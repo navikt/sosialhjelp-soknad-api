@@ -8,6 +8,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.norg.NorgService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.organisasjon.OrganisasjonService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.PdlPersonMapper;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.PdlService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdlperson.PersonSammenligner;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.personv3.PersonServiceV3;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig.AdresseSokRestConfig;
@@ -39,6 +40,7 @@ import static java.lang.System.setProperty;
         PdlService.class,
         PdlPersonMapper.class,
         PersonService.class,
+        PersonSammenligner.class,
         PersonServiceV3.class,
         ConsumerConfig.WsServices.class,
         DokumentKrypterer.class,

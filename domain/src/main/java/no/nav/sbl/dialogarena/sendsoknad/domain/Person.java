@@ -81,8 +81,4 @@ public class Person {
         this.ektefelle = ektefelle;
         return this;
     }
-
-    public void setEktefelle(Ektefelle ektefelle) {
-        this.ektefelle = ektefelle;
-    }
 }

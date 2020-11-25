@@ -21,6 +21,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.AdressebeskyttelseDto.Gradering.UGRADERT;
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.SivilstandDto.SivilstandType.ENKE_ELLER_ENKEMANN;
@@ -39,6 +40,8 @@ public class PdlPersonMapper {
 
     static final String KODE_6 = "SPSF";
     static final String KODE_7 = "SPFO";
+    static final String NOR = "NOR";
+    static final String DOED = "DOED";
 
     private static final Map<SivilstandDto.SivilstandType, String> MAP_PDLSIVILSTAND_TIL_JSONSIVILSTATUS = new ImmutableMap.Builder<SivilstandDto.SivilstandType, String>()
             .put(UOPPGITT, "")
@@ -104,19 +107,19 @@ public class PdlPersonMapper {
     private String finnFornavn(List<NavnDto> navn) {
         return navn.stream()
                 .findFirst().map(NavnDto::getFornavn)
-                .orElse("");
+                .orElse("").toUpperCase();
     }
 
     private String finnMellomnavn(List<NavnDto> navn) {
         return navn.stream()
                 .findFirst().map(NavnDto::getMellomnavn)
-                .orElse("");
+                .orElse("").toUpperCase();
     }
 
     private String finnEtternavn(List<NavnDto> navn) {
         return navn.stream()
                 .findFirst().map(NavnDto::getEtternavn)
-                .orElse("");
+                .orElse("").toUpperCase();
     }
 
     private LocalDate finnFodselsdato(List<FoedselDto> foedsel) {
@@ -139,7 +142,7 @@ public class PdlPersonMapper {
 
     private boolean erDoed(List<FolkeregisterpersonstatusDto> folkeregisterpersonstatus) {
         return folkeregisterpersonstatus.stream().findFirst()
-                .map(it -> "DOED".equalsIgnoreCase(it.getStatus()))
+                .map(it -> DOED.equalsIgnoreCase(it.getStatus()))
                 .orElse(false);
     }
 
@@ -152,7 +155,7 @@ public class PdlPersonMapper {
     private String finnStatsborgerskap(List<StatsborgerskapDto> statsborgerskap) {
         return statsborgerskap.stream().findFirst()
                 .map(StatsborgerskapDto::getLand)
-                .orElse("NOR");
+                .orElse(NOR);
     }
 
     private String finnAdressebeskyttelse(List<AdressebeskyttelseDto> adressebeskyttelse) {
@@ -190,7 +193,32 @@ public class PdlPersonMapper {
         if (bostedsadressePerson == null && bostedsadresseBarnEllerEktefelle == null) {
             return false;
         }
-        return Objects.equals(bostedsadressePerson, bostedsadresseBarnEllerEktefelle);
+        // Hvis person og barnEllerEktefelle har bostedsadresse med lik matrikkelId - betyr det at de er registrert som bosatt på samme adresse.
+        Optional<String> matrikkelIdPerson = hentMatrikkelId(bostedsadressePerson);
+        Optional<String> matrikkelIdBarnEllerEktefelle = hentMatrikkelId(bostedsadresseBarnEllerEktefelle);
+        if (matrikkelIdPerson.isPresent() && matrikkelIdBarnEllerEktefelle.isPresent()) {
+            return matrikkelIdPerson.get().equals(matrikkelIdBarnEllerEktefelle.get());
+        }
+
+        return false;
+    }
+
+    private Optional<String> hentMatrikkelId(BostedsadresseDto bostedsadresseDto) {
+        if (harVegadresseMatrikkelId(bostedsadresseDto)) {
+            return Optional.of(bostedsadresseDto.getVegadresse().getMatrikkelId());
+        }
+        if (harMatrikkeladresseMatrikkelId(bostedsadresseDto)) {
+            return Optional.of(bostedsadresseDto.getMatrikkeladresse().getMatrikkelId());
+        }
+        return Optional.empty();
+    }
+
+    private boolean harVegadresseMatrikkelId(BostedsadresseDto bostedsadresseDto) {
+        return bostedsadresseDto != null && bostedsadresseDto.getVegadresse() != null && bostedsadresseDto.getVegadresse().getMatrikkelId() != null;
+    }
+
+    private boolean harMatrikkeladresseMatrikkelId(BostedsadresseDto bostedsadresseDto) {
+        return bostedsadresseDto != null && bostedsadresseDto.getMatrikkeladresse() != null && bostedsadresseDto.getMatrikkeladresse().getMatrikkelId() != null;
     }
 
     private BostedsadresseDto finnBostedsadresse(List<BostedsadresseDto> bostedsadresse) {

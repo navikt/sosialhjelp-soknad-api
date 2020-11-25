@@ -22,6 +22,7 @@ import java.time.LocalDate;
 
 import static java.util.Collections.emptyList;
 import static no.nav.common.utils.CollectionUtils.listOf;
+import static no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.PdlPersonMapper.DOED;
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.PdlPersonMapper.KODE_6;
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.PdlPersonMapper.KODE_7;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -68,9 +69,9 @@ public class PdlPersonMapperTest {
 
         assertNotNull(person);
         assertThat(person.getDiskresjonskode(), is(nullValue()));
-        assertThat(person.getFornavn(), is(FORNAVN));
-        assertThat(person.getMellomnavn(), is(MELLOMNAVN));
-        assertThat(person.getEtternavn(), is(ETTERNAVN));
+        assertThat(person.getFornavn(), is(FORNAVN.toUpperCase()));
+        assertThat(person.getMellomnavn(), is(MELLOMNAVN.toUpperCase()));
+        assertThat(person.getEtternavn(), is(ETTERNAVN.toUpperCase()));
         assertThat(person.getFnr(), is(IDENT));
         assertThat(person.getSivilstatus(), is("gift"));
         assertThat(person.getStatsborgerskap(), is(LAND));
@@ -129,9 +130,9 @@ public class PdlPersonMapperTest {
 
         assertNotNull(ektefelle);
         assertFalse(ektefelle.harIkketilgangtilektefelle());
-        assertThat(ektefelle.getFornavn(), is(FORNAVN));
-        assertThat(ektefelle.getMellomnavn(), is(MELLOMNAVN));
-        assertThat(ektefelle.getEtternavn(), is(ETTERNAVN));
+        assertThat(ektefelle.getFornavn(), is(FORNAVN.toUpperCase()));
+        assertThat(ektefelle.getMellomnavn(), is(MELLOMNAVN.toUpperCase()));
+        assertThat(ektefelle.getEtternavn(), is(ETTERNAVN.toUpperCase()));
         assertThat(ektefelle.getFnr(), is(EKTEFELLEIDENT));
         assertThat(ektefelle.getFodselsdato().toString(), is("1970-01-01"));
         assertTrue(ektefelle.erFolkeregistrertsammen());
@@ -150,7 +151,7 @@ public class PdlPersonMapperTest {
 
         PdlEktefelle pdlEktefelle = new PdlEktefelle(
                 listOf(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT)),
-                listOf(new BostedsadresseDto(new VegadresseDto("annen_", "gårdsplassen", 42, "B", null, "9999", "8888", null), null, null)),
+                listOf(new BostedsadresseDto(new VegadresseDto("2matrikkelId", "gateveien", 1, "A", "tilleggsnavn", "1234", "1212", "U123123"), null, null)), // kun matrikkelId er ulik
                 listOf(new FoedselDto(LocalDate.of(1970, 1, 1))),
                 listOf(new NavnDto(FORNAVN, MELLOMNAVN, ETTERNAVN))
         );
@@ -298,9 +299,9 @@ public class PdlPersonMapperTest {
         Barn barn = mapper.mapTilBarn(pdlBarn, BARNIDENT, pdlPerson);
 
         assertNotNull(barn);
-        assertThat(barn.getFornavn(), is(FORNAVN));
+        assertThat(barn.getFornavn(), is(FORNAVN.toUpperCase()));
         assertThat(barn.getMellomnavn(), is(emptyString()));
-        assertThat(barn.getEtternavn(), is(ETTERNAVN));
+        assertThat(barn.getEtternavn(), is(ETTERNAVN.toUpperCase()));
         assertThat(barn.getFnr(), is(BARNIDENT));
         assertThat(barn.getFodselsdato().toString(), is(new org.joda.time.LocalDate(FOEDSELSDATO_BARN.getYear(), FOEDSELSDATO_BARN.getMonthValue(), FOEDSELSDATO_BARN.getDayOfMonth()).toString()));
         assertTrue(barn.erFolkeregistrertsammen());
@@ -344,7 +345,7 @@ public class PdlPersonMapperTest {
         PdlBarn pdlBarn = new PdlBarn(
                 listOf(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT)),
                 listOf(new BostedsadresseDto(new VegadresseDto("matrikkelId", "gateveien", 1, "A", "tilleggsnavn", "1234", "1212", "U123123"), null, null)),
-                listOf(new FolkeregisterpersonstatusDto("doed")),
+                listOf(new FolkeregisterpersonstatusDto(DOED)),
                 listOf(new FoedselDto(FOEDSELSDATO_BARN)),
                 listOf(new NavnDto(FORNAVN, null, ETTERNAVN))
         );

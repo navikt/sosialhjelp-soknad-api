@@ -3,8 +3,6 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.Objects;
-
 public class MatrikkeladresseDto {
 
     private final String matrikkelId;
@@ -45,18 +43,6 @@ public class MatrikkeladresseDto {
 
     public String getBruksenhetsnummer() {
         return bruksenhetsnummer;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        MatrikkeladresseDto that = (MatrikkeladresseDto) o;
-        return Objects.equals(matrikkelId, that.matrikkelId) &&
-                Objects.equals(postnummer, that.postnummer) &&
-                Objects.equals(tilleggsnavn, that.tilleggsnavn) &&
-                Objects.equals(kommunenummer, that.kommunenummer) &&
-                Objects.equals(bruksenhetsnummer, that.bruksenhetsnummer);
     }
 
 }

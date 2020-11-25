@@ -35,11 +35,9 @@ public class PdlService {
 
     public Person hentPerson(String ident) {
         PdlPerson pdlPerson = pdlConsumer.hentPerson(ident);
-        Person person = pdlPersonMapper.mapTilPerson(pdlPerson, ident);
 
-        person.setEktefelle(hentEktefelle(pdlPerson));
-
-        return person;
+        return pdlPersonMapper.mapTilPerson(pdlPerson, ident)
+                .withEktefelle(hentEktefelle(pdlPerson));
     }
 
     public List<Barn> hentBarnForPerson(String ident) {

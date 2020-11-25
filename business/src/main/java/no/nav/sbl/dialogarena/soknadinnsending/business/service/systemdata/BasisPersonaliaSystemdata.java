@@ -2,19 +2,34 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.Person;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.Systemdata;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.PdlApiException;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.TjenesteUtilgjengeligException;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.PdlService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdlperson.PersonSammenligner;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonService;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.*;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
 
+import static org.slf4j.LoggerFactory.getLogger;
+
 @Component
 public class BasisPersonaliaSystemdata implements Systemdata {
 
+    private static final Logger log = getLogger(BasisPersonaliaSystemdata.class);
+
     @Inject
     private PersonService personService;
+
+    @Inject
+    private PdlService pdlService;
+
+    @Inject
+    PersonSammenligner personSammenligner;
 
     @Override
     public void updateSystemdataIn(SoknadUnderArbeid soknadUnderArbeid, String token) {
@@ -36,7 +51,16 @@ public class BasisPersonaliaSystemdata implements Systemdata {
         if (person == null){
             return null;
         }
-
+        try {
+            Person pdlPerson = pdlService.hentPerson(personIdentifikator);
+            if (pdlPerson != null) {
+                personSammenligner.sammenlign(person, pdlPerson);
+            }
+        } catch (PdlApiException | TjenesteUtilgjengeligException e) {
+            log.warn("PDL kaster feil (brukes kun for sammenligning)", e);
+        } catch (Exception e) {
+            log.warn("PDL-feil eller feil ved sammenligning av data fra TPS/PDL", e);
+        }
         return mapToJsonPersonalia(person);
     }
 
