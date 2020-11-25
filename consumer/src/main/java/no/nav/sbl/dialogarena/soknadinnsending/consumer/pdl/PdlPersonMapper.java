@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.AdressebeskyttelseDto.Gradering.UGRADERT;
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.SivilstandDto.SivilstandType.ENKE_ELLER_ENKEMANN;
@@ -152,10 +153,11 @@ public class PdlPersonMapper {
                 .orElse("");
     }
 
-    private String finnStatsborgerskap(List<StatsborgerskapDto> statsborgerskap) {
-        return statsborgerskap.stream().findFirst()
+    private List<String> finnStatsborgerskap(List<StatsborgerskapDto> statsborgerskap) {
+        var list = statsborgerskap.stream()
                 .map(StatsborgerskapDto::getLand)
-                .orElse(NOR);
+                .collect(Collectors.toList());
+        return list.isEmpty() ? List.of(NOR) : list;
     }
 
     private String finnAdressebeskyttelse(List<AdressebeskyttelseDto> adressebeskyttelse) {

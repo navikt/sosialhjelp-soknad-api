@@ -1,5 +1,7 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain;
 
+import java.util.List;
+
 public class Person {
     private String fornavn;
     private String mellomnavn;
@@ -7,7 +9,7 @@ public class Person {
     private String fnr;
     private String sivilstatus;
     private String diskresjonskode;
-    private String statsborgerskap;
+    private List<String> statsborgerskap;
     private Ektefelle ektefelle;
 
     public String getFornavn() {
@@ -34,7 +36,7 @@ public class Person {
         return diskresjonskode;
     }
 
-    public String getStatsborgerskap() {
+    public List<String> getStatsborgerskap() {
         return statsborgerskap;
     }
 
@@ -72,7 +74,7 @@ public class Person {
         return this;
     }
 
-    public Person withStatsborgerskap(String statsborgerskap) {
+    public Person withStatsborgerskap(List<String> statsborgerskap) {
         this.statsborgerskap = statsborgerskap;
         return this;
     }
