@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Barn;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Ektefelle;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.PdlService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdlperson.PersonSammenligner;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonService;
 import no.nav.sbl.soknadsosialhjelp.json.AdresseMixIn;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
@@ -86,8 +88,7 @@ public class FamilieSystemdataTest {
             .withEtternavn(ETTERNAVN_BARN)
             .withFodselsdato(FODSELSDATO_BARN)
             .withFnr(FNR_BARN)
-            .withFolkeregistrertsammen(ER_FOLKEREGISTRERT_SAMMEN_BARN)
-            .withIkkeTilgang(false);
+            .withFolkeregistrertsammen(ER_FOLKEREGISTRERT_SAMMEN_BARN);
 
     private static final Barn BARN_2 = new Barn()
             .withFornavn(FORNAVN_BARN_2)
@@ -95,8 +96,7 @@ public class FamilieSystemdataTest {
             .withEtternavn(ETTERNAVN_BARN_2)
             .withFodselsdato(FODSELSDATO_BARN_2)
             .withFnr(FNR_BARN_2)
-            .withFolkeregistrertsammen(ER_FOLKEREGISTRERT_SAMMEN_BARN_2)
-            .withIkkeTilgang(false);
+            .withFolkeregistrertsammen(ER_FOLKEREGISTRERT_SAMMEN_BARN_2);
 
     private static final JsonAnsvar JSON_ANSVAR = new JsonAnsvar()
             .withBarn(new JsonBarn()
@@ -154,6 +154,12 @@ public class FamilieSystemdataTest {
 
     @Mock
     private PersonService personService;
+
+    @Mock
+    private PdlService pdlService;
+
+    @Mock
+    private PersonSammenligner personSammenligner;
 
     @InjectMocks
     private FamilieSystemdata familieSystemdata;

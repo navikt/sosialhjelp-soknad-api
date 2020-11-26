@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.SamletVedleggStorrelseForStorException;
+import no.nav.sbl.dialogarena.sendsoknad.domain.exception.UgyldigOpplastingTypeException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.StaticSubjectHandlerService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.virusscan.VirusScanner;
@@ -155,6 +156,16 @@ public class OpplastetVedleggServiceTest {
         final byte[] imageFile = createByteArrayFromJpeg();
 
         assertThrows(SamletVedleggStorrelseForStorException.class, () -> opplastetVedleggService.sjekkOmSoknadUnderArbeidTotalVedleggStorrelseOverskriderMaksgrense(BEHANDLINGSID, imageFile));
+    }
+
+    @Test
+    public void feilmeldingHvisFiltypeErUgyldigMenValidererMedTika() throws IOException {
+        byte[] imageFile = createByteArrayFromJpeg();
+
+        assertThrows(UgyldigOpplastingTypeException.class, () -> opplastetVedleggService.saveVedleggAndUpdateVedleggstatus(BEHANDLINGSID, TYPE, imageFile, "filnavn.jfif"));
+        assertThrows(UgyldigOpplastingTypeException.class, () -> opplastetVedleggService.saveVedleggAndUpdateVedleggstatus(BEHANDLINGSID, TYPE, imageFile, "filnavn.pjpeg"));
+        assertThrows(UgyldigOpplastingTypeException.class, () -> opplastetVedleggService.saveVedleggAndUpdateVedleggstatus(BEHANDLINGSID, TYPE, imageFile, "filnavn.pjp"));
+        assertThrows(UgyldigOpplastingTypeException.class, () -> opplastetVedleggService.saveVedleggAndUpdateVedleggstatus(BEHANDLINGSID, TYPE, imageFile, "filnavnUtenFiltype"));
     }
 
     private byte[] createByteArrayFromJpeg() throws IOException {

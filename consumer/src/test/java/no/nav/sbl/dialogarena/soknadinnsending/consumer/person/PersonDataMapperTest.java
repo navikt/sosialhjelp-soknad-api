@@ -6,8 +6,6 @@ import no.nav.tjeneste.virksomhet.person.v1.informasjon.Diskresjonskoder;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Familierelasjon;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Familierelasjoner;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Foedselsdato;
-import no.nav.tjeneste.virksomhet.person.v1.informasjon.Kjoenn;
-import no.nav.tjeneste.virksomhet.person.v1.informasjon.Kjoennstyper;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Landkoder;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.NorskIdent;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Person;
@@ -35,12 +33,12 @@ import static no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonMapp
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonMapper.erMyndig;
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonMapper.finnBarnForPerson;
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonMapper.finnEktefelleForPerson;
-import static no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonMapper.finnSammensattNavn;
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonMapper.finnSivilstatus;
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonMapper.mapXmlPersonTilPerson;
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonMapper.xmlPersonHarDiskresjonskode;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.emptyString;
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.core.Is.is;
@@ -55,8 +53,6 @@ public class PersonDataMapperTest {
     private static final String FORNAVN = "Fornavn";
     private static final String MELLOMNAVN = "Mellomnavn";
     private static final String ETTERNAVN = "Etternavn";
-    private static final String SAMMENSATT_NAVN = "Fornavn Mellomnavn Etternavn";
-    private static final String SAMMENSATT_NAVN_UTEN_MELLOMNAVN = "Fornavn Etternavn";
     private static final String FNR = "21098691736"; // Ikke ekte person
     private static final int FODSELSAR = 1986;
     private static final int FODSELSMANED = 9;
@@ -84,15 +80,10 @@ public class PersonDataMapperTest {
         assertThat(person.getFornavn(), is(FORNAVN));
         assertThat(person.getMellomnavn(), is(MELLOMNAVN));
         assertThat(person.getEtternavn(), is(ETTERNAVN));
-        assertThat(person.getSammensattNavn(), is(SAMMENSATT_NAVN));
         assertThat(person.getFnr(), is(FNR));
-        assertThat(person.getFodselsdato().getYear(), is(FODSELSAR));
-        assertThat(person.getFodselsdato().getMonthOfYear(), is(FODSELSMANED));
-        assertThat(person.getFodselsdato().getDayOfMonth(), is(FODSELSDAG));
-        assertThat(person.getAlder(), notNullValue());
-        assertThat(person.getKjonn(), is("k"));
         assertThat(person.getSivilstatus(), is("enke"));
-        assertThat(person.getStatsborgerskap(), is(LANDKODE));
+        assertThat(person.getStatsborgerskap(), hasSize(1));
+        assertThat(person.getStatsborgerskap().get(0), is(LANDKODE));
         assertThat(person.getDiskresjonskode(), is(DISKRESJONSKODE_UFB));
     }
 
@@ -200,7 +191,6 @@ public class PersonDataMapperTest {
         assertThat(barn.getFodselsdato().getMonthOfYear(), is(FODSELSMANED_BARN));
         assertThat(barn.getFodselsdato().getDayOfMonth(), is(FODSELSDAG_BARN));
         assertThat(barn.erFolkeregistrertsammen(), is(true));
-        assertThat(barn.harIkkeTilgang(), is(false));
 
         assertThat(barn2.getFnr(), is(FNR_BARN2));
         assertThat(barn2.getFornavn(), is(FORNAVN_BARN2));
@@ -210,7 +200,6 @@ public class PersonDataMapperTest {
         assertThat(barn2.getFodselsdato().getMonthOfYear(), is(FODSELSMANED_BARN2));
         assertThat(barn2.getFodselsdato().getDayOfMonth(), is(FODSELSDAG_BARN2));
         assertThat(barn2.erFolkeregistrertsammen(), is(false));
-        assertThat(barn2.harIkkeTilgang(), is(false));
     }
 
     @Test
@@ -326,30 +315,6 @@ public class PersonDataMapperTest {
         assertThat(erMyndig, is(true));
     }
 
-    @Test
-    public void finnSammensattNavnSetterSammenNavnRiktig() {
-        String sammensattNavn = finnSammensattNavn(lagXmlPersonMedNavn());
-
-        assertThat(sammensattNavn, is(SAMMENSATT_NAVN));
-    }
-
-    @Test
-    public void finnSammensattNavnSetterSammenNavnUtenMellomnavnRiktig() {
-        String sammensattNavn = finnSammensattNavn(lagXmlPersonMedNavn(FORNAVN, null, ETTERNAVN));
-
-        assertThat(sammensattNavn, is(SAMMENSATT_NAVN_UTEN_MELLOMNAVN));
-    }
-
-    @Test
-    public void mapXmlPersonTilPersonTaklerPersonUtenNavn() {
-        Person person = new Person();
-        person.setPersonnavn(new Personnavn());
-
-        String sammensattNavn = finnSammensattNavn(person);
-
-        assertThat(sammensattNavn, is(emptyString()));
-    }
-
     private Person lagXmlPerson() {
         Person xmlPerson = lagXmlPersonMedNavn();
         Personidenter personidenter = new Personidenter();
@@ -360,12 +325,6 @@ public class PersonDataMapperTest {
         xmlPerson.setIdent(norskIdent);
 
         xmlPerson.setFoedselsdato(fodseldato(FODSELSAR, FODSELSMANED, FODSELSDAG));
-
-        Kjoennstyper kjoennstyper = new Kjoennstyper();
-        kjoennstyper.setValue("K");
-        Kjoenn kjoenn = new Kjoenn();
-        kjoenn.setKjoenn(kjoennstyper);
-        xmlPerson.setKjoenn(kjoenn);
 
         xmlPerson.setSivilstand(lagSivilstand(SIVILSTATUS_ENKE));
 

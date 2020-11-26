@@ -1,19 +1,15 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain;
 
-import org.joda.time.LocalDate;
+import java.util.List;
 
 public class Person {
     private String fornavn;
     private String mellomnavn;
     private String etternavn;
-    private String sammensattNavn;
-    private LocalDate fodselsdato;
     private String fnr;
-    private String alder;
-    private String kjonn;
     private String sivilstatus;
     private String diskresjonskode;
-    private String statsborgerskap;
+    private List<String> statsborgerskap;
     private Ektefelle ektefelle;
 
     public String getFornavn() {
@@ -28,24 +24,8 @@ public class Person {
         return etternavn;
     }
 
-    public LocalDate getFodselsdato() {
-        return fodselsdato;
-    }
-
     public String getFnr() {
         return fnr;
-    }
-
-    public String getSammensattNavn() {
-        return sammensattNavn;
-    }
-
-    public String getAlder() {
-        return alder;
-    }
-
-    public String getKjonn() {
-        return kjonn;
     }
 
     public String getSivilstatus() {
@@ -56,7 +36,7 @@ public class Person {
         return diskresjonskode;
     }
 
-    public String getStatsborgerskap() {
+    public List<String> getStatsborgerskap() {
         return statsborgerskap;
     }
 
@@ -79,28 +59,8 @@ public class Person {
         return this;
     }
 
-    public Person withSammensattNavn(String sammensattNavn) {
-        this.sammensattNavn = sammensattNavn;
-        return this;
-    }
-
-    public Person withFodselsdato(LocalDate fodselsdato) {
-        this.fodselsdato = fodselsdato;
-        return this;
-    }
-
     public Person withFnr(String fnr) {
         this.fnr = fnr;
-        return this;
-    }
-
-    public Person withAlder(String alder) {
-        this.alder = alder;
-        return this;
-    }
-
-    public Person withKjonn(String kjonn) {
-        this.kjonn = kjonn;
         return this;
     }
 
@@ -114,7 +74,7 @@ public class Person {
         return this;
     }
 
-    public Person withStatsborgerskap(String statsborgerskap) {
+    public Person withStatsborgerskap(List<String> statsborgerskap) {
         this.statsborgerskap = statsborgerskap;
         return this;
     }
