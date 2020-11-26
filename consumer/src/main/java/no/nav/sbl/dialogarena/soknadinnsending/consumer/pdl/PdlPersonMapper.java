@@ -12,6 +12,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.Folkeregi
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.NavnDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.SivilstandDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.StatsborgerskapDto;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.VegadresseDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.ektefelle.PdlEktefelle;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.person.PdlPerson;
 import org.joda.time.LocalDate;
@@ -201,8 +202,22 @@ public class PdlPersonMapper {
         if (matrikkelIdPerson.isPresent() && matrikkelIdBarnEllerEktefelle.isPresent()) {
             return matrikkelIdPerson.get().equals(matrikkelIdBarnEllerEktefelle.get());
         }
+        // Hvis ikke vegadresse til person eller barnEllerEktefelle har matrikkelId, sammenlign resterende vegadresse-felter
+        if (bostedsadressePerson.getVegadresse() != null && bostedsadresseBarnEllerEktefelle.getVegadresse() != null) {
+            return erLikeVegadresser(bostedsadressePerson.getVegadresse(), bostedsadresseBarnEllerEktefelle.getVegadresse());
+        }
 
         return false;
+    }
+
+    private BostedsadresseDto finnBostedsadresse(List<BostedsadresseDto> bostedsadresse) {
+        if (bostedsadresse == null || bostedsadresse.isEmpty()) {
+            return null;
+        }
+        return bostedsadresse.stream()
+                .filter(dto -> dto.getUkjentBosted() == null && (dto.getVegadresse() != null || dto.getMatrikkeladresse() != null))
+                .findFirst()
+                .orElse(null);
     }
 
     private Optional<String> hentMatrikkelId(BostedsadresseDto bostedsadresseDto) {
@@ -223,13 +238,13 @@ public class PdlPersonMapper {
         return bostedsadresseDto != null && bostedsadresseDto.getMatrikkeladresse() != null && bostedsadresseDto.getMatrikkeladresse().getMatrikkelId() != null;
     }
 
-    private BostedsadresseDto finnBostedsadresse(List<BostedsadresseDto> bostedsadresse) {
-        if (bostedsadresse == null || bostedsadresse.isEmpty()) {
-            return null;
-        }
-        return bostedsadresse.stream()
-                .filter(dto -> dto.getUkjentBosted() == null && (dto.getVegadresse() != null || dto.getMatrikkeladresse() != null))
-                .findFirst()
-                .orElse(null);
+    private boolean erLikeVegadresser(VegadresseDto adr1, VegadresseDto adr2) {
+        return Objects.equals(adr1.getAdressenavn(), adr2.getAdressenavn())
+                && Objects.equals(adr1.getHusnummer(), adr2.getHusnummer())
+                && Objects.equals(adr1.getHusbokstav(), adr2.getHusbokstav())
+                && Objects.equals(adr1.getTilleggsnavn(), adr2.getTilleggsnavn())
+                && Objects.equals(adr1.getPostnummer(), adr2.getPostnummer())
+                && Objects.equals(adr1.getKommunenummer(), adr2.getKommunenummer())
+                && Objects.equals(adr1.getBruksenhetsnummer(), adr2.getBruksenhetsnummer());
     }
 }

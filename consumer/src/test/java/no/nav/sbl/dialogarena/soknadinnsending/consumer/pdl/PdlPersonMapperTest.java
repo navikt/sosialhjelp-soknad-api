@@ -142,7 +142,7 @@ public class PdlPersonMapperTest {
     }
 
     @Test
-    public void ektefelleMedAnnenBostedsadresse() {
+    public void ektefelleOgPersonErIkkeFolkeregistrertSammenMedUlikMatrikkelId() {
         PdlPerson pdlPerson = new PdlPerson(
                 listOf(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT)),
                 listOf(new BostedsadresseDto(new VegadresseDto("matrikkelId", "gateveien", 1, "A", "tilleggsnavn", "1234", "1212", "U123123"), null, null)),
@@ -163,6 +163,30 @@ public class PdlPersonMapperTest {
 
         assertNotNull(ektefelle);
         assertFalse(ektefelle.erFolkeregistrertsammen());
+    }
+
+    @Test
+    public void ektefelleOgPersonErFolkeregistrertSammenUtenMatrikkelId() {
+        PdlPerson pdlPerson = new PdlPerson(
+                listOf(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT)),
+                listOf(new BostedsadresseDto(new VegadresseDto(null, "gateveien", 1, "A", "tilleggsnavn", "1234", "1212", "U123123"), null, null)),
+                listOf(new FamilierelasjonDto(BARNIDENT, BARN_ROLLE, MOR_ROLLE)),
+                listOf(new NavnDto(FORNAVN, MELLOMNAVN, ETTERNAVN)),
+                listOf(new SivilstandDto(SivilstandDto.SivilstandType.GIFT, EKTEFELLEIDENT)),
+                listOf(new StatsborgerskapDto(LAND))
+        );
+
+        PdlEktefelle pdlEktefelle = new PdlEktefelle(
+                listOf(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT)),
+                listOf(new BostedsadresseDto(new VegadresseDto(null, "gateveien", 1, "A", "tilleggsnavn", "1234", "1212", "U123123"), null, null)),
+                listOf(new FoedselDto(LocalDate.of(1970, 1, 1))),
+                listOf(new NavnDto(FORNAVN, MELLOMNAVN, ETTERNAVN))
+        );
+
+        Ektefelle ektefelle = mapper.mapTilEktefelle(pdlEktefelle, EKTEFELLEIDENT, pdlPerson);
+
+        assertNotNull(ektefelle);
+        assertTrue(ektefelle.erFolkeregistrertsammen());
     }
 
     @Test
