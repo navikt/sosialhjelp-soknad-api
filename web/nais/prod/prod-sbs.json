@@ -18,7 +18,7 @@
     "/apigw/securitytokenservicetoken": "apikey/apigw/prod/security-token-service-token/sosialhjelp-soknad-api",
     "/apigw/dkifapi": "apikey/apigw/prod/dkif.api/sosialhjelp-soknad-api",
     "/apigw/pdlapi": "apikey/apigw/prod/pdl-api/sosialhjelp-soknad-api",
-    "/apigw/kodeverkapi": "apikey/apigw/prod/kodeverk.api/sosialhjelp-soknad-api",
+    "/apigw/kodeverkapi": "apikey/apigw/prod/kodeverk.rest-api/sosialhjelp-soknad-api",
     "/serviceuser/srvsoknadsosialhjelp-server": "serviceuser/data/prod/srvsoknadsosialhjelp-server",
     "/serviceuser/srvsoknadsosialhjelp-server-sbs": "serviceuser/data/prod/srvsoknadsosialhjelp-server-sbs"
   },
