@@ -91,7 +91,6 @@
         <ojdbc.version>19.8.0.0</ojdbc.version>
         <flyway-core.version>7.2.0</flyway-core.version>
         <flyway-maven-plugin.version>7.2.0</flyway-maven-plugin.version>
-        <flying.saucer.version>9.1.20</flying.saucer.version>
         <handlebars.version>4.0.6</handlebars.version>
         <jackson.version>2.11.0</jackson.version>
         <filformat.version>1.2020.11.05-09.32-14af05dea965</filformat.version>
