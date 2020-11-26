@@ -11,7 +11,6 @@ import no.nav.sbl.sosialhjelp.domain.OpplastetVedlegg;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.domain.VedleggType;
 import no.nav.sbl.sosialhjelp.domain.Vedleggstatus;
-import no.nav.sbl.sosialhjelp.pdf.PDFService;
 import no.nav.sbl.sosialhjelp.pdfmedpdfbox.SosialhjelpPdfGenerator;
 import org.apache.cxf.attachment.ByteDataSource;
 import org.junit.Before;
@@ -46,7 +45,6 @@ public class FiksDokumentHelperTest {
 
     private DokumentKrypterer dokumentKrypterer = mock(DokumentKrypterer.class);
     private InnsendingService innsendingService = mock(InnsendingService.class);
-    private PDFService pdfService = mock(PDFService.class);
     private SosialhjelpPdfGenerator sosialhjelpPdfGenerator = mock(SosialhjelpPdfGenerator.class);
 
     private FiksDokumentHelper fiksDokumentHelper;
@@ -55,11 +53,10 @@ public class FiksDokumentHelperTest {
     public void setup() {
         when(dokumentKrypterer.krypterData(any())).thenReturn(new byte[]{3, 2, 1});
         when(innsendingService.hentAlleOpplastedeVedleggForSoknad(any(SoknadUnderArbeid.class))).thenReturn(lagOpplastedeVedlegg());
-        when(pdfService.genererEttersendelsePdf(any(JsonInternalSoknad.class), anyString(), anyString())).thenReturn(new byte[]{1, 2, 3});
         when(sosialhjelpPdfGenerator.generate(any(JsonInternalSoknad.class), anyBoolean())).thenReturn(new byte[]{1, 2, 3});
         when(sosialhjelpPdfGenerator.generateEttersendelsePdf(any(JsonInternalSoknad.class), anyString())).thenReturn(new byte[]{1, 2, 3});
         when(sosialhjelpPdfGenerator.generateBrukerkvitteringPdf()).thenReturn(new byte[]{1, 2, 3});
-        fiksDokumentHelper = new FiksDokumentHelper(false, dokumentKrypterer, innsendingService, pdfService, sosialhjelpPdfGenerator);
+        fiksDokumentHelper = new FiksDokumentHelper(false, dokumentKrypterer, innsendingService, sosialhjelpPdfGenerator);
     }
 
     @Test
@@ -146,7 +143,7 @@ public class FiksDokumentHelperTest {
 
     @Test
     public void krypterOgOpprettByteDatasourceKryptererHvisSkalKryptereErTrue() {
-        fiksDokumentHelper = new FiksDokumentHelper(true, dokumentKrypterer, innsendingService, pdfService, sosialhjelpPdfGenerator);
+        fiksDokumentHelper = new FiksDokumentHelper(true, dokumentKrypterer, innsendingService, sosialhjelpPdfGenerator);
 
         ByteDataSource dataSource = fiksDokumentHelper.krypterOgOpprettByteDatasource(FILNAVN, DATA);
 

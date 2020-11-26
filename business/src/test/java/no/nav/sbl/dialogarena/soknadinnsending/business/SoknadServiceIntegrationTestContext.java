@@ -25,7 +25,6 @@ import no.nav.sbl.sosialhjelp.InnsendingService;
 import no.nav.sbl.sosialhjelp.SoknadUnderArbeidService;
 import no.nav.sbl.sosialhjelp.pdf.HandleBarKjoerer;
 import no.nav.sbl.sosialhjelp.pdf.HtmlGenerator;
-import no.nav.sbl.sosialhjelp.pdf.PDFService;
 import no.nav.sbl.sosialhjelp.pdfmedpdfbox.SosialhjelpPdfGenerator;
 import no.nav.sbl.sosialhjelp.pdfmedpdfbox.TextHelpers;
 import no.nav.sbl.sosialhjelp.sendtsoknad.SendtSoknadRepository;
@@ -93,11 +92,6 @@ public class SoknadServiceIntegrationTestContext {
     @Bean
     public DigisosApi digisosApi() {
         return mock(DigisosApi.class);
-    }
-
-    @Bean
-    public PDFService pdfService() {
-        return new PDFService();
     }
 
     @Bean
