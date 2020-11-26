@@ -15,6 +15,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig.AdresseSokRes
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig.ArbeidsforholdRestConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig.DigisosApiRestConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig.DkifRestConfig;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig.KodeverkRestConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig.NorgRestConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig.OrganisasjonRestConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig.PdlRestConfig;
@@ -76,7 +77,8 @@ public class ConsumerConfig {
             ArbeidsforholdRestConfig.class,
             STSTokenRestConfig.class,
             DkifRestConfig.class,
-            SkattbarInntektRestConfig.class
+            SkattbarInntektRestConfig.class,
+            KodeverkRestConfig.class
     })
     public static class WsServices {
     }
