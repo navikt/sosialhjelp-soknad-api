@@ -24,7 +24,6 @@ import no.nav.sbl.sosialhjelp.SoknadUnderArbeidService;
 import no.nav.sbl.sosialhjelp.domain.OpplastetVedlegg;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.domain.Vedleggstatus;
-import no.nav.sbl.sosialhjelp.pdf.PDFService;
 import no.nav.sbl.sosialhjelp.pdfmedpdfbox.SosialhjelpPdfGenerator;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
@@ -49,9 +48,6 @@ public class DigisosApiService {
 
     @Inject
     private DigisosApi digisosApi;
-
-    @Inject
-    private PDFService pdfService;
 
     @Inject
     private SosialhjelpPdfGenerator sosialhjelpPdfGenerator;
@@ -154,14 +150,9 @@ public class DigisosApiService {
     private FilOpplasting lagDokumentForEttersendelsePdf(JsonInternalSoknad internalSoknad, String eier) {
         String filnavn = "ettersendelse.pdf";
         String mimetype = "application/pdf";
-        try {
-            byte[] pdf = sosialhjelpPdfGenerator.generateEttersendelsePdf(internalSoknad, eier);
-            return opprettFilOpplastingFraByteArray(filnavn, mimetype, pdf);
-        } catch (Exception e) {
-            log.error("Kunne ikke generere ettersendelse.pdf. Fallback til generering med itext.", e);
-            byte[] pdf = pdfService.genererEttersendelsePdf(internalSoknad, "/", eier);
-            return opprettFilOpplastingFraByteArray(filnavn, mimetype, pdf);
-        }
+
+        byte[] pdf = sosialhjelpPdfGenerator.generateEttersendelsePdf(internalSoknad, eier);
+        return opprettFilOpplastingFraByteArray(filnavn, mimetype, pdf);
     }
 
     private FilOpplasting lagDokumentForBrukerkvitteringPdf() {

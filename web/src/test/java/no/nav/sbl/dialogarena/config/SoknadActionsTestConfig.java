@@ -21,7 +21,6 @@ import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.sosialhjelp.InnsendingService;
 import no.nav.sbl.sosialhjelp.SoknadUnderArbeidService;
 import no.nav.sbl.sosialhjelp.pdf.HtmlGenerator;
-import no.nav.sbl.sosialhjelp.pdf.PDFService;
 import no.nav.sbl.sosialhjelp.pdfmedpdfbox.PdfGeneratorConfig;
 import no.nav.sbl.sosialhjelp.pdfmedpdfbox.SosialhjelpPdfGenerator;
 import no.nav.sbl.sosialhjelp.pdfmedpdfbox.TextHelpers;
@@ -84,11 +83,6 @@ public class SoknadActionsTestConfig {
     @Bean
     public SoknadActions soknadActions() {
         return new SoknadActions();
-    }
-
-    @Bean
-    public PDFService pdfService() {
-        return new PDFService();
     }
 
     @Bean
