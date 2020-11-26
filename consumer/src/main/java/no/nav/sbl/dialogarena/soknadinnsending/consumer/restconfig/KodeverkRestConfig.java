@@ -1,5 +1,8 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.kodeverk.KodeverkConsumer;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.kodeverk.KodeverkConsumerImpl;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.kodeverk.KodeverkConsumerMock;
@@ -47,9 +50,16 @@ public class KodeverkRestConfig {
         };
     }
 
+    private ObjectMapper kodeverkMapper() {
+        return new ObjectMapper()
+                .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
+                .registerModule(new JavaTimeModule());
+    }
+
     private Client kodeverkClient() {
         final String apiKey = getenv(SOSIALHJELP_SOKNAD_API_KODEVERKAPI_APIKEY_PASSWORD);
         return RestUtils.createClient()
-                .register((ClientRequestFilter) requestContext -> requestContext.getHeaders().putSingle(HEADER_NAV_APIKEY, apiKey));
+                .register((ClientRequestFilter) requestContext -> requestContext.getHeaders().putSingle(HEADER_NAV_APIKEY, apiKey))
+                .register(kodeverkMapper());
     }
 }

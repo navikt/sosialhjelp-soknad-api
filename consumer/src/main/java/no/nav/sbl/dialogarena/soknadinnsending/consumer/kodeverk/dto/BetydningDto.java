@@ -18,9 +18,9 @@ public class BetydningDto {
 
     @JsonCreator
     public BetydningDto(
-            @JsonProperty("gyldigFra")LocalDate gyldigFra,
-            @JsonProperty("gyldigTil")LocalDate gyldigTil,
-            @JsonProperty("beskrivelser")Map<String, BeskrivelseDto> beskrivelser
+            @JsonProperty("gyldigFra") LocalDate gyldigFra,
+            @JsonProperty("gyldigTil") LocalDate gyldigTil,
+            @JsonProperty("beskrivelser") Map<String, BeskrivelseDto> beskrivelser
     ) {
         this.gyldigFra = gyldigFra;
         this.gyldigTil = gyldigTil;

@@ -22,6 +22,4 @@ public class KodeverkDto {
     public Map<String, List<BetydningDto>> getBetydninger() {
         return betydninger;
     }
-
-
 }
