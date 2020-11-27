@@ -30,8 +30,8 @@ public class KodeverkConsumerImpl implements KodeverkConsumer {
     private static final String KOMMUNER = "Kommuner";
     private static final String LANDKODER = "Landkoder";
 
-    private Client client;
-    private String endpoint;
+    private final Client client;
+    private final String endpoint;
 
     public KodeverkConsumerImpl(Client client, String endpoint) {
         this.client = client;
@@ -63,9 +63,9 @@ public class KodeverkConsumerImpl implements KodeverkConsumer {
         return hentKodeverk(LANDKODER);
     }
 
-    private KodeverkDto hentKodeverk(String landkoder) {
+    private KodeverkDto hentKodeverk(String kodeverksnavn) {
         try {
-            return lagRequest(kodeverkUri(landkoder)).get(KodeverkDto.class);
+            return lagRequest(kodeverkUri(kodeverksnavn)).get(KodeverkDto.class);
         } catch (ClientErrorException e) {
             throw new TjenesteUtilgjengeligException("Kodeverk - client-feil", e);
         } catch (Exception e) {
