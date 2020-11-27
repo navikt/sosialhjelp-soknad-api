@@ -82,6 +82,8 @@ public class KodeverkConsumerImpl implements KodeverkConsumer {
         String consumerId = SubjectHandler.getConsumerId();
         String callId = MDCOperations.getFromMDC(MDCOperations.MDC_CALL_ID);
 
+        logger.warn("kodeverk-url: {}", uri.toString());
+
         return client.target(uri)
                 .queryParam("ekskluderUgyldige", true)
                 .queryParam("spraak", "nb")
