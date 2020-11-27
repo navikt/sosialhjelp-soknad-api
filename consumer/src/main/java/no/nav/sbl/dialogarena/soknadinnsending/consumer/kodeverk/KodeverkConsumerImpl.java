@@ -24,7 +24,6 @@ public class KodeverkConsumerImpl implements KodeverkConsumer {
     private static final Logger logger = getLogger(KodeverkConsumerImpl.class);
 
     private static final String PATH_PING = "internal/isAlive";
-    private static final String QUERY = "ekskluderUgyldige=true&spraak=nb";
 
     private static final String POSTNUMMER = "Postnummer";
     private static final String KOMMUNER = "Kommuner";
@@ -40,11 +39,17 @@ public class KodeverkConsumerImpl implements KodeverkConsumer {
 
     @Override
     public void ping() {
-        Invocation.Builder request = client.target(endpoint + PATH_PING).request();
-        try (Response response = request.get()) {
-            if (response.getStatus() != 200) {
-                throw new RuntimeException("Ping mot kodeverk feilet: " + response.getStatus() + ", respons: " + response.readEntity(String.class));
-            }
+//        Invocation.Builder request = client.target(endpoint + PATH_PING).request();
+//        try (Response response = request.get()) {
+//            if (response.getStatus() != 200) {
+//                throw new RuntimeException("Ping mot kodeverk feilet: " + response.getStatus() + ", respons: " + response.readEntity(String.class));
+//            }
+//        }
+
+        try {
+            hentPostnummer();
+        } catch (Exception e) {
+            throw new RuntimeException("Ping mot kodeverk feilet");
         }
     }
 
@@ -78,13 +83,15 @@ public class KodeverkConsumerImpl implements KodeverkConsumer {
         String callId = MDCOperations.getFromMDC(MDCOperations.MDC_CALL_ID);
 
         return client.target(uri)
+                .queryParam("ekskluderUgyldige", "true")
+                .queryParam("spraak", "nb")
                 .request()
                 .header(HEADER_CALL_ID, callId)
                 .header(HEADER_CONSUMER_ID, consumerId);
     }
 
     private URI kodeverkUri(String kodeverksnavn) {
-        return URI.create(endpoint + "api/v1/kodeverk/" + kodeverksnavn + "/koder/betydninger" + QUERY);
+        return URI.create(endpoint + "v1/kodeverk/" + kodeverksnavn + "/koder/betydninger");
     }
 
 }
