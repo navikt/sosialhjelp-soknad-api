@@ -49,7 +49,7 @@ public class KodeverkConsumerImpl implements KodeverkConsumer {
         try {
             hentPostnummer();
         } catch (Exception e) {
-            throw new RuntimeException("Ping mot kodeverk feilet");
+            throw new RuntimeException("Ping mot kodeverk feilet", e);
         }
     }
 
