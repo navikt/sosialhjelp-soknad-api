@@ -40,17 +40,11 @@ public class KodeverkConsumerImpl implements KodeverkConsumer {
 
     @Override
     public void ping() {
-//        Invocation.Builder request = client.target(endpoint + PATH_PING).request();
-//        try (Response response = request.get()) {
-//            if (response.getStatus() != 200) {
-//                throw new RuntimeException("Ping mot kodeverk feilet: " + response.getStatus() + ", respons: " + response.readEntity(String.class));
-//            }
-//        }
-
-        try {
-            hentPostnummer();
-        } catch (Exception e) {
-            throw new RuntimeException("Ping mot kodeverk feilet");
+        Invocation.Builder request = client.target(endpoint + PATH_PING).request();
+        try (Response response = request.get()) {
+            if (response.getStatus() != 200) {
+                throw new RuntimeException("Ping mot kodeverk feilet: " + response.getStatus() + ", respons: " + response.readEntity(String.class));
+            }
         }
     }
 
@@ -83,9 +77,8 @@ public class KodeverkConsumerImpl implements KodeverkConsumer {
         String consumerId = SubjectHandler.getConsumerId();
         String callId = MDCOperations.getFromMDC(MDCOperations.MDC_CALL_ID);
 
-        WebTarget b = client.target(uri);
-
-        return b.request()
+        return client.target(uri)
+                .request()
                 .header(HEADER_CALL_ID, callId)
                 .header(HEADER_CONSUMER_ID, consumerId);
     }
