@@ -4,6 +4,7 @@ import no.nav.sbl.dialogarena.redis.RedisConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.adresse.AdresseSokService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.dkif.DkifService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fiks.DokumentKrypterer;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.kodeverk.KodeverkService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.norg.NorgService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.organisasjon.OrganisasjonService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.PdlPersonMapper;
@@ -50,7 +51,8 @@ import static java.lang.System.setProperty;
         UtbetalingService.class,
         SkattbarInntektService.class,
         OrganisasjonService.class,
-        DkifService.class
+        DkifService.class,
+        KodeverkService.class
 })
 
 public class ConsumerConfig {
