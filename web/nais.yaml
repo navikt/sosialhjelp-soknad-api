@@ -30,6 +30,8 @@ spec:
 {{#if isGcp}}
   accessPolicy:
     outbound:
+      external:
+        - host: "digisos-gcp.dev.nav.no"
       rules:
         - application: sosialhjelp-mock-alt-api
 {{/if}}
