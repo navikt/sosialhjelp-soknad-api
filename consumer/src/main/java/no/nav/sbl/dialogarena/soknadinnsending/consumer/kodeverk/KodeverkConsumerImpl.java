@@ -83,7 +83,7 @@ public class KodeverkConsumerImpl implements KodeverkConsumer {
         String callId = MDCOperations.getFromMDC(MDCOperations.MDC_CALL_ID);
 
         return client.target(uri)
-                .queryParam("ekskluderUgyldige", "true")
+                .queryParam("ekskluderUgyldige", true)
                 .queryParam("spraak", "nb")
                 .request()
                 .header(HEADER_CALL_ID, callId)
