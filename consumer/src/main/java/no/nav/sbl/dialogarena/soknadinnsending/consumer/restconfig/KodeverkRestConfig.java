@@ -62,9 +62,6 @@ public class KodeverkRestConfig {
 
     private Client kodeverkClient() {
         final String apiKey = getenv(SOSIALHJELP_SOKNAD_API_KODEVERKAPI_APIKEY_PASSWORD);
-        if (apiKey == null) {
-            logger.warn("Kodeverk apikey er null! :(");
-        }
         return RestUtils.createClient()
                 .register((ClientRequestFilter) requestContext -> requestContext.getHeaders().putSingle(HEADER_NAV_APIKEY, apiKey))
                 .register(kodeverkMapper());
