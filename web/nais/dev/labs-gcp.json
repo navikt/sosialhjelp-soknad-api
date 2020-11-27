@@ -63,6 +63,7 @@
     "NEDETID_SLUTT": "",
     "FASIT_ENVIRONMENT_NAME": "q0",
     "TILLATMOCK": "true",
-    "START_NORG_WITHMOCK": "true"
+    "START_NORG_WITHMOCK": "true",
+    "VIRKSOMHETSSERTIFIKAT_PATH": "/var/run/secrets"
   }
 }
