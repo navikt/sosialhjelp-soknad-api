@@ -29,10 +29,10 @@ public class ThrowableMapper implements ExceptionMapper<Throwable> {
 
             int status = exception.getResponse().getStatus();
             if (status == UNAUTHORIZED.getStatusCode()) {
-                logger.warn(e.getMessage(), e);
+                logger.debug(e.getMessage(), e);
                 return createUnauthorizedWithLoginLocationResponse("Autentiseringsfeil");
             } else if(status == FORBIDDEN.getStatusCode()) {
-                logger.warn(e.getMessage(), e);
+                logger.debug(e.getMessage(), e);
                 return createUnauthorizedWithLoginLocationResponse( "Autoriseringsfeil");
             } else if (e instanceof NotFoundException) {
                 logger.warn(e.getMessage(), e);

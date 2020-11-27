@@ -8,8 +8,6 @@
         </encoder>
     </appender>
 
-    <logger name="no.nav.security.token.support.core" level="debug"/>
-
     <root level="INFO">
         <appender-ref ref="Console"/>
     </root>
