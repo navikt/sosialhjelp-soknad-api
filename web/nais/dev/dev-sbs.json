@@ -45,7 +45,7 @@
     "IDPORTEN_TOKEN_URL": "https://oidc-ver2.difi.no/idporten-oidc-provider/token",
     "IDPORTEN_CLIENTID": "1c3631f4-dbf2-4c12-bdc4-156cbd53c625",
     "IDPORTEN_CONFIG_URL": "https://oidc-ver2.difi.no/idporten-oidc-provider/.well-known/openid-configuration",
-    "KODEVERK_API_URL": "https://api-gw-q0.oera.no/kodeverk/api/",
+    "KODEVERK_API_URL": "https://api-gw-q1.oera.no/kodeverk/api/",
     "LOGINSERVICE_URL": "https://loginservice.dev.nav.no/login",
     "NORG2_API_V1_URL": "https://api-gw-q0.oera.no/norg2/api/v1/",
     "PDL_API_URL": "https://api-gw-q1.oera.no/pdl-api/graphql",
