@@ -10,7 +10,7 @@
             </customFields>
         </encoder>
     </appender>
-  
+
 
     <logger name="org.springframework" level="warn"></logger>
 
@@ -31,6 +31,8 @@
     <logger name="org.apache.cxf" level="OFF"></logger>
 
     <logger name="no.nav.sbl.rest.ClientLogFilter" level="WARN"></logger>
+
+    <logger name="no.nav.security.token.support.core" level="debug"/>
 
     <root level="${ROOT_LOG_LEVEL:-INFO}">
         <appender-ref ref="stdout_json"/>
