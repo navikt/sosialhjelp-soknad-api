@@ -40,11 +40,17 @@ public class KodeverkConsumerImpl implements KodeverkConsumer {
 
     @Override
     public void ping() {
-        Invocation.Builder request = client.target(endpoint + PATH_PING).request();
-        try (Response response = request.get()) {
-            if (response.getStatus() != 200) {
-                logger.warn("Ping feilet mot Kodeverk: " + response.getStatus());
-            }
+//        Invocation.Builder request = client.target(endpoint + PATH_PING).request();
+//        try (Response response = request.get()) {
+//            if (response.getStatus() != 200) {
+//                throw new RuntimeException("Ping mot kodeverk feilet: " + response.getStatus() + ", respons: " + response.readEntity(String.class));
+//            }
+//        }
+
+        try {
+            hentPostnummer();
+        } catch (Exception e) {
+            throw new RuntimeException("Ping mot kodeverk feilet");
         }
     }
 
@@ -73,10 +79,6 @@ public class KodeverkConsumerImpl implements KodeverkConsumer {
         }
     }
 
-    private URI kodeverkUri(String kodeverksnavn) {
-        return URI.create(endpoint + "api/v1/kodeverk/" + kodeverksnavn + "/koder/betydninger" + QUERY);
-    }
-
     private Invocation.Builder lagRequest(URI uri) {
         String consumerId = SubjectHandler.getConsumerId();
         String callId = MDCOperations.getFromMDC(MDCOperations.MDC_CALL_ID);
@@ -86,6 +88,10 @@ public class KodeverkConsumerImpl implements KodeverkConsumer {
         return b.request()
                 .header(HEADER_CALL_ID, callId)
                 .header(HEADER_CONSUMER_ID, consumerId);
+    }
+
+    private URI kodeverkUri(String kodeverksnavn) {
+        return URI.create(endpoint + "api/v1/kodeverk/" + kodeverksnavn + "/koder/betydninger" + QUERY);
     }
 
 }
