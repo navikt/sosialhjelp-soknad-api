@@ -72,6 +72,7 @@ public class KodeverkConsumerImpl implements KodeverkConsumer {
         try {
             return lagRequest(kodeverkUri(kodeverksnavn)).get(KodeverkDto.class);
         } catch (ClientErrorException e) {
+            logger.warn("Kodeverk error", e);
             throw new TjenesteUtilgjengeligException("Kodeverk - client-feil", e);
         } catch (Exception e) {
             throw new TjenesteUtilgjengeligException("Kodeverk - noe uventet feilet", e);
