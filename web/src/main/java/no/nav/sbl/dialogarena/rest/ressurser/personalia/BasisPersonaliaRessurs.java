@@ -4,11 +4,13 @@ import no.nav.metrics.aspects.Timed;
 import no.nav.sbl.dialogarena.kodeverk.Adressekodeverk;
 import no.nav.sbl.dialogarena.rest.ressurser.NavnFrontend;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.kodeverk.KodeverkService;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonNavn;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import no.nav.security.token.support.core.api.ProtectedWithClaims;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
@@ -20,16 +22,22 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+import static org.slf4j.LoggerFactory.getLogger;
 
 @Controller
-@ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })
+@ProtectedWithClaims(issuer = "selvbetjening", claimMap = {"acr=Level4"})
 @Path("/soknader/{behandlingsId}/personalia/basisPersonalia")
 @Timed
 @Produces(APPLICATION_JSON)
 public class BasisPersonaliaRessurs {
 
+    private static final Logger logger = getLogger(BasisPersonaliaRessurs.class);
+
     @Inject
     private Adressekodeverk adressekodeverk;
+
+    @Inject
+    private KodeverkService kodeverkService;
 
     @Inject
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
@@ -48,8 +56,17 @@ public class BasisPersonaliaRessurs {
                 .withNavn(new NavnFrontend(navn.getFornavn(), navn.getMellomnavn(), navn.getEtternavn()))
                 .withFodselsnummer(jsonPersonalia.getPersonIdentifikator().getVerdi())
                 .withStatsborgerskap(jsonPersonalia.getStatsborgerskap() == null ? null :
-                        adressekodeverk.getLand(jsonPersonalia.getStatsborgerskap().getVerdi()))
+                        getLand(jsonPersonalia.getStatsborgerskap().getVerdi()))
                 .withNordiskBorger(jsonPersonalia.getNordiskBorger() != null ? jsonPersonalia.getNordiskBorger().getVerdi() : null);
+    }
+
+    private String getLand(String statsborgerskap) {
+        try {
+            return kodeverkService.getLand(statsborgerskap);
+        } catch (Exception e) {
+            logger.warn("KodeverkService feilet - bruker Kodeverk-WS som fallback.", e);
+            return adressekodeverk.getLand(statsborgerskap);
+        }
     }
 
     @XmlAccessorType(XmlAccessType.FIELD)
@@ -74,7 +91,7 @@ public class BasisPersonaliaRessurs {
             return this;
         }
 
-        public BasisPersonaliaFrontend withNordiskBorger(Boolean nordiskBorger){
+        public BasisPersonaliaFrontend withNordiskBorger(Boolean nordiskBorger) {
             this.nordiskBorger = nordiskBorger;
             return this;
         }

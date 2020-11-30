@@ -2,6 +2,7 @@ package no.nav.sbl.dialogarena.redis;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.module.kotlin.KotlinModule;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.kodeverk.dto.KodeverkDto;
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper;
 import no.nav.sosialhjelp.api.fiks.KommuneInfo;
 import org.slf4j.Logger;
@@ -16,6 +17,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static no.nav.sbl.dialogarena.redis.CacheConstants.KOMMUNEINFO_CACHE_KEY;
+import static no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig.KodeverkRestConfig.kodeverkMapper;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Component
@@ -71,6 +73,18 @@ public class RedisService {
     public Map<String, KommuneInfo> getKommuneInfos() {
         byte[] value = redisStore.get(KOMMUNEINFO_CACHE_KEY);
         return toKommuneInfoMap(value);
+    }
+
+    public KodeverkDto getKodeverk(String key) {
+        byte[] value = redisStore.get(key);
+        if (value != null) {
+            try {
+                return kodeverkMapper().readValue(value, KodeverkDto.class);
+            } catch (IOException e) {
+                log.warn("Fant key={} i cache, men value var ikke KodeverkDto", key, e);
+            }
+        }
+        return null;
     }
 
     public void setex(String key, byte[] value, long timeToLiveSeconds) {
