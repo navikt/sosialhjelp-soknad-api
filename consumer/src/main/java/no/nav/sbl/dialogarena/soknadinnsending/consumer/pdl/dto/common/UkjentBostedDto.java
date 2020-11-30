@@ -17,4 +17,5 @@ public class UkjentBostedDto {
     public String getBostedskommune() {
         return bostedskommune;
     }
+
 }

@@ -14,7 +14,6 @@ import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon;
 import no.nav.sbl.sosialhjelp.InnsendingService;
 import no.nav.sbl.sosialhjelp.domain.OpplastetVedlegg;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
-import no.nav.sbl.sosialhjelp.pdf.PDFService;
 import no.nav.sbl.sosialhjelp.pdfmedpdfbox.SosialhjelpPdfGenerator;
 import org.apache.cxf.attachment.ByteDataSource;
 import org.slf4j.Logger;
@@ -36,14 +35,12 @@ public class FiksDokumentHelper {
     private final boolean skalKryptere;
     private DokumentKrypterer dokumentKrypterer;
     private InnsendingService innsendingService;
-    private PDFService pdfService;
     private SosialhjelpPdfGenerator sosialhjelpPdfGenerator;
 
-    public FiksDokumentHelper(boolean skalKryptere, DokumentKrypterer dokumentKrypterer, InnsendingService innsendingService, PDFService pdfService, SosialhjelpPdfGenerator sosialhjelpPdfGenerator) {
+    public FiksDokumentHelper(boolean skalKryptere, DokumentKrypterer dokumentKrypterer, InnsendingService innsendingService, SosialhjelpPdfGenerator sosialhjelpPdfGenerator) {
         this.skalKryptere = skalKryptere;
         this.dokumentKrypterer = dokumentKrypterer;
         this.innsendingService = innsendingService;
-        this.pdfService = pdfService;
         this.sosialhjelpPdfGenerator = sosialhjelpPdfGenerator;
 
         mapper = new ObjectMapper();
@@ -80,28 +77,17 @@ public class FiksDokumentHelper {
     Dokument lagDokumentForSaksbehandlerPdf(JsonInternalSoknad internalSoknad) {
         final String filnavn = "Soknad.pdf";
         final String mimetype = "application/pdf";
-        try {
-            byte[] soknadPdf = sosialhjelpPdfGenerator.generate(internalSoknad, false);
-            return genererDokumentFraByteArray(filnavn, mimetype, soknadPdf, false);
-        } catch (Exception e) {
-            logger.error("Kunne ikke generere Soknad.pdf. Fallback til generering med itext.", e);
-            byte[] soknadPdf = pdfService.genererSaksbehandlerPdf(internalSoknad, "/");
-            return genererDokumentFraByteArray(filnavn, mimetype, soknadPdf, false);
-        }
+
+        byte[] soknadPdf = sosialhjelpPdfGenerator.generate(internalSoknad, false);
+        return genererDokumentFraByteArray(filnavn, mimetype, soknadPdf, false);
     }
 
     Dokument lagDokumentForJuridiskPdf(JsonInternalSoknad internalSoknad) {
         final String filnavn = "Soknad-juridisk.pdf";
         final String mimetype = "application/pdf";
 
-        try {
-            byte[] juridiskPdf = sosialhjelpPdfGenerator.generate(internalSoknad, true);
-            return genererDokumentFraByteArray(filnavn, mimetype, juridiskPdf, false);
-        } catch (Exception e) {
-            logger.error("Kunne ikke generere Soknad-juridisk.pdf. Fallback til generering med itext.", e);
-            byte[] juridiskPdf = pdfService.genererJuridiskPdf(internalSoknad, "/");
-            return genererDokumentFraByteArray(filnavn, mimetype, juridiskPdf, false);
-        }
+        byte[] juridiskPdf = sosialhjelpPdfGenerator.generate(internalSoknad, true);
+        return genererDokumentFraByteArray(filnavn, mimetype, juridiskPdf, false);
     }
 
     Dokument lagDokumentForBrukerkvitteringPdf() {
@@ -115,13 +101,9 @@ public class FiksDokumentHelper {
     Dokument lagDokumentForEttersendelsePdf(JsonInternalSoknad internalSoknad, String eier) {
         final String filnavn = "ettersendelse.pdf";
         final String mimetype = "application/pdf";
-        try {
-            byte[] pdf = sosialhjelpPdfGenerator.generateEttersendelsePdf(internalSoknad, eier);
-            return genererDokumentFraByteArray(filnavn, mimetype, pdf, false);
-        } catch (Exception e) {
-            byte[] pdf = pdfService.genererEttersendelsePdf(internalSoknad, "/", eier);
-            return genererDokumentFraByteArray(filnavn, mimetype, pdf, false);
-        }
+
+        byte[] pdf = sosialhjelpPdfGenerator.generateEttersendelsePdf(internalSoknad, eier);
+        return genererDokumentFraByteArray(filnavn, mimetype, pdf, false);
     }
 
     private Dokument genererDokumentFraByteArray(String filnavn, String mimetype, byte[] bytes, boolean eksluderesFraPrint) {

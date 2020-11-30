@@ -38,6 +38,7 @@ import static no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonMapp
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonMapper.xmlPersonHarDiskresjonskode;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.emptyString;
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.core.Is.is;
@@ -81,7 +82,8 @@ public class PersonDataMapperTest {
         assertThat(person.getEtternavn(), is(ETTERNAVN));
         assertThat(person.getFnr(), is(FNR));
         assertThat(person.getSivilstatus(), is("enke"));
-        assertThat(person.getStatsborgerskap(), is(LANDKODE));
+        assertThat(person.getStatsborgerskap(), hasSize(1));
+        assertThat(person.getStatsborgerskap().get(0), is(LANDKODE));
         assertThat(person.getDiskresjonskode(), is(DISKRESJONSKODE_UFB));
     }
 

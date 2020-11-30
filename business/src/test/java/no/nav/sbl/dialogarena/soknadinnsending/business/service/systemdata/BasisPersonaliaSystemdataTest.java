@@ -1,6 +1,8 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.Person;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.PdlService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdlperson.PersonSammenligner;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonService;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonIdentifikator;
@@ -12,6 +14,8 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+
+import java.util.List;
 
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
 import static org.hamcrest.CoreMatchers.is;
@@ -27,11 +31,18 @@ public class BasisPersonaliaSystemdataTest {
     private static final String FORNAVN = "Aragorn";
     private static final String MELLOMNAVN = "Elessar";
     private static final String ETTERNAVN = "Telcontar";
-    private static final String NORDISK_STATSBORGERSKAP = "NOR";
+    private static final String NORSK_STATSBORGERSKAP = "NOR";
+    private static final String NORDISK_STATSBORGERSKAP = "FIN";
     private static final String IKKE_NORDISK_STATSBORGERSKAP = "GER";
 
     @Mock
     private PersonService personService;
+
+    @Mock
+    private PdlService pdlService;
+
+    @Mock
+    private PersonSammenligner personSammenligner;
 
     @InjectMocks
     private BasisPersonaliaSystemdata basisPersonaliaSystemdata;
@@ -61,7 +72,7 @@ public class BasisPersonaliaSystemdataTest {
                 .withFornavn(FORNAVN)
                 .withMellomnavn(MELLOMNAVN)
                 .withEtternavn(ETTERNAVN)
-                .withStatsborgerskap(NORDISK_STATSBORGERSKAP);
+                .withStatsborgerskap(List.of(NORSK_STATSBORGERSKAP));
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         when(personService.hentPerson(anyString())).thenReturn(person);
 
@@ -76,6 +87,46 @@ public class BasisPersonaliaSystemdataTest {
         assertThat(jsonPersonalia.getNavn().getMellomnavn(), is(MELLOMNAVN));
         assertThat(jsonPersonalia.getNavn().getEtternavn(), is(ETTERNAVN));
         assertThat(jsonPersonalia.getStatsborgerskap().getKilde(), is(JsonKilde.SYSTEM));
+        assertThat(jsonPersonalia.getStatsborgerskap().getVerdi(), is(NORSK_STATSBORGERSKAP));
+        assertThat(jsonPersonalia.getNordiskBorger().getKilde(), is(JsonKilde.SYSTEM));
+        assertThat(jsonPersonalia.getNordiskBorger().getVerdi(), is(true));
+    }
+
+    @Test
+    public void skalPrioritereNorskOverNordiskStatsborgerskap() {
+        Person person = new Person()
+                .withFornavn(FORNAVN)
+                .withMellomnavn(MELLOMNAVN)
+                .withEtternavn(ETTERNAVN)
+                .withStatsborgerskap(List.of(NORDISK_STATSBORGERSKAP, NORSK_STATSBORGERSKAP));
+        SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
+        when(personService.hentPerson(anyString())).thenReturn(person);
+
+        basisPersonaliaSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
+
+        JsonPersonalia jsonPersonalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
+
+        assertThat(jsonPersonalia.getStatsborgerskap().getKilde(), is(JsonKilde.SYSTEM));
+        assertThat(jsonPersonalia.getStatsborgerskap().getVerdi(), is(NORSK_STATSBORGERSKAP));
+        assertThat(jsonPersonalia.getNordiskBorger().getKilde(), is(JsonKilde.SYSTEM));
+        assertThat(jsonPersonalia.getNordiskBorger().getVerdi(), is(true));
+    }
+
+    @Test
+    public void skalPrioritereNordiskStatsborgerskap() {
+        Person person = new Person()
+                .withFornavn(FORNAVN)
+                .withMellomnavn(MELLOMNAVN)
+                .withEtternavn(ETTERNAVN)
+                .withStatsborgerskap(List.of(IKKE_NORDISK_STATSBORGERSKAP, NORDISK_STATSBORGERSKAP));
+        SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
+        when(personService.hentPerson(anyString())).thenReturn(person);
+
+        basisPersonaliaSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
+
+        JsonPersonalia jsonPersonalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
+
+        assertThat(jsonPersonalia.getStatsborgerskap().getKilde(), is(JsonKilde.SYSTEM));
         assertThat(jsonPersonalia.getStatsborgerskap().getVerdi(), is(NORDISK_STATSBORGERSKAP));
         assertThat(jsonPersonalia.getNordiskBorger().getKilde(), is(JsonKilde.SYSTEM));
         assertThat(jsonPersonalia.getNordiskBorger().getVerdi(), is(true));
@@ -87,7 +138,7 @@ public class BasisPersonaliaSystemdataTest {
                 .withFornavn(FORNAVN)
                 .withMellomnavn(MELLOMNAVN)
                 .withEtternavn(ETTERNAVN)
-                .withStatsborgerskap(IKKE_NORDISK_STATSBORGERSKAP);
+                .withStatsborgerskap(List.of(IKKE_NORDISK_STATSBORGERSKAP));
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         when(personService.hentPerson(anyString())).thenReturn(person);
 
@@ -114,7 +165,7 @@ public class BasisPersonaliaSystemdataTest {
                 .withFornavn(FORNAVN)
                 .withMellomnavn(MELLOMNAVN)
                 .withEtternavn(ETTERNAVN)
-                .withStatsborgerskap("???");
+                .withStatsborgerskap(List.of("???"));
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         when(personService.hentPerson(anyString())).thenReturn(person);
 

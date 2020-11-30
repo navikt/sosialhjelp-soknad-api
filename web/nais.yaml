@@ -64,3 +64,6 @@ spec:
 {{/each}}
   envFrom:
     - configmap: loginservice-idporten
+{{#unless isRedisMocked}}
+    - secret: redis-password-soknad-api
+{{/unless}}

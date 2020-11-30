@@ -88,6 +88,7 @@ public class SosialhjelpPdfGenerator {
 
     public byte[] generate(JsonInternalSoknad jsonInternalSoknad, boolean utvidetSoknad) {
         try {
+
             PdfGenerator pdf = new PdfGenerator();
 
             JsonData data = jsonInternalSoknad.getSoknad().getData();
@@ -117,8 +118,11 @@ public class SosialhjelpPdfGenerator {
             leggTilMetainformasjon(pdf, jsonInternalSoknad.getSoknad());
 
             return pdf.finish();
-        } catch (IOException e) {
-            throw new RuntimeException("Error while creating pdf", e);
+        } catch (Exception e) {
+            if (utvidetSoknad) {
+                throw new PdfGenereringException("Kunne ikke generere Soknad-juridisk.pdf", e);
+            }
+            throw new PdfGenereringException("Kunne ikke generere Soknad.pdf", e);
         }
     }
 
@@ -139,7 +143,7 @@ public class SosialhjelpPdfGenerator {
 
             if (jsonInternalSoknad.getVedlegg() != null && jsonInternalSoknad.getVedlegg().getVedlegg() != null) {
                 for (JsonVedlegg jsonVedlegg : jsonInternalSoknad.getVedlegg().getVedlegg()) {
-                    if (jsonVedlegg.getStatus().equals("LastetOpp")) {
+                    if (jsonVedlegg.getStatus() != null && jsonVedlegg.getStatus().equals("LastetOpp")) {
                         pdf.skrivTekst(getTekst("vedlegg." + jsonVedlegg.getType() + "." + jsonVedlegg.getTilleggsinfo() + ".tittel"));
                         pdf.skrivTekst("Filer:");
                         for (JsonFiler jsonFiler : jsonVedlegg.getFiler()) {
@@ -150,8 +154,8 @@ public class SosialhjelpPdfGenerator {
             }
 
             return pdf.finish();
-        } catch (IOException e) {
-            throw new RuntimeException("Error while creating pdf", e);
+        } catch (Exception e) {
+            throw new PdfGenereringException("Kunne ikke generere ettersendelse.pdf", e);
         }
     }
 
@@ -164,8 +168,8 @@ public class SosialhjelpPdfGenerator {
             pdf.skrivTekst("Fil ikke i bruk, generert for bakoverkompatibilitet med filformat / File not in use, generated for backward compatibility with fileformat");
 
             return pdf.finish();
-        } catch (IOException e) {
-            throw new RuntimeException("Error while creating pdf", e);
+        } catch (Exception e) {
+            throw new PdfGenereringException("Kunne ikke generere Brukerkvittering.pdf", e);
         }
     }
 
@@ -1541,6 +1545,8 @@ public class SosialhjelpPdfGenerator {
             pdf.addBlankLine();
             pdf.skrivTekst("Du må i utgangspunktet ha lovlig opphold og fast bopel i Norge for å ha rett til økonomisk sosialhjelp. Hvis du oppholder deg i utlandet, har du ikke rett til økonomisk sosialhjelp.");
             pdf.addBlankLine();
+            pdf.skrivTekst("Søknaden skal bare brukes til å søke om økonomisk sosialhjelp. Skal du søke om andre sosiale tjenester, som for eksempel kvalifiseringsprogram, må du ta kontakt med NAV-kontoret ditt");
+            pdf.addBlankLine();
             pdf.skrivTekstBold(getTekst("informasjon.nodsituasjon.undertittel"));
             pdf.skrivTekst("Hvis du ikke har penger til det aller mest nødvendige, som mat, bør du kontakte NAV-kontoret ditt før du sender inn søknaden eller så snart som mulig etter du har søkt. NAV skal også hjelpe deg med å finne et midlertidig botilbud hvis du ikke har et sted å sove eller oppholde deg det nærmeste døgnet.");
             pdf.addBlankLine();
@@ -1561,6 +1567,7 @@ public class SosialhjelpPdfGenerator {
 
             Map<String, String> urisOnPage = new HashMap<>();
             urisOnPage.put("Les mer om andre muligheter", "https://www.nav.no/sosialhjelp/");
+            urisOnPage.put("NAV-kontoret ditt", "https://www.nav.no/no/nav-og-samfunn/kontakt-nav/relatert-informasjon/finn-ditt-nav-kontor");
             urisOnPage.put("kontakte NAV-kontoret", "https://www.nav.no/person/personopplysninger/#ditt-nav-kontor");
             addLinks(pdf, urisOnPage);
         }

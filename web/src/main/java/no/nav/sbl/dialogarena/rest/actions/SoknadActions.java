@@ -14,6 +14,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.So
 import no.nav.sbl.dialogarena.utils.NedetidUtils;
 import no.nav.sbl.sosialhjelp.SendingTilKommuneErIkkeAktivertException;
 import no.nav.sbl.sosialhjelp.SendingTilKommuneErMidlertidigUtilgjengeligException;
+import no.nav.sbl.sosialhjelp.SendingTilKommuneUtilgjengeligException;
 import no.nav.sbl.sosialhjelp.SoknadenHarNedetidException;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
@@ -99,6 +100,8 @@ public class SoknadActions {
         log.info("Kommune: {} Status: {}", kommunenummer, kommuneStatus);
 
         switch (kommuneStatus) {
+            case FIKS_NEDETID_OG_TOM_CACHE:
+                throw new SendingTilKommuneUtilgjengeligException(String.format("Sending til kommune %s er ikke tilgjengelig fordi fiks har nedetid og kommuneinfo-cache er tom.", kommunenummer));
             case MANGLER_KONFIGURASJON:
             case HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT:
                 if (!KommuneTilNavEnhetMapper.getDigisoskommuner().contains(kommunenummer)) {

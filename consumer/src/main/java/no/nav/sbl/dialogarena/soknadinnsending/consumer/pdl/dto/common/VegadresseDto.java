@@ -66,4 +66,5 @@ public class VegadresseDto {
     public String getBruksenhetsnummer() {
         return bruksenhetsnummer;
     }
+
 }

@@ -44,4 +44,5 @@ public class MatrikkeladresseDto {
     public String getBruksenhetsnummer() {
         return bruksenhetsnummer;
     }
+
 }

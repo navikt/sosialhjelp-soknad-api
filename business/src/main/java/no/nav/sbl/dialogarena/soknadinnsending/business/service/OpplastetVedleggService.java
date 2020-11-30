@@ -68,7 +68,7 @@ public class OpplastetVedleggService {
         String sha512 = ServiceUtils.getSha512FromByteArray(data);
         String mimeType = FileDetectionUtils.getMimeType(data);
 
-        validerFil(data);
+        validerFil(data, filnavn);
         virusScanner.scan(filnavn, data, behandlingsId);
 
         SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
@@ -182,15 +182,38 @@ public class OpplastetVedleggService {
         return filnavn;
     }
 
-    private void validerFil(byte[] data) {
-        if (!(FileDetectionUtils.isImage(data) || FileDetectionUtils.isPdf(data))) {
+    private void validerFil(byte[] data, String filnavn) {
+        var isImage = FileDetectionUtils.isImage(data);
+        var isPdf = FileDetectionUtils.isPdf(data);
+
+        if (!(isImage || isPdf)) {
             throw new UgyldigOpplastingTypeException(
-                    String.format("Ugyldig filtype for opplasting. Mimetype var %s", FileDetectionUtils.getMimeType(data)),
+                    String.format("Ugyldig filtype for opplasting. Mimetype var %s, filtype var %s", FileDetectionUtils.getMimeType(data), filnavn.substring(filnavn.lastIndexOf("."))),
                     null,
                     "opplasting.feilmelding.feiltype");
         }
-        if (FileDetectionUtils.isPdf(data)) {
+        if (isImage) {
+            validerFiltypeForBilde(filnavn);
+        }
+        if (isPdf) {
             sjekkOmPdfErGyldig(data);
+        }
+    }
+
+    private void validerFiltypeForBilde(String filnavn) {
+        var sisteIndexForPunktum = filnavn.lastIndexOf(".");
+        if (sisteIndexForPunktum < 0) {
+            throw new UgyldigOpplastingTypeException(
+                    "Ugyldig filtype for opplasting. Kunne ikke finne filtype for fil.",
+                    null,
+                    "opplasting.feilmelding.feiltype");
+        }
+
+        if (filnavn.endsWith(".jfif") || filnavn.endsWith(".pjpeg") || filnavn.endsWith(".pjp")) {
+            throw new UgyldigOpplastingTypeException(
+                    String.format("Ugyldig filtype for opplasting. Filtype var %s", filnavn.substring(sisteIndexForPunktum)),
+                    null,
+                    "opplasting.feilmelding.feiltype");
         }
     }
 

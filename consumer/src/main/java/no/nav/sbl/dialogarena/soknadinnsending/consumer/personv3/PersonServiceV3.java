@@ -6,6 +6,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.AdresserOgKontonummer;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.IkkeFunnetException;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.SikkerhetsBegrensningException;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.TjenesteUtilgjengeligException;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.kodeverk.KodeverkService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.domain.Gateadresse;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.domain.Matrikkeladresse;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.domain.PersonData;
@@ -41,6 +42,9 @@ public class PersonServiceV3 {
 
     @Inject
     private Kodeverk kodeverk;
+
+    @Inject
+    private KodeverkService kodeverkService;
 
     @Cacheable("adresserOgKontonummerCache")
     public AdresserOgKontonummer hentAddresserOgKontonummer(String fodselsnummer) {
@@ -122,12 +126,21 @@ public class PersonServiceV3 {
             gateadresse.bolignummer = gateAdresseStrukturert.getBolignummer();
             gateadresse.kommunenummer = gateAdresseStrukturert.getKommunenummer();
             gateadresse.postnummer = gateAdresseStrukturert.getPostnummer();
-            gateadresse.poststed = kodeverk.getPoststed( gateadresse.postnummer);
+            gateadresse.poststed = getPoststed(gateadresse.postnummer);
             adresse.setStrukturertAdresse(gateadresse);
             adresse.setAdressetype("gateadresse");
         }
 
         return adresse;
+    }
+
+    private String getPoststed(String postnummer) {
+        try {
+            return kodeverkService.getPoststed(postnummer);
+        } catch (Exception e) {
+            logger.warn("KodeverkService feilet - bruker Kodeverk-WS som fallback.", e);
+            return kodeverk.getPoststed(postnummer);
+        }
     }
 
 }

@@ -30,4 +30,5 @@ public class BostedsadresseDto {
     public UkjentBostedDto getUkjentBosted() {
         return ukjentBosted;
     }
+
 }

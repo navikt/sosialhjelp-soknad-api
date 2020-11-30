@@ -4,14 +4,19 @@ import no.nav.sbl.dialogarena.redis.RedisConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.adresse.AdresseSokService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.dkif.DkifService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fiks.DokumentKrypterer;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.kodeverk.KodeverkService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.norg.NorgService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.organisasjon.OrganisasjonService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.PdlPersonMapper;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.PdlService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdlperson.PersonSammenligner;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.personv3.PersonServiceV3;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig.AdresseSokRestConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig.ArbeidsforholdRestConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig.DigisosApiRestConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig.DkifRestConfig;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig.KodeverkRestConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig.NorgRestConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig.OrganisasjonRestConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig.PdlRestConfig;
@@ -34,7 +39,10 @@ import static java.lang.System.setProperty;
 @Configuration
 @EnableCaching
 @Import({
+        PdlService.class,
+        PdlPersonMapper.class,
         PersonService.class,
+        PersonSammenligner.class,
         PersonServiceV3.class,
         ConsumerConfig.WsServices.class,
         DokumentKrypterer.class,
@@ -43,7 +51,8 @@ import static java.lang.System.setProperty;
         UtbetalingService.class,
         SkattbarInntektService.class,
         OrganisasjonService.class,
-        DkifService.class
+        DkifService.class,
+        KodeverkService.class
 })
 
 public class ConsumerConfig {
@@ -70,7 +79,8 @@ public class ConsumerConfig {
             ArbeidsforholdRestConfig.class,
             STSTokenRestConfig.class,
             DkifRestConfig.class,
-            SkattbarInntektRestConfig.class
+            SkattbarInntektRestConfig.class,
+            KodeverkRestConfig.class
     })
     public static class WsServices {
     }
