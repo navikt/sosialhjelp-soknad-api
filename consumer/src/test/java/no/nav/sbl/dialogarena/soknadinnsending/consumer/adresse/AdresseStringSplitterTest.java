@@ -156,7 +156,6 @@ public class AdresseStringSplitterTest {
         final KodeverkService kodeverkService = mock(KodeverkService.class);
         when(kodeverkService.gjettKommunenummer(anyString())).thenReturn("0301");
         final Kodeverk kodeverk = mock(Kodeverk.class);
-//        when(kodeverk.gjettKommunenummer(anyString())).thenReturn("0301");
         final Sokedata result = AdresseStringSplitter.toSokedata(kodeverk, kodeverkService, "asdf, OSLO");
         Assert.assertEquals("asdf", result.adresse);
         Assert.assertNull(result.poststed);
@@ -169,7 +168,6 @@ public class AdresseStringSplitterTest {
         final KodeverkService kodeverkService = mock(KodeverkService.class);
         when(kodeverkService.gjettKommunenummer(anyString())).thenReturn("0301");
         final Kodeverk kodeverk = mock(Kodeverk.class);
-//        when(kodeverk.gjettKommunenummer(anyString())).thenReturn("0301");
         final Sokedata result = AdresseStringSplitter.toSokedata(kodeverk, kodeverkService, "asdf, 0756 OSLO");
         Assert.assertEquals("asdf", result.adresse);
         Assert.assertEquals("0756", result.postnummer);
