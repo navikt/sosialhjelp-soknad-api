@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 import static no.nav.sbl.dialogarena.redis.CacheConstants.KODEVERK_CACHE_SECONDS;
 import static no.nav.sbl.dialogarena.redis.CacheConstants.KODEVERK_LAST_POLL_TIME_KEY;
-import static no.nav.sbl.dialogarena.redis.CacheConstants.KOMMUNEINFO_CACHE_KEY;
+import static no.nav.sbl.dialogarena.redis.CacheConstants.KOMMUNER_CACHE_KEY;
 import static no.nav.sbl.dialogarena.redis.CacheConstants.LANDKODER_CACHE_KEY;
 import static no.nav.sbl.dialogarena.redis.CacheConstants.POSTNUMMER_CACHE_KEY;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.util.HeaderConstants.HEADER_CALL_ID;
@@ -64,7 +64,7 @@ public class KodeverkConsumerImpl implements KodeverkConsumer {
 
     @Override
     public KodeverkDto hentKommuner() {
-        return hentKodeverk(KOMMUNER, KOMMUNEINFO_CACHE_KEY);
+        return hentKodeverk(KOMMUNER, KOMMUNER_CACHE_KEY);
     }
 
     @Override
