@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.rest;
 
 import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
+import no.nav.sbl.dialogarena.mdc.MdcFilter;
 import no.nav.sbl.dialogarena.oidc.OidcResourceFilteringFeature;
 import no.nav.sbl.dialogarena.mock.TjenesteMockRessurs;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
@@ -24,6 +25,7 @@ public class SoknadApplication extends ResourceConfig {
         packages("no.nav.sbl.dialogarena.rest");
         register(JacksonJaxbJsonProvider.class);
         register(MultiPartFeature.class);
+        register(MdcFilter.class);
 
         if (isTillatMockRessurs()) {
             register(TjenesteMockRessurs.class);
