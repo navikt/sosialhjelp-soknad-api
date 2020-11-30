@@ -1,7 +1,7 @@
 package no.nav.sbl.sosialhjelp.pdfmedpdfbox;
 
-import no.nav.sbl.dialogarena.kodeverk.Adressekodeverk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.SoknadServiceIntegrationTestContext;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.kodeverk.KodeverkService;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonData;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
@@ -63,7 +63,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.test.context.ContextConfiguration;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
 import java.io.File;
@@ -78,7 +77,6 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadser
 import static no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde.BRUKER;
 import static no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde.SYSTEM;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -92,7 +90,6 @@ public class SosialhjelpPdfGeneratorTest {
     public void setUp() {
         NavMessageSource navMessageSource = new NavMessageSource();
 
-
         NavMessageSource.Bundle bundle = new NavMessageSource.Bundle(BUNDLE_NAME, "classpath:/" + BUNDLE_NAME);
 
         NavMessageSource.Bundle fellesBundle = new NavMessageSource.Bundle("sendsoknad", "classpath:/sendsoknad");
@@ -104,11 +101,11 @@ public class SosialhjelpPdfGeneratorTest {
         sosialhjelpPdfGenerator = new SosialhjelpPdfGenerator();
         sosialhjelpPdfGenerator.setNavMessageSource(navMessageSource);
 
-        Adressekodeverk adressekodeverk = mock(Adressekodeverk.class);
-        when(adressekodeverk.getLand("NOR")).thenReturn("Norsk");
+        KodeverkService kodeverkService = mock(KodeverkService.class);
+        when(kodeverkService.getLand("NOR")).thenReturn("Norsk");
         TextHelpers textHelpers = new TextHelpers();
         textHelpers.setNavMessageSource(navMessageSource);
-        textHelpers.setAdressekodeverk(adressekodeverk);
+        textHelpers.setAdressekodeverk(kodeverkService);
         sosialhjelpPdfGenerator.setTextHelpers(textHelpers);
     }
 
