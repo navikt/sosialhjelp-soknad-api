@@ -1,6 +1,6 @@
 package no.nav.sbl.sosialhjelp.pdf;
 
-import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.kodeverk.KodeverkService;
 import no.nav.sbl.sosialhjelp.pdf.helpers.*;
 import org.junit.Before;
 import org.junit.Test;
@@ -39,7 +39,7 @@ public class HandleBarKjoererTest {
     @Mock
     private CmsTekst cmsTekst;
     @Mock
-    private Kodeverk kodeverk;
+    private KodeverkService kodeverkService;
 
     @Before
     public void setup() {
