@@ -108,7 +108,7 @@ public class KodeverkServiceTest {
         var land = kodeverkService.getLand(landkode1);
 
         assertThat(land).isNotNull();
-        assertThat(land).isEqualTo(norge);
+        assertThat(land).isEqualTo("Norge");
     }
 
     @Test

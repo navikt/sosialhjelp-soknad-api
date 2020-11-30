@@ -32,16 +32,16 @@ public class KodeverkConsumerMock {
         return mock;
     }
 
-    static void leggTilPostnummer(String postnummer) {
+    public static void leggTilPostnummer(String postnummer) {
         landkoder.put(postnummer, Collections.singletonList(defaultPostnummerBetydning()));
     }
 
-    static void leggTilKommune(String kommune) {
+    public static void leggTilKommune(String kommune) {
         landkoder.put(kommune, Collections.singletonList(defaultKommuneBetydning()));
     }
 
-    static void leggTilLandkode(String landkode) {
-        landkoder.put(landkode, Collections.singletonList(defaultLandkodeBetydning()));
+    public static void leggTilLandkode(String landkode) {
+        landkoder.put(landkode, Collections.singletonList(defaultLandkodeBetydning(landkode)));
     }
 
     private static BetydningDto defaultPostnummerBetydning() {
@@ -60,11 +60,11 @@ public class KodeverkConsumerMock {
         );
     }
 
-    private static BetydningDto defaultLandkodeBetydning() {
+    private static BetydningDto defaultLandkodeBetydning(String landkode) {
         return new BetydningDto(
                 LocalDate.of(2000,1,1),
                 LocalDate.of(9999,1,1),
-                Map.of(SPRAAKKODE_NB, new BeskrivelseDto("NORGE", "NORGE"))
+                Map.of(SPRAAKKODE_NB, new BeskrivelseDto(landkode, landkode))
         );
     }
 }

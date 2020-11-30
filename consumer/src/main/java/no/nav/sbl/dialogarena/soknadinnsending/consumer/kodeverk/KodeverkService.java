@@ -42,7 +42,8 @@ public class KodeverkService {
 
     public String getLand(String landkode) {
         var landkoderKodeverk = hentKodeverkFraCacheEllerConsumer(LANDKODER_CACHE_KEY);
-        return finnFoersteTermForKodeverdi(landkoderKodeverk, landkode);
+        var land = finnFoersteTermForKodeverdi(landkoderKodeverk, landkode);
+        return formaterLand(land);
     }
 
     private KodeverkDto hentKodeverkFraCacheEllerConsumer(String key) {
@@ -112,5 +113,32 @@ public class KodeverkService {
             return kodeverk.getBetydninger().get(kodeverdi).get(0).getBeskrivelser().get(SPRAAKKODE_NB).getTerm();
         }
         return null;
+    }
+
+    private String formaterLand(String land) {
+        if (land == null) {
+            return land;
+        }
+        String formaterMedSpace = setUpperCaseBeforeRegex(land.toLowerCase(), " ");
+        String formaterMedDash = setUpperCaseBeforeRegex(formaterMedSpace, "-");
+        return setUpperCaseBeforeRegex(formaterMedDash, "/");
+    }
+
+    private String setUpperCaseBeforeRegex(String s, String regex) {
+        String[] split = s.split(regex);
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < split.length; i++) {
+            if (i > 0) {
+                sb.append(regex);
+            }
+
+            if (split[i].equals("og")) {
+                sb.append(split[i]);
+            } else {
+                sb.append(split[i].substring(0, 1).toUpperCase());
+                sb.append(split[i].substring(1));
+            }
+        }
+        return sb.toString();
     }
 }
