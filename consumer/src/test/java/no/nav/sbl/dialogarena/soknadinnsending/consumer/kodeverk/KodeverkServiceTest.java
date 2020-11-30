@@ -121,6 +121,27 @@ public class KodeverkServiceTest {
         assertThat(land).isNull();
     }
 
+    @Test
+    public void skalFormatereLandKorrekt() {
+        var now = LocalDate.now();
+        when(redisService.getString(KODEVERK_LAST_POLL_TIME_KEY)).thenReturn(null);
+        when(kodeverkConsumer.hentLandkoder()).thenReturn(
+                new KodeverkDto(Map.of(
+                        "WLF", singletonList(new BetydningDto(now, now, Map.of(SPRAAKKODE_NB, new BeskrivelseDto("WALLIS/FUTUNAØYENE", "WALLIS/FUTUNAØYENE")))),
+                        "STP", singletonList(new BetydningDto(now, now, Map.of(SPRAAKKODE_NB, new BeskrivelseDto("SAO TOME OG PRINCIPE", "SAO TOME OG PRINCIPE")))),
+                        "PNG", singletonList(new BetydningDto(now, now, Map.of(SPRAAKKODE_NB, new BeskrivelseDto("PAPUA NY-GUINEA", "PAPUA NY-GUINEA"))))
+                ))
+        );
+
+        var land = kodeverkService.getLand("WLF");
+        var land2 = kodeverkService.getLand("STP");
+        var land3 = kodeverkService.getLand("PNG");
+
+        assertThat(land).isEqualTo("Wallis/Futunaøyene");
+        assertThat(land2).isEqualTo("Sao Tome og Principe");
+        assertThat(land3).isEqualTo("Papua Ny-Guinea");
+    }
+
     private KodeverkDto kommuneKodeverk() {
         var now = LocalDate.now();
         return new KodeverkDto(Map.of(
@@ -137,7 +158,14 @@ public class KodeverkServiceTest {
                 landkode1,
                 singletonList(new BetydningDto(now, now, Map.of(SPRAAKKODE_NB, new BeskrivelseDto(norge, norge)))),
                 landkode2,
-                singletonList(new BetydningDto(now, now, Map.of(SPRAAKKODE_NB, new BeskrivelseDto(sverige, sverige)))))
+                singletonList(new BetydningDto(now, now, Map.of(SPRAAKKODE_NB, new BeskrivelseDto(sverige, sverige)))),
+                "WLF",
+                singletonList(new BetydningDto(now, now, Map.of(SPRAAKKODE_NB, new BeskrivelseDto("WALLIS/FUTUNAØYENE", "WALLIS/FUTUNAØYENE")))),
+                "STP",
+                singletonList(new BetydningDto(now, now, Map.of(SPRAAKKODE_NB, new BeskrivelseDto("SAO TOME OG PRINCIPE", "SAO TOME OG PRINCIPE")))),
+                "PNG",
+                singletonList(new BetydningDto(now, now, Map.of(SPRAAKKODE_NB, new BeskrivelseDto("PAPUA NY-GUINEA", "PAPUA NY-GUINEA"))))
+        )
         );
     }
 
