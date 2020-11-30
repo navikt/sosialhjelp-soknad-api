@@ -1,7 +1,7 @@
 package no.nav.sbl.sosialhjelp.pdf.helpers;
 
 import com.github.jknack.handlebars.Handlebars;
-import no.nav.sbl.dialogarena.kodeverk.Adressekodeverk;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.kodeverk.KodeverkService;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -15,19 +15,19 @@ public class LandMedFulltNavnHelperTest {
 
     @Test
     public void skalViseFulltNavnPaaLandGittISO3166Forkortelse() throws IOException {
-        final Adressekodeverk adressekodeverk = mock(Adressekodeverk.class);
-        final Handlebars handlebars = createHandlebarsWithHelper(adressekodeverk);
+        final KodeverkService kodeverkService = mock(KodeverkService.class);
+        final Handlebars handlebars = createHandlebarsWithHelper(kodeverkService);
 
-        when(adressekodeverk.getLand("NOR")).thenReturn("Norge");
-        when(adressekodeverk.getLand("SWE")).thenReturn("Sverige");
+        when(kodeverkService.getLand("NOR")).thenReturn("Norge");
+        when(kodeverkService.getLand("SWE")).thenReturn("Sverige");
 
         String compiled = handlebars.compileInline("{{landMedFulltNavn \"NOR\"}}, {{landMedFulltNavn \"SWE\"}}").apply(new Object());
         assertThat(compiled, is("Norge, Sverige"));
     }
 
-    private Handlebars createHandlebarsWithHelper(Adressekodeverk adressekodeverk) {
+    private Handlebars createHandlebarsWithHelper(KodeverkService kodeverkService) {
         final Handlebars handlebars = new Handlebars();
-        final LandMedFulltNavnHelper landMedFulltNavnHelper = new LandMedFulltNavnHelper(adressekodeverk);
+        final LandMedFulltNavnHelper landMedFulltNavnHelper = new LandMedFulltNavnHelper(kodeverkService);
         handlebars.registerHelper(landMedFulltNavnHelper.getNavn(), landMedFulltNavnHelper);
         return handlebars;
     }
