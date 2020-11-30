@@ -131,6 +131,11 @@ public class SoknadActionsTestConfig {
     }
 
     @Bean
+    public KodeverkService kodeverkService() {
+        return mock(KodeverkService.class);
+    }
+
+    @Bean
     public HenvendelseService henvendelseService() {
         return new HenvendelseService();
     }
