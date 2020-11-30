@@ -1,8 +1,8 @@
 package no.nav.sbl.sosialhjelp.pdf.helpers;
 
-import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.Miljovariabler;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.kodeverk.KodeverkService;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.sosialhjelp.pdf.CmsTekst;
 import no.nav.sbl.sosialhjelp.pdf.HandlebarRegistry;
@@ -26,11 +26,8 @@ import static org.mockito.Mockito.*;
 @ActiveProfiles("RegistryTest")
 public class RegistryAwareHelperTest {
 
-
-
-    private static final Logger LOG = LoggerFactory.getLogger(RegistryAwareHelperTest.class);
     public static final String NAVN = "navn";
-
+    private static final Logger LOG = LoggerFactory.getLogger(RegistryAwareHelperTest.class);
     @Inject
     List<RegistryAwareHelper> helpers;
 
@@ -43,7 +40,6 @@ public class RegistryAwareHelperTest {
             LOG.info("Helper: " + helper.getNavn());
         }
     }
-
 
     @Test
     public void registryKaltMedHelper() {
@@ -69,9 +65,9 @@ public class RegistryAwareHelperTest {
             return mock(NavMessageSource.class);
         }
 
-        @Bean()
-        public Kodeverk kodeverk() {
-            return mock(Kodeverk.class);
+        @Bean
+        public KodeverkService kodeverkService() {
+            return mock(KodeverkService.class);
         }
 
         @Bean()
