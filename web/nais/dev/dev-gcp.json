@@ -48,7 +48,6 @@
     "FASIT_ENVIRONMENT_NAME": "q0",
     "TILLATMOCK": "true",
     "START_KODEVERK_WITHMOCK": "true",
-    "MOCK_ALT_KODEVERK_URL": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/kodeverk",
     "START_PERSON_WITHMOCK": "true",
     "START_UTBETALING_WITHMOCK": "true",
     "VIRKSOMHETSSERTIFIKAT_PATH": "/var/run/secrets"
