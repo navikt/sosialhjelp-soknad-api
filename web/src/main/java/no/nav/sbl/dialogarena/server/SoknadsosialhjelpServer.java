@@ -92,7 +92,7 @@ public class SoknadsosialhjelpServer {
         } else if (MockUtils.isMockAltProfil()) {
             log.info("Running with mock-alt activated.");
             setFrom("environment/environment-mock-alt.properties");
-            System.setProperty("fiks.nokkelfil", "/svarutpublickey/svarut_public_test.pem");
+            System.setProperty("fiks.nokkelfil", "svarut_public_test.pem");
         } else if (isRunningOnNais()) {
             mapNaisProperties();
             setFrom("environment/environment.properties");
