@@ -25,7 +25,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig.SkattbarInnte
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.skatt.SkattbarInntektService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.utbetaling.UtbetalingService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig.FiksWSConfig;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig.KodeverkWSConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig.PersonV3WSConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig.PersonWSConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig.UtbetalingWSConfig;
@@ -33,8 +32,6 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
-
-import static java.lang.System.setProperty;
 
 @Configuration
 @EnableCaching
@@ -57,18 +54,12 @@ import static java.lang.System.setProperty;
 
 public class ConsumerConfig {
 
-    //Må godta så store xml-payloads pga Kodeverk postnr
-    static {
-        setProperty("org.apache.cxf.staxutils.innerElementCountThreshold", "70000");
-    }
-
     @Configuration
     @Profile("!integration")
     @Import({
             RedisConfig.class,
             PdlRestConfig.class,
             DigisosApiRestConfig.class,
-            KodeverkWSConfig.class,
             PersonWSConfig.class,
             PersonV3WSConfig.class,
             FiksWSConfig.class,

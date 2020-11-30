@@ -1,6 +1,5 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.personv3;
 
-import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Adresse;
 import no.nav.sbl.dialogarena.sendsoknad.domain.AdresserOgKontonummer;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.IkkeFunnetException;
@@ -39,9 +38,6 @@ public class PersonServiceV3 {
     @Inject
     @Named("personV3Endpoint")
     private PersonV3 personV3;
-
-    @Inject
-    private Kodeverk kodeverk;
 
     @Inject
     private KodeverkService kodeverkService;
@@ -111,7 +107,7 @@ public class PersonServiceV3 {
             matrikkelAdresse.type = "matrikkel";
             matrikkelAdresse.kommunenummer = matrikkeladresseStrukturert.getKommunenummer();
             matrikkelAdresse.postnummer = matrikkeladresseStrukturert.getPostnummer();
-            matrikkelAdresse.poststed =  kodeverk.getPoststed( matrikkelAdresse.postnummer);
+            matrikkelAdresse.poststed =  kodeverkService.getPoststed(matrikkelAdresse.postnummer);
             adresse.setStrukturertAdresse(matrikkelAdresse);
             adresse.setAdressetype("matrikkel");
         }
@@ -126,21 +122,12 @@ public class PersonServiceV3 {
             gateadresse.bolignummer = gateAdresseStrukturert.getBolignummer();
             gateadresse.kommunenummer = gateAdresseStrukturert.getKommunenummer();
             gateadresse.postnummer = gateAdresseStrukturert.getPostnummer();
-            gateadresse.poststed = getPoststed(gateadresse.postnummer);
+            gateadresse.poststed = kodeverkService.getPoststed(gateadresse.postnummer);
             adresse.setStrukturertAdresse(gateadresse);
             adresse.setAdressetype("gateadresse");
         }
 
         return adresse;
-    }
-
-    private String getPoststed(String postnummer) {
-        try {
-            return kodeverkService.getPoststed(postnummer);
-        } catch (Exception e) {
-            logger.warn("KodeverkService feilet - bruker Kodeverk-WS som fallback.", e);
-            return kodeverk.getPoststed(postnummer);
-        }
     }
 
 }

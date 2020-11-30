@@ -16,10 +16,6 @@ public class MockSoknadsosialhjelpServer {
         File override = new File(Objects.requireNonNull(MockSoknadsosialhjelpServer.class.getClassLoader().getResource("override-web-mock.xml")).getFile());
         SoknadsosialhjelpServer server = new SoknadsosialhjelpServer(PORT, override, "/sosialhjelp/soknad-api", null);
 
-        if (!isRunningOnGCP()) {
-            System.setProperty("sendsoknad.datadir", System.getProperty("user.home") + "/kodeverk/sendsoknad");
-        }
-
         server.start();
     }
 
