@@ -5,20 +5,26 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcSubjectHandlerService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.sts.StsSecurityConstants;
 import org.glassfish.jersey.server.ContainerRequest;
+import org.glassfish.jersey.server.ExtendedUriInfo;
 import org.glassfish.jersey.test.util.server.ContainerRequestBuilder;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import javax.servlet.ServletException;
-import java.io.IOException;
 
+import javax.ws.rs.core.MultivaluedHashMap;
+import javax.ws.rs.core.MultivaluedMap;
+import java.util.Collections;
+
+import static no.nav.sbl.dialogarena.mdc.MDCOperations.MDC_BEHANDLINGS_ID;
 import static no.nav.sbl.dialogarena.mdc.MDCOperations.MDC_CALL_ID;
 import static no.nav.sbl.dialogarena.mdc.MDCOperations.MDC_CONSUMER_ID;
 import static no.nav.sbl.dialogarena.mdc.MDCOperations.getFromMDC;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.util.HeaderConstants.HEADER_CALL_ID;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.*;
+import static org.hamcrest.core.Is.is;
 import static org.hamcrest.text.StringContainsInOrder.stringContainsInOrder;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class MdcFilterTest {
     private final static String MOCK_CALL_ID = "mock_call_id";
@@ -38,7 +44,7 @@ public class MdcFilterTest {
     }
 
     @Test
-    public void shouldAddCallIdFromRequest(){
+    public void shouldAddCallIdFromRequest() {
         ContainerRequest request = ContainerRequestBuilder
                 .from("requestUri", "GET", new TestSoknadApplication())
                 .header(HEADER_CALL_ID, MOCK_CALL_ID)
@@ -51,7 +57,7 @@ public class MdcFilterTest {
     }
 
     @Test
-    public void shouldGenerateCallIdIfNoneInRequest(){
+    public void shouldGenerateCallIdIfNoneInRequest() {
         ContainerRequest request = ContainerRequestBuilder
                 .from("requestUri", "GET", new TestSoknadApplication())
                 .build();
@@ -63,7 +69,7 @@ public class MdcFilterTest {
     }
 
     @Test
-    public void shouldAddConsumerId(){
+    public void shouldAddConsumerId() {
         ContainerRequest request = ContainerRequestBuilder
                 .from("requestUri", "GET", new TestSoknadApplication())
                 .build();
@@ -72,5 +78,24 @@ public class MdcFilterTest {
         filter.filter(request);
 
         assertThat(getFromMDC(MDC_CONSUMER_ID), is(MOCK_CONSUMER_ID));
+    }
+
+    @Test
+    public void shouldAddBehandlingsId() {
+        MultivaluedMap<String, String> pathParams = new MultivaluedHashMap();
+        pathParams.put("behandlingsId", Collections.singletonList(MOCK_BEHANDLINGS_ID));
+
+        ExtendedUriInfo uriInfo = mock(ExtendedUriInfo.class);
+        when(uriInfo.getPathParameters()).thenReturn(pathParams);
+
+        ContainerRequest request = mock(ContainerRequest.class);
+        when(request.getHeaderString(HEADER_CALL_ID)).thenReturn(null);
+
+        when(request.getUriInfo()).thenReturn(uriInfo);
+
+        MdcFilter filter = new MdcFilter();
+        filter.filter(request);
+
+        assertThat(getFromMDC(MDC_BEHANDLINGS_ID), is(MOCK_BEHANDLINGS_ID));
     }
 }
