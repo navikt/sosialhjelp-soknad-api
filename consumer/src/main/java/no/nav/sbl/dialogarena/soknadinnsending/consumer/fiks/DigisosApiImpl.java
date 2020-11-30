@@ -394,6 +394,10 @@ public class DigisosApiImpl implements DigisosApi {
             instance.add(Calendar.SECOND, 100);
             Date expDate = instance.getTime();
 
+            log.info("DEBUG pcn: src " + src + " (virksomhetssertifikat)");
+            log.info("DEBUG pcn: credentials alias: " + virksertCredentials.alias + " pw: " + virksertCredentials.password + " type: " + virksertCredentials.type);
+            log.info("Public certificate length " + keyPair.getPublic().getEncoded().length + " (virksomhetssertifikat)");
+
             SignedJWT signedJWT = new SignedJWT(
                     new JWSHeader.Builder(JWSAlgorithm.RS256).x509CertChain(Collections.singletonList((com.nimbusds.jose.util.Base64.encode(certificate.getEncoded())))).build(),
                     new JWTClaimsSet.Builder()
