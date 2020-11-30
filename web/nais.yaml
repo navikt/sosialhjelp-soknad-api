@@ -35,6 +35,10 @@ spec:
       rules:
         - application: sosialhjelp-mock-alt-api
 {{/if}}
+{{#if isGcp}}
+  filesFrom:
+    - secret: virksomhetssertifikat
+{{/if}}
 {{#if vaultEnabled}}
     paths:
 {{#each kvPaths}}
