@@ -1,9 +1,10 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.kodeverk;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import no.nav.sbl.dialogarena.mdc.MDCOperations;
+import no.nav.sbl.dialogarena.redis.RedisService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.TjenesteUtilgjengeligException;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.kodeverk.dto.KodeverkDto;
 import org.slf4j.Logger;
 
@@ -11,11 +12,19 @@ import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.Response;
-
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 
+import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+import static no.nav.sbl.dialogarena.redis.CacheConstants.KODEVERK_CACHE_SECONDS;
+import static no.nav.sbl.dialogarena.redis.CacheConstants.KODEVERK_LAST_POLL_TIME_KEY;
+import static no.nav.sbl.dialogarena.redis.CacheConstants.KOMMUNER_CACHE_KEY;
+import static no.nav.sbl.dialogarena.redis.CacheConstants.LANDKODER_CACHE_KEY;
+import static no.nav.sbl.dialogarena.redis.CacheConstants.POSTNUMMER_CACHE_KEY;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.util.HeaderConstants.HEADER_CALL_ID;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.util.HeaderConstants.HEADER_CONSUMER_ID;
+import static no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig.KodeverkRestConfig.kodeverkMapper;
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class KodeverkConsumerImpl implements KodeverkConsumer {
@@ -30,10 +39,12 @@ public class KodeverkConsumerImpl implements KodeverkConsumer {
 
     private final Client client;
     private final String endpoint;
+    private final RedisService redisService;
 
-    public KodeverkConsumerImpl(Client client, String endpoint) {
+    public KodeverkConsumerImpl(Client client, String endpoint, RedisService redisService) {
         this.client = client;
         this.endpoint = endpoint;
+        this.redisService = redisService;
     }
 
     @Override
@@ -48,27 +59,30 @@ public class KodeverkConsumerImpl implements KodeverkConsumer {
 
     @Override
     public KodeverkDto hentPostnummer() {
-        return hentKodeverk(POSTNUMMER);
+        return hentKodeverk(POSTNUMMER, POSTNUMMER_CACHE_KEY);
     }
 
     @Override
     public KodeverkDto hentKommuner() {
-        return hentKodeverk(KOMMUNER);
+        return hentKodeverk(KOMMUNER, KOMMUNER_CACHE_KEY);
     }
 
     @Override
     public KodeverkDto hentLandkoder() {
-        return hentKodeverk(LANDKODER);
+        return hentKodeverk(LANDKODER, LANDKODER_CACHE_KEY);
     }
 
-    private KodeverkDto hentKodeverk(String kodeverksnavn) {
+    private KodeverkDto hentKodeverk(String kodeverksnavn, String key) {
         try {
-            return lagRequest(kodeverkUri(kodeverksnavn)).get(KodeverkDto.class);
+            var kodeverk = lagRequest(kodeverkUri(kodeverksnavn)).get(KodeverkDto.class);
+            oppdaterCache(key, kodeverk);
+            return kodeverk;
         } catch (ClientErrorException e) {
-            logger.warn("Kodeverk error", e);
-            throw new TjenesteUtilgjengeligException("Kodeverk - client-feil", e);
+            logger.warn("Kodeverk client-feil", e);
+            return null;
         } catch (Exception e) {
-            throw new TjenesteUtilgjengeligException("Kodeverk - noe uventet feilet", e);
+            logger.error("Kodeverk - noe uventet feilet", e);
+            return null;
         }
     }
 
@@ -88,4 +102,12 @@ public class KodeverkConsumerImpl implements KodeverkConsumer {
         return URI.create(endpoint + "v1/kodeverk/" + kodeverksnavn + "/koder/betydninger");
     }
 
+    private void oppdaterCache(String key, KodeverkDto kodeverk) {
+        try {
+            redisService.setex(key, kodeverkMapper().writeValueAsBytes(kodeverk), KODEVERK_CACHE_SECONDS);
+            redisService.set(KODEVERK_LAST_POLL_TIME_KEY, LocalDateTime.now().format(ISO_LOCAL_DATE_TIME).getBytes(StandardCharsets.UTF_8));
+        } catch (JsonProcessingException e) {
+            logger.warn("Noe galt skjedde ved oppdatering av kodeverk til Redis", e);
+        }
+    }
 }

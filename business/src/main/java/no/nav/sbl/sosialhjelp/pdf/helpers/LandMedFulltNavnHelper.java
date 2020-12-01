@@ -1,7 +1,7 @@
 package no.nav.sbl.sosialhjelp.pdf.helpers;
 
 import com.github.jknack.handlebars.Options;
-import no.nav.sbl.dialogarena.kodeverk.Adressekodeverk;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.kodeverk.KodeverkService;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
@@ -10,7 +10,7 @@ import javax.inject.Inject;
 public class LandMedFulltNavnHelper extends RegistryAwareHelper<String>{
 
     @Inject
-    private Adressekodeverk adressekodeverk;
+    private KodeverkService kodeverkService;
 
     @Override
     public String getNavn() {
@@ -22,8 +22,8 @@ public class LandMedFulltNavnHelper extends RegistryAwareHelper<String>{
 
     }
 
-    public LandMedFulltNavnHelper(Adressekodeverk adressekodeverk) {
-        this.adressekodeverk = adressekodeverk;
+    public LandMedFulltNavnHelper(KodeverkService kodeverkService) {
+        this.kodeverkService = kodeverkService;
     }
 
 
@@ -40,6 +40,6 @@ public class LandMedFulltNavnHelper extends RegistryAwareHelper<String>{
             return "Statsløs";
         }
 
-        return adressekodeverk.getLand(landForkortelse);
+        return kodeverkService.getLand(landForkortelse);
     }
 }

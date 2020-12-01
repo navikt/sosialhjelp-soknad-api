@@ -4,6 +4,7 @@ import no.nav.sbl.dialogarena.kodeverk.Adressekodeverk;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.StaticSubjectHandlerService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.BasisPersonaliaSystemdata;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.kodeverk.KodeverkService;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.*;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
@@ -21,7 +22,9 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadser
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.internal.verification.VerificationModeFactory.times;
 
 @RunWith(MockitoJUnitRunner.Silent.class)
 public class BasisPersonaliaRessursTest {
@@ -68,6 +71,9 @@ public class BasisPersonaliaRessursTest {
     @Mock
     private Adressekodeverk adressekodeverk;
 
+    @Mock
+    private KodeverkService kodeverkService;
+
     @InjectMocks
     private BasisPersonaliaRessurs basisPersonaliaRessurs;
 
@@ -86,11 +92,13 @@ public class BasisPersonaliaRessursTest {
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithBasisPersonalia(true, true, true));
         when(basisPersonaliaSystemdata.innhentSystemBasisPersonalia(anyString())).thenReturn(JSON_PERSONALIA);
+        when(kodeverkService.getLand("NOR")).thenReturn("Norge");
         when(adressekodeverk.getLand("NOR")).thenReturn("Norge");
 
         final BasisPersonaliaFrontend basisPersonaliaFrontend = basisPersonaliaRessurs.hentBasisPersonalia(BEHANDLINGSID);
 
         assertThatPersonaliaIsCorrectlyConverted(basisPersonaliaFrontend, JSON_PERSONALIA);
+        verify(adressekodeverk, times(0)).getLand("NOR");
     }
 
     @Test
@@ -102,6 +110,20 @@ public class BasisPersonaliaRessursTest {
         final BasisPersonaliaFrontend basisPersonaliaFrontend = basisPersonaliaRessurs.hentBasisPersonalia(BEHANDLINGSID);
 
         assertThatPersonaliaIsCorrectlyConverted(basisPersonaliaFrontend, JSON_PERSONALIA_UTEN_STAT_OG_NORDISK);
+    }
+
+    @Test
+    public void getBasisPersonaliaSkalReturnereSystemBasisPersonalia_brukKodeverkWebserviceSomFallback(){
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
+                createJsonInternalSoknadWithBasisPersonalia(true, true, true));
+        when(basisPersonaliaSystemdata.innhentSystemBasisPersonalia(anyString())).thenReturn(JSON_PERSONALIA);
+        when(kodeverkService.getLand("NOR")).thenThrow(new RuntimeException("oh no"));
+        when(adressekodeverk.getLand("NOR")).thenReturn("Norge");
+
+        final BasisPersonaliaFrontend basisPersonaliaFrontend = basisPersonaliaRessurs.hentBasisPersonalia(BEHANDLINGSID);
+
+        assertThatPersonaliaIsCorrectlyConverted(basisPersonaliaFrontend, JSON_PERSONALIA);
+        verify(adressekodeverk, times(1)).getLand("NOR");
     }
 
     private void assertThatPersonaliaIsCorrectlyConverted(BasisPersonaliaFrontend personaliaFrontend, JsonPersonalia jsonPersonalia) {
