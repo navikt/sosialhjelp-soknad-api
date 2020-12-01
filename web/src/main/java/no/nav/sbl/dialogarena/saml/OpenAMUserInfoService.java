@@ -5,7 +5,6 @@ import no.nav.common.auth.SsoToken;
 import no.nav.common.auth.Subject;
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.SamlUnauthorizedException;
 import no.nav.sbl.rest.RestUtils;
-import no.nav.sbl.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,6 +18,7 @@ import java.util.Map;
 
 import static java.util.stream.Collectors.toMap;
 import static no.nav.sbl.rest.RestUtils.DEFAULT_CONFIG;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 public class OpenAMUserInfoService {
     private static final Logger log = LoggerFactory.getLogger(OpenAMUserInfoService.class);
@@ -46,7 +46,7 @@ public class OpenAMUserInfoService {
         String endpoint = System.getProperty("openam.restUrl");
         URI uri = URI.create(endpoint);
         String scheme = uri.getScheme();
-        if (StringUtils.nullOrEmpty(scheme)) {
+        if (isEmpty(scheme)) {
             throw new IllegalStateException(endpoint);
         }
         return uri;
