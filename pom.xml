@@ -245,11 +245,6 @@
             </dependency>
             <dependency>
                 <groupId>no.nav.tjenestespesifikasjoner</groupId>
-                <artifactId>kodeverk-tjenestespesifikasjon</artifactId>
-                <version>${tjenestespesifikasjon.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>no.nav.tjenestespesifikasjoner</groupId>
                 <artifactId>soeknadsskjemaSosialhjelp-v1-saksoversiktdefinisjon</artifactId>
                 <version>${tjenestespesifikasjon.version}</version>
             </dependency>
@@ -1033,6 +1028,12 @@
                 <artifactId>jersey-test-framework-provider-external</artifactId>
                 <scope>test</scope>
                 <version>${jersey.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish.jersey.test-framework</groupId>
+                <artifactId>jersey-test-framework-util</artifactId>
+                <version>${jersey.version}</version>
+                <scope>test</scope>
             </dependency>
 
             <!-- Kotlin -->

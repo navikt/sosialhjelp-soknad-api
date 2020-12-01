@@ -1,7 +1,5 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business;
 
-import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
-import no.nav.sbl.dialogarena.kodeverk.Adressekodeverk;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fiks.DigisosApi;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.OppgaveHandterer;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.RepositoryTestSupport;
@@ -73,11 +71,6 @@ public class SoknadServiceIntegrationTestContext {
     @Bean
     public RepositoryTestSupport testSupport() {
         return new TestSupport(dataSource);
-    }
-
-    @Bean
-    public Kodeverk kodeverk() {
-        return mock(Kodeverk.class);
     }
 
     @Bean
@@ -178,11 +171,6 @@ public class SoknadServiceIntegrationTestContext {
     @Bean
     TextService textService() {
         return mock(TextService.class);
-    }
-
-    @Bean
-    Adressekodeverk adressekodeverk() {
-        return mock(Adressekodeverk.class);
     }
 
     @Bean
