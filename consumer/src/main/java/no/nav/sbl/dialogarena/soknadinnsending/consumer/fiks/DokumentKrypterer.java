@@ -82,7 +82,7 @@ public class DokumentKrypterer {
         }
 
         try {
-            InputStream publickey = getClass().getResourceAsStream(nokkelFil);
+            InputStream publickey = getClass().getResourceAsStream("/svarutpublickey/" + nokkelFil);
             return (X509Certificate) CertificateFactory.getInstance("X509")
                     .generateCertificate(publickey);
         } catch (CertificateException e) {
