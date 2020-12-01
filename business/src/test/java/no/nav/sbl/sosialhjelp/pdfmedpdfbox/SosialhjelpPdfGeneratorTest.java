@@ -105,7 +105,7 @@ public class SosialhjelpPdfGeneratorTest {
         when(kodeverkService.getLand("NOR")).thenReturn("Norsk");
         TextHelpers textHelpers = new TextHelpers();
         textHelpers.setNavMessageSource(navMessageSource);
-        textHelpers.setAdressekodeverk(kodeverkService);
+        textHelpers.setKodeverkService(kodeverkService);
         sosialhjelpPdfGenerator.setTextHelpers(textHelpers);
     }
 

@@ -1,6 +1,5 @@
 package no.nav.sbl.dialogarena.config;
 
-import no.nav.sbl.dialogarena.kodeverk.Adressekodeverk;
 import no.nav.sbl.dialogarena.rest.actions.SoknadActions;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fiks.DigisosApi;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fiks.KommuneInfoService;
@@ -119,11 +118,6 @@ public class SoknadActionsTestConfig {
     @Bean
     public TextService textService() {
         return mock(TextService.class);
-    }
-
-    @Bean
-    public Adressekodeverk adressekodeverk() {
-        return mock(Adressekodeverk.class);
     }
 
     @Bean

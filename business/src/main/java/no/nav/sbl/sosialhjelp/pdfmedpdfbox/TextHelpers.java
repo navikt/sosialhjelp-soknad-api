@@ -1,6 +1,5 @@
 package no.nav.sbl.sosialhjelp.pdfmedpdfbox;
 
-import no.nav.sbl.dialogarena.kodeverk.Adressekodeverk;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.kodeverk.KodeverkService;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import org.springframework.stereotype.Component;
@@ -20,7 +19,7 @@ public class TextHelpers {
         this.navMessageSource = navMessageSource;
     }
 
-    public void setAdressekodeverk(KodeverkService kodeverkService) {
+    public void setKodeverkService(KodeverkService kodeverkService) {
         this.kodeverkService = kodeverkService;
     }
 

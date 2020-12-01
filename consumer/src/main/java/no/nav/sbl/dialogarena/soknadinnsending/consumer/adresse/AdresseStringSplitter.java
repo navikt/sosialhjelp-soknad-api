@@ -3,7 +3,6 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer.adresse;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.Sokedata;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.kodeverk.KodeverkService;
 import org.slf4j.Logger;
@@ -19,28 +18,28 @@ public final class AdresseStringSplitter {
     }
     
     static Sokedata toSokedata(String adresse) {
-        return toSokedata(null, null, adresse);
+        return toSokedata(null, adresse);
     }
     
-    static Sokedata toSokedata(Kodeverk kodeverk, KodeverkService kodeverkService, String adresse) {
+    static Sokedata toSokedata(KodeverkService kodeverkService, String adresse) {
         if (adresse == null || adresse.trim().length() <= 1) {
             return new Sokedata().withAdresse(adresse);
         }
 
         return firstNonNull(
             postnummerMatch(adresse),
-            fullstendigGateadresseMatch(kodeverk, kodeverkService, adresse),
+            fullstendigGateadresseMatch(kodeverkService, adresse),
             new Sokedata().withAdresse(adresse)
         );
     }
     
-    static Sokedata fullstendigGateadresseMatch(Kodeverk kodeverk, KodeverkService kodeverkService, String adresse) {
+    static Sokedata fullstendigGateadresseMatch(KodeverkService kodeverkService, String adresse) {
         final Pattern p = Pattern.compile("^([^0-9,]*) *([0-9]*)?([^,])? *,? *([0-9][0-9][0-9][0-9])? *[0-9]* *([^0-9]*[^ ])? *$");
         final Matcher m = p.matcher(adresse);
         if (m.matches()) {
             final String postnummer = m.group(4);
             final String kommunenavn = (postnummer == null) ? m.group(5) : null;
-            final String kommunenummer = getKommunenummer(kodeverk,kodeverkService, kommunenavn);
+            final String kommunenummer = getKommunenummer(kodeverkService, kommunenavn);
             final String poststed = kommunenummer == null ? m.group(5) : null;
             
             return new Sokedata()
@@ -54,16 +53,8 @@ public final class AdresseStringSplitter {
         return null;
     }
 
-    private static String getKommunenummer(Kodeverk kodeverk, KodeverkService kodeverkService, String kommunenavn) {
-        if (kommunenavn != null && !kommunenavn.trim().isEmpty() && kodeverk != null && kodeverkService != null) {
-            try  {
-                return kodeverkService.gjettKommunenummer(kommunenavn);
-            } catch (Exception e) {
-                log.warn("KodeverkService feilet - bruker Kodeverk-WS som fallback.", e);
-                return kodeverk.gjettKommunenummer(kommunenavn);
-            }
-        }
-        return null;
+    private static String getKommunenummer(KodeverkService kodeverkService, String kommunenavn) {
+        return kommunenavn != null && !kommunenavn.trim().isEmpty() && kodeverkService != null ? kodeverkService.gjettKommunenummer(kommunenavn) : null;
     }
 
     static Sokedata postnummerMatch(String adresse) {

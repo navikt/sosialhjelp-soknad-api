@@ -4,15 +4,10 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.kodeverk.KodeverkService
 import org.junit.Assert;
 import org.junit.Test;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.anyString;
-import static org.mockito.internal.verification.VerificationModeFactory.times;
 
-import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.Sokedata;
-import org.mockito.verification.VerificationMode;
 
 import java.util.Objects;
 
@@ -155,38 +150,21 @@ public class AdresseStringSplitterTest {
     public void skalKunneSokeMedKommunenavn() {
         final KodeverkService kodeverkService = mock(KodeverkService.class);
         when(kodeverkService.gjettKommunenummer(anyString())).thenReturn("0301");
-        final Kodeverk kodeverk = mock(Kodeverk.class);
-        final Sokedata result = AdresseStringSplitter.toSokedata(kodeverk, kodeverkService, "asdf, OSLO");
+        final Sokedata result = AdresseStringSplitter.toSokedata(kodeverkService, "asdf, OSLO");
         Assert.assertEquals("asdf", result.adresse);
         Assert.assertNull(result.poststed);
         Assert.assertEquals("0301", result.kommunenummer);
-        verify(kodeverk, times(0)).gjettKommunenummer(anyString());
     }
     
     @Test
     public void skalFungereMedPoststedSelvMedKodeverk() {
         final KodeverkService kodeverkService = mock(KodeverkService.class);
         when(kodeverkService.gjettKommunenummer(anyString())).thenReturn("0301");
-        final Kodeverk kodeverk = mock(Kodeverk.class);
-        final Sokedata result = AdresseStringSplitter.toSokedata(kodeverk, kodeverkService, "asdf, 0756 OSLO");
+        final Sokedata result = AdresseStringSplitter.toSokedata(kodeverkService, "asdf, 0756 OSLO");
         Assert.assertEquals("asdf", result.adresse);
         Assert.assertEquals("0756", result.postnummer);
         Assert.assertEquals("OSLO", result.poststed);
         Assert.assertNull(result.kommunenummer);
-        verify(kodeverk, times(0)).gjettKommunenummer(anyString());
-    }
-
-    @Test
-    public void skalBrukeKodeverkWebserviceSomFallback() {
-        final KodeverkService kodeverkService = mock(KodeverkService.class);
-        when(kodeverkService.gjettKommunenummer(anyString())).thenThrow(new RuntimeException("Oh no"));
-        final Kodeverk kodeverk = mock(Kodeverk.class);
-        when(kodeverk.gjettKommunenummer(anyString())).thenReturn("0301");
-        final Sokedata result = AdresseStringSplitter.toSokedata(kodeverk, kodeverkService, "asdf, OSLO");
-        Assert.assertEquals("asdf", result.adresse);
-        Assert.assertNull(result.poststed);
-        Assert.assertEquals("0301", result.kommunenummer);
-        verify(kodeverk, times(1)).gjettKommunenummer(anyString());
     }
 
     @Test
