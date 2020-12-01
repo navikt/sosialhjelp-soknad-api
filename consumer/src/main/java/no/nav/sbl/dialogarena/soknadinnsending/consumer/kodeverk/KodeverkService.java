@@ -84,6 +84,7 @@ public class KodeverkService {
         }
         var cachedKodeverk = hentFraCache(key);
         if (cachedKodeverk != null) {
+            logger.info("Kodeverk-client feilet, men bruker cached kodeverk.");
             return cachedKodeverk;
         }
         logger.warn("Kodeverk feiler og cache [{}] er tom", key);
