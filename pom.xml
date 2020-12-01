@@ -1029,6 +1029,12 @@
                 <scope>test</scope>
                 <version>${jersey.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.glassfish.jersey.test-framework</groupId>
+                <artifactId>jersey-test-framework-util</artifactId>
+                <version>${jersey.version}</version>
+                <scope>test</scope>
+            </dependency>
 
             <!-- Kotlin -->
             <dependency>
