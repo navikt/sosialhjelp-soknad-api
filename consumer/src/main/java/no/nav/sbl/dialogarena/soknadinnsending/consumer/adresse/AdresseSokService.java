@@ -1,6 +1,5 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.adresse;
 
-import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseForslag;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.AdresseData;
@@ -8,6 +7,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.Adres
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.Sokedata;
 import no.nav.sbl.dialogarena.sendsoknad.domain.norg.NavEnhet;
 import no.nav.sbl.dialogarena.sendsoknad.domain.util.KommuneTilNavEnhetMapper;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.kodeverk.KodeverkService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.norg.NorgService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,7 +34,7 @@ public class AdresseSokService {
     private AdresseSokConsumer adresseSokConsumer;
 
     @Inject
-    private Kodeverk kodeverk;
+    private KodeverkService kodeverkService;
 
     @Inject
     private NorgService norgService;
@@ -43,7 +43,7 @@ public class AdresseSokService {
         if (sok == null || sok.trim().length() <= 2) {
             return Collections.emptyList();
         }
-        final Sokedata sokedata = AdresseStringSplitter.toSokedata(kodeverk, sok);
+        final Sokedata sokedata = AdresseStringSplitter.toSokedata(kodeverkService, sok);
         return sokEtterAdresser(sokedata);
     }
 

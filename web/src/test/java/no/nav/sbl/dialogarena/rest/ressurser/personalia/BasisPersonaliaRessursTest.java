@@ -1,9 +1,9 @@
 package no.nav.sbl.dialogarena.rest.ressurser.personalia;
 
-import no.nav.sbl.dialogarena.kodeverk.Adressekodeverk;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.StaticSubjectHandlerService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.BasisPersonaliaSystemdata;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.kodeverk.KodeverkService;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.*;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
@@ -66,7 +66,7 @@ public class BasisPersonaliaRessursTest {
     private BasisPersonaliaSystemdata basisPersonaliaSystemdata;
 
     @Mock
-    private Adressekodeverk adressekodeverk;
+    private KodeverkService kodeverkService;
 
     @InjectMocks
     private BasisPersonaliaRessurs basisPersonaliaRessurs;
@@ -86,7 +86,7 @@ public class BasisPersonaliaRessursTest {
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithBasisPersonalia(true, true, true));
         when(basisPersonaliaSystemdata.innhentSystemBasisPersonalia(anyString())).thenReturn(JSON_PERSONALIA);
-        when(adressekodeverk.getLand("NOR")).thenReturn("Norge");
+        when(kodeverkService.getLand("NOR")).thenReturn("Norge");
 
         final BasisPersonaliaFrontend basisPersonaliaFrontend = basisPersonaliaRessurs.hentBasisPersonalia(BEHANDLINGSID);
 

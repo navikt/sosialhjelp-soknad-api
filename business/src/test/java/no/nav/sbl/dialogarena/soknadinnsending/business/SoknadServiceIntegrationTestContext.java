@@ -1,7 +1,5 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business;
 
-import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
-import no.nav.sbl.dialogarena.kodeverk.Adressekodeverk;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fiks.DigisosApi;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.OppgaveHandterer;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.RepositoryTestSupport;
@@ -16,6 +14,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.*;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.BostotteSystemdata;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.SkattetatenSystemdata;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.Bostotte;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.kodeverk.KodeverkService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.organisasjon.OrganisasjonConsumer;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.organisasjon.OrganisasjonService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.skatt.SkattbarInntektService;
@@ -75,8 +74,8 @@ public class SoknadServiceIntegrationTestContext {
     }
 
     @Bean
-    public Kodeverk kodeverk() {
-        return mock(Kodeverk.class);
+    public KodeverkService kodeverkService() {
+        return mock(KodeverkService.class);
     }
 
     @Bean
@@ -172,11 +171,6 @@ public class SoknadServiceIntegrationTestContext {
     @Bean
     TextService textService() {
         return mock(TextService.class);
-    }
-
-    @Bean
-    Adressekodeverk adressekodeverk() {
-        return mock(Adressekodeverk.class);
     }
 
     @Bean

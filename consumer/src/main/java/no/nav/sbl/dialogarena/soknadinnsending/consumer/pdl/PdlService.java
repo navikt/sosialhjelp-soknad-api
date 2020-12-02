@@ -46,8 +46,10 @@ public class PdlService {
         List<Barn> alleBarn = pdlPerson.getFamilierelasjoner().stream()
                 .filter(familierelasjonDto -> familierelasjonDto.getRelatertPersonsRolle().equalsIgnoreCase(BARN))
                 .map(familierelasjonDto -> {
-                    PdlBarn pdlBarn = pdlConsumer.hentBarn(familierelasjonDto.getRelatertPersonsIdent());
-                    return pdlPersonMapper.mapTilBarn(pdlBarn, familierelasjonDto.getRelatertPersonsIdent(), pdlPerson);
+                    var barnIdent = familierelasjonDto.getRelatertPersonsIdent();
+                    loggHvisIdentIkkeErFnr(barnIdent);
+                    var pdlBarn = pdlConsumer.hentBarn(barnIdent);
+                    return pdlPersonMapper.mapTilBarn(pdlBarn, barnIdent, pdlPerson);
                 })
                 .collect(Collectors.toList());
         alleBarn.removeIf(Objects::isNull);
@@ -61,11 +63,23 @@ public class PdlService {
                     .findFirst();
             if (ektefelle.isPresent()) {
                 String ektefelleIdent = ektefelle.get().getRelatertVedSivilstand();
+
+                loggHvisIdentIkkeErFnr(ektefelleIdent);
+
                 PdlEktefelle pdlEktefelle = pdlConsumer.hentEktefelle(ektefelleIdent);
                 return pdlPersonMapper.mapTilEktefelle(pdlEktefelle, ektefelleIdent, pdlPerson);
             }
         }
         return null;
+    }
+
+    private void loggHvisIdentIkkeErFnr(String ektefelleIdent) {
+        if (ektefelleIdent.length() == 11 && Integer.parseInt(ektefelleIdent.substring(0,2)) > 31) {
+            log.info("Ident er DNR");
+        }
+        if (ektefelleIdent.length() > 11) {
+            log.info("Ident er aktørid");
+        }
     }
 
 }

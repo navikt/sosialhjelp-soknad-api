@@ -203,7 +203,8 @@ public class PdlPersonMapper {
             return matrikkelIdPerson.get().equals(matrikkelIdBarnEllerEktefelle.get());
         }
         // Hvis ikke vegadresse til person eller barnEllerEktefelle har matrikkelId, sammenlign resterende vegadresse-felter
-        if (bostedsadressePerson.getVegadresse() != null && bostedsadresseBarnEllerEktefelle.getVegadresse() != null) {
+        if (bostedsadressePerson != null && bostedsadressePerson.getVegadresse() != null &&
+                bostedsadresseBarnEllerEktefelle != null && bostedsadresseBarnEllerEktefelle.getVegadresse() != null) {
             return erLikeVegadresser(bostedsadressePerson.getVegadresse(), bostedsadresseBarnEllerEktefelle.getVegadresse());
         }
 

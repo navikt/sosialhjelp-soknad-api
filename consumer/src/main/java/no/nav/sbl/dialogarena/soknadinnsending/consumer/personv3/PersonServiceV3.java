@@ -1,11 +1,11 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.personv3;
 
-import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Adresse;
 import no.nav.sbl.dialogarena.sendsoknad.domain.AdresserOgKontonummer;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.IkkeFunnetException;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.SikkerhetsBegrensningException;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.TjenesteUtilgjengeligException;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.kodeverk.KodeverkService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.domain.Gateadresse;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.domain.Matrikkeladresse;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.domain.PersonData;
@@ -40,7 +40,7 @@ public class PersonServiceV3 {
     private PersonV3 personV3;
 
     @Inject
-    private Kodeverk kodeverk;
+    private KodeverkService kodeverkService;
 
     @Cacheable("adresserOgKontonummerCache")
     public AdresserOgKontonummer hentAddresserOgKontonummer(String fodselsnummer) {
@@ -107,7 +107,7 @@ public class PersonServiceV3 {
             matrikkelAdresse.type = "matrikkel";
             matrikkelAdresse.kommunenummer = matrikkeladresseStrukturert.getKommunenummer();
             matrikkelAdresse.postnummer = matrikkeladresseStrukturert.getPostnummer();
-            matrikkelAdresse.poststed =  kodeverk.getPoststed( matrikkelAdresse.postnummer);
+            matrikkelAdresse.poststed =  kodeverkService.getPoststed(matrikkelAdresse.postnummer);
             adresse.setStrukturertAdresse(matrikkelAdresse);
             adresse.setAdressetype("matrikkel");
         }
@@ -122,7 +122,7 @@ public class PersonServiceV3 {
             gateadresse.bolignummer = gateAdresseStrukturert.getBolignummer();
             gateadresse.kommunenummer = gateAdresseStrukturert.getKommunenummer();
             gateadresse.postnummer = gateAdresseStrukturert.getPostnummer();
-            gateadresse.poststed = kodeverk.getPoststed( gateadresse.postnummer);
+            gateadresse.poststed = kodeverkService.getPoststed(gateadresse.postnummer);
             adresse.setStrukturertAdresse(gateadresse);
             adresse.setAdressetype("gateadresse");
         }

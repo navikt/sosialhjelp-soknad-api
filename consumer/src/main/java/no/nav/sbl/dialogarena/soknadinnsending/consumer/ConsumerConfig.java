@@ -4,6 +4,7 @@ import no.nav.sbl.dialogarena.redis.RedisConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.adresse.AdresseSokService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.dkif.DkifService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fiks.DokumentKrypterer;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.kodeverk.KodeverkService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.norg.NorgService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.organisasjon.OrganisasjonService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.PdlPersonMapper;
@@ -24,7 +25,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig.SkattbarInnte
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.skatt.SkattbarInntektService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.utbetaling.UtbetalingService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig.FiksWSConfig;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig.KodeverkWSConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig.PersonV3WSConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig.PersonWSConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig.UtbetalingWSConfig;
@@ -32,8 +32,6 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
-
-import static java.lang.System.setProperty;
 
 @Configuration
 @EnableCaching
@@ -50,15 +48,11 @@ import static java.lang.System.setProperty;
         UtbetalingService.class,
         SkattbarInntektService.class,
         OrganisasjonService.class,
-        DkifService.class
+        DkifService.class,
+        KodeverkService.class
 })
 
 public class ConsumerConfig {
-
-    //Må godta så store xml-payloads pga Kodeverk postnr
-    static {
-        setProperty("org.apache.cxf.staxutils.innerElementCountThreshold", "70000");
-    }
 
     @Configuration
     @Profile("!integration")
@@ -66,7 +60,6 @@ public class ConsumerConfig {
             RedisConfig.class,
             PdlRestConfig.class,
             DigisosApiRestConfig.class,
-            KodeverkWSConfig.class,
             PersonWSConfig.class,
             PersonV3WSConfig.class,
             FiksWSConfig.class,

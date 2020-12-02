@@ -1,6 +1,6 @@
 package no.nav.sbl.sosialhjelp.pdfmedpdfbox;
 
-import no.nav.sbl.dialogarena.kodeverk.Adressekodeverk;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.kodeverk.KodeverkService;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import org.springframework.stereotype.Component;
 
@@ -13,14 +13,14 @@ public class TextHelpers {
     public NavMessageSource navMessageSource;
 
     @Inject
-    private Adressekodeverk adressekodeverk;
+    private KodeverkService kodeverkService;
 
     public void setNavMessageSource(NavMessageSource navMessageSource) {
         this.navMessageSource = navMessageSource;
     }
 
-    public void setAdressekodeverk(Adressekodeverk adressekodeverk) {
-        this.adressekodeverk = adressekodeverk;
+    public void setKodeverkService(KodeverkService kodeverkService) {
+        this.kodeverkService = kodeverkService;
     }
 
     public String fulltNavnForLand(String landForkortelse) {
@@ -30,6 +30,6 @@ public class TextHelpers {
             return "Statsløs";
         }
 
-        return adressekodeverk.getLand(landForkortelse);
+        return kodeverkService.getLand(landForkortelse);
     }
 }

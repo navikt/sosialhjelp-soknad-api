@@ -83,16 +83,6 @@
     </filter-mapping>
 
     <filter>
-        <filter-name>SosialhjelpSoknadMDCFilter</filter-name>
-        <filter-class>no.nav.sbl.dialogarena.mdc.SosialhjelpSoknadMDCFilter</filter-class>
-        <async-supported>true</async-supported>
-    </filter>
-    <filter-mapping>
-        <filter-name>SosialhjelpSoknadMDCFilter</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping>
-
-    <filter>
         <filter-name>charEncodingFilter</filter-name>
         <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
         <async-supported>true</async-supported>

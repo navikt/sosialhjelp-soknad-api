@@ -1,9 +1,9 @@
 package no.nav.sbl.dialogarena.rest.ressurser.personalia;
 
 import no.nav.metrics.aspects.Timed;
-import no.nav.sbl.dialogarena.kodeverk.Adressekodeverk;
 import no.nav.sbl.dialogarena.rest.ressurser.NavnFrontend;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.kodeverk.KodeverkService;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonNavn;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
@@ -22,14 +22,14 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
 @Controller
-@ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })
+@ProtectedWithClaims(issuer = "selvbetjening", claimMap = {"acr=Level4"})
 @Path("/soknader/{behandlingsId}/personalia/basisPersonalia")
 @Timed
 @Produces(APPLICATION_JSON)
 public class BasisPersonaliaRessurs {
 
     @Inject
-    private Adressekodeverk adressekodeverk;
+    private KodeverkService kodeverkService;
 
     @Inject
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
@@ -48,7 +48,7 @@ public class BasisPersonaliaRessurs {
                 .withNavn(new NavnFrontend(navn.getFornavn(), navn.getMellomnavn(), navn.getEtternavn()))
                 .withFodselsnummer(jsonPersonalia.getPersonIdentifikator().getVerdi())
                 .withStatsborgerskap(jsonPersonalia.getStatsborgerskap() == null ? null :
-                        adressekodeverk.getLand(jsonPersonalia.getStatsborgerskap().getVerdi()))
+                        kodeverkService.getLand(jsonPersonalia.getStatsborgerskap().getVerdi()))
                 .withNordiskBorger(jsonPersonalia.getNordiskBorger() != null ? jsonPersonalia.getNordiskBorger().getVerdi() : null);
     }
 
@@ -74,7 +74,7 @@ public class BasisPersonaliaRessurs {
             return this;
         }
 
-        public BasisPersonaliaFrontend withNordiskBorger(Boolean nordiskBorger){
+        public BasisPersonaliaFrontend withNordiskBorger(Boolean nordiskBorger) {
             this.nordiskBorger = nordiskBorger;
             return this;
         }

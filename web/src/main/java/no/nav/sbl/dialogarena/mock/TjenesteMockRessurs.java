@@ -5,8 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import no.ks.svarut.servicesv9.Dokument;
 import no.ks.svarut.servicesv9.Forsendelse;
 import no.ks.svarut.servicesv9.PostAdresse;
-import no.nav.sbl.dialogarena.kodeverk.Adressekodeverk;
-import no.nav.sbl.dialogarena.kodeverk.StandardKodeverk;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.adresse.AdresseSokConsumerMock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.norg.NorgConsumerMock;
@@ -17,6 +15,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.fiks.FiksS
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeidsforhold.ArbeidsforholdConsumerMock;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.MockBostotteImpl;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.dkif.DkifConsumerMock;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.kodeverk.KodeverkConsumerMock;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.organisasjon.OrganisasjonConsumerMock;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.skatt.SkattbarInntektConsumerMock;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonData;
@@ -71,8 +70,6 @@ public class TjenesteMockRessurs {
     private InnsendingService innsendingService;
     @Inject
     private FiksSender fiksSender;
-    @Inject
-    private Adressekodeverk adressekodeverk;
 
     private void clearCache() {
         for (String cacheName : cacheManager.getCacheNames()) {
@@ -263,7 +260,7 @@ public class TjenesteMockRessurs {
                     && person.getStatsborgerskap().getLand() != null
                     && person.getStatsborgerskap().getLand().getValue() != null) {
                 String landkode = person.getStatsborgerskap().getLand().getValue();
-                ((StandardKodeverk) adressekodeverk).leggTilLandskodeForMock(landkode);
+                KodeverkConsumerMock.leggTilLandkode(landkode);
             }
         } catch (JsonProcessingException e) {
             logger.warn("Klarte ikke å legge inn nytt land i kodeverk mock :-O");

@@ -3,6 +3,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import no.nav.sbl.dialogarena.redis.RedisService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.kodeverk.KodeverkConsumer;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.kodeverk.KodeverkConsumerImpl;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.kodeverk.KodeverkConsumerMock;
@@ -31,18 +32,18 @@ public class KodeverkRestConfig {
     private String endpoint;
 
     @Bean
-    public KodeverkConsumer kodeverkConsumer() {
-        KodeverkConsumer prod = new KodeverkConsumerImpl(kodeverkClient(), endpoint);
+    public KodeverkConsumer kodeverkConsumer(RedisService redisService) {
+        KodeverkConsumer prod = new KodeverkConsumerImpl(kodeverkClient(), endpoint, redisService);
         KodeverkConsumer mock = new KodeverkConsumerMock().kodeverkConsumerMock();
         return createSwitcher(prod, mock, KODEVERK_KEY, KodeverkConsumer.class);
     }
 
     @Bean
-    public Pingable kodeverkRestPing() {
+    public Pingable kodeverkRestPing(KodeverkConsumer kodeverkConsumer) {
         return () -> {
             Pingable.Ping.PingMetadata metadata = new Pingable.Ping.PingMetadata(endpoint, "Kodeverk", false);
             try {
-                kodeverkConsumer().ping();
+                kodeverkConsumer.ping();
                 return lyktes(metadata);
             } catch (Exception e) {
                 return feilet(metadata, e);
@@ -50,7 +51,7 @@ public class KodeverkRestConfig {
         };
     }
 
-    private ObjectMapper kodeverkMapper() {
+    public static ObjectMapper kodeverkMapper() {
         return new ObjectMapper()
                 .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
                 .registerModule(new JavaTimeModule());
