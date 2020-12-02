@@ -5,8 +5,11 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.barn.PdlBarn;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.AdressebeskyttelseDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.BostedsadresseDto;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.EndringDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.FoedselDto;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.FolkeregisterMetadataDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.FolkeregisterpersonstatusDto;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.MetadataDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.NavnDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.SivilstandDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.StatsborgerskapDto;
@@ -16,6 +19,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.person.PdlPerson
 import org.mockito.invocation.InvocationOnMock;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -67,7 +71,11 @@ public class PdlConsumerMock {
                 singletonList(new BostedsadresseDto(new VegadresseDto("123123", "GATEVEIEN", 1, "A", null, "0690", "0301", null), null, null)),
                 emptyList(), // ingen familierelasjoner for mockperson
                 singletonList(new NavnDto("fornavn", "mellomnavn", "etternavn")),
-                singletonList(new SivilstandDto(SivilstandDto.SivilstandType.GIFT, "annenFnr")),
+                singletonList(new SivilstandDto(
+                        SivilstandDto.SivilstandType.GIFT,
+                        "annenFnr",
+                        new MetadataDto("FREG", false, "opplysningsId", singletonList(new EndringDto("FREG", LocalDateTime.now().minusDays(15), null, null, null))),
+                        new FolkeregisterMetadataDto(LocalDateTime.now().minusMonths(1), null, null, "FREG", null, 0))),
                 singletonList(new StatsborgerskapDto("NOR"))
         );
     }

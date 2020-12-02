@@ -39,9 +39,31 @@
       "sivilstand": [
         {
           "type": "GIFT",
-          "relatertVedSivilstand": "55555555555"
+          "relatertVedSivilstand": "55555555555",
+          "metadata": {
+            "master": "Freg",
+            "historisk": false,
+            "opplysningsId": "some-id",
+            "endringer": [
+              {
+                "kilde": "Dolly",
+                "registrert": "2020-10-20T12:08:11",
+                "registrertAv": "Folkeregisteret",
+                "systemkilde": "FREG",
+                "type": "OPPRETT"
+              }
+            ]
+          },
+          "folkeregistermetadata": {
+            "ajourholdstidspunkt": "2020-10-20T12:08:11",
+            "gyldighetstidspunkt": "2020-10-20T12:08:11",
+            "opphoerstidspunkt": null,
+            "kilde": "Dolly",
+            "aarsak": null,
+            "sekvens": null
+          }
         }
-      ],
+      ]
       "statsborgerskap": [
         {
           "land": "DEU"

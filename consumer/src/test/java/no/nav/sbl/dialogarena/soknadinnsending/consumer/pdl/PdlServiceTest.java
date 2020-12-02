@@ -51,7 +51,7 @@ public class PdlServiceTest {
         when(pdlConsumer.hentPerson(any())).thenReturn(mockPdlPerson);
         when(pdlPersonMapper.mapTilPerson(any(), any())).thenReturn(person);
 
-        when(mockPdlPerson.getSivilstand()).thenReturn(listOf(new SivilstandDto(SivilstandDto.SivilstandType.GIFT, "ident")));
+        when(mockPdlPerson.getSivilstand()).thenReturn(listOf(new SivilstandDto(SivilstandDto.SivilstandType.GIFT, "ident", null, null)));
 
         when(pdlConsumer.hentEktefelle(any())).thenReturn(mockPdlEktefelle);
         when(pdlPersonMapper.mapTilEktefelle(any(), any(), any())).thenReturn(ektefelle);
