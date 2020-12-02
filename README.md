@@ -22,7 +22,6 @@ Ved bruk av [cli](https://github.com/navikt/sosialhjelp-ci):
 - `deploy labs-gcp` (`labs-gcp2`, `labs-gcp3`)
 - `deploy dev-gcp`
 - `deploy dev-sbs`
-- `deploy q1` (La `q1` bestå enn så lenge saksoversikt-api går mot `q1` via service discovery url)
 - `deploy dev-sbs-intern`
 - `deploy prod`
 
