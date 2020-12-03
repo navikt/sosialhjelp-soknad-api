@@ -17,6 +17,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.ektefelle.PdlEkt
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.person.PdlPerson;
 import org.joda.time.LocalDate;
 import org.joda.time.Years;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -36,9 +37,12 @@ import static no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.Si
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.SivilstandDto.SivilstandType.SKILT_PARTNER;
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.SivilstandDto.SivilstandType.UGIFT;
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.SivilstandDto.SivilstandType.UOPPGITT;
+import static org.slf4j.LoggerFactory.getLogger;
 
 @Component
 public class PdlPersonMapper {
+
+    private static final Logger logger = getLogger(PdlPersonMapper.class);
 
     static final String KODE_6 = "SPSF";
     static final String KODE_7 = "SPFO";
@@ -57,6 +61,8 @@ public class PdlPersonMapper {
             .put(SKILT_PARTNER, "skilt")
             .put(GJENLEVENDE_PARTNER, "enke")
             .build();
+
+    private final ParallelleSannheter parallelleSannheter = new ParallelleSannheter();
 
     public Person mapTilPerson(PdlPerson pdlPerson, String ident) {
         if (pdlPerson == null) {
@@ -149,9 +155,11 @@ public class PdlPersonMapper {
     }
 
     private String finnSivilstatus(List<SivilstandDto> sivilstand) {
-        return sivilstand.stream().findFirst()
-                .map(dto -> MAP_PDLSIVILSTAND_TIL_JSONSIVILSTATUS.get(dto.getType()))
-                .orElse("");
+        if (sivilstand.size() > 1) {
+            logger.info("Person har flere gjeldende sivilstander: {}", sivilstand.stream().map(dto -> dto.getType().toString()).collect(Collectors.joining(",")));
+        }
+        var sivilstandDto = parallelleSannheter.avklareParallelleSannheter(sivilstand);
+        return sivilstandDto != null ? MAP_PDLSIVILSTAND_TIL_JSONSIVILSTATUS.get(sivilstandDto.getType()) : "";
     }
 
     private List<String> finnStatsborgerskap(List<StatsborgerskapDto> statsborgerskap) {
