@@ -52,7 +52,8 @@ public class UtbetalMock {
     }
 
     public static WSHentUtbetalingsinformasjonResponse getOrCreateCurrentUserResponse(){
-        if(feilListe.get(SubjectHandler.getUserId())) {
+        Boolean skalFeile = feilListe.get(SubjectHandler.getUserId());
+        if(skalFeile != null && skalFeile) {
             throw new RuntimeException("Mock kall til NAV er satt til å feile!");
         }
         return responses.computeIfAbsent(SubjectHandler.getUserId(), k -> getDefaultResponse());

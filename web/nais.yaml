@@ -24,9 +24,21 @@ spec:
   replicas:
     min: {{minReplicas}}
     max: {{maxReplicas}}
-  webproxy: true
+  webproxy: {{webProxyEnabled}}
   vault:
     enabled: {{vaultEnabled}}
+{{#if isGcp}}
+  accessPolicy:
+    outbound:
+      external:
+        - host: "digisos-gcp.dev.nav.no"
+      rules:
+        - application: sosialhjelp-mock-alt-api
+{{/if}}
+{{#if isGcp}}
+  filesFrom:
+    - secret: virksomhetssertifikat
+{{/if}}
 {{#if vaultEnabled}}
     paths:
 {{#each kvPaths}}
