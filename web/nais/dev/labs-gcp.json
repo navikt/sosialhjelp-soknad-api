@@ -11,6 +11,8 @@
   "vaultEnabled": false,
   "prometheusEnabled": false,
   "isRedisMocked": true,
+  "webProxyEnabled": false,
+  "isGcp": true,
   "env": {
     "MAIN_CLASS": "no.nav.sbl.dialogarena.mock.MockSoknadsosialhjelpServer",
     "dockerWithDefaultMockActivated": "true",
@@ -60,6 +62,7 @@
     "NEDETID_SLUTT": "",
     "FASIT_ENVIRONMENT_NAME": "q0",
     "TILLATMOCK": "true",
-    "START_NORG_WITHMOCK": "true"
+    "START_NORG_WITHMOCK": "true",
+    "VIRKSOMHETSSERTIFIKAT_PATH": "/var/run/secrets"
   }
 }

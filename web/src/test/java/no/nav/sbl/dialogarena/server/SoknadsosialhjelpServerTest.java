@@ -4,7 +4,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class SoknadsosialhjelpServerTest {
-   
+
     @Test
     public void withEnvironmentVariableExpansion_shouldBeUnchanged() {
         assertUnchanged(null);
@@ -18,11 +18,11 @@ public class SoknadsosialhjelpServerTest {
         assertUnchanged("$https://dette.er.ett.api.no");
         assertUnchanged("blalba {} ok {2} $ tja ${...");
     }
-    
+
     @Test
     public void withEnvironmentVariableExpansion_notRequired_shouldHandleDefaultValues() {
         System.setProperty("ENV_VAR_SET", "envVar");
-        
+
         String value = SoknadsosialhjelpServer.withEnvironmentVariableExpansion("${ENV_VAR_SET:en.ny:fancy:variabel!=}", false);
         Assert.assertEquals("envVar", value);
 
@@ -38,9 +38,15 @@ public class SoknadsosialhjelpServerTest {
         Assert.assertEquals("envVar", value);
     }
 
+    @Test
+    public void withEnvironmentVariableExpansion_withRequiredWithoutEnvVarSet_ShouldUseVariable() {
+        String value = SoknadsosialhjelpServer.withEnvironmentVariableExpansion("${ENV_NOT_SET:en.ny:fancy:variabel!=}", true);
+        Assert.assertEquals("en.ny:fancy:variabel!=", value);
+    }
+
     @Test(expected = IllegalStateException.class)
     public void withEnvironmentVariableExpansion_withRequiredWithoutEnvVarSet_ShouldThrowException() {
-        String value = SoknadsosialhjelpServer.withEnvironmentVariableExpansion("${ENV_NOT_SET:en.ny:fancy:variabel!=}", true);
+        String value = SoknadsosialhjelpServer.withEnvironmentVariableExpansion("${ENV_NOT_SET}", true);
         Assert.assertEquals("foobar", value);
     }
 
@@ -54,8 +60,8 @@ public class SoknadsosialhjelpServerTest {
         value = SoknadsosialhjelpServer.withEnvironmentVariableExpansion("Test ${SoknadsosialhjelpServerTest.property} med to ${SoknadsosialhjelpServerTest.property}", false);
         Assert.assertEquals("Test foobar med to foobar", value);
     }
-    
-    
+
+
     private void assertUnchanged(String input) {
         String value = SoknadsosialhjelpServer.withEnvironmentVariableExpansion(input, true);
         Assert.assertEquals(input, value);

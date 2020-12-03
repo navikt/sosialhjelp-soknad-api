@@ -31,6 +31,8 @@
   "vaultEnabled": true,
   "prometheusEnabled": true,
   "isRedisMocked": false,
+  "webProxyEnabled": true,
+  "isGcp": false,
   "env": {
     "AAREG_API_BASEURL": "https://api-gw-q1.oera.no/aareg-services/api/",
     "DITTNAV_LINK_URL": "https://tjenester-q1.nav.no/dittnav/",

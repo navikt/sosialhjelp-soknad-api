@@ -11,6 +11,10 @@ public class MockUtils {
         return Boolean.parseBoolean(System.getProperty("tillatMockRessurs", "false"));
     }
 
+    public static boolean isMockAltProfil() {
+        return Boolean.parseBoolean(System.getProperty("mockAltProfil", "false"));
+    }
+
     public static boolean isAlltidSendTilNavTestkommune(){
         return Boolean.parseBoolean(System.getProperty(IS_ALLTID_SEND_TIL_NAV_TESTKOMMUNE, "false")) && !isRunningInProd();
     }
