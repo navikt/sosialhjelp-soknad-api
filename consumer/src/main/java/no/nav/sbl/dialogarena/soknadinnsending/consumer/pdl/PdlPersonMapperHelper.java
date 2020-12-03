@@ -15,26 +15,26 @@ import static java.util.Comparator.comparing;
 import static java.util.Comparator.nullsLast;
 import static org.slf4j.LoggerFactory.getLogger;
 
-public class ParallelleSannheter {
+public class PdlPersonMapperHelper {
 
-    private static final Logger log = getLogger(ParallelleSannheter.class);
+    private static final Logger log = getLogger(PdlPersonMapperHelper.class);
 
     private static final String FREG = "FREG";
     private static final String PDL = "PDL";
     private static final Set<String> MASTERS = Set.of(FREG, PDL);
 
-    public SivilstandDto avklareParallelleSannheter(List<SivilstandDto> sivilstander) {
+    public SivilstandDto utledGjeldendeSivilstand(List<SivilstandDto> sivilstander) {
         if (sivilstander.isEmpty()) {
             return null;
         }
         // sorter sivilstander på synkende endringstidspunkt
-        sivilstander.sort(Comparator.comparing(this::getEndringstidspunktOrNull, nullsLast(Comparator.reverseOrder())));
+        sivilstander.sort(Comparator.comparing(dto -> getEndringstidspunktOrNull(dto), nullsLast(Comparator.reverseOrder())));
 
         var sistEndredeSivilstand = sivilstander.get(0);
         if (sistEndredeSivilstand == null
                 || flereSivilstanderRegistrertSamtidig(sistEndredeSivilstand, sivilstander)
                 || sistEndredeSivilstand.getType() == SivilstandDto.SivilstandType.UOPPGITT
-//                || erKildeUdokumentert(first)
+//                || erKildeUdokumentert(sistEndredeSivilstand)
                 || !MASTERS.contains(sistEndredeSivilstand.getMetadata().getMaster().toUpperCase())) {
             return null;
         }
@@ -50,7 +50,7 @@ public class ParallelleSannheter {
         } else {
             var endring = sisteEndringOrNull(metadata);
             if (endring == null) {
-                log.warn("oops - endring er null?");
+                log.warn("oops - endring er null?"); // Kan sikkert fjernes på sikt
             }
             return endring == null ? null : endring.getRegistrert();
         }

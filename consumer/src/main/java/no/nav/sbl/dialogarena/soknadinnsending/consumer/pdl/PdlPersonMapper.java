@@ -17,7 +17,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.ektefelle.PdlEkt
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.person.PdlPerson;
 import org.joda.time.LocalDate;
 import org.joda.time.Years;
-import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -37,12 +36,9 @@ import static no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.Si
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.SivilstandDto.SivilstandType.SKILT_PARTNER;
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.SivilstandDto.SivilstandType.UGIFT;
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.SivilstandDto.SivilstandType.UOPPGITT;
-import static org.slf4j.LoggerFactory.getLogger;
 
 @Component
 public class PdlPersonMapper {
-
-    private static final Logger logger = getLogger(PdlPersonMapper.class);
 
     static final String KODE_6 = "SPSF";
     static final String KODE_7 = "SPFO";
@@ -62,7 +58,7 @@ public class PdlPersonMapper {
             .put(GJENLEVENDE_PARTNER, "enke")
             .build();
 
-    private final ParallelleSannheter parallelleSannheter = new ParallelleSannheter();
+    private final PdlPersonMapperHelper helper = new PdlPersonMapperHelper();
 
     public Person mapTilPerson(PdlPerson pdlPerson, String ident) {
         if (pdlPerson == null) {
@@ -155,10 +151,7 @@ public class PdlPersonMapper {
     }
 
     private String finnSivilstatus(List<SivilstandDto> sivilstand) {
-        if (sivilstand.size() > 1) {
-            logger.info("Person har flere gjeldende sivilstander: {}", sivilstand.stream().map(dto -> dto.getType().toString()).collect(Collectors.joining(",")));
-        }
-        var sivilstandDto = parallelleSannheter.avklareParallelleSannheter(sivilstand);
+        var sivilstandDto = helper.utledGjeldendeSivilstand(sivilstand);
         return sivilstandDto != null ? MAP_PDLSIVILSTAND_TIL_JSONSIVILSTATUS.get(sivilstandDto.getType()) : "";
     }
 
