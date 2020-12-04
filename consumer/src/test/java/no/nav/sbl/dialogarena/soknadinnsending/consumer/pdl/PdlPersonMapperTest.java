@@ -31,7 +31,6 @@ import static no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.PdlPersonMapp
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.PdlPersonMapper.KODE_6;
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.PdlPersonMapper.KODE_7;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.emptyString;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
@@ -61,7 +60,7 @@ public class PdlPersonMapperTest {
 
     private final PdlPersonMapper mapper = new PdlPersonMapper();
 
-    private MetadataDto metadata = new MetadataDto("FREG", false, null, singletonList(new EndringDto("FREG", LocalDateTime.now().minusDays(15), null, null, null)));
+    private MetadataDto metadata = new MetadataDto("FREG", null, singletonList(new EndringDto("FREG", LocalDateTime.now().minusDays(15), null, null, null)));
     private FolkeregisterMetadataDto folkeregisterMetadata = new FolkeregisterMetadataDto(LocalDateTime.now().minusMonths(1), null, null, null, null, 0);
 
     @Test

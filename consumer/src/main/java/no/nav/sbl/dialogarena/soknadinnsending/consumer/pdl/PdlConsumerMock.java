@@ -74,7 +74,7 @@ public class PdlConsumerMock {
                 singletonList(new SivilstandDto(
                         SivilstandDto.SivilstandType.GIFT,
                         "annenFnr",
-                        new MetadataDto("FREG", false, "opplysningsId", singletonList(new EndringDto("FREG", LocalDateTime.now().minusDays(15), null, null, null))),
+                        new MetadataDto("FREG", "opplysningsId", singletonList(new EndringDto("FREG", LocalDateTime.now().minusDays(15), null, null, null))),
                         new FolkeregisterMetadataDto(LocalDateTime.now().minusMonths(1), null, null, "FREG", null, 0))),
                 singletonList(new StatsborgerskapDto("NOR"))
         );
