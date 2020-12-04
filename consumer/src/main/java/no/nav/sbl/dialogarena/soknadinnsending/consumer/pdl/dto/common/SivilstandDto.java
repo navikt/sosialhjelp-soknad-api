@@ -10,19 +10,19 @@ public class SivilstandDto {
     private final SivilstandType type;
     private final String relatertVedSivilstand;
     private final MetadataDto metadata;
-    private final FolkeregisterMetadataDto folkeregisterMetadata;
+    private final FolkeregistermetadataDto folkeregistermetadata;
 
     @JsonCreator
     public SivilstandDto(
             @JsonProperty("type") SivilstandType type,
             @JsonProperty("relatertVedSivilstand") String relatertVedSivilstand,
             @JsonProperty("metadata") MetadataDto metadata,
-            @JsonProperty("folkeregisterMetadata") FolkeregisterMetadataDto folkeregisterMetadata
+            @JsonProperty("folkeregistermetadata") FolkeregistermetadataDto folkeregistermetadata
     ) {
         this.type = type;
         this.relatertVedSivilstand = relatertVedSivilstand;
         this.metadata = metadata;
-        this.folkeregisterMetadata = folkeregisterMetadata;
+        this.folkeregistermetadata = folkeregistermetadata;
     }
 
     public SivilstandType getType() {
@@ -37,8 +37,8 @@ public class SivilstandDto {
         return metadata;
     }
 
-    public FolkeregisterMetadataDto getFolkeregisterMetadata() {
-        return folkeregisterMetadata;
+    public FolkeregistermetadataDto getFolkeregistermetadata() {
+        return folkeregistermetadata;
     }
 
     public enum SivilstandType {
