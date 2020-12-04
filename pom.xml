@@ -127,6 +127,7 @@
         <jaxb-runtime.version>2.3.3</jaxb-runtime.version>
         <lettuce.version>5.3.4.RELEASE</lettuce.version>
         <jedis-mock.version>0.1.16</jedis-mock.version>
+        <unleash.version>3.3.3</unleash.version>
 
         <flyway.placeholders.driver>oracle.jdbc.OracleDriver</flyway.placeholders.driver>
         <flyway.placeholders.encoding>ISO-8859-1</flyway.placeholders.encoding>
@@ -835,6 +836,11 @@
                 <groupId>javax.xml.bind</groupId>
                 <artifactId>jaxb-api</artifactId>
                 <version>${jaxb-api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>no.finn.unleash</groupId>
+                <artifactId>unleash-client-java</artifactId>
+                <version>${unleash.version}</version>
             </dependency>
 
             <!-- Prometheus -->

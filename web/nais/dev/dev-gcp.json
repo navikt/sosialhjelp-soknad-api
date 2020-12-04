@@ -64,6 +64,7 @@
     "NEDETID_SLUTT": "",
     "FASIT_ENVIRONMENT_NAME": "q0",
     "TILLATMOCK": "true",
-    "START_NORG_WITHMOCK": "true"
+    "START_NORG_WITHMOCK": "true",
+    "UNLEASH_INSTANCE_ID": "dev-gcp"
   }
 }
