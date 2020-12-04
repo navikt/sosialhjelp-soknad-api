@@ -3,14 +3,19 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 
 import java.time.LocalDateTime;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class FolkeregistermetadataDto {
 
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private final LocalDateTime ajourholdstidspunkt;
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private final LocalDateTime gyldighetstidspunkt;
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private final LocalDateTime opphoerstidspunkt;
     private final String kilde;
     private final String aarsak;
