@@ -19,7 +19,7 @@ For å se json-representasjon av søknaden:
 
 ### Manuell deploy:
 Ved bruk av [cli](https://github.com/navikt/sosialhjelp-ci):
-- `deploy labs-gcp` (`labs-gcp2`, `labs-gcp3`)
+- `deploy labs-gcp`
 - `deploy dev-gcp`
 - `deploy dev-sbs`
 - `deploy dev-sbs-intern`
