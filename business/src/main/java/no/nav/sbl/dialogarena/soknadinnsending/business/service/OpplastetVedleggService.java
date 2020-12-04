@@ -188,7 +188,7 @@ public class OpplastetVedleggService {
 
         if (!(isImage || isPdf)) {
             throw new UgyldigOpplastingTypeException(
-                    String.format("Ugyldig filtype for opplasting. Mimetype var %s, filtype var %s", FileDetectionUtils.getMimeType(data), filnavn.substring(filnavn.lastIndexOf("."))),
+                    String.format("Ugyldig filtype for opplasting. Mimetype var %s, filtype var %s", FileDetectionUtils.getMimeType(data), finnFiltype(filnavn)),
                     null,
                     "opplasting.feilmelding.feiltype");
         }
@@ -200,18 +200,25 @@ public class OpplastetVedleggService {
         }
     }
 
-    private void validerFiltypeForBilde(String filnavn) {
+    private String finnFiltype(String filnavn) {
         var sisteIndexForPunktum = filnavn.lastIndexOf(".");
         if (sisteIndexForPunktum < 0) {
+            return null;
+        }
+        return filnavn.substring(sisteIndexForPunktum);
+    }
+
+    private void validerFiltypeForBilde(String filnavn) {
+        var filtype = finnFiltype(filnavn);
+        if (filtype == null) {
             throw new UgyldigOpplastingTypeException(
                     "Ugyldig filtype for opplasting. Kunne ikke finne filtype for fil.",
                     null,
                     "opplasting.feilmelding.feiltype");
         }
-
         if (filnavn.endsWith(".jfif") || filnavn.endsWith(".pjpeg") || filnavn.endsWith(".pjp")) {
             throw new UgyldigOpplastingTypeException(
-                    String.format("Ugyldig filtype for opplasting. Filtype var %s", filnavn.substring(sisteIndexForPunktum)),
+                    String.format("Ugyldig filtype for opplasting. Filtype var %s", filtype),
                     null,
                     "opplasting.feilmelding.feiltype");
         }
