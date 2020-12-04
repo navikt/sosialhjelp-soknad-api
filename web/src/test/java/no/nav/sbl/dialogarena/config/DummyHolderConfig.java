@@ -1,6 +1,5 @@
 package no.nav.sbl.dialogarena.config;
 
-import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.EttersendingService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import org.springframework.context.annotation.Bean;
@@ -11,11 +10,6 @@ import javax.inject.Named;
 
 @Configuration
 public class DummyHolderConfig {
-
-    @Bean
-    public Kodeverk kodeverk() {
-        return null;
-    }
 
     @Bean
     public SoknadService soknadService() {

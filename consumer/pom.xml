@@ -140,11 +140,6 @@
         <!-- CXF deps END -->
 
         <dependency>
-            <groupId>no.nav.tjenestespesifikasjoner</groupId>
-            <artifactId>kodeverk-tjenestespesifikasjon</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>com.fasterxml.jackson.module</groupId>
             <artifactId>jackson-module-kotlin</artifactId>
         </dependency>

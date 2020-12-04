@@ -82,7 +82,7 @@
         <nav-common.version>1.2020.03.10_16.55-ca8a7f989623</nav-common.version>
 
         <spring.version>5.2.9.RELEASE</spring.version>
-        <jetty.version>9.4.33.v20201020</jetty.version>
+        <jetty.version>9.4.35.v20201120</jetty.version>
         <jersey.version>2.31</jersey.version>
         <token-validation.version>1.1.5</token-validation.version>
         <nimbus-jose-jwt.version>8.11</nimbus-jose-jwt.version>
@@ -242,11 +242,6 @@
             <dependency>
                 <groupId>no.nav.tjenestespesifikasjoner</groupId>
                 <artifactId>nav-fim-person-v1-tjenestespesifikasjon</artifactId>
-                <version>${tjenestespesifikasjon.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>no.nav.tjenestespesifikasjoner</groupId>
-                <artifactId>kodeverk-tjenestespesifikasjon</artifactId>
                 <version>${tjenestespesifikasjon.version}</version>
             </dependency>
             <dependency>

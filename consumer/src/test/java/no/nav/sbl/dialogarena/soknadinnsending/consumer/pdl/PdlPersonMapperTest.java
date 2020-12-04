@@ -6,10 +6,13 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.Person;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.barn.PdlBarn;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.AdressebeskyttelseDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.BostedsadresseDto;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.EndringDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.FamilierelasjonDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.FoedselDto;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.FolkeregisterMetadataDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.FolkeregisterpersonstatusDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.MatrikkeladresseDto;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.MetadataDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.NavnDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.SivilstandDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.StatsborgerskapDto;
@@ -19,8 +22,10 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.person.PdlPerson
 import org.junit.Test;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 import static no.nav.common.utils.CollectionUtils.listOf;
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.PdlPersonMapper.DOED;
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.PdlPersonMapper.KODE_6;
@@ -56,6 +61,9 @@ public class PdlPersonMapperTest {
 
     private final PdlPersonMapper mapper = new PdlPersonMapper();
 
+    private MetadataDto metadata = new MetadataDto("FREG", false, null, singletonList(new EndringDto("FREG", LocalDateTime.now().minusDays(15), null, null, null)));
+    private FolkeregisterMetadataDto folkeregisterMetadata = new FolkeregisterMetadataDto(LocalDateTime.now().minusMonths(1), null, null, null, null, 0);
+
     @Test
     public void fulltUtfyltPerson() {
         PdlPerson pdlPerson = new PdlPerson(
@@ -63,7 +71,7 @@ public class PdlPersonMapperTest {
                 listOf(new BostedsadresseDto(new VegadresseDto("matrikkelId", "gateveien", 1, "A", "tilleggsnavn", "1234", "1212", "U123123"), null, null)),
                 listOf(new FamilierelasjonDto(BARNIDENT, BARN_ROLLE, MOR_ROLLE)),
                 listOf(new NavnDto(FORNAVN, MELLOMNAVN, ETTERNAVN)),
-                listOf(new SivilstandDto(SivilstandDto.SivilstandType.GIFT, EKTEFELLEIDENT)),
+                listOf(new SivilstandDto(SivilstandDto.SivilstandType.GIFT, EKTEFELLEIDENT, metadata, folkeregisterMetadata)),
                 listOf(new StatsborgerskapDto(LAND))
         );
 
@@ -118,7 +126,7 @@ public class PdlPersonMapperTest {
                 listOf(new BostedsadresseDto(new VegadresseDto("matrikkelId", "gateveien", 1, "A", "tilleggsnavn", "1234", "1212", "U123123"), null, null)),
                 listOf(new FamilierelasjonDto(BARNIDENT, BARN_ROLLE, MOR_ROLLE)),
                 listOf(new NavnDto(FORNAVN, MELLOMNAVN, ETTERNAVN)),
-                listOf(new SivilstandDto(SivilstandDto.SivilstandType.GIFT, EKTEFELLEIDENT)),
+                listOf(new SivilstandDto(SivilstandDto.SivilstandType.GIFT, EKTEFELLEIDENT, metadata, folkeregisterMetadata)),
                 listOf(new StatsborgerskapDto(LAND))
         );
 
@@ -148,7 +156,7 @@ public class PdlPersonMapperTest {
                 listOf(new BostedsadresseDto(new VegadresseDto("matrikkelId", "gateveien", 1, "A", "tilleggsnavn", "1234", "1212", "U123123"), null, null)),
                 listOf(new FamilierelasjonDto(BARNIDENT, BARN_ROLLE, MOR_ROLLE)),
                 listOf(new NavnDto(FORNAVN, MELLOMNAVN, ETTERNAVN)),
-                listOf(new SivilstandDto(SivilstandDto.SivilstandType.GIFT, EKTEFELLEIDENT)),
+                listOf(new SivilstandDto(SivilstandDto.SivilstandType.GIFT, EKTEFELLEIDENT, metadata, folkeregisterMetadata)),
                 listOf(new StatsborgerskapDto(LAND))
         );
 
@@ -172,7 +180,7 @@ public class PdlPersonMapperTest {
                 listOf(new BostedsadresseDto(new VegadresseDto(null, "gateveien", 1, "A", "tilleggsnavn", "1234", "1212", "U123123"), null, null)),
                 listOf(new FamilierelasjonDto(BARNIDENT, BARN_ROLLE, MOR_ROLLE)),
                 listOf(new NavnDto(FORNAVN, MELLOMNAVN, ETTERNAVN)),
-                listOf(new SivilstandDto(SivilstandDto.SivilstandType.GIFT, EKTEFELLEIDENT)),
+                listOf(new SivilstandDto(SivilstandDto.SivilstandType.GIFT, EKTEFELLEIDENT, metadata, folkeregisterMetadata)),
                 listOf(new StatsborgerskapDto(LAND))
         );
 
@@ -196,7 +204,7 @@ public class PdlPersonMapperTest {
                 listOf(new BostedsadresseDto(new VegadresseDto("matrikkelId", "gateveien", 1, "A", "tilleggsnavn", "1234", "1212", "U123123"), null, null)),
                 listOf(new FamilierelasjonDto(BARNIDENT, BARN_ROLLE, MOR_ROLLE)),
                 listOf(new NavnDto(FORNAVN, MELLOMNAVN, ETTERNAVN)),
-                listOf(new SivilstandDto(SivilstandDto.SivilstandType.GIFT, EKTEFELLEIDENT)),
+                listOf(new SivilstandDto(SivilstandDto.SivilstandType.GIFT, EKTEFELLEIDENT, metadata, folkeregisterMetadata)),
                 listOf(new StatsborgerskapDto(LAND))
         );
 
@@ -226,7 +234,7 @@ public class PdlPersonMapperTest {
                 listOf(new BostedsadresseDto(new VegadresseDto("matrikkelId", "gateveien", 1, "A", "tilleggsnavn", "1234", "1212", "U123123"), null, null)),
                 listOf(new FamilierelasjonDto(BARNIDENT, BARN_ROLLE, MOR_ROLLE)),
                 listOf(new NavnDto(FORNAVN, MELLOMNAVN, ETTERNAVN)),
-                listOf(new SivilstandDto(SivilstandDto.SivilstandType.GIFT, EKTEFELLEIDENT)),
+                listOf(new SivilstandDto(SivilstandDto.SivilstandType.GIFT, EKTEFELLEIDENT, metadata, folkeregisterMetadata)),
                 listOf(new StatsborgerskapDto(LAND))
         );
 
@@ -242,7 +250,7 @@ public class PdlPersonMapperTest {
                 null,
                 listOf(new FamilierelasjonDto(BARNIDENT, BARN_ROLLE, MOR_ROLLE)),
                 listOf(new NavnDto(FORNAVN, MELLOMNAVN, ETTERNAVN)),
-                listOf(new SivilstandDto(SivilstandDto.SivilstandType.GIFT, EKTEFELLEIDENT)),
+                listOf(new SivilstandDto(SivilstandDto.SivilstandType.GIFT, EKTEFELLEIDENT, metadata, folkeregisterMetadata)),
                 listOf(new StatsborgerskapDto(LAND))
         );
 
@@ -265,7 +273,7 @@ public class PdlPersonMapperTest {
                 emptyList(),
                 listOf(new FamilierelasjonDto(BARNIDENT, BARN_ROLLE, MOR_ROLLE)),
                 emptyList(),
-                listOf(new SivilstandDto(SivilstandDto.SivilstandType.GIFT, EKTEFELLEIDENT)),
+                listOf(new SivilstandDto(SivilstandDto.SivilstandType.GIFT, EKTEFELLEIDENT, metadata, folkeregisterMetadata)),
                 listOf(new StatsborgerskapDto(LAND))
         );
 
@@ -288,7 +296,7 @@ public class PdlPersonMapperTest {
                 listOf(new BostedsadresseDto(null, new MatrikkeladresseDto("matrikkelId", "postnr", "tillegg", "kommunenr", "bruksenhetsnr"), null)),
                 listOf(new FamilierelasjonDto(BARNIDENT, BARN_ROLLE, MOR_ROLLE)),
                 emptyList(),
-                listOf(new SivilstandDto(SivilstandDto.SivilstandType.GIFT, EKTEFELLEIDENT)),
+                listOf(new SivilstandDto(SivilstandDto.SivilstandType.GIFT, EKTEFELLEIDENT, metadata, folkeregisterMetadata)),
                 listOf(new StatsborgerskapDto(LAND))
         );
 
@@ -311,7 +319,7 @@ public class PdlPersonMapperTest {
                 listOf(new BostedsadresseDto(new VegadresseDto("matrikkelId", "gateveien", 1, "A", "tilleggsnavn", "1234", "1212", "U123123"), null, null)),
                 listOf(new FamilierelasjonDto(BARNIDENT, BARN_ROLLE, MOR_ROLLE)),
                 listOf(new NavnDto(FORNAVN, MELLOMNAVN, ETTERNAVN)),
-                listOf(new SivilstandDto(SivilstandDto.SivilstandType.GIFT, EKTEFELLEIDENT)),
+                listOf(new SivilstandDto(SivilstandDto.SivilstandType.GIFT, EKTEFELLEIDENT, metadata, folkeregisterMetadata)),
                 listOf(new StatsborgerskapDto(LAND))
         );
 
@@ -341,7 +349,7 @@ public class PdlPersonMapperTest {
                 listOf(new BostedsadresseDto(new VegadresseDto("matrikkelId", "gateveien", 1, "A", "tilleggsnavn", "1234", "1212", "U123123"), null, null)),
                 listOf(new FamilierelasjonDto(BARNIDENT, BARN_ROLLE, MOR_ROLLE)),
                 listOf(new NavnDto(FORNAVN, MELLOMNAVN, ETTERNAVN)),
-                listOf(new SivilstandDto(SivilstandDto.SivilstandType.GIFT, EKTEFELLEIDENT)),
+                listOf(new SivilstandDto(SivilstandDto.SivilstandType.GIFT, EKTEFELLEIDENT, metadata, folkeregisterMetadata)),
                 listOf(new StatsborgerskapDto(LAND))
         );
 
@@ -365,7 +373,7 @@ public class PdlPersonMapperTest {
                 listOf(new BostedsadresseDto(new VegadresseDto("matrikkelId", "gateveien", 1, "A", "tilleggsnavn", "1234", "1212", "U123123"), null, null)),
                 listOf(new FamilierelasjonDto(BARNIDENT, BARN_ROLLE, MOR_ROLLE)),
                 listOf(new NavnDto(FORNAVN, MELLOMNAVN, ETTERNAVN)),
-                listOf(new SivilstandDto(SivilstandDto.SivilstandType.GIFT, EKTEFELLEIDENT)),
+                listOf(new SivilstandDto(SivilstandDto.SivilstandType.GIFT, EKTEFELLEIDENT, metadata, folkeregisterMetadata)),
                 listOf(new StatsborgerskapDto(LAND))
         );
 
@@ -389,7 +397,7 @@ public class PdlPersonMapperTest {
                 listOf(new BostedsadresseDto(new VegadresseDto("matrikkelId", "gateveien", 1, "A", "tilleggsnavn", "1234", "1212", "U123123"), null, null)),
                 listOf(new FamilierelasjonDto(BARNIDENT, BARN_ROLLE, MOR_ROLLE)),
                 listOf(new NavnDto(FORNAVN, MELLOMNAVN, ETTERNAVN)),
-                listOf(new SivilstandDto(SivilstandDto.SivilstandType.GIFT, EKTEFELLEIDENT)),
+                listOf(new SivilstandDto(SivilstandDto.SivilstandType.GIFT, EKTEFELLEIDENT, metadata, folkeregisterMetadata)),
                 listOf(new StatsborgerskapDto(LAND))
         );
 
@@ -413,7 +421,7 @@ public class PdlPersonMapperTest {
                 null,
                 listOf(new FamilierelasjonDto(BARNIDENT, BARN_ROLLE, MOR_ROLLE)),
                 listOf(new NavnDto(FORNAVN, MELLOMNAVN, ETTERNAVN)),
-                listOf(new SivilstandDto(SivilstandDto.SivilstandType.GIFT, EKTEFELLEIDENT)),
+                listOf(new SivilstandDto(SivilstandDto.SivilstandType.GIFT, EKTEFELLEIDENT, metadata, folkeregisterMetadata)),
                 listOf(new StatsborgerskapDto(LAND))
         );
 
@@ -437,7 +445,7 @@ public class PdlPersonMapperTest {
                 emptyList(),
                 listOf(new FamilierelasjonDto(BARNIDENT, BARN_ROLLE, MOR_ROLLE)),
                 listOf(new NavnDto(FORNAVN, MELLOMNAVN, ETTERNAVN)),
-                listOf(new SivilstandDto(SivilstandDto.SivilstandType.GIFT, EKTEFELLEIDENT)),
+                listOf(new SivilstandDto(SivilstandDto.SivilstandType.GIFT, EKTEFELLEIDENT, metadata, folkeregisterMetadata)),
                 listOf(new StatsborgerskapDto(LAND))
         );
 

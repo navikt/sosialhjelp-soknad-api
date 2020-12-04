@@ -41,7 +41,7 @@ public class XsrfGenerator {
     public static void sjekkXsrfToken(String givenToken, String behandlingsId) {
         String token = generateXsrfToken(behandlingsId);
         boolean valid = token.equals(givenToken) || generateXsrfToken(behandlingsId, new DateTime().minusDays(1).toString("yyyyMMdd")).equals(givenToken);
-        if (!valid && !MockUtils.isTillatMockRessurs()) {
+        if (!valid && !MockUtils.isTillatMockRessurs() && !MockUtils.isMockAltProfil()) {
             throw new AuthorizationException("Feil token");
         }
     }
