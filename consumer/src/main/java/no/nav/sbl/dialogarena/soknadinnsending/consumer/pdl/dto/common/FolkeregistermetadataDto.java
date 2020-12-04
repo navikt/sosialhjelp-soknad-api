@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.LocalDateTime;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class FolkeregisterMetadataDto {
+public class FolkeregistermetadataDto {
 
     private final LocalDateTime ajourholdstidspunkt;
     private final LocalDateTime gyldighetstidspunkt;
@@ -17,7 +17,7 @@ public class FolkeregisterMetadataDto {
     private final Integer sekvens;
 
     @JsonCreator
-    public FolkeregisterMetadataDto(
+    public FolkeregistermetadataDto(
             @JsonProperty("ajourholdstidspunkt") LocalDateTime ajourholdstidspunkt,
             @JsonProperty("gyldighetstidspunkt") LocalDateTime gyldighetstidspunkt,
             @JsonProperty("opphoerstidspunkt") LocalDateTime opphoerstidspunkt,
