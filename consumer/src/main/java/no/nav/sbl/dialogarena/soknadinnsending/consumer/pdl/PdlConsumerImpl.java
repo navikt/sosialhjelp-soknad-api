@@ -1,6 +1,11 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import no.nav.sbl.dialogarena.mdc.MDCOperations;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.PdlApiException;
@@ -39,6 +44,11 @@ public class PdlConsumerImpl implements PdlConsumer {
     private final String endpoint;
     private final STSConsumer stsConsumer;
 
+    private final ObjectMapper pdlMapper = JsonMapper.builder()
+            .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
+            .addModule(new JavaTimeModule())
+            .build();
+
     public PdlConsumerImpl(Client client, String endpoint, STSConsumer stsConsumer) {
         this.client = client;
         this.endpoint = endpoint;
@@ -49,7 +59,8 @@ public class PdlConsumerImpl implements PdlConsumer {
     public PdlPerson hentPerson(String ident) {
         String query = PdlApiQuery.HENT_PERSON;
         try {
-            PdlHentPersonResponse<PdlPerson> pdlResponse = lagRequest(endpoint).post(requestEntity(ident, query), new GenericType<PdlHentPersonResponse<PdlPerson>>(){});
+            String body = lagRequest(endpoint).post(requestEntity(ident, query), String.class);
+            PdlHentPersonResponse<PdlPerson> pdlResponse = pdlMapper.readValue(body, new TypeReference<PdlHentPersonResponse<PdlPerson>>() {});
 
             checkForPdlApiErrors(pdlResponse);
 
@@ -63,7 +74,8 @@ public class PdlConsumerImpl implements PdlConsumer {
     public PdlBarn hentBarn(String ident) {
         String query = PdlApiQuery.HENT_BARN;
         try {
-            PdlHentPersonResponse<PdlBarn> pdlResponse = lagRequest(endpoint).post(requestEntity(ident, query), new GenericType<PdlHentPersonResponse<PdlBarn>>(){});
+            String body = lagRequest(endpoint).post(requestEntity(ident, query), String.class);
+            PdlHentPersonResponse<PdlBarn> pdlResponse = pdlMapper.readValue(body, new TypeReference<PdlHentPersonResponse<PdlBarn>>() {});
 
             checkForPdlApiErrors(pdlResponse);
 
@@ -77,7 +89,8 @@ public class PdlConsumerImpl implements PdlConsumer {
     public PdlEktefelle hentEktefelle(String ident) {
         String query = PdlApiQuery.HENT_EKTEFELLE;
         try {
-            PdlHentPersonResponse<PdlEktefelle> pdlResponse = lagRequest(endpoint).post(requestEntity(ident, query), new GenericType<PdlHentPersonResponse<PdlEktefelle>>(){});
+            String body = lagRequest(endpoint).post(requestEntity(ident, query), String.class);
+            PdlHentPersonResponse<PdlEktefelle> pdlResponse = pdlMapper.readValue(body, new TypeReference<PdlHentPersonResponse<PdlEktefelle>>() {});
 
             checkForPdlApiErrors(pdlResponse);
 
