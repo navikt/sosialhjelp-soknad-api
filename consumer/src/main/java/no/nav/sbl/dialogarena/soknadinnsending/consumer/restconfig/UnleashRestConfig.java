@@ -3,7 +3,6 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig;
 import no.finn.unleash.DefaultUnleash;
 import no.finn.unleash.FakeUnleash;
 import no.finn.unleash.Unleash;
-import no.finn.unleash.repository.FeatureToggleResponse;
 import no.finn.unleash.repository.FeatureToggleResponse.Status;
 import no.finn.unleash.repository.HttpToggleFetcher;
 import no.finn.unleash.repository.ToggleFetcher;
