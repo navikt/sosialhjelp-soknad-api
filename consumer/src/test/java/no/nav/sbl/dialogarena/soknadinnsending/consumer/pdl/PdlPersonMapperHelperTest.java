@@ -1,7 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl;
 
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.EndringDto;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.FolkeregisterMetadataDto;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.FolkeregistermetadataDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.MetadataDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.SivilstandDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.SivilstandDto.SivilstandType;
@@ -228,8 +228,8 @@ public class PdlPersonMapperHelperTest {
         return new SivilstandDto(
                 type,
                 null,
-                new MetadataDto(master, false, null, endringer),
-                ajourholdtidspunkt != null ? new FolkeregisterMetadataDto(ajourholdtidspunkt, null, null, null, null, null) : null
+                new MetadataDto(master, null, endringer),
+                ajourholdtidspunkt != null ? new FolkeregistermetadataDto(ajourholdtidspunkt, null, null, null, null, null) : null
         );
     }
 

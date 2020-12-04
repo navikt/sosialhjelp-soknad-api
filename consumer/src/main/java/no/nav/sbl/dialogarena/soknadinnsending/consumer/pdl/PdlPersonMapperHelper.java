@@ -44,9 +44,9 @@ public class PdlPersonMapperHelper {
 
     private LocalDateTime getEndringstidspunktOrNull(SivilstandDto sivilstand) {
         var metadata = sivilstand.getMetadata();
-        var fregMetadata = sivilstand.getFolkeregisterMetadata();
+        var fregmetadata = sivilstand.getFolkeregistermetadata();
         if (metadata.getMaster().toUpperCase().equals(FREG)) {
-            return fregMetadata.getAjourholdstidspunkt();
+            return fregmetadata.getAjourholdstidspunkt();
         } else {
             var endring = sisteEndringOrNull(metadata);
             if (endring == null) {
