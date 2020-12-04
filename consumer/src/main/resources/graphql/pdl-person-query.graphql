@@ -1,6 +1,5 @@
 fragment metadata on Metadata {
     master
-    historisk
     opplysningsId
     endringer {
         kilde

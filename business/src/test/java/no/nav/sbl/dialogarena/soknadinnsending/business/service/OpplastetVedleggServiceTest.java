@@ -166,6 +166,7 @@ public class OpplastetVedleggServiceTest {
         assertThrows(UgyldigOpplastingTypeException.class, () -> opplastetVedleggService.saveVedleggAndUpdateVedleggstatus(BEHANDLINGSID, TYPE, imageFile, "filnavn.pjpeg"));
         assertThrows(UgyldigOpplastingTypeException.class, () -> opplastetVedleggService.saveVedleggAndUpdateVedleggstatus(BEHANDLINGSID, TYPE, imageFile, "filnavn.pjp"));
         assertThrows(UgyldigOpplastingTypeException.class, () -> opplastetVedleggService.saveVedleggAndUpdateVedleggstatus(BEHANDLINGSID, TYPE, imageFile, "filnavnUtenFiltype"));
+        assertThrows(UgyldigOpplastingTypeException.class, () -> opplastetVedleggService.saveVedleggAndUpdateVedleggstatus(BEHANDLINGSID, TYPE, "ikkeBildeEllerPdf".getBytes(), "filnavnUtenFiltype"));
     }
 
     private byte[] createByteArrayFromJpeg() throws IOException {
