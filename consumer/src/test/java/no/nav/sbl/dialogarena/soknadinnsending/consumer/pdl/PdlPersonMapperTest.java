@@ -9,7 +9,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.Bostedsad
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.EndringDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.FamilierelasjonDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.FoedselDto;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.FolkeregisterMetadataDto;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.FolkeregistermetadataDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.FolkeregisterpersonstatusDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.MatrikkeladresseDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.MetadataDto;
@@ -61,7 +61,7 @@ public class PdlPersonMapperTest {
     private final PdlPersonMapper mapper = new PdlPersonMapper();
 
     private MetadataDto metadata = new MetadataDto("FREG", null, singletonList(new EndringDto("FREG", LocalDateTime.now().minusDays(15), null, null, null)));
-    private FolkeregisterMetadataDto folkeregisterMetadata = new FolkeregisterMetadataDto(LocalDateTime.now().minusMonths(1), null, null, null, null, 0);
+    private FolkeregistermetadataDto folkeregisterMetadata = new FolkeregistermetadataDto(LocalDateTime.now().minusMonths(1), null, null, null, null, 0);
 
     @Test
     public void fulltUtfyltPerson() {

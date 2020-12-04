@@ -7,7 +7,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.Adressebe
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.BostedsadresseDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.EndringDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.FoedselDto;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.FolkeregisterMetadataDto;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.FolkeregistermetadataDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.FolkeregisterpersonstatusDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.MetadataDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.NavnDto;
@@ -75,7 +75,7 @@ public class PdlConsumerMock {
                         SivilstandDto.SivilstandType.GIFT,
                         "annenFnr",
                         new MetadataDto("FREG", "opplysningsId", singletonList(new EndringDto("FREG", LocalDateTime.now().minusDays(15), null, null, null))),
-                        new FolkeregisterMetadataDto(LocalDateTime.now().minusMonths(1), null, null, "FREG", null, 0))),
+                        new FolkeregistermetadataDto(LocalDateTime.now().minusMonths(1), null, null, "FREG", null, 0))),
                 singletonList(new StatsborgerskapDto("NOR"))
         );
     }
