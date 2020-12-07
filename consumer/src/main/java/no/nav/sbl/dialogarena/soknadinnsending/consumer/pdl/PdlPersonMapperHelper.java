@@ -10,6 +10,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static java.util.Comparator.comparing;
 import static java.util.Comparator.nullsLast;
@@ -31,10 +32,16 @@ public class PdlPersonMapperHelper {
         // sorter sivilstander på synkende endringstidspunkt
         sivilstander.sort(Comparator.comparing(dto -> getEndringstidspunktOrNull(dto), nullsLast(Comparator.reverseOrder())));
 
+        if (sivilstander.size() > 1) {
+            log.info("Flere gjeldende sivilstander funnet i PDL: [{}]", sivilstander.stream().map(dto -> dto.getType().toString()).collect(Collectors.joining(",")));
+        }
+
         var sistEndredeSivilstand = sivilstander.get(0);
         if (sistEndredeSivilstand == null
                 || flereSivilstanderRegistrertSamtidig(sistEndredeSivilstand, sivilstander)
                 || sistEndredeSivilstand.getType() == SivilstandDto.SivilstandType.UOPPGITT
+//                Kommentert ut fordi vi ikke er 100% sikre på om vi skal vise sivilstander fra udokumenterte kilder (master == "bruker selv").
+//                Hvis disse skal filtreres vekk, kan linjen kommenteres inn igjen.
 //                || erKildeUdokumentert(sistEndredeSivilstand)
                 || !MASTERS.contains(sistEndredeSivilstand.getMetadata().getMaster().toUpperCase())) {
             return null;
