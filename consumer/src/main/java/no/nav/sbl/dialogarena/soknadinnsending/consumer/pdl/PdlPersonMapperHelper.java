@@ -22,6 +22,7 @@ public class PdlPersonMapperHelper {
     private static final String FREG = "FREG";
     private static final String PDL = "PDL";
     private static final Set<String> MASTERS = Set.of(FREG, PDL);
+    private static final String BRUKER_SELV = "Bruker selv";
 
     public SivilstandDto utledGjeldendeSivilstand(List<SivilstandDto> sivilstander) {
         if (sivilstander.isEmpty()) {
@@ -68,6 +69,6 @@ public class PdlPersonMapperHelper {
 
     private boolean erKildeUdokumentert(SivilstandDto sivilstand) {
         var metadata = sivilstand.getMetadata();
-        return PDL.equals(metadata.getMaster().toUpperCase()) && sisteEndringOrNull(metadata) != null && sisteEndringOrNull(metadata).getKilde().equals("Bruker selv");
+        return PDL.equals(metadata.getMaster().toUpperCase()) && sisteEndringOrNull(metadata) != null && sisteEndringOrNull(metadata).getKilde().equals(BRUKER_SELV);
     }
 }
