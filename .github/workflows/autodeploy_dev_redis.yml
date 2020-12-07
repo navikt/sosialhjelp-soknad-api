@@ -1,0 +1,30 @@
+name: Auto-deploy sosialhjelp-soknad-api-redis and sosialhjelp-soknad-api-redisexporter to dev-sbs
+on:
+  push: # Deploys automatically to dev-sbs if there is a change in any redis files.
+    paths:
+      - "web/nais/redis-config.yml"
+      - "web/nais/redisexporter.yml"
+      - ".github/workflows/autodeploy_dev_redis.yml"
+    branches-ignore:
+      - 'master'
+    tags-ignore:
+      - "**" # Don't build any tags
+
+env:
+  CI: true
+
+jobs:
+  deploy-dev:
+    name: Auto-deploy redis to dev-sbs
+    runs-on: ubuntu-latest
+    steps:
+      - name: Hente kode
+        uses: actions/checkout@v1
+      - name: Deploy
+        uses: nais/deploy/actions/deploy@v1
+        env:
+          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CLUSTER: dev-sbs
+          TEAM: teamdigisos
+          RESOURCE: "web/nais/redis-config.yml,web/nais/redisexporter.yml"
