@@ -4,7 +4,10 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.Barn;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Ektefelle;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Person;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.barn.PdlBarn;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.EndringDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.FamilierelasjonDto;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.FolkeregistermetadataDto;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.MetadataDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.SivilstandDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.ektefelle.PdlEktefelle;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.person.PdlPerson;
@@ -14,9 +17,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static java.util.Collections.singletonList;
 import static no.nav.common.utils.CollectionUtils.listOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
@@ -51,7 +57,7 @@ public class PdlServiceTest {
         when(pdlConsumer.hentPerson(any())).thenReturn(mockPdlPerson);
         when(pdlPersonMapper.mapTilPerson(any(), any())).thenReturn(person);
 
-        when(mockPdlPerson.getSivilstand()).thenReturn(listOf(new SivilstandDto(SivilstandDto.SivilstandType.GIFT, "ident", null, null)));
+        when(mockPdlPerson.getSivilstand()).thenReturn(singletonList(new SivilstandDto(SivilstandDto.SivilstandType.GIFT, "ident", new MetadataDto("PDL", null, singletonList(new EndringDto("PDL", LocalDateTime.now(), null, null, null))), null)));
 
         when(pdlConsumer.hentEktefelle(any())).thenReturn(mockPdlEktefelle);
         when(pdlPersonMapper.mapTilEktefelle(any(), any(), any())).thenReturn(ektefelle);

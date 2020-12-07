@@ -28,6 +28,8 @@ public class PdlService {
     private final PdlConsumer pdlConsumer;
     private final PdlPersonMapper pdlPersonMapper;
 
+    private final PdlPersonMapperHelper helper = new PdlPersonMapperHelper();
+
     public PdlService(PdlConsumer pdlConsumer, PdlPersonMapper pdlPersonMapper) {
         this.pdlConsumer = pdlConsumer;
         this.pdlPersonMapper = pdlPersonMapper;
@@ -58,11 +60,10 @@ public class PdlService {
 
     private Ektefelle hentEktefelle(PdlPerson pdlPerson) {
         if (pdlPerson != null && pdlPerson.getSivilstand() != null && !pdlPerson.getSivilstand().isEmpty()) {
-            Optional<SivilstandDto> ektefelle = pdlPerson.getSivilstand().stream()
-                    .filter(sivilstandDto -> GIFT.equals(sivilstandDto.getType()) || PARTNER.equals(sivilstandDto.getType()))
-                    .findFirst();
-            if (ektefelle.isPresent()) {
-                String ektefelleIdent = ektefelle.get().getRelatertVedSivilstand();
+
+            var sivilstand = helper.utledGjeldendeSivilstand(pdlPerson.getSivilstand());
+            if (sivilstand != null && (GIFT == sivilstand.getType() || PARTNER == sivilstand.getType())) {
+                String ektefelleIdent = sivilstand.getRelatertVedSivilstand();
 
                 loggHvisIdentIkkeErFnr(ektefelleIdent);
 
