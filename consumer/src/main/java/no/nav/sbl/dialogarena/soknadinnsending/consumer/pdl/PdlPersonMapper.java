@@ -58,6 +58,8 @@ public class PdlPersonMapper {
             .put(GJENLEVENDE_PARTNER, "enke")
             .build();
 
+    private final PdlPersonMapperHelper helper = new PdlPersonMapperHelper();
+
     public Person mapTilPerson(PdlPerson pdlPerson, String ident) {
         if (pdlPerson == null) {
             return null;
@@ -149,9 +151,8 @@ public class PdlPersonMapper {
     }
 
     private String finnSivilstatus(List<SivilstandDto> sivilstand) {
-        return sivilstand.stream().findFirst()
-                .map(dto -> MAP_PDLSIVILSTAND_TIL_JSONSIVILSTATUS.get(dto.getType()))
-                .orElse("");
+        var sivilstandDto = helper.utledGjeldendeSivilstand(sivilstand);
+        return sivilstandDto != null ? MAP_PDLSIVILSTAND_TIL_JSONSIVILSTATUS.get(sivilstandDto.getType()) : "";
     }
 
     private List<String> finnStatsborgerskap(List<StatsborgerskapDto> statsborgerskap) {
