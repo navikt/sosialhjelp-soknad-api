@@ -34,7 +34,6 @@ public class OppgaveHandtererImpl implements OppgaveHandterer {
     private static final int PROSESS_RATE = 10 * 1000; // 10 sek etter forrige
     private static final int RAPPORTER_RATE = 15 * 60 * 1000; // hvert kvarter
     private static final int RETRY_STUCK_RATE = 15 * 60 * 1000; // hvert kvarter
-    private static final boolean SVARUT_HAS_NEDETID = true; // Skal buttes ut med unleash-toggle. Dette blir en hasteløsning :)
 
     @Inject
     private
@@ -46,10 +45,6 @@ public class OppgaveHandtererImpl implements OppgaveHandterer {
 
     @Scheduled(fixedDelay = PROSESS_RATE)
     public void prosesserOppgaver() {
-        if (SVARUT_HAS_NEDETID) {
-            logger.info("Sending til SvarUt er midlertidig deaktivert");
-            return;
-        }
         if (ServiceUtils.isScheduledTasksDisabled()) {
             logger.info("Scheduler is disabled");
             return;

@@ -2,7 +2,6 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave;
 
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.fiks.FiksHandterer;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.oppgave.OppgaveRepository;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -35,7 +34,6 @@ public class OppgaveHandtererImplTest {
     @Captor
     ArgumentCaptor<Oppgave> capturedOppgave;
 
-    @Ignore("Ignorerer til vi har byttet ut SVARUT_HAR_NEDETID med toggle fra unleash, eller til svarut sin nedetid er over (7.desember 2020)")
     @Test
     public void prosessereFeilendeOppgaveSkalSetteNesteForsok() {
         Oppgave oppgave = new Oppgave();
