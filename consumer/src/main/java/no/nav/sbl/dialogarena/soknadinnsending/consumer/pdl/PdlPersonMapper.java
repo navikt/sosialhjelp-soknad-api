@@ -8,6 +8,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.Matrikkeladresse;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Oppholdsadresse;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Person;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Vegadresse;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.kodeverk.KodeverkService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.barn.PdlBarn;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.AdressebeskyttelseDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.BostedsadresseDto;
@@ -65,6 +66,12 @@ public class PdlPersonMapper {
             .build();
 
     private final PdlPersonMapperHelper helper = new PdlPersonMapperHelper();
+
+    private KodeverkService kodeverkService;
+
+    public PdlPersonMapper(KodeverkService kodeverkService) {
+        this.kodeverkService = kodeverkService;
+    }
 
     public Person mapTilPerson(PdlPerson pdlPerson, String ident) {
         if (pdlPerson == null) {
@@ -295,6 +302,7 @@ public class PdlPersonMapper {
                 dto.getHusbokstav(),
                 dto.getTilleggsnavn(),
                 dto.getPostnummer(),
+                kodeverkService.getPoststed(dto.getPostnummer()),
                 dto.getKommunenummer(),
                 dto.getBruksenhetsnummer()
         );
@@ -304,6 +312,7 @@ public class PdlPersonMapper {
         return new Matrikkeladresse(
                 dto.getMatrikkelId(),
                 dto.getPostnummer(),
+                kodeverkService.getPoststed(dto.getPostnummer()),
                 dto.getTilleggsnavn(),
                 dto.getKommunenummer(),
                 dto.getBruksenhetsnummer()

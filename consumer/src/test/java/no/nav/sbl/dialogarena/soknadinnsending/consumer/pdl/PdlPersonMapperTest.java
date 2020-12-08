@@ -3,6 +3,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Barn;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Ektefelle;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Person;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.kodeverk.KodeverkService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.barn.PdlBarn;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.AdressebeskyttelseDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.BostedsadresseDto;
@@ -21,7 +22,12 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.UkjentBos
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.VegadresseDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.ektefelle.PdlEktefelle;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.person.PdlPerson;
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -42,7 +48,10 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
 
+@RunWith(MockitoJUnitRunner.class)
 public class PdlPersonMapperTest {
 
     private static final String IDENT = "ident";
@@ -61,10 +70,19 @@ public class PdlPersonMapperTest {
 
     private static final String LAND = "NOR";
 
-    private final PdlPersonMapper mapper = new PdlPersonMapper();
+    @Mock
+    private KodeverkService kodeverkService;
+
+    @InjectMocks
+    private PdlPersonMapper mapper;
 
     private MetadataDto metadata = new MetadataDto("FREG", null, singletonList(new EndringDto("FREG", LocalDateTime.now().minusDays(15), null, null, null)));
     private FolkeregistermetadataDto folkeregisterMetadata = new FolkeregistermetadataDto(LocalDateTime.now().minusMonths(1), null, null, null, null, 0);
+
+    @Before
+    public void setUp() {
+        when(kodeverkService.getPoststed(anyString())).thenReturn("Mitt poststed");
+    }
 
     @Test
     public void fulltUtfyltPerson() {
@@ -91,6 +109,8 @@ public class PdlPersonMapperTest {
         assertThat(person.getStatsborgerskap().get(0), is(LAND));
         assertThat(person.getBostedsadresse().getCoAdressenavn(), is(nullValue()));
         assertThat(person.getBostedsadresse().getVegadresse().getAdressenavn(), is("gateveien"));
+        assertThat(person.getBostedsadresse().getVegadresse().getPostnummer(), is("1234"));
+        assertThat(person.getBostedsadresse().getVegadresse().getPoststed(), is("Mitt poststed"));
         assertThat(person.getBostedsadresse().getMatrikkeladresse(), is(nullValue()));
         assertThat(person.getOppholdsadresse().getCoAdressenavn(), is("Test McTest"));
         assertThat(person.getOppholdsadresse().getVegadresse().getAdressenavn(), is("midlertidig"));

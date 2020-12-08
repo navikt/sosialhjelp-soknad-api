@@ -5,6 +5,7 @@ public class Matrikkeladresse {
 
     private final String matrikkelId;
     private final String postnummer;
+    private final String poststed;
     private final String tilleggsnavn;
     private final String kommunenummer;
     private final String bruksenhetsnummer;
@@ -14,11 +15,13 @@ public class Matrikkeladresse {
     public Matrikkeladresse(
             String matrikkelId,
             String postnummer,
+            String poststed,
             String tilleggsnavn,
             String kommunenummer,
             String bruksenhetsnummer) {
         this.matrikkelId = matrikkelId;
         this.postnummer = postnummer;
+        this.poststed = poststed;
         this.tilleggsnavn = tilleggsnavn;
         this.kommunenummer = kommunenummer;
         this.bruksenhetsnummer = bruksenhetsnummer;
@@ -30,6 +33,10 @@ public class Matrikkeladresse {
 
     public String getPostnummer() {
         return postnummer;
+    }
+
+    public String getPoststed() {
+        return poststed;
     }
 
     public String getTilleggsnavn() {

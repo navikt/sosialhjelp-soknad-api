@@ -7,6 +7,7 @@ public class Vegadresse {
     private final String husbokstav;
     private final String tilleggsnavn;
     private final String postnummer;
+    private final String poststed;
     private final String kommunenummer;
     private final String bruksenhetsnummer;
 
@@ -16,6 +17,7 @@ public class Vegadresse {
             String husbokstav,
             String tilleggsnavn,
             String postnummer,
+            String poststed,
             String kommunenummer,
             String bruksenhetsnummer
     ) {
@@ -24,6 +26,7 @@ public class Vegadresse {
         this.husbokstav = husbokstav;
         this.tilleggsnavn = tilleggsnavn;
         this.postnummer = postnummer;
+        this.poststed = poststed;
         this.kommunenummer = kommunenummer;
         this.bruksenhetsnummer = bruksenhetsnummer;
     }
@@ -46,6 +49,10 @@ public class Vegadresse {
 
     public String getPostnummer() {
         return postnummer;
+    }
+
+    public String getPoststed() {
+        return poststed;
     }
 
     public String getKommunenummer() {
