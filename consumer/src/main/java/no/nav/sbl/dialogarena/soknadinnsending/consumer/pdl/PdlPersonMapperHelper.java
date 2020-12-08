@@ -46,6 +46,9 @@ public class PdlPersonMapperHelper {
                 || !MASTERS.contains(sistEndredeSivilstand.getMetadata().getMaster().toUpperCase())) {
             return null;
         }
+        if (erKildeUdokumentert(sistEndredeSivilstand)) {
+            log.info("PDL sivilstand er udokumentert (kilde = {})", sisteEndringOrNull(sistEndredeSivilstand.getMetadata()).getKilde());
+        }
 
         return sistEndredeSivilstand;
     }
