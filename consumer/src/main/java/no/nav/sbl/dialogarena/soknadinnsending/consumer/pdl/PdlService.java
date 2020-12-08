@@ -65,6 +65,11 @@ public class PdlService {
             if (sivilstand != null && (GIFT == sivilstand.getType() || PARTNER == sivilstand.getType())) {
                 String ektefelleIdent = sivilstand.getRelatertVedSivilstand();
 
+                if (ektefelleIdent == null || ektefelleIdent.isEmpty()) {
+                    log.info("Sivilstand.relatertVedSivilstand (ektefelleIdent) er null -> vi kaller ikke pdl hentEktefelle");
+                    return null;
+                }
+
                 loggHvisIdentIkkeErFnr(ektefelleIdent);
 
                 PdlEktefelle pdlEktefelle = pdlConsumer.hentEktefelle(ektefelleIdent);
