@@ -62,8 +62,13 @@ public class PdlService {
         if (pdlPerson != null && pdlPerson.getSivilstand() != null && !pdlPerson.getSivilstand().isEmpty()) {
 
             var sivilstand = helper.utledGjeldendeSivilstand(pdlPerson.getSivilstand());
-            if (sivilstand != null && (GIFT == sivilstand.getType() || PARTNER == sivilstand.getType())) {
+            if (sivilstand != null && (GIFT.equals(sivilstand.getType()) || PARTNER.equals(sivilstand.getType()))) {
                 String ektefelleIdent = sivilstand.getRelatertVedSivilstand();
+
+                if (ektefelleIdent == null || ektefelleIdent.isEmpty()) {
+                    log.info("Sivilstand.relatertVedSivilstand (ektefelleIdent) er null -> vi kaller ikke pdl hentEktefelle");
+                    return null;
+                }
 
                 loggHvisIdentIkkeErFnr(ektefelleIdent);
 
