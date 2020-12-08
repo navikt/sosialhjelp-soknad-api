@@ -62,7 +62,7 @@ public class PdlService {
         if (pdlPerson != null && pdlPerson.getSivilstand() != null && !pdlPerson.getSivilstand().isEmpty()) {
 
             var sivilstand = helper.utledGjeldendeSivilstand(pdlPerson.getSivilstand());
-            if (sivilstand != null && (GIFT.equals(sivilstand.getType()) || PARTNER.equals(sivilstand.getType()))) {
+            if (sivilstand != null && (GIFT == sivilstand.getType() || PARTNER == sivilstand.getType())) {
                 String ektefelleIdent = sivilstand.getRelatertVedSivilstand();
 
                 if (ektefelleIdent == null || ektefelleIdent.isEmpty()) {
