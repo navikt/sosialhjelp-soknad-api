@@ -34,7 +34,7 @@ public class LandMedFulltNavnHelper extends RegistryAwareHelper<String>{
 
     @Override
     public CharSequence apply(String landForkortelse, Options options) {
-        if (landForkortelse == null || landForkortelse.equals("???") || landForkortelse.equals("YYY") || landForkortelse.equals("yyy")) {
+        if (landForkortelse == null || landForkortelse.equals("???") || landForkortelse.equals("YYY") || landForkortelse.equals("yyy") || landForkortelse.equals("XUK") || landForkortelse.equals("xuk")) {
             return "Vi har ikke opplysninger om ditt statsborgerskap";
         } else if (landForkortelse.equals("XXX") || landForkortelse.equals("xxx") || landForkortelse.equals("XXA") || landForkortelse.equals("xxa")){
             return "Statsløs";

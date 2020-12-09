@@ -24,7 +24,7 @@ public class TextHelpers {
     }
 
     public String fulltNavnForLand(String landForkortelse) {
-        if (landForkortelse == null || landForkortelse.equals("???") || landForkortelse.equalsIgnoreCase("YYY")) {
+        if (landForkortelse == null || landForkortelse.equals("???") || landForkortelse.equalsIgnoreCase("YYY") || landForkortelse.equalsIgnoreCase("XUK")) {
             return "Vi har ikke opplysninger om ditt statsborgerskap";
         } else if (landForkortelse.equalsIgnoreCase("XXX") || landForkortelse.equalsIgnoreCase("XXA")){
             return "Statsløs";
