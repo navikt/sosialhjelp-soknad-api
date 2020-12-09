@@ -1,4 +1,4 @@
-name: Auto-deploy sosialhjelp-soknad-api-redis and sosialhjelp-soknad-api-redisexporter to prod-sbs
+name: Auto-deploy redis prod-sbs
 on:
   push: # Deploys automatically to prod-sbs if there is a change in any redis files.
     paths:
