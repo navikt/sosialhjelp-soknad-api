@@ -7,22 +7,15 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.Soked
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.kodeverk.KodeverkService;
 import org.slf4j.Logger;
 
+import static no.nav.sbl.dialogarena.soknadinnsending.consumer.adresse.AdresseSokService.isAddressTooShortOrNull;
 import static org.slf4j.LoggerFactory.getLogger;
 
 
 public final class AdresseStringSplitter {
     private static final Logger log = getLogger(AdresseStringSplitter.class);
-
-    private AdresseStringSplitter() {
-        
-    }
-    
-    static Sokedata toSokedata(String adresse) {
-        return toSokedata(null, adresse);
-    }
     
     static Sokedata toSokedata(KodeverkService kodeverkService, String adresse) {
-        if (adresse == null || adresse.trim().length() <= 1) {
+        if (isAddressTooShortOrNull(adresse)) {
             return new Sokedata().withAdresse(adresse);
         }
 

@@ -32,6 +32,10 @@ public class AdresseSokConsumerMock {
                         return new AdressesokRespons();
                     }
 
+                    if ("sæ".equalsIgnoreCase(sokedata.adresse)) {
+                        return getAdresseWithTwoLettersRespons();
+                    }
+
                     if ("test".equalsIgnoreCase(sokedata.adresse)) {
                         return getTestRespons();
                     }
@@ -51,15 +55,6 @@ public class AdresseSokConsumerMock {
 
                     return getOrCreateCurrentUserResponse();
 
-                });
-        when(mock.sokAdresse(anyString())).thenAnswer(
-                invocation -> {
-                    String sokeString = (String) invocation.getArguments()[0];
-                    if ("test".equalsIgnoreCase(sokeString)) {
-                        return getTestRespons();
-                    }
-
-                    return getOrCreateCurrentUserResponse();
                 });
 
         return mock;
@@ -108,6 +103,12 @@ public class AdresseSokConsumerMock {
         return response;
     }
 
+    private static AdressesokRespons getAdresseWithTwoLettersRespons(){
+        AdressesokRespons response = new AdressesokRespons();
+        response.adresseDataList.add(createAdresseWithTwoLetters());
+        return response;
+    }
+
     private static AdressesokRespons getTestRespons(){
         AdressesokRespons response = new AdressesokRespons();
         response.adresseDataList.add(createAdresse("Fredrikstad", "0106"));
@@ -149,6 +150,21 @@ public class AdresseSokConsumerMock {
         a1.geografiskTilknytning = kommunenummer;
         a1.gatekode = kommunenummer;
         a1.bydel = kommunenummer;
+
+        return a1;
+    }
+
+    private static AdresseData createAdresseWithTwoLetters(){
+        final AdresseData a1 = new AdresseData();
+        a1.kommunenummer = "4614";
+        a1.kommunenavn = "Stord";
+        a1.adressenavn = "Sæ";
+        a1.husnummerFra = "0002";
+        a1.husnummerTil = "0010";
+        a1.postnummer = "5417";
+        a1.poststed = "Stord";
+        a1.geografiskTilknytning = "4614";
+        a1.gatekode = "1111";
 
         return a1;
     }

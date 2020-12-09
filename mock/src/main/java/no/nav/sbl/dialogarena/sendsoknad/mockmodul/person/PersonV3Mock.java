@@ -105,7 +105,7 @@ public class PersonV3Mock {
         statsborgerskap.setLand(landkoder);
         person.setStatsborgerskap(statsborgerskap);
         if (!forIntegrationTest) {
-            person.withBostedsadresse(new Bostedsadresse().withStrukturertAdresse(createSandeiMoreOgRomsdalMatrikkelAdresse()));
+            person.withBostedsadresse(new Bostedsadresse().withStrukturertAdresse(createTwoLetteresGateadresse()));
             person.withMidlertidigPostadresse(new MidlertidigPostadresseNorge().withStrukturertAdresse(createOsloMatrikkelAdresse()));
         }
 
@@ -119,6 +119,15 @@ public class PersonV3Mock {
                 .withGatenavn("Dobbelveien")
                 .withBolignummer("2")
                 .withHusnummer(3);
+    }
+
+    private static Gateadresse createTwoLetteresGateadresse() {
+        return new Gateadresse()
+                .withKommunenummer("4614")
+                .withPoststed(new Postnummer().withValue("5417"))
+                .withGatenavn("Sæ")
+                .withBolignummer("20")
+                .withHusnummer(20);
     }
 
     private static Matrikkeladresse createOsloMatrikkelAdresse() {

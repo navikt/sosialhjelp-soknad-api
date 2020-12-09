@@ -2,12 +2,34 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer.adresse;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseForslag;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.kodeverk.KodeverkService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.norg.NorgService;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
-
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class AdresseSokServiceTest {
+
+    @Mock
+    private AdresseSokConsumer adresseSokConsumer;
+
+    @Mock
+    private KodeverkService kodeverkService;
+
+    @Mock
+    private NorgService norgService;
+
+    @InjectMocks
+    private AdresseSokService adresseSokService;
 
     @Test
     public void skalBytteUtKommunenavnForIKSKommunerSoerFronTilNordFron() {
@@ -61,4 +83,78 @@ public class AdresseSokServiceTest {
         AdresseForslag adresseForslag = AdresseSokService.toAdresseForslag(adresseData);
         assertThat(adresseForslag.kommunenavn).isEqualTo("IkkeIKS");
     }
+
+    //
+
+    @Test
+    public void sokEtterAdresserString_medNullAdresseString_skalGiTomtResultat() {
+        List<AdresseForslag> adresseForslags = adresseSokService.sokEtterAdresser((String) null);
+        assertThat(adresseForslags).isEmpty();
+    }
+
+    @Test
+    public void sokEtterAdresserString_medAdressePaEnBokstav_skalGiTomtResultat() {
+        List<AdresseForslag> adresseForslags = adresseSokService.sokEtterAdresser("a");
+        assertThat(adresseForslags).isEmpty();
+    }
+
+    @Test
+    public void sokEtterAdresserString_medAdressePaToBokstaver_skalGiTomtResultat() {
+        String adressenavn = "Sæ";
+        when(adresseSokConsumer.sokAdresse(any())).thenReturn(mockAddressResponse(adressenavn));
+
+        List<AdresseForslag> adresseForslags = adresseSokService.sokEtterAdresser(adressenavn);
+        assertThat(adresseForslags).isNotEmpty();
+    }
+
+    //
+
+    @Test
+    public void sokEtterAdresserSokedata_medNullSokedata_skalGiTomtResultat() {
+        List<AdresseForslag> adresseForslags = adresseSokService.sokEtterAdresser((AdresseSokConsumer.Sokedata) null);
+        assertThat(adresseForslags).isEmpty();
+    }
+
+    @Test
+    public void sokEtterAdresserSokedata_derSokedataHarNullAdresse_skalGiTomtResultat() {
+        List<AdresseForslag> adresseForslags = adresseSokService.sokEtterAdresser(new AdresseSokConsumer.Sokedata());
+        assertThat(adresseForslags).isEmpty();
+    }
+
+    @Test
+    public void sokEtterAdresserSokedata_medAdressePaEnBokstav_skalGiTomtResultat() {
+        AdresseSokConsumer.Sokedata sokedata = new AdresseSokConsumer.Sokedata();
+        sokedata.adresse = "a";
+        List<AdresseForslag> adresseForslags = adresseSokService.sokEtterAdresser(sokedata);
+        assertThat(adresseForslags).isEmpty();
+    }
+
+    @Test
+    public void sokEtterAdresserSokedata_medAdressePaToBokstaver_skalGiResultat() {
+        String adressenavn = "Sæ";
+        when(adresseSokConsumer.sokAdresse(any())).thenReturn(mockAddressResponse(adressenavn));
+
+        AdresseSokConsumer.Sokedata sokedata = new AdresseSokConsumer.Sokedata();
+        sokedata.adresse = adressenavn;
+        List<AdresseForslag> adresseForslags = adresseSokService.sokEtterAdresser(sokedata);
+
+        assertThat(adresseForslags).isNotEmpty();
+    }
+
+
+    private static AdresseSokConsumer.AdressesokRespons mockAddressResponse(String adressenavn){
+        AdresseSokConsumer.AdressesokRespons adressesokRespons = new AdresseSokConsumer.AdressesokRespons();
+        adressesokRespons.adresseDataList.add(mockAddress(adressenavn));
+        return adressesokRespons;
+    }
+
+    private static AdresseSokConsumer.AdresseData mockAddress(String adressenavn){
+        final AdresseSokConsumer.AdresseData a1 = new AdresseSokConsumer.AdresseData();
+        a1.adressenavn = adressenavn;
+        a1.postnummer = "5417";
+        a1.poststed = "Stord";
+        a1.gatekode = "1111";
+        return a1;
+    }
+
 }
