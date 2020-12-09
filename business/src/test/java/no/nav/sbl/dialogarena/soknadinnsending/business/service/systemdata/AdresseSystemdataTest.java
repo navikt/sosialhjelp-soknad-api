@@ -2,6 +2,8 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.Adresse;
 import no.nav.sbl.dialogarena.sendsoknad.domain.AdresserOgKontonummer;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.PdlService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdlperson.PersonSammenligner;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.personv3.PersonServiceV3;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresseValg;
@@ -59,6 +61,12 @@ public class AdresseSystemdataTest {
 
     @Mock
     private PersonServiceV3 personService;
+
+    @Mock
+    private PdlService pdlService;
+
+    @Mock
+    private PersonSammenligner personSammenligner;
 
     @InjectMocks
     private AdresseSystemdata adresseSystemdata;

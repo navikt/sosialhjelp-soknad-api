@@ -1,7 +1,10 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.pdlperson;
 
+import no.nav.sbl.dialogarena.sendsoknad.domain.Adresse;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Barn;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Bostedsadresse;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Ektefelle;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Oppholdsadresse;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Person;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
@@ -128,6 +131,82 @@ public class PersonSammenligner {
                 log.info("Ulike felter i Barn fra Person_V1 og PDL: {}", String.join(",", ulikeFelter));
             } else {
                 log.info("Barn fra Person_v1 og Barn fra PDL er like");
+            }
+        }
+    }
+
+    public void sammenlignFolkeregistrertAdresse(Adresse folkeregistrertAdresse, Bostedsadresse bostedsadresse) {
+        if (folkeregistrertAdresse != null && bostedsadresse != null) {
+            List<String> ulikeFelter = new ArrayList<>();
+            if (folkeregistrertAdresse.getAdressetype().equals("gateadresse") && bostedsadresse.getVegadresse() != null) {
+                var gateadresse = (Adresse.Gateadresse) folkeregistrertAdresse.getStrukturertAdresse();
+                if (!gateadresse.gatenavn.equalsIgnoreCase(bostedsadresse.getVegadresse().getAdressenavn())) {
+                    ulikeFelter.add("Adressenavn");
+                }
+                if (!gateadresse.husnummer.equalsIgnoreCase(bostedsadresse.getVegadresse().getHusnummer().toString())) {
+                    ulikeFelter.add("Husnummer");
+                }
+                if (!gateadresse.husbokstav.equalsIgnoreCase(bostedsadresse.getVegadresse().getHusbokstav())) {
+                    ulikeFelter.add("Husbokstav");
+                }
+                if (!gateadresse.bolignummer.equalsIgnoreCase(bostedsadresse.getVegadresse().getBruksenhetsnummer())) {
+                    ulikeFelter.add("Bruksenhetsnummer");
+                }
+                if (!gateadresse.postnummer.equalsIgnoreCase(bostedsadresse.getVegadresse().getPostnummer())) {
+                    ulikeFelter.add("Postnummer");
+                }
+                if (!gateadresse.kommunenummer.equalsIgnoreCase(bostedsadresse.getVegadresse().getKommunenummer())) {
+                    ulikeFelter.add("Husbokstav");
+                }
+            }
+            if (folkeregistrertAdresse.getAdressetype().equalsIgnoreCase("matrikkeladresse") && bostedsadresse.getMatrikkeladresse() != null) {
+                // sammenligner ikke matrikkeladresser (enda)
+            }
+
+            if (ulikeFelter.size() > 0) {
+                log.info("Ulike felter i FolkeregistrertAdresse fra Person_v3 vs Bostedsadresse fra PDL: {}", String.join(",", ulikeFelter));
+            } else {
+                log.info("FolkeregistrertAdresse fra Person_v3 og Bostedsadresse PDL er like");
+            }
+        }
+    }
+
+    public void sammenlignMidlertidigAdresse(Adresse midlertidigAdresse, Oppholdsadresse oppholdsadresse) {
+        if (midlertidigAdresse == null && oppholdsadresse != null) {
+            log.info("MidlertidigAdresse er null i Person_v3, ");
+        }
+
+        if (midlertidigAdresse != null && oppholdsadresse != null) {
+            List<String> ulikeFelter = new ArrayList<>();
+            if (midlertidigAdresse.getAdressetype().equals("gateadresse") && oppholdsadresse.getVegadresse() != null) {
+                var gateadresse = (Adresse.Gateadresse) midlertidigAdresse.getStrukturertAdresse();
+                if (!gateadresse.gatenavn.equalsIgnoreCase(oppholdsadresse.getVegadresse().getAdressenavn())) {
+                    ulikeFelter.add("Adressenavn");
+                }
+                if (!gateadresse.husnummer.equalsIgnoreCase(oppholdsadresse.getVegadresse().getHusnummer().toString())) {
+                    ulikeFelter.add("Husnummer");
+                }
+                if (!gateadresse.husbokstav.equalsIgnoreCase(oppholdsadresse.getVegadresse().getHusbokstav())) {
+                    ulikeFelter.add("Husbokstav");
+                }
+                if (!gateadresse.bolignummer.equalsIgnoreCase(oppholdsadresse.getVegadresse().getBruksenhetsnummer())) {
+                    ulikeFelter.add("Bruksenhetsnummer");
+                }
+                if (!gateadresse.postnummer.equalsIgnoreCase(oppholdsadresse.getVegadresse().getPostnummer())) {
+                    ulikeFelter.add("Postnummer");
+                }
+                if (!gateadresse.kommunenummer.equalsIgnoreCase(oppholdsadresse.getVegadresse().getKommunenummer())) {
+                    ulikeFelter.add("Husbokstav");
+                }
+            }
+            if (midlertidigAdresse.getAdressetype().equalsIgnoreCase("matrikkeladresse")) {
+                log.info("MidlertidigAdresse i TPS er matrikkeladresse. Har ikke hentet matrikkeladresse for Oppholdsadresse i PDL.");
+            }
+
+            if (ulikeFelter.size() > 0) {
+                log.info("Ulike felter i MidlertidigAdresse i Person_v3 vs Oppholdsadresse i PDL: {}", String.join(",", ulikeFelter));
+            } else {
+                log.info("MidlertidigAdresse i Person_v3 og Oppholdsadresse i PDL er like");
             }
         }
     }
