@@ -19,31 +19,53 @@ fragment folkeregistermetadata on Folkeregistermetadata {
     sekvens
 }
 
+fragment vegadresse on Vegadresse {
+    matrikkelId
+    adressenavn
+    husnummer
+    husbokstav
+    tilleggsnavn
+    postnummer
+    kommunenummer
+    bruksenhetsnummer
+}
+
+fragment matrikkeladresse on Matrikkeladresse {
+    matrikkelId
+    postnummer
+    tilleggsnavn
+    kommunenummer
+    bruksenhetsnummer
+}
+
 query($ident: ID!, $historikk: Boolean!) {
     hentPerson(ident: $ident) {
         adressebeskyttelse(historikk: $historikk) {
             gradering
         }
         bostedsadresse(historikk: $historikk) {
+            coAdressenavn
             vegadresse {
-                matrikkelId
-                adressenavn
-                husnummer
-                husbokstav
-                tilleggsnavn
-                postnummer
-                kommunenummer
-                bruksenhetsnummer
+                ...vegadresse
             }
             matrikkeladresse {
-                matrikkelId
-                postnummer
-                tilleggsnavn
-                kommunenummer
-                bruksenhetsnummer
+                ...matrikkeladresse
             }
             ukjentBosted {
                 bostedskommune
+            }
+        }
+        oppholdsadresse(historikk: $historikk) {
+            oppholdAnnetSted
+            coAdressenavn
+            vegadresse {
+                ...vegadresse
+            }
+            metadata {
+                ...metadata
+            }
+            folkeregistermetadata{
+                ...folkeregistermetadata
             }
         }
         familierelasjoner {

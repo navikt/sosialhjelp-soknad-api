@@ -11,6 +11,8 @@ public class Person {
     private String diskresjonskode;
     private List<String> statsborgerskap;
     private Ektefelle ektefelle;
+    private Bostedsadresse bostedsadresse;
+    private Oppholdsadresse oppholdsadresse;
 
     public String getFornavn() {
         return fornavn;
@@ -42,6 +44,14 @@ public class Person {
 
     public Ektefelle getEktefelle() {
         return ektefelle;
+    }
+
+    public Bostedsadresse getBostedsadresse() {
+        return bostedsadresse;
+    }
+
+    public Oppholdsadresse getOppholdsadresse() {
+        return oppholdsadresse;
     }
 
     public Person withFornavn(String fornavn) {
@@ -81,6 +91,16 @@ public class Person {
 
     public Person withEktefelle(Ektefelle ektefelle) {
         this.ektefelle = ektefelle;
+        return this;
+    }
+
+    public Person withBostedsadresse(Bostedsadresse bostedsadresse) {
+        this.bostedsadresse = bostedsadresse;
+        return this;
+    }
+
+    public Person withOppholdsadresse(Oppholdsadresse oppholdsadresse) {
+        this.oppholdsadresse = oppholdsadresse;
         return this;
     }
 }
