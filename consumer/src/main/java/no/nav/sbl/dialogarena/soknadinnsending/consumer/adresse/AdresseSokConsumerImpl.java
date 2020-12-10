@@ -39,13 +39,6 @@ public class AdresseSokConsumerImpl implements AdresseSokConsumer {
         this.restCallContextSelector = restCallContextSelector;
         this.endpoint = endpoint;
     }
-
-    
-    @Override
-    public AdressesokRespons sokAdresse(String adresse) {
-        final Sokedata sokedata = AdresseStringSplitter.toSokedata(adresse);
-        return sokAdresse(sokedata);
-    }
     
     @Override
     public AdressesokRespons sokAdresse(Sokedata sokedata) {
