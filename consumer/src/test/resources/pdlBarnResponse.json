@@ -8,6 +8,7 @@
       ],
       "bostedsadresse": [
         {
+          "coAdressenavn": null,
           "vegadresse": {
             "matrikkelId": null,
             "adressenavn": "GATEVEIEN",

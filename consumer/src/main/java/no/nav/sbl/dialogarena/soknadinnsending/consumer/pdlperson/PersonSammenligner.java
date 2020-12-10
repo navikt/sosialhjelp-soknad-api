@@ -25,7 +25,7 @@ public class PersonSammenligner {
             ulikeFelter.add("Mellomnavn");
         }
         if (!person.getEtternavn().equals(pdlPerson.getEtternavn())) {
-            ulikeFelter.add("Ettenavn");
+            ulikeFelter.add("Etternavn");
         }
         if (person.getFnr() != null && !person.getFnr().equals(pdlPerson.getFnr())) {
             ulikeFelter.add("Fnr");
@@ -72,7 +72,7 @@ public class PersonSammenligner {
                 ulikeFelter.add("Mellomnavn");
             }
             if (!ektefelle.getEtternavn().equals(pdlEktefelle.getEtternavn())) {
-                ulikeFelter.add("Ettenavn");
+                ulikeFelter.add("Etternavn");
             }
             if (ektefelle.getFodselsdato() != null && !ektefelle.getFodselsdato().isEqual(pdlEktefelle.getFodselsdato())) {
                 ulikeFelter.add("Fodselsdato");
@@ -113,7 +113,7 @@ public class PersonSammenligner {
                 ulikeFelter.add("Mellomnavn");
             }
             if (!barn.getEtternavn().equals(pdlBarn.getEtternavn())) {
-                ulikeFelter.add("Ettenavn");
+                ulikeFelter.add("Etternavn");
             }
             if (barn.getFodselsdato() != null && !barn.getFodselsdato().isEqual(pdlBarn.getFodselsdato())) {
                 ulikeFelter.add("Fodselsdato");
