@@ -18,6 +18,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.util.List;
 
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.BasisPersonaliaSystemdata.PDL_UKJENT_STATSBORGERSKAP;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -160,7 +161,7 @@ public class BasisPersonaliaSystemdataTest {
 
     //Denne skal fjernes når TPS har oppdatert til å bruke ukjent som XXX istedenfor ???
     @Test
-    public void skalikkeSendeMedStatsborgerskapForUkjent() {
+    public void skalikkeSendeMedStatsborgerskapForUkjent_TPS() {
         Person person = new Person()
                 .withFornavn(FORNAVN)
                 .withMellomnavn(MELLOMNAVN)
@@ -173,12 +174,24 @@ public class BasisPersonaliaSystemdataTest {
 
         JsonPersonalia jsonPersonalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
 
-        assertThat(jsonPersonalia.getPersonIdentifikator().getKilde(), is(JsonPersonIdentifikator.Kilde.SYSTEM));
-        assertThat(jsonPersonalia.getPersonIdentifikator().getVerdi(), is(EIER));
-        assertThat(jsonPersonalia.getNavn().getKilde(), is(JsonSokernavn.Kilde.SYSTEM));
-        assertThat(jsonPersonalia.getNavn().getFornavn(), is(FORNAVN));
-        assertThat(jsonPersonalia.getNavn().getMellomnavn(), is(MELLOMNAVN));
-        assertThat(jsonPersonalia.getNavn().getEtternavn(), is(ETTERNAVN));
+        assertThat(jsonPersonalia.getStatsborgerskap(), nullValue());
+        assertThat(jsonPersonalia.getNordiskBorger(), nullValue());
+    }
+
+    @Test
+    public void skalikkeSendeMedStatsborgerskapForUkjent_PDL() {
+        Person person = new Person()
+                .withFornavn(FORNAVN)
+                .withMellomnavn(MELLOMNAVN)
+                .withEtternavn(ETTERNAVN)
+                .withStatsborgerskap(List.of(PDL_UKJENT_STATSBORGERSKAP));
+        SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
+        when(personService.hentPerson(anyString())).thenReturn(person);
+
+        basisPersonaliaSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
+
+        JsonPersonalia jsonPersonalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
+
         assertThat(jsonPersonalia.getStatsborgerskap(), nullValue());
         assertThat(jsonPersonalia.getNordiskBorger(), nullValue());
     }

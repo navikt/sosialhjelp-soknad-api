@@ -1,4 +1,4 @@
-name: Auto-deploy sosialhjelp-soknad-api-redis and sosialhjelp-soknad-api-redisexporter to dev-sbs
+name: Auto-deploy redis dev-sbs
 on:
   push: # Deploys automatically to dev-sbs if there is a change in any redis files.
     paths:

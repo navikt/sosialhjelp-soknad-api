@@ -8,6 +8,7 @@
       ],
       "bostedsadresse": [
         {
+          "coAdressenavn": null,
           "vegadresse": {
             "matrikkelId": null,
             "adressenavn": "GATEVEIEN",
@@ -20,6 +21,43 @@
           },
           "matrikkeladresse": null,
           "ukjentBosted": null
+        }
+      ],
+      "oppholdsadresse": [
+        {
+          "oppholdAnnetSted": null,
+          "coAdressenavn": null,
+          "vegadresse": {
+            "matrikkelId": null,
+            "adressenavn": "GATEVEIEN",
+            "husnummer": "1",
+            "husbokstav": null,
+            "tilleggsnavn": null,
+            "postnummer": "0690",
+            "kommunenummer": "0301",
+            "bruksenhetsnummer": null
+          },
+          "metadata": {
+            "master": "Freg",
+            "opplysningsId": "id her",
+            "endringer": [
+              {
+                "kilde": "Dolly",
+                "registrert": "2020-10-20T12:08:06",
+                "registrertAv": "Folkeregisteret",
+                "systemkilde": "FREG",
+                "type": "OPPRETT"
+              }
+            ]
+          },
+          "folkeregistermetadata": {
+            "ajourholdstidspunkt": "2020-10-20T12:08:06",
+            "gyldighetstidspunkt": "2020-10-20T12:08:06",
+            "opphoerstidspunkt": null,
+            "kilde": "Dolly",
+            "aarsak": null,
+            "sekvens": null
+          }
         }
       ],
       "familierelasjoner": [
@@ -66,6 +104,9 @@
       "statsborgerskap": [
         {
           "land": "DEU"
+        },
+        {
+          "land": "NOR"
         }
       ]
     }

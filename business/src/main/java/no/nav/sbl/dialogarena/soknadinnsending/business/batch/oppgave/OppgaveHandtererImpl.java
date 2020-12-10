@@ -53,7 +53,7 @@ public class OppgaveHandtererImpl implements OppgaveHandterer {
         while (true) {
             Optional<Oppgave> oppgaveOptional = oppgaveRepository.hentNeste();
 
-            if (!oppgaveOptional.isPresent()) {
+            if (oppgaveOptional.isEmpty()) {
                 return;
             }
 
