@@ -3,8 +3,6 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Barn;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Ektefelle;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Person;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.barn.PdlBarn;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.SivilstandDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.ektefelle.PdlEktefelle;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.person.PdlPerson;
 import org.slf4j.Logger;
@@ -12,7 +10,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.SivilstandDto.SivilstandType.GIFT;
@@ -27,6 +24,8 @@ public class PdlService {
 
     private final PdlConsumer pdlConsumer;
     private final PdlPersonMapper pdlPersonMapper;
+
+    private final PdlPersonMapperHelper helper = new PdlPersonMapperHelper();
 
     public PdlService(PdlConsumer pdlConsumer, PdlPersonMapper pdlPersonMapper) {
         this.pdlConsumer = pdlConsumer;
@@ -58,11 +57,15 @@ public class PdlService {
 
     private Ektefelle hentEktefelle(PdlPerson pdlPerson) {
         if (pdlPerson != null && pdlPerson.getSivilstand() != null && !pdlPerson.getSivilstand().isEmpty()) {
-            Optional<SivilstandDto> ektefelle = pdlPerson.getSivilstand().stream()
-                    .filter(sivilstandDto -> GIFT.equals(sivilstandDto.getType()) || PARTNER.equals(sivilstandDto.getType()))
-                    .findFirst();
-            if (ektefelle.isPresent()) {
-                String ektefelleIdent = ektefelle.get().getRelatertVedSivilstand();
+
+            var sivilstand = helper.utledGjeldendeSivilstand(pdlPerson.getSivilstand());
+            if (sivilstand != null && (GIFT == sivilstand.getType() || PARTNER == sivilstand.getType())) {
+                String ektefelleIdent = sivilstand.getRelatertVedSivilstand();
+
+                if (ektefelleIdent == null || ektefelleIdent.isEmpty()) {
+                    log.info("Sivilstand.relatertVedSivilstand (ektefelleIdent) er null -> vi kaller ikke pdl hentEktefelle");
+                    return null;
+                }
 
                 loggHvisIdentIkkeErFnr(ektefelleIdent);
 
@@ -74,11 +77,17 @@ public class PdlService {
     }
 
     private void loggHvisIdentIkkeErFnr(String ektefelleIdent) {
-        if (ektefelleIdent.length() == 11 && Integer.parseInt(ektefelleIdent.substring(0,2)) > 31) {
+        if (ektefelleIdent.length() == 11 && Integer.parseInt(ektefelleIdent.substring(0, 2)) > 31) {
             log.info("Ident er DNR");
+        }
+        if (ektefelleIdent.length() == 11 && Integer.parseInt(ektefelleIdent.substring(2, 4)) >= 21 && Integer.parseInt(ektefelleIdent.substring(2, 4)) <= 32) {
+            log.info("Ident er NPID");
         }
         if (ektefelleIdent.length() > 11) {
             log.info("Ident er aktørid");
+        }
+        if (ektefelleIdent.length() < 11) {
+            log.info("Ident er ukjent (mindre enn 11 tegn)");
         }
     }
 

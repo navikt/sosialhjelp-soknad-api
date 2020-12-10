@@ -2,14 +2,21 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl;
 
 import com.google.common.collect.ImmutableMap;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Barn;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Bostedsadresse;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Ektefelle;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Matrikkeladresse;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Oppholdsadresse;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Person;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Vegadresse;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.kodeverk.KodeverkService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.barn.PdlBarn;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.AdressebeskyttelseDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.BostedsadresseDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.FoedselDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.FolkeregisterpersonstatusDto;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.MatrikkeladresseDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.NavnDto;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.OppholdsadresseDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.SivilstandDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.StatsborgerskapDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.VegadresseDto;
@@ -58,6 +65,14 @@ public class PdlPersonMapper {
             .put(GJENLEVENDE_PARTNER, "enke")
             .build();
 
+    private final PdlPersonMapperHelper helper = new PdlPersonMapperHelper();
+
+    private KodeverkService kodeverkService;
+
+    public PdlPersonMapper(KodeverkService kodeverkService) {
+        this.kodeverkService = kodeverkService;
+    }
+
     public Person mapTilPerson(PdlPerson pdlPerson, String ident) {
         if (pdlPerson == null) {
             return null;
@@ -69,7 +84,9 @@ public class PdlPersonMapper {
                 .withFnr(ident)
                 .withSivilstatus(finnSivilstatus(pdlPerson.getSivilstand()))
                 .withStatsborgerskap(finnStatsborgerskap(pdlPerson.getStatsborgerskap()))
-                .withDiskresjonskode(finnAdressebeskyttelse(pdlPerson.getAdressebeskyttelse()));
+                .withDiskresjonskode(finnAdressebeskyttelse(pdlPerson.getAdressebeskyttelse()))
+                .withBostedsadresse(mapBostedsadresse(pdlPerson.getBostedsadresse()))
+                .withOppholdsadresse(mapOppholdssadresse(pdlPerson.getOppholdsadresse()));
     }
 
     public Barn mapTilBarn(PdlBarn pdlBarn, String barnIdent, PdlPerson pdlPerson) {
@@ -149,9 +166,8 @@ public class PdlPersonMapper {
     }
 
     private String finnSivilstatus(List<SivilstandDto> sivilstand) {
-        return sivilstand.stream().findFirst()
-                .map(dto -> MAP_PDLSIVILSTAND_TIL_JSONSIVILSTATUS.get(dto.getType()))
-                .orElse("");
+        var sivilstandDto = helper.utledGjeldendeSivilstand(sivilstand);
+        return sivilstandDto != null ? MAP_PDLSIVILSTAND_TIL_JSONSIVILSTATUS.get(sivilstandDto.getType()) : "";
     }
 
     private List<String> finnStatsborgerskap(List<StatsborgerskapDto> statsborgerskap) {
@@ -247,5 +263,59 @@ public class PdlPersonMapper {
                 && Objects.equals(adr1.getPostnummer(), adr2.getPostnummer())
                 && Objects.equals(adr1.getKommunenummer(), adr2.getKommunenummer())
                 && Objects.equals(adr1.getBruksenhetsnummer(), adr2.getBruksenhetsnummer());
+    }
+
+    private Bostedsadresse mapBostedsadresse(List<BostedsadresseDto> dtos) {
+        var dto = finnBostedsadresse(dtos);
+        if (dto == null) {
+            return null;
+        }
+        return new Bostedsadresse(
+                dto.getCoAdressenavn(),
+                dto.getVegadresse() == null ? null : mapTilVegadresse(dto.getVegadresse()),
+                dto.getMatrikkeladresse() == null ? null : mapTilMatrikkeladresse(dto.getMatrikkeladresse())
+        );
+    }
+
+    private Oppholdsadresse mapOppholdssadresse(List<OppholdsadresseDto> dtos) {
+        if (dtos == null || dtos.isEmpty()) {
+            return null;
+        }
+        // Todo: utled gjeldende oppholdsadresse? Fra doc:
+        //  Man kan ha en oppholdsadresse med Freg som master og en med PDL som master.
+        //  Flertallet av oppholdsadressene fra Freg vil være norske, og flertallet av oppholdsadresser registrert av NAV vil være utenlandske.
+        //  Fra folkeregisteret kan man også få oppholdsadresse uten en faktisk adresse, men med informasjon i oppholdAnnetSted.
+        var dto = dtos.get(0);
+        if (dto.getVegadresse() == null) {
+            return null;
+        }
+        return new Oppholdsadresse(
+                dto.getCoAdressenavn(),
+                mapTilVegadresse(dto.getVegadresse())
+        );
+    }
+
+    private Vegadresse mapTilVegadresse(VegadresseDto dto) {
+        return new Vegadresse(
+                dto.getAdressenavn(),
+                dto.getHusnummer(),
+                dto.getHusbokstav(),
+                dto.getTilleggsnavn(),
+                dto.getPostnummer(),
+                kodeverkService.getPoststed(dto.getPostnummer()),
+                dto.getKommunenummer(),
+                dto.getBruksenhetsnummer()
+        );
+    }
+
+    private Matrikkeladresse mapTilMatrikkeladresse(MatrikkeladresseDto dto) {
+        return new Matrikkeladresse(
+                dto.getMatrikkelId(),
+                dto.getPostnummer(),
+                kodeverkService.getPoststed(dto.getPostnummer()),
+                dto.getTilleggsnavn(),
+                dto.getKommunenummer(),
+                dto.getBruksenhetsnummer()
+        );
     }
 }

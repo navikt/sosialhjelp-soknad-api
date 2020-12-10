@@ -6,6 +6,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.Adressebe
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.BostedsadresseDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.FamilierelasjonDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.NavnDto;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.OppholdsadresseDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.SivilstandDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.StatsborgerskapDto;
 
@@ -16,6 +17,8 @@ public class PdlPerson {
     private final List<AdressebeskyttelseDto> adressebeskyttelse;
 
     private final List<BostedsadresseDto> bostedsadresse;
+
+    private final List<OppholdsadresseDto> oppholdsadresse;
 
     private final List<FamilierelasjonDto> familierelasjoner;
 
@@ -29,6 +32,7 @@ public class PdlPerson {
     public PdlPerson(
             @JsonProperty("adressebeskyttelse") List<AdressebeskyttelseDto> adressebeskyttelse,
             @JsonProperty("bostedsadresse") List<BostedsadresseDto> bostedsadresse,
+            @JsonProperty("oppholdsadresse") List<OppholdsadresseDto> oppholdsadresse,
             @JsonProperty("familierelasjoner") List<FamilierelasjonDto> familierelasjoner,
             @JsonProperty("navn") List<NavnDto> navn,
             @JsonProperty("sivilstand") List<SivilstandDto> sivilstand,
@@ -36,6 +40,7 @@ public class PdlPerson {
     ) {
         this.adressebeskyttelse = adressebeskyttelse;
         this.bostedsadresse = bostedsadresse;
+        this.oppholdsadresse = oppholdsadresse;
         this.familierelasjoner = familierelasjoner;
         this.navn = navn;
         this.sivilstand = sivilstand;
@@ -48,6 +53,10 @@ public class PdlPerson {
 
     public List<BostedsadresseDto> getBostedsadresse() {
         return bostedsadresse;
+    }
+
+    public List<OppholdsadresseDto> getOppholdsadresse() {
+        return oppholdsadresse;
     }
 
     public List<FamilierelasjonDto> getFamilierelasjoner() {
