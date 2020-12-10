@@ -3,6 +3,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.EndringDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.FolkeregistermetadataDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.MetadataDto;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.NavnDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.SivilstandDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.SivilstandDto.SivilstandType;
 import org.junit.Test;
@@ -28,9 +29,11 @@ public class PdlPersonMapperHelperTest {
 
     @Test
     public void ingenSivilstander_ingenVelges() {
-        var result = helper.utledGjeldendeSivilstand(Collections.emptyList());
+        var result_emptylist = helper.utledGjeldendeSivilstand(Collections.emptyList());
+        var result_null = helper.utledGjeldendeSivilstand(null);
 
-        assertThat(result).isNull();
+        assertThat(result_emptylist).isNull();
+        assertThat(result_null).isNull();
     }
 
     @Test
@@ -212,6 +215,47 @@ public class PdlPersonMapperHelperTest {
         assertThat(result).isNull();
     }
 
+    @Test
+    public void ingenNavn_ingenVelges() {
+        var result_emptylist = helper.utledGjeldendeNavn(Collections.emptyList());
+        var result_null = helper.utledGjeldendeNavn(null);
+
+        assertThat(result_emptylist).isNull();
+        assertThat(result_null).isNull();
+    }
+
+    @Test
+    public void kunEttNavn_fraFreg_denEneVelges() {
+        var navn_fraFreg = createNavnMedFolkeregisterMetadata("arne", "Freg", "DSF", DEC_1_MIDDAG, DEC_1_MIDDAG);
+        var list = singletonList(navn_fraFreg);
+
+        var result = helper.utledGjeldendeNavn(list);
+
+        assertThat(result).isEqualTo(navn_fraFreg);
+    }
+
+    @Test
+    public void flereNavn_ettFraFreg_ettFraPdl_nyesteVelges() {
+        var navn_fraFreg = createNavnMedFolkeregisterMetadata("arne", "Freg", "DSF", DEC_1_MIDDAG, DEC_1_MIDDAG);
+        var navn_fraPdl = createNavn("bjarne", "PDL", "NAV", DEC_1_KVELD);
+        var list = asList(navn_fraFreg, navn_fraPdl);
+
+        var result = helper.utledGjeldendeNavn(list);
+
+        assertThat(result).isEqualTo(navn_fraPdl);
+    }
+
+    @Test
+    public void flereNavn_ettFraFreg_ettFraPdl_beggeRegistrertSamtidig_ingenVelges() {
+        var navn_fraFreg = createNavnMedFolkeregisterMetadata("arne", "Freg", "DSF", DEC_1_KVELD, DEC_1_MIDDAG);
+        var navn_fraPdl = createNavn("bjarne", "PDL", "NAV", DEC_1_MIDDAG);
+        var list = asList(navn_fraFreg, navn_fraPdl);
+
+        var result = helper.utledGjeldendeNavn(list);
+
+        assertThat(result).isNull();
+    }
+
     private SivilstandDto createSivilstand(SivilstandType type, String master, String kilde, LocalDateTime registrert) {
         return createSivilstandMedEndringerOgFolkeregisterMetadata(type, master, singletonList(new EndringDto(kilde, registrert, "", "", "Opprettet")), null);
     }
@@ -228,6 +272,24 @@ public class PdlPersonMapperHelperTest {
         return new SivilstandDto(
                 type,
                 null,
+                new MetadataDto(master, endringer),
+                ajourholdtidspunkt != null ? new FolkeregistermetadataDto(ajourholdtidspunkt, null, null, null) : null
+        );
+    }
+
+    private NavnDto createNavn(String fornavn, String master, String kilde, LocalDateTime registrert) {
+        return createNavnMedEndringerOgFolkeregisterMetadata(fornavn, master, singletonList(new EndringDto(kilde, registrert, "", "", "Opprettet")), null);
+    }
+
+    private NavnDto createNavnMedFolkeregisterMetadata(String fornavn, String master, String kilde, LocalDateTime registrert, LocalDateTime ajourholdtidspunkt) {
+        return createNavnMedEndringerOgFolkeregisterMetadata(fornavn, master, singletonList(new EndringDto(kilde, registrert, "", "", "Opprettet")), ajourholdtidspunkt);
+    }
+
+    private NavnDto createNavnMedEndringerOgFolkeregisterMetadata(String fornavn, String master, List<EndringDto> endringer, LocalDateTime ajourholdtidspunkt) {
+        return new NavnDto(
+                fornavn,
+                "mellomnavn",
+                "etternavn",
                 new MetadataDto(master, endringer),
                 ajourholdtidspunkt != null ? new FolkeregistermetadataDto(ajourholdtidspunkt, null, null, null) : null
         );

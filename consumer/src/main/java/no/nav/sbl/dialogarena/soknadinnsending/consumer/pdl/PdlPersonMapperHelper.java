@@ -29,7 +29,7 @@ public class PdlPersonMapperHelper {
     private static final String BRUKER_SELV = "Bruker selv";
 
     public SivilstandDto utledGjeldendeSivilstand(List<SivilstandDto> sivilstander) {
-        if (sivilstander.isEmpty()) {
+        if (sivilstander == null || sivilstander.isEmpty()) {
             return null;
         }
         // sorter sivilstander på synkende endringstidspunkt
