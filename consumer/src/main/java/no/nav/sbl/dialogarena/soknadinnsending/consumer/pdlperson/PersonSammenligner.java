@@ -146,10 +146,14 @@ public class PersonSammenligner {
                 if (!gateadresse.husnummer.equalsIgnoreCase(bostedsadresse.getVegadresse().getHusnummer().toString())) {
                     ulikeFelter.add("Husnummer");
                 }
-                if (!gateadresse.husbokstav.equalsIgnoreCase(bostedsadresse.getVegadresse().getHusbokstav())) {
+                if (gateadresse.husbokstav != null
+                        && bostedsadresse.getVegadresse().getHusbokstav() != null
+                        && !gateadresse.husbokstav.equalsIgnoreCase(bostedsadresse.getVegadresse().getHusbokstav())) {
                     ulikeFelter.add("Husbokstav");
                 }
-                if (!gateadresse.bolignummer.equalsIgnoreCase(bostedsadresse.getVegadresse().getBruksenhetsnummer())) {
+                if (gateadresse.bolignummer != null
+                        && bostedsadresse.getVegadresse().getBruksenhetsnummer() != null
+                        && !gateadresse.bolignummer.equalsIgnoreCase(bostedsadresse.getVegadresse().getBruksenhetsnummer())) {
                     ulikeFelter.add("Bruksenhetsnummer");
                 }
                 if (!gateadresse.postnummer.equalsIgnoreCase(bostedsadresse.getVegadresse().getPostnummer())) {
@@ -186,10 +190,14 @@ public class PersonSammenligner {
                 if (!gateadresse.husnummer.equalsIgnoreCase(oppholdsadresse.getVegadresse().getHusnummer().toString())) {
                     ulikeFelter.add("Husnummer");
                 }
-                if (!gateadresse.husbokstav.equalsIgnoreCase(oppholdsadresse.getVegadresse().getHusbokstav())) {
+                if (gateadresse.husbokstav != null
+                        && oppholdsadresse.getVegadresse().getHusbokstav() != null
+                        && !gateadresse.husbokstav.equalsIgnoreCase(oppholdsadresse.getVegadresse().getHusbokstav())) {
                     ulikeFelter.add("Husbokstav");
                 }
-                if (!gateadresse.bolignummer.equalsIgnoreCase(oppholdsadresse.getVegadresse().getBruksenhetsnummer())) {
+                if (gateadresse.bolignummer != null
+                        && oppholdsadresse.getVegadresse().getBruksenhetsnummer() != null
+                        && !gateadresse.bolignummer.equalsIgnoreCase(oppholdsadresse.getVegadresse().getBruksenhetsnummer())) {
                     ulikeFelter.add("Bruksenhetsnummer");
                 }
                 if (!gateadresse.postnummer.equalsIgnoreCase(oppholdsadresse.getVegadresse().getPostnummer())) {
