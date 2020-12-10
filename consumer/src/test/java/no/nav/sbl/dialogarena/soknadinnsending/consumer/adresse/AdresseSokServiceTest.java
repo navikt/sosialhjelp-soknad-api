@@ -84,8 +84,6 @@ public class AdresseSokServiceTest {
         assertThat(adresseForslag.kommunenavn).isEqualTo("IkkeIKS");
     }
 
-    //
-
     @Test
     public void sokEtterAdresserString_medNullAdresseString_skalGiTomtResultat() {
         List<AdresseForslag> adresseForslags = adresseSokService.sokEtterAdresser((String) null);
@@ -106,8 +104,6 @@ public class AdresseSokServiceTest {
         List<AdresseForslag> adresseForslags = adresseSokService.sokEtterAdresser(adressenavn);
         assertThat(adresseForslags).isNotEmpty();
     }
-
-    //
 
     @Test
     public void sokEtterAdresserSokedata_medNullSokedata_skalGiTomtResultat() {
