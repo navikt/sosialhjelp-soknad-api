@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.adresse;
 
+import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.kodeverk.KodeverkService;
 import org.junit.Assert;
 import org.junit.Test;
@@ -144,6 +145,21 @@ public class AdresseStringSplitterTest {
         Assert.assertEquals("asdf", result.adresse);
         Assert.assertEquals("0882", result.postnummer);
         Assert.assertEquals("OSLO", result.poststed);
+    }
+
+
+    @Test
+    public void adresseMedToBokstaver_girEksaktSokeType() {
+        final Sokedata result = AdresseStringSplitter.toSokedata(null, "Sæ");
+        Assert.assertEquals("Sæ", result.adresse);
+        Assert.assertEquals(AdresseSokConsumer.Soketype.EKSAKT, result.soketype);
+    }
+
+    @Test
+    public void adresseMedFlereBokstaver_girLignendeSokeType() {
+        final Sokedata result = AdresseStringSplitter.toSokedata(null, "asd");
+        Assert.assertEquals("asd", result.adresse);
+        Assert.assertEquals(AdresseSokConsumer.Soketype.LIGNENDE, result.soketype);
     }
     
     @Test
