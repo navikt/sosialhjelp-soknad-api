@@ -77,6 +77,12 @@ query($ident: ID!, $historikk: Boolean!) {
             fornavn
             mellomnavn
             etternavn
+            metadata {
+                ...metadata
+            }
+            folkeregistermetadata{
+                ...folkeregistermetadata
+            }
         }
         sivilstand(historikk: $historikk) {
             type

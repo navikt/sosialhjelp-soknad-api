@@ -1,7 +1,9 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl;
 
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.EndringDto;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.FolkeregistermetadataDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.MetadataDto;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.NavnDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.SivilstandDto;
 import org.slf4j.Logger;
 
@@ -14,6 +16,7 @@ import java.util.stream.Collectors;
 
 import static java.util.Comparator.comparing;
 import static java.util.Comparator.nullsLast;
+import static java.util.Comparator.reverseOrder;
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class PdlPersonMapperHelper {
@@ -30,7 +33,7 @@ public class PdlPersonMapperHelper {
             return null;
         }
         // sorter sivilstander på synkende endringstidspunkt
-        sivilstander.sort(Comparator.comparing(dto -> getEndringstidspunktOrNull(dto), nullsLast(Comparator.reverseOrder())));
+        sivilstander.sort(comparing(this::getEndringstidspunktOrNull, nullsLast(reverseOrder())));
 
         if (sivilstander.size() > 1) {
             log.info("Flere gjeldende sivilstander funnet i PDL: [{}]", sivilstander.stream().map(dto -> dto.getType().toString()).collect(Collectors.joining(",")));
@@ -46,18 +49,51 @@ public class PdlPersonMapperHelper {
                 || !MASTERS.contains(sistEndredeSivilstand.getMetadata().getMaster().toUpperCase())) {
             return null;
         }
-        if (erKildeUdokumentert(sistEndredeSivilstand)) {
+        if (erKildeUdokumentert(sistEndredeSivilstand.getMetadata())) {
             log.info("PDL sivilstand er udokumentert (kilde = {})", sisteEndringOrNull(sistEndredeSivilstand.getMetadata()).getKilde());
         }
 
         return sistEndredeSivilstand;
     }
 
-    private LocalDateTime getEndringstidspunktOrNull(SivilstandDto sivilstand) {
-        var metadata = sivilstand.getMetadata();
-        var fregmetadata = sivilstand.getFolkeregistermetadata();
+    public NavnDto utledGjeldendeNavn(List<NavnDto> navn) {
+        if (navn == null || navn.isEmpty()) {
+            return null;
+        }
+
+        navn.sort(comparing(this::getEndringstidspunktOrNull, nullsLast(reverseOrder())));
+
+        if (navn.size() > 1) {
+            log.info("Flere gjeldende navn funnet i PDL");
+        }
+
+        var sistEndredeNavn = navn.get(0);
+        if (sistEndredeNavn == null
+                || flereNavnRegistrertSamtidig(sistEndredeNavn, navn)
+//                Kommentert ut fordi vi ikke er 100% sikre på om vi skal vise navn fra udokumenterte kilder (master == "bruker selv").
+//                Hvis disse skal filtreres vekk, kan linjen kommenteres inn igjen.
+//                || erKildeUdokumentert(sistEndredeNavn)
+                || !MASTERS.contains(sistEndredeNavn.getMetadata().getMaster().toUpperCase())) {
+            return null;
+        }
+        if (erKildeUdokumentert(sistEndredeNavn.getMetadata())) {
+            log.info("PDL navn er udokumentert (kilde = {})", sisteEndringOrNull(sistEndredeNavn.getMetadata()).getKilde());
+        }
+
+        return sistEndredeNavn;
+    }
+
+    private LocalDateTime getEndringstidspunktOrNull(SivilstandDto sivilstandDto) {
+        return getEndringstidspunktOrNull(sivilstandDto.getMetadata(), sivilstandDto.getFolkeregistermetadata());
+    }
+
+    private LocalDateTime getEndringstidspunktOrNull(NavnDto navnDto) {
+        return getEndringstidspunktOrNull(navnDto.getMetadata(), navnDto.getFolkeregistermetadata());
+    }
+
+    private LocalDateTime getEndringstidspunktOrNull(MetadataDto metadata, FolkeregistermetadataDto folkeregistermetadata) {
         if (metadata.getMaster().toUpperCase().equals(FREG)) {
-            return fregmetadata.getAjourholdstidspunkt();
+            return folkeregistermetadata.getAjourholdstidspunkt();
         } else {
             var endring = sisteEndringOrNull(metadata);
             if (endring == null) {
@@ -73,12 +109,17 @@ public class PdlPersonMapperHelper {
 
     private boolean flereSivilstanderRegistrertSamtidig(SivilstandDto first, List<SivilstandDto> list) {
         return list.stream()
-                .filter(sivilstandDto -> Objects.equals(getEndringstidspunktOrNull(sivilstandDto), getEndringstidspunktOrNull(first)))
+                .filter(dto -> Objects.equals(getEndringstidspunktOrNull(dto), getEndringstidspunktOrNull(first)))
                 .count() > 1;
     }
 
-    private boolean erKildeUdokumentert(SivilstandDto sivilstand) {
-        var metadata = sivilstand.getMetadata();
+    private boolean flereNavnRegistrertSamtidig(NavnDto first, List<NavnDto> list) {
+        return list.stream()
+                .filter(dto -> Objects.equals(getEndringstidspunktOrNull(dto), getEndringstidspunktOrNull(first)))
+                .count() > 1;
+    }
+
+    private boolean erKildeUdokumentert(MetadataDto metadata) {
         return PDL.equals(metadata.getMaster().toUpperCase()) && sisteEndringOrNull(metadata) != null && sisteEndringOrNull(metadata).getKilde().equals(BRUKER_SELV);
     }
 }
