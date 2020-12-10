@@ -6,10 +6,21 @@ query($ident: ID!, $historikk: Boolean!) {
         bostedsadresse(historikk: $historikk) {
             coAdressenavn
             vegadresse {
-                ...vegadresse
+                matrikkelId
+                adressenavn
+                husnummer
+                husbokstav
+                tilleggsnavn
+                postnummer
+                kommunenummer
+                bruksenhetsnummer
             }
             matrikkeladresse {
-                ...matrikkeladresse
+                matrikkelId
+                postnummer
+                tilleggsnavn
+                kommunenummer
+                bruksenhetsnummer
             }
             ukjentBosted {
                 bostedskommune
