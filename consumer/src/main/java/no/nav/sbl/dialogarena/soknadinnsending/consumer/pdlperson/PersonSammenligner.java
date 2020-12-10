@@ -186,7 +186,9 @@ public class PersonSammenligner {
 
         if (midlertidigAdresse != null && oppholdsadresse != null) {
             List<String> ulikeFelter = new ArrayList<>();
-            if (midlertidigAdresse.getAdressetype().equals("gateadresse") && oppholdsadresse.getVegadresse() != null) {
+            if (midlertidigAdresse.getAdressetype() != null
+                    && midlertidigAdresse.getAdressetype().equals("gateadresse")
+                    && oppholdsadresse.getVegadresse() != null) {
                 var gateadresse = (Adresse.Gateadresse) midlertidigAdresse.getStrukturertAdresse();
                 if (!gateadresse.gatenavn.equalsIgnoreCase(oppholdsadresse.getVegadresse().getAdressenavn())) {
                     ulikeFelter.add("Adressenavn");
