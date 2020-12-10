@@ -213,8 +213,13 @@ public class PersonSammenligner {
                     ulikeFelter.add("Husbokstav");
                 }
             }
-            if (midlertidigAdresse.getAdressetype().equalsIgnoreCase("matrikkeladresse")) {
+            if (midlertidigAdresse.getAdressetype() != null
+                    && midlertidigAdresse.getAdressetype().equalsIgnoreCase("matrikkeladresse")) {
                 log.info("MidlertidigAdresse i TPS er matrikkeladresse. Har ikke hentet matrikkeladresse for Oppholdsadresse i PDL.");
+            }
+
+            if (midlertidigAdresse.getAdressetype() != null) {
+                log.info("Midlertidig adresse - ukjent adressetyp {}", midlertidigAdresse.getAdressetype());
             }
 
             if (ulikeFelter.size() > 0) {
