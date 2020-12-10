@@ -177,7 +177,11 @@ public class PersonSammenligner {
 
     public void sammenlignMidlertidigAdresse(Adresse midlertidigAdresse, Oppholdsadresse oppholdsadresse) {
         if (midlertidigAdresse == null && oppholdsadresse != null) {
-            log.info("MidlertidigAdresse er null i Person_v3, ");
+            log.info("MidlertidigAdresse er null i Person_v3, men oppholdsadresse er satt i PDL");
+        }
+
+        if (midlertidigAdresse != null && oppholdsadresse == null) {
+            log.info("MidlertidigAdresse er satt i Person_v3, men oppholdsadresse er null i PDL");
         }
 
         if (midlertidigAdresse != null && oppholdsadresse != null) {
