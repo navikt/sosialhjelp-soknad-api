@@ -262,14 +262,15 @@ public final class Jetty {
 
     private String getStatusString() {
         final StringBuilder statusBuilder = new StringBuilder(
-                    "STARTED JETTY"
+                    "\n STARTED JETTY"
                     + "\n * WAR: " + warPath
                     + "\n * Context path: " + contextPath
                     + "\n * Http port: " + port
+                    + "\n * Localhost url: " + "http://localhost:" + port + contextPath
                     );
         sslPort.ifPresent(integer -> statusBuilder.append("\n * Https port: ").append(integer));
         for (URL url : getBaseUrls()) {
-            statusBuilder.append("\n * ").append(url);
+            statusBuilder.append("\n * Url: ").append(url);
         }
         return statusBuilder.toString();
     }
