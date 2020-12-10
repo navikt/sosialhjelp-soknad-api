@@ -95,7 +95,7 @@
         <jackson.version>2.11.0</jackson.version>
         <filformat.version>1.2020.11.05-09.32-14af05dea965</filformat.version>
         <commons-fileupload.version>1.4</commons-fileupload.version>
-        <pdfbox.version>2.0.19</pdfbox.version>
+        <pdfbox.version>2.0.21</pdfbox.version>
         <jempbox.version>1.8.16</jempbox.version>
         <bouncycastle.version>1.64</bouncycastle.version>
         <httpclient.version>4.5.13</httpclient.version>
@@ -103,8 +103,8 @@
         <stax2-api.version>4.2.1</stax2-api.version>
         <hibernate.version>5.2.5.Final</hibernate.version>
         <jaxb2-basics-runtime.version>0.11.1</jaxb2-basics-runtime.version>
-        <verapdf.version>1.14.105</verapdf.version>
-        <tika.version>1.24.1</tika.version>
+        <verapdf.version>1.16.1</verapdf.version>
+        <tika.version>1.25</tika.version>
         <logback.version>1.2.3</logback.version>
         <hsqldb.version>2.5.1</hsqldb.version>
         <hikaricp.version>3.4.2</hikaricp.version>
