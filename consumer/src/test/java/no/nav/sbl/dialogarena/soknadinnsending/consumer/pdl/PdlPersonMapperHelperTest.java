@@ -228,8 +228,8 @@ public class PdlPersonMapperHelperTest {
         return new SivilstandDto(
                 type,
                 null,
-                new MetadataDto(master, null, endringer),
-                ajourholdtidspunkt != null ? new FolkeregistermetadataDto(ajourholdtidspunkt, null, null, null, null, null) : null
+                new MetadataDto(master, endringer),
+                ajourholdtidspunkt != null ? new FolkeregistermetadataDto(ajourholdtidspunkt, null, null, null) : null
         );
     }
 

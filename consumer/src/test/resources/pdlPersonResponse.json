@@ -39,7 +39,6 @@
           },
           "metadata": {
             "master": "Freg",
-            "opplysningsId": "id her",
             "endringer": [
               {
                 "kilde": "Dolly",
@@ -54,9 +53,7 @@
             "ajourholdstidspunkt": "2020-10-20T12:08:06",
             "gyldighetstidspunkt": "2020-10-20T12:08:06",
             "opphoerstidspunkt": null,
-            "kilde": "Dolly",
-            "aarsak": null,
-            "sekvens": null
+            "kilde": "Dolly"
           }
         }
       ],
@@ -71,7 +68,25 @@
         {
           "fornavn": "TEST",
           "mellomnavn": null,
-          "etternavn": "PERSON"
+          "etternavn": "PERSON",
+          "metadata": {
+            "master": "Freg",
+            "endringer": [
+              {
+                "kilde": "Dolly",
+                "registrert": "2020-10-20T12:08:06",
+                "registrertAv": "Folkeregisteret",
+                "systemkilde": "FREG",
+                "type": "OPPRETT"
+              }
+            ]
+          },
+          "folkeregistermetadata": {
+            "ajourholdstidspunkt": "2020-10-20T12:08:06",
+            "gyldighetstidspunkt": "2020-10-20T12:08:06",
+            "opphoerstidspunkt": null,
+            "kilde": "Dolly"
+          }
         }
       ],
       "sivilstand": [
@@ -80,7 +95,6 @@
           "relatertVedSivilstand": "55555555555",
           "metadata": {
             "master": "Freg",
-            "opplysningsId": "some-id",
             "endringer": [
               {
                 "kilde": "Dolly",
@@ -95,9 +109,7 @@
             "ajourholdstidspunkt": "2020-10-20T12:08:11",
             "gyldighetstidspunkt": "2020-10-20T12:08:11",
             "opphoerstidspunkt": null,
-            "kilde": "Dolly",
-            "aarsak": null,
-            "sekvens": null
+            "kilde": "Dolly"
           }
         }
       ],
