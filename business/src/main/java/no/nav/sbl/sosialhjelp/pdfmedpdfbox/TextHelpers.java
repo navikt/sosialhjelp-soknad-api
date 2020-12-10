@@ -6,6 +6,9 @@ import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
 
+import static no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.BasisPersonaliaSystemdata.PDL_STATSLOS;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.BasisPersonaliaSystemdata.PDL_UKJENT_STATSBORGERSKAP;
+
 @Component
 public class TextHelpers {
 
@@ -24,9 +27,9 @@ public class TextHelpers {
     }
 
     public String fulltNavnForLand(String landForkortelse) {
-        if (landForkortelse == null || landForkortelse.equals("???") || landForkortelse.equalsIgnoreCase("YYY") || landForkortelse.equalsIgnoreCase("XUK")) {
+        if (landForkortelse == null || landForkortelse.equals("???") || landForkortelse.equalsIgnoreCase("YYY") || landForkortelse.equalsIgnoreCase(PDL_UKJENT_STATSBORGERSKAP)) {
             return "Vi har ikke opplysninger om ditt statsborgerskap";
-        } else if (landForkortelse.equalsIgnoreCase("XXX") || landForkortelse.equalsIgnoreCase("XXA")){
+        } else if (landForkortelse.equalsIgnoreCase(PDL_STATSLOS) || landForkortelse.equalsIgnoreCase("XXA")){
             return "Statsløs";
         }
 
