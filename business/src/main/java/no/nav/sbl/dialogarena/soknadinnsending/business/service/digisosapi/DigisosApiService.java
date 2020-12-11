@@ -37,6 +37,7 @@ import java.util.stream.Collectors;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils.isTillatMockRessurs;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.util.JsonVedleggUtils.getVedleggFromInternalSoknad;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.util.MetricsUtils.navKontorTilInfluxNavn;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.util.SenderUtils.createPrefixedBehandlingsIdInNonProd;
 import static no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator.ensureValidSoknad;
 import static no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator.ensureValidVedlegg;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -211,6 +212,8 @@ public class DigisosApiService {
         String soknadJson = getSoknadJson(soknadUnderArbeid);
         String tilleggsinformasjonJson = getTilleggsinformasjonJson(soknadUnderArbeid.getJsonInternalSoknad().getSoknad());
         String vedleggJson = getVedleggJson(soknadUnderArbeid);
+
+        behandlingsId = createPrefixedBehandlingsIdInNonProd(behandlingsId);
         log.info("Starter kryptering av filer for {}, skal sende til kommune {} med enhetsnummer {} og navenhetsnavn {}", behandlingsId,  kommunenummer,
                 soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker().getEnhetsnummer(),
                 soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker().getNavEnhetsnavn());
