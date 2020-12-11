@@ -170,7 +170,7 @@ public class PersonMapper {
         String identtype = xmlPerson.getIdent().getType().getValue();
         String ident = xmlPerson.getIdent().getIdent();
 
-        if (ident.length() == 11 && ident.substring(6).equalsIgnoreCase("00000")) {
+        if (isNotEmpty(ident) && ident.length() == 11 && ident.substring(6).equalsIgnoreCase("00000")) {
             log.info("Ektefelleident fra Person_v1 er FDAT, men identtype = {}", identtype);
         }
 
