@@ -1,6 +1,6 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain.mock;
 
-import static no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils.isRunningInProd;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils.isNonProduction;
 
 public class MockUtils {
 
@@ -16,10 +16,10 @@ public class MockUtils {
     }
 
     public static boolean isAlltidSendTilNavTestkommune(){
-        return Boolean.parseBoolean(System.getProperty(IS_ALLTID_SEND_TIL_NAV_TESTKOMMUNE, "false")) && !isRunningInProd();
+        return Boolean.parseBoolean(System.getProperty(IS_ALLTID_SEND_TIL_NAV_TESTKOMMUNE, "false")) && isNonProduction();
     }
 
     public static boolean isAlltidHentKommuneInfoFraNavTestkommune(){
-        return Boolean.parseBoolean(System.getProperty(IS_ALLTID_HENT_KOMMUNEINFO_FRA_NAV_TESTKOMMUNE, "false")) && !isRunningInProd();
+        return Boolean.parseBoolean(System.getProperty(IS_ALLTID_HENT_KOMMUNEINFO_FRA_NAV_TESTKOMMUNE, "false")) && isNonProduction();
     }
 }

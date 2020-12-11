@@ -5,7 +5,7 @@
         <encoder class="net.logstash.logback.encoder.LogstashEncoder">
             <customFields>
                 {
-                    "environment": "${FASIT_ENVIRONMENT_NAME:-local}"
+                    "environment": "${ENVIRONMENT_NAME:-local}"
                 }
             </customFields>
         </encoder>

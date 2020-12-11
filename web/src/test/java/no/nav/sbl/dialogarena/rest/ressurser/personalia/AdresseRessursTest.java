@@ -76,6 +76,7 @@ public class AdresseRessursTest {
 
     @Before
     public void setUp() {
+        System.setProperty("environment.name", "test");
         SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
         when(adresseSystemdata.createDeepCopyOfJsonAdresse(any(JsonAdresse.class))).thenCallRealMethod();
     }
@@ -83,6 +84,7 @@ public class AdresseRessursTest {
     @After
     public void tearDown() {
         SubjectHandler.resetOidcSubjectHandlerService();
+        System.clearProperty("environment.name");
     }
 
     @Test

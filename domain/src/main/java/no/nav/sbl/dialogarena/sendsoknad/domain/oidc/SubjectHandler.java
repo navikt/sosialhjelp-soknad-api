@@ -27,7 +27,7 @@ public class SubjectHandler {
     }
 
     public static void setSubjectHandlerService(SubjectHandlerService subjectHandlerServiceImpl) {
-        if (ServiceUtils.isRunningInProd()) {
+        if (!ServiceUtils.isNonProduction()) {
             logger.error("Forsøker å sette en annen SubjectHandlerService i prod!");
             throw new RuntimeException("Forsøker å sette en annen SubjectHandlerService i prod!");
         } else {
