@@ -46,6 +46,16 @@ public class PdlService {
                 .filter(familierelasjonDto -> familierelasjonDto.getRelatertPersonsRolle().equalsIgnoreCase(BARN))
                 .map(familierelasjonDto -> {
                     var barnIdent = familierelasjonDto.getRelatertPersonsIdent();
+
+                    if (barnIdent == null || barnIdent.isEmpty()) {
+                        log.info("Familierelasjon.relatertPersonsIdent (barnIdent) er null -> kaller ikke hentPerson for barn");
+                        return null;
+                    }
+                    if (erFDAT(barnIdent)) {
+                        log.info("Familierelasjon.relatertPersonsIdent (barnIdent) er FDAT -> kaller ikke hentPerson for barn");
+                        return null;
+                    }
+
                     loggHvisIdentIkkeErFnr(barnIdent);
                     var pdlBarn = pdlConsumer.hentBarn(barnIdent);
                     return pdlPersonMapper.mapTilBarn(pdlBarn, barnIdent, pdlPerson);
@@ -63,7 +73,11 @@ public class PdlService {
                 String ektefelleIdent = sivilstand.getRelatertVedSivilstand();
 
                 if (ektefelleIdent == null || ektefelleIdent.isEmpty()) {
-                    log.info("Sivilstand.relatertVedSivilstand (ektefelleIdent) er null -> vi kaller ikke pdl hentEktefelle");
+                    log.info("Sivilstand.relatertVedSivilstand (ektefelleIdent) er null -> kaller ikke hentPerson for ektefelle");
+                    return null;
+                }
+                if (erFDAT(ektefelleIdent)) {
+                    log.info("Sivilstand.relatertVedSivilstand (ektefelleIdent) er FDAT -> kaller ikke hentPerson for ektefelle");
                     return null;
                 }
 
@@ -74,6 +88,10 @@ public class PdlService {
             }
         }
         return null;
+    }
+
+    private boolean erFDAT(String ident) {
+        return ident.length() == 11 && ident.substring(6).equalsIgnoreCase("00000");
     }
 
     private void loggHvisIdentIkkeErFnr(String ektefelleIdent) {
