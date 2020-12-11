@@ -40,7 +40,7 @@ public class AdresseSokService {
     private NorgService norgService;
 
     public List<AdresseForslag> sokEtterAdresser(String sok) {
-        if (sok == null || sok.trim().length() <= 2) {
+        if (isAddressTooShortOrNull(sok)) {
             return Collections.emptyList();
         }
         final Sokedata sokedata = AdresseStringSplitter.toSokedata(kodeverkService, sok);
@@ -48,7 +48,7 @@ public class AdresseSokService {
     }
 
     public List<AdresseForslag> sokEtterAdresser(Sokedata sokedata) {
-        if (sokedata.adresse != null && sokedata.adresse.trim().length() <= 2) {
+        if (sokedata == null || isAddressTooShortOrNull(sokedata.adresse)) {
             return Collections.emptyList();
         }
         
@@ -112,7 +112,11 @@ public class AdresseSokService {
                 && !isBlank(data.poststed)
                 && !isBlank(data.gatekode);
     }
-    
+
+    public static boolean isAddressTooShortOrNull(String address) {
+        return address == null || address.trim().length() < 2;
+    }
+
     private static String upperCase(String s) {
         if (s == null) {
             return null;

@@ -31,14 +31,14 @@ public class NorgConsumerMock {
 
     public static RsNorgEnhet getOrCreateCurrentUserResponse(InvocationOnMock invocationOnMock){
 
-        Map<String, RsNorgEnhet> rsNorgEnhetMap = responses.get(SubjectHandler.getUserId());
-        if (rsNorgEnhetMap == null){
-            rsNorgEnhetMap = getDefaultMap();
-            responses.put(SubjectHandler.getUserId(), rsNorgEnhetMap);
+        Map<String, RsNorgEnhet> norgEnhetMap = responses.get(SubjectHandler.getUserId());
+        if (norgEnhetMap == null){
+            norgEnhetMap = getDefaultMap();
+            responses.put(SubjectHandler.getUserId(), norgEnhetMap);
         }
 
-        String argumentAt = invocationOnMock.getArgument(0);
-        return rsNorgEnhetMap.get(argumentAt);
+        String grafiskTilknytning = invocationOnMock.getArgument(0);
+        return norgEnhetMap.get(grafiskTilknytning);
     }
 
 
@@ -68,6 +68,7 @@ public class NorgConsumerMock {
                 .put("0403", getKommuneResponse("Hamar", "0403"))
                 .put("2222", getKommuneResponse("Dobbelby", "2222"))
                 .put("2223", getKommuneResponse("Dobbelby2", "2223"))
+                .put("4614", getKommuneResponse("Stord", "4614"))
                 .build();
     }
 
