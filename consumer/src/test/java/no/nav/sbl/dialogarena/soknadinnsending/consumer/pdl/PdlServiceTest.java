@@ -16,6 +16,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -32,7 +33,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.notNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -101,6 +101,7 @@ public class PdlServiceTest {
 
         assertThat(result.getEktefelle(), is(notNullValue()));
         assertThat(result.getEktefelle().getFnr(), is(FDAT_IDENT));
+        assertThat(result.getEktefelle().getFodselsdato().toString(), is(LocalDate.of(1922, 12, 11).toString()));
         verify(pdlConsumer, times(0)).hentEktefelle(anyString());
         verify(pdlPersonMapper, times(0)).mapTilEktefelle(any(), anyString(), any());
     }
