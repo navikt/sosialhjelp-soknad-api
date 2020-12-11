@@ -78,7 +78,14 @@ public class PdlService {
                 }
                 if (erFDAT(ektefelleIdent)) {
                     log.info("Sivilstand.relatertVedSivilstand (ektefelleIdent) er FDAT -> kaller ikke hentPerson for ektefelle");
-                    return null;
+                    return new Ektefelle()
+                            .withFornavn("")
+                            .withMellomnavn("")
+                            .withEtternavn("")
+                            .withFodselsdato(null)
+                            .withFnr(ektefelleIdent)
+                            .withFolkeregistrertsammen(false)
+                            .withIkketilgangtilektefelle(false);
                 }
 
                 loggHvisIdentIkkeErFnr(ektefelleIdent);
