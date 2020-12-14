@@ -39,7 +39,9 @@ public class PersonSammenligner {
         if (person.getDiskresjonskode() != null && pdlPerson.getDiskresjonskode() != null && !person.getDiskresjonskode().equals(pdlPerson.getDiskresjonskode())) {
             ulikeFelter.add("Diskresjonskode");
         }
-        if (!person.getStatsborgerskap().equals(pdlPerson.getStatsborgerskap())) {
+        if (!pdlPerson.getStatsborgerskap().isEmpty()
+                && person.getStatsborgerskap().size() == 1
+                && !pdlPerson.getStatsborgerskap().contains(person.getStatsborgerskap().get(0))) {
             ulikeFelter.add(String.format("Statsborgerskap [%s] vs [%s]", person.getStatsborgerskap(), pdlPerson.getStatsborgerskap()));
         }
         if (ulikeFelter.size() > 0) {
