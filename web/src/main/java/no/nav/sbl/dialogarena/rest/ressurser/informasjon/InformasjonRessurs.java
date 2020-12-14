@@ -3,15 +3,13 @@ package no.nav.sbl.dialogarena.rest.ressurser.informasjon;
 import no.nav.metrics.aspects.Timed;
 import no.nav.sbl.dialogarena.rest.Logg;
 import no.nav.sbl.dialogarena.rest.ressurser.personalia.NavEnhetRessurs;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Person;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseForslag;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.fiks.DigisosApi;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fiks.KommuneInfoService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.sendsoknad.domain.util.KommuneTilNavEnhetMapper;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.InformasjonService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.adresse.AdresseSokService;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdlperson.PdlEllerPersonV1Service;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.dialogarena.utils.NedetidUtils;
 import no.nav.security.token.support.core.api.ProtectedWithClaims;
@@ -56,21 +54,24 @@ public class InformasjonRessurs {
 
     private static final Logger logger = LoggerFactory.getLogger(InformasjonRessurs.class);
     private static final Logger klientlogger = LoggerFactory.getLogger("klientlogger");
-
-    private static final List<String> DISKRESJONSKODER = asList("6", "7");
+    private static final String KODE_6 = "SPSF";
+    private static final String KODE_7 = "SPFO";
+    private static final List<String> DISKRESJONSKODER = asList("6", "7", KODE_6, KODE_7);
 
     private final InformasjonService informasjon;
     private final NavMessageSource messageSource;
-    private final PersonService personService;
+//    private final PersonService personService;
     private final AdresseSokService adresseSokService;
     private final KommuneInfoService kommuneInfoService;
+    private final PdlEllerPersonV1Service pdlEllerPersonV1Service;
 
-    public InformasjonRessurs(InformasjonService informasjon, NavMessageSource messageSource, PersonService personService, AdresseSokService adresseSokService, KommuneInfoService kommuneInfoService) {
+    public InformasjonRessurs(InformasjonService informasjon, NavMessageSource messageSource, AdresseSokService adresseSokService, KommuneInfoService kommuneInfoService, PdlEllerPersonV1Service pdlEllerPersonV1Service) {
         this.informasjon = informasjon;
         this.messageSource = messageSource;
-        this.personService = personService;
+//        this.personService = personService;
         this.adresseSokService = adresseSokService;
         this.kommuneInfoService = kommuneInfoService;
+        this.pdlEllerPersonV1Service = pdlEllerPersonV1Service;
     }
 
     @GET
@@ -83,7 +84,8 @@ public class InformasjonRessurs {
     @Path("/fornavn")
     public Map<String, String> hentFornavn() {
         String fnr = SubjectHandler.getUserId();
-        Person person = personService.hentPerson(fnr);
+        var person = pdlEllerPersonV1Service.hentPerson(fnr);
+//        Person person = personService.hentPerson(fnr);
         if (person == null) {
             return new HashMap<>();
         }
@@ -118,7 +120,8 @@ public class InformasjonRessurs {
     @Path("/utslagskriterier/sosialhjelp")
     public Map<String, Object> hentAdresse() {
         String uid = SubjectHandler.getUserId();
-        Person person = personService.hentPerson(uid);
+        var person = pdlEllerPersonV1Service.hentPerson(uid);
+//        Person person = personService.hentPerson(uid);
 
         Map<String, Object> resultat = new HashMap<>();
 

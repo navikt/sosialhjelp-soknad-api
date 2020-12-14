@@ -2,14 +2,13 @@ package no.nav.sbl.dialogarena.rest.ressurser;
 
 import no.nav.sbl.dialogarena.rest.ressurser.informasjon.InformasjonRessurs;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Person;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.fiks.DigisosApi;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fiks.KommuneInfoService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.StaticSubjectHandlerService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.sendsoknad.domain.util.KommuneTilNavEnhetMapper;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.InformasjonService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdlperson.PdlEllerPersonV1Service;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sosialhjelp.api.fiks.KommuneInfo;
 import org.junit.After;
@@ -38,25 +37,25 @@ public class InformasjonRessursTest {
     public static final String SOKNADSTYPE = "type";
 
     @Spy
-    InformasjonService informasjonService;
+    private InformasjonService informasjonService;
     @Spy
-    SoknadService soknadService;
+    private SoknadService soknadService;
     @Mock
-    private PersonService personService;
+    private NavMessageSource messageSource;
     @Mock
-    NavMessageSource messageSource;
+    private KommuneInfoService kommuneInfoService;
     @Mock
-    KommuneInfoService kommuneInfoService;
+    private PdlEllerPersonV1Service pdlEllerPersonV1Service;
 
     @InjectMocks
-    InformasjonRessurs ressurs;
+    private InformasjonRessurs ressurs;
 
     Locale norskBokmaal = new Locale("nb", "NO");
 
     @Before
     public void setUp() {
         SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
-        when(personService.hentPerson(anyString())).thenReturn(new Person().withFnr("12312312345"));
+        when(pdlEllerPersonV1Service.hentPerson(anyString())).thenReturn(new Person().withFnr("12312312345"));
     }
 
     @After
