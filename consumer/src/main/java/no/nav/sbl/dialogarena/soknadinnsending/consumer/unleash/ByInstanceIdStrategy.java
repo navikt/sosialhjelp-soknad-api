@@ -29,6 +29,6 @@ public class ByInstanceIdStrategy implements Strategy {
     }
 
     private boolean isCurrentInstance(String instance) {
-        return getProperty(INSTANCE_PROPERTY, "local").equals(instance);
+        return getProperty(INSTANCE_PROPERTY, "prod-sbs").equals(instance);
     }
 }

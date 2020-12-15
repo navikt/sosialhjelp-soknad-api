@@ -12,7 +12,7 @@ public class ByInstanceIdStrategyTest {
     private final ByInstanceIdStrategy strategy = new ByInstanceIdStrategy();
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() {
         System.clearProperty("unleash_instance_id");
     }
 
