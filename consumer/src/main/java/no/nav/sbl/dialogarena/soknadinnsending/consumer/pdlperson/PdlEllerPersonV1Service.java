@@ -34,7 +34,7 @@ public class PdlEllerPersonV1Service {
     }
 
     public Person hentPerson(String ident) {
-        var pdlEnabled = unleashConsumer.isEnabled(UNLEASH_BRUK_PDL);
+        var pdlEnabled = unleashConsumer.isEnabled(UNLEASH_BRUK_PDL, false);
         log.info("sosialhjelp.soknad.bruk-pdl: {}", pdlEnabled);
         if (pdlEnabled) {
             return hentPersonFraPdl(ident);
