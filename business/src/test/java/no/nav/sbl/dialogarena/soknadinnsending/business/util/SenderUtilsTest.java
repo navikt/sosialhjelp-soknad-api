@@ -25,6 +25,10 @@ public class SenderUtilsTest {
         setProperty("environment.name", "p");
         prefixedBehandlingsId = createPrefixedBehandlingsIdInNonProd(originalBehandlingsId);
         assertEquals(originalBehandlingsId, prefixedBehandlingsId);
+
+        setProperty("environment.name", "ukjent");
+        prefixedBehandlingsId = createPrefixedBehandlingsIdInNonProd(originalBehandlingsId);
+        assertEquals(originalBehandlingsId, prefixedBehandlingsId);
     }
 
     @Test
