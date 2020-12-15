@@ -16,26 +16,12 @@ import org.verapdf.pdfa.results.TestAssertion;
 import org.verapdf.pdfa.results.ValidationResult;
 
 public final class PdfValidator {
-    private static final Logger logger = LoggerFactory.getLogger(PdfValidator.class);
     
     static {
         VeraGreenfieldFoundryProvider.initialise();
     }
 
     private PdfValidator() {}
-    
-    
-    public static void softAssertValidPdfA(byte[] pdf) {
-        try {
-            assertValidPdfA(pdf);
-        } catch (RuntimeException e) {
-            if (isProduction()) {
-                logger.error("Feil ved validering av PDF.", e);
-            } else {
-                throw e;
-            }
-        }
-    }
     
     public static void assertValidPdfA(byte[] pdf) {
         final ValidationResult result = validatePdfA1b(pdf);
@@ -71,9 +57,5 @@ public final class PdfValidator {
         } catch (ValidationException e) {
             throw new RuntimeException("Ukjent feil ved forsøk på validering av PDF.", e);
         }
-    }
-    
-    private static boolean isProduction() {
-        return "p".equals(System.getProperty("environment.name"));
     }
 }

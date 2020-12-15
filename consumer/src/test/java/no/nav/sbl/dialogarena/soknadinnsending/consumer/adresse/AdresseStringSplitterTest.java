@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.adresse;
 
+import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.kodeverk.KodeverkService;
 import org.junit.Assert;
 import org.junit.Test;
@@ -15,35 +16,35 @@ public class AdresseStringSplitterTest {
 
     @Test
     public void tomStrengGirBlanktSvar() {
-        Assert.assertEquals("", AdresseStringSplitter.toSokedata("").adresse);
+        Assert.assertEquals("", AdresseStringSplitter.toSokedata(null,"").adresse);
     }
     
     @Test
     public void nullStrengGirNullSvar() {
-        Assert.assertNull(AdresseStringSplitter.toSokedata(null).adresse);
+        Assert.assertNull(AdresseStringSplitter.toSokedata(null, null).adresse);
     }
     
     @Test
     public void kunAdresseVirker() {
-        Assert.assertEquals("asdf", AdresseStringSplitter.toSokedata("asdf").adresse);
+        Assert.assertEquals("asdf", AdresseStringSplitter.toSokedata(null, "asdf").adresse);
     }
     
     @Test
     public void husnummer() {
-        final Sokedata result = AdresseStringSplitter.toSokedata("asdf 2");
+        final Sokedata result = AdresseStringSplitter.toSokedata(null, "asdf 2");
         Assert.assertEquals("asdf", result.adresse);
         Assert.assertEquals("2", result.husnummer);
     }
 
     @Test
     public void kunHusnummer() {
-        final Sokedata result = AdresseStringSplitter.toSokedata("234");
+        final Sokedata result = AdresseStringSplitter.toSokedata(null, "234");
         Assert.assertEquals("234", result.husnummer);
     }
     
     @Test
     public void husbokstav() {
-        final Sokedata result = AdresseStringSplitter.toSokedata("asdf 2G");
+        final Sokedata result = AdresseStringSplitter.toSokedata(null, "asdf 2G");
         Assert.assertEquals("asdf", result.adresse);
         Assert.assertEquals("2", result.husnummer);
         Assert.assertEquals("G", result.husbokstav);
@@ -51,14 +52,14 @@ public class AdresseStringSplitterTest {
 
     @Test
     public void husnummerOgBokstav() {
-        final Sokedata result = AdresseStringSplitter.toSokedata("212G");
+        final Sokedata result = AdresseStringSplitter.toSokedata(null, "212G");
         Assert.assertEquals("212", result.husnummer);
         Assert.assertEquals("G", result.husbokstav);
     }
     
     @Test
     public void postnummer() {
-        final Sokedata result = AdresseStringSplitter.toSokedata("asdf 2G, 0882");
+        final Sokedata result = AdresseStringSplitter.toSokedata(null, "asdf 2G, 0882");
         Assert.assertEquals("asdf", result.adresse);
         Assert.assertEquals("2", result.husnummer);
         Assert.assertEquals("G", result.husbokstav);
@@ -67,7 +68,7 @@ public class AdresseStringSplitterTest {
 
     @Test
     public void postnummerMedMellomromFlyttet() {
-        final Sokedata result = AdresseStringSplitter.toSokedata("asdf 2G ,0882");
+        final Sokedata result = AdresseStringSplitter.toSokedata(null, "asdf 2G ,0882");
         Assert.assertEquals("asdf", result.adresse);
         Assert.assertEquals("2", result.husnummer);
         Assert.assertEquals("G", result.husbokstav);
@@ -76,19 +77,19 @@ public class AdresseStringSplitterTest {
 
     @Test
     public void kunPostnummer() {
-        final Sokedata result = AdresseStringSplitter.toSokedata("0882");
+        final Sokedata result = AdresseStringSplitter.toSokedata(null, "0882");
         Assert.assertEquals("0882", result.postnummer);
     }
 
     @Test
     public void kunPostnummerMedMellomrom() {
-        final Sokedata result = AdresseStringSplitter.toSokedata("   0882   ");
+        final Sokedata result = AdresseStringSplitter.toSokedata(null, "   0882   ");
         Assert.assertEquals("0882", result.postnummer);
     }
     
     @Test
     public void poststed() {
-        final Sokedata result = AdresseStringSplitter.toSokedata("asdf 2G, 0882 OSLO");
+        final Sokedata result = AdresseStringSplitter.toSokedata(null, "asdf 2G, 0882 OSLO");
         Assert.assertEquals("asdf", result.adresse);
         Assert.assertEquals("2", result.husnummer);
         Assert.assertEquals("G", result.husbokstav);
@@ -98,21 +99,21 @@ public class AdresseStringSplitterTest {
 
     @Test
     public void kunGateOgPostnummer() {
-        final Sokedata result = AdresseStringSplitter.toSokedata("Veivei, 0110 ");
+        final Sokedata result = AdresseStringSplitter.toSokedata(null, "Veivei, 0110 ");
         Assert.assertEquals("Veivei", result.adresse);
         Assert.assertEquals("0110", result.postnummer);
     }
 
     @Test
     public void kunGateOgPoststed() {
-        final Sokedata result = AdresseStringSplitter.toSokedata("Veivei, OSLO");
+        final Sokedata result = AdresseStringSplitter.toSokedata(null, "Veivei, OSLO");
         Assert.assertEquals("Veivei", result.adresse);
         Assert.assertEquals("OSLO", result.poststed);
     }
 
     @Test
     public void dobbeltnavnPlussDiverseMellomrom() {
-        final Sokedata result = AdresseStringSplitter.toSokedata("    Nedre Glommas    Vei   211G  ,  0882  ØVRE OSLO   ");
+        final Sokedata result = AdresseStringSplitter.toSokedata(null, "    Nedre Glommas    Vei   211G  ,  0882  ØVRE OSLO   ");
         Assert.assertEquals("Nedre Glommas Vei", result.adresse);
         Assert.assertEquals("211", result.husnummer);
         Assert.assertEquals("G", result.husbokstav);
@@ -121,7 +122,7 @@ public class AdresseStringSplitterTest {
     }
     @Test
     public void kompakt() {
-        final Sokedata result = AdresseStringSplitter.toSokedata(" Nedre Glommas Vei211G,0882ØVRE OSLO   ");
+        final Sokedata result = AdresseStringSplitter.toSokedata(null, " Nedre Glommas Vei211G,0882ØVRE OSLO   ");
         Assert.assertEquals("Nedre Glommas Vei", result.adresse);
         Assert.assertEquals("211", result.husnummer);
         Assert.assertEquals("G", result.husbokstav);
@@ -131,7 +132,7 @@ public class AdresseStringSplitterTest {
 
     @Test
     public void poststedUtenPostnummer() {
-        final Sokedata result = AdresseStringSplitter.toSokedata("asdf 2G OSLO");
+        final Sokedata result = AdresseStringSplitter.toSokedata(null, "asdf 2G OSLO");
         Assert.assertEquals("asdf", result.adresse);
         Assert.assertEquals("2", result.husnummer);
         Assert.assertEquals("G", result.husbokstav);
@@ -140,10 +141,25 @@ public class AdresseStringSplitterTest {
     
     @Test
     public void utenHusnummer() {
-        final Sokedata result = AdresseStringSplitter.toSokedata("asdf, 0882 OSLO");
+        final Sokedata result = AdresseStringSplitter.toSokedata(null, "asdf, 0882 OSLO");
         Assert.assertEquals("asdf", result.adresse);
         Assert.assertEquals("0882", result.postnummer);
         Assert.assertEquals("OSLO", result.poststed);
+    }
+
+
+    @Test
+    public void adresseMedToBokstaver_girEksaktSokeType() {
+        final Sokedata result = AdresseStringSplitter.toSokedata(null, "Sæ");
+        Assert.assertEquals("Sæ", result.adresse);
+        Assert.assertEquals(AdresseSokConsumer.Soketype.EKSAKT, result.soketype);
+    }
+
+    @Test
+    public void adresseMedFlereBokstaver_girLignendeSokeType() {
+        final Sokedata result = AdresseStringSplitter.toSokedata(null, "asd");
+        Assert.assertEquals("asd", result.adresse);
+        Assert.assertEquals(AdresseSokConsumer.Soketype.LIGNENDE, result.soketype);
     }
     
     @Test

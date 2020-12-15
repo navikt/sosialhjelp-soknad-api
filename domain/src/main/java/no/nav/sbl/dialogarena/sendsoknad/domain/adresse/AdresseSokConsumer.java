@@ -5,7 +5,6 @@ import java.util.List;
 
 public interface AdresseSokConsumer {
 
-    AdressesokRespons sokAdresse(String adresse);
     AdressesokRespons sokAdresse(Sokedata adressefelter);
     void ping();
 

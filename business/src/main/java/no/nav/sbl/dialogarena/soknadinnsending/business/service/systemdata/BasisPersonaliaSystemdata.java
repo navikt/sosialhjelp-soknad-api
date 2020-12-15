@@ -28,8 +28,8 @@ public class BasisPersonaliaSystemdata implements Systemdata {
     private static final String ISL = "ISL";
     private static final String DNK = "DNK";
     private static final String FIN = "FIN";
-    private static final String PDL_UKJENT_STATSBORGERSKAP = "XUK";
-    private static final String PDL_STATSLOS = "XXX";
+    public static final String PDL_UKJENT_STATSBORGERSKAP = "XUK";
+    public static final String PDL_STATSLOS = "XXX";
 
     @Inject
     private PersonService personService;

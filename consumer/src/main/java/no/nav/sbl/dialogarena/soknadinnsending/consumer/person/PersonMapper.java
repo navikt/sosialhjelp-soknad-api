@@ -6,6 +6,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.Ektefelle;
 import no.nav.sbl.dialogarena.sendsoknad.domain.NavFodselsnummer;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.*;
 import org.joda.time.LocalDate;
+import org.slf4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,8 +15,11 @@ import java.util.Objects;
 
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 import static org.joda.time.Years.yearsBetween;
+import static org.slf4j.LoggerFactory.getLogger;
 
 public class PersonMapper {
+
+    private static final Logger log = getLogger(PersonMapper.class);
 
     static final String RELASJON_EKTEFELLE = "EKTE";
     static final String RELASJON_REGISTRERT_PARTNER = "REPA";
@@ -165,6 +169,11 @@ public class PersonMapper {
         }
         String identtype = xmlPerson.getIdent().getType().getValue();
         String ident = xmlPerson.getIdent().getIdent();
+
+        if (isNotEmpty(ident) && ident.length() == 11 && ident.substring(6).equalsIgnoreCase("00000")) {
+            log.info("Ektefelleident fra Person_v1 er FDAT, men identtype = {}", identtype);
+        }
+
         if ("FNR".equalsIgnoreCase(identtype) && isNotEmpty(ident)) {
             NavFodselsnummer fnr = new NavFodselsnummer(xmlPerson.getIdent().getIdent());
             return new LocalDate(fnr.getBirthYear() + "-" + fnr.getMonth() + "-" + fnr.getDayInMonth());
