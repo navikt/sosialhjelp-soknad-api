@@ -60,7 +60,6 @@ public class InformasjonRessurs {
 
     private final InformasjonService informasjon;
     private final NavMessageSource messageSource;
-//    private final PersonService personService;
     private final AdresseSokService adresseSokService;
     private final KommuneInfoService kommuneInfoService;
     private final PdlEllerPersonV1Service pdlEllerPersonV1Service;
@@ -68,7 +67,6 @@ public class InformasjonRessurs {
     public InformasjonRessurs(InformasjonService informasjon, NavMessageSource messageSource, AdresseSokService adresseSokService, KommuneInfoService kommuneInfoService, PdlEllerPersonV1Service pdlEllerPersonV1Service) {
         this.informasjon = informasjon;
         this.messageSource = messageSource;
-//        this.personService = personService;
         this.adresseSokService = adresseSokService;
         this.kommuneInfoService = kommuneInfoService;
         this.pdlEllerPersonV1Service = pdlEllerPersonV1Service;
@@ -85,7 +83,6 @@ public class InformasjonRessurs {
     public Map<String, String> hentFornavn() {
         String fnr = SubjectHandler.getUserId();
         var person = pdlEllerPersonV1Service.hentPerson(fnr);
-//        Person person = personService.hentPerson(fnr);
         if (person == null) {
             return new HashMap<>();
         }
@@ -121,7 +118,6 @@ public class InformasjonRessurs {
     public Map<String, Object> hentAdresse() {
         String uid = SubjectHandler.getUserId();
         var person = pdlEllerPersonV1Service.hentPerson(uid);
-//        Person person = personService.hentPerson(uid);
 
         Map<String, Object> resultat = new HashMap<>();
 
