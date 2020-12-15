@@ -17,7 +17,7 @@ public class MetricsConfig {
     }
 
     public MetricsConfig() {
-        String miljo = System.getenv("FASIT_ENVIRONMENT_NAME");
+        String miljo = System.getenv("ENVIRONMENT_NAME");
         if (!parseBoolean(getProperty("disable.metrics.report"))) {
             MetricsClient.enableMetrics(no.nav.metrics.MetricsConfig.resolveNaisConfig().withEnvironment(miljo));
         }

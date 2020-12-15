@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.virusscan;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,8 +39,14 @@ public class VirusScanConnectionTest {
         when(config.getUri()).thenReturn(URI.create("test-uri"));
     }
 
+    @After
+    public void tearDown() {
+        System.clearProperty("environment.name");
+    }
+
     @Test
     public void scanFile_filenameIsVirustest_isInfected() {
+        System.setProperty("environment.name", "test");
         assertThat(connection.isInfected("virustest", data,behandlingsId)).isTrue();
         verify(operations, times(0)).exchange(any(RequestEntity.class), any(Class.class));
     }

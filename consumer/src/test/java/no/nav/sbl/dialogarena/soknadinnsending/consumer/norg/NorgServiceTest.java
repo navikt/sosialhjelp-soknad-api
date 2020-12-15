@@ -41,9 +41,14 @@ public class NorgServiceTest {
     @InjectMocks
     private NorgService norgService;
 
+    @After
+    public void tearDown() {
+        System.clearProperty("environment.name");
+    }
+
     @Test
     public void finnEnhetForGtBrukerTestOrgNrForTest() {
-        setProperty("environment.name", "t5");
+        setProperty("environment.name", "test");
         when(norgConsumer.getEnhetForGeografiskTilknytning(GT)).thenReturn(lagRsNorgEnhet());
 
         NavEnhet navEnhet = norgService.getEnhetForGt(GT);

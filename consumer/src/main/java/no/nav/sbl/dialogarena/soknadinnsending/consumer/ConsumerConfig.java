@@ -22,6 +22,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig.OrganisasjonR
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig.PdlRestConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig.STSTokenRestConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig.SkattbarInntektRestConfig;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig.UnleashRestConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.skatt.SkattbarInntektService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.utbetaling.UtbetalingService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig.FiksWSConfig;
@@ -71,7 +72,8 @@ public class ConsumerConfig {
             STSTokenRestConfig.class,
             DkifRestConfig.class,
             SkattbarInntektRestConfig.class,
-            KodeverkRestConfig.class
+            KodeverkRestConfig.class,
+            UnleashRestConfig.class
     })
     public static class WsServices {
     }

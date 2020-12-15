@@ -18,7 +18,7 @@ public abstract class AbstractIT {
     @BeforeClass
     public static void beforeClass() throws Exception {
         System.setProperty("no.nav.sbl.dialogarena.sendsoknad.hsqldb", "true");
-        System.setProperty("environment.name", "t1");
+        System.setProperty("environment.name", "test");
         System.setProperty(TestProperties.CONTAINER_FACTORY, "org.glassfish.jersey.test.external.ExternalTestContainerFactory");
         System.setProperty(TestProperties.CONTAINER_PORT, "" + PORT);
         System.setProperty(TestProperties.LOG_TRAFFIC, "true");
@@ -32,6 +32,7 @@ public abstract class AbstractIT {
     @AfterClass
     public static void afterClass() {
         jetty.jetty.stop.run();
+        System.clearProperty("environment.name");
     }
 
     protected SoknadTester soknadOpprettet() {

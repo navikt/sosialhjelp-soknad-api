@@ -81,7 +81,7 @@ public class FinnGyldigeAdresser {
                     || ad.adressenavn.length() < 4
                     || ad.postnummer == null
                     || ad.poststed == null
-                    || adresseSokConsumer.sokAdresse(toGateadresseSokestreng(ad)).adresseDataList.size() != 1;
+                    || adresseSokConsumer.sokAdresse(new Sokedata().withAdresse(toGateadresseSokestreng(ad))).adresseDataList.size() != 1;
         } catch (RuntimeException e) {
             return true;
         }

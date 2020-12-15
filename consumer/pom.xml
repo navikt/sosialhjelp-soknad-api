@@ -202,6 +202,10 @@
             <groupId>no.nav.common</groupId>
             <artifactId>types</artifactId>
         </dependency>
+        <dependency>
+            <groupId>no.finn.unleash</groupId>
+            <artifactId>unleash-client-java</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>org.assertj</groupId>

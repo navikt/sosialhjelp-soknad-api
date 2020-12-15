@@ -1,11 +1,22 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain.util;
 
+import org.junit.After;
 import org.junit.Test;
 
 import static no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils.feilmeldingUtenFnr;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils.isNonProduction;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 public class ServiceUtilsTest {
+
+
+    @After
+    public void tearDown() {
+        System.clearProperty("environment.name");
+    }
 
     @Test
     public void skalStrippeVekkFnutter() {
@@ -62,6 +73,44 @@ public class ServiceUtilsTest {
     public void skalIkkeFeile_medNull_iFeilmelding() {
         String res = feilmeldingUtenFnr(null);
 
-        assertEquals(null, res);
+        assertNull(res);
+    }
+
+    @Test
+    public void isNonProduction_skalGiTrue_forNonProd() {
+        System.setProperty("environment.name", "q0");
+        assertTrue(isNonProduction());
+        System.setProperty("environment.name", "q1");
+        assertTrue(isNonProduction());
+        System.setProperty("environment.name", "labs-gcp");
+        assertTrue(isNonProduction());
+        System.setProperty("environment.name", "dev-gcp");
+        assertTrue(isNonProduction());
+        System.setProperty("environment.name", "local");
+        assertTrue(isNonProduction());
+        System.setProperty("environment.name", "test");
+        assertTrue(isNonProduction());
+    }
+
+    @Test
+    public void isNonProduction_skalGiFalse_forProd() {
+        System.setProperty("environment.name", "p");
+        assertFalse(isNonProduction());
+        System.setProperty("environment.name", "prod");
+        assertFalse(isNonProduction());
+        System.setProperty("environment.name", "prod-sbs");
+        assertFalse(isNonProduction());
+    }
+
+    @Test
+    public void isNonProduction_skalGiFalse_forUkjentMiljo() {
+        System.clearProperty("environment.name");
+        assertFalse(isNonProduction());
+        System.setProperty("environment.name", "");
+        assertFalse(isNonProduction());
+        System.setProperty("environment.name", "ukjent");
+        assertFalse(isNonProduction());
+        System.setProperty("environment.name", "mock");
+        assertFalse(isNonProduction());
     }
 }

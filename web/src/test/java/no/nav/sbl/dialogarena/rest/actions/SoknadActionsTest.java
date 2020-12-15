@@ -88,6 +88,7 @@ public class SoknadActionsTest {
 
     @Before
     public void setUp() {
+        System.setProperty("environment.name", "test");
         SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
         reset(tekster);
         when(tekster.finnTekst(eq("sendtSoknad.sendEpost.epostSubject"), any(Object[].class), any(Locale.class))).thenReturn("Emne");
@@ -102,6 +103,7 @@ public class SoknadActionsTest {
         System.clearProperty(NedetidUtils.NEDETID_START);
         System.clearProperty(NedetidUtils.NEDETID_SLUTT);
         SubjectHandler.resetOidcSubjectHandlerService();
+        System.clearProperty("environment.name");
     }
 
     @Test(expected = SoknadenHarNedetidException.class)

@@ -3,26 +3,20 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer.adresse;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer;
 import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.Sokedata;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.kodeverk.KodeverkService;
 import org.slf4j.Logger;
 
+import static no.nav.sbl.dialogarena.soknadinnsending.consumer.adresse.AdresseSokService.isAddressTooShortOrNull;
 import static org.slf4j.LoggerFactory.getLogger;
 
 
 public final class AdresseStringSplitter {
     private static final Logger log = getLogger(AdresseStringSplitter.class);
-
-    private AdresseStringSplitter() {
-        
-    }
-    
-    static Sokedata toSokedata(String adresse) {
-        return toSokedata(null, adresse);
-    }
     
     static Sokedata toSokedata(KodeverkService kodeverkService, String adresse) {
-        if (adresse == null || adresse.trim().length() <= 1) {
+        if (isAddressTooShortOrNull(adresse)) {
             return new Sokedata().withAdresse(adresse);
         }
 
@@ -32,23 +26,26 @@ public final class AdresseStringSplitter {
             new Sokedata().withAdresse(adresse)
         );
     }
-    
+
     static Sokedata fullstendigGateadresseMatch(KodeverkService kodeverkService, String adresse) {
-        final Pattern p = Pattern.compile("^([^0-9,]*) *([0-9]*)?([^,])? *,? *([0-9][0-9][0-9][0-9])? *[0-9]* *([^0-9]*[^ ])? *$");
-        final Matcher m = p.matcher(adresse);
+        Pattern p = Pattern.compile("^([^0-9,]*) *([0-9]*)?([^,])? *,? *([0-9][0-9][0-9][0-9])? *[0-9]* *([^0-9]*[^ ])? *$");
+        Matcher m = p.matcher(adresse);
         if (m.matches()) {
-            final String postnummer = m.group(4);
-            final String kommunenavn = (postnummer == null) ? m.group(5) : null;
-            final String kommunenummer = getKommunenummer(kodeverkService, kommunenavn);
-            final String poststed = kommunenummer == null ? m.group(5) : null;
-            
+            String postnummer = m.group(4);
+            String kommunenavn = (postnummer == null) ? m.group(5) : null;
+            String kommunenummer = getKommunenummer(kodeverkService, kommunenavn);
+            String poststed = kommunenummer == null ? m.group(5) : null;
+            String gateAdresse = m.group(1).trim().replaceAll(" +", " ");
+            AdresseSokConsumer.Soketype sokeType = gateAdresse.length() < 3 ? AdresseSokConsumer.Soketype.EKSAKT : AdresseSokConsumer.Soketype.LIGNENDE;
+
             return new Sokedata()
-                    .withAdresse(m.group(1).trim().replaceAll(" +", " "))
+                    .withAdresse(gateAdresse)
                     .withHusnummer(m.group(2))
                     .withHusbokstav(m.group(3))
                     .withPostnummer(postnummer)
                     .withPoststed(poststed)
-                    .withKommunenummer(kommunenummer);
+                    .withKommunenummer(kommunenummer)
+                    .withSoketype(sokeType);
         }
         return null;
     }
