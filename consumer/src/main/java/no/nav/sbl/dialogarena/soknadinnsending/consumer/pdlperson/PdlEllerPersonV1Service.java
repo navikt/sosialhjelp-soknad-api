@@ -33,7 +33,7 @@ public class PdlEllerPersonV1Service {
         this.unleashConsumer = unleashConsumer;
     }
 
-    public Person hentPerson(String ident ) {
+    public Person hentPerson(String ident) {
         var pdlEnabled = unleashConsumer.isEnabled(UNLEASH_BRUK_PDL);
         log.info("sosialhjelp.soknad.bruk-pdl: {}", pdlEnabled);
         if (pdlEnabled) {
@@ -42,7 +42,7 @@ public class PdlEllerPersonV1Service {
         return hentPersonFraTps(ident);
     }
 
-    public List<Barn> hentBarn(String ident ) {
+    public List<Barn> hentBarn(String ident) {
         var pdlEnabled = unleashConsumer.isEnabled(UNLEASH_BRUK_PDL);
         log.info("sosialhjelp.soknad.bruk-pdl: {}", pdlEnabled);
         if (pdlEnabled) {
