@@ -22,6 +22,7 @@
     "DITTNAV_LINK_URL": "https://dittnav/dittnav/",
     "DKIF_API_BASEURL": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/dkif/",
     "PDL_API_URL": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/pdl/",
+    "UNLEASH_API_URL": "https://unleash.nais.io/api",
     "EKSTERNAPP_SKATT_DATASAMARBEID_API_INNTEKTSMOTTAKER_URL": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/skatteetaten/",
     "EREG_API_BASEURL": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/freg/",
     "FIKS_NOKKELFIL": "svarut_public_test.pem",
@@ -50,6 +51,7 @@
     "START_KODEVERK_WITHMOCK": "true",
     "START_PERSON_WITHMOCK": "true",
     "START_UTBETALING_WITHMOCK": "true",
-    "VIRKSOMHETSSERTIFIKAT_PATH": "/var/run/secrets"
+    "VIRKSOMHETSSERTIFIKAT_PATH": "/var/run/secrets",
+    "UNLEASH_INSTANCE_ID": "dev-gcp"
   }
 }
