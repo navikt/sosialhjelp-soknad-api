@@ -68,6 +68,7 @@ public class OpplastetVedleggServiceTest {
 
     @Before
     public void setUp() {
+        System.setProperty("environment.name", "test");
         SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
         opplastetVedleggService.setUp();
     }
@@ -75,6 +76,7 @@ public class OpplastetVedleggServiceTest {
     @After
     public void tearDown() {
         SubjectHandler.resetOidcSubjectHandlerService();
+        System.clearProperty("environment.name");
     }
 
     @Test

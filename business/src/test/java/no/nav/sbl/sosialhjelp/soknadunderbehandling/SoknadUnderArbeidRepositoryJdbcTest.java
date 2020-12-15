@@ -47,7 +47,7 @@ public class SoknadUnderArbeidRepositoryJdbcTest {
     private OpplastetVedleggRepository opplastetVedleggRepository;
 
     @After
-    public void cleanUp() {
+    public void tearDown() {
         soknadRepositoryTestSupport.getJdbcTemplate().update("delete from SOKNAD_UNDER_ARBEID");
         soknadRepositoryTestSupport.getJdbcTemplate().update("delete from OPPLASTET_VEDLEGG");
     }

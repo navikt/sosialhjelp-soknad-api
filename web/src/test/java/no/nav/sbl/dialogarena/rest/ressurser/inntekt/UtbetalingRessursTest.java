@@ -54,6 +54,7 @@ public class UtbetalingRessursTest {
 
     @Before
     public void setUp() {
+        System.setProperty("environment.name", "test");
         SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
         when(textService.getJsonOkonomiTittel(anyString())).thenReturn("tittel");
     }
@@ -61,6 +62,7 @@ public class UtbetalingRessursTest {
     @After
     public void tearDown() {
         SubjectHandler.resetOidcSubjectHandlerService();
+        System.clearProperty("environment.name");
     }
 
     @Test

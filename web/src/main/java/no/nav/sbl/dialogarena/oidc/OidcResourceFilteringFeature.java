@@ -30,7 +30,7 @@ public class OidcResourceFilteringFeature implements DynamicFeature {
     }
 
     private boolean isAllowedWhenNotRunningInProd() {
-        return !ServiceUtils.isRunningInProd() && (isOidcMock() || MockUtils.isTillatMockRessurs());
+        return ServiceUtils.isNonProduction() && (isOidcMock() || MockUtils.isTillatMockRessurs());
     }
 
     private boolean isOidcMock() {
