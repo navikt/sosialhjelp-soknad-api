@@ -50,6 +50,7 @@ public class SoknadServiceIntegrasjonsTest {
 
     @Before
     public void setUp() {
+        System.setProperty("environment.name", "test");
         SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
         when(soknadMetadataRepository.hent(anyString())).thenReturn(new SoknadMetadata());
         when(soknadUnderArbeidRepository.hentSoknadOptional(anyString(), anyString())).thenReturn(Optional.of(new SoknadUnderArbeid().withBehandlingsId(EN_BEHANDLINGSID).withVersjon(0L)));
@@ -59,6 +60,7 @@ public class SoknadServiceIntegrasjonsTest {
     @After
     public void tearDown() {
         SubjectHandler.resetOidcSubjectHandlerService();
+        System.clearProperty("environment.name");
     }
 
     @Test

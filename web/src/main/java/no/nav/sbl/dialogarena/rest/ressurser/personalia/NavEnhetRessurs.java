@@ -177,7 +177,7 @@ public class NavEnhetRessurs {
             return null;
         }
 
-        if (!ServiceUtils.isRunningInProd() && MockUtils.isAlltidHentKommuneInfoFraNavTestkommune()) {
+        if (ServiceUtils.isNonProduction() && MockUtils.isAlltidHentKommuneInfoFraNavTestkommune()) {
             log.error("Sender til Nav-testkommune (3002). Du skal aldri se denne meldingen i PROD");
             kommunenummer = "3002";
         }

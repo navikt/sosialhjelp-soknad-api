@@ -28,7 +28,7 @@ class VirusScanConnection {
 
     boolean isInfected(String filnavn, byte[] data, String behandlingsId) {
         try {
-            if (!ServiceUtils.isRunningInProd() && filnavn.startsWith("virustest")) {
+            if (ServiceUtils.isNonProduction() && filnavn.startsWith("virustest")) {
                 return true;
             }
             logger.info("Scanner {} bytes", data.length);

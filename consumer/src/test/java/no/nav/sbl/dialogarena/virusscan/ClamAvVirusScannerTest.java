@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.virusscan;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.OpplastingException;
+import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -23,8 +24,14 @@ public class ClamAvVirusScannerTest {
     private String behandlingsId = "1100001";
     private byte[] data = new byte[]{};
 
+    @After
+    public void tearDown() {
+        System.clearProperty("environment.name");
+    }
+
     @Test
     public void scanFile_scanningIsEnabled_throwsException() {
+        System.setProperty("environment.name", "test");
         when(config.isEnabled()).thenReturn(true);
         assertThatExceptionOfType(OpplastingException.class).isThrownBy(
             () -> virusScanner.scan(filnavn, data, behandlingsId)

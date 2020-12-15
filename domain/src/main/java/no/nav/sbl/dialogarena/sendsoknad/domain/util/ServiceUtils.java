@@ -10,7 +10,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
 
 
 public class ServiceUtils {
-    public final static String FASIT_ENVIRONMENT_NAME = "FASIT_ENVIRONMENT_NAME";
+    public final static String ENVIRONMENT_NAME = "ENVIRONMENT_NAME";
     public final static String IS_SCHEDULED_TASKS_DISABLED = "scheduler.disable";
     public final static String IS_SENDING_TIL_DIGISOS_API_ENABLED = "digisosapi.sending.enable";
     public final static String IS_ALLTID_SEND_TIL_NAV_TESTKOMMUNE = "digisosapi.sending.alltidTilTestkommune.enable";
@@ -40,8 +40,17 @@ public class ServiceUtils {
         return Hex.toHexString(sha512.digest());
     }
 
-    public static boolean isRunningInProd(){
-        return "p".equals(System.getenv(FASIT_ENVIRONMENT_NAME));
+    public static boolean isNonProduction() {
+        // Bruk isNonProduction() -sjekk fremfor å sjekke om miljø configurert som prod. På denne måten er default-configurasjon vår alltid prodlik.
+        // Slik at ved evt. endringer eller feilkonfigurasjoner, vil ikke prod bli ødelagt. Feks. ved sende ekte søknader til testkommuner som ikke finnes.
+        // Prod-konfigurasjon i test vil oppdages raskt og man vil ikke klare å skape problemer for prod da man trenger secrets som ikke er tilgjengelig i testmiljøer.
+        String miljo = System.getProperty("environment.name", "");
+        return miljo.equals("q0")
+                || miljo.equals("q1")
+                || miljo.equals("labs-gcp")
+                || miljo.equals("dev-gcp")
+                || miljo.equals("local")
+                || miljo.equals("test");
     }
 
     public static boolean isScheduledTasksDisabled(){

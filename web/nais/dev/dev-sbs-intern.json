@@ -77,7 +77,7 @@
     "IS_ALLTID_HENT_KOMMUNEINFO_FRA_NAV_TESTKOMMUNE": "true",
     "NEDETID_START": "21.11.2020 14:00:00",
     "NEDETID_SLUTT": "21.11.2020 15:00:00",
-    "FASIT_ENVIRONMENT_NAME": "q1",
+    "ENVIRONMENT_NAME": "q1",
     "TILLATMOCK": "false",
     "START_NORG_WITHMOCK": "false",
     "REDIS_HOST": "sosialhjelp-soknad-api-redis.teamdigisos.svc.nais.local",

@@ -54,6 +54,7 @@ public class InformasjonRessursTest {
 
     @Before
     public void setUp() {
+        System.setProperty("environment.name", "test");
         SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
         when(pdlEllerPersonV1Service.hentPerson(anyString())).thenReturn(new Person().withFnr("12312312345"));
     }
@@ -61,6 +62,7 @@ public class InformasjonRessursTest {
     @After
     public void tearDown() {
         SubjectHandler.resetOidcSubjectHandlerService();
+        System.clearProperty("environment.name");
     }
 
     @Test
