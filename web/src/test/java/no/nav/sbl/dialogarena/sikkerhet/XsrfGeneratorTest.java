@@ -4,16 +4,28 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.exception.AuthorizationException
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.StaticSubjectHandlerService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import org.joda.time.DateTime;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.fail;
 
 public class XsrfGeneratorTest {
 
+    @Before
+    public void setUp() {
+        System.setProperty("environment.name", "test");
+        SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
+    }
+
+    @After
+    public void tearDown() {
+        SubjectHandler.resetOidcSubjectHandlerService();
+        System.clearProperty("environment.name");
+    }
+
     @Test
     public void skalGenerereBasertPaaInput() {
-        SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
-
         String token = XsrfGenerator.generateXsrfToken("1L");
         String tokenYesterday = XsrfGenerator.generateXsrfToken("1L", new DateTime().minusDays(1).toString("yyyyMMdd"));
         XsrfGenerator.sjekkXsrfToken(token, "1L");
@@ -23,8 +35,6 @@ public class XsrfGeneratorTest {
         ((StaticSubjectHandlerService) SubjectHandler.getSubjectHandlerService()).setFakeToken("Token2");
         ((StaticSubjectHandlerService) SubjectHandler.getSubjectHandlerService()).setUser("12345");
         sjekkAtMetodeKasterException(token, 1L);
-
-        ((StaticSubjectHandlerService) SubjectHandler.getSubjectHandlerService()).reset();
     }
 
     private void sjekkAtMetodeKasterException(String token, long soknadId) {
