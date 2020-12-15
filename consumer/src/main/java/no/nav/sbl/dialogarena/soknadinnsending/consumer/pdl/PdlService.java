@@ -36,6 +36,9 @@ public class PdlService {
 
     public Person hentPerson(String ident) {
         PdlPerson pdlPerson = pdlConsumer.hentPerson(ident);
+        if (pdlPerson == null) {
+            return null;
+        }
 
         return pdlPersonMapper.mapTilPerson(pdlPerson, ident)
                 .withEktefelle(hentEktefelle(pdlPerson));
