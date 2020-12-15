@@ -27,11 +27,11 @@ public class SubjectHandler {
     }
 
     public static void setSubjectHandlerService(SubjectHandlerService subjectHandlerServiceImpl) {
-        if (!ServiceUtils.isNonProduction()) {
+        if (ServiceUtils.isNonProduction()) {
+            subjectHandlerService = subjectHandlerServiceImpl;
+        } else {
             logger.error("Forsøker å sette en annen SubjectHandlerService i prod!");
             throw new RuntimeException("Forsøker å sette en annen SubjectHandlerService i prod!");
-        } else {
-            subjectHandlerService = subjectHandlerServiceImpl;
         }
     }
 
