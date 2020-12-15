@@ -7,6 +7,7 @@ import no.finn.unleash.repository.FeatureToggleResponse.Status;
 import no.finn.unleash.repository.HttpToggleFetcher;
 import no.finn.unleash.repository.ToggleFetcher;
 import no.finn.unleash.util.UnleashConfig;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.unleash.ByInstanceIdStrategy;
 import no.nav.sbl.dialogarena.types.Pingable;
 import no.nav.sbl.dialogarena.types.Pingable.Ping.PingMetadata;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,7 +31,7 @@ public class UnleashRestConfig {
 
     @Bean
     public Unleash unleashConsumer() {
-        Unleash prod = new DefaultUnleash(config());
+        Unleash prod = new DefaultUnleash(config(), new ByInstanceIdStrategy());
         Unleash mock = new FakeUnleash();
         return createSwitcher(prod, mock, MOCK_KEY, Unleash.class);
     }
