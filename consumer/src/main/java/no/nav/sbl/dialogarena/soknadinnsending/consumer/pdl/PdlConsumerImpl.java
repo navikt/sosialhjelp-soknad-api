@@ -21,7 +21,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.sts.STSConsumer;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
-import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.List;
@@ -65,6 +64,8 @@ public class PdlConsumerImpl implements PdlConsumer {
             checkForPdlApiErrors(pdlResponse);
 
             return pdlResponse.getData().getHentPerson();
+        } catch (PdlApiException e) {
+            throw e;
         } catch (Exception e) {
             throw new TjenesteUtilgjengeligException("Noe uventet feilet ved kall til PDL", e);
         }
@@ -80,6 +81,8 @@ public class PdlConsumerImpl implements PdlConsumer {
             checkForPdlApiErrors(pdlResponse);
 
             return pdlResponse.getData().getHentPerson();
+        } catch (PdlApiException e) {
+            throw e;
         } catch (Exception e) {
             throw new TjenesteUtilgjengeligException("Noe uventet feilet ved kall til PDL", e);
         }
