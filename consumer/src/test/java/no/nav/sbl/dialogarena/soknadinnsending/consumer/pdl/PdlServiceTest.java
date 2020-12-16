@@ -16,6 +16,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -26,6 +27,7 @@ import static no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.Si
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -97,7 +99,9 @@ public class PdlServiceTest {
 
         Person result = pdlService.hentPerson("ident");
 
-        assertThat(result.getEktefelle(), is(nullValue()));
+        assertThat(result.getEktefelle(), is(notNullValue()));
+        assertThat(result.getEktefelle().getFnr(), is(FDAT_IDENT));
+        assertThat(result.getEktefelle().getFodselsdato().toString(), is(LocalDate.of(1922, 12, 11).toString()));
         verify(pdlConsumer, times(0)).hentEktefelle(anyString());
         verify(pdlPersonMapper, times(0)).mapTilEktefelle(any(), anyString(), any());
     }

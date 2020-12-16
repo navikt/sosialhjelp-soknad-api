@@ -2,9 +2,11 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.Barn;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Ektefelle;
+import no.nav.sbl.dialogarena.sendsoknad.domain.NavFodselsnummer;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Person;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.ektefelle.PdlEktefelle;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.person.PdlPerson;
+import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
@@ -34,6 +36,9 @@ public class PdlService {
 
     public Person hentPerson(String ident) {
         PdlPerson pdlPerson = pdlConsumer.hentPerson(ident);
+        if (pdlPerson == null) {
+            return null;
+        }
 
         return pdlPersonMapper.mapTilPerson(pdlPerson, ident)
                 .withEktefelle(hentEktefelle(pdlPerson));
@@ -78,7 +83,14 @@ public class PdlService {
                 }
                 if (erFDAT(ektefelleIdent)) {
                     log.info("Sivilstand.relatertVedSivilstand (ektefelleIdent) er FDAT -> kaller ikke hentPerson for ektefelle");
-                    return null;
+                    return new Ektefelle()
+                            .withFornavn("")
+                            .withMellomnavn("")
+                            .withEtternavn("")
+                            .withFodselsdato(finnFodselsdatoFraFnr(ektefelleIdent))
+                            .withFnr(ektefelleIdent)
+                            .withFolkeregistrertsammen(false)
+                            .withIkketilgangtilektefelle(false);
                 }
 
                 loggHvisIdentIkkeErFnr(ektefelleIdent);
@@ -92,6 +104,11 @@ public class PdlService {
 
     private boolean erFDAT(String ident) {
         return ident.length() == 11 && ident.substring(6).equalsIgnoreCase("00000");
+    }
+
+    private LocalDate finnFodselsdatoFraFnr(String ident) {
+        NavFodselsnummer fnr = new NavFodselsnummer(ident);
+        return new LocalDate(fnr.getBirthYear() + "-" + fnr.getMonth() + "-" + fnr.getDayInMonth());
     }
 
     private void loggHvisIdentIkkeErFnr(String ektefelleIdent) {

@@ -26,11 +26,13 @@ import java.util.Map;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class PdlConsumerMock {
+
+    private static final String EKTEFELLE_FNR = "11111111111";
 
     private static Map<String, PdlPerson> pdlPersonResponses = new HashMap<>();
     private static Map<String, PdlEktefelle> pdlEktefelleResponses = new HashMap<>();
@@ -47,20 +49,22 @@ public class PdlConsumerMock {
     }
 
     public static PdlEktefelle getOrCreateCurrentPdlEktefelleResponse(InvocationOnMock invocationOnMock) {
-        PdlEktefelle response = pdlEktefelleResponses.get(SubjectHandler.getUserId());
+        var ektefelleFnr = (String) invocationOnMock.getArgument(0);
+        PdlEktefelle response = pdlEktefelleResponses.get(ektefelleFnr);
         if (response == null) {
             response = defaultEktefelle();
-            pdlEktefelleResponses.put(SubjectHandler.getUserId(), response);
+            pdlEktefelleResponses.put(ektefelleFnr, response);
         }
 
         return response;
     }
 
     public static PdlBarn getOrCreateCurrentPdlBarnResponse(InvocationOnMock invocationOnMock) {
-        PdlBarn response = pdlBarnResponses.get(SubjectHandler.getUserId());
+        var barnFnr = (String) invocationOnMock.getArgument(0);
+        PdlBarn response = pdlBarnResponses.get(barnFnr);
         if (response == null) {
             response = defaultBarn();
-            pdlBarnResponses.put(SubjectHandler.getUserId(), response);
+            pdlBarnResponses.put(barnFnr, response);
         }
 
         return response;
@@ -72,10 +76,10 @@ public class PdlConsumerMock {
                 singletonList(new BostedsadresseDto(null, new VegadresseDto("123123", "GATEVEIEN", 1, "A", null, "0690", "0301", null), null, null)),
                 singletonList(new OppholdsadresseDto(null, "Heisann Test", new VegadresseDto(null, "midlertidig adresse gate", 1, "D", null, "0471", "Oslo", null), null, null)),
                 emptyList(), // ingen familierelasjoner for mockperson
-                singletonList(new NavnDto("fornavn", "mellomnavn", "etternavn", defaultMetadata(), defaultFolkeregisterMetadata())),
+                singletonList(new NavnDto("rask", "jule", "mat", defaultMetadata(), defaultFolkeregisterMetadata())),
                 singletonList(new SivilstandDto(
                         SivilstandDto.SivilstandType.GIFT,
-                        "annenFnr",
+                        EKTEFELLE_FNR,
                         defaultMetadata(),
                         defaultFolkeregisterMetadata())),
                 singletonList(new StatsborgerskapDto("NOR"))
@@ -87,7 +91,7 @@ public class PdlConsumerMock {
                 singletonList(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT)),
                 singletonList(new BostedsadresseDto(null, new VegadresseDto("123123", "GATEVEIEN", 1, "A", null, "0690", "0301", null), null, null)),
                 singletonList(new FoedselDto(LocalDate.of(1970, 1, 1))),
-                singletonList(new NavnDto("fornavn", "mellomnavn", "etternavn", defaultMetadata(), defaultFolkeregisterMetadata()))
+                singletonList(new NavnDto("ektefelle", "mellomnavn", "etternavn", defaultMetadata(), defaultFolkeregisterMetadata()))
         );
     }
 
@@ -97,7 +101,7 @@ public class PdlConsumerMock {
                 singletonList(new BostedsadresseDto(null, new VegadresseDto("123123", "GATEVEIEN", 1, "A", null, "0690", "0301", null), null, null)),
                 singletonList(new FolkeregisterpersonstatusDto("bosatt")),
                 singletonList(new FoedselDto(LocalDate.of(LocalDate.now().getYear() - 10, 1, 1))),
-                singletonList(new NavnDto("fornavn", "mellomnavn", "etternavn", defaultMetadata(), defaultFolkeregisterMetadata()))
+                singletonList(new NavnDto("barn", "mellomnavn", "etternavn", defaultMetadata(), defaultFolkeregisterMetadata()))
         );
     }
 
@@ -112,11 +116,11 @@ public class PdlConsumerMock {
     public PdlConsumer pdlConsumerMock() {
         PdlConsumer mock = mock(PdlConsumer.class);
 
-        when(mock.hentPerson(anyString()))
+        when(mock.hentPerson(any()))
                 .thenAnswer(PdlConsumerMock::getOrCreateCurrentPdlPersonResponse);
-        when(mock.hentEktefelle(anyString()))
+        when(mock.hentEktefelle(any()))
                 .thenAnswer(PdlConsumerMock::getOrCreateCurrentPdlEktefelleResponse);
-        when(mock.hentBarn(anyString()))
+        when(mock.hentBarn(any()))
                 .thenAnswer(PdlConsumerMock::getOrCreateCurrentPdlBarnResponse);
 
         return mock;

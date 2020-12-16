@@ -33,14 +33,16 @@ public class MdcFilterTest {
 
     @BeforeClass
     public static void setUp() {
+        System.setProperty("environment.name", "test");
         System.setProperty(StsSecurityConstants.SYSTEMUSER_USERNAME, MOCK_CONSUMER_ID);
         SubjectHandler.setSubjectHandlerService(new OidcSubjectHandlerService());
     }
 
     @AfterClass
-    public static void cleanUp() {
+    public static void tearDown() {
         System.clearProperty(StsSecurityConstants.SYSTEMUSER_USERNAME);
         SubjectHandler.resetOidcSubjectHandlerService();
+        System.clearProperty("environment.name");
     }
 
     @Test

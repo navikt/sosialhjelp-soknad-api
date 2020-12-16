@@ -45,7 +45,7 @@ public class SendtSoknadRepositoryJdbcTest {
     private RepositoryTestSupport soknadRepositoryTestSupport;
 
     @After
-    public void cleanUp() {
+    public void tearDown() {
         soknadRepositoryTestSupport.getJdbcTemplate().update("delete from SENDT_SOKNAD");
     }
 

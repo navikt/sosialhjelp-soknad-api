@@ -37,15 +37,15 @@ public class SoknadsosialhjelpServer {
     public SoknadsosialhjelpServer(int listenPort, File overrideWebXmlFile, String contextPath, DataSource dataSource) throws Exception {
         configure();
 
-        if (ServiceUtils.isRunningInProd() && MockUtils.isTillatMockRessurs()) {
+        if (!ServiceUtils.isNonProduction() && MockUtils.isTillatMockRessurs()) {
             throw new Error("tillatMockRessurs har blitt satt til true i prod. Stopper applikasjonen da dette er en sikkerhetsrisiko.");
         }
 
-        if (ServiceUtils.isRunningInProd() && MockUtils.isMockAltProfil()) {
+        if (!ServiceUtils.isNonProduction() && MockUtils.isMockAltProfil()) {
             throw new Error("mockAltProfil har blitt satt til true i prod. Stopper applikasjonen da dette er en sikkerhetsrisiko.");
         }
 
-        if (ServiceUtils.isRunningInProd() && (MockUtils.isAlltidHentKommuneInfoFraNavTestkommune() || MockUtils.isAlltidSendTilNavTestkommune())) {
+        if (!ServiceUtils.isNonProduction() && (MockUtils.isAlltidHentKommuneInfoFraNavTestkommune() || MockUtils.isAlltidSendTilNavTestkommune())) {
             throw new Error("Alltid send eller hent fra NavTestkommune er satt til true i prod. Stopper applikasjonen da dette er en sikkerhetsrisiko.");
         }
 
@@ -131,7 +131,7 @@ public class SoknadsosialhjelpServer {
     }
 
     private static String determineEnvironment() {
-        final String env = System.getenv("FASIT_ENVIRONMENT_NAME");
+        final String env = System.getenv("ENVIRONMENT_NAME");
         if (env == null || env.trim().equals("")) {
             return null;
         }
