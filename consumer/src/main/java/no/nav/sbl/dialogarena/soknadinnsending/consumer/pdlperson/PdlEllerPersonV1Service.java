@@ -17,7 +17,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 @Component
 public class PdlEllerPersonV1Service {
 
-    public static final String UNLEASH_BRUK_PDL = "sosialhjelp.soknad.bruk-pdl";
+    public static final String FEATURE_BRUK_PDL = "sosialhjelp.soknad.bruk-pdl";
 
     private static final Logger log = getLogger(PdlEllerPersonV1Service.class);
 
@@ -34,7 +34,7 @@ public class PdlEllerPersonV1Service {
     }
 
     public Person hentPerson(String ident) {
-        var pdlEnabled = unleashConsumer.isEnabled(UNLEASH_BRUK_PDL, false);
+        var pdlEnabled = unleashConsumer.isEnabled(FEATURE_BRUK_PDL, false);
         log.info("sosialhjelp.soknad.bruk-pdl: {}", pdlEnabled);
         if (pdlEnabled) {
             return hentPersonFraPdl(ident);
@@ -43,7 +43,7 @@ public class PdlEllerPersonV1Service {
     }
 
     public List<Barn> hentBarn(String ident) {
-        var pdlEnabled = unleashConsumer.isEnabled(UNLEASH_BRUK_PDL);
+        var pdlEnabled = unleashConsumer.isEnabled(FEATURE_BRUK_PDL, false);
         log.info("sosialhjelp.soknad.bruk-pdl: {}", pdlEnabled);
         if (pdlEnabled) {
             return hentBarnFraPdl(ident);

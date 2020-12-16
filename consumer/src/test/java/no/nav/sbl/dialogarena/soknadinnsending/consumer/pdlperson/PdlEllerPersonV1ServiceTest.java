@@ -13,7 +13,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import static java.util.Arrays.asList;
-import static no.nav.sbl.dialogarena.soknadinnsending.consumer.pdlperson.PdlEllerPersonV1Service.UNLEASH_BRUK_PDL;
+import static no.nav.sbl.dialogarena.soknadinnsending.consumer.pdlperson.PdlEllerPersonV1Service.FEATURE_BRUK_PDL;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
@@ -47,7 +47,7 @@ public class PdlEllerPersonV1ServiceTest {
 
     @Test
     public void skalHentePersonFraPdl_pdl_enabled() {
-        when(unleashConsumer.isEnabled(UNLEASH_BRUK_PDL)).thenReturn(true);
+        when(unleashConsumer.isEnabled(FEATURE_BRUK_PDL, false)).thenReturn(true);
         when(pdlService.hentPerson(anyString())).thenReturn(mockPerson);
 
         var person = pdlEllerPersonV1Service.hentPerson("fnr");
@@ -61,7 +61,7 @@ public class PdlEllerPersonV1ServiceTest {
 
     @Test
     public void skalHentePersonFraTpsHvisPdlFeiler_pdl_enabled() {
-        when(unleashConsumer.isEnabled(UNLEASH_BRUK_PDL)).thenReturn(true);
+        when(unleashConsumer.isEnabled(FEATURE_BRUK_PDL, false)).thenReturn(true);
         when(pdlService.hentPerson(anyString())).thenThrow(new PdlApiException("Noe feilet"));
         when(personService.hentPerson(any())).thenReturn(mockPerson);
 
@@ -76,7 +76,7 @@ public class PdlEllerPersonV1ServiceTest {
 
     @Test
     public void skalHentePersonFraTps_pdl_disabled() {
-        when(unleashConsumer.isEnabled(UNLEASH_BRUK_PDL)).thenReturn(false);
+        when(unleashConsumer.isEnabled(FEATURE_BRUK_PDL, false)).thenReturn(false);
         when(personService.hentPerson(any())).thenReturn(mockPerson);
         when(pdlService.hentPerson(anyString())).thenReturn(mockPerson);
 
@@ -91,7 +91,7 @@ public class PdlEllerPersonV1ServiceTest {
 
     @Test
     public void skalHentePersonFraTps_ingenSammenligningPdlFeiler_pdl_disabled() {
-        when(unleashConsumer.isEnabled(UNLEASH_BRUK_PDL)).thenReturn(false);
+        when(unleashConsumer.isEnabled(FEATURE_BRUK_PDL, false)).thenReturn(false);
         when(personService.hentPerson(any())).thenReturn(mockPerson);
         when(pdlService.hentPerson(anyString())).thenThrow(new PdlApiException("Noe feilet"));
 
@@ -106,7 +106,7 @@ public class PdlEllerPersonV1ServiceTest {
 
     @Test
     public void skalHenteBarnFraPdl_pdl_enabled() {
-        when(unleashConsumer.isEnabled(UNLEASH_BRUK_PDL)).thenReturn(true);
+        when(unleashConsumer.isEnabled(FEATURE_BRUK_PDL, false)).thenReturn(true);
         when(pdlService.hentBarnForPerson(anyString())).thenReturn(asList(barn1, barn2));
 
         var alleBarn = pdlEllerPersonV1Service.hentBarn("fnr");
@@ -120,7 +120,7 @@ public class PdlEllerPersonV1ServiceTest {
 
     @Test
     public void skalHenteBarnFraTpsHvisPdlFeiler_pdl_enabled() {
-        when(unleashConsumer.isEnabled(UNLEASH_BRUK_PDL)).thenReturn(true);
+        when(unleashConsumer.isEnabled(FEATURE_BRUK_PDL, false)).thenReturn(true);
         when(pdlService.hentBarnForPerson(anyString())).thenThrow(new PdlApiException("Noe feilet"));
         when(personService.hentBarn(anyString())).thenReturn(asList(barn1, barn2));
 
@@ -135,7 +135,7 @@ public class PdlEllerPersonV1ServiceTest {
 
     @Test
     public void skalHenteBarnFraTps_pdl_disabled() {
-        when(unleashConsumer.isEnabled(UNLEASH_BRUK_PDL)).thenReturn(false);
+        when(unleashConsumer.isEnabled(FEATURE_BRUK_PDL, false)).thenReturn(false);
         when(personService.hentBarn(any())).thenReturn(asList(barn1, barn2));
         when(pdlService.hentBarnForPerson(anyString())).thenReturn(asList(barn1, barn2));
 
@@ -150,7 +150,7 @@ public class PdlEllerPersonV1ServiceTest {
 
     @Test
     public void skalHenteBarnFraTps_ingenSammenligningPdlFeiler_pdl_disabled() {
-        when(unleashConsumer.isEnabled(UNLEASH_BRUK_PDL)).thenReturn(false);
+        when(unleashConsumer.isEnabled(FEATURE_BRUK_PDL, false)).thenReturn(false);
         when(personService.hentBarn(any())).thenReturn(asList(barn1, barn2));
         when(pdlService.hentBarnForPerson(anyString())).thenThrow(new PdlApiException("Noe feilet"));
 
