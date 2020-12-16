@@ -141,7 +141,7 @@ public class PdlConsumerImpl implements PdlConsumer {
 
         return client.target(endpoint)
                 .request(MediaType.APPLICATION_JSON_TYPE)
-                .header(AUTHORIZATION.name(), BEARER + fssToken.getAccessToken()) // todo: eller brukers token??
+                .header(AUTHORIZATION.name(), BEARER + fssToken.getAccessToken())
                 .header(HEADER_CALL_ID, callId)
                 .header(HEADER_CONSUMER_ID, consumerId)
                 .header(HEADER_CONSUMER_TOKEN, BEARER + fssToken.getAccessToken())
