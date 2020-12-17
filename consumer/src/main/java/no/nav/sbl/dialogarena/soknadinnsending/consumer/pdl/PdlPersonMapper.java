@@ -67,7 +67,7 @@ public class PdlPersonMapper {
 
     private final PdlPersonMapperHelper helper = new PdlPersonMapperHelper();
 
-    private KodeverkService kodeverkService;
+    private final KodeverkService kodeverkService;
 
     public PdlPersonMapper(KodeverkService kodeverkService) {
         this.kodeverkService = kodeverkService;
