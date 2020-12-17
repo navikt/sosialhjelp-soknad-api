@@ -25,14 +25,32 @@
       ],
       "foedsel": [
         {
-          "foedselsdato": "1970-01-01"
+          "foedselsdato": "1972-10-11"
         }
       ],
       "navn": [
         {
-          "fornavn": "TEST",
+          "fornavn": "EKTEFELLE",
           "mellomnavn": null,
-          "etternavn": "PERSON"
+          "etternavn": "PERSON",
+          "metadata": {
+            "master": "Freg",
+            "endringer": [
+              {
+                "kilde": "Dolly",
+                "registrert": "2020-10-20T12:08:05",
+                "registrertAv": "Folkeregisteret",
+                "systemkilde": "FREG",
+                "type": "OPPRETT"
+              }
+            ]
+          },
+          "folkeregistermetadata": {
+            "ajourholdstidspunkt": "2020-10-20T12:08:05",
+            "gyldighetstidspunkt": "2020-10-20T12:08:05",
+            "opphoerstidspunkt": null,
+            "kilde": "Dolly"
+          }
         }
       ]
     }

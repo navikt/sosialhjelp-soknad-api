@@ -66,7 +66,7 @@ public class PdlServiceTest {
         when(pdlConsumer.hentPerson(any())).thenReturn(mockPdlPerson);
         when(pdlPersonMapper.mapTilPerson(any(), any())).thenReturn(person);
 
-        when(mockPdlPerson.getSivilstand()).thenReturn(singletonList(new SivilstandDto(GIFT, EKTEFELLE_IDENT, new MetadataDto("PDL", null, singletonList(new EndringDto("PDL", LocalDateTime.now(), null, null, null))), null)));
+        when(mockPdlPerson.getSivilstand()).thenReturn(singletonList(new SivilstandDto(GIFT, EKTEFELLE_IDENT, new MetadataDto("PDL", singletonList(new EndringDto("PDL", LocalDateTime.now(), null, null, null))), null)));
 
         when(pdlConsumer.hentEktefelle(any())).thenReturn(mockPdlEktefelle);
         when(pdlPersonMapper.mapTilEktefelle(any(), any(), any())).thenReturn(ektefelle);
@@ -81,7 +81,7 @@ public class PdlServiceTest {
         when(pdlConsumer.hentPerson(any())).thenReturn(mockPdlPerson);
         when(pdlPersonMapper.mapTilPerson(any(), any())).thenReturn(person);
 
-        when(mockPdlPerson.getSivilstand()).thenReturn(singletonList(new SivilstandDto(GIFT, null, new MetadataDto("PDL", null, singletonList(new EndringDto("PDL", LocalDateTime.now(), null, null, null))), null)));
+        when(mockPdlPerson.getSivilstand()).thenReturn(singletonList(new SivilstandDto(GIFT, null, new MetadataDto("PDL", singletonList(new EndringDto("PDL", LocalDateTime.now(), null, null, null))), null)));
 
         Person result = pdlService.hentPerson("ident");
 
@@ -95,7 +95,7 @@ public class PdlServiceTest {
         when(pdlConsumer.hentPerson(any())).thenReturn(mockPdlPerson);
         when(pdlPersonMapper.mapTilPerson(any(), any())).thenReturn(person);
 
-        when(mockPdlPerson.getSivilstand()).thenReturn(singletonList(new SivilstandDto(GIFT, FDAT_IDENT, new MetadataDto("PDL", null, singletonList(new EndringDto("PDL", LocalDateTime.now(), null, null, null))), null)));
+        when(mockPdlPerson.getSivilstand()).thenReturn(singletonList(new SivilstandDto(GIFT, FDAT_IDENT, new MetadataDto("PDL", singletonList(new EndringDto("PDL", LocalDateTime.now(), null, null, null))), null)));
 
         Person result = pdlService.hentPerson("ident");
 
