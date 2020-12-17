@@ -1,11 +1,11 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata;
 
+import no.finn.unleash.Unleash;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Adresse;
 import no.nav.sbl.dialogarena.sendsoknad.domain.AdresserOgKontonummer;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Bostedsadresse;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Matrikkeladresse;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Oppholdsadresse;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Person;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Vegadresse;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.Systemdata;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.PdlApiException;
@@ -27,7 +27,6 @@ import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
-import javax.inject.Inject;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
@@ -38,15 +37,19 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class AdresseSystemdata implements Systemdata {
 
     private static final Logger log = getLogger(AdresseSystemdata.class);
+    public static final String FEATURE_ADRESSER_PDL = "sosialhjelp.soknad.adresser-pdl";
 
-    @Inject
-    private PersonServiceV3 personService;
+    private final PersonServiceV3 personService;
+    private final PdlService pdlService;
+    private final PersonSammenligner personSammenligner;
+    private final Unleash unleashConsumer;
 
-    @Inject
-    private PdlService pdlService;
-
-    @Inject
-    private PersonSammenligner personSammenligner;
+    public AdresseSystemdata(PersonServiceV3 personService, PdlService pdlService, PersonSammenligner personSammenligner, Unleash unleashConsumer) {
+        this.personService = personService;
+        this.pdlService = pdlService;
+        this.personSammenligner = personSammenligner;
+        this.unleashConsumer = unleashConsumer;
+    }
 
     @Override
     public void updateSystemdataIn(SoknadUnderArbeid soknadUnderArbeid, String token) {
@@ -101,12 +104,22 @@ public class AdresseSystemdata implements Systemdata {
     }
 
     public JsonAdresse innhentFolkeregistrertAdresse(String personIdentifikator) {
+        var skalHenteAdresserFraPdl = unleashConsumer.isEnabled(FEATURE_ADRESSER_PDL, false);
+        if (skalHenteAdresserFraPdl) {
+            var person = pdlService.hentPerson(personIdentifikator);
+            return mapToJsonAdresse(person.getBostedsadresse());
+        }
         AdresserOgKontonummer adresserOgKontonummer = personService.hentAddresserOgKontonummer(personIdentifikator);
         sammenlignFolkeregistrertAdresse(personIdentifikator, adresserOgKontonummer.getFolkeregistrertAdresse());
         return mapToJsonAdresse(adresserOgKontonummer.getFolkeregistrertAdresse());
     }
 
     public JsonAdresse innhentMidlertidigAdresse(String personIdentifikator) {
+        var skalHenteAdresserFraPdl = unleashConsumer.isEnabled(FEATURE_ADRESSER_PDL, false);
+        if (skalHenteAdresserFraPdl) {
+            var person = pdlService.hentPerson(personIdentifikator);
+            return mapToJsonAdresse(person.getOppholdsadresse());
+        }
         AdresserOgKontonummer adresserOgKontonummer = personService.hentAddresserOgKontonummer(personIdentifikator);
         sammenlignMidlertidigAdresse(personIdentifikator, adresserOgKontonummer.getMidlertidigAdresse());
         return mapToJsonAdresse(adresserOgKontonummer.getMidlertidigAdresse());
@@ -132,16 +145,6 @@ public class AdresseSystemdata implements Systemdata {
         } catch (Exception e) {
             log.warn("PDL-feil eller feil ved sammenligning av data fra TPS/PDL", e);
         }
-    }
-
-    public JsonAdresse innhentBostedsadresse(String personIdentifikator) {
-        var person = pdlService.hentPerson(personIdentifikator);
-        return mapToJsonAdresse(person.getBostedsadresse());
-    }
-
-    public JsonAdresse innhentOppholdsadresse(String personIdentifikator) {
-        var person = pdlService.hentPerson(personIdentifikator);
-        return mapToJsonAdresse(person.getOppholdsadresse());
     }
 
     private JsonAdresse mapToJsonAdresse(Bostedsadresse bostedsadresse) {
