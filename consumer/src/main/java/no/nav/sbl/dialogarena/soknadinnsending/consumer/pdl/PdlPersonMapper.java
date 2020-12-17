@@ -124,21 +124,18 @@ public class PdlPersonMapper {
     }
 
     private String finnFornavn(List<NavnDto> navn) {
-        return navn.stream()
-                .findFirst().map(NavnDto::getFornavn)
-                .orElse("").toUpperCase();
+        return Optional.ofNullable(helper.utledGjeldendeNavn(navn))
+                .map(NavnDto::getFornavn).orElse("").toUpperCase();
     }
 
     private String finnMellomnavn(List<NavnDto> navn) {
-        return navn.stream()
-                .findFirst().map(NavnDto::getMellomnavn)
-                .orElse("").toUpperCase();
+        return Optional.ofNullable(helper.utledGjeldendeNavn(navn))
+                .map(NavnDto::getMellomnavn).orElse("").toUpperCase();
     }
 
     private String finnEtternavn(List<NavnDto> navn) {
-        return navn.stream()
-                .findFirst().map(NavnDto::getEtternavn)
-                .orElse("").toUpperCase();
+        return Optional.ofNullable(helper.utledGjeldendeNavn(navn))
+                .map(NavnDto::getEtternavn).orElse("").toUpperCase();
     }
 
     private LocalDate finnFodselsdato(List<FoedselDto> foedsel) {
