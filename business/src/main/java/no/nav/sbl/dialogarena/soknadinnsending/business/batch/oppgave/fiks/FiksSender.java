@@ -17,6 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static no.nav.sbl.dialogarena.soknadinnsending.business.util.SenderUtils.createPrefixedBehandlingsIdInNonProd;
+
 @Service
 public class FiksSender {
 
@@ -68,7 +70,7 @@ public class FiksSender {
                         .withPostAdresse(fakeAdresse))
                 .withAvgivendeSystem("digisos_avsender")
                 .withForsendelseType("nav.digisos")
-                .withEksternref(environmentNameIfTest() + sendtSoknad.getBehandlingsId())
+                .withEksternref(createPrefixedBehandlingsIdInNonProd(sendtSoknad.getBehandlingsId()))
                 .withTittel(sendtSoknad.erEttersendelse() ? ETTERSENDELSE_TIL_NAV : SOKNAD_TIL_NAV)
                 .withKunDigitalLevering(false)
                 .withPrintkonfigurasjon(fakePrintConfig)

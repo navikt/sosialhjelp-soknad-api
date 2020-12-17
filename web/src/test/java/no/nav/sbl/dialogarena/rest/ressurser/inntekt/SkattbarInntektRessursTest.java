@@ -55,6 +55,7 @@ public class SkattbarInntektRessursTest {
 
     @Before
     public void setUp() {
+        System.setProperty("environment.name", "test");
         SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
         when(textService.getJsonOkonomiTittel(anyString())).thenReturn("tittel");
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(any());
@@ -63,6 +64,7 @@ public class SkattbarInntektRessursTest {
     @After
     public void tearDown() {
         SubjectHandler.resetOidcSubjectHandlerService();
+        System.clearProperty("environment.name");
     }
 
     @Test

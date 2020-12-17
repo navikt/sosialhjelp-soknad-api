@@ -2,11 +2,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.Person;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.Systemdata;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.PdlApiException;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.TjenesteUtilgjengeligException;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.PdlService;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdlperson.PersonSammenligner;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdlperson.PdlEllerPersonV1Service;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.*;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
@@ -32,13 +28,7 @@ public class BasisPersonaliaSystemdata implements Systemdata {
     public static final String PDL_STATSLOS = "XXX";
 
     @Inject
-    private PersonService personService;
-
-    @Inject
-    private PdlService pdlService;
-
-    @Inject
-    PersonSammenligner personSammenligner;
+    private PdlEllerPersonV1Service pdlEllerPersonV1Service;
 
     @Override
     public void updateSystemdataIn(SoknadUnderArbeid soknadUnderArbeid, String token) {
@@ -56,19 +46,9 @@ public class BasisPersonaliaSystemdata implements Systemdata {
     }
 
     public JsonPersonalia innhentSystemBasisPersonalia(final String personIdentifikator) {
-        Person person = personService.hentPerson(personIdentifikator);
+        var person = pdlEllerPersonV1Service.hentPerson(personIdentifikator);
         if (person == null){
             return null;
-        }
-        try {
-            Person pdlPerson = pdlService.hentPerson(personIdentifikator);
-            if (pdlPerson != null) {
-                personSammenligner.sammenlign(person, pdlPerson);
-            }
-        } catch (PdlApiException | TjenesteUtilgjengeligException e) {
-            log.warn("PDL kaster feil (brukes kun for sammenligning)", e);
-        } catch (Exception e) {
-            log.warn("PDL-feil eller feil ved sammenligning av data fra TPS/PDL", e);
         }
         return mapToJsonPersonalia(person);
     }

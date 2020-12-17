@@ -2,13 +2,8 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.Barn;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Ektefelle;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Person;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.Systemdata;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.PdlApiException;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.TjenesteUtilgjengeligException;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.PdlService;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdlperson.PersonSammenligner;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdlperson.PdlEllerPersonV1Service;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonData;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeSystem;
@@ -33,13 +28,7 @@ public class FamilieSystemdata implements Systemdata {
     private static final Logger log = getLogger(FamilieSystemdata.class);
 
     @Inject
-    private PersonService personService;
-
-    @Inject
-    private PdlService pdlService;
-
-    @Inject
-    private PersonSammenligner personSammenligner;
+    private PdlEllerPersonV1Service pdlEllerPersonV1Service;
 
     @Override
     public void updateSystemdataIn(SoknadUnderArbeid soknadUnderArbeid, String token) {
@@ -93,7 +82,7 @@ public class FamilieSystemdata implements Systemdata {
     }
 
     private JsonSivilstatus innhentSystemverdiSivilstatus(String personIdentifikator) {
-        Person person = personService.hentPerson(personIdentifikator);
+        var person = pdlEllerPersonV1Service.hentPerson(personIdentifikator);
         if (person == null || isEmpty(person.getSivilstatus())) {
             return null;
         }
@@ -135,22 +124,12 @@ public class FamilieSystemdata implements Systemdata {
     private JsonForsorgerplikt innhentSystemverdiForsorgerplikt(String personIdentifikator) {
         JsonForsorgerplikt jsonForsorgerplikt = new JsonForsorgerplikt().withHarForsorgerplikt(new JsonHarForsorgerplikt());
 
-        List<Barn> barn = personService.hentBarn(personIdentifikator);
+        var barn = pdlEllerPersonV1Service.hentBarn(personIdentifikator);
         if (barn == null || barn.isEmpty()) {
             jsonForsorgerplikt.getHarForsorgerplikt()
                     .withKilde(JsonKilde.SYSTEM)
                     .withVerdi(false);
             return jsonForsorgerplikt;
-        }
-        try {
-            List<Barn> pdlBarn = pdlService.hentBarnForPerson(personIdentifikator);
-            if (pdlBarn != null) {
-                personSammenligner.sammenlignBarn(barn, pdlBarn);
-            }
-        } catch (PdlApiException | TjenesteUtilgjengeligException e) {
-            log.warn("PDL kaster feil (brukes kun for sammenligning)", e);
-        } catch (Exception e) {
-            log.warn("PDL-feil eller feil ved sammenligning av data fra TPS/PDL", e);
         }
         jsonForsorgerplikt.getHarForsorgerplikt()
                 .withKilde(JsonKilde.SYSTEM)
