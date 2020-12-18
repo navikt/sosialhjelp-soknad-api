@@ -76,12 +76,12 @@ public class PdlConsumerMock {
                 singletonList(new BostedsadresseDto(null, new VegadresseDto("123123", "GATEVEIEN", 1, "A", null, "0690", "0301", null), null, null)),
                 singletonList(new OppholdsadresseDto(null, "Heisann Test", new VegadresseDto(null, "midlertidig adresse gate", 1, "D", null, "0471", "Oslo", null), null, null)),
                 emptyList(), // ingen familierelasjoner for mockperson
-                singletonList(new NavnDto("rask", "jule", "mat")),
+                singletonList(new NavnDto("rask", "jule", "mat", defaultMetadata(), defaultFolkeregisterMetadata())),
                 singletonList(new SivilstandDto(
                         SivilstandDto.SivilstandType.GIFT,
                         EKTEFELLE_FNR,
-                        new MetadataDto("FREG", "opplysningsId", singletonList(new EndringDto("FREG", LocalDateTime.now().minusDays(15), null, null, null))),
-                        new FolkeregistermetadataDto(LocalDateTime.now().minusMonths(1), null, null, "FREG", null, 0))),
+                        defaultMetadata(),
+                        defaultFolkeregisterMetadata())),
                 singletonList(new StatsborgerskapDto("NOR"))
         );
     }
@@ -91,7 +91,7 @@ public class PdlConsumerMock {
                 singletonList(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT)),
                 singletonList(new BostedsadresseDto(null, new VegadresseDto("123123", "GATEVEIEN", 1, "A", null, "0690", "0301", null), null, null)),
                 singletonList(new FoedselDto(LocalDate.of(1970, 1, 1))),
-                singletonList(new NavnDto("ektefelle", "mellomnavn", "etternavn"))
+                singletonList(new NavnDto("ektefelle", "mellomnavn", "etternavn", defaultMetadata(), defaultFolkeregisterMetadata()))
         );
     }
 
@@ -101,8 +101,16 @@ public class PdlConsumerMock {
                 singletonList(new BostedsadresseDto(null, new VegadresseDto("123123", "GATEVEIEN", 1, "A", null, "0690", "0301", null), null, null)),
                 singletonList(new FolkeregisterpersonstatusDto("bosatt")),
                 singletonList(new FoedselDto(LocalDate.of(LocalDate.now().getYear() - 10, 1, 1))),
-                singletonList(new NavnDto("barn", "mellomnavn", "etternavn"))
+                singletonList(new NavnDto("barn", "mellomnavn", "etternavn", defaultMetadata(), defaultFolkeregisterMetadata()))
         );
+    }
+
+    private static MetadataDto defaultMetadata() {
+        return new MetadataDto("FREG", singletonList(new EndringDto("FREG", LocalDateTime.now().minusDays(15), null, null, null)));
+    }
+
+    private static FolkeregistermetadataDto defaultFolkeregisterMetadata() {
+        return new FolkeregistermetadataDto(LocalDateTime.now().minusMonths(1), null, null, "FREG");
     }
 
     public PdlConsumer pdlConsumerMock() {

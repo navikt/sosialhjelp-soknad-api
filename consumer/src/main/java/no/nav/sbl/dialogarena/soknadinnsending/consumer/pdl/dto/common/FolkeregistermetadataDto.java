@@ -13,23 +13,18 @@ public class FolkeregistermetadataDto {
     private final LocalDateTime gyldighetstidspunkt;
     private final LocalDateTime opphoerstidspunkt;
     private final String kilde;
-    private final String aarsak;
-    private final Integer sekvens;
 
     @JsonCreator
     public FolkeregistermetadataDto(
             @JsonProperty("ajourholdstidspunkt") LocalDateTime ajourholdstidspunkt,
             @JsonProperty("gyldighetstidspunkt") LocalDateTime gyldighetstidspunkt,
             @JsonProperty("opphoerstidspunkt") LocalDateTime opphoerstidspunkt,
-            @JsonProperty("kilde") String kilde,
-            @JsonProperty("aarsak") String aarsak,
-            @JsonProperty("sekvens") Integer sekvens) {
+            @JsonProperty("kilde") String kilde
+    ) {
         this.ajourholdstidspunkt = ajourholdstidspunkt;
         this.gyldighetstidspunkt = gyldighetstidspunkt;
         this.opphoerstidspunkt = opphoerstidspunkt;
         this.kilde = kilde;
-        this.aarsak = aarsak;
-        this.sekvens = sekvens;
     }
 
     public LocalDateTime getAjourholdstidspunkt() {
@@ -48,11 +43,4 @@ public class FolkeregistermetadataDto {
         return kilde;
     }
 
-    public String getAarsak() {
-        return aarsak;
-    }
-
-    public Integer getSekvens() {
-        return sekvens;
-    }
 }

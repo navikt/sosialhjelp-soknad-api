@@ -31,7 +31,7 @@
     "IDPORTEN_CLIENTID": "id2",
     "IDPORTEN_CONFIG_URL": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/idporten/idporten-oidc-provider/.well-known/openid-configuration",
     "KODEVERK_API_URL": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/kodeverk/api/",
-    "LOGINSERVICE_URL": "https://digisos-gcp.dev.nav.no/sosialhjelp/mock-alt-api/login/cookie",
+    "LOGINSERVICE_URL": "https://digisos-gcp.dev.nav.no/sosialhjelp/mock-alt/login",
     "OIDC_ISSUER_SELVBETJENING_DISCOVERYURL": "https://digisos-gcp.dev.nav.no/sosialhjelp/mock-alt-api/login/metadata",
     "NORG_REST_URL": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/norg/",
     "SCHEDULER_DISABLE": "false",

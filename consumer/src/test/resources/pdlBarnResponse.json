@@ -19,16 +19,8 @@
             "kommunenummer": "0301",
             "bruksenhetsnummer": null
           },
-          "matrikkeladresse": {
-            "matrikkelId": "12345678",
-            "postnummer": "0123",
-            "tilleggsnavn": "tilleggsnavn",
-            "kommunenummer": "0301",
-            "bruksenhetsnummer": "H123"
-          },
-          "ukjentBosted": {
-            "bostedskommune": "0303"
-          }
+          "matrikkeladresse": null,
+          "ukjentBosted": null
         }
       ],
       "folkeregisterpersonstatus": [
@@ -38,14 +30,32 @@
       ],
       "foedsel": [
         {
-          "foedselsdato": "1970-01-01"
+          "foedselsdato": "2018-03-01"
         }
       ],
       "navn": [
         {
-          "fornavn": "TEST",
+          "fornavn": "BARN",
           "mellomnavn": null,
-          "etternavn": "PERSON"
+          "etternavn": "PERSON",
+          "metadata": {
+            "master": "Freg",
+            "endringer": [
+              {
+                "kilde": "Dolly",
+                "registrert": "2020-10-20T12:08",
+                "registrertAv": "Folkeregisteret",
+                "systemkilde": "FREG",
+                "type": "OPPRETT"
+              }
+            ]
+          },
+          "folkeregistermetadata": {
+            "ajourholdstidspunkt": "2020-10-20T12:08",
+            "gyldighetstidspunkt": "2020-10-20T12:08",
+            "opphoerstidspunkt": null,
+            "kilde": "Dolly"
+          }
         }
       ]
     }

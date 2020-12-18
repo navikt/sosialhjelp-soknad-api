@@ -1,6 +1,5 @@
 fragment metadata on Metadata {
     master
-    opplysningsId
     endringer {
         kilde
         registrert
@@ -15,8 +14,6 @@ fragment folkeregistermetadata on Folkeregistermetadata {
     gyldighetstidspunkt
     opphoerstidspunkt
     kilde
-    aarsak
-    sekvens
 }
 
 fragment vegadresse on Vegadresse {
@@ -77,6 +74,12 @@ query($ident: ID!, $historikk: Boolean!) {
             fornavn
             mellomnavn
             etternavn
+            metadata {
+                ...metadata
+            }
+            folkeregistermetadata{
+                ...folkeregistermetadata
+            }
         }
         sivilstand(historikk: $historikk) {
             type
