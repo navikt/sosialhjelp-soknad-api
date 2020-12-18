@@ -97,13 +97,13 @@
         <commons-fileupload.version>1.4</commons-fileupload.version>
         <pdfbox.version>2.0.21</pdfbox.version>
         <jempbox.version>1.8.16</jempbox.version>
-        <bouncycastle.version>1.64</bouncycastle.version>
+        <bouncycastle.version>1.67</bouncycastle.version>
         <httpclient.version>4.5.13</httpclient.version>
         <guava.version>30.0-jre</guava.version>
         <stax2-api.version>4.2.1</stax2-api.version>
         <hibernate.version>5.2.5.Final</hibernate.version>
         <jaxb2-basics-runtime.version>0.11.1</jaxb2-basics-runtime.version>
-        <verapdf.version>1.14.105</verapdf.version>
+        <verapdf.version>1.16.1</verapdf.version>
         <tika.version>1.25</tika.version>
         <logback.version>1.2.3</logback.version>
         <hsqldb.version>2.5.1</hsqldb.version>
@@ -114,7 +114,7 @@
         <slf4j.version>1.7.30</slf4j.version>
         <gson.version>2.8.6</gson.version>
         <commons-codec.version>1.15</commons-codec.version>
-        <commons-io.version>2.6</commons-io.version>
+        <commons-io.version>2.8.0</commons-io.version>
         <commons-lang3.version>3.11</commons-lang3.version>
         <commons-collections4.version>4.4</commons-collections4.version>
         <commons-text.version>1.9</commons-text.version>
@@ -150,7 +150,7 @@
         <hamcrest.version>2.2</hamcrest.version>
         <junit.version>4.13.1</junit.version>
         <mockito.version>3.3.3</mockito.version>
-        <assertj.version>3.15.0</assertj.version>
+        <assertj.version>3.18.1</assertj.version>
         <reflections.version>0.9.12</reflections.version>
         <digipost.digg.version>0.13</digipost.digg.version>
 
