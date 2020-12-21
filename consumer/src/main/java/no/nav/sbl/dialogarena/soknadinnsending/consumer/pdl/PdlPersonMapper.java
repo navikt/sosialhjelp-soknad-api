@@ -278,18 +278,16 @@ public class PdlPersonMapper {
         if (dtos == null || dtos.isEmpty()) {
             return null;
         }
-        // Todo: utled gjeldende oppholdsadresse? Fra doc:
+        // Todo: vi er kun interessert i norske oppholdsadresser med en faktisk adresse.
+        //  Fra doc:
         //  Man kan ha en oppholdsadresse med Freg som master og en med PDL som master.
         //  Flertallet av oppholdsadressene fra Freg vil være norske, og flertallet av oppholdsadresser registrert av NAV vil være utenlandske.
         //  Fra folkeregisteret kan man også få oppholdsadresse uten en faktisk adresse, men med informasjon i oppholdAnnetSted.
-        var dto = dtos.get(0);
-        if (dto.getVegadresse() == null) {
-            return null;
-        }
-        return new Oppholdsadresse(
-                dto.getCoAdressenavn(),
-                mapTilVegadresse(dto.getVegadresse())
-        );
+        return dtos.stream()
+                .filter(dto -> dto.getVegadresse() != null)
+                .findFirst()
+                .map(it -> new Oppholdsadresse(it.getCoAdressenavn(), mapTilVegadresse(it.getVegadresse())))
+                .orElse(null);
     }
 
     private Vegadresse mapTilVegadresse(VegadresseDto dto) {
