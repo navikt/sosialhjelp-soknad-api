@@ -17,6 +17,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.ektefelle.PdlEkt
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.person.PdlPerson;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.sts.FssToken;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.sts.STSConsumer;
+import org.slf4j.Logger;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 
@@ -38,8 +39,11 @@ import static no.nav.sbl.dialogarena.sendsoknad.domain.util.HeaderConstants.HEAD
 import static no.nav.sbl.dialogarena.sendsoknad.domain.util.HeaderConstants.HEADER_TEMA;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.util.HeaderConstants.TEMA_KOM;
 import static org.eclipse.jetty.http.HttpHeader.AUTHORIZATION;
+import static org.slf4j.LoggerFactory.getLogger;
 
 public class PdlConsumerImpl implements PdlConsumer {
+
+    private final static Logger log = getLogger(PdlConsumerImpl.class);
 
     private final Client client;
     private final String endpoint;
@@ -70,6 +74,7 @@ public class PdlConsumerImpl implements PdlConsumer {
         } catch (PdlApiException e) {
             throw e;
         } catch (Exception e) {
+            log.warn("Kall til PDL feilet (hentPerson)");
             throw new TjenesteUtilgjengeligException("Noe uventet feilet ved kall til PDL", e);
         }
     }
@@ -88,6 +93,7 @@ public class PdlConsumerImpl implements PdlConsumer {
         } catch (PdlApiException e) {
             throw e;
         } catch (Exception e) {
+            log.warn("Kall til PDL feilet (hentBarn)");
             throw new TjenesteUtilgjengeligException("Noe uventet feilet ved kall til PDL", e);
         }
     }
@@ -103,7 +109,10 @@ public class PdlConsumerImpl implements PdlConsumer {
             checkForPdlApiErrors(pdlResponse);
 
             return pdlResponse.getData().getHentPerson();
+        } catch (PdlApiException e) {
+            throw e;
         } catch (Exception e) {
+            log.warn("Kall til PDL feilet (hentEktefelle)");
             throw new TjenesteUtilgjengeligException("Noe uventet feilet ved kall til PDL", e);
         }
     }
