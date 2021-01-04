@@ -86,7 +86,7 @@ public class PdlPersonMapper {
                 .withStatsborgerskap(finnStatsborgerskap(pdlPerson.getStatsborgerskap()))
                 .withDiskresjonskode(finnAdressebeskyttelse(pdlPerson.getAdressebeskyttelse()))
                 .withBostedsadresse(mapBostedsadresse(pdlPerson.getBostedsadresse()))
-                .withOppholdsadresse(mapOppholdssadresse(pdlPerson.getOppholdsadresse()));
+                .withOppholdsadresse(mapOppholdssadresse(pdlPerson.getOppholdsadresse(), pdlPerson.getBostedsadresse()));
     }
 
     public Barn mapTilBarn(PdlBarn pdlBarn, String barnIdent, PdlPerson pdlPerson) {
@@ -274,7 +274,7 @@ public class PdlPersonMapper {
         );
     }
 
-    private Oppholdsadresse mapOppholdssadresse(List<OppholdsadresseDto> dtos) {
+    private Oppholdsadresse mapOppholdssadresse(List<OppholdsadresseDto> dtos, List<BostedsadresseDto> bostedsadresseDtos) {
         if (dtos == null || dtos.isEmpty()) {
             return null;
         }
@@ -285,9 +285,18 @@ public class PdlPersonMapper {
         //  Fra folkeregisteret kan man også få oppholdsadresse uten en faktisk adresse, men med informasjon i oppholdAnnetSted.
         return dtos.stream()
                 .filter(dto -> dto.getVegadresse() != null)
+                .filter(dto -> filtrerVekkVegadresseLikBostedsadresse(bostedsadresseDtos, dto))
                 .findFirst()
                 .map(it -> new Oppholdsadresse(it.getCoAdressenavn(), mapTilVegadresse(it.getVegadresse())))
                 .orElse(null);
+    }
+
+    private boolean filtrerVekkVegadresseLikBostedsadresse(List<BostedsadresseDto> bostedsadresseDtos, OppholdsadresseDto dto) {
+        var bostedsadresseDto = finnBostedsadresse(bostedsadresseDtos);
+        if (bostedsadresseDto != null && bostedsadresseDto.getVegadresse() != null) {
+            return !erLikeVegadresser(dto.getVegadresse(), bostedsadresseDto.getVegadresse());
+        }
+        return false;
     }
 
     private Vegadresse mapTilVegadresse(VegadresseDto dto) {
