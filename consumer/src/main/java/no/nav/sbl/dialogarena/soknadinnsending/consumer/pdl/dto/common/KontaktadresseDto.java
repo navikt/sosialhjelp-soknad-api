@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class KontaktadresseDto {
 
-    private final Type type;
+    private final String type;
     private final String coAdressenavn;
     private final VegadresseDto vegadresse;
     private final MetadataDto metadata;
@@ -13,7 +13,7 @@ public class KontaktadresseDto {
 
     @JsonCreator
     public KontaktadresseDto(
-            @JsonProperty("type") Type type,
+            @JsonProperty("type") String type,
             @JsonProperty("coAdressenavn") String coAdressenavn,
             @JsonProperty("vegadresse") VegadresseDto vegadresse,
             @JsonProperty("metadata") MetadataDto metadata,
@@ -26,7 +26,7 @@ public class KontaktadresseDto {
         this.folkeregistermetadata = folkeregistermetadata;
     }
 
-    public Type getType() {
+    public String getType() {
         return type;
     }
 
@@ -46,8 +46,4 @@ public class KontaktadresseDto {
         return folkeregistermetadata;
     }
 
-    public enum Type {
-        INNLAND,
-        UTLAND
-    }
 }
