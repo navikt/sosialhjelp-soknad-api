@@ -4,6 +4,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.Adresse;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Barn;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Bostedsadresse;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Ektefelle;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Kontaktadresse;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Oppholdsadresse;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Person;
 import org.slf4j.Logger;
@@ -225,6 +226,61 @@ public class PersonSammenligner {
                 log.info("Ulike felter i MidlertidigAdresse i Person_v3 vs Oppholdsadresse i PDL: {}", String.join(",", ulikeFelter));
             } else {
                 log.info("MidlertidigAdresse i Person_v3 og Oppholdsadresse i PDL er like");
+            }
+        }
+    }
+
+    public void sammenlignMidlertidigAdresse(Adresse midlertidigAdresse, Kontaktadresse kontaktadresse) {
+        if (midlertidigAdresse == null && kontaktadresse != null) {
+            log.info("MidlertidigAdresse er null i Person_v3, men kontaktadresse er satt i PDL");
+        }
+
+        if (midlertidigAdresse != null && kontaktadresse == null) {
+            log.info("MidlertidigAdresse er satt i Person_v3, men kontaktadresse er null i PDL");
+        }
+
+        if (midlertidigAdresse != null && kontaktadresse != null) {
+            List<String> ulikeFelter = new ArrayList<>();
+            if (midlertidigAdresse.getAdressetype() != null
+                    && midlertidigAdresse.getAdressetype().equals("gateadresse")
+                    && kontaktadresse.getVegadresse() != null) {
+                var gateadresse = (Adresse.Gateadresse) midlertidigAdresse.getStrukturertAdresse();
+                if (!gateadresse.gatenavn.equalsIgnoreCase(kontaktadresse.getVegadresse().getAdressenavn())) {
+                    ulikeFelter.add("Adressenavn");
+                }
+                if (!gateadresse.husnummer.equalsIgnoreCase(kontaktadresse.getVegadresse().getHusnummer().toString())) {
+                    ulikeFelter.add("Husnummer");
+                }
+                if (gateadresse.husbokstav != null
+                        && kontaktadresse.getVegadresse().getHusbokstav() != null
+                        && !gateadresse.husbokstav.equalsIgnoreCase(kontaktadresse.getVegadresse().getHusbokstav())) {
+                    ulikeFelter.add("Husbokstav");
+                }
+                if (gateadresse.bolignummer != null
+                        && kontaktadresse.getVegadresse().getBruksenhetsnummer() != null
+                        && !gateadresse.bolignummer.equalsIgnoreCase(kontaktadresse.getVegadresse().getBruksenhetsnummer())) {
+                    ulikeFelter.add("Bruksenhetsnummer");
+                }
+                if (!gateadresse.postnummer.equalsIgnoreCase(kontaktadresse.getVegadresse().getPostnummer())) {
+                    ulikeFelter.add("Postnummer");
+                }
+                if (!gateadresse.kommunenummer.equalsIgnoreCase(kontaktadresse.getVegadresse().getKommunenummer())) {
+                    ulikeFelter.add("Husbokstav");
+                }
+            }
+            if (midlertidigAdresse.getAdressetype() != null
+                    && midlertidigAdresse.getAdressetype().equalsIgnoreCase("matrikkeladresse")) {
+                log.info("MidlertidigAdresse i TPS er matrikkeladresse. Kontaktadresse i PDL er ikke mulig som matrikkeladresse.");
+            }
+
+            if (midlertidigAdresse.getAdressetype() != null) {
+                log.info("Midlertidig adresse - ukjent adressetyp {}", midlertidigAdresse.getAdressetype());
+            }
+
+            if (ulikeFelter.size() > 0) {
+                log.info("Ulike felter i MidlertidigAdresse i Person_v3 vs kontaktadresse i PDL: {}", String.join(",", ulikeFelter));
+            } else {
+                log.info("MidlertidigAdresse i Person_v3 og kontaktadresse i PDL er like");
             }
         }
     }

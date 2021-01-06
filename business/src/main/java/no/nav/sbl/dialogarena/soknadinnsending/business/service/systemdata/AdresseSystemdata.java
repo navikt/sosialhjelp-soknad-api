@@ -4,6 +4,7 @@ import no.finn.unleash.Unleash;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Adresse;
 import no.nav.sbl.dialogarena.sendsoknad.domain.AdresserOgKontonummer;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Bostedsadresse;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Kontaktadresse;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Matrikkeladresse;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Oppholdsadresse;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Vegadresse;
@@ -22,6 +23,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonMatrikkelAdresse;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonPostboksAdresse;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonUstrukturertAdresse;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
+import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeSystem;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import org.slf4j.Logger;
@@ -118,7 +120,8 @@ public class AdresseSystemdata implements Systemdata {
         var skalHenteAdresserFraPdl = unleashConsumer.isEnabled(FEATURE_ADRESSER_PDL, false);
         if (skalHenteAdresserFraPdl) {
             var person = pdlService.hentPerson(personIdentifikator);
-            return mapToJsonAdresse(person.getOppholdsadresse());
+//            return mapToJsonAdresse(person.getOppholdsadresse());
+            return mapToJsonAdresse(person.getKontaktadresse());
         }
         AdresserOgKontonummer adresserOgKontonummer = personService.hentAddresserOgKontonummer(personIdentifikator);
         sammenlignMidlertidigAdresse(personIdentifikator, adresserOgKontonummer.getMidlertidigAdresse());
@@ -139,7 +142,8 @@ public class AdresseSystemdata implements Systemdata {
     private void sammenlignMidlertidigAdresse(String personIdentifikator, Adresse midlertidigAdresse) {
         try {
             var person = pdlService.hentPerson(personIdentifikator);
-            personSammenligner.sammenlignMidlertidigAdresse(midlertidigAdresse, person.getOppholdsadresse());
+//            personSammenligner.sammenlignMidlertidigAdresse(midlertidigAdresse, person.getOppholdsadresse());
+            personSammenligner.sammenlignMidlertidigAdresse(midlertidigAdresse, person.getKontaktadresse());
         } catch (PdlApiException | TjenesteUtilgjengeligException e) {
             log.warn("PDL kaster feil (brukes kun for sammenligning)", e);
         } catch (Exception e) {
@@ -185,6 +189,20 @@ public class AdresseSystemdata implements Systemdata {
         jsonAdresse.setKilde(JsonKilde.SYSTEM);
 
         return jsonAdresse;
+    }
+
+    private JsonAdresse mapToJsonAdresse(Kontaktadresse kontaktadresse) {
+        if (kontaktadresse == null) {
+            return null;
+        }
+
+        if (kontaktadresse.getVegadresse() != null) {
+            var jsonAdresse = tilGateAdresse(kontaktadresse.getVegadresse());
+            jsonAdresse.setKilde(JsonKilde.SYSTEM);
+            return jsonAdresse;
+        } else {
+            throw new IllegalStateException("Ukjent oppholdsadresse fra PDL (skal være Vegadresse)");
+        }
     }
 
     private JsonGateAdresse tilGateAdresse(Vegadresse vegadresse) {
