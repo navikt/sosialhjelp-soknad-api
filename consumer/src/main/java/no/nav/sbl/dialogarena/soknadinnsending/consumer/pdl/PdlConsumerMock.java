@@ -9,9 +9,9 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.EndringDt
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.FoedselDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.FolkeregistermetadataDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.FolkeregisterpersonstatusDto;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.KontaktadresseDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.MetadataDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.NavnDto;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.OppholdsadresseDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.SivilstandDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.StatsborgerskapDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.VegadresseDto;
@@ -74,7 +74,8 @@ public class PdlConsumerMock {
         return new PdlPerson(
                 singletonList(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT)),
                 singletonList(new BostedsadresseDto(null, new VegadresseDto("123123", "GATEVEIEN", 1, "A", null, "0690", "0301", null), null, null)),
-                singletonList(new OppholdsadresseDto(null, "Heisann Test", new VegadresseDto(null, "midlertidig adresse gate", 1, "D", null, "0471", "Oslo", null), null, null)),
+                emptyList(), // ingen oppholdsadresse
+                singletonList(new KontaktadresseDto(KontaktadresseDto.Type.INNLAND, null, new VegadresseDto(null, "midlertidig adresse gate", 1, "D", null, "0471", "Oslo", null), null, null)),
                 emptyList(), // ingen familierelasjoner for mockperson
                 singletonList(new NavnDto("rask", "jule", "mat", defaultMetadata(), defaultFolkeregisterMetadata())),
                 singletonList(new SivilstandDto(
