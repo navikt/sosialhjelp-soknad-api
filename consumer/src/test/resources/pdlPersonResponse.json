@@ -59,7 +59,7 @@
       ],
       "kontaktadresse": [
         {
-          "type": "INNLAND",
+          "type": "Innland",
           "coAdressenavn": null,
           "vegadresse": {
             "matrikkelId": null,

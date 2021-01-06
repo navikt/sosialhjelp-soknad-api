@@ -75,7 +75,7 @@ public class PdlConsumerMock {
                 singletonList(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT)),
                 singletonList(new BostedsadresseDto(null, new VegadresseDto("123123", "GATEVEIEN", 1, "A", null, "0690", "0301", null), null, null)),
                 emptyList(), // ingen oppholdsadresse
-                singletonList(new KontaktadresseDto(KontaktadresseDto.Type.INNLAND, null, new VegadresseDto(null, "midlertidig adresse gate", 1, "D", null, "0471", "Oslo", null), null, null)),
+                singletonList(new KontaktadresseDto("Innland", null, new VegadresseDto(null, "midlertidig adresse gate", 1, "D", null, "0471", "Oslo", null), null, null)),
                 emptyList(), // ingen familierelasjoner for mockperson
                 singletonList(new NavnDto("rask", "jule", "mat", defaultMetadata(), defaultFolkeregisterMetadata())),
                 singletonList(new SivilstandDto(

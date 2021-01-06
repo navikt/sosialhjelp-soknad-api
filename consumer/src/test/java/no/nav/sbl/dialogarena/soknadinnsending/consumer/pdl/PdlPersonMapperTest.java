@@ -40,7 +40,6 @@ import static no.nav.common.utils.CollectionUtils.listOf;
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.PdlPersonMapper.DOED;
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.PdlPersonMapper.KODE_6;
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.PdlPersonMapper.KODE_7;
-import static no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.KontaktadresseDto.Type.INNLAND;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.emptyString;
 import static org.hamcrest.Matchers.hasSize;
@@ -93,7 +92,7 @@ public class PdlPersonMapperTest {
                 listOf(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT)),
                 listOf(new BostedsadresseDto(null, new VegadresseDto("matrikkelId", "gateveien", 1, "A", "tilleggsnavn", "1234", "1212", "U123123"), null, null)),
                 listOf(new OppholdsadresseDto(null, "Test McTest", new VegadresseDto("111", "midlertidig", 1, "A", null, "1234", "1212", null), null, null)),
-                listOf(new KontaktadresseDto(INNLAND, null, new VegadresseDto("222", "kontaktveien", 1, "A", null, "2222", "3333", null), null, null)),
+                listOf(new KontaktadresseDto("Innland", null, new VegadresseDto("222", "kontaktveien", 1, "A", null, "2222", "3333", null), null, null)),
                 listOf(new FamilierelasjonDto(BARNIDENT, BARN_ROLLE, MOR_ROLLE)),
                 listOf(new NavnDto(FORNAVN, MELLOMNAVN, ETTERNAVN, METADATA, FOLKEREGISTERMETADATA)),
                 listOf(new SivilstandDto(SivilstandDto.SivilstandType.GIFT, EKTEFELLEIDENT, METADATA, FOLKEREGISTERMETADATA)),
@@ -226,8 +225,8 @@ public class PdlPersonMapperTest {
                 listOf(new BostedsadresseDto(null, vegadresse, null, null)),
                 null, // ingen oppholdsadresse
                 listOf(
-                        new KontaktadresseDto(INNLAND, null, vegadresse, null, null),
-                        new KontaktadresseDto(INNLAND, null, annenVegadresse, null, null)
+                        new KontaktadresseDto("Innland", null, vegadresse, null, null),
+                        new KontaktadresseDto("Innland", null, annenVegadresse, null, null)
                 ),
                 listOf(new FamilierelasjonDto(BARNIDENT, BARN_ROLLE, MOR_ROLLE)),
                 listOf(new NavnDto(FORNAVN, MELLOMNAVN, ETTERNAVN, METADATA, FOLKEREGISTERMETADATA)),
