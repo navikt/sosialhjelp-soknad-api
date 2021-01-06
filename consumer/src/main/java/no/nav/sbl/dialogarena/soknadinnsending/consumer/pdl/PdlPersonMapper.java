@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Barn;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Bostedsadresse;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Ektefelle;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Kontaktadresse;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Matrikkeladresse;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Oppholdsadresse;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Person;
@@ -14,6 +15,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.Adressebe
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.BostedsadresseDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.FoedselDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.FolkeregisterpersonstatusDto;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.KontaktadresseDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.MatrikkeladresseDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.NavnDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.OppholdsadresseDto;
@@ -86,7 +88,8 @@ public class PdlPersonMapper {
                 .withStatsborgerskap(finnStatsborgerskap(pdlPerson.getStatsborgerskap()))
                 .withDiskresjonskode(finnAdressebeskyttelse(pdlPerson.getAdressebeskyttelse()))
                 .withBostedsadresse(mapBostedsadresse(pdlPerson.getBostedsadresse()))
-                .withOppholdsadresse(mapOppholdssadresse(pdlPerson.getOppholdsadresse(), pdlPerson.getBostedsadresse()));
+                .withOppholdsadresse(mapOppholdssadresse(pdlPerson.getOppholdsadresse(), pdlPerson.getBostedsadresse()))
+                .withKontaktadresse(mapKontaktadresse(pdlPerson.getKontaktadresse(), pdlPerson.getBostedsadresse()));
     }
 
     public Barn mapTilBarn(PdlBarn pdlBarn, String barnIdent, PdlPerson pdlPerson) {
@@ -285,16 +288,28 @@ public class PdlPersonMapper {
         //  Fra folkeregisteret kan man også få oppholdsadresse uten en faktisk adresse, men med informasjon i oppholdAnnetSted.
         return dtos.stream()
                 .filter(dto -> dto.getVegadresse() != null)
-                .filter(dto -> filtrerVekkVegadresseLikBostedsadresse(bostedsadresseDtos, dto))
+                .filter(dto -> filtrerVekkVegadresseLikBostedsadresse(bostedsadresseDtos, dto.getVegadresse()))
                 .findFirst()
                 .map(it -> new Oppholdsadresse(it.getCoAdressenavn(), mapTilVegadresse(it.getVegadresse())))
                 .orElse(null);
     }
 
-    private boolean filtrerVekkVegadresseLikBostedsadresse(List<BostedsadresseDto> bostedsadresseDtos, OppholdsadresseDto dto) {
+    private Kontaktadresse mapKontaktadresse(List<KontaktadresseDto> dtos, List<BostedsadresseDto> bostedsadresseDtos) {
+        if (dtos == null || dtos.isEmpty()) {
+            return null;
+        }
+        return dtos.stream()
+                .filter(dto -> dto.getVegadresse() != null)
+                .filter(dto -> filtrerVekkVegadresseLikBostedsadresse(bostedsadresseDtos, dto.getVegadresse()))
+                .findFirst()
+                .map(it -> new Kontaktadresse(it.getCoAdressenavn(), mapTilVegadresse(it.getVegadresse())))
+                .orElse(null);
+    }
+
+    private boolean filtrerVekkVegadresseLikBostedsadresse(List<BostedsadresseDto> bostedsadresseDtos, VegadresseDto dtoVegadresse) {
         var bostedsadresseDto = finnBostedsadresse(bostedsadresseDtos);
         if (bostedsadresseDto != null && bostedsadresseDto.getVegadresse() != null) {
-            return !erLikeVegadresser(dto.getVegadresse(), bostedsadresseDto.getVegadresse());
+            return !erLikeVegadresser(dtoVegadresse, bostedsadresseDto.getVegadresse());
         }
         return false;
     }
