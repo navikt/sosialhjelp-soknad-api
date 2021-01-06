@@ -141,10 +141,6 @@ public class AdresseSystemdataTest {
         var bostedsadresse = personWithBostedsadresseMatrikkeladresse.getBostedsadresse().getMatrikkeladresse();
         assertThat(matrikkeladresse.getBruksnummer(), is(bostedsadresse.getBruksenhetsnummer()));
         assertThat(matrikkeladresse.getKommunenummer(), is(bostedsadresse.getKommunenummer()));
-//        assertThat(matrikkeladresse.getFestenummer(), is(bostedsadresse.festenummer));
-//        assertThat(matrikkeladresse.getGaardsnummer(), is(bostedsadresse.gaardsnummer));
-//        assertThat(matrikkeladresse.getSeksjonsnummer(), is(bostedsadresse.seksjonsnummer));
-//        assertThat(matrikkeladresse.getUndernummer(), is(bostedsadresse.undernummer));
 
         verify(personService, times(0)).hentAddresserOgKontonummer(anyString());
     }

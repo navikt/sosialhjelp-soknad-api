@@ -205,11 +205,7 @@ public class AdresseSystemdata implements Systemdata {
         var jsonMatrikkelAdresse = new JsonMatrikkelAdresse();
         jsonMatrikkelAdresse.setType(JsonAdresse.Type.MATRIKKELADRESSE);
         jsonMatrikkelAdresse.setKommunenummer(matrikkeladresse.getKommunenummer());
-//        jsonMatrikkelAdresse.setGaardsnummer(matrikkeladresse.gaardsnummer); // ukjent?
         jsonMatrikkelAdresse.setBruksnummer(matrikkeladresse.getBruksenhetsnummer());
-//        jsonMatrikkelAdresse.setFestenummer(matrikkeladresse.festenummer); // ukjent?
-//        jsonMatrikkelAdresse.setSeksjonsnummer(matrikkeladresse.seksjonsnummer); // ukjent?
-//        jsonMatrikkelAdresse.setUndernummer(matrikkeladresse.undernummer); // ukjent?
         return jsonMatrikkelAdresse;
     }
 
