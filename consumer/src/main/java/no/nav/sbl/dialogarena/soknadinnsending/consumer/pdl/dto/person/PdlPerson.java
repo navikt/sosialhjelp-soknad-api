@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.AdressebeskyttelseDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.BostedsadresseDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.FamilierelasjonDto;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.KontaktadresseDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.NavnDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.OppholdsadresseDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.SivilstandDto;
@@ -20,6 +21,8 @@ public class PdlPerson {
 
     private final List<OppholdsadresseDto> oppholdsadresse;
 
+    private final List<KontaktadresseDto> kontaktadresse;
+
     private final List<FamilierelasjonDto> familierelasjoner;
 
     private final List<NavnDto> navn;
@@ -33,6 +36,7 @@ public class PdlPerson {
             @JsonProperty("adressebeskyttelse") List<AdressebeskyttelseDto> adressebeskyttelse,
             @JsonProperty("bostedsadresse") List<BostedsadresseDto> bostedsadresse,
             @JsonProperty("oppholdsadresse") List<OppholdsadresseDto> oppholdsadresse,
+            @JsonProperty("kontaktadresse") List<KontaktadresseDto> kontaktadresse,
             @JsonProperty("familierelasjoner") List<FamilierelasjonDto> familierelasjoner,
             @JsonProperty("navn") List<NavnDto> navn,
             @JsonProperty("sivilstand") List<SivilstandDto> sivilstand,
@@ -41,6 +45,7 @@ public class PdlPerson {
         this.adressebeskyttelse = adressebeskyttelse;
         this.bostedsadresse = bostedsadresse;
         this.oppholdsadresse = oppholdsadresse;
+        this.kontaktadresse = kontaktadresse;
         this.familierelasjoner = familierelasjoner;
         this.navn = navn;
         this.sivilstand = sivilstand;
@@ -57,6 +62,10 @@ public class PdlPerson {
 
     public List<OppholdsadresseDto> getOppholdsadresse() {
         return oppholdsadresse;
+    }
+
+    public List<KontaktadresseDto> getKontaktadresse() {
+        return kontaktadresse;
     }
 
     public List<FamilierelasjonDto> getFamilierelasjoner() {
