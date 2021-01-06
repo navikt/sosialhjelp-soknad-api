@@ -46,7 +46,7 @@
     "SOKNAD_ETTERSENDING_ANTALLDAGER": "90",
     "SOKNAD_FULLOPPSUMMERING_RESSURS_ENABLED": "true",
     "SECURITYTOKENSERVICE_APIGW_URL": "https://api-gw-q0.oera.no/security-token-service/rest/v1/sts/token",
-    "TPSWS_API_V1_URL": "https://api-gw-q0.oera.no/tpsws/api/v1/",
+    "TPSWS_API_V1_URL": "https://api-gw-q0.oera.no/tpsws-aura/api/v1/",
     "IS_SENDING_TIL_DIGISOS_API_ENABLED": "true",
     "IS_ALLTID_SEND_TIL_NAV_TESTKOMMUNE": "false",
     "IS_ALLTID_HENT_KOMMUNEINFO_FRA_NAV_TESTKOMMUNE": "false",
