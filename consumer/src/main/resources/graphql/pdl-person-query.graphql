@@ -65,6 +65,19 @@ query($ident: ID!, $historikk: Boolean!) {
                 ...folkeregistermetadata
             }
         }
+        kontaktadresse(historikk: $historikk) {
+            type
+            coAdressenavn
+            vegadresse {
+                ...vegadresse
+            }
+            metadata {
+                ...metadata
+            }
+            folkeregistermetadata{
+                ...folkeregistermetadata
+            }
+        }
         familierelasjoner {
             relatertPersonsIdent
             relatertPersonsRolle

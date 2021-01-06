@@ -13,6 +13,7 @@ public class Person {
     private Ektefelle ektefelle;
     private Bostedsadresse bostedsadresse;
     private Oppholdsadresse oppholdsadresse;
+    private Kontaktadresse kontaktadresse;
 
     public String getFornavn() {
         return fornavn;
@@ -52,6 +53,10 @@ public class Person {
 
     public Oppholdsadresse getOppholdsadresse() {
         return oppholdsadresse;
+    }
+
+    public Kontaktadresse getKontaktadresse() {
+        return kontaktadresse;
     }
 
     public Person withFornavn(String fornavn) {
@@ -103,4 +108,10 @@ public class Person {
         this.oppholdsadresse = oppholdsadresse;
         return this;
     }
+
+    public Person withKontaktadresse(Kontaktadresse kontaktadresse) {
+        this.kontaktadresse = kontaktadresse;
+        return this;
+    }
+
 }
