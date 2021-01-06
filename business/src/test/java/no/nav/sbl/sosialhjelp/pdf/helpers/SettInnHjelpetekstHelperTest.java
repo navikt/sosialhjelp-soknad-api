@@ -21,7 +21,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.Silent.class)
+@RunWith(MockitoJUnitRunner.class)
 public class SettInnHjelpetekstHelperTest {
 
     private Handlebars handlebars;
@@ -51,8 +51,6 @@ public class SettInnHjelpetekstHelperTest {
     
     @Test
     public void skalReturnereTomStrengHvisIkkeHjelpetekstFinnes() throws IOException {
-        when(cmsTekst.getCmsTekst(eq("hjelpetekst.oppsummering.tittel"), any(Object[].class), anyString(), anyString(), any(Locale.class))).thenReturn("Hjelpetekst:");
-
         String compiled = handlebars.compileInline("{{{settInnHjelpetekst \"testTekst\"}}}").apply(new Object());
 
         assertThat(compiled, is(""));

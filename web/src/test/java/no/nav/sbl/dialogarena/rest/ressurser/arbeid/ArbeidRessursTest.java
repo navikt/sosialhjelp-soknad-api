@@ -33,7 +33,7 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.Silent.class)
+@RunWith(MockitoJUnitRunner.class)
 public class ArbeidRessursTest {
 
     private static final String BEHANDLINGSID = "123";
@@ -87,7 +87,6 @@ public class ArbeidRessursTest {
     public void getArbeidSkalReturnereSystemArbeidsforholdRiktigKonvertert(){
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithArbeid(createArbeidsforholdListe(), null));
-        when(arbeidsforholdSystemdata.innhentSystemArbeidsforhold(anyString())).thenReturn(createArbeidsforholdListe());
 
         final ArbeidFrontend arbeidFrontend = arbeidRessurs.hentArbeid(BEHANDLINGSID);
         final List<ArbeidsforholdFrontend> arbeidsforholdFrontends = arbeidFrontend.arbeidsforhold;
@@ -104,7 +103,6 @@ public class ArbeidRessursTest {
     public void getArbeidSkalReturnereArbeidsforholdLikNull(){
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithArbeid(null, null));
-        when(arbeidsforholdSystemdata.innhentSystemArbeidsforhold(anyString())).thenReturn(null);
 
         final ArbeidFrontend arbeidFrontend = arbeidRessurs.hentArbeid(BEHANDLINGSID);
 

@@ -25,7 +25,7 @@ import java.util.Optional;
 
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.Silent.class)
+@RunWith(MockitoJUnitRunner.class)
 @ContextConfiguration(classes = {DbTestConfig.class})
 public class SlettLoggSchedulerTest {
 
@@ -81,11 +81,7 @@ public class SlettLoggSchedulerTest {
 
     @Test
     public void skalIkkeSletteLoggSomErUnderEttAarGammelt() {
-        Oppgave oppgave = oppgave(BEHANDLINGS_ID, DAGER_GAMMEL_SOKNAD - 1);
-        SendtSoknad sendtSoknad = sendtSoknad(BEHANDLINGS_ID, EIER, DAGER_GAMMEL_SOKNAD - 1);
         when(soknadMetadataRepository.hentEldreEnn(DAGER_GAMMEL_SOKNAD)).thenReturn(Optional.empty());
-        when(oppgaveRepository.hentOppgave(BEHANDLINGS_ID)).thenReturn(Optional.of(oppgave));
-        when(sendtSoknadRepository.hentSendtSoknad(BEHANDLINGS_ID, EIER)).thenReturn(Optional.of(sendtSoknad));
 
         scheduler.slettLogger();
 

@@ -27,7 +27,7 @@ import static org.hamcrest.core.Is.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.Silent.class)
+@RunWith(MockitoJUnitRunner.class)
 public class SoknadsmottakerServiceTest {
     private static final String EIER = "123456789101";
 
@@ -73,7 +73,6 @@ public class SoknadsmottakerServiceTest {
 
     @Test
     public void finnAdresseFraSoknadGirRiktigAdresseForFolkeregistrertMatrikkeladresse() {
-        when(adresseSokService.sokEtterNavKontor(any(Sokedata.class))).thenReturn(lagAdresseForslagListeMedEtInnslag());
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         JsonPersonalia personalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
         personalia.setFolkeregistrertAdresse(createMatrikkeladresse());
@@ -95,7 +94,6 @@ public class SoknadsmottakerServiceTest {
             lagAdresseForslag(KOMMUNENUMMER1, KOMMUNENAVN1, "Bar")
         ));
 
-        when(adresseSokService.sokEtterNavKontor(any(Sokedata.class))).thenReturn(lagAdresseForslagListeMedEtInnslag());
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         JsonPersonalia personalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
         personalia.setOppholdsadresse(createGateadresse());

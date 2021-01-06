@@ -78,9 +78,8 @@ import static no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde.BRUKER;
 import static no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde.SYSTEM;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.Silent.class)
+@RunWith(MockitoJUnitRunner.class)
 @ContextConfiguration(classes = SoknadServiceIntegrationTestContext.class)
 public class SosialhjelpPdfGeneratorTest {
 
@@ -89,20 +88,15 @@ public class SosialhjelpPdfGeneratorTest {
     @Before
     public void setUp() {
         NavMessageSource navMessageSource = new NavMessageSource();
-
         NavMessageSource.Bundle bundle = new NavMessageSource.Bundle(BUNDLE_NAME, "classpath:/" + BUNDLE_NAME);
-
         NavMessageSource.Bundle fellesBundle = new NavMessageSource.Bundle("sendsoknad", "classpath:/sendsoknad");
-
         navMessageSource.setBasenames(fellesBundle, bundle);
         navMessageSource.setDefaultEncoding("UTF-8");
-
 
         sosialhjelpPdfGenerator = new SosialhjelpPdfGenerator();
         sosialhjelpPdfGenerator.setNavMessageSource(navMessageSource);
 
         KodeverkService kodeverkService = mock(KodeverkService.class);
-        when(kodeverkService.getLand("NOR")).thenReturn("Norsk");
         TextHelpers textHelpers = new TextHelpers();
         textHelpers.setNavMessageSource(navMessageSource);
         textHelpers.setKodeverkService(kodeverkService);

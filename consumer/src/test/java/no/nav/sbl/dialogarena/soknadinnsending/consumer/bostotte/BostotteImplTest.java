@@ -30,7 +30,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.Silent.class)
+@RunWith(MockitoJUnitRunner.class)
 @SuppressWarnings("unchecked")
 public class BostotteImplTest {
 
@@ -153,9 +153,6 @@ public class BostotteImplTest {
 
     @Test
     public void hentBostotte_opprettHusbankenPing() {
-        // Mocks:
-        when(operations.exchange(any(), any(Class.class))).thenThrow(new HttpMessageNotReadableException("TestException"));
-
         // Testkjøring:
         Pingable pingable = BostotteImpl.opprettHusbankenPing(config, new RestTemplate());
         assertThat(pingable).isNotNull();
