@@ -65,6 +65,10 @@
             <groupId>com.migesok</groupId>
             <artifactId>jaxb-java-time-adapters</artifactId>
         </dependency>
+        <dependency>
+            <groupId>jakarta.activation</groupId>
+            <artifactId>jakarta.activation-api</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>no.nav.common</groupId>
@@ -133,16 +137,10 @@
 
         <!-- Avhengigheter med scope test -->
         <dependency>
-            <groupId>jakarta.activation</groupId>
-            <artifactId>jakarta.activation-api</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>org.hsqldb</groupId>
             <artifactId>hsqldb</artifactId>
             <scope>test</scope>
         </dependency>
-
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
