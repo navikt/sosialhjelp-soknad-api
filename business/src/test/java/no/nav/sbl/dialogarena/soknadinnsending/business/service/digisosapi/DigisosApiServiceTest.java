@@ -34,7 +34,7 @@ import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.Silent.class)
+@RunWith(MockitoJUnitRunner.class)
 @ContextConfiguration(classes = SoknadServiceIntegrationTestContext.class)
 public class DigisosApiServiceTest {
 
@@ -48,7 +48,7 @@ public class DigisosApiServiceTest {
     private DigisosApiService digisosApiService;
 
     @BeforeClass
-    public static void setUp() throws Exception {
+    public static void setUp() {
         System.setProperty("idporten_config_url", "https://oidc-ver2.difi.no/idporten-oidc-provider/.well-known/openid-configuration");
         System.setProperty("idporten_scope", "ks:fiks");
         System.setProperty("idporten_clientid", "1c3631f4-dbf2-4c12-bdc4-156cbd53c625");
@@ -58,11 +58,10 @@ public class DigisosApiServiceTest {
     }
 
     @Before
-    public void setUpBefore() throws Exception {
+    public void setUpBefore() {
         when(sosialhjelpPdfGenerator.generate(any(JsonInternalSoknad.class), anyBoolean())).thenReturn(new byte[]{1, 2, 3});
         when(sosialhjelpPdfGenerator.generateEttersendelsePdf(any(JsonInternalSoknad.class), anyString())).thenReturn(new byte[]{1, 2, 3});
         when(sosialhjelpPdfGenerator.generateBrukerkvitteringPdf()).thenReturn(new byte[]{1, 2, 3});
-        when(innsendingService.hentSoknadUnderArbeid(anyString(), anyString())).thenReturn(new SoknadUnderArbeid());
     }
 
     @Test

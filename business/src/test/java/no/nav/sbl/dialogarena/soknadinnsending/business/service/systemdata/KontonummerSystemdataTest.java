@@ -20,7 +20,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.Silent.class)
+@RunWith(MockitoJUnitRunner.class)
 public class KontonummerSystemdataTest {
 
     private static final String EIER = "12345678901";
@@ -65,10 +65,7 @@ public class KontonummerSystemdataTest {
 
     @Test
     public void skalIkkeOppdatereKontonummerDersomKildeErBruker() {
-        AdresserOgKontonummer adresserOgKontonummer = new AdresserOgKontonummer()
-                .withKontonummer(KONTONUMMER_SYSTEM);
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createJsonInternalSoknadWithUserDefinedKontonummer());
-        when(personService.hentAddresserOgKontonummer(anyString())).thenReturn(adresserOgKontonummer);
 
         kontonummerSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
 

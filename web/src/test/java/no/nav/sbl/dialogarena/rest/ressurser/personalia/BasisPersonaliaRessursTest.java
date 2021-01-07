@@ -23,7 +23,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.Silent.class)
+@RunWith(MockitoJUnitRunner.class)
 public class BasisPersonaliaRessursTest {
 
     private static final String BEHANDLINGSID = "123";
@@ -87,7 +87,6 @@ public class BasisPersonaliaRessursTest {
     public void getBasisPersonaliaSkalReturnereSystemBasisPersonalia(){
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithBasisPersonalia(true, true, true));
-        when(basisPersonaliaSystemdata.innhentSystemBasisPersonalia(anyString())).thenReturn(JSON_PERSONALIA);
         when(kodeverkService.getLand("NOR")).thenReturn("Norge");
 
         final BasisPersonaliaFrontend basisPersonaliaFrontend = basisPersonaliaRessurs.hentBasisPersonalia(BEHANDLINGSID);
@@ -99,7 +98,6 @@ public class BasisPersonaliaRessursTest {
     public void getBasisPersonaliaSkalReturnereBasisPersonaliaUtenStatsborgerskapOgNordiskBorger(){
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithBasisPersonalia(false, false, true));
-        when(basisPersonaliaSystemdata.innhentSystemBasisPersonalia(anyString())).thenReturn(JSON_PERSONALIA_UTEN_STAT_OG_NORDISK);
 
         final BasisPersonaliaFrontend basisPersonaliaFrontend = basisPersonaliaRessurs.hentBasisPersonalia(BEHANDLINGSID);
 

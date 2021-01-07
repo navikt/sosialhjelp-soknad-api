@@ -34,7 +34,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.Silent.class)
+@RunWith(MockitoJUnitRunner.class)
 public class SoknadRessursTest {
 
     private static final String BEHANDLINGSID = "123";
@@ -93,7 +93,6 @@ public class SoknadRessursTest {
 
     @Test
     public void opprettSoknadMedBehandlingsidSomIkkeHarEttersendingSkalStarteNyEttersending() {
-        doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentEttersendingMedTilknyttetBehandlingsId(anyString(), anyString())).thenReturn(Optional.empty());
         ressurs.opprettSoknad(BEHANDLINGSID, mock(HttpServletResponse.class), "");
         verify(soknadService).startEttersending(eq(BEHANDLINGSID));
@@ -101,7 +100,6 @@ public class SoknadRessursTest {
 
     @Test
     public void opprettSoknadMedBehandlingsidSomHarEttersendingSkalIkkeStarteNyEttersending() {
-        doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentEttersendingMedTilknyttetBehandlingsId(eq(BEHANDLINGSID), anyString())).thenReturn(
                 Optional.of(new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))));
         ressurs.opprettSoknad(BEHANDLINGSID, mock(HttpServletResponse.class), "");
@@ -110,9 +108,6 @@ public class SoknadRessursTest {
 
     @Test
     public void oppdaterSamtykkerMedTomListaSkalIkkeForeTilNoenSamtykker() {
-        doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
-        when(soknadUnderArbeidRepository.hentEttersendingMedTilknyttetBehandlingsId(eq(BEHANDLINGSID), anyString())).thenReturn(
-                Optional.of(new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))));
         List<BekreftelseRessurs> samtykkeListe = Lists.emptyList();
         String token = "token";
 
@@ -123,9 +118,6 @@ public class SoknadRessursTest {
 
     @Test
     public void oppdaterSamtykkerSkalGiSamtykkerFraLista() {
-        doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
-        when(soknadUnderArbeidRepository.hentEttersendingMedTilknyttetBehandlingsId(eq(BEHANDLINGSID), anyString())).thenReturn(
-                Optional.of(new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))));
         BekreftelseRessurs bekreftelse1 = new BekreftelseRessurs().withType(BOSTOTTE_SAMTYKKE).withVerdi(true);
         BekreftelseRessurs bekreftelse2 = new BekreftelseRessurs().withType(UTBETALING_SKATTEETATEN_SAMTYKKE).withVerdi(true);
         List<BekreftelseRessurs> samtykkeListe = Lists.newArrayList(bekreftelse1, bekreftelse2);
@@ -138,9 +130,6 @@ public class SoknadRessursTest {
 
     @Test
     public void oppdaterSamtykkerSkalGiSamtykkerFraLista_menKunDersomVerdiErSann() {
-        doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
-        when(soknadUnderArbeidRepository.hentEttersendingMedTilknyttetBehandlingsId(eq(BEHANDLINGSID), anyString())).thenReturn(
-                Optional.of(new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))));
         BekreftelseRessurs bekreftelse1 = new BekreftelseRessurs().withType(BOSTOTTE_SAMTYKKE).withVerdi(true);
         BekreftelseRessurs bekreftelse2 = new BekreftelseRessurs().withType(UTBETALING_SKATTEETATEN_SAMTYKKE).withVerdi(false);
         List<BekreftelseRessurs> samtykkeListe = Lists.newArrayList(bekreftelse1, bekreftelse2);
@@ -153,7 +142,6 @@ public class SoknadRessursTest {
 
     @Test
     public void hentSamtykker_skalReturnereTomListeNarViIkkeHarNoenSamtykker() {
-        doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(eq(BEHANDLINGSID), anyString())).thenReturn(
                 new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER)));
         String token = "token";
@@ -165,7 +153,6 @@ public class SoknadRessursTest {
 
     @Test
     public void hentSamtykker_skalReturnereListeMedSamtykker() {
-        doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         JsonInternalSoknad internalSoknad = createEmptyJsonInternalSoknad(EIER);
         JsonOkonomiopplysninger opplysninger = internalSoknad.getSoknad().getData().getOkonomi().getOpplysninger();
         setBekreftelse(opplysninger, BOSTOTTE_SAMTYKKE, true, "Samtykke test tekst!");
@@ -187,7 +174,6 @@ public class SoknadRessursTest {
 
     @Test
     public void hentSamtykker_skalReturnereListeMedSamtykker_tarBortDeUtenSattVerdi() {
-        doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         JsonInternalSoknad internalSoknad = createEmptyJsonInternalSoknad(EIER);
         JsonOkonomiopplysninger opplysninger = internalSoknad.getSoknad().getData().getOkonomi().getOpplysninger();
         setBekreftelse(opplysninger, BOSTOTTE_SAMTYKKE, false, "Samtykke test tekst!");

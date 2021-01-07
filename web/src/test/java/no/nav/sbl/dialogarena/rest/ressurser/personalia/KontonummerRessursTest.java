@@ -26,7 +26,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.Silent.class)
+@RunWith(MockitoJUnitRunner.class)
 public class KontonummerRessursTest {
 
     private static final String BEHANDLINGSID = "123";
@@ -63,7 +63,6 @@ public class KontonummerRessursTest {
     public void getKontonummerSkalReturnereSystemKontonummer(){
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithKontonummer(JsonKilde.SYSTEM, KONTONUMMER_SYSTEM));
-        when(kontonummerSystemdata.innhentSystemverdiKontonummer(anyString())).thenReturn(KONTONUMMER_SYSTEM);
 
         final KontonummerFrontend kontonummerFrontend = kontonummerRessurs.hentKontonummer(BEHANDLINGSID);
 
@@ -148,7 +147,6 @@ public class KontonummerRessursTest {
     }
 
     private void startWithEmptyKontonummerAndNoSystemKontonummer() {
-        when(kontonummerSystemdata.innhentSystemverdiKontonummer(anyString())).thenReturn(null);
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithKontonummer(JsonKilde.SYSTEM, null));
     }

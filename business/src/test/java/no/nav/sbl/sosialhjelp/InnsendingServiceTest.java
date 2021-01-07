@@ -31,14 +31,13 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.Silent.class)
+@RunWith(MockitoJUnitRunner.class)
 public class InnsendingServiceTest {
     private static final Long SOKNAD_UNDER_ARBEID_ID = 1L;
     private static final Long SENDT_SOKNAD_ID = 2L;
@@ -75,7 +74,6 @@ public class InnsendingServiceTest {
             TransactionCallbackWithoutResult arg = (TransactionCallbackWithoutResult) args[0];
             return arg.doInTransaction(new SimpleTransactionStatus());
         });
-        when(opplastetVedleggRepository.hentVedleggForSoknad(anyLong(), anyString())).thenReturn(createOpplastetVedleggListe());
         when(sendtSoknadRepository.opprettSendtSoknad(any(), anyString())).thenReturn(SENDT_SOKNAD_ID);
         when(sendtSoknadRepository.hentSendtSoknad(anyString(), anyString())).thenReturn(createSendtSoknad());
     }
