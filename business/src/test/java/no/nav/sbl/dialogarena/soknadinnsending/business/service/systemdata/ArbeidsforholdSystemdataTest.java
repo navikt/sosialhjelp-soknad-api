@@ -20,7 +20,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -34,7 +33,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.Silent.class)
+@RunWith(MockitoJUnitRunner.class)
 public class ArbeidsforholdSystemdataTest {
 
     private static final String EIER = "12345678901";
@@ -144,16 +143,12 @@ public class ArbeidsforholdSystemdataTest {
     @Test
     public void skalFjerneArbeidsforholdOgFjerneUtbetalingOgInntekt() {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createSoknadUnderArbeidWithArbeidsforholdAndSluttOppgjorAndLonnslipp());
-        when(arbeidsforholdService.hentArbeidsforhold(anyString())).thenReturn(new ArrayList<>());
-        String tittel = "tittel";
-        when(textService.getJsonOkonomiTittel(anyString())).thenReturn(tittel);
 
         arbeidsforholdSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
 
         List<JsonArbeidsforhold> jsonArbeidsforholdList = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getArbeid().getForhold();
         List<JsonOkonomiOpplysningUtbetaling> utbetalinger = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getUtbetaling();
         List<JsonOkonomioversiktInntekt> inntekter = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOversikt().getInntekt();
-
 
         assertThat(jsonArbeidsforholdList.isEmpty(), is(true));
         assertThat(utbetalinger.isEmpty(), is(true));

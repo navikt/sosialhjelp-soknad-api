@@ -34,7 +34,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.Silent.class)
+@RunWith(MockitoJUnitRunner.class)
 public class SkattetatenSystemdataTest {
     private static final String EIER = "12345678901";
 
@@ -195,8 +195,6 @@ public class SkattetatenSystemdataTest {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid()
                 .withJsonInternalSoknad(createJsonInternalSoknadWithUtbetalinger());
         setSamtykke(soknadUnderArbeid.getJsonInternalSoknad(), false);
-        List<Utbetaling> utbetalinger = Collections.singletonList(SKATTBAR_UTBETALING_ANNEN);
-        when(skattbarInntektService.hentUtbetalinger(anyString())).thenReturn(utbetalinger);
 
         skattetatenSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
 

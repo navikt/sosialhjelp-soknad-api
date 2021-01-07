@@ -52,7 +52,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.Silent.class)
+@RunWith(MockitoJUnitRunner.class)
 public class FiksSenderTest {
 
     private static final String FIKSFORSENDELSE_ID = "6767";
@@ -80,7 +80,6 @@ public class FiksSenderTest {
 
     @Before
     public void setUp() {
-        when(forsendelsesService.sendForsendelse(any())).thenReturn("id1234");
         when(dokumentKrypterer.krypterData(any())).thenReturn(new byte[]{3, 2, 1});
         when(innsendingService.finnSendtSoknadForEttersendelse(any(SoknadUnderArbeid.class))).thenReturn(new SendtSoknad()
                 .withFiksforsendelseId(FIKSFORSENDELSE_ID));
@@ -198,17 +197,11 @@ public class FiksSenderTest {
 
     @Test(expected = RuntimeException.class)
     public void hentDokumenterFraSoknadKasterFeilHvisSoknadManglerForNySoknad() {
-        when(innsendingService.hentSoknadUnderArbeid(anyString(), anyString()))
-                .thenReturn(new SoknadUnderArbeid().withJsonInternalSoknad(lagInternalSoknadForEttersending()));
-
         fiksSender.hentDokumenterFraSoknad(new SoknadUnderArbeid());
     }
 
     @Test(expected = RuntimeException.class)
     public void hentDokumenterFraSoknadKasterFeilHvisVedleggManglerForEttersending() {
-        when(innsendingService.hentSoknadUnderArbeid(anyString(), anyString()))
-                .thenReturn(new SoknadUnderArbeid().withJsonInternalSoknad(lagInternalSoknadForEttersending()));
-
         fiksSender.hentDokumenterFraSoknad(new SoknadUnderArbeid().withTilknyttetBehandlingsId("123"));
     }
 

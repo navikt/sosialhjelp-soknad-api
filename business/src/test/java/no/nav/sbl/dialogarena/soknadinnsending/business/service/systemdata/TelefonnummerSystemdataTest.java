@@ -19,7 +19,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.Silent.class)
+@RunWith(MockitoJUnitRunner.class)
 public class TelefonnummerSystemdataTest {
 
     private static final String EIER = "12345678901";
@@ -60,7 +60,6 @@ public class TelefonnummerSystemdataTest {
 
     @Test
     public void skalIkkeOppdatereTelefonnummerDersomKildeErBruker() {
-        when(dkifService.hentMobiltelefonnummer(anyString())).thenReturn(TELEFONNUMMER_SYSTEM);
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createJsonInternalSoknadWithUserDefinedTelefonnummer());
 
         telefonnummerSystemdata.updateSystemdataIn(soknadUnderArbeid, "");

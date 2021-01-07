@@ -36,7 +36,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.Silent.class)
+@RunWith(MockitoJUnitRunner.class)
 public class BostotteSystemdataTest {
     private static final String EIER = "12345678910";
 
@@ -212,12 +212,6 @@ public class BostotteSystemdataTest {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid()
                 .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         settBostotteSammtykkePaSoknad(soknadUnderArbeid.getJsonInternalSoknad(), false);
-        SakerDto sakerDto = lagSak(LocalDate.now().withDayOfMonth(1), BostotteStatus.UNDER_BEHANDLING, BostotteRolle.HOVEDPERSON, null, null, null);
-        BostotteDto bostotteDto = new BostotteDto()
-                .withSak(sakerDto);
-
-        // Mock:
-        when(bostotte.hentBostotte(any(), any(), any(), any())).thenReturn(bostotteDto);
 
         // Kjøring:
         bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
@@ -366,12 +360,6 @@ public class BostotteSystemdataTest {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid()
                 .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         settBostotteSammtykkePaSoknad(soknadUnderArbeid.getJsonInternalSoknad(), false);
-        UtbetalingerDto utbetalingerDto = new UtbetalingerDto().with(BostotteMottaker.KOMMUNE, BigDecimal.valueOf(10000), LocalDate.now().minusDays(32), BostotteRolle.HOVEDPERSON);
-        BostotteDto bostotteDto = new BostotteDto()
-                .withUtbetaling(utbetalingerDto);
-
-        // Mock:
-        when(bostotte.hentBostotte(any(), any(), any(), any())).thenReturn(bostotteDto);
 
         // Kjøring:
         bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid, "");

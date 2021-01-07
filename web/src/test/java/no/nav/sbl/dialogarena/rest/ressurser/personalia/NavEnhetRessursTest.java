@@ -39,7 +39,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.Silent.class)
+@RunWith(MockitoJUnitRunner.class)
 public class NavEnhetRessursTest {
 
     private static final String BEHANDLINGSID = "123";
@@ -174,8 +174,6 @@ public class NavEnhetRessursTest {
                 .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(null));
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(soknadUnderArbeid);
         when(soknadsmottakerService.finnAdresseFraSoknad(any(JsonPersonalia.class), eq(null))).thenReturn(new ArrayList<>());
-        when(norgService.getEnhetForGt(ENHETSNAVN)).thenReturn(NAV_ENHET);
-        when(norgService.getEnhetForGt(ENHETSNAVN_2)).thenReturn(NAV_ENHET_2);
 
         List<NavEnhetFrontend> navEnhetFrontends = navEnhetRessurs.hentNavEnheter(BEHANDLINGSID);
 

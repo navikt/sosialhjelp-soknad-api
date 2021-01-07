@@ -20,7 +20,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.Silent.class)
+@RunWith(MockitoJUnitRunner.class)
 public class SettInnInfoTekstHelperTest {
 
     private Handlebars handlebars;
@@ -50,8 +50,6 @@ public class SettInnInfoTekstHelperTest {
     
     @Test
     public void skalReturnereTomStrengHvisIkkeInfotekstFinnes() throws IOException {
-        when(cmsTekst.getCmsTekst(eq("infotekst.oppsummering.tittel"), any(Object[].class), anyString(), anyString(), any(Locale.class))).thenReturn("Infotekst:");
-
         String compiled = handlebars.compileInline("{{{settInnInfotekst \"testTekst\"}}}").apply(new Object());
 
         assertThat(compiled, is(""));
