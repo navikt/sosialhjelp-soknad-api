@@ -226,6 +226,7 @@ public final class Jetty {
 
         HttpConfiguration configuration = new HttpConfiguration();
         configuration.setOutputBufferSize(32768);
+        configuration.setRequestHeaderSize(16384);
 
         ServerConnector httpConnector = new ServerConnector(jetty, new HttpConnectionFactory(configuration));
         httpConnector.setPort(port);
