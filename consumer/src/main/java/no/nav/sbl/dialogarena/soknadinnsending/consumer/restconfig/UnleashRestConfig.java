@@ -31,8 +31,9 @@ public class UnleashRestConfig {
 
     @Bean
     public Unleash unleashConsumer() {
-        Unleash prod = new DefaultUnleash(config(), new ByInstanceIdStrategy());
-        Unleash mock = new FakeUnleash();
+        DefaultUnleash prod = new DefaultUnleash(config(), new ByInstanceIdStrategy());
+        FakeUnleash mock = new FakeUnleash();
+        mock.enableAll();
         return createSwitcher(prod, mock, MOCK_KEY, Unleash.class);
     }
 
