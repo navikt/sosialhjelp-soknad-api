@@ -8,7 +8,6 @@ import no.ks.svarut.servicesv9.PostAdresse;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.adresse.AdresseSokConsumerMock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.norg.NorgConsumerMock;
-import no.nav.sbl.dialogarena.sendsoknad.mockmodul.person.PersonMock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.person.PersonV3Mock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.utbetaling.UtbetalMock;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.fiks.FiksSender;
@@ -17,6 +16,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.MockBostotteImp
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.dkif.DkifConsumerMock;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.kodeverk.KodeverkConsumerMock;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.organisasjon.OrganisasjonConsumerMock;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.PdlConsumerMock;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.skatt.SkattbarInntektConsumerMock;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonData;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
@@ -28,7 +28,6 @@ import no.nav.sbl.sosialhjelp.InnsendingService;
 import no.nav.sbl.sosialhjelp.domain.SendtSoknad;
 import no.nav.sbl.sosialhjelp.pdfmedpdfbox.SosialhjelpPdfGenerator;
 import no.nav.security.token.support.core.api.Unprotected;
-import no.nav.tjeneste.virksomhet.person.v1.informasjon.Person;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -249,23 +248,23 @@ public class TjenesteMockRessurs {
     @POST
     @Consumes(APPLICATION_JSON)
     @Path("/familie")
-    public void setFamilie(@RequestBody String jsonPerson) {
+    public void setFamilie(@RequestBody String jsonPerson) throws JsonProcessingException {
         if (!isTillatMockRessurs()) {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
         logger.info("Setter mock familieforhold med data: " + jsonPerson);
-        try {
-            Person person = mapper.readValue(jsonPerson, Person.class);
-            if (person.getStatsborgerskap() != null
-                    && person.getStatsborgerskap().getLand() != null
-                    && person.getStatsborgerskap().getLand().getValue() != null) {
-                String landkode = person.getStatsborgerskap().getLand().getValue();
-                KodeverkConsumerMock.leggTilLandkode(landkode);
-            }
-        } catch (JsonProcessingException e) {
-            logger.warn("Klarte ikke å legge inn nytt land i kodeverk mock :-O");
+
+        var mockFamiliedata = mapper.readValue(jsonPerson, PdlConsumerMock.PdlMockResponse.class);
+        if (mockFamiliedata.getPerson().getStatsborgerskap() != null) {
+            KodeverkConsumerMock.leggTilLandkode(mockFamiliedata.getPerson().getStatsborgerskap());
         }
-        PersonMock.setPersonMedFamilieforhold(jsonPerson);
+
+        PdlConsumerMock.setPerson(mockFamiliedata);
+        if (mockFamiliedata.getEktefelle().getIdent() != null){
+            PdlConsumerMock.setEktefelle(mockFamiliedata.getEktefelle());
+        }
+        mockFamiliedata.getBarn().forEach(PdlConsumerMock::setBarn);
+
         clearCache();
     }
 
