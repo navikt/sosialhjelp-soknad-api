@@ -1567,7 +1567,7 @@ public class SosialhjelpPdfGenerator {
 
             Map<String, String> urisOnPage = new HashMap<>();
             urisOnPage.put("Les mer om andre muligheter", "https://www.nav.no/sosialhjelp/");
-            urisOnPage.put("NAV-kontoret ditt", "https://www.nav.no/no/nav-og-samfunn/kontakt-nav/relatert-informasjon/finn-ditt-nav-kontor");
+            urisOnPage.put("NAV-kontoret ditt", "https://www.nav.no/person/personopplysninger/nb/#ditt-nav-kontor");
             urisOnPage.put("kontakte NAV-kontoret", "https://www.nav.no/person/personopplysninger/#ditt-nav-kontor");
             addLinks(pdf, urisOnPage);
         }
