@@ -197,7 +197,7 @@ public class PdlPersonMapperTest {
     }
 
     @Test
-    public void personMedOppholdsadresseAnnetSted() {
+    public void personMedOppholdsadresseUtenVegadresse() {
         PdlPerson pdlPerson = new PdlPerson(
                 listOf(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT)),
                 listOf(new BostedsadresseDto(null, new VegadresseDto("matrikkelId", "gateveien", 1, "A", "tilleggsnavn", "1234", "1212", "U123123"), null, null)),
@@ -213,6 +213,35 @@ public class PdlPersonMapperTest {
 
         assertNotNull(person);
         assertThat(person.getOppholdsadresse(), is(nullValue()));
+    }
+
+    @Test
+    public void personMedOppholdsadresseLikBostedsadresseSkalFiltreresVekk() {
+        var vegadresse = new VegadresseDto("matrikkelId", "gateveien", 1, "A", "tilleggsnavn", "1234", "1212", "U123123");
+        var annenVegadresse = new VegadresseDto("matrikkelId2", "stien", 2, "B", null, "1234", "1212", null);
+
+        PdlPerson pdlPerson = new PdlPerson(
+                listOf(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT)),
+                listOf(new BostedsadresseDto(null, vegadresse, null, null)),
+                listOf(
+                        new OppholdsadresseDto(null, null, vegadresse, null, null),
+                        new OppholdsadresseDto(null, null, annenVegadresse, null, null)
+                ),
+                null, // ingen kontaktadresse
+                listOf(new FamilierelasjonDto(BARNIDENT, BARN_ROLLE, MOR_ROLLE)),
+                listOf(new NavnDto(FORNAVN, MELLOMNAVN, ETTERNAVN, METADATA, FOLKEREGISTERMETADATA)),
+                listOf(new SivilstandDto(SivilstandDto.SivilstandType.GIFT, EKTEFELLEIDENT, METADATA, FOLKEREGISTERMETADATA)),
+                listOf(new StatsborgerskapDto(LAND))
+        );
+
+        Person person = mapper.mapTilPerson(pdlPerson, IDENT);
+
+        assertNotNull(person);
+        assertThat(person.getBostedsadresse().getCoAdressenavn(), is(nullValue()));
+        assertThat(person.getBostedsadresse().getVegadresse().getAdressenavn(), is(vegadresse.getAdressenavn()));
+        assertThat(person.getBostedsadresse().getMatrikkeladresse(), is(nullValue()));
+        assertThat(person.getOppholdsadresse().getCoAdressenavn(), is(nullValue()));
+        assertThat(person.getOppholdsadresse().getVegadresse().getAdressenavn(), is(annenVegadresse.getAdressenavn()));
     }
 
     @Test
