@@ -26,12 +26,12 @@ class VirusScanConnection {
         return config.isEnabled();
     }
 
-    boolean isInfected(String filnavn, byte[] data, String behandlingsId) {
+    boolean isInfected(String filnavn, byte[] data, String behandlingsId, String mimeType) {
         try {
             if (ServiceUtils.isNonProduction() && filnavn.startsWith("virustest")) {
                 return true;
             }
-            logger.info("Scanner {} bytes", data.length);
+            logger.info("Scanner {} bytes for mimetype {} (fra Tika)", data.length, mimeType);
             ScanResult[] scanResults = putForObject(config.getUri(), data);
             if (scanResults.length != 1) {
                 logger.warn("Uventet respons med lengde {}, forventet lengde er 1", scanResults.length);
