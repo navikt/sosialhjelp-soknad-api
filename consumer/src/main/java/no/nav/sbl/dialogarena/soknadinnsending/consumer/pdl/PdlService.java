@@ -40,7 +40,7 @@ public class PdlService {
             return null;
         }
 
-        return pdlPersonMapper.mapTilPerson(pdlPerson, ident)
+        return pdlPersonMapper.mapToPerson(pdlPerson, ident)
                 .withEktefelle(hentEktefelle(pdlPerson));
     }
 
@@ -63,7 +63,7 @@ public class PdlService {
 
                     loggHvisIdentIkkeErFnr(barnIdent);
                     var pdlBarn = pdlConsumer.hentBarn(barnIdent);
-                    return pdlPersonMapper.mapTilBarn(pdlBarn, barnIdent, pdlPerson);
+                    return pdlPersonMapper.mapToBarn(pdlBarn, barnIdent, pdlPerson);
                 })
                 .collect(Collectors.toList());
         alleBarn.removeIf(Objects::isNull);
@@ -96,7 +96,7 @@ public class PdlService {
                 loggHvisIdentIkkeErFnr(ektefelleIdent);
 
                 PdlEktefelle pdlEktefelle = pdlConsumer.hentEktefelle(ektefelleIdent);
-                return pdlPersonMapper.mapTilEktefelle(pdlEktefelle, ektefelleIdent, pdlPerson);
+                return pdlPersonMapper.mapToEktefelle(pdlEktefelle, ektefelleIdent, pdlPerson);
             }
         }
         return null;
