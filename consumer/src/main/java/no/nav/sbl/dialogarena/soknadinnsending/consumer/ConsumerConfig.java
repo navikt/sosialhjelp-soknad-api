@@ -9,9 +9,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.norg.NorgService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.organisasjon.OrganisasjonService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.PdlPersonMapper;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.PdlService;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdlperson.PdlEllerPersonV1Service;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdlperson.PersonSammenligner;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.personv3.PersonServiceV3;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig.AdresseSokRestConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig.ArbeidsforholdRestConfig;
@@ -28,7 +26,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.skatt.SkattbarInntektSer
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.utbetaling.UtbetalingService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig.FiksWSConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig.PersonV3WSConfig;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig.PersonWSConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig.UtbetalingWSConfig;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Configuration;
@@ -42,9 +39,7 @@ import org.springframework.retry.annotation.EnableRetry;
 @Import({
         PdlService.class,
         PdlPersonMapper.class,
-        PersonService.class,
         PersonSammenligner.class,
-        PdlEllerPersonV1Service.class,
         PersonServiceV3.class,
         ConsumerConfig.WsServices.class,
         DokumentKrypterer.class,
@@ -65,7 +60,6 @@ public class ConsumerConfig {
             RedisConfig.class,
             PdlRestConfig.class,
             DigisosApiRestConfig.class,
-            PersonWSConfig.class,
             PersonV3WSConfig.class,
             FiksWSConfig.class,
             AdresseSokRestConfig.class,
