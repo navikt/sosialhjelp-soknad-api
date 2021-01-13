@@ -4,6 +4,7 @@ import no.finn.unleash.Unleash;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Adresse;
 import no.nav.sbl.dialogarena.sendsoknad.domain.AdresserOgKontonummer;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Bostedsadresse;
+import no.nav.sbl.dialogarena.sendsoknad.domain.Kontaktadresse;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Matrikkeladresse;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Person;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Vegadresse;
@@ -40,6 +41,9 @@ public class AdresseSystemdataTest {
     private static final Adresse MATRIKKEL_ADRESSE = new Adresse();
     private static final Adresse.Gateadresse STRUKTURERT_GATEADRESSE = new Adresse.Gateadresse();
     private static final Adresse.MatrikkelAdresse STRUKTURERT_MATRIKKEL_ADRESSE = new Adresse.MatrikkelAdresse();
+    private static final Vegadresse DEFAULT_VEGADRESSE = new Vegadresse("gateveien", 1, "A", "", "0123", "poststed", "0301", "H0101");
+    private static final Vegadresse ANNEN_VEGADRESSE = new Vegadresse("en annen sti", 32, null, null, "0456", "oslo", "0302", null);
+
     static {
         GATEADRESSE.setAdressetype("gateadresse");
         GATEADRESSE.setLandkode("NOR");
@@ -96,55 +100,6 @@ public class AdresseSystemdataTest {
         assertThat(folkeregistrertAdresse.getType(), is(JsonAdresse.Type.GATEADRESSE));
         assertThatGateAdresseIsCorrectlyConverted(GATEADRESSE, folkeregistrertAdresse);
     }
-
-    @Test
-    public void skalOppdatereFolkeregistrertAdresse_vegadresse_fraPdl() {
-        SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
-        when(unleashConsumer.isEnabled(FEATURE_ADRESSER_PDL, false)).thenReturn(true);
-        var personWithBostedsadresseVegadresse = createPersonWithBostedsadresseVegadresse();
-        when(pdlService.hentPerson(anyString())).thenReturn(personWithBostedsadresseVegadresse);
-
-        adresseSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
-
-        JsonAdresse folkeregistrertAdresse = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getFolkeregistrertAdresse();
-
-        assertThat(folkeregistrertAdresse.getKilde(), is(JsonKilde.SYSTEM));
-        assertThat(folkeregistrertAdresse.getType(), is(JsonAdresse.Type.GATEADRESSE));
-        var gateAdresse = (JsonGateAdresse) folkeregistrertAdresse;
-        var bostedsadresse = personWithBostedsadresseVegadresse.getBostedsadresse().getVegadresse();
-        assertThat(gateAdresse.getBolignummer(), is(bostedsadresse.getBruksenhetsnummer()));
-        assertThat(gateAdresse.getGatenavn(), is(bostedsadresse.getAdressenavn()));
-        assertThat(gateAdresse.getHusbokstav(), is(bostedsadresse.getHusbokstav()));
-        assertThat(gateAdresse.getHusnummer(), is(bostedsadresse.getHusnummer().toString()));
-        assertThat(gateAdresse.getKommunenummer(), is(bostedsadresse.getKommunenummer()));
-        assertThat(gateAdresse.getLandkode(), is("NOR"));
-        assertThat(gateAdresse.getPostnummer(), is(bostedsadresse.getPostnummer()));
-        assertThat(gateAdresse.getPoststed(), is(bostedsadresse.getPoststed()));
-
-        verify(personService, times(0)).hentAddresserOgKontonummer(anyString());
-    }
-
-    @Test
-    public void skalOppdatereFolkeregistrertAdresse_matrikkeladresse_fraPdl() {
-        SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
-        when(unleashConsumer.isEnabled(FEATURE_ADRESSER_PDL, false)).thenReturn(true);
-        var personWithBostedsadresseMatrikkeladresse = createPersonWithBostedsadresseMatrikkeladresse();
-        when(pdlService.hentPerson(anyString())).thenReturn(personWithBostedsadresseMatrikkeladresse);
-
-        adresseSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
-
-        JsonAdresse folkeregistrertAdresse = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getFolkeregistrertAdresse();
-
-        assertThat(folkeregistrertAdresse.getKilde(), is(JsonKilde.SYSTEM));
-        assertThat(folkeregistrertAdresse.getType(), is(JsonAdresse.Type.MATRIKKELADRESSE));
-        var matrikkeladresse = (JsonMatrikkelAdresse) folkeregistrertAdresse;
-        var bostedsadresse = personWithBostedsadresseMatrikkeladresse.getBostedsadresse().getMatrikkeladresse();
-        assertThat(matrikkeladresse.getBruksnummer(), is(bostedsadresse.getBruksenhetsnummer()));
-        assertThat(matrikkeladresse.getKommunenummer(), is(bostedsadresse.getKommunenummer()));
-
-        verify(personService, times(0)).hentAddresserOgKontonummer(anyString());
-    }
-
 
     @Test
     public void skalOppdatereOppholdsadresseOgPostAdresseMedFolkeregistrertAdresse() {
@@ -218,6 +173,132 @@ public class AdresseSystemdataTest {
         assertThat(oppholdsadresse.equals(postadresse), is(true));
     }
 
+    @Test
+    public void skalOppdatereFolkeregistrertAdresse_vegadresse_fraPdl() {
+        var soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
+
+        when(unleashConsumer.isEnabled(FEATURE_ADRESSER_PDL, false)).thenReturn(true);
+        var personWithBostedsadresseVegadresse = createPersonWithBostedsadresseVegadresse();
+        when(pdlService.hentPerson(anyString())).thenReturn(personWithBostedsadresseVegadresse);
+
+        adresseSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
+
+        var folkeregistrertAdresse = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getFolkeregistrertAdresse();
+        var bostedsadresseVegadresse = personWithBostedsadresseVegadresse.getBostedsadresse().getVegadresse();
+
+        assertThat(folkeregistrertAdresse.getKilde(), is(JsonKilde.SYSTEM));
+        assertThat(folkeregistrertAdresse.getType(), is(JsonAdresse.Type.GATEADRESSE));
+        assertThatVegadresseIsCorrectlyConverted(bostedsadresseVegadresse, folkeregistrertAdresse);
+
+        verify(personService, times(0)).hentAddresserOgKontonummer(anyString());
+    }
+
+    @Test
+    public void skalOppdatereFolkeregistrertAdresse_matrikkeladresse_fraPdl() {
+        var soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
+        when(unleashConsumer.isEnabled(FEATURE_ADRESSER_PDL, false)).thenReturn(true);
+        var personWithBostedsadresseMatrikkeladresse = createPersonWithBostedsadresseMatrikkeladresse();
+        when(pdlService.hentPerson(anyString())).thenReturn(personWithBostedsadresseMatrikkeladresse);
+
+        adresseSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
+
+        var folkeregistrertAdresse = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getFolkeregistrertAdresse();
+
+        assertThat(folkeregistrertAdresse.getKilde(), is(JsonKilde.SYSTEM));
+        assertThat(folkeregistrertAdresse.getType(), is(JsonAdresse.Type.MATRIKKELADRESSE));
+        var matrikkeladresse = (JsonMatrikkelAdresse) folkeregistrertAdresse;
+        var bostedsadresse = personWithBostedsadresseMatrikkeladresse.getBostedsadresse().getMatrikkeladresse();
+        assertThat(matrikkeladresse.getBruksnummer(), is(bostedsadresse.getBruksenhetsnummer()));
+        assertThat(matrikkeladresse.getKommunenummer(), is(bostedsadresse.getKommunenummer()));
+
+        verify(personService, times(0)).hentAddresserOgKontonummer(anyString());
+    }
+
+    @Test
+    public void skalOppdatereOppholdsadresseOgPostAdresseMedMidlertidigAdresse_kontaktadresse_fraPdl() {
+        var soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
+        soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia()
+                .withOppholdsadresse(new JsonAdresse().withAdresseValg(JsonAdresseValg.MIDLERTIDIG))
+                .withPostadresse(new JsonAdresse().withAdresseValg(JsonAdresseValg.MIDLERTIDIG));
+
+        when(unleashConsumer.isEnabled(FEATURE_ADRESSER_PDL, false)).thenReturn(true);
+        var personWithKontaktadresse = createPersonWithKontaktadresseVegadresse();
+        when(pdlService.hentPerson(anyString())).thenReturn(personWithKontaktadresse);
+
+        adresseSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
+
+        var folkeregistrertAdresse = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getFolkeregistrertAdresse();
+        var oppholdsadresse = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getOppholdsadresse();
+        var postadresse = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getPostadresse();
+
+        assertThat(folkeregistrertAdresse.getKilde(), is(JsonKilde.SYSTEM));
+        assertThat(oppholdsadresse.getKilde(), is(JsonKilde.SYSTEM));
+        assertThat(postadresse.getKilde(), is(JsonKilde.SYSTEM));
+
+        assertThat(folkeregistrertAdresse.getType(), is(JsonAdresse.Type.GATEADRESSE));
+        assertThat(oppholdsadresse.getType(), is(JsonAdresse.Type.GATEADRESSE));
+        assertThat(postadresse.getType(), is(JsonAdresse.Type.GATEADRESSE));
+
+        var bostedsadresseVegadresse = personWithKontaktadresse.getBostedsadresse().getVegadresse();
+        var kontaktadresseVegadresse = personWithKontaktadresse.getKontaktadresse().getVegadresse();
+
+        assertThatVegadresseIsCorrectlyConverted(bostedsadresseVegadresse, folkeregistrertAdresse);
+        assertThatVegadresseIsCorrectlyConverted(kontaktadresseVegadresse, oppholdsadresse);
+        assertThatVegadresseIsCorrectlyConverted(kontaktadresseVegadresse, postadresse);
+
+        verify(personService, times(0)).hentAddresserOgKontonummer(anyString());
+    }
+
+    @Test
+    public void skalOppdatereOppholdsadresseOgPostAdresseMedFolkeregistrertAdresse_fraPdl() {
+        var soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
+        soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia()
+                .withOppholdsadresse(new JsonAdresse().withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT))
+                .withPostadresse(new JsonAdresse().withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT));
+
+        when(unleashConsumer.isEnabled(FEATURE_ADRESSER_PDL, false)).thenReturn(true);
+        var personWithBostedsadresseVegadresse = createPersonWithBostedsadresseVegadresse();
+        when(pdlService.hentPerson(anyString())).thenReturn(personWithBostedsadresseVegadresse);
+
+        adresseSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
+
+        var folkeregistrertAdresse = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getFolkeregistrertAdresse();
+        var oppholdsadresse = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getOppholdsadresse();
+        var postadresse = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getPostadresse();
+
+        assertThat(folkeregistrertAdresse.getKilde(), is(JsonKilde.SYSTEM));
+        assertThat(oppholdsadresse.getKilde(), is(JsonKilde.SYSTEM));
+        assertThat(postadresse.getKilde(), is(JsonKilde.SYSTEM));
+        assertThat(folkeregistrertAdresse.equals(oppholdsadresse.withAdresseValg(null)), is(true));
+        assertThat(folkeregistrertAdresse.equals(postadresse), is(true));
+
+        verify(personService, times(0)).hentAddresserOgKontonummer(anyString());
+    }
+
+    @Test
+    public void skalIkkeOppdatereOppholdsadresseEllerPostAdresseDersomAdresseValgErNull_fraPdl() {
+        var soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
+        soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia()
+                .withOppholdsadresse(new JsonAdresse())
+                .withPostadresse(new JsonAdresse());
+
+        when(unleashConsumer.isEnabled(FEATURE_ADRESSER_PDL, false)).thenReturn(true);
+        var personWithBostedsadresseVegadresse = createPersonWithBostedsadresseVegadresse();
+        when(pdlService.hentPerson(anyString())).thenReturn(personWithBostedsadresseVegadresse);
+
+        adresseSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
+
+        var oppholdsadresse = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getOppholdsadresse();
+        var postadresse = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getPostadresse();
+
+        assertThat(postadresse.getAdresseValg(), nullValue());
+        assertThat(postadresse.getType(), nullValue());
+        assertThat(oppholdsadresse.getAdresseValg(), nullValue());
+        assertThat(oppholdsadresse.getType(), nullValue());
+
+        verify(personService, times(0)).hentAddresserOgKontonummer(anyString());
+    }
+
     private void assertThatMatrikkelAdresseIsCorrectlyConverted(Adresse adresse, JsonAdresse jsonAdresse) {
         JsonMatrikkelAdresse matrikkelAdresse = (JsonMatrikkelAdresse) jsonAdresse;
         Adresse.MatrikkelAdresse strukturertAdresse = (Adresse.MatrikkelAdresse) adresse.getStrukturertAdresse();
@@ -242,24 +323,21 @@ public class AdresseSystemdataTest {
         assertThat("poststed", gateAdresse.getPoststed(), is(strukturertAdresse.poststed));
     }
 
+    private void assertThatVegadresseIsCorrectlyConverted(Vegadresse vegadresse, JsonAdresse jsonAdresse) {
+        var gateAdresse = (JsonGateAdresse) jsonAdresse;
+        assertThat(gateAdresse.getBolignummer(), is(vegadresse.getBruksenhetsnummer()));
+        assertThat(gateAdresse.getGatenavn(), is(vegadresse.getAdressenavn()));
+        assertThat(gateAdresse.getHusbokstav(), is(vegadresse.getHusbokstav()));
+        assertThat(gateAdresse.getHusnummer(), is(vegadresse.getHusnummer().toString()));
+        assertThat(gateAdresse.getKommunenummer(), is(vegadresse.getKommunenummer()));
+        assertThat(gateAdresse.getLandkode(), is("NOR"));
+        assertThat(gateAdresse.getPostnummer(), is(vegadresse.getPostnummer()));
+        assertThat(gateAdresse.getPoststed(), is(vegadresse.getPoststed()));
+    }
+
     private Person createPersonWithBostedsadresseVegadresse() {
         return new Person()
-                .withBostedsadresse(
-                        new Bostedsadresse(
-                                "",
-                                new Vegadresse(
-                                        "gateveien",
-                                        1,
-                                        "A",
-                                        "",
-                                        "0123",
-                                        "poststed",
-                                        "0301",
-                                        "H0101"
-                                ),
-                                null
-                        )
-                );
+                .withBostedsadresse(new Bostedsadresse("", DEFAULT_VEGADRESSE, null));
     }
 
     private Person createPersonWithBostedsadresseMatrikkeladresse() {
@@ -278,5 +356,11 @@ public class AdresseSystemdataTest {
                                 )
                         )
                 );
+    }
+
+    private Person createPersonWithKontaktadresseVegadresse() {
+        return new Person()
+                .withBostedsadresse(new Bostedsadresse("", DEFAULT_VEGADRESSE, null))
+                .withKontaktadresse(new Kontaktadresse("", ANNEN_VEGADRESSE));
     }
 }
