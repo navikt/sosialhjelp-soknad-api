@@ -274,6 +274,31 @@ public class PdlPersonMapperTest {
     }
 
     @Test
+    public void personMedKontaktadresseUtenKommunenummerLikBostedsadresseSkalFiltreresVekk() {
+        var vegadresse = new VegadresseDto("matrikkelId", "gateveien", 1, "A", null, "1234", "1212", null);
+        var vegadresseUtenKommunenummer = new VegadresseDto("matrikkelId", "gateveien", 1, "A", null, "1234", null, null);
+
+        PdlPerson pdlPerson = new PdlPerson(
+                listOf(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT)),
+                listOf(new BostedsadresseDto(null, vegadresse, null, null)),
+                null, // ingen oppholdsadresse
+                listOf(new KontaktadresseDto("Innland", null, vegadresseUtenKommunenummer, null, null)),
+                listOf(new FamilierelasjonDto(BARNIDENT, BARN_ROLLE, MOR_ROLLE)),
+                listOf(new NavnDto(FORNAVN, MELLOMNAVN, ETTERNAVN, METADATA, FOLKEREGISTERMETADATA)),
+                listOf(new SivilstandDto(SivilstandDto.SivilstandType.GIFT, EKTEFELLEIDENT, METADATA, FOLKEREGISTERMETADATA)),
+                listOf(new StatsborgerskapDto(LAND))
+        );
+
+        Person person = mapper.mapToPerson(pdlPerson, IDENT);
+
+        assertNotNull(person);
+        assertThat(person.getBostedsadresse().getCoAdressenavn(), is(nullValue()));
+        assertThat(person.getBostedsadresse().getVegadresse().getAdressenavn(), is(vegadresse.getAdressenavn()));
+        assertThat(person.getBostedsadresse().getMatrikkeladresse(), is(nullValue()));
+        assertThat(person.getKontaktadresse(), is(nullValue()));
+    }
+
+    @Test
     public void fulltUtfyltEktefelle() {
         PdlPerson pdlPerson = new PdlPerson(
                 listOf(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT)),
