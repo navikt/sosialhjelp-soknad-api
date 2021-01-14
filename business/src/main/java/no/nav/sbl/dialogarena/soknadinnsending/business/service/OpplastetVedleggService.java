@@ -220,8 +220,7 @@ public class OpplastetVedleggService {
     }
 
     private static void sjekkOmPdfErGyldig(byte[] data) {
-        try {
-            PDDocument document = PDDocument.load(new ByteArrayInputStream(data));
+        try (PDDocument document = PDDocument.load(new ByteArrayInputStream(data))) {
             String text = (new PDFTextStripper()).getText(document);
 
             if (text == null || text.isEmpty()) {
@@ -234,7 +233,6 @@ public class OpplastetVedleggService {
                         "opplasting.feilmelding.pdf.kryptert");
             }
 
-            document.close();
         } catch (InvalidPasswordException e) {
             throw new UgyldigOpplastingTypeException(
                     "PDF kan ikke være krypert.", null,
