@@ -180,7 +180,8 @@ public class OpplastetVedleggService {
 
         if (fileType == TikaFileType.UNKNOWN) {
             throw new UgyldigOpplastingTypeException(
-                    String.format("Ugyldig filtype for opplasting. Mimetype var %s, filtype var %s", FileDetectionUtils.getMimeType(data), findFileExtention(filnavn)),
+                    String.format("Ugyldig filtype for opplasting. Mimetype var %s, filtype var %s",
+                            FileDetectionUtils.getMimeType(data), findFileExtention(filnavn)),
                     null,
                     "opplasting.feilmelding.feiltype");
         }
