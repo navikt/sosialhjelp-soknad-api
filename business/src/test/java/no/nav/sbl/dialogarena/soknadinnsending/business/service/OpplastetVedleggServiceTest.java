@@ -4,6 +4,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.exception.SamletVedleggStorrelse
 import no.nav.sbl.dialogarena.sendsoknad.domain.exception.UgyldigOpplastingTypeException;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.StaticSubjectHandlerService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
+import no.nav.sbl.dialogarena.soknadinnsending.business.util.TikaFileType;
 import no.nav.sbl.dialogarena.virusscan.VirusScanner;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler;
@@ -70,7 +71,6 @@ public class OpplastetVedleggServiceTest {
     public void setUp() {
         System.setProperty("environment.name", "test");
         SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
-        opplastetVedleggService.setUp();
     }
 
     @After
@@ -81,16 +81,21 @@ public class OpplastetVedleggServiceTest {
 
     @Test
     public void lagerFilnavn() {
-        String filnavn = opplastetVedleggService.lagFilnavn("minfil.jpg", "image/jpeg", "5c2a1cea-ef05-4db6-9c98-1b6c9b3faa99");
+        String filnavn = opplastetVedleggService.lagFilnavn("minfil.jpg", TikaFileType.JPEG, "5c2a1cea-ef05-4db6-9c98-1b6c9b3faa99");
         assertEquals("minfil-5c2a1cea.jpg", filnavn);
 
         String truncate = opplastetVedleggService.lagFilnavn("etkjempelangtfilnavn12345678901234567890123456789012345678901234567890.jpg",
-                "image/jpeg", "5c2a1cea-ef05-4db6-9c98-1b6c9b3faa99");
+                TikaFileType.JPEG, "5c2a1cea-ef05-4db6-9c98-1b6c9b3faa99");
         assertEquals("etkjempelangtfilnavn123456789012345678901234567890-5c2a1cea.jpg", truncate);
 
-        String medSpesialTegn = opplastetVedleggService.lagFilnavn("en.filmedææå()ogmyerartsjø.png", "image/jpeg", "abc-ef05");
+        String medSpesialTegn = opplastetVedleggService.lagFilnavn("en.filmedææå()ogmyerartsjø.jpg", TikaFileType.JPEG, "abc-ef05");
         assertEquals("enfilmedeeaogmyerartsjo-abc.jpg", medSpesialTegn);
 
+        String utenExtention = opplastetVedleggService.lagFilnavn("minfil", TikaFileType.PNG, "abc-ef05");
+        assertEquals("minfil-abc.png", utenExtention);
+
+        String forskjelligExtention = opplastetVedleggService.lagFilnavn("minfil.jpg", TikaFileType.PNG, "abc-ef05");
+        assertEquals("minfil-abc.jpg", forskjelligExtention);
     }
 
     @Test
