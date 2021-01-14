@@ -57,7 +57,7 @@ public class OpplastetVedleggService {
         String sha512 = ServiceUtils.getSha512FromByteArray(data);
 
         TikaFileType fileType = validerFil(data, filnavn);
-        virusScanner.scan(filnavn, data, behandlingsId, mimeType);
+        virusScanner.scan(filnavn, data, behandlingsId, fileType.name());
 
         SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
         Long soknadId = soknadUnderArbeid.getSoknadId();
