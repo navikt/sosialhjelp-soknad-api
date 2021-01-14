@@ -8,7 +8,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.Sivilstan
 import org.slf4j.Logger;
 
 import java.time.LocalDateTime;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;

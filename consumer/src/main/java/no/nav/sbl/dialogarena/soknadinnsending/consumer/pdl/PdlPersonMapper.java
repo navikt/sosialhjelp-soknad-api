@@ -88,7 +88,7 @@ public class PdlPersonMapper {
                 .withStatsborgerskap(finnStatsborgerskap(pdlPerson.getStatsborgerskap()))
                 .withDiskresjonskode(finnAdressebeskyttelse(pdlPerson.getAdressebeskyttelse()))
                 .withBostedsadresse(mapBostedsadresse(pdlPerson.getBostedsadresse()))
-                .withOppholdsadresse(mapOppholdssadresse(pdlPerson.getOppholdsadresse()))
+                .withOppholdsadresse(mapOppholdssadresse(pdlPerson.getOppholdsadresse(), pdlPerson.getBostedsadresse()))
                 .withKontaktadresse(mapKontaktadresse(pdlPerson.getKontaktadresse(), pdlPerson.getBostedsadresse()));
     }
 
@@ -277,22 +277,21 @@ public class PdlPersonMapper {
         );
     }
 
-    private Oppholdsadresse mapOppholdssadresse(List<OppholdsadresseDto> dtos) {
+    private Oppholdsadresse mapOppholdssadresse(List<OppholdsadresseDto> dtos, List<BostedsadresseDto> bostedsadresseDtos) {
         if (dtos == null || dtos.isEmpty()) {
             return null;
         }
-        // Todo: utled gjeldende oppholdsadresse? Fra doc:
+        // Todo: vi er kun interessert i norske oppholdsadresser med en faktisk adresse.
+        //  Fra doc:
         //  Man kan ha en oppholdsadresse med Freg som master og en med PDL som master.
         //  Flertallet av oppholdsadressene fra Freg vil være norske, og flertallet av oppholdsadresser registrert av NAV vil være utenlandske.
         //  Fra folkeregisteret kan man også få oppholdsadresse uten en faktisk adresse, men med informasjon i oppholdAnnetSted.
-        var dto = dtos.get(0);
-        if (dto.getVegadresse() == null) {
-            return null;
-        }
-        return new Oppholdsadresse(
-                dto.getCoAdressenavn(),
-                mapTilVegadresse(dto.getVegadresse())
-        );
+        return dtos.stream()
+                .filter(dto -> dto.getVegadresse() != null)
+                .filter(dto -> filtrerVekkVegadresseLikBostedsadresse(bostedsadresseDtos, dto.getVegadresse()))
+                .findFirst()
+                .map(it -> new Oppholdsadresse(it.getCoAdressenavn(), mapTilVegadresse(it.getVegadresse())))
+                .orElse(null);
     }
 
     private Kontaktadresse mapKontaktadresse(List<KontaktadresseDto> dtos, List<BostedsadresseDto> bostedsadresseDtos) {
