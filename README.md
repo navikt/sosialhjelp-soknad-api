@@ -44,4 +44,3 @@ I tillegg krever noen endepunkter et `access-token` fra `idporten`, som brukeren
 For å kunne konsumere pakker fra Github Package Registry kjøres `mvn install --settings maven-settings.xml`, med `GITHUB_TOKEN: ${{ secrets.GITHUB_ACCESS_TOKEN }}` som env.variabel som injectes til `maven-settings.xml`.
 
 Mer info: https://github.com/navikt/utvikling/blob/master/Konsumere%20biblioteker%20fra%20Github%20Package%20Registry.md
-
