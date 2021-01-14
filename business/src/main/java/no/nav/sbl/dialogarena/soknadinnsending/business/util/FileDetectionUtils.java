@@ -8,12 +8,12 @@ public class FileDetectionUtils {
         return new Tika().detect(bytes);
     }
 
-    public static boolean isImage(byte[] bytes) {
-        String mimeType = new Tika().detect(bytes);
-        return (mimeType.equalsIgnoreCase("image/png") || mimeType.equalsIgnoreCase("image/jpeg"));
-    }
+    public static TikaFileType detectTikaType(byte[] bytes) {
+        String type = new Tika().detect(bytes);
+        if(type.equalsIgnoreCase("application/pdf") ) return TikaFileType.PDF;
+        if(type.equalsIgnoreCase("image/png") ) return TikaFileType.PNG;
+        if(type.equalsIgnoreCase("image/jpeg") ) return TikaFileType.JPEG;
 
-    public static boolean isPdf(byte[] bytes) {
-        return new Tika().detect(bytes).equalsIgnoreCase("application/pdf");
+        return TikaFileType.UNKNOWN;
     }
 }
