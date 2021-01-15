@@ -6,9 +6,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.time.Duration;
+
 
 @Configuration
 public class RedisConfig {
+
+    private static final int TIMEOUT_SECONDS = 10;
 
     @Value("${redis_mocked}")
     private boolean mocked;
@@ -32,6 +36,7 @@ public class RedisConfig {
                 .withHost(host)
                 .withPort(port)
                 .withPassword(password)
+                .withTimeout(Duration.ofSeconds(TIMEOUT_SECONDS))
                 .build();
 
         return RedisClient.create(redisURI);
