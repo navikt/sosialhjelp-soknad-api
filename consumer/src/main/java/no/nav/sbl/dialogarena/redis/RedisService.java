@@ -98,7 +98,7 @@ public class RedisService {
     }
 
     private void handleResponse(String key, String result) {
-        if (result.equalsIgnoreCase("OK")) {
+        if (result != null && result.equalsIgnoreCase("OK")) {
             log.debug("Redis put OK, key={}", key);
         } else {
             log.warn("Redis put feilet eller fikk timeout, key={}", key);
