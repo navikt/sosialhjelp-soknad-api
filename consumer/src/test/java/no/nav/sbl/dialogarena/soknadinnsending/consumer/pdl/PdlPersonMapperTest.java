@@ -99,7 +99,7 @@ public class PdlPersonMapperTest {
                 listOf(new StatsborgerskapDto(LAND))
         );
 
-        Person person = mapper.mapTilPerson(pdlPerson, IDENT);
+        Person person = mapper.mapToPerson(pdlPerson, IDENT);
 
         assertNotNull(person);
         assertThat(person.getDiskresjonskode(), is(nullValue()));
@@ -123,7 +123,7 @@ public class PdlPersonMapperTest {
 
     @Test
     public void personNull() {
-        Person person = mapper.mapTilPerson(null, IDENT);
+        Person person = mapper.mapToPerson(null, IDENT);
 
         assertNull(person);
     }
@@ -137,12 +137,12 @@ public class PdlPersonMapperTest {
         PdlPerson kode7 = createPdlPersonMedAdressebeskyttelse(listOf(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.FORTROLIG)));
         PdlPerson listeMedUgradertOgkode7 = createPdlPersonMedAdressebeskyttelse(listOf(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT), new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.FORTROLIG)));
 
-        Person nullAdressebeskyttelsePerson = mapper.mapTilPerson(nullAdressebeskyttelse, IDENT);
-        Person tomAdressebeskyttelsePerson = mapper.mapTilPerson(tomAdressebeskyttelse, IDENT);
-        Person ugradertPerson = mapper.mapTilPerson(ugradert, IDENT);
-        Person kode6Person = mapper.mapTilPerson(kode6, IDENT);
-        Person kode7Person = mapper.mapTilPerson(kode7, IDENT);
-        Person listeMedUgradertOgkode7Person = mapper.mapTilPerson(listeMedUgradertOgkode7, IDENT);
+        Person nullAdressebeskyttelsePerson = mapper.mapToPerson(nullAdressebeskyttelse, IDENT);
+        Person tomAdressebeskyttelsePerson = mapper.mapToPerson(tomAdressebeskyttelse, IDENT);
+        Person ugradertPerson = mapper.mapToPerson(ugradert, IDENT);
+        Person kode6Person = mapper.mapToPerson(kode6, IDENT);
+        Person kode7Person = mapper.mapToPerson(kode7, IDENT);
+        Person listeMedUgradertOgkode7Person = mapper.mapToPerson(listeMedUgradertOgkode7, IDENT);
 
         assertNull(nullAdressebeskyttelsePerson.getDiskresjonskode());
         assertNull(tomAdressebeskyttelsePerson.getDiskresjonskode());
@@ -169,7 +169,7 @@ public class PdlPersonMapperTest {
                 listOf(new StatsborgerskapDto(LAND))
         );
 
-        Person person = mapper.mapTilPerson(pdlPerson, IDENT);
+        Person person = mapper.mapToPerson(pdlPerson, IDENT);
 
         assertNotNull(person);
         assertThat(person.getBostedsadresse().getVegadresse(), is(nullValue()));
@@ -190,7 +190,7 @@ public class PdlPersonMapperTest {
                 listOf(new StatsborgerskapDto(LAND))
         );
 
-        Person person = mapper.mapTilPerson(pdlPerson, IDENT);
+        Person person = mapper.mapToPerson(pdlPerson, IDENT);
 
         assertNotNull(person);
         assertThat(person.getBostedsadresse(), is(nullValue()));
@@ -209,7 +209,7 @@ public class PdlPersonMapperTest {
                 listOf(new StatsborgerskapDto(LAND))
         );
 
-        Person person = mapper.mapTilPerson(pdlPerson, IDENT);
+        Person person = mapper.mapToPerson(pdlPerson, IDENT);
 
         assertNotNull(person);
         assertThat(person.getOppholdsadresse(), is(nullValue()));
@@ -234,7 +234,7 @@ public class PdlPersonMapperTest {
                 listOf(new StatsborgerskapDto(LAND))
         );
 
-        Person person = mapper.mapTilPerson(pdlPerson, IDENT);
+        Person person = mapper.mapToPerson(pdlPerson, IDENT);
 
         assertNotNull(person);
         assertThat(person.getBostedsadresse().getCoAdressenavn(), is(nullValue()));
@@ -263,7 +263,7 @@ public class PdlPersonMapperTest {
                 listOf(new StatsborgerskapDto(LAND))
         );
 
-        Person person = mapper.mapTilPerson(pdlPerson, IDENT);
+        Person person = mapper.mapToPerson(pdlPerson, IDENT);
 
         assertNotNull(person);
         assertThat(person.getBostedsadresse().getCoAdressenavn(), is(nullValue()));
@@ -271,6 +271,31 @@ public class PdlPersonMapperTest {
         assertThat(person.getBostedsadresse().getMatrikkeladresse(), is(nullValue()));
         assertThat(person.getKontaktadresse().getCoAdressenavn(), is(nullValue()));
         assertThat(person.getKontaktadresse().getVegadresse().getAdressenavn(), is(annenVegadresse.getAdressenavn()));
+    }
+
+    @Test
+    public void personMedKontaktadresseUtenKommunenummerLikBostedsadresseSkalFiltreresVekk() {
+        var vegadresse = new VegadresseDto("matrikkelId", "gateveien", 1, "A", null, "1234", "1212", null);
+        var vegadresseUtenKommunenummer = new VegadresseDto("matrikkelId", "gateveien", 1, "A", null, "1234", null, null);
+
+        PdlPerson pdlPerson = new PdlPerson(
+                listOf(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT)),
+                listOf(new BostedsadresseDto(null, vegadresse, null, null)),
+                null, // ingen oppholdsadresse
+                listOf(new KontaktadresseDto("Innland", null, vegadresseUtenKommunenummer, null, null)),
+                listOf(new FamilierelasjonDto(BARNIDENT, BARN_ROLLE, MOR_ROLLE)),
+                listOf(new NavnDto(FORNAVN, MELLOMNAVN, ETTERNAVN, METADATA, FOLKEREGISTERMETADATA)),
+                listOf(new SivilstandDto(SivilstandDto.SivilstandType.GIFT, EKTEFELLEIDENT, METADATA, FOLKEREGISTERMETADATA)),
+                listOf(new StatsborgerskapDto(LAND))
+        );
+
+        Person person = mapper.mapToPerson(pdlPerson, IDENT);
+
+        assertNotNull(person);
+        assertThat(person.getBostedsadresse().getCoAdressenavn(), is(nullValue()));
+        assertThat(person.getBostedsadresse().getVegadresse().getAdressenavn(), is(vegadresse.getAdressenavn()));
+        assertThat(person.getBostedsadresse().getMatrikkeladresse(), is(nullValue()));
+        assertThat(person.getKontaktadresse(), is(nullValue()));
     }
 
     @Test
@@ -293,7 +318,7 @@ public class PdlPersonMapperTest {
                 listOf(new NavnDto(FORNAVN, MELLOMNAVN, ETTERNAVN, METADATA, FOLKEREGISTERMETADATA))
         );
 
-        Ektefelle ektefelle = mapper.mapTilEktefelle(pdlEktefelle, EKTEFELLEIDENT, pdlPerson);
+        Ektefelle ektefelle = mapper.mapToEktefelle(pdlEktefelle, EKTEFELLEIDENT, pdlPerson);
 
         assertNotNull(ektefelle);
         assertFalse(ektefelle.harIkketilgangtilektefelle());
@@ -325,7 +350,7 @@ public class PdlPersonMapperTest {
                 listOf(new NavnDto(FORNAVN, MELLOMNAVN, ETTERNAVN, METADATA, FOLKEREGISTERMETADATA))
         );
 
-        Ektefelle ektefelle = mapper.mapTilEktefelle(pdlEktefelle, EKTEFELLEIDENT, pdlPerson);
+        Ektefelle ektefelle = mapper.mapToEktefelle(pdlEktefelle, EKTEFELLEIDENT, pdlPerson);
 
         assertNotNull(ektefelle);
         assertFalse(ektefelle.erFolkeregistrertsammen());
@@ -351,7 +376,7 @@ public class PdlPersonMapperTest {
                 listOf(new NavnDto(FORNAVN, MELLOMNAVN, ETTERNAVN, METADATA, FOLKEREGISTERMETADATA))
         );
 
-        Ektefelle ektefelle = mapper.mapTilEktefelle(pdlEktefelle, EKTEFELLEIDENT, pdlPerson);
+        Ektefelle ektefelle = mapper.mapToEktefelle(pdlEktefelle, EKTEFELLEIDENT, pdlPerson);
 
         assertNotNull(ektefelle);
         assertTrue(ektefelle.erFolkeregistrertsammen());
@@ -377,7 +402,7 @@ public class PdlPersonMapperTest {
                 listOf(new NavnDto(FORNAVN, MELLOMNAVN, ETTERNAVN, METADATA, FOLKEREGISTERMETADATA))
         );
 
-        Ektefelle ektefelle = mapper.mapTilEktefelle(pdlEktefelle, EKTEFELLEIDENT, pdlPerson);
+        Ektefelle ektefelle = mapper.mapToEktefelle(pdlEktefelle, EKTEFELLEIDENT, pdlPerson);
 
         assertNotNull(ektefelle);
         assertTrue(ektefelle.harIkketilgangtilektefelle());
@@ -402,7 +427,7 @@ public class PdlPersonMapperTest {
                 listOf(new StatsborgerskapDto(LAND))
         );
 
-        Ektefelle ektefelle = mapper.mapTilEktefelle(null, EKTEFELLEIDENT, pdlPerson);
+        Ektefelle ektefelle = mapper.mapToEktefelle(null, EKTEFELLEIDENT, pdlPerson);
 
         assertNull(ektefelle);
     }
@@ -427,7 +452,7 @@ public class PdlPersonMapperTest {
                 listOf(new NavnDto(FORNAVN, MELLOMNAVN, ETTERNAVN, METADATA, FOLKEREGISTERMETADATA))
         );
 
-        Ektefelle ektefelle = mapper.mapTilEktefelle(pdlEktefelle, EKTEFELLEIDENT, pdlPerson);
+        Ektefelle ektefelle = mapper.mapToEktefelle(pdlEktefelle, EKTEFELLEIDENT, pdlPerson);
 
         assertFalse(ektefelle.erFolkeregistrertsammen());
     }
@@ -452,7 +477,7 @@ public class PdlPersonMapperTest {
                 listOf(new NavnDto(FORNAVN, MELLOMNAVN, ETTERNAVN, METADATA, FOLKEREGISTERMETADATA))
         );
 
-        Ektefelle ektefelle = mapper.mapTilEktefelle(pdlEktefelle, EKTEFELLEIDENT, pdlPerson);
+        Ektefelle ektefelle = mapper.mapToEktefelle(pdlEktefelle, EKTEFELLEIDENT, pdlPerson);
 
         assertFalse(ektefelle.erFolkeregistrertsammen());
     }
@@ -477,7 +502,7 @@ public class PdlPersonMapperTest {
                 listOf(new NavnDto(FORNAVN, MELLOMNAVN, ETTERNAVN, METADATA, FOLKEREGISTERMETADATA))
         );
 
-        Ektefelle ektefelle = mapper.mapTilEktefelle(pdlEktefelle, EKTEFELLEIDENT, pdlPerson);
+        Ektefelle ektefelle = mapper.mapToEktefelle(pdlEktefelle, EKTEFELLEIDENT, pdlPerson);
 
         assertTrue(ektefelle.erFolkeregistrertsammen());
     }
@@ -503,7 +528,7 @@ public class PdlPersonMapperTest {
                 listOf(new NavnDto(FORNAVN, null, ETTERNAVN, METADATA, FOLKEREGISTERMETADATA))
         );
 
-        Barn barn = mapper.mapTilBarn(pdlBarn, BARNIDENT, pdlPerson);
+        Barn barn = mapper.mapToBarn(pdlBarn, BARNIDENT, pdlPerson);
 
         assertNotNull(barn);
         assertThat(barn.getFornavn(), is(FORNAVN.toUpperCase()));
@@ -535,7 +560,7 @@ public class PdlPersonMapperTest {
                 listOf(new NavnDto(FORNAVN, null, ETTERNAVN, METADATA, FOLKEREGISTERMETADATA))
         );
 
-        Barn barn = mapper.mapTilBarn(pdlBarn, BARNIDENT, pdlPerson);
+        Barn barn = mapper.mapToBarn(pdlBarn, BARNIDENT, pdlPerson);
 
         assertNull(barn);
     }
@@ -561,7 +586,7 @@ public class PdlPersonMapperTest {
                 listOf(new NavnDto(FORNAVN, null, ETTERNAVN, METADATA, FOLKEREGISTERMETADATA))
         );
 
-        Barn barn = mapper.mapTilBarn(pdlBarn, BARNIDENT, pdlPerson);
+        Barn barn = mapper.mapToBarn(pdlBarn, BARNIDENT, pdlPerson);
 
         assertNull(barn);
     }
@@ -587,7 +612,7 @@ public class PdlPersonMapperTest {
                 listOf(new NavnDto(FORNAVN, null, ETTERNAVN, METADATA, FOLKEREGISTERMETADATA))
         );
 
-        Barn barn = mapper.mapTilBarn(pdlBarn, BARNIDENT, pdlPerson);
+        Barn barn = mapper.mapToBarn(pdlBarn, BARNIDENT, pdlPerson);
 
         assertNull(barn);
     }
@@ -613,7 +638,7 @@ public class PdlPersonMapperTest {
                 listOf(new NavnDto(FORNAVN, null, ETTERNAVN, METADATA, FOLKEREGISTERMETADATA))
         );
 
-        Barn barn = mapper.mapTilBarn(pdlBarn, BARNIDENT, pdlPerson);
+        Barn barn = mapper.mapToBarn(pdlBarn, BARNIDENT, pdlPerson);
 
         assertFalse(barn.erFolkeregistrertsammen());
     }
@@ -639,7 +664,7 @@ public class PdlPersonMapperTest {
                 listOf(new NavnDto(FORNAVN, null, ETTERNAVN, METADATA, FOLKEREGISTERMETADATA))
         );
 
-        Barn barn = mapper.mapTilBarn(pdlBarn, BARNIDENT, pdlPerson);
+        Barn barn = mapper.mapToBarn(pdlBarn, BARNIDENT, pdlPerson);
 
         assertFalse(barn.erFolkeregistrertsammen());
     }

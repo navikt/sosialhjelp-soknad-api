@@ -64,12 +64,12 @@ public class PdlServiceTest {
     @Test
     public void skalHentePersonMedEktefelle() {
         when(pdlConsumer.hentPerson(any())).thenReturn(mockPdlPerson);
-        when(pdlPersonMapper.mapTilPerson(any(), any())).thenReturn(person);
+        when(pdlPersonMapper.mapToPerson(any(), any())).thenReturn(person);
 
         when(mockPdlPerson.getSivilstand()).thenReturn(singletonList(new SivilstandDto(GIFT, EKTEFELLE_IDENT, new MetadataDto("PDL", singletonList(new EndringDto("PDL", LocalDateTime.now(), null, null, null))), null)));
 
         when(pdlConsumer.hentEktefelle(any())).thenReturn(mockPdlEktefelle);
-        when(pdlPersonMapper.mapTilEktefelle(any(), any(), any())).thenReturn(ektefelle);
+        when(pdlPersonMapper.mapToEktefelle(any(), any(), any())).thenReturn(ektefelle);
 
         Person result = pdlService.hentPerson("ident");
 
@@ -79,7 +79,7 @@ public class PdlServiceTest {
     @Test
     public void skalHentePersonMenIkkeEktefelleHvisEktefelleidentErNull() {
         when(pdlConsumer.hentPerson(any())).thenReturn(mockPdlPerson);
-        when(pdlPersonMapper.mapTilPerson(any(), any())).thenReturn(person);
+        when(pdlPersonMapper.mapToPerson(any(), any())).thenReturn(person);
 
         when(mockPdlPerson.getSivilstand()).thenReturn(singletonList(new SivilstandDto(GIFT, null, new MetadataDto("PDL", singletonList(new EndringDto("PDL", LocalDateTime.now(), null, null, null))), null)));
 
@@ -87,13 +87,13 @@ public class PdlServiceTest {
 
         assertThat(result.getEktefelle(), is(nullValue()));
         verify(pdlConsumer, times(0)).hentEktefelle(anyString());
-        verify(pdlPersonMapper, times(0)).mapTilEktefelle(any(), anyString(), any());
+        verify(pdlPersonMapper, times(0)).mapToEktefelle(any(), anyString(), any());
     }
 
     @Test
     public void skalHentePersonMenIkkeEktefelleHvisEktefelleidentErFDAT() {
         when(pdlConsumer.hentPerson(any())).thenReturn(mockPdlPerson);
-        when(pdlPersonMapper.mapTilPerson(any(), any())).thenReturn(person);
+        when(pdlPersonMapper.mapToPerson(any(), any())).thenReturn(person);
 
         when(mockPdlPerson.getSivilstand()).thenReturn(singletonList(new SivilstandDto(GIFT, FDAT_IDENT, new MetadataDto("PDL", singletonList(new EndringDto("PDL", LocalDateTime.now(), null, null, null))), null)));
 
@@ -103,13 +103,13 @@ public class PdlServiceTest {
         assertThat(result.getEktefelle().getFnr(), is(FDAT_IDENT));
         assertThat(result.getEktefelle().getFodselsdato().toString(), is(LocalDate.of(1922, 12, 11).toString()));
         verify(pdlConsumer, times(0)).hentEktefelle(anyString());
-        verify(pdlPersonMapper, times(0)).mapTilEktefelle(any(), anyString(), any());
+        verify(pdlPersonMapper, times(0)).mapToEktefelle(any(), anyString(), any());
     }
 
     @Test
     public void skalHentePersonUtenEktefelle() {
         when(pdlConsumer.hentPerson(any())).thenReturn(mockPdlPerson);
-        when(pdlPersonMapper.mapTilPerson(any(), any())).thenReturn(person);
+        when(pdlPersonMapper.mapToPerson(any(), any())).thenReturn(person);
 
         when(mockPdlPerson.getSivilstand()).thenReturn(Collections.emptyList());
 
@@ -125,7 +125,7 @@ public class PdlServiceTest {
         when(mockPdlPerson.getFamilierelasjoner()).thenReturn(listOf(new FamilierelasjonDto(BARN_IDENT, "BARN", "MOR")));
 
         when(pdlConsumer.hentBarn(any())).thenReturn(mockPdlBarn);
-        when(pdlPersonMapper.mapTilBarn(any(), any(), any())).thenReturn(barn);
+        when(pdlPersonMapper.mapToBarn(any(), any(), any())).thenReturn(barn);
 
         List<Barn> result = pdlService.hentBarnForPerson("ident");
 
@@ -141,7 +141,7 @@ public class PdlServiceTest {
         when(mockPdlPerson.getFamilierelasjoner()).thenReturn(listOf(new FamilierelasjonDto(BARN_IDENT, "BARN", "MOR")));
 
         when(pdlConsumer.hentBarn(any())).thenReturn(mockPdlBarn);
-        when(pdlPersonMapper.mapTilBarn(any(), any(), any())).thenReturn(null);
+        when(pdlPersonMapper.mapToBarn(any(), any(), any())).thenReturn(null);
 
         List<Barn> result = pdlService.hentBarnForPerson("ident");
 
@@ -160,7 +160,7 @@ public class PdlServiceTest {
         assertNotNull(result);
         assertThat(result, hasSize(0));
         verify(pdlConsumer, times(0)).hentBarn(anyString());
-        verify(pdlPersonMapper, times(0)).mapTilBarn(any(), anyString(), any());
+        verify(pdlPersonMapper, times(0)).mapToBarn(any(), anyString(), any());
     }
 
     @Test
@@ -174,6 +174,6 @@ public class PdlServiceTest {
         assertNotNull(result);
         assertThat(result, hasSize(0));
         verify(pdlConsumer, times(0)).hentBarn(anyString());
-        verify(pdlPersonMapper, times(0)).mapTilBarn(any(), anyString(), any());
+        verify(pdlPersonMapper, times(0)).mapToBarn(any(), anyString(), any());
     }
 }
