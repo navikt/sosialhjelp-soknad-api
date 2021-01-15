@@ -88,17 +88,17 @@ public class RedisService {
     }
 
     public void setex(String key, byte[] value, long timeToLiveSeconds) {
-        String set = redisStore.setex(key, value, timeToLiveSeconds);
-        handleResponse(key, set);
+        String result = redisStore.setex(key, value, timeToLiveSeconds);
+        handleResponse(key, result);
     }
 
     public void set(String key, byte[] value) {
-        String set = redisStore.set(key, value);
-        handleResponse(key, set);
+        String result = redisStore.set(key, value);
+        handleResponse(key, result);
     }
 
-    private void handleResponse(String key, String set) {
-        if (set.equalsIgnoreCase("OK")) {
+    private void handleResponse(String key, String result) {
+        if (result != null && result.equalsIgnoreCase("OK")) {
             log.debug("Redis put OK, key={}", key);
         } else {
             log.warn("Redis put feilet eller fikk timeout, key={}", key);
