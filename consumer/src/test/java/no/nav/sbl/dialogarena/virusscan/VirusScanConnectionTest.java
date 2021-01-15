@@ -47,7 +47,7 @@ public class VirusScanConnectionTest {
     @Test
     public void scanFile_filenameIsVirustest_isInfected() {
         System.setProperty("environment.name", "test");
-        assertThat(connection.isInfected("virustest", data,behandlingsId)).isTrue();
+        assertThat(connection.isInfected("virustest", data, behandlingsId, "pdf")).isTrue();
         verify(operations, times(0)).exchange(any(RequestEntity.class), any(Class.class));
     }
 
@@ -57,7 +57,7 @@ public class VirusScanConnectionTest {
             new ScanResult("test", Result.FOUND),
             new ScanResult("test", Result.FOUND),
         }));
-        assertThat(connection.isInfected(filnavn, data, behandlingsId)).isFalse();
+        assertThat(connection.isInfected(filnavn, data, behandlingsId, "png")).isFalse();
         verify(operations, times(1)).exchange(any(RequestEntity.class), any(Class.class));
     }
 
@@ -66,7 +66,7 @@ public class VirusScanConnectionTest {
         when(operations.exchange(any(), any(Class.class))).thenReturn(ResponseEntity.ok(new ScanResult[]{
             new ScanResult("test", Result.OK),
         }));
-        assertThat(connection.isInfected(filnavn, data, behandlingsId)).isFalse();
+        assertThat(connection.isInfected(filnavn, data, behandlingsId, "jpg")).isFalse();
         verify(operations, times(1)).exchange(any(RequestEntity.class), any(Class.class));
     }
 
@@ -75,7 +75,7 @@ public class VirusScanConnectionTest {
         when(operations.exchange(any(), any(Class.class))).thenReturn(ResponseEntity.ok(new ScanResult[]{
             new ScanResult("test", Result.FOUND),
         }));
-        assertThat(connection.isInfected(filnavn, data, behandlingsId)).isTrue();
+        assertThat(connection.isInfected(filnavn, data, behandlingsId, "pdf")).isTrue();
         verify(operations, times(1)).exchange(any(RequestEntity.class), any(Class.class));
     }
 }

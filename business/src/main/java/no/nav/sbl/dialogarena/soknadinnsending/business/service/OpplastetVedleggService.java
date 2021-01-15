@@ -17,6 +17,7 @@ import no.nav.sbl.sosialhjelp.soknadunderbehandling.OpplastetVedleggRepository;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException;
+import org.apache.pdfbox.text.PDFTextStripper;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
@@ -56,7 +57,7 @@ public class OpplastetVedleggService {
         String sha512 = ServiceUtils.getSha512FromByteArray(data);
 
         TikaFileType fileType = validerFil(data, filnavn);
-        virusScanner.scan(filnavn, data, behandlingsId);
+        virusScanner.scan(filnavn, data, behandlingsId, fileType.name());
 
         SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
         Long soknadId = soknadUnderArbeid.getSoknadId();
@@ -219,9 +220,18 @@ public class OpplastetVedleggService {
     }
 
     private static void sjekkOmPdfErGyldig(byte[] data) {
-        PDDocument document;
-        try {
-            document = PDDocument.load(new ByteArrayInputStream(data));
+        try (PDDocument document = PDDocument.load(new ByteArrayInputStream(data))) {
+            String text = (new PDFTextStripper()).getText(document);
+
+            if (text == null || text.isEmpty()) {
+                logger.warn("PDF er tom"); // En PDF med ett helt blankt ark generert av word gir text = "\r\n"
+            }
+
+            if (document.isEncrypted()) {
+                throw new UgyldigOpplastingTypeException(
+                        "PDF kan ikke være kryptert.", null,
+                        "opplasting.feilmelding.pdf.kryptert");
+            }
 
         } catch (InvalidPasswordException e) {
             throw new UgyldigOpplastingTypeException(
@@ -230,11 +240,6 @@ public class OpplastetVedleggService {
         } catch (IOException e) {
             throw new OpplastingException("Kunne ikke lagre fil", e,
                     "vedlegg.opplasting.feil.generell");
-        }
-        if (document.isEncrypted()) {
-            throw new UgyldigOpplastingTypeException(
-                    "PDF kan ikke være kryptert.", null,
-                    "opplasting.feilmelding.pdf.kryptert");
         }
     }
 }
