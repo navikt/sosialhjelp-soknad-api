@@ -146,8 +146,8 @@ public class PersonSammenligner {
                 if (!gateadresse.postnummer.equalsIgnoreCase(kontaktadresse.getVegadresse().getPostnummer())) {
                     ulikeFelter.add("Postnummer");
                 }
-                if (!gateadresse.kommunenummer.equalsIgnoreCase(kontaktadresse.getVegadresse().getKommunenummer())) {
-                    ulikeFelter.add("Husbokstav");
+                if (kontaktadresse.getVegadresse().getKommunenummer() != null && !gateadresse.kommunenummer.equalsIgnoreCase(kontaktadresse.getVegadresse().getKommunenummer())) {
+                    ulikeFelter.add("Kommunenummer");
                 }
             }
             if (midlertidigAdresse.getAdressetype() != null

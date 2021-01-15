@@ -1,15 +1,15 @@
 package no.nav.sbl.dialogarena.sendsoknad.domain;
 
-import no.bekk.bekkopen.common.StringNumber;
-
 /**
  * Tatt fra Bekk Open for å unngå validering av fødselsnummer, da vi tydeligvis kan få reelle
  * fødselsnummer som ikke validerer i følge fnr-reglene...
  */
-public class NavFodselsnummer extends StringNumber {
+public class NavFodselsnummer {
+
+    private final String value;
 
     public NavFodselsnummer(String value) {
-        super(value);
+        this.value = value;
     }
 
     /**
@@ -19,7 +19,7 @@ public class NavFodselsnummer extends StringNumber {
      * @return A String containing the year of birth.
      */
     public String get2DigitBirthYear() {
-        return getValue().substring(4, 6);
+        return value.substring(4, 6);
     }
 
     /**
@@ -54,7 +54,7 @@ public class NavFodselsnummer extends StringNumber {
      * @return A String containing the Individnummer.
      */
     public String getIndividnummer() {
-        return getValue().substring(6, 9);
+        return value.substring(6, 9);
     }
 
     /**
@@ -64,7 +64,7 @@ public class NavFodselsnummer extends StringNumber {
      * @return A String containing the date of birth
      */
     public String getDayInMonth() {
-        return parseDNumber(getValue()).substring(0, 2);
+        return parseDNumber(value).substring(0, 2);
     }
 
     /**
@@ -74,7 +74,7 @@ public class NavFodselsnummer extends StringNumber {
      * @return A String containing the date of birth
      */
     public String getMonth() {
-        return parseDNumber(getValue()).substring(2, 4);
+        return parseDNumber(value).substring(2, 4);
     }
 
     static String parseDNumber(String fodselsnummer) {

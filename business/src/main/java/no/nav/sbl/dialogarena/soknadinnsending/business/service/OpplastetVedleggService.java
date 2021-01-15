@@ -6,6 +6,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.exception.UgyldigOpplastingTypeE
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils;
 import no.nav.sbl.dialogarena.soknadinnsending.business.util.FileDetectionUtils;
+import no.nav.sbl.dialogarena.soknadinnsending.business.util.TikaFileType;
 import no.nav.sbl.dialogarena.virusscan.VirusScanner;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
@@ -16,10 +17,10 @@ import no.nav.sbl.sosialhjelp.soknadunderbehandling.OpplastetVedleggRepository;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException;
+import org.apache.pdfbox.text.PDFTextStripper;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.ws.rs.NotFoundException;
 import java.io.ByteArrayInputStream;
@@ -28,8 +29,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
 import static no.nav.sbl.dialogarena.soknadinnsending.business.util.JsonVedleggUtils.getVedleggFromInternalSoknad;
@@ -53,23 +52,12 @@ public class OpplastetVedleggService {
     @Inject
     private VirusScanner virusScanner;
 
-    private static Map<String, String> MIME_TIL_EXT;
-
-    @PostConstruct
-    public void setUp() {
-        MIME_TIL_EXT = new HashMap<>();
-        MIME_TIL_EXT.put("application/pdf", ".pdf");
-        MIME_TIL_EXT.put("image/png", ".png");
-        MIME_TIL_EXT.put("image/jpeg", ".jpg");
-    }
-
     public OpplastetVedlegg saveVedleggAndUpdateVedleggstatus(String behandlingsId, String vedleggstype, byte[] data, String filnavn) {
         String eier = SubjectHandler.getUserId();
         String sha512 = ServiceUtils.getSha512FromByteArray(data);
-        String mimeType = FileDetectionUtils.getMimeType(data);
 
-        validerFil(data, filnavn);
-        virusScanner.scan(filnavn, data, behandlingsId);
+        TikaFileType fileType = validerFil(data, filnavn);
+        virusScanner.scan(filnavn, data, behandlingsId, fileType.name());
 
         SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
         Long soknadId = soknadUnderArbeid.getSoknadId();
@@ -81,7 +69,7 @@ public class OpplastetVedleggService {
                 .withSoknadId(soknadId)
                 .withSha512(sha512);
 
-        filnavn = lagFilnavn(filnavn, mimeType, opplastetVedlegg.getUuid());
+        filnavn = lagFilnavn(filnavn, fileType, opplastetVedlegg.getUuid());
 
         opplastetVedlegg.withFilnavn(filnavn);
 
@@ -143,14 +131,16 @@ public class OpplastetVedleggService {
                 .filter(vedlegg -> vedleggstype.equals(vedlegg.getType() + "|" + vedlegg.getTilleggsinfo()))
                 .findFirst();
 
-        if (!jsonVedleggOptional.isPresent()) {
+        if (jsonVedleggOptional.isEmpty()) {
             throw new NotFoundException("Dette vedlegget tilhører " + vedleggstype + " utgift som har blitt tatt bort fra søknaden. Er det flere tabber oppe samtidig?");
         }
         return jsonVedleggOptional.get();
     }
 
-    String lagFilnavn(String opplastetNavn, String mimetype, String uuid) {
+    String lagFilnavn(String opplastetNavn, TikaFileType fileType, String uuid) {
         String filnavn = opplastetNavn;
+        var filExtention = findFileExtention(opplastetNavn);
+
         int separator = opplastetNavn.lastIndexOf(".");
         if (separator != -1) {
             filnavn = opplastetNavn.substring(0, separator);
@@ -177,30 +167,35 @@ public class OpplastetVedleggService {
         }
 
         filnavn += "-" + uuid.split("-")[0];
-        filnavn += MIME_TIL_EXT.get(mimetype);
+        if(filExtention != null && filExtention.length() > 0) {
+            filnavn += filExtention;
+        } else {
+            filnavn += fileType.getExtention();
+        }
 
         return filnavn;
     }
 
-    private void validerFil(byte[] data, String filnavn) {
-        var isImage = FileDetectionUtils.isImage(data);
-        var isPdf = FileDetectionUtils.isPdf(data);
+    private TikaFileType validerFil(byte[] data, String filnavn) {
+        TikaFileType fileType = FileDetectionUtils.detectTikaType(data);
 
-        if (!(isImage || isPdf)) {
+        if (fileType == TikaFileType.UNKNOWN) {
             throw new UgyldigOpplastingTypeException(
-                    String.format("Ugyldig filtype for opplasting. Mimetype var %s, filtype var %s", FileDetectionUtils.getMimeType(data), finnFiltype(filnavn)),
+                    String.format("Ugyldig filtype for opplasting. Mimetype var %s, filtype var %s",
+                            FileDetectionUtils.getMimeType(data), findFileExtention(filnavn)),
                     null,
                     "opplasting.feilmelding.feiltype");
         }
-        if (isImage) {
+        if (fileType == TikaFileType.JPEG || fileType == TikaFileType.PNG) {
             validerFiltypeForBilde(filnavn);
         }
-        if (isPdf) {
+        if (fileType == TikaFileType.PDF) {
             sjekkOmPdfErGyldig(data);
         }
+        return fileType;
     }
 
-    private String finnFiltype(String filnavn) {
+    private String findFileExtention(String filnavn) {
         var sisteIndexForPunktum = filnavn.lastIndexOf(".");
         if (sisteIndexForPunktum < 0) {
             return null;
@@ -209,7 +204,7 @@ public class OpplastetVedleggService {
     }
 
     private void validerFiltypeForBilde(String filnavn) {
-        var filtype = finnFiltype(filnavn);
+        var filtype = findFileExtention(filnavn);
         if (filtype == null) {
             throw new UgyldigOpplastingTypeException(
                     "Ugyldig filtype for opplasting. Kunne ikke finne filtype for fil.",
@@ -225,9 +220,18 @@ public class OpplastetVedleggService {
     }
 
     private static void sjekkOmPdfErGyldig(byte[] data) {
-        PDDocument document;
-        try {
-            document = PDDocument.load(new ByteArrayInputStream(data));
+        try (PDDocument document = PDDocument.load(new ByteArrayInputStream(data))) {
+            String text = (new PDFTextStripper()).getText(document);
+
+            if (text == null || text.isEmpty()) {
+                logger.warn("PDF er tom"); // En PDF med ett helt blankt ark generert av word gir text = "\r\n"
+            }
+
+            if (document.isEncrypted()) {
+                throw new UgyldigOpplastingTypeException(
+                        "PDF kan ikke være kryptert.", null,
+                        "opplasting.feilmelding.pdf.kryptert");
+            }
 
         } catch (InvalidPasswordException e) {
             throw new UgyldigOpplastingTypeException(
@@ -236,11 +240,6 @@ public class OpplastetVedleggService {
         } catch (IOException e) {
             throw new OpplastingException("Kunne ikke lagre fil", e,
                     "vedlegg.opplasting.feil.generell");
-        }
-        if (document.isEncrypted()) {
-            throw new UgyldigOpplastingTypeException(
-                    "PDF kan ikke være kryptert.", null,
-                    "opplasting.feilmelding.pdf.kryptert");
         }
     }
 }

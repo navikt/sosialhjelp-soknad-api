@@ -75,126 +75,126 @@ public class PdlPersonMapper {
         this.kodeverkService = kodeverkService;
     }
 
-    public Person mapTilPerson(PdlPerson pdlPerson, String ident) {
+    public Person mapToPerson(PdlPerson pdlPerson, String ident) {
         if (pdlPerson == null) {
             return null;
         }
         return new Person()
-                .withFornavn(finnFornavn(pdlPerson.getNavn()))
-                .withMellomnavn(finnMellomnavn(pdlPerson.getNavn()))
-                .withEtternavn(finnEtternavn(pdlPerson.getNavn()))
+                .withFornavn(findFornavn(pdlPerson.getNavn()))
+                .withMellomnavn(findMellomnavn(pdlPerson.getNavn()))
+                .withEtternavn(findEtternavn(pdlPerson.getNavn()))
                 .withFnr(ident)
-                .withSivilstatus(finnSivilstatus(pdlPerson.getSivilstand()))
-                .withStatsborgerskap(finnStatsborgerskap(pdlPerson.getStatsborgerskap()))
-                .withDiskresjonskode(finnAdressebeskyttelse(pdlPerson.getAdressebeskyttelse()))
-                .withBostedsadresse(mapBostedsadresse(pdlPerson.getBostedsadresse()))
-                .withOppholdsadresse(mapOppholdssadresse(pdlPerson.getOppholdsadresse(), pdlPerson.getBostedsadresse()))
-                .withKontaktadresse(mapKontaktadresse(pdlPerson.getKontaktadresse(), pdlPerson.getBostedsadresse()));
+                .withSivilstatus(findSivilstatus(pdlPerson.getSivilstand()))
+                .withStatsborgerskap(findStatsborgerskap(pdlPerson.getStatsborgerskap()))
+                .withDiskresjonskode(findAdressebeskyttelse(pdlPerson.getAdressebeskyttelse()))
+                .withBostedsadresse(mapToBostedsadresse(pdlPerson.getBostedsadresse()))
+                .withOppholdsadresse(mapToOppholdssadresse(pdlPerson.getOppholdsadresse(), pdlPerson.getBostedsadresse()))
+                .withKontaktadresse(maptoKontaktadresse(pdlPerson.getKontaktadresse(), pdlPerson.getBostedsadresse()));
     }
 
-    public Barn mapTilBarn(PdlBarn pdlBarn, String barnIdent, PdlPerson pdlPerson) {
-        if (harAdressebeskyttelse(pdlBarn.getAdressebeskyttelse())) {
+    public Barn mapToBarn(PdlBarn pdlBarn, String barnIdent, PdlPerson pdlPerson) {
+        if (hasAdressebeskyttelse(pdlBarn.getAdressebeskyttelse())) {
             return null;
         }
-        if (erMyndig(pdlBarn.getFoedsel()) || erDoed(pdlBarn.getFolkeregisterpersonstatus())) {
+        if (isMyndig(pdlBarn.getFoedsel()) || isDoed(pdlBarn.getFolkeregisterpersonstatus())) {
             return null;
         }
         return new Barn()
-                .withFornavn(finnFornavn(pdlBarn.getNavn()))
-                .withMellomnavn(finnMellomnavn(pdlBarn.getNavn()))
-                .withEtternavn(finnEtternavn(pdlBarn.getNavn()))
+                .withFornavn(findFornavn(pdlBarn.getNavn()))
+                .withMellomnavn(findMellomnavn(pdlBarn.getNavn()))
+                .withEtternavn(findEtternavn(pdlBarn.getNavn()))
                 .withFnr(barnIdent)
-                .withFodselsdato(finnFodselsdato(pdlBarn.getFoedsel()))
-                .withFolkeregistrertsammen(erFolkeregistrertSammen(pdlPerson.getBostedsadresse(), pdlBarn.getBostedsadresse()));
+                .withFodselsdato(findFodselsdato(pdlBarn.getFoedsel()))
+                .withFolkeregistrertsammen(isFolkeregistrertSammen(pdlPerson.getBostedsadresse(), pdlBarn.getBostedsadresse()));
     }
 
-    public Ektefelle mapTilEktefelle(PdlEktefelle pdlEktefelle, String ektefelleIdent, PdlPerson pdlPerson) {
+    public Ektefelle mapToEktefelle(PdlEktefelle pdlEktefelle, String ektefelleIdent, PdlPerson pdlPerson) {
         if (pdlEktefelle == null) {
             return null;
         }
-        if (harAdressebeskyttelse(pdlEktefelle.getAdressebeskyttelse())) {
+        if (hasAdressebeskyttelse(pdlEktefelle.getAdressebeskyttelse())) {
             return new Ektefelle()
                     .withIkketilgangtilektefelle(true);
         }
         return new Ektefelle()
-                .withFornavn(finnFornavn(pdlEktefelle.getNavn()))
-                .withMellomnavn(finnMellomnavn(pdlEktefelle.getNavn()))
-                .withEtternavn(finnEtternavn(pdlEktefelle.getNavn()))
+                .withFornavn(findFornavn(pdlEktefelle.getNavn()))
+                .withMellomnavn(findMellomnavn(pdlEktefelle.getNavn()))
+                .withEtternavn(findEtternavn(pdlEktefelle.getNavn()))
                 .withFnr(ektefelleIdent)
-                .withFodselsdato(finnFodselsdato(pdlEktefelle.getFoedsel()))
+                .withFodselsdato(findFodselsdato(pdlEktefelle.getFoedsel()))
                 .withIkketilgangtilektefelle(false)
-                .withFolkeregistrertsammen(erFolkeregistrertSammen(pdlPerson.getBostedsadresse(), pdlEktefelle.getBostedsadresse()));
+                .withFolkeregistrertsammen(isFolkeregistrertSammen(pdlPerson.getBostedsadresse(), pdlEktefelle.getBostedsadresse()));
     }
 
-    private String finnFornavn(List<NavnDto> navn) {
+    private String findFornavn(List<NavnDto> navn) {
         return Optional.ofNullable(helper.utledGjeldendeNavn(navn))
                 .map(NavnDto::getFornavn).orElse("").toUpperCase();
     }
 
-    private String finnMellomnavn(List<NavnDto> navn) {
+    private String findMellomnavn(List<NavnDto> navn) {
         return Optional.ofNullable(helper.utledGjeldendeNavn(navn))
                 .map(NavnDto::getMellomnavn).orElse("").toUpperCase();
     }
 
-    private String finnEtternavn(List<NavnDto> navn) {
+    private String findEtternavn(List<NavnDto> navn) {
         return Optional.ofNullable(helper.utledGjeldendeNavn(navn))
                 .map(NavnDto::getEtternavn).orElse("").toUpperCase();
     }
 
-    private LocalDate finnFodselsdato(List<FoedselDto> foedsel) {
+    private LocalDate findFodselsdato(List<FoedselDto> foedsel) {
         return foedsel.stream().findFirst()
                 .map(foedselDto -> new LocalDate(foedselDto.getFoedselsdato().getYear(), foedselDto.getFoedselsdato().getMonthValue(), foedselDto.getFoedselsdato().getDayOfMonth()))
                 .orElse(null);
     }
 
-    private boolean erMyndig(List<FoedselDto> foedsel) {
-        return finnAlder(foedsel) >= 18;
+    private boolean isMyndig(List<FoedselDto> foedsel) {
+        return findAlder(foedsel) >= 18;
     }
 
-    private int finnAlder(List<FoedselDto> foedsel) {
-        LocalDate foedselsdato = finnFodselsdato(foedsel);
+    private int findAlder(List<FoedselDto> foedsel) {
+        LocalDate foedselsdato = findFodselsdato(foedsel);
         if (foedselsdato == null) {
             return 0;
         }
         return Years.yearsBetween(foedselsdato, LocalDate.now()).getYears();
     }
 
-    private boolean erDoed(List<FolkeregisterpersonstatusDto> folkeregisterpersonstatus) {
+    private boolean isDoed(List<FolkeregisterpersonstatusDto> folkeregisterpersonstatus) {
         return folkeregisterpersonstatus.stream().findFirst()
                 .map(it -> DOED.equalsIgnoreCase(it.getStatus()))
                 .orElse(false);
     }
 
-    private String finnSivilstatus(List<SivilstandDto> sivilstand) {
+    private String findSivilstatus(List<SivilstandDto> sivilstand) {
         var sivilstandDto = helper.utledGjeldendeSivilstand(sivilstand);
         return sivilstandDto != null ? MAP_PDLSIVILSTAND_TIL_JSONSIVILSTATUS.get(sivilstandDto.getType()) : "";
     }
 
-    private List<String> finnStatsborgerskap(List<StatsborgerskapDto> statsborgerskap) {
+    private List<String> findStatsborgerskap(List<StatsborgerskapDto> statsborgerskap) {
         var list = statsborgerskap.stream()
                 .map(StatsborgerskapDto::getLand)
                 .collect(Collectors.toList());
         return list.isEmpty() ? List.of(NOR) : list;
     }
 
-    private String finnAdressebeskyttelse(List<AdressebeskyttelseDto> adressebeskyttelse) {
+    private String findAdressebeskyttelse(List<AdressebeskyttelseDto> adressebeskyttelse) {
         if (adressebeskyttelse == null) {
             return null;
         }
         return adressebeskyttelse.stream()
                 .filter(dto -> dto.getGradering() != UGRADERT)
                 .findFirst()
-                .map(dto -> mapTilDiskresjonskode(dto.getGradering()))
+                .map(dto -> mapToDiskresjonskode(dto.getGradering()))
                 .orElse(null);
     }
 
-    private boolean harAdressebeskyttelse(List<AdressebeskyttelseDto> adressebeskyttelse) {
+    private boolean hasAdressebeskyttelse(List<AdressebeskyttelseDto> adressebeskyttelse) {
         return adressebeskyttelse != null
                 && !adressebeskyttelse.isEmpty()
                 && !adressebeskyttelse.stream().allMatch(adressebeskyttelseDto -> UGRADERT.equals(adressebeskyttelseDto.getGradering()));
     }
 
-    private String mapTilDiskresjonskode(AdressebeskyttelseDto.Gradering gradering) {
+    private String mapToDiskresjonskode(AdressebeskyttelseDto.Gradering gradering) {
         if (gradering == AdressebeskyttelseDto.Gradering.UGRADERT) {
             return null;
         } else if (gradering == AdressebeskyttelseDto.Gradering.STRENGT_FORTROLIG || gradering == AdressebeskyttelseDto.Gradering.STRENGT_FORTROLIG_UTLAND) {
@@ -206,28 +206,28 @@ public class PdlPersonMapper {
         }
     }
 
-    private boolean erFolkeregistrertSammen(List<BostedsadresseDto> personBostedsadresse, List<BostedsadresseDto> barnEllerEktefelleBostedsadresse) {
-        BostedsadresseDto bostedsadressePerson = finnBostedsadresse(personBostedsadresse);
-        BostedsadresseDto bostedsadresseBarnEllerEktefelle = finnBostedsadresse(barnEllerEktefelleBostedsadresse);
+    private boolean isFolkeregistrertSammen(List<BostedsadresseDto> personBostedsadresse, List<BostedsadresseDto> barnEllerEktefelleBostedsadresse) {
+        BostedsadresseDto bostedsadressePerson = findBostedsadresse(personBostedsadresse);
+        BostedsadresseDto bostedsadresseBarnEllerEktefelle = findBostedsadresse(barnEllerEktefelleBostedsadresse);
         if (bostedsadressePerson == null && bostedsadresseBarnEllerEktefelle == null) {
             return false;
         }
         // Hvis person og barnEllerEktefelle har bostedsadresse med lik matrikkelId - betyr det at de er registrert som bosatt på samme adresse.
-        Optional<String> matrikkelIdPerson = hentMatrikkelId(bostedsadressePerson);
-        Optional<String> matrikkelIdBarnEllerEktefelle = hentMatrikkelId(bostedsadresseBarnEllerEktefelle);
+        Optional<String> matrikkelIdPerson = getMatrikkelId(bostedsadressePerson);
+        Optional<String> matrikkelIdBarnEllerEktefelle = getMatrikkelId(bostedsadresseBarnEllerEktefelle);
         if (matrikkelIdPerson.isPresent() && matrikkelIdBarnEllerEktefelle.isPresent()) {
             return matrikkelIdPerson.get().equals(matrikkelIdBarnEllerEktefelle.get());
         }
         // Hvis ikke vegadresse til person eller barnEllerEktefelle har matrikkelId, sammenlign resterende vegadresse-felter
         if (bostedsadressePerson != null && bostedsadressePerson.getVegadresse() != null &&
                 bostedsadresseBarnEllerEktefelle != null && bostedsadresseBarnEllerEktefelle.getVegadresse() != null) {
-            return erLikeVegadresser(bostedsadressePerson.getVegadresse(), bostedsadresseBarnEllerEktefelle.getVegadresse());
+            return isEqualVegadresser(bostedsadressePerson.getVegadresse(), bostedsadresseBarnEllerEktefelle.getVegadresse());
         }
 
         return false;
     }
 
-    private BostedsadresseDto finnBostedsadresse(List<BostedsadresseDto> bostedsadresse) {
+    private BostedsadresseDto findBostedsadresse(List<BostedsadresseDto> bostedsadresse) {
         if (bostedsadresse == null || bostedsadresse.isEmpty()) {
             return null;
         }
@@ -237,25 +237,25 @@ public class PdlPersonMapper {
                 .orElse(null);
     }
 
-    private Optional<String> hentMatrikkelId(BostedsadresseDto bostedsadresseDto) {
-        if (harVegadresseMatrikkelId(bostedsadresseDto)) {
+    private Optional<String> getMatrikkelId(BostedsadresseDto bostedsadresseDto) {
+        if (hasVegadresseMatrikkelId(bostedsadresseDto)) {
             return Optional.of(bostedsadresseDto.getVegadresse().getMatrikkelId());
         }
-        if (harMatrikkeladresseMatrikkelId(bostedsadresseDto)) {
+        if (hasMatrikkeladresseMatrikkelId(bostedsadresseDto)) {
             return Optional.of(bostedsadresseDto.getMatrikkeladresse().getMatrikkelId());
         }
         return Optional.empty();
     }
 
-    private boolean harVegadresseMatrikkelId(BostedsadresseDto bostedsadresseDto) {
+    private boolean hasVegadresseMatrikkelId(BostedsadresseDto bostedsadresseDto) {
         return bostedsadresseDto != null && bostedsadresseDto.getVegadresse() != null && bostedsadresseDto.getVegadresse().getMatrikkelId() != null;
     }
 
-    private boolean harMatrikkeladresseMatrikkelId(BostedsadresseDto bostedsadresseDto) {
+    private boolean hasMatrikkeladresseMatrikkelId(BostedsadresseDto bostedsadresseDto) {
         return bostedsadresseDto != null && bostedsadresseDto.getMatrikkeladresse() != null && bostedsadresseDto.getMatrikkeladresse().getMatrikkelId() != null;
     }
 
-    private boolean erLikeVegadresser(VegadresseDto adr1, VegadresseDto adr2) {
+    private boolean isEqualVegadresser(VegadresseDto adr1, VegadresseDto adr2) {
         return Objects.equals(adr1.getAdressenavn(), adr2.getAdressenavn())
                 && Objects.equals(adr1.getHusnummer(), adr2.getHusnummer())
                 && Objects.equals(adr1.getHusbokstav(), adr2.getHusbokstav())
@@ -265,19 +265,28 @@ public class PdlPersonMapper {
                 && Objects.equals(adr1.getBruksenhetsnummer(), adr2.getBruksenhetsnummer());
     }
 
-    private Bostedsadresse mapBostedsadresse(List<BostedsadresseDto> dtos) {
-        var dto = finnBostedsadresse(dtos);
+    private boolean isEqualVegadresserWithoutKommunenummer(VegadresseDto adr1, VegadresseDto adr2) {
+        return Objects.equals(adr1.getAdressenavn(), adr2.getAdressenavn())
+                && Objects.equals(adr1.getHusnummer(), adr2.getHusnummer())
+                && Objects.equals(adr1.getHusbokstav(), adr2.getHusbokstav())
+                && Objects.equals(adr1.getTilleggsnavn(), adr2.getTilleggsnavn())
+                && Objects.equals(adr1.getPostnummer(), adr2.getPostnummer())
+                && Objects.equals(adr1.getBruksenhetsnummer(), adr2.getBruksenhetsnummer());
+    }
+
+    private Bostedsadresse mapToBostedsadresse(List<BostedsadresseDto> dtos) {
+        var dto = findBostedsadresse(dtos);
         if (dto == null) {
             return null;
         }
         return new Bostedsadresse(
                 dto.getCoAdressenavn(),
-                dto.getVegadresse() == null ? null : mapTilVegadresse(dto.getVegadresse()),
-                dto.getMatrikkeladresse() == null ? null : mapTilMatrikkeladresse(dto.getMatrikkeladresse())
+                dto.getVegadresse() == null ? null : mapToVegadresse(dto.getVegadresse()),
+                dto.getMatrikkeladresse() == null ? null : mapToMatrikkeladresse(dto.getMatrikkeladresse())
         );
     }
 
-    private Oppholdsadresse mapOppholdssadresse(List<OppholdsadresseDto> dtos, List<BostedsadresseDto> bostedsadresseDtos) {
+    private Oppholdsadresse mapToOppholdssadresse(List<OppholdsadresseDto> dtos, List<BostedsadresseDto> bostedsadresseDtos) {
         if (dtos == null || dtos.isEmpty()) {
             return null;
         }
@@ -288,33 +297,36 @@ public class PdlPersonMapper {
         //  Fra folkeregisteret kan man også få oppholdsadresse uten en faktisk adresse, men med informasjon i oppholdAnnetSted.
         return dtos.stream()
                 .filter(dto -> dto.getVegadresse() != null)
-                .filter(dto -> filtrerVekkVegadresseLikBostedsadresse(bostedsadresseDtos, dto.getVegadresse()))
+                .filter(dto -> filterVegadresseNotEqualToBostedsadresse(bostedsadresseDtos, dto.getVegadresse()))
                 .findFirst()
-                .map(it -> new Oppholdsadresse(it.getCoAdressenavn(), mapTilVegadresse(it.getVegadresse())))
+                .map(it -> new Oppholdsadresse(it.getCoAdressenavn(), mapToVegadresse(it.getVegadresse())))
                 .orElse(null);
     }
 
-    private Kontaktadresse mapKontaktadresse(List<KontaktadresseDto> dtos, List<BostedsadresseDto> bostedsadresseDtos) {
+    private Kontaktadresse maptoKontaktadresse(List<KontaktadresseDto> dtos, List<BostedsadresseDto> bostedsadresseDtos) {
         if (dtos == null || dtos.isEmpty()) {
             return null;
         }
         return dtos.stream()
                 .filter(dto -> dto.getVegadresse() != null)
-                .filter(dto -> filtrerVekkVegadresseLikBostedsadresse(bostedsadresseDtos, dto.getVegadresse()))
+                .filter(dto -> filterVegadresseNotEqualToBostedsadresse(bostedsadresseDtos, dto.getVegadresse()))
                 .findFirst()
-                .map(it -> new Kontaktadresse(it.getCoAdressenavn(), mapTilVegadresse(it.getVegadresse())))
+                .map(it -> new Kontaktadresse(it.getCoAdressenavn(), mapToVegadresse(it.getVegadresse())))
                 .orElse(null);
     }
 
-    private boolean filtrerVekkVegadresseLikBostedsadresse(List<BostedsadresseDto> bostedsadresseDtos, VegadresseDto dtoVegadresse) {
-        var bostedsadresseDto = finnBostedsadresse(bostedsadresseDtos);
+    private boolean filterVegadresseNotEqualToBostedsadresse(List<BostedsadresseDto> bostedsadresseDtos, VegadresseDto dtoVegadresse) {
+        var bostedsadresseDto = findBostedsadresse(bostedsadresseDtos);
         if (bostedsadresseDto != null && bostedsadresseDto.getVegadresse() != null) {
-            return !erLikeVegadresser(dtoVegadresse, bostedsadresseDto.getVegadresse());
+            if (dtoVegadresse.getKommunenummer() != null) {
+                return !isEqualVegadresser(dtoVegadresse, bostedsadresseDto.getVegadresse());
+            }
+            return !isEqualVegadresserWithoutKommunenummer(dtoVegadresse, bostedsadresseDto.getVegadresse());
         }
         return false;
     }
 
-    private Vegadresse mapTilVegadresse(VegadresseDto dto) {
+    private Vegadresse mapToVegadresse(VegadresseDto dto) {
         return new Vegadresse(
                 dto.getAdressenavn(),
                 dto.getHusnummer(),
@@ -327,7 +339,7 @@ public class PdlPersonMapper {
         );
     }
 
-    private Matrikkeladresse mapTilMatrikkeladresse(MatrikkeladresseDto dto) {
+    private Matrikkeladresse mapToMatrikkeladresse(MatrikkeladresseDto dto) {
         return new Matrikkeladresse(
                 dto.getMatrikkelId(),
                 dto.getPostnummer(),

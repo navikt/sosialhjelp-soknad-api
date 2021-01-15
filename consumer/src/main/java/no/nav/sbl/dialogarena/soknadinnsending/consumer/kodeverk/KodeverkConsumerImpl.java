@@ -31,8 +31,6 @@ public class KodeverkConsumerImpl implements KodeverkConsumer {
 
     private static final Logger logger = getLogger(KodeverkConsumerImpl.class);
 
-    private static final String PATH_PING = "internal/isAlive";
-
     private static final String POSTNUMMER = "Postnummer";
     private static final String KOMMUNER = "Kommuner";
     private static final String LANDKODER = "Landkoder";
@@ -49,8 +47,9 @@ public class KodeverkConsumerImpl implements KodeverkConsumer {
 
     @Override
     public void ping() {
-        Invocation.Builder request = client.target(endpoint + PATH_PING).request();
-        try (Response response = request.get()) {
+        // Kaller GET /v1/kodeverk ettersom kodeverk ikke har dedikert ping-endepunkt
+        var request = client.target(endpoint + "v1/kodeverk/").request();
+        try (Response response = addHeaders(request).get()) {
             if (response.getStatus() != 200) {
                 throw new RuntimeException("Ping mot kodeverk feilet: " + response.getStatus() + ", respons: " + response.readEntity(String.class));
             }
@@ -87,13 +86,19 @@ public class KodeverkConsumerImpl implements KodeverkConsumer {
     }
 
     private Invocation.Builder lagRequest(URI uri) {
-        String consumerId = SubjectHandler.getConsumerId();
-        String callId = MDCOperations.getFromMDC(MDCOperations.MDC_CALL_ID);
-
-        return client.target(uri)
+        var request = client.target(uri)
                 .queryParam("ekskluderUgyldige", true)
                 .queryParam("spraak", "nb")
-                .request()
+                .request();
+
+        return addHeaders(request);
+    }
+
+    private Invocation.Builder addHeaders(Invocation.Builder request) {
+        var consumerId = SubjectHandler.getConsumerId();
+        var callId = MDCOperations.getFromMDC(MDCOperations.MDC_CALL_ID);
+
+        return request
                 .header(HEADER_CALL_ID, callId)
                 .header(HEADER_CONSUMER_ID, consumerId);
     }

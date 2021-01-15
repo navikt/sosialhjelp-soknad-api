@@ -201,14 +201,14 @@ public class AdresseSystemdata implements Systemdata {
             jsonAdresse.setKilde(JsonKilde.SYSTEM);
             return jsonAdresse;
         } else {
-            throw new IllegalStateException("Ukjent oppholdsadresse fra PDL (skal være Vegadresse)");
+            throw new IllegalStateException("Ukjent kontaktadresse fra PDL (skal være Vegadresse)");
         }
     }
 
     private JsonGateAdresse tilGateAdresse(Vegadresse vegadresse) {
         var jsonGateAdresse = new JsonGateAdresse();
         jsonGateAdresse.setType(JsonAdresse.Type.GATEADRESSE);
-        jsonGateAdresse.setLandkode("NOR"); // bostedsadresser er kun norske
+        jsonGateAdresse.setLandkode("NOR"); // vegadresser er kun norske
         jsonGateAdresse.setKommunenummer(vegadresse.getKommunenummer());
         jsonGateAdresse.setBolignummer(vegadresse.getBruksenhetsnummer());
         jsonGateAdresse.setGatenavn(vegadresse.getAdressenavn());
