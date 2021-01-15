@@ -12,7 +12,7 @@ import java.time.Duration;
 @Configuration
 public class RedisConfig {
 
-    private static final int TIMEOUT_SECONDS = 10;
+    private static final long TIMEOUT_SECONDS = 2;
 
     @Value("${redis_mocked}")
     private boolean mocked;
