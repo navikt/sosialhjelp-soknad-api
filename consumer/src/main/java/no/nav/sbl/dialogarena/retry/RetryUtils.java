@@ -1,0 +1,72 @@
+package no.nav.sbl.dialogarena.retry;
+
+import io.github.resilience4j.retry.Retry;
+import io.github.resilience4j.retry.RetryConfig;
+import io.github.resilience4j.retry.RetryRegistry;
+import io.vavr.CheckedFunction0;
+import io.vavr.control.Try;
+import org.slf4j.Logger;
+
+import javax.ws.rs.WebApplicationException;
+import java.time.Duration;
+
+public final class RetryUtils {
+
+    private RetryUtils() {
+    }
+
+    public static final int DEFAULT_NUM_RETRIES = 5;
+    public static final long DEFAULT_RETRY_WAIT_MILLIS = 100;
+
+    public static Retry retryConfig(
+            String baseUrl,
+            int numOfRetries,
+            long retryWaitMillis,
+            Class<? extends Throwable>[] retryableExceptions,
+            Logger log
+    ) {
+        var retryConfig = RetryConfig.custom()
+                .retryExceptions(retryableExceptions)
+                .maxAttempts(numOfRetries)
+                .waitDuration(Duration.ofMillis(retryWaitMillis))
+                .build();
+        var retry = RetryRegistry.of(retryConfig)
+                .retry(baseUrl);
+
+        retry.getEventPublisher()
+                .onRetry(
+                        event -> log.warn("Retry client med baseUrl={}. Forsøk nr {} av maks {} ganger. Feil: {} ({})",
+                                baseUrl,
+                                event.getNumberOfRetryAttempts(),
+                                numOfRetries,
+                                event.getLastThrowable().getClass().getSimpleName(),
+                                event.getLastThrowable().getMessage()))
+                .onSuccess(event -> {
+                    if (event.getNumberOfRetryAttempts() > 1) {
+                        log.info("Retry client med baseUrl={}. Forsøk {} av {}",
+                                baseUrl,
+                                event.getNumberOfRetryAttempts(),
+                                numOfRetries);
+                    }
+                })
+                .onError(event -> log.warn("Maks antall retries nådd ({}). Kunne ikke kalle client med baseUrl={}.",
+                        event.getNumberOfRetryAttempts(),
+                        baseUrl,
+                        event.getLastThrowable()));
+        return retry;
+    }
+
+    public static <T> T withRetry(Retry retry, CheckedFunction0<T> supplier, String baseUrl, Logger log) {
+        return Try.of(Retry.decorateCheckedSupplier(retry, supplier))
+                .onFailure(throwable -> {
+                    if (throwable instanceof WebApplicationException) {
+                        var webApplicationException = (WebApplicationException) throwable;
+                        log.warn("Fikk exception: '{}', baseUrl={}, exception={}",
+                                throwable.getClass().getSimpleName(), baseUrl, webApplicationException);
+                        throw webApplicationException;
+                    }
+                })
+                .get();
+    }
+
+}
