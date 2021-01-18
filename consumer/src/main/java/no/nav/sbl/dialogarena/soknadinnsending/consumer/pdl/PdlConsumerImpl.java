@@ -170,7 +170,7 @@ public class PdlConsumerImpl implements PdlConsumer {
     }
 
     private <T> T withRetry(CheckedFunction0<T> supplier) {
-        return RetryUtils.withRetry(retry, supplier, endpoint, log);
+        return RetryUtils.withRetry(retry, supplier);
     }
 
     private void checkForPdlApiErrors(PdlHentPersonResponse response) {

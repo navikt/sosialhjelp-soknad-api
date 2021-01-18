@@ -35,7 +35,7 @@ public class RetryUtilsTest {
 
         var retry = retryConfig(URL, MAX_ATTEMPTS, 0, new Class[]{WebApplicationException.class}, log);
 
-        Assert.assertThrows(InternalServerErrorException.class, () -> withRetry(retry, () -> pdlConsumer.hentPerson("ident"), URL, log));
+        Assert.assertThrows(InternalServerErrorException.class, () -> withRetry(retry, () -> pdlConsumer.hentPerson("ident")));
         verify(pdlConsumer, times(MAX_ATTEMPTS)).hentPerson(anyString());
     }
 }

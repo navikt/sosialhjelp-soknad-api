@@ -7,16 +7,15 @@ import io.vavr.CheckedFunction0;
 import io.vavr.control.Try;
 import org.slf4j.Logger;
 
-import javax.ws.rs.WebApplicationException;
 import java.time.Duration;
 
 public final class RetryUtils {
 
-    private RetryUtils() {
-    }
-
     public static final int DEFAULT_MAX_ATTEMPTS = 5;
     public static final long DEFAULT_RETRY_WAIT_MILLIS = 100;
+
+    private RetryUtils() {
+    }
 
     public static Retry retryConfig(
             String baseUrl,
@@ -34,16 +33,15 @@ public final class RetryUtils {
                 .retry(baseUrl);
 
         retry.getEventPublisher()
-                .onRetry(
-                        event -> log.warn("Retry client med baseUrl={}. Forsøk nr {} av maks {} ganger. Feil: {} ({})",
-                                baseUrl,
-                                event.getNumberOfRetryAttempts(),
-                                maxAttempts,
-                                event.getLastThrowable().getClass().getSimpleName(),
-                                event.getLastThrowable().getMessage()))
+                .onRetry(event -> log.warn("Retry client med baseUrl={}. Forsøk nr {} av {}. Feil: {} ({})",
+                        baseUrl,
+                        event.getNumberOfRetryAttempts(),
+                        maxAttempts,
+                        event.getLastThrowable().getClass().getSimpleName(),
+                        event.getLastThrowable().getMessage()))
                 .onSuccess(event -> {
                     if (event.getNumberOfRetryAttempts() > 1) {
-                        log.info("Retry client med baseUrl={}. Forsøk {} av {}",
+                        log.info("Retry client med baseUrl={}. Forsøk nr {} av {}",
                                 baseUrl,
                                 event.getNumberOfRetryAttempts(),
                                 maxAttempts);
@@ -56,17 +54,8 @@ public final class RetryUtils {
         return retry;
     }
 
-    public static <T> T withRetry(Retry retry, CheckedFunction0<T> supplier, String baseUrl, Logger log) {
-        return Try.of(Retry.decorateCheckedSupplier(retry, supplier))
-                .onFailure(throwable -> {
-                    if (throwable instanceof WebApplicationException) {
-                        var webApplicationException = (WebApplicationException) throwable;
-                        log.warn("Fikk exception: '{}', baseUrl={}, exception={}",
-                                throwable.getClass().getSimpleName(), baseUrl, webApplicationException);
-                        throw webApplicationException;
-                    }
-                })
-                .get();
+    public static <T> T withRetry(Retry retry, CheckedFunction0<T> supplier) {
+        return Try.of(Retry.decorateCheckedSupplier(retry, supplier)).get();
     }
 
 }
