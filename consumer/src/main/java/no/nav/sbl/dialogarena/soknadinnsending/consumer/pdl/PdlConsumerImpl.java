@@ -19,8 +19,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.sts.FssToken;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.sts.STSConsumer;
 import org.slf4j.Logger;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.retry.annotation.Backoff;
-import org.springframework.retry.annotation.Retryable;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Entity;
@@ -63,7 +61,6 @@ public class PdlConsumerImpl implements PdlConsumer {
 
     @Override
     @Cacheable(value = "pdlPersonCache", key = "#ident")
-    @Retryable(value = {TjenesteUtilgjengeligException.class}, maxAttempts = 5, backoff = @Backoff(delay = 100))
     public PdlPerson hentPerson(String ident) {
         String query = PdlApiQuery.HENT_PERSON;
         try {
@@ -83,7 +80,6 @@ public class PdlConsumerImpl implements PdlConsumer {
 
     @Override
     @Cacheable(value = "pdlBarnCache", key = "#ident")
-    @Retryable(value = {TjenesteUtilgjengeligException.class}, maxAttempts = 5, backoff = @Backoff(delay = 100))
     public PdlBarn hentBarn(String ident) {
         String query = PdlApiQuery.HENT_BARN;
         try {
@@ -103,7 +99,6 @@ public class PdlConsumerImpl implements PdlConsumer {
 
     @Override
     @Cacheable(value = "pdlEktefelleCache", key = "#ident")
-    @Retryable(value = {TjenesteUtilgjengeligException.class}, maxAttempts = 5, backoff = @Backoff(delay = 100))
     public PdlEktefelle hentEktefelle(String ident) {
         String query = PdlApiQuery.HENT_EKTEFELLE;
         try {
