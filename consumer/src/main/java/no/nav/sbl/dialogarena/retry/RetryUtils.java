@@ -15,19 +15,19 @@ public final class RetryUtils {
     private RetryUtils() {
     }
 
-    public static final int DEFAULT_NUM_RETRIES = 5;
+    public static final int DEFAULT_MAX_ATTEMPTS = 5;
     public static final long DEFAULT_RETRY_WAIT_MILLIS = 100;
 
     public static Retry retryConfig(
             String baseUrl,
-            int numOfRetries,
+            int maxAttempts,
             long retryWaitMillis,
             Class<? extends Throwable>[] retryableExceptions,
             Logger log
     ) {
         var retryConfig = RetryConfig.custom()
                 .retryExceptions(retryableExceptions)
-                .maxAttempts(numOfRetries)
+                .maxAttempts(maxAttempts)
                 .waitDuration(Duration.ofMillis(retryWaitMillis))
                 .build();
         var retry = RetryRegistry.of(retryConfig)
@@ -38,7 +38,7 @@ public final class RetryUtils {
                         event -> log.warn("Retry client med baseUrl={}. Forsøk nr {} av maks {} ganger. Feil: {} ({})",
                                 baseUrl,
                                 event.getNumberOfRetryAttempts(),
-                                numOfRetries,
+                                maxAttempts,
                                 event.getLastThrowable().getClass().getSimpleName(),
                                 event.getLastThrowable().getMessage()))
                 .onSuccess(event -> {
@@ -46,7 +46,7 @@ public final class RetryUtils {
                         log.info("Retry client med baseUrl={}. Forsøk {} av {}",
                                 baseUrl,
                                 event.getNumberOfRetryAttempts(),
-                                numOfRetries);
+                                maxAttempts);
                     }
                 })
                 .onError(event -> log.warn("Maks antall retries nådd ({}). Kunne ikke kalle client med baseUrl={}.",

@@ -36,7 +36,7 @@ import java.util.Optional;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
-import static no.nav.sbl.dialogarena.retry.RetryUtils.DEFAULT_NUM_RETRIES;
+import static no.nav.sbl.dialogarena.retry.RetryUtils.DEFAULT_MAX_ATTEMPTS;
 import static no.nav.sbl.dialogarena.retry.RetryUtils.DEFAULT_RETRY_WAIT_MILLIS;
 import static no.nav.sbl.dialogarena.retry.RetryUtils.retryConfig;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.util.HeaderConstants.BEARER;
@@ -66,7 +66,7 @@ public class PdlConsumerImpl implements PdlConsumer {
         this.client = client;
         this.endpoint = endpoint;
         this.stsConsumer = stsConsumer;
-        this.retry = retryConfig(endpoint, DEFAULT_NUM_RETRIES, DEFAULT_RETRY_WAIT_MILLIS, new Class[]{WebApplicationException.class, ProcessingException.class}, log);
+        this.retry = retryConfig(endpoint, DEFAULT_MAX_ATTEMPTS, DEFAULT_RETRY_WAIT_MILLIS, new Class[]{WebApplicationException.class, ProcessingException.class}, log);
     }
 
     @Override
