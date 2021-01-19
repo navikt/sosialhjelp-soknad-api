@@ -31,11 +31,9 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
-import org.springframework.retry.annotation.EnableRetry;
 
 @Configuration
 @EnableCaching
-@EnableRetry
 @Import({
         PdlService.class,
         PdlPersonMapper.class,
