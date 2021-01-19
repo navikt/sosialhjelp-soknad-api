@@ -6,7 +6,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import io.github.resilience4j.retry.Retry;
+import io.vavr.CheckedFunction0;
 import no.nav.sbl.dialogarena.mdc.MDCOperations;
+import no.nav.sbl.dialogarena.retry.RetryUtils;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.PdlApiException;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.TjenesteUtilgjengeligException;
@@ -23,9 +26,9 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.sts.FssToken;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.sts.STSConsumer;
 import org.slf4j.Logger;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.retry.annotation.Backoff;
-import org.springframework.retry.annotation.Retryable;
 
+import javax.ws.rs.ProcessingException;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
@@ -37,6 +40,9 @@ import java.util.Optional;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
+import static no.nav.sbl.dialogarena.retry.RetryUtils.DEFAULT_MAX_ATTEMPTS;
+import static no.nav.sbl.dialogarena.retry.RetryUtils.DEFAULT_RETRY_WAIT_MILLIS;
+import static no.nav.sbl.dialogarena.retry.RetryUtils.retryConfig;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.util.HeaderConstants.BEARER;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.util.HeaderConstants.HEADER_CALL_ID;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.util.HeaderConstants.HEADER_CONSUMER_ID;
@@ -53,6 +59,7 @@ public class PdlConsumerImpl implements PdlConsumer {
     private final Client client;
     private final String endpoint;
     private final STSConsumer stsConsumer;
+    private final Retry retry;
 
     private final ObjectMapper pdlMapper = JsonMapper.builder()
             .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
@@ -63,16 +70,17 @@ public class PdlConsumerImpl implements PdlConsumer {
         this.client = client;
         this.endpoint = endpoint;
         this.stsConsumer = stsConsumer;
+        this.retry = retryConfig(endpoint, DEFAULT_MAX_ATTEMPTS, DEFAULT_RETRY_WAIT_MILLIS, new Class[]{WebApplicationException.class, ProcessingException.class}, log);
     }
 
     @Override
     @Cacheable(value = "pdlPersonCache", key = "#ident")
-    @Retryable(value = {TjenesteUtilgjengeligException.class}, maxAttempts = 5, backoff = @Backoff(delay = 100))
     public PdlPerson hentPerson(String ident) {
         String query = PdlApiQuery.HENT_PERSON;
         try {
-            String body = createRequest(endpoint).post(requestEntity(query, variables(ident)), String.class);
-            HentPersonResponse<PdlPerson> pdlResponse = pdlMapper.readValue(body, new TypeReference<HentPersonResponse<PdlPerson>>() {});
+            var request = createRequest(endpoint);
+            var body = withRetry(() -> request.post(requestEntity(query, variables(ident)), String.class));
+            var pdlResponse = pdlMapper.readValue(body, new TypeReference<HentPersonResponse<PdlPerson>>() {});
 
             checkForPdlApiErrors(pdlResponse);
 
@@ -87,12 +95,12 @@ public class PdlConsumerImpl implements PdlConsumer {
 
     @Override
     @Cacheable(value = "pdlBarnCache", key = "#ident")
-    @Retryable(value = {TjenesteUtilgjengeligException.class}, maxAttempts = 5, backoff = @Backoff(delay = 100))
     public PdlBarn hentBarn(String ident) {
         String query = PdlApiQuery.HENT_BARN;
         try {
-            String body = createRequest(endpoint).post(requestEntity(query, variables(ident)), String.class);
-            HentPersonResponse<PdlBarn> pdlResponse = pdlMapper.readValue(body, new TypeReference<HentPersonResponse<PdlBarn>>() {});
+            var request = createRequest(endpoint);
+            var body = withRetry(() -> request.post(requestEntity(query, variables(ident)), String.class));
+            var pdlResponse = pdlMapper.readValue(body, new TypeReference<HentPersonResponse<PdlBarn>>() {});
 
             checkForPdlApiErrors(pdlResponse);
 
@@ -107,12 +115,12 @@ public class PdlConsumerImpl implements PdlConsumer {
 
     @Override
     @Cacheable(value = "pdlEktefelleCache", key = "#ident")
-    @Retryable(value = {TjenesteUtilgjengeligException.class}, maxAttempts = 5, backoff = @Backoff(delay = 100))
     public PdlEktefelle hentEktefelle(String ident) {
         String query = PdlApiQuery.HENT_EKTEFELLE;
         try {
-            String body = createRequest(endpoint).post(requestEntity(query, variables(ident)), String.class);
-            HentPersonResponse<PdlEktefelle> pdlResponse = pdlMapper.readValue(body, new TypeReference<HentPersonResponse<PdlEktefelle>>() {});
+            var request = createRequest(endpoint);
+            var body = withRetry(() -> request.post(requestEntity(query, variables(ident)), String.class));
+            var pdlResponse = pdlMapper.readValue(body, new TypeReference<HentPersonResponse<PdlEktefelle>>() {});
 
             checkForPdlApiErrors(pdlResponse);
 
@@ -130,7 +138,8 @@ public class PdlConsumerImpl implements PdlConsumer {
     public GeografiskTilknytningDto hentGeografiskTilknytning(String ident) {
         String query = PdlApiQuery.HENT_GEOGRAFISK_TILKNYTNING;
         try {
-            var body = createRequest(endpoint).post(requestEntity(query, variablesGt(ident)), String.class);
+            var request = createRequest(endpoint);
+            var body = withRetry(() -> request.post(requestEntity(query, variablesGt(ident)), String.class));
             var pdlResponse = pdlMapper.readValue(body, new TypeReference<HentGeografiskTilknytningResponse>() {});
 
             checkForPdlApiErrors(pdlResponse);
@@ -187,6 +196,10 @@ public class PdlConsumerImpl implements PdlConsumer {
                 .header(HEADER_CONSUMER_ID, consumerId)
                 .header(HEADER_CONSUMER_TOKEN, BEARER + fssToken.getAccessToken())
                 .header(HEADER_TEMA, TEMA_KOM);
+    }
+
+    private <T> T withRetry(CheckedFunction0<T> supplier) {
+        return RetryUtils.withRetry(retry, supplier);
     }
 
     private void checkForPdlApiErrors(PdlBaseResponse response) {
