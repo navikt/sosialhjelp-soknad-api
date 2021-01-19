@@ -13,6 +13,8 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.TjenesteUtilg
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.common.PdlApiQuery;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.common.PdlBaseResponse;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.common.PdlRequest;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.gt.HentGeografiskTilknytningResponse;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.gt.dto.GeografiskTilknytningDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.HentPersonResponse;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.PdlBarn;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.PdlEktefelle;
@@ -69,7 +71,7 @@ public class PdlConsumerImpl implements PdlConsumer {
     public PdlPerson hentPerson(String ident) {
         String query = PdlApiQuery.HENT_PERSON;
         try {
-            String body = lagRequest(endpoint).post(requestEntity(query, variables(ident)), String.class);
+            String body = createRequest(endpoint).post(requestEntity(query, variables(ident)), String.class);
             HentPersonResponse<PdlPerson> pdlResponse = pdlMapper.readValue(body, new TypeReference<HentPersonResponse<PdlPerson>>() {});
 
             checkForPdlApiErrors(pdlResponse);
@@ -89,7 +91,7 @@ public class PdlConsumerImpl implements PdlConsumer {
     public PdlBarn hentBarn(String ident) {
         String query = PdlApiQuery.HENT_BARN;
         try {
-            String body = lagRequest(endpoint).post(requestEntity(query, variables(ident)), String.class);
+            String body = createRequest(endpoint).post(requestEntity(query, variables(ident)), String.class);
             HentPersonResponse<PdlBarn> pdlResponse = pdlMapper.readValue(body, new TypeReference<HentPersonResponse<PdlBarn>>() {});
 
             checkForPdlApiErrors(pdlResponse);
@@ -109,7 +111,7 @@ public class PdlConsumerImpl implements PdlConsumer {
     public PdlEktefelle hentEktefelle(String ident) {
         String query = PdlApiQuery.HENT_EKTEFELLE;
         try {
-            String body = lagRequest(endpoint).post(requestEntity(query, variables(ident)), String.class);
+            String body = createRequest(endpoint).post(requestEntity(query, variables(ident)), String.class);
             HentPersonResponse<PdlEktefelle> pdlResponse = pdlMapper.readValue(body, new TypeReference<HentPersonResponse<PdlEktefelle>>() {});
 
             checkForPdlApiErrors(pdlResponse);
@@ -123,6 +125,25 @@ public class PdlConsumerImpl implements PdlConsumer {
         }
     }
 
+    @Override
+    @Cacheable(value = "pdlGtCache", key = "#ident")
+    public GeografiskTilknytningDto hentGeografiskTilknytning(String ident) {
+        String query = PdlApiQuery.HENT_GEOGRAFISK_TILKNYTNING;
+        try {
+            var body = createRequest(endpoint).post(requestEntity(query, variablesGt(ident)), String.class);
+            var pdlResponse = pdlMapper.readValue(body, new TypeReference<HentGeografiskTilknytningResponse>() {});
+
+            checkForPdlApiErrors(pdlResponse);
+
+            return pdlResponse.getData().getGeografiskTilknytning();
+        } catch (PdlApiException e) {
+            throw e;
+        } catch (Exception e) {
+            log.warn("Kall til PDL feilet (hentGeografiskTilknytning)");
+            throw new TjenesteUtilgjengeligException("Noe uventet feilet ved kall til PDL", e);
+        }
+    }
+
     private Entity<PdlRequest> requestEntity(String query, Map<String, Object> variables) {
         var request = new PdlRequest(query, variables);
         return Entity.entity(request, MediaType.APPLICATION_JSON_TYPE);
@@ -132,6 +153,10 @@ public class PdlConsumerImpl implements PdlConsumer {
         return Map.of(
                 "historikk", false,
                 "ident", ident);
+    }
+
+    private Map<String, Object> variablesGt(String ident) {
+        return Map.of("ident", ident);
     }
 
     @Override
@@ -150,7 +175,7 @@ public class PdlConsumerImpl implements PdlConsumer {
         }
     }
 
-    private Invocation.Builder lagRequest(String endpoint) {
+    private Invocation.Builder createRequest(String endpoint) {
         String consumerId = SubjectHandler.getConsumerId();
         String callId = MDCOperations.getFromMDC(MDCOperations.MDC_CALL_ID);
         FssToken fssToken = stsConsumer.getFSSToken();

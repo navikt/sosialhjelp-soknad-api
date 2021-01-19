@@ -14,6 +14,7 @@ public class PdlApiQuery {
     public static final String HENT_PERSON = readGraphQLQueryFromFile("graphql/pdl-person-query.graphql");
     public static final String HENT_BARN = readGraphQLQueryFromFile("graphql/pdl-barn-query.graphql");
     public static final String HENT_EKTEFELLE = readGraphQLQueryFromFile("graphql/pdl-ektefelle-query.graphql");
+    public static final String HENT_GEOGRAFISK_TILKNYTNING = readGraphQLQueryFromFile("graphql/pdl-geografiskTilknytning.graphql");
     // flere queries?
 
     private static String readGraphQLQueryFromFile(String file) {
