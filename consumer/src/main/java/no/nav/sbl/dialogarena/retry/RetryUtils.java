@@ -14,6 +14,7 @@ public final class RetryUtils {
     public static final int DEFAULT_MAX_ATTEMPTS = 5;
     public static final long DEFAULT_RETRY_WAIT_MILLIS = 100;
 
+    // For å hindre instansiering
     private RetryUtils() {
     }
 
