@@ -1,11 +1,11 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl;
 
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.EndringDto;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.FolkeregistermetadataDto;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.MetadataDto;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.NavnDto;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.SivilstandDto;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.SivilstandDto.SivilstandType;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.dto.EndringDto;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.dto.FolkeregistermetadataDto;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.dto.MetadataDto;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.dto.NavnDto;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.dto.SivilstandDto;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.dto.SivilstandDto.SivilstandType;
 import org.junit.Test;
 
 import java.time.LocalDateTime;
