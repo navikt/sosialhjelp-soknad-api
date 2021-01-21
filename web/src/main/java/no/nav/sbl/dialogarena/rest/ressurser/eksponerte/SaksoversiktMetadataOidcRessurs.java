@@ -26,7 +26,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * Eksponerer metadata om brukers søknader for bruk i Saksoversikt
- * Implementerer speccen definert i soeknadsskjemaSosialhjelp-v1-saksoversiktdefinisjon
+ * Implementerer speccen definert i soeknadsskjemasosialhjelp-v1-saksoversiktdefinisjon
  */
 @Controller
 @ProtectedWithClaims(issuer = "selvbetjening", combineWithOr = true, claimMap = {"acr=Level3", "acr=Level4"})
