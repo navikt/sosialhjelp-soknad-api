@@ -73,7 +73,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!-- Tjenestespesifikasjoner -->
-        <tjenestespesifikasjon.version>1.2019.09.25-00.21-49b69f0625e0</tjenestespesifikasjon.version>
+        <tjenestespesifikasjon.version>1.2021.01.21-11.34-02f5eb27bb76</tjenestespesifikasjon.version>
 
         <!-- Sosialhjelp-common -->
         <sosialhjelp-common.version>1.4ef74b4</sosialhjelp-common.version>
@@ -238,7 +238,7 @@
             </dependency>
             <dependency>
                 <groupId>no.nav.tjenestespesifikasjoner</groupId>
-                <artifactId>soeknadsskjemaSosialhjelp-v1-saksoversiktdefinisjon</artifactId>
+                <artifactId>soeknadsskjemasosialhjelp-v1-saksoversiktdefinisjon</artifactId>
                 <version>${tjenestespesifikasjon.version}</version>
             </dependency>
             <dependency>

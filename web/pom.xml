@@ -232,7 +232,7 @@
         </dependency>
         <dependency>
             <groupId>no.nav.tjenestespesifikasjoner</groupId>
-            <artifactId>soeknadsskjemaSosialhjelp-v1-saksoversiktdefinisjon</artifactId>
+            <artifactId>soeknadsskjemasosialhjelp-v1-saksoversiktdefinisjon</artifactId>
         </dependency>
         <dependency>
             <groupId>com.google.code.gson</groupId>
