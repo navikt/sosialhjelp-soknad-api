@@ -23,7 +23,6 @@ import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonMatrikkelAdresse;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonPostboksAdresse;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonUstrukturertAdresse;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
-import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeSystem;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import org.slf4j.Logger;
@@ -142,8 +141,8 @@ public class AdresseSystemdata implements Systemdata {
     private void sammenlignMidlertidigAdresse(String personIdentifikator, Adresse midlertidigAdresse) {
         try {
             var person = pdlService.hentPerson(personIdentifikator);
-//            personSammenligner.sammenlignMidlertidigAdresse(midlertidigAdresse, person.getOppholdsadresse());
-            personSammenligner.sammenlignMidlertidigAdresse(midlertidigAdresse, person.getKontaktadresse());
+            personSammenligner.sammenlignMidlertidigAdresseOppholdsadresse(midlertidigAdresse, person.getOppholdsadresse());
+            personSammenligner.sammenlignMidlertidigAdresseKontaktadresse(midlertidigAdresse, person.getKontaktadresse());
         } catch (PdlApiException | TjenesteUtilgjengeligException e) {
             log.warn("PDL kaster feil (brukes kun for sammenligning)", e);
         } catch (Exception e) {
