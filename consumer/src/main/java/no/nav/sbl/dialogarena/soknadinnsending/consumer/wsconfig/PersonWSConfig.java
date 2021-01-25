@@ -25,7 +25,7 @@ public class PersonWSConfig {
         return new ServiceBuilder<>(PersonPortType.class)
                 .asStandardService()
                 .withAddress(personEndpoint)
-                .withWsdl("classpath:/wsdl/no/nav/tjeneste/virksomhet/person/v1/Person.wsdl")
+                .withWsdl("classpath:/wsdl/no/nav/tjeneste/virksomhet/person/v1/person.wsdl")
                 .build()
                 .withHttpsMock()
                 .withMDC();

@@ -25,7 +25,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * Eksponerer metadata om brukers søknader for bruk i Saksoversikt
- * Implementerer speccen definert i soeknadsskjemaSosialhjelp-v1-saksoversiktdefinisjon
+ * Implementerer speccen definert i soeknadsskjemasosialhjelp-v1-saksoversiktdefinisjon
  */
 @Controller
 @Unprotected // Er sikret med SAML frem til team personbruker er klare med å bytte ut SAML med OIDC

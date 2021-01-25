@@ -73,7 +73,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!-- Tjenestespesifikasjoner -->
-        <tjenestespesifikasjon.version>1.2019.09.25-00.21-49b69f0625e0</tjenestespesifikasjon.version>
+        <tjenestespesifikasjon.version>1.2021.01.21-11.34-02f5eb27bb76</tjenestespesifikasjon.version>
 
         <!-- Sosialhjelp-common -->
         <sosialhjelp-common.version>1.4ef74b4</sosialhjelp-common.version>
@@ -81,8 +81,7 @@
         <!-- Nav felles java-bibliotek -->
         <nav-common.version>1.2020.11.16_14.52-3f16e0d8c867</nav-common.version>
 
-        <spring.version>5.2.9.RELEASE</spring.version>
-        <spring-retry.version>1.3.0</spring-retry.version>
+        <spring.version>5.3.2</spring.version>
         <jetty.version>9.4.35.v20201120</jetty.version>
         <jersey.version>2.33</jersey.version>
         <token-validation.version>1.3.2</token-validation.version>
@@ -129,6 +128,7 @@
         <lettuce.version>5.3.5.RELEASE</lettuce.version>
         <jedis-mock.version>0.1.16</jedis-mock.version>
         <unleash.version>3.3.4</unleash.version>
+        <resilience4j.version>1.6.1</resilience4j.version>
 
         <flyway.placeholders.driver>oracle.jdbc.OracleDriver</flyway.placeholders.driver>
         <flyway.placeholders.encoding>ISO-8859-1</flyway.placeholders.encoding>
@@ -243,7 +243,7 @@
             </dependency>
             <dependency>
                 <groupId>no.nav.tjenestespesifikasjoner</groupId>
-                <artifactId>soeknadsskjemaSosialhjelp-v1-saksoversiktdefinisjon</artifactId>
+                <artifactId>soeknadsskjemasosialhjelp-v1-saksoversiktdefinisjon</artifactId>
                 <version>${tjenestespesifikasjon.version}</version>
             </dependency>
             <dependency>
@@ -409,12 +409,6 @@
                 <artifactId>spring-aop</artifactId>
                 <version>${spring.version}</version>
             </dependency>
-            <dependency>
-                <groupId>org.springframework.retry</groupId>
-                <artifactId>spring-retry</artifactId>
-                <version>${spring-retry.version}</version>
-            </dependency>
-
 
             <!-- Jersey avhengigheter -->
             <dependency>
@@ -655,6 +649,13 @@
                 <groupId>com.github.fppt</groupId>
                 <artifactId>jedis-mock</artifactId>
                 <version>${jedis-mock.version}</version>
+            </dependency>
+
+            <!-- resilience4j -->
+            <dependency>
+                <groupId>io.github.resilience4j</groupId>
+                <artifactId>resilience4j-retry</artifactId>
+                <version>${resilience4j.version}</version>
             </dependency>
 
             <!-- diverse avhengigheter -->
