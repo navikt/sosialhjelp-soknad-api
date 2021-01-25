@@ -168,7 +168,7 @@
         <jsoup.version>1.13.1</jsoup.version>
         <oauth2-oidc-sdk.version>7.3</oauth2-oidc-sdk.version>
         <lang-tag.version>1.5</lang-tag.version>
-        <uap-java.version>1.4.4</uap-java.version>
+        <uap-java.version>1.5.0</uap-java.version>
         <emoji-java.version>5.1.1</emoji-java.version>
         <java-support.version>7.5.1</java-support.version>
         <cryptacular.version>1.2.4</cryptacular.version>
