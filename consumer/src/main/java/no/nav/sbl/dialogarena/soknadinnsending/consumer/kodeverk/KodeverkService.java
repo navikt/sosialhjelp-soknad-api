@@ -75,7 +75,7 @@ public class KodeverkService {
     }
 
     private KodeverkDto hentFraCache(String key) {
-        return redisService.getKodeverk(key);
+        return (KodeverkDto) redisService.get(key, KodeverkDto.class);
     }
 
     private KodeverkDto kodeverkFraConsumerEllerForsoekMedCacheSomFallback(String key, KodeverkDto kodeverk) {
