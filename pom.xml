@@ -92,8 +92,8 @@
         <flyway-core.version>7.3.2</flyway-core.version>
         <flyway-maven-plugin.version>7.3.2</flyway-maven-plugin.version>
         <handlebars.version>4.2.0</handlebars.version>
-        <jackson.version>2.12.0</jackson.version>
-        <filformat.version>1.2020.11.05-09.32-14af05dea965</filformat.version>
+        <jackson.version>2.12.1</jackson.version>
+        <filformat.version>1.2021.01.25-08.49-8dcba36beed0</filformat.version>
         <commons-fileupload.version>1.4</commons-fileupload.version>
         <pdfbox.version>2.0.22</pdfbox.version>
         <jempbox.version>1.8.16</jempbox.version>
