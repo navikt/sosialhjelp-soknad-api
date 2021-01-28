@@ -73,7 +73,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!-- Tjenestespesifikasjoner -->
-        <tjenestespesifikasjon.version>1.2019.09.25-00.21-49b69f0625e0</tjenestespesifikasjon.version>
+        <tjenestespesifikasjon.version>1.2021.01.21-11.34-02f5eb27bb76</tjenestespesifikasjon.version>
 
         <!-- Sosialhjelp-common -->
         <sosialhjelp-common.version>1.4ef74b4</sosialhjelp-common.version>
@@ -81,16 +81,16 @@
         <!-- Nav felles java-bibliotek -->
         <nav-common.version>1.2020.11.16_14.52-3f16e0d8c867</nav-common.version>
 
-        <spring.version>5.2.9.RELEASE</spring.version>
+        <spring.version>5.3.2</spring.version>
         <jetty.version>9.4.35.v20201120</jetty.version>
         <jersey.version>2.33</jersey.version>
         <token-validation.version>1.3.2</token-validation.version>
         <nimbus-jose-jwt.version>8.20.1</nimbus-jose-jwt.version>
-        <cxf.version>3.4.1</cxf.version>
+        <cxf.version>3.4.2</cxf.version>
         <wss4j.version>2.3.0</wss4j.version>
-        <ojdbc.version>19.8.0.0</ojdbc.version>
-        <flyway-core.version>7.2.0</flyway-core.version>
-        <flyway-maven-plugin.version>7.2.0</flyway-maven-plugin.version>
+        <ojdbc.version>19.9.0.0</ojdbc.version>
+        <flyway-core.version>7.3.2</flyway-core.version>
+        <flyway-maven-plugin.version>7.3.2</flyway-maven-plugin.version>
         <handlebars.version>4.2.0</handlebars.version>
         <jackson.version>2.12.0</jackson.version>
         <filformat.version>1.2020.11.05-09.32-14af05dea965</filformat.version>
@@ -110,7 +110,7 @@
         <hikaricp.version>3.4.5</hikaricp.version>
         <ehcache.version>2.10.6</ehcache.version>
         <woodstox-core.version>6.2.3</woodstox-core.version>
-        <joda-time.version>2.10.8</joda-time.version>
+        <joda-time.version>2.10.9</joda-time.version>
         <slf4j.version>1.7.30</slf4j.version>
         <gson.version>2.8.6</gson.version>
         <commons-codec.version>1.15</commons-codec.version>
@@ -136,7 +136,7 @@
 
         <jakarta.activation-api.version>1.2.2</jakarta.activation-api.version>
         <jakarta.annotation-api.version>1.3.5</jakarta.annotation-api.version>
-        <jakarta.inject-api.version>1.0.2</jakarta.inject-api.version>
+        <jakarta.inject-api.version>1.0.3</jakarta.inject-api.version>
         <jakarta.servlet-api.version>4.0.4</jakarta.servlet-api.version>
         <jakarta.validation-api.version>2.0.2</jakarta.validation-api.version>
         <jakarta.websocket-api.version>1.1.2</jakarta.websocket-api.version>
@@ -168,7 +168,7 @@
         <jsoup.version>1.13.1</jsoup.version>
         <oauth2-oidc-sdk.version>7.3</oauth2-oidc-sdk.version>
         <lang-tag.version>1.5</lang-tag.version>
-        <uap-java.version>1.4.4</uap-java.version>
+        <uap-java.version>1.5.0</uap-java.version>
         <emoji-java.version>5.1.1</emoji-java.version>
         <java-support.version>7.5.1</java-support.version>
         <cryptacular.version>1.2.4</cryptacular.version>
@@ -243,7 +243,7 @@
             </dependency>
             <dependency>
                 <groupId>no.nav.tjenestespesifikasjoner</groupId>
-                <artifactId>soeknadsskjemaSosialhjelp-v1-saksoversiktdefinisjon</artifactId>
+                <artifactId>soeknadsskjemasosialhjelp-v1-saksoversiktdefinisjon</artifactId>
                 <version>${tjenestespesifikasjon.version}</version>
             </dependency>
             <dependency>
