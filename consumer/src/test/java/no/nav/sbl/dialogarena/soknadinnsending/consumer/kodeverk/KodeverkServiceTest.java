@@ -60,7 +60,7 @@ public class KodeverkServiceTest {
     @Test
     public void skalHenteKommunenummerForKommunenavn_fraCache() {
         when(redisService.getString(KODEVERK_LAST_POLL_TIME_KEY)).thenReturn(LocalDateTime.now().minusMinutes(1).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
-        when(redisService.getKodeverk(KOMMUNER_CACHE_KEY)).thenReturn(kommuneKodeverk());
+        when(redisService.get(KOMMUNER_CACHE_KEY, KodeverkDto.class)).thenReturn(kommuneKodeverk());
 
         var kommunenummer = kodeverkService.gjettKommunenummer(bergen);
 
@@ -71,7 +71,7 @@ public class KodeverkServiceTest {
     @Test
     public void skalFeileHvisConsumerOgCacheGirNull() {
         when(redisService.getString(KODEVERK_LAST_POLL_TIME_KEY)).thenReturn(LocalDateTime.now().minusMinutes(61).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
-        when(redisService.getKodeverk(KOMMUNER_CACHE_KEY)).thenReturn(null);
+        when(redisService.get(KOMMUNER_CACHE_KEY, KodeverkDto.class)).thenReturn(null);
         when(kodeverkConsumer.hentKommuner()).thenReturn(null);
 
         var kommunenummer = kodeverkService.gjettKommunenummer(oslo);
@@ -82,7 +82,7 @@ public class KodeverkServiceTest {
     @Test
     public void skalFeileHvisTermIkkeFinnes() {
         when(redisService.getString(KODEVERK_LAST_POLL_TIME_KEY)).thenReturn(null);
-        when(redisService.getKodeverk(KOMMUNER_CACHE_KEY)).thenReturn(kommuneKodeverk());
+        when(redisService.get(KOMMUNER_CACHE_KEY, KodeverkDto.class)).thenReturn(kommuneKodeverk());
 
         var kommunenummer = kodeverkService.gjettKommunenummer("ukjentKommunenavn");
 
@@ -114,7 +114,7 @@ public class KodeverkServiceTest {
     @Test
     public void skalFeileHvisKodeverdiIkkeFinnes() {
         when(redisService.getString(KODEVERK_LAST_POLL_TIME_KEY)).thenReturn(null);
-        when(redisService.getKodeverk(LANDKODER_CACHE_KEY)).thenReturn(landkoderKodeverk());
+        when(redisService.get(KOMMUNER_CACHE_KEY, KodeverkDto.class)).thenReturn(landkoderKodeverk());
 
         var land = kodeverkService.getLand("ukjentLandkode");
 

@@ -82,7 +82,7 @@ import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 import static no.nav.sbl.dialogarena.redis.CacheConstants.KOMMUNEINFO_CACHE_KEY;
 import static no.nav.sbl.dialogarena.redis.CacheConstants.KOMMUNEINFO_CACHE_SECONDS;
 import static no.nav.sbl.dialogarena.redis.CacheConstants.KOMMUNEINFO_LAST_POLL_TIME_KEY;
-import static no.nav.sbl.dialogarena.redis.RedisService.toKommuneInfoMap;
+import static no.nav.sbl.dialogarena.redis.RedisUtils.toKommuneInfoMap;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils.isTillatMockRessurs;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.util.HeaderConstants.HEADER_INTEGRASJON_ID;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.util.HeaderConstants.HEADER_INTEGRASJON_PASSORD;

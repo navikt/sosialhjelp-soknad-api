@@ -153,10 +153,6 @@
             <groupId>io.lettuce</groupId>
             <artifactId>lettuce-core</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.github.fppt</groupId>
-            <artifactId>jedis-mock</artifactId>
-        </dependency>
         
         <dependency>
             <groupId>ch.qos.logback</groupId>
