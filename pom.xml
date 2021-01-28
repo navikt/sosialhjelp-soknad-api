@@ -126,7 +126,6 @@
         <jaxb-api.version>2.3.1</jaxb-api.version>
         <jaxb-runtime.version>2.3.3</jaxb-runtime.version>
         <lettuce.version>5.3.5.RELEASE</lettuce.version>
-        <jedis-mock.version>0.1.16</jedis-mock.version>
         <unleash.version>3.3.4</unleash.version>
         <resilience4j.version>1.6.1</resilience4j.version>
 
@@ -644,11 +643,6 @@
                 <groupId>io.lettuce</groupId>
                 <artifactId>lettuce-core</artifactId>
                 <version>${lettuce.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.github.fppt</groupId>
-                <artifactId>jedis-mock</artifactId>
-                <version>${jedis-mock.version}</version>
             </dependency>
 
             <!-- resilience4j -->

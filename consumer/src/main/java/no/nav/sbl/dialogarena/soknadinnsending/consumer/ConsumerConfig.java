@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer;
 
+import no.nav.sbl.dialogarena.redis.NoRedisConfig;
 import no.nav.sbl.dialogarena.redis.RedisConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.adresse.AdresseSokService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.dkif.DkifService;
@@ -38,6 +39,8 @@ import org.springframework.context.annotation.Profile;
 @Configuration
 @EnableCaching
 @Import({
+        RedisConfig.class,
+        NoRedisConfig.class,
         PdlService.class,
         PdlPersonMapper.class,
         PersonService.class,
@@ -60,7 +63,6 @@ public class ConsumerConfig {
     @Configuration
     @Profile("!integration")
     @Import({
-            RedisConfig.class,
             PdlRestConfig.class,
             DigisosApiRestConfig.class,
             PersonWSConfig.class,
