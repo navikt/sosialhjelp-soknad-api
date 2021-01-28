@@ -33,7 +33,7 @@ public class RedisServiceTest {
     private RedisStore redisStore;
 
     @InjectMocks
-    private RedisService redisService;
+    private RedisServiceImpl redisService;
 
     @Test
     public void skalHenteFraCache() throws JsonProcessingException {
