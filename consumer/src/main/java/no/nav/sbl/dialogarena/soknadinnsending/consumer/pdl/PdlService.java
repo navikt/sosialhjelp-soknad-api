@@ -4,8 +4,10 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.Barn;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Ektefelle;
 import no.nav.sbl.dialogarena.sendsoknad.domain.NavFodselsnummer;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Person;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.ektefelle.PdlEktefelle;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.person.PdlPerson;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.PdlEktefelle;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.PdlPerson;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.PdlPersonMapper;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.PdlPersonMapperHelper;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
@@ -14,8 +16,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import static no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.SivilstandDto.SivilstandType.GIFT;
-import static no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.SivilstandDto.SivilstandType.PARTNER;
+import static no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.dto.SivilstandDto.SivilstandType.GIFT;
+import static no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.dto.SivilstandDto.SivilstandType.PARTNER;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Component
@@ -46,6 +48,10 @@ public class PdlService {
 
     public List<Barn> hentBarnForPerson(String ident) {
         PdlPerson pdlPerson = pdlConsumer.hentPerson(ident);
+
+        if (pdlPerson == null || pdlPerson.getFamilierelasjoner() == null) {
+            return null;
+        }
 
         List<Barn> alleBarn = pdlPerson.getFamilierelasjoner().stream()
                 .filter(familierelasjonDto -> familierelasjonDto.getRelatertPersonsRolle().equalsIgnoreCase(BARN))
