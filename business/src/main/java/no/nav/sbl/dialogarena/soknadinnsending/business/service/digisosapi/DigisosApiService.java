@@ -219,7 +219,7 @@ public class DigisosApiService {
                 soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker().getNavEnhetsnavn());
         String digisosId = sendOgKrypter(soknadJson, tilleggsinformasjonJson, vedleggJson, filOpplastinger, kommunenummer, soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker().getNavEnhetsnavn(), behandlingsId, token);
 
-        soknadMetricsService.sendtSoknad(soknadUnderArbeid.erEttersendelse());
+        soknadMetricsService.sendSoknad(soknadUnderArbeid.erEttersendelse());
         if (!soknadUnderArbeid.erEttersendelse() && !isTillatMockRessurs()) {
             logAlderTilKibana(SubjectHandler.getUserId());
         }
