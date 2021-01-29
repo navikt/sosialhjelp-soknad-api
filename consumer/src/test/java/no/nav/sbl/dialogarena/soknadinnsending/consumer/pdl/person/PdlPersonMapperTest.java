@@ -1,10 +1,11 @@
-package no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl;
+package no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.Barn;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Ektefelle;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Person;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.kodeverk.KodeverkService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.PdlBarn;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.PdlPersonMapper;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.dto.AdressebeskyttelseDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.dto.BostedsadresseDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.dto.EndringDto;
@@ -37,9 +38,9 @@ import java.util.List;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static no.nav.common.utils.CollectionUtils.listOf;
-import static no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.PdlPersonMapper.DOED;
-import static no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.PdlPersonMapper.KODE_6;
-import static no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.PdlPersonMapper.KODE_7;
+import static no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.PdlPersonMapper.DOED;
+import static no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.PdlPersonMapper.KODE_6;
+import static no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.PdlPersonMapper.KODE_7;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.emptyString;
 import static org.hamcrest.Matchers.hasSize;

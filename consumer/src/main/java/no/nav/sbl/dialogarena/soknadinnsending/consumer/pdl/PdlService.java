@@ -6,6 +6,8 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.NavFodselsnummer;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Person;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.PdlEktefelle;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.PdlPerson;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.PdlPersonMapper;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.PdlPersonMapperHelper;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
@@ -46,6 +48,10 @@ public class PdlService {
 
     public List<Barn> hentBarnForPerson(String ident) {
         PdlPerson pdlPerson = pdlConsumer.hentPerson(ident);
+
+        if (pdlPerson == null || pdlPerson.getFamilierelasjoner() == null) {
+            return null;
+        }
 
         List<Barn> alleBarn = pdlPerson.getFamilierelasjoner().stream()
                 .filter(familierelasjonDto -> familierelasjonDto.getRelatertPersonsRolle().equalsIgnoreCase(BARN))

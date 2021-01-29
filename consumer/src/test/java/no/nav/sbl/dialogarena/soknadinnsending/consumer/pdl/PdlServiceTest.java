@@ -4,6 +4,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.Barn;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Ektefelle;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Person;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.PdlBarn;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.PdlPersonMapper;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.dto.EndringDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.dto.FamilierelasjonDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.dto.MetadataDto;

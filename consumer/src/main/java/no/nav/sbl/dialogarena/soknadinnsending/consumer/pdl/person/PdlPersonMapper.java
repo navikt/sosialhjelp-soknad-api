@@ -1,4 +1,4 @@
-package no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl;
+package no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person;
 
 import com.google.common.collect.ImmutableMap;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Barn;
@@ -10,7 +10,6 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.Oppholdsadresse;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Person;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Vegadresse;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.kodeverk.KodeverkService;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.PdlBarn;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.dto.AdressebeskyttelseDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.dto.BostedsadresseDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.dto.FoedselDto;
@@ -22,8 +21,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.dto.Oppholdsa
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.dto.SivilstandDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.dto.StatsborgerskapDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.dto.VegadresseDto;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.PdlEktefelle;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.PdlPerson;
 import org.joda.time.LocalDate;
 import org.joda.time.Years;
 import org.springframework.stereotype.Component;

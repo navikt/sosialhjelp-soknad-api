@@ -1,4 +1,4 @@
-package no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl;
+package no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person;
 
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.dto.EndringDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.dto.FolkeregistermetadataDto;
