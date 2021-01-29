@@ -149,7 +149,7 @@
         <!-- Versjoner for test dependencies -->
         <hamcrest.version>2.2</hamcrest.version>
         <junit.version>4.13.1</junit.version>
-        <mockito.version>3.6.28</mockito.version>
+        <mockito.version>3.7.0</mockito.version>
         <assertj.version>3.18.1</assertj.version>
         <reflections.version>0.9.12</reflections.version>
         <digipost.digg.version>0.13</digipost.digg.version>
