@@ -49,7 +49,9 @@ public class SoknadMetricsService {
     private void reportVedleggskrav(boolean isEttersendelse, int totaltAntall, int antallInnsendt, int anntallLevertTidligere, int antallIkkeLevert) {
         String sendtype = (isEttersendelse ? "ettersendelse" : "soknad");
 
-        Event event = MetricsFactory.createEvent("digisos.vedleggskrav." + sendtype);
+        Event event = MetricsFactory.createEvent("digisos.vedleggskrav");
+        event.addTagToReport("sendetype", sendtype);
+
         event.addFieldToReport("antall.totalt", totaltAntall);
         event.addFieldToReport("antall.innsendt", antallInnsendt);
         event.addFieldToReport("antall.levertTidligere", anntallLevertTidligere);
