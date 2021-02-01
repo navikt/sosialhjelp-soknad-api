@@ -24,6 +24,7 @@ import org.mockito.invocation.InvocationOnMock;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -131,7 +132,7 @@ public class PdlConsumerMock {
                 singletonList(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT)),
                 singletonList(pdlMockBarn.harSammeBostedsadresse ? defaultBostedsadresse() : annenBostedsadresse()),
                 singletonList(new FolkeregisterpersonstatusDto(pdlMockBarn.isErDoed() ? "doed" : "bosatt")),
-                singletonList(new FoedselDto(LocalDate.of(LocalDate.now().getYear() - 10, 1, 1))),
+                singletonList(findFoedselsdatoFromIdent(pdlMockBarn.getIdent())),
                 singletonList(new NavnDto(
                         pdlMockBarn.getFornavn(),
                         pdlMockBarn.getMellomnavn(),
@@ -139,6 +140,14 @@ public class PdlConsumerMock {
                         defaultMetadata(),
                         defaultFolkeregisterMetadata()))
         );
+    }
+
+    private static FoedselDto findFoedselsdatoFromIdent(String ident) {
+        try {
+            return new FoedselDto(LocalDate.parse(ident.substring(0,6), DateTimeFormatter.ofPattern("ddMMyy")));
+        } catch (Exception e) {
+            return new FoedselDto(LocalDate.of(LocalDate.now().getYear() - 10, 1, 1));
+        }
     }
 
     private static BostedsadresseDto defaultBostedsadresse() {
