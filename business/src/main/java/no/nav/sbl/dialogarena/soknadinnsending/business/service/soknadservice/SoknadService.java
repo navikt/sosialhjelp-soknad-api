@@ -109,7 +109,7 @@ public class SoknadService {
         henvendelseTimer.stop();
         henvendelseTimer.report();
 
-        soknadMetricsService.startSoknad(false);
+        soknadMetricsService.reportStartSoknad(false);
 
         Timer oprettIDbTimer = createDebugTimer("oprettIDb", mainUid);
 
@@ -149,7 +149,7 @@ public class SoknadService {
         oppgaveHandterer.leggTilOppgave(behandlingsId, eier);
         innsendingService.opprettSendtSoknad(soknadUnderArbeid);
 
-        reportMetrics(eier, soknadUnderArbeid, vedlegg.vedleggListe);
+        soknadMetricsService.reportSendSoknadMetrics(eier, soknadUnderArbeid, vedlegg.vedleggListe);
     }
 
     private void validateEttersendelseHasVedlegg(SoknadUnderArbeid soknadUnderArbeid) {
@@ -196,7 +196,7 @@ public class SoknadService {
         if (soknadUnderArbeidOptional.isPresent()) {
             soknadUnderArbeidRepository.slettSoknad(soknadUnderArbeidOptional.get(), eier);
             henvendelseService.avbrytSoknad(soknadUnderArbeidOptional.get().getBehandlingsId(), false);
-            soknadMetricsService.avbruttSoknad(soknadUnderArbeidOptional.get().erEttersendelse());
+            soknadMetricsService.reportAvbruttSoknad(soknadUnderArbeidOptional.get().erEttersendelse());
         }
     }
 
@@ -301,45 +301,4 @@ public class SoknadService {
         return m;
     }
 
-    private void reportMetrics(String eier, SoknadUnderArbeid soknadUnderArbeid, List<SoknadMetadata.VedleggMetadata> vedleggList) {
-        soknadMetricsService.sendSoknad(soknadUnderArbeid.erEttersendelse());
-        reportVedleggskrav(soknadUnderArbeid, vedleggList);
-        reportAlder(eier, soknadUnderArbeid);
-    }
-
-    private void reportVedleggskrav(SoknadUnderArbeid soknadUnderArbeid, List<SoknadMetadata.VedleggMetadata> vedleggList) {
-        int antallInnsendt = 0;
-        int anntallLevertTidligere = 0;
-        int antallIkkeLevert = 0;
-
-        for (SoknadMetadata.VedleggMetadata vedlegg : vedleggList) {
-            switch (vedlegg.status) {
-                case LastetOpp:
-                    antallInnsendt++;
-                case VedleggAlleredeSendt:
-                    anntallLevertTidligere++;
-                case VedleggKreves:
-                    antallIkkeLevert++;
-            }
-        }
-
-        soknadMetricsService.reportSoknadVedlegg(
-                soknadUnderArbeid.erEttersendelse(),
-                vedleggList.size(),
-                antallInnsendt,
-                anntallLevertTidligere,
-                antallIkkeLevert
-        );
-    }
-
-    private static void reportAlder(String eier, SoknadUnderArbeid soknadUnderArbeid) {
-        if (!soknadUnderArbeid.erEttersendelse() && !MockUtils.isTillatMockRessurs()) {
-            int age = new PersonAlder(eier).getAlder();
-            if (age > 0 && age < 30) {
-                logger.info("DIGISOS-1164: UNDER30 - Soknad sent av bruker med alder: " + age);
-            } else {
-                logger.info("DIGISOS-1164: OVER30 - Soknad sent av bruker med alder:" + age);
-            }
-        }
-    }
 }
