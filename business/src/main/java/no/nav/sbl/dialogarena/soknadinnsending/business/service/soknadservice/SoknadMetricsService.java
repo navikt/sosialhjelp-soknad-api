@@ -70,10 +70,13 @@ public class SoknadMetricsService {
             switch (vedlegg.status) {
                 case LastetOpp:
                     antallInnsendt++;
+                    break;
                 case VedleggAlleredeSendt:
                     anntallLevertTidligere++;
+                    break;
                 case VedleggKreves:
                     antallIkkeLevert++;
+                    break;
             }
         }
 
