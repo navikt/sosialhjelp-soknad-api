@@ -33,7 +33,7 @@ public class NorgService {
 
 
     public List<NavEnhet> getEnheterForKommunenummer(String kommunenummer) {
-        return getNavenhetForKommunenummerFraCahceEllerLokalListe(kommunenummer)
+        return getNavenhetForKommunenummerFraCacheEllerLokalListe(kommunenummer)
                 .stream()
                 .map(this::mapToNavEnhet)
                 .distinct()
@@ -82,7 +82,7 @@ public class NorgService {
         return enhet;
     }
 
-    private List<NavenhetFraLokalListe> getNavenhetForKommunenummerFraCahceEllerLokalListe(String kommunenummer) {
+    private List<NavenhetFraLokalListe> getNavenhetForKommunenummerFraCacheEllerLokalListe(String kommunenummer) {
         if (cachedNavenheterFraLokalListe == null) {
             NavenheterFraLokalListe allNavenheterFromPath = getAllNavenheterFromPath();
             if (allNavenheterFromPath == null) {
