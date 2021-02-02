@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.retry;
 
+import io.github.resilience4j.core.IntervalFunction;
 import io.github.resilience4j.retry.Retry;
 import io.github.resilience4j.retry.RetryConfig;
 import io.github.resilience4j.retry.RetryRegistry;
@@ -12,7 +13,8 @@ import java.time.Duration;
 public final class RetryUtils {
 
     public static final int DEFAULT_MAX_ATTEMPTS = 5;
-    public static final long DEFAULT_RETRY_WAIT_MILLIS = 100;
+    public static final long DEFAULT_INITIAL_WAIT_INTERVAL_MILLIS = 100;
+    public static final double DEFAULT_EXPONENTIAL_BACKOFF_MULTIPLIER = 2.0;
 
     // For å hindre instansiering
     private RetryUtils() {
@@ -21,14 +23,16 @@ public final class RetryUtils {
     public static Retry retryConfig(
             String baseUrl,
             int maxAttempts,
-            long retryWaitMillis,
+            long initialWaitIntervalMillis,
+            double exponentialBackoffMultiplier,
             Class<? extends Throwable>[] retryableExceptions,
             Logger log
     ) {
         var retryConfig = RetryConfig.custom()
                 .retryExceptions(retryableExceptions)
                 .maxAttempts(maxAttempts)
-                .waitDuration(Duration.ofMillis(retryWaitMillis))
+                .waitDuration(Duration.ofMillis(initialWaitIntervalMillis))
+                .intervalFunction(IntervalFunction.ofExponentialBackoff(initialWaitIntervalMillis, exponentialBackoffMultiplier))
                 .build();
         var retry = RetryRegistry.of(retryConfig)
                 .retry(baseUrl);
@@ -42,15 +46,17 @@ public final class RetryUtils {
                         event.getLastThrowable().getMessage()))
                 .onSuccess(event -> {
                     if (event.getNumberOfRetryAttempts() > 1) {
-                        log.info("Retry client med baseUrl={}. Forsøk nr {} av {}",
+                        log.info("Retry client med baseUrl={}. Forsøk nr {} av {} -> suksess",
                                 baseUrl,
                                 event.getNumberOfRetryAttempts(),
                                 maxAttempts);
                     }
                 })
-                .onError(event -> log.warn("Maks antall retries nådd ({}). Kunne ikke kalle client med baseUrl={}.",
+                .onError(event -> log.warn("Retry client med baseUrl={}. Maks antall retries nådd ({}). Feil: {} ({})",
                         event.getNumberOfRetryAttempts(),
                         baseUrl,
+                        event.getLastThrowable().getClass().getSimpleName(),
+                        event.getLastThrowable().getMessage(),
                         event.getLastThrowable()));
         return retry;
     }
