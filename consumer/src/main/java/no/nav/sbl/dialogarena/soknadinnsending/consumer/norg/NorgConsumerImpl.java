@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.norg;
 
+import io.github.resilience4j.retry.Retry;
 import no.nav.sbl.dialogarena.mdc.MDCOperations;
 import no.nav.sbl.dialogarena.sendsoknad.domain.norg.NorgConsumer;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
@@ -7,12 +8,18 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.TjenesteUtilg
 import org.slf4j.Logger;
 
 import javax.ws.rs.NotFoundException;
+import javax.ws.rs.ServerErrorException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 
 import static java.lang.System.getenv;
+import static no.nav.sbl.dialogarena.retry.RetryUtils.DEFAULT_EXPONENTIAL_BACKOFF_MULTIPLIER;
+import static no.nav.sbl.dialogarena.retry.RetryUtils.DEFAULT_INITIAL_WAIT_INTERVAL_MILLIS;
+import static no.nav.sbl.dialogarena.retry.RetryUtils.DEFAULT_MAX_ATTEMPTS;
+import static no.nav.sbl.dialogarena.retry.RetryUtils.retryConfig;
+import static no.nav.sbl.dialogarena.retry.RetryUtils.withRetry;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.util.HeaderConstants.HEADER_CALL_ID;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.util.HeaderConstants.HEADER_CONSUMER_ID;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.util.HeaderConstants.HEADER_NAV_APIKEY;
@@ -24,19 +31,28 @@ public class NorgConsumerImpl implements NorgConsumer {
     private static final Logger logger = getLogger(NorgConsumerImpl.class);
     private static final String SOKNADSOSIALHJELP_SERVER_NORG_2_API_V_1_APIKEY_PASSWORD = "SOKNADSOSIALHJELP_SERVER_NORG2_API_V1_APIKEY_PASSWORD";
 
-    private Client client;
-    private String endpoint;
+    private final Client client;
+    private final String endpoint;
+    private final Retry retry;
 
     public NorgConsumerImpl(Client client, String endpoint) {
         this.client = client;
         this.endpoint = endpoint;
+        this.retry = retryConfig(
+                endpoint,
+                DEFAULT_MAX_ATTEMPTS,
+                DEFAULT_INITIAL_WAIT_INTERVAL_MILLIS,
+                DEFAULT_EXPONENTIAL_BACKOFF_MULTIPLIER,
+                new Class[]{ServerErrorException.class},
+                logger);
     }
 
     @Override
     public RsNorgEnhet getEnhetForGeografiskTilknytning(String geografiskTilknytning) {
 
         final Invocation.Builder request = lagRequest(endpoint + "enhet/navkontor/" + geografiskTilknytning);
-        try (Response response = request.get()) {
+        try {
+            var response = withRetry(retry, request::get);
             if (response.getStatus() != 200) {
                 logger.warn("Feil statuskode ved kall mot NORG/gt: " + response.getStatus() + ", respons: " + response.readEntity(String.class));
                 return null;
