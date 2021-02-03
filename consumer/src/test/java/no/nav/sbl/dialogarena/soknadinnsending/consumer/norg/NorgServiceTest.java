@@ -1,9 +1,11 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.norg;
 
+import no.nav.sbl.dialogarena.redis.RedisService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.norg.NavEnhet;
 import no.nav.sbl.dialogarena.sendsoknad.domain.norg.NavenhetFraLokalListe;
 import no.nav.sbl.dialogarena.sendsoknad.domain.norg.NavenheterFraLokalListe;
 import no.nav.sbl.dialogarena.sendsoknad.domain.norg.NorgConsumer;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.TjenesteUtilgjengeligException;
 import org.junit.After;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -12,6 +14,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import javax.ws.rs.ServerErrorException;
+import javax.ws.rs.ServiceUnavailableException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -26,6 +32,12 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -38,6 +50,8 @@ public class NorgServiceTest {
 
     @Mock
     private NorgConsumer norgConsumer;
+    @Mock
+    private RedisService redisService;
     @InjectMocks
     private NorgService norgService;
 
@@ -282,5 +296,77 @@ public class NorgServiceTest {
         System.out.println(kommunerNavnUlikNavenhetsnavn);
 
         assertThat(allNavenheterFromPath.navenheter.size(), is(356 + 17-1 + 8-1 + 9-1 + 4-1)); //Totalt antall kommuner + ekstra navkontorer i Oslo, Bergen, Stavanger og Trondheim
+    }
+
+    @Test
+    public void skalHenteNavEnhetForGtFraConsumer() {
+        when(norgConsumer.getEnhetForGeografiskTilknytning(GT)).thenReturn(lagRsNorgEnhet());
+
+        NavEnhet navEnhet = norgService.getEnhetForGt(GT);
+
+        assertThat(navEnhet.sosialOrgnr, is(ORGNUMMER_PROD));
+
+        verify(norgConsumer, times(1)).getEnhetForGeografiskTilknytning(GT);
+        verify(redisService, times(1)).getString(anyString());
+        verify(redisService, times(0)).get(anyString(), any());
+    }
+
+    @Test
+    public void skalHenteNavEnhetForGtFraCache() {
+        var mockEnhet = lagRsNorgEnhet();
+        when(redisService.getString(anyString())).thenReturn(LocalDateTime.now().minusMinutes(1).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+        when(redisService.get(anyString(), any())).thenReturn(mockEnhet);
+
+        var navEnhet = norgService.getEnhetForGt(GT);
+
+        assertThat(navEnhet.sosialOrgnr, is(ORGNUMMER_PROD));
+
+        verify(norgConsumer, times(0)).getEnhetForGeografiskTilknytning(GT);
+        verify(redisService, times(1)).getString(anyString());
+        verify(redisService, times(1)).get(anyString(), any());
+    }
+
+    @Test
+    public void skalBrukeCacheSomFallbackDersomConsumerFeilerOgCacheFinnes() {
+        var mockEnhet = lagRsNorgEnhet();
+        when(redisService.getString(anyString())).thenReturn(LocalDateTime.now().minusMinutes(60).minusSeconds(1).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+        when(redisService.get(anyString(), any())).thenReturn(mockEnhet);
+        when(norgConsumer.getEnhetForGeografiskTilknytning(GT)).thenThrow(new TjenesteUtilgjengeligException("norg feiler", new ServiceUnavailableException()));
+
+        var navEnhet = norgService.getEnhetForGt(GT);
+
+        assertThat(navEnhet.sosialOrgnr, is(ORGNUMMER_PROD));
+
+        verify(norgConsumer, times(1)).getEnhetForGeografiskTilknytning(GT);
+        verify(redisService, times(1)).getString(anyString());
+        verify(redisService, times(1)).get(anyString(), any());
+    }
+
+    @Test
+    public void skalKasteFeilHvisConsumerFeilerOgCacheErExpired() {
+        when(redisService.getString(anyString())).thenReturn(LocalDateTime.now().minusMinutes(60).minusSeconds(1).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+        when(redisService.get(anyString(), any())).thenReturn(null);
+        when(norgConsumer.getEnhetForGeografiskTilknytning(GT)).thenThrow(new TjenesteUtilgjengeligException("norg feiler", new ServiceUnavailableException()));
+
+        assertThrows(TjenesteUtilgjengeligException.class, () -> norgService.getEnhetForGt(GT));
+
+        verify(norgConsumer, times(1)).getEnhetForGeografiskTilknytning(GT);
+        verify(redisService, times(1)).getString(anyString());
+        verify(redisService, times(1)).get(anyString(), any());
+    }
+
+    @Test
+    public void skalReturnereNullHvisConsumerReturnererNull() {
+        when(redisService.getString(anyString())).thenReturn(LocalDateTime.now().minusMinutes(60).minusSeconds(1).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+        when(redisService.get(anyString(), any())).thenReturn(null);
+        when(norgConsumer.getEnhetForGeografiskTilknytning(GT)).thenReturn(null);
+
+        var navEnhet = norgService.getEnhetForGt(GT);
+
+        assertNull(navEnhet);
+
+        verify(norgConsumer, times(1)).getEnhetForGeografiskTilknytning(GT);
+        verify(redisService, times(1)).getString(anyString());
+        verify(redisService, times(0)).get(anyString(), any()); // sjekker ikke cache hvis consumer returnerer null (404 not found)
     }
 }
