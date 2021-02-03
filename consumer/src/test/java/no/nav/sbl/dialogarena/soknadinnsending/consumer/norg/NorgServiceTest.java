@@ -358,7 +358,6 @@ public class NorgServiceTest {
     @Test
     public void skalReturnereNullHvisConsumerReturnererNull() {
         when(redisService.getString(anyString())).thenReturn(LocalDateTime.now().minusMinutes(60).minusSeconds(1).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
-        when(redisService.get(anyString(), any())).thenReturn(null);
         when(norgConsumer.getEnhetForGeografiskTilknytning(GT)).thenReturn(null);
 
         var navEnhet = norgService.getEnhetForGt(GT);
