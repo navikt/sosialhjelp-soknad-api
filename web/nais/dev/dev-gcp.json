@@ -10,7 +10,6 @@
   "memoryRequest": "2Gi",
   "vaultEnabled": false,
   "prometheusEnabled": false,
-  "isRedisMocked": true,
   "webProxyEnabled": false,
   "isGcp": true,
   "env": {
@@ -52,6 +51,7 @@
     "START_PERSON_WITHMOCK": "true",
     "START_UTBETALING_WITHMOCK": "true",
     "VIRKSOMHETSSERTIFIKAT_PATH": "/var/run/secrets",
-    "UNLEASH_INSTANCE_ID": "dev-gcp"
+    "UNLEASH_INSTANCE_ID": "dev-gcp",
+    "REDIS_HOST": "sosialhjelp-soknad-api-redis.teamdigisos.svc.cluster.local"
   }
 }

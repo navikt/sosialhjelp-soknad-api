@@ -30,7 +30,6 @@
   "memoryRequest": "2Gi",
   "vaultEnabled": true,
   "prometheusEnabled": true,
-  "isRedisMocked": false,
   "webProxyEnabled": true,
   "isGcp": false,
   "env": {
