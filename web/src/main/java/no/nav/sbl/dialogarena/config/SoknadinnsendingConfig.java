@@ -10,7 +10,11 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.ConsumerConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.BostotteConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig.DigisosApiRestConfig;
 import no.nav.sbl.dialogarena.virusscan.VirusScanConfig;
-import org.springframework.context.annotation.*;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import org.springframework.context.annotation.Import;
 
 @EnableAspectJAutoProxy
 @Configuration

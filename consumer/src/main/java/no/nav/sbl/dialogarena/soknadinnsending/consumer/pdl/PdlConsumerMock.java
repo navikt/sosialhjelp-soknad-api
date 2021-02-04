@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.PdlBarn;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.PdlEktefelle;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.PdlPerson;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.dto.AdressebeskyttelseDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.dto.BostedsadresseDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.dto.EndringDto;
@@ -18,8 +20,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.dto.NavnDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.dto.SivilstandDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.dto.StatsborgerskapDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.dto.VegadresseDto;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.PdlEktefelle;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.PdlPerson;
 import org.mockito.invocation.InvocationOnMock;
 
 import java.time.LocalDate;

@@ -1,8 +1,8 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer;
 
-import no.nav.sbl.dialogarena.mdc.MDCOutHandler;
 import no.nav.sbl.dialogarena.common.cxf.LoggingFeatureUtenBinaryOgUtenSamlTokenLogging;
 import no.nav.sbl.dialogarena.common.cxf.TimeoutFeature;
+import no.nav.sbl.dialogarena.mdc.MDCOutHandler;
 import org.apache.cxf.configuration.jsse.TLSClientParameters;
 import org.apache.cxf.frontend.ClientProxy;
 import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
@@ -19,7 +19,8 @@ import java.util.List;
 import java.util.Map;
 
 import static java.lang.System.getProperty;
-import static no.nav.sbl.dialogarena.sts.utility.STSConfigurationUtility.*;
+import static no.nav.sbl.dialogarena.sts.utility.STSConfigurationUtility.configureStsForOnBehalfOfWithJWT;
+import static no.nav.sbl.dialogarena.sts.utility.STSConfigurationUtility.configureStsForSystemUserInFSS;
 import static org.apache.cxf.frontend.ClientProxy.getClient;
 import static org.apache.cxf.ws.security.SecurityConstants.MUST_UNDERSTAND;
 

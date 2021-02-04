@@ -10,8 +10,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 import static no.nav.sbl.dialogarena.redis.CacheConstants.KOMMUNEINFO_CACHE_KEY;
-import static no.nav.sbl.dialogarena.redis.RedisUtils.toKommuneInfoMap;
 import static no.nav.sbl.dialogarena.redis.RedisUtils.objectMapper;
+import static no.nav.sbl.dialogarena.redis.RedisUtils.toKommuneInfoMap;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Component

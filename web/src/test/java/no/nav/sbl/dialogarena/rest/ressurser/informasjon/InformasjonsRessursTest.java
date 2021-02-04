@@ -1,20 +1,20 @@
 package no.nav.sbl.dialogarena.rest.ressurser.informasjon;
 
-import no.nav.sbl.dialogarena.rest.ressurser.inntekt.BostotteRessurs;
 import no.nav.sosialhjelp.api.fiks.KommuneInfo;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(MockitoJUnitRunner.class)
 public class InformasjonsRessursTest {

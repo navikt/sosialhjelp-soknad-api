@@ -1,10 +1,10 @@
 package no.nav.sbl.dialogarena.virusscan;
 
-import java.net.URI;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+
+import java.net.URI;
 
 @Configuration
 @ComponentScan(basePackageClasses = VirusScanner.class)

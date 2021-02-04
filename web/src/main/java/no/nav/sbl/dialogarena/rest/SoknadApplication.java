@@ -2,8 +2,8 @@ package no.nav.sbl.dialogarena.rest;
 
 import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
 import no.nav.sbl.dialogarena.mdc.MdcFilter;
-import no.nav.sbl.dialogarena.oidc.OidcResourceFilteringFeature;
 import no.nav.sbl.dialogarena.mock.TjenesteMockRessurs;
+import no.nav.sbl.dialogarena.oidc.OidcResourceFilteringFeature;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.slf4j.Logger;

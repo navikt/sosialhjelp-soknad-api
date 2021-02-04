@@ -15,7 +15,6 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
-
 import java.time.LocalDateTime;
 
 import static java.lang.System.getenv;

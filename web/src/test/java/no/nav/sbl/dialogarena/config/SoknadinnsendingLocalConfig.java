@@ -1,10 +1,9 @@
 package no.nav.sbl.dialogarena.config;
 
+import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import org.mockito.Mockito;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 
 @Configuration
 public class SoknadinnsendingLocalConfig {

@@ -39,8 +39,8 @@ import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
 import static no.nav.sbl.dialogarena.retry.RetryUtils.DEFAULT_EXPONENTIAL_BACKOFF_MULTIPLIER;
-import static no.nav.sbl.dialogarena.retry.RetryUtils.DEFAULT_MAX_ATTEMPTS;
 import static no.nav.sbl.dialogarena.retry.RetryUtils.DEFAULT_INITIAL_WAIT_INTERVAL_MILLIS;
+import static no.nav.sbl.dialogarena.retry.RetryUtils.DEFAULT_MAX_ATTEMPTS;
 import static no.nav.sbl.dialogarena.retry.RetryUtils.retryConfig;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.util.HeaderConstants.BEARER;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.util.HeaderConstants.HEADER_CALL_ID;

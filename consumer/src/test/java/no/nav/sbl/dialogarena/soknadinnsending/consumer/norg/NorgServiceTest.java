@@ -14,7 +14,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import javax.ws.rs.ServerErrorException;
 import javax.ws.rs.ServiceUnavailableException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;

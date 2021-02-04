@@ -2,7 +2,14 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer.utbetaling;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.utbetaling.Utbetaling;
 import no.nav.tjeneste.virksomhet.utbetaling.v1.UtbetalingV1;
-import no.nav.tjeneste.virksomhet.utbetaling.v1.informasjon.*;
+import no.nav.tjeneste.virksomhet.utbetaling.v1.informasjon.WSBankkonto;
+import no.nav.tjeneste.virksomhet.utbetaling.v1.informasjon.WSOrganisasjon;
+import no.nav.tjeneste.virksomhet.utbetaling.v1.informasjon.WSPeriode;
+import no.nav.tjeneste.virksomhet.utbetaling.v1.informasjon.WSPerson;
+import no.nav.tjeneste.virksomhet.utbetaling.v1.informasjon.WSUtbetaling;
+import no.nav.tjeneste.virksomhet.utbetaling.v1.informasjon.WSYtelse;
+import no.nav.tjeneste.virksomhet.utbetaling.v1.informasjon.WSYtelseskomponent;
+import no.nav.tjeneste.virksomhet.utbetaling.v1.informasjon.WSYtelsestyper;
 import no.nav.tjeneste.virksomhet.utbetaling.v1.meldinger.WSHentUtbetalingsinformasjonResponse;
 import org.junit.Before;
 import org.junit.Test;
@@ -17,8 +24,8 @@ import java.util.List;
 
 import static no.nav.sbl.dialogarena.sendsoknad.mockmodul.utbetaling.UtbetalMock.dato;
 import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.core.Is.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
 
 @RunWith(MockitoJUnitRunner.class)
 public class UtbetalingServiceTest {

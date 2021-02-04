@@ -5,7 +5,12 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata.VedleggMetadataListe;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.EttersendingService;
 import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
-import no.nav.sbl.soknadsosialhjelp.tjeneste.saksoversikt.*;
+import no.nav.sbl.soknadsosialhjelp.tjeneste.saksoversikt.EttersendingsSoknad;
+import no.nav.sbl.soknadsosialhjelp.tjeneste.saksoversikt.Hoveddokument;
+import no.nav.sbl.soknadsosialhjelp.tjeneste.saksoversikt.InnsendtSoknad;
+import no.nav.sbl.soknadsosialhjelp.tjeneste.saksoversikt.PabegyntSoknad;
+import no.nav.sbl.soknadsosialhjelp.tjeneste.saksoversikt.Part;
+import no.nav.sbl.soknadsosialhjelp.tjeneste.saksoversikt.Vedlegg;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 

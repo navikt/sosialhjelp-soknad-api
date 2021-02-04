@@ -18,7 +18,6 @@ import java.util.Map;
 import static java.util.Collections.singletonList;
 import static no.nav.sbl.dialogarena.redis.CacheConstants.KODEVERK_LAST_POLL_TIME_KEY;
 import static no.nav.sbl.dialogarena.redis.CacheConstants.KOMMUNER_CACHE_KEY;
-import static no.nav.sbl.dialogarena.redis.CacheConstants.LANDKODER_CACHE_KEY;
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.kodeverk.dto.BetydningDto.SPRAAKKODE_NB;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;

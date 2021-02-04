@@ -3,7 +3,12 @@ package no.nav.sbl.dialogarena.soknadsosialhjelp.message;
 import org.slf4j.Logger;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Properties;
 
 import static org.slf4j.LoggerFactory.getLogger;
 

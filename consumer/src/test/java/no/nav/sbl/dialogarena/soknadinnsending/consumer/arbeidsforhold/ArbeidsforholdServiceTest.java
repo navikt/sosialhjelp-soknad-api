@@ -1,7 +1,12 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeidsforhold;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.Arbeidsforhold;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeidsforhold.dto.*;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeidsforhold.dto.AnsettelsesperiodeDto;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeidsforhold.dto.ArbeidsavtaleDto;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeidsforhold.dto.ArbeidsforholdDto;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeidsforhold.dto.OrganisasjonDto;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeidsforhold.dto.PeriodeDto;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeidsforhold.dto.PersonDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.organisasjon.OrganisasjonService;
 import org.junit.Before;
 import org.junit.Test;

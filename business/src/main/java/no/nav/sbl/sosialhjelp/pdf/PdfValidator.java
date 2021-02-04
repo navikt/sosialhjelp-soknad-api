@@ -1,9 +1,5 @@
 package no.nav.sbl.sosialhjelp.pdf;
 
-import java.io.ByteArrayInputStream;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.verapdf.core.EncryptedPdfException;
 import org.verapdf.core.ModelParsingException;
 import org.verapdf.core.ValidationException;
@@ -14,6 +10,8 @@ import org.verapdf.pdfa.VeraGreenfieldFoundryProvider;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
 import org.verapdf.pdfa.results.TestAssertion;
 import org.verapdf.pdfa.results.ValidationResult;
+
+import java.io.ByteArrayInputStream;
 
 public final class PdfValidator {
     

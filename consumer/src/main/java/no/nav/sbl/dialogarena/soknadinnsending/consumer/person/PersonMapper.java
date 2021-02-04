@@ -4,7 +4,11 @@ import com.google.common.collect.ImmutableMap;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Barn;
 import no.nav.sbl.dialogarena.sendsoknad.domain.Ektefelle;
 import no.nav.sbl.dialogarena.sendsoknad.domain.NavFodselsnummer;
-import no.nav.tjeneste.virksomhet.person.v1.informasjon.*;
+import no.nav.tjeneste.virksomhet.person.v1.informasjon.Familierelasjon;
+import no.nav.tjeneste.virksomhet.person.v1.informasjon.Familierelasjoner;
+import no.nav.tjeneste.virksomhet.person.v1.informasjon.Person;
+import no.nav.tjeneste.virksomhet.person.v1.informasjon.Personstatus;
+import no.nav.tjeneste.virksomhet.person.v1.informasjon.Statsborgerskap;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 

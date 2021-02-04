@@ -5,7 +5,7 @@ import org.junit.Test;
 
 import static no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler.getSubjectHandlerService;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler.setSubjectHandlerService;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class SubjectHandlerTest {
 

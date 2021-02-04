@@ -1,12 +1,12 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer;
 
-import static org.slf4j.LoggerFactory.getLogger;
-
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.adresse.AdresseSokConsumerImpl;
+
+import static org.slf4j.LoggerFactory.getLogger;
 
 public final class LoggingTestUtils {
 

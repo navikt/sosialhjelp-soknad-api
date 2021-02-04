@@ -6,7 +6,11 @@ import no.nav.common.auth.Subject;
 import no.nav.common.auth.SubjectHandler;
 import org.slf4j.Logger;
 
-import javax.servlet.*;
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 

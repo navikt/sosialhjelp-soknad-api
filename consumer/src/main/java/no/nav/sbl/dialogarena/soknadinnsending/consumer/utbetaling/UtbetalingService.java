@@ -2,7 +2,14 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer.utbetaling;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.utbetaling.Utbetaling;
 import no.nav.tjeneste.virksomhet.utbetaling.v1.UtbetalingV1;
-import no.nav.tjeneste.virksomhet.utbetaling.v1.informasjon.*;
+import no.nav.tjeneste.virksomhet.utbetaling.v1.informasjon.WSAktoer;
+import no.nav.tjeneste.virksomhet.utbetaling.v1.informasjon.WSForespurtPeriode;
+import no.nav.tjeneste.virksomhet.utbetaling.v1.informasjon.WSIdent;
+import no.nav.tjeneste.virksomhet.utbetaling.v1.informasjon.WSIdentroller;
+import no.nav.tjeneste.virksomhet.utbetaling.v1.informasjon.WSIdenttyper;
+import no.nav.tjeneste.virksomhet.utbetaling.v1.informasjon.WSPeriode;
+import no.nav.tjeneste.virksomhet.utbetaling.v1.informasjon.WSUtbetaling;
+import no.nav.tjeneste.virksomhet.utbetaling.v1.informasjon.WSYtelse;
 import no.nav.tjeneste.virksomhet.utbetaling.v1.meldinger.WSHentUtbetalingsinformasjonRequest;
 import no.nav.tjeneste.virksomhet.utbetaling.v1.meldinger.WSHentUtbetalingsinformasjonResponse;
 import org.joda.time.DateTime;

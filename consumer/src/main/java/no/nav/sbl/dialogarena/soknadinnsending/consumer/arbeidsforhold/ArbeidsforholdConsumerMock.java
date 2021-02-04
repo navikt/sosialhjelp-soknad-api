@@ -5,7 +5,12 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeidsforhold.dto.*;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeidsforhold.dto.AnsettelsesperiodeDto;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeidsforhold.dto.ArbeidsavtaleDto;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeidsforhold.dto.ArbeidsforholdDto;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeidsforhold.dto.OrganisasjonDto;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeidsforhold.dto.PeriodeDto;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeidsforhold.dto.PersonDto;
 import org.mockito.invocation.InvocationOnMock;
 
 import java.io.IOException;

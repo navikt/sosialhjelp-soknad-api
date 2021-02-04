@@ -1,12 +1,20 @@
 package no.nav.sbl.dialogarena.rest.ressurser.personalia;
 
-import no.nav.sbl.dialogarena.rest.ressurser.personalia.AdresseRessurs.*;
+import no.nav.sbl.dialogarena.rest.ressurser.personalia.AdresseRessurs.AdresseFrontend;
+import no.nav.sbl.dialogarena.rest.ressurser.personalia.AdresseRessurs.AdresserFrontend;
+import no.nav.sbl.dialogarena.rest.ressurser.personalia.AdresseRessurs.GateadresseFrontend;
+import no.nav.sbl.dialogarena.rest.ressurser.personalia.AdresseRessurs.MatrikkeladresseFrontend;
+import no.nav.sbl.dialogarena.rest.ressurser.personalia.AdresseRessurs.UstrukturertAdresseFrontend;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.StaticSubjectHandlerService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.AdresseSystemdata;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
-import no.nav.sbl.soknadsosialhjelp.soknad.adresse.*;
+import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse;
+import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresseValg;
+import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonGateAdresse;
+import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonMatrikkelAdresse;
+import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonUstrukturertAdresse;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
@@ -27,7 +35,12 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadser
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AdresseRessursTest {

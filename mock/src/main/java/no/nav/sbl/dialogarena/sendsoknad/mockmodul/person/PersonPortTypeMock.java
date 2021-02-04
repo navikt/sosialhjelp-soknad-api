@@ -1,6 +1,6 @@
 package no.nav.sbl.dialogarena.sendsoknad.mockmodul.person;
 
-import no.nav.tjeneste.virksomhet.person.v1.*;
+import no.nav.tjeneste.virksomhet.person.v1.PersonPortType;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Person;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonRequest;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonResponse;

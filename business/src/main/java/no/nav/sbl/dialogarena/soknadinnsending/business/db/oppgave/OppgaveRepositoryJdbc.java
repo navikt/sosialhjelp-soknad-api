@@ -15,8 +15,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import static no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.Oppgave.Status.*;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.db.SQLUtils.*;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.Oppgave.Status.FEILET;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.Oppgave.Status.KLAR;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.Oppgave.Status.UNDER_ARBEID;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.db.SQLUtils.limit;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.db.SQLUtils.selectNextSequenceValue;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.db.SQLUtils.tidTilTimestamp;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.db.SQLUtils.timestampTilTid;
 
 @Component
 @Transactional
