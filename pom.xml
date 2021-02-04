@@ -125,7 +125,7 @@
         <aspectjweaver.version>1.9.6</aspectjweaver.version>
         <jaxb-api.version>2.3.1</jaxb-api.version>
         <jaxb-runtime.version>2.3.3</jaxb-runtime.version>
-        <lettuce.version>5.3.5.RELEASE</lettuce.version>
+        <lettuce.version>5.3.6.RELEASE</lettuce.version>
         <unleash.version>3.3.4</unleash.version>
         <resilience4j.version>1.6.1</resilience4j.version>
 
@@ -143,7 +143,7 @@
         <jakarta.xml.version>2.3.3</jakarta.xml.version>
         <jakarta.xml.soap-api.version>1.4.2</jakarta.xml.soap-api.version>
 
-        <kryptering.version>1.0.10</kryptering.version>
+        <kryptering.version>1.0.11</kryptering.version>
         <streaming-klient.version>1.0.12</streaming-klient.version>
 
         <!-- Versjoner for test dependencies -->
