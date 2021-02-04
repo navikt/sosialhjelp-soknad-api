@@ -20,11 +20,15 @@ spec:
     requests:
       cpu: 100m
       memory: 100Mi
+  accessPolicy: # for GCP
+    outbound:
+      rules:
+        - application: sosialhjelp-soknad-api-redis
   liveness:
     path: /health
   env:
     - name: REDIS_ADDR
-      value: sosialhjelp-soknad-api-redis.teamdigisos.svc.nais.local:6379
+      value: sosialhjelp-soknad-api-redis:6379
     - name: REDIS_EXPORTER_LOG_FORMAT
       value: json
   envFrom:

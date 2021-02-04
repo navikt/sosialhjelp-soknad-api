@@ -18,7 +18,13 @@ spec:
     requests:
       cpu: 100m
       memory: 128Mi
+  accessPolicy: # for GCP
+    inbound:
+      rules:
+        - application: sosialhjelp-soknad-api
+        - application: sosialhjelp-soknad-api-redisexporter
   service:
     port: 6379
+    protocol: redis
   envFrom:
     - secret: redis-password-soknad-api
