@@ -12,6 +12,7 @@
   "prometheusEnabled": false,
   "webProxyEnabled": false,
   "isGcp": true,
+  "isLabsGcp": false,
   "env": {
     "MAIN_CLASS": "no.nav.sbl.dialogarena.mock.MockAltSoknadsosialhjelpServer",
     "dockerWithDefaultMockActivated": "false",

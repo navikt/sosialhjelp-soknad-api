@@ -12,6 +12,7 @@
   "prometheusEnabled": false,
   "webProxyEnabled": false,
   "isGcp": true,
+  "isLabsGcp": true,
   "env": {
     "MAIN_CLASS": "no.nav.sbl.dialogarena.mock.MockSoknadsosialhjelpServer",
     "dockerWithDefaultMockActivated": "true",
@@ -55,7 +56,6 @@
     "TILLATMOCK": "true",
     "START_NORG_WITHMOCK": "true",
     "VIRKSOMHETSSERTIFIKAT_PATH": "/var/run/secrets",
-    "UNLEASH_INSTANCE_ID": "labs-gcp",
-    "REDIS_HOST": "sosialhjelp-soknad-api-redis.teamdigisos.svc.cluster.local"
+    "UNLEASH_INSTANCE_ID": "labs-gcp"
   }
 }
