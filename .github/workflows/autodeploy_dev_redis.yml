@@ -1,4 +1,4 @@
-name: Auto-deploy redis dev-sbs
+name: Auto-deploy redis dev
 on:
   push: # Deploys automatically to dev-sbs, dev-gcp and labs-gcp if there is a change in any redis files.
     paths:
