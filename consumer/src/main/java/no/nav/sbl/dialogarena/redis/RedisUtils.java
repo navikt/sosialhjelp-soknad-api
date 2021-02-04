@@ -22,7 +22,7 @@ public final class RedisUtils {
     }
 
     private static final Logger log = getLogger(RedisUtils.class);
-    static final ObjectMapper objectMapper = JsonSosialhjelpObjectMapper.createObjectMapper()
+    public static final ObjectMapper objectMapper = JsonSosialhjelpObjectMapper.createObjectMapper()
             .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
             .registerModule(new KotlinModule())
             .registerModule(new JavaTimeModule());
