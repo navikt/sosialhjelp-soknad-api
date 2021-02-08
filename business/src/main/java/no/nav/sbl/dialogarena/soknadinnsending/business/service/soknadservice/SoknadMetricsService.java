@@ -46,7 +46,7 @@ public class SoknadMetricsService {
         event.report();
     }
 
-    private void reportVedleggskrav(boolean isEttersendelse, int totaltAntall, int antallInnsendt, int anntallLevertTidligere, int antallIkkeLevert) {
+    private void reportVedleggskrav(boolean isEttersendelse, int totaltAntall, int antallInnsendt, int antallLevertTidligere, int antallIkkeLevert) {
         String sendtype = (isEttersendelse ? "ettersendelse" : "soknad");
 
         Event event = MetricsFactory.createEvent("digisos.vedleggskrav");
@@ -54,18 +54,18 @@ public class SoknadMetricsService {
 
         event.addFieldToReport("antall.totalt", totaltAntall);
         event.addFieldToReport("antall.innsendt", antallInnsendt);
-        event.addFieldToReport("antall.levertTidligere", anntallLevertTidligere);
+        event.addFieldToReport("antall.levertTidligere", antallLevertTidligere);
         event.addFieldToReport("antall.ikkeLevert", antallIkkeLevert);
 
         event.addFieldToReport("prosent.innsendt", getProsent(antallInnsendt, totaltAntall));
-        event.addFieldToReport("prosent.levertTidligere", getProsent(anntallLevertTidligere, totaltAntall));
+        event.addFieldToReport("prosent.levertTidligere", getProsent(antallLevertTidligere, totaltAntall));
         event.addFieldToReport("prosent.ikkeLevert", getProsent(antallIkkeLevert, totaltAntall));
         event.report();
     }
 
     private void reportVedleggskrav(SoknadUnderArbeid soknadUnderArbeid, List<SoknadMetadata.VedleggMetadata> vedleggList) {
         int antallInnsendt = 0;
-        int anntallLevertTidligere = 0;
+        int antallLevertTidligere = 0;
         int antallIkkeLevert = 0;
 
         for (SoknadMetadata.VedleggMetadata vedlegg : vedleggList) {
@@ -74,7 +74,7 @@ public class SoknadMetricsService {
                     antallInnsendt++;
                     break;
                 case VedleggAlleredeSendt:
-                    anntallLevertTidligere++;
+                    antallLevertTidligere++;
                     break;
                 case VedleggKreves:
                     antallIkkeLevert++;
@@ -86,7 +86,7 @@ public class SoknadMetricsService {
                 soknadUnderArbeid.erEttersendelse(),
                 vedleggList.size(),
                 antallInnsendt,
-                anntallLevertTidligere,
+                antallLevertTidligere,
                 antallIkkeLevert
         );
     }
