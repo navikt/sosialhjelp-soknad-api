@@ -48,7 +48,7 @@ public class SoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoSuppor
     private static final Logger logger = getLogger(SoknadUnderArbeidRepository.class);
     private final ObjectMapper mapper;
     private final ObjectWriter writer;
-    
+
     {
         mapper = new ObjectMapper();
         mapper.addMixIn(JsonAdresse.class, AdresseMixIn.class);
@@ -87,12 +87,14 @@ public class SoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoSuppor
 
     @Override
     public Optional<SoknadUnderArbeid> hentSoknad(Long soknadId, String eier) {
+        logger.info("hentSoknad med soknadId: " + soknadId.toString());
         return getJdbcTemplate().query("select * from SOKNAD_UNDER_ARBEID where EIER = ? and SOKNAD_UNDER_ARBEID_ID = ? and STATUS != ?",
                 new SoknadUnderArbeidRowMapper(), eier, soknadId, SENDT_MED_DIGISOS_API.toString()).stream().findFirst();
     }
 
     @Override
     public SoknadUnderArbeid hentSoknad(String behandlingsId, String eier) {
+        logger.info("hentSoknad med behandlingsId: " + behandlingsId);
         Optional<SoknadUnderArbeid> soknadUnderArbeidOptional = getJdbcTemplate().query("select * from SOKNAD_UNDER_ARBEID where EIER = ? and BEHANDLINGSID = ? and STATUS != ?",
                 new SoknadUnderArbeidRowMapper(), eier, behandlingsId, SENDT_MED_DIGISOS_API.toString()).stream().findFirst();
         if (soknadUnderArbeidOptional.isPresent()) {
@@ -104,6 +106,7 @@ public class SoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoSuppor
 
     @Override
     public Optional<SoknadUnderArbeid> hentSoknadOptional(String behandlingsId, String eier) {
+        logger.info("hentSoknadOptional med behandlingsId: " + behandlingsId);
         return getJdbcTemplate().query("select * from SOKNAD_UNDER_ARBEID where EIER = ? and BEHANDLINGSID = ? and STATUS != ?",
                 new SoknadUnderArbeidRowMapper(), eier, behandlingsId, SENDT_MED_DIGISOS_API.toString()).stream().findFirst();
     }
@@ -231,7 +234,7 @@ public class SoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoSuppor
                             rs.getTimestamp("sistendretdato").toLocalDateTime() : null);
         }
     }
-    
+
     private JsonInternalSoknad mapDataToJsonInternalSoknad(byte[] data){
         if (data == null){
             return null;
@@ -243,7 +246,7 @@ public class SoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoSuppor
             throw new RuntimeException(e);
         }
     }
-    
+
     private byte[] mapJsonSoknadInternalTilFil(JsonInternalSoknad jsonInternalSoknad) {
         try {
             final String internalSoknad = writer.writeValueAsString(jsonInternalSoknad);
