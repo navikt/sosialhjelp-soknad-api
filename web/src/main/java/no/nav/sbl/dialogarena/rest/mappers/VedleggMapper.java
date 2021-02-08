@@ -37,13 +37,16 @@ import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTGIFTER_BOLIGLA
 
 public final class VedleggMapper {
 
+    private static final String ANNET_ANNET = "annet|annet";
+    private static final String LASTET_OPP = "LastetOpp";
+
     private VedleggMapper() {
     }
 
     public static VedleggFrontend mapToVedleggFrontend(JsonVedlegg vedlegg, JsonOkonomi jsonOkonomi, List<OpplastetVedlegg> opplastedeVedlegg) {
         List<FilFrontend> filer = mapJsonFilerAndOpplastedeVedleggToFilerFrontend(vedlegg.getFiler(), opplastedeVedlegg);
 
-        String vedleggType = vedlegg.getType() + "|" + vedlegg.getTilleggsinfo();
+        String vedleggType = getSammensattNavn(vedlegg);
 
         List<VedleggRadFrontend> rader = getRader(jsonOkonomi, vedleggType);
 
@@ -195,45 +198,45 @@ public final class VedleggMapper {
     public static List<EttersendtVedlegg> mapVedleggToSortedListOfEttersendteVedlegg(LocalDateTime innsendingstidspunkt, List<OpplastetVedlegg> opplastedeVedlegg, List<JsonVedlegg> originaleVedlegg) {
         SortedMap<String, EttersendtVedlegg> ettersendteVedlegg = new TreeMap<>(sortAlphabeticallyAndPutTypeAnnetLast());
 
-        originaleVedlegg.forEach(vedlegg -> {
-            String sammensattNavn = vedlegg.getType() + "|" + vedlegg.getTilleggsinfo();
-
-            if (!ettersendteVedlegg.containsKey(sammensattNavn)) {
-                if (innsendingstidspunkt != null && soknadSendtForMindreEnn30DagerSiden(innsendingstidspunkt.toLocalDate())) {
-                    List<FilFrontend> filerFrontend = new ArrayList<>();
-                    if (vedlegg.getStatus().equals("LastetOpp")) {
-                        List<JsonFiler> filer = vedlegg.getFiler();
-                        filerFrontend = mapJsonFilerAndOpplastedeVedleggToFilerFrontend(filer, opplastedeVedlegg);
-                    }
-
-                    ettersendteVedlegg.put(sammensattNavn, new EttersendtVedlegg()
-                            .withType(sammensattNavn)
-                            .withVedleggStatus(vedlegg.getStatus())
-                            .withFiler(filerFrontend));
-                } else {
-                    if (vedlegg.getStatus().equals("LastetOpp")) {
-                        List<JsonFiler> filer = vedlegg.getFiler();
-                        var filerFrontend = mapJsonFilerAndOpplastedeVedleggToFilerFrontend(filer, opplastedeVedlegg);
+        originaleVedlegg.stream()
+                .filter(vedlegg -> filterGittInnsendingstidspunkt(innsendingstidspunkt, vedlegg))
+                .forEach(vedlegg -> {
+                    var sammensattNavn = getSammensattNavn(vedlegg);
+                    if (!ettersendteVedlegg.containsKey(sammensattNavn)) {
+                        List<FilFrontend> filerFrontend = new ArrayList<>();
+                        if (vedlegg.getStatus().equals(LASTET_OPP)) {
+                            List<JsonFiler> filer = vedlegg.getFiler();
+                            filerFrontend = mapJsonFilerAndOpplastedeVedleggToFilerFrontend(filer, opplastedeVedlegg);
+                        }
 
                         ettersendteVedlegg.put(sammensattNavn, new EttersendtVedlegg()
                                 .withType(sammensattNavn)
                                 .withVedleggStatus(vedlegg.getStatus())
                                 .withFiler(filerFrontend));
                     }
-                }
-            }
-        });
+                });
 
         return new ArrayList<>(ettersendteVedlegg.values());
+    }
+
+    private static boolean filterGittInnsendingstidspunkt(LocalDateTime innsendingstidspunkt, JsonVedlegg vedlegg) {
+        if (innsendingstidspunkt != null && soknadSendtForMindreEnn30DagerSiden(innsendingstidspunkt.toLocalDate())) {
+            return true;
+        }
+        return vedlegg.getStatus().equals(LASTET_OPP) || getSammensattNavn(vedlegg).equals(ANNET_ANNET);
+    }
+
+    private static String getSammensattNavn(JsonVedlegg vedlegg) {
+        return vedlegg.getType() + "|" + vedlegg.getTilleggsinfo();
     }
 
     private static Comparator<String> sortAlphabeticallyAndPutTypeAnnetLast() {
         return (o1, o2) -> {
             if (o1.equals(o2)) {
                 return 0;
-            } else if (o1.equals("annet|annet")) {
+            } else if (o1.equals(ANNET_ANNET)) {
                 return 1;
-            } else if (o2.equals("annet|annet")) {
+            } else if (o2.equals(ANNET_ANNET)) {
                 return -1;
             }
             return o1.compareTo(o2);
