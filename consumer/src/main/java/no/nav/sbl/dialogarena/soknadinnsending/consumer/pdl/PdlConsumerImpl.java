@@ -13,11 +13,13 @@ import no.nav.sbl.dialogarena.retry.RetryUtils;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.PdlApiException;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.TjenesteUtilgjengeligException;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.PdlHentPersonResponse;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.PdlRequest;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.barn.PdlBarn;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.ektefelle.PdlEktefelle;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.person.PdlPerson;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.common.PdlApiQuery;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.common.PdlBaseResponse;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.common.PdlRequest;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.HentPersonResponse;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.PdlBarn;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.PdlEktefelle;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.PdlPerson;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.sts.FssToken;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.sts.STSConsumer;
 import org.slf4j.Logger;
@@ -36,8 +38,9 @@ import java.util.Optional;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
+import static no.nav.sbl.dialogarena.retry.RetryUtils.DEFAULT_EXPONENTIAL_BACKOFF_MULTIPLIER;
 import static no.nav.sbl.dialogarena.retry.RetryUtils.DEFAULT_MAX_ATTEMPTS;
-import static no.nav.sbl.dialogarena.retry.RetryUtils.DEFAULT_RETRY_WAIT_MILLIS;
+import static no.nav.sbl.dialogarena.retry.RetryUtils.DEFAULT_INITIAL_WAIT_INTERVAL_MILLIS;
 import static no.nav.sbl.dialogarena.retry.RetryUtils.retryConfig;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.util.HeaderConstants.BEARER;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.util.HeaderConstants.HEADER_CALL_ID;
@@ -66,7 +69,13 @@ public class PdlConsumerImpl implements PdlConsumer {
         this.client = client;
         this.endpoint = endpoint;
         this.stsConsumer = stsConsumer;
-        this.retry = retryConfig(endpoint, DEFAULT_MAX_ATTEMPTS, DEFAULT_RETRY_WAIT_MILLIS, new Class[]{WebApplicationException.class, ProcessingException.class}, log);
+        this.retry = retryConfig(
+                endpoint,
+                DEFAULT_MAX_ATTEMPTS,
+                DEFAULT_INITIAL_WAIT_INTERVAL_MILLIS,
+                DEFAULT_EXPONENTIAL_BACKOFF_MULTIPLIER,
+                new Class[]{WebApplicationException.class, ProcessingException.class},
+                log);
     }
 
     @Override
@@ -75,8 +84,8 @@ public class PdlConsumerImpl implements PdlConsumer {
         String query = PdlApiQuery.HENT_PERSON;
         try {
             var request = lagRequest(endpoint);
-            var body = withRetry(() -> request.post(requestEntity(ident, query), String.class));
-            var pdlResponse = pdlMapper.readValue(body, new TypeReference<PdlHentPersonResponse<PdlPerson>>() {});
+            var body = withRetry(() -> request.post(requestEntity(query, variables(ident)), String.class));
+            var pdlResponse = pdlMapper.readValue(body, new TypeReference<HentPersonResponse<PdlPerson>>() {});
 
             checkForPdlApiErrors(pdlResponse);
 
@@ -95,8 +104,8 @@ public class PdlConsumerImpl implements PdlConsumer {
         String query = PdlApiQuery.HENT_BARN;
         try {
             var request = lagRequest(endpoint);
-            var body = withRetry(() -> request.post(requestEntity(ident, query), String.class));
-            var pdlResponse = pdlMapper.readValue(body, new TypeReference<PdlHentPersonResponse<PdlBarn>>() {});
+            var body = withRetry(() -> request.post(requestEntity(query, variables(ident)), String.class));
+            var pdlResponse = pdlMapper.readValue(body, new TypeReference<HentPersonResponse<PdlBarn>>() {});
 
             checkForPdlApiErrors(pdlResponse);
 
@@ -115,8 +124,8 @@ public class PdlConsumerImpl implements PdlConsumer {
         String query = PdlApiQuery.HENT_EKTEFELLE;
         try {
             var request = lagRequest(endpoint);
-            var body = withRetry(() -> request.post(requestEntity(ident, query), String.class));
-            var pdlResponse = pdlMapper.readValue(body, new TypeReference<PdlHentPersonResponse<PdlEktefelle>>() {});
+            var body = withRetry(() -> request.post(requestEntity(query, variables(ident)), String.class));
+            var pdlResponse = pdlMapper.readValue(body, new TypeReference<HentPersonResponse<PdlEktefelle>>() {});
 
             checkForPdlApiErrors(pdlResponse);
 
@@ -129,14 +138,15 @@ public class PdlConsumerImpl implements PdlConsumer {
         }
     }
 
-    private Entity<PdlRequest> requestEntity(String ident, String query) {
-        PdlRequest request = new PdlRequest(
-                query,
-                Map.of(
-                        "historikk", false,
-                        "ident", ident)
-        );
+    private Entity<PdlRequest> requestEntity(String query, Map<String, Object> variables) {
+        var request = new PdlRequest(query, variables);
         return Entity.entity(request, MediaType.APPLICATION_JSON_TYPE);
+    }
+
+    private Map<String, Object> variables(String ident) {
+        return Map.of(
+                "historikk", false,
+                "ident", ident);
     }
 
     @Override
@@ -173,9 +183,9 @@ public class PdlConsumerImpl implements PdlConsumer {
         return RetryUtils.withRetry(retry, supplier);
     }
 
-    private void checkForPdlApiErrors(PdlHentPersonResponse response) {
+    private void checkForPdlApiErrors(PdlBaseResponse response) {
         Optional.ofNullable(response)
-                .map(PdlHentPersonResponse::getErrors)
+                .map(PdlBaseResponse::getErrors)
                 .ifPresent(this::handleErrors);
     }
 

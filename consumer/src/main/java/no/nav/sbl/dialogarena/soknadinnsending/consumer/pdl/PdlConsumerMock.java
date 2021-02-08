@@ -4,26 +4,27 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.barn.PdlBarn;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.AdressebeskyttelseDto;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.BostedsadresseDto;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.EndringDto;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.FamilierelasjonDto;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.FoedselDto;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.FolkeregistermetadataDto;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.FolkeregisterpersonstatusDto;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.KontaktadresseDto;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.MetadataDto;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.NavnDto;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.SivilstandDto;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.StatsborgerskapDto;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.common.VegadresseDto;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.ektefelle.PdlEktefelle;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.dto.person.PdlPerson;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.PdlBarn;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.dto.AdressebeskyttelseDto;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.dto.BostedsadresseDto;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.dto.EndringDto;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.dto.FamilierelasjonDto;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.dto.FoedselDto;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.dto.FolkeregistermetadataDto;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.dto.FolkeregisterpersonstatusDto;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.dto.KontaktadresseDto;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.dto.MetadataDto;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.dto.NavnDto;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.dto.SivilstandDto;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.dto.StatsborgerskapDto;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.dto.VegadresseDto;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.PdlEktefelle;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.PdlPerson;
 import org.mockito.invocation.InvocationOnMock;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -131,7 +132,7 @@ public class PdlConsumerMock {
                 singletonList(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT)),
                 singletonList(pdlMockBarn.harSammeBostedsadresse ? defaultBostedsadresse() : annenBostedsadresse()),
                 singletonList(new FolkeregisterpersonstatusDto(pdlMockBarn.isErDoed() ? "doed" : "bosatt")),
-                singletonList(new FoedselDto(LocalDate.of(LocalDate.now().getYear() - 10, 1, 1))),
+                singletonList(findFoedselsdatoFromIdent(pdlMockBarn.getIdent())),
                 singletonList(new NavnDto(
                         pdlMockBarn.getFornavn(),
                         pdlMockBarn.getMellomnavn(),
@@ -139,6 +140,14 @@ public class PdlConsumerMock {
                         defaultMetadata(),
                         defaultFolkeregisterMetadata()))
         );
+    }
+
+    private static FoedselDto findFoedselsdatoFromIdent(String ident) {
+        try {
+            return new FoedselDto(LocalDate.parse(ident.substring(0,6), DateTimeFormatter.ofPattern("ddMMyy")));
+        } catch (Exception e) {
+            return new FoedselDto(LocalDate.of(LocalDate.now().getYear() - 10, 1, 1));
+        }
     }
 
     private static BostedsadresseDto defaultBostedsadresse() {

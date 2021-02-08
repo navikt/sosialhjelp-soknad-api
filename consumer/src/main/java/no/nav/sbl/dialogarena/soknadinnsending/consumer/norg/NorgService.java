@@ -2,38 +2,48 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer.norg;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import no.nav.sbl.dialogarena.redis.RedisService;
 import no.nav.sbl.dialogarena.sendsoknad.domain.norg.NavenhetFraLokalListe;
 import no.nav.sbl.dialogarena.sendsoknad.domain.norg.NavEnhet;
 import no.nav.sbl.dialogarena.sendsoknad.domain.norg.NavenheterFraLokalListe;
 import no.nav.sbl.dialogarena.sendsoknad.domain.norg.NorgConsumer;
 import no.nav.sbl.dialogarena.sendsoknad.domain.norg.NorgConsumer.RsNorgEnhet;
 import no.nav.sbl.dialogarena.sendsoknad.domain.util.KommuneTilNavEnhetMapper;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.TjenesteUtilgjengeligException;
 import org.apache.cxf.helpers.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import javax.inject.Inject;
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.LocalDateTime;
 import java.util.List;
 
+import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 import static java.util.stream.Collectors.toList;
+import static no.nav.sbl.dialogarena.redis.CacheConstants.GT_CACHE_KEY_PREFIX;
+import static no.nav.sbl.dialogarena.redis.CacheConstants.GT_LAST_POLL_TIME_PREFIX;
 
 @Service
 public class NorgService {
 
     private static final Logger logger = LoggerFactory.getLogger(NorgService.class);
+    private static final String NAVENHET_PATH = "/navenhet.json";
+    private static final long MINUTES_TO_PASS_BETWEEN_POLL = 60;
 
-    @Inject
-    private NorgConsumer norgConsumer;
+    private final NorgConsumer norgConsumer;
+    private final RedisService redisService;
 
     private List<NavenhetFraLokalListe> cachedNavenheterFraLokalListe;
-    private static final String NAVENHET_PATH = "/navenhet.json";
 
+    public NorgService(NorgConsumer norgConsumer, RedisService redisService) {
+        this.norgConsumer = norgConsumer;
+        this.redisService = redisService;
+    }
 
     public List<NavEnhet> getEnheterForKommunenummer(String kommunenummer) {
-        return getNavenhetForKommunenummerFraCahceEllerLokalListe(kommunenummer)
+        return getNavenhetForKommunenummerFraCacheEllerLokalListe(kommunenummer)
                 .stream()
                 .map(this::mapToNavEnhet)
                 .distinct()
@@ -54,16 +64,17 @@ public class NorgService {
             throw new IllegalArgumentException("GT ikke på gyldig format: " + gt);
         }
 
-        RsNorgEnhet rsNorgEnhet = norgConsumer.getEnhetForGeografiskTilknytning(gt);
-        if (rsNorgEnhet == null) {
+        var norgEnhet = hentFraCacheEllerConsumer(gt);
+
+        if (norgEnhet == null) {
             logger.warn("Kunne ikke finne NorgEnhet for gt: " + gt);
             return null;
         }
 
         NavEnhet enhet = new NavEnhet();
-        enhet.enhetNr = rsNorgEnhet.enhetNr;
-        enhet.navn = rsNorgEnhet.navn;
-        if (rsNorgEnhet.enhetNr.equals("0513")  && gt.equals("3434")){
+        enhet.enhetNr = norgEnhet.enhetNr;
+        enhet.navn = norgEnhet.navn;
+        if (norgEnhet.enhetNr.equals("0513")  && gt.equals("3434")){
             /*
             Jira sak 1200
 
@@ -71,18 +82,62 @@ public class NorgService {
             Dette er en midlertidig fix for å få denne casen til å fungere.
             */
             enhet.sosialOrgnr = "974592274";
-        } else if (rsNorgEnhet.enhetNr.equals("0511")  && gt.equals("3432")){
+        } else if (norgEnhet.enhetNr.equals("0511")  && gt.equals("3432")){
             enhet.sosialOrgnr = "964949204";
-        } else if (rsNorgEnhet.enhetNr.equals("1620")  && gt.equals("5014")){
+        } else if (norgEnhet.enhetNr.equals("1620")  && gt.equals("5014")){
             enhet.sosialOrgnr = "913071751";
         } else {
-            enhet.sosialOrgnr = KommuneTilNavEnhetMapper.getOrganisasjonsnummer(rsNorgEnhet.enhetNr);
+            enhet.sosialOrgnr = KommuneTilNavEnhetMapper.getOrganisasjonsnummer(norgEnhet.enhetNr);
         }
 
         return enhet;
     }
 
-    private List<NavenhetFraLokalListe> getNavenhetForKommunenummerFraCahceEllerLokalListe(String kommunenummer) {
+    private RsNorgEnhet hentFraCacheEllerConsumer(String gt) {
+        if (skalBrukeCache(gt)) {
+            var cached = hentFraCache(gt);
+            if (cached != null) {
+                return cached;
+            }
+        }
+
+        return hentFraConsumerMedCacheSomFallback(gt);
+    }
+
+    private boolean skalBrukeCache(String gt) {
+        String timeString = redisService.getString(GT_LAST_POLL_TIME_PREFIX + gt);
+        if (timeString == null) {
+            return false;
+        }
+        LocalDateTime lastPollTime = LocalDateTime.parse(timeString, ISO_LOCAL_DATE_TIME);
+        return lastPollTime.plusMinutes(MINUTES_TO_PASS_BETWEEN_POLL).isAfter(LocalDateTime.now());
+    }
+
+    private RsNorgEnhet hentFraCache(String gt) {
+        return (RsNorgEnhet) redisService.get(GT_CACHE_KEY_PREFIX + gt, RsNorgEnhet.class);
+    }
+
+    private RsNorgEnhet hentFraConsumerMedCacheSomFallback(String gt) {
+        try {
+            var rsNorgEnhet = norgConsumer.getEnhetForGeografiskTilknytning(gt);
+            if (rsNorgEnhet != null) {
+                return rsNorgEnhet;
+            }
+        } catch (TjenesteUtilgjengeligException e) {
+            // Norg feiler -> prøv å hent tidligere cached verdi
+            var cached = hentFraCache(gt);
+            if (cached != null) {
+                logger.info("Norg-client feilet, men bruker tidligere cachet response fra Norg");
+                return cached;
+            }
+            logger.warn("Norg-client feilet og cache [key={}] er tom", GT_CACHE_KEY_PREFIX + gt);
+            throw e;
+        }
+
+        return null;
+    }
+
+    private List<NavenhetFraLokalListe> getNavenhetForKommunenummerFraCacheEllerLokalListe(String kommunenummer) {
         if (cachedNavenheterFraLokalListe == null) {
             NavenheterFraLokalListe allNavenheterFromPath = getAllNavenheterFromPath();
             if (allNavenheterFromPath == null) {
