@@ -96,7 +96,7 @@ public class SoknadRessurs {
     @Produces("application/vnd.oppsummering+html")
     public String hentOppsummering(@PathParam("behandlingsId") String behandlingsId) throws IOException {
         String eier = SubjectHandler.getUserId();
-        logger.info("Henter soknadUnderArbeid med id: " + behandlingsId);
+        logger.warn("Henter soknadUnderArbeid med id: " + behandlingsId);
         SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
 
         return pdfTemplate.fyllHtmlMalMedInnhold(soknadUnderArbeid.getJsonInternalSoknad(), false);
@@ -106,7 +106,7 @@ public class SoknadRessurs {
     @Path("/{behandlingsId}/erSystemdataEndret")
     public boolean sjekkOmSystemdataErEndret(@PathParam("behandlingsId") String behandlingsId, @HeaderParam(value = AUTHORIZATION) String token) {
         final String eier = SubjectHandler.getUserId();
-        logger.info("Henter soknadUnderArbeid med id: " + behandlingsId + " for sjekkOmSystemdataErEndret");
+        logger.warn("Henter soknadUnderArbeid med id: " + behandlingsId + " for sjekkOmSystemdataErEndret");
         final SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
         systemdata.update(soknadUnderArbeid, token);
 
@@ -144,7 +144,7 @@ public class SoknadRessurs {
     public List<BekreftelseRessurs> hentSamtykker(@PathParam("behandlingsId") String behandlingsId,
                                                   @HeaderParam(value = AUTHORIZATION) String token) {
         final String eier = SubjectHandler.getUserId();
-        logger.info("Henter soknadUnderArbeid med id: " + behandlingsId + " for hentSamtykker");
+        logger.warn("Henter soknadUnderArbeid med id: " + behandlingsId + " for hentSamtykker");
         final SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
 
         List<JsonOkonomibekreftelse> bekreftelser = new ArrayList<>();
