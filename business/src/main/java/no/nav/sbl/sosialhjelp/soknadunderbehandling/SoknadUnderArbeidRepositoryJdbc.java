@@ -10,7 +10,6 @@ import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse;
 import no.nav.sbl.sosialhjelp.SamtidigOppdateringException;
 import no.nav.sbl.sosialhjelp.SoknadLaastException;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
-import org.slf4j.Logger;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
 import org.springframework.stereotype.Component;
@@ -39,13 +38,11 @@ import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.UN
 import static no.nav.sbl.dialogarena.soknadinnsending.business.db.SQLUtils.selectNextSequenceValue;
 import static no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator.ensureValidInternalSoknad;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
-import static org.slf4j.LoggerFactory.getLogger;
 
 @Named("SoknadUnderArbeidRepository")
 @Component
 public class SoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoSupport implements SoknadUnderArbeidRepository {
 
-    private static final Logger logger = getLogger(SoknadUnderArbeidRepository.class);
     private final ObjectMapper mapper;
     private final ObjectWriter writer;
 
@@ -87,14 +84,12 @@ public class SoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoSuppor
 
     @Override
     public Optional<SoknadUnderArbeid> hentSoknad(Long soknadId, String eier) {
-        logger.info("hentSoknad med soknadId: " + soknadId.toString());
         return getJdbcTemplate().query("select * from SOKNAD_UNDER_ARBEID where EIER = ? and SOKNAD_UNDER_ARBEID_ID = ? and STATUS != ?",
                 new SoknadUnderArbeidRowMapper(), eier, soknadId, SENDT_MED_DIGISOS_API.toString()).stream().findFirst();
     }
 
     @Override
     public SoknadUnderArbeid hentSoknad(String behandlingsId, String eier) {
-        logger.info("hentSoknad med behandlingsId: " + behandlingsId);
         Optional<SoknadUnderArbeid> soknadUnderArbeidOptional = getJdbcTemplate().query("select * from SOKNAD_UNDER_ARBEID where EIER = ? and BEHANDLINGSID = ? and STATUS != ?",
                 new SoknadUnderArbeidRowMapper(), eier, behandlingsId, SENDT_MED_DIGISOS_API.toString()).stream().findFirst();
         if (soknadUnderArbeidOptional.isPresent()) {
@@ -106,7 +101,6 @@ public class SoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoSuppor
 
     @Override
     public Optional<SoknadUnderArbeid> hentSoknadOptional(String behandlingsId, String eier) {
-        logger.info("hentSoknadOptional med behandlingsId: " + behandlingsId);
         return getJdbcTemplate().query("select * from SOKNAD_UNDER_ARBEID where EIER = ? and BEHANDLINGSID = ? and STATUS != ?",
                 new SoknadUnderArbeidRowMapper(), eier, behandlingsId, SENDT_MED_DIGISOS_API.toString()).stream().findFirst();
     }
