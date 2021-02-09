@@ -15,7 +15,6 @@ import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.pdf.HtmlGenerator;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import no.nav.security.token.support.core.api.ProtectedWithClaims;
-import org.slf4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -46,7 +45,6 @@ import static no.nav.sbl.dialogarena.utils.NedetidUtils.NEDETID_SLUTT;
 import static no.nav.sbl.dialogarena.utils.NedetidUtils.getNedetidAsStringOrNull;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.BOSTOTTE_SAMTYKKE;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_SKATTEETATEN_SAMTYKKE;
-import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @Controller
@@ -55,8 +53,6 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 @Timed
 @Produces(APPLICATION_JSON)
 public class SoknadRessurs {
-
-    private static final Logger logger = getLogger(SoknadRessurs.class);
 
     public static final String XSRF_TOKEN = "XSRF-TOKEN-SOKNAD-API";
 
@@ -96,7 +92,6 @@ public class SoknadRessurs {
     @Produces("application/vnd.oppsummering+html")
     public String hentOppsummering(@PathParam("behandlingsId") String behandlingsId) throws IOException {
         String eier = SubjectHandler.getUserId();
-        logger.warn("Henter soknadUnderArbeid med id: " + behandlingsId);
         SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
 
         return pdfTemplate.fyllHtmlMalMedInnhold(soknadUnderArbeid.getJsonInternalSoknad(), false);
@@ -106,7 +101,6 @@ public class SoknadRessurs {
     @Path("/{behandlingsId}/erSystemdataEndret")
     public boolean sjekkOmSystemdataErEndret(@PathParam("behandlingsId") String behandlingsId, @HeaderParam(value = AUTHORIZATION) String token) {
         final String eier = SubjectHandler.getUserId();
-        logger.warn("Henter soknadUnderArbeid med id: " + behandlingsId + " for sjekkOmSystemdataErEndret");
         final SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
         systemdata.update(soknadUnderArbeid, token);
 
@@ -144,7 +138,6 @@ public class SoknadRessurs {
     public List<BekreftelseRessurs> hentSamtykker(@PathParam("behandlingsId") String behandlingsId,
                                                   @HeaderParam(value = AUTHORIZATION) String token) {
         final String eier = SubjectHandler.getUserId();
-        logger.warn("Henter soknadUnderArbeid med id: " + behandlingsId + " for hentSamtykker");
         final SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
 
         List<JsonOkonomibekreftelse> bekreftelser = new ArrayList<>();
