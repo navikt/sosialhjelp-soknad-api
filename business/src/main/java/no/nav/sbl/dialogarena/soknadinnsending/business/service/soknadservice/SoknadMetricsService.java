@@ -47,6 +47,14 @@ public class SoknadMetricsService {
     }
 
     private void reportVedleggskrav(boolean isEttersendelse, int totaltAntall, int antallInnsendt, int antallLevertTidligere, int antallIkkeLevert) {
+        log.info("reportVedleggskrav. isEttersendelse {}. totaltAntall {}. antallInnsendt {}. antallLevertTidligere {}. antallIkkeLevert {}",
+                isEttersendelse,
+                totaltAntall,
+                antallInnsendt,
+                antallLevertTidligere,
+                antallIkkeLevert
+        );
+
         String sendtype = (isEttersendelse ? "ettersendelse" : "soknad");
 
         Event event = MetricsFactory.createEvent("digisos.vedleggskrav");
@@ -61,6 +69,21 @@ public class SoknadMetricsService {
         event.addFieldToReport("prosent.levertTidligere", getProsent(antallLevertTidligere, totaltAntall));
         event.addFieldToReport("prosent.ikkeLevert", getProsent(antallIkkeLevert, totaltAntall));
         event.report();
+
+
+
+        Event event2 = MetricsFactory.createEvent("digisos.vedleggskrav2." + sendtype);
+        //event2.addTagToReport("sendetype", sendtype);
+
+        event2.addFieldToReport("antall.totalt", totaltAntall);
+        event2.addFieldToReport("antall.innsendt", antallInnsendt);
+        event2.addFieldToReport("antall.levertTidligere", antallLevertTidligere);
+        event2.addFieldToReport("antall.ikkeLevert", antallIkkeLevert);
+
+        event2.addFieldToReport("prosent.innsendt", getProsent(antallInnsendt, totaltAntall));
+        event2.addFieldToReport("prosent.levertTidligere", getProsent(antallLevertTidligere, totaltAntall));
+        event2.addFieldToReport("prosent.ikkeLevert", getProsent(antallIkkeLevert, totaltAntall));
+        event2.report();
     }
 
     private void reportVedleggskrav(SoknadUnderArbeid soknadUnderArbeid, List<SoknadMetadata.VedleggMetadata> vedleggList) {
