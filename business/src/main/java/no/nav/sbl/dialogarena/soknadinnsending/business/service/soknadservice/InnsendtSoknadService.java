@@ -13,11 +13,16 @@ import javax.inject.Inject;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Predicate;
 
 import static java.util.stream.Collectors.toList;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SoknadType.SEND_SOKNAD_KOMMUNAL_ETTERSENDING;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.util.EttersendelseUtils.soknadSendtForMindreEnn30DagerSiden;
 
 @Component
 public class InnsendtSoknadService {
@@ -33,6 +38,11 @@ public class InnsendtSoknadService {
 
     private DateTimeFormatter datoFormatter = DateTimeFormatter.ofPattern("d. MMMM yyyy");
     private DateTimeFormatter tidFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+
+    static long soknadsalderIMinutter(LocalDateTime tidspunktSendt) {
+        if (tidspunktSendt == null) return -1;
+        return tidspunktSendt.until(LocalDateTime.now(), ChronoUnit.MINUTES);
+    }
 
     public BehandlingsKjede hentBehandlingskjede(String behandlingsId) {
         SoknadMetadata originalSoknad = hentOriginalSoknad(behandlingsId);
@@ -70,12 +80,12 @@ public class InnsendtSoknadService {
                 .medNavenhet(metadata.navEnhet)
                 .medOrgnummer(metadata.orgnr)
                 .medInnsendteVedlegg(tilVedlegg(metadata.vedlegg.vedleggListe, lastetOpp))
-                .medIkkeInnsendteVedlegg(tilVedlegg(metadata.vedlegg.vedleggListe, ikkeLastetOpp));
+                .medIkkeInnsendteVedlegg(soknadSendtForMindreEnn30DagerSiden(metadata.innsendtDato.toLocalDate()) ? tilVedlegg(metadata.vedlegg.vedleggListe, ikkeLastetOpp) : null);
     }
 
-    static long soknadsalderIMinutter(LocalDateTime tidspunktSendt) {
-        if (tidspunktSendt == null) return -1;
-        return tidspunktSendt.until(LocalDateTime.now(), ChronoUnit.MINUTES);
+    public LocalDateTime getInnsendingstidspunkt(String behandlingsId) {
+        var soknadMetadata = hentOriginalSoknad(behandlingsId);
+        return soknadMetadata.innsendtDato;
     }
 
     private List<InnsendtSoknad.Vedlegg> tilVedlegg(List<VedleggMetadata> vedlegg, Predicate<VedleggMetadata> status) {
