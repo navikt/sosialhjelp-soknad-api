@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SosialhjelpInformasjon.SOKNAD_TYPE_PREFIX;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.util.JsonVedleggUtils.isVedleggskravAnnet;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.util.MetricsUtils.getProsent;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -69,16 +70,18 @@ public class SoknadMetricsService {
         int antallIkkeLevert = 0;
 
         for (SoknadMetadata.VedleggMetadata vedlegg : vedleggList) {
-            switch (vedlegg.status) {
-                case LastetOpp:
-                    antallInnsendt++;
-                    break;
-                case VedleggAlleredeSendt:
-                    antallLevertTidligere++;
-                    break;
-                case VedleggKreves:
-                    antallIkkeLevert++;
-                    break;
+            if (!isVedleggskravAnnet(vedlegg)) {
+                switch (vedlegg.status) {
+                    case LastetOpp:
+                        antallInnsendt++;
+                        break;
+                    case VedleggAlleredeSendt:
+                        antallLevertTidligere++;
+                        break;
+                    case VedleggKreves:
+                        antallIkkeLevert++;
+                        break;
+                }
             }
         }
 
