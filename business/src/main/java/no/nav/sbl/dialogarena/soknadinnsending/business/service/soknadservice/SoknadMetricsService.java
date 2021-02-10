@@ -23,7 +23,7 @@ public class SoknadMetricsService {
 
     public void reportSendSoknadMetrics(String eier, SoknadUnderArbeid soknadUnderArbeid, List<SoknadMetadata.VedleggMetadata> vedleggList) {
         reportSendSoknad(soknadUnderArbeid.erEttersendelse());
-        reportVedleggskrav(soknadUnderArbeid, vedleggList);
+        countAndreportVedleggskrav(soknadUnderArbeid.erEttersendelse(), vedleggList);
         reportAlder(eier, soknadUnderArbeid);
     }
 
@@ -47,7 +47,7 @@ public class SoknadMetricsService {
         event.report();
     }
 
-    private void reportVedleggskrav(boolean isEttersendelse, int totaltAntall, int antallInnsendt, int antallLevertTidligere, int antallIkkeLevert) {
+    void reportVedleggskrav(boolean isEttersendelse, int totaltAntall, int antallInnsendt, int antallLevertTidligere, int antallIkkeLevert) {
         String sendtype = (isEttersendelse ? "ettersendelse" : "soknad");
 
         Event event = MetricsFactory.createEvent("digisos.vedleggskrav");
@@ -64,13 +64,15 @@ public class SoknadMetricsService {
         event.report();
     }
 
-    private void reportVedleggskrav(SoknadUnderArbeid soknadUnderArbeid, List<SoknadMetadata.VedleggMetadata> vedleggList) {
+    void countAndreportVedleggskrav(boolean isEttersendelse, List<SoknadMetadata.VedleggMetadata> vedleggList) {
         int antallInnsendt = 0;
         int antallLevertTidligere = 0;
         int antallIkkeLevert = 0;
+        int totaltAntall = 0;
 
         for (SoknadMetadata.VedleggMetadata vedlegg : vedleggList) {
             if (!isVedleggskravAnnet(vedlegg)) {
+                totaltAntall++;
                 switch (vedlegg.status) {
                     case LastetOpp:
                         antallInnsendt++;
@@ -86,8 +88,8 @@ public class SoknadMetricsService {
         }
 
         reportVedleggskrav(
-                soknadUnderArbeid.erEttersendelse(),
-                vedleggList.size(),
+                isEttersendelse,
+                totaltAntall,
                 antallInnsendt,
                 antallLevertTidligere,
                 antallIkkeLevert
