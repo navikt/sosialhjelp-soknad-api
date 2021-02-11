@@ -79,7 +79,7 @@
         <sosialhjelp-common.version>1.4ef74b4</sosialhjelp-common.version>
 
         <!-- Nav felles java-bibliotek -->
-        <nav-common.version>1.2020.11.16_14.52-3f16e0d8c867</nav-common.version>
+        <nav-common.version>2.2020.07.09_15.11-43231b4bf93d</nav-common.version>
 
         <spring.version>5.3.3</spring.version>
         <jetty.version>9.4.36.v20210114</jetty.version>
