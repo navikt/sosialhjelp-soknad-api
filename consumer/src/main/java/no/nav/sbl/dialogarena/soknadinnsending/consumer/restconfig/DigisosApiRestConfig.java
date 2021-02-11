@@ -50,7 +50,7 @@ public class DigisosApiRestConfig {
     @Bean
     public Pingable digisosPing(DigisosApi digisosApi) {
         return new Pingable() {
-            Ping.PingMetadata metadata = new Ping.PingMetadata(digisosApiEndpoint, "DigisosApi", false);
+            Ping.PingMetadata metadata = new Ping.PingMetadata(digisosApiEndpoint, "DigisosApi", true);
 
             @Override
             public Ping ping() {

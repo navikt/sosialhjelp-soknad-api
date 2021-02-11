@@ -37,7 +37,7 @@ public class PdlRestConfig {
     @Bean
     public Pingable pdlRestPing(PdlConsumer pdlConsumer) {
         return () -> {
-            PingMetadata metadata = new PingMetadata(endpoint, "Pdl", false);
+            PingMetadata metadata = new PingMetadata(endpoint, "Pdl", true);
             try {
                 pdlConsumer.ping();
                 return lyktes(metadata);
