@@ -22,6 +22,7 @@ import java.util.Properties;
 import static java.util.stream.Collectors.toList;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SoknadType.SEND_SOKNAD_KOMMUNAL;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.EttersendingService.ETTERSENDELSE_FRIST_DAGER;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.util.JsonVedleggUtils.isVedleggskravAnnet;
 import static no.nav.sbl.sosialhjelp.domain.Vedleggstatus.LastetOpp;
 import static no.nav.sbl.sosialhjelp.domain.Vedleggstatus.VedleggKreves;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -101,7 +102,7 @@ public class SaksoversiktMetadataService {
 
         return nyesteSoknad.vedlegg.vedleggListe.stream()
                 .filter(v -> v.status.er(VedleggKreves))
-                .filter(v -> !"annet".equals(v.skjema) || !"annet".equals(v.tillegg))
+                .filter(v -> !(isVedleggskravAnnet(v)))
                 .map(v -> "vedlegg." + v.skjema + "." + v.tillegg + ".tittel")
                 .distinct()
                 .map(bundle::getProperty)

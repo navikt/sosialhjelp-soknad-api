@@ -6,6 +6,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.exception.SosialhjelpSoknadApiEx
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata.VedleggMetadata;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.HenvendelseService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.util.JsonVedleggUtils;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
@@ -132,8 +133,7 @@ public class EttersendingService {
                 .filter(v -> v.status == Vedleggstatus.VedleggKreves)
                 .collect(toList());
 
-        if (manglendeVedlegg.stream()
-                .noneMatch(v -> "annet".equals(v.skjema) && "annet".equals(v.tillegg))) {
+        if (manglendeVedlegg.stream().noneMatch(JsonVedleggUtils::isVedleggskravAnnet)) {
             VedleggMetadata annetVedlegg = new VedleggMetadata();
             annetVedlegg.skjema = "annet";
             annetVedlegg.tillegg = "annet";

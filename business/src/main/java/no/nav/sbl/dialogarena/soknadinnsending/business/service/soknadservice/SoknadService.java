@@ -109,7 +109,7 @@ public class SoknadService {
         henvendelseTimer.stop();
         henvendelseTimer.report();
 
-        soknadMetricsService.startetSoknad(false);
+        soknadMetricsService.reportStartSoknad(false);
 
         Timer oprettIDbTimer = createDebugTimer("oprettIDb", mainUid);
 
@@ -138,11 +138,28 @@ public class SoknadService {
     public void sendSoknad(String behandlingsId) {
         final String eier = SubjectHandler.getUserId();
         SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
+
+        logger.info("Starter innsending av søknad med behandlingsId {}", behandlingsId);
+        logDriftsinformasjon(soknadUnderArbeid);
+
+        validateEttersendelseHasVedlegg(soknadUnderArbeid);
+        SoknadMetadata.VedleggMetadataListe vedlegg = convertToVedleggMetadataListe(soknadUnderArbeid);
+
+        henvendelseService.oppdaterMetadataVedAvslutningAvSoknad(behandlingsId, vedlegg, soknadUnderArbeid, false);
+        oppgaveHandterer.leggTilOppgave(behandlingsId, eier);
+        innsendingService.opprettSendtSoknad(soknadUnderArbeid);
+
+        soknadMetricsService.reportSendSoknadMetrics(eier, soknadUnderArbeid, vedlegg.vedleggListe);
+    }
+
+    private void validateEttersendelseHasVedlegg(SoknadUnderArbeid soknadUnderArbeid) {
         if (soknadUnderArbeid.erEttersendelse() && getVedleggFromInternalSoknad(soknadUnderArbeid).isEmpty()) {
-            logger.error("Kan ikke sende inn ettersendingen med ID {} uten å ha lastet opp vedlegg", behandlingsId);
+            logger.error("Kan ikke sende inn ettersendingen med ID {} uten å ha lastet opp vedlegg", soknadUnderArbeid.getBehandlingsId());
             throw new SosialhjelpSoknadApiException("Kan ikke sende inn ettersendingen uten å ha lastet opp vedlegg");
         }
-        logger.info("Starter innsending av søknad med behandlingsId {}", behandlingsId);
+    }
+
+    private void logDriftsinformasjon(SoknadUnderArbeid soknadUnderArbeid){
         if(!soknadUnderArbeid.erEttersendelse()) {
             if (soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getDriftsinformasjon().getStotteFraHusbankenFeilet()) {
                 logger.info("Nedlasting fra Husbanken har feilet for innsendtsoknad." +
@@ -152,17 +169,6 @@ public class SoknadService {
                 logger.info("Nedlasting fra Skatteetaten har feilet for innsendtsoknad." +
                         finnAlderPaaDataFor(soknadUnderArbeid, UTBETALING_SKATTEETATEN_SAMTYKKE));
             }
-        }
-
-        SoknadMetadata.VedleggMetadataListe vedlegg = convertToVedleggMetadataListe(soknadUnderArbeid);
-        henvendelseService.oppdaterMetadataVedAvslutningAvSoknad(behandlingsId, vedlegg, soknadUnderArbeid, false);
-        oppgaveHandterer.leggTilOppgave(behandlingsId, eier);
-
-        innsendingService.opprettSendtSoknad(soknadUnderArbeid);
-
-        soknadMetricsService.sendtSoknad(soknadUnderArbeid.erEttersendelse());
-        if (!soknadUnderArbeid.erEttersendelse() && !MockUtils.isTillatMockRessurs()) {
-            logAlderTilKibana(eier);
         }
     }
 
@@ -190,7 +196,7 @@ public class SoknadService {
         if (soknadUnderArbeidOptional.isPresent()) {
             soknadUnderArbeidRepository.slettSoknad(soknadUnderArbeidOptional.get(), eier);
             henvendelseService.avbrytSoknad(soknadUnderArbeidOptional.get().getBehandlingsId(), false);
-            soknadMetricsService.avbruttSoknad(soknadUnderArbeidOptional.get().erEttersendelse());
+            soknadMetricsService.reportAvbruttSoknad(soknadUnderArbeidOptional.get().erEttersendelse());
         }
     }
 
@@ -295,12 +301,4 @@ public class SoknadService {
         return m;
     }
 
-    private static void logAlderTilKibana(String eier) {
-        int age = new PersonAlder(eier).getAlder();
-        if (age > 0 && age < 30) {
-            logger.info("DIGISOS-1164: UNDER30 - Soknad sent av bruker med alder: " + age);
-        } else {
-            logger.info("DIGISOS-1164: OVER30 - Soknad sent av bruker med alder:" + age);
-        }
-    }
 }
