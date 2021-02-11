@@ -76,7 +76,7 @@
         <tjenestespesifikasjon.version>1.2021.01.21-11.34-02f5eb27bb76</tjenestespesifikasjon.version>
 
         <!-- Sosialhjelp-common -->
-        <sosialhjelp-common.version>1.4ef74b4</sosialhjelp-common.version>
+        <sosialhjelp-common.version>1.14b3a11</sosialhjelp-common.version>
 
         <!-- Nav felles java-bibliotek -->
         <nav-common.version>1.2020.11.16_14.52-3f16e0d8c867</nav-common.version>
