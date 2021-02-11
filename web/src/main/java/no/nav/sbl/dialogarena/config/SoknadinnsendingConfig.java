@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.config;
 
 import no.nav.sbl.dialogarena.oidc.OidcTokenValidatorConfig;
+import no.nav.sbl.dialogarena.selftest.SelftestConfig;
 import no.nav.sbl.dialogarena.service.SaksoversiktMetadataService;
 import no.nav.sbl.dialogarena.service.SoknadOversiktService;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
@@ -29,7 +30,8 @@ import org.springframework.context.annotation.*;
         SoknadOversiktService.class,
         VirusScanConfig.class,
         DigisosApiRestConfig.class,
-        BostotteConfig.class
+        BostotteConfig.class,
+        SelftestConfig.class
 })
 @ComponentScan(basePackages = "no.nav.sbl.dialogarena.rest")
 public class SoknadinnsendingConfig {

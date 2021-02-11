@@ -10,7 +10,7 @@ import javax.servlet.ServletException;
 import java.util.Collection;
 
 public class SelftestServlet extends SelfTestBaseServlet {
-    private static final String APPLIKASJONS_NAVN = "Søknadsapi";
+    private static final String APPLIKASJONS_NAVN = "sosialhjelp-soknad-api";
     private ApplicationContext ctx = null;
 
     @Override
