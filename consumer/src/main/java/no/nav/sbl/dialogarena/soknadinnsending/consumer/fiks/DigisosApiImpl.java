@@ -254,7 +254,8 @@ public class DigisosApiImpl implements DigisosApi {
         CMSStreamKryptering kryptering = new CMSKrypteringImpl();
 
         PipedInputStream pipedInputStream = new PipedInputStream();
-        try (PipedOutputStream pipedOutputStream = new PipedOutputStream(pipedInputStream)) {
+        try {
+            PipedOutputStream pipedOutputStream = new PipedOutputStream(pipedInputStream);
             Future<Void> krypteringFuture =
                     executor.submit(() -> {
                         try {
