@@ -1,6 +1,6 @@
 package no.nav.sbl.sosialhjelp.pdf;
 
-import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
+import no.nav.sosialhjelp.soknad.tekster.NavMessageSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
