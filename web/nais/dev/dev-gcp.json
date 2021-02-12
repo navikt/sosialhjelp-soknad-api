@@ -10,9 +10,9 @@
   "memoryRequest": "2Gi",
   "vaultEnabled": false,
   "prometheusEnabled": false,
-  "isRedisMocked": true,
   "webProxyEnabled": false,
   "isGcp": true,
+  "isLabsGcp": false,
   "env": {
     "MAIN_CLASS": "no.nav.sbl.dialogarena.mock.MockAltSoknadsosialhjelpServer",
     "dockerWithDefaultMockActivated": "false",
@@ -21,7 +21,7 @@
     "AAREG_API_BASEURL": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/aareg/",
     "DITTNAV_LINK_URL": "https://dittnav/dittnav/",
     "DKIF_API_BASEURL": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/dkif/",
-    "PDL_API_URL": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/pdl/",
+    "PDL_API_URL": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/pdl_endpoint_url/",
     "UNLEASH_API_URL": "https://unleash.nais.io/api",
     "EKSTERNAPP_SKATT_DATASAMARBEID_API_INNTEKTSMOTTAKER_URL": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/skatteetaten/",
     "EREG_API_BASEURL": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/freg/",
@@ -33,7 +33,7 @@
     "KODEVERK_API_URL": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/kodeverk/api/",
     "LOGINSERVICE_URL": "https://digisos-gcp.dev.nav.no/sosialhjelp/mock-alt/login",
     "OIDC_ISSUER_SELVBETJENING_DISCOVERYURL": "https://digisos-gcp.dev.nav.no/sosialhjelp/mock-alt-api/login/metadata",
-    "NORG_REST_URL": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/norg/",
+    "NORG_REST_URL": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/norg_endpoint_url/",
     "SCHEDULER_DISABLE": "false",
     "SOKNAD_BOSTOTTE_URL": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/husbanken",
     "SOKNAD_BOSTOTTE_PING_URL": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/husbanken/ping",
@@ -52,6 +52,7 @@
     "START_PERSON_WITHMOCK": "true",
     "START_UTBETALING_WITHMOCK": "true",
     "VIRKSOMHETSSERTIFIKAT_PATH": "/var/run/secrets",
-    "UNLEASH_INSTANCE_ID": "dev-gcp"
+    "UNLEASH_INSTANCE_ID": "dev-gcp",
+    "REDIS_HOST": "sosialhjelp-soknad-api-redis.teamdigisos.svc.cluster.local"
   }
 }

@@ -4,7 +4,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.Soknad
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker;
-import no.nav.sbl.sosialhjelp.domain.OpplastetVedlegg;
 import no.nav.sbl.sosialhjelp.domain.SendtSoknad;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.domain.VedleggType;
@@ -22,8 +21,6 @@ import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import static java.time.LocalDateTime.now;
@@ -138,14 +135,6 @@ public class InnsendingServiceTest {
         innsendingService.finnSendtSoknadForEttersendelse(createSoknadUnderArbeidForEttersendelse());
     }
 
-    private List<OpplastetVedlegg> createOpplastetVedleggListe() {
-        List<OpplastetVedlegg> opplastedeVedlegg = new ArrayList<>();
-        opplastedeVedlegg.add(createOpplastetVedlegg());
-        opplastedeVedlegg.add(createOpplastetVedlegg());
-        opplastedeVedlegg.add(null);
-        return opplastedeVedlegg;
-    }
-
     private SoknadUnderArbeid createSoknadUnderArbeid() {
         return new SoknadUnderArbeid()
                 .withSoknadId(SOKNAD_UNDER_ARBEID_ID)
@@ -178,12 +167,6 @@ public class InnsendingServiceTest {
                 .withEier(EIER)
                 .withOpprettetDato(OPPRETTET_DATO)
                 .withSistEndretDato(SIST_ENDRET_DATO);
-    }
-
-    private OpplastetVedlegg createOpplastetVedlegg() {
-        return new OpplastetVedlegg()
-                .withVedleggType(VEDLEGGTYPE)
-                .withEier(EIER);
     }
 
     private Optional<SendtSoknad> createSendtSoknad() {

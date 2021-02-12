@@ -114,7 +114,6 @@ public class KodeverkServiceTest {
     @Test
     public void skalFeileHvisKodeverdiIkkeFinnes() {
         when(redisService.getString(KODEVERK_LAST_POLL_TIME_KEY)).thenReturn(null);
-        when(redisService.get(KOMMUNER_CACHE_KEY, KodeverkDto.class)).thenReturn(landkoderKodeverk());
 
         var land = kodeverkService.getLand("ukjentLandkode");
 

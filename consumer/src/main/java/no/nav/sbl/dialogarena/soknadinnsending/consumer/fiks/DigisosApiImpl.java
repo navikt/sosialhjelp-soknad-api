@@ -22,6 +22,8 @@ import no.nav.sosialhjelp.api.fiks.KommuneInfo;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpRequestRetryHandler;
+import org.apache.http.client.ServiceUnavailableRetryStrategy;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -33,12 +35,12 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.DefaultHttpRequestRetryHandler;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 
-import javax.inject.Inject;
 import javax.ws.rs.core.MediaType;
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -102,18 +104,24 @@ public class DigisosApiImpl implements DigisosApi {
 
     private RedisService redisService;
     private DigisosApiProperties properties;
+    private HttpRequestRetryHandler retryHandler;
+    private ServiceUnavailableRetryStrategy serviceUnavailableRetryStrategy;
 
     private ExecutorCompletionService<Void> executor = new ExecutorCompletionService<>(Executors.newCachedThreadPool());
     private IdPortenOidcConfiguration idPortenOidcConfiguration;
     private byte[] fiksPublicKey = null;
 
-    @Inject
-    public DigisosApiImpl(DigisosApiProperties properties, RedisService redisService) {
-        if (isTillatMockRessurs()){
+    public DigisosApiImpl(
+            DigisosApiProperties properties,
+            RedisService redisService
+    ) {
+        if (isTillatMockRessurs()) {
             return;
         }
         this.redisService = redisService;
         this.properties = properties;
+        this.retryHandler = new DefaultHttpRequestRetryHandler();
+        this.serviceUnavailableRetryStrategy = new FiksServiceUnavailableRetryStrategy();
 
         String idPortenConfigUrl = properties.getIdPortenConfigUrl();
         try {
@@ -121,6 +129,17 @@ public class DigisosApiImpl implements DigisosApi {
         } catch (IOException e) {
             log.error(String.format("Henting av idportens konfigurasjon feilet. idPortenConfigUrl=%s", idPortenConfigUrl), e);
         }
+    }
+
+    static String getDigisosIdFromResponse(String errorResponse, String behandlingsId) {
+        if (errorResponse != null && errorResponse.contains(behandlingsId) && errorResponse.contains("finnes allerede")) {
+            Pattern p = Pattern.compile("^.*?message.*([0-9a-fA-F]{8}[-]?(?:[0-9a-fA-F]{4}[-]?){3}[0-9a-fA-F]{12}).*?$");
+            Matcher m = p.matcher(errorResponse);
+            if (m.matches()) {
+                return m.group(1);
+            }
+        }
+        return null;
     }
 
     @Override
@@ -134,7 +153,7 @@ public class DigisosApiImpl implements DigisosApi {
     @Override
     public Map<String, KommuneInfo> hentAlleKommuneInfo() {
         IdPortenAccessTokenResponse accessToken = getVirksertAccessToken();
-        try (CloseableHttpClient client = HttpClientBuilder.create().useSystemProperties().build()) {
+        try (CloseableHttpClient client = clientBuilder().build()) {
             HttpGet http = new HttpGet(properties.getDigisosApiEndpoint() + "digisos/api/v1/nav/kommuner/");
             http.setHeader(ACCEPT.name(), MediaType.APPLICATION_JSON);
             http.setHeader(HEADER_INTEGRASJON_ID, properties.getIntegrasjonsidFiks());
@@ -164,6 +183,13 @@ public class DigisosApiImpl implements DigisosApi {
         }
     }
 
+    private HttpClientBuilder clientBuilder() {
+        return HttpClientBuilder.create()
+                .setRetryHandler(retryHandler)
+                .setServiceUnavailableRetryStrategy(serviceUnavailableRetryStrategy)
+                .useSystemProperties();
+    }
+
     @Override
     public String krypterOgLastOppFiler(String soknadJson, String tilleggsinformasjonJson, String vedleggJson, List<FilOpplasting> dokumenter, String kommunenr, String behandlingsId, String token) {
         List<Future<Void>> krypteringFutureList = Collections.synchronizedList(new ArrayList<>(dokumenter.size()));
@@ -191,7 +217,7 @@ public class DigisosApiImpl implements DigisosApi {
         // Fiks public key skal aldri endres. Isåfall vil Fiks gi en tydelig beskjed.
         //Denne integrasjonen kan feile så fiksPublicKey blir derfor cachet.
         if (fiksPublicKey == null) {
-            try (CloseableHttpClient client = HttpClientBuilder.create().useSystemProperties().build()) {
+            try (CloseableHttpClient client = clientBuilder().build()) {
                 HttpUriRequest request = RequestBuilder.get().setUri(properties.getDigisosApiEndpoint() + "/digisos/api/v1/dokumentlager-public-key")
                         .addHeader(ACCEPT.name(), MediaType.WILDCARD)
                         .addHeader(HEADER_INTEGRASJON_ID, properties.getIntegrasjonsidFiks())
@@ -300,7 +326,7 @@ public class DigisosApiImpl implements DigisosApi {
                 .setSocketTimeout(SENDING_TIL_FIKS_TIMEOUT)
                 .build();
 
-        try (CloseableHttpClient client = HttpClientBuilder.create().useSystemProperties().setDefaultRequestConfig(requestConfig).build()) {
+        try (CloseableHttpClient client = clientBuilder().setDefaultRequestConfig(requestConfig).build()) {
             HttpPost post = new HttpPost(properties.getDigisosApiEndpoint() + getLastOppFilerPath(kommunenummer, behandlingsId));
 
             post.setHeader("requestid", UUID.randomUUID().toString());
@@ -327,22 +353,11 @@ public class DigisosApiImpl implements DigisosApi {
                         errorResponse));
             }
             String digisosId = stripVekkFnutter(EntityUtils.toString(response.getEntity()));
-            log.info("Sendte inn søknad {} til kommune {} og fikk digisosid: {}", behandlingsId,  kommunenummer, digisosId);
+            log.info("Sendte inn søknad {} til kommune {} og fikk digisosid: {}", behandlingsId, kommunenummer, digisosId);
             return digisosId;
         } catch (IOException e) {
             throw new IllegalStateException(String.format("Opplasting av %s til fiks-digisos-api feilet", behandlingsId), e);
         }
-    }
-
-    static String getDigisosIdFromResponse(String errorResponse, String behandlingsId) {
-        if (errorResponse != null && errorResponse.contains(behandlingsId) && errorResponse.contains("finnes allerede")) {
-            Pattern p = Pattern.compile("^.*?message.*([0-9a-fA-F]{8}[-]?(?:[0-9a-fA-F]{4}[-]?){3}[0-9a-fA-F]{12}).*?$");
-            Matcher m = p.matcher(errorResponse);
-            if (m.matches()) {
-                return m.group(1);
-            }
-        }
-        return null;
     }
 
     private String getJson(FilForOpplasting<Object> objectFilForOpplasting) {
@@ -365,7 +380,7 @@ public class DigisosApiImpl implements DigisosApi {
         params.add(new BasicNameValuePair("grant_type", "urn:ietf:params:oauth:grant-type:jwt-bearer"));
         params.add(new BasicNameValuePair("assertion", jws));
 
-        try (CloseableHttpClient client = HttpClientBuilder.create().useSystemProperties().build()) {
+        try (CloseableHttpClient client = clientBuilder().build()) {
 
             httpPost.setEntity(new UrlEncodedFormEntity(params));
             CloseableHttpResponse response = client.execute(httpPost);
@@ -394,7 +409,7 @@ public class DigisosApiImpl implements DigisosApi {
             instance.add(Calendar.SECOND, 100);
             Date expDate = instance.getTime();
 
-            log.debug("Public certificate length " + keyPair.getPublic().getEncoded().length + " (virksomhetssertifikat)");
+            log.debug("Public certificate length {} (virksomhetssertifikat)", keyPair.getPublic().getEncoded().length);
 
             SignedJWT signedJWT = new SignedJWT(
                     new JWSHeader.Builder(JWSAlgorithm.RS256).x509CertChain(Collections.singletonList((com.nimbusds.jose.util.Base64.encode(certificate.getEncoded())))).build(),
