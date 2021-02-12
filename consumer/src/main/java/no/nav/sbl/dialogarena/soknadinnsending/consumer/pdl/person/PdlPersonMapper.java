@@ -35,7 +35,7 @@ import static no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.dto.Ad
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.dto.SivilstandDto.SivilstandType.ENKE_ELLER_ENKEMANN;
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.dto.SivilstandDto.SivilstandType.GIFT;
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.dto.SivilstandDto.SivilstandType.GJENLEVENDE_PARTNER;
-import static no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.dto.SivilstandDto.SivilstandType.PARTNER;
+import static no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.dto.SivilstandDto.SivilstandType.REGISTRERT_PARTNER;
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.dto.SivilstandDto.SivilstandType.SEPARERT;
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.dto.SivilstandDto.SivilstandType.SEPARERT_PARTNER;
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.dto.SivilstandDto.SivilstandType.SKILT;
@@ -58,7 +58,7 @@ public class PdlPersonMapper {
             .put(ENKE_ELLER_ENKEMANN, "enke")
             .put(SKILT, "skilt")
             .put(SEPARERT, "separert")
-            .put(PARTNER, "gift")
+            .put(REGISTRERT_PARTNER, "gift")
             .put(SEPARERT_PARTNER, "separert")
             .put(SKILT_PARTNER, "skilt")
             .put(GJENLEVENDE_PARTNER, "enke")

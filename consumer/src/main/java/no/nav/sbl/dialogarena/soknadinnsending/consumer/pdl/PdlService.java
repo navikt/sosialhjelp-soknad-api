@@ -17,7 +17,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.dto.SivilstandDto.SivilstandType.GIFT;
-import static no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.dto.SivilstandDto.SivilstandType.PARTNER;
+import static no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.dto.SivilstandDto.SivilstandType.REGISTRERT_PARTNER;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Component
@@ -80,7 +80,7 @@ public class PdlService {
         if (pdlPerson != null && pdlPerson.getSivilstand() != null && !pdlPerson.getSivilstand().isEmpty()) {
 
             var sivilstand = helper.utledGjeldendeSivilstand(pdlPerson.getSivilstand());
-            if (sivilstand != null && (GIFT == sivilstand.getType() || PARTNER == sivilstand.getType())) {
+            if (sivilstand != null && (GIFT == sivilstand.getType() || REGISTRERT_PARTNER == sivilstand.getType())) {
                 String ektefelleIdent = sivilstand.getRelatertVedSivilstand();
 
                 if (ektefelleIdent == null || ektefelleIdent.isEmpty()) {
