@@ -83,9 +83,11 @@ import static no.nav.sbl.dialogarena.redis.CacheConstants.KOMMUNEINFO_CACHE_KEY;
 import static no.nav.sbl.dialogarena.redis.CacheConstants.KOMMUNEINFO_CACHE_SECONDS;
 import static no.nav.sbl.dialogarena.redis.CacheConstants.KOMMUNEINFO_LAST_POLL_TIME_KEY;
 import static no.nav.sbl.dialogarena.redis.RedisUtils.toKommuneInfoMap;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils.isMockAltProfil;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils.isTillatMockRessurs;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.util.HeaderConstants.HEADER_INTEGRASJON_ID;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.util.HeaderConstants.HEADER_INTEGRASJON_PASSORD;
+import static no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils.isNonProduction;
 import static no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils.stripVekkFnutter;
 import static org.eclipse.jetty.http.HttpHeader.ACCEPT;
 import static org.eclipse.jetty.http.HttpHeader.AUTHORIZATION;
@@ -233,7 +235,11 @@ public class DigisosApiImpl implements DigisosApi {
             Future<Void> krypteringFuture =
                     executor.submit(() -> {
                         try {
-                            kryptering.krypterData(pipedOutputStream, dokumentStream, fiksX509Certificate, Security.getProvider("BC"));
+                            if(isNonProduction() && isMockAltProfil()) {
+                                IOUtils.copy(dokumentStream, pipedOutputStream);
+                            } else {
+                                kryptering.krypterData(pipedOutputStream, dokumentStream, fiksX509Certificate, Security.getProvider("BC"));
+                            }
                         } catch (Exception e) {
                             log.error("Encryption failed, setting exception on encrypted InputStream", e);
                             throw new IllegalStateException("An error occurred during encryption", e);
