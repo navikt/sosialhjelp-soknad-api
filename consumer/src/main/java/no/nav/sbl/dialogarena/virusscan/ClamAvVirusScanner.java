@@ -1,6 +1,6 @@
 package no.nav.sbl.dialogarena.virusscan;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.exception.OpplastingException;
+import no.nav.sosialhjelp.soknad.domain.model.exception.OpplastingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;

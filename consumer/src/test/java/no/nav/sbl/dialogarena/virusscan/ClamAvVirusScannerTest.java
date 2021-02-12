@@ -1,6 +1,6 @@
 package no.nav.sbl.dialogarena.virusscan;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.exception.OpplastingException;
+import no.nav.sosialhjelp.soknad.domain.model.exception.OpplastingException;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;

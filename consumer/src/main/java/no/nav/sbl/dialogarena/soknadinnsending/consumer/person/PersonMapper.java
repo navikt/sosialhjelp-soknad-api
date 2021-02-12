@@ -1,9 +1,9 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.person;
 
 import com.google.common.collect.ImmutableMap;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Barn;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Ektefelle;
-import no.nav.sbl.dialogarena.sendsoknad.domain.NavFodselsnummer;
+import no.nav.sosialhjelp.soknad.domain.model.Barn;
+import no.nav.sosialhjelp.soknad.domain.model.Ektefelle;
+import no.nav.sosialhjelp.soknad.domain.model.NavFodselsnummer;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.*;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
@@ -43,11 +43,11 @@ public class PersonMapper {
             .put("SKIL", "skilt")
             .put("SKPA", "skilt").build();
 
-    static no.nav.sbl.dialogarena.sendsoknad.domain.Person mapXmlPersonTilPerson(Person xmlPerson) {
+    static no.nav.sosialhjelp.soknad.domain.model.Person mapXmlPersonTilPerson(Person xmlPerson) {
         if (xmlPerson == null) {
             return null;
         }
-        return new no.nav.sbl.dialogarena.sendsoknad.domain.Person()
+        return new no.nav.sosialhjelp.soknad.domain.model.Person()
                 .withFornavn(finnFornavn(xmlPerson))
                 .withMellomnavn(finnMellomnavn(xmlPerson))
                 .withEtternavn(finnEtternavn(xmlPerson))

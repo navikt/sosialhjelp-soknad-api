@@ -1,6 +1,6 @@
 package no.nav.sbl.dialogarena.virusscan;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.exception.OpplastingException;
+import no.nav.sosialhjelp.soknad.domain.model.exception.OpplastingException;
 
 /**
  * Integrasjonen er kopiert fra https://github.com/navikt/foreldrepengesoknad-api og modifisert til eget bruk

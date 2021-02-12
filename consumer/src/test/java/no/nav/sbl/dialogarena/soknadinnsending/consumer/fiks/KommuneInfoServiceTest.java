@@ -1,7 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.fiks;
 
 import no.nav.sbl.dialogarena.redis.RedisService;
-import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.KommuneStatus;
+import no.nav.sosialhjelp.soknad.domain.model.digisosapi.KommuneStatus;
 import no.nav.sosialhjelp.api.fiks.KommuneInfo;
 import org.junit.Before;
 import org.junit.Test;

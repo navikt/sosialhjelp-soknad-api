@@ -1,7 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.person;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.Barn;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Ektefelle;
+import no.nav.sosialhjelp.soknad.domain.model.Barn;
+import no.nav.sosialhjelp.soknad.domain.model.Ektefelle;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Diskresjonskoder;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Familierelasjon;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Familierelasjoner;
@@ -21,7 +21,7 @@ import org.junit.Test;
 
 import java.util.List;
 
-import static no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils.lagDatatypeFactory;
+import static no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils.lagDatatypeFactory;
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonMapper.DOED;
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonMapper.KODE_6;
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonMapper.KODE_6_TALLFORM;
@@ -75,7 +75,7 @@ public class PersonDataMapperTest {
 
     @Test
     public void mapXmlPersonTilPersonMapperPersonRiktig() {
-        no.nav.sbl.dialogarena.sendsoknad.domain.Person person = mapXmlPersonTilPerson(lagXmlPerson());
+        no.nav.sosialhjelp.soknad.domain.model.Person person = mapXmlPersonTilPerson(lagXmlPerson());
 
         assertThat(person.getFornavn(), is(FORNAVN));
         assertThat(person.getMellomnavn(), is(MELLOMNAVN));
@@ -89,7 +89,7 @@ public class PersonDataMapperTest {
 
     @Test
     public void mapXmlPersonTilPersonTaklerTomPerson() {
-        no.nav.sbl.dialogarena.sendsoknad.domain.Person person = mapXmlPersonTilPerson(new Person());
+        no.nav.sosialhjelp.soknad.domain.model.Person person = mapXmlPersonTilPerson(new Person());
 
         assertThat(person, notNullValue());
     }

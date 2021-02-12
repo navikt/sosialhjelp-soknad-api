@@ -10,7 +10,7 @@ import io.github.resilience4j.retry.Retry;
 import io.vavr.CheckedFunction0;
 import no.nav.sbl.dialogarena.mdc.MDCOperations;
 import no.nav.sbl.dialogarena.retry.RetryUtils;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
+import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.PdlApiException;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.TjenesteUtilgjengeligException;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.common.PdlApiQuery;
@@ -42,12 +42,12 @@ import static no.nav.sbl.dialogarena.retry.RetryUtils.DEFAULT_EXPONENTIAL_BACKOF
 import static no.nav.sbl.dialogarena.retry.RetryUtils.DEFAULT_MAX_ATTEMPTS;
 import static no.nav.sbl.dialogarena.retry.RetryUtils.DEFAULT_INITIAL_WAIT_INTERVAL_MILLIS;
 import static no.nav.sbl.dialogarena.retry.RetryUtils.retryConfig;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.util.HeaderConstants.BEARER;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.util.HeaderConstants.HEADER_CALL_ID;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.util.HeaderConstants.HEADER_CONSUMER_ID;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.util.HeaderConstants.HEADER_CONSUMER_TOKEN;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.util.HeaderConstants.HEADER_TEMA;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.util.HeaderConstants.TEMA_KOM;
+import static no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.BEARER;
+import static no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.HEADER_CALL_ID;
+import static no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.HEADER_CONSUMER_ID;
+import static no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.HEADER_CONSUMER_TOKEN;
+import static no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.HEADER_TEMA;
+import static no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.TEMA_KOM;
 import static org.eclipse.jetty.http.HttpHeader.AUTHORIZATION;
 import static org.slf4j.LoggerFactory.getLogger;
 

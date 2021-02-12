@@ -1,7 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.skatt;
 
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.skattbarinntekt.SkattbarInntekt;
+import no.nav.sosialhjelp.soknad.domain.model.skattbarinntekt.SkattbarInntekt;
 
 public interface SkattbarInntektConsumer {
 

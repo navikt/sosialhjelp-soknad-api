@@ -1,6 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeidsforhold;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.Arbeidsforhold;
+import no.nav.sosialhjelp.soknad.domain.model.Arbeidsforhold;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeidsforhold.dto.*;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.organisasjon.OrganisasjonService;
 import org.junit.Before;

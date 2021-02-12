@@ -1,9 +1,9 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.Barn;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Ektefelle;
-import no.nav.sbl.dialogarena.sendsoknad.domain.NavFodselsnummer;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Person;
+import no.nav.sosialhjelp.soknad.domain.model.Barn;
+import no.nav.sosialhjelp.soknad.domain.model.Ektefelle;
+import no.nav.sosialhjelp.soknad.domain.model.NavFodselsnummer;
+import no.nav.sosialhjelp.soknad.domain.model.Person;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.PdlEktefelle;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.PdlPerson;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.PdlPersonMapper;

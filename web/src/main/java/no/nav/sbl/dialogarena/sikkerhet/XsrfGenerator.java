@@ -1,9 +1,9 @@
 package no.nav.sbl.dialogarena.sikkerhet;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.exception.AuthorizationException;
-import no.nav.sbl.dialogarena.sendsoknad.domain.exception.SosialhjelpSoknadApiException;
-import no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
+import no.nav.sosialhjelp.soknad.domain.model.exception.AuthorizationException;
+import no.nav.sosialhjelp.soknad.domain.model.exception.SosialhjelpSoknadApiException;
+import no.nav.sosialhjelp.soknad.domain.model.mock.MockUtils;
+import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import org.apache.commons.codec.binary.Base64;
 import org.joda.time.DateTime;
 

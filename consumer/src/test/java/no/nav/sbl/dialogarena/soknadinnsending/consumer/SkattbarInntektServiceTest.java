@@ -2,8 +2,8 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import no.nav.sbl.dialogarena.sendsoknad.domain.skattbarinntekt.SkattbarInntekt;
-import no.nav.sbl.dialogarena.sendsoknad.domain.utbetaling.Utbetaling;
+import no.nav.sosialhjelp.soknad.domain.model.skattbarinntekt.SkattbarInntekt;
+import no.nav.sosialhjelp.soknad.domain.model.utbetaling.Utbetaling;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.skatt.SkattbarInntektConsumer;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.skatt.SkattbarInntektService;
 import org.apache.cxf.helpers.IOUtils;

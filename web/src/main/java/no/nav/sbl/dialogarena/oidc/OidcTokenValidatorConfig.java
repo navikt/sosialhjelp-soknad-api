@@ -1,6 +1,6 @@
 package no.nav.sbl.dialogarena.oidc;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils;
+import no.nav.sosialhjelp.soknad.domain.model.mock.MockUtils;
 import no.nav.security.token.support.core.configuration.IssuerProperties;
 import no.nav.security.token.support.core.configuration.MultiIssuerConfiguration;
 import no.nav.security.token.support.core.configuration.ProxyAwareResourceRetriever;

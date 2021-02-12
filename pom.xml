@@ -12,7 +12,7 @@
     <modules>
         <module>app</module>
         <module>business</module>
-        <module>domain</module>
+<!--        <module>domain</module>-->
         <module>consumer</module>
         <module>web</module>
         <module>mock</module>
@@ -184,11 +184,6 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>sendsoknad-consumer</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>sendsoknad-domain</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -976,7 +971,7 @@
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>sendsoknad-domain</artifactId>
+                <artifactId>app</artifactId>
                 <version>${project.version}</version>
                 <type>test-jar</type>
                 <scope>test</scope>

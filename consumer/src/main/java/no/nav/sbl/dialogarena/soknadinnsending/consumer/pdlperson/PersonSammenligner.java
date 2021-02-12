@@ -1,12 +1,12 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.pdlperson;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.Adresse;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Barn;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Bostedsadresse;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Ektefelle;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Kontaktadresse;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Oppholdsadresse;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Person;
+import no.nav.sosialhjelp.soknad.domain.model.Adresse;
+import no.nav.sosialhjelp.soknad.domain.model.Barn;
+import no.nav.sosialhjelp.soknad.domain.model.Bostedsadresse;
+import no.nav.sosialhjelp.soknad.domain.model.Ektefelle;
+import no.nav.sosialhjelp.soknad.domain.model.Kontaktadresse;
+import no.nav.sosialhjelp.soknad.domain.model.Oppholdsadresse;
+import no.nav.sosialhjelp.soknad.domain.model.Person;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 

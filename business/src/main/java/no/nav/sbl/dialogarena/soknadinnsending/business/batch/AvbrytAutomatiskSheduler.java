@@ -2,10 +2,10 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.batch;
 
 import no.nav.metrics.MetricsFactory;
 import no.nav.metrics.Timer;
-import no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils;
+import no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
-import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
+import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import org.slf4j.Logger;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -15,7 +15,7 @@ import javax.inject.Inject;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.AVBRUTT_AUTOMATISK;
+import static no.nav.sosialhjelp.soknad.domain.SoknadInnsendingStatus.AVBRUTT_AUTOMATISK;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Service

@@ -2,16 +2,16 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice;
 
 import no.nav.metrics.Event;
 import no.nav.metrics.MetricsFactory;
-import no.nav.sbl.dialogarena.sendsoknad.domain.PersonAlder;
-import no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils;
+import no.nav.sosialhjelp.soknad.domain.model.PersonAlder;
+import no.nav.sosialhjelp.soknad.domain.model.mock.MockUtils;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
-import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
+import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SosialhjelpInformasjon.SOKNAD_TYPE_PREFIX;
+import static no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SosialhjelpInformasjon.SOKNAD_TYPE_PREFIX;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.util.JsonVedleggUtils.isVedleggskravAnnet;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.util.MetricsUtils.getProsent;
 import static org.slf4j.LoggerFactory.getLogger;

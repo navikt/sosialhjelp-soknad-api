@@ -1,6 +1,6 @@
 package no.nav.sbl.dialogarena.sikkerhet;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils;
+import no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;

@@ -3,9 +3,9 @@ package no.nav.sbl.dialogarena.sendsoknad.mockmodul.norg;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableMap;
-import no.nav.sbl.dialogarena.sendsoknad.domain.norg.NorgConsumer;
-import no.nav.sbl.dialogarena.sendsoknad.domain.norg.NorgConsumer.RsNorgEnhet;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
+import no.nav.sosialhjelp.soknad.domain.model.norg.NorgConsumer;
+import no.nav.sosialhjelp.soknad.domain.model.norg.NorgConsumer.RsNorgEnhet;
+import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import org.mockito.invocation.InvocationOnMock;
 
 import java.io.IOException;

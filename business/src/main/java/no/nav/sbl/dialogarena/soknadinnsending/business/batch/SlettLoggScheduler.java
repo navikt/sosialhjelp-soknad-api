@@ -2,12 +2,12 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.batch;
 
 import no.nav.metrics.MetricsFactory;
 import no.nav.metrics.Timer;
-import no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils;
+import no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.Oppgave;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.oppgave.OppgaveRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
-import no.nav.sbl.sosialhjelp.domain.SendtSoknad;
+import no.nav.sosialhjelp.soknad.domain.SendtSoknad;
 import no.nav.sbl.sosialhjelp.sendtsoknad.SendtSoknadRepository;
 import org.slf4j.Logger;
 import org.springframework.scheduling.annotation.Scheduled;

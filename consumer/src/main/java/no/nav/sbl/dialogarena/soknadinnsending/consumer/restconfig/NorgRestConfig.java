@@ -1,7 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig;
 
 import no.nav.sbl.dialogarena.redis.RedisService;
-import no.nav.sbl.dialogarena.sendsoknad.domain.norg.NorgConsumer;
+import no.nav.sosialhjelp.soknad.domain.model.norg.NorgConsumer;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.norg.NorgConsumerMock;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.norg.NorgConsumerImpl;
 import no.nav.sbl.dialogarena.types.Pingable;

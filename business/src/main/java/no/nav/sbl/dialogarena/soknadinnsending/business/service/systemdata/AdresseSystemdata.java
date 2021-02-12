@@ -1,13 +1,13 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata;
 
 import no.finn.unleash.Unleash;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Adresse;
-import no.nav.sbl.dialogarena.sendsoknad.domain.AdresserOgKontonummer;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Bostedsadresse;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Kontaktadresse;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Matrikkeladresse;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Oppholdsadresse;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Vegadresse;
+import no.nav.sosialhjelp.soknad.domain.model.Adresse;
+import no.nav.sosialhjelp.soknad.domain.model.AdresserOgKontonummer;
+import no.nav.sosialhjelp.soknad.domain.model.Bostedsadresse;
+import no.nav.sosialhjelp.soknad.domain.model.Kontaktadresse;
+import no.nav.sosialhjelp.soknad.domain.model.Matrikkeladresse;
+import no.nav.sosialhjelp.soknad.domain.model.Oppholdsadresse;
+import no.nav.sosialhjelp.soknad.domain.model.Vegadresse;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.Systemdata;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.PdlApiException;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.TjenesteUtilgjengeligException;
@@ -24,7 +24,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonPostboksAdresse;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonUstrukturertAdresse;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
-import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
+import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 

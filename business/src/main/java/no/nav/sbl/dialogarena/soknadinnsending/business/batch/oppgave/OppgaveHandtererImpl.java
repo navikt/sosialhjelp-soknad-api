@@ -2,7 +2,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave;
 
 import no.nav.metrics.Event;
 import no.nav.metrics.MetricsFactory;
-import no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils;
+import no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.Oppgave.Status;
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.fiks.*;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.oppgave.OppgaveRepository;
