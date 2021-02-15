@@ -1,8 +1,8 @@
 package no.nav.sbl.dialogarena.config;
 
 
-import no.nav.sosialhjelp.soknad.tekster.NavMessageSource;
 import no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils;
+import no.nav.sosialhjelp.soknad.tekster.NavMessageSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
