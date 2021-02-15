@@ -12,7 +12,6 @@
     <modules>
         <module>app</module>
         <module>business</module>
-<!--        <module>domain</module>-->
         <module>consumer</module>
         <module>web</module>
         <module>mock</module>
