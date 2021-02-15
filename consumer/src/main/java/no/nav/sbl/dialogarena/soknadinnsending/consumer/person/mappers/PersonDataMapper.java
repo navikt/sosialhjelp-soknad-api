@@ -1,7 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.person.mappers;
 
 import no.ks.svarut.servicesv9.PostAdresse;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.domain.Bostedsadresse;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.domain.Gateadresse;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.domain.Matrikkeladresse;
@@ -22,7 +21,7 @@ public class PersonDataMapper {
     private static final String KODE_6 = "6";
     private static final String KODE_7 = "7";
 
-    private static final Logger log = getLogger(PersonService.class);
+    private static final Logger log = getLogger(PersonDataMapper.class);
     public PersonData tilPersonData(Person person) {
         return new PersonData()
                 .withFornavn(kanskjeFornavn(person))

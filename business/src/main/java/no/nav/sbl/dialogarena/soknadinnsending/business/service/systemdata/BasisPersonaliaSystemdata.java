@@ -2,7 +2,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata;
 
 import no.nav.sbl.dialogarena.sendsoknad.domain.Person;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.Systemdata;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdlperson.PdlEllerPersonV1Service;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.PdlService;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.*;
 import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
@@ -28,7 +28,7 @@ public class BasisPersonaliaSystemdata implements Systemdata {
     public static final String PDL_STATSLOS = "XXX";
 
     @Inject
-    private PdlEllerPersonV1Service pdlEllerPersonV1Service;
+    private PdlService pdlService;
 
     @Override
     public void updateSystemdataIn(SoknadUnderArbeid soknadUnderArbeid, String token) {
@@ -46,7 +46,7 @@ public class BasisPersonaliaSystemdata implements Systemdata {
     }
 
     public JsonPersonalia innhentSystemBasisPersonalia(final String personIdentifikator) {
-        var person = pdlEllerPersonV1Service.hentPerson(personIdentifikator);
+        var person = pdlService.hentPerson(personIdentifikator);
         if (person == null){
             return null;
         }

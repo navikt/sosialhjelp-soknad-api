@@ -3,7 +3,7 @@ package no.nav.sbl.dialogarena.sendsoknad.domain.message;
 import org.junit.Before;
 import org.junit.Test;
 
-import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
+import no.nav.sosialhjelp.soknad.tekster.NavMessageSource;
 
 import java.util.HashMap;
 import java.util.Locale;

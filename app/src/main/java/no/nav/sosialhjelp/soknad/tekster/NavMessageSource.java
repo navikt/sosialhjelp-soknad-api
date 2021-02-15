@@ -1,4 +1,4 @@
-package no.nav.sbl.dialogarena.soknadsosialhjelp.message;
+package no.nav.sosialhjelp.soknad.tekster;
 
 import org.slf4j.Logger;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
