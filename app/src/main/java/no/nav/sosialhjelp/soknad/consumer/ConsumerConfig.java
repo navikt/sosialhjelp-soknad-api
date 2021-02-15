@@ -8,9 +8,7 @@ import no.nav.sosialhjelp.soknad.consumer.norg.NorgService;
 import no.nav.sosialhjelp.soknad.consumer.organisasjon.OrganisasjonService;
 import no.nav.sosialhjelp.soknad.consumer.pdl.PdlService;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.PdlPersonMapper;
-import no.nav.sosialhjelp.soknad.consumer.pdlperson.PdlEllerPersonV1Service;
 import no.nav.sosialhjelp.soknad.consumer.pdlperson.PersonSammenligner;
-import no.nav.sosialhjelp.soknad.consumer.person.PersonService;
 import no.nav.sosialhjelp.soknad.consumer.personv3.PersonServiceV3;
 import no.nav.sosialhjelp.soknad.consumer.redis.NoRedisConfig;
 import no.nav.sosialhjelp.soknad.consumer.redis.RedisConfig;
@@ -29,7 +27,6 @@ import no.nav.sosialhjelp.soknad.consumer.skatt.SkattbarInntektService;
 import no.nav.sosialhjelp.soknad.consumer.utbetaling.UtbetalingService;
 import no.nav.sosialhjelp.soknad.consumer.wsconfig.FiksWSConfig;
 import no.nav.sosialhjelp.soknad.consumer.wsconfig.PersonV3WSConfig;
-import no.nav.sosialhjelp.soknad.consumer.wsconfig.PersonWSConfig;
 import no.nav.sosialhjelp.soknad.consumer.wsconfig.UtbetalingWSConfig;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Configuration;
@@ -43,9 +40,7 @@ import org.springframework.context.annotation.Profile;
         NoRedisConfig.class,
         PdlService.class,
         PdlPersonMapper.class,
-        PersonService.class,
         PersonSammenligner.class,
-        PdlEllerPersonV1Service.class,
         PersonServiceV3.class,
         ConsumerConfig.WsServices.class,
         DokumentKrypterer.class,
@@ -65,7 +60,6 @@ public class ConsumerConfig {
     @Import({
             PdlRestConfig.class,
             DigisosApiRestConfig.class,
-            PersonWSConfig.class,
             PersonV3WSConfig.class,
             FiksWSConfig.class,
             AdresseSokRestConfig.class,
