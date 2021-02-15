@@ -1,14 +1,14 @@
 package no.nav.sbl.dialogarena.service;
 
-import no.nav.sosialhjelp.soknad.domain.Vedleggstatus;
-import no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SoknadType;
-import no.nav.sosialhjelp.soknad.tekster.NavMessageSource;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata.VedleggMetadata;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.EttersendingService;
 import no.nav.sbl.soknadsosialhjelp.tjeneste.saksoversikt.EttersendingsSoknad;
 import no.nav.sbl.soknadsosialhjelp.tjeneste.saksoversikt.InnsendtSoknad;
+import no.nav.sosialhjelp.soknad.domain.Vedleggstatus;
+import no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SoknadType;
+import no.nav.sosialhjelp.soknad.tekster.NavMessageSource;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
