@@ -3,7 +3,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata;
 import no.nav.sosialhjelp.soknad.domain.model.Barn;
 import no.nav.sosialhjelp.soknad.domain.model.Ektefelle;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.Systemdata;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdlperson.PdlEllerPersonV1Service;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.PdlService;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonData;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeSystem;
@@ -28,7 +28,7 @@ public class FamilieSystemdata implements Systemdata {
     private static final Logger log = getLogger(FamilieSystemdata.class);
 
     @Inject
-    private PdlEllerPersonV1Service pdlEllerPersonV1Service;
+    private PdlService pdlService;
 
     @Override
     public void updateSystemdataIn(SoknadUnderArbeid soknadUnderArbeid, String token) {
@@ -82,7 +82,7 @@ public class FamilieSystemdata implements Systemdata {
     }
 
     private JsonSivilstatus innhentSystemverdiSivilstatus(String personIdentifikator) {
-        var person = pdlEllerPersonV1Service.hentPerson(personIdentifikator);
+        var person = pdlService.hentPerson(personIdentifikator);
         if (person == null || isEmpty(person.getSivilstatus())) {
             return null;
         }
@@ -124,7 +124,7 @@ public class FamilieSystemdata implements Systemdata {
     private JsonForsorgerplikt innhentSystemverdiForsorgerplikt(String personIdentifikator) {
         JsonForsorgerplikt jsonForsorgerplikt = new JsonForsorgerplikt().withHarForsorgerplikt(new JsonHarForsorgerplikt());
 
-        var barn = pdlEllerPersonV1Service.hentBarn(personIdentifikator);
+        var barn = pdlService.hentBarnForPerson(personIdentifikator);
         if (barn == null || barn.isEmpty()) {
             jsonForsorgerplikt.getHarForsorgerplikt()
                     .withKilde(JsonKilde.SYSTEM)
