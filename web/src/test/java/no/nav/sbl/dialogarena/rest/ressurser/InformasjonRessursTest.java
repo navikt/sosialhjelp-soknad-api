@@ -7,7 +7,7 @@ import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.sendsoknad.domain.util.KommuneTilNavEnhetMapper;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.InformasjonService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdlperson.PdlEllerPersonV1Service;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.PdlService;
 import no.nav.sosialhjelp.soknad.tekster.NavMessageSource;
 import no.nav.sosialhjelp.api.fiks.KommuneInfo;
 import org.junit.After;
@@ -43,7 +43,7 @@ public class InformasjonRessursTest {
     @Mock
     private KommuneInfoService kommuneInfoService;
     @Mock
-    private PdlEllerPersonV1Service pdlEllerPersonV1Service;
+    private PdlService pdlService;
 
     @InjectMocks
     private InformasjonRessurs ressurs;
