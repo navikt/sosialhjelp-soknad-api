@@ -3,7 +3,7 @@ package no.nav.sbl.sosialhjelp.pdf.helpers;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.Miljovariabler;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.kodeverk.KodeverkService;
-import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
+import no.nav.sosialhjelp.soknad.tekster.NavMessageSource;
 import no.nav.sbl.sosialhjelp.pdf.CmsTekst;
 import no.nav.sbl.sosialhjelp.pdf.HandlebarRegistry;
 import org.junit.Test;

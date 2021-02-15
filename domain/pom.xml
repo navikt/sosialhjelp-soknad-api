@@ -22,7 +22,7 @@
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>soknadsosialhjelp-tekster</artifactId>
+            <artifactId>app</artifactId>
         </dependency>
         <dependency>
             <groupId>jakarta.xml.bind</groupId>

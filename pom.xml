@@ -10,7 +10,7 @@
     </parent>
 
     <modules>
-        <module>tekster</module>
+        <module>app</module>
         <module>business</module>
         <module>domain</module>
         <module>consumer</module>
@@ -178,7 +178,7 @@
         <dependencies>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>soknadsosialhjelp-tekster</artifactId>
+                <artifactId>app</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
