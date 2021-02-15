@@ -7,7 +7,7 @@ import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils;
 import no.nav.sbl.dialogarena.soknadinnsending.business.util.FileDetectionUtils;
 import no.nav.sbl.dialogarena.soknadinnsending.business.util.TikaFileType;
-import no.nav.sbl.dialogarena.virusscan.VirusScanner;
+import no.nav.sosialhjelp.soknad.consumer.virusscan.VirusScanner;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
 import no.nav.sosialhjelp.soknad.domain.OpplastetVedlegg;

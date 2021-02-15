@@ -1,15 +1,15 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
-import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseForslag;
-import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseForslagType;
-import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseSokConsumer.Sokedata;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.adresse.AdresseSokService;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresseValg;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonGateAdresse;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonMatrikkelAdresse;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
+import no.nav.sosialhjelp.soknad.consumer.adresse.AdresseSokService;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
+import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseForslag;
+import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseForslagType;
+import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseSokConsumer.Sokedata;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;

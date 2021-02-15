@@ -21,8 +21,8 @@ import java.util.Properties;
 
 import static java.lang.System.getProperties;
 import static java.lang.System.setProperty;
-import static no.nav.sbl.dialogarena.soknadinnsending.consumer.MockUtil.DEFAULT_MOCK_TILLATT;
-import static no.nav.sbl.dialogarena.soknadinnsending.consumer.MockUtil.TILLATMOCK_PROPERTY;
+import static no.nav.sosialhjelp.soknad.consumer.MockUtil.DEFAULT_MOCK_TILLATT;
+import static no.nav.sosialhjelp.soknad.consumer.MockUtil.TILLATMOCK_PROPERTY;
 
 @WebAppConfiguration
 @RunWith(SpringJUnit4ClassRunner.class)

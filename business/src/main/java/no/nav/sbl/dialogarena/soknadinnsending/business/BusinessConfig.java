@@ -18,9 +18,9 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.Konto
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.SkattetatenSystemdata;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.TelefonnummerSystemdata;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.UtbetalingerFraNavSystemdata;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.ConsumerConfig;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeidsforhold.ArbeidsforholdService;
 import no.nav.sbl.sosialhjelp.pdfmedpdfbox.PdfGeneratorConfig;
+import no.nav.sosialhjelp.soknad.consumer.ConsumerConfig;
+import no.nav.sosialhjelp.soknad.consumer.arbeidsforhold.ArbeidsforholdService;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 

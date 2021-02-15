@@ -1,5 +1,13 @@
 package no.nav.sbl.dialogarena.rest.feil;
 
+import no.nav.sbl.sosialhjelp.SendingTilKommuneErIkkeAktivertException;
+import no.nav.sbl.sosialhjelp.SendingTilKommuneErMidlertidigUtilgjengeligException;
+import no.nav.sbl.sosialhjelp.SendingTilKommuneUtilgjengeligException;
+import no.nav.sbl.sosialhjelp.SoknadenHarNedetidException;
+import no.nav.sbl.sosialhjelp.pdfmedpdfbox.PdfGenereringException;
+import no.nav.sosialhjelp.soknad.consumer.exceptions.PdlApiException;
+import no.nav.sosialhjelp.soknad.consumer.exceptions.SikkerhetsBegrensningException;
+import no.nav.sosialhjelp.soknad.consumer.exceptions.TjenesteUtilgjengeligException;
 import no.nav.sosialhjelp.soknad.domain.model.exception.AuthorizationException;
 import no.nav.sosialhjelp.soknad.domain.model.exception.EttersendelseSendtForSentException;
 import no.nav.sosialhjelp.soknad.domain.model.exception.IkkeFunnetException;
@@ -7,14 +15,6 @@ import no.nav.sosialhjelp.soknad.domain.model.exception.OpplastingException;
 import no.nav.sosialhjelp.soknad.domain.model.exception.SamletVedleggStorrelseForStorException;
 import no.nav.sosialhjelp.soknad.domain.model.exception.SosialhjelpSoknadApiException;
 import no.nav.sosialhjelp.soknad.domain.model.exception.UgyldigOpplastingTypeException;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.PdlApiException;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.SikkerhetsBegrensningException;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.TjenesteUtilgjengeligException;
-import no.nav.sbl.sosialhjelp.SendingTilKommuneErIkkeAktivertException;
-import no.nav.sbl.sosialhjelp.SendingTilKommuneErMidlertidigUtilgjengeligException;
-import no.nav.sbl.sosialhjelp.SendingTilKommuneUtilgjengeligException;
-import no.nav.sbl.sosialhjelp.SoknadenHarNedetidException;
-import no.nav.sbl.sosialhjelp.pdfmedpdfbox.PdfGenereringException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,7 +24,12 @@ import javax.ws.rs.ext.Provider;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.MediaType.TEXT_PLAIN;
-import static javax.ws.rs.core.Response.Status.*;
+import static javax.ws.rs.core.Response.Status.FORBIDDEN;
+import static javax.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR;
+import static javax.ws.rs.core.Response.Status.NOT_FOUND;
+import static javax.ws.rs.core.Response.Status.REQUEST_ENTITY_TOO_LARGE;
+import static javax.ws.rs.core.Response.Status.SERVICE_UNAVAILABLE;
+import static javax.ws.rs.core.Response.Status.UNSUPPORTED_MEDIA_TYPE;
 import static javax.ws.rs.core.Response.serverError;
 import static javax.ws.rs.core.Response.status;
 import static no.nav.sbl.dialogarena.rest.feil.Feilmelding.NO_BIGIP_5XX_REDIRECT;

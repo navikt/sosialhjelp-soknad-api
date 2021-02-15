@@ -24,7 +24,7 @@ public class IntegrationConfig {
             try {
                 ImmutableSet<ClassPath.ClassInfo> tjenester = ClassPath
                         .from(IntegrationConfig.class.getClassLoader())
-                        .getTopLevelClasses("no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig");
+                        .getTopLevelClasses("no.nav.sosialhjelp.soknad.consumer.wsconfig");
                 System.out.println(tjenester);
                 for (ClassPath.ClassInfo classInfo : tjenester) {
                     for (Method method: classInfo.load().getMethods()) {
