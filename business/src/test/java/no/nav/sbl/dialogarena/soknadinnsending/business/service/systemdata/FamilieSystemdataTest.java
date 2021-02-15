@@ -21,13 +21,10 @@ import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonHarDeltBosted;
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonHarForsorgerplikt;
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSamvarsgrad;
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus;
-import no.nav.sosialhjelp.soknad.consumer.pdlperson.PdlEllerPersonV1Service;
+import no.nav.sosialhjelp.soknad.consumer.pdl.PdlService;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.domain.model.Barn;
 import no.nav.sosialhjelp.soknad.domain.model.Ektefelle;
-import no.nav.tjeneste.virksomhet.person.v1.informasjon.Person;
-import no.nav.tjeneste.virksomhet.person.v1.informasjon.Sivilstand;
-import no.nav.tjeneste.virksomhet.person.v1.informasjon.Sivilstander;
 import org.joda.time.LocalDate;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,7 +32,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -48,7 +44,6 @@ import static no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus.Status
 import static no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus.Status.SEPARERT;
 import static no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus.Status.SKILT;
 import static no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus.Status.UGIFT;
-import static no.nav.sosialhjelp.soknad.consumer.person.PersonMapper.finnSivilstatus;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -166,7 +161,7 @@ public class FamilieSystemdataTest {
     }
 
     @Mock
-    private PdlEllerPersonV1Service pdlEllerPersonV1Service;
+    private PdlService pdlService;
 
     @InjectMocks
     private FamilieSystemdata familieSystemdata;
@@ -176,7 +171,7 @@ public class FamilieSystemdataTest {
         no.nav.sosialhjelp.soknad.domain.model.Person person = new no.nav.sosialhjelp.soknad.domain.model.Person()
                 .withSivilstatus(GIFT.toString())
                 .withEktefelle(EKTEFELLE);
-        when(pdlEllerPersonV1Service.hentPerson(anyString())).thenReturn(person);
+        when(pdlService.hentPerson(anyString())).thenReturn(person);
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
 
         familieSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
@@ -198,7 +193,7 @@ public class FamilieSystemdataTest {
     public void skalIkkeSetteSivilstatusDersomEktefelleMangler() throws JsonProcessingException {
         no.nav.sosialhjelp.soknad.domain.model.Person person = new no.nav.sosialhjelp.soknad.domain.model.Person()
                 .withSivilstatus(GIFT.toString());
-        when(pdlEllerPersonV1Service.hentPerson(anyString())).thenReturn(person);
+        when(pdlService.hentPerson(anyString())).thenReturn(person);
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
 
         familieSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
@@ -226,27 +221,11 @@ public class FamilieSystemdataTest {
     }
 
     @Test
-    public void alleStatuserFraTPSBlirMappetTilJsonSivilstatus() {
-        List<String> muligeTPSKoder = new ArrayList<>(asList("GIFT", "GLAD", "REPA", "SAMB", "UGIF", "ENKE", "GJPA", "SEPA", "SEPR", "SKIL", "SKPA"));
-        String status;
-        Sivilstand sivilstand = new Sivilstand();
-        Sivilstander sivilstander = new Sivilstander();
-        Person person = new Person();
-        for (String tpsKode : muligeTPSKoder){
-            sivilstander.setValue(tpsKode);
-            sivilstand.setSivilstand(sivilstander);
-            person.setSivilstand(sivilstand);
-            status = finnSivilstatus(person);
-            JsonSivilstatus.Status.fromValue(status);
-        }
-    }
-
-    @Test
     public void skalSetteSivilstatusGiftMedTomEktefelleDersomEktefelleHarDiskresjonskode() throws JsonProcessingException {
         no.nav.sosialhjelp.soknad.domain.model.Person person = new no.nav.sosialhjelp.soknad.domain.model.Person()
                 .withSivilstatus(GIFT.toString())
                 .withEktefelle(EKTEFELLE_MED_DISKRESJONSKODE);
-        when(pdlEllerPersonV1Service.hentPerson(anyString())).thenReturn(person);
+        when(pdlService.hentPerson(anyString())).thenReturn(person);
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
 
         familieSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
@@ -266,7 +245,7 @@ public class FamilieSystemdataTest {
 
     @Test
     public void skalSetteForsorgerpliktMedFlereBarn() throws JsonProcessingException {
-        when(pdlEllerPersonV1Service.hentBarn(anyString())).thenReturn(asList(BARN, BARN_2));
+        when(pdlService.hentBarnForPerson(anyString())).thenReturn(asList(BARN, BARN_2));
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
 
         familieSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
@@ -288,7 +267,7 @@ public class FamilieSystemdataTest {
 
     @Test
     public void skalIkkeSetteForsorgerplikt() throws JsonProcessingException {
-        when(pdlEllerPersonV1Service.hentBarn(anyString())).thenReturn(Collections.emptyList());
+        when(pdlService.hentBarnForPerson(anyString())).thenReturn(Collections.emptyList());
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
 
         familieSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
@@ -311,7 +290,7 @@ public class FamilieSystemdataTest {
                         .withKilde(JsonKilde.SYSTEM)
                         .withVerdi(true))
                 .withAnsvar(asList(JSON_ANSVAR, JSON_ANSVAR_2, JSON_ANSVAR_3_BRUKERREGISTRERT));
-        when(pdlEllerPersonV1Service.hentBarn(anyString())).thenReturn(asList(BARN, BARN_2));
+        when(pdlService.hentBarnForPerson(anyString())).thenReturn(asList(BARN, BARN_2));
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid()
                 .withJsonInternalSoknad(jsonInternalSoknad);
 
@@ -340,7 +319,7 @@ public class FamilieSystemdataTest {
 
     @Test
     public void skalIkkeOverskriveBrukerregistrerteBarnEllerForsorgerpliktVerdiNaarDetIkkeFinnesSystemBarn() throws JsonProcessingException {
-        when(pdlEllerPersonV1Service.hentBarn(anyString())).thenReturn(Collections.emptyList());
+        when(pdlService.hentBarnForPerson(anyString())).thenReturn(Collections.emptyList());
         JsonInternalSoknad jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER);
         jsonInternalSoknad.getSoknad().getData().getFamilie().getForsorgerplikt()
                 .withHarForsorgerplikt(new JsonHarForsorgerplikt()
@@ -369,7 +348,7 @@ public class FamilieSystemdataTest {
 
     @Test
     public void skalIkkeOverskriveSamvaersgradOgHarDeltBostedOgBarnebidrag() throws JsonProcessingException {
-        when(pdlEllerPersonV1Service.hentBarn(anyString())).thenReturn(asList(BARN, BARN_2));
+        when(pdlService.hentBarnForPerson(anyString())).thenReturn(asList(BARN, BARN_2));
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createJsonInternalSoknadWithBarnWithUserFilledInfoOnSystemBarn());
 
         familieSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
@@ -395,7 +374,7 @@ public class FamilieSystemdataTest {
         no.nav.sosialhjelp.soknad.domain.model.Person person = new no.nav.sosialhjelp.soknad.domain.model.Person()
                 .withSivilstatus(status.toString())
                 .withEktefelle(ektefelle);
-        when(pdlEllerPersonV1Service.hentPerson(anyString())).thenReturn(person);
+        when(pdlService.hentPerson(anyString())).thenReturn(person);
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
 
         familieSystemdata.updateSystemdataIn(soknadUnderArbeid, "");

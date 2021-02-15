@@ -1,10 +1,10 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata;
 
+import no.nav.sosialhjelp.soknad.consumer.pdl.PdlService;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonIdentifikator;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonSokernavn;
-import no.nav.sosialhjelp.soknad.consumer.pdlperson.PdlEllerPersonV1Service;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.domain.model.Person;
 import org.junit.Test;
@@ -35,7 +35,7 @@ public class BasisPersonaliaSystemdataTest {
     private static final String IKKE_NORDISK_STATSBORGERSKAP = "GER";
 
     @Mock
-    private PdlEllerPersonV1Service pdlEllerPersonV1Service;
+    private PdlService pdlService;
 
     @InjectMocks
     private BasisPersonaliaSystemdata basisPersonaliaSystemdata;
@@ -43,7 +43,7 @@ public class BasisPersonaliaSystemdataTest {
     @Test
     public void skalIkkeOppdatereDersomPersonaliaErNull() {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
-        when(pdlEllerPersonV1Service.hentPerson(anyString())).thenReturn(null);
+        when(pdlService.hentPerson(anyString())).thenReturn(null);
 
         basisPersonaliaSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
 
@@ -67,7 +67,7 @@ public class BasisPersonaliaSystemdataTest {
                 .withEtternavn(ETTERNAVN)
                 .withStatsborgerskap(List.of(NORSK_STATSBORGERSKAP));
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
-        when(pdlEllerPersonV1Service.hentPerson(anyString())).thenReturn(person);
+        when(pdlService.hentPerson(anyString())).thenReturn(person);
 
         basisPersonaliaSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
 
@@ -93,7 +93,7 @@ public class BasisPersonaliaSystemdataTest {
                 .withEtternavn(ETTERNAVN)
                 .withStatsborgerskap(List.of(NORDISK_STATSBORGERSKAP, NORSK_STATSBORGERSKAP));
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
-        when(pdlEllerPersonV1Service.hentPerson(anyString())).thenReturn(person);
+        when(pdlService.hentPerson(anyString())).thenReturn(person);
 
         basisPersonaliaSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
 
@@ -113,7 +113,7 @@ public class BasisPersonaliaSystemdataTest {
                 .withEtternavn(ETTERNAVN)
                 .withStatsborgerskap(List.of(IKKE_NORDISK_STATSBORGERSKAP, NORDISK_STATSBORGERSKAP));
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
-        when(pdlEllerPersonV1Service.hentPerson(anyString())).thenReturn(person);
+        when(pdlService.hentPerson(anyString())).thenReturn(person);
 
         basisPersonaliaSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
 
@@ -133,7 +133,7 @@ public class BasisPersonaliaSystemdataTest {
                 .withEtternavn(ETTERNAVN)
                 .withStatsborgerskap(List.of(IKKE_NORDISK_STATSBORGERSKAP));
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
-        when(pdlEllerPersonV1Service.hentPerson(anyString())).thenReturn(person);
+        when(pdlService.hentPerson(anyString())).thenReturn(person);
 
         basisPersonaliaSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
 
@@ -160,7 +160,7 @@ public class BasisPersonaliaSystemdataTest {
                 .withEtternavn(ETTERNAVN)
                 .withStatsborgerskap(List.of("???"));
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
-        when(pdlEllerPersonV1Service.hentPerson(anyString())).thenReturn(person);
+        when(pdlService.hentPerson(anyString())).thenReturn(person);
 
         basisPersonaliaSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
 
@@ -178,7 +178,7 @@ public class BasisPersonaliaSystemdataTest {
                 .withEtternavn(ETTERNAVN)
                 .withStatsborgerskap(List.of(PDL_UKJENT_STATSBORGERSKAP));
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
-        when(pdlEllerPersonV1Service.hentPerson(anyString())).thenReturn(person);
+        when(pdlService.hentPerson(anyString())).thenReturn(person);
 
         basisPersonaliaSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
 

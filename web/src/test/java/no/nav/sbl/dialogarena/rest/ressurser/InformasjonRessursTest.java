@@ -5,7 +5,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.service.InformasjonServi
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sosialhjelp.api.fiks.KommuneInfo;
 import no.nav.sosialhjelp.soknad.consumer.fiks.KommuneInfoService;
-import no.nav.sosialhjelp.soknad.consumer.pdlperson.PdlEllerPersonV1Service;
+import no.nav.sosialhjelp.soknad.consumer.pdl.PdlService;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.StaticSubjectHandlerService;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import no.nav.sosialhjelp.soknad.domain.model.util.KommuneTilNavEnhetMapper;
@@ -43,7 +43,7 @@ public class InformasjonRessursTest {
     @Mock
     private KommuneInfoService kommuneInfoService;
     @Mock
-    private PdlEllerPersonV1Service pdlEllerPersonV1Service;
+    private PdlService pdlService;
 
     @InjectMocks
     private InformasjonRessurs ressurs;

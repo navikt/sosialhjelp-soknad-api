@@ -53,8 +53,8 @@ public final class RetryUtils {
                     }
                 })
                 .onError(event -> log.warn("Retry client med baseUrl={}. Maks antall retries nådd ({}). Feil: {} ({})",
-                        event.getNumberOfRetryAttempts(),
                         baseUrl,
+                        event.getNumberOfRetryAttempts(),
                         event.getLastThrowable().getClass().getSimpleName(),
                         event.getLastThrowable().getMessage(),
                         event.getLastThrowable()));
