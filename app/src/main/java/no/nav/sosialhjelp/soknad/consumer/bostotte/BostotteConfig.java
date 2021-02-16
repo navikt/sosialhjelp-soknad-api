@@ -14,7 +14,7 @@ import org.springframework.web.client.RestTemplate;
 public class BostotteConfig {
 
     @Value("${soknad.bostotte.url}")
-    private final String uri = "";
+    private String uri = "";
 
     @Value("${soknad.bostotte.ping.url}")
     private String pingUrl;

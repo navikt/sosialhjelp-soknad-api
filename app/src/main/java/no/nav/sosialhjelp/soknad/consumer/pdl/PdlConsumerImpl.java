@@ -85,8 +85,7 @@ public class PdlConsumerImpl implements PdlConsumer {
         try {
             var request = lagRequest(endpoint);
             var body = withRetry(() -> request.post(requestEntity(query, variables(ident)), String.class));
-            var pdlResponse = pdlMapper.readValue(body, new TypeReference<HentPersonResponse<PdlPerson>>() {
-            });
+            var pdlResponse = pdlMapper.readValue(body, new TypeReference<HentPersonResponse<PdlPerson>>() {});
 
             checkForPdlApiErrors(pdlResponse);
 
@@ -106,8 +105,7 @@ public class PdlConsumerImpl implements PdlConsumer {
         try {
             var request = lagRequest(endpoint);
             var body = withRetry(() -> request.post(requestEntity(query, variables(ident)), String.class));
-            var pdlResponse = pdlMapper.readValue(body, new TypeReference<HentPersonResponse<PdlBarn>>() {
-            });
+            var pdlResponse = pdlMapper.readValue(body, new TypeReference<HentPersonResponse<PdlBarn>>() {});
 
             checkForPdlApiErrors(pdlResponse);
 
@@ -127,8 +125,7 @@ public class PdlConsumerImpl implements PdlConsumer {
         try {
             var request = lagRequest(endpoint);
             var body = withRetry(() -> request.post(requestEntity(query, variables(ident)), String.class));
-            var pdlResponse = pdlMapper.readValue(body, new TypeReference<HentPersonResponse<PdlEktefelle>>() {
-            });
+            var pdlResponse = pdlMapper.readValue(body, new TypeReference<HentPersonResponse<PdlEktefelle>>() {});
 
             checkForPdlApiErrors(pdlResponse);
 

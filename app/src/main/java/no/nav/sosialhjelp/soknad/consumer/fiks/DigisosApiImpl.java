@@ -107,7 +107,7 @@ public class DigisosApiImpl implements DigisosApi {
     private HttpRequestRetryHandler retryHandler;
     private ServiceUnavailableRetryStrategy serviceUnavailableRetryStrategy;
 
-    private final ExecutorCompletionService<Void> executor = new ExecutorCompletionService<>(Executors.newCachedThreadPool());
+    private ExecutorCompletionService<Void> executor = new ExecutorCompletionService<>(Executors.newCachedThreadPool());
     private IdPortenOidcConfiguration idPortenOidcConfiguration;
     private byte[] fiksPublicKey = null;
 

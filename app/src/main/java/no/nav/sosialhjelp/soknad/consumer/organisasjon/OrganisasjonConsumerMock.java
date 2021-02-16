@@ -16,7 +16,7 @@ import static org.mockito.Mockito.when;
 
 public class OrganisasjonConsumerMock {
 
-    private static final Map<String, OrganisasjonNoekkelinfoDto> responses = new HashMap<>();
+    private static Map<String, OrganisasjonNoekkelinfoDto> responses = new HashMap<>();
 
     private static final String orgnrMock = "123457890";
 

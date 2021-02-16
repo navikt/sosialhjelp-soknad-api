@@ -22,8 +22,8 @@ public class OrganisasjonConsumerImpl implements OrganisasjonConsumer {
 
     private static final Logger logger = getLogger(OrganisasjonConsumerImpl.class);
 
-    private final Client client;
-    private final String endpoint;
+    private Client client;
+    private String endpoint;
 
     public OrganisasjonConsumerImpl(Client client, String endpoint) {
         this.client = client;

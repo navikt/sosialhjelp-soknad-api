@@ -74,7 +74,7 @@ public class AdresseSokService {
 
     @Cacheable("kommunesokCache")
     public List<Kommunesok> sokEtterNavEnheter(String kommunenr) {
-        return sokEtterNavKontor(new Sokedata().withKommunenummer(kommunenr))
+        return sokEtterNavKontor(new AdresseSokConsumer.Sokedata().withKommunenummer(kommunenr))
                 .stream().map(adresseForslag -> {
                     NavEnhet navEnhet = norgService.getEnhetForGt(adresseForslag.geografiskTilknytning);
                     return new Kommunesok(kommunenr, adresseForslag, navEnhet);

@@ -40,9 +40,9 @@ public class PdlConsumerMock {
 
     private static final String EKTEFELLE_FNR = "11111111111";
 
-    private static final Map<String, PdlPerson> pdlPersonResponses = new HashMap<>();
-    private static final Map<String, PdlEktefelle> pdlEktefelleResponses = new HashMap<>();
-    private static final Map<String, PdlBarn> pdlBarnResponses = new HashMap<>();
+    private static Map<String, PdlPerson> pdlPersonResponses = new HashMap<>();
+    private static Map<String, PdlEktefelle> pdlEktefelleResponses = new HashMap<>();
+    private static Map<String, PdlBarn> pdlBarnResponses = new HashMap<>();
 
     public static PdlPerson getOrCreateCurrentPdlPersonResponse(InvocationOnMock invocationOnMock) {
         PdlPerson response = pdlPersonResponses.get(SubjectHandler.getUserId());

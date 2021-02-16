@@ -15,7 +15,16 @@ import static org.mockito.Mockito.when;
 public class DkifConsumerMock {
 
     private static final String telefonnummer = "12345789";
-    private static final Map<String, DigitalKontaktinfoBolk> responses = new HashMap<>();
+    private static Map<String, DigitalKontaktinfoBolk> responses = new HashMap<>();
+
+    public DkifConsumer dkifConsumerMock() {
+        DkifConsumer mock = mock(DkifConsumer.class);
+
+        when(mock.hentDigitalKontaktinfo(anyString()))
+                .thenAnswer((invocationOnMock) -> getOrDefaultResponse(SubjectHandler.getUserId()));
+
+        return mock;
+    }
 
     public static DigitalKontaktinfoBolk getOrDefaultResponse(String fnr) {
         DigitalKontaktinfoBolk response = responses.get(fnr);
@@ -38,14 +47,5 @@ public class DkifConsumerMock {
 
     public static void resetTelefonnummer(String fnr) {
         responses.replace(fnr, defaultDigitalKontaktinfo(fnr));
-    }
-
-    public DkifConsumer dkifConsumerMock() {
-        DkifConsumer mock = mock(DkifConsumer.class);
-
-        when(mock.hentDigitalKontaktinfo(anyString()))
-                .thenAnswer((invocationOnMock) -> getOrDefaultResponse(SubjectHandler.getUserId()));
-
-        return mock;
     }
 }

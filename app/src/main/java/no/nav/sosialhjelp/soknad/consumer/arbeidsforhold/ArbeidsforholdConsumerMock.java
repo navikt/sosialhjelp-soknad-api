@@ -26,7 +26,7 @@ import static org.mockito.Mockito.when;
 
 public class ArbeidsforholdConsumerMock {
 
-    private static final Map<String, List<ArbeidsforholdDto>> responses = new HashMap<>();
+    private static Map<String, List<ArbeidsforholdDto>> responses = new HashMap<>();
 
     public ArbeidsforholdConsumer arbeidsforholdConsumerMock() {
 

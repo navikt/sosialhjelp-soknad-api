@@ -8,6 +8,7 @@ import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseSokConsumer;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import org.slf4j.Logger;
 
+import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.Invocation.Builder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
@@ -26,8 +27,8 @@ public class AdresseSokConsumerImpl implements AdresseSokConsumer {
     private static final Logger logger = getLogger(AdresseSokConsumerImpl.class);
     private static final String SOKNADSOSIALHJELP_SERVER_TPSWS_API_V1_APIKEY_PASSWORD = "SOKNADSOSIALHJELP_SERVER_TPSWS_API_V1_APIKEY_PASSWORD";
 
-    private final Function<Sokedata, RestCallContext> restCallContextSelector;
-    private final String endpoint;
+    private Function<Sokedata, RestCallContext> restCallContextSelector;
+    private String endpoint;
 
 
     public AdresseSokConsumerImpl(RestCallContext restCallContext, String endpoint) {
@@ -42,7 +43,7 @@ public class AdresseSokConsumerImpl implements AdresseSokConsumer {
     @Override
     public AdressesokRespons sokAdresse(Sokedata sokedata) {
         final RestCallContext executionContext = restCallContextSelector.apply(sokedata);
-        final Builder request = lagRequest(executionContext, sokedata, sokedata.soketype.toTpsKode());
+        final Invocation.Builder request = lagRequest(executionContext, sokedata, sokedata.soketype.toTpsKode());
 
         return RestCallUtils.performRequestUsingContext(executionContext, () -> sokAdresseMotTjeneste(sokedata, request));
     }
@@ -84,7 +85,7 @@ public class AdresseSokConsumerImpl implements AdresseSokConsumer {
         }
     }
 
-    private AdressesokRespons sokAdresseMotTjeneste(Sokedata sokedata, final Builder request) {
+    private AdressesokRespons sokAdresseMotTjeneste(Sokedata sokedata, final Invocation.Builder request) {
         try (Response response = request.get()) {
 
             if (logger.isDebugEnabled()) {
@@ -128,7 +129,7 @@ public class AdresseSokConsumerImpl implements AdresseSokConsumer {
                 && !isBlank(adresseData.poststed);
     }
 
-    private Builder lagRequest(RestCallContext executionContext, Sokedata sokedata, String soketype) {
+    private Invocation.Builder lagRequest(RestCallContext executionContext, Sokedata sokedata, String soketype) {
         String consumerId = SubjectHandler.getConsumerId();
         String callId = MDCOperations.getFromMDC(MDCOperations.MDC_CALL_ID);
         final String apiKey = getenv(SOKNADSOSIALHJELP_SERVER_TPSWS_API_V1_APIKEY_PASSWORD);

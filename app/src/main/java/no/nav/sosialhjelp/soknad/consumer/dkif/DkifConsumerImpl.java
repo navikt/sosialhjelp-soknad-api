@@ -26,8 +26,8 @@ public class DkifConsumerImpl implements DkifConsumer {
     private static final Logger logger = getLogger(DkifConsumerImpl.class);
     private static final String BEARER = "Bearer ";
 
-    private final Client client;
-    private final String endpoint;
+    private Client client;
+    private String endpoint;
 
     public DkifConsumerImpl(Client client, String endpoint) {
         this.client = client;
