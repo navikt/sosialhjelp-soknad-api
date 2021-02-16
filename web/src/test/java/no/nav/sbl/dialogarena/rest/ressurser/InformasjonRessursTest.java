@@ -1,9 +1,9 @@
 package no.nav.sbl.dialogarena.rest.ressurser;
 
 import no.nav.sbl.dialogarena.rest.ressurser.informasjon.InformasjonRessurs;
+import no.nav.sosialhjelp.api.fiks.KommuneInfo;
 import no.nav.sosialhjelp.soknad.business.service.InformasjonService;
 import no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService;
-import no.nav.sosialhjelp.api.fiks.KommuneInfo;
 import no.nav.sosialhjelp.soknad.consumer.fiks.KommuneInfoService;
 import no.nav.sosialhjelp.soknad.consumer.pdl.PdlService;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.StaticSubjectHandlerService;
