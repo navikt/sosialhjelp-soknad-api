@@ -19,7 +19,6 @@ public final class RestCallContext {
         this.executorTimeoutInMilliseconds = executorTimeoutInMilliseconds;
     }
 
-
     public Client getClient() {
         return client;
     }
@@ -35,7 +34,6 @@ public final class RestCallContext {
     public int currentQueueSize() {
         return executorService.getQueue().size();
     }
-
 
     public static final class Builder {
         private Client client;
