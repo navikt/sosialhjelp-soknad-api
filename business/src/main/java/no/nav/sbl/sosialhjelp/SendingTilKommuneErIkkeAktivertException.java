@@ -1,6 +1,6 @@
 package no.nav.sbl.sosialhjelp;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.exception.SosialhjelpSoknadApiException;
+import no.nav.sosialhjelp.soknad.domain.model.exception.SosialhjelpSoknadApiException;
 
 public class SendingTilKommuneErIkkeAktivertException extends SosialhjelpSoknadApiException {
 

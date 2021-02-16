@@ -1,6 +1,6 @@
-name: Auto-deploy redis dev-sbs
+name: Auto-deploy redis dev
 on:
-  push: # Deploys automatically to dev-sbs if there is a change in any redis files.
+  push: # Deploys automatically to dev-sbs and dev-gcp if there is a change in any redis files.
     paths:
       - "web/nais/redis-config.yml"
       - "web/nais/redisexporter.yml"
@@ -14,17 +14,32 @@ env:
   CI: true
 
 jobs:
-  deploy-dev:
+  deploy-dev-sbs:
     name: Auto-deploy redis to dev-sbs
     runs-on: ubuntu-latest
     steps:
       - name: Hente kode
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
       - name: Deploy
         uses: nais/deploy/actions/deploy@v1
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CLUSTER: dev-sbs
+          TEAM: teamdigisos
+          RESOURCE: "web/nais/redis-config.yml,web/nais/redisexporter.yml"
+
+  deploy-dev-gcp:
+    name: Auto-deploy redis to dev-gcp
+    runs-on: ubuntu-latest
+    steps:
+      - name: Hente kode
+        uses: actions/checkout@v2
+      - name: Deploy
+        uses: nais/deploy/actions/deploy@v1
+        env:
+          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CLUSTER: dev-gcp
           TEAM: teamdigisos
           RESOURCE: "web/nais/redis-config.yml,web/nais/redisexporter.yml"

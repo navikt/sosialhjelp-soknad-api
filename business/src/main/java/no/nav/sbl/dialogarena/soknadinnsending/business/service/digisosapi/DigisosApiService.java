@@ -4,13 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.metrics.Event;
 import no.nav.metrics.MetricsFactory;
-import no.nav.sbl.dialogarena.sendsoknad.domain.PersonAlder;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.fiks.DigisosApi;
-import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.FilMetadata;
-import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.FilOpplasting;
-import no.nav.sbl.dialogarena.sendsoknad.domain.exception.SosialhjelpSoknadApiException;
-import no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.HenvendelseService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadMetricsService;
@@ -21,10 +14,15 @@ import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
 import no.nav.sbl.sosialhjelp.InnsendingService;
 import no.nav.sbl.sosialhjelp.SoknadUnderArbeidService;
-import no.nav.sbl.sosialhjelp.domain.OpplastetVedlegg;
-import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
-import no.nav.sbl.sosialhjelp.domain.Vedleggstatus;
 import no.nav.sbl.sosialhjelp.pdfmedpdfbox.SosialhjelpPdfGenerator;
+import no.nav.sosialhjelp.soknad.consumer.fiks.DigisosApi;
+import no.nav.sosialhjelp.soknad.domain.OpplastetVedlegg;
+import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
+import no.nav.sosialhjelp.soknad.domain.Vedleggstatus;
+import no.nav.sosialhjelp.soknad.domain.model.digisosapi.FilMetadata;
+import no.nav.sosialhjelp.soknad.domain.model.digisosapi.FilOpplasting;
+import no.nav.sosialhjelp.soknad.domain.model.mock.MockUtils;
+import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
@@ -34,7 +32,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils.isTillatMockRessurs;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.util.JsonVedleggUtils.getVedleggFromInternalSoknad;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.util.MetricsUtils.navKontorTilInfluxNavn;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.util.SenderUtils.createPrefixedBehandlingsIdInNonProd;
@@ -198,10 +195,6 @@ public class DigisosApiService {
         String behandlingsId = soknadUnderArbeid.getBehandlingsId();
         soknadUnderArbeidService.settInnsendingstidspunktPaSoknad(soknadUnderArbeid);
 
-        if (soknadUnderArbeid.erEttersendelse() && getVedleggFromInternalSoknad(soknadUnderArbeid).isEmpty()) {
-            log.error("Kan ikke sende inn ettersendingen med ID {} uten å ha lastet opp vedlegg", behandlingsId);
-            throw new SosialhjelpSoknadApiException("Kan ikke sende inn ettersendingen uten å ha lastet opp vedlegg");
-        }
         log.info("Starter innsending av søknad med behandlingsId {}, skal sendes til DigisosApi", behandlingsId);
 
         SoknadMetadata.VedleggMetadataListe vedlegg = convertToVedleggMetadataListe(soknadUnderArbeid);
@@ -219,10 +212,7 @@ public class DigisosApiService {
                 soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker().getNavEnhetsnavn());
         String digisosId = sendOgKrypter(soknadJson, tilleggsinformasjonJson, vedleggJson, filOpplastinger, kommunenummer, soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker().getNavEnhetsnavn(), behandlingsId, token);
 
-        soknadMetricsService.sendtSoknad(soknadUnderArbeid.erEttersendelse());
-        if (!soknadUnderArbeid.erEttersendelse() && !isTillatMockRessurs()) {
-            logAlderTilKibana(SubjectHandler.getUserId());
-        }
+        soknadMetricsService.reportSendSoknadMetrics(SubjectHandler.getUserId(), soknadUnderArbeid, vedlegg.vedleggListe);
         return digisosId;
     }
 
@@ -266,7 +256,6 @@ public class DigisosApiService {
         }
     }
 
-
     private SoknadMetadata.VedleggMetadataListe convertToVedleggMetadataListe(SoknadUnderArbeid soknadUnderArbeid) {
         SoknadMetadata.VedleggMetadataListe vedlegg = new SoknadMetadata.VedleggMetadataListe();
 
@@ -280,14 +269,5 @@ public class DigisosApiService {
         }).collect(Collectors.toList());
 
         return vedlegg;
-    }
-
-    private static void logAlderTilKibana(String eier) {
-        int age = new PersonAlder(eier).getAlder();
-        if (age > 0 && age < 30) {
-            log.info("DIGISOS-1164: UNDER30 - Soknad sent av bruker med alder: " + age);
-        } else {
-            log.info("DIGISOS-1164: OVER30 - Soknad sent av bruker med alder:" + age);
-        }
     }
 }

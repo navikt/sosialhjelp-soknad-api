@@ -1,9 +1,9 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata;
 
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.organisasjon.OrganisasjonService;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.skatt.SkattbarInntektService;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.utbetaling.UtbetalingService;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOrganisasjon;
+import no.nav.sosialhjelp.soknad.consumer.organisasjon.OrganisasjonService;
+import no.nav.sosialhjelp.soknad.consumer.skatt.SkattbarInntektService;
+import no.nav.sosialhjelp.soknad.consumer.utbetaling.UtbetalingService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;

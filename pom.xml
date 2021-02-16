@@ -10,13 +10,9 @@
     </parent>
 
     <modules>
-        <module>tekster</module>
-        <module>config</module>
+        <module>app</module>
         <module>business</module>
-        <module>domain</module>
-        <module>consumer</module>
         <module>web</module>
-        <module>mock</module>
     </modules>
 
     <name>Dialogarena - Send Søknad</name>
@@ -82,14 +78,14 @@
         <nav-common.version>1.2020.11.16_14.52-3f16e0d8c867</nav-common.version>
 
         <spring.version>5.3.3</spring.version>
-        <jetty.version>9.4.35.v20201120</jetty.version>
+        <jetty.version>9.4.36.v20210114</jetty.version>
         <jersey.version>2.33</jersey.version>
         <token-validation.version>1.3.2</token-validation.version>
         <nimbus-jose-jwt.version>8.20.1</nimbus-jose-jwt.version>
         <cxf.version>3.4.2</cxf.version>
         <wss4j.version>2.3.0</wss4j.version>
         <ojdbc.version>19.9.0.0</ojdbc.version>
-        <flyway-core.version>7.5.0</flyway-core.version>
+        <flyway-core.version>7.5.1</flyway-core.version>
         <flyway-maven-plugin.version>7.5.0</flyway-maven-plugin.version>
         <handlebars.version>4.2.0</handlebars.version>
         <jackson.version>2.12.1</jackson.version>
@@ -103,7 +99,6 @@
         <stax2-api.version>4.2.1</stax2-api.version>
         <hibernate.version>5.2.5.Final</hibernate.version>
         <jaxb2-basics-runtime.version>0.11.1</jaxb2-basics-runtime.version>
-        <verapdf.version>1.16.1</verapdf.version>
         <tika.version>1.25</tika.version>
         <logback.version>1.2.3</logback.version>
         <hsqldb.version>2.5.1</hsqldb.version>
@@ -116,7 +111,6 @@
         <commons-codec.version>1.15</commons-codec.version>
         <commons-io.version>2.8.0</commons-io.version>
         <commons-lang3.version>3.11</commons-lang3.version>
-        <commons-collections4.version>4.4</commons-collections4.version>
         <commons-text.version>1.9</commons-text.version>
         <httpcore.version>4.4.14</httpcore.version>
         <httpmime.version>4.5.13</httpmime.version>
@@ -149,7 +143,7 @@
         <!-- Versjoner for test dependencies -->
         <hamcrest.version>2.2</hamcrest.version>
         <junit.version>4.13.1</junit.version>
-        <mockito.version>3.7.0</mockito.version>
+        <mockito.version>3.7.7</mockito.version>
         <assertj.version>3.18.1</assertj.version>
         <reflections.version>0.9.12</reflections.version>
         <digipost.digg.version>0.13</digipost.digg.version>
@@ -167,7 +161,6 @@
         <jsoup.version>1.13.1</jsoup.version>
         <oauth2-oidc-sdk.version>7.3</oauth2-oidc-sdk.version>
         <lang-tag.version>1.5</lang-tag.version>
-        <uap-java.version>1.5.0</uap-java.version>
         <emoji-java.version>5.1.1</emoji-java.version>
         <java-support.version>7.5.1</java-support.version>
         <cryptacular.version>1.2.4</cryptacular.version>
@@ -182,33 +175,12 @@
         <dependencies>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>soknadsosialhjelp-tekster</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>sendsoknad-consumer</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>sendsoknad-domain</artifactId>
+                <artifactId>app</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>sendsoknad-business</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>sendsoknad-frontend</artifactId>
-                <version>${project.version}</version>
-                <scope>runtime</scope>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>sendsoknad-mock</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
@@ -233,11 +205,6 @@
             <dependency>
                 <groupId>no.nav.tjenestespesifikasjoner</groupId>
                 <artifactId>person-v3-tjenestespesifikasjon</artifactId>
-                <version>${tjenestespesifikasjon.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>no.nav.tjenestespesifikasjoner</groupId>
-                <artifactId>nav-fim-person-v1-tjenestespesifikasjon</artifactId>
                 <version>${tjenestespesifikasjon.version}</version>
             </dependency>
             <dependency>
@@ -833,28 +800,6 @@
                 <scope>compile</scope>
             </dependency>
             <dependency>
-                <groupId>org.verapdf</groupId>
-                <artifactId>validation-model</artifactId>
-                <version>${verapdf.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.apache.cxf</groupId>
-                        <artifactId>cxf-api</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.verapdf</groupId>
-                <artifactId>core</artifactId>
-                <version>${verapdf.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>javax.xml.bind</groupId>
-                        <artifactId>jaxb-api</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
                 <groupId>org.apache.tika</groupId>
                 <artifactId>tika-core</artifactId>
                 <version>${tika.version}</version>
@@ -994,7 +939,7 @@
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>sendsoknad-consumer</artifactId>
+                <artifactId>app</artifactId>
                 <version>${project.version}</version>
                 <type>test-jar</type>
                 <scope>test</scope>
@@ -1002,13 +947,6 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>sendsoknad-business</artifactId>
-                <version>${project.version}</version>
-                <type>test-jar</type>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>sendsoknad-domain</artifactId>
                 <version>${project.version}</version>
                 <type>test-jar</type>
                 <scope>test</scope>
@@ -1288,23 +1226,6 @@
                 <groupId>org.jvnet.mimepull</groupId>
                 <artifactId>mimepull</artifactId>
                 <version>${mimepull.version}</version>
-            </dependency>
-
-            <!--
-                Snyk klager på sårbarhet i snakeyaml som er en avhengighet i uap-java.
-                Se https://snyk.io/vuln/SNYK-JAVA-ORGYAML-537645
-                uap-java bruker kun snakeyaml til å parse en yaml-fil med regexer brukt av biblioteket. Vi stoler på
-                denne filen. https://github.com/ua-parser/uap-core/blob/master/regexes.yaml
-            -->
-            <dependency>
-                <groupId>com.github.ua-parser</groupId>
-                <artifactId>uap-java</artifactId>
-                <version>${uap-java.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.commons</groupId>
-                <artifactId>commons-collections4</artifactId>
-                <version>${commons-collections4.version}</version>
             </dependency>
 
             <dependency>
