@@ -1,7 +1,7 @@
 package no.nav.sbl.dialogarena.config;
 
-import no.nav.sbl.sosialhjelp.pdf.HandleBarKjoerer;
-import no.nav.sbl.sosialhjelp.pdf.HtmlGenerator;
+import no.nav.sosialhjelp.soknad.business.pdf.HandleBarKjoerer;
+import no.nav.sosialhjelp.soknad.business.pdf.HtmlGenerator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;

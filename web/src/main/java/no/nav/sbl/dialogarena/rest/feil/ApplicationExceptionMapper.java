@@ -1,10 +1,10 @@
 package no.nav.sbl.dialogarena.rest.feil;
 
-import no.nav.sbl.sosialhjelp.SendingTilKommuneErIkkeAktivertException;
-import no.nav.sbl.sosialhjelp.SendingTilKommuneErMidlertidigUtilgjengeligException;
-import no.nav.sbl.sosialhjelp.SendingTilKommuneUtilgjengeligException;
-import no.nav.sbl.sosialhjelp.SoknadenHarNedetidException;
-import no.nav.sbl.sosialhjelp.pdfmedpdfbox.PdfGenereringException;
+import no.nav.sosialhjelp.soknad.business.exceptions.SendingTilKommuneErIkkeAktivertException;
+import no.nav.sosialhjelp.soknad.business.exceptions.SendingTilKommuneErMidlertidigUtilgjengeligException;
+import no.nav.sosialhjelp.soknad.business.exceptions.SendingTilKommuneUtilgjengeligException;
+import no.nav.sosialhjelp.soknad.business.exceptions.SoknadenHarNedetidException;
+import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.PdfGenereringException;
 import no.nav.sosialhjelp.soknad.consumer.exceptions.PdlApiException;
 import no.nav.sosialhjelp.soknad.consumer.exceptions.SikkerhetsBegrensningException;
 import no.nav.sosialhjelp.soknad.consumer.exceptions.TjenesteUtilgjengeligException;
@@ -33,7 +33,7 @@ import static javax.ws.rs.core.Response.Status.UNSUPPORTED_MEDIA_TYPE;
 import static javax.ws.rs.core.Response.serverError;
 import static javax.ws.rs.core.Response.status;
 import static no.nav.sbl.dialogarena.rest.feil.Feilmelding.NO_BIGIP_5XX_REDIRECT;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.service.OpplastetVedleggService.MAKS_SAMLET_VEDLEGG_STORRELSE_I_MB;
+import static no.nav.sosialhjelp.soknad.business.service.OpplastetVedleggService.MAKS_SAMLET_VEDLEGG_STORRELSE_I_MB;
 
 @Provider
 public class ApplicationExceptionMapper implements ExceptionMapper<SosialhjelpSoknadApiException> {

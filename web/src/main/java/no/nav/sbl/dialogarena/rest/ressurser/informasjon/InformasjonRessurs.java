@@ -3,7 +3,7 @@ package no.nav.sbl.dialogarena.rest.ressurser.informasjon;
 import no.nav.metrics.aspects.Timed;
 import no.nav.sbl.dialogarena.rest.Logg;
 import no.nav.sbl.dialogarena.rest.ressurser.personalia.NavEnhetRessurs;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.InformasjonService;
+import no.nav.sosialhjelp.soknad.business.service.InformasjonService;
 import no.nav.sbl.dialogarena.utils.NedetidUtils;
 import no.nav.security.token.support.core.api.ProtectedWithClaims;
 import no.nav.security.token.support.core.api.Unprotected;
