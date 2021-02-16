@@ -12,9 +12,7 @@
     <modules>
         <module>app</module>
         <module>business</module>
-        <module>consumer</module>
         <module>web</module>
-        <module>mock</module>
     </modules>
 
     <name>Dialogarena - Send Søknad</name>
@@ -182,17 +180,7 @@
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>sendsoknad-consumer</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
                 <artifactId>sendsoknad-business</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>sendsoknad-mock</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
@@ -951,7 +939,7 @@
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>sendsoknad-consumer</artifactId>
+                <artifactId>app</artifactId>
                 <version>${project.version}</version>
                 <type>test-jar</type>
                 <scope>test</scope>
@@ -959,13 +947,6 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>sendsoknad-business</artifactId>
-                <version>${project.version}</version>
-                <type>test-jar</type>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>app</artifactId>
                 <version>${project.version}</version>
                 <type>test-jar</type>
                 <scope>test</scope>

@@ -1,13 +1,21 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.fiks;
 
-import no.ks.svarut.servicesv9.*;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.fiks.DokumentKrypterer;
+import no.ks.svarut.servicesv9.Adresse;
+import no.ks.svarut.servicesv9.Brevtype;
+import no.ks.svarut.servicesv9.Dokument;
+import no.ks.svarut.servicesv9.Forsendelse;
+import no.ks.svarut.servicesv9.ForsendelsesServiceV9;
+import no.ks.svarut.servicesv9.NoarkMetadataFraAvleverendeSakssystem;
+import no.ks.svarut.servicesv9.OrganisasjonDigitalAdresse;
+import no.ks.svarut.servicesv9.PostAdresse;
+import no.ks.svarut.servicesv9.Printkonfigurasjon;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
 import no.nav.sbl.sosialhjelp.InnsendingService;
+import no.nav.sbl.sosialhjelp.pdfmedpdfbox.SosialhjelpPdfGenerator;
+import no.nav.sosialhjelp.soknad.consumer.fiks.DokumentKrypterer;
 import no.nav.sosialhjelp.soknad.domain.SendtSoknad;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
-import no.nav.sbl.sosialhjelp.pdfmedpdfbox.SosialhjelpPdfGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;

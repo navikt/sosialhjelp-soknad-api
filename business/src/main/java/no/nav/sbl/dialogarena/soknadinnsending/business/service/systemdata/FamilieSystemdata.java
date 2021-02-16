@@ -1,15 +1,22 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata;
 
-import no.nav.sosialhjelp.soknad.domain.model.Barn;
-import no.nav.sosialhjelp.soknad.domain.model.Ektefelle;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.Systemdata;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.PdlService;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonData;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeSystem;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonNavn;
-import no.nav.sbl.soknadsosialhjelp.soknad.familie.*;
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonAnsvar;
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonBarn;
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonEktefelle;
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonErFolkeregistrertSammen;
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonFamilie;
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonForsorgerplikt;
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonHarForsorgerplikt;
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus;
+import no.nav.sosialhjelp.soknad.consumer.pdl.PdlService;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
+import no.nav.sosialhjelp.soknad.domain.model.Barn;
+import no.nav.sosialhjelp.soknad.domain.model.Ektefelle;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 

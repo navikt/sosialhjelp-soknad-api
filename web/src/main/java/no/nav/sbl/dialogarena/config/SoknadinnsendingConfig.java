@@ -6,11 +6,15 @@ import no.nav.sbl.dialogarena.service.SoknadOversiktService;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.BusinessConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknad.SoknadInnsendingDBConfig;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.ConsumerConfig;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.BostotteConfig;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig.DigisosApiRestConfig;
-import no.nav.sbl.dialogarena.virusscan.VirusScanConfig;
-import org.springframework.context.annotation.*;
+import no.nav.sosialhjelp.soknad.consumer.ConsumerConfig;
+import no.nav.sosialhjelp.soknad.consumer.bostotte.BostotteConfig;
+import no.nav.sosialhjelp.soknad.consumer.restconfig.DigisosApiRestConfig;
+import no.nav.sosialhjelp.soknad.consumer.virusscan.VirusScanConfig;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import org.springframework.context.annotation.Import;
 
 @EnableAspectJAutoProxy
 @Configuration

@@ -1,20 +1,20 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
-import no.nav.sosialhjelp.soknad.domain.model.exception.SamletVedleggStorrelseForStorException;
-import no.nav.sosialhjelp.soknad.domain.model.exception.UgyldigOpplastingTypeException;
-import no.nav.sosialhjelp.soknad.domain.model.oidc.StaticSubjectHandlerService;
-import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.soknadinnsending.business.util.TikaFileType;
-import no.nav.sbl.dialogarena.virusscan.VirusScanner;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon;
+import no.nav.sbl.sosialhjelp.soknadunderbehandling.OpplastetVedleggRepository;
+import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
+import no.nav.sosialhjelp.soknad.consumer.virusscan.VirusScanner;
 import no.nav.sosialhjelp.soknad.domain.OpplastetVedlegg;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.domain.VedleggType;
-import no.nav.sbl.sosialhjelp.soknadunderbehandling.OpplastetVedleggRepository;
-import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
+import no.nav.sosialhjelp.soknad.domain.model.exception.SamletVedleggStorrelseForStorException;
+import no.nav.sosialhjelp.soknad.domain.model.exception.UgyldigOpplastingTypeException;
+import no.nav.sosialhjelp.soknad.domain.model.oidc.StaticSubjectHandlerService;
+import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

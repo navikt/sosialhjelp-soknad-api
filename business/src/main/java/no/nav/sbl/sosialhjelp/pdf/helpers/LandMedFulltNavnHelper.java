@@ -1,7 +1,7 @@
 package no.nav.sbl.sosialhjelp.pdf.helpers;
 
 import com.github.jknack.handlebars.Options;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.kodeverk.KodeverkService;
+import no.nav.sosialhjelp.soknad.consumer.kodeverk.KodeverkService;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
