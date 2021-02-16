@@ -85,11 +85,11 @@ import static no.nav.sosialhjelp.soknad.consumer.redis.CacheConstants.KOMMUNEINF
 import static no.nav.sosialhjelp.soknad.consumer.redis.CacheConstants.KOMMUNEINFO_CACHE_SECONDS;
 import static no.nav.sosialhjelp.soknad.consumer.redis.CacheConstants.KOMMUNEINFO_LAST_POLL_TIME_KEY;
 import static no.nav.sosialhjelp.soknad.consumer.redis.RedisUtils.toKommuneInfoMap;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils.isMockAltProfil;
+import static no.nav.sosialhjelp.soknad.domain.mock.MockUtils.isMockAltProfil;
 import static no.nav.sosialhjelp.soknad.domain.model.mock.MockUtils.isTillatMockRessurs;
 import static no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.HEADER_INTEGRASJON_ID;
 import static no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.HEADER_INTEGRASJON_PASSORD;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils.isNonProduction;
+import static no.nav.sosialhjelp.soknad.domain.util.ServiceUtils.isNonProduction;
 import static no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils.stripVekkFnutter;
 import static org.eclipse.jetty.http.HttpHeader.ACCEPT;
 import static org.eclipse.jetty.http.HttpHeader.AUTHORIZATION;
