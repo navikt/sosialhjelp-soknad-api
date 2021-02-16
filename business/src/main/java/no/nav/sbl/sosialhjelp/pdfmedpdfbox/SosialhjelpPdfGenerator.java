@@ -1074,9 +1074,9 @@ public class SosialhjelpPdfGenerator {
                 }
                 pdf.addBlankLine();
                 if (utvidetSoknad) {
-                    skrivInfotekst(pdf, "inntekt.bostotte.detaljer.lenkeText");
+                    skrivInfotekst(pdf, "inntekt.bostotte.husbanken.lenkeText");
                     skrivInfotekst(pdf, "inntekt.bostotte.ta_bort_samtykke");
-                    urisOnPage.put(getTekst("inntekt.bostotte.detaljer.lenkeText"), getTekst("inntekt.bostotte.husbanken.url"));
+                    urisOnPage.put(getTekst("inntekt.bostotte.husbanken.lenkeText"), getTekst("inntekt.bostotte.husbanken.url"));
                     pdf.addBlankLine();
                 }
             }
