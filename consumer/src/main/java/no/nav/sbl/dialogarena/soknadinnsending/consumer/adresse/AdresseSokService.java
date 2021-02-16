@@ -1,12 +1,12 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.adresse;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseForslag;
-import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer;
-import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.AdresseData;
-import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.AdressesokRespons;
-import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.Sokedata;
-import no.nav.sbl.dialogarena.sendsoknad.domain.norg.NavEnhet;
-import no.nav.sbl.dialogarena.sendsoknad.domain.util.KommuneTilNavEnhetMapper;
+import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseForslag;
+import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseSokConsumer;
+import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseSokConsumer.AdresseData;
+import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseSokConsumer.AdressesokRespons;
+import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseSokConsumer.Sokedata;
+import no.nav.sosialhjelp.soknad.domain.model.norg.NavEnhet;
+import no.nav.sosialhjelp.soknad.domain.model.util.KommuneTilNavEnhetMapper;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.kodeverk.KodeverkService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.norg.NorgService;
 import org.slf4j.Logger;
@@ -23,7 +23,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseForslagType.gateAdresse;
+import static no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseForslagType.gateAdresse;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Service

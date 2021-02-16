@@ -1,9 +1,9 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.pdlperson;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.Adresse;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Bostedsadresse;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Kontaktadresse;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Oppholdsadresse;
+import no.nav.sosialhjelp.soknad.domain.model.Adresse;
+import no.nav.sosialhjelp.soknad.domain.model.Bostedsadresse;
+import no.nav.sosialhjelp.soknad.domain.model.Kontaktadresse;
+import no.nav.sosialhjelp.soknad.domain.model.Oppholdsadresse;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 

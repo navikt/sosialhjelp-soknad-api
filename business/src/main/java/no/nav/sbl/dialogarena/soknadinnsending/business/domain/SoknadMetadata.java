@@ -1,9 +1,9 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.domain;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus;
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SoknadType;
+import no.nav.sosialhjelp.soknad.domain.SoknadInnsendingStatus;
+import no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SoknadType;
 import no.nav.sbl.dialogarena.soknadinnsending.business.util.JAXBHelper;
-import no.nav.sbl.sosialhjelp.domain.Vedleggstatus;
+import no.nav.sosialhjelp.soknad.domain.Vedleggstatus;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.time.LocalDateTime;

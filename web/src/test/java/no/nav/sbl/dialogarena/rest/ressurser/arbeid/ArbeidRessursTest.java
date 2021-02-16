@@ -2,15 +2,15 @@ package no.nav.sbl.dialogarena.rest.ressurser.arbeid;
 
 import no.nav.sbl.dialogarena.rest.ressurser.arbeid.ArbeidRessurs.ArbeidFrontend;
 import no.nav.sbl.dialogarena.rest.ressurser.arbeid.ArbeidRessurs.ArbeidsforholdFrontend;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.StaticSubjectHandlerService;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
+import no.nav.sosialhjelp.soknad.domain.model.oidc.StaticSubjectHandlerService;
+import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata.ArbeidsforholdSystemdata;
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeidsforhold;
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonKommentarTilArbeidsforhold;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker;
-import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
+import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import org.junit.After;
 import org.junit.Before;

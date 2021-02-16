@@ -1,11 +1,9 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.Barn;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Ektefelle;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Person;
+import no.nav.sosialhjelp.soknad.domain.model.Barn;
+import no.nav.sosialhjelp.soknad.domain.model.Ektefelle;
+import no.nav.sosialhjelp.soknad.domain.model.Person;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.kodeverk.KodeverkService;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.PdlBarn;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.PdlPersonMapper;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.dto.AdressebeskyttelseDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.dto.BostedsadresseDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.dto.EndringDto;
@@ -22,8 +20,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.dto.Sivilstan
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.dto.StatsborgerskapDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.dto.UkjentBostedDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.dto.VegadresseDto;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.PdlEktefelle;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.PdlPerson;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

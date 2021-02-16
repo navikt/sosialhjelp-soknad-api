@@ -1,10 +1,10 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.skatt;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.skattbarinntekt.Forskuddstrekk;
-import no.nav.sbl.dialogarena.sendsoknad.domain.skattbarinntekt.Inntekt;
-import no.nav.sbl.dialogarena.sendsoknad.domain.skattbarinntekt.OppgaveInntektsmottaker;
-import no.nav.sbl.dialogarena.sendsoknad.domain.skattbarinntekt.SkattbarInntekt;
-import no.nav.sbl.dialogarena.sendsoknad.domain.utbetaling.Utbetaling;
+import no.nav.sosialhjelp.soknad.domain.model.skattbarinntekt.Forskuddstrekk;
+import no.nav.sosialhjelp.soknad.domain.model.skattbarinntekt.Inntekt;
+import no.nav.sosialhjelp.soknad.domain.model.skattbarinntekt.OppgaveInntektsmottaker;
+import no.nav.sosialhjelp.soknad.domain.model.skattbarinntekt.SkattbarInntekt;
+import no.nav.sosialhjelp.soknad.domain.model.utbetaling.Utbetaling;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;

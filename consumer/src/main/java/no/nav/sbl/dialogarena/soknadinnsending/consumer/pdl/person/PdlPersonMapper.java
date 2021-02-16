@@ -1,14 +1,14 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person;
 
 import com.google.common.collect.ImmutableMap;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Barn;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Bostedsadresse;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Ektefelle;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Kontaktadresse;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Matrikkeladresse;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Oppholdsadresse;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Person;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Vegadresse;
+import no.nav.sosialhjelp.soknad.domain.model.Barn;
+import no.nav.sosialhjelp.soknad.domain.model.Bostedsadresse;
+import no.nav.sosialhjelp.soknad.domain.model.Ektefelle;
+import no.nav.sosialhjelp.soknad.domain.model.Kontaktadresse;
+import no.nav.sosialhjelp.soknad.domain.model.Matrikkeladresse;
+import no.nav.sosialhjelp.soknad.domain.model.Oppholdsadresse;
+import no.nav.sosialhjelp.soknad.domain.model.Person;
+import no.nav.sosialhjelp.soknad.domain.model.Vegadresse;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.kodeverk.KodeverkService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.dto.AdressebeskyttelseDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.dto.BostedsadresseDto;

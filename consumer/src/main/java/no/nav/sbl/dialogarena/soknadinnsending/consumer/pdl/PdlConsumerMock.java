@@ -3,7 +3,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
+import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.PdlBarn;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.dto.AdressebeskyttelseDto;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.person.dto.BostedsadresseDto;

@@ -2,7 +2,7 @@ package no.nav.sbl.dialogarena.rest.ressurser.soknadoversikt;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import no.nav.metrics.aspects.Timed;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
+import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.service.SoknadOversiktService;
 import no.nav.security.token.support.core.api.ProtectedWithClaims;
 import org.slf4j.Logger;

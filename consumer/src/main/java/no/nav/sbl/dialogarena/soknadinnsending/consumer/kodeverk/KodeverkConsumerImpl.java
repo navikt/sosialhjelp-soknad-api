@@ -4,7 +4,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer.kodeverk;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import no.nav.sbl.dialogarena.mdc.MDCOperations;
 import no.nav.sbl.dialogarena.redis.RedisService;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
+import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.kodeverk.dto.KodeverkDto;
 import org.slf4j.Logger;
 
@@ -22,8 +22,8 @@ import static no.nav.sbl.dialogarena.redis.CacheConstants.KODEVERK_LAST_POLL_TIM
 import static no.nav.sbl.dialogarena.redis.CacheConstants.KOMMUNER_CACHE_KEY;
 import static no.nav.sbl.dialogarena.redis.CacheConstants.LANDKODER_CACHE_KEY;
 import static no.nav.sbl.dialogarena.redis.CacheConstants.POSTNUMMER_CACHE_KEY;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.util.HeaderConstants.HEADER_CALL_ID;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.util.HeaderConstants.HEADER_CONSUMER_ID;
+import static no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.HEADER_CALL_ID;
+import static no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.HEADER_CONSUMER_ID;
 import static no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig.KodeverkRestConfig.kodeverkMapper;
 import static org.slf4j.LoggerFactory.getLogger;
 

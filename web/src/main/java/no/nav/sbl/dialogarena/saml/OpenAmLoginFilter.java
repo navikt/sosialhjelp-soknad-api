@@ -2,7 +2,7 @@ package no.nav.sbl.dialogarena.saml;
 
 import no.nav.common.auth.Subject;
 import no.nav.common.auth.SubjectHandler;
-import no.nav.sbl.dialogarena.sendsoknad.domain.exception.SamlUnauthorizedException;
+import no.nav.sosialhjelp.soknad.domain.model.exception.SamlUnauthorizedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -11,7 +11,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktI
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktUtgift;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
-import no.nav.sbl.sosialhjelp.domain.OpplastetVedlegg;
+import no.nav.sosialhjelp.soknad.domain.OpplastetVedlegg;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

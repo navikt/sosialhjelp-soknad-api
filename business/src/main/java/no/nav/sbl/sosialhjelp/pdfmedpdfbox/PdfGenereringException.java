@@ -1,6 +1,6 @@
 package no.nav.sbl.sosialhjelp.pdfmedpdfbox;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.exception.SosialhjelpSoknadApiException;
+import no.nav.sosialhjelp.soknad.domain.model.exception.SosialhjelpSoknadApiException;
 
 public class PdfGenereringException extends SosialhjelpSoknadApiException {
 

@@ -3,8 +3,8 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer.adresse;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer;
-import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.Sokedata;
+import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseSokConsumer;
+import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseSokConsumer.Sokedata;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.kodeverk.KodeverkService;
 import org.slf4j.Logger;
 

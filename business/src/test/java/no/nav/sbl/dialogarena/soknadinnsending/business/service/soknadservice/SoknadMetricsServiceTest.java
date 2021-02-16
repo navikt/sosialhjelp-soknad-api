@@ -1,7 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice;
 
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
-import no.nav.sbl.sosialhjelp.domain.Vedleggstatus;
+import no.nav.sosialhjelp.soknad.domain.Vedleggstatus;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;

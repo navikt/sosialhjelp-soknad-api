@@ -1,6 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.skatt;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.skattbarinntekt.SkattbarInntekt;
+import no.nav.sosialhjelp.soknad.domain.model.skattbarinntekt.SkattbarInntekt;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.concurrency.RestCallContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +14,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.function.Function;
 
-import static no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils.feilmeldingUtenFnr;
+import static no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils.feilmeldingUtenFnr;
 
 @Component
 public class SkattbarInntektConsumerImpl implements SkattbarInntektConsumer {

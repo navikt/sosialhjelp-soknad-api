@@ -1,6 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.utbetaling.Utbetaling;
+import no.nav.sosialhjelp.soknad.domain.model.utbetaling.Utbetaling;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.organisasjon.OrganisasjonService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.skatt.SkattbarInntektService;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
@@ -8,7 +8,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetalingKomponent;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse;
-import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
+import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

@@ -1,6 +1,6 @@
 package no.nav.sbl.dialogarena.saml;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.exception.SamlUnauthorizedException;
+import no.nav.sosialhjelp.soknad.domain.model.exception.SamlUnauthorizedException;
 import org.junit.Test;
 
 import java.util.HashMap;

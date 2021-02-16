@@ -4,8 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import io.github.resilience4j.retry.Retry;
 import no.nav.sbl.dialogarena.mdc.MDCOperations;
 import no.nav.sbl.dialogarena.redis.RedisService;
-import no.nav.sbl.dialogarena.sendsoknad.domain.norg.NorgConsumer;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
+import no.nav.sosialhjelp.soknad.domain.model.norg.NorgConsumer;
+import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.TjenesteUtilgjengeligException;
 import org.slf4j.Logger;
 
@@ -30,9 +30,9 @@ import static no.nav.sbl.dialogarena.retry.RetryUtils.DEFAULT_INITIAL_WAIT_INTER
 import static no.nav.sbl.dialogarena.retry.RetryUtils.DEFAULT_MAX_ATTEMPTS;
 import static no.nav.sbl.dialogarena.retry.RetryUtils.retryConfig;
 import static no.nav.sbl.dialogarena.retry.RetryUtils.withRetry;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.util.HeaderConstants.HEADER_CALL_ID;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.util.HeaderConstants.HEADER_CONSUMER_ID;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.util.HeaderConstants.HEADER_NAV_APIKEY;
+import static no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.HEADER_CALL_ID;
+import static no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.HEADER_CONSUMER_ID;
+import static no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.HEADER_NAV_APIKEY;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 import static org.slf4j.LoggerFactory.getLogger;
 

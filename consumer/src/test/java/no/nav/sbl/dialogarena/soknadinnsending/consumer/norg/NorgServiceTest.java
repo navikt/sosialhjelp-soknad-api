@@ -1,10 +1,10 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.norg;
 
 import no.nav.sbl.dialogarena.redis.RedisService;
-import no.nav.sbl.dialogarena.sendsoknad.domain.norg.NavEnhet;
-import no.nav.sbl.dialogarena.sendsoknad.domain.norg.NavenhetFraLokalListe;
-import no.nav.sbl.dialogarena.sendsoknad.domain.norg.NavenheterFraLokalListe;
-import no.nav.sbl.dialogarena.sendsoknad.domain.norg.NorgConsumer;
+import no.nav.sosialhjelp.soknad.domain.model.norg.NavEnhet;
+import no.nav.sosialhjelp.soknad.domain.model.norg.NavenhetFraLokalListe;
+import no.nav.sosialhjelp.soknad.domain.model.norg.NavenheterFraLokalListe;
+import no.nav.sosialhjelp.soknad.domain.model.norg.NorgConsumer;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.TjenesteUtilgjengeligException;
 import org.junit.After;
 import org.junit.Ignore;
@@ -14,7 +14,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import javax.ws.rs.ServerErrorException;
 import javax.ws.rs.ServiceUnavailableException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -27,7 +26,7 @@ import java.util.stream.Collectors;
 
 import static java.lang.System.clearProperty;
 import static java.lang.System.setProperty;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.util.KommuneTilNavEnhetMapper.getOrganisasjonsnummer;
+import static no.nav.sosialhjelp.soknad.domain.model.util.KommuneTilNavEnhetMapper.getOrganisasjonsnummer;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertNotEquals;

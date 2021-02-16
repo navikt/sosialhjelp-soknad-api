@@ -1,12 +1,12 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus;
+import no.nav.sosialhjelp.soknad.domain.SoknadInnsendingStatus;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.BehandlingsKjede;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.BehandlingsKjede.InnsendtSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata.VedleggMetadata;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.HenvendelseService;
-import no.nav.sbl.sosialhjelp.domain.Vedleggstatus;
+import no.nav.sosialhjelp.soknad.domain.Vedleggstatus;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.function.Predicate;
 
 import static java.util.stream.Collectors.toList;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SoknadType.SEND_SOKNAD_KOMMUNAL_ETTERSENDING;
+import static no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SoknadType.SEND_SOKNAD_KOMMUNAL_ETTERSENDING;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.util.EttersendelseUtils.soknadSendtForMindreEnn30DagerSiden;
 
 @Component

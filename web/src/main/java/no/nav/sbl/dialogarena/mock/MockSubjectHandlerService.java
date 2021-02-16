@@ -1,7 +1,7 @@
 package no.nav.sbl.dialogarena.mock;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandlerService;
+import no.nav.sosialhjelp.soknad.domain.model.mock.MockUtils;
+import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandlerService;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 

@@ -1,7 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.restconfig;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer;
-import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.Sokedata;
+import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseSokConsumer;
+import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseSokConsumer.Sokedata;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.adresse.AdresseSokConsumerMock;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.adresse.AdresseSokConsumerImpl;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.concurrency.RestCallContext;

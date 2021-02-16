@@ -1,6 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils;
+import no.nav.sosialhjelp.soknad.domain.model.mock.MockUtils;
 import no.nav.sbl.dialogarena.types.Pingable;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

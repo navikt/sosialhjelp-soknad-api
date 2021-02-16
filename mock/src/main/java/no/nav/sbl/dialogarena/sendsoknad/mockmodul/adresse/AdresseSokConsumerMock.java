@@ -1,11 +1,11 @@
 package no.nav.sbl.dialogarena.sendsoknad.mockmodul.adresse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer;
-import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.AdresseData;
-import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.AdressesokRespons;
-import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.Sokedata;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
+import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseSokConsumer;
+import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseSokConsumer.AdresseData;
+import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseSokConsumer.AdressesokRespons;
+import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseSokConsumer.Sokedata;
+import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -13,7 +13,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 

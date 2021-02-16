@@ -1,12 +1,12 @@
 package no.nav.sbl.dialogarena.sendsoknad.mockmodul.adresse;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.AdresseData;
-import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.Sokedata;
+import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseSokConsumer.AdresseData;
+import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseSokConsumer.Sokedata;
 
 import java.util.Arrays;
 import java.util.List;
 
-import static no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.Soketype.FONETISK;
+import static no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseSokConsumer.Soketype.FONETISK;
 
 class AdresseSokMockHelper {
 

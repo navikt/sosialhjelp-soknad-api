@@ -1,18 +1,18 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.exception.OpplastingException;
-import no.nav.sbl.dialogarena.sendsoknad.domain.exception.SamletVedleggStorrelseForStorException;
-import no.nav.sbl.dialogarena.sendsoknad.domain.exception.UgyldigOpplastingTypeException;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
-import no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils;
+import no.nav.sosialhjelp.soknad.domain.model.exception.OpplastingException;
+import no.nav.sosialhjelp.soknad.domain.model.exception.SamletVedleggStorrelseForStorException;
+import no.nav.sosialhjelp.soknad.domain.model.exception.UgyldigOpplastingTypeException;
+import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
+import no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils;
 import no.nav.sbl.dialogarena.soknadinnsending.business.util.FileDetectionUtils;
 import no.nav.sbl.dialogarena.soknadinnsending.business.util.TikaFileType;
 import no.nav.sbl.dialogarena.virusscan.VirusScanner;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
-import no.nav.sbl.sosialhjelp.domain.OpplastetVedlegg;
-import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
-import no.nav.sbl.sosialhjelp.domain.VedleggType;
+import no.nav.sosialhjelp.soknad.domain.OpplastetVedlegg;
+import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
+import no.nav.sosialhjelp.soknad.domain.VedleggType;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.OpplastetVedleggRepository;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -32,8 +32,8 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 import static no.nav.sbl.dialogarena.soknadinnsending.business.util.JsonVedleggUtils.getVedleggFromInternalSoknad;
-import static no.nav.sbl.sosialhjelp.domain.Vedleggstatus.LastetOpp;
-import static no.nav.sbl.sosialhjelp.domain.Vedleggstatus.VedleggKreves;
+import static no.nav.sosialhjelp.soknad.domain.Vedleggstatus.LastetOpp;
+import static no.nav.sosialhjelp.soknad.domain.Vedleggstatus.VedleggKreves;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Component

@@ -1,6 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.personv3;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.AdresserOgKontonummer;
+import no.nav.sosialhjelp.soknad.domain.model.AdresserOgKontonummer;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.IkkeFunnetException;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.SikkerhetsBegrensningException;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.TjenesteUtilgjengeligException;

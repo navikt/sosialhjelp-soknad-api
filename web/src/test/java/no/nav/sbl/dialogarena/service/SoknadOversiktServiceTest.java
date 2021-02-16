@@ -1,7 +1,7 @@
 package no.nav.sbl.dialogarena.service;
 
 import no.nav.sbl.dialogarena.rest.ressurser.soknadoversikt.SoknadOversiktRessurs.SoknadOversikt;
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SoknadType;
+import no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SoknadType;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
 import org.junit.Before;
@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static java.util.Collections.singletonList;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.UNDER_ARBEID;
+import static no.nav.sosialhjelp.soknad.domain.SoknadInnsendingStatus.UNDER_ARBEID;
 import static no.nav.sbl.dialogarena.service.SoknadOversiktService.DEFAULT_TITTEL;
 import static no.nav.sbl.dialogarena.service.SoknadOversiktService.KILDE_SOKNAD_API;
 import static org.junit.Assert.assertEquals;

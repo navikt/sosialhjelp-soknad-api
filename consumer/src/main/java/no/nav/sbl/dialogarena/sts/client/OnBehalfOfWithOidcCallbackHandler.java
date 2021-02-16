@@ -2,7 +2,7 @@ package no.nav.sbl.dialogarena.sts.client;
 
 /* Originally from common-java-modules (no.nav.sbl.dialogarena.common.cxf) */
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
+import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import org.apache.cxf.ws.security.trust.delegation.DelegationCallback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

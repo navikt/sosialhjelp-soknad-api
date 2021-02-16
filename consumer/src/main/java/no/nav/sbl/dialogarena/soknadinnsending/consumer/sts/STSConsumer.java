@@ -1,6 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.sts;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.exception.SosialhjelpSoknadApiException;
+import no.nav.sosialhjelp.soknad.domain.model.exception.SosialhjelpSoknadApiException;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.TjenesteUtilgjengeligException;
 import org.slf4j.Logger;
 
@@ -13,7 +13,7 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.Response;
 
-import static no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils.isTillatMockRessurs;
+import static no.nav.sosialhjelp.soknad.domain.model.mock.MockUtils.isTillatMockRessurs;
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class STSConsumer {

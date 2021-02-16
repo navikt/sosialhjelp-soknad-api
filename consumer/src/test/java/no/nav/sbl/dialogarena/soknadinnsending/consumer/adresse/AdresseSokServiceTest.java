@@ -1,7 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.adresse;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseForslag;
-import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer;
+import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseForslag;
+import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseSokConsumer;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.kodeverk.KodeverkService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.norg.NorgService;
 import org.junit.Test;

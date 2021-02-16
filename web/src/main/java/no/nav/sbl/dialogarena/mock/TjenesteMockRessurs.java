@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import no.ks.svarut.servicesv9.Dokument;
 import no.ks.svarut.servicesv9.Forsendelse;
 import no.ks.svarut.servicesv9.PostAdresse;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
+import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.adresse.AdresseSokConsumerMock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.norg.NorgConsumerMock;
 import no.nav.sbl.dialogarena.sendsoknad.mockmodul.person.PersonV3Mock;
@@ -25,7 +25,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonSokernavn;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonTelefonnummer;
 import no.nav.sbl.sosialhjelp.InnsendingService;
-import no.nav.sbl.sosialhjelp.domain.SendtSoknad;
+import no.nav.sosialhjelp.soknad.domain.SendtSoknad;
 import no.nav.sbl.sosialhjelp.pdfmedpdfbox.SosialhjelpPdfGenerator;
 import no.nav.security.token.support.core.api.Unprotected;
 import org.apache.commons.io.IOUtils;
@@ -51,7 +51,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils.isTillatMockRessurs;
+import static no.nav.sosialhjelp.soknad.domain.model.mock.MockUtils.isTillatMockRessurs;
 
 @Controller
 @Unprotected

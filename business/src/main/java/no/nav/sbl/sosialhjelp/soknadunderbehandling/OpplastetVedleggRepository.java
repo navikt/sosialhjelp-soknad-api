@@ -1,6 +1,6 @@
 package no.nav.sbl.sosialhjelp.soknadunderbehandling;
 
-import no.nav.sbl.sosialhjelp.domain.OpplastetVedlegg;
+import no.nav.sosialhjelp.soknad.domain.OpplastetVedlegg;
 
 import java.util.List;
 import java.util.Optional;

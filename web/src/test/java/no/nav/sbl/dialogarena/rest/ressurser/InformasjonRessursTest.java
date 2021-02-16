@@ -2,9 +2,9 @@ package no.nav.sbl.dialogarena.rest.ressurser;
 
 import no.nav.sbl.dialogarena.rest.ressurser.informasjon.InformasjonRessurs;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fiks.KommuneInfoService;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.StaticSubjectHandlerService;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
-import no.nav.sbl.dialogarena.sendsoknad.domain.util.KommuneTilNavEnhetMapper;
+import no.nav.sosialhjelp.soknad.domain.model.oidc.StaticSubjectHandlerService;
+import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
+import no.nav.sosialhjelp.soknad.domain.model.util.KommuneTilNavEnhetMapper;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.InformasjonService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.PdlService;

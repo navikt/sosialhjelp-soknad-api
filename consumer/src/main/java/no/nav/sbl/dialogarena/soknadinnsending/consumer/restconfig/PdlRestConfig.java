@@ -15,7 +15,7 @@ import javax.ws.rs.client.ClientRequestFilter;
 
 import static java.lang.System.getenv;
 import static no.nav.sbl.dialogarena.common.cxf.InstanceSwitcher.createSwitcher;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.util.HeaderConstants.HEADER_NAV_APIKEY;
+import static no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.HEADER_NAV_APIKEY;
 import static no.nav.sbl.dialogarena.types.Pingable.Ping.feilet;
 import static no.nav.sbl.dialogarena.types.Pingable.Ping.lyktes;
 

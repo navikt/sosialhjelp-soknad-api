@@ -15,6 +15,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>no.nav.sbl.dialogarena</groupId>
+            <artifactId>app</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
         </dependency>
@@ -37,10 +42,6 @@
         <dependency>
             <groupId>joda-time</groupId>
             <artifactId>joda-time</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.sbl.dialogarena</groupId>
-            <artifactId>sendsoknad-domain</artifactId>
         </dependency>
 
         <dependency>

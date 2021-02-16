@@ -1,10 +1,10 @@
 package no.nav.sbl.dialogarena.rest.feil;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.exception.AuthorizationException;
-import no.nav.sbl.dialogarena.sendsoknad.domain.exception.EttersendelseSendtForSentException;
-import no.nav.sbl.dialogarena.sendsoknad.domain.exception.OpplastingException;
-import no.nav.sbl.dialogarena.sendsoknad.domain.exception.SosialhjelpSoknadApiException;
-import no.nav.sbl.dialogarena.sendsoknad.domain.exception.UgyldigOpplastingTypeException;
+import no.nav.sosialhjelp.soknad.domain.model.exception.AuthorizationException;
+import no.nav.sosialhjelp.soknad.domain.model.exception.EttersendelseSendtForSentException;
+import no.nav.sosialhjelp.soknad.domain.model.exception.OpplastingException;
+import no.nav.sosialhjelp.soknad.domain.model.exception.SosialhjelpSoknadApiException;
+import no.nav.sosialhjelp.soknad.domain.model.exception.UgyldigOpplastingTypeException;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.SikkerhetsBegrensningException;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.TjenesteUtilgjengeligException;
 import org.junit.Test;

@@ -1,6 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.utbetaling;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.utbetaling.Utbetaling;
+import no.nav.sosialhjelp.soknad.domain.model.utbetaling.Utbetaling;
 import no.nav.tjeneste.virksomhet.utbetaling.v1.UtbetalingV1;
 import no.nav.tjeneste.virksomhet.utbetaling.v1.informasjon.*;
 import no.nav.tjeneste.virksomhet.utbetaling.v1.meldinger.WSHentUtbetalingsinformasjonRequest;

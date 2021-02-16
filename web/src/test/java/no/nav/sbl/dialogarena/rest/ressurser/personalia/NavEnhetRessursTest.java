@@ -1,11 +1,11 @@
 package no.nav.sbl.dialogarena.rest.ressurser.personalia;
 
 import no.nav.sbl.dialogarena.rest.ressurser.personalia.NavEnhetRessurs.NavEnhetFrontend;
-import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseForslag;
-import no.nav.sbl.dialogarena.sendsoknad.domain.norg.NavEnhet;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.StaticSubjectHandlerService;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
-import no.nav.sbl.dialogarena.sendsoknad.domain.util.KommuneTilNavEnhetMapper;
+import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseForslag;
+import no.nav.sosialhjelp.soknad.domain.model.norg.NavEnhet;
+import no.nav.sosialhjelp.soknad.domain.model.oidc.StaticSubjectHandlerService;
+import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
+import no.nav.sosialhjelp.soknad.domain.model.util.KommuneTilNavEnhetMapper;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.SoknadsmottakerService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fiks.KommuneInfoService;
@@ -16,7 +16,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonGateAdresse;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknadsmottaker;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
-import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
+import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import org.junit.After;
 import org.junit.Before;
