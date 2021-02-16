@@ -1,7 +1,7 @@
 package no.nav.sbl.sosialhjelp.soknadunderbehandling;
 
-import no.nav.sbl.sosialhjelp.domain.OpplastetVedlegg;
-import no.nav.sbl.sosialhjelp.domain.VedleggType;
+import no.nav.sosialhjelp.soknad.domain.OpplastetVedlegg;
+import no.nav.sosialhjelp.soknad.domain.VedleggType;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
 import org.springframework.stereotype.Component;

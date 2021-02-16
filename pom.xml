@@ -10,12 +10,9 @@
     </parent>
 
     <modules>
-        <module>tekster</module>
+        <module>app</module>
         <module>business</module>
-        <module>domain</module>
-        <module>consumer</module>
         <module>web</module>
-        <module>mock</module>
     </modules>
 
     <name>Dialogarena - Send Søknad</name>
@@ -88,7 +85,7 @@
         <cxf.version>3.4.2</cxf.version>
         <wss4j.version>2.3.0</wss4j.version>
         <ojdbc.version>19.9.0.0</ojdbc.version>
-        <flyway-core.version>7.5.0</flyway-core.version>
+        <flyway-core.version>7.5.1</flyway-core.version>
         <flyway-maven-plugin.version>7.5.0</flyway-maven-plugin.version>
         <handlebars.version>4.2.0</handlebars.version>
         <jackson.version>2.12.1</jackson.version>
@@ -178,27 +175,12 @@
         <dependencies>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>soknadsosialhjelp-tekster</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>sendsoknad-consumer</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>sendsoknad-domain</artifactId>
+                <artifactId>app</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>sendsoknad-business</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>sendsoknad-mock</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
@@ -223,11 +205,6 @@
             <dependency>
                 <groupId>no.nav.tjenestespesifikasjoner</groupId>
                 <artifactId>person-v3-tjenestespesifikasjon</artifactId>
-                <version>${tjenestespesifikasjon.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>no.nav.tjenestespesifikasjoner</groupId>
-                <artifactId>nav-fim-person-v1-tjenestespesifikasjon</artifactId>
                 <version>${tjenestespesifikasjon.version}</version>
             </dependency>
             <dependency>
@@ -962,7 +939,7 @@
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>sendsoknad-consumer</artifactId>
+                <artifactId>app</artifactId>
                 <version>${project.version}</version>
                 <type>test-jar</type>
                 <scope>test</scope>
@@ -970,13 +947,6 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>sendsoknad-business</artifactId>
-                <version>${project.version}</version>
-                <type>test-jar</type>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>sendsoknad-domain</artifactId>
                 <version>${project.version}</version>
                 <type>test-jar</type>
                 <scope>test</scope>

@@ -1,9 +1,9 @@
 package no.nav.sbl.dialogarena.rest.mappers;
 
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
-import no.nav.sbl.sosialhjelp.domain.OpplastetVedlegg;
-import no.nav.sbl.sosialhjelp.domain.VedleggType;
-import no.nav.sbl.sosialhjelp.domain.Vedleggstatus;
+import no.nav.sosialhjelp.soknad.domain.OpplastetVedlegg;
+import no.nav.sosialhjelp.soknad.domain.VedleggType;
+import no.nav.sosialhjelp.soknad.domain.Vedleggstatus;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 

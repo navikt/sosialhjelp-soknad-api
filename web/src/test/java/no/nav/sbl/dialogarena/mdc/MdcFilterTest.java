@@ -1,9 +1,9 @@
 package no.nav.sbl.dialogarena.mdc;
 
 import no.nav.sbl.dialogarena.config.TestSoknadApplication;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.OidcSubjectHandlerService;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
-import no.nav.sbl.dialogarena.sts.StsSecurityConstants;
+import no.nav.sosialhjelp.soknad.consumer.sts.servicegateway.StsSecurityConstants;
+import no.nav.sosialhjelp.soknad.domain.model.oidc.OidcSubjectHandlerService;
+import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import org.glassfish.jersey.server.ContainerRequest;
 import org.glassfish.jersey.server.ExtendedUriInfo;
 import org.glassfish.jersey.test.util.server.ContainerRequestBuilder;
@@ -15,11 +15,11 @@ import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
 import java.util.Collections;
 
-import static no.nav.sbl.dialogarena.mdc.MDCOperations.MDC_BEHANDLINGS_ID;
-import static no.nav.sbl.dialogarena.mdc.MDCOperations.MDC_CALL_ID;
-import static no.nav.sbl.dialogarena.mdc.MDCOperations.MDC_CONSUMER_ID;
-import static no.nav.sbl.dialogarena.mdc.MDCOperations.getFromMDC;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.util.HeaderConstants.HEADER_CALL_ID;
+import static no.nav.sosialhjelp.soknad.consumer.mdc.MDCOperations.MDC_BEHANDLINGS_ID;
+import static no.nav.sosialhjelp.soknad.consumer.mdc.MDCOperations.MDC_CALL_ID;
+import static no.nav.sosialhjelp.soknad.consumer.mdc.MDCOperations.MDC_CONSUMER_ID;
+import static no.nav.sosialhjelp.soknad.consumer.mdc.MDCOperations.getFromMDC;
+import static no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.HEADER_CALL_ID;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.text.StringContainsInOrder.stringContainsInOrder;

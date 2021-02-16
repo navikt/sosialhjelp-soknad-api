@@ -1,6 +1,6 @@
 package no.nav.sbl.sosialhjelp.sendtsoknad;
 
-import no.nav.sbl.sosialhjelp.domain.SendtSoknad;
+import no.nav.sosialhjelp.soknad.domain.SendtSoknad;
 
 import java.util.List;
 import java.util.Optional;

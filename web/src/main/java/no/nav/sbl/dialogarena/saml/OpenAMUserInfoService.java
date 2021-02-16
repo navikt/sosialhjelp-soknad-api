@@ -3,7 +3,7 @@ package no.nav.sbl.dialogarena.saml;
 import no.nav.brukerdialog.security.domain.IdentType;
 import no.nav.common.auth.SsoToken;
 import no.nav.common.auth.Subject;
-import no.nav.sbl.dialogarena.sendsoknad.domain.exception.SamlUnauthorizedException;
+import no.nav.sosialhjelp.soknad.domain.model.exception.SamlUnauthorizedException;
 import no.nav.sbl.rest.RestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

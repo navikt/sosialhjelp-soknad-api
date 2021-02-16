@@ -1,15 +1,22 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.Barn;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Ektefelle;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.Systemdata;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdlperson.PdlEllerPersonV1Service;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonData;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeSystem;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonNavn;
-import no.nav.sbl.soknadsosialhjelp.soknad.familie.*;
-import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonAnsvar;
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonBarn;
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonEktefelle;
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonErFolkeregistrertSammen;
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonFamilie;
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonForsorgerplikt;
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonHarForsorgerplikt;
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus;
+import no.nav.sosialhjelp.soknad.consumer.pdl.PdlService;
+import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
+import no.nav.sosialhjelp.soknad.domain.model.Barn;
+import no.nav.sosialhjelp.soknad.domain.model.Ektefelle;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
@@ -28,7 +35,7 @@ public class FamilieSystemdata implements Systemdata {
     private static final Logger log = getLogger(FamilieSystemdata.class);
 
     @Inject
-    private PdlEllerPersonV1Service pdlEllerPersonV1Service;
+    private PdlService pdlService;
 
     @Override
     public void updateSystemdataIn(SoknadUnderArbeid soknadUnderArbeid, String token) {
@@ -82,7 +89,7 @@ public class FamilieSystemdata implements Systemdata {
     }
 
     private JsonSivilstatus innhentSystemverdiSivilstatus(String personIdentifikator) {
-        var person = pdlEllerPersonV1Service.hentPerson(personIdentifikator);
+        var person = pdlService.hentPerson(personIdentifikator);
         if (person == null || isEmpty(person.getSivilstatus())) {
             return null;
         }
@@ -124,7 +131,7 @@ public class FamilieSystemdata implements Systemdata {
     private JsonForsorgerplikt innhentSystemverdiForsorgerplikt(String personIdentifikator) {
         JsonForsorgerplikt jsonForsorgerplikt = new JsonForsorgerplikt().withHarForsorgerplikt(new JsonHarForsorgerplikt());
 
-        var barn = pdlEllerPersonV1Service.hentBarn(personIdentifikator);
+        var barn = pdlService.hentBarnForPerson(personIdentifikator);
         if (barn == null || barn.isEmpty()) {
             jsonForsorgerplikt.getHarForsorgerplikt()
                     .withKilde(JsonKilde.SYSTEM)

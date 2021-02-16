@@ -2,7 +2,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.fiks;
 
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.Oppgave;
 import no.nav.sbl.sosialhjelp.InnsendingService;
-import no.nav.sbl.sosialhjelp.domain.SendtSoknad;
+import no.nav.sosialhjelp.soknad.domain.SendtSoknad;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;

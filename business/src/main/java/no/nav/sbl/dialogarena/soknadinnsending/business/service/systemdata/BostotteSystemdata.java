@@ -1,11 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata;
 
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.TextService;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.Bostotte;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.dto.BostotteDto;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.dto.BostotteRolle;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.dto.SakerDto;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.bostotte.dto.UtbetalingerDto;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.bostotte.JsonBostotte;
 import no.nav.sbl.soknadsosialhjelp.soknad.bostotte.JsonBostotteSak;
@@ -14,7 +9,12 @@ import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeSystem;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling;
-import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
+import no.nav.sosialhjelp.soknad.consumer.bostotte.Bostotte;
+import no.nav.sosialhjelp.soknad.consumer.bostotte.dto.BostotteDto;
+import no.nav.sosialhjelp.soknad.consumer.bostotte.dto.BostotteRolle;
+import no.nav.sosialhjelp.soknad.consumer.bostotte.dto.SakerDto;
+import no.nav.sosialhjelp.soknad.consumer.bostotte.dto.UtbetalingerDto;
+import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import org.apache.commons.text.WordUtils;
 import org.springframework.stereotype.Component;
 

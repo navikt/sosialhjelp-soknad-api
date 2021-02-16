@@ -1,6 +1,6 @@
 package no.nav.sbl.dialogarena.config;
 
-import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
+import no.nav.sosialhjelp.soknad.tekster.NavMessageSource;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
