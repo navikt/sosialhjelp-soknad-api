@@ -1,9 +1,9 @@
 package no.nav.sbl.dialogarena.service;
 
-import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata.VedleggMetadata;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.EttersendingService;
+import no.nav.sosialhjelp.soknad.business.db.soknadmetadata.SoknadMetadataRepository;
+import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata;
+import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata.VedleggMetadata;
+import no.nav.sosialhjelp.soknad.business.service.soknadservice.EttersendingService;
 import no.nav.sbl.soknadsosialhjelp.tjeneste.saksoversikt.EttersendingsSoknad;
 import no.nav.sbl.soknadsosialhjelp.tjeneste.saksoversikt.InnsendtSoknad;
 import no.nav.sosialhjelp.soknad.domain.Vedleggstatus;
@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Properties;
 
 import static java.util.Arrays.asList;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.EttersendingService.ETTERSENDELSE_FRIST_DAGER;
+import static no.nav.sosialhjelp.soknad.business.service.soknadservice.EttersendingService.ETTERSENDELSE_FRIST_DAGER;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;

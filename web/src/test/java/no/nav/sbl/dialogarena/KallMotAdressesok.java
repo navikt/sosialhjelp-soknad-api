@@ -1,6 +1,6 @@
 package no.nav.sbl.dialogarena;
 
-import static no.nav.sbl.dialogarena.soknadinnsending.business.db.config.DatabaseTestContext.buildDataSource;
+import static no.nav.sosialhjelp.soknad.business.db.config.DatabaseTestContext.buildDataSource;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.io.IOException;

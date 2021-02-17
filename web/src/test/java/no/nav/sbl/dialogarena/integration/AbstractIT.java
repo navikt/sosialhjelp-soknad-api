@@ -8,7 +8,7 @@ import org.junit.BeforeClass;
 import java.io.File;
 
 import static java.lang.System.setProperty;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.db.config.DatabaseTestContext.buildDataSource;
+import static no.nav.sosialhjelp.soknad.business.db.config.DatabaseTestContext.buildDataSource;
 import static no.nav.sbl.dialogarena.test.path.FilesAndDirs.TEST_RESOURCES;
 
 public abstract class AbstractIT {

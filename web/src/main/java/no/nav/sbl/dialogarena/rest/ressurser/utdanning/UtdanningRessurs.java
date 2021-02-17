@@ -9,7 +9,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktInntekt;
 import no.nav.sbl.soknadsosialhjelp.soknad.utdanning.JsonUtdanning;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
-import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
+import no.nav.sosialhjelp.soknad.business.soknadunderbehandling.SoknadUnderArbeidRepository;
 import no.nav.security.token.support.core.api.ProtectedWithClaims;
 import org.springframework.stereotype.Controller;
 

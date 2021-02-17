@@ -11,7 +11,6 @@
 
     <modules>
         <module>app</module>
-        <module>business</module>
         <module>web</module>
     </modules>
 
@@ -176,11 +175,6 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>app</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>sendsoknad-business</artifactId>
                 <version>${project.version}</version>
             </dependency>
 

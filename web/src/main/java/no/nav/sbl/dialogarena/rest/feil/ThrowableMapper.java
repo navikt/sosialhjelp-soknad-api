@@ -1,6 +1,6 @@
 package no.nav.sbl.dialogarena.rest.feil;
 
-import no.nav.sbl.sosialhjelp.SamtidigOppdateringException;
+import no.nav.sosialhjelp.soknad.business.exceptions.SamtidigOppdateringException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

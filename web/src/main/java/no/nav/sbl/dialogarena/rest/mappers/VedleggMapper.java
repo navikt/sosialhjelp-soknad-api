@@ -26,7 +26,7 @@ import static no.nav.sbl.dialogarena.rest.mappers.OkonomiskGruppeMapper.getGrupp
 import static no.nav.sbl.dialogarena.rest.mappers.VedleggTypeToSoknadTypeMapper.getSoknadPath;
 import static no.nav.sbl.dialogarena.rest.mappers.VedleggTypeToSoknadTypeMapper.isInSoknadJson;
 import static no.nav.sbl.dialogarena.rest.mappers.VedleggTypeToSoknadTypeMapper.vedleggTypeToSoknadType;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.util.EttersendelseUtils.soknadSendtForMindreEnn30DagerSiden;
+import static no.nav.sosialhjelp.soknad.business.util.EttersendelseUtils.soknadSendtForMindreEnn30DagerSiden;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.JOBB;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTGIFTER_ANDRE_UTGIFTER;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTGIFTER_ANNET_BARN;

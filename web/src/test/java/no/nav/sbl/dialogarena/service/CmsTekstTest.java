@@ -1,7 +1,7 @@
 package no.nav.sbl.dialogarena.service;
 
 import no.nav.sosialhjelp.soknad.tekster.NavMessageSource;
-import no.nav.sbl.sosialhjelp.pdf.CmsTekst;
+import no.nav.sosialhjelp.soknad.business.pdf.CmsTekst;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
