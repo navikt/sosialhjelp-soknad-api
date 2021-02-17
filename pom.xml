@@ -156,7 +156,7 @@
         <opensaml.version>3.4.5</opensaml.version>
         <logstash-logback-encoder.version>4.11</logstash-logback-encoder.version>
         <hk2.version>2.6.1</hk2.version>
-        <prometheus.version>0.9.0</prometheus.version>
+        <prometheus.version>0.10.0</prometheus.version>
         <jsoup.version>1.13.1</jsoup.version>
         <oauth2-oidc-sdk.version>7.3</oauth2-oidc-sdk.version>
         <lang-tag.version>1.5</lang-tag.version>
