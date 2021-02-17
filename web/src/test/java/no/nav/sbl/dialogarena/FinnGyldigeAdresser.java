@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.Map.Entry;
 
-import static no.nav.sbl.dialogarena.soknadinnsending.business.db.config.DatabaseTestContext.buildDataSource;
+import static no.nav.sosialhjelp.soknad.business.db.config.DatabaseTestContext.buildDataSource;
 
 
 /**

@@ -1,6 +1,6 @@
 package no.nav.sbl.dialogarena.rest.feil;
 
-import no.nav.sbl.sosialhjelp.SamtidigOppdateringException;
+import no.nav.sosialhjelp.soknad.business.exceptions.SamtidigOppdateringException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;

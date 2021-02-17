@@ -11,7 +11,6 @@
 
     <modules>
         <module>app</module>
-        <module>business</module>
         <module>web</module>
     </modules>
 
@@ -144,7 +143,7 @@
         <hamcrest.version>2.2</hamcrest.version>
         <junit.version>4.13.1</junit.version>
         <mockito.version>3.7.7</mockito.version>
-        <assertj.version>3.18.1</assertj.version>
+        <assertj.version>3.19.0</assertj.version>
         <reflections.version>0.9.12</reflections.version>
         <digipost.digg.version>0.13</digipost.digg.version>
 
@@ -157,7 +156,7 @@
         <opensaml.version>3.4.5</opensaml.version>
         <logstash-logback-encoder.version>4.11</logstash-logback-encoder.version>
         <hk2.version>2.6.1</hk2.version>
-        <prometheus.version>0.9.0</prometheus.version>
+        <prometheus.version>0.10.0</prometheus.version>
         <jsoup.version>1.13.1</jsoup.version>
         <oauth2-oidc-sdk.version>7.3</oauth2-oidc-sdk.version>
         <lang-tag.version>1.5</lang-tag.version>
@@ -176,11 +175,6 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>app</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>sendsoknad-business</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
