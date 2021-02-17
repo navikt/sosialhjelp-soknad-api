@@ -578,7 +578,7 @@
             <plugin>
                 <groupId>org.apache.cxf</groupId>
                 <artifactId>cxf-codegen-plugin</artifactId>
-                <version>${cxf.version}</version>
+                <version>3.3.9</version>
                 <executions>
                     <execution>
                         <id>wsdl-to-java</id>
