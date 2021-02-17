@@ -10,7 +10,6 @@ import no.nav.sosialhjelp.soknad.business.exceptions.SamtidigOppdateringExceptio
 import no.nav.sosialhjelp.soknad.business.exceptions.SoknadLaastException;
 import no.nav.sosialhjelp.soknad.domain.SoknadInnsendingStatus;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
-import org.slf4j.Logger;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
 import org.springframework.stereotype.Component;
@@ -39,16 +38,14 @@ import static no.nav.sosialhjelp.soknad.business.db.SQLUtils.selectNextSequenceV
 import static no.nav.sosialhjelp.soknad.domain.SoknadInnsendingStatus.SENDT_MED_DIGISOS_API;
 import static no.nav.sosialhjelp.soknad.domain.SoknadInnsendingStatus.UNDER_ARBEID;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
-import static org.slf4j.LoggerFactory.getLogger;
 
 @Named("SoknadUnderArbeidRepository")
 @Component
 public class SoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoSupport implements SoknadUnderArbeidRepository {
 
-    private static final Logger logger = getLogger(SoknadUnderArbeidRepository.class);
     private final ObjectMapper mapper;
     private final ObjectWriter writer;
-    
+
     {
         mapper = new ObjectMapper();
         mapper.addMixIn(JsonAdresse.class, AdresseMixIn.class);
@@ -231,7 +228,7 @@ public class SoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoSuppor
                             rs.getTimestamp("sistendretdato").toLocalDateTime() : null);
         }
     }
-    
+
     private JsonInternalSoknad mapDataToJsonInternalSoknad(byte[] data){
         if (data == null){
             return null;
@@ -243,7 +240,7 @@ public class SoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoSuppor
             throw new RuntimeException(e);
         }
     }
-    
+
     private byte[] mapJsonSoknadInternalTilFil(JsonInternalSoknad jsonInternalSoknad) {
         try {
             final String internalSoknad = writer.writeValueAsString(jsonInternalSoknad);
