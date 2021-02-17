@@ -1,6 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.util;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils;
+import no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils;
 
 public class SenderUtils {
 

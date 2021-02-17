@@ -3,18 +3,18 @@ package no.nav.sbl.dialogarena.rest.ressurser.informasjon;
 import no.nav.metrics.aspects.Timed;
 import no.nav.sbl.dialogarena.rest.Logg;
 import no.nav.sbl.dialogarena.rest.ressurser.personalia.NavEnhetRessurs;
-import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseForslag;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.fiks.KommuneInfoService;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
-import no.nav.sbl.dialogarena.sendsoknad.domain.util.KommuneTilNavEnhetMapper;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.InformasjonService;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.adresse.AdresseSokService;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdlperson.PdlEllerPersonV1Service;
-import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
 import no.nav.sbl.dialogarena.utils.NedetidUtils;
 import no.nav.security.token.support.core.api.ProtectedWithClaims;
 import no.nav.security.token.support.core.api.Unprotected;
 import no.nav.sosialhjelp.api.fiks.KommuneInfo;
+import no.nav.sosialhjelp.soknad.consumer.adresse.AdresseSokService;
+import no.nav.sosialhjelp.soknad.consumer.fiks.KommuneInfoService;
+import no.nav.sosialhjelp.soknad.consumer.pdl.PdlService;
+import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseForslag;
+import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
+import no.nav.sosialhjelp.soknad.domain.model.util.KommuneTilNavEnhetMapper;
+import no.nav.sosialhjelp.soknad.tekster.NavMessageSource;
 import org.apache.commons.lang3.LocaleUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,17 +28,17 @@ import javax.ws.rs.QueryParam;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SosialhjelpInformasjon.BUNDLE_NAME;
+import static no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SosialhjelpInformasjon.BUNDLE_NAME;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 
@@ -62,14 +62,14 @@ public class InformasjonRessurs {
     private final NavMessageSource messageSource;
     private final AdresseSokService adresseSokService;
     private final KommuneInfoService kommuneInfoService;
-    private final PdlEllerPersonV1Service pdlEllerPersonV1Service;
+    private final PdlService pdlService;
 
-    public InformasjonRessurs(InformasjonService informasjon, NavMessageSource messageSource, AdresseSokService adresseSokService, KommuneInfoService kommuneInfoService, PdlEllerPersonV1Service pdlEllerPersonV1Service) {
+    public InformasjonRessurs(InformasjonService informasjon, NavMessageSource messageSource, AdresseSokService adresseSokService, KommuneInfoService kommuneInfoService, PdlService pdlService) {
         this.informasjon = informasjon;
         this.messageSource = messageSource;
         this.adresseSokService = adresseSokService;
         this.kommuneInfoService = kommuneInfoService;
-        this.pdlEllerPersonV1Service = pdlEllerPersonV1Service;
+        this.pdlService = pdlService;
     }
 
     @GET
@@ -82,7 +82,7 @@ public class InformasjonRessurs {
     @Path("/fornavn")
     public Map<String, String> hentFornavn() {
         String fnr = SubjectHandler.getUserId();
-        var person = pdlEllerPersonV1Service.hentPerson(fnr);
+        var person = pdlService.hentPerson(fnr);
         if (person == null) {
             return new HashMap<>();
         }
@@ -117,7 +117,7 @@ public class InformasjonRessurs {
     @Path("/utslagskriterier/sosialhjelp")
     public Map<String, Object> hentAdresse() {
         String uid = SubjectHandler.getUserId();
-        var person = pdlEllerPersonV1Service.hentPerson(uid);
+        var person = pdlService.hentPerson(uid);
 
         Map<String, Object> resultat = new HashMap<>();
 

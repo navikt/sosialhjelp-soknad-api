@@ -2,7 +2,7 @@ package no.nav.sbl.sosialhjelp.sendtsoknad;
 
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.DbTestConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.RepositoryTestSupport;
-import no.nav.sbl.sosialhjelp.domain.SendtSoknad;
+import no.nav.sosialhjelp.soknad.domain.SendtSoknad;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;

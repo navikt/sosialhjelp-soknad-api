@@ -1,7 +1,7 @@
 package no.nav.sbl.sosialhjelp.pdfmedpdfbox;
 
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.kodeverk.KodeverkService;
-import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
+import no.nav.sosialhjelp.soknad.consumer.kodeverk.KodeverkService;
+import no.nav.sosialhjelp.soknad.tekster.NavMessageSource;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;

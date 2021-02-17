@@ -3,7 +3,7 @@ package no.nav.sbl.dialogarena.config;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.reflect.ClassPath;
 import com.google.common.reflect.Invokable;
-import no.nav.sbl.dialogarena.soknadsosialhjelp.message.NavMessageSource;
+import no.nav.sosialhjelp.soknad.tekster.NavMessageSource;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.context.annotation.Bean;
@@ -24,7 +24,7 @@ public class IntegrationConfig {
             try {
                 ImmutableSet<ClassPath.ClassInfo> tjenester = ClassPath
                         .from(IntegrationConfig.class.getClassLoader())
-                        .getTopLevelClasses("no.nav.sbl.dialogarena.soknadinnsending.consumer.wsconfig");
+                        .getTopLevelClasses("no.nav.sosialhjelp.soknad.consumer.wsconfig");
                 System.out.println(tjenester);
                 for (ClassPath.ClassInfo classInfo : tjenester) {
                     for (Method method: classInfo.load().getMethods()) {

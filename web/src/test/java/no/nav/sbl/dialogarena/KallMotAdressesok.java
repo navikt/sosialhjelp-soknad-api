@@ -19,8 +19,8 @@ import java.util.concurrent.TimeUnit;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.StaticSubjectHandlerService;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
+import no.nav.sosialhjelp.soknad.domain.model.oidc.StaticSubjectHandlerService;
+import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import org.apache.log4j.MDC;
 import org.slf4j.Logger;
 import org.springframework.context.ApplicationContext;
@@ -28,9 +28,9 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.mock.jndi.SimpleNamingContextBuilder;
 
 import no.nav.sbl.dialogarena.config.SoknadinnsendingConfig;
-import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer;
-import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.AdresseData;
-import no.nav.sbl.dialogarena.sendsoknad.domain.adresse.AdresseSokConsumer.Sokedata;
+import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseSokConsumer;
+import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseSokConsumer.AdresseData;
+import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseSokConsumer.Sokedata;
 import no.nav.sbl.dialogarena.server.SoknadsosialhjelpServer;
 
 

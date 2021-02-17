@@ -2,13 +2,13 @@ package no.nav.sbl.dialogarena.rest.ressurser.vedlegg;
 
 import no.nav.metrics.aspects.Timed;
 import no.nav.sbl.dialogarena.rest.ressurser.FilFrontend;
-import no.nav.sbl.dialogarena.sendsoknad.domain.exception.OpplastingException;
-import no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
+import no.nav.sosialhjelp.soknad.domain.model.exception.OpplastingException;
+import no.nav.sosialhjelp.soknad.domain.model.mock.MockUtils;
+import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.OpplastetVedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.util.FileDetectionUtils;
-import no.nav.sbl.sosialhjelp.domain.OpplastetVedlegg;
+import no.nav.sosialhjelp.soknad.domain.OpplastetVedlegg;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.OpplastetVedleggRepository;
 import no.nav.security.token.support.core.api.ProtectedWithClaims;
 import org.apache.commons.io.IOUtils;
