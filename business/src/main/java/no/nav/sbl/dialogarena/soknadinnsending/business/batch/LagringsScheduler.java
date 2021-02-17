@@ -2,9 +2,9 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.batch;
 
 import no.nav.metrics.MetricsFactory;
 import no.nav.metrics.Timer;
-import no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils;
+import no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.HenvendelseService;
-import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
+import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;

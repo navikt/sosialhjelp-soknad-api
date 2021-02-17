@@ -1,7 +1,7 @@
 package no.nav.sbl.dialogarena.rest.ressurser.eksponerte;
 
 import no.nav.metrics.aspects.Timed;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
+import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.service.SaksoversiktMetadataService;
 import no.nav.sbl.soknadsosialhjelp.tjeneste.saksoversikt.EttersendingerRespons;
 import no.nav.sbl.soknadsosialhjelp.tjeneste.saksoversikt.EttersendingsSoknad;

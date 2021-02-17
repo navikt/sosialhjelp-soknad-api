@@ -1,10 +1,10 @@
 package no.nav.sbl.sosialhjelp.soknadunderbehandling;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils;
+import no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.DbTestConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.RepositoryTestSupport;
-import no.nav.sbl.sosialhjelp.domain.OpplastetVedlegg;
-import no.nav.sbl.sosialhjelp.domain.VedleggType;
+import no.nav.sosialhjelp.soknad.domain.OpplastetVedlegg;
+import no.nav.sosialhjelp.soknad.domain.VedleggType;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;

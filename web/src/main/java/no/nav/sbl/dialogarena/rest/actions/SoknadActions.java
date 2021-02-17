@@ -1,11 +1,6 @@
 package no.nav.sbl.dialogarena.rest.actions;
 
 import no.nav.metrics.aspects.Timed;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.fiks.KommuneInfoService;
-import no.nav.sbl.dialogarena.sendsoknad.domain.digisosapi.KommuneStatus;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
-import no.nav.sbl.dialogarena.sendsoknad.domain.util.KommuneTilNavEnhetMapper;
-import no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
@@ -16,9 +11,14 @@ import no.nav.sbl.sosialhjelp.SendingTilKommuneErIkkeAktivertException;
 import no.nav.sbl.sosialhjelp.SendingTilKommuneErMidlertidigUtilgjengeligException;
 import no.nav.sbl.sosialhjelp.SendingTilKommuneUtilgjengeligException;
 import no.nav.sbl.sosialhjelp.SoknadenHarNedetidException;
-import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import no.nav.security.token.support.core.api.ProtectedWithClaims;
+import no.nav.sosialhjelp.soknad.consumer.fiks.KommuneInfoService;
+import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
+import no.nav.sosialhjelp.soknad.domain.model.digisosapi.KommuneStatus;
+import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
+import no.nav.sosialhjelp.soknad.domain.model.util.KommuneTilNavEnhetMapper;
+import no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Controller;
 
@@ -34,11 +34,11 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.SENDT_MED_DIGISOS_API;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.mock.MockUtils.isAlltidSendTilNavTestkommune;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.util.ServiceUtils.isSendingTilFiksEnabled;
 import static no.nav.sbl.dialogarena.utils.NedetidUtils.NEDETID_SLUTT;
 import static no.nav.sbl.dialogarena.utils.NedetidUtils.getNedetidAsStringOrNull;
+import static no.nav.sosialhjelp.soknad.domain.SoknadInnsendingStatus.SENDT_MED_DIGISOS_API;
+import static no.nav.sosialhjelp.soknad.domain.model.mock.MockUtils.isAlltidSendTilNavTestkommune;
+import static no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils.isSendingTilFiksEnabled;
 import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 

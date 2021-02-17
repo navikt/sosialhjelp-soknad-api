@@ -1,7 +1,7 @@
 package no.nav.sbl.dialogarena.rest.ressurser;
 
 import no.nav.metrics.aspects.Timed;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
+import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.sikkerhet.Tilgangskontroll;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.HenvendelseService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService;
@@ -11,7 +11,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse;
 import no.nav.sbl.sosialhjelp.SoknadUnderArbeidService;
 import no.nav.sbl.sosialhjelp.SoknadenHarNedetidException;
-import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
+import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.pdf.HtmlGenerator;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import no.nav.security.token.support.core.api.ProtectedWithClaims;
@@ -32,7 +32,11 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;

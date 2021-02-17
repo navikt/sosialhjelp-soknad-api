@@ -1,8 +1,8 @@
 package no.nav.sbl.dialogarena;
 
 import no.nav.sbl.dialogarena.oidc.OidcConfig;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.StaticSubjectHandlerService;
-import no.nav.sbl.dialogarena.sendsoknad.domain.oidc.SubjectHandler;
+import no.nav.sosialhjelp.soknad.domain.model.oidc.StaticSubjectHandlerService;
+import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import no.nav.sbl.dialogarena.server.SoknadsosialhjelpServer;
 
 import javax.sql.DataSource;

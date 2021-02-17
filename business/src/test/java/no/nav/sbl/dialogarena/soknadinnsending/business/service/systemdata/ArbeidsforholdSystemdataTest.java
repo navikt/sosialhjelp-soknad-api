@@ -1,17 +1,17 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.Arbeidsforhold;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.TextService;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.arbeidsforhold.ArbeidsforholdService;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.skatt.SkattbarInntektService;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.utbetaling.UtbetalingService;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeidsforhold;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktInntekt;
-import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
+import no.nav.sosialhjelp.soknad.consumer.arbeidsforhold.ArbeidsforholdService;
+import no.nav.sosialhjelp.soknad.consumer.skatt.SkattbarInntektService;
+import no.nav.sosialhjelp.soknad.consumer.utbetaling.UtbetalingService;
+import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
+import no.nav.sosialhjelp.soknad.domain.model.Arbeidsforhold;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;

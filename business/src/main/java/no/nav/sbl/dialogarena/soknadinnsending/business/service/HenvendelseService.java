@@ -1,11 +1,11 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus;
-import no.nav.sbl.dialogarena.sendsoknad.domain.exception.SosialhjelpSoknadApiException;
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SoknadType;
+import no.nav.sosialhjelp.soknad.domain.SoknadInnsendingStatus;
+import no.nav.sosialhjelp.soknad.domain.model.exception.SosialhjelpSoknadApiException;
+import no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SoknadType;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
-import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
+import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
@@ -14,12 +14,12 @@ import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.AVBRUTT_AUTOMATISK;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.AVBRUTT_AV_BRUKER;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.FERDIG;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.SENDT_MED_DIGISOS_API;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus.UNDER_ARBEID;
-import static no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SosialhjelpInformasjon.SKJEMANUMMER;
+import static no.nav.sosialhjelp.soknad.domain.SoknadInnsendingStatus.AVBRUTT_AUTOMATISK;
+import static no.nav.sosialhjelp.soknad.domain.SoknadInnsendingStatus.AVBRUTT_AV_BRUKER;
+import static no.nav.sosialhjelp.soknad.domain.SoknadInnsendingStatus.FERDIG;
+import static no.nav.sosialhjelp.soknad.domain.SoknadInnsendingStatus.SENDT_MED_DIGISOS_API;
+import static no.nav.sosialhjelp.soknad.domain.SoknadInnsendingStatus.UNDER_ARBEID;
+import static no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SosialhjelpInformasjon.SKJEMANUMMER;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Component

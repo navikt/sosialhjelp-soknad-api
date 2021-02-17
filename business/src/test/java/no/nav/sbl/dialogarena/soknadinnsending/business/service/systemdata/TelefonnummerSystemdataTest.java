@@ -1,11 +1,11 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata;
 
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.dkif.DkifService;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonTelefonnummer;
-import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
+import no.nav.sosialhjelp.soknad.consumer.dkif.DkifService;
+import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;

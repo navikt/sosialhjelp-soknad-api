@@ -1,6 +1,6 @@
 package no.nav.sbl.sosialhjelp.sendtsoknad;
 
-import no.nav.sbl.sosialhjelp.domain.SendtSoknad;
+import no.nav.sosialhjelp.soknad.domain.SendtSoknad;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
 import org.springframework.stereotype.Component;

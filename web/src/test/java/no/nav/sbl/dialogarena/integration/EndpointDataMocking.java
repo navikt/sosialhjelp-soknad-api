@@ -6,7 +6,7 @@ import no.nav.tjeneste.virksomhet.person.v3.binding.HentPersonSikkerhetsbegrensn
 import no.nav.tjeneste.virksomhet.person.v3.binding.PersonV3;
 import no.nav.tjeneste.virksomhet.person.v3.meldinger.HentPersonRequest;
 
-import static no.nav.sbl.dialogarena.sendsoknad.mockmodul.person.PersonV3Mock.createPersonV3HentPersonRequestForIntegrationTest;
+import static no.nav.sosialhjelp.soknad.mock.person.PersonV3Mock.createPersonV3HentPersonRequestForIntegrationTest;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 

@@ -3,9 +3,6 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service.systemdata;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Barn;
-import no.nav.sbl.dialogarena.sendsoknad.domain.Ektefelle;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.pdl.PdlService;
 import no.nav.sbl.soknadsosialhjelp.json.AdresseMixIn;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse;
@@ -13,8 +10,21 @@ import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeSystem;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonNavn;
-import no.nav.sbl.soknadsosialhjelp.soknad.familie.*;
-import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonAnsvar;
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonBarn;
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonBarnebidrag;
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonBorSammenMed;
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonEktefelle;
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonErFolkeregistrertSammen;
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonForsorgerplikt;
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonHarDeltBosted;
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonHarForsorgerplikt;
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSamvarsgrad;
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus;
+import no.nav.sosialhjelp.soknad.consumer.pdl.PdlService;
+import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
+import no.nav.sosialhjelp.soknad.domain.model.Barn;
+import no.nav.sosialhjelp.soknad.domain.model.Ektefelle;
 import org.joda.time.LocalDate;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,7 +38,12 @@ import java.util.List;
 import static java.util.Arrays.asList;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
 import static no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator.ensureValidInternalSoknad;
-import static no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus.Status.*;
+import static no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus.Status.ENKE;
+import static no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus.Status.GIFT;
+import static no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus.Status.SAMBOER;
+import static no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus.Status.SEPARERT;
+import static no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus.Status.SKILT;
+import static no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus.Status.UGIFT;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -153,7 +168,7 @@ public class FamilieSystemdataTest {
 
     @Test
     public void skalSetteSivilstatusGiftMedEktefelle() throws JsonProcessingException {
-        no.nav.sbl.dialogarena.sendsoknad.domain.Person person = new no.nav.sbl.dialogarena.sendsoknad.domain.Person()
+        no.nav.sosialhjelp.soknad.domain.model.Person person = new no.nav.sosialhjelp.soknad.domain.model.Person()
                 .withSivilstatus(GIFT.toString())
                 .withEktefelle(EKTEFELLE);
         when(pdlService.hentPerson(anyString())).thenReturn(person);
@@ -176,7 +191,7 @@ public class FamilieSystemdataTest {
 
     @Test
     public void skalIkkeSetteSivilstatusDersomEktefelleMangler() throws JsonProcessingException {
-        no.nav.sbl.dialogarena.sendsoknad.domain.Person person = new no.nav.sbl.dialogarena.sendsoknad.domain.Person()
+        no.nav.sosialhjelp.soknad.domain.model.Person person = new no.nav.sosialhjelp.soknad.domain.model.Person()
                 .withSivilstatus(GIFT.toString());
         when(pdlService.hentPerson(anyString())).thenReturn(person);
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
@@ -207,7 +222,7 @@ public class FamilieSystemdataTest {
 
     @Test
     public void skalSetteSivilstatusGiftMedTomEktefelleDersomEktefelleHarDiskresjonskode() throws JsonProcessingException {
-        no.nav.sbl.dialogarena.sendsoknad.domain.Person person = new no.nav.sbl.dialogarena.sendsoknad.domain.Person()
+        no.nav.sosialhjelp.soknad.domain.model.Person person = new no.nav.sosialhjelp.soknad.domain.model.Person()
                 .withSivilstatus(GIFT.toString())
                 .withEktefelle(EKTEFELLE_MED_DISKRESJONSKODE);
         when(pdlService.hentPerson(anyString())).thenReturn(person);
@@ -356,7 +371,7 @@ public class FamilieSystemdataTest {
     }
 
     private void sivilstatusSkalIkkeSettes(JsonSivilstatus.Status status, Ektefelle ektefelle) throws JsonProcessingException {
-        no.nav.sbl.dialogarena.sendsoknad.domain.Person person = new no.nav.sbl.dialogarena.sendsoknad.domain.Person()
+        no.nav.sosialhjelp.soknad.domain.model.Person person = new no.nav.sosialhjelp.soknad.domain.model.Person()
                 .withSivilstatus(status.toString())
                 .withEktefelle(ektefelle);
         when(pdlService.hentPerson(anyString())).thenReturn(person);

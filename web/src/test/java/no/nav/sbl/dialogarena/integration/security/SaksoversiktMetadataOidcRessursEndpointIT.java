@@ -5,7 +5,7 @@ import com.nimbusds.jwt.SignedJWT;
 import no.nav.sbl.dialogarena.integration.AbstractSecurityIT;
 import no.nav.sbl.dialogarena.integration.EndpointDataMocking;
 import no.nav.sbl.dialogarena.integration.SoknadTester;
-import no.nav.sbl.dialogarena.sendsoknad.domain.kravdialoginformasjon.SosialhjelpInformasjon;
+import no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SosialhjelpInformasjon;
 import no.nav.sbl.soknadsosialhjelp.tjeneste.saksoversikt.PabegynteSoknaderRespons;
 import no.nav.security.token.support.core.JwtTokenConstants;
 import no.nav.security.token.support.test.JwtTokenGenerator;

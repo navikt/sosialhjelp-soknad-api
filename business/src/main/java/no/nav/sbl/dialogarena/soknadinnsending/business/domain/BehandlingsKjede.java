@@ -1,6 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.domain;
 
-import no.nav.sbl.sosialhjelp.domain.Vedleggstatus;
+import no.nav.sosialhjelp.soknad.domain.Vedleggstatus;
 
 import java.util.ArrayList;
 import java.util.Collection;

@@ -1,16 +1,16 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.batch.oppgave.fiks;
 
 import no.ks.svarut.servicesv9.Dokument;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.fiks.DokumentKrypterer;
+import no.nav.sosialhjelp.soknad.consumer.fiks.DokumentKrypterer;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon;
 import no.nav.sbl.sosialhjelp.InnsendingService;
-import no.nav.sbl.sosialhjelp.domain.OpplastetVedlegg;
-import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
-import no.nav.sbl.sosialhjelp.domain.VedleggType;
-import no.nav.sbl.sosialhjelp.domain.Vedleggstatus;
+import no.nav.sosialhjelp.soknad.domain.OpplastetVedlegg;
+import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
+import no.nav.sosialhjelp.soknad.domain.VedleggType;
+import no.nav.sosialhjelp.soknad.domain.Vedleggstatus;
 import no.nav.sbl.sosialhjelp.pdfmedpdfbox.SosialhjelpPdfGenerator;
 import org.apache.cxf.attachment.ByteDataSource;
 import org.junit.Before;

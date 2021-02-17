@@ -1,8 +1,8 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.batch;
 
-import no.nav.sbl.dialogarena.sendsoknad.domain.SoknadInnsendingStatus;
+import no.nav.sosialhjelp.soknad.domain.SoknadInnsendingStatus;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.HenvendelseService;
-import no.nav.sbl.sosialhjelp.domain.SoknadUnderArbeid;
+import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sbl.sosialhjelp.soknadunderbehandling.SoknadUnderArbeidRepository;
 import org.junit.After;
 import org.junit.Before;
