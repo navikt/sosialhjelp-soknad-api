@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.consumer.norg;
 
-import no.nav.sosialhjelp.soknad.consumer.redis.RedisService;
 import no.nav.sosialhjelp.soknad.consumer.exceptions.TjenesteUtilgjengeligException;
+import no.nav.sosialhjelp.soknad.consumer.redis.RedisService;
 import no.nav.sosialhjelp.soknad.domain.model.norg.NavEnhet;
 import no.nav.sosialhjelp.soknad.domain.model.norg.NavenhetFraLokalListe;
 import no.nav.sosialhjelp.soknad.domain.model.norg.NavenheterFraLokalListe;
@@ -24,9 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static java.lang.System.clearProperty;
 import static java.lang.System.setProperty;
-import static no.nav.sosialhjelp.soknad.domain.model.util.KommuneTilNavEnhetMapper.getOrganisasjonsnummer;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertNotEquals;
@@ -44,7 +42,7 @@ public class NorgServiceTest {
 
     private static final String GT = "0101";
     private static final String ENHETSNUMMER = "0701";
-    private static final String ORGNUMMER_PROD = getOrganisasjonsnummer(ENHETSNUMMER);
+    private static final String ORGNUMMER_PROD = "974605171";
     private static final String ORGNUMMER_TEST = "910940066";
 
     @Mock
@@ -77,11 +75,6 @@ public class NorgServiceTest {
         NavEnhet navEnhet = norgService.getEnhetForGt(GT);
 
         assertThat(navEnhet.sosialOrgnr, is(ORGNUMMER_PROD));
-    }
-
-    @After
-    public void teardown() {
-        clearProperty("environment.name");
     }
 
     private NorgConsumer.RsNorgEnhet lagRsNorgEnhet() {
