@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="30 seconds">
+
+    <appender name="stdout_json" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <customFields>
+                {
+                    "environment": "${ENVIRONMENT_NAME:-local}"
+                }
+            </customFields>
+        </encoder>
+    </appender>
+
+
+    <logger name="org.springframework" level="warn"/>
+
+    <logger name="no.nav.sosialhjelp.soknad.web.config" level="info"/>
+
+    <logger name="org.apache.pdfbox" level="error"/>
+
+    <logger name="no.nav.sosialhjelp.soknad.business.batch.LagringsScheduler" level="info"/>
+
+    <logger name="klientlogger" level="debug"/>
+
+    <logger name="org.apache.http.impl.client" level="info"/>
+
+    <logger name="no.nav.sbl.dialogarena.common.cxf.CXFMaskSAMLTokenLoggingOutInterceptor" level="OFF"/>
+
+    <logger name="org.apache.http.client.protocol.ResponseProcessCookies" level="ERROR"/>
+
+    <logger name="org.apache.cxf" level="OFF"/>
+
+    <logger name="no.nav.sbl.rest.ClientLogFilter" level="WARN"/>
+
+    <root level="${ROOT_LOG_LEVEL:-INFO}">
+        <appender-ref ref="stdout_json"/>
+    </root>
+</configuration>

@@ -11,7 +11,6 @@
 
     <modules>
         <module>app</module>
-        <module>web</module>
     </modules>
 
     <name>Dialogarena - Send Søknad</name>
@@ -929,20 +928,6 @@
                 <groupId>org.reflections</groupId>
                 <artifactId>reflections</artifactId>
                 <version>${reflections.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>app</artifactId>
-                <version>${project.version}</version>
-                <type>test-jar</type>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>sendsoknad-business</artifactId>
-                <version>${project.version}</version>
-                <type>test-jar</type>
                 <scope>test</scope>
             </dependency>
 
