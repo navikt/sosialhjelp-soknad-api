@@ -325,7 +325,6 @@
         <dependency>
             <groupId>jakarta.annotation</groupId>
             <artifactId>jakarta.annotation-api</artifactId>
-<!--            <scope>runtime</scope>-->
         </dependency>
         <dependency>
             <groupId>org.aspectj</groupId>
@@ -448,7 +447,10 @@
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-core</artifactId>
         </dependency>
 
         <!--Test-->
@@ -467,26 +469,6 @@
             <artifactId>token-validation-test-support</artifactId>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-core</artifactId>
-<!--            <scope>test</scope>-->
-        </dependency>
-<!--        <dependency>-->
-<!--            <groupId>ch.qos.logback</groupId>-->
-<!--            <artifactId>logback-classic</artifactId>-->
-<!--            <scope>test</scope>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>org.assertj</groupId>-->
-<!--            <artifactId>assertj-core</artifactId>-->
-<!--            <scope>test</scope>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>org.hsqldb</groupId>-->
-<!--            <artifactId>hsqldb</artifactId>-->
-<!--            <scope>test</scope>-->
-<!--        </dependency>-->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
@@ -521,17 +503,6 @@
             <artifactId>jersey-test-framework-util</artifactId>
             <scope>test</scope>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>org.apache.pdfbox</groupId>-->
-<!--            <artifactId>preflight</artifactId>-->
-<!--            <scope>test</scope>-->
-<!--            <exclusions>-->
-<!--                <exclusion>-->
-<!--                    <groupId>commons-logging</groupId>-->
-<!--                    <artifactId>commons-logging</artifactId>-->
-<!--                </exclusion>-->
-<!--            </exclusions>-->
-<!--        </dependency>-->
 
     </dependencies>
 
@@ -586,25 +557,22 @@
                         <goals>
                             <goal>wsdl2java</goal>
                         </goals>
-                        <configuration>
-                            <defaultOptions>
-                                <extraargs>
-<!--                                    <extraarg>-xjc-Xfluent-api</extraarg>-->
-<!--                                    <extraarg>-xjc-XhashCode</extraarg>-->
-<!--                                    <extraarg>-xjc-Xequals</extraarg>-->
-                                    <extraart>-xjc-mark-generated</extraart>
-                                </extraargs>
-                            </defaultOptions>
-                        </configuration>
+<!--                        <configuration>-->
+<!--                            <defaultOptions>-->
+<!--                                <extraargs>-->
+<!--                                    <extraart>-xjc-mark-generated</extraart>-->
+<!--                                </extraargs>-->
+<!--                            </defaultOptions>-->
+<!--                        </configuration>-->
                     </execution>
                 </executions>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.jvnet.jaxb2_commons</groupId>
-                        <artifactId>jaxb2-basics-runtime</artifactId>
-                        <version>${jaxb2-basics-runtime.version}</version>
-                    </dependency>
-                </dependencies>
+<!--                <dependencies>-->
+<!--                    <dependency>-->
+<!--                        <groupId>org.jvnet.jaxb2_commons</groupId>-->
+<!--                        <artifactId>jaxb2-basics-runtime</artifactId>-->
+<!--                        <version>${jaxb2-basics-runtime.version}</version>-->
+<!--                    </dependency>-->
+<!--                </dependencies>-->
             </plugin>
             <plugin>
                 <artifactId>maven-dependency-plugin</artifactId>
