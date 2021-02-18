@@ -12,6 +12,7 @@ public class SubjectHandlerTest {
     @After
     public void tearDown() {
         System.clearProperty("environment.name");
+        SubjectHandler.resetOidcSubjectHandlerService();
     }
 
     @Test(expected = RuntimeException.class)
