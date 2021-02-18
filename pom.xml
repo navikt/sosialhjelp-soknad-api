@@ -120,7 +120,7 @@
         <jaxb-runtime.version>2.3.3</jaxb-runtime.version>
         <lettuce.version>5.3.6.RELEASE</lettuce.version>
         <unleash.version>3.3.4</unleash.version>
-        <resilience4j.version>1.6.1</resilience4j.version>
+        <resilience4j.version>1.7.0</resilience4j.version>
 
         <flyway.placeholders.driver>oracle.jdbc.OracleDriver</flyway.placeholders.driver>
         <flyway.placeholders.encoding>ISO-8859-1</flyway.placeholders.encoding>
