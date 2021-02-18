@@ -557,22 +557,8 @@
                         <goals>
                             <goal>wsdl2java</goal>
                         </goals>
-<!--                        <configuration>-->
-<!--                            <defaultOptions>-->
-<!--                                <extraargs>-->
-<!--                                    <extraart>-xjc-mark-generated</extraart>-->
-<!--                                </extraargs>-->
-<!--                            </defaultOptions>-->
-<!--                        </configuration>-->
                     </execution>
                 </executions>
-<!--                <dependencies>-->
-<!--                    <dependency>-->
-<!--                        <groupId>org.jvnet.jaxb2_commons</groupId>-->
-<!--                        <artifactId>jaxb2-basics-runtime</artifactId>-->
-<!--                        <version>${jaxb2-basics-runtime.version}</version>-->
-<!--                    </dependency>-->
-<!--                </dependencies>-->
             </plugin>
             <plugin>
                 <artifactId>maven-dependency-plugin</artifactId>
