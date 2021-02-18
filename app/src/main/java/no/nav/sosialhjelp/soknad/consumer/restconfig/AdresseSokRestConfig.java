@@ -1,7 +1,5 @@
 package no.nav.sosialhjelp.soknad.consumer.restconfig;
 
-import no.nav.sbl.dialogarena.types.Pingable;
-import no.nav.sbl.dialogarena.types.Pingable.Ping.PingMetadata;
 import no.nav.sbl.rest.RestUtils;
 import no.nav.sbl.rest.RestUtils.RestConfig;
 import no.nav.sosialhjelp.soknad.consumer.adresse.AdresseSokConsumerImpl;
@@ -9,6 +7,8 @@ import no.nav.sosialhjelp.soknad.consumer.concurrency.RestCallContext;
 import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseSokConsumer;
 import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseSokConsumer.Sokedata;
 import no.nav.sosialhjelp.soknad.mock.adresse.AdresseSokConsumerMock;
+import no.nav.sosialhjelp.soknad.web.types.Pingable;
+import no.nav.sosialhjelp.soknad.web.types.Pingable.Ping.PingMetadata;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,8 +16,8 @@ import org.springframework.context.annotation.Configuration;
 import java.util.function.Function;
 
 import static no.nav.sbl.dialogarena.common.cxf.InstanceSwitcher.createSwitcher;
-import static no.nav.sbl.dialogarena.types.Pingable.Ping.feilet;
-import static no.nav.sbl.dialogarena.types.Pingable.Ping.lyktes;
+import static no.nav.sosialhjelp.soknad.web.types.Pingable.Ping.feilet;
+import static no.nav.sosialhjelp.soknad.web.types.Pingable.Ping.lyktes;
 
 
 @Configuration

@@ -1,8 +1,8 @@
-package no.nav.sbl.dialogarena.common.web.selftest.domain;
+package no.nav.sosialhjelp.soknad.web.selftest.domain;
 
 import static java.util.Optional.ofNullable;
-import static no.nav.sbl.dialogarena.common.web.selftest.SelfTestBaseServlet.STATUS_ERROR;
-import static no.nav.sbl.dialogarena.common.web.selftest.SelfTestBaseServlet.STATUS_OK;
+import static no.nav.sosialhjelp.soknad.web.selftest.SelfTestBaseServlet.STATUS_ERROR;
+import static no.nav.sosialhjelp.soknad.web.selftest.SelfTestBaseServlet.STATUS_OK;
 
 /*
 Kopiert inn fra no.nav.sbl.dialogarena:common-web

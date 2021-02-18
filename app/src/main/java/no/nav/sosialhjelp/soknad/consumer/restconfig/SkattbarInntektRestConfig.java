@@ -1,10 +1,10 @@
 package no.nav.sosialhjelp.soknad.consumer.restconfig;
 
-import no.nav.sbl.dialogarena.types.Pingable;
 import no.nav.sbl.rest.RestUtils;
 import no.nav.sosialhjelp.soknad.consumer.skatt.SkattbarInntektConsumer;
 import no.nav.sosialhjelp.soknad.consumer.skatt.SkattbarInntektConsumerImpl;
 import no.nav.sosialhjelp.soknad.consumer.skatt.SkattbarInntektConsumerMock;
+import no.nav.sosialhjelp.soknad.web.types.Pingable;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,9 +14,9 @@ import javax.ws.rs.client.ClientRequestFilter;
 
 import static java.lang.System.getenv;
 import static no.nav.sbl.dialogarena.common.cxf.InstanceSwitcher.createSwitcher;
-import static no.nav.sbl.dialogarena.types.Pingable.Ping.feilet;
-import static no.nav.sbl.dialogarena.types.Pingable.Ping.lyktes;
 import static no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.HEADER_NAV_APIKEY;
+import static no.nav.sosialhjelp.soknad.web.types.Pingable.Ping.feilet;
+import static no.nav.sosialhjelp.soknad.web.types.Pingable.Ping.lyktes;
 
 @Configuration
 public class SkattbarInntektRestConfig {

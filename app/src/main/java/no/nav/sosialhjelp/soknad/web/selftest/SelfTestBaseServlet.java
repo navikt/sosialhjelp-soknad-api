@@ -1,15 +1,14 @@
-package no.nav.sbl.dialogarena.common.web.selftest;
+package no.nav.sosialhjelp.soknad.web.selftest;
 
-import no.nav.sbl.dialogarena.common.web.selftest.domain.Selftest;
-import no.nav.sbl.dialogarena.common.web.selftest.domain.SelftestEndpoint;
-import no.nav.sbl.dialogarena.common.web.selftest.generators.SelftestHtmlGenerator;
-import no.nav.sbl.dialogarena.common.web.selftest.generators.SelftestJsonGenerator;
-import no.nav.sbl.dialogarena.types.Pingable;
+import no.nav.sosialhjelp.soknad.web.selftest.domain.Selftest;
+import no.nav.sosialhjelp.soknad.web.selftest.domain.SelftestEndpoint;
+import no.nav.sosialhjelp.soknad.web.selftest.generators.SelftestHtmlGenerator;
+import no.nav.sosialhjelp.soknad.web.selftest.generators.SelftestJsonGenerator;
+import no.nav.sosialhjelp.soknad.web.types.Pingable;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -27,8 +26,8 @@ import java.util.jar.Manifest;
 
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
-import static no.nav.sbl.dialogarena.types.Pingable.Ping;
 import static no.nav.sbl.util.EnvironmentUtils.getOptionalProperty;
+import static no.nav.sosialhjelp.soknad.web.types.Pingable.Ping;
 
 /*
 Kopiert inn fra no.nav.sbl.dialogarena:common-web

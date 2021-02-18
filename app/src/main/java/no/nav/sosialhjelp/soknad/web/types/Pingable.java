@@ -1,4 +1,4 @@
-package no.nav.sbl.dialogarena.types;
+package no.nav.sosialhjelp.soknad.web.types;
 
 import java.io.Serializable;
 import java.util.UUID;
