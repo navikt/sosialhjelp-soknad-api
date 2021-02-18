@@ -1,16 +1,16 @@
 package no.nav.sosialhjelp.soknad.consumer.wsconfig;
 
 import no.ks.svarut.servicesv9.ForsendelsesServiceV9;
-import no.nav.sbl.dialogarena.types.Pingable;
 import no.nav.sosialhjelp.soknad.consumer.ServiceBuilder;
 import no.nav.sosialhjelp.soknad.mock.fiks.ForsendelseServiceMock;
+import no.nav.sosialhjelp.soknad.web.types.Pingable;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import static no.nav.sbl.dialogarena.common.cxf.InstanceSwitcher.createMetricsProxyWithInstanceSwitcher;
-import static no.nav.sbl.dialogarena.types.Pingable.Ping.feilet;
-import static no.nav.sbl.dialogarena.types.Pingable.Ping.lyktes;
+import static no.nav.sosialhjelp.soknad.web.types.Pingable.Ping.feilet;
+import static no.nav.sosialhjelp.soknad.web.types.Pingable.Ping.lyktes;
 
 @Configuration
 public class FiksWSConfig {

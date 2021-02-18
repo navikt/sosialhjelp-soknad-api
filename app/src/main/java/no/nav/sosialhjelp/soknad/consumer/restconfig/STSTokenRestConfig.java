@@ -1,8 +1,8 @@
 package no.nav.sosialhjelp.soknad.consumer.restconfig;
 
-import no.nav.sbl.dialogarena.types.Pingable;
 import no.nav.sbl.rest.RestUtils;
 import no.nav.sosialhjelp.soknad.consumer.sts.apigw.STSConsumer;
+import no.nav.sosialhjelp.soknad.web.types.Pingable;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,9 +13,9 @@ import javax.xml.bind.DatatypeConverter;
 import java.nio.charset.StandardCharsets;
 
 import static java.util.Collections.singletonList;
-import static no.nav.sbl.dialogarena.types.Pingable.Ping.feilet;
-import static no.nav.sbl.dialogarena.types.Pingable.Ping.lyktes;
 import static no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.HEADER_NAV_APIKEY;
+import static no.nav.sosialhjelp.soknad.web.types.Pingable.Ping.feilet;
+import static no.nav.sosialhjelp.soknad.web.types.Pingable.Ping.lyktes;
 import static org.eclipse.jetty.http.HttpHeader.AUTHORIZATION;
 
 @Configuration

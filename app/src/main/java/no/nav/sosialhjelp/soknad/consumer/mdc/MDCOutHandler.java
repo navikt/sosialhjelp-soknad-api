@@ -36,7 +36,7 @@ public class MDCOutHandler implements SOAPHandler<SOAPMessageContext> {
             if (callId == null) {
                 throw new RuntimeException("CallId skal være tilgjengelig i MDC på dette tidspunkt. Om du er en webapp, må du legge til et MDCFilter i web.xml " +
                         "(oppskrift på dette: http://confluence.adeo.no/display/Modernisering/MDCFilter). " +
-                        "Om du er noe annet må du generere callId selv og legge på MDC. Hjelpemetoder finnes i no.nav.sbl.dialogarena.mdc.MDCOperations.");
+                        "Om du er noe annet må du generere callId selv og legge på MDC. Hjelpemetoder finnes i no.nav.sosialhjelp.soknad.web.mdc.MDCOperations.");
             }
             try {
                 SOAPEnvelope envelope = context.getMessage().getSOAPPart().getEnvelope();
