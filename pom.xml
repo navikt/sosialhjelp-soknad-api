@@ -260,11 +260,6 @@
             </dependency>
             <dependency>
                 <groupId>no.nav.common</groupId>
-                <artifactId>types</artifactId>
-                <version>${nav-common.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>no.nav.common</groupId>
                 <artifactId>rest</artifactId>
                 <version>${nav-common.version}</version>
                 <exclusions>
