@@ -1,4 +1,4 @@
-package no.nav.sbl.dialogarena.common.web.selftest.domain;
+package no.nav.sosialhjelp.soknad.web.selftest.domain;
 
 import java.util.Collections;
 import java.util.List;

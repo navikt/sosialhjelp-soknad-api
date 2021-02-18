@@ -1,7 +1,7 @@
-package no.nav.sbl.dialogarena.common.web.selftest.generators;
+package no.nav.sosialhjelp.soknad.web.selftest.generators;
 
-import no.nav.sbl.dialogarena.common.web.selftest.domain.Selftest;
-import no.nav.sbl.dialogarena.common.web.selftest.domain.SelftestEndpoint;
+import no.nav.sosialhjelp.soknad.web.selftest.domain.Selftest;
+import no.nav.sosialhjelp.soknad.web.selftest.domain.SelftestEndpoint;
 import org.apache.commons.io.IOUtils;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -17,9 +17,9 @@ import java.util.stream.Collectors;
 
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.joining;
-import static no.nav.sbl.dialogarena.common.web.selftest.SelfTestBaseServlet.STATUS_ERROR;
-import static no.nav.sbl.dialogarena.common.web.selftest.SelfTestBaseServlet.STATUS_OK;
-import static no.nav.sbl.dialogarena.common.web.selftest.SelfTestBaseServlet.STATUS_WARNING;
+import static no.nav.sosialhjelp.soknad.web.selftest.SelfTestBaseServlet.STATUS_ERROR;
+import static no.nav.sosialhjelp.soknad.web.selftest.SelfTestBaseServlet.STATUS_OK;
+import static no.nav.sosialhjelp.soknad.web.selftest.SelfTestBaseServlet.STATUS_WARNING;
 import static org.apache.commons.lang3.StringUtils.join;
 
 /*

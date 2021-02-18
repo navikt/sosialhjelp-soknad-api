@@ -1,9 +1,9 @@
 package no.nav.sosialhjelp.soknad.consumer.wsconfig;
 
-import no.nav.sbl.dialogarena.types.Pingable;
-import no.nav.sbl.dialogarena.types.Pingable.Ping.PingMetadata;
 import no.nav.sosialhjelp.soknad.consumer.ServiceBuilder;
 import no.nav.sosialhjelp.soknad.mock.person.PersonV3Mock;
+import no.nav.sosialhjelp.soknad.web.types.Pingable;
+import no.nav.sosialhjelp.soknad.web.types.Pingable.Ping.PingMetadata;
 import no.nav.tjeneste.virksomhet.person.v3.binding.PersonV3;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -12,8 +12,8 @@ import org.springframework.context.annotation.Configuration;
 import javax.xml.namespace.QName;
 
 import static no.nav.sbl.dialogarena.common.cxf.InstanceSwitcher.createMetricsProxyWithInstanceSwitcher;
-import static no.nav.sbl.dialogarena.types.Pingable.Ping.feilet;
-import static no.nav.sbl.dialogarena.types.Pingable.Ping.lyktes;
+import static no.nav.sosialhjelp.soknad.web.types.Pingable.Ping.feilet;
+import static no.nav.sosialhjelp.soknad.web.types.Pingable.Ping.lyktes;
 
 @Configuration
 public class PersonV3WSConfig {

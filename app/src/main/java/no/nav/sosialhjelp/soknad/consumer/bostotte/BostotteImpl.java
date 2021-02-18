@@ -1,8 +1,8 @@
 package no.nav.sosialhjelp.soknad.consumer.bostotte;
 
 import no.nav.metrics.aspects.Timed;
-import no.nav.sbl.dialogarena.types.Pingable;
 import no.nav.sosialhjelp.soknad.consumer.bostotte.dto.BostotteDto;
+import no.nav.sosialhjelp.soknad.web.types.Pingable;
 import org.eclipse.jetty.http.HttpHeader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,9 +18,9 @@ import javax.ws.rs.core.UriBuilder;
 import java.time.LocalDate;
 
 import static java.lang.System.getenv;
-import static no.nav.sbl.dialogarena.types.Pingable.Ping.feilet;
-import static no.nav.sbl.dialogarena.types.Pingable.Ping.lyktes;
 import static no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.HEADER_NAV_APIKEY;
+import static no.nav.sosialhjelp.soknad.web.types.Pingable.Ping.feilet;
+import static no.nav.sosialhjelp.soknad.web.types.Pingable.Ping.lyktes;
 
 @Timed
 public class BostotteImpl implements Bostotte {

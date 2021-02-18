@@ -1,9 +1,9 @@
-package no.nav.sbl.dialogarena.common.web.selftest.generators;
+package no.nav.sosialhjelp.soknad.web.selftest.generators;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import no.nav.sbl.dialogarena.common.web.selftest.domain.Selftest;
+import no.nav.sosialhjelp.soknad.web.selftest.domain.Selftest;
 
 /*
 Kopiert inn fra no.nav.sbl.dialogarena:common-web
