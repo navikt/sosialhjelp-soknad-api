@@ -1,8 +1,8 @@
 package no.nav.sbl.dialogarena.service;
 
 import no.nav.sbl.dialogarena.rest.ressurser.soknadoversikt.SoknadOversiktRessurs.SoknadOversikt;
-import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
+import no.nav.sosialhjelp.soknad.business.db.soknadmetadata.SoknadMetadataRepository;
+import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 

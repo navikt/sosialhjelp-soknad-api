@@ -8,7 +8,7 @@ import no.nav.sbl.dialogarena.server.SoknadsosialhjelpServer;
 import javax.sql.DataSource;
 import java.io.File;
 
-import static no.nav.sbl.dialogarena.soknadinnsending.business.db.config.DatabaseTestContext.buildDataSource;
+import static no.nav.sosialhjelp.soknad.business.db.config.DatabaseTestContext.buildDataSource;
 import static no.nav.sbl.dialogarena.test.path.FilesAndDirs.TEST_RESOURCES;
 
 public class DevSoknadsosialhjelpServer {

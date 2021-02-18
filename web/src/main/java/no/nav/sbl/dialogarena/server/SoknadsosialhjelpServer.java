@@ -6,7 +6,7 @@ import no.nav.sbl.dialogarena.mock.MockSubjectHandlerService;
 import no.nav.sosialhjelp.soknad.domain.model.mock.MockUtils;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils;
-import no.nav.sbl.dialogarena.soknadinnsending.business.db.config.DatabaseTestContext;
+import no.nav.sosialhjelp.soknad.business.db.config.DatabaseTestContext;
 import org.flywaydb.core.Flyway;
 import org.flywaydb.core.api.output.MigrateResult;
 import org.slf4j.Logger;

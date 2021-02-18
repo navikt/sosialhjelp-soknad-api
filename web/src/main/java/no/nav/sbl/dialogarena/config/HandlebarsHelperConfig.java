@@ -1,6 +1,6 @@
 package no.nav.sbl.dialogarena.config;
 
-import no.nav.sbl.sosialhjelp.pdf.HandleBarKjoerer;
+import no.nav.sosialhjelp.soknad.business.pdf.HandleBarKjoerer;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 

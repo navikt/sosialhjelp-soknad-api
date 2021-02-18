@@ -2,8 +2,8 @@ package no.nav.sbl.dialogarena.service;
 
 import no.nav.sbl.dialogarena.rest.ressurser.soknadoversikt.SoknadOversiktRessurs.SoknadOversikt;
 import no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SoknadType;
-import no.nav.sbl.dialogarena.soknadinnsending.business.db.soknadmetadata.SoknadMetadataRepository;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadMetadata;
+import no.nav.sosialhjelp.soknad.business.db.soknadmetadata.SoknadMetadataRepository;
+import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

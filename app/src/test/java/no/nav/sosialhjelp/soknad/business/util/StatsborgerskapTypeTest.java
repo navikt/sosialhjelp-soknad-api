@@ -1,0 +1,25 @@
+package no.nav.sosialhjelp.soknad.business.util;
+
+import no.nav.sosialhjelp.soknad.domain.model.util.StatsborgerskapType;
+import org.junit.Test;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+
+public class StatsborgerskapTypeTest {
+
+    @Test
+    public void skalReturnereNorskForLandkodeNOR() {
+        assertThat(StatsborgerskapType.get("NOR"), equalTo("norsk"));
+    }
+
+    @Test
+    public void skalReturnereEOSForLandkodeDNK() {
+        assertThat(StatsborgerskapType.get("DNK"), equalTo("eos"));
+    }
+
+    @Test
+    public void skalReturnereIkkeEosForLandkodeBUR() {
+        assertThat(StatsborgerskapType.get("BUR"), equalTo("ikkeEos"));
+    }
+}
