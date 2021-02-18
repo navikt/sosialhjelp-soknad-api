@@ -123,7 +123,7 @@ public final class Jetty {
                     webAppContext.setResourceBase("src/main/webapp");
                 }
             } else {
-                webAppContext.setWar("");
+                webAppContext.setWar("/");
             }
         }
 
