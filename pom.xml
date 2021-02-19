@@ -848,7 +848,7 @@
                 <groupId>net.sf.ehcache</groupId>
                 <artifactId>ehcache</artifactId>
                 <version>${ehcache.version}</version>
-<!--                <scope>runtime</scope>-->
+                <scope>runtime</scope>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.woodstox</groupId>
@@ -859,7 +859,7 @@
                 <groupId>org.codehaus.woodstox</groupId>
                 <artifactId>stax2-api</artifactId>
                 <version>${stax2-api.version}</version>
-<!--                <scope>runtime</scope>-->
+                <scope>runtime</scope>
             </dependency>
             <dependency>
                 <groupId>org.aspectj</groupId>
@@ -874,14 +874,14 @@
                 <groupId>jakarta.servlet</groupId>
                 <artifactId>jakarta.servlet-api</artifactId>
                 <version>${jakarta.servlet-api.version}</version>
-<!--                <scope>provided</scope>-->
+                <scope>provided</scope>
             </dependency>
             <!-- https://mvnrepository.com/artifact/org.apache.pdfbox/preflight -->
             <dependency>
                 <groupId>org.apache.pdfbox</groupId>
                 <artifactId>preflight</artifactId>
                 <version>${pdfbox.version}</version>
-<!--                <scope>provided</scope>-->
+                <scope>provided</scope>
                 <exclusions>
                     <exclusion>
                         <groupId>commons-logging</groupId>
