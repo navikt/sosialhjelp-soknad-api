@@ -51,6 +51,7 @@
     "START_KODEVERK_WITHMOCK": "true",
     "START_PERSON_WITHMOCK": "true",
     "START_UTBETALING_WITHMOCK": "true",
+    "MOCK_ALT_UTBETALINGER_FRA_NAV_URL": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/utbetaling",
     "VIRKSOMHETSSERTIFIKAT_PATH": "/var/run/secrets",
     "UNLEASH_INSTANCE_ID": "dev-gcp",
     "REDIS_HOST": "sosialhjelp-soknad-api-redis.teamdigisos.svc.cluster.local"
