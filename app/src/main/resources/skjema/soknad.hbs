@@ -69,7 +69,10 @@
             <ul class="fakta-liste">
                 <li>
                     <ul class="svar-liste">
-                        <li>{{{hentTekstMedParametere "soknasosialhjelp.oppsummering.hvorsendes" "navkontor" @root.navEnhetsnavn}}}</li>
+                        <li>
+                            {{{hentTekstMedParametere "soknasosialhjelp.oppsummering.hvorsendes_del1" "navkontor" @root.navEnhetsnavn}}}
+                            {{{hentTekstMedParametere "soknasosialhjelp.oppsummering.hvorsendes_del2" "navkontor" @root.navEnhetsnavn}}}
+                        </li>
                         <li>{{{hentTekstMedParametere "soknadsosialhjelp.forstesiden.bekreftInfoModal.body"
                         "navkontor" @root.navEnhetsnavn
                         "navkontor:NAV-kontoret ditt" @root.navEnhetsnavn
