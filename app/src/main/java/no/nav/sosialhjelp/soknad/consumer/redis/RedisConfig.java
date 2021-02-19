@@ -33,7 +33,7 @@ public class RedisConfig {
         RedisURI redisURI = RedisURI.builder()
                 .withHost(host)
                 .withPort(port)
-                .withPassword(password)
+                .withPassword(password.toCharArray())
                 .withTimeout(Duration.ofSeconds(TIMEOUT_SECONDS))
                 .build();
 
