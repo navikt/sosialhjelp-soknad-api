@@ -882,12 +882,6 @@
                 <artifactId>preflight</artifactId>
                 <version>${pdfbox.version}</version>
                 <scope>provided</scope>
-                <exclusions>
-                    <exclusion>
-                        <groupId>commons-logging</groupId>
-                        <artifactId>commons-logging</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
             <!-- https://mvnrepository.com/artifact/org.apache.pdfbox/jempbox -->
             <dependency>
