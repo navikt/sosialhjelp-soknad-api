@@ -145,7 +145,7 @@ public final class ServiceBuilder<T> {
 
         public PortTypeBuilder<U> withHttpsMock() {
             HTTPConduit httpConduit = (HTTPConduit) getClient(portType).getConduit();
-            String property = getProperty("no.nav.sbl.dialogarena.sendsoknad.sslMock");
+            String property = getProperty("no.nav.sosialhjelp.soknad.sslMock");
             if (property != null && property.equals("true")) {
                 TLSClientParameters params = new TLSClientParameters();
                 params.setDisableCNCheck(true);

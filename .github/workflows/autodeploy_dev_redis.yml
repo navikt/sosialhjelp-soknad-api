@@ -2,8 +2,8 @@ name: Auto-deploy redis dev
 on:
   push: # Deploys automatically to dev-sbs and dev-gcp if there is a change in any redis files.
     paths:
-      - "web/nais/redis-config.yml"
-      - "web/nais/redisexporter.yml"
+      - "app/nais/redis-config.yml"
+      - "app/nais/redisexporter.yml"
       - ".github/workflows/autodeploy_dev_redis.yml"
     branches-ignore:
       - 'master'
@@ -27,7 +27,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CLUSTER: dev-sbs
           TEAM: teamdigisos
-          RESOURCE: "web/nais/redis-config.yml,web/nais/redisexporter.yml"
+          RESOURCE: "app/nais/redis-config.yml,app/nais/redisexporter.yml"
 
   deploy-dev-gcp:
     name: Auto-deploy redis to dev-gcp
@@ -42,4 +42,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CLUSTER: dev-gcp
           TEAM: teamdigisos
-          RESOURCE: "web/nais/redis-config.yml,web/nais/redisexporter.yml"
+          RESOURCE: "app/nais/redis-config.yml,app/nais/redisexporter.yml"
