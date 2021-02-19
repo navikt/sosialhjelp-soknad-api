@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.consumer.retry;
 
+import io.github.resilience4j.core.IntervalBiFunction;
 import io.github.resilience4j.core.IntervalFunction;
 import io.github.resilience4j.retry.Retry;
 import io.github.resilience4j.retry.RetryConfig;
@@ -32,7 +33,7 @@ public final class RetryUtils {
                 .retryExceptions(retryableExceptions)
                 .maxAttempts(maxAttempts)
                 .waitDuration(Duration.ofMillis(initialWaitIntervalMillis))
-                .intervalFunction(IntervalFunction.ofExponentialBackoff(initialWaitIntervalMillis, exponentialBackoffMultiplier))
+                .intervalBiFunction(IntervalBiFunction.ofIntervalFunction(IntervalFunction.ofExponentialBackoff(initialWaitIntervalMillis, exponentialBackoffMultiplier)))
                 .build();
         var retry = RetryRegistry.of(retryConfig)
                 .retry(baseUrl);
