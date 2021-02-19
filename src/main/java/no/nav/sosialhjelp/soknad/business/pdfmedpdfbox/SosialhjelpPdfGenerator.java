@@ -869,6 +869,8 @@ public class SosialhjelpPdfGenerator {
         pdf.addBlankLine();
 
         if (okonomi != null) {
+            Map<String, String> urisOnPage = new HashMap<>();
+
             // Skatt
             pdf.skrivTekstBold(getTekst("utbetalinger.inntekt.skattbar.tittel"));
             List<JsonOkonomibekreftelse> skattetatenSamtykke = hentBekreftelser(okonomi, UTBETALING_SKATTEETATEN_SAMTYKKE);
@@ -927,7 +929,8 @@ public class SosialhjelpPdfGenerator {
                         pdf.addBlankLine();
                     }
                     if (utvidetSoknad) {
-                        skrivInfotekst(pdf, "utbetalinger.infotekst.tekst");
+                        skrivInfotekst(pdf, "utbetalinger.infotekst.tekst.v2");
+                        urisOnPage.put("Dine Utbetalinger", getTekst("utbetalinger.infotekst.tekst.url"));
                     }
                 }
                 if (utvidetSoknad) {
@@ -960,7 +963,8 @@ public class SosialhjelpPdfGenerator {
                         }
                     }
                     if (utvidetSoknad) {
-                        skrivInfotekst(pdf, "utbetalinger.infotekst.tekst");
+                        skrivInfotekst(pdf, "utbetalinger.infotekst.tekst.v2");
+                        urisOnPage.put("Dine Utbetalinger", getTekst("utbetalinger.infotekst.tekst.url"));
                     }
                 } else {
                     pdf.skrivTekst(getTekst("utbetalinger.ingen.true"));
@@ -980,7 +984,8 @@ public class SosialhjelpPdfGenerator {
                 pdf.skrivTekst(getTekst("inntekt.bostotte.sporsmal." + bostotteBekreftelse.getVerdi()));
 
                 if (utvidetSoknad && !bostotteBekreftelse.getVerdi()) {
-                    skrivInfotekst(pdf, "informasjon.husbanken.bostotte");
+                    skrivInfotekst(pdf, "informasjon.husbanken.bostotte.v2");
+                    urisOnPage.put("støtte fra Husbanken", getTekst("informasjon.husbanken.bostotte.url"));
                 }
             } else {
                 skrivIkkeUtfylt(pdf);
@@ -1069,8 +1074,9 @@ public class SosialhjelpPdfGenerator {
                 }
                 pdf.addBlankLine();
                 if (utvidetSoknad) {
-                    skrivInfotekst(pdf, "inntekt.bostotte.detaljer.tekst");
+                    skrivInfotekst(pdf, "inntekt.bostotte.husbanken.lenkeText");
                     skrivInfotekst(pdf, "inntekt.bostotte.ta_bort_samtykke");
+                    urisOnPage.put(getTekst("inntekt.bostotte.husbanken.lenkeText"), getTekst("inntekt.bostotte.husbanken.url"));
                     pdf.addBlankLine();
                 }
             }
@@ -1087,8 +1093,9 @@ public class SosialhjelpPdfGenerator {
                     if (utvidetSoknad && !studielanOgStipendBekreftelse.getVerdi()) {
                         pdf.skrivTekstBold(getTekst("infotekst.oppsummering.tittel"));
                         pdf.skrivTekst(getTekst("informasjon.student.studielan.tittel"));
-                        pdf.skrivTekst(getTekst("informasjon.student.studielan.1"));
+                        pdf.skrivTekst(getTekst("informasjon.student.studielan.1.v2"));
                         pdf.skrivTekst(getTekst("informasjon.student.studielan.2"));
+                        urisOnPage.put("lanekassen.no", getTekst("informasjon.student.studielan.url"));
                     }
                 } else {
                     skrivIkkeUtfylt(pdf);
@@ -1255,6 +1262,11 @@ public class SosialhjelpPdfGenerator {
                 skrivSvaralternativer(pdf, inntektJaSvaralternativer);
             }
             pdf.addBlankLine();
+
+            if(urisOnPage.size() > 0) {
+                addLinks(pdf, urisOnPage);
+            }
+
         }
     }
 
