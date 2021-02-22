@@ -2,8 +2,8 @@ name: Auto-deploy redis prod-sbs
 on:
   push: # Deploys automatically to prod-sbs if there is a change in any redis files.
     paths:
-      - "app/nais/redis-config.yml"
-      - "app/nais/redisexporter.yml"
+      - "nais/redis-config.yml"
+      - "nais/redisexporter.yml"
       - ".github/workflows/autodeploy_prod_redis.yml"
     branches:
       - 'master'
@@ -27,4 +27,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CLUSTER: prod-sbs
           TEAM: teamdigisos
-          RESOURCE: "app/nais/redis-config.yml,app/nais/redisexporter.yml"
+          RESOURCE: "nais/redis-config.yml,nais/redisexporter.yml"
