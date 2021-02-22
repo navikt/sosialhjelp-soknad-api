@@ -83,7 +83,7 @@
         <cxf.version>3.4.2</cxf.version>
         <wss4j.version>2.3.0</wss4j.version>
         <ojdbc.version>19.9.0.0</ojdbc.version>
-        <flyway-core.version>7.5.2</flyway-core.version>
+        <flyway-core.version>7.5.3</flyway-core.version>
         <flyway-maven-plugin.version>7.5.0</flyway-maven-plugin.version>
         <handlebars.version>4.2.0</handlebars.version>
         <jackson.version>2.12.1</jackson.version>
