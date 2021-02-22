@@ -27,9 +27,9 @@ jobs:
         uses: nais/deploy/actions/deploy@v1
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
-          RESOURCE: app/nais.yaml
+          RESOURCE: nais/nais.yaml
           CLUSTER: prod-sbs
-          VARS: app/nais/prod/prod-sbs.json
+          VARS: nais/prod/prod-sbs.json
           REF: ${{ github.sha }}
           PRINT_PAYLOAD: true
           IMAGE: ${{ env.DOCKER_TAG }}
