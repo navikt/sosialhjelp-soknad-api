@@ -1,4 +1,4 @@
 .idea
 /target
 */target
-!web/target/soknadsosialhjelp-server
+!target/sosialhjelp-soknad-api

@@ -1,0 +1,40 @@
+package no.nav.sosialhjelp.soknad.business.service;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+import java.util.HashMap;
+import java.util.Map;
+
+@Component
+public class InformasjonService implements Miljovariabler {
+
+    @Value("${dittnav.link.url}")
+    private String dittnavUrl;
+    @Value("${soknad.ettersending.antalldager}")
+    private String antallDager;
+
+    public Map<String,String> hentMiljovariabler() {
+        Map<String, String> result = new HashMap<>();
+
+        result.put("dittnav.link.url", dittnavUrl);
+        result.put("soknad.ettersending.antalldager", antallDager);
+
+        result.putAll(getTestSpesifikkConfig());
+
+        return result;
+    }
+
+    private Map<String, String> getTestSpesifikkConfig() {
+        Map<String, String> testEnvVars = new HashMap<>();
+
+        for(String envVar : System.getProperties().stringPropertyNames()) {
+            if(envVar.startsWith("testconfig.")) {
+                testEnvVars.put(envVar, System.getProperty(envVar));
+            }
+        }
+        return testEnvVars;
+    }
+
+
+}
