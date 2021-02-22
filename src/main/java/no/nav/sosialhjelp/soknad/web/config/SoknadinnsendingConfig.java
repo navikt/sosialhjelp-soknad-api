@@ -9,6 +9,7 @@ import no.nav.sosialhjelp.soknad.consumer.virusscan.VirusScanConfig;
 import no.nav.sosialhjelp.soknad.web.oidc.OidcTokenValidatorConfig;
 import no.nav.sosialhjelp.soknad.web.service.SaksoversiktMetadataService;
 import no.nav.sosialhjelp.soknad.web.service.SoknadOversiktService;
+import no.nav.sosialhjelp.soknad.web.selftest.SelftestConfig;
 import no.nav.sosialhjelp.soknad.web.sikkerhet.Tilgangskontroll;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -33,7 +34,8 @@ import org.springframework.context.annotation.Import;
         SoknadOversiktService.class,
         VirusScanConfig.class,
         DigisosApiRestConfig.class,
-        BostotteConfig.class
+        BostotteConfig.class,
+        SelftestConfig.class
 })
 @ComponentScan(basePackages = "no.nav.sosialhjelp.soknad.web.rest")
 public class SoknadinnsendingConfig {
