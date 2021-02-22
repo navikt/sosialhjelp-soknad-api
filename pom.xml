@@ -9,10 +9,10 @@
         <version>1.2020.03.10_16.55-ca8a7f989623</version>
     </parent>
 
-    <name>Dialogarena - Send Søknad</name>
-    <description>Innsending av elektronisk søknad.</description>
-    <groupId>no.nav.sbl.dialogarena</groupId>
-    <artifactId>sendsoknad</artifactId>
+    <name>sosialhjelp-soknad-api</name>
+    <description>Søknad for økonomisk sosialhjelp</description>
+    <groupId>no.nav.sosialhjelp</groupId>
+    <artifactId>sosialhjelp-soknad-api</artifactId>
     <version>18.1.0-SNAPSHOT</version>
 
     <packaging>war</packaging>
@@ -52,7 +52,7 @@
         <java.jdk.version>11</java.jdk.version>
 
         <sonar.exclusions>
-            **/mockmodul/**,
+            **/mock/**,
             **/selftest/**
         </sonar.exclusions>
         <!-- Sonaroppsett for å få med integrasjonstester på testdekning -->
@@ -1927,9 +1927,9 @@
 
     </build>
     <scm>
-        <developerConnection>scm:git:http://stash.devillo.no/scm/sokd/sendsoknad.git</developerConnection>
-        <url>http://stash.devillo.no/scm/sokd/sendsoknad.git</url>
-        <tag>sendsoknad-17.1.1</tag>
+        <developerConnection>scm:git:git@github.com:navikt/sosialhjelp-soknad-api.git</developerConnection>
+        <url>https://github.com/navikt/sosialhjelp-soknad-api</url>
+        <tag>sosialhjelp-soknad-api-1.0.0</tag>
     </scm>
 
     <profiles>
@@ -1941,7 +1941,7 @@
                 </property>
             </activation>
             <properties>
-                <sonar.jacoco.excludes>no/nav/sbl/dialogarena/sendsoknad/mockmodul/**/*</sonar.jacoco.excludes>
+                <sonar.jacoco.excludes>no/nav/sosialhjelp/soknad/mock/**/*</sonar.jacoco.excludes>
             </properties>
         </profile>
     </profiles>
