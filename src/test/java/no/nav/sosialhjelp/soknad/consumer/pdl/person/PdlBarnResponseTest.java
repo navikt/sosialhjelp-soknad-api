@@ -23,7 +23,7 @@ public class PdlBarnResponseTest {
 
     @Test
     public void deserialiseringAvPdlBarnResponseJson() throws IOException {
-        InputStream resourceAsStream = ClassLoader.getSystemResourceAsStream("pdlBarnResponse.json");
+        InputStream resourceAsStream = ClassLoader.getSystemResourceAsStream("pdl/pdlBarnResponse.json");
         assertThat(resourceAsStream).isNotNull();
         String jsonString = IOUtils.toString(resourceAsStream);
 

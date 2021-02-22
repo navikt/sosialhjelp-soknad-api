@@ -94,7 +94,7 @@ public class BostotteImplTest {
     public void hentBostotte_testJson_testingJsonTranslation() throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
 
-        InputStream resourceAsStream = ClassLoader.getSystemResourceAsStream("husbankenSvar.json");
+        InputStream resourceAsStream = ClassLoader.getSystemResourceAsStream("husbanken/husbankenSvar.json");
         assertThat(resourceAsStream).isNotNull();
         String jsonString = IOUtils.toString(resourceAsStream);
 

@@ -23,7 +23,7 @@ public class ArbeidsforholdDtoTest {
                 .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
                 .registerModule(new JavaTimeModule());
 
-        InputStream resourceAsStream = ClassLoader.getSystemResourceAsStream("aaregResponse.json");
+        InputStream resourceAsStream = ClassLoader.getSystemResourceAsStream("arbeidsforhold/aaregResponse.json");
         assertThat(resourceAsStream).isNotNull();
         String jsonString = IOUtils.toString(resourceAsStream);
 
