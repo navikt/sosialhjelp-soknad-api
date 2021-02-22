@@ -1,4 +1,4 @@
-package no.nav.sbl.dialogarena.selftest;
+package no.nav.sosialhjelp.soknad.web.selftest;
 
 import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
