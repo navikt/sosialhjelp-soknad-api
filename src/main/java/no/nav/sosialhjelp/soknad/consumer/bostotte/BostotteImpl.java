@@ -44,9 +44,10 @@ public class BostotteImpl implements Bostotte {
                     .header(HEADER_NAV_APIKEY, apikey)
                     .header(HttpHeader.AUTHORIZATION.name(), token)
                     .build();
+            logger.info("Hentet bostøtte informasjon fra Husbanken!");
             return operations.exchange(request, BostotteDto.class).getBody();
         } catch (ResourceAccessException e) {
-            logger.error("Problemer med å hente bostøtte informasjon!", e);
+            logger.error("Problemer med å hente bostøtte informasjon fra Husbanken!", e);
         } catch (HttpClientErrorException e) {
             logger.error("Problemer med å koble opp mot Husbanken!", e);
         } catch (HttpServerErrorException e) {

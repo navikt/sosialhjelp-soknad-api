@@ -7,6 +7,8 @@ import no.nav.tjeneste.virksomhet.utbetaling.v1.UtbetalingV1;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.web.client.RestTemplate;
 
 import javax.xml.namespace.QName;
 
@@ -22,6 +24,9 @@ public class UtbetalingWSConfig {
     @Value("${utbetaling.v1.url}")
     private String utbetalingEndpoint;
 
+    @Value("${utbetaling.mock.url}")
+    private String mockUtbetalingEndpoint;
+
     private ServiceBuilder<UtbetalingV1>.PortTypeBuilder<UtbetalingV1> factory() {
         return new ServiceBuilder<>(UtbetalingV1.class)
                 .asStandardService()
@@ -36,9 +41,18 @@ public class UtbetalingWSConfig {
 
     @Bean
     public UtbetalingV1 utbetalingV1() {
-        UtbetalingV1 mock = new UtbetalMock().utbetalMock();
+        RestTemplate restTemplate = new RestTemplate(getClientHttpRequestFactory());
+        UtbetalingV1 mock = new UtbetalMock().utbetalMock(mockUtbetalingEndpoint, restTemplate);
         UtbetalingV1 prod = factory().withUserSecurity().get();
         return createMetricsProxyWithInstanceSwitcher("Utbetaling", prod, mock, UTBETALING_KEY, UtbetalingV1.class);
+    }
+
+    private HttpComponentsClientHttpRequestFactory getClientHttpRequestFactory() {
+        HttpComponentsClientHttpRequestFactory clientHttpRequestFactory
+                = new HttpComponentsClientHttpRequestFactory();
+        clientHttpRequestFactory.setConnectTimeout(10_000);
+        clientHttpRequestFactory.setReadTimeout(10_000);
+        return clientHttpRequestFactory;
     }
 
     @Bean
