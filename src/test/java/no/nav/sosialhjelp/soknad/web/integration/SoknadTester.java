@@ -59,7 +59,7 @@ public class SoknadTester extends JerseyTest {
     }
 
     private WebTarget sendsoknad() {
-        return target("/sendsoknad/").queryParam("fnr", this.user);
+        return target("/sosialhjelp/soknad-api/").queryParam("fnr", this.user);
     }
 
     private void checkResponse(Response invoke, int expectedStatusCode) {
@@ -70,7 +70,7 @@ public class SoknadTester extends JerseyTest {
     }
 
     public Invocation.Builder sendsoknadResource(String suburl, Function<WebTarget, WebTarget> webTargetDecorator) {
-        WebTarget target = target("/sendsoknad/" + suburl);
+        WebTarget target = target("/sosialhjelp/soknad-api/" + suburl);
         MediaType APPLICATION_PDF_TYPE = new MediaType("application", "pdf");
         return webTargetDecorator.apply(target)
                 .request(APPLICATION_JSON_TYPE)

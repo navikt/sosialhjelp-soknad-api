@@ -23,7 +23,7 @@ public abstract class AbstractIT {
         System.setProperty(TestProperties.CONTAINER_PORT, "" + PORT);
         System.setProperty(TestProperties.LOG_TRAFFIC, "true");
         System.setProperty("jersey.test.host", "localhost");
-        jetty = new SoknadsosialhjelpServer(PORT, new File(TEST_RESOURCES, "override-web-integration.xml"), "/sendsoknad", buildDataSource("hsqldb.properties"));
+        jetty = new SoknadsosialhjelpServer(PORT, new File(TEST_RESOURCES, "override-web-integration.xml"), "/sosialhjelp/soknad-api", buildDataSource("hsqldb.properties"));
         System.setProperty("no.nav.sosialhjelp.soknad.hsqldb", "true");
         setProperty("start.oidc.withmock", "false"); // pga. Testene validerer oidc-filtre
         jetty.start();
