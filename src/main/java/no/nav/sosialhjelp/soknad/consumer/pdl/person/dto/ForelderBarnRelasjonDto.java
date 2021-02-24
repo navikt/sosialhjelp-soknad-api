@@ -3,14 +3,14 @@ package no.nav.sosialhjelp.soknad.consumer.pdl.person.dto;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class FamilierelasjonDto {
+public class ForelderBarnRelasjonDto {
 
     private final String relatertPersonsIdent;
     private final String relatertPersonsRolle;
     private final String minRolleForPerson;
 
     @JsonCreator
-    public FamilierelasjonDto(
+    public ForelderBarnRelasjonDto(
             @JsonProperty("relatertPersonsIdent") String relatertPersonsIdent,
             @JsonProperty("relatertPersonsRolle") String relatertPersonsRolle,
             @JsonProperty("minRolleForPerson") String minRolleForPerson

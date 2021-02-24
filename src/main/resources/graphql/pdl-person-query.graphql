@@ -78,7 +78,7 @@ query($ident: ID!, $historikk: Boolean!) {
                 ...folkeregistermetadata
             }
         }
-        familierelasjoner {
+        forelderBarnRelasjon {
             relatertPersonsIdent
             relatertPersonsRolle
             minRolleForPerson
