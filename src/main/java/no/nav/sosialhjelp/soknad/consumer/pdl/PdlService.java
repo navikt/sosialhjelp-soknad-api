@@ -49,21 +49,21 @@ public class PdlService {
     public List<Barn> hentBarnForPerson(String ident) {
         PdlPerson pdlPerson = pdlConsumer.hentPerson(ident);
 
-        if (pdlPerson == null || pdlPerson.getFamilierelasjoner() == null) {
+        if (pdlPerson == null || pdlPerson.getForelderBarnRelasjon() == null) {
             return null;
         }
 
-        List<Barn> alleBarn = pdlPerson.getFamilierelasjoner().stream()
-                .filter(familierelasjonDto -> familierelasjonDto.getRelatertPersonsRolle().equalsIgnoreCase(BARN))
-                .map(familierelasjonDto -> {
-                    var barnIdent = familierelasjonDto.getRelatertPersonsIdent();
+        List<Barn> alleBarn = pdlPerson.getForelderBarnRelasjon().stream()
+                .filter(forelderBarnRelasjonDto -> forelderBarnRelasjonDto.getRelatertPersonsRolle().equalsIgnoreCase(BARN))
+                .map(forelderBarnRelasjonDto -> {
+                    var barnIdent = forelderBarnRelasjonDto.getRelatertPersonsIdent();
 
                     if (barnIdent == null || barnIdent.isEmpty()) {
-                        log.info("Familierelasjon.relatertPersonsIdent (barnIdent) er null -> kaller ikke hentPerson for barn");
+                        log.info("ForelderBarnRelasjon.relatertPersonsIdent (barnIdent) er null -> kaller ikke hentPerson for barn");
                         return null;
                     }
                     if (erFDAT(barnIdent)) {
-                        log.info("Familierelasjon.relatertPersonsIdent (barnIdent) er FDAT -> kaller ikke hentPerson for barn");
+                        log.info("ForelderBarnRelasjon.relatertPersonsIdent (barnIdent) er FDAT -> kaller ikke hentPerson for barn");
                         return null;
                     }
 

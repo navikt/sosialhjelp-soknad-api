@@ -9,10 +9,10 @@ import no.nav.sosialhjelp.soknad.consumer.pdl.person.PdlPerson;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.AdressebeskyttelseDto;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.BostedsadresseDto;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.EndringDto;
-import no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.FamilierelasjonDto;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.FoedselDto;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.FolkeregistermetadataDto;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.FolkeregisterpersonstatusDto;
+import no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.ForelderBarnRelasjonDto;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.KontaktadresseDto;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.MetadataDto;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.NavnDto;
@@ -97,7 +97,7 @@ public class PdlConsumerMock {
                 singletonList(defaultBostedsadresse()),
                 emptyList(), // ingen oppholdsadresse
                 singletonList(new KontaktadresseDto("Innland", null, new VegadresseDto(null, "midlertidig adresse gate", 1, "D", null, "0471", "Oslo", null), null, null)),
-                response.getBarn().isEmpty() ? null : familierelasjoner(response.getBarn()), // ingen familierelasjoner for mockperson
+                response.getBarn().isEmpty() ? null : forelderBarnRelasjoner(response.getBarn()), // ingen forelderBarnRelasjoner for mockperson
                 singletonList(new NavnDto(
                         response.getPerson().getFornavn(),
                         response.getPerson().getMellomnavn(),
@@ -158,12 +158,12 @@ public class PdlConsumerMock {
         return new BostedsadresseDto(null, new VegadresseDto("999999", "Karl Johans gate", 1, "A", null, "1111", "0301", null), null, null);
     }
 
-    private static List<FamilierelasjonDto> familierelasjoner(List<PdlMockBarn> barn) {
+    private static List<ForelderBarnRelasjonDto> forelderBarnRelasjoner(List<PdlMockBarn> barn) {
         if (barn == null) {
             return emptyList();
         }
         return barn.stream()
-                .map(pdlMockBarn -> new FamilierelasjonDto(pdlMockBarn.getIdent(), "BARN", "MOR"))
+                .map(pdlMockBarn -> new ForelderBarnRelasjonDto(pdlMockBarn.getIdent(), "BARN", "MOR"))
                 .collect(Collectors.toList());
     }
 
@@ -173,7 +173,7 @@ public class PdlConsumerMock {
                 singletonList(new BostedsadresseDto(null, new VegadresseDto("123123", "GATEVEIEN", 1, "A", null, "0690", "0301", null), null, null)),
                 emptyList(), // ingen oppholdsadresse
                 singletonList(new KontaktadresseDto("Innland", null, new VegadresseDto(null, "midlertidig adresse gate", 1, "D", null, "0471", "Oslo", null), null, null)),
-                emptyList(), // ingen familierelasjoner for mockperson
+                emptyList(), // ingen forelderBarnRelasjoner for mockperson
                 singletonList(new NavnDto("rask", "jule", "mat", defaultMetadata(), defaultFolkeregisterMetadata())),
                 singletonList(new SivilstandDto(
                         SivilstandDto.SivilstandType.GIFT,

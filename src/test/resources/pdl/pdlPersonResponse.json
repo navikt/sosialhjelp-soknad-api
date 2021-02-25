@@ -91,7 +91,7 @@
           }
         }
       ],
-      "familierelasjoner": [
+      "forelderBarnRelasjon": [
         {
           "relatertPersonsIdent": "33333333333",
           "relatertPersonsRolle": "BARN",
