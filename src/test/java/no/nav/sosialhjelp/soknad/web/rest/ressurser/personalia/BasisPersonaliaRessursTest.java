@@ -10,8 +10,10 @@ import no.nav.sosialhjelp.soknad.business.service.systemdata.BasisPersonaliaSyst
 import no.nav.sosialhjelp.soknad.business.soknadunderbehandling.SoknadUnderArbeidRepository;
 import no.nav.sosialhjelp.soknad.consumer.kodeverk.KodeverkService;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
+import no.nav.sosialhjelp.soknad.domain.model.exception.AuthorizationException;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.StaticSubjectHandlerService;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
+import no.nav.sosialhjelp.soknad.web.sikkerhet.Tilgangskontroll;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,6 +27,8 @@ import static no.nav.sosialhjelp.soknad.web.rest.ressurser.personalia.BasisPerso
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -72,6 +76,9 @@ public class BasisPersonaliaRessursTest {
     @Mock
     private KodeverkService kodeverkService;
 
+    @Mock
+    private Tilgangskontroll tilgangskontroll;
+
     @InjectMocks
     private BasisPersonaliaRessurs basisPersonaliaRessurs;
 
@@ -106,6 +113,13 @@ public class BasisPersonaliaRessursTest {
         final BasisPersonaliaFrontend basisPersonaliaFrontend = basisPersonaliaRessurs.hentBasisPersonalia(BEHANDLINGSID);
 
         assertThatPersonaliaIsCorrectlyConverted(basisPersonaliaFrontend, JSON_PERSONALIA_UTEN_STAT_OG_NORDISK);
+    }
+
+    @Test(expected = AuthorizationException.class)
+    public void shouldFailIfTilgangskontrollThrowsException() {
+        doThrow(new AuthorizationException("not for you my friend")).when(tilgangskontroll).verifiserAtBrukerHarTilgang();
+        basisPersonaliaRessurs.hentBasisPersonalia(BEHANDLINGSID);
+        verifyNoInteractions(soknadUnderArbeidRepository);
     }
 
     private void assertThatPersonaliaIsCorrectlyConverted(BasisPersonaliaFrontend personaliaFrontend, JsonPersonalia jsonPersonalia) {

@@ -10,6 +10,7 @@ import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import no.nav.sosialhjelp.soknad.domain.model.util.KommuneTilNavEnhetMapper;
 import no.nav.sosialhjelp.soknad.tekster.NavMessageSource;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.informasjon.InformasjonRessurs;
+import no.nav.sosialhjelp.soknad.web.sikkerhet.Tilgangskontroll;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -44,6 +45,8 @@ public class InformasjonRessursTest {
     private KommuneInfoService kommuneInfoService;
     @Mock
     private PdlService pdlService;
+    @Mock
+    private Tilgangskontroll tilgangskontroll;
 
     @InjectMocks
     private InformasjonRessurs ressurs;

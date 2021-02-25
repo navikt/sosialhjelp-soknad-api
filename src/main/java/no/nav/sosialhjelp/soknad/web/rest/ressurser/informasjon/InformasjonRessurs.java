@@ -14,6 +14,7 @@ import no.nav.sosialhjelp.soknad.domain.model.util.KommuneTilNavEnhetMapper;
 import no.nav.sosialhjelp.soknad.tekster.NavMessageSource;
 import no.nav.sosialhjelp.soknad.web.rest.Logg;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.personalia.NavEnhetRessurs;
+import no.nav.sosialhjelp.soknad.web.sikkerhet.Tilgangskontroll;
 import no.nav.sosialhjelp.soknad.web.utils.NedetidUtils;
 import org.apache.commons.lang3.LocaleUtils;
 import org.slf4j.Logger;
@@ -63,24 +64,34 @@ public class InformasjonRessurs {
     private final AdresseSokService adresseSokService;
     private final KommuneInfoService kommuneInfoService;
     private final PdlService pdlService;
+    private final Tilgangskontroll tilgangskontroll;
 
-    public InformasjonRessurs(InformasjonService informasjon, NavMessageSource messageSource, AdresseSokService adresseSokService, KommuneInfoService kommuneInfoService, PdlService pdlService) {
+    public InformasjonRessurs(
+            InformasjonService informasjon,
+            NavMessageSource messageSource,
+            AdresseSokService adresseSokService,
+            KommuneInfoService kommuneInfoService,
+            PdlService pdlService,
+            Tilgangskontroll tilgangskontroll) {
         this.informasjon = informasjon;
         this.messageSource = messageSource;
         this.adresseSokService = adresseSokService;
         this.kommuneInfoService = kommuneInfoService;
         this.pdlService = pdlService;
+        this.tilgangskontroll = tilgangskontroll;
     }
 
     @GET
     @Path("/miljovariabler")
     public Map<String, String> hentMiljovariabler() {
+        tilgangskontroll.verifiserAtBrukerHarTilgang();
         return informasjon.hentMiljovariabler();
     }
 
     @GET
     @Path("/fornavn")
     public Map<String, String> hentFornavn() {
+        tilgangskontroll.verifiserAtBrukerHarTilgang();
         String fnr = SubjectHandler.getUserId();
         var person = pdlService.hentPerson(fnr);
         if (person == null) {
@@ -259,8 +270,8 @@ public class InformasjonRessurs {
         }
 
         public KommuneInfoFrontend withKommunenummer(String kommunenummer) {
-           this.kommunenummer = kommunenummer;
-           return this;
+            this.kommunenummer = kommunenummer;
+            return this;
         }
 
         public KommuneInfoFrontend withKanMottaSoknader(boolean kanMottaSoknader) {
