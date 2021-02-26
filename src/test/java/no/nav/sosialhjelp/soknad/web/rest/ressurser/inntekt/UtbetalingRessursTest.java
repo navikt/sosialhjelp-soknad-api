@@ -7,6 +7,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibeskriv
 import no.nav.sosialhjelp.soknad.business.service.TextService;
 import no.nav.sosialhjelp.soknad.business.soknadunderbehandling.SoknadUnderArbeidRepository;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
+import no.nav.sosialhjelp.soknad.domain.model.exception.AuthorizationException;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.StaticSubjectHandlerService;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.inntekt.UtbetalingRessurs.UtbetalingerFrontend;
@@ -37,7 +38,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -72,7 +75,7 @@ public class UtbetalingRessursTest {
     }
 
     @Test
-    public void getUtbetalingerSkalReturnereBekreftelseLikNullOgAltFalse(){
+    public void getUtbetalingerSkalReturnereBekreftelseLikNullOgAltFalse() {
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER)));
 
@@ -87,7 +90,7 @@ public class UtbetalingRessursTest {
     }
 
     @Test
-    public void getUtbetalingerSkalReturnereBekreftelserLikTrue(){
+    public void getUtbetalingerSkalReturnereBekreftelserLikTrue() {
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithUtbetalinger(true, asList(UTBETALING_UTBYTTE, UTBETALING_SALG, UTBETALING_FORSIKRING,
                         UTBETALING_ANNET), null));
@@ -103,7 +106,7 @@ public class UtbetalingRessursTest {
     }
 
     @Test
-    public void getUtbetalingerSkalReturnereBeskrivelseAvAnnet(){
+    public void getUtbetalingerSkalReturnereBeskrivelseAvAnnet() {
         String beskrivelse = "Lottogevinst";
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithUtbetalinger(true, asList(UTBETALING_ANNET), beskrivelse));
@@ -116,7 +119,7 @@ public class UtbetalingRessursTest {
     }
 
     @Test
-    public void putUtbetalingerSkalSetteAltFalseDersomManVelgerHarIkkeUtbetalinger(){
+    public void putUtbetalingerSkalSetteAltFalseDersomManVelgerHarIkkeUtbetalinger() {
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithUtbetalinger(true, asList(UTBETALING_UTBYTTE, UTBETALING_SALG, UTBETALING_FORSIKRING,
@@ -137,7 +140,7 @@ public class UtbetalingRessursTest {
     }
 
     @Test
-    public void putUtbetalingerSkalSetteAlleBekreftelserLikFalse(){
+    public void putUtbetalingerSkalSetteAlleBekreftelserLikFalse() {
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithUtbetalinger(true, asList(UTBETALING_UTBYTTE, UTBETALING_SALG,
@@ -161,7 +164,7 @@ public class UtbetalingRessursTest {
     }
 
     @Test
-    public void putUtbetalingerSkalSetteNoenBekreftelser(){
+    public void putUtbetalingerSkalSetteNoenBekreftelser() {
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER)));
@@ -190,7 +193,7 @@ public class UtbetalingRessursTest {
     }
 
     @Test
-    public void putUtbetalingerSkalSetteAlleBekreftelser(){
+    public void putUtbetalingerSkalSetteAlleBekreftelser() {
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER)));
@@ -219,7 +222,7 @@ public class UtbetalingRessursTest {
     }
 
     @Test
-    public void putUtbetalingerSkalFjerneBeskrivelseAvAnnetDersomAnnetBlirAvkreftet(){
+    public void putUtbetalingerSkalFjerneBeskrivelseAvAnnetDersomAnnetBlirAvkreftet() {
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithUtbetalinger(true, asList(UTBETALING_ANNET), "Lottogevinst"));
@@ -238,6 +241,25 @@ public class UtbetalingRessursTest {
         assertThat(beskrivelse, is(""));
     }
 
+    @Test(expected = AuthorizationException.class)
+    public void getUtbetalingerSkalKasteAuthorizationExceptionVedManglendeTilgang() {
+        doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerHarTilgang();
+
+        utbetalingRessurs.hentUtbetalinger(BEHANDLINGSID);
+
+        verifyNoInteractions(soknadUnderArbeidRepository);
+    }
+
+    @Test(expected = AuthorizationException.class)
+    public void putUtbetalingerSkalKasteAuthorizationExceptionVedManglendeTilgang() {
+        doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(BEHANDLINGSID);
+
+        var utbetalingerFrontend = new UtbetalingerFrontend();
+        utbetalingRessurs.updateUtbetalinger(BEHANDLINGSID, utbetalingerFrontend);
+
+        verifyNoInteractions(soknadUnderArbeidRepository);
+    }
+
     private SoknadUnderArbeid catchSoknadUnderArbeidSentToOppdaterSoknadsdata() {
         ArgumentCaptor<SoknadUnderArbeid> argument = ArgumentCaptor.forClass(SoknadUnderArbeid.class);
         verify(soknadUnderArbeidRepository).oppdaterSoknadsdata(argument.capture(), anyString());
@@ -247,7 +269,7 @@ public class UtbetalingRessursTest {
     private SoknadUnderArbeid createJsonInternalSoknadWithUtbetalinger(Boolean harUtbetalinger, List<String> utbetalingTyper, String beskrivelseAvAnnet) {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         List<JsonOkonomiOpplysningUtbetaling> utbetalinger = new ArrayList<>();
-        for (String utbetaling: utbetalingTyper) {
+        for (String utbetaling : utbetalingTyper) {
             utbetalinger.add(new JsonOkonomiOpplysningUtbetaling()
                     .withKilde(JsonKilde.BRUKER)
                     .withType(utbetaling)

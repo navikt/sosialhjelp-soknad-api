@@ -1,9 +1,14 @@
 package no.nav.sosialhjelp.soknad.web.rest.ressurser.informasjon;
 
 import no.nav.sosialhjelp.api.fiks.KommuneInfo;
+import no.nav.sosialhjelp.soknad.business.service.InformasjonService;
+import no.nav.sosialhjelp.soknad.consumer.pdl.PdlService;
+import no.nav.sosialhjelp.soknad.domain.model.exception.AuthorizationException;
+import no.nav.sosialhjelp.soknad.web.sikkerhet.Tilgangskontroll;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.Arrays;
@@ -15,9 +20,18 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.verifyNoInteractions;
 
 @RunWith(MockitoJUnitRunner.class)
 public class InformasjonsRessursTest {
+
+    @Mock
+    private PdlService pdlService;
+    @Mock
+    private InformasjonService informasjonService;
+    @Mock
+    private Tilgangskontroll tilgangskontroll;
 
     @InjectMocks
     private InformasjonRessurs informasjonRessurs;
@@ -56,5 +70,23 @@ public class InformasjonsRessursTest {
         Map<String, InformasjonRessurs.KommuneInfoFrontend> margedKommuner = informasjonRessurs.mergeManuelleKommunerMedDigisosKommuner(manueltMappedeKommuner, mappedeDigisosKommuner);
         assertEquals(margedKommuner.size(), 1);
         assertTrue(margedKommuner.get("1234").kanOppdatereStatus);
+    }
+
+    @Test(expected = AuthorizationException.class)
+    public void getMiljovariablerSkalKasteAuthorizationExceptionVedManglendeTilgang() {
+        doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerHarTilgang();
+
+        informasjonRessurs.hentMiljovariabler();
+
+        verifyNoInteractions(informasjonService);
+    }
+
+    @Test(expected = AuthorizationException.class)
+    public void getFornavnSkalKasteAuthorizationExceptionVedManglendeTilgang() {
+        doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerHarTilgang();
+
+        informasjonRessurs.hentFornavn();
+
+        verifyNoInteractions(pdlService);
     }
 }

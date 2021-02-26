@@ -141,20 +141,19 @@ public class KontonummerRessursTest {
     }
 
     @Test(expected = AuthorizationException.class)
-    public void shouldFailGettingKontonummerIfTilgangskontrollThrowsException() {
-        doThrow(new AuthorizationException("not for you my friend")).when(tilgangskontroll).verifiserAtBrukerHarTilgang();
+    public void getKontonummerSkalKasteAuthorizationExceptionVedManglendeTilgang() {
+        doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerHarTilgang();
 
         kontonummerRessurs.hentKontonummer(BEHANDLINGSID);
+
         verifyNoInteractions(soknadUnderArbeidRepository);
     }
 
     @Test(expected = AuthorizationException.class)
-    public void shouldFailUpdatingKontonummerIfTilgangskontrollThrowsException() {
-        doThrow(new AuthorizationException("not for you my friend")).when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
+    public void putKontonummerSkalKasteAuthorizationExceptionVedManglendeTilgang() {
+        doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
 
-        var kontonummerFrontend = new KontonummerFrontend()
-                .withBrukerdefinert(false)
-                .withSystemverdi(KONTONUMMER_SYSTEM);
+        var kontonummerFrontend = new KontonummerFrontend();
         kontonummerRessurs.updateKontonummer(BEHANDLINGSID, kontonummerFrontend);
 
         verifyNoInteractions(soknadUnderArbeidRepository);

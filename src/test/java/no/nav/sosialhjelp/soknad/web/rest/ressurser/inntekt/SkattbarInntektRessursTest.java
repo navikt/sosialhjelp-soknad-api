@@ -9,11 +9,11 @@ import no.nav.sosialhjelp.soknad.business.service.TextService;
 import no.nav.sosialhjelp.soknad.business.service.systemdata.SkattetatenSystemdata;
 import no.nav.sosialhjelp.soknad.business.soknadunderbehandling.SoknadUnderArbeidRepository;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
+import no.nav.sosialhjelp.soknad.domain.model.exception.AuthorizationException;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.StaticSubjectHandlerService;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.inntekt.SkattbarInntektRessurs.SkattbarInntektFrontend;
 import no.nav.sosialhjelp.soknad.web.sikkerhet.Tilgangskontroll;
-import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,13 +27,14 @@ import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_SKATT
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_SKATTEETATEN_SAMTYKKE;
 import static no.nav.sosialhjelp.soknad.business.mappers.OkonomiMapper.setBekreftelse;
 import static no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -72,33 +73,33 @@ public class SkattbarInntektRessursTest {
     }
 
     @Test
-    public void getSkattbarInntektSkalReturnereTomListe(){
+    public void getSkattbarInntektSkalReturnereTomListe() {
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER)));
 
         SkattbarInntektFrontend skattbarInntektFrontend = skattbarInntektRessurs.hentSkattbareInntekter(BEHANDLINGSID);
 
-        assertThat(skattbarInntektFrontend.inntektFraSkatteetaten.size(), is(0));
+        assertThat(skattbarInntektFrontend.inntektFraSkatteetaten).isEmpty();
     }
 
     @Test
-    public void getSkattbarInntektSkalReturnereBekreftetSkattbarInntekt(){
+    public void getSkattbarInntektSkalReturnereBekreftetSkattbarInntekt() {
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithSkattbarInntekt(true));
 
         SkattbarInntektFrontend skattbarInntektFrontend = skattbarInntektRessurs.hentSkattbareInntekter(BEHANDLINGSID);
 
-        assertThat(skattbarInntektFrontend.inntektFraSkatteetaten.size(), is(1));
+        assertThat(skattbarInntektFrontend.inntektFraSkatteetaten).hasSize(1);
     }
 
     @Test
-    public void getSkattbarInntektSkalReturnereHarIkkeSkattbarInntekt(){
+    public void getSkattbarInntektSkalReturnereHarIkkeSkattbarInntekt() {
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithSkattbarInntekt(false));
 
         SkattbarInntektFrontend skattbarInntektFrontend = skattbarInntektRessurs.hentSkattbareInntekter(BEHANDLINGSID);
 
-        assertThat(skattbarInntektFrontend.inntektFraSkatteetaten.size(), is(0));
+        assertThat(skattbarInntektFrontend.inntektFraSkatteetaten).isEmpty();
     }
 
     @Test
@@ -113,15 +114,15 @@ public class SkattbarInntektRessursTest {
         verify(skattetatenSystemdata).updateSystemdataIn(argument.capture(), anyString());
         JsonOkonomi okonomi = argument.getValue().getJsonInternalSoknad().getSoknad().getData().getOkonomi();
         JsonOkonomibekreftelse fangetBekreftelse = okonomi.getOpplysninger().getBekreftelse().get(0);
-        Assertions.assertThat(fangetBekreftelse.getType()).isEqualTo(UTBETALING_SKATTEETATEN_SAMTYKKE);
-        Assertions.assertThat(fangetBekreftelse.getVerdi()).isTrue();
+        assertThat(fangetBekreftelse.getType()).isEqualTo(UTBETALING_SKATTEETATEN_SAMTYKKE);
+        assertThat(fangetBekreftelse.getVerdi()).isTrue();
 
         // Sjekker lagring av soknaden
         SoknadUnderArbeid spartSoknad = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
-        Assertions.assertThat(spartSoknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getBekreftelse()).hasSize(1);
+        assertThat(spartSoknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getBekreftelse()).hasSize(1);
         JsonOkonomibekreftelse spartBekreftelse = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getBekreftelse().get(0);
-        Assertions.assertThat(spartBekreftelse.getType()).isEqualTo(UTBETALING_SKATTEETATEN_SAMTYKKE);
-        Assertions.assertThat(spartBekreftelse.getVerdi()).isTrue();
+        assertThat(spartBekreftelse.getType()).isEqualTo(UTBETALING_SKATTEETATEN_SAMTYKKE);
+        assertThat(spartBekreftelse.getVerdi()).isTrue();
     }
 
     @Test
@@ -138,16 +139,16 @@ public class SkattbarInntektRessursTest {
         verify(skattetatenSystemdata).updateSystemdataIn(argument.capture(), anyString());
         JsonOkonomi okonomi = argument.getValue().getJsonInternalSoknad().getSoknad().getData().getOkonomi();
         JsonOkonomibekreftelse fangetBekreftelse = okonomi.getOpplysninger().getBekreftelse().get(0);
-        Assertions.assertThat(fangetBekreftelse.getType()).isEqualTo(UTBETALING_SKATTEETATEN_SAMTYKKE);
-        Assertions.assertThat(fangetBekreftelse.getVerdi()).isFalse();
+        assertThat(fangetBekreftelse.getType()).isEqualTo(UTBETALING_SKATTEETATEN_SAMTYKKE);
+        assertThat(fangetBekreftelse.getVerdi()).isFalse();
 
         // Sjekker lagring av soknaden
         SoknadUnderArbeid spartSoknad = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
         JsonOkonomiopplysninger sparteOpplysninger = spartSoknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger();
-        Assertions.assertThat(sparteOpplysninger.getBekreftelse()).hasSize(1);
+        assertThat(sparteOpplysninger.getBekreftelse()).hasSize(1);
         JsonOkonomibekreftelse spartBekreftelse = sparteOpplysninger.getBekreftelse().get(0);
-        Assertions.assertThat(spartBekreftelse.getType()).isEqualTo(UTBETALING_SKATTEETATEN_SAMTYKKE);
-        Assertions.assertThat(spartBekreftelse.getVerdi()).isFalse();
+        assertThat(spartBekreftelse.getType()).isEqualTo(UTBETALING_SKATTEETATEN_SAMTYKKE);
+        assertThat(spartBekreftelse.getVerdi()).isFalse();
     }
 
     @Test
@@ -164,7 +165,25 @@ public class SkattbarInntektRessursTest {
         verify(soknadUnderArbeidRepository, times(0)).oppdaterSoknadsdata(any(), anyString());
 
         // Sjekker soknaden
-        Assertions.assertThat(soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getBekreftelse()).hasSize(0);
+        assertThat(soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getBekreftelse()).isEmpty();
+    }
+
+    @Test(expected = AuthorizationException.class)
+    public void getSkattbarInntektkalKasteAuthorizationExceptionVedManglendeTilgang() {
+        doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerHarTilgang();
+
+        skattbarInntektRessurs.hentSkattbareInntekter(BEHANDLINGSID);
+
+        verifyNoInteractions(soknadUnderArbeidRepository);
+    }
+
+    @Test(expected = AuthorizationException.class)
+    public void putSamtykkeSkalKasteAuthorizationExceptionVedManglendeTilgang() {
+        doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(BEHANDLINGSID);
+
+        skattbarInntektRessurs.updateSamtykke(BEHANDLINGSID, true, "token");
+
+        verifyNoInteractions(soknadUnderArbeidRepository);
     }
 
     private SoknadUnderArbeid catchSoknadUnderArbeidSentToOppdaterSoknadsdata() {
@@ -175,7 +194,7 @@ public class SkattbarInntektRessursTest {
 
     private SoknadUnderArbeid createJsonInternalSoknadWithSkattbarInntekt(Boolean harSkattbarInntekt) {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
-        if(harSkattbarInntekt) {
+        if (harSkattbarInntekt) {
             JsonOkonomiOpplysningUtbetaling utbetaling = new JsonOkonomiOpplysningUtbetaling()
                     .withType(UTBETALING_SKATTEETATEN)
                     .withKilde(JsonKilde.SYSTEM)

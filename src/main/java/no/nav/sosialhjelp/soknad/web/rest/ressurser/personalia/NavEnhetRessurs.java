@@ -122,15 +122,15 @@ public class NavEnhetRessurs {
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
     }
 
-    public String createNavEnhetsnavn(String enhetsnavn, String kommunenavn) {
+    private String createNavEnhetsnavn(String enhetsnavn, String kommunenavn) {
         return enhetsnavn + SPLITTER + kommunenavn;
     }
 
-    public String getEnhetsnavnFromNavEnhetsnavn(String navEnhetsnavn) {
+    private String getEnhetsnavnFromNavEnhetsnavn(String navEnhetsnavn) {
         return navEnhetsnavn.split(SPLITTER)[0];
     }
 
-    public String getKommunenavnFromNavEnhetsnavn(String navEnhetsnavn) {
+    private String getKommunenavnFromNavEnhetsnavn(String navEnhetsnavn) {
         return navEnhetsnavn.split(SPLITTER)[1];
     }
 

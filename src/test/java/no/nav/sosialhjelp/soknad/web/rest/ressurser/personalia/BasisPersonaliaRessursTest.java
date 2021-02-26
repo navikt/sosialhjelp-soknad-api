@@ -95,7 +95,7 @@ public class BasisPersonaliaRessursTest {
     }
 
     @Test
-    public void getBasisPersonaliaSkalReturnereSystemBasisPersonalia(){
+    public void getBasisPersonaliaSkalReturnereSystemBasisPersonalia() {
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithBasisPersonalia(true, true, true));
         when(kodeverkService.getLand("NOR")).thenReturn("Norge");
@@ -106,7 +106,7 @@ public class BasisPersonaliaRessursTest {
     }
 
     @Test
-    public void getBasisPersonaliaSkalReturnereBasisPersonaliaUtenStatsborgerskapOgNordiskBorger(){
+    public void getBasisPersonaliaSkalReturnereBasisPersonaliaUtenStatsborgerskapOgNordiskBorger() {
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithBasisPersonalia(false, false, true));
 
@@ -116,9 +116,11 @@ public class BasisPersonaliaRessursTest {
     }
 
     @Test(expected = AuthorizationException.class)
-    public void shouldFailIfTilgangskontrollThrowsException() {
-        doThrow(new AuthorizationException("not for you my friend")).when(tilgangskontroll).verifiserAtBrukerHarTilgang();
+    public void getBasisPersonaliaSkalKasteAuthorizationExceptionVedManglendeTilgang() {
+        doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerHarTilgang();
+
         basisPersonaliaRessurs.hentBasisPersonalia(BEHANDLINGSID);
+
         verifyNoInteractions(soknadUnderArbeidRepository);
     }
 
