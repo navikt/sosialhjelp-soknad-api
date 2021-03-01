@@ -11,8 +11,11 @@ import no.nav.tjeneste.virksomhet.utbetaling.v1.HentUtbetalingsinformasjonPerson
 import no.nav.tjeneste.virksomhet.utbetaling.v1.UtbetalingV1;
 import no.nav.tjeneste.virksomhet.utbetaling.v1.informasjon.WSAktoer;
 import no.nav.tjeneste.virksomhet.utbetaling.v1.informasjon.WSBankkonto;
+import no.nav.tjeneste.virksomhet.utbetaling.v1.informasjon.WSPeriode;
+import no.nav.tjeneste.virksomhet.utbetaling.v1.informasjon.WSSkatt;
 import no.nav.tjeneste.virksomhet.utbetaling.v1.informasjon.WSUtbetaling;
 import no.nav.tjeneste.virksomhet.utbetaling.v1.informasjon.WSYtelse;
+import no.nav.tjeneste.virksomhet.utbetaling.v1.informasjon.WSYtelseskomponent;
 import no.nav.tjeneste.virksomhet.utbetaling.v1.informasjon.WSYtelsestyper;
 import no.nav.tjeneste.virksomhet.utbetaling.v1.meldinger.WSHentUtbetalingsinformasjonRequest;
 import no.nav.tjeneste.virksomhet.utbetaling.v1.meldinger.WSHentUtbetalingsinformasjonResponse;
@@ -36,6 +39,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -89,7 +93,11 @@ public class UtbetalMock {
             UriBuilder uri = UriBuilder.fromPath(mockAltUtbetalingEndpoint).queryParam("fnr", SubjectHandler.getUserId());
             RequestEntity<Void> request = RequestEntity.get(uri.build()).build();
             UtbetalingsListeDto utbetalingsListe = restTemplate.exchange(request, UtbetalingsListeDto.class).getBody();
-            return mapToWsResponse(utbetalingsListe );
+            if(utbetalingsListe == null) {
+                logger.error("Problemer med å hente mock utbetalinger! Response is null.");
+            } else {
+                return mapToWsResponse(utbetalingsListe);
+            }
         } catch (ResourceAccessException e) {
             logger.error("Problemer med å hente mock utbetalinger!", e);
         } catch (HttpClientErrorException e) {
@@ -114,19 +122,34 @@ public class UtbetalMock {
 
     private static WSUtbetaling mapToWsResponsePart(UtbetalingDto utbetaling) {
         WSAktoer mottaker = new MockWSAktoerImpl("Dummy Navn", SubjectHandler.getUserId());
+        DateTime utbetalingDato = utbetaling.getDato();
 
         WSUtbetaling wsUtbetaling = new WSUtbetaling();
-        wsUtbetaling.setForfallsdato(utbetaling.getDato());
-        wsUtbetaling.setPosteringsdato(utbetaling.getDato());
+        wsUtbetaling.setForfallsdato(utbetalingDato);
+        wsUtbetaling.setPosteringsdato(utbetalingDato);
         wsUtbetaling.setUtbetalingNettobeloep(utbetaling.getBelop());
-        wsUtbetaling.setUtbetalingsdato(utbetaling.getDato());
+        wsUtbetaling.setUtbetalingsdato(utbetalingDato);
         wsUtbetaling.setUtbetaltTil(mottaker);
+        wsUtbetaling.setUtbetalingsmelding(utbetaling.getMelding());
         wsUtbetaling.setUtbetaltTilKonto(new WSBankkonto());
 
         WSYtelse ytelse = new WSYtelse();
         ytelse.setRettighetshaver(mottaker);
-        ytelse.setYtelseNettobeloep(utbetaling.getBelop());
+        ytelse.setSkattsum(-utbetaling.getSkattebelop());
+        ytelse.setYtelseNettobeloep(utbetaling.getBelop() - utbetaling.getSkattebelop());
         ytelse.setYtelseskomponentersum(utbetaling.getBelop());
+        ytelse.setYtelsesperiode(new WSPeriode().withFom(utbetalingDato.minusMonths(1)).withTom(utbetalingDato));
+        if (utbetaling.getSkattebelop() != 0.0)
+            ytelse.getSkattListe().add(new WSSkatt().withSkattebeloep(-utbetaling.getSkattebelop()));
+        if (utbetaling.getYtelseskomponenttype() != null && !utbetaling.getYtelseskomponenttype().isEmpty()) {
+            WSYtelseskomponent ytelseskomponent = new WSYtelseskomponent();
+            ytelseskomponent.setYtelseskomponenttype(utbetaling.getYtelseskomponenttype());
+            ytelseskomponent.setSatsbeloep(utbetaling.getBelop() / 10);
+            ytelseskomponent.setSatstype("Dag");
+            ytelseskomponent.setSatsantall(10.0);
+            ytelseskomponent.setYtelseskomponentbeloep(utbetaling.getBelop());
+            ytelse.getYtelseskomponentListe().add(ytelseskomponent);
+        }
         WSYtelsestyper ytelsestype = new WSYtelsestyper();
         ytelsestype.setValue(utbetaling.getYtelsestype());
         ytelse.setYtelsestype(ytelsestype);
@@ -139,7 +162,6 @@ public class UtbetalMock {
     }
 
     public static void setUtbetalinger(String jsonWSUtbetaling) {
-
         WSHentUtbetalingsinformasjonResponse newResponse = new WSHentUtbetalingsinformasjonResponse();
 
         try {
@@ -197,9 +219,13 @@ public class UtbetalMock {
         private double belop;
         private DateTime dato;
         private String ytelsestype;
+        private String melding;
+        private Double skattebelop;
+        private String ytelseskomponenttype;
 
         public double getBelop() {
-            return belop;
+            Double verdi = Objects.requireNonNullElse(belop, 0.0);
+            return Math.abs(verdi);
         }
 
         public DateTime getDato() {
@@ -208,6 +234,19 @@ public class UtbetalMock {
 
         public String getYtelsestype() {
             return ytelsestype;
+        }
+
+        public String getMelding() {
+            return melding;
+        }
+
+        public double getSkattebelop() {
+            Double verdi = Objects.requireNonNullElse(skattebelop, 0.0);
+            return Math.abs(verdi);
+        }
+
+        public String getYtelseskomponenttype() {
+            return ytelseskomponenttype;
         }
     }
 
