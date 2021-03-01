@@ -112,6 +112,7 @@ public class DigisosApiImpl implements DigisosApi {
     private ExecutorCompletionService<Void> executor = new ExecutorCompletionService<>(Executors.newCachedThreadPool());
     private IdPortenOidcConfiguration idPortenOidcConfiguration;
     private byte[] fiksPublicKey = null;
+    private CMSStreamKryptering kryptering = new CMSKrypteringImpl();
 
     public DigisosApiImpl(
             DigisosApiProperties properties,
@@ -253,8 +254,6 @@ public class DigisosApiImpl implements DigisosApi {
     }
 
     private InputStream krypter(InputStream dokumentStream, List<Future<Void>> krypteringFutureList, X509Certificate fiksX509Certificate) {
-        CMSStreamKryptering kryptering = new CMSKrypteringImpl();
-
         PipedInputStream pipedInputStream = new PipedInputStream();
         try {
             PipedOutputStream pipedOutputStream = new PipedOutputStream(pipedInputStream);

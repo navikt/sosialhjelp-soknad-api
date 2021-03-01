@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.AdressebeskyttelseDto;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.BostedsadresseDto;
-import no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.FamilierelasjonDto;
+import no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.ForelderBarnRelasjonDto;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.KontaktadresseDto;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.NavnDto;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.OppholdsadresseDto;
@@ -23,7 +23,7 @@ public class PdlPerson {
 
     private final List<KontaktadresseDto> kontaktadresse;
 
-    private final List<FamilierelasjonDto> familierelasjoner;
+    private final List<ForelderBarnRelasjonDto> forelderBarnRelasjon;
 
     private final List<NavnDto> navn;
 
@@ -37,7 +37,7 @@ public class PdlPerson {
             @JsonProperty("bostedsadresse") List<BostedsadresseDto> bostedsadresse,
             @JsonProperty("oppholdsadresse") List<OppholdsadresseDto> oppholdsadresse,
             @JsonProperty("kontaktadresse") List<KontaktadresseDto> kontaktadresse,
-            @JsonProperty("familierelasjoner") List<FamilierelasjonDto> familierelasjoner,
+            @JsonProperty("forelderBarnRelasjon") List<ForelderBarnRelasjonDto> forelderBarnRelasjon,
             @JsonProperty("navn") List<NavnDto> navn,
             @JsonProperty("sivilstand") List<SivilstandDto> sivilstand,
             @JsonProperty("statsborgerskap") List<StatsborgerskapDto> statsborgerskap
@@ -46,7 +46,7 @@ public class PdlPerson {
         this.bostedsadresse = bostedsadresse;
         this.oppholdsadresse = oppholdsadresse;
         this.kontaktadresse = kontaktadresse;
-        this.familierelasjoner = familierelasjoner;
+        this.forelderBarnRelasjon = forelderBarnRelasjon;
         this.navn = navn;
         this.sivilstand = sivilstand;
         this.statsborgerskap = statsborgerskap;
@@ -68,8 +68,8 @@ public class PdlPerson {
         return kontaktadresse;
     }
 
-    public List<FamilierelasjonDto> getFamilierelasjoner() {
-        return familierelasjoner;
+    public List<ForelderBarnRelasjonDto> getForelderBarnRelasjon() {
+        return forelderBarnRelasjon;
     }
 
     public List<NavnDto> getNavn() {
