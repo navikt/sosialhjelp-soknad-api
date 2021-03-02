@@ -39,7 +39,7 @@
 
     <context-param>
         <param-name>contextConfigLocation</param-name>
-        <param-value>no.nav.sosialhjelp.soknad.web.config.SoknadinnsendingConfig,no.nav.sosialhjelp.soknad.web.config.SikkerhetsConfig</param-value>
+        <param-value>no.nav.sosialhjelp.soknad.web.config.SoknadinnsendingConfig</param-value>
     </context-param>
 
     <filter>
