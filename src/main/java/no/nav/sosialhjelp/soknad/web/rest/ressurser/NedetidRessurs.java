@@ -2,8 +2,6 @@ package no.nav.sosialhjelp.soknad.web.rest.ressurser;
 
 import no.nav.metrics.aspects.Timed;
 import no.nav.security.token.support.core.api.Unprotected;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 
 import javax.ws.rs.GET;
@@ -27,7 +25,6 @@ import static no.nav.sosialhjelp.soknad.web.utils.NedetidUtils.isInnenforPlanlag
 @Timed
 @Produces(APPLICATION_JSON)
 public class NedetidRessurs {
-    private static final Logger log = LoggerFactory.getLogger(NedetidRessurs.class);
 
     @GET
     public NedetidFrontend hentNedetidInformasjon() {

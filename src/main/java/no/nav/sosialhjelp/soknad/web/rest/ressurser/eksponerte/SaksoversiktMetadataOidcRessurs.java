@@ -76,7 +76,7 @@ public class SaksoversiktMetadataOidcRessurs {
             return new PabegynteSoknaderRespons()
                     .withPabegynteSoknader(pabegynte);
         } catch (Exception e) {
-            logger.error(String.format("Uthenting av påbegynte søknader feilet. Var fnr tom? %s", fnr == null || fnr.equals("")), e) ;
+            logger.error("Uthenting av påbegynte søknader feilet. Var fnr tom? {}", fnr == null || fnr.equals(""), e) ;
             throw e;
         }
     }

@@ -213,7 +213,7 @@ public class InformasjonRessurs {
 
     private NavEnhetRessurs.NavEnhetFrontend mapFraAdresseForslagOgNavEnhetTilNavEnhetFrontend(AdresseSokService.Kommunesok kommunesok) {
         if (kommunesok.navEnhet == null) {
-            logger.warn("Kunne ikke hente NAV-enhet: " + kommunesok.adresseForslag.geografiskTilknytning);
+            logger.warn("Kunne ikke hente NAV-enhet: {}", kommunesok.adresseForslag.geografiskTilknytning);
             return null;
         }
         boolean digisosKommune = KommuneTilNavEnhetMapper.getDigisoskommuner().contains(kommunesok.kommunenr);

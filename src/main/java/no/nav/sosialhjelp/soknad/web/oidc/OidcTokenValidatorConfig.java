@@ -77,7 +77,7 @@ public class OidcTokenValidatorConfig {
         try {
             return new URL(System.getProperty("oidc.issuer." + issuer + ".proxy_url"));
         } catch (MalformedURLException e) {
-            log.info("Kunne ikke parse property 'oidc.issuer."+ issuer + ".proxy_url' til en URL. Fortsetter uten proxy." );
+            log.info("Kunne ikke parse property 'oidc.issuer.{}.proxy_url' til en URL. Fortsetter uten proxy.", issuer);
             return null;
         }
     }

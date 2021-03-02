@@ -1,8 +1,6 @@
 package no.nav.sosialhjelp.soknad.domain.model.util;
 
 import com.google.common.collect.ImmutableMap;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
 import java.util.List;
@@ -12,8 +10,6 @@ import static java.util.Arrays.asList;
 
 
 public class KommuneTilNavEnhetMapper {
-
-    private static final Logger log = LoggerFactory.getLogger(KommuneTilNavEnhetMapper.class);
 
     public static final Map<String, String> IKS_KOMMUNER = new ImmutableMap.Builder<String, String>()
             .put("3438", "Nord-Fron") // Sør-Fron (nytt kommunenummer)

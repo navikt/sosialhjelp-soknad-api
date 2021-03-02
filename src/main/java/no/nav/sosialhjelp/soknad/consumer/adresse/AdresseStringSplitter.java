@@ -3,17 +3,14 @@ package no.nav.sosialhjelp.soknad.consumer.adresse;
 import no.nav.sosialhjelp.soknad.consumer.kodeverk.KodeverkService;
 import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseSokConsumer;
 import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseSokConsumer.Sokedata;
-import org.slf4j.Logger;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static no.nav.sosialhjelp.soknad.consumer.adresse.AdresseSokService.isAddressTooShortOrNull;
-import static org.slf4j.LoggerFactory.getLogger;
 
 
 public final class AdresseStringSplitter {
-    private static final Logger log = getLogger(AdresseStringSplitter.class);
 
     static Sokedata toSokedata(KodeverkService kodeverkService, String adresse) {
         if (isAddressTooShortOrNull(adresse)) {

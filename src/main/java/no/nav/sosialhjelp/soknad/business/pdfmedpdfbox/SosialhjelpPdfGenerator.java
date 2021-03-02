@@ -62,7 +62,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.BOSTOTTE;
@@ -71,13 +70,9 @@ import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_HUSBA
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_SKATTEETATEN_SAMTYKKE;
 import static no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.PdfGenerator.INNRYKK_2;
 import static no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.PdfGenerator.INNRYKK_4;
-import static org.apache.cxf.common.logging.LogUtils.getLogger;
 
 @Component
 public class SosialhjelpPdfGenerator {
-
-    private final Logger logger = getLogger(SosialhjelpPdfGenerator.class);
-
     private final String DATO_FORMAT = "d. MMMM yyyy";
 
     @Inject
