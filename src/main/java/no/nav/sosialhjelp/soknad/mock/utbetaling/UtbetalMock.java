@@ -103,7 +103,7 @@ public class UtbetalMock {
         } catch (HttpClientErrorException e) {
             logger.error("Problemer med å koble opp mot mock-alt!", e);
         } catch (HttpServerErrorException e) {
-            logger.error("Problemer med å hente mock utbetalinger! Ekstern error: " + e.getMessage(), e);
+            logger.error("Problemer med å hente mock utbetalinger! Ekstern error: {}", e.getMessage(), e);
         } catch (HttpMessageNotReadableException e) {
             logger.error("Problemer med å tolke data fra mock-alt!", e);
         }
@@ -183,7 +183,7 @@ public class UtbetalMock {
             e.printStackTrace();
         }
 
-        logger.info("Setter utbetalingsresponse: " + jsonWSUtbetaling);
+        logger.info("Setter utbetalingsresponse: {}", jsonWSUtbetaling);
         String fnr = SubjectHandler.getUserId();
         responses.remove(fnr);
         responses.put(fnr, newResponse);

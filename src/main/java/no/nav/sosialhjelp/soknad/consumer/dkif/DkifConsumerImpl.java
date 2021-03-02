@@ -39,7 +39,7 @@ public class DkifConsumerImpl implements DkifConsumer {
         Invocation.Builder request = client.target(endpoint + "ping").request();
         try (Response response = request.get()) {
             if (response.getStatus() != 200) {
-                logger.warn("Ping feilet mot Dkif: " + response.getStatus());
+                logger.warn("Ping feilet mot Dkif: {}", response.getStatus());
             }
         }
     }

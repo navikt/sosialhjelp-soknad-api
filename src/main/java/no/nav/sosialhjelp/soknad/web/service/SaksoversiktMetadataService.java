@@ -11,7 +11,6 @@ import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata;
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata.VedleggMetadataListe;
 import no.nav.sosialhjelp.soknad.business.service.soknadservice.EttersendingService;
 import no.nav.sosialhjelp.soknad.tekster.NavMessageSource;
-import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -30,12 +29,9 @@ import static no.nav.sosialhjelp.soknad.business.util.JsonVedleggUtils.isVedlegg
 import static no.nav.sosialhjelp.soknad.domain.Vedleggstatus.LastetOpp;
 import static no.nav.sosialhjelp.soknad.domain.Vedleggstatus.VedleggKreves;
 import static no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SoknadType.SEND_SOKNAD_KOMMUNAL;
-import static org.slf4j.LoggerFactory.getLogger;
 
 @Service
 public class SaksoversiktMetadataService {
-
-    private static final Logger logger = getLogger(SaksoversiktMetadataService.class);
 
     @Inject
     private SoknadMetadataRepository soknadMetadataRepository;

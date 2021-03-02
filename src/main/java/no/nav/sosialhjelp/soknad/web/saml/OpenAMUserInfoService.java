@@ -5,8 +5,6 @@ import no.nav.common.auth.SsoToken;
 import no.nav.common.auth.Subject;
 import no.nav.sbl.rest.RestUtils;
 import no.nav.sosialhjelp.soknad.domain.model.exception.SamlUnauthorizedException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.core.Response;
@@ -21,8 +19,6 @@ import static no.nav.sbl.rest.RestUtils.DEFAULT_CONFIG;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 public class OpenAMUserInfoService {
-    private static final Logger log = LoggerFactory.getLogger(OpenAMUserInfoService.class);
-
     public static final String PARAMETER_UID = "uid";
     public static final String PARAMETER_SECURITY_LEVEL = "SecurityLevel";
 

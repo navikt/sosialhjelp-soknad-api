@@ -49,7 +49,7 @@ public class SkattbarInntektConsumerImpl implements SkattbarInntektConsumer {
         try (Response response = request.get()) {
             if (log.isDebugEnabled()) {
                 response.bufferEntity();
-                log.debug("Response (" + response.getStatus() + "): " + response.readEntity(String.class));
+                log.debug("Response ({}): {}", response.getStatus(), response.readEntity(String.class));
             }
 
             if (response.getStatus() == 200) {
