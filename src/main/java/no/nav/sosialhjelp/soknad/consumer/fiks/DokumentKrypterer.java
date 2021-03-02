@@ -86,7 +86,7 @@ public class DokumentKrypterer {
             return (X509Certificate) CertificateFactory.getInstance("X509")
                     .generateCertificate(publickey);
         } catch (CertificateException e) {
-            logger.error("Kunne ikke opprette certificate for Fiks: " + nokkelFil, e);
+            logger.error("Kunne ikke opprette certificate for Fiks: {}", nokkelFil, e);
             throw new RuntimeException(e);
         }
     }

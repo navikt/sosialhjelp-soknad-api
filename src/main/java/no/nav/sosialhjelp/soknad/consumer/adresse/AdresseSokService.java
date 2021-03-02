@@ -9,8 +9,6 @@ import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseSokConsumer.Adresse
 import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseSokConsumer.Sokedata;
 import no.nav.sosialhjelp.soknad.domain.model.norg.NavEnhet;
 import no.nav.sosialhjelp.soknad.domain.model.util.KommuneTilNavEnhetMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +26,6 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Service
 public class AdresseSokService {
-    private static final Logger log = LoggerFactory.getLogger(AdresseSokService.class);
 
     @Inject
     private AdresseSokConsumer adresseSokConsumer;

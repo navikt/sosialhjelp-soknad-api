@@ -44,28 +44,28 @@ public class Tilgangskontroll {
 
     public void verifiserBrukerHarTilgangTilSoknad(String behandlingsId) {
         Optional<SoknadUnderArbeid> soknadUnderArbeidOptional = soknadUnderArbeidRepository.hentSoknadOptional(behandlingsId, SubjectHandler.getUserId());
-        String fnr;
+        String eier;
         if (soknadUnderArbeidOptional.isPresent()) {
-            fnr = soknadUnderArbeidOptional.get().getEier();
+            eier = soknadUnderArbeidOptional.get().getEier();
         } else {
             throw new AuthorizationException("Bruker har ikke tilgang til søknaden.");
         }
 
-        verifiserTilgang(fnr);
+        verifiserAtInnloggetBrukerErEierAvSoknad(eier);
     }
 
     public void verifiserBrukerHarTilgangTilMetadata(String behandlingsId) {
-        String fnr = "undefined";
+        String eier = "undefined";
         try {
             SoknadMetadata metadata = soknadMetadataRepository.hent(behandlingsId);
-            fnr = metadata.fnr;
+            eier = metadata.fnr;
         } catch (Exception e) {
             logger.warn("Kunne ikke avgjøre hvem som eier søknad med behandlingsId {} -> Ikke tilgang.", behandlingsId, e);
         }
-        verifiserTilgang(fnr);
+        verifiserAtInnloggetBrukerErEierAvSoknad(eier);
     }
 
-    private void verifiserTilgang(String eier) {
+    private void verifiserAtInnloggetBrukerErEierAvSoknad(String eier) {
         if (Objects.isNull(eier)) {
             throw new AuthorizationException("Søknaden har ingen eier");
         }
