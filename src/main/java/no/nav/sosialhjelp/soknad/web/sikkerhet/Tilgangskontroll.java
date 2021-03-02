@@ -51,7 +51,7 @@ public class Tilgangskontroll {
             throw new AuthorizationException("Bruker har ikke tilgang til søknaden.");
         }
 
-        verifiserTilgang(fnr);
+        verifiserAtInnloggetBrukerErEierAvSoknad(fnr);
     }
 
     public void verifiserBrukerHarTilgangTilMetadata(String behandlingsId) {
@@ -62,10 +62,10 @@ public class Tilgangskontroll {
         } catch (Exception e) {
             logger.warn("Kunne ikke avgjøre hvem som eier søknad med behandlingsId {} -> Ikke tilgang.", behandlingsId, e);
         }
-        verifiserTilgang(fnr);
+        verifiserAtInnloggetBrukerErEierAvSoknad(fnr);
     }
 
-    private void verifiserTilgang(String eier) {
+    private void verifiserAtInnloggetBrukerErEierAvSoknad(String eier) {
         if (Objects.isNull(eier)) {
             throw new AuthorizationException("Søknaden har ingen eier");
         }
