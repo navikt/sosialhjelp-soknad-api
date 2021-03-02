@@ -40,7 +40,6 @@ import static no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadSer
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -131,7 +130,7 @@ public class BostotteRessursTest {
                 .getOkonomi().getOpplysninger().getBekreftelse();
         List<JsonOkonomiOpplysningUtbetaling> utbetaling = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData()
                 .getOkonomi().getOpplysninger().getUtbetaling();
-        assertEquals(utbetaling.get(0).getType(), UTBETALING_HUSBANKEN);
+        assertThat(utbetaling.get(0).getType(), is(UTBETALING_HUSBANKEN));
         JsonOkonomibekreftelse bostotte = bekreftelser.get(0);
         assertThat(bostotte.getKilde(), is(JsonKilde.BRUKER));
         assertThat(bostotte.getType(), is(BOSTOTTE));
@@ -180,7 +179,7 @@ public class BostotteRessursTest {
 
         BostotteRessurs.BostotteFrontend bostotteFrontend = bostotteRessurs.hentBostotte(BEHANDLINGSID);
 
-        Assertions.assertThat(bostotteFrontend.utbetalinger).hasSize(0);
+        Assertions.assertThat(bostotteFrontend.utbetalinger).isEmpty();
     }
 
     @Test
@@ -200,7 +199,7 @@ public class BostotteRessursTest {
 
         BostotteRessurs.BostotteFrontend bostotteFrontend = bostotteRessurs.hentBostotte(BEHANDLINGSID);
 
-        Assertions.assertThat(bostotteFrontend.saker).hasSize(0);
+        Assertions.assertThat(bostotteFrontend.saker).isEmpty();
     }
 
     @Test
@@ -266,7 +265,7 @@ public class BostotteRessursTest {
         verify(soknadUnderArbeidRepository, times(0)).oppdaterSoknadsdata(any(), anyString());
 
         // Sjekker soknaden
-        Assertions.assertThat(soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getBekreftelse()).hasSize(0);
+        Assertions.assertThat(soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getBekreftelse()).isEmpty();
     }
 
     @Test(expected = AuthorizationException.class)

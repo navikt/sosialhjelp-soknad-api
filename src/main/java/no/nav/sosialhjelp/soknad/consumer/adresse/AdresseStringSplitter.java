@@ -12,6 +12,9 @@ import static no.nav.sosialhjelp.soknad.consumer.adresse.AdresseSokService.isAdd
 
 public final class AdresseStringSplitter {
 
+    private AdresseStringSplitter() {
+    }
+
     static Sokedata toSokedata(KodeverkService kodeverkService, String adresse) {
         if (isAddressTooShortOrNull(adresse)) {
             return new Sokedata().withAdresse(adresse);

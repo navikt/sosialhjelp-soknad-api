@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class UrlUtils {
+public final class UrlUtils {
+
+    private UrlUtils() {
+    }
 
     public static String endreHyperLenkerTilTekst(String html) {
 

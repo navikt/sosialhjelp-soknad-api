@@ -9,7 +9,10 @@ import java.util.Map;
 import static java.util.Arrays.asList;
 
 
-public class KommuneTilNavEnhetMapper {
+public final class KommuneTilNavEnhetMapper {
+
+    private KommuneTilNavEnhetMapper() {
+    }
 
     public static final Map<String, String> IKS_KOMMUNER = new ImmutableMap.Builder<String, String>()
             .put("3438", "Nord-Fron") // Sør-Fron (nytt kommunenummer)

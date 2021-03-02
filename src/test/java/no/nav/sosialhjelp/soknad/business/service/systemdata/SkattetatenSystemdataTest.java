@@ -138,7 +138,7 @@ public class SkattetatenSystemdataTest {
         List<Utbetaling> skattbare_utbetalinger = Arrays.asList(SKATTBAR_UTBETALING, SKATTBAR_UTBETALING_ANNEN);
         when(skattbarInntektService.hentUtbetalinger(anyString())).thenReturn(skattbare_utbetalinger);
 
-        skattetatenSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
+        skattetatenSystemdata.updateSystemdataIn(soknadUnderArbeid);
 
         List<JsonOkonomiOpplysningUtbetaling> jsonUtbetalinger = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getUtbetaling();
         JsonOkonomiOpplysningUtbetaling utbetaling = jsonUtbetalinger.get(0);
@@ -157,7 +157,7 @@ public class SkattetatenSystemdataTest {
         List<Utbetaling> skattbare_utbetalinger = Arrays.asList(SKATTBAR_UTBETALING_ANNEN, SKATTBAR_UTBETALING, SKATTBAR_UTBETALING_FRA_PRIVATPERSON);
         when(skattbarInntektService.hentUtbetalinger(anyString())).thenReturn(skattbare_utbetalinger);
 
-        skattetatenSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
+        skattetatenSystemdata.updateSystemdataIn(soknadUnderArbeid);
 
         List<JsonOkonomiOpplysningUtbetaling> jsonUtbetalinger = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getUtbetaling();
         JsonOkonomiOpplysningUtbetaling utbetaling = jsonUtbetalinger.get(0);
@@ -178,7 +178,7 @@ public class SkattetatenSystemdataTest {
         List<Utbetaling> utbetalinger = Collections.singletonList(SKATTBAR_UTBETALING_ANNEN);
         when(skattbarInntektService.hentUtbetalinger(anyString())).thenReturn(utbetalinger);
 
-        skattetatenSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
+        skattetatenSystemdata.updateSystemdataIn(soknadUnderArbeid);
 
         List<JsonOkonomiOpplysningUtbetaling> jsonUtbetalinger = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getUtbetaling();
         JsonOkonomiOpplysningUtbetaling utbetaling = jsonUtbetalinger.get(0);
@@ -196,7 +196,7 @@ public class SkattetatenSystemdataTest {
                 .withJsonInternalSoknad(createJsonInternalSoknadWithUtbetalinger());
         setSamtykke(soknadUnderArbeid.getJsonInternalSoknad(), false);
 
-        skattetatenSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
+        skattetatenSystemdata.updateSystemdataIn(soknadUnderArbeid);
 
         List<JsonOkonomiOpplysningUtbetaling> jsonUtbetalinger = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getUtbetaling();
         JsonOkonomiOpplysningUtbetaling utbetaling = jsonUtbetalinger.get(0);
@@ -215,7 +215,7 @@ public class SkattetatenSystemdataTest {
         List<Utbetaling> utbetalinger = Collections.singletonList(SKATTBAR_UTBETALING_ANNEN);
         when(skattbarInntektService.hentUtbetalinger(anyString())).thenReturn(utbetalinger);
 
-        skattetatenSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
+        skattetatenSystemdata.updateSystemdataIn(soknadUnderArbeid);
 
         List<JsonOkonomiOpplysningUtbetaling> jsonUtbetalingerA = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getUtbetaling();
         JsonOkonomiOpplysningUtbetaling utbetalingA = jsonUtbetalingerA.get(0);
@@ -229,7 +229,7 @@ public class SkattetatenSystemdataTest {
 
         //TEST:
         setSamtykke(soknadUnderArbeid.getJsonInternalSoknad(), false);
-        skattetatenSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
+        skattetatenSystemdata.updateSystemdataIn(soknadUnderArbeid);
         List<JsonOkonomiOpplysningUtbetaling> jsonUtbetalingerB = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getUtbetaling();
         JsonOkonomiOpplysningUtbetaling utbetalingB = jsonUtbetalingerB.get(0);
 
@@ -252,7 +252,7 @@ public class SkattetatenSystemdataTest {
         when(skattbarInntektService.hentUtbetalinger(anyString())).thenReturn(null);
 
         // Kjøring:
-        skattetatenSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
+        skattetatenSystemdata.updateSystemdataIn(soknadUnderArbeid);
 
         assertThat(utbetalinger.size(), is(1));
         JsonOkonomiOpplysningUtbetaling utbetaling = utbetalinger.get(0);

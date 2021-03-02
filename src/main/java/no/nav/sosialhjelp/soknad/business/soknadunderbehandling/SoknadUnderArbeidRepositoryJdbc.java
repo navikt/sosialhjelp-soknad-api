@@ -22,7 +22,6 @@ import javax.inject.Named;
 import javax.sql.DataSource;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
@@ -33,6 +32,7 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static java.time.LocalDateTime.now;
+import static java.util.Date.from;
 import static no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator.ensureValidInternalSoknad;
 import static no.nav.sosialhjelp.soknad.business.db.SQLUtils.selectNextSequenceValue;
 import static no.nav.sosialhjelp.soknad.domain.SoknadInnsendingStatus.SENDT_MED_DIGISOS_API;
@@ -77,8 +77,8 @@ public class SoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoSuppor
                         soknadUnderArbeid.getEier(),
                         mapJsonSoknadInternalTilFil(soknadUnderArbeid.getJsonInternalSoknad()),
                         soknadUnderArbeid.getInnsendingStatus().toString(),
-                        Date.from(soknadUnderArbeid.getOpprettetDato().atZone(ZoneId.systemDefault()).toInstant()),
-                        Date.from(soknadUnderArbeid.getSistEndretDato().atZone(ZoneId.systemDefault()).toInstant()));
+                        from(soknadUnderArbeid.getOpprettetDato().atZone(ZoneId.systemDefault()).toInstant()),
+                        from(soknadUnderArbeid.getSistEndretDato().atZone(ZoneId.systemDefault()).toInstant()));
         return soknadUnderArbeidId;
     }
 
@@ -137,7 +137,7 @@ public class SoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoSuppor
                 .update("update SOKNAD_UNDER_ARBEID set VERSJON = ?, DATA = ?, SISTENDRETDATO = ? where SOKNAD_UNDER_ARBEID_ID = ? and EIER = ? and VERSJON = ? and STATUS = ?",
                         oppdatertVersjon,
                         data,
-                        Date.from(sistEndretDato.atZone(ZoneId.systemDefault()).toInstant()),
+                        from(sistEndretDato.atZone(ZoneId.systemDefault()).toInstant()),
                         soknadUnderArbeid.getSoknadId(),
                         eier,
                         opprinneligVersjon,
@@ -165,7 +165,7 @@ public class SoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoSuppor
         final int antallOppdaterteRader = getJdbcTemplate()
                 .update("update SOKNAD_UNDER_ARBEID set STATUS = ?, SISTENDRETDATO = ? where SOKNAD_UNDER_ARBEID_ID = ? and EIER = ?",
                         soknadUnderArbeid.getInnsendingStatus().toString(),
-                        Date.from(sistEndretDato.atZone(ZoneId.systemDefault()).toInstant()),
+                        from(sistEndretDato.atZone(ZoneId.systemDefault()).toInstant()),
                         soknadUnderArbeid.getSoknadId(),
                         eier);
         if (antallOppdaterteRader != 0) {
@@ -227,17 +227,17 @@ public class SoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoSuppor
                     .withSistEndretDato(rs.getTimestamp("sistendretdato") != null ?
                             rs.getTimestamp("sistendretdato").toLocalDateTime() : null);
         }
-    }
 
-    private JsonInternalSoknad mapDataToJsonInternalSoknad(byte[] data){
-        if (data == null){
-            return null;
-        }
-        try {
-            return mapper.readValue(data, JsonInternalSoknad.class);
-        } catch (IOException e) {
-            logger.error("Kunne ikke finne søknad", e);
-            throw new RuntimeException(e);
+        private JsonInternalSoknad mapDataToJsonInternalSoknad(byte[] data){
+            if (data == null){
+                return null;
+            }
+            try {
+                return mapper.readValue(data, JsonInternalSoknad.class);
+            } catch (IOException e) {
+                logger.error("Kunne ikke finne søknad", e);
+                throw new RuntimeException(e);
+            }
         }
     }
 

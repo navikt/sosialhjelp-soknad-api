@@ -29,7 +29,6 @@ import static no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadSer
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -140,7 +139,7 @@ public class StudielanRessursTest {
                 .getOkonomi().getOpplysninger().getBekreftelse();
         List<JsonOkonomioversiktInntekt> inntekt = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData()
                 .getOkonomi().getOversikt().getInntekt();
-        assertEquals(inntekt.get(0).getType(), STUDIELAN);
+        assertThat(inntekt.get(0).getType(), is(STUDIELAN));
         JsonOkonomibekreftelse studielan = bekreftelser.get(0);
         assertThat(studielan.getKilde(), is(JsonKilde.BRUKER));
         assertThat(studielan.getType(), is(STUDIELAN));

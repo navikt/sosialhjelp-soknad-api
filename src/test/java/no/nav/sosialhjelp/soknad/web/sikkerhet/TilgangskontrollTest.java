@@ -22,6 +22,7 @@ import java.util.Optional;
 import static no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
 import static no.nav.sosialhjelp.soknad.consumer.pdl.person.PdlPersonMapper.KODE_6;
 import static no.nav.sosialhjelp.soknad.consumer.pdl.person.PdlPersonMapper.KODE_7;
+import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -55,7 +56,8 @@ public class TilgangskontrollTest {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withEier(userId).withJsonInternalSoknad(createEmptyJsonInternalSoknad(userId));
         when(soknadUnderArbeidRepository.hentSoknadOptional(anyString(), anyString())).thenReturn(Optional.of(soknadUnderArbeid));
         when(pdlService.hentPerson(userId)).thenReturn(personUtenAdressebeskyttelse());
-        tilgangskontroll.verifiserBrukerHarTilgangTilSoknad("123");
+
+        assertThatNoException().isThrownBy(() -> tilgangskontroll.verifiserBrukerHarTilgangTilSoknad("123"));
     }
 
     @Test(expected = AuthorizationException.class)
@@ -78,7 +80,8 @@ public class TilgangskontrollTest {
         metadata.fnr = userId;
         when(soknadMetadataRepository.hent("123")).thenReturn(metadata);
         when(pdlService.hentPerson(userId)).thenReturn(personUtenAdressebeskyttelse());
-        tilgangskontroll.verifiserBrukerHarTilgangTilMetadata("123");
+
+        assertThatNoException().isThrownBy(() -> tilgangskontroll.verifiserBrukerHarTilgangTilMetadata("123"));
     }
 
     @Test(expected = AuthorizationException.class)

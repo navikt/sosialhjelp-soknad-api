@@ -12,7 +12,10 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktU
 import java.util.List;
 import java.util.Optional;
 
-public class OkonomiMapper {
+public final class OkonomiMapper {
+
+    private OkonomiMapper() {
+    }
 
     public static void setBekreftelse(JsonOkonomiopplysninger opplysninger, String type, Boolean verdi, String tittel) {
         final Optional<JsonOkonomibekreftelse> utbetaltBekreftelse = opplysninger.getBekreftelse().stream()

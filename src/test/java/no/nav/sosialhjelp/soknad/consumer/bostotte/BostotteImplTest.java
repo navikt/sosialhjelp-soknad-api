@@ -120,7 +120,7 @@ public class BostotteImplTest {
         when(operations.exchange(any(), any(Class.class))).thenThrow(new ResourceAccessException("TestException"));
 
         // Testkjøring:
-        assertThat(bostotte.hentBostotte(personIdentifikator, "", fra,til)).isEqualTo(null);
+        assertThat(bostotte.hentBostotte(personIdentifikator, "", fra,til)).isNull();
     }
 
     @Test
@@ -134,7 +134,7 @@ public class BostotteImplTest {
         when(operations.exchange(any(), any(Class.class))).thenThrow(new HttpClientErrorException(HttpStatus.BAD_REQUEST));
 
         // Testkjøring:
-        assertThat(bostotte.hentBostotte(personIdentifikator, "", fra,til)).isEqualTo(null);
+        assertThat(bostotte.hentBostotte(personIdentifikator, "", fra,til)).isNull();
     }
 
     @Test
@@ -148,7 +148,7 @@ public class BostotteImplTest {
         when(operations.exchange(any(), any(Class.class))).thenThrow(new HttpMessageNotReadableException("TestException"));
 
         // Testkjøring:
-        assertThat(bostotte.hentBostotte(personIdentifikator, "", fra,til)).isEqualTo(null);
+        assertThat(bostotte.hentBostotte(personIdentifikator, "", fra,til)).isNull();
     }
 
     @Test

@@ -35,7 +35,10 @@ import static no.nav.sosialhjelp.soknad.consumer.sts.servicegateway.StsType.SYST
  * A collection of configuration methods to configure an CXF WS-client
  * to use STS to retrieve SAML tokens for end user and system user.
  */
-public class STSConfigurationUtility {
+public final class STSConfigurationUtility {
+
+    private STSConfigurationUtility() {
+    }
 
     /**
      * Configures endpoint to get SAML token for the system user from STS.
