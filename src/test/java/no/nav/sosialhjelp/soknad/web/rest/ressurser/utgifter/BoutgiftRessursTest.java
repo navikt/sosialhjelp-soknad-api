@@ -10,6 +10,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktU
 import no.nav.sosialhjelp.soknad.business.service.TextService;
 import no.nav.sosialhjelp.soknad.business.soknadunderbehandling.SoknadUnderArbeidRepository;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
+import no.nav.sosialhjelp.soknad.domain.model.exception.AuthorizationException;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.StaticSubjectHandlerService;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.utgifter.BoutgiftRessurs.BoutgifterFrontend;
@@ -47,7 +48,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -263,6 +266,25 @@ public class BoutgiftRessursTest {
         assertTrue(opplysningerBoutgifter.stream().anyMatch(boutgift -> boutgift.getType().equals(UTGIFTER_KOMMUNAL_AVGIFT)));
         assertTrue(opplysningerBoutgifter.stream().anyMatch(boutgift -> boutgift.getType().equals(UTGIFTER_OPPVARMING)));
         assertTrue(opplysningerBoutgifter.stream().anyMatch(boutgift -> boutgift.getType().equals(UTGIFTER_ANNET_BO)));
+    }
+
+    @Test(expected = AuthorizationException.class)
+    public void getBoutgifterSkalKasteAuthorizationExceptionVedManglendeTilgang() {
+        doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerHarTilgang();
+
+        boutgiftRessurs.hentBoutgifter(BEHANDLINGSID);
+
+        verifyNoInteractions(soknadUnderArbeidRepository);
+    }
+
+    @Test(expected = AuthorizationException.class)
+    public void putBoutgifterSkalKasteAuthorizationExceptionVedManglendeTilgang() {
+        doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
+
+        var boutgifterFrontend = new BoutgifterFrontend();
+        boutgiftRessurs.updateBoutgifter(BEHANDLINGSID, boutgifterFrontend);
+
+        verifyNoInteractions(soknadUnderArbeidRepository);
     }
 
     private SoknadUnderArbeid catchSoknadUnderArbeidSentToOppdaterSoknadsdata() {

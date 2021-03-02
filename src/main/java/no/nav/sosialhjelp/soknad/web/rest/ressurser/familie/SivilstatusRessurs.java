@@ -15,7 +15,6 @@ import no.nav.sosialhjelp.soknad.web.rest.ressurser.NavnFrontend;
 import no.nav.sosialhjelp.soknad.web.sikkerhet.Tilgangskontroll;
 import org.springframework.stereotype.Controller;
 
-import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -39,14 +38,17 @@ import static no.nav.sosialhjelp.soknad.web.rest.mappers.PersonMapper.mapToJsonN
 @Produces(APPLICATION_JSON)
 public class SivilstatusRessurs {
 
-    @Inject
-    private Tilgangskontroll tilgangskontroll;
+    private final Tilgangskontroll tilgangskontroll;
+    private final SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
-    @Inject
-    private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
+    public SivilstatusRessurs(Tilgangskontroll tilgangskontroll, SoknadUnderArbeidRepository soknadUnderArbeidRepository) {
+        this.tilgangskontroll = tilgangskontroll;
+        this.soknadUnderArbeidRepository = soknadUnderArbeidRepository;
+    }
 
     @GET
     public SivilstatusFrontend hentSivilstatus(@PathParam("behandlingsId") String behandlingsId){
+        tilgangskontroll.verifiserAtBrukerHarTilgang();
         String eier = SubjectHandler.getUserId();
         JsonInternalSoknad soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).getJsonInternalSoknad();
         JsonSivilstatus jsonSivilstatus = soknad.getSoknad().getData().getFamilie().getSivilstatus();

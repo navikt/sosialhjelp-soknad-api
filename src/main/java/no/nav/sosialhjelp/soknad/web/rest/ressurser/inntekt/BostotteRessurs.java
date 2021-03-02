@@ -15,7 +15,6 @@ import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import no.nav.sosialhjelp.soknad.web.sikkerhet.Tilgangskontroll;
 import org.springframework.stereotype.Controller;
 
-import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
@@ -47,20 +46,21 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 @Produces(APPLICATION_JSON)
 public class BostotteRessurs {
 
-    @Inject
-    private Tilgangskontroll tilgangskontroll;
+    private final Tilgangskontroll tilgangskontroll;
+    private final SoknadUnderArbeidRepository soknadUnderArbeidRepository;
+    private final BostotteSystemdata bostotteSystemdata;
+    private final TextService textService;
 
-    @Inject
-    private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
-
-    @Inject
-    private BostotteSystemdata bostotteSystemdata;
-
-    @Inject
-    private TextService textService;
+    public BostotteRessurs(Tilgangskontroll tilgangskontroll, SoknadUnderArbeidRepository soknadUnderArbeidRepository, BostotteSystemdata bostotteSystemdata, TextService textService) {
+        this.tilgangskontroll = tilgangskontroll;
+        this.soknadUnderArbeidRepository = soknadUnderArbeidRepository;
+        this.bostotteSystemdata = bostotteSystemdata;
+        this.textService = textService;
+    }
 
     @GET
     public BostotteFrontend hentBostotte(@PathParam("behandlingsId") String behandlingsId) {
+        tilgangskontroll.verifiserAtBrukerHarTilgang();
         String eier = SubjectHandler.getUserId();
         JsonInternalSoknad soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).getJsonInternalSoknad();
         JsonOkonomiopplysninger opplysninger = soknad.getSoknad().getData().getOkonomi().getOpplysninger();
@@ -78,8 +78,7 @@ public class BostotteRessurs {
     }
 
     @PUT
-    public void updateBostotte(@PathParam("behandlingsId") String behandlingsId, BostotteFrontend bostotteFrontend,
-                               @HeaderParam(value = AUTHORIZATION) String token) {
+    public void updateBostotte(@PathParam("behandlingsId") String behandlingsId, BostotteFrontend bostotteFrontend, @HeaderParam(value = AUTHORIZATION) String token) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
         String eier = SubjectHandler.getUserId();
         SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
@@ -92,7 +91,7 @@ public class BostotteRessurs {
         setBekreftelse(opplysninger, BOSTOTTE, bostotteFrontend.bekreftelse, textService.getJsonOkonomiTittel("inntekt.bostotte"));
 
         if (bostotteFrontend.bekreftelse != null) {
-            if(bostotteFrontend.bekreftelse) {
+            if (bostotteFrontend.bekreftelse) {
                 String tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey.get(BOSTOTTE));
                 addUtbetalingIfNotPresentInOpplysninger(opplysninger.getUtbetaling(), UTBETALING_HUSBANKEN, tittel);
             } else {
@@ -105,8 +104,7 @@ public class BostotteRessurs {
 
     @POST
     @Path(value = "/samtykke")
-    public void updateSamtykke(@PathParam("behandlingsId") String behandlingsId, boolean samtykke,
-                               @HeaderParam(value = AUTHORIZATION) String token) {
+    public void updateSamtykke(@PathParam("behandlingsId") String behandlingsId, boolean samtykke, @HeaderParam(value = AUTHORIZATION) String token) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
         String eier = SubjectHandler.getUserId();
         SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
@@ -115,13 +113,13 @@ public class BostotteRessurs {
         boolean lagretSamtykke = hentSamtykkeFraSoknad(opplysninger);
         boolean skalLagre = samtykke;
 
-        if(lagretSamtykke != samtykke) {
+        if (lagretSamtykke != samtykke) {
             skalLagre = true;
             removeBekreftelserIfPresent(opplysninger, BOSTOTTE_SAMTYKKE);
             setBekreftelse(opplysninger, BOSTOTTE_SAMTYKKE, samtykke, textService.getJsonOkonomiTittel("inntekt.bostotte.samtykke"));
         }
 
-        if(skalLagre) {
+        if (skalLagre) {
             bostotteSystemdata.updateSystemdataIn(soknad, token);
             soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
         }

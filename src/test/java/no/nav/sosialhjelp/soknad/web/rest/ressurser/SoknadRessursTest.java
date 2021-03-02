@@ -6,6 +6,7 @@ import no.nav.sosialhjelp.soknad.business.service.HenvendelseService;
 import no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService;
 import no.nav.sosialhjelp.soknad.business.soknadunderbehandling.SoknadUnderArbeidRepository;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
+import no.nav.sosialhjelp.soknad.domain.model.exception.AuthorizationException;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.StaticSubjectHandlerService;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import no.nav.sosialhjelp.soknad.web.sikkerhet.Tilgangskontroll;
@@ -21,6 +22,8 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,11 +35,13 @@ import static no.nav.sosialhjelp.soknad.web.rest.ressurser.SoknadRessurs.XSRF_TO
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.only;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -46,19 +51,16 @@ public class SoknadRessursTest {
     private static final String EIER = "Hans og Grete";
 
     @Mock
-    SoknadService soknadService;
-
+    private SoknadService soknadService;
     @Mock
-    SoknadUnderArbeidRepository soknadUnderArbeidRepository;
-
+    private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
     @Mock
     private Tilgangskontroll tilgangskontroll;
-
     @Mock
     private HenvendelseService henvendelseService;
 
     @InjectMocks
-    SoknadRessurs ressurs;
+    private SoknadRessurs ressurs;
 
     @Before
     public void setUp() {
@@ -192,5 +194,61 @@ public class SoknadRessursTest {
         BekreftelseRessurs bekreftelse1 = bekreftelseRessurser.get(0);
         assertThat(bekreftelse1.type).isEqualTo(UTBETALING_SKATTEETATEN_SAMTYKKE);
         assertThat(bekreftelse1.verdi).isEqualTo(true);
+    }
+
+    @Test(expected = AuthorizationException.class)
+    public void getXsrfCookieSkalKasteAuthorizationExceptionVedManglendeTilgang() {
+        doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserBrukerHarTilgangTilSoknad(BEHANDLINGSID);
+
+        HttpServletResponse response = mock(HttpServletResponse.class);
+        ressurs.hentXsrfCookie(BEHANDLINGSID, response);
+
+        verifyNoInteractions(henvendelseService);
+    }
+
+    @Test(expected = AuthorizationException.class)
+    public void getOppsummeringSkalKasteAuthorizationExceptionVedManglendeTilgang() throws IOException {
+        doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerHarTilgang();
+
+        ressurs.hentOppsummering(BEHANDLINGSID);
+
+        verifyNoInteractions(soknadUnderArbeidRepository);
+    }
+
+    @Test(expected = AuthorizationException.class)
+    public void getErSystemdataEndretSkalKasteAuthorizationExceptionVedManglendeTilgang() {
+        doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerHarTilgang();
+
+        ressurs.sjekkOmSystemdataErEndret(BEHANDLINGSID, "token");
+
+        verifyNoInteractions(soknadUnderArbeidRepository);
+    }
+
+    @Test(expected = AuthorizationException.class)
+    public void oppdaterSamtykkerSkalKasteAuthorizationExceptionVedManglendeTilgang() {
+        doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerHarTilgang();
+
+        ressurs.oppdaterSamtykker(BEHANDLINGSID, Collections.emptyList(), "token");
+
+        verifyNoInteractions(soknadService);
+    }
+
+    @Test(expected = AuthorizationException.class)
+    public void getSamtykkerSkalKasteAuthorizationExceptionVedManglendeTilgang() {
+        doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerHarTilgang();
+
+        ressurs.hentSamtykker(BEHANDLINGSID, "token");
+
+        verifyNoInteractions(soknadUnderArbeidRepository);
+    }
+
+    @Test(expected = AuthorizationException.class)
+    public void opprettSoknadSkalKasteAuthorizationExceptionVedManglendeTilgang() {
+        doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerHarTilgang();
+
+        HttpServletResponse response = mock(HttpServletResponse.class);
+        ressurs.opprettSoknad(BEHANDLINGSID, response, "token");
+
+        verifyNoInteractions(soknadService);
     }
 }

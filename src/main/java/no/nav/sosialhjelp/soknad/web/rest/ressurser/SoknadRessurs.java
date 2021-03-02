@@ -18,7 +18,6 @@ import no.nav.sosialhjelp.soknad.web.utils.NedetidUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import javax.inject.Inject;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
@@ -56,26 +55,30 @@ public class SoknadRessurs {
 
     public static final String XSRF_TOKEN = "XSRF-TOKEN-SOKNAD-API";
 
-    @Inject
-    private SoknadService soknadService;
+    private final SoknadService soknadService;
+    private final HtmlGenerator pdfTemplate;
+    private final SoknadUnderArbeidService soknadUnderArbeidService;
+    private final SoknadUnderArbeidRepository soknadUnderArbeidRepository;
+    private final SystemdataUpdater systemdata;
+    private final Tilgangskontroll tilgangskontroll;
+    private final HenvendelseService henvendelseService;
 
-    @Inject
-    private HtmlGenerator pdfTemplate;
-
-    @Inject
-    private SoknadUnderArbeidService soknadUnderArbeidService;
-
-    @Inject
-    private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
-
-    @Inject
-    private SystemdataUpdater systemdata;
-
-    @Inject
-    private Tilgangskontroll tilgangskontroll;
-
-    @Inject
-    private HenvendelseService henvendelseService;
+    public SoknadRessurs(
+            SoknadService soknadService,
+            HtmlGenerator pdfTemplate,
+            SoknadUnderArbeidService soknadUnderArbeidService,
+            SoknadUnderArbeidRepository soknadUnderArbeidRepository,
+            SystemdataUpdater systemdata,
+            Tilgangskontroll tilgangskontroll,
+            HenvendelseService henvendelseService) {
+        this.soknadService = soknadService;
+        this.pdfTemplate = pdfTemplate;
+        this.soknadUnderArbeidService = soknadUnderArbeidService;
+        this.soknadUnderArbeidRepository = soknadUnderArbeidRepository;
+        this.systemdata = systemdata;
+        this.tilgangskontroll = tilgangskontroll;
+        this.henvendelseService = henvendelseService;
+    }
 
     @GET
     @Path("/{behandlingsId}/xsrfCookie")
@@ -91,6 +94,7 @@ public class SoknadRessurs {
     @Path("/{behandlingsId}")
     @Produces("application/vnd.oppsummering+html")
     public String hentOppsummering(@PathParam("behandlingsId") String behandlingsId) throws IOException {
+        tilgangskontroll.verifiserAtBrukerHarTilgang();
         String eier = SubjectHandler.getUserId();
         SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
 
@@ -100,6 +104,7 @@ public class SoknadRessurs {
     @GET
     @Path("/{behandlingsId}/erSystemdataEndret")
     public boolean sjekkOmSystemdataErEndret(@PathParam("behandlingsId") String behandlingsId, @HeaderParam(value = AUTHORIZATION) String token) {
+        tilgangskontroll.verifiserAtBrukerHarTilgang();
         final String eier = SubjectHandler.getUserId();
         final SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
         systemdata.update(soknadUnderArbeid, token);
@@ -123,9 +128,8 @@ public class SoknadRessurs {
 
     @POST
     @Path("/{behandlingsId}/oppdaterSamtykker")
-    public void oppdaterSamtykker(@PathParam("behandlingsId") String behandlingsId,
-                                  @RequestBody List<BekreftelseRessurs> samtykker,
-                                  @HeaderParam(value = AUTHORIZATION) String token) {
+    public void oppdaterSamtykker(@PathParam("behandlingsId") String behandlingsId, @RequestBody List<BekreftelseRessurs> samtykker, @HeaderParam(value = AUTHORIZATION) String token) {
+        tilgangskontroll.verifiserAtBrukerHarTilgang();
         boolean harBostotteSamtykke = samtykker.stream()
                 .anyMatch(bekreftelse -> bekreftelse.type.equalsIgnoreCase(BOSTOTTE_SAMTYKKE) && bekreftelse.verdi);
         boolean harSkatteetatenSamtykke = samtykker.stream()
@@ -135,8 +139,8 @@ public class SoknadRessurs {
 
     @GET
     @Path("/{behandlingsId}/hentSamtykker")
-    public List<BekreftelseRessurs> hentSamtykker(@PathParam("behandlingsId") String behandlingsId,
-                                                  @HeaderParam(value = AUTHORIZATION) String token) {
+    public List<BekreftelseRessurs> hentSamtykker(@PathParam("behandlingsId") String behandlingsId, @HeaderParam(value = AUTHORIZATION) String token) {
+        tilgangskontroll.verifiserAtBrukerHarTilgang();
         final String eier = SubjectHandler.getUserId();
         final SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
 
@@ -161,12 +165,12 @@ public class SoknadRessurs {
     @POST
     @Path("/opprettSoknad")
     @Consumes(APPLICATION_JSON)
-    public Map<String, String> opprettSoknad(@QueryParam("ettersendTil") String behandlingsId,
-                                             @Context HttpServletResponse response,
-                                             @HeaderParam(value = AUTHORIZATION) String token) {
+    public Map<String, String> opprettSoknad(@QueryParam("ettersendTil") String behandlingsId, @Context HttpServletResponse response, @HeaderParam(value = AUTHORIZATION) String token) {
         if (NedetidUtils.isInnenforNedetid()) {
             throw new SoknadenHarNedetidException(String.format("Soknaden har nedetid fram til %s ", getNedetidAsStringOrNull(NEDETID_SLUTT)));
         }
+
+        tilgangskontroll.verifiserAtBrukerHarTilgang();
 
         Map<String, String> result = new HashMap<>();
 

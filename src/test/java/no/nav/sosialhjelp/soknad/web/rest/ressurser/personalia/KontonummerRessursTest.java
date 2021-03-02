@@ -5,6 +5,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonKontonummer;
 import no.nav.sosialhjelp.soknad.business.service.systemdata.KontonummerSystemdata;
 import no.nav.sosialhjelp.soknad.business.soknadunderbehandling.SoknadUnderArbeidRepository;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
+import no.nav.sosialhjelp.soknad.domain.model.exception.AuthorizationException;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.StaticSubjectHandlerService;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.personalia.KontonummerRessurs.KontonummerFrontend;
@@ -26,7 +27,9 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -63,7 +66,7 @@ public class KontonummerRessursTest {
     }
 
     @Test
-    public void getKontonummerSkalReturnereSystemKontonummer(){
+    public void getKontonummerSkalReturnereSystemKontonummer() {
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithKontonummer(JsonKilde.SYSTEM, KONTONUMMER_SYSTEM));
 
@@ -76,7 +79,7 @@ public class KontonummerRessursTest {
     }
 
     @Test
-    public void getKontonummerSkalReturnereBrukerutfyltKontonummer(){
+    public void getKontonummerSkalReturnereBrukerutfyltKontonummer() {
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithKontonummer(JsonKilde.BRUKER, KONTONUMMER_BRUKER));
         when(kontonummerSystemdata.innhentSystemverdiKontonummer(anyString())).thenReturn(KONTONUMMER_SYSTEM);
@@ -90,7 +93,7 @@ public class KontonummerRessursTest {
     }
 
     @Test
-    public void getKontonummerSkalReturnereKontonummerLikNull(){
+    public void getKontonummerSkalReturnereKontonummerLikNull() {
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithKontonummer(JsonKilde.BRUKER, null));
         when(kontonummerSystemdata.innhentSystemverdiKontonummer(anyString())).thenReturn(null);
@@ -104,7 +107,7 @@ public class KontonummerRessursTest {
     }
 
     @Test
-    public void putKontonummerSkalSetteBrukerutfyltKontonummer(){
+    public void putKontonummerSkalSetteBrukerutfyltKontonummer() {
         startWithEmptyKontonummerAndNoSystemKontonummer();
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
 
@@ -121,7 +124,7 @@ public class KontonummerRessursTest {
     }
 
     @Test
-    public void putKontonummerSkalOverskriveBrukerutfyltKontonummerMedSystemKontonummer(){
+    public void putKontonummerSkalOverskriveBrukerutfyltKontonummerMedSystemKontonummer() {
         startWithBrukerKontonummerAndSystemKontonummerInTPS();
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
 
@@ -135,6 +138,25 @@ public class KontonummerRessursTest {
         assertThat(kontonummer.getKilde(), is(JsonKilde.SYSTEM));
         assertThat(kontonummer.getHarIkkeKonto(), nullValue());
         assertThat(kontonummer.getVerdi(), is(KONTONUMMER_SYSTEM));
+    }
+
+    @Test(expected = AuthorizationException.class)
+    public void getKontonummerSkalKasteAuthorizationExceptionVedManglendeTilgang() {
+        doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerHarTilgang();
+
+        kontonummerRessurs.hentKontonummer(BEHANDLINGSID);
+
+        verifyNoInteractions(soknadUnderArbeidRepository);
+    }
+
+    @Test(expected = AuthorizationException.class)
+    public void putKontonummerSkalKasteAuthorizationExceptionVedManglendeTilgang() {
+        doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
+
+        var kontonummerFrontend = new KontonummerFrontend();
+        kontonummerRessurs.updateKontonummer(BEHANDLINGSID, kontonummerFrontend);
+
+        verifyNoInteractions(soknadUnderArbeidRepository);
     }
 
     private SoknadUnderArbeid catchSoknadUnderArbeidSentToOppdaterSoknadsdata() {
@@ -159,7 +181,7 @@ public class KontonummerRessursTest {
         soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getKontonummer()
                 .withKilde(kilde)
                 .withVerdi(verdi);
-        return  soknadUnderArbeid;
+        return soknadUnderArbeid;
     }
 
 }

@@ -64,7 +64,12 @@ public class InformasjonRessurs {
     private final KommuneInfoService kommuneInfoService;
     private final PdlService pdlService;
 
-    public InformasjonRessurs(InformasjonService informasjon, NavMessageSource messageSource, AdresseSokService adresseSokService, KommuneInfoService kommuneInfoService, PdlService pdlService) {
+    public InformasjonRessurs(
+            InformasjonService informasjon,
+            NavMessageSource messageSource,
+            AdresseSokService adresseSokService,
+            KommuneInfoService kommuneInfoService,
+            PdlService pdlService) {
         this.informasjon = informasjon;
         this.messageSource = messageSource;
         this.adresseSokService = adresseSokService;
@@ -259,8 +264,8 @@ public class InformasjonRessurs {
         }
 
         public KommuneInfoFrontend withKommunenummer(String kommunenummer) {
-           this.kommunenummer = kommunenummer;
-           return this;
+            this.kommunenummer = kommunenummer;
+            return this;
         }
 
         public KommuneInfoFrontend withKanMottaSoknader(boolean kanMottaSoknader) {
