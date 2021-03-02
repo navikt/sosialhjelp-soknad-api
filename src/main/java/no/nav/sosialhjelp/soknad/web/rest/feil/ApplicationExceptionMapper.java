@@ -50,7 +50,7 @@ public class ApplicationExceptionMapper implements ExceptionMapper<SosialhjelpSo
             logger.warn("Feilet opplasting", e);
         } else if (e instanceof SamletVedleggStorrelseForStorException) {
             response = status(REQUEST_ENTITY_TOO_LARGE);
-            logger.warn("Feilet opplasting. Valgt fil for opplasting gjør at grensen for samlet vedleggstørrelse på " + MAKS_SAMLET_VEDLEGG_STORRELSE_I_MB + "MB overskrides.", e);
+            logger.warn("Feilet opplasting. Valgt fil for opplasting gjør at grensen for samlet vedleggstørrelse på {}MB overskrides.", MAKS_SAMLET_VEDLEGG_STORRELSE_I_MB, e);
         } else if (e instanceof AuthorizationException) {
             response = status(FORBIDDEN);
             logger.warn("Ikke tilgang til ressurs", e);
@@ -60,7 +60,7 @@ public class ApplicationExceptionMapper implements ExceptionMapper<SosialhjelpSo
             logger.warn("Fant ikke ressurs", e);
         } else if (e instanceof EttersendelseSendtForSentException) {
             response = serverError().header(NO_BIGIP_5XX_REDIRECT, true);
-            logger.info("REST-kall feilet: " + e.getMessage(), e);
+            logger.info("REST-kall feilet: {}", e.getMessage(), e);
         } else if (e instanceof TjenesteUtilgjengeligException) {
             response = serverError().header(NO_BIGIP_5XX_REDIRECT, true);
             logger.warn("REST-kall feilet: Ekstern tjeneste er utilgjengelig", e);

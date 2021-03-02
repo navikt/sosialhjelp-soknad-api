@@ -52,7 +52,7 @@ public class BostotteImpl implements Bostotte {
         } catch (HttpClientErrorException e) {
             logger.error("Problemer med å koble opp mot Husbanken!", e);
         } catch (HttpServerErrorException e) {
-            logger.error("Problemer med å hente bostøtte fra Husbanken! Ekstern error: " + e.getMessage(), e);
+            logger.error("Problemer med å hente bostøtte fra Husbanken! Ekstern error: {}", e.getMessage(), e);
         } catch (HttpMessageNotReadableException e) {
             logger.error("Problemer med å tolke data fra Husbanken!", e);
         }

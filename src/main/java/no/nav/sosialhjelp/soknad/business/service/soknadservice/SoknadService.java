@@ -160,12 +160,10 @@ public class SoknadService {
     private void logDriftsinformasjon(SoknadUnderArbeid soknadUnderArbeid){
         if(!soknadUnderArbeid.erEttersendelse()) {
             if (soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getDriftsinformasjon().getStotteFraHusbankenFeilet()) {
-                logger.info("Nedlasting fra Husbanken har feilet for innsendtsoknad." +
-                        finnAlderPaaDataFor(soknadUnderArbeid, BOSTOTTE_SAMTYKKE));
+                logger.info("Nedlasting fra Husbanken har feilet for innsendtsoknad. {}", finnAlderPaaDataFor(soknadUnderArbeid, BOSTOTTE_SAMTYKKE));
             }
             if (soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getDriftsinformasjon().getInntektFraSkatteetatenFeilet()) {
-                logger.info("Nedlasting fra Skatteetaten har feilet for innsendtsoknad." +
-                        finnAlderPaaDataFor(soknadUnderArbeid, UTBETALING_SKATTEETATEN_SAMTYKKE));
+                logger.info("Nedlasting fra Skatteetaten har feilet for innsendtsoknad. {}", finnAlderPaaDataFor(soknadUnderArbeid, UTBETALING_SKATTEETATEN_SAMTYKKE));
             }
         }
     }

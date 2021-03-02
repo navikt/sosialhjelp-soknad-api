@@ -106,7 +106,7 @@ public class HenvendelseService {
 
         soknadMetadataRepository.oppdater(meta);
 
-        logger.info("Søknad avsluttet " + behandlingsId + " " + meta.skjema + ", " + vedlegg.vedleggListe.size());
+        logger.info("Søknad avsluttet {} {}, {}", behandlingsId, meta.skjema, vedlegg.vedleggListe.size());
     }
 
     public SoknadMetadata hentSoknad(String behandlingsId) {

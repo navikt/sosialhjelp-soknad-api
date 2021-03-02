@@ -65,7 +65,7 @@ public class NorgConsumerImpl implements NorgConsumer {
         try {
             var response = withRetry(retry, request::get);
             if (response.getStatus() != 200) {
-                logger.warn("Feil statuskode ved kall mot NORG/gt: " + response.getStatus() + ", respons: " + response.readEntity(String.class));
+                logger.warn("Feil statuskode ved kall mot NORG/gt: {}, respons: {}", response.getStatus(), response.readEntity(String.class));
                 return null;
             }
             var rsNorgEnhet = response.readEntity(RsNorgEnhet.class);

@@ -90,7 +90,7 @@ public class AdresseSokConsumerImpl implements AdresseSokConsumer {
 
             if (logger.isDebugEnabled()) {
                 response.bufferEntity();
-                logger.debug("Response (" + response.getStatus() + "): " + response.readEntity(String.class));
+                logger.debug("Response ({}): {}", response.getStatus(), response.readEntity(String.class));
             }
 
             if (response.getStatus() == 200) {

@@ -20,19 +20,16 @@ import no.nav.tjeneste.virksomhet.person.v3.informasjon.NorskIdent;
 import no.nav.tjeneste.virksomhet.person.v3.informasjon.Person;
 import no.nav.tjeneste.virksomhet.person.v3.informasjon.PersonIdent;
 import no.nav.tjeneste.virksomhet.person.v3.informasjon.Personnavn;
-import org.slf4j.Logger;
 
 import java.util.Optional;
 
 import static java.util.Optional.ofNullable;
-import static org.slf4j.LoggerFactory.getLogger;
 
 public class PersonDataMapper {
 
     private static final String KODE_6 = "6";
     private static final String KODE_7 = "7";
 
-    private static final Logger log = getLogger(PersonDataMapper.class);
     public PersonData tilPersonData(Person person) {
         return new PersonData()
                 .withFornavn(kanskjeFornavn(person))

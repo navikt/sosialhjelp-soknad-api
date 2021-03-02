@@ -36,7 +36,7 @@ public class OrganisasjonConsumerImpl implements OrganisasjonConsumer {
         Invocation.Builder request = client.target(endpoint + "v1/organisasjon/990983666/noekkelinfo").request();
         try (Response response = request.options()) {
             if (response.getStatus() != 200) {
-                logger.warn("Ping feilet mot Ereg: " + response.getStatus());
+                logger.warn("Ping feilet mot Ereg: {}", response.getStatus());
             }
         }
     }

@@ -106,7 +106,7 @@ public abstract class SelfTestBaseServlet extends HttpServlet {
             InputStream inputStream = getServletContext().getResourceAsStream("/META-INF/MANIFEST.MF");
             version = new Manifest(inputStream).getMainAttributes().getValue("Implementation-Version");
         } catch (Exception e) {
-            logger.warn("Feil ved henting av applikasjonsversjon: " + e.getMessage());
+            logger.warn("Feil ved henting av applikasjonsversjon: {}", e.getMessage());
         }
         return version;
     }
@@ -126,7 +126,7 @@ public abstract class SelfTestBaseServlet extends HttpServlet {
         Ping ping = pingable.ping();
         ping.setResponstid(System.currentTimeMillis() - startTime);
         if (!ping.erVellykket()) {
-            logger.warn("Feil ved SelfTest av " + ping.getMetadata().getEndepunkt(), ping.getFeil());
+            logger.warn("Feil ved SelfTest av {}", ping.getMetadata().getEndepunkt(), ping.getFeil());
         }
         return ping;
     };

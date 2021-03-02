@@ -77,7 +77,7 @@ public class ArbeidsforholdSystemdata implements Systemdata {
         try {
             arbeidsforholds = arbeidsforholdService.hentArbeidsforhold(personIdentifikator);
         } catch (Exception e) {
-            LOG.warn("Kunne ikke hente arbeidsforhold: " + e, e);
+            LOG.warn("Kunne ikke hente arbeidsforhold", e);
             arbeidsforholds = null;
         }
 
