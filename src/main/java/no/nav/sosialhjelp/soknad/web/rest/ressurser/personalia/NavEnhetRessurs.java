@@ -147,7 +147,7 @@ public class NavEnhetRessurs {
         List<NavEnhetRessurs.NavEnhetFrontend> navEnhetFrontendListe = new ArrayList<>();
 
         for (AdresseForslag adresseForslag: adresseForslagene) {
-            if (adresseForslag.type != null && adresseForslag.type.equals(AdresseForslagType.matrikkelAdresse))
+            if (adresseForslag.type != null && adresseForslag.type.equals(AdresseForslagType.MATRIKKELADRESSE))
             {
                     List<NavEnhet> navenheter = norgService.getEnheterForKommunenummer(adresseForslag.kommunenummer);
                     navenheter.forEach(navEnhet ->

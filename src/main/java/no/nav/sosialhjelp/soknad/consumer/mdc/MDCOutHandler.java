@@ -31,7 +31,7 @@ public class MDCOutHandler implements SOAPHandler<SOAPMessageContext> {
         Boolean outbound = (Boolean) context.get(MessageContext.MESSAGE_OUTBOUND_PROPERTY);
 
         // OUTBOUND processing
-        if (outbound) {
+        if (Boolean.TRUE.equals(outbound)) {
             String callId = MDCOperations.getFromMDC(MDCOperations.MDC_CALL_ID);
             if (callId == null) {
                 throw new RuntimeException("CallId skal være tilgjengelig i MDC på dette tidspunkt. Om du er en webapp, må du legge til et MDCFilter i web.xml " +

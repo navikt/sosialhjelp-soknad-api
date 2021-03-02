@@ -55,7 +55,7 @@ public class SoknadsmottakerService {
             }
 
             AdresseForslag adresseForslag = new AdresseForslag();
-            adresseForslag.type = AdresseForslagType.matrikkelAdresse;
+            adresseForslag.type = AdresseForslagType.MATRIKKELADRESSE;
             adresseForslag.kommunenummer = kommunenummer;
 
             return Collections.singletonList(adresseForslag);

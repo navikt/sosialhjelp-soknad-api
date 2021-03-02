@@ -173,10 +173,10 @@ public class SoknadRessursTest {
         assertThat(bekreftelseRessurser).hasSize(2);
         BekreftelseRessurs bekreftelse1 = bekreftelseRessurser.get(0);
         assertThat(bekreftelse1.type).isEqualTo(BOSTOTTE_SAMTYKKE);
-        assertThat(bekreftelse1.verdi).isEqualTo(true);
+        assertThat(bekreftelse1.verdi).isTrue();
         BekreftelseRessurs bekreftelse2 = bekreftelseRessurser.get(1);
         assertThat(bekreftelse2.type).isEqualTo(UTBETALING_SKATTEETATEN_SAMTYKKE);
-        assertThat(bekreftelse2.verdi).isEqualTo(true);
+        assertThat(bekreftelse2.verdi).isTrue();
     }
 
     @Test
@@ -193,7 +193,7 @@ public class SoknadRessursTest {
         assertThat(bekreftelseRessurser).hasSize(1);
         BekreftelseRessurs bekreftelse1 = bekreftelseRessurser.get(0);
         assertThat(bekreftelse1.type).isEqualTo(UTBETALING_SKATTEETATEN_SAMTYKKE);
-        assertThat(bekreftelse1.verdi).isEqualTo(true);
+        assertThat(bekreftelse1.verdi).isTrue();
     }
 
     @Test(expected = AuthorizationException.class)

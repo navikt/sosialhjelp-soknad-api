@@ -56,7 +56,7 @@ public class Adresse {
         this.strukturertAdresse = strukturertAdresse;
     }
 
-    public static abstract class StrukturertAdresse {
+    public abstract static class StrukturertAdresse {
         public String type;
         public String kommunenummer;
         public String bolignummer;

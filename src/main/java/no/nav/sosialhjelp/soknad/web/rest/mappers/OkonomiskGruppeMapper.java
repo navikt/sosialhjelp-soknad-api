@@ -2,7 +2,11 @@ package no.nav.sosialhjelp.soknad.web.rest.mappers;
 
 import static no.nav.sosialhjelp.soknad.web.rest.mappers.VedleggTypeToSoknadTypeMapper.getSoknadPath;
 
-public class OkonomiskGruppeMapper {
+public final class OkonomiskGruppeMapper {
+
+    private OkonomiskGruppeMapper() {
+    }
+
     public static String getGruppe(String vedleggType) {
         switch (vedleggType) {
             case "barnebidrag|mottar":

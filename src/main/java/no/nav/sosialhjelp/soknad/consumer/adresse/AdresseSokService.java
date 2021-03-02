@@ -21,7 +21,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
-import static no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseForslagType.gateAdresse;
+import static no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseForslagType.GATEADRESSE;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Service
@@ -90,7 +90,7 @@ public class AdresseSokService {
         adresse.geografiskTilknytning = data.geografiskTilknytning;
         adresse.gatekode = data.gatekode;
         adresse.bydel = data.bydel;
-        adresse.type = gateAdresse;
+        adresse.type = GATEADRESSE;
         return adresse;
     }
 

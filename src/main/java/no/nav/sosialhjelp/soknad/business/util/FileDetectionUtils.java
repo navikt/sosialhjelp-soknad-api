@@ -2,7 +2,10 @@ package no.nav.sosialhjelp.soknad.business.util;
 
 import org.apache.tika.Tika;
 
-public class FileDetectionUtils {
+public final class FileDetectionUtils {
+
+    private FileDetectionUtils() {
+    }
 
     public static String getMimeType(byte[] bytes) {
         return new Tika().detect(bytes);

@@ -31,7 +31,7 @@ public class SkattbarInntektConsumerMock {
         SkattbarInntektConsumer mock = mock(SkattbarInntektConsumer.class);
 
         when(mock.hentSkattbarInntekt(anyString()))
-                .thenAnswer((invocationOnMock) -> getOrDefaultResponse(SubjectHandler.getUserId()));
+                .thenAnswer(invocationOnMock -> getOrDefaultResponse(SubjectHandler.getUserId()));
 
         return mock;
     }

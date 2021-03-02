@@ -111,7 +111,7 @@ public class SkattbarInntektRessursTest {
 
         // Sjekker kaller til bostotteSystemdata
         ArgumentCaptor<SoknadUnderArbeid> argument = ArgumentCaptor.forClass(SoknadUnderArbeid.class);
-        verify(skattetatenSystemdata).updateSystemdataIn(argument.capture(), anyString());
+        verify(skattetatenSystemdata).updateSystemdataIn(argument.capture());
         JsonOkonomi okonomi = argument.getValue().getJsonInternalSoknad().getSoknad().getData().getOkonomi();
         JsonOkonomibekreftelse fangetBekreftelse = okonomi.getOpplysninger().getBekreftelse().get(0);
         assertThat(fangetBekreftelse.getType()).isEqualTo(UTBETALING_SKATTEETATEN_SAMTYKKE);
@@ -136,7 +136,7 @@ public class SkattbarInntektRessursTest {
 
         // Sjekker kaller til skattbarInntektSystemdata
         ArgumentCaptor<SoknadUnderArbeid> argument = ArgumentCaptor.forClass(SoknadUnderArbeid.class);
-        verify(skattetatenSystemdata).updateSystemdataIn(argument.capture(), anyString());
+        verify(skattetatenSystemdata).updateSystemdataIn(argument.capture());
         JsonOkonomi okonomi = argument.getValue().getJsonInternalSoknad().getSoknad().getData().getOkonomi();
         JsonOkonomibekreftelse fangetBekreftelse = okonomi.getOpplysninger().getBekreftelse().get(0);
         assertThat(fangetBekreftelse.getType()).isEqualTo(UTBETALING_SKATTEETATEN_SAMTYKKE);
@@ -159,7 +159,7 @@ public class SkattbarInntektRessursTest {
         skattbarInntektRessurs.updateSamtykke(BEHANDLINGSID, false, "token");
 
         // Sjekker kaller til skattbarInntektSystemdata
-        verify(skattetatenSystemdata, times(0)).updateSystemdataIn(any(), anyString());
+        verify(skattetatenSystemdata, times(0)).updateSystemdataIn(any());
 
         // Sjekker lagring av soknaden
         verify(soknadUnderArbeidRepository, times(0)).oppdaterSoknadsdata(any(), anyString());

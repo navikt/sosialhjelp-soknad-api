@@ -9,12 +9,16 @@ import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 
-public class ServiceUtils {
-    public final static String ENVIRONMENT_NAME = "ENVIRONMENT_NAME";
-    public final static String IS_SCHEDULED_TASKS_DISABLED = "scheduler.disable";
-    public final static String IS_SENDING_TIL_DIGISOS_API_ENABLED = "digisosapi.sending.enable";
-    public final static String IS_ALLTID_SEND_TIL_NAV_TESTKOMMUNE = "digisosapi.sending.alltidTilTestkommune.enable";
-    public final static String IS_ALLTID_HENT_KOMMUNEINFO_FRA_NAV_TESTKOMMUNE = "digisosapi.henting.alltidTestkommune.enable";
+public final class ServiceUtils {
+
+    private ServiceUtils() {
+    }
+
+    public static final String ENVIRONMENT_NAME = "ENVIRONMENT_NAME";
+    public static final String IS_SCHEDULED_TASKS_DISABLED = "scheduler.disable";
+    public static final String IS_SENDING_TIL_DIGISOS_API_ENABLED = "digisosapi.sending.enable";
+    public static final String IS_ALLTID_SEND_TIL_NAV_TESTKOMMUNE = "digisosapi.sending.alltidTilTestkommune.enable";
+    public static final String IS_ALLTID_HENT_KOMMUNEINFO_FRA_NAV_TESTKOMMUNE = "digisosapi.henting.alltidTestkommune.enable";
 
     public static XMLGregorianCalendar stringTilXmldato(String dato) {
         return lagDatatypeFactory().newXMLGregorianCalendar(DateTime.parse(dato).toGregorianCalendar());

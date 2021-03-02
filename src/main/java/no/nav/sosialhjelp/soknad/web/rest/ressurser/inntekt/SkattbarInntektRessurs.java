@@ -97,7 +97,7 @@ public class SkattbarInntektRessurs {
         }
 
         if (skalLagre) {
-            skattetatenSystemdata.updateSystemdataIn(soknad, token);
+            skattetatenSystemdata.updateSystemdataIn(soknad);
             soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
         }
     }

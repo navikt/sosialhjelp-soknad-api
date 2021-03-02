@@ -83,7 +83,7 @@ public class SoknadsmottakerServiceTest {
         AdresseForslag adresseForslag = adresseForslagene.get(0);
 
         assertThat(adresseForslag.kommunenummer, is(KOMMUNENUMMER));
-        assertThat(adresseForslag.type, is(AdresseForslagType.matrikkelAdresse));
+        assertThat(adresseForslag.type, is(AdresseForslagType.MATRIKKELADRESSE));
         // Får kun kommunenummer som adresseforslag. Ut fra denne finner man navenhet i den lokale lista
     }
 

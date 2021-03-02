@@ -36,7 +36,11 @@ import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.VERDI_CAMPINGVOG
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.VERDI_FRITIDSEIENDOM;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.VERDI_KJORETOY;
 
-public class VedleggTypeToSoknadTypeMapper {
+public final class VedleggTypeToSoknadTypeMapper {
+
+    private VedleggTypeToSoknadTypeMapper() {
+    }
+
     public static final Map<String,String> vedleggTypeToSoknadType = new HashMap<>();
 
     static {
