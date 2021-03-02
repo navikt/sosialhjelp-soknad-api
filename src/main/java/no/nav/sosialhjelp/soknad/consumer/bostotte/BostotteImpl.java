@@ -17,15 +17,12 @@ import javax.inject.Inject;
 import javax.ws.rs.core.UriBuilder;
 import java.time.LocalDate;
 
-import static java.lang.System.getenv;
-import static no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.HEADER_NAV_APIKEY;
 import static no.nav.sosialhjelp.soknad.web.types.Pingable.Ping.feilet;
 import static no.nav.sosialhjelp.soknad.web.types.Pingable.Ping.lyktes;
 
 @Timed
 public class BostotteImpl implements Bostotte {
     private static final Logger logger = LoggerFactory.getLogger(BostotteImpl.class);
-    private static final String SOSIALHJELP_SOKNAD_API_HUSBANKEN_BOSTOTTE_APIKEY_PASSWORD = "SOSIALHJELP_SOKNAD_API_HUSBANKEN_BOSTOTTE_APIKEY_PASSWORD";
     private final BostotteConfig config;
     private final RestOperations operations;
 
@@ -38,10 +35,8 @@ public class BostotteImpl implements Bostotte {
     @Override
     public BostotteDto hentBostotte(String personIdentifikator, String token, LocalDate fra, LocalDate til) {
         try {
-            String apikey = getenv(SOSIALHJELP_SOKNAD_API_HUSBANKEN_BOSTOTTE_APIKEY_PASSWORD);
             UriBuilder uri = UriBuilder.fromPath(config.getUri()).queryParam("fra", fra).queryParam("til", til);
             RequestEntity<Void> request = RequestEntity.get(uri.build())
-                    .header(HEADER_NAV_APIKEY, apikey)
                     .header(HttpHeader.AUTHORIZATION.name(), token)
                     .build();
             BostotteDto bostotteDto = operations.exchange(request, BostotteDto.class).getBody();
@@ -66,9 +61,7 @@ public class BostotteImpl implements Bostotte {
             @Override
             public Ping ping() {
                 try {
-                    String apikey = getenv(SOSIALHJELP_SOKNAD_API_HUSBANKEN_BOSTOTTE_APIKEY_PASSWORD);
                     RequestEntity<Void> request = RequestEntity.get(UriBuilder.fromPath(config.getPingUrl()).build())
-                            .header(HEADER_NAV_APIKEY, apikey)
                             .build();
                     String result = operations.exchange(request, String.class).getBody();
                     if (result.equalsIgnoreCase("pong")) {
