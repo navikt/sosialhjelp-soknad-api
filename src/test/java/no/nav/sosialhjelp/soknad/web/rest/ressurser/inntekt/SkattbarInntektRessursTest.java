@@ -13,7 +13,6 @@ import no.nav.sosialhjelp.soknad.domain.model.oidc.StaticSubjectHandlerService;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.inntekt.SkattbarInntektRessurs.SkattbarInntektFrontend;
 import no.nav.sosialhjelp.soknad.web.sikkerhet.Tilgangskontroll;
-import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,8 +26,7 @@ import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_SKATT
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_SKATTEETATEN_SAMTYKKE;
 import static no.nav.sosialhjelp.soknad.business.mappers.OkonomiMapper.setBekreftelse;
 import static no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.doNothing;
@@ -78,7 +76,7 @@ public class SkattbarInntektRessursTest {
 
         SkattbarInntektFrontend skattbarInntektFrontend = skattbarInntektRessurs.hentSkattbareInntekter(BEHANDLINGSID);
 
-        assertThat(skattbarInntektFrontend.inntektFraSkatteetaten.size(), is(0));
+        assertThat(skattbarInntektFrontend.inntektFraSkatteetaten).isEmpty();
     }
 
     @Test
@@ -88,7 +86,7 @@ public class SkattbarInntektRessursTest {
 
         SkattbarInntektFrontend skattbarInntektFrontend = skattbarInntektRessurs.hentSkattbareInntekter(BEHANDLINGSID);
 
-        assertThat(skattbarInntektFrontend.inntektFraSkatteetaten.size(), is(1));
+        assertThat(skattbarInntektFrontend.inntektFraSkatteetaten).hasSize(1);
     }
 
     @Test
@@ -98,7 +96,7 @@ public class SkattbarInntektRessursTest {
 
         SkattbarInntektFrontend skattbarInntektFrontend = skattbarInntektRessurs.hentSkattbareInntekter(BEHANDLINGSID);
 
-        assertThat(skattbarInntektFrontend.inntektFraSkatteetaten.size(), is(0));
+        assertThat(skattbarInntektFrontend.inntektFraSkatteetaten).isEmpty();
     }
 
     @Test
@@ -110,18 +108,18 @@ public class SkattbarInntektRessursTest {
 
         // Sjekker kaller til bostotteSystemdata
         ArgumentCaptor<SoknadUnderArbeid> argument = ArgumentCaptor.forClass(SoknadUnderArbeid.class);
-        verify(skattetatenSystemdata).updateSystemdataIn(argument.capture(), anyString());
+        verify(skattetatenSystemdata).updateSystemdataIn(argument.capture());
         JsonOkonomi okonomi = argument.getValue().getJsonInternalSoknad().getSoknad().getData().getOkonomi();
         JsonOkonomibekreftelse fangetBekreftelse = okonomi.getOpplysninger().getBekreftelse().get(0);
-        Assertions.assertThat(fangetBekreftelse.getType()).isEqualTo(UTBETALING_SKATTEETATEN_SAMTYKKE);
-        Assertions.assertThat(fangetBekreftelse.getVerdi()).isTrue();
+        assertThat(fangetBekreftelse.getType()).isEqualTo(UTBETALING_SKATTEETATEN_SAMTYKKE);
+        assertThat(fangetBekreftelse.getVerdi()).isTrue();
 
         // Sjekker lagring av soknaden
         SoknadUnderArbeid spartSoknad = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
-        Assertions.assertThat(spartSoknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getBekreftelse()).hasSize(1);
+        assertThat(spartSoknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getBekreftelse()).hasSize(1);
         JsonOkonomibekreftelse spartBekreftelse = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getBekreftelse().get(0);
-        Assertions.assertThat(spartBekreftelse.getType()).isEqualTo(UTBETALING_SKATTEETATEN_SAMTYKKE);
-        Assertions.assertThat(spartBekreftelse.getVerdi()).isTrue();
+        assertThat(spartBekreftelse.getType()).isEqualTo(UTBETALING_SKATTEETATEN_SAMTYKKE);
+        assertThat(spartBekreftelse.getVerdi()).isTrue();
     }
 
     @Test
@@ -135,19 +133,19 @@ public class SkattbarInntektRessursTest {
 
         // Sjekker kaller til skattbarInntektSystemdata
         ArgumentCaptor<SoknadUnderArbeid> argument = ArgumentCaptor.forClass(SoknadUnderArbeid.class);
-        verify(skattetatenSystemdata).updateSystemdataIn(argument.capture(), anyString());
+        verify(skattetatenSystemdata).updateSystemdataIn(argument.capture());
         JsonOkonomi okonomi = argument.getValue().getJsonInternalSoknad().getSoknad().getData().getOkonomi();
         JsonOkonomibekreftelse fangetBekreftelse = okonomi.getOpplysninger().getBekreftelse().get(0);
-        Assertions.assertThat(fangetBekreftelse.getType()).isEqualTo(UTBETALING_SKATTEETATEN_SAMTYKKE);
-        Assertions.assertThat(fangetBekreftelse.getVerdi()).isFalse();
+        assertThat(fangetBekreftelse.getType()).isEqualTo(UTBETALING_SKATTEETATEN_SAMTYKKE);
+        assertThat(fangetBekreftelse.getVerdi()).isFalse();
 
         // Sjekker lagring av soknaden
         SoknadUnderArbeid spartSoknad = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
         JsonOkonomiopplysninger sparteOpplysninger = spartSoknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger();
-        Assertions.assertThat(sparteOpplysninger.getBekreftelse()).hasSize(1);
+        assertThat(sparteOpplysninger.getBekreftelse()).hasSize(1);
         JsonOkonomibekreftelse spartBekreftelse = sparteOpplysninger.getBekreftelse().get(0);
-        Assertions.assertThat(spartBekreftelse.getType()).isEqualTo(UTBETALING_SKATTEETATEN_SAMTYKKE);
-        Assertions.assertThat(spartBekreftelse.getVerdi()).isFalse();
+        assertThat(spartBekreftelse.getType()).isEqualTo(UTBETALING_SKATTEETATEN_SAMTYKKE);
+        assertThat(spartBekreftelse.getVerdi()).isFalse();
     }
 
     @Test
@@ -158,13 +156,13 @@ public class SkattbarInntektRessursTest {
         skattbarInntektRessurs.updateSamtykke(BEHANDLINGSID, false, "token");
 
         // Sjekker kaller til skattbarInntektSystemdata
-        verify(skattetatenSystemdata, times(0)).updateSystemdataIn(any(), anyString());
+        verify(skattetatenSystemdata, times(0)).updateSystemdataIn(any());
 
         // Sjekker lagring av soknaden
         verify(soknadUnderArbeidRepository, times(0)).oppdaterSoknadsdata(any(), anyString());
 
         // Sjekker soknaden
-        Assertions.assertThat(soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getBekreftelse()).hasSize(0);
+        assertThat(soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getBekreftelse()).isEmpty();
     }
 
     private SoknadUnderArbeid catchSoknadUnderArbeidSentToOppdaterSoknadsdata() {

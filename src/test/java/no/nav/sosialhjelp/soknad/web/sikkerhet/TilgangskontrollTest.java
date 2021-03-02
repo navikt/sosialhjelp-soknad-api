@@ -18,6 +18,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.util.Optional;
 
 import static no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
+import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -48,7 +49,8 @@ public class TilgangskontrollTest {
         String userId = SubjectHandler.getUserId();
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withEier(userId).withJsonInternalSoknad(createEmptyJsonInternalSoknad(userId));
         when(soknadUnderArbeidRepository.hentSoknadOptional(anyString(), anyString())).thenReturn(Optional.of(soknadUnderArbeid));
-        tilgangskontroll.verifiserBrukerHarTilgangTilSoknad("123");
+
+        assertThatNoException().isThrownBy(() -> tilgangskontroll.verifiserBrukerHarTilgangTilSoknad("123"));
     }
 
     @Test(expected = AuthorizationException.class)
@@ -70,6 +72,8 @@ public class TilgangskontrollTest {
         metadata.fnr = SubjectHandler.getUserId();
         when(soknadMetadataRepository.hent("123")).thenReturn(metadata);
         tilgangskontroll.verifiserBrukerHarTilgangTilMetadata("123");
+
+        assertThatNoException().isThrownBy(() -> tilgangskontroll.verifiserBrukerHarTilgangTilMetadata("123"));
     }
 
     @Test(expected = AuthorizationException.class)

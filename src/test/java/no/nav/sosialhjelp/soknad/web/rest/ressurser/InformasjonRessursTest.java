@@ -66,8 +66,8 @@ public class InformasjonRessursTest {
     public void miljovariablerInneholderAlleVariableneViTrenger() {
         Map<String, String> miljovariabler = ressurs.hentMiljovariabler();
 
-        assertThat(miljovariabler.containsKey("dittnav.link.url")).isTrue();
-        assertThat(miljovariabler.containsKey("soknad.ettersending.antalldager")).isTrue();
+        assertThat(miljovariabler).containsKey("dittnav.link.url");
+        assertThat(miljovariabler).containsKey("soknad.ettersending.antalldager");
     }
 
     @Test

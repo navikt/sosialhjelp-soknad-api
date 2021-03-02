@@ -34,7 +34,11 @@ import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.VERDI_CAMPINGVOG
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.VERDI_FRITIDSEIENDOM;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.VERDI_KJORETOY;
 
-public class TitleKeyMapper {
+public final class TitleKeyMapper {
+
+    private TitleKeyMapper() {
+    }
+
     public static final Map<String, String> soknadTypeToTitleKey = new HashMap<>();
 
     static {

@@ -92,7 +92,7 @@ public class BostotteRessurs {
         setBekreftelse(opplysninger, BOSTOTTE, bostotteFrontend.bekreftelse, textService.getJsonOkonomiTittel("inntekt.bostotte"));
 
         if (bostotteFrontend.bekreftelse != null) {
-            if(bostotteFrontend.bekreftelse) {
+            if(Boolean.TRUE.equals(bostotteFrontend.bekreftelse)) {
                 String tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey.get(BOSTOTTE));
                 addUtbetalingIfNotPresentInOpplysninger(opplysninger.getUtbetaling(), UTBETALING_HUSBANKEN, tittel);
             } else {

@@ -7,7 +7,10 @@ import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import java.util.ArrayList;
 import java.util.List;
 
-public class JsonVedleggUtils {
+public final class JsonVedleggUtils {
+
+    private JsonVedleggUtils() {
+    }
 
     public static final String ANNET = "annet";
 

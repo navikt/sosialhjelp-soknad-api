@@ -53,7 +53,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 public class PdlConsumerImpl implements PdlConsumer {
 
-    private final static Logger log = getLogger(PdlConsumerImpl.class);
+    private static final Logger log = getLogger(PdlConsumerImpl.class);
 
     private final Client client;
     private final String endpoint;

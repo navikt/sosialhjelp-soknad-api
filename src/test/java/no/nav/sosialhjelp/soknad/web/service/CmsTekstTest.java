@@ -57,6 +57,6 @@ public class CmsTekstTest {
     public void getCmsTekstReturnererNullNarKeyMangler() {
         String tekst = cmsTekst.getCmsTekst("min.key", null, "prefix", "bundlename", toLocale("nb_NO"));
 
-        assertThat(tekst).isEqualTo(null);
+        assertThat(tekst).isNull();
     }
 }

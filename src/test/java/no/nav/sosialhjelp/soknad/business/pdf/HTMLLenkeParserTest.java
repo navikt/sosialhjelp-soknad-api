@@ -6,7 +6,7 @@ import org.junit.Test;
 import java.util.ArrayList;
 
 import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 
 public class HTMLLenkeParserTest {
@@ -28,7 +28,7 @@ public class HTMLLenkeParserTest {
 
         ArrayList<HTMLLenkeParser.HTMLLenke> lenker = HTMLLenkeParser.hentLenker(html);
 
-        assertTrue(lenker.size() != 0);
+        assertThat(lenker).isNotEmpty();
 
         for (HTMLLenkeParser.HTMLLenke htmlLenker : lenker) {
             assertEquals(htmlLenker.getLenke(), TEST_LENKE);

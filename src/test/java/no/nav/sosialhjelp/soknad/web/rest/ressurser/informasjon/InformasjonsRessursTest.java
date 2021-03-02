@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -54,7 +54,7 @@ public class InformasjonsRessursTest {
         Map<String, InformasjonRessurs.KommuneInfoFrontend> mappedeDigisosKommuner = informasjonRessurs.mapDigisosKommuner(digisosKommuner);
 
         Map<String, InformasjonRessurs.KommuneInfoFrontend> margedKommuner = informasjonRessurs.mergeManuelleKommunerMedDigisosKommuner(manueltMappedeKommuner, mappedeDigisosKommuner);
-        assertEquals(margedKommuner.size(), 1);
+        assertThat(margedKommuner).hasSize(1);
         assertTrue(margedKommuner.get("1234").kanOppdatereStatus);
     }
 }

@@ -1,11 +1,9 @@
 package no.nav.sosialhjelp.soknad.business.pdf.helpers;
 
 import com.github.jknack.handlebars.Options;
-import no.nav.sosialhjelp.soknad.business.pdf.CmsTekst;
 import no.nav.sosialhjelp.soknad.business.pdf.UrlUtils;
 import no.nav.sosialhjelp.soknad.tekster.NavMessageSource;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
@@ -14,6 +12,7 @@ import java.util.Properties;
 import static no.nav.sosialhjelp.soknad.business.pdf.HandlebarContext.SPRAK;
 import static no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SosialhjelpInformasjon.BUNDLE_NAME;
 import static no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SosialhjelpInformasjon.SOKNAD_TYPE_PREFIX;
+import static org.slf4j.LoggerFactory.getLogger;
 
 @Component
 public class HentTekstMedParametereHelper extends RegistryAwareHelper<String> {
@@ -21,7 +20,7 @@ public class HentTekstMedParametereHelper extends RegistryAwareHelper<String> {
     @Inject
     private NavMessageSource navMessageSource;
 
-    private static final Logger LOG = LoggerFactory.getLogger(CmsTekst.class);
+    private static final Logger LOG = getLogger(HentTekstMedParametereHelper.class);
 
     @Override
     public String getNavn() {

@@ -21,6 +21,7 @@ import static no.nav.sosialhjelp.soknad.web.rest.feil.Feilmelding.NO_BIGIP_5XX_R
 @Provider
 public class ThrowableMapper implements ExceptionMapper<Throwable> {
     private static final Logger logger = LoggerFactory.getLogger(ThrowableMapper.class);
+    private static final String WEB_APPLICATION_ERROR = "web_application_error";
 
     @Override
     public Response toResponse(Throwable e) {
@@ -40,10 +41,10 @@ public class ThrowableMapper implements ExceptionMapper<Throwable> {
                 logger.error(e.getMessage(), e);
             }
 
-            return status(exception.getResponse().getStatus()).type(APPLICATION_JSON).entity(new Feilmelding("web_application_error", "Noe uventet feilet")).build();
+            return status(exception.getResponse().getStatus()).type(APPLICATION_JSON).entity(new Feilmelding(WEB_APPLICATION_ERROR, "Noe uventet feilet")).build();
         } else if (e instanceof SamtidigOppdateringException) {
             logger.warn(e.getMessage(), e);
-            return status(Response.Status.CONFLICT).type(APPLICATION_JSON).entity(new Feilmelding("web_application_error", "Samtidig oppdatering av søknad")).build();
+            return status(Response.Status.CONFLICT).type(APPLICATION_JSON).entity(new Feilmelding(WEB_APPLICATION_ERROR, "Samtidig oppdatering av søknad")).build();
         } else {
             logger.error("Noe uventet feilet: {}", e.getMessage(), e);
             return serverError().header(NO_BIGIP_5XX_REDIRECT, true).type(APPLICATION_JSON).entity(new Feilmelding("unexpected_error", "Noe uventet feilet")).build();
@@ -55,7 +56,7 @@ public class ThrowableMapper implements ExceptionMapper<Throwable> {
         return status(UNAUTHORIZED.getStatusCode())
                 .location(loginUrl)
                 .type(APPLICATION_JSON)
-                .entity(new UnauthorizedMelding("web_application_error", message, loginUrl))
+                .entity(new UnauthorizedMelding(WEB_APPLICATION_ERROR, message, loginUrl))
                 .build();
     }
 }

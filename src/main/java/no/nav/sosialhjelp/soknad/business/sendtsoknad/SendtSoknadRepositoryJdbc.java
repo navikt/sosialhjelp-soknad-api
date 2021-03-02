@@ -11,7 +11,6 @@ import org.springframework.transaction.support.TransactionTemplate;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.sql.DataSource;
-import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.ZoneId;
@@ -19,6 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static java.time.LocalDateTime.now;
+import static java.util.Date.from;
 import static no.nav.sosialhjelp.soknad.business.db.SQLUtils.selectNextSequenceValue;
 
 @Named("SendtSoknadRepository")
@@ -47,9 +47,9 @@ public class SendtSoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport impl
                         sendtSoknad.getFiksforsendelseId(),
                         sendtSoknad.getOrgnummer(),
                         sendtSoknad.getNavEnhetsnavn(),
-                        Date.from(sendtSoknad.getBrukerOpprettetDato().atZone(ZoneId.systemDefault()).toInstant()),
-                        Date.from(sendtSoknad.getBrukerFerdigDato().atZone(ZoneId.systemDefault()).toInstant()),
-                        sendtSoknad.getSendtDato() != null ? Date.from(sendtSoknad.getSendtDato().atZone(ZoneId.systemDefault()).toInstant())
+                        from(sendtSoknad.getBrukerOpprettetDato().atZone(ZoneId.systemDefault()).toInstant()),
+                        from(sendtSoknad.getBrukerFerdigDato().atZone(ZoneId.systemDefault()).toInstant()),
+                        sendtSoknad.getSendtDato() != null ? from(sendtSoknad.getSendtDato().atZone(ZoneId.systemDefault()).toInstant())
                          : null);
         return sendtSoknadId;
     }
@@ -71,7 +71,7 @@ public class SendtSoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport impl
         getJdbcTemplate()
                 .update("update SENDT_SOKNAD set FIKSFORSENDELSEID = ?, SENDTDATO = ? where BEHANDLINGSID = ? and EIER = ?",
                         fiksforsendelseId,
-                        Date.from(now().atZone(ZoneId.systemDefault()).toInstant()),
+                        from(now().atZone(ZoneId.systemDefault()).toInstant()),
                         behandlingsId,
                         eier);
     }
