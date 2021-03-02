@@ -17,6 +17,7 @@ import no.nav.sosialhjelp.soknad.consumer.fiks.DigisosApi;
 import no.nav.sosialhjelp.soknad.consumer.fiks.KommuneInfoService;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.domain.model.digisosapi.KommuneStatus;
+import no.nav.sosialhjelp.soknad.domain.model.exception.AuthorizationException;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.StaticSubjectHandlerService;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import no.nav.sosialhjelp.soknad.tekster.NavMessageSource;
@@ -42,10 +43,13 @@ import static no.nav.sosialhjelp.soknad.domain.SoknadInnsendingStatus.UNDER_ARBE
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -57,31 +61,31 @@ public class SoknadActionsTest {
     private String EIER;
 
     @Inject
-    NavMessageSource tekster;
+    private NavMessageSource tekster;
     @Inject
-    SoknadService soknadService;
+    private SoknadService soknadService;
     @Inject
-    OppgaveHandterer oppgaveHandterer;
+    private OppgaveHandterer oppgaveHandterer;
     @Inject
-    InnsendingService innsendingService;
+    private InnsendingService innsendingService;
     @Inject
-    SystemdataUpdater systemdataUpdater;
+    private SystemdataUpdater systemdataUpdater;
     @Inject
-    SoknadActions actions;
+    private DigisosApi digisosApi;
     @Inject
-    DigisosApi digisosApi;
-    @Inject
-    KommuneInfoService kommuneInfoService;
+    private KommuneInfoService kommuneInfoService;
     @Inject
     private Tilgangskontroll tilgangskontroll;
     @Inject
-    SoknadUnderArbeidRepository soknadUnderArbeidRepository;
+    private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
     @Inject
-    SoknadMetadataRepository soknadMetadataRepository;
+    private SoknadMetadataRepository soknadMetadataRepository;
     @Inject
-    DigisosApiService digisosApiService;
+    private DigisosApiService digisosApiService;
     @Inject
-    SosialhjelpPdfGenerator sosialhjelpPdfGenerator;
+    private SosialhjelpPdfGenerator sosialhjelpPdfGenerator;
+    @Inject
+    private SoknadActions actions;
 
     ServletContext context = mock(ServletContext.class);
 
@@ -93,6 +97,7 @@ public class SoknadActionsTest {
         when(tekster.finnTekst(eq("sendtSoknad.sendEpost.epostSubject"), any(Object[].class), any(Locale.class))).thenReturn("Emne");
         when(context.getRealPath(anyString())).thenReturn("");
         EIER = SubjectHandler.getUserId();
+        doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
     }
 
     @After
@@ -273,5 +278,16 @@ public class SoknadActionsTest {
         String kommunenummer = actions.getKommunenummerOrMock(soknadUnderArbeid);
 
         Assert.assertEquals(expectedKommunenummer, kommunenummer);
+    }
+
+    @Test(expected = AuthorizationException.class)
+    public void sendSoknadSkalGiAuthorizationExceptionVedManglendeTilgang() {
+        doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
+
+        actions.sendSoknad("behandlingsId", mock(ServletContext.class), "token");
+
+        verifyNoInteractions(soknadService);
+        verifyNoInteractions(kommuneInfoService);
+        verifyNoInteractions(digisosApiService);
     }
 }

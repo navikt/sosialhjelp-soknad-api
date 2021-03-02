@@ -9,6 +9,7 @@ import no.nav.sosialhjelp.soknad.business.service.TextService;
 import no.nav.sosialhjelp.soknad.business.service.systemdata.SkattetatenSystemdata;
 import no.nav.sosialhjelp.soknad.business.soknadunderbehandling.SoknadUnderArbeidRepository;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
+import no.nav.sosialhjelp.soknad.domain.model.exception.AuthorizationException;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.StaticSubjectHandlerService;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.inntekt.SkattbarInntektRessurs.SkattbarInntektFrontend;
@@ -30,8 +31,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -70,7 +73,7 @@ public class SkattbarInntektRessursTest {
     }
 
     @Test
-    public void getSkattbarInntektSkalReturnereTomListe(){
+    public void getSkattbarInntektSkalReturnereTomListe() {
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER)));
 
@@ -80,7 +83,7 @@ public class SkattbarInntektRessursTest {
     }
 
     @Test
-    public void getSkattbarInntektSkalReturnereBekreftetSkattbarInntekt(){
+    public void getSkattbarInntektSkalReturnereBekreftetSkattbarInntekt() {
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithSkattbarInntekt(true));
 
@@ -90,7 +93,7 @@ public class SkattbarInntektRessursTest {
     }
 
     @Test
-    public void getSkattbarInntektSkalReturnereHarIkkeSkattbarInntekt(){
+    public void getSkattbarInntektSkalReturnereHarIkkeSkattbarInntekt() {
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithSkattbarInntekt(false));
 
@@ -165,6 +168,24 @@ public class SkattbarInntektRessursTest {
         assertThat(soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getBekreftelse()).isEmpty();
     }
 
+    @Test(expected = AuthorizationException.class)
+    public void getSkattbarInntektkalKasteAuthorizationExceptionVedManglendeTilgang() {
+        doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerHarTilgang();
+
+        skattbarInntektRessurs.hentSkattbareInntekter(BEHANDLINGSID);
+
+        verifyNoInteractions(soknadUnderArbeidRepository);
+    }
+
+    @Test(expected = AuthorizationException.class)
+    public void putSamtykkeSkalKasteAuthorizationExceptionVedManglendeTilgang() {
+        doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(BEHANDLINGSID);
+
+        skattbarInntektRessurs.updateSamtykke(BEHANDLINGSID, true, "token");
+
+        verifyNoInteractions(soknadUnderArbeidRepository);
+    }
+
     private SoknadUnderArbeid catchSoknadUnderArbeidSentToOppdaterSoknadsdata() {
         ArgumentCaptor<SoknadUnderArbeid> argument = ArgumentCaptor.forClass(SoknadUnderArbeid.class);
         verify(soknadUnderArbeidRepository).oppdaterSoknadsdata(argument.capture(), anyString());
@@ -173,7 +194,7 @@ public class SkattbarInntektRessursTest {
 
     private SoknadUnderArbeid createJsonInternalSoknadWithSkattbarInntekt(Boolean harSkattbarInntekt) {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
-        if(harSkattbarInntekt) {
+        if (harSkattbarInntekt) {
             JsonOkonomiOpplysningUtbetaling utbetaling = new JsonOkonomiOpplysningUtbetaling()
                     .withType(UTBETALING_SKATTEETATEN)
                     .withKilde(JsonKilde.SYSTEM)

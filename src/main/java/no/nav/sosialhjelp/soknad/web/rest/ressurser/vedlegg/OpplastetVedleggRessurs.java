@@ -16,7 +16,6 @@ import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.springframework.stereotype.Controller;
 
-import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -43,19 +42,21 @@ public class OpplastetVedleggRessurs {
 
     public static final Integer MAKS_TOTAL_FILSTORRELSE = 1024 * 1024 * 10;
 
-    @Inject
-    private OpplastetVedleggRepository opplastetVedleggRepository;
+    private final OpplastetVedleggRepository opplastetVedleggRepository;
+    private final OpplastetVedleggService opplastetVedleggService;
+    private final Tilgangskontroll tilgangskontroll;
 
-    @Inject
-    private OpplastetVedleggService opplastetVedleggService;
-
-    @Inject
-    private Tilgangskontroll tilgangskontroll;
+    public OpplastetVedleggRessurs(OpplastetVedleggRepository opplastetVedleggRepository, OpplastetVedleggService opplastetVedleggService, Tilgangskontroll tilgangskontroll) {
+        this.opplastetVedleggRepository = opplastetVedleggRepository;
+        this.opplastetVedleggService = opplastetVedleggService;
+        this.tilgangskontroll = tilgangskontroll;
+    }
 
     @GET
     @Path("/{vedleggId}")
     @Produces(APPLICATION_JSON)
     public OpplastetVedlegg getVedlegg(@PathParam("vedleggId") final String vedleggId) {
+        tilgangskontroll.verifiserAtBrukerHarTilgang();
         final String eier = SubjectHandler.getUserId();
         return opplastetVedleggRepository.hentVedlegg(vedleggId, eier).orElse(null);
     }
@@ -64,6 +65,7 @@ public class OpplastetVedleggRessurs {
     @Path("/{vedleggId}/fil")
     @Produces(APPLICATION_JSON)
     public Response getVedleggFil(@PathParam("vedleggId") final String vedleggId, @Context HttpServletResponse response) {
+        tilgangskontroll.verifiserAtBrukerHarTilgang();
         final String eier = SubjectHandler.getUserId();
         OpplastetVedlegg opplastetVedlegg = opplastetVedleggRepository.hentVedlegg(vedleggId, eier).orElse(null);
         if (opplastetVedlegg != null) {
