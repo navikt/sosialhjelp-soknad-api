@@ -25,5 +25,6 @@
     <cache name="pdlPersonCache" maxElementsInMemory="1000" overflowToDisk="false" timeToLiveSeconds="3600"  />
     <cache name="pdlBarnCache" maxElementsInMemory="1000" overflowToDisk="false" timeToLiveSeconds="3600"  />
     <cache name="pdlEktefelleCache" maxElementsInMemory="1000" overflowToDisk="false" timeToLiveSeconds="3600"  />
+    <cache name="pdlAdressebeskyttelseCache" maxElementsInMemory="1000" overflowToDisk="false" timeToLiveSeconds="3600"  />
 
 </ehcache>

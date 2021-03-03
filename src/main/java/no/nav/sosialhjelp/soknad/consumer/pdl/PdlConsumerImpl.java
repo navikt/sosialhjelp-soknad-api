@@ -15,6 +15,7 @@ import no.nav.sosialhjelp.soknad.consumer.pdl.common.PdlApiQuery;
 import no.nav.sosialhjelp.soknad.consumer.pdl.common.PdlBaseResponse;
 import no.nav.sosialhjelp.soknad.consumer.pdl.common.PdlRequest;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.HentPersonResponse;
+import no.nav.sosialhjelp.soknad.consumer.pdl.person.PdlAdressebeskyttelse;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.PdlBarn;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.PdlEktefelle;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.PdlPerson;
@@ -134,6 +135,25 @@ public class PdlConsumerImpl implements PdlConsumer {
             throw e;
         } catch (Exception e) {
             log.warn("Kall til PDL feilet (hentEktefelle)");
+            throw new TjenesteUtilgjengeligException("Noe uventet feilet ved kall til PDL", e);
+        }
+    }
+
+    @Override
+    public PdlAdressebeskyttelse hentAdressebeskyttelse(String ident) {
+        String query = PdlApiQuery.HENT_PERSON_ADRESSEBESKYTTELSE;
+        try {
+            var request = lagRequest(endpoint);
+            var body = withRetry(() -> request.post(requestEntity(query, variables(ident)), String.class));
+            var pdlResponse = pdlMapper.readValue(body, new TypeReference<HentPersonResponse<PdlAdressebeskyttelse>>() {});
+
+            checkForPdlApiErrors(pdlResponse);
+
+            return pdlResponse.getData().getHentPerson();
+        } catch (PdlApiException e) {
+            throw e;
+        } catch (Exception e) {
+            log.warn("Kall til PDL feilet (hentPersonAdressebeskyttelse)");
             throw new TjenesteUtilgjengeligException("Noe uventet feilet ved kall til PDL", e);
         }
     }

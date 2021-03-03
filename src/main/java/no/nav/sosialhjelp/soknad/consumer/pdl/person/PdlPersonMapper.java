@@ -3,6 +3,7 @@ package no.nav.sosialhjelp.soknad.consumer.pdl.person;
 import com.google.common.collect.ImmutableMap;
 import no.nav.sosialhjelp.soknad.consumer.kodeverk.KodeverkService;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.AdressebeskyttelseDto;
+import no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.AdressebeskyttelseDto.Gradering;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.BostedsadresseDto;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.FoedselDto;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.FolkeregisterpersonstatusDto;
@@ -123,6 +124,16 @@ public class PdlPersonMapper {
                 .withFolkeregistrertsammen(isFolkeregistrertSammen(pdlPerson.getBostedsadresse(), pdlEktefelle.getBostedsadresse()));
     }
 
+    public Gradering mapToAdressebeskyttelse(PdlAdressebeskyttelse pdlAdressebeskyttelse) {
+        if (pdlAdressebeskyttelse == null) {
+            return null;
+        }
+        return pdlAdressebeskyttelse.getAdressebeskyttelse().stream()
+                .findFirst()
+                .map(AdressebeskyttelseDto::getGradering)
+                .orElse(null);
+    }
+
     private String findFornavn(List<NavnDto> navn) {
         return Optional.ofNullable(helper.utledGjeldendeNavn(navn))
                 .map(NavnDto::getFornavn).orElse("").toUpperCase();
@@ -191,12 +202,12 @@ public class PdlPersonMapper {
                 && !adressebeskyttelse.stream().allMatch(adressebeskyttelseDto -> UGRADERT.equals(adressebeskyttelseDto.getGradering()));
     }
 
-    private String mapToDiskresjonskode(AdressebeskyttelseDto.Gradering gradering) {
-        if (gradering == AdressebeskyttelseDto.Gradering.UGRADERT) {
+    private String mapToDiskresjonskode(Gradering gradering) {
+        if (gradering == Gradering.UGRADERT) {
             return null;
-        } else if (gradering == AdressebeskyttelseDto.Gradering.STRENGT_FORTROLIG || gradering == AdressebeskyttelseDto.Gradering.STRENGT_FORTROLIG_UTLAND) {
+        } else if (gradering == Gradering.STRENGT_FORTROLIG || gradering == Gradering.STRENGT_FORTROLIG_UTLAND) {
             return KODE_6;
-        } else if (gradering == AdressebeskyttelseDto.Gradering.FORTROLIG) {
+        } else if (gradering == Gradering.FORTROLIG) {
             return KODE_7;
         } else {
             return null;

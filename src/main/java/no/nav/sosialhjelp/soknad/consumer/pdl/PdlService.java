@@ -4,12 +4,14 @@ import no.nav.sosialhjelp.soknad.consumer.pdl.person.PdlEktefelle;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.PdlPerson;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.PdlPersonMapper;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.PdlPersonMapperHelper;
+import no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.AdressebeskyttelseDto.Gradering;
 import no.nav.sosialhjelp.soknad.domain.model.Barn;
 import no.nav.sosialhjelp.soknad.domain.model.Ektefelle;
 import no.nav.sosialhjelp.soknad.domain.model.NavFodselsnummer;
 import no.nav.sosialhjelp.soknad.domain.model.Person;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -106,6 +108,13 @@ public class PdlService {
             }
         }
         return null;
+    }
+
+    @Cacheable(value = "pdlAdressebeskyttelseCache", key = "#ident")
+    public Gradering hentAdressebeskyttelse(String ident) {
+        var pdlAdressebeskyttelse = pdlConsumer.hentAdressebeskyttelse(ident);
+
+        return pdlPersonMapper.mapToAdressebeskyttelse(pdlAdressebeskyttelse);
     }
 
     private boolean erFDAT(String ident) {

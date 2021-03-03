@@ -1,9 +1,11 @@
 package no.nav.sosialhjelp.soknad.consumer.pdl;
 
+import no.nav.sosialhjelp.soknad.consumer.pdl.person.PdlAdressebeskyttelse;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.PdlBarn;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.PdlEktefelle;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.PdlPerson;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.PdlPersonMapper;
+import no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.AdressebeskyttelseDto;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.EndringDto;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.ForelderBarnRelasjonDto;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.MetadataDto;
@@ -176,5 +178,16 @@ public class PdlServiceTest {
         assertThat(result, hasSize(0));
         verify(pdlConsumer, times(0)).hentBarn(anyString());
         verify(pdlPersonMapper, times(0)).mapToBarn(any(), anyString(), any());
+    }
+
+    @Test
+    public void skalHenteAdressebeskyttelse() {
+        when(pdlConsumer.hentAdressebeskyttelse(any())).thenReturn(mock(PdlAdressebeskyttelse.class));
+        when(pdlPersonMapper.mapToAdressebeskyttelse(any())).thenReturn(AdressebeskyttelseDto.Gradering.UGRADERT);
+
+        var result = pdlService.hentAdressebeskyttelse("ident");
+
+        assertNotNull(result);
+        assertThat(result, is(AdressebeskyttelseDto.Gradering.UGRADERT));
     }
 }
