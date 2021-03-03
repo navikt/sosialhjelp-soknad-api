@@ -8,7 +8,6 @@ import org.junit.BeforeClass;
 import java.io.File;
 
 import static java.lang.System.setProperty;
-import static no.nav.sbl.dialogarena.test.path.FilesAndDirs.TEST_RESOURCES;
 import static no.nav.sosialhjelp.soknad.business.db.config.DatabaseTestContext.buildDataSource;
 
 public abstract class AbstractIT {
@@ -23,7 +22,7 @@ public abstract class AbstractIT {
         System.setProperty(TestProperties.CONTAINER_PORT, "" + PORT);
         System.setProperty(TestProperties.LOG_TRAFFIC, "true");
         System.setProperty("jersey.test.host", "localhost");
-        jetty = new SoknadsosialhjelpServer(PORT, new File(TEST_RESOURCES, "override-web-integration.xml"), "/sosialhjelp/soknad-api", buildDataSource("hsqldb.properties"));
+        jetty = new SoknadsosialhjelpServer(PORT, new File("src/test/resources/override-web-integration.xml"), "/sosialhjelp/soknad-api", buildDataSource("hsqldb.properties"));
         System.setProperty("no.nav.sosialhjelp.soknad.hsqldb", "true");
         setProperty("start.oidc.withmock", "false"); // pga. Testene validerer oidc-filtre
         jetty.start();
