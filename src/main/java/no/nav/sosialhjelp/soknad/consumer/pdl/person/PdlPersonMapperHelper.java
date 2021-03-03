@@ -107,15 +107,17 @@ public class PdlPersonMapperHelper {
     }
 
     private boolean flereSivilstanderRegistrertSamtidig(SivilstandDto first, List<SivilstandDto> list) {
-        return list.stream()
+        var filtered = list.stream()
                 .filter(dto -> Objects.equals(getEndringstidspunktOrNull(dto), getEndringstidspunktOrNull(first)))
-                .count() > 1;
+                .collect(Collectors.toList());
+        return filtered.size() > 1;
     }
 
     private boolean flereNavnRegistrertSamtidig(NavnDto first, List<NavnDto> list) {
-        return list.stream()
+        var filtered = list.stream()
                 .filter(dto -> Objects.equals(getEndringstidspunktOrNull(dto), getEndringstidspunktOrNull(first)))
-                .count() > 1;
+                .collect(Collectors.toList());
+        return filtered.size() > 1;
     }
 
     private boolean erKildeUdokumentert(MetadataDto metadata) {
