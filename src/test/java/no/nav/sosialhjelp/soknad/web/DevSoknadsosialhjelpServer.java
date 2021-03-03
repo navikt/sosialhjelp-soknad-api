@@ -8,7 +8,6 @@ import no.nav.sosialhjelp.soknad.web.server.SoknadsosialhjelpServer;
 import javax.sql.DataSource;
 import java.io.File;
 
-import static no.nav.sbl.dialogarena.test.path.FilesAndDirs.TEST_RESOURCES;
 import static no.nav.sosialhjelp.soknad.business.db.config.DatabaseTestContext.buildDataSource;
 
 public class DevSoknadsosialhjelpServer {
@@ -24,7 +23,7 @@ public class DevSoknadsosialhjelpServer {
             dataSource = buildDataSource("hsqldb.properties");
         }
 
-        final SoknadsosialhjelpServer server = new SoknadsosialhjelpServer(PORT, new File(TEST_RESOURCES, "override-web.xml"), "/sosialhjelp/soknad-api", dataSource);
+        final SoknadsosialhjelpServer server = new SoknadsosialhjelpServer(PORT, new File("src/test/resources/override-web.xml"), "/sosialhjelp/soknad-api", dataSource);
         if (OidcConfig.isOidcMock()) {
             SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
         }

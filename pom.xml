@@ -921,19 +921,6 @@
                 <version>${reflections.version}</version>
                 <scope>test</scope>
             </dependency>
-
-            <dependency>
-                <groupId>no.nav.common</groupId>
-                <artifactId>test</artifactId>
-                <version>${nav-common.version}</version>
-                <scope>test</scope>
-                <exclusions>
-                    <exclusion>
-                        <groupId>javax.servlet</groupId>
-                        <artifactId>javax.servlet-api</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
             <dependency>
                 <groupId>no.digipost</groupId>
                 <artifactId>digg</artifactId>
@@ -1668,10 +1655,6 @@
             <groupId>org.reflections</groupId>
             <artifactId>reflections</artifactId>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.common</groupId>
-            <artifactId>test</artifactId>
         </dependency>
         <dependency>
             <groupId>org.glassfish.jersey.test-framework</groupId>
