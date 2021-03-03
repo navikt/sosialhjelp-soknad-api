@@ -22,10 +22,6 @@ public class LoggingFeatureUtenBinaryOgUtenSamlTokenLogging extends AbstractFeat
     public LoggingFeatureUtenBinaryOgUtenSamlTokenLogging() {
     }
 
-    public LoggingFeatureUtenBinaryOgUtenSamlTokenLogging(boolean maskerSAMLToken) {
-        OUT.setMaskerSAMLToken(maskerSAMLToken);
-    }
-
     @Override
     protected void initializeProvider(InterceptorProvider provider, Bus bus) {
         provider.getInInterceptors().add(IN);

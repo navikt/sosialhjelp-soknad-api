@@ -13,25 +13,17 @@ import org.glassfish.jersey.client.JerseyClientBuilder;
 
 import javax.net.ssl.SSLContext;
 import javax.ws.rs.client.Client;
-import java.util.function.Function;
 
 import static org.glassfish.jersey.client.ClientProperties.CONNECT_TIMEOUT;
 import static org.glassfish.jersey.client.ClientProperties.FOLLOW_REDIRECTS;
 import static org.glassfish.jersey.client.ClientProperties.READ_TIMEOUT;
 
-public class RestUtils {
+public final class RestUtils {
+
     public static final String CSRF_COOKIE_NAVN = "NAV_CSRF_PROTECTION";
-
     public static final RestConfig DEFAULT_CONFIG = RestConfig.builder().build();
-    public static final RestConfig LONG_READ_CONFIG = DEFAULT_CONFIG.withReadTimeout(DEFAULT_CONFIG.readTimeout * 4);
 
-    @SuppressWarnings("unused")
-    public static ClientConfig createClientConfig() {
-        return createClientConfig(DEFAULT_CONFIG, getMetricName());
-    }
-
-    public static ClientConfig createClientConfig(RestConfig restConfig) {
-        return createClientConfig(restConfig, getMetricName());
+    private RestUtils() {
     }
 
     private static ClientConfig createClientConfig(RestConfig restConfig, String metricName) {
@@ -62,31 +54,19 @@ public class RestUtils {
 
     private static Client createClient(RestConfig restConfig, String metricName) {
         return new JerseyClientBuilder()
-                .sslContext(riktigSSLContext())
+                .sslContext(defaultSSLContext())
                 .withConfig(createClientConfig(restConfig, metricName))
                 .build();
     }
 
-    public static <T> T withClient(Function<Client, T> function) {
-        return withClient(DEFAULT_CONFIG, function, getMetricName());
-    }
-
-    public static <T> T withClient(RestConfig restConfig, Function<Client, T> function) {
-        return withClient(restConfig, function, getMetricName());
-    }
-
-    private static <T> T withClient(RestConfig restConfig, Function<Client, T> function, String metricName) {
-        Client client = createClient(restConfig, metricName);
-        try {
-            return function.apply(client);
-        } finally {
-            client.close();
-        }
-    }
-
     @SneakyThrows
-    private static SSLContext riktigSSLContext() {
+    private static SSLContext defaultSSLContext() {
         return SSLContext.getDefault();
+    }
+
+    private static String getMetricName() {
+        StackTraceElement element = Thread.currentThread().getStackTrace()[3];
+        return String.format("rest.client.%s.%s", element.getClassName(), element.getMethodName());
     }
 
     @With
@@ -102,10 +82,5 @@ public class RestUtils {
         public boolean disableMetrics;
         public boolean disableParameterLogging;
 
-    }
-
-    private static String getMetricName() {
-        StackTraceElement element = Thread.currentThread().getStackTrace()[3];
-        return String.format("rest.client.%s.%s", element.getClassName(), element.getMethodName());
     }
 }
