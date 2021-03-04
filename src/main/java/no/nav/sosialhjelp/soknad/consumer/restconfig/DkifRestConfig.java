@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.consumer.restconfig;
 
-import no.nav.sbl.rest.RestUtils;
+import no.nav.sosialhjelp.soknad.consumer.common.rest.RestUtils;
 import no.nav.sosialhjelp.soknad.consumer.dkif.DkifConsumer;
 import no.nav.sosialhjelp.soknad.consumer.dkif.DkifConsumerImpl;
 import no.nav.sosialhjelp.soknad.consumer.dkif.DkifConsumerMock;
@@ -13,7 +13,7 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientRequestFilter;
 
 import static java.lang.System.getenv;
-import static no.nav.sbl.dialogarena.common.cxf.InstanceSwitcher.createSwitcher;
+import static no.nav.sosialhjelp.soknad.consumer.common.cxf.InstanceSwitcher.createSwitcher;
 import static no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.HEADER_NAV_APIKEY;
 import static no.nav.sosialhjelp.soknad.web.types.Pingable.Ping.feilet;
 import static no.nav.sosialhjelp.soknad.web.types.Pingable.Ping.lyktes;
