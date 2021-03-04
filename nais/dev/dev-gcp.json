@@ -38,7 +38,6 @@
     "SOKNAD_BOSTOTTE_URL": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/husbanken",
     "SOKNAD_BOSTOTTE_PING_URL": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/husbanken/ping",
     "SOKNAD_ETTERSENDING_ANTALLDAGER": "180",
-    "SOKNAD_FULLOPPSUMMERING_RESSURS_ENABLED": "true",
     "SECURITYTOKENSERVICE_APIGW_URL": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/appgw/",
     "TPS_ADRESSE_URL": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/tps/",
     "IS_SENDING_TIL_DIGISOS_API_ENABLED": "true",
