@@ -11,7 +11,6 @@ import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import no.nav.sosialhjelp.soknad.web.sikkerhet.Tilgangskontroll;
 import org.springframework.stereotype.Controller;
 
-import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -29,15 +28,17 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 @Produces(APPLICATION_JSON)
 public class BegrunnelseRessurs {
 
-    @Inject
-    private Tilgangskontroll tilgangskontroll;
+    private final Tilgangskontroll tilgangskontroll;
+    private final SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
-    @Inject
-    private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
-
+    public BegrunnelseRessurs(Tilgangskontroll tilgangskontroll, SoknadUnderArbeidRepository soknadUnderArbeidRepository) {
+        this.tilgangskontroll = tilgangskontroll;
+        this.soknadUnderArbeidRepository = soknadUnderArbeidRepository;
+    }
 
     @GET
     public BegrunnelseFrontend hentBegrunnelse(@PathParam("behandlingsId") String behandlingsId) {
+        tilgangskontroll.verifiserAtBrukerHarTilgang();
         String eier = SubjectHandler.getUserId();
         JsonInternalSoknad soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).getJsonInternalSoknad();
         JsonBegrunnelse begrunnelse = soknad.getSoknad().getData().getBegrunnelse();

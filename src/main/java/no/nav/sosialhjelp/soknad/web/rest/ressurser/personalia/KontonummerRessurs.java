@@ -12,7 +12,6 @@ import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import no.nav.sosialhjelp.soknad.web.sikkerhet.Tilgangskontroll;
 import org.springframework.stereotype.Controller;
 
-import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -30,17 +29,19 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 @Produces(APPLICATION_JSON)
 public class KontonummerRessurs {
 
-    @Inject
-    private Tilgangskontroll tilgangskontroll;
+    private final Tilgangskontroll tilgangskontroll;
+    private final SoknadUnderArbeidRepository soknadUnderArbeidRepository;
+    private final KontonummerSystemdata kontonummerSystemdata;
 
-    @Inject
-    private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
-
-    @Inject
-    private KontonummerSystemdata kontonummerSystemdata;
+    public KontonummerRessurs(Tilgangskontroll tilgangskontroll, SoknadUnderArbeidRepository soknadUnderArbeidRepository, KontonummerSystemdata kontonummerSystemdata) {
+        this.tilgangskontroll = tilgangskontroll;
+        this.soknadUnderArbeidRepository = soknadUnderArbeidRepository;
+        this.kontonummerSystemdata = kontonummerSystemdata;
+    }
 
     @GET
     public KontonummerFrontend hentKontonummer(@PathParam("behandlingsId") String behandlingsId) {
+        tilgangskontroll.verifiserAtBrukerHarTilgang();
         String eier = SubjectHandler.getUserId();
         SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
         JsonKontonummer kontonummer = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getKontonummer();

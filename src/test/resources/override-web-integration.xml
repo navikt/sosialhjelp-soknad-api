@@ -16,7 +16,7 @@
 
     <context-param>
         <param-name>contextConfigLocation</param-name>
-        <param-value>no.nav.sosialhjelp.soknad.web.config.SoknadinnsendingConfig,no.nav.sosialhjelp.soknad.web.config.IntegrationConfig,no.nav.sosialhjelp.soknad.web.config.SikkerhetsConfig,no.nav.sosialhjelp.soknad.web.oidc.OidcConfig</param-value>
+        <param-value>no.nav.sosialhjelp.soknad.web.config.SoknadinnsendingConfig,no.nav.sosialhjelp.soknad.web.config.IntegrationConfig,no.nav.sosialhjelp.soknad.web.oidc.OidcConfig</param-value>
     </context-param>
 
     <servlet>

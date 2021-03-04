@@ -91,7 +91,7 @@ public class OppgaveHandtererImpl implements OppgaveHandterer {
         try {
             final int antall = oppgaveRepository.retryOppgaveStuckUnderArbeid();
             if (antall > 0) {
-                logger.info("Har satt " + antall + " oppgaver tilbake til KLAR etter at de lå for lenge som UNDER_ARBEID.");
+                logger.info("Har satt {} oppgaver tilbake til KLAR etter at de lå for lenge som UNDER_ARBEID.", antall);
             }
         } catch (Exception e) {
             logger.error("Uventet feil ved oppdatering av oppgaver som er stuck i UNDER_ARBEID");

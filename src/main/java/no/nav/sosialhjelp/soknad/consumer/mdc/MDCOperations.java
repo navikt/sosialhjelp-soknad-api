@@ -2,8 +2,6 @@ package no.nav.sosialhjelp.soknad.consumer.mdc;
 
 /* Copy from modig-log-common */
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
 import java.security.SecureRandom;
@@ -12,8 +10,6 @@ import java.security.SecureRandom;
  * Utility-klasse for kommunikasjon med MDC.
  */
 public final class MDCOperations {
-    protected static final Logger log = LoggerFactory.getLogger(MDCOperations.class.getName());
-
     public static final String MDC_CALL_ID = "callId";
     public static final String MDC_BEHANDLINGS_ID = "behandlingsId";
     public static final String MDC_CONSUMER_ID = "consumerId";

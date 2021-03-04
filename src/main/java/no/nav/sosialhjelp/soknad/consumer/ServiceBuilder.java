@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.consumer;
 
-import no.nav.sbl.dialogarena.common.cxf.LoggingFeatureUtenBinaryOgUtenSamlTokenLogging;
-import no.nav.sbl.dialogarena.common.cxf.TimeoutFeature;
+import no.nav.sosialhjelp.soknad.consumer.common.cxf.LoggingFeatureUtenBinaryOgUtenSamlTokenLogging;
+import no.nav.sosialhjelp.soknad.consumer.common.cxf.TimeoutFeature;
 import no.nav.sosialhjelp.soknad.consumer.mdc.MDCOutHandler;
 import org.apache.cxf.configuration.jsse.TLSClientParameters;
 import org.apache.cxf.frontend.ClientProxy;

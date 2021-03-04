@@ -5,10 +5,10 @@ import no.nav.metrics.aspects.Timed;
 import no.nav.security.token.support.core.api.ProtectedWithClaims;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import no.nav.sosialhjelp.soknad.web.service.SoknadOversiktService;
+import no.nav.sosialhjelp.soknad.web.sikkerhet.Tilgangskontroll;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Controller;
 
-import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -29,12 +29,18 @@ public class SoknadOversiktRessurs {
 
     private static final Logger logger = getLogger(SoknadOversiktRessurs.class);
 
-    @Inject
-    private SoknadOversiktService service;
+    private final SoknadOversiktService service;
+    private final Tilgangskontroll tilgangskontroll;
+
+    public SoknadOversiktRessurs(SoknadOversiktService service, Tilgangskontroll tilgangskontroll) {
+        this.service = service;
+        this.tilgangskontroll = tilgangskontroll;
+    }
 
     @GET
     @Path("/soknader")
     public List<SoknadOversikt> hentInnsendteSoknaderForBruker() {
+        tilgangskontroll.verifiserAtBrukerHarTilgang();
         String fnr = SubjectHandler.getUserId();
         logger.debug("Henter alle søknader");
 

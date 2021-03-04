@@ -17,7 +17,6 @@ import no.nav.sosialhjelp.soknad.consumer.pdl.PdlService;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.domain.model.Barn;
 import no.nav.sosialhjelp.soknad.domain.model.Ektefelle;
-import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
@@ -27,12 +26,9 @@ import java.util.stream.Collectors;
 
 import static no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus.Status.GIFT;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
-import static org.slf4j.LoggerFactory.getLogger;
 
 @Component
 public class FamilieSystemdata implements Systemdata {
-
-    private static final Logger log = getLogger(FamilieSystemdata.class);
 
     @Inject
     private PdlService pdlService;

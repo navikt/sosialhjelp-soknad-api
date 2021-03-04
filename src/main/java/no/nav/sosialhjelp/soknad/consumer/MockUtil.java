@@ -2,7 +2,10 @@ package no.nav.sosialhjelp.soknad.consumer;
 
 import static java.lang.System.getProperty;
 
-public class MockUtil {
+public final class MockUtil {
+
+    private MockUtil() {
+    }
 
     public static final String TILLATMOCK_PROPERTY = "tillatmock";
     public static final String TILLATSTARTDATOMOCK_PROPERTY = "tillatstartdatomock";

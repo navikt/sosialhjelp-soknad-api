@@ -74,7 +74,7 @@ public class SoknadsosialhjelpServer {
         log.debug("Running Flyway migration.");
         final Flyway flyway = Flyway.configure().dataSource(ds).load();
         MigrateResult migrateResult = flyway.migrate();
-        log.info("Flyway migration successfully executed. Number of new applied migrations: " + migrateResult.migrationsExecuted);
+        log.info("Flyway migration successfully executed. Number of new applied migrations: {}", migrateResult.migrationsExecuted);
     }
 
     public void start() {

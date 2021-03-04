@@ -12,6 +12,7 @@ import no.nav.sosialhjelp.soknad.business.service.TextService;
 import no.nav.sosialhjelp.soknad.business.service.systemdata.BostotteSystemdata;
 import no.nav.sosialhjelp.soknad.business.soknadunderbehandling.SoknadUnderArbeidRepository;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
+import no.nav.sosialhjelp.soknad.domain.model.exception.AuthorizationException;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.StaticSubjectHandlerService;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.inntekt.BostotteRessurs.BostotteFrontend;
@@ -39,14 +40,15 @@ import static no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadSer
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -84,7 +86,7 @@ public class BostotteRessursTest {
     }
 
     @Test
-    public void getBostotteSkalReturnereNull(){
+    public void getBostotteSkalReturnereNull() {
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER)));
 
@@ -94,7 +96,7 @@ public class BostotteRessursTest {
     }
 
     @Test
-    public void getBostotteSkalReturnereBekreftetBostotte(){
+    public void getBostotteSkalReturnereBekreftetBostotte() {
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithBostotte(true));
 
@@ -104,7 +106,7 @@ public class BostotteRessursTest {
     }
 
     @Test
-    public void getBostotteSkalReturnereHarIkkeBostotte(){
+    public void getBostotteSkalReturnereHarIkkeBostotte() {
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithBostotte(false));
 
@@ -114,7 +116,7 @@ public class BostotteRessursTest {
     }
 
     @Test
-    public void putBostotteSkalSetteBostotteOgLeggeTilInntektstypen(){
+    public void putBostotteSkalSetteBostotteOgLeggeTilInntektstypen() {
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER)));
@@ -128,7 +130,7 @@ public class BostotteRessursTest {
                 .getOkonomi().getOpplysninger().getBekreftelse();
         List<JsonOkonomiOpplysningUtbetaling> utbetaling = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData()
                 .getOkonomi().getOpplysninger().getUtbetaling();
-        assertEquals(utbetaling.get(0).getType(), UTBETALING_HUSBANKEN);
+        assertThat(utbetaling.get(0).getType(), is(UTBETALING_HUSBANKEN));
         JsonOkonomibekreftelse bostotte = bekreftelser.get(0);
         assertThat(bostotte.getKilde(), is(JsonKilde.BRUKER));
         assertThat(bostotte.getType(), is(BOSTOTTE));
@@ -136,7 +138,7 @@ public class BostotteRessursTest {
     }
 
     @Test
-    public void putBostotteSkalSetteHarIkkeBostotteOgSletteInntektstypen(){
+    public void putBostotteSkalSetteHarIkkeBostotteOgSletteInntektstypen() {
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         SoknadUnderArbeid soknad = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         ArrayList<JsonOkonomioversiktInntekt> inntekt = new ArrayList<>();
@@ -177,7 +179,7 @@ public class BostotteRessursTest {
 
         BostotteRessurs.BostotteFrontend bostotteFrontend = bostotteRessurs.hentBostotte(BEHANDLINGSID);
 
-        Assertions.assertThat(bostotteFrontend.utbetalinger).hasSize(0);
+        Assertions.assertThat(bostotteFrontend.utbetalinger).isEmpty();
     }
 
     @Test
@@ -197,7 +199,7 @@ public class BostotteRessursTest {
 
         BostotteRessurs.BostotteFrontend bostotteFrontend = bostotteRessurs.hentBostotte(BEHANDLINGSID);
 
-        Assertions.assertThat(bostotteFrontend.saker).hasSize(0);
+        Assertions.assertThat(bostotteFrontend.saker).isEmpty();
     }
 
     @Test
@@ -263,7 +265,35 @@ public class BostotteRessursTest {
         verify(soknadUnderArbeidRepository, times(0)).oppdaterSoknadsdata(any(), anyString());
 
         // Sjekker soknaden
-        Assertions.assertThat(soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getBekreftelse()).hasSize(0);
+        Assertions.assertThat(soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getBekreftelse()).isEmpty();
+    }
+
+    @Test(expected = AuthorizationException.class)
+    public void getBostotteSkalKasteAuthorizationExceptionVedManglendeTilgang() {
+        doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerHarTilgang();
+
+        bostotteRessurs.hentBostotte(BEHANDLINGSID);
+
+        verifyNoInteractions(soknadUnderArbeidRepository);
+    }
+
+    @Test(expected = AuthorizationException.class)
+    public void putBostotteSkalKasteAuthorizationExceptionVedManglendeTilgang() {
+        doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(BEHANDLINGSID);
+
+        var bostotteFrontend = new BostotteRessurs.BostotteFrontend();
+        bostotteRessurs.updateBostotte(BEHANDLINGSID, bostotteFrontend, "token");
+
+        verifyNoInteractions(soknadUnderArbeidRepository);
+    }
+
+    @Test(expected = AuthorizationException.class)
+    public void putSamtykkeSkalKasteAuthorizationExceptionVedManglendeTilgang() {
+        doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(BEHANDLINGSID);
+
+        bostotteRessurs.updateSamtykke(BEHANDLINGSID, true, "token");
+
+        verifyNoInteractions(soknadUnderArbeidRepository);
     }
 
     private SoknadUnderArbeid catchSoknadUnderArbeidSentToOppdaterSoknadsdata() {
@@ -285,13 +315,13 @@ public class BostotteRessursTest {
     private SoknadUnderArbeid createJsonInternalSoknadWithBostotteUtbetalinger(Boolean harUtbetalinger, List<String> utbetalingTyper) {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         List<JsonOkonomiOpplysningUtbetaling> utbetalinger = new ArrayList<>();
-        for (String utbetaling: utbetalingTyper) {
+        for (String utbetaling : utbetalingTyper) {
             utbetalinger.add(new JsonOkonomiOpplysningUtbetaling()
                     .withKilde(JsonKilde.SYSTEM)
                     .withType(utbetaling)
                     .withTittel("tittel"));
         }
-        if(harUtbetalinger) {
+        if (harUtbetalinger) {
             utbetalinger.add(new JsonOkonomiOpplysningUtbetaling()
                     .withKilde(JsonKilde.SYSTEM)
                     .withType(UTBETALING_HUSBANKEN)
@@ -304,13 +334,13 @@ public class BostotteRessursTest {
     private SoknadUnderArbeid createJsonInternalSoknadWithSaker(Boolean harSaker, List<String> saksTyper) {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         List<JsonBostotteSak> saker = new ArrayList<>();
-        for (String sak: saksTyper) {
+        for (String sak : saksTyper) {
             saker.add(new JsonBostotteSak()
                     .withKilde(JsonKildeSystem.SYSTEM)
                     .withType(sak)
                     .withStatus("STATUS"));
         }
-        if(harSaker) {
+        if (harSaker) {
             saker.add(new JsonBostotteSak()
                     .withKilde(JsonKildeSystem.SYSTEM)
                     .withType(UTBETALING_HUSBANKEN)

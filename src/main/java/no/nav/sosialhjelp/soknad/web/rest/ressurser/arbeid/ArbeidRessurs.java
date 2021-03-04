@@ -13,7 +13,6 @@ import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import no.nav.sosialhjelp.soknad.web.sikkerhet.Tilgangskontroll;
 import org.springframework.stereotype.Controller;
 
-import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -34,14 +33,17 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 @Produces(APPLICATION_JSON)
 public class ArbeidRessurs {
 
-    @Inject
-    private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
+    private final SoknadUnderArbeidRepository soknadUnderArbeidRepository;
+    private final Tilgangskontroll tilgangskontroll;
 
-    @Inject
-    private Tilgangskontroll tilgangskontroll;
+    public ArbeidRessurs(SoknadUnderArbeidRepository soknadUnderArbeidRepository, Tilgangskontroll tilgangskontroll) {
+        this.soknadUnderArbeidRepository = soknadUnderArbeidRepository;
+        this.tilgangskontroll = tilgangskontroll;
+    }
 
     @GET
     public ArbeidFrontend hentArbeid(@PathParam("behandlingsId") String behandlingsId) {
+        tilgangskontroll.verifiserAtBrukerHarTilgang();
         String eier = SubjectHandler.getUserId();
         JsonInternalSoknad soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).getJsonInternalSoknad();
         JsonArbeid arbeid = soknad.getSoknad().getData().getArbeid();

@@ -10,17 +10,12 @@ import no.nav.sosialhjelp.soknad.business.service.soknadservice.Systemdata;
 import no.nav.sosialhjelp.soknad.consumer.pdl.PdlService;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.domain.model.Person;
-import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
 
-import static org.slf4j.LoggerFactory.getLogger;
-
 @Component
 public class BasisPersonaliaSystemdata implements Systemdata {
-
-    private static final Logger log = getLogger(BasisPersonaliaSystemdata.class);
 
     private static final String NOR = "NOR";
     private static final String SWE = "SWE";

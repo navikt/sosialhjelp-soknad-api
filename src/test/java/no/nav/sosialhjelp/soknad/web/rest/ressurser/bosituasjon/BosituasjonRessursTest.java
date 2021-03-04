@@ -4,6 +4,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.bosituasjon.JsonBosituasjon;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker;
 import no.nav.sosialhjelp.soknad.business.soknadunderbehandling.SoknadUnderArbeidRepository;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
+import no.nav.sosialhjelp.soknad.domain.model.exception.AuthorizationException;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.StaticSubjectHandlerService;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.bosituasjon.BosituasjonRessurs.BosituasjonFrontend;
@@ -23,7 +24,9 @@ import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -107,6 +110,25 @@ public class BosituasjonRessursTest {
         assertThat(bosituasjon.getKilde(), is(JsonKildeBruker.BRUKER));
         assertThat(bosituasjon.getBotype(), nullValue());
         assertThat(bosituasjon.getAntallPersoner(), nullValue());
+    }
+
+    @Test(expected = AuthorizationException.class)
+    public void getBosituasjonSkalKasteAuthorizationExceptionVedManglendeTilgang() {
+        doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerHarTilgang();
+
+        bosituasjonRessurs.hentBosituasjon(BEHANDLINGSID);
+
+        verifyNoInteractions(soknadUnderArbeidRepository);
+    }
+
+    @Test(expected = AuthorizationException.class)
+    public void putBosituasjonSkalKasteAuthorizationExceptionVedManglendeTilgang() {
+        doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(BEHANDLINGSID);
+
+        var bosituasjonFrontend = new BosituasjonFrontend();
+        bosituasjonRessurs.updateBosituasjon(BEHANDLINGSID, bosituasjonFrontend);
+
+        verifyNoInteractions(soknadUnderArbeidRepository);
     }
 
     private SoknadUnderArbeid catchSoknadUnderArbeidSentToOppdaterSoknadsdata() {

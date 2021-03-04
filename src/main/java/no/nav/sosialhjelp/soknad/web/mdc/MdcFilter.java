@@ -1,8 +1,6 @@
 package no.nav.sosialhjelp.soknad.web.mdc;
 
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
@@ -18,7 +16,6 @@ import static no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.HEADER
 
 @Provider
 public class MdcFilter implements ContainerRequestFilter {
-    protected static final Logger log = LoggerFactory.getLogger(MdcFilter.class.getName());
 
     @Override
     public void filter(ContainerRequestContext requestContext) {

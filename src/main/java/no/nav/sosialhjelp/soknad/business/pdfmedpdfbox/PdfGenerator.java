@@ -13,6 +13,7 @@ import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType0Font;
 import org.apache.pdfbox.pdmodel.graphics.color.PDOutputIntent;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
+import org.slf4j.Logger;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.util.StreamUtils;
 
@@ -21,9 +22,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
-import static org.apache.cxf.common.logging.LogUtils.getLogger;
+import static org.slf4j.LoggerFactory.getLogger;
 
 public class PdfGenerator {
 
@@ -332,7 +332,7 @@ public class PdfGenerator {
             } else if (characterIsLegal(text.codePointAt(i))) {
                 stringBuilder.append(text.charAt(i));
             } else {
-                logger.info("Prøver å skrive ulovlig tegn til pdf. UTF-8 codepoint: " + text.codePointAt(i));
+                logger.info("Prøver å skrive ulovlig tegn til pdf. UTF-8 codepoint: {}", text.codePointAt(i));
             }
         }
         splitByNewlines.add(stringBuilder.toString());

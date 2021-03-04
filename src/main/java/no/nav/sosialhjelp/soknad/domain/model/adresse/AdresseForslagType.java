@@ -1,6 +1,10 @@
 package no.nav.sosialhjelp.soknad.domain.model.adresse;
 
-public class AdresseForslagType {
-    public static String gateAdresse = "gateadresse";
-    public static String matrikkelAdresse = "matrikkeladresse";
+public final class AdresseForslagType {
+
+    private AdresseForslagType() {
+    }
+
+    public static final String GATEADRESSE = "gateadresse";
+    public static final String MATRIKKELADRESSE = "matrikkeladresse";
 }

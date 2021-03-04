@@ -9,9 +9,9 @@ import no.nav.sosialhjelp.soknad.business.soknadunderbehandling.SoknadUnderArbei
 import no.nav.sosialhjelp.soknad.consumer.kodeverk.KodeverkService;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.NavnFrontend;
+import no.nav.sosialhjelp.soknad.web.sikkerhet.Tilgangskontroll;
 import org.springframework.stereotype.Controller;
 
-import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -28,14 +28,19 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 @Produces(APPLICATION_JSON)
 public class BasisPersonaliaRessurs {
 
-    @Inject
-    private KodeverkService kodeverkService;
+    private final KodeverkService kodeverkService;
+    private final SoknadUnderArbeidRepository soknadUnderArbeidRepository;
+    private final Tilgangskontroll tilgangskontroll;
 
-    @Inject
-    private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
+    public BasisPersonaliaRessurs(KodeverkService kodeverkService, SoknadUnderArbeidRepository soknadUnderArbeidRepository, Tilgangskontroll tilgangskontroll) {
+        this.kodeverkService = kodeverkService;
+        this.soknadUnderArbeidRepository = soknadUnderArbeidRepository;
+        this.tilgangskontroll = tilgangskontroll;
+    }
 
     @GET
     public BasisPersonaliaFrontend hentBasisPersonalia(@PathParam("behandlingsId") String behandlingsId) {
+        tilgangskontroll.verifiserAtBrukerHarTilgang();
         final String eier = SubjectHandler.getUserId();
         JsonInternalSoknad soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).getJsonInternalSoknad();
 

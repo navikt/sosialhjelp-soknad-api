@@ -10,7 +10,11 @@ import java.util.stream.Collectors;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
-public class PdlApiQuery {
+public final class PdlApiQuery {
+
+    private PdlApiQuery() {
+    }
+
     public static final String HENT_PERSON = readGraphQLQueryFromFile("graphql/pdl-person-query.graphql");
     public static final String HENT_BARN = readGraphQLQueryFromFile("graphql/pdl-barn-query.graphql");
     public static final String HENT_EKTEFELLE = readGraphQLQueryFromFile("graphql/pdl-ektefelle-query.graphql");

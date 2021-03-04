@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class HTMLLenkeParser {
+public final class HTMLLenkeParser {
+
+    private HTMLLenkeParser() {
+    }
 
     public static Pattern patternTag, patternLenke;
     private static Matcher matcherTag, matcherLenke;
@@ -93,8 +96,8 @@ public class HTMLLenkeParser {
         }
 
         private String erstattInvalideTegn(String lenke) {
-            lenke = lenke.replaceAll("'", "");
-            lenke = lenke.replaceAll("\"", "");
+            lenke = lenke.replace("'", "");
+            lenke = lenke.replace("\"", "");
             return lenke;
         }
     }

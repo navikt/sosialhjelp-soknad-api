@@ -3,7 +3,11 @@ package no.nav.sosialhjelp.soknad.consumer.person.mappers;
 
 import no.nav.sosialhjelp.soknad.consumer.person.domain.Diskresjonskoder;
 
-class DiskresjonskodeMapper {
+final class DiskresjonskodeMapper {
+
+    private DiskresjonskodeMapper() {
+    }
+
     static String mapTilTallkode(String diskresjonskode) {
         if (Diskresjonskoder.STRENGT_FORTROLIG_ADRESSE.kodeverkVerdi.equals(diskresjonskode)){
             return Diskresjonskoder.STRENGT_FORTROLIG_ADRESSE.tallVerdi;

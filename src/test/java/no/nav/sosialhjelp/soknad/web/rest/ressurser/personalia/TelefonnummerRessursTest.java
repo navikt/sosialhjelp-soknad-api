@@ -5,6 +5,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonTelefonnummer;
 import no.nav.sosialhjelp.soknad.business.service.systemdata.TelefonnummerSystemdata;
 import no.nav.sosialhjelp.soknad.business.soknadunderbehandling.SoknadUnderArbeidRepository;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
+import no.nav.sosialhjelp.soknad.domain.model.exception.AuthorizationException;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.StaticSubjectHandlerService;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.personalia.TelefonnummerRessurs.TelefonnummerFrontend;
@@ -26,7 +27,9 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -149,6 +152,25 @@ public class TelefonnummerRessursTest {
         final JsonTelefonnummer telefonnummer = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getTelefonnummer();
         assertThat(telefonnummer.getKilde(), is(JsonKilde.SYSTEM));
         assertThat(telefonnummer.getVerdi(), is(TELEFONNUMMER_SYSTEM));
+    }
+
+    @Test(expected = AuthorizationException.class)
+    public void getTelefonnummerSkalKasteAuthorizationExceptionVedManglendeTilgang() {
+        doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerHarTilgang();
+
+        telefonnummerRessurs.hentTelefonnummer(BEHANDLINGSID);
+
+        verifyNoInteractions(soknadUnderArbeidRepository);
+    }
+
+    @Test(expected = AuthorizationException.class)
+    public void putTelefonnummerSkalKasteAuthorizationExceptionVedManglendeTilgang() {
+        doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
+
+        var telefonnummerFrontend = new TelefonnummerFrontend();
+        telefonnummerRessurs.updateTelefonnummer(BEHANDLINGSID, telefonnummerFrontend);
+
+        verifyNoInteractions(soknadUnderArbeidRepository);
     }
 
     private SoknadUnderArbeid catchSoknadUnderArbeidSentToOppdaterSoknadsdata() {

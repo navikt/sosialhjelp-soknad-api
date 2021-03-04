@@ -7,6 +7,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktF
 import no.nav.sosialhjelp.soknad.business.service.TextService;
 import no.nav.sosialhjelp.soknad.business.soknadunderbehandling.SoknadUnderArbeidRepository;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
+import no.nav.sosialhjelp.soknad.domain.model.exception.AuthorizationException;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.StaticSubjectHandlerService;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.inntekt.FormueRessurs.FormueFrontend;
@@ -39,7 +40,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -74,7 +77,7 @@ public class FormueRessursTest {
     }
 
     @Test
-    public void getFormueSkalReturnereBekreftelserLikFalse(){
+    public void getFormueSkalReturnereBekreftelserLikFalse() {
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER)));
 
@@ -90,7 +93,7 @@ public class FormueRessursTest {
     }
 
     @Test
-    public void getFormueSkalReturnereBekreftelserLikTrue(){
+    public void getFormueSkalReturnereBekreftelserLikTrue() {
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithFormue(asList(FORMUE_BRUKSKONTO, FORMUE_BSU,
                         FORMUE_LIVSFORSIKRING, FORMUE_VERDIPAPIRER, FORMUE_SPAREKONTO, FORMUE_ANNET), null));
@@ -107,7 +110,7 @@ public class FormueRessursTest {
     }
 
     @Test
-    public void getFormueSkalReturnereBeskrivelseAvAnnet(){
+    public void getFormueSkalReturnereBeskrivelseAvAnnet() {
         String beskrivelse = "Vinylplater";
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithFormue(asList(FORMUE_ANNET), beskrivelse));
@@ -119,7 +122,7 @@ public class FormueRessursTest {
     }
 
     @Test
-    public void putFormueSkalSetteAlleBekreftelserLikFalse(){
+    public void putFormueSkalSetteAlleBekreftelserLikFalse() {
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithFormue(asList(FORMUE_BRUKSKONTO, FORMUE_BSU,
@@ -140,9 +143,9 @@ public class FormueRessursTest {
         assertTrue(formuer.isEmpty());
         assertThat(beskrivelse, is(""));
     }
-    
+
     @Test
-    public void putFormueSkalSetteNoenBekreftelser(){
+    public void putFormueSkalSetteNoenBekreftelser() {
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER)));
@@ -174,7 +177,7 @@ public class FormueRessursTest {
     }
 
     @Test
-    public void putFormueSkalSetteAlleBekreftelser(){
+    public void putFormueSkalSetteAlleBekreftelser() {
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER)));
@@ -206,7 +209,7 @@ public class FormueRessursTest {
     }
 
     @Test
-    public void putFormueSkalFjerneBeskrivelseAvAnnetDersomAnnetBlirAvkreftet(){
+    public void putFormueSkalFjerneBeskrivelseAvAnnetDersomAnnetBlirAvkreftet() {
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithFormue(asList(FORMUE_ANNET), "Vinylplater"));
@@ -224,6 +227,25 @@ public class FormueRessursTest {
         assertThat(beskrivelse, is(""));
     }
 
+    @Test(expected = AuthorizationException.class)
+    public void getFormueSkalKasteAuthorizationExceptionVedManglendeTilgang() {
+        doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerHarTilgang();
+
+        formueRessurs.hentFormue(BEHANDLINGSID);
+
+        verifyNoInteractions(soknadUnderArbeidRepository);
+    }
+
+    @Test(expected = AuthorizationException.class)
+    public void putFormueSkalKasteAuthorizationExceptionVedManglendeTilgang() {
+        doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(BEHANDLINGSID);
+
+        var formueFrontend = new FormueFrontend();
+        formueRessurs.updateFormue(BEHANDLINGSID, formueFrontend);
+
+        verifyNoInteractions(soknadUnderArbeidRepository);
+    }
+
     private SoknadUnderArbeid catchSoknadUnderArbeidSentToOppdaterSoknadsdata() {
         ArgumentCaptor<SoknadUnderArbeid> argument = ArgumentCaptor.forClass(SoknadUnderArbeid.class);
         verify(soknadUnderArbeidRepository).oppdaterSoknadsdata(argument.capture(), anyString());
@@ -233,7 +255,7 @@ public class FormueRessursTest {
     private SoknadUnderArbeid createJsonInternalSoknadWithFormue(List<String> formueTyper, String beskrivelseAvAnnet) {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         List<JsonOkonomioversiktFormue> formuer = new ArrayList<>();
-        for (String formue: formueTyper) {
+        for (String formue : formueTyper) {
             formuer.add(new JsonOkonomioversiktFormue()
                     .withKilde(JsonKilde.BRUKER)
                     .withType(formue)

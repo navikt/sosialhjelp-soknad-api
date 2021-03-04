@@ -9,6 +9,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktU
 import no.nav.sosialhjelp.soknad.business.service.TextService;
 import no.nav.sosialhjelp.soknad.business.soknadunderbehandling.SoknadUnderArbeidRepository;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
+import no.nav.sosialhjelp.soknad.domain.model.exception.AuthorizationException;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.StaticSubjectHandlerService;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.utgifter.BarneutgiftRessurs.BarneutgifterFrontend;
@@ -41,7 +42,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -76,7 +79,7 @@ public class BarneutgiftRessursTest {
     }
 
     @Test
-    public void getBarneutgifterSkalReturnereBekreftelseLikNullOgAltFalse(){
+    public void getBarneutgifterSkalReturnereBekreftelseLikNullOgAltFalse() {
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER)));
 
@@ -92,7 +95,7 @@ public class BarneutgiftRessursTest {
     }
 
     @Test
-    public void getBarneutgifterSkalReturnereHarForsorgerpliktLikFalseForPersonUtenBarn(){
+    public void getBarneutgifterSkalReturnereHarForsorgerpliktLikFalseForPersonUtenBarn() {
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithBarneutgifter(false, false, Collections.emptyList()));
 
@@ -108,7 +111,7 @@ public class BarneutgiftRessursTest {
     }
 
     @Test
-    public void getBarneutgifterSkalReturnereBekreftelserLikTrue(){
+    public void getBarneutgifterSkalReturnereBekreftelserLikTrue() {
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithBarneutgifter(true, true, asList(UTGIFTER_BARNEHAGE, UTGIFTER_SFO, UTGIFTER_BARN_FRITIDSAKTIVITETER,
                         UTGIFTER_BARN_TANNREGULERING, UTGIFTER_ANNET_BARN)));
@@ -125,7 +128,7 @@ public class BarneutgiftRessursTest {
     }
 
     @Test
-    public void putBarneutgifterSkalSetteAltFalseDersomManVelgerHarIkkeBarneutgifter(){
+    public void putBarneutgifterSkalSetteAltFalseDersomManVelgerHarIkkeBarneutgifter() {
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithBarneutgifter(true, true, asList(UTGIFTER_BARNEHAGE, UTGIFTER_SFO,
@@ -149,7 +152,7 @@ public class BarneutgiftRessursTest {
     }
 
     @Test
-    public void putBarneutgifterSkalSetteNoenBekreftelser(){
+    public void putBarneutgifterSkalSetteNoenBekreftelser() {
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER)));
@@ -182,7 +185,7 @@ public class BarneutgiftRessursTest {
     }
 
     @Test
-    public void putBarneutgifterSkalSetteAlleBekreftelser(){
+    public void putBarneutgifterSkalSetteAlleBekreftelser() {
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER)));
@@ -214,6 +217,25 @@ public class BarneutgiftRessursTest {
         assertTrue(opplysningerBarneutgifter.stream().anyMatch(barneutgift -> barneutgift.getType().equals(UTGIFTER_ANNET_BARN)));
     }
 
+    @Test(expected = AuthorizationException.class)
+    public void getBarneutgifterSkalKasteAuthorizationExceptionVedManglendeTilgang() {
+        doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerHarTilgang();
+
+        barneutgiftRessurs.hentBarneutgifter(BEHANDLINGSID);
+
+        verifyNoInteractions(soknadUnderArbeidRepository);
+    }
+
+    @Test(expected = AuthorizationException.class)
+    public void putBarneutgifterSkalKasteAuthorizationExceptionVedManglendeTilgang() {
+        doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
+
+        var barneutgifterFrontend = new BarneutgifterFrontend();
+        barneutgiftRessurs.updateBarneutgifter(BEHANDLINGSID, barneutgifterFrontend);
+
+        verifyNoInteractions(soknadUnderArbeidRepository);
+    }
+
     private SoknadUnderArbeid catchSoknadUnderArbeidSentToOppdaterSoknadsdata() {
         ArgumentCaptor<SoknadUnderArbeid> argument = ArgumentCaptor.forClass(SoknadUnderArbeid.class);
         verify(soknadUnderArbeidRepository).oppdaterSoknadsdata(argument.capture(), anyString());
@@ -224,7 +246,7 @@ public class BarneutgiftRessursTest {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         List<JsonOkonomioversiktUtgift> oversiktUtgifter = new ArrayList<>();
         List<JsonOkonomiOpplysningUtgift> opplysningUtgifter = new ArrayList<>();
-        for (String utgiftstype: utgiftstyper) {
+        for (String utgiftstype : utgiftstyper) {
             if (utgiftstype.equals(UTGIFTER_BARNEHAGE) || utgiftstype.equals(UTGIFTER_SFO)) {
                 oversiktUtgifter.add(new JsonOkonomioversiktUtgift()
                         .withKilde(JsonKilde.BRUKER)
