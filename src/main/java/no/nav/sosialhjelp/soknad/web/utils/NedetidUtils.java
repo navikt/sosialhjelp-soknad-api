@@ -8,7 +8,11 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Locale;
 
-public class NedetidUtils {
+public final class NedetidUtils {
+
+    private NedetidUtils() {
+    }
+
     private static final Logger log = LoggerFactory.getLogger(NedetidUtils.class);
     private final static int planlagtNedetidVarselAntallDager = 14;
     public final static String NEDETID_START = "nedetid.start";

@@ -42,26 +42,26 @@ public class SoknadMetadataRepositoryJdbcTest {
     @Test
     public void hentForBatchSkalIkkeReturnereFerdige() {
         opprettSoknadMetadata(soknadMetadata(behandlingsId, SoknadInnsendingStatus.FERDIG, dagerGammelSoknad));
-        assertThat(soknadMetadataRepository.hentForBatch(dagerGammelSoknad - 1).isPresent()).isFalse();
+        assertThat(soknadMetadataRepository.hentForBatch(dagerGammelSoknad - 1)).isNotPresent();
     }
     
     @Test
     public void hentForBatchSkalIkkeReturnereAvbruttAutomatisk() {
         opprettSoknadMetadata(soknadMetadata(behandlingsId, SoknadInnsendingStatus.AVBRUTT_AUTOMATISK, dagerGammelSoknad));
-        assertThat(soknadMetadataRepository.hentForBatch(dagerGammelSoknad - 1).isPresent()).isFalse();
+        assertThat(soknadMetadataRepository.hentForBatch(dagerGammelSoknad - 1)).isNotPresent();
     }
     
     @Test
     public void hentForBatchSkalIkkeReturnereAvbruttAvBruker() {
         opprettSoknadMetadata(soknadMetadata(behandlingsId, SoknadInnsendingStatus.AVBRUTT_AV_BRUKER, dagerGammelSoknad));
-        assertThat(soknadMetadataRepository.hentForBatch(dagerGammelSoknad - 1).isPresent()).isFalse();
+        assertThat(soknadMetadataRepository.hentForBatch(dagerGammelSoknad - 1)).isNotPresent();
     }
     
     @Test
     public void hentForBatchBrukerEndringstidspunkt() {
         opprettSoknadMetadata(soknadMetadata(behandlingsId, SoknadInnsendingStatus.UNDER_ARBEID, dagerGammelSoknad));
-        assertThat(soknadMetadataRepository.hentForBatch(dagerGammelSoknad - 1).isPresent()).isTrue();
-        assertThat(soknadMetadataRepository.hentForBatch(dagerGammelSoknad + 1).isPresent()).isFalse();
+        assertThat(soknadMetadataRepository.hentForBatch(dagerGammelSoknad - 1)).isPresent();
+        assertThat(soknadMetadataRepository.hentForBatch(dagerGammelSoknad + 1)).isNotPresent();
     }
 
     @Test
@@ -70,8 +70,8 @@ public class SoknadMetadataRepositoryJdbcTest {
                 SoknadInnsendingStatus.AVBRUTT_AUTOMATISK, SoknadInnsendingStatus.AVBRUTT_AV_BRUKER);
         for (SoknadInnsendingStatus status : statuser) {
             opprettSoknadMetadata(soknadMetadata(behandlingsId, status, dagerGammelSoknad));
-            assertThat(soknadMetadataRepository.hentEldreEnn(dagerGammelSoknad - 1).isPresent()).isTrue();
-            assertThat(soknadMetadataRepository.hentEldreEnn(dagerGammelSoknad + 1).isPresent()).isFalse();
+            assertThat(soknadMetadataRepository.hentEldreEnn(dagerGammelSoknad - 1)).isPresent();
+            assertThat(soknadMetadataRepository.hentEldreEnn(dagerGammelSoknad + 1)).isNotPresent();
             soknadMetadataRepository.slettSoknadMetaData(behandlingsId, EIER);
         }
     }

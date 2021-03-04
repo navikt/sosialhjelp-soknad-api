@@ -6,6 +6,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonEktefelle;
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus;
 import no.nav.sosialhjelp.soknad.business.soknadunderbehandling.SoknadUnderArbeidRepository;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
+import no.nav.sosialhjelp.soknad.domain.model.exception.AuthorizationException;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.StaticSubjectHandlerService;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.NavnFrontend;
@@ -31,7 +32,9 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -179,6 +182,27 @@ public class SivilstatusRessursTest {
         assertThat(sivilstatus.getKilde(), is(JsonKilde.BRUKER));
         assertThat(sivilstatus.getStatus(), is(JsonSivilstatus.Status.GIFT));
         assertThatEktefelleIsCorrectlyConverted(EKTEFELLE_FRONTEND, sivilstatus.getEktefelle());
+    }
+
+    @Test(expected = AuthorizationException.class)
+    public void getSivilstatusSkalKasteAuthorizationExceptionVedManglendeTilgang() {
+        doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerHarTilgang();
+
+        sivilstatusRessurs.hentSivilstatus(BEHANDLINGSID);
+
+        verifyNoInteractions(soknadUnderArbeidRepository);
+    }
+
+    @Test(expected = AuthorizationException.class)
+    public void putSivilstatusSkalKasteAuthorizationExceptionVedManglendeTilgang() throws ParseException {
+        doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(BEHANDLINGSID);
+
+        var sivilstatusFrontend = new SivilstatusFrontend()
+                .withKildeErSystem(false).withSivilstatus(JsonSivilstatus.Status.GIFT)
+                .withEktefelle(EKTEFELLE_FRONTEND);
+        sivilstatusRessurs.updateSivilstatus(BEHANDLINGSID, sivilstatusFrontend);
+
+        verifyNoInteractions(soknadUnderArbeidRepository);
     }
 
     private void assertThatEktefelleIsCorrectlyConverted(EktefelleFrontend ektefelle, JsonEktefelle jsonEktefelle) {

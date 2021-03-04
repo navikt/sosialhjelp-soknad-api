@@ -5,8 +5,6 @@ import no.nav.sosialhjelp.soknad.domain.model.skattbarinntekt.Inntekt;
 import no.nav.sosialhjelp.soknad.domain.model.skattbarinntekt.OppgaveInntektsmottaker;
 import no.nav.sosialhjelp.soknad.domain.model.skattbarinntekt.SkattbarInntekt;
 import no.nav.sosialhjelp.soknad.domain.model.utbetaling.Utbetaling;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -24,8 +22,6 @@ import static java.util.stream.Collectors.toList;
 
 @Service
 public class SkattbarInntektService {
-
-    private static final Logger log = LoggerFactory.getLogger(SkattbarInntektService.class);
 
     private DateTimeFormatter arManedFormatter = DateTimeFormatter.ofPattern("yyyy-MM");
 

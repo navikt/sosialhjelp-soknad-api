@@ -17,15 +17,12 @@ import javax.inject.Inject;
 import javax.ws.rs.core.UriBuilder;
 import java.time.LocalDate;
 
-import static java.lang.System.getenv;
-import static no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.HEADER_NAV_APIKEY;
 import static no.nav.sosialhjelp.soknad.web.types.Pingable.Ping.feilet;
 import static no.nav.sosialhjelp.soknad.web.types.Pingable.Ping.lyktes;
 
 @Timed
 public class BostotteImpl implements Bostotte {
     private static final Logger logger = LoggerFactory.getLogger(BostotteImpl.class);
-    private static final String SOSIALHJELP_SOKNAD_API_HUSBANKEN_BOSTOTTE_APIKEY_PASSWORD = "SOSIALHJELP_SOKNAD_API_HUSBANKEN_BOSTOTTE_APIKEY_PASSWORD";
     private final BostotteConfig config;
     private final RestOperations operations;
 
@@ -38,20 +35,19 @@ public class BostotteImpl implements Bostotte {
     @Override
     public BostotteDto hentBostotte(String personIdentifikator, String token, LocalDate fra, LocalDate til) {
         try {
-            String apikey = getenv(SOSIALHJELP_SOKNAD_API_HUSBANKEN_BOSTOTTE_APIKEY_PASSWORD);
             UriBuilder uri = UriBuilder.fromPath(config.getUri()).queryParam("fra", fra).queryParam("til", til);
             RequestEntity<Void> request = RequestEntity.get(uri.build())
-                    .header(HEADER_NAV_APIKEY, apikey)
                     .header(HttpHeader.AUTHORIZATION.name(), token)
                     .build();
+            BostotteDto bostotteDto = operations.exchange(request, BostotteDto.class).getBody();
             logger.info("Hentet bostøtte informasjon fra Husbanken!");
-            return operations.exchange(request, BostotteDto.class).getBody();
+            return bostotteDto;
         } catch (ResourceAccessException e) {
             logger.error("Problemer med å hente bostøtte informasjon fra Husbanken!", e);
         } catch (HttpClientErrorException e) {
             logger.error("Problemer med å koble opp mot Husbanken!", e);
         } catch (HttpServerErrorException e) {
-            logger.error("Problemer med å hente bostøtte fra Husbanken! Ekstern error: " + e.getMessage(), e);
+            logger.error("Problemer med å hente bostøtte fra Husbanken! Ekstern error: {}", e.getMessage(), e);
         } catch (HttpMessageNotReadableException e) {
             logger.error("Problemer med å tolke data fra Husbanken!", e);
         }
@@ -65,9 +61,7 @@ public class BostotteImpl implements Bostotte {
             @Override
             public Ping ping() {
                 try {
-                    String apikey = getenv(SOSIALHJELP_SOKNAD_API_HUSBANKEN_BOSTOTTE_APIKEY_PASSWORD);
                     RequestEntity<Void> request = RequestEntity.get(UriBuilder.fromPath(config.getPingUrl()).build())
-                            .header(HEADER_NAV_APIKEY, apikey)
                             .build();
                     String result = operations.exchange(request, String.class).getBody();
                     if (result.equalsIgnoreCase("pong")) {

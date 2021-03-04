@@ -5,12 +5,16 @@ import java.time.LocalDateTime;
 
 import static java.lang.System.getProperty;
 
-public class SQLUtils {
-    
+public final class SQLUtils {
+
+    private SQLUtils() {
+    }
+
+    private static final String HSQLDB = "hsqldb";
     public static final String DIALECT_PROPERTY = "sqldialect";
 
     public static String limit(int limit) {
-        if ("hsqldb".equals(getProperty(DIALECT_PROPERTY))) {
+        if (HSQLDB.equals(getProperty(DIALECT_PROPERTY))) {
             return "limit " + limit;
         } else {
             return "and rownum <= " + limit;
@@ -18,7 +22,7 @@ public class SQLUtils {
     }
 
     public static String whereLimit(int limit) {
-        if ("hsqldb".equals(getProperty(DIALECT_PROPERTY))) {
+        if (HSQLDB.equals(getProperty(DIALECT_PROPERTY))) {
             return "limit " + limit;
         } else {
             return "where rownum <= " + limit;
@@ -26,7 +30,7 @@ public class SQLUtils {
     }
 
     public static String toDate(int antallDager) {
-        if ("hsqldb".equals(getProperty(DIALECT_PROPERTY))) {
+        if (HSQLDB.equals(getProperty(DIALECT_PROPERTY))) {
             return "CURRENT_TIMESTAMP - " + antallDager + " DAY";
         } else {
             return "CURRENT_TIMESTAMP - NUMTODSINTERVAL("+antallDager+",'DAY') " ;
@@ -34,7 +38,7 @@ public class SQLUtils {
     }
 
     public static String selectNextSequenceValue(String sequence) {
-        if ("hsqldb".equals(getProperty(DIALECT_PROPERTY))) {
+        if (HSQLDB.equals(getProperty(DIALECT_PROPERTY))) {
             return "call next value for " + sequence;
         } else {
             return "select " + sequence + ".nextval from dual";
@@ -42,7 +46,7 @@ public class SQLUtils {
     }
 
     public static String selectMultipleNextSequenceValues(String sequence) {
-        if ("hsqldb".equals(getProperty(DIALECT_PROPERTY))) {
+        if (HSQLDB.equals(getProperty(DIALECT_PROPERTY))) {
             return "select next value for " + sequence + " from unnest(sequence_array(1,?,1))";
         } else {
             return "select " + sequence + ".nextval from dual connect by level <= ?";

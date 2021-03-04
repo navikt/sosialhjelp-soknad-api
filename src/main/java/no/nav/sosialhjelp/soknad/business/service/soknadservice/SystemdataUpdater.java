@@ -13,6 +13,6 @@ public class SystemdataUpdater {
     private List<Systemdata> systemdatas;
 
     public void update(SoknadUnderArbeid soknadUnderArbeid, String token) {
-        systemdatas.forEach((s) -> s.updateSystemdataIn(soknadUnderArbeid, token));
+        systemdatas.forEach(s -> s.updateSystemdataIn(soknadUnderArbeid, token));
     }
 }

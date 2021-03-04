@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Bean;
 
 import static no.finn.unleash.repository.FeatureToggleResponse.Status.CHANGED;
 import static no.finn.unleash.repository.FeatureToggleResponse.Status.NOT_CHANGED;
-import static no.nav.sbl.dialogarena.common.cxf.InstanceSwitcher.createSwitcher;
+import static no.nav.sosialhjelp.soknad.consumer.common.cxf.InstanceSwitcher.createSwitcher;
 import static no.nav.sosialhjelp.soknad.web.types.Pingable.Ping.feilet;
 import static no.nav.sosialhjelp.soknad.web.types.Pingable.Ping.lyktes;
 

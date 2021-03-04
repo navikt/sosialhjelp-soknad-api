@@ -2,8 +2,11 @@ package no.nav.sosialhjelp.soknad.business.db;
 
 import static java.lang.Long.parseLong;
 
-public class IdGenerator {
-    
+public final class IdGenerator {
+
+    private IdGenerator() {
+    }
+
     private static final String APPLIKASJON_PREFIX_BASE_36 = "10";
 
     public static String lagBehandlingsId(long databasenokkel) {

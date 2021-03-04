@@ -128,8 +128,8 @@ public class UtbetalingerFraNavSystemdata implements Systemdata {
         if (isBlank(s)) {
             return null;
         }
-        s = s.replaceAll(",", ".");
-        s = s.replaceAll("\u00A0", "");
+        s = s.replace(",", ".");
+        s = s.replace("\u00A0", "");
         return parseDouble(deleteWhitespace(s));
     }
 }

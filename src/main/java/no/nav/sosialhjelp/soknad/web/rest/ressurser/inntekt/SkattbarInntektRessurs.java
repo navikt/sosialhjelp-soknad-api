@@ -15,7 +15,6 @@ import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import no.nav.sosialhjelp.soknad.web.sikkerhet.Tilgangskontroll;
 import org.springframework.stereotype.Controller;
 
-import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
@@ -46,20 +45,21 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 @Produces(APPLICATION_JSON)
 public class SkattbarInntektRessurs {
 
-    @Inject
-    private Tilgangskontroll tilgangskontroll;
+    private final Tilgangskontroll tilgangskontroll;
+    private final SoknadUnderArbeidRepository soknadUnderArbeidRepository;
+    private final SkattetatenSystemdata skattetatenSystemdata;
+    private final TextService textService;
 
-    @Inject
-    private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
-
-    @Inject
-    private SkattetatenSystemdata skattetatenSystemdata;
-
-    @Inject
-    private TextService textService;
+    public SkattbarInntektRessurs(Tilgangskontroll tilgangskontroll, SoknadUnderArbeidRepository soknadUnderArbeidRepository, SkattetatenSystemdata skattetatenSystemdata, TextService textService) {
+        this.tilgangskontroll = tilgangskontroll;
+        this.soknadUnderArbeidRepository = soknadUnderArbeidRepository;
+        this.skattetatenSystemdata = skattetatenSystemdata;
+        this.textService = textService;
+    }
 
     @GET
     public SkattbarInntektFrontend hentSkattbareInntekter(@PathParam("behandlingsId") String behandlingsId) {
+        tilgangskontroll.verifiserAtBrukerHarTilgang();
         String eier = SubjectHandler.getUserId();
         List<JsonOkonomiOpplysningUtbetaling> utbetalinger;
 
@@ -97,7 +97,7 @@ public class SkattbarInntektRessurs {
         }
 
         if (skalLagre) {
-            skattetatenSystemdata.updateSystemdataIn(soknad, token);
+            skattetatenSystemdata.updateSystemdataIn(soknad);
             soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
         }
     }

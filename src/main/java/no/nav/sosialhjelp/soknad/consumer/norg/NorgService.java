@@ -67,7 +67,7 @@ public class NorgService {
         var norgEnhet = hentFraCacheEllerConsumer(gt);
 
         if (norgEnhet == null) {
-            logger.warn("Kunne ikke finne NorgEnhet for gt: " + gt);
+            logger.warn("Kunne ikke finne NorgEnhet for gt: {}", gt);
             return null;
         }
 

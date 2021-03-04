@@ -1,6 +1,9 @@
 package no.nav.sosialhjelp.soknad.business.util;
 
-public class MetricsUtils {
+public final class MetricsUtils {
+
+    private MetricsUtils() {
+    }
 
     public static String navKontorTilInfluxNavn(String mottaker) {
         if (mottaker == null) {

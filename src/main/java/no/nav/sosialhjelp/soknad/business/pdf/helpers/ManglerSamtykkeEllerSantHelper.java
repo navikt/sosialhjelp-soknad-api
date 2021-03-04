@@ -17,7 +17,7 @@ public class ManglerSamtykkeEllerSantHelper extends RegistryAwareHelper<String> 
     @Override
     public CharSequence apply(final String type, final Options options) throws IOException {
         final Boolean otherBoolean = options.param(0);
-        if(otherBoolean) return createReturnVariable(options, true);
+        if(Boolean.TRUE.equals(otherBoolean)) return createReturnVariable(options, true);
 
         if (options.context.get("bekreftelse") == null) {
             return options.fn(this);
@@ -30,7 +30,7 @@ public class ManglerSamtykkeEllerSantHelper extends RegistryAwareHelper<String> 
         
         if (bekreftelse.isPresent()) {
             Boolean verdi = bekreftelse.get().getVerdi();
-            if(!verdi)
+            if(Boolean.FALSE.equals(verdi))
                 return options.fn(this);
             else
                 return options.inverse(this);

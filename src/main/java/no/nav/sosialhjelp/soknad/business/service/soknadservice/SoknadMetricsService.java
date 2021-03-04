@@ -100,9 +100,9 @@ public class SoknadMetricsService {
         if (!soknadUnderArbeid.erEttersendelse() && !MockUtils.isTillatMockRessurs()) {
             int age = new PersonAlder(eier).getAlder();
             if (age > 0 && age < 30) {
-                log.info("DIGISOS-1164: UNDER30 - Soknad sent av bruker med alder: " + age);
+                log.info("DIGISOS-1164: UNDER30 - Soknad sent av bruker med alder: {}", age);
             } else {
-                log.info("DIGISOS-1164: OVER30 - Soknad sent av bruker med alder:" + age);
+                log.info("DIGISOS-1164: OVER30 - Soknad sent av bruker med alder: {}", age);
             }
         }
     }

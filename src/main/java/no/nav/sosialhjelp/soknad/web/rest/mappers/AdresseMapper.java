@@ -9,7 +9,11 @@ import no.nav.sosialhjelp.soknad.web.rest.ressurser.personalia.AdresseRessurs;
 
 import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
 
-public class AdresseMapper {
+public final class AdresseMapper {
+
+    private AdresseMapper() {
+    }
+
     public static AdresseRessurs.AdresserFrontend mapToAdresserFrontend(JsonAdresse sysFolkeregistrert, JsonAdresse sysMidlertidig, JsonAdresse jsonOpphold) {
         return new AdresseRessurs.AdresserFrontend()
                 .withValg(jsonOpphold != null ? jsonOpphold.getAdresseValg() : null)

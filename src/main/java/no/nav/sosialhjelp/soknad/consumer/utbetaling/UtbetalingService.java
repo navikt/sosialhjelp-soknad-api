@@ -41,7 +41,7 @@ public class UtbetalingService {
         try {
             WSHentUtbetalingsinformasjonResponse wsUtbetalinger = utbetalingV1.hentUtbetalingsinformasjon(lagHentUtbetalingRequest(brukerFnr, fom, tom));
             List<Utbetaling> utbetalinger = mapTilUtbetalinger(wsUtbetalinger);
-            logger.info("Antall navytelser utbetaling " + utbetalinger.size());
+            logger.info("Antall navytelser utbetaling {}", utbetalinger.size());
             return utbetalinger;
         } catch (Exception e) {
             logger.warn("Kunne ikke hente utbetalinger", e);
@@ -120,7 +120,7 @@ public class UtbetalingService {
         utbetaling.utbetalingsdato = tilLocalDate(wsUtbetaling.getUtbetalingsdato());
 
         if (ytelse.getYtelseskomponentListe() != null) {
-            logger.info("Antall navytelser komponent " + ytelse.getYtelseskomponentListe().size());
+            logger.info("Antall navytelser komponent {}", ytelse.getYtelseskomponentListe().size());
             utbetaling.komponenter = ytelse.getYtelseskomponentListe().stream()
                     .map(wsYtelseskomponent -> {
                         Utbetaling.Komponent komponent = new Utbetaling.Komponent();

@@ -13,7 +13,6 @@ import no.nav.sosialhjelp.soknad.web.rest.mappers.AdresseMapper;
 import no.nav.sosialhjelp.soknad.web.sikkerhet.Tilgangskontroll;
 import org.springframework.stereotype.Controller;
 
-import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -32,20 +31,21 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 @Produces(APPLICATION_JSON)
 public class AdresseRessurs {
 
-    @Inject
-    private Tilgangskontroll tilgangskontroll;
+    private final Tilgangskontroll tilgangskontroll;
+    private final AdresseSystemdata adresseSystemdata;
+    private final SoknadUnderArbeidRepository soknadUnderArbeidRepository;
+    private final NavEnhetRessurs navEnhetRessurs;
 
-    @Inject
-    private AdresseSystemdata adresseSystemdata;
-
-    @Inject
-    private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
-
-    @Inject
-    private NavEnhetRessurs navEnhetRessurs;
+    public AdresseRessurs(Tilgangskontroll tilgangskontroll, AdresseSystemdata adresseSystemdata, SoknadUnderArbeidRepository soknadUnderArbeidRepository, NavEnhetRessurs navEnhetRessurs) {
+        this.tilgangskontroll = tilgangskontroll;
+        this.adresseSystemdata = adresseSystemdata;
+        this.soknadUnderArbeidRepository = soknadUnderArbeidRepository;
+        this.navEnhetRessurs = navEnhetRessurs;
+    }
 
     @GET
     public AdresserFrontend hentAdresser(@PathParam("behandlingsId") String behandlingsId) {
+        tilgangskontroll.verifiserAtBrukerHarTilgang();
         String eier = SubjectHandler.getUserId();
         SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
         String personIdentifikator = soknad.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getPersonIdentifikator().getVerdi();

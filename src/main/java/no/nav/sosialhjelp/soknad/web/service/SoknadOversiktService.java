@@ -3,7 +3,6 @@ package no.nav.sosialhjelp.soknad.web.service;
 import no.nav.sosialhjelp.soknad.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.soknadoversikt.SoknadOversiktRessurs.SoknadOversikt;
-import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -12,15 +11,11 @@ import java.util.List;
 
 import static java.util.stream.Collectors.toList;
 import static no.nav.sosialhjelp.soknad.web.service.SaksoversiktMetadataService.lagEttersendelseLenke;
-import static org.slf4j.LoggerFactory.getLogger;
 
 @Service
 public class SoknadOversiktService {
 
-    private static final Logger logger = getLogger(SoknadOversiktService.class);
-
     static final String KILDE_SOKNAD_API = "soknad-api";
-
     static final String DEFAULT_TITTEL = "Økonomisk sosialhjelp";
 
     @Inject

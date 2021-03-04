@@ -4,7 +4,11 @@ import no.nav.common.auth.SubjectHandler;
 
 import java.util.Optional;
 
-public class SamlSubjectHandler {
+public final class SamlSubjectHandler {
+
+    private SamlSubjectHandler() {
+    }
+
     public static String getUserId() {
         Optional<String> ident = SubjectHandler.getIdent();
 

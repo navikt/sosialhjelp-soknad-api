@@ -106,7 +106,7 @@ public class ArbeidsforholdSystemdataTest {
         String tittel = "tittel";
         when(textService.getJsonOkonomiTittel(anyString())).thenReturn(tittel);
         when(skattbarInntektService.hentUtbetalinger(anyString())).thenReturn(null);
-        skattetatenSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
+        skattetatenSystemdata.updateSystemdataIn(soknadUnderArbeid);
         arbeidsforholdSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
 
         JsonOkonomioversiktInntekt inntekt = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOversikt().getInntekt().get(0);
@@ -129,7 +129,7 @@ public class ArbeidsforholdSystemdataTest {
         String tittel = "tittel";
         when(textService.getJsonOkonomiTittel(anyString())).thenReturn(tittel);
         when(skattbarInntektService.hentUtbetalinger(anyString())).thenReturn(null);
-        skattetatenSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
+        skattetatenSystemdata.updateSystemdataIn(soknadUnderArbeid);
         arbeidsforholdSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
 
         JsonOkonomiOpplysningUtbetaling utbetaling = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getUtbetaling().get(0);

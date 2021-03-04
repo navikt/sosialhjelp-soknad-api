@@ -40,7 +40,7 @@ public class SkattetatenSystemdata {
     @Inject
     private TextService textService;
 
-    public void updateSystemdataIn(SoknadUnderArbeid soknadUnderArbeid, String token) {
+    public void updateSystemdataIn(SoknadUnderArbeid soknadUnderArbeid) {
         JsonData jsonData = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData();
         String personIdentifikator = jsonData.getPersonalia().getPersonIdentifikator().getVerdi();
         List<JsonOkonomiOpplysningUtbetaling> okonomiOpplysningUtbetalinger = jsonData.getOkonomi().getOpplysninger().getUtbetaling();
@@ -141,8 +141,8 @@ public class SkattetatenSystemdata {
         if (isBlank(s)) {
             return null;
         }
-        s = s.replaceAll(",", ".");
-        s = s.replaceAll("\u00A0", "");
+        s = s.replace(",", ".");
+        s = s.replace("\u00A0", "");
         return parseDouble(deleteWhitespace(s));
     }
 }

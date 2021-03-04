@@ -3,7 +3,11 @@ package no.nav.sosialhjelp.soknad.web.rest.mappers;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonNavn;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.NavnFrontend;
 
-public class PersonMapper {
+public final class PersonMapper {
+
+    private PersonMapper() {
+    }
+
     public static String getPersonnummerFromFnr(String fnr){
         return fnr != null ? fnr.substring(6) : null;
     }

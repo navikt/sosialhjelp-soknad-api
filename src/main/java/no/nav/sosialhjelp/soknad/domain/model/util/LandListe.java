@@ -13,7 +13,10 @@ import static java.util.Arrays.asList;
  * I tilegg har Kroatia (HRV) blitt lagt til etter at enonic-innholdet ble arkivert.
  *
  */
-public class LandListe {
+public final class LandListe {
+
+    private LandListe() {
+    }
 
     public static final List<String> EOS_LAND = asList("BEL", "BGR", "DNK", "CZE", "EST", "FIN", "FRA", "GRC", "IRL", "ISL", "ITA", "HRV", "CYP", "LVA", "LIE", "LTU", "LUX", "MLT", "NLD"
             , "POL", "PRT", "ROU", "SVK", "SVN", "ESP", "GBR", "CHE", "SWE", "DEU", "HUN", "AUT");
