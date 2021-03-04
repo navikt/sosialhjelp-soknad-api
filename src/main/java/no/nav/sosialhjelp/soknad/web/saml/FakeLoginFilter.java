@@ -1,9 +1,5 @@
 package no.nav.sosialhjelp.soknad.web.saml;
 
-import no.nav.brukerdialog.security.domain.IdentType;
-import no.nav.common.auth.SsoToken;
-import no.nav.common.auth.Subject;
-import no.nav.common.auth.SubjectHandler;
 import org.slf4j.Logger;
 
 import javax.servlet.Filter;
