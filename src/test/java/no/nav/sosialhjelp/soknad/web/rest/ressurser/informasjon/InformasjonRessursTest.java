@@ -88,12 +88,6 @@ public class InformasjonRessursTest {
     }
 
     @Test
-    public void skalHenteTeksterForForeldrepengerViaBundleForeldrepenger() {
-        ressurs.hentTekster("foreldrepenger", null);
-        verify(messageSource).getBundleFor("foreldrepenger", norskBokmaal);
-    }
-
-    @Test
     public void skalHenteTeksterForAlleBundlesUtenType() {
         ressurs.hentTekster("", null);
         verify(messageSource).getBundleFor("", norskBokmaal);
