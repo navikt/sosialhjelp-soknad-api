@@ -11,7 +11,6 @@ import no.nav.sosialhjelp.soknad.domain.model.oidc.StaticSubjectHandlerService;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -42,11 +41,6 @@ public class SoknadServiceIntegrasjonsTest {
 
     @Inject
     private SosialhjelpPdfGenerator sosialhjelpPdfGenerator;
-
-    @BeforeClass
-    public static void beforeClass() {
-        System.setProperty("soknad.feature.foreldrepenger.alternativrepresentasjon.enabled", "true");
-    }
 
     @Before
     public void setUp() {
