@@ -1,8 +1,5 @@
 package no.nav.sosialhjelp.soknad.web.saml;
 
-import no.nav.brukerdialog.security.domain.IdentType;
-import no.nav.common.auth.SsoToken;
-import no.nav.common.auth.Subject;
 import no.nav.sosialhjelp.soknad.consumer.common.rest.RestUtils;
 import no.nav.sosialhjelp.soknad.domain.model.exception.SamlUnauthorizedException;
 
