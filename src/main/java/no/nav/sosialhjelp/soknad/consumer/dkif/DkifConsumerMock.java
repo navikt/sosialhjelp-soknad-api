@@ -21,7 +21,7 @@ public class DkifConsumerMock {
         DkifConsumer mock = mock(DkifConsumer.class);
 
         when(mock.hentDigitalKontaktinfo(anyString()))
-                .thenAnswer((invocationOnMock) -> getOrDefaultResponse(SubjectHandler.getUserId()));
+                .thenAnswer(invocationOnMock -> getOrDefaultResponse(SubjectHandler.getUserId()));
 
         return mock;
     }

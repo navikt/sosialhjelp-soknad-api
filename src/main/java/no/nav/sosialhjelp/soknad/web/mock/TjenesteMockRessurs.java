@@ -111,7 +111,7 @@ public class TjenesteMockRessurs {
     @Consumes(APPLICATION_JSON)
     @Path("/uid")
     public void setUid(@RequestBody MockUid uid) {
-        logger.info("setUid " + uid.getUid());
+        logger.info("setUid {}", uid.getUid());
         if (!isTillatMockRessurs()) {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
@@ -227,7 +227,7 @@ public class TjenesteMockRessurs {
         if (!isTillatMockRessurs()) {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
-        logger.info("Setter arbeidsforhold med data: " + arbeidsforholdData);
+        logger.info("Setter arbeidsforhold med data: {}", arbeidsforholdData);
         String strippedArbeidsforhold = mapper.readTree(arbeidsforholdData).get("arbeidsforhold").toString();
         ArbeidsforholdConsumerMock.setArbeidsforhold(strippedArbeidsforhold);
         clearCache();
@@ -241,7 +241,7 @@ public class TjenesteMockRessurs {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
 
-        logger.info("Setter mock organisasjon med data: " + jsonOrganisasjon);
+        logger.info("Setter mock organisasjon med data: {}", jsonOrganisasjon);
         if (jsonOrganisasjon != null && mapper.readTree(jsonOrganisasjon).has("organisasjon")) {
             String strippedOrganisasjon = mapper.readTree(jsonOrganisasjon).get("organisasjon").toString();
             OrganisasjonConsumerMock.setOrganisasjon(strippedOrganisasjon);
@@ -258,7 +258,7 @@ public class TjenesteMockRessurs {
         if (!isTillatMockRessurs()) {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
-        logger.info("Setter mock familieforhold med data: " + jsonPerson);
+        logger.info("Setter mock familieforhold med data: {}", jsonPerson);
 
         var mockFamiliedata = mapper.readValue(jsonPerson, PdlConsumerMock.PdlMockResponse.class);
         if (mockFamiliedata.getPerson().getStatsborgerskap() != null) {

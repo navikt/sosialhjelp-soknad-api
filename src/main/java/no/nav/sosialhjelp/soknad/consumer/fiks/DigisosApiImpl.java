@@ -130,7 +130,7 @@ public class DigisosApiImpl implements DigisosApi {
         try {
             idPortenOidcConfiguration = objectMapper.readValue(URI.create(idPortenConfigUrl).toURL(), IdPortenOidcConfiguration.class);
         } catch (IOException e) {
-            log.error(String.format("Henting av idportens konfigurasjon feilet. idPortenConfigUrl=%s", idPortenConfigUrl), e);
+            log.error("Henting av idportens konfigurasjon feilet. idPortenConfigUrl={}", idPortenConfigUrl, e);
         }
     }
 

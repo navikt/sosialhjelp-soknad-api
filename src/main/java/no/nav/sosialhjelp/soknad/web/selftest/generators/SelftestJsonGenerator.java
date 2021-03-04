@@ -11,7 +11,11 @@ Endringer gjort i no.nav.common:web gjør at vi heller benytter den fra det gaml
 Kan mest sannsynlig oppgraderes, hvis vi får selftest til å fungere fra no.nav.common:web
 */
 
-public class SelftestJsonGenerator {
+public final class SelftestJsonGenerator {
+
+    private SelftestJsonGenerator() {
+    }
+
     public static String generate(Selftest selftest) throws JsonProcessingException {
         ObjectMapper om = new ObjectMapper();
         om.setSerializationInclusion(JsonInclude.Include.NON_NULL);

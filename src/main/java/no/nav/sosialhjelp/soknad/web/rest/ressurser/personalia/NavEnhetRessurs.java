@@ -23,7 +23,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 
-import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -46,24 +45,29 @@ public class NavEnhetRessurs {
     private static final Logger log = LoggerFactory.getLogger(NavEnhetRessurs.class);
     private static final String SPLITTER = ", ";
 
-    @Inject
-    private Tilgangskontroll tilgangskontroll;
+    private final Tilgangskontroll tilgangskontroll;
+    private final SoknadUnderArbeidRepository soknadUnderArbeidRepository;
+    private final SoknadsmottakerService soknadsmottakerService;
+    private final NorgService norgService;
+    private final KommuneInfoService kommuneInfoService;
 
-    @Inject
-    private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
-
-    @Inject
-    private SoknadsmottakerService soknadsmottakerService;
-
-    @Inject
-    private NorgService norgService;
-
-    @Inject
-    private KommuneInfoService kommuneInfoService;
+    public NavEnhetRessurs(
+            Tilgangskontroll tilgangskontroll,
+            SoknadUnderArbeidRepository soknadUnderArbeidRepository,
+            SoknadsmottakerService soknadsmottakerService,
+            NorgService norgService,
+            KommuneInfoService kommuneInfoService) {
+        this.tilgangskontroll = tilgangskontroll;
+        this.soknadUnderArbeidRepository = soknadUnderArbeidRepository;
+        this.soknadsmottakerService = soknadsmottakerService;
+        this.norgService = norgService;
+        this.kommuneInfoService = kommuneInfoService;
+    }
 
     @GET
     @Path("/navEnheter")
     public List<NavEnhetFrontend> hentNavEnheter(@PathParam("behandlingsId") String behandlingsId) {
+        tilgangskontroll.verifiserAtBrukerHarTilgang();
         String eier = SubjectHandler.getUserId();
         JsonSoknad soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).getJsonInternalSoknad().getSoknad();
         String valgtEnhetNr = soknad.getMottaker().getEnhetsnummer();
@@ -79,6 +83,7 @@ public class NavEnhetRessurs {
     @GET
     @Path("/navEnhet")
     public NavEnhetFrontend hentValgtNavEnhet(@PathParam("behandlingsId") String behandlingsId) {
+        tilgangskontroll.verifiserAtBrukerHarTilgang();
         String eier = SubjectHandler.getUserId();
         JsonSoknadsmottaker soknadsmottaker = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).getJsonInternalSoknad().getSoknad().getMottaker();
         String kommunenummer = soknadsmottaker.getKommunenummer();
@@ -117,15 +122,15 @@ public class NavEnhetRessurs {
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
     }
 
-    public String createNavEnhetsnavn(String enhetsnavn, String kommunenavn) {
+    private String createNavEnhetsnavn(String enhetsnavn, String kommunenavn) {
         return enhetsnavn + SPLITTER + kommunenavn;
     }
 
-    public String getEnhetsnavnFromNavEnhetsnavn(String navEnhetsnavn) {
+    private String getEnhetsnavnFromNavEnhetsnavn(String navEnhetsnavn) {
         return navEnhetsnavn.split(SPLITTER)[0];
     }
 
-    public String getKommunenavnFromNavEnhetsnavn(String navEnhetsnavn) {
+    private String getKommunenavnFromNavEnhetsnavn(String navEnhetsnavn) {
         return navEnhetsnavn.split(SPLITTER)[1];
     }
 
@@ -142,7 +147,7 @@ public class NavEnhetRessurs {
         List<NavEnhetRessurs.NavEnhetFrontend> navEnhetFrontendListe = new ArrayList<>();
 
         for (AdresseForslag adresseForslag: adresseForslagene) {
-            if (adresseForslag.type != null && adresseForslag.type.equals(AdresseForslagType.matrikkelAdresse))
+            if (adresseForslag.type != null && adresseForslag.type.equals(AdresseForslagType.MATRIKKELADRESSE))
             {
                     List<NavEnhet> navenheter = norgService.getEnheterForKommunenummer(adresseForslag.kommunenummer);
                     navenheter.forEach(navEnhet ->

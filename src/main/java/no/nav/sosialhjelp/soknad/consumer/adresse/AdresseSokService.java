@@ -9,8 +9,6 @@ import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseSokConsumer.Adresse
 import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseSokConsumer.Sokedata;
 import no.nav.sosialhjelp.soknad.domain.model.norg.NavEnhet;
 import no.nav.sosialhjelp.soknad.domain.model.util.KommuneTilNavEnhetMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -23,12 +21,11 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
-import static no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseForslagType.gateAdresse;
+import static no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseForslagType.GATEADRESSE;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Service
 public class AdresseSokService {
-    private static final Logger log = LoggerFactory.getLogger(AdresseSokService.class);
 
     @Inject
     private AdresseSokConsumer adresseSokConsumer;
@@ -93,7 +90,7 @@ public class AdresseSokService {
         adresse.geografiskTilknytning = data.geografiskTilknytning;
         adresse.gatekode = data.gatekode;
         adresse.bydel = data.bydel;
-        adresse.type = gateAdresse;
+        adresse.type = GATEADRESSE;
         return adresse;
     }
 

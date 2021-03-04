@@ -1,8 +1,8 @@
 package no.nav.sosialhjelp.soknad.domain.model.oidc;
 
 public class StaticSubjectHandlerService implements SubjectHandlerService {
-    private final static String DEFAULT_USER = "26104500284"; //Testbruker i idporten. Nathalie
-    private final static String DEFAULT_TOKEN = "token";
+    private static final String DEFAULT_USER = "26104500284"; //Testbruker i idporten. Nathalie
+    private static final String DEFAULT_TOKEN = "token";
     private String user = DEFAULT_USER;
     private String fakeToken = DEFAULT_TOKEN;
 

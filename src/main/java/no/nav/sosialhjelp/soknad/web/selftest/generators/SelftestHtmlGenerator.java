@@ -28,7 +28,11 @@ Endringer gjort i no.nav.common:web gjør at vi heller benytter den fra det gaml
 Kan mest sannsynlig oppgraderes, hvis vi får selftest til å fungere fra no.nav.common:web
 */
 
-public class SelftestHtmlGenerator {
+public final class SelftestHtmlGenerator {
+
+    private SelftestHtmlGenerator() {
+    }
+
     public static String generate(Selftest selftest, String host) throws IOException {
         Selftest selftestNullSafe = ofNullable(selftest).orElseGet(Selftest::new);
         List<SelftestEndpoint> checks = selftestNullSafe.getChecks();

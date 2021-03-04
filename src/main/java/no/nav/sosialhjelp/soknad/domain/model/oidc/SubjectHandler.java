@@ -4,7 +4,11 @@ import no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class SubjectHandler {
+public final class SubjectHandler {
+
+    private SubjectHandler() {
+    }
+
     private static final Logger logger = LoggerFactory.getLogger(SubjectHandler.class);
 
     private static SubjectHandlerService subjectHandlerService = new OidcSubjectHandlerService();

@@ -9,8 +9,6 @@ import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseForslag;
 import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseForslagType;
 import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseSokConsumer.Sokedata;
 import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseSokConsumer.Soketype;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
@@ -19,7 +17,6 @@ import java.util.List;
 
 @Component
 public class SoknadsmottakerService {
-    private static final Logger log = LoggerFactory.getLogger(SoknadsmottakerService.class);
 
     @Inject
     private AdresseSokService adresseSokService;
@@ -58,7 +55,7 @@ public class SoknadsmottakerService {
             }
 
             AdresseForslag adresseForslag = new AdresseForslag();
-            adresseForslag.type = AdresseForslagType.matrikkelAdresse;
+            adresseForslag.type = AdresseForslagType.MATRIKKELADRESSE;
             adresseForslag.kommunenummer = kommunenummer;
 
             return Collections.singletonList(adresseForslag);

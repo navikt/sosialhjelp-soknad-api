@@ -15,7 +15,11 @@ import java.security.NoSuchAlgorithmException;
 /**
  * Klasse som genererer og sjekker xsrf token som sendes inn
  */
-public class XsrfGenerator {
+public final class XsrfGenerator {
+
+    private XsrfGenerator() {
+    }
+
     private static final String SECRET = "9f8c0d81-d9b3-4b70-af03-bb9375336c4f";
 
     public static String generateXsrfToken(String behandlingsId) {

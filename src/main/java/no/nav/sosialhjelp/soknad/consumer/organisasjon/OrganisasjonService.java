@@ -25,7 +25,7 @@ public class OrganisasjonService {
             try {
                 OrganisasjonNoekkelinfoDto noekkelinfo = organisasjonConsumer.hentOrganisasjonNoekkelinfo(orgnr);
                 if (noekkelinfo == null) {
-                    log.warn("Kunne ikke hente orgnr fra Ereg: " + orgnr);
+                    log.warn("Kunne ikke hente orgnr fra Ereg: {}", orgnr);
                     return orgnr;
                 }
                 NavnDto navn = noekkelinfo.getNavn();
@@ -33,7 +33,7 @@ public class OrganisasjonService {
                 list.removeAll(asList("", null)); // fjern tomme strenger og null (håndteres som "null")
                 return String.join(", ", list);
             } catch (Exception e) {
-                log.warn("Kunne ikke hente orgnr fra Ereg: " + orgnr, e);
+                log.warn("Kunne ikke hente orgnr fra Ereg: {}", orgnr, e);
                 return orgnr;
             }
         } else {

@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.web.rest.ressurser;
+package no.nav.sosialhjelp.soknad.web.rest.ressurser.informasjon;
 
 import no.nav.sosialhjelp.api.fiks.KommuneInfo;
 import no.nav.sosialhjelp.soknad.business.service.InformasjonService;
@@ -9,7 +9,6 @@ import no.nav.sosialhjelp.soknad.domain.model.oidc.StaticSubjectHandlerService;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import no.nav.sosialhjelp.soknad.domain.model.util.KommuneTilNavEnhetMapper;
 import no.nav.sosialhjelp.soknad.tekster.NavMessageSource;
-import no.nav.sosialhjelp.soknad.web.rest.ressurser.informasjon.InformasjonRessurs;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,11 +19,16 @@ import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -66,8 +70,8 @@ public class InformasjonRessursTest {
     public void miljovariablerInneholderAlleVariableneViTrenger() {
         Map<String, String> miljovariabler = ressurs.hentMiljovariabler();
 
-        assertThat(miljovariabler.containsKey("dittnav.link.url")).isTrue();
-        assertThat(miljovariabler.containsKey("soknad.ettersending.antalldager")).isTrue();
+        assertThat(miljovariabler).containsKey("dittnav.link.url");
+        assertThat(miljovariabler).containsKey("soknad.ettersending.antalldager");
     }
 
     @Test
@@ -124,5 +128,41 @@ public class InformasjonRessursTest {
                 .contains(manueltPaakobletKommune)
                 .contains(digisosKommune)
                 .doesNotContain(deaktivertDigisosKommune);
+    }
+
+    @Test
+    public void skalReturnereMappetListeOverManueltPakobledeKommuner() {
+        List<String> manuelleKommuner = singletonList("1234");
+        Map<String, InformasjonRessurs.KommuneInfoFrontend> mappedeKommuner = ressurs.mapManueltPakobledeKommuner(manuelleKommuner);
+
+        assertNotNull(mappedeKommuner.get("1234"));
+        assertTrue(mappedeKommuner.get("1234").kanMottaSoknader);
+        assertFalse(mappedeKommuner.get("1234").kanOppdatereStatus);
+    }
+
+    @Test
+    public void skalReturnereMappetListeOverDigisosKommuner() {
+        Map<String, KommuneInfo> digisosKommuner = new HashMap<>();
+        digisosKommuner.put("1234", new KommuneInfo("1234", true, true, false, false, null, false, null));
+        Map<String, InformasjonRessurs.KommuneInfoFrontend> mappedeKommuner = ressurs.mapDigisosKommuner(digisosKommuner);
+
+        assertNotNull(mappedeKommuner.get("1234"));
+        assertTrue(mappedeKommuner.get("1234").kanMottaSoknader);
+        assertTrue(mappedeKommuner.get("1234").kanOppdatereStatus);
+    }
+
+    @Test
+    public void duplikatIDigisosKommuneSkalOverskriveManuellKommune() {
+        List<String> manuelleKommuner = singletonList("1234");
+        Map<String, InformasjonRessurs.KommuneInfoFrontend> manueltMappedeKommuner = ressurs.mapManueltPakobledeKommuner(manuelleKommuner);
+        assertFalse(manueltMappedeKommuner.get("1234").kanOppdatereStatus); // Manuelle kommuner får ikke innsyn
+
+        Map<String, KommuneInfo> digisosKommuner = new HashMap<>();
+        digisosKommuner.put("1234", new KommuneInfo("1234", true, true, false, false, null, false, null));
+        Map<String, InformasjonRessurs.KommuneInfoFrontend> mappedeDigisosKommuner = ressurs.mapDigisosKommuner(digisosKommuner);
+
+        Map<String, InformasjonRessurs.KommuneInfoFrontend> margedKommuner = ressurs.mergeManuelleKommunerMedDigisosKommuner(manueltMappedeKommuner, mappedeDigisosKommuner);
+        assertThat(margedKommuner).hasSize(1);
+        assertTrue(margedKommuner.get("1234").kanOppdatereStatus);
     }
 }
