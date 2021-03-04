@@ -51,7 +51,6 @@
     "SECURITYTOKENSERVICE_URL": "https://sts.oera.no/SecurityTokenServiceProvider/",
     "SERVICEGATEWAY_URL": "https://service-gw.oera.no/",
     "SOKNADSOSIALHJELPDATASOURCE_URL": "jdbc:oracle:thin:@a30dbfl005.oera.no:1521/soknadsosialhjelp",
-    "SOKNAD_ALTERNATIVREPRESENTASJON_RESSURS_ENABLED": "false",
     "SOKNAD_BOSTOTTE_URL": "https://api.husbanken.no/bostotte/minbostotte",
     "SOKNAD_BOSTOTTE_PING_URL": "https://api.husbanken.no/bostotte/minbostotte/ping",
     "SOKNAD_ETTERSENDING_ANTALLDAGER": "300",
