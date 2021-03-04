@@ -3,7 +3,7 @@ package no.nav.sosialhjelp.soknad.web.saml;
 import no.nav.brukerdialog.security.domain.IdentType;
 import no.nav.common.auth.SsoToken;
 import no.nav.common.auth.Subject;
-import no.nav.sbl.rest.RestUtils;
+import no.nav.sosialhjelp.soknad.consumer.common.rest.RestUtils;
 import no.nav.sosialhjelp.soknad.domain.model.exception.SamlUnauthorizedException;
 
 import javax.ws.rs.client.Client;
@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 import static java.util.stream.Collectors.toMap;
-import static no.nav.sbl.rest.RestUtils.DEFAULT_CONFIG;
+import static no.nav.sosialhjelp.soknad.consumer.common.rest.RestUtils.DEFAULT_CONFIG;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 public class OpenAMUserInfoService {
