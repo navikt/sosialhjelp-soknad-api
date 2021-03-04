@@ -140,6 +140,7 @@ public class PdlConsumerImpl implements PdlConsumer {
     }
 
     @Override
+    @Cacheable(value = "pdlAdressebeskyttelseCache", key = "#ident")
     public PdlAdressebeskyttelse hentAdressebeskyttelse(String ident) {
         String query = PdlApiQuery.HENT_PERSON_ADRESSEBESKYTTELSE;
         try {

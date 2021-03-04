@@ -11,7 +11,6 @@ import no.nav.sosialhjelp.soknad.domain.model.NavFodselsnummer;
 import no.nav.sosialhjelp.soknad.domain.model.Person;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -110,7 +109,6 @@ public class PdlService {
         return null;
     }
 
-    @Cacheable(value = "pdlAdressebeskyttelseCache", key = "#ident")
     public Gradering hentAdressebeskyttelse(String ident) {
         var pdlAdressebeskyttelse = pdlConsumer.hentAdressebeskyttelse(ident);
 
