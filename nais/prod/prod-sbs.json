@@ -36,7 +36,6 @@
     "DKIF_API_BASEURL": "https://api-gw.oera.no/dkif/api/",
     "EKSTERNAPP_SKATT_DATASAMARBEID_API_INNTEKTSMOTTAKER_URL": "https://api-gw.oera.no/ekstern/skatt/datasamarbeid/api/innrapportert/inntektsmottaker/",
     "EKSTERN_KS_SVARUT_V1_ENDPOINTURL": "https://pep-gw.oera.no:9443/ekstern/ks/svarUt/v1",
-    "EKSTERN_KS_SVARUT_V1_SECURITYTOKEN": "SAML",
     "EKSTERN_KS_SVARUT_V1_WSDLURL": "http://maven.adeo.no/nexus/content/groups/public/no/nav/tjenester/ekstern-ks-svarUt-tjenestespesifikasjon/1.0.1/ekstern-ks-svarUt-tjenestespesifikasjon-1.0.1.zip",
     "EREG_API_BASEURL": "https://api-gw.oera.no/ereg/api/",
     "FIKS_NOKKELFIL": "svarut_public_prod.pem",
