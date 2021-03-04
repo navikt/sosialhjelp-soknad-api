@@ -123,7 +123,7 @@ public class InformasjonRessurs {
 
     @GET
     @Path("/utslagskriterier/sosialhjelp")
-    public Map<String, Object> hentAdresse() {
+    public Map<String, Object> getUtslagskriterier() {
         String uid = SubjectHandler.getUserId();
         var adressebeskyttelse = pdlService.hentAdressebeskyttelse(uid);
 
