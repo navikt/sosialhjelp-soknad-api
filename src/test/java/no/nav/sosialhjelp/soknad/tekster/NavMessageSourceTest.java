@@ -63,7 +63,7 @@ public class NavMessageSourceTest {
     @Test
     public void skalIkkeHenteAndreSoknadersTekster() {
         Properties properties = messageSource.getBundleFor("sendsoknad", new Locale("nb", "NO"));
-        assertFalse(properties.containsKey("foreldrepenger.key"));
+        assertFalse(properties.containsKey("annen.key"));
     }
 
     @Test
