@@ -2,7 +2,6 @@ package no.nav.sosialhjelp.soknad.consumer.pdl.person;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.AdressebeskyttelseDto;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.BostedsadresseDto;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.ForelderBarnRelasjonDto;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.KontaktadresseDto;
@@ -14,8 +13,6 @@ import no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.StatsborgerskapDto;
 import java.util.List;
 
 public class PdlPerson {
-
-    private final List<AdressebeskyttelseDto> adressebeskyttelse;
 
     private final List<BostedsadresseDto> bostedsadresse;
 
@@ -33,7 +30,6 @@ public class PdlPerson {
 
     @JsonCreator
     public PdlPerson(
-            @JsonProperty("adressebeskyttelse") List<AdressebeskyttelseDto> adressebeskyttelse,
             @JsonProperty("bostedsadresse") List<BostedsadresseDto> bostedsadresse,
             @JsonProperty("oppholdsadresse") List<OppholdsadresseDto> oppholdsadresse,
             @JsonProperty("kontaktadresse") List<KontaktadresseDto> kontaktadresse,
@@ -42,7 +38,6 @@ public class PdlPerson {
             @JsonProperty("sivilstand") List<SivilstandDto> sivilstand,
             @JsonProperty("statsborgerskap") List<StatsborgerskapDto> statsborgerskap
     ) {
-        this.adressebeskyttelse = adressebeskyttelse;
         this.bostedsadresse = bostedsadresse;
         this.oppholdsadresse = oppholdsadresse;
         this.kontaktadresse = kontaktadresse;
@@ -50,10 +45,6 @@ public class PdlPerson {
         this.navn = navn;
         this.sivilstand = sivilstand;
         this.statsborgerskap = statsborgerskap;
-    }
-
-    public List<AdressebeskyttelseDto> getAdressebeskyttelse() {
-        return adressebeskyttelse;
     }
 
     public List<BostedsadresseDto> getBostedsadresse() {

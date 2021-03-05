@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.AdressebeskyttelseDto;
 import org.apache.cxf.helpers.IOUtils;
 import org.junit.Test;
 
@@ -25,11 +24,12 @@ public class PdlPersonResponseTest {
     public void deserialiseringAvPdlPersonResponseJson() throws IOException {
         InputStream resourceAsStream = ClassLoader.getSystemResourceAsStream("pdl/pdlPersonResponse.json");
         assertThat(resourceAsStream).isNotNull();
-        String jsonString = IOUtils.toString(resourceAsStream);
+        var jsonString = IOUtils.toString(resourceAsStream);
 
-        HentPersonResponse<PdlPerson> pdlPersonResponse = mapper.readValue(jsonString, new TypeReference<HentPersonResponse<PdlPerson>>() {});
+        var pdlPersonResponse = mapper.readValue(jsonString, new TypeReference<HentPersonResponse<PdlPerson>>() {});
 
         assertNotNull(pdlPersonResponse);
-        assertEquals(AdressebeskyttelseDto.Gradering.UGRADERT, pdlPersonResponse.getData().getHentPerson().getAdressebeskyttelse().get(0).getGradering());
+        assertEquals("TEST", pdlPersonResponse.getData().getHentPerson().getNavn().get(0).getFornavn());
+        assertEquals("PERSON", pdlPersonResponse.getData().getHentPerson().getNavn().get(0).getEtternavn());
     }
 }

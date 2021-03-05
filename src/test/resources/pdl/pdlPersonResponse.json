@@ -1,11 +1,6 @@
 {
   "data": {
     "hentPerson": {
-      "adressebeskyttelse": [
-        {
-          "gradering": "UGRADERT"
-        }
-      ],
       "bostedsadresse": [
         {
           "coAdressenavn": null,
