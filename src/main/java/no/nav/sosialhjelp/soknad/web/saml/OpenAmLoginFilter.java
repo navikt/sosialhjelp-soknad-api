@@ -1,7 +1,5 @@
 package no.nav.sosialhjelp.soknad.web.saml;
 
-import no.nav.common.auth.Subject;
-import no.nav.common.auth.SubjectHandler;
 import no.nav.sosialhjelp.soknad.domain.model.exception.SamlUnauthorizedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

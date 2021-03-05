@@ -1,7 +1,5 @@
 package no.nav.sosialhjelp.soknad.web.saml;
 
-import no.nav.common.auth.SubjectHandler;
-
 import java.util.Optional;
 
 public final class SamlSubjectHandler {
