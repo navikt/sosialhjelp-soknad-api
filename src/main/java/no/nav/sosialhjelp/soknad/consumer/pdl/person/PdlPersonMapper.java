@@ -47,8 +47,6 @@ import static no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.SivilstandDto.Si
 @Component
 public class PdlPersonMapper {
 
-    public static final String KODE_6 = "SPSF";
-    public static final String KODE_7 = "SPFO";
     static final String NOR = "NOR";
     static final String DOED = "DOED";
 

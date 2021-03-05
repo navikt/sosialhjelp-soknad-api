@@ -36,7 +36,6 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static java.util.Arrays.asList;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.AdressebeskyttelseDto.Gradering.FORTROLIG;
 import static no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.AdressebeskyttelseDto.Gradering.STRENGT_FORTROLIG;
@@ -57,9 +56,6 @@ public class InformasjonRessurs {
 
     private static final Logger logger = LoggerFactory.getLogger(InformasjonRessurs.class);
     private static final Logger klientlogger = LoggerFactory.getLogger("klientlogger");
-    private static final String KODE_6 = "SPSF";
-    private static final String KODE_7 = "SPFO";
-    private static final List<String> DISKRESJONSKODER = asList("6", "7", KODE_6, KODE_7);
 
     private final InformasjonService informasjon;
     private final NavMessageSource messageSource;
