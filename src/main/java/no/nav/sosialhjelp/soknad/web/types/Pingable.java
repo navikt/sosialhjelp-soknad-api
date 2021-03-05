@@ -1,7 +1,6 @@
 package no.nav.sosialhjelp.soknad.web.types;
 
 import java.io.Serializable;
-import java.util.UUID;
 
 /*
 Kopiert inn fra no.nav.sbl.dialogarena:common-types
@@ -131,7 +130,6 @@ public interface Pingable {
          * Metadata om en pingable.
          */
         public static class PingMetadata {
-            String id;
             String endepunkt;
             String beskrivelse;
             boolean kritisk;
@@ -139,7 +137,6 @@ public interface Pingable {
             /**
              * Metadata om en pingable.
              *
-             * @param id          Unik id for pingable
              * @param endepunkt   Presis beskrivelse av endepunktet som kalles. Eksempelvis full URI ved SOAP/REST-kall,
              *                    database connection-string e.l.
              * @param beskrivelse En kort beskrivelse av hva selftesten gjør. Denne beskrivelsen bør være god nok til at
@@ -148,20 +145,10 @@ public interface Pingable {
              *                    fint kan kjøre selv om tjenesten er nede. Har en selftest ingen kritiske feil vil den
              *                    kun returnere warning i stede for error.
              */
-            public PingMetadata(String id, String endepunkt, String beskrivelse, boolean kritisk) {
-                this.id = id;
+            public PingMetadata(String endepunkt, String beskrivelse, boolean kritisk) {
                 this.endepunkt = endepunkt;
                 this.beskrivelse = beskrivelse;
                 this.kritisk = kritisk;
-            }
-
-            @Deprecated
-            public PingMetadata(String endepunkt, String beskrivelse, boolean kritisk) {
-                this(UUID.randomUUID().toString(), endepunkt, beskrivelse, kritisk);
-            }
-
-            public String getId() {
-                return id;
             }
 
             public String getEndepunkt() {

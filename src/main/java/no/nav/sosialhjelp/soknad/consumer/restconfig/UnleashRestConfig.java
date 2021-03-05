@@ -45,7 +45,7 @@ public class UnleashRestConfig {
     @Bean
     public Pingable unleashRestPing(ToggleFetcher unleashToggleFetcher) {
         return () -> {
-            PingMetadata metadata = new PingMetadata("unleash_ping", endpoint, "Unleash", false);
+            PingMetadata metadata = new PingMetadata(endpoint, "Unleash", false);
             try {
                 Status status = unleashToggleFetcher.fetchToggles().getStatus();
                 if (status == CHANGED || status == NOT_CHANGED) {
