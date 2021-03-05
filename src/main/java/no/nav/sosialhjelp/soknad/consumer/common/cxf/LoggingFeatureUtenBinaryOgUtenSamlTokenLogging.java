@@ -3,18 +3,19 @@ package no.nav.sosialhjelp.soknad.consumer.common.cxf;
 /* Originally from common-java-modules (no.nav.sbl.dialogarena.common.cxf) */
 
 import org.apache.cxf.Bus;
+import org.apache.cxf.ext.logging.LoggingInInterceptor;
 import org.apache.cxf.feature.AbstractFeature;
 import org.apache.cxf.interceptor.AttachmentInInterceptor;
 import org.apache.cxf.interceptor.AttachmentOutInterceptor;
 import org.apache.cxf.interceptor.InterceptorProvider;
-import org.apache.cxf.interceptor.LoggingInInterceptor;
 
 public class LoggingFeatureUtenBinaryOgUtenSamlTokenLogging extends AbstractFeature {
 
     private static final int DEFAULT_LIMIT = 64 * 1024;
-    private static final LoggingInInterceptor IN = new LoggingInInterceptor(DEFAULT_LIMIT);
+    private static final LoggingInInterceptor IN = new LoggingInInterceptor();
     private static final CXFMaskSAMLTokenLoggingOutInterceptor OUT = new CXFMaskSAMLTokenLoggingOutInterceptor(DEFAULT_LIMIT);
     static {
+        IN.setLimit(DEFAULT_LIMIT);
         IN.addAfter(AttachmentInInterceptor.class.getName());
         OUT.addAfter(AttachmentOutInterceptor.class.getName());
     }
