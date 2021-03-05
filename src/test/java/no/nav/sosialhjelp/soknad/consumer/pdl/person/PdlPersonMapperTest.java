@@ -29,14 +29,11 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static no.nav.common.utils.CollectionUtils.listOf;
 import static no.nav.sosialhjelp.soknad.consumer.pdl.person.PdlPersonMapper.DOED;
-import static no.nav.sosialhjelp.soknad.consumer.pdl.person.PdlPersonMapper.KODE_6;
-import static no.nav.sosialhjelp.soknad.consumer.pdl.person.PdlPersonMapper.KODE_7;
 import static no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.AdressebeskyttelseDto.Gradering.STRENGT_FORTROLIG;
 import static no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.AdressebeskyttelseDto.Gradering.UGRADERT;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -88,7 +85,6 @@ public class PdlPersonMapperTest {
     @Test
     public void fulltUtfyltPerson() {
         PdlPerson pdlPerson = new PdlPerson(
-                listOf(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT)),
                 listOf(new BostedsadresseDto(null, new VegadresseDto("matrikkelId", "gateveien", 1, "A", "tilleggsnavn", "1234", "1212", "U123123"), null, null)),
                 listOf(new OppholdsadresseDto(null, "Test McTest", new VegadresseDto("111", "midlertidig", 1, "A", null, "1234", "1212", null), null, null)),
                 listOf(new KontaktadresseDto("Innland", null, new VegadresseDto("222", "kontaktveien", 1, "A", null, "2222", "3333", null), null, null)),
@@ -101,7 +97,6 @@ public class PdlPersonMapperTest {
         Person person = mapper.mapToPerson(pdlPerson, IDENT);
 
         assertNotNull(person);
-        assertThat(person.getDiskresjonskode(), is(nullValue()));
         assertThat(person.getFornavn(), is(FORNAVN.toUpperCase()));
         assertThat(person.getMellomnavn(), is(MELLOMNAVN.toUpperCase()));
         assertThat(person.getEtternavn(), is(ETTERNAVN.toUpperCase()));
@@ -128,37 +123,8 @@ public class PdlPersonMapperTest {
     }
 
     @Test
-    public void personMedAdressebeskyttelse() {
-        PdlPerson nullAdressebeskyttelse = createPdlPersonMedAdressebeskyttelse(null);
-        PdlPerson tomAdressebeskyttelse = createPdlPersonMedAdressebeskyttelse(emptyList());
-        PdlPerson ugradert = createPdlPersonMedAdressebeskyttelse(listOf(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT)));
-        PdlPerson kode6 = createPdlPersonMedAdressebeskyttelse(listOf(new AdressebeskyttelseDto(STRENGT_FORTROLIG)));
-        PdlPerson kode7 = createPdlPersonMedAdressebeskyttelse(listOf(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.FORTROLIG)));
-        PdlPerson listeMedUgradertOgkode7 = createPdlPersonMedAdressebeskyttelse(listOf(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT), new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.FORTROLIG)));
-
-        Person nullAdressebeskyttelsePerson = mapper.mapToPerson(nullAdressebeskyttelse, IDENT);
-        Person tomAdressebeskyttelsePerson = mapper.mapToPerson(tomAdressebeskyttelse, IDENT);
-        Person ugradertPerson = mapper.mapToPerson(ugradert, IDENT);
-        Person kode6Person = mapper.mapToPerson(kode6, IDENT);
-        Person kode7Person = mapper.mapToPerson(kode7, IDENT);
-        Person listeMedUgradertOgkode7Person = mapper.mapToPerson(listeMedUgradertOgkode7, IDENT);
-
-        assertNull(nullAdressebeskyttelsePerson.getDiskresjonskode());
-        assertNull(tomAdressebeskyttelsePerson.getDiskresjonskode());
-        assertNull(ugradertPerson.getDiskresjonskode());
-        assertThat(kode6Person.getDiskresjonskode(), is(KODE_6));
-        assertThat(kode7Person.getDiskresjonskode(), is(KODE_7));
-        assertThat(listeMedUgradertOgkode7Person.getDiskresjonskode(), is(KODE_7));
-    }
-
-    private PdlPerson createPdlPersonMedAdressebeskyttelse(List<AdressebeskyttelseDto> adressebeskyttelse) {
-        return new PdlPerson(adressebeskyttelse, emptyList(), emptyList(), emptyList(), emptyList(), emptyList(), emptyList(), emptyList());
-    }
-
-    @Test
     public void personMedMatrikkeladresseBostedsadresse() {
         PdlPerson pdlPerson = new PdlPerson(
-                listOf(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT)),
                 listOf(new BostedsadresseDto(null, null, new MatrikkeladresseDto("matrikkelid", "1111", null, "1111", null), null)),
                 null, // ingen oppholdsadresse
                 null, // ingen kontaktadresse
@@ -179,7 +145,6 @@ public class PdlPersonMapperTest {
     @Test
     public void personMedUkjentBosted() {
         PdlPerson pdlPerson = new PdlPerson(
-                listOf(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT)),
                 listOf(new BostedsadresseDto(null, null, null, new UkjentBostedDto("Oslo"))),
                 null, // ingen oppholdsadresse
                 null, // ingen kontaktadresse
@@ -198,7 +163,6 @@ public class PdlPersonMapperTest {
     @Test
     public void personMedOppholdsadresseUtenVegadresse() {
         PdlPerson pdlPerson = new PdlPerson(
-                listOf(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT)),
                 listOf(new BostedsadresseDto(null, new VegadresseDto("matrikkelId", "gateveien", 1, "A", "tilleggsnavn", "1234", "1212", "U123123"), null, null)),
                 listOf(new OppholdsadresseDto("oppholdAnnetSted", null, null, null, null)),
                 null, // ingen kontaktadresse
@@ -220,7 +184,6 @@ public class PdlPersonMapperTest {
         var annenVegadresse = new VegadresseDto("matrikkelId2", "stien", 2, "B", null, "1234", "1212", null);
 
         PdlPerson pdlPerson = new PdlPerson(
-                listOf(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT)),
                 listOf(new BostedsadresseDto(null, vegadresse, null, null)),
                 listOf(
                         new OppholdsadresseDto(null, null, vegadresse, null, null),
@@ -249,7 +212,6 @@ public class PdlPersonMapperTest {
         var annenVegadresse = new VegadresseDto("matrikkelId2", "stien", 2, "B", null, "1234", "1212", null);
 
         PdlPerson pdlPerson = new PdlPerson(
-                listOf(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT)),
                 listOf(new BostedsadresseDto(null, vegadresse, null, null)),
                 null, // ingen oppholdsadresse
                 listOf(
@@ -278,7 +240,6 @@ public class PdlPersonMapperTest {
         var vegadresseUtenKommunenummer = new VegadresseDto("matrikkelId", "gateveien", 1, "A", null, "1234", null, null);
 
         PdlPerson pdlPerson = new PdlPerson(
-                listOf(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT)),
                 listOf(new BostedsadresseDto(null, vegadresse, null, null)),
                 null, // ingen oppholdsadresse
                 listOf(new KontaktadresseDto("Innland", null, vegadresseUtenKommunenummer, null, null)),
@@ -300,7 +261,6 @@ public class PdlPersonMapperTest {
     @Test
     public void fulltUtfyltEktefelle() {
         PdlPerson pdlPerson = new PdlPerson(
-                listOf(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT)),
                 listOf(new BostedsadresseDto(null, new VegadresseDto("matrikkelId", "gateveien", 1, "A", "tilleggsnavn", "1234", "1212", "U123123"), null, null)),
                 null, // Ingen oppholdsadresse
                 null, // ingen kontaktadresse
@@ -332,7 +292,6 @@ public class PdlPersonMapperTest {
     @Test
     public void ektefelleOgPersonErIkkeFolkeregistrertSammenMedUlikMatrikkelId() {
         PdlPerson pdlPerson = new PdlPerson(
-                listOf(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT)),
                 listOf(new BostedsadresseDto(null, new VegadresseDto("matrikkelId", "gateveien", 1, "A", "tilleggsnavn", "1234", "1212", "U123123"), null, null)),
                 null, // Ingen oppholdsadresse
                 null, // ingen kontaktadresse
@@ -358,7 +317,6 @@ public class PdlPersonMapperTest {
     @Test
     public void ektefelleOgPersonErFolkeregistrertSammenUtenMatrikkelId() {
         PdlPerson pdlPerson = new PdlPerson(
-                listOf(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT)),
                 listOf(new BostedsadresseDto(null, new VegadresseDto(null, "gateveien", 1, "A", "tilleggsnavn", "1234", "1212", "U123123"), null, null)),
                 null, // Ingen oppholdsadresse
                 null, // ingen kontaktadresse
@@ -384,7 +342,6 @@ public class PdlPersonMapperTest {
     @Test
     public void ektefelleMedAdressebeskyttelse() {
         PdlPerson pdlPerson = new PdlPerson(
-                listOf(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT)),
                 listOf(new BostedsadresseDto(null, new VegadresseDto("matrikkelId", "gateveien", 1, "A", "tilleggsnavn", "1234", "1212", "U123123"), null, null)),
                 null, // Ingen oppholdsadresse
                 null, // ingen kontaktadresse
@@ -416,7 +373,6 @@ public class PdlPersonMapperTest {
     @Test
     public void ektefelleNull() {
         PdlPerson pdlPerson = new PdlPerson(
-                listOf(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT)),
                 listOf(new BostedsadresseDto(null, new VegadresseDto("matrikkelId", "gateveien", 1, "A", "tilleggsnavn", "1234", "1212", "U123123"), null, null)),
                 null, // Ingen oppholdsadresse
                 null, // ingen kontaktadresse
@@ -434,7 +390,6 @@ public class PdlPersonMapperTest {
     @Test
     public void ektefelleOgPersonNullAdresse() {
         PdlPerson pdlPerson = new PdlPerson(
-                listOf(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT)),
                 null, // Ingen bostedsadresse
                 null, // Ingen oppholdsadresse
                 null, // ingen kontaktadresse
@@ -459,7 +414,6 @@ public class PdlPersonMapperTest {
     @Test
     public void ektefelleOgPersonTomAdresse() {
         PdlPerson pdlPerson = new PdlPerson(
-                listOf(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT)),
                 emptyList(),
                 null, // Ingen oppholdsadresse
                 null, // ingen kontaktadresse
@@ -484,7 +438,6 @@ public class PdlPersonMapperTest {
     @Test
     public void ektefelleOgPersonMatrikkelAdresse() {
         PdlPerson pdlPerson = new PdlPerson(
-                listOf(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT)),
                 listOf(new BostedsadresseDto(null, null, new MatrikkeladresseDto("matrikkelId", "postnr", "tillegg", "kommunenr", "bruksenhetsnr"), null)),
                 null, // Ingen oppholdsadresse
                 null, // ingen kontaktadresse
@@ -509,7 +462,6 @@ public class PdlPersonMapperTest {
     @Test
     public void fulltUtfyltBarn() {
         PdlPerson pdlPerson = new PdlPerson(
-                listOf(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT)),
                 listOf(new BostedsadresseDto(null, new VegadresseDto("matrikkelId", "gateveien", 1, "A", "tilleggsnavn", "1234", "1212", "U123123"), null, null)),
                 null, // Ingen oppholdsadresse
                 null, // ingen kontaktadresse
@@ -541,7 +493,6 @@ public class PdlPersonMapperTest {
     @Test
     public void barnMedAdressebeskyttelse() {
         PdlPerson pdlPerson = new PdlPerson(
-                listOf(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT)),
                 listOf(new BostedsadresseDto(null, new VegadresseDto("matrikkelId", "gateveien", 1, "A", "tilleggsnavn", "1234", "1212", "U123123"), null, null)),
                 null, // Ingen oppholdsadresse
                 null, // ingen kontaktadresse
@@ -567,7 +518,6 @@ public class PdlPersonMapperTest {
     @Test
     public void barnDoed() {
         PdlPerson pdlPerson = new PdlPerson(
-                listOf(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT)),
                 listOf(new BostedsadresseDto(null, new VegadresseDto("matrikkelId", "gateveien", 1, "A", "tilleggsnavn", "1234", "1212", "U123123"), null, null)),
                 null, // Ingen oppholdsadresse
                 null, // ingen kontaktadresse
@@ -593,7 +543,6 @@ public class PdlPersonMapperTest {
     @Test
     public void barnMyndig() {
         PdlPerson pdlPerson = new PdlPerson(
-                listOf(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT)),
                 listOf(new BostedsadresseDto(null, new VegadresseDto("matrikkelId", "gateveien", 1, "A", "tilleggsnavn", "1234", "1212", "U123123"), null, null)),
                 null, // Ingen oppholdsadresse
                 null, // ingen kontaktadresse
@@ -619,7 +568,6 @@ public class PdlPersonMapperTest {
     @Test
     public void barnOgPersonNullAdresse() {
         PdlPerson pdlPerson = new PdlPerson(
-                listOf(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT)),
                 null, // Ingen bostedsadresse
                 null, // Ingen oppholdsadresse
                 null, // ingen kontaktadresse
@@ -645,7 +593,6 @@ public class PdlPersonMapperTest {
     @Test
     public void barnOgPersonTomAdresseliste() {
         PdlPerson pdlPerson = new PdlPerson(
-                listOf(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT)),
                 emptyList(),
                 null, // Ingen oppholdsadresse
                 null, // ingen kontaktadresse

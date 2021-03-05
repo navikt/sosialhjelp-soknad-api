@@ -84,7 +84,6 @@ public class PdlPersonMapper {
                 .withFnr(ident)
                 .withSivilstatus(findSivilstatus(pdlPerson.getSivilstand()))
                 .withStatsborgerskap(findStatsborgerskap(pdlPerson.getStatsborgerskap()))
-                .withDiskresjonskode(findAdressebeskyttelse(pdlPerson.getAdressebeskyttelse()))
                 .withBostedsadresse(mapToBostedsadresse(pdlPerson.getBostedsadresse()))
                 .withOppholdsadresse(mapToOppholdssadresse(pdlPerson.getOppholdsadresse(), pdlPerson.getBostedsadresse()))
                 .withKontaktadresse(maptoKontaktadresse(pdlPerson.getKontaktadresse(), pdlPerson.getBostedsadresse()));
@@ -185,33 +184,10 @@ public class PdlPersonMapper {
         return list.isEmpty() ? List.of(NOR) : list;
     }
 
-    private String findAdressebeskyttelse(List<AdressebeskyttelseDto> adressebeskyttelse) {
-        if (adressebeskyttelse == null) {
-            return null;
-        }
-        return adressebeskyttelse.stream()
-                .filter(dto -> dto.getGradering() != UGRADERT)
-                .findFirst()
-                .map(dto -> mapToDiskresjonskode(dto.getGradering()))
-                .orElse(null);
-    }
-
     private boolean hasAdressebeskyttelse(List<AdressebeskyttelseDto> adressebeskyttelse) {
         return adressebeskyttelse != null
                 && !adressebeskyttelse.isEmpty()
                 && !adressebeskyttelse.stream().allMatch(adressebeskyttelseDto -> UGRADERT.equals(adressebeskyttelseDto.getGradering()));
-    }
-
-    private String mapToDiskresjonskode(Gradering gradering) {
-        if (gradering == Gradering.UGRADERT) {
-            return null;
-        } else if (gradering == Gradering.STRENGT_FORTROLIG || gradering == Gradering.STRENGT_FORTROLIG_UTLAND) {
-            return KODE_6;
-        } else if (gradering == Gradering.FORTROLIG) {
-            return KODE_7;
-        } else {
-            return null;
-        }
     }
 
     private boolean isFolkeregistrertSammen(List<BostedsadresseDto> personBostedsadresse, List<BostedsadresseDto> barnEllerEktefelleBostedsadresse) {

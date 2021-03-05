@@ -8,7 +8,6 @@ public class Person {
     private String etternavn;
     private String fnr;
     private String sivilstatus;
-    private String diskresjonskode;
     private List<String> statsborgerskap;
     private Ektefelle ektefelle;
     private Bostedsadresse bostedsadresse;
@@ -33,10 +32,6 @@ public class Person {
 
     public String getSivilstatus() {
         return sivilstatus;
-    }
-
-    public String getDiskresjonskode() {
-        return diskresjonskode;
     }
 
     public List<String> getStatsborgerskap() {
@@ -81,11 +76,6 @@ public class Person {
 
     public Person withSivilstatus(String sivilstatus) {
         this.sivilstatus = sivilstatus;
-        return this;
-    }
-
-    public Person withDiskresjonskode(String diskresjonskode) {
-        this.diskresjonskode = diskresjonskode;
         return this;
     }
 

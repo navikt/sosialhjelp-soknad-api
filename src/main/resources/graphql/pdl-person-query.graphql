@@ -37,9 +37,6 @@ fragment matrikkeladresse on Matrikkeladresse {
 
 query($ident: ID!, $historikk: Boolean!) {
     hentPerson(ident: $ident) {
-        adressebeskyttelse(historikk: $historikk) {
-            gradering
-        }
         bostedsadresse(historikk: $historikk) {
             coAdressenavn
             vegadresse {

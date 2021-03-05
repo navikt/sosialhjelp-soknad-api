@@ -104,7 +104,6 @@ public class PdlConsumerMock {
 
     private static PdlPerson createPdlPerson(PdlMockResponse response) {
         return new PdlPerson(
-                singletonList(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT)),
                 singletonList(defaultBostedsadresse()),
                 emptyList(), // ingen oppholdsadresse
                 singletonList(new KontaktadresseDto("Innland", null, new VegadresseDto(null, "midlertidig adresse gate", 1, "D", null, "0471", "Oslo", null), null, null)),
@@ -180,7 +179,6 @@ public class PdlConsumerMock {
 
     private static PdlPerson defaultPerson() {
         return new PdlPerson(
-                singletonList(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT)),
                 singletonList(new BostedsadresseDto(null, new VegadresseDto("123123", "GATEVEIEN", 1, "A", null, "0690", "0301", null), null, null)),
                 emptyList(), // ingen oppholdsadresse
                 singletonList(new KontaktadresseDto("Innland", null, new VegadresseDto(null, "midlertidig adresse gate", 1, "D", null, "0471", "Oslo", null), null, null)),
