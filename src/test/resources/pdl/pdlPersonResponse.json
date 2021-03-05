@@ -38,16 +38,12 @@
               {
                 "kilde": "Dolly",
                 "registrert": "2020-10-20T12:08:06",
-                "registrertAv": "Folkeregisteret",
-                "systemkilde": "FREG",
                 "type": "OPPRETT"
               }
             ]
           },
           "folkeregistermetadata": {
             "ajourholdstidspunkt": "2020-10-20T12:08:06",
-            "gyldighetstidspunkt": "2020-10-20T12:08:06",
-            "opphoerstidspunkt": null,
             "kilde": "Dolly"
           }
         }
@@ -72,16 +68,12 @@
               {
                 "kilde": "Dolly",
                 "registrert": "2020-10-20T12:06",
-                "registrertAv": "Folkeregisteret",
-                "systemkilde": "FREG",
                 "type": "OPPRETT"
               }
             ]
           },
           "folkeregistermetadata": {
             "ajourholdstidspunkt": "2020-10-20T12:06",
-            "gyldighetstidspunkt": "2020-10-20T12:06",
-            "opphoerstidspunkt": "2021-08-14T00:00",
             "kilde": "Dolly"
           }
         }
@@ -104,16 +96,12 @@
               {
                 "kilde": "Dolly",
                 "registrert": "2020-10-20T12:08:06",
-                "registrertAv": "Folkeregisteret",
-                "systemkilde": "FREG",
                 "type": "OPPRETT"
               }
             ]
           },
           "folkeregistermetadata": {
             "ajourholdstidspunkt": "2020-10-20T12:08:06",
-            "gyldighetstidspunkt": "2020-10-20T12:08:06",
-            "opphoerstidspunkt": null,
             "kilde": "Dolly"
           }
         }
@@ -128,16 +116,12 @@
               {
                 "kilde": "Dolly",
                 "registrert": "2020-10-20T12:08:11",
-                "registrertAv": "Folkeregisteret",
-                "systemkilde": "FREG",
                 "type": "OPPRETT"
               }
             ]
           },
           "folkeregistermetadata": {
             "ajourholdstidspunkt": "2020-10-20T12:08:11",
-            "gyldighetstidspunkt": "2020-10-20T12:08:11",
-            "opphoerstidspunkt": null,
             "kilde": "Dolly"
           }
         }

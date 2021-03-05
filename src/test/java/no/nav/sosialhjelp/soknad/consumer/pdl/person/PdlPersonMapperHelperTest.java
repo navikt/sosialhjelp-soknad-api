@@ -185,9 +185,9 @@ public class PdlPersonMapperHelperTest {
 
     @Test
     public void flereSivilstander_enFraFreg_enFraPdlMedFlereEndringerHvorSisteEndringErNyereEnnFreg_nyesteVelges() {
-        var opprettet = new EndringDto("PDL", DEC_1_MORGEN, "", "", "Opprettet");
-        var endring_1 = new EndringDto("PDL", DEC_1_MIDDAG, "", "", "Korriger");
-        var endring_2 = new EndringDto("PDL", DEC_1_KVELD, "", "", "Korriger");
+        var opprettet = new EndringDto("PDL", DEC_1_MORGEN, "Opprettet");
+        var endring_1 = new EndringDto("PDL", DEC_1_MIDDAG, "Korriger");
+        var endring_2 = new EndringDto("PDL", DEC_1_KVELD, "Korriger");
         var endringer = asList(opprettet, endring_1, endring_2);
 
         var sivilstand_fraFreg = createSivilstandMedFolkeregisterMetadata(SivilstandType.SKILT, "Freg", "DSF", DEC_1_MIDDAG, DEC_1_MIDDAG);
@@ -201,9 +201,9 @@ public class PdlPersonMapperHelperTest {
 
     @Test
     public void flereSivilstander_enFraFreg_enFraPdlMedFlereEndringerHvorSisteEndringSamtidigMedFregAjourholdtidspunkt_ingenVelges() {
-        var opprettet = new EndringDto("PDL", DEC_1_MORGEN, "", "", "Opprettet");
-        var endring_1 = new EndringDto("PDL", DEC_1_MIDDAG, "", "", "Korriger");
-        var endring_2 = new EndringDto("PDL", DEC_1_KVELD, "", "", "Korriger");
+        var opprettet = new EndringDto("PDL", DEC_1_MORGEN, "Opprettet");
+        var endring_1 = new EndringDto("PDL", DEC_1_MIDDAG, "Korriger");
+        var endring_2 = new EndringDto("PDL", DEC_1_KVELD, "Korriger");
         var endringer = asList(opprettet, endring_1, endring_2);
 
         var sivilstand_fraFreg = createSivilstandMedFolkeregisterMetadata(SivilstandType.SKILT, "Freg", "DSF", DEC_1_KVELD, DEC_1_KVELD);
@@ -257,11 +257,11 @@ public class PdlPersonMapperHelperTest {
     }
 
     private SivilstandDto createSivilstand(SivilstandType type, String master, String kilde, LocalDateTime registrert) {
-        return createSivilstandMedEndringerOgFolkeregisterMetadata(type, master, singletonList(new EndringDto(kilde, registrert, "", "", "Opprettet")), null);
+        return createSivilstandMedEndringerOgFolkeregisterMetadata(type, master, singletonList(new EndringDto(kilde, registrert, "Opprettet")), null);
     }
 
     private SivilstandDto createSivilstandMedFolkeregisterMetadata(SivilstandType type, String master, String kilde, LocalDateTime registrert, LocalDateTime ajourholdtidspunkt) {
-        return createSivilstandMedEndringerOgFolkeregisterMetadata(type, master, singletonList(new EndringDto(kilde, registrert, "", "", "Opprettet")), ajourholdtidspunkt);
+        return createSivilstandMedEndringerOgFolkeregisterMetadata(type, master, singletonList(new EndringDto(kilde, registrert, "Opprettet")), ajourholdtidspunkt);
     }
 
     private SivilstandDto createSivilstandMedEndringer(SivilstandType type, String master, List<EndringDto> endringer) {
@@ -273,16 +273,16 @@ public class PdlPersonMapperHelperTest {
                 type,
                 null,
                 new MetadataDto(master, endringer),
-                ajourholdtidspunkt != null ? new FolkeregistermetadataDto(ajourholdtidspunkt, null, null, null) : null
+                ajourholdtidspunkt != null ? new FolkeregistermetadataDto(ajourholdtidspunkt, null) : null
         );
     }
 
     private NavnDto createNavn(String fornavn, String master, String kilde, LocalDateTime registrert) {
-        return createNavnMedEndringerOgFolkeregisterMetadata(fornavn, master, singletonList(new EndringDto(kilde, registrert, "", "", "Opprettet")), null);
+        return createNavnMedEndringerOgFolkeregisterMetadata(fornavn, master, singletonList(new EndringDto(kilde, registrert, "Opprettet")), null);
     }
 
     private NavnDto createNavnMedFolkeregisterMetadata(String fornavn, String master, String kilde, LocalDateTime registrert, LocalDateTime ajourholdtidspunkt) {
-        return createNavnMedEndringerOgFolkeregisterMetadata(fornavn, master, singletonList(new EndringDto(kilde, registrert, "", "", "Opprettet")), ajourholdtidspunkt);
+        return createNavnMedEndringerOgFolkeregisterMetadata(fornavn, master, singletonList(new EndringDto(kilde, registrert, "Opprettet")), ajourholdtidspunkt);
     }
 
     private NavnDto createNavnMedEndringerOgFolkeregisterMetadata(String fornavn, String master, List<EndringDto> endringer, LocalDateTime ajourholdtidspunkt) {
@@ -291,7 +291,7 @@ public class PdlPersonMapperHelperTest {
                 "mellomnavn",
                 "etternavn",
                 new MetadataDto(master, endringer),
-                ajourholdtidspunkt != null ? new FolkeregistermetadataDto(ajourholdtidspunkt, null, null, null) : null
+                ajourholdtidspunkt != null ? new FolkeregistermetadataDto(ajourholdtidspunkt, null) : null
         );
     }
 

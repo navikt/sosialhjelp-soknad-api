@@ -219,11 +219,11 @@ public class PdlConsumerMock {
     }
 
     private static MetadataDto defaultMetadata() {
-        return new MetadataDto("FREG", singletonList(new EndringDto("FREG", LocalDateTime.now().minusDays(15), null, null, null)));
+        return new MetadataDto("FREG", singletonList(new EndringDto("FREG", LocalDateTime.now().minusDays(15), null)));
     }
 
     private static FolkeregistermetadataDto defaultFolkeregisterMetadata() {
-        return new FolkeregistermetadataDto(LocalDateTime.now().minusMonths(1), null, null, "FREG");
+        return new FolkeregistermetadataDto(LocalDateTime.now().minusMonths(1), "FREG");
     }
 
     public PdlConsumer pdlConsumerMock() {
