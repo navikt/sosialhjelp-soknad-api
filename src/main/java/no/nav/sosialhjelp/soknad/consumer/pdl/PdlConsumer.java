@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.consumer.pdl;
 
+import no.nav.sosialhjelp.soknad.consumer.pdl.person.PdlAdressebeskyttelse;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.PdlBarn;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.PdlEktefelle;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.PdlPerson;
@@ -11,6 +12,8 @@ public interface PdlConsumer {
     PdlBarn hentBarn(String ident);
 
     PdlEktefelle hentEktefelle(String ident);
+
+    PdlAdressebeskyttelse hentAdressebeskyttelse(String ident);
 
     void ping();
 }

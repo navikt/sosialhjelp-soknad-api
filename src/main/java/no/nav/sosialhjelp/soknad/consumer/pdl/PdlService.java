@@ -4,6 +4,7 @@ import no.nav.sosialhjelp.soknad.consumer.pdl.person.PdlEktefelle;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.PdlPerson;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.PdlPersonMapper;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.PdlPersonMapperHelper;
+import no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.AdressebeskyttelseDto.Gradering;
 import no.nav.sosialhjelp.soknad.domain.model.Barn;
 import no.nav.sosialhjelp.soknad.domain.model.Ektefelle;
 import no.nav.sosialhjelp.soknad.domain.model.NavFodselsnummer;
@@ -106,6 +107,12 @@ public class PdlService {
             }
         }
         return null;
+    }
+
+    public Gradering hentAdressebeskyttelse(String ident) {
+        var pdlAdressebeskyttelse = pdlConsumer.hentAdressebeskyttelse(ident);
+
+        return pdlPersonMapper.mapToAdressebeskyttelse(pdlAdressebeskyttelse);
     }
 
     private boolean erFDAT(String ident) {

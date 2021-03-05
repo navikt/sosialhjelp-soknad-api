@@ -16,8 +16,9 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Objects;
 import java.util.Optional;
 
-import static no.nav.sosialhjelp.soknad.consumer.pdl.person.PdlPersonMapper.KODE_6;
-import static no.nav.sosialhjelp.soknad.consumer.pdl.person.PdlPersonMapper.KODE_7;
+import static no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.AdressebeskyttelseDto.Gradering.FORTROLIG;
+import static no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.AdressebeskyttelseDto.Gradering.STRENGT_FORTROLIG;
+import static no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.AdressebeskyttelseDto.Gradering.STRENGT_FORTROLIG_UTLAND;
 import static no.nav.sosialhjelp.soknad.web.sikkerhet.XsrfGenerator.sjekkXsrfToken;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -73,7 +74,7 @@ public class Tilgangskontroll {
         if (!Objects.equals(fnr, eier)) {
             throw new AuthorizationException("Fnr stemmer ikke overens med eieren til søknaden");
         }
-        verifiserAtBrukerIkkeHarDiskresjonskode(fnr);
+        verifiserAtBrukerIkkeHarAdressebeskyttelse(fnr);
     }
 
     public void verifiserAtBrukerHarTilgang() {
@@ -81,12 +82,12 @@ public class Tilgangskontroll {
         if (Objects.isNull(fnr)) {
             throw new AuthorizationException("Ingen tilgang når fnr ikke er satt");
         }
-        verifiserAtBrukerIkkeHarDiskresjonskode(fnr);
+        verifiserAtBrukerIkkeHarAdressebeskyttelse(fnr);
     }
 
-    private void verifiserAtBrukerIkkeHarDiskresjonskode(String ident) {
-        var person = pdlService.hentPerson(ident);
-        if (person.getDiskresjonskode() != null && (person.getDiskresjonskode().equals(KODE_6) || person.getDiskresjonskode().equals(KODE_7))) {
+    private void verifiserAtBrukerIkkeHarAdressebeskyttelse(String ident) {
+        var adressebeskyttelse = pdlService.hentAdressebeskyttelse(ident);
+        if (FORTROLIG.equals(adressebeskyttelse) || STRENGT_FORTROLIG.equals(adressebeskyttelse) || STRENGT_FORTROLIG_UTLAND.equals(adressebeskyttelse)) {
             throw new AuthorizationException("Bruker har ikke tilgang til søknaden.");
         }
     }

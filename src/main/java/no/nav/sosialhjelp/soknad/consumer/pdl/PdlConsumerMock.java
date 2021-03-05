@@ -3,6 +3,7 @@ package no.nav.sosialhjelp.soknad.consumer.pdl;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import no.nav.sosialhjelp.soknad.consumer.pdl.person.PdlAdressebeskyttelse;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.PdlBarn;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.PdlEktefelle;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.PdlPerson;
@@ -43,6 +44,7 @@ public class PdlConsumerMock {
     private static Map<String, PdlPerson> pdlPersonResponses = new HashMap<>();
     private static Map<String, PdlEktefelle> pdlEktefelleResponses = new HashMap<>();
     private static Map<String, PdlBarn> pdlBarnResponses = new HashMap<>();
+    private static Map<String, PdlAdressebeskyttelse> pdlAdressebeskyttelseResponses = new HashMap<>();
 
     public static PdlPerson getOrCreateCurrentPdlPersonResponse(InvocationOnMock invocationOnMock) {
         PdlPerson response = pdlPersonResponses.get(SubjectHandler.getUserId());
@@ -73,6 +75,15 @@ public class PdlConsumerMock {
             pdlBarnResponses.put(barnFnr, response);
         }
 
+        return response;
+    }
+
+    public static PdlAdressebeskyttelse getOrCreateCurrentPdlAdressebeskyttelseResponse(InvocationOnMock invocationOnMock) {
+        var response = pdlAdressebeskyttelseResponses.get(SubjectHandler.getUserId());
+        if (response == null) {
+            response = defaultAdressebeskyttelse();
+            pdlAdressebeskyttelseResponses.put(SubjectHandler.getUserId(), response);
+        }
         return response;
     }
 
@@ -203,6 +214,12 @@ public class PdlConsumerMock {
         );
     }
 
+    private static PdlAdressebeskyttelse defaultAdressebeskyttelse() {
+        return new PdlAdressebeskyttelse(
+                singletonList(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT))
+        );
+    }
+
     private static MetadataDto defaultMetadata() {
         return new MetadataDto("FREG", singletonList(new EndringDto("FREG", LocalDateTime.now().minusDays(15), null, null, null)));
     }
@@ -220,6 +237,8 @@ public class PdlConsumerMock {
                 .thenAnswer(PdlConsumerMock::getOrCreateCurrentPdlEktefelleResponse);
         when(mock.hentBarn(any()))
                 .thenAnswer(PdlConsumerMock::getOrCreateCurrentPdlBarnResponse);
+        when(mock.hentAdressebeskyttelse(any()))
+                .thenAnswer(PdlConsumerMock::getOrCreateCurrentPdlAdressebeskyttelseResponse);
 
         return mock;
     }

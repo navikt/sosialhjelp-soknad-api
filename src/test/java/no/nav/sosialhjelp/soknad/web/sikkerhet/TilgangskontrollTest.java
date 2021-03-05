@@ -4,8 +4,8 @@ import no.nav.sosialhjelp.soknad.business.db.soknadmetadata.SoknadMetadataReposi
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata;
 import no.nav.sosialhjelp.soknad.business.soknadunderbehandling.SoknadUnderArbeidRepository;
 import no.nav.sosialhjelp.soknad.consumer.pdl.PdlService;
+import no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.AdressebeskyttelseDto;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
-import no.nav.sosialhjelp.soknad.domain.model.Person;
 import no.nav.sosialhjelp.soknad.domain.model.exception.AuthorizationException;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.StaticSubjectHandlerService;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
@@ -20,8 +20,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.util.Optional;
 
 import static no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
-import static no.nav.sosialhjelp.soknad.consumer.pdl.person.PdlPersonMapper.KODE_6;
-import static no.nav.sosialhjelp.soknad.consumer.pdl.person.PdlPersonMapper.KODE_7;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
@@ -55,7 +53,7 @@ public class TilgangskontrollTest {
         String userId = SubjectHandler.getUserId();
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withEier(userId).withJsonInternalSoknad(createEmptyJsonInternalSoknad(userId));
         when(soknadUnderArbeidRepository.hentSoknadOptional(anyString(), anyString())).thenReturn(Optional.of(soknadUnderArbeid));
-        when(pdlService.hentPerson(userId)).thenReturn(personUtenAdressebeskyttelse());
+        when(pdlService.hentAdressebeskyttelse(userId)).thenReturn(AdressebeskyttelseDto.Gradering.UGRADERT);
 
         assertThatNoException().isThrownBy(() -> tilgangskontroll.verifiserBrukerHarTilgangTilSoknad("123"));
     }
@@ -79,7 +77,7 @@ public class TilgangskontrollTest {
         SoknadMetadata metadata = new SoknadMetadata();
         metadata.fnr = userId;
         when(soknadMetadataRepository.hent("123")).thenReturn(metadata);
-        when(pdlService.hentPerson(userId)).thenReturn(personUtenAdressebeskyttelse());
+        when(pdlService.hentAdressebeskyttelse(userId)).thenReturn(AdressebeskyttelseDto.Gradering.UGRADERT);
 
         assertThatNoException().isThrownBy(() -> tilgangskontroll.verifiserBrukerHarTilgangTilMetadata("123"));
     }
@@ -98,28 +96,17 @@ public class TilgangskontrollTest {
     }
 
     @Test(expected = AuthorizationException.class)
-    public void skalFeileHvisBrukerErKode6() {
+    public void skalFeileHvisBrukerHarAdressebeskyttelseStrengtFortrolig() {
         var userId = SubjectHandler.getUserId();
-        when(pdlService.hentPerson(userId)).thenReturn(personMedKode6());
+        when(pdlService.hentAdressebeskyttelse(userId)).thenReturn(AdressebeskyttelseDto.Gradering.STRENGT_FORTROLIG);
         tilgangskontroll.verifiserAtBrukerHarTilgang();
     }
 
     @Test(expected = AuthorizationException.class)
-    public void skalFeileHvisBrukerErKode7() {
+    public void skalFeileHvisBrukerHarAdressebeskyttelseFortrolig() {
         var userId = SubjectHandler.getUserId();
-        when(pdlService.hentPerson(userId)).thenReturn(personMedKode7());
+        when(pdlService.hentAdressebeskyttelse(userId)).thenReturn(AdressebeskyttelseDto.Gradering.FORTROLIG);
         tilgangskontroll.verifiserAtBrukerHarTilgang();
     }
 
-    private Person personUtenAdressebeskyttelse() {
-        return new Person().withDiskresjonskode(null);
-    }
-
-    private Person personMedKode6() {
-        return new Person().withDiskresjonskode(KODE_6);
-    }
-
-    private Person personMedKode7() {
-        return new Person().withDiskresjonskode(KODE_7);
-    }
 }

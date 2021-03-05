@@ -37,6 +37,8 @@ import static no.nav.common.utils.CollectionUtils.listOf;
 import static no.nav.sosialhjelp.soknad.consumer.pdl.person.PdlPersonMapper.DOED;
 import static no.nav.sosialhjelp.soknad.consumer.pdl.person.PdlPersonMapper.KODE_6;
 import static no.nav.sosialhjelp.soknad.consumer.pdl.person.PdlPersonMapper.KODE_7;
+import static no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.AdressebeskyttelseDto.Gradering.STRENGT_FORTROLIG;
+import static no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.AdressebeskyttelseDto.Gradering.UGRADERT;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.emptyString;
 import static org.hamcrest.Matchers.hasSize;
@@ -130,7 +132,7 @@ public class PdlPersonMapperTest {
         PdlPerson nullAdressebeskyttelse = createPdlPersonMedAdressebeskyttelse(null);
         PdlPerson tomAdressebeskyttelse = createPdlPersonMedAdressebeskyttelse(emptyList());
         PdlPerson ugradert = createPdlPersonMedAdressebeskyttelse(listOf(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT)));
-        PdlPerson kode6 = createPdlPersonMedAdressebeskyttelse(listOf(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.STRENGT_FORTROLIG)));
+        PdlPerson kode6 = createPdlPersonMedAdressebeskyttelse(listOf(new AdressebeskyttelseDto(STRENGT_FORTROLIG)));
         PdlPerson kode7 = createPdlPersonMedAdressebeskyttelse(listOf(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.FORTROLIG)));
         PdlPerson listeMedUgradertOgkode7 = createPdlPersonMedAdressebeskyttelse(listOf(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT), new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.FORTROLIG)));
 
@@ -393,7 +395,7 @@ public class PdlPersonMapperTest {
         );
 
         PdlEktefelle pdlEktefelle = new PdlEktefelle(
-                listOf(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.STRENGT_FORTROLIG)),
+                listOf(new AdressebeskyttelseDto(STRENGT_FORTROLIG)),
                 listOf(new BostedsadresseDto(null, null, null, null)),
                 listOf(new FoedselDto(LocalDate.of(1970, 1, 1))),
                 listOf(new NavnDto(FORNAVN, MELLOMNAVN, ETTERNAVN, METADATA, FOLKEREGISTERMETADATA))
@@ -666,4 +668,38 @@ public class PdlPersonMapperTest {
         assertFalse(barn.erFolkeregistrertsammen());
     }
 
+    @Test
+    public void adressebeskyttelseStrengtFortrolig() {
+        var pdlAdressebeskyttelse = new PdlAdressebeskyttelse(
+                listOf(new AdressebeskyttelseDto(STRENGT_FORTROLIG))
+        );
+
+        var gradering = mapper.mapToAdressebeskyttelse(pdlAdressebeskyttelse);
+
+        assertNotNull(gradering);
+        assertThat(gradering, is(STRENGT_FORTROLIG));
+    }
+
+    @Test
+    public void adressebeskyttelseStrengtUgradert() {
+        var pdlAdressebeskyttelse = new PdlAdressebeskyttelse(
+                listOf(new AdressebeskyttelseDto(UGRADERT))
+        );
+
+        var gradering = mapper.mapToAdressebeskyttelse(pdlAdressebeskyttelse);
+
+        assertNotNull(gradering);
+        assertThat(gradering, is(UGRADERT));
+    }
+
+    @Test
+    public void adressebeskyttelseNull() {
+        var pdlAdressebeskyttelse = new PdlAdressebeskyttelse(
+                listOf(new AdressebeskyttelseDto(null))
+        );
+
+        var gradering = mapper.mapToAdressebeskyttelse(pdlAdressebeskyttelse);
+
+        assertNull(gradering);
+    }
 }

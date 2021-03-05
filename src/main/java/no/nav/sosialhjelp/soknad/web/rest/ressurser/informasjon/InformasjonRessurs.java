@@ -38,6 +38,9 @@ import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+import static no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.AdressebeskyttelseDto.Gradering.FORTROLIG;
+import static no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.AdressebeskyttelseDto.Gradering.STRENGT_FORTROLIG;
+import static no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.AdressebeskyttelseDto.Gradering.STRENGT_FORTROLIG_UTLAND;
 import static no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SosialhjelpInformasjon.BUNDLE_NAME;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
@@ -120,16 +123,16 @@ public class InformasjonRessurs {
 
     @GET
     @Path("/utslagskriterier/sosialhjelp")
-    public Map<String, Object> hentAdresse() {
+    public Map<String, Object> getUtslagskriterier() {
         String uid = SubjectHandler.getUserId();
-        var person = pdlService.hentPerson(uid);
+        var adressebeskyttelse = pdlService.hentAdressebeskyttelse(uid);
 
         Map<String, Object> resultat = new HashMap<>();
 
         boolean harTilgang = true;
         String sperrekode = "";
 
-        if (DISKRESJONSKODER.contains(person.getDiskresjonskode())) {
+        if (FORTROLIG.equals(adressebeskyttelse) || STRENGT_FORTROLIG.equals(adressebeskyttelse) || STRENGT_FORTROLIG_UTLAND.equals(adressebeskyttelse)) {
             harTilgang = false;
             sperrekode = "bruker";
         }
