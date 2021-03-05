@@ -12,6 +12,7 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.http.HttpInputMessage;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +28,7 @@ import java.time.LocalDate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -145,7 +147,7 @@ public class BostotteImplTest {
         LocalDate til = LocalDate.now();
 
         // Mocks:
-        when(operations.exchange(any(), any(Class.class))).thenThrow(new HttpMessageNotReadableException("TestException"));
+        when(operations.exchange(any(), any(Class.class))).thenThrow(new HttpMessageNotReadableException("TestException", mock(HttpInputMessage.class)));
 
         // Testkjøring:
         assertThat(bostotte.hentBostotte(personIdentifikator, "", fra,til)).isNull();

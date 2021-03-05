@@ -31,7 +31,6 @@ import no.nav.sosialhjelp.soknad.consumer.organisasjon.OrganisasjonService;
 import no.nav.sosialhjelp.soknad.consumer.skatt.SkattbarInntektService;
 import no.nav.sosialhjelp.soknad.consumer.virusscan.VirusScanner;
 import no.nav.sosialhjelp.soknad.tekster.NavMessageSource;
-import org.springframework.beans.factory.annotation.Autowire;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -145,12 +144,12 @@ public class SoknadServiceIntegrationTestContext {
         return mock(SoknadUnderArbeidService.class);
     }
 
-    @Bean(autowire = Autowire.NO)
+    @Bean
     SystemdataUpdater systemdataUpdater() {
         return mock(SystemdataUpdater.class);
     }
 
-    @Bean(autowire = Autowire.NO)
+    @Bean
     Systemdata systemdata() {
         return mock(Systemdata.class);
     }
