@@ -68,8 +68,8 @@ public class PdlPersonMapperTest {
 
     private static final String LAND = "NOR";
 
-    private static final MetadataDto METADATA = new MetadataDto("FREG", singletonList(new EndringDto("FREG", LocalDateTime.now().minusDays(15), null, null, null)));
-    private static final FolkeregistermetadataDto FOLKEREGISTERMETADATA = new FolkeregistermetadataDto(LocalDateTime.now().minusMonths(1), null, null, null);
+    private static final MetadataDto METADATA = new MetadataDto("FREG", singletonList(new EndringDto("FREG", LocalDateTime.now().minusDays(15), null)));
+    private static final FolkeregistermetadataDto FOLKEREGISTERMETADATA = new FolkeregistermetadataDto(LocalDateTime.now().minusMonths(1), null);
 
     @Mock
     private KodeverkService kodeverkService;
