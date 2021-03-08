@@ -5,6 +5,8 @@ public final class HeaderConstants {
     private HeaderConstants() {
     }
 
+    public static final String[] NAV_CALL_ID_HEADER_NAMES = new String[]{"Nav-Call-Id", "Nav-CallId", "X-Correlation-Id"};
+
     public static final String HEADER_CALL_ID = "Nav-Call-Id";
     public static final String HEADER_CONSUMER_ID = "Nav-Consumer-Id";
     public static final String HEADER_CONSUMER_TOKEN = "Nav-Consumer-Token";
