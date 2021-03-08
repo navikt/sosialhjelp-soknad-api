@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.business.batch.oppgave;
 
-import no.nav.metrics.Event;
-import no.nav.metrics.MetricsFactory;
+import no.nav.sosialhjelp.metrics.Event;
+import no.nav.sosialhjelp.metrics.MetricsFactory;
 import no.nav.sosialhjelp.soknad.business.batch.oppgave.Oppgave.Status;
 import no.nav.sosialhjelp.soknad.business.batch.oppgave.fiks.FiksHandterer;
 import no.nav.sosialhjelp.soknad.business.batch.oppgave.fiks.FiksSender;

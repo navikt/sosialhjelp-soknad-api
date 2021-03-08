@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.web.rest.ressurser.familie;
 
-import no.nav.metrics.aspects.Timed;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonNavn;
@@ -8,6 +7,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonEktefelle;
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonFamilie;
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus;
 import no.nav.security.token.support.core.api.ProtectedWithClaims;
+import no.nav.sosialhjelp.metrics.aspects.Timed;
 import no.nav.sosialhjelp.soknad.business.soknadunderbehandling.SoknadUnderArbeidRepository;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;

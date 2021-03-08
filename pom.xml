@@ -67,7 +67,7 @@
         <tjenestespesifikasjon.version>1.2021.01.21-11.34-02f5eb27bb76</tjenestespesifikasjon.version>
 
         <!-- Sosialhjelp-common -->
-        <sosialhjelp-common.version>1.4ef74b4</sosialhjelp-common.version>
+        <sosialhjelp-common.version>1.6ebfe40</sosialhjelp-common.version>
 
         <!-- Nav felles java-bibliotek -->
         <nav-common.version>1.2020.11.16_14.52-3f16e0d8c867</nav-common.version>
@@ -212,30 +212,13 @@
                 <artifactId>sosialhjelp-common-api</artifactId>
                 <version>${sosialhjelp-common.version}</version>
             </dependency>
+            <dependency>
+                <groupId>no.nav.sosialhjelp</groupId>
+                <artifactId>sosialhjelp-common-metrics</artifactId>
+                <version>${sosialhjelp-common.version}</version>
+            </dependency>
 
             <!-- NAV felles biblioteker (nytt) -->
-            <dependency>
-                <groupId>no.nav.common</groupId>
-                <artifactId>metrics</artifactId>
-                <version>${nav-common.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>javax.servlet</groupId>
-                        <artifactId>javax.servlet-api</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <!--TODO: Kommenter inn web og selftest igjen dersom du vil prøve å oppgradere selftesten -->
-            <!--            <dependency>-->
-            <!--                <groupId>no.nav.common</groupId>-->
-            <!--                <artifactId>web</artifactId>-->
-            <!--                <version>${nav-common.version}</version>-->
-            <!--            </dependency>-->
-            <!--            <dependency>-->
-            <!--                <groupId>no.nav.common</groupId>-->
-            <!--                <artifactId>selftest</artifactId>-->
-            <!--                <version>${nav-common.version}</version>-->
-            <!--            </dependency>-->
             <dependency>
                 <groupId>no.nav.common</groupId>
                 <artifactId>util</artifactId>
@@ -1333,10 +1316,6 @@
             <artifactId>jaxb-java-time-adapters</artifactId>
         </dependency>
         <dependency>
-            <groupId>no.nav.common</groupId>
-            <artifactId>metrics</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-jdbc</artifactId>
         </dependency>
@@ -1397,6 +1376,10 @@
         </dependency>
 
         <!--web-->
+        <dependency>
+            <groupId>no.nav.sosialhjelp</groupId>
+            <artifactId>sosialhjelp-common-metrics</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-core</artifactId>
@@ -1475,15 +1458,6 @@
             <artifactId>jakarta.servlet-api</artifactId>
             <scope>compile</scope>
         </dependency>
-        <!--TODO: Kommenter inn web og selftest igjen dersom du vil prøve å oppgradere selftesten -->
-        <!--        <dependency>-->
-        <!--            <groupId>no.nav.common</groupId>-->
-        <!--            <artifactId>web</artifactId>-->
-        <!--        </dependency>-->
-        <!--        <dependency>-->
-        <!--            <groupId>no.nav.common</groupId>-->
-        <!--            <artifactId>selftest</artifactId>-->
-        <!--        </dependency>-->
         <dependency>
             <groupId>no.nav.common</groupId>
             <artifactId>util</artifactId>

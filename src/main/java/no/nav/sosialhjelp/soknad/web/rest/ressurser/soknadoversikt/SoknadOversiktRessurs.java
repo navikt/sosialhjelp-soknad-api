@@ -1,8 +1,8 @@
 package no.nav.sosialhjelp.soknad.web.rest.ressurser.soknadoversikt;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import no.nav.metrics.aspects.Timed;
 import no.nav.security.token.support.core.api.ProtectedWithClaims;
+import no.nav.sosialhjelp.metrics.aspects.Timed;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import no.nav.sosialhjelp.soknad.web.service.SoknadOversiktService;
 import no.nav.sosialhjelp.soknad.web.sikkerhet.Tilgangskontroll;

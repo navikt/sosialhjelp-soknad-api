@@ -1,11 +1,11 @@
 package no.nav.sosialhjelp.soknad.web.rest.ressurser.personalia;
 
-import no.nav.metrics.aspects.Timed;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknadsmottaker;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
 import no.nav.security.token.support.core.api.ProtectedWithClaims;
+import no.nav.sosialhjelp.metrics.aspects.Timed;
 import no.nav.sosialhjelp.soknad.business.service.SoknadsmottakerService;
 import no.nav.sosialhjelp.soknad.business.soknadunderbehandling.SoknadUnderArbeidRepository;
 import no.nav.sosialhjelp.soknad.consumer.fiks.KommuneInfoService;

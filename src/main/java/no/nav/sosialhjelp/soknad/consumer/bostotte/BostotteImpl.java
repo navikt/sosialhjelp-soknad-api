@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.consumer.bostotte;
 
-import no.nav.metrics.aspects.Timed;
+import no.nav.sosialhjelp.metrics.aspects.Timed;
 import no.nav.sosialhjelp.soknad.consumer.bostotte.dto.BostotteDto;
 import no.nav.sosialhjelp.soknad.web.types.Pingable;
 import org.eclipse.jetty.http.HttpHeader;

@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering;
 
-import no.nav.metrics.aspects.Timed;
 import no.nav.security.token.support.core.api.ProtectedWithClaims;
+import no.nav.sosialhjelp.metrics.aspects.Timed;
 import no.nav.sosialhjelp.soknad.business.soknadunderbehandling.SoknadUnderArbeidRepository;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;

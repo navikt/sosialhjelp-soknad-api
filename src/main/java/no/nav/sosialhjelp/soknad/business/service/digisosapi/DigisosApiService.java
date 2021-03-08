@@ -2,12 +2,12 @@ package no.nav.sosialhjelp.soknad.business.service.digisosapi;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import no.nav.metrics.Event;
-import no.nav.metrics.MetricsFactory;
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
+import no.nav.sosialhjelp.metrics.Event;
+import no.nav.sosialhjelp.metrics.MetricsFactory;
 import no.nav.sosialhjelp.soknad.business.InnsendingService;
 import no.nav.sosialhjelp.soknad.business.SoknadUnderArbeidService;
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata;

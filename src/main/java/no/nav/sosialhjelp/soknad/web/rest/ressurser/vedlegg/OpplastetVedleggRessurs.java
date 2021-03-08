@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.web.rest.ressurser.vedlegg;
 
-import no.nav.metrics.aspects.Timed;
 import no.nav.security.token.support.core.api.ProtectedWithClaims;
+import no.nav.sosialhjelp.metrics.aspects.Timed;
 import no.nav.sosialhjelp.soknad.business.service.OpplastetVedleggService;
 import no.nav.sosialhjelp.soknad.business.soknadunderbehandling.OpplastetVedleggRepository;
 import no.nav.sosialhjelp.soknad.business.util.FileDetectionUtils;

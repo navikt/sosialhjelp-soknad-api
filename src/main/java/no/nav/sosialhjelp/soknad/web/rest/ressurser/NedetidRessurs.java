@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.web.rest.ressurser;
 
-import no.nav.metrics.aspects.Timed;
 import no.nav.security.token.support.core.api.Unprotected;
+import no.nav.sosialhjelp.metrics.aspects.Timed;
 import org.springframework.stereotype.Controller;
 
 import javax.ws.rs.GET;

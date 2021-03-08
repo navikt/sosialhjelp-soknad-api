@@ -1,9 +1,9 @@
 package no.nav.sosialhjelp.soknad.web.rest.ressurser;
 
-import no.nav.metrics.aspects.Timed;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse;
 import no.nav.security.token.support.core.api.ProtectedWithClaims;
+import no.nav.sosialhjelp.metrics.aspects.Timed;
 import no.nav.sosialhjelp.soknad.business.SoknadUnderArbeidService;
 import no.nav.sosialhjelp.soknad.business.exceptions.SoknadenHarNedetidException;
 import no.nav.sosialhjelp.soknad.business.pdf.HtmlGenerator;

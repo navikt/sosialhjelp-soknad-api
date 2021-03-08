@@ -1,9 +1,9 @@
 package no.nav.sosialhjelp.soknad.web.rest.ressurser.informasjon;
 
-import no.nav.metrics.aspects.Timed;
 import no.nav.security.token.support.core.api.ProtectedWithClaims;
 import no.nav.security.token.support.core.api.Unprotected;
 import no.nav.sosialhjelp.api.fiks.KommuneInfo;
+import no.nav.sosialhjelp.metrics.aspects.Timed;
 import no.nav.sosialhjelp.soknad.business.service.InformasjonService;
 import no.nav.sosialhjelp.soknad.consumer.adresse.AdresseSokService;
 import no.nav.sosialhjelp.soknad.consumer.fiks.KommuneInfoService;
