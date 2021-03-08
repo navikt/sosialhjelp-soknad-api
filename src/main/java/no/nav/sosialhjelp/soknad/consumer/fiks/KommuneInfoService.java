@@ -64,7 +64,7 @@ public class KommuneInfoService {
         }
 
         Map<String, KommuneInfo> kommuneInfoMap = digisosApi.hentAlleKommuneInfo();
-        if (kommuneInfoMap.isEmpty()) {
+        if (kommuneInfoMap == null || kommuneInfoMap.isEmpty()) {
             Map<String, KommuneInfo> cachedMap = redisService.getKommuneInfos();
             if (cachedMap != null && !cachedMap.isEmpty()) {
                 log.info("hentAlleKommuneInfo - feiler mot Fiks. Bruker cache mens Fiks er nede.");
