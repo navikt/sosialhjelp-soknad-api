@@ -384,4 +384,17 @@ public class KommuneInfoServiceTest {
         verify(redisService, times(1)).getString(eq(KOMMUNEINFO_LAST_POLL_TIME_KEY));
         verify(redisService, times(1)).getKommuneInfos();
     }
+
+    @Test
+    public void hentAlleKommuneInfo_fiksFeiler_skalHenteFraCache() {
+        KommuneInfo value = new KommuneInfo(KOMMUNENR, true, false, true, false, null, false, null);
+        Map<String, KommuneInfo> cachedKommuneInfoMap = new HashMap<>();
+        cachedKommuneInfoMap.put(KOMMUNENR, value);
+
+        when(digisosApi.hentAlleKommuneInfo()).thenReturn(null);
+        when(redisService.getKommuneInfos()).thenReturn(cachedKommuneInfoMap);
+
+        Map<String, KommuneInfo> kommuneInfoMap = kommuneInfoService.hentAlleKommuneInfo();
+        assertThat(kommuneInfoMap).isEqualTo(cachedKommuneInfoMap);
+    }
 }
