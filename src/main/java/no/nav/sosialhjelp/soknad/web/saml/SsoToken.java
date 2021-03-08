@@ -8,11 +8,11 @@ import lombok.Getter;
 import java.util.Map;
 
 import static java.util.Collections.unmodifiableMap;
-import static no.nav.sbl.util.AssertUtils.assertNotNull;
-import static no.nav.sbl.util.StringUtils.assertNotNullOrEmpty;
 import static no.nav.sosialhjelp.soknad.web.saml.SsoToken.Type.EKSTERN_OPENAM;
 import static no.nav.sosialhjelp.soknad.web.saml.SsoToken.Type.OIDC;
 import static no.nav.sosialhjelp.soknad.web.saml.SsoToken.Type.SAML;
+import static org.apache.http.util.Asserts.notEmpty;
+import static org.apache.http.util.Asserts.notNull;
 
 @Getter
 @EqualsAndHashCode
@@ -22,9 +22,9 @@ public class SsoToken {
     private final Map<String, Object> attributes;
 
     SsoToken(Type type, String token, Map<String, ?> attributes) {
-        assertNotNull(type);
-        assertNotNullOrEmpty(token);
-        assertNotNull(attributes);
+        notNull(type, "SsoToken.type");
+        notEmpty(token, "SsoToken.token");
+        notNull(attributes, "SsoToken.attributes");
 
         this.type = type;
         this.token = token;

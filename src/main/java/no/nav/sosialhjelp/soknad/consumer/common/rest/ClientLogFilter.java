@@ -5,10 +5,11 @@ package no.nav.sosialhjelp.soknad.consumer.common.rest;
 import lombok.Builder;
 import lombok.Value;
 import lombok.With;
-import no.nav.log.MDCConstants;
 import no.nav.metrics.MetricsFactory;
 import no.nav.metrics.Timer;
-import no.nav.sbl.util.ExceptionUtils;
+import no.nav.sosialhjelp.soknad.consumer.mdc.MDCOperations;
+import no.nav.sosialhjelp.soknad.web.utils.MiljoUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.MDC;
 
@@ -21,17 +22,17 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriBuilder;
 import java.io.IOException;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Optional;
 
 import static java.util.Arrays.stream;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.stream.Collectors.joining;
 import static javax.ws.rs.core.HttpHeaders.COOKIE;
-import static no.nav.log.LogFilter.CONSUMER_ID_HEADER_NAME;
-import static no.nav.log.LogFilter.NAV_CALL_ID_HEADER_NAMES;
-import static no.nav.sbl.util.EnvironmentUtils.getApplicationName;
-import static no.nav.sbl.util.ListUtils.mutableList;
-import static no.nav.sbl.util.StringUtils.of;
+import static no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.HEADER_CONSUMER_ID;
+import static no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.NAV_CALL_ID_HEADER_NAMES;
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class ClientLogFilter implements ClientResponseFilter, ClientRequestFilter {
@@ -41,16 +42,6 @@ public class ClientLogFilter implements ClientResponseFilter, ClientRequestFilte
     private static final String CSRF_TOKEN = "csrf-token";
 
     private final ClientLogFilterConfig filterConfig;
-
-    @With
-    @Value
-    @Builder
-    public static class ClientLogFilterConfig {
-        public final String metricName;
-        public final boolean disableMetrics;
-        public final boolean disableParameterLogging;
-    }
-
 
     public ClientLogFilter(final ClientLogFilterConfig filterConfig) {
         this.filterConfig = filterConfig;
@@ -62,9 +53,8 @@ public class ClientLogFilter implements ClientResponseFilter, ClientRequestFilte
 
         MultivaluedMap<String, Object> requestHeaders = clientRequestContext.getHeaders();
 
-        of(MDC.get(MDCConstants.MDC_CALL_ID)).ifPresent(callId -> stream(NAV_CALL_ID_HEADER_NAMES).forEach(headerName-> requestHeaders.add(headerName, callId)));
-        getApplicationName().ifPresent(applicationName -> requestHeaders.add(CONSUMER_ID_HEADER_NAME, applicationName));
-
+        Optional.of(MDC.get(MDCOperations.MDC_CALL_ID)).ifPresent(callId -> stream(NAV_CALL_ID_HEADER_NAMES).forEach(headerName -> requestHeaders.add(headerName, callId)));
+        requestHeaders.add(HEADER_CONSUMER_ID, MiljoUtils.getNaisAppName());
         requestHeaders.add(RestUtils.CSRF_COOKIE_NAVN, CSRF_TOKEN);
         requestHeaders.add(COOKIE, new Cookie(RestUtils.CSRF_COOKIE_NAVN, CSRF_TOKEN));
 
@@ -74,11 +64,12 @@ public class ClientLogFilter implements ClientResponseFilter, ClientRequestFilte
         // Therefore we serialize cookies on the more modern and simpler rfc6265-format
         // https://www.ietf.org/rfc/rfc2109.txt
         // https://tools.ietf.org/html/rfc6265
-        requestHeaders.replace(COOKIE, mutableList(requestHeaders.get(COOKIE)
-                .stream()
-                .map(this::toCookieString)
-                .collect(joining("; "))
-        ));
+        requestHeaders.replace(COOKIE, new ArrayList(Arrays.asList(
+                requestHeaders.get(COOKIE)
+                        .stream()
+                        .map(this::toCookieString)
+                        .collect(joining("; "))
+        )));
 
 
         if (!filterConfig.disableMetrics) {
@@ -138,6 +129,15 @@ public class ClientLogFilter implements ClientResponseFilter, ClientRequestFilte
     private URI uriForLogging(ClientRequestContext clientRequestContext) {
         URI uri = clientRequestContext.getUri();
         return filterConfig.disableParameterLogging ? UriBuilder.fromUri(uri).replaceQuery("").build() : uri;
+    }
+
+    @With
+    @Value
+    @Builder
+    public static class ClientLogFilterConfig {
+        public final String metricName;
+        public final boolean disableMetrics;
+        public final boolean disableParameterLogging;
     }
 
     private static class Data {

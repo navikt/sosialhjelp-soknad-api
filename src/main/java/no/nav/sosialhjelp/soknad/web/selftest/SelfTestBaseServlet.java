@@ -5,6 +5,7 @@ import no.nav.sosialhjelp.soknad.web.selftest.domain.SelftestEndpoint;
 import no.nav.sosialhjelp.soknad.web.selftest.generators.SelftestHtmlGenerator;
 import no.nav.sosialhjelp.soknad.web.selftest.generators.SelftestJsonGenerator;
 import no.nav.sosialhjelp.soknad.web.types.Pingable;
+import no.nav.sosialhjelp.soknad.web.utils.MiljoUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,7 +14,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.time.LocalDateTime;
@@ -22,11 +22,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.jar.Manifest;
 
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
-import static no.nav.sbl.util.EnvironmentUtils.getOptionalProperty;
 import static no.nav.sosialhjelp.soknad.web.types.Pingable.Ping;
 
 /*
@@ -38,18 +36,9 @@ Kan mest sannsynlig oppgraderes, hvis vi får selftest til å fungere fra no.nav
 public abstract class SelfTestBaseServlet extends HttpServlet {
 
     private static final Logger logger = LoggerFactory.getLogger(SelfTestBaseServlet.class);
-    static final String APP_VERSION_PROPERTY_NAME = "APP_VERSION";
-
 
     protected List<Ping> result;
     private volatile long lastResultTime;
-
-    /**
-     * Denne metoden må implementeres til å returnere applikasjonens navn, for bruk i tittel og overskrift
-     * på selftestsiden.
-     * @return Applikasjonens navn
-     */
-    protected abstract String getApplicationName();
 
     /**
      * Denne metoden må implementeres til å returnere en Collection av alle tjenester som skal inngå
@@ -96,21 +85,6 @@ public abstract class SelfTestBaseServlet extends HttpServlet {
         return STATUS_OK;
     }
 
-    protected String getApplicationVersion() {
-        return getOptionalProperty(APP_VERSION_PROPERTY_NAME).orElseGet(this::getApplicationVersjonFromManifest);
-    }
-
-    private String getApplicationVersjonFromManifest() {
-        String version = "unknown version";
-        try {
-            InputStream inputStream = getServletContext().getResourceAsStream("/META-INF/MANIFEST.MF");
-            version = new Manifest(inputStream).getMainAttributes().getValue("Implementation-Version");
-        } catch (Exception e) {
-            logger.warn("Feil ved henting av applikasjonsversjon: {}", e.getMessage());
-        }
-        return version;
-    }
-
     protected String getHost() {
         String host = "unknown host";
         try {
@@ -133,8 +107,8 @@ public abstract class SelfTestBaseServlet extends HttpServlet {
 
     private Selftest lagSelftest() {
         return new Selftest()
-                .setApplication(getApplicationName())
-                .setVersion(getApplicationVersion())
+                .setApplication(MiljoUtils.getNaisAppName())
+                .setVersion(MiljoUtils.getNaisAppImage())
                 .setTimestamp(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME))
                 .setAggregateResult(getAggregertStatus())
                 .setChecks(result.stream()
@@ -157,8 +131,6 @@ public abstract class SelfTestBaseServlet extends HttpServlet {
                 );
     }
 
-    private static final Function<Ping, String> ENDEPUNKT = p -> p.getMetadata().getEndepunkt();
-    private static final Predicate<Ping> VELLYKKET = Ping::erVellykket;
     private static final Predicate<Ping> KRITISK_FEIL = ping -> ping.harFeil() && ping.getMetadata().isKritisk();
     private static final Predicate<Ping> HAR_FEIL = Ping::harFeil;
 
