@@ -44,16 +44,12 @@
               {
                 "kilde": "Dolly",
                 "registrert": "2020-10-20T12:08",
-                "registrertAv": "Folkeregisteret",
-                "systemkilde": "FREG",
                 "type": "OPPRETT"
               }
             ]
           },
           "folkeregistermetadata": {
             "ajourholdstidspunkt": "2020-10-20T12:08",
-            "gyldighetstidspunkt": "2020-10-20T12:08",
-            "opphoerstidspunkt": null,
             "kilde": "Dolly"
           }
         }

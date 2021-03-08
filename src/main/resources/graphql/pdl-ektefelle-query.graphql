@@ -3,16 +3,12 @@ fragment metadata on Metadata {
     endringer {
         kilde
         registrert
-        registrertAv
-        systemkilde
         type
     }
 }
 
 fragment folkeregistermetadata on Folkeregistermetadata {
     ajourholdstidspunkt
-    gyldighetstidspunkt
-    opphoerstidspunkt
     kilde
 }
 

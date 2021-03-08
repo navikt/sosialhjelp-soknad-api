@@ -11,21 +11,15 @@ public class EndringDto {
 
     private final String kilde;
     private final LocalDateTime registrert;
-    private final String registrertAv;
-    private final String systemkilde;
     private final String type;
 
     @JsonCreator
     public EndringDto(
             @JsonProperty("kilde") String kilde,
             @JsonProperty("registrert") LocalDateTime registrert,
-            @JsonProperty("registrertAv") String registrertAv,
-            @JsonProperty("systemkilde") String systemkilde,
             @JsonProperty("type") String type) {
         this.kilde = kilde;
         this.registrert = registrert;
-        this.registrertAv = registrertAv;
-        this.systemkilde = systemkilde;
         this.type = type;
     }
 
@@ -35,14 +29,6 @@ public class EndringDto {
 
     public LocalDateTime getRegistrert() {
         return registrert;
-    }
-
-    public String getRegistrertAv() {
-        return registrertAv;
-    }
-
-    public String getSystemkilde() {
-        return systemkilde;
     }
 
     public String getType() {
