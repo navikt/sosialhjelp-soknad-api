@@ -1,9 +1,9 @@
 package no.nav.sosialhjelp.soknad.business.batch;
 
-import no.nav.metrics.MetricsFactory;
-import no.nav.metrics.Timer;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker;
+import no.nav.sosialhjelp.metrics.MetricsFactory;
+import no.nav.sosialhjelp.metrics.Timer;
 import no.nav.sosialhjelp.soknad.business.soknadunderbehandling.SoknadUnderArbeidRepository;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils;

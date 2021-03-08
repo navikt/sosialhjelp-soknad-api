@@ -1,7 +1,5 @@
 package no.nav.sosialhjelp.soknad.business.service.soknadservice;
 
-import no.nav.metrics.MetricsFactory;
-import no.nav.metrics.Timer;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonData;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonDriftsinformasjon;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
@@ -26,6 +24,8 @@ import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonSokernavn;
 import no.nav.sbl.soknadsosialhjelp.soknad.utdanning.JsonUtdanning;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon;
+import no.nav.sosialhjelp.metrics.MetricsFactory;
+import no.nav.sosialhjelp.metrics.Timer;
 import no.nav.sosialhjelp.soknad.business.InnsendingService;
 import no.nav.sosialhjelp.soknad.business.batch.oppgave.OppgaveHandterer;
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata;

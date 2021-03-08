@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.web.rest.ressurser.eksponerte;
 
-import no.nav.metrics.aspects.Timed;
 import no.nav.sbl.soknadsosialhjelp.tjeneste.saksoversikt.EttersendingerRespons;
 import no.nav.sbl.soknadsosialhjelp.tjeneste.saksoversikt.EttersendingsSoknad;
 import no.nav.sbl.soknadsosialhjelp.tjeneste.saksoversikt.InnsendtSoknad;
@@ -9,6 +8,7 @@ import no.nav.sbl.soknadsosialhjelp.tjeneste.saksoversikt.PabegyntSoknad;
 import no.nav.sbl.soknadsosialhjelp.tjeneste.saksoversikt.PabegynteSoknaderRespons;
 import no.nav.sbl.soknadsosialhjelp.tjeneste.saksoversikt.PingRespons;
 import no.nav.security.token.support.core.api.Unprotected;
+import no.nav.sosialhjelp.metrics.aspects.Timed;
 import no.nav.sosialhjelp.soknad.web.saml.SamlSubjectHandler;
 import no.nav.sosialhjelp.soknad.web.service.SaksoversiktMetadataService;
 import org.slf4j.Logger;

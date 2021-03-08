@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.business.service.soknadservice;
 
-import no.nav.metrics.Event;
-import no.nav.metrics.MetricsFactory;
+import no.nav.sosialhjelp.metrics.Event;
+import no.nav.sosialhjelp.metrics.MetricsFactory;
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.domain.model.PersonAlder;

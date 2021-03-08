@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.business.batch;
 
-import no.nav.metrics.MetricsFactory;
-import no.nav.metrics.Timer;
+import no.nav.sosialhjelp.metrics.MetricsFactory;
+import no.nav.sosialhjelp.metrics.Timer;
 import no.nav.sosialhjelp.soknad.business.service.HenvendelseService;
 import no.nav.sosialhjelp.soknad.business.soknadunderbehandling.SoknadUnderArbeidRepository;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;

@@ -11,7 +11,7 @@ import java.lang.reflect.Method;
 import static java.lang.Boolean.valueOf;
 import static java.lang.System.getProperty;
 import static java.lang.reflect.Proxy.newProxyInstance;
-import static no.nav.metrics.MetricsFactory.createTimerProxyForWebService;
+import static no.nav.sosialhjelp.metrics.MetricsFactory.createTimerProxyForWebService;
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class InstanceSwitcher implements InvocationHandler {

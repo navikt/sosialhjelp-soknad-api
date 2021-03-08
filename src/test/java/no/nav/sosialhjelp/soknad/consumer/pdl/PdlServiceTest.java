@@ -24,8 +24,8 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
+import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
-import static no.nav.common.utils.CollectionUtils.listOf;
 import static no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.SivilstandDto.SivilstandType.GIFT;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
@@ -125,7 +125,7 @@ public class PdlServiceTest {
     public void skalHenteBarn() {
         when(pdlConsumer.hentPerson(any())).thenReturn(mockPdlPerson);
 
-        when(mockPdlPerson.getForelderBarnRelasjon()).thenReturn(listOf(new ForelderBarnRelasjonDto(BARN_IDENT, "BARN", "MOR")));
+        when(mockPdlPerson.getForelderBarnRelasjon()).thenReturn(asList(new ForelderBarnRelasjonDto(BARN_IDENT, "BARN", "MOR")));
 
         when(pdlConsumer.hentBarn(any())).thenReturn(mockPdlBarn);
         when(pdlPersonMapper.mapToBarn(any(), any(), any())).thenReturn(barn);
@@ -141,7 +141,7 @@ public class PdlServiceTest {
     public void skalFiltrereVekkNullBarn() {
         when(pdlConsumer.hentPerson(any())).thenReturn(mockPdlPerson);
 
-        when(mockPdlPerson.getForelderBarnRelasjon()).thenReturn(listOf(new ForelderBarnRelasjonDto(BARN_IDENT, "BARN", "MOR")));
+        when(mockPdlPerson.getForelderBarnRelasjon()).thenReturn(asList(new ForelderBarnRelasjonDto(BARN_IDENT, "BARN", "MOR")));
 
         when(pdlConsumer.hentBarn(any())).thenReturn(mockPdlBarn);
         when(pdlPersonMapper.mapToBarn(any(), any(), any())).thenReturn(null);
@@ -156,7 +156,7 @@ public class PdlServiceTest {
     public void skalIkkeHenteBarnHvisIdentErNull() {
         when(pdlConsumer.hentPerson(any())).thenReturn(mockPdlPerson);
 
-        when(mockPdlPerson.getForelderBarnRelasjon()).thenReturn(listOf(new ForelderBarnRelasjonDto(null, "BARN", "MOR")));
+        when(mockPdlPerson.getForelderBarnRelasjon()).thenReturn(asList(new ForelderBarnRelasjonDto(null, "BARN", "MOR")));
 
         List<Barn> result = pdlService.hentBarnForPerson("ident");
 
@@ -170,7 +170,7 @@ public class PdlServiceTest {
     public void skalIkkeHenteBarnHvisIdentErFDAT() {
         when(pdlConsumer.hentPerson(any())).thenReturn(mockPdlPerson);
 
-        when(mockPdlPerson.getForelderBarnRelasjon()).thenReturn(listOf(new ForelderBarnRelasjonDto(FDAT_IDENT, "BARN", "MOR")));
+        when(mockPdlPerson.getForelderBarnRelasjon()).thenReturn(asList(new ForelderBarnRelasjonDto(FDAT_IDENT, "BARN", "MOR")));
 
         List<Barn> result = pdlService.hentBarnForPerson("ident");
 
