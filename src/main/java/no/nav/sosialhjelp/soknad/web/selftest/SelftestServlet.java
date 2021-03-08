@@ -9,17 +9,12 @@ import javax.servlet.ServletException;
 import java.util.Collection;
 
 public class SelftestServlet extends SelfTestBaseServlet {
-    private static final String APPLIKASJONS_NAVN = "Søknadsapi";
     private ApplicationContext ctx = null;
 
     @Override
     public void init() throws ServletException {
         ctx = WebApplicationContextUtils.getWebApplicationContext(getServletContext());
         super.init();
-    }
-    @Override
-    protected String getApplicationName() {
-        return APPLIKASJONS_NAVN;
     }
 
     @Override
