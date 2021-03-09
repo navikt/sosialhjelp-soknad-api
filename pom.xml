@@ -73,7 +73,6 @@
         <guava.version>30.1-jre</guava.version>
         <stax2-api.version>4.2.1</stax2-api.version>
         <hibernate.version>5.2.5.Final</hibernate.version>
-        <jaxb2-basics-runtime.version>0.11.1</jaxb2-basics-runtime.version>
         <tika.version>1.25</tika.version>
         <logback.version>1.2.3</logback.version>
         <hsqldb.version>2.5.1</hsqldb.version>
@@ -672,11 +671,6 @@
                 <groupId>org.apache.tika</groupId>
                 <artifactId>tika-core</artifactId>
                 <version>${tika.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.jvnet.jaxb2_commons</groupId>
-                <artifactId>jaxb2-basics-runtime</artifactId>
-                <version>${jaxb2-basics-runtime.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.glassfish.jaxb</groupId>
