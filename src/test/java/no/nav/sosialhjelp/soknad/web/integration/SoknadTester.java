@@ -3,6 +3,7 @@ package no.nav.sosialhjelp.soknad.web.integration;
 
 import no.nav.security.token.support.core.JwtTokenConstants;
 import no.nav.security.token.support.test.JwtTokenGenerator;
+import no.nav.sosialhjelp.soknad.consumer.common.json.JsonProvider;
 import no.nav.sosialhjelp.soknad.web.rest.SoknadApplication;
 import org.glassfish.jersey.test.JerseyTest;
 
@@ -45,7 +46,7 @@ public class SoknadTester extends JerseyTest {
 
     private SoknadTester start() throws Exception {
         setUp();
-        client().register(GsonProvider.class);
+        client().register(JsonProvider.class);
 
         Response response = sendsoknad().path("soknader/opprettSoknad")
                 .request(APPLICATION_JSON_TYPE)
