@@ -122,7 +122,6 @@
         <mockito.version>3.7.7</mockito.version>
         <assertj.version>3.19.0</assertj.version>
         <reflections.version>0.9.12</reflections.version>
-        <digipost.digg.version>0.13</digipost.digg.version>
 
         <!-- Versjoner identifisert av maven-enforcer-plugin -->
         <asm.version>9.0</asm.version>
@@ -822,12 +821,6 @@
                 <scope>test</scope>
             </dependency>
             <dependency>
-                <groupId>no.digipost</groupId>
-                <artifactId>digg</artifactId>
-                <version>${digipost.digg.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
                 <version>${junit.version}</version>
@@ -1523,11 +1516,6 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>no.digipost</groupId>
-            <artifactId>digg</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
