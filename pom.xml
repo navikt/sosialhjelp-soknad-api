@@ -117,7 +117,6 @@
         <junit.version>4.13.1</junit.version>
         <mockito.version>3.7.7</mockito.version>
         <assertj.version>3.19.0</assertj.version>
-        <reflections.version>0.9.12</reflections.version>
 
         <!-- Versjoner identifisert av maven-enforcer-plugin -->
         <asm.version>9.0</asm.version>
@@ -791,12 +790,6 @@
                         <artifactId>javax.inject</artifactId>
                     </exclusion>
                 </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.reflections</groupId>
-                <artifactId>reflections</artifactId>
-                <version>${reflections.version}</version>
-                <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>junit</groupId>
@@ -1481,11 +1474,6 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.reflections</groupId>
-            <artifactId>reflections</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
