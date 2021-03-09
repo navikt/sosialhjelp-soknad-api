@@ -64,9 +64,6 @@
         <!-- Sosialhjelp-common -->
         <sosialhjelp-common.version>1.6ebfe40</sosialhjelp-common.version>
 
-        <!-- Nav felles java-bibliotek -->
-        <nav-common.version>1.2020.11.16_14.52-3f16e0d8c867</nav-common.version>
-
         <spring.version>5.3.3</spring.version>
         <jetty.version>9.4.37.v20210219</jetty.version>
         <jersey.version>2.33</jersey.version>
@@ -211,13 +208,6 @@
                 <groupId>no.nav.sosialhjelp</groupId>
                 <artifactId>sosialhjelp-common-metrics</artifactId>
                 <version>${sosialhjelp-common.version}</version>
-            </dependency>
-
-            <!-- NAV felles biblioteker (nytt) -->
-            <dependency>
-                <groupId>no.nav.common</groupId>
-                <artifactId>util</artifactId>
-                <version>${nav-common.version}</version>
             </dependency>
 
             <!-- Spring avhengigheter -->
@@ -1452,10 +1442,6 @@
             <groupId>jakarta.servlet</groupId>
             <artifactId>jakarta.servlet-api</artifactId>
             <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.common</groupId>
-            <artifactId>util</artifactId>
         </dependency>
         <dependency>
             <groupId>no.nav.tjenestespesifikasjoner</groupId>

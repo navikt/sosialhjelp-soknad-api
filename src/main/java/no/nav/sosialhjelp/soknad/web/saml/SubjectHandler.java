@@ -2,8 +2,8 @@ package no.nav.sosialhjelp.soknad.web.saml;
 
 /* Originally from common-java-modules (auth) */
 
-import no.nav.sbl.util.fn.UnsafeRunnable;
-import no.nav.sbl.util.fn.UnsafeSupplier;
+import no.nav.sosialhjelp.soknad.web.saml.fn.UnsafeRunnable;
+import no.nav.sosialhjelp.soknad.web.saml.fn.UnsafeSupplier;
 
 import java.util.Optional;
 import java.util.function.Supplier;
