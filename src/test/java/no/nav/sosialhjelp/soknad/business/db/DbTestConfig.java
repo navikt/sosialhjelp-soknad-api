@@ -1,7 +1,5 @@
 package no.nav.sosialhjelp.soknad.business.db;
 
-
-import no.digipost.time.ControllableClock;
 import no.nav.sosialhjelp.soknad.business.db.config.DatabaseTestContext;
 import no.nav.sosialhjelp.soknad.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sosialhjelp.soknad.business.db.soknadmetadata.SoknadMetadataRepositoryJdbc;
@@ -25,12 +23,13 @@ import java.time.Clock;
 @EnableTransactionManagement()
 public class DbTestConfig {
 
-    public static final ControllableClock clock = ControllableClock.control(Clock.systemDefaultZone());
+    public static final Clock clock = Clock.systemDefaultZone();
 
     @Inject
     private DataSource dataSource;
-    
-    @Bean SoknadMetadataRepository soknadMetadataRepository() {
+
+    @Bean
+    SoknadMetadataRepository soknadMetadataRepository() {
         return new SoknadMetadataRepositoryJdbc();
     }
 
@@ -55,7 +54,7 @@ public class DbTestConfig {
     }
 
     @Bean
-    public Clock clock(){
+    public Clock clock() {
         return clock;
     }
 

@@ -66,7 +66,6 @@
         <handlebars.version>4.2.0</handlebars.version>
         <jackson.version>2.12.1</jackson.version>
         <filformat.version>1.2021.03.02-10.58-415c44e55124</filformat.version>
-        <commons-fileupload.version>1.4</commons-fileupload.version>
         <pdfbox.version>2.0.22</pdfbox.version>
         <jempbox.version>1.8.16</jempbox.version>
         <bouncycastle.version>1.68</bouncycastle.version>
@@ -74,7 +73,6 @@
         <guava.version>30.1-jre</guava.version>
         <stax2-api.version>4.2.1</stax2-api.version>
         <hibernate.version>5.2.5.Final</hibernate.version>
-        <jaxb2-basics-runtime.version>0.11.1</jaxb2-basics-runtime.version>
         <tika.version>1.25</tika.version>
         <logback.version>1.2.3</logback.version>
         <hsqldb.version>2.5.1</hsqldb.version>
@@ -83,7 +81,6 @@
         <woodstox-core.version>6.2.3</woodstox-core.version>
         <joda-time.version>2.10.10</joda-time.version>
         <slf4j.version>1.7.30</slf4j.version>
-        <gson.version>2.8.6</gson.version>
         <commons-codec.version>1.15</commons-codec.version>
         <commons-io.version>2.8.0</commons-io.version>
         <commons-lang3.version>3.11</commons-lang3.version>
@@ -93,7 +90,6 @@
         <json-smart.version>2.3</json-smart.version>
         <jaxb-java-time-adapters.version>1.1.3</jaxb-java-time-adapters.version>
         <aspectjweaver.version>1.9.6</aspectjweaver.version>
-        <jaxb-api.version>2.3.1</jaxb-api.version>
         <jaxb-runtime.version>2.3.3</jaxb-runtime.version>
         <lettuce.version>6.0.2.RELEASE</lettuce.version>
         <unleash.version>3.3.4</unleash.version>
@@ -112,6 +108,7 @@
         <jakarta.ws.version>2.1.6</jakarta.ws.version>
         <jakarta.xml.version>2.3.3</jakarta.xml.version>
         <jakarta.xml.soap-api.version>1.4.2</jakarta.xml.soap-api.version>
+        <jakarta.jws.version>2.1.0</jakarta.jws.version>
 
         <kryptering.version>1.0.11</kryptering.version>
         <streaming-klient.version>1.0.12</streaming-klient.version>
@@ -121,14 +118,11 @@
         <junit.version>4.13.1</junit.version>
         <mockito.version>3.7.7</mockito.version>
         <assertj.version>3.19.0</assertj.version>
-        <reflections.version>0.9.12</reflections.version>
-        <digipost.digg.version>0.13</digipost.digg.version>
 
         <!-- Versjoner identifisert av maven-enforcer-plugin -->
         <asm.version>9.0</asm.version>
         <neethi.version>3.1.1</neethi.version>
         <xmlsec.version>2.2.1</xmlsec.version>
-        <nav-sbl-util.version>2018.05.15.11.54</nav-sbl-util.version>
         <rhino.version>1.7.13</rhino.version>
         <opensaml.version>3.4.5</opensaml.version>
         <logstash-logback-encoder.version>4.11</logstash-logback-encoder.version>
@@ -287,12 +281,6 @@
                 <artifactId>jersey-media-multipart</artifactId>
                 <version>${jersey.version}</version>
             </dependency>
-            <dependency>
-                <groupId>jakarta.ws.rs</groupId>
-                <artifactId>jakarta.ws.rs-api</artifactId>
-                <version>${jakarta.ws.version}</version>
-            </dependency>
-
 
             <!-- Jackson avhengigheter -->
             <dependency>
@@ -366,6 +354,26 @@
                 <groupId>jakarta.websocket</groupId>
                 <artifactId>jakarta.websocket-api</artifactId>
                 <version>${jakarta.websocket-api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>jakarta.servlet</groupId>
+                <artifactId>jakarta.servlet-api</artifactId>
+                <version>${jakarta.servlet-api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>jakarta.annotation</groupId>
+                <artifactId>jakarta.annotation-api</artifactId>
+                <version>${jakarta.annotation-api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>jakarta.ws.rs</groupId>
+                <artifactId>jakarta.ws.rs-api</artifactId>
+                <version>${jakarta.ws.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>jakarta.jws</groupId>
+                <artifactId>jakarta.jws-api</artifactId>
+                <version>${jakarta.jws.version}</version>
             </dependency>
 
             <!-- CXF avhengigheter -->
@@ -534,11 +542,6 @@
                 <version>${slf4j.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.google.code.gson</groupId>
-                <artifactId>gson</artifactId>
-                <version>${gson.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
                 <version>${commons-lang3.version}</version>
@@ -677,17 +680,11 @@
                 <groupId>com.zaxxer</groupId>
                 <artifactId>HikariCP</artifactId>
                 <version>${hikaricp.version}</version>
-                <scope>compile</scope>
             </dependency>
             <dependency>
                 <groupId>org.apache.tika</groupId>
                 <artifactId>tika-core</artifactId>
                 <version>${tika.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.jvnet.jaxb2_commons</groupId>
-                <artifactId>jaxb2-basics-runtime</artifactId>
-                <version>${jaxb2-basics-runtime.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.glassfish.jaxb</groupId>
@@ -698,6 +695,21 @@
                 <groupId>no.finn.unleash</groupId>
                 <artifactId>unleash-client-java</artifactId>
                 <version>${unleash.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.woodstox</groupId>
+                <artifactId>woodstox-core</artifactId>
+                <version>${woodstox-core.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>net.sf.ehcache</groupId>
+                <artifactId>ehcache</artifactId>
+                <version>${ehcache.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.pdfbox</groupId>
+                <artifactId>jempbox</artifactId>
+                <version>${jempbox.version}</version>
             </dependency>
 
             <!-- Prometheus -->
@@ -747,17 +759,6 @@
                 <scope>runtime</scope>
             </dependency>
             <dependency>
-                <groupId>net.sf.ehcache</groupId>
-                <artifactId>ehcache</artifactId>
-                <version>${ehcache.version}</version>
-                <scope>runtime</scope>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.woodstox</groupId>
-                <artifactId>woodstox-core</artifactId>
-                <version>${woodstox-core.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>org.codehaus.woodstox</groupId>
                 <artifactId>stax2-api</artifactId>
                 <version>${stax2-api.version}</version>
@@ -770,29 +771,13 @@
                 <scope>runtime</scope>
             </dependency>
 
-
             <!-- Avhengigheter med provided scope -->
-            <dependency>
-                <groupId>jakarta.servlet</groupId>
-                <artifactId>jakarta.servlet-api</artifactId>
-                <version>${jakarta.servlet-api.version}</version>
-                <scope>provided</scope>
-            </dependency>
-            <!-- https://mvnrepository.com/artifact/org.apache.pdfbox/preflight -->
             <dependency>
                 <groupId>org.apache.pdfbox</groupId>
                 <artifactId>preflight</artifactId>
                 <version>${pdfbox.version}</version>
                 <scope>provided</scope>
             </dependency>
-            <!-- https://mvnrepository.com/artifact/org.apache.pdfbox/jempbox -->
-            <dependency>
-                <groupId>org.apache.pdfbox</groupId>
-                <artifactId>jempbox</artifactId>
-                <version>${jempbox.version}</version>
-            </dependency>
-
-
 
             <!-- Avhengigheter med test scope -->
             <dependency>
@@ -814,18 +799,6 @@
                         <artifactId>javax.inject</artifactId>
                     </exclusion>
                 </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.reflections</groupId>
-                <artifactId>reflections</artifactId>
-                <version>${reflections.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>no.digipost</groupId>
-                <artifactId>digg</artifactId>
-                <version>${digipost.digg.version}</version>
-                <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>junit</groupId>
@@ -1055,11 +1028,6 @@
                 <version>${java-support.version}</version>
             </dependency>
             <dependency>
-                <groupId>jakarta.annotation</groupId>
-                <artifactId>jakarta.annotation-api</artifactId>
-                <version>${jakarta.annotation-api.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>org.cryptacular</groupId>
                 <artifactId>cryptacular</artifactId>
                 <version>${cryptacular.version}</version>
@@ -1111,6 +1079,10 @@
         </dependency>
 
         <!--domain-->
+        <dependency>
+            <groupId>jakarta.jws</groupId>
+            <artifactId>jakarta.jws-api</artifactId>
+        </dependency>
         <dependency>
             <groupId>jakarta.xml.bind</groupId>
             <artifactId>jakarta.xml.bind-api</artifactId>
@@ -1425,51 +1397,38 @@
         <dependency>
             <groupId>net.sf.ehcache</groupId>
             <artifactId>ehcache</artifactId>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>jakarta.servlet</groupId>
             <artifactId>jakarta.servlet-api</artifactId>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>no.nav.tjenestespesifikasjoner</groupId>
             <artifactId>soeknadsskjemasosialhjelp-v1-saksoversiktdefinisjon</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-security</artifactId>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-http</artifactId>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-server</artifactId>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-util</artifactId>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-webapp</artifactId>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-plus</artifactId>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.hsqldb</groupId>
@@ -1523,16 +1482,6 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>no.digipost</groupId>
-            <artifactId>digg</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.reflections</groupId>
-            <artifactId>reflections</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
