@@ -108,6 +108,7 @@
         <jakarta.ws.version>2.1.6</jakarta.ws.version>
         <jakarta.xml.version>2.3.3</jakarta.xml.version>
         <jakarta.xml.soap-api.version>1.4.2</jakarta.xml.soap-api.version>
+        <jakarta.jws.version>2.1.0</jakarta.jws.version>
 
         <kryptering.version>1.0.11</kryptering.version>
         <streaming-klient.version>1.0.12</streaming-klient.version>
@@ -368,6 +369,11 @@
                 <groupId>jakarta.ws.rs</groupId>
                 <artifactId>jakarta.ws.rs-api</artifactId>
                 <version>${jakarta.ws.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>jakarta.jws</groupId>
+                <artifactId>jakarta.jws-api</artifactId>
+                <version>${jakarta.jws.version}</version>
             </dependency>
 
             <!-- CXF avhengigheter -->
