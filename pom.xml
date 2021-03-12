@@ -69,7 +69,6 @@
         <httpclient.version>4.5.13</httpclient.version>
         <guava.version>30.1-jre</guava.version>
         <stax2-api.version>4.2.1</stax2-api.version>
-        <hibernate.version>5.2.5.Final</hibernate.version>
         <tika.version>1.25</tika.version>
         <logback.version>1.2.3</logback.version>
         <hsqldb.version>2.5.1</hsqldb.version>
@@ -958,12 +957,6 @@
         </dependency>
 
         <!-- Avhengigheter med runtime scope -->
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-validator</artifactId>
-            <version>${hibernate.version}</version>
-            <scope>runtime</scope>
-        </dependency>
         <dependency>
             <groupId>org.codehaus.woodstox</groupId>
             <artifactId>stax2-api</artifactId>
