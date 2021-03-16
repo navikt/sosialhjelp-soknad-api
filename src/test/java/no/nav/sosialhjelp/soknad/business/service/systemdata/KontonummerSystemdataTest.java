@@ -6,7 +6,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonKontonummer;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
 import no.nav.sosialhjelp.soknad.consumer.personv3.PersonServiceV3;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
-import no.nav.sosialhjelp.soknad.domain.model.AdresserOgKontonummer;
+import no.nav.sosialhjelp.soknad.domain.model.Kontonummer;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -35,10 +35,10 @@ public class KontonummerSystemdataTest {
 
     @Test
     public void skalOppdatereKontonummer() {
-        AdresserOgKontonummer adresserOgKontonummer = new AdresserOgKontonummer()
+        Kontonummer adresserOgKontonummer = new Kontonummer()
                 .withKontonummer(KONTONUMMER_SYSTEM);
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
-        when(personService.hentAddresserOgKontonummer(anyString())).thenReturn(adresserOgKontonummer);
+        when(personService.hentKontonummer(anyString())).thenReturn(adresserOgKontonummer);
 
         kontonummerSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
 
@@ -50,10 +50,10 @@ public class KontonummerSystemdataTest {
 
     @Test
     public void skalOppdatereKontonummerOgFjerneUlovligeSymboler() {
-        AdresserOgKontonummer adresserOgKontonummer = new AdresserOgKontonummer()
+        Kontonummer adresserOgKontonummer = new Kontonummer()
                 .withKontonummer(KONTONUMMER_SYSTEM + " !#¤%&/()=?`-<>|§,.-* ");
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
-        when(personService.hentAddresserOgKontonummer(anyString())).thenReturn(adresserOgKontonummer);
+        when(personService.hentKontonummer(anyString())).thenReturn(adresserOgKontonummer);
 
         kontonummerSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
 
@@ -77,10 +77,10 @@ public class KontonummerSystemdataTest {
 
     @Test
     public void skalSetteNullDersomKontonummerErTomStreng() {
-        AdresserOgKontonummer adresserOgKontonummer = new AdresserOgKontonummer()
+        Kontonummer adresserOgKontonummer = new Kontonummer()
                 .withKontonummer("");
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
-        when(personService.hentAddresserOgKontonummer(anyString())).thenReturn(adresserOgKontonummer);
+        when(personService.hentKontonummer(anyString())).thenReturn(adresserOgKontonummer);
 
         kontonummerSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
 
@@ -92,10 +92,10 @@ public class KontonummerSystemdataTest {
 
     @Test
     public void skalSetteNullDersomKontonummerErNull() {
-        AdresserOgKontonummer adresserOgKontonummer = new AdresserOgKontonummer()
+        Kontonummer adresserOgKontonummer = new Kontonummer()
                 .withKontonummer(null);
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
-        when(personService.hentAddresserOgKontonummer(anyString())).thenReturn(adresserOgKontonummer);
+        when(personService.hentKontonummer(anyString())).thenReturn(adresserOgKontonummer);
 
         kontonummerSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
 

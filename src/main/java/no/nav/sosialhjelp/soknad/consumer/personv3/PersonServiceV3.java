@@ -3,14 +3,9 @@ package no.nav.sosialhjelp.soknad.consumer.personv3;
 import no.nav.sosialhjelp.soknad.consumer.exceptions.IkkeFunnetException;
 import no.nav.sosialhjelp.soknad.consumer.exceptions.SikkerhetsBegrensningException;
 import no.nav.sosialhjelp.soknad.consumer.exceptions.TjenesteUtilgjengeligException;
-import no.nav.sosialhjelp.soknad.consumer.kodeverk.KodeverkService;
-import no.nav.sosialhjelp.soknad.consumer.person.domain.Gateadresse;
-import no.nav.sosialhjelp.soknad.consumer.person.domain.Matrikkeladresse;
 import no.nav.sosialhjelp.soknad.consumer.person.domain.PersonData;
-import no.nav.sosialhjelp.soknad.consumer.person.domain.StrukturertAdresse;
 import no.nav.sosialhjelp.soknad.consumer.person.mappers.PersonDataMapper;
-import no.nav.sosialhjelp.soknad.domain.model.Adresse;
-import no.nav.sosialhjelp.soknad.domain.model.AdresserOgKontonummer;
+import no.nav.sosialhjelp.soknad.domain.model.Kontonummer;
 import no.nav.tjeneste.virksomhet.person.v3.binding.HentPersonPersonIkkeFunnet;
 import no.nav.tjeneste.virksomhet.person.v3.binding.HentPersonSikkerhetsbegrensning;
 import no.nav.tjeneste.virksomhet.person.v3.binding.PersonV3;
@@ -39,20 +34,17 @@ public class PersonServiceV3 {
     @Named("personV3Endpoint")
     private PersonV3 personV3;
 
-    @Inject
-    private KodeverkService kodeverkService;
-
-    @Cacheable("adresserOgKontonummerCache")
-    public AdresserOgKontonummer hentAddresserOgKontonummer(String fodselsnummer) {
+    @Cacheable("kontonummerCache")
+    public Kontonummer hentKontonummer(String fodselsnummer) {
         try {
             Person person = getPerson(fodselsnummer);
             if (person == null) {
                 logger.warn("Person er null");
-                return new AdresserOgKontonummer();
+                return new Kontonummer();
             }
             PersonDataMapper personDataMapper = new PersonDataMapper();
             PersonData personData = personDataMapper.tilPersonData(person);
-            return mapResponsTilAdresserOgKontonummer(personData);
+            return mapResponsTilKontonummer(personData);
         } catch (WebServiceException e) {
             logger.warn("Ingen kontakt med TPS (Person_V3).", e);
             throw new TjenesteUtilgjengeligException("TPS:webserviceException", e);
@@ -78,56 +70,13 @@ public class PersonServiceV3 {
         return hentPersonResponse.getPerson();
     }
 
-    private AdresserOgKontonummer mapResponsTilAdresserOgKontonummer(PersonData personData) {
+    private Kontonummer mapResponsTilKontonummer(PersonData personData) {
         if (personData == null) {
             return null;
         }
 
-        String diskresjonskode = personData.getDiskresjonskode();
-
-        boolean diskresjonsKodeSatt = diskresjonskode != null && (diskresjonskode.equals("6") || diskresjonskode.equals("7"));
-
-        return new AdresserOgKontonummer()
-                .withMidlertidigAdresse(diskresjonsKodeSatt ? null : getAdresse(personData.getMidlertidigAdresseNorge() == null ? null : personData.getMidlertidigAdresseNorge().getStrukturertAdresse()))
-                .withFolkeregistrertAdresse(diskresjonsKodeSatt ? null : getAdresse(personData.getBostedsadresse() == null ? null : personData.getBostedsadresse().getStrukturertAdresse()))
+        return new Kontonummer()
                 .withKontonummer(personData.getKontonummer());
-    }
-
-    private Adresse getAdresse(StrukturertAdresse strukturertAdresse) {
-        Adresse adresse = new Adresse();
-        if (strukturertAdresse instanceof Matrikkeladresse) {
-            Matrikkeladresse matrikkeladresseStrukturert = (Matrikkeladresse) strukturertAdresse;
-            Adresse.MatrikkelAdresse matrikkelAdresse = new Adresse.MatrikkelAdresse();
-            matrikkelAdresse.eiendomsnavn = matrikkeladresseStrukturert.getEiendomsnavn();
-            matrikkelAdresse.gaardsnummer = matrikkeladresseStrukturert.getGardsnummer();
-            matrikkelAdresse.bruksnummer = matrikkeladresseStrukturert.getBruksnummer();
-            matrikkelAdresse.festenummer = matrikkeladresseStrukturert.getFestenummer();
-            matrikkelAdresse.seksjonsnummer = matrikkeladresseStrukturert.getSeksjonsnummer();
-            matrikkelAdresse.undernummer = matrikkeladresseStrukturert.getUndernummer();
-            matrikkelAdresse.type = "matrikkel";
-            matrikkelAdresse.kommunenummer = matrikkeladresseStrukturert.getKommunenummer();
-            matrikkelAdresse.postnummer = matrikkeladresseStrukturert.getPostnummer();
-            matrikkelAdresse.poststed = kodeverkService.getPoststed(matrikkelAdresse.postnummer);
-            adresse.setStrukturertAdresse(matrikkelAdresse);
-            adresse.setAdressetype("matrikkel");
-        }
-
-        if (strukturertAdresse instanceof Gateadresse) {
-            Gateadresse gateAdresseStrukturert = (Gateadresse) strukturertAdresse;
-            Adresse.Gateadresse gateadresse = new Adresse.Gateadresse();
-            gateadresse.type = "gateadresse";
-            gateadresse.gatenavn = gateAdresseStrukturert.getGatenavn();
-            gateadresse.husnummer = String.valueOf(gateAdresseStrukturert.getHusnummer());
-            gateadresse.husbokstav = gateAdresseStrukturert.getHusbokstav();
-            gateadresse.bolignummer = gateAdresseStrukturert.getBolignummer();
-            gateadresse.kommunenummer = gateAdresseStrukturert.getKommunenummer();
-            gateadresse.postnummer = gateAdresseStrukturert.getPostnummer();
-            gateadresse.poststed = kodeverkService.getPoststed(gateadresse.postnummer);
-            adresse.setStrukturertAdresse(gateadresse);
-            adresse.setAdressetype("gateadresse");
-        }
-
-        return adresse;
     }
 
 }

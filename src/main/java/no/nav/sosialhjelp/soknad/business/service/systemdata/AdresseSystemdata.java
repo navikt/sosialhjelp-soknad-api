@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.business.service.systemdata;
 
-import no.finn.unleash.Unleash;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknadsmottaker;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse;
@@ -12,14 +11,8 @@ import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonUstrukturertAdresse;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
 import no.nav.sosialhjelp.soknad.business.service.soknadservice.Systemdata;
-import no.nav.sosialhjelp.soknad.consumer.exceptions.PdlApiException;
-import no.nav.sosialhjelp.soknad.consumer.exceptions.TjenesteUtilgjengeligException;
 import no.nav.sosialhjelp.soknad.consumer.pdl.PdlService;
-import no.nav.sosialhjelp.soknad.consumer.pdlperson.PersonSammenligner;
-import no.nav.sosialhjelp.soknad.consumer.personv3.PersonServiceV3;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
-import no.nav.sosialhjelp.soknad.domain.model.Adresse;
-import no.nav.sosialhjelp.soknad.domain.model.AdresserOgKontonummer;
 import no.nav.sosialhjelp.soknad.domain.model.Bostedsadresse;
 import no.nav.sosialhjelp.soknad.domain.model.Kontaktadresse;
 import no.nav.sosialhjelp.soknad.domain.model.Matrikkeladresse;
@@ -28,28 +21,17 @@ import no.nav.sosialhjelp.soknad.domain.model.Vegadresse;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
-import java.util.stream.Collectors;
-
-import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Component
 public class AdresseSystemdata implements Systemdata {
 
     private static final Logger log = getLogger(AdresseSystemdata.class);
-    public static final String FEATURE_ADRESSER_PDL = "sosialhjelp.soknad.adresser-pdl";
 
-    private final PersonServiceV3 personService;
     private final PdlService pdlService;
-    private final PersonSammenligner personSammenligner;
-    private final Unleash unleashConsumer;
 
-    public AdresseSystemdata(PersonServiceV3 personService, PdlService pdlService, PersonSammenligner personSammenligner, Unleash unleashConsumer) {
-        this.personService = personService;
+    public AdresseSystemdata(PdlService pdlService) {
         this.pdlService = pdlService;
-        this.personSammenligner = personSammenligner;
-        this.unleashConsumer = unleashConsumer;
     }
 
     @Override
@@ -105,49 +87,14 @@ public class AdresseSystemdata implements Systemdata {
     }
 
     public JsonAdresse innhentFolkeregistrertAdresse(String personIdentifikator) {
-        var skalHenteAdresserFraPdl = unleashConsumer.isEnabled(FEATURE_ADRESSER_PDL, false);
-        if (skalHenteAdresserFraPdl) {
-            var person = pdlService.hentPerson(personIdentifikator);
-            return mapToJsonAdresse(person.getBostedsadresse());
-        }
-        AdresserOgKontonummer adresserOgKontonummer = personService.hentAddresserOgKontonummer(personIdentifikator);
-        sammenlignFolkeregistrertAdresse(personIdentifikator, adresserOgKontonummer.getFolkeregistrertAdresse());
-        return mapToJsonAdresse(adresserOgKontonummer.getFolkeregistrertAdresse());
+        var person = pdlService.hentPerson(personIdentifikator);
+        return mapToJsonAdresse(person.getBostedsadresse());
     }
 
     public JsonAdresse innhentMidlertidigAdresse(String personIdentifikator) {
-        var skalHenteAdresserFraPdl = unleashConsumer.isEnabled(FEATURE_ADRESSER_PDL, false);
-        if (skalHenteAdresserFraPdl) {
-            var person = pdlService.hentPerson(personIdentifikator);
-//            return mapToJsonAdresse(person.getOppholdsadresse());
-            return mapToJsonAdresse(person.getKontaktadresse());
-        }
-        AdresserOgKontonummer adresserOgKontonummer = personService.hentAddresserOgKontonummer(personIdentifikator);
-        sammenlignMidlertidigAdresse(personIdentifikator, adresserOgKontonummer.getMidlertidigAdresse());
-        return mapToJsonAdresse(adresserOgKontonummer.getMidlertidigAdresse());
-    }
-
-    private void sammenlignFolkeregistrertAdresse(String personIdentifikator, Adresse folkeregistrertAdresse) {
-        try {
-            var person = pdlService.hentPerson(personIdentifikator);
-            personSammenligner.sammenlignFolkeregistrertAdresse(folkeregistrertAdresse, person.getBostedsadresse());
-        } catch (PdlApiException | TjenesteUtilgjengeligException e) {
-            log.warn("PDL kaster feil (brukes kun for sammenligning)", e);
-        } catch (Exception e) {
-            log.warn("PDL-feil eller feil ved sammenligning av data fra TPS/PDL", e);
-        }
-    }
-
-    private void sammenlignMidlertidigAdresse(String personIdentifikator, Adresse midlertidigAdresse) {
-        try {
-            var person = pdlService.hentPerson(personIdentifikator);
-            personSammenligner.sammenlignMidlertidigAdresseOppholdsadresse(midlertidigAdresse, person.getOppholdsadresse());
-            personSammenligner.sammenlignMidlertidigAdresseKontaktadresse(midlertidigAdresse, person.getKontaktadresse());
-        } catch (PdlApiException | TjenesteUtilgjengeligException e) {
-            log.warn("PDL kaster feil (brukes kun for sammenligning)", e);
-        } catch (Exception e) {
-            log.warn("PDL-feil eller feil ved sammenligning av data fra TPS/PDL", e);
-        }
+        var person = pdlService.hentPerson(personIdentifikator);
+//        return mapToJsonAdresse(person.getOppholdsadresse());
+        return mapToJsonAdresse(person.getKontaktadresse());
     }
 
     private JsonAdresse mapToJsonAdresse(Bostedsadresse bostedsadresse) {
@@ -226,94 +173,6 @@ public class AdresseSystemdata implements Systemdata {
         return jsonMatrikkelAdresse;
     }
 
-    private JsonAdresse mapToJsonAdresse(Adresse adresse) {
-        if (adresse == null || isUtenlandskAdresse(adresse)) {
-            return null;
-        }
-
-        Adresse.StrukturertAdresse strukturertAdresse = adresse.getStrukturertAdresse();
-
-        if (strukturertAdresse == null) {
-            // Skal aldri kunne skje med folkeregistrert adresse ref. PersonV1-definisjon.
-            return null;
-        }
-
-        String type = adresse.getAdressetype();
-        if (type == null) {
-            throw new IllegalStateException("Adresse mangler type");
-        }
-
-        JsonAdresse jsonAdresse;
-        if (strukturertAdresse instanceof Adresse.Gateadresse) {
-            jsonAdresse = tilGateAdresse(adresse);
-        } else if (strukturertAdresse instanceof Adresse.MatrikkelAdresse) {
-            jsonAdresse = tilMatrikkelAdresse(adresse);
-        } else if (type.equals("ustrukturert")) {
-            jsonAdresse = tilUstrukturertAdresse(adresse);
-        } else if (type.equals("postboks")) {
-            throw new IllegalStateException("Adresser av typen \"postboks\" har ikke blitt implementert ennå.");
-        } else {
-            throw new IllegalStateException("Ukjent adressetype: \"" + type + "\"");
-        }
-
-        jsonAdresse.setKilde(JsonKilde.SYSTEM);
-
-        return jsonAdresse;
-    }
-
-    private static JsonAdresse tilGateAdresse(Adresse adresse) {
-        if (adresse.getStrukturertAdresse() == null) {
-            // Skal aldri kunne skje med folkeregistrert adresse ref. PersonV1-definisjon.
-            throw new IllegalStateException("Adresse er ikke strukturert");
-        }
-
-        Adresse.Gateadresse gateadresse = (Adresse.Gateadresse) adresse.getStrukturertAdresse();
-        JsonGateAdresse jsonGateAdresse = new JsonGateAdresse();
-        jsonGateAdresse.setType(JsonAdresse.Type.GATEADRESSE);
-        jsonGateAdresse.setLandkode(defaultIfBlank(adresse.getLandkode(), "NOR"));
-        jsonGateAdresse.setKommunenummer(defaultIfBlank(gateadresse.kommunenummer, null));
-        jsonGateAdresse.setBolignummer(defaultIfBlank(gateadresse.bolignummer, null));
-        jsonGateAdresse.setGatenavn(defaultIfBlank(gateadresse.gatenavn, null));
-        jsonGateAdresse.setHusnummer(defaultIfBlank(gateadresse.husnummer, null));
-        jsonGateAdresse.setHusbokstav(defaultIfBlank(gateadresse.husbokstav, null));
-        jsonGateAdresse.setPostnummer(defaultIfBlank(gateadresse.postnummer, null));
-        jsonGateAdresse.setPoststed(defaultIfBlank(gateadresse.poststed, null));
-        return jsonGateAdresse;
-    }
-
-    private static JsonAdresse tilMatrikkelAdresse(Adresse adresse) {
-        if (adresse.getStrukturertAdresse() == null) {
-            // Skal aldri kunne skje med folkeregistrert adresse ref. PersonV1-definisjon.
-            throw new IllegalStateException("Adresse er ikke strukturert");
-        }
-
-        Adresse.MatrikkelAdresse matrikkelAdresse = (Adresse.MatrikkelAdresse) adresse.getStrukturertAdresse();
-        JsonMatrikkelAdresse jsonMatrikkelAdresse = new JsonMatrikkelAdresse();
-        jsonMatrikkelAdresse.setType(JsonAdresse.Type.MATRIKKELADRESSE);
-        jsonMatrikkelAdresse.setKommunenummer(defaultIfBlank(matrikkelAdresse.kommunenummer, null));
-        jsonMatrikkelAdresse.setGaardsnummer(defaultIfBlank(matrikkelAdresse.gaardsnummer, null));
-        jsonMatrikkelAdresse.setBruksnummer(defaultIfBlank(matrikkelAdresse.bruksnummer, null));
-        jsonMatrikkelAdresse.setFestenummer(defaultIfBlank(matrikkelAdresse.festenummer, null));
-        jsonMatrikkelAdresse.setSeksjonsnummer(defaultIfBlank(matrikkelAdresse.seksjonsnummer, null));
-        jsonMatrikkelAdresse.setUndernummer(defaultIfBlank(matrikkelAdresse.undernummer, null));
-        return jsonMatrikkelAdresse;
-    }
-
-    private static JsonAdresse tilUstrukturertAdresse(Adresse adresse) {
-        if (adresse.getAdresse() == null) {
-            return null;
-        }
-
-        JsonUstrukturertAdresse ustrukturertAdresse = new JsonUstrukturertAdresse();
-        ustrukturertAdresse.setType(JsonAdresse.Type.USTRUKTURERT);
-
-        ustrukturertAdresse.setAdresse(Arrays.stream(adresse.getAdresse().split(","))
-                .map(String::trim)
-                .collect(Collectors.toList()));
-
-        return ustrukturertAdresse;
-    }
-
     public JsonAdresse createDeepCopyOfJsonAdresse(JsonAdresse oppholdsadresse) {
         switch (oppholdsadresse.getType()){
             case GATEADRESSE:
@@ -357,9 +216,5 @@ public class AdresseSystemdata implements Systemdata {
             default:
                 return null;
         }
-    }
-
-    private boolean isUtenlandskAdresse(Adresse adresse) {
-        return adresse.getLandkode() != null && !adresse.getLandkode().equals("NOR");
     }
 }
