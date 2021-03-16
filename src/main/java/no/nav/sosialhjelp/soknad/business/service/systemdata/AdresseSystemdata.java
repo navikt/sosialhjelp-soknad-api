@@ -119,8 +119,8 @@ public class AdresseSystemdata implements Systemdata {
         var skalHenteAdresserFraPdl = unleashConsumer.isEnabled(FEATURE_ADRESSER_PDL, false);
         if (skalHenteAdresserFraPdl) {
             var person = pdlService.hentPerson(personIdentifikator);
-//            return mapToJsonAdresse(person.getOppholdsadresse());
-            return mapToJsonAdresse(person.getKontaktadresse());
+            return mapToJsonAdresse(person.getOppholdsadresse());
+//            return mapToJsonAdresse(person.getKontaktadresse());
         }
         AdresserOgKontonummer adresserOgKontonummer = personService.hentAddresserOgKontonummer(personIdentifikator);
         sammenlignMidlertidigAdresse(personIdentifikator, adresserOgKontonummer.getMidlertidigAdresse());
