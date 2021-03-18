@@ -223,7 +223,7 @@ public class AdresseSystemdataTest {
                 .withPostadresse(new JsonAdresse().withAdresseValg(JsonAdresseValg.MIDLERTIDIG));
 
         when(unleashConsumer.isEnabled(FEATURE_ADRESSER_PDL, false)).thenReturn(true);
-        var personWithOppholdsadresse = createPersonWithOppholdsadresseVegadresse();
+        var personWithOppholdsadresse = createPersonWithKontaktadresseVegadresse();
         when(pdlService.hentPerson(anyString())).thenReturn(personWithOppholdsadresse);
 
         adresseSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
@@ -241,7 +241,7 @@ public class AdresseSystemdataTest {
         assertThat(postadresse.getType(), is(JsonAdresse.Type.GATEADRESSE));
 
         var bostedsadresseVegadresse = personWithOppholdsadresse.getBostedsadresse().getVegadresse();
-        var oppholdsadresseVegadresse = personWithOppholdsadresse.getOppholdsadresse().getVegadresse();
+        var oppholdsadresseVegadresse = personWithOppholdsadresse.getKontaktadresse().getVegadresse();
 
         assertThatVegadresseIsCorrectlyConverted(bostedsadresseVegadresse, folkeregistrertAdresse);
         assertThatVegadresseIsCorrectlyConverted(oppholdsadresseVegadresse, oppholdsadresse);
