@@ -9,6 +9,7 @@ import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseSokConsumer.Adresse
 import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseSokConsumer.Sokedata;
 import no.nav.sosialhjelp.soknad.domain.model.norg.NavEnhet;
 import no.nav.sosialhjelp.soknad.domain.model.util.KommuneTilNavEnhetMapper;
+import org.slf4j.Logger;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -23,9 +24,12 @@ import java.util.stream.Collectors;
 import static java.util.stream.Collectors.toList;
 import static no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseForslagType.GATEADRESSE;
 import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.slf4j.LoggerFactory.getLogger;
 
 @Service
 public class AdresseSokService {
+
+    private static final Logger log = getLogger(AdresseSokService.class);
 
     @Inject
     private AdresseSokConsumer adresseSokConsumer;
@@ -48,8 +52,9 @@ public class AdresseSokService {
         if (sokedata == null || isAddressTooShortOrNull(sokedata.adresse)) {
             return Collections.emptyList();
         }
-
+        log.info("Adressesok sokedata: soketype={} adresse={} husnummer={} husbokstav={} kommunenummer={} postnummer={}", sokedata.soketype, sokedata.adresse, sokedata.husnummer, sokedata.husbokstav, sokedata.kommunenummer, sokedata.postnummer);
         final AdressesokRespons adressesokRespons = adresseSokConsumer.sokAdresse(sokedata);
+        log.info("Fant {} forslag i adressesok", adressesokRespons.adresseDataList.size());
         return adressesokRespons.adresseDataList.stream()
                 .filter(isGateadresse())
                 .map(AdresseSokService::toAdresseForslag) // "gateadresse" er hardkodet.

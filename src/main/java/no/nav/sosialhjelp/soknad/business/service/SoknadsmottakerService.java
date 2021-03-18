@@ -9,14 +9,19 @@ import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseForslag;
 import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseForslagType;
 import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseSokConsumer.Sokedata;
 import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseSokConsumer.Soketype;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
 import java.util.Collections;
 import java.util.List;
 
+import static org.slf4j.LoggerFactory.getLogger;
+
 @Component
 public class SoknadsmottakerService {
+
+    private static final Logger log = getLogger(SoknadsmottakerService.class);
 
     @Inject
     private AdresseSokService adresseSokService;
@@ -62,6 +67,7 @@ public class SoknadsmottakerService {
 
         } else if (adresse.getType().equals(JsonAdresse.Type.GATEADRESSE)) {
             final JsonGateAdresse gateAdresse = (JsonGateAdresse) adresse;
+            log.info("JsonAdresse: {}", gateAdresse.toString());
             final List<AdresseForslag> adresser = adresseSokService.sokEtterAdresser(new Sokedata()
                     .withSoketype(Soketype.EKSAKT)
                     .withAdresse(gateAdresse.getGatenavn())
