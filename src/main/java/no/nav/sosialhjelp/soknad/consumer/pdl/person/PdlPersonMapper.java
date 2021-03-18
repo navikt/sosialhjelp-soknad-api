@@ -310,22 +310,30 @@ public class PdlPersonMapper {
 
     private Vegadresse mapToVegadresse(VegadresseDto dto) {
         return new Vegadresse(
-                dto.getAdressenavn(),
+                dto.getAdressenavn().toUpperCase(),
                 dto.getHusnummer(),
                 dto.getHusbokstav(),
                 dto.getTilleggsnavn(),
                 dto.getPostnummer(),
-                kodeverkService.getPoststed(dto.getPostnummer()),
+                getPoststed(dto.getPostnummer()),
                 dto.getKommunenummer(),
                 dto.getBruksenhetsnummer()
         );
+    }
+
+    private String getPoststed(String postnummer) {
+        var poststed = kodeverkService.getPoststed(postnummer);
+        if (poststed != null) {
+            return poststed.toUpperCase();
+        }
+        return null;
     }
 
     private Matrikkeladresse mapToMatrikkeladresse(MatrikkeladresseDto dto) {
         return new Matrikkeladresse(
                 dto.getMatrikkelId(),
                 dto.getPostnummer(),
-                kodeverkService.getPoststed(dto.getPostnummer()),
+                getPoststed(dto.getPostnummer()),
                 dto.getTilleggsnavn(),
                 dto.getKommunenummer(),
                 dto.getBruksenhetsnummer()

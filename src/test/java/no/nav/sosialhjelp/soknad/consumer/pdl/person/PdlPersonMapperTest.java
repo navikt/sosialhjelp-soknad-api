@@ -105,14 +105,14 @@ public class PdlPersonMapperTest {
         assertThat(person.getStatsborgerskap(), hasSize(1));
         assertThat(person.getStatsborgerskap().get(0), is(LAND));
         assertThat(person.getBostedsadresse().getCoAdressenavn(), is(nullValue()));
-        assertThat(person.getBostedsadresse().getVegadresse().getAdressenavn(), is("gateveien"));
+        assertThat(person.getBostedsadresse().getVegadresse().getAdressenavn(), is("gateveien".toUpperCase()));
         assertThat(person.getBostedsadresse().getVegadresse().getPostnummer(), is("1234"));
-        assertThat(person.getBostedsadresse().getVegadresse().getPoststed(), is("Mitt poststed"));
+        assertThat(person.getBostedsadresse().getVegadresse().getPoststed(), is("Mitt poststed".toUpperCase()));
         assertThat(person.getBostedsadresse().getMatrikkeladresse(), is(nullValue()));
         assertThat(person.getOppholdsadresse().getCoAdressenavn(), is("Test McTest"));
-        assertThat(person.getOppholdsadresse().getVegadresse().getAdressenavn(), is("midlertidig"));
+        assertThat(person.getOppholdsadresse().getVegadresse().getAdressenavn(), is("midlertidig".toUpperCase()));
         assertThat(person.getKontaktadresse().getCoAdressenavn(), is(nullValue()));
-        assertThat(person.getKontaktadresse().getVegadresse().getAdressenavn(), is("kontaktveien"));
+        assertThat(person.getKontaktadresse().getVegadresse().getAdressenavn(), is("kontaktveien".toUpperCase()));
     }
 
     @Test
@@ -200,10 +200,10 @@ public class PdlPersonMapperTest {
 
         assertNotNull(person);
         assertThat(person.getBostedsadresse().getCoAdressenavn(), is(nullValue()));
-        assertThat(person.getBostedsadresse().getVegadresse().getAdressenavn(), is(vegadresse.getAdressenavn()));
+        assertThat(person.getBostedsadresse().getVegadresse().getAdressenavn(), is(vegadresse.getAdressenavn().toUpperCase()));
         assertThat(person.getBostedsadresse().getMatrikkeladresse(), is(nullValue()));
         assertThat(person.getOppholdsadresse().getCoAdressenavn(), is(nullValue()));
-        assertThat(person.getOppholdsadresse().getVegadresse().getAdressenavn(), is(annenVegadresse.getAdressenavn()));
+        assertThat(person.getOppholdsadresse().getVegadresse().getAdressenavn(), is(annenVegadresse.getAdressenavn().toUpperCase()));
     }
 
     @Test
@@ -228,10 +228,10 @@ public class PdlPersonMapperTest {
 
         assertNotNull(person);
         assertThat(person.getBostedsadresse().getCoAdressenavn(), is(nullValue()));
-        assertThat(person.getBostedsadresse().getVegadresse().getAdressenavn(), is(vegadresse.getAdressenavn()));
+        assertThat(person.getBostedsadresse().getVegadresse().getAdressenavn(), is(vegadresse.getAdressenavn().toUpperCase()));
         assertThat(person.getBostedsadresse().getMatrikkeladresse(), is(nullValue()));
         assertThat(person.getKontaktadresse().getCoAdressenavn(), is(nullValue()));
-        assertThat(person.getKontaktadresse().getVegadresse().getAdressenavn(), is(annenVegadresse.getAdressenavn()));
+        assertThat(person.getKontaktadresse().getVegadresse().getAdressenavn(), is(annenVegadresse.getAdressenavn().toUpperCase()));
     }
 
     @Test
@@ -253,7 +253,7 @@ public class PdlPersonMapperTest {
 
         assertNotNull(person);
         assertThat(person.getBostedsadresse().getCoAdressenavn(), is(nullValue()));
-        assertThat(person.getBostedsadresse().getVegadresse().getAdressenavn(), is(vegadresse.getAdressenavn()));
+        assertThat(person.getBostedsadresse().getVegadresse().getAdressenavn(), is(vegadresse.getAdressenavn().toUpperCase()));
         assertThat(person.getBostedsadresse().getMatrikkeladresse(), is(nullValue()));
         assertThat(person.getKontaktadresse(), is(nullValue()));
     }
