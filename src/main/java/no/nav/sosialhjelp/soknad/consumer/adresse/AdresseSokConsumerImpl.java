@@ -141,7 +141,7 @@ public class AdresseSokConsumerImpl implements AdresseSokConsumer {
                 .queryParam("maxretur", maxretur);
 
         if (sokedata.adresse != null && !sokedata.adresse.trim().equals("")) {
-            b = b.queryParam("adresse", sokedata.adresse);
+            b = b.queryParam("adresse", sokedata.adresse.toLowerCase());
         }
         if (sokedata.postnummer != null) {
             b = b.queryParam("postnr", sokedata.postnummer);
