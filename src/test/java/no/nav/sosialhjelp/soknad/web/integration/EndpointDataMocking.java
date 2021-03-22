@@ -6,23 +6,21 @@ import no.nav.tjeneste.virksomhet.person.v3.binding.HentPersonSikkerhetsbegrensn
 import no.nav.tjeneste.virksomhet.person.v3.binding.PersonV3;
 import no.nav.tjeneste.virksomhet.person.v3.meldinger.HentPersonRequest;
 
-import static no.nav.sosialhjelp.soknad.mock.person.PersonV3Mock.createPersonV3HentPersonRequestForIntegrationTest;
+import static no.nav.sosialhjelp.soknad.mock.person.PersonV3Mock.createPersonV3HentPersonRequest;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 public class EndpointDataMocking {
 
-    private static int behandlingsIdCounter = 1;
-
-    public static void setupMockWsEndpointData() throws Exception {
+    public static void setupMockWsEndpointData() {
         mockPersonV3Endpoint();
     }
 
-    static void mockPersonV3Endpoint() throws Exception {
+    static void mockPersonV3Endpoint() {
         PersonV3 mock = IntegrationConfig.getMocked("personV3Endpoint");
 
         try {
-            when(mock.hentPerson(any(HentPersonRequest.class))).thenReturn(createPersonV3HentPersonRequestForIntegrationTest("12"));
+            when(mock.hentPerson(any(HentPersonRequest.class))).thenReturn(createPersonV3HentPersonRequest("12"));
         } catch (HentPersonPersonIkkeFunnet | HentPersonSikkerhetsbegrensning hentPersonPersonIkkeFunnet) {
             hentPersonPersonIkkeFunnet.printStackTrace();
         }

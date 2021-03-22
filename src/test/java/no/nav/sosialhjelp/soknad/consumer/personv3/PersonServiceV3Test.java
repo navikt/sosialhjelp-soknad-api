@@ -4,19 +4,13 @@ import no.nav.sosialhjelp.soknad.consumer.exceptions.IkkeFunnetException;
 import no.nav.sosialhjelp.soknad.consumer.exceptions.SikkerhetsBegrensningException;
 import no.nav.sosialhjelp.soknad.consumer.exceptions.TjenesteUtilgjengeligException;
 import no.nav.sosialhjelp.soknad.consumer.kodeverk.KodeverkService;
-import no.nav.sosialhjelp.soknad.domain.model.AdresserOgKontonummer;
+import no.nav.sosialhjelp.soknad.domain.model.Kontonummer;
 import no.nav.tjeneste.virksomhet.person.v3.binding.HentPersonPersonIkkeFunnet;
 import no.nav.tjeneste.virksomhet.person.v3.binding.HentPersonSikkerhetsbegrensning;
 import no.nav.tjeneste.virksomhet.person.v3.binding.PersonV3;
 import no.nav.tjeneste.virksomhet.person.v3.informasjon.BankkontoNorge;
 import no.nav.tjeneste.virksomhet.person.v3.informasjon.Bankkontonummer;
-import no.nav.tjeneste.virksomhet.person.v3.informasjon.Bostedsadresse;
 import no.nav.tjeneste.virksomhet.person.v3.informasjon.Bruker;
-import no.nav.tjeneste.virksomhet.person.v3.informasjon.Diskresjonskoder;
-import no.nav.tjeneste.virksomhet.person.v3.informasjon.Gateadresse;
-import no.nav.tjeneste.virksomhet.person.v3.informasjon.Matrikkeladresse;
-import no.nav.tjeneste.virksomhet.person.v3.informasjon.Person;
-import no.nav.tjeneste.virksomhet.person.v3.informasjon.Postnummer;
 import no.nav.tjeneste.virksomhet.person.v3.meldinger.HentPersonRequest;
 import no.nav.tjeneste.virksomhet.person.v3.meldinger.HentPersonResponse;
 import org.junit.Test;
@@ -43,70 +37,26 @@ public class PersonServiceV3Test {
     @Test(expected = IkkeFunnetException.class)
     public void skalKasteIkkeFunnetExceptionHvisPersonIkkeFinnesITps() throws HentPersonSikkerhetsbegrensning, HentPersonPersonIkkeFunnet {
         when(personV3.hentPerson(any(HentPersonRequest.class))).thenThrow(new HentPersonPersonIkkeFunnet("", null));
-        personService.hentAddresserOgKontonummer("");
+        personService.hentKontonummer("");
     }
 
     @Test(expected = SikkerhetsBegrensningException.class)
     public void skalKasteSikkerhetsBegrensningExceptionHvisTpsNekterTilgangTilBruker() throws HentPersonSikkerhetsbegrensning, HentPersonPersonIkkeFunnet {
         when(personV3.hentPerson(any(HentPersonRequest.class))).thenThrow(new HentPersonSikkerhetsbegrensning("", null));
-        personService.hentAddresserOgKontonummer("");
+        personService.hentKontonummer("");
     }
 
     @Test(expected = TjenesteUtilgjengeligException.class)
     public void skalKasteTjenesteUtilgjengeligExceptionHvisTpsErNede() throws HentPersonSikkerhetsbegrensning, HentPersonPersonIkkeFunnet {
         when(personV3.hentPerson(any(HentPersonRequest.class))).thenThrow(new WebServiceException("", null));
-        personService.hentAddresserOgKontonummer("");
+        personService.hentKontonummer("");
     }
 
     @Test
     public void skalTakleTomRespons() throws HentPersonSikkerhetsbegrensning, HentPersonPersonIkkeFunnet {
         when(personV3.hentPerson(any(HentPersonRequest.class))).thenReturn(new HentPersonResponse());
-        AdresserOgKontonummer adresserOgKontonummer = personService.hentAddresserOgKontonummer("");
-        assertThat(adresserOgKontonummer).isNotNull();
-    }
-
-    @Test
-    public void skalIkkeVisePersonerMedDiskresjonsKode6() throws HentPersonSikkerhetsbegrensning, HentPersonPersonIkkeFunnet {
-        when(personV3.hentPerson(any(HentPersonRequest.class))).thenReturn(new HentPersonResponse().withPerson(new Person()
-                .withBostedsadresse(new Bostedsadresse().withStrukturertAdresse(new Gateadresse()
-                        .withPoststed(new Postnummer().withValue("Oslo"))
-                        .withGatenavn("Veien")))
-                .withDiskresjonskode(new Diskresjonskoder().withValue("SPSF"))));
-        AdresserOgKontonummer adresserOgKontonummer = personService.hentAddresserOgKontonummer("");
-        assertThat(adresserOgKontonummer.getFolkeregistrertAdresse()).isNull();
-    }
-
-    @Test
-    public void skalIkkeVisePersonerMedDiskresjonsKode7() throws HentPersonSikkerhetsbegrensning, HentPersonPersonIkkeFunnet {
-        when(personV3.hentPerson(any(HentPersonRequest.class))).thenReturn(new HentPersonResponse().withPerson(new Person()
-                .withBostedsadresse(new Bostedsadresse().withStrukturertAdresse(new Gateadresse()
-                        .withPoststed(new Postnummer().withValue("Oslo"))
-                        .withGatenavn("Veien")))
-                .withDiskresjonskode(new Diskresjonskoder().withValue("SPFO"))));
-        AdresserOgKontonummer adresserOgKontonummer = personService.hentAddresserOgKontonummer("");
-        assertThat(adresserOgKontonummer.getFolkeregistrertAdresse()).isNull();
-    }
-
-    @Test
-    public void skalVisePersonerUtenDiskresjonsKode() throws HentPersonSikkerhetsbegrensning, HentPersonPersonIkkeFunnet {
-        when(personV3.hentPerson(any(HentPersonRequest.class))).thenReturn(new HentPersonResponse().withPerson(new Person()
-                .withBostedsadresse(new Bostedsadresse().withStrukturertAdresse(new Gateadresse()
-                        .withPoststed(new Postnummer().withValue("Oslo"))
-                        .withGatenavn("Veien")))
-        ));
-        AdresserOgKontonummer adresserOgKontonummer = personService.hentAddresserOgKontonummer("");
-        assertThat(adresserOgKontonummer.getFolkeregistrertAdresse()).isNotNull();
-    }
-
-    @Test
-    public void skalHenteMatrikkelAdresseMedKommunenr() throws HentPersonSikkerhetsbegrensning, HentPersonPersonIkkeFunnet {
-        when(personV3.hentPerson(any(HentPersonRequest.class))).thenReturn(new HentPersonResponse().withPerson(new Person()
-                .withBostedsadresse(new Bostedsadresse().withStrukturertAdresse(new Matrikkeladresse()
-                        .withPoststed(new Postnummer().withValue("Oslo"))
-                        .withKommunenummer("0301")))
-        ));
-        AdresserOgKontonummer adresserOgKontonummer = personService.hentAddresserOgKontonummer("");
-        assertThat(adresserOgKontonummer.getFolkeregistrertAdresse().getStrukturertAdresse().kommunenummer).isEqualTo("0301");
+        Kontonummer kontonummer = personService.hentKontonummer("");
+        assertThat(kontonummer).isNotNull();
     }
 
     @Test
@@ -114,7 +64,7 @@ public class PersonServiceV3Test {
         when(personV3.hentPerson(any(HentPersonRequest.class))).thenReturn(new HentPersonResponse().withPerson(new Bruker()
                 .withBankkonto(new BankkontoNorge().withBankkonto(new Bankkontonummer().withBankkontonummer("00000000000")))
         ));
-        AdresserOgKontonummer adresserOgKontonummer = personService.hentAddresserOgKontonummer("");
+        Kontonummer adresserOgKontonummer = personService.hentKontonummer("");
         assertThat(adresserOgKontonummer.getKontonummer()).isEqualTo("00000000000");
     }
 }

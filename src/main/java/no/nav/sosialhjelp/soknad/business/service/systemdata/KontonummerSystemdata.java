@@ -6,7 +6,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
 import no.nav.sosialhjelp.soknad.business.service.soknadservice.Systemdata;
 import no.nav.sosialhjelp.soknad.consumer.personv3.PersonServiceV3;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
-import no.nav.sosialhjelp.soknad.domain.model.AdresserOgKontonummer;
+import no.nav.sosialhjelp.soknad.domain.model.Kontonummer;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
@@ -35,7 +35,7 @@ public class KontonummerSystemdata implements Systemdata {
     }
     
     public String innhentSystemverdiKontonummer(final String personIdentifikator) {
-        AdresserOgKontonummer adresserOgKontonummer = personService.hentAddresserOgKontonummer(personIdentifikator);
+        Kontonummer adresserOgKontonummer = personService.hentKontonummer(personIdentifikator);
         if (adresserOgKontonummer == null) {
             return null;
         }
