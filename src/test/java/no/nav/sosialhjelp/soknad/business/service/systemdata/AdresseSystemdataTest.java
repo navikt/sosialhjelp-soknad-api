@@ -10,6 +10,7 @@ import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.domain.model.Bostedsadresse;
 import no.nav.sosialhjelp.soknad.domain.model.Kontaktadresse;
 import no.nav.sosialhjelp.soknad.domain.model.Matrikkeladresse;
+import no.nav.sosialhjelp.soknad.domain.model.Oppholdsadresse;
 import no.nav.sosialhjelp.soknad.domain.model.Person;
 import no.nav.sosialhjelp.soknad.domain.model.Vegadresse;
 import org.junit.Test;
@@ -80,8 +81,8 @@ public class AdresseSystemdataTest {
                 .withOppholdsadresse(new JsonAdresse().withAdresseValg(JsonAdresseValg.MIDLERTIDIG))
                 .withPostadresse(new JsonAdresse().withAdresseValg(JsonAdresseValg.MIDLERTIDIG));
 
-        var personWithKontaktadresse = createPersonWithKontaktadresseVegadresse();
-        when(pdlService.hentPerson(anyString())).thenReturn(personWithKontaktadresse);
+        var personWithOppholdsadresse = createPersonWithOppholdsadresseVegadresse();
+        when(pdlService.hentPerson(anyString())).thenReturn(personWithOppholdsadresse);
 
         adresseSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
 
@@ -97,8 +98,8 @@ public class AdresseSystemdataTest {
         assertThat(oppholdsadresse.getType(), is(JsonAdresse.Type.GATEADRESSE));
         assertThat(postadresse.getType(), is(JsonAdresse.Type.GATEADRESSE));
 
-        var bostedsadresseVegadresse = personWithKontaktadresse.getBostedsadresse().getVegadresse();
-        var kontaktadresseVegadresse = personWithKontaktadresse.getKontaktadresse().getVegadresse();
+        var bostedsadresseVegadresse = personWithOppholdsadresse.getBostedsadresse().getVegadresse();
+        var oppholdsadresseVegadresse = personWithOppholdsadresse.getOppholdsadresse().getVegadresse();
 
         assertThatVegadresseIsCorrectlyConverted(bostedsadresseVegadresse, folkeregistrertAdresse);
         assertThatVegadresseIsCorrectlyConverted(kontaktadresseVegadresse, oppholdsadresse);
@@ -188,5 +189,11 @@ public class AdresseSystemdataTest {
         return new Person()
                 .withBostedsadresse(new Bostedsadresse("", DEFAULT_VEGADRESSE, null))
                 .withKontaktadresse(new Kontaktadresse("", ANNEN_VEGADRESSE));
+    }
+
+    private Person createPersonWithOppholdsadresseVegadresse() {
+        return new Person()
+                .withBostedsadresse(new Bostedsadresse("", DEFAULT_VEGADRESSE, null))
+                .withOppholdsadresse(new Oppholdsadresse("", ANNEN_VEGADRESSE));
     }
 }

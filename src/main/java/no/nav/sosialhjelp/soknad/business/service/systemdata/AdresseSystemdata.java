@@ -93,8 +93,8 @@ public class AdresseSystemdata implements Systemdata {
 
     public JsonAdresse innhentMidlertidigAdresse(String personIdentifikator) {
         var person = pdlService.hentPerson(personIdentifikator);
-//        return mapToJsonAdresse(person.getOppholdsadresse());
-        return mapToJsonAdresse(person.getKontaktadresse());
+        return mapToJsonAdresse(person.getOppholdsadresse());
+//        return mapToJsonAdresse(person.getKontaktadresse());
     }
 
     private JsonAdresse mapToJsonAdresse(Bostedsadresse bostedsadresse) {
