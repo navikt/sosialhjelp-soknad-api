@@ -8,7 +8,6 @@ import no.nav.sosialhjelp.soknad.consumer.norg.NorgService;
 import no.nav.sosialhjelp.soknad.consumer.organisasjon.OrganisasjonService;
 import no.nav.sosialhjelp.soknad.consumer.pdl.PdlService;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.PdlPersonMapper;
-import no.nav.sosialhjelp.soknad.consumer.pdlperson.PersonSammenligner;
 import no.nav.sosialhjelp.soknad.consumer.personv3.PersonServiceV3;
 import no.nav.sosialhjelp.soknad.consumer.redis.NoRedisConfig;
 import no.nav.sosialhjelp.soknad.consumer.redis.RedisConfig;
@@ -40,7 +39,6 @@ import org.springframework.context.annotation.Profile;
         NoRedisConfig.class,
         PdlService.class,
         PdlPersonMapper.class,
-        PersonSammenligner.class,
         PersonServiceV3.class,
         ConsumerConfig.WsServices.class,
         DokumentKrypterer.class,
