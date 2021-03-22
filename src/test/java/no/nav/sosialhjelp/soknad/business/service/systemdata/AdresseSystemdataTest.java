@@ -102,8 +102,8 @@ public class AdresseSystemdataTest {
         var oppholdsadresseVegadresse = personWithOppholdsadresse.getOppholdsadresse().getVegadresse();
 
         assertThatVegadresseIsCorrectlyConverted(bostedsadresseVegadresse, folkeregistrertAdresse);
-        assertThatVegadresseIsCorrectlyConverted(kontaktadresseVegadresse, oppholdsadresse);
-        assertThatVegadresseIsCorrectlyConverted(kontaktadresseVegadresse, postadresse);
+        assertThatVegadresseIsCorrectlyConverted(oppholdsadresseVegadresse, oppholdsadresse);
+        assertThatVegadresseIsCorrectlyConverted(oppholdsadresseVegadresse, postadresse);
     }
 
     @Test
