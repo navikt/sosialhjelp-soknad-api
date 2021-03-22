@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.consumer.pdl.adressesok;
+package no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto;
 
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -10,14 +10,10 @@ public class AdresseDto {
     private final Integer husnummer;
     private final String husbokstav;
     private final String adressenavn;
-    private final String tilleggsnavn;
-    private final String fylkenavn;
-    private final String fylkenummer;
     private final String kommunenavn;
     private final String kommunenummer;
     private final String postnummer;
     private final String poststed;
-    private final String bydelsnavn;
     private final String bydelsnummer;
 
     @JsonCreator
@@ -26,28 +22,20 @@ public class AdresseDto {
             @JsonProperty("husnummer") Integer husnummer,
             @JsonProperty("husbokstav") String husbokstav,
             @JsonProperty("adressenavn") String adressenavn,
-            @JsonProperty("tilleggsnavn") String tilleggsnavn,
-            @JsonProperty("fylkenavn") String fylkenavn,
-            @JsonProperty("fylkenummer") String fylkenummer,
             @JsonProperty("kommunenavn") String kommunenavn,
             @JsonProperty("kommunenummer") String kommunenummer,
             @JsonProperty("postnummer") String postnummer,
             @JsonProperty("poststed") String poststed,
-            @JsonProperty("bydelsnavn") String bydelsnavn,
             @JsonProperty("bydelsnummer") String bydelsnummer
     ) {
         this.matrikkelId = matrikkelId;
         this.husnummer = husnummer;
         this.husbokstav = husbokstav;
         this.adressenavn = adressenavn;
-        this.tilleggsnavn = tilleggsnavn;
-        this.fylkenavn = fylkenavn;
-        this.fylkenummer = fylkenummer;
         this.kommunenavn = kommunenavn;
         this.kommunenummer = kommunenummer;
         this.postnummer = postnummer;
         this.poststed = poststed;
-        this.bydelsnavn = bydelsnavn;
         this.bydelsnummer = bydelsnummer;
     }
 
@@ -67,18 +55,6 @@ public class AdresseDto {
         return adressenavn;
     }
 
-    public String getTilleggsnavn() {
-        return tilleggsnavn;
-    }
-
-    public String getFylkenavn() {
-        return fylkenavn;
-    }
-
-    public String getFylkenummer() {
-        return fylkenummer;
-    }
-
     public String getKommunenavn() {
         return kommunenavn;
     }
@@ -93,10 +69,6 @@ public class AdresseDto {
 
     public String getPoststed() {
         return poststed;
-    }
-
-    public String getBydelsnavn() {
-        return bydelsnavn;
     }
 
     public String getBydelsnummer() {

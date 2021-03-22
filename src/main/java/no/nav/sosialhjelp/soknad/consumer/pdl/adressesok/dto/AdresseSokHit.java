@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.consumer.pdl.adressesok;
+package no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
