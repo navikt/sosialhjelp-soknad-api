@@ -7,12 +7,14 @@
         {
           "vegadresse": {
             "matrikkelId": "276443635",
-            "adressenavn": "Heggsnipvegen",
-            "tilleggsnavn": null,
             "husnummer": 9,
             "husbokstav": "B",
+            "adressenavn": "Heggsnipvegen",
             "postnummer": "7070",
-            "poststed": "BOSBERG"
+            "poststed": "BOSBERG",
+            "kommunenavn": "BLOKSBERG",
+            "kommunenummer":"7071",
+            "bydelsnummer": null
           }
         }
       ]

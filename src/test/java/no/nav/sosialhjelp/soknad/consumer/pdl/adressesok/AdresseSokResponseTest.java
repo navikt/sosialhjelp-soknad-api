@@ -19,7 +19,7 @@ public class AdresseSokResponseTest {
             .registerModule(new JavaTimeModule());
 
     @Test
-    public void deserialiseringAvPdlBarnResponseJson() throws IOException {
+    public void deserialiseringAvAdresseSokResponseJson() throws IOException {
         InputStream resourceAsStream = ClassLoader.getSystemResourceAsStream("pdl/pdlSokAdresseResponse.json");
         assertThat(resourceAsStream).isNotNull();
         String jsonString = IOUtils.toString(resourceAsStream);
