@@ -3,8 +3,6 @@ package no.nav.sosialhjelp.soknad.consumer.personv3;
 import no.nav.sosialhjelp.soknad.consumer.exceptions.IkkeFunnetException;
 import no.nav.sosialhjelp.soknad.consumer.exceptions.SikkerhetsBegrensningException;
 import no.nav.sosialhjelp.soknad.consumer.exceptions.TjenesteUtilgjengeligException;
-import no.nav.sosialhjelp.soknad.consumer.person.domain.PersonData;
-import no.nav.sosialhjelp.soknad.consumer.person.mappers.PersonDataMapper;
 import no.nav.sosialhjelp.soknad.domain.model.Kontonummer;
 import no.nav.tjeneste.virksomhet.person.v3.binding.HentPersonPersonIkkeFunnet;
 import no.nav.tjeneste.virksomhet.person.v3.binding.HentPersonSikkerhetsbegrensning;
@@ -42,9 +40,7 @@ public class PersonServiceV3 {
                 logger.warn("Person er null");
                 return new Kontonummer();
             }
-            PersonDataMapper personDataMapper = new PersonDataMapper();
-            PersonData personData = personDataMapper.tilPersonData(person);
-            return mapResponsTilKontonummer(personData);
+            return KontonummerMapper.tilKontonummer(person);
         } catch (WebServiceException e) {
             logger.warn("Ingen kontakt med TPS (Person_V3).", e);
             throw new TjenesteUtilgjengeligException("TPS:webserviceException", e);
@@ -69,14 +65,4 @@ public class PersonServiceV3 {
 
         return hentPersonResponse.getPerson();
     }
-
-    private Kontonummer mapResponsTilKontonummer(PersonData personData) {
-        if (personData == null) {
-            return null;
-        }
-
-        return new Kontonummer()
-                .withKontonummer(personData.getKontonummer());
-    }
-
 }

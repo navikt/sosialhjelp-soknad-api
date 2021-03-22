@@ -1,14 +1,17 @@
-package no.nav.sosialhjelp.soknad.consumer.person.mappers;
+package no.nav.sosialhjelp.soknad.consumer.personv3;
 
-import no.nav.sosialhjelp.soknad.consumer.person.domain.PersonData;
+import no.nav.sosialhjelp.soknad.domain.model.Kontonummer;
 import no.nav.tjeneste.virksomhet.person.v3.informasjon.Person;
 
 import static java.util.Optional.ofNullable;
 
-public class PersonDataMapper {
+public final class KontonummerMapper {
 
-    public PersonData tilPersonData(Person person) {
-        return new PersonData()
+    private KontonummerMapper() {
+    }
+
+    public static Kontonummer tilKontonummer(Person person) {
+        return new Kontonummer()
                 .withKontonummer(kanskjeKontonummer(person));
     }
 
