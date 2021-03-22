@@ -3,6 +3,7 @@ package no.nav.sosialhjelp.soknad.business.batch.oppgave.fiks;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import no.finn.unleash.Unleash;
 import no.ks.svarut.servicesv9.Dokument;
 import no.nav.sbl.soknadsosialhjelp.json.AdresseMixIn;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
@@ -25,6 +26,8 @@ import java.util.stream.Collectors;
 
 import static no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator.ensureValidSoknad;
 import static no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator.ensureValidVedlegg;
+import static no.nav.sosialhjelp.soknad.business.util.JsonVedleggUtils.FEATURE_UTVIDE_VEDLEGGJSON;
+import static no.nav.sosialhjelp.soknad.business.util.JsonVedleggUtils.addHendelseTypeAndHendelseReferanse;
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class FiksDokumentHelper {
@@ -36,12 +39,14 @@ public class FiksDokumentHelper {
     private DokumentKrypterer dokumentKrypterer;
     private InnsendingService innsendingService;
     private SosialhjelpPdfGenerator sosialhjelpPdfGenerator;
+    private final Unleash unleash;
 
-    public FiksDokumentHelper(boolean skalKryptere, DokumentKrypterer dokumentKrypterer, InnsendingService innsendingService, SosialhjelpPdfGenerator sosialhjelpPdfGenerator) {
+    public FiksDokumentHelper(boolean skalKryptere, DokumentKrypterer dokumentKrypterer, InnsendingService innsendingService, SosialhjelpPdfGenerator sosialhjelpPdfGenerator, Unleash unleash) {
         this.skalKryptere = skalKryptere;
         this.dokumentKrypterer = dokumentKrypterer;
         this.innsendingService = innsendingService;
         this.sosialhjelpPdfGenerator = sosialhjelpPdfGenerator;
+        this.unleash = unleash;
 
         mapper = new ObjectMapper();
         mapper.addMixIn(JsonAdresse.class, AdresseMixIn.class);
@@ -64,7 +69,10 @@ public class FiksDokumentHelper {
     Dokument lagDokumentForVedleggJson(JsonInternalSoknad internalSoknad) {
         final String filnavn = "vedlegg.json";
         final String mimetype = "application/json";
-        byte[] vedleggJson = mapJsonVedleggTilFil(internalSoknad.getVedlegg());
+
+        JsonVedleggSpesifikasjon jsonVedleggSpesifikasjon = internalSoknad.getVedlegg();
+        addHendelseTypeAndHendelseReferanse(jsonVedleggSpesifikasjon, unleash.isEnabled(FEATURE_UTVIDE_VEDLEGGJSON, false));
+        byte[] vedleggJson = mapJsonVedleggTilFil(jsonVedleggSpesifikasjon);
 
         ByteDataSource dataSource = krypterOgOpprettByteDatasource(filnavn, vedleggJson);
         return new Dokument()

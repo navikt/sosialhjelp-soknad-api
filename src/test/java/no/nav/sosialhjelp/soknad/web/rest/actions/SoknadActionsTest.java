@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.web.rest.actions;
 
+import no.finn.unleash.Unleash;
 import no.nav.sosialhjelp.soknad.business.InnsendingService;
 import no.nav.sosialhjelp.soknad.business.batch.oppgave.OppgaveHandterer;
 import no.nav.sosialhjelp.soknad.business.db.soknadmetadata.SoknadMetadataRepository;
@@ -86,6 +87,8 @@ public class SoknadActionsTest {
     private SosialhjelpPdfGenerator sosialhjelpPdfGenerator;
     @Inject
     private SoknadActions actions;
+    @Inject
+    private Unleash unleash;
 
     ServletContext context = mock(ServletContext.class);
 

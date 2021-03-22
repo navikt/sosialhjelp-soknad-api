@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.business;
 
+import no.finn.unleash.Unleash;
 import no.nav.sosialhjelp.soknad.business.batch.oppgave.OppgaveHandterer;
 import no.nav.sosialhjelp.soknad.business.db.RepositoryTestSupport;
 import no.nav.sosialhjelp.soknad.business.db.TestSupport;
@@ -202,5 +203,10 @@ public class SoknadServiceIntegrationTestContext {
     @Bean
     public OrganisasjonConsumer organisasjonConsumer() {
         return mock(OrganisasjonConsumer.class);
+    }
+
+    @Bean
+    public Unleash unleash() {
+        return mock(Unleash.class);
     }
 }

@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.business.batch.oppgave.fiks;
 
+import no.finn.unleash.Unleash;
 import no.ks.svarut.servicesv9.Adresse;
 import no.ks.svarut.servicesv9.Brevtype;
 import no.ks.svarut.servicesv9.Dokument;
@@ -43,10 +44,10 @@ public class FiksSender {
 
     @Inject
     public FiksSender(ForsendelsesServiceV9 forsendelsesService, DokumentKrypterer dokumentKrypterer,
-                      InnsendingService innsendingService, SosialhjelpPdfGenerator sosialhjelpPdfGenerator) {
+                      InnsendingService innsendingService, SosialhjelpPdfGenerator sosialhjelpPdfGenerator, Unleash unleash) {
         this.forsendelsesService = forsendelsesService;
         this.innsendingService = innsendingService;
-        this.fiksDokumentHelper = new FiksDokumentHelper(SKAL_KRYPTERE, dokumentKrypterer, innsendingService, sosialhjelpPdfGenerator);
+        this.fiksDokumentHelper = new FiksDokumentHelper(SKAL_KRYPTERE, dokumentKrypterer, innsendingService, sosialhjelpPdfGenerator, unleash);
     }
 
     private final Printkonfigurasjon fakePrintConfig = new Printkonfigurasjon()
