@@ -9,6 +9,7 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 
+import static no.nav.sosialhjelp.soknad.business.util.JsonVedleggUtils.ANNET;
 import static no.nav.sosialhjelp.soknad.business.util.JsonVedleggUtils.addHendelseTypeAndHendelseReferanse;
 import static org.junit.Assert.*;
 
@@ -26,6 +27,8 @@ public class JsonVedleggUtilsTest {
         assertNull(jsonVedleggSpesifikasjon.getVedlegg().get(0).getHendelseReferanse());
         assertNull(jsonVedleggSpesifikasjon.getVedlegg().get(1).getHendelseType());
         assertNull(jsonVedleggSpesifikasjon.getVedlegg().get(1).getHendelseReferanse());
+        assertNull(jsonVedleggSpesifikasjon.getVedlegg().get(2).getHendelseType());
+        assertNull(jsonVedleggSpesifikasjon.getVedlegg().get(2).getHendelseReferanse());
     }
 
     @Test
@@ -36,10 +39,13 @@ public class JsonVedleggUtilsTest {
 
         addHendelseTypeAndHendelseReferanse(jsonVedleggSpesifikasjon, true);
 
-        assertNotNull(jsonVedleggSpesifikasjon.getVedlegg().get(0).getHendelseType());
+        assertEquals(JsonVedlegg.HendelseType.SOKNAD, jsonVedleggSpesifikasjon.getVedlegg().get(0).getHendelseType());
         assertNotNull(jsonVedleggSpesifikasjon.getVedlegg().get(0).getHendelseReferanse());
-        assertNotNull(jsonVedleggSpesifikasjon.getVedlegg().get(1).getHendelseType());
+        assertEquals(JsonVedlegg.HendelseType.SOKNAD, jsonVedleggSpesifikasjon.getVedlegg().get(1).getHendelseType());
         assertNotNull(jsonVedleggSpesifikasjon.getVedlegg().get(1).getHendelseReferanse());
+        // annet|annet -> hendelseType:bruker uten hendelseReferanse
+        assertEquals(JsonVedlegg.HendelseType.BRUKER, jsonVedleggSpesifikasjon.getVedlegg().get(2).getHendelseType());
+        assertNull(jsonVedleggSpesifikasjon.getVedlegg().get(2).getHendelseReferanse());
     }
 
     @Test
@@ -57,12 +63,17 @@ public class JsonVedleggUtilsTest {
         List<JsonVedlegg> jsonVedlegg = new ArrayList<>();
         jsonVedlegg.add(new JsonVedlegg()
                 .withStatus(Vedleggstatus.VedleggKreves.name())
-                .withType("type1")
+                .withType("annet")
                 .withTilleggsinfo("tilleggsinfo1"));
         jsonVedlegg.add(new JsonVedlegg()
                 .withStatus(Vedleggstatus.LastetOpp.name())
                 .withType("type1")
-                .withTilleggsinfo("tilleggsinfo2")
+                .withTilleggsinfo("annet")
+                .withFiler(lagJsonFiler()));
+        jsonVedlegg.add(new JsonVedlegg()
+                .withStatus(Vedleggstatus.LastetOpp.name())
+                .withType(ANNET)
+                .withTilleggsinfo(ANNET)
                 .withFiler(lagJsonFiler()));
         return new JsonVedleggSpesifikasjon()
                 .withVedlegg(jsonVedlegg);
