@@ -137,7 +137,7 @@ public class SoknadActions {
 
         addHendelseTypeAndHendelseReferanse(jsonVedleggSpesifikasjon, !soknadUnderArbeid.erEttersendelse(), isUtvideVedleggJsonFeatureActive);
 
-        soknadUnderArbeidRepository.opprettSoknad(soknadUnderArbeid, eier);
+        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier);
     }
 
     String getKommunenummerOrMock(SoknadUnderArbeid soknadUnderArbeid) {
