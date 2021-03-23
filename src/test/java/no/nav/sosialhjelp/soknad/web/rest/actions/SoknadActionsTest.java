@@ -123,12 +123,13 @@ public class SoknadActionsTest {
         verify(digisosApiService, times(0)).sendSoknad(any(), any(), any());
     }
 
-    @Test
-    public void sendSoknadMedSoknadUnderArbeidNullSkalKalleSoknadService() {
+    @Test(expected = IllegalStateException.class)
+    public void sendSoknadMedSoknadUnderArbeidNullSkalKasteException() {
         String behandlingsId = "soknadUnderArbeidErNull";
         actions.sendSoknad(behandlingsId, context, "");
 
-        verify(soknadService, times(1)).sendSoknad(eq(behandlingsId));
+        verify(soknadService, times(0)).sendSoknad(eq(behandlingsId));
+        verify(digisosApiService, times(0)).sendSoknad(any(), any(), any());
     }
 
     @Test
