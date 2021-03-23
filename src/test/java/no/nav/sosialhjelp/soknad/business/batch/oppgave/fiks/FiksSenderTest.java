@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.business.batch.oppgave.fiks;
 
-import no.finn.unleash.Unleash;
 import no.ks.svarut.servicesv9.Brevtype;
 import no.ks.svarut.servicesv9.Dokument;
 import no.ks.svarut.servicesv9.Forsendelse;
@@ -70,8 +69,6 @@ public class FiksSenderTest {
     InnsendingService innsendingService;
     @Mock
     SosialhjelpPdfGenerator sosialhjelpPdfGenerator;
-    @Mock
-    Unleash unleash;
 
     @InjectMocks
     private FiksSender fiksSender;
@@ -92,7 +89,7 @@ public class FiksSenderTest {
         when(sosialhjelpPdfGenerator.generateBrukerkvitteringPdf()).thenReturn(new byte[]{1, 2, 3});
 
         setProperty(FiksSender.KRYPTERING_DISABLED, "");
-        fiksSender = new FiksSender(forsendelsesService, dokumentKrypterer, innsendingService, sosialhjelpPdfGenerator, unleash);
+        fiksSender = new FiksSender(forsendelsesService, dokumentKrypterer, innsendingService, sosialhjelpPdfGenerator);
     }
 
     @Test
@@ -124,7 +121,7 @@ public class FiksSenderTest {
         when(innsendingService.hentSoknadUnderArbeid(anyString(), anyString()))
                 .thenReturn(new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER)).withEier(EIER));
         setProperty(FiksSender.KRYPTERING_DISABLED, "true");
-        fiksSender = new FiksSender(forsendelsesService, dokumentKrypterer, innsendingService, sosialhjelpPdfGenerator, unleash);
+        fiksSender = new FiksSender(forsendelsesService, dokumentKrypterer, innsendingService, sosialhjelpPdfGenerator);
         SendtSoknad sendtSoknad = lagSendtSoknad();
 
         Forsendelse forsendelse = fiksSender.opprettForsendelse(sendtSoknad, FAKE_ADRESSE);

@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.business.batch.oppgave.fiks;
 
-import no.finn.unleash.Unleash;
 import no.ks.svarut.servicesv9.Adresse;
 import no.ks.svarut.servicesv9.Brevtype;
 import no.ks.svarut.servicesv9.Dokument;
@@ -44,10 +43,10 @@ public class FiksSender {
 
     @Inject
     public FiksSender(ForsendelsesServiceV9 forsendelsesService, DokumentKrypterer dokumentKrypterer,
-                      InnsendingService innsendingService, SosialhjelpPdfGenerator sosialhjelpPdfGenerator, Unleash unleash) {
+                      InnsendingService innsendingService, SosialhjelpPdfGenerator sosialhjelpPdfGenerator) {
         this.forsendelsesService = forsendelsesService;
         this.innsendingService = innsendingService;
-        this.fiksDokumentHelper = new FiksDokumentHelper(SKAL_KRYPTERE, dokumentKrypterer, innsendingService, sosialhjelpPdfGenerator, unleash);
+        this.fiksDokumentHelper = new FiksDokumentHelper(SKAL_KRYPTERE, dokumentKrypterer, innsendingService, sosialhjelpPdfGenerator);
     }
 
     private final Printkonfigurasjon fakePrintConfig = new Printkonfigurasjon()
@@ -122,7 +121,7 @@ public class FiksSender {
         int antallVedleggForsendelse;
         if (soknadUnderArbeid.erEttersendelse()) {
             fiksDokumenter.add(fiksDokumentHelper.lagDokumentForEttersendelsePdf(internalSoknad, soknadUnderArbeid.getEier()));
-            fiksDokumenter.add(fiksDokumentHelper.lagDokumentForVedleggJson(internalSoknad, false));
+            fiksDokumenter.add(fiksDokumentHelper.lagDokumentForVedleggJson(internalSoknad));
             fiksDokumenter.add(fiksDokumentHelper.lagDokumentForBrukerkvitteringPdf());
             List<Dokument> dokumenterForVedlegg = fiksDokumentHelper.lagDokumentListeForVedlegg(soknadUnderArbeid);
             antallVedleggForsendelse = dokumenterForVedlegg.size();
@@ -130,7 +129,7 @@ public class FiksSender {
         } else {
             fiksDokumenter.add(fiksDokumentHelper.lagDokumentForSoknadJson(internalSoknad));
             fiksDokumenter.add(fiksDokumentHelper.lagDokumentForSaksbehandlerPdf(internalSoknad));
-            fiksDokumenter.add(fiksDokumentHelper.lagDokumentForVedleggJson(internalSoknad, true));
+            fiksDokumenter.add(fiksDokumentHelper.lagDokumentForVedleggJson(internalSoknad));
             fiksDokumenter.add(fiksDokumentHelper.lagDokumentForJuridiskPdf(internalSoknad));
             fiksDokumenter.add(fiksDokumentHelper.lagDokumentForBrukerkvitteringPdf());
             List<Dokument> dokumenterForVedlegg = fiksDokumentHelper.lagDokumentListeForVedlegg(soknadUnderArbeid);

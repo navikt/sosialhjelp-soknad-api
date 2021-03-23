@@ -2,12 +2,10 @@ package no.nav.sosialhjelp.soknad.business.service.digisosapi;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import no.finn.unleash.Unleash;
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
-import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon;
 import no.nav.sosialhjelp.metrics.Event;
 import no.nav.sosialhjelp.metrics.MetricsFactory;
 import no.nav.sosialhjelp.soknad.business.InnsendingService;
@@ -36,8 +34,6 @@ import java.util.stream.Collectors;
 
 import static no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator.ensureValidSoknad;
 import static no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator.ensureValidVedlegg;
-import static no.nav.sosialhjelp.soknad.business.util.JsonVedleggUtils.FEATURE_UTVIDE_VEDLEGGJSON;
-import static no.nav.sosialhjelp.soknad.business.util.JsonVedleggUtils.addHendelseTypeAndHendelseReferanse;
 import static no.nav.sosialhjelp.soknad.business.util.JsonVedleggUtils.getVedleggFromInternalSoknad;
 import static no.nav.sosialhjelp.soknad.business.util.MetricsUtils.navKontorTilInfluxNavn;
 import static no.nav.sosialhjelp.soknad.business.util.SenderUtils.createPrefixedBehandlingsIdInNonProd;
@@ -65,9 +61,6 @@ public class DigisosApiService {
 
     @Inject
     private SoknadMetricsService soknadMetricsService;
-
-    @Inject
-    private Unleash unleash;
 
 
     private final ObjectMapper objectMapper = JsonSosialhjelpObjectMapper.createObjectMapper();
@@ -211,7 +204,7 @@ public class DigisosApiService {
         log.info("Laster opp {}", filOpplastinger.size());
         String soknadJson = getSoknadJson(soknadUnderArbeid);
         String tilleggsinformasjonJson = getTilleggsinformasjonJson(soknadUnderArbeid.getJsonInternalSoknad().getSoknad());
-        String vedleggJson = getUtvidetVedleggJsonAsString(soknadUnderArbeid);
+        String vedleggJson = getVedleggJson(soknadUnderArbeid);
 
         behandlingsId = createPrefixedBehandlingsIdInNonProd(behandlingsId);
         log.info("Starter kryptering av filer for {}, skal sende til kommune {} med enhetsnummer {} og navenhetsnavn {}", behandlingsId,  kommunenummer,
@@ -253,12 +246,9 @@ public class DigisosApiService {
         }
     }
 
-    String getUtvidetVedleggJsonAsString(SoknadUnderArbeid soknadUnderArbeid) {
+    String getVedleggJson(SoknadUnderArbeid soknadUnderArbeid) {
         try {
-            JsonVedleggSpesifikasjon jsonVedleggSpesifikasjon = soknadUnderArbeid.getJsonInternalSoknad().getVedlegg();
-            addHendelseTypeAndHendelseReferanse(jsonVedleggSpesifikasjon, true, unleash.isEnabled(FEATURE_UTVIDE_VEDLEGGJSON, false));
-
-            String vedleggJson = objectMapper.writeValueAsString(jsonVedleggSpesifikasjon);
+            String vedleggJson = objectMapper.writeValueAsString(soknadUnderArbeid.getJsonInternalSoknad().getVedlegg());
             ensureValidVedlegg(vedleggJson);
             return vedleggJson;
         } catch (JsonProcessingException e) {

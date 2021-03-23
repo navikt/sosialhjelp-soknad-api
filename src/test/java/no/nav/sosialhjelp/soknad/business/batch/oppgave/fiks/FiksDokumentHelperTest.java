@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.business.batch.oppgave.fiks;
 
-import no.finn.unleash.Unleash;
 import no.ks.svarut.servicesv9.Dokument;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler;
@@ -47,7 +46,6 @@ public class FiksDokumentHelperTest {
     private DokumentKrypterer dokumentKrypterer = mock(DokumentKrypterer.class);
     private InnsendingService innsendingService = mock(InnsendingService.class);
     private SosialhjelpPdfGenerator sosialhjelpPdfGenerator = mock(SosialhjelpPdfGenerator.class);
-    private Unleash unleash = mock(Unleash.class);
 
     private FiksDokumentHelper fiksDokumentHelper;
 
@@ -58,7 +56,7 @@ public class FiksDokumentHelperTest {
         when(sosialhjelpPdfGenerator.generate(any(JsonInternalSoknad.class), anyBoolean())).thenReturn(new byte[]{1, 2, 3});
         when(sosialhjelpPdfGenerator.generateEttersendelsePdf(any(JsonInternalSoknad.class), anyString())).thenReturn(new byte[]{1, 2, 3});
         when(sosialhjelpPdfGenerator.generateBrukerkvitteringPdf()).thenReturn(new byte[]{1, 2, 3});
-        fiksDokumentHelper = new FiksDokumentHelper(false, dokumentKrypterer, innsendingService, sosialhjelpPdfGenerator, unleash);
+        fiksDokumentHelper = new FiksDokumentHelper(false, dokumentKrypterer, innsendingService, sosialhjelpPdfGenerator);
     }
 
     @Test
@@ -73,7 +71,7 @@ public class FiksDokumentHelperTest {
 
     @Test
     public void lagDokumentForVedleggJsonLagerKorrektDokument() {
-        Dokument vedleggJson = fiksDokumentHelper.lagDokumentForVedleggJson(lagInternalSoknadForVedlegg(), true);
+        Dokument vedleggJson = fiksDokumentHelper.lagDokumentForVedleggJson(lagInternalSoknadForVedlegg());
 
         assertThat(vedleggJson.getFilnavn(), is("vedlegg.json"));
         assertThat(vedleggJson.getMimetype(), is("application/json"));
@@ -145,7 +143,7 @@ public class FiksDokumentHelperTest {
 
     @Test
     public void krypterOgOpprettByteDatasourceKryptererHvisSkalKryptereErTrue() {
-        fiksDokumentHelper = new FiksDokumentHelper(true, dokumentKrypterer, innsendingService, sosialhjelpPdfGenerator, unleash);
+        fiksDokumentHelper = new FiksDokumentHelper(true, dokumentKrypterer, innsendingService, sosialhjelpPdfGenerator);
 
         ByteDataSource dataSource = fiksDokumentHelper.krypterOgOpprettByteDatasource(FILNAVN, DATA);
 

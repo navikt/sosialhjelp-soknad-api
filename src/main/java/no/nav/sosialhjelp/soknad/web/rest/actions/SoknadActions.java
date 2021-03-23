@@ -1,5 +1,7 @@
 package no.nav.sosialhjelp.soknad.web.rest.actions;
 
+import no.finn.unleash.Unleash;
+import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon;
 import no.nav.security.token.support.core.api.ProtectedWithClaims;
 import no.nav.sosialhjelp.metrics.aspects.Timed;
 import no.nav.sosialhjelp.soknad.business.db.soknadmetadata.SoknadMetadataRepository;
@@ -34,6 +36,8 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+import static no.nav.sosialhjelp.soknad.business.util.JsonVedleggUtils.FEATURE_UTVIDE_VEDLEGGJSON;
+import static no.nav.sosialhjelp.soknad.business.util.JsonVedleggUtils.addHendelseTypeAndHendelseReferanse;
 import static no.nav.sosialhjelp.soknad.domain.SoknadInnsendingStatus.SENDT_MED_DIGISOS_API;
 import static no.nav.sosialhjelp.soknad.domain.model.mock.MockUtils.isAlltidSendTilNavTestkommune;
 import static no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils.isSendingTilFiksEnabled;
@@ -71,6 +75,9 @@ public class SoknadActions {
     @Inject
     private DigisosApiService digisosApiService;
 
+    @Inject
+    private Unleash unleash;
+
     @POST
     @Path("/send")
     public SendTilUrlFrontend sendSoknad(@PathParam("behandlingsId") String behandlingsId, @Context ServletContext servletContext, @HeaderParam(value = AUTHORIZATION) String token) {
@@ -80,10 +87,13 @@ public class SoknadActions {
 
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
         String eier = SubjectHandler.getUserId();
+
         SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
+        if (soknadUnderArbeid == null) throw new IllegalStateException(String.format("SoknadUnderArbeid er null ved sending for behandlingsId %s", behandlingsId));
+
+        updateVedleggJsonWithHendelseTypeAndHendelseReferanse(eier, soknadUnderArbeid);
 
         if (!isSendingTilFiksEnabled()
-                || soknadUnderArbeid == null
                 || isEttersendelsePaSoknadSendtViaSvarUt(soknadUnderArbeid)) {
             log.info("BehandlingsId {} sendes til SvarUt.", behandlingsId);
             soknadService.sendSoknad(behandlingsId);
@@ -119,6 +129,15 @@ public class SoknadActions {
             default:
                 throw new SendingTilKommuneErMidlertidigUtilgjengeligException(String.format("Det mangler håndtering av case %s for kommunens konfigurasjon. Sending til kommune %s er midlertidig utilgjengelig.", kommuneStatus.name(), kommunenummer));
         }
+    }
+
+    private void updateVedleggJsonWithHendelseTypeAndHendelseReferanse(String eier, SoknadUnderArbeid soknadUnderArbeid) {
+        JsonVedleggSpesifikasjon jsonVedleggSpesifikasjon = soknadUnderArbeid.getJsonInternalSoknad().getVedlegg();
+        boolean isUtvideVedleggJsonFeatureActive = unleash.isEnabled(FEATURE_UTVIDE_VEDLEGGJSON, false);
+
+        addHendelseTypeAndHendelseReferanse(jsonVedleggSpesifikasjon, !soknadUnderArbeid.erEttersendelse(), isUtvideVedleggJsonFeatureActive);
+
+        soknadUnderArbeidRepository.opprettSoknad(soknadUnderArbeid, eier);
     }
 
     String getKommunenummerOrMock(SoknadUnderArbeid soknadUnderArbeid) {
