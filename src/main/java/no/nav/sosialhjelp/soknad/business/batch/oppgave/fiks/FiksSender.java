@@ -122,7 +122,7 @@ public class FiksSender {
         int antallVedleggForsendelse;
         if (soknadUnderArbeid.erEttersendelse()) {
             fiksDokumenter.add(fiksDokumentHelper.lagDokumentForEttersendelsePdf(internalSoknad, soknadUnderArbeid.getEier()));
-            fiksDokumenter.add(fiksDokumentHelper.lagDokumentForVedleggJson(internalSoknad));
+            fiksDokumenter.add(fiksDokumentHelper.lagDokumentForVedleggJson(internalSoknad, false));
             fiksDokumenter.add(fiksDokumentHelper.lagDokumentForBrukerkvitteringPdf());
             List<Dokument> dokumenterForVedlegg = fiksDokumentHelper.lagDokumentListeForVedlegg(soknadUnderArbeid);
             antallVedleggForsendelse = dokumenterForVedlegg.size();
@@ -130,7 +130,7 @@ public class FiksSender {
         } else {
             fiksDokumenter.add(fiksDokumentHelper.lagDokumentForSoknadJson(internalSoknad));
             fiksDokumenter.add(fiksDokumentHelper.lagDokumentForSaksbehandlerPdf(internalSoknad));
-            fiksDokumenter.add(fiksDokumentHelper.lagDokumentForVedleggJson(internalSoknad));
+            fiksDokumenter.add(fiksDokumentHelper.lagDokumentForVedleggJson(internalSoknad, true));
             fiksDokumenter.add(fiksDokumentHelper.lagDokumentForJuridiskPdf(internalSoknad));
             fiksDokumenter.add(fiksDokumentHelper.lagDokumentForBrukerkvitteringPdf());
             List<Dokument> dokumenterForVedlegg = fiksDokumentHelper.lagDokumentListeForVedlegg(soknadUnderArbeid);

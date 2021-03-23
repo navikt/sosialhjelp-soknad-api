@@ -256,7 +256,7 @@ public class DigisosApiService {
     String getUtvidetVedleggJsonAsString(SoknadUnderArbeid soknadUnderArbeid) {
         try {
             JsonVedleggSpesifikasjon jsonVedleggSpesifikasjon = soknadUnderArbeid.getJsonInternalSoknad().getVedlegg();
-            addHendelseTypeAndHendelseReferanse(jsonVedleggSpesifikasjon, unleash.isEnabled(FEATURE_UTVIDE_VEDLEGGJSON, false));
+            addHendelseTypeAndHendelseReferanse(jsonVedleggSpesifikasjon, true, unleash.isEnabled(FEATURE_UTVIDE_VEDLEGGJSON, false));
 
             String vedleggJson = objectMapper.writeValueAsString(jsonVedleggSpesifikasjon);
             ensureValidVedlegg(vedleggJson);

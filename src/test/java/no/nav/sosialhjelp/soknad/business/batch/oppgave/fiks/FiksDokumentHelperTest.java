@@ -73,7 +73,7 @@ public class FiksDokumentHelperTest {
 
     @Test
     public void lagDokumentForVedleggJsonLagerKorrektDokument() {
-        Dokument vedleggJson = fiksDokumentHelper.lagDokumentForVedleggJson(lagInternalSoknadForVedlegg());
+        Dokument vedleggJson = fiksDokumentHelper.lagDokumentForVedleggJson(lagInternalSoknadForVedlegg(), true);
 
         assertThat(vedleggJson.getFilnavn(), is("vedlegg.json"));
         assertThat(vedleggJson.getMimetype(), is("application/json"));

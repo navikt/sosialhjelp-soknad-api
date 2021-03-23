@@ -66,12 +66,12 @@ public class FiksDokumentHelper {
                 .withData(new DataHandler(dataSource));
     }
 
-    Dokument lagDokumentForVedleggJson(JsonInternalSoknad internalSoknad) {
+    Dokument lagDokumentForVedleggJson(JsonInternalSoknad internalSoknad, boolean isSoknad) {
         final String filnavn = "vedlegg.json";
         final String mimetype = "application/json";
 
         JsonVedleggSpesifikasjon jsonVedleggSpesifikasjon = internalSoknad.getVedlegg();
-        addHendelseTypeAndHendelseReferanse(jsonVedleggSpesifikasjon, unleash.isEnabled(FEATURE_UTVIDE_VEDLEGGJSON, false));
+        addHendelseTypeAndHendelseReferanse(jsonVedleggSpesifikasjon, isSoknad, unleash.isEnabled(FEATURE_UTVIDE_VEDLEGGJSON, false));
         byte[] vedleggJson = mapJsonVedleggTilFil(jsonVedleggSpesifikasjon);
 
         ByteDataSource dataSource = krypterOgOpprettByteDatasource(filnavn, vedleggJson);

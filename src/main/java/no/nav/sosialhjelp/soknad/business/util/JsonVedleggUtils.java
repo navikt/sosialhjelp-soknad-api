@@ -34,8 +34,8 @@ public final class JsonVedleggUtils {
         return ANNET.equals(vedlegg.getType()) && ANNET.equals(vedlegg.getTilleggsinfo());
     }
 
-    public static void addHendelseTypeAndHendelseReferanse(JsonVedleggSpesifikasjon jsonVedleggSpesifikasjon, boolean isUtvideVedleggJsonFeatureActive) {
-        if (isUtvideVedleggJsonFeatureActive) {
+    public static void addHendelseTypeAndHendelseReferanse(JsonVedleggSpesifikasjon jsonVedleggSpesifikasjon, boolean isSoknad, boolean isUtvideVedleggJsonFeatureActive) {
+        if (isUtvideVedleggJsonFeatureActive && isSoknad) {
             log.info("hendelsetype og hendelsereferanse blir inkludert i vedlegg.json");
             jsonVedleggSpesifikasjon.getVedlegg().forEach(vedlegg -> {
                 if (isVedleggskravAnnet(vedlegg)) {

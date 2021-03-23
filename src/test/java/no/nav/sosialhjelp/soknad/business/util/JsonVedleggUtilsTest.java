@@ -21,7 +21,7 @@ public class JsonVedleggUtilsTest {
         assertNull(jsonVedleggSpesifikasjon.getVedlegg().get(0).getHendelseType());
         assertNull(jsonVedleggSpesifikasjon.getVedlegg().get(0).getHendelseReferanse());
 
-        addHendelseTypeAndHendelseReferanse(jsonVedleggSpesifikasjon, false);
+        addHendelseTypeAndHendelseReferanse(jsonVedleggSpesifikasjon, true, false);
 
         assertNull(jsonVedleggSpesifikasjon.getVedlegg().get(0).getHendelseType());
         assertNull(jsonVedleggSpesifikasjon.getVedlegg().get(0).getHendelseReferanse());
@@ -37,7 +37,7 @@ public class JsonVedleggUtilsTest {
         assertNull(jsonVedleggSpesifikasjon.getVedlegg().get(0).getHendelseType());
         assertNull(jsonVedleggSpesifikasjon.getVedlegg().get(0).getHendelseReferanse());
 
-        addHendelseTypeAndHendelseReferanse(jsonVedleggSpesifikasjon, true);
+        addHendelseTypeAndHendelseReferanse(jsonVedleggSpesifikasjon, true, true);
 
         assertEquals(JsonVedlegg.HendelseType.SOKNAD, jsonVedleggSpesifikasjon.getVedlegg().get(0).getHendelseType());
         assertNotNull(jsonVedleggSpesifikasjon.getVedlegg().get(0).getHendelseReferanse());
@@ -51,12 +51,47 @@ public class JsonVedleggUtilsTest {
     @Test
     public void addHendelseTypeAndHendelseReferanse_shouldAddUniqueReferanse() {
         JsonVedleggSpesifikasjon jsonVedleggSpesifikasjon = createJsonVedleggSpesifikasjon();
-        addHendelseTypeAndHendelseReferanse(jsonVedleggSpesifikasjon, true);
+        addHendelseTypeAndHendelseReferanse(jsonVedleggSpesifikasjon, true, true);
 
         assertNotEquals(
                 jsonVedleggSpesifikasjon.getVedlegg().get(0).getHendelseReferanse(),
                 jsonVedleggSpesifikasjon.getVedlegg().get(1).getHendelseReferanse()
         );
+    }
+
+    @Test
+    public void doNot_addHendelseTypeAndHendelseReferanse_ifEttersendelse() {
+        JsonVedleggSpesifikasjon jsonVedleggSpesifikasjon = createJsonVedleggSpesifikasjon();
+        assertNull(jsonVedleggSpesifikasjon.getVedlegg().get(0).getHendelseType());
+        assertNull(jsonVedleggSpesifikasjon.getVedlegg().get(0).getHendelseReferanse());
+
+        addHendelseTypeAndHendelseReferanse(jsonVedleggSpesifikasjon, false, true);
+
+        assertNull(jsonVedleggSpesifikasjon.getVedlegg().get(0).getHendelseType());
+        assertNull(jsonVedleggSpesifikasjon.getVedlegg().get(0).getHendelseReferanse());
+        assertNull(jsonVedleggSpesifikasjon.getVedlegg().get(1).getHendelseType());
+        assertNull(jsonVedleggSpesifikasjon.getVedlegg().get(1).getHendelseReferanse());
+        assertNull(jsonVedleggSpesifikasjon.getVedlegg().get(2).getHendelseType());
+        assertNull(jsonVedleggSpesifikasjon.getVedlegg().get(2).getHendelseReferanse());
+    }
+
+    @Test
+    public void doNot_editHendelseTypeAndHendelseReferanse_ifEttersendelse() {
+        String hendelseReferanse = "1234";
+        JsonVedleggSpesifikasjon jsonVedleggSpesifikasjon = createJsonVedleggSpesifikasjon();
+        jsonVedleggSpesifikasjon.getVedlegg().get(0).setHendelseType(JsonVedlegg.HendelseType.SOKNAD);
+        jsonVedleggSpesifikasjon.getVedlegg().get(0).setHendelseReferanse(hendelseReferanse);
+        jsonVedleggSpesifikasjon.getVedlegg().get(1).setHendelseType(JsonVedlegg.HendelseType.BRUKER);
+
+        addHendelseTypeAndHendelseReferanse(jsonVedleggSpesifikasjon, false, true);
+
+        assertEquals(JsonVedlegg.HendelseType.SOKNAD, jsonVedleggSpesifikasjon.getVedlegg().get(0).getHendelseType());
+        assertEquals(hendelseReferanse, jsonVedleggSpesifikasjon.getVedlegg().get(0).getHendelseReferanse());
+        assertEquals(JsonVedlegg.HendelseType.BRUKER, jsonVedleggSpesifikasjon.getVedlegg().get(1).getHendelseType());
+
+        assertNull(jsonVedleggSpesifikasjon.getVedlegg().get(1).getHendelseReferanse());
+        assertNull(jsonVedleggSpesifikasjon.getVedlegg().get(2).getHendelseType());
+        assertNull(jsonVedleggSpesifikasjon.getVedlegg().get(2).getHendelseReferanse());
     }
 
     private JsonVedleggSpesifikasjon createJsonVedleggSpesifikasjon() {
