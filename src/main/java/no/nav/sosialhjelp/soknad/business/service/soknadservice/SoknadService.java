@@ -296,6 +296,8 @@ public class SoknadService {
         m.tillegg = jsonVedlegg.getTilleggsinfo();
         m.filnavn = jsonVedlegg.getType();
         m.status = Vedleggstatus.valueOf(jsonVedlegg.getStatus());
+        m.hendelseType = jsonVedlegg.getHendelseType();
+        m.hendelseReferanse = jsonVedlegg.getHendelseReferanse();
         return m;
     }
 

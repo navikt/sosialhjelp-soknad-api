@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.business.domain;
 
+import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
 import no.nav.sosialhjelp.soknad.business.util.JAXBHelper;
 import no.nav.sosialhjelp.soknad.domain.SoknadInnsendingStatus;
 import no.nav.sosialhjelp.soknad.domain.Vedleggstatus;
@@ -36,6 +37,8 @@ public class SoknadMetadata {
         public Vedleggstatus status;
         public String skjema;
         public String tillegg;
+        public JsonVedlegg.HendelseType hendelseType;
+        public String hendelseReferanse;
     }
 
     @XmlRootElement

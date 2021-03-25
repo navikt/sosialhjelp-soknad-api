@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.web.config;
 
+import no.finn.unleash.Unleash;
 import no.nav.sosialhjelp.soknad.business.InnsendingService;
 import no.nav.sosialhjelp.soknad.business.SoknadUnderArbeidService;
 import no.nav.sosialhjelp.soknad.business.batch.oppgave.OppgaveHandterer;
@@ -202,5 +203,10 @@ public class SoknadActionsTestConfig {
     @Bean
     public Systemdata systemdata() {
         return mock(Systemdata.class);
+    }
+
+    @Bean
+    public Unleash unleash() {
+        return mock(Unleash.class);
     }
 }
