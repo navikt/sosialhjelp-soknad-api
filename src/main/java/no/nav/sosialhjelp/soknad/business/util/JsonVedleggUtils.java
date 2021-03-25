@@ -35,12 +35,12 @@ public final class JsonVedleggUtils {
     }
 
     public static void addHendelseTypeAndHendelseReferanse(JsonVedleggSpesifikasjon jsonVedleggSpesifikasjon, boolean isSoknad, boolean isUtvideVedleggJsonFeatureActive) {
-        if (isUtvideVedleggJsonFeatureActive && isSoknad) {
+        if (isUtvideVedleggJsonFeatureActive) {
             log.info("hendelsetype og hendelsereferanse blir inkludert i vedlegg.json");
             jsonVedleggSpesifikasjon.getVedlegg().forEach(vedlegg -> {
                 if (isVedleggskravAnnet(vedlegg)) {
                     vedlegg.setHendelseType(JsonVedlegg.HendelseType.BRUKER);
-                } else {
+                } else if (isSoknad) {
                     vedlegg.setHendelseType(JsonVedlegg.HendelseType.SOKNAD);
                     vedlegg.setHendelseReferanse(UUID.randomUUID().toString());
                 }

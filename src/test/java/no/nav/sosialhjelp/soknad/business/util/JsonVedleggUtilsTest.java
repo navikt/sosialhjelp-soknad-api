@@ -32,7 +32,7 @@ public class JsonVedleggUtilsTest {
     }
 
     @Test
-    public void addHendelseTypeAndHendelseReferanse_ifUnleashToggleIsActivated() {
+    public void addHendelseTypeAndHendelseReferanse_forSoknad_ifUnleashToggleIsActivated() {
         JsonVedleggSpesifikasjon jsonVedleggSpesifikasjon = createJsonVedleggSpesifikasjon();
         assertNull(jsonVedleggSpesifikasjon.getVedlegg().get(0).getHendelseType());
         assertNull(jsonVedleggSpesifikasjon.getVedlegg().get(0).getHendelseReferanse());
@@ -60,7 +60,7 @@ public class JsonVedleggUtilsTest {
     }
 
     @Test
-    public void doNot_addHendelseTypeAndHendelseReferanse_ifEttersendelse() {
+    public void addHendelseTypeAndHendelseReferanse_forEttersendelse_shouldOnlyAddHendelseTypeBrukerForAnnetAnnet() {
         JsonVedleggSpesifikasjon jsonVedleggSpesifikasjon = createJsonVedleggSpesifikasjon();
         assertNull(jsonVedleggSpesifikasjon.getVedlegg().get(0).getHendelseType());
         assertNull(jsonVedleggSpesifikasjon.getVedlegg().get(0).getHendelseReferanse());
@@ -71,12 +71,12 @@ public class JsonVedleggUtilsTest {
         assertNull(jsonVedleggSpesifikasjon.getVedlegg().get(0).getHendelseReferanse());
         assertNull(jsonVedleggSpesifikasjon.getVedlegg().get(1).getHendelseType());
         assertNull(jsonVedleggSpesifikasjon.getVedlegg().get(1).getHendelseReferanse());
-        assertNull(jsonVedleggSpesifikasjon.getVedlegg().get(2).getHendelseType());
+        assertEquals(JsonVedlegg.HendelseType.BRUKER, jsonVedleggSpesifikasjon.getVedlegg().get(2).getHendelseType());
         assertNull(jsonVedleggSpesifikasjon.getVedlegg().get(2).getHendelseReferanse());
     }
 
     @Test
-    public void doNot_editHendelseTypeAndHendelseReferanse_ifEttersendelse() {
+    public void addHendelseTypeAndHendelseReferanse_forEttersendelse_shouldNotEditHendelseReferanse() {
         String hendelseReferanse = "1234";
         JsonVedleggSpesifikasjon jsonVedleggSpesifikasjon = createJsonVedleggSpesifikasjon();
         jsonVedleggSpesifikasjon.getVedlegg().get(0).setHendelseType(JsonVedlegg.HendelseType.SOKNAD);
@@ -88,10 +88,7 @@ public class JsonVedleggUtilsTest {
         assertEquals(JsonVedlegg.HendelseType.SOKNAD, jsonVedleggSpesifikasjon.getVedlegg().get(0).getHendelseType());
         assertEquals(hendelseReferanse, jsonVedleggSpesifikasjon.getVedlegg().get(0).getHendelseReferanse());
         assertEquals(JsonVedlegg.HendelseType.BRUKER, jsonVedleggSpesifikasjon.getVedlegg().get(1).getHendelseType());
-
         assertNull(jsonVedleggSpesifikasjon.getVedlegg().get(1).getHendelseReferanse());
-        assertNull(jsonVedleggSpesifikasjon.getVedlegg().get(2).getHendelseType());
-        assertNull(jsonVedleggSpesifikasjon.getVedlegg().get(2).getHendelseReferanse());
     }
 
     private JsonVedleggSpesifikasjon createJsonVedleggSpesifikasjon() {
