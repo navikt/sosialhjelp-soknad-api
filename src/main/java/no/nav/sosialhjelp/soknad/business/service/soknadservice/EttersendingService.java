@@ -76,9 +76,12 @@ public class EttersendingService {
     private List<JsonVedlegg> convertVedleggMetadataToJsonVedlegg(List<VedleggMetadata> manglendeVedlegg) {
         return manglendeVedlegg.stream()
                 .map(v -> new JsonVedlegg()
-                    .withType(v.skjema)
-                    .withTilleggsinfo(v.tillegg)
-                    .withStatus("VedleggKreves"))
+                        .withType(v.skjema)
+                        .withTilleggsinfo(v.tillegg)
+                        .withStatus("VedleggKreves")
+                        .withHendelseType(v.hendelseType)
+                        .withHendelseReferanse(v.hendelseReferanse)
+                )
                 .collect(Collectors.toList());
     }
 
@@ -137,6 +140,7 @@ public class EttersendingService {
             VedleggMetadata annetVedlegg = new VedleggMetadata();
             annetVedlegg.skjema = "annet";
             annetVedlegg.tillegg = "annet";
+            annetVedlegg.hendelseType = JsonVedlegg.HendelseType.BRUKER;
             manglendeVedlegg.add(annetVedlegg);
         }
 
