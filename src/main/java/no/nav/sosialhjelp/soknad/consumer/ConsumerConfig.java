@@ -27,6 +27,8 @@ import no.nav.sosialhjelp.soknad.consumer.utbetaling.UtbetalingService;
 import no.nav.sosialhjelp.soknad.consumer.wsconfig.FiksWSConfig;
 import no.nav.sosialhjelp.soknad.consumer.wsconfig.PersonV3WSConfig;
 import no.nav.sosialhjelp.soknad.consumer.wsconfig.UtbetalingWSConfig;
+import no.nav.sosialhjelp.soknad.oppslag.KontonummerService;
+import no.nav.sosialhjelp.soknad.oppslag.OppslagRestConfig;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -48,7 +50,8 @@ import org.springframework.context.annotation.Profile;
         SkattbarInntektService.class,
         OrganisasjonService.class,
         DkifService.class,
-        KodeverkService.class
+        KodeverkService.class,
+        KontonummerService.class
 })
 
 public class ConsumerConfig {
@@ -69,7 +72,8 @@ public class ConsumerConfig {
             DkifRestConfig.class,
             SkattbarInntektRestConfig.class,
             KodeverkRestConfig.class,
-            UnleashRestConfig.class
+            UnleashRestConfig.class,
+            OppslagRestConfig.class
     })
     public static class WsServices {
     }
