@@ -27,7 +27,7 @@ import static no.nav.sosialhjelp.soknad.web.types.Pingable.Ping.lyktes;
 public class ArbeidsforholdRestConfig {
 
     public static final String AAREG_KEY = "start.aareg.withmock";
-    private static final String SOSIALHJELP_SOKNAD_API_AAREGAPI_APIKEY_PASSWORD = "SOSIALHJELP_SOKNAD_API_AAREGAPI_APIKEY_PASSWORD";
+    private static final String AAREGAPI_APIKEY = "AAREGAPI_APIKEY";
 
     @Value("${aareg_api_baseurl}")
     private String endpoint;
@@ -62,7 +62,7 @@ public class ArbeidsforholdRestConfig {
     }
 
     private Client arbeidsforholdClient() {
-        final String apiKey = getenv(SOSIALHJELP_SOKNAD_API_AAREGAPI_APIKEY_PASSWORD);
+        final String apiKey = getenv(AAREGAPI_APIKEY);
         return RestUtils.createClient()
                 .register((ClientRequestFilter) requestContext -> requestContext.getHeaders().putSingle(HEADER_NAV_APIKEY, apiKey))
                 .register(arbeidsforholdMapper());

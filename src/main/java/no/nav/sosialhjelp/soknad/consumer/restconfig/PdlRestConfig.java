@@ -22,7 +22,7 @@ import static no.nav.sosialhjelp.soknad.web.types.Pingable.Ping.lyktes;
 public class PdlRestConfig {
 
     public static final String PDL_KEY = "start.pdl.withmock";
-    private static final String PDLAPI_APIKEY_PASSWORD = "SOSIALHJELP_SOKNAD_API_PDLAPI_APIKEY_PASSWORD";
+    private static final String PDLAPI_APIKEY = "PDLAPI_APIKEY";
 
     @Value("${pdl_api_url}")
     private String endpoint;
@@ -48,7 +48,7 @@ public class PdlRestConfig {
     }
 
     private Client pdlClient() {
-        final String apiKey = getenv(PDLAPI_APIKEY_PASSWORD);
+        final String apiKey = getenv(PDLAPI_APIKEY);
         return RestUtils.createClient()
                 .register((ClientRequestFilter) requestContext -> requestContext.getHeaders().putSingle(HEADER_NAV_APIKEY, apiKey));
     }
