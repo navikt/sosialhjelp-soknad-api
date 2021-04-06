@@ -22,7 +22,7 @@ import static no.nav.sosialhjelp.soknad.web.types.Pingable.Ping.lyktes;
 public class OrganisasjonRestConfig {
 
     public static final String ORGANISASJON_KEY = "start.organisasjon.withmock";
-    private static final String SOSIALHJELP_SOKNAD_API_EREGAPI_APIKEY_PASSWORD = "SOSIALHJELP_SOKNAD_API_EREGAPI_APIKEY_PASSWORD";
+    private static final String EREGAPI_APIKEY = "EREGAPI_APIKEY";
 
     @Value("${ereg_api_baseurl}")
     private String endpoint;
@@ -48,7 +48,7 @@ public class OrganisasjonRestConfig {
     }
 
     private Client organisasjonClient() {
-        final String apiKey = getenv(SOSIALHJELP_SOKNAD_API_EREGAPI_APIKEY_PASSWORD);
+        final String apiKey = getenv(EREGAPI_APIKEY);
         return RestUtils.createClient()
                 .register((ClientRequestFilter) requestContext -> requestContext.getHeaders().putSingle(HEADER_NAV_APIKEY, apiKey));
     }
