@@ -26,7 +26,7 @@ import static no.nav.sosialhjelp.soknad.web.types.Pingable.Ping.lyktes;
 public class KodeverkRestConfig {
 
     public static final String KODEVERK_KEY = "start.kodeverk.withmock";
-    private static final String SOSIALHJELP_SOKNAD_API_KODEVERKAPI_APIKEY_PASSWORD = "SOSIALHJELP_SOKNAD_API_KODEVERKAPI_APIKEY_PASSWORD";
+    private static final String KODEVERKAPI_APIKEY = "KODEVERKAPI_APIKEY";
 
     @Value("${kodeverk_api_url}")
     private String endpoint;
@@ -58,7 +58,7 @@ public class KodeverkRestConfig {
     }
 
     private Client kodeverkClient() {
-        final String apiKey = getenv(SOSIALHJELP_SOKNAD_API_KODEVERKAPI_APIKEY_PASSWORD);
+        final String apiKey = getenv(KODEVERKAPI_APIKEY);
         return RestUtils.createClient()
                 .register((ClientRequestFilter) requestContext -> requestContext.getHeaders().putSingle(HEADER_NAV_APIKEY, apiKey))
                 .register(kodeverkMapper());
