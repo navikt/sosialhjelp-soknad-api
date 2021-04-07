@@ -46,7 +46,6 @@ public class OppslagConsumerImpl implements OppslagConsumer {
     @Override
     public KontonummerDto getKontonummer(String ident) {
         var request = lagRequest(endpoint + "kontonummer");
-        logger.info("Henter kontonummer - {}", endpoint + "kontonummer");
         try {
             return request.post(requestEntity(ident), KontonummerDto.class);
         } catch (NotAuthorizedException e) {
