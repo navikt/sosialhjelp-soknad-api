@@ -3,7 +3,6 @@ package no.nav.sosialhjelp.soknad.oppslag;
 import no.nav.sosialhjelp.soknad.consumer.exceptions.TjenesteUtilgjengeligException;
 import no.nav.sosialhjelp.soknad.consumer.mdc.MDCOperations;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
-import no.nav.sosialhjelp.soknad.oppslag.dto.Ident;
 import no.nav.sosialhjelp.soknad.oppslag.dto.KontonummerDto;
 import org.eclipse.jetty.http.HttpHeader;
 import org.slf4j.Logger;
@@ -12,9 +11,7 @@ import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.client.Client;
-import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
-import javax.ws.rs.core.MediaType;
 
 import static no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.BEARER;
 import static no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.HEADER_CALL_ID;
@@ -47,7 +44,7 @@ public class OppslagConsumerImpl implements OppslagConsumer {
     public KontonummerDto getKontonummer(String ident) {
         var request = lagRequest(endpoint + "kontonummer");
         try {
-            return request.post(requestEntity(ident), KontonummerDto.class);
+            return request.get(KontonummerDto.class);
         } catch (NotAuthorizedException e) {
             logger.warn("oppslag.kontonummer - 401 Unauthorized - {}", e.getMessage());
             return null;
@@ -72,10 +69,5 @@ public class OppslagConsumerImpl implements OppslagConsumer {
                 .header(HttpHeader.AUTHORIZATION.name(), BEARER + SubjectHandler.getToken())
                 .header(HEADER_CALL_ID, callId)
                 .header(HEADER_CONSUMER_ID, consumerId);
-    }
-
-    private Entity<Ident> requestEntity(String ident) {
-        var request = new Ident(ident);
-        return Entity.entity(request, MediaType.APPLICATION_JSON_TYPE);
     }
 }
