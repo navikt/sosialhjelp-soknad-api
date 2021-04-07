@@ -70,4 +70,5 @@ public class OppslagConsumerImpl implements OppslagConsumer {
                 .header(HEADER_CALL_ID, callId)
                 .header(HEADER_CONSUMER_ID, consumerId);
     }
+
 }
