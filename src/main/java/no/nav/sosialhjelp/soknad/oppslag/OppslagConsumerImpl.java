@@ -7,7 +7,6 @@ import no.nav.sosialhjelp.soknad.oppslag.dto.KontonummerDto;
 import org.eclipse.jetty.http.HttpHeader;
 import org.slf4j.Logger;
 
-import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.client.Client;
@@ -47,9 +46,6 @@ public class OppslagConsumerImpl implements OppslagConsumer {
             return request.get(KontonummerDto.class);
         } catch (NotAuthorizedException e) {
             logger.warn("oppslag.kontonummer - 401 Unauthorized - {}", e.getMessage());
-            return null;
-        } catch (ForbiddenException e) {
-            logger.warn("oppslag.kontonummer - 403 Forbidden - {}", e.getMessage());
             return null;
         } catch (NotFoundException e) {
             logger.warn("oppslag.kontonummer - 404 Not Found - {}", e.getMessage());
