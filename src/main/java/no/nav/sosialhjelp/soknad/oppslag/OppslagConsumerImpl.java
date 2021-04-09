@@ -6,6 +6,7 @@ import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import no.nav.sosialhjelp.soknad.oppslag.dto.KontonummerDto;
 import org.eclipse.jetty.http.HttpHeader;
 import org.slf4j.Logger;
+import org.springframework.cache.annotation.Cacheable;
 
 import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.NotFoundException;
@@ -48,6 +49,7 @@ public class OppslagConsumerImpl implements OppslagConsumer {
     }
 
     @Override
+    @Cacheable("kontonummerOppslagCache")
     public KontonummerDto getKontonummer(String ident) {
         var request = lagRequest(endpoint + "kontonummer");
         try {
