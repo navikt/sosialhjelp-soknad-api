@@ -38,7 +38,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class NorgConsumerImpl implements NorgConsumer {
 
     private static final Logger logger = getLogger(NorgConsumerImpl.class);
-    private static final String SOKNADSOSIALHJELP_SERVER_NORG_2_API_V_1_APIKEY_PASSWORD = "SOKNADSOSIALHJELP_SERVER_NORG2_API_V1_APIKEY_PASSWORD";
+    private static final String NORG2_API_V1_APIKEY = "NORG2_API_V1_APIKEY";
 
     private final Client client;
     private final String endpoint;
@@ -89,7 +89,7 @@ public class NorgConsumerImpl implements NorgConsumer {
          */
         final String consumerId = SubjectHandler.getConsumerId();
         final String callId = MDCOperations.getFromMDC(MDCOperations.MDC_CALL_ID);
-        final String apiKey = getenv(SOKNADSOSIALHJELP_SERVER_NORG_2_API_V_1_APIKEY_PASSWORD);
+        final String apiKey = getenv(NORG2_API_V1_APIKEY);
 
         final Invocation.Builder request = client.target(endpoint + "kodeverk/EnhetstyperNorg").request()
                 .header(HEADER_CALL_ID, callId)
@@ -106,7 +106,7 @@ public class NorgConsumerImpl implements NorgConsumer {
     private Invocation.Builder lagRequest(String endpoint) {
         String consumerId = SubjectHandler.getConsumerId();
         String callId = MDCOperations.getFromMDC(MDCOperations.MDC_CALL_ID);
-        final String apiKey = getenv(SOKNADSOSIALHJELP_SERVER_NORG_2_API_V_1_APIKEY_PASSWORD);
+        final String apiKey = getenv(NORG2_API_V1_APIKEY);
 
         WebTarget b = client.target(endpoint);
 

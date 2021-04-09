@@ -1,12 +1,7 @@
-package no.nav.sosialhjelp.soknad.consumer.restconfig;
+package no.nav.sosialhjelp.soknad.oppslag;
 
 import no.nav.sosialhjelp.soknad.consumer.common.rest.RestUtils;
-import no.nav.sosialhjelp.soknad.consumer.pdl.PdlConsumer;
-import no.nav.sosialhjelp.soknad.consumer.pdl.PdlConsumerImpl;
-import no.nav.sosialhjelp.soknad.consumer.pdl.PdlConsumerMock;
-import no.nav.sosialhjelp.soknad.consumer.sts.apigw.STSConsumer;
 import no.nav.sosialhjelp.soknad.web.types.Pingable;
-import no.nav.sosialhjelp.soknad.web.types.Pingable.Ping.PingMetadata;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 
@@ -19,27 +14,26 @@ import static no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.HEADER
 import static no.nav.sosialhjelp.soknad.web.types.Pingable.Ping.feilet;
 import static no.nav.sosialhjelp.soknad.web.types.Pingable.Ping.lyktes;
 
-public class PdlRestConfig {
+public class OppslagRestConfig {
+    private static final String OPPSLAGAPI_APIKEY = "OPPSLAGAPI_APIKEY";
+    public static final String OPPSLAG_KEY = "start.oppslag.withmock";
 
-    public static final String PDL_KEY = "start.pdl.withmock";
-    private static final String PDLAPI_APIKEY = "PDLAPI_APIKEY";
-
-    @Value("${pdl_api_url}")
+    @Value("${oppslag_api_baseurl}")
     private String endpoint;
 
     @Bean
-    public PdlConsumer pdlConsumer(STSConsumer stsConsumer) {
-        PdlConsumer prod = new PdlConsumerImpl(pdlClient(), endpoint, stsConsumer);
-        PdlConsumer mock = new PdlConsumerMock().pdlConsumerMock();
-        return createSwitcher(prod, mock, PDL_KEY, PdlConsumer.class);
+    public OppslagConsumer kontonummerConsumer() {
+        var prod = new OppslagConsumerImpl(oppslagClient(), endpoint);
+        var mock = new OppslagConsumerMock().oppslagMock();
+        return createSwitcher(prod, mock, OPPSLAG_KEY, OppslagConsumer.class);
     }
 
     @Bean
-    public Pingable pdlRestPing(PdlConsumer pdlConsumer) {
+    public Pingable kontonummerPing(OppslagConsumer oppslagConsumer) {
         return () -> {
-            PingMetadata metadata = new PingMetadata(endpoint, "Pdl", false);
+            Pingable.Ping.PingMetadata metadata = new Pingable.Ping.PingMetadata(endpoint, "Oppslag", false);
             try {
-                pdlConsumer.ping();
+                oppslagConsumer.ping();
                 return lyktes(metadata);
             } catch (Exception e) {
                 return feilet(metadata, e);
@@ -47,8 +41,8 @@ public class PdlRestConfig {
         };
     }
 
-    private Client pdlClient() {
-        final String apiKey = getenv(PDLAPI_APIKEY);
+    private Client oppslagClient() {
+        final var apiKey = getenv(OPPSLAGAPI_APIKEY);
         return RestUtils.createClient()
                 .register((ClientRequestFilter) requestContext -> requestContext.getHeaders().putSingle(HEADER_NAV_APIKEY, apiKey));
     }

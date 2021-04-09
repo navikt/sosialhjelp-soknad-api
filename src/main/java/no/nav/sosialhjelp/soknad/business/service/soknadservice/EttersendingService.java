@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.business.service.soknadservice;
 
+import no.finn.unleash.Unleash;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
@@ -26,6 +27,7 @@ import java.util.stream.Collectors;
 
 import static java.time.temporal.ChronoUnit.DAYS;
 import static java.util.stream.Collectors.toList;
+import static no.nav.sosialhjelp.soknad.business.util.JsonVedleggUtils.FEATURE_UTVIDE_VEDLEGGJSON;
 import static no.nav.sosialhjelp.soknad.domain.SoknadInnsendingStatus.FERDIG;
 import static no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SoknadType.SEND_SOKNAD_KOMMUNAL_ETTERSENDING;
 
@@ -38,6 +40,9 @@ public class EttersendingService {
 
     @Inject
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
+
+    @Inject
+    private Unleash unleash;
 
     @Inject
     Clock clock;
@@ -76,9 +81,12 @@ public class EttersendingService {
     private List<JsonVedlegg> convertVedleggMetadataToJsonVedlegg(List<VedleggMetadata> manglendeVedlegg) {
         return manglendeVedlegg.stream()
                 .map(v -> new JsonVedlegg()
-                    .withType(v.skjema)
-                    .withTilleggsinfo(v.tillegg)
-                    .withStatus("VedleggKreves"))
+                        .withType(v.skjema)
+                        .withTilleggsinfo(v.tillegg)
+                        .withStatus("VedleggKreves")
+                        .withHendelseType(v.hendelseType)
+                        .withHendelseReferanse(v.hendelseReferanse)
+                )
                 .collect(Collectors.toList());
     }
 
@@ -137,6 +145,9 @@ public class EttersendingService {
             VedleggMetadata annetVedlegg = new VedleggMetadata();
             annetVedlegg.skjema = "annet";
             annetVedlegg.tillegg = "annet";
+            if (unleash.isEnabled(FEATURE_UTVIDE_VEDLEGGJSON, false)) {
+                annetVedlegg.hendelseType = JsonVedlegg.HendelseType.BRUKER;
+            }
             manglendeVedlegg.add(annetVedlegg);
         }
 

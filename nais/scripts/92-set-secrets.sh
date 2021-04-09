@@ -1,13 +1,14 @@
 echo "Export apikeys"
-export SOKNADSOSIALHJELP_SERVER_TPSWS_API_V1_APIKEY_PASSWORD=$(cat /apigw/tpswsapi/x-nav-apiKey)
-export SOKNADSOSIALHJELP_SERVER_NORG2_API_V1_APIKEY_PASSWORD=$(cat /apigw/norg2api/x-nav-apiKey)
-export SOKNADSOSIALHJELP_SERVER_SKATT_INNTEKTSMOTTAKER_APIKEY_PASSWORD=$(cat /apigw/skatt_inntektsmottakerapi/x-nav-apiKey)
-export SOSIALHJELP_SOKNAD_API_EREGAPI_APIKEY_PASSWORD=$(cat /apigw/eregapi/x-nav-apiKey)
-export SOSIALHJELP_SOKNAD_API_AAREGAPI_APIKEY_PASSWORD=$(cat /apigw/aaregapi/x-nav-apiKey)
-export SOSIALHJELP_SOKNAD_API_STSTOKEN_APIKEY_PASSWORD=$(cat /apigw/securitytokenservicetoken/x-nav-apiKey)
-export SOSIALHJELP_SOKNAD_API_DKIFAPI_APIKEY_PASSWORD=$(cat /apigw/dkifapi/x-nav-apiKey)
-export SOSIALHJELP_SOKNAD_API_PDLAPI_APIKEY_PASSWORD=$(cat /apigw/pdlapi/x-nav-apiKey)
-export SOSIALHJELP_SOKNAD_API_KODEVERKAPI_APIKEY_PASSWORD=$(cat /apigw/kodeverkapi/x-nav-apiKey)
+export TPSWS_API_V1_APIKEY=$(cat /apigw/tpswsapi/x-nav-apiKey)
+export NORG2_API_V1_APIKEY=$(cat /apigw/norg2api/x-nav-apiKey)
+export SKATT_INNTEKTSMOTTAKER_APIKEY=$(cat /apigw/skatt_inntektsmottakerapi/x-nav-apiKey)
+export EREGAPI_APIKEY=$(cat /apigw/eregapi/x-nav-apiKey)
+export AAREGAPI_APIKEY=$(cat /apigw/aaregapi/x-nav-apiKey)
+export STSTOKEN_APIKEY=$(cat /apigw/securitytokenservicetoken/x-nav-apiKey)
+export DKIFAPI_APIKEY=$(cat /apigw/dkifapi/x-nav-apiKey)
+export PDLAPI_APIKEY=$(cat /apigw/pdlapi/x-nav-apiKey)
+export KODEVERKAPI_APIKEY=$(cat /apigw/kodeverkapi/x-nav-apiKey)
+export OPPSLAGAPI_APIKEY=$(cat /apigw/sosialhjelp_oppslag_api/x-nav-apiKey)
 
 echo "Export serviceuser credentials"
 export SRVSOKNADSOSIALHJELP_SERVER_USERNAME=$(cat /serviceuser/srvsoknadsosialhjelp-server/username)
