@@ -23,6 +23,21 @@ public final class RetryUtils {
 
     public static Retry retryConfig(
             String baseUrl,
+            Class<? extends Throwable>[] retryableExceptions,
+            Logger log
+    ) {
+        return retryConfig(
+                baseUrl,
+                DEFAULT_MAX_ATTEMPTS,
+                DEFAULT_INITIAL_WAIT_INTERVAL_MILLIS,
+                DEFAULT_EXPONENTIAL_BACKOFF_MULTIPLIER,
+                retryableExceptions,
+                log
+        );
+    }
+
+    public static Retry retryConfig(
+            String baseUrl,
             int maxAttempts,
             long initialWaitIntervalMillis,
             double exponentialBackoffMultiplier,
