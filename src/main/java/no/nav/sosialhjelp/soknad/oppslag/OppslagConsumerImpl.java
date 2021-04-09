@@ -1,7 +1,6 @@
 package no.nav.sosialhjelp.soknad.oppslag;
 
 import io.github.resilience4j.retry.Retry;
-import no.nav.sosialhjelp.soknad.consumer.exceptions.TjenesteUtilgjengeligException;
 import no.nav.sosialhjelp.soknad.consumer.mdc.MDCOperations;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import no.nav.sosialhjelp.soknad.oppslag.dto.KontonummerDto;
@@ -60,8 +59,8 @@ public class OppslagConsumerImpl implements OppslagConsumer {
             log.warn("oppslag.kontonummer - 404 Not Found - {}", e.getMessage());
             return null;
         } catch (Exception e) {
-            log.warn("oppslag.kontonummer - Noe uventet feilet");
-            throw new TjenesteUtilgjengeligException("oppslag.kontonummer", e);
+            log.error("oppslag.kontonummer - Noe uventet feilet", e);
+            return null;
         }
     }
 
