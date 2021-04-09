@@ -478,11 +478,6 @@
         <!-- Tjenestespesifikasjoner -->
         <dependency>
             <groupId>no.nav.tjenestespesifikasjoner</groupId>
-            <artifactId>person-v3-tjenestespesifikasjon</artifactId>
-            <version>${tjenestespesifikasjon.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.tjenestespesifikasjoner</groupId>
             <artifactId>soeknadsskjemasosialhjelp-v1-saksoversiktdefinisjon</artifactId>
             <version>${tjenestespesifikasjon.version}</version>
         </dependency>

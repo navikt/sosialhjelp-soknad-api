@@ -1,5 +1,8 @@
 package no.nav.sosialhjelp.soknad.oppslag;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import no.nav.sosialhjelp.soknad.oppslag.dto.KontonummerDto;
 
@@ -30,5 +33,18 @@ public class OppslagConsumerMock {
                 .thenAnswer(invocationOnMock -> getOrDefaultResponse(SubjectHandler.getUserId()));
 
         return mock;
+    }
+
+    public static void setKontonummer(String json) {
+        ObjectMapper mapper = new ObjectMapper();
+
+        try {
+            JsonNode node = mapper.readTree(json);
+            String kontonummer = node.at("/person/bankkonto/bankkonto/bankkontonummer").textValue();
+
+            kontonummerResponses.put(SubjectHandler.getUserId(), new KontonummerDto(kontonummer));
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
     }
 }

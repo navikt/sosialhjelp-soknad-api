@@ -7,9 +7,7 @@ import no.nav.security.token.support.core.JwtTokenConstants;
 import no.nav.security.token.support.test.JwtTokenGenerator;
 import no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SosialhjelpInformasjon;
 import no.nav.sosialhjelp.soknad.web.integration.AbstractSecurityIT;
-import no.nav.sosialhjelp.soknad.web.integration.EndpointDataMocking;
 import no.nav.sosialhjelp.soknad.web.integration.SoknadTester;
-import org.junit.Before;
 import org.junit.Test;
 
 import javax.ws.rs.client.Invocation;
@@ -21,11 +19,6 @@ public class SaksoversiktMetadataOidcRessursEndpointIT extends AbstractSecurityI
     public static final String BRUKER = "11111111111";
     public static final String ANNEN_BRUKER = "22222222222";
     private String skjemanummer = SosialhjelpInformasjon.SKJEMANUMMER;
-
-    @Before
-    public void setup() throws Exception {
-        EndpointDataMocking.setupMockWsEndpointData();
-    }
 
     @Test
     public void innsendte_skalGi401UtenToken() {
