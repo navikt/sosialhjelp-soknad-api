@@ -71,14 +71,16 @@ public class UtbetalingerFraNavSystemdata implements Systemdata {
     }
 
     private List<JsonOkonomiOpplysningUtbetaling> innhentNavSystemregistrertInntekt(String personIdentifikator) {
+        List<Utbetaling> utbetalinger;
         if (unleash.isEnabled(FEATURE_OPPSLAG_UTBETALINGER_ENABLED, false)) {
-            var utbetalingerSiste40Dager = utbetalingOppslagService.getUtbetalingerSiste40Dager(personIdentifikator);
-            if (utbetalingerSiste40Dager == null) {
-                return null;
+            utbetalinger = utbetalingOppslagService.getUtbetalingerSiste40Dager(personIdentifikator);
+            if (utbetalinger == null) {
+                log.warn("Ingen ytelser funnet -> forsøker service-gw integrasjon");
+                utbetalinger = utbetalingService.hentUtbetalingerForBrukerIPeriode(personIdentifikator, LocalDate.now().minusDays(40), LocalDate.now());
             }
-            return utbetalingerSiste40Dager.stream().map(this::mapToJsonOkonomiOpplysningUtbetaling).collect(Collectors.toList());
+        } else {
+            utbetalinger = utbetalingService.hentUtbetalingerForBrukerIPeriode(personIdentifikator, LocalDate.now().minusDays(40), LocalDate.now());
         }
-        List<Utbetaling> utbetalinger = utbetalingService.hentUtbetalingerForBrukerIPeriode(personIdentifikator, LocalDate.now().minusDays(40), LocalDate.now());
 
         if (utbetalinger == null) {
             return null;
