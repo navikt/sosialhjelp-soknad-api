@@ -73,9 +73,10 @@ public class UtbetalingerFraNavSystemdata implements Systemdata {
     private List<JsonOkonomiOpplysningUtbetaling> innhentNavSystemregistrertInntekt(String personIdentifikator) {
         List<Utbetaling> utbetalinger;
         if (unleash.isEnabled(FEATURE_OPPSLAG_UTBETALINGER_ENABLED, false)) {
-            utbetalinger = utbetalingOppslagService.getUtbetalingerSiste40Dager(personIdentifikator);
-            if (utbetalinger == null) {
-                log.warn("Ingen ytelser funnet -> forsøker service-gw integrasjon");
+            try {
+                utbetalinger = utbetalingOppslagService.getUtbetalingerSiste40Dager(personIdentifikator);
+            } catch (Exception e) {
+                log.warn("Feil mot oppslag-api -> forsøker service-gw integrasjon");
                 utbetalinger = utbetalingService.hentUtbetalingerForBrukerIPeriode(personIdentifikator, LocalDate.now().minusDays(40), LocalDate.now());
             }
         } else {
