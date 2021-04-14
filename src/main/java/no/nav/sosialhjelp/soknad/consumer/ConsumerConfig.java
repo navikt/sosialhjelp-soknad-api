@@ -48,7 +48,8 @@ import org.springframework.context.annotation.Profile;
         OrganisasjonService.class,
         DkifService.class,
         KodeverkService.class,
-        KontonummerService.class
+        KontonummerService.class,
+        no.nav.sosialhjelp.soknad.oppslag.UtbetalingService.class
 })
 
 public class ConsumerConfig {
