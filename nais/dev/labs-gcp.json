@@ -37,7 +37,6 @@
     "UNLEASH_API_URL": "https://unleash.nais.io/api",
     "SCHEDULER_DISABLE": "false",
     "SECURITYTOKENSERVICE_URL": "https://sts-q0.oera-q.local/SecurityTokenServiceProvider/",
-    "SERVICEGATEWAY_URL": "https://service-gw-q0.oera-q.local/",
     "SOKNADSOSIALHJELPDATASOURCE_URL": "jdbc:oracle:thin:@d32dbfl003.oera-t.local:1521/soknadsosialhjelp_q0",
     "SOKNAD_BOSTOTTE_URL": "https://api-gw-q0.oera.no/ekstern/husbanken/api/nav/minbostotte",
     "SOKNAD_BOSTOTTE_PING_URL": "https://api-gw-q0.oera.no/ekstern/husbanken/api/nav/minbostotte/ping",
