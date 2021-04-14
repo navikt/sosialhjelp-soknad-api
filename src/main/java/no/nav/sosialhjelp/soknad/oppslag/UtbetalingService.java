@@ -14,7 +14,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 @Component
 public class UtbetalingService {
 
-    private final Logger logger = getLogger(UtbetalingService.class);
+    private static final Logger logger = getLogger(UtbetalingService.class);
 
     private final OppslagConsumer oppslagConsumer;
 
