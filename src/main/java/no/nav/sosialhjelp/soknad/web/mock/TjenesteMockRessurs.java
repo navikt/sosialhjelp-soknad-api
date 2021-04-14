@@ -26,7 +26,6 @@ import no.nav.sosialhjelp.soknad.domain.SendtSoknad;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import no.nav.sosialhjelp.soknad.mock.adresse.AdresseSokConsumerMock;
 import no.nav.sosialhjelp.soknad.mock.norg.NorgConsumerMock;
-import no.nav.sosialhjelp.soknad.mock.utbetaling.UtbetalMock;
 import no.nav.sosialhjelp.soknad.oppslag.OppslagConsumerMock;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
@@ -281,10 +280,9 @@ public class TjenesteMockRessurs {
         if (!isTillatMockRessurs()) {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
-        if(jsonWSUtbetaling != null && !jsonWSUtbetaling.isEmpty()){
-            UtbetalMock.setUtbetalinger(jsonWSUtbetaling);
-            clearCache();
-        }
+        // setter kun default-utbetaling her.
+        OppslagConsumerMock.setUtbetalinger();
+        clearCache();
     }
 
     @POST
@@ -294,8 +292,7 @@ public class TjenesteMockRessurs {
         if (!isTillatMockRessurs()) {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
-        fnr = SubjectHandler.getUserId() != null ? SubjectHandler.getUserId() : fnr;
-        UtbetalMock.setMockSkalFeile(fnr, skalFeile);
+        // gjør ikke noe frem til endepunktet ikke kalles fra frontend lengre.
         clearCache();
     }
 

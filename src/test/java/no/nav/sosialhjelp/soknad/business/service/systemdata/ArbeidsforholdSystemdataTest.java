@@ -9,7 +9,6 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktI
 import no.nav.sosialhjelp.soknad.business.service.TextService;
 import no.nav.sosialhjelp.soknad.consumer.arbeidsforhold.ArbeidsforholdService;
 import no.nav.sosialhjelp.soknad.consumer.skatt.SkattbarInntektService;
-import no.nav.sosialhjelp.soknad.consumer.utbetaling.UtbetalingService;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.domain.model.Arbeidsforhold;
 import org.junit.Test;
@@ -62,9 +61,6 @@ public class ArbeidsforholdSystemdataTest {
 
     @Mock
     private TextService textService;
-
-    @Mock
-    private UtbetalingService utbetalingService;
 
     @Mock
     private SkattbarInntektService skattbarInntektService;

@@ -75,4 +75,9 @@ public class OppslagConsumerMock {
             e.printStackTrace();
         }
     }
+
+    public static void setUtbetalinger() {
+        // legger til dummy utbetaling
+        utbetalingerResponses.put(SubjectHandler.getUserId(), defaultUtbetalinger());
+    }
 }
