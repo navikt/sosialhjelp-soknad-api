@@ -28,7 +28,10 @@ public class ArbeidsforholdService {
     private OrganisasjonService organisasjonService;
 
     public List<Arbeidsforhold> hentArbeidsforhold(String fnr) {
-        List<ArbeidsforholdDto> arbeidsforholdDtos = arbeidsforholdConsumer.finnArbeidsforholdForArbeidstaker(fnr);
+        var arbeidsforholdDtos = arbeidsforholdConsumer.finnArbeidsforholdForArbeidstaker(fnr);
+        if (arbeidsforholdDtos == null) {
+            return null;
+        }
         log.info("Hentet {} arbeidsforhold fra aareg", arbeidsforholdDtos.size());
 
         return arbeidsforholdDtos.stream()
