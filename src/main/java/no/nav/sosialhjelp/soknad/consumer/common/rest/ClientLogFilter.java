@@ -11,7 +11,6 @@ import no.nav.sosialhjelp.soknad.consumer.mdc.MDCOperations;
 import no.nav.sosialhjelp.soknad.web.utils.MiljoUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
-import org.slf4j.MDC;
 
 import javax.ws.rs.client.ClientRequestContext;
 import javax.ws.rs.client.ClientRequestFilter;
@@ -53,7 +52,7 @@ public class ClientLogFilter implements ClientResponseFilter, ClientRequestFilte
 
         MultivaluedMap<String, Object> requestHeaders = clientRequestContext.getHeaders();
 
-        Optional.of(MDC.get(MDCOperations.MDC_CALL_ID)).ifPresent(callId -> stream(NAV_CALL_ID_HEADER_NAMES).forEach(headerName -> requestHeaders.add(headerName, callId)));
+        Optional.ofNullable(MDCOperations.getFromMDC(MDCOperations.MDC_CALL_ID)).ifPresent(callId -> stream(NAV_CALL_ID_HEADER_NAMES).forEach(headerName -> requestHeaders.add(headerName, callId)));
         requestHeaders.add(HEADER_CONSUMER_ID, MiljoUtils.getNaisAppName());
         requestHeaders.add(RestUtils.CSRF_COOKIE_NAVN, CSRF_TOKEN);
         requestHeaders.add(COOKIE, new Cookie(RestUtils.CSRF_COOKIE_NAVN, CSRF_TOKEN));
