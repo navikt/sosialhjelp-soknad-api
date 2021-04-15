@@ -21,7 +21,7 @@ import static org.eclipse.jetty.http.HttpHeader.AUTHORIZATION;
 @Configuration
 public class STSTokenRestConfig {
 
-    private static final String SOSIALHJELP_SOKNAD_API_STSTOKEN_APIKEY_PASSWORD = "SOSIALHJELP_SOKNAD_API_STSTOKEN_APIKEY_PASSWORD";
+    private static final String STSTOKEN_APIKEY = "STSTOKEN_APIKEY";
     private static final String SRVSOKNADSOSIALHJELP_SERVER_USERNAME = "SRVSOKNADSOSIALHJELP_SERVER_USERNAME";
     private static final String SRVSOKNADSOSIALHJELP_SERVER_PASSWORD = "SRVSOKNADSOSIALHJELP_SERVER_PASSWORD";
 
@@ -49,7 +49,7 @@ public class STSTokenRestConfig {
     private Client STSClient() {
         return RestUtils.createClient()
                 .register((ClientRequestFilter) requestContext -> requestContext.getHeaders().put(AUTHORIZATION.toString(), singletonList(getBasicAuthentication())))
-                .register((ClientRequestFilter) requestContext -> requestContext.getHeaders().putSingle(HEADER_NAV_APIKEY, System.getenv(SOSIALHJELP_SOKNAD_API_STSTOKEN_APIKEY_PASSWORD)));
+                .register((ClientRequestFilter) requestContext -> requestContext.getHeaders().putSingle(HEADER_NAV_APIKEY, System.getenv(STSTOKEN_APIKEY)));
     }
 
     private String getBasicAuthentication() {

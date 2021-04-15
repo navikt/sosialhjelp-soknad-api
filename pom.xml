@@ -52,9 +52,9 @@
         <filformat.version>1.2021.03.02-10.58-415c44e55124</filformat.version>
 
         <spring.version>5.3.4</spring.version>
-        <jetty.version>9.4.38.v20210224</jetty.version>
+        <jetty.version>9.4.39.v20210325</jetty.version>
         <jersey.version>2.33</jersey.version>
-        <token-validation.version>1.3.3</token-validation.version>
+        <token-validation.version>1.3.5</token-validation.version>
         <nimbus-jose-jwt.version>9.0</nimbus-jose-jwt.version>
         <cxf.version>3.4.2</cxf.version>
         <wss4j.version>2.3.0</wss4j.version>
@@ -476,11 +476,6 @@
         </dependency>
 
         <!-- Tjenestespesifikasjoner -->
-        <dependency>
-            <groupId>no.nav.tjenestespesifikasjoner</groupId>
-            <artifactId>person-v3-tjenestespesifikasjon</artifactId>
-            <version>${tjenestespesifikasjon.version}</version>
-        </dependency>
         <dependency>
             <groupId>no.nav.tjenestespesifikasjoner</groupId>
             <artifactId>soeknadsskjemasosialhjelp-v1-saksoversiktdefinisjon</artifactId>

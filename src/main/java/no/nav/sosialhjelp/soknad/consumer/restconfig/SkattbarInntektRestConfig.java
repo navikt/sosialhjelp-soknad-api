@@ -21,7 +21,7 @@ import static no.nav.sosialhjelp.soknad.web.types.Pingable.Ping.lyktes;
 @Configuration
 public class SkattbarInntektRestConfig {
 
-    private static final String SOKNADSOSIALHJELP_SERVER_SKATT_INNTEKTSMOTTAKER_APIKEY_PASSWORD = "SOKNADSOSIALHJELP_SERVER_SKATT_INNTEKTSMOTTAKER_APIKEY_PASSWORD";
+    private static final String SKATT_INNTEKTSMOTTAKER_APIKEY = "SKATT_INNTEKTSMOTTAKER_APIKEY";
     public static final String SKATT_KEY = "start.inntektogskatteopplysninger.withmock";
 
     @Value("${skatteetaten.inntektsmottaker.url}")
@@ -48,7 +48,7 @@ public class SkattbarInntektRestConfig {
     }
 
     private Client skattbarInntektClient() {
-        final String apiKey = getenv(SOKNADSOSIALHJELP_SERVER_SKATT_INNTEKTSMOTTAKER_APIKEY_PASSWORD);
+        final String apiKey = getenv(SKATT_INNTEKTSMOTTAKER_APIKEY);
         return RestUtils.createClient()
                 .register((ClientRequestFilter) requestContext -> requestContext.getHeaders().putSingle(HEADER_NAV_APIKEY, apiKey));
     }
