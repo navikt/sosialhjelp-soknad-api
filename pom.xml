@@ -628,6 +628,7 @@
             <groupId>jakarta.validation</groupId>
             <artifactId>jakarta.validation-api</artifactId>
             <version>${jakarta.validation-api.version}</version>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>jakarta.xml.ws</groupId>
@@ -638,6 +639,7 @@
             <groupId>jakarta.websocket</groupId>
             <artifactId>jakarta.websocket-api</artifactId>
             <version>${jakarta.websocket-api.version}</version>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>jakarta.ws.rs</groupId>
@@ -648,6 +650,7 @@
             <groupId>jakarta.mail</groupId>
             <artifactId>jakarta.mail-api</artifactId>
             <version>${jakarta.mail-api.version}</version>
+            <scope>runtime</scope>
         </dependency>
 
         <!-- Jackson avhengigheter -->
@@ -848,6 +851,7 @@
             <groupId>io.prometheus</groupId>
             <artifactId>simpleclient_jetty_jdk8</artifactId>
             <version>${prometheus.version}</version>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>io.prometheus</groupId>
@@ -1012,6 +1016,7 @@
             <groupId>org.glassfish.jaxb</groupId>
             <artifactId>jaxb-runtime</artifactId>
             <version>${jaxb-runtime.version}</version>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>no.finn.unleash</groupId>
