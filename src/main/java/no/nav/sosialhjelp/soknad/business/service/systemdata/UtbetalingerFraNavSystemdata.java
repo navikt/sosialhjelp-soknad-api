@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.business.service.systemdata;
 
+import no.finn.unleash.Unleash;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonData;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling;
@@ -13,7 +14,6 @@ import no.nav.sosialhjelp.soknad.domain.model.utbetaling.Utbetaling;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
-import javax.inject.Inject;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,12 +29,24 @@ import static org.slf4j.LoggerFactory.getLogger;
 @Component
 public class UtbetalingerFraNavSystemdata implements Systemdata {
     public static final Logger log = getLogger(UtbetalingerFraNavSystemdata.class);
+    private static final String FEATURE_OPPSLAG_UTBETALINGER_ENABLED = "sosialhjelp.oppslag.utbetalinger-enabled";
 
-    @Inject
-    UtbetalingService utbetalingService;
+    private final UtbetalingService utbetalingService;
+    private final OrganisasjonService organisasjonService;
+    private final no.nav.sosialhjelp.soknad.oppslag.UtbetalingService utbetalingOppslagService;
+    private final Unleash unleash;
 
-    @Inject
-    OrganisasjonService organisasjonService;
+    public UtbetalingerFraNavSystemdata(
+            UtbetalingService utbetalingService,
+            OrganisasjonService organisasjonService,
+            no.nav.sosialhjelp.soknad.oppslag.UtbetalingService utbetalingOppslagService,
+            Unleash unleash
+    ) {
+        this.utbetalingService = utbetalingService;
+        this.organisasjonService = organisasjonService;
+        this.utbetalingOppslagService = utbetalingOppslagService;
+        this.unleash = unleash;
+    }
 
     @Override
     public void updateSystemdataIn(SoknadUnderArbeid soknadUnderArbeid, String token) {
@@ -59,7 +71,17 @@ public class UtbetalingerFraNavSystemdata implements Systemdata {
     }
 
     private List<JsonOkonomiOpplysningUtbetaling> innhentNavSystemregistrertInntekt(String personIdentifikator) {
-        List<Utbetaling> utbetalinger = utbetalingService.hentUtbetalingerForBrukerIPeriode(personIdentifikator, LocalDate.now().minusDays(40), LocalDate.now());
+        List<Utbetaling> utbetalinger;
+        if (unleash.isEnabled(FEATURE_OPPSLAG_UTBETALINGER_ENABLED, false)) {
+            try {
+                utbetalinger = utbetalingOppslagService.getUtbetalingerSiste40Dager(personIdentifikator);
+            } catch (Exception e) {
+                log.warn("Feil mot oppslag-api -> forsøker service-gw integrasjon");
+                utbetalinger = utbetalingService.hentUtbetalingerForBrukerIPeriode(personIdentifikator, LocalDate.now().minusDays(40), LocalDate.now());
+            }
+        } else {
+            utbetalinger = utbetalingService.hentUtbetalingerForBrukerIPeriode(personIdentifikator, LocalDate.now().minusDays(40), LocalDate.now());
+        }
 
         if (utbetalinger == null) {
             return null;

@@ -8,7 +8,6 @@ import no.nav.sosialhjelp.soknad.consumer.norg.NorgService;
 import no.nav.sosialhjelp.soknad.consumer.organisasjon.OrganisasjonService;
 import no.nav.sosialhjelp.soknad.consumer.pdl.PdlService;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.PdlPersonMapper;
-import no.nav.sosialhjelp.soknad.consumer.personv3.PersonServiceV3;
 import no.nav.sosialhjelp.soknad.consumer.redis.NoRedisConfig;
 import no.nav.sosialhjelp.soknad.consumer.redis.RedisConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.AdresseSokRestConfig;
@@ -25,7 +24,6 @@ import no.nav.sosialhjelp.soknad.consumer.restconfig.UnleashRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.skatt.SkattbarInntektService;
 import no.nav.sosialhjelp.soknad.consumer.utbetaling.UtbetalingService;
 import no.nav.sosialhjelp.soknad.consumer.wsconfig.FiksWSConfig;
-import no.nav.sosialhjelp.soknad.consumer.wsconfig.PersonV3WSConfig;
 import no.nav.sosialhjelp.soknad.consumer.wsconfig.UtbetalingWSConfig;
 import no.nav.sosialhjelp.soknad.oppslag.KontonummerService;
 import no.nav.sosialhjelp.soknad.oppslag.OppslagRestConfig;
@@ -41,7 +39,6 @@ import org.springframework.context.annotation.Profile;
         NoRedisConfig.class,
         PdlService.class,
         PdlPersonMapper.class,
-        PersonServiceV3.class,
         ConsumerConfig.WsServices.class,
         DokumentKrypterer.class,
         AdresseSokService.class,
@@ -51,7 +48,8 @@ import org.springframework.context.annotation.Profile;
         OrganisasjonService.class,
         DkifService.class,
         KodeverkService.class,
-        KontonummerService.class
+        KontonummerService.class,
+        no.nav.sosialhjelp.soknad.oppslag.UtbetalingService.class
 })
 
 public class ConsumerConfig {
@@ -61,7 +59,6 @@ public class ConsumerConfig {
     @Import({
             PdlRestConfig.class,
             DigisosApiRestConfig.class,
-            PersonV3WSConfig.class,
             FiksWSConfig.class,
             AdresseSokRestConfig.class,
             NorgRestConfig.class,
