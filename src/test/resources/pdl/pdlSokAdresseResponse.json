@@ -1,0 +1,23 @@
+{
+  "data": {
+    "sokAdresse": {
+      "totalHits": 1,
+      "totalPages": 1,
+      "hits": [
+        {
+          "vegadresse": {
+            "matrikkelId": "276443635",
+            "husnummer": 9,
+            "husbokstav": "B",
+            "adressenavn": "Heggsnipvegen",
+            "postnummer": "7070",
+            "poststed": "BOSBERG",
+            "kommunenavn": "BLOKSBERG",
+            "kommunenummer":"7071",
+            "bydelsnummer": null
+          }
+        }
+      ]
+    }
+  }
+}
