@@ -4,9 +4,7 @@ import com.nimbusds.jwt.SignedJWT;
 import no.nav.security.token.support.core.JwtTokenConstants;
 import no.nav.security.token.support.test.JwtTokenGenerator;
 import no.nav.sosialhjelp.soknad.web.integration.AbstractSecurityIT;
-import no.nav.sosialhjelp.soknad.web.integration.EndpointDataMocking;
 import no.nav.sosialhjelp.soknad.web.integration.SoknadTester;
-import org.junit.Before;
 import org.junit.Test;
 
 import javax.ws.rs.client.Entity;
@@ -18,11 +16,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class SoknadActionsEndpointIT extends AbstractSecurityIT {
 
     private static final String DIFFERENT_USER_THAN_THE_ONE_CURRENTLY_LOGGED_IN = "22222222222";
-
-    @Before
-    public void setup() throws Exception {
-        EndpointDataMocking.setupMockWsEndpointData();
-    }
 
     @Test
     public void sendSoknad_skalGiForbiddenMedAnnenBruker() {

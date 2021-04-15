@@ -3,10 +3,8 @@ package no.nav.sosialhjelp.soknad.business.service.systemdata;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonKontonummer;
-import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
-import no.nav.sosialhjelp.soknad.consumer.personv3.PersonServiceV3;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
-import no.nav.sosialhjelp.soknad.domain.model.Kontonummer;
+import no.nav.sosialhjelp.soknad.oppslag.KontonummerService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -15,8 +13,8 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import static no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.nullValue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -28,21 +26,20 @@ public class KontonummerSystemdataTest {
     private static final String KONTONUMMER_BRUKER = "11223344556";
 
     @Mock
-    private PersonServiceV3 personService;
+    private KontonummerService kontonummerService;
 
     @InjectMocks
     private KontonummerSystemdata kontonummerSystemdata;
 
     @Test
     public void skalOppdatereKontonummer() {
-        Kontonummer adresserOgKontonummer = new Kontonummer()
-                .withKontonummer(KONTONUMMER_SYSTEM);
-        SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
-        when(personService.hentKontonummer(anyString())).thenReturn(adresserOgKontonummer);
+
+        var soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
+        when(kontonummerService.getKontonummer(anyString())).thenReturn(KONTONUMMER_SYSTEM);
 
         kontonummerSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
 
-        JsonPersonalia jsonPersonalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
+        var jsonPersonalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
 
         assertThat(jsonPersonalia.getKontonummer().getKilde(), is(JsonKilde.SYSTEM));
         assertThat(jsonPersonalia.getKontonummer().getVerdi(), is(KONTONUMMER_SYSTEM));
@@ -50,14 +47,13 @@ public class KontonummerSystemdataTest {
 
     @Test
     public void skalOppdatereKontonummerOgFjerneUlovligeSymboler() {
-        Kontonummer adresserOgKontonummer = new Kontonummer()
-                .withKontonummer(KONTONUMMER_SYSTEM + " !#¤%&/()=?`-<>|§,.-* ");
-        SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
-        when(personService.hentKontonummer(anyString())).thenReturn(adresserOgKontonummer);
+
+        var soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
+        when(kontonummerService.getKontonummer(anyString())).thenReturn(KONTONUMMER_SYSTEM + " !#¤%&/()=?`-<>|§,.-* ");
 
         kontonummerSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
 
-        JsonPersonalia jsonPersonalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
+        var jsonPersonalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
 
         assertThat(jsonPersonalia.getKontonummer().getKilde(), is(JsonKilde.SYSTEM));
         assertThat(jsonPersonalia.getKontonummer().getVerdi(), is(KONTONUMMER_SYSTEM));
@@ -65,11 +61,11 @@ public class KontonummerSystemdataTest {
 
     @Test
     public void skalIkkeOppdatereKontonummerDersomKildeErBruker() {
-        SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createJsonInternalSoknadWithUserDefinedKontonummer());
+        var soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createJsonInternalSoknadWithUserDefinedKontonummer());
 
         kontonummerSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
 
-        JsonPersonalia jsonPersonalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
+        var jsonPersonalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
 
         assertThat(jsonPersonalia.getKontonummer().getKilde(), is(JsonKilde.BRUKER));
         assertThat(jsonPersonalia.getKontonummer().getVerdi(), is(KONTONUMMER_BRUKER));
@@ -77,14 +73,12 @@ public class KontonummerSystemdataTest {
 
     @Test
     public void skalSetteNullDersomKontonummerErTomStreng() {
-        Kontonummer adresserOgKontonummer = new Kontonummer()
-                .withKontonummer("");
-        SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
-        when(personService.hentKontonummer(anyString())).thenReturn(adresserOgKontonummer);
+        var soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
+        when(kontonummerService.getKontonummer(anyString())).thenReturn("");
 
         kontonummerSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
 
-        JsonPersonalia jsonPersonalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
+        var jsonPersonalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
 
         assertThat(jsonPersonalia.getKontonummer().getKilde(), is(JsonKilde.BRUKER));
         assertThat(jsonPersonalia.getKontonummer().getVerdi(), nullValue());
@@ -92,21 +86,19 @@ public class KontonummerSystemdataTest {
 
     @Test
     public void skalSetteNullDersomKontonummerErNull() {
-        Kontonummer adresserOgKontonummer = new Kontonummer()
-                .withKontonummer(null);
-        SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
-        when(personService.hentKontonummer(anyString())).thenReturn(adresserOgKontonummer);
+        var soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
+        when(kontonummerService.getKontonummer(anyString())).thenReturn(null);
 
         kontonummerSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
 
-        JsonPersonalia jsonPersonalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
+        var jsonPersonalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
 
         assertThat(jsonPersonalia.getKontonummer().getKilde(), is(JsonKilde.BRUKER));
         assertThat(jsonPersonalia.getKontonummer().getVerdi(), nullValue());
     }
 
     private JsonInternalSoknad createJsonInternalSoknadWithUserDefinedKontonummer() {
-        JsonInternalSoknad jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER);
+        var jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER);
         jsonInternalSoknad.getSoknad().getData().getPersonalia()
                 .setKontonummer(new JsonKontonummer().withKilde(JsonKilde.BRUKER).withVerdi(KONTONUMMER_BRUKER));
         return jsonInternalSoknad;

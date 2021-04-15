@@ -7,11 +7,9 @@ import lombok.Value;
 import lombok.With;
 import no.nav.sosialhjelp.metrics.MetricsFactory;
 import no.nav.sosialhjelp.metrics.Timer;
-import no.nav.sosialhjelp.soknad.consumer.mdc.MDCOperations;
 import no.nav.sosialhjelp.soknad.web.utils.MiljoUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
-import org.slf4j.MDC;
 
 import javax.ws.rs.client.ClientRequestContext;
 import javax.ws.rs.client.ClientRequestFilter;
@@ -31,6 +29,8 @@ import static java.util.Optional.ofNullable;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.stream.Collectors.joining;
 import static javax.ws.rs.core.HttpHeaders.COOKIE;
+import static no.nav.sosialhjelp.soknad.consumer.mdc.MDCOperations.MDC_CALL_ID;
+import static no.nav.sosialhjelp.soknad.consumer.mdc.MDCOperations.getFromMDC;
 import static no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.HEADER_CONSUMER_ID;
 import static no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.NAV_CALL_ID_HEADER_NAMES;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -53,7 +53,7 @@ public class ClientLogFilter implements ClientResponseFilter, ClientRequestFilte
 
         MultivaluedMap<String, Object> requestHeaders = clientRequestContext.getHeaders();
 
-        Optional.of(MDC.get(MDCOperations.MDC_CALL_ID)).ifPresent(callId -> stream(NAV_CALL_ID_HEADER_NAMES).forEach(headerName -> requestHeaders.add(headerName, callId)));
+        Optional.ofNullable(getFromMDC(MDC_CALL_ID)).ifPresent(callId -> stream(NAV_CALL_ID_HEADER_NAMES).forEach(headerName -> requestHeaders.add(headerName, callId)));
         requestHeaders.add(HEADER_CONSUMER_ID, MiljoUtils.getNaisAppName());
         requestHeaders.add(RestUtils.CSRF_COOKIE_NAVN, CSRF_TOKEN);
         requestHeaders.add(COOKIE, new Cookie(RestUtils.CSRF_COOKIE_NAVN, CSRF_TOKEN));

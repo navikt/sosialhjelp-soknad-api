@@ -26,5 +26,7 @@
     <cache name="pdlBarnCache" maxElementsInMemory="1000" overflowToDisk="false" timeToLiveSeconds="3600"  />
     <cache name="pdlEktefelleCache" maxElementsInMemory="1000" overflowToDisk="false" timeToLiveSeconds="3600"  />
     <cache name="pdlAdressebeskyttelseCache" maxElementsInMemory="1000" overflowToDisk="false" timeToLiveSeconds="3600"  />
+    <cache name="kontonummerOppslagCache" maxElementsInMemory="1000" overflowToDisk="false" timeToLiveSeconds="3600"  />
+    <cache name="utbetalingerOppslagCache" maxElementsInMemory="1000" overflowToDisk="false" timeToLiveSeconds="3600"  />
 
 </ehcache>

@@ -4,19 +4,22 @@ import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonKontonummer;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
 import no.nav.sosialhjelp.soknad.business.service.soknadservice.Systemdata;
-import no.nav.sosialhjelp.soknad.consumer.personv3.PersonServiceV3;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
-import no.nav.sosialhjelp.soknad.domain.model.Kontonummer;
+import no.nav.sosialhjelp.soknad.oppslag.KontonummerService;
 import org.springframework.stereotype.Component;
 
-import javax.inject.Inject;
 
 @Component
 public class KontonummerSystemdata implements Systemdata {
 
-    @Inject
-    private PersonServiceV3 personService;
-    
+    private final KontonummerService kontonummerService;
+
+    public KontonummerSystemdata(
+            KontonummerService kontonummerService
+    ) {
+        this.kontonummerService = kontonummerService;
+    }
+
     @Override
     public void updateSystemdataIn(SoknadUnderArbeid soknadUnderArbeid, String token) {
         final JsonPersonalia personalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
@@ -24,7 +27,7 @@ public class KontonummerSystemdata implements Systemdata {
         final String personIdentifikator = personalia.getPersonIdentifikator().getVerdi();
         if (kontonummer.getKilde() == JsonKilde.SYSTEM) {
             String systemverdi = innhentSystemverdiKontonummer(personIdentifikator);
-            if (systemverdi == null || systemverdi.isEmpty()){
+            if (systemverdi == null || systemverdi.isEmpty()) {
                 kontonummer.setKilde(JsonKilde.BRUKER);
                 kontonummer.setVerdi(null);
             } else {
@@ -33,12 +36,8 @@ public class KontonummerSystemdata implements Systemdata {
             }
         }
     }
-    
+
     public String innhentSystemverdiKontonummer(final String personIdentifikator) {
-        Kontonummer adresserOgKontonummer = personService.hentKontonummer(personIdentifikator);
-        if (adresserOgKontonummer == null) {
-            return null;
-        }
-        return adresserOgKontonummer.getKontonummer();
+        return kontonummerService.getKontonummer(personIdentifikator);
     }
 }

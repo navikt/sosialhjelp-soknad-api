@@ -21,7 +21,7 @@ import static no.nav.sosialhjelp.soknad.web.types.Pingable.Ping.lyktes;
 @Configuration
 public class DkifRestConfig {
 
-    private static final String SOSIALHJELP_SOKNAD_API_DKIFAPI_APIKEY_PASSWORD = "SOSIALHJELP_SOKNAD_API_DKIFAPI_APIKEY_PASSWORD";
+    private static final String DKIFAPI_APIKEY = "DKIFAPI_APIKEY";
     public static final String DKIF_KEY = "start.dkif.withmock";
 
     @Value("${dkif_api_baseurl}")
@@ -48,7 +48,7 @@ public class DkifRestConfig {
     }
 
     private Client dkifClient() {
-        final String apiKey = getenv(SOSIALHJELP_SOKNAD_API_DKIFAPI_APIKEY_PASSWORD);
+        final String apiKey = getenv(DKIFAPI_APIKEY);
         return RestUtils.createClient()
                 .register((ClientRequestFilter) requestContext -> requestContext.getHeaders().putSingle(HEADER_NAV_APIKEY, apiKey));
     }

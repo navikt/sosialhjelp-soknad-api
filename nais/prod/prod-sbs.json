@@ -18,6 +18,7 @@
     "/apigw/dkifapi": "apikey/apigw/prod/dkif.api/sosialhjelp-soknad-api",
     "/apigw/pdlapi": "apikey/apigw/prod/pdl-api/sosialhjelp-soknad-api",
     "/apigw/kodeverkapi": "apikey/apigw/prod/kodeverk.rest-api/sosialhjelp-soknad-api",
+    "/apigw/sosialhjelp_oppslag_api": "apikey/apigw/prod/sosialhjelp-oppslag-api/sosialhjelp-soknad-api",
     "/serviceuser/srvsoknadsosialhjelp-server": "serviceuser/data/prod/srvsoknadsosialhjelp-server",
     "/serviceuser/srvsoknadsosialhjelp-server-sbs": "serviceuser/data/prod/srvsoknadsosialhjelp-server-sbs"
   },
@@ -45,6 +46,7 @@
     "KODEVERK_API_URL": "https://api-gw.oera.no/kodeverk/api/",
     "LOGINSERVICE_URL": "https://loginservice.nav.no/login",
     "NORG2_API_V1_URL": "https://api-gw.oera.no/norg2/api/v1/",
+    "OPPSLAG_API_BASEURL": "https://api-gw.oera.no/sosialhjelp-oppslag-api/api/",
     "PDL_API_URL": "https://api-gw.oera.no/pdl-api/graphql",
     "UNLEASH_API_URL": "https://unleash.nais.io/api",
     "SCHEDULER_DISABLE": "false",

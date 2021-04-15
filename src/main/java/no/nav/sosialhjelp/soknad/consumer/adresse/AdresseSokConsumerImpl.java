@@ -25,7 +25,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class AdresseSokConsumerImpl implements AdresseSokConsumer {
 
     private static final Logger logger = getLogger(AdresseSokConsumerImpl.class);
-    private static final String SOKNADSOSIALHJELP_SERVER_TPSWS_API_V1_APIKEY_PASSWORD = "SOKNADSOSIALHJELP_SERVER_TPSWS_API_V1_APIKEY_PASSWORD";
+    private static final String TPSWS_API_V1_APIKEY = "TPSWS_API_V1_APIKEY";
 
     private Function<Sokedata, RestCallContext> restCallContextSelector;
     private String endpoint;
@@ -52,7 +52,7 @@ public class AdresseSokConsumerImpl implements AdresseSokConsumer {
     public void ping() {
         final String consumerId = SubjectHandler.getConsumerId();
         final String callId = MDCOperations.getFromMDC(MDCOperations.MDC_CALL_ID);
-        final String apiKey = getenv(SOKNADSOSIALHJELP_SERVER_TPSWS_API_V1_APIKEY_PASSWORD);
+        final String apiKey = getenv(TPSWS_API_V1_APIKEY);
 
         final RestCallContext restCallContext = restCallContextSelector.apply(null);
 
@@ -132,7 +132,7 @@ public class AdresseSokConsumerImpl implements AdresseSokConsumer {
     private Invocation.Builder lagRequest(RestCallContext executionContext, Sokedata sokedata, String soketype) {
         String consumerId = SubjectHandler.getConsumerId();
         String callId = MDCOperations.getFromMDC(MDCOperations.MDC_CALL_ID);
-        final String apiKey = getenv(SOKNADSOSIALHJELP_SERVER_TPSWS_API_V1_APIKEY_PASSWORD);
+        final String apiKey = getenv(TPSWS_API_V1_APIKEY);
 
         final String maxretur = (sokedata.postnummer != null) ? "100" : "8";
         WebTarget b = executionContext.getClient().target(endpoint + "adressesoek")

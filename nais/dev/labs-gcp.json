@@ -32,6 +32,7 @@
     "KODEVERK_API_URL": "https://api-gw-q1.oera.no/kodeverk/api/",
     "LOGINSERVICE_URL": "https://digisos-gcp.dev.nav.no/sosialhjelp/mock-alt/login",
     "NORG2_API_V1_URL": "https://api-gw-q0.oera.no/norg2/api/v1/",
+    "OPPSLAG_API_BASEURL": "https://api-gw-q1.oera.no/sosialhjelp-oppslag-api/api/",
     "PDL_API_URL": "https://api-gw-q1.oera.no/pdl-api/graphql",
     "UNLEASH_API_URL": "https://unleash.nais.io/api",
     "SCHEDULER_DISABLE": "false",
