@@ -50,6 +50,8 @@
     "TILLATMOCK": "true",
     "MOCK_ALT_UTBETALINGER_FRA_NAV_URL": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/utbetaling",
     "VIRKSOMHETSSERTIFIKAT_PATH": "/var/run/secrets",
+    "SRVSOKNADSOSIALHJELP_SERVER_USERNAME": "mockUsername",
+    "SRVSOKNADSOSIALHJELP_SERVER_PASSWORD": "mockPassword",
     "UNLEASH_INSTANCE_ID": "labs-gcp"
   }
 }
