@@ -11,15 +11,19 @@ import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseForslag;
 import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseForslagType;
 import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseSokConsumer.Sokedata;
 import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseSokConsumer.Soketype;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
 import java.util.List;
 
 import static no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresseValg.FOLKEREGISTRERT;
+import static org.slf4j.LoggerFactory.getLogger;
 
 @Component
 public class SoknadsmottakerService {
+
+    private static final Logger log = getLogger(SoknadsmottakerService.class);
 
     private static final String FEATURE_PDL_ADRESSESOK_VED_FOLKEREGISTRERT_ADRESSE = "sosialhjelp.soknad.pdl-adressesok-ved-folkeregistrert-adresse";
 
@@ -71,6 +75,7 @@ public class SoknadsmottakerService {
             return adresseForslagForMatrikkelAdresse((JsonMatrikkelAdresse) adresse);
         } else if (adresse.getType().equals(JsonAdresse.Type.GATEADRESSE)) {
             var sokedata = sokedateFromGateAdresse((JsonGateAdresse) adresse);
+            log.info("Pdl adressesok, sokedata: {}", sokedata);
             var adresseForslag = pdlAdresseSokService.getAdresseForslag(sokedata);
             return Collections.singletonList(adresseForslag);
         }
