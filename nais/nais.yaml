@@ -32,6 +32,7 @@ spec:
     outbound:
       external:
         - host: "digisos-gcp.dev.nav.no"
+        - host: "digisos.labs.nais.io"
         - host: "unleash.nais.io"
       rules:
         - application: sosialhjelp-mock-alt-api
