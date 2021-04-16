@@ -37,7 +37,7 @@ import java.util.stream.Collectors;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
 @Controller
-@ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })
+@ProtectedWithClaims(issuer = "selvbetjening", claimMap = {"acr=Level4"})
 @Path("/soknader/{behandlingsId}/personalia")
 @Timed
 @Produces(APPLICATION_JSON)
@@ -146,14 +146,11 @@ public class NavEnhetRessurs {
 
         List<NavEnhetRessurs.NavEnhetFrontend> navEnhetFrontendListe = new ArrayList<>();
 
-        for (AdresseForslag adresseForslag: adresseForslagene) {
-            if (adresseForslag.type != null && adresseForslag.type.equals(AdresseForslagType.MATRIKKELADRESSE))
-            {
-                    List<NavEnhet> navenheter = norgService.getEnheterForKommunenummer(adresseForslag.kommunenummer);
-                    navenheter.forEach(navEnhet ->
-                            addToNavEnhetFrontendListe(navEnhetFrontendListe, adresseForslag, navEnhet, valgtEnhetNr)
-                    );
-                    log.info("Matrikkeladresse ble brukt. Returnerer {} navenheter", navenheter.size());
+        for (AdresseForslag adresseForslag : adresseForslagene) {
+            if (adresseForslag.type != null && adresseForslag.type.equals(AdresseForslagType.MATRIKKELADRESSE)) {
+                List<NavEnhet> navenheter = norgService.getEnheterForKommunenummer(adresseForslag.kommunenummer);
+                navenheter.forEach(navEnhet -> addToNavEnhetFrontendListe(navEnhetFrontendListe, adresseForslag, navEnhet, valgtEnhetNr));
+                log.info("Matrikkeladresse ble brukt. Returnerer {} navenheter", navenheter.size());
             } else {
                 NavEnhet navEnhet = norgService.getEnhetForGt(adresseForslag.geografiskTilknytning);
                 addToNavEnhetFrontendListe(navEnhetFrontendListe, adresseForslag, navEnhet, valgtEnhetNr);
@@ -172,7 +169,7 @@ public class NavEnhetRessurs {
 
     private NavEnhetRessurs.NavEnhetFrontend mapFraAdresseForslagOgNavEnhetTilNavEnhetFrontend(AdresseForslag adresseForslag, NavEnhet navEnhet, String valgtEnhetNr) {
         if (navEnhet == null) {
-            log.warn("Kunne ikke hente NAV-enhet: {} , i kommune: {} ({})",adresseForslag.geografiskTilknytning, adresseForslag.kommunenavn, adresseForslag.kommunenummer);
+            log.warn("Kunne ikke hente NAV-enhet: {} , i kommune: {} ({})", adresseForslag.geografiskTilknytning, adresseForslag.kommunenavn, adresseForslag.kommunenummer);
             return null;
         }
 
@@ -204,7 +201,7 @@ public class NavEnhetRessurs {
                 .withIsMottakDeaktivert(!digisosKommune);
     }
 
-    private boolean isDigisosKommune(String kommunenummer){
+    private boolean isDigisosKommune(String kommunenummer) {
         boolean isNyDigisosApiKommuneMedMottakAktivert = kommuneInfoService.kanMottaSoknader(kommunenummer) && ServiceUtils.isSendingTilFiksEnabled();
         boolean isGammelSvarUtKommune = KommuneTilNavEnhetMapper.getDigisoskommuner().contains(kommunenummer);
         return isNyDigisosApiKommuneMedMottakAktivert || isGammelSvarUtKommune;

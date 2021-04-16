@@ -7,6 +7,7 @@ import no.nav.sosialhjelp.soknad.consumer.kodeverk.KodeverkService;
 import no.nav.sosialhjelp.soknad.consumer.norg.NorgService;
 import no.nav.sosialhjelp.soknad.consumer.organisasjon.OrganisasjonService;
 import no.nav.sosialhjelp.soknad.consumer.pdl.PdlService;
+import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.PdlAdresseSokService;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.PdlPersonMapper;
 import no.nav.sosialhjelp.soknad.consumer.redis.NoRedisConfig;
 import no.nav.sosialhjelp.soknad.consumer.redis.RedisConfig;
@@ -39,6 +40,7 @@ import org.springframework.context.annotation.Profile;
         NoRedisConfig.class,
         PdlService.class,
         PdlPersonMapper.class,
+        PdlAdresseSokService.class,
         ConsumerConfig.WsServices.class,
         DokumentKrypterer.class,
         AdresseSokService.class,
