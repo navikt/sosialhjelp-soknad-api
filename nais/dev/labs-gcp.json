@@ -50,7 +50,6 @@
     "TILLATMOCK": "true",
     "MOCK_ALT_UTBETALINGER_FRA_NAV_URL": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/utbetaling",
     "VIRKSOMHETSSERTIFIKAT_PATH": "/var/run/secrets",
-    "UNLEASH_INSTANCE_ID": "labs-gcp",
-    "REDIS_HOST": "sosialhjelp-soknad-api-redis.teamdigisos.svc.cluster.local"
+    "UNLEASH_INSTANCE_ID": "labs-gcp"
   }
 }
