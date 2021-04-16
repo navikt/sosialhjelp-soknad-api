@@ -33,7 +33,7 @@
     "IDPORTEN_CONFIG_URL": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/idporten/idporten-oidc-provider/.well-known/openid-configuration",
     "KODEVERK_API_URL": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/kodeverk/api/",
     "LOGINSERVICE_URL": "https://digisos.labs.nais.io/sosialhjelp/mock-alt/login",
-    "OIDC_ISSUER_SELVBETJENING_DISCOVERYURL": "https://digisos.labs.nais.iososialhjelp/mock-alt-api/login/metadata",
+    "OIDC_ISSUER_SELVBETJENING_DISCOVERYURL": "https://digisos.labs.nais.io/sosialhjelp/mock-alt-api/login/metadata",
     "NORG_REST_URL": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/norg_endpoint_url/",
     "SCHEDULER_DISABLE": "false",
     "SOKNAD_BOSTOTTE_URL": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/husbanken",
