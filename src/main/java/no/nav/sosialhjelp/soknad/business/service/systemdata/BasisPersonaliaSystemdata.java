@@ -7,7 +7,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonSokernavn;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonStatsborgerskap;
 import no.nav.sosialhjelp.soknad.business.service.soknadservice.Systemdata;
-import no.nav.sosialhjelp.soknad.consumer.pdl.PdlService;
+import no.nav.sosialhjelp.soknad.consumer.pdl.person.PersonService;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.domain.model.Person;
 import org.springframework.stereotype.Component;
@@ -27,7 +27,7 @@ public class BasisPersonaliaSystemdata implements Systemdata {
     public static final String PDL_STATSLOS = "XXX";
 
     @Inject
-    private PdlService pdlService;
+    private PersonService personService;
 
     @Override
     public void updateSystemdataIn(SoknadUnderArbeid soknadUnderArbeid, String token) {
@@ -45,7 +45,7 @@ public class BasisPersonaliaSystemdata implements Systemdata {
     }
 
     public JsonPersonalia innhentSystemBasisPersonalia(final String personIdentifikator) {
-        var person = pdlService.hentPerson(personIdentifikator);
+        var person = personService.hentPerson(personIdentifikator);
         if (person == null){
             return null;
         }

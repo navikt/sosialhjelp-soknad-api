@@ -7,7 +7,7 @@ import no.nav.sosialhjelp.metrics.aspects.Timed;
 import no.nav.sosialhjelp.soknad.business.service.InformasjonService;
 import no.nav.sosialhjelp.soknad.consumer.adresse.AdresseSokService;
 import no.nav.sosialhjelp.soknad.consumer.fiks.KommuneInfoService;
-import no.nav.sosialhjelp.soknad.consumer.pdl.PdlService;
+import no.nav.sosialhjelp.soknad.consumer.pdl.person.PersonService;
 import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseForslag;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import no.nav.sosialhjelp.soknad.domain.model.util.KommuneTilNavEnhetMapper;
@@ -61,19 +61,19 @@ public class InformasjonRessurs {
     private final NavMessageSource messageSource;
     private final AdresseSokService adresseSokService;
     private final KommuneInfoService kommuneInfoService;
-    private final PdlService pdlService;
+    private final PersonService personService;
 
     public InformasjonRessurs(
             InformasjonService informasjon,
             NavMessageSource messageSource,
             AdresseSokService adresseSokService,
             KommuneInfoService kommuneInfoService,
-            PdlService pdlService) {
+            PersonService personService) {
         this.informasjon = informasjon;
         this.messageSource = messageSource;
         this.adresseSokService = adresseSokService;
         this.kommuneInfoService = kommuneInfoService;
-        this.pdlService = pdlService;
+        this.personService = personService;
     }
 
     @GET
@@ -86,7 +86,7 @@ public class InformasjonRessurs {
     @Path("/fornavn")
     public Map<String, String> hentFornavn() {
         String fnr = SubjectHandler.getUserId();
-        var person = pdlService.hentPerson(fnr);
+        var person = personService.hentPerson(fnr);
         if (person == null) {
             return new HashMap<>();
         }
@@ -121,7 +121,7 @@ public class InformasjonRessurs {
     @Path("/utslagskriterier/sosialhjelp")
     public Map<String, Object> getUtslagskriterier() {
         String uid = SubjectHandler.getUserId();
-        var adressebeskyttelse = pdlService.hentAdressebeskyttelse(uid);
+        var adressebeskyttelse = personService.hentAdressebeskyttelse(uid);
 
         Map<String, Object> resultat = new HashMap<>();
 
