@@ -6,7 +6,7 @@ import no.nav.sosialhjelp.soknad.business.db.soknadmetadata.SoknadMetadataReposi
 import no.nav.sosialhjelp.soknad.business.soknadunderbehandling.SoknadUnderArbeidRepository;
 import no.nav.sosialhjelp.soknad.consumer.ConsumerConfig;
 import no.nav.sosialhjelp.soknad.consumer.bostotte.BostotteConfig;
-import no.nav.sosialhjelp.soknad.consumer.pdl.PdlService;
+import no.nav.sosialhjelp.soknad.consumer.pdl.person.PersonService;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.DigisosApiRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.virusscan.VirusScanConfig;
 import no.nav.sosialhjelp.soknad.web.oidc.OidcTokenValidatorConfig;
@@ -42,7 +42,7 @@ import org.springframework.context.annotation.Import;
 public class SoknadinnsendingConfig {
 
     @Bean
-    public Tilgangskontroll tilgangskontroll(SoknadMetadataRepository soknadMetadataRepository, SoknadUnderArbeidRepository soknadUnderArbeidRepository, PdlService pdlService) {
-        return new Tilgangskontroll(soknadMetadataRepository, soknadUnderArbeidRepository, pdlService);
+    public Tilgangskontroll tilgangskontroll(SoknadMetadataRepository soknadMetadataRepository, SoknadUnderArbeidRepository soknadUnderArbeidRepository, PersonService personService) {
+        return new Tilgangskontroll(soknadMetadataRepository, soknadUnderArbeidRepository, personService);
     }
 }

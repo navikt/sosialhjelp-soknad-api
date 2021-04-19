@@ -5,7 +5,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresseValg;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonGateAdresse;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonMatrikkelAdresse;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
-import no.nav.sosialhjelp.soknad.consumer.pdl.PdlService;
+import no.nav.sosialhjelp.soknad.consumer.pdl.person.PersonService;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.domain.model.Bostedsadresse;
 import no.nav.sosialhjelp.soknad.domain.model.Kontaktadresse;
@@ -34,7 +34,7 @@ public class AdresseSystemdataTest {
     private static final Vegadresse ANNEN_VEGADRESSE = new Vegadresse("en annen sti", 32, null, null, "0456", "oslo", "0302", null, null);
 
     @Mock
-    private PdlService pdlService;
+    private PersonService personService;
 
     @InjectMocks
     private AdresseSystemdata adresseSystemdata;
@@ -44,7 +44,7 @@ public class AdresseSystemdataTest {
         var soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
 
         var personWithBostedsadresseVegadresse = createPersonWithBostedsadresseVegadresse();
-        when(pdlService.hentPerson(anyString())).thenReturn(personWithBostedsadresseVegadresse);
+        when(personService.hentPerson(anyString())).thenReturn(personWithBostedsadresseVegadresse);
 
         adresseSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
 
@@ -60,7 +60,7 @@ public class AdresseSystemdataTest {
     public void skalOppdatereFolkeregistrertAdresse_matrikkeladresse_fraPdl() {
         var soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         var personWithBostedsadresseMatrikkeladresse = createPersonWithBostedsadresseMatrikkeladresse();
-        when(pdlService.hentPerson(anyString())).thenReturn(personWithBostedsadresseMatrikkeladresse);
+        when(personService.hentPerson(anyString())).thenReturn(personWithBostedsadresseMatrikkeladresse);
 
         adresseSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
 
@@ -82,7 +82,7 @@ public class AdresseSystemdataTest {
                 .withPostadresse(new JsonAdresse().withAdresseValg(JsonAdresseValg.MIDLERTIDIG));
 
         var personWithOppholdsadresse = createPersonWithOppholdsadresseVegadresse();
-        when(pdlService.hentPerson(anyString())).thenReturn(personWithOppholdsadresse);
+        when(personService.hentPerson(anyString())).thenReturn(personWithOppholdsadresse);
 
         adresseSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
 
@@ -114,7 +114,7 @@ public class AdresseSystemdataTest {
                 .withPostadresse(new JsonAdresse().withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT));
 
         var personWithBostedsadresseVegadresse = createPersonWithBostedsadresseVegadresse();
-        when(pdlService.hentPerson(anyString())).thenReturn(personWithBostedsadresseVegadresse);
+        when(personService.hentPerson(anyString())).thenReturn(personWithBostedsadresseVegadresse);
 
         adresseSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
 
@@ -137,7 +137,7 @@ public class AdresseSystemdataTest {
                 .withPostadresse(new JsonAdresse());
 
         var personWithBostedsadresseVegadresse = createPersonWithBostedsadresseVegadresse();
-        when(pdlService.hentPerson(anyString())).thenReturn(personWithBostedsadresseVegadresse);
+        when(personService.hentPerson(anyString())).thenReturn(personWithBostedsadresseVegadresse);
 
         adresseSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
 

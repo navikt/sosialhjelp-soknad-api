@@ -3,7 +3,7 @@ package no.nav.sosialhjelp.soknad.web.sikkerhet;
 import no.nav.sosialhjelp.soknad.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata;
 import no.nav.sosialhjelp.soknad.business.soknadunderbehandling.SoknadUnderArbeidRepository;
-import no.nav.sosialhjelp.soknad.consumer.pdl.PdlService;
+import no.nav.sosialhjelp.soknad.consumer.pdl.person.PersonService;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.domain.model.exception.AuthorizationException;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
@@ -29,12 +29,12 @@ public class Tilgangskontroll {
 
     private final SoknadMetadataRepository soknadMetadataRepository;
     private final SoknadUnderArbeidRepository soknadUnderArbeidRepository;
-    private final PdlService pdlService;
+    private final PersonService personService;
 
-    public Tilgangskontroll(SoknadMetadataRepository soknadMetadataRepository, SoknadUnderArbeidRepository soknadUnderArbeidRepository, PdlService pdlService) {
+    public Tilgangskontroll(SoknadMetadataRepository soknadMetadataRepository, SoknadUnderArbeidRepository soknadUnderArbeidRepository, PersonService personService) {
         this.soknadMetadataRepository = soknadMetadataRepository;
         this.soknadUnderArbeidRepository = soknadUnderArbeidRepository;
-        this.pdlService = pdlService;
+        this.personService = personService;
     }
 
     public void verifiserAtBrukerKanEndreSoknad(String behandlingsId) {
@@ -86,7 +86,7 @@ public class Tilgangskontroll {
     }
 
     private void verifiserAtBrukerIkkeHarAdressebeskyttelse(String ident) {
-        var adressebeskyttelse = pdlService.hentAdressebeskyttelse(ident);
+        var adressebeskyttelse = personService.hentAdressebeskyttelse(ident);
         if (FORTROLIG.equals(adressebeskyttelse) || STRENGT_FORTROLIG.equals(adressebeskyttelse) || STRENGT_FORTROLIG_UTLAND.equals(adressebeskyttelse)) {
             throw new AuthorizationException("Bruker har ikke tilgang til søknaden.");
         }
