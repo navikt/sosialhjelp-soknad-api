@@ -482,11 +482,6 @@
             <artifactId>svarut-ks-forsendelsesservice</artifactId>
             <version>${tjenestespesifikasjon.version}</version>
         </dependency>
-        <dependency>
-            <groupId>no.nav.tjenestespesifikasjoner</groupId>
-            <artifactId>utbetaling-tjenestespesifikasjon</artifactId>
-            <version>${tjenestespesifikasjon.version}</version>
-        </dependency>
 
         <!-- Sosialhjelp-common -->
         <dependency>

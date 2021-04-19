@@ -1,7 +1,6 @@
 package no.nav.sosialhjelp.soknad.oppslag;
 
 import io.github.resilience4j.retry.Retry;
-import no.nav.sosialhjelp.soknad.consumer.exceptions.TjenesteUtilgjengeligException;
 import no.nav.sosialhjelp.soknad.consumer.mdc.MDCOperations;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import no.nav.sosialhjelp.soknad.oppslag.dto.KontonummerDto;
@@ -78,7 +77,7 @@ public class OppslagConsumerImpl implements OppslagConsumer {
             return withRetry(retry, () -> request.get(new GenericType<List<UtbetalingDto>>() {}));
         } catch (Exception e) {
             log.error("oppslag.utbetalinger - Noe uventet feilet", e);
-            throw new TjenesteUtilgjengeligException("oppslag.utbetalinger", e);
+            return null;
         }
     }
 

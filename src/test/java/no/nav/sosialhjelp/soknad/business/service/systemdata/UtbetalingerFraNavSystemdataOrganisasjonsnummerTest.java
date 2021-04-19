@@ -2,8 +2,6 @@ package no.nav.sosialhjelp.soknad.business.service.systemdata;
 
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOrganisasjon;
 import no.nav.sosialhjelp.soknad.consumer.organisasjon.OrganisasjonService;
-import no.nav.sosialhjelp.soknad.consumer.skatt.SkattbarInntektService;
-import no.nav.sosialhjelp.soknad.consumer.utbetaling.UtbetalingService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -18,17 +16,10 @@ import static org.junit.Assert.assertNull;
 public class UtbetalingerFraNavSystemdataOrganisasjonsnummerTest {
 
     @Mock
-    private UtbetalingService utbetalingService;
-
-    @Mock
     OrganisasjonService organisasjonService;
-
-    @Mock
-    SkattbarInntektService skattbarInntektService;
 
     @InjectMocks
     private UtbetalingerFraNavSystemdata utbetalingerFraNavSystemdata;
-
 
     @Test
     public void skalReturnereOrganisasjonOmGyldigOrganisasjonsnummer() {

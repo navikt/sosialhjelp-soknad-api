@@ -1,14 +1,13 @@
 package no.nav.sosialhjelp.soknad.business.service.systemdata;
 
-import no.finn.unleash.Unleash;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetalingKomponent;
 import no.nav.sosialhjelp.soknad.consumer.organisasjon.OrganisasjonService;
-import no.nav.sosialhjelp.soknad.consumer.utbetaling.UtbetalingService;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.domain.model.utbetaling.Utbetaling;
+import no.nav.sosialhjelp.soknad.oppslag.UtbetalingService;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,10 +29,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -116,16 +112,10 @@ public class UtbetalingerFraNavSystemdataTest {
     }
 
     @Mock
-    private UtbetalingService utbetalingService;
-
-    @Mock
     private OrganisasjonService organisasjonService;
 
     @Mock
-    private no.nav.sosialhjelp.soknad.oppslag.UtbetalingService utbetalingOppslagService;
-
-    @Mock
-    private Unleash unleash;
+    private UtbetalingService utbetalingService;
 
     @InjectMocks
     private UtbetalingerFraNavSystemdata utbetalingerFraNavSystemdata;
@@ -133,7 +123,6 @@ public class UtbetalingerFraNavSystemdataTest {
     @Before
     public void setUp() {
         System.setProperty("tillatmock", "true");
-        when(unleash.isEnabled(anyString(), anyBoolean())).thenReturn(false);
     }
 
     @After
@@ -145,7 +134,7 @@ public class UtbetalingerFraNavSystemdataTest {
     public void skalOppdatereUtbetalinger() {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         List<Utbetaling> nav_utbetalinger = Arrays.asList(NAV_UTBETALING_1, NAV_UTBETALING_2);
-        when(utbetalingService.hentUtbetalingerForBrukerIPeriode(anyString(), any(LocalDate.class), any(LocalDate.class))).thenReturn(nav_utbetalinger);
+        when(utbetalingService.getUtbetalingerSiste40Dager(anyString())).thenReturn(nav_utbetalinger);
 
         utbetalingerFraNavSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
 
@@ -156,15 +145,13 @@ public class UtbetalingerFraNavSystemdataTest {
         assertThat(utbetaling.getKilde(), is(JsonKilde.SYSTEM));
         assertThatUtbetalingIsCorrectlyConverted(NAV_UTBETALING_1, utbetaling, UTBETALING_NAVYTELSE);
         assertThatUtbetalingIsCorrectlyConverted(NAV_UTBETALING_2, utbetaling_1, UTBETALING_NAVYTELSE);
-
-        verifyNoInteractions(utbetalingOppslagService);
     }
 
     @Test
     public void skalKunInkludereGyldigeOrganisasjonsnummer() {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         List<Utbetaling> nav_utbetalinger = Arrays.asList(NAV_UTBETALING_1, NAV_UTBETALING_2, NAV_UTBETALING_3);
-        when(utbetalingService.hentUtbetalingerForBrukerIPeriode(anyString(), any(LocalDate.class), any(LocalDate.class))).thenReturn(nav_utbetalinger);
+        when(utbetalingService.getUtbetalingerSiste40Dager(anyString())).thenReturn(nav_utbetalinger);
 
         utbetalingerFraNavSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
 
@@ -177,8 +164,6 @@ public class UtbetalingerFraNavSystemdataTest {
         assertNull(utbetaling.getOrganisasjon());
         assertEquals(ORGANISASJONSNR, utbetaling_1.getOrganisasjon().getOrganisasjonsnummer());
         assertNull(utbetaling_2.getOrganisasjon());
-
-        verifyNoInteractions(utbetalingOppslagService);
     }
 
     @Test
@@ -186,7 +171,7 @@ public class UtbetalingerFraNavSystemdataTest {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid()
                 .withJsonInternalSoknad(createJsonInternalSoknadWithUtbetalinger());
         List<Utbetaling> utbetalinger = Collections.singletonList(NAV_UTBETALING_1);
-        when(utbetalingService.hentUtbetalingerForBrukerIPeriode(anyString(), any(LocalDate.class), any(LocalDate.class))).thenReturn(utbetalinger);
+        when(utbetalingService.getUtbetalingerSiste40Dager(anyString())).thenReturn(utbetalinger);
 
         utbetalingerFraNavSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
 
@@ -198,28 +183,6 @@ public class UtbetalingerFraNavSystemdataTest {
         assertThat(utbetaling.equals(JSON_OKONOMI_OPPLYSNING_UTBETALING), is(true));
         assertThat(utbetaling_1.getKilde(), is(JsonKilde.SYSTEM));
         assertThatUtbetalingIsCorrectlyConverted(NAV_UTBETALING_1, utbetaling_1, UTBETALING_NAVYTELSE);
-
-        verifyNoInteractions(utbetalingOppslagService);
-    }
-
-    @Test
-    public void skalOppdatereUtbetalinger_oppslag() {
-        when(unleash.isEnabled(anyString(), anyBoolean())).thenReturn(true);
-        SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
-        List<Utbetaling> nav_utbetalinger = Arrays.asList(NAV_UTBETALING_1, NAV_UTBETALING_2);
-        when(utbetalingOppslagService.getUtbetalingerSiste40Dager(anyString())).thenReturn(nav_utbetalinger);
-
-        utbetalingerFraNavSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
-
-        List<JsonOkonomiOpplysningUtbetaling> jsonUtbetalinger = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getUtbetaling();
-        JsonOkonomiOpplysningUtbetaling utbetaling = jsonUtbetalinger.get(0);
-        JsonOkonomiOpplysningUtbetaling utbetaling_1 = jsonUtbetalinger.get(1);
-
-        assertThat(utbetaling.getKilde(), is(JsonKilde.SYSTEM));
-        assertThatUtbetalingIsCorrectlyConverted(NAV_UTBETALING_1, utbetaling, UTBETALING_NAVYTELSE);
-        assertThatUtbetalingIsCorrectlyConverted(NAV_UTBETALING_2, utbetaling_1, UTBETALING_NAVYTELSE);
-
-        verifyNoInteractions(utbetalingService);
     }
 
     private JsonInternalSoknad createJsonInternalSoknadWithUtbetalinger() {
