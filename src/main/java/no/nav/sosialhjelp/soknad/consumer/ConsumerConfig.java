@@ -23,11 +23,10 @@ import no.nav.sosialhjelp.soknad.consumer.restconfig.STSTokenRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.SkattbarInntektRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.UnleashRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.skatt.SkattbarInntektService;
-import no.nav.sosialhjelp.soknad.consumer.utbetaling.UtbetalingService;
 import no.nav.sosialhjelp.soknad.consumer.wsconfig.FiksWSConfig;
-import no.nav.sosialhjelp.soknad.consumer.wsconfig.UtbetalingWSConfig;
 import no.nav.sosialhjelp.soknad.oppslag.KontonummerService;
 import no.nav.sosialhjelp.soknad.oppslag.OppslagRestConfig;
+import no.nav.sosialhjelp.soknad.oppslag.UtbetalingService;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -45,13 +44,12 @@ import org.springframework.context.annotation.Profile;
         DokumentKrypterer.class,
         AdresseSokService.class,
         NorgService.class,
-        UtbetalingService.class,
         SkattbarInntektService.class,
         OrganisasjonService.class,
         DkifService.class,
         KodeverkService.class,
         KontonummerService.class,
-        no.nav.sosialhjelp.soknad.oppslag.UtbetalingService.class
+        UtbetalingService.class
 })
 
 public class ConsumerConfig {
@@ -64,7 +62,6 @@ public class ConsumerConfig {
             FiksWSConfig.class,
             AdresseSokRestConfig.class,
             NorgRestConfig.class,
-            UtbetalingWSConfig.class,
             OrganisasjonRestConfig.class,
             ArbeidsforholdRestConfig.class,
             STSTokenRestConfig.class,
