@@ -292,7 +292,7 @@ public class TjenesteMockRessurs {
         if (!isTillatMockRessurs()) {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
-        // gjør ikke noe frem til endepunktet ikke kalles fra frontend lengre.
+        // do nothing
         clearCache();
     }
 
