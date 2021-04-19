@@ -77,7 +77,7 @@ public class OppslagConsumerMock {
     }
 
     public static void setUtbetalinger() {
-        // legger til dummy utbetaling
+        // put default utbetaling
         utbetalingerResponses.put(SubjectHandler.getUserId(), defaultUtbetalinger());
     }
 }
