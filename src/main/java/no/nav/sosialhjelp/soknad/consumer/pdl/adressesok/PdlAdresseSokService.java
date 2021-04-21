@@ -2,27 +2,33 @@ package no.nav.sosialhjelp.soknad.consumer.pdl.adressesok;
 
 import no.nav.sosialhjelp.soknad.consumer.pdl.PdlConsumer;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.AdresseDto;
+import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.AdresseSokHit;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.Criteria;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.Paging;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.SearchRule;
 import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseForslag;
 import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseSokConsumer;
 import no.nav.sosialhjelp.soknad.domain.model.util.KommuneTilNavEnhetMapper;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import static java.util.Collections.emptyList;
 import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.SearchRule.CONTAINS;
 import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.SearchRule.EQUALS;
 import static no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseForslagType.GATEADRESSE;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+import static org.slf4j.LoggerFactory.getLogger;
 
 @Component
 public class PdlAdresseSokService {
+
+    private static final Logger log = getLogger(PdlAdresseSokService.class);
 
     private final PdlConsumer pdlConsumer;
 
@@ -33,7 +39,7 @@ public class PdlAdresseSokService {
     public String getGeografiskTilknytning(AdresseSokConsumer.Sokedata sokedata) {
         var adresseSokResult = pdlConsumer.getAdresseSokResult(toVariables(sokedata));
         if (adresseSokResult.getHits() == null || adresseSokResult.getHits().isEmpty()) {
-            throw new RuntimeException("ingen hits i adressesok");
+            throw new RuntimeException("Ingen hits i adressesok");
         }
         if (adresseSokResult.getHits().size() > 1) {
             throw new RuntimeException("For mange hits i adressesok");
@@ -45,14 +51,38 @@ public class PdlAdresseSokService {
 
     public AdresseForslag getAdresseForslag(AdresseSokConsumer.Sokedata sokedata) {
         var adresseSokResult = pdlConsumer.getAdresseSokResult(toVariables(sokedata));
-        if (adresseSokResult.getHits() == null || adresseSokResult.getHits().isEmpty()) {
-            throw new RuntimeException("ingen hits i adressesok");
-        }
-        if (adresseSokResult.getHits().size() > 1) {
-            throw new RuntimeException("For mange hits i adressesok");
-        }
-        var vegadresse = adresseSokResult.getHits().get(0).getVegadresse();
+        var vegadresse = resolveVegadresse(adresseSokResult.getHits());
         return toAdresseForslag(vegadresse);
+    }
+
+    private void checkIfMoreThanOneDistinctHits(List<AdresseSokHit> hits) {
+        if (hits.stream().distinct().count() > 1) {
+            throw new RuntimeException("For mange unike hits i adressesok");
+        }
+    }
+
+    private AdresseDto resolveVegadresse(List<AdresseSokHit> hits) {
+        if (hits.isEmpty()) {
+            log.warn("Ingen hits i adressesok");
+            throw new RuntimeException("Ingen hits i adressesok");
+        } else if (hits.size() == 1) {
+            return hits.get(0).getVegadresse();
+        } else {
+            var first = hits.get(0).getVegadresse();
+            if (hits.stream().allMatch(hit -> relevantFieldsAreEquals(first, hit.getVegadresse()))) {
+                log.info("Flere hits i adressesok, men velger første hit fra listen ettersom (kommunnummer, kommunenavn og bydelsenummer) er like.");
+                return first;
+            }
+            log.warn("Flere ({}) hits i adressesok. Kan ikke utlede entydig kombinasjon av (kommunenummer, kommunenavn og bydelsnummer) fra alle vegadressene", hits.size());
+            throw new RuntimeException("Flere hits i adressesok");
+        }
+    }
+
+    private boolean relevantFieldsAreEquals(AdresseDto dto1, AdresseDto dto2) {
+        if (dto1 == null || dto2 == null) return false;
+        return Objects.equals(dto1.getKommunenummer(), dto2.getKommunenummer()) &&
+                Objects.equals(dto1.getKommunenavn(), dto2.getKommunenavn()) &&
+                Objects.equals(dto1.getBydelsnummer(), dto2.getBydelsnummer());
     }
 
     private String bydelsnummerOrKommunenummer(AdresseDto vegadresse) {
