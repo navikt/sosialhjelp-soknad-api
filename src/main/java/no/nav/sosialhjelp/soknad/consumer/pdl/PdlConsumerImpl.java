@@ -168,11 +168,7 @@ public class PdlConsumerImpl implements PdlConsumer {
             var requestEntity = requestEntity(query, variables);
             var body = withRetry(() -> request.post(requestEntity, String.class));
 
-            log.info("Pdl adresseSok request: {}", pdlMapper.writeValueAsString(requestEntity.getEntity()));
-
             var pdlResponse = pdlMapper.readValue(body, new TypeReference<AdresseSokResponse>() {});
-
-            log.info("Pdl adresseSok response: {}", pdlMapper.writeValueAsString(pdlResponse));
 
             checkForPdlApiErrors(pdlResponse);
 

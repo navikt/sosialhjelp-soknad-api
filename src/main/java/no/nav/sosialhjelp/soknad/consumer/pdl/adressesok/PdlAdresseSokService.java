@@ -38,27 +38,14 @@ public class PdlAdresseSokService {
 
     public String getGeografiskTilknytning(AdresseSokConsumer.Sokedata sokedata) {
         var adresseSokResult = pdlConsumer.getAdresseSokResult(toVariables(sokedata));
-        if (adresseSokResult.getHits() == null || adresseSokResult.getHits().isEmpty()) {
-            throw new RuntimeException("Ingen hits i adressesok");
-        }
-        if (adresseSokResult.getHits().size() > 1) {
-            throw new RuntimeException("For mange hits i adressesok");
-        }
-        var hit = adresseSokResult.getHits().get(0);
-
-        return bydelsnummerOrKommunenummer(hit.getVegadresse());
+        var vegadresse = resolveVegadresse(adresseSokResult.getHits());
+        return bydelsnummerOrKommunenummer(vegadresse);
     }
 
     public AdresseForslag getAdresseForslag(AdresseSokConsumer.Sokedata sokedata) {
         var adresseSokResult = pdlConsumer.getAdresseSokResult(toVariables(sokedata));
         var vegadresse = resolveVegadresse(adresseSokResult.getHits());
         return toAdresseForslag(vegadresse);
-    }
-
-    private void checkIfMoreThanOneDistinctHits(List<AdresseSokHit> hits) {
-        if (hits.stream().distinct().count() > 1) {
-            throw new RuntimeException("For mange unike hits i adressesok");
-        }
     }
 
     private AdresseDto resolveVegadresse(List<AdresseSokHit> hits) {
