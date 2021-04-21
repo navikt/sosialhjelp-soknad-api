@@ -30,8 +30,8 @@ import static org.mockito.Mockito.when;
 public class AdresseSystemdataTest {
 
     private static final String EIER = "12345678901";
-    private static final Vegadresse DEFAULT_VEGADRESSE = new Vegadresse("gateveien", 1, "A", "", "0123", "poststed", "0301", "H0101");
-    private static final Vegadresse ANNEN_VEGADRESSE = new Vegadresse("en annen sti", 32, null, null, "0456", "oslo", "0302", null);
+    private static final Vegadresse DEFAULT_VEGADRESSE = new Vegadresse("gateveien", 1, "A", "", "0123", "poststed", "0301", "H0101", "123456");
+    private static final Vegadresse ANNEN_VEGADRESSE = new Vegadresse("en annen sti", 32, null, null, "0456", "oslo", "0302", null, null);
 
     @Mock
     private PdlService pdlService;
@@ -160,6 +160,7 @@ public class AdresseSystemdataTest {
         assertThat(gateAdresse.getLandkode(), is("NOR"));
         assertThat(gateAdresse.getPostnummer(), is(vegadresse.getPostnummer()));
         assertThat(gateAdresse.getPoststed(), is(vegadresse.getPoststed()));
+
     }
 
     private Person createPersonWithBostedsadresseVegadresse() {

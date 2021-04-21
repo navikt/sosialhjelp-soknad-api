@@ -106,7 +106,7 @@ public class PdlConsumerMock {
         return new PdlPerson(
                 singletonList(defaultBostedsadresse()),
                 emptyList(), // ingen oppholdsadresse
-                singletonList(new KontaktadresseDto("Innland", null, new VegadresseDto(null, "midlertidig adresse gate", 1, "D", null, "0471", "Oslo", null), null, null)),
+                singletonList(new KontaktadresseDto("Innland", null, new VegadresseDto(null, "midlertidig adresse gate", 1, "D", null, "0471", "Oslo", null, null), null, null)),
                 response.getBarn().isEmpty() ? null : forelderBarnRelasjoner(response.getBarn()), // ingen forelderBarnRelasjoner for mockperson
                 singletonList(new NavnDto(
                         response.getPerson().getFornavn(),
@@ -161,11 +161,11 @@ public class PdlConsumerMock {
     }
 
     private static BostedsadresseDto defaultBostedsadresse() {
-        return new BostedsadresseDto(null, new VegadresseDto("123123", "GATEVEIEN", 1, "A", null, "0690", "0301", null), null, null);
+        return new BostedsadresseDto(null, new VegadresseDto("123123", "GATEVEIEN", 1, "A", null, "0690", "0301", null, "030112"), null, null);
     }
 
     private static BostedsadresseDto annenBostedsadresse() {
-        return new BostedsadresseDto(null, new VegadresseDto("999999", "Karl Johans gate", 1, "A", null, "1111", "0301", null), null, null);
+        return new BostedsadresseDto(null, new VegadresseDto("999999", "Karl Johans gate", 1, "A", null, "1111", "0301", null, null), null, null);
     }
 
     private static List<ForelderBarnRelasjonDto> forelderBarnRelasjoner(List<PdlMockBarn> barn) {
@@ -179,9 +179,9 @@ public class PdlConsumerMock {
 
     private static PdlPerson defaultPerson() {
         return new PdlPerson(
-                singletonList(new BostedsadresseDto(null, new VegadresseDto("123123", "GATEVEIEN", 1, "A", null, "0690", "0301", null), null, null)),
+                singletonList(defaultBostedsadresse()),
                 emptyList(), // ingen oppholdsadresse
-                singletonList(new KontaktadresseDto("Innland", null, new VegadresseDto(null, "midlertidig adresse gate", 1, "D", null, "0471", "Oslo", null), null, null)),
+                singletonList(new KontaktadresseDto("Innland", null, new VegadresseDto(null, "midlertidig adresse gate", 1, "D", null, "0471", "Oslo", null, null), null, null)),
                 emptyList(), // ingen forelderBarnRelasjoner for mockperson
                 singletonList(new NavnDto("rask", "jule", "mat", defaultMetadata(), defaultFolkeregisterMetadata())),
                 singletonList(new SivilstandDto(
@@ -196,7 +196,7 @@ public class PdlConsumerMock {
     private static PdlEktefelle defaultEktefelle() {
         return new PdlEktefelle(
                 singletonList(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT)),
-                singletonList(new BostedsadresseDto(null, new VegadresseDto("123123", "GATEVEIEN", 1, "A", null, "0690", "0301", null), null, null)),
+                singletonList(defaultBostedsadresse()),
                 singletonList(new FoedselDto(LocalDate.of(1970, 1, 1))),
                 singletonList(new NavnDto("ektefelle", "mellomnavn", "etternavn", defaultMetadata(), defaultFolkeregisterMetadata()))
         );
@@ -205,7 +205,7 @@ public class PdlConsumerMock {
     private static PdlBarn defaultBarn() {
         return new PdlBarn(
                 singletonList(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT)),
-                singletonList(new BostedsadresseDto(null, new VegadresseDto("123123", "GATEVEIEN", 1, "A", null, "0690", "0301", null), null, null)),
+                singletonList(defaultBostedsadresse()),
                 singletonList(new FolkeregisterpersonstatusDto("bosatt")),
                 singletonList(new FoedselDto(LocalDate.of(LocalDate.now().getYear() - 10, 1, 1))),
                 singletonList(new NavnDto("barn", "mellomnavn", "etternavn", defaultMetadata(), defaultFolkeregisterMetadata()))

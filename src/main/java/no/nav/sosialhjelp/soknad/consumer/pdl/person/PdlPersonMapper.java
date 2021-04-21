@@ -244,7 +244,8 @@ public class PdlPersonMapper {
                 && Objects.equals(adr1.getTilleggsnavn(), adr2.getTilleggsnavn())
                 && Objects.equals(adr1.getPostnummer(), adr2.getPostnummer())
                 && Objects.equals(adr1.getKommunenummer(), adr2.getKommunenummer())
-                && Objects.equals(adr1.getBruksenhetsnummer(), adr2.getBruksenhetsnummer());
+                && Objects.equals(adr1.getBruksenhetsnummer(), adr2.getBruksenhetsnummer())
+                && Objects.equals(adr1.getBydelsnummer(), adr2.getBydelsnummer());
     }
 
     private boolean isEqualVegadresserWithoutKommunenummer(VegadresseDto adr1, VegadresseDto adr2) {
@@ -317,7 +318,8 @@ public class PdlPersonMapper {
                 dto.getPostnummer(),
                 getPoststed(dto.getPostnummer()),
                 dto.getKommunenummer(),
-                dto.getBruksenhetsnummer()
+                dto.getBruksenhetsnummer(),
+                dto.getBydelsnummer()
         );
     }
 
