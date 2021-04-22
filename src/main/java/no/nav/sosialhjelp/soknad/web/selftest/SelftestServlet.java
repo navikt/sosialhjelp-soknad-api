@@ -6,8 +6,10 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import java.util.Collection;
 
+@WebServlet(urlPatterns = "/internal/selftest")
 public class SelftestServlet extends SelfTestBaseServlet {
     private ApplicationContext ctx = null;
 
