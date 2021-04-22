@@ -13,6 +13,7 @@ public class VegadresseDto {
     private final String postnummer;
     private final String kommunenummer;
     private final String bruksenhetsnummer;
+    private final String bydelsnummer;
 
     @JsonCreator
     public VegadresseDto(
@@ -23,7 +24,8 @@ public class VegadresseDto {
             @JsonProperty("tilleggsnavn") String tilleggsnavn,
             @JsonProperty("postnummer") String postnummer,
             @JsonProperty("kommunenummer") String kommunenummer,
-            @JsonProperty("bruksenhetsnummer") String bruksenhetsnummer
+            @JsonProperty("bruksenhetsnummer") String bruksenhetsnummer,
+            @JsonProperty("bydelsnummer") String bydelsnummer
     ) {
         this.matrikkelId = matrikkelId;
         this.adressenavn = adressenavn;
@@ -33,6 +35,7 @@ public class VegadresseDto {
         this.postnummer = postnummer;
         this.kommunenummer = kommunenummer;
         this.bruksenhetsnummer = bruksenhetsnummer;
+        this.bydelsnummer = bydelsnummer;
     }
 
     public String getMatrikkelId() {
@@ -67,4 +70,7 @@ public class VegadresseDto {
         return bruksenhetsnummer;
     }
 
+    public String getBydelsnummer() {
+        return bydelsnummer;
+    }
 }

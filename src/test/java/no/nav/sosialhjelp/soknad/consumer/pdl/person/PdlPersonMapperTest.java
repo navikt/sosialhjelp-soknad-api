@@ -85,9 +85,9 @@ public class PdlPersonMapperTest {
     @Test
     public void fulltUtfyltPerson() {
         PdlPerson pdlPerson = new PdlPerson(
-                asList(new BostedsadresseDto(null, new VegadresseDto("matrikkelId", "gateveien", 1, "A", "tilleggsnavn", "1234", "1212", "U123123"), null, null)),
-                asList(new OppholdsadresseDto(null, "Test McTest", new VegadresseDto("111", "midlertidig", 1, "A", null, "1234", "1212", null), null, null)),
-                asList(new KontaktadresseDto("Innland", null, new VegadresseDto("222", "kontaktveien", 1, "A", null, "2222", "3333", null), null, null)),
+                asList(new BostedsadresseDto(null, new VegadresseDto("matrikkelId", "gateveien", 1, "A", "tilleggsnavn", "1234", "1212", "U123123", "123456"), null, null)),
+                asList(new OppholdsadresseDto(null, "Test McTest", new VegadresseDto("111", "midlertidig", 1, "A", null, "1234", "1212", null, null), null, null)),
+                asList(new KontaktadresseDto("Innland", null, new VegadresseDto("222", "kontaktveien", 1, "A", null, "2222", "3333", null, null), null, null)),
                 asList(new ForelderBarnRelasjonDto(BARNIDENT, BARN_ROLLE, MOR_ROLLE)),
                 asList(new NavnDto(FORNAVN, MELLOMNAVN, ETTERNAVN, METADATA, FOLKEREGISTERMETADATA)),
                 asList(new SivilstandDto(SivilstandDto.SivilstandType.GIFT, EKTEFELLEIDENT, METADATA, FOLKEREGISTERMETADATA)),
@@ -163,7 +163,7 @@ public class PdlPersonMapperTest {
     @Test
     public void personMedOppholdsadresseUtenVegadresse() {
         PdlPerson pdlPerson = new PdlPerson(
-                asList(new BostedsadresseDto(null, new VegadresseDto("matrikkelId", "gateveien", 1, "A", "tilleggsnavn", "1234", "1212", "U123123"), null, null)),
+                asList(new BostedsadresseDto(null, new VegadresseDto("matrikkelId", "gateveien", 1, "A", "tilleggsnavn", "1234", "1212", "U123123", "123456"), null, null)),
                 asList(new OppholdsadresseDto("oppholdAnnetSted", null, null, null, null)),
                 null, // ingen kontaktadresse
                 asList(new ForelderBarnRelasjonDto(BARNIDENT, BARN_ROLLE, MOR_ROLLE)),
@@ -180,8 +180,8 @@ public class PdlPersonMapperTest {
 
     @Test
     public void personMedOppholdsadresseLikBostedsadresseSkalFiltreresVekk() {
-        var vegadresse = new VegadresseDto("matrikkelId", "gateveien", 1, "A", "tilleggsnavn", "1234", "1212", "U123123");
-        var annenVegadresse = new VegadresseDto("matrikkelId2", "stien", 2, "B", null, "1234", "1212", null);
+        var vegadresse = defaultVegadresse();
+        var annenVegadresse = annenVegadresse();
 
         PdlPerson pdlPerson = new PdlPerson(
                 asList(new BostedsadresseDto(null, vegadresse, null, null)),
@@ -208,8 +208,8 @@ public class PdlPersonMapperTest {
 
     @Test
     public void personMedKontaktadresseLikBostedsadresseSkalFiltreresVekk() {
-        var vegadresse = new VegadresseDto("matrikkelId", "gateveien", 1, "A", "tilleggsnavn", "1234", "1212", "U123123");
-        var annenVegadresse = new VegadresseDto("matrikkelId2", "stien", 2, "B", null, "1234", "1212", null);
+        var vegadresse = defaultVegadresse();
+        var annenVegadresse = annenVegadresse();
 
         PdlPerson pdlPerson = new PdlPerson(
                 asList(new BostedsadresseDto(null, vegadresse, null, null)),
@@ -236,8 +236,8 @@ public class PdlPersonMapperTest {
 
     @Test
     public void personMedKontaktadresseUtenKommunenummerLikBostedsadresseSkalFiltreresVekk() {
-        var vegadresse = new VegadresseDto("matrikkelId", "gateveien", 1, "A", null, "1234", "1212", null);
-        var vegadresseUtenKommunenummer = new VegadresseDto("matrikkelId", "gateveien", 1, "A", null, "1234", null, null);
+        var vegadresse = new VegadresseDto("matrikkelId", "gateveien", 1, "A", null, "1234", "1212", null, null);
+        var vegadresseUtenKommunenummer = new VegadresseDto("matrikkelId", "gateveien", 1, "A", null, "1234", null, null, null);
 
         PdlPerson pdlPerson = new PdlPerson(
                 asList(new BostedsadresseDto(null, vegadresse, null, null)),
@@ -261,7 +261,7 @@ public class PdlPersonMapperTest {
     @Test
     public void fulltUtfyltEktefelle() {
         PdlPerson pdlPerson = new PdlPerson(
-                asList(new BostedsadresseDto(null, new VegadresseDto("matrikkelId", "gateveien", 1, "A", "tilleggsnavn", "1234", "1212", "U123123"), null, null)),
+                asList(new BostedsadresseDto(null, defaultVegadresse(), null, null)),
                 null, // Ingen oppholdsadresse
                 null, // ingen kontaktadresse
                 asList(new ForelderBarnRelasjonDto(BARNIDENT, BARN_ROLLE, MOR_ROLLE)),
@@ -272,7 +272,7 @@ public class PdlPersonMapperTest {
 
         PdlEktefelle pdlEktefelle = new PdlEktefelle(
                 asList(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT)),
-                asList(new BostedsadresseDto(null, new VegadresseDto("matrikkelId", "gateveien", 1, "A", "tilleggsnavn", "1234", "1212", "U123123"), null, null)),
+                asList(new BostedsadresseDto(null, defaultVegadresse(), null, null)),
                 asList(new FoedselDto(LocalDate.of(1970, 1, 1))),
                 asList(new NavnDto(FORNAVN, MELLOMNAVN, ETTERNAVN, METADATA, FOLKEREGISTERMETADATA))
         );
@@ -292,7 +292,7 @@ public class PdlPersonMapperTest {
     @Test
     public void ektefelleOgPersonErIkkeFolkeregistrertSammenMedUlikMatrikkelId() {
         PdlPerson pdlPerson = new PdlPerson(
-                asList(new BostedsadresseDto(null, new VegadresseDto("matrikkelId", "gateveien", 1, "A", "tilleggsnavn", "1234", "1212", "U123123"), null, null)),
+                asList(new BostedsadresseDto(null, new VegadresseDto("matrikkelId", "gateveien", 1, "A", "tilleggsnavn", "1234", "1212", "U123123", "123456"), null, null)),
                 null, // Ingen oppholdsadresse
                 null, // ingen kontaktadresse
                 asList(new ForelderBarnRelasjonDto(BARNIDENT, BARN_ROLLE, MOR_ROLLE)),
@@ -303,7 +303,7 @@ public class PdlPersonMapperTest {
 
         PdlEktefelle pdlEktefelle = new PdlEktefelle(
                 asList(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT)),
-                asList(new BostedsadresseDto(null, new VegadresseDto("2matrikkelId", "gateveien", 1, "A", "tilleggsnavn", "1234", "1212", "U123123"), null, null)), // kun matrikkelId er ulik
+                asList(new BostedsadresseDto(null, new VegadresseDto("2matrikkelId", "gateveien", 1, "A", "tilleggsnavn", "1234", "1212", "U123123", "123456"), null, null)), // kun matrikkelId er ulik
                 asList(new FoedselDto(LocalDate.of(1970, 1, 1))),
                 asList(new NavnDto(FORNAVN, MELLOMNAVN, ETTERNAVN, METADATA, FOLKEREGISTERMETADATA))
         );
@@ -317,7 +317,7 @@ public class PdlPersonMapperTest {
     @Test
     public void ektefelleOgPersonErFolkeregistrertSammenUtenMatrikkelId() {
         PdlPerson pdlPerson = new PdlPerson(
-                asList(new BostedsadresseDto(null, new VegadresseDto(null, "gateveien", 1, "A", "tilleggsnavn", "1234", "1212", "U123123"), null, null)),
+                asList(new BostedsadresseDto(null, new VegadresseDto(null, "gateveien", 1, "A", "tilleggsnavn", "1234", "1212", "U123123", "123456"), null, null)),
                 null, // Ingen oppholdsadresse
                 null, // ingen kontaktadresse
                 asList(new ForelderBarnRelasjonDto(BARNIDENT, BARN_ROLLE, MOR_ROLLE)),
@@ -328,7 +328,7 @@ public class PdlPersonMapperTest {
 
         PdlEktefelle pdlEktefelle = new PdlEktefelle(
                 asList(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT)),
-                asList(new BostedsadresseDto(null, new VegadresseDto(null, "gateveien", 1, "A", "tilleggsnavn", "1234", "1212", "U123123"), null, null)),
+                asList(new BostedsadresseDto(null, new VegadresseDto(null, "gateveien", 1, "A", "tilleggsnavn", "1234", "1212", "U123123", "123456"), null, null)),
                 asList(new FoedselDto(LocalDate.of(1970, 1, 1))),
                 asList(new NavnDto(FORNAVN, MELLOMNAVN, ETTERNAVN, METADATA, FOLKEREGISTERMETADATA))
         );
@@ -342,7 +342,7 @@ public class PdlPersonMapperTest {
     @Test
     public void ektefelleMedAdressebeskyttelse() {
         PdlPerson pdlPerson = new PdlPerson(
-                asList(new BostedsadresseDto(null, new VegadresseDto("matrikkelId", "gateveien", 1, "A", "tilleggsnavn", "1234", "1212", "U123123"), null, null)),
+                asList(new BostedsadresseDto(null, defaultVegadresse(), null, null)),
                 null, // Ingen oppholdsadresse
                 null, // ingen kontaktadresse
                 asList(new ForelderBarnRelasjonDto(BARNIDENT, BARN_ROLLE, MOR_ROLLE)),
@@ -373,7 +373,7 @@ public class PdlPersonMapperTest {
     @Test
     public void ektefelleNull() {
         PdlPerson pdlPerson = new PdlPerson(
-                asList(new BostedsadresseDto(null, new VegadresseDto("matrikkelId", "gateveien", 1, "A", "tilleggsnavn", "1234", "1212", "U123123"), null, null)),
+                asList(new BostedsadresseDto(null, defaultVegadresse(), null, null)),
                 null, // Ingen oppholdsadresse
                 null, // ingen kontaktadresse
                 asList(new ForelderBarnRelasjonDto(BARNIDENT, BARN_ROLLE, MOR_ROLLE)),
@@ -462,7 +462,7 @@ public class PdlPersonMapperTest {
     @Test
     public void fulltUtfyltBarn() {
         PdlPerson pdlPerson = new PdlPerson(
-                asList(new BostedsadresseDto(null, new VegadresseDto("matrikkelId", "gateveien", 1, "A", "tilleggsnavn", "1234", "1212", "U123123"), null, null)),
+                asList(new BostedsadresseDto(null, defaultVegadresse(), null, null)),
                 null, // Ingen oppholdsadresse
                 null, // ingen kontaktadresse
                 asList(new ForelderBarnRelasjonDto(BARNIDENT, BARN_ROLLE, MOR_ROLLE)),
@@ -473,7 +473,7 @@ public class PdlPersonMapperTest {
 
         PdlBarn pdlBarn = new PdlBarn(
                 asList(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT)),
-                asList(new BostedsadresseDto(null, new VegadresseDto("matrikkelId", "gateveien", 1, "A", "tilleggsnavn", "1234", "1212", "U123123"), null, null)),
+                asList(new BostedsadresseDto(null, defaultVegadresse(), null, null)),
                 asList(new FolkeregisterpersonstatusDto("ikke-doed")),
                 asList(new FoedselDto(FOEDSELSDATO_BARN)),
                 asList(new NavnDto(FORNAVN, null, ETTERNAVN, METADATA, FOLKEREGISTERMETADATA))
@@ -493,7 +493,7 @@ public class PdlPersonMapperTest {
     @Test
     public void barnMedAdressebeskyttelse() {
         PdlPerson pdlPerson = new PdlPerson(
-                asList(new BostedsadresseDto(null, new VegadresseDto("matrikkelId", "gateveien", 1, "A", "tilleggsnavn", "1234", "1212", "U123123"), null, null)),
+                asList(new BostedsadresseDto(null, defaultVegadresse(), null, null)),
                 null, // Ingen oppholdsadresse
                 null, // ingen kontaktadresse
                 asList(new ForelderBarnRelasjonDto(BARNIDENT, BARN_ROLLE, MOR_ROLLE)),
@@ -518,7 +518,7 @@ public class PdlPersonMapperTest {
     @Test
     public void barnDoed() {
         PdlPerson pdlPerson = new PdlPerson(
-                asList(new BostedsadresseDto(null, new VegadresseDto("matrikkelId", "gateveien", 1, "A", "tilleggsnavn", "1234", "1212", "U123123"), null, null)),
+                asList(new BostedsadresseDto(null, defaultVegadresse(), null, null)),
                 null, // Ingen oppholdsadresse
                 null, // ingen kontaktadresse
                 asList(new ForelderBarnRelasjonDto(BARNIDENT, BARN_ROLLE, MOR_ROLLE)),
@@ -529,7 +529,7 @@ public class PdlPersonMapperTest {
 
         PdlBarn pdlBarn = new PdlBarn(
                 asList(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT)),
-                asList(new BostedsadresseDto(null, new VegadresseDto("matrikkelId", "gateveien", 1, "A", "tilleggsnavn", "1234", "1212", "U123123"), null, null)),
+                asList(new BostedsadresseDto(null, defaultVegadresse(), null, null)),
                 asList(new FolkeregisterpersonstatusDto(DOED)),
                 asList(new FoedselDto(FOEDSELSDATO_BARN)),
                 asList(new NavnDto(FORNAVN, null, ETTERNAVN, METADATA, FOLKEREGISTERMETADATA))
@@ -543,7 +543,7 @@ public class PdlPersonMapperTest {
     @Test
     public void barnMyndig() {
         PdlPerson pdlPerson = new PdlPerson(
-                asList(new BostedsadresseDto(null, new VegadresseDto("matrikkelId", "gateveien", 1, "A", "tilleggsnavn", "1234", "1212", "U123123"), null, null)),
+                asList(new BostedsadresseDto(null, defaultVegadresse(), null, null)),
                 null, // Ingen oppholdsadresse
                 null, // ingen kontaktadresse
                 asList(new ForelderBarnRelasjonDto(BARNIDENT, BARN_ROLLE, MOR_ROLLE)),
@@ -554,7 +554,7 @@ public class PdlPersonMapperTest {
 
         PdlBarn pdlBarn = new PdlBarn(
                 asList(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT)),
-                asList(new BostedsadresseDto(null, new VegadresseDto("matrikkelId", "gateveien", 1, "A", "tilleggsnavn", "1234", "1212", "U123123"), null, null)),
+                asList(new BostedsadresseDto(null, defaultVegadresse(), null, null)),
                 asList(new FolkeregisterpersonstatusDto("ikke-doed")),
                 asList(new FoedselDto(FOEDSELSDATO_BARN_MYNDIG)),
                 asList(new NavnDto(FORNAVN, null, ETTERNAVN, METADATA, FOLKEREGISTERMETADATA))
@@ -648,5 +648,13 @@ public class PdlPersonMapperTest {
         var gradering = mapper.mapToAdressebeskyttelse(pdlAdressebeskyttelse);
 
         assertNull(gradering);
+    }
+
+    private VegadresseDto defaultVegadresse() {
+        return new VegadresseDto("matrikkelId", "gateveien", 1, "A", "tilleggsnavn", "1234", "1212", "U123123", "123456");
+    }
+
+    private VegadresseDto annenVegadresse() {
+        return new VegadresseDto("matrikkelId2", "stien", 2, "B", null, "1234", "1212", null, null);
     }
 }

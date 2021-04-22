@@ -10,6 +10,7 @@ public class Vegadresse {
     private final String poststed;
     private final String kommunenummer;
     private final String bruksenhetsnummer;
+    private final String bydelsnummer;
 
     public Vegadresse(
             String adressenavn,
@@ -19,7 +20,8 @@ public class Vegadresse {
             String postnummer,
             String poststed,
             String kommunenummer,
-            String bruksenhetsnummer
+            String bruksenhetsnummer,
+            String bydelsnummer
     ) {
         this.adressenavn = adressenavn;
         this.husnummer = husnummer;
@@ -29,6 +31,7 @@ public class Vegadresse {
         this.poststed = poststed;
         this.kommunenummer = kommunenummer;
         this.bruksenhetsnummer = bruksenhetsnummer;
+        this.bydelsnummer = bydelsnummer;
     }
 
     public String getAdressenavn() {
@@ -61,5 +64,9 @@ public class Vegadresse {
 
     public String getBruksenhetsnummer() {
         return bruksenhetsnummer;
+    }
+
+    public String getBydelsnummer() {
+        return bydelsnummer;
     }
 }
