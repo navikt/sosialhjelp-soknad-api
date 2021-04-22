@@ -28,6 +28,7 @@ query($ident: ID!, $historikk: Boolean!) {
                 postnummer
                 kommunenummer
                 bruksenhetsnummer
+                bydelsnummer
             }
             matrikkeladresse {
                 matrikkelId
