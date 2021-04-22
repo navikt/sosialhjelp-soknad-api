@@ -21,6 +21,7 @@ fragment vegadresse on Vegadresse {
     postnummer
     kommunenummer
     bruksenhetsnummer
+    bydelsnummer
 }
 
 fragment matrikkeladresse on Matrikkeladresse {
