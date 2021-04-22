@@ -13,7 +13,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonForsorgerplikt;
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonHarForsorgerplikt;
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus;
 import no.nav.sosialhjelp.soknad.business.service.soknadservice.Systemdata;
-import no.nav.sosialhjelp.soknad.consumer.pdl.PdlService;
+import no.nav.sosialhjelp.soknad.consumer.pdl.person.PersonService;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.domain.model.Barn;
 import no.nav.sosialhjelp.soknad.domain.model.Ektefelle;
@@ -31,7 +31,7 @@ import static org.apache.commons.lang3.StringUtils.isEmpty;
 public class FamilieSystemdata implements Systemdata {
 
     @Inject
-    private PdlService pdlService;
+    private PersonService personService;
 
     @Override
     public void updateSystemdataIn(SoknadUnderArbeid soknadUnderArbeid, String token) {
@@ -85,7 +85,7 @@ public class FamilieSystemdata implements Systemdata {
     }
 
     private JsonSivilstatus innhentSystemverdiSivilstatus(String personIdentifikator) {
-        var person = pdlService.hentPerson(personIdentifikator);
+        var person = personService.hentPerson(personIdentifikator);
         if (person == null || isEmpty(person.getSivilstatus())) {
             return null;
         }
@@ -127,7 +127,7 @@ public class FamilieSystemdata implements Systemdata {
     private JsonForsorgerplikt innhentSystemverdiForsorgerplikt(String personIdentifikator) {
         JsonForsorgerplikt jsonForsorgerplikt = new JsonForsorgerplikt().withHarForsorgerplikt(new JsonHarForsorgerplikt());
 
-        var barn = pdlService.hentBarnForPerson(personIdentifikator);
+        var barn = personService.hentBarnForPerson(personIdentifikator);
         if (barn == null || barn.isEmpty()) {
             jsonForsorgerplikt.getHarForsorgerplikt()
                     .withKilde(JsonKilde.SYSTEM)

@@ -11,7 +11,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonUstrukturertAdresse;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
 import no.nav.sosialhjelp.soknad.business.service.soknadservice.Systemdata;
-import no.nav.sosialhjelp.soknad.consumer.pdl.PdlService;
+import no.nav.sosialhjelp.soknad.consumer.pdl.person.PersonService;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.domain.model.Bostedsadresse;
 import no.nav.sosialhjelp.soknad.domain.model.Kontaktadresse;
@@ -28,10 +28,10 @@ public class AdresseSystemdata implements Systemdata {
 
     private static final Logger log = getLogger(AdresseSystemdata.class);
 
-    private final PdlService pdlService;
+    private final PersonService personService;
 
-    public AdresseSystemdata(PdlService pdlService) {
-        this.pdlService = pdlService;
+    public AdresseSystemdata(PersonService personService) {
+        this.personService = personService;
     }
 
     @Override
@@ -87,12 +87,12 @@ public class AdresseSystemdata implements Systemdata {
     }
 
     public JsonAdresse innhentFolkeregistrertAdresse(String personIdentifikator) {
-        var person = pdlService.hentPerson(personIdentifikator);
+        var person = personService.hentPerson(personIdentifikator);
         return mapToJsonAdresse(person.getBostedsadresse());
     }
 
     public JsonAdresse innhentMidlertidigAdresse(String personIdentifikator) {
-        var person = pdlService.hentPerson(personIdentifikator);
+        var person = personService.hentPerson(personIdentifikator);
         return mapToJsonAdresse(person.getOppholdsadresse());
 //        return mapToJsonAdresse(person.getKontaktadresse());
     }

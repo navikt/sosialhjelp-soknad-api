@@ -1,9 +1,6 @@
-package no.nav.sosialhjelp.soknad.consumer.pdl;
+package no.nav.sosialhjelp.soknad.consumer.pdl.person;
 
-import no.nav.sosialhjelp.soknad.consumer.pdl.person.PdlEktefelle;
-import no.nav.sosialhjelp.soknad.consumer.pdl.person.PdlPerson;
-import no.nav.sosialhjelp.soknad.consumer.pdl.person.PdlPersonMapper;
-import no.nav.sosialhjelp.soknad.consumer.pdl.person.PdlPersonMapperHelper;
+import no.nav.sosialhjelp.soknad.consumer.pdl.PdlConsumer;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.AdressebeskyttelseDto.Gradering;
 import no.nav.sosialhjelp.soknad.domain.model.Barn;
 import no.nav.sosialhjelp.soknad.domain.model.Ektefelle;
@@ -22,9 +19,9 @@ import static no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.SivilstandDto.Si
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Component
-public class PdlService {
+public class PersonService {
 
-    private static final Logger log = getLogger(PdlService.class);
+    private static final Logger log = getLogger(PersonService.class);
     private static final String BARN = "BARN";
 
     private final PdlConsumer pdlConsumer;
@@ -32,7 +29,7 @@ public class PdlService {
 
     private final PdlPersonMapperHelper helper = new PdlPersonMapperHelper();
 
-    public PdlService(PdlConsumer pdlConsumer, PdlPersonMapper pdlPersonMapper) {
+    public PersonService(PdlConsumer pdlConsumer, PdlPersonMapper pdlPersonMapper) {
         this.pdlConsumer = pdlConsumer;
         this.pdlPersonMapper = pdlPersonMapper;
     }
