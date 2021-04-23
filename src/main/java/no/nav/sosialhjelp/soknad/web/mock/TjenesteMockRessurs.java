@@ -18,7 +18,6 @@ import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.SosialhjelpPdfGenerator;
 import no.nav.sosialhjelp.soknad.consumer.arbeidsforhold.ArbeidsforholdConsumerMock;
 import no.nav.sosialhjelp.soknad.consumer.bostotte.MockBostotteImpl;
 import no.nav.sosialhjelp.soknad.consumer.dkif.DkifConsumerMock;
-import no.nav.sosialhjelp.soknad.consumer.kodeverk.KodeverkConsumerMock;
 import no.nav.sosialhjelp.soknad.consumer.organisasjon.OrganisasjonConsumerMock;
 import no.nav.sosialhjelp.soknad.consumer.pdl.PdlConsumerMock;
 import no.nav.sosialhjelp.soknad.consumer.skatt.SkattbarInntektConsumerMock;
@@ -261,7 +260,7 @@ public class TjenesteMockRessurs {
 
         var mockFamiliedata = mapper.readValue(jsonPerson, PdlConsumerMock.PdlMockResponse.class);
         if (mockFamiliedata.getPerson().getStatsborgerskap() != null) {
-            KodeverkConsumerMock.leggTilLandkode(mockFamiliedata.getPerson().getStatsborgerskap());
+            // do nothing
         }
 
         PdlConsumerMock.setPerson(mockFamiliedata);
