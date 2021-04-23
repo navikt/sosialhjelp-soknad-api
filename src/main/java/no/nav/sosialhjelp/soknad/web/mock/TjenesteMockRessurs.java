@@ -19,7 +19,6 @@ import no.nav.sosialhjelp.soknad.consumer.arbeidsforhold.ArbeidsforholdConsumerM
 import no.nav.sosialhjelp.soknad.consumer.bostotte.MockBostotteImpl;
 import no.nav.sosialhjelp.soknad.consumer.dkif.DkifConsumerMock;
 import no.nav.sosialhjelp.soknad.consumer.kodeverk.KodeverkConsumerMock;
-import no.nav.sosialhjelp.soknad.consumer.organisasjon.OrganisasjonConsumerMock;
 import no.nav.sosialhjelp.soknad.consumer.pdl.PdlConsumerMock;
 import no.nav.sosialhjelp.soknad.consumer.skatt.SkattbarInntektConsumerMock;
 import no.nav.sosialhjelp.soknad.domain.SendtSoknad;
@@ -239,14 +238,7 @@ public class TjenesteMockRessurs {
         if (!isTillatMockRessurs()) {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
-
-        logger.info("Setter mock organisasjon med data: {}", jsonOrganisasjon);
-        if (jsonOrganisasjon != null && mapper.readTree(jsonOrganisasjon).has("organisasjon")) {
-            String strippedOrganisasjon = mapper.readTree(jsonOrganisasjon).get("organisasjon").toString();
-            OrganisasjonConsumerMock.setOrganisasjon(strippedOrganisasjon);
-        } else {
-            OrganisasjonConsumerMock.resetOrganisasjon();
-        }
+        // do nothing
         clearCache();
     }
 
