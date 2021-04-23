@@ -25,7 +25,6 @@ import org.springframework.context.annotation.Import;
         ApplicationConfig.class,
         BusinessConfig.class,
         CacheConfig.class,
-        GAConfig.class,
         ConsumerConfig.class,
         ContentConfig.class,
         SoknadInnsendingDBConfig.class,
