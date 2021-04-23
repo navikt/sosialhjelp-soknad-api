@@ -18,9 +18,7 @@ import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.SosialhjelpPdfGenerator;
 import no.nav.sosialhjelp.soknad.consumer.arbeidsforhold.ArbeidsforholdConsumerMock;
 import no.nav.sosialhjelp.soknad.consumer.bostotte.MockBostotteImpl;
 import no.nav.sosialhjelp.soknad.consumer.dkif.DkifConsumerMock;
-import no.nav.sosialhjelp.soknad.consumer.kodeverk.KodeverkConsumerMock;
 import no.nav.sosialhjelp.soknad.consumer.organisasjon.OrganisasjonConsumerMock;
-import no.nav.sosialhjelp.soknad.consumer.pdl.PdlConsumerMock;
 import no.nav.sosialhjelp.soknad.consumer.skatt.SkattbarInntektConsumerMock;
 import no.nav.sosialhjelp.soknad.domain.SendtSoknad;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
@@ -257,19 +255,7 @@ public class TjenesteMockRessurs {
         if (!isTillatMockRessurs()) {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
-        logger.info("Setter mock familieforhold med data: {}", jsonPerson);
-
-        var mockFamiliedata = mapper.readValue(jsonPerson, PdlConsumerMock.PdlMockResponse.class);
-        if (mockFamiliedata.getPerson().getStatsborgerskap() != null) {
-            KodeverkConsumerMock.leggTilLandkode(mockFamiliedata.getPerson().getStatsborgerskap());
-        }
-
-        PdlConsumerMock.setPerson(mockFamiliedata);
-        if (mockFamiliedata.getEktefelle().getIdent() != null){
-            PdlConsumerMock.setEktefelle(mockFamiliedata.getEktefelle());
-        }
-        mockFamiliedata.getBarn().forEach(PdlConsumerMock::setBarn);
-
+        // do nothing
         clearCache();
     }
 
