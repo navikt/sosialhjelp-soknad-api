@@ -26,7 +26,6 @@ import no.nav.sosialhjelp.soknad.domain.SendtSoknad;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import no.nav.sosialhjelp.soknad.mock.adresse.AdresseSokConsumerMock;
 import no.nav.sosialhjelp.soknad.mock.norg.NorgConsumerMock;
-import no.nav.sosialhjelp.soknad.oppslag.OppslagConsumerMock;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -215,7 +214,7 @@ public class TjenesteMockRessurs {
         if (!isTillatMockRessurs()) {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
-        OppslagConsumerMock.setKontonummer(jsonBrukerProfil);
+        // do nothing
         clearCache();
     }
 
@@ -280,8 +279,7 @@ public class TjenesteMockRessurs {
         if (!isTillatMockRessurs()) {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
-        // setter kun default-utbetaling her.
-        OppslagConsumerMock.setUtbetalinger();
+        // do nothing
         clearCache();
     }
 
