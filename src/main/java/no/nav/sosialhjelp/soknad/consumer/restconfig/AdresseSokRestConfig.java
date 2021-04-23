@@ -7,7 +7,6 @@ import no.nav.sosialhjelp.soknad.consumer.common.rest.RestUtils.RestConfig;
 import no.nav.sosialhjelp.soknad.consumer.concurrency.RestCallContext;
 import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseSokConsumer;
 import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseSokConsumer.Sokedata;
-import no.nav.sosialhjelp.soknad.mock.adresse.AdresseSokConsumerMock;
 import no.nav.sosialhjelp.soknad.web.types.Pingable;
 import no.nav.sosialhjelp.soknad.web.types.Pingable.Ping.PingMetadata;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,7 +15,6 @@ import org.springframework.context.annotation.Configuration;
 
 import java.util.function.Function;
 
-import static no.nav.sosialhjelp.soknad.consumer.common.cxf.InstanceSwitcher.createSwitcher;
 import static no.nav.sosialhjelp.soknad.web.types.Pingable.Ping.feilet;
 import static no.nav.sosialhjelp.soknad.web.types.Pingable.Ping.lyktes;
 
@@ -24,11 +22,8 @@ import static no.nav.sosialhjelp.soknad.web.types.Pingable.Ping.lyktes;
 @Configuration
 public class AdresseSokRestConfig {
 
-    public static final String ADRESSE_KEY = "start.adressesok.withmock";
-
     @Value("${tps.adresse.url}")
     private String endpoint;
-
 
     private final RestCallContext medPostnummerExecutionContext = new RestCallContext.Builder()
             .withClient(RestUtils.createClient(RestConfig.builder().readTimeout(30000).build()))
@@ -48,9 +43,7 @@ public class AdresseSokRestConfig {
 
     @Bean
     public AdresseSokConsumer adresseSokConsumer() {
-        AdresseSokConsumerImpl prod = new AdresseSokConsumerImpl(restCallContextSelector, endpoint);
-        AdresseSokConsumer mock = new AdresseSokConsumerMock().adresseRestService();
-        return createSwitcher(prod, mock, ADRESSE_KEY, AdresseSokConsumer.class);
+        return new AdresseSokConsumerImpl(restCallContextSelector, endpoint);
     }
 
     @Bean
