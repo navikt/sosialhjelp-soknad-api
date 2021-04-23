@@ -17,7 +17,6 @@ import no.nav.sosialhjelp.soknad.business.batch.oppgave.fiks.FiksSender;
 import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.SosialhjelpPdfGenerator;
 import no.nav.sosialhjelp.soknad.consumer.arbeidsforhold.ArbeidsforholdConsumerMock;
 import no.nav.sosialhjelp.soknad.consumer.bostotte.MockBostotteImpl;
-import no.nav.sosialhjelp.soknad.consumer.dkif.DkifConsumerMock;
 import no.nav.sosialhjelp.soknad.consumer.kodeverk.KodeverkConsumerMock;
 import no.nav.sosialhjelp.soknad.consumer.organisasjon.OrganisasjonConsumerMock;
 import no.nav.sosialhjelp.soknad.consumer.pdl.PdlConsumerMock;
@@ -197,14 +196,7 @@ public class TjenesteMockRessurs {
         if (!isTillatMockRessurs()) {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
-
-        fnr = SubjectHandler.getUserId() != null ? SubjectHandler.getUserId() : fnr;
-        logger.warn("Setter telefonnummer for bruker. Dette skal aldri skje i PROD.");
-        if (jsonTelefonnummer != null) {
-            DkifConsumerMock.setTelefonnummer(jsonTelefonnummer.getVerdi(), fnr);
-        } else {
-            DkifConsumerMock.resetTelefonnummer(fnr);
-        }
+        // do nothing
         clearCache();
     }
 
