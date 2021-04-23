@@ -6,15 +6,21 @@ import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonTelefonnummer;
 import no.nav.sosialhjelp.soknad.business.service.soknadservice.Systemdata;
 import no.nav.sosialhjelp.soknad.consumer.dkif.DkifService;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
-import javax.inject.Inject;
+import static org.slf4j.LoggerFactory.getLogger;
 
 @Component
 public class TelefonnummerSystemdata implements Systemdata {
 
-    @Inject
-    private DkifService dkifService;
+    private static final Logger log = getLogger(TelefonnummerSystemdata.class);
+
+    private final DkifService dkifService;
+
+    public TelefonnummerSystemdata(DkifService dkifService) {
+        this.dkifService = dkifService;
+    }
 
     @Override
     public void updateSystemdataIn(SoknadUnderArbeid soknadUnderArbeid, String token) {
@@ -34,11 +40,17 @@ public class TelefonnummerSystemdata implements Systemdata {
     }
 
     public String innhentSystemverdiTelefonnummer(final String personIdentifikator) {
-        String mobiltelefonnummer = dkifService.hentMobiltelefonnummer(personIdentifikator);
+        String mobiltelefonnummer;
+        try {
+            mobiltelefonnummer = dkifService.hentMobiltelefonnummer(personIdentifikator);
+        } catch (Exception e) {
+            log.warn("Kunne ikke hente telefonnummer fra Dkif", e);
+            mobiltelefonnummer = null;
+        }
         return norskTelefonnummer(mobiltelefonnummer);
     }
 
-    private static String norskTelefonnummer(String mobiltelefonnummer) {
+    private String norskTelefonnummer(String mobiltelefonnummer) {
         if (mobiltelefonnummer == null) {
             return null;
         }
