@@ -1,6 +1,7 @@
 package no.nav.sosialhjelp.soknad.oppslag;
 
-import no.nav.sosialhjelp.soknad.oppslag.dto.KontonummerDto;
+import no.nav.sosialhjelp.soknad.oppslag.kontonummer.KontonummerDto;
+import no.nav.sosialhjelp.soknad.oppslag.kontonummer.KontonummerService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;

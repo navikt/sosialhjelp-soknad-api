@@ -20,12 +20,12 @@ public class OppslagRestConfig {
     private String endpoint;
 
     @Bean
-    public OppslagConsumer kontonummerConsumer() {
+    public OppslagConsumer oppslagConsumer() {
         return new OppslagConsumerImpl(oppslagClient(), endpoint);
     }
 
     @Bean
-    public Pingable kontonummerPing(OppslagConsumer oppslagConsumer) {
+    public Pingable oppslagPing(OppslagConsumer oppslagConsumer) {
         return () -> {
             Pingable.Ping.PingMetadata metadata = new Pingable.Ping.PingMetadata(endpoint, "Oppslag", false);
             try {
