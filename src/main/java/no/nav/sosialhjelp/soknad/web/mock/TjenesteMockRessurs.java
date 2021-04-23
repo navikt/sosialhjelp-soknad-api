@@ -15,7 +15,6 @@ import no.nav.security.token.support.core.api.Unprotected;
 import no.nav.sosialhjelp.soknad.business.InnsendingService;
 import no.nav.sosialhjelp.soknad.business.batch.oppgave.fiks.FiksSender;
 import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.SosialhjelpPdfGenerator;
-import no.nav.sosialhjelp.soknad.consumer.arbeidsforhold.ArbeidsforholdConsumerMock;
 import no.nav.sosialhjelp.soknad.consumer.bostotte.MockBostotteImpl;
 import no.nav.sosialhjelp.soknad.consumer.dkif.DkifConsumerMock;
 import no.nav.sosialhjelp.soknad.consumer.kodeverk.KodeverkConsumerMock;
@@ -226,9 +225,7 @@ public class TjenesteMockRessurs {
         if (!isTillatMockRessurs()) {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
-        logger.info("Setter arbeidsforhold med data: {}", arbeidsforholdData);
-        String strippedArbeidsforhold = mapper.readTree(arbeidsforholdData).get("arbeidsforhold").toString();
-        ArbeidsforholdConsumerMock.setArbeidsforhold(strippedArbeidsforhold);
+        // do nothing
         clearCache();
     }
 
