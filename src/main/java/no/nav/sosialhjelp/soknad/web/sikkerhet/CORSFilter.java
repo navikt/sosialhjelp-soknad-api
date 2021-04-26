@@ -2,53 +2,33 @@ package no.nav.sosialhjelp.soknad.web.sikkerhet;
 
 import no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils;
 
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.annotation.WebFilter;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import javax.ws.rs.container.ContainerRequestContext;
+import javax.ws.rs.container.ContainerResponseContext;
+import javax.ws.rs.container.ContainerResponseFilter;
+import javax.ws.rs.ext.Provider;
 import java.util.List;
 
 import static java.util.Arrays.asList;
 
-@WebFilter(urlPatterns = "/*")
-public class CORSFilter implements Filter {
+@Provider
+public class CORSFilter implements ContainerResponseFilter {
     private static final List<String> ALLOWED_ORIGINS = asList(
             "https://tjenester.nav.no",
             "https://www.nav.no");
 
     @Override
-    public void init(FilterConfig filterConfig) {}
-
-    @Override
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-
-        String origin = "*";
-        if (servletRequest instanceof  HttpServletRequest) {
-            HttpServletRequest httpRequest = (HttpServletRequest) servletRequest;
-            origin = httpRequest.getHeader("Origin");
-        }
-
-        HttpServletResponse httpResponse = (HttpServletResponse) servletResponse;
-        setCorsHeaders(httpResponse, origin);
-
-        filterChain.doFilter(servletRequest, httpResponse);
+    public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext) {
+        var origin = requestContext.getHeaderString("Origin") == null ? "*" : requestContext.getHeaderString("Origin");
+        setCorsHeaders(responseContext, origin);
     }
 
-    public void setCorsHeaders(HttpServletResponse httpResponse, String origin) {
+    private void setCorsHeaders(ContainerResponseContext responseContext, String origin) {
         if (ServiceUtils.isNonProduction() || ALLOWED_ORIGINS.contains(origin)) {
-            httpResponse.setHeader("Access-Control-Allow-Origin", origin);
-            httpResponse.setHeader("Access-Control-Allow-Headers", "Origin, Content-Type, Accept, X-XSRF-TOKEN, Nav-Call-Id, Authorization");
-            httpResponse.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-            httpResponse.setHeader("Access-Control-Allow-Credentials", "true");
+            var headers = responseContext.getHeaders();
+            headers.add("Access-Control-Allow-Origin", origin);
+            headers.add("Access-Control-Allow-Headers", "Origin, Content-Type, Accept, X-XSRF-TOKEN, Nav-Call-Id, Authorization");
+            headers.add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+            headers.add("Access-Control-Allow-Credentials", "true");
         }
     }
-
-    @Override
-    public void destroy() {}
 }

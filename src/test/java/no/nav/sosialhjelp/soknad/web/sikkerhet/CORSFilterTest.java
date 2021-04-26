@@ -1,15 +1,23 @@
 package no.nav.sosialhjelp.soknad.web.sikkerhet;
 
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Test;
-import org.springframework.mock.web.MockHttpServletResponse;
 
+import javax.ws.rs.container.ContainerRequestContext;
+import javax.ws.rs.container.ContainerResponseContext;
+import javax.ws.rs.core.MultivaluedHashMap;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class CORSFilterTest {
 
     private final CORSFilter corsFilter = new CORSFilter();
     private final String unknownOrigin = "https://www.unknown.no";
+
+    private ContainerRequestContext requestContext = mock(ContainerRequestContext.class);
+    private ContainerResponseContext responseContext = mock(ContainerResponseContext.class);
 
     @After
     public void tearDown() {
@@ -18,34 +26,42 @@ public class CORSFilterTest {
 
     @Test
     public void setCorsHeaders_inProdWithUnknownOrigin_shouldNotSetCorsHeaders() {
-        MockHttpServletResponse httpResponse = new MockHttpServletResponse();
-        corsFilter.setCorsHeaders(httpResponse, unknownOrigin);
-        Assert.assertEquals(0, httpResponse.getHeaderNames().size());
+        when(requestContext.getHeaderString("Origin")).thenReturn(unknownOrigin);
+        when(responseContext.getHeaders()).thenReturn(new MultivaluedHashMap<>());
+        corsFilter.filter(requestContext, responseContext);
+
+        assertThat(responseContext.getHeaders()).isEmpty();
     }
 
     @Test
     public void setCorsHeaders_inProdWithTrustedOrigin_shouldSetCorsHeaders() {
-        MockHttpServletResponse httpResponse = new MockHttpServletResponse();
-
         String trustedOrigin = "https://www.nav.no";
-        corsFilter.setCorsHeaders(httpResponse, trustedOrigin);
 
-        Assert.assertTrue(httpResponse.containsHeader("Access-Control-Allow-Headers"));
-        Assert.assertTrue(httpResponse.containsHeader("Access-Control-Allow-Methods"));
-        Assert.assertTrue(httpResponse.containsHeader("Access-Control-Allow-Credentials"));
-        Assert.assertEquals(trustedOrigin, httpResponse.getHeader("Access-Control-Allow-Origin"));
+        when(requestContext.getHeaderString("Origin")).thenReturn(trustedOrigin);
+        when(responseContext.getHeaders()).thenReturn(new MultivaluedHashMap<>());
+        corsFilter.filter(requestContext, responseContext);
+
+        var headers = responseContext.getHeaders();
+        assertThat(headers).hasSize(4);
+        assertThat(headers.getFirst("Access-Control-Allow-Origin")).isEqualTo(trustedOrigin);
+        assertThat(headers.containsKey("Access-Control-Allow-Headers")).isTrue();
+        assertThat(headers.containsKey("Access-Control-Allow-Methods")).isTrue();
+        assertThat(headers.containsKey("Access-Control-Allow-Credentials")).isTrue();
     }
 
     @Test
     public void setCorsHeaders_inTestWithUnknownOrigin_shouldSetCorsHeaders() {
         System.setProperty("environment.name", "q0");
-        MockHttpServletResponse httpResponse = new MockHttpServletResponse();
 
-        corsFilter.setCorsHeaders(httpResponse, unknownOrigin);
+        when(requestContext.getHeaderString("Origin")).thenReturn(unknownOrigin);
+        when(responseContext.getHeaders()).thenReturn(new MultivaluedHashMap<>());
+        corsFilter.filter(requestContext, responseContext);
 
-        Assert.assertTrue(httpResponse.containsHeader("Access-Control-Allow-Headers"));
-        Assert.assertTrue(httpResponse.containsHeader("Access-Control-Allow-Methods"));
-        Assert.assertTrue(httpResponse.containsHeader("Access-Control-Allow-Credentials"));
-        Assert.assertEquals(unknownOrigin, httpResponse.getHeader("Access-Control-Allow-Origin"));
+        var headers = responseContext.getHeaders();
+        assertThat(headers).hasSize(4);
+        assertThat(headers.getFirst("Access-Control-Allow-Origin")).isEqualTo(unknownOrigin);
+        assertThat(headers.containsKey("Access-Control-Allow-Headers")).isTrue();
+        assertThat(headers.containsKey("Access-Control-Allow-Methods")).isTrue();
+        assertThat(headers.containsKey("Access-Control-Allow-Credentials")).isTrue();
     }
 }
