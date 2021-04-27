@@ -7,6 +7,8 @@ import no.nav.sosialhjelp.soknad.consumer.kodeverk.KodeverkService;
 import no.nav.sosialhjelp.soknad.consumer.norg.NorgService;
 import no.nav.sosialhjelp.soknad.consumer.organisasjon.OrganisasjonService;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.PdlAdresseSokService;
+import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.bydel.BydelConfig;
+import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.bydel.BydelService;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.PdlPersonMapper;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.PersonService;
 import no.nav.sosialhjelp.soknad.consumer.redis.NoRedisConfig;
@@ -49,7 +51,9 @@ import org.springframework.context.annotation.Profile;
         DkifService.class,
         KodeverkService.class,
         KontonummerService.class,
-        UtbetalingService.class
+        UtbetalingService.class,
+        BydelConfig.class,
+        BydelService.class
 })
 
 public class ConsumerConfig {
