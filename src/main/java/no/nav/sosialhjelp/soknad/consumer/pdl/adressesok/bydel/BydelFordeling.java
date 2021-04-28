@@ -1,5 +1,8 @@
 package no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.bydel;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.List;
 
 public class BydelFordeling {
@@ -11,13 +14,14 @@ public class BydelFordeling {
     private final String bydelTil;
     private final String bydelsnavnTil;
 
+    @JsonCreator
     public BydelFordeling(
-            String veiadresse,
-            String gatekode,
-            List<Husnummerfordeling> husnummerfordeling,
-            String bydelFra,
-            String bydelTil,
-            String bydelsnavnTil
+            @JsonProperty("veiadresse") String veiadresse,
+            @JsonProperty("gatekode") String gatekode,
+            @JsonProperty("husnummerfordeling") List<Husnummerfordeling> husnummerfordeling,
+            @JsonProperty("bydelFra") String bydelFra,
+            @JsonProperty("bydelTil") String bydelTil,
+            @JsonProperty("bydelsnavnTil") String bydelsnavnTil
     ) {
         this.veiadresse = veiadresse;
         this.gatekode = gatekode;
@@ -56,7 +60,12 @@ public class BydelFordeling {
         private final int til;
         private final HusnummerfordelingType type;
 
-        public Husnummerfordeling(int fra, int til, HusnummerfordelingType type) {
+        @JsonCreator
+        public Husnummerfordeling(
+                @JsonProperty("fra") int fra,
+                @JsonProperty("til") int til,
+                @JsonProperty("type") HusnummerfordelingType type
+        ) {
             this.fra = fra;
             this.til = til;
             this.type = type;

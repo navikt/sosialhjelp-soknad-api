@@ -30,16 +30,16 @@ public class BydelConfig {
         try {
             return objectMapper.readValue(json, new TypeReference<List<BydelFordeling>>() {});
         } catch (JsonProcessingException e) {
-            throw new SosialhjelpSoknadApiException("marka: Failed to parse json", e);
+            throw new SosialhjelpSoknadApiException("BydelFordeling marka: Failed to parse json", e);
         }
     }
 
     private static String readBydelsfordelingFromFile() {
-        final var resource = new ClassPathResource("gt/marka-bydelsfordeling.json");
+        final var resource = new ClassPathResource("pdl/marka-bydelsfordeling.json");
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource.getInputStream(), StandardCharsets.UTF_8))) {
             return reader.lines().collect(Collectors.joining("\n"));
         } catch (IOException e) {
-            throw new SosialhjelpSoknadApiException("GT: Failed to read file", e);
+            throw new SosialhjelpSoknadApiException("BydelFordeling marka: Failed to read file", e);
         }
     }
 }
