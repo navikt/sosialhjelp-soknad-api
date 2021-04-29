@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.consumer.bostotte;
 
-import no.nav.sosialhjelp.soknad.domain.model.mock.MockUtils;
 import no.nav.sosialhjelp.soknad.web.types.Pingable;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -21,18 +20,12 @@ public class BostotteConfig {
 
     @Bean
     Bostotte getBostotteImpl() {
-        if (MockUtils.isTillatMockRessurs()) {
-            return new MockBostotteImpl();
-        }
         RestTemplate restTemplate = new RestTemplate(getClientHttpRequestFactory());
         return new BostotteImpl(this, restTemplate);
     }
 
     @Bean
     public Pingable opprettHusbankenPing() {
-        if (MockUtils.isTillatMockRessurs()) {
-            return null;
-        }
         return BostotteImpl.opprettHusbankenPing(this, new RestTemplate(getClientHttpRequestFactory()));
     }
 
