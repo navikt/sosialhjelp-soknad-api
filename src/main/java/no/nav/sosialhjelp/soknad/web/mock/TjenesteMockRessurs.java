@@ -17,7 +17,6 @@ import no.nav.sosialhjelp.soknad.business.batch.oppgave.fiks.FiksSender;
 import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.SosialhjelpPdfGenerator;
 import no.nav.sosialhjelp.soknad.consumer.kodeverk.KodeverkConsumerMock;
 import no.nav.sosialhjelp.soknad.consumer.pdl.PdlConsumerMock;
-import no.nav.sosialhjelp.soknad.consumer.skatt.SkattbarInntektConsumerMock;
 import no.nav.sosialhjelp.soknad.domain.SendtSoknad;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import no.nav.sosialhjelp.soknad.mock.adresse.AdresseSokConsumerMock;
@@ -280,8 +279,7 @@ public class TjenesteMockRessurs {
         if (!isTillatMockRessurs()) {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
-        fnr = SubjectHandler.getUserId() != null ? SubjectHandler.getUserId() : fnr;
-        SkattbarInntektConsumerMock.setMockData(fnr, jsonWSSkattUtbetaling);
+        // do nothing
         clearCache();
     }
 
@@ -292,8 +290,7 @@ public class TjenesteMockRessurs {
         if (!isTillatMockRessurs()) {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
-        fnr = SubjectHandler.getUserId() != null ? SubjectHandler.getUserId() : fnr;
-        SkattbarInntektConsumerMock.setMockSkalFeile(fnr, skalFeile);
+        // do nothing
         clearCache();
     }
 
