@@ -24,12 +24,12 @@ public class UtbetalingService {
     }
 
     public List<Utbetaling> getUtbetalingerSiste40Dager(String ident) {
-        var utbetalingDtoList = oppslagConsumer.getUtbetalingerSiste40Dager(ident);
-        if (utbetalingDtoList == null) {
+        var responseDto = oppslagConsumer.getUtbetalingerSiste40Dager(ident);
+        if (responseDto == null || responseDto.getFeilet() || responseDto.getUtbetalinger() == null) {
             return null;
         }
 
-        var utbetalinger = utbetalingDtoList.stream()
+        var utbetalinger = responseDto.getUtbetalinger().stream()
                 .map(dto -> {
                     var utbetaling = new Utbetaling();
                     utbetaling.type = dto.getType();
