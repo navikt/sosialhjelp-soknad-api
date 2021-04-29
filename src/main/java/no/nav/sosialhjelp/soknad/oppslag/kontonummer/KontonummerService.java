@@ -1,5 +1,6 @@
-package no.nav.sosialhjelp.soknad.oppslag;
+package no.nav.sosialhjelp.soknad.oppslag.kontonummer;
 
+import no.nav.sosialhjelp.soknad.oppslag.OppslagConsumer;
 import org.springframework.stereotype.Component;
 
 @Component
