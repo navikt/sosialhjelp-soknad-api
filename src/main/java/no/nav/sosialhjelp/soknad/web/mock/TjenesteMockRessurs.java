@@ -15,8 +15,6 @@ import no.nav.security.token.support.core.api.Unprotected;
 import no.nav.sosialhjelp.soknad.business.InnsendingService;
 import no.nav.sosialhjelp.soknad.business.batch.oppgave.fiks.FiksSender;
 import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.SosialhjelpPdfGenerator;
-import no.nav.sosialhjelp.soknad.consumer.bostotte.MockBostotteImpl;
-import no.nav.sosialhjelp.soknad.consumer.dkif.DkifConsumerMock;
 import no.nav.sosialhjelp.soknad.consumer.kodeverk.KodeverkConsumerMock;
 import no.nav.sosialhjelp.soknad.consumer.pdl.PdlConsumerMock;
 import no.nav.sosialhjelp.soknad.consumer.skatt.SkattbarInntektConsumerMock;
@@ -193,14 +191,7 @@ public class TjenesteMockRessurs {
         if (!isTillatMockRessurs()) {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
-
-        fnr = SubjectHandler.getUserId() != null ? SubjectHandler.getUserId() : fnr;
-        logger.warn("Setter telefonnummer for bruker. Dette skal aldri skje i PROD.");
-        if (jsonTelefonnummer != null) {
-            DkifConsumerMock.setTelefonnummer(jsonTelefonnummer.getVerdi(), fnr);
-        } else {
-            DkifConsumerMock.resetTelefonnummer(fnr);
-        }
+        // do nothing
         clearCache();
     }
 
@@ -324,8 +315,7 @@ public class TjenesteMockRessurs {
         if (!isTillatMockRessurs()) {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
-        fnr = SubjectHandler.getUserId() != null ? SubjectHandler.getUserId() : fnr;
-        MockBostotteImpl.setBostotteData(fnr, bostotteJson);
+        // do nothing
     }
 
     @POST
@@ -335,9 +325,6 @@ public class TjenesteMockRessurs {
         if (!isTillatMockRessurs()) {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
-        if(skalFeile != null) {
-            fnr = SubjectHandler.getUserId() != null ? SubjectHandler.getUserId() : fnr;
-            MockBostotteImpl.settPersonnummerSomSkalFeile(fnr, skalFeile);
-        }
+        // do nothing
     }
 }

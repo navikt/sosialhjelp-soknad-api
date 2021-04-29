@@ -3,7 +3,6 @@ package no.nav.sosialhjelp.soknad.consumer.restconfig;
 import no.nav.sosialhjelp.soknad.consumer.common.rest.RestUtils;
 import no.nav.sosialhjelp.soknad.consumer.dkif.DkifConsumer;
 import no.nav.sosialhjelp.soknad.consumer.dkif.DkifConsumerImpl;
-import no.nav.sosialhjelp.soknad.consumer.dkif.DkifConsumerMock;
 import no.nav.sosialhjelp.soknad.web.types.Pingable;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -13,7 +12,6 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientRequestFilter;
 
 import static java.lang.System.getenv;
-import static no.nav.sosialhjelp.soknad.consumer.common.cxf.InstanceSwitcher.createSwitcher;
 import static no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.HEADER_NAV_APIKEY;
 import static no.nav.sosialhjelp.soknad.web.types.Pingable.Ping.feilet;
 import static no.nav.sosialhjelp.soknad.web.types.Pingable.Ping.lyktes;
@@ -22,16 +20,13 @@ import static no.nav.sosialhjelp.soknad.web.types.Pingable.Ping.lyktes;
 public class DkifRestConfig {
 
     private static final String DKIFAPI_APIKEY = "DKIFAPI_APIKEY";
-    public static final String DKIF_KEY = "start.dkif.withmock";
 
     @Value("${dkif_api_baseurl}")
     private String endpoint;
 
     @Bean
     public DkifConsumer dkifConsumer() {
-        DkifConsumer prod = new DkifConsumerImpl(dkifClient(), endpoint);
-        DkifConsumer mock = new DkifConsumerMock().dkifConsumerMock();
-        return createSwitcher(prod, mock, DKIF_KEY, DkifConsumer.class);
+        return new DkifConsumerImpl(dkifClient(), endpoint);
     }
 
     @Bean
