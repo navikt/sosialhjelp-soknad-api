@@ -4,9 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
-import no.nav.sosialhjelp.soknad.oppslag.dto.KontonummerDto;
-import no.nav.sosialhjelp.soknad.oppslag.dto.UtbetalingDto;
-import no.nav.sosialhjelp.soknad.oppslag.dto.UtbetalingDto.KomponentDto;
+import no.nav.sosialhjelp.soknad.oppslag.kontonummer.KontonummerDto;
+import no.nav.sosialhjelp.soknad.oppslag.utbetaling.UtbetalingDto;
+import no.nav.sosialhjelp.soknad.oppslag.utbetaling.UtbetalingDto.KomponentDto;
 
 import java.time.LocalDate;
 import java.util.HashMap;

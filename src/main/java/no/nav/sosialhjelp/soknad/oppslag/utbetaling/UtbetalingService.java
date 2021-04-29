@@ -1,8 +1,9 @@
-package no.nav.sosialhjelp.soknad.oppslag;
+package no.nav.sosialhjelp.soknad.oppslag.utbetaling;
 
 import no.nav.sosialhjelp.soknad.domain.model.utbetaling.Utbetaling;
 import no.nav.sosialhjelp.soknad.domain.model.utbetaling.Utbetaling.Komponent;
-import no.nav.sosialhjelp.soknad.oppslag.dto.UtbetalingDto.KomponentDto;
+import no.nav.sosialhjelp.soknad.oppslag.OppslagConsumer;
+import no.nav.sosialhjelp.soknad.oppslag.utbetaling.UtbetalingDto.KomponentDto;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
