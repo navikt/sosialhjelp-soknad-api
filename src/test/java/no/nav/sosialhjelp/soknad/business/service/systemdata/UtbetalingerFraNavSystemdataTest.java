@@ -7,7 +7,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysn
 import no.nav.sosialhjelp.soknad.consumer.organisasjon.OrganisasjonService;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.domain.model.utbetaling.Utbetaling;
-import no.nav.sosialhjelp.soknad.oppslag.UtbetalingService;
+import no.nav.sosialhjelp.soknad.oppslag.utbetaling.UtbetalingService;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
