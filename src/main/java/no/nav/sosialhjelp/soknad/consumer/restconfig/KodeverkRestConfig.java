@@ -6,7 +6,6 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import no.nav.sosialhjelp.soknad.consumer.common.rest.RestUtils;
 import no.nav.sosialhjelp.soknad.consumer.kodeverk.KodeverkConsumer;
 import no.nav.sosialhjelp.soknad.consumer.kodeverk.KodeverkConsumerImpl;
-import no.nav.sosialhjelp.soknad.consumer.kodeverk.KodeverkConsumerMock;
 import no.nav.sosialhjelp.soknad.consumer.redis.RedisService;
 import no.nav.sosialhjelp.soknad.web.types.Pingable;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,7 +16,6 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientRequestFilter;
 
 import static java.lang.System.getenv;
-import static no.nav.sosialhjelp.soknad.consumer.common.cxf.InstanceSwitcher.createSwitcher;
 import static no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.HEADER_NAV_APIKEY;
 import static no.nav.sosialhjelp.soknad.web.types.Pingable.Ping.feilet;
 import static no.nav.sosialhjelp.soknad.web.types.Pingable.Ping.lyktes;
@@ -25,7 +23,6 @@ import static no.nav.sosialhjelp.soknad.web.types.Pingable.Ping.lyktes;
 @Configuration
 public class KodeverkRestConfig {
 
-    public static final String KODEVERK_KEY = "start.kodeverk.withmock";
     private static final String KODEVERKAPI_APIKEY = "KODEVERKAPI_APIKEY";
 
     @Value("${kodeverk_api_url}")
@@ -33,9 +30,7 @@ public class KodeverkRestConfig {
 
     @Bean
     public KodeverkConsumer kodeverkConsumer(RedisService redisService) {
-        KodeverkConsumer prod = new KodeverkConsumerImpl(kodeverkClient(), endpoint, redisService);
-        KodeverkConsumer mock = new KodeverkConsumerMock().kodeverkConsumerMock();
-        return createSwitcher(prod, mock, KODEVERK_KEY, KodeverkConsumer.class);
+        return new KodeverkConsumerImpl(kodeverkClient(), endpoint, redisService);
     }
 
     @Bean

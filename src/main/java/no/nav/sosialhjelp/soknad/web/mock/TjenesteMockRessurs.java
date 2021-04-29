@@ -15,7 +15,6 @@ import no.nav.security.token.support.core.api.Unprotected;
 import no.nav.sosialhjelp.soknad.business.InnsendingService;
 import no.nav.sosialhjelp.soknad.business.batch.oppgave.fiks.FiksSender;
 import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.SosialhjelpPdfGenerator;
-import no.nav.sosialhjelp.soknad.consumer.kodeverk.KodeverkConsumerMock;
 import no.nav.sosialhjelp.soknad.consumer.pdl.PdlConsumerMock;
 import no.nav.sosialhjelp.soknad.domain.SendtSoknad;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
@@ -237,7 +236,7 @@ public class TjenesteMockRessurs {
 
         var mockFamiliedata = mapper.readValue(jsonPerson, PdlConsumerMock.PdlMockResponse.class);
         if (mockFamiliedata.getPerson().getStatsborgerskap() != null) {
-            KodeverkConsumerMock.leggTilLandkode(mockFamiliedata.getPerson().getStatsborgerskap());
+            // do nothing
         }
 
         PdlConsumerMock.setPerson(mockFamiliedata);
