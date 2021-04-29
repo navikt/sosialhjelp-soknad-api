@@ -1,7 +1,6 @@
 package no.nav.sosialhjelp.soknad.consumer.adresse;
 
 import no.nav.sosialhjelp.soknad.consumer.kodeverk.KodeverkService;
-import no.nav.sosialhjelp.soknad.consumer.norg.NorgService;
 import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseForslag;
 import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseSokConsumer;
 import org.junit.Test;
@@ -24,9 +23,6 @@ public class AdresseSokServiceTest {
 
     @Mock
     private KodeverkService kodeverkService;
-
-    @Mock
-    private NorgService norgService;
 
     @InjectMocks
     private AdresseSokService adresseSokService;
