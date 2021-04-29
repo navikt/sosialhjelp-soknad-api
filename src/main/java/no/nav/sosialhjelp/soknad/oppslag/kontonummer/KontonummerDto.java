@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.oppslag.dto;
+package no.nav.sosialhjelp.soknad.oppslag.kontonummer;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
