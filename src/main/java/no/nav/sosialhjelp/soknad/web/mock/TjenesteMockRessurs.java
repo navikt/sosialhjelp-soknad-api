@@ -24,7 +24,6 @@ import no.nav.sosialhjelp.soknad.consumer.pdl.PdlConsumerMock;
 import no.nav.sosialhjelp.soknad.consumer.skatt.SkattbarInntektConsumerMock;
 import no.nav.sosialhjelp.soknad.domain.SendtSoknad;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
-import no.nav.sosialhjelp.soknad.mock.norg.NorgConsumerMock;
 import no.nav.sosialhjelp.soknad.oppslag.OppslagConsumerMock;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
@@ -326,7 +325,7 @@ public class TjenesteMockRessurs {
         if (!isTillatMockRessurs()) {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
-        NorgConsumerMock.setNorgMap(rsNorgEnhetMap);
+        // do nothing
         clearCache();
     }
 

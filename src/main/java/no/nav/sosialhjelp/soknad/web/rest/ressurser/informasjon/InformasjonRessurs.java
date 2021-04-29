@@ -13,7 +13,6 @@ import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import no.nav.sosialhjelp.soknad.domain.model.util.KommuneTilNavEnhetMapper;
 import no.nav.sosialhjelp.soknad.tekster.NavMessageSource;
 import no.nav.sosialhjelp.soknad.web.rest.Logg;
-import no.nav.sosialhjelp.soknad.web.rest.ressurser.personalia.NavEnhetRessurs;
 import no.nav.sosialhjelp.soknad.web.utils.NedetidUtils;
 import org.apache.commons.lang3.LocaleUtils;
 import org.slf4j.Logger;
@@ -204,28 +203,6 @@ public class InformasjonRessurs {
         Map<String, KommuneInfoFrontend> digisosKommuner = mapDigisosKommuner(kommuneInfoService.hentAlleKommuneInfo());
 
         return mergeManuelleKommunerMedDigisosKommuner(manueltPakobledeKommuner, digisosKommuner);
-    }
-
-    @Unprotected
-    @GET
-    @Path("/kommunesok")
-    public List<NavEnhetRessurs.NavEnhetFrontend> sokEtterNavEnheter(@QueryParam("kommunenr") String kommunenr) {
-        return adresseSokService.sokEtterNavEnheter(kommunenr).stream()
-                .map(this::mapFraAdresseForslagOgNavEnhetTilNavEnhetFrontend)
-                .collect(Collectors.toList());
-    }
-
-    private NavEnhetRessurs.NavEnhetFrontend mapFraAdresseForslagOgNavEnhetTilNavEnhetFrontend(AdresseSokService.Kommunesok kommunesok) {
-        if (kommunesok.navEnhet == null) {
-            logger.warn("Kunne ikke hente NAV-enhet: {}", kommunesok.adresseForslag.geografiskTilknytning);
-            return null;
-        }
-        boolean digisosKommune = KommuneTilNavEnhetMapper.getDigisoskommuner().contains(kommunesok.kommunenr);
-
-        return new NavEnhetRessurs.NavEnhetFrontend()
-                .withEnhetsnavn(kommunesok.navEnhet.navn)
-                .withKommunenavn(kommuneInfoService.getBehandlingskommune(kommunesok.kommunenr, kommunesok.adresseForslag.kommunenavn))
-                .withOrgnr((digisosKommune) ? kommunesok.navEnhet.sosialOrgnr : null);
     }
 
     public Map<String, KommuneInfoFrontend> mapManueltPakobledeKommuner(List<String> manuelleKommuner) {
