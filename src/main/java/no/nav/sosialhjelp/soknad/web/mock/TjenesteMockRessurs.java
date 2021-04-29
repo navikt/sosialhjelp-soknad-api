@@ -15,17 +15,14 @@ import no.nav.security.token.support.core.api.Unprotected;
 import no.nav.sosialhjelp.soknad.business.InnsendingService;
 import no.nav.sosialhjelp.soknad.business.batch.oppgave.fiks.FiksSender;
 import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.SosialhjelpPdfGenerator;
-import no.nav.sosialhjelp.soknad.consumer.arbeidsforhold.ArbeidsforholdConsumerMock;
 import no.nav.sosialhjelp.soknad.consumer.bostotte.MockBostotteImpl;
 import no.nav.sosialhjelp.soknad.consumer.dkif.DkifConsumerMock;
 import no.nav.sosialhjelp.soknad.consumer.kodeverk.KodeverkConsumerMock;
-import no.nav.sosialhjelp.soknad.consumer.organisasjon.OrganisasjonConsumerMock;
 import no.nav.sosialhjelp.soknad.consumer.pdl.PdlConsumerMock;
 import no.nav.sosialhjelp.soknad.consumer.skatt.SkattbarInntektConsumerMock;
 import no.nav.sosialhjelp.soknad.domain.SendtSoknad;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import no.nav.sosialhjelp.soknad.mock.adresse.AdresseSokConsumerMock;
-import no.nav.sosialhjelp.soknad.mock.norg.NorgConsumerMock;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -225,9 +222,7 @@ public class TjenesteMockRessurs {
         if (!isTillatMockRessurs()) {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
-        logger.info("Setter arbeidsforhold med data: {}", arbeidsforholdData);
-        String strippedArbeidsforhold = mapper.readTree(arbeidsforholdData).get("arbeidsforhold").toString();
-        ArbeidsforholdConsumerMock.setArbeidsforhold(strippedArbeidsforhold);
+        // do nothing
         clearCache();
     }
 
@@ -238,14 +233,7 @@ public class TjenesteMockRessurs {
         if (!isTillatMockRessurs()) {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
-
-        logger.info("Setter mock organisasjon med data: {}", jsonOrganisasjon);
-        if (jsonOrganisasjon != null && mapper.readTree(jsonOrganisasjon).has("organisasjon")) {
-            String strippedOrganisasjon = mapper.readTree(jsonOrganisasjon).get("organisasjon").toString();
-            OrganisasjonConsumerMock.setOrganisasjon(strippedOrganisasjon);
-        } else {
-            OrganisasjonConsumerMock.resetOrganisasjon();
-        }
+        // do nothing
         clearCache();
     }
 
@@ -325,7 +313,7 @@ public class TjenesteMockRessurs {
         if (!isTillatMockRessurs()) {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
-        NorgConsumerMock.setNorgMap(rsNorgEnhetMap);
+        // do nothing
         clearCache();
     }
 

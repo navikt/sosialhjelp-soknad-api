@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import no.nav.sosialhjelp.soknad.consumer.arbeidsforhold.ArbeidsforholdConsumer;
 import no.nav.sosialhjelp.soknad.consumer.arbeidsforhold.ArbeidsforholdConsumerImpl;
-import no.nav.sosialhjelp.soknad.consumer.arbeidsforhold.ArbeidsforholdConsumerMock;
 import no.nav.sosialhjelp.soknad.consumer.common.rest.RestUtils;
 import no.nav.sosialhjelp.soknad.consumer.sts.apigw.STSConsumer;
 import no.nav.sosialhjelp.soknad.web.types.Pingable;
@@ -18,7 +17,6 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientRequestFilter;
 
 import static java.lang.System.getenv;
-import static no.nav.sosialhjelp.soknad.consumer.common.cxf.InstanceSwitcher.createSwitcher;
 import static no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.HEADER_NAV_APIKEY;
 import static no.nav.sosialhjelp.soknad.web.types.Pingable.Ping.feilet;
 import static no.nav.sosialhjelp.soknad.web.types.Pingable.Ping.lyktes;
@@ -26,7 +24,6 @@ import static no.nav.sosialhjelp.soknad.web.types.Pingable.Ping.lyktes;
 @Configuration
 public class ArbeidsforholdRestConfig {
 
-    public static final String AAREG_KEY = "start.aareg.withmock";
     private static final String AAREGAPI_APIKEY = "AAREGAPI_APIKEY";
 
     @Value("${aareg_api_baseurl}")
@@ -43,9 +40,7 @@ public class ArbeidsforholdRestConfig {
 
     @Bean
     public ArbeidsforholdConsumer arbeidsforholdConsumer() {
-        ArbeidsforholdConsumer prod = new ArbeidsforholdConsumerImpl(arbeidsforholdClient(), endpoint, stsConsumer);
-        ArbeidsforholdConsumer mock = new ArbeidsforholdConsumerMock().arbeidsforholdConsumerMock();
-        return createSwitcher(prod, mock, AAREG_KEY, ArbeidsforholdConsumer.class);
+        return new ArbeidsforholdConsumerImpl(arbeidsforholdClient(), endpoint, stsConsumer);
     }
 
     @Bean
