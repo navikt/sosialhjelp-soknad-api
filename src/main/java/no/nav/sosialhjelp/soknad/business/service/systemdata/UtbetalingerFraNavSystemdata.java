@@ -9,7 +9,7 @@ import no.nav.sosialhjelp.soknad.business.service.soknadservice.Systemdata;
 import no.nav.sosialhjelp.soknad.consumer.organisasjon.OrganisasjonService;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.domain.model.utbetaling.Utbetaling;
-import no.nav.sosialhjelp.soknad.oppslag.UtbetalingService;
+import no.nav.sosialhjelp.soknad.oppslag.utbetaling.UtbetalingService;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
