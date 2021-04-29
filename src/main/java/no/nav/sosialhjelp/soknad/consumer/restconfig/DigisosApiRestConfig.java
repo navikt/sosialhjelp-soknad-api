@@ -2,7 +2,6 @@ package no.nav.sosialhjelp.soknad.consumer.restconfig;
 
 import no.nav.sosialhjelp.soknad.consumer.fiks.DigisosApi;
 import no.nav.sosialhjelp.soknad.consumer.fiks.DigisosApiImpl;
-import no.nav.sosialhjelp.soknad.consumer.fiks.DigisosApiMock;
 import no.nav.sosialhjelp.soknad.consumer.fiks.DigisosApiProperties;
 import no.nav.sosialhjelp.soknad.consumer.fiks.KommuneInfoService;
 import no.nav.sosialhjelp.soknad.consumer.redis.RedisService;
@@ -11,7 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import static no.nav.sosialhjelp.soknad.consumer.common.cxf.InstanceSwitcher.createMetricsProxyWithInstanceSwitcher;
+import static no.nav.sosialhjelp.metrics.MetricsFactory.createTimerProxyForWebService;
 import static no.nav.sosialhjelp.soknad.web.types.Pingable.Ping.feilet;
 import static no.nav.sosialhjelp.soknad.web.types.Pingable.Ping.lyktes;
 
@@ -33,13 +32,10 @@ public class DigisosApiRestConfig {
     @Value("${integrasjonpassord_fiks}")
     private String integrasjonpassordFiks;
 
-    public static final String DIGISOSAPI_WITHMOCK = "start.digisosapi.withmock";
-
     @Bean
     public DigisosApi digisosApi(RedisService redisService) {
-        DigisosApi mock = new DigisosApiMock().digisosApiMock();
-        DigisosApi prod = new DigisosApiImpl(digisosApiProperties(), redisService);
-        return createMetricsProxyWithInstanceSwitcher("DigisosApi", prod, mock, DIGISOSAPI_WITHMOCK, DigisosApi.class);
+        var digisosApi = new DigisosApiImpl(digisosApiProperties(), redisService);
+        return createTimerProxyForWebService("DigisosApi", digisosApi, DigisosApi.class); // timerProxyForWebService fordi metrikkene er prefixet med 'ws'. Dette kan/bør endres senere
     }
 
     @Bean
