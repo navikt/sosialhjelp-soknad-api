@@ -1,7 +1,6 @@
 package no.nav.sosialhjelp.soknad.consumer.restconfig;
 
 import no.finn.unleash.DefaultUnleash;
-import no.finn.unleash.FakeUnleash;
 import no.finn.unleash.Unleash;
 import no.finn.unleash.repository.FeatureToggleResponse.Status;
 import no.finn.unleash.repository.HttpToggleFetcher;
@@ -15,12 +14,10 @@ import org.springframework.context.annotation.Bean;
 
 import static no.finn.unleash.repository.FeatureToggleResponse.Status.CHANGED;
 import static no.finn.unleash.repository.FeatureToggleResponse.Status.NOT_CHANGED;
-import static no.nav.sosialhjelp.soknad.consumer.common.cxf.InstanceSwitcher.createSwitcher;
 import static no.nav.sosialhjelp.soknad.web.types.Pingable.Ping.feilet;
 import static no.nav.sosialhjelp.soknad.web.types.Pingable.Ping.lyktes;
 
 public class UnleashRestConfig {
-    public static final String MOCK_KEY = "start.unleash.withmock";
     public static final String APPLICATION_NAME = "sosialhjelp-soknad-api";
 
     @Value("${unleash_api_url}")
@@ -31,10 +28,7 @@ public class UnleashRestConfig {
 
     @Bean
     public Unleash unleashConsumer() {
-        DefaultUnleash prod = new DefaultUnleash(config(), new ByInstanceIdStrategy());
-        FakeUnleash mock = new FakeUnleash();
-        mock.enableAll();
-        return createSwitcher(prod, mock, MOCK_KEY, Unleash.class);
+        return new DefaultUnleash(config(), new ByInstanceIdStrategy());
     }
 
     @Bean
