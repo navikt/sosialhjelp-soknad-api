@@ -8,6 +8,7 @@ import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.Paging;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.SearchRule;
 import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseForslag;
 import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseSokConsumer;
+import no.nav.sosialhjelp.soknad.domain.model.exception.SosialhjelpSoknadApiException;
 import no.nav.sosialhjelp.soknad.domain.model.util.KommuneTilNavEnhetMapper;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
@@ -51,7 +52,7 @@ public class PdlAdresseSokService {
     private AdresseDto resolveVegadresse(List<AdresseSokHit> hits) {
         if (hits.isEmpty()) {
             log.warn("Ingen hits i adressesok");
-            throw new RuntimeException("Ingen hits i adressesok");
+            throw new SosialhjelpSoknadApiException("PDL adressesok - ingen hits");
         } else if (hits.size() == 1) {
             return hits.get(0).getVegadresse();
         } else {
@@ -61,7 +62,7 @@ public class PdlAdresseSokService {
                 return first;
             }
             log.warn("Flere ({}) hits i adressesok. Kan ikke utlede entydig kombinasjon av (kommunenummer, kommunenavn og bydelsnummer) fra alle vegadressene", hits.size());
-            throw new RuntimeException("Flere hits i adressesok");
+            throw new SosialhjelpSoknadApiException("PDL adressesok - flere hits");
         }
     }
 
