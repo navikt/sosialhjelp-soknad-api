@@ -56,7 +56,7 @@ public class SoknadsmottakerService {
         if (valg == null) {
             return null;
         }
-        switch (valg){
+        switch (valg) {
             case "folkeregistrert":
                 return personalia.getFolkeregistrertAdresse();
             case "midlertidig":
@@ -66,7 +66,7 @@ public class SoknadsmottakerService {
                 return null;
         }
     }
-    
+
     private List<AdresseForslag> getAdresseForslagFraPDL(JsonAdresse adresse) {
         if (adresse == null) {
             return Collections.emptyList();
