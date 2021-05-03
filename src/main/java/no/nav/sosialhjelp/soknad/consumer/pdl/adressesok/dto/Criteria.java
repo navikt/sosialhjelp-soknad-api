@@ -44,13 +44,18 @@ public class Criteria {
             return this;
         }
 
+        public Builder withFieldName(FieldName fieldName) {
+            this.fieldName = fieldName.getField();
+            return this;
+        }
+
         public Builder withSearchRule(Map<String, String> searchRule) {
             this.searchRule = searchRule;
             return this;
         }
 
         public Builder withSearchRule(SearchRule searchRule, String value) {
-            return withSearchRule(singletonMap(searchRule.getField(), value));
+            return withSearchRule(singletonMap(searchRule.getRule(), value));
         }
 
         public Criteria build() {

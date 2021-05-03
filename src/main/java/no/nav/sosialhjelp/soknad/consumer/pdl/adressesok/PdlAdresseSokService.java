@@ -4,6 +4,7 @@ import no.nav.sosialhjelp.soknad.consumer.pdl.PdlConsumer;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.AdresseDto;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.AdresseSokHit;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.Criteria;
+import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.FieldName;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.Paging;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.SearchRule;
 import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseForslag;
@@ -20,6 +21,10 @@ import java.util.Map;
 import java.util.Objects;
 
 import static java.util.Collections.emptyList;
+import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.FieldName.ADRESSENAVN;
+import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.FieldName.HUSBOKSTAV;
+import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.FieldName.HUSNUMMER;
+import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.FieldName.POSTSTED;
 import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.SearchRule.CONTAINS;
 import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.SearchRule.EQUALS;
 import static no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseForslagType.GATEADRESSE;
@@ -28,6 +33,9 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 @Component
 public class PdlAdresseSokService {
+
+    private static final String PAGING = "paging";
+    private static final String CRITERIA = "criteria";
 
     private static final Logger log = getLogger(PdlAdresseSokService.class);
 
@@ -82,33 +90,33 @@ public class PdlAdresseSokService {
 
     private Map<String, Object> toVariables(AdresseSokConsumer.Sokedata sokedata) {
         var variables = new HashMap<String, Object>();
-        variables.put("paging", new Paging(1, 30, emptyList()));
+        variables.put(PAGING, new Paging(1, 30, emptyList()));
 
         if (sokedata == null) {
             throw new IllegalArgumentException("kan ikke soke uten sokedata");
         }
-        variables.put("criteria", toCriteriaList(sokedata));
+        variables.put(CRITERIA, toCriteriaList(sokedata));
         return variables;
     }
 
     private List<Criteria> toCriteriaList(AdresseSokConsumer.Sokedata sokedata) {
         var criteriaList = new ArrayList<Criteria>();
         if (isNotEmpty(sokedata.adresse)) {
-            criteriaList.add(criteria("adressenavn", CONTAINS, sokedata.adresse));
+            criteriaList.add(criteria(ADRESSENAVN, CONTAINS, sokedata.adresse));
         }
         if (isNotEmpty(sokedata.husnummer)) {
-            criteriaList.add(criteria("husnummer", EQUALS, sokedata.husnummer));
+            criteriaList.add(criteria(HUSNUMMER, EQUALS, sokedata.husnummer));
         }
         if (isNotEmpty(sokedata.husbokstav)) {
-            criteriaList.add(criteria("hustbokstav", EQUALS, sokedata.husbokstav));
+            criteriaList.add(criteria(HUSBOKSTAV, EQUALS, sokedata.husbokstav));
         }
         if (isNotEmpty(sokedata.poststed)) {
-            criteriaList.add(criteria("poststed", EQUALS, sokedata.poststed));
+            criteriaList.add(criteria(POSTSTED, EQUALS, sokedata.poststed));
         }
         return criteriaList;
     }
 
-    private Criteria criteria(String fieldName, SearchRule searchRule, String value) {
+    private Criteria criteria(FieldName fieldName, SearchRule searchRule, String value) {
         return new Criteria.Builder()
                 .withFieldName(fieldName)
                 .withSearchRule(searchRule, value)
