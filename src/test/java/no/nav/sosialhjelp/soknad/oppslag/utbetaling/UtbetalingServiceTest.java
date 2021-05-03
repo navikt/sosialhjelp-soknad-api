@@ -26,7 +26,8 @@ public class UtbetalingServiceTest {
 
     @Test
     public void clientReturnererUtbetalinger() {
-        when(oppslagConsumer.getUtbetalingerSiste40Dager(anyString())).thenReturn(singletonList(createUtbetaling()));
+        when(oppslagConsumer.getUtbetalingerSiste40Dager(anyString()))
+                .thenReturn(new UtbetalingerResponseDto(singletonList(createUtbetaling()), false));
 
         var utbetalinger = utbetalingService.getUtbetalingerSiste40Dager("ident");
 
@@ -53,7 +54,8 @@ public class UtbetalingServiceTest {
 
     @Test
     public void clientReturnererTomListe() {
-        when(oppslagConsumer.getUtbetalingerSiste40Dager(anyString())).thenReturn(emptyList());
+        when(oppslagConsumer.getUtbetalingerSiste40Dager(anyString()))
+                .thenReturn(new UtbetalingerResponseDto(emptyList(), false));
 
         var utbetalinger = utbetalingService.getUtbetalingerSiste40Dager("ident");
 
@@ -62,7 +64,18 @@ public class UtbetalingServiceTest {
 
     @Test
     public void clientReturnererNull() {
-        when(oppslagConsumer.getUtbetalingerSiste40Dager(anyString())).thenReturn(null);
+        when(oppslagConsumer.getUtbetalingerSiste40Dager(anyString()))
+                .thenReturn(null);
+
+        var utbetalinger = utbetalingService.getUtbetalingerSiste40Dager("ident");
+
+        assertThat(utbetalinger).isNull();
+    }
+
+    @Test
+    public void clientReturnererResponseMedFeiletTrue() {
+        when(oppslagConsumer.getUtbetalingerSiste40Dager(anyString()))
+                .thenReturn(new UtbetalingerResponseDto(null, true));
 
         var utbetalinger = utbetalingService.getUtbetalingerSiste40Dager("ident");
 
