@@ -56,6 +56,7 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 public class SoknadRessurs {
 
     public static final String XSRF_TOKEN = "XSRF-TOKEN-SOKNAD-API";
+    private static final int FJORTEN_DAGER = 14;
 
     private final SoknadService soknadService;
     private final HtmlGenerator pdfTemplate;
@@ -225,7 +226,7 @@ public class SoknadRessurs {
         tilgangskontroll.verifiserAtBrukerHarTilgang();
 
         var eier = SubjectHandler.getUserId();
-        var grense = LocalDateTime.now().minusDays(14);
+        var grense = LocalDateTime.now().minusDays(FJORTEN_DAGER);
         var nyligSendteSoknader = soknadMetadataRepository.hentSoknaderForEttersending(eier, grense);
 
         var antallNyligInnsendte = nyligSendteSoknader == null ? 0 : nyligSendteSoknader.size();
