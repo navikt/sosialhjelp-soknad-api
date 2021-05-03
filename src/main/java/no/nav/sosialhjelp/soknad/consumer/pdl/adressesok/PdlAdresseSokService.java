@@ -99,7 +99,7 @@ public class PdlAdresseSokService {
             criteriaList.add(criteria("husnummer", EQUALS, sokedata.husnummer));
         }
         if (isNotEmpty(sokedata.husbokstav)) {
-            criteriaList.add(criteria("hustbokstav", EQUALS, sokedata.husbokstav));
+            criteriaList.add(criteria("husbokstav", EQUALS, sokedata.husbokstav));
         }
         if (isNotEmpty(sokedata.poststed)) {
             criteriaList.add(criteria("poststed", EQUALS, sokedata.poststed));
