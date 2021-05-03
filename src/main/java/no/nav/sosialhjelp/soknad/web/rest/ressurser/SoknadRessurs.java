@@ -227,7 +227,7 @@ public class SoknadRessurs {
 
         var eier = SubjectHandler.getUserId();
         var grense = LocalDateTime.now().minusDays(FJORTEN_DAGER);
-        var nyligSendteSoknader = soknadMetadataRepository.hentSoknaderForEttersending(eier, grense);
+        var nyligSendteSoknader = soknadMetadataRepository.hentInnsendteSoknaderForBrukerEtterTidspunkt(eier, grense);
 
         var antallNyligInnsendte = nyligSendteSoknader == null ? 0 : nyligSendteSoknader.size();
         return new NyligInnsendteSoknaderResponse(antallNyligInnsendte);

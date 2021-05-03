@@ -269,7 +269,7 @@ public class SoknadRessursTest {
 
     @Test
     public void harNyligInnsendteSoknader_tomResponse() {
-        when(soknadMetadataRepository.hentSoknaderForEttersending(anyString(), any()))
+        when(soknadMetadataRepository.hentInnsendteSoknaderForBrukerEtterTidspunkt(anyString(), any()))
                 .thenReturn(Collections.emptyList());
 
         var response = ressurs.harNyligInnsendteSoknader();
@@ -279,7 +279,7 @@ public class SoknadRessursTest {
 
     @Test
     public void harNyligInnsendteSoknader_tomResponse_null() {
-        when(soknadMetadataRepository.hentSoknaderForEttersending(anyString(), any()))
+        when(soknadMetadataRepository.hentInnsendteSoknaderForBrukerEtterTidspunkt(anyString(), any()))
                 .thenReturn(null);
 
         var response = ressurs.harNyligInnsendteSoknader();
@@ -289,7 +289,7 @@ public class SoknadRessursTest {
 
     @Test
     public void harNyligInnsendteSoknader_flereSoknaderResponse() {
-        when(soknadMetadataRepository.hentSoknaderForEttersending(anyString(), any()))
+        when(soknadMetadataRepository.hentInnsendteSoknaderForBrukerEtterTidspunkt(anyString(), any()))
                 .thenReturn(Arrays.asList(mock(SoknadMetadata.class), mock(SoknadMetadata.class)));
 
         var response = ressurs.harNyligInnsendteSoknader();
