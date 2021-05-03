@@ -5,6 +5,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreft
 import no.nav.security.token.support.core.api.ProtectedWithClaims;
 import no.nav.sosialhjelp.metrics.aspects.Timed;
 import no.nav.sosialhjelp.soknad.business.SoknadUnderArbeidService;
+import no.nav.sosialhjelp.soknad.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sosialhjelp.soknad.business.exceptions.SoknadenHarNedetidException;
 import no.nav.sosialhjelp.soknad.business.pdf.HtmlGenerator;
 import no.nav.sosialhjelp.soknad.business.service.HenvendelseService;
@@ -31,6 +32,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -62,6 +64,7 @@ public class SoknadRessurs {
     private final SystemdataUpdater systemdata;
     private final Tilgangskontroll tilgangskontroll;
     private final HenvendelseService henvendelseService;
+    private final SoknadMetadataRepository soknadMetadataRepository;
 
     public SoknadRessurs(
             SoknadService soknadService,
@@ -70,7 +73,9 @@ public class SoknadRessurs {
             SoknadUnderArbeidRepository soknadUnderArbeidRepository,
             SystemdataUpdater systemdata,
             Tilgangskontroll tilgangskontroll,
-            HenvendelseService henvendelseService) {
+            HenvendelseService henvendelseService,
+            SoknadMetadataRepository soknadMetadataRepository
+    ) {
         this.soknadService = soknadService;
         this.pdfTemplate = pdfTemplate;
         this.soknadUnderArbeidService = soknadUnderArbeidService;
@@ -78,6 +83,21 @@ public class SoknadRessurs {
         this.systemdata = systemdata;
         this.tilgangskontroll = tilgangskontroll;
         this.henvendelseService = henvendelseService;
+        this.soknadMetadataRepository = soknadMetadataRepository;
+    }
+
+    private static Cookie xsrfCookie(String behandlingId) {
+        Cookie xsrfCookie = new Cookie(XSRF_TOKEN, generateXsrfToken(behandlingId));
+        xsrfCookie.setPath("/");
+        xsrfCookie.setSecure(true);
+        return xsrfCookie;
+    }
+
+    private static Cookie xsrfCookieMedBehandlingsid(String behandlingId) {
+        Cookie xsrfCookie = new Cookie(XSRF_TOKEN + "-" + behandlingId, generateXsrfToken(behandlingId));
+        xsrfCookie.setPath("/");
+        xsrfCookie.setSecure(true);
+        return xsrfCookie;
     }
 
     @GET
@@ -199,17 +219,16 @@ public class SoknadRessurs {
         soknadService.avbrytSoknad(behandlingsId);
     }
 
-    private static Cookie xsrfCookie(String behandlingId) {
-        Cookie xsrfCookie = new Cookie(XSRF_TOKEN, generateXsrfToken(behandlingId));
-        xsrfCookie.setPath("/");
-        xsrfCookie.setSecure(true);
-        return xsrfCookie;
-    }
+    @GET
+    @Path("/harNyligInnsendteSoknader")
+    public NyligInnsendteSoknaderResponse harNyligInnsendteSoknader() {
+        tilgangskontroll.verifiserAtBrukerHarTilgang();
 
-    private static Cookie xsrfCookieMedBehandlingsid(String behandlingId) {
-        Cookie xsrfCookie = new Cookie(XSRF_TOKEN + "-" + behandlingId, generateXsrfToken(behandlingId));
-        xsrfCookie.setPath("/");
-        xsrfCookie.setSecure(true);
-        return xsrfCookie;
+        var eier = SubjectHandler.getUserId();
+        var grense = LocalDateTime.now().minusDays(14);
+        var nyligSendteSoknader = soknadMetadataRepository.hentSoknaderForEttersending(eier, grense);
+
+        var antallNyligInnsendte = nyligSendteSoknader == null ? 0 : nyligSendteSoknader.size();
+        return new NyligInnsendteSoknaderResponse(antallNyligInnsendte);
     }
 }
