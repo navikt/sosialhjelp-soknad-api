@@ -5,7 +5,6 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreft
 import no.nav.security.token.support.core.api.ProtectedWithClaims;
 import no.nav.sosialhjelp.metrics.aspects.Timed;
 import no.nav.sosialhjelp.soknad.business.SoknadUnderArbeidService;
-import no.nav.sosialhjelp.soknad.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sosialhjelp.soknad.business.exceptions.SoknadenHarNedetidException;
 import no.nav.sosialhjelp.soknad.business.pdf.HtmlGenerator;
 import no.nav.sosialhjelp.soknad.business.service.HenvendelseService;
@@ -32,7 +31,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -56,7 +54,6 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 public class SoknadRessurs {
 
     public static final String XSRF_TOKEN = "XSRF-TOKEN-SOKNAD-API";
-    private static final int FJORTEN_DAGER = 14;
 
     private final SoknadService soknadService;
     private final HtmlGenerator pdfTemplate;
@@ -65,7 +62,6 @@ public class SoknadRessurs {
     private final SystemdataUpdater systemdata;
     private final Tilgangskontroll tilgangskontroll;
     private final HenvendelseService henvendelseService;
-    private final SoknadMetadataRepository soknadMetadataRepository;
 
     public SoknadRessurs(
             SoknadService soknadService,
@@ -74,8 +70,7 @@ public class SoknadRessurs {
             SoknadUnderArbeidRepository soknadUnderArbeidRepository,
             SystemdataUpdater systemdata,
             Tilgangskontroll tilgangskontroll,
-            HenvendelseService henvendelseService,
-            SoknadMetadataRepository soknadMetadataRepository
+            HenvendelseService henvendelseService
     ) {
         this.soknadService = soknadService;
         this.pdfTemplate = pdfTemplate;
@@ -84,7 +79,6 @@ public class SoknadRessurs {
         this.systemdata = systemdata;
         this.tilgangskontroll = tilgangskontroll;
         this.henvendelseService = henvendelseService;
-        this.soknadMetadataRepository = soknadMetadataRepository;
     }
 
     private static Cookie xsrfCookie(String behandlingId) {
@@ -218,18 +212,5 @@ public class SoknadRessurs {
     public void slettSoknad(@PathParam("behandlingsId") String behandlingsId) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
         soknadService.avbrytSoknad(behandlingsId);
-    }
-
-    @GET
-    @Path("/harNyligInnsendteSoknader")
-    public NyligInnsendteSoknaderResponse harNyligInnsendteSoknader() {
-        tilgangskontroll.verifiserAtBrukerHarTilgang();
-
-        var eier = SubjectHandler.getUserId();
-        var grense = LocalDateTime.now().minusDays(FJORTEN_DAGER);
-        var nyligSendteSoknader = soknadMetadataRepository.hentInnsendteSoknaderForBrukerEtterTidspunkt(eier, grense);
-
-        var antallNyligInnsendte = nyligSendteSoknader == null ? 0 : nyligSendteSoknader.size();
-        return new NyligInnsendteSoknaderResponse(antallNyligInnsendte);
     }
 }

@@ -2,8 +2,6 @@ package no.nav.sosialhjelp.soknad.web.rest.ressurser;
 
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger;
-import no.nav.sosialhjelp.soknad.business.db.soknadmetadata.SoknadMetadataRepository;
-import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata;
 import no.nav.sosialhjelp.soknad.business.service.HenvendelseService;
 import no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService;
 import no.nav.sosialhjelp.soknad.business.soknadunderbehandling.SoknadUnderArbeidRepository;
@@ -25,7 +23,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -36,7 +33,6 @@ import static no.nav.sosialhjelp.soknad.business.mappers.OkonomiMapper.setBekref
 import static no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
 import static no.nav.sosialhjelp.soknad.web.rest.ressurser.SoknadRessurs.XSRF_TOKEN;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
@@ -62,8 +58,6 @@ public class SoknadRessursTest {
     private Tilgangskontroll tilgangskontroll;
     @Mock
     private HenvendelseService henvendelseService;
-    @Mock
-    private SoknadMetadataRepository soknadMetadataRepository;
 
     @InjectMocks
     private SoknadRessurs ressurs;
@@ -256,44 +250,5 @@ public class SoknadRessursTest {
         ressurs.opprettSoknad(BEHANDLINGSID, response, "token");
 
         verifyNoInteractions(soknadService);
-    }
-
-    @Test(expected = AuthorizationException.class)
-    public void harNyligInnsendteSoknader_AuthorizationExceptionVedManglendeTilgang() {
-        doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerHarTilgang();
-
-        ressurs.harNyligInnsendteSoknader();
-
-        verifyNoInteractions(soknadMetadataRepository);
-    }
-
-    @Test
-    public void harNyligInnsendteSoknader_tomResponse() {
-        when(soknadMetadataRepository.hentInnsendteSoknaderForBrukerEtterTidspunkt(anyString(), any()))
-                .thenReturn(Collections.emptyList());
-
-        var response = ressurs.harNyligInnsendteSoknader();
-
-        assertThat(response.getAntallNyligInnsendte()).isZero();
-    }
-
-    @Test
-    public void harNyligInnsendteSoknader_tomResponse_null() {
-        when(soknadMetadataRepository.hentInnsendteSoknaderForBrukerEtterTidspunkt(anyString(), any()))
-                .thenReturn(null);
-
-        var response = ressurs.harNyligInnsendteSoknader();
-
-        assertThat(response.getAntallNyligInnsendte()).isZero();
-    }
-
-    @Test
-    public void harNyligInnsendteSoknader_flereSoknaderResponse() {
-        when(soknadMetadataRepository.hentInnsendteSoknaderForBrukerEtterTidspunkt(anyString(), any()))
-                .thenReturn(Arrays.asList(mock(SoknadMetadata.class), mock(SoknadMetadata.class)));
-
-        var response = ressurs.harNyligInnsendteSoknader();
-
-        assertThat(response.getAntallNyligInnsendte()).isEqualTo(2);
     }
 }
