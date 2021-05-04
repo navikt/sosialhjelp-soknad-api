@@ -1,11 +1,13 @@
 package no.nav.sosialhjelp.soknad.business.service;
 
+import no.finn.unleash.Unleash;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresseValg;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonGateAdresse;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonMatrikkelAdresse;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
 import no.nav.sosialhjelp.soknad.consumer.adresse.AdresseSokService;
+import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.PdlAdresseSokService;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseForslag;
 import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseForslagType;
@@ -25,6 +27,9 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -50,6 +55,12 @@ public class SoknadsmottakerServiceTest {
     @Mock
     private AdresseSokService adresseSokService;
 
+    @Mock
+    private PdlAdresseSokService pdlAdresseSokService;
+
+    @Mock
+    private Unleash unleash;
+
     @InjectMocks
     private SoknadsmottakerService soknadsmottakerService;
 
@@ -69,6 +80,27 @@ public class SoknadsmottakerServiceTest {
         assertThat(adresseForslag.kommunenavn, is(KOMMUNENAVN1));
         assertThat(adresseForslag.bydel, is(BYDEL));
         assertThat(adresseForslag.type, is(GATEADRESSE));
+    }
+
+    @Test
+    public void finnAdresseFraSoknadGirRiktigAdresseForFolkeregistrertGateadresseHentetFraPdl() {
+        when(unleash.isEnabled(anyString(), anyBoolean())).thenReturn(true);
+        when(pdlAdresseSokService.getAdresseForslag(any())).thenReturn(lagAdresseForslag(KOMMUNENUMMER, KOMMUNENAVN1));
+        var soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
+        var personalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
+        personalia.setFolkeregistrertAdresse(createGateadresse());
+
+        var adresseForslagene = soknadsmottakerService.finnAdresseFraSoknad(personalia, JsonAdresseValg.FOLKEREGISTRERT.toString());
+
+        assertThat(adresseForslagene.size(), is(1));
+
+        var adresseForslag = adresseForslagene.get(0);
+        assertThat(adresseForslag.geografiskTilknytning, is(GEOGRAFISK_TILKNYTNING));
+        assertThat(adresseForslag.kommunenummer, is(KOMMUNENUMMER));
+        assertThat(adresseForslag.kommunenavn, is(KOMMUNENAVN1));
+        assertThat(adresseForslag.type, is(GATEADRESSE));
+
+        verifyNoInteractions(adresseSokService);
     }
 
     @Test

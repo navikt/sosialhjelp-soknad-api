@@ -28,6 +28,7 @@ public class AdresseSokResponseTest {
 
         assertNotNull(response);
         assertThat(response.getData().getAdresseSokResult().getHits()).hasSize(1);
+        assertThat(response.getData().getAdresseSokResult().getHits().get(0).getScore()).isZero();
         assertThat(response.getData().getAdresseSokResult().getHits().get(0).getVegadresse().getAdressenavn()).isEqualTo("Heggsnipvegen");
     }
 }

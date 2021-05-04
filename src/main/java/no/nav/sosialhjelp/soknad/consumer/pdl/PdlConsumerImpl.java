@@ -11,6 +11,8 @@ import io.vavr.CheckedFunction0;
 import no.nav.sosialhjelp.soknad.consumer.exceptions.PdlApiException;
 import no.nav.sosialhjelp.soknad.consumer.exceptions.TjenesteUtilgjengeligException;
 import no.nav.sosialhjelp.soknad.consumer.mdc.MDCOperations;
+import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.AdresseSokResponse;
+import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.AdresseSokResult;
 import no.nav.sosialhjelp.soknad.consumer.pdl.common.PdlApiQuery;
 import no.nav.sosialhjelp.soknad.consumer.pdl.common.PdlBaseResponse;
 import no.nav.sosialhjelp.soknad.consumer.pdl.common.PdlRequest;
@@ -20,7 +22,6 @@ import no.nav.sosialhjelp.soknad.consumer.pdl.person.PdlBarn;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.PdlEktefelle;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.PdlPerson;
 import no.nav.sosialhjelp.soknad.consumer.retry.RetryUtils;
-import no.nav.sosialhjelp.soknad.consumer.sts.apigw.FssToken;
 import no.nav.sosialhjelp.soknad.consumer.sts.apigw.STSConsumer;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import org.slf4j.Logger;
@@ -84,7 +85,7 @@ public class PdlConsumerImpl implements PdlConsumer {
     public PdlPerson hentPerson(String ident) {
         String query = PdlApiQuery.HENT_PERSON;
         try {
-            var request = lagRequest(endpoint);
+            var request = hentPersonRequest(endpoint);
             var body = withRetry(() -> request.post(requestEntity(query, variables(ident)), String.class));
             var pdlResponse = pdlMapper.readValue(body, new TypeReference<HentPersonResponse<PdlPerson>>() {});
 
@@ -104,7 +105,7 @@ public class PdlConsumerImpl implements PdlConsumer {
     public PdlBarn hentBarn(String ident) {
         String query = PdlApiQuery.HENT_BARN;
         try {
-            var request = lagRequest(endpoint);
+            var request = hentPersonRequest(endpoint);
             var body = withRetry(() -> request.post(requestEntity(query, variables(ident)), String.class));
             var pdlResponse = pdlMapper.readValue(body, new TypeReference<HentPersonResponse<PdlBarn>>() {});
 
@@ -124,7 +125,7 @@ public class PdlConsumerImpl implements PdlConsumer {
     public PdlEktefelle hentEktefelle(String ident) {
         String query = PdlApiQuery.HENT_EKTEFELLE;
         try {
-            var request = lagRequest(endpoint);
+            var request = hentPersonRequest(endpoint);
             var body = withRetry(() -> request.post(requestEntity(query, variables(ident)), String.class));
             var pdlResponse = pdlMapper.readValue(body, new TypeReference<HentPersonResponse<PdlEktefelle>>() {});
 
@@ -144,7 +145,7 @@ public class PdlConsumerImpl implements PdlConsumer {
     public PdlAdressebeskyttelse hentAdressebeskyttelse(String ident) {
         String query = PdlApiQuery.HENT_PERSON_ADRESSEBESKYTTELSE;
         try {
-            var request = lagRequest(endpoint);
+            var request = hentPersonRequest(endpoint);
             var body = withRetry(() -> request.post(requestEntity(query, variables(ident)), String.class));
             var pdlResponse = pdlMapper.readValue(body, new TypeReference<HentPersonResponse<PdlAdressebeskyttelse>>() {});
 
@@ -155,6 +156,28 @@ public class PdlConsumerImpl implements PdlConsumer {
             throw e;
         } catch (Exception e) {
             log.warn("Kall til PDL feilet (hentPersonAdressebeskyttelse)");
+            throw new TjenesteUtilgjengeligException("Noe uventet feilet ved kall til PDL", e);
+        }
+    }
+
+    @Override
+    public AdresseSokResult getAdresseSokResult(Map<String, Object> variables) {
+        var query = PdlApiQuery.ADRESSE_SOK;
+        try {
+            var request = adresseSokRequest(endpoint);
+            var requestEntity = requestEntity(query, variables);
+            var body = withRetry(() -> request.post(requestEntity, String.class));
+
+            var pdlResponse = pdlMapper.readValue(body, new TypeReference<AdresseSokResponse>() {});
+
+            checkForPdlApiErrors(pdlResponse);
+
+            return pdlResponse.getData().getAdresseSokResult();
+        } catch (PdlApiException e) {
+            log.warn("PDL - feil oppdaget i response: {}", e.getMessage(), e);
+            throw e;
+        } catch (Exception e) {
+            log.warn("Kall til PDL feilet (adresseSok)");
             throw new TjenesteUtilgjengeligException("Noe uventet feilet ved kall til PDL", e);
         }
     }
@@ -186,18 +209,26 @@ public class PdlConsumerImpl implements PdlConsumer {
         }
     }
 
-    private Invocation.Builder lagRequest(String endpoint) {
-        String consumerId = SubjectHandler.getConsumerId();
-        String callId = MDCOperations.getFromMDC(MDCOperations.MDC_CALL_ID);
-        FssToken fssToken = stsConsumer.getFSSToken();
+    private Invocation.Builder hentPersonRequest(String endpoint) {
+        return baseRequest(endpoint)
+                .header(HEADER_TEMA, TEMA_KOM);
+    }
+
+    private Invocation.Builder adresseSokRequest(String endpoint) {
+        return baseRequest(endpoint);
+    }
+
+    private Invocation.Builder baseRequest(String endpoint) {
+        var consumerId = SubjectHandler.getConsumerId();
+        var callId = MDCOperations.getFromMDC(MDCOperations.MDC_CALL_ID);
+        var fssToken = stsConsumer.getFSSToken();
 
         return client.target(endpoint)
                 .request(MediaType.APPLICATION_JSON_TYPE)
                 .header(AUTHORIZATION.name(), BEARER + fssToken.getAccessToken())
                 .header(HEADER_CALL_ID, callId)
                 .header(HEADER_CONSUMER_ID, consumerId)
-                .header(HEADER_CONSUMER_TOKEN, BEARER + fssToken.getAccessToken())
-                .header(HEADER_TEMA, TEMA_KOM);
+                .header(HEADER_CONSUMER_TOKEN, BEARER + fssToken.getAccessToken());
     }
 
     private <T> T withRetry(CheckedFunction0<T> supplier) {
