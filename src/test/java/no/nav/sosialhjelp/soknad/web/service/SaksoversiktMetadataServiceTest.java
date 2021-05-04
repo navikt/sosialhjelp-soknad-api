@@ -113,7 +113,7 @@ public class SaksoversiktMetadataServiceTest {
 
     @Test
     public void hentForEttersendelse() {
-        when(soknadMetadataRepository.hentSoknaderForEttersending(anyString(), any())).thenReturn(asList(soknadMetadata));
+        when(soknadMetadataRepository.hentInnsendteSoknaderForBrukerEtterTidspunkt(anyString(), any())).thenReturn(asList(soknadMetadata));
         when(ettersendingService.hentNyesteSoknadIKjede(any())).thenReturn(soknadMetadata);
 
         List<EttersendingsSoknad> resultat = saksoversiktMetadataService.hentSoknaderBrukerKanEttersendePa("12345");
@@ -127,7 +127,7 @@ public class SaksoversiktMetadataServiceTest {
 
     @Test
     public void hentForEttersendelseHarRiktigInterval() {
-        when(soknadMetadataRepository.hentSoknaderForEttersending(anyString(), timeCaptor.capture())).thenReturn(asList(soknadMetadata));
+        when(soknadMetadataRepository.hentInnsendteSoknaderForBrukerEtterTidspunkt(anyString(), timeCaptor.capture())).thenReturn(asList(soknadMetadata));
         when(ettersendingService.hentNyesteSoknadIKjede(any())).thenReturn(soknadMetadata);
 
         saksoversiktMetadataService.hentSoknaderBrukerKanEttersendePa("12345");

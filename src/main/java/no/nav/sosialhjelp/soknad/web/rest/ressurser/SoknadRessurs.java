@@ -70,7 +70,8 @@ public class SoknadRessurs {
             SoknadUnderArbeidRepository soknadUnderArbeidRepository,
             SystemdataUpdater systemdata,
             Tilgangskontroll tilgangskontroll,
-            HenvendelseService henvendelseService) {
+            HenvendelseService henvendelseService
+    ) {
         this.soknadService = soknadService;
         this.pdfTemplate = pdfTemplate;
         this.soknadUnderArbeidService = soknadUnderArbeidService;
@@ -78,6 +79,20 @@ public class SoknadRessurs {
         this.systemdata = systemdata;
         this.tilgangskontroll = tilgangskontroll;
         this.henvendelseService = henvendelseService;
+    }
+
+    private static Cookie xsrfCookie(String behandlingId) {
+        Cookie xsrfCookie = new Cookie(XSRF_TOKEN, generateXsrfToken(behandlingId));
+        xsrfCookie.setPath("/");
+        xsrfCookie.setSecure(true);
+        return xsrfCookie;
+    }
+
+    private static Cookie xsrfCookieMedBehandlingsid(String behandlingId) {
+        Cookie xsrfCookie = new Cookie(XSRF_TOKEN + "-" + behandlingId, generateXsrfToken(behandlingId));
+        xsrfCookie.setPath("/");
+        xsrfCookie.setSecure(true);
+        return xsrfCookie;
     }
 
     @GET
@@ -197,19 +212,5 @@ public class SoknadRessurs {
     public void slettSoknad(@PathParam("behandlingsId") String behandlingsId) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
         soknadService.avbrytSoknad(behandlingsId);
-    }
-
-    private static Cookie xsrfCookie(String behandlingId) {
-        Cookie xsrfCookie = new Cookie(XSRF_TOKEN, generateXsrfToken(behandlingId));
-        xsrfCookie.setPath("/");
-        xsrfCookie.setSecure(true);
-        return xsrfCookie;
-    }
-
-    private static Cookie xsrfCookieMedBehandlingsid(String behandlingId) {
-        Cookie xsrfCookie = new Cookie(XSRF_TOKEN + "-" + behandlingId, generateXsrfToken(behandlingId));
-        xsrfCookie.setPath("/");
-        xsrfCookie.setSecure(true);
-        return xsrfCookie;
     }
 }
