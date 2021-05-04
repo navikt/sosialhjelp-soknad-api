@@ -46,7 +46,12 @@ public class SoknadsmottakerService {
 
         // prøv å ta i bruk pdl adressesok kun ved valgt folkeregistrert adresse
         if (FOLKEREGISTRERT.toString().equals(valg) && unleash.isEnabled(FEATURE_PDL_ADRESSESOK_VED_FOLKEREGISTRERT_ADRESSE, false)) {
-            return getAdresseForslagFraPDL(adresse);
+            try {
+                return getAdresseForslagFraPDL(adresse);
+            } catch (Exception e) {
+                log.warn("Noe uventet feilet ved henting av adresse fra PDL -> Fallback til TPS adressesøk", e);
+                return soknadsmottakerGitt(adresse);
+            }
         }
 
         return soknadsmottakerGitt(adresse);
