@@ -1,14 +1,18 @@
 package no.nav.sosialhjelp.soknad.web.rest.ressurser.informasjon;
 
 import no.nav.sosialhjelp.api.fiks.KommuneInfo;
+import no.nav.sosialhjelp.soknad.business.db.soknadmetadata.SoknadMetadataRepository;
+import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata;
 import no.nav.sosialhjelp.soknad.business.service.InformasjonService;
 import no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService;
 import no.nav.sosialhjelp.soknad.consumer.fiks.KommuneInfoService;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.PersonService;
+import no.nav.sosialhjelp.soknad.domain.model.exception.AuthorizationException;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.StaticSubjectHandlerService;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import no.nav.sosialhjelp.soknad.domain.model.util.KommuneTilNavEnhetMapper;
 import no.nav.sosialhjelp.soknad.tekster.NavMessageSource;
+import no.nav.sosialhjelp.soknad.web.sikkerhet.Tilgangskontroll;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,6 +22,8 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -29,8 +35,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -48,6 +59,10 @@ public class InformasjonRessursTest {
     private KommuneInfoService kommuneInfoService;
     @Mock
     private PersonService personService;
+    @Mock
+    private Tilgangskontroll tilgangskontroll;
+    @Mock
+    private SoknadMetadataRepository soknadMetadataRepository;
 
     @InjectMocks
     private InformasjonRessurs ressurs;
@@ -158,5 +173,44 @@ public class InformasjonRessursTest {
         Map<String, InformasjonRessurs.KommuneInfoFrontend> margedKommuner = ressurs.mergeManuelleKommunerMedDigisosKommuner(manueltMappedeKommuner, mappedeDigisosKommuner);
         assertThat(margedKommuner).hasSize(1);
         assertTrue(margedKommuner.get("1234").kanOppdatereStatus);
+    }
+
+    @Test(expected = AuthorizationException.class)
+    public void harNyligInnsendteSoknader_AuthorizationExceptionVedManglendeTilgang() {
+        doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerHarTilgang();
+
+        ressurs.harNyligInnsendteSoknader();
+
+        verifyNoInteractions(soknadMetadataRepository);
+    }
+
+    @Test
+    public void harNyligInnsendteSoknader_tomResponse() {
+        when(soknadMetadataRepository.hentInnsendteSoknaderForBrukerEtterTidspunkt(anyString(), any()))
+                .thenReturn(Collections.emptyList());
+
+        var response = ressurs.harNyligInnsendteSoknader();
+
+        assertThat(response.getAntallNyligInnsendte()).isZero();
+    }
+
+    @Test
+    public void harNyligInnsendteSoknader_tomResponse_null() {
+        when(soknadMetadataRepository.hentInnsendteSoknaderForBrukerEtterTidspunkt(anyString(), any()))
+                .thenReturn(null);
+
+        var response = ressurs.harNyligInnsendteSoknader();
+
+        assertThat(response.getAntallNyligInnsendte()).isZero();
+    }
+
+    @Test
+    public void harNyligInnsendteSoknader_flereSoknaderResponse() {
+        when(soknadMetadataRepository.hentInnsendteSoknaderForBrukerEtterTidspunkt(anyString(), any()))
+                .thenReturn(Arrays.asList(mock(SoknadMetadata.class), mock(SoknadMetadata.class)));
+
+        var response = ressurs.harNyligInnsendteSoknader();
+
+        assertThat(response.getAntallNyligInnsendte()).isEqualTo(2);
     }
 }

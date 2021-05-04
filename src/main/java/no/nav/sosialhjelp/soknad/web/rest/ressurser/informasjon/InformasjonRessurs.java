@@ -4,6 +4,7 @@ import no.nav.security.token.support.core.api.ProtectedWithClaims;
 import no.nav.security.token.support.core.api.Unprotected;
 import no.nav.sosialhjelp.api.fiks.KommuneInfo;
 import no.nav.sosialhjelp.metrics.aspects.Timed;
+import no.nav.sosialhjelp.soknad.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sosialhjelp.soknad.business.service.InformasjonService;
 import no.nav.sosialhjelp.soknad.consumer.adresse.AdresseSokService;
 import no.nav.sosialhjelp.soknad.consumer.fiks.KommuneInfoService;
@@ -13,6 +14,8 @@ import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import no.nav.sosialhjelp.soknad.domain.model.util.KommuneTilNavEnhetMapper;
 import no.nav.sosialhjelp.soknad.tekster.NavMessageSource;
 import no.nav.sosialhjelp.soknad.web.rest.Logg;
+import no.nav.sosialhjelp.soknad.web.rest.ressurser.NyligInnsendteSoknaderResponse;
+import no.nav.sosialhjelp.soknad.web.sikkerhet.Tilgangskontroll;
 import no.nav.sosialhjelp.soknad.web.utils.NedetidUtils;
 import org.apache.commons.lang3.LocaleUtils;
 import org.slf4j.Logger;
@@ -26,6 +29,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -55,24 +59,32 @@ public class InformasjonRessurs {
 
     private static final Logger logger = LoggerFactory.getLogger(InformasjonRessurs.class);
     private static final Logger klientlogger = LoggerFactory.getLogger("klientlogger");
+    private static final int FJORTEN_DAGER = 14;
 
     private final InformasjonService informasjon;
     private final NavMessageSource messageSource;
     private final AdresseSokService adresseSokService;
     private final KommuneInfoService kommuneInfoService;
     private final PersonService personService;
+    private final Tilgangskontroll tilgangskontroll;
+    private final SoknadMetadataRepository soknadMetadataRepository;
 
     public InformasjonRessurs(
             InformasjonService informasjon,
             NavMessageSource messageSource,
             AdresseSokService adresseSokService,
             KommuneInfoService kommuneInfoService,
-            PersonService personService) {
+            PersonService personService,
+            Tilgangskontroll tilgangskontroll,
+            SoknadMetadataRepository soknadMetadataRepository
+            ) {
         this.informasjon = informasjon;
         this.messageSource = messageSource;
         this.adresseSokService = adresseSokService;
         this.kommuneInfoService = kommuneInfoService;
         this.personService = personService;
+        this.tilgangskontroll = tilgangskontroll;
+        this.soknadMetadataRepository = soknadMetadataRepository;
     }
 
     @GET
@@ -203,6 +215,19 @@ public class InformasjonRessurs {
         Map<String, KommuneInfoFrontend> digisosKommuner = mapDigisosKommuner(kommuneInfoService.hentAlleKommuneInfo());
 
         return mergeManuelleKommunerMedDigisosKommuner(manueltPakobledeKommuner, digisosKommuner);
+    }
+
+    @GET
+    @Path("/harNyligInnsendteSoknader")
+    public NyligInnsendteSoknaderResponse harNyligInnsendteSoknader() {
+        tilgangskontroll.verifiserAtBrukerHarTilgang();
+
+        var eier = SubjectHandler.getUserId();
+        var grense = LocalDateTime.now().minusDays(FJORTEN_DAGER);
+        var nyligSendteSoknader = soknadMetadataRepository.hentInnsendteSoknaderForBrukerEtterTidspunkt(eier, grense);
+
+        var antallNyligInnsendte = nyligSendteSoknader == null ? 0 : nyligSendteSoknader.size();
+        return new NyligInnsendteSoknaderResponse(antallNyligInnsendte);
     }
 
     public Map<String, KommuneInfoFrontend> mapManueltPakobledeKommuner(List<String> manuelleKommuner) {

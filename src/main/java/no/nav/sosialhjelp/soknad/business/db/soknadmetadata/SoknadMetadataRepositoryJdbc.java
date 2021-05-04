@@ -192,7 +192,7 @@ public class SoknadMetadataRepositoryJdbc extends NamedParameterJdbcDaoSupport i
         return getJdbcTemplate().query(query, soknadMetadataRowMapper, fnr, SoknadInnsendingStatus.UNDER_ARBEID.name(), SoknadType.SEND_SOKNAD_KOMMUNAL.name());
     }
     @Override
-    public List<SoknadMetadata> hentSoknaderForEttersending(String fnr, LocalDateTime tidsgrense) {
+    public List<SoknadMetadata> hentInnsendteSoknaderForBrukerEtterTidspunkt(String fnr, LocalDateTime tidsgrense) {
         String query = "SELECT * FROM soknadmetadata WHERE fnr = ? AND (innsendingstatus = ? OR innsendingstatus = ?) AND innsendtdato > ? AND TILKNYTTETBEHANDLINGSID IS NULL ORDER BY innsendtdato DESC";
         return getJdbcTemplate().query(query, soknadMetadataRowMapper,
                 fnr, SoknadInnsendingStatus.FERDIG.name(), SoknadInnsendingStatus.SENDT_MED_DIGISOS_API.name(), tidTilTimestamp(tidsgrense));
