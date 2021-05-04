@@ -6,13 +6,13 @@ public enum SearchRule {
     CONTAINS("contains"),
     FUZZY("fuzzy");
 
-    private final String rule;
+    private final String name;
 
-    SearchRule(String rule) {
-        this.rule = rule;
+    SearchRule(String name) {
+        this.name = name;
     }
 
-    public String getRule() {
-        return rule;
+    public String getName() {
+        return name;
     }
 }

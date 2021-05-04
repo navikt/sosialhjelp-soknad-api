@@ -45,7 +45,7 @@ public class Criteria {
         }
 
         public Builder withFieldName(FieldName fieldName) {
-            this.fieldName = fieldName.getField();
+            this.fieldName = fieldName.getName();
             return this;
         }
 
@@ -55,7 +55,7 @@ public class Criteria {
         }
 
         public Builder withSearchRule(SearchRule searchRule, String value) {
-            return withSearchRule(singletonMap(searchRule.getRule(), value));
+            return withSearchRule(singletonMap(searchRule.getName(), value));
         }
 
         public Criteria build() {

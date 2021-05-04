@@ -7,14 +7,14 @@ public enum FieldName {
     HUSBOKSTAV("husbokstav"),
     POSTSTED("poststed");
 
-    private final String field;
+    private final String name;
 
-    FieldName(String field) {
-        this.field = field;
+    FieldName(String name) {
+        this.name = name;
     }
 
-    public String getField() {
-        return field;
+    public String getName() {
+        return name;
     }
 
 }
