@@ -10,6 +10,7 @@ import no.nav.sosialhjelp.soknad.business.service.SoknadsmottakerService;
 import no.nav.sosialhjelp.soknad.business.soknadunderbehandling.SoknadUnderArbeidRepository;
 import no.nav.sosialhjelp.soknad.consumer.fiks.KommuneInfoService;
 import no.nav.sosialhjelp.soknad.consumer.norg.NorgService;
+import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.bydel.BydelService;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseForslag;
 import no.nav.sosialhjelp.soknad.domain.model.exception.AuthorizationException;
@@ -32,7 +33,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static java.util.Collections.singletonList;
 import static no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
+import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.bydel.BydelService.BYDEL_MARKA;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -88,9 +91,11 @@ public class NavEnhetRessursTest {
 
     private static final AdresseForslag SOKNADSMOTTAKER_FORSLAG = new AdresseForslag();
     private static final AdresseForslag SOKNADSMOTTAKER_FORSLAG_2 = new AdresseForslag();
+    private static final AdresseForslag SOKNADSMOTTAKER_FORSLAG_BYDEL_MARKA = new AdresseForslag();
 
     private static final NavEnhet NAV_ENHET = new NavEnhet();
     private static final NavEnhet NAV_ENHET_2 = new NavEnhet();
+    private static final String EIER = "123456789101";
 
     static {
         SOKNADSMOTTAKER_FORSLAG.geografiskTilknytning = ENHETSNAVN;
@@ -108,9 +113,11 @@ public class NavEnhetRessursTest {
         NAV_ENHET_2.navn = ENHETSNAVN_2;
         NAV_ENHET_2.sosialOrgnr = ORGNR_2;
         NAV_ENHET_2.enhetNr = ENHETSNR_2;
-    }
 
-    private static final String EIER = "123456789101";
+        SOKNADSMOTTAKER_FORSLAG_BYDEL_MARKA.geografiskTilknytning = BYDEL_MARKA;
+        SOKNADSMOTTAKER_FORSLAG_BYDEL_MARKA.kommunenavn = KOMMUNENAVN_2;
+        SOKNADSMOTTAKER_FORSLAG_BYDEL_MARKA.kommunenummer = KOMMUNENR_2;
+    }
 
     @Mock
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
@@ -126,6 +133,9 @@ public class NavEnhetRessursTest {
 
     @Mock
     private KommuneInfoService kommuneInfoService;
+
+    @Mock
+    private BydelService bydelService;
 
     @InjectMocks
     private NavEnhetRessurs navEnhetRessurs;
@@ -143,7 +153,7 @@ public class NavEnhetRessursTest {
     }
 
     @Test
-    public void getNavEnheterSkalReturnereEnheterRiktigKonvertert(){
+    public void getNavEnheterSkalReturnereEnheterRiktigKonvertert() {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         soknadUnderArbeid.getJsonInternalSoknad().getSoknad().withMottaker(SOKNADSMOTTAKER).getData().getPersonalia()
                 .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT));
@@ -163,7 +173,26 @@ public class NavEnhetRessursTest {
     }
 
     @Test
-    public void getValgtNavEnhetSkalReturnereEnhetRiktigKonvertert(){
+    public void getNavEnheterSkalReturnereEnheterRiktigKonvertertVedBydelMarka() {
+        var annenBydel = "030112";
+        var soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
+        soknadUnderArbeid.getJsonInternalSoknad().getSoknad().withMottaker(SOKNADSMOTTAKER_2).getData().getPersonalia()
+                .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT));
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(soknadUnderArbeid);
+        when(soknadsmottakerService.finnAdresseFraSoknad(any(JsonPersonalia.class), eq("folkeregistrert")))
+                .thenReturn(singletonList(SOKNADSMOTTAKER_FORSLAG_BYDEL_MARKA));
+        when(bydelService.getBydelTilForMarka(SOKNADSMOTTAKER_FORSLAG_BYDEL_MARKA)).thenReturn(annenBydel);
+        when(norgService.getEnhetForGt(annenBydel)).thenReturn(NAV_ENHET_2);
+        when(kommuneInfoService.getBehandlingskommune(KOMMUNENR_2, KOMMUNENAVN_2)).thenReturn(KOMMUNENAVN_2);
+
+        var navEnhetFrontends = navEnhetRessurs.hentNavEnheter(BEHANDLINGSID);
+
+        assertThatEnheterAreCorrectlyConverted(navEnhetFrontends, singletonList(SOKNADSMOTTAKER_2));
+        assertThat(navEnhetFrontends.get(0).valgt, is(true));
+    }
+
+    @Test
+    public void getValgtNavEnhetSkalReturnereEnhetRiktigKonvertert() {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         soknadUnderArbeid.getJsonInternalSoknad().getSoknad().withMottaker(SOKNADSMOTTAKER).getData().getPersonalia()
                 .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT));
@@ -176,7 +205,7 @@ public class NavEnhetRessursTest {
     }
 
     @Test
-    public void getNavEnheterSkalReturnereTomListeNaarOppholdsadresseIkkeErValgt(){
+    public void getNavEnheterSkalReturnereTomListeNaarOppholdsadresseIkkeErValgt() {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia()
                 .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(null));
@@ -189,7 +218,7 @@ public class NavEnhetRessursTest {
     }
 
     @Test
-    public void getValgtNavEnhetSkalReturnereNullNarOppholdsadresseIkkeErValgt(){
+    public void getValgtNavEnhetSkalReturnereNullNarOppholdsadresseIkkeErValgt() {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia()
                 .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(null));
@@ -201,7 +230,7 @@ public class NavEnhetRessursTest {
     }
 
     @Test
-    public void putNavEnhetSkalSetteNavenhet(){
+    public void putNavEnhetSkalSetteNavenhet() {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         soknadUnderArbeid.getJsonInternalSoknad().getSoknad().withMottaker(SOKNADSMOTTAKER).getData().getPersonalia()
                 .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT));
@@ -248,14 +277,14 @@ public class NavEnhetRessursTest {
         verifyNoInteractions(soknadUnderArbeidRepository);
     }
 
-    private void assertThatEnheterAreCorrectlyConverted(List<NavEnhetFrontend> navEnhetFrontends, List<JsonSoknadsmottaker> jsonSoknadsmottakers){
-        for (int i = 0; i < navEnhetFrontends.size(); i++){
+    private void assertThatEnheterAreCorrectlyConverted(List<NavEnhetFrontend> navEnhetFrontends, List<JsonSoknadsmottaker> jsonSoknadsmottakers) {
+        for (int i = 0; i < navEnhetFrontends.size(); i++) {
             assertThatEnhetIsCorrectlyConverted(navEnhetFrontends.get(i), jsonSoknadsmottakers.get(i));
         }
     }
 
     private void assertThatEnhetIsCorrectlyConverted(NavEnhetFrontend navEnhetFrontend, JsonSoknadsmottaker soknadsmottaker) {
-        if (navEnhetFrontend == null){
+        if (navEnhetFrontend == null) {
             assertThat(soknadsmottaker, nullValue());
             return;
         }

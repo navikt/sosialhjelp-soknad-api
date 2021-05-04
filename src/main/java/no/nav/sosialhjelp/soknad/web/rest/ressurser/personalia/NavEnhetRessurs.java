@@ -10,6 +10,7 @@ import no.nav.sosialhjelp.soknad.business.service.SoknadsmottakerService;
 import no.nav.sosialhjelp.soknad.business.soknadunderbehandling.SoknadUnderArbeidRepository;
 import no.nav.sosialhjelp.soknad.consumer.fiks.KommuneInfoService;
 import no.nav.sosialhjelp.soknad.consumer.norg.NorgService;
+import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.bydel.BydelService;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseForslag;
 import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseForslagType;
@@ -35,9 +36,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.bydel.BydelService.BYDEL_MARKA;
 
 @Controller
-@ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })
+@ProtectedWithClaims(issuer = "selvbetjening", claimMap = {"acr=Level4"})
 @Path("/soknader/{behandlingsId}/personalia")
 @Timed
 @Produces(APPLICATION_JSON)
@@ -50,18 +52,22 @@ public class NavEnhetRessurs {
     private final SoknadsmottakerService soknadsmottakerService;
     private final NorgService norgService;
     private final KommuneInfoService kommuneInfoService;
+    private final BydelService bydelService;
 
     public NavEnhetRessurs(
             Tilgangskontroll tilgangskontroll,
             SoknadUnderArbeidRepository soknadUnderArbeidRepository,
             SoknadsmottakerService soknadsmottakerService,
             NorgService norgService,
-            KommuneInfoService kommuneInfoService) {
+            KommuneInfoService kommuneInfoService,
+            BydelService bydelService
+    ) {
         this.tilgangskontroll = tilgangskontroll;
         this.soknadUnderArbeidRepository = soknadUnderArbeidRepository;
         this.soknadsmottakerService = soknadsmottakerService;
         this.norgService = norgService;
         this.kommuneInfoService = kommuneInfoService;
+        this.bydelService = bydelService;
     }
 
     @GET
@@ -146,33 +152,31 @@ public class NavEnhetRessurs {
 
         List<NavEnhetRessurs.NavEnhetFrontend> navEnhetFrontendListe = new ArrayList<>();
 
-        for (AdresseForslag adresseForslag: adresseForslagene) {
-            if (adresseForslag.type != null && adresseForslag.type.equals(AdresseForslagType.MATRIKKELADRESSE))
-            {
-                    List<NavEnhet> navenheter = norgService.getEnheterForKommunenummer(adresseForslag.kommunenummer);
-                    navenheter.forEach(navEnhet ->
-                            addToNavEnhetFrontendListe(navEnhetFrontendListe, adresseForslag, navEnhet, valgtEnhetNr)
-                    );
-                    log.info("Matrikkeladresse ble brukt. Returnerer {} navenheter", navenheter.size());
+        for (AdresseForslag adresseForslag : adresseForslagene) {
+            if (adresseForslag.type != null && adresseForslag.type.equals(AdresseForslagType.MATRIKKELADRESSE)) {
+                List<NavEnhet> navenheter = norgService.getEnheterForKommunenummer(adresseForslag.kommunenummer);
+                navenheter.forEach(navEnhet -> addToNavEnhetFrontendListe(navEnhetFrontendListe, adresseForslag.geografiskTilknytning, adresseForslag, navEnhet, valgtEnhetNr));
+                log.info("Matrikkeladresse ble brukt. Returnerer {} navenheter", navenheter.size());
             } else {
-                NavEnhet navEnhet = norgService.getEnhetForGt(adresseForslag.geografiskTilknytning);
-                addToNavEnhetFrontendListe(navEnhetFrontendListe, adresseForslag, navEnhet, valgtEnhetNr);
+                var geografiskTilknytning = getGeografiskTilknytningFromAdresseForslag(adresseForslag);
+                var navEnhet = norgService.getEnhetForGt(geografiskTilknytning);
+                addToNavEnhetFrontendListe(navEnhetFrontendListe, geografiskTilknytning, adresseForslag, navEnhet, valgtEnhetNr);
             }
         }
 
         return navEnhetFrontendListe.stream().distinct().collect(Collectors.toList());
     }
 
-    private void addToNavEnhetFrontendListe(List<NavEnhetRessurs.NavEnhetFrontend> navEnhetFrontendListe, AdresseForslag adresseForslag, NavEnhet navEnhet, String valgtEnhetNr) {
-        NavEnhetFrontend navEnhetFrontend = mapFraAdresseForslagOgNavEnhetTilNavEnhetFrontend(adresseForslag, navEnhet, valgtEnhetNr);
+    private void addToNavEnhetFrontendListe(List<NavEnhetRessurs.NavEnhetFrontend> navEnhetFrontendListe, String geografiskTilknytning, AdresseForslag adresseForslag, NavEnhet navEnhet, String valgtEnhetNr) {
+        NavEnhetFrontend navEnhetFrontend = mapFraAdresseForslagOgNavEnhetTilNavEnhetFrontend(geografiskTilknytning, adresseForslag, navEnhet, valgtEnhetNr);
         if (navEnhetFrontend != null) {
             navEnhetFrontendListe.add(navEnhetFrontend);
         }
     }
 
-    private NavEnhetRessurs.NavEnhetFrontend mapFraAdresseForslagOgNavEnhetTilNavEnhetFrontend(AdresseForslag adresseForslag, NavEnhet navEnhet, String valgtEnhetNr) {
+    private NavEnhetRessurs.NavEnhetFrontend mapFraAdresseForslagOgNavEnhetTilNavEnhetFrontend(String geografiskTilknytning, AdresseForslag adresseForslag, NavEnhet navEnhet, String valgtEnhetNr) {
         if (navEnhet == null) {
-            log.warn("Kunne ikke hente NAV-enhet: {} , i kommune: {} ({})",adresseForslag.geografiskTilknytning, adresseForslag.kommunenavn, adresseForslag.kommunenummer);
+            log.warn("Kunne ikke hente NAV-enhet: {} , i kommune: {} ({})", geografiskTilknytning, adresseForslag.kommunenavn, adresseForslag.kommunenummer);
             return null;
         }
 
@@ -204,10 +208,18 @@ public class NavEnhetRessurs {
                 .withIsMottakDeaktivert(!digisosKommune);
     }
 
-    private boolean isDigisosKommune(String kommunenummer){
+    private boolean isDigisosKommune(String kommunenummer) {
         boolean isNyDigisosApiKommuneMedMottakAktivert = kommuneInfoService.kanMottaSoknader(kommunenummer) && ServiceUtils.isSendingTilFiksEnabled();
         boolean isGammelSvarUtKommune = KommuneTilNavEnhetMapper.getDigisoskommuner().contains(kommunenummer);
         return isNyDigisosApiKommuneMedMottakAktivert || isGammelSvarUtKommune;
+    }
+
+    private String getGeografiskTilknytningFromAdresseForslag(AdresseForslag adresseForslag) {
+        if (BYDEL_MARKA.equals(adresseForslag.geografiskTilknytning)) {
+            return bydelService.getBydelTilForMarka(adresseForslag);
+        }
+        // flere special cases her?
+        return adresseForslag.geografiskTilknytning;
     }
 
     @XmlAccessorType(XmlAccessType.FIELD)

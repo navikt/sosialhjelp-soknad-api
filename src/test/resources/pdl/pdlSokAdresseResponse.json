@@ -5,6 +5,7 @@
       "totalPages": 1,
       "hits": [
         {
+          "score": 0,
           "vegadresse": {
             "matrikkelId": "276443635",
             "husnummer": 9,

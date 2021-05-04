@@ -1,0 +1,1339 @@
+[
+  {
+    "veiadresse": "ALUNDAMVEIEN",
+    "gatekode": "10114",
+    "husnummerfordeling": [
+      {
+        "fra": 81,
+        "til": 9999,
+        "type": "ODD"
+      }
+    ],
+    "bydelFra": "030117",
+    "bydelTil": "030110",
+    "bydelsnavnTil": "Grorud"
+  },
+  {
+    "veiadresse": "ALUNSJØVEIEN",
+    "gatekode": "10119",
+    "husnummerfordeling": [
+      {
+        "fra": 69,
+        "til": 9999,
+        "type": "ODD"
+      },
+      {
+        "fra": 62,
+        "til": 9999,
+        "type": "EVEN"
+      }
+    ],
+    "bydelFra": "030117",
+    "bydelTil": "030110",
+    "bydelsnavnTil": "Grorud"
+  },
+  {
+    "veiadresse": "BERGENDALSVEIEN",
+    "gatekode": "21623",
+    "husnummerfordeling": [
+      {
+        "fra": 1,
+        "til": 9999,
+        "type": "ALL"
+      }
+    ],
+    "bydelFra": "030117",
+    "bydelTil": "030107",
+    "bydelsnavnTil": "Vestre Aker"
+  },
+  {
+    "veiadresse": "BERGENSVEIEN",
+    "gatekode": "10498",
+    "husnummerfordeling": [
+      {
+        "fra": 805,
+        "til": 9999,
+        "type": "ODD"
+      },
+      {
+        "fra": 74,
+        "til": 9999,
+        "type": "EVEN"
+      }
+    ],
+    "bydelFra": "030117",
+    "bydelTil": "030110",
+    "bydelsnavnTil": "Grorud"
+  },
+  {
+    "veiadresse": "BIRGER AANERUDS VEI",
+    "gatekode": "10604",
+    "husnummerfordeling": [
+      {
+        "fra": 1,
+        "til": 9999,
+        "type": "ALL"
+      }
+    ],
+    "bydelFra": "030117",
+    "bydelTil": "030108",
+    "bydelsnavnTil": "Nordre Aker"
+  },
+  {
+    "veiadresse": "BJØRKEHAVNA",
+    "gatekode": "21519",
+    "husnummerfordeling": [
+      {
+        "fra": 1,
+        "til": 9999,
+        "type": "ALL"
+      }
+    ],
+    "bydelFra": "030117",
+    "bydelTil": "030107",
+    "bydelsnavnTil": "Vestre Aker"
+  },
+  {
+    "veiadresse": "BOMVEIEN",
+    "gatekode": "10782",
+    "husnummerfordeling": [
+      {
+        "fra": 1,
+        "til": 9999,
+        "type": "ALL"
+      }
+    ],
+    "bydelFra": "030117",
+    "bydelTil": "030107",
+    "bydelsnavnTil": "Vestre Aker"
+  },
+  {
+    "veiadresse": "DØLERUDVEIEN",
+    "gatekode": "21022",
+    "husnummerfordeling": [
+      {
+        "fra": 1,
+        "til": 9999,
+        "type": "ALL"
+      }
+    ],
+    "bydelFra": "030117",
+    "bydelTil": "030115",
+    "bydelsnavnTil": "Søndre Nordstrand"
+  },
+  {
+    "veiadresse": "ELVELIVEIEN",
+    "gatekode": "21644",
+    "husnummerfordeling": [
+      {
+        "fra": 1,
+        "til": 9999,
+        "type": "ALL"
+      }
+    ],
+    "bydelFra": "030117",
+    "bydelTil": "030107",
+    "bydelsnavnTil": "Vestre Aker"
+  },
+  {
+    "veiadresse": "ENEBAKKVEIEN",
+    "gatekode": "11540",
+    "husnummerfordeling": [
+      {
+        "fra": 695,
+        "til": 9999,
+        "type": "ODD"
+      },
+      {
+        "fra": 476,
+        "til": 9999,
+        "type": "EVEN"
+      }
+    ],
+    "bydelFra": "030117",
+    "bydelTil": "030115",
+    "bydelsnavnTil": "Søndre Nordstrand"
+  },
+  {
+    "veiadresse": "FROGNERSETERVEIEN",
+    "gatekode": "12043",
+    "husnummerfordeling": [
+      {
+        "fra": 67,
+        "til": 9999,
+        "type": "ODD"
+      }
+    ],
+    "bydelFra": "030117",
+    "bydelTil": "030107",
+    "bydelsnavnTil": "Vestre Aker"
+  },
+  {
+    "veiadresse": "GAMLE HEGGELIVEI",
+    "gatekode": "21637",
+    "husnummerfordeling": [
+      {
+        "fra": 1,
+        "til": 9999,
+        "type": "ALL"
+      }
+    ],
+    "bydelFra": "030117",
+    "bydelTil": "030107",
+    "bydelsnavnTil": "Vestre Aker"
+  },
+  {
+    "veiadresse": "GAMLE MARIDALSVEI",
+    "gatekode": "12167",
+    "husnummerfordeling": [
+      {
+        "fra": 1,
+        "til": 9999,
+        "type": "ALL"
+      }
+    ],
+    "bydelFra": "030117",
+    "bydelTil": "030108",
+    "bydelsnavnTil": "Nordre Aker"
+  },
+  {
+    "veiadresse": "GENERAL RUGES VEI",
+    "gatekode": "12212",
+    "husnummerfordeling": [
+      {
+        "fra": 106,
+        "til": 9999,
+        "type": "EVEN"
+      }
+    ],
+    "bydelFra": "030117",
+    "bydelTil": "030113",
+    "bydelsnavnTil": "Østensjø"
+  },
+  {
+    "veiadresse": "GRANSVEIEN",
+    "gatekode": "21624",
+    "husnummerfordeling": [
+      {
+        "fra": 1,
+        "til": 9999,
+        "type": "ALL"
+      }
+    ],
+    "bydelFra": "030117",
+    "bydelTil": "030107",
+    "bydelsnavnTil": "Vestre Aker"
+  },
+  {
+    "veiadresse": "GREFSENKOLLVEIEN",
+    "gatekode": "12341",
+    "husnummerfordeling": [
+      {
+        "fra": 56,
+        "til": 9999,
+        "type": "EVEN"
+      }
+    ],
+    "bydelFra": "030117",
+    "bydelTil": "030108",
+    "bydelsnavnTil": "Nordre Aker"
+  },
+  {
+    "veiadresse": "GREVEVEIEN",
+    "gatekode": "12373",
+    "husnummerfordeling": [
+      {
+        "fra": 1,
+        "til": 9999,
+        "type": "ALL"
+      }
+    ],
+    "bydelFra": "030117",
+    "bydelTil": "030108",
+    "bydelsnavnTil": "Nordre Aker"
+  },
+  {
+    "veiadresse": "GRYTEBEKKVEIEN",
+    "gatekode": "12438",
+    "husnummerfordeling": [
+      {
+        "fra": 1,
+        "til": 9999,
+        "type": "ALL"
+      }
+    ],
+    "bydelFra": "030117",
+    "bydelTil": "030108",
+    "bydelsnavnTil": "Nordre Aker"
+  },
+  {
+    "veiadresse": "GRYTEVEIEN",
+    "gatekode": "12440",
+    "husnummerfordeling": [
+      {
+        "fra": 2,
+        "til": 9999,
+        "type": "EVEN"
+      }
+    ],
+    "bydelFra": "030117",
+    "bydelTil": "030108",
+    "bydelsnavnTil": "Nordre Aker"
+  },
+  {
+    "veiadresse": "GRØNMOVEIEN",
+    "gatekode": "20363",
+    "husnummerfordeling": [
+      {
+        "fra": 15,
+        "til": 9999,
+        "type": "ODD"
+      }
+    ],
+    "bydelFra": "030117",
+    "bydelTil": "030115",
+    "bydelsnavnTil": "Søndre Nordstrand"
+  },
+  {
+    "veiadresse": "GRØTTUMSVEIEN",
+    "gatekode": "21636",
+    "husnummerfordeling": [
+      {
+        "fra": 1,
+        "til": 9999,
+        "type": "ODD"
+      }
+    ],
+    "bydelFra": "030117",
+    "bydelTil": "030107",
+    "bydelsnavnTil": "Vestre Aker"
+  },
+  {
+    "veiadresse": "GRÅSETERVEIEN",
+    "gatekode": "21626",
+    "husnummerfordeling": [
+      {
+        "fra": 1,
+        "til": 9999,
+        "type": "ALL"
+      }
+    ],
+    "bydelFra": "030117",
+    "bydelTil": "030107",
+    "bydelsnavnTil": "Vestre Aker"
+  },
+  {
+    "veiadresse": "GUNNARS VEI",
+    "gatekode": "12515",
+    "husnummerfordeling": [
+      {
+        "fra": 1,
+        "til": 9999,
+        "type": "ALL"
+      }
+    ],
+    "bydelFra": "030117",
+    "bydelTil": "030108",
+    "bydelsnavnTil": "Nordre Aker"
+  },
+  {
+    "veiadresse": "HAKADALSVEIEN",
+    "gatekode": "12592",
+    "husnummerfordeling": [
+      {
+        "fra": 2,
+        "til": 9999,
+        "type": "EVEN"
+      }
+    ],
+    "bydelFra": "030117",
+    "bydelTil": "030108",
+    "bydelsnavnTil": "Nordre Aker"
+  },
+  {
+    "veiadresse": "HANÅVEIEN",
+    "gatekode": "12673",
+    "husnummerfordeling": [
+      {
+        "fra": 1,
+        "til": 9999,
+        "type": "ALL"
+      }
+    ],
+    "bydelFra": "030117",
+    "bydelTil": "030115",
+    "bydelsnavnTil": "Søndre Nordstrand"
+  },
+  {
+    "veiadresse": "HAUGAKOLLVEIEN",
+    "gatekode": "12742",
+    "husnummerfordeling": [
+      {
+        "fra": 1,
+        "til": 9999,
+        "type": "ALL"
+      }
+    ],
+    "bydelFra": "030117",
+    "bydelTil": "030108",
+    "bydelsnavnTil": "Nordre Aker"
+  },
+  {
+    "veiadresse": "HEIKAMPVEIEN",
+    "gatekode": "21632",
+    "husnummerfordeling": [
+      {
+        "fra": 1,
+        "til": 9999,
+        "type": "ALL"
+      }
+    ],
+    "bydelFra": "030117",
+    "bydelTil": "030107",
+    "bydelsnavnTil": "Vestre Aker"
+  },
+  {
+    "veiadresse": "HOLMENKOLLVEIEN",
+    "gatekode": "13070",
+    "husnummerfordeling": [
+      {
+        "fra": 201,
+        "til": 9999,
+        "type": "ODD"
+      },
+      {
+        "fra": 140,
+        "til": 9999,
+        "type": "EVEN"
+      }
+    ],
+    "bydelFra": "030117",
+    "bydelTil": "030107",
+    "bydelsnavnTil": "Vestre Aker"
+  },
+  {
+    "veiadresse": "JEGERSBORGVEIEN",
+    "gatekode": "21620",
+    "husnummerfordeling": [
+      {
+        "fra": 1,
+        "til": 9999,
+        "type": "ALL"
+      }
+    ],
+    "bydelFra": "030117",
+    "bydelTil": "030107",
+    "bydelsnavnTil": "Vestre Aker"
+  },
+  {
+    "veiadresse": "KALLANDVEIEN",
+    "gatekode": "13596",
+    "husnummerfordeling": [
+      {
+        "fra": 2,
+        "til": 9999,
+        "type": "EVEN"
+      }
+    ],
+    "bydelFra": "030117",
+    "bydelTil": "030108",
+    "bydelsnavnTil": "Nordre Aker"
+  },
+  {
+    "veiadresse": "KALLERUDVEIEN",
+    "gatekode": "13598",
+    "husnummerfordeling": [
+      {
+        "fra": 2,
+        "til": 9999,
+        "type": "EVEN"
+      }
+    ],
+    "bydelFra": "030117",
+    "bydelTil": "030108",
+    "bydelsnavnTil": "Nordre Aker"
+  },
+  {
+    "veiadresse": "KASAVEIEN",
+    "gatekode": "13648",
+    "husnummerfordeling": [
+      {
+        "fra": 1,
+        "til": 9999,
+        "type": "ALL"
+      }
+    ],
+    "bydelFra": "030117",
+    "bydelTil": "030108",
+    "bydelsnavnTil": "Nordre Aker"
+  },
+  {
+    "veiadresse": "KONGEVEIEN",
+    "gatekode": "13850",
+    "husnummerfordeling": [
+      {
+        "fra": 1,
+        "til": 9999,
+        "type": "ODD"
+      },
+      {
+        "fra": 30,
+        "til": 9999,
+        "type": "EVEN"
+      }
+    ],
+    "bydelFra": "030117",
+    "bydelTil": "030107",
+    "bydelsnavnTil": "Vestre Aker"
+  },
+  {
+    "veiadresse": "KRINGLEBEKKVEIEN",
+    "gatekode": "13949",
+    "husnummerfordeling": [
+      {
+        "fra": 1,
+        "til": 9999,
+        "type": "ALL"
+      }
+    ],
+    "bydelFra": "030117",
+    "bydelTil": "030108",
+    "bydelsnavnTil": "Nordre Aker"
+  },
+  {
+    "veiadresse": "KROKEN",
+    "gatekode": "13987",
+    "husnummerfordeling": [
+      {
+        "fra": 1,
+        "til": 9999,
+        "type": "ALL"
+      }
+    ],
+    "bydelFra": "030117",
+    "bydelTil": "030108",
+    "bydelsnavnTil": "Nordre Aker"
+  },
+  {
+    "veiadresse": "KUDALSVEIEN",
+    "gatekode": "14036",
+    "husnummerfordeling": [
+      {
+        "fra": 1,
+        "til": 9999,
+        "type": "ALL"
+      }
+    ],
+    "bydelFra": "030117",
+    "bydelTil": "030108",
+    "bydelsnavnTil": "Nordre Aker"
+  },
+  {
+    "veiadresse": "LANGLIVEIEN",
+    "gatekode": "21629",
+    "husnummerfordeling": [
+      {
+        "fra": 1,
+        "til": 9999,
+        "type": "ALL"
+      }
+    ],
+    "bydelFra": "030117",
+    "bydelTil": "030107",
+    "bydelsnavnTil": "Vestre Aker"
+  },
+  {
+    "veiadresse": "LAUVLUNDVEIEN",
+    "gatekode": "14195",
+    "husnummerfordeling": [
+      {
+        "fra": 1,
+        "til": 9999,
+        "type": "ALL"
+      }
+    ],
+    "bydelFra": "030117",
+    "bydelTil": "030108",
+    "bydelsnavnTil": "Nordre Aker"
+  },
+  {
+    "veiadresse": "LILLE STENSRUD",
+    "gatekode": "14289",
+    "husnummerfordeling": [
+      {
+        "fra": 2,
+        "til": 9999,
+        "type": "EVEN"
+      }
+    ],
+    "bydelFra": "030117",
+    "bydelTil": "030115",
+    "bydelsnavnTil": "Søndre Nordstrand"
+  },
+  {
+    "veiadresse": "LILLOSETERVEIEN",
+    "gatekode": "14323",
+    "husnummerfordeling": [
+      {
+        "fra": 99,
+        "til": 9999,
+        "type": "ODD"
+      }
+    ],
+    "bydelFra": "030117",
+    "bydelTil": "030110",
+    "bydelsnavnTil": "Grorud"
+  },
+  {
+    "veiadresse": "LOKKEBERGET",
+    "gatekode": "21373",
+    "husnummerfordeling": [
+      {
+        "fra": 1,
+        "til": 9999,
+        "type": "ALL"
+      }
+    ],
+    "bydelFra": "030117",
+    "bydelTil": "030107",
+    "bydelsnavnTil": "Vestre Aker"
+  },
+  {
+    "veiadresse": "LØNNÅSVEIEN",
+    "gatekode": "21622",
+    "husnummerfordeling": [
+      {
+        "fra": 1,
+        "til": 9999,
+        "type": "ALL"
+      }
+    ],
+    "bydelFra": "030117",
+    "bydelTil": "030107",
+    "bydelsnavnTil": "Vestre Aker"
+  },
+  {
+    "veiadresse": "MARIDALSVEIEN",
+    "gatekode": "14622",
+    "husnummerfordeling": [
+      {
+        "fra": 425,
+        "til": 9999,
+        "type": "ODD"
+      },
+      {
+        "fra": 438,
+        "til": 9999,
+        "type": "EVEN"
+      }
+    ],
+    "bydelFra": "030117",
+    "bydelTil": "030108",
+    "bydelsnavnTil": "Nordre Aker"
+  },
+  {
+    "veiadresse": "MARIHOLTVEIEN",
+    "gatekode": "14638",
+    "husnummerfordeling": [
+      {
+        "fra": 1,
+        "til": 9999,
+        "type": "ALL"
+      }
+    ],
+    "bydelFra": "030117",
+    "bydelTil": "030112",
+    "bydelsnavnTil": "Alna"
+  },
+  {
+    "veiadresse": "MINÅSVEIEN",
+    "gatekode": "14771",
+    "husnummerfordeling": [
+      {
+        "fra": 1,
+        "til": 9999,
+        "type": "ALL"
+      }
+    ],
+    "bydelFra": "030117",
+    "bydelTil": "030108",
+    "bydelsnavnTil": "Nordre Aker"
+  },
+  {
+    "veiadresse": "MOVASSBAKKEN",
+    "gatekode": "14844",
+    "husnummerfordeling": [
+      {
+        "fra": 1,
+        "til": 9999,
+        "type": "ALL"
+      }
+    ],
+    "bydelFra": "030117",
+    "bydelTil": "030108",
+    "bydelsnavnTil": "Nordre Aker"
+  },
+  {
+    "veiadresse": "NORDMARKA",
+    "gatekode": "15156",
+    "husnummerfordeling": [
+      {
+        "fra": 815,
+        "til": 823,
+        "type": "ODD"
+      },
+      {
+        "fra": 816,
+        "til": 824,
+        "type": "EVEN"
+      },
+      {
+        "fra": 846,
+        "til": 862,
+        "type": "EVEN"
+      },
+      {
+        "fra": 885,
+        "til": 887,
+        "type": "ODD"
+      }
+    ],
+    "bydelFra": "030117",
+    "bydelTil": "030107",
+    "bydelsnavnTil": "Vestre Aker"
+  },
+  {
+    "veiadresse": "NORDMARKA",
+    "gatekode": "15156",
+    "husnummerfordeling": [
+      {
+        "fra": 805,
+        "til": 813,
+        "type": "ODD"
+      },
+      {
+        "fra": 826,
+        "til": 844,
+        "type": "EVEN"
+      },
+      {
+        "fra": 825,
+        "til": 883,
+        "type": "ODD"
+      },
+      {
+        "fra": 889,
+        "til": 9999,
+        "type": "ODD"
+      },
+      {
+        "fra": 864,
+        "til": 9999,
+        "type": "EVEN"
+      }
+    ],
+    "bydelFra": "030117",
+    "bydelTil": "030108",
+    "bydelsnavnTil": "Nordre Aker"
+  },
+  {
+    "veiadresse": "NORDMARKVEIEN",
+    "gatekode": "20676",
+    "husnummerfordeling": [
+      {
+        "fra": 1,
+        "til": 9999,
+        "type": "ALL"
+      }
+    ],
+    "bydelFra": "030117",
+    "bydelTil": "030108",
+    "bydelsnavnTil": "Nordre Aker"
+  },
+  {
+    "veiadresse": "NØKLEVANNSVEIEN",
+    "gatekode": "15269",
+    "husnummerfordeling": [
+      {
+        "fra": 1,
+        "til": 9999,
+        "type": "ODD"
+      }
+    ],
+    "bydelFra": "030117",
+    "bydelTil": "030113",
+    "bydelsnavnTil": "Østensjø"
+  },
+  {
+    "veiadresse": "OSPESKOGVEIEN",
+    "gatekode": "21627",
+    "husnummerfordeling": [
+      {
+        "fra": 1,
+        "til": 9999,
+        "type": "ALL"
+      }
+    ],
+    "bydelFra": "030117",
+    "bydelTil": "030107",
+    "bydelsnavnTil": "Vestre Aker"
+  },
+  {
+    "veiadresse": "RUNDHAUGVEIEN",
+    "gatekode": "16020",
+    "husnummerfordeling": [
+      {
+        "fra": 15,
+        "til": 9999,
+        "type": "ODD"
+      }
+    ],
+    "bydelFra": "030117",
+    "bydelTil": "030108",
+    "bydelsnavnTil": "Nordre Aker"
+  },
+  {
+    "veiadresse": "RUNDMYRVEIEN",
+    "gatekode": "16029",
+    "husnummerfordeling": [
+      {
+        "fra": 1,
+        "til": 9999,
+        "type": "ALL"
+      }
+    ],
+    "bydelFra": "030117",
+    "bydelTil": "030108",
+    "bydelsnavnTil": "Nordre Aker"
+  },
+  {
+    "veiadresse": "RUSTADSAGA",
+    "gatekode": "16041",
+    "husnummerfordeling": [
+      {
+        "fra": 825,
+        "til": 9999,
+        "type": "ODD"
+      },
+      {
+        "fra": 820,
+        "til": 9999,
+        "type": "EVEN"
+      }
+    ],
+    "bydelFra": "030117",
+    "bydelTil": "030113",
+    "bydelsnavnTil": "Østensjø"
+  },
+  {
+    "veiadresse": "SAKARIASVEIEN",
+    "gatekode": "20931",
+    "husnummerfordeling": [
+      {
+        "fra": 1,
+        "til": 9999,
+        "type": "ALL"
+      }
+    ],
+    "bydelFra": "030117",
+    "bydelTil": "030107",
+    "bydelsnavnTil": "Vestre Aker"
+  },
+  {
+    "veiadresse": "SANDERMOSVEIEN",
+    "gatekode": "16170",
+    "husnummerfordeling": [
+      {
+        "fra": 1,
+        "til": 9999,
+        "type": "ALL"
+      }
+    ],
+    "bydelFra": "030117",
+    "bydelTil": "030108",
+    "bydelsnavnTil": "Nordre Aker"
+  },
+  {
+    "veiadresse": "SANDÅSVEIEN",
+    "gatekode": "16184",
+    "husnummerfordeling": [
+      {
+        "fra": 80,
+        "til": 9999,
+        "type": "EVEN"
+      }
+    ],
+    "bydelFra": "030117",
+    "bydelTil": "030110",
+    "bydelsnavnTil": "Grorud"
+  },
+  {
+    "veiadresse": "SETERVOLLVEIEN",
+    "gatekode": "16321",
+    "husnummerfordeling": [
+      {
+        "fra": 1,
+        "til": 9999,
+        "type": "ODD"
+      }
+    ],
+    "bydelFra": "030117",
+    "bydelTil": "030108",
+    "bydelsnavnTil": "Nordre Aker"
+  },
+  {
+    "veiadresse": "SKARSKROKEN",
+    "gatekode": "20636",
+    "husnummerfordeling": [
+      {
+        "fra": 1,
+        "til": 9999,
+        "type": "ALL"
+      }
+    ],
+    "bydelFra": "030117",
+    "bydelTil": "030108",
+    "bydelsnavnTil": "Nordre Aker"
+  },
+  {
+    "veiadresse": "SKÅDALSVEIEN",
+    "gatekode": "16615",
+    "husnummerfordeling": [
+      {
+        "fra": 75,
+        "til": 9999,
+        "type": "ODD"
+      },
+      {
+        "fra": 850,
+        "til": 9999,
+        "type": "EVEN"
+      }
+    ],
+    "bydelFra": "030117",
+    "bydelTil": "030107",
+    "bydelsnavnTil": "Vestre Aker"
+  },
+  {
+    "veiadresse": "SOGNSVANNSVEIEN",
+    "gatekode": "16757",
+    "husnummerfordeling": [
+      {
+        "fra": 70,
+        "til": 9999,
+        "type": "EVEN"
+      }
+    ],
+    "bydelFra": "030117",
+    "bydelTil": "030107",
+    "bydelsnavnTil": "Vestre Aker"
+  },
+  {
+    "veiadresse": "SOLEMSKOGEN",
+    "gatekode": "16783",
+    "husnummerfordeling": [
+      {
+        "fra": 2,
+        "til": 9999,
+        "type": "EVEN"
+      }
+    ],
+    "bydelFra": "030117",
+    "bydelTil": "030108",
+    "bydelsnavnTil": "Nordre Aker"
+  },
+  {
+    "veiadresse": "SOLEMSKOGVEIEN",
+    "gatekode": "16785",
+    "husnummerfordeling": [
+      {
+        "fra": 1,
+        "til": 9999,
+        "type": "ALL"
+      }
+    ],
+    "bydelFra": "030117",
+    "bydelTil": "030108",
+    "bydelsnavnTil": "Nordre Aker"
+  },
+  {
+    "veiadresse": "STRØMSBRÅTAVEIEN",
+    "gatekode": "21619",
+    "husnummerfordeling": [
+      {
+        "fra": 1,
+        "til": 9999,
+        "type": "ODD"
+      }
+    ],
+    "bydelFra": "030117",
+    "bydelTil": "030107",
+    "bydelsnavnTil": "Vestre Aker"
+  },
+  {
+    "veiadresse": "STÅRPUTTVEIEN",
+    "gatekode": "17168",
+    "husnummerfordeling": [
+      {
+        "fra": 1,
+        "til": 9999,
+        "type": "ALL"
+      }
+    ],
+    "bydelFra": "030117",
+    "bydelTil": "030108",
+    "bydelsnavnTil": "Nordre Aker"
+  },
+  {
+    "veiadresse": "SVARTORSETERVEIEN",
+    "gatekode": "21634",
+    "husnummerfordeling": [
+      {
+        "fra": 1,
+        "til": 9999,
+        "type": "ALL"
+      }
+    ],
+    "bydelFra": "030117",
+    "bydelTil": "030107",
+    "bydelsnavnTil": "Vestre Aker"
+  },
+  {
+    "veiadresse": "SØRBRÅTVEIEN",
+    "gatekode": "17301",
+    "husnummerfordeling": [
+      {
+        "fra": 1,
+        "til": 9999,
+        "type": "ALL"
+      }
+    ],
+    "bydelFra": "030117",
+    "bydelTil": "030108",
+    "bydelsnavnTil": "Nordre Aker"
+  },
+  {
+    "veiadresse": "SØRHELLINGA",
+    "gatekode": "17318",
+    "husnummerfordeling": [
+      {
+        "fra": 1,
+        "til": 9999,
+        "type": "ALL"
+      }
+    ],
+    "bydelFra": "030117",
+    "bydelTil": "030108",
+    "bydelsnavnTil": "Nordre Aker"
+  },
+  {
+    "veiadresse": "SØRKEDALEN",
+    "gatekode": "17322",
+    "husnummerfordeling": [
+      {
+        "fra": 1,
+        "til": 9999,
+        "type": "ALL"
+      }
+    ],
+    "bydelFra": "030117",
+    "bydelTil": "030107",
+    "bydelsnavnTil": "Vestre Aker"
+  },
+  {
+    "veiadresse": "SØRKEDALSVEIEN",
+    "gatekode": "17327",
+    "husnummerfordeling": [
+      {
+        "fra": 537,
+        "til": 9999,
+        "type": "ODD"
+      },
+      {
+        "fra": 446,
+        "til": 9999,
+        "type": "EVEN"
+      }
+    ],
+    "bydelFra": "030117",
+    "bydelTil": "030107",
+    "bydelsnavnTil": "Vestre Aker"
+  },
+  {
+    "veiadresse": "SØRLIVEIEN",
+    "gatekode": "17336",
+    "husnummerfordeling": [
+      {
+        "fra": 70,
+        "til": 9999,
+        "type": "EVEN"
+      }
+    ],
+    "bydelFra": "030117",
+    "bydelTil": "030115",
+    "bydelsnavnTil": "Søndre Nordstrand"
+  },
+  {
+    "veiadresse": "SØRSTIEN",
+    "gatekode": "20832",
+    "husnummerfordeling": [
+      {
+        "fra": 1,
+        "til": 9999,
+        "type": "ODD"
+      }
+    ],
+    "bydelFra": "030117",
+    "bydelTil": "030108",
+    "bydelsnavnTil": "Nordre Aker"
+  },
+  {
+    "veiadresse": "SØRSVINGEN",
+    "gatekode": "20034",
+    "husnummerfordeling": [
+      {
+        "fra": 1,
+        "til": 9999,
+        "type": "ALL"
+      }
+    ],
+    "bydelFra": "030117",
+    "bydelTil": "030108",
+    "bydelsnavnTil": "Nordre Aker"
+  },
+  {
+    "veiadresse": "TANGENVEIEN",
+    "gatekode": "21621",
+    "husnummerfordeling": [
+      {
+        "fra": 1,
+        "til": 9999,
+        "type": "ALL"
+      }
+    ],
+    "bydelFra": "030117",
+    "bydelTil": "030107",
+    "bydelsnavnTil": "Vestre Aker"
+  },
+  {
+    "veiadresse": "TOMM MURSTADBAKKEN",
+    "gatekode": "21421",
+    "husnummerfordeling": [
+      {
+        "fra": 1,
+        "til": 9999,
+        "type": "ALL"
+      }
+    ],
+    "bydelFra": "030117",
+    "bydelTil": "030107",
+    "bydelsnavnTil": "Vestre Aker"
+  },
+  {
+    "veiadresse": "TORSTØLVEIEN",
+    "gatekode": "17668",
+    "husnummerfordeling": [
+      {
+        "fra": 1,
+        "til": 9999,
+        "type": "ALL"
+      }
+    ],
+    "bydelFra": "030117",
+    "bydelTil": "030108",
+    "bydelsnavnTil": "Nordre Aker"
+  },
+  {
+    "veiadresse": "TROLLVANNSVEIEN",
+    "gatekode": "17735",
+    "husnummerfordeling": [
+      {
+        "fra": 1,
+        "til": 9999,
+        "type": "ODD"
+      }
+    ],
+    "bydelFra": "030117",
+    "bydelTil": "030108",
+    "bydelsnavnTil": "Nordre Aker"
+  },
+  {
+    "veiadresse": "TRYVANNSVEIEN",
+    "gatekode": "17787",
+    "husnummerfordeling": [
+      {
+        "fra": 1,
+        "til": 9999,
+        "type": "ALL"
+      }
+    ],
+    "bydelFra": "030117",
+    "bydelTil": "030107",
+    "bydelsnavnTil": "Vestre Aker"
+  },
+  {
+    "veiadresse": "ULLEVÅLSETERVEIEN",
+    "gatekode": "20675",
+    "husnummerfordeling": [
+      {
+        "fra": 31,
+        "til": 9999,
+        "type": "ODD"
+      },
+      {
+        "fra": 60,
+        "til": 9999,
+        "type": "EVEN"
+      }
+    ],
+    "bydelFra": "030117",
+    "bydelTil": "030108",
+    "bydelsnavnTil": "Nordre Aker"
+  },
+  {
+    "veiadresse": "VENNERBAKKEN",
+    "gatekode": "21496",
+    "husnummerfordeling": [
+      {
+        "fra": 1,
+        "til": 9999,
+        "type": "ALL"
+      }
+    ],
+    "bydelFra": "030117",
+    "bydelTil": "030107",
+    "bydelsnavnTil": "Vestre Aker"
+  },
+  {
+    "veiadresse": "VETTALIVEIEN",
+    "gatekode": "18280",
+    "husnummerfordeling": [
+      {
+        "fra": 22,
+        "til": 9999,
+        "type": "EVEN"
+      }
+    ],
+    "bydelFra": "030117",
+    "bydelTil": "030107",
+    "bydelsnavnTil": "Vestre Aker"
+  },
+  {
+    "veiadresse": "ZINOBERSTUBBEN",
+    "gatekode": "21642",
+    "husnummerfordeling": [
+      {
+        "fra": 1,
+        "til": 9999,
+        "type": "ALL"
+      }
+    ],
+    "bydelFra": "030117",
+    "bydelTil": "030107",
+    "bydelsnavnTil": "Vestre Aker"
+  },
+  {
+    "veiadresse": "ZINOBERVEIEN",
+    "gatekode": "18565",
+    "husnummerfordeling": [
+      {
+        "fra": 1,
+        "til": 9999,
+        "type": "ALL"
+      }
+    ],
+    "bydelFra": "030117",
+    "bydelTil": "030107",
+    "bydelsnavnTil": "Vestre Aker"
+  },
+  {
+    "veiadresse": "ØSTMARKVEIEN",
+    "gatekode": "18673",
+    "husnummerfordeling": [
+      {
+        "fra": 121,
+        "til": 9999,
+        "type": "ODD"
+      },
+      {
+        "fra": 140,
+        "til": 9999,
+        "type": "EVEN"
+      }
+    ],
+    "bydelFra": "030117",
+    "bydelTil": "030113",
+    "bydelsnavnTil": "Østensjø"
+  },
+  {
+    "veiadresse": "ÅRVOLLVEIEN",
+    "gatekode": "18808",
+    "husnummerfordeling": [
+      {
+        "fra": 85,
+        "til": 9999,
+        "type": "ODD"
+      }
+    ],
+    "bydelFra": "030117",
+    "bydelTil": "030109",
+    "bydelsnavnTil": "Bjerke"
+  },
+  {
+    "veiadresse": "BIRGER AANERUDS VEI",
+    "gatekode": "10694",
+    "husnummerfordeling": [
+      {
+        "fra": 1,
+        "til": 7,
+        "type": "ODD"
+      },
+      {
+        "fra": 2,
+        "til": 6,
+        "type": "EVEN"
+      }
+    ],
+    "bydelFra": "030117",
+    "bydelTil": "30108",
+    "bydelsnavnTil": "Nordre Aker"
+  },
+  {
+    "veiadresse": "BYVEIEN",
+    "gatekode": "21648",
+    "husnummerfordeling": [
+      {
+        "fra": 11,
+        "til": 149,
+        "type": "ODD"
+      },
+      {
+        "fra": 10,
+        "til": 148,
+        "type": "EVEN"
+      }
+    ],
+    "bydelFra": "030117",
+    "bydelTil": "30107",
+    "bydelsnavnTil": "Vestre Aker"
+  },
+  {
+    "veiadresse": "OLAF LØRENSKOGENS VEI",
+    "gatekode": "21617",
+    "husnummerfordeling": [
+      {
+        "fra": 103,
+        "til": 103,
+        "type": "ODD"
+      },
+      {
+        "fra": 102,
+        "til": 104,
+        "type": "EVEN"
+      }
+    ],
+    "bydelFra": "030117",
+    "bydelTil": "30108",
+    "bydelsnavnTil": "Nordre Aker"
+  }
+]
