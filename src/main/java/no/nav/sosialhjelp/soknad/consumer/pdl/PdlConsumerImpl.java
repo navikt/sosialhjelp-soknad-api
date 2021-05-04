@@ -174,6 +174,7 @@ public class PdlConsumerImpl implements PdlConsumer {
 
             return pdlResponse.getData().getAdresseSokResult();
         } catch (PdlApiException e) {
+            log.warn("PDL - feil oppdaget i response: {}", e.getMessage(), e);
             throw e;
         } catch (Exception e) {
             log.warn("Kall til PDL feilet (adresseSok)");

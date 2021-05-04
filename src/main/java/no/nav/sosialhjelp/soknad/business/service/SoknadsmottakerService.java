@@ -80,7 +80,6 @@ public class SoknadsmottakerService {
             return adresseForslagForMatrikkelAdresse((JsonMatrikkelAdresse) adresse);
         } else if (adresse.getType().equals(JsonAdresse.Type.GATEADRESSE)) {
             var sokedata = sokedateFromGateAdresse((JsonGateAdresse) adresse);
-            log.info("Pdl adressesok, sokedata: {}", sokedata);
             var adresseForslag = pdlAdresseSokService.getAdresseForslag(sokedata);
             return Collections.singletonList(adresseForslag);
         }
