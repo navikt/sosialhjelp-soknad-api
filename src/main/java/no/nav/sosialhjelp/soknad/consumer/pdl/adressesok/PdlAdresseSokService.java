@@ -24,6 +24,7 @@ import static java.util.Collections.emptyList;
 import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.FieldName.ADRESSENAVN;
 import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.FieldName.HUSBOKSTAV;
 import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.FieldName.HUSNUMMER;
+import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.FieldName.POSTNUMMER;
 import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.FieldName.POSTSTED;
 import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.SearchRule.CONTAINS;
 import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.SearchRule.EQUALS;
@@ -109,6 +110,9 @@ public class PdlAdresseSokService {
         }
         if (isNotEmpty(sokedata.husbokstav)) {
             criteriaList.add(criteria(HUSBOKSTAV, EQUALS, sokedata.husbokstav));
+        }
+        if (isNotEmpty(sokedata.postnummer)) {
+            criteriaList.add(criteria(POSTNUMMER, EQUALS, sokedata.postnummer));
         }
         if (isNotEmpty(sokedata.poststed)) {
             criteriaList.add(criteria(POSTSTED, EQUALS, sokedata.poststed));

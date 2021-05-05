@@ -5,6 +5,7 @@ public enum FieldName {
     ADRESSENAVN("adressenavn"),
     HUSNUMMER("husnummer"),
     HUSBOKSTAV("husbokstav"),
+    POSTNUMMER("postnummer"),
     POSTSTED("poststed");
 
     private final String name;
