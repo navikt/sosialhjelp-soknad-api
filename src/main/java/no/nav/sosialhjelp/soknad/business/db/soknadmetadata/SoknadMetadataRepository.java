@@ -32,7 +32,7 @@ public interface SoknadMetadataRepository {
 
     List<SoknadMetadata> hentPabegynteSoknaderForBruker(String fnr);
 
-    List<SoknadMetadata> hentSoknaderForEttersending(String fnr, LocalDateTime after);
+    List<SoknadMetadata> hentInnsendteSoknaderForBrukerEtterTidspunkt(String fnr, LocalDateTime after);
 
     void slettSoknadMetaData(String behandlingsId, String eier);
 }

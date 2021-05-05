@@ -1,9 +1,7 @@
 package no.nav.sosialhjelp.soknad.oppslag;
 
 import no.nav.sosialhjelp.soknad.oppslag.kontonummer.KontonummerDto;
-import no.nav.sosialhjelp.soknad.oppslag.utbetaling.UtbetalingDto;
-
-import java.util.List;
+import no.nav.sosialhjelp.soknad.oppslag.utbetaling.UtbetalingerResponseDto;
 
 public interface OppslagConsumer {
 
@@ -11,5 +9,5 @@ public interface OppslagConsumer {
 
     KontonummerDto getKontonummer(String ident);
 
-    List<UtbetalingDto> getUtbetalingerSiste40Dager(String ident);
+    UtbetalingerResponseDto getUtbetalingerSiste40Dager(String ident);
 }

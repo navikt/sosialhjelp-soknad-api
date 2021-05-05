@@ -4,7 +4,7 @@ import io.github.resilience4j.retry.Retry;
 import no.nav.sosialhjelp.soknad.consumer.mdc.MDCOperations;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import no.nav.sosialhjelp.soknad.oppslag.kontonummer.KontonummerDto;
-import no.nav.sosialhjelp.soknad.oppslag.utbetaling.UtbetalingDto;
+import no.nav.sosialhjelp.soknad.oppslag.utbetaling.UtbetalingerResponseDto;
 import org.eclipse.jetty.http.HttpHeader;
 import org.slf4j.Logger;
 import org.springframework.cache.annotation.Cacheable;
@@ -15,7 +15,6 @@ import javax.ws.rs.ServerErrorException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.GenericType;
-import java.util.List;
 
 import static no.nav.sosialhjelp.soknad.consumer.retry.RetryUtils.retryConfig;
 import static no.nav.sosialhjelp.soknad.consumer.retry.RetryUtils.withRetry;
@@ -71,10 +70,10 @@ public class OppslagConsumerImpl implements OppslagConsumer {
 
     @Override
     @Cacheable("utbetalingerOppslagCache")
-    public List<UtbetalingDto> getUtbetalingerSiste40Dager(String ident) {
+    public UtbetalingerResponseDto getUtbetalingerSiste40Dager(String ident) {
         var request = lagRequest(endpoint + "utbetalinger");
         try {
-            return withRetry(retry, () -> request.get(new GenericType<List<UtbetalingDto>>() {}));
+            return withRetry(retry, () -> request.get(new GenericType<UtbetalingerResponseDto>() {}));
         } catch (Exception e) {
             log.error("oppslag.utbetalinger - Noe uventet feilet", e);
             return null;

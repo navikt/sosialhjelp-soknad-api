@@ -1,9 +1,12 @@
 package no.nav.sosialhjelp.soknad.consumer.pdl;
 
+import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.AdresseSokResult;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.PdlAdressebeskyttelse;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.PdlBarn;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.PdlEktefelle;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.PdlPerson;
+
+import java.util.Map;
 
 public interface PdlConsumer {
 
@@ -16,4 +19,6 @@ public interface PdlConsumer {
     PdlAdressebeskyttelse hentAdressebeskyttelse(String ident);
 
     void ping();
+
+    AdresseSokResult getAdresseSokResult(Map<String, Object> variables);
 }

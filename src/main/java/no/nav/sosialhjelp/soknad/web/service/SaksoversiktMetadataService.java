@@ -87,7 +87,7 @@ public class SaksoversiktMetadataService {
                 .minusDays(ETTERSENDELSE_FRIST_DAGER);
         DateTimeFormatter datoFormatter = DateTimeFormatter.ofPattern("d. MMMM yyyy");
 
-        List<SoknadMetadata> soknader = soknadMetadataRepository.hentSoknaderForEttersending(fnr, ettersendelseFrist);
+        List<SoknadMetadata> soknader = soknadMetadataRepository.hentInnsendteSoknaderForBrukerEtterTidspunkt(fnr, ettersendelseFrist);
 
         return soknader.stream().map(soknad ->
             new EttersendingsSoknad()
