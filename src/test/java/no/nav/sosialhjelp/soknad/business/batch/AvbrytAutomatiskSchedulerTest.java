@@ -57,7 +57,7 @@ public class AvbrytAutomatiskSchedulerTest {
                 .withInnsendingStatus(SoknadInnsendingStatus.UNDER_ARBEID);
 
         when(soknadMetadataRepository.hentForBatch(DAGER_GAMMEL_SOKNAD)).thenReturn(Optional.of(soknadMetadata)).thenReturn(Optional.empty());
-        when(soknadUnderArbeidRepository.hentSoknadOptional(BEHANDLINGS_ID, EIER)).thenReturn(Optional.of(soknadUnderArbeid));
+        when(soknadUnderArbeidRepository.hentSoknadOptionalForBatch(BEHANDLINGS_ID, EIER)).thenReturn(Optional.of(soknadUnderArbeid));
 
         scheduler.avbrytGamleSoknader();
 
