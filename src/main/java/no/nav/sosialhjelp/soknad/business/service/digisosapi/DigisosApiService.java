@@ -212,6 +212,8 @@ public class DigisosApiService {
                 soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker().getNavEnhetsnavn());
         String digisosId = sendOgKrypter(soknadJson, tilleggsinformasjonJson, vedleggJson, filOpplastinger, kommunenummer, soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker().getNavEnhetsnavn(), behandlingsId, token);
 
+        innsendingService.finnOgSlettSoknadUnderArbeidVedSendingTilFiks(behandlingsId, soknadUnderArbeid.getEier());
+
         soknadMetricsService.reportSendSoknadMetrics(SubjectHandler.getUserId(), soknadUnderArbeid, vedlegg.vedleggListe);
         return digisosId;
     }
