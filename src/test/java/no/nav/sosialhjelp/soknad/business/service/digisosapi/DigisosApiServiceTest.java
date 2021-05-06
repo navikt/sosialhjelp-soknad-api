@@ -12,6 +12,7 @@ import no.nav.sosialhjelp.soknad.business.SoknadUnderArbeidService;
 import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.SosialhjelpPdfGenerator;
 import no.nav.sosialhjelp.soknad.business.service.HenvendelseService;
 import no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadMetricsService;
+import no.nav.sosialhjelp.soknad.business.soknadunderbehandling.SoknadUnderArbeidRepository;
 import no.nav.sosialhjelp.soknad.consumer.fiks.DigisosApi;
 import no.nav.sosialhjelp.soknad.domain.OpplastetVedlegg;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
@@ -58,6 +59,8 @@ public class DigisosApiServiceTest {
     private DigisosApi digisosApi;
     @Mock
     private SoknadMetricsService soknadMetricsService;
+    @Mock
+    private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
     @InjectMocks
     private DigisosApiService digisosApiService;
@@ -152,7 +155,7 @@ public class DigisosApiServiceTest {
 
         digisosApiService.sendSoknad(soknadUnderArbeid, "token", "0301");
 
-        verify(innsendingService, times(1)).finnOgSlettSoknadUnderArbeidVedSendingTilFiks(anyString(), anyString());
+        verify(soknadUnderArbeidRepository, times(1)).slettSoknad(any(), anyString());
     }
 
     private JsonInternalSoknad lagInternalSoknadForEttersending() {

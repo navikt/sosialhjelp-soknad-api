@@ -10,6 +10,7 @@ import no.nav.sosialhjelp.soknad.business.exceptions.SamtidigOppdateringExceptio
 import no.nav.sosialhjelp.soknad.business.exceptions.SoknadLaastException;
 import no.nav.sosialhjelp.soknad.domain.SoknadInnsendingStatus;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
+import org.slf4j.Logger;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
 import org.springframework.stereotype.Component;
@@ -38,10 +39,13 @@ import static no.nav.sosialhjelp.soknad.business.db.SQLUtils.selectNextSequenceV
 import static no.nav.sosialhjelp.soknad.domain.SoknadInnsendingStatus.SENDT_MED_DIGISOS_API;
 import static no.nav.sosialhjelp.soknad.domain.SoknadInnsendingStatus.UNDER_ARBEID;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+import static org.slf4j.LoggerFactory.getLogger;
 
 @Named("SoknadUnderArbeidRepository")
 @Component
 public class SoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoSupport implements SoknadUnderArbeidRepository {
+
+    private static final Logger log = getLogger(SoknadUnderArbeidRepositoryJdbc.class);
 
     private final ObjectMapper mapper;
     private final ObjectWriter writer;
@@ -175,6 +179,7 @@ public class SoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoSuppor
 
     @Override
     public void slettSoknad(SoknadUnderArbeid soknadUnderArbeid, String eier) {
+        log.info("Forsøker å slette soknadUnderArbeid");
         sjekkOmBrukerEierSoknadUnderArbeid(soknadUnderArbeid, eier);
         transactionTemplate.execute(new TransactionCallbackWithoutResult() {
             @Override
@@ -183,8 +188,10 @@ public class SoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoSuppor
                 if (soknadUnderArbeidId == null) {
                     throw new RuntimeException("Kan ikke slette sendt søknad uten søknadsid");
                 }
+                log.info("Sletter soknadUnderArbeid {}", soknadUnderArbeid.getBehandlingsId());
                 opplastetVedleggRepository.slettAlleVedleggForSoknad(soknadUnderArbeidId, eier);
-                getJdbcTemplate().update("delete from SOKNAD_UNDER_ARBEID where EIER = ? and SOKNAD_UNDER_ARBEID_ID = ?", eier, soknadUnderArbeidId);
+                var oppdaterteRader = getJdbcTemplate().update("delete from SOKNAD_UNDER_ARBEID where EIER = ? and SOKNAD_UNDER_ARBEID_ID = ?", eier, soknadUnderArbeidId);
+                log.info("Antall rader oppdatert (delete) {}", oppdaterteRader);
             }
         });
     }
