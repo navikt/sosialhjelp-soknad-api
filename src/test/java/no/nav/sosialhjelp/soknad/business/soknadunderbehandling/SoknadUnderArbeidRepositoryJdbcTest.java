@@ -158,6 +158,20 @@ public class SoknadUnderArbeidRepositoryJdbcTest {
         assertThat(opplastetVedleggRepository.hentVedlegg(opplastetVedleggUuid, EIER).isPresent(), is(false));
     }
 
+    @Test
+    public void hentSoknaderForBatchSkalFinneGamleSoknader() {
+        var skalIkkeSlettes = lagSoknadUnderArbeid(BEHANDLINGSID, 13);
+        var skalIkkeSlettesId = soknadUnderArbeidRepository.opprettSoknad(skalIkkeSlettes, EIER);
+
+        var skalSlettes = lagSoknadUnderArbeid("annen_behandlingsid", 15);
+        var skalSlettesId = soknadUnderArbeidRepository.opprettSoknad(skalSlettes, EIER);
+
+        var soknader = soknadUnderArbeidRepository.hentSoknaderForBatch();
+
+        assertThat(soknader.size(), is(1));
+        assertThat(soknader.get(0).getSoknadId(), is(skalSlettesId));
+    }
+
     private SoknadUnderArbeid lagSoknadUnderArbeid(String behandlingsId) {
         return new SoknadUnderArbeid().withVersjon(1L)
                 .withBehandlingsId(behandlingsId)
@@ -167,6 +181,17 @@ public class SoknadUnderArbeidRepositoryJdbcTest {
                 .withInnsendingStatus(UNDER_ARBEID)
                 .withOpprettetDato(OPPRETTET_DATO)
                 .withSistEndretDato(SIST_ENDRET_DATO);
+    }
+
+    private SoknadUnderArbeid lagSoknadUnderArbeid(String behandlingsId, int antallDagerSiden) {
+        return new SoknadUnderArbeid().withVersjon(1L)
+                .withBehandlingsId(behandlingsId)
+                .withTilknyttetBehandlingsId(TILKNYTTET_BEHANDLINGSID)
+                .withEier(EIER)
+                .withJsonInternalSoknad(JSON_INTERNAL_SOKNAD)
+                .withInnsendingStatus(UNDER_ARBEID)
+                .withOpprettetDato(LocalDateTime.now().minusDays(antallDagerSiden))
+                .withSistEndretDato(LocalDateTime.now().minusDays(antallDagerSiden));
     }
 
     private OpplastetVedlegg lagOpplastetVedlegg(Long soknadId) {
