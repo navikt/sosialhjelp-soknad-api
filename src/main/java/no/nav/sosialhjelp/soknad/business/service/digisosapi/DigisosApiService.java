@@ -277,7 +277,7 @@ public class DigisosApiService {
     }
 
     private void finnOgSlettSoknadUnderArbeidEtterSendingTilFiks(SoknadUnderArbeid soknadUnderArbeid) {
-        log.info("Henter søknad under arbeid for sletting, behandlingsid {}", soknadUnderArbeid.getBehandlingsId());
+        log.info("Sletter SoknadUnderArbeid, behandlingsid {}", soknadUnderArbeid.getBehandlingsId());
         soknadUnderArbeidRepository.slettSoknad(soknadUnderArbeid, soknadUnderArbeid.getEier());
     }
 }

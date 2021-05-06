@@ -179,7 +179,6 @@ public class SoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoSuppor
 
     @Override
     public void slettSoknad(SoknadUnderArbeid soknadUnderArbeid, String eier) {
-        log.info("Forsøker å slette soknadUnderArbeid");
         sjekkOmBrukerEierSoknadUnderArbeid(soknadUnderArbeid, eier);
         transactionTemplate.execute(new TransactionCallbackWithoutResult() {
             @Override
@@ -188,10 +187,8 @@ public class SoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoSuppor
                 if (soknadUnderArbeidId == null) {
                     throw new RuntimeException("Kan ikke slette sendt søknad uten søknadsid");
                 }
-                log.info("Sletter soknadUnderArbeid {}", soknadUnderArbeid.getBehandlingsId());
                 opplastetVedleggRepository.slettAlleVedleggForSoknad(soknadUnderArbeidId, eier);
                 var oppdaterteRader = getJdbcTemplate().update("delete from SOKNAD_UNDER_ARBEID where EIER = ? and SOKNAD_UNDER_ARBEID_ID = ?", eier, soknadUnderArbeidId);
-                log.info("Antall rader oppdatert (delete) {}", oppdaterteRader);
             }
         });
     }
