@@ -84,6 +84,7 @@ public class DigisosApiServiceTest {
     @Test
     public void tearDown() {
         SubjectHandler.resetOidcSubjectHandlerService();
+        System.clearProperty("environment.name");
     }
 
     @Test
