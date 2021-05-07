@@ -43,7 +43,7 @@ public class SlettSoknadUnderArbeidSchedulerTest {
         var soknadSkalIkkeSlettes = soknadUnderArbeid(1L, BEHANDLINGS_ID, SoknadInnsendingStatus.UNDER_ARBEID);
         var soknadSkalSlettes = soknadUnderArbeid(2L, BEHANDLINGS_ID, SoknadInnsendingStatus.UNDER_ARBEID);
 
-        when(soknadUnderArbeidRepository.hentSoknaderForBatch())
+        when(soknadUnderArbeidRepository.hentGamleSoknadUnderArbeidForBatch())
                 .thenReturn(Arrays.asList(soknadSkalSlettes, soknadSkalIkkeSlettes));
 
         slettSoknadUnderArbeidScheduler.slettGamleSoknadUnderArbeid();

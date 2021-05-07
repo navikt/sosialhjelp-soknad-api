@@ -166,7 +166,7 @@ public class SoknadUnderArbeidRepositoryJdbcTest {
         var skalSlettes = lagSoknadUnderArbeid("annen_behandlingsid", 15);
         var skalSlettesId = soknadUnderArbeidRepository.opprettSoknad(skalSlettes, EIER);
 
-        var soknader = soknadUnderArbeidRepository.hentSoknaderForBatch();
+        var soknader = soknadUnderArbeidRepository.hentGamleSoknadUnderArbeidForBatch();
 
         assertThat(soknader.size(), is(1));
         assertThat(soknader.get(0).getSoknadId(), is(skalSlettesId));

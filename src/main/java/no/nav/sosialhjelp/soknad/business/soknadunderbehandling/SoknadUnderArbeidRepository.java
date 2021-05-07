@@ -12,7 +12,7 @@ public interface SoknadUnderArbeidRepository {
     Optional<SoknadUnderArbeid> hentSoknad(Long soknadId, String eier);
     SoknadUnderArbeid hentSoknad(String behandlingsId, String eier);
     Optional<SoknadUnderArbeid> hentSoknadOptional(String behandlingsId, String eier);
-    List<SoknadUnderArbeid> hentSoknaderForBatch();
+    List<SoknadUnderArbeid> hentGamleSoknadUnderArbeidForBatch();
     Optional<SoknadUnderArbeid> hentEttersendingMedTilknyttetBehandlingsId(String behandlingsId, String eier);
     List<SoknadUnderArbeid> hentForeldedeEttersendelser();
     List<SoknadUnderArbeid> hentAlleSoknaderUnderArbeidSiste15Dager();

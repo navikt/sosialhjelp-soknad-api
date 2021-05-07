@@ -59,7 +59,7 @@ public class SlettSoknadUnderArbeidScheduler {
     }
 
     private void slett() {
-        var soknader = soknadUnderArbeidRepository.hentSoknaderForBatch();
+        var soknader = soknadUnderArbeidRepository.hentGamleSoknadUnderArbeidForBatch();
 
         soknader.forEach(soknadUnderArbeid -> {
             if (harGaattForLangTid()) {
