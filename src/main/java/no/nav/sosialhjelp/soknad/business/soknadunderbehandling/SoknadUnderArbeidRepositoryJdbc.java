@@ -8,8 +8,8 @@ import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse;
 import no.nav.sosialhjelp.soknad.business.exceptions.SamtidigOppdateringException;
 import no.nav.sosialhjelp.soknad.business.exceptions.SoknadLaastException;
-import no.nav.sosialhjelp.soknad.domain.SoknadInnsendingStatus;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
+import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeidStatus;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
 import org.springframework.stereotype.Component;
@@ -35,8 +35,7 @@ import static java.time.LocalDateTime.now;
 import static java.util.Date.from;
 import static no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator.ensureValidInternalSoknad;
 import static no.nav.sosialhjelp.soknad.business.db.SQLUtils.selectNextSequenceValue;
-import static no.nav.sosialhjelp.soknad.domain.SoknadInnsendingStatus.SENDT_MED_DIGISOS_API;
-import static no.nav.sosialhjelp.soknad.domain.SoknadInnsendingStatus.UNDER_ARBEID;
+import static no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeidStatus.UNDER_ARBEID;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 @Named("SoknadUnderArbeidRepository")
@@ -76,7 +75,7 @@ public class SoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoSuppor
                         soknadUnderArbeid.getTilknyttetBehandlingsId(),
                         soknadUnderArbeid.getEier(),
                         mapJsonSoknadInternalTilFil(soknadUnderArbeid.getJsonInternalSoknad()),
-                        soknadUnderArbeid.getInnsendingStatus().toString(),
+                        soknadUnderArbeid.getStatus().toString(),
                         from(soknadUnderArbeid.getOpprettetDato().atZone(ZoneId.systemDefault()).toInstant()),
                         from(soknadUnderArbeid.getSistEndretDato().atZone(ZoneId.systemDefault()).toInstant()));
         return soknadUnderArbeidId;
@@ -84,14 +83,14 @@ public class SoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoSuppor
 
     @Override
     public Optional<SoknadUnderArbeid> hentSoknad(Long soknadId, String eier) {
-        return getJdbcTemplate().query("select * from SOKNAD_UNDER_ARBEID where EIER = ? and SOKNAD_UNDER_ARBEID_ID = ? and STATUS != ?",
-                new SoknadUnderArbeidRowMapper(), eier, soknadId, SENDT_MED_DIGISOS_API.toString()).stream().findFirst();
+        return getJdbcTemplate().query("select * from SOKNAD_UNDER_ARBEID where EIER = ? and SOKNAD_UNDER_ARBEID_ID = ?",
+                new SoknadUnderArbeidRowMapper(), eier, soknadId).stream().findFirst();
     }
 
     @Override
     public SoknadUnderArbeid hentSoknad(String behandlingsId, String eier) {
-        Optional<SoknadUnderArbeid> soknadUnderArbeidOptional = getJdbcTemplate().query("select * from SOKNAD_UNDER_ARBEID where EIER = ? and BEHANDLINGSID = ? and STATUS != ?",
-                new SoknadUnderArbeidRowMapper(), eier, behandlingsId, SENDT_MED_DIGISOS_API.toString()).stream().findFirst();
+        Optional<SoknadUnderArbeid> soknadUnderArbeidOptional = getJdbcTemplate().query("select * from SOKNAD_UNDER_ARBEID where EIER = ? and BEHANDLINGSID = ?",
+                new SoknadUnderArbeidRowMapper(), eier, behandlingsId).stream().findFirst();
         if (soknadUnderArbeidOptional.isPresent()) {
             return soknadUnderArbeidOptional.get();
         } else {
@@ -101,8 +100,8 @@ public class SoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoSuppor
 
     @Override
     public Optional<SoknadUnderArbeid> hentSoknadOptional(String behandlingsId, String eier) {
-        return getJdbcTemplate().query("select * from SOKNAD_UNDER_ARBEID where EIER = ? and BEHANDLINGSID = ? and STATUS != ?",
-                new SoknadUnderArbeidRowMapper(), eier, behandlingsId, SENDT_MED_DIGISOS_API.toString()).stream().findFirst();
+        return getJdbcTemplate().query("select * from SOKNAD_UNDER_ARBEID where EIER = ? and BEHANDLINGSID = ?",
+                new SoknadUnderArbeidRowMapper(), eier, behandlingsId).stream().findFirst();
     }
 
     @Override
@@ -146,7 +145,7 @@ public class SoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoSuppor
             SoknadUnderArbeid soknadIDb = hentSoknad(soknadUnderArbeid.getSoknadId(), soknadUnderArbeid.getEier()).orElseThrow(() -> new IllegalStateException(
                             String.format("Ingen soknadUnderArbeid funnet for %s, med status %s ",
                                     soknadUnderArbeid.getBehandlingsId(),
-                                    soknadUnderArbeid.getInnsendingStatus())));
+                                    soknadUnderArbeid.getStatus())));
             if (Arrays.equals(mapJsonSoknadInternalTilFil(soknadIDb.getJsonInternalSoknad()), data)) {
                 return;
             }
@@ -164,7 +163,7 @@ public class SoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoSuppor
         final LocalDateTime sistEndretDato = now();
         final int antallOppdaterteRader = getJdbcTemplate()
                 .update("update SOKNAD_UNDER_ARBEID set STATUS = ?, SISTENDRETDATO = ? where SOKNAD_UNDER_ARBEID_ID = ? and EIER = ?",
-                        soknadUnderArbeid.getInnsendingStatus().toString(),
+                        soknadUnderArbeid.getStatus().toString(),
                         from(sistEndretDato.atZone(ZoneId.systemDefault()).toInstant()),
                         soknadUnderArbeid.getSoknadId(),
                         eier);
@@ -196,7 +195,7 @@ public class SoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoSuppor
     }
 
     private void sjekkOmSoknadErLaast(SoknadUnderArbeid soknadUnderArbeid) {
-        if (SoknadInnsendingStatus.LAAST.equals(soknadUnderArbeid.getInnsendingStatus())) {
+        if (SoknadUnderArbeidStatus.LAAST.equals(soknadUnderArbeid.getStatus())) {
             throw new SoknadLaastException("Kan ikke oppdatere søknad med behandlingsid " + soknadUnderArbeid.getBehandlingsId() +
                     " fordi den er sendt fra bruker");
         }
@@ -205,11 +204,11 @@ public class SoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoSuppor
     public class SoknadUnderArbeidRowMapper implements RowMapper<SoknadUnderArbeid> {
 
         public SoknadUnderArbeid mapRow(ResultSet rs, int rowNum) throws SQLException {
-            SoknadInnsendingStatus status = null;
+            SoknadUnderArbeidStatus status = null;
             try {
                 final String statusFraDb = rs.getString("status");
                 if (isNotEmpty(statusFraDb)) {
-                    status = SoknadInnsendingStatus.valueOf(statusFraDb);
+                    status = SoknadUnderArbeidStatus.valueOf(statusFraDb);
                 }
             } catch (IllegalArgumentException e) {
                 throw new RuntimeException("Ukjent innsendingsstatus fra database", e);
@@ -221,7 +220,7 @@ public class SoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoSuppor
                     .withTilknyttetBehandlingsId(rs.getString("tilknyttetbehandlingsid"))
                     .withEier(rs.getString("eier"))
                     .withJsonInternalSoknad(mapDataToJsonInternalSoknad(rs.getBytes("data")))
-                    .withInnsendingStatus(status)
+                    .withStatus(status)
                     .withOpprettetDato(rs.getTimestamp("opprettetdato") != null ?
                             rs.getTimestamp("opprettetdato").toLocalDateTime() : null)
                     .withSistEndretDato(rs.getTimestamp("sistendretdato") != null ?

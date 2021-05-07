@@ -2,7 +2,7 @@ package no.nav.sosialhjelp.soknad.business.service;
 
 import no.nav.sosialhjelp.soknad.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata;
-import no.nav.sosialhjelp.soknad.domain.SoknadInnsendingStatus;
+import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.domain.model.exception.SosialhjelpSoknadApiException;
 import no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SoknadType;
@@ -14,11 +14,11 @@ import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static no.nav.sosialhjelp.soknad.domain.SoknadInnsendingStatus.AVBRUTT_AUTOMATISK;
-import static no.nav.sosialhjelp.soknad.domain.SoknadInnsendingStatus.AVBRUTT_AV_BRUKER;
-import static no.nav.sosialhjelp.soknad.domain.SoknadInnsendingStatus.FERDIG;
-import static no.nav.sosialhjelp.soknad.domain.SoknadInnsendingStatus.SENDT_MED_DIGISOS_API;
-import static no.nav.sosialhjelp.soknad.domain.SoknadInnsendingStatus.UNDER_ARBEID;
+import static no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus.AVBRUTT_AUTOMATISK;
+import static no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus.AVBRUTT_AV_BRUKER;
+import static no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus.FERDIG;
+import static no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus.SENDT_MED_DIGISOS_API;
+import static no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus.UNDER_ARBEID;
 import static no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SosialhjelpInformasjon.SKJEMANUMMER;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -42,7 +42,7 @@ public class HenvendelseService {
         meta.fnr = fnr;
         meta.type = SoknadType.SEND_SOKNAD_KOMMUNAL;
         meta.skjema = SKJEMANUMMER;
-        meta.status = SoknadInnsendingStatus.UNDER_ARBEID;
+        meta.status = SoknadMetadataInnsendingStatus.UNDER_ARBEID;
         meta.opprettetDato = LocalDateTime.now(clock);
         meta.sistEndretDato = LocalDateTime.now(clock);
 

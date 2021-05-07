@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static java.util.Collections.singletonList;
-import static no.nav.sosialhjelp.soknad.domain.SoknadInnsendingStatus.UNDER_ARBEID;
+import static no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus.UNDER_ARBEID;
 import static no.nav.sosialhjelp.soknad.web.service.SoknadOversiktService.DEFAULT_TITTEL;
 import static no.nav.sosialhjelp.soknad.web.service.SoknadOversiktService.KILDE_SOKNAD_API;
 import static org.junit.Assert.assertEquals;
