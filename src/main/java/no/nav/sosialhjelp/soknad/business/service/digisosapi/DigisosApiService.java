@@ -215,7 +215,7 @@ public class DigisosApiService {
                 soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker().getNavEnhetsnavn());
         String digisosId = sendOgKrypter(soknadJson, tilleggsinformasjonJson, vedleggJson, filOpplastinger, kommunenummer, soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker().getNavEnhetsnavn(), behandlingsId, token);
 
-        finnOgSlettSoknadUnderArbeidEtterSendingTilFiks(soknadUnderArbeid);
+        slettSoknadUnderArbeidEtterSendingTilFiks(soknadUnderArbeid);
 
         soknadMetricsService.reportSendSoknadMetrics(SubjectHandler.getUserId(), soknadUnderArbeid, vedlegg.vedleggListe);
         return digisosId;
@@ -276,7 +276,7 @@ public class DigisosApiService {
         return vedlegg;
     }
 
-    private void finnOgSlettSoknadUnderArbeidEtterSendingTilFiks(SoknadUnderArbeid soknadUnderArbeid) {
+    private void slettSoknadUnderArbeidEtterSendingTilFiks(SoknadUnderArbeid soknadUnderArbeid) {
         log.info("Sletter SoknadUnderArbeid, behandlingsid {}", soknadUnderArbeid.getBehandlingsId());
         soknadUnderArbeidRepository.slettSoknad(soknadUnderArbeid, soknadUnderArbeid.getEier());
     }

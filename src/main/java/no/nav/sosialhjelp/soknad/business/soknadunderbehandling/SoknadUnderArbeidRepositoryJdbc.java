@@ -188,7 +188,7 @@ public class SoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoSuppor
                     throw new RuntimeException("Kan ikke slette sendt søknad uten søknadsid");
                 }
                 opplastetVedleggRepository.slettAlleVedleggForSoknad(soknadUnderArbeidId, eier);
-                var oppdaterteRader = getJdbcTemplate().update("delete from SOKNAD_UNDER_ARBEID where EIER = ? and SOKNAD_UNDER_ARBEID_ID = ?", eier, soknadUnderArbeidId);
+                getJdbcTemplate().update("delete from SOKNAD_UNDER_ARBEID where EIER = ? and SOKNAD_UNDER_ARBEID_ID = ?", eier, soknadUnderArbeidId);
             }
         });
     }
