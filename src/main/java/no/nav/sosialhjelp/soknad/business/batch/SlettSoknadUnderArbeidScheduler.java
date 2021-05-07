@@ -19,7 +19,6 @@ public class SlettSoknadUnderArbeidScheduler {
 
     private static final String KLOKKEN_HALV_FEM_OM_NATTEN = "0 30 4 * * *";
     private static final int SCHEDULE_INTERRUPT_S = 60 * 10;
-    private static final int DAGER_GAMMELT = 15;
 
     private LocalDateTime batchStartTime;
     private int vellykket;
