@@ -37,7 +37,6 @@ import static no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator.ensureV
 import static no.nav.sosialhjelp.soknad.business.db.SQLUtils.selectNextSequenceValue;
 import static no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeidStatus.UNDER_ARBEID;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
-import static org.slf4j.LoggerFactory.getLogger;
 
 @Named("SoknadUnderArbeidRepository")
 @Component

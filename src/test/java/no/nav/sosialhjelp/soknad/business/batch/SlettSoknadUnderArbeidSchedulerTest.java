@@ -1,8 +1,8 @@
 package no.nav.sosialhjelp.soknad.business.batch;
 
 import no.nav.sosialhjelp.soknad.business.soknadunderbehandling.SoknadUnderArbeidRepository;
-import no.nav.sosialhjelp.soknad.domain.SoknadInnsendingStatus;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
+import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeidStatus;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -40,8 +40,8 @@ public class SlettSoknadUnderArbeidSchedulerTest {
 
     @Test
     public void skalSletteGamleSoknadUnderArbeid() {
-        var soknadSkalIkkeSlettes = soknadUnderArbeid(1L, BEHANDLINGS_ID, SoknadInnsendingStatus.UNDER_ARBEID);
-        var soknadSkalSlettes = soknadUnderArbeid(2L, BEHANDLINGS_ID, SoknadInnsendingStatus.UNDER_ARBEID);
+        var soknadSkalIkkeSlettes = soknadUnderArbeid(1L, BEHANDLINGS_ID, SoknadUnderArbeidStatus.UNDER_ARBEID);
+        var soknadSkalSlettes = soknadUnderArbeid(2L, BEHANDLINGS_ID, SoknadUnderArbeidStatus.UNDER_ARBEID);
 
         when(soknadUnderArbeidRepository.hentGamleSoknadUnderArbeidForBatch())
                 .thenReturn(Arrays.asList(soknadSkalSlettes, soknadSkalIkkeSlettes));
@@ -52,12 +52,12 @@ public class SlettSoknadUnderArbeidSchedulerTest {
         // verify(soknadUnderArbeidRepository, times(2)).slettSoknad(any(), anyString());
     }
 
-    private SoknadUnderArbeid soknadUnderArbeid(Long id, String behandlingsId, SoknadInnsendingStatus status) {
+    private SoknadUnderArbeid soknadUnderArbeid(Long id, String behandlingsId, SoknadUnderArbeidStatus status) {
         return new SoknadUnderArbeid()
                 .withSoknadId(id)
                 .withBehandlingsId(behandlingsId)
                 .withEier(EIER)
-                .withInnsendingStatus(status)
+                .withStatus(status)
                 .withJsonInternalSoknad(null)
                 .withOpprettetDato(LocalDateTime.now().minusDays(12))
                 .withSistEndretDato(LocalDateTime.now().minusDays(12))
