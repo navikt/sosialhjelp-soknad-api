@@ -14,6 +14,7 @@ import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata;
 import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.SosialhjelpPdfGenerator;
 import no.nav.sosialhjelp.soknad.business.service.HenvendelseService;
 import no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadMetricsService;
+import no.nav.sosialhjelp.soknad.business.soknadunderbehandling.SoknadUnderArbeidRepository;
 import no.nav.sosialhjelp.soknad.business.util.FileDetectionUtils;
 import no.nav.sosialhjelp.soknad.consumer.fiks.DigisosApi;
 import no.nav.sosialhjelp.soknad.domain.OpplastetVedlegg;
@@ -62,6 +63,8 @@ public class DigisosApiService {
     @Inject
     private SoknadMetricsService soknadMetricsService;
 
+    @Inject
+    private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
     private final ObjectMapper objectMapper = JsonSosialhjelpObjectMapper.createObjectMapper();
 
@@ -212,7 +215,7 @@ public class DigisosApiService {
                 soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker().getNavEnhetsnavn());
         String digisosId = sendOgKrypter(soknadJson, tilleggsinformasjonJson, vedleggJson, filOpplastinger, kommunenummer, soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker().getNavEnhetsnavn(), behandlingsId, token);
 
-        innsendingService.finnOgSlettSoknadUnderArbeidVedSendingTilFiks(behandlingsId, soknadUnderArbeid.getEier());
+        slettSoknadUnderArbeidEtterSendingTilFiks(soknadUnderArbeid);
 
         soknadMetricsService.reportSendSoknadMetrics(SubjectHandler.getUserId(), soknadUnderArbeid, vedlegg.vedleggListe);
         return digisosId;
@@ -271,5 +274,10 @@ public class DigisosApiService {
         }).collect(Collectors.toList());
 
         return vedlegg;
+    }
+
+    private void slettSoknadUnderArbeidEtterSendingTilFiks(SoknadUnderArbeid soknadUnderArbeid) {
+        log.info("Sletter SoknadUnderArbeid, behandlingsid {}", soknadUnderArbeid.getBehandlingsId());
+        soknadUnderArbeidRepository.slettSoknad(soknadUnderArbeid, soknadUnderArbeid.getEier());
     }
 }
