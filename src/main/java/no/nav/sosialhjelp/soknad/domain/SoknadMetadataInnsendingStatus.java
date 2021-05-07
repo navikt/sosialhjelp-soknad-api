@@ -1,12 +1,9 @@
 package no.nav.sosialhjelp.soknad.domain;
 
-public enum SoknadInnsendingStatus {
-
+public enum SoknadMetadataInnsendingStatus {
 	UNDER_ARBEID,
-    LAAST,
     FERDIG,
     AVBRUTT_AV_BRUKER,
     AVBRUTT_AUTOMATISK,
     SENDT_MED_DIGISOS_API
-
 }

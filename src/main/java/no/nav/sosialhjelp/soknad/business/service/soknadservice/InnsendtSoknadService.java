@@ -5,7 +5,7 @@ import no.nav.sosialhjelp.soknad.business.domain.BehandlingsKjede.InnsendtSoknad
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata;
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata.VedleggMetadata;
 import no.nav.sosialhjelp.soknad.business.service.HenvendelseService;
-import no.nav.sosialhjelp.soknad.domain.SoknadInnsendingStatus;
+import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus;
 import no.nav.sosialhjelp.soknad.domain.Vedleggstatus;
 import org.springframework.stereotype.Component;
 
@@ -66,7 +66,7 @@ public class InnsendtSoknadService {
 
     private List<SoknadMetadata> hentEttersendelser(String behandlingsId) {
         return henvendelseService.hentBehandlingskjede(behandlingsId).stream()
-                .filter(soknad -> soknad.status.equals(SoknadInnsendingStatus.FERDIG))
+                .filter(soknad -> soknad.status.equals(SoknadMetadataInnsendingStatus.FERDIG))
                 .sorted(Comparator.comparing(o -> o.innsendtDato))
                 .collect(toList());
     }

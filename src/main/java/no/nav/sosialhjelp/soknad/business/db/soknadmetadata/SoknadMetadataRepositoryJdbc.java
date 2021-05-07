@@ -3,7 +3,7 @@ package no.nav.sosialhjelp.soknad.business.db.soknadmetadata;
 import no.nav.sosialhjelp.soknad.business.db.SQLUtils;
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata;
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata.VedleggMetadataListe;
-import no.nav.sosialhjelp.soknad.domain.SoknadInnsendingStatus;
+import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus;
 import no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SoknadType;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
@@ -35,7 +35,7 @@ public class SoknadMetadataRepositoryJdbc extends NamedParameterJdbcDaoSupport i
         m.navEnhet = rs.getString("navenhet");
         m.fiksForsendelseId = rs.getString("fiksforsendelseid");
         m.type = SoknadType.valueOf(rs.getString("soknadtype"));
-        m.status = SoknadInnsendingStatus.valueOf(rs.getString("innsendingstatus"));
+        m.status = SoknadMetadataInnsendingStatus.valueOf(rs.getString("innsendingstatus"));
         m.opprettetDato = timestampTilTid(rs.getTimestamp("opprettetdato"));
         m.sistEndretDato = timestampTilTid(rs.getTimestamp("sistendretdato"));
         m.innsendtDato = timestampTilTid(rs.getTimestamp("innsendtdato"));
@@ -168,7 +168,7 @@ public class SoknadMetadataRepositoryJdbc extends NamedParameterJdbcDaoSupport i
     public int hentAntallInnsendteSoknaderEtterTidspunkt(String fnr, LocalDateTime tidspunkt) {
         String select = "SELECT count(*) as antall FROM soknadmetadata WHERE fnr = ? AND innsendingstatus = ? AND innsendtdato > ?";
         try {
-            return getJdbcTemplate().queryForObject(select, antallRowMapper, fnr, SoknadInnsendingStatus.FERDIG.name(), tidTilTimestamp(tidspunkt));
+            return getJdbcTemplate().queryForObject(select, antallRowMapper, fnr, SoknadMetadataInnsendingStatus.FERDIG.name(), tidTilTimestamp(tidspunkt));
         } catch (Exception e) {
             return 0;
         }
@@ -177,25 +177,25 @@ public class SoknadMetadataRepositoryJdbc extends NamedParameterJdbcDaoSupport i
     @Override
     public List<SoknadMetadata> hentSvarUtInnsendteSoknaderForBruker(String fnr) {
         String query = "SELECT * FROM soknadmetadata WHERE fnr = ? AND innsendingstatus = ? AND TILKNYTTETBEHANDLINGSID IS NULL ORDER BY innsendtdato DESC";
-        return getJdbcTemplate().query(query, soknadMetadataRowMapper, fnr, SoknadInnsendingStatus.FERDIG.name());
+        return getJdbcTemplate().query(query, soknadMetadataRowMapper, fnr, SoknadMetadataInnsendingStatus.FERDIG.name());
     }
 
     @Override
     public List<SoknadMetadata> hentAlleInnsendteSoknaderForBruker(String fnr) {
         String query = "SELECT * FROM soknadmetadata WHERE fnr = ? AND (innsendingstatus = ? OR innsendingstatus = ?) AND TILKNYTTETBEHANDLINGSID IS NULL ORDER BY innsendtdato DESC";
-        return getJdbcTemplate().query(query, soknadMetadataRowMapper, fnr, SoknadInnsendingStatus.FERDIG.name(), SoknadInnsendingStatus.SENDT_MED_DIGISOS_API.name());
+        return getJdbcTemplate().query(query, soknadMetadataRowMapper, fnr, SoknadMetadataInnsendingStatus.FERDIG.name(), SoknadMetadataInnsendingStatus.SENDT_MED_DIGISOS_API.name());
     }
 
     @Override
     public List<SoknadMetadata> hentPabegynteSoknaderForBruker(String fnr) {
         String query = "SELECT * FROM soknadmetadata WHERE fnr = ? AND innsendingstatus = ? AND soknadtype = ? ORDER BY innsendtdato DESC";
-        return getJdbcTemplate().query(query, soknadMetadataRowMapper, fnr, SoknadInnsendingStatus.UNDER_ARBEID.name(), SoknadType.SEND_SOKNAD_KOMMUNAL.name());
+        return getJdbcTemplate().query(query, soknadMetadataRowMapper, fnr, SoknadMetadataInnsendingStatus.UNDER_ARBEID.name(), SoknadType.SEND_SOKNAD_KOMMUNAL.name());
     }
     @Override
     public List<SoknadMetadata> hentInnsendteSoknaderForBrukerEtterTidspunkt(String fnr, LocalDateTime tidsgrense) {
         String query = "SELECT * FROM soknadmetadata WHERE fnr = ? AND (innsendingstatus = ? OR innsendingstatus = ?) AND innsendtdato > ? AND TILKNYTTETBEHANDLINGSID IS NULL ORDER BY innsendtdato DESC";
         return getJdbcTemplate().query(query, soknadMetadataRowMapper,
-                fnr, SoknadInnsendingStatus.FERDIG.name(), SoknadInnsendingStatus.SENDT_MED_DIGISOS_API.name(), tidTilTimestamp(tidsgrense));
+                fnr, SoknadMetadataInnsendingStatus.FERDIG.name(), SoknadMetadataInnsendingStatus.SENDT_MED_DIGISOS_API.name(), tidTilTimestamp(tidsgrense));
     }
 
     @Transactional

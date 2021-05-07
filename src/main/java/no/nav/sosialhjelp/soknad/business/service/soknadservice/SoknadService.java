@@ -34,8 +34,8 @@ import no.nav.sosialhjelp.soknad.business.service.TextService;
 import no.nav.sosialhjelp.soknad.business.service.systemdata.BostotteSystemdata;
 import no.nav.sosialhjelp.soknad.business.service.systemdata.SkattetatenSystemdata;
 import no.nav.sosialhjelp.soknad.business.soknadunderbehandling.SoknadUnderArbeidRepository;
-import no.nav.sosialhjelp.soknad.domain.SoknadInnsendingStatus;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
+import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeidStatus;
 import no.nav.sosialhjelp.soknad.domain.Vedleggstatus;
 import no.nav.sosialhjelp.soknad.domain.model.exception.SosialhjelpSoknadApiException;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
@@ -116,7 +116,7 @@ public class SoknadService {
                 .withEier(aktorId)
                 .withBehandlingsId(behandlingsId)
                 .withJsonInternalSoknad(createEmptyJsonInternalSoknad(aktorId))
-                .withInnsendingStatus(SoknadInnsendingStatus.UNDER_ARBEID)
+                .withStatus(SoknadUnderArbeidStatus.UNDER_ARBEID)
                 .withOpprettetDato(LocalDateTime.now())
                 .withSistEndretDato(LocalDateTime.now());
 

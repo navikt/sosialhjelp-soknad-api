@@ -7,6 +7,7 @@ import no.nav.sosialhjelp.soknad.business.exceptions.SamtidigOppdateringExceptio
 import no.nav.sosialhjelp.soknad.business.exceptions.SoknadLaastException;
 import no.nav.sosialhjelp.soknad.domain.OpplastetVedlegg;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
+import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeidStatus;
 import no.nav.sosialhjelp.soknad.domain.VedleggType;
 import org.junit.After;
 import org.junit.Test;
@@ -20,9 +21,8 @@ import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 
 import static java.time.LocalDateTime.now;
-import static no.nav.sosialhjelp.soknad.domain.SoknadInnsendingStatus.AVBRUTT_AV_BRUKER;
-import static no.nav.sosialhjelp.soknad.domain.SoknadInnsendingStatus.LAAST;
-import static no.nav.sosialhjelp.soknad.domain.SoknadInnsendingStatus.UNDER_ARBEID;
+import static no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeidStatus.LAAST;
+import static no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeidStatus.UNDER_ARBEID;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -74,7 +74,7 @@ public class SoknadUnderArbeidRepositoryJdbcTest {
         assertThat(soknadUnderArbeid.getTilknyttetBehandlingsId(), is(TILKNYTTET_BEHANDLINGSID));
         assertThat(soknadUnderArbeid.getEier(), is(EIER));
         assertThat(soknadUnderArbeid.getJsonInternalSoknad(), notNullValue());
-        assertThat(soknadUnderArbeid.getInnsendingStatus(), is(UNDER_ARBEID));
+        assertThat(soknadUnderArbeid.getStatus(), is(UNDER_ARBEID));
         assertThat(soknadUnderArbeid.getOpprettetDato(), is(OPPRETTET_DATO));
         assertThat(soknadUnderArbeid.getSistEndretDato(), is(SIST_ENDRET_DATO));
     }
@@ -124,7 +124,7 @@ public class SoknadUnderArbeidRepositoryJdbcTest {
 
     @Test(expected = SoknadLaastException.class)
     public void oppdaterSoknadsdataKasterExceptionVedOppdateringAvLaastSoknad() throws SamtidigOppdateringException {
-        SoknadUnderArbeid soknadUnderArbeid = lagSoknadUnderArbeid(BEHANDLINGSID).withInnsendingStatus(LAAST);
+        SoknadUnderArbeid soknadUnderArbeid = lagSoknadUnderArbeid(BEHANDLINGSID).withStatus(LAAST);
         final Long soknadUnderArbeidId = soknadUnderArbeidRepository.opprettSoknad(soknadUnderArbeid, EIER);
         soknadUnderArbeid.withSoknadId(soknadUnderArbeidId).withJsonInternalSoknad(JSON_INTERNAL_SOKNAD);
 
@@ -135,13 +135,13 @@ public class SoknadUnderArbeidRepositoryJdbcTest {
     public void oppdaterInnsendingStatusOppdatererStatusOgSistEndretDato() {
         SoknadUnderArbeid soknadUnderArbeid = lagSoknadUnderArbeid(BEHANDLINGSID);
         final Long soknadUnderArbeidId = soknadUnderArbeidRepository.opprettSoknad(soknadUnderArbeid, EIER);
-        soknadUnderArbeid.withSoknadId(soknadUnderArbeidId).withInnsendingStatus(AVBRUTT_AV_BRUKER);
+        soknadUnderArbeid.withSoknadId(soknadUnderArbeidId).withStatus(SoknadUnderArbeidStatus.LAAST);
 
         soknadUnderArbeidRepository.oppdaterInnsendingStatus(soknadUnderArbeid, EIER);
 
         SoknadUnderArbeid soknadUnderArbeidFraDb = soknadUnderArbeidRepository.hentSoknad(soknadUnderArbeidId, EIER).get();
         assertThat(soknadUnderArbeidFraDb.getVersjon(), is(1L));
-        assertThat(soknadUnderArbeidFraDb.getInnsendingStatus(), is(AVBRUTT_AV_BRUKER));
+        assertThat(soknadUnderArbeidFraDb.getStatus(), is(SoknadUnderArbeidStatus.LAAST));
         assertThat(soknadUnderArbeidFraDb.getSistEndretDato().isAfter(SIST_ENDRET_DATO), is(true));
     }
 
@@ -164,7 +164,7 @@ public class SoknadUnderArbeidRepositoryJdbcTest {
                 .withTilknyttetBehandlingsId(TILKNYTTET_BEHANDLINGSID)
                 .withEier(EIER)
                 .withJsonInternalSoknad(JSON_INTERNAL_SOKNAD)
-                .withInnsendingStatus(UNDER_ARBEID)
+                .withStatus(UNDER_ARBEID)
                 .withOpprettetDato(OPPRETTET_DATO)
                 .withSistEndretDato(SIST_ENDRET_DATO);
     }

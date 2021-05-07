@@ -9,7 +9,7 @@ import no.nav.sosialhjelp.soknad.business.db.soknadmetadata.SoknadMetadataReposi
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata;
 import no.nav.sosialhjelp.soknad.business.sendtsoknad.SendtSoknadRepository;
 import no.nav.sosialhjelp.soknad.domain.SendtSoknad;
-import no.nav.sosialhjelp.soknad.domain.SoknadInnsendingStatus;
+import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus;
 import no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SoknadType;
 import org.junit.After;
 import org.junit.Before;
@@ -55,7 +55,7 @@ public class SlettLoggSchedulerTest {
     public void skalSletteForeldetLoggFraDatabase() {
         Oppgave oppgave = oppgave(BEHANDLINGS_ID, DAGER_GAMMEL_SOKNAD + 1);
         SendtSoknad sendtSoknad = sendtSoknad(BEHANDLINGS_ID, EIER, DAGER_GAMMEL_SOKNAD + 1);
-        SoknadMetadata soknadMetadata = soknadMetadata(BEHANDLINGS_ID, SoknadInnsendingStatus.UNDER_ARBEID, DAGER_GAMMEL_SOKNAD + 1);
+        SoknadMetadata soknadMetadata = soknadMetadata(BEHANDLINGS_ID, SoknadMetadataInnsendingStatus.UNDER_ARBEID, DAGER_GAMMEL_SOKNAD + 1);
         when(soknadMetadataRepository.hentEldreEnn(DAGER_GAMMEL_SOKNAD)).thenReturn(Optional.of(soknadMetadata)).thenReturn(Optional.empty());
         when(oppgaveRepository.hentOppgave(BEHANDLINGS_ID)).thenReturn(Optional.of(oppgave));
         when(sendtSoknadRepository.hentSendtSoknad(BEHANDLINGS_ID, EIER)).thenReturn(Optional.of(sendtSoknad));
@@ -71,7 +71,7 @@ public class SlettLoggSchedulerTest {
     public void skalSletteForeldetLoggFraDatabaseSelvOmIkkeAlleTabelleneInneholderBehandlingsIdeen() {
         Oppgave oppgave = oppgave(BEHANDLINGS_ID, DAGER_GAMMEL_SOKNAD + 1);
         SendtSoknad sendtSoknad = sendtSoknad(BEHANDLINGS_ID, EIER, DAGER_GAMMEL_SOKNAD + 1);
-        SoknadMetadata soknadMetadata = soknadMetadata(BEHANDLINGS_ID, SoknadInnsendingStatus.UNDER_ARBEID, DAGER_GAMMEL_SOKNAD + 1);
+        SoknadMetadata soknadMetadata = soknadMetadata(BEHANDLINGS_ID, SoknadMetadataInnsendingStatus.UNDER_ARBEID, DAGER_GAMMEL_SOKNAD + 1);
         when(soknadMetadataRepository.hentEldreEnn(DAGER_GAMMEL_SOKNAD)).thenReturn(Optional.of(soknadMetadata)).thenReturn(Optional.empty());
         when(oppgaveRepository.hentOppgave(BEHANDLINGS_ID)).thenReturn(Optional.of(oppgave));
         when(sendtSoknadRepository.hentSendtSoknad(BEHANDLINGS_ID, EIER)).thenReturn(Optional.empty());
@@ -99,7 +99,7 @@ public class SlettLoggSchedulerTest {
         System.clearProperty("sendsoknad.batch.enabled");
     }
 
-    private SoknadMetadata soknadMetadata(String behandlingsId, SoknadInnsendingStatus status, int dagerSiden) {
+    private SoknadMetadata soknadMetadata(String behandlingsId, SoknadMetadataInnsendingStatus status, int dagerSiden) {
         SoknadMetadata meta = new SoknadMetadata();
         meta.id = soknadMetadataRepository.hentNesteId();
         meta.behandlingsId = behandlingsId;

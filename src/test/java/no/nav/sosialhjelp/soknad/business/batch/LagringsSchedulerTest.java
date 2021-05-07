@@ -2,8 +2,8 @@ package no.nav.sosialhjelp.soknad.business.batch;
 
 import no.nav.sosialhjelp.soknad.business.service.HenvendelseService;
 import no.nav.sosialhjelp.soknad.business.soknadunderbehandling.SoknadUnderArbeidRepository;
-import no.nav.sosialhjelp.soknad.domain.SoknadInnsendingStatus;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
+import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeidStatus;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -41,7 +41,7 @@ public class LagringsSchedulerTest {
                 .withSoknadId(soknadId)
                 .withEier("11111111111")
                 .withBehandlingsId(behandlingsId)
-                .withInnsendingStatus(SoknadInnsendingStatus.UNDER_ARBEID)
+                .withStatus(SoknadUnderArbeidStatus.UNDER_ARBEID)
                 .withTilknyttetBehandlingsId(tilknyttetBehandlingsId);
 
         when(soknadUnderArbeidRepository.hentForeldedeEttersendelser()).thenReturn(Arrays.asList(soknadUnderArbeid));
@@ -60,7 +60,7 @@ public class LagringsSchedulerTest {
                 .withSoknadId(soknadId)
                 .withEier("11111111111")
                 .withBehandlingsId(behandlingsId)
-                .withInnsendingStatus(SoknadInnsendingStatus.UNDER_ARBEID) ;
+                .withStatus(SoknadUnderArbeidStatus.UNDER_ARBEID) ;
 
         when(soknadUnderArbeidRepository.hentForeldedeEttersendelser()).thenReturn(Arrays.asList(soknadUnderArbeid));
 

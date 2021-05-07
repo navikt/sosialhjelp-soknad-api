@@ -4,7 +4,7 @@ import no.nav.sosialhjelp.soknad.business.db.DbTestConfig;
 import no.nav.sosialhjelp.soknad.business.db.RepositoryTestSupport;
 import no.nav.sosialhjelp.soknad.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata;
-import no.nav.sosialhjelp.soknad.domain.SoknadInnsendingStatus;
+import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus;
 import no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SoknadType;
 import org.junit.After;
 import org.junit.Test;
@@ -41,34 +41,34 @@ public class SoknadMetadataRepositoryJdbcTest {
     
     @Test
     public void hentForBatchSkalIkkeReturnereFerdige() {
-        opprettSoknadMetadata(soknadMetadata(behandlingsId, SoknadInnsendingStatus.FERDIG, dagerGammelSoknad));
+        opprettSoknadMetadata(soknadMetadata(behandlingsId, SoknadMetadataInnsendingStatus.FERDIG, dagerGammelSoknad));
         assertThat(soknadMetadataRepository.hentForBatch(dagerGammelSoknad - 1)).isNotPresent();
     }
     
     @Test
     public void hentForBatchSkalIkkeReturnereAvbruttAutomatisk() {
-        opprettSoknadMetadata(soknadMetadata(behandlingsId, SoknadInnsendingStatus.AVBRUTT_AUTOMATISK, dagerGammelSoknad));
+        opprettSoknadMetadata(soknadMetadata(behandlingsId, SoknadMetadataInnsendingStatus.AVBRUTT_AUTOMATISK, dagerGammelSoknad));
         assertThat(soknadMetadataRepository.hentForBatch(dagerGammelSoknad - 1)).isNotPresent();
     }
     
     @Test
     public void hentForBatchSkalIkkeReturnereAvbruttAvBruker() {
-        opprettSoknadMetadata(soknadMetadata(behandlingsId, SoknadInnsendingStatus.AVBRUTT_AV_BRUKER, dagerGammelSoknad));
+        opprettSoknadMetadata(soknadMetadata(behandlingsId, SoknadMetadataInnsendingStatus.AVBRUTT_AV_BRUKER, dagerGammelSoknad));
         assertThat(soknadMetadataRepository.hentForBatch(dagerGammelSoknad - 1)).isNotPresent();
     }
     
     @Test
     public void hentForBatchBrukerEndringstidspunkt() {
-        opprettSoknadMetadata(soknadMetadata(behandlingsId, SoknadInnsendingStatus.UNDER_ARBEID, dagerGammelSoknad));
+        opprettSoknadMetadata(soknadMetadata(behandlingsId, SoknadMetadataInnsendingStatus.UNDER_ARBEID, dagerGammelSoknad));
         assertThat(soknadMetadataRepository.hentForBatch(dagerGammelSoknad - 1)).isPresent();
         assertThat(soknadMetadataRepository.hentForBatch(dagerGammelSoknad + 1)).isNotPresent();
     }
 
     @Test
     public void hentEldreEnnBrukerEndringstidspunktUavhengigAvStatus() {
-        List<SoknadInnsendingStatus> statuser = asList(SoknadInnsendingStatus.UNDER_ARBEID, SoknadInnsendingStatus.FERDIG,
-                SoknadInnsendingStatus.AVBRUTT_AUTOMATISK, SoknadInnsendingStatus.AVBRUTT_AV_BRUKER);
-        for (SoknadInnsendingStatus status : statuser) {
+        List<SoknadMetadataInnsendingStatus> statuser = asList(SoknadMetadataInnsendingStatus.UNDER_ARBEID, SoknadMetadataInnsendingStatus.FERDIG,
+                SoknadMetadataInnsendingStatus.AVBRUTT_AUTOMATISK, SoknadMetadataInnsendingStatus.AVBRUTT_AV_BRUKER);
+        for (SoknadMetadataInnsendingStatus status : statuser) {
             opprettSoknadMetadata(soknadMetadata(behandlingsId, status, dagerGammelSoknad));
             assertThat(soknadMetadataRepository.hentEldreEnn(dagerGammelSoknad - 1)).isPresent();
             assertThat(soknadMetadataRepository.hentEldreEnn(dagerGammelSoknad + 1)).isNotPresent();
@@ -83,7 +83,7 @@ public class SoknadMetadataRepositoryJdbcTest {
         soknadMetadataRepository.leggTilbakeBatch(lagretSoknadMetadata.id);
     }
     
-    private SoknadMetadata soknadMetadata(String behandlingsId, SoknadInnsendingStatus status, int dagerSiden) {
+    private SoknadMetadata soknadMetadata(String behandlingsId, SoknadMetadataInnsendingStatus status, int dagerSiden) {
         SoknadMetadata meta = new SoknadMetadata();
         meta.id = soknadMetadataRepository.hentNesteId();
         meta.behandlingsId = behandlingsId;

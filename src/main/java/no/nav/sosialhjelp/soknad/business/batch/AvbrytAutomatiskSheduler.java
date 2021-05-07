@@ -15,7 +15,7 @@ import javax.inject.Inject;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-import static no.nav.sosialhjelp.soknad.domain.SoknadInnsendingStatus.AVBRUTT_AUTOMATISK;
+import static no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus.AVBRUTT_AUTOMATISK;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Service

@@ -4,8 +4,9 @@ import no.nav.sosialhjelp.soknad.business.db.DbTestConfig;
 import no.nav.sosialhjelp.soknad.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata;
 import no.nav.sosialhjelp.soknad.business.soknadunderbehandling.SoknadUnderArbeidRepository;
-import no.nav.sosialhjelp.soknad.domain.SoknadInnsendingStatus;
+import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
+import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeidStatus;
 import no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SoknadType;
 import org.junit.After;
 import org.junit.Before;
@@ -49,12 +50,12 @@ public class AvbrytAutomatiskSchedulerTest {
 
     @Test
     public void avbrytAutomatiskOgSlettGamleSoknader() {
-        SoknadMetadata soknadMetadata = soknadMetadata(BEHANDLINGS_ID, SoknadInnsendingStatus.UNDER_ARBEID, DAGER_GAMMEL_SOKNAD + 1);
+        SoknadMetadata soknadMetadata = soknadMetadata(BEHANDLINGS_ID, SoknadMetadataInnsendingStatus.UNDER_ARBEID, DAGER_GAMMEL_SOKNAD + 1);
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid()
                 .withSoknadId(1L)
                 .withEier(EIER)
                 .withBehandlingsId(BEHANDLINGS_ID)
-                .withInnsendingStatus(SoknadInnsendingStatus.UNDER_ARBEID);
+                .withStatus(SoknadUnderArbeidStatus.UNDER_ARBEID);
 
         when(soknadMetadataRepository.hentForBatch(DAGER_GAMMEL_SOKNAD)).thenReturn(Optional.of(soknadMetadata)).thenReturn(Optional.empty());
         when(soknadUnderArbeidRepository.hentSoknadOptional(BEHANDLINGS_ID, EIER)).thenReturn(Optional.of(soknadUnderArbeid));
@@ -65,7 +66,7 @@ public class AvbrytAutomatiskSchedulerTest {
         verify(soknadMetadataRepository).oppdater(argument.capture());
         SoknadMetadata oppdatertSoknadMetadata = argument.getValue();
 
-        assertThat(oppdatertSoknadMetadata.status, is(SoknadInnsendingStatus.AVBRUTT_AUTOMATISK));
+        assertThat(oppdatertSoknadMetadata.status, is(SoknadMetadataInnsendingStatus.AVBRUTT_AUTOMATISK));
         verify(soknadUnderArbeidRepository).slettSoknad(any(SoknadUnderArbeid.class), anyString());
     }
 
@@ -74,7 +75,7 @@ public class AvbrytAutomatiskSchedulerTest {
         System.clearProperty("sendsoknad.batch.enabled");
     }
 
-    private SoknadMetadata soknadMetadata(String behandlingsId, SoknadInnsendingStatus status, int dagerSiden) {
+    private SoknadMetadata soknadMetadata(String behandlingsId, SoknadMetadataInnsendingStatus status, int dagerSiden) {
         SoknadMetadata meta = new SoknadMetadata();
         meta.id = soknadMetadataRepository.hentNesteId();
         meta.behandlingsId = behandlingsId;
