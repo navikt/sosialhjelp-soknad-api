@@ -189,7 +189,7 @@ public class SoknadUnderArbeidRepositoryJdbcTest {
                 .withTilknyttetBehandlingsId(TILKNYTTET_BEHANDLINGSID)
                 .withEier(EIER)
                 .withJsonInternalSoknad(JSON_INTERNAL_SOKNAD)
-                .withInnsendingStatus(UNDER_ARBEID)
+                .withStatus(UNDER_ARBEID)
                 .withOpprettetDato(LocalDateTime.now().minusDays(antallDagerSiden))
                 .withSistEndretDato(LocalDateTime.now().minusDays(antallDagerSiden));
     }
