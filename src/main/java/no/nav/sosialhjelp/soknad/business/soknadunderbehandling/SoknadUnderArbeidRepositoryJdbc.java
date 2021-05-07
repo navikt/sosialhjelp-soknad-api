@@ -10,7 +10,6 @@ import no.nav.sosialhjelp.soknad.business.exceptions.SamtidigOppdateringExceptio
 import no.nav.sosialhjelp.soknad.business.exceptions.SoknadLaastException;
 import no.nav.sosialhjelp.soknad.domain.SoknadInnsendingStatus;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
-import org.slf4j.Logger;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
 import org.springframework.stereotype.Component;
@@ -39,13 +38,10 @@ import static no.nav.sosialhjelp.soknad.business.db.SQLUtils.selectNextSequenceV
 import static no.nav.sosialhjelp.soknad.domain.SoknadInnsendingStatus.SENDT_MED_DIGISOS_API;
 import static no.nav.sosialhjelp.soknad.domain.SoknadInnsendingStatus.UNDER_ARBEID;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
-import static org.slf4j.LoggerFactory.getLogger;
 
 @Named("SoknadUnderArbeidRepository")
 @Component
 public class SoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoSupport implements SoknadUnderArbeidRepository {
-
-    private static final Logger log = getLogger(SoknadUnderArbeidRepositoryJdbc.class);
 
     private final ObjectMapper mapper;
     private final ObjectWriter writer;
