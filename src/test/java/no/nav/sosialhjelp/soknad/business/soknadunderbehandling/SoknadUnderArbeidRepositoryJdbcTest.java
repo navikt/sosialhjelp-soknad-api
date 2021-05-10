@@ -158,7 +158,7 @@ public class SoknadUnderArbeidRepositoryJdbcTest {
         assertThat(opplastetVedleggRepository.hentVedlegg(opplastetVedleggUuid, EIER).isPresent(), is(false));
     }
 
-    SoknadUnderArbeid lagSoknadUnderArbeid(String behandlingsId) {
+    private SoknadUnderArbeid lagSoknadUnderArbeid(String behandlingsId) {
         return new SoknadUnderArbeid().withVersjon(1L)
                 .withBehandlingsId(behandlingsId)
                 .withTilknyttetBehandlingsId(TILKNYTTET_BEHANDLINGSID)
@@ -169,7 +169,7 @@ public class SoknadUnderArbeidRepositoryJdbcTest {
                 .withSistEndretDato(SIST_ENDRET_DATO);
     }
 
-    OpplastetVedlegg lagOpplastetVedlegg(Long soknadId) {
+    private OpplastetVedlegg lagOpplastetVedlegg(Long soknadId) {
         return new OpplastetVedlegg()
                 .withEier(EIER)
                 .withVedleggType(new VedleggType("bostotte|annetboutgift"))

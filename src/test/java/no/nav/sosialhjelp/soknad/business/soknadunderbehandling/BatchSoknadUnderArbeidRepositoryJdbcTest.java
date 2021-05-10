@@ -24,7 +24,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 public class BatchSoknadUnderArbeidRepositoryJdbcTest {
 
     private static final String EIER = "12345678901";
-    private static final String EIER2 = "22222222222";
     private static final String BEHANDLINGSID = "1100020";
     private static final String TILKNYTTET_BEHANDLINGSID = "4567";
     private static final JsonInternalSoknad JSON_INTERNAL_SOKNAD = new JsonInternalSoknad();
@@ -67,9 +66,9 @@ public class BatchSoknadUnderArbeidRepositoryJdbcTest {
     @Test
     public void slettSoknadGittSoknadUnderArbeidIdSkalSletteSoknad() {
         SoknadUnderArbeid soknadUnderArbeid = lagSoknadUnderArbeid(BEHANDLINGSID, 15);
-        final Long soknadUnderArbeidId = soknadUnderArbeidRepository.opprettSoknad(soknadUnderArbeid, EIER);
+        var soknadUnderArbeidId = soknadUnderArbeidRepository.opprettSoknad(soknadUnderArbeid, EIER);
         soknadUnderArbeid.setSoknadId(soknadUnderArbeidId);
-        final String opplastetVedleggUuid = opplastetVedleggRepository.opprettVedlegg(lagOpplastetVedlegg(soknadUnderArbeidId), EIER);
+        var opplastetVedleggUuid = opplastetVedleggRepository.opprettVedlegg(lagOpplastetVedlegg(soknadUnderArbeidId), EIER);
 
         batchSoknadUnderArbeidRepository.slettSoknad(soknadUnderArbeid.getSoknadId());
 
@@ -88,7 +87,7 @@ public class BatchSoknadUnderArbeidRepositoryJdbcTest {
                 .withSistEndretDato(LocalDateTime.now().minusDays(antallDagerSiden));
     }
 
-    OpplastetVedlegg lagOpplastetVedlegg(Long soknadId) {
+    private OpplastetVedlegg lagOpplastetVedlegg(Long soknadId) {
         return new OpplastetVedlegg()
                 .withEier(EIER)
                 .withVedleggType(new VedleggType("bostotte|annetboutgift"))
