@@ -13,6 +13,11 @@ import java.util.List;
 
 import static no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeidStatus.UNDER_ARBEID;
 
+
+/**
+ * Repository for SoknadUnderArbeid.
+ * Operasjoner som kun er tiltenkt batch/schedulerte jobber.
+ */
 @Named("BatchSoknadUnderArbeidRepository")
 @Component
 public class BatchSoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoSupport implements BatchSoknadUnderArbeidRepository {

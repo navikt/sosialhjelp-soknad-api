@@ -7,6 +7,10 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.sql.DataSource;
 
+/**
+ * Repository for OpplastetVedlegg.
+ * Operasjoner som kun er tiltenkt batch/schedulerte jobber.
+ */
 @Named("BatchOpplastetVedleggRepository")
 @Component
 public class BatchOpplastetVedleggRepositoryJdbc extends NamedParameterJdbcDaoSupport implements BatchOpplastetVedleggRepository {
