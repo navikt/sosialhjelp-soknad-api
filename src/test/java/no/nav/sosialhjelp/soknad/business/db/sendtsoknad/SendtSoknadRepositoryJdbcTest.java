@@ -1,7 +1,8 @@
-package no.nav.sosialhjelp.soknad.business.sendtsoknad;
+package no.nav.sosialhjelp.soknad.business.db.sendtsoknad;
 
 import no.nav.sosialhjelp.soknad.business.db.DbTestConfig;
 import no.nav.sosialhjelp.soknad.business.db.RepositoryTestSupport;
+import no.nav.sosialhjelp.soknad.business.sendtsoknad.SendtSoknadRepository;
 import no.nav.sosialhjelp.soknad.domain.SendtSoknad;
 import org.junit.After;
 import org.junit.Test;

@@ -70,13 +70,6 @@ public class OpplastetVedleggRepositoryJdbc extends NamedParameterJdbcDaoSupport
     }
 
     @Override
-    public void slettAlleVedleggForSoknad(Long soknadId) {
-        getJdbcTemplate()
-                .update("delete from OPPLASTET_VEDLEGG where SOKNAD_UNDER_ARBEID_ID = ?",
-                        soknadId);
-    }
-
-    @Override
     public Integer hentSamletVedleggStorrelse(Long soknadId, String eier) {
         if (getJdbcTemplate()
                 .queryForObject("select count(*) from OPPLASTET_VEDLEGG where EIER = ? and SOKNAD_UNDER_ARBEID_ID = ?", Integer.class, eier, soknadId) > 0) {

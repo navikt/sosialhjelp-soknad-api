@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.business.batch;
 
 import no.nav.sosialhjelp.metrics.MetricsFactory;
-import no.nav.sosialhjelp.soknad.business.soknadunderbehandling.SoknadUnderArbeidRepository;
+import no.nav.sosialhjelp.soknad.business.soknadunderbehandling.BatchSoknadUnderArbeidRepository;
 import no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils;
 import org.slf4j.Logger;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -24,7 +24,7 @@ public class SlettSoknadUnderArbeidScheduler {
     private int vellykket;
 
     @Inject
-    private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
+    private BatchSoknadUnderArbeidRepository batchSoknadUnderArbeidRepository;
 
     @Scheduled(cron = KLOKKEN_HALV_FEM_OM_NATTEN)
     public void slettGamleSoknadUnderArbeid() {
@@ -59,7 +59,7 @@ public class SlettSoknadUnderArbeidScheduler {
     }
 
     private void slett() {
-        var soknadIdList = soknadUnderArbeidRepository.hentGamleSoknadUnderArbeidForBatch();
+        var soknadIdList = batchSoknadUnderArbeidRepository.hentGamleSoknadUnderArbeidForBatch();
 
         soknadIdList.forEach(soknadId -> {
             if (harGaattForLangTid()) {
@@ -67,7 +67,7 @@ public class SlettSoknadUnderArbeidScheduler {
                 return;
             }
 
-            soknadUnderArbeidRepository.slettSoknad(soknadId);
+            batchSoknadUnderArbeidRepository.slettSoknad(soknadId);
             vellykket++;
         });
     }

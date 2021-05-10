@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.business.batch;
 
-import no.nav.sosialhjelp.soknad.business.soknadunderbehandling.SoknadUnderArbeidRepository;
+import no.nav.sosialhjelp.soknad.business.soknadunderbehandling.BatchSoknadUnderArbeidRepository;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,7 +20,7 @@ import static org.mockito.Mockito.when;
 public class SlettSoknadUnderArbeidSchedulerTest {
 
     @Mock
-    private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
+    private BatchSoknadUnderArbeidRepository batchSoknadUnderArbeidRepository;
 
     @InjectMocks
     private SlettSoknadUnderArbeidScheduler slettSoknadUnderArbeidScheduler;
@@ -37,11 +37,11 @@ public class SlettSoknadUnderArbeidSchedulerTest {
 
     @Test
     public void skalSletteGamleSoknadUnderArbeid() {
-        when(soknadUnderArbeidRepository.hentGamleSoknadUnderArbeidForBatch())
+        when(batchSoknadUnderArbeidRepository.hentGamleSoknadUnderArbeidForBatch())
                 .thenReturn(Arrays.asList(1L, 2L));
 
         slettSoknadUnderArbeidScheduler.slettGamleSoknadUnderArbeid();
 
-         verify(soknadUnderArbeidRepository, times(2)).slettSoknad(any());
+         verify(batchSoknadUnderArbeidRepository, times(2)).slettSoknad(any());
     }
 }

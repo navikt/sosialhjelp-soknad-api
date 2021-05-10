@@ -5,6 +5,10 @@ import no.nav.sosialhjelp.soknad.business.db.soknadmetadata.SoknadMetadataReposi
 import no.nav.sosialhjelp.soknad.business.db.soknadmetadata.SoknadMetadataRepositoryJdbc;
 import no.nav.sosialhjelp.soknad.business.sendtsoknad.SendtSoknadRepository;
 import no.nav.sosialhjelp.soknad.business.sendtsoknad.SendtSoknadRepositoryJdbc;
+import no.nav.sosialhjelp.soknad.business.soknadunderbehandling.BatchOpplastetVedleggRepository;
+import no.nav.sosialhjelp.soknad.business.soknadunderbehandling.BatchOpplastetVedleggRepositoryJdbc;
+import no.nav.sosialhjelp.soknad.business.soknadunderbehandling.BatchSoknadUnderArbeidRepository;
+import no.nav.sosialhjelp.soknad.business.soknadunderbehandling.BatchSoknadUnderArbeidRepositoryJdbc;
 import no.nav.sosialhjelp.soknad.business.soknadunderbehandling.OpplastetVedleggRepository;
 import no.nav.sosialhjelp.soknad.business.soknadunderbehandling.OpplastetVedleggRepositoryJdbc;
 import no.nav.sosialhjelp.soknad.business.soknadunderbehandling.SoknadUnderArbeidRepository;
@@ -46,6 +50,16 @@ public class DbTestConfig {
     @Bean
     public OpplastetVedleggRepository opplastetVedleggRepository() {
         return new OpplastetVedleggRepositoryJdbc();
+    }
+
+    @Bean
+    public BatchSoknadUnderArbeidRepository batchSoknadUnderArbeidRepository() {
+        return new BatchSoknadUnderArbeidRepositoryJdbc();
+    }
+
+    @Bean
+    public BatchOpplastetVedleggRepository batchOpplastetVedleggRepository() {
+        return new BatchOpplastetVedleggRepositoryJdbc();
     }
 
     @Bean

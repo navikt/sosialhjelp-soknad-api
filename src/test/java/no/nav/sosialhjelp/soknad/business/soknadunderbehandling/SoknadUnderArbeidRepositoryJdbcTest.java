@@ -158,34 +158,7 @@ public class SoknadUnderArbeidRepositoryJdbcTest {
         assertThat(opplastetVedleggRepository.hentVedlegg(opplastetVedleggUuid, EIER).isPresent(), is(false));
     }
 
-    @Test
-    public void hentSoknaderForBatchSkalFinneGamleSoknader() {
-        var skalIkkeSlettes = lagSoknadUnderArbeid(BEHANDLINGSID, 364);
-        var skalIkkeSlettesId = soknadUnderArbeidRepository.opprettSoknad(skalIkkeSlettes, EIER);
-
-        var skalSlettes = lagSoknadUnderArbeid("annen_behandlingsid", 365);
-        var skalSlettesId = soknadUnderArbeidRepository.opprettSoknad(skalSlettes, EIER);
-
-        var soknader = soknadUnderArbeidRepository.hentGamleSoknadUnderArbeidForBatch();
-
-        assertThat(soknader.size(), is(1));
-        assertThat(soknader.get(0), is(skalSlettesId));
-    }
-
-    @Test
-    public void slettSoknadGittSoknadUnderArbeidIdSkalSletteSoknad() {
-        SoknadUnderArbeid soknadUnderArbeid = lagSoknadUnderArbeid(BEHANDLINGSID);
-        final Long soknadUnderArbeidId = soknadUnderArbeidRepository.opprettSoknad(soknadUnderArbeid, EIER);
-        soknadUnderArbeid.setSoknadId(soknadUnderArbeidId);
-        final String opplastetVedleggUuid = opplastetVedleggRepository.opprettVedlegg(lagOpplastetVedlegg(soknadUnderArbeidId), EIER);
-
-        soknadUnderArbeidRepository.slettSoknad(soknadUnderArbeid.getSoknadId());
-
-        assertThat(soknadUnderArbeidRepository.hentSoknad(soknadUnderArbeidId, EIER).isPresent(), is(false));
-        assertThat(opplastetVedleggRepository.hentVedlegg(opplastetVedleggUuid, EIER).isPresent(), is(false));
-    }
-
-    private SoknadUnderArbeid lagSoknadUnderArbeid(String behandlingsId) {
+    SoknadUnderArbeid lagSoknadUnderArbeid(String behandlingsId) {
         return new SoknadUnderArbeid().withVersjon(1L)
                 .withBehandlingsId(behandlingsId)
                 .withTilknyttetBehandlingsId(TILKNYTTET_BEHANDLINGSID)
@@ -196,18 +169,7 @@ public class SoknadUnderArbeidRepositoryJdbcTest {
                 .withSistEndretDato(SIST_ENDRET_DATO);
     }
 
-    private SoknadUnderArbeid lagSoknadUnderArbeid(String behandlingsId, int antallDagerSiden) {
-        return new SoknadUnderArbeid().withVersjon(1L)
-                .withBehandlingsId(behandlingsId)
-                .withTilknyttetBehandlingsId(TILKNYTTET_BEHANDLINGSID)
-                .withEier(EIER)
-                .withJsonInternalSoknad(JSON_INTERNAL_SOKNAD)
-                .withStatus(UNDER_ARBEID)
-                .withOpprettetDato(LocalDateTime.now().minusDays(antallDagerSiden))
-                .withSistEndretDato(LocalDateTime.now().minusDays(antallDagerSiden));
-    }
-
-    private OpplastetVedlegg lagOpplastetVedlegg(Long soknadId) {
+    OpplastetVedlegg lagOpplastetVedlegg(Long soknadId) {
         return new OpplastetVedlegg()
                 .withEier(EIER)
                 .withVedleggType(new VedleggType("bostotte|annetboutgift"))
