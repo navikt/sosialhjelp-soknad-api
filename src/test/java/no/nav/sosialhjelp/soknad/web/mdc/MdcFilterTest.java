@@ -7,8 +7,8 @@ import no.nav.sosialhjelp.soknad.web.config.TestSoknadApplication;
 import org.glassfish.jersey.server.ContainerRequest;
 import org.glassfish.jersey.server.ExtendedUriInfo;
 import org.glassfish.jersey.test.util.server.ContainerRequestBuilder;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import javax.ws.rs.core.MultivaluedHashMap;
@@ -31,15 +31,15 @@ public class MdcFilterTest {
     private final static String MOCK_CONSUMER_ID = "mock_consumer_id";
     private final static String MOCK_BEHANDLINGS_ID = "mock_behandlings_id";
 
-    @BeforeClass
-    public static void setUp() {
+    @Before
+    public void setUp() {
         System.setProperty("environment.name", "test");
         System.setProperty(StsSecurityConstants.SYSTEMUSER_USERNAME, MOCK_CONSUMER_ID);
         SubjectHandler.setSubjectHandlerService(new OidcSubjectHandlerService());
     }
 
-    @AfterClass
-    public static void tearDown() {
+    @After
+    public void tearDown() {
         System.clearProperty(StsSecurityConstants.SYSTEMUSER_USERNAME);
         SubjectHandler.resetOidcSubjectHandlerService();
         System.clearProperty("environment.name");
