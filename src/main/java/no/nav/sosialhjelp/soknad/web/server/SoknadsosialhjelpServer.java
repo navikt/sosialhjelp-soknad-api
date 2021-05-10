@@ -83,13 +83,7 @@ public class SoknadsosialhjelpServer {
 
     private void configure() throws IOException {
         Locale.setDefault(Locale.forLanguageTag("nb-NO"));
-        if (isRunningAsTestAppWithMockingActivated() || MockUtils.isTillatMockRessurs()){
-            log.info("Running with mocking activated. Totally isolated.");
-            setFrom("environment/environment-mock.properties", false);
-            if (!MockUtils.isTillatMockRessurs()) {
-                throw new Error("Mocking må være aktivert når applikasjonen skal kjøre isolert.");
-            }
-        } else if (MockUtils.isMockAltProfil()) {
+        if (MockUtils.isMockAltProfil() || MockUtils.isTillatMockRessurs()) {
             log.info("Running with mock-alt activated.");
             setFrom("environment/environment-mock-alt.properties");
         } else if (isRunningOnNais()) {
@@ -104,11 +98,6 @@ public class SoknadsosialhjelpServer {
             SubjectHandler.setSubjectHandlerService(new MockSubjectHandlerService());
         }
     }
-
-    private boolean isRunningAsTestAppWithMockingActivated() {
-        return System.getenv("dockerWithDefaultMockActivated") != null && Boolean.parseBoolean(System.getenv("dockerWithDefaultMockActivated"));
-    }
-
 
     private void mapNaisProperties() throws IOException {
         final Properties props = readProperties("naisPropertyMapping.properties", true);
