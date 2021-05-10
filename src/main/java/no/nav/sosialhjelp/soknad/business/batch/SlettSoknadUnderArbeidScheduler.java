@@ -17,7 +17,7 @@ public class SlettSoknadUnderArbeidScheduler {
 
     private static final Logger logger = getLogger(SlettSoknadUnderArbeidScheduler.class);
 
-    private static final String KLOKKEN_HALV_FEM_OM_NATTEN = "0 30 4 * * *";
+    private static final String KLOKKEN_HALV_FEM_OM_NATTEN = "0 30 9 * * *";
     private static final int SCHEDULE_INTERRUPT_S = 60 * 10;
 
     private LocalDateTime batchStartTime;
