@@ -15,7 +15,6 @@
   "isLabsGcp": true,
   "env": {
     "MAIN_CLASS": "no.nav.sosialhjelp.soknad.web.mock.MockAltSoknadsosialhjelpServer",
-    "dockerWithDefaultMockActivated": "false",
     "GCP": "true",
     "PORT": "8080",
     "AAREG_API_BASEURL": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/aareg/",

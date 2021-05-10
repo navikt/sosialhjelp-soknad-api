@@ -19,10 +19,7 @@ import java.io.InputStream;
 import java.util.Map;
 import java.util.Properties;
 
-import static java.lang.System.getProperties;
 import static java.lang.System.setProperty;
-import static no.nav.sosialhjelp.soknad.consumer.MockUtil.DEFAULT_MOCK_TILLATT;
-import static no.nav.sosialhjelp.soknad.consumer.MockUtil.TILLATMOCK_PROPERTY;
 
 @WebAppConfiguration
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -36,7 +33,6 @@ public class ApplicationContextTest {
     @BeforeClass
     public static void beforeClass() throws NamingException {
         load(ENVIRONMENT_TEST_PROPERTIES);
-        getProperties().setProperty(TILLATMOCK_PROPERTY, DEFAULT_MOCK_TILLATT);
 
         builder = new SimpleNamingContextBuilder();
         builder.bind("jdbc/SoknadInnsendingDS", Mockito.mock(DataSource.class));
