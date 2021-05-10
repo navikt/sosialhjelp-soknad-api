@@ -2,9 +2,11 @@ package no.nav.sosialhjelp.soknad.business.soknadunderbehandling;
 
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sosialhjelp.soknad.business.db.DbTestConfig;
+import no.nav.sosialhjelp.soknad.business.db.RepositoryTestSupport;
 import no.nav.sosialhjelp.soknad.domain.OpplastetVedlegg;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.domain.VedleggType;
+import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -28,6 +30,9 @@ public class BatchSoknadUnderArbeidRepositoryJdbcTest {
     private static final JsonInternalSoknad JSON_INTERNAL_SOKNAD = new JsonInternalSoknad();
 
     @Inject
+    private RepositoryTestSupport soknadRepositoryTestSupport;
+
+    @Inject
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
     @Inject
@@ -38,6 +43,12 @@ public class BatchSoknadUnderArbeidRepositoryJdbcTest {
 
     @Inject
     private BatchOpplastetVedleggRepository batchOpplastetVedleggRepository;
+
+    @After
+    public void tearDown() {
+        soknadRepositoryTestSupport.getJdbcTemplate().update("delete from SOKNAD_UNDER_ARBEID");
+        soknadRepositoryTestSupport.getJdbcTemplate().update("delete from OPPLASTET_VEDLEGG");
+    }
 
     @Test
     public void hentSoknaderForBatchSkalFinneGamleSoknader() {
