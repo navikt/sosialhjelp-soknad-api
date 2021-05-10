@@ -104,6 +104,19 @@ public class OpplastetVedleggRepositoryJdbcTest {
         assertThat(opplastetVedleggRepository.hentVedlegg(uuidSammeEierOgAnnenSoknad, EIER).isPresent(), is(true));
     }
 
+    @Test
+    public void slettAlleVedleggForSoknadSletterAlleOpplastedeVedleggForGittSoknadId() {
+        final String uuid = opprettOpplastetVedleggOgLagreIDb(lagOpplastetVedlegg(), EIER);
+        final String uuidSammeSoknadOgEier = opprettOpplastetVedleggOgLagreIDb(lagOpplastetVedlegg(EIER, TYPE, SOKNADID), EIER);
+        final String uuidSammeEierOgAnnenSoknad = opprettOpplastetVedleggOgLagreIDb(lagOpplastetVedlegg(EIER, TYPE2, SOKNADID3), EIER);
+
+        opplastetVedleggRepository.slettAlleVedleggForSoknad(SOKNADID);
+
+        assertThat(opplastetVedleggRepository.hentVedlegg(uuid, EIER).isPresent(), is(false));
+        assertThat(opplastetVedleggRepository.hentVedlegg(uuidSammeSoknadOgEier, EIER).isPresent(), is(false));
+        assertThat(opplastetVedleggRepository.hentVedlegg(uuidSammeEierOgAnnenSoknad, EIER).isPresent(), is(true));
+    }
+
     private OpplastetVedlegg lagOpplastetVedlegg(String eier, String type, Long soknadId) {
         return new OpplastetVedlegg()
                 .withEier(eier)

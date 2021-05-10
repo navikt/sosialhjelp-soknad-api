@@ -169,7 +169,20 @@ public class SoknadUnderArbeidRepositoryJdbcTest {
         var soknader = soknadUnderArbeidRepository.hentGamleSoknadUnderArbeidForBatch();
 
         assertThat(soknader.size(), is(1));
-        assertThat(soknader.get(0).getSoknadId(), is(skalSlettesId));
+        assertThat(soknader.get(0), is(skalSlettesId));
+    }
+
+    @Test
+    public void slettSoknadGittSoknadUnderArbeidIdSkalSletteSoknad() {
+        SoknadUnderArbeid soknadUnderArbeid = lagSoknadUnderArbeid(BEHANDLINGSID);
+        final Long soknadUnderArbeidId = soknadUnderArbeidRepository.opprettSoknad(soknadUnderArbeid, EIER);
+        soknadUnderArbeid.setSoknadId(soknadUnderArbeidId);
+        final String opplastetVedleggUuid = opplastetVedleggRepository.opprettVedlegg(lagOpplastetVedlegg(soknadUnderArbeidId), EIER);
+
+        soknadUnderArbeidRepository.slettSoknad(soknadUnderArbeid.getSoknadId());
+
+        assertThat(soknadUnderArbeidRepository.hentSoknad(soknadUnderArbeidId, EIER).isPresent(), is(false));
+        assertThat(opplastetVedleggRepository.hentVedlegg(opplastetVedleggUuid, EIER).isPresent(), is(false));
     }
 
     private SoknadUnderArbeid lagSoknadUnderArbeid(String behandlingsId) {

@@ -105,9 +105,9 @@ public class SoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoSuppor
     }
 
     @Override
-    public List<SoknadUnderArbeid> hentGamleSoknadUnderArbeidForBatch() {
-        return getJdbcTemplate().query("select * from SOKNAD_UNDER_ARBEID where SISTENDRETDATO < CURRENT_TIMESTAMP - (INTERVAL '365' DAY(3)) and STATUS = ?",
-                new SoknadUnderArbeidRowMapper(), UNDER_ARBEID.toString());
+    public List<Long> hentGamleSoknadUnderArbeidForBatch() {
+        return getJdbcTemplate().query("select SOKNAD_UNDER_ARBEID_ID from SOKNAD_UNDER_ARBEID where SISTENDRETDATO < CURRENT_TIMESTAMP - (INTERVAL '365' DAY(3)) and STATUS = ?",
+                (resultSet, i) -> resultSet.getLong("soknad_under_arbeid_id"), UNDER_ARBEID.toString());
     }
 
     @Override
@@ -189,7 +189,21 @@ public class SoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoSuppor
                     throw new RuntimeException("Kan ikke slette sendt søknad uten søknadsid");
                 }
                 opplastetVedleggRepository.slettAlleVedleggForSoknad(soknadUnderArbeidId, eier);
-                var oppdaterteRader = getJdbcTemplate().update("delete from SOKNAD_UNDER_ARBEID where EIER = ? and SOKNAD_UNDER_ARBEID_ID = ?", eier, soknadUnderArbeidId);
+                getJdbcTemplate().update("delete from SOKNAD_UNDER_ARBEID where EIER = ? and SOKNAD_UNDER_ARBEID_ID = ?", eier, soknadUnderArbeidId);
+            }
+        });
+    }
+
+    @Override
+    public void slettSoknad(Long soknadUnderArbeidId) {
+        transactionTemplate.execute(new TransactionCallbackWithoutResult() {
+            @Override
+            protected void doInTransactionWithoutResult(TransactionStatus transactionStatus) {
+                if (soknadUnderArbeidId == null) {
+                    throw new RuntimeException("Kan ikke slette sendt søknad uten søknadsid");
+                }
+                opplastetVedleggRepository.slettAlleVedleggForSoknad(soknadUnderArbeidId);
+                getJdbcTemplate().update("delete from SOKNAD_UNDER_ARBEID where SOKNAD_UNDER_ARBEID_ID = ?", soknadUnderArbeidId);
             }
         });
     }

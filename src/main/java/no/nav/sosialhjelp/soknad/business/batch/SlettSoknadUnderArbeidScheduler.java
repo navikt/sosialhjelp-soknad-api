@@ -59,15 +59,15 @@ public class SlettSoknadUnderArbeidScheduler {
     }
 
     private void slett() {
-        var soknader = soknadUnderArbeidRepository.hentGamleSoknadUnderArbeidForBatch();
+        var soknadIdList = soknadUnderArbeidRepository.hentGamleSoknadUnderArbeidForBatch();
 
-        soknader.forEach(soknadUnderArbeid -> {
+        soknadIdList.forEach(soknadId -> {
             if (harGaattForLangTid()) {
                 logger.warn("Jobben har kjørt i mer enn {} s. Den blir derfor terminert", SCHEDULE_INTERRUPT_S);
                 return;
             }
 
-            soknadUnderArbeidRepository.slettSoknad(soknadUnderArbeid, soknadUnderArbeid.getEier());
+            soknadUnderArbeidRepository.slettSoknad(soknadId);
             vellykket++;
         });
     }
