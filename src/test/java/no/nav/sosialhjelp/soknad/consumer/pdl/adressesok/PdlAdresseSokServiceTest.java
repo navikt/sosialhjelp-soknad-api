@@ -193,9 +193,9 @@ public class PdlAdresseSokServiceTest {
     @Test
     public void skalReturnereAdresseForslagVedFlereHitsHvisDeHarSammeKommunenummerKommunenavnOgBydelsnummer() {
         var hitMock = mock(AdresseSokHit.class);
-        when(hitMock.getVegadresse()).thenReturn(adresse("kommune", "1111", "030101"));
+        when(hitMock.getVegadresse()).thenReturn(adresse("Oslo", "1111", "030101"));
         var hitMock2 = mock(AdresseSokHit.class);
-        when(hitMock2.getVegadresse()).thenReturn(adresse("kommune", "1111", "030101"));
+        when(hitMock2.getVegadresse()).thenReturn(adresse("Oslo", "1111", "030101"));
 
         var adresseSokResultMock = mock(AdresseSokResult.class);
         when(adresseSokResultMock.getHits()).thenReturn(Arrays.asList(hitMock, hitMock2));
@@ -203,7 +203,7 @@ public class PdlAdresseSokServiceTest {
         when(pdlConsumer.getAdresseSokResult(any())).thenReturn(adresseSokResultMock);
 
         var adresseForslag = pdlAdresseSokService.getAdresseForslag(sokedata);
-        assertThat(adresseForslag.kommunenavn).isEqualTo("kommune");
+        assertThat(adresseForslag.kommunenavn).isEqualTo("Oslo");
         assertThat(adresseForslag.kommunenummer).isEqualTo("1111");
         assertThat(adresseForslag.geografiskTilknytning).isEqualTo("030101");
     }
