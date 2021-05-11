@@ -17,9 +17,6 @@ public class MockAltSoknadsosialhjelpServer {
         File override = new File(Objects.requireNonNull(MockAltSoknadsosialhjelpServer.class.getClassLoader().getResource("override-web-mock-alt.xml")).getFile());
         SoknadsosialhjelpServer server = new SoknadsosialhjelpServer(PORT, override, "/sosialhjelp/soknad-api", null);
 
-        if (!isRunningOnGCP()) {
-            System.setProperty("sendsoknad.datadir", System.getProperty("user.home") + "/kodeverk/sendsoknad");
-        }
         System.setProperty("NAIS_NAMESPACE", "sosialhjelp-soknad-api-mock-alt");
 
         server.start();
