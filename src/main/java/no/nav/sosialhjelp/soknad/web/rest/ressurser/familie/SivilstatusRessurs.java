@@ -30,9 +30,11 @@ import java.util.Date;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static no.nav.sosialhjelp.soknad.web.rest.mappers.PersonMapper.getPersonnummerFromFnr;
 import static no.nav.sosialhjelp.soknad.web.rest.mappers.PersonMapper.mapToJsonNavn;
+import static no.nav.sosialhjelp.soknad.web.utils.Constants.CLAIM_ACR_LEVEL_4;
+import static no.nav.sosialhjelp.soknad.web.utils.Constants.SELVBETJENING;
 
 @Controller
-@ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })
+@ProtectedWithClaims(issuer = SELVBETJENING, claimMap = {CLAIM_ACR_LEVEL_4})
 @Path("/soknader/{behandlingsId}/familie/sivilstatus")
 @Timed
 @Produces(APPLICATION_JSON)

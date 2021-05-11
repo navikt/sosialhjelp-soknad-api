@@ -18,6 +18,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static no.nav.sosialhjelp.soknad.web.utils.Constants.SELVBETJENING;
+
 @Configuration
 public class OidcTokenValidatorConfig {
     private static final Logger log = LoggerFactory.getLogger(OidcTokenValidatorConfig.class);
@@ -43,7 +45,7 @@ public class OidcTokenValidatorConfig {
 
     private Map<String, IssuerProperties> getIssuerPropertiesMap() {
         Map<String, IssuerProperties> issuerPropertiesMap = new HashMap<>();
-        String[] issuers = {"selvbetjening"};
+        String[] issuers = {SELVBETJENING};
         Arrays.stream(issuers)
                 .forEach(i -> addIssuerToMap(i, issuerPropertiesMap));
         return issuerPropertiesMap;

@@ -22,6 +22,9 @@ import javax.ws.rs.Produces;
 import java.util.List;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+import static no.nav.sosialhjelp.soknad.web.utils.Constants.CLAIM_ACR_LEVEL_3;
+import static no.nav.sosialhjelp.soknad.web.utils.Constants.CLAIM_ACR_LEVEL_4;
+import static no.nav.sosialhjelp.soknad.web.utils.Constants.SELVBETJENING;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -29,7 +32,7 @@ import static org.slf4j.LoggerFactory.getLogger;
  * Implementerer speccen definert i soeknadsskjemasosialhjelp-v1-saksoversiktdefinisjon
  */
 @Controller
-@ProtectedWithClaims(issuer = "selvbetjening", combineWithOr = true, claimMap = {"acr=Level3", "acr=Level4"})
+@ProtectedWithClaims(issuer = SELVBETJENING, combineWithOr = true, claimMap = {CLAIM_ACR_LEVEL_3, CLAIM_ACR_LEVEL_4})
 @Path("/metadata/oidc")
 @Timed
 @Produces(APPLICATION_JSON)
