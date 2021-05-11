@@ -44,9 +44,11 @@ import static no.nav.sosialhjelp.soknad.web.rest.mappers.VedleggMapper.mapToVedl
 import static no.nav.sosialhjelp.soknad.web.rest.mappers.VedleggTypeToSoknadTypeMapper.getSoknadPath;
 import static no.nav.sosialhjelp.soknad.web.rest.mappers.VedleggTypeToSoknadTypeMapper.isInSoknadJson;
 import static no.nav.sosialhjelp.soknad.web.rest.mappers.VedleggTypeToSoknadTypeMapper.vedleggTypeToSoknadType;
+import static no.nav.sosialhjelp.soknad.web.utils.Constants.CLAIM_ACR_LEVEL_4;
+import static no.nav.sosialhjelp.soknad.web.utils.Constants.SELVBETJENING;
 
 @Controller
-@ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })
+@ProtectedWithClaims(issuer = SELVBETJENING, claimMap = {CLAIM_ACR_LEVEL_4})
 @Path("/soknader/{behandlingsId}/okonomiskeOpplysninger")
 @Timed
 @Produces(APPLICATION_JSON)

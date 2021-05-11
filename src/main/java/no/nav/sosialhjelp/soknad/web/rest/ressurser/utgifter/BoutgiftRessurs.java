@@ -42,9 +42,11 @@ import static no.nav.sosialhjelp.soknad.business.mappers.OkonomiMapper.addutgift
 import static no.nav.sosialhjelp.soknad.business.mappers.OkonomiMapper.addutgiftIfCheckedElseDeleteInOversikt;
 import static no.nav.sosialhjelp.soknad.business.mappers.OkonomiMapper.setBekreftelse;
 import static no.nav.sosialhjelp.soknad.business.mappers.TitleKeyMapper.soknadTypeToTitleKey;
+import static no.nav.sosialhjelp.soknad.web.utils.Constants.CLAIM_ACR_LEVEL_4;
+import static no.nav.sosialhjelp.soknad.web.utils.Constants.SELVBETJENING;
 
 @Controller
-@ProtectedWithClaims(issuer = "selvbetjening", claimMap = {"acr=Level4"})
+@ProtectedWithClaims(issuer = SELVBETJENING, claimMap = {CLAIM_ACR_LEVEL_4})
 @Path("/soknader/{behandlingsId}/utgifter/boutgifter")
 @Timed
 @Produces(APPLICATION_JSON)
