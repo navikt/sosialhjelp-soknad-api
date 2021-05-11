@@ -41,13 +41,15 @@ import static no.nav.sosialhjelp.soknad.business.util.JsonVedleggUtils.addHendel
 import static no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus.SENDT_MED_DIGISOS_API;
 import static no.nav.sosialhjelp.soknad.domain.model.mock.MockUtils.isAlltidSendTilNavTestkommune;
 import static no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils.isSendingTilFiksEnabled;
+import static no.nav.sosialhjelp.soknad.web.utils.Constants.CLAIM_ACR_LEVEL_4;
+import static no.nav.sosialhjelp.soknad.web.utils.Constants.SELVBETJENING;
 import static no.nav.sosialhjelp.soknad.web.utils.NedetidUtils.NEDETID_SLUTT;
 import static no.nav.sosialhjelp.soknad.web.utils.NedetidUtils.getNedetidAsStringOrNull;
 import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @Controller
-@ProtectedWithClaims(issuer = "selvbetjening", claimMap = {"acr=Level4"})
+@ProtectedWithClaims(issuer = SELVBETJENING, claimMap = {CLAIM_ACR_LEVEL_4})
 @Path("/soknader/{behandlingsId}/actions")
 @Produces(APPLICATION_JSON)
 @Timed(name = "SoknadActionsRessurs")

@@ -24,10 +24,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+import static no.nav.sosialhjelp.soknad.web.utils.Constants.CLAIM_ACR_LEVEL_4;
+import static no.nav.sosialhjelp.soknad.web.utils.Constants.SELVBETJENING;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Controller
-@ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })
+@ProtectedWithClaims(issuer = SELVBETJENING, claimMap = {CLAIM_ACR_LEVEL_4})
 @Path("/soknader/{behandlingsId}/arbeid")
 @Timed
 @Produces(APPLICATION_JSON)
