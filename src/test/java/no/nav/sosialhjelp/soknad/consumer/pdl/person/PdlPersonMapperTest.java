@@ -616,10 +616,10 @@ public class PdlPersonMapperTest {
     }
 
     @Test
-    public void assertMyndighetKorrekthetVedBursdag() {
-        var dayBeforeBirthday = LocalDate.now().minusYears(18).plusDays(1);
-        var birthday = LocalDate.now().minusYears(18);
-        var dayAfterBirthday = LocalDate.now().minusYears(18).minusDays(1);
+    public void assertUtledingAvMyndighetErKorrekt() {
+        var dagenFoerBarnBlirMyndig = LocalDate.now().minusYears(18).plusDays(1);
+        var dagenBarnBlirMyndig = LocalDate.now().minusYears(18);
+        var dagenEtterBarnBlirMyndig = LocalDate.now().minusYears(18).minusDays(1);
 
         var pdlPerson = new PdlPerson(
                 emptyList(),
@@ -631,37 +631,13 @@ public class PdlPersonMapperTest {
                 asList(new StatsborgerskapDto(LAND))
         );
 
-        var pdlBarnDayBeforeBirthday = new PdlBarn(
-                asList(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT)),
-                emptyList(),
-                asList(new FolkeregisterpersonstatusDto("ikke-doed")),
-                asList(new FoedselDto(dayBeforeBirthday)),
-                asList(new NavnDto(FORNAVN, null, ETTERNAVN, METADATA, FOLKEREGISTERMETADATA))
-        );
+        var pdlBarn_dagenFoerBarnBlirMyndig = createBarnMedFoedselsdato(dagenFoerBarnBlirMyndig);
+        var pdlBarn_dagenBarnBlirMyndig = createBarnMedFoedselsdato(dagenBarnBlirMyndig);
+        var pdlBarn_dagenEtterBarnBlirMyndig = createBarnMedFoedselsdato(dagenEtterBarnBlirMyndig);
 
-        var pdlBarnBirthday = new PdlBarn(
-                asList(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT)),
-                emptyList(),
-                asList(new FolkeregisterpersonstatusDto("ikke-doed")),
-                asList(new FoedselDto(birthday)),
-                asList(new NavnDto(FORNAVN, null, ETTERNAVN, METADATA, FOLKEREGISTERMETADATA))
-        );
-
-        var pdlBarnDayAfterBirthday = new PdlBarn(
-                asList(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT)),
-                emptyList(),
-                asList(new FolkeregisterpersonstatusDto("ikke-doed")),
-                asList(new FoedselDto(dayAfterBirthday)),
-                asList(new NavnDto(FORNAVN, null, ETTERNAVN, METADATA, FOLKEREGISTERMETADATA))
-        );
-
-        var barnDayBeforeBirthday = mapper.mapToBarn(pdlBarnDayBeforeBirthday, BARNIDENT, pdlPerson);
-        var barnBirthday = mapper.mapToBarn(pdlBarnBirthday, BARNIDENT, pdlPerson);
-        var barnDayAfterBirthday = mapper.mapToBarn(pdlBarnDayAfterBirthday, BARNIDENT, pdlPerson);
-
-        assertNotNull(barnDayBeforeBirthday);
-        assertNull(barnBirthday);
-        assertNull(barnDayAfterBirthday);
+        assertNotNull(mapper.mapToBarn(pdlBarn_dagenFoerBarnBlirMyndig, BARNIDENT, pdlPerson));
+        assertNull(mapper.mapToBarn(pdlBarn_dagenBarnBlirMyndig, BARNIDENT, pdlPerson));
+        assertNull(mapper.mapToBarn(pdlBarn_dagenEtterBarnBlirMyndig, BARNIDENT, pdlPerson));
     }
 
     @Test
@@ -705,5 +681,15 @@ public class PdlPersonMapperTest {
 
     private VegadresseDto annenVegadresse() {
         return new VegadresseDto("matrikkelId2", "stien", 2, "B", null, "1234", "1212", null, null);
+    }
+
+    private PdlBarn createBarnMedFoedselsdato(LocalDate foedselsdato) {
+        return new PdlBarn(
+                asList(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT)),
+                emptyList(),
+                asList(new FolkeregisterpersonstatusDto("ikke-doed")),
+                asList(new FoedselDto(foedselsdato)),
+                asList(new NavnDto(FORNAVN, null, ETTERNAVN, METADATA, FOLKEREGISTERMETADATA))
+        );
     }
 }
