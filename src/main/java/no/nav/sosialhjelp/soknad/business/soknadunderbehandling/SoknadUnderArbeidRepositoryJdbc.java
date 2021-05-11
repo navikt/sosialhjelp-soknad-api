@@ -10,7 +10,6 @@ import no.nav.sosialhjelp.soknad.business.exceptions.SamtidigOppdateringExceptio
 import no.nav.sosialhjelp.soknad.business.exceptions.SoknadLaastException;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeidStatus;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
@@ -20,10 +19,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.sql.DataSource;
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Arrays;
@@ -36,7 +32,6 @@ import static java.util.Date.from;
 import static no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator.ensureValidInternalSoknad;
 import static no.nav.sosialhjelp.soknad.business.db.SQLUtils.selectNextSequenceValue;
 import static no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeidStatus.UNDER_ARBEID;
-import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 @Named("SoknadUnderArbeidRepository")
 @Component
@@ -108,13 +103,6 @@ public class SoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoSuppor
     public Optional<SoknadUnderArbeid> hentEttersendingMedTilknyttetBehandlingsId(String tilknyttetBehandlingsId, String eier) {
         return getJdbcTemplate().query("select * from SOKNAD_UNDER_ARBEID where EIER = ? and TILKNYTTETBEHANDLINGSID = ? and STATUS = ?",
                 new SoknadUnderArbeidRowMapper(), eier, tilknyttetBehandlingsId, UNDER_ARBEID.toString()).stream().findFirst();
-    }
-
-    @Override
-    public List<SoknadUnderArbeid> hentForeldedeEttersendelser() {
-        return getJdbcTemplate().query("select * from SOKNAD_UNDER_ARBEID where SISTENDRETDATO < CURRENT_TIMESTAMP - (INTERVAL '1' HOUR) " +
-                        "and TILKNYTTETBEHANDLINGSID IS NOT NULL and STATUS = ?",
-                new SoknadUnderArbeidRowMapper(), UNDER_ARBEID.toString());
     }
 
     @Override
@@ -198,45 +186,6 @@ public class SoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoSuppor
         if (SoknadUnderArbeidStatus.LAAST.equals(soknadUnderArbeid.getStatus())) {
             throw new SoknadLaastException("Kan ikke oppdatere søknad med behandlingsid " + soknadUnderArbeid.getBehandlingsId() +
                     " fordi den er sendt fra bruker");
-        }
-    }
-
-    public class SoknadUnderArbeidRowMapper implements RowMapper<SoknadUnderArbeid> {
-
-        public SoknadUnderArbeid mapRow(ResultSet rs, int rowNum) throws SQLException {
-            SoknadUnderArbeidStatus status = null;
-            try {
-                final String statusFraDb = rs.getString("status");
-                if (isNotEmpty(statusFraDb)) {
-                    status = SoknadUnderArbeidStatus.valueOf(statusFraDb);
-                }
-            } catch (IllegalArgumentException e) {
-                throw new RuntimeException("Ukjent innsendingsstatus fra database", e);
-            }
-            return new SoknadUnderArbeid()
-                    .withSoknadId(rs.getLong("soknad_under_arbeid_id"))
-                    .withVersjon(rs.getLong("versjon"))
-                    .withBehandlingsId(rs.getString("behandlingsid"))
-                    .withTilknyttetBehandlingsId(rs.getString("tilknyttetbehandlingsid"))
-                    .withEier(rs.getString("eier"))
-                    .withJsonInternalSoknad(mapDataToJsonInternalSoknad(rs.getBytes("data")))
-                    .withStatus(status)
-                    .withOpprettetDato(rs.getTimestamp("opprettetdato") != null ?
-                            rs.getTimestamp("opprettetdato").toLocalDateTime() : null)
-                    .withSistEndretDato(rs.getTimestamp("sistendretdato") != null ?
-                            rs.getTimestamp("sistendretdato").toLocalDateTime() : null);
-        }
-
-        private JsonInternalSoknad mapDataToJsonInternalSoknad(byte[] data){
-            if (data == null){
-                return null;
-            }
-            try {
-                return mapper.readValue(data, JsonInternalSoknad.class);
-            } catch (IOException e) {
-                logger.error("Kunne ikke finne søknad", e);
-                throw new RuntimeException(e);
-            }
         }
     }
 

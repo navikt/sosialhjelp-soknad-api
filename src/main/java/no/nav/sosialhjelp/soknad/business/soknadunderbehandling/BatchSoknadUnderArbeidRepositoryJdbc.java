@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.business.soknadunderbehandling;
 
+import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
@@ -51,5 +52,12 @@ public class BatchSoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoS
                 getJdbcTemplate().update("delete from SOKNAD_UNDER_ARBEID where SOKNAD_UNDER_ARBEID_ID = ?", soknadUnderArbeidId);
             }
         });
+    }
+
+    @Override
+    public List<SoknadUnderArbeid> hentForeldedeEttersendelser() {
+        return getJdbcTemplate().query("select * from SOKNAD_UNDER_ARBEID where SISTENDRETDATO < CURRENT_TIMESTAMP - (INTERVAL '1' HOUR) " +
+                        "and TILKNYTTETBEHANDLINGSID IS NOT NULL and STATUS = ?",
+                new SoknadUnderArbeidRowMapper(), UNDER_ARBEID.toString());
     }
 }

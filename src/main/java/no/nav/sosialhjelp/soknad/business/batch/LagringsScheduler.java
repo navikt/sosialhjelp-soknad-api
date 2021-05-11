@@ -3,7 +3,7 @@ package no.nav.sosialhjelp.soknad.business.batch;
 import no.nav.sosialhjelp.metrics.MetricsFactory;
 import no.nav.sosialhjelp.metrics.Timer;
 import no.nav.sosialhjelp.soknad.business.service.HenvendelseService;
-import no.nav.sosialhjelp.soknad.business.soknadunderbehandling.SoknadUnderArbeidRepository;
+import no.nav.sosialhjelp.soknad.business.soknadunderbehandling.BatchSoknadUnderArbeidRepository;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils;
 import org.joda.time.DateTime;
@@ -29,7 +29,7 @@ public class LagringsScheduler {
     @Inject
     private HenvendelseService henvendelseService;
     @Inject
-    private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
+    private BatchSoknadUnderArbeidRepository batchSoknadUnderArbeidRepository;
 
     @Scheduled(fixedRate = SCHEDULE_RATE_MS)
     public void slettForeldedeEttersendelserFraSoknadUnderArbeidDatabase() throws InterruptedException {
@@ -59,7 +59,7 @@ public class LagringsScheduler {
     }
 
     private void hentForeldedeEttersendelserFraDatabaseOgSlett(Timer metrikk) throws InterruptedException {
-        List<SoknadUnderArbeid> soknadUnderArbeidList = soknadUnderArbeidRepository.hentForeldedeEttersendelser();
+        List<SoknadUnderArbeid> soknadUnderArbeidList = batchSoknadUnderArbeidRepository.hentForeldedeEttersendelser();
         for (SoknadUnderArbeid soknadUnderArbeid : soknadUnderArbeidList) {
             if (soknadUnderArbeid.erEttersendelse()) {
                 avbrytOgSlettEttersendelse(soknadUnderArbeid);
@@ -79,7 +79,7 @@ public class LagringsScheduler {
     private void avbrytOgSlettEttersendelse(SoknadUnderArbeid soknadUnderArbeid) throws InterruptedException {
         try {
             henvendelseService.avbrytSoknad(soknadUnderArbeid.getBehandlingsId(), true);
-            soknadUnderArbeidRepository.slettSoknad(soknadUnderArbeid, soknadUnderArbeid.getEier());
+            batchSoknadUnderArbeidRepository.slettSoknad(soknadUnderArbeid.getSoknadId());
 
             vellykket++;
         } catch (Exception e) {

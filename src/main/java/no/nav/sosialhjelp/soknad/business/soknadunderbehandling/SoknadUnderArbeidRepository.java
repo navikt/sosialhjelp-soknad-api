@@ -13,7 +13,6 @@ public interface SoknadUnderArbeidRepository {
     SoknadUnderArbeid hentSoknad(String behandlingsId, String eier);
     Optional<SoknadUnderArbeid> hentSoknadOptional(String behandlingsId, String eier);
     Optional<SoknadUnderArbeid> hentEttersendingMedTilknyttetBehandlingsId(String behandlingsId, String eier);
-    List<SoknadUnderArbeid> hentForeldedeEttersendelser();
     List<SoknadUnderArbeid> hentAlleSoknaderUnderArbeidSiste15Dager();
     void oppdaterSoknadsdata(SoknadUnderArbeid soknadUnderArbeid, String eier) throws SamtidigOppdateringException;
     void oppdaterInnsendingStatus(SoknadUnderArbeid soknadUnderArbeid, String eier);
