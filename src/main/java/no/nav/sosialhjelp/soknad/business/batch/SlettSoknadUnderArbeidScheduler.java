@@ -37,7 +37,7 @@ public class SlettSoknadUnderArbeidScheduler {
         vellykket = 0;
 
         if (Boolean.parseBoolean(System.getProperty("sendsoknad.batch.enabled", "true"))) {
-            logger.info("Starter sletting av soknadUnderArbeid som er eldre enn 365 dager");
+            logger.info("Starter sletting av soknadUnderArbeid som er eldre enn 180 dager");
             var batchTimer = MetricsFactory.createTimer("sosialhjelp.debug.slettSoknadUnderArbeid");
             batchTimer.start();
 
