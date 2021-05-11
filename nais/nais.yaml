@@ -28,7 +28,7 @@ spec:
   vault:
     enabled: {{vaultEnabled}}
   tokenx:
-    enabled: true
+    enabled: {{tokenXEnabled}}
 {{#if isGcp}}
   accessPolicy:
     outbound:

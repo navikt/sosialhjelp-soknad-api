@@ -27,6 +27,7 @@
   "memoryLimit": "4Gi",
   "memoryRequest": "4Gi",
   "vaultEnabled": true,
+  "tokenXEnabled": true,
   "prometheusEnabled": true,
   "webProxyEnabled": true,
   "isGcp": false,

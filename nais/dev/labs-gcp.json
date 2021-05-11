@@ -9,6 +9,7 @@
   "memoryLimit": "2Gi",
   "memoryRequest": "2Gi",
   "vaultEnabled": false,
+  "tokenXEnabled": false,
   "prometheusEnabled": false,
   "webProxyEnabled": false,
   "isGcp": true,
