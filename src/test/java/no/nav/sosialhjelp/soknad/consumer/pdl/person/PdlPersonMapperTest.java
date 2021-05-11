@@ -616,6 +616,55 @@ public class PdlPersonMapperTest {
     }
 
     @Test
+    public void assertMyndighetKorrekthetVedBursdag() {
+        var dayBeforeBirthday = LocalDate.now().minusYears(18).plusDays(1);
+        var birthday = LocalDate.now().minusYears(18);
+        var dayAfterBirthday = LocalDate.now().minusYears(18).minusDays(1);
+
+        var pdlPerson = new PdlPerson(
+                emptyList(),
+                null, // Ingen oppholdsadresse
+                null, // ingen kontaktadresse
+                asList(new ForelderBarnRelasjonDto(BARNIDENT, BARN_ROLLE, MOR_ROLLE)),
+                asList(new NavnDto(FORNAVN, MELLOMNAVN, ETTERNAVN, METADATA, FOLKEREGISTERMETADATA)),
+                asList(new SivilstandDto(SivilstandDto.SivilstandType.GIFT, EKTEFELLEIDENT, METADATA, FOLKEREGISTERMETADATA)),
+                asList(new StatsborgerskapDto(LAND))
+        );
+
+        var pdlBarnDayBeforeBirthday = new PdlBarn(
+                asList(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT)),
+                emptyList(),
+                asList(new FolkeregisterpersonstatusDto("ikke-doed")),
+                asList(new FoedselDto(dayBeforeBirthday)),
+                asList(new NavnDto(FORNAVN, null, ETTERNAVN, METADATA, FOLKEREGISTERMETADATA))
+        );
+
+        var pdlBarnBirthday = new PdlBarn(
+                asList(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT)),
+                emptyList(),
+                asList(new FolkeregisterpersonstatusDto("ikke-doed")),
+                asList(new FoedselDto(birthday)),
+                asList(new NavnDto(FORNAVN, null, ETTERNAVN, METADATA, FOLKEREGISTERMETADATA))
+        );
+
+        var pdlBarnDayAfterBirthday = new PdlBarn(
+                asList(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT)),
+                emptyList(),
+                asList(new FolkeregisterpersonstatusDto("ikke-doed")),
+                asList(new FoedselDto(dayAfterBirthday)),
+                asList(new NavnDto(FORNAVN, null, ETTERNAVN, METADATA, FOLKEREGISTERMETADATA))
+        );
+
+        var barnDayBeforeBirthday = mapper.mapToBarn(pdlBarnDayBeforeBirthday, BARNIDENT, pdlPerson);
+        var barnBirthday = mapper.mapToBarn(pdlBarnBirthday, BARNIDENT, pdlPerson);
+        var barnDayAfterBirthday = mapper.mapToBarn(pdlBarnDayAfterBirthday, BARNIDENT, pdlPerson);
+
+        assertNotNull(barnDayBeforeBirthday);
+        assertNull(barnBirthday);
+        assertNull(barnDayAfterBirthday);
+    }
+
+    @Test
     public void adressebeskyttelseStrengtFortrolig() {
         var pdlAdressebeskyttelse = new PdlAdressebeskyttelse(
                 asList(new AdressebeskyttelseDto(STRENGT_FORTROLIG))
