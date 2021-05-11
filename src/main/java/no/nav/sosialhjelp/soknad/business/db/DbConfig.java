@@ -2,6 +2,7 @@ package no.nav.sosialhjelp.soknad.business.db;
 
 import no.nav.sosialhjelp.soknad.business.db.oppgave.OppgaveRepositoryJdbc;
 import no.nav.sosialhjelp.soknad.business.db.soknad.SoknadInnsendingDBConfig;
+import no.nav.sosialhjelp.soknad.business.db.soknadmetadata.BatchSoknadMetadataRepositoryJdbc;
 import no.nav.sosialhjelp.soknad.business.db.soknadmetadata.SoknadMetadataRepositoryJdbc;
 import no.nav.sosialhjelp.soknad.business.sendtsoknad.SendtSoknadRepositoryJdbc;
 import no.nav.sosialhjelp.soknad.business.soknadunderbehandling.BatchOpplastetVedleggRepositoryJdbc;
@@ -22,6 +23,7 @@ import java.time.Clock;
         SoknadMetadataRepositoryJdbc.class,
         BatchOpplastetVedleggRepositoryJdbc.class,
         BatchSoknadUnderArbeidRepositoryJdbc.class,
+        BatchSoknadMetadataRepositoryJdbc.class,
         OppgaveRepositoryJdbc.class,
         SoknadInnsendingDBConfig.class,
 })

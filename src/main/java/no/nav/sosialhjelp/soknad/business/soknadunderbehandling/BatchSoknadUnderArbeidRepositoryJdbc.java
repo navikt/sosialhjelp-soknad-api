@@ -11,6 +11,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.sql.DataSource;
 import java.util.List;
+import java.util.Optional;
 
 import static no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeidStatus.UNDER_ARBEID;
 
@@ -32,6 +33,12 @@ public class BatchSoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoS
     @Inject
     public void setDS(DataSource ds) {
         super.setDataSource(ds);
+    }
+
+    @Override
+    public Optional<Long> hentSoknadUnderArbeidIdFromBehandlingsIdOptional(String behandlingsId) {
+        return getJdbcTemplate().query("select * from SOKNAD_UNDER_ARBEID where BEHANDLINGSID = ?",
+                (resultSet, i) -> resultSet.getLong("soknad_under_arbeid_id"), behandlingsId).stream().findFirst();
     }
 
     @Override

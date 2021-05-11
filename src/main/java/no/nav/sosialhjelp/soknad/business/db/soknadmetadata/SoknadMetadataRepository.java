@@ -4,7 +4,6 @@ import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 public interface SoknadMetadataRepository {
 
@@ -16,11 +15,11 @@ public interface SoknadMetadataRepository {
 
     SoknadMetadata hent(String behandlingsId);
 
-    Optional<SoknadMetadata> hentForBatch(int antallDagerGammel);
-
-    Optional<SoknadMetadata> hentEldreEnn(int antallDagerGammel);
-
-    void leggTilbakeBatch(Long id);
+//    Optional<SoknadMetadata> hentForBatch(int antallDagerGammel);
+//
+//    Optional<SoknadMetadata> hentEldreEnn(int antallDagerGammel);
+//
+//    void leggTilbakeBatch(Long id);
 
     List<SoknadMetadata> hentBehandlingskjede(String behandlingsId);
 
@@ -34,5 +33,5 @@ public interface SoknadMetadataRepository {
 
     List<SoknadMetadata> hentInnsendteSoknaderForBrukerEtterTidspunkt(String fnr, LocalDateTime after);
 
-    void slettSoknadMetaData(String behandlingsId, String eier);
+//    void slettSoknadMetaData(String behandlingsId, String eier);
 }

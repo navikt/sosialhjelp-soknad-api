@@ -1,9 +1,10 @@
 package no.nav.sosialhjelp.soknad.business.batch;
 
 import no.nav.sosialhjelp.soknad.business.db.DbTestConfig;
+import no.nav.sosialhjelp.soknad.business.db.soknadmetadata.BatchSoknadMetadataRepository;
 import no.nav.sosialhjelp.soknad.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata;
-import no.nav.sosialhjelp.soknad.business.soknadunderbehandling.SoknadUnderArbeidRepository;
+import no.nav.sosialhjelp.soknad.business.soknadunderbehandling.BatchSoknadUnderArbeidRepository;
 import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeidStatus;
@@ -23,8 +24,7 @@ import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -39,9 +39,11 @@ public class AvbrytAutomatiskSchedulerTest {
     @InjectMocks
     private AvbrytAutomatiskSheduler scheduler = new AvbrytAutomatiskSheduler();
     @Mock
-    private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
+    private BatchSoknadUnderArbeidRepository batchSoknadUnderArbeidRepository;
     @Mock
     private SoknadMetadataRepository soknadMetadataRepository;
+    @Mock
+    private BatchSoknadMetadataRepository batchSoknadMetadataRepository;
 
     @Before
     public void setup() {
@@ -57,8 +59,8 @@ public class AvbrytAutomatiskSchedulerTest {
                 .withBehandlingsId(BEHANDLINGS_ID)
                 .withStatus(SoknadUnderArbeidStatus.UNDER_ARBEID);
 
-        when(soknadMetadataRepository.hentForBatch(DAGER_GAMMEL_SOKNAD)).thenReturn(Optional.of(soknadMetadata)).thenReturn(Optional.empty());
-        when(soknadUnderArbeidRepository.hentSoknadOptional(BEHANDLINGS_ID, EIER)).thenReturn(Optional.of(soknadUnderArbeid));
+        when(batchSoknadMetadataRepository.hentForBatch(DAGER_GAMMEL_SOKNAD)).thenReturn(Optional.of(soknadMetadata)).thenReturn(Optional.empty());
+        when(batchSoknadUnderArbeidRepository.hentSoknadUnderArbeidIdFromBehandlingsIdOptional(BEHANDLINGS_ID)).thenReturn(Optional.of(soknadUnderArbeid.getSoknadId()));
 
         scheduler.avbrytGamleSoknader();
 
@@ -67,7 +69,7 @@ public class AvbrytAutomatiskSchedulerTest {
         SoknadMetadata oppdatertSoknadMetadata = argument.getValue();
 
         assertThat(oppdatertSoknadMetadata.status, is(SoknadMetadataInnsendingStatus.AVBRUTT_AUTOMATISK));
-        verify(soknadUnderArbeidRepository).slettSoknad(any(SoknadUnderArbeid.class), anyString());
+        verify(batchSoknadUnderArbeidRepository).slettSoknad(anyLong());
     }
 
     @After

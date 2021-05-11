@@ -14,9 +14,7 @@ import javax.inject.Inject;
 import javax.sql.DataSource;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
-import static no.nav.sosialhjelp.soknad.business.db.SQLUtils.limit;
 import static no.nav.sosialhjelp.soknad.business.db.SQLUtils.tidTilTimestamp;
 import static no.nav.sosialhjelp.soknad.business.db.SQLUtils.timestampTilTid;
 
@@ -111,53 +109,6 @@ public class SoknadMetadataRepositoryJdbc extends NamedParameterJdbcDaoSupport i
         return null;
     }
 
-    @Transactional
-    @Override
-    public Optional<SoknadMetadata> hentForBatch(int antallDagerGammel) {
-        LocalDateTime frist = LocalDateTime.now().minusDays(antallDagerGammel);
-
-        while (true) {
-            String select = "SELECT * FROM soknadmetadata WHERE opprettetDato < ? AND batchstatus = 'LEDIG' AND innsendingstatus = 'UNDER_ARBEID' " + limit(1);
-            Optional<SoknadMetadata> resultat = getJdbcTemplate().query(select, soknadMetadataRowMapper, tidTilTimestamp(frist))
-                    .stream().findFirst();
-            if (!resultat.isPresent()) {
-                return Optional.empty();
-            }
-            String update = "UPDATE soknadmetadata set batchstatus = 'TATT' WHERE id = ? AND batchstatus = 'LEDIG'";
-            int rowsAffected = getJdbcTemplate().update(update, resultat.get().id);
-            if (rowsAffected == 1) {
-                return resultat;
-            }
-        }
-    }
-
-    @Transactional
-    @Override
-    public Optional<SoknadMetadata> hentEldreEnn(int antallDagerGammel) {
-        LocalDateTime frist = LocalDateTime.now().minusDays(antallDagerGammel);
-
-        while (true) {
-            String select = "SELECT * FROM soknadmetadata WHERE opprettetDato < ? AND batchstatus = 'LEDIG'" + limit(1);
-            Optional<SoknadMetadata> resultat = getJdbcTemplate().query(select, soknadMetadataRowMapper, tidTilTimestamp(frist))
-                    .stream().findFirst();
-            if (!resultat.isPresent()) {
-                return Optional.empty();
-            }
-            String update = "UPDATE soknadmetadata set batchstatus = 'TATT' WHERE id = ? AND batchstatus = 'LEDIG'";
-            int rowsAffected = getJdbcTemplate().update(update, resultat.get().id);
-            if (rowsAffected == 1) {
-                return resultat;
-            }
-        }
-    }
-
-    @Transactional
-    @Override
-    public void leggTilbakeBatch(Long id) {
-        String update = "UPDATE soknadmetadata set batchstatus = 'LEDIG' WHERE id = ?";
-        getJdbcTemplate().update(update, id);
-    }
-
     @Override
     public List<SoknadMetadata> hentBehandlingskjede(String behandlingsId) {
         String select = "SELECT * FROM soknadmetadata WHERE TILKNYTTETBEHANDLINGSID = ?";
@@ -196,11 +147,5 @@ public class SoknadMetadataRepositoryJdbc extends NamedParameterJdbcDaoSupport i
         String query = "SELECT * FROM soknadmetadata WHERE fnr = ? AND (innsendingstatus = ? OR innsendingstatus = ?) AND innsendtdato > ? AND TILKNYTTETBEHANDLINGSID IS NULL ORDER BY innsendtdato DESC";
         return getJdbcTemplate().query(query, soknadMetadataRowMapper,
                 fnr, SoknadMetadataInnsendingStatus.FERDIG.name(), SoknadMetadataInnsendingStatus.SENDT_MED_DIGISOS_API.name(), tidTilTimestamp(tidsgrense));
-    }
-
-    @Transactional
-    @Override
-    public void slettSoknadMetaData(String behandlingsId, String eier) {
-        getJdbcTemplate().update("DELETE FROM soknadmetadata WHERE fnr = ? AND behandlingsid = ?", eier, behandlingsId);
     }
 }
