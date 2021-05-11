@@ -27,6 +27,8 @@ spec:
   webproxy: {{webProxyEnabled}}
   vault:
     enabled: {{vaultEnabled}}
+  tokenx:
+    enabled: true
 {{#if isGcp}}
   accessPolicy:
     outbound:
