@@ -12,7 +12,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import javax.inject.Inject;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.List;
 
 import static java.time.LocalDateTime.now;
 import static org.hamcrest.CoreMatchers.is;
@@ -82,21 +81,6 @@ public class SendtSoknadRepositoryJdbcTest {
         assertThat(sendtSoknad.getBrukerOpprettetDato(), is(BRUKER_OPPRETTET_DATO));
         assertThat(sendtSoknad.getBrukerFerdigDato(), is(BRUKER_FERDIG_DATO));
         assertThat(sendtSoknad.getSendtDato(), is(SENDT_DATO));
-    }
-
-    @Test
-    public void hentAlleSendteSoknaderHenterAlleSendteSoknaderForEier() {
-        sendtSoknadRepository.opprettSendtSoknad(lagSendtSoknad(EIER, BEHANDLINGSID, FIKSFORSENDELSEID), EIER);
-        sendtSoknadRepository.opprettSendtSoknad(lagSendtSoknad(EIER, BEHANDLINGSID2, FIKSFORSENDELSEID2), EIER);
-        sendtSoknadRepository.opprettSendtSoknad(lagSendtSoknad(EIER2, BEHANDLINGSID3, FIKSFORSENDELSEID3), EIER2);
-
-        List<SendtSoknad> sendteSoknader = sendtSoknadRepository.hentAlleSendteSoknader(EIER);
-
-        assertThat(sendteSoknader.size(), is(2));
-        assertThat(sendteSoknader.get(0).getEier(), is(EIER));
-        assertThat(sendteSoknader.get(0).getBehandlingsId(), is(BEHANDLINGSID));
-        assertThat(sendteSoknader.get(1).getEier(), is(EIER));
-        assertThat(sendteSoknader.get(1).getBehandlingsId(), is(BEHANDLINGSID2));
     }
 
     @Test

@@ -14,7 +14,6 @@ import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.ZoneId;
-import java.util.List;
 import java.util.Optional;
 
 import static java.time.LocalDateTime.now;
@@ -58,12 +57,6 @@ public class SendtSoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport impl
     public Optional<SendtSoknad> hentSendtSoknad(String behandlingsId, String eier) {
         return getJdbcTemplate().query("select * from SENDT_SOKNAD where EIER = ? and BEHANDLINGSID = ?",
                 new SendtSoknadRowMapper(), eier, behandlingsId).stream().findFirst();
-    }
-
-    @Override
-    public List<SendtSoknad> hentAlleSendteSoknader(String eier) {
-        return getJdbcTemplate().query("select * from SENDT_SOKNAD where EIER = ?",
-                new SendtSoknadRowMapper(), eier);
     }
 
     @Override
