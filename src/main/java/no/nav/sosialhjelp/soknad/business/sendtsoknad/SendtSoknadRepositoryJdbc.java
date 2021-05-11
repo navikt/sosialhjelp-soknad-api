@@ -4,8 +4,6 @@ import no.nav.sosialhjelp.soknad.domain.SendtSoknad;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.inject.Inject;
@@ -67,21 +65,6 @@ public class SendtSoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport impl
                         from(now().atZone(ZoneId.systemDefault()).toInstant()),
                         behandlingsId,
                         eier);
-    }
-
-    @Override
-    public void slettSendtSoknad(SendtSoknad sendtSoknad, String eier) {
-        sjekkOmBrukerEierSendtSoknad(sendtSoknad, eier);
-        transactionTemplate.execute(new TransactionCallbackWithoutResult() {
-            @Override
-            protected void doInTransactionWithoutResult(TransactionStatus transactionStatus) {
-                final Long sendtSoknadId = sendtSoknad.getSendtSoknadId();
-                if (sendtSoknadId == null) {
-                    throw new RuntimeException("Kan ikke slette sendt søknad uten søknadsid");
-                }
-                getJdbcTemplate().update("delete from SENDT_SOKNAD where EIER = ? and SENDT_SOKNAD_ID = ?", eier, sendtSoknadId);
-            }
-        });
     }
 
     private void sjekkOmBrukerEierSendtSoknad(SendtSoknad sendtSoknad, String eier) {

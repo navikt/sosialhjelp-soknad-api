@@ -9,5 +9,4 @@ public interface SendtSoknadRepository {
     Long opprettSendtSoknad(SendtSoknad sendtSoknad, String eier);
     Optional<SendtSoknad> hentSendtSoknad(String behandlingsId, String eier);
     void oppdaterSendtSoknadVedSendingTilFiks(String fiksforsendelseId, String behandlingsId, String eier);
-    void slettSendtSoknad(SendtSoknad sendtSoknad, String eier);
 }

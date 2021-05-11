@@ -25,12 +25,8 @@ public class SendtSoknadRepositoryJdbcTest {
     private static final String EIER = "12345678901";
     private static final String EIER2 = "22222222222";
     private static final String BEHANDLINGSID = "1100020";
-    private static final String BEHANDLINGSID2 = "1100021";
-    private static final String BEHANDLINGSID3 = "1100022";
     private static final String TILKNYTTET_BEHANDLINGSID = "4567";
     private static final String FIKSFORSENDELSEID = "12345";
-    private static final String FIKSFORSENDELSEID2 = "12789";
-    private static final String FIKSFORSENDELSEID3 = "12652";
     private static final String ORGNUMMER = "987654";
     private static final String NAVENHETSNAVN = "NAV Enhet";
     private static final LocalDateTime BRUKER_OPPRETTET_DATO = now().minusDays(2).truncatedTo(ChronoUnit.MILLIS);
@@ -92,17 +88,6 @@ public class SendtSoknadRepositoryJdbcTest {
         SendtSoknad oppdatertSendtSoknad = sendtSoknadRepository.hentSendtSoknad(BEHANDLINGSID, EIER).get();
         assertThat(oppdatertSendtSoknad.getFiksforsendelseId(), is(FIKSFORSENDELSEID));
         assertThat(oppdatertSendtSoknad.getSendtDato(), notNullValue());
-    }
-
-    @Test
-    public void slettSendtSoknadSletterSoknadFraDatabase() {
-        SendtSoknad sendtSoknad = lagSendtSoknad(EIER);
-        Long sendtSoknadId = sendtSoknadRepository.opprettSendtSoknad(sendtSoknad, EIER);
-        sendtSoknad.setSendtSoknadId(sendtSoknadId);
-
-        sendtSoknadRepository.slettSendtSoknad(sendtSoknad, EIER);
-
-        assertThat(sendtSoknadRepository.hentSendtSoknad(BEHANDLINGSID, EIER).isPresent(), is(false));
     }
 
     private SendtSoknad lagSendtSoknad(String eier) {

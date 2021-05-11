@@ -13,5 +13,5 @@ public interface BatchSoknadMetadataRepository {
 
     void leggTilbakeBatch(Long id);
 
-    void slettSoknadMetaData(String behandlingsId, String eier);
+    void slettSoknadMetaData(String behandlingsId);
 }

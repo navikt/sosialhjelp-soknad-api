@@ -11,6 +11,7 @@ import no.nav.sosialhjelp.soknad.business.pdf.HandleBarKjoerer;
 import no.nav.sosialhjelp.soknad.business.pdf.HtmlGenerator;
 import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.SosialhjelpPdfGenerator;
 import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.TextHelpers;
+import no.nav.sosialhjelp.soknad.business.sendtsoknad.BatchSendtSoknadRepository;
 import no.nav.sosialhjelp.soknad.business.sendtsoknad.SendtSoknadRepository;
 import no.nav.sosialhjelp.soknad.business.service.HenvendelseService;
 import no.nav.sosialhjelp.soknad.business.service.OpplastetVedleggService;
@@ -156,6 +157,11 @@ public class SoknadServiceIntegrationTestContext {
     @Bean
     SendtSoknadRepository sendtSoknadRepository() {
         return mock(SendtSoknadRepository.class);
+    }
+
+    @Bean
+    BatchSendtSoknadRepository batchSendtSoknadRepository() {
+        return mock(BatchSendtSoknadRepository.class);
     }
 
     @Bean

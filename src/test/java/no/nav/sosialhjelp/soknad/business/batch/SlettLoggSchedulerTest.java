@@ -8,7 +8,7 @@ import no.nav.sosialhjelp.soknad.business.db.oppgave.OppgaveRepository;
 import no.nav.sosialhjelp.soknad.business.db.soknadmetadata.BatchSoknadMetadataRepository;
 import no.nav.sosialhjelp.soknad.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata;
-import no.nav.sosialhjelp.soknad.business.sendtsoknad.SendtSoknadRepository;
+import no.nav.sosialhjelp.soknad.business.sendtsoknad.BatchSendtSoknadRepository;
 import no.nav.sosialhjelp.soknad.domain.SendtSoknad;
 import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus;
 import no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SoknadType;
@@ -24,7 +24,7 @@ import org.springframework.test.context.ContextConfiguration;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-import static org.mockito.Mockito.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -41,7 +41,7 @@ public class SlettLoggSchedulerTest {
     @InjectMocks
     private SlettLoggScheduler scheduler = new SlettLoggScheduler();
     @Mock
-    private SendtSoknadRepository sendtSoknadRepository;
+    private BatchSendtSoknadRepository batchSendtSoknadRepository;
     @Mock
     private SoknadMetadataRepository soknadMetadataRepository;
     @Mock
@@ -61,13 +61,13 @@ public class SlettLoggSchedulerTest {
         SoknadMetadata soknadMetadata = soknadMetadata(BEHANDLINGS_ID, SoknadMetadataInnsendingStatus.UNDER_ARBEID, DAGER_GAMMEL_SOKNAD + 1);
         when(batchSoknadMetadataRepository.hentEldreEnn(DAGER_GAMMEL_SOKNAD)).thenReturn(Optional.of(soknadMetadata)).thenReturn(Optional.empty());
         when(oppgaveRepository.hentOppgave(BEHANDLINGS_ID)).thenReturn(Optional.of(oppgave));
-        when(sendtSoknadRepository.hentSendtSoknad(BEHANDLINGS_ID, EIER)).thenReturn(Optional.of(sendtSoknad));
+        when(batchSendtSoknadRepository.hentSendtSoknad(BEHANDLINGS_ID)).thenReturn(Optional.of(sendtSoknad.getSendtSoknadId()));
 
         scheduler.slettLogger();
 
         verify(oppgaveRepository).slettOppgave(BEHANDLINGS_ID);
-        verify(sendtSoknadRepository).slettSendtSoknad(sendtSoknad, EIER);
-        verify(batchSoknadMetadataRepository).slettSoknadMetaData(BEHANDLINGS_ID, EIER);
+        verify(batchSendtSoknadRepository).slettSendtSoknad(sendtSoknad.getSendtSoknadId());
+        verify(batchSoknadMetadataRepository).slettSoknadMetaData(BEHANDLINGS_ID);
     }
 
     @Test
@@ -77,13 +77,13 @@ public class SlettLoggSchedulerTest {
         SoknadMetadata soknadMetadata = soknadMetadata(BEHANDLINGS_ID, SoknadMetadataInnsendingStatus.UNDER_ARBEID, DAGER_GAMMEL_SOKNAD + 1);
         when(batchSoknadMetadataRepository.hentEldreEnn(DAGER_GAMMEL_SOKNAD)).thenReturn(Optional.of(soknadMetadata)).thenReturn(Optional.empty());
         when(oppgaveRepository.hentOppgave(BEHANDLINGS_ID)).thenReturn(Optional.of(oppgave));
-        when(sendtSoknadRepository.hentSendtSoknad(BEHANDLINGS_ID, EIER)).thenReturn(Optional.empty());
+        when(batchSendtSoknadRepository.hentSendtSoknad(BEHANDLINGS_ID)).thenReturn(Optional.empty());
 
         scheduler.slettLogger();
 
         verify(oppgaveRepository).slettOppgave(BEHANDLINGS_ID);
-        verify(sendtSoknadRepository, never()).slettSendtSoknad(sendtSoknad, EIER);
-        verify(batchSoknadMetadataRepository).slettSoknadMetaData(BEHANDLINGS_ID, EIER);
+        verify(batchSendtSoknadRepository, never()).slettSendtSoknad(sendtSoknad.getSendtSoknadId());
+        verify(batchSoknadMetadataRepository).slettSoknadMetaData(BEHANDLINGS_ID);
     }
 
     @Test
@@ -93,8 +93,8 @@ public class SlettLoggSchedulerTest {
         scheduler.slettLogger();
 
         verify(oppgaveRepository, never()).slettOppgave(anyString());
-        verify(sendtSoknadRepository, never()).slettSendtSoknad(any(SendtSoknad.class), anyString());
-        verify(batchSoknadMetadataRepository, never()).slettSoknadMetaData(anyString(), anyString());
+        verify(batchSendtSoknadRepository, never()).slettSendtSoknad(anyLong());
+        verify(batchSoknadMetadataRepository, never()).slettSoknadMetaData(anyString());
     }
 
     @After
