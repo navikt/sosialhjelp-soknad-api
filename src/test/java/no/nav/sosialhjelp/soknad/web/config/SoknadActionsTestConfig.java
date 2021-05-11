@@ -20,6 +20,8 @@ import no.nav.sosialhjelp.soknad.business.service.soknadservice.Systemdata;
 import no.nav.sosialhjelp.soknad.business.service.soknadservice.SystemdataUpdater;
 import no.nav.sosialhjelp.soknad.business.service.systemdata.BostotteSystemdata;
 import no.nav.sosialhjelp.soknad.business.service.systemdata.SkattetatenSystemdata;
+import no.nav.sosialhjelp.soknad.business.soknadunderbehandling.BatchOpplastetVedleggRepository;
+import no.nav.sosialhjelp.soknad.business.soknadunderbehandling.BatchSoknadUnderArbeidRepository;
 import no.nav.sosialhjelp.soknad.business.soknadunderbehandling.OpplastetVedleggRepository;
 import no.nav.sosialhjelp.soknad.business.soknadunderbehandling.SoknadUnderArbeidRepository;
 import no.nav.sosialhjelp.soknad.consumer.bostotte.Bostotte;
@@ -116,6 +118,11 @@ public class SoknadActionsTestConfig {
     }
 
     @Bean
+    public BatchSoknadUnderArbeidRepository batchSoknadUnderArbeidRepository() {
+        return mock(BatchSoknadUnderArbeidRepository.class);
+    }
+
+    @Bean
     public TextHelpers textHelpers() {
         return mock(TextHelpers.class);
     }
@@ -153,6 +160,11 @@ public class SoknadActionsTestConfig {
     @Bean
     public OpplastetVedleggRepository opplastetVedleggRepository() {
         return mock(OpplastetVedleggRepository.class);
+    }
+
+    @Bean
+    public BatchOpplastetVedleggRepository batchOpplastetVedleggRepository() {
+        return mock(BatchOpplastetVedleggRepository.class);
     }
 
     @Bean

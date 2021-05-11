@@ -4,6 +4,7 @@ import no.nav.sosialhjelp.soknad.business.batch.AvbrytAutomatiskSheduler;
 import no.nav.sosialhjelp.soknad.business.batch.LagringsScheduler;
 import no.nav.sosialhjelp.soknad.business.batch.NullstillValgtNavenhetVedKommunesammenslaingSheduler;
 import no.nav.sosialhjelp.soknad.business.batch.SlettLoggScheduler;
+import no.nav.sosialhjelp.soknad.business.batch.SlettSoknadUnderArbeidScheduler;
 import no.nav.sosialhjelp.soknad.business.batch.oppgave.OppgaveHandtererImpl;
 import no.nav.sosialhjelp.soknad.business.db.DbConfig;
 import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.PdfGeneratorConfig;
@@ -35,6 +36,7 @@ import org.springframework.context.annotation.Import;
         ArbeidsforholdService.class,
         OppgaveHandtererImpl.class,
         AvbrytAutomatiskSheduler.class,
+        SlettSoknadUnderArbeidScheduler.class,
         NullstillValgtNavenhetVedKommunesammenslaingSheduler.class,
         SoknadsmottakerService.class,
         SystemdataUpdater.class,
