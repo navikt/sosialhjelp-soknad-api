@@ -51,10 +51,10 @@ public class BatchSoknadUnderArbeidRepositoryJdbcTest {
 
     @Test
     public void hentSoknaderForBatchSkalFinneGamleSoknader() {
-        var skalIkkeSlettes = lagSoknadUnderArbeid(BEHANDLINGSID, 364);
+        var skalIkkeSlettes = lagSoknadUnderArbeid(BEHANDLINGSID, 179);
         var skalIkkeSlettesId = soknadUnderArbeidRepository.opprettSoknad(skalIkkeSlettes, EIER);
 
-        var skalSlettes = lagSoknadUnderArbeid("annen_behandlingsid", 365);
+        var skalSlettes = lagSoknadUnderArbeid("annen_behandlingsid", 180);
         var skalSlettesId = soknadUnderArbeidRepository.opprettSoknad(skalSlettes, EIER);
 
         var soknader = batchSoknadUnderArbeidRepository.hentGamleSoknadUnderArbeidForBatch();

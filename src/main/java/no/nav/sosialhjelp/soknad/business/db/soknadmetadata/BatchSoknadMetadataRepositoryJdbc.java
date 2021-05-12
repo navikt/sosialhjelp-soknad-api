@@ -40,8 +40,6 @@ public class BatchSoknadMetadataRepositoryJdbc extends NamedParameterJdbcDaoSupp
         return m;
     };
 
-    private RowMapper<Integer> antallRowMapper = (rs, rowNum) -> rs.getInt("antall");
-
     @Inject
     public void setDS(DataSource ds) {
         super.setDataSource(ds);
