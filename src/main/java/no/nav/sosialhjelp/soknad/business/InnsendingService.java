@@ -2,11 +2,11 @@ package no.nav.sosialhjelp.soknad.business;
 
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknadsmottaker;
-import no.nav.sosialhjelp.soknad.business.db.soknadmetadata.SoknadMetadataRepository;
+import no.nav.sosialhjelp.soknad.business.db.repositories.opplastetvedlegg.OpplastetVedleggRepository;
+import no.nav.sosialhjelp.soknad.business.db.repositories.sendtsoknad.SendtSoknadRepository;
+import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.SoknadMetadataRepository;
+import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository;
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata;
-import no.nav.sosialhjelp.soknad.business.sendtsoknad.SendtSoknadRepository;
-import no.nav.sosialhjelp.soknad.business.soknadunderbehandling.OpplastetVedleggRepository;
-import no.nav.sosialhjelp.soknad.business.soknadunderbehandling.SoknadUnderArbeidRepository;
 import no.nav.sosialhjelp.soknad.domain.OpplastetVedlegg;
 import no.nav.sosialhjelp.soknad.domain.SendtSoknad;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;

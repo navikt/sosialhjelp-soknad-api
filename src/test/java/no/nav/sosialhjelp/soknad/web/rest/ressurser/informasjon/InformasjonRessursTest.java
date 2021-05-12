@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.web.rest.ressurser.informasjon;
 
 import no.nav.sosialhjelp.api.fiks.KommuneInfo;
-import no.nav.sosialhjelp.soknad.business.db.soknadmetadata.SoknadMetadataRepository;
+import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata;
 import no.nav.sosialhjelp.soknad.business.service.InformasjonService;
 import no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService;

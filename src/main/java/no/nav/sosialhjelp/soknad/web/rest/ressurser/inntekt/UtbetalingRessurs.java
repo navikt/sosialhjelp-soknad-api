@@ -7,8 +7,8 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysn
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibeskrivelserAvAnnet;
 import no.nav.security.token.support.core.api.ProtectedWithClaims;
 import no.nav.sosialhjelp.metrics.aspects.Timed;
+import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository;
 import no.nav.sosialhjelp.soknad.business.service.TextService;
-import no.nav.sosialhjelp.soknad.business.soknadunderbehandling.SoknadUnderArbeidRepository;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import no.nav.sosialhjelp.soknad.web.sikkerhet.Tilgangskontroll;

@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.business.batch;
 
-import no.nav.sosialhjelp.soknad.business.soknadunderbehandling.BatchSoknadUnderArbeidRepository;
+import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.BatchSoknadUnderArbeidRepository;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

@@ -2,9 +2,9 @@ package no.nav.sosialhjelp.soknad.web.rest.ressurser;
 
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger;
+import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository;
 import no.nav.sosialhjelp.soknad.business.service.HenvendelseService;
 import no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService;
-import no.nav.sosialhjelp.soknad.business.soknadunderbehandling.SoknadUnderArbeidRepository;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.domain.model.exception.AuthorizationException;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.StaticSubjectHandlerService;

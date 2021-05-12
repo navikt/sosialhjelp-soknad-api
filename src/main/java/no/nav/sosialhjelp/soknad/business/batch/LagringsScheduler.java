@@ -2,8 +2,8 @@ package no.nav.sosialhjelp.soknad.business.batch;
 
 import no.nav.sosialhjelp.metrics.MetricsFactory;
 import no.nav.sosialhjelp.metrics.Timer;
+import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.BatchSoknadUnderArbeidRepository;
 import no.nav.sosialhjelp.soknad.business.service.HenvendelseService;
-import no.nav.sosialhjelp.soknad.business.soknadunderbehandling.BatchSoknadUnderArbeidRepository;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils;
 import org.joda.time.DateTime;
