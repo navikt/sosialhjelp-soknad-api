@@ -36,10 +36,12 @@ import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_SKATT
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_SKATTEETATEN_SAMTYKKE;
 import static no.nav.sosialhjelp.soknad.business.mappers.OkonomiMapper.removeBekreftelserIfPresent;
 import static no.nav.sosialhjelp.soknad.business.mappers.OkonomiMapper.setBekreftelse;
+import static no.nav.sosialhjelp.soknad.web.utils.Constants.CLAIM_ACR_LEVEL_4;
+import static no.nav.sosialhjelp.soknad.web.utils.Constants.SELVBETJENING;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @Controller
-@ProtectedWithClaims(issuer = "selvbetjening", claimMap = {"acr=Level4"})
+@ProtectedWithClaims(issuer = SELVBETJENING, claimMap = {CLAIM_ACR_LEVEL_4})
 @Path("/soknader/{behandlingsId}/inntekt/skattbarinntektogforskuddstrekk")
 @Timed
 @Produces(APPLICATION_JSON)
