@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.business.soknadunderbehandling;
 
+import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
@@ -10,6 +11,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.sql.DataSource;
 import java.util.List;
+import java.util.Optional;
 
 import static no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeidStatus.UNDER_ARBEID;
 
@@ -34,6 +36,12 @@ public class BatchSoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoS
     }
 
     @Override
+    public Optional<Long> hentSoknadUnderArbeidIdFromBehandlingsIdOptional(String behandlingsId) {
+        return getJdbcTemplate().query("select * from SOKNAD_UNDER_ARBEID where BEHANDLINGSID = ?",
+                (resultSet, i) -> resultSet.getLong("soknad_under_arbeid_id"), behandlingsId).stream().findFirst();
+    }
+
+    @Override
     public List<Long> hentGamleSoknadUnderArbeidForBatch() {
         return getJdbcTemplate().query("select SOKNAD_UNDER_ARBEID_ID from SOKNAD_UNDER_ARBEID where SISTENDRETDATO < CURRENT_TIMESTAMP - (INTERVAL '180' DAY(3)) and STATUS = ?",
                 (resultSet, i) -> resultSet.getLong("soknad_under_arbeid_id"), UNDER_ARBEID.toString());
@@ -51,5 +59,12 @@ public class BatchSoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoS
                 getJdbcTemplate().update("delete from SOKNAD_UNDER_ARBEID where SOKNAD_UNDER_ARBEID_ID = ?", soknadUnderArbeidId);
             }
         });
+    }
+
+    @Override
+    public List<SoknadUnderArbeid> hentForeldedeEttersendelser() {
+        return getJdbcTemplate().query("select * from SOKNAD_UNDER_ARBEID where SISTENDRETDATO < CURRENT_TIMESTAMP - (INTERVAL '1' HOUR) " +
+                        "and TILKNYTTETBEHANDLINGSID IS NOT NULL and STATUS = ?",
+                new SoknadUnderArbeidRowMapper(), UNDER_ARBEID.toString());
     }
 }

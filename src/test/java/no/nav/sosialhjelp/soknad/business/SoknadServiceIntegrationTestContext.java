@@ -5,6 +5,7 @@ import no.nav.sosialhjelp.soknad.business.batch.oppgave.OppgaveHandterer;
 import no.nav.sosialhjelp.soknad.business.db.RepositoryTestSupport;
 import no.nav.sosialhjelp.soknad.business.db.TestSupport;
 import no.nav.sosialhjelp.soknad.business.db.config.DatabaseTestContext;
+import no.nav.sosialhjelp.soknad.business.db.soknadmetadata.BatchSoknadMetadataRepository;
 import no.nav.sosialhjelp.soknad.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sosialhjelp.soknad.business.pdf.HandleBarKjoerer;
 import no.nav.sosialhjelp.soknad.business.pdf.HtmlGenerator;
@@ -65,6 +66,11 @@ public class SoknadServiceIntegrationTestContext {
     @Bean
     public SoknadMetadataRepository soknadMetadataRepository() {
         return mock(SoknadMetadataRepository.class);
+    }
+
+    @Bean
+    public BatchSoknadMetadataRepository batchSoknadMetadataRepository() {
+        return mock(BatchSoknadMetadataRepository.class);
     }
 
     @Bean

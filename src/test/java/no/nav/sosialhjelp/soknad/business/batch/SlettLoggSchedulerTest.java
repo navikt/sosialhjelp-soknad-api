@@ -5,6 +5,7 @@ import no.nav.sosialhjelp.soknad.business.batch.oppgave.fiks.FiksData;
 import no.nav.sosialhjelp.soknad.business.batch.oppgave.fiks.FiksResultat;
 import no.nav.sosialhjelp.soknad.business.db.DbTestConfig;
 import no.nav.sosialhjelp.soknad.business.db.oppgave.OppgaveRepository;
+import no.nav.sosialhjelp.soknad.business.db.soknadmetadata.BatchSoknadMetadataRepository;
 import no.nav.sosialhjelp.soknad.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata;
 import no.nav.sosialhjelp.soknad.business.sendtsoknad.SendtSoknadRepository;
@@ -44,6 +45,8 @@ public class SlettLoggSchedulerTest {
     @Mock
     private SoknadMetadataRepository soknadMetadataRepository;
     @Mock
+    private BatchSoknadMetadataRepository batchSoknadMetadataRepository;
+    @Mock
     private OppgaveRepository oppgaveRepository;
 
     @Before
@@ -56,7 +59,7 @@ public class SlettLoggSchedulerTest {
         Oppgave oppgave = oppgave(BEHANDLINGS_ID, DAGER_GAMMEL_SOKNAD + 1);
         SendtSoknad sendtSoknad = sendtSoknad(BEHANDLINGS_ID, EIER, DAGER_GAMMEL_SOKNAD + 1);
         SoknadMetadata soknadMetadata = soknadMetadata(BEHANDLINGS_ID, SoknadMetadataInnsendingStatus.UNDER_ARBEID, DAGER_GAMMEL_SOKNAD + 1);
-        when(soknadMetadataRepository.hentEldreEnn(DAGER_GAMMEL_SOKNAD)).thenReturn(Optional.of(soknadMetadata)).thenReturn(Optional.empty());
+        when(batchSoknadMetadataRepository.hentEldreEnn(DAGER_GAMMEL_SOKNAD)).thenReturn(Optional.of(soknadMetadata)).thenReturn(Optional.empty());
         when(oppgaveRepository.hentOppgave(BEHANDLINGS_ID)).thenReturn(Optional.of(oppgave));
         when(sendtSoknadRepository.hentSendtSoknad(BEHANDLINGS_ID, EIER)).thenReturn(Optional.of(sendtSoknad));
 
@@ -64,7 +67,7 @@ public class SlettLoggSchedulerTest {
 
         verify(oppgaveRepository).slettOppgave(BEHANDLINGS_ID);
         verify(sendtSoknadRepository).slettSendtSoknad(sendtSoknad, EIER);
-        verify(soknadMetadataRepository).slettSoknadMetaData(BEHANDLINGS_ID, EIER);
+        verify(batchSoknadMetadataRepository).slettSoknadMetaData(BEHANDLINGS_ID, EIER);
     }
 
     @Test
@@ -72,7 +75,7 @@ public class SlettLoggSchedulerTest {
         Oppgave oppgave = oppgave(BEHANDLINGS_ID, DAGER_GAMMEL_SOKNAD + 1);
         SendtSoknad sendtSoknad = sendtSoknad(BEHANDLINGS_ID, EIER, DAGER_GAMMEL_SOKNAD + 1);
         SoknadMetadata soknadMetadata = soknadMetadata(BEHANDLINGS_ID, SoknadMetadataInnsendingStatus.UNDER_ARBEID, DAGER_GAMMEL_SOKNAD + 1);
-        when(soknadMetadataRepository.hentEldreEnn(DAGER_GAMMEL_SOKNAD)).thenReturn(Optional.of(soknadMetadata)).thenReturn(Optional.empty());
+        when(batchSoknadMetadataRepository.hentEldreEnn(DAGER_GAMMEL_SOKNAD)).thenReturn(Optional.of(soknadMetadata)).thenReturn(Optional.empty());
         when(oppgaveRepository.hentOppgave(BEHANDLINGS_ID)).thenReturn(Optional.of(oppgave));
         when(sendtSoknadRepository.hentSendtSoknad(BEHANDLINGS_ID, EIER)).thenReturn(Optional.empty());
 
@@ -80,18 +83,18 @@ public class SlettLoggSchedulerTest {
 
         verify(oppgaveRepository).slettOppgave(BEHANDLINGS_ID);
         verify(sendtSoknadRepository, never()).slettSendtSoknad(sendtSoknad, EIER);
-        verify(soknadMetadataRepository).slettSoknadMetaData(BEHANDLINGS_ID, EIER);
+        verify(batchSoknadMetadataRepository).slettSoknadMetaData(BEHANDLINGS_ID, EIER);
     }
 
     @Test
     public void skalIkkeSletteLoggSomErUnderEttAarGammelt() {
-        when(soknadMetadataRepository.hentEldreEnn(DAGER_GAMMEL_SOKNAD)).thenReturn(Optional.empty());
+        when(batchSoknadMetadataRepository.hentEldreEnn(DAGER_GAMMEL_SOKNAD)).thenReturn(Optional.empty());
 
         scheduler.slettLogger();
 
         verify(oppgaveRepository, never()).slettOppgave(anyString());
         verify(sendtSoknadRepository, never()).slettSendtSoknad(any(SendtSoknad.class), anyString());
-        verify(soknadMetadataRepository, never()).slettSoknadMetaData(anyString(), anyString());
+        verify(batchSoknadMetadataRepository, never()).slettSoknadMetaData(anyString(), anyString());
     }
 
     @After
