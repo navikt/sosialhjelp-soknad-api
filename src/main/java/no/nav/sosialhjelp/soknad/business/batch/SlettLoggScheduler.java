@@ -4,7 +4,7 @@ import no.nav.sosialhjelp.metrics.MetricsFactory;
 import no.nav.sosialhjelp.metrics.Timer;
 import no.nav.sosialhjelp.soknad.business.batch.oppgave.Oppgave;
 import no.nav.sosialhjelp.soknad.business.db.oppgave.OppgaveRepository;
-import no.nav.sosialhjelp.soknad.business.db.soknadmetadata.SoknadMetadataRepository;
+import no.nav.sosialhjelp.soknad.business.db.soknadmetadata.BatchSoknadMetadataRepository;
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata;
 import no.nav.sosialhjelp.soknad.business.sendtsoknad.SendtSoknadRepository;
 import no.nav.sosialhjelp.soknad.domain.SendtSoknad;
@@ -32,7 +32,7 @@ public class SlettLoggScheduler {
     private int vellykket;
 
     @Inject
-    private SoknadMetadataRepository soknadMetadataRepository;
+    private BatchSoknadMetadataRepository batchSoknadMetadataRepository;
     @Inject
     private SendtSoknadRepository sendtSoknadRepository;
     @Inject
@@ -70,7 +70,7 @@ public class SlettLoggScheduler {
     }
 
     private void slettForeldetLogg() {
-        Optional<SoknadMetadata> soknad = soknadMetadataRepository.hentEldreEnn(DAGER_GAMMELT);
+        Optional<SoknadMetadata> soknad = batchSoknadMetadataRepository.hentEldreEnn(DAGER_GAMMELT);
 
         while (soknad.isPresent()) {
             SoknadMetadata soknadMetadata = soknad.get();
@@ -84,7 +84,7 @@ public class SlettLoggScheduler {
             Optional<Oppgave> oppgaveOptional = oppgaveRepository.hentOppgave(behandlingsId);
             oppgaveOptional.ifPresent(oppgave -> oppgaveRepository.slettOppgave(behandlingsId));
 
-            soknadMetadataRepository.slettSoknadMetaData(behandlingsId, eier);
+            batchSoknadMetadataRepository.slettSoknadMetaData(behandlingsId, eier);
 
             vellykket++;
 
@@ -92,7 +92,7 @@ public class SlettLoggScheduler {
                 logger.warn("Jobben har kjørt i mer enn {} s. Den blir derfor terminert", SCHEDULE_INTERRUPT_S);
                 return;
             }
-            soknad = soknadMetadataRepository.hentEldreEnn(DAGER_GAMMELT);
+            soknad = batchSoknadMetadataRepository.hentEldreEnn(DAGER_GAMMELT);
         }
 
     }

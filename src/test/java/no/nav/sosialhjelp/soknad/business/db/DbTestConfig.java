@@ -1,6 +1,8 @@
 package no.nav.sosialhjelp.soknad.business.db;
 
 import no.nav.sosialhjelp.soknad.business.db.config.DatabaseTestContext;
+import no.nav.sosialhjelp.soknad.business.db.soknadmetadata.BatchSoknadMetadataRepository;
+import no.nav.sosialhjelp.soknad.business.db.soknadmetadata.BatchSoknadMetadataRepositoryJdbc;
 import no.nav.sosialhjelp.soknad.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sosialhjelp.soknad.business.db.soknadmetadata.SoknadMetadataRepositoryJdbc;
 import no.nav.sosialhjelp.soknad.business.sendtsoknad.SendtSoknadRepository;
@@ -33,7 +35,7 @@ public class DbTestConfig {
     private DataSource dataSource;
 
     @Bean
-    SoknadMetadataRepository soknadMetadataRepository() {
+    public SoknadMetadataRepository soknadMetadataRepository() {
         return new SoknadMetadataRepositoryJdbc();
     }
 
@@ -60,6 +62,11 @@ public class DbTestConfig {
     @Bean
     public BatchOpplastetVedleggRepository batchOpplastetVedleggRepository() {
         return new BatchOpplastetVedleggRepositoryJdbc();
+    }
+
+    @Bean
+    public BatchSoknadMetadataRepository batchSoknadMetadataRepository() {
+        return new BatchSoknadMetadataRepositoryJdbc();
     }
 
     @Bean

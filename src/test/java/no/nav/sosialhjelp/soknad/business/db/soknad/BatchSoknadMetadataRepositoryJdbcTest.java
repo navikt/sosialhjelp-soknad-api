@@ -2,6 +2,7 @@ package no.nav.sosialhjelp.soknad.business.db.soknad;
 
 import no.nav.sosialhjelp.soknad.business.db.DbTestConfig;
 import no.nav.sosialhjelp.soknad.business.db.RepositoryTestSupport;
+import no.nav.sosialhjelp.soknad.business.db.soknadmetadata.BatchSoknadMetadataRepository;
 import no.nav.sosialhjelp.soknad.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata;
 import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus;
@@ -21,11 +22,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {DbTestConfig.class})
-public class SoknadMetadataRepositoryJdbcTest {
+public class BatchSoknadMetadataRepositoryJdbcTest {
 
     private static final String EIER = "11111111111";
     private final int dagerGammelSoknad = 20;
     private final String behandlingsId = "1100AAAAA";
+
+    @Inject
+    private BatchSoknadMetadataRepository batchSoknadMetadataRepository;
 
     @Inject
     private SoknadMetadataRepository soknadMetadataRepository;
@@ -38,30 +42,29 @@ public class SoknadMetadataRepositoryJdbcTest {
         support.getJdbcTemplate().update("DELETE FROM soknadmetadata WHERE behandlingsid = ?", behandlingsId);
     }
 
-    
     @Test
     public void hentForBatchSkalIkkeReturnereFerdige() {
         opprettSoknadMetadata(soknadMetadata(behandlingsId, SoknadMetadataInnsendingStatus.FERDIG, dagerGammelSoknad));
-        assertThat(soknadMetadataRepository.hentForBatch(dagerGammelSoknad - 1)).isNotPresent();
+        assertThat(batchSoknadMetadataRepository.hentForBatch(dagerGammelSoknad - 1)).isNotPresent();
     }
-    
+
     @Test
     public void hentForBatchSkalIkkeReturnereAvbruttAutomatisk() {
         opprettSoknadMetadata(soknadMetadata(behandlingsId, SoknadMetadataInnsendingStatus.AVBRUTT_AUTOMATISK, dagerGammelSoknad));
-        assertThat(soknadMetadataRepository.hentForBatch(dagerGammelSoknad - 1)).isNotPresent();
+        assertThat(batchSoknadMetadataRepository.hentForBatch(dagerGammelSoknad - 1)).isNotPresent();
     }
-    
+
     @Test
     public void hentForBatchSkalIkkeReturnereAvbruttAvBruker() {
         opprettSoknadMetadata(soknadMetadata(behandlingsId, SoknadMetadataInnsendingStatus.AVBRUTT_AV_BRUKER, dagerGammelSoknad));
-        assertThat(soknadMetadataRepository.hentForBatch(dagerGammelSoknad - 1)).isNotPresent();
+        assertThat(batchSoknadMetadataRepository.hentForBatch(dagerGammelSoknad - 1)).isNotPresent();
     }
-    
+
     @Test
     public void hentForBatchBrukerEndringstidspunkt() {
         opprettSoknadMetadata(soknadMetadata(behandlingsId, SoknadMetadataInnsendingStatus.UNDER_ARBEID, dagerGammelSoknad));
-        assertThat(soknadMetadataRepository.hentForBatch(dagerGammelSoknad - 1)).isPresent();
-        assertThat(soknadMetadataRepository.hentForBatch(dagerGammelSoknad + 1)).isNotPresent();
+        assertThat(batchSoknadMetadataRepository.hentForBatch(dagerGammelSoknad - 1)).isPresent();
+        assertThat(batchSoknadMetadataRepository.hentForBatch(dagerGammelSoknad + 1)).isNotPresent();
     }
 
     @Test
@@ -70,19 +73,19 @@ public class SoknadMetadataRepositoryJdbcTest {
                 SoknadMetadataInnsendingStatus.AVBRUTT_AUTOMATISK, SoknadMetadataInnsendingStatus.AVBRUTT_AV_BRUKER);
         for (SoknadMetadataInnsendingStatus status : statuser) {
             opprettSoknadMetadata(soknadMetadata(behandlingsId, status, dagerGammelSoknad));
-            assertThat(soknadMetadataRepository.hentEldreEnn(dagerGammelSoknad - 1)).isPresent();
-            assertThat(soknadMetadataRepository.hentEldreEnn(dagerGammelSoknad + 1)).isNotPresent();
-            soknadMetadataRepository.slettSoknadMetaData(behandlingsId, EIER);
+            assertThat(batchSoknadMetadataRepository.hentEldreEnn(dagerGammelSoknad - 1)).isPresent();
+            assertThat(batchSoknadMetadataRepository.hentEldreEnn(dagerGammelSoknad + 1)).isNotPresent();
+            batchSoknadMetadataRepository.slettSoknadMetaData(behandlingsId, EIER);
         }
     }
 
-    
+
     private void opprettSoknadMetadata(SoknadMetadata soknadMetadata) {
         soknadMetadataRepository.opprett(soknadMetadata);
         final SoknadMetadata lagretSoknadMetadata = soknadMetadataRepository.hent(soknadMetadata.behandlingsId);
-        soknadMetadataRepository.leggTilbakeBatch(lagretSoknadMetadata.id);
+        batchSoknadMetadataRepository.leggTilbakeBatch(lagretSoknadMetadata.id);
     }
-    
+
     private SoknadMetadata soknadMetadata(String behandlingsId, SoknadMetadataInnsendingStatus status, int dagerSiden) {
         SoknadMetadata meta = new SoknadMetadata();
         meta.id = soknadMetadataRepository.hentNesteId();
