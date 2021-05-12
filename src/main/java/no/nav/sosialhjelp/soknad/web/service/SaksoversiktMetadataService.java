@@ -6,7 +6,7 @@ import no.nav.sbl.soknadsosialhjelp.tjeneste.saksoversikt.InnsendtSoknad;
 import no.nav.sbl.soknadsosialhjelp.tjeneste.saksoversikt.PabegyntSoknad;
 import no.nav.sbl.soknadsosialhjelp.tjeneste.saksoversikt.Part;
 import no.nav.sbl.soknadsosialhjelp.tjeneste.saksoversikt.Vedlegg;
-import no.nav.sosialhjelp.soknad.business.db.soknadmetadata.SoknadMetadataRepository;
+import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata;
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata.VedleggMetadataListe;
 import no.nav.sosialhjelp.soknad.business.service.soknadservice.EttersendingService;

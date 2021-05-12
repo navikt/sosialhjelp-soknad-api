@@ -5,12 +5,12 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreft
 import no.nav.security.token.support.core.api.ProtectedWithClaims;
 import no.nav.sosialhjelp.metrics.aspects.Timed;
 import no.nav.sosialhjelp.soknad.business.SoknadUnderArbeidService;
+import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository;
 import no.nav.sosialhjelp.soknad.business.exceptions.SoknadenHarNedetidException;
 import no.nav.sosialhjelp.soknad.business.pdf.HtmlGenerator;
 import no.nav.sosialhjelp.soknad.business.service.HenvendelseService;
 import no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService;
 import no.nav.sosialhjelp.soknad.business.service.soknadservice.SystemdataUpdater;
-import no.nav.sosialhjelp.soknad.business.soknadunderbehandling.SoknadUnderArbeidRepository;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import no.nav.sosialhjelp.soknad.web.sikkerhet.Tilgangskontroll;

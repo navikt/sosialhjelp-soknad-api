@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.web.service;
 
-import no.nav.sosialhjelp.soknad.business.db.soknadmetadata.SoknadMetadataRepository;
+import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.soknadoversikt.SoknadOversiktRessurs.SoknadOversikt;
 import org.springframework.stereotype.Service;

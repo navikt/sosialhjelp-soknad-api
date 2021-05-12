@@ -5,7 +5,7 @@ import no.nav.sosialhjelp.soknad.business.batch.LagringsScheduler;
 import no.nav.sosialhjelp.soknad.business.batch.SlettLoggScheduler;
 import no.nav.sosialhjelp.soknad.business.batch.SlettSoknadUnderArbeidScheduler;
 import no.nav.sosialhjelp.soknad.business.batch.oppgave.OppgaveHandtererImpl;
-import no.nav.sosialhjelp.soknad.business.db.DbConfig;
+import no.nav.sosialhjelp.soknad.business.db.config.DbConfig;
 import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.PdfGeneratorConfig;
 import no.nav.sosialhjelp.soknad.business.service.ServiceConfig;
 import no.nav.sosialhjelp.soknad.business.service.SoknadsmottakerService;

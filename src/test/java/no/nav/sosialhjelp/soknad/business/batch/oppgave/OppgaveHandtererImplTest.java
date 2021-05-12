@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.business.batch.oppgave;
 
 import no.nav.sosialhjelp.soknad.business.batch.oppgave.fiks.FiksHandterer;
-import no.nav.sosialhjelp.soknad.business.db.oppgave.OppgaveRepository;
+import no.nav.sosialhjelp.soknad.business.db.repositories.oppgave.OppgaveRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;

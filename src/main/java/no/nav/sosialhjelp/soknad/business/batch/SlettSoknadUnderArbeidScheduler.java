@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.business.batch;
 
 import no.nav.sosialhjelp.metrics.MetricsFactory;
-import no.nav.sosialhjelp.soknad.business.soknadunderbehandling.BatchSoknadUnderArbeidRepository;
+import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.BatchSoknadUnderArbeidRepository;
 import no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils;
 import org.slf4j.Logger;
 import org.springframework.scheduling.annotation.Scheduled;

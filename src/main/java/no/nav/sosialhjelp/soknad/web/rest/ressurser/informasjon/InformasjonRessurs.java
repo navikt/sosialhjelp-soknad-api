@@ -4,7 +4,7 @@ import no.nav.security.token.support.core.api.ProtectedWithClaims;
 import no.nav.security.token.support.core.api.Unprotected;
 import no.nav.sosialhjelp.api.fiks.KommuneInfo;
 import no.nav.sosialhjelp.metrics.aspects.Timed;
-import no.nav.sosialhjelp.soknad.business.db.soknadmetadata.SoknadMetadataRepository;
+import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sosialhjelp.soknad.business.service.InformasjonService;
 import no.nav.sosialhjelp.soknad.consumer.adresse.AdresseSokService;
 import no.nav.sosialhjelp.soknad.consumer.fiks.KommuneInfoService;

@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.business.pdf.helpers;
 
-import no.nav.sosialhjelp.soknad.business.db.soknadmetadata.SoknadMetadataRepository;
+import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sosialhjelp.soknad.business.pdf.CmsTekst;
 import no.nav.sosialhjelp.soknad.business.pdf.HandlebarRegistry;
 import no.nav.sosialhjelp.soknad.business.service.Miljovariabler;

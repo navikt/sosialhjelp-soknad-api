@@ -4,7 +4,8 @@ import no.finn.unleash.Unleash;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon;
 import no.nav.security.token.support.core.api.ProtectedWithClaims;
 import no.nav.sosialhjelp.metrics.aspects.Timed;
-import no.nav.sosialhjelp.soknad.business.db.soknadmetadata.SoknadMetadataRepository;
+import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.SoknadMetadataRepository;
+import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository;
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata;
 import no.nav.sosialhjelp.soknad.business.exceptions.SendingTilKommuneErIkkeAktivertException;
 import no.nav.sosialhjelp.soknad.business.exceptions.SendingTilKommuneErMidlertidigUtilgjengeligException;
@@ -12,7 +13,6 @@ import no.nav.sosialhjelp.soknad.business.exceptions.SendingTilKommuneUtilgjenge
 import no.nav.sosialhjelp.soknad.business.exceptions.SoknadenHarNedetidException;
 import no.nav.sosialhjelp.soknad.business.service.digisosapi.DigisosApiService;
 import no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService;
-import no.nav.sosialhjelp.soknad.business.soknadunderbehandling.SoknadUnderArbeidRepository;
 import no.nav.sosialhjelp.soknad.consumer.fiks.KommuneInfoService;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.domain.model.digisosapi.KommuneStatus;
