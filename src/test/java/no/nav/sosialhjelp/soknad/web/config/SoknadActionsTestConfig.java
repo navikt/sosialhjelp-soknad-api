@@ -4,6 +4,7 @@ import no.finn.unleash.Unleash;
 import no.nav.sosialhjelp.soknad.business.InnsendingService;
 import no.nav.sosialhjelp.soknad.business.SoknadUnderArbeidService;
 import no.nav.sosialhjelp.soknad.business.batch.oppgave.OppgaveHandterer;
+import no.nav.sosialhjelp.soknad.business.db.soknadmetadata.BatchSoknadMetadataRepository;
 import no.nav.sosialhjelp.soknad.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sosialhjelp.soknad.business.pdf.HtmlGenerator;
 import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.PdfGeneratorConfig;
@@ -105,6 +106,11 @@ public class SoknadActionsTestConfig {
     @Bean
     public SoknadMetadataRepository soknadMetadataRepository() {
         return mock(SoknadMetadataRepository.class);
+    }
+
+    @Bean
+    public BatchSoknadMetadataRepository batchSoknadMetadataRepository() {
+        return mock(BatchSoknadMetadataRepository.class);
     }
 
     @Bean

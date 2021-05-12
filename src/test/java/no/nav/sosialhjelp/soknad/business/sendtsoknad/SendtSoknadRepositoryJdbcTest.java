@@ -12,7 +12,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import javax.inject.Inject;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.List;
 
 import static java.time.LocalDateTime.now;
 import static org.hamcrest.CoreMatchers.is;
@@ -26,12 +25,8 @@ public class SendtSoknadRepositoryJdbcTest {
     private static final String EIER = "12345678901";
     private static final String EIER2 = "22222222222";
     private static final String BEHANDLINGSID = "1100020";
-    private static final String BEHANDLINGSID2 = "1100021";
-    private static final String BEHANDLINGSID3 = "1100022";
     private static final String TILKNYTTET_BEHANDLINGSID = "4567";
     private static final String FIKSFORSENDELSEID = "12345";
-    private static final String FIKSFORSENDELSEID2 = "12789";
-    private static final String FIKSFORSENDELSEID3 = "12652";
     private static final String ORGNUMMER = "987654";
     private static final String NAVENHETSNAVN = "NAV Enhet";
     private static final LocalDateTime BRUKER_OPPRETTET_DATO = now().minusDays(2).truncatedTo(ChronoUnit.MILLIS);
@@ -85,21 +80,6 @@ public class SendtSoknadRepositoryJdbcTest {
     }
 
     @Test
-    public void hentAlleSendteSoknaderHenterAlleSendteSoknaderForEier() {
-        sendtSoknadRepository.opprettSendtSoknad(lagSendtSoknad(EIER, BEHANDLINGSID, FIKSFORSENDELSEID), EIER);
-        sendtSoknadRepository.opprettSendtSoknad(lagSendtSoknad(EIER, BEHANDLINGSID2, FIKSFORSENDELSEID2), EIER);
-        sendtSoknadRepository.opprettSendtSoknad(lagSendtSoknad(EIER2, BEHANDLINGSID3, FIKSFORSENDELSEID3), EIER2);
-
-        List<SendtSoknad> sendteSoknader = sendtSoknadRepository.hentAlleSendteSoknader(EIER);
-
-        assertThat(sendteSoknader.size(), is(2));
-        assertThat(sendteSoknader.get(0).getEier(), is(EIER));
-        assertThat(sendteSoknader.get(0).getBehandlingsId(), is(BEHANDLINGSID));
-        assertThat(sendteSoknader.get(1).getEier(), is(EIER));
-        assertThat(sendteSoknader.get(1).getBehandlingsId(), is(BEHANDLINGSID2));
-    }
-
-    @Test
     public void oppdaterSendtSoknadVedSendingTilFiksOppdatererFiksIdOgSendtDato() {
         sendtSoknadRepository.opprettSendtSoknad(lagSendtSoknadSomIkkeErSendtTilFiks(), EIER);
 
@@ -108,17 +88,6 @@ public class SendtSoknadRepositoryJdbcTest {
         SendtSoknad oppdatertSendtSoknad = sendtSoknadRepository.hentSendtSoknad(BEHANDLINGSID, EIER).get();
         assertThat(oppdatertSendtSoknad.getFiksforsendelseId(), is(FIKSFORSENDELSEID));
         assertThat(oppdatertSendtSoknad.getSendtDato(), notNullValue());
-    }
-
-    @Test
-    public void slettSendtSoknadSletterSoknadFraDatabase() {
-        SendtSoknad sendtSoknad = lagSendtSoknad(EIER);
-        Long sendtSoknadId = sendtSoknadRepository.opprettSendtSoknad(sendtSoknad, EIER);
-        sendtSoknad.setSendtSoknadId(sendtSoknadId);
-
-        sendtSoknadRepository.slettSendtSoknad(sendtSoknad, EIER);
-
-        assertThat(sendtSoknadRepository.hentSendtSoknad(BEHANDLINGSID, EIER).isPresent(), is(false));
     }
 
     private SendtSoknad lagSendtSoknad(String eier) {

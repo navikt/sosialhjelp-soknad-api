@@ -2,7 +2,9 @@ package no.nav.sosialhjelp.soknad.business.db;
 
 import no.nav.sosialhjelp.soknad.business.db.oppgave.OppgaveRepositoryJdbc;
 import no.nav.sosialhjelp.soknad.business.db.soknad.SoknadInnsendingDBConfig;
+import no.nav.sosialhjelp.soknad.business.db.soknadmetadata.BatchSoknadMetadataRepositoryJdbc;
 import no.nav.sosialhjelp.soknad.business.db.soknadmetadata.SoknadMetadataRepositoryJdbc;
+import no.nav.sosialhjelp.soknad.business.sendtsoknad.BatchSendtSoknadRepositoryJdbc;
 import no.nav.sosialhjelp.soknad.business.sendtsoknad.SendtSoknadRepositoryJdbc;
 import no.nav.sosialhjelp.soknad.business.soknadunderbehandling.BatchOpplastetVedleggRepositoryJdbc;
 import no.nav.sosialhjelp.soknad.business.soknadunderbehandling.BatchSoknadUnderArbeidRepositoryJdbc;
@@ -22,13 +24,15 @@ import java.time.Clock;
         SoknadMetadataRepositoryJdbc.class,
         BatchOpplastetVedleggRepositoryJdbc.class,
         BatchSoknadUnderArbeidRepositoryJdbc.class,
+        BatchSoknadMetadataRepositoryJdbc.class,
+        BatchSendtSoknadRepositoryJdbc.class,
         OppgaveRepositoryJdbc.class,
         SoknadInnsendingDBConfig.class,
 })
 public class DbConfig {
 
     @Bean
-    public Clock clock(){
+    public Clock clock() {
         return Clock.systemDefaultZone();
     }
 

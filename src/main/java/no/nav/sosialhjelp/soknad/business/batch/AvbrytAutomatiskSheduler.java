@@ -2,10 +2,10 @@ package no.nav.sosialhjelp.soknad.business.batch;
 
 import no.nav.sosialhjelp.metrics.MetricsFactory;
 import no.nav.sosialhjelp.metrics.Timer;
+import no.nav.sosialhjelp.soknad.business.db.soknadmetadata.BatchSoknadMetadataRepository;
 import no.nav.sosialhjelp.soknad.business.db.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata;
-import no.nav.sosialhjelp.soknad.business.soknadunderbehandling.SoknadUnderArbeidRepository;
-import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
+import no.nav.sosialhjelp.soknad.business.soknadunderbehandling.BatchSoknadUnderArbeidRepository;
 import no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils;
 import org.slf4j.Logger;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -33,7 +33,9 @@ public class AvbrytAutomatiskSheduler {
     @Inject
     private SoknadMetadataRepository soknadMetadataRepository;
     @Inject
-    private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
+    private BatchSoknadMetadataRepository batchSoknadMetadataRepository;
+    @Inject
+    private BatchSoknadUnderArbeidRepository batchSoknadUnderArbeidRepository;
 
     @Scheduled(cron = KLOKKEN_FIRE_OM_NATTEN)
     public void avbrytGamleSoknader() {
@@ -67,7 +69,7 @@ public class AvbrytAutomatiskSheduler {
     }
 
     private void avbryt() {
-        Optional<SoknadMetadata> soknad = soknadMetadataRepository.hentForBatch(DAGER_GAMMELT);
+        Optional<SoknadMetadata> soknad = batchSoknadMetadataRepository.hentForBatch(DAGER_GAMMELT);
 
         while (soknad.isPresent()) {
             SoknadMetadata soknadMetadata = soknad.get();
@@ -76,19 +78,18 @@ public class AvbrytAutomatiskSheduler {
             soknadMetadataRepository.oppdater(soknadMetadata);
 
             final String behandlingsId = soknadMetadata.behandlingsId;
-            final String eier = soknadMetadata.fnr;
 
-            Optional<SoknadUnderArbeid> soknadUnderArbeidOptional = soknadUnderArbeidRepository.hentSoknadOptional(behandlingsId, eier);
-            soknadUnderArbeidOptional.ifPresent(soknadUnderArbeid -> soknadUnderArbeidRepository.slettSoknad(soknadUnderArbeid, eier));
+            Optional<Long> soknadUnderArbeidOptional = batchSoknadUnderArbeidRepository.hentSoknadUnderArbeidIdFromBehandlingsIdOptional(behandlingsId);
+            soknadUnderArbeidOptional.ifPresent(soknadUnderArbeid -> batchSoknadUnderArbeidRepository.slettSoknad(soknadUnderArbeid));
 
-            soknadMetadataRepository.leggTilbakeBatch(soknadMetadata.id);
+            batchSoknadMetadataRepository.leggTilbakeBatch(soknadMetadata.id);
             vellykket++;
 
             if (harGaattForLangTid()) {
                 logger.warn("Jobben har kjørt i mer enn {} s. Den blir derfor terminert", SCHEDULE_INTERRUPT_S);
                 return;
             }
-            soknad = soknadMetadataRepository.hentForBatch(DAGER_GAMMELT);
+            soknad = batchSoknadMetadataRepository.hentForBatch(DAGER_GAMMELT);
         }
 
     }
