@@ -75,7 +75,7 @@ public class BatchSoknadMetadataRepositoryJdbcTest {
             opprettSoknadMetadata(soknadMetadata(behandlingsId, status, dagerGammelSoknad));
             assertThat(batchSoknadMetadataRepository.hentEldreEnn(dagerGammelSoknad - 1)).isPresent();
             assertThat(batchSoknadMetadataRepository.hentEldreEnn(dagerGammelSoknad + 1)).isNotPresent();
-            batchSoknadMetadataRepository.slettSoknadMetaData(behandlingsId, EIER);
+            batchSoknadMetadataRepository.slettSoknadMetaData(behandlingsId);
         }
     }
 

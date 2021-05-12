@@ -6,8 +6,7 @@ import no.nav.sosialhjelp.soknad.business.batch.oppgave.Oppgave;
 import no.nav.sosialhjelp.soknad.business.db.oppgave.OppgaveRepository;
 import no.nav.sosialhjelp.soknad.business.db.soknadmetadata.BatchSoknadMetadataRepository;
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata;
-import no.nav.sosialhjelp.soknad.business.sendtsoknad.SendtSoknadRepository;
-import no.nav.sosialhjelp.soknad.domain.SendtSoknad;
+import no.nav.sosialhjelp.soknad.business.sendtsoknad.BatchSendtSoknadRepository;
 import no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils;
 import org.slf4j.Logger;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -34,7 +33,7 @@ public class SlettLoggScheduler {
     @Inject
     private BatchSoknadMetadataRepository batchSoknadMetadataRepository;
     @Inject
-    private SendtSoknadRepository sendtSoknadRepository;
+    private BatchSendtSoknadRepository batchSendtSoknadRepository;
     @Inject
     private OppgaveRepository oppgaveRepository;
 
@@ -76,15 +75,14 @@ public class SlettLoggScheduler {
             SoknadMetadata soknadMetadata = soknad.get();
 
             String behandlingsId = soknadMetadata.behandlingsId;
-            String eier = soknadMetadata.fnr;
 
-            Optional<SendtSoknad> sendtSoknadOptional = sendtSoknadRepository.hentSendtSoknad(behandlingsId, eier);
-            sendtSoknadOptional.ifPresent(sendtSoknad -> sendtSoknadRepository.slettSendtSoknad(sendtSoknad, eier));
+            Optional<Long> sendtSoknadIdOptional = batchSendtSoknadRepository.hentSendtSoknad(behandlingsId);
+            sendtSoknadIdOptional.ifPresent(sendtSoknadId -> batchSendtSoknadRepository.slettSendtSoknad(sendtSoknadId));
 
             Optional<Oppgave> oppgaveOptional = oppgaveRepository.hentOppgave(behandlingsId);
             oppgaveOptional.ifPresent(oppgave -> oppgaveRepository.slettOppgave(behandlingsId));
 
-            batchSoknadMetadataRepository.slettSoknadMetaData(behandlingsId, eier);
+            batchSoknadMetadataRepository.slettSoknadMetaData(behandlingsId);
 
             vellykket++;
 
