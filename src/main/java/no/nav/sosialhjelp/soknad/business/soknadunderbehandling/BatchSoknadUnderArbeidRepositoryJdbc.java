@@ -43,7 +43,7 @@ public class BatchSoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoS
 
     @Override
     public List<Long> hentGamleSoknadUnderArbeidForBatch() {
-        return getJdbcTemplate().query("select SOKNAD_UNDER_ARBEID_ID from SOKNAD_UNDER_ARBEID where SISTENDRETDATO < CURRENT_TIMESTAMP - (INTERVAL '365' DAY(3)) and STATUS = ?",
+        return getJdbcTemplate().query("select SOKNAD_UNDER_ARBEID_ID from SOKNAD_UNDER_ARBEID where SISTENDRETDATO < CURRENT_TIMESTAMP - (INTERVAL '180' DAY(3)) and STATUS = ?",
                 (resultSet, i) -> resultSet.getLong("soknad_under_arbeid_id"), UNDER_ARBEID.toString());
     }
 
