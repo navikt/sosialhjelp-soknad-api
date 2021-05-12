@@ -94,7 +94,7 @@ public class BatchSoknadMetadataRepositoryJdbc extends NamedParameterJdbcDaoSupp
 
     @Transactional
     @Override
-    public void slettSoknadMetaData(String behandlingsId, String eier) {
-        getJdbcTemplate().update("DELETE FROM soknadmetadata WHERE fnr = ? AND behandlingsid = ?", eier, behandlingsId);
+    public void slettSoknadMetaData(String behandlingsId) {
+        getJdbcTemplate().update("DELETE FROM soknadmetadata WHERE behandlingsid = ?", behandlingsId);
     }
 }

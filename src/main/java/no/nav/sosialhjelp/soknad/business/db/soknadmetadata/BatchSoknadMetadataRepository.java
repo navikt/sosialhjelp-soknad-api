@@ -10,5 +10,5 @@ public interface BatchSoknadMetadataRepository {
     Optional<SoknadMetadata> hentForBatch(int antallDagerGammel);
     Optional<SoknadMetadata> hentEldreEnn(int antallDagerGammel);
     void leggTilbakeBatch(Long id);
-    void slettSoknadMetaData(String behandlingsId, String eier);
+    void slettSoknadMetaData(String behandlingsId);
 }
