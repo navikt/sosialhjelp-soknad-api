@@ -53,10 +53,10 @@ public class BatchSoknadUnderArbeidRepositoryJdbcTest {
 
     @Test
     public void hentSoknaderForBatchSkalFinneGamleSoknader() {
-        var skalIkkeSlettes = lagSoknadUnderArbeid(BEHANDLINGSID, 179);
+        var skalIkkeSlettes = lagSoknadUnderArbeid(BEHANDLINGSID, 13);
         var skalIkkeSlettesId = soknadUnderArbeidRepository.opprettSoknad(skalIkkeSlettes, EIER);
 
-        var skalSlettes = lagSoknadUnderArbeid("annen_behandlingsid", 180);
+        var skalSlettes = lagSoknadUnderArbeid("annen_behandlingsid", 14);
         var skalSlettesId = soknadUnderArbeidRepository.opprettSoknad(skalSlettes, EIER);
 
         var soknader = batchSoknadUnderArbeidRepository.hentGamleSoknadUnderArbeidForBatch();
@@ -67,7 +67,7 @@ public class BatchSoknadUnderArbeidRepositoryJdbcTest {
 
     @Test
     public void slettSoknadGittSoknadUnderArbeidIdSkalSletteSoknad() {
-        SoknadUnderArbeid soknadUnderArbeid = lagSoknadUnderArbeid(BEHANDLINGSID, 15);
+        var soknadUnderArbeid = lagSoknadUnderArbeid(BEHANDLINGSID, 15);
         var soknadUnderArbeidId = soknadUnderArbeidRepository.opprettSoknad(soknadUnderArbeid, EIER);
         soknadUnderArbeid.setSoknadId(soknadUnderArbeidId);
         var opplastetVedleggUuid = opplastetVedleggRepository.opprettVedlegg(lagOpplastetVedlegg(soknadUnderArbeidId), EIER);
