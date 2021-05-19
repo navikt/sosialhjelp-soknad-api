@@ -19,7 +19,7 @@ import java.util.Optional;
 import static no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.AdressebeskyttelseDto.Gradering.FORTROLIG;
 import static no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.AdressebeskyttelseDto.Gradering.STRENGT_FORTROLIG;
 import static no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.AdressebeskyttelseDto.Gradering.STRENGT_FORTROLIG_UTLAND;
-import static no.nav.sosialhjelp.soknad.web.sikkerhet.XsrfGenerator.sjekkXsrfToken;
+import static no.nav.sosialhjelp.soknad.web.utils.XsrfGenerator.sjekkXsrfToken;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Named("tilgangskontroll")
