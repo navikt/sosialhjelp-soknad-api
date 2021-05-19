@@ -35,7 +35,7 @@ spec:
       rules:
         - application: mine-saker-api
           namespace: personbruker
-          cluster: {{gcpCluster}}
+          cluster: {{personbrukerGcpCluster}}
 {{/if}}
 {{#if isGcp}}
     outbound:
