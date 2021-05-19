@@ -29,8 +29,15 @@ spec:
     enabled: {{vaultEnabled}}
   tokenx:
     enabled: {{tokenXEnabled}}
-{{#if isGcp}}
   accessPolicy:
+{{#if tokenXEnabled}}
+    inbound:
+      rules:
+        - application: mine-saker-api
+          namespace: personbruker
+          cluster: {{gcpCluster}}
+{{/if}}
+{{#if isGcp}}
     outbound:
       external:
         - host: "digisos-gcp.dev.nav.no"
