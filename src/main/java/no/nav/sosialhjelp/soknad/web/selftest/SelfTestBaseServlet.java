@@ -4,7 +4,6 @@ import no.nav.sosialhjelp.soknad.web.selftest.domain.Selftest;
 import no.nav.sosialhjelp.soknad.web.selftest.domain.SelftestEndpoint;
 import no.nav.sosialhjelp.soknad.web.selftest.generators.SelftestHtmlGenerator;
 import no.nav.sosialhjelp.soknad.web.selftest.generators.SelftestJsonGenerator;
-import no.nav.sosialhjelp.soknad.web.types.Pingable;
 import no.nav.sosialhjelp.soknad.web.utils.MiljoUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
@@ -25,7 +24,7 @@ import java.util.function.Predicate;
 
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
-import static no.nav.sosialhjelp.soknad.web.types.Pingable.Ping;
+import static no.nav.sosialhjelp.soknad.web.selftest.Pingable.Ping;
 
 /*
 Kopiert inn fra no.nav.sbl.dialogarena:common-web
