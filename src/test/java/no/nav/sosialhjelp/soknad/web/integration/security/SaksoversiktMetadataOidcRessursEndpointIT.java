@@ -4,10 +4,10 @@ package no.nav.sosialhjelp.soknad.web.integration.security;
 import com.nimbusds.jwt.SignedJWT;
 import no.nav.sbl.soknadsosialhjelp.tjeneste.saksoversikt.PabegynteSoknaderRespons;
 import no.nav.security.token.support.core.JwtTokenConstants;
-import no.nav.security.token.support.test.JwtTokenGenerator;
 import no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SosialhjelpInformasjon;
 import no.nav.sosialhjelp.soknad.web.integration.AbstractSecurityIT;
 import no.nav.sosialhjelp.soknad.web.integration.SoknadTester;
+import no.nav.sosialhjelp.soknad.web.oidc.JwtTokenGenerator;
 import org.junit.Test;
 
 import javax.ws.rs.client.Invocation;
