@@ -32,7 +32,7 @@ public class SkattbarInntektServiceTest {
 
     @Test
     public void hentSkattbarInntekt() {
-        SkattbarInntekt skattbarInntekt = readResponseFromPath("/mockdata/InntektOgSkatt.json");
+        SkattbarInntekt skattbarInntekt = readResponseFromPath("/skatt/InntektOgSkatt.json");
         when(skattbarInntektConsumer.hentSkattbarInntekt(anyString())).thenReturn(skattbarInntekt);
 
         List<Utbetaling> utbetalinger = skattbarInntektService.hentUtbetalinger("01234567");
@@ -45,7 +45,7 @@ public class SkattbarInntektServiceTest {
 
     @Test
     public void hentSkattbarInntektForToMaanederIgnorererDaArbeidsgiver1IForrigeMaaned() {
-        SkattbarInntekt skattbarInntekt = readResponseFromPath("/mockdata/InntektOgSkattToMaaneder.json");
+        SkattbarInntekt skattbarInntekt = readResponseFromPath("/skatt/InntektOgSkattToMaaneder.json");
         when(skattbarInntektConsumer.hentSkattbarInntekt(anyString())).thenReturn(skattbarInntekt);
 
         List<Utbetaling> utbetalinger = skattbarInntektService.hentUtbetalinger("01234567");
@@ -54,7 +54,7 @@ public class SkattbarInntektServiceTest {
 
     @Test
     public void hentSkattbarInntektForToMaanederIForrigeMaanedBeggeMaanedeneOgArbeidsgiverneVilVaereMed() {
-        SkattbarInntekt skattbarInntekt = readResponseFromPath("/mockdata/InntektOgSkattToMaanederToArbeidsgivere.json");
+        SkattbarInntekt skattbarInntekt = readResponseFromPath("/skatt/InntektOgSkattToMaanederToArbeidsgivere.json");
         when(skattbarInntektConsumer.hentSkattbarInntekt(anyString())).thenReturn(skattbarInntekt);
 
         List<Utbetaling> utbetalinger = skattbarInntektService.hentUtbetalinger("01234567");

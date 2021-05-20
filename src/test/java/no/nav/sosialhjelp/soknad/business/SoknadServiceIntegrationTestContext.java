@@ -5,12 +5,18 @@ import no.nav.sosialhjelp.soknad.business.batch.oppgave.OppgaveHandterer;
 import no.nav.sosialhjelp.soknad.business.db.RepositoryTestSupport;
 import no.nav.sosialhjelp.soknad.business.db.TestSupport;
 import no.nav.sosialhjelp.soknad.business.db.config.DatabaseTestContext;
-import no.nav.sosialhjelp.soknad.business.db.soknadmetadata.SoknadMetadataRepository;
+import no.nav.sosialhjelp.soknad.business.db.repositories.opplastetvedlegg.BatchOpplastetVedleggRepository;
+import no.nav.sosialhjelp.soknad.business.db.repositories.opplastetvedlegg.OpplastetVedleggRepository;
+import no.nav.sosialhjelp.soknad.business.db.repositories.sendtsoknad.BatchSendtSoknadRepository;
+import no.nav.sosialhjelp.soknad.business.db.repositories.sendtsoknad.SendtSoknadRepository;
+import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.BatchSoknadMetadataRepository;
+import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.SoknadMetadataRepository;
+import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.BatchSoknadUnderArbeidRepository;
+import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository;
 import no.nav.sosialhjelp.soknad.business.pdf.HandleBarKjoerer;
 import no.nav.sosialhjelp.soknad.business.pdf.HtmlGenerator;
 import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.SosialhjelpPdfGenerator;
 import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.TextHelpers;
-import no.nav.sosialhjelp.soknad.business.sendtsoknad.SendtSoknadRepository;
 import no.nav.sosialhjelp.soknad.business.service.HenvendelseService;
 import no.nav.sosialhjelp.soknad.business.service.OpplastetVedleggService;
 import no.nav.sosialhjelp.soknad.business.service.TextService;
@@ -22,8 +28,6 @@ import no.nav.sosialhjelp.soknad.business.service.soknadservice.Systemdata;
 import no.nav.sosialhjelp.soknad.business.service.soknadservice.SystemdataUpdater;
 import no.nav.sosialhjelp.soknad.business.service.systemdata.BostotteSystemdata;
 import no.nav.sosialhjelp.soknad.business.service.systemdata.SkattetatenSystemdata;
-import no.nav.sosialhjelp.soknad.business.soknadunderbehandling.OpplastetVedleggRepository;
-import no.nav.sosialhjelp.soknad.business.soknadunderbehandling.SoknadUnderArbeidRepository;
 import no.nav.sosialhjelp.soknad.consumer.bostotte.Bostotte;
 import no.nav.sosialhjelp.soknad.consumer.fiks.DigisosApi;
 import no.nav.sosialhjelp.soknad.consumer.kodeverk.KodeverkService;
@@ -63,6 +67,11 @@ public class SoknadServiceIntegrationTestContext {
     @Bean
     public SoknadMetadataRepository soknadMetadataRepository() {
         return mock(SoknadMetadataRepository.class);
+    }
+
+    @Bean
+    public BatchSoknadMetadataRepository batchSoknadMetadataRepository() {
+        return mock(BatchSoknadMetadataRepository.class);
     }
 
     @Bean
@@ -126,8 +135,18 @@ public class SoknadServiceIntegrationTestContext {
     }
 
     @Bean
+    public BatchSoknadUnderArbeidRepository batchSoknadUnderArbeidRepository() {
+        return mock(BatchSoknadUnderArbeidRepository.class);
+    }
+
+    @Bean
     OpplastetVedleggRepository opplastetVedleggRepository() {
         return mock(OpplastetVedleggRepository.class);
+    }
+
+    @Bean
+    BatchOpplastetVedleggRepository batchOpplastetVedleggRepository() {
+        return mock(BatchOpplastetVedleggRepository.class);
     }
 
     @Bean
@@ -138,6 +157,11 @@ public class SoknadServiceIntegrationTestContext {
     @Bean
     SendtSoknadRepository sendtSoknadRepository() {
         return mock(SendtSoknadRepository.class);
+    }
+
+    @Bean
+    BatchSendtSoknadRepository batchSendtSoknadRepository() {
+        return mock(BatchSendtSoknadRepository.class);
     }
 
     @Bean

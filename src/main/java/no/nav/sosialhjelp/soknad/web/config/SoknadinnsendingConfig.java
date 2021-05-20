@@ -1,9 +1,9 @@
 package no.nav.sosialhjelp.soknad.web.config;
 
 import no.nav.sosialhjelp.soknad.business.BusinessConfig;
-import no.nav.sosialhjelp.soknad.business.db.soknad.SoknadInnsendingDBConfig;
-import no.nav.sosialhjelp.soknad.business.db.soknadmetadata.SoknadMetadataRepository;
-import no.nav.sosialhjelp.soknad.business.soknadunderbehandling.SoknadUnderArbeidRepository;
+import no.nav.sosialhjelp.soknad.business.db.config.SoknadInnsendingDBConfig;
+import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.SoknadMetadataRepository;
+import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository;
 import no.nav.sosialhjelp.soknad.consumer.ConsumerConfig;
 import no.nav.sosialhjelp.soknad.consumer.bostotte.BostotteConfig;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.PersonService;

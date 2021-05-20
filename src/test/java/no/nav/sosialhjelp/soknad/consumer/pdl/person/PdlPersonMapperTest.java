@@ -616,6 +616,31 @@ public class PdlPersonMapperTest {
     }
 
     @Test
+    public void assertUtledingAvMyndighetErKorrekt() {
+        var dagenFoerBarnBlirMyndig = LocalDate.now().minusYears(18).plusDays(1);
+        var dagenBarnBlirMyndig = LocalDate.now().minusYears(18);
+        var dagenEtterBarnBlirMyndig = LocalDate.now().minusYears(18).minusDays(1);
+
+        var pdlPerson = new PdlPerson(
+                emptyList(),
+                null, // Ingen oppholdsadresse
+                null, // ingen kontaktadresse
+                asList(new ForelderBarnRelasjonDto(BARNIDENT, BARN_ROLLE, MOR_ROLLE)),
+                asList(new NavnDto(FORNAVN, MELLOMNAVN, ETTERNAVN, METADATA, FOLKEREGISTERMETADATA)),
+                asList(new SivilstandDto(SivilstandDto.SivilstandType.GIFT, EKTEFELLEIDENT, METADATA, FOLKEREGISTERMETADATA)),
+                asList(new StatsborgerskapDto(LAND))
+        );
+
+        var pdlBarn_dagenFoerBarnBlirMyndig = createBarnMedFoedselsdato(dagenFoerBarnBlirMyndig);
+        var pdlBarn_dagenBarnBlirMyndig = createBarnMedFoedselsdato(dagenBarnBlirMyndig);
+        var pdlBarn_dagenEtterBarnBlirMyndig = createBarnMedFoedselsdato(dagenEtterBarnBlirMyndig);
+
+        assertNotNull(mapper.mapToBarn(pdlBarn_dagenFoerBarnBlirMyndig, BARNIDENT, pdlPerson));
+        assertNull(mapper.mapToBarn(pdlBarn_dagenBarnBlirMyndig, BARNIDENT, pdlPerson));
+        assertNull(mapper.mapToBarn(pdlBarn_dagenEtterBarnBlirMyndig, BARNIDENT, pdlPerson));
+    }
+
+    @Test
     public void adressebeskyttelseStrengtFortrolig() {
         var pdlAdressebeskyttelse = new PdlAdressebeskyttelse(
                 asList(new AdressebeskyttelseDto(STRENGT_FORTROLIG))
@@ -656,5 +681,15 @@ public class PdlPersonMapperTest {
 
     private VegadresseDto annenVegadresse() {
         return new VegadresseDto("matrikkelId2", "stien", 2, "B", null, "1234", "1212", null, null);
+    }
+
+    private PdlBarn createBarnMedFoedselsdato(LocalDate foedselsdato) {
+        return new PdlBarn(
+                asList(new AdressebeskyttelseDto(AdressebeskyttelseDto.Gradering.UGRADERT)),
+                emptyList(),
+                asList(new FolkeregisterpersonstatusDto("ikke-doed")),
+                asList(new FoedselDto(foedselsdato)),
+                asList(new NavnDto(FORNAVN, null, ETTERNAVN, METADATA, FOLKEREGISTERMETADATA))
+        );
     }
 }

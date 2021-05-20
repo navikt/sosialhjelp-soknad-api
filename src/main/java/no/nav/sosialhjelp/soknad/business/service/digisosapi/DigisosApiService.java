@@ -10,6 +10,7 @@ import no.nav.sosialhjelp.metrics.Event;
 import no.nav.sosialhjelp.metrics.MetricsFactory;
 import no.nav.sosialhjelp.soknad.business.InnsendingService;
 import no.nav.sosialhjelp.soknad.business.SoknadUnderArbeidService;
+import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository;
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata;
 import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.SosialhjelpPdfGenerator;
 import no.nav.sosialhjelp.soknad.business.service.HenvendelseService;
@@ -62,6 +63,8 @@ public class DigisosApiService {
     @Inject
     private SoknadMetricsService soknadMetricsService;
 
+    @Inject
+    private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
     private final ObjectMapper objectMapper = JsonSosialhjelpObjectMapper.createObjectMapper();
 
@@ -212,6 +215,8 @@ public class DigisosApiService {
                 soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker().getNavEnhetsnavn());
         String digisosId = sendOgKrypter(soknadJson, tilleggsinformasjonJson, vedleggJson, filOpplastinger, kommunenummer, soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker().getNavEnhetsnavn(), behandlingsId, token);
 
+        slettSoknadUnderArbeidEtterSendingTilFiks(soknadUnderArbeid);
+
         soknadMetricsService.reportSendSoknadMetrics(SubjectHandler.getUserId(), soknadUnderArbeid, vedlegg.vedleggListe);
         return digisosId;
     }
@@ -269,5 +274,10 @@ public class DigisosApiService {
         }).collect(Collectors.toList());
 
         return vedlegg;
+    }
+
+    private void slettSoknadUnderArbeidEtterSendingTilFiks(SoknadUnderArbeid soknadUnderArbeid) {
+        log.info("Sletter SoknadUnderArbeid, behandlingsid {}", soknadUnderArbeid.getBehandlingsId());
+        soknadUnderArbeidRepository.slettSoknad(soknadUnderArbeid, soknadUnderArbeid.getEier());
     }
 }

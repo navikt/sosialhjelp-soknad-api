@@ -5,15 +5,17 @@ import no.nav.security.token.support.jaxrs.JaxrsTokenValidationContextHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static no.nav.sosialhjelp.soknad.web.utils.Constants.SELVBETJENING;
+
 public class OidcSubjectHandlerService implements SubjectHandlerService {
     private static final Logger logger = LoggerFactory.getLogger(OidcSubjectHandlerService.class);
 
     public String getUserIdFromToken() {
-        return getTokenValidationContext().getClaims("selvbetjening").getSubject();
+        return getTokenValidationContext().getClaims(SELVBETJENING).getSubject();
     }
 
     public String getToken() {
-        return getTokenValidationContext().getJwtToken("selvbetjening").getTokenAsString();
+        return getTokenValidationContext().getJwtToken(SELVBETJENING).getTokenAsString();
     }
 
     public String getConsumerId() {

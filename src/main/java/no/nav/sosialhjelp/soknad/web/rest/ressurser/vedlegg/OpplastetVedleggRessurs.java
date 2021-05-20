@@ -2,8 +2,8 @@ package no.nav.sosialhjelp.soknad.web.rest.ressurser.vedlegg;
 
 import no.nav.security.token.support.core.api.ProtectedWithClaims;
 import no.nav.sosialhjelp.metrics.aspects.Timed;
+import no.nav.sosialhjelp.soknad.business.db.repositories.opplastetvedlegg.OpplastetVedleggRepository;
 import no.nav.sosialhjelp.soknad.business.service.OpplastetVedleggService;
-import no.nav.sosialhjelp.soknad.business.soknadunderbehandling.OpplastetVedleggRepository;
 import no.nav.sosialhjelp.soknad.business.util.FileDetectionUtils;
 import no.nav.sosialhjelp.soknad.domain.OpplastetVedlegg;
 import no.nav.sosialhjelp.soknad.domain.model.exception.OpplastingException;
@@ -32,9 +32,11 @@ import java.io.InputStream;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.MediaType.MULTIPART_FORM_DATA;
+import static no.nav.sosialhjelp.soknad.web.utils.Constants.CLAIM_ACR_LEVEL_4;
+import static no.nav.sosialhjelp.soknad.web.utils.Constants.SELVBETJENING;
 
 @Controller
-@ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })
+@ProtectedWithClaims(issuer = SELVBETJENING, claimMap = {CLAIM_ACR_LEVEL_4})
 @Path("/opplastetVedlegg")
 @Produces(APPLICATION_JSON)
 @Timed

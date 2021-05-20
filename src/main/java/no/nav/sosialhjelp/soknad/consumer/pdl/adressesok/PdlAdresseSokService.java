@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import static java.util.Collections.emptyList;
+import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.AdresseHelper.formatterKommunenavn;
 import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.FieldName.ADRESSENAVN;
 import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.FieldName.HUSBOKSTAV;
 import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.FieldName.HUSNUMMER;
@@ -128,12 +129,13 @@ public class PdlAdresseSokService {
     }
 
     private AdresseForslag toAdresseForslag(AdresseDto adresseDto) {
+        var kommunenavnFormattert = formatterKommunenavn(adresseDto.getKommunenavn());
         var adresse = new AdresseForslag();
         adresse.adresse = adresseDto.getAdressenavn();
         adresse.husnummer = adresseDto.getHusnummer().toString();
         adresse.husbokstav = adresseDto.getHusbokstav();
         adresse.kommunenummer = adresseDto.getKommunenummer();
-        adresse.kommunenavn = KommuneTilNavEnhetMapper.IKS_KOMMUNER.getOrDefault(adresseDto.getKommunenummer(), adresseDto.getKommunenavn());
+        adresse.kommunenavn = KommuneTilNavEnhetMapper.IKS_KOMMUNER.getOrDefault(adresseDto.getKommunenummer(), kommunenavnFormattert);
         adresse.postnummer = adresseDto.getPostnummer();
         adresse.poststed = adresseDto.getPoststed();
         adresse.geografiskTilknytning = bydelsnummerOrKommunenummer(adresseDto);

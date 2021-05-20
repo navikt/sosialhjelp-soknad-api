@@ -80,6 +80,7 @@ public class FiksSenderTest {
 
     @Before
     public void setUp() {
+        System.clearProperty("environment.name");
         when(dokumentKrypterer.krypterData(any())).thenReturn(new byte[]{3, 2, 1});
         when(innsendingService.finnSendtSoknadForEttersendelse(any(SoknadUnderArbeid.class))).thenReturn(new SendtSoknad()
                 .withFiksforsendelseId(FIKSFORSENDELSE_ID));
@@ -90,6 +91,11 @@ public class FiksSenderTest {
 
         setProperty(FiksSender.KRYPTERING_DISABLED, "");
         fiksSender = new FiksSender(forsendelsesService, dokumentKrypterer, innsendingService, sosialhjelpPdfGenerator);
+    }
+
+    @After
+    public void tearDown() {
+        clearProperty(FiksSender.KRYPTERING_DISABLED);
     }
 
     @Test
@@ -203,11 +209,6 @@ public class FiksSenderTest {
     @Test(expected = RuntimeException.class)
     public void hentDokumenterFraSoknadKasterFeilHvisVedleggManglerForEttersending() {
         fiksSender.hentDokumenterFraSoknad(new SoknadUnderArbeid().withTilknyttetBehandlingsId("123"));
-    }
-
-    @After
-    public void tearDown() {
-        clearProperty(FiksSender.KRYPTERING_DISABLED);
     }
 
     private JsonInternalSoknad lagInternalSoknadForEttersending() {

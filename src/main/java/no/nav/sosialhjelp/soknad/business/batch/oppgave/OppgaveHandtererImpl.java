@@ -5,7 +5,7 @@ import no.nav.sosialhjelp.metrics.MetricsFactory;
 import no.nav.sosialhjelp.soknad.business.batch.oppgave.Oppgave.Status;
 import no.nav.sosialhjelp.soknad.business.batch.oppgave.fiks.FiksHandterer;
 import no.nav.sosialhjelp.soknad.business.batch.oppgave.fiks.FiksSender;
-import no.nav.sosialhjelp.soknad.business.db.oppgave.OppgaveRepository;
+import no.nav.sosialhjelp.soknad.business.db.repositories.oppgave.OppgaveRepository;
 import no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils;
 import org.slf4j.Logger;
 import org.springframework.context.annotation.Import;

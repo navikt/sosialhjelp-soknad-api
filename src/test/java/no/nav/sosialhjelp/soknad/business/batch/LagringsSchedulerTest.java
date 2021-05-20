@@ -1,9 +1,9 @@
 package no.nav.sosialhjelp.soknad.business.batch;
 
+import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.BatchSoknadUnderArbeidRepository;
 import no.nav.sosialhjelp.soknad.business.service.HenvendelseService;
-import no.nav.sosialhjelp.soknad.business.soknadunderbehandling.SoknadUnderArbeidRepository;
-import no.nav.sosialhjelp.soknad.domain.SoknadInnsendingStatus;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
+import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeidStatus;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,8 +14,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.Arrays;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -25,7 +24,7 @@ public class LagringsSchedulerTest {
 
     @InjectMocks private LagringsScheduler scheduler = new LagringsScheduler();
     @Mock private HenvendelseService henvendelseService;
-    @Mock private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
+    @Mock private BatchSoknadUnderArbeidRepository batchSoknadUnderArbeidRepository;
 
     @Before
     public void setup() {
@@ -41,15 +40,15 @@ public class LagringsSchedulerTest {
                 .withSoknadId(soknadId)
                 .withEier("11111111111")
                 .withBehandlingsId(behandlingsId)
-                .withInnsendingStatus(SoknadInnsendingStatus.UNDER_ARBEID)
+                .withStatus(SoknadUnderArbeidStatus.UNDER_ARBEID)
                 .withTilknyttetBehandlingsId(tilknyttetBehandlingsId);
 
-        when(soknadUnderArbeidRepository.hentForeldedeEttersendelser()).thenReturn(Arrays.asList(soknadUnderArbeid));
+        when(batchSoknadUnderArbeidRepository.hentForeldedeEttersendelser()).thenReturn(Arrays.asList(soknadUnderArbeid));
 
         scheduler.slettForeldedeEttersendelserFraSoknadUnderArbeidDatabase();
 
         verify(henvendelseService).avbrytSoknad(behandlingsId, true);
-        verify(soknadUnderArbeidRepository).slettSoknad(any(SoknadUnderArbeid.class), anyString());
+        verify(batchSoknadUnderArbeidRepository).slettSoknad(anyLong());
     }
 
     @Test
@@ -60,14 +59,14 @@ public class LagringsSchedulerTest {
                 .withSoknadId(soknadId)
                 .withEier("11111111111")
                 .withBehandlingsId(behandlingsId)
-                .withInnsendingStatus(SoknadInnsendingStatus.UNDER_ARBEID) ;
+                .withStatus(SoknadUnderArbeidStatus.UNDER_ARBEID) ;
 
-        when(soknadUnderArbeidRepository.hentForeldedeEttersendelser()).thenReturn(Arrays.asList(soknadUnderArbeid));
+        when(batchSoknadUnderArbeidRepository.hentForeldedeEttersendelser()).thenReturn(Arrays.asList(soknadUnderArbeid));
 
         scheduler.slettForeldedeEttersendelserFraSoknadUnderArbeidDatabase();
 
         verify(henvendelseService, times(0)).avbrytSoknad(behandlingsId, true);
-        verify(soknadUnderArbeidRepository, times(0)).slettSoknad(any(SoknadUnderArbeid.class), anyString());
+        verify(batchSoknadUnderArbeidRepository, times(0)).slettSoknad(anyLong());
     }
 
     @After

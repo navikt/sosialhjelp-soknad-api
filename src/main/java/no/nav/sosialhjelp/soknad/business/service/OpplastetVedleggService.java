@@ -2,8 +2,8 @@ package no.nav.sosialhjelp.soknad.business.service;
 
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
-import no.nav.sosialhjelp.soknad.business.soknadunderbehandling.OpplastetVedleggRepository;
-import no.nav.sosialhjelp.soknad.business.soknadunderbehandling.SoknadUnderArbeidRepository;
+import no.nav.sosialhjelp.soknad.business.db.repositories.opplastetvedlegg.OpplastetVedleggRepository;
+import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository;
 import no.nav.sosialhjelp.soknad.business.util.FileDetectionUtils;
 import no.nav.sosialhjelp.soknad.business.util.TikaFileType;
 import no.nav.sosialhjelp.soknad.consumer.virusscan.VirusScanner;

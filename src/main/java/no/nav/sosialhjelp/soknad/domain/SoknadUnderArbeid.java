@@ -13,7 +13,7 @@ public class SoknadUnderArbeid {
     private String tilknyttetBehandlingsId;
     private String eier;
     private JsonInternalSoknad jsonInternalSoknad;
-    private SoknadInnsendingStatus innsendingStatus;
+    private SoknadUnderArbeidStatus status;
     private LocalDateTime opprettetDato;
     private LocalDateTime sistEndretDato;
 
@@ -74,17 +74,17 @@ public class SoknadUnderArbeid {
         return this;
     }
 
-    public SoknadInnsendingStatus getInnsendingStatus() {
-        return innsendingStatus;
+    public SoknadUnderArbeidStatus getStatus() {
+        return status;
     }
 
-    public SoknadUnderArbeid withInnsendingStatus(SoknadInnsendingStatus innsendingStatus) {
-        this.innsendingStatus = innsendingStatus;
+    public SoknadUnderArbeid withStatus(SoknadUnderArbeidStatus status) {
+        this.status = status;
         return this;
     }
 
-    public void setInnsendingStatus(SoknadInnsendingStatus innsendingStatus) {
-        this.innsendingStatus = innsendingStatus;
+    public void setStatus(SoknadUnderArbeidStatus status) {
+        this.status = status;
     }
 
     public LocalDateTime getOpprettetDato() {
