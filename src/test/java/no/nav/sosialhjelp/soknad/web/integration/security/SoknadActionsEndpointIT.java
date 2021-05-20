@@ -2,7 +2,7 @@ package no.nav.sosialhjelp.soknad.web.integration.security;
 
 import com.nimbusds.jwt.SignedJWT;
 import no.nav.security.token.support.core.JwtTokenConstants;
-import no.nav.sosialhjelp.soknad.web.integration.AbstractSecurityIT;
+import no.nav.sosialhjelp.soknad.web.integration.AbstractIT;
 import no.nav.sosialhjelp.soknad.web.integration.SoknadTester;
 import no.nav.sosialhjelp.soknad.web.oidc.JwtTokenGenerator;
 import org.junit.Test;
@@ -13,7 +13,7 @@ import javax.ws.rs.core.Response;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class SoknadActionsEndpointIT extends AbstractSecurityIT {
+public class SoknadActionsEndpointIT extends AbstractIT {
 
     private static final String DIFFERENT_USER_THAN_THE_ONE_CURRENTLY_LOGGED_IN = "22222222222";
 
