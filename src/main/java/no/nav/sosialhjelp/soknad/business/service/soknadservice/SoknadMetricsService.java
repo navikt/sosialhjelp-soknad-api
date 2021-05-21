@@ -5,7 +5,6 @@ import no.nav.sosialhjelp.metrics.MetricsFactory;
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.domain.model.PersonAlder;
-import no.nav.sosialhjelp.soknad.domain.model.mock.MockUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 
@@ -97,7 +96,7 @@ public class SoknadMetricsService {
     }
 
     private static void reportAlder(String eier, SoknadUnderArbeid soknadUnderArbeid) {
-        if (!soknadUnderArbeid.erEttersendelse() && !MockUtils.isTillatMockRessurs()) {
+        if (!soknadUnderArbeid.erEttersendelse()) {
             int age = new PersonAlder(eier).getAlder();
             if (age > 0 && age < 30) {
                 log.info("DIGISOS-1164: UNDER30 - Soknad sent av bruker med alder: {}", age);

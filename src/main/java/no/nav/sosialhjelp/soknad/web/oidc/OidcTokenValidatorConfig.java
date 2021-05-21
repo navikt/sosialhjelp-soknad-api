@@ -4,7 +4,6 @@ import no.nav.security.token.support.core.configuration.IssuerProperties;
 import no.nav.security.token.support.core.configuration.MultiIssuerConfiguration;
 import no.nav.security.token.support.core.configuration.ProxyAwareResourceRetriever;
 import no.nav.security.token.support.jaxrs.servlet.JaxrsJwtTokenValidationFilter;
-import no.nav.sosialhjelp.soknad.domain.model.mock.MockUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
@@ -32,9 +31,6 @@ public class OidcTokenValidatorConfig {
 
     @Bean
     public MultiIssuerConfiguration MultiIssuerConfiguration(ProxyAwareResourceRetriever resourceRetriever) {
-        if (MockUtils.isTillatMockRessurs()) {
-            return new MultiIssuerConfiguration(new HashMap<>(), resourceRetriever);
-        }
         return new MultiIssuerConfiguration(getIssuerPropertiesMap(), resourceRetriever);
     }
 

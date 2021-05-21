@@ -22,7 +22,6 @@ import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.domain.Vedleggstatus;
 import no.nav.sosialhjelp.soknad.domain.model.digisosapi.FilMetadata;
 import no.nav.sosialhjelp.soknad.domain.model.digisosapi.FilOpplasting;
-import no.nav.sosialhjelp.soknad.domain.model.mock.MockUtils;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
@@ -191,10 +190,6 @@ public class DigisosApiService {
     }
 
     public String sendSoknad(SoknadUnderArbeid soknadUnderArbeid, String token, String kommunenummer) {
-        if (MockUtils.isTillatMockRessurs()) {
-            return null;
-        }
-
         String behandlingsId = soknadUnderArbeid.getBehandlingsId();
         soknadUnderArbeidService.settInnsendingstidspunktPaSoknad(soknadUnderArbeid);
 
