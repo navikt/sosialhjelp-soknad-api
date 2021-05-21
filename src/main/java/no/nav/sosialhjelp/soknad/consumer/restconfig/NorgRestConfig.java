@@ -17,7 +17,7 @@ import static no.nav.sosialhjelp.soknad.web.selftest.Pingable.Ping.lyktes;
 @Configuration
 public class NorgRestConfig {
 
-    @Value("${norg.rest.url}")
+    @Value("${norg_rest_url}")
     private String endpoint;
 
     @Bean
