@@ -15,7 +15,6 @@ import no.nav.security.token.support.core.api.Unprotected;
 import no.nav.sosialhjelp.soknad.business.InnsendingService;
 import no.nav.sosialhjelp.soknad.business.batch.oppgave.fiks.FiksSender;
 import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.SosialhjelpPdfGenerator;
-import no.nav.sosialhjelp.soknad.consumer.pdl.PdlConsumerMock;
 import no.nav.sosialhjelp.soknad.domain.SendtSoknad;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import org.apache.commons.io.IOUtils;
@@ -232,19 +231,7 @@ public class TjenesteMockRessurs {
         if (!isTillatMockRessurs()) {
             throw new RuntimeException("Mocking har ikke blitt aktivert.");
         }
-        logger.info("Setter mock familieforhold med data: {}", jsonPerson);
-
-        var mockFamiliedata = mapper.readValue(jsonPerson, PdlConsumerMock.PdlMockResponse.class);
-        if (mockFamiliedata.getPerson().getStatsborgerskap() != null) {
-            // do nothing
-        }
-
-        PdlConsumerMock.setPerson(mockFamiliedata);
-        if (mockFamiliedata.getEktefelle().getIdent() != null){
-            PdlConsumerMock.setEktefelle(mockFamiliedata.getEktefelle());
-        }
-        mockFamiliedata.getBarn().forEach(PdlConsumerMock::setBarn);
-
+        // do nothing
         clearCache();
     }
 
