@@ -27,12 +27,11 @@ public class SoknadsosialhjelpServer {
     public static final int PORT = 8080;
     public final Jetty jetty;
 
-
     public SoknadsosialhjelpServer() throws Exception {
-        this(PORT, null, "/sosialhjelp/soknad-api", null);
+        this(PORT, null, "/sosialhjelp/soknad-api");
     }
 
-    public SoknadsosialhjelpServer(int listenPort, File overrideWebXmlFile, String contextPath, DataSource dataSource) throws Exception {
+    public SoknadsosialhjelpServer(int listenPort, File overrideWebXmlFile, String contextPath) throws Exception {
         configure();
 
         if (!ServiceUtils.isNonProduction() && MockUtils.isMockAltProfil()) {
@@ -43,10 +42,7 @@ public class SoknadsosialhjelpServer {
             throw new Error("Alltid send eller hent fra NavTestkommune er satt til true i prod. Stopper applikasjonen da dette er en sikkerhetsrisiko.");
         }
 
-        if (MockUtils.isMockAltProfil()) {
-            dataSource = DatabaseTestContext.buildDataSource("hsqldb.properties");
-        }
-        final DataSource ds = (dataSource != null) ? dataSource : buildDataSource();
+        final DataSource ds = MockUtils.isRunningWithInMemoryDb() ? DatabaseTestContext.buildDataSource("hsqldb.properties") : buildDataSource();
 
         if (isRunningOnNais() && !MockUtils.isMockAltProfil()) {
             databaseSchemaMigration(ds);

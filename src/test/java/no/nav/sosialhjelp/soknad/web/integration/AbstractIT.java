@@ -8,7 +8,6 @@ import org.junit.BeforeClass;
 import java.io.File;
 
 import static java.lang.System.setProperty;
-import static no.nav.sosialhjelp.soknad.business.db.config.DatabaseTestContext.buildDataSource;
 
 public abstract class AbstractIT {
     private static final int PORT = 10001;
@@ -16,14 +15,12 @@ public abstract class AbstractIT {
 
     @BeforeClass
     public static void beforeClass() throws Exception {
-        System.setProperty("no.nav.sosialhjelp.soknad.hsqldb", "true");
         System.setProperty("environment.name", "test");
         System.setProperty(TestProperties.CONTAINER_FACTORY, "org.glassfish.jersey.test.external.ExternalTestContainerFactory");
         System.setProperty(TestProperties.CONTAINER_PORT, "" + PORT);
         System.setProperty(TestProperties.LOG_TRAFFIC, "true");
         System.setProperty("jersey.test.host", "localhost");
-        jetty = new SoknadsosialhjelpServer(PORT, new File("src/test/resources/override-web-integration.xml"), "/sosialhjelp/soknad-api", buildDataSource("hsqldb.properties"));
-        System.setProperty("no.nav.sosialhjelp.soknad.hsqldb", "true");
+        jetty = new SoknadsosialhjelpServer(PORT, new File("src/test/resources/override-web-integration.xml"), "/sosialhjelp/soknad-api");
         setProperty("start.oidc.withmock", "false"); // pga. Testene validerer oidc-filtre
         jetty.start();
     }
