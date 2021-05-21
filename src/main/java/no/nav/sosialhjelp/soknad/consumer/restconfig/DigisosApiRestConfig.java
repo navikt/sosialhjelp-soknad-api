@@ -5,14 +5,14 @@ import no.nav.sosialhjelp.soknad.consumer.fiks.DigisosApiImpl;
 import no.nav.sosialhjelp.soknad.consumer.fiks.DigisosApiProperties;
 import no.nav.sosialhjelp.soknad.consumer.fiks.KommuneInfoService;
 import no.nav.sosialhjelp.soknad.consumer.redis.RedisService;
-import no.nav.sosialhjelp.soknad.web.types.Pingable;
+import no.nav.sosialhjelp.soknad.web.selftest.Pingable;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import static no.nav.sosialhjelp.metrics.MetricsFactory.createTimerProxyForWebService;
-import static no.nav.sosialhjelp.soknad.web.types.Pingable.Ping.feilet;
-import static no.nav.sosialhjelp.soknad.web.types.Pingable.Ping.lyktes;
+import static no.nav.sosialhjelp.soknad.web.selftest.Pingable.Ping.feilet;
+import static no.nav.sosialhjelp.soknad.web.selftest.Pingable.Ping.lyktes;
 
 @Configuration
 public class DigisosApiRestConfig {

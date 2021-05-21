@@ -2,7 +2,7 @@ package no.nav.sosialhjelp.soknad.consumer.bostotte;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.sosialhjelp.soknad.consumer.bostotte.dto.BostotteDto;
-import no.nav.sosialhjelp.soknad.web.types.Pingable;
+import no.nav.sosialhjelp.soknad.web.selftest.Pingable;
 import org.apache.cxf.helpers.IOUtils;
 import org.junit.Before;
 import org.junit.Test;
