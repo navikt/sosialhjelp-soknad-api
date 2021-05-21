@@ -10,7 +10,6 @@ public class MockAltSoknadsosialhjelpServer {
     private static final int PORT = isRunningOnGCP() ? Integer.parseInt(System.getenv("PORT")) : 8181;
 
     public static void main(String[] args) throws Exception {
-        System.setProperty("tillatMockRessurs", "false");
         System.setProperty("mockAltProfil", "true");
         System.setProperty("logback.configurationFile", "logback-mock-alt.xml");
 

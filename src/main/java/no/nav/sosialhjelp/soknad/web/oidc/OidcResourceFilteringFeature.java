@@ -1,7 +1,6 @@
 package no.nav.sosialhjelp.soknad.web.oidc;
 
 import no.nav.security.token.support.jaxrs.JwtTokenContainerRequestFilter;
-import no.nav.sosialhjelp.soknad.domain.model.mock.MockUtils;
 import no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils;
 import org.glassfish.jersey.server.wadl.processor.OptionsMethodProcessor;
 import org.glassfish.jersey.server.wadl.processor.WadlModelProcessor;
@@ -30,7 +29,7 @@ public class OidcResourceFilteringFeature implements DynamicFeature {
     }
 
     private boolean isAllowedWhenNotRunningInProd() {
-        return ServiceUtils.isNonProduction() && (isOidcMock() || MockUtils.isTillatMockRessurs());
+        return ServiceUtils.isNonProduction() && (isOidcMock());
     }
 
     private boolean isOidcMock() {
