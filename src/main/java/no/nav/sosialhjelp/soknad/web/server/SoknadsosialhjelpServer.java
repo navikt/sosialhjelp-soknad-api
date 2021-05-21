@@ -87,7 +87,6 @@ public class SoknadsosialhjelpServer {
             log.info("Running with mock-alt activated.");
             setFrom("environment/environment-mock-alt.properties");
         } else if (isRunningOnNais()) {
-            mapNaisProperties();
             setFrom("environment/environment.properties");
         } else {
             log.info("Running with DEVELOPER (local) setup.");
@@ -96,18 +95,6 @@ public class SoknadsosialhjelpServer {
 
         if (MockUtils.isTillatMockRessurs()){
             SubjectHandler.setSubjectHandlerService(new MockSubjectHandlerService());
-        }
-    }
-
-    private void mapNaisProperties() throws IOException {
-        final Properties props = readProperties("naisPropertyMapping.properties", true);
-
-        for (String env : props.stringPropertyNames()) {
-            final String interntNavn = props.getProperty(env);
-            final String value = findVariableValue(env, true);
-            if (value != null) {
-                System.setProperty(interntNavn, value);
-            }
         }
     }
 
