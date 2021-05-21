@@ -86,7 +86,6 @@ import static no.nav.sosialhjelp.soknad.consumer.redis.CacheConstants.KOMMUNEINF
 import static no.nav.sosialhjelp.soknad.consumer.redis.CacheConstants.KOMMUNEINFO_LAST_POLL_TIME_KEY;
 import static no.nav.sosialhjelp.soknad.consumer.redis.RedisUtils.toKommuneInfoMap;
 import static no.nav.sosialhjelp.soknad.domain.model.mock.MockUtils.isMockAltProfil;
-import static no.nav.sosialhjelp.soknad.domain.model.mock.MockUtils.isTillatMockRessurs;
 import static no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.HEADER_INTEGRASJON_ID;
 import static no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.HEADER_INTEGRASJON_PASSORD;
 import static no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils.isNonProduction;
@@ -118,9 +117,6 @@ public class DigisosApiImpl implements DigisosApi {
             DigisosApiProperties properties,
             RedisService redisService
     ) {
-        if (isTillatMockRessurs()) {
-            return;
-        }
         this.redisService = redisService;
         this.properties = properties;
         this.retryHandler = new DefaultHttpRequestRetryHandler();

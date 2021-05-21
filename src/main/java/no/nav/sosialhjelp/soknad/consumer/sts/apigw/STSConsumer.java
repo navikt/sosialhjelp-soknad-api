@@ -13,7 +13,6 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.Response;
 
-import static no.nav.sosialhjelp.soknad.domain.model.mock.MockUtils.isTillatMockRessurs;
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class STSConsumer {
@@ -26,23 +25,17 @@ public class STSConsumer {
     private FssToken cachedFssToken;
 
     public STSConsumer(Client client, String endpoint) {
-        if (isTillatMockRessurs()) {
-            return;
-        }
         this.client = client;
         this.endpoint = endpoint;
     }
 
     public void ping() {
-        if (isTillatMockRessurs()) {
-        } else {
-            Invocation.Builder request = client
-                    .target(endpoint)
-                    .request();
-            try (Response response = request.options()) {
-                if (response.getStatus() != 200) {
-                    throw new RuntimeException("Feil statuskode ved ping mot STS: " + response.getStatus() + ", respons: " + response.readEntity(String.class));
-                }
+        Invocation.Builder request = client
+                .target(endpoint)
+                .request();
+        try (Response response = request.options()) {
+            if (response.getStatus() != 200) {
+                throw new RuntimeException("Feil statuskode ved ping mot STS: " + response.getStatus() + ", respons: " + response.readEntity(String.class));
             }
         }
     }

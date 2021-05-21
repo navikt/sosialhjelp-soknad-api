@@ -44,7 +44,7 @@ public class DatabaseTestContext {
     }
 
     private static boolean erInMemoryDatabase() {
-        String dbProp = getProperty("no.nav.sosialhjelp.soknad.business.hsqldb", "true");
+        String dbProp = getProperty("no.nav.sosialhjelp.soknad.hsqldb", "true");
         return dbProp == null || dbProp.equalsIgnoreCase("true");
     }
 
