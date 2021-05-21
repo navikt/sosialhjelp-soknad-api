@@ -41,11 +41,11 @@ import java.util.stream.Collectors;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.BOSTOTTE_SAMTYKKE;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_SKATTEETATEN_SAMTYKKE;
-import static no.nav.sosialhjelp.soknad.web.sikkerhet.XsrfGenerator.generateXsrfToken;
 import static no.nav.sosialhjelp.soknad.web.utils.Constants.CLAIM_ACR_LEVEL_4;
 import static no.nav.sosialhjelp.soknad.web.utils.Constants.SELVBETJENING;
 import static no.nav.sosialhjelp.soknad.web.utils.NedetidUtils.NEDETID_SLUTT;
 import static no.nav.sosialhjelp.soknad.web.utils.NedetidUtils.getNedetidAsStringOrNull;
+import static no.nav.sosialhjelp.soknad.web.utils.XsrfGenerator.generateXsrfToken;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @Controller

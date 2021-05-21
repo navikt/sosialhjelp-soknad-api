@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.web.types;
+package no.nav.sosialhjelp.soknad.web.selftest;
 
 import java.io.Serializable;
 
