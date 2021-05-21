@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.business.db.config;
 
-import no.nav.sosialhjelp.soknad.web.types.Pingable;
+import no.nav.sosialhjelp.soknad.web.selftest.Pingable;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -12,8 +12,8 @@ import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.sql.DataSource;
 
-import static no.nav.sosialhjelp.soknad.web.types.Pingable.Ping.feilet;
-import static no.nav.sosialhjelp.soknad.web.types.Pingable.Ping.lyktes;
+import static no.nav.sosialhjelp.soknad.web.selftest.Pingable.Ping.feilet;
+import static no.nav.sosialhjelp.soknad.web.selftest.Pingable.Ping.lyktes;
 
 
 @Configuration

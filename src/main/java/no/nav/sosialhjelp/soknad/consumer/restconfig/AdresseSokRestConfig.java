@@ -7,16 +7,16 @@ import no.nav.sosialhjelp.soknad.consumer.common.rest.RestUtils.RestConfig;
 import no.nav.sosialhjelp.soknad.consumer.concurrency.RestCallContext;
 import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseSokConsumer;
 import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseSokConsumer.Sokedata;
-import no.nav.sosialhjelp.soknad.web.types.Pingable;
-import no.nav.sosialhjelp.soknad.web.types.Pingable.Ping.PingMetadata;
+import no.nav.sosialhjelp.soknad.web.selftest.Pingable;
+import no.nav.sosialhjelp.soknad.web.selftest.Pingable.Ping.PingMetadata;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.function.Function;
 
-import static no.nav.sosialhjelp.soknad.web.types.Pingable.Ping.feilet;
-import static no.nav.sosialhjelp.soknad.web.types.Pingable.Ping.lyktes;
+import static no.nav.sosialhjelp.soknad.web.selftest.Pingable.Ping.feilet;
+import static no.nav.sosialhjelp.soknad.web.selftest.Pingable.Ping.lyktes;
 
 
 @Configuration

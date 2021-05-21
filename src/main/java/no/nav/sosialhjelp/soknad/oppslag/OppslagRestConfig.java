@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.oppslag;
 
 import no.nav.sosialhjelp.soknad.consumer.common.rest.RestUtils;
-import no.nav.sosialhjelp.soknad.web.types.Pingable;
+import no.nav.sosialhjelp.soknad.web.selftest.Pingable;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 
@@ -10,8 +10,8 @@ import javax.ws.rs.client.ClientRequestFilter;
 
 import static java.lang.System.getenv;
 import static no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.HEADER_NAV_APIKEY;
-import static no.nav.sosialhjelp.soknad.web.types.Pingable.Ping.feilet;
-import static no.nav.sosialhjelp.soknad.web.types.Pingable.Ping.lyktes;
+import static no.nav.sosialhjelp.soknad.web.selftest.Pingable.Ping.feilet;
+import static no.nav.sosialhjelp.soknad.web.selftest.Pingable.Ping.lyktes;
 
 public class OppslagRestConfig {
     private static final String OPPSLAGAPI_APIKEY = "OPPSLAGAPI_APIKEY";

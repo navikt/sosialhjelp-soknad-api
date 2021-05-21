@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.web.sikkerhet;
+package no.nav.sosialhjelp.soknad.web.utils;
 
 import no.nav.sosialhjelp.soknad.domain.model.exception.AuthorizationException;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.StaticSubjectHandlerService;

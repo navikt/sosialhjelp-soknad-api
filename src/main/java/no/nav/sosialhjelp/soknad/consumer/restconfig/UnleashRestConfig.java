@@ -7,15 +7,15 @@ import no.finn.unleash.repository.HttpToggleFetcher;
 import no.finn.unleash.repository.ToggleFetcher;
 import no.finn.unleash.util.UnleashConfig;
 import no.nav.sosialhjelp.soknad.consumer.unleash.ByInstanceIdStrategy;
-import no.nav.sosialhjelp.soknad.web.types.Pingable;
-import no.nav.sosialhjelp.soknad.web.types.Pingable.Ping.PingMetadata;
+import no.nav.sosialhjelp.soknad.web.selftest.Pingable;
+import no.nav.sosialhjelp.soknad.web.selftest.Pingable.Ping.PingMetadata;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 
 import static no.finn.unleash.repository.FeatureToggleResponse.Status.CHANGED;
 import static no.finn.unleash.repository.FeatureToggleResponse.Status.NOT_CHANGED;
-import static no.nav.sosialhjelp.soknad.web.types.Pingable.Ping.feilet;
-import static no.nav.sosialhjelp.soknad.web.types.Pingable.Ping.lyktes;
+import static no.nav.sosialhjelp.soknad.web.selftest.Pingable.Ping.feilet;
+import static no.nav.sosialhjelp.soknad.web.selftest.Pingable.Ping.lyktes;
 
 public class UnleashRestConfig {
     public static final String APPLICATION_NAME = "sosialhjelp-soknad-api";

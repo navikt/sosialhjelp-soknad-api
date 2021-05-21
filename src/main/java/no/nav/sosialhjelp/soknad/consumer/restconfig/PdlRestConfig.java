@@ -5,8 +5,8 @@ import no.nav.sosialhjelp.soknad.consumer.pdl.PdlConsumer;
 import no.nav.sosialhjelp.soknad.consumer.pdl.PdlConsumerImpl;
 import no.nav.sosialhjelp.soknad.consumer.pdl.PdlConsumerMock;
 import no.nav.sosialhjelp.soknad.consumer.sts.apigw.STSConsumer;
-import no.nav.sosialhjelp.soknad.web.types.Pingable;
-import no.nav.sosialhjelp.soknad.web.types.Pingable.Ping.PingMetadata;
+import no.nav.sosialhjelp.soknad.web.selftest.Pingable;
+import no.nav.sosialhjelp.soknad.web.selftest.Pingable.Ping.PingMetadata;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 
@@ -16,8 +16,8 @@ import javax.ws.rs.client.ClientRequestFilter;
 import static java.lang.System.getenv;
 import static no.nav.sosialhjelp.soknad.consumer.common.cxf.InstanceSwitcher.createSwitcher;
 import static no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.HEADER_NAV_APIKEY;
-import static no.nav.sosialhjelp.soknad.web.types.Pingable.Ping.feilet;
-import static no.nav.sosialhjelp.soknad.web.types.Pingable.Ping.lyktes;
+import static no.nav.sosialhjelp.soknad.web.selftest.Pingable.Ping.feilet;
+import static no.nav.sosialhjelp.soknad.web.selftest.Pingable.Ping.lyktes;
 
 public class PdlRestConfig {
 
