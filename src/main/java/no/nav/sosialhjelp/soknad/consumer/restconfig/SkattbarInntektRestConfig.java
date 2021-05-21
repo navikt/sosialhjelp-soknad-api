@@ -21,7 +21,7 @@ public class SkattbarInntektRestConfig {
 
     private static final String SKATT_INNTEKTSMOTTAKER_APIKEY = "SKATT_INNTEKTSMOTTAKER_APIKEY";
 
-    @Value("${skatteetaten.inntektsmottaker.url}")
+    @Value("${skatteetaten_inntektsmottaker_url}")
     private String endpoint;
 
     @Bean
