@@ -4,9 +4,7 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import no.nav.sosialhjelp.soknad.business.db.config.DatabaseTestContext;
 import no.nav.sosialhjelp.soknad.domain.model.mock.MockUtils;
-import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils;
-import no.nav.sosialhjelp.soknad.web.mock.MockSubjectHandlerService;
 import org.flywaydb.core.Flyway;
 import org.flywaydb.core.api.output.MigrateResult;
 import org.slf4j.Logger;
@@ -37,10 +35,6 @@ public class SoknadsosialhjelpServer {
     public SoknadsosialhjelpServer(int listenPort, File overrideWebXmlFile, String contextPath, DataSource dataSource) throws Exception {
         configure();
 
-        if (!ServiceUtils.isNonProduction() && MockUtils.isTillatMockRessurs()) {
-            throw new Error("tillatMockRessurs har blitt satt til true i prod. Stopper applikasjonen da dette er en sikkerhetsrisiko.");
-        }
-
         if (!ServiceUtils.isNonProduction() && MockUtils.isMockAltProfil()) {
             throw new Error("mockAltProfil har blitt satt til true i prod. Stopper applikasjonen da dette er en sikkerhetsrisiko.");
         }
@@ -49,12 +43,12 @@ public class SoknadsosialhjelpServer {
             throw new Error("Alltid send eller hent fra NavTestkommune er satt til true i prod. Stopper applikasjonen da dette er en sikkerhetsrisiko.");
         }
 
-        if (MockUtils.isTillatMockRessurs() || MockUtils.isMockAltProfil()) {
+        if (MockUtils.isMockAltProfil()) {
             dataSource = DatabaseTestContext.buildDataSource("hsqldb.properties");
         }
         final DataSource ds = (dataSource != null) ? dataSource : buildDataSource();
 
-        if (isRunningOnNais() && !MockUtils.isTillatMockRessurs() && !MockUtils.isMockAltProfil()) {
+        if (isRunningOnNais() && !MockUtils.isMockAltProfil()) {
             databaseSchemaMigration(ds);
         }
 
@@ -83,7 +77,7 @@ public class SoknadsosialhjelpServer {
 
     private void configure() throws IOException {
         Locale.setDefault(Locale.forLanguageTag("nb-NO"));
-        if (MockUtils.isMockAltProfil() || MockUtils.isTillatMockRessurs()) {
+        if (MockUtils.isMockAltProfil()) {
             log.info("Running with mock-alt activated.");
             setFrom("environment/environment-mock-alt.properties");
         } else if (isRunningOnNais()) {
@@ -91,10 +85,6 @@ public class SoknadsosialhjelpServer {
         } else {
             log.info("Running with DEVELOPER (local) setup.");
             configureLocalEnvironment();
-        }
-
-        if (MockUtils.isTillatMockRessurs()){
-            SubjectHandler.setSubjectHandlerService(new MockSubjectHandlerService());
         }
     }
 

@@ -92,8 +92,8 @@ public class OpplastetVedleggRessurs {
         final String filnavn = fil.getContentDisposition().getFileName();
         final byte[] data = getByteArray(fil);
 
-        if (!MockUtils.isTillatMockRessurs()) {
-            // Oracle-spesifikk syntax i query: disabler da denne sjekken på mock (hvor hsqldb brukes)
+        if (!MockUtils.isRunningWithInMemoryDb()) {
+            // Oracle-spesifikk syntax i query: disabler da denne sjekken når in-memory hsqldb brukes
             opplastetVedleggService.sjekkOmSoknadUnderArbeidTotalVedleggStorrelseOverskriderMaksgrense(behandlingsId, data);
         }
 

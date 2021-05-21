@@ -8,8 +8,6 @@ import org.glassfish.jersey.server.ResourceConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static no.nav.sosialhjelp.soknad.domain.model.mock.MockUtils.isTillatMockRessurs;
-
 /**
  * Jersey 2 config
  */
@@ -26,10 +24,7 @@ public class SoknadApplication extends ResourceConfig {
         register(MultiPartFeature.class);
         register(MdcFilter.class);
 
-        if (isTillatMockRessurs()) {
-        } else {
-            register(OidcResourceFilteringFeature.class);
-        }
+        register(OidcResourceFilteringFeature.class);
 
         logger.info("Starter Jersey");
     }
