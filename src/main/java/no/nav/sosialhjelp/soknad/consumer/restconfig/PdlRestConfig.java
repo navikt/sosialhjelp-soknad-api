@@ -3,7 +3,6 @@ package no.nav.sosialhjelp.soknad.consumer.restconfig;
 import no.nav.sosialhjelp.soknad.consumer.common.rest.RestUtils;
 import no.nav.sosialhjelp.soknad.consumer.pdl.PdlConsumer;
 import no.nav.sosialhjelp.soknad.consumer.pdl.PdlConsumerImpl;
-import no.nav.sosialhjelp.soknad.consumer.pdl.PdlConsumerMock;
 import no.nav.sosialhjelp.soknad.consumer.sts.apigw.STSConsumer;
 import no.nav.sosialhjelp.soknad.web.selftest.Pingable;
 import no.nav.sosialhjelp.soknad.web.selftest.Pingable.Ping.PingMetadata;
@@ -14,14 +13,12 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientRequestFilter;
 
 import static java.lang.System.getenv;
-import static no.nav.sosialhjelp.soknad.consumer.common.cxf.InstanceSwitcher.createSwitcher;
 import static no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.HEADER_NAV_APIKEY;
 import static no.nav.sosialhjelp.soknad.web.selftest.Pingable.Ping.feilet;
 import static no.nav.sosialhjelp.soknad.web.selftest.Pingable.Ping.lyktes;
 
 public class PdlRestConfig {
 
-    public static final String PDL_KEY = "start.pdl.withmock";
     private static final String PDLAPI_APIKEY = "PDLAPI_APIKEY";
 
     @Value("${pdl_api_url}")
@@ -29,9 +26,7 @@ public class PdlRestConfig {
 
     @Bean
     public PdlConsumer pdlConsumer(STSConsumer stsConsumer) {
-        PdlConsumer prod = new PdlConsumerImpl(pdlClient(), endpoint, stsConsumer);
-        PdlConsumer mock = new PdlConsumerMock().pdlConsumerMock();
-        return createSwitcher(prod, mock, PDL_KEY, PdlConsumer.class);
+        return new PdlConsumerImpl(pdlClient(), endpoint, stsConsumer);
     }
 
     @Bean

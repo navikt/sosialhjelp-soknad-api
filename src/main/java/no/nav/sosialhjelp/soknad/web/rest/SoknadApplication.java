@@ -2,7 +2,6 @@ package no.nav.sosialhjelp.soknad.web.rest;
 
 import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
 import no.nav.sosialhjelp.soknad.web.mdc.MdcFilter;
-import no.nav.sosialhjelp.soknad.web.mock.TjenesteMockRessurs;
 import no.nav.sosialhjelp.soknad.web.oidc.OidcResourceFilteringFeature;
 import no.nav.sosialhjelp.soknad.web.oidc.OidcTokenValidatorFilter;
 import no.nav.sosialhjelp.soknad.web.sikkerhet.HeaderFilter;
@@ -10,8 +9,6 @@ import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static no.nav.sosialhjelp.soknad.domain.model.mock.MockUtils.isTillatMockRessurs;
 
 /**
  * Jersey 2 config
@@ -32,11 +29,7 @@ public class SoknadApplication extends ResourceConfig {
         register(HeaderFilter.class);
         register(MdcFilter.class);
 
-        if (isTillatMockRessurs()) {
-            register(TjenesteMockRessurs.class);
-        } else {
-            register(OidcResourceFilteringFeature.class);
-        }
+        register(OidcResourceFilteringFeature.class);
 
         logger.info("Starter Jersey");
     }

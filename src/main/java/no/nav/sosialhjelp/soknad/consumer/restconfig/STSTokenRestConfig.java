@@ -22,8 +22,12 @@ import static org.eclipse.jetty.http.HttpHeader.AUTHORIZATION;
 public class STSTokenRestConfig {
 
     private static final String STSTOKEN_APIKEY = "STSTOKEN_APIKEY";
-    private static final String SRVSOKNADSOSIALHJELP_SERVER_USERNAME = "SRVSOKNADSOSIALHJELP_SERVER_USERNAME";
-    private static final String SRVSOKNADSOSIALHJELP_SERVER_PASSWORD = "SRVSOKNADSOSIALHJELP_SERVER_PASSWORD";
+
+    @Value("${srvsoknadsosialhjelp.server.username}")
+    private String srvsoknadsosialhjelpServerUsername;
+
+    @Value("${srvsoknadsosialhjelp.server.password}")
+    private String srvsoknadsosialhjelpServerPassword;
 
     @Value("${securitytokenservice_apigw_url}")
     private String endpoint;
@@ -53,12 +57,10 @@ public class STSTokenRestConfig {
     }
 
     private String getBasicAuthentication() {
-        String username = System.getenv(SRVSOKNADSOSIALHJELP_SERVER_USERNAME);
-        String password = System.getenv(SRVSOKNADSOSIALHJELP_SERVER_PASSWORD);
-        if (username == null || password == null) {
+        if (srvsoknadsosialhjelpServerUsername == null || srvsoknadsosialhjelpServerPassword == null) {
             throw new RuntimeException("Username eller password er ikke tilgjengelig.");
         }
-        String token = username + ":" + password;
+        String token = srvsoknadsosialhjelpServerUsername + ":" + srvsoknadsosialhjelpServerPassword;
         return "BASIC " + DatatypeConverter.printBase64Binary(token.getBytes(StandardCharsets.UTF_8));
     }
 }
