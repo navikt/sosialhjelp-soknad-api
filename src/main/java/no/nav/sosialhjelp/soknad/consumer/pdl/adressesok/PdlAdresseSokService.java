@@ -1,12 +1,12 @@
 package no.nav.sosialhjelp.soknad.consumer.pdl.adressesok;
 
 import no.nav.sosialhjelp.soknad.consumer.pdl.PdlConsumer;
-import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.AdresseDto;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.AdresseSokHit;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.Criteria;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.FieldName;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.Paging;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.SearchRule;
+import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.VegadresseDto;
 import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseForslag;
 import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseSokConsumer;
 import no.nav.sosialhjelp.soknad.domain.model.exception.SosialhjelpSoknadApiException;
@@ -22,11 +22,11 @@ import java.util.Objects;
 
 import static java.util.Collections.emptyList;
 import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.AdresseHelper.formatterKommunenavn;
-import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.FieldName.ADRESSENAVN;
-import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.FieldName.HUSBOKSTAV;
-import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.FieldName.HUSNUMMER;
-import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.FieldName.POSTNUMMER;
-import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.FieldName.POSTSTED;
+import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.FieldName.VEGADRESSE_ADRESSENAVN;
+import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.FieldName.VEGADRESSE_HUSBOKSTAV;
+import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.FieldName.VEGADRESSE_HUSNUMMER;
+import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.FieldName.VEGADRESSE_POSTNUMMER;
+import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.FieldName.VEGADRESSE_POSTSTED;
 import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.SearchRule.CONTAINS;
 import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.SearchRule.EQUALS;
 import static no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseForslagType.GATEADRESSE;
@@ -59,7 +59,7 @@ public class PdlAdresseSokService {
         return toAdresseForslag(vegadresse);
     }
 
-    private AdresseDto resolveVegadresse(List<AdresseSokHit> hits) {
+    private VegadresseDto resolveVegadresse(List<AdresseSokHit> hits) {
         if (hits.isEmpty()) {
             log.warn("Ingen hits i adressesok");
             throw new SosialhjelpSoknadApiException("PDL adressesok - ingen hits");
@@ -76,14 +76,14 @@ public class PdlAdresseSokService {
         }
     }
 
-    private boolean relevantFieldsAreEquals(AdresseDto dto1, AdresseDto dto2) {
+    private boolean relevantFieldsAreEquals(VegadresseDto dto1, VegadresseDto dto2) {
         if (dto1 == null || dto2 == null) return false;
         return Objects.equals(dto1.getKommunenummer(), dto2.getKommunenummer()) &&
                 Objects.equals(dto1.getKommunenavn(), dto2.getKommunenavn()) &&
                 Objects.equals(dto1.getBydelsnummer(), dto2.getBydelsnummer());
     }
 
-    private String bydelsnummerOrKommunenummer(AdresseDto vegadresse) {
+    private String bydelsnummerOrKommunenummer(VegadresseDto vegadresse) {
         if (vegadresse.getBydelsnummer() != null) {
             return vegadresse.getBydelsnummer();
         }
@@ -104,19 +104,19 @@ public class PdlAdresseSokService {
     private List<Criteria> toCriteriaList(AdresseSokConsumer.Sokedata sokedata) {
         var criteriaList = new ArrayList<Criteria>();
         if (isNotEmpty(sokedata.adresse)) {
-            criteriaList.add(criteria(ADRESSENAVN, CONTAINS, sokedata.adresse));
+            criteriaList.add(criteria(VEGADRESSE_ADRESSENAVN, CONTAINS, sokedata.adresse));
         }
         if (isNotEmpty(sokedata.husnummer)) {
-            criteriaList.add(criteria(HUSNUMMER, EQUALS, sokedata.husnummer));
+            criteriaList.add(criteria(VEGADRESSE_HUSNUMMER, EQUALS, sokedata.husnummer));
         }
         if (isNotEmpty(sokedata.husbokstav)) {
-            criteriaList.add(criteria(HUSBOKSTAV, EQUALS, sokedata.husbokstav));
+            criteriaList.add(criteria(VEGADRESSE_HUSBOKSTAV, EQUALS, sokedata.husbokstav));
         }
         if (isNotEmpty(sokedata.postnummer)) {
-            criteriaList.add(criteria(POSTNUMMER, EQUALS, sokedata.postnummer));
+            criteriaList.add(criteria(VEGADRESSE_POSTNUMMER, EQUALS, sokedata.postnummer));
         }
         if (isNotEmpty(sokedata.poststed)) {
-            criteriaList.add(criteria(POSTSTED, EQUALS, sokedata.poststed));
+            criteriaList.add(criteria(VEGADRESSE_POSTSTED, EQUALS, sokedata.poststed));
         }
         return criteriaList;
     }
@@ -128,17 +128,17 @@ public class PdlAdresseSokService {
                 .build();
     }
 
-    private AdresseForslag toAdresseForslag(AdresseDto adresseDto) {
-        var kommunenavnFormattert = formatterKommunenavn(adresseDto.getKommunenavn());
+    private AdresseForslag toAdresseForslag(VegadresseDto vegadresseDto) {
+        var kommunenavnFormattert = formatterKommunenavn(vegadresseDto.getKommunenavn());
         var adresse = new AdresseForslag();
-        adresse.adresse = adresseDto.getAdressenavn();
-        adresse.husnummer = adresseDto.getHusnummer().toString();
-        adresse.husbokstav = adresseDto.getHusbokstav();
-        adresse.kommunenummer = adresseDto.getKommunenummer();
-        adresse.kommunenavn = KommuneTilNavEnhetMapper.IKS_KOMMUNER.getOrDefault(adresseDto.getKommunenummer(), kommunenavnFormattert);
-        adresse.postnummer = adresseDto.getPostnummer();
-        adresse.poststed = adresseDto.getPoststed();
-        adresse.geografiskTilknytning = bydelsnummerOrKommunenummer(adresseDto);
+        adresse.adresse = vegadresseDto.getAdressenavn();
+        adresse.husnummer = vegadresseDto.getHusnummer().toString();
+        adresse.husbokstav = vegadresseDto.getHusbokstav();
+        adresse.kommunenummer = vegadresseDto.getKommunenummer();
+        adresse.kommunenavn = KommuneTilNavEnhetMapper.IKS_KOMMUNER.getOrDefault(vegadresseDto.getKommunenummer(), kommunenavnFormattert);
+        adresse.postnummer = vegadresseDto.getPostnummer();
+        adresse.poststed = vegadresseDto.getPoststed();
+        adresse.geografiskTilknytning = bydelsnummerOrKommunenummer(vegadresseDto);
         adresse.type = GATEADRESSE;
         return adresse;
     }

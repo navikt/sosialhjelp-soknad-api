@@ -4,7 +4,7 @@ package no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class AdresseDto {
+public class VegadresseDto {
 
     private final String matrikkelId;
     private final Integer husnummer;
@@ -17,7 +17,7 @@ public class AdresseDto {
     private final String bydelsnummer;
 
     @JsonCreator
-    public AdresseDto(
+    public VegadresseDto(
             @JsonProperty("matrikkelId") String matrikkelId,
             @JsonProperty("husnummer") Integer husnummer,
             @JsonProperty("husbokstav") String husbokstav,
