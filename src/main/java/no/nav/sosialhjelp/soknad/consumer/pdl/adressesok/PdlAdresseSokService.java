@@ -1,12 +1,12 @@
 package no.nav.sosialhjelp.soknad.consumer.pdl.adressesok;
 
 import no.nav.sosialhjelp.soknad.consumer.pdl.PdlConsumer;
-import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.AdresseDto;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.AdresseSokHit;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.Criteria;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.FieldName;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.Paging;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.SearchRule;
+import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.VegadresseDto;
 import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseForslag;
 import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseSokConsumer;
 import no.nav.sosialhjelp.soknad.domain.model.exception.SosialhjelpSoknadApiException;
@@ -59,7 +59,7 @@ public class PdlAdresseSokService {
         return toAdresseForslag(vegadresse);
     }
 
-    private AdresseDto resolveVegadresse(List<AdresseSokHit> hits) {
+    private VegadresseDto resolveVegadresse(List<AdresseSokHit> hits) {
         if (hits.isEmpty()) {
             log.warn("Ingen hits i adressesok");
             throw new SosialhjelpSoknadApiException("PDL adressesok - ingen hits");
@@ -76,14 +76,14 @@ public class PdlAdresseSokService {
         }
     }
 
-    private boolean relevantFieldsAreEquals(AdresseDto dto1, AdresseDto dto2) {
+    private boolean relevantFieldsAreEquals(VegadresseDto dto1, VegadresseDto dto2) {
         if (dto1 == null || dto2 == null) return false;
         return Objects.equals(dto1.getKommunenummer(), dto2.getKommunenummer()) &&
                 Objects.equals(dto1.getKommunenavn(), dto2.getKommunenavn()) &&
                 Objects.equals(dto1.getBydelsnummer(), dto2.getBydelsnummer());
     }
 
-    private String bydelsnummerOrKommunenummer(AdresseDto vegadresse) {
+    private String bydelsnummerOrKommunenummer(VegadresseDto vegadresse) {
         if (vegadresse.getBydelsnummer() != null) {
             return vegadresse.getBydelsnummer();
         }
@@ -128,17 +128,17 @@ public class PdlAdresseSokService {
                 .build();
     }
 
-    private AdresseForslag toAdresseForslag(AdresseDto adresseDto) {
-        var kommunenavnFormattert = formatterKommunenavn(adresseDto.getKommunenavn());
+    private AdresseForslag toAdresseForslag(VegadresseDto vegadresseDto) {
+        var kommunenavnFormattert = formatterKommunenavn(vegadresseDto.getKommunenavn());
         var adresse = new AdresseForslag();
-        adresse.adresse = adresseDto.getAdressenavn();
-        adresse.husnummer = adresseDto.getHusnummer().toString();
-        adresse.husbokstav = adresseDto.getHusbokstav();
-        adresse.kommunenummer = adresseDto.getKommunenummer();
-        adresse.kommunenavn = KommuneTilNavEnhetMapper.IKS_KOMMUNER.getOrDefault(adresseDto.getKommunenummer(), kommunenavnFormattert);
-        adresse.postnummer = adresseDto.getPostnummer();
-        adresse.poststed = adresseDto.getPoststed();
-        adresse.geografiskTilknytning = bydelsnummerOrKommunenummer(adresseDto);
+        adresse.adresse = vegadresseDto.getAdressenavn();
+        adresse.husnummer = vegadresseDto.getHusnummer().toString();
+        adresse.husbokstav = vegadresseDto.getHusbokstav();
+        adresse.kommunenummer = vegadresseDto.getKommunenummer();
+        adresse.kommunenavn = KommuneTilNavEnhetMapper.IKS_KOMMUNER.getOrDefault(vegadresseDto.getKommunenummer(), kommunenavnFormattert);
+        adresse.postnummer = vegadresseDto.getPostnummer();
+        adresse.poststed = vegadresseDto.getPoststed();
+        adresse.geografiskTilknytning = bydelsnummerOrKommunenummer(vegadresseDto);
         adresse.type = GATEADRESSE;
         return adresse;
     }
