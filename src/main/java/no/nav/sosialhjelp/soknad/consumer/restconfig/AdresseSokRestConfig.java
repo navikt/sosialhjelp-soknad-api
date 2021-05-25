@@ -22,7 +22,7 @@ import static no.nav.sosialhjelp.soknad.web.selftest.Pingable.Ping.lyktes;
 @Configuration
 public class AdresseSokRestConfig {
 
-    @Value("${tps.adresse.url}")
+    @Value("${tps_adresse_url}")
     private String endpoint;
 
     private final RestCallContext medPostnummerExecutionContext = new RestCallContext.Builder()
