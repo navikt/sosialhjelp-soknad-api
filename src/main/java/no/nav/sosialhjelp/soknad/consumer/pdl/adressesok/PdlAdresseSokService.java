@@ -22,11 +22,11 @@ import java.util.Objects;
 
 import static java.util.Collections.emptyList;
 import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.AdresseHelper.formatterKommunenavn;
-import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.FieldName.ADRESSENAVN;
-import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.FieldName.HUSBOKSTAV;
-import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.FieldName.HUSNUMMER;
-import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.FieldName.POSTNUMMER;
-import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.FieldName.POSTSTED;
+import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.FieldName.VEGADRESSE_ADRESSENAVN;
+import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.FieldName.VEGADRESSE_HUSBOKSTAV;
+import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.FieldName.VEGADRESSE_HUSNUMMER;
+import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.FieldName.VEGADRESSE_POSTNUMMER;
+import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.FieldName.VEGADRESSE_POSTSTED;
 import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.SearchRule.CONTAINS;
 import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.SearchRule.EQUALS;
 import static no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseForslagType.GATEADRESSE;
@@ -104,19 +104,19 @@ public class PdlAdresseSokService {
     private List<Criteria> toCriteriaList(AdresseSokConsumer.Sokedata sokedata) {
         var criteriaList = new ArrayList<Criteria>();
         if (isNotEmpty(sokedata.adresse)) {
-            criteriaList.add(criteria(ADRESSENAVN, CONTAINS, sokedata.adresse));
+            criteriaList.add(criteria(VEGADRESSE_ADRESSENAVN, CONTAINS, sokedata.adresse));
         }
         if (isNotEmpty(sokedata.husnummer)) {
-            criteriaList.add(criteria(HUSNUMMER, EQUALS, sokedata.husnummer));
+            criteriaList.add(criteria(VEGADRESSE_HUSNUMMER, EQUALS, sokedata.husnummer));
         }
         if (isNotEmpty(sokedata.husbokstav)) {
-            criteriaList.add(criteria(HUSBOKSTAV, EQUALS, sokedata.husbokstav));
+            criteriaList.add(criteria(VEGADRESSE_HUSBOKSTAV, EQUALS, sokedata.husbokstav));
         }
         if (isNotEmpty(sokedata.postnummer)) {
-            criteriaList.add(criteria(POSTNUMMER, EQUALS, sokedata.postnummer));
+            criteriaList.add(criteria(VEGADRESSE_POSTNUMMER, EQUALS, sokedata.postnummer));
         }
         if (isNotEmpty(sokedata.poststed)) {
-            criteriaList.add(criteria(POSTSTED, EQUALS, sokedata.poststed));
+            criteriaList.add(criteria(VEGADRESSE_POSTSTED, EQUALS, sokedata.poststed));
         }
         return criteriaList;
     }
