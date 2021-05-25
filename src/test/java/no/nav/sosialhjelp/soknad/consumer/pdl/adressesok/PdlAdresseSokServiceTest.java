@@ -1,9 +1,9 @@
 package no.nav.sosialhjelp.soknad.consumer.pdl.adressesok;
 
 import no.nav.sosialhjelp.soknad.consumer.pdl.PdlConsumer;
-import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.AdresseDto;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.AdresseSokHit;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.AdresseSokResult;
+import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.VegadresseDto;
 import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseSokConsumer;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -91,7 +91,7 @@ public class PdlAdresseSokServiceTest {
     @Test
     public void skalReturnereBydelsnummerSomGeografiskTilknytning() {
         var hitMock = mock(AdresseSokHit.class);
-        when(hitMock.getVegadresse()).thenReturn(adresseMedBydelsnummer());
+        when(hitMock.getVegadresse()).thenReturn(vegadresseMedBydelsnummer());
 
         var adresseSokResultMock = mock(AdresseSokResult.class);
         when(adresseSokResultMock.getHits()).thenReturn(singletonList(hitMock));
@@ -105,7 +105,7 @@ public class PdlAdresseSokServiceTest {
     @Test
     public void skalReturnereKommunenummerSomGeografiskTilknytning() {
         var hitMock = mock(AdresseSokHit.class);
-        when(hitMock.getVegadresse()).thenReturn(adresseUtenBydelsnummer());
+        when(hitMock.getVegadresse()).thenReturn(vegadresseUtenBydelsnummer());
         var adresseSokResultMock = mock(AdresseSokResult.class);
         when(adresseSokResultMock.getHits()).thenReturn(singletonList(hitMock));
 
@@ -118,7 +118,7 @@ public class PdlAdresseSokServiceTest {
     @Test
     public void skalReturnereAdresseForslagMedGeografiskTilknytningLikBydelsnummer() {
         var hitMock = mock(AdresseSokHit.class);
-        when(hitMock.getVegadresse()).thenReturn(adresseMedBydelsnummer());
+        when(hitMock.getVegadresse()).thenReturn(vegadresseMedBydelsnummer());
 
         var adresseSokResultMock = mock(AdresseSokResult.class);
         when(adresseSokResultMock.getHits()).thenReturn(singletonList(hitMock));
@@ -132,7 +132,7 @@ public class PdlAdresseSokServiceTest {
     @Test
     public void skalReturnereAdresseForslagMedGeografiskTilknytningLikKommunenummer() {
         var hitMock = mock(AdresseSokHit.class);
-        when(hitMock.getVegadresse()).thenReturn(adresseUtenBydelsnummer());
+        when(hitMock.getVegadresse()).thenReturn(vegadresseUtenBydelsnummer());
         var adresseSokResultMock = mock(AdresseSokResult.class);
         when(adresseSokResultMock.getHits()).thenReturn(singletonList(hitMock));
 
@@ -145,9 +145,9 @@ public class PdlAdresseSokServiceTest {
     @Test
     public void skalKasteFeil_flereHitsMedUlikeKommunenavn() {
         var hitMock = mock(AdresseSokHit.class);
-        when(hitMock.getVegadresse()).thenReturn(adresse("kommune1", "0101", null));
+        when(hitMock.getVegadresse()).thenReturn(vegadresse("kommune1", "0101", null));
         var hitMock2 = mock(AdresseSokHit.class);
-        when(hitMock2.getVegadresse()).thenReturn(adresse("kommune2", "0101", null));
+        when(hitMock2.getVegadresse()).thenReturn(vegadresse("kommune2", "0101", null));
 
         var adresseSokResultMock = mock(AdresseSokResult.class);
         when(adresseSokResultMock.getHits()).thenReturn(Arrays.asList(hitMock, hitMock2));
@@ -161,9 +161,9 @@ public class PdlAdresseSokServiceTest {
     @Test
     public void skalKasteFeil_flereHitsMedUlikeKommunenummer() {
         var hitMock = mock(AdresseSokHit.class);
-        when(hitMock.getVegadresse()).thenReturn(adresse("kommune", "1111", null));
+        when(hitMock.getVegadresse()).thenReturn(vegadresse("kommune", "1111", null));
         var hitMock2 = mock(AdresseSokHit.class);
-        when(hitMock2.getVegadresse()).thenReturn(adresse("kommune", "2222", null));
+        when(hitMock2.getVegadresse()).thenReturn(vegadresse("kommune", "2222", null));
 
         var adresseSokResultMock = mock(AdresseSokResult.class);
         when(adresseSokResultMock.getHits()).thenReturn(Arrays.asList(hitMock, hitMock2));
@@ -177,9 +177,9 @@ public class PdlAdresseSokServiceTest {
     @Test
     public void skalKasteFeil_flereHitsMedUlikeBydelsnummer() {
         var hitMock = mock(AdresseSokHit.class);
-        when(hitMock.getVegadresse()).thenReturn(adresse("kommune", "1111", "030101"));
+        when(hitMock.getVegadresse()).thenReturn(vegadresse("kommune", "1111", "030101"));
         var hitMock2 = mock(AdresseSokHit.class);
-        when(hitMock2.getVegadresse()).thenReturn(adresse("kommune", "1111", "030102"));
+        when(hitMock2.getVegadresse()).thenReturn(vegadresse("kommune", "1111", "030102"));
 
         var adresseSokResultMock = mock(AdresseSokResult.class);
         when(adresseSokResultMock.getHits()).thenReturn(Arrays.asList(hitMock, hitMock2));
@@ -193,9 +193,9 @@ public class PdlAdresseSokServiceTest {
     @Test
     public void skalReturnereAdresseForslagVedFlereHitsHvisDeHarSammeKommunenummerKommunenavnOgBydelsnummer() {
         var hitMock = mock(AdresseSokHit.class);
-        when(hitMock.getVegadresse()).thenReturn(adresse("Oslo", "1111", "030101"));
+        when(hitMock.getVegadresse()).thenReturn(vegadresse("Oslo", "1111", "030101"));
         var hitMock2 = mock(AdresseSokHit.class);
-        when(hitMock2.getVegadresse()).thenReturn(adresse("Oslo", "1111", "030101"));
+        when(hitMock2.getVegadresse()).thenReturn(vegadresse("Oslo", "1111", "030101"));
 
         var adresseSokResultMock = mock(AdresseSokResult.class);
         when(adresseSokResultMock.getHits()).thenReturn(Arrays.asList(hitMock, hitMock2));
@@ -208,15 +208,15 @@ public class PdlAdresseSokServiceTest {
         assertThat(adresseForslag.geografiskTilknytning).isEqualTo("030101");
     }
 
-    private AdresseDto adresseMedBydelsnummer() {
-        return adresse(KOMMUNENAVN, KOMMUNENUMMER, BYDELSNUMMER);
+    private VegadresseDto vegadresseMedBydelsnummer() {
+        return vegadresse(KOMMUNENAVN, KOMMUNENUMMER, BYDELSNUMMER);
     }
 
-    private AdresseDto adresseUtenBydelsnummer() {
-        return adresse(KOMMUNENAVN, KOMMUNENUMMER, null);
+    private VegadresseDto vegadresseUtenBydelsnummer() {
+        return vegadresse(KOMMUNENAVN, KOMMUNENUMMER, null);
     }
 
-    private AdresseDto adresse(String kommunenavn, String kommunenummer, String bydelsnummer) {
-        return new AdresseDto("matrikkelId", 1, "B", "Testveien", kommunenavn, kommunenummer, "0123", "Oslo", bydelsnummer);
+    private VegadresseDto vegadresse(String kommunenavn, String kommunenummer, String bydelsnummer) {
+        return new VegadresseDto("matrikkelId", 1, "B", "Testveien", kommunenavn, kommunenummer, "0123", "Oslo", bydelsnummer);
     }
 }

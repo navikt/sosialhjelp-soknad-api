@@ -5,19 +5,19 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class AdresseSokHit {
 
-    private final AdresseDto vegadresse;
+    private final VegadresseDto vegadresse;
     private final Float score;
 
     @JsonCreator
     public AdresseSokHit(
-            @JsonProperty("vegadresse") AdresseDto vegadresse,
+            @JsonProperty("vegadresse") VegadresseDto vegadresse,
             @JsonProperty("score") Float score
     ) {
         this.vegadresse = vegadresse;
         this.score = score;
     }
 
-    public AdresseDto getVegadresse() {
+    public VegadresseDto getVegadresse() {
         return vegadresse;
     }
 
