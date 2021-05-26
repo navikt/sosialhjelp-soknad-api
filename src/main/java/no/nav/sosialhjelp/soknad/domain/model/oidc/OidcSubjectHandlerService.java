@@ -6,11 +6,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static no.nav.sosialhjelp.soknad.web.utils.Constants.SELVBETJENING;
+import static no.nav.sosialhjelp.soknad.web.utils.Constants.TOKENX;
 
 public class OidcSubjectHandlerService implements SubjectHandlerService {
     private static final Logger logger = LoggerFactory.getLogger(OidcSubjectHandlerService.class);
 
     public String getUserIdFromToken() {
+        if (getTokenValidationContext().hasTokenFor(TOKENX)) {
+            return getTokenValidationContext().getClaims(TOKENX).getSubject();
+        }
         return getTokenValidationContext().getClaims(SELVBETJENING).getSubject();
     }
 
