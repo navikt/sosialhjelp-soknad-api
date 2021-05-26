@@ -17,12 +17,12 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 @Controller
 @ProtectedWithClaims(issuer = TOKENX, claimMap = {CLAIM_ACR_LEVEL_4})
-@Path("/dittnav")
+@Path("/minesaker")
 @Timed
 @Produces(APPLICATION_JSON)
-public class DittNavMetadataRessurs {
+public class MineSakerMetadataRessurs {
 
-    private static final Logger log = getLogger(DittNavMetadataRessurs.class);
+    private static final Logger log = getLogger(MineSakerMetadataRessurs.class);
 
     @GET
     @Path("/pabegynte")
@@ -35,7 +35,7 @@ public class DittNavMetadataRessurs {
     @Unprotected
     @Path("/ping")
     public String ping() {
-        log.debug("Ping for DittNav");
+        log.debug("Ping for MineSaker");
         return "pong";
     }
 }

@@ -30,7 +30,7 @@
   "memoryRequest": "2Gi",
   "vaultEnabled": true,
   "tokenXEnabled": true,
-  "personbrukerCluster": "dev-sbs",
+  "personbrukerGcpCluster": "dev-gcp",
   "prometheusEnabled": true,
   "webProxyEnabled": true,
   "isGcp": false,

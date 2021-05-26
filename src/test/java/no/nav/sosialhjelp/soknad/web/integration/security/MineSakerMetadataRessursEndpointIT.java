@@ -12,7 +12,7 @@ import javax.ws.rs.core.Response;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class DittNavMetadataRessursEndpointIT extends AbstractIT {
+public class MineSakerMetadataRessursEndpointIT extends AbstractIT {
 
     public static final String BRUKER = "11111111111";
     public static final String ANNEN_BRUKER = "22222222222";
@@ -20,7 +20,7 @@ public class DittNavMetadataRessursEndpointIT extends AbstractIT {
     @Test
     public void pabegynte_skalGi401UtenToken() {
         SoknadTester soknadTester = soknadOpprettet();
-        String subUrl = "dittnav/pabegynte";
+        String subUrl = "minesaker/pabegynte";
 
         Response response = sendGetRequest(soknadTester, subUrl, null);
 
@@ -30,7 +30,7 @@ public class DittNavMetadataRessursEndpointIT extends AbstractIT {
     @Test
     public void pabegynte_skalGi401MedAnnenIssuer() {
         SoknadTester soknadTester = soknadOpprettet();
-        String subUrl = "dittnav/pabegynte";
+        String subUrl = "minesaker/pabegynte";
         SignedJWT signedJWTMedAnnenIssuer = JwtTokenGenerator.createSignedJWT(BRUKER);
 
         Response response = sendGetRequest(soknadTester, subUrl, signedJWTMedAnnenIssuer);
@@ -41,7 +41,7 @@ public class DittNavMetadataRessursEndpointIT extends AbstractIT {
     @Test
     public void pabegynte_skalGi401MedAnnenBruker() {
         SoknadTester soknadTester = soknadOpprettet();
-        String subUrl = "dittnav/pabegynte";
+        String subUrl = "minesaker/pabegynte";
         SignedJWT signedJWTMedAnnenIssuer = JwtTokenGenerator.createSignedJwtForTokenx(ANNEN_BRUKER, null);
 
         Response response = sendGetRequest(soknadTester, subUrl, signedJWTMedAnnenIssuer);

@@ -28,7 +28,7 @@
   "memoryRequest": "4Gi",
   "vaultEnabled": true,
   "tokenXEnabled": true,
-  "personbrukerCluster": "prod-sbs",
+  "personbrukerGcpCluster": "prod-gcp",
   "prometheusEnabled": true,
   "webProxyEnabled": true,
   "isGcp": false,
