@@ -25,12 +25,26 @@ spec:
     min: {{minReplicas}}
     max: {{maxReplicas}}
   webproxy: {{webProxyEnabled}}
+{{#if vaultEnabled}}
   vault:
-    enabled: {{vaultEnabled}}
+    enabled: true
+    paths:
+{{#each kvPaths}}
+      - mountPath: {{@key}}
+        kvPath: {{this}}
+{{/each}}
+{{/if}}
   tokenx:
     enabled: {{tokenXEnabled}}
   accessPolicy:
 {{#if isGcp}}
+{{#if tokenXEnabled}}
+    inbound:
+      rules:
+        - application: mine-saker-api
+          namespace: personbruker
+          cluster: {{personbrukerGcpCluster}}
+{{/if}}
     outbound:
       external:
         - host: "digisos-gcp.dev.nav.no"
@@ -43,13 +57,6 @@ spec:
 {{#if isGcp}}
   filesFrom:
     - secret: virksomhetssertifikat
-{{/if}}
-{{#if vaultEnabled}}
-    paths:
-{{#each kvPaths}}
-      - mountPath: {{@key}}
-        kvPath: {{this}}
-{{/each}}
 {{/if}}
   ingresses:
 {{#each ingresses}}
