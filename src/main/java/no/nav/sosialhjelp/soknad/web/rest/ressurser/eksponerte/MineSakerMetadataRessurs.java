@@ -3,6 +3,7 @@ package no.nav.sosialhjelp.soknad.web.rest.ressurser.eksponerte;
 import no.nav.security.token.support.core.api.ProtectedWithClaims;
 import no.nav.security.token.support.core.api.Unprotected;
 import no.nav.sosialhjelp.metrics.aspects.Timed;
+import no.nav.sosialhjelp.soknad.web.rest.ressurser.eksponerte.dto.InnsendteSoknaderResponse;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Controller;
 
@@ -25,10 +26,10 @@ public class MineSakerMetadataRessurs {
     private static final Logger log = getLogger(MineSakerMetadataRessurs.class);
 
     @GET
-    @Path("/pabegynte")
-    public PabegynteSoknaderResponse hentPabegynteSoknaderForBruker() {
+    @Path("/innsendte")
+    public InnsendteSoknaderResponse hentPabegynteSoknaderForBruker() {
         // todo hent paabegynte soknader fra db
-        return new PabegynteSoknaderResponse("tittel");
+        return new InnsendteSoknaderResponse("tittel");
     }
 
     @GET

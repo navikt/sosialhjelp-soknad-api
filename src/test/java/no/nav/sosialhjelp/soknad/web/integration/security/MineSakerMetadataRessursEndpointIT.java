@@ -20,7 +20,7 @@ public class MineSakerMetadataRessursEndpointIT extends AbstractIT {
     @Test
     public void pabegynte_skalGi401UtenToken() {
         SoknadTester soknadTester = soknadOpprettet();
-        String subUrl = "minesaker/pabegynte";
+        String subUrl = "minesaker/innsendte";
 
         Response response = sendGetRequest(soknadTester, subUrl, null);
 
@@ -30,7 +30,7 @@ public class MineSakerMetadataRessursEndpointIT extends AbstractIT {
     @Test
     public void pabegynte_skalGi401MedAnnenIssuer() {
         SoknadTester soknadTester = soknadOpprettet();
-        String subUrl = "minesaker/pabegynte";
+        String subUrl = "minesaker/innsendte";
         SignedJWT signedJWTMedAnnenIssuer = JwtTokenGenerator.createSignedJWT(BRUKER);
 
         Response response = sendGetRequest(soknadTester, subUrl, signedJWTMedAnnenIssuer);
@@ -41,7 +41,7 @@ public class MineSakerMetadataRessursEndpointIT extends AbstractIT {
     @Test
     public void pabegynte_skalGi401MedAnnenBruker() {
         SoknadTester soknadTester = soknadOpprettet();
-        String subUrl = "minesaker/pabegynte";
+        String subUrl = "minesaker/innsendte";
         SignedJWT signedJWTMedAnnenIssuer = JwtTokenGenerator.createSignedJwtForTokenx(ANNEN_BRUKER, null);
 
         Response response = sendGetRequest(soknadTester, subUrl, signedJWTMedAnnenIssuer);

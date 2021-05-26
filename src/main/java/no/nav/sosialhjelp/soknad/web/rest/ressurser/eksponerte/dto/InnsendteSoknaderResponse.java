@@ -1,14 +1,14 @@
-package no.nav.sosialhjelp.soknad.web.rest.ressurser.eksponerte;
+package no.nav.sosialhjelp.soknad.web.rest.ressurser.eksponerte.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class PabegynteSoknaderResponse {
+public class InnsendteSoknaderResponse {
 
     private final String tittel;
 
     @JsonCreator
-    public PabegynteSoknaderResponse(
+    public InnsendteSoknaderResponse(
             @JsonProperty("tittel") String tittel
     ) {
         this.tittel = tittel;
