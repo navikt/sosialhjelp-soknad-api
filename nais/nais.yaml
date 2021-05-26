@@ -33,9 +33,9 @@ spec:
 {{#if tokenXEnabled}}
     inbound:
       rules:
-        - application: mine-saker-api
+        - application: dittnav-api
           namespace: personbruker
-          cluster: {{personbrukerGcpCluster}}
+          cluster: {{personbrukerCluster}}
 {{/if}}
 {{#if isGcp}}
     outbound:
