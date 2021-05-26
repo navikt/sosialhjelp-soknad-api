@@ -37,7 +37,6 @@ spec:
   tokenx:
     enabled: {{tokenXEnabled}}
   accessPolicy:
-{{#if isGcp}}
 {{#if tokenXEnabled}}
     inbound:
       rules:
@@ -45,6 +44,7 @@ spec:
           namespace: personbruker
           cluster: {{personbrukerGcpCluster}}
 {{/if}}
+{{#if isGcp}}
     outbound:
       external:
         - host: "digisos-gcp.dev.nav.no"
