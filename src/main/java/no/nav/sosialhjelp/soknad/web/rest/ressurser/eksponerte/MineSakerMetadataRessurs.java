@@ -3,6 +3,8 @@ package no.nav.sosialhjelp.soknad.web.rest.ressurser.eksponerte;
 import no.nav.security.token.support.core.api.ProtectedWithClaims;
 import no.nav.security.token.support.core.api.Unprotected;
 import no.nav.sosialhjelp.metrics.aspects.Timed;
+import no.nav.sosialhjelp.soknad.business.service.minesaker.MineSakerMetadataService;
+import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.eksponerte.dto.InnsendteSoknaderResponse;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Controller;
@@ -25,11 +27,20 @@ public class MineSakerMetadataRessurs {
 
     private static final Logger log = getLogger(MineSakerMetadataRessurs.class);
 
+    private final MineSakerMetadataService mineSakerMetadataService;
+
+    public MineSakerMetadataRessurs(
+            MineSakerMetadataService mineSakerMetadataService
+    ) {
+        this.mineSakerMetadataService = mineSakerMetadataService;
+    }
+
     @GET
     @Path("/innsendte")
     public InnsendteSoknaderResponse hentPabegynteSoknaderForBruker() {
-        // todo hent paabegynte soknader fra db
-        return new InnsendteSoknaderResponse("tittel");
+        var fnr = SubjectHandler.getUserId();
+        var innsendteSoknader = mineSakerMetadataService.hentInnsendteSoknader(fnr);
+        return new InnsendteSoknaderResponse(innsendteSoknader);
     }
 
     @GET
