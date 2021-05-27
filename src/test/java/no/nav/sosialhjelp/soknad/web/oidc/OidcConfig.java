@@ -2,8 +2,6 @@ package no.nav.sosialhjelp.soknad.web.oidc;
 
 import no.nav.security.token.support.core.configuration.MultiIssuerConfiguration;
 import no.nav.security.token.support.jaxrs.servlet.JaxrsJwtTokenValidationFilter;
-import no.nav.security.token.support.test.FileResourceRetriever;
-import no.nav.security.token.support.test.JwkGenerator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -14,11 +12,12 @@ public class OidcConfig {
     /**
      * Overskriver måten å hente ut OIDC-metadata. Istedenfor å hente det fra en internettadresse henter man det fra filsystemet.
      * Filene metadata.json og jwkset.json ligger i jar-pakken til maven-biblioteket token-validation-test-support.
+     * metadata-tokenx.json ligger lokalt i test-resources.
      */
     @Primary
     @Bean
     public FileResourceRetriever fileResourceRetriever() {
-        return new FileResourceRetriever("/metadata.json",  "/jwkset.json");
+        return new FileResourceRetriever("/metadata.json", "/metadata-tokenx.json", "/jwkset.json");
     }
 
     /** Overskriver filteret for å validere token */
