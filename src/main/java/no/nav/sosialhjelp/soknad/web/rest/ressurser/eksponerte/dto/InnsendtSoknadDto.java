@@ -7,30 +7,31 @@ import java.time.LocalDateTime;
 
 public class InnsendtSoknadDto {
 
-    private final String tema;
+    private final String navn;
+    private final String kode;
     private final LocalDateTime sisteEndring;
-    private final String lenkeInnsyn;
 
     @JsonCreator
     public InnsendtSoknadDto(
-            @JsonProperty("tema") String tema,
-            @JsonProperty("sisteEndring") LocalDateTime sisteEndring,
-            @JsonProperty("lenkeInnsyn") String lenkeInnsyn
+            @JsonProperty("navn") String navn,
+            @JsonProperty("kode") String kode,
+            @JsonProperty("sisteEndring") LocalDateTime sisteEndring
     ) {
-        this.tema = tema;
+        this.navn = navn;
+        this.kode = kode;
         this.sisteEndring = sisteEndring;
-        this.lenkeInnsyn = lenkeInnsyn;
     }
 
-    public String getTema() {
-        return tema;
+    public String getNavn() {
+        return navn;
+    }
+
+    public String getKode() {
+        return kode;
     }
 
     public LocalDateTime getSisteEndring() {
         return sisteEndring;
     }
 
-    public String getLenkeInnsyn() {
-        return lenkeInnsyn;
-    }
 }

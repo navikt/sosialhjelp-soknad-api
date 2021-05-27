@@ -5,13 +5,14 @@ import no.nav.security.token.support.core.api.Unprotected;
 import no.nav.sosialhjelp.metrics.aspects.Timed;
 import no.nav.sosialhjelp.soknad.business.service.minesaker.MineSakerMetadataService;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
-import no.nav.sosialhjelp.soknad.web.rest.ressurser.eksponerte.dto.InnsendteSoknaderResponse;
+import no.nav.sosialhjelp.soknad.web.rest.ressurser.eksponerte.dto.InnsendtSoknadDto;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Controller;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import java.util.List;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static no.nav.sosialhjelp.soknad.web.utils.Constants.CLAIM_ACR_LEVEL_4;
@@ -41,10 +42,10 @@ public class MineSakerMetadataRessurs {
      */
     @GET
     @Path("/innsendte")
-    public InnsendteSoknaderResponse hentInnsendteSoknaderForBruker() {
+    public List<InnsendtSoknadDto> hentInnsendteSoknaderForBruker() {
         var fnr = SubjectHandler.getUserId();
-        var innsendteSoknader = mineSakerMetadataService.hentInnsendteSoknader(fnr);
-        return new InnsendteSoknaderResponse(innsendteSoknader);
+
+        return mineSakerMetadataService.hentInnsendteSoknader(fnr);
     }
 
     @GET
