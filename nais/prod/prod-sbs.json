@@ -27,6 +27,8 @@
   "memoryLimit": "4Gi",
   "memoryRequest": "4Gi",
   "vaultEnabled": true,
+  "tokenXEnabled": true,
+  "personbrukerGcpCluster": "prod-gcp",
   "prometheusEnabled": true,
   "webProxyEnabled": true,
   "isGcp": false,
