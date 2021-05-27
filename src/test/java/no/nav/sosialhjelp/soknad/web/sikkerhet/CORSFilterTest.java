@@ -1,15 +1,31 @@
 package no.nav.sosialhjelp.soknad.web.sikkerhet;
 
+import no.nav.sosialhjelp.soknad.web.config.TestSoknadApplication;
+import org.glassfish.jersey.server.ContainerResponse;
+import org.glassfish.jersey.test.util.server.ContainerRequestBuilder;
 import org.junit.After;
-import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
-import org.springframework.mock.web.MockHttpServletResponse;
+
+import javax.ws.rs.core.MultivaluedHashMap;
+import javax.ws.rs.core.MultivaluedMap;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 
 public class CORSFilterTest {
 
     private final CORSFilter corsFilter = new CORSFilter();
-    private final String unknownOrigin = "https://www.unknown.no";
+
+    private final ContainerResponse response = mock(ContainerResponse.class);
+
+    @Before
+    public void setUp() throws Exception {
+        MultivaluedMap<String, Object> headers = new MultivaluedHashMap<>();
+        when(response.getHeaders()).thenReturn(headers);
+    }
 
     @After
     public void tearDown() {
@@ -18,34 +34,50 @@ public class CORSFilterTest {
 
     @Test
     public void setCorsHeaders_inProdWithUnknownOrigin_shouldNotSetCorsHeaders() {
-        MockHttpServletResponse httpResponse = new MockHttpServletResponse();
-        corsFilter.setCorsHeaders(httpResponse, unknownOrigin);
-        Assert.assertEquals(0, httpResponse.getHeaderNames().size());
+        var unknownOrigin = "https://www.unknown.no";
+
+        var request = ContainerRequestBuilder
+                .from("requestUri", "GET", new TestSoknadApplication())
+                .header("Origin", unknownOrigin)
+                .build();
+
+        corsFilter.filter(request, response);
+        assertThat(response.getHeaders()).isEmpty();
     }
 
     @Test
     public void setCorsHeaders_inProdWithTrustedOrigin_shouldSetCorsHeaders() {
-        MockHttpServletResponse httpResponse = new MockHttpServletResponse();
+        var trustedOrigin = "https://www.nav.no";
 
-        String trustedOrigin = "https://www.nav.no";
-        corsFilter.setCorsHeaders(httpResponse, trustedOrigin);
+        var request = ContainerRequestBuilder
+                .from("requestUri", "GET", new TestSoknadApplication())
+                .header("Origin", trustedOrigin)
+                .build();
 
-        Assert.assertTrue(httpResponse.containsHeader("Access-Control-Allow-Headers"));
-        Assert.assertTrue(httpResponse.containsHeader("Access-Control-Allow-Methods"));
-        Assert.assertTrue(httpResponse.containsHeader("Access-Control-Allow-Credentials"));
-        Assert.assertEquals(trustedOrigin, httpResponse.getHeader("Access-Control-Allow-Origin"));
+        corsFilter.filter(request, response);
+
+        assertThat(response.getHeaders()).containsKey("Access-Control-Allow-Headers");
+        assertThat(response.getHeaders()).containsKey("Access-Control-Allow-Methods");
+        assertThat(response.getHeaders()).containsKey("Access-Control-Allow-Credentials");
+        assertThat(response.getHeaders().get("Access-Control-Allow-Origin").get(0)).isEqualTo(trustedOrigin);
     }
 
     @Test
     public void setCorsHeaders_inTestWithUnknownOrigin_shouldSetCorsHeaders() {
         System.setProperty("environment.name", "q0");
-        MockHttpServletResponse httpResponse = new MockHttpServletResponse();
 
-        corsFilter.setCorsHeaders(httpResponse, unknownOrigin);
+        var unknownOrigin = "https://www.unknown.no";
 
-        Assert.assertTrue(httpResponse.containsHeader("Access-Control-Allow-Headers"));
-        Assert.assertTrue(httpResponse.containsHeader("Access-Control-Allow-Methods"));
-        Assert.assertTrue(httpResponse.containsHeader("Access-Control-Allow-Credentials"));
-        Assert.assertEquals(unknownOrigin, httpResponse.getHeader("Access-Control-Allow-Origin"));
+        var request = ContainerRequestBuilder
+                .from("requestUri", "GET", new TestSoknadApplication())
+                .header("Origin", unknownOrigin)
+                .build();
+
+        corsFilter.filter(request, response);
+
+        assertThat(response.getHeaders()).containsKey("Access-Control-Allow-Headers");
+        assertThat(response.getHeaders()).containsKey("Access-Control-Allow-Methods");
+        assertThat(response.getHeaders()).containsKey("Access-Control-Allow-Credentials");
+        assertThat(response.getHeaders().get("Access-Control-Allow-Origin").get(0)).isEqualTo(unknownOrigin);
     }
 }
