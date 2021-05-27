@@ -12,6 +12,7 @@
     <logger name="org.apache.cxf" level="info" />
     <logger name="no.nav.sosialhjelp.soknad.consumer.common.cxf.CXFMaskSAMLTokenLoggingOutInterceptor" level="info" />
     <logger name="org.apache.http.impl.client" level="info" />
+    <logger name="no.nav.security.token" level="debug" />
 
     <root level="info">
         <appender-ref ref="Console"/>
