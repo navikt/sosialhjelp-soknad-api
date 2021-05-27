@@ -35,9 +35,13 @@ public class MineSakerMetadataRessurs {
         this.mineSakerMetadataService = mineSakerMetadataService;
     }
 
+    /**
+     * Henter informasjon om innsendte søknader via SoknadMetadataRepository.
+     * På sikt vil vi hente denne informasjonen fra Fiks (endepunkt vil da høre mer hjemme i innsyn-api)
+     */
     @GET
     @Path("/innsendte")
-    public InnsendteSoknaderResponse hentPabegynteSoknaderForBruker() {
+    public InnsendteSoknaderResponse hentInnsendteSoknaderForBruker() {
         var fnr = SubjectHandler.getUserId();
         var innsendteSoknader = mineSakerMetadataService.hentInnsendteSoknader(fnr);
         return new InnsendteSoknaderResponse(innsendteSoknader);
