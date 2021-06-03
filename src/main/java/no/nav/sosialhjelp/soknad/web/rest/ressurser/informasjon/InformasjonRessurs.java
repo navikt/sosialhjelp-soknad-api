@@ -133,7 +133,6 @@ public class InformasjonRessurs {
     @GET
     @Path("/utslagskriterier/sosialhjelp")
     public Map<String, Object> getUtslagskriterier() {
-        logger.info("Hello from utslagskriterier");
         String uid = SubjectHandler.getUserId();
         var adressebeskyttelse = personService.hentAdressebeskyttelse(uid);
 

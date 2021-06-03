@@ -8,8 +8,8 @@
         </encoder>
     </appender>
 
-    <logger name="no.nav.sosialhjelp.soknad" level="debug"/>
-    <logger name="no.nav.security.token.support" level="debug"/>
+    <logger name="no.nav.sosialhjelp.soknad" level="info"/>
+    <logger name="no.nav.security.token.support" level="info"/>
 
     <root level="INFO">
         <appender-ref ref="Console"/>
