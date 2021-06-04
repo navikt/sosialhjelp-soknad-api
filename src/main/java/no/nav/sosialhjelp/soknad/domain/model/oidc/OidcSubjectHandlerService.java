@@ -13,12 +13,12 @@ import static no.nav.sosialhjelp.soknad.web.utils.Constants.TOKENX;
 public class OidcSubjectHandlerService implements SubjectHandlerService {
     private static final Logger logger = LoggerFactory.getLogger(OidcSubjectHandlerService.class);
 
+    private static final String CLAIM_PID = "pid";
+
     public String getUserIdFromToken() {
         if (getTokenValidationContext().hasTokenFor(TOKENX)) {
-            logger.info("henter subject fra tokenx token - {}", getTokenValidationContext().getClaims(TOKENX).getSubject());
-            return getTokenValidationContext().getClaims(TOKENX).getSubject();
+            return getTokenValidationContext().getClaims(TOKENX).getStringClaim(CLAIM_PID);
         }
-        logger.info("getTokenValidationContext().hasTokenFor(TOKENX) -> false");
         return getTokenValidationContext().getClaims(SELVBETJENING).getSubject();
     }
 
