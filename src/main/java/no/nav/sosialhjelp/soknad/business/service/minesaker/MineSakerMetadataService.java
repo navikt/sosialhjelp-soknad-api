@@ -42,7 +42,7 @@ public class MineSakerMetadataService {
                         new InnsendtSoknadDto(
                                 TEMA_NAVN,
                                 TEMA_KODE_KOM,
-                                toUtcLocalDateTime(soknadMetadata.innsendtDato).format(DateTimeFormatter.ISO_OFFSET_DATE_TIME))))
+                                toUtcLocalDateTime(soknadMetadata.innsendtDato).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME))))
                 .orElse(emptyList());
     }
 
