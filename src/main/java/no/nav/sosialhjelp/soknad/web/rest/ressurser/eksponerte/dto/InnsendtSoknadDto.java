@@ -1,22 +1,23 @@
 package no.nav.sosialhjelp.soknad.web.rest.ressurser.eksponerte.dto;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import java.time.LocalDateTime;
 
+@XmlAccessorType(XmlAccessType.FIELD)
 public class InnsendtSoknadDto {
 
     private final String navn;
     private final String kode;
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ")
     private final LocalDateTime sisteEndring;
 
-    @JsonCreator
     public InnsendtSoknadDto(
-            @JsonProperty("navn") String navn,
-            @JsonProperty("kode") String kode,
-            @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ") @JsonProperty("sisteEndring") LocalDateTime sisteEndring
+            String navn,
+            String kode,
+            @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ") LocalDateTime sisteEndring
     ) {
         this.navn = navn;
         this.kode = kode;
