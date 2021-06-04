@@ -30,7 +30,7 @@ public class JwtTokenGenerator {
     }
 
     public static SignedJWT createSignedJwtForTokenx(String subject, String uniqueName) {
-        JWTClaimsSet claimsSet = buildClaimSet(subject, ISS_TOKENX, AUD, null, EXPIRY, uniqueName);
+        JWTClaimsSet claimsSet = buildClaimSet(subject, ISS_TOKENX, AUD, ACR, EXPIRY, uniqueName);
         return createSignedJWT(JwkGenerator.getDefaultRSAKey(), claimsSet);
     }
 

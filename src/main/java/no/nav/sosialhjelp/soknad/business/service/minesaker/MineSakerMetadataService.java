@@ -38,17 +38,14 @@ public class MineSakerMetadataService {
         var innsendteSoknader = Optional.ofNullable(soknadMetadataRepository.hentAlleInnsendteSoknaderForBruker(fnr)).orElse(emptyList());
         log.info("Fant {} innsendte soknader", innsendteSoknader.size());
         return innsendteSoknader.stream().findFirst()
-                .map(soknadMetadata -> singletonList(
-                        new InnsendtSoknadDto(
-                                TEMA_NAVN,
-                                TEMA_KODE_KOM,
-                                toUtcLocalDateTime(soknadMetadata.innsendtDato).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME))))
+                .map(soknadMetadata -> singletonList(new InnsendtSoknadDto(TEMA_NAVN, TEMA_KODE_KOM, toUtcString(soknadMetadata.innsendtDato))))
                 .orElse(emptyList());
     }
 
-    public LocalDateTime toUtcLocalDateTime(LocalDateTime localDateTime) {
+    public String toUtcString(LocalDateTime localDateTime) {
         return ZonedDateTime.of(localDateTime, ZoneId.systemDefault())
                 .withZoneSameInstant(UTC)
-                .toLocalDateTime();
+                .toLocalDateTime()
+                .format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
     }
 }
