@@ -1,6 +1,7 @@
 package no.nav.sosialhjelp.soknad.web.rest.ressurser.eksponerte.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.time.LocalDateTime;
@@ -15,7 +16,7 @@ public class InnsendtSoknadDto {
     public InnsendtSoknadDto(
             @JsonProperty("navn") String navn,
             @JsonProperty("kode") String kode,
-            @JsonProperty("sisteEndring") LocalDateTime sisteEndring
+            @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ") @JsonProperty("sisteEndring") LocalDateTime sisteEndring
     ) {
         this.navn = navn;
         this.kode = kode;
