@@ -43,9 +43,7 @@ public class MineSakerMetadataRessurs {
     @GET
     @Path("/innsendte")
     public List<InnsendtSoknadDto> hentInnsendteSoknaderForBruker() {
-        log.info("hello from /minesaker/innsendte");
         var fnr = SubjectHandler.getUserId();
-
         return mineSakerMetadataService.hentInnsendteSoknader(fnr);
     }
 
