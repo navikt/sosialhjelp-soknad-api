@@ -15,8 +15,10 @@ public class OidcSubjectHandlerService implements SubjectHandlerService {
 
     public String getUserIdFromToken() {
         if (getTokenValidationContext().hasTokenFor(TOKENX)) {
+            logger.info("henter subject fra tokenx token - {}", getTokenValidationContext().getClaims(TOKENX).getSubject());
             return getTokenValidationContext().getClaims(TOKENX).getSubject();
         }
+        logger.info("getTokenValidationContext().hasTokenFor(TOKENX) -> false");
         return getTokenValidationContext().getClaims(SELVBETJENING).getSubject();
     }
 
