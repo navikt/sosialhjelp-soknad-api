@@ -43,6 +43,9 @@ spec:
         - application: mine-saker-api
           namespace: personbruker
           cluster: {{personbrukerGcpCluster}}
+        - application: sosialhjelp-dialog-api
+          namespace: teamdigisos
+          cluster: dev-gcp
 {{/if}}
 {{#if isGcp}}
     outbound:
