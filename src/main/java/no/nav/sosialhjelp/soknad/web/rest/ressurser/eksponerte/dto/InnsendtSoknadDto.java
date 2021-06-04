@@ -4,16 +4,16 @@ public class InnsendtSoknadDto {
 
     private final String navn;
     private final String kode;
-    private final String sisteEndring;
+    private final String sistEndret;
 
     public InnsendtSoknadDto(
             String navn,
             String kode,
-            String sisteEndring
+            String sistEndret
     ) {
         this.navn = navn;
         this.kode = kode;
-        this.sisteEndring = sisteEndring;
+        this.sistEndret = sistEndret;
     }
 
     public String getNavn() {
@@ -24,8 +24,8 @@ public class InnsendtSoknadDto {
         return kode;
     }
 
-    public String getSisteEndring() {
-        return sisteEndring;
+    public String getSistEndret() {
+        return sistEndret;
     }
 
 }
