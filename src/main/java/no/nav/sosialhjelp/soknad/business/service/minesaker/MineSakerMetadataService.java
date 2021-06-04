@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,7 +38,11 @@ public class MineSakerMetadataService {
         var innsendteSoknader = Optional.ofNullable(soknadMetadataRepository.hentAlleInnsendteSoknaderForBruker(fnr)).orElse(emptyList());
         log.info("Fant {} innsendte soknader", innsendteSoknader.size());
         return innsendteSoknader.stream().findFirst()
-                .map(soknadMetadata -> singletonList(new InnsendtSoknadDto(TEMA_NAVN, TEMA_KODE_KOM, toUtcLocalDateTime(soknadMetadata.innsendtDato))))
+                .map(soknadMetadata -> singletonList(
+                        new InnsendtSoknadDto(
+                                TEMA_NAVN,
+                                TEMA_KODE_KOM,
+                                toUtcLocalDateTime(soknadMetadata.innsendtDato).format(DateTimeFormatter.ISO_OFFSET_DATE_TIME))))
                 .orElse(emptyList());
     }
 
