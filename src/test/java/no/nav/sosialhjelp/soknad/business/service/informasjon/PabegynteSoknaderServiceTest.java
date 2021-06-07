@@ -9,6 +9,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
@@ -16,12 +17,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
-
 @RunWith(MockitoJUnitRunner.class)
-public class InformasjonServiceTest {
-
-    // ingen pabegynte soknader
-    // har 1 eller flere pabegynte
+public class PabegynteSoknaderServiceTest {
 
     @Mock
     private SoknadMetadataRepository soknadMetadataRepository;
@@ -37,9 +34,9 @@ public class InformasjonServiceTest {
     }
 
     @Test
-    public void brukerHar1PabegyntSoknader() {
-        var soknadMetadata = new SoknadMetadata();
+    public void brukerHar1PabegyntSoknad() {
         var now = LocalDateTime.now();
+        var soknadMetadata = new SoknadMetadata();
         soknadMetadata.sistEndretDato = now;
         soknadMetadata.behandlingsId = "id";
 
@@ -47,7 +44,7 @@ public class InformasjonServiceTest {
 
         var pabegyntSoknadList = informasjonService.hentPabegynteSoknaderForBruker("fnr");
         assertThat(pabegyntSoknadList).hasSize(1);
-        assertThat(pabegyntSoknadList.get(0).getSistOppdatert()).isEqualTo(now);
+        assertThat(pabegyntSoknadList.get(0).getSistOppdatert()).isEqualTo(now.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
         assertThat(pabegyntSoknadList.get(0).getBehandlingsId()).isEqualTo("id");
     }
 }
