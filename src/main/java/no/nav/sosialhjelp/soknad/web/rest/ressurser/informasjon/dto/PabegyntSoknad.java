@@ -1,6 +1,7 @@
 package no.nav.sosialhjelp.soknad.web.rest.ressurser.informasjon.dto;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class PabegyntSoknad {
 
@@ -12,8 +13,8 @@ public class PabegyntSoknad {
         this.behandlingsId = behandlingsId;
     }
 
-    public LocalDateTime getSistOppdatert() {
-        return sistOppdatert;
+    public String getSistOppdatert() {
+        return sistOppdatert.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
     }
 
     public String getBehandlingsId() {
