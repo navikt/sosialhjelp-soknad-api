@@ -5,36 +5,32 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.SneakyThrows;
-import no.nav.sosialhjelp.soknad.consumer.pdl.PdlConsumer;
-import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.AdresseSokResponse;
-import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.AdresseSokResult;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.HentPersonResponse;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.PdlAdressebeskyttelse;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.PdlBarn;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.PdlEktefelle;
+import no.nav.sosialhjelp.soknad.consumer.pdl.person.PdlHentPersonConsumer;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.PdlPerson;
 import org.apache.cxf.helpers.IOUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 
-import java.util.Map;
-
 @Configuration
 public class PdlIntegrationTestConfig {
 
     /**
-     * overskriver pdlConsumer for itester
+     * overskriver pdlHentPersonConsumer for itester
      */
     @Primary
     @Bean
-    public PdlConsumer pdlConsumer() {
-        return new PdlConsumerMock();
+    public PdlHentPersonConsumer pdlHentPersonConsumer() {
+        return new PdlHentPersonConsumerMock();
     }
 
-    static class PdlConsumerMock implements PdlConsumer {
+    static class PdlHentPersonConsumerMock implements PdlHentPersonConsumer {
 
-        private ObjectMapper mapper = new ObjectMapper()
+        private final ObjectMapper mapper = new ObjectMapper()
                 .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
                 .registerModule(new JavaTimeModule());
 
@@ -81,16 +77,6 @@ public class PdlIntegrationTestConfig {
         @Override
         public void ping() {
 
-        }
-
-        @SneakyThrows
-        @Override
-        public AdresseSokResult getAdresseSokResult(Map<String, Object> variables) {
-            var resourceAsStream = ClassLoader.getSystemResourceAsStream("pdl/pdlSokAdresseResponse.json");
-            var jsonString = IOUtils.toString(resourceAsStream);
-
-            var adresseSokResponse = mapper.readValue(jsonString, new TypeReference<AdresseSokResponse>() {});
-            return adresseSokResponse.getData().getAdresseSokResult();
         }
     }
 }

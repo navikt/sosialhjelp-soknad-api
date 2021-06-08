@@ -1,11 +1,9 @@
 package no.nav.sosialhjelp.soknad.consumer.restconfig;
 
 import no.nav.sosialhjelp.soknad.consumer.common.rest.RestUtils;
-import no.nav.sosialhjelp.soknad.consumer.pdl.PdlConsumer;
-import no.nav.sosialhjelp.soknad.consumer.pdl.PdlConsumerImpl;
+import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.PdlAdresseSokConsumer;
 import no.nav.sosialhjelp.soknad.consumer.sts.apigw.STSConsumer;
 import no.nav.sosialhjelp.soknad.web.selftest.Pingable;
-import no.nav.sosialhjelp.soknad.web.selftest.Pingable.Ping.PingMetadata;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 
@@ -17,7 +15,7 @@ import static no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.HEADER
 import static no.nav.sosialhjelp.soknad.web.selftest.Pingable.Ping.feilet;
 import static no.nav.sosialhjelp.soknad.web.selftest.Pingable.Ping.lyktes;
 
-public class PdlRestConfig {
+public class PdlAdresseSokRestConfig {
 
     private static final String PDLAPI_APIKEY = "PDLAPI_APIKEY";
 
@@ -25,16 +23,16 @@ public class PdlRestConfig {
     private String endpoint;
 
     @Bean
-    public PdlConsumer pdlConsumer(STSConsumer stsConsumer) {
-        return new PdlConsumerImpl(pdlClient(), endpoint, stsConsumer);
+    public PdlAdresseSokConsumer pdlAdresseSokConsumer(STSConsumer stsConsumer) {
+        return new PdlAdresseSokConsumer(pdlClient(), endpoint, stsConsumer);
     }
 
     @Bean
-    public Pingable pdlRestPing(PdlConsumer pdlConsumer) {
+    public Pingable pdlRestPing(PdlAdresseSokConsumer pdlAdresseSokConsumer) {
         return () -> {
-            PingMetadata metadata = new PingMetadata(endpoint, "Pdl", false);
+            var metadata = new Pingable.Ping.PingMetadata(endpoint, "Pdl (adressesøk)", false);
             try {
-                pdlConsumer.ping();
+                pdlAdresseSokConsumer.ping();
                 return lyktes(metadata);
             } catch (Exception e) {
                 return feilet(metadata, e);
@@ -43,7 +41,7 @@ public class PdlRestConfig {
     }
 
     private Client pdlClient() {
-        final String apiKey = getenv(PDLAPI_APIKEY);
+        final var apiKey = getenv(PDLAPI_APIKEY);
         return RestUtils.createClient()
                 .register((ClientRequestFilter) requestContext -> requestContext.getHeaders().putSingle(HEADER_NAV_APIKEY, apiKey));
     }

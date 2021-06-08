@@ -20,7 +20,8 @@ import no.nav.sosialhjelp.soknad.consumer.restconfig.DkifRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.KodeverkRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.NorgRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.OrganisasjonRestConfig;
-import no.nav.sosialhjelp.soknad.consumer.restconfig.PdlRestConfig;
+import no.nav.sosialhjelp.soknad.consumer.restconfig.PdlAdresseSokRestConfig;
+import no.nav.sosialhjelp.soknad.consumer.restconfig.PdlHentPersonRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.STSTokenRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.SkattbarInntektRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.UnleashRestConfig;
@@ -61,7 +62,8 @@ public class ConsumerConfig {
     @Configuration
     @Profile("!integration")
     @Import({
-            PdlRestConfig.class,
+            PdlHentPersonRestConfig.class,
+            PdlAdresseSokRestConfig.class,
             DigisosApiRestConfig.class,
             FiksWSConfig.class,
             AdresseSokRestConfig.class,
