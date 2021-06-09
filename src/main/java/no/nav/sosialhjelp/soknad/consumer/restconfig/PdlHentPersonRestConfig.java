@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.consumer.restconfig;
 
+import no.nav.sosialhjelp.soknad.consumer.pdl.person.PdlHentPersonConsumer;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.PdlHentPersonConsumerImpl;
 import no.nav.sosialhjelp.soknad.consumer.sts.apigw.STSConsumer;
 import no.nav.sosialhjelp.soknad.web.selftest.Pingable;
@@ -16,13 +17,13 @@ public class PdlHentPersonRestConfig extends PdlConfig {
     private String endpoint;
 
     @Bean
-    public PdlHentPersonConsumerImpl pdlHentPersonConsumer(STSConsumer stsConsumer) {
+    public PdlHentPersonConsumer pdlHentPersonConsumer(STSConsumer stsConsumer) {
         return new PdlHentPersonConsumerImpl(pdlClient(), endpoint, stsConsumer);
     }
 
     // Trenger kun en ping mot PDL
     @Bean
-    public Pingable pdlRestPing(PdlHentPersonConsumerImpl pdlHentPersonConsumer) {
+    public Pingable pdlRestPing(PdlHentPersonConsumer pdlHentPersonConsumer) {
         return () -> {
             var metadata = new PingMetadata(endpoint, "Pdl", false);
             try {
