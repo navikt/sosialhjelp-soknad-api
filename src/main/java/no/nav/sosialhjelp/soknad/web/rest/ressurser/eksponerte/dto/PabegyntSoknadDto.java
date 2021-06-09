@@ -1,9 +1,7 @@
 package no.nav.sosialhjelp.soknad.web.rest.ressurser.eksponerte.dto;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class PabegyntSoknadDto {
 
@@ -15,15 +13,13 @@ public class PabegyntSoknadDto {
     private final LocalDateTime synligFremTil;
     private final boolean eksternVarsling;
 
-    @JsonCreator
     public PabegyntSoknadDto(
-            @JsonProperty("tidspunkt") LocalDateTime tidspunkt,
-            @JsonProperty("grupperingsId") String grupperingsId,
-            @JsonProperty("tekst") String tekst,
-            @JsonProperty("link") String link,
-            @JsonProperty("sikkerhetsnivaa") Integer sikkerhetsnivaa,
-            @JsonProperty("synligFremTil") LocalDateTime synligFremTil,
-            @JsonProperty("eksternVarsling") boolean eksternVarsling
+            LocalDateTime tidspunkt,
+            String grupperingsId,
+            String tekst,
+            String link,
+            Integer sikkerhetsnivaa,
+            LocalDateTime synligFremTil
     ) {
         this.tidspunkt = tidspunkt;
         this.grupperingsId = grupperingsId;
@@ -31,11 +27,11 @@ public class PabegyntSoknadDto {
         this.link = link;
         this.sikkerhetsnivaa = sikkerhetsnivaa;
         this.synligFremTil = synligFremTil;
-        this.eksternVarsling = eksternVarsling;
+        this.eksternVarsling = false;
     }
 
-    public LocalDateTime getTidspunkt() {
-        return tidspunkt;
+    public String getTidspunkt() {
+        return tidspunkt.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
     }
 
     public String getGrupperingsId() {
@@ -54,8 +50,8 @@ public class PabegyntSoknadDto {
         return sikkerhetsnivaa;
     }
 
-    public LocalDateTime getSynligFremTil() {
-        return synligFremTil;
+    public String getSynligFremTil() {
+        return synligFremTil.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
     }
 
     public boolean isEksternVarsling() {

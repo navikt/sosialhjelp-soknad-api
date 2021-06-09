@@ -13,7 +13,6 @@ public class DittNavMetadataService {
     private static final String SOKNAD_TITTEL = "Søknad om økonomisk sosialhjelp";
     private static final int SIKKERHETSNIVAA_3 = 3;
     private static final int SIKKERHETSNIVAA_4 = 4;
-    private static final boolean EKSTERN_VARSLING_FALSE = false;
 
     private final SoknadMetadataRepository soknadMetadataRepository;
 
@@ -31,8 +30,7 @@ public class DittNavMetadataService {
                         SOKNAD_TITTEL,
                         lenkeTilPabegyntSoknad(soknadMetadata.behandlingsId),
                         SIKKERHETSNIVAA_4, // todo finn ut hvilken
-                        soknadMetadata.opprettetDato.plusDays(14), // todo utc time
-                        EKSTERN_VARSLING_FALSE
+                        soknadMetadata.opprettetDato.plusDays(14) // todo utc time
                 ))
                 .collect(Collectors.toList());
     }
