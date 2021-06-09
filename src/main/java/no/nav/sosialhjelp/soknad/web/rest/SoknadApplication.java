@@ -3,7 +3,7 @@ package no.nav.sosialhjelp.soknad.web.rest;
 import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
 import no.nav.sosialhjelp.soknad.web.mdc.MdcFilter;
 import no.nav.sosialhjelp.soknad.web.oidc.OidcResourceFilteringFeature;
-import no.nav.sosialhjelp.soknad.web.oidc.OidcTokenValidatorFilter;
+import no.nav.sosialhjelp.soknad.web.sikkerhet.CORSFilter;
 import no.nav.sosialhjelp.soknad.web.sikkerhet.HeaderFilter;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.server.ResourceConfig;
@@ -27,6 +27,7 @@ public class SoknadApplication extends ResourceConfig {
 
         // Filters
         register(HeaderFilter.class);
+        register(CORSFilter.class);
         register(MdcFilter.class);
 
         register(OidcResourceFilteringFeature.class);
