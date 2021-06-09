@@ -6,6 +6,7 @@ import no.nav.sosialhjelp.api.fiks.KommuneInfo;
 import no.nav.sosialhjelp.metrics.aspects.Timed;
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sosialhjelp.soknad.business.service.InformasjonService;
+import no.nav.sosialhjelp.soknad.business.service.informasjon.PabegynteSoknaderService;
 import no.nav.sosialhjelp.soknad.consumer.adresse.AdresseSokService;
 import no.nav.sosialhjelp.soknad.consumer.fiks.KommuneInfoService;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.PersonService;
@@ -15,6 +16,7 @@ import no.nav.sosialhjelp.soknad.domain.model.util.KommuneTilNavEnhetMapper;
 import no.nav.sosialhjelp.soknad.tekster.NavMessageSource;
 import no.nav.sosialhjelp.soknad.web.rest.Logg;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.NyligInnsendteSoknaderResponse;
+import no.nav.sosialhjelp.soknad.web.rest.ressurser.informasjon.dto.PabegyntSoknad;
 import no.nav.sosialhjelp.soknad.web.sikkerhet.Tilgangskontroll;
 import no.nav.sosialhjelp.soknad.web.utils.NedetidUtils;
 import org.apache.commons.lang3.LocaleUtils;
@@ -70,6 +72,7 @@ public class InformasjonRessurs {
     private final PersonService personService;
     private final Tilgangskontroll tilgangskontroll;
     private final SoknadMetadataRepository soknadMetadataRepository;
+    private final PabegynteSoknaderService pabegynteSoknaderService;
 
     public InformasjonRessurs(
             InformasjonService informasjon,
@@ -78,7 +81,8 @@ public class InformasjonRessurs {
             KommuneInfoService kommuneInfoService,
             PersonService personService,
             Tilgangskontroll tilgangskontroll,
-            SoknadMetadataRepository soknadMetadataRepository
+            SoknadMetadataRepository soknadMetadataRepository,
+            PabegynteSoknaderService pabegynteSoknaderService
             ) {
         this.informasjon = informasjon;
         this.messageSource = messageSource;
@@ -87,6 +91,7 @@ public class InformasjonRessurs {
         this.personService = personService;
         this.tilgangskontroll = tilgangskontroll;
         this.soknadMetadataRepository = soknadMetadataRepository;
+        this.pabegynteSoknaderService = pabegynteSoknaderService;
     }
 
     @GET
@@ -230,6 +235,16 @@ public class InformasjonRessurs {
 
         var antallNyligInnsendte = nyligSendteSoknader == null ? 0 : nyligSendteSoknader.size();
         return new NyligInnsendteSoknaderResponse(antallNyligInnsendte);
+    }
+
+    @GET
+    @Path("/pabegynteSoknader")
+    public List<PabegyntSoknad> hentPabegynteSoknader() {
+        tilgangskontroll.verifiserAtBrukerHarTilgang();
+        String fnr = SubjectHandler.getUserId();
+        logger.debug("Henter pabegynte soknader for bruker");
+
+        return pabegynteSoknaderService.hentPabegynteSoknaderForBruker(fnr);
     }
 
     public Map<String, KommuneInfoFrontend> mapManueltPakobledeKommuner(List<String> manuelleKommuner) {
