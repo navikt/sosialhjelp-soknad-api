@@ -11,7 +11,7 @@ public class FeatureToggleUtilsTest {
     public void enableModalV2Test() {
         assertThat(FeatureToggleUtils.enableModalV2("1234")).isTrue();
         assertThat(FeatureToggleUtils.enableModalV2("1235")).isFalse();
-
+        assertThat(FeatureToggleUtils.enableModalV2("asdf")).isFalse();
         assertThat(FeatureToggleUtils.enableModalV2(null)).isFalse();
         assertThat(FeatureToggleUtils.enableModalV2("01234")).isTrue();
     }
