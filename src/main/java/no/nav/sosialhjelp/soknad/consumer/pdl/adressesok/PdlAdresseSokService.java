@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.consumer.pdl.adressesok;
 
-import no.nav.sosialhjelp.soknad.consumer.pdl.PdlConsumer;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.AdresseSokHit;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.Criteria;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.FieldName;
@@ -41,20 +40,20 @@ public class PdlAdresseSokService {
 
     private static final Logger log = getLogger(PdlAdresseSokService.class);
 
-    private final PdlConsumer pdlConsumer;
+    private final PdlAdresseSokConsumer pdlAdresseSokConsumer;
 
-    public PdlAdresseSokService(PdlConsumer pdlConsumer) {
-        this.pdlConsumer = pdlConsumer;
+    public PdlAdresseSokService(PdlAdresseSokConsumer pdlAdresseSokConsumer) {
+        this.pdlAdresseSokConsumer = pdlAdresseSokConsumer;
     }
 
     public String getGeografiskTilknytning(AdresseSokConsumer.Sokedata sokedata) {
-        var adresseSokResult = pdlConsumer.getAdresseSokResult(toVariables(sokedata));
+        var adresseSokResult = pdlAdresseSokConsumer.getAdresseSokResult(toVariables(sokedata));
         var vegadresse = resolveVegadresse(adresseSokResult.getHits());
         return bydelsnummerOrKommunenummer(vegadresse);
     }
 
     public AdresseForslag getAdresseForslag(AdresseSokConsumer.Sokedata sokedata) {
-        var adresseSokResult = pdlConsumer.getAdresseSokResult(toVariables(sokedata));
+        var adresseSokResult = pdlAdresseSokConsumer.getAdresseSokResult(toVariables(sokedata));
         var vegadresse = resolveVegadresse(adresseSokResult.getHits());
         return toAdresseForslag(vegadresse);
     }
@@ -68,7 +67,7 @@ public class PdlAdresseSokService {
         } else {
             var first = hits.get(0).getVegadresse();
             if (hits.stream().allMatch(hit -> relevantFieldsAreEquals(first, hit.getVegadresse()))) {
-                log.info("Flere hits i adressesok, men velger første hit fra listen ettersom (kommunnummer, kommunenavn og bydelsenummer) er like.");
+                log.info("Flere hits i adressesok, men velger første hit fra listen ettersom (kommunenummer, kommunenavn og bydelsnummer) er like.");
                 return first;
             }
             log.warn("Flere ({}) hits i adressesok. Kan ikke utlede entydig kombinasjon av (kommunenummer, kommunenavn og bydelsnummer) fra alle vegadressene", hits.size());

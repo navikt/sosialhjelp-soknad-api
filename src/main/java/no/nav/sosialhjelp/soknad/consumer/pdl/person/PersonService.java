@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.consumer.pdl.person;
 
-import no.nav.sosialhjelp.soknad.consumer.pdl.PdlConsumer;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.AdressebeskyttelseDto.Gradering;
 import no.nav.sosialhjelp.soknad.domain.model.Barn;
 import no.nav.sosialhjelp.soknad.domain.model.Ektefelle;
@@ -24,18 +23,18 @@ public class PersonService {
     private static final Logger log = getLogger(PersonService.class);
     private static final String BARN = "BARN";
 
-    private final PdlConsumer pdlConsumer;
+    private final PdlHentPersonConsumer pdlHentPersonConsumer;
     private final PdlPersonMapper pdlPersonMapper;
 
     private final PdlPersonMapperHelper helper = new PdlPersonMapperHelper();
 
-    public PersonService(PdlConsumer pdlConsumer, PdlPersonMapper pdlPersonMapper) {
-        this.pdlConsumer = pdlConsumer;
+    public PersonService(PdlHentPersonConsumer pdlHentPersonConsumer, PdlPersonMapper pdlPersonMapper) {
+        this.pdlHentPersonConsumer = pdlHentPersonConsumer;
         this.pdlPersonMapper = pdlPersonMapper;
     }
 
     public Person hentPerson(String ident) {
-        PdlPerson pdlPerson = pdlConsumer.hentPerson(ident);
+        PdlPerson pdlPerson = pdlHentPersonConsumer.hentPerson(ident);
         if (pdlPerson == null) {
             return null;
         }
@@ -45,7 +44,7 @@ public class PersonService {
     }
 
     public List<Barn> hentBarnForPerson(String ident) {
-        PdlPerson pdlPerson = pdlConsumer.hentPerson(ident);
+        PdlPerson pdlPerson = pdlHentPersonConsumer.hentPerson(ident);
 
         if (pdlPerson == null || pdlPerson.getForelderBarnRelasjon() == null) {
             return null;
@@ -66,7 +65,7 @@ public class PersonService {
                     }
 
                     loggHvisIdentIkkeErFnr(barnIdent);
-                    var pdlBarn = pdlConsumer.hentBarn(barnIdent);
+                    var pdlBarn = pdlHentPersonConsumer.hentBarn(barnIdent);
                     return pdlPersonMapper.mapToBarn(pdlBarn, barnIdent, pdlPerson);
                 })
                 .collect(Collectors.toList());
@@ -99,7 +98,7 @@ public class PersonService {
 
                 loggHvisIdentIkkeErFnr(ektefelleIdent);
 
-                PdlEktefelle pdlEktefelle = pdlConsumer.hentEktefelle(ektefelleIdent);
+                PdlEktefelle pdlEktefelle = pdlHentPersonConsumer.hentEktefelle(ektefelleIdent);
                 return pdlPersonMapper.mapToEktefelle(pdlEktefelle, ektefelleIdent, pdlPerson);
             }
         }
@@ -107,7 +106,7 @@ public class PersonService {
     }
 
     public Gradering hentAdressebeskyttelse(String ident) {
-        var pdlAdressebeskyttelse = pdlConsumer.hentAdressebeskyttelse(ident);
+        var pdlAdressebeskyttelse = pdlHentPersonConsumer.hentAdressebeskyttelse(ident);
 
         return pdlPersonMapper.mapToAdressebeskyttelse(pdlAdressebeskyttelse);
     }
