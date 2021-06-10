@@ -1,8 +1,8 @@
 package no.nav.sosialhjelp.soknad.consumer.restconfig;
 
 import no.nav.sosialhjelp.soknad.consumer.common.rest.RestUtils;
-import no.nav.sosialhjelp.soknad.consumer.pdl.PdlConsumer;
-import no.nav.sosialhjelp.soknad.consumer.pdl.PdlConsumerImpl;
+import no.nav.sosialhjelp.soknad.consumer.pdl.person.PdlHentPersonConsumer;
+import no.nav.sosialhjelp.soknad.consumer.pdl.person.PdlHentPersonConsumerImpl;
 import no.nav.sosialhjelp.soknad.consumer.sts.apigw.STSConsumer;
 import no.nav.sosialhjelp.soknad.web.selftest.Pingable;
 import no.nav.sosialhjelp.soknad.web.selftest.Pingable.Ping.PingMetadata;
@@ -17,7 +17,7 @@ import static no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.HEADER
 import static no.nav.sosialhjelp.soknad.web.selftest.Pingable.Ping.feilet;
 import static no.nav.sosialhjelp.soknad.web.selftest.Pingable.Ping.lyktes;
 
-public class PdlRestConfig {
+public class PdlHentPersonRestConfig {
 
     private static final String PDLAPI_APIKEY = "PDLAPI_APIKEY";
 
@@ -25,16 +25,17 @@ public class PdlRestConfig {
     private String endpoint;
 
     @Bean
-    public PdlConsumer pdlConsumer(STSConsumer stsConsumer) {
-        return new PdlConsumerImpl(pdlClient(), endpoint, stsConsumer);
+    public PdlHentPersonConsumer pdlHentPersonConsumer(STSConsumer stsConsumer) {
+        return new PdlHentPersonConsumerImpl(pdlHentPersonClient(), endpoint, stsConsumer);
     }
 
+    // Trenger kun en ping mot PDL
     @Bean
-    public Pingable pdlRestPing(PdlConsumer pdlConsumer) {
+    public Pingable pdlRestPing(PdlHentPersonConsumer pdlHentPersonConsumer) {
         return () -> {
-            PingMetadata metadata = new PingMetadata(endpoint, "Pdl", false);
+            var metadata = new PingMetadata(endpoint, "Pdl", false);
             try {
-                pdlConsumer.ping();
+                pdlHentPersonConsumer.ping();
                 return lyktes(metadata);
             } catch (Exception e) {
                 return feilet(metadata, e);
@@ -42,8 +43,8 @@ public class PdlRestConfig {
         };
     }
 
-    private Client pdlClient() {
-        final String apiKey = getenv(PDLAPI_APIKEY);
+    private Client pdlHentPersonClient() {
+        final var apiKey = getenv(PDLAPI_APIKEY);
         return RestUtils.createClient()
                 .register((ClientRequestFilter) requestContext -> requestContext.getHeaders().putSingle(HEADER_NAV_APIKEY, apiKey));
     }
