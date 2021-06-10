@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.consumer.retry;
 
-import no.nav.sosialhjelp.soknad.consumer.pdl.PdlConsumer;
+import no.nav.sosialhjelp.soknad.consumer.pdl.person.PdlHentPersonConsumer;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,25 +27,25 @@ public class RetryUtilsTest {
     private static final int MAX_ATTEMPTS = 2;
 
     @Mock
-    private PdlConsumer pdlConsumer;
+    private PdlHentPersonConsumer pdlHentPersonConsumer;
 
     @Test
     public void skalForsokeLikeMangeGangerSomMaxAttempts() {
-        when(pdlConsumer.hentPerson(anyString())).thenThrow(new InternalServerErrorException());
+        when(pdlHentPersonConsumer.hentPerson(anyString())).thenThrow(new InternalServerErrorException());
 
         var retry = retryConfig(URL, MAX_ATTEMPTS, 1, 2.0, new Class[]{WebApplicationException.class}, log);
 
-        Assert.assertThrows(InternalServerErrorException.class, () -> withRetry(retry, () -> pdlConsumer.hentPerson("ident")));
-        verify(pdlConsumer, times(MAX_ATTEMPTS)).hentPerson(anyString());
+        Assert.assertThrows(InternalServerErrorException.class, () -> withRetry(retry, () -> pdlHentPersonConsumer.hentPerson("ident")));
+        verify(pdlHentPersonConsumer, times(MAX_ATTEMPTS)).hentPerson(anyString());
     }
 
     @Test
     public void skalIkkeRetryVedAnnenException() {
-        when(pdlConsumer.hentPerson(anyString())).thenThrow(new IllegalStateException());
+        when(pdlHentPersonConsumer.hentPerson(anyString())).thenThrow(new IllegalStateException());
 
         var retry = retryConfig(URL, MAX_ATTEMPTS, 1, 2.0, new Class[]{WebApplicationException.class}, log);
 
-        Assert.assertThrows(IllegalStateException.class, () -> withRetry(retry, () -> pdlConsumer.hentPerson("ident")));
-        verify(pdlConsumer, times(1)).hentPerson(anyString());
+        Assert.assertThrows(IllegalStateException.class, () -> withRetry(retry, () -> pdlHentPersonConsumer.hentPerson("ident")));
+        verify(pdlHentPersonConsumer, times(1)).hentPerson(anyString());
     }
 }

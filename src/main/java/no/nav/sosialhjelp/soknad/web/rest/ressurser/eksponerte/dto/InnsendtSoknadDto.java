@@ -1,36 +1,31 @@
 package no.nav.sosialhjelp.soknad.web.rest.ressurser.eksponerte.dto;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import java.time.LocalDateTime;
-
 public class InnsendtSoknadDto {
 
-    private final String tema;
-    private final LocalDateTime sisteEndring;
-    private final String lenkeInnsyn;
+    private final String navn;
+    private final String kode;
+    private final String sistEndret;
 
-    @JsonCreator
     public InnsendtSoknadDto(
-            @JsonProperty("tema") String tema,
-            @JsonProperty("sisteEndring") LocalDateTime sisteEndring,
-            @JsonProperty("lenkeInnsyn") String lenkeInnsyn
+            String navn,
+            String kode,
+            String sistEndret
     ) {
-        this.tema = tema;
-        this.sisteEndring = sisteEndring;
-        this.lenkeInnsyn = lenkeInnsyn;
+        this.navn = navn;
+        this.kode = kode;
+        this.sistEndret = sistEndret;
     }
 
-    public String getTema() {
-        return tema;
+    public String getNavn() {
+        return navn;
     }
 
-    public LocalDateTime getSisteEndring() {
-        return sisteEndring;
+    public String getKode() {
+        return kode;
     }
 
-    public String getLenkeInnsyn() {
-        return lenkeInnsyn;
+    public String getSistEndret() {
+        return sistEndret;
     }
+
 }

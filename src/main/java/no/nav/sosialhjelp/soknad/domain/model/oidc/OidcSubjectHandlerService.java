@@ -13,9 +13,11 @@ import static no.nav.sosialhjelp.soknad.web.utils.Constants.TOKENX;
 public class OidcSubjectHandlerService implements SubjectHandlerService {
     private static final Logger logger = LoggerFactory.getLogger(OidcSubjectHandlerService.class);
 
+    private static final String CLAIM_PID = "pid";
+
     public String getUserIdFromToken() {
         if (getTokenValidationContext().hasTokenFor(TOKENX)) {
-            return getTokenValidationContext().getClaims(TOKENX).getSubject();
+            return getTokenValidationContext().getClaims(TOKENX).getStringClaim(CLAIM_PID);
         }
         return getTokenValidationContext().getClaims(SELVBETJENING).getSubject();
     }

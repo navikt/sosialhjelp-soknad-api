@@ -28,7 +28,6 @@ import org.springframework.context.annotation.Import;
         OpplastetVedleggService.class,
         MineSakerMetadataService.class,
         DittNavMetadataService.class,
-        OpplastetVedleggService.class,
         PabegynteSoknaderService.class
 })
 public class ServiceConfig {

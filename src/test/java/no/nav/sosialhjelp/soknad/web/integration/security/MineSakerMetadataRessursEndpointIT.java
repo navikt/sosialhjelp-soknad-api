@@ -38,17 +38,6 @@ public class MineSakerMetadataRessursEndpointIT extends AbstractIT {
         assertThat(response.getStatus()).isEqualTo(Response.Status.UNAUTHORIZED.getStatusCode());
     }
 
-    @Test
-    public void pabegynte_skalGi401MedAnnenBruker() {
-        SoknadTester soknadTester = soknadOpprettet();
-        String subUrl = "minesaker/innsendte";
-        SignedJWT signedJWTMedAnnenIssuer = JwtTokenGenerator.createSignedJwtForTokenx(ANNEN_BRUKER, null);
-
-        Response response = sendGetRequest(soknadTester, subUrl, signedJWTMedAnnenIssuer);
-
-        assertThat(response.getStatus()).isEqualTo(Response.Status.UNAUTHORIZED.getStatusCode());
-    }
-
     private Response sendGetRequest(SoknadTester soknadTester, String subUrl, SignedJWT signedJWT){
         Invocation.Builder builder = soknadTester.sendsoknadResource(subUrl, webTarget -> webTarget);
 
