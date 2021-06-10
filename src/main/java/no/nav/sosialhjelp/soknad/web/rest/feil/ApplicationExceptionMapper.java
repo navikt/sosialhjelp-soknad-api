@@ -3,6 +3,7 @@ package no.nav.sosialhjelp.soknad.web.rest.feil;
 import no.nav.sosialhjelp.soknad.business.exceptions.SendingTilKommuneErIkkeAktivertException;
 import no.nav.sosialhjelp.soknad.business.exceptions.SendingTilKommuneErMidlertidigUtilgjengeligException;
 import no.nav.sosialhjelp.soknad.business.exceptions.SendingTilKommuneUtilgjengeligException;
+import no.nav.sosialhjelp.soknad.business.exceptions.SoknadUnderArbeidIkkeFunnetException;
 import no.nav.sosialhjelp.soknad.business.exceptions.SoknadenHarNedetidException;
 import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.PdfGenereringException;
 import no.nav.sosialhjelp.soknad.consumer.exceptions.PdlApiException;
@@ -82,6 +83,9 @@ public class ApplicationExceptionMapper implements ExceptionMapper<SosialhjelpSo
         } else if (e instanceof PdfGenereringException) {
             logger.error(e.getMessage(), e);
             return status(INTERNAL_SERVER_ERROR).type(APPLICATION_JSON).entity(new Feilmelding("pdf_generering", "Innsending av søknad eller ettersendelse feilet")).build();
+        } else if (e instanceof SoknadUnderArbeidIkkeFunnetException) {
+            logger.warn(e.getMessage(), e);
+            return status(INTERNAL_SERVER_ERROR).type(APPLICATION_JSON).entity(new Feilmelding("unexpected_error", "Søknad ikke funnet. Har mest sannsynlig allerede blitt sendt inn")).build();
         } else if (e instanceof PdlApiException){
             response = serverError().header(NO_BIGIP_5XX_REDIRECT, true);
             logger.warn("Kall til PDL feilet", e);
