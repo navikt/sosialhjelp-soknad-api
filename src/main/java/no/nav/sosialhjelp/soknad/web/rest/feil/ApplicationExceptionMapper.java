@@ -85,7 +85,7 @@ public class ApplicationExceptionMapper implements ExceptionMapper<SosialhjelpSo
             return status(INTERNAL_SERVER_ERROR).type(APPLICATION_JSON).entity(new Feilmelding("pdf_generering", "Innsending av søknad eller ettersendelse feilet")).build();
         } else if (e instanceof SoknadUnderArbeidIkkeFunnetException) {
             logger.warn(e.getMessage(), e);
-            return status(INTERNAL_SERVER_ERROR).type(APPLICATION_JSON).entity(new Feilmelding("unexpected_error", "Søknad ikke funnet. Har mest sannsynlig allerede blitt sendt inn")).build();
+            return status(INTERNAL_SERVER_ERROR).type(APPLICATION_JSON).entity(new Feilmelding("unexpected_error", "Noe uventet feilet.")).build();
         } else if (e instanceof PdlApiException){
             response = serverError().header(NO_BIGIP_5XX_REDIRECT, true);
             logger.warn("Kall til PDL feilet", e);
