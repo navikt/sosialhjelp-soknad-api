@@ -4,8 +4,11 @@ import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.SoknadM
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.eksponerte.dto.PabegyntSoknadDto;
 import org.springframework.stereotype.Component;
 
+import java.time.ZoneId;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static no.nav.sosialhjelp.soknad.business.util.TimeUtils.toUtc;
 
 @Component
 public class DittNavMetadataService {
@@ -25,12 +28,12 @@ public class DittNavMetadataService {
 
         return pabegynteSoknader.stream()
                 .map(soknadMetadata -> new PabegyntSoknadDto(
-                        soknadMetadata.sistEndretDato, // todo utc time
+                        toUtc(soknadMetadata.sistEndretDato, ZoneId.systemDefault()),
                         soknadMetadata.behandlingsId,
                         SOKNAD_TITTEL,
                         lenkeTilPabegyntSoknad(soknadMetadata.behandlingsId),
                         SIKKERHETSNIVAA_4, // todo finn ut hvilken
-                        soknadMetadata.opprettetDato.plusDays(14) // todo utc time
+                        toUtc(soknadMetadata.opprettetDato.plusDays(14), ZoneId.systemDefault())
                 ))
                 .collect(Collectors.toList());
     }

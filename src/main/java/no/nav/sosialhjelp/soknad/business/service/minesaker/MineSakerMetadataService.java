@@ -6,15 +6,13 @@ import no.nav.sosialhjelp.soknad.web.rest.ressurser.eksponerte.dto.InnsendtSokna
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import static java.time.ZoneOffset.UTC;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
+import static no.nav.sosialhjelp.soknad.business.util.TimeUtils.toUtc;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Component
@@ -37,13 +35,7 @@ public class MineSakerMetadataService {
         var innsendteSoknader = Optional.ofNullable(soknadMetadataRepository.hentAlleInnsendteSoknaderForBruker(fnr)).orElse(emptyList());
         log.info("Fant {} innsendte soknader", innsendteSoknader.size());
         return innsendteSoknader.stream().findFirst()
-                .map(soknadMetadata -> singletonList(new InnsendtSoknadDto(TEMA_NAVN, TEMA_KODE_KOM, toUtc(soknadMetadata.innsendtDato))))
+                .map(soknadMetadata -> singletonList(new InnsendtSoknadDto(TEMA_NAVN, TEMA_KODE_KOM, toUtc(soknadMetadata.innsendtDato, ZoneId.systemDefault()))))
                 .orElse(emptyList());
-    }
-
-    public LocalDateTime toUtc(LocalDateTime localDateTime) {
-        return ZonedDateTime.of(localDateTime, ZoneId.systemDefault())
-                .withZoneSameInstant(UTC)
-                .toLocalDateTime();
     }
 }
