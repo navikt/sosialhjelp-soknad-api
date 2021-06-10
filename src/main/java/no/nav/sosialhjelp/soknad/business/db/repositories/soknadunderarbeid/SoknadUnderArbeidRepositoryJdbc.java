@@ -9,6 +9,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse;
 import no.nav.sosialhjelp.soknad.business.db.repositories.opplastetvedlegg.OpplastetVedleggRepository;
 import no.nav.sosialhjelp.soknad.business.exceptions.SamtidigOppdateringException;
 import no.nav.sosialhjelp.soknad.business.exceptions.SoknadLaastException;
+import no.nav.sosialhjelp.soknad.business.exceptions.SoknadUnderArbeidIkkeFunnetException;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeidStatus;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
@@ -24,7 +25,6 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Arrays;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static java.time.LocalDateTime.now;
@@ -89,7 +89,7 @@ public class SoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoSuppor
         if (soknadUnderArbeidOptional.isPresent()) {
             return soknadUnderArbeidOptional.get();
         } else {
-            throw new NoSuchElementException("Ingen SoknadUnderArbeid funnet på behandlingsId: " + behandlingsId);
+            throw new SoknadUnderArbeidIkkeFunnetException("Ingen SoknadUnderArbeid funnet på behandlingsId: " + behandlingsId);
         }
     }
 
