@@ -1,15 +1,18 @@
 package no.nav.sosialhjelp.soknad.web.rest.ressurser.eksponerte.dto;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 public class InnsendtSoknadDto {
 
     private final String navn;
     private final String kode;
-    private final String sistEndret;
+    private final LocalDateTime sistEndret;
 
     public InnsendtSoknadDto(
             String navn,
             String kode,
-            String sistEndret
+            LocalDateTime sistEndret
     ) {
         this.navn = navn;
         this.kode = kode;
@@ -25,7 +28,7 @@ public class InnsendtSoknadDto {
     }
 
     public String getSistEndret() {
-        return sistEndret;
+        return sistEndret.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
     }
 
 }
