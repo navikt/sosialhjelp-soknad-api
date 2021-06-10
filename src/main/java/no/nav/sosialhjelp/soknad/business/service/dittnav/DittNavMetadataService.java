@@ -21,9 +21,9 @@ public class DittNavMetadataService {
     }
 
     public List<PabegyntSoknadDto> hentPabegynteSoknader(String fnr) {
-        var pabegynteSoknaderMetadata = soknadMetadataRepository.hentPabegynteSoknaderForBruker(fnr);
+        var pabegynteSoknader = soknadMetadataRepository.hentPabegynteSoknaderForBruker(fnr);
 
-        return pabegynteSoknaderMetadata.stream()
+        return pabegynteSoknader.stream()
                 .map(soknadMetadata -> new PabegyntSoknadDto(
                         soknadMetadata.sistEndretDato, // todo utc time
                         soknadMetadata.behandlingsId,
