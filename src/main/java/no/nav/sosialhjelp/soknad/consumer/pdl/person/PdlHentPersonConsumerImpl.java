@@ -166,7 +166,7 @@ public class PdlHentPersonConsumerImpl extends BasePdlConsumer implements PdlHen
         try {
             redisService.setex(prefix + ident, pdlMapper.writeValueAsBytes(pdlResponse), PDL_CACHE_SECONDS);
         } catch (JsonProcessingException e) {
-            log.warn("noe feilet ved serialisering til kommuneInfoMap");
+            log.warn("Noe feilet ved serialisering av response fra Pdl - {}", pdlResponse.getClass().getName(), e);
         }
     }
 }
