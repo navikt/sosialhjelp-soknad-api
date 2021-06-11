@@ -32,7 +32,7 @@ public class DittNavMetadataService {
                         soknadMetadata.behandlingsId,
                         SOKNAD_TITTEL,
                         lenkeTilPabegyntSoknad(soknadMetadata.behandlingsId),
-                        SIKKERHETSNIVAA_4, // todo finn ut hvilken
+                        SIKKERHETSNIVAA_3, // todo finn ut hvilken
                         toUtc(soknadMetadata.opprettetDato.plusDays(14), ZoneId.systemDefault())
                 ))
                 .collect(Collectors.toList());
