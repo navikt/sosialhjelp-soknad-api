@@ -3,6 +3,7 @@ package no.nav.sosialhjelp.soknad.consumer.restconfig;
 import no.nav.sosialhjelp.soknad.consumer.common.rest.RestUtils;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.PdlHentPersonConsumer;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.PdlHentPersonConsumerImpl;
+import no.nav.sosialhjelp.soknad.consumer.redis.RedisService;
 import no.nav.sosialhjelp.soknad.consumer.sts.apigw.STSConsumer;
 import no.nav.sosialhjelp.soknad.web.selftest.Pingable;
 import no.nav.sosialhjelp.soknad.web.selftest.Pingable.Ping.PingMetadata;
@@ -25,8 +26,8 @@ public class PdlHentPersonRestConfig {
     private String endpoint;
 
     @Bean
-    public PdlHentPersonConsumer pdlHentPersonConsumer(STSConsumer stsConsumer) {
-        return new PdlHentPersonConsumerImpl(pdlHentPersonClient(), endpoint, stsConsumer);
+    public PdlHentPersonConsumer pdlHentPersonConsumer(STSConsumer stsConsumer, RedisService redisService) {
+        return new PdlHentPersonConsumerImpl(pdlHentPersonClient(), endpoint, stsConsumer, redisService);
     }
 
     // Trenger kun en ping mot PDL
