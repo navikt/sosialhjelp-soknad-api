@@ -64,7 +64,7 @@ spec:
 {{/each}}
   resources:
     limits:
-      cpu: 3000m
+      cpu: 1000m
       memory: {{memoryLimit}}
     requests:
       cpu: 400m
