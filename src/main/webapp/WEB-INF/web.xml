@@ -17,12 +17,12 @@
     </session-config>
 
     <!-- sikrer at man kan benytte servlet-loginmodules -->
-    <security-constraint>
-        <web-resource-collection>
-            <web-resource-name>All pages</web-resource-name>
-            <url-pattern>/*</url-pattern>
-        </web-resource-collection>
-    </security-constraint>
+<!--    <security-constraint>-->
+<!--        <web-resource-collection>-->
+<!--            <web-resource-name>All pages</web-resource-name>-->
+<!--            <url-pattern>/*</url-pattern>-->
+<!--        </web-resource-collection>-->
+<!--    </security-constraint>-->
 
     <listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
