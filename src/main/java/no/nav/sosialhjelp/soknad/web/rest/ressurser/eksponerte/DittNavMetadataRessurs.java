@@ -43,6 +43,8 @@ public class DittNavMetadataRessurs {
     @GET
     @Path("/pabegynte")
     public List<PabegyntSoknadDto> hentPabegynteSoknaderForBruker() {
+        log.info("Feature toggle {} exists in unleash? {}", DITTNAV_PABEGYNTE_ENDEPUNKT_ENABLED, unleash.getFeatureToggleNames().contains(DITTNAV_PABEGYNTE_ENDEPUNKT_ENABLED));
+
         if (unleash.isEnabled(DITTNAV_PABEGYNTE_ENDEPUNKT_ENABLED, false)) {
             log.info("Endepunkt for å hente info om påbegynte søknader for dittNav er ikke enabled. Returnerer tom liste.");
             return Collections.emptyList();
