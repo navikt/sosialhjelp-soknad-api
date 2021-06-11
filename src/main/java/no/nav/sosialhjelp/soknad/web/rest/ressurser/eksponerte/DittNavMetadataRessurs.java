@@ -23,7 +23,7 @@ import static no.nav.sosialhjelp.soknad.web.utils.Constants.SELVBETJENING;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Controller
-@ProtectedWithClaims(issuer = SELVBETJENING, claimMap = {CLAIM_ACR_LEVEL_3, CLAIM_ACR_LEVEL_4})
+@ProtectedWithClaims(issuer = SELVBETJENING, combineWithOr = true, claimMap = {CLAIM_ACR_LEVEL_3, CLAIM_ACR_LEVEL_4})
 @Path("/dittnav")
 @Timed
 @Produces(APPLICATION_JSON)
