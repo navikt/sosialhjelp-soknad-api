@@ -3,6 +3,10 @@ package no.nav.sosialhjelp.soknad.web.rest.ressurser.eksponerte.dto;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * Response-objekt for endepunkt som skal hente informasjon om påbegynte søknader for DittNAV.
+ * https://navikt.github.io/brukernotifikasjon-docs/eventtyper/beskjed/felter/
+ */
 public class PabegyntSoknadDto {
 
     private final LocalDateTime tidspunkt;
@@ -10,8 +14,8 @@ public class PabegyntSoknadDto {
     private final String tekst;
     private final String link;
     private final Integer sikkerhetsnivaa;
-    private final LocalDateTime synligFremTil;
-    private final boolean eksternVarsling;
+    private final LocalDateTime synligFremTil; // 14 dager frem i tid fra siste endring
+    private final boolean eksternVarsling; // Settes alltid til false
 
     public PabegyntSoknadDto(
             LocalDateTime tidspunkt,
