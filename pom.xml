@@ -28,7 +28,7 @@
             <!-- repo.adeo.no har ikke dependency analyzer med støtte for Java 11 (maven-dependency-analyzer:1.11.1) -->
             <id>maven-central</id>
             <name>Maven central</name>
-            <url>https://repo.maven.apache.org/maven</url>
+            <url>https://repo.maven.apache.org/maven2</url>
         </repository>
 
         <!-- Skal brukes hvis bygget kjøres fra en Github Action -->
