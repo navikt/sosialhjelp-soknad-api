@@ -49,7 +49,7 @@ public class MineSakerMetadataRessurs {
     @GET
     @Path("/innsendte")
     public List<InnsendtSoknadDto> hentInnsendteSoknaderForBruker() {
-        if (unleash.isEnabled(MINESAKER_INNSENDTE_ENDEPUNKT_ENABLED, false)) {
+        if (!unleash.isEnabled(MINESAKER_INNSENDTE_ENDEPUNKT_ENABLED, false)) {
             log.info("Endepunkt for å hente info om innsendte søknader for mine-saker er ikke enabled. Returnerer tom liste.");
             return Collections.emptyList();
         }
