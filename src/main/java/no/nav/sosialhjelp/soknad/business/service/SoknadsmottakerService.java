@@ -18,6 +18,8 @@ import java.util.Collections;
 import java.util.List;
 
 import static no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresseValg.FOLKEREGISTRERT;
+import static no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresseValg.SOKNAD;
+import static no.nav.sosialhjelp.soknad.business.service.adressesok.AdresseSokService.FEATURE_PDL_ADRESSESOK_ENABLED;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Component
@@ -46,6 +48,15 @@ public class SoknadsmottakerService {
 
         // prøv å ta i bruk pdl adressesok kun ved valgt folkeregistrert adresse
         if (FOLKEREGISTRERT.toString().equals(valg) && unleash.isEnabled(FEATURE_PDL_ADRESSESOK_VED_FOLKEREGISTRERT_ADRESSE, false)) {
+            try {
+                return getAdresseForslagFraPDL(adresse);
+            } catch (Exception e) {
+                log.warn("Noe uventet feilet ved henting av adresse fra PDL -> Fallback til TPS adressesøk", e);
+                return soknadsmottakerGitt(adresse);
+            }
+        }
+        // prøv å bruk PDL fremfor TPS for fritekstsøk (soknad)
+        if (SOKNAD.toString().equals(valg) && unleash.isEnabled(FEATURE_PDL_ADRESSESOK_ENABLED, false)) {
             try {
                 return getAdresseForslagFraPDL(adresse);
             } catch (Exception e) {
