@@ -1,6 +1,8 @@
 package no.nav.sosialhjelp.soknad.consumer.adresse;
 
+import no.finn.unleash.Unleash;
 import no.nav.sosialhjelp.soknad.consumer.kodeverk.KodeverkService;
+import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.PdlAdresseSokService;
 import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseForslag;
 import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseSokConsumer;
 import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseSokConsumer.AdresseData;
@@ -22,20 +24,40 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 @Service
 public class AdresseSokService {
 
+    private static final String FEATURE_PDL_ADRESSESOK_ENABLED = "sosialhjelp.soknad.pdl-adressesok-enabled";
+
     private final AdresseSokConsumer adresseSokConsumer;
     private final KodeverkService kodeverkService;
+    private final Unleash unleash;
+    private final PdlAdresseSokService pdlAdresseSokService;
 
-    public AdresseSokService(AdresseSokConsumer adresseSokConsumer, KodeverkService kodeverkService) {
+    public AdresseSokService(
+            AdresseSokConsumer adresseSokConsumer,
+            KodeverkService kodeverkService,
+            Unleash unleash,
+            PdlAdresseSokService pdlAdresseSokService
+    ) {
         this.adresseSokConsumer = adresseSokConsumer;
         this.kodeverkService = kodeverkService;
+        this.unleash = unleash;
+        this.pdlAdresseSokService = pdlAdresseSokService;
     }
 
     public List<AdresseForslag> sokEtterAdresser(String sok) {
         if (isAddressTooShortOrNull(sok)) {
             return Collections.emptyList();
         }
-        final Sokedata sokedata = AdresseStringSplitter.toSokedata(kodeverkService, sok);
+        final var sokedata = AdresseStringSplitter.toSokedata(kodeverkService, sok);
+
+        if (unleash.isEnabled(FEATURE_PDL_ADRESSESOK_ENABLED)) {
+            return sokEtterAdresserPDL(sokedata);
+        }
         return sokEtterAdresser(sokedata);
+    }
+
+    private List<AdresseForslag> sokEtterAdresserPDL(Sokedata sokedata) {
+        // todo implement. use pdlAdresseSokService
+        return Collections.emptyList();
     }
 
     public List<AdresseForslag> sokEtterAdresser(Sokedata sokedata) {
