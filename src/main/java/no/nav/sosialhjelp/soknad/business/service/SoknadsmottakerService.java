@@ -5,7 +5,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonGateAdresse;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonMatrikkelAdresse;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
-import no.nav.sosialhjelp.soknad.consumer.adresse.AdresseSokService;
+import no.nav.sosialhjelp.soknad.consumer.adresse.TpsAdresseSokService;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.PdlAdresseSokService;
 import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseForslag;
 import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseForslagType;
@@ -27,16 +27,16 @@ public class SoknadsmottakerService {
 
     private static final String FEATURE_PDL_ADRESSESOK_VED_FOLKEREGISTRERT_ADRESSE = "sosialhjelp.soknad.pdl-adressesok-ved-folkeregistrert-adresse";
 
-    private final AdresseSokService adresseSokService;
+    private final TpsAdresseSokService tpsAdresseSokService;
     private final PdlAdresseSokService pdlAdresseSokService;
     private final Unleash unleash;
 
     public SoknadsmottakerService(
-            AdresseSokService adresseSokService,
+            TpsAdresseSokService tpsAdresseSokService,
             PdlAdresseSokService pdlAdresseSokService,
             Unleash unleash
     ) {
-        this.adresseSokService = adresseSokService;
+        this.tpsAdresseSokService = tpsAdresseSokService;
         this.pdlAdresseSokService = pdlAdresseSokService;
         this.unleash = unleash;
     }
@@ -105,7 +105,7 @@ public class SoknadsmottakerService {
             return adresseForslagForMatrikkelAdresse((JsonMatrikkelAdresse) adresse);
         } else if (adresse.getType().equals(JsonAdresse.Type.GATEADRESSE)) {
             var sokedata = sokedateFromGateAdresse((JsonGateAdresse) adresse);
-            var adresser = adresseSokService.sokEtterAdresser(sokedata);
+            var adresser = tpsAdresseSokService.sokEtterAdresser(sokedata);
 
             if (adresser.size() <= 1) {
                 return adresser;

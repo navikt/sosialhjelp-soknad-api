@@ -20,12 +20,15 @@ import static no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseForslagType.
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Service
-public class AdresseSokService {
+public class TpsAdresseSokService {
 
     private final AdresseSokConsumer adresseSokConsumer;
     private final KodeverkService kodeverkService;
 
-    public AdresseSokService(AdresseSokConsumer adresseSokConsumer, KodeverkService kodeverkService) {
+    public TpsAdresseSokService(
+            AdresseSokConsumer adresseSokConsumer,
+            KodeverkService kodeverkService
+    ) {
         this.adresseSokConsumer = adresseSokConsumer;
         this.kodeverkService = kodeverkService;
     }
@@ -34,7 +37,8 @@ public class AdresseSokService {
         if (isAddressTooShortOrNull(sok)) {
             return Collections.emptyList();
         }
-        final Sokedata sokedata = AdresseStringSplitter.toSokedata(kodeverkService, sok);
+        final var sokedata = AdresseStringSplitter.toSokedata(kodeverkService, sok);
+
         return sokEtterAdresser(sokedata);
     }
 
@@ -46,7 +50,7 @@ public class AdresseSokService {
         final AdressesokRespons adressesokRespons = adresseSokConsumer.sokAdresse(sokedata);
         return adressesokRespons.adresseDataList.stream()
                 .filter(isGateadresse())
-                .map(AdresseSokService::toAdresseForslag) // "gateadresse" er hardkodet.
+                .map(TpsAdresseSokService::toAdresseForslag) // "gateadresse" er hardkodet.
                 .filter(distinkte())
                 .collect(toList());
     }

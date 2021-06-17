@@ -7,7 +7,7 @@ import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseSokConsumer.Sokedat
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static no.nav.sosialhjelp.soknad.consumer.adresse.AdresseSokService.isAddressTooShortOrNull;
+import static no.nav.sosialhjelp.soknad.consumer.adresse.TpsAdresseSokService.isAddressTooShortOrNull;
 
 
 public final class AdresseStringSplitter {

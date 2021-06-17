@@ -2,6 +2,7 @@ package no.nav.sosialhjelp.soknad.business.service;
 
 import no.nav.sosialhjelp.soknad.business.InnsendingService;
 import no.nav.sosialhjelp.soknad.business.SoknadUnderArbeidService;
+import no.nav.sosialhjelp.soknad.business.service.adressesok.AdresseSokService;
 import no.nav.sosialhjelp.soknad.business.service.digisosapi.DigisosApiService;
 import no.nav.sosialhjelp.soknad.business.service.dittnav.DittNavMetadataService;
 import no.nav.sosialhjelp.soknad.business.service.informasjon.PabegynteSoknaderService;
@@ -28,7 +29,8 @@ import org.springframework.context.annotation.Import;
         OpplastetVedleggService.class,
         MineSakerMetadataService.class,
         DittNavMetadataService.class,
-        PabegynteSoknaderService.class
+        PabegynteSoknaderService.class,
+        AdresseSokService.class
 })
 public class ServiceConfig {
 }
