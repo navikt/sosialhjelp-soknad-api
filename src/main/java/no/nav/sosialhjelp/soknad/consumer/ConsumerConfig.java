@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.consumer;
 
-import no.nav.sosialhjelp.soknad.consumer.adresse.AdresseSokService;
+import no.nav.sosialhjelp.soknad.consumer.adresse.TpsAdresseSokService;
 import no.nav.sosialhjelp.soknad.consumer.dkif.DkifService;
 import no.nav.sosialhjelp.soknad.consumer.fiks.DokumentKrypterer;
 import no.nav.sosialhjelp.soknad.consumer.kodeverk.KodeverkService;
@@ -45,7 +45,7 @@ import org.springframework.context.annotation.Profile;
         PdlAdresseSokService.class,
         ConsumerConfig.WsServices.class,
         DokumentKrypterer.class,
-        AdresseSokService.class,
+        TpsAdresseSokService.class,
         NorgService.class,
         SkattbarInntektService.class,
         OrganisasjonService.class,

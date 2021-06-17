@@ -6,7 +6,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresseValg;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonGateAdresse;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonMatrikkelAdresse;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
-import no.nav.sosialhjelp.soknad.consumer.adresse.AdresseSokService;
+import no.nav.sosialhjelp.soknad.consumer.adresse.TpsAdresseSokService;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.PdlAdresseSokService;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseForslag;
@@ -53,7 +53,7 @@ public class SoknadsmottakerServiceTest {
     private static final String HUSBOKSTAV = "B";
 
     @Mock
-    private AdresseSokService adresseSokService;
+    private TpsAdresseSokService tpsAdresseSokService;
 
     @Mock
     private PdlAdresseSokService pdlAdresseSokService;
@@ -66,7 +66,7 @@ public class SoknadsmottakerServiceTest {
 
     @Test
     public void finnAdresseFraSoknadGirRiktigAdresseForMidlertidigGateadresse() {
-        when(adresseSokService.sokEtterAdresser(any(Sokedata.class))).thenReturn(lagAdresseForslagListeMedEtInnslag());
+        when(tpsAdresseSokService.sokEtterAdresser(any(Sokedata.class))).thenReturn(lagAdresseForslagListeMedEtInnslag());
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         JsonPersonalia personalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
         personalia.setOppholdsadresse(createGateadresse());
@@ -100,7 +100,7 @@ public class SoknadsmottakerServiceTest {
         assertThat(adresseForslag.kommunenavn, is(KOMMUNENAVN1));
         assertThat(adresseForslag.type, is(GATEADRESSE));
 
-        verifyNoInteractions(adresseSokService);
+        verifyNoInteractions(tpsAdresseSokService);
     }
 
     @Test
@@ -121,7 +121,7 @@ public class SoknadsmottakerServiceTest {
 
     @Test
     public void finnAdresseFraSoknadReturnererTomListeHvisAdressesokGirFlereResultater() {
-        when(adresseSokService.sokEtterAdresser(any(Sokedata.class))).thenReturn(Arrays.asList(
+        when(tpsAdresseSokService.sokEtterAdresser(any(Sokedata.class))).thenReturn(Arrays.asList(
             lagAdresseForslag(KOMMUNENUMMER1, KOMMUNENAVN1, "Foo"),
             lagAdresseForslag(KOMMUNENUMMER1, KOMMUNENAVN1, "Bar")
         ));
@@ -137,7 +137,7 @@ public class SoknadsmottakerServiceTest {
     
     @Test
     public void finnAdresseFraSoknadKanGiFlereNavKontor() {
-        when(adresseSokService.sokEtterAdresser(any(Sokedata.class))).thenReturn(Arrays.asList(
+        when(tpsAdresseSokService.sokEtterAdresser(any(Sokedata.class))).thenReturn(Arrays.asList(
             lagAdresseForslag(KOMMUNENUMMER1, KOMMUNENAVN1, "Foo"),
             lagAdresseForslag(KOMMUNENUMMER2, KOMMUNENAVN2, "Foo")
         ));

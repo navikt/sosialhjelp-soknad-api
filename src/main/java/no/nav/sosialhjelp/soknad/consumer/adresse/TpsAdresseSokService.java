@@ -1,8 +1,6 @@
 package no.nav.sosialhjelp.soknad.consumer.adresse;
 
-import no.finn.unleash.Unleash;
 import no.nav.sosialhjelp.soknad.consumer.kodeverk.KodeverkService;
-import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.PdlAdresseSokService;
 import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseForslag;
 import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseSokConsumer;
 import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseSokConsumer.AdresseData;
@@ -22,25 +20,17 @@ import static no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseForslagType.
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Service
-public class AdresseSokService {
-
-    private static final String FEATURE_PDL_ADRESSESOK_ENABLED = "sosialhjelp.soknad.pdl-adressesok-enabled";
+public class TpsAdresseSokService {
 
     private final AdresseSokConsumer adresseSokConsumer;
     private final KodeverkService kodeverkService;
-    private final Unleash unleash;
-    private final PdlAdresseSokService pdlAdresseSokService;
 
-    public AdresseSokService(
+    public TpsAdresseSokService(
             AdresseSokConsumer adresseSokConsumer,
-            KodeverkService kodeverkService,
-            Unleash unleash,
-            PdlAdresseSokService pdlAdresseSokService
+            KodeverkService kodeverkService
     ) {
         this.adresseSokConsumer = adresseSokConsumer;
         this.kodeverkService = kodeverkService;
-        this.unleash = unleash;
-        this.pdlAdresseSokService = pdlAdresseSokService;
     }
 
     public List<AdresseForslag> sokEtterAdresser(String sok) {
@@ -49,15 +39,7 @@ public class AdresseSokService {
         }
         final var sokedata = AdresseStringSplitter.toSokedata(kodeverkService, sok);
 
-        if (unleash.isEnabled(FEATURE_PDL_ADRESSESOK_ENABLED, false)) {
-            return sokEtterAdresserPDL(sokedata);
-        }
         return sokEtterAdresser(sokedata);
-    }
-
-    private List<AdresseForslag> sokEtterAdresserPDL(Sokedata sokedata) {
-        // todo implement. use pdlAdresseSokService
-        return Collections.emptyList();
     }
 
     public List<AdresseForslag> sokEtterAdresser(Sokedata sokedata) {
@@ -68,7 +50,7 @@ public class AdresseSokService {
         final AdressesokRespons adressesokRespons = adresseSokConsumer.sokAdresse(sokedata);
         return adressesokRespons.adresseDataList.stream()
                 .filter(isGateadresse())
-                .map(AdresseSokService::toAdresseForslag) // "gateadresse" er hardkodet.
+                .map(TpsAdresseSokService::toAdresseForslag) // "gateadresse" er hardkodet.
                 .filter(distinkte())
                 .collect(toList());
     }
