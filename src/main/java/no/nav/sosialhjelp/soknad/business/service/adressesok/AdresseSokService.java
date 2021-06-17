@@ -5,7 +5,6 @@ import no.nav.sosialhjelp.soknad.consumer.adresse.TpsAdresseSokService;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.PdlAdresseSokService;
 import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseForslag;
 
-import java.util.Collections;
 import java.util.List;
 
 public class AdresseSokService {
@@ -35,7 +34,7 @@ public class AdresseSokService {
 
     private List<AdresseForslag> sokEtterAdresserPDL(String sok) {
         // TODO implement using pdlAdresseSokService
-        return Collections.emptyList();
+        return pdlAdresseSokService.getAdresseForslagList(sok);
     }
 
     private List<AdresseForslag> sokEtterAdresserTPS(String sok) {
