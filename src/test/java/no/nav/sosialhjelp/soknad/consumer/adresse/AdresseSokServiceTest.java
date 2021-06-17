@@ -1,8 +1,10 @@
 package no.nav.sosialhjelp.soknad.consumer.adresse;
 
+import no.finn.unleash.Unleash;
 import no.nav.sosialhjelp.soknad.consumer.kodeverk.KodeverkService;
 import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseForslag;
 import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseSokConsumer;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -13,6 +15,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.Silent.class)
@@ -24,8 +27,17 @@ public class AdresseSokServiceTest {
     @Mock
     private KodeverkService kodeverkService;
 
+    @Mock
+    private Unleash unleash;
+
+
     @InjectMocks
     private AdresseSokService adresseSokService;
+
+    @Before
+    public void setUp() throws Exception {
+        when(unleash.isEnabled(any(), anyBoolean())).thenReturn(false);
+    }
 
     @Test
     public void skalBytteUtKommunenavnForIKSKommunerSoerFronTilNordFron() {

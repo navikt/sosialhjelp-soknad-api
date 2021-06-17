@@ -49,7 +49,7 @@ public class AdresseSokService {
         }
         final var sokedata = AdresseStringSplitter.toSokedata(kodeverkService, sok);
 
-        if (unleash.isEnabled(FEATURE_PDL_ADRESSESOK_ENABLED)) {
+        if (unleash.isEnabled(FEATURE_PDL_ADRESSESOK_ENABLED, false)) {
             return sokEtterAdresserPDL(sokedata);
         }
         return sokEtterAdresser(sokedata);
