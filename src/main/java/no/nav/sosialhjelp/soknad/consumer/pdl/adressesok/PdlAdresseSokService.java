@@ -179,7 +179,7 @@ public class PdlAdresseSokService {
             criteriaList.add(criteria(VEGADRESSE_HUSBOKSTAV, EQUALS, sokedata.husbokstav));
         }
         if (isNotEmpty(sokedata.postnummer)) {
-            criteriaList.add(criteria(VEGADRESSE_POSTNUMMER, WILDCARD, sokedata.postnummer + WILDCARD_SUFFIX));
+            criteriaList.add(criteria(VEGADRESSE_POSTNUMMER, EQUALS, sokedata.postnummer));
         }
         if (isNotEmpty(sokedata.poststed)) {
             criteriaList.add(criteria(VEGADRESSE_POSTSTED, WILDCARD, sokedata.poststed + WILDCARD_SUFFIX));
