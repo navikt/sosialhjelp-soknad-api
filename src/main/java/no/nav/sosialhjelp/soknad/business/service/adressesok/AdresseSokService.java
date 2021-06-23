@@ -98,14 +98,14 @@ public class AdresseSokService {
         if (JsonAdresse.Type.MATRIKKELADRESSE.equals(adresse.getType())) {
             return adresseForslagForMatrikkelAdresse((JsonMatrikkelAdresse) adresse);
         } else if (JsonAdresse.Type.GATEADRESSE.equals(adresse.getType())) {
-            var sokedata = sokedateFromGateAdresse((JsonGateAdresse) adresse);
+            var sokedata = sokedataFromGateAdresse((JsonGateAdresse) adresse);
             var adresseForslag = pdlAdresseSokService.getAdresseForslag(sokedata);
             return Collections.singletonList(adresseForslag);
         }
         return Collections.emptyList();
     }
 
-    private AdresseSokConsumer.Sokedata sokedateFromGateAdresse(JsonGateAdresse adresse) {
+    private AdresseSokConsumer.Sokedata sokedataFromGateAdresse(JsonGateAdresse adresse) {
         return new AdresseSokConsumer.Sokedata()
                 .withSoketype(AdresseSokConsumer.Soketype.EKSAKT)
                 .withAdresse(adresse.getGatenavn())
@@ -123,7 +123,7 @@ public class AdresseSokService {
         if (JsonAdresse.Type.MATRIKKELADRESSE.equals(adresse.getType())) {
             return adresseForslagForMatrikkelAdresse((JsonMatrikkelAdresse) adresse);
         } else if (JsonAdresse.Type.GATEADRESSE.equals(adresse.getType())) {
-            var sokedata = sokedateFromGateAdresse((JsonGateAdresse) adresse);
+            var sokedata = sokedataFromGateAdresse((JsonGateAdresse) adresse);
             var adresser = tpsAdresseSokService.sokEtterAdresser(sokedata);
 
             if (adresser.size() <= 1) {
