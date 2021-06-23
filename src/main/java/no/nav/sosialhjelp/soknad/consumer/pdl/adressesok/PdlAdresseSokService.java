@@ -8,7 +8,6 @@ import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.Paging;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.SearchRule;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.VegadresseDto;
 import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseForslag;
-import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseSokConsumer;
 import no.nav.sosialhjelp.soknad.domain.model.exception.SosialhjelpSoknadApiException;
 import no.nav.sosialhjelp.soknad.domain.model.util.KommuneTilNavEnhetMapper;
 import org.slf4j.Logger;
@@ -47,12 +46,6 @@ public class PdlAdresseSokService {
         this.pdlAdresseSokConsumer = pdlAdresseSokConsumer;
     }
 
-    public String getGeografiskTilknytning(AdresseSokConsumer.Sokedata sokedata) {
-        var adresseSokResult = pdlAdresseSokConsumer.getAdresseSokResult(toVariables(sokedata));
-        var vegadresse = resolveVegadresse(adresseSokResult.getHits());
-        return bydelsnummerOrKommunenummer(vegadresse);
-    }
-
     public AdresseForslag getAdresseForslag(JsonGateAdresse adresse) {
         var adresseSokResult = pdlAdresseSokConsumer.getAdresseSokResult(toVariables(adresse));
         var vegadresse = resolveVegadresse(adresseSokResult.getHits());
@@ -88,37 +81,6 @@ public class PdlAdresseSokService {
             return vegadresse.getBydelsnummer();
         }
         return vegadresse.getKommunenummer();
-    }
-
-    private Map<String, Object> toVariables(AdresseSokConsumer.Sokedata sokedata) {
-        var variables = new HashMap<String, Object>();
-        variables.put(PAGING, new Paging(1, 30, emptyList()));
-
-        if (sokedata == null) {
-            throw new IllegalArgumentException("kan ikke soke uten sokedata");
-        }
-        variables.put(CRITERIA, toCriteriaList(sokedata));
-        return variables;
-    }
-
-    private List<Criteria> toCriteriaList(AdresseSokConsumer.Sokedata sokedata) {
-        var criteriaList = new ArrayList<Criteria>();
-        if (isNotEmpty(sokedata.adresse)) {
-            criteriaList.add(criteria(VEGADRESSE_ADRESSENAVN, CONTAINS, sokedata.adresse));
-        }
-        if (isNotEmpty(sokedata.husnummer)) {
-            criteriaList.add(criteria(VEGADRESSE_HUSNUMMER, EQUALS, sokedata.husnummer));
-        }
-        if (isNotEmpty(sokedata.husbokstav)) {
-            criteriaList.add(criteria(VEGADRESSE_HUSBOKSTAV, EQUALS, sokedata.husbokstav));
-        }
-        if (isNotEmpty(sokedata.postnummer)) {
-            criteriaList.add(criteria(VEGADRESSE_POSTNUMMER, EQUALS, sokedata.postnummer));
-        }
-        if (isNotEmpty(sokedata.poststed)) {
-            criteriaList.add(criteria(VEGADRESSE_POSTSTED, EQUALS, sokedata.poststed));
-        }
-        return criteriaList;
     }
 
     private Map<String, Object> toVariables(JsonGateAdresse adresse) {
