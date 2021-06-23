@@ -8,7 +8,6 @@ import no.nav.sosialhjelp.soknad.business.batch.oppgave.OppgaveHandtererImpl;
 import no.nav.sosialhjelp.soknad.business.db.config.DbConfig;
 import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.PdfGeneratorConfig;
 import no.nav.sosialhjelp.soknad.business.service.ServiceConfig;
-import no.nav.sosialhjelp.soknad.business.service.SoknadsmottakerService;
 import no.nav.sosialhjelp.soknad.business.service.soknadservice.SystemdataUpdater;
 import no.nav.sosialhjelp.soknad.business.service.systemdata.AdresseSystemdata;
 import no.nav.sosialhjelp.soknad.business.service.systemdata.ArbeidsforholdSystemdata;
@@ -36,7 +35,6 @@ import org.springframework.context.annotation.Import;
         OppgaveHandtererImpl.class,
         AvbrytAutomatiskSheduler.class,
         SlettSoknadUnderArbeidScheduler.class,
-        SoknadsmottakerService.class,
         SystemdataUpdater.class,
         KontonummerSystemdata.class,
         TelefonnummerSystemdata.class,

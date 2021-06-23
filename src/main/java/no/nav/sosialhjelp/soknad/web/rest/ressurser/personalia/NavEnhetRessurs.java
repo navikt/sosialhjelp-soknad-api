@@ -7,7 +7,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
 import no.nav.security.token.support.core.api.ProtectedWithClaims;
 import no.nav.sosialhjelp.metrics.aspects.Timed;
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository;
-import no.nav.sosialhjelp.soknad.business.service.SoknadsmottakerService;
+import no.nav.sosialhjelp.soknad.business.service.adressesok.AdresseSokService;
 import no.nav.sosialhjelp.soknad.consumer.fiks.KommuneInfoService;
 import no.nav.sosialhjelp.soknad.consumer.norg.NorgService;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.bydel.BydelService;
@@ -51,25 +51,25 @@ public class NavEnhetRessurs {
 
     private final Tilgangskontroll tilgangskontroll;
     private final SoknadUnderArbeidRepository soknadUnderArbeidRepository;
-    private final SoknadsmottakerService soknadsmottakerService;
     private final NorgService norgService;
     private final KommuneInfoService kommuneInfoService;
     private final BydelService bydelService;
+    private final AdresseSokService adresseSokService;
 
     public NavEnhetRessurs(
             Tilgangskontroll tilgangskontroll,
             SoknadUnderArbeidRepository soknadUnderArbeidRepository,
-            SoknadsmottakerService soknadsmottakerService,
             NorgService norgService,
             KommuneInfoService kommuneInfoService,
-            BydelService bydelService
+            BydelService bydelService,
+            AdresseSokService adresseSokService
     ) {
         this.tilgangskontroll = tilgangskontroll;
         this.soknadUnderArbeidRepository = soknadUnderArbeidRepository;
-        this.soknadsmottakerService = soknadsmottakerService;
         this.norgService = norgService;
         this.kommuneInfoService = kommuneInfoService;
         this.bydelService = bydelService;
+        this.adresseSokService = adresseSokService;
     }
 
     @GET
@@ -145,7 +145,7 @@ public class NavEnhetRessurs {
     public List<NavEnhetRessurs.NavEnhetFrontend> findSoknadsmottaker(JsonSoknad soknad, String valg, String valgtEnhetNr) {
         JsonPersonalia personalia = soknad.getData().getPersonalia();
 
-        List<AdresseForslag> adresseForslagene = soknadsmottakerService.finnAdresseFraSoknad(personalia, valg);
+        List<AdresseForslag> adresseForslagene = adresseSokService.finnAdresseFraSoknad(personalia, valg);
         /*
          * Vi fjerner nå duplikate NAV-enheter med forskjellige bydelsnumre gjennom
          * bruk av distinct. Hvis det er viktig med riktig bydelsnummer bør dette kallet
