@@ -22,6 +22,7 @@ public class AdresseSokService {
 
     private static final String FEATURE_PDL_ADRESSESOK_ENABLED = "sosialhjelp.soknad.pdl-adressesok-enabled";
     private static final String FEATURE_PDL_ADRESSESOK_VED_FOLKEREGISTRERT_ADRESSE = "sosialhjelp.soknad.pdl-adressesok-ved-folkeregistrert-adresse";
+    private static final String FEATURE_PDL_ADRESSESOK_SAMMENLIGN_MED_TPS = "sosialhjelp.soknad.pdl-adressesok-sammenlign-med-tps";
 
     private static final Logger log = getLogger(AdresseSokService.class);
 
@@ -68,7 +69,11 @@ public class AdresseSokService {
             }
         }
 
-        return getAdresseForslagFraTPS(adresse);
+        var adresseForslagFraTPS = getAdresseForslagFraTPS(adresse);
+        if (FOLKEREGISTRERT.toString().equals(valg) && unleash.isEnabled(FEATURE_PDL_ADRESSESOK_SAMMENLIGN_MED_TPS, false)) {
+            sammenlignMedPdl(adresseForslagFraTPS, adresse);
+        }
+        return adresseForslagFraTPS;
     }
 
     private JsonAdresse hentValgtAdresse(JsonPersonalia personalia, String valg) {
@@ -157,5 +162,26 @@ public class AdresseSokService {
                 .anyMatch(af -> !forste.adresse.equals(af.adresse)
                         || !forste.postnummer.equals(af.postnummer)
                         || !forste.poststed.equals(af.poststed));
+    }
+
+    private void sammenlignMedPdl(List<AdresseForslag> adresseForslagList, JsonAdresse adresse) {
+        if (adresseForslagList.isEmpty()) {
+            return;
+        }
+        var tpsGt = adresseForslagList.get(0).geografiskTilknytning;
+        try {
+            var pdlAdresseForslag = getAdresseForslagFraPDL(adresse);
+            if (!pdlAdresseForslag.isEmpty()) {
+                var pdlGt = pdlAdresseForslag.get(0).geografiskTilknytning;
+                if (tpsGt.equals(pdlGt)) {
+                    log.info("GT fra tps og pdl er like");
+                } else {
+                    log.info("GT fra tps og pdl er ulike. Tps={}, pdl={}", tpsGt, pdlGt);
+                }
+            }
+        } catch (Exception e) {
+            log.warn("Noe feilet ved sammenligning av resultat fra TPS og PDL", e);
+        }
+
     }
 }
