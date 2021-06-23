@@ -96,28 +96,21 @@ public class PdlAdresseSokService {
 
     private List<Criteria> toCriteriaList(JsonGateAdresse adresse) {
         var criteriaList = new ArrayList<Criteria>();
-        var debugString = "";
         if (isNotEmpty(adresse.getGatenavn())) {
             criteriaList.add(criteria(VEGADRESSE_ADRESSENAVN, CONTAINS, adresse.getGatenavn()));
-            debugString += "adressenavn, ";
         }
         if (isNotEmpty(adresse.getHusnummer())) {
             criteriaList.add(criteria(VEGADRESSE_HUSNUMMER, EQUALS, adresse.getHusnummer()));
-            debugString += "husnummer, ";
         }
         if (isNotEmpty(adresse.getHusbokstav())) {
             criteriaList.add(criteria(VEGADRESSE_HUSBOKSTAV, EQUALS, adresse.getHusbokstav()));
-            debugString += "husbokstav, ";
         }
         if (isNotEmpty(adresse.getPostnummer())) {
             criteriaList.add(criteria(VEGADRESSE_POSTNUMMER, EQUALS, adresse.getPostnummer()));
-            debugString += "postnummer, ";
         }
         if (isNotEmpty(adresse.getPoststed())) {
-            criteriaList.add(criteria(VEGADRESSE_POSTSTED, EQUALS, adresse.getPoststed()));
-            debugString += "poststed, ";
+            criteriaList.add(criteria(VEGADRESSE_POSTSTED, CONTAINS, adresse.getPoststed()));
         }
-        log.info("sokeCriteria som er satt: {}", debugString);
         return criteriaList;
     }
 
