@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.business.service;
+package no.nav.sosialhjelp.soknad.business.service.adressesok;
 
 import no.finn.unleash.Unleash;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse;
@@ -11,7 +11,7 @@ import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.PdlAdresseSokService;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseForslag;
 import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseForslagType;
-import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseSokConsumer.Sokedata;
+import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseSokConsumer;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -33,9 +33,9 @@ import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class SoknadsmottakerServiceTest {
-    private static final String EIER = "123456789101";
+public class AdresseSokServiceTest {
 
+    private static final String EIER = "123456789101";
     private static final String KOMMUNENUMMER = "0300";
     private static final String GEOGRAFISK_TILKNYTNING = "0101";
     private static final String BYDEL = "0102";
@@ -62,16 +62,16 @@ public class SoknadsmottakerServiceTest {
     private Unleash unleash;
 
     @InjectMocks
-    private SoknadsmottakerService soknadsmottakerService;
+    private AdresseSokService adresseSokService;
 
     @Test
     public void finnAdresseFraSoknadGirRiktigAdresseForMidlertidigGateadresse() {
-        when(tpsAdresseSokService.sokEtterAdresser(any(Sokedata.class))).thenReturn(lagAdresseForslagListeMedEtInnslag());
+        when(tpsAdresseSokService.sokEtterAdresser(any(AdresseSokConsumer.Sokedata.class))).thenReturn(lagAdresseForslagListeMedEtInnslag());
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         JsonPersonalia personalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
         personalia.setOppholdsadresse(createGateadresse());
 
-        List<AdresseForslag> adresseForslagene = soknadsmottakerService.finnAdresseFraSoknad(personalia, JsonAdresseValg.MIDLERTIDIG.toString());
+        List<AdresseForslag> adresseForslagene = adresseSokService.finnAdresseFraSoknad(personalia, JsonAdresseValg.MIDLERTIDIG.toString());
         assertThat(adresseForslagene.size(), is(1));
 
         AdresseForslag adresseForslag = adresseForslagene.get(0);
@@ -90,7 +90,7 @@ public class SoknadsmottakerServiceTest {
         var personalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
         personalia.setFolkeregistrertAdresse(createGateadresse());
 
-        var adresseForslagene = soknadsmottakerService.finnAdresseFraSoknad(personalia, JsonAdresseValg.FOLKEREGISTRERT.toString());
+        var adresseForslagene = adresseSokService.finnAdresseFraSoknad(personalia, JsonAdresseValg.FOLKEREGISTRERT.toString());
 
         assertThat(adresseForslagene.size(), is(1));
 
@@ -109,7 +109,7 @@ public class SoknadsmottakerServiceTest {
         JsonPersonalia personalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
         personalia.setFolkeregistrertAdresse(createMatrikkeladresse());
 
-        List<AdresseForslag> adresseForslagene = soknadsmottakerService.finnAdresseFraSoknad(personalia, JsonAdresseValg.FOLKEREGISTRERT.toString());
+        List<AdresseForslag> adresseForslagene = adresseSokService.finnAdresseFraSoknad(personalia, JsonAdresseValg.FOLKEREGISTRERT.toString());
         assertThat(adresseForslagene.size(), is(1));
 
         AdresseForslag adresseForslag = adresseForslagene.get(0);
@@ -121,32 +121,32 @@ public class SoknadsmottakerServiceTest {
 
     @Test
     public void finnAdresseFraSoknadReturnererTomListeHvisAdressesokGirFlereResultater() {
-        when(tpsAdresseSokService.sokEtterAdresser(any(Sokedata.class))).thenReturn(Arrays.asList(
-            lagAdresseForslag(KOMMUNENUMMER1, KOMMUNENAVN1, "Foo"),
-            lagAdresseForslag(KOMMUNENUMMER1, KOMMUNENAVN1, "Bar")
+        when(tpsAdresseSokService.sokEtterAdresser(any(AdresseSokConsumer.Sokedata.class))).thenReturn(Arrays.asList(
+                lagAdresseForslag(KOMMUNENUMMER1, KOMMUNENAVN1, "Foo"),
+                lagAdresseForslag(KOMMUNENUMMER1, KOMMUNENAVN1, "Bar")
         ));
 
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         JsonPersonalia personalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
         personalia.setOppholdsadresse(createGateadresse());
 
-        List<AdresseForslag> adresseForslagene = soknadsmottakerService.finnAdresseFraSoknad(personalia, JsonAdresseValg.SOKNAD.toString());
+        List<AdresseForslag> adresseForslagene = adresseSokService.finnAdresseFraSoknad(personalia, JsonAdresseValg.SOKNAD.toString());
 
         assertThat(adresseForslagene, is(empty()));
     }
-    
+
     @Test
     public void finnAdresseFraSoknadKanGiFlereNavKontor() {
-        when(tpsAdresseSokService.sokEtterAdresser(any(Sokedata.class))).thenReturn(Arrays.asList(
-            lagAdresseForslag(KOMMUNENUMMER1, KOMMUNENAVN1, "Foo"),
-            lagAdresseForslag(KOMMUNENUMMER2, KOMMUNENAVN2, "Foo")
+        when(tpsAdresseSokService.sokEtterAdresser(any(AdresseSokConsumer.Sokedata.class))).thenReturn(Arrays.asList(
+                lagAdresseForslag(KOMMUNENUMMER1, KOMMUNENAVN1, "Foo"),
+                lagAdresseForslag(KOMMUNENUMMER2, KOMMUNENAVN2, "Foo")
         ));
 
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         JsonPersonalia personalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
         personalia.setOppholdsadresse(createGateadresse());
 
-        List<AdresseForslag> adresseForslagene = soknadsmottakerService.finnAdresseFraSoknad(personalia, JsonAdresseValg.SOKNAD.toString());
+        List<AdresseForslag> adresseForslagene = adresseSokService.finnAdresseFraSoknad(personalia, JsonAdresseValg.SOKNAD.toString());
 
         assertThat(adresseForslagene.size(), is(2));
     }
@@ -157,7 +157,7 @@ public class SoknadsmottakerServiceTest {
         JsonPersonalia personalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
         personalia.setOppholdsadresse(createGateadresse());
 
-        List<AdresseForslag> adresseForslagene = soknadsmottakerService.finnAdresseFraSoknad(personalia, null);
+        List<AdresseForslag> adresseForslagene = adresseSokService.finnAdresseFraSoknad(personalia, null);
 
         assertThat(adresseForslagene, is(empty()));
     }
@@ -184,7 +184,7 @@ public class SoknadsmottakerServiceTest {
     private AdresseForslag lagAdresseForslag(String kommunenummer, String kommunenavn) {
         return lagAdresseForslag(kommunenummer, kommunenavn, "Gateveien");
     }
-    
+
     private AdresseForslag lagAdresseForslag(String kommunenummer, String kommunenavn, String adresse) {
         AdresseForslag adresseForslag = new AdresseForslag();
         adresseForslag.geografiskTilknytning = GEOGRAFISK_TILKNYTNING;

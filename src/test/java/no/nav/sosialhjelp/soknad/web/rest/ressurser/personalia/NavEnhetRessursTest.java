@@ -7,7 +7,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonGateAdresse;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository;
-import no.nav.sosialhjelp.soknad.business.service.SoknadsmottakerService;
+import no.nav.sosialhjelp.soknad.business.service.adressesok.AdresseSokService;
 import no.nav.sosialhjelp.soknad.consumer.fiks.KommuneInfoService;
 import no.nav.sosialhjelp.soknad.consumer.norg.NorgService;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.bydel.BydelService;
@@ -126,7 +126,7 @@ public class NavEnhetRessursTest {
     private Tilgangskontroll tilgangskontroll;
 
     @Mock
-    private SoknadsmottakerService soknadsmottakerService;
+    private AdresseSokService adresseSokService;
 
     @Mock
     private NorgService norgService;
@@ -158,7 +158,7 @@ public class NavEnhetRessursTest {
         soknadUnderArbeid.getJsonInternalSoknad().getSoknad().withMottaker(SOKNADSMOTTAKER).getData().getPersonalia()
                 .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT));
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(soknadUnderArbeid);
-        when(soknadsmottakerService.finnAdresseFraSoknad(any(JsonPersonalia.class), eq("folkeregistrert"))).thenReturn(
+        when(adresseSokService.finnAdresseFraSoknad(any(JsonPersonalia.class), eq("folkeregistrert"))).thenReturn(
                 Arrays.asList(SOKNADSMOTTAKER_FORSLAG, SOKNADSMOTTAKER_FORSLAG_2));
         when(norgService.getEnhetForGt(ENHETSNAVN)).thenReturn(NAV_ENHET);
         when(norgService.getEnhetForGt(ENHETSNAVN_2)).thenReturn(NAV_ENHET_2);
@@ -179,7 +179,7 @@ public class NavEnhetRessursTest {
         soknadUnderArbeid.getJsonInternalSoknad().getSoknad().withMottaker(SOKNADSMOTTAKER_2).getData().getPersonalia()
                 .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT));
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(soknadUnderArbeid);
-        when(soknadsmottakerService.finnAdresseFraSoknad(any(JsonPersonalia.class), eq("folkeregistrert")))
+        when(adresseSokService.finnAdresseFraSoknad(any(JsonPersonalia.class), eq("folkeregistrert")))
                 .thenReturn(singletonList(SOKNADSMOTTAKER_FORSLAG_BYDEL_MARKA));
         when(bydelService.getBydelTilForMarka(SOKNADSMOTTAKER_FORSLAG_BYDEL_MARKA)).thenReturn(annenBydel);
         when(norgService.getEnhetForGt(annenBydel)).thenReturn(NAV_ENHET_2);
@@ -210,7 +210,7 @@ public class NavEnhetRessursTest {
         soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia()
                 .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(null));
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(soknadUnderArbeid);
-        when(soknadsmottakerService.finnAdresseFraSoknad(any(JsonPersonalia.class), eq(null))).thenReturn(new ArrayList<>());
+        when(adresseSokService.finnAdresseFraSoknad(any(JsonPersonalia.class), eq(null))).thenReturn(new ArrayList<>());
 
         List<NavEnhetFrontend> navEnhetFrontends = navEnhetRessurs.hentNavEnheter(BEHANDLINGSID);
 
