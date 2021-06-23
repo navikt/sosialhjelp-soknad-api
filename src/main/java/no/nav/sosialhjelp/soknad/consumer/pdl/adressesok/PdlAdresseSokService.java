@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.consumer.pdl.adressesok;
 
+import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonGateAdresse;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.AdresseSokHit;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.Criteria;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.FieldName;
@@ -52,8 +53,8 @@ public class PdlAdresseSokService {
         return bydelsnummerOrKommunenummer(vegadresse);
     }
 
-    public AdresseForslag getAdresseForslag(AdresseSokConsumer.Sokedata sokedata) {
-        var adresseSokResult = pdlAdresseSokConsumer.getAdresseSokResult(toVariables(sokedata));
+    public AdresseForslag getAdresseForslag(JsonGateAdresse adresse) {
+        var adresseSokResult = pdlAdresseSokConsumer.getAdresseSokResult(toVariables(adresse));
         var vegadresse = resolveVegadresse(adresseSokResult.getHits());
         return toAdresseForslag(vegadresse);
     }
@@ -116,6 +117,37 @@ public class PdlAdresseSokService {
         }
         if (isNotEmpty(sokedata.poststed)) {
             criteriaList.add(criteria(VEGADRESSE_POSTSTED, EQUALS, sokedata.poststed));
+        }
+        return criteriaList;
+    }
+
+    private Map<String, Object> toVariables(JsonGateAdresse adresse) {
+        var variables = new HashMap<String, Object>();
+        variables.put(PAGING, new Paging(1, 30, emptyList()));
+
+        if (adresse == null) {
+            throw new IllegalArgumentException("kan ikke soke uten adresse");
+        }
+        variables.put(CRITERIA, toCriteriaList(adresse));
+        return variables;
+    }
+
+    private List<Criteria> toCriteriaList(JsonGateAdresse adresse) {
+        var criteriaList = new ArrayList<Criteria>();
+        if (isNotEmpty(adresse.getGatenavn())) {
+            criteriaList.add(criteria(VEGADRESSE_ADRESSENAVN, CONTAINS, adresse.getGatenavn()));
+        }
+        if (isNotEmpty(adresse.getHusnummer())) {
+            criteriaList.add(criteria(VEGADRESSE_HUSNUMMER, EQUALS, adresse.getHusnummer()));
+        }
+        if (isNotEmpty(adresse.getHusbokstav())) {
+            criteriaList.add(criteria(VEGADRESSE_HUSBOKSTAV, EQUALS, adresse.getHusbokstav()));
+        }
+        if (isNotEmpty(adresse.getPostnummer())) {
+            criteriaList.add(criteria(VEGADRESSE_POSTNUMMER, EQUALS, adresse.getPostnummer()));
+        }
+        if (isNotEmpty(adresse.getPoststed())) {
+            criteriaList.add(criteria(VEGADRESSE_POSTSTED, EQUALS, adresse.getPoststed()));
         }
         return criteriaList;
     }

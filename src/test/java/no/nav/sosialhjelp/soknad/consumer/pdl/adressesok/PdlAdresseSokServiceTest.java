@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.consumer.pdl.adressesok;
 
+import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonGateAdresse;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.AdresseSokHit;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.AdresseSokResult;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.VegadresseDto;
@@ -36,6 +37,12 @@ public class PdlAdresseSokServiceTest {
 
     private AdresseSokConsumer.Sokedata sokedata = new AdresseSokConsumer.Sokedata()
             .withAdresse("Testveien")
+            .withHusnummer("1")
+            .withHusbokstav("B")
+            .withPoststed("Oslo");
+
+    private JsonGateAdresse folkeregistretAdresse = new JsonGateAdresse()
+            .withGatenavn("Testveien")
             .withHusnummer("1")
             .withHusbokstav("B")
             .withPoststed("Oslo");
@@ -124,7 +131,7 @@ public class PdlAdresseSokServiceTest {
 
         when(pdlAdresseSokConsumer.getAdresseSokResult(any())).thenReturn(adresseSokResultMock);
 
-        var adresseForslag = pdlAdresseSokService.getAdresseForslag(sokedata);
+        var adresseForslag = pdlAdresseSokService.getAdresseForslag(folkeregistretAdresse);
         assertThat(adresseForslag.geografiskTilknytning).isEqualTo(BYDELSNUMMER);
     }
 
@@ -137,7 +144,7 @@ public class PdlAdresseSokServiceTest {
 
         when(pdlAdresseSokConsumer.getAdresseSokResult(any())).thenReturn(adresseSokResultMock);
 
-        var adresseForslag = pdlAdresseSokService.getAdresseForslag(sokedata);
+        var adresseForslag = pdlAdresseSokService.getAdresseForslag(folkeregistretAdresse);
         assertThat(adresseForslag.geografiskTilknytning).isEqualTo(KOMMUNENUMMER);
     }
 
@@ -154,7 +161,7 @@ public class PdlAdresseSokServiceTest {
         when(pdlAdresseSokConsumer.getAdresseSokResult(any())).thenReturn(adresseSokResultMock);
 
         assertThatExceptionOfType(RuntimeException.class)
-                .isThrownBy(() -> pdlAdresseSokService.getAdresseForslag(sokedata));
+                .isThrownBy(() -> pdlAdresseSokService.getAdresseForslag(folkeregistretAdresse));
     }
 
     @Test
@@ -170,7 +177,7 @@ public class PdlAdresseSokServiceTest {
         when(pdlAdresseSokConsumer.getAdresseSokResult(any())).thenReturn(adresseSokResultMock);
 
         assertThatExceptionOfType(RuntimeException.class)
-                .isThrownBy(() -> pdlAdresseSokService.getAdresseForslag(sokedata));
+                .isThrownBy(() -> pdlAdresseSokService.getAdresseForslag(folkeregistretAdresse));
     }
 
     @Test
@@ -186,7 +193,7 @@ public class PdlAdresseSokServiceTest {
         when(pdlAdresseSokConsumer.getAdresseSokResult(any())).thenReturn(adresseSokResultMock);
 
         assertThatExceptionOfType(RuntimeException.class)
-                .isThrownBy(() -> pdlAdresseSokService.getAdresseForslag(sokedata));
+                .isThrownBy(() -> pdlAdresseSokService.getAdresseForslag(folkeregistretAdresse));
     }
 
     @Test
@@ -201,7 +208,7 @@ public class PdlAdresseSokServiceTest {
 
         when(pdlAdresseSokConsumer.getAdresseSokResult(any())).thenReturn(adresseSokResultMock);
 
-        var adresseForslag = pdlAdresseSokService.getAdresseForslag(sokedata);
+        var adresseForslag = pdlAdresseSokService.getAdresseForslag(folkeregistretAdresse);
         assertThat(adresseForslag.kommunenavn).isEqualTo("Oslo");
         assertThat(adresseForslag.kommunenummer).isEqualTo("1111");
         assertThat(adresseForslag.geografiskTilknytning).isEqualTo("030101");
