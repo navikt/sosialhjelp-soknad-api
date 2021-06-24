@@ -41,14 +41,18 @@ public class AdresseSokService {
 
     public List<AdresseForslag> sokEtterAdresser(String sok) {
         if (unleash.isEnabled(FEATURE_PDL_ADRESSESOK_ENABLED, false)) {
-            return sokEtterAdresserPDL(sok);
+            try {
+                return sokEtterAdresserPDL(sok);
+            } catch (Exception e) {
+                log.warn("Noe uventet feilet ved kall mot PDL adressesøk -> Fallback mot TPS");
+                return sokEtterAdresserTPS(sok);
+            }
         }
         return sokEtterAdresserTPS(sok);
     }
 
     private List<AdresseForslag> sokEtterAdresserPDL(String sok) {
-        // TODO implement using pdlAdresseSokService
-        return pdlAdresseSokService.getAdresseForslagList(sok);
+        return pdlAdresseSokService.sokEtterAdresser(sok);
     }
 
     private List<AdresseForslag> sokEtterAdresserTPS(String sok) {

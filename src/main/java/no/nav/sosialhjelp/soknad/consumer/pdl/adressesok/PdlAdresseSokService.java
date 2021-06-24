@@ -68,7 +68,7 @@ public class PdlAdresseSokService {
         return toAdresseForslag(vegadresse);
     }
 
-    public List<AdresseForslag> getAdresseForslagList(String sok) {
+    public List<AdresseForslag> sokEtterAdresser(String sok) {
         if (isAddressTooShortOrNull(sok)) {
             return Collections.emptyList();
         }
