@@ -84,7 +84,7 @@ public class MdcFilterTest {
 
     @Test
     public void shouldAddBehandlingsId() {
-        MultivaluedMap<String, String> pathParams = new MultivaluedHashMap();
+        MultivaluedMap<String, String> pathParams = new MultivaluedHashMap<>();
         pathParams.put("behandlingsId", Collections.singletonList(MOCK_BEHANDLINGS_ID));
 
         ExtendedUriInfo uriInfo = mock(ExtendedUriInfo.class);

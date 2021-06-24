@@ -12,6 +12,7 @@ import java.io.StringWriter;
 public class JAXBHelper {
     private final JAXBContext context;
 
+    @SuppressWarnings("rawtypes")
     public JAXBHelper(Class... classes) {
         try {
             context = JAXBContext.newInstance(classes);

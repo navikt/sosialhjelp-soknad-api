@@ -49,7 +49,7 @@ public class SoknadActionsEndpointIT extends AbstractIT {
                 .invoke();
     }
 
-    private Response sendPostRequest(SoknadTester soknadTester, String subUrl, Entity entity, String token, String xhrHeader){
+    private Response sendPostRequest(SoknadTester soknadTester, String subUrl, Entity<String> entity, String token, String xhrHeader){
         Invocation.Builder builder = soknadTester.sendsoknadResource(subUrl, webTarget -> webTarget);
 
         if(token != null) {

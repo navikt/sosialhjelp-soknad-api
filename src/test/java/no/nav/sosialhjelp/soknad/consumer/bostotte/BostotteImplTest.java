@@ -46,7 +46,7 @@ public class BostotteImplTest {
     private BostotteImpl bostotte;
 
     @Captor
-    ArgumentCaptor<RequestEntity> captor;
+    ArgumentCaptor<RequestEntity<BostotteDto>> captor;
 
     @Before
     public void setUp() {

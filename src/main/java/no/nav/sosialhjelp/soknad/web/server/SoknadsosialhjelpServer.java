@@ -127,7 +127,7 @@ public class SoknadsosialhjelpServer {
 
         final Pattern p = Pattern.compile("\\$\\{([^}:]*):*([^}]*)\\}"); // Matches and groups properties on this form ${ENV_VAR:https://env.var}. To simulate same logic as in spring boot.
         final Matcher m = p.matcher(value);
-        final StringBuffer sb = new StringBuffer();
+        final StringBuilder sb = new StringBuilder();
         while (m.find()) {
             final String variableName = m.group(1);
             String replacement = m.group(2);

@@ -64,7 +64,7 @@ public class ClientLogFilter implements ClientResponseFilter, ClientRequestFilte
         // Therefore we serialize cookies on the more modern and simpler rfc6265-format
         // https://www.ietf.org/rfc/rfc2109.txt
         // https://tools.ietf.org/html/rfc6265
-        requestHeaders.replace(COOKIE, new ArrayList(Arrays.asList(
+        requestHeaders.replace(COOKIE, new ArrayList<>(Arrays.asList(
                 requestHeaders.get(COOKIE)
                         .stream()
                         .map(this::toCookieString)
