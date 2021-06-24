@@ -26,6 +26,7 @@ public class RedisServiceImpl implements RedisService {
         this.redisStore = redisStore;
     }
 
+    @SuppressWarnings("rawtypes")
     @Override
     public Object get(String key, Class requestedClass) {
         byte[] value = redisStore.get(key);

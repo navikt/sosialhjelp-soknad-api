@@ -11,6 +11,7 @@ import com.github.jknack.handlebars.Helper;
 *
 * */
 
+@SuppressWarnings("rawtypes")
 public interface HandlebarRegistry {
 
     void registrerHelper(String name, Helper helper);

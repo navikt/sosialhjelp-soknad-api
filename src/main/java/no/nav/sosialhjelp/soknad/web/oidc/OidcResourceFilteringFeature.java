@@ -11,6 +11,7 @@ import javax.ws.rs.core.FeatureContext;
 import java.util.Collections;
 import java.util.List;
 
+@SuppressWarnings("rawtypes")
 public class OidcResourceFilteringFeature implements DynamicFeature {
     private static final List<Class> ALLOWED_CLASSES = Collections.singletonList(WadlModelProcessor.OptionsHandler.class); // Add Resource-classes from external libraries we need to use but can't annotate with @unprotected.
     private static final List<Class> ALLOWED_PARENT_CLASSES = Collections.singletonList(OptionsMethodProcessor.class);

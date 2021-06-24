@@ -6,7 +6,7 @@ import java.util.Map;
 
 public interface RedisService {
 
-    Object get(String key, Class requestedClass);
+    Object get(String key, @SuppressWarnings("rawtypes") Class requestedClass);
 
     String getString(String key);
 
