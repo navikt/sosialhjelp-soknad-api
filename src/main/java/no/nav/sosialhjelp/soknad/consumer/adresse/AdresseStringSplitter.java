@@ -15,7 +15,7 @@ public final class AdresseStringSplitter {
     private AdresseStringSplitter() {
     }
 
-    static Sokedata toSokedata(KodeverkService kodeverkService, String adresse) {
+    public static Sokedata toSokedata(KodeverkService kodeverkService, String adresse) {
         if (isAddressTooShortOrNull(adresse)) {
             return new Sokedata().withAdresse(adresse);
         }

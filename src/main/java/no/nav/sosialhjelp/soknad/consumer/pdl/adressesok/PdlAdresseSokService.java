@@ -1,25 +1,33 @@
 package no.nav.sosialhjelp.soknad.consumer.pdl.adressesok;
 
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonGateAdresse;
+import no.nav.sosialhjelp.soknad.consumer.adresse.AdresseStringSplitter;
+import no.nav.sosialhjelp.soknad.consumer.kodeverk.KodeverkService;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.AdresseSokHit;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.Criteria;
+import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.Direction;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.FieldName;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.Paging;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.SearchRule;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.VegadresseDto;
 import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseForslag;
+import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseSokConsumer;
 import no.nav.sosialhjelp.soknad.domain.model.exception.SosialhjelpSoknadApiException;
 import no.nav.sosialhjelp.soknad.domain.model.util.KommuneTilNavEnhetMapper;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
+import static no.nav.sosialhjelp.soknad.consumer.adresse.TpsAdresseSokService.isAddressTooShortOrNull;
 import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.AdresseHelper.formatterKommunenavn;
 import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.FieldName.VEGADRESSE_ADRESSENAVN;
 import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.FieldName.VEGADRESSE_HUSBOKSTAV;
@@ -28,6 +36,8 @@ import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.FieldName.VE
 import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.FieldName.VEGADRESSE_POSTSTED;
 import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.SearchRule.CONTAINS;
 import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.SearchRule.EQUALS;
+import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.SearchRule.FROM;
+import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.SearchRule.WILDCARD;
 import static no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseForslagType.GATEADRESSE;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -39,17 +49,48 @@ public class PdlAdresseSokService {
     private static final String CRITERIA = "criteria";
 
     private static final Logger log = getLogger(PdlAdresseSokService.class);
+    public static final String WILDCARD_SUFFIX = "*";
 
     private final PdlAdresseSokConsumer pdlAdresseSokConsumer;
+    private final KodeverkService kodeverkService;
 
-    public PdlAdresseSokService(PdlAdresseSokConsumer pdlAdresseSokConsumer) {
+    public PdlAdresseSokService(
+            PdlAdresseSokConsumer pdlAdresseSokConsumer,
+            KodeverkService kodeverkService
+    ) {
         this.pdlAdresseSokConsumer = pdlAdresseSokConsumer;
+        this.kodeverkService = kodeverkService;
     }
 
     public AdresseForslag getAdresseForslag(JsonGateAdresse adresse) {
         var adresseSokResult = pdlAdresseSokConsumer.getAdresseSokResult(toVariables(adresse));
         var vegadresse = resolveVegadresse(adresseSokResult.getHits());
         return toAdresseForslag(vegadresse);
+    }
+
+    public List<AdresseForslag> getAdresseForslagList(String sok) {
+        if (isAddressTooShortOrNull(sok)) {
+            return Collections.emptyList();
+        }
+
+        var sokedata = AdresseStringSplitter.toSokedata(kodeverkService, sok);
+
+        return getAdresser(sokedata).stream()
+                .map(this::toAdresseForslag)
+                .collect(Collectors.toList());
+    }
+
+    public List<VegadresseDto> getAdresser(AdresseSokConsumer.Sokedata sokedata) {
+        if (sokedata == null || isAddressTooShortOrNull(sokedata.adresse)) {
+            return Collections.emptyList();
+        }
+
+        var adresseSokResult = pdlAdresseSokConsumer.getAdresseSokResult(toVariablesForFritekstSok(sokedata));
+        var adresser = adresseSokResult.getHits().stream()
+                .map(AdresseSokHit::getVegadresse)
+                .collect(Collectors.toList());
+        log.info("Fant {} treff i adressesok for sokedata = {}", adresser.size(), sokedata);
+        return adresser;
     }
 
     private VegadresseDto resolveVegadresse(List<AdresseSokHit> hits) {
@@ -110,6 +151,38 @@ public class PdlAdresseSokService {
         }
         if (isNotEmpty(adresse.getPoststed())) {
             criteriaList.add(criteria(VEGADRESSE_POSTSTED, CONTAINS, adresse.getPoststed()));
+        }
+        return criteriaList;
+    }
+
+    private Map<String, Object> toVariablesForFritekstSok(AdresseSokConsumer.Sokedata sokedata) {
+        var variables = new HashMap<String, Object>();
+        variables.put(PAGING, new Paging(1, 30, singletonList(new Paging.SortBy(VEGADRESSE_HUSNUMMER.getName(), Direction.ASC))));
+
+        if (sokedata == null) {
+            throw new IllegalArgumentException("kan ikke soke uten sokedata");
+        }
+
+        variables.put(CRITERIA, toCriteriaListForFritekstSok(sokedata));
+        return variables;
+    }
+
+    private List<Criteria> toCriteriaListForFritekstSok(AdresseSokConsumer.Sokedata sokedata) {
+        var criteriaList = new ArrayList<Criteria>();
+        if (isNotEmpty(sokedata.adresse)) {
+            criteriaList.add(criteria(VEGADRESSE_ADRESSENAVN, WILDCARD, sokedata.adresse + WILDCARD_SUFFIX));
+        }
+        if (isNotEmpty(sokedata.husnummer)) {
+            criteriaList.add(criteria(VEGADRESSE_HUSNUMMER, FROM, sokedata.husnummer));
+        }
+        if (isNotEmpty(sokedata.husbokstav)) {
+            criteriaList.add(criteria(VEGADRESSE_HUSBOKSTAV, EQUALS, sokedata.husbokstav));
+        }
+        if (isNotEmpty(sokedata.postnummer)) {
+            criteriaList.add(criteria(VEGADRESSE_POSTNUMMER, WILDCARD, sokedata.postnummer + WILDCARD_SUFFIX));
+        }
+        if (isNotEmpty(sokedata.poststed)) {
+            criteriaList.add(criteria(VEGADRESSE_POSTSTED, WILDCARD, sokedata.poststed + WILDCARD_SUFFIX));
         }
         return criteriaList;
     }
