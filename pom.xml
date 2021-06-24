@@ -51,7 +51,7 @@
         <sosialhjelp-common.version>1.6ebfe40</sosialhjelp-common.version>
         <filformat.version>1.2021.04.15-10.42-6eb47b47da27</filformat.version>
 
-        <spring.version>5.3.7</spring.version>
+        <spring.version>5.3.8</spring.version>
         <jetty.version>9.4.42.v20210604</jetty.version>
         <jersey.version>2.34</jersey.version>
         <token-validation.version>1.3.7</token-validation.version>
