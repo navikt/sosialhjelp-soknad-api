@@ -1,9 +1,9 @@
 package no.nav.sosialhjelp.soknad.consumer.pdl.adressesok;
 
+import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonGateAdresse;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.AdresseSokHit;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.AdresseSokResult;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.VegadresseDto;
-import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseSokConsumer;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -34,8 +34,8 @@ public class PdlAdresseSokServiceTest {
     @InjectMocks
     private PdlAdresseSokService pdlAdresseSokService;
 
-    private AdresseSokConsumer.Sokedata sokedata = new AdresseSokConsumer.Sokedata()
-            .withAdresse("Testveien")
+    private final JsonGateAdresse folkeregistretAdresse = new JsonGateAdresse()
+            .withGatenavn("Testveien")
             .withHusnummer("1")
             .withHusbokstav("B")
             .withPoststed("Oslo");
@@ -45,13 +45,13 @@ public class PdlAdresseSokServiceTest {
         when(pdlAdresseSokConsumer.getAdresseSokResult(any())).thenReturn(null);
 
         assertThatExceptionOfType(RuntimeException.class)
-                .isThrownBy(() -> pdlAdresseSokService.getGeografiskTilknytning(sokedata));
+                .isThrownBy(() -> pdlAdresseSokService.getAdresseForslag(folkeregistretAdresse));
     }
 
     @Test
     public void skalKasteFeil_SokedataErNull() {
         assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(() -> pdlAdresseSokService.getGeografiskTilknytning(null));
+                .isThrownBy(() -> pdlAdresseSokService.getAdresseForslag(null));
     }
 
     @Test
@@ -62,7 +62,7 @@ public class PdlAdresseSokServiceTest {
         when(pdlAdresseSokConsumer.getAdresseSokResult(any())).thenReturn(adresseSokResultMock);
 
         assertThatExceptionOfType(RuntimeException.class)
-                .isThrownBy(() -> pdlAdresseSokService.getGeografiskTilknytning(sokedata));
+                .isThrownBy(() -> pdlAdresseSokService.getAdresseForslag(folkeregistretAdresse));
     }
 
     @Test
@@ -73,7 +73,7 @@ public class PdlAdresseSokServiceTest {
         when(pdlAdresseSokConsumer.getAdresseSokResult(any())).thenReturn(adresseSokResultMock);
 
         assertThatExceptionOfType(RuntimeException.class)
-                .isThrownBy(() -> pdlAdresseSokService.getGeografiskTilknytning(sokedata));
+                .isThrownBy(() -> pdlAdresseSokService.getAdresseForslag(folkeregistretAdresse));
     }
 
     @Test
@@ -84,34 +84,7 @@ public class PdlAdresseSokServiceTest {
         when(pdlAdresseSokConsumer.getAdresseSokResult(any())).thenReturn(adresseSokResultMock);
 
         assertThatExceptionOfType(RuntimeException.class)
-                .isThrownBy(() -> pdlAdresseSokService.getGeografiskTilknytning(sokedata));
-    }
-
-    @Test
-    public void skalReturnereBydelsnummerSomGeografiskTilknytning() {
-        var hitMock = mock(AdresseSokHit.class);
-        when(hitMock.getVegadresse()).thenReturn(vegadresseMedBydelsnummer());
-
-        var adresseSokResultMock = mock(AdresseSokResult.class);
-        when(adresseSokResultMock.getHits()).thenReturn(singletonList(hitMock));
-
-        when(pdlAdresseSokConsumer.getAdresseSokResult(any())).thenReturn(adresseSokResultMock);
-
-        var geografiskTilknytning = pdlAdresseSokService.getGeografiskTilknytning(sokedata);
-        assertThat(geografiskTilknytning).isEqualTo(BYDELSNUMMER);
-    }
-
-    @Test
-    public void skalReturnereKommunenummerSomGeografiskTilknytning() {
-        var hitMock = mock(AdresseSokHit.class);
-        when(hitMock.getVegadresse()).thenReturn(vegadresseUtenBydelsnummer());
-        var adresseSokResultMock = mock(AdresseSokResult.class);
-        when(adresseSokResultMock.getHits()).thenReturn(singletonList(hitMock));
-
-        when(pdlAdresseSokConsumer.getAdresseSokResult(any())).thenReturn(adresseSokResultMock);
-
-        var geografiskTilknytning = pdlAdresseSokService.getGeografiskTilknytning(sokedata);
-        assertThat(geografiskTilknytning).isEqualTo(KOMMUNENUMMER);
+                .isThrownBy(() -> pdlAdresseSokService.getAdresseForslag(folkeregistretAdresse));
     }
 
     @Test
@@ -124,7 +97,7 @@ public class PdlAdresseSokServiceTest {
 
         when(pdlAdresseSokConsumer.getAdresseSokResult(any())).thenReturn(adresseSokResultMock);
 
-        var adresseForslag = pdlAdresseSokService.getAdresseForslag(sokedata);
+        var adresseForslag = pdlAdresseSokService.getAdresseForslag(folkeregistretAdresse);
         assertThat(adresseForslag.geografiskTilknytning).isEqualTo(BYDELSNUMMER);
     }
 
@@ -137,7 +110,7 @@ public class PdlAdresseSokServiceTest {
 
         when(pdlAdresseSokConsumer.getAdresseSokResult(any())).thenReturn(adresseSokResultMock);
 
-        var adresseForslag = pdlAdresseSokService.getAdresseForslag(sokedata);
+        var adresseForslag = pdlAdresseSokService.getAdresseForslag(folkeregistretAdresse);
         assertThat(adresseForslag.geografiskTilknytning).isEqualTo(KOMMUNENUMMER);
     }
 
@@ -154,7 +127,7 @@ public class PdlAdresseSokServiceTest {
         when(pdlAdresseSokConsumer.getAdresseSokResult(any())).thenReturn(adresseSokResultMock);
 
         assertThatExceptionOfType(RuntimeException.class)
-                .isThrownBy(() -> pdlAdresseSokService.getAdresseForslag(sokedata));
+                .isThrownBy(() -> pdlAdresseSokService.getAdresseForslag(folkeregistretAdresse));
     }
 
     @Test
@@ -170,7 +143,7 @@ public class PdlAdresseSokServiceTest {
         when(pdlAdresseSokConsumer.getAdresseSokResult(any())).thenReturn(adresseSokResultMock);
 
         assertThatExceptionOfType(RuntimeException.class)
-                .isThrownBy(() -> pdlAdresseSokService.getAdresseForslag(sokedata));
+                .isThrownBy(() -> pdlAdresseSokService.getAdresseForslag(folkeregistretAdresse));
     }
 
     @Test
@@ -186,7 +159,7 @@ public class PdlAdresseSokServiceTest {
         when(pdlAdresseSokConsumer.getAdresseSokResult(any())).thenReturn(adresseSokResultMock);
 
         assertThatExceptionOfType(RuntimeException.class)
-                .isThrownBy(() -> pdlAdresseSokService.getAdresseForslag(sokedata));
+                .isThrownBy(() -> pdlAdresseSokService.getAdresseForslag(folkeregistretAdresse));
     }
 
     @Test
@@ -201,7 +174,7 @@ public class PdlAdresseSokServiceTest {
 
         when(pdlAdresseSokConsumer.getAdresseSokResult(any())).thenReturn(adresseSokResultMock);
 
-        var adresseForslag = pdlAdresseSokService.getAdresseForslag(sokedata);
+        var adresseForslag = pdlAdresseSokService.getAdresseForslag(folkeregistretAdresse);
         assertThat(adresseForslag.kommunenavn).isEqualTo("Oslo");
         assertThat(adresseForslag.kommunenummer).isEqualTo("1111");
         assertThat(adresseForslag.geografiskTilknytning).isEqualTo("030101");

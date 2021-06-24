@@ -98,8 +98,7 @@ public class AdresseSokService {
         if (JsonAdresse.Type.MATRIKKELADRESSE.equals(adresse.getType())) {
             return adresseForslagForMatrikkelAdresse((JsonMatrikkelAdresse) adresse);
         } else if (JsonAdresse.Type.GATEADRESSE.equals(adresse.getType())) {
-            var sokedata = sokedataFromGateAdresse((JsonGateAdresse) adresse);
-            var adresseForslag = pdlAdresseSokService.getAdresseForslag(sokedata);
+            var adresseForslag = pdlAdresseSokService.getAdresseForslag((JsonGateAdresse) adresse);
             return Collections.singletonList(adresseForslag);
         }
         return Collections.emptyList();
