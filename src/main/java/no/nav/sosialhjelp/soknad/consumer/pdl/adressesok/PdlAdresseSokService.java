@@ -36,7 +36,6 @@ import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.FieldName.VE
 import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.FieldName.VEGADRESSE_POSTSTED;
 import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.SearchRule.CONTAINS;
 import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.SearchRule.EQUALS;
-import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.SearchRule.FROM;
 import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.SearchRule.WILDCARD;
 import static no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseForslagType.GATEADRESSE;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
@@ -170,10 +169,10 @@ public class PdlAdresseSokService {
     private List<Criteria> toCriteriaListForFritekstSok(AdresseSokConsumer.Sokedata sokedata) {
         var criteriaList = new ArrayList<Criteria>();
         if (isNotEmpty(sokedata.adresse)) {
-            criteriaList.add(criteria(VEGADRESSE_ADRESSENAVN, WILDCARD, sokedata.adresse + WILDCARD_SUFFIX));
+            criteriaList.add(criteria(VEGADRESSE_ADRESSENAVN, WILDCARD, sokedata.adresse));
         }
         if (isNotEmpty(sokedata.husnummer)) {
-            criteriaList.add(criteria(VEGADRESSE_HUSNUMMER, FROM, sokedata.husnummer));
+            criteriaList.add(criteria(VEGADRESSE_HUSNUMMER, WILDCARD, sokedata.husnummer));
         }
         if (isNotEmpty(sokedata.husbokstav)) {
             criteriaList.add(criteria(VEGADRESSE_HUSBOKSTAV, EQUALS, sokedata.husbokstav));
@@ -182,12 +181,15 @@ public class PdlAdresseSokService {
             criteriaList.add(criteria(VEGADRESSE_POSTNUMMER, EQUALS, sokedata.postnummer));
         }
         if (isNotEmpty(sokedata.poststed)) {
-            criteriaList.add(criteria(VEGADRESSE_POSTSTED, WILDCARD, sokedata.poststed + WILDCARD_SUFFIX));
+            criteriaList.add(criteria(VEGADRESSE_POSTSTED, WILDCARD, sokedata.poststed));
         }
         return criteriaList;
     }
 
     private Criteria criteria(FieldName fieldName, SearchRule searchRule, String value) {
+        if (WILDCARD.equals(searchRule)) {
+            value += WILDCARD_SUFFIX;
+        }
         return new Criteria.Builder()
                 .withFieldName(fieldName)
                 .withSearchRule(searchRule, value)
