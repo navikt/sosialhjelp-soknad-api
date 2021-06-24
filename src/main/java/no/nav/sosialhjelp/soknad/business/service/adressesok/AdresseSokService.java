@@ -12,6 +12,7 @@ import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseForslagType;
 import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseSokConsumer;
 import org.slf4j.Logger;
 
+import java.util.Collections;
 import java.util.List;
 
 import static no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresseValg.FOLKEREGISTRERT;
