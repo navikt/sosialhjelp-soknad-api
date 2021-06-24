@@ -48,7 +48,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <tjenestespesifikasjon.version>1.2021.01.21-11.34-02f5eb27bb76</tjenestespesifikasjon.version>
-        <sosialhjelp-common.version>1.6ebfe40</sosialhjelp-common.version>
+        <sosialhjelp-common.version>1.05daec2</sosialhjelp-common.version>
         <filformat.version>1.2021.04.15-10.42-6eb47b47da27</filformat.version>
 
         <spring.version>5.3.8</spring.version>
@@ -133,7 +133,7 @@
         <objenesis.version>2.6</objenesis.version>
         <saaj-impl.version>1.5.1</saaj-impl.version>
         <mimepull.version>1.9.13</mimepull.version>
-        <kotlin.version>1.4.21</kotlin.version>
+        <kotlin.version>1.5.10</kotlin.version>
         <relaxng-datatype.version>2.3.3</relaxng-datatype.version>
         <json.version>20210307</json.version>
     </properties>
