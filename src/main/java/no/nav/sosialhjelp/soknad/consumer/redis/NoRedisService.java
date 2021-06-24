@@ -9,6 +9,7 @@ import java.util.Map;
 @Component
 public class NoRedisService implements RedisService {
 
+    @SuppressWarnings("rawtypes")
     @Override
     public Object get(String key, Class requestedClass) {
         return null;
