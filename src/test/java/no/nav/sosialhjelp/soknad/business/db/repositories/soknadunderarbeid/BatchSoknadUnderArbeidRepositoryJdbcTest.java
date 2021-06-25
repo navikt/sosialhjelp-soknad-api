@@ -86,7 +86,8 @@ public class BatchSoknadUnderArbeidRepositoryJdbcTest {
                 .withJsonInternalSoknad(JSON_INTERNAL_SOKNAD)
                 .withStatus(UNDER_ARBEID)
                 .withOpprettetDato(LocalDateTime.now().minusDays(antallDagerSiden))
-                .withSistEndretDato(LocalDateTime.now().minusDays(antallDagerSiden));
+                .withSistEndretDato(LocalDateTime.now().minusDays(antallDagerSiden))
+                .withLestDittNav(false);
     }
 
     private OpplastetVedlegg lagOpplastetVedlegg(Long soknadId) {

@@ -73,7 +73,8 @@ public class EttersendingService {
                                 .withOrganisasjonsnummer(originalSoknad.orgnr)
                                 .withNavEnhetsnavn(originalSoknad.navEnhet)))
                 .withOpprettetDato(LocalDateTime.now())
-                .withSistEndretDato(LocalDateTime.now());
+                .withSistEndretDato(LocalDateTime.now())
+                .withLestDittNav(false);
 
         soknadUnderArbeidRepository.opprettSoknad(ettersendingSoknad, originalSoknad.fnr);
     }
