@@ -16,6 +16,7 @@ public class SoknadUnderArbeid {
     private SoknadUnderArbeidStatus status;
     private LocalDateTime opprettetDato;
     private LocalDateTime sistEndretDato;
+    private boolean lestDittNav;
 
     public boolean erEttersendelse() {
         return !isEmpty(tilknyttetBehandlingsId);
@@ -113,6 +114,19 @@ public class SoknadUnderArbeid {
 
     public SoknadUnderArbeid withJsonInternalSoknad(JsonInternalSoknad jsonInternalSoknad) {
         this.jsonInternalSoknad = jsonInternalSoknad;
+        return this;
+    }
+
+    public boolean isLestDittNav() {
+        return lestDittNav;
+    }
+
+    public void setLestDittNav(boolean lestDittNav) {
+        this.lestDittNav = lestDittNav;
+    }
+
+    public SoknadUnderArbeid withLestDittNav(boolean lestDittNav) {
+        this.lestDittNav = lestDittNav;
         return this;
     }
 }

@@ -165,7 +165,8 @@ public class SoknadUnderArbeidRepositoryJdbcTest {
                 .withJsonInternalSoknad(JSON_INTERNAL_SOKNAD)
                 .withStatus(UNDER_ARBEID)
                 .withOpprettetDato(OPPRETTET_DATO)
-                .withSistEndretDato(SIST_ENDRET_DATO);
+                .withSistEndretDato(SIST_ENDRET_DATO)
+                .withLestDittNav(false);
     }
 
     private OpplastetVedlegg lagOpplastetVedlegg(Long soknadId) {
