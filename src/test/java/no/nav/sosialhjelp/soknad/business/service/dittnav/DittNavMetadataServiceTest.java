@@ -35,7 +35,8 @@ public class DittNavMetadataServiceTest {
         soknadMetadata.behandlingsId = "beh123";
         soknadMetadata.status = SoknadMetadataInnsendingStatus.UNDER_ARBEID;
         soknadMetadata.type = SoknadType.SEND_SOKNAD_KOMMUNAL;
-        soknadMetadata.innsendtDato = LocalDateTime.now();
+        soknadMetadata.opprettetDato = LocalDateTime.now().minusDays(10);
+        soknadMetadata.sistEndretDato = LocalDateTime.now().minusDays(2);
 
         when(soknadMetadataRepository.hentPabegynteSoknaderForBruker(anyString()))
                 .thenReturn(Collections.singletonList(soknadMetadata));
