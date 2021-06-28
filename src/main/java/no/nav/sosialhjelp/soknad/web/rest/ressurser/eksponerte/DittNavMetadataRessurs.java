@@ -51,12 +51,27 @@ public class DittNavMetadataRessurs {
             return Collections.emptyList();
         }
         var fnr = SubjectHandler.getUserId();
-        return dittNavMetadataService.hentPabegynteSoknader(fnr);
+        return dittNavMetadataService.hentAktivePabegynteSoknader(fnr);
+    }
+
+    @GET
+    @Path("/pabegynte/inaktive")
+    public List<PabegyntSoknadDto> hentPabegynteSoknaderForBrukerLestDittNav() {
+        if (!unleash.isEnabled(DITTNAV_PABEGYNTE_ENDEPUNKT_ENABLED, false)) {
+            log.info("Endepunkt for å hente info om påbegynte søknader for dittNav er ikke enabled. Returnerer tom liste.");
+            return Collections.emptyList();
+        }
+        var fnr = SubjectHandler.getUserId();
+        return dittNavMetadataService.hentInaktivePabegynteSoknader(fnr);
     }
 
     @POST
     @Path("/pabegynte/lest")
     public boolean oppdaterLestDittNavForPabegyntSoknad(@RequestBody MarkerPabegyntSoknadSomLestDto dto) {
+        if (!unleash.isEnabled(DITTNAV_PABEGYNTE_ENDEPUNKT_ENABLED, false)) {
+            log.info("Endepunkt for å oppdatere lestDittNav for påbegynt søknad er ikke enabled. Returnerer false.");
+            return false;
+        }
         var fnr = SubjectHandler.getUserId();
         var somLest = dittNavMetadataService.oppdaterLestDittNavForPabegyntSoknad(dto.getBehandlingsId(), dto.isLestDittNav(), fnr);
         log.info("Pabegynt søknad med behandlingsId={} er har fått lestDittNav={}", dto.getBehandlingsId(), somLest);
