@@ -157,6 +157,19 @@ public class SoknadUnderArbeidRepositoryJdbcTest {
         assertThat(opplastetVedleggRepository.hentVedlegg(opplastetVedleggUuid, EIER)).isEmpty();
     }
 
+    @Test
+    public void oppdaterLestDittNav() {
+        var soknadUnderArbeid = lagSoknadUnderArbeid(BEHANDLINGSID);
+        final var soknadUnderArbeidId = soknadUnderArbeidRepository.opprettSoknad(soknadUnderArbeid, EIER);
+
+        assertThat(soknadUnderArbeidRepository.hentSoknad(soknadUnderArbeidId, EIER).get().isLestDittNav()).isFalse();
+
+        soknadUnderArbeidRepository.oppdaterLestDittNav(soknadUnderArbeid, EIER);
+
+        var soknadUnderArbeidFraDb = soknadUnderArbeidRepository.hentSoknad(soknadUnderArbeidId, EIER).get();
+        assertThat(soknadUnderArbeidFraDb.isLestDittNav()).isTrue();
+    }
+
     private SoknadUnderArbeid lagSoknadUnderArbeid(String behandlingsId) {
         return new SoknadUnderArbeid().withVersjon(1L)
                 .withBehandlingsId(behandlingsId)
