@@ -50,7 +50,8 @@ public class DittNavMetadataServiceTest {
     public void markerPabegyntSoknadSomLest_skalGiFalse_hvisRepositoryReturnererNull() {
         when(soknadMetadataRepository.hent(anyString()))
                 .thenReturn(null);
-        var markert = dittNavMetadataService.markerPabegyntSoknadSomLest("behandlingsId", "12345");
+
+        var markert = dittNavMetadataService.oppdaterLestDittNavForPabegyntSoknad("behandlingsId", true, "12345");
 
         assertThat(markert).isFalse();
     }
@@ -69,7 +70,7 @@ public class DittNavMetadataServiceTest {
                 .thenReturn(soknadMetadata);
         doThrow(new RuntimeException("Noe feilet")).when(soknadMetadataRepository).oppdaterLestDittNav(any(SoknadMetadata.class), anyString());
 
-        var markert = dittNavMetadataService.markerPabegyntSoknadSomLest("behandlingsId", "12345");
+        var markert = dittNavMetadataService.oppdaterLestDittNavForPabegyntSoknad("behandlingsId", true, "12345");
 
         assertThat(markert).isFalse();
     }
