@@ -37,11 +37,31 @@ public class DittNavMetadataServiceTest {
         soknadMetadata.type = SoknadType.SEND_SOKNAD_KOMMUNAL;
         soknadMetadata.opprettetDato = LocalDateTime.now().minusDays(10);
         soknadMetadata.sistEndretDato = LocalDateTime.now().minusDays(2);
+        soknadMetadata.lestDittNav = false;
 
-        when(soknadMetadataRepository.hentPabegynteSoknaderForBruker(anyString()))
+        when(soknadMetadataRepository.hentPabegynteSoknaderForBruker("12345", false))
                 .thenReturn(Collections.singletonList(soknadMetadata));
 
-        var dtos = dittNavMetadataService.hentPabegynteSoknader("12345");
+        var dtos = dittNavMetadataService.hentAktivePabegynteSoknader("12345");
+
+        assertThat(dtos).hasSize(1);
+    }
+
+    @Test
+    public void skalHenteInaktivePabegynteSoknaderForBruker() {
+        var soknadMetadata = new SoknadMetadata();
+        soknadMetadata.fnr = "12345";
+        soknadMetadata.behandlingsId = "beh123";
+        soknadMetadata.status = SoknadMetadataInnsendingStatus.UNDER_ARBEID;
+        soknadMetadata.type = SoknadType.SEND_SOKNAD_KOMMUNAL;
+        soknadMetadata.opprettetDato = LocalDateTime.now().minusDays(10);
+        soknadMetadata.sistEndretDato = LocalDateTime.now().minusDays(2);
+        soknadMetadata.lestDittNav = true;
+
+        when(soknadMetadataRepository.hentPabegynteSoknaderForBruker("12345", true))
+                .thenReturn(Collections.singletonList(soknadMetadata));
+
+        var dtos = dittNavMetadataService.hentInaktivePabegynteSoknader("12345");
 
         assertThat(dtos).hasSize(1);
     }
