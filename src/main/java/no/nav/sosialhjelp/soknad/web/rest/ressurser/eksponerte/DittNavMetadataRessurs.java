@@ -6,6 +6,7 @@ import no.nav.security.token.support.core.api.Unprotected;
 import no.nav.sosialhjelp.metrics.aspects.Timed;
 import no.nav.sosialhjelp.soknad.business.service.dittnav.DittNavMetadataService;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
+import no.nav.sosialhjelp.soknad.web.rest.ressurser.eksponerte.dto.MarkerPabegyntSoknadSomLestDto;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.eksponerte.dto.PabegyntSoknadDto;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Controller;
@@ -55,10 +56,10 @@ public class DittNavMetadataRessurs {
 
     @POST
     @Path("/pabegynte/lest")
-    public boolean markerPabegyntSoknadSomLest(@RequestBody String behandlingsId) {
+    public boolean oppdaterLestDittNavForPabegyntSoknad(@RequestBody MarkerPabegyntSoknadSomLestDto dto) {
         var fnr = SubjectHandler.getUserId();
-        var somLest = dittNavMetadataService.markerPabegyntSoknadSomLest(behandlingsId, fnr);
-        log.info("Pabegynt søknad med behandlingsId={} er har fått lestDittNav={}", behandlingsId, somLest);
+        var somLest = dittNavMetadataService.oppdaterLestDittNavForPabegyntSoknad(dto.getBehandlingsId(), dto.isLestDittNav(), fnr);
+        log.info("Pabegynt søknad med behandlingsId={} er har fått lestDittNav={}", dto.getBehandlingsId(), somLest);
         return somLest;
     }
 

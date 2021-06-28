@@ -42,18 +42,18 @@ public class DittNavMetadataService {
                 .collect(Collectors.toList());
     }
 
-    public boolean markerPabegyntSoknadSomLest(String behandlingsId, String fnr) {
+    public boolean oppdaterLestDittNavForPabegyntSoknad(String behandlingsId, boolean lestDittNav, String fnr) {
         var soknadMetadata = soknadMetadataRepository.hent(behandlingsId);
         if (soknadMetadata == null) {
             log.warn("Fant ingen soknadMetadata med behandlingsId={}", behandlingsId);
             return false;
         }
-        soknadMetadata.lestDittNav = true;
+        soknadMetadata.lestDittNav = lestDittNav;
         try {
             soknadMetadataRepository.oppdaterLestDittNav(soknadMetadata, fnr);
             return true;
         } catch (Exception e) {
-            log.warn("Noe feilet ved markering av soknadMetadata {} som lest i DittNav", behandlingsId, e);
+            log.warn("Noe feilet ved oppdatering av lestDittNav for soknadMetadata med behandlingsId={}", behandlingsId, e);
             return false;
         }
     }
