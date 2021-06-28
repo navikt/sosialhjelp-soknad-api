@@ -2,6 +2,7 @@ package no.nav.sosialhjelp.soknad.business.service.dittnav;
 
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.eksponerte.dto.PabegyntSoknadDto;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
 import java.time.ZoneId;
@@ -9,9 +10,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static no.nav.sosialhjelp.soknad.business.util.TimeUtils.toUtc;
+import static org.slf4j.LoggerFactory.getLogger;
 
 @Component
 public class DittNavMetadataService {
+
+    private static final Logger log = getLogger(DittNavMetadataService.class);
 
     private static final String SOKNAD_TITTEL = "Søknad om økonomisk sosialhjelp";
     private static final int SIKKERHETSNIVAA_3 = 3;
@@ -38,6 +42,21 @@ public class DittNavMetadataService {
                 .collect(Collectors.toList());
     }
 
+    public boolean markerPabegyntSoknadSomLest(String behandlingsId, String fnr) {
+        var soknadMetadata = soknadMetadataRepository.hent(behandlingsId);
+        if (soknadMetadata == null) {
+            log.warn("Fant ingen soknadMetadata med behandlingsId={}", behandlingsId);
+            return false;
+        }
+        soknadMetadata.lestDittNav = true;
+        try {
+            soknadMetadataRepository.oppdaterLestDittNav(soknadMetadata, fnr);
+            return true;
+        } catch (Exception e) {
+            log.warn("Noe feilet ved markering av soknadMetadata {} som lest i DittNav", behandlingsId, e);
+            return false;
+        }
+    }
 
     private String lenkeTilPabegyntSoknad(String behandlingsId) {
         return lagContextLenke() + "skjema/" + behandlingsId + "/0";

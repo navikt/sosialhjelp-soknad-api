@@ -9,8 +9,10 @@ import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.eksponerte.dto.PabegyntSoknadDto;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import java.util.Collections;
@@ -49,6 +51,15 @@ public class DittNavMetadataRessurs {
         }
         var fnr = SubjectHandler.getUserId();
         return dittNavMetadataService.hentPabegynteSoknader(fnr);
+    }
+
+    @POST
+    @Path("/pabegynte/lest")
+    public boolean markerPabegyntSoknadSomLest(@RequestBody String behandlingsId) {
+        var fnr = SubjectHandler.getUserId();
+        var somLest = dittNavMetadataService.markerPabegyntSoknadSomLest(behandlingsId, fnr);
+        log.info("Pabegynt søknad med behandlingsId={} er har fått lestDittNav={}", behandlingsId, somLest);
+        return somLest;
     }
 
     @GET
