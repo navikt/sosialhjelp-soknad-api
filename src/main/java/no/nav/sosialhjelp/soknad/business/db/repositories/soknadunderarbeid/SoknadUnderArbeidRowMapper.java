@@ -51,8 +51,7 @@ public class SoknadUnderArbeidRowMapper implements RowMapper<SoknadUnderArbeid> 
                 .withOpprettetDato(rs.getTimestamp("opprettetdato") != null ?
                         rs.getTimestamp("opprettetdato").toLocalDateTime() : null)
                 .withSistEndretDato(rs.getTimestamp("sistendretdato") != null ?
-                        rs.getTimestamp("sistendretdato").toLocalDateTime() : null)
-                .withLestDittNav(rs.getBoolean("lest_ditt_nav"));
+                        rs.getTimestamp("sistendretdato").toLocalDateTime() : null);
     }
 
     private JsonInternalSoknad mapDataToJsonInternalSoknad(byte[] data){

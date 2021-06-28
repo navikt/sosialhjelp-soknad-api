@@ -62,8 +62,8 @@ public class SoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoSuppor
         sjekkOmBrukerEierSoknadUnderArbeid(soknadUnderArbeid, eier);
         Long soknadUnderArbeidId = getJdbcTemplate().queryForObject(selectNextSequenceValue("SOKNAD_UNDER_ARBEID_ID_SEQ"), Long.class);
         getJdbcTemplate()
-                .update("insert into SOKNAD_UNDER_ARBEID (SOKNAD_UNDER_ARBEID_ID, VERSJON, BEHANDLINGSID, TILKNYTTETBEHANDLINGSID, EIER, DATA, STATUS, OPPRETTETDATO, SISTENDRETDATO, LEST_DITT_NAV)" +
-                                " values (?,?,?,?,?,?,?,?,?,?)",
+                .update("insert into SOKNAD_UNDER_ARBEID (SOKNAD_UNDER_ARBEID_ID, VERSJON, BEHANDLINGSID, TILKNYTTETBEHANDLINGSID, EIER, DATA, STATUS, OPPRETTETDATO, SISTENDRETDATO)" +
+                                " values (?,?,?,?,?,?,?,?,?)",
                         soknadUnderArbeidId,
                         soknadUnderArbeid.getVersjon(),
                         soknadUnderArbeid.getBehandlingsId(),
@@ -72,8 +72,7 @@ public class SoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoSuppor
                         mapJsonSoknadInternalTilFil(soknadUnderArbeid.getJsonInternalSoknad()),
                         soknadUnderArbeid.getStatus().toString(),
                         from(soknadUnderArbeid.getOpprettetDato().atZone(ZoneId.systemDefault()).toInstant()),
-                        from(soknadUnderArbeid.getSistEndretDato().atZone(ZoneId.systemDefault()).toInstant()),
-                        soknadUnderArbeid.isLestDittNav());
+                        from(soknadUnderArbeid.getSistEndretDato().atZone(ZoneId.systemDefault()).toInstant()));
         return soknadUnderArbeidId;
     }
 
@@ -169,17 +168,6 @@ public class SoknadUnderArbeidRepositoryJdbc extends NamedParameterJdbcDaoSuppor
                 getJdbcTemplate().update("delete from SOKNAD_UNDER_ARBEID where EIER = ? and SOKNAD_UNDER_ARBEID_ID = ?", eier, soknadUnderArbeidId);
             }
         });
-    }
-
-    @Override
-    public void oppdaterLestDittNav(SoknadUnderArbeid soknadUnderArbeid, String eier) {
-        sjekkOmBrukerEierSoknadUnderArbeid(soknadUnderArbeid, eier);
-
-        getJdbcTemplate()
-                .update("update SOKNAD_UNDER_ARBEID set LEST_DITT_NAV = ? where SOKNAD_UNDER_ARBEID_ID = ? and EIER = ?",
-                        soknadUnderArbeid.isLestDittNav(),
-                        soknadUnderArbeid.getSoknadId(),
-                        eier);
     }
 
     private void sjekkOmBrukerEierSoknadUnderArbeid(SoknadUnderArbeid soknadUnderArbeid, String eier) {

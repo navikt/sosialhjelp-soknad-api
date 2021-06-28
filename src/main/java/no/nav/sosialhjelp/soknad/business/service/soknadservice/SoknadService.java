@@ -118,8 +118,7 @@ public class SoknadService {
                 .withJsonInternalSoknad(createEmptyJsonInternalSoknad(aktorId))
                 .withStatus(SoknadUnderArbeidStatus.UNDER_ARBEID)
                 .withOpprettetDato(LocalDateTime.now())
-                .withSistEndretDato(LocalDateTime.now())
-                .withLestDittNav(false);
+                .withSistEndretDato(LocalDateTime.now());
 
         systemdataUpdater.update(soknadUnderArbeid, token);
 

@@ -15,5 +15,4 @@ public interface SoknadUnderArbeidRepository {
     void oppdaterSoknadsdata(SoknadUnderArbeid soknadUnderArbeid, String eier) throws SamtidigOppdateringException;
     void oppdaterInnsendingStatus(SoknadUnderArbeid soknadUnderArbeid, String eier);
     void slettSoknad(SoknadUnderArbeid soknadUnderArbeid, String eier);
-    void oppdaterLestDittNav(SoknadUnderArbeid soknadUnderArbeid, String eier);
 }
