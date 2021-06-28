@@ -160,10 +160,10 @@ public class SoknadUnderArbeidRepositoryJdbcTest {
     @Test
     public void oppdaterLestDittNav() {
         var soknadUnderArbeid = lagSoknadUnderArbeid(BEHANDLINGSID);
-        final var soknadUnderArbeidId = soknadUnderArbeidRepository.opprettSoknad(soknadUnderArbeid, EIER);
+        assertThat(soknadUnderArbeid.isLestDittNav()).isFalse();
+        var soknadUnderArbeidId = soknadUnderArbeidRepository.opprettSoknad(soknadUnderArbeid, EIER);
 
-        assertThat(soknadUnderArbeidRepository.hentSoknad(soknadUnderArbeidId, EIER).get().isLestDittNav()).isFalse();
-
+        soknadUnderArbeid.withSoknadId(soknadUnderArbeidId).withLestDittNav(true);
         soknadUnderArbeidRepository.oppdaterLestDittNav(soknadUnderArbeid, EIER);
 
         var soknadUnderArbeidFraDb = soknadUnderArbeidRepository.hentSoknad(soknadUnderArbeidId, EIER).get();
