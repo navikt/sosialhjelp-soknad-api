@@ -157,19 +157,6 @@ public class SoknadUnderArbeidRepositoryJdbcTest {
         assertThat(opplastetVedleggRepository.hentVedlegg(opplastetVedleggUuid, EIER)).isEmpty();
     }
 
-    @Test
-    public void oppdaterLestDittNav() {
-        var soknadUnderArbeid = lagSoknadUnderArbeid(BEHANDLINGSID);
-        assertThat(soknadUnderArbeid.isLestDittNav()).isFalse();
-        var soknadUnderArbeidId = soknadUnderArbeidRepository.opprettSoknad(soknadUnderArbeid, EIER);
-
-        soknadUnderArbeid.withSoknadId(soknadUnderArbeidId).withLestDittNav(true);
-        soknadUnderArbeidRepository.oppdaterLestDittNav(soknadUnderArbeid, EIER);
-
-        var soknadUnderArbeidFraDb = soknadUnderArbeidRepository.hentSoknad(soknadUnderArbeidId, EIER).get();
-        assertThat(soknadUnderArbeidFraDb.isLestDittNav()).isTrue();
-    }
-
     private SoknadUnderArbeid lagSoknadUnderArbeid(String behandlingsId) {
         return new SoknadUnderArbeid().withVersjon(1L)
                 .withBehandlingsId(behandlingsId)
@@ -178,8 +165,7 @@ public class SoknadUnderArbeidRepositoryJdbcTest {
                 .withJsonInternalSoknad(JSON_INTERNAL_SOKNAD)
                 .withStatus(UNDER_ARBEID)
                 .withOpprettetDato(OPPRETTET_DATO)
-                .withSistEndretDato(SIST_ENDRET_DATO)
-                .withLestDittNav(false);
+                .withSistEndretDato(SIST_ENDRET_DATO);
     }
 
     private OpplastetVedlegg lagOpplastetVedlegg(Long soknadId) {
