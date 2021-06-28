@@ -1,11 +1,18 @@
 package no.nav.sosialhjelp.soknad.web.rest.ressurser.eksponerte.dto;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class MarkerPabegyntSoknadSomLestDto {
 
     private final String behandlingsId;
     private final boolean lestDittNav;
 
-    public MarkerPabegyntSoknadSomLestDto(String behandlingsId, boolean lestDittNav) {
+    @JsonCreator
+    public MarkerPabegyntSoknadSomLestDto(
+            @JsonProperty("behandlingsId") String behandlingsId,
+            @JsonProperty("lestDittNav") boolean lestDittNav
+    ) {
         this.behandlingsId = behandlingsId;
         this.lestDittNav = lestDittNav;
     }
