@@ -5,23 +5,23 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class MarkerPabegyntSoknadSomLestDto {
 
-    private final String behandlingsId;
-    private final boolean lestDittNav;
+    private final String eventId;
+    private final String grupperingsId;
 
     @JsonCreator
     public MarkerPabegyntSoknadSomLestDto(
-            @JsonProperty("behandlingsId") String behandlingsId,
-            @JsonProperty("lestDittNav") boolean lestDittNav
+            @JsonProperty("eventId") String eventId,
+            @JsonProperty("grupperingsId") String grupperingsId
     ) {
-        this.behandlingsId = behandlingsId;
-        this.lestDittNav = lestDittNav;
+        this.eventId = eventId;
+        this.grupperingsId = grupperingsId;
     }
 
-    public String getBehandlingsId() {
-        return behandlingsId;
+    public String getEventId() {
+        return eventId;
     }
 
-    public boolean isLestDittNav() {
-        return lestDittNav;
+    public String getGrupperingsId() {
+        return grupperingsId;
     }
 }

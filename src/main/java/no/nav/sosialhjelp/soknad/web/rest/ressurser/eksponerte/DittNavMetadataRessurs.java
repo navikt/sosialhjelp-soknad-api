@@ -2,7 +2,6 @@ package no.nav.sosialhjelp.soknad.web.rest.ressurser.eksponerte;
 
 import no.finn.unleash.Unleash;
 import no.nav.security.token.support.core.api.ProtectedWithClaims;
-import no.nav.security.token.support.core.api.Unprotected;
 import no.nav.sosialhjelp.metrics.aspects.Timed;
 import no.nav.sosialhjelp.soknad.business.service.dittnav.DittNavMetadataService;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
@@ -73,16 +72,10 @@ public class DittNavMetadataRessurs {
             return false;
         }
         var fnr = SubjectHandler.getUserId();
-        var somLest = dittNavMetadataService.oppdaterLestDittNavForPabegyntSoknad(dto.getBehandlingsId(), dto.isLestDittNav(), fnr);
-        log.info("Pabegynt søknad med behandlingsId={} er har fått lestDittNav={}", dto.getBehandlingsId(), somLest);
+        var behandlingsId = dto.getGrupperingsId();
+        var somLest = dittNavMetadataService.oppdaterLestDittNavForPabegyntSoknad(behandlingsId, fnr);
+        log.info("Pabegynt søknad med behandlingsId={} er har fått lestDittNav={}", behandlingsId, somLest);
         return somLest;
     }
 
-    @GET
-    @Unprotected
-    @Path("/ping")
-    public String ping() {
-        log.debug("Ping for DittNav");
-        return "pong";
-    }
 }
