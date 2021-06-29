@@ -9,33 +9,41 @@ import java.time.format.DateTimeFormatter;
  */
 public class PabegyntSoknadDto {
 
-    private final LocalDateTime tidspunkt;
+    private final LocalDateTime eventTidspunkt;
+    private final String eventId;
     private final String grupperingsId;
     private final String tekst;
     private final String link;
     private final Integer sikkerhetsnivaa;
-    private final LocalDateTime synligFremTil; // 14 dager frem i tid fra siste endring
-    private final boolean eksternVarsling; // Settes alltid til false
+    private final LocalDateTime sistOppdatert;
+    private final boolean aktiv;
 
     public PabegyntSoknadDto(
-            LocalDateTime tidspunkt,
+            LocalDateTime eventTidspunkt,
+            String eventId,
             String grupperingsId,
             String tekst,
             String link,
             Integer sikkerhetsnivaa,
-            LocalDateTime synligFremTil
+            LocalDateTime sistOppdatert,
+            boolean aktiv
     ) {
-        this.tidspunkt = tidspunkt;
+        this.eventTidspunkt = eventTidspunkt;
+        this.eventId = eventId;
         this.grupperingsId = grupperingsId;
         this.tekst = tekst;
         this.link = link;
         this.sikkerhetsnivaa = sikkerhetsnivaa;
-        this.synligFremTil = synligFremTil;
-        this.eksternVarsling = false;
+        this.sistOppdatert = sistOppdatert;
+        this.aktiv = aktiv;
     }
 
-    public String getTidspunkt() {
-        return tidspunkt.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+    public String getEventTidspunkt() {
+        return eventTidspunkt.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+    }
+
+    public String getEventId() {
+        return eventId;
     }
 
     public String getGrupperingsId() {
@@ -54,11 +62,11 @@ public class PabegyntSoknadDto {
         return sikkerhetsnivaa;
     }
 
-    public String getSynligFremTil() {
-        return synligFremTil.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+    public LocalDateTime getSistOppdatert() {
+        return sistOppdatert;
     }
 
-    public boolean isEksternVarsling() {
-        return eksternVarsling;
+    public boolean isAktiv() {
+        return aktiv;
     }
 }

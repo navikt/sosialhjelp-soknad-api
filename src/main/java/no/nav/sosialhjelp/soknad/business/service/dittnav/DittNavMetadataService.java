@@ -37,26 +37,29 @@ public class DittNavMetadataService {
 
     private List<PabegyntSoknadDto> hentPabegynteSoknader(String fnr, boolean lestDittNav) {
         var pabegynteSoknader = soknadMetadataRepository.hentPabegynteSoknaderForBruker(fnr, lestDittNav);
+        var aktiv = !lestDittNav;
 
         return pabegynteSoknader.stream()
                 .map(soknadMetadata -> new PabegyntSoknadDto(
                         toUtc(soknadMetadata.sistEndretDato, ZoneId.systemDefault()),
+                        eventId(soknadMetadata.behandlingsId, aktiv),
                         soknadMetadata.behandlingsId,
                         SOKNAD_TITTEL,
                         lenkeTilPabegyntSoknad(soknadMetadata.behandlingsId),
                         SIKKERHETSNIVAA_3, // todo finn ut hvilken
-                        toUtc(soknadMetadata.opprettetDato.plusDays(14), ZoneId.systemDefault())
+                        toUtc(soknadMetadata.sistEndretDato, ZoneId.systemDefault()),
+                        aktiv
                 ))
                 .collect(Collectors.toList());
     }
 
-    public boolean oppdaterLestDittNavForPabegyntSoknad(String behandlingsId, boolean lestDittNav, String fnr) {
+    public boolean oppdaterLestDittNavForPabegyntSoknad(String behandlingsId, String fnr) {
         var soknadMetadata = soknadMetadataRepository.hent(behandlingsId);
         if (soknadMetadata == null) {
             log.warn("Fant ingen soknadMetadata med behandlingsId={}", behandlingsId);
             return false;
         }
-        soknadMetadata.lestDittNav = lestDittNav;
+        soknadMetadata.lestDittNav = true;
         try {
             soknadMetadataRepository.oppdaterLestDittNav(soknadMetadata, fnr);
             return true;
@@ -64,6 +67,10 @@ public class DittNavMetadataService {
             log.warn("Noe feilet ved oppdatering av lestDittNav for soknadMetadata med behandlingsId={}", behandlingsId, e);
             return false;
         }
+    }
+
+    private String eventId(String behandlingsId, boolean aktiv) {
+        return behandlingsId + "_" + (aktiv ? "aktiv" : "inaktiv");
     }
 
     private String lenkeTilPabegyntSoknad(String behandlingsId) {
