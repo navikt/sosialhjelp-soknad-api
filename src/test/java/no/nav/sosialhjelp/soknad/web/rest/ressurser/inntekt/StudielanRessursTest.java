@@ -26,11 +26,7 @@ import java.util.List;
 import static java.util.Arrays.asList;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.STUDIELAN;
 import static no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
@@ -76,8 +72,8 @@ public class StudielanRessursTest {
 
         StudielanFrontend studielanFrontend = studielanRessurs.hentStudielanBekreftelse(BEHANDLINGSID);
 
-        assertThat(studielanFrontend.skalVises, is(true));
-        assertThat(studielanFrontend.bekreftelse, nullValue());
+        assertThat(studielanFrontend.skalVises).isTrue();
+        assertThat(studielanFrontend.bekreftelse).isNull();
     }
 
     @Test
@@ -87,8 +83,8 @@ public class StudielanRessursTest {
 
         StudielanFrontend studielanFrontend = studielanRessurs.hentStudielanBekreftelse(BEHANDLINGSID);
 
-        assertThat(studielanFrontend.skalVises, is(true));
-        assertTrue(studielanFrontend.bekreftelse);
+        assertThat(studielanFrontend.skalVises).isTrue();
+        assertThat(studielanFrontend.bekreftelse).isTrue();
     }
 
     @Test
@@ -98,8 +94,8 @@ public class StudielanRessursTest {
 
         StudielanFrontend studielanFrontend = studielanRessurs.hentStudielanBekreftelse(BEHANDLINGSID);
 
-        assertThat(studielanFrontend.skalVises, is(true));
-        assertFalse(studielanFrontend.bekreftelse);
+        assertThat(studielanFrontend.skalVises).isTrue();
+        assertThat(studielanFrontend.bekreftelse).isFalse();
     }
 
     @Test
@@ -109,8 +105,8 @@ public class StudielanRessursTest {
 
         StudielanFrontend studielanFrontend = studielanRessurs.hentStudielanBekreftelse(BEHANDLINGSID);
 
-        assertThat(studielanFrontend.skalVises, is(false));
-        assertThat(studielanFrontend.bekreftelse, nullValue());
+        assertThat(studielanFrontend.skalVises).isFalse();
+        assertThat(studielanFrontend.bekreftelse).isNull();
     }
 
     @Test
@@ -120,8 +116,8 @@ public class StudielanRessursTest {
 
         StudielanFrontend studielanFrontend = studielanRessurs.hentStudielanBekreftelse(BEHANDLINGSID);
 
-        assertThat(studielanFrontend.skalVises, is(false));
-        assertThat(studielanFrontend.bekreftelse, nullValue());
+        assertThat(studielanFrontend.skalVises).isFalse();
+        assertThat(studielanFrontend.bekreftelse).isNull();
     }
 
     @Test
@@ -139,11 +135,11 @@ public class StudielanRessursTest {
                 .getOkonomi().getOpplysninger().getBekreftelse();
         List<JsonOkonomioversiktInntekt> inntekt = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData()
                 .getOkonomi().getOversikt().getInntekt();
-        assertThat(inntekt.get(0).getType(), is(STUDIELAN));
+        assertThat(inntekt.get(0).getType()).isEqualTo(STUDIELAN);
         JsonOkonomibekreftelse studielan = bekreftelser.get(0);
-        assertThat(studielan.getKilde(), is(JsonKilde.BRUKER));
-        assertThat(studielan.getType(), is(STUDIELAN));
-        assertTrue(studielan.getVerdi());
+        assertThat(studielan.getKilde()).isEqualTo(JsonKilde.BRUKER);
+        assertThat(studielan.getType()).isEqualTo(STUDIELAN);
+        assertThat(studielan.getVerdi()).isTrue();
     }
 
     @Test
@@ -164,11 +160,11 @@ public class StudielanRessursTest {
                 .getOkonomi().getOpplysninger().getBekreftelse();
         List<JsonOkonomioversiktInntekt> jsonInntekt = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData()
                 .getOkonomi().getOversikt().getInntekt();
-        assertTrue(jsonInntekt.isEmpty());
+        assertThat(jsonInntekt).isEmpty();
         JsonOkonomibekreftelse studielan = bekreftelser.get(0);
-        assertThat(studielan.getKilde(), is(JsonKilde.BRUKER));
-        assertThat(studielan.getType(), is(STUDIELAN));
-        assertFalse(studielan.getVerdi());
+        assertThat(studielan.getKilde()).isEqualTo(JsonKilde.BRUKER);
+        assertThat(studielan.getType()).isEqualTo(STUDIELAN);
+        assertThat(studielan.getVerdi()).isFalse();
     }
 
     @Test(expected = AuthorizationException.class)

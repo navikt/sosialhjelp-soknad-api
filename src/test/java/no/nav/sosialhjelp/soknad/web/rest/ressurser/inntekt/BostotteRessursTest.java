@@ -17,7 +17,6 @@ import no.nav.sosialhjelp.soknad.domain.model.oidc.StaticSubjectHandlerService;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.inntekt.BostotteRessurs.BostotteFrontend;
 import no.nav.sosialhjelp.soknad.web.sikkerhet.Tilgangskontroll;
-import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,11 +36,7 @@ import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.BOSTOTTE_SAMTYKK
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_HUSBANKEN;
 import static no.nav.sosialhjelp.soknad.business.mappers.OkonomiMapper.setBekreftelse;
 import static no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.doNothing;
@@ -92,7 +87,7 @@ public class BostotteRessursTest {
 
         BostotteFrontend bostotteFrontend = bostotteRessurs.hentBostotte(BEHANDLINGSID);
 
-        assertThat(bostotteFrontend.bekreftelse, nullValue());
+        assertThat(bostotteFrontend.bekreftelse).isNull();
     }
 
     @Test
@@ -102,7 +97,7 @@ public class BostotteRessursTest {
 
         BostotteFrontend bostotteFrontend = bostotteRessurs.hentBostotte(BEHANDLINGSID);
 
-        assertTrue(bostotteFrontend.bekreftelse);
+        assertThat(bostotteFrontend.bekreftelse).isTrue();
     }
 
     @Test
@@ -112,7 +107,7 @@ public class BostotteRessursTest {
 
         BostotteFrontend bostotteFrontend = bostotteRessurs.hentBostotte(BEHANDLINGSID);
 
-        assertFalse(bostotteFrontend.bekreftelse);
+        assertThat(bostotteFrontend.bekreftelse).isFalse();
     }
 
     @Test
@@ -130,11 +125,11 @@ public class BostotteRessursTest {
                 .getOkonomi().getOpplysninger().getBekreftelse();
         List<JsonOkonomiOpplysningUtbetaling> utbetaling = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData()
                 .getOkonomi().getOpplysninger().getUtbetaling();
-        assertThat(utbetaling.get(0).getType(), is(UTBETALING_HUSBANKEN));
+        assertThat(utbetaling.get(0).getType()).isEqualTo(UTBETALING_HUSBANKEN);
         JsonOkonomibekreftelse bostotte = bekreftelser.get(0);
-        assertThat(bostotte.getKilde(), is(JsonKilde.BRUKER));
-        assertThat(bostotte.getType(), is(BOSTOTTE));
-        assertTrue(bostotte.getVerdi());
+        assertThat(bostotte.getKilde()).isEqualTo(JsonKilde.BRUKER);
+        assertThat(bostotte.getType()).isEqualTo(BOSTOTTE);
+        assertThat(bostotte.getVerdi()).isTrue();
     }
 
     @Test
@@ -155,11 +150,11 @@ public class BostotteRessursTest {
                 .getOkonomi().getOpplysninger().getBekreftelse();
         List<JsonOkonomiOpplysningUtbetaling> utbetaling = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData()
                 .getOkonomi().getOpplysninger().getUtbetaling();
-        assertTrue(utbetaling.isEmpty());
+        assertThat(utbetaling).isEmpty();
         JsonOkonomibekreftelse bostotte = bekreftelser.get(0);
-        assertThat(bostotte.getKilde(), is(JsonKilde.BRUKER));
-        assertThat(bostotte.getType(), is(BOSTOTTE));
-        assertFalse(bostotte.getVerdi());
+        assertThat(bostotte.getKilde()).isEqualTo(JsonKilde.BRUKER);
+        assertThat(bostotte.getType()).isEqualTo(BOSTOTTE);
+        assertThat(bostotte.getVerdi()).isFalse();
     }
 
     @Test
@@ -169,7 +164,7 @@ public class BostotteRessursTest {
 
         BostotteRessurs.BostotteFrontend bostotteFrontend = bostotteRessurs.hentBostotte(BEHANDLINGSID);
 
-        Assertions.assertThat(bostotteFrontend.utbetalinger).hasSize(1);
+        assertThat(bostotteFrontend.utbetalinger).hasSize(1);
     }
 
     @Test
@@ -179,7 +174,7 @@ public class BostotteRessursTest {
 
         BostotteRessurs.BostotteFrontend bostotteFrontend = bostotteRessurs.hentBostotte(BEHANDLINGSID);
 
-        Assertions.assertThat(bostotteFrontend.utbetalinger).isEmpty();
+        assertThat(bostotteFrontend.utbetalinger).isEmpty();
     }
 
     @Test
@@ -189,7 +184,7 @@ public class BostotteRessursTest {
 
         BostotteRessurs.BostotteFrontend bostotteFrontend = bostotteRessurs.hentBostotte(BEHANDLINGSID);
 
-        Assertions.assertThat(bostotteFrontend.saker).hasSize(1);
+        assertThat(bostotteFrontend.saker).hasSize(1);
     }
 
     @Test
@@ -199,7 +194,7 @@ public class BostotteRessursTest {
 
         BostotteRessurs.BostotteFrontend bostotteFrontend = bostotteRessurs.hentBostotte(BEHANDLINGSID);
 
-        Assertions.assertThat(bostotteFrontend.saker).isEmpty();
+        assertThat(bostotteFrontend.saker).isEmpty();
     }
 
     @Test
@@ -214,15 +209,15 @@ public class BostotteRessursTest {
         verify(bostotteSystemdata).updateSystemdataIn(argument.capture(), anyString());
         JsonOkonomi okonomi = argument.getValue().getJsonInternalSoknad().getSoknad().getData().getOkonomi();
         JsonOkonomibekreftelse fangetBekreftelse = okonomi.getOpplysninger().getBekreftelse().get(0);
-        Assertions.assertThat(fangetBekreftelse.getType()).isEqualTo(BOSTOTTE_SAMTYKKE);
-        Assertions.assertThat(fangetBekreftelse.getVerdi()).isTrue();
+        assertThat(fangetBekreftelse.getType()).isEqualTo(BOSTOTTE_SAMTYKKE);
+        assertThat(fangetBekreftelse.getVerdi()).isTrue();
 
         // Sjekker lagring av soknaden
         SoknadUnderArbeid spartSoknad = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
-        Assertions.assertThat(spartSoknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getBekreftelse()).hasSize(1);
+        assertThat(spartSoknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getBekreftelse()).hasSize(1);
         JsonOkonomibekreftelse spartBekreftelse = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getBekreftelse().get(0);
-        Assertions.assertThat(spartBekreftelse.getType()).isEqualTo(BOSTOTTE_SAMTYKKE);
-        Assertions.assertThat(spartBekreftelse.getVerdi()).isTrue();
+        assertThat(spartBekreftelse.getType()).isEqualTo(BOSTOTTE_SAMTYKKE);
+        assertThat(spartBekreftelse.getVerdi()).isTrue();
     }
 
     @Test
@@ -239,16 +234,16 @@ public class BostotteRessursTest {
         verify(bostotteSystemdata).updateSystemdataIn(argument.capture(), anyString());
         JsonOkonomi okonomi = argument.getValue().getJsonInternalSoknad().getSoknad().getData().getOkonomi();
         JsonOkonomibekreftelse fangetBekreftelse = okonomi.getOpplysninger().getBekreftelse().get(0);
-        Assertions.assertThat(fangetBekreftelse.getType()).isEqualTo(BOSTOTTE_SAMTYKKE);
-        Assertions.assertThat(fangetBekreftelse.getVerdi()).isFalse();
+        assertThat(fangetBekreftelse.getType()).isEqualTo(BOSTOTTE_SAMTYKKE);
+        assertThat(fangetBekreftelse.getVerdi()).isFalse();
 
         // Sjekker lagring av soknaden
         SoknadUnderArbeid spartSoknad = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
         JsonOkonomiopplysninger sparteOpplysninger = spartSoknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger();
-        Assertions.assertThat(sparteOpplysninger.getBekreftelse()).hasSize(1);
+        assertThat(sparteOpplysninger.getBekreftelse()).hasSize(1);
         JsonOkonomibekreftelse spartBekreftelse = sparteOpplysninger.getBekreftelse().get(0);
-        Assertions.assertThat(spartBekreftelse.getType()).isEqualTo(BOSTOTTE_SAMTYKKE);
-        Assertions.assertThat(spartBekreftelse.getVerdi()).isFalse();
+        assertThat(spartBekreftelse.getType()).isEqualTo(BOSTOTTE_SAMTYKKE);
+        assertThat(spartBekreftelse.getVerdi()).isFalse();
     }
 
     @Test
@@ -265,7 +260,7 @@ public class BostotteRessursTest {
         verify(soknadUnderArbeidRepository, times(0)).oppdaterSoknadsdata(any(), anyString());
 
         // Sjekker soknaden
-        Assertions.assertThat(soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getBekreftelse()).isEmpty();
+        assertThat(soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getBekreftelse()).isEmpty();
     }
 
     @Test(expected = AuthorizationException.class)

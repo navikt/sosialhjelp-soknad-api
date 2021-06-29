@@ -35,11 +35,7 @@ import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTGIFTER_BARN_FR
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTGIFTER_BARN_TANNREGULERING;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTGIFTER_SFO;
 import static no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
@@ -85,13 +81,13 @@ public class BarneutgiftRessursTest {
 
         BarneutgifterFrontend barneutgifterFrontend = barneutgiftRessurs.hentBarneutgifter(BEHANDLINGSID);
 
-        assertFalse(barneutgifterFrontend.harForsorgerplikt);
-        assertThat(barneutgifterFrontend.bekreftelse, nullValue());
-        assertFalse(barneutgifterFrontend.barnehage);
-        assertFalse(barneutgifterFrontend.sfo);
-        assertFalse(barneutgifterFrontend.tannregulering);
-        assertFalse(barneutgifterFrontend.fritidsaktiviteter);
-        assertFalse(barneutgifterFrontend.annet);
+        assertThat(barneutgifterFrontend.harForsorgerplikt).isFalse();
+        assertThat(barneutgifterFrontend.bekreftelse).isNull();
+        assertThat(barneutgifterFrontend.barnehage).isFalse();
+        assertThat(barneutgifterFrontend.sfo).isFalse();
+        assertThat(barneutgifterFrontend.tannregulering).isFalse();
+        assertThat(barneutgifterFrontend.fritidsaktiviteter).isFalse();
+        assertThat(barneutgifterFrontend.annet).isFalse();
     }
 
     @Test
@@ -101,13 +97,13 @@ public class BarneutgiftRessursTest {
 
         BarneutgifterFrontend barneutgifterFrontend = barneutgiftRessurs.hentBarneutgifter(BEHANDLINGSID);
 
-        assertFalse(barneutgifterFrontend.harForsorgerplikt);
-        assertThat(barneutgifterFrontend.bekreftelse, nullValue());
-        assertFalse(barneutgifterFrontend.barnehage);
-        assertFalse(barneutgifterFrontend.sfo);
-        assertFalse(barneutgifterFrontend.tannregulering);
-        assertFalse(barneutgifterFrontend.fritidsaktiviteter);
-        assertFalse(barneutgifterFrontend.annet);
+        assertThat(barneutgifterFrontend.harForsorgerplikt).isFalse();
+        assertThat(barneutgifterFrontend.bekreftelse).isNull();
+        assertThat(barneutgifterFrontend.barnehage).isFalse();
+        assertThat(barneutgifterFrontend.sfo).isFalse();
+        assertThat(barneutgifterFrontend.tannregulering).isFalse();
+        assertThat(barneutgifterFrontend.fritidsaktiviteter).isFalse();
+        assertThat(barneutgifterFrontend.annet).isFalse();
     }
 
     @Test
@@ -118,13 +114,13 @@ public class BarneutgiftRessursTest {
 
         BarneutgifterFrontend barneutgifterFrontend = barneutgiftRessurs.hentBarneutgifter(BEHANDLINGSID);
 
-        assertTrue(barneutgifterFrontend.harForsorgerplikt);
-        assertTrue(barneutgifterFrontend.bekreftelse);
-        assertTrue(barneutgifterFrontend.barnehage);
-        assertTrue(barneutgifterFrontend.sfo);
-        assertTrue(barneutgifterFrontend.tannregulering);
-        assertTrue(barneutgifterFrontend.fritidsaktiviteter);
-        assertTrue(barneutgifterFrontend.annet);
+        assertThat(barneutgifterFrontend.harForsorgerplikt).isTrue();
+        assertThat(barneutgifterFrontend.bekreftelse).isTrue();
+        assertThat(barneutgifterFrontend.barnehage).isTrue();
+        assertThat(barneutgifterFrontend.sfo).isTrue();
+        assertThat(barneutgifterFrontend.tannregulering).isTrue();
+        assertThat(barneutgifterFrontend.fritidsaktiviteter).isTrue();
+        assertThat(barneutgifterFrontend.annet).isTrue();
     }
 
     @Test
@@ -146,9 +142,9 @@ public class BarneutgiftRessursTest {
                 .getOkonomi().getOversikt().getUtgift();
         List<JsonOkonomiOpplysningUtgift> opplysningerBarneutgifter = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData()
                 .getOkonomi().getOpplysninger().getUtgift();
-        assertFalse(barneutgiftBekreftelse.getVerdi());
-        assertTrue(oversiktBarneutgifter.isEmpty());
-        assertTrue(opplysningerBarneutgifter.isEmpty());
+        assertThat(barneutgiftBekreftelse.getVerdi()).isFalse();
+        assertThat(oversiktBarneutgifter.isEmpty()).isTrue();
+        assertThat(opplysningerBarneutgifter.isEmpty()).isTrue();
     }
 
     @Test
@@ -174,14 +170,14 @@ public class BarneutgiftRessursTest {
                 .getOkonomi().getOversikt().getUtgift();
         List<JsonOkonomiOpplysningUtgift> opplysningerBarneutgifter = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData()
                 .getOkonomi().getOpplysninger().getUtgift();
-        assertThat(barneutgiftBekreftelse.getKilde(), is(JsonKilde.BRUKER));
-        assertThat(barneutgiftBekreftelse.getType(), is(BEKREFTELSE_BARNEUTGIFTER));
-        assertTrue(barneutgiftBekreftelse.getVerdi());
-        assertTrue(oversiktBarneutgifter.stream().anyMatch(barneutgift -> barneutgift.getType().equals(UTGIFTER_BARNEHAGE)));
-        assertTrue(oversiktBarneutgifter.stream().anyMatch(barneutgift -> barneutgift.getType().equals(UTGIFTER_SFO)));
-        assertFalse(opplysningerBarneutgifter.stream().anyMatch(barneutgift -> barneutgift.getType().equals(UTGIFTER_BARN_FRITIDSAKTIVITETER)));
-        assertFalse(opplysningerBarneutgifter.stream().anyMatch(barneutgift -> barneutgift.getType().equals(UTGIFTER_BARN_TANNREGULERING)));
-        assertFalse(opplysningerBarneutgifter.stream().anyMatch(barneutgift -> barneutgift.getType().equals(UTGIFTER_ANNET_BARN)));
+        assertThat(barneutgiftBekreftelse.getKilde()).isEqualTo(JsonKilde.BRUKER);
+        assertThat(barneutgiftBekreftelse.getType()).isEqualTo(BEKREFTELSE_BARNEUTGIFTER);
+        assertThat(barneutgiftBekreftelse.getVerdi()).isTrue();
+        assertThat(oversiktBarneutgifter.stream().anyMatch(barneutgift -> barneutgift.getType().equals(UTGIFTER_BARNEHAGE))).isTrue();
+        assertThat(oversiktBarneutgifter.stream().anyMatch(barneutgift -> barneutgift.getType().equals(UTGIFTER_SFO))).isTrue();
+        assertThat(opplysningerBarneutgifter.stream().anyMatch(barneutgift -> barneutgift.getType().equals(UTGIFTER_BARN_FRITIDSAKTIVITETER))).isFalse();
+        assertThat(opplysningerBarneutgifter.stream().anyMatch(barneutgift -> barneutgift.getType().equals(UTGIFTER_BARN_TANNREGULERING))).isFalse();
+        assertThat(opplysningerBarneutgifter.stream().anyMatch(barneutgift -> barneutgift.getType().equals(UTGIFTER_ANNET_BARN))).isFalse();
     }
 
     @Test
@@ -207,14 +203,14 @@ public class BarneutgiftRessursTest {
                 .getOkonomi().getOversikt().getUtgift();
         List<JsonOkonomiOpplysningUtgift> opplysningerBarneutgifter = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData()
                 .getOkonomi().getOpplysninger().getUtgift();
-        assertThat(barneutgiftBekreftelse.getKilde(), is(JsonKilde.BRUKER));
-        assertThat(barneutgiftBekreftelse.getType(), is(BEKREFTELSE_BARNEUTGIFTER));
-        assertTrue(barneutgiftBekreftelse.getVerdi());
-        assertTrue(oversiktBarneutgifter.stream().anyMatch(barneutgift -> barneutgift.getType().equals(UTGIFTER_BARNEHAGE)));
-        assertTrue(oversiktBarneutgifter.stream().anyMatch(barneutgift -> barneutgift.getType().equals(UTGIFTER_SFO)));
-        assertTrue(opplysningerBarneutgifter.stream().anyMatch(barneutgift -> barneutgift.getType().equals(UTGIFTER_BARN_FRITIDSAKTIVITETER)));
-        assertTrue(opplysningerBarneutgifter.stream().anyMatch(barneutgift -> barneutgift.getType().equals(UTGIFTER_BARN_TANNREGULERING)));
-        assertTrue(opplysningerBarneutgifter.stream().anyMatch(barneutgift -> barneutgift.getType().equals(UTGIFTER_ANNET_BARN)));
+        assertThat(barneutgiftBekreftelse.getKilde()).isEqualTo(JsonKilde.BRUKER);
+        assertThat(barneutgiftBekreftelse.getType()).isEqualTo(BEKREFTELSE_BARNEUTGIFTER);
+        assertThat(barneutgiftBekreftelse.getVerdi()).isTrue();
+        assertThat(oversiktBarneutgifter.stream().anyMatch(barneutgift -> barneutgift.getType().equals(UTGIFTER_BARNEHAGE))).isTrue();
+        assertThat(oversiktBarneutgifter.stream().anyMatch(barneutgift -> barneutgift.getType().equals(UTGIFTER_SFO))).isTrue();
+        assertThat(opplysningerBarneutgifter.stream().anyMatch(barneutgift -> barneutgift.getType().equals(UTGIFTER_BARN_FRITIDSAKTIVITETER))).isTrue();
+        assertThat(opplysningerBarneutgifter.stream().anyMatch(barneutgift -> barneutgift.getType().equals(UTGIFTER_BARN_TANNREGULERING))).isTrue();
+        assertThat(opplysningerBarneutgifter.stream().anyMatch(barneutgift -> barneutgift.getType().equals(UTGIFTER_ANNET_BARN))).isTrue();
     }
 
     @Test(expected = AuthorizationException.class)

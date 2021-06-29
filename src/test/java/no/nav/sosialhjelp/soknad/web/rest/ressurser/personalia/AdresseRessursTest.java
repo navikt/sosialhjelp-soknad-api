@@ -33,9 +33,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.doNothing;
@@ -164,10 +162,10 @@ public class AdresseRessursTest {
 
         final SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
         final JsonAdresse oppholdsadresse = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getOppholdsadresse();
-        assertThat(oppholdsadresse.getKilde(), is(JsonKilde.SYSTEM));
-        assertThat(oppholdsadresse, is(adresseSystemdata.createDeepCopyOfJsonAdresse(JSON_SYS_MATRIKKELADRESSE).withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT)));
-        assertThat(navEnheter.size(), is(1));
-        assertThat(navEnheter.get(0).enhetsnavn, is("Folkeregistrert NavEnhet"));
+        assertThat(oppholdsadresse.getKilde()).isEqualTo(JsonKilde.SYSTEM);
+        assertThat(oppholdsadresse).isEqualTo(adresseSystemdata.createDeepCopyOfJsonAdresse(JSON_SYS_MATRIKKELADRESSE).withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT));
+        assertThat(navEnheter).hasSize(1);
+        assertThat(navEnheter.get(0).enhetsnavn).isEqualTo("Folkeregistrert NavEnhet");
     }
 
     @Test
@@ -184,11 +182,11 @@ public class AdresseRessursTest {
 
         final SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
         final JsonAdresse oppholdsadresse = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getOppholdsadresse();
-        assertThat(oppholdsadresse.getKilde(), is(JsonKilde.SYSTEM));
-        assertThat(oppholdsadresse, is(JSON_SYS_USTRUKTURERT_ADRESSE));
-        assertThat(oppholdsadresse.getAdresseValg(), is(JsonAdresseValg.MIDLERTIDIG));
-        assertThat(navEnheter.size(), is(1));
-        assertThat(navEnheter.get(0).enhetsnavn, is("Midlertidig NavEnhet"));
+        assertThat(oppholdsadresse.getKilde()).isEqualTo(JsonKilde.SYSTEM);
+        assertThat(oppholdsadresse).isEqualTo(JSON_SYS_USTRUKTURERT_ADRESSE);
+        assertThat(oppholdsadresse.getAdresseValg()).isEqualTo(JsonAdresseValg.MIDLERTIDIG);
+        assertThat(navEnheter).hasSize(1);
+        assertThat(navEnheter.get(0).enhetsnavn).isEqualTo("Midlertidig NavEnhet");
     }
 
     @Test
@@ -206,11 +204,11 @@ public class AdresseRessursTest {
 
         final SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
         final JsonAdresse oppholdsadresse = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getOppholdsadresse();
-        assertThat(oppholdsadresse.getKilde(), is(JsonKilde.BRUKER));
-        assertThat(((JsonGateAdresse) oppholdsadresse).getGatenavn(), is("Søknadsgata"));
-        assertThat(oppholdsadresse.getAdresseValg(), is(JsonAdresseValg.SOKNAD));
-        assertThat(navEnheter.size(), is(1));
-        assertThat(navEnheter.get(0).enhetsnavn, is("Soknad NavEnhet"));
+        assertThat(oppholdsadresse.getKilde()).isEqualTo(JsonKilde.BRUKER);
+        assertThat(((JsonGateAdresse) oppholdsadresse).getGatenavn()).isEqualTo("Søknadsgata");
+        assertThat(oppholdsadresse.getAdresseValg()).isEqualTo(JsonAdresseValg.SOKNAD);
+        assertThat(navEnheter).hasSize(1);
+        assertThat(navEnheter.get(0).enhetsnavn).isEqualTo("Soknad NavEnhet");
     }
 
     @Test(expected = AuthorizationException.class)
@@ -249,10 +247,10 @@ public class AdresseRessursTest {
 
     private void assertThatAdresseIsCorrectlyConverted(AdresseFrontend adresseFrontend, JsonAdresse jsonAdresse) {
         if (adresseFrontend == null) {
-            assertThat(jsonAdresse, nullValue());
+            assertThat(jsonAdresse).isNull();
             return;
         }
-        assertThat("Adressetype", adresseFrontend.type, is(jsonAdresse.getType()));
+        assertThat(adresseFrontend.type).isEqualTo(jsonAdresse.getType());
         switch (jsonAdresse.getType()) {
             case GATEADRESSE:
                 assertThatGateadresseIsCorrectlyConverted(adresseFrontend.gateadresse, jsonAdresse);
@@ -264,39 +262,39 @@ public class AdresseRessursTest {
                 assertThatUstrukturertAdresseIsCorrectlyConverted(adresseFrontend.ustrukturert, jsonAdresse);
                 break;
             default:
-                assertThat(jsonAdresse, nullValue());
-                assertThat(adresseFrontend.gateadresse, nullValue());
-                assertThat(adresseFrontend.matrikkeladresse, nullValue());
-                assertThat(adresseFrontend.ustrukturert, nullValue());
+                assertThat(jsonAdresse).isNull();
+                assertThat(adresseFrontend.gateadresse).isNull();
+                assertThat(adresseFrontend.matrikkeladresse).isNull();
+                assertThat(adresseFrontend.ustrukturert).isNull();
         }
     }
 
     private void assertThatGateadresseIsCorrectlyConverted(GateadresseFrontend gateadresse, JsonAdresse jsonAdresse) {
         JsonGateAdresse jsonGateAdresse = (JsonGateAdresse) jsonAdresse;
-        assertThat("landkode", gateadresse.landkode, is(jsonGateAdresse.getLandkode()));
-        assertThat("kommunenummer", gateadresse.kommunenummer, is(jsonGateAdresse.getKommunenummer()));
-        assertThat("adresselinjer", gateadresse.adresselinjer, is(jsonGateAdresse.getAdresselinjer()));
-        assertThat("bolignummer", gateadresse.bolignummer, is(jsonGateAdresse.getBolignummer()));
-        assertThat("postnummer", gateadresse.postnummer, is(jsonGateAdresse.getPostnummer()));
-        assertThat("poststed", gateadresse.poststed, is(jsonGateAdresse.getPoststed()));
-        assertThat("gatenavn", gateadresse.gatenavn, is(jsonGateAdresse.getGatenavn()));
-        assertThat("husnummer", gateadresse.husnummer, is(jsonGateAdresse.getHusnummer()));
-        assertThat("husbokstav", gateadresse.husbokstav, is(jsonGateAdresse.getHusbokstav()));
+        assertThat(gateadresse.landkode).isEqualTo(jsonGateAdresse.getLandkode());
+        assertThat(gateadresse.kommunenummer).isEqualTo(jsonGateAdresse.getKommunenummer());
+        assertThat(gateadresse.adresselinjer).isEqualTo(jsonGateAdresse.getAdresselinjer());
+        assertThat(gateadresse.bolignummer).isEqualTo(jsonGateAdresse.getBolignummer());
+        assertThat(gateadresse.postnummer).isEqualTo(jsonGateAdresse.getPostnummer());
+        assertThat(gateadresse.poststed).isEqualTo(jsonGateAdresse.getPoststed());
+        assertThat(gateadresse.gatenavn).isEqualTo(jsonGateAdresse.getGatenavn());
+        assertThat(gateadresse.husnummer).isEqualTo(jsonGateAdresse.getHusnummer());
+        assertThat(gateadresse.husbokstav).isEqualTo(jsonGateAdresse.getHusbokstav());
     }
 
     private void assertThatMatrikkeladresseIsCorrectlyConverted(MatrikkeladresseFrontend matrikkeladresse, JsonAdresse jsonAdresse) {
         JsonMatrikkelAdresse jsonMatrikkelAdresse = (JsonMatrikkelAdresse) jsonAdresse;
-        assertThat("kommunenummer", matrikkeladresse.kommunenummer, is(jsonMatrikkelAdresse.getKommunenummer()));
-        assertThat("gaardsnummer", matrikkeladresse.gaardsnummer, is(jsonMatrikkelAdresse.getGaardsnummer()));
-        assertThat("bruksnummer", matrikkeladresse.bruksnummer, is(jsonMatrikkelAdresse.getBruksnummer()));
-        assertThat("festenummer", matrikkeladresse.festenummer, is(jsonMatrikkelAdresse.getFestenummer()));
-        assertThat("seksjonsnummer", matrikkeladresse.seksjonsnummer, is(jsonMatrikkelAdresse.getSeksjonsnummer()));
-        assertThat("undernummer", matrikkeladresse.undernummer, is(jsonMatrikkelAdresse.getUndernummer()));
+        assertThat(matrikkeladresse.kommunenummer).isEqualTo(jsonMatrikkelAdresse.getKommunenummer());
+        assertThat(matrikkeladresse.gaardsnummer).isEqualTo(jsonMatrikkelAdresse.getGaardsnummer());
+        assertThat(matrikkeladresse.bruksnummer).isEqualTo(jsonMatrikkelAdresse.getBruksnummer());
+        assertThat(matrikkeladresse.festenummer).isEqualTo(jsonMatrikkelAdresse.getFestenummer());
+        assertThat(matrikkeladresse.seksjonsnummer).isEqualTo(jsonMatrikkelAdresse.getSeksjonsnummer());
+        assertThat(matrikkeladresse.undernummer).isEqualTo(jsonMatrikkelAdresse.getUndernummer());
     }
 
     private void assertThatUstrukturertAdresseIsCorrectlyConverted(UstrukturertAdresseFrontend ustrukturertAdresse, JsonAdresse jsonAdresse) {
         JsonUstrukturertAdresse jsonUstrukturertAdresse = (JsonUstrukturertAdresse) jsonAdresse;
-        assertThat("adresse", ustrukturertAdresse.adresse, is(jsonUstrukturertAdresse.getAdresse()));
+        assertThat(ustrukturertAdresse.adresse).isEqualTo(jsonUstrukturertAdresse.getAdresse());
     }
 
     private SoknadUnderArbeid catchSoknadUnderArbeidSentToOppdaterSoknadsdata() {

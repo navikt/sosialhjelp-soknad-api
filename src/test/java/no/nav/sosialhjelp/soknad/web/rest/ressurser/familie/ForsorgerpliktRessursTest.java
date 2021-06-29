@@ -41,9 +41,7 @@ import java.util.List;
 import static java.util.Arrays.asList;
 import static no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
 import static no.nav.sosialhjelp.soknad.web.rest.mappers.PersonMapper.getPersonnummerFromFnr;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doNothing;
@@ -114,9 +112,9 @@ public class ForsorgerpliktRessursTest {
 
         ForsorgerpliktFrontend forsorgerpliktFrontend = forsorgerpliktRessurs.hentForsorgerplikt(BEHANDLINGSID);
 
-        assertThat(forsorgerpliktFrontend.harForsorgerplikt, nullValue());
-        assertThat(forsorgerpliktFrontend.barnebidrag, nullValue());
-        assertThat(forsorgerpliktFrontend.ansvar, nullValue());
+        assertThat(forsorgerpliktFrontend.harForsorgerplikt).isNull();
+        assertThat(forsorgerpliktFrontend.barnebidrag).isNull();
+        assertThat(forsorgerpliktFrontend.ansvar).isNull();
     }
 
     @Test
@@ -129,9 +127,9 @@ public class ForsorgerpliktRessursTest {
 
         ForsorgerpliktFrontend forsorgerpliktFrontend = forsorgerpliktRessurs.hentForsorgerplikt(BEHANDLINGSID);
 
-        assertThat(forsorgerpliktFrontend.harForsorgerplikt, is(true));
-        assertThat(forsorgerpliktFrontend.barnebidrag, nullValue());
-        assertThat(forsorgerpliktFrontend.ansvar.size(), is(1));
+        assertThat(forsorgerpliktFrontend.harForsorgerplikt).isTrue();
+        assertThat(forsorgerpliktFrontend.barnebidrag).isNull();
+        assertThat(forsorgerpliktFrontend.ansvar).hasSize(1);
         assertThatAnsvarIsCorrectlyConverted(forsorgerpliktFrontend.ansvar.get(0), jsonAnsvar);
     }
 
@@ -145,9 +143,9 @@ public class ForsorgerpliktRessursTest {
 
         ForsorgerpliktFrontend forsorgerpliktFrontend = forsorgerpliktRessurs.hentForsorgerplikt(BEHANDLINGSID);
 
-        assertThat(forsorgerpliktFrontend.harForsorgerplikt, is(true));
-        assertThat(forsorgerpliktFrontend.barnebidrag, nullValue());
-        assertThat(forsorgerpliktFrontend.ansvar.size(), is(1));
+        assertThat(forsorgerpliktFrontend.harForsorgerplikt).isTrue();
+        assertThat(forsorgerpliktFrontend.barnebidrag).isNull();
+        assertThat(forsorgerpliktFrontend.ansvar).hasSize(1);
         assertThatAnsvarIsCorrectlyConverted(forsorgerpliktFrontend.ansvar.get(0), jsonAnsvar);
     }
 
@@ -160,9 +158,9 @@ public class ForsorgerpliktRessursTest {
 
         ForsorgerpliktFrontend forsorgerpliktFrontend = forsorgerpliktRessurs.hentForsorgerplikt(BEHANDLINGSID);
 
-        assertThat(forsorgerpliktFrontend.harForsorgerplikt, is(true));
-        assertThat(forsorgerpliktFrontend.barnebidrag, nullValue());
-        assertThat(forsorgerpliktFrontend.ansvar.size(), is(2));
+        assertThat(forsorgerpliktFrontend.harForsorgerplikt).isTrue();
+        assertThat(forsorgerpliktFrontend.barnebidrag).isNull();
+        assertThat(forsorgerpliktFrontend.ansvar).hasSize(2);
         assertThatAnsvarIsCorrectlyConverted(forsorgerpliktFrontend.ansvar.get(0), jsonAnsvar);
         assertThatAnsvarIsCorrectlyConverted(forsorgerpliktFrontend.ansvar.get(1), jsonAnsvar_2);
     }
@@ -175,9 +173,9 @@ public class ForsorgerpliktRessursTest {
 
         ForsorgerpliktFrontend forsorgerpliktFrontend = forsorgerpliktRessurs.hentForsorgerplikt(BEHANDLINGSID);
 
-        assertThat(forsorgerpliktFrontend.harForsorgerplikt, is(true));
-        assertThat(forsorgerpliktFrontend.barnebidrag, is(JsonBarnebidrag.Verdi.BEGGE));
-        assertThat(forsorgerpliktFrontend.ansvar.size(), is(1));
+        assertThat(forsorgerpliktFrontend.harForsorgerplikt).isTrue();
+        assertThat(forsorgerpliktFrontend.barnebidrag).isEqualTo(JsonBarnebidrag.Verdi.BEGGE);
+        assertThat(forsorgerpliktFrontend.ansvar).hasSize(1);
         assertThatAnsvarIsCorrectlyConverted(forsorgerpliktFrontend.ansvar.get(0), jsonAnsvar);
     }
 
@@ -194,9 +192,9 @@ public class ForsorgerpliktRessursTest {
 
         SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
         JsonForsorgerplikt forsorgerplikt = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getFamilie().getForsorgerplikt();
-        assertThat(forsorgerplikt.getBarnebidrag().getVerdi(), is(JsonBarnebidrag.Verdi.BETALER));
-        assertThat(forsorgerplikt.getHarForsorgerplikt(), nullValue());
-        assertThat(forsorgerplikt.getAnsvar(), nullValue());
+        assertThat(forsorgerplikt.getBarnebidrag().getVerdi()).isEqualTo(JsonBarnebidrag.Verdi.BETALER);
+        assertThat(forsorgerplikt.getHarForsorgerplikt()).isNull();
+        assertThat(forsorgerplikt.getAnsvar()).isNull();
     }
 
     @Test
@@ -220,9 +218,9 @@ public class ForsorgerpliktRessursTest {
         JsonForsorgerplikt forsorgerplikt = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getFamilie().getForsorgerplikt();
         List<JsonOkonomioversiktInntekt> inntekter = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOversikt().getInntekt();
         List<JsonOkonomioversiktUtgift> utgifter = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOversikt().getUtgift();
-        assertThat(forsorgerplikt.getBarnebidrag(), nullValue());
-        assertThat(inntekter.isEmpty(), is(true));
-        assertThat(utgifter.isEmpty(), is(true));
+        assertThat(forsorgerplikt.getBarnebidrag()).isNull();
+        assertThat(inntekter.isEmpty()).isTrue();
+        assertThat(utgifter.isEmpty()).isTrue();
     }
 
     @Test
@@ -240,10 +238,10 @@ public class ForsorgerpliktRessursTest {
 
         SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
         JsonForsorgerplikt forsorgerplikt = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getFamilie().getForsorgerplikt();
-        assertThat(forsorgerplikt.getBarnebidrag(), nullValue());
-        assertThat(forsorgerplikt.getHarForsorgerplikt().getVerdi(), is(true));
-        assertThat(forsorgerplikt.getAnsvar().get(0).getHarDeltBosted().getVerdi(), is(true));
-        assertThat(forsorgerplikt.getAnsvar().get(1).getSamvarsgrad().getVerdi(), is(30));
+        assertThat(forsorgerplikt.getBarnebidrag()).isNull();
+        assertThat(forsorgerplikt.getHarForsorgerplikt().getVerdi()).isTrue();
+        assertThat(forsorgerplikt.getAnsvar().get(0).getHarDeltBosted().getVerdi()).isTrue();
+        assertThat(forsorgerplikt.getAnsvar().get(1).getSamvarsgrad().getVerdi()).isEqualTo(30);
     }
 
     @Test
@@ -262,10 +260,10 @@ public class ForsorgerpliktRessursTest {
 
         SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
         JsonForsorgerplikt forsorgerplikt = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getFamilie().getForsorgerplikt();
-        assertThat(forsorgerplikt.getBarnebidrag(), nullValue());
-        assertThat(forsorgerplikt.getHarForsorgerplikt().getVerdi(), is(true));
-        assertThat(forsorgerplikt.getAnsvar().get(0).getHarDeltBosted().getVerdi(), is(true));
-        assertThat(forsorgerplikt.getAnsvar().get(1).getSamvarsgrad().getVerdi(), is(30));
+        assertThat(forsorgerplikt.getBarnebidrag()).isNull();
+        assertThat(forsorgerplikt.getHarForsorgerplikt().getVerdi()).isTrue();
+        assertThat(forsorgerplikt.getAnsvar().get(0).getHarDeltBosted().getVerdi()).isTrue();
+        assertThat(forsorgerplikt.getAnsvar().get(1).getSamvarsgrad().getVerdi()).isEqualTo(30);
         JsonAnsvar brukerregistrertAnsvar = forsorgerplikt.getAnsvar().get(2);
         assertThatAnsvarIsCorrectlyConverted(BRUKERREGISTRERT_BARN, brukerregistrertAnsvar);
     }
@@ -283,8 +281,8 @@ public class ForsorgerpliktRessursTest {
 
         SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
         JsonForsorgerplikt forsorgerplikt = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getFamilie().getForsorgerplikt();
-        assertThat(forsorgerplikt.getBarnebidrag(), nullValue());
-        assertThat(forsorgerplikt.getHarForsorgerplikt().getVerdi(), is(true));
+        assertThat(forsorgerplikt.getBarnebidrag()).isNull();
+        assertThat(forsorgerplikt.getHarForsorgerplikt().getVerdi()).isTrue();
         JsonAnsvar brukerregistrertAnsvar = forsorgerplikt.getAnsvar().get(0);
         assertThatAnsvarIsCorrectlyConverted(BRUKERREGISTRERT_BARN, brukerregistrertAnsvar);
     }
@@ -328,20 +326,15 @@ public class ForsorgerpliktRessursTest {
         BarnFrontend barnFrontend = ansvarFrontend.barn;
         JsonBarn jsonBarn = jsonAnsvar.getBarn();
 
-        assertThat("borSammenMed", ansvarFrontend.borSammenMed,
-                is(jsonAnsvar.getBorSammenMed() == null ? null : jsonAnsvar.getBorSammenMed().getVerdi()));
-        assertThat("harDeltBosted", ansvarFrontend.harDeltBosted,
-                is(jsonAnsvar.getHarDeltBosted() == null ? null : jsonAnsvar.getHarDeltBosted().getVerdi()));
-        assertThat("samvarsgrad", ansvarFrontend.samvarsgrad,
-                is(jsonAnsvar.getSamvarsgrad() == null ? null : jsonAnsvar.getSamvarsgrad().getVerdi()));
-        assertThat("erFolkeregistrertSammen", ansvarFrontend.erFolkeregistrertSammen,
-                is(jsonAnsvar.getErFolkeregistrertSammen() == null ? null : jsonAnsvar.getErFolkeregistrertSammen().getVerdi()));
-
-        assertThat("fodselsnummer", barnFrontend.fodselsnummer, is(jsonBarn.getPersonIdentifikator()));
-        assertThat("fodselsdato", barnFrontend.fodselsdato, is(jsonBarn.getFodselsdato()));
-        assertThat("fornavn", barnFrontend.navn.fornavn, is(jsonBarn.getNavn().getFornavn()));
-        assertThat("mellomnavn", barnFrontend.navn.mellomnavn, is(jsonBarn.getNavn().getMellomnavn()));
-        assertThat("etternavn", barnFrontend.navn.etternavn, is(jsonBarn.getNavn().getEtternavn()));
+        assertThat(ansvarFrontend.borSammenMed).isEqualTo(jsonAnsvar.getBorSammenMed() == null ? null : jsonAnsvar.getBorSammenMed().getVerdi());
+        assertThat(ansvarFrontend.harDeltBosted).isEqualTo(jsonAnsvar.getHarDeltBosted() == null ? null : jsonAnsvar.getHarDeltBosted().getVerdi());
+        assertThat(ansvarFrontend.samvarsgrad).isEqualTo(jsonAnsvar.getSamvarsgrad() == null ? null : jsonAnsvar.getSamvarsgrad().getVerdi());
+        assertThat(ansvarFrontend.erFolkeregistrertSammen).isEqualTo(jsonAnsvar.getErFolkeregistrertSammen() == null ? null : jsonAnsvar.getErFolkeregistrertSammen().getVerdi());
+        assertThat(barnFrontend.fodselsnummer).isEqualTo(jsonBarn.getPersonIdentifikator());
+        assertThat(barnFrontend.fodselsdato).isEqualTo(jsonBarn.getFodselsdato());
+        assertThat(barnFrontend.navn.fornavn).isEqualTo(jsonBarn.getNavn().getFornavn());
+        assertThat(barnFrontend.navn.mellomnavn).isEqualTo(jsonBarn.getNavn().getMellomnavn());
+        assertThat(barnFrontend.navn.etternavn).isEqualTo(jsonBarn.getNavn().getEtternavn());
     }
 
     private SoknadUnderArbeid catchSoknadUnderArbeidSentToOppdaterSoknadsdata() {

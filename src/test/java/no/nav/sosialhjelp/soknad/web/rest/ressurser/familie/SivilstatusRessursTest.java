@@ -26,9 +26,7 @@ import java.text.ParseException;
 
 import static no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
 import static no.nav.sosialhjelp.soknad.web.rest.mappers.PersonMapper.getPersonnummerFromFnr;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doNothing;
@@ -84,7 +82,7 @@ public class SivilstatusRessursTest {
 
         final SivilstatusFrontend sivilstatusFrontend = sivilstatusRessurs.hentSivilstatus(BEHANDLINGSID);
 
-        assertThat(sivilstatusFrontend, nullValue());
+        assertThat(sivilstatusFrontend).isNull();
     }
 
     @Test
@@ -95,11 +93,11 @@ public class SivilstatusRessursTest {
 
         final SivilstatusFrontend sivilstatusFrontend = sivilstatusRessurs.hentSivilstatus(BEHANDLINGSID);
 
-        assertThat(sivilstatusFrontend.sivilstatus, is(JsonSivilstatus.Status.GIFT));
-        assertThat(sivilstatusFrontend.kildeErSystem, is(false));
-        assertThat(sivilstatusFrontend.ektefelle, nullValue());
-        assertThat(sivilstatusFrontend.harDiskresjonskode, nullValue());
-        assertThat(sivilstatusFrontend.erFolkeregistrertSammen, nullValue());
+        assertThat(sivilstatusFrontend.sivilstatus).isEqualTo(JsonSivilstatus.Status.GIFT);
+        assertThat(sivilstatusFrontend.kildeErSystem).isFalse();
+        assertThat(sivilstatusFrontend.ektefelle).isNull();
+        assertThat(sivilstatusFrontend.harDiskresjonskode).isNull();
+        assertThat(sivilstatusFrontend.erFolkeregistrertSammen).isNull();
     }
 
     @Test
@@ -110,12 +108,12 @@ public class SivilstatusRessursTest {
 
         final SivilstatusFrontend sivilstatusFrontend = sivilstatusRessurs.hentSivilstatus(BEHANDLINGSID);
 
-        assertThat(sivilstatusFrontend.kildeErSystem, is(false));
-        assertThat(sivilstatusFrontend.sivilstatus, is(JsonSivilstatus.Status.GIFT));
+        assertThat(sivilstatusFrontend.kildeErSystem).isFalse();
+        assertThat(sivilstatusFrontend.sivilstatus).isEqualTo(JsonSivilstatus.Status.GIFT);
         assertThatEktefelleIsCorrectlyConverted(sivilstatusFrontend.ektefelle, JSON_EKTEFELLE);
-        assertThat(sivilstatusFrontend.harDiskresjonskode, nullValue());
-        assertThat(sivilstatusFrontend.erFolkeregistrertSammen, nullValue());
-        assertThat(sivilstatusFrontend.borSammenMed, is(true));
+        assertThat(sivilstatusFrontend.harDiskresjonskode).isNull();
+        assertThat(sivilstatusFrontend.erFolkeregistrertSammen).isNull();
+        assertThat(sivilstatusFrontend.borSammenMed).isTrue();
     }
 
     @Test
@@ -126,12 +124,12 @@ public class SivilstatusRessursTest {
 
         final SivilstatusFrontend sivilstatusFrontend = sivilstatusRessurs.hentSivilstatus(BEHANDLINGSID);
 
-        assertThat(sivilstatusFrontend.kildeErSystem, is(true));
-        assertThat(sivilstatusFrontend.sivilstatus, is(JsonSivilstatus.Status.GIFT));
+        assertThat(sivilstatusFrontend.kildeErSystem).isTrue();
+        assertThat(sivilstatusFrontend.sivilstatus).isEqualTo(JsonSivilstatus.Status.GIFT);
         assertThatEktefelleIsCorrectlyConverted(sivilstatusFrontend.ektefelle, JSON_EKTEFELLE);
-        assertThat(sivilstatusFrontend.harDiskresjonskode, is(false));
-        assertThat(sivilstatusFrontend.erFolkeregistrertSammen, is(true));
-        assertThat(sivilstatusFrontend.borSammenMed, nullValue());
+        assertThat(sivilstatusFrontend.harDiskresjonskode).isFalse();
+        assertThat(sivilstatusFrontend.erFolkeregistrertSammen).isTrue();
+        assertThat(sivilstatusFrontend.borSammenMed).isNull();
     }
 
     @Test
@@ -142,11 +140,11 @@ public class SivilstatusRessursTest {
 
         final SivilstatusFrontend sivilstatusFrontend = sivilstatusRessurs.hentSivilstatus(BEHANDLINGSID);
 
-        assertThat(sivilstatusFrontend.kildeErSystem, is(true));
-        assertThat(sivilstatusFrontend.sivilstatus, is(JsonSivilstatus.Status.GIFT));
-        assertThat(sivilstatusFrontend.harDiskresjonskode, is(true));
-        assertThat(sivilstatusFrontend.erFolkeregistrertSammen, nullValue());
-        assertThat(sivilstatusFrontend.borSammenMed, nullValue());
+        assertThat(sivilstatusFrontend.kildeErSystem).isTrue();
+        assertThat(sivilstatusFrontend.sivilstatus).isEqualTo(JsonSivilstatus.Status.GIFT);
+        assertThat(sivilstatusFrontend.harDiskresjonskode).isTrue();
+        assertThat(sivilstatusFrontend.erFolkeregistrertSammen).isNull();
+        assertThat(sivilstatusFrontend.borSammenMed).isNull();
     }
 
     @Test
@@ -179,8 +177,8 @@ public class SivilstatusRessursTest {
 
         final SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
         final JsonSivilstatus sivilstatus = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getFamilie().getSivilstatus();
-        assertThat(sivilstatus.getKilde(), is(JsonKilde.BRUKER));
-        assertThat(sivilstatus.getStatus(), is(JsonSivilstatus.Status.GIFT));
+        assertThat(sivilstatus.getKilde()).isEqualTo(JsonKilde.BRUKER);
+        assertThat(sivilstatus.getStatus()).isEqualTo(JsonSivilstatus.Status.GIFT);
         assertThatEktefelleIsCorrectlyConverted(EKTEFELLE_FRONTEND, sivilstatus.getEktefelle());
     }
 
@@ -206,11 +204,11 @@ public class SivilstatusRessursTest {
     }
 
     private void assertThatEktefelleIsCorrectlyConverted(EktefelleFrontend ektefelle, JsonEktefelle jsonEktefelle) {
-        assertThat("fodselsdato", ektefelle.fodselsdato, is(jsonEktefelle.getFodselsdato()));
-        assertThat("personIdentifikator", ektefelle.personnummer, is(getPersonnummerFromFnr(jsonEktefelle.getPersonIdentifikator())));
-        assertThat("fornavn", ektefelle.navn.fornavn, is(jsonEktefelle.getNavn().getFornavn()));
-        assertThat("mellomnavn", ektefelle.navn.mellomnavn, is(jsonEktefelle.getNavn().getMellomnavn()));
-        assertThat("etternavn", ektefelle.navn.etternavn, is(jsonEktefelle.getNavn().getEtternavn()));
+        assertThat(ektefelle.fodselsdato).isEqualTo(jsonEktefelle.getFodselsdato());
+        assertThat(ektefelle.personnummer).isEqualTo(getPersonnummerFromFnr(jsonEktefelle.getPersonIdentifikator()));
+        assertThat(ektefelle.navn.fornavn).isEqualTo(jsonEktefelle.getNavn().getFornavn());
+        assertThat(ektefelle.navn.mellomnavn).isEqualTo(jsonEktefelle.getNavn().getMellomnavn());
+        assertThat(ektefelle.navn.etternavn).isEqualTo(jsonEktefelle.getNavn().getEtternavn());
     }
 
     private void assertThatPutSivilstatusSetterRiktigStatus(JsonSivilstatus.Status status) throws ParseException {
@@ -221,8 +219,8 @@ public class SivilstatusRessursTest {
 
         final SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
         final JsonSivilstatus sivilstatus = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getFamilie().getSivilstatus();
-        assertThat("kilde", sivilstatus.getKilde(), is(JsonKilde.BRUKER));
-        assertThat("status", sivilstatus.getStatus(), is(status));
+        assertThat(sivilstatus.getKilde()).isEqualTo(JsonKilde.BRUKER);
+        assertThat(sivilstatus.getStatus()).isEqualTo(status);
     }
 
     private SoknadUnderArbeid catchSoknadUnderArbeidSentToOppdaterSoknadsdata() {

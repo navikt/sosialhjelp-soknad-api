@@ -20,9 +20,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import static no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doCallRealMethod;
@@ -72,9 +70,9 @@ public class TelefonnummerRessursTest {
 
         final TelefonnummerFrontend telefonnummerFrontend = telefonnummerRessurs.hentTelefonnummer(BEHANDLINGSID);
 
-        assertThat(telefonnummerFrontend.brukerutfyltVerdi, nullValue());
-        assertThat(telefonnummerFrontend.systemverdi, is(TELEFONNUMMER_SYSTEM));
-        assertThat(telefonnummerFrontend.brukerdefinert, is(false));
+        assertThat(telefonnummerFrontend.brukerutfyltVerdi).isNull();
+        assertThat(telefonnummerFrontend.systemverdi).isEqualTo(TELEFONNUMMER_SYSTEM);
+        assertThat(telefonnummerFrontend.brukerdefinert).isFalse();
     }
 
     @Test
@@ -85,9 +83,9 @@ public class TelefonnummerRessursTest {
 
         final TelefonnummerFrontend telefonnummerFrontend = telefonnummerRessurs.hentTelefonnummer(BEHANDLINGSID);
 
-        assertThat(telefonnummerFrontend.brukerutfyltVerdi, nullValue());
-        assertThat(telefonnummerFrontend.systemverdi, nullValue());
-        assertThat(telefonnummerFrontend.brukerdefinert, is(true));
+        assertThat(telefonnummerFrontend.brukerutfyltVerdi).isNull();
+        assertThat(telefonnummerFrontend.systemverdi).isNull();
+        assertThat(telefonnummerFrontend.brukerdefinert).isTrue();
     }
 
     @Test
@@ -98,9 +96,9 @@ public class TelefonnummerRessursTest {
 
         final TelefonnummerFrontend telefonnummerFrontend = telefonnummerRessurs.hentTelefonnummer(BEHANDLINGSID);
 
-        assertThat(telefonnummerFrontend.brukerutfyltVerdi, is(TELEFONNUMMER_BRUKER));
-        assertThat(telefonnummerFrontend.systemverdi, is(TELEFONNUMMER_SYSTEM));
-        assertThat(telefonnummerFrontend.brukerdefinert, is(true));
+        assertThat(telefonnummerFrontend.brukerutfyltVerdi).isEqualTo(TELEFONNUMMER_BRUKER);
+        assertThat(telefonnummerFrontend.systemverdi).isEqualTo(TELEFONNUMMER_SYSTEM);
+        assertThat(telefonnummerFrontend.brukerdefinert).isTrue();
     }
 
     @Test
@@ -116,8 +114,8 @@ public class TelefonnummerRessursTest {
 
         SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
         JsonTelefonnummer telefonnummer = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getTelefonnummer();
-        assertThat(telefonnummer.getKilde(), is(JsonKilde.BRUKER));
-        assertThat(telefonnummer.getVerdi(), is(TELEFONNUMMER_BRUKER));
+        assertThat(telefonnummer.getKilde()).isEqualTo(JsonKilde.BRUKER);
+        assertThat(telefonnummer.getVerdi()).isEqualTo(TELEFONNUMMER_BRUKER);
     }
 
     @Test
@@ -133,8 +131,8 @@ public class TelefonnummerRessursTest {
 
         final SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
         final JsonTelefonnummer telefonnummer = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getTelefonnummer();
-        assertThat(telefonnummer.getKilde(), is(JsonKilde.BRUKER));
-        assertThat(telefonnummer.getVerdi(), is(TELEFONNUMMER_BRUKER));
+        assertThat(telefonnummer.getKilde()).isEqualTo(JsonKilde.BRUKER);
+        assertThat(telefonnummer.getVerdi()).isEqualTo(TELEFONNUMMER_BRUKER);
     }
 
     @Test
@@ -150,8 +148,8 @@ public class TelefonnummerRessursTest {
 
         final SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
         final JsonTelefonnummer telefonnummer = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getTelefonnummer();
-        assertThat(telefonnummer.getKilde(), is(JsonKilde.SYSTEM));
-        assertThat(telefonnummer.getVerdi(), is(TELEFONNUMMER_SYSTEM));
+        assertThat(telefonnummer.getKilde()).isEqualTo(JsonKilde.SYSTEM);
+        assertThat(telefonnummer.getVerdi()).isEqualTo(TELEFONNUMMER_SYSTEM);
     }
 
     @Test(expected = AuthorizationException.class)

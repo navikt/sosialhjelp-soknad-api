@@ -33,11 +33,7 @@ import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.FORMUE_LIVSFORSI
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.FORMUE_SPAREKONTO;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.FORMUE_VERDIPAPIRER;
 import static no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
@@ -83,13 +79,13 @@ public class FormueRessursTest {
 
         FormueFrontend formueFrontend = formueRessurs.hentFormue(BEHANDLINGSID);
 
-        assertFalse(formueFrontend.brukskonto);
-        assertFalse(formueFrontend.bsu);
-        assertFalse(formueFrontend.livsforsikring);
-        assertFalse(formueFrontend.sparekonto);
-        assertFalse(formueFrontend.verdipapirer);
-        assertFalse(formueFrontend.annet);
-        assertThat(formueFrontend.beskrivelseAvAnnet, nullValue());
+        assertThat(formueFrontend.brukskonto).isFalse();
+        assertThat(formueFrontend.bsu).isFalse();
+        assertThat(formueFrontend.livsforsikring).isFalse();
+        assertThat(formueFrontend.sparekonto).isFalse();
+        assertThat(formueFrontend.verdipapirer).isFalse();
+        assertThat(formueFrontend.annet).isFalse();
+        assertThat(formueFrontend.beskrivelseAvAnnet).isNull();
     }
 
     @Test
@@ -100,13 +96,13 @@ public class FormueRessursTest {
 
         FormueFrontend formueFrontend = formueRessurs.hentFormue(BEHANDLINGSID);
 
-        assertTrue(formueFrontend.brukskonto);
-        assertTrue(formueFrontend.bsu);
-        assertTrue(formueFrontend.livsforsikring);
-        assertTrue(formueFrontend.sparekonto);
-        assertTrue(formueFrontend.verdipapirer);
-        assertTrue(formueFrontend.annet);
-        assertThat(formueFrontend.beskrivelseAvAnnet, nullValue());
+        assertThat(formueFrontend.brukskonto).isTrue();
+        assertThat(formueFrontend.bsu).isTrue();
+        assertThat(formueFrontend.livsforsikring).isTrue();
+        assertThat(formueFrontend.sparekonto).isTrue();
+        assertThat(formueFrontend.verdipapirer).isTrue();
+        assertThat(formueFrontend.annet).isTrue();
+        assertThat(formueFrontend.beskrivelseAvAnnet).isNull();
     }
 
     @Test
@@ -117,8 +113,8 @@ public class FormueRessursTest {
 
         FormueFrontend formueFrontend = formueRessurs.hentFormue(BEHANDLINGSID);
 
-        assertTrue(formueFrontend.annet);
-        assertThat(formueFrontend.beskrivelseAvAnnet, is(beskrivelse));
+        assertThat(formueFrontend.annet).isTrue();
+        assertThat(formueFrontend.beskrivelseAvAnnet).isEqualTo(beskrivelse);
     }
 
     @Test
@@ -139,9 +135,9 @@ public class FormueRessursTest {
                 .getOkonomi().getOversikt().getFormue();
         String beskrivelse = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData()
                 .getOkonomi().getOpplysninger().getBeskrivelseAvAnnet().getSparing();
-        assertFalse(sparing.getVerdi());
-        assertTrue(formuer.isEmpty());
-        assertThat(beskrivelse, is(""));
+        assertThat(sparing.getVerdi()).isFalse();
+        assertThat(formuer).isEmpty();
+        assertThat(beskrivelse).isBlank();
     }
 
     @Test
@@ -165,15 +161,15 @@ public class FormueRessursTest {
         JsonOkonomibekreftelse sparing = bekreftelser.get(0);
         List<JsonOkonomioversiktFormue> formuer = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData()
                 .getOkonomi().getOversikt().getFormue();
-        assertThat(sparing.getKilde(), is(JsonKilde.BRUKER));
-        assertThat(sparing.getType(), is(BEKREFTELSE_SPARING));
-        assertTrue(sparing.getVerdi());
-        assertTrue(formuer.stream().anyMatch(formue -> formue.getType().equals(FORMUE_BRUKSKONTO)));
-        assertTrue(formuer.stream().anyMatch(formue -> formue.getType().equals(FORMUE_BSU)));
-        assertTrue(formuer.stream().anyMatch(formue -> formue.getType().equals(FORMUE_LIVSFORSIKRING)));
-        assertFalse(formuer.stream().anyMatch(formue -> formue.getType().equals(FORMUE_SPAREKONTO)));
-        assertFalse(formuer.stream().anyMatch(formue -> formue.getType().equals(FORMUE_VERDIPAPIRER)));
-        assertFalse(formuer.stream().anyMatch(formue -> formue.getType().equals(FORMUE_ANNET)));
+        assertThat(sparing.getKilde()).isEqualTo(JsonKilde.BRUKER);
+        assertThat(sparing.getType()).isEqualTo(BEKREFTELSE_SPARING);
+        assertThat(sparing.getVerdi()).isTrue();
+        assertThat(formuer.stream().anyMatch(formue -> formue.getType().equals(FORMUE_BRUKSKONTO))).isTrue();
+        assertThat(formuer.stream().anyMatch(formue -> formue.getType().equals(FORMUE_BSU))).isTrue();
+        assertThat(formuer.stream().anyMatch(formue -> formue.getType().equals(FORMUE_LIVSFORSIKRING))).isTrue();
+        assertThat(formuer.stream().anyMatch(formue -> formue.getType().equals(FORMUE_SPAREKONTO))).isFalse();
+        assertThat(formuer.stream().anyMatch(formue -> formue.getType().equals(FORMUE_VERDIPAPIRER))).isFalse();
+        assertThat(formuer.stream().anyMatch(formue -> formue.getType().equals(FORMUE_ANNET))).isFalse();
     }
 
     @Test
@@ -197,15 +193,15 @@ public class FormueRessursTest {
         JsonOkonomibekreftelse sparing = bekreftelser.get(0);
         List<JsonOkonomioversiktFormue> formuer = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData()
                 .getOkonomi().getOversikt().getFormue();
-        assertThat(sparing.getKilde(), is(JsonKilde.BRUKER));
-        assertThat(sparing.getType(), is(BEKREFTELSE_SPARING));
-        assertTrue(sparing.getVerdi());
-        assertTrue(formuer.stream().anyMatch(formue -> formue.getType().equals(FORMUE_BRUKSKONTO)));
-        assertTrue(formuer.stream().anyMatch(formue -> formue.getType().equals(FORMUE_BSU)));
-        assertTrue(formuer.stream().anyMatch(formue -> formue.getType().equals(FORMUE_LIVSFORSIKRING)));
-        assertTrue(formuer.stream().anyMatch(formue -> formue.getType().equals(FORMUE_SPAREKONTO)));
-        assertTrue(formuer.stream().anyMatch(formue -> formue.getType().equals(FORMUE_VERDIPAPIRER)));
-        assertTrue(formuer.stream().anyMatch(formue -> formue.getType().equals(FORMUE_ANNET)));
+        assertThat(sparing.getKilde()).isEqualTo(JsonKilde.BRUKER);
+        assertThat(sparing.getType()).isEqualTo(BEKREFTELSE_SPARING);
+        assertThat(sparing.getVerdi()).isTrue();
+        assertThat(formuer.stream().anyMatch(formue -> formue.getType().equals(FORMUE_BRUKSKONTO))).isTrue();
+        assertThat(formuer.stream().anyMatch(formue -> formue.getType().equals(FORMUE_BSU))).isTrue();
+        assertThat(formuer.stream().anyMatch(formue -> formue.getType().equals(FORMUE_LIVSFORSIKRING))).isTrue();
+        assertThat(formuer.stream().anyMatch(formue -> formue.getType().equals(FORMUE_SPAREKONTO))).isTrue();
+        assertThat(formuer.stream().anyMatch(formue -> formue.getType().equals(FORMUE_VERDIPAPIRER))).isTrue();
+        assertThat(formuer.stream().anyMatch(formue -> formue.getType().equals(FORMUE_ANNET))).isTrue();
     }
 
     @Test
@@ -223,8 +219,8 @@ public class FormueRessursTest {
         JsonOkonomibekreftelse sparing = bekreftelser.get(0);
         String beskrivelse = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData()
                 .getOkonomi().getOpplysninger().getBeskrivelseAvAnnet().getSparing();
-        assertFalse(sparing.getVerdi());
-        assertThat(beskrivelse, is(""));
+        assertThat(sparing.getVerdi()).isFalse();
+        assertThat(beskrivelse).isBlank();
     }
 
     @Test(expected = AuthorizationException.class)
