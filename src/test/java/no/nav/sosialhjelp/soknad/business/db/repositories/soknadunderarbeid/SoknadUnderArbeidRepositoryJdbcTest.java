@@ -24,9 +24,7 @@ import java.util.Optional;
 import static java.time.LocalDateTime.now;
 import static no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeidStatus.LAAST;
 import static no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeidStatus.UNDER_ARBEID;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {DbTestConfig.class})
@@ -59,7 +57,7 @@ public class SoknadUnderArbeidRepositoryJdbcTest {
     public void opprettSoknadOppretterSoknadUnderArbeidIDatabasen() {
         final Long soknadUnderArbeidId = soknadUnderArbeidRepository.opprettSoknad(lagSoknadUnderArbeid(BEHANDLINGSID), EIER);
 
-        assertThat(soknadUnderArbeidId, notNullValue());
+        assertThat(soknadUnderArbeidId).isNotNull();
     }
 
     @Test
@@ -69,15 +67,15 @@ public class SoknadUnderArbeidRepositoryJdbcTest {
 
         SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(soknadUnderArbeidId, EIER).get();
 
-        assertThat(soknadUnderArbeid.getSoknadId(), notNullValue());
-        assertThat(soknadUnderArbeid.getVersjon(), is(1L));
-        assertThat(soknadUnderArbeid.getBehandlingsId(), is(BEHANDLINGSID));
-        assertThat(soknadUnderArbeid.getTilknyttetBehandlingsId(), is(TILKNYTTET_BEHANDLINGSID));
-        assertThat(soknadUnderArbeid.getEier(), is(EIER));
-        assertThat(soknadUnderArbeid.getJsonInternalSoknad(), notNullValue());
-        assertThat(soknadUnderArbeid.getStatus(), is(UNDER_ARBEID));
-        assertThat(soknadUnderArbeid.getOpprettetDato(), is(OPPRETTET_DATO));
-        assertThat(soknadUnderArbeid.getSistEndretDato(), is(SIST_ENDRET_DATO));
+        assertThat(soknadUnderArbeid.getSoknadId()).isNotNull();
+        assertThat(soknadUnderArbeid.getVersjon()).isEqualTo(1L);
+        assertThat(soknadUnderArbeid.getBehandlingsId()).isEqualTo(BEHANDLINGSID);
+        assertThat(soknadUnderArbeid.getTilknyttetBehandlingsId()).isEqualTo(TILKNYTTET_BEHANDLINGSID);
+        assertThat(soknadUnderArbeid.getEier()).isEqualTo(EIER);
+        assertThat(soknadUnderArbeid.getJsonInternalSoknad()).isNotNull();
+        assertThat(soknadUnderArbeid.getStatus()).isEqualTo(UNDER_ARBEID);
+        assertThat(soknadUnderArbeid.getOpprettetDato()).isEqualTo(OPPRETTET_DATO);
+        assertThat(soknadUnderArbeid.getSistEndretDato()).isEqualTo(SIST_ENDRET_DATO);
     }
 
     @Test
@@ -86,7 +84,7 @@ public class SoknadUnderArbeidRepositoryJdbcTest {
 
         Optional<SoknadUnderArbeid> soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(soknadUnderArbeidId, EIER2);
 
-        assertThat(soknadUnderArbeid.isPresent(), is(false));
+        assertThat(soknadUnderArbeid).isEmpty();
     }
 
     @Test
@@ -95,9 +93,9 @@ public class SoknadUnderArbeidRepositoryJdbcTest {
 
         SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(BEHANDLINGSID, EIER);
 
-        assertThat(soknadUnderArbeid.getSoknadId(), is(soknadUnderArbeidId));
-        assertThat(soknadUnderArbeid.getBehandlingsId(), is(BEHANDLINGSID));
-        assertThat(soknadUnderArbeid.getEier(), is(EIER));
+        assertThat(soknadUnderArbeid.getSoknadId()).isEqualTo(soknadUnderArbeidId);
+        assertThat(soknadUnderArbeid.getBehandlingsId()).isEqualTo(BEHANDLINGSID);
+        assertThat(soknadUnderArbeid.getEier()).isEqualTo(EIER);
     }
 
     @Test
@@ -109,9 +107,9 @@ public class SoknadUnderArbeidRepositoryJdbcTest {
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, EIER);
 
         SoknadUnderArbeid soknadUnderArbeidFraDb = soknadUnderArbeidRepository.hentSoknad(soknadUnderArbeidId, EIER).get();
-        assertThat(soknadUnderArbeidFraDb.getVersjon(), is(2L));
-        assertThat(soknadUnderArbeidFraDb.getJsonInternalSoknad(), is(JSON_INTERNAL_SOKNAD));
-        assertThat(soknadUnderArbeidFraDb.getSistEndretDato().isAfter(SIST_ENDRET_DATO), is(true));
+        assertThat(soknadUnderArbeidFraDb.getVersjon()).isEqualTo(2L);
+        assertThat(soknadUnderArbeidFraDb.getJsonInternalSoknad()).isEqualTo(JSON_INTERNAL_SOKNAD);
+        assertThat(soknadUnderArbeidFraDb.getSistEndretDato()).isAfter(SIST_ENDRET_DATO);
     }
 
     @Test(expected = SamtidigOppdateringException.class)
@@ -141,9 +139,9 @@ public class SoknadUnderArbeidRepositoryJdbcTest {
         soknadUnderArbeidRepository.oppdaterInnsendingStatus(soknadUnderArbeid, EIER);
 
         SoknadUnderArbeid soknadUnderArbeidFraDb = soknadUnderArbeidRepository.hentSoknad(soknadUnderArbeidId, EIER).get();
-        assertThat(soknadUnderArbeidFraDb.getVersjon(), is(1L));
-        assertThat(soknadUnderArbeidFraDb.getStatus(), is(SoknadUnderArbeidStatus.LAAST));
-        assertThat(soknadUnderArbeidFraDb.getSistEndretDato().isAfter(SIST_ENDRET_DATO), is(true));
+        assertThat(soknadUnderArbeidFraDb.getVersjon()).isEqualTo(1L);
+        assertThat(soknadUnderArbeidFraDb.getStatus()).isEqualTo(SoknadUnderArbeidStatus.LAAST);
+        assertThat(soknadUnderArbeidFraDb.getSistEndretDato()).isAfter(SIST_ENDRET_DATO);
     }
 
     @Test
@@ -155,8 +153,8 @@ public class SoknadUnderArbeidRepositoryJdbcTest {
 
         soknadUnderArbeidRepository.slettSoknad(soknadUnderArbeid, EIER);
 
-        assertThat(soknadUnderArbeidRepository.hentSoknad(soknadUnderArbeidId, EIER).isPresent(), is(false));
-        assertThat(opplastetVedleggRepository.hentVedlegg(opplastetVedleggUuid, EIER).isPresent(), is(false));
+        assertThat(soknadUnderArbeidRepository.hentSoknad(soknadUnderArbeidId, EIER)).isEmpty();
+        assertThat(opplastetVedleggRepository.hentVedlegg(opplastetVedleggUuid, EIER)).isEmpty();
     }
 
     private SoknadUnderArbeid lagSoknadUnderArbeid(String behandlingsId) {

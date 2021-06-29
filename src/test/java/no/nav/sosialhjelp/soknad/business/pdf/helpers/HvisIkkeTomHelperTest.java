@@ -8,8 +8,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import java.io.IOException;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(MockitoJUnitRunner.class)
 public class HvisIkkeTomHelperTest {
@@ -26,14 +25,14 @@ public class HvisIkkeTomHelperTest {
     @Test
     public void viserInnholdDersomVerdiIkkeErTom() throws IOException {
         String compiled = handlebars.compileInline("{{#hvisIkkeTom \"verdi\" }}Ikke tom verdi{{/hvisIkkeTom}}").apply(new Object());
-        assertThat(compiled, is("Ikke tom verdi"));
+        assertThat(compiled).isEqualTo("Ikke tom verdi");
     }
 
 
     @Test
     public void viserIkkeInnholdDersomVerdiErTom() throws IOException {
         String compiled = handlebars.compileInline("{{#hvisIkkeTom \"\"}}Ikke tom verdi{{else}}Tom verdi{{/hvisIkkeTom}}").apply(new Object());
-        assertThat(compiled, is("Tom verdi"));
+        assertThat(compiled).isEqualTo("Tom verdi");
     }
 
 }

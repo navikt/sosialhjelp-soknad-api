@@ -12,9 +12,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.io.IOException;
 import java.util.Locale;
 
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -43,15 +41,15 @@ public class SettInnKnappTilgjengeligTekstHelperTest {
 
         String compiled = handlebars.compileInline("{{{settInnKnappTilgjengeligTekst \"testTekst\"}}}").apply(new Object());
 
-        assertThat(compiled, containsString("Knapp tilgjengelig:"));
-        assertThat(compiled, containsString("Lorem ipsum"));
+        assertThat(compiled).contains("Knapp tilgjengelig:");
+        assertThat(compiled).contains("Lorem ipsum");
     }
 
     @Test
     public void skalReturnereTomStrengHvisIkkeKnapptekstFinnes() throws IOException {
         String compiled = handlebars.compileInline("{{{settInnKnappTilgjengeligTekst \"testTekst\"}}}").apply(new Object());
 
-        assertThat(compiled, is(""));
+        assertThat(compiled).isEqualTo("");
     }
 
 }

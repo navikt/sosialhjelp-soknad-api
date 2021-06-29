@@ -25,10 +25,7 @@ import java.util.List;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_NAVYTELSE;
 import static no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
 import static no.nav.sosialhjelp.soknad.business.service.systemdata.UtbetalingerFraNavSystemdata.tilIntegerMedAvrunding;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -142,7 +139,7 @@ public class UtbetalingerFraNavSystemdataTest {
         JsonOkonomiOpplysningUtbetaling utbetaling = jsonUtbetalinger.get(0);
         JsonOkonomiOpplysningUtbetaling utbetaling_1 = jsonUtbetalinger.get(1);
 
-        assertThat(utbetaling.getKilde(), is(JsonKilde.SYSTEM));
+        assertThat(utbetaling.getKilde()).isEqualTo(JsonKilde.SYSTEM);
         assertThatUtbetalingIsCorrectlyConverted(NAV_UTBETALING_1, utbetaling, UTBETALING_NAVYTELSE);
         assertThatUtbetalingIsCorrectlyConverted(NAV_UTBETALING_2, utbetaling_1, UTBETALING_NAVYTELSE);
     }
@@ -160,10 +157,10 @@ public class UtbetalingerFraNavSystemdataTest {
         JsonOkonomiOpplysningUtbetaling utbetaling_1 = jsonUtbetalinger.get(1);
         JsonOkonomiOpplysningUtbetaling utbetaling_2 = jsonUtbetalinger.get(2);
 
-        assertEquals(3, jsonUtbetalinger.size());
-        assertNull(utbetaling.getOrganisasjon());
-        assertEquals(ORGANISASJONSNR, utbetaling_1.getOrganisasjon().getOrganisasjonsnummer());
-        assertNull(utbetaling_2.getOrganisasjon());
+        assertThat(jsonUtbetalinger).hasSize(3);
+        assertThat(utbetaling.getOrganisasjon()).isNull();
+        assertThat(utbetaling_1.getOrganisasjon().getOrganisasjonsnummer()).isEqualTo(ORGANISASJONSNR);
+        assertThat(utbetaling_2.getOrganisasjon()).isNull();
     }
 
     @Test
@@ -179,9 +176,9 @@ public class UtbetalingerFraNavSystemdataTest {
         JsonOkonomiOpplysningUtbetaling utbetaling = jsonUtbetalinger.get(0);
         JsonOkonomiOpplysningUtbetaling utbetaling_1 = jsonUtbetalinger.get(1);
 
-        assertThat(utbetaling.getKilde(), is(JsonKilde.BRUKER));
-        assertThat(utbetaling.equals(JSON_OKONOMI_OPPLYSNING_UTBETALING), is(true));
-        assertThat(utbetaling_1.getKilde(), is(JsonKilde.SYSTEM));
+        assertThat(utbetaling.getKilde()).isEqualTo(JsonKilde.BRUKER);
+        assertThat(utbetaling).isEqualTo(JSON_OKONOMI_OPPLYSNING_UTBETALING);
+        assertThat(utbetaling_1.getKilde()).isEqualTo(JsonKilde.SYSTEM);
         assertThatUtbetalingIsCorrectlyConverted(NAV_UTBETALING_1, utbetaling_1, UTBETALING_NAVYTELSE);
     }
 
@@ -194,26 +191,26 @@ public class UtbetalingerFraNavSystemdataTest {
     }
 
     private void assertThatUtbetalingIsCorrectlyConverted(Utbetaling utbetaling, JsonOkonomiOpplysningUtbetaling jsonUtbetaling, String type) {
-        assertThat("type", jsonUtbetaling.getType(), is(type));
-        assertThat("tittel", jsonUtbetaling.getTittel(), is(utbetaling.tittel));
-        assertThat("belop", jsonUtbetaling.getBelop(), is(tilIntegerMedAvrunding(String.valueOf(utbetaling.netto))));
-        assertThat("brutto", jsonUtbetaling.getBrutto(), is(utbetaling.brutto));
-        assertThat("netto", jsonUtbetaling.getNetto(), is(utbetaling.netto));
-        assertThat("utbetalingsdato", jsonUtbetaling.getUtbetalingsdato(), is(utbetaling.utbetalingsdato.toString()));
-        assertThat("fom", jsonUtbetaling.getPeriodeFom(), is(utbetaling.periodeFom.toString()));
-        assertThat("tom", jsonUtbetaling.getPeriodeTom(), is(utbetaling.periodeTom.toString()));
-        assertThat("skattetrekk", jsonUtbetaling.getSkattetrekk(), is(utbetaling.skattetrekk));
-        assertThat("andreTrekk", jsonUtbetaling.getAndreTrekk(), is(utbetaling.andreTrekk));
-        assertThat("overstyrtAvBruker", jsonUtbetaling.getOverstyrtAvBruker(), is(false));
+        assertThat(jsonUtbetaling.getType()).isEqualTo(type);
+        assertThat(jsonUtbetaling.getTittel()).isEqualTo(utbetaling.tittel);
+        assertThat(jsonUtbetaling.getBelop()).isEqualTo(tilIntegerMedAvrunding(String.valueOf(utbetaling.netto)));
+        assertThat(jsonUtbetaling.getBrutto()).isEqualTo(utbetaling.brutto);
+        assertThat(jsonUtbetaling.getNetto()).isEqualTo(utbetaling.netto);
+        assertThat(jsonUtbetaling.getUtbetalingsdato()).isEqualTo(utbetaling.utbetalingsdato.toString());
+        assertThat(jsonUtbetaling.getPeriodeFom()).isEqualTo(utbetaling.periodeFom.toString());
+        assertThat(jsonUtbetaling.getPeriodeTom()).isEqualTo(utbetaling.periodeTom.toString());
+        assertThat(jsonUtbetaling.getSkattetrekk()).isEqualTo(utbetaling.skattetrekk);
+        assertThat(jsonUtbetaling.getAndreTrekk()).isEqualTo(utbetaling.andreTrekk);
+        assertThat(jsonUtbetaling.getOverstyrtAvBruker()).isFalse();
         if (!utbetaling.komponenter.isEmpty()) {
             for (int i = 0; i < utbetaling.komponenter.size(); i++) {
                 Utbetaling.Komponent komponent = utbetaling.komponenter.get(i);
                 JsonOkonomiOpplysningUtbetalingKomponent jsonKomponent = jsonUtbetaling.getKomponenter().get(i);
-                assertThat("komponentType", jsonKomponent.getType(), is(komponent.type));
-                assertThat("komponentBelop", jsonKomponent.getBelop(), is(komponent.belop));
-                assertThat("komponentSatsType", jsonKomponent.getSatsType(), is(komponent.satsType));
-                assertThat("komponentSatsAntall", jsonKomponent.getSatsAntall(), is(komponent.satsAntall));
-                assertThat("komponentSatsBelop", jsonKomponent.getSatsBelop(), is(komponent.satsBelop));
+                assertThat(jsonKomponent.getType()).isEqualTo(komponent.type);
+                assertThat(jsonKomponent.getBelop()).isEqualTo(komponent.belop);
+                assertThat(jsonKomponent.getSatsType()).isEqualTo(komponent.satsType);
+                assertThat(jsonKomponent.getSatsAntall()).isEqualTo(komponent.satsAntall);
+                assertThat(jsonKomponent.getSatsBelop()).isEqualTo(komponent.satsBelop);
             }
         }
     }

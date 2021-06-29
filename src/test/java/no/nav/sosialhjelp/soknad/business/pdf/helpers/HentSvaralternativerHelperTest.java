@@ -13,9 +13,7 @@ import java.io.IOException;
 import java.util.Properties;
 
 import static no.nav.sosialhjelp.soknad.business.pdf.HandlebarContext.SPRAK;
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -44,9 +42,9 @@ public class HentSvaralternativerHelperTest {
         
         String compiled = handlebars.compileInline("{{{hentSvaralternativer \"bosituasjon\"}}}").apply(new Object());
 
-        assertThat(compiled, containsString("Eier egen bolig"));
-        assertThat(compiled, containsString("Leier privat"));
-        assertThat(compiled, containsString("Annen bosituasjon"));
+        assertThat(compiled).contains("Eier egen bolig");
+        assertThat(compiled).contains("Leier privat");
+        assertThat(compiled).contains("Annen bosituasjon");
     }
     
     @Test
@@ -58,15 +56,15 @@ public class HentSvaralternativerHelperTest {
         
         String compiled = handlebars.compileInline("{{{hentSvaralternativer \"bosituasjon\"}}}").apply(new Object());
 
-        assertThat(compiled, containsString("Eier egen bolig"));
-        assertThat(compiled, containsString("Leier privat"));
-        assertThat(compiled, containsString("Annen bosituasjon"));
+        assertThat(compiled).contains("Eier egen bolig");
+        assertThat(compiled).contains("Leier privat");
+        assertThat(compiled).contains("Annen bosituasjon");
         
-        assertThat(compiled, not(containsString("En label")));
-        assertThat(compiled, not(containsString("Et spørsmål")));
-        assertThat(compiled, not(containsString("En feilmelding")));
-        assertThat(compiled, not(containsString("En infotekst")));
-        assertThat(compiled, not(containsString("En hjelpetekst")));
+        assertThat(compiled).doesNotContain("En label");
+        assertThat(compiled).doesNotContain("Et spørsmål");
+        assertThat(compiled).doesNotContain("En feilmelding");
+        assertThat(compiled).doesNotContain("En infotekst");
+        assertThat(compiled).doesNotContain("En hjelpetekst");
     }
     
     @Test
@@ -78,13 +76,13 @@ public class HentSvaralternativerHelperTest {
         
         String compiled = handlebars.compileInline("{{{hentSvaralternativer \"bosituasjon\"}}}").apply(new Object());
 
-        assertThat(compiled, containsString("Eier egen bolig"));
-        assertThat(compiled, containsString("Leier privat"));
-        assertThat(compiled, containsString("Annen bosituasjon"));
+        assertThat(compiled).contains("Eier egen bolig");
+        assertThat(compiled).contains("Leier privat");
+        assertThat(compiled).contains("Annen bosituasjon");
         
-        assertThat(compiled, not(containsString("Bor hos foreldre")));
-        assertThat(compiled, not(containsString("Institusjon")));
-        assertThat(compiled, not(containsString("Krisesenter")));
+        assertThat(compiled).doesNotContain("Bor hos foreldre");
+        assertThat(compiled).doesNotContain("Institusjon");
+        assertThat(compiled).doesNotContain("Krisesenter");
     }
     
     private void leggTilValgtekster(Properties tekstFiler) {

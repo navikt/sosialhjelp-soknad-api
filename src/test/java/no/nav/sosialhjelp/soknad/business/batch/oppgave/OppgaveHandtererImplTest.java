@@ -13,8 +13,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.util.Optional;
 
 import static no.nav.sosialhjelp.soknad.business.batch.oppgave.Oppgave.Status.UNDER_ARBEID;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -51,7 +50,7 @@ public class OppgaveHandtererImplTest {
         oppgaveHandterer.prosesserOppgaver();
 
         verify(oppgaveRepository, times(1)).oppdater(capturedOppgave.capture());
-        assertEquals(Oppgave.Status.KLAR, capturedOppgave.getValue().status);
-        assertNotNull(capturedOppgave.getValue().nesteForsok);
+        assertThat(capturedOppgave.getValue().status).isEqualTo(Oppgave.Status.KLAR);
+        assertThat(capturedOppgave.getValue().nesteForsok).isNotNull();
     }
 }

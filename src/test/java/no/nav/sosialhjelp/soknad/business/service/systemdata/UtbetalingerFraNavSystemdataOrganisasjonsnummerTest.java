@@ -8,9 +8,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(MockitoJUnitRunner.class)
 public class UtbetalingerFraNavSystemdataOrganisasjonsnummerTest {
@@ -25,35 +23,35 @@ public class UtbetalingerFraNavSystemdataOrganisasjonsnummerTest {
     public void skalReturnereOrganisasjonOmGyldigOrganisasjonsnummer() {
         String organisasjonsnummer = "089640782";
         JsonOrganisasjon result = utbetalingerFraNavSystemdata.mapToJsonOrganisasjon(organisasjonsnummer);
-        assertNotNull(result);
-        assertEquals(organisasjonsnummer, result.getOrganisasjonsnummer());
+        assertThat(result).isNotNull();
+        assertThat(result.getOrganisasjonsnummer()).isEqualTo(organisasjonsnummer);
     }
 
     @Test
     public void skalReturnereNullOmOrganisasjonsnummerInneholderTekst() {
         String organisasjonsnummer = "o89640782";
         JsonOrganisasjon result = utbetalingerFraNavSystemdata.mapToJsonOrganisasjon(organisasjonsnummer);
-        assertNull(result);
+        assertThat(result).isNull();
     }
 
     @Test
     public void skalReturnereNullOmForKortOrganisasjonsnummer() {
         String nummer = "12345678";
         JsonOrganisasjon result = utbetalingerFraNavSystemdata.mapToJsonOrganisasjon(nummer);
-        assertNull(result);
+        assertThat(result).isNull();
     }
 
     @Test
     public void skalReturnereNullOmForLangtOrganisasjonsnummer() {
         String nummer = "1234567890";
         JsonOrganisasjon result = utbetalingerFraNavSystemdata.mapToJsonOrganisasjon(nummer);
-        assertNull(result);
+        assertThat(result).isNull();
     }
 
     @Test
     public void skalReturnereOrganisasjonUtenNummerVedPersonnummer() {
         String personnummer = "01010011111";
         JsonOrganisasjon result = utbetalingerFraNavSystemdata.mapToJsonOrganisasjon(personnummer);
-        assertNull(result);
+        assertThat(result).isNull();
     }
 }

@@ -23,8 +23,6 @@ public class SoknadMetricsServiceTest {
     @Mock
     SoknadMetricsService metricsService;
 
-
-
     @Test
     public void reportVedleggskrav_shouldReportCorrect() {
         doCallRealMethod().when(metricsService).countAndreportVedleggskrav(anyBoolean(), any());

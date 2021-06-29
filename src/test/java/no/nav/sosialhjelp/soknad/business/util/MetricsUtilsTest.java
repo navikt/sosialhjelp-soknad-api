@@ -3,25 +3,25 @@ package no.nav.sosialhjelp.soknad.business.util;
 import org.junit.Test;
 
 import static no.nav.sosialhjelp.soknad.business.util.MetricsUtils.getProsent;
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class MetricsUtilsTest {
 
     @Test
     public void getProsent_shouldWork() {
-        assertEquals(22, getProsent(4, 18), 0);
-        assertEquals(99, getProsent(99, 100), 0);
+        assertThat(getProsent(4, 18)).isEqualTo(22);
+        assertThat(getProsent(99, 100)).isEqualTo(99);
     }
 
     @Test
     public void getProsent_shouldRoundToNearestInteger() {
-        assertEquals(3, getProsent(3_499, 100_000), 0);
-        assertEquals(4, getProsent(3_500, 100_000), 0);
-        assertEquals(4, getProsent(3_599, 100_000), 0);
+        assertThat(getProsent(3_499, 100_000)).isEqualTo(3);
+        assertThat(getProsent(3_500, 100_000)).isEqualTo(4);
+        assertThat(getProsent(3_599, 100_000)).isEqualTo(4);
     }
 
     @Test
     public void getProsent_whenDividingByZero_shouldGiveZero() {
-        assertEquals(0, getProsent(7, 0), 0);
+        assertThat(getProsent(7, 0)).isEqualTo(0);
     }
 }

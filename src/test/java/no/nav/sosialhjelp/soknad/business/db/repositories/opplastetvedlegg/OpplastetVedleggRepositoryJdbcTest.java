@@ -14,8 +14,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import javax.inject.Inject;
 import java.util.List;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {DbTestConfig.class})
@@ -50,7 +49,7 @@ public class OpplastetVedleggRepositoryJdbcTest {
 
         String uuidFraDb = opplastetVedleggRepository.opprettVedlegg(opplastetVedlegg, EIER);
 
-        assertThat(uuidFraDb, is(opplastetVedlegg.getUuid()));
+        assertThat(uuidFraDb).isEqualTo(opplastetVedlegg.getUuid());
     }
 
     @Test
@@ -59,13 +58,13 @@ public class OpplastetVedleggRepositoryJdbcTest {
 
         OpplastetVedlegg opplastetVedleggFraDb = opplastetVedleggRepository.hentVedlegg(uuid, EIER).get();
 
-        assertThat(opplastetVedleggFraDb.getUuid(), is(uuid));
-        assertThat(opplastetVedleggFraDb.getEier(), is(EIER));
-        assertThat(opplastetVedleggFraDb.getVedleggType().getSammensattType(), is(TYPE));
-        assertThat(opplastetVedleggFraDb.getData(), is(DATA));
-        assertThat(opplastetVedleggFraDb.getSoknadId(), is(SOKNADID));
-        assertThat(opplastetVedleggFraDb.getFilnavn(), is(FILNAVN));
-        assertThat(opplastetVedleggFraDb.getSha512(), is(SHA512));
+        assertThat(opplastetVedleggFraDb.getUuid()).isEqualTo(uuid);
+        assertThat(opplastetVedleggFraDb.getEier()).isEqualTo(EIER);
+        assertThat(opplastetVedleggFraDb.getVedleggType().getSammensattType()).isEqualTo(TYPE);
+        assertThat(opplastetVedleggFraDb.getData()).isEqualTo(DATA);
+        assertThat(opplastetVedleggFraDb.getSoknadId()).isEqualTo(SOKNADID);
+        assertThat(opplastetVedleggFraDb.getFilnavn()).isEqualTo(FILNAVN);
+        assertThat(opplastetVedleggFraDb.getSha512()).isEqualTo(SHA512);
     }
 
     @Test
@@ -77,9 +76,9 @@ public class OpplastetVedleggRepositoryJdbcTest {
 
         List<OpplastetVedlegg> opplastedeVedlegg = opplastetVedleggRepository.hentVedleggForSoknad(SOKNADID, EIER);
 
-        assertThat(opplastedeVedlegg.size(), is(2));
-        assertThat(opplastedeVedlegg.get(0).getUuid(), is(uuid));
-        assertThat(opplastedeVedlegg.get(1).getUuid(), is(uuidSammeSoknadOgEier));
+        assertThat(opplastedeVedlegg).hasSize(2);
+        assertThat(opplastedeVedlegg.get(0).getUuid()).isEqualTo(uuid);
+        assertThat(opplastedeVedlegg.get(1).getUuid()).isEqualTo(uuidSammeSoknadOgEier);
     }
 
     @Test
@@ -88,7 +87,7 @@ public class OpplastetVedleggRepositoryJdbcTest {
 
         opplastetVedleggRepository.slettVedlegg(uuid, EIER);
 
-        assertThat(opplastetVedleggRepository.hentVedlegg(uuid, EIER).isPresent(), is(false));
+        assertThat(opplastetVedleggRepository.hentVedlegg(uuid, EIER)).isEmpty();
     }
 
     @Test
@@ -99,9 +98,9 @@ public class OpplastetVedleggRepositoryJdbcTest {
 
         opplastetVedleggRepository.slettAlleVedleggForSoknad(SOKNADID, EIER);
 
-        assertThat(opplastetVedleggRepository.hentVedlegg(uuid, EIER).isPresent(), is(false));
-        assertThat(opplastetVedleggRepository.hentVedlegg(uuidSammeSoknadOgEier, EIER).isPresent(), is(false));
-        assertThat(opplastetVedleggRepository.hentVedlegg(uuidSammeEierOgAnnenSoknad, EIER).isPresent(), is(true));
+        assertThat(opplastetVedleggRepository.hentVedlegg(uuid, EIER)).isEmpty();
+        assertThat(opplastetVedleggRepository.hentVedlegg(uuidSammeSoknadOgEier, EIER)).isEmpty();
+        assertThat(opplastetVedleggRepository.hentVedlegg(uuidSammeEierOgAnnenSoknad, EIER)).isPresent();
     }
 
     private OpplastetVedlegg lagOpplastetVedlegg(String eier, String type, Long soknadId) {

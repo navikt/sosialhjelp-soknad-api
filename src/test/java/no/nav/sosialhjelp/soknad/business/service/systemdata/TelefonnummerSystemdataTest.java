@@ -13,9 +13,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import static no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -41,8 +39,8 @@ public class TelefonnummerSystemdataTest {
 
         JsonPersonalia jsonPersonalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
 
-        assertThat(jsonPersonalia.getTelefonnummer().getKilde(), is(JsonKilde.SYSTEM));
-        assertThat(jsonPersonalia.getTelefonnummer().getVerdi(), is("+47" + TELEFONNUMMER_SYSTEM));
+        assertThat(jsonPersonalia.getTelefonnummer().getKilde()).isEqualTo(JsonKilde.SYSTEM);
+        assertThat(jsonPersonalia.getTelefonnummer().getVerdi()).isEqualTo("+47" + TELEFONNUMMER_SYSTEM);
     }
 
     @Test
@@ -54,8 +52,8 @@ public class TelefonnummerSystemdataTest {
 
         JsonPersonalia jsonPersonalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
 
-        assertThat(jsonPersonalia.getTelefonnummer().getKilde(), is(JsonKilde.SYSTEM));
-        assertThat(jsonPersonalia.getTelefonnummer().getVerdi(), is("+47" + TELEFONNUMMER_SYSTEM));
+        assertThat(jsonPersonalia.getTelefonnummer().getKilde()).isEqualTo(JsonKilde.SYSTEM);
+        assertThat(jsonPersonalia.getTelefonnummer().getVerdi()).isEqualTo("+47" + TELEFONNUMMER_SYSTEM);
     }
 
     @Test
@@ -66,8 +64,8 @@ public class TelefonnummerSystemdataTest {
 
         JsonPersonalia jsonPersonalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
 
-        assertThat(jsonPersonalia.getTelefonnummer().getKilde(), is(JsonKilde.BRUKER));
-        assertThat(jsonPersonalia.getTelefonnummer().getVerdi(), is(TELEFONNUMMER_BRUKER));
+        assertThat(jsonPersonalia.getTelefonnummer().getKilde()).isEqualTo(JsonKilde.BRUKER);
+        assertThat(jsonPersonalia.getTelefonnummer().getVerdi()).isEqualTo(TELEFONNUMMER_BRUKER);
     }
 
     @Test
@@ -79,7 +77,7 @@ public class TelefonnummerSystemdataTest {
 
         JsonPersonalia jsonPersonalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
 
-        assertThat(jsonPersonalia.getTelefonnummer(), nullValue());
+        assertThat(jsonPersonalia.getTelefonnummer()).isNull();
     }
 
     @Test
@@ -91,7 +89,7 @@ public class TelefonnummerSystemdataTest {
 
         JsonPersonalia jsonPersonalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
 
-        assertThat(jsonPersonalia.getTelefonnummer(), nullValue());
+        assertThat(jsonPersonalia.getTelefonnummer()).isNull();
     }
 
     private JsonInternalSoknad createJsonInternalSoknadWithUserDefinedTelefonnummer() {

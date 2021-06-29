@@ -34,8 +34,7 @@ import java.io.IOException;
 import java.util.Locale;
 
 import static no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
@@ -93,13 +92,13 @@ public class HandleBarKjoererTest {
     public void fyllHtmlMalMedInnholdLagerHtmlFraJsonInternalSoknad() throws IOException {
         String html = handleBarKjoerer.fyllHtmlMalMedInnhold(createEmptyJsonInternalSoknad(FNR), false);
 
-        assertThat(html, containsString(FNR));
+        assertThat(html).contains(FNR);
     }
 
     @Test
     public void skalTaBortUgyldigeTegn() throws IOException {
         String html = handleBarKjoerer.fyllHtmlMalMedInnhold(createEmptyJsonInternalSoknad("FNR\b\ntrall"), false);
 
-        assertThat(html, containsString("FNR\ntrall"));
+        assertThat(html).contains("FNR\ntrall");
     }
 }

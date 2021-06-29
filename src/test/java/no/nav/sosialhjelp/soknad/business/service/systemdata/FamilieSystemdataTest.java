@@ -44,9 +44,7 @@ import static no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus.Status
 import static no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus.Status.SKILT;
 import static no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus.Status.UGIFT;
 import static no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -181,12 +179,12 @@ public class FamilieSystemdataTest {
 
         JsonSivilstatus sivilstatus = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getFamilie().getSivilstatus();
 
-        assertThat(sivilstatus.getKilde(), is(JsonKilde.SYSTEM));
-        assertThat(sivilstatus.getStatus(), is(GIFT));
+        assertThat(sivilstatus.getKilde()).isEqualTo(JsonKilde.SYSTEM);
+        assertThat(sivilstatus.getStatus()).isEqualTo(GIFT);
         assertThatEktefelleIsCorrectlyConverted(EKTEFELLE, sivilstatus.getEktefelle());
-        assertThat(sivilstatus.getEktefelleHarDiskresjonskode(), is(false));
-        assertThat(sivilstatus.getFolkeregistrertMedEktefelle(), is(false));
-        assertThat(sivilstatus.getBorSammenMed(), nullValue());
+        assertThat(sivilstatus.getEktefelleHarDiskresjonskode()).isFalse();
+        assertThat(sivilstatus.getFolkeregistrertMedEktefelle()).isFalse();
+        assertThat(sivilstatus.getBorSammenMed()).isNull();
     }
 
     @Test
@@ -203,7 +201,7 @@ public class FamilieSystemdataTest {
 
         JsonSivilstatus sivilstatus = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getFamilie().getSivilstatus();
 
-        assertThat(sivilstatus, nullValue());
+        assertThat(sivilstatus).isNull();
     }
 
     @Test
@@ -235,12 +233,12 @@ public class FamilieSystemdataTest {
 
         JsonSivilstatus sivilstatus = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getFamilie().getSivilstatus();
 
-        assertThat(sivilstatus.getKilde(), is(JsonKilde.SYSTEM));
-        assertThat(sivilstatus.getStatus(), is(GIFT));
+        assertThat(sivilstatus.getKilde()).isEqualTo(JsonKilde.SYSTEM);
+        assertThat(sivilstatus.getStatus()).isEqualTo(GIFT);
         assertThatEktefelleIsCorrectlyConverted(TOM_EKTEFELLE, sivilstatus.getEktefelle());
-        assertThat(sivilstatus.getEktefelleHarDiskresjonskode(), is(true));
-        assertThat(sivilstatus.getFolkeregistrertMedEktefelle(), is(false));
-        assertThat(sivilstatus.getBorSammenMed(), nullValue());
+        assertThat(sivilstatus.getEktefelleHarDiskresjonskode()).isTrue();
+        assertThat(sivilstatus.getFolkeregistrertMedEktefelle()).isFalse();
+        assertThat(sivilstatus.getBorSammenMed()).isNull();
     }
 
     @Test
@@ -254,13 +252,13 @@ public class FamilieSystemdataTest {
         ensureValidInternalSoknad(internalSoknad);
 
         JsonForsorgerplikt forsorgerplikt = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getFamilie().getForsorgerplikt();
-        assertThat(forsorgerplikt.getHarForsorgerplikt().getKilde(), is(JsonKilde.SYSTEM));
-        assertThat(forsorgerplikt.getHarForsorgerplikt().getVerdi(), is(true));
+        assertThat(forsorgerplikt.getHarForsorgerplikt().getKilde()).isEqualTo(JsonKilde.SYSTEM);
+        assertThat(forsorgerplikt.getHarForsorgerplikt().getVerdi()).isTrue();
         List<JsonAnsvar> ansvarList = forsorgerplikt.getAnsvar();
         JsonAnsvar ansvar = ansvarList.get(0);
         JsonAnsvar ansvar_2 = ansvarList.get(1);
-        assertThat(ansvar.getBarn().getKilde(), is(JsonKilde.SYSTEM));
-        assertThat(ansvar_2.getBarn().getKilde(), is(JsonKilde.SYSTEM));
+        assertThat(ansvar.getBarn().getKilde()).isEqualTo(JsonKilde.SYSTEM);
+        assertThat(ansvar_2.getBarn().getKilde()).isEqualTo(JsonKilde.SYSTEM);
         assertThatAnsvarIsCorrectlyConverted(BARN, ansvar);
         assertThatAnsvarIsCorrectlyConverted(BARN_2, ansvar_2);
     }
@@ -276,10 +274,10 @@ public class FamilieSystemdataTest {
         ensureValidInternalSoknad(internalSoknad);
 
         JsonForsorgerplikt forsorgerplikt = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getFamilie().getForsorgerplikt();
-        assertThat(forsorgerplikt.getHarForsorgerplikt().getKilde(), is(JsonKilde.SYSTEM));
-        assertThat(forsorgerplikt.getHarForsorgerplikt().getVerdi(), is(false));
+        assertThat(forsorgerplikt.getHarForsorgerplikt().getKilde()).isEqualTo(JsonKilde.SYSTEM);
+        assertThat(forsorgerplikt.getHarForsorgerplikt().getVerdi()).isFalse();
         List<JsonAnsvar> ansvarList = forsorgerplikt.getAnsvar();
-        assertThat(ansvarList.isEmpty(), is(true));
+        assertThat(ansvarList.isEmpty()).isTrue();
     }
 
     @Test
@@ -300,21 +298,21 @@ public class FamilieSystemdataTest {
         ensureValidInternalSoknad(internalSoknad);
 
         JsonForsorgerplikt forsorgerplikt = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getFamilie().getForsorgerplikt();
-        assertThat(forsorgerplikt.getHarForsorgerplikt().getKilde(), is(JsonKilde.SYSTEM));
-        assertThat(forsorgerplikt.getHarForsorgerplikt().getVerdi(), is(true));
+        assertThat(forsorgerplikt.getHarForsorgerplikt().getKilde()).isEqualTo(JsonKilde.SYSTEM);
+        assertThat(forsorgerplikt.getHarForsorgerplikt().getVerdi()).isTrue();
         List<JsonAnsvar> ansvarList = forsorgerplikt.getAnsvar();
         JsonAnsvar ansvar = ansvarList.get(0);
         JsonAnsvar ansvar_2 = ansvarList.get(1);
         JsonAnsvar ansvar_3 = ansvarList.get(2);
-        assertThat(ansvar.getBarn().getKilde(), is(JsonKilde.SYSTEM));
-        assertThat(ansvar_2.getBarn().getKilde(), is(JsonKilde.SYSTEM));
-        assertThat(ansvar_3.getBarn().getKilde(), is(JsonKilde.BRUKER));
+        assertThat(ansvar.getBarn().getKilde()).isEqualTo(JsonKilde.SYSTEM);
+        assertThat(ansvar_2.getBarn().getKilde()).isEqualTo(JsonKilde.SYSTEM);
+        assertThat(ansvar_3.getBarn().getKilde()).isEqualTo(JsonKilde.BRUKER);
         assertThatAnsvarIsCorrectlyConverted(BARN, JSON_ANSVAR);
         assertThatAnsvarIsCorrectlyConverted(BARN_2, JSON_ANSVAR_2);
         JsonBarn jsonBarn = ansvar_3.getBarn();
-        assertThat("fornavn", FORNAVN_BARN_3, is(jsonBarn.getNavn().getFornavn()));
-        assertThat("mellomnavn", MELLOMNAVN_BARN_3, is(jsonBarn.getNavn().getMellomnavn()));
-        assertThat("etternavn", ETTERNAVN_BARN_3, is(jsonBarn.getNavn().getEtternavn()));
+        assertThat(jsonBarn.getNavn().getFornavn()).isEqualTo(FORNAVN_BARN_3);
+        assertThat(jsonBarn.getNavn().getMellomnavn()).isEqualTo(MELLOMNAVN_BARN_3);
+        assertThat(jsonBarn.getNavn().getEtternavn()).isEqualTo(ETTERNAVN_BARN_3);
     }
 
     @Test
@@ -335,15 +333,15 @@ public class FamilieSystemdataTest {
         ensureValidInternalSoknad(internalSoknad);
 
         JsonForsorgerplikt forsorgerplikt = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getFamilie().getForsorgerplikt();
-        assertThat(forsorgerplikt.getHarForsorgerplikt().getKilde(), is(JsonKilde.BRUKER));
-        assertThat(forsorgerplikt.getHarForsorgerplikt().getVerdi(), is(true));
+        assertThat(forsorgerplikt.getHarForsorgerplikt().getKilde()).isEqualTo(JsonKilde.BRUKER);
+        assertThat(forsorgerplikt.getHarForsorgerplikt().getVerdi()).isTrue();
         List<JsonAnsvar> ansvarList = forsorgerplikt.getAnsvar();
         JsonAnsvar ansvar = ansvarList.get(0);
-        assertThat(ansvar.getBarn().getKilde(), is(JsonKilde.BRUKER));
+        assertThat(ansvar.getBarn().getKilde()).isEqualTo(JsonKilde.BRUKER);
         JsonBarn jsonBarn = ansvar.getBarn();
-        assertThat("fornavn", FORNAVN_BARN_3, is(jsonBarn.getNavn().getFornavn()));
-        assertThat("mellomnavn", MELLOMNAVN_BARN_3, is(jsonBarn.getNavn().getMellomnavn()));
-        assertThat("etternavn", ETTERNAVN_BARN_3, is(jsonBarn.getNavn().getEtternavn()));
+        assertThat(jsonBarn.getNavn().getFornavn()).isEqualTo(FORNAVN_BARN_3);
+        assertThat(jsonBarn.getNavn().getMellomnavn()).isEqualTo(MELLOMNAVN_BARN_3);
+        assertThat(jsonBarn.getNavn().getEtternavn()).isEqualTo(ETTERNAVN_BARN_3);
     }
 
     @Test
@@ -357,15 +355,15 @@ public class FamilieSystemdataTest {
         ensureValidInternalSoknad(internalSoknad);
 
         JsonForsorgerplikt forsorgerplikt = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getFamilie().getForsorgerplikt();
-        assertThat(forsorgerplikt.getHarForsorgerplikt().getKilde(), is(JsonKilde.SYSTEM));
-        assertThat(forsorgerplikt.getHarForsorgerplikt().getVerdi(), is(true));
-        assertThat(forsorgerplikt.getBarnebidrag().getKilde(), is(JsonKildeBruker.BRUKER));
-        assertThat(forsorgerplikt.getBarnebidrag().getVerdi(), is(JsonBarnebidrag.Verdi.BEGGE));
+        assertThat(forsorgerplikt.getHarForsorgerplikt().getKilde()).isEqualTo(JsonKilde.SYSTEM);
+        assertThat(forsorgerplikt.getHarForsorgerplikt().getVerdi()).isTrue();
+        assertThat(forsorgerplikt.getBarnebidrag().getKilde()).isEqualTo(JsonKildeBruker.BRUKER);
+        assertThat(forsorgerplikt.getBarnebidrag().getVerdi()).isEqualTo(JsonBarnebidrag.Verdi.BEGGE);
         List<JsonAnsvar> ansvarList = forsorgerplikt.getAnsvar();
         JsonAnsvar ansvar = ansvarList.get(0);
         JsonAnsvar ansvar_2 = ansvarList.get(1);
-        assertThat(ansvar.getBarn().getKilde(), is(JsonKilde.SYSTEM));
-        assertThat(ansvar_2.getBarn().getKilde(), is(JsonKilde.SYSTEM));
+        assertThat(ansvar.getBarn().getKilde()).isEqualTo(JsonKilde.SYSTEM);
+        assertThat(ansvar_2.getBarn().getKilde()).isEqualTo(JsonKilde.SYSTEM);
         assertThatAnsvarIsCorrectlyConverted(BARN, JSON_ANSVAR);
         assertThatAnsvarIsCorrectlyConverted(BARN_2, JSON_ANSVAR_2);
     }
@@ -384,7 +382,7 @@ public class FamilieSystemdataTest {
 
         JsonSivilstatus sivilstatus = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getFamilie().getSivilstatus();
 
-        assertThat(sivilstatus, nullValue());
+        assertThat(sivilstatus).isNull();
     }
 
     private JsonInternalSoknad createJsonInternalSoknadWithBarnWithUserFilledInfoOnSystemBarn() {
@@ -413,29 +411,28 @@ public class FamilieSystemdataTest {
     private void assertThatAnsvarIsCorrectlyConverted(Barn barn, JsonAnsvar jsonAnsvar) {
         JsonBarn jsonBarn = jsonAnsvar.getBarn();
 
-        assertThat("erFolkeregistrertSammen", barn.erFolkeregistrertsammen(),
-                is(jsonAnsvar.getErFolkeregistrertSammen() == null ? null : jsonAnsvar.getErFolkeregistrertSammen().getVerdi()));
+        assertThat(barn.erFolkeregistrertsammen()).isEqualTo(jsonAnsvar.getErFolkeregistrertSammen() == null ? null : jsonAnsvar.getErFolkeregistrertSammen().getVerdi());
 
-        assertThat("fodselsnummer", barn.getFnr(), is(jsonBarn.getPersonIdentifikator()));
+        assertThat(barn.getFnr()).isEqualTo(jsonBarn.getPersonIdentifikator());
         if (barn.getFodselsdato() != null){
-            assertThat("FODSELSDATO_BARN", barn.getFodselsdato().toString(), is(jsonBarn.getFodselsdato()));
+            assertThat(barn.getFodselsdato().toString()).isEqualTo(jsonBarn.getFodselsdato());
         } else {
-            assertThat("FODSELSDATO_BARN", jsonBarn.getFodselsdato(), nullValue());
+            assertThat(jsonBarn.getFodselsdato()).isNull();
         }
-        assertThat("fornavn", barn.getFornavn(), is(jsonBarn.getNavn().getFornavn()));
-        assertThat("mellomnavn", barn.getMellomnavn(), is(jsonBarn.getNavn().getMellomnavn()));
-        assertThat("etternavn", barn.getEtternavn(), is(jsonBarn.getNavn().getEtternavn()));
+        assertThat(barn.getFornavn()).isEqualTo(jsonBarn.getNavn().getFornavn());
+        assertThat(barn.getMellomnavn()).isEqualTo(jsonBarn.getNavn().getMellomnavn());
+        assertThat(barn.getEtternavn()).isEqualTo(jsonBarn.getNavn().getEtternavn());
     }
 
     private void assertThatEktefelleIsCorrectlyConverted(Ektefelle ektefelle, JsonEktefelle jsonEktefelle) {
         if (ektefelle.getFodselsdato() != null){
-            assertThat("FODSELSDATO_BARN", ektefelle.getFodselsdato().toString(), is(jsonEktefelle.getFodselsdato()));
+            assertThat(ektefelle.getFodselsdato().toString()).isEqualTo(jsonEktefelle.getFodselsdato());
         } else {
-            assertThat("FODSELSDATO_BARN", jsonEktefelle.getFodselsdato(), nullValue());
+            assertThat(jsonEktefelle.getFodselsdato()).isNull();
         }
-        assertThat("fnr", ektefelle.getFnr(), is(jsonEktefelle.getPersonIdentifikator()));
-        assertThat("fornavn", ektefelle.getFornavn(), is(jsonEktefelle.getNavn().getFornavn()));
-        assertThat("mellomnavn", ektefelle.getMellomnavn(), is(jsonEktefelle.getNavn().getMellomnavn()));
-        assertThat("etternavn", ektefelle.getEtternavn(), is(jsonEktefelle.getNavn().getEtternavn()));
+        assertThat(ektefelle.getFnr()).isEqualTo(jsonEktefelle.getPersonIdentifikator());
+        assertThat(ektefelle.getFornavn()).isEqualTo(jsonEktefelle.getNavn().getFornavn());
+        assertThat(ektefelle.getMellomnavn()).isEqualTo(jsonEktefelle.getNavn().getMellomnavn());
+        assertThat(ektefelle.getEtternavn()).isEqualTo(jsonEktefelle.getNavn().getEtternavn());
     }
 }

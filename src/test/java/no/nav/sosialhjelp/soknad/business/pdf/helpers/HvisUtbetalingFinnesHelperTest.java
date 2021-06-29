@@ -15,8 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_NAVYTELSE;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(MockitoJUnitRunner.class)
 public class HvisUtbetalingFinnesHelperTest {
@@ -38,7 +37,7 @@ public class HvisUtbetalingFinnesHelperTest {
         String compiled = handlebars.compileInline("{{#hvisUtbetalingFinnes \"navytelse\" }}Utbetalingstypen finnes"
                 + "{{else}} Utbetalingstypen finnes ikke{{/hvisUtbetalingFinnes}}").apply(opplysninger);
         
-        assertThat(compiled, equalTo("Utbetalingstypen finnes"));
+        assertThat(compiled).isEqualTo("Utbetalingstypen finnes");
     }
     
     @Test
@@ -48,7 +47,7 @@ public class HvisUtbetalingFinnesHelperTest {
         String compiled = handlebars.compileInline("{{#hvisUtbetalingFinnes \"tullepenger\" }}Utbetalingstypen finnes"
                 + "{{else}}Utbetalingstypen finnes ikke{{/hvisUtbetalingFinnes}}").apply(opplysninger);
         
-        assertThat(compiled, equalTo("Utbetalingstypen finnes ikke"));
+        assertThat(compiled).isEqualTo("Utbetalingstypen finnes ikke");
     }
 
 

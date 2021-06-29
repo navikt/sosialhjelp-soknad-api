@@ -75,8 +75,8 @@ import static no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde.BRUKER;
 import static no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde.SYSTEM;
 import static no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
 import static no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SosialhjelpInformasjon.BUNDLE_NAME;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -837,7 +837,7 @@ public class SosialhjelpPdfGeneratorTest {
             PreflightDocument document = parser.getPreflightDocument();
             document.validate();
             result = document.getResult();
-            assertTrue(result.isValid());
+            assertThat(result.isValid()).isTrue();
             document.close();
         } catch (SyntaxValidationException e) {
             fail("Exception when checking validity of pdf/a. ", e);
@@ -864,7 +864,7 @@ public class SosialhjelpPdfGeneratorTest {
             PreflightDocument document = parser.getPreflightDocument();
             document.validate();
             result = document.getResult();
-            assertTrue(result.isValid());
+            assertThat(result.isValid()).isTrue();
             document.close();
         } catch (SyntaxValidationException e) {
             fail("Exception when checking validity of pdf/a. ", e);

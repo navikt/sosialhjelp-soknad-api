@@ -9,8 +9,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import java.io.IOException;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(MockitoJUnitRunner.class)
 public class PersonnrHelperTest {
@@ -31,7 +30,7 @@ public class PersonnrHelperTest {
         ektefelle.setPersonIdentifikator("65432112345"); // Ikke ekte person
         String compiled = handlebars.compileInline("Personnr: {{personnr personIdentifikator }}").apply(ektefelle);
 
-        assertThat(compiled, is("Personnr: 12345"));
+        assertThat(compiled).isEqualTo("Personnr: 12345");
     }
 
     @Test
@@ -40,12 +39,12 @@ public class PersonnrHelperTest {
         ektefelle.setPersonIdentifikator("1231231234");
         String compiled = handlebars.compileInline("Personnr: {{personnr personIdentifikator }}").apply(ektefelle);
 
-        assertThat(compiled, is("Personnr: "));
+        assertThat(compiled).isEqualTo("Personnr: ");
         
         ektefelle.setPersonIdentifikator("");
         compiled = handlebars.compileInline("Personnr: {{personnr personIdentifikator }}").apply(ektefelle);
 
-        assertThat(compiled, is("Personnr: "));
+        assertThat(compiled).isEqualTo("Personnr: ");
     }
 
     @Test
@@ -54,7 +53,7 @@ public class PersonnrHelperTest {
         ektefelle.setPersonIdentifikator(null);
         String compiled = handlebars.compileInline("Personnr: {{personnr personIdentifikator }}").apply(ektefelle);
 
-        assertThat(compiled, is("Personnr: "));
+        assertThat(compiled).isEqualTo("Personnr: ");
     }
 
 }

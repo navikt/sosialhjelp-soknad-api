@@ -10,8 +10,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ErListeTomHelperTest {
 
@@ -27,7 +26,7 @@ public class ErListeTomHelperTest {
     @Test
     public void skalReturnereTomNarListaErTom() throws IOException {
         String compiled = handlebars.compileInline("{{#erListeTom saker}}tom{{else}}ikke tom{{/erListeTom}}").apply(new JsonBostotte());
-        assertThat(compiled, is("tom"));
+        assertThat(compiled).isEqualTo("tom");
     }
 
     @Test
@@ -35,6 +34,6 @@ public class ErListeTomHelperTest {
         List<JsonBostotteSak> saker = new ArrayList<>();
         saker.add(new JsonBostotteSak());
         String compiled = handlebars.compileInline("{{#erListeTom saker}}tom{{else}}ikke tom{{/erListeTom}}").apply(new JsonBostotte().withSaker(saker));
-        assertThat(compiled, is("ikke tom"));
+        assertThat(compiled).isEqualTo("ikke tom");
     }
 }
