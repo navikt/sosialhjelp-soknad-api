@@ -29,7 +29,7 @@ public class DittNavMetadataServiceTest {
     private DittNavMetadataService dittNavMetadataService;
 
     @Test
-    public void skalHentePabegynteSoknaderForBruker() {
+    public void skalHenteAktivePabegynteSoknaderForBruker() {
         var soknadMetadata = new SoknadMetadata();
         soknadMetadata.fnr = "12345";
         soknadMetadata.behandlingsId = "beh123";
@@ -45,6 +45,9 @@ public class DittNavMetadataServiceTest {
         var dtos = dittNavMetadataService.hentAktivePabegynteSoknader("12345");
 
         assertThat(dtos).hasSize(1);
+        assertThat(dtos.get(0).getEventId()).isEqualTo(soknadMetadata.behandlingsId + "_aktiv");
+        assertThat(dtos.get(0).getGrupperingsId()).isEqualTo(soknadMetadata.behandlingsId);
+        assertThat(dtos.get(0).isAktiv()).isTrue();
     }
 
     @Test
@@ -64,6 +67,9 @@ public class DittNavMetadataServiceTest {
         var dtos = dittNavMetadataService.hentInaktivePabegynteSoknader("12345");
 
         assertThat(dtos).hasSize(1);
+        assertThat(dtos.get(0).getEventId()).isEqualTo(soknadMetadata.behandlingsId + "_inaktiv");
+        assertThat(dtos.get(0).getGrupperingsId()).isEqualTo(soknadMetadata.behandlingsId);
+        assertThat(dtos.get(0).isAktiv()).isFalse();
     }
 
     @Test

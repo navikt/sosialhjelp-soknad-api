@@ -43,7 +43,7 @@ public class DittNavMetadataRessurs {
     }
 
     @GET
-    @Path("/pabegynte")
+    @Path("/pabegynte/aktive")
     public List<PabegyntSoknadDto> hentPabegynteSoknaderForBruker() {
         if (!unleash.isEnabled(DITTNAV_PABEGYNTE_ENDEPUNKT_ENABLED, false)) {
             log.info("Endepunkt for å hente info om påbegynte søknader for dittNav er ikke enabled. Returnerer tom liste.");

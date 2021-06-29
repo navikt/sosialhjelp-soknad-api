@@ -41,7 +41,7 @@ public class DittNavMetadataService {
 
         return pabegynteSoknader.stream()
                 .map(soknadMetadata -> new PabegyntSoknadDto(
-                        toUtc(soknadMetadata.sistEndretDato, ZoneId.systemDefault()),
+                        toUtc(soknadMetadata.opprettetDato, ZoneId.systemDefault()),
                         eventId(soknadMetadata.behandlingsId, aktiv),
                         soknadMetadata.behandlingsId,
                         SOKNAD_TITTEL,
