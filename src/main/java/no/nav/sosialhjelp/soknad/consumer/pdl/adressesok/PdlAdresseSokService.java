@@ -116,13 +116,6 @@ public class PdlAdresseSokService {
                 Objects.equals(dto1.getBydelsnummer(), dto2.getBydelsnummer());
     }
 
-    private String bydelsnummerOrKommunenummer(VegadresseDto vegadresse) {
-        if (vegadresse.getBydelsnummer() != null) {
-            return vegadresse.getBydelsnummer();
-        }
-        return vegadresse.getKommunenummer();
-    }
-
     private Map<String, Object> toVariables(JsonGateAdresse adresse) {
         var variables = new HashMap<String, Object>();
         variables.put(PAGING, new Paging(1, 30, emptyList()));
@@ -209,6 +202,13 @@ public class PdlAdresseSokService {
         adresse.geografiskTilknytning = bydelsnummerOrKommunenummer(vegadresseDto);
         adresse.type = GATEADRESSE;
         return adresse;
+    }
+
+    private String bydelsnummerOrKommunenummer(VegadresseDto vegadresse) {
+        if (vegadresse.getBydelsnummer() != null) {
+            return vegadresse.getBydelsnummer();
+        }
+        return vegadresse.getKommunenummer();
     }
 
 }
