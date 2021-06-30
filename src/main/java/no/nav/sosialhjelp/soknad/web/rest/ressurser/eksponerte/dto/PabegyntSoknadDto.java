@@ -62,8 +62,8 @@ public class PabegyntSoknadDto {
         return sikkerhetsnivaa;
     }
 
-    public LocalDateTime getSistOppdatert() {
-        return sistOppdatert;
+    public String getSistOppdatert() {
+        return sistOppdatert.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
     }
 
     public boolean isAktiv() {
