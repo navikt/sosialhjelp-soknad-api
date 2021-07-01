@@ -31,12 +31,12 @@ public class Paging {
 
     public static class SortBy {
         private final String fieldName;
-        private final String direction;
+        private final Direction direction;
 
 
         public SortBy(
                 String fieldName,
-                String direction
+                Direction direction
         ) {
             this.fieldName = fieldName;
             this.direction = direction;
@@ -46,7 +46,7 @@ public class Paging {
             return fieldName;
         }
 
-        public String getDirection() {
+        public Direction getDirection() {
             return direction;
         }
     }
