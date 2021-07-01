@@ -22,8 +22,7 @@ import org.springframework.test.context.ContextConfiguration;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -68,7 +67,7 @@ public class AvbrytAutomatiskSchedulerTest {
         verify(soknadMetadataRepository).oppdater(argument.capture());
         SoknadMetadata oppdatertSoknadMetadata = argument.getValue();
 
-        assertThat(oppdatertSoknadMetadata.status, is(SoknadMetadataInnsendingStatus.AVBRUTT_AUTOMATISK));
+        assertThat(oppdatertSoknadMetadata.status).isEqualTo(SoknadMetadataInnsendingStatus.AVBRUTT_AUTOMATISK);
         verify(batchSoknadUnderArbeidRepository).slettSoknad(anyLong());
     }
 

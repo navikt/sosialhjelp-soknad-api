@@ -17,9 +17,7 @@ import java.util.List;
 
 import static no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
 import static no.nav.sosialhjelp.soknad.business.service.systemdata.BasisPersonaliaSystemdata.PDL_UKJENT_STATSBORGERSKAP;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -49,14 +47,14 @@ public class BasisPersonaliaSystemdataTest {
 
         JsonPersonalia jsonPersonalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
 
-        assertThat(jsonPersonalia.getPersonIdentifikator().getKilde(), is(JsonPersonIdentifikator.Kilde.SYSTEM));
-        assertThat(jsonPersonalia.getPersonIdentifikator().getVerdi(), is(EIER));
-        assertThat(jsonPersonalia.getNavn().getKilde(), is(JsonSokernavn.Kilde.SYSTEM));
-        assertThat(jsonPersonalia.getNavn().getFornavn(), is(""));
-        assertThat(jsonPersonalia.getNavn().getMellomnavn(), is(""));
-        assertThat(jsonPersonalia.getNavn().getEtternavn(), is(""));
-        assertThat(jsonPersonalia.getStatsborgerskap(), nullValue());
-        assertThat(jsonPersonalia.getNordiskBorger(), nullValue());
+        assertThat(jsonPersonalia.getPersonIdentifikator().getKilde()).isEqualTo(JsonPersonIdentifikator.Kilde.SYSTEM);
+        assertThat(jsonPersonalia.getPersonIdentifikator().getVerdi()).isEqualTo(EIER);
+        assertThat(jsonPersonalia.getNavn().getKilde()).isEqualTo(JsonSokernavn.Kilde.SYSTEM);
+        assertThat(jsonPersonalia.getNavn().getFornavn()).isEqualTo("");
+        assertThat(jsonPersonalia.getNavn().getMellomnavn()).isEqualTo("");
+        assertThat(jsonPersonalia.getNavn().getEtternavn()).isEqualTo("");
+        assertThat(jsonPersonalia.getStatsborgerskap()).isNull();
+        assertThat(jsonPersonalia.getNordiskBorger()).isNull();
     }
 
     @Test
@@ -73,16 +71,16 @@ public class BasisPersonaliaSystemdataTest {
 
         JsonPersonalia jsonPersonalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
 
-        assertThat(jsonPersonalia.getPersonIdentifikator().getKilde(), is(JsonPersonIdentifikator.Kilde.SYSTEM));
-        assertThat(jsonPersonalia.getPersonIdentifikator().getVerdi(), is(EIER));
-        assertThat(jsonPersonalia.getNavn().getKilde(), is(JsonSokernavn.Kilde.SYSTEM));
-        assertThat(jsonPersonalia.getNavn().getFornavn(), is(FORNAVN));
-        assertThat(jsonPersonalia.getNavn().getMellomnavn(), is(MELLOMNAVN));
-        assertThat(jsonPersonalia.getNavn().getEtternavn(), is(ETTERNAVN));
-        assertThat(jsonPersonalia.getStatsborgerskap().getKilde(), is(JsonKilde.SYSTEM));
-        assertThat(jsonPersonalia.getStatsborgerskap().getVerdi(), is(NORSK_STATSBORGERSKAP));
-        assertThat(jsonPersonalia.getNordiskBorger().getKilde(), is(JsonKilde.SYSTEM));
-        assertThat(jsonPersonalia.getNordiskBorger().getVerdi(), is(true));
+        assertThat(jsonPersonalia.getPersonIdentifikator().getKilde()).isEqualTo(JsonPersonIdentifikator.Kilde.SYSTEM);
+        assertThat(jsonPersonalia.getPersonIdentifikator().getVerdi()).isEqualTo(EIER);
+        assertThat(jsonPersonalia.getNavn().getKilde()).isEqualTo(JsonSokernavn.Kilde.SYSTEM);
+        assertThat(jsonPersonalia.getNavn().getFornavn()).isEqualTo(FORNAVN);
+        assertThat(jsonPersonalia.getNavn().getMellomnavn()).isEqualTo(MELLOMNAVN);
+        assertThat(jsonPersonalia.getNavn().getEtternavn()).isEqualTo(ETTERNAVN);
+        assertThat(jsonPersonalia.getStatsborgerskap().getKilde()).isEqualTo(JsonKilde.SYSTEM);
+        assertThat(jsonPersonalia.getStatsborgerskap().getVerdi()).isEqualTo(NORSK_STATSBORGERSKAP);
+        assertThat(jsonPersonalia.getNordiskBorger().getKilde()).isEqualTo(JsonKilde.SYSTEM);
+        assertThat(jsonPersonalia.getNordiskBorger().getVerdi()).isTrue();
     }
 
     @Test
@@ -99,10 +97,10 @@ public class BasisPersonaliaSystemdataTest {
 
         JsonPersonalia jsonPersonalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
 
-        assertThat(jsonPersonalia.getStatsborgerskap().getKilde(), is(JsonKilde.SYSTEM));
-        assertThat(jsonPersonalia.getStatsborgerskap().getVerdi(), is(NORSK_STATSBORGERSKAP));
-        assertThat(jsonPersonalia.getNordiskBorger().getKilde(), is(JsonKilde.SYSTEM));
-        assertThat(jsonPersonalia.getNordiskBorger().getVerdi(), is(true));
+        assertThat(jsonPersonalia.getStatsborgerskap().getKilde()).isEqualTo(JsonKilde.SYSTEM);
+        assertThat(jsonPersonalia.getStatsborgerskap().getVerdi()).isEqualTo(NORSK_STATSBORGERSKAP);
+        assertThat(jsonPersonalia.getNordiskBorger().getKilde()).isEqualTo(JsonKilde.SYSTEM);
+        assertThat(jsonPersonalia.getNordiskBorger().getVerdi()).isTrue();
     }
 
     @Test
@@ -119,10 +117,10 @@ public class BasisPersonaliaSystemdataTest {
 
         JsonPersonalia jsonPersonalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
 
-        assertThat(jsonPersonalia.getStatsborgerskap().getKilde(), is(JsonKilde.SYSTEM));
-        assertThat(jsonPersonalia.getStatsborgerskap().getVerdi(), is(NORDISK_STATSBORGERSKAP));
-        assertThat(jsonPersonalia.getNordiskBorger().getKilde(), is(JsonKilde.SYSTEM));
-        assertThat(jsonPersonalia.getNordiskBorger().getVerdi(), is(true));
+        assertThat(jsonPersonalia.getStatsborgerskap().getKilde()).isEqualTo(JsonKilde.SYSTEM);
+        assertThat(jsonPersonalia.getStatsborgerskap().getVerdi()).isEqualTo(NORDISK_STATSBORGERSKAP);
+        assertThat(jsonPersonalia.getNordiskBorger().getKilde()).isEqualTo(JsonKilde.SYSTEM);
+        assertThat(jsonPersonalia.getNordiskBorger().getVerdi()).isTrue();
     }
 
     @Test
@@ -139,16 +137,16 @@ public class BasisPersonaliaSystemdataTest {
 
         JsonPersonalia jsonPersonalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
 
-        assertThat(jsonPersonalia.getPersonIdentifikator().getKilde(), is(JsonPersonIdentifikator.Kilde.SYSTEM));
-        assertThat(jsonPersonalia.getPersonIdentifikator().getVerdi(), is(EIER));
-        assertThat(jsonPersonalia.getNavn().getKilde(), is(JsonSokernavn.Kilde.SYSTEM));
-        assertThat(jsonPersonalia.getNavn().getFornavn(), is(FORNAVN));
-        assertThat(jsonPersonalia.getNavn().getMellomnavn(), is(MELLOMNAVN));
-        assertThat(jsonPersonalia.getNavn().getEtternavn(), is(ETTERNAVN));
-        assertThat(jsonPersonalia.getStatsborgerskap().getKilde(), is(JsonKilde.SYSTEM));
-        assertThat(jsonPersonalia.getStatsborgerskap().getVerdi(), is(IKKE_NORDISK_STATSBORGERSKAP));
-        assertThat(jsonPersonalia.getNordiskBorger().getKilde(), is(JsonKilde.SYSTEM));
-        assertThat(jsonPersonalia.getNordiskBorger().getVerdi(), is(false));
+        assertThat(jsonPersonalia.getPersonIdentifikator().getKilde()).isEqualTo(JsonPersonIdentifikator.Kilde.SYSTEM);
+        assertThat(jsonPersonalia.getPersonIdentifikator().getVerdi()).isEqualTo(EIER);
+        assertThat(jsonPersonalia.getNavn().getKilde()).isEqualTo(JsonSokernavn.Kilde.SYSTEM);
+        assertThat(jsonPersonalia.getNavn().getFornavn()).isEqualTo(FORNAVN);
+        assertThat(jsonPersonalia.getNavn().getMellomnavn()).isEqualTo(MELLOMNAVN);
+        assertThat(jsonPersonalia.getNavn().getEtternavn()).isEqualTo(ETTERNAVN);
+        assertThat(jsonPersonalia.getStatsborgerskap().getKilde()).isEqualTo(JsonKilde.SYSTEM);
+        assertThat(jsonPersonalia.getStatsborgerskap().getVerdi()).isEqualTo(IKKE_NORDISK_STATSBORGERSKAP);
+        assertThat(jsonPersonalia.getNordiskBorger().getKilde()).isEqualTo(JsonKilde.SYSTEM);
+        assertThat(jsonPersonalia.getNordiskBorger().getVerdi()).isFalse();
     }
 
     //Denne skal fjernes når TPS har oppdatert til å bruke ukjent som XXX istedenfor ???
@@ -166,8 +164,8 @@ public class BasisPersonaliaSystemdataTest {
 
         JsonPersonalia jsonPersonalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
 
-        assertThat(jsonPersonalia.getStatsborgerskap(), nullValue());
-        assertThat(jsonPersonalia.getNordiskBorger(), nullValue());
+        assertThat(jsonPersonalia.getStatsborgerskap()).isNull();
+        assertThat(jsonPersonalia.getNordiskBorger()).isNull();
     }
 
     @Test
@@ -184,21 +182,21 @@ public class BasisPersonaliaSystemdataTest {
 
         JsonPersonalia jsonPersonalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
 
-        assertThat(jsonPersonalia.getStatsborgerskap(), nullValue());
-        assertThat(jsonPersonalia.getNordiskBorger(), nullValue());
+        assertThat(jsonPersonalia.getStatsborgerskap()).isNull();
+        assertThat(jsonPersonalia.getNordiskBorger()).isNull();
     }
 
     @Test
     public void skalSetteRiktigNordiskBorger() {
-        assertThat(BasisPersonaliaSystemdata.erNordiskBorger(null), nullValue());
-        assertThat(BasisPersonaliaSystemdata.erNordiskBorger("NOR"), is(true));
-        assertThat(BasisPersonaliaSystemdata.erNordiskBorger("SWE"), is(true));
-        assertThat(BasisPersonaliaSystemdata.erNordiskBorger("FRO"), is(true));
-        assertThat(BasisPersonaliaSystemdata.erNordiskBorger("ISL"), is(true));
-        assertThat(BasisPersonaliaSystemdata.erNordiskBorger("DNK"), is(true));
-        assertThat(BasisPersonaliaSystemdata.erNordiskBorger("FIN"), is(true));
-        assertThat(BasisPersonaliaSystemdata.erNordiskBorger("RUS"), is(false));
-        assertThat(BasisPersonaliaSystemdata.erNordiskBorger("DEU"), is(false));
-        assertThat(BasisPersonaliaSystemdata.erNordiskBorger("GBR"), is(false));
+        assertThat(BasisPersonaliaSystemdata.erNordiskBorger(null)).isNull();
+        assertThat(BasisPersonaliaSystemdata.erNordiskBorger("NOR")).isTrue();
+        assertThat(BasisPersonaliaSystemdata.erNordiskBorger("SWE")).isTrue();
+        assertThat(BasisPersonaliaSystemdata.erNordiskBorger("FRO")).isTrue();
+        assertThat(BasisPersonaliaSystemdata.erNordiskBorger("ISL")).isTrue();
+        assertThat(BasisPersonaliaSystemdata.erNordiskBorger("DNK")).isTrue();
+        assertThat(BasisPersonaliaSystemdata.erNordiskBorger("FIN")).isTrue();
+        assertThat(BasisPersonaliaSystemdata.erNordiskBorger("RUS")).isFalse();
+        assertThat(BasisPersonaliaSystemdata.erNordiskBorger("DEU")).isFalse();
+        assertThat(BasisPersonaliaSystemdata.erNordiskBorger("GBR")).isFalse();
     }
 }

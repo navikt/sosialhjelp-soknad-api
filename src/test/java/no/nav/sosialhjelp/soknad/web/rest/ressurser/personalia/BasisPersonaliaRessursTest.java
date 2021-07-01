@@ -24,8 +24,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import static no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
 import static no.nav.sosialhjelp.soknad.web.rest.ressurser.personalia.BasisPersonaliaRessurs.BasisPersonaliaFrontend;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verifyNoInteractions;
@@ -125,17 +124,15 @@ public class BasisPersonaliaRessursTest {
     }
 
     private void assertThatPersonaliaIsCorrectlyConverted(BasisPersonaliaFrontend personaliaFrontend, JsonPersonalia jsonPersonalia) {
-        assertThat("fodselsnummer", personaliaFrontend.fodselsnummer,
-                is(jsonPersonalia.getPersonIdentifikator().getVerdi()));
-        assertThat("fornavn", personaliaFrontend.navn.fornavn, is(jsonPersonalia.getNavn().getFornavn()));
-        assertThat("mellomnavn", personaliaFrontend.navn.mellomnavn, is(jsonPersonalia.getNavn().getMellomnavn()));
-        assertThat("etternavn", personaliaFrontend.navn.etternavn, is(jsonPersonalia.getNavn().getEtternavn()));
-        assertThat("fullt navn", personaliaFrontend.navn.fulltNavn, is(FULLT_NAVN));
-        assertThat("statsborgerskap", personaliaFrontend.statsborgerskap,
-                is(jsonPersonalia.getStatsborgerskap() == null ? null :
-                        jsonPersonalia.getStatsborgerskap().getVerdi().equals("NOR") ? "Norge" : jsonPersonalia.getStatsborgerskap().getVerdi()));
-        assertThat("nordiskBorger", personaliaFrontend.nordiskBorger,
-                is(jsonPersonalia.getNordiskBorger() != null ? jsonPersonalia.getNordiskBorger().getVerdi() : null));
+        assertThat(personaliaFrontend.fodselsnummer).isEqualTo(jsonPersonalia.getPersonIdentifikator().getVerdi());
+        assertThat(personaliaFrontend.navn.fornavn).isEqualTo(jsonPersonalia.getNavn().getFornavn());
+        assertThat(personaliaFrontend.navn.mellomnavn).isEqualTo(jsonPersonalia.getNavn().getMellomnavn());
+        assertThat(personaliaFrontend.navn.etternavn).isEqualTo(jsonPersonalia.getNavn().getEtternavn());
+        assertThat(personaliaFrontend.navn.fulltNavn).isEqualTo(FULLT_NAVN);
+        assertThat(personaliaFrontend.statsborgerskap)
+                .isEqualTo(jsonPersonalia.getStatsborgerskap() == null ? null :
+                        jsonPersonalia.getStatsborgerskap().getVerdi().equals("NOR") ? "Norge" : jsonPersonalia.getStatsborgerskap().getVerdi());
+        assertThat(personaliaFrontend.nordiskBorger).isEqualTo(jsonPersonalia.getNordiskBorger() != null ? jsonPersonalia.getNordiskBorger().getVerdi() : null);
     }
 
     private SoknadUnderArbeid createJsonInternalSoknadWithBasisPersonalia(boolean withStatsborgerskap, boolean withNordiskBorger, boolean erNordisk) {

@@ -27,8 +27,7 @@ import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.JOBB;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.SLUTTOPPGJOER;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_SKATTEETATEN_SAMTYKKE;
 import static no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -84,8 +83,8 @@ public class ArbeidsforholdSystemdataTest {
         JsonArbeidsforhold jsonArbeidsforhold = jsonArbeidsforholdList.get(0);
         JsonArbeidsforhold jsonArbeidsforhold_2 = jsonArbeidsforholdList.get(1);
 
-        assertThat(jsonArbeidsforhold.getKilde(), is(JsonKilde.SYSTEM));
-        assertThat(jsonArbeidsforhold_2.getKilde(), is(JsonKilde.SYSTEM));
+        assertThat(jsonArbeidsforhold.getKilde()).isEqualTo(JsonKilde.SYSTEM);
+        assertThat(jsonArbeidsforhold_2.getKilde()).isEqualTo(JsonKilde.SYSTEM);
         assertThatArbeidsforholdIsCorrectlyConverted(ARBEIDSFORHOLD_LONNSLIPP, jsonArbeidsforhold);
         assertThatArbeidsforholdIsCorrectlyConverted(ARBEIDSFORHOLD_SLUTTOPPGJOR, jsonArbeidsforhold_2);
     }
@@ -107,10 +106,10 @@ public class ArbeidsforholdSystemdataTest {
 
         JsonOkonomioversiktInntekt inntekt = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOversikt().getInntekt().get(0);
 
-        assertThat(inntekt.getKilde(), is(JsonKilde.BRUKER));
-        assertThat(inntekt.getType(), is(JOBB));
-        assertThat(inntekt.getTittel(), is(tittel));
-        assertThat(inntekt.getOverstyrtAvBruker(), is(false));
+        assertThat(inntekt.getKilde()).isEqualTo(JsonKilde.BRUKER);
+        assertThat(inntekt.getType()).isEqualTo(JOBB);
+        assertThat(inntekt.getTittel()).isEqualTo(tittel);
+        assertThat(inntekt.getOverstyrtAvBruker()).isFalse();
     }
 
     @Test
@@ -130,10 +129,10 @@ public class ArbeidsforholdSystemdataTest {
 
         JsonOkonomiOpplysningUtbetaling utbetaling = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getUtbetaling().get(0);
 
-        assertThat(utbetaling.getKilde(), is(JsonKilde.BRUKER));
-        assertThat(utbetaling.getType(), is(SLUTTOPPGJOER));
-        assertThat(utbetaling.getTittel(), is(tittel));
-        assertThat(utbetaling.getOverstyrtAvBruker(), is(false));
+        assertThat(utbetaling.getKilde()).isEqualTo(JsonKilde.BRUKER);
+        assertThat(utbetaling.getType()).isEqualTo(SLUTTOPPGJOER);
+        assertThat(utbetaling.getTittel()).isEqualTo(tittel);
+        assertThat(utbetaling.getOverstyrtAvBruker()).isFalse();
     }
 
     @Test
@@ -146,9 +145,9 @@ public class ArbeidsforholdSystemdataTest {
         List<JsonOkonomiOpplysningUtbetaling> utbetalinger = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getUtbetaling();
         List<JsonOkonomioversiktInntekt> inntekter = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOversikt().getInntekt();
 
-        assertThat(jsonArbeidsforholdList.isEmpty(), is(true));
-        assertThat(utbetalinger.isEmpty(), is(true));
-        assertThat(inntekter.isEmpty(), is(true));
+        assertThat(jsonArbeidsforholdList).isEmpty();
+        assertThat(utbetalinger).isEmpty();
+        assertThat(inntekter).isEmpty();
     }
 
     private JsonInternalSoknad createSoknadUnderArbeidWithArbeidsforholdAndSluttOppgjorAndLonnslipp() {
@@ -171,14 +170,14 @@ public class ArbeidsforholdSystemdataTest {
 
 
     private void assertThatArbeidsforholdIsCorrectlyConverted(Arbeidsforhold arbeidsforhold, JsonArbeidsforhold jsonArbeidsforhold) {
-        assertThat("arbeidsgivernavn", jsonArbeidsforhold.getArbeidsgivernavn(), is(arbeidsforhold.arbeidsgivernavn));
-        assertThat("fom", jsonArbeidsforhold.getFom(), is(arbeidsforhold.fom));
-        assertThat("tom", jsonArbeidsforhold.getTom(), is(arbeidsforhold.tom));
-        assertThat("stillingsprosent", Long.valueOf(jsonArbeidsforhold.getStillingsprosent()), is(arbeidsforhold.fastStillingsprosent));
+        assertThat(jsonArbeidsforhold.getArbeidsgivernavn()).isEqualTo(arbeidsforhold.arbeidsgivernavn);
+        assertThat(jsonArbeidsforhold.getFom()).isEqualTo(arbeidsforhold.fom);
+        assertThat(jsonArbeidsforhold.getTom()).isEqualTo(arbeidsforhold.tom);
+        assertThat(Long.valueOf(jsonArbeidsforhold.getStillingsprosent())).isEqualTo(arbeidsforhold.fastStillingsprosent);
         if (arbeidsforhold.harFastStilling) {
-            assertThat("harFastStilling", jsonArbeidsforhold.getStillingstype(), is(JsonArbeidsforhold.Stillingstype.FAST));
+            assertThat(jsonArbeidsforhold.getStillingstype()).isEqualTo(JsonArbeidsforhold.Stillingstype.FAST);
         } else {
-            assertThat("harFastStilling", jsonArbeidsforhold.getStillingstype(), is(JsonArbeidsforhold.Stillingstype.VARIABEL));
+            assertThat(jsonArbeidsforhold.getStillingstype()).isEqualTo(JsonArbeidsforhold.Stillingstype.VARIABEL);
         }
     }
 }

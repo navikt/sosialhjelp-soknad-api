@@ -35,10 +35,8 @@ import java.util.Collections;
 import java.util.Optional;
 
 import static no.nav.sosialhjelp.soknad.business.service.OpplastetVedleggService.MAKS_SAMLET_VEDLEGG_STORRELSE;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThrows;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyString;
@@ -82,20 +80,20 @@ public class OpplastetVedleggServiceTest {
     @Test
     public void lagerFilnavn() {
         String filnavn = opplastetVedleggService.lagFilnavn("minfil.jpg", TikaFileType.JPEG, "5c2a1cea-ef05-4db6-9c98-1b6c9b3faa99");
-        assertEquals("minfil-5c2a1cea.jpg", filnavn);
+        assertThat(filnavn).isEqualTo("minfil-5c2a1cea.jpg");
 
         String truncate = opplastetVedleggService.lagFilnavn("etkjempelangtfilnavn12345678901234567890123456789012345678901234567890.jpg",
                 TikaFileType.JPEG, "5c2a1cea-ef05-4db6-9c98-1b6c9b3faa99");
-        assertEquals("etkjempelangtfilnavn123456789012345678901234567890-5c2a1cea.jpg", truncate);
+        assertThat(truncate).isEqualTo("etkjempelangtfilnavn123456789012345678901234567890-5c2a1cea.jpg");
 
         String medSpesialTegn = opplastetVedleggService.lagFilnavn("en.filmedææå()ogmyerartsjø.jpg", TikaFileType.JPEG, "abc-ef05");
-        assertEquals("enfilmedeeaogmyerartsjo-abc.jpg", medSpesialTegn);
+        assertThat(medSpesialTegn).isEqualTo("enfilmedeeaogmyerartsjo-abc.jpg");
 
         String utenExtention = opplastetVedleggService.lagFilnavn("minfil", TikaFileType.PNG, "abc-ef05");
-        assertEquals("minfil-abc.png", utenExtention);
+        assertThat(utenExtention).isEqualTo("minfil-abc.png");
 
         String forskjelligExtention = opplastetVedleggService.lagFilnavn("minfil.jpg", TikaFileType.PNG, "abc-ef05");
-        assertEquals("minfil-abc.jpg", forskjelligExtention);
+        assertThat(forskjelligExtention).isEqualTo("minfil-abc.jpg");
     }
 
     @Test
@@ -115,11 +113,11 @@ public class OpplastetVedleggServiceTest {
 
         final SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
         final JsonVedlegg jsonVedlegg = soknadUnderArbeid.getJsonInternalSoknad().getVedlegg().getVedlegg().get(0);
-        assertThat(jsonVedlegg.getType() + "|" + jsonVedlegg.getTilleggsinfo(), is(TYPE));
-        assertThat(jsonVedlegg.getStatus(), is("LastetOpp"));
-        assertThat(jsonVedlegg.getFiler().size(), is(1));
-        assertThat(opplastetVedlegg.getUuid(), is("321"));
-        assertThat(opplastetVedlegg.getFilnavn().substring(0, 5), is(FILNAVN1.substring(0, 5)));
+        assertThat(jsonVedlegg.getType() + "|" + jsonVedlegg.getTilleggsinfo()).isEqualTo(TYPE);
+        assertThat(jsonVedlegg.getStatus()).isEqualTo("LastetOpp");
+        assertThat(jsonVedlegg.getFiler()).hasSize(1);
+        assertThat(opplastetVedlegg.getUuid()).isEqualTo("321");
+        assertThat(opplastetVedlegg.getFilnavn().substring(0, 5)).isEqualTo(FILNAVN1.substring(0, 5));
     }
 
     @Test
@@ -140,9 +138,9 @@ public class OpplastetVedleggServiceTest {
 
         final SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
         final JsonVedlegg jsonVedlegg = soknadUnderArbeid.getJsonInternalSoknad().getVedlegg().getVedlegg().get(0);
-        assertThat(jsonVedlegg.getType() + "|" + jsonVedlegg.getTilleggsinfo(), is(TYPE));
-        assertThat(jsonVedlegg.getStatus(), is("VedleggKreves"));
-        assertThat(jsonVedlegg.getFiler().size(), is(0));
+        assertThat(jsonVedlegg.getType() + "|" + jsonVedlegg.getTilleggsinfo()).isEqualTo(TYPE);
+        assertThat(jsonVedlegg.getStatus()).isEqualTo("VedleggKreves");
+        assertThat(jsonVedlegg.getFiler()).isEmpty();
     }
 
     @Test
@@ -162,18 +160,24 @@ public class OpplastetVedleggServiceTest {
 
         final byte[] imageFile = createByteArrayFromJpeg();
 
-        assertThrows(SamletVedleggStorrelseForStorException.class, () -> opplastetVedleggService.sjekkOmSoknadUnderArbeidTotalVedleggStorrelseOverskriderMaksgrense(BEHANDLINGSID, imageFile));
+        assertThatExceptionOfType(SamletVedleggStorrelseForStorException.class)
+                .isThrownBy(() -> opplastetVedleggService.sjekkOmSoknadUnderArbeidTotalVedleggStorrelseOverskriderMaksgrense(BEHANDLINGSID, imageFile));
     }
 
     @Test
     public void feilmeldingHvisFiltypeErUgyldigMenValidererMedTika() throws IOException {
         byte[] imageFile = createByteArrayFromJpeg();
 
-        assertThrows(UgyldigOpplastingTypeException.class, () -> opplastetVedleggService.saveVedleggAndUpdateVedleggstatus(BEHANDLINGSID, TYPE, imageFile, "filnavn.jfif"));
-        assertThrows(UgyldigOpplastingTypeException.class, () -> opplastetVedleggService.saveVedleggAndUpdateVedleggstatus(BEHANDLINGSID, TYPE, imageFile, "filnavn.pjpeg"));
-        assertThrows(UgyldigOpplastingTypeException.class, () -> opplastetVedleggService.saveVedleggAndUpdateVedleggstatus(BEHANDLINGSID, TYPE, imageFile, "filnavn.pjp"));
-        assertThrows(UgyldigOpplastingTypeException.class, () -> opplastetVedleggService.saveVedleggAndUpdateVedleggstatus(BEHANDLINGSID, TYPE, imageFile, "filnavnUtenFiltype"));
-        assertThrows(UgyldigOpplastingTypeException.class, () -> opplastetVedleggService.saveVedleggAndUpdateVedleggstatus(BEHANDLINGSID, TYPE, "ikkeBildeEllerPdf".getBytes(), "filnavnUtenFiltype"));
+        assertThatExceptionOfType(UgyldigOpplastingTypeException.class)
+                .isThrownBy(() -> opplastetVedleggService.saveVedleggAndUpdateVedleggstatus(BEHANDLINGSID, TYPE, imageFile, "filnavn.jfif"));
+        assertThatExceptionOfType(UgyldigOpplastingTypeException.class)
+                .isThrownBy(() -> opplastetVedleggService.saveVedleggAndUpdateVedleggstatus(BEHANDLINGSID, TYPE, imageFile, "filnavn.pjpeg"));
+        assertThatExceptionOfType(UgyldigOpplastingTypeException.class)
+                .isThrownBy(() -> opplastetVedleggService.saveVedleggAndUpdateVedleggstatus(BEHANDLINGSID, TYPE, imageFile, "filnavn.pjp"));
+        assertThatExceptionOfType(UgyldigOpplastingTypeException.class)
+                .isThrownBy(() -> opplastetVedleggService.saveVedleggAndUpdateVedleggstatus(BEHANDLINGSID, TYPE, imageFile, "filnavnUtenFiltype"));
+        assertThatExceptionOfType(UgyldigOpplastingTypeException.class)
+                .isThrownBy(() -> opplastetVedleggService.saveVedleggAndUpdateVedleggstatus(BEHANDLINGSID, TYPE, "ikkeBildeEllerPdf".getBytes(), "filnavnUtenFiltype"));
     }
 
     private byte[] createByteArrayFromJpeg() throws IOException {

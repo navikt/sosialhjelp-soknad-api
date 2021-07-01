@@ -8,8 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class VedleggTypeTest {
 
@@ -21,7 +20,7 @@ public class VedleggTypeTest {
         VedleggType vedleggType = new VedleggType(TYPE);
         VedleggType likVedleggType = new VedleggType(TYPE);
 
-        assertThat(vedleggType.equals(likVedleggType), is(true));
+        assertThat(vedleggType.equals(likVedleggType)).isTrue();
     }
 
     @Test
@@ -31,8 +30,8 @@ public class VedleggTypeTest {
         Set<VedleggType> vedleggTyper = new HashSet<>();
         vedleggTypeList.removeIf(type -> !vedleggTyper.add(type));
 
-        assertThat(vedleggTyper.size(), is(1));
-        assertThat(vedleggTypeList.size(), is(1));
+        assertThat(vedleggTyper).hasSize(1);
+        assertThat(vedleggTypeList).hasSize(1);
     }
 
     @Test
@@ -40,7 +39,7 @@ public class VedleggTypeTest {
         VedleggType vedleggType = new VedleggType(TYPE);
         VedleggType likVedleggType = new VedleggType(TYPE2);
 
-        assertThat(vedleggType.equals(likVedleggType), is(false));
+        assertThat(vedleggType.equals(likVedleggType)).isFalse();
     }
 
     @Test
@@ -48,6 +47,6 @@ public class VedleggTypeTest {
         VedleggType vedleggType = new VedleggType(TYPE);
         VedleggType likVedleggType = new VedleggType(TYPE2);
 
-        assertThat(vedleggType.equals(likVedleggType), is(false));
+        assertThat(vedleggType.equals(likVedleggType)).isFalse();
     }
 }

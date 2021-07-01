@@ -11,41 +11,41 @@ import java.util.List;
 
 import static no.nav.sosialhjelp.soknad.business.util.JsonVedleggUtils.ANNET;
 import static no.nav.sosialhjelp.soknad.business.util.JsonVedleggUtils.addHendelseTypeAndHendelseReferanse;
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class JsonVedleggUtilsTest {
 
     @Test
     public void doNot_addHendelseTypeAndHendelseReferanse_ifUnleashToggleIsDeactivated() {
         JsonVedleggSpesifikasjon jsonVedleggSpesifikasjon = createJsonVedleggSpesifikasjon();
-        assertNull(jsonVedleggSpesifikasjon.getVedlegg().get(0).getHendelseType());
-        assertNull(jsonVedleggSpesifikasjon.getVedlegg().get(0).getHendelseReferanse());
+        assertThat(jsonVedleggSpesifikasjon.getVedlegg().get(0).getHendelseType()).isNull();
+        assertThat(jsonVedleggSpesifikasjon.getVedlegg().get(0).getHendelseReferanse()).isNull();
 
         addHendelseTypeAndHendelseReferanse(jsonVedleggSpesifikasjon, true, false);
 
-        assertNull(jsonVedleggSpesifikasjon.getVedlegg().get(0).getHendelseType());
-        assertNull(jsonVedleggSpesifikasjon.getVedlegg().get(0).getHendelseReferanse());
-        assertNull(jsonVedleggSpesifikasjon.getVedlegg().get(1).getHendelseType());
-        assertNull(jsonVedleggSpesifikasjon.getVedlegg().get(1).getHendelseReferanse());
-        assertNull(jsonVedleggSpesifikasjon.getVedlegg().get(2).getHendelseType());
-        assertNull(jsonVedleggSpesifikasjon.getVedlegg().get(2).getHendelseReferanse());
+        assertThat(jsonVedleggSpesifikasjon.getVedlegg().get(0).getHendelseType()).isNull();
+        assertThat(jsonVedleggSpesifikasjon.getVedlegg().get(0).getHendelseReferanse()).isNull();
+        assertThat(jsonVedleggSpesifikasjon.getVedlegg().get(1).getHendelseType()).isNull();
+        assertThat(jsonVedleggSpesifikasjon.getVedlegg().get(1).getHendelseReferanse()).isNull();
+        assertThat(jsonVedleggSpesifikasjon.getVedlegg().get(2).getHendelseType()).isNull();
+        assertThat(jsonVedleggSpesifikasjon.getVedlegg().get(2).getHendelseReferanse()).isNull();
     }
 
     @Test
     public void addHendelseTypeAndHendelseReferanse_forSoknad_ifUnleashToggleIsActivated() {
         JsonVedleggSpesifikasjon jsonVedleggSpesifikasjon = createJsonVedleggSpesifikasjon();
-        assertNull(jsonVedleggSpesifikasjon.getVedlegg().get(0).getHendelseType());
-        assertNull(jsonVedleggSpesifikasjon.getVedlegg().get(0).getHendelseReferanse());
+        assertThat(jsonVedleggSpesifikasjon.getVedlegg().get(0).getHendelseType()).isNull();
+        assertThat(jsonVedleggSpesifikasjon.getVedlegg().get(0).getHendelseReferanse()).isNull();
 
         addHendelseTypeAndHendelseReferanse(jsonVedleggSpesifikasjon, true, true);
 
-        assertEquals(JsonVedlegg.HendelseType.SOKNAD, jsonVedleggSpesifikasjon.getVedlegg().get(0).getHendelseType());
-        assertNotNull(jsonVedleggSpesifikasjon.getVedlegg().get(0).getHendelseReferanse());
-        assertEquals(JsonVedlegg.HendelseType.SOKNAD, jsonVedleggSpesifikasjon.getVedlegg().get(1).getHendelseType());
-        assertNotNull(jsonVedleggSpesifikasjon.getVedlegg().get(1).getHendelseReferanse());
+        assertThat(jsonVedleggSpesifikasjon.getVedlegg().get(0).getHendelseType()).isEqualTo(JsonVedlegg.HendelseType.SOKNAD);
+        assertThat(jsonVedleggSpesifikasjon.getVedlegg().get(0).getHendelseReferanse()).isNotNull();
+        assertThat(jsonVedleggSpesifikasjon.getVedlegg().get(1).getHendelseType()).isEqualTo(JsonVedlegg.HendelseType.SOKNAD);
+        assertThat(jsonVedleggSpesifikasjon.getVedlegg().get(1).getHendelseReferanse()).isNotNull();
         // annet|annet -> hendelseType:bruker uten hendelseReferanse
-        assertEquals(JsonVedlegg.HendelseType.BRUKER, jsonVedleggSpesifikasjon.getVedlegg().get(2).getHendelseType());
-        assertNull(jsonVedleggSpesifikasjon.getVedlegg().get(2).getHendelseReferanse());
+        assertThat(jsonVedleggSpesifikasjon.getVedlegg().get(2).getHendelseType()).isEqualTo(JsonVedlegg.HendelseType.BRUKER);
+        assertThat(jsonVedleggSpesifikasjon.getVedlegg().get(2).getHendelseReferanse()).isNull();
     }
 
     @Test
@@ -53,26 +53,24 @@ public class JsonVedleggUtilsTest {
         JsonVedleggSpesifikasjon jsonVedleggSpesifikasjon = createJsonVedleggSpesifikasjon();
         addHendelseTypeAndHendelseReferanse(jsonVedleggSpesifikasjon, true, true);
 
-        assertNotEquals(
-                jsonVedleggSpesifikasjon.getVedlegg().get(0).getHendelseReferanse(),
-                jsonVedleggSpesifikasjon.getVedlegg().get(1).getHendelseReferanse()
-        );
+        assertThat(jsonVedleggSpesifikasjon.getVedlegg().get(0).getHendelseReferanse())
+                .isNotEqualTo(jsonVedleggSpesifikasjon.getVedlegg().get(1).getHendelseReferanse());
     }
 
     @Test
     public void addHendelseTypeAndHendelseReferanse_forEttersendelse_shouldOnlyAddHendelseTypeBrukerForAnnetAnnet() {
         JsonVedleggSpesifikasjon jsonVedleggSpesifikasjon = createJsonVedleggSpesifikasjon();
-        assertNull(jsonVedleggSpesifikasjon.getVedlegg().get(0).getHendelseType());
-        assertNull(jsonVedleggSpesifikasjon.getVedlegg().get(0).getHendelseReferanse());
+        assertThat(jsonVedleggSpesifikasjon.getVedlegg().get(0).getHendelseType()).isNull();
+        assertThat(jsonVedleggSpesifikasjon.getVedlegg().get(0).getHendelseReferanse()).isNull();
 
         addHendelseTypeAndHendelseReferanse(jsonVedleggSpesifikasjon, false, true);
 
-        assertNull(jsonVedleggSpesifikasjon.getVedlegg().get(0).getHendelseType());
-        assertNull(jsonVedleggSpesifikasjon.getVedlegg().get(0).getHendelseReferanse());
-        assertNull(jsonVedleggSpesifikasjon.getVedlegg().get(1).getHendelseType());
-        assertNull(jsonVedleggSpesifikasjon.getVedlegg().get(1).getHendelseReferanse());
-        assertEquals(JsonVedlegg.HendelseType.BRUKER, jsonVedleggSpesifikasjon.getVedlegg().get(2).getHendelseType());
-        assertNull(jsonVedleggSpesifikasjon.getVedlegg().get(2).getHendelseReferanse());
+        assertThat(jsonVedleggSpesifikasjon.getVedlegg().get(0).getHendelseType()).isNull();
+        assertThat(jsonVedleggSpesifikasjon.getVedlegg().get(0).getHendelseReferanse()).isNull();
+        assertThat(jsonVedleggSpesifikasjon.getVedlegg().get(1).getHendelseType()).isNull();
+        assertThat(jsonVedleggSpesifikasjon.getVedlegg().get(1).getHendelseReferanse()).isNull();
+        assertThat(jsonVedleggSpesifikasjon.getVedlegg().get(2).getHendelseType()).isEqualTo(JsonVedlegg.HendelseType.BRUKER);
+        assertThat(jsonVedleggSpesifikasjon.getVedlegg().get(2).getHendelseReferanse()).isNull();
     }
 
     @Test
@@ -85,10 +83,10 @@ public class JsonVedleggUtilsTest {
 
         addHendelseTypeAndHendelseReferanse(jsonVedleggSpesifikasjon, false, true);
 
-        assertEquals(JsonVedlegg.HendelseType.SOKNAD, jsonVedleggSpesifikasjon.getVedlegg().get(0).getHendelseType());
-        assertEquals(hendelseReferanse, jsonVedleggSpesifikasjon.getVedlegg().get(0).getHendelseReferanse());
-        assertEquals(JsonVedlegg.HendelseType.BRUKER, jsonVedleggSpesifikasjon.getVedlegg().get(1).getHendelseType());
-        assertNull(jsonVedleggSpesifikasjon.getVedlegg().get(1).getHendelseReferanse());
+        assertThat(jsonVedleggSpesifikasjon.getVedlegg().get(0).getHendelseType()).isEqualTo(JsonVedlegg.HendelseType.SOKNAD);
+        assertThat(jsonVedleggSpesifikasjon.getVedlegg().get(0).getHendelseReferanse()).isEqualTo(hendelseReferanse);
+        assertThat(jsonVedleggSpesifikasjon.getVedlegg().get(1).getHendelseType()).isEqualTo(JsonVedlegg.HendelseType.BRUKER);
+        assertThat(jsonVedleggSpesifikasjon.getVedlegg().get(1).getHendelseReferanse()).isNull();
     }
 
     private JsonVedleggSpesifikasjon createJsonVedleggSpesifikasjon() {

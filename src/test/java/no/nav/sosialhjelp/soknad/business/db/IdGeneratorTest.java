@@ -1,19 +1,19 @@
 package no.nav.sosialhjelp.soknad.business.db;
 
-import org.junit.Assert;
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class IdGeneratorTest {
     
     @Test
     public void skalGenererId() {
         String behandlingsId = IdGenerator.lagBehandlingsId(1l);
-        Assert.assertEquals("100000001", behandlingsId);
+        assertThat(behandlingsId).isEqualTo("100000001");
     }
     
     @Test(expected=RuntimeException.class)
     public void skalFaaFeilVedForHoyId() {
-        String behandlingsId = IdGenerator.lagBehandlingsId(10000000000000l);
-        Assert.assertTrue(true);
+        IdGenerator.lagBehandlingsId(10000000000000l);
     }
 }

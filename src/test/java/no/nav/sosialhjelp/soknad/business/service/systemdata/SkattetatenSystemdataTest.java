@@ -27,10 +27,7 @@ import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_SKATT
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_SKATTEETATEN_SAMTYKKE;
 import static no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
 import static no.nav.sosialhjelp.soknad.business.service.systemdata.UtbetalingerFraNavSystemdata.tilIntegerMedAvrunding;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -144,7 +141,7 @@ public class SkattetatenSystemdataTest {
         JsonOkonomiOpplysningUtbetaling utbetaling = jsonUtbetalinger.get(0);
         JsonOkonomiOpplysningUtbetaling utbetaling_1 = jsonUtbetalinger.get(1);
 
-        assertThat(utbetaling.getKilde(), is(JsonKilde.SYSTEM));
+        assertThat(utbetaling.getKilde()).isEqualTo(JsonKilde.SYSTEM);
         assertThatUtbetalingIsCorrectlyConverted(SKATTBAR_UTBETALING, utbetaling, UTBETALING_SKATTEETATEN);
         assertThatUtbetalingIsCorrectlyConverted(SKATTBAR_UTBETALING_ANNEN, utbetaling_1, UTBETALING_SKATTEETATEN);
     }
@@ -164,10 +161,10 @@ public class SkattetatenSystemdataTest {
         JsonOkonomiOpplysningUtbetaling utbetaling_1 = jsonUtbetalinger.get(1);
         JsonOkonomiOpplysningUtbetaling utbetaling_2 = jsonUtbetalinger.get(2);
 
-        assertEquals(3, jsonUtbetalinger.size());
-        assertNull(utbetaling.getOrganisasjon());
-        assertEquals(ORGANISASJONSNR, utbetaling_1.getOrganisasjon().getOrganisasjonsnummer());
-        assertNull(utbetaling_2.getOrganisasjon());
+        assertThat(jsonUtbetalinger).hasSize(3);
+        assertThat(utbetaling.getOrganisasjon()).isNull();
+        assertThat(utbetaling_1.getOrganisasjon().getOrganisasjonsnummer()).isEqualTo(ORGANISASJONSNR);
+        assertThat(utbetaling_2.getOrganisasjon()).isNull();
     }
 
     @Test
@@ -184,9 +181,9 @@ public class SkattetatenSystemdataTest {
         JsonOkonomiOpplysningUtbetaling utbetaling = jsonUtbetalinger.get(0);
         JsonOkonomiOpplysningUtbetaling utbetaling_1 = jsonUtbetalinger.get(1);
 
-        assertThat(utbetaling.getKilde(), is(JsonKilde.BRUKER));
-        assertThat(utbetaling.equals(JSON_OKONOMI_OPPLYSNING_UTBETALING), is(true));
-        assertThat(utbetaling_1.getKilde(), is(JsonKilde.SYSTEM));
+        assertThat(utbetaling.getKilde()).isEqualTo(JsonKilde.BRUKER);
+        assertThat(utbetaling.equals(JSON_OKONOMI_OPPLYSNING_UTBETALING)).isTrue();
+        assertThat(utbetaling_1.getKilde()).isEqualTo(JsonKilde.SYSTEM);
         assertThatUtbetalingIsCorrectlyConverted(SKATTBAR_UTBETALING_ANNEN, utbetaling_1, UTBETALING_SKATTEETATEN);
     }
 
@@ -201,10 +198,10 @@ public class SkattetatenSystemdataTest {
         List<JsonOkonomiOpplysningUtbetaling> jsonUtbetalinger = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getUtbetaling();
         JsonOkonomiOpplysningUtbetaling utbetaling = jsonUtbetalinger.get(0);
 
-        assertThat(utbetaling.getKilde(), is(JsonKilde.BRUKER));
-        assertThat(utbetaling.equals(JSON_OKONOMI_OPPLYSNING_UTBETALING), is(true));
-        assertThat(jsonUtbetalinger.size(), is(1));
-        assertThat(soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getDriftsinformasjon().getInntektFraSkatteetatenFeilet(), is(false));
+        assertThat(utbetaling.getKilde()).isEqualTo(JsonKilde.BRUKER);
+        assertThat(utbetaling.equals(JSON_OKONOMI_OPPLYSNING_UTBETALING)).isTrue();
+        assertThat(jsonUtbetalinger).hasSize(1);
+        assertThat(soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getDriftsinformasjon().getInntektFraSkatteetatenFeilet()).isFalse();
     }
 
     @Test
@@ -222,9 +219,9 @@ public class SkattetatenSystemdataTest {
         JsonOkonomiOpplysningUtbetaling utbetalingA_1 = jsonUtbetalingerA.get(1);
 
         //SJEKK STATE FOR TEST:
-        assertThat(utbetalingA.getKilde(), is(JsonKilde.BRUKER));
-        assertThat(utbetalingA.equals(JSON_OKONOMI_OPPLYSNING_UTBETALING), is(true));
-        assertThat(utbetalingA_1.getKilde(), is(JsonKilde.SYSTEM));
+        assertThat(utbetalingA.getKilde()).isEqualTo(JsonKilde.BRUKER);
+        assertThat(utbetalingA.equals(JSON_OKONOMI_OPPLYSNING_UTBETALING)).isTrue();
+        assertThat(utbetalingA_1.getKilde()).isEqualTo(JsonKilde.SYSTEM);
         assertThatUtbetalingIsCorrectlyConverted(SKATTBAR_UTBETALING_ANNEN, utbetalingA_1, UTBETALING_SKATTEETATEN);
 
         //TEST:
@@ -233,9 +230,9 @@ public class SkattetatenSystemdataTest {
         List<JsonOkonomiOpplysningUtbetaling> jsonUtbetalingerB = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getUtbetaling();
         JsonOkonomiOpplysningUtbetaling utbetalingB = jsonUtbetalingerB.get(0);
 
-        assertThat(utbetalingB.getKilde(), is(JsonKilde.BRUKER));
-        assertThat(utbetalingB.equals(JSON_OKONOMI_OPPLYSNING_UTBETALING), is(true));
-        assertThat(jsonUtbetalingerB.size(), is(1));
+        assertThat(utbetalingB.getKilde()).isEqualTo(JsonKilde.BRUKER);
+        assertThat(utbetalingB.equals(JSON_OKONOMI_OPPLYSNING_UTBETALING)).isTrue();
+        assertThat(jsonUtbetalingerB).hasSize(1);
     }
 
     @Test
@@ -254,12 +251,12 @@ public class SkattetatenSystemdataTest {
         // Kjøring:
         skattetatenSystemdata.updateSystemdataIn(soknadUnderArbeid);
 
-        assertThat(utbetalinger.size(), is(1));
+        assertThat(utbetalinger).hasSize(1);
         JsonOkonomiOpplysningUtbetaling utbetaling = utbetalinger.get(0);
-        assertThat(utbetaling.getKilde(), is(JSON_OKONOMI_OPPLYSNING_UTBETALING.getKilde()));
-        assertThat(utbetaling.getType(), is(JSON_OKONOMI_OPPLYSNING_UTBETALING.getType()));
-        assertThat(utbetaling.getBelop(), is(JSON_OKONOMI_OPPLYSNING_UTBETALING.getBelop()));
-        assertThat(soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getDriftsinformasjon().getInntektFraSkatteetatenFeilet(), is(true));
+        assertThat(utbetaling.getKilde()).isEqualTo(JSON_OKONOMI_OPPLYSNING_UTBETALING.getKilde());
+        assertThat(utbetaling.getType()).isEqualTo(JSON_OKONOMI_OPPLYSNING_UTBETALING.getType());
+        assertThat(utbetaling.getBelop()).isEqualTo(JSON_OKONOMI_OPPLYSNING_UTBETALING.getBelop());
+        assertThat(soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getDriftsinformasjon().getInntektFraSkatteetatenFeilet()).isTrue();
     }
 
     private JsonInternalSoknad createJsonInternalSoknadWithUtbetalinger() {
@@ -282,26 +279,26 @@ public class SkattetatenSystemdataTest {
     }
 
     private void assertThatUtbetalingIsCorrectlyConverted(Utbetaling utbetaling, JsonOkonomiOpplysningUtbetaling jsonUtbetaling, String type) {
-        assertThat("type", jsonUtbetaling.getType(), is(type));
-        assertThat("tittel", jsonUtbetaling.getTittel(), is(utbetaling.tittel));
-        assertThat("belop", jsonUtbetaling.getBelop(), is(tilIntegerMedAvrunding(String.valueOf(utbetaling.netto))));
-        assertThat("brutto", jsonUtbetaling.getBrutto(), is(utbetaling.brutto));
-        assertThat("netto", jsonUtbetaling.getNetto(), is(utbetaling.netto));
-        assertThat("utbetalingsdato", jsonUtbetaling.getUtbetalingsdato(), is(utbetaling.utbetalingsdato.toString()));
-        assertThat("fom", jsonUtbetaling.getPeriodeFom(), is(utbetaling.periodeFom.toString()));
-        assertThat("tom", jsonUtbetaling.getPeriodeTom(), is(utbetaling.periodeTom.toString()));
-        assertThat("skattetrekk", jsonUtbetaling.getSkattetrekk(), is(utbetaling.skattetrekk));
-        assertThat("andreTrekk", jsonUtbetaling.getAndreTrekk(), is(utbetaling.andreTrekk));
-        assertThat("overstyrtAvBruker", jsonUtbetaling.getOverstyrtAvBruker(), is(false));
+        assertThat(jsonUtbetaling.getType()).isEqualTo(type);
+        assertThat(jsonUtbetaling.getTittel()).isEqualTo(utbetaling.tittel);
+        assertThat(jsonUtbetaling.getBelop()).isEqualTo(tilIntegerMedAvrunding(String.valueOf(utbetaling.netto)));
+        assertThat(jsonUtbetaling.getBrutto()).isEqualTo(utbetaling.brutto);
+        assertThat(jsonUtbetaling.getNetto()).isEqualTo(utbetaling.netto);
+        assertThat(jsonUtbetaling.getUtbetalingsdato()).isEqualTo(utbetaling.utbetalingsdato.toString());
+        assertThat(jsonUtbetaling.getPeriodeFom()).isEqualTo(utbetaling.periodeFom.toString());
+        assertThat(jsonUtbetaling.getPeriodeTom()).isEqualTo(utbetaling.periodeTom.toString());
+        assertThat(jsonUtbetaling.getSkattetrekk()).isEqualTo(utbetaling.skattetrekk);
+        assertThat(jsonUtbetaling.getAndreTrekk()).isEqualTo(utbetaling.andreTrekk);
+        assertThat(jsonUtbetaling.getOverstyrtAvBruker()).isFalse();
         if (!utbetaling.komponenter.isEmpty()) {
             for (int i = 0; i < utbetaling.komponenter.size(); i++) {
                 Utbetaling.Komponent komponent = utbetaling.komponenter.get(i);
                 JsonOkonomiOpplysningUtbetalingKomponent jsonKomponent = jsonUtbetaling.getKomponenter().get(i);
-                assertThat("komponentType", jsonKomponent.getType(), is(komponent.type));
-                assertThat("komponentBelop", jsonKomponent.getBelop(), is(komponent.belop));
-                assertThat("komponentSatsType", jsonKomponent.getSatsType(), is(komponent.satsType));
-                assertThat("komponentSatsAntall", jsonKomponent.getSatsAntall(), is(komponent.satsAntall));
-                assertThat("komponentSatsBelop", jsonKomponent.getSatsBelop(), is(komponent.satsBelop));
+                assertThat(jsonKomponent.getType()).isEqualTo(komponent.type);
+                assertThat(jsonKomponent.getBelop()).isEqualTo(komponent.belop);
+                assertThat(jsonKomponent.getSatsType()).isEqualTo(komponent.satsType);
+                assertThat(jsonKomponent.getSatsAntall()).isEqualTo(komponent.satsAntall);
+                assertThat(jsonKomponent.getSatsBelop()).isEqualTo(komponent.satsBelop);
             }
         }
     }

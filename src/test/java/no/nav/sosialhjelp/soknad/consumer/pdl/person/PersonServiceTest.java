@@ -22,13 +22,7 @@ import java.util.List;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.SivilstandDto.SivilstandType.GIFT;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -71,7 +65,7 @@ public class PersonServiceTest {
 
         Person result = personService.hentPerson("ident");
 
-        assertThat(result.getEktefelle(), is(ektefelle));
+        assertThat(result.getEktefelle()).isEqualTo(ektefelle);
     }
 
     @Test
@@ -83,7 +77,7 @@ public class PersonServiceTest {
 
         Person result = personService.hentPerson("ident");
 
-        assertThat(result.getEktefelle(), is(nullValue()));
+        assertThat(result.getEktefelle()).isNull();
         verify(pdlHentPersonConsumer, times(0)).hentEktefelle(anyString());
         verify(pdlPersonMapper, times(0)).mapToEktefelle(any(), anyString(), any());
     }
@@ -97,9 +91,9 @@ public class PersonServiceTest {
 
         Person result = personService.hentPerson("ident");
 
-        assertThat(result.getEktefelle(), is(notNullValue()));
-        assertThat(result.getEktefelle().getFnr(), is(FDAT_IDENT));
-        assertThat(result.getEktefelle().getFodselsdato().toString(), is(LocalDate.of(1922, 12, 11).toString()));
+        assertThat(result.getEktefelle()).isNotNull();
+        assertThat(result.getEktefelle().getFnr()).isEqualTo(FDAT_IDENT);
+        assertThat(result.getEktefelle().getFodselsdato()).hasToString(LocalDate.of(1922, 12, 11).toString());
         verify(pdlHentPersonConsumer, times(0)).hentEktefelle(anyString());
         verify(pdlPersonMapper, times(0)).mapToEktefelle(any(), anyString(), any());
     }
@@ -113,7 +107,7 @@ public class PersonServiceTest {
 
         Person result = personService.hentPerson("ident");
 
-        assertNull(result.getEktefelle());
+        assertThat(result.getEktefelle()).isNull();
     }
 
     @Test
@@ -127,9 +121,8 @@ public class PersonServiceTest {
 
         List<Barn> result = personService.hentBarnForPerson("ident");
 
-        assertNotNull(result);
-        assertThat(result, hasSize(1));
-        assertThat(result.get(0), is(barn));
+        assertThat(result).hasSize(1);
+        assertThat(result.get(0)).isEqualTo(barn);
     }
 
     @Test
@@ -143,8 +136,7 @@ public class PersonServiceTest {
 
         List<Barn> result = personService.hentBarnForPerson("ident");
 
-        assertNotNull(result);
-        assertThat(result, hasSize(0));
+        assertThat(result).isEmpty();
     }
 
     @Test
@@ -155,8 +147,7 @@ public class PersonServiceTest {
 
         List<Barn> result = personService.hentBarnForPerson("ident");
 
-        assertNotNull(result);
-        assertThat(result, hasSize(0));
+        assertThat(result).isEmpty();
         verify(pdlHentPersonConsumer, times(0)).hentBarn(anyString());
         verify(pdlPersonMapper, times(0)).mapToBarn(any(), anyString(), any());
     }
@@ -169,8 +160,7 @@ public class PersonServiceTest {
 
         List<Barn> result = personService.hentBarnForPerson("ident");
 
-        assertNotNull(result);
-        assertThat(result, hasSize(0));
+        assertThat(result).isEmpty();
         verify(pdlHentPersonConsumer, times(0)).hentBarn(anyString());
         verify(pdlPersonMapper, times(0)).mapToBarn(any(), anyString(), any());
     }
@@ -182,7 +172,7 @@ public class PersonServiceTest {
 
         var result = personService.hentAdressebeskyttelse("ident");
 
-        assertNotNull(result);
-        assertThat(result, is(AdressebeskyttelseDto.Gradering.UGRADERT));
+        assertThat(result).isNotNull();
+        assertThat(result).isEqualTo(AdressebeskyttelseDto.Gradering.UGRADERT);
     }
 }

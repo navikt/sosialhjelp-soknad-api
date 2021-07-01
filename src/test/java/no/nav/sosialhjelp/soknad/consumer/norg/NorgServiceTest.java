@@ -25,12 +25,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static java.lang.System.setProperty;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThrows;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
@@ -64,7 +60,7 @@ public class NorgServiceTest {
 
         NavEnhet navEnhet = norgService.getEnhetForGt(GT);
 
-        assertThat(navEnhet.sosialOrgnr, is(ORGNUMMER_TEST));
+        assertThat(navEnhet.sosialOrgnr).isEqualTo(ORGNUMMER_TEST);
     }
 
     @Test
@@ -74,7 +70,7 @@ public class NorgServiceTest {
 
         NavEnhet navEnhet = norgService.getEnhetForGt(GT);
 
-        assertThat(navEnhet.sosialOrgnr, is(ORGNUMMER_PROD));
+        assertThat(navEnhet.sosialOrgnr).isEqualTo(ORGNUMMER_PROD);
     }
 
     private NorgConsumer.RsNorgEnhet lagRsNorgEnhet() {
@@ -96,7 +92,7 @@ public class NorgServiceTest {
         when(norgConsumer.getEnhetForGeografiskTilknytning(gt)).thenReturn(norgEnhet);
 
         NavEnhet navEnhet = norgService.getEnhetForGt(gt);
-        assertThat(navEnhet.sosialOrgnr, is(sosialOrgNummer));
+        assertThat(navEnhet.sosialOrgnr).isEqualTo(sosialOrgNummer);
     }
 
     @Test
@@ -110,26 +106,26 @@ public class NorgServiceTest {
         when(norgConsumer.getEnhetForGeografiskTilknytning(gt)).thenReturn(norgEnhet);
 
         NavEnhet navEnhet = norgService.getEnhetForGt(gt);
-        assertThat(navEnhet.sosialOrgnr, is(sosialOrgNummer));
+        assertThat(navEnhet.sosialOrgnr).isEqualTo(sosialOrgNummer);
     }
 
     @Test
     public void getEnheterForKommunenummer_forKommunerMedFlereNavenheter_skalReturnereRettAntall() {
         // Oslo
         List<NavEnhet> enheterForKommunenummer = norgService.getEnheterForKommunenummer("0301");
-        assertThat(enheterForKommunenummer.size(), is(15));
+        assertThat(enheterForKommunenummer).hasSize(15);
 
         // Bergen
         enheterForKommunenummer = norgService.getEnheterForKommunenummer("4601");
-        assertThat(enheterForKommunenummer.size(), is(8)); // Ikke 5?
+        assertThat(enheterForKommunenummer).hasSize(8); // Ikke 5?
 
         // Stavanger
         enheterForKommunenummer = norgService.getEnheterForKommunenummer("1103");
-        assertThat(enheterForKommunenummer.size(), is(5));
+        assertThat(enheterForKommunenummer).hasSize(5);
 
         // Trondheim
         enheterForKommunenummer = norgService.getEnheterForKommunenummer("5001");
-        assertThat(enheterForKommunenummer.size(), is(2));
+        assertThat(enheterForKommunenummer).hasSize(2);
     }
 
     @Test
@@ -138,70 +134,70 @@ public class NorgServiceTest {
         List<String> kommuner = Arrays.asList("3001", "3002", "3003", "3004", "3005", "3006", "3007", "3011", "3012", "3013", "3014", "3015", "3016", "3017", "3018", "3019", "3020", "3021", "3022", "3023", "3024", "3025", "3026", "3027", "3028", "3029", "3030", "3031", "3032", "3033", "3034", "3035", "3036", "3037", "3038", "3039", "3040", "3041", "3042", "3043", "3044", "3045", "3046", "3047", "3048", "3049", "3050", "3051", "3052", "3053", "3054");
         kommuner.forEach(kommune -> {
             List<NavEnhet> enheterForKommunenummer = norgService.getEnheterForKommunenummer(kommune);
-            assertThat(kommune, enheterForKommunenummer.size(), is(1));
+            assertThat(enheterForKommunenummer).hasSize(1);
         });
 
         // Innlandet
         kommuner = Arrays.asList("3401", "3403", "3405", "3407", "3411", "3412", "3413", "3414", "3415", "3416", "3417", "3418", "3419", "3420", "3421", "3422", "3423", "3424", "3425", "3426", "3427", "3428", "3429", "3430", "3431", "3432", "3433", "3434", "3435", "3436", "3437", "3438", "3439", "3440", "3441", "3442", "3443", "3446", "3447", "3448", "3449", "3450", "3451", "3452", "3453", "3454");
         kommuner.forEach(kommune -> {
             List<NavEnhet> enheterForKommunenummer = norgService.getEnheterForKommunenummer(kommune);
-            assertThat(kommune, enheterForKommunenummer.size(), is(1));
+            assertThat(enheterForKommunenummer).hasSize(1);
         });
 
         // Vestfold og Telemark
         kommuner = Arrays.asList("3801", "3802", "3803", "3804", "3805", "3806", "3807", "3808", "3811", "3812", "3813", "3814", "3815", "3816", "3817", "3818", "3819", "3820", "3821", "3822", "3823", "3824", "3825");
         kommuner.forEach(kommune -> {
             List<NavEnhet> enheterForKommunenummer = norgService.getEnheterForKommunenummer(kommune);
-            assertThat(kommune, enheterForKommunenummer.size(), is(1));
+            assertThat(enheterForKommunenummer).hasSize(1);
         });
 
         // Agder
         kommuner = Arrays.asList("4201", "4202", "4203", "4204", "4205", "4206", "4207", "4211", "4212", "4213", "4214", "4215", "4216", "4217", "4218", "4219", "4220", "4221", "4222", "4223", "4224", "4225", "4226", "4227", "4228");
         kommuner.forEach(kommune -> {
             List<NavEnhet> enheterForKommunenummer = norgService.getEnheterForKommunenummer(kommune);
-            assertThat(kommune, enheterForKommunenummer.size(), is(1));
+            assertThat(enheterForKommunenummer).hasSize(1);
         });
 
         // Rogaland
         kommuner = Arrays.asList("1101", "1106", "1108", "1111", "1112", "1114", "1119", "1120", "1121", "1122", "1124", "1127", "1130", "1133", "1134", "1135", "1144", "1145", "1146", "1149", "1151", "1160");
         kommuner.forEach(kommune -> {
             List<NavEnhet> enheterForKommunenummer = norgService.getEnheterForKommunenummer(kommune);
-            assertThat(kommune, enheterForKommunenummer.size(), is(1));
+            assertThat(enheterForKommunenummer).hasSize(1);
         });
 
         // Vestland
         kommuner = Arrays.asList("4602", "4611", "4612", "4613", "4614", "4615", "4616", "4617", "4618", "4619", "4620", "4621", "4622", "4623", "4624", "4625", "4626", "4627", "4628", "4629", "4630", "4631", "4632", "4633", "4634", "4635", "4636", "4637", "4638", "4639", "4640", "4641", "4642", "4643", "4644", "4645", "4646", "4647", "4648", "4649", "4650", "4651");
         kommuner.forEach(kommune -> {
             List<NavEnhet> enheterForKommunenummer = norgService.getEnheterForKommunenummer(kommune);
-            assertThat(kommune, enheterForKommunenummer.size(), is(1));
+            assertThat(enheterForKommunenummer).hasSize(1);
         });
 
         // Møre og Romsdal
         kommuner = Arrays.asList("1505", "1506", "1507", "1511", "1514", "1515", "1516", "1517", "1520", "1525", "1528", "1531", "1532", "1535", "1539", "1539", "1547", "1554", "1557", "1560", "1563", "1566", "1573", "1573", "1576", "1577", "1578", "1579");
         kommuner.forEach(kommune -> {
             List<NavEnhet> enheterForKommunenummer = norgService.getEnheterForKommunenummer(kommune);
-            assertThat(kommune, enheterForKommunenummer.size(), is(1));
+            assertThat(enheterForKommunenummer).hasSize(1);
         });
 
         // Trøndelag
         kommuner = Arrays.asList("5006", "5007", "5014", "5020", "5021", "5022", "5025", "5026", "5027", "5028", "5029", "5031", "5032", "5033", "5034", "5035", "5036", "5037", "5038", "5041", "5042", "5043", "5044", "5045", "5046", "5047", "5049", "5052", "5053", "5054", "5055", "5056", "5057", "5058", "5059", "5060", "5061");
         kommuner.forEach(kommune -> {
             List<NavEnhet> enheterForKommunenummer = norgService.getEnheterForKommunenummer(kommune);
-            assertThat(kommune, enheterForKommunenummer.size(), is(1));
+            assertThat(enheterForKommunenummer).hasSize(1);
         });
 
         // Nordland
         kommuner = Arrays.asList("1804", "1806", "1812", "1813", "1815", "1816", "1818", "1820", "1822", "1824", "1825", "1826", "1827", "1828", "1832", "1833", "1834", "1835", "1836", "1837", "1838", "1839", "1840", "1841", "1845", "1848", "1851", "1853", "1856", "1857", "1859", "1860", "1865", "1866", "1867", "1868", "1870", "1871", "1874");
         kommuner.forEach(kommune -> {
             List<NavEnhet> enheterForKommunenummer = norgService.getEnheterForKommunenummer(kommune);
-            assertThat(kommune, enheterForKommunenummer.size(), is(1));
+            assertThat(enheterForKommunenummer).hasSize(1);
         });
 
         // Troms og Finnmark
         kommuner = Arrays.asList("5401", "5402", "5403", "5404", "5405", "5406", "5411", "5412", "5413", "5414", "5415", "5416", "5417", "5418", "5419", "5420", "5421", "5422", "5423", "5424", "5425", "5426", "5427", "5428", "5429", "5430", "5432", "5433", "5434", "5435", "5436", "5437", "5438", "5439", "5440", "5441", "5442", "5443", "5444");
         kommuner.forEach(kommune -> {
             List<NavEnhet> enheterForKommunenummer = norgService.getEnheterForKommunenummer(kommune);
-            assertThat(kommune, enheterForKommunenummer.size(), is(1));
+            assertThat(enheterForKommunenummer).hasSize(1);
         });
     }
 
@@ -216,8 +212,8 @@ public class NorgServiceTest {
         Map<String, List<NavenhetFraLokalListe>> enhetsnavnMap = new HashMap<>();
 
         for (NavenhetFraLokalListe navenhet : allNavenheterFromPath.navenheter) {
-            assertNotNull(navenhet.kommunenavn);
-            assertNotEquals("", navenhet.kommunenavn);
+            assertThat(navenhet.kommunenavn).isNotNull();
+            assertThat(navenhet.kommunenavn).isNotBlank();
             if (!navenhet.enhetsnavn.contains(navenhet.kommunenavn) &&
                     !navenhet.kommunenavn.equals("Oslo") &&
                     !navenhet.kommunenavn.equals("Bergen") &&
@@ -287,7 +283,7 @@ public class NorgServiceTest {
         });
         System.out.println(kommunerNavnUlikNavenhetsnavn);
 
-        assertThat(allNavenheterFromPath.navenheter.size(), is(356 + 17-1 + 8-1 + 9-1 + 4-1)); //Totalt antall kommuner + ekstra navkontorer i Oslo, Bergen, Stavanger og Trondheim
+        assertThat(allNavenheterFromPath.navenheter.size()).isEqualTo(356 + 17-1 + 8-1 + 9-1 + 4-1); //Totalt antall kommuner + ekstra navkontorer i Oslo, Bergen, Stavanger og Trondheim
     }
 
     @Test
@@ -296,7 +292,7 @@ public class NorgServiceTest {
 
         NavEnhet navEnhet = norgService.getEnhetForGt(GT);
 
-        assertThat(navEnhet.sosialOrgnr, is(ORGNUMMER_PROD));
+        assertThat(navEnhet.sosialOrgnr).isEqualTo(ORGNUMMER_PROD);
 
         verify(norgConsumer, times(1)).getEnhetForGeografiskTilknytning(GT);
         verify(redisService, times(1)).getString(anyString());
@@ -311,7 +307,7 @@ public class NorgServiceTest {
 
         var navEnhet = norgService.getEnhetForGt(GT);
 
-        assertThat(navEnhet.sosialOrgnr, is(ORGNUMMER_PROD));
+        assertThat(navEnhet.sosialOrgnr).isEqualTo(ORGNUMMER_PROD);
 
         verify(norgConsumer, times(0)).getEnhetForGeografiskTilknytning(GT);
         verify(redisService, times(1)).getString(anyString());
@@ -327,7 +323,7 @@ public class NorgServiceTest {
 
         var navEnhet = norgService.getEnhetForGt(GT);
 
-        assertThat(navEnhet.sosialOrgnr, is(ORGNUMMER_PROD));
+        assertThat(navEnhet.sosialOrgnr).isEqualTo(ORGNUMMER_PROD);
 
         verify(norgConsumer, times(1)).getEnhetForGeografiskTilknytning(GT);
         verify(redisService, times(1)).getString(anyString());
@@ -340,7 +336,7 @@ public class NorgServiceTest {
         when(redisService.get(anyString(), any())).thenReturn(null);
         when(norgConsumer.getEnhetForGeografiskTilknytning(GT)).thenThrow(new TjenesteUtilgjengeligException("norg feiler", new ServiceUnavailableException()));
 
-        assertThrows(TjenesteUtilgjengeligException.class, () -> norgService.getEnhetForGt(GT));
+        assertThatExceptionOfType(TjenesteUtilgjengeligException.class).isThrownBy(() -> norgService.getEnhetForGt(GT));
 
         verify(norgConsumer, times(1)).getEnhetForGeografiskTilknytning(GT);
         verify(redisService, times(1)).getString(anyString());
@@ -354,7 +350,7 @@ public class NorgServiceTest {
 
         var navEnhet = norgService.getEnhetForGt(GT);
 
-        assertNull(navEnhet);
+        assertThat(navEnhet).isNull();
 
         verify(norgConsumer, times(1)).getEnhetForGeografiskTilknytning(GT);
         verify(redisService, times(1)).getString(anyString());

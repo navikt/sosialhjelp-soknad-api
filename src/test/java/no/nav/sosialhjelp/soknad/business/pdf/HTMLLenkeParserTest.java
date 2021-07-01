@@ -1,11 +1,9 @@
 package no.nav.sosialhjelp.soknad.business.pdf;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.ArrayList;
 
-import static junit.framework.TestCase.assertEquals;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
@@ -31,19 +29,17 @@ public class HTMLLenkeParserTest {
         assertThat(lenker).isNotEmpty();
 
         for (HTMLLenkeParser.HTMLLenke htmlLenker : lenker) {
-            assertEquals(htmlLenker.getLenke(), TEST_LENKE);
+            assertThat(htmlLenker.getLenke()).isEqualTo(TEST_LENKE);
         }
     }
     @Test
     public void testSplitByNumber() {
-
         String langUrL = "https://www.nav.no/no/NAV+og+samfunn/Kontakt+NAV/Relatert+informasjon/ta-bilde-av-vedleggene-med-mobilen";
-
 
         String[] strings = HTMLLenkeParser.splittLinjeEtterAntallTegn(langUrL, 50);
 
         langUrL = String.join("<br />", strings);
 
-        Assert.assertTrue(langUrL.contains("<br />"));
+        assertThat(langUrL).contains("<br />");
     }
 }

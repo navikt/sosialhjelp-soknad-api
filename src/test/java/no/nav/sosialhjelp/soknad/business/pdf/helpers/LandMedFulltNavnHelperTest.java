@@ -6,8 +6,7 @@ import org.junit.Test;
 
 import java.io.IOException;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -22,7 +21,7 @@ public class LandMedFulltNavnHelperTest {
         when(kodeverkService.getLand("SWE")).thenReturn("Sverige");
 
         String compiled = handlebars.compileInline("{{landMedFulltNavn \"NOR\"}}, {{landMedFulltNavn \"SWE\"}}").apply(new Object());
-        assertThat(compiled, is("Norge, Sverige"));
+        assertThat(compiled).isEqualTo("Norge, Sverige");
     }
 
     private Handlebars createHandlebarsWithHelper(KodeverkService kodeverkService) {

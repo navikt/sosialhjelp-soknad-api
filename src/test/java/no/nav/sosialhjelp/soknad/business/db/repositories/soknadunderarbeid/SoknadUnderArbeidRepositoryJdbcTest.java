@@ -84,7 +84,7 @@ public class SoknadUnderArbeidRepositoryJdbcTest {
 
         Optional<SoknadUnderArbeid> soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(soknadUnderArbeidId, EIER2);
 
-        assertThat(soknadUnderArbeid.isPresent()).isFalse();
+        assertThat(soknadUnderArbeid).isEmpty();
     }
 
     @Test
@@ -109,7 +109,7 @@ public class SoknadUnderArbeidRepositoryJdbcTest {
         SoknadUnderArbeid soknadUnderArbeidFraDb = soknadUnderArbeidRepository.hentSoknad(soknadUnderArbeidId, EIER).get();
         assertThat(soknadUnderArbeidFraDb.getVersjon()).isEqualTo(2L);
         assertThat(soknadUnderArbeidFraDb.getJsonInternalSoknad()).isEqualTo(JSON_INTERNAL_SOKNAD);
-        assertThat(soknadUnderArbeidFraDb.getSistEndretDato().isAfter(SIST_ENDRET_DATO)).isTrue();
+        assertThat(soknadUnderArbeidFraDb.getSistEndretDato()).isAfter(SIST_ENDRET_DATO);
     }
 
     @Test(expected = SamtidigOppdateringException.class)
@@ -141,7 +141,7 @@ public class SoknadUnderArbeidRepositoryJdbcTest {
         SoknadUnderArbeid soknadUnderArbeidFraDb = soknadUnderArbeidRepository.hentSoknad(soknadUnderArbeidId, EIER).get();
         assertThat(soknadUnderArbeidFraDb.getVersjon()).isEqualTo(1L);
         assertThat(soknadUnderArbeidFraDb.getStatus()).isEqualTo(SoknadUnderArbeidStatus.LAAST);
-        assertThat(soknadUnderArbeidFraDb.getSistEndretDato().isAfter(SIST_ENDRET_DATO)).isTrue();
+        assertThat(soknadUnderArbeidFraDb.getSistEndretDato()).isAfter(SIST_ENDRET_DATO);
     }
 
     @Test
@@ -153,8 +153,8 @@ public class SoknadUnderArbeidRepositoryJdbcTest {
 
         soknadUnderArbeidRepository.slettSoknad(soknadUnderArbeid, EIER);
 
-        assertThat(soknadUnderArbeidRepository.hentSoknad(soknadUnderArbeidId, EIER).isPresent()).isFalse();
-        assertThat(opplastetVedleggRepository.hentVedlegg(opplastetVedleggUuid, EIER).isPresent()).isFalse();
+        assertThat(soknadUnderArbeidRepository.hentSoknad(soknadUnderArbeidId, EIER)).isEmpty();
+        assertThat(opplastetVedleggRepository.hentVedlegg(opplastetVedleggUuid, EIER)).isEmpty();
     }
 
     private SoknadUnderArbeid lagSoknadUnderArbeid(String behandlingsId) {

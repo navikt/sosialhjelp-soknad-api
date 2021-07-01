@@ -26,9 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
@@ -94,7 +92,7 @@ public class ArbeidRessursTest {
         final ArbeidFrontend arbeidFrontend = arbeidRessurs.hentArbeid(BEHANDLINGSID);
         final List<ArbeidsforholdFrontend> arbeidsforholdFrontends = arbeidFrontend.arbeidsforhold;
 
-        assertThat(arbeidsforholdFrontends.size(), is(2));
+        assertThat(arbeidsforholdFrontends).hasSize(2);
         final ArbeidsforholdFrontend arbeidsforhold_1 = arbeidsforholdFrontends.get(0);
         final ArbeidsforholdFrontend arbeidsforhold_2 = arbeidsforholdFrontends.get(1);
 
@@ -109,7 +107,7 @@ public class ArbeidRessursTest {
 
         final ArbeidFrontend arbeidFrontend = arbeidRessurs.hentArbeid(BEHANDLINGSID);
 
-        assertThat(arbeidFrontend.arbeidsforhold, nullValue());
+        assertThat(arbeidFrontend.arbeidsforhold).isNull();
     }
 
     @Test
@@ -119,7 +117,7 @@ public class ArbeidRessursTest {
 
         final ArbeidFrontend arbeidFrontend = arbeidRessurs.hentArbeid(BEHANDLINGSID);
 
-        assertThat(arbeidFrontend.kommentarTilArbeidsforhold, nullValue());
+        assertThat(arbeidFrontend.kommentarTilArbeidsforhold).isNull();
     }
 
     @Test
@@ -129,7 +127,7 @@ public class ArbeidRessursTest {
 
         final ArbeidFrontend arbeidFrontend = arbeidRessurs.hentArbeid(BEHANDLINGSID);
 
-        assertThat(arbeidFrontend.kommentarTilArbeidsforhold, is(KOMMENTAR));
+        assertThat(arbeidFrontend.kommentarTilArbeidsforhold).isEqualTo(KOMMENTAR);
     }
 
     @Test
@@ -143,8 +141,8 @@ public class ArbeidRessursTest {
 
         final SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
         final JsonKommentarTilArbeidsforhold kommentarTilArbeidsforhold = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getArbeid().getKommentarTilArbeidsforhold();
-        assertThat(kommentarTilArbeidsforhold.getKilde(), is(JsonKildeBruker.BRUKER));
-        assertThat(kommentarTilArbeidsforhold.getVerdi(), is(KOMMENTAR));
+        assertThat(kommentarTilArbeidsforhold.getKilde()).isEqualTo(JsonKildeBruker.BRUKER);
+        assertThat(kommentarTilArbeidsforhold.getVerdi()).isEqualTo(KOMMENTAR);
     }
 
     @Test
@@ -158,8 +156,8 @@ public class ArbeidRessursTest {
 
         final SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
         final JsonKommentarTilArbeidsforhold kommentarTilArbeidsforhold = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getArbeid().getKommentarTilArbeidsforhold();
-        assertThat(kommentarTilArbeidsforhold.getKilde(), is(JsonKildeBruker.BRUKER));
-        assertThat(kommentarTilArbeidsforhold.getVerdi(), is(KOMMENTAR));
+        assertThat(kommentarTilArbeidsforhold.getKilde()).isEqualTo(JsonKildeBruker.BRUKER);
+        assertThat(kommentarTilArbeidsforhold.getVerdi()).isEqualTo(KOMMENTAR);
     }
 
     @Test
@@ -173,7 +171,7 @@ public class ArbeidRessursTest {
 
         final SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
         final JsonKommentarTilArbeidsforhold kommentarTilArbeidsforhold = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getArbeid().getKommentarTilArbeidsforhold();
-        assertThat(kommentarTilArbeidsforhold, nullValue());
+        assertThat(kommentarTilArbeidsforhold).isNull();
     }
 
     @Test(expected = AuthorizationException.class)
@@ -202,12 +200,12 @@ public class ArbeidRessursTest {
     }
 
     private void assertThatArbeidsforholdIsCorrectlyConverted(ArbeidsforholdFrontend forholdFrontend, JsonArbeidsforhold jsonForhold) {
-        assertThat("arbeidsgivernavn", forholdFrontend.arbeidsgivernavn, is(jsonForhold.getArbeidsgivernavn()));
-        assertThat("fom", forholdFrontend.fom, is(jsonForhold.getFom()));
-        assertThat("tom", forholdFrontend.tom, is(jsonForhold.getTom()));
-        assertThat("stillingsprosent", forholdFrontend.stillingsprosent, is(jsonForhold.getStillingsprosent()));
+        assertThat(forholdFrontend.arbeidsgivernavn).isEqualTo(jsonForhold.getArbeidsgivernavn());
+        assertThat(forholdFrontend.fom).isEqualTo(jsonForhold.getFom());
+        assertThat(forholdFrontend.tom).isEqualTo(jsonForhold.getTom());
+        assertThat(forholdFrontend.stillingsprosent).isEqualTo(jsonForhold.getStillingsprosent());
         assertThatStillingstypeIsCorrect(forholdFrontend.stillingstypeErHeltid, jsonForhold.getStillingstype());
-        assertThat("overstyrtAvBruker", forholdFrontend.overstyrtAvBruker, is(Boolean.FALSE));
+        assertThat(forholdFrontend.overstyrtAvBruker).isEqualTo(Boolean.FALSE);
     }
 
     private void assertThatStillingstypeIsCorrect(Boolean stillingstypeErHeltid, JsonArbeidsforhold.Stillingstype stillingstype){
@@ -215,9 +213,9 @@ public class ArbeidRessursTest {
             return;
         }
         if (stillingstypeErHeltid){
-            assertThat("stillingstype", stillingstype, is(JsonArbeidsforhold.Stillingstype.FAST));
+            assertThat(stillingstype).isEqualTo(JsonArbeidsforhold.Stillingstype.FAST);
         } else {
-            assertThat("stillingstype", stillingstype, is(JsonArbeidsforhold.Stillingstype.VARIABEL));
+            assertThat(stillingstype).isEqualTo(JsonArbeidsforhold.Stillingstype.VARIABEL);
         }
     }
 

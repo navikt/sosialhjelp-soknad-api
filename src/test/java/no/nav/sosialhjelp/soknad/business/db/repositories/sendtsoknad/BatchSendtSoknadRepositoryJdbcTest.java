@@ -14,9 +14,7 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
 import static java.time.LocalDateTime.now;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {DbTestConfig.class})
@@ -52,7 +50,7 @@ public class BatchSendtSoknadRepositoryJdbcTest {
 
         Long sendtSoknadId = batchSendtSoknadRepository.hentSendtSoknad(BEHANDLINGSID).get();
 
-        assertThat(sendtSoknadId, notNullValue());
+        assertThat(sendtSoknadId).isNotNull();
     }
 
     @Test
@@ -63,7 +61,7 @@ public class BatchSendtSoknadRepositoryJdbcTest {
 
         batchSendtSoknadRepository.slettSendtSoknad(sendtSoknadId);
 
-        assertThat(batchSendtSoknadRepository.hentSendtSoknad(BEHANDLINGSID).isPresent(), is(false));
+        assertThat(batchSendtSoknadRepository.hentSendtSoknad(BEHANDLINGSID)).isEmpty();
     }
 
     private SendtSoknad lagSendtSoknad(String eier) {

@@ -12,9 +12,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import static no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.nullValue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -41,8 +39,8 @@ public class KontonummerSystemdataTest {
 
         var jsonPersonalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
 
-        assertThat(jsonPersonalia.getKontonummer().getKilde(), is(JsonKilde.SYSTEM));
-        assertThat(jsonPersonalia.getKontonummer().getVerdi(), is(KONTONUMMER_SYSTEM));
+        assertThat(jsonPersonalia.getKontonummer().getKilde()).isEqualTo(JsonKilde.SYSTEM);
+        assertThat(jsonPersonalia.getKontonummer().getVerdi()).isEqualTo(KONTONUMMER_SYSTEM);
     }
 
     @Test
@@ -55,8 +53,8 @@ public class KontonummerSystemdataTest {
 
         var jsonPersonalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
 
-        assertThat(jsonPersonalia.getKontonummer().getKilde(), is(JsonKilde.SYSTEM));
-        assertThat(jsonPersonalia.getKontonummer().getVerdi(), is(KONTONUMMER_SYSTEM));
+        assertThat(jsonPersonalia.getKontonummer().getKilde()).isEqualTo(JsonKilde.SYSTEM);
+        assertThat(jsonPersonalia.getKontonummer().getVerdi()).isEqualTo(KONTONUMMER_SYSTEM);
     }
 
     @Test
@@ -67,8 +65,8 @@ public class KontonummerSystemdataTest {
 
         var jsonPersonalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
 
-        assertThat(jsonPersonalia.getKontonummer().getKilde(), is(JsonKilde.BRUKER));
-        assertThat(jsonPersonalia.getKontonummer().getVerdi(), is(KONTONUMMER_BRUKER));
+        assertThat(jsonPersonalia.getKontonummer().getKilde()).isEqualTo(JsonKilde.BRUKER);
+        assertThat(jsonPersonalia.getKontonummer().getVerdi()).isEqualTo(KONTONUMMER_BRUKER);
     }
 
     @Test
@@ -80,8 +78,8 @@ public class KontonummerSystemdataTest {
 
         var jsonPersonalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
 
-        assertThat(jsonPersonalia.getKontonummer().getKilde(), is(JsonKilde.BRUKER));
-        assertThat(jsonPersonalia.getKontonummer().getVerdi(), nullValue());
+        assertThat(jsonPersonalia.getKontonummer().getKilde()).isEqualTo(JsonKilde.BRUKER);
+        assertThat(jsonPersonalia.getKontonummer().getVerdi()).isNull();
     }
 
     @Test
@@ -93,8 +91,8 @@ public class KontonummerSystemdataTest {
 
         var jsonPersonalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
 
-        assertThat(jsonPersonalia.getKontonummer().getKilde(), is(JsonKilde.BRUKER));
-        assertThat(jsonPersonalia.getKontonummer().getVerdi(), nullValue());
+        assertThat(jsonPersonalia.getKontonummer().getKilde()).isEqualTo(JsonKilde.BRUKER);
+        assertThat(jsonPersonalia.getKontonummer().getVerdi()).isNull();
     }
 
     private JsonInternalSoknad createJsonInternalSoknadWithUserDefinedKontonummer() {

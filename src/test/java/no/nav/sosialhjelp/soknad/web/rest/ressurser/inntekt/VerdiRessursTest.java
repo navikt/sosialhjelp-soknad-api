@@ -32,11 +32,7 @@ import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.VERDI_CAMPINGVOG
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.VERDI_FRITIDSEIENDOM;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.VERDI_KJORETOY;
 import static no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
@@ -82,13 +78,13 @@ public class VerdiRessursTest {
 
         VerdierFrontend verdierFrontend = verdiRessurs.hentVerdier(BEHANDLINGSID);
 
-        assertThat(verdierFrontend.bekreftelse, nullValue());
-        assertFalse(verdierFrontend.bolig);
-        assertFalse(verdierFrontend.campingvogn);
-        assertFalse(verdierFrontend.kjoretoy);
-        assertFalse(verdierFrontend.fritidseiendom);
-        assertFalse(verdierFrontend.annet);
-        assertThat(verdierFrontend.beskrivelseAvAnnet, nullValue());
+        assertThat(verdierFrontend.bekreftelse).isNull();
+        assertThat(verdierFrontend.bolig).isFalse();
+        assertThat(verdierFrontend.campingvogn).isFalse();
+        assertThat(verdierFrontend.kjoretoy).isFalse();
+        assertThat(verdierFrontend.fritidseiendom).isFalse();
+        assertThat(verdierFrontend.annet).isFalse();
+        assertThat(verdierFrontend.beskrivelseAvAnnet).isNull();
     }
 
     @Test
@@ -99,13 +95,13 @@ public class VerdiRessursTest {
 
         VerdierFrontend verdierFrontend = verdiRessurs.hentVerdier(BEHANDLINGSID);
 
-        assertTrue(verdierFrontend.bekreftelse);
-        assertTrue(verdierFrontend.bolig);
-        assertTrue(verdierFrontend.campingvogn);
-        assertTrue(verdierFrontend.kjoretoy);
-        assertTrue(verdierFrontend.fritidseiendom);
-        assertTrue(verdierFrontend.annet);
-        assertThat(verdierFrontend.beskrivelseAvAnnet, nullValue());
+        assertThat(verdierFrontend.bekreftelse).isTrue();
+        assertThat(verdierFrontend.bolig).isTrue();
+        assertThat(verdierFrontend.campingvogn).isTrue();
+        assertThat(verdierFrontend.kjoretoy).isTrue();
+        assertThat(verdierFrontend.fritidseiendom).isTrue();
+        assertThat(verdierFrontend.annet).isTrue();
+        assertThat(verdierFrontend.beskrivelseAvAnnet).isNull();
     }
 
     @Test
@@ -116,9 +112,9 @@ public class VerdiRessursTest {
 
         VerdierFrontend verdierFrontend = verdiRessurs.hentVerdier(BEHANDLINGSID);
 
-        assertTrue(verdierFrontend.bekreftelse);
-        assertTrue(verdierFrontend.annet);
-        assertThat(verdierFrontend.beskrivelseAvAnnet, is(beskrivelse));
+        assertThat(verdierFrontend.bekreftelse).isTrue();
+        assertThat(verdierFrontend.annet).isTrue();
+        assertThat(verdierFrontend.beskrivelseAvAnnet).isEqualTo(beskrivelse);
     }
 
     @Test
@@ -138,8 +134,8 @@ public class VerdiRessursTest {
         JsonOkonomibekreftelse verdiBekreftelse = bekreftelser.get(0);
         List<JsonOkonomioversiktFormue> verdier = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData()
                 .getOkonomi().getOversikt().getFormue();
-        assertFalse(verdiBekreftelse.getVerdi());
-        assertTrue(verdier.isEmpty());
+        assertThat(verdiBekreftelse.getVerdi()).isFalse();
+        assertThat(verdier.isEmpty()).isTrue();
     }
 
     @Test
@@ -161,9 +157,9 @@ public class VerdiRessursTest {
                 .getOkonomi().getOversikt().getFormue();
         String beskrivelse = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData()
                 .getOkonomi().getOpplysninger().getBeskrivelseAvAnnet().getVerdi();
-        assertFalse(verdiBekreftelse.getVerdi());
-        assertTrue(verdier.isEmpty());
-        assertThat(beskrivelse, is(""));
+        assertThat(verdiBekreftelse.getVerdi()).isFalse();
+        assertThat(verdier.isEmpty()).isTrue();
+        assertThat(beskrivelse).isBlank();
     }
 
     @Test
@@ -187,14 +183,14 @@ public class VerdiRessursTest {
         JsonOkonomibekreftelse verdiBekreftelse = bekreftelser.get(0);
         List<JsonOkonomioversiktFormue> verdier = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData()
                 .getOkonomi().getOversikt().getFormue();
-        assertThat(verdiBekreftelse.getKilde(), is(JsonKilde.BRUKER));
-        assertThat(verdiBekreftelse.getType(), is(BEKREFTELSE_VERDI));
-        assertTrue(verdiBekreftelse.getVerdi());
-        assertTrue(verdier.stream().anyMatch(verdi -> verdi.getType().equals(VERDI_BOLIG)));
-        assertTrue(verdier.stream().anyMatch(verdi -> verdi.getType().equals(VERDI_CAMPINGVOGN)));
-        assertFalse(verdier.stream().anyMatch(verdi -> verdi.getType().equals(VERDI_KJORETOY)));
-        assertFalse(verdier.stream().anyMatch(verdi -> verdi.getType().equals(VERDI_FRITIDSEIENDOM)));
-        assertFalse(verdier.stream().anyMatch(verdi -> verdi.getType().equals(VERDI_ANNET)));
+        assertThat(verdiBekreftelse.getKilde()).isEqualTo(JsonKilde.BRUKER);
+        assertThat(verdiBekreftelse.getType()).isEqualTo(BEKREFTELSE_VERDI);
+        assertThat(verdiBekreftelse.getVerdi()).isTrue();
+        assertThat(verdier.stream().anyMatch(verdi -> verdi.getType().equals(VERDI_BOLIG))).isTrue();
+        assertThat(verdier.stream().anyMatch(verdi -> verdi.getType().equals(VERDI_CAMPINGVOGN))).isTrue();
+        assertThat(verdier.stream().anyMatch(verdi -> verdi.getType().equals(VERDI_KJORETOY))).isFalse();
+        assertThat(verdier.stream().anyMatch(verdi -> verdi.getType().equals(VERDI_FRITIDSEIENDOM))).isFalse();
+        assertThat(verdier.stream().anyMatch(verdi -> verdi.getType().equals(VERDI_ANNET))).isFalse();
     }
 
     @Test
@@ -218,14 +214,14 @@ public class VerdiRessursTest {
         JsonOkonomibekreftelse verdiBekreftelse = bekreftelser.get(0);
         List<JsonOkonomioversiktFormue> verdier = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData()
                 .getOkonomi().getOversikt().getFormue();
-        assertThat(verdiBekreftelse.getKilde(), is(JsonKilde.BRUKER));
-        assertThat(verdiBekreftelse.getType(), is(BEKREFTELSE_VERDI));
-        assertTrue(verdiBekreftelse.getVerdi());
-        assertTrue(verdier.stream().anyMatch(verdi -> verdi.getType().equals(VERDI_KJORETOY)));
-        assertTrue(verdier.stream().anyMatch(verdi -> verdi.getType().equals(VERDI_CAMPINGVOGN)));
-        assertTrue(verdier.stream().anyMatch(verdi -> verdi.getType().equals(VERDI_BOLIG)));
-        assertTrue(verdier.stream().anyMatch(verdi -> verdi.getType().equals(VERDI_FRITIDSEIENDOM)));
-        assertTrue(verdier.stream().anyMatch(verdi -> verdi.getType().equals(VERDI_ANNET)));
+        assertThat(verdiBekreftelse.getKilde()).isEqualTo(JsonKilde.BRUKER);
+        assertThat(verdiBekreftelse.getType()).isEqualTo(BEKREFTELSE_VERDI);
+        assertThat(verdiBekreftelse.getVerdi()).isTrue();
+        assertThat(verdier.stream().anyMatch(verdi -> verdi.getType().equals(VERDI_KJORETOY))).isTrue();
+        assertThat(verdier.stream().anyMatch(verdi -> verdi.getType().equals(VERDI_CAMPINGVOGN))).isTrue();
+        assertThat(verdier.stream().anyMatch(verdi -> verdi.getType().equals(VERDI_BOLIG))).isTrue();
+        assertThat(verdier.stream().anyMatch(verdi -> verdi.getType().equals(VERDI_FRITIDSEIENDOM))).isTrue();
+        assertThat(verdier.stream().anyMatch(verdi -> verdi.getType().equals(VERDI_ANNET))).isTrue();
     }
 
     @Test
@@ -244,8 +240,8 @@ public class VerdiRessursTest {
         JsonOkonomibekreftelse verdiBekreftelse = bekreftelser.get(0);
         String beskrivelse = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData()
                 .getOkonomi().getOpplysninger().getBeskrivelseAvAnnet().getVerdi();
-        assertFalse(verdiBekreftelse.getVerdi());
-        assertThat(beskrivelse, is(""));
+        assertThat(verdiBekreftelse.getVerdi()).isFalse();
+        assertThat(beskrivelse).isBlank();
     }
 
     @Test(expected = AuthorizationException.class)

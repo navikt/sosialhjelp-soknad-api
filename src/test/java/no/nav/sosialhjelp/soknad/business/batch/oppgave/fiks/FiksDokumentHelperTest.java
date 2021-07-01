@@ -20,9 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -63,70 +61,70 @@ public class FiksDokumentHelperTest {
     public void lagDokumentForSoknadJsonLagerKorrektDokument() {
         Dokument soknadJson = fiksDokumentHelper.lagDokumentForSoknadJson(createEmptyJsonInternalSoknad(EIER));
 
-        assertThat(soknadJson.getFilnavn(), is("soknad.json"));
-        assertThat(soknadJson.getMimetype(), is("application/json"));
-        assertThat(soknadJson.isEkskluderesFraPrint(), is(true));
-        assertThat(soknadJson.getData(), notNullValue());
+        assertThat(soknadJson.getFilnavn()).isEqualTo("soknad.json");
+        assertThat(soknadJson.getMimetype()).isEqualTo("application/json");
+        assertThat(soknadJson.isEkskluderesFraPrint()).isEqualTo(true);
+        assertThat(soknadJson.getData()).isNotNull();
     }
 
     @Test
     public void lagDokumentForVedleggJsonLagerKorrektDokument() {
         Dokument vedleggJson = fiksDokumentHelper.lagDokumentForVedleggJson(lagInternalSoknadForVedlegg());
 
-        assertThat(vedleggJson.getFilnavn(), is("vedlegg.json"));
-        assertThat(vedleggJson.getMimetype(), is("application/json"));
-        assertThat(vedleggJson.isEkskluderesFraPrint(), is(true));
-        assertThat(vedleggJson.getData(), notNullValue());
+        assertThat(vedleggJson.getFilnavn()).isEqualTo("vedlegg.json");
+        assertThat(vedleggJson.getMimetype()).isEqualTo("application/json");
+        assertThat(vedleggJson.isEkskluderesFraPrint()).isEqualTo(true);
+        assertThat(vedleggJson.getData()).isNotNull();
     }
 
     @Test
     public void lagDokumentForSaksbehandlerPdfLagerKorrektDokument() {
         Dokument saksbehandlerPdf = fiksDokumentHelper.lagDokumentForSaksbehandlerPdf(createEmptyJsonInternalSoknad(EIER));
 
-        assertThat(saksbehandlerPdf.getFilnavn(), is("Soknad.pdf"));
-        assertThat(saksbehandlerPdf.getMimetype(), is("application/pdf"));
-        assertThat(saksbehandlerPdf.isEkskluderesFraPrint(), is(false));
-        assertThat(saksbehandlerPdf.getData(), notNullValue());
+        assertThat(saksbehandlerPdf.getFilnavn()).isEqualTo("Soknad.pdf");
+        assertThat(saksbehandlerPdf.getMimetype()).isEqualTo("application/pdf");
+        assertThat(saksbehandlerPdf.isEkskluderesFraPrint()).isEqualTo(false);
+        assertThat(saksbehandlerPdf.getData()).isNotNull();
     }
 
     @Test
     public void lagDokumentForJuridiskPdfLagerKorrektDokument() {
         Dokument juridiskPdf = fiksDokumentHelper.lagDokumentForJuridiskPdf(createEmptyJsonInternalSoknad(EIER));
 
-        assertThat(juridiskPdf.getFilnavn(), is("Soknad-juridisk.pdf"));
-        assertThat(juridiskPdf.getMimetype(), is("application/pdf"));
-        assertThat(juridiskPdf.isEkskluderesFraPrint(), is(false));
-        assertThat(juridiskPdf.getData(), notNullValue());
+        assertThat(juridiskPdf.getFilnavn()).isEqualTo("Soknad-juridisk.pdf");
+        assertThat(juridiskPdf.getMimetype()).isEqualTo("application/pdf");
+        assertThat(juridiskPdf.isEkskluderesFraPrint()).isEqualTo(false);
+        assertThat(juridiskPdf.getData()).isNotNull();
     }
 
     @Test
     public void lagDokumentForBrukerkvitteringPdfLagerKorrektDokument() {
         Dokument brukerkvitteringPdf = fiksDokumentHelper.lagDokumentForBrukerkvitteringPdf();
 
-        assertThat(brukerkvitteringPdf.getFilnavn(), is("Brukerkvittering.pdf"));
-        assertThat(brukerkvitteringPdf.getMimetype(), is("application/pdf"));
-        assertThat(brukerkvitteringPdf.isEkskluderesFraPrint(), is(true));
-        assertThat(brukerkvitteringPdf.getData(), notNullValue());
+        assertThat(brukerkvitteringPdf.getFilnavn()).isEqualTo("Brukerkvittering.pdf");
+        assertThat(brukerkvitteringPdf.getMimetype()).isEqualTo("application/pdf");
+        assertThat(brukerkvitteringPdf.isEkskluderesFraPrint()).isEqualTo(true);
+        assertThat(brukerkvitteringPdf.getData()).isNotNull();
     }
 
     @Test
     public void lagDokumentForEttersendelsePdfLagerKorrektDokument() {
         Dokument ettersendelsePdf = fiksDokumentHelper.lagDokumentForEttersendelsePdf(createEmptyJsonInternalSoknad(EIER), EIER);
 
-        assertThat(ettersendelsePdf.getFilnavn(), is("ettersendelse.pdf"));
-        assertThat(ettersendelsePdf.getMimetype(), is("application/pdf"));
-        assertThat(ettersendelsePdf.isEkskluderesFraPrint(), is(false));
-        assertThat(ettersendelsePdf.getData(), notNullValue());
+        assertThat(ettersendelsePdf.getFilnavn()).isEqualTo("ettersendelse.pdf");
+        assertThat(ettersendelsePdf.getMimetype()).isEqualTo("application/pdf");
+        assertThat(ettersendelsePdf.isEkskluderesFraPrint()).isEqualTo(false);
+        assertThat(ettersendelsePdf.getData()).isNotNull();
     }
 
     @Test
     public void lagDokumentListeForVedleggReturnererRiktigeVedlegg() {
         List<Dokument> dokumenter = fiksDokumentHelper.lagDokumentListeForVedlegg(new SoknadUnderArbeid());
 
-        assertThat(dokumenter.size(), is(3));
-        assertThat(dokumenter.get(0).getFilnavn(), is(FILNAVN));
-        assertThat(dokumenter.get(1).getFilnavn(), is(ANNET_FILNAVN));
-        assertThat(dokumenter.get(2).getFilnavn(), is(TREDJE_FILNAVN));
+        assertThat(dokumenter).hasSize(3);
+        assertThat(dokumenter.get(0).getFilnavn()).isEqualTo(FILNAVN);
+        assertThat(dokumenter.get(1).getFilnavn()).isEqualTo(ANNET_FILNAVN);
+        assertThat(dokumenter.get(2).getFilnavn()).isEqualTo(TREDJE_FILNAVN);
     }
 
     @Test
@@ -135,10 +133,10 @@ public class FiksDokumentHelperTest {
 
         Dokument dokument = fiksDokumentHelper.opprettDokumentForVedlegg(opplastetVedlegg);
 
-        assertThat(dokument.getFilnavn(), is(FILNAVN));
-        assertThat(dokument.getData(), notNullValue());
-        assertThat(dokument.getMimetype(), is("application/octet-stream"));
-        assertThat(dokument.isEkskluderesFraPrint(), is(true));
+        assertThat(dokument.getFilnavn()).isEqualTo(FILNAVN);
+        assertThat(dokument.getData()).isNotNull();
+        assertThat(dokument.getMimetype()).isEqualTo("application/octet-stream");
+        assertThat(dokument.isEkskluderesFraPrint()).isTrue();
     }
 
     @Test
@@ -147,16 +145,16 @@ public class FiksDokumentHelperTest {
 
         ByteDataSource dataSource = fiksDokumentHelper.krypterOgOpprettByteDatasource(FILNAVN, DATA);
 
-        assertThat(dataSource.getName(), is(FILNAVN));
-        assertThat(dataSource.getContentType(), is("application/octet-stream"));
-        assertThat(dataSource.getData()[0], is((byte) 3));
+        assertThat(dataSource.getName()).isEqualTo(FILNAVN);
+        assertThat(dataSource.getContentType()).isEqualTo("application/octet-stream");
+        assertThat(dataSource.getData()[0]).isEqualTo((byte) 3);
     }
 
     @Test
     public void krypterOgOpprettByteDatasourceKryptererIkkeHvisSkalKryptereErFalse() {
         ByteDataSource dataSource = fiksDokumentHelper.krypterOgOpprettByteDatasource(FILNAVN, DATA);
 
-        assertThat(dataSource.getData()[0], is((byte) 1));
+        assertThat(dataSource.getData()[0]).isEqualTo((byte) 1);
     }
 
     private List<OpplastetVedlegg> lagOpplastedeVedlegg() {

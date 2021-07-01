@@ -15,8 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.BOSTOTTE;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(MockitoJUnitRunner.class)
 public class HentOkonomiBekreftelseHelperTest {
@@ -37,7 +36,7 @@ public class HentOkonomiBekreftelseHelperTest {
 
         String compiled = handlebars.compileInline("{{#hentOkonomiBekreftelse \"bostotte\" }}Verdi: {{verdi}}{{/hentOkonomiBekreftelse}}").apply(opplysninger);
         
-        assertThat(compiled, equalTo("Verdi: true"));
+        assertThat(compiled).isEqualTo("Verdi: true");
     }
 
     @Test
@@ -47,7 +46,7 @@ public class HentOkonomiBekreftelseHelperTest {
         
         String compiled = handlebars.compileInline("{{#hentOkonomiBekreftelse \"bostotte\" }}Verdi: {{verdi}}{{/hentOkonomiBekreftelse}}").apply(opplysninger);
         
-        assertThat(compiled, equalTo("Verdi: "));
+        assertThat(compiled).isEqualTo("Verdi: ");
     }
     
     @Test
@@ -57,7 +56,7 @@ public class HentOkonomiBekreftelseHelperTest {
         opplysninger.setBekreftelse(null);
 
         String compiled = handlebars.compileInline("{{#hentOkonomiBekreftelse \"bostotte\" }}Verdi: {{verdi}}{{/hentOkonomiBekreftelse}}").apply(opplysninger);
-        assertThat(compiled, equalTo(""));
+        assertThat(compiled).isEqualTo("");
     }
     
     private JsonOkonomiopplysninger lagOpplysningerMedBostotteBekreftelse(boolean bostotteBekreftelseSkalHaVerdiLikTrue) {

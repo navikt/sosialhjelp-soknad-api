@@ -31,11 +31,7 @@ import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_FORSI
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_SALG;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_UTBYTTE;
 import static no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
@@ -81,12 +77,12 @@ public class UtbetalingRessursTest {
 
         UtbetalingerFrontend utbetalingerFrontend = utbetalingRessurs.hentUtbetalinger(BEHANDLINGSID);
 
-        assertThat(utbetalingerFrontend.bekreftelse, nullValue());
-        assertFalse(utbetalingerFrontend.forsikring);
-        assertFalse(utbetalingerFrontend.salg);
-        assertFalse(utbetalingerFrontend.utbytte);
-        assertFalse(utbetalingerFrontend.annet);
-        assertThat(utbetalingerFrontend.beskrivelseAvAnnet, nullValue());
+        assertThat(utbetalingerFrontend.bekreftelse).isNull();
+        assertThat(utbetalingerFrontend.forsikring).isFalse();
+        assertThat(utbetalingerFrontend.salg).isFalse();
+        assertThat(utbetalingerFrontend.utbytte).isFalse();
+        assertThat(utbetalingerFrontend.annet).isFalse();
+        assertThat(utbetalingerFrontend.beskrivelseAvAnnet).isNull();
     }
 
     @Test
@@ -97,12 +93,12 @@ public class UtbetalingRessursTest {
 
         UtbetalingerFrontend utbetalingerFrontend = utbetalingRessurs.hentUtbetalinger(BEHANDLINGSID);
 
-        assertTrue(utbetalingerFrontend.bekreftelse);
-        assertTrue(utbetalingerFrontend.utbytte);
-        assertTrue(utbetalingerFrontend.salg);
-        assertTrue(utbetalingerFrontend.forsikring);
-        assertTrue(utbetalingerFrontend.annet);
-        assertThat(utbetalingerFrontend.beskrivelseAvAnnet, nullValue());
+        assertThat(utbetalingerFrontend.bekreftelse).isTrue();
+        assertThat(utbetalingerFrontend.utbytte).isTrue();
+        assertThat(utbetalingerFrontend.salg).isTrue();
+        assertThat(utbetalingerFrontend.forsikring).isTrue();
+        assertThat(utbetalingerFrontend.annet).isTrue();
+        assertThat(utbetalingerFrontend.beskrivelseAvAnnet).isNull();
     }
 
     @Test
@@ -113,9 +109,9 @@ public class UtbetalingRessursTest {
 
         UtbetalingerFrontend utbetalingerFrontend = utbetalingRessurs.hentUtbetalinger(BEHANDLINGSID);
 
-        assertTrue(utbetalingerFrontend.bekreftelse);
-        assertTrue(utbetalingerFrontend.annet);
-        assertThat(utbetalingerFrontend.beskrivelseAvAnnet, is(beskrivelse));
+        assertThat(utbetalingerFrontend.bekreftelse).isTrue();
+        assertThat(utbetalingerFrontend.annet).isTrue();
+        assertThat(utbetalingerFrontend.beskrivelseAvAnnet).isEqualTo(beskrivelse);
     }
 
     @Test
@@ -135,8 +131,8 @@ public class UtbetalingRessursTest {
         JsonOkonomibekreftelse utbetalingBekreftelse = bekreftelser.get(0);
         List<JsonOkonomiOpplysningUtbetaling> utbetalinger = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData()
                 .getOkonomi().getOpplysninger().getUtbetaling();
-        assertFalse(utbetalingBekreftelse.getVerdi());
-        assertTrue(utbetalinger.isEmpty());
+        assertThat(utbetalingBekreftelse.getVerdi()).isFalse();
+        assertThat(utbetalinger).isEmpty();
     }
 
     @Test
@@ -158,9 +154,9 @@ public class UtbetalingRessursTest {
                 .getOkonomi().getOpplysninger().getUtbetaling();
         String beskrivelse = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData()
                 .getOkonomi().getOpplysninger().getBeskrivelseAvAnnet().getUtbetaling();
-        assertFalse(utbetalingBekreftelse.getVerdi());
-        assertTrue(utbetalinger.isEmpty());
-        assertThat(beskrivelse, is(""));
+        assertThat(utbetalingBekreftelse.getVerdi()).isFalse();
+        assertThat(utbetalinger).isEmpty();
+        assertThat(beskrivelse).isBlank();
     }
 
     @Test
@@ -183,13 +179,13 @@ public class UtbetalingRessursTest {
         JsonOkonomibekreftelse utbetalingBekreftelse = bekreftelser.get(0);
         List<JsonOkonomiOpplysningUtbetaling> utbetalinger = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData()
                 .getOkonomi().getOpplysninger().getUtbetaling();
-        assertThat(utbetalingBekreftelse.getKilde(), is(JsonKilde.BRUKER));
-        assertThat(utbetalingBekreftelse.getType(), is(BEKREFTELSE_UTBETALING));
-        assertTrue(utbetalingBekreftelse.getVerdi());
-        assertTrue(utbetalinger.stream().anyMatch(utbetaling -> utbetaling.getType().equals(UTBETALING_FORSIKRING)));
-        assertTrue(utbetalinger.stream().anyMatch(utbetaling -> utbetaling.getType().equals(UTBETALING_SALG)));
-        assertFalse(utbetalinger.stream().anyMatch(utbetaling -> utbetaling.getType().equals(UTBETALING_UTBYTTE)));
-        assertFalse(utbetalinger.stream().anyMatch(utbetaling -> utbetaling.getType().equals(UTBETALING_ANNET)));
+        assertThat(utbetalingBekreftelse.getKilde()).isEqualTo(JsonKilde.BRUKER);
+        assertThat(utbetalingBekreftelse.getType()).isEqualTo(BEKREFTELSE_UTBETALING);
+        assertThat(utbetalingBekreftelse.getVerdi()).isTrue();
+        assertThat(utbetalinger.stream().anyMatch(utbetaling -> utbetaling.getType().equals(UTBETALING_FORSIKRING))).isTrue();
+        assertThat(utbetalinger.stream().anyMatch(utbetaling -> utbetaling.getType().equals(UTBETALING_SALG))).isTrue();
+        assertThat(utbetalinger.stream().anyMatch(utbetaling -> utbetaling.getType().equals(UTBETALING_UTBYTTE))).isFalse();
+        assertThat(utbetalinger.stream().anyMatch(utbetaling -> utbetaling.getType().equals(UTBETALING_ANNET))).isFalse();
     }
 
     @Test
@@ -212,13 +208,13 @@ public class UtbetalingRessursTest {
         JsonOkonomibekreftelse utbetalingBekreftelse = bekreftelser.get(0);
         List<JsonOkonomiOpplysningUtbetaling> utbetalinger = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData()
                 .getOkonomi().getOpplysninger().getUtbetaling();
-        assertThat(utbetalingBekreftelse.getKilde(), is(JsonKilde.BRUKER));
-        assertThat(utbetalingBekreftelse.getType(), is(BEKREFTELSE_UTBETALING));
-        assertTrue(utbetalingBekreftelse.getVerdi());
-        assertTrue(utbetalinger.stream().anyMatch(utbetaling -> utbetaling.getType().equals(UTBETALING_FORSIKRING)));
-        assertTrue(utbetalinger.stream().anyMatch(utbetaling -> utbetaling.getType().equals(UTBETALING_SALG)));
-        assertTrue(utbetalinger.stream().anyMatch(utbetaling -> utbetaling.getType().equals(UTBETALING_UTBYTTE)));
-        assertTrue(utbetalinger.stream().anyMatch(utbetaling -> utbetaling.getType().equals(UTBETALING_ANNET)));
+        assertThat(utbetalingBekreftelse.getKilde()).isEqualTo(JsonKilde.BRUKER);
+        assertThat(utbetalingBekreftelse.getType()).isEqualTo(BEKREFTELSE_UTBETALING);
+        assertThat(utbetalingBekreftelse.getVerdi()).isTrue();
+        assertThat(utbetalinger.stream().anyMatch(utbetaling -> utbetaling.getType().equals(UTBETALING_FORSIKRING))).isTrue();
+        assertThat(utbetalinger.stream().anyMatch(utbetaling -> utbetaling.getType().equals(UTBETALING_SALG))).isTrue();
+        assertThat(utbetalinger.stream().anyMatch(utbetaling -> utbetaling.getType().equals(UTBETALING_UTBYTTE))).isTrue();
+        assertThat(utbetalinger.stream().anyMatch(utbetaling -> utbetaling.getType().equals(UTBETALING_ANNET))).isTrue();
     }
 
     @Test
@@ -237,8 +233,8 @@ public class UtbetalingRessursTest {
         JsonOkonomibekreftelse utbetalingBekreftelse = bekreftelser.get(0);
         String beskrivelse = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData()
                 .getOkonomi().getOpplysninger().getBeskrivelseAvAnnet().getUtbetaling();
-        assertFalse(utbetalingBekreftelse.getVerdi());
-        assertThat(beskrivelse, is(""));
+        assertThat(utbetalingBekreftelse.getVerdi()).isFalse();
+        assertThat(beskrivelse).isBlank();
     }
 
     @Test(expected = AuthorizationException.class)

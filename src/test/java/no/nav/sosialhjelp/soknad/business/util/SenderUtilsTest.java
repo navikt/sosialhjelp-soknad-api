@@ -5,7 +5,7 @@ import org.junit.Test;
 
 import static java.lang.System.setProperty;
 import static no.nav.sosialhjelp.soknad.business.util.SenderUtils.createPrefixedBehandlingsIdInNonProd;
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class SenderUtilsTest {
 
@@ -20,25 +20,25 @@ public class SenderUtilsTest {
     public void createPrefixedBehandlingsId_inProd_shouldNotBePrefixed() {
         System.clearProperty("environment.name");
         String prefixedBehandlingsId = createPrefixedBehandlingsIdInNonProd(originalBehandlingsId);
-        assertEquals(originalBehandlingsId, prefixedBehandlingsId);
+        assertThat(prefixedBehandlingsId).isEqualTo(originalBehandlingsId);
 
         setProperty("environment.name", "p");
         prefixedBehandlingsId = createPrefixedBehandlingsIdInNonProd(originalBehandlingsId);
-        assertEquals(originalBehandlingsId, prefixedBehandlingsId);
+        assertThat(prefixedBehandlingsId).isEqualTo(originalBehandlingsId);
 
         setProperty("environment.name", "ukjent");
         prefixedBehandlingsId = createPrefixedBehandlingsIdInNonProd(originalBehandlingsId);
-        assertEquals(originalBehandlingsId, prefixedBehandlingsId);
+        assertThat(prefixedBehandlingsId).isEqualTo(originalBehandlingsId);
     }
 
     @Test
     public void createPrefixedBehandlingsId_inNonProd_shouldBePrefixedWithEnvironmentName() {
         setProperty("environment.name", "q0");
         String prefixedBehandlingsId = createPrefixedBehandlingsIdInNonProd(originalBehandlingsId);
-        assertEquals("q0-" + originalBehandlingsId, prefixedBehandlingsId);
+        assertThat(prefixedBehandlingsId).isEqualTo("q0-" + originalBehandlingsId);
 
         setProperty("environment.name", "q1");
         prefixedBehandlingsId = createPrefixedBehandlingsIdInNonProd(originalBehandlingsId);
-        assertEquals("q1-" + originalBehandlingsId, prefixedBehandlingsId);
+        assertThat(prefixedBehandlingsId).isEqualTo("q1-" + originalBehandlingsId);
     }
 }

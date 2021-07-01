@@ -13,8 +13,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.inject.Inject;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {DbTestConfig.class})
@@ -53,9 +52,9 @@ public class BatchOpplastetVedleggRepositoryJdbcTest {
 
         batchOpplastetVedleggRepository.slettAlleVedleggForSoknad(SOKNADID);
 
-        assertThat(opplastetVedleggRepository.hentVedlegg(uuid, EIER).isPresent(), is(false));
-        assertThat(opplastetVedleggRepository.hentVedlegg(uuidSammeSoknadOgEier, EIER).isPresent(), is(false));
-        assertThat(opplastetVedleggRepository.hentVedlegg(uuidSammeEierOgAnnenSoknad, EIER).isPresent(), is(true));
+        assertThat(opplastetVedleggRepository.hentVedlegg(uuid, EIER)).isEmpty();
+        assertThat(opplastetVedleggRepository.hentVedlegg(uuidSammeSoknadOgEier, EIER)).isEmpty();
+        assertThat(opplastetVedleggRepository.hentVedlegg(uuidSammeEierOgAnnenSoknad, EIER)).isPresent();
     }
 
     private OpplastetVedlegg lagOpplastetVedlegg(String eier, String type, Long soknadId) {

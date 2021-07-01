@@ -19,9 +19,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import static no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
@@ -63,8 +61,8 @@ public class BosituasjonRessursTest {
 
         final BosituasjonFrontend bosituasjonFrontend = bosituasjonRessurs.hentBosituasjon(BEHANDLINGSID);
 
-        assertThat(bosituasjonFrontend.botype, nullValue());
-        assertThat(bosituasjonFrontend.antallPersoner, nullValue());
+        assertThat(bosituasjonFrontend.botype).isNull();
+        assertThat(bosituasjonFrontend.antallPersoner).isNull();
     }
 
     @Test
@@ -74,8 +72,8 @@ public class BosituasjonRessursTest {
 
         final BosituasjonFrontend bosituasjonFrontend = bosituasjonRessurs.hentBosituasjon(BEHANDLINGSID);
 
-        assertThat(bosituasjonFrontend.botype, is(JsonBosituasjon.Botype.EIER));
-        assertThat(bosituasjonFrontend.antallPersoner, is(2));
+        assertThat(bosituasjonFrontend.botype).isEqualTo(JsonBosituasjon.Botype.EIER);
+        assertThat(bosituasjonFrontend.antallPersoner).isEqualTo(2);
     }
 
     @Test
@@ -91,9 +89,9 @@ public class BosituasjonRessursTest {
 
         final SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
         final JsonBosituasjon bosituasjon = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getBosituasjon();
-        assertThat(bosituasjon.getKilde(), is(JsonKildeBruker.BRUKER));
-        assertThat(bosituasjon.getBotype(), is(JsonBosituasjon.Botype.ANNET));
-        assertThat(bosituasjon.getAntallPersoner(), is(3));
+        assertThat(bosituasjon.getKilde()).isEqualTo(JsonKildeBruker.BRUKER);
+        assertThat(bosituasjon.getBotype()).isEqualTo(JsonBosituasjon.Botype.ANNET);
+        assertThat(bosituasjon.getAntallPersoner()).isEqualTo(3);
     }
 
     @Test
@@ -107,9 +105,9 @@ public class BosituasjonRessursTest {
 
         final SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
         final JsonBosituasjon bosituasjon = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getBosituasjon();
-        assertThat(bosituasjon.getKilde(), is(JsonKildeBruker.BRUKER));
-        assertThat(bosituasjon.getBotype(), nullValue());
-        assertThat(bosituasjon.getAntallPersoner(), nullValue());
+        assertThat(bosituasjon.getKilde()).isEqualTo(JsonKildeBruker.BRUKER);
+        assertThat(bosituasjon.getBotype()).isNull();
+        assertThat(bosituasjon.getAntallPersoner()).isNull();
     }
 
     @Test(expected = AuthorizationException.class)

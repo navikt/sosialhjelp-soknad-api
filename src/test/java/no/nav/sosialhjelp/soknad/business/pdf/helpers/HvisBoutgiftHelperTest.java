@@ -13,8 +13,7 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
@@ -45,14 +44,14 @@ public class HvisBoutgiftHelperTest {
     public void skalGjenkjenneBoutgiftstype() throws IOException {
         String compiled = handlebars.compileInline("{{#hvisBoutgift \"husleie\"}}husleie er en boutgift{{else}}ikke en boutgift{{/hvisBoutgift}}").apply(new Object());
 
-        assertThat(compiled, is("husleie er en boutgift"));
+        assertThat(compiled).isEqualTo("husleie er en boutgift");
     }
 
     @Test
     public void skalIkkeGjenkjenneBoutgiftstype() throws IOException {
         String compiled = handlebars.compileInline("{{#hvisBoutgift \"stygtVeggpanel\"}}stygtVeggpanel er en boutgift{{else}}ikke en boutgift{{/hvisBoutgift}}").apply(new Object());
 
-        assertThat(compiled, is("ikke en boutgift"));
+        assertThat(compiled).isEqualTo("ikke en boutgift");
     }
 
 }

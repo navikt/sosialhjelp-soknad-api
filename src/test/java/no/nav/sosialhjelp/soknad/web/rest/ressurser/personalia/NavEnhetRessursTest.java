@@ -36,11 +36,7 @@ import java.util.List;
 import static java.util.Collections.singletonList;
 import static no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
 import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.bydel.BydelService.BYDEL_MARKA;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.doNothing;
@@ -168,8 +164,8 @@ public class NavEnhetRessursTest {
         List<NavEnhetFrontend> navEnhetFrontends = navEnhetRessurs.hentNavEnheter(BEHANDLINGSID);
 
         assertThatEnheterAreCorrectlyConverted(navEnhetFrontends, Arrays.asList(SOKNADSMOTTAKER, SOKNADSMOTTAKER_2));
-        assertThat(navEnhetFrontends.get(0).valgt, is(true));
-        assertThat(navEnhetFrontends.get(1).valgt, is(false));
+        assertThat(navEnhetFrontends.get(0).valgt).isTrue();
+        assertThat(navEnhetFrontends.get(1).valgt).isFalse();
     }
 
     @Test
@@ -188,7 +184,7 @@ public class NavEnhetRessursTest {
         var navEnhetFrontends = navEnhetRessurs.hentNavEnheter(BEHANDLINGSID);
 
         assertThatEnheterAreCorrectlyConverted(navEnhetFrontends, singletonList(SOKNADSMOTTAKER_2));
-        assertThat(navEnhetFrontends.get(0).valgt, is(true));
+        assertThat(navEnhetFrontends.get(0).valgt).isTrue();
     }
 
     @Test
@@ -201,7 +197,7 @@ public class NavEnhetRessursTest {
         NavEnhetFrontend navEnhetFrontend = navEnhetRessurs.hentValgtNavEnhet(BEHANDLINGSID);
 
         assertThatEnhetIsCorrectlyConverted(navEnhetFrontend, SOKNADSMOTTAKER);
-        assertThat(navEnhetFrontend.valgt, is(true));
+        assertThat(navEnhetFrontend.valgt).isTrue();
     }
 
     @Test
@@ -214,7 +210,7 @@ public class NavEnhetRessursTest {
 
         List<NavEnhetFrontend> navEnhetFrontends = navEnhetRessurs.hentNavEnheter(BEHANDLINGSID);
 
-        assertTrue(navEnhetFrontends.isEmpty());
+        assertThat(navEnhetFrontends).isEmpty();
     }
 
     @Test
@@ -226,7 +222,7 @@ public class NavEnhetRessursTest {
 
         NavEnhetFrontend navEnhetFrontends = navEnhetRessurs.hentValgtNavEnhet(BEHANDLINGSID);
 
-        assertNull(navEnhetFrontends);
+        assertThat(navEnhetFrontends).isNull();
     }
 
     @Test
@@ -285,7 +281,7 @@ public class NavEnhetRessursTest {
 
     private void assertThatEnhetIsCorrectlyConverted(NavEnhetFrontend navEnhetFrontend, JsonSoknadsmottaker soknadsmottaker) {
         if (navEnhetFrontend == null) {
-            assertThat(soknadsmottaker, nullValue());
+            assertThat(soknadsmottaker).isNull();
             return;
         }
 
@@ -293,9 +289,9 @@ public class NavEnhetRessursTest {
         String enhetsnavn = kombinertnavn.substring(0, kombinertnavn.indexOf(','));
         String kommunenavn = kombinertnavn.substring(kombinertnavn.indexOf(',') + 2);
 
-        assertThat("Enhetsnavn", navEnhetFrontend.enhetsnavn, is(enhetsnavn));
-        assertThat("kommunenavn", navEnhetFrontend.kommunenavn, is(kommunenavn));
-        assertThat("enhetsnr", navEnhetFrontend.enhetsnr, is(soknadsmottaker.getEnhetsnummer()));
+        assertThat(navEnhetFrontend.enhetsnavn).isEqualTo(enhetsnavn);
+        assertThat(navEnhetFrontend.kommunenavn).isEqualTo(kommunenavn);
+        assertThat(navEnhetFrontend.enhetsnr).isEqualTo(soknadsmottaker.getEnhetsnummer());
     }
 
     private SoknadUnderArbeid catchSoknadUnderArbeidSentToOppdaterSoknadsdata() {

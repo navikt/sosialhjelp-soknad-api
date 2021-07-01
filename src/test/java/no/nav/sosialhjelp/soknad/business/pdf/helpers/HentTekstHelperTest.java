@@ -16,8 +16,7 @@ import java.util.Locale;
 import static no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SosialhjelpInformasjon.BUNDLE_NAME;
 import static no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SosialhjelpInformasjon.SOKNAD_TYPE_PREFIX;
 import static org.apache.commons.lang3.LocaleUtils.toLocale;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.atLeastOnce;
@@ -46,7 +45,7 @@ public class HentTekstHelperTest {
     public void henterTekstFraCmsTekst() throws IOException {
         String compiled = handlebars.compileInline("{{hentTekst \"test\"}}").apply(new Object());
 
-        assertThat(compiled, is("test"));
+        assertThat(compiled).isEqualTo("test");
     }
 
     @Test

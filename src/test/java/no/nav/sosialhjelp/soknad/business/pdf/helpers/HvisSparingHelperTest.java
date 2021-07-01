@@ -13,8 +13,7 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
@@ -45,14 +44,14 @@ public class HvisSparingHelperTest {
     public void skalGjenkjenneSparingstype() throws IOException {
         String compiled = handlebars.compileInline("{{#hvisSparing \"brukskonto\"}}brukskonto er en sparingstype{{else}}ikke en sparingstype{{/hvisSparing}}").apply(new Object());
 
-        assertThat(compiled, is("brukskonto er en sparingstype"));
+        assertThat(compiled).isEqualTo("brukskonto er en sparingstype");
     }
 
     @Test
     public void skalIkkeGjenkjenneSparingstype() throws IOException {
         String compiled = handlebars.compileInline("{{#hvisSparing \"skattekart\"}}skattekart er en sparingstype{{else}}ikke en sparingstype{{/hvisSparing}}").apply(new Object());
 
-        assertThat(compiled, is("ikke en sparingstype"));
+        assertThat(compiled).isEqualTo("ikke en sparingstype");
     }
 
 }
