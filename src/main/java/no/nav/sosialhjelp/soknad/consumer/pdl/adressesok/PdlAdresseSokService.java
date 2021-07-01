@@ -32,6 +32,7 @@ import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.AdresseHelper.fo
 import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.FieldName.VEGADRESSE_ADRESSENAVN;
 import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.FieldName.VEGADRESSE_HUSBOKSTAV;
 import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.FieldName.VEGADRESSE_HUSNUMMER;
+import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.FieldName.VEGADRESSE_KOMMUNENUMMER;
 import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.FieldName.VEGADRESSE_POSTNUMMER;
 import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.FieldName.VEGADRESSE_POSTSTED;
 import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.SearchRule.CONTAINS;
@@ -175,6 +176,9 @@ public class PdlAdresseSokService {
         }
         if (isNotEmpty(sokedata.poststed)) {
             criteriaList.add(criteria(VEGADRESSE_POSTSTED, WILDCARD, sokedata.poststed));
+        }
+        if (isNotEmpty(sokedata.kommunenummer)) {
+            criteriaList.add(criteria(VEGADRESSE_KOMMUNENUMMER, EQUALS, sokedata.poststed));
         }
         return criteriaList;
     }

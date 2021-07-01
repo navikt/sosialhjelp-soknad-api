@@ -147,7 +147,6 @@ public class AdresseStringSplitterTest {
         Assert.assertEquals("OSLO", result.poststed);
     }
 
-
     @Test
     public void adresseMedToBokstaver_girEksaktSokeType() {
         final Sokedata result = AdresseStringSplitter.toSokedata(null, "Sæ");

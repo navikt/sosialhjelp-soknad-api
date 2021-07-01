@@ -6,7 +6,8 @@ public enum FieldName {
     VEGADRESSE_HUSNUMMER("vegadresse.husnummer"),
     VEGADRESSE_HUSBOKSTAV("vegadresse.husbokstav"),
     VEGADRESSE_POSTNUMMER("vegadresse.postnummer"),
-    VEGADRESSE_POSTSTED("vegadresse.poststed");
+    VEGADRESSE_POSTSTED("vegadresse.poststed"),
+    VEGADRESSE_KOMMUNENUMMER("vegadresse.kommunenummer");
 
     private final String name;
 
