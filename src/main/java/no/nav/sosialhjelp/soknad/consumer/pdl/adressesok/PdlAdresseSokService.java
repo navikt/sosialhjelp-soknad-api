@@ -178,7 +178,7 @@ public class PdlAdresseSokService {
             criteriaList.add(criteria(VEGADRESSE_POSTSTED, WILDCARD, sokedata.poststed));
         }
         if (isNotEmpty(sokedata.kommunenummer)) {
-            criteriaList.add(criteria(VEGADRESSE_KOMMUNENUMMER, EQUALS, sokedata.poststed));
+            criteriaList.add(criteria(VEGADRESSE_KOMMUNENUMMER, EQUALS, sokedata.kommunenummer));
         }
         return criteriaList;
     }
