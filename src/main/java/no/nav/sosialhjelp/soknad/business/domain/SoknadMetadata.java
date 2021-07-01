@@ -18,6 +18,7 @@ public class SoknadMetadata {
     public SoknadType type;
     public SoknadMetadataInnsendingStatus status;
     public LocalDateTime opprettetDato, sistEndretDato, innsendtDato;
+    public boolean lestDittNav;
 
     @XmlRootElement
     public static class FilData {

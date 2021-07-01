@@ -95,6 +95,7 @@ public class BatchSoknadMetadataRepositoryJdbcTest {
         meta.innsendtDato = LocalDateTime.now().minusDays(dagerSiden);
         meta.opprettetDato = LocalDateTime.now().minusDays(dagerSiden);
         meta.sistEndretDato = LocalDateTime.now().minusDays(dagerSiden);
+        meta.lestDittNav = false;
 
         return meta;
     }

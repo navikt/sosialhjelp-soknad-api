@@ -37,6 +37,7 @@ public class SoknadMetadataRepositoryJdbc extends NamedParameterJdbcDaoSupport i
         m.opprettetDato = timestampTilTid(rs.getTimestamp("opprettetdato"));
         m.sistEndretDato = timestampTilTid(rs.getTimestamp("sistendretdato"));
         m.innsendtDato = timestampTilTid(rs.getTimestamp("innsendtdato"));
+        m.lestDittNav = rs.getBoolean("lest_ditt_nav");
         return m;
     };
 
@@ -147,5 +148,22 @@ public class SoknadMetadataRepositoryJdbc extends NamedParameterJdbcDaoSupport i
         String query = "SELECT * FROM soknadmetadata WHERE fnr = ? AND (innsendingstatus = ? OR innsendingstatus = ?) AND innsendtdato > ? AND TILKNYTTETBEHANDLINGSID IS NULL ORDER BY innsendtdato DESC";
         return getJdbcTemplate().query(query, soknadMetadataRowMapper,
                 fnr, SoknadMetadataInnsendingStatus.FERDIG.name(), SoknadMetadataInnsendingStatus.SENDT_MED_DIGISOS_API.name(), tidTilTimestamp(tidsgrense));
+    }
+
+    @Override
+    public void oppdaterLestDittNav(SoknadMetadata soknadMetadata, String fnr) {
+        sjekkOmBrukerEierSoknadUnderArbeid(soknadMetadata, fnr);
+
+        getJdbcTemplate()
+                .update("update soknadmetadata set LEST_DITT_NAV = ? where id = ? and fnr = ?",
+                        soknadMetadata.lestDittNav,
+                        soknadMetadata.id,
+                        fnr);
+    }
+
+    private void sjekkOmBrukerEierSoknadUnderArbeid(SoknadMetadata soknadMetadata, String fnr) {
+        if (fnr == null || !fnr.equalsIgnoreCase(soknadMetadata.fnr)) {
+            throw new RuntimeException("Eier stemmer ikke med søknadens eier");
+        }
     }
 }

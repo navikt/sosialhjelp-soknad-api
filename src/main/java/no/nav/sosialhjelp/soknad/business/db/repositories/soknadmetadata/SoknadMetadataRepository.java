@@ -17,4 +17,5 @@ public interface SoknadMetadataRepository {
     List<SoknadMetadata> hentAlleInnsendteSoknaderForBruker(String fnr);
     List<SoknadMetadata> hentPabegynteSoknaderForBruker(String fnr);
     List<SoknadMetadata> hentInnsendteSoknaderForBrukerEtterTidspunkt(String fnr, LocalDateTime after);
+    void oppdaterLestDittNav(SoknadMetadata soknadMetadata, String fnr);
 }

@@ -140,6 +140,7 @@ public class DatabaseTestContext {
            st.execute("drop table SOKNAD if exists");
            st.execute("drop table VEDLEGG if exists");
            st.execute("drop table VEDLEGGSTATUS if exists");
+           st.execute("alter table SOKNADMETADATA add LEST_DITT_NAV BOOLEAN default FALSE NOT NULL");
         } catch (SQLException e) {
             throw new RuntimeException("Feil ved oppretting av databasen", e);
         }

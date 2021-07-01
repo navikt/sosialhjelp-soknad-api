@@ -37,6 +37,7 @@ public class BatchSoknadMetadataRepositoryJdbc extends NamedParameterJdbcDaoSupp
         m.opprettetDato = timestampTilTid(rs.getTimestamp("opprettetdato"));
         m.sistEndretDato = timestampTilTid(rs.getTimestamp("sistendretdato"));
         m.innsendtDato = timestampTilTid(rs.getTimestamp("innsendtdato"));
+        m.lestDittNav = rs.getBoolean("lest_ditt_nav");
         return m;
     };
 
