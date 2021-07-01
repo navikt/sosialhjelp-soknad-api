@@ -84,13 +84,10 @@ public class PdlAdresseSokService {
         if (sokedata == null || isAddressTooShortOrNull(sokedata.adresse)) {
             return Collections.emptyList();
         }
-
         var adresseSokResult = pdlAdresseSokConsumer.getAdresseSokResult(toVariablesForFritekstSok(sokedata));
-        var adresser = adresseSokResult.getHits().stream()
+        return adresseSokResult.getHits().stream()
                 .map(AdresseSokHit::getVegadresse)
                 .collect(Collectors.toList());
-        log.info("Fant {} treff i adressesok for sokedata = {}", adresser.size(), sokedata);
-        return adresser;
     }
 
     private VegadresseDto resolveVegadresse(List<AdresseSokHit> hits) {
