@@ -12,9 +12,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.io.IOException;
 import java.util.Locale;
 
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -44,15 +42,15 @@ public class SettInnHjelpetekstHelperTest {
 
         String compiled = handlebars.compileInline("{{{settInnHjelpetekst \"testTekst\"}}}").apply(new Object());
 
-        assertThat(compiled, containsString("Hjelpetekst:"));
-        assertThat(compiled, containsString("Lorem ipsum"));
+        assertThat(compiled).contains("Hjelpetekst:");
+        assertThat(compiled).contains("Lorem ipsum");
     }
     
     @Test
     public void skalReturnereTomStrengHvisIkkeHjelpetekstFinnes() throws IOException {
         String compiled = handlebars.compileInline("{{{settInnHjelpetekst \"testTekst\"}}}").apply(new Object());
 
-        assertThat(compiled, is(""));
+        assertThat(compiled).isEqualTo("");
     }
 
 }

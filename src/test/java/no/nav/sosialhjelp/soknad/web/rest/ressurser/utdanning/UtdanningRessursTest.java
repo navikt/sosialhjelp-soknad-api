@@ -20,9 +20,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import static no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
@@ -67,8 +65,8 @@ public class UtdanningRessursTest {
 
         final UtdanningFrontend utdanningFrontend = utdanningRessurs.hentUtdanning(BEHANDLINGSID);
         
-        assertThat(utdanningFrontend.erStudent, nullValue());
-        assertThat(utdanningFrontend.studengradErHeltid, nullValue());
+        assertThat(utdanningFrontend.erStudent).isNull();
+        assertThat(utdanningFrontend.studengradErHeltid).isNull();
     }
 
     @Test
@@ -78,8 +76,8 @@ public class UtdanningRessursTest {
 
         final UtdanningFrontend utdanningFrontend = utdanningRessurs.hentUtdanning(BEHANDLINGSID);
         
-        assertThat(utdanningFrontend.erStudent, is(Boolean.FALSE));
-        assertThat(utdanningFrontend.studengradErHeltid, nullValue());
+        assertThat(utdanningFrontend.erStudent).isEqualTo(Boolean.FALSE);
+        assertThat(utdanningFrontend.studengradErHeltid).isNull();
     }
 
     @Test
@@ -89,8 +87,8 @@ public class UtdanningRessursTest {
 
         final UtdanningFrontend utdanningFrontend = utdanningRessurs.hentUtdanning(BEHANDLINGSID);
         
-        assertThat(utdanningFrontend.erStudent, is(Boolean.TRUE));
-        assertThat(utdanningFrontend.studengradErHeltid, nullValue());
+        assertThat(utdanningFrontend.erStudent).isEqualTo(Boolean.TRUE);
+        assertThat(utdanningFrontend.studengradErHeltid).isNull();
     }
 
     @Test
@@ -100,8 +98,8 @@ public class UtdanningRessursTest {
 
         final UtdanningFrontend utdanningFrontend = utdanningRessurs.hentUtdanning(BEHANDLINGSID);
         
-        assertThat(utdanningFrontend.erStudent, is(Boolean.TRUE));
-        assertThat(utdanningFrontend.studengradErHeltid, is(Boolean.TRUE));
+        assertThat(utdanningFrontend.erStudent).isEqualTo(Boolean.TRUE);
+        assertThat(utdanningFrontend.studengradErHeltid).isEqualTo(Boolean.TRUE);
     }
 
     @Test
@@ -111,8 +109,8 @@ public class UtdanningRessursTest {
 
         final UtdanningFrontend utdanningFrontend = utdanningRessurs.hentUtdanning(BEHANDLINGSID);
         
-        assertThat(utdanningFrontend.erStudent, is(Boolean.TRUE));
-        assertThat(utdanningFrontend.studengradErHeltid, is(Boolean.FALSE));
+        assertThat(utdanningFrontend.erStudent).isEqualTo(Boolean.TRUE);
+        assertThat(utdanningFrontend.studengradErHeltid).isEqualTo(Boolean.FALSE);
     }
 
     @Test
@@ -127,9 +125,9 @@ public class UtdanningRessursTest {
 
         final SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
         final JsonUtdanning utdanning = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getUtdanning();
-        assertThat(utdanning.getKilde(), is(JsonKilde.BRUKER));
-        assertThat(utdanning.getErStudent(), is(Boolean.TRUE));
-        assertThat(utdanning.getStudentgrad(), nullValue());
+        assertThat(utdanning.getKilde()).isEqualTo(JsonKilde.BRUKER);
+        assertThat(utdanning.getErStudent()).isEqualTo(Boolean.TRUE);
+        assertThat(utdanning.getStudentgrad()).isNull();
     }
 
     @Test
@@ -145,9 +143,9 @@ public class UtdanningRessursTest {
 
         final SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
         final JsonUtdanning utdanning = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getUtdanning();
-        assertThat(utdanning.getKilde(), is(JsonKilde.BRUKER));
-        assertThat(utdanning.getErStudent(), is(Boolean.TRUE));
-        assertThat(utdanning.getStudentgrad(), is(JsonUtdanning.Studentgrad.HELTID));
+        assertThat(utdanning.getKilde()).isEqualTo(JsonKilde.BRUKER);
+        assertThat(utdanning.getErStudent()).isEqualTo(Boolean.TRUE);
+        assertThat(utdanning.getStudentgrad()).isEqualTo(JsonUtdanning.Studentgrad.HELTID);
     }
 
     @Test
@@ -163,9 +161,9 @@ public class UtdanningRessursTest {
 
         final SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
         final JsonUtdanning utdanning = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getUtdanning();
-        assertThat(utdanning.getKilde(), is(JsonKilde.BRUKER));
-        assertThat(utdanning.getErStudent(), is(Boolean.FALSE));
-        assertThat(utdanning.getStudentgrad(), nullValue());
+        assertThat(utdanning.getKilde()).isEqualTo(JsonKilde.BRUKER);
+        assertThat(utdanning.getErStudent()).isEqualTo(Boolean.FALSE);
+        assertThat(utdanning.getStudentgrad()).isNull();
     }
 
     @Test(expected = AuthorizationException.class)

@@ -67,7 +67,6 @@ public class BostotteSystemdataTest {
         bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
 
         List<JsonOkonomiOpplysningUtbetaling> utbetalinger = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getUtbetaling();
-        assertThat(utbetalinger).isNotEmpty();
         assertThat(utbetalinger).hasSize(1);
         JsonOkonomiOpplysningUtbetaling utbetaling = utbetalinger.get(0);
         assertThatUtbetalingErKorrekt(mottaker, netto, utbetaling, utbetalingsDato);
@@ -95,7 +94,6 @@ public class BostotteSystemdataTest {
         bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
 
         List<JsonOkonomiOpplysningUtbetaling> utbetalinger = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getUtbetaling();
-        assertThat(utbetalinger).isNotEmpty();
         assertThat(utbetalinger).hasSize(1);
         JsonOkonomiOpplysningUtbetaling utbetaling1 = utbetalinger.get(0);
         assertThatUtbetalingErKorrekt(mottaker, netto2, utbetaling1, utbetalingsDato);
@@ -119,7 +117,6 @@ public class BostotteSystemdataTest {
         bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
 
         List<JsonBostotteSak> saker = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getBostotte().getSaker();
-        assertThat(saker).isNotEmpty();
         assertThat(saker).hasSize(1);
         JsonBostotteSak sak = saker.get(0);
         assertThat(sak.getKilde()).isEqualTo(JsonKildeSystem.SYSTEM);
@@ -149,7 +146,6 @@ public class BostotteSystemdataTest {
         bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
 
         List<JsonBostotteSak> saker = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getBostotte().getSaker();
-        assertThat(saker).isNotEmpty();
         assertThat(saker).hasSize(2);
         JsonBostotteSak sak1 = saker.get(0);
         JsonBostotteSak sak2 = saker.get(1);
@@ -238,7 +234,6 @@ public class BostotteSystemdataTest {
         bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid1, "");
 
         List<JsonBostotteSak> saker1 = soknadUnderArbeid1.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getBostotte().getSaker();
-        assertThat(saker1).isNotEmpty();
         assertThat(saker1).hasSize(1);
 
         // Kjøring:
@@ -269,7 +264,6 @@ public class BostotteSystemdataTest {
         bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
 
         List<JsonBostotteSak> saker = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getBostotte().getSaker();
-        assertThat(saker).isNotEmpty();
         assertThat(saker).hasSize(1);
         JsonBostotteSak sak1 = saker.get(0);
         assertThat(sak1.getStatus()).isEqualToIgnoringCase(sakerDto1.getStatus().toString());
@@ -294,7 +288,6 @@ public class BostotteSystemdataTest {
         bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
 
         List<JsonOkonomiOpplysningUtbetaling> utbetalinger = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getUtbetaling();
-        assertThat(utbetalinger).isNotEmpty();
         assertThat(utbetalinger).hasSize(1);
         JsonOkonomiOpplysningUtbetaling utbetaling = utbetalinger.get(0);
         assertThat(utbetaling.getNetto()).isEqualTo(utbetalingerDto1.getBelop().longValue());
@@ -319,7 +312,6 @@ public class BostotteSystemdataTest {
         bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
 
         List<JsonBostotteSak> saker = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getBostotte().getSaker();
-        assertThat(saker).isNotEmpty();
         assertThat(saker).hasSize(1);
         JsonBostotteSak sak1 = saker.get(0);
         assertThat(sak1.getStatus()).isEqualToIgnoringCase(sakerDto1.getStatus().toString());
@@ -348,7 +340,6 @@ public class BostotteSystemdataTest {
         bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
 
         List<JsonBostotteSak> saker = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getBostotte().getSaker();
-        assertThat(saker).isNotEmpty();
         assertThat(saker).hasSize(1);
         JsonBostotteSak sak1 = saker.get(0);
         assertThat(sak1.getStatus()).isEqualToIgnoringCase(sakerDto2.getStatus().toString());
@@ -389,7 +380,6 @@ public class BostotteSystemdataTest {
         bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid1, "");
 
         List<JsonOkonomiOpplysningUtbetaling> utbetalinger1 = soknadUnderArbeid1.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getUtbetaling();
-        assertThat(utbetalinger1).isNotEmpty();
         assertThat(utbetalinger1).hasSize(1);
 
         // Kjøring:

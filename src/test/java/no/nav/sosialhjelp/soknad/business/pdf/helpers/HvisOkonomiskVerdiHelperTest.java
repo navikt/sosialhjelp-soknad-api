@@ -13,8 +13,7 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
@@ -45,14 +44,14 @@ public class HvisOkonomiskVerdiHelperTest {
     public void skalGjenkjenneOkonomiskVerditype() throws IOException {
         String compiled = handlebars.compileInline("{{#hvisOkonomiskVerdi \"campingvogn\"}}campingvogn er en økonomisk verdi{{else}}ikke en økonomisk verdi{{/hvisOkonomiskVerdi}}").apply(new Object());
 
-        assertThat(compiled, is("campingvogn er en økonomisk verdi"));
+        assertThat(compiled).isEqualTo("campingvogn er en økonomisk verdi");
     }
 
     @Test
     public void skalIkkeGjenkjenneOkonomiskVerditype() throws IOException {
         String compiled = handlebars.compileInline("{{#hvisOkonomiskVerdi \"stygtVeggpanel\"}}stygtVeggpanel er en økonomisk verdi{{else}}ikke en økonomisk verdi{{/hvisOkonomiskVerdi}}").apply(new Object());
 
-        assertThat(compiled, is("ikke en økonomisk verdi"));
+        assertThat(compiled).isEqualTo("ikke en økonomisk verdi");
     }
 
 }

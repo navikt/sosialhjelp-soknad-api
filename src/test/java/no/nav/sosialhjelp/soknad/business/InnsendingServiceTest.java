@@ -24,9 +24,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static java.time.LocalDateTime.now;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -90,15 +88,15 @@ public class InnsendingServiceTest {
                 createJsonInternalSoknadWithOrgnrAndNavEnhetsnavn()
         ));
 
-        assertThat(sendtSoknad.getBehandlingsId(), is(BEHANDLINGSID));
-        assertThat(sendtSoknad.getTilknyttetBehandlingsId(), nullValue());
-        assertThat(sendtSoknad.getEier(), is(EIER));
-        assertThat(sendtSoknad.getOrgnummer(), is(ORGNR));
-        assertThat(sendtSoknad.getNavEnhetsnavn(), is(NAVENHETSNAVN));
-        assertThat(sendtSoknad.getBrukerOpprettetDato(), is(OPPRETTET_DATO));
-        assertThat(sendtSoknad.getBrukerFerdigDato(), is(SIST_ENDRET_DATO));
-        assertThat(sendtSoknad.getSendtDato(), nullValue());
-        assertThat(sendtSoknad.getFiksforsendelseId(), nullValue());
+        assertThat(sendtSoknad.getBehandlingsId()).isEqualTo(BEHANDLINGSID);
+        assertThat(sendtSoknad.getTilknyttetBehandlingsId()).isNull();
+        assertThat(sendtSoknad.getEier()).isEqualTo(EIER);
+        assertThat(sendtSoknad.getOrgnummer()).isEqualTo(ORGNR);
+        assertThat(sendtSoknad.getNavEnhetsnavn()).isEqualTo(NAVENHETSNAVN);
+        assertThat(sendtSoknad.getBrukerOpprettetDato()).isEqualTo(OPPRETTET_DATO);
+        assertThat(sendtSoknad.getBrukerFerdigDato()).isEqualTo(SIST_ENDRET_DATO);
+        assertThat(sendtSoknad.getSendtDato()).isNull();
+        assertThat(sendtSoknad.getFiksforsendelseId()).isNull();
     }
 
     @Test(expected = IllegalStateException.class)
@@ -111,9 +109,9 @@ public class InnsendingServiceTest {
     public void finnSendtSoknadForEttersendelseHenterMottakerinfoFraSendtSoknadVedEttersendelse() {
         SendtSoknad sendtSoknad = innsendingService.finnSendtSoknadForEttersendelse(createSoknadUnderArbeidForEttersendelse());
 
-        assertThat(sendtSoknad.getOrgnummer(), is(ORGNR));
-        assertThat(sendtSoknad.getNavEnhetsnavn(), is(NAVENHETSNAVN));
-        assertThat(sendtSoknad.getTilknyttetBehandlingsId(), is(TILKNYTTET_BEHANDLINGSID));
+        assertThat(sendtSoknad.getOrgnummer()).isEqualTo(ORGNR);
+        assertThat(sendtSoknad.getNavEnhetsnavn()).isEqualTo(NAVENHETSNAVN);
+        assertThat(sendtSoknad.getTilknyttetBehandlingsId()).isEqualTo(TILKNYTTET_BEHANDLINGSID);
     }
 
     @Test
@@ -123,8 +121,8 @@ public class InnsendingServiceTest {
 
         SendtSoknad soknadMedMottaksinfoFraMetadata = innsendingService.finnSendtSoknadForEttersendelse(createSoknadUnderArbeidForEttersendelse());
 
-        assertThat(soknadMedMottaksinfoFraMetadata.getOrgnummer(), is(ORGNR_METADATA));
-        assertThat(soknadMedMottaksinfoFraMetadata.getNavEnhetsnavn(), is(NAVENHETSNAVN_METADATA));
+        assertThat(soknadMedMottaksinfoFraMetadata.getOrgnummer()).isEqualTo(ORGNR_METADATA);
+        assertThat(soknadMedMottaksinfoFraMetadata.getNavEnhetsnavn()).isEqualTo(NAVENHETSNAVN_METADATA);
     }
 
     @Test(expected = IllegalStateException.class)

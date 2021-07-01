@@ -2,12 +2,11 @@ package no.nav.sosialhjelp.soknad.web.rest;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import no.nav.sosialhjelp.soknad.web.rest.providers.SoknadObjectMapperProvider;
-import org.hamcrest.CoreMatchers;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.junit.Test;
 
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class JerseyJacksonTest {
 
@@ -18,7 +17,7 @@ public class JerseyJacksonTest {
         SoknadObjectMapperProvider mapper = new SoknadObjectMapperProvider();
         String result = mapper.getContext(DateTime.class).writeValueAsString(date);
 
-        assertThat(result, CoreMatchers.containsString("2015-01-01T10:00:00.000Z"));
+        assertThat(result).contains("2015-01-01T10:00:00.000Z");
     }
 
 }

@@ -36,16 +36,7 @@ import static java.util.Collections.singletonList;
 import static no.nav.sosialhjelp.soknad.consumer.pdl.person.PdlPersonMapper.DOED;
 import static no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.AdressebeskyttelseDto.Gradering.STRENGT_FORTROLIG;
 import static no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.AdressebeskyttelseDto.Gradering.UGRADERT;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.emptyString;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -96,30 +87,30 @@ public class PdlPersonMapperTest {
 
         Person person = mapper.mapToPerson(pdlPerson, IDENT);
 
-        assertNotNull(person);
-        assertThat(person.getFornavn(), is(FORNAVN.toUpperCase()));
-        assertThat(person.getMellomnavn(), is(MELLOMNAVN.toUpperCase()));
-        assertThat(person.getEtternavn(), is(ETTERNAVN.toUpperCase()));
-        assertThat(person.getFnr(), is(IDENT));
-        assertThat(person.getSivilstatus(), is("gift"));
-        assertThat(person.getStatsborgerskap(), hasSize(1));
-        assertThat(person.getStatsborgerskap().get(0), is(LAND));
-        assertThat(person.getBostedsadresse().getCoAdressenavn(), is(nullValue()));
-        assertThat(person.getBostedsadresse().getVegadresse().getAdressenavn(), is("gateveien".toUpperCase()));
-        assertThat(person.getBostedsadresse().getVegadresse().getPostnummer(), is("1234"));
-        assertThat(person.getBostedsadresse().getVegadresse().getPoststed(), is("Mitt poststed".toUpperCase()));
-        assertThat(person.getBostedsadresse().getMatrikkeladresse(), is(nullValue()));
-        assertThat(person.getOppholdsadresse().getCoAdressenavn(), is("Test McTest"));
-        assertThat(person.getOppholdsadresse().getVegadresse().getAdressenavn(), is("midlertidig".toUpperCase()));
-        assertThat(person.getKontaktadresse().getCoAdressenavn(), is(nullValue()));
-        assertThat(person.getKontaktadresse().getVegadresse().getAdressenavn(), is("kontaktveien".toUpperCase()));
+        assertThat(person).isNotNull();
+        assertThat(person.getFornavn()).isEqualTo(FORNAVN.toUpperCase());
+        assertThat(person.getMellomnavn()).isEqualTo(MELLOMNAVN.toUpperCase());
+        assertThat(person.getEtternavn()).isEqualTo(ETTERNAVN.toUpperCase());
+        assertThat(person.getFnr()).isEqualTo(IDENT);
+        assertThat(person.getSivilstatus()).isEqualTo("gift");
+        assertThat(person.getStatsborgerskap()).hasSize(1);
+        assertThat(person.getStatsborgerskap().get(0)).isEqualTo(LAND);
+        assertThat(person.getBostedsadresse().getCoAdressenavn()).isNull();
+        assertThat(person.getBostedsadresse().getVegadresse().getAdressenavn()).isEqualTo("gateveien".toUpperCase());
+        assertThat(person.getBostedsadresse().getVegadresse().getPostnummer()).isEqualTo("1234");
+        assertThat(person.getBostedsadresse().getVegadresse().getPoststed()).isEqualTo("Mitt poststed".toUpperCase());
+        assertThat(person.getBostedsadresse().getMatrikkeladresse()).isNull();
+        assertThat(person.getOppholdsadresse().getCoAdressenavn()).isEqualTo("Test McTest");
+        assertThat(person.getOppholdsadresse().getVegadresse().getAdressenavn()).isEqualTo("midlertidig".toUpperCase());
+        assertThat(person.getKontaktadresse().getCoAdressenavn()).isNull();
+        assertThat(person.getKontaktadresse().getVegadresse().getAdressenavn()).isEqualTo("kontaktveien".toUpperCase());
     }
 
     @Test
     public void personNull() {
         Person person = mapper.mapToPerson(null, IDENT);
 
-        assertNull(person);
+        assertThat(person).isNull();
     }
 
     @Test
@@ -136,10 +127,10 @@ public class PdlPersonMapperTest {
 
         Person person = mapper.mapToPerson(pdlPerson, IDENT);
 
-        assertNotNull(person);
-        assertThat(person.getBostedsadresse().getVegadresse(), is(nullValue()));
-        assertThat(person.getBostedsadresse().getMatrikkeladresse(), is(notNullValue()));
-        assertThat(person.getBostedsadresse().getMatrikkeladresse().getMatrikkelId(), is("matrikkelid"));
+        assertThat(person).isNotNull();
+        assertThat(person.getBostedsadresse().getVegadresse()).isNull();
+        assertThat(person.getBostedsadresse().getMatrikkeladresse()).isNotNull();
+        assertThat(person.getBostedsadresse().getMatrikkeladresse().getMatrikkelId()).isEqualTo("matrikkelid");
     }
 
     @Test
@@ -156,8 +147,8 @@ public class PdlPersonMapperTest {
 
         Person person = mapper.mapToPerson(pdlPerson, IDENT);
 
-        assertNotNull(person);
-        assertThat(person.getBostedsadresse(), is(nullValue()));
+        assertThat(person).isNotNull();
+        assertThat(person.getBostedsadresse()).isNull();
     }
 
     @Test
@@ -174,8 +165,8 @@ public class PdlPersonMapperTest {
 
         Person person = mapper.mapToPerson(pdlPerson, IDENT);
 
-        assertNotNull(person);
-        assertThat(person.getOppholdsadresse(), is(nullValue()));
+        assertThat(person).isNotNull();
+        assertThat(person.getOppholdsadresse()).isNull();
     }
 
     @Test
@@ -198,12 +189,12 @@ public class PdlPersonMapperTest {
 
         Person person = mapper.mapToPerson(pdlPerson, IDENT);
 
-        assertNotNull(person);
-        assertThat(person.getBostedsadresse().getCoAdressenavn(), is(nullValue()));
-        assertThat(person.getBostedsadresse().getVegadresse().getAdressenavn(), is(vegadresse.getAdressenavn().toUpperCase()));
-        assertThat(person.getBostedsadresse().getMatrikkeladresse(), is(nullValue()));
-        assertThat(person.getOppholdsadresse().getCoAdressenavn(), is(nullValue()));
-        assertThat(person.getOppholdsadresse().getVegadresse().getAdressenavn(), is(annenVegadresse.getAdressenavn().toUpperCase()));
+        assertThat(person).isNotNull();
+        assertThat(person.getBostedsadresse().getCoAdressenavn()).isNull();
+        assertThat(person.getBostedsadresse().getVegadresse().getAdressenavn()).isEqualTo(vegadresse.getAdressenavn().toUpperCase());
+        assertThat(person.getBostedsadresse().getMatrikkeladresse()).isNull();
+        assertThat(person.getOppholdsadresse().getCoAdressenavn()).isNull();
+        assertThat(person.getOppholdsadresse().getVegadresse().getAdressenavn()).isEqualTo(annenVegadresse.getAdressenavn().toUpperCase());
     }
 
     @Test
@@ -226,12 +217,12 @@ public class PdlPersonMapperTest {
 
         Person person = mapper.mapToPerson(pdlPerson, IDENT);
 
-        assertNotNull(person);
-        assertThat(person.getBostedsadresse().getCoAdressenavn(), is(nullValue()));
-        assertThat(person.getBostedsadresse().getVegadresse().getAdressenavn(), is(vegadresse.getAdressenavn().toUpperCase()));
-        assertThat(person.getBostedsadresse().getMatrikkeladresse(), is(nullValue()));
-        assertThat(person.getKontaktadresse().getCoAdressenavn(), is(nullValue()));
-        assertThat(person.getKontaktadresse().getVegadresse().getAdressenavn(), is(annenVegadresse.getAdressenavn().toUpperCase()));
+        assertThat(person).isNotNull();
+        assertThat(person.getBostedsadresse().getCoAdressenavn()).isNull();
+        assertThat(person.getBostedsadresse().getVegadresse().getAdressenavn()).isEqualTo(vegadresse.getAdressenavn().toUpperCase());
+        assertThat(person.getBostedsadresse().getMatrikkeladresse()).isNull();
+        assertThat(person.getKontaktadresse().getCoAdressenavn()).isNull();
+        assertThat(person.getKontaktadresse().getVegadresse().getAdressenavn()).isEqualTo(annenVegadresse.getAdressenavn().toUpperCase());
     }
 
     @Test
@@ -251,11 +242,11 @@ public class PdlPersonMapperTest {
 
         Person person = mapper.mapToPerson(pdlPerson, IDENT);
 
-        assertNotNull(person);
-        assertThat(person.getBostedsadresse().getCoAdressenavn(), is(nullValue()));
-        assertThat(person.getBostedsadresse().getVegadresse().getAdressenavn(), is(vegadresse.getAdressenavn().toUpperCase()));
-        assertThat(person.getBostedsadresse().getMatrikkeladresse(), is(nullValue()));
-        assertThat(person.getKontaktadresse(), is(nullValue()));
+        assertThat(person).isNotNull();
+        assertThat(person.getBostedsadresse().getCoAdressenavn()).isNull();
+        assertThat(person.getBostedsadresse().getVegadresse().getAdressenavn()).isEqualTo(vegadresse.getAdressenavn().toUpperCase());
+        assertThat(person.getBostedsadresse().getMatrikkeladresse()).isNull();
+        assertThat(person.getKontaktadresse()).isNull();
     }
 
     @Test
@@ -279,14 +270,14 @@ public class PdlPersonMapperTest {
 
         Ektefelle ektefelle = mapper.mapToEktefelle(pdlEktefelle, EKTEFELLEIDENT, pdlPerson);
 
-        assertNotNull(ektefelle);
-        assertFalse(ektefelle.harIkketilgangtilektefelle());
-        assertThat(ektefelle.getFornavn(), is(FORNAVN.toUpperCase()));
-        assertThat(ektefelle.getMellomnavn(), is(MELLOMNAVN.toUpperCase()));
-        assertThat(ektefelle.getEtternavn(), is(ETTERNAVN.toUpperCase()));
-        assertThat(ektefelle.getFnr(), is(EKTEFELLEIDENT));
-        assertThat(ektefelle.getFodselsdato().toString(), is("1970-01-01"));
-        assertTrue(ektefelle.erFolkeregistrertsammen());
+        assertThat(ektefelle).isNotNull();
+        assertThat(ektefelle.harIkketilgangtilektefelle()).isFalse();
+        assertThat(ektefelle.getFornavn()).isEqualTo(FORNAVN.toUpperCase());
+        assertThat(ektefelle.getMellomnavn()).isEqualTo(MELLOMNAVN.toUpperCase());
+        assertThat(ektefelle.getEtternavn()).isEqualTo(ETTERNAVN.toUpperCase());
+        assertThat(ektefelle.getFnr()).isEqualTo(EKTEFELLEIDENT);
+        assertThat(ektefelle.getFodselsdato()).hasToString("1970-01-01");
+        assertThat(ektefelle.erFolkeregistrertsammen()).isTrue();
     }
 
     @Test
@@ -310,8 +301,8 @@ public class PdlPersonMapperTest {
 
         Ektefelle ektefelle = mapper.mapToEktefelle(pdlEktefelle, EKTEFELLEIDENT, pdlPerson);
 
-        assertNotNull(ektefelle);
-        assertFalse(ektefelle.erFolkeregistrertsammen());
+        assertThat(ektefelle).isNotNull();
+        assertThat(ektefelle.erFolkeregistrertsammen()).isFalse();
     }
 
     @Test
@@ -335,8 +326,8 @@ public class PdlPersonMapperTest {
 
         Ektefelle ektefelle = mapper.mapToEktefelle(pdlEktefelle, EKTEFELLEIDENT, pdlPerson);
 
-        assertNotNull(ektefelle);
-        assertTrue(ektefelle.erFolkeregistrertsammen());
+        assertThat(ektefelle).isNotNull();
+        assertThat(ektefelle.erFolkeregistrertsammen()).isTrue();
     }
 
     @Test
@@ -360,14 +351,14 @@ public class PdlPersonMapperTest {
 
         Ektefelle ektefelle = mapper.mapToEktefelle(pdlEktefelle, EKTEFELLEIDENT, pdlPerson);
 
-        assertNotNull(ektefelle);
-        assertTrue(ektefelle.harIkketilgangtilektefelle());
-        assertNull(ektefelle.getFornavn());
-        assertNull(ektefelle.getMellomnavn());
-        assertNull(ektefelle.getEtternavn());
-        assertNull(ektefelle.getFnr());
-        assertNull(ektefelle.getFodselsdato());
-        assertFalse(ektefelle.erFolkeregistrertsammen());
+        assertThat(ektefelle).isNotNull();
+        assertThat(ektefelle.harIkketilgangtilektefelle()).isTrue();
+        assertThat(ektefelle.getFornavn()).isNull();
+        assertThat(ektefelle.getMellomnavn()).isNull();
+        assertThat(ektefelle.getEtternavn()).isNull();
+        assertThat(ektefelle.getFnr()).isNull();
+        assertThat(ektefelle.getFodselsdato()).isNull();
+        assertThat(ektefelle.erFolkeregistrertsammen()).isFalse();
     }
 
     @Test
@@ -384,7 +375,7 @@ public class PdlPersonMapperTest {
 
         Ektefelle ektefelle = mapper.mapToEktefelle(null, EKTEFELLEIDENT, pdlPerson);
 
-        assertNull(ektefelle);
+        assertThat(ektefelle).isNull();
     }
 
     @Test
@@ -408,7 +399,7 @@ public class PdlPersonMapperTest {
 
         Ektefelle ektefelle = mapper.mapToEktefelle(pdlEktefelle, EKTEFELLEIDENT, pdlPerson);
 
-        assertFalse(ektefelle.erFolkeregistrertsammen());
+        assertThat(ektefelle.erFolkeregistrertsammen()).isFalse();
     }
 
     @Test
@@ -432,7 +423,7 @@ public class PdlPersonMapperTest {
 
         Ektefelle ektefelle = mapper.mapToEktefelle(pdlEktefelle, EKTEFELLEIDENT, pdlPerson);
 
-        assertFalse(ektefelle.erFolkeregistrertsammen());
+        assertThat(ektefelle.erFolkeregistrertsammen()).isFalse();
     }
 
     @Test
@@ -456,7 +447,7 @@ public class PdlPersonMapperTest {
 
         Ektefelle ektefelle = mapper.mapToEktefelle(pdlEktefelle, EKTEFELLEIDENT, pdlPerson);
 
-        assertTrue(ektefelle.erFolkeregistrertsammen());
+        assertThat(ektefelle.erFolkeregistrertsammen()).isTrue();
     }
 
     @Test
@@ -481,13 +472,13 @@ public class PdlPersonMapperTest {
 
         Barn barn = mapper.mapToBarn(pdlBarn, BARNIDENT, pdlPerson);
 
-        assertNotNull(barn);
-        assertThat(barn.getFornavn(), is(FORNAVN.toUpperCase()));
-        assertThat(barn.getMellomnavn(), is(emptyString()));
-        assertThat(barn.getEtternavn(), is(ETTERNAVN.toUpperCase()));
-        assertThat(barn.getFnr(), is(BARNIDENT));
-        assertThat(barn.getFodselsdato().toString(), is(new org.joda.time.LocalDate(FOEDSELSDATO_BARN.getYear(), FOEDSELSDATO_BARN.getMonthValue(), FOEDSELSDATO_BARN.getDayOfMonth()).toString()));
-        assertTrue(barn.erFolkeregistrertsammen());
+        assertThat(barn).isNotNull();
+        assertThat(barn.getFornavn()).isEqualTo(FORNAVN.toUpperCase());
+        assertThat(barn.getMellomnavn()).isBlank();
+        assertThat(barn.getEtternavn()).isEqualTo(ETTERNAVN.toUpperCase());
+        assertThat(barn.getFnr()).isEqualTo(BARNIDENT);
+        assertThat(barn.getFodselsdato()).hasToString(new org.joda.time.LocalDate(FOEDSELSDATO_BARN.getYear(), FOEDSELSDATO_BARN.getMonthValue(), FOEDSELSDATO_BARN.getDayOfMonth()).toString());
+        assertThat(barn.erFolkeregistrertsammen()).isTrue();
     }
 
     @Test
@@ -512,7 +503,7 @@ public class PdlPersonMapperTest {
 
         Barn barn = mapper.mapToBarn(pdlBarn, BARNIDENT, pdlPerson);
 
-        assertNull(barn);
+        assertThat(barn).isNull();
     }
 
     @Test
@@ -537,7 +528,7 @@ public class PdlPersonMapperTest {
 
         Barn barn = mapper.mapToBarn(pdlBarn, BARNIDENT, pdlPerson);
 
-        assertNull(barn);
+        assertThat(barn).isNull();
     }
 
     @Test
@@ -562,7 +553,7 @@ public class PdlPersonMapperTest {
 
         Barn barn = mapper.mapToBarn(pdlBarn, BARNIDENT, pdlPerson);
 
-        assertNull(barn);
+        assertThat(barn).isNull();
     }
 
     @Test
@@ -587,7 +578,7 @@ public class PdlPersonMapperTest {
 
         Barn barn = mapper.mapToBarn(pdlBarn, BARNIDENT, pdlPerson);
 
-        assertFalse(barn.erFolkeregistrertsammen());
+        assertThat(barn.erFolkeregistrertsammen()).isFalse();
     }
 
     @Test
@@ -612,7 +603,7 @@ public class PdlPersonMapperTest {
 
         Barn barn = mapper.mapToBarn(pdlBarn, BARNIDENT, pdlPerson);
 
-        assertFalse(barn.erFolkeregistrertsammen());
+        assertThat(barn.erFolkeregistrertsammen()).isFalse();
     }
 
     @Test
@@ -635,9 +626,9 @@ public class PdlPersonMapperTest {
         var pdlBarn_dagenBarnBlirMyndig = createBarnMedFoedselsdato(dagenBarnBlirMyndig);
         var pdlBarn_dagenEtterBarnBlirMyndig = createBarnMedFoedselsdato(dagenEtterBarnBlirMyndig);
 
-        assertNotNull(mapper.mapToBarn(pdlBarn_dagenFoerBarnBlirMyndig, BARNIDENT, pdlPerson));
-        assertNull(mapper.mapToBarn(pdlBarn_dagenBarnBlirMyndig, BARNIDENT, pdlPerson));
-        assertNull(mapper.mapToBarn(pdlBarn_dagenEtterBarnBlirMyndig, BARNIDENT, pdlPerson));
+        assertThat(mapper.mapToBarn(pdlBarn_dagenFoerBarnBlirMyndig, BARNIDENT, pdlPerson)).isNotNull();
+        assertThat(mapper.mapToBarn(pdlBarn_dagenBarnBlirMyndig, BARNIDENT, pdlPerson)).isNull();
+        assertThat(mapper.mapToBarn(pdlBarn_dagenEtterBarnBlirMyndig, BARNIDENT, pdlPerson)).isNull();
     }
 
     @Test
@@ -648,8 +639,8 @@ public class PdlPersonMapperTest {
 
         var gradering = mapper.mapToAdressebeskyttelse(pdlAdressebeskyttelse);
 
-        assertNotNull(gradering);
-        assertThat(gradering, is(STRENGT_FORTROLIG));
+        assertThat(gradering).isNotNull();
+        assertThat(gradering).isEqualTo(STRENGT_FORTROLIG);
     }
 
     @Test
@@ -660,8 +651,8 @@ public class PdlPersonMapperTest {
 
         var gradering = mapper.mapToAdressebeskyttelse(pdlAdressebeskyttelse);
 
-        assertNotNull(gradering);
-        assertThat(gradering, is(UGRADERT));
+        assertThat(gradering).isNotNull();
+        assertThat(gradering).isEqualTo(UGRADERT);
     }
 
     @Test
@@ -672,7 +663,7 @@ public class PdlPersonMapperTest {
 
         var gradering = mapper.mapToAdressebeskyttelse(pdlAdressebeskyttelse);
 
-        assertNull(gradering);
+        assertThat(gradering).isNull();
     }
 
     private VegadresseDto defaultVegadresse() {

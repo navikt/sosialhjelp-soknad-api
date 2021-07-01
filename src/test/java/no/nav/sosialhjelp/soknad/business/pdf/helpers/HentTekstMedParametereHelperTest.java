@@ -15,8 +15,7 @@ import java.util.Properties;
 import static no.nav.sosialhjelp.soknad.business.pdf.HandlebarContext.SPRAK;
 import static no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SosialhjelpInformasjon.BUNDLE_NAME;
 import static no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SosialhjelpInformasjon.SOKNAD_TYPE_PREFIX;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -44,7 +43,7 @@ public class HentTekstMedParametereHelperTest {
 
         String compiled = handlebars.compileInline("{{{hentTekstMedParametere \"" + key + "\" \"parameter\" \"verdi\"}}}").apply(new Object());
         
-        assertThat(compiled, is("<div>Parameter er satt til: verdi.</div>"));
+        assertThat(compiled).isEqualTo("<div>Parameter er satt til: verdi.</div>");
     }
 
     @Test
@@ -57,7 +56,7 @@ public class HentTekstMedParametereHelperTest {
                 "{{{hentTekstMedParametere \"" + key + "\" \"parameter1\" \"verdi1\" \"parameter2\" \"verdi2\" \"parameter3\" \"verdi3\"}}}")
                 .apply(new Object());
 
-        assertThat(compiled, is("<div>Parametere er satt til: verdi1, verdi2, verdi3.</div>"));
+        assertThat(compiled).isEqualTo("<div>Parametere er satt til: verdi1, verdi2, verdi3.</div>");
     }
     
     @Test
@@ -68,7 +67,7 @@ public class HentTekstMedParametereHelperTest {
         
         String compiled = handlebars.compileInline("{{{hentTekstMedParametere \"" + key + "\" \"parameter\"}}}").apply(new Object());
 
-        assertThat(compiled, is("<div>Parameter er satt til: {parameter}.</div>"));
+        assertThat(compiled).isEqualTo("<div>Parameter er satt til: {parameter}.</div>");
     }
     
     @Test
@@ -79,7 +78,7 @@ public class HentTekstMedParametereHelperTest {
         
         String compiled = handlebars.compileInline("{{{hentTekstMedParametere \"" + key + "\"}}}").apply(new Object());
 
-        assertThat(compiled, is("<div>Parameter er satt til: {parameter}.</div>"));
+        assertThat(compiled).isEqualTo("<div>Parameter er satt til: {parameter}.</div>");
     }
 
     private void lagPropertiesMedTekstOgFilnavnNokkel(String testStreng, String key) {

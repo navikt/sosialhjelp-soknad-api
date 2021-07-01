@@ -14,9 +14,7 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
 import static java.time.LocalDateTime.now;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {DbTestConfig.class})
@@ -48,7 +46,7 @@ public class SendtSoknadRepositoryJdbcTest {
     public void opprettSendtSoknadOppretterSendtSoknadIDatabasen() {
         Long sendtSoknadId = sendtSoknadRepository.opprettSendtSoknad(lagSendtSoknad(EIER), EIER);
 
-        assertThat(sendtSoknadId, notNullValue());
+        assertThat(sendtSoknadId).isNotNull();
     }
 
     @Test(expected = RuntimeException.class)
@@ -67,16 +65,16 @@ public class SendtSoknadRepositoryJdbcTest {
 
         SendtSoknad sendtSoknad = sendtSoknadRepository.hentSendtSoknad(BEHANDLINGSID, EIER).get();
 
-        assertThat(sendtSoknad.getEier(), is(EIER));
-        assertThat(sendtSoknad.getSendtSoknadId(), notNullValue());
-        assertThat(sendtSoknad.getBehandlingsId(), is(BEHANDLINGSID));
-        assertThat(sendtSoknad.getTilknyttetBehandlingsId(), is(TILKNYTTET_BEHANDLINGSID));
-        assertThat(sendtSoknad.getFiksforsendelseId(), is(FIKSFORSENDELSEID));
-        assertThat(sendtSoknad.getOrgnummer(), is(ORGNUMMER));
-        assertThat(sendtSoknad.getNavEnhetsnavn(), is(NAVENHETSNAVN));
-        assertThat(sendtSoknad.getBrukerOpprettetDato(), is(BRUKER_OPPRETTET_DATO));
-        assertThat(sendtSoknad.getBrukerFerdigDato(), is(BRUKER_FERDIG_DATO));
-        assertThat(sendtSoknad.getSendtDato(), is(SENDT_DATO));
+        assertThat(sendtSoknad.getEier()).isEqualTo(EIER);
+        assertThat(sendtSoknad.getSendtSoknadId()).isNotNull();
+        assertThat(sendtSoknad.getBehandlingsId()).isEqualTo(BEHANDLINGSID);
+        assertThat(sendtSoknad.getTilknyttetBehandlingsId()).isEqualTo(TILKNYTTET_BEHANDLINGSID);
+        assertThat(sendtSoknad.getFiksforsendelseId()).isEqualTo(FIKSFORSENDELSEID);
+        assertThat(sendtSoknad.getOrgnummer()).isEqualTo(ORGNUMMER);
+        assertThat(sendtSoknad.getNavEnhetsnavn()).isEqualTo(NAVENHETSNAVN);
+        assertThat(sendtSoknad.getBrukerOpprettetDato()).isEqualTo(BRUKER_OPPRETTET_DATO);
+        assertThat(sendtSoknad.getBrukerFerdigDato()).isEqualTo(BRUKER_FERDIG_DATO);
+        assertThat(sendtSoknad.getSendtDato()).isEqualTo(SENDT_DATO);
     }
 
     @Test
@@ -86,8 +84,8 @@ public class SendtSoknadRepositoryJdbcTest {
         sendtSoknadRepository.oppdaterSendtSoknadVedSendingTilFiks(FIKSFORSENDELSEID, BEHANDLINGSID, EIER);
 
         SendtSoknad oppdatertSendtSoknad = sendtSoknadRepository.hentSendtSoknad(BEHANDLINGSID, EIER).get();
-        assertThat(oppdatertSendtSoknad.getFiksforsendelseId(), is(FIKSFORSENDELSEID));
-        assertThat(oppdatertSendtSoknad.getSendtDato(), notNullValue());
+        assertThat(oppdatertSendtSoknad.getFiksforsendelseId()).isEqualTo(FIKSFORSENDELSEID);
+        assertThat(oppdatertSendtSoknad.getSendtDato()).isNotNull();
     }
 
     private SendtSoknad lagSendtSoknad(String eier) {

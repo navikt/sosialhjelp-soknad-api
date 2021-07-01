@@ -16,11 +16,7 @@ import java.util.Collections;
 import java.util.Map;
 
 import static no.nav.sosialhjelp.soknad.consumer.redis.CacheConstants.KOMMUNEINFO_CACHE_KEY;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasKey;
-import static org.hamcrest.Matchers.hasValue;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -40,7 +36,7 @@ public class RedisServiceTest {
         when(redisStore.get(KOMMUNEINFO_CACHE_KEY)).thenReturn(objectMapper.writeValueAsBytes(kommuneInfo));
 
         KommuneInfo cached = (KommuneInfo) redisService.get(KOMMUNEINFO_CACHE_KEY, KommuneInfo.class);
-        assertThat(cached, is(kommuneInfo));
+        assertThat(cached).isEqualTo(kommuneInfo);
     }
 
     @Test
@@ -49,8 +45,8 @@ public class RedisServiceTest {
         when(redisStore.get(KOMMUNEINFO_CACHE_KEY)).thenReturn(bytes);
 
         Map<String, KommuneInfo> cached = redisService.getKommuneInfos();
-        assertThat(cached, hasKey(kommuneInfo.getKommunenummer()));
-        assertThat(cached, hasValue(kommuneInfo));
+        assertThat(cached).containsKey(kommuneInfo.getKommunenummer());
+        assertThat(cached).containsValue(kommuneInfo);
     }
 
     @Test
@@ -58,7 +54,7 @@ public class RedisServiceTest {
         when(redisStore.get(KOMMUNEINFO_CACHE_KEY)).thenReturn(null);
 
         Map<String, KommuneInfo> map = redisService.getKommuneInfos();
-        assertThat(map, is(nullValue()));
+        assertThat(map).isNull();
     }
 
     @Test

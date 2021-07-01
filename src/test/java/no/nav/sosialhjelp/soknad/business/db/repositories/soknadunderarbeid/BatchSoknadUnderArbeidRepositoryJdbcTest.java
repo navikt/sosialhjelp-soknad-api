@@ -18,8 +18,7 @@ import javax.inject.Inject;
 import java.time.LocalDateTime;
 
 import static no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeidStatus.UNDER_ARBEID;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {DbTestConfig.class})
@@ -61,8 +60,8 @@ public class BatchSoknadUnderArbeidRepositoryJdbcTest {
 
         var soknader = batchSoknadUnderArbeidRepository.hentGamleSoknadUnderArbeidForBatch();
 
-        assertThat(soknader.size(), is(1));
-        assertThat(soknader.get(0), is(skalSlettesId));
+        assertThat(soknader).hasSize(1);
+        assertThat(soknader.get(0)).isEqualTo(skalSlettesId);
     }
 
     @Test
@@ -74,8 +73,8 @@ public class BatchSoknadUnderArbeidRepositoryJdbcTest {
 
         batchSoknadUnderArbeidRepository.slettSoknad(soknadUnderArbeid.getSoknadId());
 
-        assertThat(soknadUnderArbeidRepository.hentSoknad(soknadUnderArbeidId, EIER).isPresent(), is(false));
-        assertThat(opplastetVedleggRepository.hentVedlegg(opplastetVedleggUuid, EIER).isPresent(), is(false));
+        assertThat(soknadUnderArbeidRepository.hentSoknad(soknadUnderArbeidId, EIER)).isEmpty();
+        assertThat(opplastetVedleggRepository.hentVedlegg(opplastetVedleggUuid, EIER)).isEmpty();
     }
 
     private SoknadUnderArbeid lagSoknadUnderArbeid(String behandlingsId, int antallDagerSiden) {

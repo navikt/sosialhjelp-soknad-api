@@ -8,10 +8,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.emptyString;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -32,7 +29,7 @@ public class OrganisasjonServiceTest {
 
         String orgNavn = service.hentOrgNavn(orgnr);
 
-        assertThat(orgNavn, equalTo("Testesen A/S, andre linje"));
+        assertThat(orgNavn).isEqualTo("Testesen A/S, andre linje");
     }
 
     @Test
@@ -41,14 +38,14 @@ public class OrganisasjonServiceTest {
 
         String orgNavn = service.hentOrgNavn(orgnr);
 
-        assertThat(orgNavn, equalTo("Testesen A/S, andre linje"));
+        assertThat(orgNavn).isEqualTo("Testesen A/S, andre linje");
     }
 
     @Test
     public void skalReturnereTomStringHvisOrgnrErNull() {
         String orgNavn = service.hentOrgNavn(null);
 
-        assertThat(orgNavn, is(emptyString()));
+        assertThat(orgNavn).isBlank();
     }
 
     @Test
@@ -57,7 +54,7 @@ public class OrganisasjonServiceTest {
 
         String orgNavn = service.hentOrgNavn(orgnr);
 
-        assertThat(orgNavn, equalTo(orgnr));
+        assertThat(orgNavn).isEqualTo(orgnr);
     }
 
     @Test
@@ -66,7 +63,7 @@ public class OrganisasjonServiceTest {
 
         String orgNavn = service.hentOrgNavn(orgnr);
 
-        assertThat(orgNavn, equalTo(orgnr));
+        assertThat(orgNavn).isEqualTo(orgnr);
     }
 
     private OrganisasjonNoekkelinfoDto createOrgNoekkelinfoResponseWithNulls() {

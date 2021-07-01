@@ -6,8 +6,7 @@ import org.junit.Test;
 
 import java.io.IOException;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class FormaterDatoHelperTest {
 
@@ -23,13 +22,13 @@ public class FormaterDatoHelperTest {
     @Test
     public void skalViseDagerFormat() throws IOException {
         String compiled = handlebars.compileInline("{{formaterDato \"2015-09-16\" \"EEEE\"}}, {{formaterDato \"2015-09-20\" \"EEEE\"}}").apply(new Object());
-        assertThat(compiled, is("onsdag, søndag"));
+        assertThat(compiled).isEqualTo("onsdag, søndag");
     }
 
     @Test
     public void skalViseDagerOgDatoFormat() throws IOException {
         String compiled = handlebars.compileInline("{{formaterDato \"2015-07-21\" \"EEEE d. MMMM YYYY\"}}").apply(new Object());
-        assertThat(compiled, is("tirsdag 21. juli 2015"));
+        assertThat(compiled).isEqualTo("tirsdag 21. juli 2015");
     }
 
 }

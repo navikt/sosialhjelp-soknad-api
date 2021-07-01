@@ -41,11 +41,7 @@ import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTGIFTER_OPPVARM
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTGIFTER_STROM;
 import static no.nav.sosialhjelp.soknad.business.mappers.OkonomiMapper.setBekreftelse;
 import static no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
@@ -91,13 +87,13 @@ public class BoutgiftRessursTest {
 
         BoutgifterFrontend boutgifterFrontend = boutgiftRessurs.hentBoutgifter(BEHANDLINGSID);
         
-        assertThat(boutgifterFrontend.bekreftelse, nullValue());
-        assertFalse(boutgifterFrontend.husleie);
-        assertFalse(boutgifterFrontend.strom);
-        assertFalse(boutgifterFrontend.oppvarming);
-        assertFalse(boutgifterFrontend.kommunalAvgift);
-        assertFalse(boutgifterFrontend.boliglan);
-        assertFalse(boutgifterFrontend.annet);
+        assertThat(boutgifterFrontend.bekreftelse).isNull();
+        assertThat(boutgifterFrontend.husleie).isFalse();
+        assertThat(boutgifterFrontend.strom).isFalse();
+        assertThat(boutgifterFrontend.oppvarming).isFalse();
+        assertThat(boutgifterFrontend.kommunalAvgift).isFalse();
+        assertThat(boutgifterFrontend.boliglan).isFalse();
+        assertThat(boutgifterFrontend.annet).isFalse();
     }
 
     @Test
@@ -108,13 +104,13 @@ public class BoutgiftRessursTest {
 
         BoutgifterFrontend boutgifterFrontend = boutgiftRessurs.hentBoutgifter(BEHANDLINGSID);
 
-        assertTrue(boutgifterFrontend.bekreftelse);
-        assertTrue(boutgifterFrontend.husleie);
-        assertTrue(boutgifterFrontend.strom);
-        assertTrue(boutgifterFrontend.oppvarming);
-        assertTrue(boutgifterFrontend.kommunalAvgift);
-        assertTrue(boutgifterFrontend.boliglan);
-        assertTrue(boutgifterFrontend.annet);
+        assertThat(boutgifterFrontend.bekreftelse).isTrue();
+        assertThat(boutgifterFrontend.husleie).isTrue();
+        assertThat(boutgifterFrontend.strom).isTrue();
+        assertThat(boutgifterFrontend.oppvarming).isTrue();
+        assertThat(boutgifterFrontend.kommunalAvgift).isTrue();
+        assertThat(boutgifterFrontend.boliglan).isTrue();
+        assertThat(boutgifterFrontend.annet).isTrue();
     }
 
     @Test
@@ -124,7 +120,7 @@ public class BoutgiftRessursTest {
 
         BoutgifterFrontend boutgifterFrontend = boutgiftRessurs.hentBoutgifter(BEHANDLINGSID);
 
-        assertTrue(boutgifterFrontend.skalViseInfoVedBekreftelse);
+        assertThat(boutgifterFrontend.skalViseInfoVedBekreftelse).isTrue();
     }
 
     @Test
@@ -141,7 +137,7 @@ public class BoutgiftRessursTest {
 
         BoutgifterFrontend boutgifterFrontend = boutgiftRessurs.hentBoutgifter(BEHANDLINGSID);
 
-        assertFalse(boutgifterFrontend.skalViseInfoVedBekreftelse);
+        assertThat(boutgifterFrontend.skalViseInfoVedBekreftelse).isFalse();
     }
 
     @Test
@@ -156,7 +152,7 @@ public class BoutgiftRessursTest {
 
         BoutgifterFrontend boutgifterFrontend = boutgiftRessurs.hentBoutgifter(BEHANDLINGSID);
 
-        assertTrue(boutgifterFrontend.skalViseInfoVedBekreftelse);
+        assertThat(boutgifterFrontend.skalViseInfoVedBekreftelse).isTrue();
     }
 
     @Test
@@ -169,7 +165,7 @@ public class BoutgiftRessursTest {
 
         BoutgifterFrontend boutgifterFrontend = boutgiftRessurs.hentBoutgifter(BEHANDLINGSID);
 
-        assertTrue(boutgifterFrontend.skalViseInfoVedBekreftelse);
+        assertThat(boutgifterFrontend.skalViseInfoVedBekreftelse).isTrue();
     }
 
     @Test
@@ -191,9 +187,9 @@ public class BoutgiftRessursTest {
                 .getOkonomi().getOversikt().getUtgift();
         List<JsonOkonomiOpplysningUtgift> opplysningerBoutgifter = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData()
                 .getOkonomi().getOpplysninger().getUtgift();
-        assertFalse(boutgiftBekreftelse.getVerdi());
-        assertTrue(oversiktBoutgifter.isEmpty());
-        assertTrue(opplysningerBoutgifter.isEmpty());
+        assertThat(boutgiftBekreftelse.getVerdi()).isFalse();
+        assertThat(oversiktBoutgifter.isEmpty()).isTrue();
+        assertThat(opplysningerBoutgifter.isEmpty()).isTrue();
     }
 
     @Test
@@ -220,16 +216,16 @@ public class BoutgiftRessursTest {
                 .getOkonomi().getOversikt().getUtgift();
         List<JsonOkonomiOpplysningUtgift> opplysningerBoutgifter = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData()
                 .getOkonomi().getOpplysninger().getUtgift();
-        assertThat(boutgiftBekreftelse.getKilde(), is(JsonKilde.BRUKER));
-        assertThat(boutgiftBekreftelse.getType(), is(BEKREFTELSE_BOUTGIFTER));
-        assertTrue(boutgiftBekreftelse.getVerdi());
-        assertTrue(oversiktBoutgifter.stream().anyMatch(boutgift -> boutgift.getType().equals(UTGIFTER_HUSLEIE)));
-        assertFalse(oversiktBoutgifter.stream().anyMatch(boutgift -> boutgift.getType().equals(UTGIFTER_BOLIGLAN_AVDRAG)));
-        assertFalse(oversiktBoutgifter.stream().anyMatch(boutgift -> boutgift.getType().equals(UTGIFTER_BOLIGLAN_RENTER)));
-        assertTrue(opplysningerBoutgifter.stream().anyMatch(boutgift -> boutgift.getType().equals(UTGIFTER_STROM)));
-        assertFalse(opplysningerBoutgifter.stream().anyMatch(boutgift -> boutgift.getType().equals(UTGIFTER_KOMMUNAL_AVGIFT)));
-        assertFalse(opplysningerBoutgifter.stream().anyMatch(boutgift -> boutgift.getType().equals(UTGIFTER_OPPVARMING)));
-        assertFalse(opplysningerBoutgifter.stream().anyMatch(boutgift -> boutgift.getType().equals(UTGIFTER_ANNET_BO)));
+        assertThat(boutgiftBekreftelse.getKilde()).isEqualTo(JsonKilde.BRUKER);
+        assertThat(boutgiftBekreftelse.getType()).isEqualTo(BEKREFTELSE_BOUTGIFTER);
+        assertThat(boutgiftBekreftelse.getVerdi()).isTrue();
+        assertThat(oversiktBoutgifter.stream().anyMatch(boutgift -> boutgift.getType().equals(UTGIFTER_HUSLEIE))).isTrue();
+        assertThat(oversiktBoutgifter.stream().anyMatch(boutgift -> boutgift.getType().equals(UTGIFTER_BOLIGLAN_AVDRAG))).isFalse();
+        assertThat(oversiktBoutgifter.stream().anyMatch(boutgift -> boutgift.getType().equals(UTGIFTER_BOLIGLAN_RENTER))).isFalse();
+        assertThat(opplysningerBoutgifter.stream().anyMatch(boutgift -> boutgift.getType().equals(UTGIFTER_STROM))).isTrue();
+        assertThat(opplysningerBoutgifter.stream().anyMatch(boutgift -> boutgift.getType().equals(UTGIFTER_KOMMUNAL_AVGIFT))).isFalse();
+        assertThat(opplysningerBoutgifter.stream().anyMatch(boutgift -> boutgift.getType().equals(UTGIFTER_OPPVARMING))).isFalse();
+        assertThat(opplysningerBoutgifter.stream().anyMatch(boutgift -> boutgift.getType().equals(UTGIFTER_ANNET_BO))).isFalse();
     }
 
     @Test
@@ -256,16 +252,16 @@ public class BoutgiftRessursTest {
                 .getOkonomi().getOversikt().getUtgift();
         List<JsonOkonomiOpplysningUtgift> opplysningerBoutgifter = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData()
                 .getOkonomi().getOpplysninger().getUtgift();
-        assertThat(boutgiftBekreftelse.getKilde(), is(JsonKilde.BRUKER));
-        assertThat(boutgiftBekreftelse.getType(), is(BEKREFTELSE_BOUTGIFTER));
-        assertTrue(boutgiftBekreftelse.getVerdi());
-        assertTrue(oversiktBoutgifter.stream().anyMatch(boutgift -> boutgift.getType().equals(UTGIFTER_HUSLEIE)));
-        assertTrue(oversiktBoutgifter.stream().anyMatch(boutgift -> boutgift.getType().equals(UTGIFTER_BOLIGLAN_AVDRAG)));
-        assertTrue(oversiktBoutgifter.stream().anyMatch(boutgift -> boutgift.getType().equals(UTGIFTER_BOLIGLAN_RENTER)));
-        assertTrue(opplysningerBoutgifter.stream().anyMatch(boutgift -> boutgift.getType().equals(UTGIFTER_STROM)));
-        assertTrue(opplysningerBoutgifter.stream().anyMatch(boutgift -> boutgift.getType().equals(UTGIFTER_KOMMUNAL_AVGIFT)));
-        assertTrue(opplysningerBoutgifter.stream().anyMatch(boutgift -> boutgift.getType().equals(UTGIFTER_OPPVARMING)));
-        assertTrue(opplysningerBoutgifter.stream().anyMatch(boutgift -> boutgift.getType().equals(UTGIFTER_ANNET_BO)));
+        assertThat(boutgiftBekreftelse.getKilde()).isEqualTo(JsonKilde.BRUKER);
+        assertThat(boutgiftBekreftelse.getType()).isEqualTo(BEKREFTELSE_BOUTGIFTER);
+        assertThat(boutgiftBekreftelse.getVerdi()).isTrue();
+        assertThat(oversiktBoutgifter.stream().anyMatch(boutgift -> boutgift.getType().equals(UTGIFTER_HUSLEIE))).isTrue();
+        assertThat(oversiktBoutgifter.stream().anyMatch(boutgift -> boutgift.getType().equals(UTGIFTER_BOLIGLAN_AVDRAG))).isTrue();
+        assertThat(oversiktBoutgifter.stream().anyMatch(boutgift -> boutgift.getType().equals(UTGIFTER_BOLIGLAN_RENTER))).isTrue();
+        assertThat(opplysningerBoutgifter.stream().anyMatch(boutgift -> boutgift.getType().equals(UTGIFTER_STROM))).isTrue();
+        assertThat(opplysningerBoutgifter.stream().anyMatch(boutgift -> boutgift.getType().equals(UTGIFTER_KOMMUNAL_AVGIFT))).isTrue();
+        assertThat(opplysningerBoutgifter.stream().anyMatch(boutgift -> boutgift.getType().equals(UTGIFTER_OPPVARMING))).isTrue();
+        assertThat(opplysningerBoutgifter.stream().anyMatch(boutgift -> boutgift.getType().equals(UTGIFTER_ANNET_BO))).isTrue();
     }
 
     @Test(expected = AuthorizationException.class)

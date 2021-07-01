@@ -20,9 +20,7 @@ import static no.nav.sosialhjelp.soknad.consumer.mdc.MDCOperations.MDC_CALL_ID;
 import static no.nav.sosialhjelp.soknad.consumer.mdc.MDCOperations.MDC_CONSUMER_ID;
 import static no.nav.sosialhjelp.soknad.consumer.mdc.MDCOperations.getFromMDC;
 import static no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.HEADER_CALL_ID;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.text.StringContainsInOrder.stringContainsInOrder;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -55,7 +53,7 @@ public class MdcFilterTest {
         MdcFilter filter = new MdcFilter();
         filter.filter(request);
 
-        assertThat(getFromMDC(MDC_CALL_ID), is(MOCK_CALL_ID));
+        assertThat(getFromMDC(MDC_CALL_ID)).isEqualTo(MOCK_CALL_ID);
     }
 
     @Test
@@ -67,7 +65,7 @@ public class MdcFilterTest {
         MdcFilter filter = new MdcFilter();
         filter.filter(request);
 
-        assertThat(getFromMDC(MDC_CALL_ID), stringContainsInOrder("CallId_", "_"));
+        assertThat(getFromMDC(MDC_CALL_ID)).contains("CallId_", "_");
     }
 
     @Test
@@ -79,7 +77,7 @@ public class MdcFilterTest {
         MdcFilter filter = new MdcFilter();
         filter.filter(request);
 
-        assertThat(getFromMDC(MDC_CONSUMER_ID), is(MOCK_CONSUMER_ID));
+        assertThat(getFromMDC(MDC_CONSUMER_ID)).isEqualTo(MOCK_CONSUMER_ID);
     }
 
     @Test
@@ -98,6 +96,6 @@ public class MdcFilterTest {
         MdcFilter filter = new MdcFilter();
         filter.filter(request);
 
-        assertThat(getFromMDC(MDC_BEHANDLINGS_ID), is(MOCK_BEHANDLINGS_ID));
+        assertThat(getFromMDC(MDC_BEHANDLINGS_ID)).isEqualTo(MOCK_BEHANDLINGS_ID);
     }
 }

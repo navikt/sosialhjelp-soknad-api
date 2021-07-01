@@ -20,9 +20,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import static no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doCallRealMethod;
@@ -72,10 +70,10 @@ public class KontonummerRessursTest {
 
         final KontonummerFrontend kontonummerFrontend = kontonummerRessurs.hentKontonummer(BEHANDLINGSID);
 
-        assertThat(kontonummerFrontend.brukerutfyltVerdi, nullValue());
-        assertThat(kontonummerFrontend.systemverdi, is(KONTONUMMER_SYSTEM));
-        assertThat(kontonummerFrontend.harIkkeKonto, nullValue());
-        assertThat(kontonummerFrontend.brukerdefinert, is(false));
+        assertThat(kontonummerFrontend.brukerutfyltVerdi).isNull();
+        assertThat(kontonummerFrontend.systemverdi).isEqualTo(KONTONUMMER_SYSTEM);
+        assertThat(kontonummerFrontend.harIkkeKonto).isNull();
+        assertThat(kontonummerFrontend.brukerdefinert).isFalse();
     }
 
     @Test
@@ -86,10 +84,10 @@ public class KontonummerRessursTest {
 
         final KontonummerFrontend kontonummerFrontend = kontonummerRessurs.hentKontonummer(BEHANDLINGSID);
 
-        assertThat(kontonummerFrontend.brukerutfyltVerdi, is(KONTONUMMER_BRUKER));
-        assertThat(kontonummerFrontend.systemverdi, is(KONTONUMMER_SYSTEM));
-        assertThat(kontonummerFrontend.harIkkeKonto, nullValue());
-        assertThat(kontonummerFrontend.brukerdefinert, is(true));
+        assertThat(kontonummerFrontend.brukerutfyltVerdi).isEqualTo(KONTONUMMER_BRUKER);
+        assertThat(kontonummerFrontend.systemverdi).isEqualTo(KONTONUMMER_SYSTEM);
+        assertThat(kontonummerFrontend.harIkkeKonto).isNull();
+        assertThat(kontonummerFrontend.brukerdefinert).isTrue();
     }
 
     @Test
@@ -100,10 +98,10 @@ public class KontonummerRessursTest {
 
         final KontonummerFrontend kontonummerFrontend = kontonummerRessurs.hentKontonummer(BEHANDLINGSID);
 
-        assertThat(kontonummerFrontend.brukerutfyltVerdi, nullValue());
-        assertThat(kontonummerFrontend.systemverdi, nullValue());
-        assertThat(kontonummerFrontend.harIkkeKonto, nullValue());
-        assertThat(kontonummerFrontend.brukerdefinert, is(true));
+        assertThat(kontonummerFrontend.brukerutfyltVerdi).isNull();
+        assertThat(kontonummerFrontend.systemverdi).isNull();
+        assertThat(kontonummerFrontend.harIkkeKonto).isNull();
+        assertThat(kontonummerFrontend.brukerdefinert).isTrue();
     }
 
     @Test
@@ -118,9 +116,9 @@ public class KontonummerRessursTest {
 
         final SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
         final JsonKontonummer kontonummer = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getKontonummer();
-        assertThat(kontonummer.getKilde(), is(JsonKilde.BRUKER));
-        assertThat(kontonummer.getHarIkkeKonto(), nullValue());
-        assertThat(kontonummer.getVerdi(), is(KONTONUMMER_BRUKER));
+        assertThat(kontonummer.getKilde()).isEqualTo(JsonKilde.BRUKER);
+        assertThat(kontonummer.getHarIkkeKonto()).isNull();
+        assertThat(kontonummer.getVerdi()).isEqualTo(KONTONUMMER_BRUKER);
     }
 
     @Test
@@ -135,9 +133,9 @@ public class KontonummerRessursTest {
 
         final SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
         final JsonKontonummer kontonummer = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getKontonummer();
-        assertThat(kontonummer.getKilde(), is(JsonKilde.SYSTEM));
-        assertThat(kontonummer.getHarIkkeKonto(), nullValue());
-        assertThat(kontonummer.getVerdi(), is(KONTONUMMER_SYSTEM));
+        assertThat(kontonummer.getKilde()).isEqualTo(JsonKilde.SYSTEM);
+        assertThat(kontonummer.getHarIkkeKonto()).isNull();
+        assertThat(kontonummer.getVerdi()).isEqualTo(KONTONUMMER_SYSTEM);
     }
 
     @Test(expected = AuthorizationException.class)

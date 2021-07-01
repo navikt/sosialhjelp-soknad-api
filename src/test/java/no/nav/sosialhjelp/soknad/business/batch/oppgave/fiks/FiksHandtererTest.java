@@ -10,9 +10,8 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import static no.nav.sosialhjelp.soknad.business.batch.oppgave.OppgaveHandtererImpl.FORSTE_STEG_NY_INNSENDING;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.eq;
@@ -49,18 +48,18 @@ public class FiksHandtererTest {
         verify(fiksSender, times(1)).sendTilFiks(any(SendtSoknad.class));
         verify(innsendingService, never()).finnOgSlettSoknadUnderArbeidVedSendingTilFiks(anyString(), anyString());
         verify(innsendingService, never()).oppdaterSendtSoknadVedSendingTilFiks(anyString(), anyString(), anyString());
-        assertThat(oppgave.steg, is(22));
+        assertThat(oppgave.steg).isEqualTo(22);
 
         fiksHandterer.eksekver(oppgave);
         verify(innsendingService, times(1)).finnOgSlettSoknadUnderArbeidVedSendingTilFiks(eq(BEHANDLINGSID),
                 eq(AVSENDER));
         verify(innsendingService, never()).oppdaterSendtSoknadVedSendingTilFiks(anyString(), anyString(), anyString());
-        assertThat(oppgave.steg, is(23));
+        assertThat(oppgave.steg).isEqualTo(23);
 
         fiksHandterer.eksekver(oppgave);
         verify(innsendingService, times(1))
                 .oppdaterSendtSoknadVedSendingTilFiks(anyString(), eq(BEHANDLINGSID), eq(AVSENDER));
-        assertThat(oppgave.status, is(Oppgave.Status.FERDIG));
+        assertThat(oppgave.status).isEqualTo(Oppgave.Status.FERDIG);
 
     }
 
@@ -76,7 +75,7 @@ public class FiksHandtererTest {
         } catch (Exception e) {
         }
 
-        assertThat(oppgave.oppgaveResultat.feilmelding, is("feilmelding123"));
+        assertThat(oppgave.oppgaveResultat.feilmelding).isEqualTo("feilmelding123");
     }
 
     @Test
@@ -92,28 +91,28 @@ public class FiksHandtererTest {
         try {
             fiksHandterer.eksekver(oppgave);
         } catch (IllegalStateException ignored) { }
-        assertThat(oppgave.oppgaveResultat.feilmelding, is("Ettersendelse har svarPaForsendelseId null"));
+        assertThat(oppgave.oppgaveResultat.feilmelding).isEqualTo("Ettersendelse har svarPaForsendelseId null");
         verify(fiksSender, times(1)).sendTilFiks(any(SendtSoknad.class));
         verify(innsendingService, never()).finnOgSlettSoknadUnderArbeidVedSendingTilFiks(anyString(), anyString());
         verify(innsendingService, never()).oppdaterSendtSoknadVedSendingTilFiks(anyString(), anyString(), anyString());
-        assertThat(oppgave.steg, is(21));
+        assertThat(oppgave.steg).isEqualTo(21);
 
         fiksHandterer.eksekver(oppgave);
         verify(fiksSender, times(2)).sendTilFiks(any(SendtSoknad.class));
         verify(innsendingService, never()).finnOgSlettSoknadUnderArbeidVedSendingTilFiks(anyString(), anyString());
         verify(innsendingService, never()).oppdaterSendtSoknadVedSendingTilFiks(anyString(), anyString(), anyString());
-        assertThat(oppgave.steg, is(22));
+        assertThat(oppgave.steg).isEqualTo(22);
 
         fiksHandterer.eksekver(oppgave);
         verify(innsendingService, times(1)).finnOgSlettSoknadUnderArbeidVedSendingTilFiks(eq(BEHANDLINGSID),
                 eq(AVSENDER));
         verify(innsendingService, never()).oppdaterSendtSoknadVedSendingTilFiks(anyString(), anyString(), anyString());
-        assertThat(oppgave.steg, is(23));
+        assertThat(oppgave.steg).isEqualTo(23);
 
         fiksHandterer.eksekver(oppgave);
         verify(innsendingService, times(1))
                 .oppdaterSendtSoknadVedSendingTilFiks(anyString(), eq(BEHANDLINGSID), eq(AVSENDER));
-        assertThat(oppgave.status, is(Oppgave.Status.FERDIG));
+        assertThat(oppgave.status).isEqualTo(Oppgave.Status.FERDIG);
     }
 
     private Oppgave opprettOppgave() {

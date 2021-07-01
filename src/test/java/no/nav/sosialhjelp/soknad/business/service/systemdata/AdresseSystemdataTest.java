@@ -20,9 +20,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import static no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -51,8 +49,8 @@ public class AdresseSystemdataTest {
         var folkeregistrertAdresse = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getFolkeregistrertAdresse();
         var bostedsadresseVegadresse = personWithBostedsadresseVegadresse.getBostedsadresse().getVegadresse();
 
-        assertThat(folkeregistrertAdresse.getKilde(), is(JsonKilde.SYSTEM));
-        assertThat(folkeregistrertAdresse.getType(), is(JsonAdresse.Type.GATEADRESSE));
+        assertThat(folkeregistrertAdresse.getKilde()).isEqualTo(JsonKilde.SYSTEM);
+        assertThat(folkeregistrertAdresse.getType()).isEqualTo(JsonAdresse.Type.GATEADRESSE);
         assertThatVegadresseIsCorrectlyConverted(bostedsadresseVegadresse, folkeregistrertAdresse);
     }
 
@@ -66,12 +64,12 @@ public class AdresseSystemdataTest {
 
         var folkeregistrertAdresse = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getFolkeregistrertAdresse();
 
-        assertThat(folkeregistrertAdresse.getKilde(), is(JsonKilde.SYSTEM));
-        assertThat(folkeregistrertAdresse.getType(), is(JsonAdresse.Type.MATRIKKELADRESSE));
+        assertThat(folkeregistrertAdresse.getKilde()).isEqualTo(JsonKilde.SYSTEM);
+        assertThat(folkeregistrertAdresse.getType()).isEqualTo(JsonAdresse.Type.MATRIKKELADRESSE);
         var matrikkeladresse = (JsonMatrikkelAdresse) folkeregistrertAdresse;
         var bostedsadresse = personWithBostedsadresseMatrikkeladresse.getBostedsadresse().getMatrikkeladresse();
-        assertThat(matrikkeladresse.getBruksnummer(), is(bostedsadresse.getBruksenhetsnummer()));
-        assertThat(matrikkeladresse.getKommunenummer(), is(bostedsadresse.getKommunenummer()));
+        assertThat(matrikkeladresse.getBruksnummer()).isEqualTo(bostedsadresse.getBruksenhetsnummer());
+        assertThat(matrikkeladresse.getKommunenummer()).isEqualTo(bostedsadresse.getKommunenummer());
     }
 
     @Test
@@ -90,13 +88,13 @@ public class AdresseSystemdataTest {
         var oppholdsadresse = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getOppholdsadresse();
         var postadresse = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getPostadresse();
 
-        assertThat(folkeregistrertAdresse.getKilde(), is(JsonKilde.SYSTEM));
-        assertThat(oppholdsadresse.getKilde(), is(JsonKilde.SYSTEM));
-        assertThat(postadresse.getKilde(), is(JsonKilde.SYSTEM));
+        assertThat(folkeregistrertAdresse.getKilde()).isEqualTo(JsonKilde.SYSTEM);
+        assertThat(oppholdsadresse.getKilde()).isEqualTo(JsonKilde.SYSTEM);
+        assertThat(postadresse.getKilde()).isEqualTo(JsonKilde.SYSTEM);
 
-        assertThat(folkeregistrertAdresse.getType(), is(JsonAdresse.Type.GATEADRESSE));
-        assertThat(oppholdsadresse.getType(), is(JsonAdresse.Type.GATEADRESSE));
-        assertThat(postadresse.getType(), is(JsonAdresse.Type.GATEADRESSE));
+        assertThat(folkeregistrertAdresse.getType()).isEqualTo(JsonAdresse.Type.GATEADRESSE);
+        assertThat(oppholdsadresse.getType()).isEqualTo(JsonAdresse.Type.GATEADRESSE);
+        assertThat(postadresse.getType()).isEqualTo(JsonAdresse.Type.GATEADRESSE);
 
         var bostedsadresseVegadresse = personWithOppholdsadresse.getBostedsadresse().getVegadresse();
         var oppholdsadresseVegadresse = personWithOppholdsadresse.getOppholdsadresse().getVegadresse();
@@ -122,11 +120,11 @@ public class AdresseSystemdataTest {
         var oppholdsadresse = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getOppholdsadresse();
         var postadresse = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getPostadresse();
 
-        assertThat(folkeregistrertAdresse.getKilde(), is(JsonKilde.SYSTEM));
-        assertThat(oppholdsadresse.getKilde(), is(JsonKilde.SYSTEM));
-        assertThat(postadresse.getKilde(), is(JsonKilde.SYSTEM));
-        assertThat(folkeregistrertAdresse.equals(oppholdsadresse.withAdresseValg(null)), is(true));
-        assertThat(folkeregistrertAdresse.equals(postadresse), is(true));
+        assertThat(folkeregistrertAdresse.getKilde()).isEqualTo(JsonKilde.SYSTEM);
+        assertThat(oppholdsadresse.getKilde()).isEqualTo(JsonKilde.SYSTEM);
+        assertThat(postadresse.getKilde()).isEqualTo(JsonKilde.SYSTEM);
+        assertThat(folkeregistrertAdresse).isEqualTo(oppholdsadresse.withAdresseValg(null));
+        assertThat(folkeregistrertAdresse).isEqualTo(postadresse);
     }
 
     @Test
@@ -144,22 +142,22 @@ public class AdresseSystemdataTest {
         var oppholdsadresse = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getOppholdsadresse();
         var postadresse = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getPostadresse();
 
-        assertThat(postadresse.getAdresseValg(), nullValue());
-        assertThat(postadresse.getType(), nullValue());
-        assertThat(oppholdsadresse.getAdresseValg(), nullValue());
-        assertThat(oppholdsadresse.getType(), nullValue());
+        assertThat(postadresse.getAdresseValg()).isNull();
+        assertThat(postadresse.getType()).isNull();
+        assertThat(oppholdsadresse.getAdresseValg()).isNull();
+        assertThat(oppholdsadresse.getType()).isNull();
     }
 
     private void assertThatVegadresseIsCorrectlyConverted(Vegadresse vegadresse, JsonAdresse jsonAdresse) {
         var gateAdresse = (JsonGateAdresse) jsonAdresse;
-        assertThat(gateAdresse.getBolignummer(), is(vegadresse.getBruksenhetsnummer()));
-        assertThat(gateAdresse.getGatenavn(), is(vegadresse.getAdressenavn()));
-        assertThat(gateAdresse.getHusbokstav(), is(vegadresse.getHusbokstav()));
-        assertThat(gateAdresse.getHusnummer(), is(vegadresse.getHusnummer().toString()));
-        assertThat(gateAdresse.getKommunenummer(), is(vegadresse.getKommunenummer()));
-        assertThat(gateAdresse.getLandkode(), is("NOR"));
-        assertThat(gateAdresse.getPostnummer(), is(vegadresse.getPostnummer()));
-        assertThat(gateAdresse.getPoststed(), is(vegadresse.getPoststed()));
+        assertThat(gateAdresse.getBolignummer()).isEqualTo(vegadresse.getBruksenhetsnummer());
+        assertThat(gateAdresse.getGatenavn()).isEqualTo(vegadresse.getAdressenavn());
+        assertThat(gateAdresse.getHusbokstav()).isEqualTo(vegadresse.getHusbokstav());
+        assertThat(gateAdresse.getHusnummer()).isEqualTo(vegadresse.getHusnummer().toString());
+        assertThat(gateAdresse.getKommunenummer()).isEqualTo(vegadresse.getKommunenummer());
+        assertThat(gateAdresse.getLandkode()).isEqualTo("NOR");
+        assertThat(gateAdresse.getPostnummer()).isEqualTo(vegadresse.getPostnummer());
+        assertThat(gateAdresse.getPoststed()).isEqualTo(vegadresse.getPoststed());
 
     }
 

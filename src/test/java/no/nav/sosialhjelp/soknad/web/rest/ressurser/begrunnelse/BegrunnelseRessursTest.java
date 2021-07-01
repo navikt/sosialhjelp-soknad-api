@@ -19,8 +19,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import static no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
 import static no.nav.sosialhjelp.soknad.web.rest.ressurser.begrunnelse.BegrunnelseRessurs.BegrunnelseFrontend;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
@@ -64,8 +63,8 @@ public class BegrunnelseRessursTest {
 
         final BegrunnelseFrontend begrunnelseFrontend = begrunnelseRessurs.hentBegrunnelse(BEHANDLINGSID);
 
-        assertThat(begrunnelseFrontend.hvaSokesOm, is(""));
-        assertThat(begrunnelseFrontend.hvorforSoke, is(""));
+        assertThat(begrunnelseFrontend.hvaSokesOm).isBlank();
+        assertThat(begrunnelseFrontend.hvorforSoke).isBlank();
     }
 
     @Test
@@ -75,8 +74,8 @@ public class BegrunnelseRessursTest {
 
         final BegrunnelseFrontend begrunnelseFrontend = begrunnelseRessurs.hentBegrunnelse(BEHANDLINGSID);
 
-        assertThat(begrunnelseFrontend.hvaSokesOm, is(SOKER_OM));
-        assertThat(begrunnelseFrontend.hvorforSoke, is(SOKER_FORDI));
+        assertThat(begrunnelseFrontend.hvaSokesOm).isEqualTo(SOKER_OM);
+        assertThat(begrunnelseFrontend.hvorforSoke).isEqualTo(SOKER_FORDI);
     }
 
     @Test
@@ -92,9 +91,9 @@ public class BegrunnelseRessursTest {
 
         final SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
         final JsonBegrunnelse begrunnelse = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getBegrunnelse();
-        assertThat(begrunnelse.getKilde(), is(JsonKildeBruker.BRUKER));
-        assertThat(begrunnelse.getHvaSokesOm(), is(SOKER_OM));
-        assertThat(begrunnelse.getHvorforSoke(), is(SOKER_FORDI));
+        assertThat(begrunnelse.getKilde()).isEqualTo(JsonKildeBruker.BRUKER);
+        assertThat(begrunnelse.getHvaSokesOm()).isEqualTo(SOKER_OM);
+        assertThat(begrunnelse.getHvorforSoke()).isEqualTo(SOKER_FORDI);
     }
 
     @Test(expected = AuthorizationException.class)

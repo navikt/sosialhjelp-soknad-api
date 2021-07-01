@@ -23,9 +23,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.empty;
-import static org.hamcrest.core.Is.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -72,14 +70,14 @@ public class AdresseSokServiceTest {
         personalia.setOppholdsadresse(createGateadresse());
 
         List<AdresseForslag> adresseForslagene = adresseSokService.finnAdresseFraSoknad(personalia, JsonAdresseValg.MIDLERTIDIG.toString());
-        assertThat(adresseForslagene.size(), is(1));
+        assertThat(adresseForslagene).hasSize(1);
 
         AdresseForslag adresseForslag = adresseForslagene.get(0);
-        assertThat(adresseForslag.geografiskTilknytning, is(GEOGRAFISK_TILKNYTNING));
-        assertThat(adresseForslag.kommunenummer, is(KOMMUNENUMMER));
-        assertThat(adresseForslag.kommunenavn, is(KOMMUNENAVN1));
-        assertThat(adresseForslag.bydel, is(BYDEL));
-        assertThat(adresseForslag.type, is(GATEADRESSE));
+        assertThat(adresseForslag.geografiskTilknytning).isEqualTo(GEOGRAFISK_TILKNYTNING);
+        assertThat(adresseForslag.kommunenummer).isEqualTo(KOMMUNENUMMER);
+        assertThat(adresseForslag.kommunenavn).isEqualTo(KOMMUNENAVN1);
+        assertThat(adresseForslag.bydel).isEqualTo(BYDEL);
+        assertThat(adresseForslag.type).isEqualTo(GATEADRESSE);
     }
 
     @Test
@@ -92,13 +90,13 @@ public class AdresseSokServiceTest {
 
         var adresseForslagene = adresseSokService.finnAdresseFraSoknad(personalia, JsonAdresseValg.FOLKEREGISTRERT.toString());
 
-        assertThat(adresseForslagene.size(), is(1));
+        assertThat(adresseForslagene).hasSize(1);
 
         var adresseForslag = adresseForslagene.get(0);
-        assertThat(adresseForslag.geografiskTilknytning, is(GEOGRAFISK_TILKNYTNING));
-        assertThat(adresseForslag.kommunenummer, is(KOMMUNENUMMER));
-        assertThat(adresseForslag.kommunenavn, is(KOMMUNENAVN1));
-        assertThat(adresseForslag.type, is(GATEADRESSE));
+        assertThat(adresseForslag.geografiskTilknytning).isEqualTo(GEOGRAFISK_TILKNYTNING);
+        assertThat(adresseForslag.kommunenummer).isEqualTo(KOMMUNENUMMER);
+        assertThat(adresseForslag.kommunenavn).isEqualTo(KOMMUNENAVN1);
+        assertThat(adresseForslag.type).isEqualTo(GATEADRESSE);
 
         verifyNoInteractions(tpsAdresseSokService);
     }
@@ -110,12 +108,12 @@ public class AdresseSokServiceTest {
         personalia.setFolkeregistrertAdresse(createMatrikkeladresse());
 
         List<AdresseForslag> adresseForslagene = adresseSokService.finnAdresseFraSoknad(personalia, JsonAdresseValg.FOLKEREGISTRERT.toString());
-        assertThat(adresseForslagene.size(), is(1));
+        assertThat(adresseForslagene).hasSize(1);
 
         AdresseForslag adresseForslag = adresseForslagene.get(0);
 
-        assertThat(adresseForslag.kommunenummer, is(KOMMUNENUMMER));
-        assertThat(adresseForslag.type, is(AdresseForslagType.MATRIKKELADRESSE));
+        assertThat(adresseForslag.kommunenummer).isEqualTo(KOMMUNENUMMER);
+        assertThat(adresseForslag.type).isEqualTo(AdresseForslagType.MATRIKKELADRESSE);
         // Får kun kommunenummer som adresseforslag. Ut fra denne finner man navenhet i den lokale lista
     }
 
@@ -132,7 +130,7 @@ public class AdresseSokServiceTest {
 
         List<AdresseForslag> adresseForslagene = adresseSokService.finnAdresseFraSoknad(personalia, JsonAdresseValg.SOKNAD.toString());
 
-        assertThat(adresseForslagene, is(empty()));
+        assertThat(adresseForslagene).isEmpty();
     }
 
     @Test
@@ -148,7 +146,7 @@ public class AdresseSokServiceTest {
 
         List<AdresseForslag> adresseForslagene = adresseSokService.finnAdresseFraSoknad(personalia, JsonAdresseValg.SOKNAD.toString());
 
-        assertThat(adresseForslagene.size(), is(2));
+        assertThat(adresseForslagene).hasSize(2);
     }
 
     @Test
@@ -159,7 +157,7 @@ public class AdresseSokServiceTest {
 
         List<AdresseForslag> adresseForslagene = adresseSokService.finnAdresseFraSoknad(personalia, null);
 
-        assertThat(adresseForslagene, is(empty()));
+        assertThat(adresseForslagene).isEmpty();
     }
 
     private JsonAdresse createMatrikkeladresse(){

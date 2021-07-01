@@ -4,7 +4,7 @@ import org.junit.Test;
 
 import java.time.LocalDateTime;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class InnsendtSoknadServiceTest {
 
@@ -13,13 +13,13 @@ public class InnsendtSoknadServiceTest {
         LocalDateTime tidspunktSendt = LocalDateTime.now().minusDays(1).plusHours(2).minusMinutes(3); // (24-2)h * 60 m/h - 3 = 22*60-3 =
         long response = InnsendtSoknadService.soknadsalderIMinutter(tidspunktSendt);
 
-        assertEquals(1323, response);// (24-2)h * 60 m/h + 3 = 22*60+3
+        assertThat(response).isEqualTo(1323);// (24-2)h * 60 m/h + 3 = 22*60+3
     }
 
     @Test
     public void soknadsalderIMinutter_whenDateTimeIsNull_returnsMinusOne() {
         long response = InnsendtSoknadService.soknadsalderIMinutter(null);
 
-        assertEquals(-1, response);
+        assertThat(response).isEqualTo(-1);
     }
 }

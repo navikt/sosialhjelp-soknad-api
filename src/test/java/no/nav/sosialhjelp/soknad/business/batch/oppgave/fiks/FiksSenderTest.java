@@ -40,10 +40,7 @@ import static java.lang.System.setProperty;
 import static no.nav.sosialhjelp.soknad.business.batch.oppgave.fiks.FiksSender.ETTERSENDELSE_TIL_NAV;
 import static no.nav.sosialhjelp.soknad.business.batch.oppgave.fiks.FiksSender.SOKNAD_TIL_NAV;
 import static no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.anyBoolean;
 import static org.mockito.Mockito.anyString;
@@ -107,18 +104,18 @@ public class FiksSenderTest {
         Forsendelse forsendelse = fiksSender.opprettForsendelse(sendtSoknad, FAKE_ADRESSE);
 
         OrganisasjonDigitalAdresse adresse = (OrganisasjonDigitalAdresse) forsendelse.getMottaker().getDigitalAdresse();
-        assertThat(adresse.getOrgnr(), is(ORGNUMMER));
-        assertThat(forsendelse.getMottaker().getPostAdresse().getNavn(), is(NAVENHETSNAVN));
-        assertThat(forsendelse.getAvgivendeSystem(), is("digisos_avsender"));
-        assertThat(forsendelse.getForsendelseType(), is("nav.digisos"));
-        assertThat(forsendelse.getEksternref(), is(BEHANDLINGSID));
-        assertThat(forsendelse.isKunDigitalLevering(), is(false));
-        assertThat(forsendelse.getPrintkonfigurasjon().getBrevtype(), is(Brevtype.APOST));
-        assertThat(forsendelse.isKryptert(), is(true));
-        assertThat(forsendelse.isKrevNiva4Innlogging(), is(true));
-        assertThat(forsendelse.getSvarPaForsendelse(), nullValue());
-        assertThat(forsendelse.getDokumenter().size(), is(5));
-        assertThat(forsendelse.getMetadataFraAvleverendeSystem().getDokumentetsDato(), notNullValue());
+        assertThat(adresse.getOrgnr()).isEqualTo(ORGNUMMER);
+        assertThat(forsendelse.getMottaker().getPostAdresse().getNavn()).isEqualTo(NAVENHETSNAVN);
+        assertThat(forsendelse.getAvgivendeSystem()).isEqualTo("digisos_avsender");
+        assertThat(forsendelse.getForsendelseType()).isEqualTo("nav.digisos");
+        assertThat(forsendelse.getEksternref()).isEqualTo(BEHANDLINGSID);
+        assertThat(forsendelse.isKunDigitalLevering()).isFalse();
+        assertThat(forsendelse.getPrintkonfigurasjon().getBrevtype()).isEqualTo(Brevtype.APOST);
+        assertThat(forsendelse.isKryptert()).isTrue();
+        assertThat(forsendelse.isKrevNiva4Innlogging()).isTrue();
+        assertThat(forsendelse.getSvarPaForsendelse()).isNull();
+        assertThat(forsendelse.getDokumenter()).hasSize(5);
+        assertThat(forsendelse.getMetadataFraAvleverendeSystem().getDokumentetsDato()).isNotNull();
         verify(dokumentKrypterer, times(5)).krypterData(any());
     }
 
@@ -132,8 +129,8 @@ public class FiksSenderTest {
 
         Forsendelse forsendelse = fiksSender.opprettForsendelse(sendtSoknad, FAKE_ADRESSE);
 
-        assertThat(forsendelse.isKryptert(), is(false));
-        assertThat(forsendelse.isKrevNiva4Innlogging(), is(false));
+        assertThat(forsendelse.isKryptert()).isFalse();
+        assertThat(forsendelse.isKrevNiva4Innlogging()).isFalse();
         verify(dokumentKrypterer, never()).krypterData(any());
     }
 
@@ -145,7 +142,7 @@ public class FiksSenderTest {
 
         Forsendelse forsendelse = fiksSender.opprettForsendelse(sendtSoknad, new PostAdresse());
 
-        assertThat(forsendelse.getTittel(), is(SOKNAD_TIL_NAV));
+        assertThat(forsendelse.getTittel()).isEqualTo(SOKNAD_TIL_NAV);
     }
 
     @Test
@@ -159,7 +156,7 @@ public class FiksSenderTest {
 
         Forsendelse forsendelse = fiksSender.opprettForsendelse(sendtSoknad, new PostAdresse());
 
-        assertThat(forsendelse.getTittel(), is(ETTERSENDELSE_TIL_NAV));
+        assertThat(forsendelse.getTittel()).isEqualTo(ETTERSENDELSE_TIL_NAV);
     }
 
     @Test(expected = IllegalStateException.class)
@@ -178,12 +175,12 @@ public class FiksSenderTest {
         List<Dokument> fiksDokumenter = fiksSender.hentDokumenterFraSoknad(new SoknadUnderArbeid()
                 .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER)));
 
-        assertThat(fiksDokumenter.size(), is(5));
-        assertThat(fiksDokumenter.get(0).getFilnavn(), is("soknad.json"));
-        assertThat(fiksDokumenter.get(1).getFilnavn(), is("Soknad.pdf"));
-        assertThat(fiksDokumenter.get(2).getFilnavn(), is("vedlegg.json"));
-        assertThat(fiksDokumenter.get(3).getFilnavn(), is("Soknad-juridisk.pdf"));
-        assertThat(fiksDokumenter.get(4).getFilnavn(), is("Brukerkvittering.pdf"));
+        assertThat(fiksDokumenter).hasSize(5);
+        assertThat(fiksDokumenter.get(0).getFilnavn()).isEqualTo("soknad.json");
+        assertThat(fiksDokumenter.get(1).getFilnavn()).isEqualTo("Soknad.pdf");
+        assertThat(fiksDokumenter.get(2).getFilnavn()).isEqualTo("vedlegg.json");
+        assertThat(fiksDokumenter.get(3).getFilnavn()).isEqualTo("Soknad-juridisk.pdf");
+        assertThat(fiksDokumenter.get(4).getFilnavn()).isEqualTo("Brukerkvittering.pdf");
     }
 
     @Test
@@ -194,11 +191,11 @@ public class FiksSenderTest {
                 .withTilknyttetBehandlingsId("123")
                 .withJsonInternalSoknad(lagInternalSoknadForEttersending()));
 
-        assertThat(fiksDokumenter.size(), is(4));
-        assertThat(fiksDokumenter.get(0).getFilnavn(), is("ettersendelse.pdf"));
-        assertThat(fiksDokumenter.get(1).getFilnavn(), is("vedlegg.json"));
-        assertThat(fiksDokumenter.get(2).getFilnavn(), is("Brukerkvittering.pdf"));
-        assertThat(fiksDokumenter.get(3).getFilnavn(), is(FILNAVN));
+        assertThat(fiksDokumenter).hasSize(4);
+        assertThat(fiksDokumenter.get(0).getFilnavn()).isEqualTo("ettersendelse.pdf");
+        assertThat(fiksDokumenter.get(1).getFilnavn()).isEqualTo("vedlegg.json");
+        assertThat(fiksDokumenter.get(2).getFilnavn()).isEqualTo("Brukerkvittering.pdf");
+        assertThat(fiksDokumenter.get(3).getFilnavn()).isEqualTo(FILNAVN);
     }
 
     @Test(expected = RuntimeException.class)

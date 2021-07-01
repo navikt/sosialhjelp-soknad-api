@@ -13,8 +13,7 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
@@ -45,14 +44,14 @@ public class HvisBarneutgiftHelperTest {
     public void skalGjenkjenneBarneutgiftstype() throws IOException {
         String compiled = handlebars.compileInline("{{#hvisBarneutgift \"barnehage\"}}barnehage er en barneutgift{{else}}ikke en barneutgift{{/hvisBarneutgift}}").apply(new Object());
 
-        assertThat(compiled, is("barnehage er en barneutgift"));
+        assertThat(compiled).isEqualTo("barnehage er en barneutgift");
     }
 
     @Test
     public void skalIkkeGjenkjenneBarneutgiftstype() throws IOException {
         String compiled = handlebars.compileInline("{{#hvisBarneutgift \"gretneBarn\"}}gretneBarn er en barneutgift{{else}}ikke en barneutgift{{/hvisBarneutgift}}").apply(new Object());
 
-        assertThat(compiled, is("ikke en barneutgift"));
+        assertThat(compiled).isEqualTo("ikke en barneutgift");
     }
 
 }
