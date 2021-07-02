@@ -160,7 +160,11 @@ public class PdlAdresseSokService {
     private List<Criteria> toCriteriaListForFritekstSok(AdresseSokConsumer.Sokedata sokedata) {
         var criteriaList = new ArrayList<Criteria>();
         if (isNotEmpty(sokedata.adresse)) {
-            criteriaList.add(criteria(VEGADRESSE_ADRESSENAVN, WILDCARD, sokedata.adresse));
+            if (sokedata.adresse.length() < 3) {
+                criteriaList.add(criteria(VEGADRESSE_ADRESSENAVN, EQUALS, sokedata.adresse));
+            } else {
+                criteriaList.add(criteria(VEGADRESSE_ADRESSENAVN, WILDCARD, sokedata.adresse));
+            }
         }
         if (isNotEmpty(sokedata.husnummer)) {
             criteriaList.add(criteria(VEGADRESSE_HUSNUMMER, WILDCARD, sokedata.husnummer));
