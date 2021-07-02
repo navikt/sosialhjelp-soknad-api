@@ -41,14 +41,18 @@ public class AdresseSokService {
 
     public List<AdresseForslag> sokEtterAdresser(String sok) {
         if (unleash.isEnabled(FEATURE_PDL_ADRESSESOK_ENABLED, false)) {
-            return sokEtterAdresserPDL(sok);
+            try {
+                return sokEtterAdresserPDL(sok);
+            } catch (Exception e) {
+                log.warn("Noe uventet feilet ved kall mot PDL adressesøk -> Fallback mot TPS");
+                return sokEtterAdresserTPS(sok);
+            }
         }
         return sokEtterAdresserTPS(sok);
     }
 
     private List<AdresseForslag> sokEtterAdresserPDL(String sok) {
-        // TODO implement using pdlAdresseSokService
-        return Collections.emptyList();
+        return pdlAdresseSokService.sokEtterAdresser(sok);
     }
 
     private List<AdresseForslag> sokEtterAdresserTPS(String sok) {
@@ -59,7 +63,8 @@ public class AdresseSokService {
         var adresse = hentValgtAdresse(personalia, valg);
 
         // prøv å ta i bruk pdl adressesok ved valgt folkeregistrert adresse
-        if (FOLKEREGISTRERT.toString().equals(valg) && unleash.isEnabled(FEATURE_PDL_ADRESSESOK_VED_FOLKEREGISTRERT_ADRESSE, false)) {
+        if (unleash.isEnabled(FEATURE_PDL_ADRESSESOK_ENABLED, false)
+                || (FOLKEREGISTRERT.toString().equals(valg) && unleash.isEnabled(FEATURE_PDL_ADRESSESOK_VED_FOLKEREGISTRERT_ADRESSE, false))) {
             try {
                 return getAdresseForslagFraPDL(adresse);
             } catch (Exception e) {

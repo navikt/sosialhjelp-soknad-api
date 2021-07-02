@@ -4,7 +4,9 @@ public enum SearchRule {
 
     EQUALS("equals"),
     CONTAINS("contains"),
-    FUZZY("fuzzy");
+    FUZZY("fuzzy"),
+    FROM("from"),
+    WILDCARD("wildcard");
 
     private final String name;
 
