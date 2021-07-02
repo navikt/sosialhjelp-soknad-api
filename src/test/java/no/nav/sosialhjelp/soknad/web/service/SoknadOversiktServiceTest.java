@@ -19,9 +19,7 @@ import static java.util.Collections.singletonList;
 import static no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus.UNDER_ARBEID;
 import static no.nav.sosialhjelp.soknad.web.service.SoknadOversiktService.DEFAULT_TITTEL;
 import static no.nav.sosialhjelp.soknad.web.service.SoknadOversiktService.KILDE_SOKNAD_API;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -53,15 +51,15 @@ public class SoknadOversiktServiceTest {
 
         List<SoknadOversikt> resultat = service.hentSvarUtSoknaderFor("12345");
 
-        assertEquals(1, resultat.size());
+        assertThat(resultat).hasSize(1);
         SoknadOversikt soknad = resultat.get(0);
-        assertNull(soknad.getFiksDigisosId());
-        assertTrue(soknad.getSoknadTittel().contains(DEFAULT_TITTEL));
-        assertTrue(soknad.getSoknadTittel().contains(soknadMetadata.behandlingsId));
-        assertEquals(UNDER_ARBEID.toString(), soknad.getStatus());
-        assertEquals(Timestamp.valueOf(soknadMetadata.innsendtDato), soknad.getSistOppdatert());
-        assertNull(soknad.getAntallNyeOppgaver());
-        assertEquals(KILDE_SOKNAD_API, soknad.getKilde());
-        assertTrue(soknad.getUrl().contains(soknadMetadata.behandlingsId));
+        assertThat(soknad.getFiksDigisosId()).isNull();
+        assertThat(soknad.getSoknadTittel()).contains(DEFAULT_TITTEL);
+        assertThat(soknad.getSoknadTittel()).contains(soknadMetadata.behandlingsId);
+        assertThat(soknad.getStatus()).isEqualTo(UNDER_ARBEID.toString());
+        assertThat(soknad.getSistOppdatert()).isEqualTo(Timestamp.valueOf(soknadMetadata.innsendtDato));
+        assertThat(soknad.getAntallNyeOppgaver()).isNull();
+        assertThat(soknad.getKilde()).isEqualTo(KILDE_SOKNAD_API);
+        assertThat(soknad.getUrl()).contains(soknadMetadata.behandlingsId);
     }
 }
