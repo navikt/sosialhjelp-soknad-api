@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.consumer.adresse;
 
+import no.nav.sosialhjelp.soknad.business.service.adressesok.Sokedata;
 import no.nav.sosialhjelp.soknad.consumer.concurrency.RestCallContext;
 import no.nav.sosialhjelp.soknad.consumer.concurrency.RestCallUtils;
 import no.nav.sosialhjelp.soknad.consumer.exceptions.TjenesteUtilgjengeligException;
