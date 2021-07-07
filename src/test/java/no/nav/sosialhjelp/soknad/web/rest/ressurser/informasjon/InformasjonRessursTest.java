@@ -32,9 +32,6 @@ import java.util.Set;
 
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doThrow;
@@ -144,9 +141,9 @@ public class InformasjonRessursTest {
         List<String> manuelleKommuner = singletonList("1234");
         Map<String, InformasjonRessurs.KommuneInfoFrontend> mappedeKommuner = ressurs.mapManueltPakobledeKommuner(manuelleKommuner);
 
-        assertNotNull(mappedeKommuner.get("1234"));
-        assertTrue(mappedeKommuner.get("1234").kanMottaSoknader);
-        assertFalse(mappedeKommuner.get("1234").kanOppdatereStatus);
+        assertThat(mappedeKommuner.get("1234")).isNotNull();
+        assertThat(mappedeKommuner.get("1234").kanMottaSoknader).isTrue();
+        assertThat(mappedeKommuner.get("1234").kanOppdatereStatus).isFalse();
     }
 
     @Test
@@ -155,16 +152,16 @@ public class InformasjonRessursTest {
         digisosKommuner.put("1234", new KommuneInfo("1234", true, true, false, false, null, false, null));
         Map<String, InformasjonRessurs.KommuneInfoFrontend> mappedeKommuner = ressurs.mapDigisosKommuner(digisosKommuner);
 
-        assertNotNull(mappedeKommuner.get("1234"));
-        assertTrue(mappedeKommuner.get("1234").kanMottaSoknader);
-        assertTrue(mappedeKommuner.get("1234").kanOppdatereStatus);
+        assertThat(mappedeKommuner.get("1234")).isNotNull();
+        assertThat(mappedeKommuner.get("1234").kanMottaSoknader).isTrue();
+        assertThat(mappedeKommuner.get("1234").kanOppdatereStatus).isTrue();
     }
 
     @Test
     public void duplikatIDigisosKommuneSkalOverskriveManuellKommune() {
         List<String> manuelleKommuner = singletonList("1234");
         Map<String, InformasjonRessurs.KommuneInfoFrontend> manueltMappedeKommuner = ressurs.mapManueltPakobledeKommuner(manuelleKommuner);
-        assertFalse(manueltMappedeKommuner.get("1234").kanOppdatereStatus); // Manuelle kommuner får ikke innsyn
+        assertThat(manueltMappedeKommuner.get("1234").kanOppdatereStatus).isFalse(); // Manuelle kommuner får ikke innsyn
 
         Map<String, KommuneInfo> digisosKommuner = new HashMap<>();
         digisosKommuner.put("1234", new KommuneInfo("1234", true, true, false, false, null, false, null));
@@ -172,7 +169,7 @@ public class InformasjonRessursTest {
 
         Map<String, InformasjonRessurs.KommuneInfoFrontend> margedKommuner = ressurs.mergeManuelleKommunerMedDigisosKommuner(manueltMappedeKommuner, mappedeDigisosKommuner);
         assertThat(margedKommuner).hasSize(1);
-        assertTrue(margedKommuner.get("1234").kanOppdatereStatus);
+        assertThat(margedKommuner.get("1234").kanOppdatereStatus).isTrue();
     }
 
     @Test(expected = AuthorizationException.class)

@@ -10,8 +10,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import static java.util.Collections.singletonMap;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -33,7 +32,7 @@ public class DkifServiceTest {
 
         String response = service.hentMobiltelefonnummer(ident);
 
-        assertEquals(mobiltelefonnummer, response);
+        assertThat(response).isEqualTo(mobiltelefonnummer);
     }
 
     @Test
@@ -42,7 +41,7 @@ public class DkifServiceTest {
 
         String response = service.hentMobiltelefonnummer(ident);
 
-        assertNull(response);
+        assertThat(response).isNull();
     }
 
     @Test
@@ -51,7 +50,7 @@ public class DkifServiceTest {
 
         String response = service.hentMobiltelefonnummer(ident);
 
-        assertNull(response);
+        assertThat(response).isNull();
     }
 
     @Test
@@ -60,7 +59,7 @@ public class DkifServiceTest {
 
         String response = service.hentMobiltelefonnummer(ident);
 
-        assertNull(response);
+        assertThat(response).isNull();
     }
 
     @Test
@@ -69,7 +68,7 @@ public class DkifServiceTest {
 
         String response = service.hentMobiltelefonnummer(ident);
 
-        assertNull(response);
+        assertThat(response).isNull();
     }
 
     private DigitalKontaktinfoBolk createDigitalKontaktinfoBolk() {

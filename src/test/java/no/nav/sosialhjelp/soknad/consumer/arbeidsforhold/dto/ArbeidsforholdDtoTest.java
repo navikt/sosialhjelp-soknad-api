@@ -12,8 +12,6 @@ import java.io.InputStream;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class ArbeidsforholdDtoTest {
 
@@ -32,14 +30,14 @@ public class ArbeidsforholdDtoTest {
                 });
 
         ArbeidsforholdDto dto = arbeidsforholdDtoList.get(0);
-        assertEquals("2014-07-01", dto.getAnsettelsesperiode().getPeriode().getFom().toString());
-        assertEquals("2015-12-31", dto.getAnsettelsesperiode().getPeriode().getTom().toString());
-        assertEquals(1, dto.getArbeidsavtaler().size());
-        assertEquals(49.5, dto.getArbeidsavtaler().get(0).getStillingsprosent(), 0.0);
-        assertEquals("abc-321", dto.getArbeidsforholdId());
-        assertTrue(dto.getArbeidsgiver() instanceof OrganisasjonDto);
-        assertEquals("31126700000", dto.getArbeidstaker().getOffentligIdent());
-        assertEquals(123456L, dto.getNavArbeidsforholdId().longValue());
+        assertThat(dto.getAnsettelsesperiode().getPeriode().getFom().toString()).isEqualTo("2014-07-01");
+        assertThat(dto.getAnsettelsesperiode().getPeriode().getTom().toString()).isEqualTo("2015-12-31");
+        assertThat(dto.getArbeidsavtaler()).hasSize(1);
+        assertThat(dto.getArbeidsavtaler().get(0).getStillingsprosent()).isEqualTo(49.5);
+        assertThat(dto.getArbeidsforholdId()).isEqualTo("abc-321");
+        assertThat(dto.getArbeidsgiver()).isExactlyInstanceOf(OrganisasjonDto.class);
+        assertThat(dto.getArbeidstaker().getOffentligIdent()).isEqualTo("31126700000");
+        assertThat(dto.getNavArbeidsforholdId().longValue()).isEqualTo(123456L);
     }
 
 }

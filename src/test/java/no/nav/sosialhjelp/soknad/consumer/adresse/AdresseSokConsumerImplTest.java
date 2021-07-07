@@ -25,10 +25,8 @@ import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Function;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Fail.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -44,8 +42,8 @@ public class AdresseSokConsumerImplTest {
         final AdresseSokConsumer adresseSok = new AdresseSokConsumerImpl(simpleRestCallContext(mock), "foobar");
         final AdressesokRespons adressesokRespons = adresseSok.sokAdresse(new Sokedata().withAdresse("Testeveien"));
         
-        assertTrue(adressesokRespons.adresseDataList.isEmpty());
-        assertFalse(adressesokRespons.flereTreff);
+        assertThat(adressesokRespons.adresseDataList).isEmpty();
+        assertThat(adressesokRespons.flereTreff).isFalse();
     }
     
     @Test
@@ -87,7 +85,7 @@ public class AdresseSokConsumerImplTest {
                 .findFirst()
                 .get();
         
-        assertEquals("testverdi", logEvent.getMDCPropertyMap().get("lala"));
+        assertThat(logEvent.getMDCPropertyMap().get("lala")).isEqualTo("testverdi");
         
         listAppender.stop();
     }
@@ -133,7 +131,7 @@ public class AdresseSokConsumerImplTest {
                 adresseSok.sokAdresse(new Sokedata().withAdresse("Testsveien"));
                 fail("Forventet exception.");
             } catch (RuntimeException e) {
-                assertEquals(TimeoutException.class, e.getCause().getClass());
+                assertThat(e.getCause()).isInstanceOf(TimeoutException.class);
             }
         } finally {
             done.countDown();
