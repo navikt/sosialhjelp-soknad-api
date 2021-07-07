@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static no.nav.sosialhjelp.soknad.business.service.adressesok.AdresseForslagType.GATEADRESSE;
-import static no.nav.sosialhjelp.soknad.consumer.adresse.TpsAdresseSokService.isAddressTooShortOrNull;
+import static no.nav.sosialhjelp.soknad.consumer.adresse.AdresseStringSplitter.isAddressTooShortOrNull;
 import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.AdresseHelper.formatterKommunenavn;
 import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.FieldName.VEGADRESSE_ADRESSENAVN;
 import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.FieldName.VEGADRESSE_HUSBOKSTAV;

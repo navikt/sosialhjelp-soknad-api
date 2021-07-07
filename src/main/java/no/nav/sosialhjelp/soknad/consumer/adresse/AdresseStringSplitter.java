@@ -7,7 +7,7 @@ import no.nav.sosialhjelp.soknad.consumer.kodeverk.KodeverkService;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static no.nav.sosialhjelp.soknad.consumer.adresse.TpsAdresseSokService.isAddressTooShortOrNull;
+//import static no.nav.sosialhjelp.soknad.consumer.adresse.TpsAdresseSokService.isAddressTooShortOrNull;
 
 
 public final class AdresseStringSplitter {
@@ -72,5 +72,7 @@ public final class AdresseStringSplitter {
         return null;
     }
 
-
+    public static boolean isAddressTooShortOrNull(String address) {
+        return address == null || address.trim().length() < 2;
+    }
 }
