@@ -5,7 +5,7 @@ import org.junit.Test;
 
 import static no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler.getSubjectHandlerService;
 import static no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler.setSubjectHandlerService;
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class SubjectHandlerTest {
 
@@ -31,6 +31,6 @@ public class SubjectHandlerTest {
     public void setSubjectHandlerService_lokalt_skalSetteSubjectHandler() {
         System.setProperty("environment.name", "local");
         setSubjectHandlerService(new StaticSubjectHandlerService());
-        assertEquals(StaticSubjectHandlerService.class, getSubjectHandlerService().getClass());
+        assertThat(getSubjectHandlerService()).isExactlyInstanceOf(StaticSubjectHandlerService.class);
     }
 }
