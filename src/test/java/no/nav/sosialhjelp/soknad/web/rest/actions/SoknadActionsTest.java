@@ -26,7 +26,6 @@ import no.nav.sosialhjelp.soknad.web.config.SoknadActionsTestConfig;
 import no.nav.sosialhjelp.soknad.web.sikkerhet.Tilgangskontroll;
 import no.nav.sosialhjelp.soknad.web.utils.NedetidUtils;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,6 +40,7 @@ import java.util.Locale;
 import static no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
 import static no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus.SENDT_MED_DIGISOS_API;
 import static no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus.UNDER_ARBEID;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -270,7 +270,7 @@ public class SoknadActionsTest {
     public void getKommunenummerOrMockMedMockEnableSkalReturnereMock() {
         System.setProperty("digisosapi.sending.alltidTilTestkommune.enable", "true");
         String kommunenummer = actions.getKommunenummerOrMock(new SoknadUnderArbeid());
-        Assert.assertEquals(TESTKOMMUNE, kommunenummer);
+        assertThat(kommunenummer).isEqualTo(TESTKOMMUNE);
     }
 
     @Test
@@ -281,7 +281,7 @@ public class SoknadActionsTest {
 
         String kommunenummer = actions.getKommunenummerOrMock(soknadUnderArbeid);
 
-        Assert.assertEquals(expectedKommunenummer, kommunenummer);
+        assertThat(kommunenummer).isEqualTo(expectedKommunenummer);
     }
 
     @Test(expected = AuthorizationException.class)
