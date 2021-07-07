@@ -12,8 +12,6 @@ import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
@@ -48,7 +46,7 @@ public class STSConsumerTest {
         assertThat(fssToken.getAccessToken()).isEqualTo("asdf");
         assertThat(fssToken.getTokenType()).isEqualTo("type");
         assertThat(fssToken.getExpiresIn()).isEqualTo(3600L);
-        assertFalse(fssToken.isExpired());
+        assertThat(fssToken.isExpired()).isFalse();
     }
 
     @Test
@@ -77,7 +75,7 @@ public class STSConsumerTest {
 
         verify(request, times(1)).get(FssToken.class);
         verify(client, times(1)).target(anyString());
-        assertTrue(first.isExpired());
+        assertThat(first.isExpired()).isTrue();
 
         // token som er ikke har gått ut
         when(request.get(FssToken.class)).thenReturn(new FssToken("qwer", "type", 61L));
@@ -86,7 +84,7 @@ public class STSConsumerTest {
 
         verify(request, times(2)).get(FssToken.class);
         verify(client, times(2)).target(anyString());
-        assertFalse(second.isExpired());
+        assertThat(second.isExpired()).isFalse();
 
         assertThat(second).isNotEqualTo(first);
     }

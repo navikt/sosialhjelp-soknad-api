@@ -12,8 +12,6 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 public class PdlBarnResponseTest {
 
@@ -29,7 +27,7 @@ public class PdlBarnResponseTest {
 
         HentPersonResponse<PdlBarn> pdlBarnResponse = mapper.readValue(jsonString, new TypeReference<HentPersonResponse<PdlBarn>>() {});
 
-        assertNotNull(pdlBarnResponse);
-        assertEquals(AdressebeskyttelseDto.Gradering.UGRADERT, pdlBarnResponse.getData().getHentPerson().getAdressebeskyttelse().get(0).getGradering());
+        assertThat(pdlBarnResponse).isNotNull();
+        assertThat(pdlBarnResponse.getData().getHentPerson().getAdressebeskyttelse().get(0).getGradering()).isEqualTo(AdressebeskyttelseDto.Gradering.UGRADERT);
     }
 }

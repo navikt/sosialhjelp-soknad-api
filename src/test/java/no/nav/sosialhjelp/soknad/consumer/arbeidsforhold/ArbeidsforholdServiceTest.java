@@ -22,9 +22,7 @@ import java.util.stream.Collectors;
 import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE;
 import static java.util.Arrays.stream;
 import static java.util.Collections.singletonList;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -58,13 +56,13 @@ public class ArbeidsforholdServiceTest {
         List<Arbeidsforhold> arbeidsforholdList = service.hentArbeidsforhold(fnr);
         Arbeidsforhold arbeidsforhold = arbeidsforholdList.get(0);
 
-        assertEquals(orgNavn, arbeidsforhold.arbeidsgivernavn);
-        assertTrue(arbeidsforhold.harFastStilling);
-        assertEquals(100L, arbeidsforhold.fastStillingsprosent.longValue());
-        assertEquals(orgnr, arbeidsforhold.orgnr);
-        assertEquals(fom.format(ISO_LOCAL_DATE), arbeidsforhold.fom);
-        assertEquals(tom.format(ISO_LOCAL_DATE), arbeidsforhold.tom);
-        assertEquals(1337L, arbeidsforhold.edagId.longValue());
+        assertThat(arbeidsforhold.arbeidsgivernavn).isEqualTo(orgNavn);
+        assertThat(arbeidsforhold.harFastStilling).isTrue();
+        assertThat(arbeidsforhold.fastStillingsprosent.longValue()).isEqualTo(100L);
+        assertThat(arbeidsforhold.orgnr).isEqualTo(orgnr);
+        assertThat(arbeidsforhold.fom).isEqualTo(fom.format(ISO_LOCAL_DATE));
+        assertThat(arbeidsforhold.tom).isEqualTo(tom.format(ISO_LOCAL_DATE));
+        assertThat(arbeidsforhold.edagId.longValue()).isEqualTo(1337L);
     }
 
     @Test
@@ -74,8 +72,8 @@ public class ArbeidsforholdServiceTest {
         List<Arbeidsforhold> arbeidsforholdList = service.hentArbeidsforhold(fnr);
         Arbeidsforhold arbeidsforhold = arbeidsforholdList.get(0);
 
-        assertEquals("Privatperson", arbeidsforhold.arbeidsgivernavn);
-        assertNull(arbeidsforhold.orgnr);
+        assertThat(arbeidsforhold.arbeidsgivernavn).isEqualTo("Privatperson");
+        assertThat(arbeidsforhold.orgnr).isNull();
     }
 
     @Test
@@ -87,7 +85,7 @@ public class ArbeidsforholdServiceTest {
         Arbeidsforhold arbeidsforhold = arbeidsforholdList.get(0);
 
         // desimaler strippes fra double til long
-        assertEquals(57L, arbeidsforhold.fastStillingsprosent.longValue());
+        assertThat(arbeidsforhold.fastStillingsprosent.longValue()).isEqualTo(57L);
     }
 
     @Test
@@ -97,13 +95,13 @@ public class ArbeidsforholdServiceTest {
         List<Arbeidsforhold> arbeidsforholdList = service.hentArbeidsforhold(fnr);
         Arbeidsforhold arbeidsforhold = arbeidsforholdList.get(0);
 
-        assertEquals(orgNavn, arbeidsforhold.arbeidsgivernavn);
-        assertTrue(arbeidsforhold.harFastStilling);
-        assertEquals(100L, arbeidsforhold.fastStillingsprosent.longValue());
-        assertEquals(orgnr, arbeidsforhold.orgnr);
-        assertEquals(fom.format(ISO_LOCAL_DATE), arbeidsforhold.fom);
-        assertNull(arbeidsforhold.tom);
-        assertEquals(1337L, arbeidsforhold.edagId.longValue());
+        assertThat(arbeidsforhold.arbeidsgivernavn).isEqualTo(orgNavn);
+        assertThat(arbeidsforhold.harFastStilling).isTrue();
+        assertThat(arbeidsforhold.fastStillingsprosent.longValue()).isEqualTo(100L);
+        assertThat(arbeidsforhold.orgnr).isEqualTo(orgnr);
+        assertThat(arbeidsforhold.fom).isEqualTo(fom.format(ISO_LOCAL_DATE));
+        assertThat(arbeidsforhold.tom).isNull();
+        assertThat(arbeidsforhold.edagId.longValue()).isEqualTo(1337L);
     }
 
     private ArbeidsforholdDto createArbeidsforhold(boolean erArbeidsgiverOrganisasjon, LocalDate fom, LocalDate tom) {
