@@ -8,8 +8,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class NavMessageSourceTest {
     private Map<String, String> mockedCmsValues = new HashMap<>();
@@ -51,25 +50,25 @@ public class NavMessageSourceTest {
     @Test
     public void skalHenteSoknadensEgneTeksterOgFellesTeksterNorsk() {
         Properties properties = messageSource.getBundleFor("sendsoknad", new Locale("nb", "NO"));
-        assertEquals("norsk felles fra minne", properties.getProperty("felles.key"));
+        assertThat(properties.getProperty("felles.key")).isEqualTo("norsk felles fra minne");
     }
 
     @Test
     public void skalHenteSoknadensEgneTeksterOgFellesTeksterEngelsk() {
         Properties properties = messageSource.getBundleFor("sendsoknad", new Locale("en", "GB"));
-        assertEquals("engelsk felles fra minne", properties.getProperty("felles.key"));
+        assertThat(properties.getProperty("felles.key")).isEqualTo("engelsk felles fra minne");
     }
 
     @Test
     public void skalIkkeHenteAndreSoknadersTekster() {
         Properties properties = messageSource.getBundleFor("sendsoknad", new Locale("nb", "NO"));
-        assertFalse(properties.containsKey("annen.key"));
+        assertThat(properties).doesNotContainKey("annen.key");
     }
 
     @Test
     public void skalHenteAlleTeksterHvisTypeMangler() {
         Properties properties = messageSource.getBundleFor(null, new Locale("nb", "NO"));
-        assertEquals("norsk felles fra minne", properties.getProperty("felles.key"));
+        assertThat(properties.getProperty("felles.key")).isEqualTo("norsk felles fra minne");
     }
 
 }
