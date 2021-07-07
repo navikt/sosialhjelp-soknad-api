@@ -5,10 +5,7 @@ import org.junit.Test;
 
 import static no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils.feilmeldingUtenFnr;
 import static no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils.isNonProduction;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ServiceUtilsTest {
 
@@ -21,7 +18,7 @@ public class ServiceUtilsTest {
     @Test
     public void skalStrippeVekkFnutter() {
         String utenFnutter = ServiceUtils.stripVekkFnutter("\"123\"");
-        assertEquals("123", utenFnutter);
+        assertThat(utenFnutter).isEqualTo("123");
     }
 
     @Test
@@ -30,7 +27,7 @@ public class ServiceUtilsTest {
 
         String res = feilmeldingUtenFnr(str);
 
-        assertEquals("[FNR] feilmelding som har flere fnr [FNR] og [FNR]", res);
+        assertThat(res).isEqualTo("[FNR] feilmelding som har flere fnr [FNR] og [FNR]");
     }
 
     @Test
@@ -39,7 +36,7 @@ public class ServiceUtilsTest {
 
         String res = feilmeldingUtenFnr(str);
 
-        assertEquals("/ekstern/skatt/datasamarbeid/api/innrapportert/inntektsmottaker/[FNR]/oppgave/inntekt?fnr=[FNR]&a=b", res);
+        assertThat(res).isEqualTo("/ekstern/skatt/datasamarbeid/api/innrapportert/inntektsmottaker/[FNR]/oppgave/inntekt?fnr=[FNR]&a=b");
     }
 
     @Test
@@ -48,7 +45,7 @@ public class ServiceUtilsTest {
 
         String res = feilmeldingUtenFnr(str);
 
-        assertEquals(str, res);
+        assertThat(res).isEqualTo(str);
     }
 
     @Test
@@ -57,7 +54,7 @@ public class ServiceUtilsTest {
 
         String res = feilmeldingUtenFnr(str);
 
-        assertEquals(str, res);
+        assertThat(res).isEqualTo(str);
     }
 
     @Test
@@ -66,51 +63,51 @@ public class ServiceUtilsTest {
 
         String res = feilmeldingUtenFnr(str);
 
-        assertEquals("feilmelding som har fnr \"[FNR]\"", res);
+        assertThat(res).isEqualTo("feilmelding som har fnr \"[FNR]\"");
     }
 
     @Test
     public void skalIkkeFeile_medNull_iFeilmelding() {
         String res = feilmeldingUtenFnr(null);
 
-        assertNull(res);
+        assertThat(res).isNull();
     }
 
     @Test
     public void isNonProduction_skalGiTrue_forNonProd() {
         System.setProperty("environment.name", "q0");
-        assertTrue(isNonProduction());
+        assertThat(isNonProduction()).isTrue();
         System.setProperty("environment.name", "q1");
-        assertTrue(isNonProduction());
+        assertThat(isNonProduction()).isTrue();
         System.setProperty("environment.name", "labs-gcp");
-        assertTrue(isNonProduction());
+        assertThat(isNonProduction()).isTrue();
         System.setProperty("environment.name", "dev-gcp");
-        assertTrue(isNonProduction());
+        assertThat(isNonProduction()).isTrue();
         System.setProperty("environment.name", "local");
-        assertTrue(isNonProduction());
+        assertThat(isNonProduction()).isTrue();
         System.setProperty("environment.name", "test");
-        assertTrue(isNonProduction());
+        assertThat(isNonProduction()).isTrue();
     }
 
     @Test
     public void isNonProduction_skalGiFalse_forProd() {
         System.setProperty("environment.name", "p");
-        assertFalse(isNonProduction());
+        assertThat(isNonProduction()).isFalse();
         System.setProperty("environment.name", "prod");
-        assertFalse(isNonProduction());
+        assertThat(isNonProduction()).isFalse();
         System.setProperty("environment.name", "prod-sbs");
-        assertFalse(isNonProduction());
+        assertThat(isNonProduction()).isFalse();
     }
 
     @Test
     public void isNonProduction_skalGiFalse_forUkjentMiljo() {
         System.clearProperty("environment.name");
-        assertFalse(isNonProduction());
+        assertThat(isNonProduction()).isFalse();
         System.setProperty("environment.name", "");
-        assertFalse(isNonProduction());
+        assertThat(isNonProduction()).isFalse();
         System.setProperty("environment.name", "ukjent");
-        assertFalse(isNonProduction());
+        assertThat(isNonProduction()).isFalse();
         System.setProperty("environment.name", "mock");
-        assertFalse(isNonProduction());
+        assertThat(isNonProduction()).isFalse();
     }
 }

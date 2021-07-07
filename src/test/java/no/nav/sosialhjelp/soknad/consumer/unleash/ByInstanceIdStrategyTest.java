@@ -5,8 +5,7 @@ import org.junit.Test;
 
 import java.util.Map;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ByInstanceIdStrategyTest {
 
@@ -22,7 +21,7 @@ public class ByInstanceIdStrategyTest {
         System.setProperty("unleash_instance_id", "local");
         var parameters = Map.of("instance.id", "dev-sbs,dev-sbs-intern");
 
-        assertFalse(strategy.isEnabled(parameters));
+        assertThat(strategy.isEnabled(parameters)).isFalse();
     }
 
     @Test
@@ -30,7 +29,7 @@ public class ByInstanceIdStrategyTest {
         System.setProperty("unleash_instance_id", "dev-sbs");
         var parameters = Map.of("instance.id", "dev-sbs,dev-sbs-intern");
 
-        assertTrue(strategy.isEnabled(parameters));
+        assertThat(strategy.isEnabled(parameters)).isTrue();
     }
 
 }

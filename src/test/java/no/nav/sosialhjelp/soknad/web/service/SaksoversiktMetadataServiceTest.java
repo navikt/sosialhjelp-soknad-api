@@ -29,8 +29,7 @@ import java.util.Properties;
 
 import static java.util.Arrays.asList;
 import static no.nav.sosialhjelp.soknad.business.service.soknadservice.EttersendingService.ETTERSENDELSE_FRIST_DAGER;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -102,13 +101,13 @@ public class SaksoversiktMetadataServiceTest {
 
         List<InnsendtSoknad> resultat = saksoversiktMetadataService.hentInnsendteSoknaderForFnr("12345");
 
-        assertEquals(1, resultat.size());
+        assertThat(resultat).hasSize(1);
         InnsendtSoknad soknad = resultat.get(0);
-        assertEquals("beh123", soknad.getBehandlingsId());
-        assertEquals("saksoversikt.soknadsnavn", soknad.getHoveddokument().getTittel());
-        assertEquals(1, soknad.getVedlegg().size());
-        assertEquals("vedlegg.skjema1.tillegg1.tittel", soknad.getVedlegg().get(0).getTittel());
-        assertEquals(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2018-04-11 13:30:00"), soknad.getInnsendtDato());
+        assertThat(soknad.getBehandlingsId()).isEqualTo("beh123");
+        assertThat(soknad.getHoveddokument().getTittel()).isEqualTo("saksoversikt.soknadsnavn");
+        assertThat(soknad.getVedlegg()).hasSize(1);
+        assertThat(soknad.getVedlegg().get(0).getTittel()).isEqualTo("vedlegg.skjema1.tillegg1.tittel");
+        assertThat(soknad.getInnsendtDato()).isEqualTo(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2018-04-11 13:30:00"));
     }
 
     @Test
@@ -118,11 +117,11 @@ public class SaksoversiktMetadataServiceTest {
 
         List<EttersendingsSoknad> resultat = saksoversiktMetadataService.hentSoknaderBrukerKanEttersendePa("12345");
 
-        assertEquals(1, resultat.size());
+        assertThat(resultat).hasSize(1);
         EttersendingsSoknad soknad = resultat.get(0);
-        assertTrue(soknad.getTittel().contains("saksoversikt.soknadsnavn"));
-        assertEquals(1, soknad.getVedlegg().size());
-        assertEquals("vedlegg.skjema2.tillegg1.tittel", soknad.getVedlegg().get(0).getTittel());
+        assertThat(soknad.getTittel()).contains("saksoversikt.soknadsnavn");
+        assertThat(soknad.getVedlegg()).hasSize(1);
+        assertThat(soknad.getVedlegg().get(0).getTittel()).isEqualTo("vedlegg.skjema2.tillegg1.tittel");
     }
 
     @Test
@@ -132,6 +131,6 @@ public class SaksoversiktMetadataServiceTest {
 
         saksoversiktMetadataService.hentSoknaderBrukerKanEttersendePa("12345");
 
-        assertEquals(LocalDateTime.of(2018, 5, 31, 13, 33, 37).minusDays(ETTERSENDELSE_FRIST_DAGER), timeCaptor.getValue());
+        assertThat(timeCaptor.getValue()).isEqualTo(LocalDateTime.of(2018, 5, 31, 13, 33, 37).minusDays(ETTERSENDELSE_FRIST_DAGER));
     }
 }

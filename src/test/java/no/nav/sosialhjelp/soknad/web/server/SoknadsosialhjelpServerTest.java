@@ -1,7 +1,8 @@
 package no.nav.sosialhjelp.soknad.web.server;
 
-import org.junit.Assert;
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class SoknadsosialhjelpServerTest {
 
@@ -24,10 +25,10 @@ public class SoknadsosialhjelpServerTest {
         System.setProperty("ENV_VAR_SET", "envVar");
 
         String value = SoknadsosialhjelpServer.withEnvironmentVariableExpansion("${ENV_VAR_SET:en.ny:fancy:variabel!=}", false);
-        Assert.assertEquals("envVar", value);
+        assertThat(value).isEqualTo("envVar");
 
         value = SoknadsosialhjelpServer.withEnvironmentVariableExpansion("${ENV_VAR_NOT_SET:en.ny:fancy:variabel!=}", false);
-        Assert.assertEquals("en.ny:fancy:variabel!=", value);
+        assertThat(value).isEqualTo("en.ny:fancy:variabel!=");
     }
 
     @Test
@@ -35,19 +36,19 @@ public class SoknadsosialhjelpServerTest {
         System.setProperty("ENV_VAR_SET", "envVar");
 
         String value = SoknadsosialhjelpServer.withEnvironmentVariableExpansion("${ENV_VAR_SET:en.ny:fancy:variabel!=}", true);
-        Assert.assertEquals("envVar", value);
+        assertThat(value).isEqualTo("envVar");
     }
 
     @Test
     public void withEnvironmentVariableExpansion_withRequiredWithoutEnvVarSet_ShouldUseVariable() {
         String value = SoknadsosialhjelpServer.withEnvironmentVariableExpansion("${ENV_NOT_SET:en.ny:fancy:variabel!=}", true);
-        Assert.assertEquals("en.ny:fancy:variabel!=", value);
+        assertThat(value).isEqualTo("en.ny:fancy:variabel!=");
     }
 
     @Test(expected = IllegalStateException.class)
     public void withEnvironmentVariableExpansion_withRequiredWithoutEnvVarSet_ShouldThrowException() {
         String value = SoknadsosialhjelpServer.withEnvironmentVariableExpansion("${ENV_NOT_SET}", true);
-        Assert.assertEquals("foobar", value);
+        assertThat(value).isEqualTo("foobar");
     }
 
     @Test
@@ -55,18 +56,18 @@ public class SoknadsosialhjelpServerTest {
         System.setProperty("SoknadsosialhjelpServerTest.property", "foobar");
 
         String value = SoknadsosialhjelpServer.withEnvironmentVariableExpansion("Test ${SoknadsosialhjelpServerTest.property} med to ${SoknadsosialhjelpServerTest.property}", true);
-        Assert.assertEquals("Test foobar med to foobar", value);
+        assertThat(value).isEqualTo("Test foobar med to foobar");
 
         value = SoknadsosialhjelpServer.withEnvironmentVariableExpansion("Test ${SoknadsosialhjelpServerTest.property} med to ${SoknadsosialhjelpServerTest.property}", false);
-        Assert.assertEquals("Test foobar med to foobar", value);
+        assertThat(value).isEqualTo("Test foobar med to foobar");
     }
 
 
     private void assertUnchanged(String input) {
         String value = SoknadsosialhjelpServer.withEnvironmentVariableExpansion(input, true);
-        Assert.assertEquals(input, value);
+        assertThat(value).isEqualTo(input);
 
         value = SoknadsosialhjelpServer.withEnvironmentVariableExpansion(input, false);
-        Assert.assertEquals(input, value);
+        assertThat(value).isEqualTo(input);
     }
 }

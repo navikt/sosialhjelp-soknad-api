@@ -6,7 +6,7 @@ import org.junit.Test;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class OpenAMUserInfoServiceTest {
 
@@ -18,6 +18,6 @@ public class OpenAMUserInfoServiceTest {
     @Test
     public void openAmAttributesToMap_withEmptyOpenAmAttribute_shouldNotThrowException() {
         Map<String, String> attributeMap = OpenAMUserInfoService.openAmAttributesToMap(new OpenAMUserInfoService.OpenAMAttributes());
-        assertEquals(attributeMap, new HashMap<>());
+        assertThat(attributeMap).isEqualTo(new HashMap<>());
     }
 }

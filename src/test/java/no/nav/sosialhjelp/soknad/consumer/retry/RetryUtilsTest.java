@@ -1,7 +1,6 @@
 package no.nav.sosialhjelp.soknad.consumer.retry;
 
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.PdlHentPersonConsumer;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -13,6 +12,7 @@ import javax.ws.rs.WebApplicationException;
 
 import static no.nav.sosialhjelp.soknad.consumer.retry.RetryUtils.retryConfig;
 import static no.nav.sosialhjelp.soknad.consumer.retry.RetryUtils.withRetry;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -35,7 +35,8 @@ public class RetryUtilsTest {
 
         var retry = retryConfig(URL, MAX_ATTEMPTS, 1, 2.0, new Class[]{WebApplicationException.class}, log);
 
-        Assert.assertThrows(InternalServerErrorException.class, () -> withRetry(retry, () -> pdlHentPersonConsumer.hentPerson("ident")));
+        assertThatExceptionOfType(InternalServerErrorException.class)
+                .isThrownBy(() -> withRetry(retry, () -> pdlHentPersonConsumer.hentPerson("ident")));
         verify(pdlHentPersonConsumer, times(MAX_ATTEMPTS)).hentPerson(anyString());
     }
 
@@ -45,7 +46,8 @@ public class RetryUtilsTest {
 
         var retry = retryConfig(URL, MAX_ATTEMPTS, 1, 2.0, new Class[]{WebApplicationException.class}, log);
 
-        Assert.assertThrows(IllegalStateException.class, () -> withRetry(retry, () -> pdlHentPersonConsumer.hentPerson("ident")));
+        assertThatExceptionOfType(IllegalStateException.class)
+                .isThrownBy(() -> withRetry(retry, () -> pdlHentPersonConsumer.hentPerson("ident")));
         verify(pdlHentPersonConsumer, times(1)).hentPerson(anyString());
     }
 }
