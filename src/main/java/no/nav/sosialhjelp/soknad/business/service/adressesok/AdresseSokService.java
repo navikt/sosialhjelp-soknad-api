@@ -9,7 +9,6 @@ import no.nav.sosialhjelp.soknad.consumer.adresse.TpsAdresseSokService;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.PdlAdresseSokService;
 import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseForslag;
 import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseForslagType;
-import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseSokConsumer;
 import org.slf4j.Logger;
 
 import java.util.Collections;
@@ -104,9 +103,9 @@ public class AdresseSokService {
         return Collections.emptyList();
     }
 
-    private AdresseSokConsumer.Sokedata sokedataFromGateAdresse(JsonGateAdresse adresse) {
-        return new AdresseSokConsumer.Sokedata()
-                .withSoketype(AdresseSokConsumer.Soketype.EKSAKT)
+    private Sokedata sokedataFromGateAdresse(JsonGateAdresse adresse) {
+        return new Sokedata()
+                .withSoketype(Soketype.EKSAKT)
                 .withAdresse(adresse.getGatenavn())
                 .withHusnummer(adresse.getHusnummer())
                 .withHusbokstav(adresse.getHusbokstav())

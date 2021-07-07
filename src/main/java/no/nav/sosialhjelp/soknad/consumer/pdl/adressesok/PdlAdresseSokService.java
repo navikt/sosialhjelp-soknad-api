@@ -1,6 +1,7 @@
 package no.nav.sosialhjelp.soknad.consumer.pdl.adressesok;
 
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonGateAdresse;
+import no.nav.sosialhjelp.soknad.business.service.adressesok.Sokedata;
 import no.nav.sosialhjelp.soknad.consumer.adresse.AdresseStringSplitter;
 import no.nav.sosialhjelp.soknad.consumer.kodeverk.KodeverkService;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.AdresseSokHit;
@@ -11,7 +12,6 @@ import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.Paging;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.SearchRule;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.VegadresseDto;
 import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseForslag;
-import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseSokConsumer;
 import no.nav.sosialhjelp.soknad.domain.model.exception.SosialhjelpSoknadApiException;
 import no.nav.sosialhjelp.soknad.domain.model.util.KommuneTilNavEnhetMapper;
 import org.slf4j.Logger;
@@ -80,7 +80,7 @@ public class PdlAdresseSokService {
                 .collect(Collectors.toList());
     }
 
-    public List<VegadresseDto> getAdresser(AdresseSokConsumer.Sokedata sokedata) {
+    public List<VegadresseDto> getAdresser(Sokedata sokedata) {
         if (sokedata == null || isAddressTooShortOrNull(sokedata.adresse)) {
             return Collections.emptyList();
         }
@@ -145,7 +145,7 @@ public class PdlAdresseSokService {
         return criteriaList;
     }
 
-    private Map<String, Object> toVariablesForFritekstSok(AdresseSokConsumer.Sokedata sokedata) {
+    private Map<String, Object> toVariablesForFritekstSok(Sokedata sokedata) {
         var variables = new HashMap<String, Object>();
         variables.put(PAGING, new Paging(1, 30, singletonList(new Paging.SortBy(VEGADRESSE_HUSNUMMER.getName(), Direction.ASC))));
 
@@ -157,7 +157,7 @@ public class PdlAdresseSokService {
         return variables;
     }
 
-    private List<Criteria> toCriteriaListForFritekstSok(AdresseSokConsumer.Sokedata sokedata) {
+    private List<Criteria> toCriteriaListForFritekstSok(Sokedata sokedata) {
         var criteriaList = new ArrayList<Criteria>();
         if (isNotEmpty(sokedata.adresse)) {
             if (sokedata.adresse.length() < 3) {
