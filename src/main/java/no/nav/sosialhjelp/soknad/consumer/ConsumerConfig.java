@@ -1,7 +1,5 @@
 package no.nav.sosialhjelp.soknad.consumer;
 
-//import no.nav.sosialhjelp.soknad.consumer.adresse.TpsAdresseSokService;
-
 import no.nav.sosialhjelp.soknad.consumer.dkif.DkifService;
 import no.nav.sosialhjelp.soknad.consumer.fiks.DokumentKrypterer;
 import no.nav.sosialhjelp.soknad.consumer.kodeverk.KodeverkService;
@@ -45,7 +43,6 @@ import org.springframework.context.annotation.Profile;
         PdlAdresseSokService.class,
         ConsumerConfig.WsServices.class,
         DokumentKrypterer.class,
-//        TpsAdresseSokService.class,
         NorgService.class,
         SkattbarInntektService.class,
         OrganisasjonService.class,
@@ -66,7 +63,6 @@ public class ConsumerConfig {
             PdlAdresseSokRestConfig.class,
             DigisosApiRestConfig.class,
             FiksWSConfig.class,
-//            AdresseSokRestConfig.class,
             NorgRestConfig.class,
             OrganisasjonRestConfig.class,
             ArbeidsforholdRestConfig.class,

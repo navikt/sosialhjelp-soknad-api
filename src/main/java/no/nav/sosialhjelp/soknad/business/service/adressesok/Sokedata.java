@@ -9,7 +9,6 @@ public class Sokedata {
     public String poststed;
 
     public String kommunenummer;
-    public Soketype soketype = Soketype.LIGNENDE;
 
     public Sokedata withAdresse(String adresse) {
         this.adresse = adresse;
@@ -41,18 +40,9 @@ public class Sokedata {
         return this;
     }
 
-    public Sokedata withSoketype(Soketype soketype) {
-        if (soketype == null) {
-            throw new IllegalArgumentException("soketype == null");
-        }
-        this.soketype = soketype;
-        return this;
-    }
-
     @Override
     public String toString() {
         return "Sokedata [adresse=" + adresse + ", husnummer=" + husnummer + ", husbokstav=" + husbokstav
-                + ", postnummer=" + postnummer + ", poststed=" + poststed + ", kommunenummer=" + kommunenummer
-                + ", soketype=" + soketype + "]";
+                + ", postnummer=" + postnummer + ", poststed=" + poststed + ", kommunenummer=" + kommunenummer + "]";
     }
 }

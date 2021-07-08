@@ -2,8 +2,8 @@ package no.nav.sosialhjelp.soknad.consumer.pdl.adressesok;
 
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonGateAdresse;
 import no.nav.sosialhjelp.soknad.business.service.adressesok.AdresseForslag;
+import no.nav.sosialhjelp.soknad.business.service.adressesok.AdresseStringSplitter;
 import no.nav.sosialhjelp.soknad.business.service.adressesok.Sokedata;
-import no.nav.sosialhjelp.soknad.consumer.adresse.AdresseStringSplitter;
 import no.nav.sosialhjelp.soknad.consumer.kodeverk.KodeverkService;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.AdresseSokHit;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.Criteria;
@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static no.nav.sosialhjelp.soknad.business.service.adressesok.AdresseForslagType.GATEADRESSE;
-import static no.nav.sosialhjelp.soknad.consumer.adresse.AdresseStringSplitter.isAddressTooShortOrNull;
+import static no.nav.sosialhjelp.soknad.business.service.adressesok.AdresseStringSplitter.isAddressTooShortOrNull;
 import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.AdresseHelper.formatterKommunenavn;
 import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.FieldName.VEGADRESSE_ADRESSENAVN;
 import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.FieldName.VEGADRESSE_HUSBOKSTAV;

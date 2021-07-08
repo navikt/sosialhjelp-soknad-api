@@ -1,7 +1,5 @@
 package no.nav.sosialhjelp.soknad.business.service.adressesok;
 
-//import no.finn.unleash.Unleash;
-
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresseValg;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonGateAdresse;
@@ -32,31 +30,21 @@ public class AdresseSokServiceTest {
     private static final String GATEADRESSE = "gateadresse";
     private static final String BOLIGNUMMER = "H0101";
     private static final String GATENAVN = "Sandakerveien";
-//    private static final String KOMMUNENUMMER1 = "0100";
     private static final String KOMMUNENAVN1 = "Kommune 1";
     private static final String LANDKODE = "NOR";
-//    private static final String KOMMUNENUMMER2 = "0200";
-//    private static final String KOMMUNENAVN2 = "Kommune 2";
     private static final String POSTNUMMER = "0000";
     private static final String POSTSTED = "Oslo";
     private static final String HUSNUMMER = "53";
     private static final String HUSBOKSTAV = "B";
 
-//    @Mock
-//    private TpsAdresseSokService tpsAdresseSokService;
-
     @Mock
     private PdlAdresseSokService pdlAdresseSokService;
-
-//    @Mock
-//    private Unleash unleash;
 
     @InjectMocks
     private AdresseSokService adresseSokService;
 
     @Test
     public void finnAdresseFraSoknadGirRiktigAdresseForFolkeregistrertGateadresse() {
-//        when(unleash.isEnabled(anyString(), anyBoolean())).thenReturn(true);
         when(pdlAdresseSokService.getAdresseForslag(any())).thenReturn(lagAdresseForslag(KOMMUNENUMMER, KOMMUNENAVN1));
         var soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         var personalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
@@ -135,10 +123,4 @@ public class AdresseSokServiceTest {
         adresseForslag.type = GATEADRESSE;
         return adresseForslag;
     }
-
-//    private List<AdresseForslag> lagAdresseForslagListeMedEtInnslag() {
-//        List<AdresseForslag> adresseForslagListe = new ArrayList<>();
-//        adresseForslagListe.add(lagAdresseForslag(KOMMUNENUMMER, KOMMUNENAVN1));
-//        return adresseForslagListe;
-//    }
 }

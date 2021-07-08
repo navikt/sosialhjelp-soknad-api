@@ -1,13 +1,9 @@
-package no.nav.sosialhjelp.soknad.consumer.adresse;
+package no.nav.sosialhjelp.soknad.business.service.adressesok;
 
-import no.nav.sosialhjelp.soknad.business.service.adressesok.Sokedata;
-import no.nav.sosialhjelp.soknad.business.service.adressesok.Soketype;
 import no.nav.sosialhjelp.soknad.consumer.kodeverk.KodeverkService;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-//import static no.nav.sosialhjelp.soknad.consumer.adresse.TpsAdresseSokService.isAddressTooShortOrNull;
 
 
 public final class AdresseStringSplitter {
@@ -36,7 +32,6 @@ public final class AdresseStringSplitter {
             String kommunenummer = getKommunenummer(kodeverkService, kommunenavn);
             String poststed = kommunenummer == null ? m.group(5) : null;
             String gateAdresse = m.group(1).trim().replaceAll(" +", " ");
-            Soketype sokeType = gateAdresse.length() < 3 ? Soketype.EKSAKT : Soketype.LIGNENDE;
 
             return new Sokedata()
                     .withAdresse(gateAdresse)
@@ -44,8 +39,7 @@ public final class AdresseStringSplitter {
                     .withHusbokstav(m.group(3))
                     .withPostnummer(postnummer)
                     .withPoststed(poststed)
-                    .withKommunenummer(kommunenummer)
-                    .withSoketype(sokeType);
+                    .withKommunenummer(kommunenummer);
         }
         return null;
     }

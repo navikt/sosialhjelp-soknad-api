@@ -5,69 +5,26 @@ import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonGateAdresse;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonMatrikkelAdresse;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.PdlAdresseSokService;
-import org.slf4j.Logger;
 
 import java.util.Collections;
 import java.util.List;
 
-import static org.slf4j.LoggerFactory.getLogger;
 
 public class AdresseSokService {
 
-//    private static final String FEATURE_PDL_ADRESSESOK_ENABLED = "sosialhjelp.soknad.pdl-adressesok-enabled";
-//    private static final String FEATURE_PDL_ADRESSESOK_VED_FOLKEREGISTRERT_ADRESSE = "sosialhjelp.soknad.pdl-adressesok-ved-folkeregistrert-adresse";
-
-    private static final Logger log = getLogger(AdresseSokService.class);
-
-//    private final Unleash unleash;
     private final PdlAdresseSokService pdlAdresseSokService;
-//    private final TpsAdresseSokService tpsAdresseSokService;
 
-    public AdresseSokService(
-//            TpsAdresseSokService tpsAdresseSokService,
-            PdlAdresseSokService pdlAdresseSokService
-//            Unleash unleash
-    ) {
-//        this.tpsAdresseSokService = tpsAdresseSokService;
+    public AdresseSokService(PdlAdresseSokService pdlAdresseSokService) {
         this.pdlAdresseSokService = pdlAdresseSokService;
-//        this.unleash = unleash;
     }
 
     public List<AdresseForslag> sokEtterAdresser(String sok) {
-//        if (unleash.isEnabled(FEATURE_PDL_ADRESSESOK_ENABLED, false)) {
-//            try {
-                return sokEtterAdresserPDL(sok);
-//            } catch (Exception e) {
-//                log.warn("Noe uventet feilet ved kall mot PDL adressesøk -> Fallback mot TPS");
-//                return sokEtterAdresserTPS(sok);
-//            }
-//        }
-//        return sokEtterAdresserTPS(sok);
-    }
-
-    private List<AdresseForslag> sokEtterAdresserPDL(String sok) {
         return pdlAdresseSokService.sokEtterAdresser(sok);
     }
 
-//    private List<AdresseForslag> sokEtterAdresserTPS(String sok) {
-//        return tpsAdresseSokService.sokEtterAdresser(sok);
-//    }
-
     public List<AdresseForslag> finnAdresseFraSoknad(final JsonPersonalia personalia, String valg) {
         var adresse = hentValgtAdresse(personalia, valg);
-
-        // prøv å ta i bruk pdl adressesok ved valgt folkeregistrert adresse
-//        if (unleash.isEnabled(FEATURE_PDL_ADRESSESOK_ENABLED, false)
-//                || (FOLKEREGISTRERT.toString().equals(valg) && unleash.isEnabled(FEATURE_PDL_ADRESSESOK_VED_FOLKEREGISTRERT_ADRESSE, false))) {
-//            try {
-                return getAdresseForslagFraPDL(adresse);
-//            } catch (Exception e) {
-//                log.warn("Noe uventet feilet ved henting av adresse fra PDL -> Fallback til TPS adressesøk", e);
-//                return getAdresseForslagFraTPS(adresse);
-//            }
-//        }
-//
-//        return getAdresseForslagFraTPS(adresse);
+        return getAdresseForslagFraPDL(adresse);
     }
 
     private JsonAdresse hentValgtAdresse(JsonPersonalia personalia, String valg) {
@@ -98,41 +55,6 @@ public class AdresseSokService {
         return Collections.emptyList();
     }
 
-//    private Sokedata sokedataFromGateAdresse(JsonGateAdresse adresse) {
-//        return new Sokedata()
-//                .withSoketype(Soketype.EKSAKT)
-//                .withAdresse(adresse.getGatenavn())
-//                .withHusnummer(adresse.getHusnummer())
-//                .withHusbokstav(adresse.getHusbokstav())
-//                .withPostnummer(adresse.getPostnummer())
-//                .withPoststed(adresse.getPoststed());
-//    }
-
-//    private List<AdresseForslag> getAdresseForslagFraTPS(final JsonAdresse adresse) {
-//        if (adresse == null) {
-//            return Collections.emptyList();
-//        }
-//
-//        if (JsonAdresse.Type.MATRIKKELADRESSE.equals(adresse.getType())) {
-//            return adresseForslagForMatrikkelAdresse((JsonMatrikkelAdresse) adresse);
-//        } else if (JsonAdresse.Type.GATEADRESSE.equals(adresse.getType())) {
-//            var sokedata = sokedataFromGateAdresse((JsonGateAdresse) adresse);
-//            var adresser = tpsAdresseSokService.sokEtterAdresser(sokedata);
-//
-//            if (adresser.size() <= 1) {
-//                return adresser;
-//            }
-//
-//            if (hasIkkeUnikGate(adresser)) {
-//                return Collections.emptyList();
-//            }
-//
-//            return adresser;
-//        } else {
-//            return Collections.emptyList();
-//        }
-//    }
-
     private List<AdresseForslag> adresseForslagForMatrikkelAdresse(JsonMatrikkelAdresse adresse) {
         var kommunenummer = adresse.getKommunenummer();
         if (kommunenummer == null || kommunenummer.trim().equals("")) {
@@ -145,16 +67,5 @@ public class AdresseSokService {
 
         return Collections.singletonList(adresseForslag);
     }
-
-//    private boolean hasIkkeUnikGate(List<AdresseForslag> adresser) {
-//        final AdresseForslag forste = adresser.get(0);
-//        if (forste.adresse == null || forste.postnummer == null || forste.poststed == null) {
-//            return true;
-//        }
-//        return adresser.stream()
-//                .anyMatch(af -> !forste.adresse.equals(af.adresse)
-//                        || !forste.postnummer.equals(af.postnummer)
-//                        || !forste.poststed.equals(af.poststed));
-//    }
 
 }

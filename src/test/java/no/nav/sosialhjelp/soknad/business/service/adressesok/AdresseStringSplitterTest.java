@@ -1,7 +1,5 @@
-package no.nav.sosialhjelp.soknad.consumer.adresse;
+package no.nav.sosialhjelp.soknad.business.service.adressesok;
 
-import no.nav.sosialhjelp.soknad.business.service.adressesok.Sokedata;
-import no.nav.sosialhjelp.soknad.business.service.adressesok.Soketype;
 import no.nav.sosialhjelp.soknad.consumer.kodeverk.KodeverkService;
 import org.junit.Test;
 
@@ -145,20 +143,6 @@ public class AdresseStringSplitterTest {
         assertThat(result.adresse).isEqualTo("asdf");
         assertThat(result.postnummer).isEqualTo("0882");
         assertThat(result.poststed).isEqualTo("OSLO");
-    }
-
-    @Test
-    public void adresseMedToBokstaver_girEksaktSokeType() {
-        final Sokedata result = AdresseStringSplitter.toSokedata(null, "Sæ");
-        assertThat(result.adresse).isEqualTo("Sæ");
-        assertThat(result.soketype).isEqualTo(Soketype.EKSAKT);
-    }
-
-    @Test
-    public void adresseMedFlereBokstaver_girLignendeSokeType() {
-        final Sokedata result = AdresseStringSplitter.toSokedata(null, "asd");
-        assertThat(result.adresse).isEqualTo("asd");
-        assertThat(result.soketype).isEqualTo(Soketype.LIGNENDE);
     }
     
     @Test
