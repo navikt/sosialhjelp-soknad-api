@@ -1,7 +1,9 @@
 package no.nav.sosialhjelp.soknad.business.service;
 
+import no.nav.sbl.soknadsosialhjelp.json.VedleggsforventningMaster;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
+import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon;
 import no.nav.sosialhjelp.soknad.business.db.repositories.opplastetvedlegg.OpplastetVedleggRepository;
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository;
 import no.nav.sosialhjelp.soknad.business.util.FileDetectionUtils;
@@ -29,7 +31,10 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import static no.nav.sosialhjelp.soknad.business.util.JsonVedleggUtils.getVedleggFromInternalSoknad;
 import static no.nav.sosialhjelp.soknad.domain.Vedleggstatus.LastetOpp;
@@ -39,10 +44,9 @@ import static org.slf4j.LoggerFactory.getLogger;
 @Component
 public class OpplastetVedleggService {
 
-    private static final Logger logger = getLogger(OpplastetVedleggService.class);
     public static final Integer MAKS_SAMLET_VEDLEGG_STORRELSE_I_MB = 150;
     public static final Integer MAKS_SAMLET_VEDLEGG_STORRELSE = MAKS_SAMLET_VEDLEGG_STORRELSE_I_MB * 1024 * 1024; // 150 MB
-
+    private static final Logger logger = getLogger(OpplastetVedleggService.class);
     @Inject
     private OpplastetVedleggRepository opplastetVedleggRepository;
 
@@ -51,6 +55,30 @@ public class OpplastetVedleggService {
 
     @Inject
     private VirusScanner virusScanner;
+
+    private static void sjekkOmPdfErGyldig(byte[] data) {
+        try (PDDocument document = PDDocument.load(new ByteArrayInputStream(data))) {
+            String text = (new PDFTextStripper()).getText(document);
+
+            if (text == null || text.isEmpty()) {
+                logger.warn("PDF er tom"); // En PDF med ett helt blankt ark generert av word gir text = "\r\n"
+            }
+
+            if (document.isEncrypted()) {
+                throw new UgyldigOpplastingTypeException(
+                        "PDF kan ikke være kryptert.", null,
+                        "opplasting.feilmelding.pdf.kryptert");
+            }
+
+        } catch (InvalidPasswordException e) {
+            throw new UgyldigOpplastingTypeException(
+                    "PDF kan ikke være krypert.", null,
+                    "opplasting.feilmelding.pdf.kryptert");
+        } catch (IOException e) {
+            throw new OpplastingException("Kunne ikke lagre fil", e,
+                    "vedlegg.opplasting.feil.generell");
+        }
+    }
 
     public OpplastetVedlegg saveVedleggAndUpdateVedleggstatus(String behandlingsId, String vedleggstype, byte[] data, String filnavn) {
         String eier = SubjectHandler.getUserId();
@@ -87,6 +115,23 @@ public class OpplastetVedleggService {
         return opplastetVedlegg;
     }
 
+    public void oppdaterVedleggsforventninger(SoknadUnderArbeid soknadUnderArbeid, String eier) {
+        var jsonVedleggs = getVedleggFromInternalSoknad(soknadUnderArbeid);
+        var paakrevdeVedlegg = VedleggsforventningMaster.finnPaakrevdeVedlegg(soknadUnderArbeid.getJsonInternalSoknad());
+        var opplastedeVedlegg = opplastetVedleggRepository.hentVedleggForSoknad(soknadUnderArbeid.getSoknadId(), eier);
+
+        fjernIkkePaakrevdeVedlegg(jsonVedleggs, paakrevdeVedlegg, opplastedeVedlegg);
+
+        jsonVedleggs.addAll(
+                paakrevdeVedlegg.stream()
+                        .filter(isNotInList(jsonVedleggs))
+                        .map(jsonVedlegg -> jsonVedlegg.withStatus(VedleggKreves.toString()))
+                        .collect(Collectors.toList()));
+
+        soknadUnderArbeid.getJsonInternalSoknad().setVedlegg(new JsonVedleggSpesifikasjon().withVedlegg(jsonVedleggs));
+        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier);
+    }
+
     public void sjekkOmSoknadUnderArbeidTotalVedleggStorrelseOverskriderMaksgrense(String behandlingsId, byte[] data) {
         String eier = SubjectHandler.getUserId();
         SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
@@ -104,7 +149,7 @@ public class OpplastetVedleggService {
         final String eier = SubjectHandler.getUserId();
         final OpplastetVedlegg opplastetVedlegg = opplastetVedleggRepository.hentVedlegg(vedleggId, eier).orElse(null);
 
-        if (opplastetVedlegg == null){
+        if (opplastetVedlegg == null) {
             return;
         }
 
@@ -115,15 +160,48 @@ public class OpplastetVedleggService {
         JsonVedlegg jsonVedlegg = finnVedleggEllerKastException(vedleggstype, soknadUnderArbeid);
         jsonVedlegg.getFiler().removeIf(jsonFiler ->
                 jsonFiler.getSha512().equals(opplastetVedlegg.getSha512()) &&
-                jsonFiler.getFilnavn().equals(opplastetVedlegg.getFilnavn()));
+                        jsonFiler.getFilnavn().equals(opplastetVedlegg.getFilnavn()));
 
-        if (jsonVedlegg.getFiler().isEmpty()){
+        if (jsonVedlegg.getFiler().isEmpty()) {
             jsonVedlegg.setStatus(VedleggKreves.toString());
         }
 
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier);
 
         opplastetVedleggRepository.slettVedlegg(vedleggId, eier);
+    }
+
+    private void fjernIkkePaakrevdeVedlegg(List<JsonVedlegg> jsonVedleggs, List<JsonVedlegg> paakrevdeVedlegg, List<OpplastetVedlegg> opplastedeVedlegg) {
+        final var ikkeLengerPaakrevdeVedlegg = jsonVedleggs.stream().filter(isNotInList(paakrevdeVedlegg)).collect(Collectors.toList());
+
+        excludeTypeAnnetAnnetFromList(ikkeLengerPaakrevdeVedlegg);
+        jsonVedleggs.removeAll(ikkeLengerPaakrevdeVedlegg);
+
+        for (var ikkePaakrevdVedlegg : ikkeLengerPaakrevdeVedlegg) {
+            for (var oVedlegg : opplastedeVedlegg) {
+                if (isSameType(ikkePaakrevdVedlegg, oVedlegg)) {
+                    opplastetVedleggRepository.slettVedlegg(oVedlegg.getUuid(), oVedlegg.getEier());
+                }
+            }
+        }
+    }
+
+    private Predicate<JsonVedlegg> isNotInList(List<JsonVedlegg> jsonVedleggs) {
+        return v -> jsonVedleggs.stream()
+                .noneMatch(vedlegg ->
+                        vedlegg.getType().equals(v.getType()) &&
+                                vedlegg.getTilleggsinfo().equals(v.getTilleggsinfo())
+                );
+    }
+
+    private void excludeTypeAnnetAnnetFromList(List<JsonVedlegg> jsonVedleggs) {
+        jsonVedleggs.removeAll(jsonVedleggs.stream()
+                .filter(vedlegg -> vedlegg.getType().equals("annet") &&
+                        vedlegg.getTilleggsinfo().equals("annet")).collect(Collectors.toList()));
+    }
+
+    private boolean isSameType(JsonVedlegg jsonVedlegg, OpplastetVedlegg opplastetVedlegg) {
+        return opplastetVedlegg.getVedleggType().getSammensattType().equals(jsonVedlegg.getType() + "|" + jsonVedlegg.getTilleggsinfo());
     }
 
     private JsonVedlegg finnVedleggEllerKastException(String vedleggstype, SoknadUnderArbeid soknadUnderArbeid) {
@@ -167,7 +245,7 @@ public class OpplastetVedleggService {
         }
 
         filnavn += "-" + uuid.split("-")[0];
-        if(filExtention != null && filExtention.length() > 0) {
+        if (filExtention != null && filExtention.length() > 0) {
             filnavn += filExtention;
         } else {
             filnavn += fileType.getExtention();
@@ -216,30 +294,6 @@ public class OpplastetVedleggService {
                     String.format("Ugyldig filtype for opplasting. Filtype var %s", filtype),
                     null,
                     "opplasting.feilmelding.feiltype");
-        }
-    }
-
-    private static void sjekkOmPdfErGyldig(byte[] data) {
-        try (PDDocument document = PDDocument.load(new ByteArrayInputStream(data))) {
-            String text = (new PDFTextStripper()).getText(document);
-
-            if (text == null || text.isEmpty()) {
-                logger.warn("PDF er tom"); // En PDF med ett helt blankt ark generert av word gir text = "\r\n"
-            }
-
-            if (document.isEncrypted()) {
-                throw new UgyldigOpplastingTypeException(
-                        "PDF kan ikke være kryptert.", null,
-                        "opplasting.feilmelding.pdf.kryptert");
-            }
-
-        } catch (InvalidPasswordException e) {
-            throw new UgyldigOpplastingTypeException(
-                    "PDF kan ikke være krypert.", null,
-                    "opplasting.feilmelding.pdf.kryptert");
-        } catch (IOException e) {
-            throw new OpplastingException("Kunne ikke lagre fil", e,
-                    "vedlegg.opplasting.feil.generell");
         }
     }
 }

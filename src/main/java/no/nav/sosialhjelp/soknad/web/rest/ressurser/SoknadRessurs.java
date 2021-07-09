@@ -9,11 +9,11 @@ import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.Sokn
 import no.nav.sosialhjelp.soknad.business.exceptions.SoknadenHarNedetidException;
 import no.nav.sosialhjelp.soknad.business.pdf.HtmlGenerator;
 import no.nav.sosialhjelp.soknad.business.service.HenvendelseService;
+import no.nav.sosialhjelp.soknad.business.service.OpplastetVedleggService;
 import no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService;
 import no.nav.sosialhjelp.soknad.business.service.soknadservice.SystemdataUpdater;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
-import no.nav.sosialhjelp.soknad.web.rest.ressurser.okonomi.OkonomiskeOpplysningerRessurs;
 import no.nav.sosialhjelp.soknad.web.sikkerhet.Tilgangskontroll;
 import no.nav.sosialhjelp.soknad.web.utils.NedetidUtils;
 import org.springframework.stereotype.Controller;
@@ -65,7 +65,7 @@ public class SoknadRessurs {
     private final SystemdataUpdater systemdata;
     private final Tilgangskontroll tilgangskontroll;
     private final HenvendelseService henvendelseService;
-    private final OkonomiskeOpplysningerRessurs okonomiskeOpplysningerRessurs;
+    private final OpplastetVedleggService opplastetVedleggService;
 
     public SoknadRessurs(
             SoknadService soknadService,
@@ -75,7 +75,7 @@ public class SoknadRessurs {
             SystemdataUpdater systemdata,
             Tilgangskontroll tilgangskontroll,
             HenvendelseService henvendelseService,
-            OkonomiskeOpplysningerRessurs okonomiskeOpplysningerRessurs
+            OpplastetVedleggService opplastetVedleggService
     ) {
         this.soknadService = soknadService;
         this.pdfTemplate = pdfTemplate;
@@ -84,7 +84,7 @@ public class SoknadRessurs {
         this.systemdata = systemdata;
         this.tilgangskontroll = tilgangskontroll;
         this.henvendelseService = henvendelseService;
-        this.okonomiskeOpplysningerRessurs = okonomiskeOpplysningerRessurs;
+        this.opplastetVedleggService = opplastetVedleggService;
     }
 
     private static Cookie xsrfCookie(String behandlingId) {
@@ -117,11 +117,10 @@ public class SoknadRessurs {
     public String hentOppsummering(@PathParam("behandlingsId") String behandlingsId) throws IOException {
         tilgangskontroll.verifiserAtBrukerHarTilgang();
         String eier = SubjectHandler.getUserId();
-//        var manglerVedleggsforventninger = true;
-//        if (manglerVedleggsforventninger) {
-            okonomiskeOpplysningerRessurs.hentOkonomiskeOpplysninger(behandlingsId);
-//        }
         var soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
+//        if (soknadUnderArbeid.getJsonInternalSoknad().getVedlegg() == null) {
+        opplastetVedleggService.oppdaterVedleggsforventninger(soknadUnderArbeid, eier);
+//        }
 
         return pdfTemplate.fyllHtmlMalMedInnhold(soknadUnderArbeid.getJsonInternalSoknad(), false);
     }
