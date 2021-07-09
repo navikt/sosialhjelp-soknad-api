@@ -2,15 +2,17 @@ package no.nav.sosialhjelp.soknad.web.rest.ressurser.eksponerte;
 
 import no.finn.unleash.Unleash;
 import no.nav.security.token.support.core.api.ProtectedWithClaims;
-import no.nav.security.token.support.core.api.Unprotected;
 import no.nav.sosialhjelp.metrics.aspects.Timed;
 import no.nav.sosialhjelp.soknad.business.service.dittnav.DittNavMetadataService;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
+import no.nav.sosialhjelp.soknad.web.rest.ressurser.eksponerte.dto.MarkerPabegyntSoknadSomLestDto;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.eksponerte.dto.PabegyntSoknadDto;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import java.util.Collections;
@@ -41,21 +43,39 @@ public class DittNavMetadataRessurs {
     }
 
     @GET
-    @Path("/pabegynte")
+    @Path("/pabegynte/aktive")
     public List<PabegyntSoknadDto> hentPabegynteSoknaderForBruker() {
         if (!unleash.isEnabled(DITTNAV_PABEGYNTE_ENDEPUNKT_ENABLED, false)) {
             log.info("Endepunkt for å hente info om påbegynte søknader for dittNav er ikke enabled. Returnerer tom liste.");
             return Collections.emptyList();
         }
         var fnr = SubjectHandler.getUserId();
-        return dittNavMetadataService.hentPabegynteSoknader(fnr);
+        return dittNavMetadataService.hentAktivePabegynteSoknader(fnr);
     }
 
     @GET
-    @Unprotected
-    @Path("/ping")
-    public String ping() {
-        log.debug("Ping for DittNav");
-        return "pong";
+    @Path("/pabegynte/inaktive")
+    public List<PabegyntSoknadDto> hentPabegynteSoknaderForBrukerLestDittNav() {
+        if (!unleash.isEnabled(DITTNAV_PABEGYNTE_ENDEPUNKT_ENABLED, false)) {
+            log.info("Endepunkt for å hente info om påbegynte søknader for dittNav er ikke enabled. Returnerer tom liste.");
+            return Collections.emptyList();
+        }
+        var fnr = SubjectHandler.getUserId();
+        return dittNavMetadataService.hentInaktivePabegynteSoknader(fnr);
     }
+
+    @POST
+    @Path("/pabegynte/lest")
+    public boolean oppdaterLestDittNavForPabegyntSoknad(@RequestBody MarkerPabegyntSoknadSomLestDto dto) {
+        if (!unleash.isEnabled(DITTNAV_PABEGYNTE_ENDEPUNKT_ENABLED, false)) {
+            log.info("Endepunkt for å oppdatere lestDittNav for påbegynt søknad er ikke enabled. Returnerer false.");
+            return false;
+        }
+        var fnr = SubjectHandler.getUserId();
+        var behandlingsId = dto.getGrupperingsId();
+        var somLest = dittNavMetadataService.oppdaterLestDittNavForPabegyntSoknad(behandlingsId, fnr);
+        log.info("Pabegynt søknad med behandlingsId={} har fått lestDittNav={}", behandlingsId, somLest);
+        return somLest;
+    }
+
 }
