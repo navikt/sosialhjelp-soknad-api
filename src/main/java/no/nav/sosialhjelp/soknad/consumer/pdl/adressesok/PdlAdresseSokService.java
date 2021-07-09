@@ -1,6 +1,8 @@
 package no.nav.sosialhjelp.soknad.consumer.pdl.adressesok;
 
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonGateAdresse;
+import no.nav.sosialhjelp.soknad.business.service.adressesok.AdresseForslag;
+import no.nav.sosialhjelp.soknad.business.service.adressesok.Sokedata;
 import no.nav.sosialhjelp.soknad.consumer.adresse.AdresseStringSplitter;
 import no.nav.sosialhjelp.soknad.consumer.kodeverk.KodeverkService;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.AdresseSokHit;
@@ -10,8 +12,6 @@ import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.FieldName;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.Paging;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.SearchRule;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.VegadresseDto;
-import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseForslag;
-import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseSokConsumer;
 import no.nav.sosialhjelp.soknad.domain.model.exception.SosialhjelpSoknadApiException;
 import no.nav.sosialhjelp.soknad.domain.model.util.KommuneTilNavEnhetMapper;
 import org.slf4j.Logger;
@@ -27,6 +27,7 @@ import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
+import static no.nav.sosialhjelp.soknad.business.service.adressesok.AdresseForslagType.GATEADRESSE;
 import static no.nav.sosialhjelp.soknad.consumer.adresse.TpsAdresseSokService.isAddressTooShortOrNull;
 import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.AdresseHelper.formatterKommunenavn;
 import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.FieldName.VEGADRESSE_ADRESSENAVN;
@@ -38,7 +39,6 @@ import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.FieldName.VE
 import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.SearchRule.CONTAINS;
 import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.SearchRule.EQUALS;
 import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.SearchRule.WILDCARD;
-import static no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseForslagType.GATEADRESSE;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -80,7 +80,7 @@ public class PdlAdresseSokService {
                 .collect(Collectors.toList());
     }
 
-    public List<VegadresseDto> getAdresser(AdresseSokConsumer.Sokedata sokedata) {
+    public List<VegadresseDto> getAdresser(Sokedata sokedata) {
         if (sokedata == null || isAddressTooShortOrNull(sokedata.adresse)) {
             return Collections.emptyList();
         }
@@ -145,7 +145,7 @@ public class PdlAdresseSokService {
         return criteriaList;
     }
 
-    private Map<String, Object> toVariablesForFritekstSok(AdresseSokConsumer.Sokedata sokedata) {
+    private Map<String, Object> toVariablesForFritekstSok(Sokedata sokedata) {
         var variables = new HashMap<String, Object>();
         variables.put(PAGING, new Paging(1, 30, singletonList(new Paging.SortBy(VEGADRESSE_HUSNUMMER.getName(), Direction.ASC))));
 
@@ -157,7 +157,7 @@ public class PdlAdresseSokService {
         return variables;
     }
 
-    private List<Criteria> toCriteriaListForFritekstSok(AdresseSokConsumer.Sokedata sokedata) {
+    private List<Criteria> toCriteriaListForFritekstSok(Sokedata sokedata) {
         var criteriaList = new ArrayList<Criteria>();
         if (isNotEmpty(sokedata.adresse)) {
             if (sokedata.adresse.length() < 3) {

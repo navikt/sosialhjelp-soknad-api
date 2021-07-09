@@ -1,7 +1,8 @@
 package no.nav.sosialhjelp.soknad.consumer.adresse;
 
+import no.nav.sosialhjelp.soknad.business.service.adressesok.AdresseForslag;
+import no.nav.sosialhjelp.soknad.business.service.adressesok.Sokedata;
 import no.nav.sosialhjelp.soknad.consumer.kodeverk.KodeverkService;
-import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseForslag;
 import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseSokConsumer;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -103,19 +104,19 @@ public class AdresseSokTPSServiceTest {
 
     @Test
     public void sokEtterAdresserSokedata_medNullSokedata_skalGiTomtResultat() {
-        List<AdresseForslag> adresseForslags = tpsAdresseSokService.sokEtterAdresser((AdresseSokConsumer.Sokedata) null);
+        List<AdresseForslag> adresseForslags = tpsAdresseSokService.sokEtterAdresser((Sokedata) null);
         assertThat(adresseForslags).isEmpty();
     }
 
     @Test
     public void sokEtterAdresserSokedata_derSokedataHarNullAdresse_skalGiTomtResultat() {
-        List<AdresseForslag> adresseForslags = tpsAdresseSokService.sokEtterAdresser(new AdresseSokConsumer.Sokedata());
+        List<AdresseForslag> adresseForslags = tpsAdresseSokService.sokEtterAdresser(new Sokedata());
         assertThat(adresseForslags).isEmpty();
     }
 
     @Test
     public void sokEtterAdresserSokedata_medAdressePaEnBokstav_skalGiTomtResultat() {
-        AdresseSokConsumer.Sokedata sokedata = new AdresseSokConsumer.Sokedata();
+        Sokedata sokedata = new Sokedata();
         sokedata.adresse = "a";
         List<AdresseForslag> adresseForslags = tpsAdresseSokService.sokEtterAdresser(sokedata);
         assertThat(adresseForslags).isEmpty();
@@ -126,7 +127,7 @@ public class AdresseSokTPSServiceTest {
         String adressenavn = "Sæ";
         when(adresseSokConsumer.sokAdresse(any())).thenReturn(mockAddressResponse(adressenavn));
 
-        AdresseSokConsumer.Sokedata sokedata = new AdresseSokConsumer.Sokedata();
+        Sokedata sokedata = new Sokedata();
         sokedata.adresse = adressenavn;
         List<AdresseForslag> adresseForslags = tpsAdresseSokService.sokEtterAdresser(sokedata);
 

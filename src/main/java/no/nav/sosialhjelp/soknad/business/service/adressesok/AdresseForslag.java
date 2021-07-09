@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.domain.model.adresse;
+package no.nav.sosialhjelp.soknad.business.service.adressesok;
 
 public class AdresseForslag {
     public String adresse;

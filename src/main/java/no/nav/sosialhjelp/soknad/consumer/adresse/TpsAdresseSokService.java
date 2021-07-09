@@ -1,11 +1,11 @@
 package no.nav.sosialhjelp.soknad.consumer.adresse;
 
+import no.nav.sosialhjelp.soknad.business.service.adressesok.AdresseForslag;
+import no.nav.sosialhjelp.soknad.business.service.adressesok.Sokedata;
 import no.nav.sosialhjelp.soknad.consumer.kodeverk.KodeverkService;
-import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseForslag;
 import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseSokConsumer;
 import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseSokConsumer.AdresseData;
 import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseSokConsumer.AdressesokRespons;
-import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseSokConsumer.Sokedata;
 import no.nav.sosialhjelp.soknad.domain.model.util.KommuneTilNavEnhetMapper;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +16,7 @@ import java.util.Set;
 import java.util.function.Predicate;
 
 import static java.util.stream.Collectors.toList;
-import static no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseForslagType.GATEADRESSE;
+import static no.nav.sosialhjelp.soknad.business.service.adressesok.AdresseForslagType.GATEADRESSE;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Service

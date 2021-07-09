@@ -9,9 +9,6 @@ import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
 import no.nav.sosialhjelp.soknad.consumer.adresse.TpsAdresseSokService;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.PdlAdresseSokService;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
-import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseForslag;
-import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseForslagType;
-import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseSokConsumer;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -64,7 +61,7 @@ public class AdresseSokServiceTest {
 
     @Test
     public void finnAdresseFraSoknadGirRiktigAdresseForMidlertidigGateadresse() {
-        when(tpsAdresseSokService.sokEtterAdresser(any(AdresseSokConsumer.Sokedata.class))).thenReturn(lagAdresseForslagListeMedEtInnslag());
+        when(tpsAdresseSokService.sokEtterAdresser(any(Sokedata.class))).thenReturn(lagAdresseForslagListeMedEtInnslag());
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         JsonPersonalia personalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
         personalia.setOppholdsadresse(createGateadresse());
@@ -119,7 +116,7 @@ public class AdresseSokServiceTest {
 
     @Test
     public void finnAdresseFraSoknadReturnererTomListeHvisAdressesokGirFlereResultater() {
-        when(tpsAdresseSokService.sokEtterAdresser(any(AdresseSokConsumer.Sokedata.class))).thenReturn(Arrays.asList(
+        when(tpsAdresseSokService.sokEtterAdresser(any(Sokedata.class))).thenReturn(Arrays.asList(
                 lagAdresseForslag(KOMMUNENUMMER1, KOMMUNENAVN1, "Foo"),
                 lagAdresseForslag(KOMMUNENUMMER1, KOMMUNENAVN1, "Bar")
         ));
@@ -135,7 +132,7 @@ public class AdresseSokServiceTest {
 
     @Test
     public void finnAdresseFraSoknadKanGiFlereNavKontor() {
-        when(tpsAdresseSokService.sokEtterAdresser(any(AdresseSokConsumer.Sokedata.class))).thenReturn(Arrays.asList(
+        when(tpsAdresseSokService.sokEtterAdresser(any(Sokedata.class))).thenReturn(Arrays.asList(
                 lagAdresseForslag(KOMMUNENUMMER1, KOMMUNENAVN1, "Foo"),
                 lagAdresseForslag(KOMMUNENUMMER2, KOMMUNENAVN2, "Foo")
         ));

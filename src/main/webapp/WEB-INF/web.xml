@@ -6,16 +6,6 @@
 
     <display-name>sosialhjelp-soknad-api</display-name>
 
-    <session-config>
-        <session-timeout>30</session-timeout>
-        <cookie-config>
-            <name>SENDSOKNAD_JSESSIONID</name>
-            <http-only>true</http-only>
-            <secure>true</secure>
-        </cookie-config>
-        <tracking-mode>COOKIE</tracking-mode>
-    </session-config>
-
     <listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
     </listener>
