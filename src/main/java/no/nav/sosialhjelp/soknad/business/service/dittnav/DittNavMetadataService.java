@@ -28,16 +28,15 @@ public class DittNavMetadataService {
     }
 
     public List<PabegyntSoknadDto> hentAktivePabegynteSoknader(String fnr) {
-        return hentPabegynteSoknader(fnr, false);
-    }
-
-    public List<PabegyntSoknadDto> hentInaktivePabegynteSoknader(String fnr) {
         return hentPabegynteSoknader(fnr, true);
     }
 
-    private List<PabegyntSoknadDto> hentPabegynteSoknader(String fnr, boolean lestDittNav) {
-        var pabegynteSoknader = soknadMetadataRepository.hentPabegynteSoknaderForBruker(fnr, lestDittNav);
-        var aktiv = !lestDittNav;
+    public List<PabegyntSoknadDto> hentInaktivePabegynteSoknader(String fnr) {
+        return hentPabegynteSoknader(fnr, false);
+    }
+
+    private List<PabegyntSoknadDto> hentPabegynteSoknader(String fnr, boolean aktiv) {
+        var pabegynteSoknader = soknadMetadataRepository.hentPabegynteSoknaderForBruker(fnr, !aktiv);
 
         return pabegynteSoknader.stream()
                 .map(soknadMetadata -> new PabegyntSoknadDto(

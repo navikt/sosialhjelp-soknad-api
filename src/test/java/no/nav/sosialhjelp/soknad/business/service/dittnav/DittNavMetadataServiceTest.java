@@ -30,14 +30,7 @@ public class DittNavMetadataServiceTest {
 
     @Test
     public void skalHenteAktivePabegynteSoknaderForBruker() {
-        var soknadMetadata = new SoknadMetadata();
-        soknadMetadata.fnr = "12345";
-        soknadMetadata.behandlingsId = "beh123";
-        soknadMetadata.status = SoknadMetadataInnsendingStatus.UNDER_ARBEID;
-        soknadMetadata.type = SoknadType.SEND_SOKNAD_KOMMUNAL;
-        soknadMetadata.opprettetDato = LocalDateTime.now().minusDays(10);
-        soknadMetadata.sistEndretDato = LocalDateTime.now().minusDays(2);
-        soknadMetadata.lestDittNav = false;
+        var soknadMetadata = createSoknadMetadata(false);
 
         when(soknadMetadataRepository.hentPabegynteSoknaderForBruker("12345", false))
                 .thenReturn(Collections.singletonList(soknadMetadata));
@@ -52,14 +45,7 @@ public class DittNavMetadataServiceTest {
 
     @Test
     public void skalHenteInaktivePabegynteSoknaderForBruker() {
-        var soknadMetadata = new SoknadMetadata();
-        soknadMetadata.fnr = "12345";
-        soknadMetadata.behandlingsId = "beh123";
-        soknadMetadata.status = SoknadMetadataInnsendingStatus.UNDER_ARBEID;
-        soknadMetadata.type = SoknadType.SEND_SOKNAD_KOMMUNAL;
-        soknadMetadata.opprettetDato = LocalDateTime.now().minusDays(10);
-        soknadMetadata.sistEndretDato = LocalDateTime.now().minusDays(2);
-        soknadMetadata.lestDittNav = true;
+        var soknadMetadata = createSoknadMetadata(true);
 
         when(soknadMetadataRepository.hentPabegynteSoknaderForBruker("12345", true))
                 .thenReturn(Collections.singletonList(soknadMetadata));
@@ -84,13 +70,7 @@ public class DittNavMetadataServiceTest {
 
     @Test
     public void markerPabegyntSoknadSomLest_skalGiFalse_hvisNoeFeiler() {
-        var soknadMetadata = new SoknadMetadata();
-        soknadMetadata.fnr = "12345";
-        soknadMetadata.behandlingsId = "beh123";
-        soknadMetadata.status = SoknadMetadataInnsendingStatus.UNDER_ARBEID;
-        soknadMetadata.type = SoknadType.SEND_SOKNAD_KOMMUNAL;
-        soknadMetadata.innsendtDato = LocalDateTime.now();
-        soknadMetadata.lestDittNav = false;
+        var soknadMetadata = createSoknadMetadata(false);
 
         when(soknadMetadataRepository.hent(anyString()))
                 .thenReturn(soknadMetadata);
@@ -99,5 +79,18 @@ public class DittNavMetadataServiceTest {
         var markert = dittNavMetadataService.oppdaterLestDittNavForPabegyntSoknad("behandlingsId", "12345");
 
         assertThat(markert).isFalse();
+    }
+
+    private SoknadMetadata createSoknadMetadata(boolean lestDittNav) {
+        var soknadMetadata = new SoknadMetadata();
+        soknadMetadata.fnr = "12345";
+        soknadMetadata.behandlingsId = "beh123";
+        soknadMetadata.status = SoknadMetadataInnsendingStatus.UNDER_ARBEID;
+        soknadMetadata.type = SoknadType.SEND_SOKNAD_KOMMUNAL;
+        soknadMetadata.opprettetDato = LocalDateTime.now().minusDays(10);
+        soknadMetadata.innsendtDato = LocalDateTime.now().minusDays(2);
+        soknadMetadata.sistEndretDato = LocalDateTime.now().minusDays(2);
+        soknadMetadata.lestDittNav = lestDittNav;
+        return soknadMetadata;
     }
 }
