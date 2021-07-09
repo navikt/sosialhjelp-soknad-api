@@ -13,6 +13,7 @@ import no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService;
 import no.nav.sosialhjelp.soknad.business.service.soknadservice.SystemdataUpdater;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
+import no.nav.sosialhjelp.soknad.web.rest.ressurser.okonomi.OkonomiskeOpplysningerRessurs;
 import no.nav.sosialhjelp.soknad.web.sikkerhet.Tilgangskontroll;
 import no.nav.sosialhjelp.soknad.web.utils.NedetidUtils;
 import org.springframework.stereotype.Controller;
@@ -64,6 +65,7 @@ public class SoknadRessurs {
     private final SystemdataUpdater systemdata;
     private final Tilgangskontroll tilgangskontroll;
     private final HenvendelseService henvendelseService;
+    private final OkonomiskeOpplysningerRessurs okonomiskeOpplysningerRessurs;
 
     public SoknadRessurs(
             SoknadService soknadService,
@@ -72,7 +74,8 @@ public class SoknadRessurs {
             SoknadUnderArbeidRepository soknadUnderArbeidRepository,
             SystemdataUpdater systemdata,
             Tilgangskontroll tilgangskontroll,
-            HenvendelseService henvendelseService
+            HenvendelseService henvendelseService,
+            OkonomiskeOpplysningerRessurs okonomiskeOpplysningerRessurs
     ) {
         this.soknadService = soknadService;
         this.pdfTemplate = pdfTemplate;
@@ -81,6 +84,7 @@ public class SoknadRessurs {
         this.systemdata = systemdata;
         this.tilgangskontroll = tilgangskontroll;
         this.henvendelseService = henvendelseService;
+        this.okonomiskeOpplysningerRessurs = okonomiskeOpplysningerRessurs;
     }
 
     private static Cookie xsrfCookie(String behandlingId) {
@@ -113,7 +117,11 @@ public class SoknadRessurs {
     public String hentOppsummering(@PathParam("behandlingsId") String behandlingsId) throws IOException {
         tilgangskontroll.verifiserAtBrukerHarTilgang();
         String eier = SubjectHandler.getUserId();
-        SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
+//        var manglerVedleggsforventninger = true;
+//        if (manglerVedleggsforventninger) {
+            okonomiskeOpplysningerRessurs.hentOkonomiskeOpplysninger(behandlingsId);
+//        }
+        var soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
 
         return pdfTemplate.fyllHtmlMalMedInnhold(soknadUnderArbeid.getJsonInternalSoknad(), false);
     }
