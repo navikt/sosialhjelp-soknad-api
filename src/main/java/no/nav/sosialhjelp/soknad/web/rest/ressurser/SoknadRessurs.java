@@ -16,6 +16,7 @@ import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import no.nav.sosialhjelp.soknad.web.sikkerhet.Tilgangskontroll;
 import no.nav.sosialhjelp.soknad.web.utils.NedetidUtils;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -47,6 +48,7 @@ import static no.nav.sosialhjelp.soknad.web.utils.Constants.SELVBETJENING;
 import static no.nav.sosialhjelp.soknad.web.utils.NedetidUtils.NEDETID_SLUTT;
 import static no.nav.sosialhjelp.soknad.web.utils.NedetidUtils.getNedetidAsStringOrNull;
 import static no.nav.sosialhjelp.soknad.web.utils.XsrfGenerator.generateXsrfToken;
+import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @Controller
@@ -57,6 +59,8 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 public class SoknadRessurs {
 
     public static final String XSRF_TOKEN = "XSRF-TOKEN-SOKNAD-API";
+
+    private static final Logger log = getLogger(SoknadRessurs.class);
 
     private final SoknadService soknadService;
     private final HtmlGenerator pdfTemplate;
@@ -120,6 +124,7 @@ public class SoknadRessurs {
         var soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
         // JsonInternalSoknad.setVedlegg kalles kun på side 8 - ved henting av ØkonomiskeOpplysninger
         if (soknadUnderArbeid.getJsonInternalSoknad().getVedlegg() == null) {
+            log.info("Oppdaterer vedleggsforventninger for soknad {} fra oppsummeringssiden", behandlingsId);
             opplastetVedleggService.oppdaterVedleggsforventninger(soknadUnderArbeid, eier);
         }
 
