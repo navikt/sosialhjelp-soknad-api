@@ -118,9 +118,10 @@ public class SoknadRessurs {
         tilgangskontroll.verifiserAtBrukerHarTilgang();
         String eier = SubjectHandler.getUserId();
         var soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
-//        if (soknadUnderArbeid.getJsonInternalSoknad().getVedlegg() == null) {
-        opplastetVedleggService.oppdaterVedleggsforventninger(soknadUnderArbeid, eier);
-//        }
+        // JsonInternalSoknad.setVedlegg kalles kun på side 8 - ved henting av ØkonomiskeOpplysninger
+        if (soknadUnderArbeid.getJsonInternalSoknad().getVedlegg() == null) {
+            opplastetVedleggService.oppdaterVedleggsforventninger(soknadUnderArbeid, eier);
+        }
 
         return pdfTemplate.fyllHtmlMalMedInnhold(soknadUnderArbeid.getJsonInternalSoknad(), false);
     }
