@@ -126,7 +126,7 @@ public class SoknadRessurs {
         log.info("soknadUnderArbeid.jsonInternalSoknad.vedlegg: {}", soknadUnderArbeid.getJsonInternalSoknad().getVedlegg());
         if (soknadUnderArbeid.getJsonInternalSoknad().getVedlegg() == null
                 || soknadUnderArbeid.getJsonInternalSoknad().getVedlegg().getVedlegg() == null
-                || !soknadUnderArbeid.getJsonInternalSoknad().getVedlegg().getVedlegg().isEmpty()) {
+                || soknadUnderArbeid.getJsonInternalSoknad().getVedlegg().getVedlegg().isEmpty()) {
             log.info("Oppdaterer vedleggsforventninger for soknad {} fra oppsummeringssiden", behandlingsId);
             opplastetVedleggService.oppdaterVedleggsforventninger(soknadUnderArbeid, eier);
         }
