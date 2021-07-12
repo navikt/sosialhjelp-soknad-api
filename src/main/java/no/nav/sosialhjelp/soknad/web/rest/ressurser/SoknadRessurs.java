@@ -124,7 +124,8 @@ public class SoknadRessurs {
         var soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
         // JsonInternalSoknad.setVedlegg kalles kun på side 8 - ved henting av ØkonomiskeOpplysninger
         if (soknadUnderArbeid.getJsonInternalSoknad().getVedlegg() == null
-                || soknadUnderArbeid.getJsonInternalSoknad().getVedlegg().getVedlegg() == null) {
+                || soknadUnderArbeid.getJsonInternalSoknad().getVedlegg().getVedlegg() == null
+                || !soknadUnderArbeid.getJsonInternalSoknad().getVedlegg().getVedlegg().isEmpty()) {
             log.info("Oppdaterer vedleggsforventninger for soknad {} fra oppsummeringssiden", behandlingsId);
             opplastetVedleggService.oppdaterVedleggsforventninger(soknadUnderArbeid, eier);
         }
