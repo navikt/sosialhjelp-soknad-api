@@ -122,12 +122,11 @@ public class SoknadRessurs {
         tilgangskontroll.verifiserAtBrukerHarTilgang();
         String eier = SubjectHandler.getUserId();
         var soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
-        // JsonInternalSoknad.setVedlegg kalles kun på side 8 - ved henting av ØkonomiskeOpplysninger
-        log.info("soknadUnderArbeid.jsonInternalSoknad.vedlegg: {}", soknadUnderArbeid.getJsonInternalSoknad().getVedlegg());
+
         if (soknadUnderArbeid.getJsonInternalSoknad().getVedlegg() == null
                 || soknadUnderArbeid.getJsonInternalSoknad().getVedlegg().getVedlegg() == null
                 || soknadUnderArbeid.getJsonInternalSoknad().getVedlegg().getVedlegg().isEmpty()) {
-            log.info("Oppdaterer vedleggsforventninger for soknad {} fra oppsummeringssiden", behandlingsId);
+            log.info("Oppdaterer vedleggsforventninger for soknad {} fra oppsummeringssiden, ettersom side 8 ble hoppet over", behandlingsId);
             opplastetVedleggService.oppdaterVedleggsforventninger(soknadUnderArbeid, eier);
         }
 
