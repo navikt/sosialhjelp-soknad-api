@@ -56,30 +56,6 @@ public class OpplastetVedleggService {
     @Inject
     private VirusScanner virusScanner;
 
-    private static void sjekkOmPdfErGyldig(byte[] data) {
-        try (PDDocument document = PDDocument.load(new ByteArrayInputStream(data))) {
-            String text = (new PDFTextStripper()).getText(document);
-
-            if (text == null || text.isEmpty()) {
-                logger.warn("PDF er tom"); // En PDF med ett helt blankt ark generert av word gir text = "\r\n"
-            }
-
-            if (document.isEncrypted()) {
-                throw new UgyldigOpplastingTypeException(
-                        "PDF kan ikke være kryptert.", null,
-                        "opplasting.feilmelding.pdf.kryptert");
-            }
-
-        } catch (InvalidPasswordException e) {
-            throw new UgyldigOpplastingTypeException(
-                    "PDF kan ikke være krypert.", null,
-                    "opplasting.feilmelding.pdf.kryptert");
-        } catch (IOException e) {
-            throw new OpplastingException("Kunne ikke lagre fil", e,
-                    "vedlegg.opplasting.feil.generell");
-        }
-    }
-
     public OpplastetVedlegg saveVedleggAndUpdateVedleggstatus(String behandlingsId, String vedleggstype, byte[] data, String filnavn) {
         String eier = SubjectHandler.getUserId();
         String sha512 = ServiceUtils.getSha512FromByteArray(data);
@@ -294,6 +270,30 @@ public class OpplastetVedleggService {
                     String.format("Ugyldig filtype for opplasting. Filtype var %s", filtype),
                     null,
                     "opplasting.feilmelding.feiltype");
+        }
+    }
+
+    private static void sjekkOmPdfErGyldig(byte[] data) {
+        try (PDDocument document = PDDocument.load(new ByteArrayInputStream(data))) {
+            String text = (new PDFTextStripper()).getText(document);
+
+            if (text == null || text.isEmpty()) {
+                logger.warn("PDF er tom"); // En PDF med ett helt blankt ark generert av word gir text = "\r\n"
+            }
+
+            if (document.isEncrypted()) {
+                throw new UgyldigOpplastingTypeException(
+                        "PDF kan ikke være kryptert.", null,
+                        "opplasting.feilmelding.pdf.kryptert");
+            }
+
+        } catch (InvalidPasswordException e) {
+            throw new UgyldigOpplastingTypeException(
+                    "PDF kan ikke være krypert.", null,
+                    "opplasting.feilmelding.pdf.kryptert");
+        } catch (IOException e) {
+            throw new OpplastingException("Kunne ikke lagre fil", e,
+                    "vedlegg.opplasting.feil.generell");
         }
     }
 }
