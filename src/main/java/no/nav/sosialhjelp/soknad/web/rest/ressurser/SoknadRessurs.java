@@ -123,6 +123,7 @@ public class SoknadRessurs {
         String eier = SubjectHandler.getUserId();
         var soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
         // JsonInternalSoknad.setVedlegg kalles kun på side 8 - ved henting av ØkonomiskeOpplysninger
+        log.info("soknadUnderArbeid.jsonInternalSoknad.vedlegg: {}", soknadUnderArbeid.getJsonInternalSoknad().getVedlegg());
         if (soknadUnderArbeid.getJsonInternalSoknad().getVedlegg() == null
                 || soknadUnderArbeid.getJsonInternalSoknad().getVedlegg().getVedlegg() == null
                 || !soknadUnderArbeid.getJsonInternalSoknad().getVedlegg().getVedlegg().isEmpty()) {
