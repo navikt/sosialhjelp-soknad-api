@@ -9,7 +9,6 @@ import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.domain.model.exception.AuthorizationException;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.StaticSubjectHandlerService;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
-import no.nav.sosialhjelp.soknad.web.rest.ressurser.okonomi.OkonomiskeOpplysningerRessurs;
 import no.nav.sosialhjelp.soknad.web.sikkerhet.Tilgangskontroll;
 import org.assertj.core.util.Lists;
 import org.junit.After;
@@ -59,8 +58,6 @@ public class SoknadRessursTest {
     private Tilgangskontroll tilgangskontroll;
     @Mock
     private HenvendelseService henvendelseService;
-    @Mock
-    private OkonomiskeOpplysningerRessurs okonomiskeOpplysningerRessurs;
 
     @InjectMocks
     private SoknadRessurs ressurs;
