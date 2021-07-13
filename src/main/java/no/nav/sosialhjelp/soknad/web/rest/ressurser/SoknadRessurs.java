@@ -9,12 +9,14 @@ import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.Sokn
 import no.nav.sosialhjelp.soknad.business.exceptions.SoknadenHarNedetidException;
 import no.nav.sosialhjelp.soknad.business.pdf.HtmlGenerator;
 import no.nav.sosialhjelp.soknad.business.service.HenvendelseService;
+import no.nav.sosialhjelp.soknad.business.service.OpplastetVedleggService;
 import no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService;
 import no.nav.sosialhjelp.soknad.business.service.soknadservice.SystemdataUpdater;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import no.nav.sosialhjelp.soknad.web.sikkerhet.Tilgangskontroll;
 import no.nav.sosialhjelp.soknad.web.utils.NedetidUtils;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -46,6 +48,7 @@ import static no.nav.sosialhjelp.soknad.web.utils.Constants.SELVBETJENING;
 import static no.nav.sosialhjelp.soknad.web.utils.NedetidUtils.NEDETID_SLUTT;
 import static no.nav.sosialhjelp.soknad.web.utils.NedetidUtils.getNedetidAsStringOrNull;
 import static no.nav.sosialhjelp.soknad.web.utils.XsrfGenerator.generateXsrfToken;
+import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @Controller
@@ -57,6 +60,8 @@ public class SoknadRessurs {
 
     public static final String XSRF_TOKEN = "XSRF-TOKEN-SOKNAD-API";
 
+    private static final Logger log = getLogger(SoknadRessurs.class);
+
     private final SoknadService soknadService;
     private final HtmlGenerator pdfTemplate;
     private final SoknadUnderArbeidService soknadUnderArbeidService;
@@ -64,6 +69,7 @@ public class SoknadRessurs {
     private final SystemdataUpdater systemdata;
     private final Tilgangskontroll tilgangskontroll;
     private final HenvendelseService henvendelseService;
+    private final OpplastetVedleggService opplastetVedleggService;
 
     public SoknadRessurs(
             SoknadService soknadService,
@@ -72,7 +78,8 @@ public class SoknadRessurs {
             SoknadUnderArbeidRepository soknadUnderArbeidRepository,
             SystemdataUpdater systemdata,
             Tilgangskontroll tilgangskontroll,
-            HenvendelseService henvendelseService
+            HenvendelseService henvendelseService,
+            OpplastetVedleggService opplastetVedleggService
     ) {
         this.soknadService = soknadService;
         this.pdfTemplate = pdfTemplate;
@@ -81,6 +88,7 @@ public class SoknadRessurs {
         this.systemdata = systemdata;
         this.tilgangskontroll = tilgangskontroll;
         this.henvendelseService = henvendelseService;
+        this.opplastetVedleggService = opplastetVedleggService;
     }
 
     private static Cookie xsrfCookie(String behandlingId) {
@@ -113,7 +121,14 @@ public class SoknadRessurs {
     public String hentOppsummering(@PathParam("behandlingsId") String behandlingsId) throws IOException {
         tilgangskontroll.verifiserAtBrukerHarTilgang();
         String eier = SubjectHandler.getUserId();
-        SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
+        var soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
+
+        if (soknadUnderArbeid.getJsonInternalSoknad().getVedlegg() == null
+                || soknadUnderArbeid.getJsonInternalSoknad().getVedlegg().getVedlegg() == null
+                || soknadUnderArbeid.getJsonInternalSoknad().getVedlegg().getVedlegg().isEmpty()) {
+            log.info("Oppdaterer vedleggsforventninger for soknad {} fra oppsummeringssiden, ettersom side 8 ble hoppet over", behandlingsId);
+            opplastetVedleggService.oppdaterVedleggsforventninger(soknadUnderArbeid, eier);
+        }
 
         return pdfTemplate.fyllHtmlMalMedInnhold(soknadUnderArbeid.getJsonInternalSoknad(), false);
     }
