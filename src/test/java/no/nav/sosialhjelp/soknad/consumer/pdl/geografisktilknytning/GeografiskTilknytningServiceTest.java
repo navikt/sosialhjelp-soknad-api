@@ -1,0 +1,72 @@
+package no.nav.sosialhjelp.soknad.consumer.pdl.geografisktilknytning;
+
+
+import no.nav.sosialhjelp.soknad.consumer.pdl.geografisktilknytning.dto.GeografiskTilknytningDto;
+import no.nav.sosialhjelp.soknad.consumer.pdl.geografisktilknytning.dto.GtType;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
+
+@RunWith(MockitoJUnitRunner.class)
+public class GeografiskTilknytningServiceTest {
+
+    @Mock
+    private GeografiskTilknytningConsumer geografiskTilknytningConsumer;
+
+    @InjectMocks
+    private GeografiskTilknytningService geografiskTilknytningService;
+
+    private final String ident = "ident";
+    private final String gt = "gt";
+
+    @Test
+    public void skalReturnereBydelsnummer() {
+        when(geografiskTilknytningConsumer.hentGeografiskTilknytning(ident))
+                .thenReturn(new GeografiskTilknytningDto(GtType.BYDEL, null, gt, null));
+
+        var geografiskTilknytning = geografiskTilknytningService.hentGeografiskTilknytning(ident);
+        assertThat(geografiskTilknytning).isEqualTo(gt);
+    }
+
+    @Test
+    public void skalReturnereKommunenummer() {
+        when(geografiskTilknytningConsumer.hentGeografiskTilknytning(ident))
+                .thenReturn(new GeografiskTilknytningDto(GtType.KOMMUNE, gt, null, null));
+
+        var geografiskTilknytning = geografiskTilknytningService.hentGeografiskTilknytning(ident);
+        assertThat(geografiskTilknytning).isEqualTo(gt);
+    }
+
+    @Test
+    public void skalReturnereNullHvisUtland() {
+        when(geografiskTilknytningConsumer.hentGeografiskTilknytning(ident))
+                .thenReturn(new GeografiskTilknytningDto(GtType.UTLAND, null, null, gt));
+
+        var geografiskTilknytning = geografiskTilknytningService.hentGeografiskTilknytning(ident);
+        assertThat(geografiskTilknytning).isNull();
+    }
+
+    @Test
+    public void skalReturnereNullHvisUdefinert() {
+        when(geografiskTilknytningConsumer.hentGeografiskTilknytning(ident))
+                .thenReturn(new GeografiskTilknytningDto(GtType.UDEFINERT, null, null, null));
+
+        var geografiskTilknytning = geografiskTilknytningService.hentGeografiskTilknytning(ident);
+        assertThat(geografiskTilknytning).isNull();
+    }
+
+    @Test
+    public void skalReturnereNullHvisConsumerGirNull() {
+        when(geografiskTilknytningConsumer.hentGeografiskTilknytning(ident))
+                .thenReturn(null);
+
+        var geografiskTilknytning = geografiskTilknytningService.hentGeografiskTilknytning(ident);
+        assertThat(geografiskTilknytning).isNull();
+    }
+
+}
