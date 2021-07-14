@@ -161,7 +161,12 @@ public class NavEnhetRessurs {
 
         if ("folkeregistrert".equals(valg) && unleash.isEnabled(BRUK_HENT_GEOGRAFISKTILKNYTNING_ENABLED, false)) {
             log.info("Bruker hentGeografiskTilknytning for å hente gt, siden folkeregistrert adresse er valgt.");
-            return finnNavEnhetFraGT(eier, personalia, valgtEnhetNr);
+            try {
+                finnNavEnhetFraGT(eier, personalia, valgtEnhetNr);
+            } catch (Exception e) {
+                log.warn("Noe feilet ved utleding av Nav-kontor ut fra GT hentet fra PDL -> fallback til adressesøk-løsning", e);
+                finnNavEnhetFraAdresse(personalia, valg, valgtEnhetNr);
+            }
         }
 
         return finnNavEnhetFraAdresse(personalia, valg, valgtEnhetNr);
