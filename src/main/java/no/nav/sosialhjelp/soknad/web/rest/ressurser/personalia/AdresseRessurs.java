@@ -85,7 +85,7 @@ public class AdresseRessurs {
         personalia.setPostadresse(midlertidigLosningForPostadresse(personalia.getOppholdsadresse()));
 
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier);
-        return navEnhetRessurs.findSoknadsmottaker(soknad.getJsonInternalSoknad().getSoknad(), adresserFrontend.valg.toString(), null);
+        return navEnhetRessurs.findSoknadsmottaker(eier, soknad.getJsonInternalSoknad().getSoknad(), adresserFrontend.valg.toString(), null);
     }
 
     private JsonAdresse midlertidigLosningForPostadresse(JsonAdresse oppholdsadresse) {
