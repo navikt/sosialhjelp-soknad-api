@@ -23,5 +23,6 @@ public final class CacheConstants {
     public static final String BARN_CACHE_KEY = "hentperson_barn_";
     public static final String EKTEFELLE_CACHE_KEY = "hentperson_ektefelle_";
     public static final String ADRESSEBESKYTTELSE_CACHE_KEY = "hentperson_adressebeskyttelse_";
+    public static final String GEOGRAFISK_TILKNYTNING_CACHE_KEY = "hent_geografisktilknytning_";
     public static final long PDL_CACHE_SECONDS = 30 * 60L; // 30 minutter
 }

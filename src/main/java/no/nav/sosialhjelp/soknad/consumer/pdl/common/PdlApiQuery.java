@@ -20,11 +20,12 @@ public final class PdlApiQuery {
     public static final String HENT_EKTEFELLE = readGraphQLQueryFromFile("graphql/pdl-ektefelle-query.graphql");
     public static final String HENT_PERSON_ADRESSEBESKYTTELSE = readGraphQLQueryFromFile("graphql/pdl-person-adressebeskyttelse-query.graphql");
     public static final String ADRESSE_SOK = readGraphQLQueryFromFile("graphql/pdl-adressesok.graphql");
+    public static final String HENT_GEOGRAFISK_TILKNYTNING = readGraphQLQueryFromFile("graphql/pdl-geografisktilknytning-query.graphql");
     // flere queries?
 
     private static String readGraphQLQueryFromFile(String file) {
-        ClassPathResource classPathResource = new ClassPathResource(file);
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(classPathResource.getInputStream(), UTF_8))) {
+        var classPathResource = new ClassPathResource(file);
+        try (var reader = new BufferedReader(new InputStreamReader(classPathResource.getInputStream(), UTF_8))) {
             return reader.lines().collect(Collectors.joining("\n"));
         } catch (IOException e) {
             throw new PdlApiException("Failed to read graphql-file: " + file, e);
