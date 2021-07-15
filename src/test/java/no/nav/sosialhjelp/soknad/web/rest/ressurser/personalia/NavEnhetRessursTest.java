@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.web.rest.ressurser.personalia;
 
+import no.finn.unleash.Unleash;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknadsmottaker;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresseValg;
@@ -9,9 +10,12 @@ import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository;
 import no.nav.sosialhjelp.soknad.business.service.adressesok.AdresseForslag;
 import no.nav.sosialhjelp.soknad.business.service.adressesok.AdresseSokService;
+import no.nav.sosialhjelp.soknad.consumer.exceptions.PdlApiException;
 import no.nav.sosialhjelp.soknad.consumer.fiks.KommuneInfoService;
+import no.nav.sosialhjelp.soknad.consumer.kodeverk.KodeverkService;
 import no.nav.sosialhjelp.soknad.consumer.norg.NorgService;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.bydel.BydelService;
+import no.nav.sosialhjelp.soknad.consumer.pdl.geografisktilknytning.GeografiskTilknytningService;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.domain.model.exception.AuthorizationException;
 import no.nav.sosialhjelp.soknad.domain.model.norg.NavEnhet;
@@ -37,6 +41,7 @@ import static java.util.Collections.singletonList;
 import static no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
 import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.bydel.BydelService.BYDEL_MARKA;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.doNothing;
@@ -51,11 +56,14 @@ public class NavEnhetRessursTest {
 
     private static final String BEHANDLINGSID = "123";
 
+
+    private static final String OPPHOLDSADRESSE_KOMMUNENR = "0123";
+    private static final String OPPHOLDSADRESSE_BYDELSNR = "012301";
     private static final JsonAdresse OPPHOLDSADRESSE = new JsonGateAdresse()
             .withKilde(JsonKilde.BRUKER)
             .withType(JsonAdresse.Type.GATEADRESSE)
             .withLandkode("NOR")
-            .withKommunenummer("123")
+            .withKommunenummer(OPPHOLDSADRESSE_KOMMUNENR)
             .withAdresselinjer(null)
             .withBolignummer("1")
             .withPostnummer("2")
@@ -132,6 +140,15 @@ public class NavEnhetRessursTest {
 
     @Mock
     private BydelService bydelService;
+    
+    @Mock
+    private GeografiskTilknytningService geografiskTilknytningService;
+    
+    @Mock
+    private Unleash unleash;
+
+    @Mock
+    private KodeverkService kodeverkService;
 
     @InjectMocks
     private NavEnhetRessurs navEnhetRessurs;
@@ -140,6 +157,8 @@ public class NavEnhetRessursTest {
     public void setUp() {
         System.setProperty("environment.name", "test");
         SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
+        
+        when(unleash.isEnabled(anyString(), anyBoolean())).thenReturn(false);
     }
 
     @After
@@ -243,6 +262,63 @@ public class NavEnhetRessursTest {
         SoknadUnderArbeid updatedSoknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
         JsonSoknadsmottaker jsonSoknadsmottaker = updatedSoknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker();
         assertThatEnhetIsCorrectlyConverted(navEnhetFrontend, jsonSoknadsmottaker);
+    }
+
+    @Test
+    public void skalBrukeKommunenummerGeografiskTilknytningService() {
+        when(unleash.isEnabled(anyString(), anyBoolean())).thenReturn(true);
+
+        SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
+        soknadUnderArbeid.getJsonInternalSoknad().getSoknad().withMottaker(SOKNADSMOTTAKER).getData().getPersonalia()
+                .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT));
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(soknadUnderArbeid);
+        when(geografiskTilknytningService.hentGeografiskTilknytning(anyString())).thenReturn(OPPHOLDSADRESSE_KOMMUNENR);
+        when(kodeverkService.getKommunenavn(OPPHOLDSADRESSE_KOMMUNENR)).thenReturn(KOMMUNENAVN);
+        when(norgService.getEnhetForGt(OPPHOLDSADRESSE_KOMMUNENR)).thenReturn(NAV_ENHET);
+
+        var navEnhetFrontends = navEnhetRessurs.hentNavEnheter(BEHANDLINGSID);
+        assertThat(navEnhetFrontends).hasSize(1);
+        assertThat(navEnhetFrontends.get(0).kommuneNr).isEqualTo(OPPHOLDSADRESSE_KOMMUNENR);
+    }
+
+    @Test
+    public void skalBrukeBydelsnummerGeografiskTilknytningService() {
+        when(unleash.isEnabled(anyString(), anyBoolean())).thenReturn(true);
+
+        SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
+        soknadUnderArbeid.getJsonInternalSoknad().getSoknad().withMottaker(SOKNADSMOTTAKER).getData().getPersonalia()
+                .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT));
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(soknadUnderArbeid);
+        when(geografiskTilknytningService.hentGeografiskTilknytning(anyString())).thenReturn(OPPHOLDSADRESSE_BYDELSNR);
+        when(kodeverkService.getKommunenavn(OPPHOLDSADRESSE_KOMMUNENR)).thenReturn(KOMMUNENAVN);
+        when(norgService.getEnhetForGt(OPPHOLDSADRESSE_BYDELSNR)).thenReturn(NAV_ENHET);
+
+        var navEnhetFrontends = navEnhetRessurs.hentNavEnheter(BEHANDLINGSID);
+        assertThat(navEnhetFrontends).hasSize(1);
+        assertThat(navEnhetFrontends.get(0).kommuneNr).isEqualTo(OPPHOLDSADRESSE_KOMMUNENR);
+    }
+
+    @Test
+    public void skalBrukeAdressesokFallbackHvisGeografiskTilknytningServiceFeiler() {
+        when(unleash.isEnabled(anyString(), anyBoolean())).thenReturn(true);
+
+        SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
+        soknadUnderArbeid.getJsonInternalSoknad().getSoknad().withMottaker(SOKNADSMOTTAKER).getData().getPersonalia()
+                .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT));
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(soknadUnderArbeid);
+
+        when(geografiskTilknytningService.hentGeografiskTilknytning(anyString())).thenThrow(new PdlApiException("pdl feil"));
+
+        when(adresseSokService.finnAdresseFraSoknad(any(JsonPersonalia.class), eq("folkeregistrert")))
+                .thenReturn(singletonList(SOKNADSMOTTAKER_FORSLAG));
+
+        when(norgService.getEnhetForGt(SOKNADSMOTTAKER_FORSLAG.geografiskTilknytning)).thenReturn(NAV_ENHET);
+
+        var navEnhetFrontends = navEnhetRessurs.hentNavEnheter(BEHANDLINGSID);
+        assertThat(navEnhetFrontends).hasSize(1);
+        assertThat(navEnhetFrontends.get(0).kommuneNr).isEqualTo(KOMMUNENR);
+
+        verifyNoInteractions(kodeverkService);
     }
 
     @Test(expected = AuthorizationException.class)

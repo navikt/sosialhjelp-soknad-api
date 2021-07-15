@@ -8,6 +8,7 @@ import no.nav.sosialhjelp.soknad.consumer.organisasjon.OrganisasjonService;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.PdlAdresseSokService;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.bydel.BydelConfig;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.bydel.BydelService;
+import no.nav.sosialhjelp.soknad.consumer.pdl.geografisktilknytning.GeografiskTilknytningService;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.PdlPersonMapper;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.PersonService;
 import no.nav.sosialhjelp.soknad.consumer.redis.NoRedisConfig;
@@ -19,6 +20,7 @@ import no.nav.sosialhjelp.soknad.consumer.restconfig.KodeverkRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.NorgRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.OrganisasjonRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.PdlAdresseSokRestConfig;
+import no.nav.sosialhjelp.soknad.consumer.restconfig.PdlGeografiskTilknytningRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.PdlHentPersonRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.STSTokenRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.SkattbarInntektRestConfig;
@@ -41,6 +43,7 @@ import org.springframework.context.annotation.Profile;
         PersonService.class,
         PdlPersonMapper.class,
         PdlAdresseSokService.class,
+        GeografiskTilknytningService.class,
         ConsumerConfig.WsServices.class,
         DokumentKrypterer.class,
         NorgService.class,
@@ -61,6 +64,7 @@ public class ConsumerConfig {
     @Import({
             PdlHentPersonRestConfig.class,
             PdlAdresseSokRestConfig.class,
+            PdlGeografiskTilknytningRestConfig.class,
             DigisosApiRestConfig.class,
             FiksWSConfig.class,
             NorgRestConfig.class,

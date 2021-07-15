@@ -1,8 +1,11 @@
 package no.nav.sosialhjelp.soknad.web.rest.ressurser.personalia;
 
+import no.finn.unleash.Unleash;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknadsmottaker;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse;
+import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonGateAdresse;
+import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonMatrikkelAdresse;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
 import no.nav.security.token.support.core.api.ProtectedWithClaims;
 import no.nav.sosialhjelp.metrics.aspects.Timed;
@@ -11,8 +14,10 @@ import no.nav.sosialhjelp.soknad.business.service.adressesok.AdresseForslag;
 import no.nav.sosialhjelp.soknad.business.service.adressesok.AdresseForslagType;
 import no.nav.sosialhjelp.soknad.business.service.adressesok.AdresseSokService;
 import no.nav.sosialhjelp.soknad.consumer.fiks.KommuneInfoService;
+import no.nav.sosialhjelp.soknad.consumer.kodeverk.KodeverkService;
 import no.nav.sosialhjelp.soknad.consumer.norg.NorgService;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.bydel.BydelService;
+import no.nav.sosialhjelp.soknad.consumer.pdl.geografisktilknytning.GeografiskTilknytningService;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.domain.model.mock.MockUtils;
 import no.nav.sosialhjelp.soknad.domain.model.norg.NavEnhet;
@@ -32,6 +37,7 @@ import javax.ws.rs.Produces;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -46,6 +52,9 @@ import static no.nav.sosialhjelp.soknad.web.utils.Constants.SELVBETJENING;
 @Timed
 @Produces(APPLICATION_JSON)
 public class NavEnhetRessurs {
+
+    private static final String BRUK_HENT_GEOGRAFISKTILKNYTNING_ENABLED = "sosialhjelp.soknad.bruk-hent-geografisktilknytning-enabled";
+
     private static final Logger log = LoggerFactory.getLogger(NavEnhetRessurs.class);
     private static final String SPLITTER = ", ";
 
@@ -55,6 +64,9 @@ public class NavEnhetRessurs {
     private final KommuneInfoService kommuneInfoService;
     private final BydelService bydelService;
     private final AdresseSokService adresseSokService;
+    private final GeografiskTilknytningService geografiskTilknytningService;
+    private final Unleash unleash;
+    private final KodeverkService kodeverkService;
 
     public NavEnhetRessurs(
             Tilgangskontroll tilgangskontroll,
@@ -62,7 +74,10 @@ public class NavEnhetRessurs {
             NorgService norgService,
             KommuneInfoService kommuneInfoService,
             BydelService bydelService,
-            AdresseSokService adresseSokService
+            AdresseSokService adresseSokService,
+            GeografiskTilknytningService geografiskTilknytningService,
+            Unleash unleash,
+            KodeverkService kodeverkService
     ) {
         this.tilgangskontroll = tilgangskontroll;
         this.soknadUnderArbeidRepository = soknadUnderArbeidRepository;
@@ -70,6 +85,9 @@ public class NavEnhetRessurs {
         this.kommuneInfoService = kommuneInfoService;
         this.bydelService = bydelService;
         this.adresseSokService = adresseSokService;
+        this.geografiskTilknytningService = geografiskTilknytningService;
+        this.unleash = unleash;
+        this.kodeverkService = kodeverkService;
     }
 
     @GET
@@ -85,7 +103,7 @@ public class NavEnhetRessurs {
                 oppholdsadresse.getAdresseValg() == null ? null :
                         oppholdsadresse.getAdresseValg().toString();
 
-        return findSoknadsmottaker(soknad, adresseValg, valgtEnhetNr);
+        return findSoknadsmottaker(eier, soknad, adresseValg, valgtEnhetNr);
     }
 
     @GET
@@ -142,9 +160,81 @@ public class NavEnhetRessurs {
         return navEnhetsnavn.split(SPLITTER)[1];
     }
 
-    public List<NavEnhetRessurs.NavEnhetFrontend> findSoknadsmottaker(JsonSoknad soknad, String valg, String valgtEnhetNr) {
-        JsonPersonalia personalia = soknad.getData().getPersonalia();
+    public List<NavEnhetRessurs.NavEnhetFrontend> findSoknadsmottaker(String eier, JsonSoknad soknad, String valg, String valgtEnhetNr) {
+        var personalia = soknad.getData().getPersonalia();
 
+        if ("folkeregistrert".equals(valg) && unleash.isEnabled(BRUK_HENT_GEOGRAFISKTILKNYTNING_ENABLED, false)) {
+            log.info("Bruker hentGeografiskTilknytning for å hente gt, siden folkeregistrert adresse er valgt.");
+            try {
+                return finnNavEnhetFraGT(eier, personalia, valgtEnhetNr);
+            } catch (Exception e) {
+                log.warn("Noe feilet ved utleding av Nav-kontor ut fra GT hentet fra PDL -> fallback til adressesøk-løsning", e);
+                return finnNavEnhetFraAdresse(personalia, valg, valgtEnhetNr);
+            }
+        }
+
+        return finnNavEnhetFraAdresse(personalia, valg, valgtEnhetNr);
+    }
+
+    private List<NavEnhetRessurs.NavEnhetFrontend> finnNavEnhetFraGT(String ident, JsonPersonalia personalia, String valgtEnhetNr) {
+        var kommunenummer = getKommunenummer(personalia.getOppholdsadresse());
+        if (kommunenummer == null) {
+            return Collections.emptyList();
+        }
+
+        var geografiskTilknytning = geografiskTilknytningService.hentGeografiskTilknytning(ident);
+        var navEnhet = norgService.getEnhetForGt(geografiskTilknytning);
+        var navEnhetFrontend = mapToNavEnhetFrontend(navEnhet, geografiskTilknytning, kommunenummer, valgtEnhetNr);
+        return navEnhetFrontend == null ? Collections.emptyList() : Collections.singletonList(navEnhetFrontend);
+    }
+
+    private String getKommunenummer(JsonAdresse oppholdsadresse) {
+        String kommunenummer = null;
+        if (oppholdsadresse instanceof JsonMatrikkelAdresse) {
+            kommunenummer = ((JsonMatrikkelAdresse) oppholdsadresse).getKommunenummer();
+        }
+        if (oppholdsadresse instanceof JsonGateAdresse) {
+            kommunenummer = ((JsonGateAdresse) oppholdsadresse).getKommunenummer();
+        }
+        return kommunenummer;
+    }
+
+    private NavEnhetRessurs.NavEnhetFrontend mapToNavEnhetFrontend(NavEnhet navEnhet, String geografiskTilknytning, String kommunenummer, String valgtEnhetNr) {
+        if (navEnhet == null) {
+            log.warn("Kunne ikke hente NAV-enhet: {} , i kommune: {}", geografiskTilknytning, kommunenummer);
+            return null;
+        }
+
+        if (kommunenummer == null || kommunenummer.length() != 4) {
+            log.warn("Kommunenummer hadde ikke 4 tegn, var {}", kommunenummer);
+            return null;
+        }
+
+        if (ServiceUtils.isNonProduction() && MockUtils.isAlltidHentKommuneInfoFraNavTestkommune()) {
+            log.error("Sender til Nav-testkommune (3002). Du skal aldri se denne meldingen i PROD");
+            kommunenummer = "3002";
+        }
+
+        var isDigisosKommune = isDigisosKommune(kommunenummer);
+        var sosialOrgnr = isDigisosKommune ? navEnhet.sosialOrgnr : null;
+        var enhetNr = isDigisosKommune ? navEnhet.enhetNr : null;
+
+        var valgt = enhetNr != null && enhetNr.equals(valgtEnhetNr);
+
+        var kommunenavn = kodeverkService.getKommunenavn(kommunenummer);
+
+        return new NavEnhetRessurs.NavEnhetFrontend()
+                .withEnhetsnavn(navEnhet.navn)
+                .withKommunenavn(kommuneInfoService.getBehandlingskommune(kommunenummer, kommunenavn))
+                .withOrgnr(sosialOrgnr)
+                .withEnhetsnr(enhetNr)
+                .withValgt(valgt)
+                .withKommuneNr(kommunenummer)
+                .withIsMottakMidlertidigDeaktivert(kommuneInfoService.harMidlertidigDeaktivertMottak(kommunenummer))
+                .withIsMottakDeaktivert(!isDigisosKommune);
+    }
+
+    private List<NavEnhetRessurs.NavEnhetFrontend> finnNavEnhetFraAdresse(JsonPersonalia personalia, String valg, String valgtEnhetNr) {
         List<AdresseForslag> adresseForslagene = adresseSokService.finnAdresseFraSoknad(personalia, valg);
         /*
          * Vi fjerner nå duplikate NAV-enheter med forskjellige bydelsnumre gjennom

@@ -1,0 +1,10 @@
+{
+  "data": {
+    "hentGeografiskTilknytning": {
+      "gtType": "BYDEL",
+      "gtKommune": null,
+      "gtBydel": "030108",
+      "gtLand": null
+    }
+  }
+}
