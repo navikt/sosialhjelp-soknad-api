@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.domain.model.norg;
+package no.nav.sosialhjelp.soknad.domain.model.navenhet;
 
 import java.util.List;
 
