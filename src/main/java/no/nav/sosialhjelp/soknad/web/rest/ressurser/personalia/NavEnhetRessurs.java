@@ -20,7 +20,7 @@ import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.bydel.BydelService;
 import no.nav.sosialhjelp.soknad.consumer.pdl.geografisktilknytning.GeografiskTilknytningService;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.domain.model.mock.MockUtils;
-import no.nav.sosialhjelp.soknad.domain.model.norg.NavEnhet;
+import no.nav.sosialhjelp.soknad.domain.model.navenhet.NavEnhet;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import no.nav.sosialhjelp.soknad.domain.model.util.KommuneTilNavEnhetMapper;
 import no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils;

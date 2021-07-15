@@ -1,11 +1,11 @@
 package no.nav.sosialhjelp.soknad.consumer.norg;
 
 import no.nav.sosialhjelp.soknad.consumer.exceptions.TjenesteUtilgjengeligException;
+import no.nav.sosialhjelp.soknad.consumer.norg.dto.RsNorgEnhet;
 import no.nav.sosialhjelp.soknad.consumer.redis.RedisService;
-import no.nav.sosialhjelp.soknad.domain.model.norg.NavEnhet;
-import no.nav.sosialhjelp.soknad.domain.model.norg.NavenhetFraLokalListe;
-import no.nav.sosialhjelp.soknad.domain.model.norg.NavenheterFraLokalListe;
-import no.nav.sosialhjelp.soknad.domain.model.norg.NorgConsumer;
+import no.nav.sosialhjelp.soknad.domain.model.navenhet.NavEnhet;
+import no.nav.sosialhjelp.soknad.domain.model.navenhet.NavenhetFraLokalListe;
+import no.nav.sosialhjelp.soknad.domain.model.navenhet.NavenheterFraLokalListe;
 import org.junit.After;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -73,8 +73,8 @@ public class NorgServiceTest {
         assertThat(navEnhet.sosialOrgnr).isEqualTo(ORGNUMMER_PROD);
     }
 
-    private NorgConsumer.RsNorgEnhet lagRsNorgEnhet() {
-        NorgConsumer.RsNorgEnhet rsNorgEnhet = new NorgConsumer.RsNorgEnhet();
+    private RsNorgEnhet lagRsNorgEnhet() {
+        RsNorgEnhet rsNorgEnhet = new RsNorgEnhet();
         rsNorgEnhet.enhetNr = ENHETSNUMMER;
         rsNorgEnhet.navn = "Nav Enhet";
         rsNorgEnhet.orgNrTilKommunaltNavKontor = ORGNUMMER_PROD;
@@ -87,7 +87,7 @@ public class NorgServiceTest {
 
         String gt = "3434";
         String sosialOrgNummer = "974592274";
-        NorgConsumer.RsNorgEnhet norgEnhet = lagRsNorgEnhet();
+        RsNorgEnhet norgEnhet = lagRsNorgEnhet();
         norgEnhet.enhetNr = "0513";
         when(norgConsumer.getEnhetForGeografiskTilknytning(gt)).thenReturn(norgEnhet);
 
@@ -101,7 +101,7 @@ public class NorgServiceTest {
 
         String gt = "3432";
         String sosialOrgNummer = "976641175";
-        NorgConsumer.RsNorgEnhet norgEnhet = lagRsNorgEnhet();
+        RsNorgEnhet norgEnhet = lagRsNorgEnhet();
         norgEnhet.enhetNr = "0513";
         when(norgConsumer.getEnhetForGeografiskTilknytning(gt)).thenReturn(norgEnhet);
 
