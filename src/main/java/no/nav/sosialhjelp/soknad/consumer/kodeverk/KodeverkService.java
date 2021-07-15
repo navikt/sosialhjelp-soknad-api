@@ -30,6 +30,11 @@ public class KodeverkService {
         this.redisService = redisService;
     }
 
+    public String getKommunenavn(String kommunenummer) {
+        var kommuneKodeverk = hentKodeverkFraCacheEllerConsumer(KOMMUNER_CACHE_KEY);
+        return finnFoersteTermForKodeverdi(kommuneKodeverk, kommunenummer);
+    }
+
     public String gjettKommunenummer(String kommunenavn) {
         var kommuneKodeverk = hentKodeverkFraCacheEllerConsumer(KOMMUNER_CACHE_KEY);
         return finnKodeverdiForFoersteTerm(kommuneKodeverk, kommunenavn);

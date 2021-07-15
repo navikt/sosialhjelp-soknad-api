@@ -11,6 +11,7 @@ import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.Sokn
 import no.nav.sosialhjelp.soknad.business.service.adressesok.AdresseForslag;
 import no.nav.sosialhjelp.soknad.business.service.adressesok.AdresseSokService;
 import no.nav.sosialhjelp.soknad.consumer.fiks.KommuneInfoService;
+import no.nav.sosialhjelp.soknad.consumer.kodeverk.KodeverkService;
 import no.nav.sosialhjelp.soknad.consumer.norg.NorgService;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.bydel.BydelService;
 import no.nav.sosialhjelp.soknad.consumer.pdl.geografisktilknytning.GeografiskTilknytningService;
@@ -145,6 +146,9 @@ public class NavEnhetRessursTest {
     @Mock
     private Unleash unleash;
 
+    @Mock
+    private KodeverkService kodeverkService;
+
     @InjectMocks
     private NavEnhetRessurs navEnhetRessurs;
 
@@ -268,6 +272,7 @@ public class NavEnhetRessursTest {
                 .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT));
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(soknadUnderArbeid);
         when(geografiskTilknytningService.hentGeografiskTilknytning(anyString())).thenReturn(OPPHOLDSADRESSE_KOMMUNENR);
+        when(kodeverkService.getKommunenavn(OPPHOLDSADRESSE_KOMMUNENR)).thenReturn(KOMMUNENAVN);
         when(norgService.getEnhetForGt(OPPHOLDSADRESSE_KOMMUNENR)).thenReturn(NAV_ENHET);
 
         var navEnhetFrontends = navEnhetRessurs.hentNavEnheter(BEHANDLINGSID);
@@ -284,6 +289,7 @@ public class NavEnhetRessursTest {
                 .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT));
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(soknadUnderArbeid);
         when(geografiskTilknytningService.hentGeografiskTilknytning(anyString())).thenReturn(OPPHOLDSADRESSE_BYDELSNR);
+        when(kodeverkService.getKommunenavn(OPPHOLDSADRESSE_KOMMUNENR)).thenReturn(KOMMUNENAVN);
         when(norgService.getEnhetForGt(OPPHOLDSADRESSE_BYDELSNR)).thenReturn(NAV_ENHET);
 
         var navEnhetFrontends = navEnhetRessurs.hentNavEnheter(BEHANDLINGSID);

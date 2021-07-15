@@ -14,6 +14,7 @@ import no.nav.sosialhjelp.soknad.business.service.adressesok.AdresseForslag;
 import no.nav.sosialhjelp.soknad.business.service.adressesok.AdresseForslagType;
 import no.nav.sosialhjelp.soknad.business.service.adressesok.AdresseSokService;
 import no.nav.sosialhjelp.soknad.consumer.fiks.KommuneInfoService;
+import no.nav.sosialhjelp.soknad.consumer.kodeverk.KodeverkService;
 import no.nav.sosialhjelp.soknad.consumer.norg.NorgService;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.bydel.BydelService;
 import no.nav.sosialhjelp.soknad.consumer.pdl.geografisktilknytning.GeografiskTilknytningService;
@@ -65,6 +66,7 @@ public class NavEnhetRessurs {
     private final AdresseSokService adresseSokService;
     private final GeografiskTilknytningService geografiskTilknytningService;
     private final Unleash unleash;
+    private final KodeverkService kodeverkService;
 
     public NavEnhetRessurs(
             Tilgangskontroll tilgangskontroll,
@@ -74,7 +76,8 @@ public class NavEnhetRessurs {
             BydelService bydelService,
             AdresseSokService adresseSokService,
             GeografiskTilknytningService geografiskTilknytningService,
-            Unleash unleash
+            Unleash unleash,
+            KodeverkService kodeverkService
     ) {
         this.tilgangskontroll = tilgangskontroll;
         this.soknadUnderArbeidRepository = soknadUnderArbeidRepository;
@@ -84,6 +87,7 @@ public class NavEnhetRessurs {
         this.adresseSokService = adresseSokService;
         this.geografiskTilknytningService = geografiskTilknytningService;
         this.unleash = unleash;
+        this.kodeverkService = kodeverkService;
     }
 
     @GET
@@ -217,9 +221,11 @@ public class NavEnhetRessurs {
 
         var valgt = enhetNr != null && enhetNr.equals(valgtEnhetNr);
 
+        var kommunenavn = kodeverkService.getKommunenavn(kommunenummer);
+
         return new NavEnhetRessurs.NavEnhetFrontend()
                 .withEnhetsnavn(navEnhet.navn)
-                .withKommunenavn(kommuneInfoService.getBehandlingskommune(kommunenummer, navEnhet.kommunenavn))
+                .withKommunenavn(kommuneInfoService.getBehandlingskommune(kommunenummer, kommunenavn))
                 .withOrgnr(sosialOrgnr)
                 .withEnhetsnr(enhetNr)
                 .withValgt(valgt)
