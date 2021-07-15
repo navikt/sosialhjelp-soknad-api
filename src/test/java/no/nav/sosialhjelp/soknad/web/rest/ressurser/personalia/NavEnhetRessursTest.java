@@ -10,6 +10,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository;
 import no.nav.sosialhjelp.soknad.business.service.adressesok.AdresseForslag;
 import no.nav.sosialhjelp.soknad.business.service.adressesok.AdresseSokService;
+import no.nav.sosialhjelp.soknad.consumer.exceptions.PdlApiException;
 import no.nav.sosialhjelp.soknad.consumer.fiks.KommuneInfoService;
 import no.nav.sosialhjelp.soknad.consumer.kodeverk.KodeverkService;
 import no.nav.sosialhjelp.soknad.consumer.norg.NorgService;
@@ -295,6 +296,29 @@ public class NavEnhetRessursTest {
         var navEnhetFrontends = navEnhetRessurs.hentNavEnheter(BEHANDLINGSID);
         assertThat(navEnhetFrontends).hasSize(1);
         assertThat(navEnhetFrontends.get(0).kommuneNr).isEqualTo(OPPHOLDSADRESSE_KOMMUNENR);
+    }
+
+    @Test
+    public void skalBrukeAdressesokFallbackHvisGeografiskTilknytningServiceFeiler() {
+        when(unleash.isEnabled(anyString(), anyBoolean())).thenReturn(true);
+
+        SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
+        soknadUnderArbeid.getJsonInternalSoknad().getSoknad().withMottaker(SOKNADSMOTTAKER).getData().getPersonalia()
+                .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT));
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(soknadUnderArbeid);
+
+        when(geografiskTilknytningService.hentGeografiskTilknytning(anyString())).thenThrow(new PdlApiException("pdl feil"));
+
+        when(adresseSokService.finnAdresseFraSoknad(any(JsonPersonalia.class), eq("folkeregistrert")))
+                .thenReturn(singletonList(SOKNADSMOTTAKER_FORSLAG));
+
+        when(norgService.getEnhetForGt(SOKNADSMOTTAKER_FORSLAG.geografiskTilknytning)).thenReturn(NAV_ENHET);
+
+        var navEnhetFrontends = navEnhetRessurs.hentNavEnheter(BEHANDLINGSID);
+        assertThat(navEnhetFrontends).hasSize(1);
+        assertThat(navEnhetFrontends.get(0).kommuneNr).isEqualTo(KOMMUNENR);
+
+        verifyNoInteractions(kodeverkService);
     }
 
     @Test(expected = AuthorizationException.class)
