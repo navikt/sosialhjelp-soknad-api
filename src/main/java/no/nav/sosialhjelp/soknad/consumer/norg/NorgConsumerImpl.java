@@ -4,8 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import io.github.resilience4j.retry.Retry;
 import no.nav.sosialhjelp.soknad.consumer.exceptions.TjenesteUtilgjengeligException;
 import no.nav.sosialhjelp.soknad.consumer.mdc.MDCOperations;
+import no.nav.sosialhjelp.soknad.consumer.norg.dto.RsNorgEnhet;
 import no.nav.sosialhjelp.soknad.consumer.redis.RedisService;
-import no.nav.sosialhjelp.soknad.domain.model.norg.NorgConsumer;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import org.slf4j.Logger;
 

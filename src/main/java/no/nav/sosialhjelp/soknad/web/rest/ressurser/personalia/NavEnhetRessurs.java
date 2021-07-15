@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.web.rest.ressurser.personalia;
 
-import no.finn.unleash.Unleash;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknadsmottaker;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse;
@@ -20,7 +19,7 @@ import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.bydel.BydelService;
 import no.nav.sosialhjelp.soknad.consumer.pdl.geografisktilknytning.GeografiskTilknytningService;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.domain.model.mock.MockUtils;
-import no.nav.sosialhjelp.soknad.domain.model.norg.NavEnhet;
+import no.nav.sosialhjelp.soknad.domain.model.navenhet.NavEnhet;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import no.nav.sosialhjelp.soknad.domain.model.util.KommuneTilNavEnhetMapper;
 import no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils;
@@ -53,8 +52,6 @@ import static no.nav.sosialhjelp.soknad.web.utils.Constants.SELVBETJENING;
 @Produces(APPLICATION_JSON)
 public class NavEnhetRessurs {
 
-    private static final String BRUK_HENT_GEOGRAFISKTILKNYTNING_ENABLED = "sosialhjelp.soknad.bruk-hent-geografisktilknytning-enabled";
-
     private static final Logger log = LoggerFactory.getLogger(NavEnhetRessurs.class);
     private static final String SPLITTER = ", ";
 
@@ -65,7 +62,6 @@ public class NavEnhetRessurs {
     private final BydelService bydelService;
     private final AdresseSokService adresseSokService;
     private final GeografiskTilknytningService geografiskTilknytningService;
-    private final Unleash unleash;
     private final KodeverkService kodeverkService;
 
     public NavEnhetRessurs(
@@ -76,7 +72,6 @@ public class NavEnhetRessurs {
             BydelService bydelService,
             AdresseSokService adresseSokService,
             GeografiskTilknytningService geografiskTilknytningService,
-            Unleash unleash,
             KodeverkService kodeverkService
     ) {
         this.tilgangskontroll = tilgangskontroll;
@@ -86,7 +81,6 @@ public class NavEnhetRessurs {
         this.bydelService = bydelService;
         this.adresseSokService = adresseSokService;
         this.geografiskTilknytningService = geografiskTilknytningService;
-        this.unleash = unleash;
         this.kodeverkService = kodeverkService;
     }
 
@@ -163,8 +157,7 @@ public class NavEnhetRessurs {
     public List<NavEnhetRessurs.NavEnhetFrontend> findSoknadsmottaker(String eier, JsonSoknad soknad, String valg, String valgtEnhetNr) {
         var personalia = soknad.getData().getPersonalia();
 
-        if ("folkeregistrert".equals(valg) && unleash.isEnabled(BRUK_HENT_GEOGRAFISKTILKNYTNING_ENABLED, false)) {
-            log.info("Bruker hentGeografiskTilknytning for å hente gt, siden folkeregistrert adresse er valgt.");
+        if ("folkeregistrert".equals(valg)) {
             try {
                 return finnNavEnhetFraGT(eier, personalia, valgtEnhetNr);
             } catch (Exception e) {
