@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.web.rest.ressurser.personalia;
 
-import no.finn.unleash.Unleash;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknadsmottaker;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresseValg;
@@ -41,7 +40,6 @@ import static java.util.Collections.singletonList;
 import static no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
 import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.bydel.BydelService.BYDEL_MARKA;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.doNothing;
@@ -143,9 +141,6 @@ public class NavEnhetRessursTest {
     
     @Mock
     private GeografiskTilknytningService geografiskTilknytningService;
-    
-    @Mock
-    private Unleash unleash;
 
     @Mock
     private KodeverkService kodeverkService;
@@ -157,8 +152,6 @@ public class NavEnhetRessursTest {
     public void setUp() {
         System.setProperty("environment.name", "test");
         SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
-        
-        when(unleash.isEnabled(anyString(), anyBoolean())).thenReturn(false);
     }
 
     @After
@@ -168,13 +161,14 @@ public class NavEnhetRessursTest {
     }
 
     @Test
-    public void getNavEnheterSkalReturnereEnheterRiktigKonvertert() {
+    public void hentNavEnheter_oppholdsadresseFraAdressesok_skalReturnereEnheterRiktigKonvertert() {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         soknadUnderArbeid.getJsonInternalSoknad().getSoknad().withMottaker(SOKNADSMOTTAKER).getData().getPersonalia()
-                .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT));
+                .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(JsonAdresseValg.SOKNAD));
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(soknadUnderArbeid);
-        when(adresseSokService.finnAdresseFraSoknad(any(JsonPersonalia.class), eq("folkeregistrert"))).thenReturn(
-                Arrays.asList(SOKNADSMOTTAKER_FORSLAG, SOKNADSMOTTAKER_FORSLAG_2));
+
+        when(adresseSokService.finnAdresseFraSoknad(any(JsonPersonalia.class), eq("soknad")))
+                .thenReturn(Arrays.asList(SOKNADSMOTTAKER_FORSLAG, SOKNADSMOTTAKER_FORSLAG_2));
         when(norgService.getEnhetForGt(ENHETSNAVN)).thenReturn(NAV_ENHET);
         when(norgService.getEnhetForGt(ENHETSNAVN_2)).thenReturn(NAV_ENHET_2);
         when(kommuneInfoService.getBehandlingskommune(KOMMUNENR, KOMMUNENAVN)).thenReturn(KOMMUNENAVN);
@@ -188,13 +182,13 @@ public class NavEnhetRessursTest {
     }
 
     @Test
-    public void getNavEnheterSkalReturnereEnheterRiktigKonvertertVedBydelMarka() {
+    public void hentNavEnheter_oppholdsadresseFraAdressesok_skalReturnereEnheterRiktigKonvertertVedBydelMarka() {
         var annenBydel = "030112";
         var soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         soknadUnderArbeid.getJsonInternalSoknad().getSoknad().withMottaker(SOKNADSMOTTAKER_2).getData().getPersonalia()
-                .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT));
+                .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(JsonAdresseValg.SOKNAD));
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(soknadUnderArbeid);
-        when(adresseSokService.finnAdresseFraSoknad(any(JsonPersonalia.class), eq("folkeregistrert")))
+        when(adresseSokService.finnAdresseFraSoknad(any(JsonPersonalia.class), eq("soknad")))
                 .thenReturn(singletonList(SOKNADSMOTTAKER_FORSLAG_BYDEL_MARKA));
         when(bydelService.getBydelTilForMarka(SOKNADSMOTTAKER_FORSLAG_BYDEL_MARKA)).thenReturn(annenBydel);
         when(norgService.getEnhetForGt(annenBydel)).thenReturn(NAV_ENHET_2);
@@ -207,7 +201,7 @@ public class NavEnhetRessursTest {
     }
 
     @Test
-    public void getValgtNavEnhetSkalReturnereEnhetRiktigKonvertert() {
+    public void hentValgtNavEnhet_skalReturnereEnhetRiktigKonvertert() {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         soknadUnderArbeid.getJsonInternalSoknad().getSoknad().withMottaker(SOKNADSMOTTAKER).getData().getPersonalia()
                 .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT));
@@ -220,7 +214,7 @@ public class NavEnhetRessursTest {
     }
 
     @Test
-    public void getNavEnheterSkalReturnereTomListeNaarOppholdsadresseIkkeErValgt() {
+    public void hentNavEnheter_oppholdsadresseIkkeValgt_skalReturnereTomListe() {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia()
                 .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(null));
@@ -233,7 +227,7 @@ public class NavEnhetRessursTest {
     }
 
     @Test
-    public void getValgtNavEnhetSkalReturnereNullNarOppholdsadresseIkkeErValgt() {
+    public void getValgtNavEnhet_oppholdsadresseIkkeValgt_skalReturnereNull() {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia()
                 .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(null));
@@ -245,7 +239,7 @@ public class NavEnhetRessursTest {
     }
 
     @Test
-    public void putNavEnhetSkalSetteNavenhet() {
+    public void updateNavEnhet_skalSetteNavEnhet() {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         soknadUnderArbeid.getJsonInternalSoknad().getSoknad().withMottaker(SOKNADSMOTTAKER).getData().getPersonalia()
                 .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT));
@@ -265,43 +259,41 @@ public class NavEnhetRessursTest {
     }
 
     @Test
-    public void skalBrukeKommunenummerGeografiskTilknytningService() {
-        when(unleash.isEnabled(anyString(), anyBoolean())).thenReturn(true);
-
+    public void hentNavEnheter_oppholdsadresseFolkeregistrert_skalBrukeKommunenummerFraGtOgKommunenavnFraKodeverk() {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         soknadUnderArbeid.getJsonInternalSoknad().getSoknad().withMottaker(SOKNADSMOTTAKER).getData().getPersonalia()
                 .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT));
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(soknadUnderArbeid);
         when(geografiskTilknytningService.hentGeografiskTilknytning(anyString())).thenReturn(OPPHOLDSADRESSE_KOMMUNENR);
-        when(kodeverkService.getKommunenavn(OPPHOLDSADRESSE_KOMMUNENR)).thenReturn(KOMMUNENAVN);
         when(norgService.getEnhetForGt(OPPHOLDSADRESSE_KOMMUNENR)).thenReturn(NAV_ENHET);
+        when(kodeverkService.getKommunenavn(OPPHOLDSADRESSE_KOMMUNENR)).thenReturn(KOMMUNENAVN);
+        when(kommuneInfoService.getBehandlingskommune(OPPHOLDSADRESSE_KOMMUNENR, KOMMUNENAVN)).thenReturn(KOMMUNENAVN);
 
         var navEnhetFrontends = navEnhetRessurs.hentNavEnheter(BEHANDLINGSID);
         assertThat(navEnhetFrontends).hasSize(1);
         assertThat(navEnhetFrontends.get(0).kommuneNr).isEqualTo(OPPHOLDSADRESSE_KOMMUNENR);
+        assertThat(navEnhetFrontends.get(0).kommunenavn).isEqualTo(KOMMUNENAVN);
     }
 
     @Test
-    public void skalBrukeBydelsnummerGeografiskTilknytningService() {
-        when(unleash.isEnabled(anyString(), anyBoolean())).thenReturn(true);
-
+    public void hentNavEnheter_oppholdsadresseFolkeregistrert_skalBrukeBydelsnummerFraGtOgKommunenavnFraKodeverk() {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         soknadUnderArbeid.getJsonInternalSoknad().getSoknad().withMottaker(SOKNADSMOTTAKER).getData().getPersonalia()
                 .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT));
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(soknadUnderArbeid);
         when(geografiskTilknytningService.hentGeografiskTilknytning(anyString())).thenReturn(OPPHOLDSADRESSE_BYDELSNR);
-        when(kodeverkService.getKommunenavn(OPPHOLDSADRESSE_KOMMUNENR)).thenReturn(KOMMUNENAVN);
         when(norgService.getEnhetForGt(OPPHOLDSADRESSE_BYDELSNR)).thenReturn(NAV_ENHET);
+        when(kodeverkService.getKommunenavn(OPPHOLDSADRESSE_KOMMUNENR)).thenReturn(KOMMUNENAVN);
+        when(kommuneInfoService.getBehandlingskommune(OPPHOLDSADRESSE_KOMMUNENR, KOMMUNENAVN)).thenReturn(KOMMUNENAVN);
 
         var navEnhetFrontends = navEnhetRessurs.hentNavEnheter(BEHANDLINGSID);
         assertThat(navEnhetFrontends).hasSize(1);
         assertThat(navEnhetFrontends.get(0).kommuneNr).isEqualTo(OPPHOLDSADRESSE_KOMMUNENR);
+        assertThat(navEnhetFrontends.get(0).kommunenavn).isEqualTo(KOMMUNENAVN);
     }
 
     @Test
-    public void skalBrukeAdressesokFallbackHvisGeografiskTilknytningServiceFeiler() {
-        when(unleash.isEnabled(anyString(), anyBoolean())).thenReturn(true);
-
+    public void hentNavEnheter_oppholdsadresseFolkeregistrert_skalBrukeAdressesokSomFallback() {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         soknadUnderArbeid.getJsonInternalSoknad().getSoknad().withMottaker(SOKNADSMOTTAKER).getData().getPersonalia()
                 .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT));
@@ -322,7 +314,7 @@ public class NavEnhetRessursTest {
     }
 
     @Test(expected = AuthorizationException.class)
-    public void getNavEnheterSkalKasteAuthorizationExceptionVedManglendeTilgang() {
+    public void hentNavEnheter_skalKasteAuthorizationExceptionVedManglendeTilgang() {
         doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerHarTilgang();
 
         navEnhetRessurs.hentNavEnheter(BEHANDLINGSID);
@@ -331,7 +323,7 @@ public class NavEnhetRessursTest {
     }
 
     @Test(expected = AuthorizationException.class)
-    public void getValgtNavEnhetSkalKasteAuthorizationExceptionVedManglendeTilgang() {
+    public void hentValgtNavEnhet_skalKasteAuthorizationExceptionVedManglendeTilgang() {
         doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerHarTilgang();
 
         navEnhetRessurs.hentValgtNavEnhet(BEHANDLINGSID);
@@ -340,7 +332,7 @@ public class NavEnhetRessursTest {
     }
 
     @Test(expected = AuthorizationException.class)
-    public void putNavEnhetSkalKasteAuthorizationExceptionVedManglendeTilgang() {
+    public void updateNavEnhet_skalKasteAuthorizationExceptionVedManglendeTilgang() {
         doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
 
         var navEnhetFrontend = new NavEnhetFrontend();
