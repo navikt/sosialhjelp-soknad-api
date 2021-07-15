@@ -164,7 +164,6 @@ public class NavEnhetRessurs {
         var personalia = soknad.getData().getPersonalia();
 
         if ("folkeregistrert".equals(valg) && unleash.isEnabled(BRUK_HENT_GEOGRAFISKTILKNYTNING_ENABLED, false)) {
-            log.info("Bruker hentGeografiskTilknytning for å hente gt, siden folkeregistrert adresse er valgt.");
             try {
                 return finnNavEnhetFraGT(eier, personalia, valgtEnhetNr);
             } catch (Exception e) {
