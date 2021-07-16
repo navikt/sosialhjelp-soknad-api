@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.domain.model.skattbarinntekt;
+package no.nav.sosialhjelp.soknad.consumer.skatt.dto;
 
 public class AldersUfoereEtterlatteAvtalefestetOgKrigspensjon {
 
