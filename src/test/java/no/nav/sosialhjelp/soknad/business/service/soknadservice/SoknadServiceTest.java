@@ -83,7 +83,7 @@ public class SoknadServiceTest {
         soknadService.startSoknad("");
 
         String bruker = SubjectHandler.getUserId();
-        verify(henvendelsesConnector).startSoknad(eq(bruker));
+        verify(henvendelsesConnector).startSoknad(bruker);
         ArgumentCaptor<SoknadUnderArbeid> argument = ArgumentCaptor.forClass(SoknadUnderArbeid.class);
         verify(soknadUnderArbeidRepository).opprettSoknad(argument.capture(), eq(bruker));
         List<JsonOkonomibekreftelse> bekreftelser = argument.getValue().getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getBekreftelse();

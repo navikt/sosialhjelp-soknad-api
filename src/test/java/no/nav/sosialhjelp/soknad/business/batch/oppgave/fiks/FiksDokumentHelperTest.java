@@ -63,7 +63,7 @@ public class FiksDokumentHelperTest {
 
         assertThat(soknadJson.getFilnavn()).isEqualTo("soknad.json");
         assertThat(soknadJson.getMimetype()).isEqualTo("application/json");
-        assertThat(soknadJson.isEkskluderesFraPrint()).isEqualTo(true);
+        assertThat(soknadJson.isEkskluderesFraPrint()).isTrue();
         assertThat(soknadJson.getData()).isNotNull();
     }
 
@@ -73,7 +73,7 @@ public class FiksDokumentHelperTest {
 
         assertThat(vedleggJson.getFilnavn()).isEqualTo("vedlegg.json");
         assertThat(vedleggJson.getMimetype()).isEqualTo("application/json");
-        assertThat(vedleggJson.isEkskluderesFraPrint()).isEqualTo(true);
+        assertThat(vedleggJson.isEkskluderesFraPrint()).isTrue();
         assertThat(vedleggJson.getData()).isNotNull();
     }
 
@@ -83,7 +83,7 @@ public class FiksDokumentHelperTest {
 
         assertThat(saksbehandlerPdf.getFilnavn()).isEqualTo("Soknad.pdf");
         assertThat(saksbehandlerPdf.getMimetype()).isEqualTo("application/pdf");
-        assertThat(saksbehandlerPdf.isEkskluderesFraPrint()).isEqualTo(false);
+        assertThat(saksbehandlerPdf.isEkskluderesFraPrint()).isFalse();
         assertThat(saksbehandlerPdf.getData()).isNotNull();
     }
 
@@ -93,7 +93,7 @@ public class FiksDokumentHelperTest {
 
         assertThat(juridiskPdf.getFilnavn()).isEqualTo("Soknad-juridisk.pdf");
         assertThat(juridiskPdf.getMimetype()).isEqualTo("application/pdf");
-        assertThat(juridiskPdf.isEkskluderesFraPrint()).isEqualTo(false);
+        assertThat(juridiskPdf.isEkskluderesFraPrint()).isFalse();
         assertThat(juridiskPdf.getData()).isNotNull();
     }
 
@@ -103,7 +103,7 @@ public class FiksDokumentHelperTest {
 
         assertThat(brukerkvitteringPdf.getFilnavn()).isEqualTo("Brukerkvittering.pdf");
         assertThat(brukerkvitteringPdf.getMimetype()).isEqualTo("application/pdf");
-        assertThat(brukerkvitteringPdf.isEkskluderesFraPrint()).isEqualTo(true);
+        assertThat(brukerkvitteringPdf.isEkskluderesFraPrint()).isTrue();
         assertThat(brukerkvitteringPdf.getData()).isNotNull();
     }
 
@@ -113,7 +113,7 @@ public class FiksDokumentHelperTest {
 
         assertThat(ettersendelsePdf.getFilnavn()).isEqualTo("ettersendelse.pdf");
         assertThat(ettersendelsePdf.getMimetype()).isEqualTo("application/pdf");
-        assertThat(ettersendelsePdf.isEkskluderesFraPrint()).isEqualTo(false);
+        assertThat(ettersendelsePdf.isEkskluderesFraPrint()).isFalse();
         assertThat(ettersendelsePdf.getData()).isNotNull();
     }
 

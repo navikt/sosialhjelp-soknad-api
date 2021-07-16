@@ -59,13 +59,13 @@ public class FiksSenderTest {
     private static final String BEHANDLINGSID = "12345";
     private static final String EIER = "12345678910";
     @Mock
-    ForsendelsesServiceV9 forsendelsesService;
+    private ForsendelsesServiceV9 forsendelsesService;
     @Mock
-    DokumentKrypterer dokumentKrypterer;
+    private DokumentKrypterer dokumentKrypterer;
     @Mock
-    InnsendingService innsendingService;
+    private InnsendingService innsendingService;
     @Mock
-    SosialhjelpPdfGenerator sosialhjelpPdfGenerator;
+    private SosialhjelpPdfGenerator sosialhjelpPdfGenerator;
 
     @InjectMocks
     private FiksSender fiksSender;
@@ -79,8 +79,8 @@ public class FiksSenderTest {
     public void setUp() {
         System.clearProperty("environment.name");
         when(dokumentKrypterer.krypterData(any())).thenReturn(new byte[]{3, 2, 1});
-        when(innsendingService.finnSendtSoknadForEttersendelse(any(SoknadUnderArbeid.class))).thenReturn(new SendtSoknad()
-                .withFiksforsendelseId(FIKSFORSENDELSE_ID));
+        when(innsendingService.finnSendtSoknadForEttersendelse(any(SoknadUnderArbeid.class)))
+                .thenReturn(new SendtSoknad().withFiksforsendelseId(FIKSFORSENDELSE_ID));
         when(innsendingService.hentSoknadUnderArbeid(anyString(), anyString())).thenReturn(new SoknadUnderArbeid());
         when(sosialhjelpPdfGenerator.generate(any(JsonInternalSoknad.class), anyBoolean())).thenReturn(new byte[]{1, 2, 3});
         when(sosialhjelpPdfGenerator.generateEttersendelsePdf(any(JsonInternalSoknad.class), anyString())).thenReturn(new byte[]{1, 2, 3});

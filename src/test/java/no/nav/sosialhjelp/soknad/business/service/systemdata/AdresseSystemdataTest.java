@@ -123,8 +123,9 @@ public class AdresseSystemdataTest {
         assertThat(folkeregistrertAdresse.getKilde()).isEqualTo(JsonKilde.SYSTEM);
         assertThat(oppholdsadresse.getKilde()).isEqualTo(JsonKilde.SYSTEM);
         assertThat(postadresse.getKilde()).isEqualTo(JsonKilde.SYSTEM);
-        assertThat(folkeregistrertAdresse).isEqualTo(oppholdsadresse.withAdresseValg(null));
-        assertThat(folkeregistrertAdresse).isEqualTo(postadresse);
+        assertThat(folkeregistrertAdresse)
+                .isEqualTo(oppholdsadresse.withAdresseValg(null))
+                .isEqualTo(postadresse);
     }
 
     @Test

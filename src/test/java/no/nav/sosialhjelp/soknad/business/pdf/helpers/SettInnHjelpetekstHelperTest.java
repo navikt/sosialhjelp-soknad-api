@@ -42,15 +42,14 @@ public class SettInnHjelpetekstHelperTest {
 
         String compiled = handlebars.compileInline("{{{settInnHjelpetekst \"testTekst\"}}}").apply(new Object());
 
-        assertThat(compiled).contains("Hjelpetekst:");
-        assertThat(compiled).contains("Lorem ipsum");
+        assertThat(compiled).contains("Hjelpetekst:", "Lorem ipsum");
     }
     
     @Test
     public void skalReturnereTomStrengHvisIkkeHjelpetekstFinnes() throws IOException {
         String compiled = handlebars.compileInline("{{{settInnHjelpetekst \"testTekst\"}}}").apply(new Object());
 
-        assertThat(compiled).isEqualTo("");
+        assertThat(compiled).isBlank();
     }
 
 }
