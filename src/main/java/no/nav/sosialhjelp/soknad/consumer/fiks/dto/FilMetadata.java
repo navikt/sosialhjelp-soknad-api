@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.domain.model.digisosapi;
+package no.nav.sosialhjelp.soknad.consumer.fiks.dto;
 
 public class FilMetadata {
 
