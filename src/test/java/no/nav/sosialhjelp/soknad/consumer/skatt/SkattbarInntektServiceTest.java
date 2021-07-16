@@ -2,7 +2,7 @@ package no.nav.sosialhjelp.soknad.consumer.skatt;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import no.nav.sosialhjelp.soknad.domain.model.skattbarinntekt.SkattbarInntekt;
+import no.nav.sosialhjelp.soknad.consumer.skatt.dto.SkattbarInntekt;
 import no.nav.sosialhjelp.soknad.domain.model.utbetaling.Utbetaling;
 import org.apache.cxf.helpers.IOUtils;
 import org.junit.Test;

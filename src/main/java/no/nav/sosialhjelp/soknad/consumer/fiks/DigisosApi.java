@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.consumer.fiks;
 
 import no.nav.sosialhjelp.api.fiks.KommuneInfo;
-import no.nav.sosialhjelp.soknad.domain.model.digisosapi.FilOpplasting;
+import no.nav.sosialhjelp.soknad.consumer.fiks.dto.FilOpplasting;
 
 import java.util.List;
 import java.util.Map;

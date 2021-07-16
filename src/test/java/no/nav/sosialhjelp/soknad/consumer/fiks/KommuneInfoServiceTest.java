@@ -1,8 +1,8 @@
 package no.nav.sosialhjelp.soknad.consumer.fiks;
 
 import no.nav.sosialhjelp.api.fiks.KommuneInfo;
+import no.nav.sosialhjelp.soknad.consumer.fiks.dto.KommuneStatus;
 import no.nav.sosialhjelp.soknad.consumer.redis.RedisService;
-import no.nav.sosialhjelp.soknad.domain.model.digisosapi.KommuneStatus;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
