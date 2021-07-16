@@ -2,11 +2,11 @@ package no.nav.sosialhjelp.soknad.consumer.restconfig;
 
 
 import no.nav.sosialhjelp.soknad.business.service.adressesok.Sokedata;
+import no.nav.sosialhjelp.soknad.consumer.adresse.AdresseSokConsumer;
 import no.nav.sosialhjelp.soknad.consumer.adresse.AdresseSokConsumerImpl;
 import no.nav.sosialhjelp.soknad.consumer.common.rest.RestUtils;
 import no.nav.sosialhjelp.soknad.consumer.common.rest.RestUtils.RestConfig;
 import no.nav.sosialhjelp.soknad.consumer.concurrency.RestCallContext;
-import no.nav.sosialhjelp.soknad.domain.model.adresse.AdresseSokConsumer;
 import no.nav.sosialhjelp.soknad.web.selftest.Pingable;
 import no.nav.sosialhjelp.soknad.web.selftest.Pingable.Ping.PingMetadata;
 import org.springframework.beans.factory.annotation.Value;

@@ -1,8 +1,8 @@
 package no.nav.sosialhjelp.soknad.consumer.fiks;
 
 import no.nav.sosialhjelp.api.fiks.KommuneInfo;
+import no.nav.sosialhjelp.soknad.consumer.fiks.dto.KommuneStatus;
 import no.nav.sosialhjelp.soknad.consumer.redis.RedisService;
-import no.nav.sosialhjelp.soknad.domain.model.digisosapi.KommuneStatus;
 import no.nav.sosialhjelp.soknad.domain.model.util.KommuneTilNavEnhetMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,12 +13,12 @@ import java.time.LocalDateTime;
 import java.util.Map;
 
 import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+import static no.nav.sosialhjelp.soknad.consumer.fiks.dto.KommuneStatus.FIKS_NEDETID_OG_TOM_CACHE;
+import static no.nav.sosialhjelp.soknad.consumer.fiks.dto.KommuneStatus.HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT;
+import static no.nav.sosialhjelp.soknad.consumer.fiks.dto.KommuneStatus.MANGLER_KONFIGURASJON;
+import static no.nav.sosialhjelp.soknad.consumer.fiks.dto.KommuneStatus.SKAL_SENDE_SOKNADER_OG_ETTERSENDELSER_VIA_FDA;
+import static no.nav.sosialhjelp.soknad.consumer.fiks.dto.KommuneStatus.SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD_OG_ETTERSENDELSER;
 import static no.nav.sosialhjelp.soknad.consumer.redis.CacheConstants.KOMMUNEINFO_LAST_POLL_TIME_KEY;
-import static no.nav.sosialhjelp.soknad.domain.model.digisosapi.KommuneStatus.FIKS_NEDETID_OG_TOM_CACHE;
-import static no.nav.sosialhjelp.soknad.domain.model.digisosapi.KommuneStatus.HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT;
-import static no.nav.sosialhjelp.soknad.domain.model.digisosapi.KommuneStatus.MANGLER_KONFIGURASJON;
-import static no.nav.sosialhjelp.soknad.domain.model.digisosapi.KommuneStatus.SKAL_SENDE_SOKNADER_OG_ETTERSENDELSER_VIA_FDA;
-import static no.nav.sosialhjelp.soknad.domain.model.digisosapi.KommuneStatus.SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD_OG_ETTERSENDELSER;
 
 @Component
 public class KommuneInfoService {

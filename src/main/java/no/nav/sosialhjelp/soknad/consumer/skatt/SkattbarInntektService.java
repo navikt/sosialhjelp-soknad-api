@@ -1,9 +1,9 @@
 package no.nav.sosialhjelp.soknad.consumer.skatt;
 
-import no.nav.sosialhjelp.soknad.domain.model.skattbarinntekt.Forskuddstrekk;
-import no.nav.sosialhjelp.soknad.domain.model.skattbarinntekt.Inntekt;
-import no.nav.sosialhjelp.soknad.domain.model.skattbarinntekt.OppgaveInntektsmottaker;
-import no.nav.sosialhjelp.soknad.domain.model.skattbarinntekt.SkattbarInntekt;
+import no.nav.sosialhjelp.soknad.consumer.skatt.dto.Forskuddstrekk;
+import no.nav.sosialhjelp.soknad.consumer.skatt.dto.Inntekt;
+import no.nav.sosialhjelp.soknad.consumer.skatt.dto.OppgaveInntektsmottaker;
+import no.nav.sosialhjelp.soknad.consumer.skatt.dto.SkattbarInntekt;
 import no.nav.sosialhjelp.soknad.domain.model.utbetaling.Utbetaling;
 import org.springframework.stereotype.Service;
 
