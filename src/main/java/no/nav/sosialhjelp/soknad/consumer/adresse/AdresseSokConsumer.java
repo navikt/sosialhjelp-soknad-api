@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.domain.model.adresse;
+package no.nav.sosialhjelp.soknad.consumer.adresse;
 
 import no.nav.sosialhjelp.soknad.business.service.adressesok.Sokedata;
 
