@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.web.sikkerhet;
 
-import no.nav.sosialhjelp.soknad.web.config.TestSoknadApplication;
+import no.nav.sosialhjelp.soknad.web.rest.SoknadApplication;
 import org.glassfish.jersey.server.ContainerResponse;
 import org.glassfish.jersey.test.util.server.ContainerRequestBuilder;
 import org.junit.After;
@@ -37,7 +37,7 @@ public class CORSFilterTest {
         var unknownOrigin = "https://www.unknown.no";
 
         var request = ContainerRequestBuilder
-                .from("requestUri", "GET", new TestSoknadApplication())
+                .from("requestUri", "GET", new SoknadApplication())
                 .header("Origin", unknownOrigin)
                 .build();
 
@@ -50,7 +50,7 @@ public class CORSFilterTest {
         var trustedOrigin = "https://www.nav.no";
 
         var request = ContainerRequestBuilder
-                .from("requestUri", "GET", new TestSoknadApplication())
+                .from("requestUri", "GET", new SoknadApplication())
                 .header("Origin", trustedOrigin)
                 .build();
 
@@ -69,7 +69,7 @@ public class CORSFilterTest {
         var unknownOrigin = "https://www.unknown.no";
 
         var request = ContainerRequestBuilder
-                .from("requestUri", "GET", new TestSoknadApplication())
+                .from("requestUri", "GET", new SoknadApplication())
                 .header("Origin", unknownOrigin)
                 .build();
 
