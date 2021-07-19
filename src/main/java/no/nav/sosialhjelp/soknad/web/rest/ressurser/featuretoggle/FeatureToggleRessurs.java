@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.web.rest.ressurser.featureToggle;
+package no.nav.sosialhjelp.soknad.web.rest.ressurser.featuretoggle;
 
 import no.nav.security.token.support.core.api.ProtectedWithClaims;
 import no.nav.sosialhjelp.metrics.aspects.Timed;
@@ -24,7 +24,6 @@ import static no.nav.sosialhjelp.soknad.web.utils.FeatureToggleUtils.enableModal
 public class FeatureToggleRessurs {
 
     @GET
-    @Path("/")
     public Map<String, Boolean> getFeatureToggles() {
         String uid = SubjectHandler.getUserId();
 
@@ -33,6 +32,5 @@ public class FeatureToggleRessurs {
 
         return featureToggles;
     }
-
 
 }
