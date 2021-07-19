@@ -77,15 +77,6 @@
         <servlet-name>SoknadAPI</servlet-name>
         <url-pattern>/*</url-pattern>
     </servlet-mapping>
-
-<!--    <servlet>-->
-<!--        <servlet-name>SelftestServlet</servlet-name>-->
-<!--        <servlet-class>no.nav.sosialhjelp.soknad.web.selftest.SelftestServlet</servlet-class>-->
-<!--    </servlet>-->
-<!--    <servlet-mapping>-->
-<!--        <servlet-name>SelftestServlet</servlet-name>-->
-<!--        <url-pattern>/internal/selftest</url-pattern>-->
-<!--    </servlet-mapping>-->
     
     <resource-ref>
         <res-ref-name>jdbc/SoknadInnsendingDS</res-ref-name>

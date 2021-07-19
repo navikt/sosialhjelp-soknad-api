@@ -1,8 +1,8 @@
 package no.nav.sosialhjelp.soknad.web.selftest.domain;
 
 import static java.util.Optional.ofNullable;
-import static no.nav.sosialhjelp.soknad.web.rest.ressurser.InternalRessurs.STATUS_ERROR;
-import static no.nav.sosialhjelp.soknad.web.rest.ressurser.InternalRessurs.STATUS_OK;
+import static no.nav.sosialhjelp.soknad.web.selftest.SelftestService.STATUS_ERROR;
+import static no.nav.sosialhjelp.soknad.web.selftest.SelftestService.STATUS_OK;
 
 /*
 Kopiert inn fra no.nav.sbl.dialogarena:common-web
