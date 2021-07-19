@@ -54,7 +54,7 @@ public class InternalRessurs {
         return response.build();
     }
 
-    protected String getHost() {
+    private String getHost() {
         var host = "unknown host";
         try {
             host = InetAddress.getLocalHost().getCanonicalHostName();
