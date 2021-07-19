@@ -22,6 +22,6 @@ public class MetricsUtilsTest {
 
     @Test
     public void getProsent_whenDividingByZero_shouldGiveZero() {
-        assertThat(getProsent(7, 0)).isEqualTo(0);
+        assertThat(getProsent(7, 0)).isZero();
     }
 }

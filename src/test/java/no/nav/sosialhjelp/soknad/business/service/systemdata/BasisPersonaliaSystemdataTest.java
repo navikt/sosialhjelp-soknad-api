@@ -50,9 +50,9 @@ public class BasisPersonaliaSystemdataTest {
         assertThat(jsonPersonalia.getPersonIdentifikator().getKilde()).isEqualTo(JsonPersonIdentifikator.Kilde.SYSTEM);
         assertThat(jsonPersonalia.getPersonIdentifikator().getVerdi()).isEqualTo(EIER);
         assertThat(jsonPersonalia.getNavn().getKilde()).isEqualTo(JsonSokernavn.Kilde.SYSTEM);
-        assertThat(jsonPersonalia.getNavn().getFornavn()).isEqualTo("");
-        assertThat(jsonPersonalia.getNavn().getMellomnavn()).isEqualTo("");
-        assertThat(jsonPersonalia.getNavn().getEtternavn()).isEqualTo("");
+        assertThat(jsonPersonalia.getNavn().getFornavn()).isBlank();
+        assertThat(jsonPersonalia.getNavn().getMellomnavn()).isBlank();
+        assertThat(jsonPersonalia.getNavn().getEtternavn()).isBlank();
         assertThat(jsonPersonalia.getStatsborgerskap()).isNull();
         assertThat(jsonPersonalia.getNordiskBorger()).isNull();
     }

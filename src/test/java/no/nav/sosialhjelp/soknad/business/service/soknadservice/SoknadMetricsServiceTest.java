@@ -13,7 +13,6 @@ import java.util.List;
 import static no.nav.sosialhjelp.soknad.business.util.JsonVedleggUtils.ANNET;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.verify;
 
@@ -40,7 +39,7 @@ public class SoknadMetricsServiceTest {
         vedleggList.add(createVedleggMetadata(Vedleggstatus.VedleggKreves, ANNET, ANNET));
 
         metricsService.countAndreportVedleggskrav(true, vedleggList);
-        verify(metricsService).reportVedleggskrav(eq(true), eq(9), eq(3), eq(2), eq(4));
+        verify(metricsService).reportVedleggskrav(true, 9, 3, 2, 4);
     }
 
     @Test
@@ -53,7 +52,7 @@ public class SoknadMetricsServiceTest {
         vedleggList.add(createVedleggMetadata(Vedleggstatus.LastetOpp, "skjema", "tillegg"));
 
         metricsService.countAndreportVedleggskrav(true, vedleggList);
-        verify(metricsService).reportVedleggskrav(eq(true), eq(3), eq(3), eq(0), eq(0));
+        verify(metricsService).reportVedleggskrav(true, 3, 3, 0, 0);
     }
 
     @Test
@@ -66,7 +65,7 @@ public class SoknadMetricsServiceTest {
         vedleggList.add(createVedleggMetadata(Vedleggstatus.VedleggKreves, "skjema", "tillegg"));
 
         metricsService.countAndreportVedleggskrav(true, vedleggList);
-        verify(metricsService).reportVedleggskrav(eq(true), eq(3), eq(0), eq(0), eq(3));
+        verify(metricsService).reportVedleggskrav(true, 3, 0, 0, 3);
     }
 
     @Test
@@ -79,7 +78,7 @@ public class SoknadMetricsServiceTest {
         vedleggList.add(createVedleggMetadata(Vedleggstatus.VedleggAlleredeSendt, "skjema", "tillegg"));
 
         metricsService.countAndreportVedleggskrav(true, vedleggList);
-        verify(metricsService).reportVedleggskrav(eq(true), eq(3), eq(0), eq(3), eq(0));
+        verify(metricsService).reportVedleggskrav(true, 3, 0, 3, 0);
     }
 
     @Test
@@ -90,7 +89,7 @@ public class SoknadMetricsServiceTest {
         vedleggList.add(createVedleggMetadata(Vedleggstatus.LastetOpp, ANNET, ANNET));
 
         metricsService.countAndreportVedleggskrav(true, vedleggList);
-        verify(metricsService).reportVedleggskrav(eq(true), eq(0), eq(0), eq(0), eq(0));
+        verify(metricsService).reportVedleggskrav(true, 0, 0, 0, 0);
     }
 
     @Test
@@ -101,7 +100,7 @@ public class SoknadMetricsServiceTest {
         vedleggList.add(createVedleggMetadata(Vedleggstatus.VedleggKreves, ANNET, ANNET));
 
         metricsService.countAndreportVedleggskrav(true, vedleggList);
-        verify(metricsService).reportVedleggskrav(eq(true), eq(0), eq(0), eq(0), eq(0));
+        verify(metricsService).reportVedleggskrav(true, 0, 0, 0, 0);
     }
 
     @Test
@@ -112,7 +111,7 @@ public class SoknadMetricsServiceTest {
         vedleggList.add(createVedleggMetadata(Vedleggstatus.VedleggAlleredeSendt, ANNET, ANNET));
 
         metricsService.countAndreportVedleggskrav(true, vedleggList);
-        verify(metricsService).reportVedleggskrav(eq(true), eq(0), eq(0), eq(0), eq(0));
+        verify(metricsService).reportVedleggskrav(true, 0, 0, 0, 0);
     }
 
 

@@ -23,18 +23,16 @@ import static org.mockito.Mockito.when;
 public class OppgaveHandtererImplTest {
 
     @Mock
-    private
-    FiksHandterer fiksHandterer;
+    private FiksHandterer fiksHandterer;
 
     @Mock
-    private
-    OppgaveRepository oppgaveRepository;
+    private OppgaveRepository oppgaveRepository;
 
     @InjectMocks
-    OppgaveHandtererImpl oppgaveHandterer;
+    private OppgaveHandtererImpl oppgaveHandterer;
 
     @Captor
-    ArgumentCaptor<Oppgave> capturedOppgave;
+    private ArgumentCaptor<Oppgave> capturedOppgave;
 
     @Test
     public void prosessereFeilendeOppgaveSkalSetteNesteForsok() {
