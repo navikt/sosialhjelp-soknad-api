@@ -3,7 +3,7 @@ package no.nav.sosialhjelp.soknad.web.mdc;
 import no.nav.sosialhjelp.soknad.consumer.sts.servicegateway.StsSecurityConstants;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.OidcSubjectHandlerService;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
-import no.nav.sosialhjelp.soknad.web.config.TestSoknadApplication;
+import no.nav.sosialhjelp.soknad.web.rest.SoknadApplication;
 import org.glassfish.jersey.server.ContainerRequest;
 import org.glassfish.jersey.server.ExtendedUriInfo;
 import org.glassfish.jersey.test.util.server.ContainerRequestBuilder;
@@ -46,7 +46,7 @@ public class MdcFilterTest {
     @Test
     public void shouldAddCallIdFromRequest() {
         ContainerRequest request = ContainerRequestBuilder
-                .from("requestUri", "GET", new TestSoknadApplication())
+                .from("requestUri", "GET", new SoknadApplication())
                 .header(HEADER_CALL_ID, MOCK_CALL_ID)
                 .build();
 
@@ -59,7 +59,7 @@ public class MdcFilterTest {
     @Test
     public void shouldGenerateCallIdIfNoneInRequest() {
         ContainerRequest request = ContainerRequestBuilder
-                .from("requestUri", "GET", new TestSoknadApplication())
+                .from("requestUri", "GET", new SoknadApplication())
                 .build();
 
         MdcFilter filter = new MdcFilter();
@@ -71,7 +71,7 @@ public class MdcFilterTest {
     @Test
     public void shouldAddConsumerId() {
         ContainerRequest request = ContainerRequestBuilder
-                .from("requestUri", "GET", new TestSoknadApplication())
+                .from("requestUri", "GET", new SoknadApplication())
                 .build();
 
         MdcFilter filter = new MdcFilter();
