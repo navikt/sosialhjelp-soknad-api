@@ -17,9 +17,9 @@ import java.util.stream.Collectors;
 
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.joining;
-import static no.nav.sosialhjelp.soknad.web.selftest.SelfTestBaseServlet.STATUS_ERROR;
-import static no.nav.sosialhjelp.soknad.web.selftest.SelfTestBaseServlet.STATUS_OK;
-import static no.nav.sosialhjelp.soknad.web.selftest.SelfTestBaseServlet.STATUS_WARNING;
+import static no.nav.sosialhjelp.soknad.web.rest.ressurser.InternalRessurs.STATUS_ERROR;
+import static no.nav.sosialhjelp.soknad.web.rest.ressurser.InternalRessurs.STATUS_OK;
+import static no.nav.sosialhjelp.soknad.web.rest.ressurser.InternalRessurs.STATUS_WARNING;
 import static org.apache.commons.lang3.StringUtils.join;
 
 /*
