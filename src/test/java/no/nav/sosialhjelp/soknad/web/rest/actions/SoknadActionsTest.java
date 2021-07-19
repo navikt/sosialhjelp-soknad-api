@@ -128,7 +128,7 @@ public class SoknadActionsTest {
         String behandlingsId = "soknadUnderArbeidErNull";
         actions.sendSoknad(behandlingsId, context, "");
 
-        verify(soknadService, times(0)).sendSoknad(eq(behandlingsId));
+        verify(soknadService, times(0)).sendSoknad(behandlingsId);
         verify(digisosApiService, times(0)).sendSoknad(any(), any(), any());
     }
 
@@ -140,7 +140,7 @@ public class SoknadActionsTest {
 
         actions.sendSoknad(behandlingsId, context, "");
 
-        verify(soknadService, times(1)).sendSoknad(eq(behandlingsId));
+        verify(soknadService, times(1)).sendSoknad(behandlingsId);
     }
 
     @Test
@@ -156,7 +156,7 @@ public class SoknadActionsTest {
 
         actions.sendSoknad(behandlingsId, context, "");
 
-        verify(soknadService, times(1)).sendSoknad(eq(behandlingsId));
+        verify(soknadService, times(1)).sendSoknad(behandlingsId);
     }
 
     @Test(expected = IllegalStateException.class)
@@ -195,7 +195,7 @@ public class SoknadActionsTest {
 
         actions.sendSoknad(behandlingsId, context, "");
 
-        verify(soknadService, times(1)).sendSoknad(eq(behandlingsId));
+        verify(soknadService, times(1)).sendSoknad(behandlingsId);
     }
 
     @Test
@@ -209,7 +209,7 @@ public class SoknadActionsTest {
 
         actions.sendSoknad(behandlingsId, context, "");
 
-        verify(soknadService, times(1)).sendSoknad(eq(behandlingsId));
+        verify(soknadService, times(1)).sendSoknad(behandlingsId);
     }
 
     @Test
@@ -223,7 +223,7 @@ public class SoknadActionsTest {
 
         actions.sendSoknad(behandlingsId, context, "");
 
-        verify(soknadService, times(1)).sendSoknad(eq(behandlingsId));
+        verify(soknadService, times(1)).sendSoknad(behandlingsId);
     }
 
     @Test

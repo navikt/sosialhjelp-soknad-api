@@ -41,15 +41,14 @@ public class SettInnKnappTilgjengeligTekstHelperTest {
 
         String compiled = handlebars.compileInline("{{{settInnKnappTilgjengeligTekst \"testTekst\"}}}").apply(new Object());
 
-        assertThat(compiled).contains("Knapp tilgjengelig:");
-        assertThat(compiled).contains("Lorem ipsum");
+        assertThat(compiled).contains("Knapp tilgjengelig:", "Lorem ipsum");
     }
 
     @Test
     public void skalReturnereTomStrengHvisIkkeKnapptekstFinnes() throws IOException {
         String compiled = handlebars.compileInline("{{{settInnKnappTilgjengeligTekst \"testTekst\"}}}").apply(new Object());
 
-        assertThat(compiled).isEqualTo("");
+        assertThat(compiled).isBlank();
     }
 
 }

@@ -14,7 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class UtbetalingerFraNavSystemdataOrganisasjonsnummerTest {
 
     @Mock
-    OrganisasjonService organisasjonService;
+    private OrganisasjonService organisasjonService;
 
     @InjectMocks
     private UtbetalingerFraNavSystemdata utbetalingerFraNavSystemdata;

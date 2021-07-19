@@ -39,7 +39,7 @@ public class FiksHandtererTest {
 
     @Test
     public void kjorerKjede() {
-        when(innsendingService.hentSendtSoknad(eq(BEHANDLINGSID), eq(AVSENDER))).thenReturn(lagSendtSoknad());
+        when(innsendingService.hentSendtSoknad(BEHANDLINGSID, AVSENDER)).thenReturn(lagSendtSoknad());
         when(fiksSender.sendTilFiks(any(SendtSoknad.class))).thenReturn(FIKSFORSENDELSEID);
         Oppgave oppgave = opprettOppgave();
 
@@ -51,8 +51,7 @@ public class FiksHandtererTest {
         assertThat(oppgave.steg).isEqualTo(22);
 
         fiksHandterer.eksekver(oppgave);
-        verify(innsendingService, times(1)).finnOgSlettSoknadUnderArbeidVedSendingTilFiks(eq(BEHANDLINGSID),
-                eq(AVSENDER));
+        verify(innsendingService, times(1)).finnOgSlettSoknadUnderArbeidVedSendingTilFiks(BEHANDLINGSID, AVSENDER);
         verify(innsendingService, never()).oppdaterSendtSoknadVedSendingTilFiks(anyString(), anyString(), anyString());
         assertThat(oppgave.steg).isEqualTo(23);
 
@@ -65,7 +64,7 @@ public class FiksHandtererTest {
 
     @Test
     public void lagrerFeilmelding() {
-        when(innsendingService.hentSendtSoknad(eq(BEHANDLINGSID), eq(AVSENDER))).thenReturn(new SendtSoknad());
+        when(innsendingService.hentSendtSoknad(BEHANDLINGSID, AVSENDER)).thenReturn(new SendtSoknad());
         when(fiksSender.sendTilFiks(any(SendtSoknad.class))).thenThrow(new RuntimeException("feilmelding123"));
         Oppgave oppgave = opprettOppgave();
 
@@ -81,7 +80,7 @@ public class FiksHandtererTest {
     @Test
     public void kjorerKjedeSelvOmFeilerForsteGang() {
         //Feks. dersom en ettersendelse sin svarPaForsendelseId er null
-        when(innsendingService.hentSendtSoknad(eq(BEHANDLINGSID), eq(AVSENDER))).thenReturn(lagSendtEttersendelse());
+        when(innsendingService.hentSendtSoknad(BEHANDLINGSID, AVSENDER)).thenReturn(lagSendtEttersendelse());
         when(fiksSender.sendTilFiks(any(SendtSoknad.class)))
                 .thenThrow(new IllegalStateException("Ettersendelse har svarPaForsendelseId null"))
                 .thenReturn(FIKSFORSENDELSEID);
@@ -104,8 +103,7 @@ public class FiksHandtererTest {
         assertThat(oppgave.steg).isEqualTo(22);
 
         fiksHandterer.eksekver(oppgave);
-        verify(innsendingService, times(1)).finnOgSlettSoknadUnderArbeidVedSendingTilFiks(eq(BEHANDLINGSID),
-                eq(AVSENDER));
+        verify(innsendingService, times(1)).finnOgSlettSoknadUnderArbeidVedSendingTilFiks(BEHANDLINGSID, AVSENDER);
         verify(innsendingService, never()).oppdaterSendtSoknadVedSendingTilFiks(anyString(), anyString(), anyString());
         assertThat(oppgave.steg).isEqualTo(23);
 

@@ -415,7 +415,7 @@ public class FamilieSystemdataTest {
 
         assertThat(barn.getFnr()).isEqualTo(jsonBarn.getPersonIdentifikator());
         if (barn.getFodselsdato() != null){
-            assertThat(barn.getFodselsdato().toString()).isEqualTo(jsonBarn.getFodselsdato());
+            assertThat(barn.getFodselsdato()).hasToString(jsonBarn.getFodselsdato());
         } else {
             assertThat(jsonBarn.getFodselsdato()).isNull();
         }
@@ -426,7 +426,7 @@ public class FamilieSystemdataTest {
 
     private void assertThatEktefelleIsCorrectlyConverted(Ektefelle ektefelle, JsonEktefelle jsonEktefelle) {
         if (ektefelle.getFodselsdato() != null){
-            assertThat(ektefelle.getFodselsdato().toString()).isEqualTo(jsonEktefelle.getFodselsdato());
+            assertThat(ektefelle.getFodselsdato()).hasToString(jsonEktefelle.getFodselsdato());
         } else {
             assertThat(jsonEktefelle.getFodselsdato()).isNull();
         }
