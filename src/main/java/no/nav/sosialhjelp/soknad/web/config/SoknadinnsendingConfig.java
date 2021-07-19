@@ -22,13 +22,12 @@ import org.springframework.context.annotation.Import;
 @EnableAspectJAutoProxy
 @Configuration
 @Import({
-        ApplicationConfig.class,
         BusinessConfig.class,
         CacheConfig.class,
         ConsumerConfig.class,
         ContentConfig.class,
         SoknadInnsendingDBConfig.class,
-        HandlebarsHelperConfig.class,
+        HandlebarsConfig.class,
         OidcTokenValidatorConfig.class,
         MetricsConfig.class,
         SaksoversiktMetadataService.class,

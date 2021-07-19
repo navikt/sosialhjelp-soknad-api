@@ -4,19 +4,14 @@ import no.nav.sosialhjelp.soknad.tekster.NavMessageSource;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.io.File;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ContentConfigTest extends ApplicationContextTest {
-
-    @Mock
-    File brukerprofilDataDirectory;
 
     @InjectMocks
     ContentConfig contentConfig;

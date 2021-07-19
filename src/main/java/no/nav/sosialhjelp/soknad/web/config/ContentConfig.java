@@ -18,7 +18,6 @@ import static no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.Sosia
 public class ContentConfig {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
-    final static String delstiTilbundlefilPaaDisk = "tekster";
     private static final long FEM_MINUTTER = 1000*60*5;
 
     @Bean
