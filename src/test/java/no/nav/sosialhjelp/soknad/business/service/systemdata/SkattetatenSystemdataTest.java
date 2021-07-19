@@ -182,7 +182,7 @@ public class SkattetatenSystemdataTest {
         JsonOkonomiOpplysningUtbetaling utbetaling_1 = jsonUtbetalinger.get(1);
 
         assertThat(utbetaling.getKilde()).isEqualTo(JsonKilde.BRUKER);
-        assertThat(utbetaling.equals(JSON_OKONOMI_OPPLYSNING_UTBETALING)).isTrue();
+        assertThat(utbetaling).isEqualTo(JSON_OKONOMI_OPPLYSNING_UTBETALING);
         assertThat(utbetaling_1.getKilde()).isEqualTo(JsonKilde.SYSTEM);
         assertThatUtbetalingIsCorrectlyConverted(SKATTBAR_UTBETALING_ANNEN, utbetaling_1, UTBETALING_SKATTEETATEN);
     }
@@ -199,7 +199,7 @@ public class SkattetatenSystemdataTest {
         JsonOkonomiOpplysningUtbetaling utbetaling = jsonUtbetalinger.get(0);
 
         assertThat(utbetaling.getKilde()).isEqualTo(JsonKilde.BRUKER);
-        assertThat(utbetaling.equals(JSON_OKONOMI_OPPLYSNING_UTBETALING)).isTrue();
+        assertThat(utbetaling).isEqualTo(JSON_OKONOMI_OPPLYSNING_UTBETALING);
         assertThat(jsonUtbetalinger).hasSize(1);
         assertThat(soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getDriftsinformasjon().getInntektFraSkatteetatenFeilet()).isFalse();
     }
@@ -220,7 +220,7 @@ public class SkattetatenSystemdataTest {
 
         //SJEKK STATE FOR TEST:
         assertThat(utbetalingA.getKilde()).isEqualTo(JsonKilde.BRUKER);
-        assertThat(utbetalingA.equals(JSON_OKONOMI_OPPLYSNING_UTBETALING)).isTrue();
+        assertThat(utbetalingA).isEqualTo(JSON_OKONOMI_OPPLYSNING_UTBETALING);
         assertThat(utbetalingA_1.getKilde()).isEqualTo(JsonKilde.SYSTEM);
         assertThatUtbetalingIsCorrectlyConverted(SKATTBAR_UTBETALING_ANNEN, utbetalingA_1, UTBETALING_SKATTEETATEN);
 
@@ -231,7 +231,7 @@ public class SkattetatenSystemdataTest {
         JsonOkonomiOpplysningUtbetaling utbetalingB = jsonUtbetalingerB.get(0);
 
         assertThat(utbetalingB.getKilde()).isEqualTo(JsonKilde.BRUKER);
-        assertThat(utbetalingB.equals(JSON_OKONOMI_OPPLYSNING_UTBETALING)).isTrue();
+        assertThat(utbetalingB).isEqualTo(JSON_OKONOMI_OPPLYSNING_UTBETALING);
         assertThat(jsonUtbetalingerB).hasSize(1);
     }
 

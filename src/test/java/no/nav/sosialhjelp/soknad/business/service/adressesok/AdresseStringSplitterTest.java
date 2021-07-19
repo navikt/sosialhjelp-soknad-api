@@ -14,7 +14,7 @@ public class AdresseStringSplitterTest {
 
     @Test
     public void tomStrengGirBlanktSvar() {
-        assertThat(AdresseStringSplitter.toSokedata(null,"").adresse).isEqualTo("");
+        assertThat(AdresseStringSplitter.toSokedata(null,"").adresse).isBlank();
     }
     
     @Test

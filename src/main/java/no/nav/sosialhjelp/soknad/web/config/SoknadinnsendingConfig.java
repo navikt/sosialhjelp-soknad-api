@@ -10,6 +10,7 @@ import no.nav.sosialhjelp.soknad.consumer.pdl.person.PersonService;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.DigisosApiRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.virusscan.VirusScanConfig;
 import no.nav.sosialhjelp.soknad.web.oidc.OidcTokenValidatorConfig;
+import no.nav.sosialhjelp.soknad.web.selftest.SelftestService;
 import no.nav.sosialhjelp.soknad.web.service.SaksoversiktMetadataService;
 import no.nav.sosialhjelp.soknad.web.service.SoknadOversiktService;
 import no.nav.sosialhjelp.soknad.web.sikkerhet.Tilgangskontroll;
@@ -22,20 +23,20 @@ import org.springframework.context.annotation.Import;
 @EnableAspectJAutoProxy
 @Configuration
 @Import({
-        ApplicationConfig.class,
         BusinessConfig.class,
         CacheConfig.class,
         ConsumerConfig.class,
         ContentConfig.class,
         SoknadInnsendingDBConfig.class,
-        HandlebarsHelperConfig.class,
+        HandlebarsConfig.class,
         OidcTokenValidatorConfig.class,
         MetricsConfig.class,
         SaksoversiktMetadataService.class,
         SoknadOversiktService.class,
         VirusScanConfig.class,
         DigisosApiRestConfig.class,
-        BostotteConfig.class
+        BostotteConfig.class,
+        SelftestService.class
 })
 @ComponentScan(basePackages = "no.nav.sosialhjelp.soknad.web.rest")
 public class SoknadinnsendingConfig {

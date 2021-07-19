@@ -9,30 +9,6 @@
         <param-value>no.nav.sosialhjelp.soknad.web.config.SoknadinnsendingConfig,no.nav.sosialhjelp.soknad.web.config.SoknadinnsendingLocalConfig, no.nav.sosialhjelp.soknad.web.oidc.OidcConfig</param-value>
     </context-param>
 
-    <servlet>
-        <servlet-name>SoknadAPI</servlet-name>
-        <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
-        <init-param>
-            <param-name>javax.ws.rs.Application</param-name>
-            <param-value>no.nav.sosialhjelp.soknad.web.config.TestSoknadApplication</param-value>
-        </init-param>
-        <load-on-startup>1</load-on-startup>
-        <async-supported>true</async-supported>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>SoknadAPI</servlet-name>
-        <url-pattern>/*</url-pattern>
-    </servlet-mapping>
-
-    <servlet>
-        <servlet-name>livebeans</servlet-name>
-        <servlet-class>org.springframework.web.context.support.LiveBeansViewServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>livebeans</servlet-name>
-        <url-pattern>/livebeans</url-pattern>
-    </servlet-mapping>
-
     <filter>
         <filter-name>OpenAmLoginFilter</filter-name>
         <filter-class>no.nav.sosialhjelp.soknad.web.saml.FakeLoginFilter</filter-class>

@@ -56,7 +56,7 @@ public class HentOkonomiBekreftelseHelperTest {
         opplysninger.setBekreftelse(null);
 
         String compiled = handlebars.compileInline("{{#hentOkonomiBekreftelse \"bostotte\" }}Verdi: {{verdi}}{{/hentOkonomiBekreftelse}}").apply(opplysninger);
-        assertThat(compiled).isEqualTo("");
+        assertThat(compiled).isBlank();
     }
     
     private JsonOkonomiopplysninger lagOpplysningerMedBostotteBekreftelse(boolean bostotteBekreftelseSkalHaVerdiLikTrue) {

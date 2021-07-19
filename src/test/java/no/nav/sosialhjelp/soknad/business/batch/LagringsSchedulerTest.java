@@ -13,6 +13,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.times;
@@ -22,9 +23,12 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class LagringsSchedulerTest {
 
-    @InjectMocks private LagringsScheduler scheduler = new LagringsScheduler();
-    @Mock private HenvendelseService henvendelseService;
-    @Mock private BatchSoknadUnderArbeidRepository batchSoknadUnderArbeidRepository;
+    @InjectMocks
+    private LagringsScheduler scheduler = new LagringsScheduler();
+    @Mock
+    private HenvendelseService henvendelseService;
+    @Mock
+    private BatchSoknadUnderArbeidRepository batchSoknadUnderArbeidRepository;
 
     @Before
     public void setup() {
@@ -61,7 +65,7 @@ public class LagringsSchedulerTest {
                 .withBehandlingsId(behandlingsId)
                 .withStatus(SoknadUnderArbeidStatus.UNDER_ARBEID) ;
 
-        when(batchSoknadUnderArbeidRepository.hentForeldedeEttersendelser()).thenReturn(Arrays.asList(soknadUnderArbeid));
+        when(batchSoknadUnderArbeidRepository.hentForeldedeEttersendelser()).thenReturn(Collections.singletonList(soknadUnderArbeid));
 
         scheduler.slettForeldedeEttersendelserFraSoknadUnderArbeidDatabase();
 

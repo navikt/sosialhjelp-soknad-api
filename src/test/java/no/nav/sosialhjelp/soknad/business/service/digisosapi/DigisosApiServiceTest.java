@@ -22,6 +22,7 @@ import no.nav.sosialhjelp.soknad.domain.VedleggType;
 import no.nav.sosialhjelp.soknad.domain.Vedleggstatus;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.StaticSubjectHandlerService;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -81,7 +82,7 @@ public class DigisosApiServiceTest {
         when(sosialhjelpPdfGenerator.generateBrukerkvitteringPdf()).thenReturn(new byte[]{1, 2, 3});
     }
 
-    @Test
+    @After
     public void tearDown() {
         SubjectHandler.resetOidcSubjectHandlerService();
         System.clearProperty("environment.name");
