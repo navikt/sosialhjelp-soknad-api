@@ -51,7 +51,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @MockitoSettings(strictness = Strictness.LENIENT)
-//@ExtendWith(MockitoExtension.class)
 public class FiksSenderTest {
 
     private static final String FIKSFORSENDELSE_ID = "6767";

@@ -41,7 +41,6 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @MockitoSettings(strictness = Strictness.LENIENT)
-//@ExtendWith(MockitoExtension.class)
 public class PdlPersonMapperTest {
 
     private static final String IDENT = "ident";
