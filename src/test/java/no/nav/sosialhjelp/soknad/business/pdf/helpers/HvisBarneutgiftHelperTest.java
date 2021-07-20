@@ -19,15 +19,15 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class HvisBarneutgiftHelperTest {
+class HvisBarneutgiftHelperTest {
 
     private Handlebars handlebars;
 
     @InjectMocks
-    HvisBarneutgiftHelper hvisBarneutgiftHelper;
+    private HvisBarneutgiftHelper hvisBarneutgiftHelper;
 
     @Mock
-    HentSvaralternativerHelper hentSvaralternativerHelper;
+    private HentSvaralternativerHelper hentSvaralternativerHelper;
 
     @BeforeEach
     public void setup() {
@@ -41,14 +41,14 @@ public class HvisBarneutgiftHelperTest {
     }
 
     @Test
-    public void skalGjenkjenneBarneutgiftstype() throws IOException {
+    void skalGjenkjenneBarneutgiftstype() throws IOException {
         String compiled = handlebars.compileInline("{{#hvisBarneutgift \"barnehage\"}}barnehage er en barneutgift{{else}}ikke en barneutgift{{/hvisBarneutgift}}").apply(new Object());
 
         assertThat(compiled).isEqualTo("barnehage er en barneutgift");
     }
 
     @Test
-    public void skalIkkeGjenkjenneBarneutgiftstype() throws IOException {
+    void skalIkkeGjenkjenneBarneutgiftstype() throws IOException {
         String compiled = handlebars.compileInline("{{#hvisBarneutgift \"gretneBarn\"}}gretneBarn er en barneutgift{{else}}ikke en barneutgift{{/hvisBarneutgift}}").apply(new Object());
 
         assertThat(compiled).isEqualTo("ikke en barneutgift");

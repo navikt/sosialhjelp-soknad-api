@@ -19,7 +19,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class CmsTekstTest {
+class CmsTekstTest {
 
     @InjectMocks
     CmsTekst cmsTekst;
@@ -35,7 +35,7 @@ public class CmsTekstTest {
     }
 
     @Test
-    public void kallerMessageSourceToGangerMedOgUtenPrefixNarKeyIkkeEksisterer() {
+    void kallerMessageSourceToGangerMedOgUtenPrefixNarKeyIkkeEksisterer() {
         properties.put("min.key", "jegFinnes");
 
         String tekst = this.cmsTekst.getCmsTekst("min.key", null, "prefix", "bundlename", toLocale("nb_NO"));
@@ -54,7 +54,7 @@ public class CmsTekstTest {
     }
 
     @Test
-    public void getCmsTekstReturnererNullNarKeyMangler() {
+    void getCmsTekstReturnererNullNarKeyMangler() {
         String tekst = cmsTekst.getCmsTekst("min.key", null, "prefix", "bundlename", toLocale("nb_NO"));
 
         assertThat(tekst).isNull();

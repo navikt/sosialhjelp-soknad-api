@@ -19,15 +19,15 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class SettInnHjelpetekstHelperTest {
+class SettInnHjelpetekstHelperTest {
 
     private Handlebars handlebars;
 
     @InjectMocks
-    SettInnHjelpetekstHelper settInnHjelpetekstHelper;
+    private SettInnHjelpetekstHelper settInnHjelpetekstHelper;
 
     @Mock
-    CmsTekst cmsTekst;
+    private CmsTekst cmsTekst;
 
     @BeforeEach
     public void setup() {
@@ -36,7 +36,7 @@ public class SettInnHjelpetekstHelperTest {
     }
 
     @Test
-    public void skalHenteHjelpetekstMedTittel() throws IOException {
+    void skalHenteHjelpetekstMedTittel() throws IOException {
         when(cmsTekst.getCmsTekst(eq("testTekst"), any(Object[].class), anyString(), anyString(), any(Locale.class))).thenReturn("Lorem ipsum");
         when(cmsTekst.getCmsTekst(eq("hjelpetekst.oppsummering.tittel"), any(Object[].class), anyString(), anyString(), any(Locale.class))).thenReturn("Hjelpetekst:");
 
@@ -46,7 +46,7 @@ public class SettInnHjelpetekstHelperTest {
     }
     
     @Test
-    public void skalReturnereTomStrengHvisIkkeHjelpetekstFinnes() throws IOException {
+    void skalReturnereTomStrengHvisIkkeHjelpetekstFinnes() throws IOException {
         String compiled = handlebars.compileInline("{{{settInnHjelpetekst \"testTekst\"}}}").apply(new Object());
 
         assertThat(compiled).isBlank();

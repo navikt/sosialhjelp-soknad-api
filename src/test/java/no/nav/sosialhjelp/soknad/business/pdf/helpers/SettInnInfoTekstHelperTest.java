@@ -19,15 +19,15 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class SettInnInfoTekstHelperTest {
+class SettInnInfoTekstHelperTest {
 
     private Handlebars handlebars;
 
     @InjectMocks
-    SettInnInfotekstHelper settInnInfotekstHelper;
+    private SettInnInfotekstHelper settInnInfotekstHelper;
 
     @Mock
-    CmsTekst cmsTekst;
+    private CmsTekst cmsTekst;
 
     @BeforeEach
     public void setup() {
@@ -36,7 +36,7 @@ public class SettInnInfoTekstHelperTest {
     }
 
     @Test
-    public void skalHenteInfotekstMedTittel() throws IOException {
+    void skalHenteInfotekstMedTittel() throws IOException {
         when(cmsTekst.getCmsTekst(eq("testTekst"), any(Object[].class), anyString(), anyString(), any(Locale.class))).thenReturn("Lorem ipsum");
         when(cmsTekst.getCmsTekst(eq("infotekst.oppsummering.tittel"), any(Object[].class), anyString(), anyString(), any(Locale.class))).thenReturn("Infotekst:");
 
@@ -46,7 +46,7 @@ public class SettInnInfoTekstHelperTest {
     }
     
     @Test
-    public void skalReturnereTomStrengHvisIkkeInfotekstFinnes() throws IOException {
+    void skalReturnereTomStrengHvisIkkeInfotekstFinnes() throws IOException {
         String compiled = handlebars.compileInline("{{{settInnInfotekst \"testTekst\"}}}").apply(new Object());
 
         assertThat(compiled).isBlank();

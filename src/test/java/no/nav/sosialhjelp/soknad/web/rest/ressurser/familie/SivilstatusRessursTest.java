@@ -37,7 +37,7 @@ import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class SivilstatusRessursTest {
+class SivilstatusRessursTest {
 
     private static final String BEHANDLINGSID = "123";
     private static final String EIER = "123456789101";
@@ -76,7 +76,7 @@ public class SivilstatusRessursTest {
     }
 
     @Test
-    public void getSivilstatusSkalReturnereNull(){
+    void getSivilstatusSkalReturnereNull(){
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithSivilstatus(null, null, null,
                         null, null, null));
@@ -87,7 +87,7 @@ public class SivilstatusRessursTest {
     }
 
     @Test
-    public void getSivilstatusSkalReturnereKunBrukerdefinertStatus(){
+    void getSivilstatusSkalReturnereKunBrukerdefinertStatus(){
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithSivilstatus(true, JsonSivilstatus.Status.GIFT, null,
                         null, null, null));
@@ -102,7 +102,7 @@ public class SivilstatusRessursTest {
     }
 
     @Test
-    public void getSivilstatusSkalReturnereBrukerdefinertEktefelleRiktigKonvertert(){
+    void getSivilstatusSkalReturnereBrukerdefinertEktefelleRiktigKonvertert(){
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithSivilstatus(true, JsonSivilstatus.Status.GIFT, JSON_EKTEFELLE,
                         null, null, true));
@@ -118,7 +118,7 @@ public class SivilstatusRessursTest {
     }
 
     @Test
-    public void getSivilstatusSkalReturnereSystemdefinertEktefelleRiktigKonvertert(){
+    void getSivilstatusSkalReturnereSystemdefinertEktefelleRiktigKonvertert(){
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithSivilstatus(false, JsonSivilstatus.Status.GIFT, JSON_EKTEFELLE,
                         false, true, null));
@@ -134,7 +134,7 @@ public class SivilstatusRessursTest {
     }
 
     @Test
-    public void getSivilstatusSkalReturnereSystemdefinertEktefelleMedDiskresjonskode(){
+    void getSivilstatusSkalReturnereSystemdefinertEktefelleMedDiskresjonskode(){
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithSivilstatus(false, JsonSivilstatus.Status.GIFT, JSON_EKTEFELLE,
                         true, null, null));
@@ -149,7 +149,7 @@ public class SivilstatusRessursTest {
     }
 
     @Test
-    public void putSivilstatusSkalKunneSetteAlleTyperSivilstatus() throws ParseException {
+    void putSivilstatusSkalKunneSetteAlleTyperSivilstatus() throws ParseException {
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithSivilstatus(null, null, null,
@@ -164,7 +164,7 @@ public class SivilstatusRessursTest {
     }
 
     @Test
-    public void putSivilstatusSkalSetteStatusGiftOgEktefelle() throws ParseException {
+    void putSivilstatusSkalSetteStatusGiftOgEktefelle() throws ParseException {
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithSivilstatus(null, null, null,
@@ -184,7 +184,7 @@ public class SivilstatusRessursTest {
     }
 
     @Test
-    public void getSivilstatusSkalKasteAuthorizationExceptionVedManglendeTilgang() {
+    void getSivilstatusSkalKasteAuthorizationExceptionVedManglendeTilgang() {
         doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerHarTilgang();
 
         assertThatExceptionOfType(AuthorizationException.class)
@@ -194,7 +194,7 @@ public class SivilstatusRessursTest {
     }
 
     @Test
-    public void putSivilstatusSkalKasteAuthorizationExceptionVedManglendeTilgang() throws ParseException {
+    void putSivilstatusSkalKasteAuthorizationExceptionVedManglendeTilgang() throws ParseException {
         doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(BEHANDLINGSID);
 
         var sivilstatusFrontend = new SivilstatusFrontend()

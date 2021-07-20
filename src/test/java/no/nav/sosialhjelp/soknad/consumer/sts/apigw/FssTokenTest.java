@@ -6,10 +6,10 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class FssTokenTest {
+class FssTokenTest {
 
     @Test
-    public void skalDeserialisereFssToken() throws JsonProcessingException {
+    void skalDeserialisereFssToken() throws JsonProcessingException {
         String json = "{\"access_token\":\"asd\",\"token_type\":\"fgh\",\"expires_in\":1234}";
 
         FssToken fssToken = new ObjectMapper()

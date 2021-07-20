@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {DbTestConfig.class})
-public class SendtSoknadRepositoryJdbcTest {
+class SendtSoknadRepositoryJdbcTest {
 
     private static final String EIER = "12345678901";
     private static final String EIER2 = "22222222222";
@@ -44,26 +44,26 @@ public class SendtSoknadRepositoryJdbcTest {
     }
 
     @Test
-    public void opprettSendtSoknadOppretterSendtSoknadIDatabasen() {
+    void opprettSendtSoknadOppretterSendtSoknadIDatabasen() {
         Long sendtSoknadId = sendtSoknadRepository.opprettSendtSoknad(lagSendtSoknad(EIER), EIER);
 
         assertThat(sendtSoknadId).isNotNull();
     }
 
     @Test
-    public void opprettSendtSoknadKasterRuntimeExceptionHvisEierErUlikSoknadseier() {
+    void opprettSendtSoknadKasterRuntimeExceptionHvisEierErUlikSoknadseier() {
         assertThatExceptionOfType(RuntimeException.class)
                 .isThrownBy(() -> sendtSoknadRepository.opprettSendtSoknad(lagSendtSoknad(EIER), EIER2));
     }
 
     @Test
-    public void opprettSendtSoknadKasterRuntimeExceptionHvisEierErNull() {
+    void opprettSendtSoknadKasterRuntimeExceptionHvisEierErNull() {
         assertThatExceptionOfType(RuntimeException.class)
             .isThrownBy(() -> sendtSoknadRepository.opprettSendtSoknad(lagSendtSoknad(EIER), null));
     }
 
     @Test
-    public void hentSendtSoknadHenterSendtSoknadForEierOgBehandlingsid() {
+    void hentSendtSoknadHenterSendtSoknadForEierOgBehandlingsid() {
         sendtSoknadRepository.opprettSendtSoknad(lagSendtSoknad(EIER), EIER);
 
         SendtSoknad sendtSoknad = sendtSoknadRepository.hentSendtSoknad(BEHANDLINGSID, EIER).get();
@@ -81,7 +81,7 @@ public class SendtSoknadRepositoryJdbcTest {
     }
 
     @Test
-    public void oppdaterSendtSoknadVedSendingTilFiksOppdatererFiksIdOgSendtDato() {
+    void oppdaterSendtSoknadVedSendingTilFiksOppdatererFiksIdOgSendtDato() {
         sendtSoknadRepository.opprettSendtSoknad(lagSendtSoknadSomIkkeErSendtTilFiks(), EIER);
 
         sendtSoknadRepository.oppdaterSendtSoknadVedSendingTilFiks(FIKSFORSENDELSEID, BEHANDLINGSID, EIER);

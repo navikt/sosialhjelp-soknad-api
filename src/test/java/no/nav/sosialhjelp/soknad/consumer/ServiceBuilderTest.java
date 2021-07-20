@@ -3,9 +3,9 @@ package no.nav.sosialhjelp.soknad.consumer;
 
 import org.junit.jupiter.api.Test;
 
-public class ServiceBuilderTest {
+class ServiceBuilderTest {
     @Test
-    public void skalByggeTjeneste(){
+    void skalByggeTjeneste(){
         new ServiceBuilder<>(ServiceBuilderTestInterface.class)
                 .asStandardService()
                 .withTimeout()

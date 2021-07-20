@@ -48,7 +48,7 @@ import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class BostotteRessursTest {
+class BostotteRessursTest {
 
     private static final String BEHANDLINGSID = "123";
     private static final String EIER = "123456789101";
@@ -81,7 +81,7 @@ public class BostotteRessursTest {
     }
 
     @Test
-    public void getBostotteSkalReturnereNull() {
+    void getBostotteSkalReturnereNull() {
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER)));
 
@@ -91,7 +91,7 @@ public class BostotteRessursTest {
     }
 
     @Test
-    public void getBostotteSkalReturnereBekreftetBostotte() {
+    void getBostotteSkalReturnereBekreftetBostotte() {
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithBostotte(true));
 
@@ -101,7 +101,7 @@ public class BostotteRessursTest {
     }
 
     @Test
-    public void getBostotteSkalReturnereHarIkkeBostotte() {
+    void getBostotteSkalReturnereHarIkkeBostotte() {
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithBostotte(false));
 
@@ -111,7 +111,7 @@ public class BostotteRessursTest {
     }
 
     @Test
-    public void putBostotteSkalSetteBostotteOgLeggeTilInntektstypen() {
+    void putBostotteSkalSetteBostotteOgLeggeTilInntektstypen() {
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER)));
@@ -134,7 +134,7 @@ public class BostotteRessursTest {
     }
 
     @Test
-    public void putBostotteSkalSetteHarIkkeBostotteOgSletteInntektstypen() {
+    void putBostotteSkalSetteHarIkkeBostotteOgSletteInntektstypen() {
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         SoknadUnderArbeid soknad = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         ArrayList<JsonOkonomioversiktInntekt> inntekt = new ArrayList<>();
@@ -160,7 +160,7 @@ public class BostotteRessursTest {
     }
 
     @Test
-    public void bostotte_skalBareHaUtRiktigUtbetaling() {
+    void bostotte_skalBareHaUtRiktigUtbetaling() {
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithBostotteUtbetalinger(true, asList("tilfeldig", "salg", "lonn")));
 
@@ -170,7 +170,7 @@ public class BostotteRessursTest {
     }
 
     @Test
-    public void bostotte_skalIkkeHaUtbetaling() {
+    void bostotte_skalIkkeHaUtbetaling() {
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithBostotteUtbetalinger(false, asList("tilfeldig", "salg", "lonn")));
 
@@ -180,7 +180,7 @@ public class BostotteRessursTest {
     }
 
     @Test
-    public void bostotte_skalBareHaUtRiktigSak() {
+    void bostotte_skalBareHaUtRiktigSak() {
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithSaker(true, asList("tilfeldig", "salg", "lonn")));
 
@@ -190,7 +190,7 @@ public class BostotteRessursTest {
     }
 
     @Test
-    public void bostotte_skalIkkeHaSak() {
+    void bostotte_skalIkkeHaSak() {
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithSaker(false, asList("tilfeldig", "salg", "lonn")));
 
@@ -200,7 +200,7 @@ public class BostotteRessursTest {
     }
 
     @Test
-    public void bostotte_skalGiSamtykke() {
+    void bostotte_skalGiSamtykke() {
         SoknadUnderArbeid soknad = createJsonInternalSoknadWithSaker(false, asList("tilfeldig", "salg", "lonn"));
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(soknad);
         when(textService.getJsonOkonomiTittel(anyString())).thenReturn("tittel");
@@ -224,7 +224,7 @@ public class BostotteRessursTest {
     }
 
     @Test
-    public void bostotte_skalTaBortSamtykke() {
+    void bostotte_skalTaBortSamtykke() {
         SoknadUnderArbeid soknad = createJsonInternalSoknadWithSaker(false, asList("tilfeldig", "salg", "lonn"));
         JsonOkonomiopplysninger opplysninger = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger();
         setBekreftelse(opplysninger, BOSTOTTE_SAMTYKKE, true, "");
@@ -251,7 +251,7 @@ public class BostotteRessursTest {
     }
 
     @Test
-    public void bostotte_skalIkkeForandreSamtykke() {
+    void bostotte_skalIkkeForandreSamtykke() {
         SoknadUnderArbeid soknad = createJsonInternalSoknadWithSaker(false, asList("tilfeldig", "salg", "lonn"));
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(soknad);
 
@@ -268,7 +268,7 @@ public class BostotteRessursTest {
     }
 
     @Test
-    public void getBostotteSkalKasteAuthorizationExceptionVedManglendeTilgang() {
+    void getBostotteSkalKasteAuthorizationExceptionVedManglendeTilgang() {
         doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerHarTilgang();
 
         assertThatExceptionOfType(AuthorizationException.class)
@@ -278,7 +278,7 @@ public class BostotteRessursTest {
     }
 
     @Test
-    public void putBostotteSkalKasteAuthorizationExceptionVedManglendeTilgang() {
+    void putBostotteSkalKasteAuthorizationExceptionVedManglendeTilgang() {
         doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(BEHANDLINGSID);
 
         var bostotteFrontend = new BostotteRessurs.BostotteFrontend();
@@ -290,7 +290,7 @@ public class BostotteRessursTest {
     }
 
     @Test
-    public void putSamtykkeSkalKasteAuthorizationExceptionVedManglendeTilgang() {
+    void putSamtykkeSkalKasteAuthorizationExceptionVedManglendeTilgang() {
         doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(BEHANDLINGSID);
 
         assertThatExceptionOfType(AuthorizationException.class)

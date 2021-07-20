@@ -15,14 +15,14 @@ public class FormaterDatoKlokkeslettHelperTest {
     private Handlebars handlebars;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         handlebars = new Handlebars();
         FormaterDatoKlokkeslettHelper helper = new FormaterDatoKlokkeslettHelper();
         handlebars.registerHelper(helper.getNavn(), helper);
     }
 
     @Test
-    public void skalViseDatoOgKlokkeslettINorskTidssone() throws IOException {
+    void skalViseDatoOgKlokkeslettINorskTidssone() throws IOException {
         Locale.setDefault(Locale.forLanguageTag("nb-NO"));
         String compiled = handlebars.compileInline("{{formaterDatoKlokkeslett \"2018-10-04T13:37:00.134Z\" \"d. MMMM yyyy HH:mm\"}}").apply(new Object());
         assertThat(compiled).isEqualTo("4. oktober 2018 15:37");

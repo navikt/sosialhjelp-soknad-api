@@ -32,7 +32,7 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @ContextConfiguration(classes = {DbTestConfig.class})
-public class SlettLoggSchedulerTest {
+class SlettLoggSchedulerTest {
 
     private static final String EIER = "11111111111";
     private static final int DAGER_GAMMEL_SOKNAD = 365;
@@ -60,7 +60,7 @@ public class SlettLoggSchedulerTest {
     }
 
     @Test
-    public void skalSletteForeldetLoggFraDatabase() {
+    void skalSletteForeldetLoggFraDatabase() {
         Oppgave oppgave = oppgave(BEHANDLINGS_ID, DAGER_GAMMEL_SOKNAD + 1);
         SendtSoknad sendtSoknad = sendtSoknad(BEHANDLINGS_ID, EIER, DAGER_GAMMEL_SOKNAD + 1);
         SoknadMetadata soknadMetadata = soknadMetadata(BEHANDLINGS_ID, SoknadMetadataInnsendingStatus.UNDER_ARBEID, DAGER_GAMMEL_SOKNAD + 1);
@@ -76,7 +76,7 @@ public class SlettLoggSchedulerTest {
     }
 
     @Test
-    public void skalSletteForeldetLoggFraDatabaseSelvOmIkkeAlleTabelleneInneholderBehandlingsIdeen() {
+    void skalSletteForeldetLoggFraDatabaseSelvOmIkkeAlleTabelleneInneholderBehandlingsIdeen() {
         Oppgave oppgave = oppgave(BEHANDLINGS_ID, DAGER_GAMMEL_SOKNAD + 1);
         SendtSoknad sendtSoknad = sendtSoknad(BEHANDLINGS_ID, EIER, DAGER_GAMMEL_SOKNAD + 1);
         SoknadMetadata soknadMetadata = soknadMetadata(BEHANDLINGS_ID, SoknadMetadataInnsendingStatus.UNDER_ARBEID, DAGER_GAMMEL_SOKNAD + 1);
@@ -92,7 +92,7 @@ public class SlettLoggSchedulerTest {
     }
 
     @Test
-    public void skalIkkeSletteLoggSomErUnderEttAarGammelt() {
+    void skalIkkeSletteLoggSomErUnderEttAarGammelt() {
         when(batchSoknadMetadataRepository.hentEldreEnn(DAGER_GAMMEL_SOKNAD)).thenReturn(Optional.empty());
 
         scheduler.slettLogger();

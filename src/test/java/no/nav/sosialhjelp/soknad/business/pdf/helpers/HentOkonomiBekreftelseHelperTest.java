@@ -18,7 +18,7 @@ import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.BOSTOTTE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(MockitoExtension.class)
-public class HentOkonomiBekreftelseHelperTest {
+class HentOkonomiBekreftelseHelperTest {
 
     private Handlebars handlebars;
 
@@ -31,7 +31,7 @@ public class HentOkonomiBekreftelseHelperTest {
     
     
     @Test
-    public void hentOkonomiBekreftelseSomLiggerIListe() throws IOException{
+    void hentOkonomiBekreftelseSomLiggerIListe() throws IOException{
         final JsonOkonomiopplysninger opplysninger = lagOpplysningerMedBostotteBekreftelse(true);
 
         String compiled = handlebars.compileInline("{{#hentOkonomiBekreftelse \"bostotte\" }}Verdi: {{verdi}}{{/hentOkonomiBekreftelse}}").apply(opplysninger);
@@ -40,7 +40,7 @@ public class HentOkonomiBekreftelseHelperTest {
     }
 
     @Test
-    public void bekreftelseMedVerdiLikNull() throws IOException{
+    void bekreftelseMedVerdiLikNull() throws IOException{
         
         final JsonOkonomiopplysninger opplysninger = lagOpplysningerMedBostotteBekreftelse(false);
         
@@ -50,7 +50,7 @@ public class HentOkonomiBekreftelseHelperTest {
     }
     
     @Test
-    public void bekreftelseListeErNull() throws IOException{
+    void bekreftelseListeErNull() throws IOException{
         
         final JsonOkonomiopplysninger opplysninger = new JsonOkonomiopplysninger();
         opplysninger.setBekreftelse(null);

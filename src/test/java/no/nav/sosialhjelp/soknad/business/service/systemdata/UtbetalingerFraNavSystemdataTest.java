@@ -30,7 +30,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class UtbetalingerFraNavSystemdataTest {
+class UtbetalingerFraNavSystemdataTest {
 
     private static final String EIER = "12345678901";
 
@@ -128,7 +128,7 @@ public class UtbetalingerFraNavSystemdataTest {
     }
 
     @Test
-    public void skalOppdatereUtbetalinger() {
+    void skalOppdatereUtbetalinger() {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         List<Utbetaling> nav_utbetalinger = Arrays.asList(NAV_UTBETALING_1, NAV_UTBETALING_2);
         when(utbetalingService.getUtbetalingerSiste40Dager(anyString())).thenReturn(nav_utbetalinger);
@@ -145,7 +145,7 @@ public class UtbetalingerFraNavSystemdataTest {
     }
 
     @Test
-    public void skalKunInkludereGyldigeOrganisasjonsnummer() {
+    void skalKunInkludereGyldigeOrganisasjonsnummer() {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         List<Utbetaling> nav_utbetalinger = Arrays.asList(NAV_UTBETALING_1, NAV_UTBETALING_2, NAV_UTBETALING_3);
         when(utbetalingService.getUtbetalingerSiste40Dager(anyString())).thenReturn(nav_utbetalinger);
@@ -164,7 +164,7 @@ public class UtbetalingerFraNavSystemdataTest {
     }
 
     @Test
-    public void skalIkksLasteNedUtbetalingerUtenSamtykke() {
+    void skalIkksLasteNedUtbetalingerUtenSamtykke() {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid()
                 .withJsonInternalSoknad(createJsonInternalSoknadWithUtbetalinger());
         List<Utbetaling> utbetalinger = Collections.singletonList(NAV_UTBETALING_1);

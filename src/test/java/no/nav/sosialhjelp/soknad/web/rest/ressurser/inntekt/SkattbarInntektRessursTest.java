@@ -39,7 +39,7 @@ import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class SkattbarInntektRessursTest {
+class SkattbarInntektRessursTest {
 
     private static final String BEHANDLINGSID = "123";
     private static final String EIER = "123456789101";
@@ -72,7 +72,7 @@ public class SkattbarInntektRessursTest {
     }
 
     @Test
-    public void getSkattbarInntektSkalReturnereTomListe() {
+    void getSkattbarInntektSkalReturnereTomListe() {
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER)));
 
@@ -82,7 +82,7 @@ public class SkattbarInntektRessursTest {
     }
 
     @Test
-    public void getSkattbarInntektSkalReturnereBekreftetSkattbarInntekt() {
+    void getSkattbarInntektSkalReturnereBekreftetSkattbarInntekt() {
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithSkattbarInntekt(true));
 
@@ -92,7 +92,7 @@ public class SkattbarInntektRessursTest {
     }
 
     @Test
-    public void getSkattbarInntektSkalReturnereHarIkkeSkattbarInntekt() {
+    void getSkattbarInntektSkalReturnereHarIkkeSkattbarInntekt() {
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithSkattbarInntekt(false));
 
@@ -102,7 +102,7 @@ public class SkattbarInntektRessursTest {
     }
 
     @Test
-    public void skattbarInntekt_skalGiSamtykke() {
+    void skattbarInntekt_skalGiSamtykke() {
         SoknadUnderArbeid soknad = createJsonInternalSoknadWithSkattbarInntekt(false);
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(soknad);
         when(textService.getJsonOkonomiTittel(anyString())).thenReturn("tittel");
@@ -127,7 +127,7 @@ public class SkattbarInntektRessursTest {
     }
 
     @Test
-    public void skattbarInntekt_skalTaBortSamtykke() {
+    void skattbarInntekt_skalTaBortSamtykke() {
         SoknadUnderArbeid soknad = createJsonInternalSoknadWithSkattbarInntekt(false);
         JsonOkonomiopplysninger opplysninger = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger();
         setBekreftelse(opplysninger, UTBETALING_SKATTEETATEN_SAMTYKKE, true, "");
@@ -155,7 +155,7 @@ public class SkattbarInntektRessursTest {
     }
 
     @Test
-    public void skattbarInntekt_skalIkkeForandreSamtykke() {
+    void skattbarInntekt_skalIkkeForandreSamtykke() {
         SoknadUnderArbeid soknad = createJsonInternalSoknadWithSkattbarInntekt(false);
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(soknad);
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(any());
@@ -173,7 +173,7 @@ public class SkattbarInntektRessursTest {
     }
 
     @Test
-    public void getSkattbarInntektkalKasteAuthorizationExceptionVedManglendeTilgang() {
+    void getSkattbarInntektkalKasteAuthorizationExceptionVedManglendeTilgang() {
         doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerHarTilgang();
 
         assertThatExceptionOfType(AuthorizationException.class)
@@ -183,7 +183,7 @@ public class SkattbarInntektRessursTest {
     }
 
     @Test
-    public void putSamtykkeSkalKasteAuthorizationExceptionVedManglendeTilgang() {
+    void putSamtykkeSkalKasteAuthorizationExceptionVedManglendeTilgang() {
         doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(BEHANDLINGSID);
 
         assertThatExceptionOfType(AuthorizationException.class)

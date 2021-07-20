@@ -31,10 +31,10 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class AdresseSokConsumerImplTest {
+class AdresseSokConsumerImplTest {
 
     @Test
-    public void simpleRestCallWith404() {
+    void simpleRestCallWith404() {
         final ClientMock mock = mockClient();
         when(mock.response.getStatus()).thenReturn(404);
 
@@ -46,7 +46,7 @@ public class AdresseSokConsumerImplTest {
     }
     
     @Test
-    public void skalGiExceptionVed500() {
+    void skalGiExceptionVed500() {
         final ClientMock mock = mockClient();
         when(mock.response.getStatus()).thenReturn(500);
 
@@ -62,7 +62,7 @@ public class AdresseSokConsumerImplTest {
 
     @Disabled//Feiler sporadisk pga flere logback som starter opp, Stian jobber med en fiks.
     @Test
-    public void mdcParametersAreAccessible() {
+    void mdcParametersAreAccessible() {
         final ListAppender<ILoggingEvent> listAppender = LoggingTestUtils.createTestLogAppender(Level.INFO);
         
         final ClientMock mock = mockClient();
@@ -90,7 +90,7 @@ public class AdresseSokConsumerImplTest {
     }
     
     @Test
-    public void skalKunneBrukeForskjelligeRestCallContext() {
+    void skalKunneBrukeForskjelligeRestCallContext() {
         final ClientMock mock1 = mockClient();
         when(mock1.response.getStatus()).thenReturn(404);
         final RestCallContext restCallContext1 = simpleRestCallContext(mock1);
@@ -115,7 +115,7 @@ public class AdresseSokConsumerImplTest {
     }
     
     @Test
-    public void girTimeout() {
+    void girTimeout() {
         final CountDownLatch done = new CountDownLatch(1);
         try {
             final ClientMock mock = mockClientWithWait(done);
@@ -138,12 +138,12 @@ public class AdresseSokConsumerImplTest {
     }
     
     @Test
-    public void skalAvviseSokNarKoenErFull() throws Exception {
+    void skalAvviseSokNarKoenErFull() throws Exception {
         skalAvviseSokNarKoenErFullMed(1, 1);
     }
     
     @Test
-    public void skalAvviseSokNarKoenErFullMedFlereSamtidigeKallOgOppgaverIKo() throws Exception {
+    void skalAvviseSokNarKoenErFullMedFlereSamtidigeKallOgOppgaverIKo() throws Exception {
         skalAvviseSokNarKoenErFullMed(4, 12);
     }
     

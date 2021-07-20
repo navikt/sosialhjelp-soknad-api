@@ -22,7 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {DbTestConfig.class})
-public class BatchSoknadUnderArbeidRepositoryJdbcTest {
+class BatchSoknadUnderArbeidRepositoryJdbcTest {
 
     private static final String EIER = "12345678901";
     private static final String BEHANDLINGSID = "1100020";
@@ -51,7 +51,7 @@ public class BatchSoknadUnderArbeidRepositoryJdbcTest {
     }
 
     @Test
-    public void hentSoknaderForBatchSkalFinneGamleSoknader() {
+    void hentSoknaderForBatchSkalFinneGamleSoknader() {
         var skalIkkeSlettes = lagSoknadUnderArbeid(BEHANDLINGSID, 13);
         var skalIkkeSlettesId = soknadUnderArbeidRepository.opprettSoknad(skalIkkeSlettes, EIER);
 
@@ -65,7 +65,7 @@ public class BatchSoknadUnderArbeidRepositoryJdbcTest {
     }
 
     @Test
-    public void slettSoknadGittSoknadUnderArbeidIdSkalSletteSoknad() {
+    void slettSoknadGittSoknadUnderArbeidIdSkalSletteSoknad() {
         var soknadUnderArbeid = lagSoknadUnderArbeid(BEHANDLINGSID, 15);
         var soknadUnderArbeidId = soknadUnderArbeidRepository.opprettSoknad(soknadUnderArbeid, EIER);
         soknadUnderArbeid.setSoknadId(soknadUnderArbeidId);

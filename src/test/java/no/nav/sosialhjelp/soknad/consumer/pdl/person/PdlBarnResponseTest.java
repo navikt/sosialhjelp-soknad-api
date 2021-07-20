@@ -13,14 +13,14 @@ import java.io.InputStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class PdlBarnResponseTest {
+class PdlBarnResponseTest {
 
     private ObjectMapper mapper = new ObjectMapper()
             .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
             .registerModule(new JavaTimeModule());
 
     @Test
-    public void deserialiseringAvPdlBarnResponseJson() throws IOException {
+    void deserialiseringAvPdlBarnResponseJson() throws IOException {
         InputStream resourceAsStream = ClassLoader.getSystemResourceAsStream("pdl/pdlBarnResponse.json");
         assertThat(resourceAsStream).isNotNull();
         String jsonString = IOUtils.toString(resourceAsStream);

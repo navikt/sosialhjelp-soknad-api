@@ -19,15 +19,15 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class SettInnKnappTilgjengeligTekstHelperTest {
+class SettInnKnappTilgjengeligTekstHelperTest {
 
     private Handlebars handlebars;
 
     @InjectMocks
-    SettInnKnappTilgjengeligTekstHelper settInnKnappTilgjengeligTekstHelper;
+    private SettInnKnappTilgjengeligTekstHelper settInnKnappTilgjengeligTekstHelper;
 
     @Mock
-    CmsTekst cmsTekst;
+    private CmsTekst cmsTekst;
 
     @BeforeEach
     public void setup() {
@@ -36,7 +36,7 @@ public class SettInnKnappTilgjengeligTekstHelperTest {
     }
 
     @Test
-    public void skalHenteKnapptekstMedTittel() throws IOException {
+    void skalHenteKnapptekstMedTittel() throws IOException {
         when(cmsTekst.getCmsTekst(eq("testTekst"), any(Object[].class), anyString(), anyString(), any(Locale.class))).thenReturn("Lorem ipsum");
 
         String compiled = handlebars.compileInline("{{{settInnKnappTilgjengeligTekst \"testTekst\"}}}").apply(new Object());
@@ -45,7 +45,7 @@ public class SettInnKnappTilgjengeligTekstHelperTest {
     }
 
     @Test
-    public void skalReturnereTomStrengHvisIkkeKnapptekstFinnes() throws IOException {
+    void skalReturnereTomStrengHvisIkkeKnapptekstFinnes() throws IOException {
         String compiled = handlebars.compileInline("{{{settInnKnappTilgjengeligTekst \"testTekst\"}}}").apply(new Object());
 
         assertThat(compiled).isBlank();

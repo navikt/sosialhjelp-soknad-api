@@ -39,7 +39,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class SoknadServiceTest {
+class SoknadServiceTest {
 
     private static final String EIER = "Hans og Grete";
     private static final String BEHANDLINGSID = "123";
@@ -77,7 +77,7 @@ public class SoknadServiceTest {
     }
 
     @Test
-    public void skalStarteSoknad() {
+    void skalStarteSoknad() {
         DateTimeUtils.setCurrentMillisFixed(System.currentTimeMillis());
         when(henvendelsesConnector.startSoknad(anyString())).thenReturn("123");
         soknadService.startSoknad("");
@@ -97,7 +97,7 @@ public class SoknadServiceTest {
     }
 
     @Test
-    public void skalSendeSoknad() {
+    void skalSendeSoknad() {
         String testType = "testType";
         String testTilleggsinfo = "testTilleggsinfo";
         String testType2 = "testType2";
@@ -139,7 +139,7 @@ public class SoknadServiceTest {
     }
 
     @Test
-    public void skalAvbryteSoknad() {
+    void skalAvbryteSoknad() {
         when(soknadUnderArbeidRepository.hentSoknadOptional(eq(BEHANDLINGSID), anyString())).thenReturn(
                 Optional.of(new SoknadUnderArbeid()
                         .withBehandlingsId(BEHANDLINGSID)

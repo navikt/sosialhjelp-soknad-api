@@ -23,7 +23,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 
 @ExtendWith(MockitoExtension.class)
-public class ClamAvVirusScannerTest {
+class ClamAvVirusScannerTest {
 
     private final URI uri = URI.create("www.test.com");
     private final RestTemplate restTemplate = mock(RestTemplate.class);
@@ -45,7 +45,7 @@ public class ClamAvVirusScannerTest {
     }
 
     @Test
-    public void scanFile_scanningIsEnabled_throwsException() {
+    void scanFile_scanningIsEnabled_throwsException() {
         when(restTemplate.exchange(any(RequestEntity.class), eq(ScanResult[].class)))
                 .thenReturn(ResponseEntity.ok(new ScanResult[]{new ScanResult(filnavn, Result.FOUND)}));
 
@@ -55,7 +55,7 @@ public class ClamAvVirusScannerTest {
     }
 
     @Test
-    public void scanFile_scanningIsNotEnabled_doesNotThrowException() {
+    void scanFile_scanningIsNotEnabled_doesNotThrowException() {
         setField(virusScanner, "enabled", false);
 
         assertThatCode(() -> virusScanner.scan(filnavn, data, behandlingsId, "pdf"))
@@ -63,7 +63,7 @@ public class ClamAvVirusScannerTest {
     }
 
     @Test
-    public void scanFile_filenameIsVirustest_isInfected() {
+    void scanFile_filenameIsVirustest_isInfected() {
         System.setProperty("environment.name", "test");
 
         assertThatExceptionOfType(OpplastingException.class)
@@ -73,7 +73,7 @@ public class ClamAvVirusScannerTest {
     }
 
     @Test
-    public void scanFile_resultatHasWrongLength_isNotInfected() {
+    void scanFile_resultatHasWrongLength_isNotInfected() {
         when(restTemplate.exchange(any(RequestEntity.class), eq(ScanResult[].class)))
                 .thenReturn(ResponseEntity.ok(new ScanResult[]{
                         new ScanResult("test", Result.FOUND),
@@ -87,7 +87,7 @@ public class ClamAvVirusScannerTest {
     }
 
     @Test
-    public void scanFile_resultatIsOK_isNotInfected() {
+    void scanFile_resultatIsOK_isNotInfected() {
         when(restTemplate.exchange(any(RequestEntity.class), eq(ScanResult[].class)))
                 .thenReturn(ResponseEntity.ok(new ScanResult[]{new ScanResult("test", Result.OK)}));
 
@@ -98,7 +98,7 @@ public class ClamAvVirusScannerTest {
     }
 
     @Test
-    public void scanFile_resultatIsNotOK_isInfected() {
+    void scanFile_resultatIsNotOK_isInfected() {
         when(restTemplate.exchange(any(RequestEntity.class), eq(ScanResult[].class)))
                 .thenReturn(ResponseEntity.ok(new ScanResult[]{new ScanResult("test", Result.FOUND)}));
 

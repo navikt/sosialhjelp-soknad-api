@@ -12,7 +12,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class KontonummerServiceTest {
+class KontonummerServiceTest {
 
     @Mock
     private OppslagConsumer oppslagConsumer;
@@ -21,7 +21,7 @@ public class KontonummerServiceTest {
     private KontonummerService kontonummerService;
 
     @Test
-    public void clientReturnererKontonummer() {
+    void clientReturnererKontonummer() {
         when(oppslagConsumer.getKontonummer(anyString())).thenReturn(new KontonummerDto("1337"));
 
         var kontonummer = kontonummerService.getKontonummer("ident");
@@ -30,7 +30,7 @@ public class KontonummerServiceTest {
     }
 
     @Test
-    public void clientReturnererKontonummerNull() {
+    void clientReturnererKontonummerNull() {
         when(oppslagConsumer.getKontonummer(anyString())).thenReturn(new KontonummerDto(null));
 
         var kontonummer = kontonummerService.getKontonummer("ident");
@@ -39,7 +39,7 @@ public class KontonummerServiceTest {
     }
 
     @Test
-    public void clientReturnererNull() {
+    void clientReturnererNull() {
         when(oppslagConsumer.getKontonummer(anyString())).thenReturn(null);
 
         var kontonummer = kontonummerService.getKontonummer("ident");

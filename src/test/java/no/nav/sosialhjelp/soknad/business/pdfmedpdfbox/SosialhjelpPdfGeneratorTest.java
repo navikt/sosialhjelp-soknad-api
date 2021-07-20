@@ -81,7 +81,7 @@ import static org.mockito.Mockito.mock;
 
 @ExtendWith(MockitoExtension.class)
 @ContextConfiguration(classes = SoknadServiceIntegrationTestContext.class)
-public class SosialhjelpPdfGeneratorTest {
+class SosialhjelpPdfGeneratorTest {
 
     private SosialhjelpPdfGenerator sosialhjelpPdfGenerator;
 
@@ -104,7 +104,7 @@ public class SosialhjelpPdfGeneratorTest {
     }
 
     @Test
-    public void generateEttersendelsePdfWithValidJson() {
+    void generateEttersendelsePdfWithValidJson() {
         JsonInternalSoknad internalSoknad = getJsonInternalSoknadWithMandatoryFields();
 
         JsonVedleggSpesifikasjon vedleggSpesifikasjon = new JsonVedleggSpesifikasjon()
@@ -124,12 +124,12 @@ public class SosialhjelpPdfGeneratorTest {
     }
 
     @Test
-    public void generateBrukerkvittering() {
+    void generateBrukerkvittering() {
         sosialhjelpPdfGenerator.generateBrukerkvitteringPdf();
     }
 
     @Test
-    public void generatePdfWithLatinCharacters() {
+    void generatePdfWithLatinCharacters() {
         StringBuilder text = new StringBuilder();
 
         for (int i = 0x0000; i <= 0x024F; i++) {
@@ -150,7 +150,7 @@ public class SosialhjelpPdfGeneratorTest {
     }
 
     @Test
-    public void generatePdfWithVeryLongWords() {
+    void generatePdfWithVeryLongWords() {
         JsonInternalSoknad internalSoknad = getJsonInternalSoknadWithMandatoryFields();
         internalSoknad.getSoknad().getData().getBegrunnelse().withHvaSokesOm("a".repeat(1000));
 
@@ -158,7 +158,7 @@ public class SosialhjelpPdfGeneratorTest {
     }
 
     @Test
-    public void generatePdfWithEmoticons() {
+    void generatePdfWithEmoticons() {
         StringBuilder text = new StringBuilder();
 
         for (int i = 0x1F600; i <= 0x1F64F; i++) {
@@ -173,7 +173,7 @@ public class SosialhjelpPdfGeneratorTest {
     }
 
     @Test
-    public void lagPdfMedGyldigInnsendelsestidspunkt() {
+    void lagPdfMedGyldigInnsendelsestidspunkt() {
         JsonInternalSoknad internalSoknad = getJsonInternalSoknadWithMandatoryFields();
         internalSoknad.getSoknad().withInnsendingstidspunkt("2020-03-12T08:35:45.329Z");
 
@@ -235,7 +235,7 @@ public class SosialhjelpPdfGeneratorTest {
     // TODO: Skrive bedre tester for generering av pdf med pdfbox
     @Disabled("Ignoreres midlertidig da denne testen hovedsaklig brukes for å generere PDF under utvikling")
     @Test
-    public void testGenerate() {
+    void testGenerate() {
         //SosialhjelpPdfGenerator sosialhjelpPdfGenerator =  new SosialhjelpPdfGenerator();
 
 
@@ -579,7 +579,7 @@ public class SosialhjelpPdfGeneratorTest {
 
     @Disabled("Ignoreres midlertidig da denne testen hovedsaklig brukes for å generere PDF under utvikling")
     @Test
-    public void testGenerateNoDisk() {
+    void testGenerateNoDisk() {
         //SosialhjelpPdfGenerator sosialhjelpPdfGenerator =  new SosialhjelpPdfGenerator();
 
 
@@ -820,7 +820,7 @@ public class SosialhjelpPdfGeneratorTest {
     }
 
     @Test
-    public void skalGenererePdfA() throws Exception {
+    void skalGenererePdfA() throws Exception {
         JsonInternalSoknad jsonInternalSoknad = createEmptyJsonInternalSoknad("pdfaTest");
         jsonInternalSoknad.getSoknad();
 
@@ -847,7 +847,7 @@ public class SosialhjelpPdfGeneratorTest {
         }
     }
     @Test
-    public void skalGenerereEttersendelsePdfA() throws Exception {
+    void skalGenerereEttersendelsePdfA() throws Exception {
         JsonInternalSoknad jsonInternalSoknad = createEmptyJsonInternalSoknad("pdfaTest");
         jsonInternalSoknad.getSoknad();
 

@@ -33,7 +33,7 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @SuppressWarnings("unchecked")
-public class BostotteImplTest {
+class BostotteImplTest {
 
     @Mock
     private BostotteConfig config;
@@ -48,7 +48,7 @@ public class BostotteImplTest {
     ArgumentCaptor<RequestEntity<BostotteDto>> captor;
 
     @Test
-    public void hentBostotte_testUrl_riktigUrlBlirSendtInnTilRestKallet() {
+    void hentBostotte_testUrl_riktigUrlBlirSendtInnTilRestKallet() {
         // Variabler:
         String configUrl = "http://magicUri";
         BostotteDto bostotteDto = new BostotteDto();
@@ -67,7 +67,7 @@ public class BostotteImplTest {
     }
 
     @Test
-    public void hentBostotte_testUrl_urlHarRiktigTilOgFraDato() {
+    void hentBostotte_testUrl_urlHarRiktigTilOgFraDato() {
         // Variabler:
         String configUrl = "http://magicUri";
         BostotteDto bostotteDto = new BostotteDto();
@@ -87,7 +87,7 @@ public class BostotteImplTest {
     }
 
     @Test
-    public void hentBostotte_testJson_testingJsonTranslation() throws IOException {
+    void hentBostotte_testJson_testingJsonTranslation() throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
 
         InputStream resourceAsStream = ClassLoader.getSystemResourceAsStream("husbanken/husbankenSvar.json");
@@ -106,7 +106,7 @@ public class BostotteImplTest {
     }
 
     @Test
-    public void hentBostotte_testUrl_overlevNullUrl() {
+    void hentBostotte_testUrl_overlevNullUrl() {
         // Variabler:
         String personIdentifikator = "121212123456";
         LocalDate fra = LocalDate.now().minusDays(30);
@@ -121,7 +121,7 @@ public class BostotteImplTest {
     }
 
     @Test
-    public void hentBostotte_testUrl_overlevBadConnection() {
+    void hentBostotte_testUrl_overlevBadConnection() {
         // Variabler:
         String personIdentifikator = "121212123456";
         LocalDate fra = LocalDate.now().minusDays(30);
@@ -136,7 +136,7 @@ public class BostotteImplTest {
     }
 
     @Test
-    public void hentBostotte_testUrl_overlevBadData() {
+    void hentBostotte_testUrl_overlevBadData() {
         // Variabler:
         String personIdentifikator = "121212123456";
         LocalDate fra = LocalDate.now().minusDays(30);
@@ -151,7 +151,7 @@ public class BostotteImplTest {
     }
 
     @Test
-    public void hentBostotte_opprettHusbankenPing() {
+    void hentBostotte_opprettHusbankenPing() {
         // Testkjøring:
         Pingable pingable = BostotteImpl.opprettHusbankenPing(config, new RestTemplate());
         assertThat(pingable).isNotNull();

@@ -22,7 +22,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class BasisPersonaliaSystemdataTest {
+class BasisPersonaliaSystemdataTest {
 
     private static final String EIER = "12345678901";
     private static final String FORNAVN = "Aragorn";
@@ -39,7 +39,7 @@ public class BasisPersonaliaSystemdataTest {
     private BasisPersonaliaSystemdata basisPersonaliaSystemdata;
 
     @Test
-    public void skalIkkeOppdatereDersomPersonaliaErNull() {
+    void skalIkkeOppdatereDersomPersonaliaErNull() {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         when(personService.hentPerson(anyString())).thenReturn(null);
 
@@ -58,7 +58,7 @@ public class BasisPersonaliaSystemdataTest {
     }
 
     @Test
-    public void skalOppdatereNordiskPersonalia() {
+    void skalOppdatereNordiskPersonalia() {
         Person person = new Person()
                 .withFornavn(FORNAVN)
                 .withMellomnavn(MELLOMNAVN)
@@ -84,7 +84,7 @@ public class BasisPersonaliaSystemdataTest {
     }
 
     @Test
-    public void skalPrioritereNorskOverNordiskStatsborgerskap() {
+    void skalPrioritereNorskOverNordiskStatsborgerskap() {
         Person person = new Person()
                 .withFornavn(FORNAVN)
                 .withMellomnavn(MELLOMNAVN)
@@ -104,7 +104,7 @@ public class BasisPersonaliaSystemdataTest {
     }
 
     @Test
-    public void skalPrioritereNordiskStatsborgerskap() {
+    void skalPrioritereNordiskStatsborgerskap() {
         Person person = new Person()
                 .withFornavn(FORNAVN)
                 .withMellomnavn(MELLOMNAVN)
@@ -124,7 +124,7 @@ public class BasisPersonaliaSystemdataTest {
     }
 
     @Test
-    public void skalOppdatereIkkeNordiskPersonalia() {
+    void skalOppdatereIkkeNordiskPersonalia() {
         Person person = new Person()
                 .withFornavn(FORNAVN)
                 .withMellomnavn(MELLOMNAVN)
@@ -151,7 +151,7 @@ public class BasisPersonaliaSystemdataTest {
 
     //Denne skal fjernes når TPS har oppdatert til å bruke ukjent som XXX istedenfor ???
     @Test
-    public void skalikkeSendeMedStatsborgerskapForUkjent_TPS() {
+    void skalikkeSendeMedStatsborgerskapForUkjent_TPS() {
         Person person = new Person()
                 .withFornavn(FORNAVN)
                 .withMellomnavn(MELLOMNAVN)
@@ -169,7 +169,7 @@ public class BasisPersonaliaSystemdataTest {
     }
 
     @Test
-    public void skalikkeSendeMedStatsborgerskapForUkjent_PDL() {
+    void skalikkeSendeMedStatsborgerskapForUkjent_PDL() {
         Person person = new Person()
                 .withFornavn(FORNAVN)
                 .withMellomnavn(MELLOMNAVN)
@@ -187,7 +187,7 @@ public class BasisPersonaliaSystemdataTest {
     }
 
     @Test
-    public void skalSetteRiktigNordiskBorger() {
+    void skalSetteRiktigNordiskBorger() {
         assertThat(BasisPersonaliaSystemdata.erNordiskBorger(null)).isNull();
         assertThat(BasisPersonaliaSystemdata.erNordiskBorger("NOR")).isTrue();
         assertThat(BasisPersonaliaSystemdata.erNordiskBorger("SWE")).isTrue();

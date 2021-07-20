@@ -55,7 +55,7 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {SoknadActionsTestConfig.class})
-public class SoknadActionsTest {
+class SoknadActionsTest {
 
     public static final String TESTKOMMUNE = "3002";
     public static final String KOMMUNE_I_SVARUT_LISTEN = "0301";
@@ -114,7 +114,7 @@ public class SoknadActionsTest {
     }
 
     @Test
-    public void sendSoknadINedetidSkalKasteException() {
+    void sendSoknadINedetidSkalKasteException() {
         System.setProperty(NedetidUtils.NEDETID_START, LocalDateTime.now().minusDays(1).format(NedetidUtils.dateTimeFormatter));
         System.setProperty(NedetidUtils.NEDETID_SLUTT, LocalDateTime.now().plusDays(2).format(NedetidUtils.dateTimeFormatter));
 
@@ -126,7 +126,7 @@ public class SoknadActionsTest {
     }
 
     @Test
-    public void sendSoknadMedSoknadUnderArbeidNullSkalKasteException() {
+    void sendSoknadMedSoknadUnderArbeidNullSkalKasteException() {
         String behandlingsId = "soknadUnderArbeidErNull";
 
         assertThatExceptionOfType(IllegalStateException.class)
@@ -137,7 +137,7 @@ public class SoknadActionsTest {
     }
 
     @Test
-    public void sendSoknadMedSendingTilFiksDisabledSkalKalleSoknadService() {
+    void sendSoknadMedSendingTilFiksDisabledSkalKalleSoknadService() {
         String behandlingsId = "SendingTilFiksDisabled";
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         when(soknadUnderArbeidRepository.hentSoknad(behandlingsId, EIER)).thenReturn(soknadUnderArbeid);
@@ -148,7 +148,7 @@ public class SoknadActionsTest {
     }
 
     @Test
-    public void sendEttersendelsePaaSvarutSoknadSkalKalleSoknadService() {
+    void sendEttersendelsePaaSvarutSoknadSkalKalleSoknadService() {
         String behandlingsId = "ettersendelsePaaSvarUtSoknad";
         String soknadBehandlingsId = "soknadSendtViaSvarUt";
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER)).withTilknyttetBehandlingsId(soknadBehandlingsId);
@@ -164,7 +164,7 @@ public class SoknadActionsTest {
     }
 
     @Test
-    public void sendEttersendelsePaaSoknadUtenMetadataSkalGiException() {
+    void sendEttersendelsePaaSoknadUtenMetadataSkalGiException() {
         String behandlingsId = "ettersendelsePaaSoknadUtenMetadata";
         String soknadBehandlingsId = "soknadSendtViaSvarUt";
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER)).withTilknyttetBehandlingsId(soknadBehandlingsId);
@@ -176,7 +176,7 @@ public class SoknadActionsTest {
     }
 
     @Test
-    public void sendEttersendelsePaaDigisosApiSoknadSkalGiException() {
+    void sendEttersendelsePaaDigisosApiSoknadSkalGiException() {
         String behandlingsId = "ettersendelsePaaDigisosApiSoknad";
         String soknadBehandlingsId = "soknadSendtViaSvarUt";
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER)).withTilknyttetBehandlingsId(soknadBehandlingsId);
@@ -191,7 +191,7 @@ public class SoknadActionsTest {
     }
 
     @Test
-    public void sendSoknadMedFiksNedetidOgTomCacheSkalKasteException() {
+    void sendSoknadMedFiksNedetidOgTomCacheSkalKasteException() {
         String behandlingsId = "fiksNedetidOgTomCache";
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker().setKommunenummer(KOMMUNE_I_SVARUT_LISTEN);
@@ -206,7 +206,7 @@ public class SoknadActionsTest {
     }
 
     @Test
-    public void sendSoknadTilKommuneUtenKonfigurasjonSkalKalleSoknadService() {
+    void sendSoknadTilKommuneUtenKonfigurasjonSkalKalleSoknadService() {
         String behandlingsId = "kommuneUtenKonfigurasjon";
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker().setKommunenummer(KOMMUNE_I_SVARUT_LISTEN);
@@ -220,7 +220,7 @@ public class SoknadActionsTest {
     }
 
     @Test
-    public void sendSoknadTilKommuneMedSvarUtSkalKalleSoknadService() {
+    void sendSoknadTilKommuneMedSvarUtSkalKalleSoknadService() {
         String behandlingsId = "kommuneMedSvarUt";
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker().setKommunenummer(KOMMUNE_I_SVARUT_LISTEN);
@@ -234,7 +234,7 @@ public class SoknadActionsTest {
     }
 
     @Test
-    public void sendSoknadTilKommuneMedDigisosApiSkalKalleDigisosApiService() {
+    void sendSoknadTilKommuneMedDigisosApiSkalKalleDigisosApiService() {
         String behandlingsId = "kommuneMedFDA";
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         when(soknadUnderArbeidRepository.hentSoknad(behandlingsId, EIER)).thenReturn(soknadUnderArbeid);
@@ -247,7 +247,7 @@ public class SoknadActionsTest {
     }
 
     @Test
-    public void sendSoknadTilKommuneMedMidlertidigFeilSkalKasteException() {
+    void sendSoknadTilKommuneMedMidlertidigFeilSkalKasteException() {
         String behandlingsId = "kommuneMedMidlertidigFeil";
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         when(soknadUnderArbeidRepository.hentSoknad(behandlingsId, EIER)).thenReturn(soknadUnderArbeid);
@@ -261,7 +261,7 @@ public class SoknadActionsTest {
     }
 
     @Test
-    public void sendSoknadTilKommuneSomIkkeErAktivertEllerSvarUtSkalKasteException() {
+    void sendSoknadTilKommuneSomIkkeErAktivertEllerSvarUtSkalKasteException() {
         String behandlingsId = "kommueMedMottakDeaktivertOgIkkeSvarut";
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker().setKommunenummer("9999_kommune_uten_svarut");
@@ -276,14 +276,14 @@ public class SoknadActionsTest {
     }
 
     @Test
-    public void getKommunenummerOrMockMedMockEnableSkalReturnereMock() {
+    void getKommunenummerOrMockMedMockEnableSkalReturnereMock() {
         System.setProperty("digisosapi.sending.alltidTilTestkommune.enable", "true");
         String kommunenummer = actions.getKommunenummerOrMock(new SoknadUnderArbeid());
         assertThat(kommunenummer).isEqualTo(TESTKOMMUNE);
     }
 
     @Test
-    public void getKommunenummerOrMockUtenMockSkalIkkeReturnereMock() {
+    void getKommunenummerOrMockUtenMockSkalIkkeReturnereMock() {
         String expectedKommunenummer = "1111";
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getMottaker().withKommunenummer(expectedKommunenummer);
@@ -294,7 +294,7 @@ public class SoknadActionsTest {
     }
 
     @Test
-    public void sendSoknadSkalGiAuthorizationExceptionVedManglendeTilgang() {
+    void sendSoknadSkalGiAuthorizationExceptionVedManglendeTilgang() {
         doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
 
         assertThatExceptionOfType(AuthorizationException.class)

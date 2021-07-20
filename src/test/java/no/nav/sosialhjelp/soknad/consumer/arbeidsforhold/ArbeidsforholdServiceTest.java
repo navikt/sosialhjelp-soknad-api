@@ -26,7 +26,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class ArbeidsforholdServiceTest {
+class ArbeidsforholdServiceTest {
 
     @Mock
     private ArbeidsforholdConsumer arbeidsforholdConsumer;
@@ -44,7 +44,7 @@ public class ArbeidsforholdServiceTest {
     private LocalDate tom = LocalDate.now();
 
     @Test
-    public void skalMappeDtoTilArbeidsforhold() {
+    void skalMappeDtoTilArbeidsforhold() {
         when(arbeidsforholdConsumer.finnArbeidsforholdForArbeidstaker(fnr)).thenReturn(singletonList(createArbeidsforhold(true, fom, tom)));
         when(organisasjonService.hentOrgNavn(anyString())).thenReturn(orgNavn);
 
@@ -61,7 +61,7 @@ public class ArbeidsforholdServiceTest {
     }
 
     @Test
-    public void skalSetteArbeidsgivernavnTilOrgnrHvisArbeidsgiverErOrganisasjon() {
+    void skalSetteArbeidsgivernavnTilOrgnrHvisArbeidsgiverErOrganisasjon() {
         when(arbeidsforholdConsumer.finnArbeidsforholdForArbeidstaker(fnr)).thenReturn(singletonList(createArbeidsforhold(false, fom, tom)));
 
         List<Arbeidsforhold> arbeidsforholdList = service.hentArbeidsforhold(fnr);
@@ -72,7 +72,7 @@ public class ArbeidsforholdServiceTest {
     }
 
     @Test
-    public void skalAddereStillingsprosentFraArbeidsavtaler() {
+    void skalAddereStillingsprosentFraArbeidsavtaler() {
         when(arbeidsforholdConsumer.finnArbeidsforholdForArbeidstaker(fnr))
                 .thenReturn(singletonList(createArbeidsforholdMedFlereArbeidsavtaler(12.3, 45.6)));
         when(organisasjonService.hentOrgNavn(anyString())).thenReturn(orgNavn);
@@ -85,7 +85,7 @@ public class ArbeidsforholdServiceTest {
     }
 
     @Test
-    public void ansettelsesperiodeTomKanVæreNull() {
+    void ansettelsesperiodeTomKanVæreNull() {
         when(arbeidsforholdConsumer.finnArbeidsforholdForArbeidstaker(fnr)).thenReturn(singletonList(createArbeidsforhold(true, fom, null)));
         when(organisasjonService.hentOrgNavn(anyString())).thenReturn(orgNavn);
 

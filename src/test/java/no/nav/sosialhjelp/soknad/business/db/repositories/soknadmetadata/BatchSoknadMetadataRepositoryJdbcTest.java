@@ -20,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {DbTestConfig.class})
-public class BatchSoknadMetadataRepositoryJdbcTest {
+class BatchSoknadMetadataRepositoryJdbcTest {
 
     private static final String EIER = "11111111111";
     private final int dagerGammelSoknad = 20;
@@ -41,32 +41,32 @@ public class BatchSoknadMetadataRepositoryJdbcTest {
     }
 
     @Test
-    public void hentForBatchSkalIkkeReturnereFerdige() {
+    void hentForBatchSkalIkkeReturnereFerdige() {
         opprettSoknadMetadata(soknadMetadata(behandlingsId, SoknadMetadataInnsendingStatus.FERDIG, dagerGammelSoknad));
         assertThat(batchSoknadMetadataRepository.hentForBatch(dagerGammelSoknad - 1)).isNotPresent();
     }
 
     @Test
-    public void hentForBatchSkalIkkeReturnereAvbruttAutomatisk() {
+    void hentForBatchSkalIkkeReturnereAvbruttAutomatisk() {
         opprettSoknadMetadata(soknadMetadata(behandlingsId, SoknadMetadataInnsendingStatus.AVBRUTT_AUTOMATISK, dagerGammelSoknad));
         assertThat(batchSoknadMetadataRepository.hentForBatch(dagerGammelSoknad - 1)).isNotPresent();
     }
 
     @Test
-    public void hentForBatchSkalIkkeReturnereAvbruttAvBruker() {
+    void hentForBatchSkalIkkeReturnereAvbruttAvBruker() {
         opprettSoknadMetadata(soknadMetadata(behandlingsId, SoknadMetadataInnsendingStatus.AVBRUTT_AV_BRUKER, dagerGammelSoknad));
         assertThat(batchSoknadMetadataRepository.hentForBatch(dagerGammelSoknad - 1)).isNotPresent();
     }
 
     @Test
-    public void hentForBatchBrukerEndringstidspunkt() {
+    void hentForBatchBrukerEndringstidspunkt() {
         opprettSoknadMetadata(soknadMetadata(behandlingsId, SoknadMetadataInnsendingStatus.UNDER_ARBEID, dagerGammelSoknad));
         assertThat(batchSoknadMetadataRepository.hentForBatch(dagerGammelSoknad - 1)).isPresent();
         assertThat(batchSoknadMetadataRepository.hentForBatch(dagerGammelSoknad + 1)).isNotPresent();
     }
 
     @Test
-    public void hentEldreEnnBrukerEndringstidspunktUavhengigAvStatus() {
+    void hentEldreEnnBrukerEndringstidspunktUavhengigAvStatus() {
         List<SoknadMetadataInnsendingStatus> statuser = asList(SoknadMetadataInnsendingStatus.UNDER_ARBEID, SoknadMetadataInnsendingStatus.FERDIG,
                 SoknadMetadataInnsendingStatus.AVBRUTT_AUTOMATISK, SoknadMetadataInnsendingStatus.AVBRUTT_AV_BRUKER);
         for (SoknadMetadataInnsendingStatus status : statuser) {

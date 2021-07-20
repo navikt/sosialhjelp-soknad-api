@@ -17,13 +17,13 @@ import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-public class SoknadMetricsServiceTest {
+class SoknadMetricsServiceTest {
 
     @Mock
     SoknadMetricsService metricsService;
 
     @Test
-    public void reportVedleggskrav_shouldReportCorrect() {
+    void reportVedleggskrav_shouldReportCorrect() {
         doCallRealMethod().when(metricsService).countAndreportVedleggskrav(anyBoolean(), any());
 
         List<SoknadMetadata.VedleggMetadata> vedleggList = new ArrayList<>();
@@ -43,7 +43,7 @@ public class SoknadMetricsServiceTest {
     }
 
     @Test
-    public void reportVedleggskrav_with3LastetOpp_shouldReport3() {
+    void reportVedleggskrav_with3LastetOpp_shouldReport3() {
         doCallRealMethod().when(metricsService).countAndreportVedleggskrav(anyBoolean(), any());
 
         List<SoknadMetadata.VedleggMetadata> vedleggList = new ArrayList<>();
@@ -56,7 +56,7 @@ public class SoknadMetricsServiceTest {
     }
 
     @Test
-    public void reportVedleggskrav_with3Kreves_shouldReport3() {
+    void reportVedleggskrav_with3Kreves_shouldReport3() {
         doCallRealMethod().when(metricsService).countAndreportVedleggskrav(anyBoolean(), any());
 
         List<SoknadMetadata.VedleggMetadata> vedleggList = new ArrayList<>();
@@ -69,7 +69,7 @@ public class SoknadMetricsServiceTest {
     }
 
     @Test
-    public void reportVedleggskrav_with3LevertTidligere_shouldReport3() {
+    void reportVedleggskrav_with3LevertTidligere_shouldReport3() {
         doCallRealMethod().when(metricsService).countAndreportVedleggskrav(anyBoolean(), any());
 
         List<SoknadMetadata.VedleggMetadata> vedleggList = new ArrayList<>();
@@ -82,7 +82,7 @@ public class SoknadMetricsServiceTest {
     }
 
     @Test
-    public void reportVedleggskrav_withAnnetLastetOpp_shouldReportZero() {
+    void reportVedleggskrav_withAnnetLastetOpp_shouldReportZero() {
         doCallRealMethod().when(metricsService).countAndreportVedleggskrav(anyBoolean(), any());
 
         List<SoknadMetadata.VedleggMetadata> vedleggList = new ArrayList<>();
@@ -93,7 +93,7 @@ public class SoknadMetricsServiceTest {
     }
 
     @Test
-    public void reportVedleggskrav_withAnnetKreves_shouldReportZero() {
+    void reportVedleggskrav_withAnnetKreves_shouldReportZero() {
         doCallRealMethod().when(metricsService).countAndreportVedleggskrav(anyBoolean(), any());
 
         List<SoknadMetadata.VedleggMetadata> vedleggList = new ArrayList<>();
@@ -104,7 +104,7 @@ public class SoknadMetricsServiceTest {
     }
 
     @Test
-    public void reportVedleggskrav_withAnnetLevertTidligere_shouldReportZero() {
+    void reportVedleggskrav_withAnnetLevertTidligere_shouldReportZero() {
         doCallRealMethod().when(metricsService).countAndreportVedleggskrav(anyBoolean(), any());
 
         List<SoknadMetadata.VedleggMetadata> vedleggList = new ArrayList<>();

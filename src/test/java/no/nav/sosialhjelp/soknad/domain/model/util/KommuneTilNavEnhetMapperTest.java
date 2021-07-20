@@ -5,10 +5,10 @@ import org.junit.jupiter.api.Test;
 import static no.nav.sosialhjelp.soknad.domain.model.util.KommuneTilNavEnhetMapper.getOrganisasjonsnummer;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class KommuneTilNavEnhetMapperTest {
+class KommuneTilNavEnhetMapperTest {
 
     @Test
-    public void TestGetOrganisasjonsnummerOfNull() {
+    void TestGetOrganisasjonsnummerOfNull() {
         String result = getOrganisasjonsnummer(null);
         assertThat(result).isNull();
     }

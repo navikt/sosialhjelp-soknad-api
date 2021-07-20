@@ -20,7 +20,7 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class DittNavMetadataServiceTest {
+class DittNavMetadataServiceTest {
 
     @Mock
     private SoknadMetadataRepository soknadMetadataRepository;
@@ -29,7 +29,7 @@ public class DittNavMetadataServiceTest {
     private DittNavMetadataService dittNavMetadataService;
 
     @Test
-    public void skalHenteAktivePabegynteSoknaderForBruker() {
+    void skalHenteAktivePabegynteSoknaderForBruker() {
         var soknadMetadata = createSoknadMetadata(false);
 
         when(soknadMetadataRepository.hentPabegynteSoknaderForBruker("12345", false))
@@ -44,7 +44,7 @@ public class DittNavMetadataServiceTest {
     }
 
     @Test
-    public void skalHenteInaktivePabegynteSoknaderForBruker() {
+    void skalHenteInaktivePabegynteSoknaderForBruker() {
         var soknadMetadata = createSoknadMetadata(true);
 
         when(soknadMetadataRepository.hentPabegynteSoknaderForBruker("12345", true))
@@ -59,7 +59,7 @@ public class DittNavMetadataServiceTest {
     }
 
     @Test
-    public void markerPabegyntSoknadSomLest_skalGiFalse_hvisRepositoryReturnererNull() {
+    void markerPabegyntSoknadSomLest_skalGiFalse_hvisRepositoryReturnererNull() {
         when(soknadMetadataRepository.hent(anyString()))
                 .thenReturn(null);
 
@@ -69,7 +69,7 @@ public class DittNavMetadataServiceTest {
     }
 
     @Test
-    public void markerPabegyntSoknadSomLest_skalGiFalse_hvisNoeFeiler() {
+    void markerPabegyntSoknadSomLest_skalGiFalse_hvisNoeFeiler() {
         var soknadMetadata = createSoknadMetadata(false);
 
         when(soknadMetadataRepository.hent(anyString()))

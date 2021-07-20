@@ -27,7 +27,7 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = SoknadServiceIntegrationTestContext.class)
-public class SoknadServiceIntegrasjonsTest {
+class SoknadServiceIntegrasjonsTest {
     private final String EN_BEHANDLINGSID = "EN_BEHANDLINGSID";
 
     @Inject
@@ -58,7 +58,7 @@ public class SoknadServiceIntegrasjonsTest {
     }
 
     @Test
-    public void avbrytSoknadSletterSoknadenFraLokalDb() {
+    void avbrytSoknadSletterSoknadenFraLokalDb() {
         soknadService.avbrytSoknad(EN_BEHANDLINGSID);
 
         verify(soknadUnderArbeidRepository).slettSoknad(any(SoknadUnderArbeid.class), anyString());

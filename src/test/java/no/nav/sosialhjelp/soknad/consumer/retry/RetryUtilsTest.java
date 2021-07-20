@@ -20,7 +20,7 @@ import static org.mockito.Mockito.when;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @ExtendWith(MockitoExtension.class)
-public class RetryUtilsTest {
+class RetryUtilsTest {
 
     private static final Logger log = getLogger(RetryUtilsTest.class);
     private static final String URL = "test.com";
@@ -30,7 +30,7 @@ public class RetryUtilsTest {
     private PdlHentPersonConsumer pdlHentPersonConsumer;
 
     @Test
-    public void skalForsokeLikeMangeGangerSomMaxAttempts() {
+    void skalForsokeLikeMangeGangerSomMaxAttempts() {
         when(pdlHentPersonConsumer.hentPerson(anyString())).thenThrow(new InternalServerErrorException());
 
         var retry = retryConfig(URL, MAX_ATTEMPTS, 1, 2.0, new Class[]{WebApplicationException.class}, log);
@@ -41,7 +41,7 @@ public class RetryUtilsTest {
     }
 
     @Test
-    public void skalIkkeRetryVedAnnenException() {
+    void skalIkkeRetryVedAnnenException() {
         when(pdlHentPersonConsumer.hentPerson(anyString())).thenThrow(new IllegalStateException());
 
         var retry = retryConfig(URL, MAX_ATTEMPTS, 1, 2.0, new Class[]{WebApplicationException.class}, log);

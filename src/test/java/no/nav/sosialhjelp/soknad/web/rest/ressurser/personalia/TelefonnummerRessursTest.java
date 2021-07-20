@@ -32,7 +32,7 @@ import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class TelefonnummerRessursTest {
+class TelefonnummerRessursTest {
 
     private static final String BEHANDLINGSID = "123";
     private static final String EIER = "123456789101";
@@ -64,7 +64,7 @@ public class TelefonnummerRessursTest {
     }
 
     @Test
-    public void getTelefonnummerSkalReturnereSystemTelefonnummer(){
+    void getTelefonnummerSkalReturnereSystemTelefonnummer(){
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithTelefonnummer(JsonKilde.SYSTEM, TELEFONNUMMER_SYSTEM));
 
@@ -76,7 +76,7 @@ public class TelefonnummerRessursTest {
     }
 
     @Test
-    public void getTelefonnummerSkalReturnereBrukerdefinertNaarTelefonnummerErLikNull(){
+    void getTelefonnummerSkalReturnereBrukerdefinertNaarTelefonnummerErLikNull(){
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithTelefonnummer(null, null));
         when(telefonnummerSystemdata.innhentSystemverdiTelefonnummer(anyString())).thenReturn(null);
@@ -89,7 +89,7 @@ public class TelefonnummerRessursTest {
     }
 
     @Test
-    public void getTelefonnummerSkalReturnereBrukerutfyltTelefonnummer(){
+    void getTelefonnummerSkalReturnereBrukerutfyltTelefonnummer(){
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithTelefonnummer(JsonKilde.BRUKER, TELEFONNUMMER_BRUKER));
         when(telefonnummerSystemdata.innhentSystemverdiTelefonnummer(anyString())).thenReturn(TELEFONNUMMER_SYSTEM);
@@ -102,7 +102,7 @@ public class TelefonnummerRessursTest {
     }
 
     @Test
-    public void putTelefonnummerSkalLageNyJsonTelefonnummerDersomDenVarNull(){
+    void putTelefonnummerSkalLageNyJsonTelefonnummerDersomDenVarNull(){
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithTelefonnummer(null, null));
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
@@ -119,7 +119,7 @@ public class TelefonnummerRessursTest {
     }
 
     @Test
-    public void putTelefonnummerSkalOppdatereBrukerutfyltTelefonnummer(){
+    void putTelefonnummerSkalOppdatereBrukerutfyltTelefonnummer(){
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithTelefonnummer(null, null));
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
@@ -136,7 +136,7 @@ public class TelefonnummerRessursTest {
     }
 
     @Test
-    public void putTelefonnummerSkalOverskriveBrukerutfyltTelefonnummerMedSystemTelefonnummer(){
+    void putTelefonnummerSkalOverskriveBrukerutfyltTelefonnummerMedSystemTelefonnummer(){
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithTelefonnummer(JsonKilde.BRUKER, TELEFONNUMMER_BRUKER));
         when(telefonnummerSystemdata.innhentSystemverdiTelefonnummer(anyString())).thenReturn(TELEFONNUMMER_SYSTEM);
@@ -154,7 +154,7 @@ public class TelefonnummerRessursTest {
     }
 
     @Test
-    public void getTelefonnummerSkalKasteAuthorizationExceptionVedManglendeTilgang() {
+    void getTelefonnummerSkalKasteAuthorizationExceptionVedManglendeTilgang() {
         doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerHarTilgang();
 
         assertThatExceptionOfType(AuthorizationException.class)
@@ -164,7 +164,7 @@ public class TelefonnummerRessursTest {
     }
 
     @Test
-    public void putTelefonnummerSkalKasteAuthorizationExceptionVedManglendeTilgang() {
+    void putTelefonnummerSkalKasteAuthorizationExceptionVedManglendeTilgang() {
         doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
 
         var telefonnummerFrontend = new TelefonnummerFrontend();

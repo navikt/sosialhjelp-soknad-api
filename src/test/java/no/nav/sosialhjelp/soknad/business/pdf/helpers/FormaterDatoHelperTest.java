@@ -8,7 +8,7 @@ import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class FormaterDatoHelperTest {
+class FormaterDatoHelperTest {
 
     private Handlebars handlebars;
 
@@ -20,13 +20,13 @@ public class FormaterDatoHelperTest {
     }
 
     @Test
-    public void skalViseDagerFormat() throws IOException {
+    void skalViseDagerFormat() throws IOException {
         String compiled = handlebars.compileInline("{{formaterDato \"2015-09-16\" \"EEEE\"}}, {{formaterDato \"2015-09-20\" \"EEEE\"}}").apply(new Object());
         assertThat(compiled).isEqualTo("onsdag, søndag");
     }
 
     @Test
-    public void skalViseDagerOgDatoFormat() throws IOException {
+    void skalViseDagerOgDatoFormat() throws IOException {
         String compiled = handlebars.compileInline("{{formaterDato \"2015-07-21\" \"EEEE d. MMMM YYYY\"}}").apply(new Object());
         assertThat(compiled).isEqualTo("tirsdag 21. juli 2015");
     }

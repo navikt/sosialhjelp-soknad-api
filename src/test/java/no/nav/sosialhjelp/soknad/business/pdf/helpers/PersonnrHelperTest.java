@@ -12,10 +12,9 @@ import java.io.IOException;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(MockitoExtension.class)
-public class PersonnrHelperTest {
+class PersonnrHelperTest {
 
     private Handlebars handlebars;
-
 
     @BeforeEach
     public void setup() {
@@ -25,7 +24,7 @@ public class PersonnrHelperTest {
     }
 
     @Test
-    public void skalHentePersonnr() throws IOException {
+    void skalHentePersonnr() throws IOException {
         JsonEktefelle ektefelle = new JsonEktefelle();
         ektefelle.setPersonIdentifikator("65432112345"); // Ikke ekte person
         String compiled = handlebars.compileInline("Personnr: {{personnr personIdentifikator }}").apply(ektefelle);
@@ -34,7 +33,7 @@ public class PersonnrHelperTest {
     }
 
     @Test
-    public void skalHenteTomStrengForUgyldigPersonIdentifikator() throws IOException {
+    void skalHenteTomStrengForUgyldigPersonIdentifikator() throws IOException {
         JsonEktefelle ektefelle = new JsonEktefelle();
         ektefelle.setPersonIdentifikator("1231231234");
         String compiled = handlebars.compileInline("Personnr: {{personnr personIdentifikator }}").apply(ektefelle);
@@ -48,7 +47,7 @@ public class PersonnrHelperTest {
     }
 
     @Test
-    public void skalHenteTomStrengForPersonIdentifikatorLikNull() throws IOException {
+    void skalHenteTomStrengForPersonIdentifikatorLikNull() throws IOException {
         JsonEktefelle ektefelle = new JsonEktefelle();
         ektefelle.setPersonIdentifikator(null);
         String compiled = handlebars.compileInline("Personnr: {{personnr personIdentifikator }}").apply(ektefelle);

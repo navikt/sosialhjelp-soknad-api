@@ -19,7 +19,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class STSConsumerTest {
+class STSConsumerTest {
 
     @Mock
     private Client client;
@@ -40,7 +40,7 @@ public class STSConsumerTest {
     }
 
     @Test
-    public void getFssTokenSkalHenteTokenHvisCacheErTom() {
+    void getFssTokenSkalHenteTokenHvisCacheErTom() {
         FssToken fssToken = consumer.getFSSToken();
 
         assertThat(fssToken.getAccessToken()).isEqualTo("asdf");
@@ -50,7 +50,7 @@ public class STSConsumerTest {
     }
 
     @Test
-    public void toPafolgendeKallSkalSetteCache() {
+    void toPafolgendeKallSkalSetteCache() {
         FssToken first = consumer.getFSSToken();
 
         assertThat(first.getAccessToken()).isEqualTo("asdf");
@@ -67,7 +67,7 @@ public class STSConsumerTest {
     }
 
     @Test
-    public void utgattTokenSkalTriggeRenew() {
+    void utgattTokenSkalTriggeRenew() {
         // token som har gått ut
         when(request.get(FssToken.class)).thenReturn(new FssToken("asdf", "type", 59L));
 

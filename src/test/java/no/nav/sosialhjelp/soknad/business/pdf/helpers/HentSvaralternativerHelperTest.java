@@ -17,15 +17,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class HentSvaralternativerHelperTest {
+class HentSvaralternativerHelperTest {
 
     private Handlebars handlebars;
 
     @InjectMocks
-    HentSvaralternativerHelper hentSvaralternativerHelper;
+    private HentSvaralternativerHelper hentSvaralternativerHelper;
     
     @Mock
-    NavMessageSource navMessageSource;
+    private NavMessageSource navMessageSource;
 
     @BeforeEach
     public void setup() {
@@ -35,7 +35,7 @@ public class HentSvaralternativerHelperTest {
 
 
     @Test
-    public void skalHenteAlleValg() throws IOException {
+    void skalHenteAlleValg() throws IOException {
         Properties tekstFiler = new Properties();
         leggTilValgtekster(tekstFiler);
         when(navMessageSource.getBundleFor("soknadsosialhjelp", SPRAK)).thenReturn(tekstFiler);
@@ -48,7 +48,7 @@ public class HentSvaralternativerHelperTest {
     }
     
     @Test
-    public void skalFiltrereBortTeksterSomIkkeErValg() throws IOException {
+    void skalFiltrereBortTeksterSomIkkeErValg() throws IOException {
         Properties tekstFiler = new Properties();
         leggTilValgtekster(tekstFiler);
         leggTilTeksterSomIkkeErValgbare(tekstFiler);
@@ -68,7 +68,7 @@ public class HentSvaralternativerHelperTest {
     }
     
     @Test
-    public void skalFiltrereBortUndervalg() throws IOException {
+    void skalFiltrereBortUndervalg() throws IOException {
         Properties tekstFiler = new Properties();
         leggTilValgtekster(tekstFiler);
         leggTilUndervalgtekster(tekstFiler);

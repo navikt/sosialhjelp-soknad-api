@@ -32,7 +32,7 @@ import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class BasisPersonaliaRessursTest {
+class BasisPersonaliaRessursTest {
 
     private static final String BEHANDLINGSID = "123";
     private static final String EIER = "123456789101";
@@ -95,7 +95,7 @@ public class BasisPersonaliaRessursTest {
     }
 
     @Test
-    public void getBasisPersonaliaSkalReturnereSystemBasisPersonalia() {
+    void getBasisPersonaliaSkalReturnereSystemBasisPersonalia() {
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithBasisPersonalia(true, true, true));
         when(kodeverkService.getLand("NOR")).thenReturn("Norge");
@@ -106,7 +106,7 @@ public class BasisPersonaliaRessursTest {
     }
 
     @Test
-    public void getBasisPersonaliaSkalReturnereBasisPersonaliaUtenStatsborgerskapOgNordiskBorger() {
+    void getBasisPersonaliaSkalReturnereBasisPersonaliaUtenStatsborgerskapOgNordiskBorger() {
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithBasisPersonalia(false, false, true));
 
@@ -116,7 +116,7 @@ public class BasisPersonaliaRessursTest {
     }
 
     @Test
-    public void getBasisPersonaliaSkalKasteAuthorizationExceptionVedManglendeTilgang() {
+    void getBasisPersonaliaSkalKasteAuthorizationExceptionVedManglendeTilgang() {
         doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerHarTilgang();
 
         assertThatExceptionOfType(AuthorizationException.class)

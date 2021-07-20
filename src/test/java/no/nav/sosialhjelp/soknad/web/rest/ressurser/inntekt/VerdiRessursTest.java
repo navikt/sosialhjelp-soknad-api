@@ -42,7 +42,7 @@ import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class VerdiRessursTest {
+class VerdiRessursTest {
 
     private static final String BEHANDLINGSID = "123";
     private static final String EIER = "123456789101";
@@ -72,7 +72,7 @@ public class VerdiRessursTest {
     }
 
     @Test
-    public void getVerdierSkalReturnereBekreftelseLikNullOgAltFalse(){
+    void getVerdierSkalReturnereBekreftelseLikNullOgAltFalse(){
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER)));
 
@@ -88,7 +88,7 @@ public class VerdiRessursTest {
     }
 
     @Test
-    public void getVerdierSkalReturnereBekreftelserLikTrue(){
+    void getVerdierSkalReturnereBekreftelserLikTrue(){
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithVerdier(true, asList(VERDI_BOLIG, VERDI_CAMPINGVOGN, VERDI_KJORETOY,
                         VERDI_FRITIDSEIENDOM, VERDI_ANNET), null));
@@ -105,7 +105,7 @@ public class VerdiRessursTest {
     }
 
     @Test
-    public void getVerdierSkalReturnereBeskrivelseAvAnnet(){
+    void getVerdierSkalReturnereBeskrivelseAvAnnet(){
         String beskrivelse = "Bestefars klokke";
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithVerdier(true, asList(VERDI_ANNET), beskrivelse));
@@ -118,7 +118,7 @@ public class VerdiRessursTest {
     }
 
     @Test
-    public void putVerdierSkalSetteAltFalseDersomManVelgerHarIkkeVerdier(){
+    void putVerdierSkalSetteAltFalseDersomManVelgerHarIkkeVerdier(){
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithVerdier(true, asList(VERDI_BOLIG, VERDI_CAMPINGVOGN, VERDI_KJORETOY,
@@ -140,7 +140,7 @@ public class VerdiRessursTest {
     }
 
     @Test
-    public void putVerdierSkalSetteAlleBekreftelserLikFalse(){
+    void putVerdierSkalSetteAlleBekreftelserLikFalse(){
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithVerdier(true, asList(VERDI_BOLIG, VERDI_CAMPINGVOGN,
@@ -165,7 +165,7 @@ public class VerdiRessursTest {
     }
 
     @Test
-    public void putVerdierSkalSetteNoenBekreftelser(){
+    void putVerdierSkalSetteNoenBekreftelser(){
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER)));
@@ -197,7 +197,7 @@ public class VerdiRessursTest {
     }
 
     @Test
-    public void putVerdierSkalSetteAlleBekreftelser(){
+    void putVerdierSkalSetteAlleBekreftelser(){
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER)));
@@ -229,7 +229,7 @@ public class VerdiRessursTest {
     }
 
     @Test
-    public void putVerdierSkalFjerneBeskrivelseAvAnnetDersomAnnetBlirAvkreftet(){
+    void putVerdierSkalFjerneBeskrivelseAvAnnetDersomAnnetBlirAvkreftet(){
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithVerdier(true, asList(VERDI_ANNET), "Vinylplater"));
@@ -250,7 +250,7 @@ public class VerdiRessursTest {
     }
 
     @Test
-    public void getVerdierSkalKasteAuthorizationExceptionVedManglendeTilgang() {
+    void getVerdierSkalKasteAuthorizationExceptionVedManglendeTilgang() {
         doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerHarTilgang();
 
         assertThatExceptionOfType(AuthorizationException.class)
@@ -260,7 +260,7 @@ public class VerdiRessursTest {
     }
 
     @Test
-    public void putVerdierSkalKasteAuthorizationExceptionVedManglendeTilgang() {
+    void putVerdierSkalKasteAuthorizationExceptionVedManglendeTilgang() {
         doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(BEHANDLINGSID);
 
         var verdierFrontend = new VerdierFrontend();

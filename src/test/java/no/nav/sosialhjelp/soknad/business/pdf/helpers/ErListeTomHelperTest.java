@@ -12,7 +12,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ErListeTomHelperTest {
+class ErListeTomHelperTest {
 
     private Handlebars handlebars;
 
@@ -24,13 +24,13 @@ public class ErListeTomHelperTest {
     }
 
     @Test
-    public void skalReturnereTomNarListaErTom() throws IOException {
+    void skalReturnereTomNarListaErTom() throws IOException {
         String compiled = handlebars.compileInline("{{#erListeTom saker}}tom{{else}}ikke tom{{/erListeTom}}").apply(new JsonBostotte());
         assertThat(compiled).isEqualTo("tom");
     }
 
     @Test
-    public void skalReturnereIkkeTomNarListaIkkeErTom() throws IOException {
+    void skalReturnereIkkeTomNarListaIkkeErTom() throws IOException {
         List<JsonBostotteSak> saker = new ArrayList<>();
         saker.add(new JsonBostotteSak());
         String compiled = handlebars.compileInline("{{#erListeTom saker}}tom{{else}}ikke tom{{/erListeTom}}").apply(new JsonBostotte().withSaker(saker));

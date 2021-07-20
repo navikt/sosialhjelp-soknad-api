@@ -34,7 +34,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @MockitoSettings(strictness = Strictness.LENIENT)
-public class InnsendingServiceTest {
+class InnsendingServiceTest {
     private static final Long SOKNAD_UNDER_ARBEID_ID = 1L;
     private static final Long SENDT_SOKNAD_ID = 2L;
     private static final String EIER = "12345678910";
@@ -75,7 +75,7 @@ public class InnsendingServiceTest {
     }
 
     @Test
-    public void opprettSendtSoknadOppretterSendtSoknadOgVedleggstatus() {
+    void opprettSendtSoknadOppretterSendtSoknadOgVedleggstatus() {
         innsendingService.opprettSendtSoknad(createSoknadUnderArbeid().
                 withJsonInternalSoknad(createJsonInternalSoknadWithOrgnrAndNavEnhetsnavn()));
 
@@ -84,7 +84,7 @@ public class InnsendingServiceTest {
     }
 
     @Test
-    public void mapSoknadUnderArbeidTilSendtSoknadMapperInfoRiktig() {
+    void mapSoknadUnderArbeidTilSendtSoknadMapperInfoRiktig() {
         SendtSoknad sendtSoknad = innsendingService.mapSoknadUnderArbeidTilSendtSoknad(createSoknadUnderArbeid().withJsonInternalSoknad(
                 createJsonInternalSoknadWithOrgnrAndNavEnhetsnavn()
         ));
@@ -101,14 +101,14 @@ public class InnsendingServiceTest {
     }
 
     @Test
-    public void mapSoknadUnderArbeidTilSendtSoknadKasterFeilHvisIkkeEttersendingOgMottakerinfoMangler() {
+    void mapSoknadUnderArbeidTilSendtSoknadKasterFeilHvisIkkeEttersendingOgMottakerinfoMangler() {
         var soknadUnderArbeid = createSoknadUnderArbeidUtenTilknyttetBehandlingsid().withJsonInternalSoknad(new JsonInternalSoknad().withMottaker(null));
         assertThatExceptionOfType(IllegalStateException.class)
                 .isThrownBy(() -> innsendingService.mapSoknadUnderArbeidTilSendtSoknad(soknadUnderArbeid));
     }
 
     @Test
-    public void finnSendtSoknadForEttersendelseHenterMottakerinfoFraSendtSoknadVedEttersendelse() {
+    void finnSendtSoknadForEttersendelseHenterMottakerinfoFraSendtSoknadVedEttersendelse() {
         SendtSoknad sendtSoknad = innsendingService.finnSendtSoknadForEttersendelse(createSoknadUnderArbeidForEttersendelse());
 
         assertThat(sendtSoknad.getOrgnummer()).isEqualTo(ORGNR);
@@ -117,7 +117,7 @@ public class InnsendingServiceTest {
     }
 
     @Test
-    public void finnSendtSoknadForEttersendelseHenterInfoFraSoknadMetadataHvisSendtSoknadMangler() {
+    void finnSendtSoknadForEttersendelseHenterInfoFraSoknadMetadataHvisSendtSoknadMangler() {
         when(sendtSoknadRepository.hentSendtSoknad(anyString(), anyString())).thenReturn(Optional.empty());
         when(soknadMetadataRepository.hent(anyString())).thenReturn(createSoknadMetadata());
 
@@ -128,7 +128,7 @@ public class InnsendingServiceTest {
     }
 
     @Test
-    public void finnSendtSoknadForEttersendelseKasterFeilHvisSendtSoknadOgMetadataManglerForEttersendelse() {
+    void finnSendtSoknadForEttersendelseKasterFeilHvisSendtSoknadOgMetadataManglerForEttersendelse() {
         when(sendtSoknadRepository.hentSendtSoknad(anyString(), anyString())).thenReturn(Optional.empty());
         when(soknadMetadataRepository.hent(anyString())).thenReturn(null);
 

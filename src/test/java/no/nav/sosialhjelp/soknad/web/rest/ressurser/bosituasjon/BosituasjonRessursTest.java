@@ -29,7 +29,7 @@ import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class BosituasjonRessursTest {
+class BosituasjonRessursTest {
 
     private static final String BEHANDLINGSID = "123";
     private static final String EIER = "123456789101";
@@ -56,7 +56,7 @@ public class BosituasjonRessursTest {
     }
 
     @Test
-    public void getBosituasjonSkalReturnereBosituasjonMedBotypeOgAntallPersonerLikNull(){
+    void getBosituasjonSkalReturnereBosituasjonMedBotypeOgAntallPersonerLikNull(){
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithBosituasjon(null, null));
 
@@ -67,7 +67,7 @@ public class BosituasjonRessursTest {
     }
 
     @Test
-    public void getBosituasjonSkalReturnereBosituasjonMedBotypeOgAntallPersoner(){
+    void getBosituasjonSkalReturnereBosituasjonMedBotypeOgAntallPersoner(){
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithBosituasjon(JsonBosituasjon.Botype.EIER, 2));
 
@@ -78,7 +78,7 @@ public class BosituasjonRessursTest {
     }
 
     @Test
-    public void putBosituasjonSkalSetteBosituasjon(){
+    void putBosituasjonSkalSetteBosituasjon(){
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithBosituasjon(JsonBosituasjon.Botype.LEIER, 2));
@@ -96,7 +96,7 @@ public class BosituasjonRessursTest {
     }
 
     @Test
-    public void putBosituasjonSkalSetteAntallPersonerLikNull(){
+    void putBosituasjonSkalSetteAntallPersonerLikNull(){
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithBosituasjon(null, 2));
@@ -112,7 +112,7 @@ public class BosituasjonRessursTest {
     }
 
     @Test
-    public void getBosituasjonSkalKasteAuthorizationExceptionVedManglendeTilgang() {
+    void getBosituasjonSkalKasteAuthorizationExceptionVedManglendeTilgang() {
         doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerHarTilgang();
 
         assertThatExceptionOfType(AuthorizationException.class)
@@ -122,7 +122,7 @@ public class BosituasjonRessursTest {
     }
 
     @Test
-    public void putBosituasjonSkalKasteAuthorizationExceptionVedManglendeTilgang() {
+    void putBosituasjonSkalKasteAuthorizationExceptionVedManglendeTilgang() {
         doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(BEHANDLINGSID);
 
         var bosituasjonFrontend = new BosituasjonFrontend();

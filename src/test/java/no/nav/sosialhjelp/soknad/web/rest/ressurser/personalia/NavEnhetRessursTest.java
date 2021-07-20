@@ -51,7 +51,7 @@ import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class NavEnhetRessursTest {
+class NavEnhetRessursTest {
 
     private static final String BEHANDLINGSID = "123";
 
@@ -162,7 +162,7 @@ public class NavEnhetRessursTest {
     }
 
     @Test
-    public void hentNavEnheter_oppholdsadresseFraAdressesok_skalReturnereEnheterRiktigKonvertert() {
+    void hentNavEnheter_oppholdsadresseFraAdressesok_skalReturnereEnheterRiktigKonvertert() {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         soknadUnderArbeid.getJsonInternalSoknad().getSoknad().withMottaker(SOKNADSMOTTAKER).getData().getPersonalia()
                 .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(JsonAdresseValg.SOKNAD));
@@ -183,7 +183,7 @@ public class NavEnhetRessursTest {
     }
 
     @Test
-    public void hentNavEnheter_oppholdsadresseFraAdressesok_skalReturnereEnheterRiktigKonvertertVedBydelMarka() {
+    void hentNavEnheter_oppholdsadresseFraAdressesok_skalReturnereEnheterRiktigKonvertertVedBydelMarka() {
         var annenBydel = "030112";
         var soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         soknadUnderArbeid.getJsonInternalSoknad().getSoknad().withMottaker(SOKNADSMOTTAKER_2).getData().getPersonalia()
@@ -202,7 +202,7 @@ public class NavEnhetRessursTest {
     }
 
     @Test
-    public void hentValgtNavEnhet_skalReturnereEnhetRiktigKonvertert() {
+    void hentValgtNavEnhet_skalReturnereEnhetRiktigKonvertert() {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         soknadUnderArbeid.getJsonInternalSoknad().getSoknad().withMottaker(SOKNADSMOTTAKER).getData().getPersonalia()
                 .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT));
@@ -215,7 +215,7 @@ public class NavEnhetRessursTest {
     }
 
     @Test
-    public void hentNavEnheter_oppholdsadresseIkkeValgt_skalReturnereTomListe() {
+    void hentNavEnheter_oppholdsadresseIkkeValgt_skalReturnereTomListe() {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia()
                 .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(null));
@@ -228,7 +228,7 @@ public class NavEnhetRessursTest {
     }
 
     @Test
-    public void getValgtNavEnhet_oppholdsadresseIkkeValgt_skalReturnereNull() {
+    void getValgtNavEnhet_oppholdsadresseIkkeValgt_skalReturnereNull() {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia()
                 .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(null));
@@ -240,7 +240,7 @@ public class NavEnhetRessursTest {
     }
 
     @Test
-    public void updateNavEnhet_skalSetteNavEnhet() {
+    void updateNavEnhet_skalSetteNavEnhet() {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         soknadUnderArbeid.getJsonInternalSoknad().getSoknad().withMottaker(SOKNADSMOTTAKER).getData().getPersonalia()
                 .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT));
@@ -260,7 +260,7 @@ public class NavEnhetRessursTest {
     }
 
     @Test
-    public void hentNavEnheter_oppholdsadresseFolkeregistrert_skalBrukeKommunenummerFraGtOgKommunenavnFraKodeverk() {
+    void hentNavEnheter_oppholdsadresseFolkeregistrert_skalBrukeKommunenummerFraGtOgKommunenavnFraKodeverk() {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         soknadUnderArbeid.getJsonInternalSoknad().getSoknad().withMottaker(SOKNADSMOTTAKER).getData().getPersonalia()
                 .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT));
@@ -277,7 +277,7 @@ public class NavEnhetRessursTest {
     }
 
     @Test
-    public void hentNavEnheter_oppholdsadresseFolkeregistrert_skalBrukeBydelsnummerFraGtOgKommunenavnFraKodeverk() {
+    void hentNavEnheter_oppholdsadresseFolkeregistrert_skalBrukeBydelsnummerFraGtOgKommunenavnFraKodeverk() {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         soknadUnderArbeid.getJsonInternalSoknad().getSoknad().withMottaker(SOKNADSMOTTAKER).getData().getPersonalia()
                 .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT));
@@ -294,7 +294,7 @@ public class NavEnhetRessursTest {
     }
 
     @Test
-    public void hentNavEnheter_oppholdsadresseFolkeregistrert_skalBrukeAdressesokSomFallback() {
+    void hentNavEnheter_oppholdsadresseFolkeregistrert_skalBrukeAdressesokSomFallback() {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         soknadUnderArbeid.getJsonInternalSoknad().getSoknad().withMottaker(SOKNADSMOTTAKER).getData().getPersonalia()
                 .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT));
@@ -315,7 +315,7 @@ public class NavEnhetRessursTest {
     }
 
     @Test
-    public void hentNavEnheter_skalKasteAuthorizationExceptionVedManglendeTilgang() {
+    void hentNavEnheter_skalKasteAuthorizationExceptionVedManglendeTilgang() {
         doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerHarTilgang();
 
         assertThatExceptionOfType(AuthorizationException.class)
@@ -325,7 +325,7 @@ public class NavEnhetRessursTest {
     }
 
     @Test
-    public void hentValgtNavEnhet_skalKasteAuthorizationExceptionVedManglendeTilgang() {
+    void hentValgtNavEnhet_skalKasteAuthorizationExceptionVedManglendeTilgang() {
         doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerHarTilgang();
 
         assertThatExceptionOfType(AuthorizationException.class)
@@ -335,7 +335,7 @@ public class NavEnhetRessursTest {
     }
 
     @Test
-    public void updateNavEnhet_skalKasteAuthorizationExceptionVedManglendeTilgang() {
+    void updateNavEnhet_skalKasteAuthorizationExceptionVedManglendeTilgang() {
         doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
 
         var navEnhetFrontend = new NavEnhetFrontend();

@@ -13,7 +13,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class OrganisasjonServiceTest {
+class OrganisasjonServiceTest {
 
     @Mock
     private OrganisasjonConsumer organisasjonConsumer;
@@ -24,7 +24,7 @@ public class OrganisasjonServiceTest {
     private String orgnr = "12345";
 
     @Test
-    public void skalHentOrgNavnMedNullINavnelinjer() {
+    void skalHentOrgNavnMedNullINavnelinjer() {
         when(organisasjonConsumer.hentOrganisasjonNoekkelinfo(anyString())).thenReturn(createOrgNoekkelinfoResponseWithNulls());
 
         String orgNavn = service.hentOrgNavn(orgnr);
@@ -33,7 +33,7 @@ public class OrganisasjonServiceTest {
     }
 
     @Test
-    public void skalHentOrgNavnMedTommeStringsINavnelinjer() {
+    void skalHentOrgNavnMedTommeStringsINavnelinjer() {
         when(organisasjonConsumer.hentOrganisasjonNoekkelinfo(anyString())).thenReturn(createOrgNoekkelinfoResponseWithEmptyStrings());
 
         String orgNavn = service.hentOrgNavn(orgnr);
@@ -42,14 +42,14 @@ public class OrganisasjonServiceTest {
     }
 
     @Test
-    public void skalReturnereTomStringHvisOrgnrErNull() {
+    void skalReturnereTomStringHvisOrgnrErNull() {
         String orgNavn = service.hentOrgNavn(null);
 
         assertThat(orgNavn).isBlank();
     }
 
     @Test
-    public void skalReturnereOrgNrSomOrgNavnHvisNoekkelinfoErNull() {
+    void skalReturnereOrgNrSomOrgNavnHvisNoekkelinfoErNull() {
         when(organisasjonConsumer.hentOrganisasjonNoekkelinfo(anyString())).thenReturn(null);
 
         String orgNavn = service.hentOrgNavn(orgnr);
@@ -58,7 +58,7 @@ public class OrganisasjonServiceTest {
     }
 
     @Test
-    public void skalReturnereOrgNrSomOrgNavnHvisConsumerKasterFeil() {
+    void skalReturnereOrgNrSomOrgNavnHvisConsumerKasterFeil() {
         when(organisasjonConsumer.hentOrganisasjonNoekkelinfo(anyString())).thenThrow(new RuntimeException("noe feil"));
 
         String orgNavn = service.hentOrgNavn(orgnr);

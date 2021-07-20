@@ -17,7 +17,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class SlettSoknadUnderArbeidSchedulerTest {
+class SlettSoknadUnderArbeidSchedulerTest {
 
     @Mock
     private BatchSoknadUnderArbeidRepository batchSoknadUnderArbeidRepository;
@@ -36,7 +36,7 @@ public class SlettSoknadUnderArbeidSchedulerTest {
     }
 
     @Test
-    public void skalSletteGamleSoknadUnderArbeid() {
+    void skalSletteGamleSoknadUnderArbeid() {
         when(batchSoknadUnderArbeidRepository.hentGamleSoknadUnderArbeidForBatch())
                 .thenReturn(Arrays.asList(1L, 2L));
 

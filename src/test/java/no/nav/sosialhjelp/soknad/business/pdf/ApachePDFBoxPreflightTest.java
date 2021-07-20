@@ -15,7 +15,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 @Disabled
-public class ApachePDFBoxPreflightTest {
+class ApachePDFBoxPreflightTest {
 
     private static final String pathToDir = "src/test/java/no/nav/sbl/dialogarena/utils";
 
@@ -26,7 +26,6 @@ public class ApachePDFBoxPreflightTest {
 
     @BeforeEach
     public void setup() {
-
         pdfUtenVannmerkePath = Paths.get(pathToDir + "/pdfUtenVannmerke.pdf");
         pdfUtenVannmerkeFile = new File(pdfUtenVannmerkePath.toString());
         pdfMedVannmerkePath = Paths.get(pathToDir + "/pdfMedVannmerke.pdf");
@@ -34,14 +33,14 @@ public class ApachePDFBoxPreflightTest {
     }
 
     @Test
-    public void testApachePDFBoxPreflightUtenVannmarke() throws IOException {
+    void testApachePDFBoxPreflightUtenVannmarke() throws IOException {
         ValidationResult result = getValidationResult(pdfUtenVannmerkeFile.toString());
 
         printValidationResult(result, pdfUtenVannmerkeFile);
     }
 
     @Test
-    public void testApachePDFBoxPreflightMedVannmerke() throws IOException {
+    void testApachePDFBoxPreflightMedVannmerke() throws IOException {
         ValidationResult result = getValidationResult(pdfMedVannmerkeFile.toString());
 
         printValidationResult(result, pdfMedVannmerkeFile);

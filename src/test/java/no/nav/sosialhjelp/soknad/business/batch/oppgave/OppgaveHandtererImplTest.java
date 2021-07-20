@@ -20,7 +20,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class OppgaveHandtererImplTest {
+class OppgaveHandtererImplTest {
 
     @Mock
     private FiksHandterer fiksHandterer;
@@ -35,7 +35,7 @@ public class OppgaveHandtererImplTest {
     private ArgumentCaptor<Oppgave> capturedOppgave;
 
     @Test
-    public void prosessereFeilendeOppgaveSkalSetteNesteForsok() {
+    void prosessereFeilendeOppgaveSkalSetteNesteForsok() {
         Oppgave oppgave = new Oppgave();
         oppgave.status = UNDER_ARBEID;
 

@@ -12,14 +12,14 @@ import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class HentGeografiskTilknytningResponseTest {
+class HentGeografiskTilknytningResponseTest {
 
     private final ObjectMapper mapper = new ObjectMapper()
             .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
             .registerModule(new JavaTimeModule());
 
     @Test
-    public void deserialiseringAvResponseJson() throws IOException {
+    void deserialiseringAvResponseJson() throws IOException {
         var resourceAsStream = ClassLoader.getSystemResourceAsStream("pdl/pdlHentGeografiskTilknytningResponse.json");
         assertThat(resourceAsStream).isNotNull();
         var jsonString = IOUtils.toString(resourceAsStream);

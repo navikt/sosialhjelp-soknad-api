@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class MineSakerMetadataServiceTest {
+class MineSakerMetadataServiceTest {
 
     @Mock
     private SoknadMetadataRepository soknadMetadataRepository;
@@ -25,7 +25,7 @@ public class MineSakerMetadataServiceTest {
     private MineSakerMetadataService mineSakerMetadataService;
 
     @Test
-    public void skalHenteInnsendteSoknaderForBruker() {
+    void skalHenteInnsendteSoknaderForBruker() {
         var soknadMetadata = new SoknadMetadata();
         soknadMetadata.fnr = "12345";
         soknadMetadata.behandlingsId = "beh123";
@@ -41,7 +41,7 @@ public class MineSakerMetadataServiceTest {
     }
 
     @Test
-    public void skalReturnereTomListeVedNull() {
+    void skalReturnereTomListeVedNull() {
         when(soknadMetadataRepository.hentAlleInnsendteSoknaderForBruker("12345"))
                 .thenReturn(null);
 
@@ -51,7 +51,7 @@ public class MineSakerMetadataServiceTest {
     }
 
     @Test
-    public void skalReturnereTomListeVedTomListe() {
+    void skalReturnereTomListeVedTomListe() {
         when(soknadMetadataRepository.hentAlleInnsendteSoknaderForBruker("12345"))
                 .thenReturn(Collections.emptyList());
 

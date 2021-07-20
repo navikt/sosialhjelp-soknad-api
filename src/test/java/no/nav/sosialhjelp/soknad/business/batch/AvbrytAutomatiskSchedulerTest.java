@@ -29,7 +29,7 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @ContextConfiguration(classes = {DbTestConfig.class})
-public class AvbrytAutomatiskSchedulerTest {
+class AvbrytAutomatiskSchedulerTest {
 
     private static final String EIER = "11111111111";
     private static final String BEHANDLINGS_ID = "1100AAAAA";

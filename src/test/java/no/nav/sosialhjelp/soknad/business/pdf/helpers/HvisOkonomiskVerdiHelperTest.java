@@ -19,15 +19,15 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class HvisOkonomiskVerdiHelperTest {
+class HvisOkonomiskVerdiHelperTest {
 
     private Handlebars handlebars;
 
     @InjectMocks
-    HvisOkonomiskVerdiHelper hvisOkonomiskVerdiHelper;
+    private HvisOkonomiskVerdiHelper hvisOkonomiskVerdiHelper;
 
     @Mock
-    HentSvaralternativerHelper hentSvaralternativerHelper;
+    private HentSvaralternativerHelper hentSvaralternativerHelper;
 
     @BeforeEach
     public void setup() {
@@ -41,14 +41,14 @@ public class HvisOkonomiskVerdiHelperTest {
     }
 
     @Test
-    public void skalGjenkjenneOkonomiskVerditype() throws IOException {
+    void skalGjenkjenneOkonomiskVerditype() throws IOException {
         String compiled = handlebars.compileInline("{{#hvisOkonomiskVerdi \"campingvogn\"}}campingvogn er en økonomisk verdi{{else}}ikke en økonomisk verdi{{/hvisOkonomiskVerdi}}").apply(new Object());
 
         assertThat(compiled).isEqualTo("campingvogn er en økonomisk verdi");
     }
 
     @Test
-    public void skalIkkeGjenkjenneOkonomiskVerditype() throws IOException {
+    void skalIkkeGjenkjenneOkonomiskVerditype() throws IOException {
         String compiled = handlebars.compileInline("{{#hvisOkonomiskVerdi \"stygtVeggpanel\"}}stygtVeggpanel er en økonomisk verdi{{else}}ikke en økonomisk verdi{{/hvisOkonomiskVerdi}}").apply(new Object());
 
         assertThat(compiled).isEqualTo("ikke en økonomisk verdi");

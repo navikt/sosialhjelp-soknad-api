@@ -9,7 +9,7 @@ import java.util.HashMap;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ConcatHelperTest {
+class ConcatHelperTest {
 
     private Handlebars handlebars;
 
@@ -21,13 +21,13 @@ public class ConcatHelperTest {
     }
 
     @Test
-    public void skalLeggeSammenToTekststrenger() throws IOException {
+    void skalLeggeSammenToTekststrenger() throws IOException {
         String innhold = handlebars.compileInline("{{concat \"mye\" \"innhold\"}}").apply(new Object());
         assertThat(innhold).isEqualTo("myeinnhold");
     }
 
     @Test
-    public void skalLeggeSammenToVariabler() throws IOException {
+    void skalLeggeSammenToVariabler() throws IOException {
         HashMap<String, String> map = new HashMap<>();
         map.put("forsteString", "con");
         map.put("andreString", "tent");
@@ -36,7 +36,7 @@ public class ConcatHelperTest {
     }
 
     @Test
-    public void skalLeggeSammenFlereTekststrenger() throws IOException {
+    void skalLeggeSammenFlereTekststrenger() throws IOException {
         String innhold = handlebars.compileInline("{{concat \"a\" \"b\" \"c\" \"d\" \"e\" \"f\"}}").apply(new Object());
         assertThat(innhold).isEqualTo("abcdef");
     }
