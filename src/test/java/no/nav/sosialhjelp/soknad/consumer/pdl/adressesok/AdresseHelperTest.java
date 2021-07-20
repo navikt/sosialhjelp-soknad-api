@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.consumer.pdl.adressesok;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.AdresseHelper.formatterKommunenavn;
 import static org.assertj.core.api.Assertions.assertThat;

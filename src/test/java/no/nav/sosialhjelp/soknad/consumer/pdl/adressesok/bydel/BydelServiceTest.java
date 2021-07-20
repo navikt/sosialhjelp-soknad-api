@@ -2,7 +2,7 @@ package no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.bydel;
 
 import no.nav.sosialhjelp.soknad.business.service.adressesok.AdresseForslag;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.bydel.BydelFordeling.Husnummerfordeling;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 

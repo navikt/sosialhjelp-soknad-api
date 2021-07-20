@@ -1,8 +1,8 @@
 package no.nav.sosialhjelp.soknad.business.pdf.helpers;
 
 import com.github.jknack.handlebars.Handlebars;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
@@ -12,7 +12,7 @@ public class FinnSaksstatusHelperTest {
 
     private Handlebars handlebars;
 
-    @Before
+    @BeforeEach
     public void setup() {
         handlebars = new Handlebars();
         FinnSaksstatusHelper helper = new FinnSaksstatusHelper();

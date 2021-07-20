@@ -1,8 +1,9 @@
 package no.nav.sosialhjelp.soknad.web.server;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 public class SoknadsosialhjelpServerTest {
 
@@ -45,10 +46,10 @@ public class SoknadsosialhjelpServerTest {
         assertThat(value).isEqualTo("en.ny:fancy:variabel!=");
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void withEnvironmentVariableExpansion_withRequiredWithoutEnvVarSet_ShouldThrowException() {
-        String value = SoknadsosialhjelpServer.withEnvironmentVariableExpansion("${ENV_NOT_SET}", true);
-        assertThat(value).isEqualTo("foobar");
+        assertThatExceptionOfType(IllegalStateException.class)
+                .isThrownBy(() -> SoknadsosialhjelpServer.withEnvironmentVariableExpansion("${ENV_NOT_SET}", true));
     }
 
     @Test

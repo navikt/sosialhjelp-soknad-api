@@ -1,16 +1,16 @@
 package no.nav.sosialhjelp.soknad.business;
 
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
 
 import static java.time.LocalDateTime.now;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class SoknadUnderArbeidServiceTest {
     private static final String EIER = "12345678910";
     private static final Long SOKNAD_UNDER_ARBEID_ID = 1L;

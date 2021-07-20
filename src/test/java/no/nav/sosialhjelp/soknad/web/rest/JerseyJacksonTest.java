@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import no.nav.sosialhjelp.soknad.web.rest.providers.SoknadObjectMapperProvider;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

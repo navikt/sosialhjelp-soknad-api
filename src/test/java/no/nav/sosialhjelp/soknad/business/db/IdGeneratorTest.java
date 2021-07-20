@@ -1,8 +1,9 @@
 package no.nav.sosialhjelp.soknad.business.db;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 public class IdGeneratorTest {
     
@@ -12,8 +13,9 @@ public class IdGeneratorTest {
         assertThat(behandlingsId).isEqualTo("100000001");
     }
     
-    @Test(expected=RuntimeException.class)
+    @Test
     public void skalFaaFeilVedForHoyId() {
-        IdGenerator.lagBehandlingsId(10000000000000l);
+        assertThatExceptionOfType(RuntimeException.class)
+                .isThrownBy(() -> IdGenerator.lagBehandlingsId(10000000000000l));
     }
 }

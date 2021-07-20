@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.business.service.soknadservice;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 

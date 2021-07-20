@@ -5,16 +5,16 @@ import org.apache.pdfbox.preflight.ValidationResult;
 import org.apache.pdfbox.preflight.exception.SyntaxValidationException;
 import org.apache.pdfbox.preflight.exception.ValidationException;
 import org.apache.pdfbox.preflight.parser.PreflightParser;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-@Ignore
+@Disabled
 public class ApachePDFBoxPreflightTest {
 
     private static final String pathToDir = "src/test/java/no/nav/sbl/dialogarena/utils";
@@ -24,7 +24,7 @@ public class ApachePDFBoxPreflightTest {
     private Path pdfMedVannmerkePath;
     private File pdfMedVannmerkeFile;
 
-    @Before
+    @BeforeEach
     public void setup() {
 
         pdfUtenVannmerkePath = Paths.get(pathToDir + "/pdfUtenVannmerke.pdf");

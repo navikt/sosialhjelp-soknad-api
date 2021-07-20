@@ -6,7 +6,7 @@ import no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.MetadataDto;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.NavnDto;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.SivilstandDto;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.SivilstandDto.SivilstandType;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 import java.util.Collections;

@@ -3,9 +3,9 @@ package no.nav.sosialhjelp.soknad.web.sikkerhet;
 import no.nav.sosialhjelp.soknad.web.rest.SoknadApplication;
 import org.glassfish.jersey.server.ContainerResponse;
 import org.glassfish.jersey.test.util.server.ContainerRequestBuilder;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
@@ -21,13 +21,13 @@ public class CORSFilterTest {
 
     private final ContainerResponse response = mock(ContainerResponse.class);
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         MultivaluedMap<String, Object> headers = new MultivaluedHashMap<>();
         when(response.getHeaders()).thenReturn(headers);
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         System.clearProperty("environment.name");
     }

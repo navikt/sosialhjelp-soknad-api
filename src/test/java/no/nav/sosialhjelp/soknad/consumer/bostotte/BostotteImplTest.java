@@ -4,14 +4,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.sosialhjelp.soknad.consumer.bostotte.dto.BostotteDto;
 import no.nav.sosialhjelp.soknad.web.selftest.Pingable;
 import org.apache.cxf.helpers.IOUtils;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
@@ -32,7 +31,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 @SuppressWarnings("unchecked")
 public class BostotteImplTest {
 
@@ -47,11 +46,6 @@ public class BostotteImplTest {
 
     @Captor
     ArgumentCaptor<RequestEntity<BostotteDto>> captor;
-
-    @Before
-    public void setUp() {
-        when(config.getUri()).thenReturn("uri");
-    }
 
     @Test
     public void hentBostotte_testUrl_riktigUrlBlirSendtInnTilRestKallet() {
@@ -119,6 +113,7 @@ public class BostotteImplTest {
         LocalDate til = LocalDate.now();
 
         // Mocks:
+        when(config.getUri()).thenReturn("uri");
         when(operations.exchange(any(), any(Class.class))).thenThrow(new ResourceAccessException("TestException"));
 
         // Testkjøring:
@@ -133,6 +128,7 @@ public class BostotteImplTest {
         LocalDate til = LocalDate.now();
 
         // Mocks:
+        when(config.getUri()).thenReturn("uri");
         when(operations.exchange(any(), any(Class.class))).thenThrow(new HttpClientErrorException(HttpStatus.BAD_REQUEST));
 
         // Testkjøring:
@@ -147,6 +143,7 @@ public class BostotteImplTest {
         LocalDate til = LocalDate.now();
 
         // Mocks:
+        when(config.getUri()).thenReturn("uri");
         when(operations.exchange(any(), any(Class.class))).thenThrow(new HttpMessageNotReadableException("TestException", mock(HttpInputMessage.class)));
 
         // Testkjøring:

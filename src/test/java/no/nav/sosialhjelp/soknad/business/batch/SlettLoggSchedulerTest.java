@@ -12,13 +12,13 @@ import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata;
 import no.nav.sosialhjelp.soknad.domain.SendtSoknad;
 import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus;
 import no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SoknadType;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.ContextConfiguration;
 
 import java.time.LocalDateTime;
@@ -30,7 +30,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 @ContextConfiguration(classes = {DbTestConfig.class})
 public class SlettLoggSchedulerTest {
 
@@ -49,9 +49,14 @@ public class SlettLoggSchedulerTest {
     @Mock
     private OppgaveRepository oppgaveRepository;
 
-    @Before
+    @BeforeEach
     public void setup() {
         System.setProperty("sendsoknad.batch.enabled", "true");
+    }
+
+    @AfterEach
+    public void teardown() {
+        System.clearProperty("sendsoknad.batch.enabled");
     }
 
     @Test
@@ -95,11 +100,6 @@ public class SlettLoggSchedulerTest {
         verify(oppgaveRepository, never()).slettOppgave(anyString());
         verify(batchSendtSoknadRepository, never()).slettSendtSoknad(anyLong());
         verify(batchSoknadMetadataRepository, never()).slettSoknadMetaData(anyString());
-    }
-
-    @After
-    public void teardown() {
-        System.clearProperty("sendsoknad.batch.enabled");
     }
 
     private SoknadMetadata soknadMetadata(String behandlingsId, SoknadMetadataInnsendingStatus status, int dagerSiden) {

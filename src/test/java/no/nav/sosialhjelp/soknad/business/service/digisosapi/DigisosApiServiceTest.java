@@ -22,13 +22,13 @@ import no.nav.sosialhjelp.soknad.domain.VedleggType;
 import no.nav.sosialhjelp.soknad.domain.Vedleggstatus;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.StaticSubjectHandlerService;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.ContextConfiguration;
 
 import java.util.ArrayList;
@@ -36,6 +36,7 @@ import java.util.List;
 
 import static no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -43,7 +44,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 @ContextConfiguration(classes = SoknadServiceIntegrationTestContext.class)
 public class DigisosApiServiceTest {
 
@@ -65,7 +66,7 @@ public class DigisosApiServiceTest {
     @InjectMocks
     private DigisosApiService digisosApiService;
 
-    @Before
+    @BeforeEach
     public void setUpBefore() {
         System.setProperty("environment.name", "test");
         SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
@@ -76,13 +77,9 @@ public class DigisosApiServiceTest {
         System.setProperty("idporten_token_url", "https://oidc-ver2.difi.no/idporten-oidc-provider/token");
         System.setProperty("digisos_api_baseurl", "https://api.fiks.test.ks.no/");
         System.setProperty("integrasjonsid_fiks", "c4bf2682-327f-4535-a087-c248d35978e1");
-
-        when(sosialhjelpPdfGenerator.generate(any(JsonInternalSoknad.class), anyBoolean())).thenReturn(new byte[]{1, 2, 3});
-        when(sosialhjelpPdfGenerator.generateEttersendelsePdf(any(JsonInternalSoknad.class), anyString())).thenReturn(new byte[]{1, 2, 3});
-        when(sosialhjelpPdfGenerator.generateBrukerkvitteringPdf()).thenReturn(new byte[]{1, 2, 3});
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         SubjectHandler.resetOidcSubjectHandlerService();
         System.clearProperty("environment.name");
@@ -98,6 +95,9 @@ public class DigisosApiServiceTest {
     @Test
     public void skalLageOpplastingsListeMedDokumenterForSoknad() {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad("12345678910")).withEier("eier");
+
+        when(sosialhjelpPdfGenerator.generate(any(JsonInternalSoknad.class), anyBoolean())).thenReturn(new byte[]{1, 2, 3});
+        when(sosialhjelpPdfGenerator.generateBrukerkvitteringPdf()).thenReturn(new byte[]{1, 2, 3});
 
         List<FilOpplasting> filOpplastings = digisosApiService.lagDokumentListe(soknadUnderArbeid);
 
@@ -118,6 +118,8 @@ public class DigisosApiServiceTest {
     @Test
     public void hentDokumenterFraSoknadReturnererTreDokumenterForEttersendingMedEtVedlegg() {
         when(innsendingService.hentAlleOpplastedeVedleggForSoknad(any(SoknadUnderArbeid.class))).thenReturn(lagOpplastetVedlegg());
+        when(sosialhjelpPdfGenerator.generateEttersendelsePdf(any(JsonInternalSoknad.class), anyString())).thenReturn(new byte[]{1, 2, 3});
+        when(sosialhjelpPdfGenerator.generateBrukerkvitteringPdf()).thenReturn(new byte[]{1, 2, 3});
 
         List<FilOpplasting> fiksDokumenter = digisosApiService.lagDokumentListe(new SoknadUnderArbeid()
                 .withTilknyttetBehandlingsId("123")
@@ -144,16 +146,20 @@ public class DigisosApiServiceTest {
         assertThat(tilleggsinformasjonJson).isEqualTo("{}");
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void getTilleggsinformasjonJson_withNoMottaker_shouldThrowException() {
         JsonSoknad soknad = new JsonSoknad();
-        String tilleggsinformasjonJson = digisosApiService.getTilleggsinformasjonJson(soknad);
-        assertThat(tilleggsinformasjonJson).isEqualTo("hei");
+
+        assertThatExceptionOfType(IllegalStateException.class)
+                .isThrownBy(() -> digisosApiService.getTilleggsinformasjonJson(soknad));
     }
 
     @Test
     public void etterInnsendingSkalSoknadUnderArbeidSlettes() {
         var soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad("12345678910")).withEier("eier");
+
+        when(sosialhjelpPdfGenerator.generate(any(JsonInternalSoknad.class), anyBoolean())).thenReturn(new byte[]{1, 2, 3});
+        when(sosialhjelpPdfGenerator.generateBrukerkvitteringPdf()).thenReturn(new byte[]{1, 2, 3});
 
         when(digisosApi.krypterOgLastOppFiler(anyString(), anyString(), anyString(), any(), anyString(), anyString(), anyString()))
                 .thenReturn("digisosid");

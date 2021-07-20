@@ -13,20 +13,21 @@ import no.nav.sosialhjelp.soknad.web.rest.ressurser.NavnFrontend;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.familie.SivilstatusRessurs.EktefelleFrontend;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.familie.SivilstatusRessurs.SivilstatusFrontend;
 import no.nav.sosialhjelp.soknad.web.sikkerhet.Tilgangskontroll;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.text.ParseException;
 
 import static no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
 import static no.nav.sosialhjelp.soknad.web.rest.mappers.PersonMapper.getPersonnummerFromFnr;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doNothing;
@@ -35,7 +36,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class SivilstatusRessursTest {
 
     private static final String BEHANDLINGSID = "123";
@@ -62,13 +63,13 @@ public class SivilstatusRessursTest {
     @Mock
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         System.setProperty("environment.name", "test");
         SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         SubjectHandler.resetOidcSubjectHandlerService();
         System.clearProperty("environment.name");
@@ -182,23 +183,26 @@ public class SivilstatusRessursTest {
         assertThatEktefelleIsCorrectlyConverted(EKTEFELLE_FRONTEND, sivilstatus.getEktefelle());
     }
 
-    @Test(expected = AuthorizationException.class)
+    @Test
     public void getSivilstatusSkalKasteAuthorizationExceptionVedManglendeTilgang() {
         doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerHarTilgang();
 
-        sivilstatusRessurs.hentSivilstatus(BEHANDLINGSID);
+        assertThatExceptionOfType(AuthorizationException.class)
+                .isThrownBy(() -> sivilstatusRessurs.hentSivilstatus(BEHANDLINGSID));
 
         verifyNoInteractions(soknadUnderArbeidRepository);
     }
 
-    @Test(expected = AuthorizationException.class)
+    @Test
     public void putSivilstatusSkalKasteAuthorizationExceptionVedManglendeTilgang() throws ParseException {
         doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(BEHANDLINGSID);
 
         var sivilstatusFrontend = new SivilstatusFrontend()
                 .withKildeErSystem(false).withSivilstatus(JsonSivilstatus.Status.GIFT)
                 .withEktefelle(EKTEFELLE_FRONTEND);
-        sivilstatusRessurs.updateSivilstatus(BEHANDLINGSID, sivilstatusFrontend);
+
+        assertThatExceptionOfType(AuthorizationException.class)
+                .isThrownBy(() -> sivilstatusRessurs.updateSivilstatus(BEHANDLINGSID, sivilstatusFrontend));
 
         verifyNoInteractions(soknadUnderArbeidRepository);
     }

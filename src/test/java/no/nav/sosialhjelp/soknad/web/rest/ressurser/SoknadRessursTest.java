@@ -11,14 +11,14 @@ import no.nav.sosialhjelp.soknad.domain.model.oidc.StaticSubjectHandlerService;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import no.nav.sosialhjelp.soknad.web.sikkerhet.Tilgangskontroll;
 import org.assertj.core.util.Lists;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
@@ -33,6 +33,7 @@ import static no.nav.sosialhjelp.soknad.business.mappers.OkonomiMapper.setBekref
 import static no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
 import static no.nav.sosialhjelp.soknad.web.rest.ressurser.SoknadRessurs.XSRF_TOKEN;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
@@ -44,7 +45,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class SoknadRessursTest {
 
     private static final String BEHANDLINGSID = "123";
@@ -62,13 +63,13 @@ public class SoknadRessursTest {
     @InjectMocks
     private SoknadRessurs ressurs;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         System.setProperty("environment.name", "test");
         SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         SubjectHandler.resetOidcSubjectHandlerService();
         System.clearProperty("environment.name");
@@ -196,58 +197,66 @@ public class SoknadRessursTest {
         assertThat(bekreftelse1.verdi).isTrue();
     }
 
-    @Test(expected = AuthorizationException.class)
+    @Test
     public void getXsrfCookieSkalKasteAuthorizationExceptionVedManglendeTilgang() {
         doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserBrukerHarTilgangTilSoknad(BEHANDLINGSID);
 
         HttpServletResponse response = mock(HttpServletResponse.class);
-        ressurs.hentXsrfCookie(BEHANDLINGSID, response);
+
+        assertThatExceptionOfType(AuthorizationException.class)
+                .isThrownBy(() -> ressurs.hentXsrfCookie(BEHANDLINGSID, response));
 
         verifyNoInteractions(henvendelseService);
     }
 
-    @Test(expected = AuthorizationException.class)
+    @Test
     public void getOppsummeringSkalKasteAuthorizationExceptionVedManglendeTilgang() throws IOException {
         doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerHarTilgang();
 
-        ressurs.hentOppsummering(BEHANDLINGSID);
+        assertThatExceptionOfType(AuthorizationException.class)
+                .isThrownBy(() -> ressurs.hentOppsummering(BEHANDLINGSID));
 
         verifyNoInteractions(soknadUnderArbeidRepository);
     }
 
-    @Test(expected = AuthorizationException.class)
+    @Test
     public void getErSystemdataEndretSkalKasteAuthorizationExceptionVedManglendeTilgang() {
         doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerHarTilgang();
 
-        ressurs.sjekkOmSystemdataErEndret(BEHANDLINGSID, "token");
+        assertThatExceptionOfType(AuthorizationException.class)
+                .isThrownBy(() -> ressurs.sjekkOmSystemdataErEndret(BEHANDLINGSID, "token"));
 
         verifyNoInteractions(soknadUnderArbeidRepository);
     }
 
-    @Test(expected = AuthorizationException.class)
+    @Test
     public void oppdaterSamtykkerSkalKasteAuthorizationExceptionVedManglendeTilgang() {
         doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerHarTilgang();
 
-        ressurs.oppdaterSamtykker(BEHANDLINGSID, Collections.emptyList(), "token");
+        assertThatExceptionOfType(AuthorizationException.class)
+                .isThrownBy(() -> ressurs.oppdaterSamtykker(BEHANDLINGSID, Collections.emptyList(), "token"));
 
         verifyNoInteractions(soknadService);
     }
 
-    @Test(expected = AuthorizationException.class)
+    @Test
     public void getSamtykkerSkalKasteAuthorizationExceptionVedManglendeTilgang() {
         doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerHarTilgang();
 
-        ressurs.hentSamtykker(BEHANDLINGSID, "token");
+        assertThatExceptionOfType(AuthorizationException.class)
+                .isThrownBy(() -> ressurs.hentSamtykker(BEHANDLINGSID, "token"));
 
         verifyNoInteractions(soknadUnderArbeidRepository);
     }
 
-    @Test(expected = AuthorizationException.class)
+    @Test
     public void opprettSoknadSkalKasteAuthorizationExceptionVedManglendeTilgang() {
         doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerHarTilgang();
 
         HttpServletResponse response = mock(HttpServletResponse.class);
-        ressurs.opprettSoknad(BEHANDLINGSID, response, "token");
+
+        assertThatExceptionOfType(AuthorizationException.class)
+                .isThrownBy(() -> ressurs.opprettSoknad(BEHANDLINGSID, response, "token"));
 
         verifyNoInteractions(soknadService);
     }

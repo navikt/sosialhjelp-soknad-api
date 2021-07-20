@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.domain.model.util;
 
-import org.junit.After;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 
 import static no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils.feilmeldingUtenFnr;
 import static no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils.isNonProduction;
@@ -10,7 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ServiceUtilsTest {
 
 
-    @After
+    @AfterEach
     public void tearDown() {
         System.clearProperty("environment.name");
     }
