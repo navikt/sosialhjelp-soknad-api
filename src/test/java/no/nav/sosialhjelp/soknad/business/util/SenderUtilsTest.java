@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.business.util;
 
-import org.junit.After;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 
 import static java.lang.System.setProperty;
 import static no.nav.sosialhjelp.soknad.business.util.SenderUtils.createPrefixedBehandlingsIdInNonProd;
@@ -11,7 +11,7 @@ public class SenderUtilsTest {
 
     String originalBehandlingsId = "behandlingsId";
 
-    @After
+    @AfterEach
     public void tearDown() {
         System.clearProperty("environment.name");
     }

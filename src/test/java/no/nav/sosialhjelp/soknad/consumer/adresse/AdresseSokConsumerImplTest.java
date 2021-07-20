@@ -7,8 +7,8 @@ import no.nav.sosialhjelp.soknad.business.service.adressesok.Sokedata;
 import no.nav.sosialhjelp.soknad.consumer.LoggingTestUtils;
 import no.nav.sosialhjelp.soknad.consumer.adresse.AdresseSokConsumer.AdressesokRespons;
 import no.nav.sosialhjelp.soknad.consumer.concurrency.RestCallContext;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.slf4j.MDC;
@@ -60,7 +60,7 @@ public class AdresseSokConsumerImplTest {
         }
     }
 
-    @Ignore//Feiler sporadisk pga flere logback som starter opp, Stian jobber med en fiks.
+    @Disabled//Feiler sporadisk pga flere logback som starter opp, Stian jobber med en fiks.
     @Test
     public void mdcParametersAreAccessible() {
         final ListAppender<ILoggingEvent> listAppender = LoggingTestUtils.createTestLogAppender(Level.INFO);
@@ -114,7 +114,7 @@ public class AdresseSokConsumerImplTest {
         }
     }
     
-    @Test(timeout=30000)
+    @Test
     public void girTimeout() {
         final CountDownLatch done = new CountDownLatch(1);
         try {
@@ -137,12 +137,12 @@ public class AdresseSokConsumerImplTest {
         }
     }
     
-    @Test(timeout=30000)
+    @Test
     public void skalAvviseSokNarKoenErFull() throws Exception {
         skalAvviseSokNarKoenErFullMed(1, 1);
     }
     
-    @Test(timeout=30000)
+    @Test
     public void skalAvviseSokNarKoenErFullMedFlereSamtidigeKallOgOppgaverIKo() throws Exception {
         skalAvviseSokNarKoenErFullMed(4, 12);
     }

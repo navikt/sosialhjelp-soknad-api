@@ -1,11 +1,11 @@
 package no.nav.sosialhjelp.soknad.consumer.virusscan;
 
 import no.nav.sosialhjelp.soknad.domain.model.exception.OpplastingException;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
@@ -22,7 +22,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ClamAvVirusScannerTest {
 
     private final URI uri = URI.create("www.test.com");
@@ -34,12 +34,12 @@ public class ClamAvVirusScannerTest {
     private String behandlingsId = "1100001";
     private byte[] data = new byte[]{};
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         setField(virusScanner, "enabled", true);
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         System.clearProperty("environment.name");
     }

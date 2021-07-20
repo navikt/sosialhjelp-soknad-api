@@ -6,13 +6,13 @@ import no.nav.sosialhjelp.soknad.consumer.redis.RedisService;
 import no.nav.sosialhjelp.soknad.domain.model.navenhet.NavEnhet;
 import no.nav.sosialhjelp.soknad.domain.model.navenhet.NavenhetFraLokalListe;
 import no.nav.sosialhjelp.soknad.domain.model.navenhet.NavenheterFraLokalListe;
-import org.junit.After;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.ws.rs.ServiceUnavailableException;
 import java.time.LocalDateTime;
@@ -33,7 +33,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class NorgServiceTest {
 
     private static final String GT = "0101";
@@ -48,7 +48,7 @@ public class NorgServiceTest {
     @InjectMocks
     private NorgService norgService;
 
-    @After
+    @AfterEach
     public void tearDown() {
         System.clearProperty("environment.name");
     }
@@ -201,7 +201,7 @@ public class NorgServiceTest {
         });
     }
 
-    @Ignore
+    @Disabled
     @Test
     public void getAllNavenheterFromPath() {
         NavenheterFraLokalListe allNavenheterFromPath = norgService.getAllNavenheterFromPath();

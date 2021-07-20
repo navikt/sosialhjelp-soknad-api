@@ -57,11 +57,11 @@ import org.apache.pdfbox.preflight.PreflightDocument;
 import org.apache.pdfbox.preflight.ValidationResult;
 import org.apache.pdfbox.preflight.exception.SyntaxValidationException;
 import org.apache.pdfbox.preflight.parser.PreflightParser;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.ContextConfiguration;
 
 import java.io.File;
@@ -79,13 +79,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 import static org.mockito.Mockito.mock;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 @ContextConfiguration(classes = SoknadServiceIntegrationTestContext.class)
 public class SosialhjelpPdfGeneratorTest {
 
     private SosialhjelpPdfGenerator sosialhjelpPdfGenerator;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         NavMessageSource navMessageSource = new NavMessageSource();
         NavMessageSource.Bundle bundle = new NavMessageSource.Bundle(BUNDLE_NAME, "classpath:/" + BUNDLE_NAME);
@@ -233,7 +233,7 @@ public class SosialhjelpPdfGeneratorTest {
     }
 
     // TODO: Skrive bedre tester for generering av pdf med pdfbox
-    @Ignore("Ignoreres midlertidig da denne testen hovedsaklig brukes for å generere PDF under utvikling")
+    @Disabled("Ignoreres midlertidig da denne testen hovedsaklig brukes for å generere PDF under utvikling")
     @Test
     public void testGenerate() {
         //SosialhjelpPdfGenerator sosialhjelpPdfGenerator =  new SosialhjelpPdfGenerator();
@@ -577,7 +577,7 @@ public class SosialhjelpPdfGeneratorTest {
         }
     }
 
-    @Ignore("Ignoreres midlertidig da denne testen hovedsaklig brukes for å generere PDF under utvikling")
+    @Disabled("Ignoreres midlertidig da denne testen hovedsaklig brukes for å generere PDF under utvikling")
     @Test
     public void testGenerateNoDisk() {
         //SosialhjelpPdfGenerator sosialhjelpPdfGenerator =  new SosialhjelpPdfGenerator();

@@ -2,7 +2,7 @@ package no.nav.sosialhjelp.soknad.business.pdf.helpers;
 
 import com.github.jknack.handlebars.Handlebars;
 import no.nav.sosialhjelp.soknad.consumer.kodeverk.KodeverkService;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 

@@ -2,12 +2,12 @@ package no.nav.sosialhjelp.soknad.business.pdf.helpers;
 
 import com.github.jknack.handlebars.Handlebars;
 import no.nav.sosialhjelp.soknad.business.pdf.CmsTekst;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
 import java.util.Locale;
@@ -18,7 +18,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class SettInnKnappTilgjengeligTekstHelperTest {
 
     private Handlebars handlebars;
@@ -29,7 +29,7 @@ public class SettInnKnappTilgjengeligTekstHelperTest {
     @Mock
     CmsTekst cmsTekst;
 
-    @Before
+    @BeforeEach
     public void setup() {
         handlebars = new Handlebars();
         handlebars.registerHelper(settInnKnappTilgjengeligTekstHelper.getNavn(), settInnKnappTilgjengeligTekstHelper);

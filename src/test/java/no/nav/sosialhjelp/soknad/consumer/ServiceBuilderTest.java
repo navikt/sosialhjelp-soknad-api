@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.consumer;
 
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ServiceBuilderTest {
     @Test

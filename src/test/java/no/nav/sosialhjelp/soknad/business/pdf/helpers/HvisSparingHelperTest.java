@@ -1,12 +1,12 @@
 package no.nav.sosialhjelp.soknad.business.pdf.helpers;
 
 import com.github.jknack.handlebars.Handlebars;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -18,7 +18,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class HvisSparingHelperTest {
 
     private Handlebars handlebars;
@@ -29,7 +29,7 @@ public class HvisSparingHelperTest {
     @Mock
     HentSvaralternativerHelper hentSvaralternativerHelper;
 
-    @Before
+    @BeforeEach
     public void setup() {
         final Set<String> sparingTyper = new HashSet<>();
         sparingTyper.add("brukskonto");

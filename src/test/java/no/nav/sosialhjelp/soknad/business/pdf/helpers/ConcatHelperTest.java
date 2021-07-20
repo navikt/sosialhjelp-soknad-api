@@ -1,8 +1,8 @@
 package no.nav.sosialhjelp.soknad.business.pdf.helpers;
 
 import com.github.jknack.handlebars.Handlebars;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -13,7 +13,7 @@ public class ConcatHelperTest {
 
     private Handlebars handlebars;
 
-    @Before
+    @BeforeEach
     public void setup() {
         handlebars = new Handlebars();
         ConcatHelper helper = new ConcatHelper();

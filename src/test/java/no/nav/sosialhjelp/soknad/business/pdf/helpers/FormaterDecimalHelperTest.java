@@ -2,8 +2,8 @@ package no.nav.sosialhjelp.soknad.business.pdf.helpers;
 
 import com.github.jknack.handlebars.Handlebars;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
@@ -14,7 +14,7 @@ public class FormaterDecimalHelperTest {
 
     private Handlebars handlebars;
 
-    @Before
+    @BeforeEach
     public void setup() {
         handlebars = new Handlebars();
         FormaterDecimalHelper helper = new FormaterDecimalHelper();

@@ -3,11 +3,11 @@ package no.nav.sosialhjelp.soknad.business.db.repositories.sendtsoknad;
 import no.nav.sosialhjelp.soknad.business.db.RepositoryTestSupport;
 import no.nav.sosialhjelp.soknad.business.db.config.DbTestConfig;
 import no.nav.sosialhjelp.soknad.domain.SendtSoknad;
-import org.junit.After;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.inject.Inject;
 import java.time.LocalDateTime;
@@ -15,8 +15,9 @@ import java.time.temporal.ChronoUnit;
 
 import static java.time.LocalDateTime.now;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
-@RunWith(SpringJUnit4ClassRunner.class)
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {DbTestConfig.class})
 public class SendtSoknadRepositoryJdbcTest {
 
@@ -37,7 +38,7 @@ public class SendtSoknadRepositoryJdbcTest {
     @Inject
     private RepositoryTestSupport soknadRepositoryTestSupport;
 
-    @After
+    @AfterEach
     public void tearDown() {
         soknadRepositoryTestSupport.getJdbcTemplate().update("delete from SENDT_SOKNAD");
     }
@@ -49,14 +50,16 @@ public class SendtSoknadRepositoryJdbcTest {
         assertThat(sendtSoknadId).isNotNull();
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test
     public void opprettSendtSoknadKasterRuntimeExceptionHvisEierErUlikSoknadseier() {
-        sendtSoknadRepository.opprettSendtSoknad(lagSendtSoknad(EIER), EIER2);
+        assertThatExceptionOfType(RuntimeException.class)
+                .isThrownBy(() -> sendtSoknadRepository.opprettSendtSoknad(lagSendtSoknad(EIER), EIER2));
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test
     public void opprettSendtSoknadKasterRuntimeExceptionHvisEierErNull() {
-        sendtSoknadRepository.opprettSendtSoknad(lagSendtSoknad(EIER), null);
+        assertThatExceptionOfType(RuntimeException.class)
+            .isThrownBy(() -> sendtSoknadRepository.opprettSendtSoknad(lagSendtSoknad(EIER), null));
     }
 
     @Test

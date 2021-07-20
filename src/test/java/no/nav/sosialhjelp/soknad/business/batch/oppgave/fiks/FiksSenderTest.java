@@ -23,13 +23,13 @@ import no.nav.sosialhjelp.soknad.domain.SendtSoknad;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.domain.VedleggType;
 import no.nav.sosialhjelp.soknad.domain.Vedleggstatus;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -41,6 +41,7 @@ import static no.nav.sosialhjelp.soknad.business.batch.oppgave.fiks.FiksSender.E
 import static no.nav.sosialhjelp.soknad.business.batch.oppgave.fiks.FiksSender.SOKNAD_TIL_NAV;
 import static no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.anyBoolean;
 import static org.mockito.Mockito.anyString;
@@ -49,7 +50,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
+//@ExtendWith(MockitoExtension.class)
 public class FiksSenderTest {
 
     private static final String FIKSFORSENDELSE_ID = "6767";
@@ -75,7 +77,7 @@ public class FiksSenderTest {
             .withPostnr("0000")
             .withPoststed("Ikke send");
 
-    @Before
+    @BeforeEach
     public void setUp() {
         System.clearProperty("environment.name");
         when(dokumentKrypterer.krypterData(any())).thenReturn(new byte[]{3, 2, 1});
@@ -90,7 +92,7 @@ public class FiksSenderTest {
         fiksSender = new FiksSender(forsendelsesService, dokumentKrypterer, innsendingService, sosialhjelpPdfGenerator);
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         clearProperty(FiksSender.KRYPTERING_DISABLED);
     }
@@ -159,7 +161,7 @@ public class FiksSenderTest {
         assertThat(forsendelse.getTittel()).isEqualTo(ETTERSENDELSE_TIL_NAV);
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void opprettForsendelseForEttersendelseUtenSvarPaForsendelseSkalFeile() {
         when(innsendingService.hentSoknadUnderArbeid(anyString(), anyString()))
                 .thenReturn(new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER)).withEier(EIER));
@@ -167,7 +169,8 @@ public class FiksSenderTest {
                 .withFiksforsendelseId(null));
         SendtSoknad sendtEttersendelse = lagSendtEttersendelse();
 
-        fiksSender.opprettForsendelse(sendtEttersendelse, new PostAdresse());
+        assertThatExceptionOfType(IllegalStateException.class)
+                .isThrownBy(() -> fiksSender.opprettForsendelse(sendtEttersendelse, new PostAdresse()));
     }
 
     @Test
@@ -198,14 +201,16 @@ public class FiksSenderTest {
         assertThat(fiksDokumenter.get(3).getFilnavn()).isEqualTo(FILNAVN);
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test
     public void hentDokumenterFraSoknadKasterFeilHvisSoknadManglerForNySoknad() {
-        fiksSender.hentDokumenterFraSoknad(new SoknadUnderArbeid());
+        assertThatExceptionOfType(RuntimeException.class)
+                .isThrownBy(() -> fiksSender.hentDokumenterFraSoknad(new SoknadUnderArbeid()));
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test
     public void hentDokumenterFraSoknadKasterFeilHvisVedleggManglerForEttersending() {
-        fiksSender.hentDokumenterFraSoknad(new SoknadUnderArbeid().withTilknyttetBehandlingsId("123"));
+        assertThatExceptionOfType(RuntimeException.class)
+                .isThrownBy(() -> fiksSender.hentDokumenterFraSoknad(new SoknadUnderArbeid().withTilknyttetBehandlingsId("123")));
     }
 
     private JsonInternalSoknad lagInternalSoknadForEttersending() {

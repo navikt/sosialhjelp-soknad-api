@@ -1,23 +1,23 @@
 package no.nav.sosialhjelp.soknad.web.rest.ressurser;
 
 import no.nav.sosialhjelp.soknad.web.utils.NedetidUtils;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class NedetidRessursTest {
 
     @InjectMocks
     NedetidRessurs nedetidRessurs;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         System.clearProperty(NedetidUtils.NEDETID_START);
         System.clearProperty(NedetidUtils.NEDETID_SLUTT);

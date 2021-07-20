@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.tekster;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -20,7 +20,7 @@ public class NavMessageSourceTest {
     private NavMessageSource messageSource;
     private boolean diskFilesExist = true;
 
-    @Before
+    @BeforeEach
     public void setup() {
         messageSource = new NavMessageSource() {
             @Override

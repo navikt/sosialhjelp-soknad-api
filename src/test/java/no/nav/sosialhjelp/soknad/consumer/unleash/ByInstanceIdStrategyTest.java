@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.consumer.unleash;
 
-import org.junit.After;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 
@@ -11,7 +11,7 @@ public class ByInstanceIdStrategyTest {
 
     private final ByInstanceIdStrategy strategy = new ByInstanceIdStrategy();
 
-    @After
+    @AfterEach
     public void tearDown() {
         System.clearProperty("unleash_instance_id");
     }

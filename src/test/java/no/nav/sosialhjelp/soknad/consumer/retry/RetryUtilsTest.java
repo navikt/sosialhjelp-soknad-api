@@ -1,10 +1,10 @@
 package no.nav.sosialhjelp.soknad.consumer.retry;
 
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.PdlHentPersonConsumer;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.slf4j.Logger;
 
 import javax.ws.rs.InternalServerErrorException;
@@ -19,7 +19,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.slf4j.LoggerFactory.getLogger;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class RetryUtilsTest {
 
     private static final Logger log = getLogger(RetryUtilsTest.class);

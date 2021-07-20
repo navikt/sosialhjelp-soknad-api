@@ -15,14 +15,14 @@ import no.nav.sosialhjelp.soknad.domain.model.oidc.StaticSubjectHandlerService;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.utgifter.BoutgiftRessurs.BoutgifterFrontend;
 import no.nav.sosialhjelp.soknad.web.sikkerhet.Tilgangskontroll;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +42,7 @@ import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTGIFTER_STROM;
 import static no.nav.sosialhjelp.soknad.business.mappers.OkonomiMapper.setBekreftelse;
 import static no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
@@ -49,7 +50,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class BoutgiftRessursTest {
 
     private static final String BEHANDLINGSID = "123";
@@ -67,14 +68,13 @@ public class BoutgiftRessursTest {
     @InjectMocks
     private BoutgiftRessurs boutgiftRessurs;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         System.setProperty("environment.name", "test");
         SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
-        when(textService.getJsonOkonomiTittel(anyString())).thenReturn("tittel");
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         SubjectHandler.resetOidcSubjectHandlerService();
         System.clearProperty("environment.name");
@@ -174,6 +174,7 @@ public class BoutgiftRessursTest {
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithBoutgifter(true, asList(UTGIFTER_HUSLEIE, UTGIFTER_STROM,
                         UTGIFTER_KOMMUNAL_AVGIFT, UTGIFTER_ANNET_BO)));
+        when(textService.getJsonOkonomiTittel(anyString())).thenReturn("tittel");
 
         BoutgifterFrontend boutgifterFrontend = new BoutgifterFrontend();
         boutgifterFrontend.setBekreftelse(false);
@@ -197,6 +198,7 @@ public class BoutgiftRessursTest {
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER)));
+        when(textService.getJsonOkonomiTittel(anyString())).thenReturn("tittel");
 
         BoutgifterFrontend boutgifterFrontend = new BoutgifterFrontend();
         boutgifterFrontend.setBekreftelse(true);
@@ -233,6 +235,7 @@ public class BoutgiftRessursTest {
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER)));
+        when(textService.getJsonOkonomiTittel(anyString())).thenReturn("tittel");
 
         BoutgifterFrontend boutgifterFrontend = new BoutgifterFrontend();
         boutgifterFrontend.setBekreftelse(true);
@@ -264,21 +267,24 @@ public class BoutgiftRessursTest {
         assertThat(opplysningerBoutgifter.stream().anyMatch(boutgift -> boutgift.getType().equals(UTGIFTER_ANNET_BO))).isTrue();
     }
 
-    @Test(expected = AuthorizationException.class)
+    @Test
     public void getBoutgifterSkalKasteAuthorizationExceptionVedManglendeTilgang() {
         doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerHarTilgang();
 
-        boutgiftRessurs.hentBoutgifter(BEHANDLINGSID);
+        assertThatExceptionOfType(AuthorizationException.class)
+                .isThrownBy(() -> boutgiftRessurs.hentBoutgifter(BEHANDLINGSID));
 
         verifyNoInteractions(soknadUnderArbeidRepository);
     }
 
-    @Test(expected = AuthorizationException.class)
+    @Test
     public void putBoutgifterSkalKasteAuthorizationExceptionVedManglendeTilgang() {
         doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
 
         var boutgifterFrontend = new BoutgifterFrontend();
-        boutgiftRessurs.updateBoutgifter(BEHANDLINGSID, boutgifterFrontend);
+
+        assertThatExceptionOfType(AuthorizationException.class)
+                .isThrownBy(() -> boutgiftRessurs.updateBoutgifter(BEHANDLINGSID, boutgifterFrontend));
 
         verifyNoInteractions(soknadUnderArbeidRepository);
     }

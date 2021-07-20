@@ -25,12 +25,12 @@ import no.nav.sosialhjelp.soknad.tekster.NavMessageSource;
 import no.nav.sosialhjelp.soknad.web.config.SoknadActionsTestConfig;
 import no.nav.sosialhjelp.soknad.web.sikkerhet.Tilgangskontroll;
 import no.nav.sosialhjelp.soknad.web.utils.NedetidUtils;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.inject.Inject;
 import javax.servlet.ServletContext;
@@ -41,6 +41,7 @@ import static no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadSer
 import static no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus.SENDT_MED_DIGISOS_API;
 import static no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus.UNDER_ARBEID;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -50,10 +51,9 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
-@RunWith(SpringJUnit4ClassRunner.class)
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {SoknadActionsTestConfig.class})
 public class SoknadActionsTest {
 
@@ -92,7 +92,7 @@ public class SoknadActionsTest {
 
     ServletContext context = mock(ServletContext.class);
 
-    @Before
+    @BeforeEach
     public void setUp() {
         System.setProperty("environment.name", "test");
         SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
@@ -103,7 +103,7 @@ public class SoknadActionsTest {
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         System.clearProperty("digisosapi.sending.alltidTilTestkommune.enable");
         System.clearProperty("digisosapi.sending.enable");
@@ -113,20 +113,24 @@ public class SoknadActionsTest {
         System.clearProperty("environment.name");
     }
 
-    @Test(expected = SoknadenHarNedetidException.class)
+    @Test
     public void sendSoknadINedetidSkalKasteException() {
         System.setProperty(NedetidUtils.NEDETID_START, LocalDateTime.now().minusDays(1).format(NedetidUtils.dateTimeFormatter));
         System.setProperty(NedetidUtils.NEDETID_SLUTT, LocalDateTime.now().plusDays(2).format(NedetidUtils.dateTimeFormatter));
-        actions.sendSoknad("behandlingsId", context, "");
 
-        verify(soknadService, times(0)).sendSoknad(any());
-        verify(digisosApiService, times(0)).sendSoknad(any(), any(), any());
+        assertThatExceptionOfType(SoknadenHarNedetidException.class)
+                .isThrownBy(() -> actions.sendSoknad("behandlingsId", context, ""));
+
+//        verify(soknadService, times(0)).sendSoknad(any());
+//        verify(digisosApiService, times(0)).sendSoknad(any(), any(), any());
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void sendSoknadMedSoknadUnderArbeidNullSkalKasteException() {
         String behandlingsId = "soknadUnderArbeidErNull";
-        actions.sendSoknad(behandlingsId, context, "");
+
+        assertThatExceptionOfType(IllegalStateException.class)
+                .isThrownBy(() -> actions.sendSoknad("behandlingsId", context, ""));
 
         verify(soknadService, times(0)).sendSoknad(behandlingsId);
         verify(digisosApiService, times(0)).sendSoknad(any(), any(), any());
@@ -159,7 +163,7 @@ public class SoknadActionsTest {
         verify(soknadService, times(1)).sendSoknad(behandlingsId);
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void sendEttersendelsePaaSoknadUtenMetadataSkalGiException() {
         String behandlingsId = "ettersendelsePaaSoknadUtenMetadata";
         String soknadBehandlingsId = "soknadSendtViaSvarUt";
@@ -167,10 +171,11 @@ public class SoknadActionsTest {
         when(soknadUnderArbeidRepository.hentSoknad(behandlingsId, EIER)).thenReturn(soknadUnderArbeid);
         System.setProperty("digisosapi.sending.enable", "true");
 
-        actions.sendSoknad(behandlingsId, context, "");
+        assertThatExceptionOfType(IllegalStateException.class)
+                .isThrownBy(() -> actions.sendSoknad(behandlingsId, context, ""));
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void sendEttersendelsePaaDigisosApiSoknadSkalGiException() {
         String behandlingsId = "ettersendelsePaaDigisosApiSoknad";
         String soknadBehandlingsId = "soknadSendtViaSvarUt";
@@ -181,10 +186,11 @@ public class SoknadActionsTest {
         when(soknadMetadataRepository.hent(soknadBehandlingsId)).thenReturn(soknadMetadata);
         System.setProperty("digisosapi.sending.enable", "true");
 
-        actions.sendSoknad(behandlingsId, context, "");
+        assertThatExceptionOfType(IllegalStateException.class)
+                .isThrownBy(() -> actions.sendSoknad(behandlingsId, context, ""));
     }
 
-    @Test(expected = SendingTilKommuneUtilgjengeligException.class)
+    @Test
     public void sendSoknadMedFiksNedetidOgTomCacheSkalKasteException() {
         String behandlingsId = "fiksNedetidOgTomCache";
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
@@ -193,9 +199,10 @@ public class SoknadActionsTest {
         when(kommuneInfoService.kommuneInfo(any(String.class))).thenReturn(KommuneStatus.FIKS_NEDETID_OG_TOM_CACHE);
         System.setProperty("digisosapi.sending.enable", "true");
 
-        actions.sendSoknad(behandlingsId, context, "");
+        assertThatExceptionOfType(SendingTilKommuneUtilgjengeligException.class)
+                .isThrownBy(() -> actions.sendSoknad(behandlingsId, context, ""));
 
-        verify(soknadService, times(1)).sendSoknad(behandlingsId);
+//        verify(soknadService, times(1)).sendSoknad(behandlingsId);
     }
 
     @Test
@@ -239,7 +246,7 @@ public class SoknadActionsTest {
         verify(digisosApiService, times(1)).sendSoknad(eq(soknadUnderArbeid), any(), any());
     }
 
-    @Test(expected = SendingTilKommuneErMidlertidigUtilgjengeligException.class)
+    @Test
     public void sendSoknadTilKommuneMedMidlertidigFeilSkalKasteException() {
         String behandlingsId = "kommuneMedMidlertidigFeil";
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
@@ -247,12 +254,13 @@ public class SoknadActionsTest {
         when(kommuneInfoService.kommuneInfo(any())).thenReturn(KommuneStatus.SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD_OG_ETTERSENDELSER);
         System.setProperty("digisosapi.sending.enable", "true");
 
-        actions.sendSoknad(behandlingsId, context, "");
+        assertThatExceptionOfType(SendingTilKommuneErMidlertidigUtilgjengeligException.class)
+                .isThrownBy(() -> actions.sendSoknad(behandlingsId, context, ""));
 
         verify(digisosApiService, times(0)).sendSoknad(eq(soknadUnderArbeid), any(), any());
     }
 
-    @Test(expected = SendingTilKommuneErIkkeAktivertException.class)
+    @Test
     public void sendSoknadTilKommuneSomIkkeErAktivertEllerSvarUtSkalKasteException() {
         String behandlingsId = "kommueMedMottakDeaktivertOgIkkeSvarut";
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
@@ -261,7 +269,8 @@ public class SoknadActionsTest {
         when(kommuneInfoService.kommuneInfo(any())).thenReturn(KommuneStatus.HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT);
         System.setProperty("digisosapi.sending.enable", "true");
 
-        actions.sendSoknad(behandlingsId, context, "");
+        assertThatExceptionOfType(SendingTilKommuneErIkkeAktivertException.class)
+                .isThrownBy(() -> actions.sendSoknad(behandlingsId, context, ""));
 
         verify(digisosApiService, times(0)).sendSoknad(eq(soknadUnderArbeid), any(), any());
     }
@@ -284,14 +293,15 @@ public class SoknadActionsTest {
         assertThat(kommunenummer).isEqualTo(expectedKommunenummer);
     }
 
-    @Test(expected = AuthorizationException.class)
+    @Test
     public void sendSoknadSkalGiAuthorizationExceptionVedManglendeTilgang() {
         doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
 
-        actions.sendSoknad("behandlingsId", mock(ServletContext.class), "token");
+        assertThatExceptionOfType(AuthorizationException.class)
+                .isThrownBy(() -> actions.sendSoknad("behandlingsId", mock(ServletContext.class), "token"));
 
-        verifyNoInteractions(soknadService);
-        verifyNoInteractions(kommuneInfoService);
-        verifyNoInteractions(digisosApiService);
+//        verifyNoInteractions(soknadService);
+//        verifyNoInteractions(kommuneInfoService);
+//        verifyNoInteractions(digisosApiService);
     }
 }

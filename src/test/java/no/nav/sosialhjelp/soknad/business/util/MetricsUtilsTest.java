@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.business.util;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static no.nav.sosialhjelp.soknad.business.util.MetricsUtils.getProsent;
 import static org.assertj.core.api.Assertions.assertThat;

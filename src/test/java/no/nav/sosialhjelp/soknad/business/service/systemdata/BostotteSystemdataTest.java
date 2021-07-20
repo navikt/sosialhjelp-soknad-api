@@ -17,11 +17,11 @@ import no.nav.sosialhjelp.soknad.consumer.bostotte.dto.SakerDto;
 import no.nav.sosialhjelp.soknad.consumer.bostotte.dto.UtbetalingerDto;
 import no.nav.sosialhjelp.soknad.consumer.bostotte.dto.VedtakDto;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -36,7 +36,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class BostotteSystemdataTest {
     private static final String EIER = "12345678910";
 

@@ -20,12 +20,12 @@ import no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.VegadresseDto;
 import no.nav.sosialhjelp.soknad.domain.model.Barn;
 import no.nav.sosialhjelp.soknad.domain.model.Ektefelle;
 import no.nav.sosialhjelp.soknad.domain.model.Person;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -40,7 +40,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
+//@ExtendWith(MockitoExtension.class)
 public class PdlPersonMapperTest {
 
     private static final String IDENT = "ident";
@@ -68,7 +69,7 @@ public class PdlPersonMapperTest {
     @InjectMocks
     private PdlPersonMapper mapper;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         when(kodeverkService.getPoststed(anyString())).thenReturn("Mitt poststed");
     }

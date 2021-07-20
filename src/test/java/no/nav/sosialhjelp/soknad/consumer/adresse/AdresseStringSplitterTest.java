@@ -3,7 +3,7 @@ package no.nav.sosialhjelp.soknad.consumer.adresse;
 import no.nav.sosialhjelp.soknad.business.service.adressesok.Sokedata;
 import no.nav.sosialhjelp.soknad.business.service.adressesok.Soketype;
 import no.nav.sosialhjelp.soknad.consumer.kodeverk.KodeverkService;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Objects;
 

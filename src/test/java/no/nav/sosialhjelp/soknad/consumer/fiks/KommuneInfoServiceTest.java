@@ -3,12 +3,12 @@ package no.nav.sosialhjelp.soknad.consumer.fiks;
 import no.nav.sosialhjelp.api.fiks.KommuneInfo;
 import no.nav.sosialhjelp.soknad.consumer.fiks.dto.KommuneStatus;
 import no.nav.sosialhjelp.soknad.consumer.redis.RedisService;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -23,7 +23,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class KommuneInfoServiceTest {
 
     private static final String KOMMUNENR = "1234";
@@ -39,7 +39,7 @@ public class KommuneInfoServiceTest {
     @InjectMocks
     private KommuneInfoService kommuneInfoService;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         when(redisService.getString(any())).thenReturn(null);
     }

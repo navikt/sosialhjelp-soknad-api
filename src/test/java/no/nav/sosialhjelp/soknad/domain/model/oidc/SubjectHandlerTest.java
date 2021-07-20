@@ -1,30 +1,33 @@
 package no.nav.sosialhjelp.soknad.domain.model.oidc;
 
-import org.junit.After;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 
 import static no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler.getSubjectHandlerService;
 import static no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler.setSubjectHandlerService;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 public class SubjectHandlerTest {
 
-    @After
+    @AfterEach
     public void tearDown() {
         System.clearProperty("environment.name");
         SubjectHandler.resetOidcSubjectHandlerService();
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test
     public void setSubjectHandlerService_iProdMiljo_skalGiException() {
         System.setProperty("environment.name", "p");
-        setSubjectHandlerService(new StaticSubjectHandlerService());
+        assertThatExceptionOfType(RuntimeException.class)
+                .isThrownBy(() -> setSubjectHandlerService(new StaticSubjectHandlerService()));
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test
     public void setSubjectHandlerService_iUkjentMiljo_skalGiException() {
         System.setProperty("environment.name", "ukjent");
-        setSubjectHandlerService(new StaticSubjectHandlerService());
+        assertThatExceptionOfType(RuntimeException.class)
+                .isThrownBy(() -> setSubjectHandlerService(new StaticSubjectHandlerService()));
     }
 
     @Test
