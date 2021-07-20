@@ -18,7 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {DbTestConfig.class})
-public class SoknadMetadataRepositoryJdbcTest {
+class SoknadMetadataRepositoryJdbcTest {
 
     private static final String EIER = "11111111111";
     private final int dagerGammelSoknad = 20;
@@ -36,7 +36,7 @@ public class SoknadMetadataRepositoryJdbcTest {
     }
 
     @Test
-    public void oppdaterLestDittNav() {
+    void oppdaterLestDittNav() {
         var soknadMetadata = soknadMetadata(behandlingsId, SoknadMetadataInnsendingStatus.UNDER_ARBEID, 12);
         assertThat(soknadMetadata.lestDittNav).isFalse();
         soknadMetadataRepository.opprett(soknadMetadata);

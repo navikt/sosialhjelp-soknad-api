@@ -21,7 +21,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class LagringsSchedulerTest {
+class LagringsSchedulerTest {
 
     @InjectMocks
     private LagringsScheduler scheduler = new LagringsScheduler();
@@ -41,7 +41,7 @@ public class LagringsSchedulerTest {
     }
 
     @Test
-    public void skalAvbryteIHenvendelseOgSletteFraDatabase() throws InterruptedException {
+    void skalAvbryteIHenvendelseOgSletteFraDatabase() throws InterruptedException {
         String behandlingsId = "2";
         String tilknyttetBehandlingsId = "1";
         long soknadId = 2;
@@ -61,7 +61,7 @@ public class LagringsSchedulerTest {
     }
 
     @Test
-    public void skalIkkeAvbryteIHenvendelseOgSletteFraDatabaseDersomDetIkkeErEttersendelse() throws InterruptedException {
+    void skalIkkeAvbryteIHenvendelseOgSletteFraDatabaseDersomDetIkkeErEttersendelse() throws InterruptedException {
         String behandlingsId = "2";
         long soknadId = 2;
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid()

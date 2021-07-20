@@ -43,7 +43,7 @@ import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class FormueRessursTest {
+class FormueRessursTest {
 
     private static final String BEHANDLINGSID = "123";
     private static final String EIER = "123456789101";
@@ -73,7 +73,7 @@ public class FormueRessursTest {
     }
 
     @Test
-    public void getFormueSkalReturnereBekreftelserLikFalse() {
+    void getFormueSkalReturnereBekreftelserLikFalse() {
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER)));
 
@@ -89,7 +89,7 @@ public class FormueRessursTest {
     }
 
     @Test
-    public void getFormueSkalReturnereBekreftelserLikTrue() {
+    void getFormueSkalReturnereBekreftelserLikTrue() {
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithFormue(asList(FORMUE_BRUKSKONTO, FORMUE_BSU,
                         FORMUE_LIVSFORSIKRING, FORMUE_VERDIPAPIRER, FORMUE_SPAREKONTO, FORMUE_ANNET), null));
@@ -106,7 +106,7 @@ public class FormueRessursTest {
     }
 
     @Test
-    public void getFormueSkalReturnereBeskrivelseAvAnnet() {
+    void getFormueSkalReturnereBeskrivelseAvAnnet() {
         String beskrivelse = "Vinylplater";
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithFormue(asList(FORMUE_ANNET), beskrivelse));
@@ -118,7 +118,7 @@ public class FormueRessursTest {
     }
 
     @Test
-    public void putFormueSkalSetteAlleBekreftelserLikFalse() {
+    void putFormueSkalSetteAlleBekreftelserLikFalse() {
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithFormue(asList(FORMUE_BRUKSKONTO, FORMUE_BSU,
@@ -142,7 +142,7 @@ public class FormueRessursTest {
     }
 
     @Test
-    public void putFormueSkalSetteNoenBekreftelser() {
+    void putFormueSkalSetteNoenBekreftelser() {
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER)));
@@ -175,7 +175,7 @@ public class FormueRessursTest {
     }
 
     @Test
-    public void putFormueSkalSetteAlleBekreftelser() {
+    void putFormueSkalSetteAlleBekreftelser() {
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER)));
@@ -208,7 +208,7 @@ public class FormueRessursTest {
     }
 
     @Test
-    public void putFormueSkalFjerneBeskrivelseAvAnnetDersomAnnetBlirAvkreftet() {
+    void putFormueSkalFjerneBeskrivelseAvAnnetDersomAnnetBlirAvkreftet() {
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithFormue(asList(FORMUE_ANNET), "Vinylplater"));
@@ -228,7 +228,7 @@ public class FormueRessursTest {
     }
 
     @Test
-    public void getFormueSkalKasteAuthorizationExceptionVedManglendeTilgang() {
+    void getFormueSkalKasteAuthorizationExceptionVedManglendeTilgang() {
         doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerHarTilgang();
 
         assertThatExceptionOfType(AuthorizationException.class)
@@ -238,7 +238,7 @@ public class FormueRessursTest {
     }
 
     @Test
-    public void putFormueSkalKasteAuthorizationExceptionVedManglendeTilgang() {
+    void putFormueSkalKasteAuthorizationExceptionVedManglendeTilgang() {
         doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(BEHANDLINGSID);
 
         var formueFrontend = new FormueFrontend();

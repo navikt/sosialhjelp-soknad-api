@@ -13,7 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class GeografiskTilknytningServiceTest {
+class GeografiskTilknytningServiceTest {
 
     @Mock
     private GeografiskTilknytningConsumer geografiskTilknytningConsumer;
@@ -25,7 +25,7 @@ public class GeografiskTilknytningServiceTest {
     private final String gt = "gt";
 
     @Test
-    public void skalReturnereBydelsnummer() {
+    void skalReturnereBydelsnummer() {
         when(geografiskTilknytningConsumer.hentGeografiskTilknytning(ident))
                 .thenReturn(new GeografiskTilknytningDto(GtType.BYDEL, null, gt, null));
 
@@ -34,7 +34,7 @@ public class GeografiskTilknytningServiceTest {
     }
 
     @Test
-    public void skalReturnereKommunenummer() {
+    void skalReturnereKommunenummer() {
         when(geografiskTilknytningConsumer.hentGeografiskTilknytning(ident))
                 .thenReturn(new GeografiskTilknytningDto(GtType.KOMMUNE, gt, null, null));
 
@@ -43,7 +43,7 @@ public class GeografiskTilknytningServiceTest {
     }
 
     @Test
-    public void skalReturnereNullHvisUtland() {
+    void skalReturnereNullHvisUtland() {
         when(geografiskTilknytningConsumer.hentGeografiskTilknytning(ident))
                 .thenReturn(new GeografiskTilknytningDto(GtType.UTLAND, null, null, gt));
 
@@ -52,7 +52,7 @@ public class GeografiskTilknytningServiceTest {
     }
 
     @Test
-    public void skalReturnereNullHvisUdefinert() {
+    void skalReturnereNullHvisUdefinert() {
         when(geografiskTilknytningConsumer.hentGeografiskTilknytning(ident))
                 .thenReturn(new GeografiskTilknytningDto(GtType.UDEFINERT, null, null, null));
 
@@ -61,7 +61,7 @@ public class GeografiskTilknytningServiceTest {
     }
 
     @Test
-    public void skalReturnereNullHvisConsumerGirNull() {
+    void skalReturnereNullHvisConsumerGirNull() {
         when(geografiskTilknytningConsumer.hentGeografiskTilknytning(ident))
                 .thenReturn(null);
 

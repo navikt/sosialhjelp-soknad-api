@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class HentTekstMedParametereHelperTest {
+class HentTekstMedParametereHelperTest {
 
     private Handlebars handlebars;
 
@@ -36,7 +36,7 @@ public class HentTekstMedParametereHelperTest {
     }
 
     @Test
-    public void hentTekstMedEnParameter() throws IOException {
+    void hentTekstMedEnParameter() throws IOException {
         final String testStreng = "<div>Parameter er satt til: {parameter}.</div>";
         final String key = "test";
         lagPropertiesMedTekstOgFilnavnNokkel(testStreng, key);
@@ -47,7 +47,7 @@ public class HentTekstMedParametereHelperTest {
     }
 
     @Test
-    public void hentTekstMedFlereParametere() throws IOException {
+    void hentTekstMedFlereParametere() throws IOException {
         final String testStreng = "<div>Parametere er satt til: {parameter1}, {parameter2}, {parameter3}.</div>";
         final String key = "test";
         lagPropertiesMedTekstOgFilnavnNokkel(testStreng, key);
@@ -60,7 +60,7 @@ public class HentTekstMedParametereHelperTest {
     }
     
     @Test
-    public void hentTekstMedUfullstendigParameter() throws IOException {
+    void hentTekstMedUfullstendigParameter() throws IOException {
         final String testStreng = "<div>Parameter er satt til: {parameter}.</div>";
         final String key = "test";
         lagPropertiesMedTekstOgFilnavnNokkel(testStreng, key);
@@ -71,7 +71,7 @@ public class HentTekstMedParametereHelperTest {
     }
     
     @Test
-    public void hentTekstUtenParametere() throws IOException {
+    void hentTekstUtenParametere() throws IOException {
         final String testStreng = "<div>Parameter er satt til: {parameter}.</div>";
         final String key = "test";
         lagPropertiesMedTekstOgFilnavnNokkel(testStreng, key);

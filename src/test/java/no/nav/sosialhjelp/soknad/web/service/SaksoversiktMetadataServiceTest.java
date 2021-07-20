@@ -36,7 +36,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class SaksoversiktMetadataServiceTest {
+class SaksoversiktMetadataServiceTest {
 
     @Mock
     SoknadMetadataRepository soknadMetadataRepository;
@@ -95,7 +95,7 @@ public class SaksoversiktMetadataServiceTest {
     }
 
     @Test
-    public void henterInnsendteForBruker() throws ParseException {
+    void henterInnsendteForBruker() throws ParseException {
         when(soknadMetadataRepository.hentAlleInnsendteSoknaderForBruker("12345"))
                 .thenReturn(asList(soknadMetadata));
 
@@ -111,7 +111,7 @@ public class SaksoversiktMetadataServiceTest {
     }
 
     @Test
-    public void hentForEttersendelse() {
+    void hentForEttersendelse() {
         when(soknadMetadataRepository.hentInnsendteSoknaderForBrukerEtterTidspunkt(anyString(), any())).thenReturn(asList(soknadMetadata));
         when(ettersendingService.hentNyesteSoknadIKjede(any())).thenReturn(soknadMetadata);
 
@@ -125,7 +125,7 @@ public class SaksoversiktMetadataServiceTest {
     }
 
     @Test
-    public void hentForEttersendelseHarRiktigInterval() {
+    void hentForEttersendelseHarRiktigInterval() {
         when(soknadMetadataRepository.hentInnsendteSoknaderForBrukerEtterTidspunkt(anyString(), timeCaptor.capture())).thenReturn(asList(soknadMetadata));
         when(ettersendingService.hentNyesteSoknadIKjede(any())).thenReturn(soknadMetadata);
 

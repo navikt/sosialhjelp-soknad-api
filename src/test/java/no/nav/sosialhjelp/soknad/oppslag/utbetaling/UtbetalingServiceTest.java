@@ -16,7 +16,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class UtbetalingServiceTest {
+class UtbetalingServiceTest {
 
     @Mock
     private OppslagConsumer oppslagConsumer;
@@ -25,7 +25,7 @@ public class UtbetalingServiceTest {
     private UtbetalingService utbetalingService;
 
     @Test
-    public void clientReturnererUtbetalinger() {
+    void clientReturnererUtbetalinger() {
         when(oppslagConsumer.getUtbetalingerSiste40Dager(anyString()))
                 .thenReturn(new UtbetalingerResponseDto(singletonList(createUtbetaling()), false));
 
@@ -53,7 +53,7 @@ public class UtbetalingServiceTest {
     }
 
     @Test
-    public void clientReturnererTomListe() {
+    void clientReturnererTomListe() {
         when(oppslagConsumer.getUtbetalingerSiste40Dager(anyString()))
                 .thenReturn(new UtbetalingerResponseDto(emptyList(), false));
 
@@ -63,7 +63,7 @@ public class UtbetalingServiceTest {
     }
 
     @Test
-    public void clientReturnererNull() {
+    void clientReturnererNull() {
         when(oppslagConsumer.getUtbetalingerSiste40Dager(anyString()))
                 .thenReturn(null);
 
@@ -73,7 +73,7 @@ public class UtbetalingServiceTest {
     }
 
     @Test
-    public void clientReturnererResponseMedFeiletTrue() {
+    void clientReturnererResponseMedFeiletTrue() {
         when(oppslagConsumer.getUtbetalingerSiste40Dager(anyString()))
                 .thenReturn(new UtbetalingerResponseDto(null, true));
 

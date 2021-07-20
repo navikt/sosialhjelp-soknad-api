@@ -46,7 +46,7 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @ContextConfiguration(classes = SoknadServiceIntegrationTestContext.class)
-public class DigisosApiServiceTest {
+class DigisosApiServiceTest {
 
     @Mock
     private InnsendingService innsendingService;
@@ -93,7 +93,7 @@ public class DigisosApiServiceTest {
     }
 
     @Test
-    public void skalLageOpplastingsListeMedDokumenterForSoknad() {
+    void skalLageOpplastingsListeMedDokumenterForSoknad() {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad("12345678910")).withEier("eier");
 
         when(sosialhjelpPdfGenerator.generate(any(JsonInternalSoknad.class), anyBoolean())).thenReturn(new byte[]{1, 2, 3});
@@ -116,7 +116,7 @@ public class DigisosApiServiceTest {
     }
 
     @Test
-    public void hentDokumenterFraSoknadReturnererTreDokumenterForEttersendingMedEtVedlegg() {
+    void hentDokumenterFraSoknadReturnererTreDokumenterForEttersendingMedEtVedlegg() {
         when(innsendingService.hentAlleOpplastedeVedleggForSoknad(any(SoknadUnderArbeid.class))).thenReturn(lagOpplastetVedlegg());
         when(sosialhjelpPdfGenerator.generateEttersendelsePdf(any(JsonInternalSoknad.class), anyString())).thenReturn(new byte[]{1, 2, 3});
         when(sosialhjelpPdfGenerator.generateBrukerkvitteringPdf()).thenReturn(new byte[]{1, 2, 3});
@@ -133,21 +133,21 @@ public class DigisosApiServiceTest {
     }
 
     @Test
-    public void getTilleggsinformasjonJson() {
+    void getTilleggsinformasjonJson() {
         JsonSoknad soknad = new JsonSoknad().withMottaker(new JsonSoknadsmottaker().withEnhetsnummer("1234"));
         String tilleggsinformasjonJson = digisosApiService.getTilleggsinformasjonJson(soknad);
         assertThat(tilleggsinformasjonJson).isEqualTo("{\"enhetsnummer\":\"1234\"}");
     }
 
     @Test
-    public void getTilleggsinformasjonJson_withNoEnhetsnummer_shouldSetEnhetsnummerToNull() {
+    void getTilleggsinformasjonJson_withNoEnhetsnummer_shouldSetEnhetsnummerToNull() {
         JsonSoknad soknad = new JsonSoknad().withMottaker(new JsonSoknadsmottaker());
         String tilleggsinformasjonJson = digisosApiService.getTilleggsinformasjonJson(soknad);
         assertThat(tilleggsinformasjonJson).isEqualTo("{}");
     }
 
     @Test
-    public void getTilleggsinformasjonJson_withNoMottaker_shouldThrowException() {
+    void getTilleggsinformasjonJson_withNoMottaker_shouldThrowException() {
         JsonSoknad soknad = new JsonSoknad();
 
         assertThatExceptionOfType(IllegalStateException.class)
@@ -155,7 +155,7 @@ public class DigisosApiServiceTest {
     }
 
     @Test
-    public void etterInnsendingSkalSoknadUnderArbeidSlettes() {
+    void etterInnsendingSkalSoknadUnderArbeidSlettes() {
         var soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad("12345678910")).withEier("eier");
 
         when(sosialhjelpPdfGenerator.generate(any(JsonInternalSoknad.class), anyBoolean())).thenReturn(new byte[]{1, 2, 3});

@@ -43,7 +43,7 @@ import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class InformasjonRessursTest {
+class InformasjonRessursTest {
 
     public static final String SOKNADSTYPE = "type";
 
@@ -80,7 +80,7 @@ public class InformasjonRessursTest {
     }
 
     @Test
-    public void miljovariablerInneholderAlleVariableneViTrenger() {
+    void miljovariablerInneholderAlleVariableneViTrenger() {
         Map<String, String> miljovariabler = ressurs.hentMiljovariabler();
 
         assertThat(miljovariabler).containsKey("dittnav.link.url");
@@ -88,32 +88,32 @@ public class InformasjonRessursTest {
     }
 
     @Test
-    public void spraakDefaulterTilNorskBokmaalHvisIkkeSatt() {
+    void spraakDefaulterTilNorskBokmaalHvisIkkeSatt() {
         ressurs.hentTekster(SOKNADSTYPE, null);
         ressurs.hentTekster(SOKNADSTYPE, " ");
         verify(messageSource, times(2)).getBundleFor(SOKNADSTYPE, norskBokmaal);
     }
 
     @Test
-    public void skalHenteTeksterForSoknadsosialhjelpViaBundle() {
+    void skalHenteTeksterForSoknadsosialhjelpViaBundle() {
         ressurs.hentTekster("soknadsosialhjelp", null);
         verify(messageSource).getBundleFor("soknadsosialhjelp", norskBokmaal);
     }
 
     @Test
-    public void skalHenteTeksterForAlleBundlesUtenType() {
+    void skalHenteTeksterForAlleBundlesUtenType() {
         ressurs.hentTekster("", null);
         verify(messageSource).getBundleFor("", norskBokmaal);
     }
 
     @Test
-    public void kastExceptionHvisIkkeSpraakErPaaRiktigFormat() {
+    void kastExceptionHvisIkkeSpraakErPaaRiktigFormat() {
         assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(() -> ressurs.hentTekster(SOKNADSTYPE, "NORSK"));
     }
 
     @Test
-    public void skalHenteAllePaakobledeKommuner() {
+    void skalHenteAllePaakobledeKommuner() {
         String manueltPaakobletKommune = "0301";
         String digisosKommune = "asdf";
         String deaktivertDigisosKommune = "456456";
@@ -139,7 +139,7 @@ public class InformasjonRessursTest {
     }
 
     @Test
-    public void skalReturnereMappetListeOverManueltPakobledeKommuner() {
+    void skalReturnereMappetListeOverManueltPakobledeKommuner() {
         List<String> manuelleKommuner = singletonList("1234");
         Map<String, InformasjonRessurs.KommuneInfoFrontend> mappedeKommuner = ressurs.mapManueltPakobledeKommuner(manuelleKommuner);
 
@@ -149,7 +149,7 @@ public class InformasjonRessursTest {
     }
 
     @Test
-    public void skalReturnereMappetListeOverDigisosKommuner() {
+    void skalReturnereMappetListeOverDigisosKommuner() {
         Map<String, KommuneInfo> digisosKommuner = new HashMap<>();
         digisosKommuner.put("1234", new KommuneInfo("1234", true, true, false, false, null, false, null));
         Map<String, InformasjonRessurs.KommuneInfoFrontend> mappedeKommuner = ressurs.mapDigisosKommuner(digisosKommuner);
@@ -160,7 +160,7 @@ public class InformasjonRessursTest {
     }
 
     @Test
-    public void duplikatIDigisosKommuneSkalOverskriveManuellKommune() {
+    void duplikatIDigisosKommuneSkalOverskriveManuellKommune() {
         List<String> manuelleKommuner = singletonList("1234");
         Map<String, InformasjonRessurs.KommuneInfoFrontend> manueltMappedeKommuner = ressurs.mapManueltPakobledeKommuner(manuelleKommuner);
         assertThat(manueltMappedeKommuner.get("1234").kanOppdatereStatus).isFalse(); // Manuelle kommuner får ikke innsyn
@@ -175,7 +175,7 @@ public class InformasjonRessursTest {
     }
 
     @Test
-    public void harNyligInnsendteSoknader_AuthorizationExceptionVedManglendeTilgang() {
+    void harNyligInnsendteSoknader_AuthorizationExceptionVedManglendeTilgang() {
         doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerHarTilgang();
 
         assertThatExceptionOfType(AuthorizationException.class)
@@ -185,7 +185,7 @@ public class InformasjonRessursTest {
     }
 
     @Test
-    public void harNyligInnsendteSoknader_tomResponse() {
+    void harNyligInnsendteSoknader_tomResponse() {
         when(soknadMetadataRepository.hentInnsendteSoknaderForBrukerEtterTidspunkt(anyString(), any()))
                 .thenReturn(Collections.emptyList());
 
@@ -195,7 +195,7 @@ public class InformasjonRessursTest {
     }
 
     @Test
-    public void harNyligInnsendteSoknader_tomResponse_null() {
+    void harNyligInnsendteSoknader_tomResponse_null() {
         when(soknadMetadataRepository.hentInnsendteSoknaderForBrukerEtterTidspunkt(anyString(), any()))
                 .thenReturn(null);
 
@@ -205,7 +205,7 @@ public class InformasjonRessursTest {
     }
 
     @Test
-    public void harNyligInnsendteSoknader_flereSoknaderResponse() {
+    void harNyligInnsendteSoknader_flereSoknaderResponse() {
         when(soknadMetadataRepository.hentInnsendteSoknaderForBrukerEtterTidspunkt(anyString(), any()))
                 .thenReturn(Arrays.asList(mock(SoknadMetadata.class), mock(SoknadMetadata.class)));
 

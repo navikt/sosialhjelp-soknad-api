@@ -32,7 +32,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class ArbeidsforholdSystemdataTest {
+class ArbeidsforholdSystemdataTest {
 
     private static final String EIER = "12345678901";
 
@@ -71,7 +71,7 @@ public class ArbeidsforholdSystemdataTest {
     private SkattetatenSystemdata skattetatenSystemdata;
 
     @Test
-    public void skalOppdatereArbeidsforhold() {
+    void skalOppdatereArbeidsforhold() {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER)).withEier(EIER);
         List<Arbeidsforhold> arbeidsforholdList = Arrays.asList(ARBEIDSFORHOLD_LONNSLIPP, ARBEIDSFORHOLD_SLUTTOPPGJOR);
         when(arbeidsforholdService.hentArbeidsforhold(anyString())).thenReturn(arbeidsforholdList);
@@ -90,7 +90,7 @@ public class ArbeidsforholdSystemdataTest {
     }
 
     @Test
-    public void skalLeggeTilInntektForLonnslipp() {
+    void skalLeggeTilInntektForLonnslipp() {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid()
                 .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
                 .withEier(EIER);
@@ -113,7 +113,7 @@ public class ArbeidsforholdSystemdataTest {
     }
 
     @Test
-    public void skalLeggeTilUtbetalingForSluttoppgjor() {
+    void skalLeggeTilUtbetalingForSluttoppgjor() {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid()
                 .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
                 .withEier(EIER);
@@ -136,7 +136,7 @@ public class ArbeidsforholdSystemdataTest {
     }
 
     @Test
-    public void skalFjerneArbeidsforholdOgFjerneUtbetalingOgInntekt() {
+    void skalFjerneArbeidsforholdOgFjerneUtbetalingOgInntekt() {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createSoknadUnderArbeidWithArbeidsforholdAndSluttOppgjorAndLonnslipp());
 
         arbeidsforholdSystemdata.updateSystemdataIn(soknadUnderArbeid, "");

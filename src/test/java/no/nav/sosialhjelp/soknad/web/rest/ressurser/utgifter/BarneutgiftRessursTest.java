@@ -45,7 +45,7 @@ import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class BarneutgiftRessursTest {
+class BarneutgiftRessursTest {
 
     private static final String BEHANDLINGSID = "123";
     private static final String EIER = "123456789101";
@@ -75,7 +75,7 @@ public class BarneutgiftRessursTest {
     }
 
     @Test
-    public void getBarneutgifterSkalReturnereBekreftelseLikNullOgAltFalse() {
+    void getBarneutgifterSkalReturnereBekreftelseLikNullOgAltFalse() {
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER)));
 
@@ -91,7 +91,7 @@ public class BarneutgiftRessursTest {
     }
 
     @Test
-    public void getBarneutgifterSkalReturnereHarForsorgerpliktLikFalseForPersonUtenBarn() {
+    void getBarneutgifterSkalReturnereHarForsorgerpliktLikFalseForPersonUtenBarn() {
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithBarneutgifter(false, false, Collections.emptyList()));
 
@@ -107,7 +107,7 @@ public class BarneutgiftRessursTest {
     }
 
     @Test
-    public void getBarneutgifterSkalReturnereBekreftelserLikTrue() {
+    void getBarneutgifterSkalReturnereBekreftelserLikTrue() {
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithBarneutgifter(true, true, asList(UTGIFTER_BARNEHAGE, UTGIFTER_SFO, UTGIFTER_BARN_FRITIDSAKTIVITETER,
                         UTGIFTER_BARN_TANNREGULERING, UTGIFTER_ANNET_BARN)));
@@ -124,7 +124,7 @@ public class BarneutgiftRessursTest {
     }
 
     @Test
-    public void putBarneutgifterSkalSetteAltFalseDersomManVelgerHarIkkeBarneutgifter() {
+    void putBarneutgifterSkalSetteAltFalseDersomManVelgerHarIkkeBarneutgifter() {
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithBarneutgifter(true, true, asList(UTGIFTER_BARNEHAGE, UTGIFTER_SFO,
@@ -149,7 +149,7 @@ public class BarneutgiftRessursTest {
     }
 
     @Test
-    public void putBarneutgifterSkalSetteNoenBekreftelser() {
+    void putBarneutgifterSkalSetteNoenBekreftelser() {
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER)));
@@ -183,7 +183,7 @@ public class BarneutgiftRessursTest {
     }
 
     @Test
-    public void putBarneutgifterSkalSetteAlleBekreftelser() {
+    void putBarneutgifterSkalSetteAlleBekreftelser() {
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER)));
@@ -217,7 +217,7 @@ public class BarneutgiftRessursTest {
     }
 
     @Test
-    public void getBarneutgifterSkalKasteAuthorizationExceptionVedManglendeTilgang() {
+    void getBarneutgifterSkalKasteAuthorizationExceptionVedManglendeTilgang() {
         doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerHarTilgang();
 
         assertThatExceptionOfType(AuthorizationException.class)
@@ -227,7 +227,7 @@ public class BarneutgiftRessursTest {
     }
 
     @Test
-    public void putBarneutgifterSkalKasteAuthorizationExceptionVedManglendeTilgang() {
+    void putBarneutgifterSkalKasteAuthorizationExceptionVedManglendeTilgang() {
         doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
 
         var barneutgifterFrontend = new BarneutgifterFrontend();

@@ -18,7 +18,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class TelefonnummerSystemdataTest {
+class TelefonnummerSystemdataTest {
 
     private static final String EIER = "12345678901";
     private static final String TELEFONNUMMER_SYSTEM = "98765432";
@@ -31,7 +31,7 @@ public class TelefonnummerSystemdataTest {
     private TelefonnummerSystemdata telefonnummerSystemdata;
 
     @Test
-    public void skalOppdatereTelefonnummerUtenLandkode() {
+    void skalOppdatereTelefonnummerUtenLandkode() {
         when(dkifService.hentMobiltelefonnummer(anyString())).thenReturn(TELEFONNUMMER_SYSTEM);
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
 
@@ -44,7 +44,7 @@ public class TelefonnummerSystemdataTest {
     }
 
     @Test
-    public void skalOppdatereTelefonnummerMedLandkode() {
+    void skalOppdatereTelefonnummerMedLandkode() {
         when(dkifService.hentMobiltelefonnummer(anyString())).thenReturn("+47" + TELEFONNUMMER_SYSTEM);
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
 
@@ -57,7 +57,7 @@ public class TelefonnummerSystemdataTest {
     }
 
     @Test
-    public void skalIkkeOppdatereTelefonnummerDersomKildeErBruker() {
+    void skalIkkeOppdatereTelefonnummerDersomKildeErBruker() {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createJsonInternalSoknadWithUserDefinedTelefonnummer());
 
         telefonnummerSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
@@ -69,7 +69,7 @@ public class TelefonnummerSystemdataTest {
     }
 
     @Test
-    public void skalSetteNullDersomTelefonnummerErTomStreng() {
+    void skalSetteNullDersomTelefonnummerErTomStreng() {
         when(dkifService.hentMobiltelefonnummer(anyString())).thenReturn("");
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
 
@@ -81,7 +81,7 @@ public class TelefonnummerSystemdataTest {
     }
 
     @Test
-    public void skalSetteNullDersomTelefonnummerErNull() {
+    void skalSetteNullDersomTelefonnummerErNull() {
         when(dkifService.hentMobiltelefonnummer(anyString())).thenReturn(null);
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
 

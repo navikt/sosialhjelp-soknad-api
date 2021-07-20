@@ -8,7 +8,7 @@ import static no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler.setSubj
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
-public class SubjectHandlerTest {
+class SubjectHandlerTest {
 
     @AfterEach
     public void tearDown() {
@@ -17,21 +17,21 @@ public class SubjectHandlerTest {
     }
 
     @Test
-    public void setSubjectHandlerService_iProdMiljo_skalGiException() {
+    void setSubjectHandlerService_iProdMiljo_skalGiException() {
         System.setProperty("environment.name", "p");
         assertThatExceptionOfType(RuntimeException.class)
                 .isThrownBy(() -> setSubjectHandlerService(new StaticSubjectHandlerService()));
     }
 
     @Test
-    public void setSubjectHandlerService_iUkjentMiljo_skalGiException() {
+    void setSubjectHandlerService_iUkjentMiljo_skalGiException() {
         System.setProperty("environment.name", "ukjent");
         assertThatExceptionOfType(RuntimeException.class)
                 .isThrownBy(() -> setSubjectHandlerService(new StaticSubjectHandlerService()));
     }
 
     @Test
-    public void setSubjectHandlerService_lokalt_skalSetteSubjectHandler() {
+    void setSubjectHandlerService_lokalt_skalSetteSubjectHandler() {
         System.setProperty("environment.name", "local");
         setSubjectHandlerService(new StaticSubjectHandlerService());
         assertThat(getSubjectHandlerService()).isExactlyInstanceOf(StaticSubjectHandlerService.class);

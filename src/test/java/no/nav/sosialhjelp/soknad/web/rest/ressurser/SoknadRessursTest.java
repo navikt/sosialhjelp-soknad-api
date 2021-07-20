@@ -46,7 +46,7 @@ import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class SoknadRessursTest {
+class SoknadRessursTest {
 
     private static final String BEHANDLINGSID = "123";
     private static final String EIER = "Hans og Grete";
@@ -76,7 +76,7 @@ public class SoknadRessursTest {
     }
 
     @Test
-    public void skalSetteXsrfToken() {
+    void skalSetteXsrfToken() {
         HttpServletResponse response = mock(HttpServletResponse.class);
         ArgumentCaptor<Cookie> cookie = ArgumentCaptor.forClass(Cookie.class);
         ressurs.hentXsrfCookie(BEHANDLINGSID, response);
@@ -85,7 +85,7 @@ public class SoknadRessursTest {
     }
 
     @Test
-    public void opprettingAvSoknadSkalSetteXsrfToken() {
+    void opprettingAvSoknadSkalSetteXsrfToken() {
         HttpServletResponse response = mock(HttpServletResponse.class);
         ArgumentCaptor<Cookie> cookie = ArgumentCaptor.forClass(Cookie.class);
         ressurs.opprettSoknad(null, response, "");
@@ -94,20 +94,20 @@ public class SoknadRessursTest {
     }
 
     @Test
-    public void opprettSoknadUtenBehandlingsidSkalStarteNySoknad() {
+    void opprettSoknadUtenBehandlingsidSkalStarteNySoknad() {
         ressurs.opprettSoknad(null, mock(HttpServletResponse.class), "");
         verify(soknadService).startSoknad("");
     }
 
     @Test
-    public void opprettSoknadMedBehandlingsidSomIkkeHarEttersendingSkalStarteNyEttersending() {
+    void opprettSoknadMedBehandlingsidSomIkkeHarEttersendingSkalStarteNyEttersending() {
         when(soknadUnderArbeidRepository.hentEttersendingMedTilknyttetBehandlingsId(anyString(), anyString())).thenReturn(Optional.empty());
         ressurs.opprettSoknad(BEHANDLINGSID, mock(HttpServletResponse.class), "");
         verify(soknadService).startEttersending(eq(BEHANDLINGSID));
     }
 
     @Test
-    public void opprettSoknadMedBehandlingsidSomHarEttersendingSkalIkkeStarteNyEttersending() {
+    void opprettSoknadMedBehandlingsidSomHarEttersendingSkalIkkeStarteNyEttersending() {
         when(soknadUnderArbeidRepository.hentEttersendingMedTilknyttetBehandlingsId(eq(BEHANDLINGSID), anyString())).thenReturn(
                 Optional.of(new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))));
         ressurs.opprettSoknad(BEHANDLINGSID, mock(HttpServletResponse.class), "");
@@ -115,7 +115,7 @@ public class SoknadRessursTest {
     }
 
     @Test
-    public void oppdaterSamtykkerMedTomListaSkalIkkeForeTilNoenSamtykker() {
+    void oppdaterSamtykkerMedTomListaSkalIkkeForeTilNoenSamtykker() {
         List<BekreftelseRessurs> samtykkeListe = Lists.emptyList();
         String token = "token";
 
@@ -125,7 +125,7 @@ public class SoknadRessursTest {
     }
 
     @Test
-    public void oppdaterSamtykkerSkalGiSamtykkerFraLista() {
+    void oppdaterSamtykkerSkalGiSamtykkerFraLista() {
         BekreftelseRessurs bekreftelse1 = new BekreftelseRessurs().withType(BOSTOTTE_SAMTYKKE).withVerdi(true);
         BekreftelseRessurs bekreftelse2 = new BekreftelseRessurs().withType(UTBETALING_SKATTEETATEN_SAMTYKKE).withVerdi(true);
         List<BekreftelseRessurs> samtykkeListe = Lists.newArrayList(bekreftelse1, bekreftelse2);
@@ -137,7 +137,7 @@ public class SoknadRessursTest {
     }
 
     @Test
-    public void oppdaterSamtykkerSkalGiSamtykkerFraLista_menKunDersomVerdiErSann() {
+    void oppdaterSamtykkerSkalGiSamtykkerFraLista_menKunDersomVerdiErSann() {
         BekreftelseRessurs bekreftelse1 = new BekreftelseRessurs().withType(BOSTOTTE_SAMTYKKE).withVerdi(true);
         BekreftelseRessurs bekreftelse2 = new BekreftelseRessurs().withType(UTBETALING_SKATTEETATEN_SAMTYKKE).withVerdi(false);
         List<BekreftelseRessurs> samtykkeListe = Lists.newArrayList(bekreftelse1, bekreftelse2);
@@ -149,7 +149,7 @@ public class SoknadRessursTest {
     }
 
     @Test
-    public void hentSamtykker_skalReturnereTomListeNarViIkkeHarNoenSamtykker() {
+    void hentSamtykker_skalReturnereTomListeNarViIkkeHarNoenSamtykker() {
         when(soknadUnderArbeidRepository.hentSoknad(eq(BEHANDLINGSID), anyString())).thenReturn(
                 new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER)));
         String token = "token";
@@ -160,7 +160,7 @@ public class SoknadRessursTest {
     }
 
     @Test
-    public void hentSamtykker_skalReturnereListeMedSamtykker() {
+    void hentSamtykker_skalReturnereListeMedSamtykker() {
         JsonInternalSoknad internalSoknad = createEmptyJsonInternalSoknad(EIER);
         JsonOkonomiopplysninger opplysninger = internalSoknad.getSoknad().getData().getOkonomi().getOpplysninger();
         setBekreftelse(opplysninger, BOSTOTTE_SAMTYKKE, true, "Samtykke test tekst!");
@@ -181,7 +181,7 @@ public class SoknadRessursTest {
     }
 
     @Test
-    public void hentSamtykker_skalReturnereListeMedSamtykker_tarBortDeUtenSattVerdi() {
+    void hentSamtykker_skalReturnereListeMedSamtykker_tarBortDeUtenSattVerdi() {
         JsonInternalSoknad internalSoknad = createEmptyJsonInternalSoknad(EIER);
         JsonOkonomiopplysninger opplysninger = internalSoknad.getSoknad().getData().getOkonomi().getOpplysninger();
         setBekreftelse(opplysninger, BOSTOTTE_SAMTYKKE, false, "Samtykke test tekst!");
@@ -198,7 +198,7 @@ public class SoknadRessursTest {
     }
 
     @Test
-    public void getXsrfCookieSkalKasteAuthorizationExceptionVedManglendeTilgang() {
+    void getXsrfCookieSkalKasteAuthorizationExceptionVedManglendeTilgang() {
         doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserBrukerHarTilgangTilSoknad(BEHANDLINGSID);
 
         HttpServletResponse response = mock(HttpServletResponse.class);
@@ -210,7 +210,7 @@ public class SoknadRessursTest {
     }
 
     @Test
-    public void getOppsummeringSkalKasteAuthorizationExceptionVedManglendeTilgang() throws IOException {
+    void getOppsummeringSkalKasteAuthorizationExceptionVedManglendeTilgang() throws IOException {
         doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerHarTilgang();
 
         assertThatExceptionOfType(AuthorizationException.class)
@@ -220,7 +220,7 @@ public class SoknadRessursTest {
     }
 
     @Test
-    public void getErSystemdataEndretSkalKasteAuthorizationExceptionVedManglendeTilgang() {
+    void getErSystemdataEndretSkalKasteAuthorizationExceptionVedManglendeTilgang() {
         doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerHarTilgang();
 
         assertThatExceptionOfType(AuthorizationException.class)
@@ -230,7 +230,7 @@ public class SoknadRessursTest {
     }
 
     @Test
-    public void oppdaterSamtykkerSkalKasteAuthorizationExceptionVedManglendeTilgang() {
+    void oppdaterSamtykkerSkalKasteAuthorizationExceptionVedManglendeTilgang() {
         doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerHarTilgang();
 
         assertThatExceptionOfType(AuthorizationException.class)
@@ -240,7 +240,7 @@ public class SoknadRessursTest {
     }
 
     @Test
-    public void getSamtykkerSkalKasteAuthorizationExceptionVedManglendeTilgang() {
+    void getSamtykkerSkalKasteAuthorizationExceptionVedManglendeTilgang() {
         doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerHarTilgang();
 
         assertThatExceptionOfType(AuthorizationException.class)
@@ -250,7 +250,7 @@ public class SoknadRessursTest {
     }
 
     @Test
-    public void opprettSoknadSkalKasteAuthorizationExceptionVedManglendeTilgang() {
+    void opprettSoknadSkalKasteAuthorizationExceptionVedManglendeTilgang() {
         doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerHarTilgang();
 
         HttpServletResponse response = mock(HttpServletResponse.class);

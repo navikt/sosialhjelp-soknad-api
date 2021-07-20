@@ -10,12 +10,12 @@ import javax.ws.rs.core.Response;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(MockitoExtension.class)
-public class ThrowableMapperTest {
+class ThrowableMapperTest {
 
     final private ThrowableMapper mapper = new ThrowableMapper();
 
     @Test
-    public void skalGi409ConflictVedSamtidigOppdateringException() {
+    void skalGi409ConflictVedSamtidigOppdateringException() {
         Response response = mapper.toResponse(new SamtidigOppdateringException("Mulig versjonskonflikt..."));
         assertThat(response.getStatus()).isEqualTo(409);
     }

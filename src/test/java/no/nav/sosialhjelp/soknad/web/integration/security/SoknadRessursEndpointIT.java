@@ -9,11 +9,11 @@ import javax.ws.rs.core.Response;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class SoknadRessursEndpointIT extends AbstractIT {
-    public static final String ANNEN_BRUKER = "22222222222";
+class SoknadRessursEndpointIT extends AbstractIT {
+    static final String ANNEN_BRUKER = "22222222222";
 
     @Test
-    public void nektetTilgang_opprettEttersendelse() {
+    void nektetTilgang_opprettEttersendelse() {
         SoknadTester soknadTester = soknadOpprettet();
         String url = "soknader/opprettSoknad";
 

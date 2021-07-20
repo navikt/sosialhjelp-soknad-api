@@ -52,7 +52,7 @@ import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class ForsorgerpliktRessursTest {
+class ForsorgerpliktRessursTest {
 
     private static final String EIER = "123456789101";
     private static final String BEHANDLINGSID = "123";
@@ -106,7 +106,7 @@ public class ForsorgerpliktRessursTest {
     }
 
     @Test
-    public void getForsorgerpliktSkalReturnereTomForsorgerplikt(){
+    void getForsorgerpliktSkalReturnereTomForsorgerplikt(){
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithForsorgerplikt(null, null, null));
 
@@ -118,7 +118,7 @@ public class ForsorgerpliktRessursTest {
     }
 
     @Test
-    public void getForsorgerpliktSkalReturnereEtBarnSomErFolkeregistrertSammenOgHarDeltBosted(){
+    void getForsorgerpliktSkalReturnereEtBarnSomErFolkeregistrertSammenOgHarDeltBosted(){
         JsonAnsvar jsonAnsvar = new JsonAnsvar().withBarn(JSON_BARN)
                 .withErFolkeregistrertSammen(new JsonErFolkeregistrertSammen().withKilde(JsonKildeSystem.SYSTEM).withVerdi(true))
                 .withHarDeltBosted(new JsonHarDeltBosted().withKilde(JsonKildeBruker.BRUKER).withVerdi(true));
@@ -134,7 +134,7 @@ public class ForsorgerpliktRessursTest {
     }
 
     @Test
-    public void getForsorgerpliktSkalReturnereEtBarnSomIkkeErFolkeregistrertSammenMenHarSamvarsgrad(){
+    void getForsorgerpliktSkalReturnereEtBarnSomIkkeErFolkeregistrertSammenMenHarSamvarsgrad(){
         JsonAnsvar jsonAnsvar = new JsonAnsvar().withBarn(JSON_BARN)
                 .withErFolkeregistrertSammen(new JsonErFolkeregistrertSammen().withKilde(JsonKildeSystem.SYSTEM).withVerdi(false))
                 .withSamvarsgrad(new JsonSamvarsgrad().withKilde(JsonKildeBruker.BRUKER).withVerdi(30));
@@ -150,7 +150,7 @@ public class ForsorgerpliktRessursTest {
     }
 
     @Test
-    public void getForsorgerpliktSkalReturnereToBarn(){
+    void getForsorgerpliktSkalReturnereToBarn(){
         JsonAnsvar jsonAnsvar = new JsonAnsvar().withBarn(JSON_BARN);
         JsonAnsvar jsonAnsvar_2 = new JsonAnsvar().withBarn(JSON_BARN_2);
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
@@ -166,7 +166,7 @@ public class ForsorgerpliktRessursTest {
     }
 
     @Test
-    public void getForsorgerpliktSkalReturnereEtBarnOgBarnebidrag(){
+    void getForsorgerpliktSkalReturnereEtBarnOgBarnebidrag(){
         JsonAnsvar jsonAnsvar = new JsonAnsvar().withBarn(JSON_BARN);
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithForsorgerplikt(true, JsonBarnebidrag.Verdi.BEGGE, Collections.singletonList(jsonAnsvar)));
@@ -180,7 +180,7 @@ public class ForsorgerpliktRessursTest {
     }
 
     @Test
-    public void putForsorgerpliktSkalSetteBarnebidrag(){
+    void putForsorgerpliktSkalSetteBarnebidrag(){
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithForsorgerplikt(null, null, null));
@@ -199,7 +199,7 @@ public class ForsorgerpliktRessursTest {
     }
 
     @Test
-    public void putForsorgerpliktSkalFjerneBarnebidragOgInntektOgUtgiftKnyttetTilBarnebidrag(){
+    void putForsorgerpliktSkalFjerneBarnebidragOgInntektOgUtgiftKnyttetTilBarnebidrag(){
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         SoknadUnderArbeid soknad = createJsonInternalSoknadWithForsorgerplikt(null, JsonBarnebidrag.Verdi.BEGGE, null);
         List<JsonOkonomioversiktInntekt> inntekt = new ArrayList<>();
@@ -225,7 +225,7 @@ public class ForsorgerpliktRessursTest {
     }
 
     @Test
-    public void putForsorgerpliktSkalSetteHarDeltBostedOgSamvarsgradPaaToBarn(){
+    void putForsorgerpliktSkalSetteHarDeltBostedOgSamvarsgradPaaToBarn(){
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         JsonAnsvar jsonAnsvar = new JsonAnsvar().withBarn(JSON_BARN);
         JsonAnsvar jsonAnsvar_2 = new JsonAnsvar().withBarn(JSON_BARN_2);
@@ -246,7 +246,7 @@ public class ForsorgerpliktRessursTest {
     }
 
     @Test
-    public void putForsorgerpliktSkalLeggeTilBrukerregistrertBarnVedSidenAvSystemregistrerte(){
+    void putForsorgerpliktSkalLeggeTilBrukerregistrertBarnVedSidenAvSystemregistrerte(){
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         JsonAnsvar jsonAnsvar = new JsonAnsvar().withBarn(JSON_BARN);
         JsonAnsvar jsonAnsvar_2 = new JsonAnsvar().withBarn(JSON_BARN_2);
@@ -270,7 +270,7 @@ public class ForsorgerpliktRessursTest {
     }
 
     @Test
-    public void putForsorgerpliktSkalLeggeTilBrukerregistrertBarnOgSetteHarForsorgerplikt(){
+    void putForsorgerpliktSkalLeggeTilBrukerregistrertBarnOgSetteHarForsorgerplikt(){
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithForsorgerplikt(false, null, new ArrayList<>()));
@@ -289,7 +289,7 @@ public class ForsorgerpliktRessursTest {
     }
 
     @Test
-    public void getForsorgerpliktSkalKasteAuthorizationExceptionVedManglendeTilgang() {
+    void getForsorgerpliktSkalKasteAuthorizationExceptionVedManglendeTilgang() {
         doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerHarTilgang();
 
         assertThatExceptionOfType(AuthorizationException.class)
@@ -299,7 +299,7 @@ public class ForsorgerpliktRessursTest {
     }
 
     @Test
-    public void putForsorgerpliktSkalKasteAuthorizationExceptionVedManglendeTilgang() {
+    void putForsorgerpliktSkalKasteAuthorizationExceptionVedManglendeTilgang() {
         doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(BEHANDLINGSID);
 
         var forsorgerpliktFrontend = new ForsorgerpliktFrontend().withBrukerregistrertAnsvar(asList(BRUKERREGISTRERT_BARN));

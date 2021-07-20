@@ -34,25 +34,24 @@ import static org.mockito.Mockito.verify;
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {RegistryAwareHelperTest.HandlebarsHelperTestConfig.class})
 @ActiveProfiles("RegistryTest")
-public class RegistryAwareHelperTest {
+class RegistryAwareHelperTest {
 
-    public static final String NAVN = "navn";
     private static final Logger LOG = LoggerFactory.getLogger(RegistryAwareHelperTest.class);
     @Inject
-    List<RegistryAwareHelper> helpers;
+    private List<RegistryAwareHelper> helpers;
 
     @Inject
-    HandlebarRegistry registry;
+    private HandlebarRegistry registry;
 
     @Test
-    public void listUtRegistrerteHelpers() {
+    void listUtRegistrerteHelpers() {
         for (RegistryAwareHelper helper : helpers) {
             LOG.info("Helper: " + helper.getNavn());
         }
     }
 
     @Test
-    public void registryKaltMedHelper() {
+    void registryKaltMedHelper() {
         verify(registry, atLeastOnce()).registrerHelper(eq(ConcatHelper.NAVN), any(ConcatHelper.class));
         verify(registry, atLeastOnce()).registrerHelper(anyString(), any(RegistryAwareHelper.class));
     }

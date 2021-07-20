@@ -13,10 +13,10 @@ import static no.nav.sosialhjelp.soknad.business.util.JsonVedleggUtils.ANNET;
 import static no.nav.sosialhjelp.soknad.business.util.JsonVedleggUtils.addHendelseTypeAndHendelseReferanse;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class JsonVedleggUtilsTest {
+class JsonVedleggUtilsTest {
 
     @Test
-    public void doNot_addHendelseTypeAndHendelseReferanse_ifUnleashToggleIsDeactivated() {
+    void doNot_addHendelseTypeAndHendelseReferanse_ifUnleashToggleIsDeactivated() {
         JsonVedleggSpesifikasjon jsonVedleggSpesifikasjon = createJsonVedleggSpesifikasjon();
         assertThat(jsonVedleggSpesifikasjon.getVedlegg().get(0).getHendelseType()).isNull();
         assertThat(jsonVedleggSpesifikasjon.getVedlegg().get(0).getHendelseReferanse()).isNull();
@@ -32,7 +32,7 @@ public class JsonVedleggUtilsTest {
     }
 
     @Test
-    public void addHendelseTypeAndHendelseReferanse_forSoknad_ifUnleashToggleIsActivated() {
+    void addHendelseTypeAndHendelseReferanse_forSoknad_ifUnleashToggleIsActivated() {
         JsonVedleggSpesifikasjon jsonVedleggSpesifikasjon = createJsonVedleggSpesifikasjon();
         assertThat(jsonVedleggSpesifikasjon.getVedlegg().get(0).getHendelseType()).isNull();
         assertThat(jsonVedleggSpesifikasjon.getVedlegg().get(0).getHendelseReferanse()).isNull();
@@ -49,7 +49,7 @@ public class JsonVedleggUtilsTest {
     }
 
     @Test
-    public void addHendelseTypeAndHendelseReferanse_shouldAddUniqueReferanse() {
+    void addHendelseTypeAndHendelseReferanse_shouldAddUniqueReferanse() {
         JsonVedleggSpesifikasjon jsonVedleggSpesifikasjon = createJsonVedleggSpesifikasjon();
         addHendelseTypeAndHendelseReferanse(jsonVedleggSpesifikasjon, true, true);
 
@@ -58,7 +58,7 @@ public class JsonVedleggUtilsTest {
     }
 
     @Test
-    public void addHendelseTypeAndHendelseReferanse_forEttersendelse_shouldOnlyAddHendelseTypeBrukerForAnnetAnnet() {
+    void addHendelseTypeAndHendelseReferanse_forEttersendelse_shouldOnlyAddHendelseTypeBrukerForAnnetAnnet() {
         JsonVedleggSpesifikasjon jsonVedleggSpesifikasjon = createJsonVedleggSpesifikasjon();
         assertThat(jsonVedleggSpesifikasjon.getVedlegg().get(0).getHendelseType()).isNull();
         assertThat(jsonVedleggSpesifikasjon.getVedlegg().get(0).getHendelseReferanse()).isNull();
@@ -74,7 +74,7 @@ public class JsonVedleggUtilsTest {
     }
 
     @Test
-    public void addHendelseTypeAndHendelseReferanse_forEttersendelse_shouldNotEditHendelseReferanse() {
+    void addHendelseTypeAndHendelseReferanse_forEttersendelse_shouldNotEditHendelseReferanse() {
         String hendelseReferanse = "1234";
         JsonVedleggSpesifikasjon jsonVedleggSpesifikasjon = createJsonVedleggSpesifikasjon();
         jsonVedleggSpesifikasjon.getVedlegg().get(0).setHendelseType(JsonVedlegg.HendelseType.SOKNAD);

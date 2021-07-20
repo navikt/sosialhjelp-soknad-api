@@ -40,7 +40,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class HandleBarKjoererTest {
+class HandleBarKjoererTest {
     private static final String FNR = "11111111111";
     @InjectMocks
     private HandleBarKjoerer handleBarKjoerer;
@@ -89,14 +89,14 @@ public class HandleBarKjoererTest {
     }
 
     @Test
-    public void fyllHtmlMalMedInnholdLagerHtmlFraJsonInternalSoknad() throws IOException {
+    void fyllHtmlMalMedInnholdLagerHtmlFraJsonInternalSoknad() throws IOException {
         String html = handleBarKjoerer.fyllHtmlMalMedInnhold(createEmptyJsonInternalSoknad(FNR), false);
 
         assertThat(html).contains(FNR);
     }
 
     @Test
-    public void skalTaBortUgyldigeTegn() throws IOException {
+    void skalTaBortUgyldigeTegn() throws IOException {
         String html = handleBarKjoerer.fyllHtmlMalMedInnhold(createEmptyJsonInternalSoknad("FNR\b\ntrall"), false);
 
         assertThat(html).contains("FNR\ntrall");

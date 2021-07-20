@@ -15,7 +15,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 
-public class CORSFilterTest {
+class CORSFilterTest {
 
     private final CORSFilter corsFilter = new CORSFilter();
 
@@ -33,7 +33,7 @@ public class CORSFilterTest {
     }
 
     @Test
-    public void setCorsHeaders_inProdWithUnknownOrigin_shouldNotSetCorsHeaders() {
+    void setCorsHeaders_inProdWithUnknownOrigin_shouldNotSetCorsHeaders() {
         var unknownOrigin = "https://www.unknown.no";
 
         var request = ContainerRequestBuilder
@@ -46,7 +46,7 @@ public class CORSFilterTest {
     }
 
     @Test
-    public void setCorsHeaders_inProdWithTrustedOrigin_shouldSetCorsHeaders() {
+    void setCorsHeaders_inProdWithTrustedOrigin_shouldSetCorsHeaders() {
         var trustedOrigin = "https://www.nav.no";
 
         var request = ContainerRequestBuilder
@@ -63,7 +63,7 @@ public class CORSFilterTest {
     }
 
     @Test
-    public void setCorsHeaders_inTestWithUnknownOrigin_shouldSetCorsHeaders() {
+    void setCorsHeaders_inTestWithUnknownOrigin_shouldSetCorsHeaders() {
         System.setProperty("environment.name", "q0");
 
         var unknownOrigin = "https://www.unknown.no";

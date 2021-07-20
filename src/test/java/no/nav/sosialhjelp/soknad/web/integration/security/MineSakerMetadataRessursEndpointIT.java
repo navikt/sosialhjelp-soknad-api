@@ -12,13 +12,13 @@ import javax.ws.rs.core.Response;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class MineSakerMetadataRessursEndpointIT extends AbstractIT {
+class MineSakerMetadataRessursEndpointIT extends AbstractIT {
 
     public static final String BRUKER = "11111111111";
     public static final String ANNEN_BRUKER = "22222222222";
 
     @Test
-    public void pabegynte_skalGi401UtenToken() {
+    void pabegynte_skalGi401UtenToken() {
         SoknadTester soknadTester = soknadOpprettet();
         String subUrl = "minesaker/innsendte";
 
@@ -28,7 +28,7 @@ public class MineSakerMetadataRessursEndpointIT extends AbstractIT {
     }
 
     @Test
-    public void pabegynte_skalGi401MedAnnenIssuer() {
+    void pabegynte_skalGi401MedAnnenIssuer() {
         SoknadTester soknadTester = soknadOpprettet();
         String subUrl = "minesaker/innsendte";
         SignedJWT signedJWTMedAnnenIssuer = JwtTokenGenerator.createSignedJWT(BRUKER);

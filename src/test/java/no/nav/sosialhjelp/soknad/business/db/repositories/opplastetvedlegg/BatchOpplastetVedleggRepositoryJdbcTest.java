@@ -17,7 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {DbTestConfig.class})
-public class BatchOpplastetVedleggRepositoryJdbcTest {
+class BatchOpplastetVedleggRepositoryJdbcTest {
 
     private static final String EIER = "12345678901";
     private static final byte[] DATA = {1, 2, 3, 4};
@@ -45,7 +45,7 @@ public class BatchOpplastetVedleggRepositoryJdbcTest {
     }
 
     @Test
-    public void slettAlleVedleggForSoknadSletterAlleOpplastedeVedleggForGittSoknadId() {
+    void slettAlleVedleggForSoknadSletterAlleOpplastedeVedleggForGittSoknadId() {
         final String uuid = opprettOpplastetVedleggOgLagreIDb(lagOpplastetVedlegg(), EIER);
         final String uuidSammeSoknadOgEier = opprettOpplastetVedleggOgLagreIDb(lagOpplastetVedlegg(EIER, TYPE, SOKNADID), EIER);
         final String uuidSammeEierOgAnnenSoknad = opprettOpplastetVedleggOgLagreIDb(lagOpplastetVedlegg(EIER, TYPE2, SOKNADID3), EIER);

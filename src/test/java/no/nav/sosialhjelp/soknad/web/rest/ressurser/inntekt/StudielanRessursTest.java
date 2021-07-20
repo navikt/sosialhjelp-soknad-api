@@ -36,7 +36,7 @@ import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class StudielanRessursTest {
+class StudielanRessursTest {
 
     private static final String BEHANDLINGSID = "123";
     private static final String EIER = "123456789101";
@@ -66,7 +66,7 @@ public class StudielanRessursTest {
     }
 
     @Test
-    public void getStudielanSkalReturnereNull(){
+    void getStudielanSkalReturnereNull(){
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithErStudentStudielanBekreftelse(true, null));
 
@@ -77,7 +77,7 @@ public class StudielanRessursTest {
     }
 
     @Test
-    public void getStudielanSkalReturnereBekreftetStudielan(){
+    void getStudielanSkalReturnereBekreftetStudielan(){
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithErStudentStudielanBekreftelse(true, true));
 
@@ -88,7 +88,7 @@ public class StudielanRessursTest {
     }
 
     @Test
-    public void getStudielanSkalReturnereHarIkkeStudielan(){
+    void getStudielanSkalReturnereHarIkkeStudielan(){
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithErStudentStudielanBekreftelse(true, false));
 
@@ -99,7 +99,7 @@ public class StudielanRessursTest {
     }
 
     @Test
-    public void getStudielanSkalReturnereSkalIkkeVisesHvisIkkeStudent(){
+    void getStudielanSkalReturnereSkalIkkeVisesHvisIkkeStudent(){
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithErStudentStudielanBekreftelse(false, null));
 
@@ -110,7 +110,7 @@ public class StudielanRessursTest {
     }
 
     @Test
-    public void getStudielanSkalReturnereSkalIkkeVisesHvisStudentSporsmalIkkeBesvart(){
+    void getStudielanSkalReturnereSkalIkkeVisesHvisStudentSporsmalIkkeBesvart(){
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithErStudentStudielanBekreftelse(null, null));
 
@@ -121,7 +121,7 @@ public class StudielanRessursTest {
     }
 
     @Test
-    public void putStudielanSkalSetteStudielanOgLeggeTilInntektstypen(){
+    void putStudielanSkalSetteStudielanOgLeggeTilInntektstypen(){
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER)));
@@ -144,7 +144,7 @@ public class StudielanRessursTest {
     }
 
     @Test
-    public void putStudielanSkalSetteHarIkkeStudielanOgSletteInntektstypen(){
+    void putStudielanSkalSetteHarIkkeStudielanOgSletteInntektstypen(){
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         SoknadUnderArbeid soknad = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         ArrayList<JsonOkonomioversiktInntekt> inntekt = new ArrayList<>();
@@ -170,7 +170,7 @@ public class StudielanRessursTest {
     }
 
     @Test
-    public void getStudielanSkalKasteAuthorizationExceptionVedManglendeTilgang() {
+    void getStudielanSkalKasteAuthorizationExceptionVedManglendeTilgang() {
         doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerHarTilgang();
 
         assertThatExceptionOfType(AuthorizationException.class)
@@ -180,7 +180,7 @@ public class StudielanRessursTest {
     }
 
     @Test
-    public void putStudielanSkalKasteAuthorizationExceptionVedManglendeTilgang() {
+    void putStudielanSkalKasteAuthorizationExceptionVedManglendeTilgang() {
         doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(BEHANDLINGSID);
 
         var studielanFrontend = new StudielanFrontend();

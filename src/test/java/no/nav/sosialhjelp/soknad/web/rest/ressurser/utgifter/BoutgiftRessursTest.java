@@ -51,7 +51,7 @@ import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class BoutgiftRessursTest {
+class BoutgiftRessursTest {
 
     private static final String BEHANDLINGSID = "123";
     private static final String EIER = "123456789101";
@@ -81,7 +81,7 @@ public class BoutgiftRessursTest {
     }
 
     @Test
-    public void getBoutgifterSkalReturnereBekreftelseLikNullOgAlleUnderverdierLikFalse(){
+    void getBoutgifterSkalReturnereBekreftelseLikNullOgAlleUnderverdierLikFalse(){
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER)));
 
@@ -97,7 +97,7 @@ public class BoutgiftRessursTest {
     }
 
     @Test
-    public void getBoutgifterSkalReturnereBekreftelserLikTrue(){
+    void getBoutgifterSkalReturnereBekreftelserLikTrue(){
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithBoutgifter(true, asList(UTGIFTER_HUSLEIE, UTGIFTER_STROM, UTGIFTER_KOMMUNAL_AVGIFT,
                         UTGIFTER_OPPVARMING, UTGIFTER_BOLIGLAN_AVDRAG, UTGIFTER_BOLIGLAN_RENTER, UTGIFTER_ANNET_BO)));
@@ -114,7 +114,7 @@ public class BoutgiftRessursTest {
     }
 
     @Test
-    public void getBoutgifterSkalReturnereSkalViseInfoLikTrueDersomManHverkenHarBostotteSakerEllerUtbetalinger(){
+    void getBoutgifterSkalReturnereSkalViseInfoLikTrueDersomManHverkenHarBostotteSakerEllerUtbetalinger(){
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER)));
 
@@ -124,7 +124,7 @@ public class BoutgiftRessursTest {
     }
 
     @Test
-    public void getBoutgifterSkalReturnereSkalViseInfoLikFalseDersomManHarBostotteSakerEllerUtbetalinger(){
+    void getBoutgifterSkalReturnereSkalViseInfoLikFalseDersomManHarBostotteSakerEllerUtbetalinger(){
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().setBostotte(
                 new JsonBostotte().withSaker(asList(new JsonBostotteSak().withType(UTBETALING_HUSBANKEN))));
@@ -141,7 +141,7 @@ public class BoutgiftRessursTest {
     }
 
     @Test
-    public void getBoutgifterSkalReturnereSkalViseInfoLikTrueDersomHusbankenErNedeOgManSvarerNeiTilBostotte(){
+    void getBoutgifterSkalReturnereSkalViseInfoLikTrueDersomHusbankenErNedeOgManSvarerNeiTilBostotte(){
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getDriftsinformasjon().setStotteFraHusbankenFeilet(true);
         setBekreftelse(soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger(),
@@ -156,7 +156,7 @@ public class BoutgiftRessursTest {
     }
 
     @Test
-    public void getBoutgifterSkalReturnereSkalViseInfoLikTrueDersomViMAnglerSamtykkeOgManSvarerNeiTilBostotte(){
+    void getBoutgifterSkalReturnereSkalViseInfoLikTrueDersomViMAnglerSamtykkeOgManSvarerNeiTilBostotte(){
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().setBekreftelse(
                 asList(new JsonOkonomibekreftelse().withKilde(JsonKilde.BRUKER).withType(BOSTOTTE).withVerdi(false),
@@ -169,7 +169,7 @@ public class BoutgiftRessursTest {
     }
 
     @Test
-    public void putBoutgifterSkalSetteAltFalseDersomManVelgerHarIkkeBoutgifter(){
+    void putBoutgifterSkalSetteAltFalseDersomManVelgerHarIkkeBoutgifter(){
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithBoutgifter(true, asList(UTGIFTER_HUSLEIE, UTGIFTER_STROM,
@@ -194,7 +194,7 @@ public class BoutgiftRessursTest {
     }
 
     @Test
-    public void putBoutgifterSkalSetteNoenBekreftelser(){
+    void putBoutgifterSkalSetteNoenBekreftelser(){
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER)));
@@ -231,7 +231,7 @@ public class BoutgiftRessursTest {
     }
 
     @Test
-    public void putBoutgifterSkalSetteAlleBekreftelser(){
+    void putBoutgifterSkalSetteAlleBekreftelser(){
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER)));
@@ -268,7 +268,7 @@ public class BoutgiftRessursTest {
     }
 
     @Test
-    public void getBoutgifterSkalKasteAuthorizationExceptionVedManglendeTilgang() {
+    void getBoutgifterSkalKasteAuthorizationExceptionVedManglendeTilgang() {
         doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerHarTilgang();
 
         assertThatExceptionOfType(AuthorizationException.class)
@@ -278,7 +278,7 @@ public class BoutgiftRessursTest {
     }
 
     @Test
-    public void putBoutgifterSkalKasteAuthorizationExceptionVedManglendeTilgang() {
+    void putBoutgifterSkalKasteAuthorizationExceptionVedManglendeTilgang() {
         doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
 
         var boutgifterFrontend = new BoutgifterFrontend();

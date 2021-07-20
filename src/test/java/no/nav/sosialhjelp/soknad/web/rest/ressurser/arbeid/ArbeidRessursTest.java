@@ -36,7 +36,7 @@ import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class ArbeidRessursTest {
+class ArbeidRessursTest {
 
     private static final String BEHANDLINGSID = "123";
     private static final String EIER = "123456789101";
@@ -86,7 +86,7 @@ public class ArbeidRessursTest {
     }
 
     @Test
-    public void getArbeidSkalReturnereSystemArbeidsforholdRiktigKonvertert(){
+    void getArbeidSkalReturnereSystemArbeidsforholdRiktigKonvertert(){
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithArbeid(createArbeidsforholdListe(), null));
 
@@ -102,7 +102,7 @@ public class ArbeidRessursTest {
     }
 
     @Test
-    public void getArbeidSkalReturnereArbeidsforholdLikNull(){
+    void getArbeidSkalReturnereArbeidsforholdLikNull(){
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithArbeid(null, null));
 
@@ -112,7 +112,7 @@ public class ArbeidRessursTest {
     }
 
     @Test
-    public void getArbeidSkalReturnereKommentarTilArbeidsforholdLikNull(){
+    void getArbeidSkalReturnereKommentarTilArbeidsforholdLikNull(){
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithArbeid(null, null));
 
@@ -122,7 +122,7 @@ public class ArbeidRessursTest {
     }
 
     @Test
-    public void getArbeidSkalReturnereKommentarTilArbeidsforhold(){
+    void getArbeidSkalReturnereKommentarTilArbeidsforhold(){
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithArbeid(null, KOMMENTAR));
 
@@ -132,7 +132,7 @@ public class ArbeidRessursTest {
     }
 
     @Test
-    public void putArbeidSkalLageNyJsonKommentarTilArbeidsforholdDersomDenVarNull(){
+    void putArbeidSkalLageNyJsonKommentarTilArbeidsforholdDersomDenVarNull(){
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithArbeid(null, null));
@@ -147,7 +147,7 @@ public class ArbeidRessursTest {
     }
 
     @Test
-    public void putArbeidSkalOppdatereKommentarTilArbeidsforhold(){
+    void putArbeidSkalOppdatereKommentarTilArbeidsforhold(){
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithArbeid(null, "Tidligere kommentar"));
@@ -162,7 +162,7 @@ public class ArbeidRessursTest {
     }
 
     @Test
-    public void putArbeidSkalSetteLikNullDersomKommentarenErTom(){
+    void putArbeidSkalSetteLikNullDersomKommentarenErTom(){
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithArbeid(null, "Tidligere kommentar"));
@@ -176,7 +176,7 @@ public class ArbeidRessursTest {
     }
 
     @Test
-    public void getArbeidSkalKasteAuthorizationExceptionVedManglendeTilgang() {
+    void getArbeidSkalKasteAuthorizationExceptionVedManglendeTilgang() {
         doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerHarTilgang();
 
         assertThatExceptionOfType(AuthorizationException.class)
@@ -186,7 +186,7 @@ public class ArbeidRessursTest {
     }
 
     @Test
-    public void putArbeidSkalKasteAuthorizationExceptionVedManglendeTilgang() {
+    void putArbeidSkalKasteAuthorizationExceptionVedManglendeTilgang() {
         doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(BEHANDLINGSID);
 
         var arbeidFrontend = new ArbeidFrontend().withKommentarTilArbeidsforhold("");

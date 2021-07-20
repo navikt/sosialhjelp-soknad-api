@@ -20,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class RedisServiceTest {
+class RedisServiceTest {
 
     private static final ObjectMapper objectMapper = JsonSosialhjelpObjectMapper.createObjectMapper().registerModule(new KotlinModule());
     private final KommuneInfo kommuneInfo = new KommuneInfo("1234", true, true, true, true, null, true, null);
@@ -32,7 +32,7 @@ public class RedisServiceTest {
     private RedisServiceImpl redisService;
 
     @Test
-    public void skalHenteFraCache() throws JsonProcessingException {
+    void skalHenteFraCache() throws JsonProcessingException {
         when(redisStore.get(KOMMUNEINFO_CACHE_KEY)).thenReturn(objectMapper.writeValueAsBytes(kommuneInfo));
 
         KommuneInfo cached = (KommuneInfo) redisService.get(KOMMUNEINFO_CACHE_KEY, KommuneInfo.class);
@@ -40,7 +40,7 @@ public class RedisServiceTest {
     }
 
     @Test
-    public void skalHenteAlleKommuneInfos() throws JsonProcessingException {
+    void skalHenteAlleKommuneInfos() throws JsonProcessingException {
         byte[] bytes = objectMapper.writeValueAsBytes(Collections.singletonList(kommuneInfo));
         when(redisStore.get(KOMMUNEINFO_CACHE_KEY)).thenReturn(bytes);
 
@@ -50,7 +50,7 @@ public class RedisServiceTest {
     }
 
     @Test
-    public void ingenKommuneInfos() {
+    void ingenKommuneInfos() {
         when(redisStore.get(KOMMUNEINFO_CACHE_KEY)).thenReturn(null);
 
         Map<String, KommuneInfo> map = redisService.getKommuneInfos();
@@ -58,7 +58,7 @@ public class RedisServiceTest {
     }
 
     @Test
-    public void skalHandtereNullFraRedisStore() {
+    void skalHandtereNullFraRedisStore() {
         var key = "key";
         var value = "value".getBytes(StandardCharsets.UTF_8);
 

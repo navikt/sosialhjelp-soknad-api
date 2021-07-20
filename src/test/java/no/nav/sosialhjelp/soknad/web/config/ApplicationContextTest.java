@@ -45,7 +45,7 @@ public class ApplicationContextTest {
     }
 
     @Test
-    public void shouldSetupAppContext() {}
+    void shouldSetupAppContext() {}
 
     private static Properties load(String resourcePath) {
         Properties properties = new Properties();

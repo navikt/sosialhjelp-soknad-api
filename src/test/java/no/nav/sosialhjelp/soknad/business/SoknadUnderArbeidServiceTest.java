@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 import static java.time.LocalDateTime.now;
 
 @ExtendWith(MockitoExtension.class)
-public class SoknadUnderArbeidServiceTest {
+class SoknadUnderArbeidServiceTest {
     private static final String EIER = "12345678910";
     private static final Long SOKNAD_UNDER_ARBEID_ID = 1L;
     private static final String BEHANDLINGSID = "1100001L";
@@ -23,7 +23,7 @@ public class SoknadUnderArbeidServiceTest {
     private SoknadUnderArbeidService soknadUnderArbeidService;
 
     @Test
-    public void settInnsendingstidspunktPaSoknadSkalHandtereEttersendelse() {
+    void settInnsendingstidspunktPaSoknadSkalHandtereEttersendelse() {
         soknadUnderArbeidService.settInnsendingstidspunktPaSoknad(lagSoknadUnderArbeidForEttersendelse());
     }
 

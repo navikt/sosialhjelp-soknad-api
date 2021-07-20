@@ -29,10 +29,10 @@ public class HentTekstHelperTest {
     private Handlebars handlebars;
 
     @InjectMocks
-    HentTekstHelper hentTekstHelper;
+    private HentTekstHelper hentTekstHelper;
 
     @Mock
-    CmsTekst cmsTekst;
+    private CmsTekst cmsTekst;
 
     @BeforeEach
     public void setup() {

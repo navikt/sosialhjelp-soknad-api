@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.fail;
 
-public class XsrfGeneratorTest {
+class XsrfGeneratorTest {
 
     @BeforeEach
     public void setUp() {
@@ -25,7 +25,7 @@ public class XsrfGeneratorTest {
     }
 
     @Test
-    public void skalGenerereBasertPaaInput() {
+    void skalGenerereBasertPaaInput() {
         String token = XsrfGenerator.generateXsrfToken("1L");
         String tokenYesterday = XsrfGenerator.generateXsrfToken("1L", new DateTime().minusDays(1).toString("yyyyMMdd"));
         XsrfGenerator.sjekkXsrfToken(token, "1L");

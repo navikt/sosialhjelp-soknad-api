@@ -22,7 +22,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class SkattbarInntektServiceTest {
+class SkattbarInntektServiceTest {
 
     @Mock
     private SkattbarInntektConsumer skattbarInntektConsumer;
@@ -31,7 +31,7 @@ public class SkattbarInntektServiceTest {
     private SkattbarInntektService skattbarInntektService;
 
     @Test
-    public void hentSkattbarInntekt() {
+    void hentSkattbarInntekt() {
         SkattbarInntekt skattbarInntekt = readResponseFromPath("/skatt/InntektOgSkatt.json");
         when(skattbarInntektConsumer.hentSkattbarInntekt(anyString())).thenReturn(skattbarInntekt);
 
@@ -44,7 +44,7 @@ public class SkattbarInntektServiceTest {
     }
 
     @Test
-    public void hentSkattbarInntektForToMaanederIgnorererDaArbeidsgiver1IForrigeMaaned() {
+    void hentSkattbarInntektForToMaanederIgnorererDaArbeidsgiver1IForrigeMaaned() {
         SkattbarInntekt skattbarInntekt = readResponseFromPath("/skatt/InntektOgSkattToMaaneder.json");
         when(skattbarInntektConsumer.hentSkattbarInntekt(anyString())).thenReturn(skattbarInntekt);
 
@@ -53,7 +53,7 @@ public class SkattbarInntektServiceTest {
     }
 
     @Test
-    public void hentSkattbarInntektForToMaanederIForrigeMaanedBeggeMaanedeneOgArbeidsgiverneVilVaereMed() {
+    void hentSkattbarInntektForToMaanederIForrigeMaanedBeggeMaanedeneOgArbeidsgiverneVilVaereMed() {
         SkattbarInntekt skattbarInntekt = readResponseFromPath("/skatt/InntektOgSkattToMaanederToArbeidsgivere.json");
         when(skattbarInntektConsumer.hentSkattbarInntekt(anyString())).thenReturn(skattbarInntekt);
 

@@ -13,14 +13,14 @@ import java.io.InputStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class PdlAdressebeskyttelseResponseTest {
+class PdlAdressebeskyttelseResponseTest {
 
     private ObjectMapper mapper = new ObjectMapper()
             .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
             .registerModule(new JavaTimeModule());
 
     @Test
-    public void deserialiseringAvPdlAdressebesskyttelseResponseJson() throws IOException {
+    void deserialiseringAvPdlAdressebesskyttelseResponseJson() throws IOException {
         InputStream resourceAsStream = ClassLoader.getSystemResourceAsStream("pdl/pdlAdressebeskyttelseResponse.json");
         assertThat(resourceAsStream).isNotNull();
         String jsonString = IOUtils.toString(resourceAsStream);

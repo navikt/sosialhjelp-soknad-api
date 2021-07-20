@@ -29,7 +29,7 @@ import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class BegrunnelseRessursTest {
+class BegrunnelseRessursTest {
 
     private static final String BEHANDLINGSID = "123";
     private static final String EIER = "123456789101";
@@ -58,7 +58,7 @@ public class BegrunnelseRessursTest {
     }
 
     @Test
-    public void getBegrunnelseSkalReturnereBegrunnelseMedTommeStrenger(){
+    void getBegrunnelseSkalReturnereBegrunnelseMedTommeStrenger(){
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithBegrunnelse("", ""));
 
@@ -69,7 +69,7 @@ public class BegrunnelseRessursTest {
     }
 
     @Test
-    public void getBegrunnelseSkalReturnereBegrunnelse(){
+    void getBegrunnelseSkalReturnereBegrunnelse(){
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithBegrunnelse(SOKER_OM, SOKER_FORDI));
 
@@ -80,7 +80,7 @@ public class BegrunnelseRessursTest {
     }
 
     @Test
-    public void putBegrunnelseSkalSetteBegrunnelse(){
+    void putBegrunnelseSkalSetteBegrunnelse(){
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithBegrunnelse("", ""));
@@ -98,7 +98,7 @@ public class BegrunnelseRessursTest {
     }
 
     @Test
-    public void getBegrunnelseSkalKasteAuthorizationExceptionVedManglendeTilgang() {
+    void getBegrunnelseSkalKasteAuthorizationExceptionVedManglendeTilgang() {
         doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerHarTilgang();
 
         assertThatExceptionOfType(AuthorizationException.class)
@@ -108,7 +108,7 @@ public class BegrunnelseRessursTest {
     }
 
     @Test
-    public void putBegrunnelseSkalKasteAuthorizationExceptionVedManglendeTilgang() {
+    void putBegrunnelseSkalKasteAuthorizationExceptionVedManglendeTilgang() {
         doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(BEHANDLINGSID);
 
         var begrunnelseFrontend = new BegrunnelseFrontend().withHvaSokesOm(SOKER_OM).withHvorforSoke(SOKER_FORDI);

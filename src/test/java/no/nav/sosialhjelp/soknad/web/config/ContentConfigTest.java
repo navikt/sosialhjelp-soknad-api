@@ -11,13 +11,13 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(MockitoExtension.class)
-public class ContentConfigTest extends ApplicationContextTest {
+class ContentConfigTest extends ApplicationContextTest {
 
     @InjectMocks
     ContentConfig contentConfig;
 
     @Test
-    public void skalReturnereRettAntallBundles(){
+    void skalReturnereRettAntallBundles(){
         NavMessageSource source = contentConfig.navMessageSource();
         Map<String, String> basenames = source.getBasenames();
         assertThat(basenames).hasSize(1);

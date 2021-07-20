@@ -13,10 +13,10 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ArbeidsforholdDtoTest {
+class ArbeidsforholdDtoTest {
 
     @Test
-    public void skalDeserialisereArbeidsforholdResponse() throws IOException {
+    void skalDeserialisereArbeidsforholdResponse() throws IOException {
         ObjectMapper objectMapper = new ObjectMapper()
                 .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
                 .registerModule(new JavaTimeModule());

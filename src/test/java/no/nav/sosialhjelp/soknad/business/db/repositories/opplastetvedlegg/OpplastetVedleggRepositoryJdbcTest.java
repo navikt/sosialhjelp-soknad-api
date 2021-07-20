@@ -18,7 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {DbTestConfig.class})
-public class OpplastetVedleggRepositoryJdbcTest {
+class OpplastetVedleggRepositoryJdbcTest {
 
     private static final String EIER = "12345678901";
     private static final String EIER2 = "22222222222";
@@ -44,7 +44,7 @@ public class OpplastetVedleggRepositoryJdbcTest {
     }
 
     @Test
-    public void opprettVedleggOppretterOpplastetVedleggIDatabasen() {
+    void opprettVedleggOppretterOpplastetVedleggIDatabasen() {
         OpplastetVedlegg opplastetVedlegg = lagOpplastetVedlegg();
 
         String uuidFraDb = opplastetVedleggRepository.opprettVedlegg(opplastetVedlegg, EIER);
@@ -53,7 +53,7 @@ public class OpplastetVedleggRepositoryJdbcTest {
     }
 
     @Test
-    public void hentVedleggHenterOpplastetVedleggSomFinnesForGittUuidOgEier() {
+    void hentVedleggHenterOpplastetVedleggSomFinnesForGittUuidOgEier() {
         final String uuid = opprettOpplastetVedleggOgLagreIDb(lagOpplastetVedlegg(), EIER);
 
         OpplastetVedlegg opplastetVedleggFraDb = opplastetVedleggRepository.hentVedlegg(uuid, EIER).get();
@@ -68,7 +68,7 @@ public class OpplastetVedleggRepositoryJdbcTest {
     }
 
     @Test
-    public void hentVedleggForSoknadHenterAlleVedleggForGittSoknadUnderArbeidId() {
+    void hentVedleggForSoknadHenterAlleVedleggForGittSoknadUnderArbeidId() {
         final String uuid = opprettOpplastetVedleggOgLagreIDb(lagOpplastetVedlegg(), EIER);
         final String uuidSammeSoknadOgEier = opprettOpplastetVedleggOgLagreIDb(lagOpplastetVedlegg(EIER, TYPE2, SOKNADID), EIER);
         opprettOpplastetVedleggOgLagreIDb(lagOpplastetVedlegg(EIER2, TYPE2, SOKNADID2), EIER2);
@@ -82,7 +82,7 @@ public class OpplastetVedleggRepositoryJdbcTest {
     }
 
     @Test
-    public void slettVedleggSletterOpplastetVedleggMedGittUuidOgEier() {
+    void slettVedleggSletterOpplastetVedleggMedGittUuidOgEier() {
         final String uuid = opprettOpplastetVedleggOgLagreIDb(lagOpplastetVedlegg(), EIER);
 
         opplastetVedleggRepository.slettVedlegg(uuid, EIER);
@@ -91,7 +91,7 @@ public class OpplastetVedleggRepositoryJdbcTest {
     }
 
     @Test
-    public void slettAlleVedleggForSoknadSletterAlleOpplastedeVedleggForGittSoknadIdOgEier() {
+    void slettAlleVedleggForSoknadSletterAlleOpplastedeVedleggForGittSoknadIdOgEier() {
         final String uuid = opprettOpplastetVedleggOgLagreIDb(lagOpplastetVedlegg(), EIER);
         final String uuidSammeSoknadOgEier = opprettOpplastetVedleggOgLagreIDb(lagOpplastetVedlegg(EIER, TYPE, SOKNADID), EIER);
         final String uuidSammeEierOgAnnenSoknad = opprettOpplastetVedleggOgLagreIDb(lagOpplastetVedlegg(EIER, TYPE2, SOKNADID3), EIER);

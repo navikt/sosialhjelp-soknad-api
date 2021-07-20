@@ -16,7 +16,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class AdresseSokTPSServiceTest {
+class AdresseSokTPSServiceTest {
 
     @Mock
     private AdresseSokConsumer adresseSokConsumer;
@@ -28,7 +28,7 @@ public class AdresseSokTPSServiceTest {
     private TpsAdresseSokService tpsAdresseSokService;
 
     @Test
-    public void skalBytteUtKommunenavnForIKSKommunerSoerFronTilNordFron() {
+    void skalBytteUtKommunenavnForIKSKommunerSoerFronTilNordFron() {
         AdresseSokConsumer.AdresseData adresseData = new AdresseSokConsumer.AdresseData();
         adresseData.kommunenummer = "3438";
         adresseData.kommunenavn = "Sør-Fron";
@@ -37,7 +37,7 @@ public class AdresseSokTPSServiceTest {
     }
 
     @Test
-    public void skalBytteUtKommunenavnForIKSKommunerRingebuTilNordFron() {
+    void skalBytteUtKommunenavnForIKSKommunerRingebuTilNordFron() {
         AdresseSokConsumer.AdresseData adresseData = new AdresseSokConsumer.AdresseData();
         adresseData.kommunenummer = "3439";
         adresseData.kommunenavn = "Ringebu";
@@ -45,7 +45,7 @@ public class AdresseSokTPSServiceTest {
         assertThat(adresseForslag.kommunenavn).isEqualTo("Nord-Fron");
     }
     @Test
-    public void skalBytteUtKommunenavnForIKSKommunerFlesbergTilRollag() {
+    void skalBytteUtKommunenavnForIKSKommunerFlesbergTilRollag() {
         AdresseSokConsumer.AdresseData adresseData = new AdresseSokConsumer.AdresseData();
         adresseData.kommunenummer = "3050";
         adresseData.kommunenavn = "Flesberg";
@@ -54,7 +54,7 @@ public class AdresseSokTPSServiceTest {
     }
 
     @Test
-    public void skalBytteUtKommunenavnForIKSKommunerNoreOgUvedalTilRollag() {
+    void skalBytteUtKommunenavnForIKSKommunerNoreOgUvedalTilRollag() {
         AdresseSokConsumer.AdresseData adresseData = new AdresseSokConsumer.AdresseData();
         adresseData.kommunenummer = "3052";
         adresseData.kommunenavn = "Nore og Uvdal";
@@ -63,7 +63,7 @@ public class AdresseSokTPSServiceTest {
     }
 
     @Test
-    public void skalBytteUtKommunenavnForIKSKommunerNoreOgUvedalTilHaugesund() {
+    void skalBytteUtKommunenavnForIKSKommunerNoreOgUvedalTilHaugesund() {
         AdresseSokConsumer.AdresseData adresseData = new AdresseSokConsumer.AdresseData();
         adresseData.kommunenummer = "1151";
         adresseData.kommunenavn = "Utsira";
@@ -72,7 +72,7 @@ public class AdresseSokTPSServiceTest {
     }
 
     @Test
-    public void skalIkkeBytteUtKommunenavnDersomKommunenIkkeErIKSKommune() {
+    void skalIkkeBytteUtKommunenavnDersomKommunenIkkeErIKSKommune() {
         AdresseSokConsumer.AdresseData adresseData = new AdresseSokConsumer.AdresseData();
         adresseData.kommunenummer = "2004";
         adresseData.kommunenavn = "IkkeIKS";
@@ -81,19 +81,19 @@ public class AdresseSokTPSServiceTest {
     }
 
     @Test
-    public void sokEtterAdresserString_medNullAdresseString_skalGiTomtResultat() {
+    void sokEtterAdresserString_medNullAdresseString_skalGiTomtResultat() {
         List<AdresseForslag> adresseForslags = tpsAdresseSokService.sokEtterAdresser((String) null);
         assertThat(adresseForslags).isEmpty();
     }
 
     @Test
-    public void sokEtterAdresserString_medAdressePaEnBokstav_skalGiTomtResultat() {
+    void sokEtterAdresserString_medAdressePaEnBokstav_skalGiTomtResultat() {
         List<AdresseForslag> adresseForslags = tpsAdresseSokService.sokEtterAdresser("a");
         assertThat(adresseForslags).isEmpty();
     }
 
     @Test
-    public void sokEtterAdresserString_medAdressePaToBokstaver_skalGiTomtResultat() {
+    void sokEtterAdresserString_medAdressePaToBokstaver_skalGiTomtResultat() {
         String adressenavn = "Sæ";
         when(adresseSokConsumer.sokAdresse(any())).thenReturn(mockAddressResponse(adressenavn));
 
@@ -102,19 +102,19 @@ public class AdresseSokTPSServiceTest {
     }
 
     @Test
-    public void sokEtterAdresserSokedata_medNullSokedata_skalGiTomtResultat() {
+    void sokEtterAdresserSokedata_medNullSokedata_skalGiTomtResultat() {
         List<AdresseForslag> adresseForslags = tpsAdresseSokService.sokEtterAdresser((Sokedata) null);
         assertThat(adresseForslags).isEmpty();
     }
 
     @Test
-    public void sokEtterAdresserSokedata_derSokedataHarNullAdresse_skalGiTomtResultat() {
+    void sokEtterAdresserSokedata_derSokedataHarNullAdresse_skalGiTomtResultat() {
         List<AdresseForslag> adresseForslags = tpsAdresseSokService.sokEtterAdresser(new Sokedata());
         assertThat(adresseForslags).isEmpty();
     }
 
     @Test
-    public void sokEtterAdresserSokedata_medAdressePaEnBokstav_skalGiTomtResultat() {
+    void sokEtterAdresserSokedata_medAdressePaEnBokstav_skalGiTomtResultat() {
         Sokedata sokedata = new Sokedata();
         sokedata.adresse = "a";
         List<AdresseForslag> adresseForslags = tpsAdresseSokService.sokEtterAdresser(sokedata);
@@ -122,7 +122,7 @@ public class AdresseSokTPSServiceTest {
     }
 
     @Test
-    public void sokEtterAdresserSokedata_medAdressePaToBokstaver_skalGiResultat() {
+    void sokEtterAdresserSokedata_medAdressePaToBokstaver_skalGiResultat() {
         String adressenavn = "Sæ";
         when(adresseSokConsumer.sokAdresse(any())).thenReturn(mockAddressResponse(adressenavn));
 

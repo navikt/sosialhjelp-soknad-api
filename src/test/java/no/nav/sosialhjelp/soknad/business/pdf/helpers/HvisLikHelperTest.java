@@ -11,7 +11,7 @@ import java.io.IOException;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(MockitoExtension.class)
-public class HvisLikHelperTest {
+class HvisLikHelperTest {
 
     private Handlebars handlebars;
 
@@ -23,14 +23,14 @@ public class HvisLikHelperTest {
     }
 
     @Test
-    public void viserInnholdVedToLikeStrenger() throws IOException {
+    void viserInnholdVedToLikeStrenger() throws IOException {
         String compiled = handlebars.compileInline("{{#hvisLik \"verdi\" \"verdi\" }}like verdier{{/hvisLik}}").apply(new Object());
         assertThat(compiled).isEqualTo("like verdier");
     }
 
 
     @Test
-    public void viserIkkeInnholdVedToUlikeStrenger() throws IOException {
+    void viserIkkeInnholdVedToUlikeStrenger() throws IOException {
         String compiled = handlebars.compileInline("{{#hvisLik \"noe\" \"noe annet\" }}like verdier{{else}}ulike verdier{{/hvisLik}}").apply(new Object());
         assertThat(compiled).isEqualTo("ulike verdier");
     }

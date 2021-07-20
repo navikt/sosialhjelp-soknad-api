@@ -51,7 +51,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @MockitoSettings(strictness = Strictness.LENIENT)
-public class FiksSenderTest {
+class FiksSenderTest {
 
     private static final String FIKSFORSENDELSE_ID = "6767";
     private static final String FILNAVN = "filnavn.jpg";
@@ -97,7 +97,7 @@ public class FiksSenderTest {
     }
 
     @Test
-    public void opprettForsendelseSetterRiktigInfoPaForsendelsenMedKryptering() {
+    void opprettForsendelseSetterRiktigInfoPaForsendelsenMedKryptering() {
         when(innsendingService.hentSoknadUnderArbeid(anyString(), anyString()))
                 .thenReturn(new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER)));
         SendtSoknad sendtSoknad = lagSendtSoknad();
@@ -121,7 +121,7 @@ public class FiksSenderTest {
     }
 
     @Test
-    public void opprettForsendelseSetterRiktigInfoPaForsendelsenUtenKryptering() {
+    void opprettForsendelseSetterRiktigInfoPaForsendelsenUtenKryptering() {
         when(innsendingService.hentSoknadUnderArbeid(anyString(), anyString()))
                 .thenReturn(new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER)).withEier(EIER));
         setProperty(FiksSender.KRYPTERING_DISABLED, "true");
@@ -136,7 +136,7 @@ public class FiksSenderTest {
     }
 
     @Test
-    public void opprettForsendelseSetterRiktigTittelForNySoknad() {
+    void opprettForsendelseSetterRiktigTittelForNySoknad() {
         when(innsendingService.hentSoknadUnderArbeid(anyString(), anyString()))
                 .thenReturn(new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER)).withEier(EIER));
         SendtSoknad sendtSoknad = lagSendtSoknad();
@@ -147,7 +147,7 @@ public class FiksSenderTest {
     }
 
     @Test
-    public void opprettForsendelseSetterRiktigTittelForEttersendelse() {
+    void opprettForsendelseSetterRiktigTittelForEttersendelse() {
         when(innsendingService.hentSoknadUnderArbeid(anyString(), anyString())).thenReturn(new SoknadUnderArbeid()
                 .withTilknyttetBehandlingsId("12345")
                 .withJsonInternalSoknad(lagInternalSoknadForEttersending())
@@ -161,7 +161,7 @@ public class FiksSenderTest {
     }
 
     @Test
-    public void opprettForsendelseForEttersendelseUtenSvarPaForsendelseSkalFeile() {
+    void opprettForsendelseForEttersendelseUtenSvarPaForsendelseSkalFeile() {
         when(innsendingService.hentSoknadUnderArbeid(anyString(), anyString()))
                 .thenReturn(new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER)).withEier(EIER));
         when(innsendingService.finnSendtSoknadForEttersendelse(any(SoknadUnderArbeid.class))).thenReturn(new SendtSoknad()
@@ -173,7 +173,7 @@ public class FiksSenderTest {
     }
 
     @Test
-    public void hentDokumenterFraSoknadReturnererFireDokumenterForSoknadUtenVedlegg() {
+    void hentDokumenterFraSoknadReturnererFireDokumenterForSoknadUtenVedlegg() {
         List<Dokument> fiksDokumenter = fiksSender.hentDokumenterFraSoknad(new SoknadUnderArbeid()
                 .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER)));
 
@@ -186,7 +186,7 @@ public class FiksSenderTest {
     }
 
     @Test
-    public void hentDokumenterFraSoknadReturnererTreDokumenterForEttersendingMedEtVedlegg() {
+    void hentDokumenterFraSoknadReturnererTreDokumenterForEttersendingMedEtVedlegg() {
         when(innsendingService.hentAlleOpplastedeVedleggForSoknad(any(SoknadUnderArbeid.class))).thenReturn(lagOpplastetVedlegg());
 
         List<Dokument> fiksDokumenter = fiksSender.hentDokumenterFraSoknad(new SoknadUnderArbeid()
@@ -201,13 +201,13 @@ public class FiksSenderTest {
     }
 
     @Test
-    public void hentDokumenterFraSoknadKasterFeilHvisSoknadManglerForNySoknad() {
+    void hentDokumenterFraSoknadKasterFeilHvisSoknadManglerForNySoknad() {
         assertThatExceptionOfType(RuntimeException.class)
                 .isThrownBy(() -> fiksSender.hentDokumenterFraSoknad(new SoknadUnderArbeid()));
     }
 
     @Test
-    public void hentDokumenterFraSoknadKasterFeilHvisVedleggManglerForEttersending() {
+    void hentDokumenterFraSoknadKasterFeilHvisVedleggManglerForEttersending() {
         assertThatExceptionOfType(RuntimeException.class)
                 .isThrownBy(() -> fiksSender.hentDokumenterFraSoknad(new SoknadUnderArbeid().withTilknyttetBehandlingsId("123")));
     }

@@ -7,10 +7,10 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class KodeverkDtoTest {
+class KodeverkDtoTest {
 
     @Test
-    public void skalDeserialisereResponse() throws JsonProcessingException {
+    void skalDeserialisereResponse() throws JsonProcessingException {
         String json = "{\"betydninger\":{ \"NOR\": [ {\"gyldigFra\": \"1900-01-01\",\"gyldigTil\": \"9999-12-31\",\"beskrivelser\": {\"nb\": {\"term\": \"NORGE\",\"tekst\": \"NORGE\" } } }] } } ";
 
         KodeverkDto response = new ObjectMapper()

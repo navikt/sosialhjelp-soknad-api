@@ -22,7 +22,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class PdlAdresseSokServiceTest {
+class PdlAdresseSokServiceTest {
 
     private static final String BYDELSNUMMER = "030101";
     private static final String KOMMUNENUMMER = "0301";
@@ -41,7 +41,7 @@ public class PdlAdresseSokServiceTest {
             .withPoststed("Oslo");
 
     @Test
-    public void skalKasteFeil_AdresseSokResultErNull() {
+    void skalKasteFeil_AdresseSokResultErNull() {
         when(pdlAdresseSokConsumer.getAdresseSokResult(any())).thenReturn(null);
 
         assertThatExceptionOfType(RuntimeException.class)
@@ -49,13 +49,13 @@ public class PdlAdresseSokServiceTest {
     }
 
     @Test
-    public void skalKasteFeil_SokedataErNull() {
+    void skalKasteFeil_SokedataErNull() {
         assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(() -> pdlAdresseSokService.getAdresseForslag(null));
     }
 
     @Test
-    public void skalKasteFeil_AdresseSokResultHitsErNull() {
+    void skalKasteFeil_AdresseSokResultHitsErNull() {
         var adresseSokResultMock = mock(AdresseSokResult.class);
         when(adresseSokResultMock.getHits()).thenReturn(null);
 
@@ -66,7 +66,7 @@ public class PdlAdresseSokServiceTest {
     }
 
     @Test
-    public void skalKasteFeil_AdresseSokGirTomListe() {
+    void skalKasteFeil_AdresseSokGirTomListe() {
         var adresseSokResultMock = mock(AdresseSokResult.class);
         when(adresseSokResultMock.getHits()).thenReturn(emptyList());
 
@@ -77,7 +77,7 @@ public class PdlAdresseSokServiceTest {
     }
 
     @Test
-    public void skalKasteFeil_AdresseSokGirFlereHits() {
+    void skalKasteFeil_AdresseSokGirFlereHits() {
         var adresseSokResultMock = mock(AdresseSokResult.class);
         when(adresseSokResultMock.getHits()).thenReturn(List.of(mock(AdresseSokHit.class), mock(AdresseSokHit.class)));
 
@@ -88,7 +88,7 @@ public class PdlAdresseSokServiceTest {
     }
 
     @Test
-    public void skalReturnereAdresseForslagMedGeografiskTilknytningLikBydelsnummer() {
+    void skalReturnereAdresseForslagMedGeografiskTilknytningLikBydelsnummer() {
         var hitMock = mock(AdresseSokHit.class);
         when(hitMock.getVegadresse()).thenReturn(vegadresseMedBydelsnummer());
 
@@ -102,7 +102,7 @@ public class PdlAdresseSokServiceTest {
     }
 
     @Test
-    public void skalReturnereAdresseForslagMedGeografiskTilknytningLikKommunenummer() {
+    void skalReturnereAdresseForslagMedGeografiskTilknytningLikKommunenummer() {
         var hitMock = mock(AdresseSokHit.class);
         when(hitMock.getVegadresse()).thenReturn(vegadresseUtenBydelsnummer());
         var adresseSokResultMock = mock(AdresseSokResult.class);
@@ -115,7 +115,7 @@ public class PdlAdresseSokServiceTest {
     }
 
     @Test
-    public void skalKasteFeil_flereHitsMedUlikeKommunenavn() {
+    void skalKasteFeil_flereHitsMedUlikeKommunenavn() {
         var hitMock = mock(AdresseSokHit.class);
         when(hitMock.getVegadresse()).thenReturn(vegadresse("kommune1", "0101", null));
         var hitMock2 = mock(AdresseSokHit.class);
@@ -131,7 +131,7 @@ public class PdlAdresseSokServiceTest {
     }
 
     @Test
-    public void skalKasteFeil_flereHitsMedUlikeKommunenummer() {
+    void skalKasteFeil_flereHitsMedUlikeKommunenummer() {
         var hitMock = mock(AdresseSokHit.class);
         when(hitMock.getVegadresse()).thenReturn(vegadresse("kommune", "1111", null));
         var hitMock2 = mock(AdresseSokHit.class);
@@ -147,7 +147,7 @@ public class PdlAdresseSokServiceTest {
     }
 
     @Test
-    public void skalKasteFeil_flereHitsMedUlikeBydelsnummer() {
+    void skalKasteFeil_flereHitsMedUlikeBydelsnummer() {
         var hitMock = mock(AdresseSokHit.class);
         when(hitMock.getVegadresse()).thenReturn(vegadresse("kommune", "1111", "030101"));
         var hitMock2 = mock(AdresseSokHit.class);
@@ -163,7 +163,7 @@ public class PdlAdresseSokServiceTest {
     }
 
     @Test
-    public void skalReturnereAdresseForslagVedFlereHitsHvisDeHarSammeKommunenummerKommunenavnOgBydelsnummer() {
+    void skalReturnereAdresseForslagVedFlereHitsHvisDeHarSammeKommunenummerKommunenavnOgBydelsnummer() {
         var hitMock = mock(AdresseSokHit.class);
         when(hitMock.getVegadresse()).thenReturn(vegadresse("Oslo", "1111", "030101"));
         var hitMock2 = mock(AdresseSokHit.class);

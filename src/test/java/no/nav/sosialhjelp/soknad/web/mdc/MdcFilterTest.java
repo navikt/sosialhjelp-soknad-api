@@ -24,7 +24,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class MdcFilterTest {
+class MdcFilterTest {
     private final static String MOCK_CALL_ID = "mock_call_id";
     private final static String MOCK_CONSUMER_ID = "mock_consumer_id";
     private final static String MOCK_BEHANDLINGS_ID = "mock_behandlings_id";
@@ -44,7 +44,7 @@ public class MdcFilterTest {
     }
 
     @Test
-    public void shouldAddCallIdFromRequest() {
+    void shouldAddCallIdFromRequest() {
         ContainerRequest request = ContainerRequestBuilder
                 .from("requestUri", "GET", new SoknadApplication())
                 .header(HEADER_CALL_ID, MOCK_CALL_ID)
@@ -57,7 +57,7 @@ public class MdcFilterTest {
     }
 
     @Test
-    public void shouldGenerateCallIdIfNoneInRequest() {
+    void shouldGenerateCallIdIfNoneInRequest() {
         ContainerRequest request = ContainerRequestBuilder
                 .from("requestUri", "GET", new SoknadApplication())
                 .build();
@@ -69,7 +69,7 @@ public class MdcFilterTest {
     }
 
     @Test
-    public void shouldAddConsumerId() {
+    void shouldAddConsumerId() {
         ContainerRequest request = ContainerRequestBuilder
                 .from("requestUri", "GET", new SoknadApplication())
                 .build();
@@ -81,7 +81,7 @@ public class MdcFilterTest {
     }
 
     @Test
-    public void shouldAddBehandlingsId() {
+    void shouldAddBehandlingsId() {
         MultivaluedMap<String, String> pathParams = new MultivaluedHashMap<>();
         pathParams.put("behandlingsId", Collections.singletonList(MOCK_BEHANDLINGS_ID));
 

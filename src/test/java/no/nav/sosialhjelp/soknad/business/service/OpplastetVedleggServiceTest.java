@@ -44,7 +44,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class OpplastetVedleggServiceTest {
+class OpplastetVedleggServiceTest {
 
     private static final String BEHANDLINGSID = "123";
     private static final String FILNAVN1 = "Bifil.jpeg";
@@ -78,7 +78,7 @@ public class OpplastetVedleggServiceTest {
     }
 
     @Test
-    public void lagerFilnavn() {
+    void lagerFilnavn() {
         String filnavn = opplastetVedleggService.lagFilnavn("minfil.jpg", TikaFileType.JPEG, "5c2a1cea-ef05-4db6-9c98-1b6c9b3faa99");
         assertThat(filnavn).isEqualTo("minfil-5c2a1cea.jpg");
 
@@ -97,7 +97,7 @@ public class OpplastetVedleggServiceTest {
     }
 
     @Test
-    public void oppdatererVedleggStatusVedOpplastingAvVedlegg() throws IOException {
+    void oppdatererVedleggStatusVedOpplastingAvVedlegg() throws IOException {
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 new SoknadUnderArbeid().withJsonInternalSoknad(new JsonInternalSoknad()
                         .withVedlegg(new JsonVedleggSpesifikasjon().withVedlegg(Collections.singletonList(
@@ -121,7 +121,7 @@ public class OpplastetVedleggServiceTest {
     }
 
     @Test
-    public void sletterVedleggStatusVedSlettingAvOpplastingAvVedlegg() {
+    void sletterVedleggStatusVedSlettingAvOpplastingAvVedlegg() {
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 new SoknadUnderArbeid().withJsonInternalSoknad(new JsonInternalSoknad()
                         .withVedlegg(new JsonVedleggSpesifikasjon().withVedlegg(Collections.singletonList(
@@ -144,7 +144,7 @@ public class OpplastetVedleggServiceTest {
     }
 
     @Test
-    public void feilmeldingHvisSamletVedleggStorrelseOverskriderMaksgrense() throws IOException {
+    void feilmeldingHvisSamletVedleggStorrelseOverskriderMaksgrense() throws IOException {
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 new SoknadUnderArbeid()
                         .withJsonInternalSoknad(new JsonInternalSoknad().withVedlegg(
@@ -165,7 +165,7 @@ public class OpplastetVedleggServiceTest {
     }
 
     @Test
-    public void feilmeldingHvisFiltypeErUgyldigMenValidererMedTika() throws IOException {
+    void feilmeldingHvisFiltypeErUgyldigMenValidererMedTika() throws IOException {
         byte[] imageFile = createByteArrayFromJpeg();
 
         assertThatExceptionOfType(UgyldigOpplastingTypeException.class)

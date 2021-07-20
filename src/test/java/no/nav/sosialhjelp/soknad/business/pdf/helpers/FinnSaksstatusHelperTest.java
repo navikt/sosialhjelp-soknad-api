@@ -8,7 +8,7 @@ import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class FinnSaksstatusHelperTest {
+class FinnSaksstatusHelperTest {
 
     private Handlebars handlebars;
 
@@ -20,25 +20,25 @@ public class FinnSaksstatusHelperTest {
     }
 
     @Test
-    public void skalViseBeskrivelseVedVedtak() throws IOException {
+    void skalViseBeskrivelseVedVedtak() throws IOException {
         String compiled = handlebars.compileInline("{{finnSaksstatus \"VEDTATT\" \"Beskrivelse av vedtak\" \"INNVILGET\"}}").apply(new Object());
         assertThat(compiled).isEqualTo("Innvilget: Beskrivelse av vedtak");
     }
 
     @Test
-    public void skalLeggePaAvslag() throws IOException {
+    void skalLeggePaAvslag() throws IOException {
         String compiled = handlebars.compileInline("{{finnSaksstatus \"VEDTATT\" \"Beskrivelse av vedtak\" \"AVSLAG\"}}").apply(new Object());
         assertThat(compiled).isEqualTo("Avslag: Beskrivelse av vedtak");
     }
 
     @Test
-    public void skalLeggePaAvvist() throws IOException {
+    void skalLeggePaAvvist() throws IOException {
         String compiled = handlebars.compileInline("{{finnSaksstatus \"VEDTATT\" \"Beskrivelse av vedtak\" \"AVVIST\"}}").apply(new Object());
         assertThat(compiled).isEqualTo("Avvist: Beskrivelse av vedtak");
     }
 
     @Test
-    public void skalViseUnderBehandlingVedIkkeVedtak() throws IOException {
+    void skalViseUnderBehandlingVedIkkeVedtak() throws IOException {
         String compiled = handlebars.compileInline("{{finnSaksstatus \"UNDER_BEHANDLING\" \"Beskrivelse av vedtak\"}}").apply(new Object());
         assertThat(compiled).isEqualTo("Under behandling");
     }

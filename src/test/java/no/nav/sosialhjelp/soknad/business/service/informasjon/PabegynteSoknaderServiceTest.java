@@ -18,7 +18,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class PabegynteSoknaderServiceTest {
+class PabegynteSoknaderServiceTest {
 
     @Mock
     private SoknadMetadataRepository soknadMetadataRepository;
@@ -27,14 +27,14 @@ public class PabegynteSoknaderServiceTest {
     private PabegynteSoknaderService informasjonService;
 
     @Test
-    public void brukerHarIngenPabegynteSoknader() {
+    void brukerHarIngenPabegynteSoknader() {
         when(soknadMetadataRepository.hentPabegynteSoknaderForBruker(anyString())).thenReturn(emptyList());
 
         assertThat(informasjonService.hentPabegynteSoknaderForBruker("fnr")).isEmpty();
     }
 
     @Test
-    public void brukerHar1PabegyntSoknad() {
+    void brukerHar1PabegyntSoknad() {
         var now = LocalDateTime.now();
         var soknadMetadata = new SoknadMetadata();
         soknadMetadata.sistEndretDato = now;

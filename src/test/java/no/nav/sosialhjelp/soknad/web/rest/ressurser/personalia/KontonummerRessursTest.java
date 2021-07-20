@@ -32,7 +32,7 @@ import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class KontonummerRessursTest {
+class KontonummerRessursTest {
 
     private static final String BEHANDLINGSID = "123";
     private static final String EIER = "123456789101";
@@ -64,7 +64,7 @@ public class KontonummerRessursTest {
     }
 
     @Test
-    public void getKontonummerSkalReturnereSystemKontonummer() {
+    void getKontonummerSkalReturnereSystemKontonummer() {
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithKontonummer(JsonKilde.SYSTEM, KONTONUMMER_SYSTEM));
 
@@ -77,7 +77,7 @@ public class KontonummerRessursTest {
     }
 
     @Test
-    public void getKontonummerSkalReturnereBrukerutfyltKontonummer() {
+    void getKontonummerSkalReturnereBrukerutfyltKontonummer() {
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithKontonummer(JsonKilde.BRUKER, KONTONUMMER_BRUKER));
         when(kontonummerSystemdata.innhentSystemverdiKontonummer(anyString())).thenReturn(KONTONUMMER_SYSTEM);
@@ -91,7 +91,7 @@ public class KontonummerRessursTest {
     }
 
     @Test
-    public void getKontonummerSkalReturnereKontonummerLikNull() {
+    void getKontonummerSkalReturnereKontonummerLikNull() {
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithKontonummer(JsonKilde.BRUKER, null));
         when(kontonummerSystemdata.innhentSystemverdiKontonummer(anyString())).thenReturn(null);
@@ -105,7 +105,7 @@ public class KontonummerRessursTest {
     }
 
     @Test
-    public void putKontonummerSkalSetteBrukerutfyltKontonummer() {
+    void putKontonummerSkalSetteBrukerutfyltKontonummer() {
         startWithEmptyKontonummerAndNoSystemKontonummer();
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
 
@@ -122,7 +122,7 @@ public class KontonummerRessursTest {
     }
 
     @Test
-    public void putKontonummerSkalOverskriveBrukerutfyltKontonummerMedSystemKontonummer() {
+    void putKontonummerSkalOverskriveBrukerutfyltKontonummerMedSystemKontonummer() {
         startWithBrukerKontonummerAndSystemKontonummerInTPS();
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         doCallRealMethod().when(kontonummerSystemdata).updateSystemdataIn(any(SoknadUnderArbeid.class), any());
@@ -140,7 +140,7 @@ public class KontonummerRessursTest {
     }
 
     @Test
-    public void getKontonummerSkalKasteAuthorizationExceptionVedManglendeTilgang() {
+    void getKontonummerSkalKasteAuthorizationExceptionVedManglendeTilgang() {
         doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerHarTilgang();
 
         assertThatExceptionOfType(AuthorizationException.class)
@@ -150,7 +150,7 @@ public class KontonummerRessursTest {
     }
 
     @Test
-    public void putKontonummerSkalKasteAuthorizationExceptionVedManglendeTilgang() {
+    void putKontonummerSkalKasteAuthorizationExceptionVedManglendeTilgang() {
         doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
 
         var kontonummerFrontend = new KontonummerFrontend();

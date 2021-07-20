@@ -28,7 +28,7 @@ import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class AdresseSokServiceTest {
+class AdresseSokServiceTest {
 
     private static final String EIER = "123456789101";
     private static final String KOMMUNENUMMER = "0300";
@@ -60,7 +60,7 @@ public class AdresseSokServiceTest {
     private AdresseSokService adresseSokService;
 
     @Test
-    public void finnAdresseFraSoknadGirRiktigAdresseForMidlertidigGateadresse() {
+    void finnAdresseFraSoknadGirRiktigAdresseForMidlertidigGateadresse() {
         when(tpsAdresseSokService.sokEtterAdresser(any(Sokedata.class))).thenReturn(lagAdresseForslagListeMedEtInnslag());
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         JsonPersonalia personalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
@@ -78,7 +78,7 @@ public class AdresseSokServiceTest {
     }
 
     @Test
-    public void finnAdresseFraSoknadGirRiktigAdresseForFolkeregistrertGateadresseHentetFraPdl() {
+    void finnAdresseFraSoknadGirRiktigAdresseForFolkeregistrertGateadresseHentetFraPdl() {
         when(unleash.isEnabled(anyString(), anyBoolean())).thenReturn(true);
         when(pdlAdresseSokService.getAdresseForslag(any())).thenReturn(lagAdresseForslag(KOMMUNENUMMER, KOMMUNENAVN1));
         var soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
@@ -99,7 +99,7 @@ public class AdresseSokServiceTest {
     }
 
     @Test
-    public void finnAdresseFraSoknadGirRiktigAdresseForFolkeregistrertMatrikkeladresse() {
+    void finnAdresseFraSoknadGirRiktigAdresseForFolkeregistrertMatrikkeladresse() {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         JsonPersonalia personalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
         personalia.setFolkeregistrertAdresse(createMatrikkeladresse());
@@ -115,7 +115,7 @@ public class AdresseSokServiceTest {
     }
 
     @Test
-    public void finnAdresseFraSoknadReturnererTomListeHvisAdressesokGirFlereResultater() {
+    void finnAdresseFraSoknadReturnererTomListeHvisAdressesokGirFlereResultater() {
         when(tpsAdresseSokService.sokEtterAdresser(any(Sokedata.class))).thenReturn(Arrays.asList(
                 lagAdresseForslag(KOMMUNENUMMER1, KOMMUNENAVN1, "Foo"),
                 lagAdresseForslag(KOMMUNENUMMER1, KOMMUNENAVN1, "Bar")
@@ -131,7 +131,7 @@ public class AdresseSokServiceTest {
     }
 
     @Test
-    public void finnAdresseFraSoknadKanGiFlereNavKontor() {
+    void finnAdresseFraSoknadKanGiFlereNavKontor() {
         when(tpsAdresseSokService.sokEtterAdresser(any(Sokedata.class))).thenReturn(Arrays.asList(
                 lagAdresseForslag(KOMMUNENUMMER1, KOMMUNENAVN1, "Foo"),
                 lagAdresseForslag(KOMMUNENUMMER2, KOMMUNENAVN2, "Foo")
@@ -147,7 +147,7 @@ public class AdresseSokServiceTest {
     }
 
     @Test
-    public void finnAdresseFraSoknadReturnererTomListeHvisAdresseValgMangler() {
+    void finnAdresseFraSoknadReturnererTomListeHvisAdresseValgMangler() {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         JsonPersonalia personalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
         personalia.setOppholdsadresse(createGateadresse());

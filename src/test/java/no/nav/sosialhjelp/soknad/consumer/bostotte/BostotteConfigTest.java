@@ -8,9 +8,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(MockitoExtension.class)
-public class BostotteConfigTest {
+class BostotteConfigTest {
     @Test
-    public void bostotteConfig_verifiserStandardverdier() {
+    void bostotteConfig_verifiserStandardverdier() {
         BostotteConfig bostotteConfig = new BostotteConfig();
 
         assertThat(bostotteConfig.getBostotteImpl()).isNotNull();
@@ -18,7 +18,7 @@ public class BostotteConfigTest {
     }
 
     @Test
-    public void bostotteConfig_verifiserPingOppretting() {
+    void bostotteConfig_verifiserPingOppretting() {
         BostotteConfig bostotteConfig = new BostotteConfig();
 
         Pingable pingable = bostotteConfig.opprettHusbankenPing();

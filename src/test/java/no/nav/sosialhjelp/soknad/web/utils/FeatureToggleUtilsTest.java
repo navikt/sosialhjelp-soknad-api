@@ -4,11 +4,10 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-
-public class FeatureToggleUtilsTest {
+class FeatureToggleUtilsTest {
 
     @Test
-    public void enableModalV2Test() {
+    void enableModalV2Test() {
         assertThat(FeatureToggleUtils.enableModalV2("1234")).isTrue();
         assertThat(FeatureToggleUtils.enableModalV2("1235")).isFalse();
         assertThat(FeatureToggleUtils.enableModalV2("asdf")).isFalse();

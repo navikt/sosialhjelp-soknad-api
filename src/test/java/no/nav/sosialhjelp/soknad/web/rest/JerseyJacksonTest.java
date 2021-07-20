@@ -8,10 +8,10 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class JerseyJacksonTest {
+class JerseyJacksonTest {
 
     @Test
-    public void serializeJodaTime() throws JsonProcessingException {
+    void serializeJodaTime() throws JsonProcessingException {
         DateTime date = new DateTime(2015, 1, 1, 10, 0, DateTimeZone.UTC);
 
         SoknadObjectMapperProvider mapper = new SoknadObjectMapperProvider();

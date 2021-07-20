@@ -18,7 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {DbTestConfig.class})
-public class BatchSendtSoknadRepositoryJdbcTest {
+class BatchSendtSoknadRepositoryJdbcTest {
 
     private static final String EIER = "12345678901";
     private static final String BEHANDLINGSID = "1100020";
@@ -45,7 +45,7 @@ public class BatchSendtSoknadRepositoryJdbcTest {
     }
 
     @Test
-    public void hentSendtSoknadHenterSendtSoknadForEierOgBehandlingsid() {
+    void hentSendtSoknadHenterSendtSoknadForEierOgBehandlingsid() {
         sendtSoknadRepository.opprettSendtSoknad(lagSendtSoknad(EIER), EIER);
 
         Long sendtSoknadId = batchSendtSoknadRepository.hentSendtSoknad(BEHANDLINGSID).get();
@@ -54,7 +54,7 @@ public class BatchSendtSoknadRepositoryJdbcTest {
     }
 
     @Test
-    public void slettSendtSoknadSletterSoknadFraDatabase() {
+    void slettSendtSoknadSletterSoknadFraDatabase() {
         SendtSoknad sendtSoknad = lagSendtSoknad(EIER);
         Long sendtSoknadId = sendtSoknadRepository.opprettSendtSoknad(sendtSoknad, EIER);
         sendtSoknad.setSendtSoknadId(sendtSoknadId);

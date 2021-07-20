@@ -26,7 +26,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class TilgangskontrollTest {
+class TilgangskontrollTest {
 
     @InjectMocks
     private Tilgangskontroll tilgangskontroll;
@@ -50,7 +50,7 @@ public class TilgangskontrollTest {
     }
 
     @Test
-    public void skalGiTilgangForBruker() {
+    void skalGiTilgangForBruker() {
         String userId = SubjectHandler.getUserId();
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withEier(userId).withJsonInternalSoknad(createEmptyJsonInternalSoknad(userId));
         when(soknadUnderArbeidRepository.hentSoknadOptional(anyString(), anyString())).thenReturn(Optional.of(soknadUnderArbeid));
@@ -60,7 +60,7 @@ public class TilgangskontrollTest {
     }
 
     @Test
-    public void skalFeileForAndre() {
+    void skalFeileForAndre() {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad("other_user"));
         when(soknadUnderArbeidRepository.hentSoknadOptional(anyString(), anyString())).thenReturn(Optional.of(soknadUnderArbeid));
 
@@ -69,7 +69,7 @@ public class TilgangskontrollTest {
     }
 
     @Test
-    public void skalFeileOmSoknadenIkkeFinnes() {
+    void skalFeileOmSoknadenIkkeFinnes() {
         when(soknadUnderArbeidRepository.hentSoknadOptional(anyString(), anyString())).thenReturn(Optional.empty());
 
         assertThatExceptionOfType(AuthorizationException.class)
@@ -77,7 +77,7 @@ public class TilgangskontrollTest {
     }
 
     @Test
-    public void skalGiTilgangForBrukerMetadata() {
+    void skalGiTilgangForBrukerMetadata() {
         var userId = SubjectHandler.getUserId();
         SoknadMetadata metadata = new SoknadMetadata();
         metadata.fnr = userId;
@@ -88,7 +88,7 @@ public class TilgangskontrollTest {
     }
 
     @Test
-    public void skalFeileForAndreMetadata() {
+    void skalFeileForAndreMetadata() {
         SoknadMetadata metadata = new SoknadMetadata();
         metadata.fnr = "other_user";
         when(soknadMetadataRepository.hent("123")).thenReturn(metadata);
@@ -98,13 +98,13 @@ public class TilgangskontrollTest {
     }
 
     @Test
-    public void skalFeileHvisEierErNull() {
+    void skalFeileHvisEierErNull() {
         assertThatExceptionOfType(AuthorizationException.class)
                 .isThrownBy(() -> tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(""));
     }
 
     @Test
-    public void skalFeileHvisBrukerHarAdressebeskyttelseStrengtFortrolig() {
+    void skalFeileHvisBrukerHarAdressebeskyttelseStrengtFortrolig() {
         var userId = SubjectHandler.getUserId();
         when(personService.hentAdressebeskyttelse(userId)).thenReturn(AdressebeskyttelseDto.Gradering.STRENGT_FORTROLIG);
 
@@ -113,7 +113,7 @@ public class TilgangskontrollTest {
     }
 
     @Test
-    public void skalFeileHvisBrukerHarAdressebeskyttelseFortrolig() {
+    void skalFeileHvisBrukerHarAdressebeskyttelseFortrolig() {
         var userId = SubjectHandler.getUserId();
         when(personService.hentAdressebeskyttelse(userId)).thenReturn(AdressebeskyttelseDto.Gradering.FORTROLIG);
 

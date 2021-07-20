@@ -10,7 +10,7 @@ import java.io.IOException;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
-public class FormaterDecimalHelperTest {
+class FormaterDecimalHelperTest {
 
     private Handlebars handlebars;
 
@@ -22,14 +22,14 @@ public class FormaterDecimalHelperTest {
     }
 
     @Test
-    public void skalViseToDesimalerSomStandard() throws IOException {
+    void skalViseToDesimalerSomStandard() throws IOException {
         JsonOkonomiOpplysningUtbetaling bostotteUtbetaling = new JsonOkonomiOpplysningUtbetaling().withNetto(123.0);
         String compiled = handlebars.compileInline("{{formaterDecimal netto}}").apply(bostotteUtbetaling);
         assertThat(compiled).isEqualTo("123,00");
     }
 
     @Test
-    public void skalkunneViseTreDecimaler() throws IOException {
+    void skalkunneViseTreDecimaler() throws IOException {
         JsonOkonomiOpplysningUtbetaling bostotteUtbetaling = new JsonOkonomiOpplysningUtbetaling().withNetto(123.0);
         String compiled = handlebars.compileInline("{{formaterDecimal netto 3}}").apply(bostotteUtbetaling);
         assertThat(compiled).isEqualTo("123,000");

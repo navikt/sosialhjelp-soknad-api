@@ -32,7 +32,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class SkattetatenSystemdataTest {
+class SkattetatenSystemdataTest {
     private static final String EIER = "12345678901";
 
     private static final JsonOkonomiOpplysningUtbetaling JSON_OKONOMI_OPPLYSNING_UTBETALING = new JsonOkonomiOpplysningUtbetaling()
@@ -128,7 +128,7 @@ public class SkattetatenSystemdataTest {
     }
 
     @Test
-    public void skalOppdatereUtbetalinger() {
+    void skalOppdatereUtbetalinger() {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid()
                 .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         setSamtykke(soknadUnderArbeid.getJsonInternalSoknad(), true);
@@ -147,7 +147,7 @@ public class SkattetatenSystemdataTest {
     }
 
     @Test
-    public void skalKunInkludereGyldigeOrganisasjonsnummer() {
+    void skalKunInkludereGyldigeOrganisasjonsnummer() {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid()
                 .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         setSamtykke(soknadUnderArbeid.getJsonInternalSoknad(), true);
@@ -168,7 +168,7 @@ public class SkattetatenSystemdataTest {
     }
 
     @Test
-    public void skalOppdatereUtbetalingerUtenAAOverskriveBrukerUtfylteUtbetalinger() {
+    void skalOppdatereUtbetalingerUtenAAOverskriveBrukerUtfylteUtbetalinger() {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid()
                 .withJsonInternalSoknad(createJsonInternalSoknadWithUtbetalinger());
         setSamtykke(soknadUnderArbeid.getJsonInternalSoknad(), true);
@@ -188,7 +188,7 @@ public class SkattetatenSystemdataTest {
     }
 
     @Test
-    public void skalIkkeHenteUtbetalingerUtenSamtykke() {
+    void skalIkkeHenteUtbetalingerUtenSamtykke() {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid()
                 .withJsonInternalSoknad(createJsonInternalSoknadWithUtbetalinger());
         setSamtykke(soknadUnderArbeid.getJsonInternalSoknad(), false);
@@ -205,7 +205,7 @@ public class SkattetatenSystemdataTest {
     }
 
     @Test
-    public void skalFjerneUtbetalingerNarViIkkeHarSamtykke() {
+    void skalFjerneUtbetalingerNarViIkkeHarSamtykke() {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid()
                 .withJsonInternalSoknad(createJsonInternalSoknadWithUtbetalinger());
         setSamtykke(soknadUnderArbeid.getJsonInternalSoknad(), true);
@@ -236,7 +236,7 @@ public class SkattetatenSystemdataTest {
     }
 
     @Test
-    public void updateSystemdata_soknadBlirOppdatertRiktigVedKommunikasjonsfeil_ogBeholderGamleData() {
+    void updateSystemdata_soknadBlirOppdatertRiktigVedKommunikasjonsfeil_ogBeholderGamleData() {
         // Variabler:
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid()
                 .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));

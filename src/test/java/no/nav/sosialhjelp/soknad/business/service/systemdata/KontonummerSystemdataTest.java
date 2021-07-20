@@ -17,7 +17,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class KontonummerSystemdataTest {
+class KontonummerSystemdataTest {
 
     private static final String EIER = "12345678901";
     private static final String KONTONUMMER_SYSTEM = "12345678903";
@@ -30,7 +30,7 @@ public class KontonummerSystemdataTest {
     private KontonummerSystemdata kontonummerSystemdata;
 
     @Test
-    public void skalOppdatereKontonummer() {
+    void skalOppdatereKontonummer() {
 
         var soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         when(kontonummerService.getKontonummer(anyString())).thenReturn(KONTONUMMER_SYSTEM);
@@ -44,7 +44,7 @@ public class KontonummerSystemdataTest {
     }
 
     @Test
-    public void skalOppdatereKontonummerOgFjerneUlovligeSymboler() {
+    void skalOppdatereKontonummerOgFjerneUlovligeSymboler() {
 
         var soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         when(kontonummerService.getKontonummer(anyString())).thenReturn(KONTONUMMER_SYSTEM + " !#¤%&/()=?`-<>|§,.-* ");
@@ -58,7 +58,7 @@ public class KontonummerSystemdataTest {
     }
 
     @Test
-    public void skalIkkeOppdatereKontonummerDersomKildeErBruker() {
+    void skalIkkeOppdatereKontonummerDersomKildeErBruker() {
         var soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createJsonInternalSoknadWithUserDefinedKontonummer());
 
         kontonummerSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
@@ -70,7 +70,7 @@ public class KontonummerSystemdataTest {
     }
 
     @Test
-    public void skalSetteNullDersomKontonummerErTomStreng() {
+    void skalSetteNullDersomKontonummerErTomStreng() {
         var soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         when(kontonummerService.getKontonummer(anyString())).thenReturn("");
 
@@ -83,7 +83,7 @@ public class KontonummerSystemdataTest {
     }
 
     @Test
-    public void skalSetteNullDersomKontonummerErNull() {
+    void skalSetteNullDersomKontonummerErNull() {
         var soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         when(kontonummerService.getKontonummer(anyString())).thenReturn(null);
 

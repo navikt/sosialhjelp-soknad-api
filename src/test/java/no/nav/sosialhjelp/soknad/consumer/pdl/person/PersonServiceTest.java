@@ -31,7 +31,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class PersonServiceTest {
+class PersonServiceTest {
 
     private static final String BARN_IDENT = "11111111111";
     private static final String EKTEFELLE_IDENT = "22222222222";
@@ -54,7 +54,7 @@ public class PersonServiceTest {
     private final Barn barn = new Barn();
 
     @Test
-    public void skalHentePersonMedEktefelle() {
+    void skalHentePersonMedEktefelle() {
         when(pdlHentPersonConsumer.hentPerson(any())).thenReturn(mockPdlPerson);
         when(pdlPersonMapper.mapToPerson(any(), any())).thenReturn(person);
 
@@ -69,7 +69,7 @@ public class PersonServiceTest {
     }
 
     @Test
-    public void skalHentePersonMenIkkeEktefelleHvisEktefelleidentErNull() {
+    void skalHentePersonMenIkkeEktefelleHvisEktefelleidentErNull() {
         when(pdlHentPersonConsumer.hentPerson(any())).thenReturn(mockPdlPerson);
         when(pdlPersonMapper.mapToPerson(any(), any())).thenReturn(person);
 
@@ -83,7 +83,7 @@ public class PersonServiceTest {
     }
 
     @Test
-    public void skalHentePersonMenIkkeEktefelleHvisEktefelleidentErFDAT() {
+    void skalHentePersonMenIkkeEktefelleHvisEktefelleidentErFDAT() {
         when(pdlHentPersonConsumer.hentPerson(any())).thenReturn(mockPdlPerson);
         when(pdlPersonMapper.mapToPerson(any(), any())).thenReturn(person);
 
@@ -99,7 +99,7 @@ public class PersonServiceTest {
     }
 
     @Test
-    public void skalHentePersonUtenEktefelle() {
+    void skalHentePersonUtenEktefelle() {
         when(pdlHentPersonConsumer.hentPerson(any())).thenReturn(mockPdlPerson);
         when(pdlPersonMapper.mapToPerson(any(), any())).thenReturn(person);
 
@@ -111,7 +111,7 @@ public class PersonServiceTest {
     }
 
     @Test
-    public void skalHenteBarn() {
+    void skalHenteBarn() {
         when(pdlHentPersonConsumer.hentPerson(any())).thenReturn(mockPdlPerson);
 
         when(mockPdlPerson.getForelderBarnRelasjon()).thenReturn(asList(new ForelderBarnRelasjonDto(BARN_IDENT, "BARN", "MOR")));
@@ -126,7 +126,7 @@ public class PersonServiceTest {
     }
 
     @Test
-    public void skalFiltrereVekkNullBarn() {
+    void skalFiltrereVekkNullBarn() {
         when(pdlHentPersonConsumer.hentPerson(any())).thenReturn(mockPdlPerson);
 
         when(mockPdlPerson.getForelderBarnRelasjon()).thenReturn(asList(new ForelderBarnRelasjonDto(BARN_IDENT, "BARN", "MOR")));
@@ -140,7 +140,7 @@ public class PersonServiceTest {
     }
 
     @Test
-    public void skalIkkeHenteBarnHvisIdentErNull() {
+    void skalIkkeHenteBarnHvisIdentErNull() {
         when(pdlHentPersonConsumer.hentPerson(any())).thenReturn(mockPdlPerson);
 
         when(mockPdlPerson.getForelderBarnRelasjon()).thenReturn(asList(new ForelderBarnRelasjonDto(null, "BARN", "MOR")));
@@ -153,7 +153,7 @@ public class PersonServiceTest {
     }
 
     @Test
-    public void skalIkkeHenteBarnHvisIdentErFDAT() {
+    void skalIkkeHenteBarnHvisIdentErFDAT() {
         when(pdlHentPersonConsumer.hentPerson(any())).thenReturn(mockPdlPerson);
 
         when(mockPdlPerson.getForelderBarnRelasjon()).thenReturn(asList(new ForelderBarnRelasjonDto(FDAT_IDENT, "BARN", "MOR")));
@@ -166,7 +166,7 @@ public class PersonServiceTest {
     }
 
     @Test
-    public void skalHenteAdressebeskyttelse() {
+    void skalHenteAdressebeskyttelse() {
         when(pdlHentPersonConsumer.hentAdressebeskyttelse(any())).thenReturn(mock(PdlAdressebeskyttelse.class));
         when(pdlPersonMapper.mapToAdressebeskyttelse(any())).thenReturn(AdressebeskyttelseDto.Gradering.UGRADERT);
 

@@ -18,7 +18,7 @@ import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_NAVYT
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(MockitoExtension.class)
-public class HvisUtbetalingFinnesHelperTest {
+class HvisUtbetalingFinnesHelperTest {
 
     private Handlebars handlebars;
 
@@ -31,7 +31,7 @@ public class HvisUtbetalingFinnesHelperTest {
     
     
     @Test
-    public void skalFinneUtbetalingIOpplysninger() throws IOException{
+    void skalFinneUtbetalingIOpplysninger() throws IOException{
         final JsonOkonomiopplysninger opplysninger = lagOpplysningerMedEnNavytelseOgEnAnnenUtbetaling();
 
         String compiled = handlebars.compileInline("{{#hvisUtbetalingFinnes \"navytelse\" }}Utbetalingstypen finnes"
@@ -41,7 +41,7 @@ public class HvisUtbetalingFinnesHelperTest {
     }
     
     @Test
-    public void skalIkkeFinneUtbetalingIOpplysninger() throws IOException{
+    void skalIkkeFinneUtbetalingIOpplysninger() throws IOException{
         final JsonOkonomiopplysninger opplysninger = lagOpplysningerMedEnNavytelseOgEnAnnenUtbetaling();
 
         String compiled = handlebars.compileInline("{{#hvisUtbetalingFinnes \"tullepenger\" }}Utbetalingstypen finnes"

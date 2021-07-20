@@ -10,13 +10,13 @@ import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class VedleggTypeTest {
+class VedleggTypeTest {
 
     private static final String TYPE = "bostotte|kontooversikt";
     private static final String TYPE2 = "annetboutgift|brukskonto";
 
     @Test
-    public void vedleggTypeObjekterMedSammeTypeOgTilleggsinfoErLike() {
+    void vedleggTypeObjekterMedSammeTypeOgTilleggsinfoErLike() {
         VedleggType vedleggType = new VedleggType(TYPE);
         VedleggType likVedleggType = new VedleggType(TYPE);
 
@@ -24,7 +24,7 @@ public class VedleggTypeTest {
     }
 
     @Test
-    public void vedleggTypeObjekterMedSammeTypeOgTilleggsinfoHarSammeHashVerdi() {
+    void vedleggTypeObjekterMedSammeTypeOgTilleggsinfoHarSammeHashVerdi() {
         List<VedleggType> vedleggTypeList = new ArrayList<>(Arrays.asList(new VedleggType(TYPE), new VedleggType(TYPE)));
 
         Set<VedleggType> vedleggTyper = new HashSet<>();
@@ -35,7 +35,7 @@ public class VedleggTypeTest {
     }
 
     @Test
-    public void vedleggTypeObjekterMedSammeTypeOgUlikTilleggsinfoErUlike() {
+    void vedleggTypeObjekterMedSammeTypeOgUlikTilleggsinfoErUlike() {
         VedleggType vedleggType = new VedleggType(TYPE);
         VedleggType likVedleggType = new VedleggType(TYPE2);
 
@@ -43,7 +43,7 @@ public class VedleggTypeTest {
     }
 
     @Test
-    public void vedleggTypeObjekterMedUlikTypeOgSammeTilleggsinfoErUlike() {
+    void vedleggTypeObjekterMedUlikTypeOgSammeTilleggsinfoErUlike() {
         VedleggType vedleggType = new VedleggType(TYPE);
         VedleggType likVedleggType = new VedleggType(TYPE2);
 

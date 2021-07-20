@@ -19,15 +19,15 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class HvisSparingHelperTest {
+class HvisSparingHelperTest {
 
     private Handlebars handlebars;
 
     @InjectMocks
-    HvisSparingHelper hvisSparingHelper;
+    private HvisSparingHelper hvisSparingHelper;
 
     @Mock
-    HentSvaralternativerHelper hentSvaralternativerHelper;
+    private HentSvaralternativerHelper hentSvaralternativerHelper;
 
     @BeforeEach
     public void setup() {
@@ -41,14 +41,14 @@ public class HvisSparingHelperTest {
     }
 
     @Test
-    public void skalGjenkjenneSparingstype() throws IOException {
+    void skalGjenkjenneSparingstype() throws IOException {
         String compiled = handlebars.compileInline("{{#hvisSparing \"brukskonto\"}}brukskonto er en sparingstype{{else}}ikke en sparingstype{{/hvisSparing}}").apply(new Object());
 
         assertThat(compiled).isEqualTo("brukskonto er en sparingstype");
     }
 
     @Test
-    public void skalIkkeGjenkjenneSparingstype() throws IOException {
+    void skalIkkeGjenkjenneSparingstype() throws IOException {
         String compiled = handlebars.compileInline("{{#hvisSparing \"skattekart\"}}skattekart er en sparingstype{{else}}ikke en sparingstype{{/hvisSparing}}").apply(new Object());
 
         assertThat(compiled).isEqualTo("ikke en sparingstype");

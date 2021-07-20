@@ -45,7 +45,7 @@ import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class AdresseRessursTest {
+class AdresseRessursTest {
 
     private static final String BEHANDLINGSID = "123";
     private static final JsonAdresse JSON_SYS_MATRIKKELADRESSE = new JsonMatrikkelAdresse()
@@ -102,7 +102,7 @@ public class AdresseRessursTest {
     }
 
     @Test
-    public void getAdresserSkalReturnereAdresserRiktigKonvertert() {
+    void getAdresserSkalReturnereAdresserRiktigKonvertert() {
         SoknadUnderArbeid soknadUnderArbeid = createJsonInternalSoknadWithOppholdsadresse(JsonAdresseValg.SOKNAD);
         soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().setFolkeregistrertAdresse(JSON_SYS_MATRIKKELADRESSE);
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(soknadUnderArbeid);
@@ -114,7 +114,7 @@ public class AdresseRessursTest {
     }
 
     @Test
-    public void getAdresserSkalReturnereOppholdsAdresseLikFolkeregistrertAdresse() {
+    void getAdresserSkalReturnereOppholdsAdresseLikFolkeregistrertAdresse() {
         SoknadUnderArbeid soknadUnderArbeid = createJsonInternalSoknadWithOppholdsadresse(JsonAdresseValg.FOLKEREGISTRERT);
         soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().setFolkeregistrertAdresse(JSON_SYS_MATRIKKELADRESSE);
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(soknadUnderArbeid);
@@ -126,7 +126,7 @@ public class AdresseRessursTest {
     }
 
     @Test
-    public void getAdresserSkalReturnereOppholdsAdresseLikMidlertidigAdresse() {
+    void getAdresserSkalReturnereOppholdsAdresseLikMidlertidigAdresse() {
         SoknadUnderArbeid soknadUnderArbeid = createJsonInternalSoknadWithOppholdsadresse(JsonAdresseValg.MIDLERTIDIG);
         soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().setFolkeregistrertAdresse(JSON_SYS_MATRIKKELADRESSE);
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(soknadUnderArbeid);
@@ -138,7 +138,7 @@ public class AdresseRessursTest {
     }
 
     @Test
-    public void getAdresserSkalReturnereAdresserLikNull() {
+    void getAdresserSkalReturnereAdresserLikNull() {
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithOppholdsadresse(null));
         when(adresseSystemdata.innhentMidlertidigAdresse(anyString())).thenReturn(null);
@@ -149,7 +149,7 @@ public class AdresseRessursTest {
     }
 
     @Test
-    public void putAdresseSkalSetteOppholdsAdresseLikFolkeregistrertAdresseOgReturnereTilhorendeNavenhet() {
+    void putAdresseSkalSetteOppholdsAdresseLikFolkeregistrertAdresseOgReturnereTilhorendeNavenhet() {
         SoknadUnderArbeid soknadUnderArbeidIRepo = createJsonInternalSoknadWithOppholdsadresse(JsonAdresseValg.SOKNAD);
         soknadUnderArbeidIRepo.getJsonInternalSoknad().getSoknad().getData().getPersonalia().setFolkeregistrertAdresse(JSON_SYS_MATRIKKELADRESSE);
         when(adresseSystemdata.createDeepCopyOfJsonAdresse(any(JsonAdresse.class))).thenCallRealMethod();
@@ -171,7 +171,7 @@ public class AdresseRessursTest {
     }
 
     @Test
-    public void putAdresseSkalSetteOppholdsAdresseLikMidlertidigAdresseOgReturnereTilhorendeNavenhet() {
+    void putAdresseSkalSetteOppholdsAdresseLikMidlertidigAdresseOgReturnereTilhorendeNavenhet() {
         when(adresseSystemdata.innhentMidlertidigAdresse(anyString())).thenReturn(JSON_SYS_USTRUKTURERT_ADRESSE);
         when(adresseSystemdata.createDeepCopyOfJsonAdresse(any(JsonAdresse.class))).thenCallRealMethod();
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
@@ -194,7 +194,7 @@ public class AdresseRessursTest {
     }
 
     @Test
-    public void putAdresseSkalSetteOppholdsAdresseLikSoknadsadresseOgReturnereTilhorendeNavenhet() {
+    void putAdresseSkalSetteOppholdsAdresseLikSoknadsadresseOgReturnereTilhorendeNavenhet() {
         when(adresseSystemdata.createDeepCopyOfJsonAdresse(any(JsonAdresse.class))).thenCallRealMethod();
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithOppholdsadresse(JsonAdresseValg.FOLKEREGISTRERT));
@@ -218,7 +218,7 @@ public class AdresseRessursTest {
     }
 
     @Test
-    public void getAdresserSkalKasteAuthorizationExceptionVedManglendeTilgang() {
+    void getAdresserSkalKasteAuthorizationExceptionVedManglendeTilgang() {
         doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerHarTilgang();
 
         assertThatExceptionOfType(AuthorizationException.class)
@@ -228,7 +228,7 @@ public class AdresseRessursTest {
     }
 
     @Test
-    public void putAdresserSkalKasteAuthorizationExceptionVedManglendeTilgang() {
+    void putAdresserSkalKasteAuthorizationExceptionVedManglendeTilgang() {
         doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(BEHANDLINGSID);
 
         var adresserFrontend = new AdresserFrontend();

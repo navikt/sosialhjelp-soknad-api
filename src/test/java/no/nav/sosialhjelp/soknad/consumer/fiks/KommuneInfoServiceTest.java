@@ -24,7 +24,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class KommuneInfoServiceTest {
+class KommuneInfoServiceTest {
 
     private static final String KOMMUNENR = "1234";
     private static final String KOMMUNENR_UTEN_KONFIG = "1111";
@@ -45,7 +45,7 @@ public class KommuneInfoServiceTest {
     }
 
     @Test
-    public void kommuneUtenKonfigurasjonSkalGikanMottaSoknaderFalse() {
+    void kommuneUtenKonfigurasjonSkalGikanMottaSoknaderFalse() {
         KommuneInfo kommuneInfo = new KommuneInfo(KOMMUNENR_MED_KONFIG, true, false, true, false, null, false, null);
         Map<String, KommuneInfo> kommuneInfoMap = Map.of(KOMMUNENR_MED_KONFIG, kommuneInfo);
         when(digisosApi.hentAlleKommuneInfo()).thenReturn(kommuneInfoMap);
@@ -55,7 +55,7 @@ public class KommuneInfoServiceTest {
     }
 
     @Test
-    public void kommuneMedKonfigurasjonSkalGikanMottaSoknaderLikKonfigurasjon() {
+    void kommuneMedKonfigurasjonSkalGikanMottaSoknaderLikKonfigurasjon() {
         // True
         KommuneInfo kommuneInfo = new KommuneInfo(KOMMUNENR_MED_KONFIG, true, false, false, false, null, false, null);
         Map<String, KommuneInfo> kommuneInfoMap = Map.of(KOMMUNENR_MED_KONFIG, kommuneInfo);
@@ -74,7 +74,7 @@ public class KommuneInfoServiceTest {
     }
 
     @Test
-    public void kommuneUtenKonfigurasjonSkalGiharMidlertidigDeaktivertMottakFalse() {
+    void kommuneUtenKonfigurasjonSkalGiharMidlertidigDeaktivertMottakFalse() {
         KommuneInfo kommuneInfo = new KommuneInfo(KOMMUNENR_MED_KONFIG, true, false, true, false, null, false, null);
         Map<String, KommuneInfo> kommuneInfoMap = Map.of(KOMMUNENR_MED_KONFIG, kommuneInfo);
         when(digisosApi.hentAlleKommuneInfo()).thenReturn(kommuneInfoMap);
@@ -84,7 +84,7 @@ public class KommuneInfoServiceTest {
     }
 
     @Test
-    public void kommuneMedKonfigurasjonSkalGiharMidlertidigDeaktivertMottakLikKonfigurasjon() {
+    void kommuneMedKonfigurasjonSkalGiharMidlertidigDeaktivertMottakLikKonfigurasjon() {
         // True
         KommuneInfo kommuneInfo = new KommuneInfo(KOMMUNENR_MED_KONFIG, true, false, true, false, null, false, null);
         Map<String, KommuneInfo> kommuneInfoMap = Map.of(KOMMUNENR_MED_KONFIG, kommuneInfo);
@@ -103,7 +103,7 @@ public class KommuneInfoServiceTest {
     }
 
     @Test
-    public void kommuneInfo_fiks_feiler_og_cache_er_tom() {
+    void kommuneInfo_fiks_feiler_og_cache_er_tom() {
         when(digisosApi.hentAlleKommuneInfo()).thenReturn(emptyMap());
         when(redisService.getKommuneInfos()).thenReturn(null);
 
@@ -112,7 +112,7 @@ public class KommuneInfoServiceTest {
     }
 
     @Test
-    public void kommuneInfo_case1_ingen_konfigurasjon() {
+    void kommuneInfo_case1_ingen_konfigurasjon() {
         // Case 1
         KommuneInfo kommuneInfo = new KommuneInfo(KOMMUNENR_MED_KONFIG, true, false, true, false, null, false, null);
         Map<String, KommuneInfo> kommuneInfoMap = Map.of(KOMMUNENR_MED_KONFIG, kommuneInfo);
@@ -123,7 +123,7 @@ public class KommuneInfoServiceTest {
     }
 
     @Test
-    public void kommuneInfo_case2_deaktivert_mottak_8_permutasjoner_0000_0111() {
+    void kommuneInfo_case2_deaktivert_mottak_8_permutasjoner_0000_0111() {
         Map<String, KommuneInfo> kommuneInfoMap = new HashMap<>();
 
         // Kun deaktivert mottak (permutasjon 0 = 0000)
@@ -207,7 +207,7 @@ public class KommuneInfoServiceTest {
     }
 
     @Test
-    public void kommuneInfo_case3_aktivert_mottak() {
+    void kommuneInfo_case3_aktivert_mottak() {
         Map<String, KommuneInfo> kommuneInfoMap = new HashMap<>();
 
         // Kun aktivert mottak (permutasjon 8 = 1000)
@@ -231,7 +231,7 @@ public class KommuneInfoServiceTest {
     }
 
     @Test
-    public void kommuneInfo_case4_aktivert_mottak_og_innsyn() {
+    void kommuneInfo_case4_aktivert_mottak_og_innsyn() {
         Map<String, KommuneInfo> kommuneInfoMap = new HashMap<>();
 
         // Case 4 (permutasjon 12 = 1100)
@@ -254,7 +254,7 @@ public class KommuneInfoServiceTest {
     }
 
     @Test
-    public void kommuneInfo_case5_aktivert_mottak_og_innsyn_men_midlertidig_deaktivert_mottak() {
+    void kommuneInfo_case5_aktivert_mottak_og_innsyn_men_midlertidig_deaktivert_mottak() {
         Map<String, KommuneInfo> kommuneInfoMap = new HashMap<>();
 
         // Case 5 (permutasjon 14 = 1110)
@@ -286,7 +286,7 @@ public class KommuneInfoServiceTest {
     }
 
     @Test
-    public void kommuneInfo_case6_aktivert_mottak_og_innsyn_men_midlertidig_deaktivert_mottak_og_innsyn() {
+    void kommuneInfo_case6_aktivert_mottak_og_innsyn_men_midlertidig_deaktivert_mottak_og_innsyn() {
         Map<String, KommuneInfo> kommuneInfoMap = new HashMap<>();
 
         // Case 6 (permutasjon 15 = 1111)
@@ -301,7 +301,7 @@ public class KommuneInfoServiceTest {
 
 
     @Test
-    public void behandlingsansvarligKommuneSkalReturneresUtenKommuneINavnet() {
+    void behandlingsansvarligKommuneSkalReturneresUtenKommuneINavnet() {
         KommuneInfo value = new KommuneInfo(KOMMUNENR, true, false, true, false, null, false, "nabokommunenavn kommune");
         Map<String, KommuneInfo> kommuneInfoMap = new HashMap<>();
         kommuneInfoMap.put(KOMMUNENR, value);
@@ -312,7 +312,7 @@ public class KommuneInfoServiceTest {
     }
 
     @Test
-    public void behandlingsansvarligKommuneSkalReturnereKommunenavnHvisIngenBehandlingsansvarlig() {
+    void behandlingsansvarligKommuneSkalReturnereKommunenavnHvisIngenBehandlingsansvarlig() {
         KommuneInfo value = new KommuneInfo(KOMMUNENR, true, false, true, false, null, false, null);
         Map<String, KommuneInfo> kommuneInfoMap = new HashMap<>();
         kommuneInfoMap.put(KOMMUNENR, value);
@@ -323,7 +323,7 @@ public class KommuneInfoServiceTest {
     }
 
     @Test
-    public void skalHenteKommuneInfoFraCache_hvisLastTimePollErInnenfor() {
+    void skalHenteKommuneInfoFraCache_hvisLastTimePollErInnenfor() {
         KommuneInfo value = new KommuneInfo(KOMMUNENR, true, false, true, false, null, false, null);
         Map<String, KommuneInfo> kommuneInfoMap = new HashMap<>();
         kommuneInfoMap.put(KOMMUNENR, value);
@@ -338,7 +338,7 @@ public class KommuneInfoServiceTest {
     }
 
     @Test
-    public void skalHenteKommuneInfoFraFiks_hvisLastPollTimeOverskriderGrense() {
+    void skalHenteKommuneInfoFraFiks_hvisLastPollTimeOverskriderGrense() {
         KommuneInfo value = new KommuneInfo(KOMMUNENR, true, false, true, false, null, false, null);
         Map<String, KommuneInfo> kommuneInfoMap = new HashMap<>();
         kommuneInfoMap.put(KOMMUNENR, value);
@@ -353,7 +353,7 @@ public class KommuneInfoServiceTest {
     }
 
     @Test
-    public void hentKommuneInfoFraFiksFeiler_brukCache() {
+    void hentKommuneInfoFraFiksFeiler_brukCache() {
         KommuneInfo value = new KommuneInfo(KOMMUNENR, true, false, true, false, null, false, null);
         Map<String, KommuneInfo> kommuneInfoMap = new HashMap<>();
         kommuneInfoMap.put(KOMMUNENR, value);
@@ -371,7 +371,7 @@ public class KommuneInfoServiceTest {
     }
 
     @Test
-    public void hentKommuneInfoFraFiksFeiler_cacheErTom() {
+    void hentKommuneInfoFraFiksFeiler_cacheErTom() {
         when(redisService.getString(KOMMUNEINFO_LAST_POLL_TIME_KEY)).thenReturn(LocalDateTime.now().minusMinutes(12).format(ISO_LOCAL_DATE_TIME));
         when(digisosApi.hentAlleKommuneInfo()).thenReturn(emptyMap());
         when(redisService.getKommuneInfos()).thenReturn(null);
@@ -385,7 +385,7 @@ public class KommuneInfoServiceTest {
     }
 
     @Test
-    public void hentAlleKommuneInfo_fiksFeiler_skalHenteFraCache() {
+    void hentAlleKommuneInfo_fiksFeiler_skalHenteFraCache() {
         KommuneInfo value = new KommuneInfo(KOMMUNENR, true, false, true, false, null, false, null);
         Map<String, KommuneInfo> cachedKommuneInfoMap = new HashMap<>();
         cachedKommuneInfoMap.put(KOMMUNENR, value);

@@ -23,7 +23,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class SoknadOversiktServiceTest {
+class SoknadOversiktServiceTest {
 
     @Mock
     SoknadMetadataRepository soknadMetadataRepository;
@@ -45,7 +45,7 @@ public class SoknadOversiktServiceTest {
     }
 
     @Test
-    public void hentAlleSoknaderForBruker() {
+    void hentAlleSoknaderForBruker() {
         when(soknadMetadataRepository.hentSvarUtInnsendteSoknaderForBruker("12345"))
                 .thenReturn(singletonList(soknadMetadata));
 
