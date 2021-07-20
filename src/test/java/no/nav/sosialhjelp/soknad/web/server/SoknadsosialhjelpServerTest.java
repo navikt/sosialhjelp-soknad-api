@@ -1,13 +1,14 @@
 package no.nav.sosialhjelp.soknad.web.server;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
-public class SoknadsosialhjelpServerTest {
+class SoknadsosialhjelpServerTest {
 
     @Test
-    public void withEnvironmentVariableExpansion_shouldBeUnchanged() {
+    void withEnvironmentVariableExpansion_shouldBeUnchanged() {
         assertUnchanged(null);
         assertUnchanged("");
         assertUnchanged("https://dette.er.ett.api.no");
@@ -21,7 +22,7 @@ public class SoknadsosialhjelpServerTest {
     }
 
     @Test
-    public void withEnvironmentVariableExpansion_notRequired_shouldHandleDefaultValues() {
+    void withEnvironmentVariableExpansion_notRequired_shouldHandleDefaultValues() {
         System.setProperty("ENV_VAR_SET", "envVar");
 
         String value = SoknadsosialhjelpServer.withEnvironmentVariableExpansion("${ENV_VAR_SET:en.ny:fancy:variabel!=}", false);
@@ -32,7 +33,7 @@ public class SoknadsosialhjelpServerTest {
     }
 
     @Test
-    public void withEnvironmentVariableExpansion_withRequiredParameterAndEnvVarSet_shouldHandleDefaultValues() {
+    void withEnvironmentVariableExpansion_withRequiredParameterAndEnvVarSet_shouldHandleDefaultValues() {
         System.setProperty("ENV_VAR_SET", "envVar");
 
         String value = SoknadsosialhjelpServer.withEnvironmentVariableExpansion("${ENV_VAR_SET:en.ny:fancy:variabel!=}", true);
@@ -40,19 +41,19 @@ public class SoknadsosialhjelpServerTest {
     }
 
     @Test
-    public void withEnvironmentVariableExpansion_withRequiredWithoutEnvVarSet_ShouldUseVariable() {
+    void withEnvironmentVariableExpansion_withRequiredWithoutEnvVarSet_ShouldUseVariable() {
         String value = SoknadsosialhjelpServer.withEnvironmentVariableExpansion("${ENV_NOT_SET:en.ny:fancy:variabel!=}", true);
         assertThat(value).isEqualTo("en.ny:fancy:variabel!=");
     }
 
-    @Test(expected = IllegalStateException.class)
-    public void withEnvironmentVariableExpansion_withRequiredWithoutEnvVarSet_ShouldThrowException() {
-        String value = SoknadsosialhjelpServer.withEnvironmentVariableExpansion("${ENV_NOT_SET}", true);
-        assertThat(value).isEqualTo("foobar");
+    @Test
+    void withEnvironmentVariableExpansion_withRequiredWithoutEnvVarSet_ShouldThrowException() {
+        assertThatExceptionOfType(IllegalStateException.class)
+                .isThrownBy(() -> SoknadsosialhjelpServer.withEnvironmentVariableExpansion("${ENV_NOT_SET}", true));
     }
 
     @Test
-    public void withEnvironmentVariableExpansion_shouldHandleMultipleProperties() {
+    void withEnvironmentVariableExpansion_shouldHandleMultipleProperties() {
         System.setProperty("SoknadsosialhjelpServerTest.property", "foobar");
 
         String value = SoknadsosialhjelpServer.withEnvironmentVariableExpansion("Test ${SoknadsosialhjelpServerTest.property} med to ${SoknadsosialhjelpServerTest.property}", true);

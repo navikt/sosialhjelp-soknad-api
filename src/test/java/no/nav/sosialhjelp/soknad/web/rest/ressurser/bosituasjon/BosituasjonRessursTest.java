@@ -9,17 +9,18 @@ import no.nav.sosialhjelp.soknad.domain.model.oidc.StaticSubjectHandlerService;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.bosituasjon.BosituasjonRessurs.BosituasjonFrontend;
 import no.nav.sosialhjelp.soknad.web.sikkerhet.Tilgangskontroll;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
@@ -27,8 +28,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
-public class BosituasjonRessursTest {
+@ExtendWith(MockitoExtension.class)
+class BosituasjonRessursTest {
 
     private static final String BEHANDLINGSID = "123";
     private static final String EIER = "123456789101";
@@ -42,20 +43,20 @@ public class BosituasjonRessursTest {
     @InjectMocks
     private BosituasjonRessurs bosituasjonRessurs;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         System.setProperty("environment.name", "test");
         SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         SubjectHandler.resetOidcSubjectHandlerService();
         System.clearProperty("environment.name");
     }
 
     @Test
-    public void getBosituasjonSkalReturnereBosituasjonMedBotypeOgAntallPersonerLikNull(){
+    void getBosituasjonSkalReturnereBosituasjonMedBotypeOgAntallPersonerLikNull(){
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithBosituasjon(null, null));
 
@@ -66,7 +67,7 @@ public class BosituasjonRessursTest {
     }
 
     @Test
-    public void getBosituasjonSkalReturnereBosituasjonMedBotypeOgAntallPersoner(){
+    void getBosituasjonSkalReturnereBosituasjonMedBotypeOgAntallPersoner(){
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithBosituasjon(JsonBosituasjon.Botype.EIER, 2));
 
@@ -77,7 +78,7 @@ public class BosituasjonRessursTest {
     }
 
     @Test
-    public void putBosituasjonSkalSetteBosituasjon(){
+    void putBosituasjonSkalSetteBosituasjon(){
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithBosituasjon(JsonBosituasjon.Botype.LEIER, 2));
@@ -95,7 +96,7 @@ public class BosituasjonRessursTest {
     }
 
     @Test
-    public void putBosituasjonSkalSetteAntallPersonerLikNull(){
+    void putBosituasjonSkalSetteAntallPersonerLikNull(){
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithBosituasjon(null, 2));
@@ -110,21 +111,24 @@ public class BosituasjonRessursTest {
         assertThat(bosituasjon.getAntallPersoner()).isNull();
     }
 
-    @Test(expected = AuthorizationException.class)
-    public void getBosituasjonSkalKasteAuthorizationExceptionVedManglendeTilgang() {
+    @Test
+    void getBosituasjonSkalKasteAuthorizationExceptionVedManglendeTilgang() {
         doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerHarTilgang();
 
-        bosituasjonRessurs.hentBosituasjon(BEHANDLINGSID);
+        assertThatExceptionOfType(AuthorizationException.class)
+                .isThrownBy(() -> bosituasjonRessurs.hentBosituasjon(BEHANDLINGSID));
 
         verifyNoInteractions(soknadUnderArbeidRepository);
     }
 
-    @Test(expected = AuthorizationException.class)
-    public void putBosituasjonSkalKasteAuthorizationExceptionVedManglendeTilgang() {
+    @Test
+    void putBosituasjonSkalKasteAuthorizationExceptionVedManglendeTilgang() {
         doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(BEHANDLINGSID);
 
         var bosituasjonFrontend = new BosituasjonFrontend();
-        bosituasjonRessurs.updateBosituasjon(BEHANDLINGSID, bosituasjonFrontend);
+
+        assertThatExceptionOfType(AuthorizationException.class)
+                .isThrownBy(() -> bosituasjonRessurs.updateBosituasjon(BEHANDLINGSID, bosituasjonFrontend));
 
         verifyNoInteractions(soknadUnderArbeidRepository);
     }

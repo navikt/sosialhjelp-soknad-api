@@ -2,7 +2,7 @@ package no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.bydel;
 
 import no.nav.sosialhjelp.soknad.business.service.adressesok.AdresseForslag;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.bydel.BydelFordeling.Husnummerfordeling;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
@@ -14,7 +14,7 @@ import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.bydel.BydelForde
 import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.bydel.BydelService.BYDEL_MARKA;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class BydelServiceTest {
+class BydelServiceTest {
 
     private static final String TESTVEIEN = "testveien";
     private static final String TESTGATEN = "testgaten";
@@ -26,7 +26,7 @@ public class BydelServiceTest {
     private final BydelService bydelService = new BydelService(markaBydelFordeling());
 
     @Test
-    public void skalReturnereBydelTil() {
+    void skalReturnereBydelTil() {
         var testveien14 = createAdresseForslag(TESTVEIEN, "14");
         assertThat(bydelService.getBydelTilForMarka(testveien14)).isEqualTo(BYDEL_GRORUD);
 
@@ -44,7 +44,7 @@ public class BydelServiceTest {
     }
 
     @Test
-    public void skalReturnereAdresseforslagGeografiskTilknytningHvisBydelFordelingIkkeFinnes() {
+    void skalReturnereAdresseforslagGeografiskTilknytningHvisBydelFordelingIkkeFinnes() {
         var adresseForslag = createAdresseForslag("annen adresse", "14");
         var bydelTil = bydelService.getBydelTilForMarka(adresseForslag);
 

@@ -1,23 +1,23 @@
 package no.nav.sosialhjelp.soknad.business.util;
 
-import org.junit.After;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 
 import static java.lang.System.setProperty;
 import static no.nav.sosialhjelp.soknad.business.util.SenderUtils.createPrefixedBehandlingsIdInNonProd;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class SenderUtilsTest {
+class SenderUtilsTest {
 
     String originalBehandlingsId = "behandlingsId";
 
-    @After
+    @AfterEach
     public void tearDown() {
         System.clearProperty("environment.name");
     }
 
     @Test
-    public void createPrefixedBehandlingsId_inProd_shouldNotBePrefixed() {
+    void createPrefixedBehandlingsId_inProd_shouldNotBePrefixed() {
         System.clearProperty("environment.name");
         String prefixedBehandlingsId = createPrefixedBehandlingsIdInNonProd(originalBehandlingsId);
         assertThat(prefixedBehandlingsId).isEqualTo(originalBehandlingsId);
@@ -32,7 +32,7 @@ public class SenderUtilsTest {
     }
 
     @Test
-    public void createPrefixedBehandlingsId_inNonProd_shouldBePrefixedWithEnvironmentName() {
+    void createPrefixedBehandlingsId_inNonProd_shouldBePrefixedWithEnvironmentName() {
         setProperty("environment.name", "q0");
         String prefixedBehandlingsId = createPrefixedBehandlingsIdInNonProd(originalBehandlingsId);
         assertThat(prefixedBehandlingsId).isEqualTo("q0-" + originalBehandlingsId);

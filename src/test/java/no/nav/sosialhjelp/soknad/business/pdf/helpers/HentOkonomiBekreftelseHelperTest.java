@@ -5,10 +5,10 @@ import com.github.jknack.handlebars.Handlebars;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -17,12 +17,12 @@ import java.util.List;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.BOSTOTTE;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(MockitoJUnitRunner.class)
-public class HentOkonomiBekreftelseHelperTest {
+@ExtendWith(MockitoExtension.class)
+class HentOkonomiBekreftelseHelperTest {
 
     private Handlebars handlebars;
 
-    @Before
+    @BeforeEach
     public void setup(){
         handlebars = new Handlebars();
         HentOkonomiBekreftelseHelper helper = new HentOkonomiBekreftelseHelper();
@@ -31,7 +31,7 @@ public class HentOkonomiBekreftelseHelperTest {
     
     
     @Test
-    public void hentOkonomiBekreftelseSomLiggerIListe() throws IOException{
+    void hentOkonomiBekreftelseSomLiggerIListe() throws IOException{
         final JsonOkonomiopplysninger opplysninger = lagOpplysningerMedBostotteBekreftelse(true);
 
         String compiled = handlebars.compileInline("{{#hentOkonomiBekreftelse \"bostotte\" }}Verdi: {{verdi}}{{/hentOkonomiBekreftelse}}").apply(opplysninger);
@@ -40,7 +40,7 @@ public class HentOkonomiBekreftelseHelperTest {
     }
 
     @Test
-    public void bekreftelseMedVerdiLikNull() throws IOException{
+    void bekreftelseMedVerdiLikNull() throws IOException{
         
         final JsonOkonomiopplysninger opplysninger = lagOpplysningerMedBostotteBekreftelse(false);
         
@@ -50,7 +50,7 @@ public class HentOkonomiBekreftelseHelperTest {
     }
     
     @Test
-    public void bekreftelseListeErNull() throws IOException{
+    void bekreftelseListeErNull() throws IOException{
         
         final JsonOkonomiopplysninger opplysninger = new JsonOkonomiopplysninger();
         opplysninger.setBekreftelse(null);

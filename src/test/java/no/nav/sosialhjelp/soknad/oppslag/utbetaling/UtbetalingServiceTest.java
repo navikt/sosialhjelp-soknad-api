@@ -1,11 +1,11 @@
 package no.nav.sosialhjelp.soknad.oppslag.utbetaling;
 
 import no.nav.sosialhjelp.soknad.oppslag.OppslagConsumer;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
 
@@ -15,8 +15,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
-public class UtbetalingServiceTest {
+@ExtendWith(MockitoExtension.class)
+class UtbetalingServiceTest {
 
     @Mock
     private OppslagConsumer oppslagConsumer;
@@ -25,7 +25,7 @@ public class UtbetalingServiceTest {
     private UtbetalingService utbetalingService;
 
     @Test
-    public void clientReturnererUtbetalinger() {
+    void clientReturnererUtbetalinger() {
         when(oppslagConsumer.getUtbetalingerSiste40Dager(anyString()))
                 .thenReturn(new UtbetalingerResponseDto(singletonList(createUtbetaling()), false));
 
@@ -53,7 +53,7 @@ public class UtbetalingServiceTest {
     }
 
     @Test
-    public void clientReturnererTomListe() {
+    void clientReturnererTomListe() {
         when(oppslagConsumer.getUtbetalingerSiste40Dager(anyString()))
                 .thenReturn(new UtbetalingerResponseDto(emptyList(), false));
 
@@ -63,7 +63,7 @@ public class UtbetalingServiceTest {
     }
 
     @Test
-    public void clientReturnererNull() {
+    void clientReturnererNull() {
         when(oppslagConsumer.getUtbetalingerSiste40Dager(anyString()))
                 .thenReturn(null);
 
@@ -73,7 +73,7 @@ public class UtbetalingServiceTest {
     }
 
     @Test
-    public void clientReturnererResponseMedFeiletTrue() {
+    void clientReturnererResponseMedFeiletTrue() {
         when(oppslagConsumer.getUtbetalingerSiste40Dager(anyString()))
                 .thenReturn(new UtbetalingerResponseDto(null, true));
 

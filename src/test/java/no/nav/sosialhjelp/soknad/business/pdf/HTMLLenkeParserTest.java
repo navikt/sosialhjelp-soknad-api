@@ -1,20 +1,17 @@
 package no.nav.sosialhjelp.soknad.business.pdf;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-
-public class HTMLLenkeParserTest {
-
+class HTMLLenkeParserTest {
 
     private static String TEST_LENKE = "http://www.nav.no";
 
-
     @Test
-    public void testHTMLLenkeParser() {
+    void testHTMLLenkeParser() {
 
         String html = "abc hmmmm <a href='" + TEST_LENKE + "'>NAV</a>" +
                 "\n" + "abc hmmmm <a HREF='" + TEST_LENKE + "'>NAV</a>" +
@@ -33,7 +30,7 @@ public class HTMLLenkeParserTest {
         }
     }
     @Test
-    public void testSplitByNumber() {
+    void testSplitByNumber() {
         String langUrL = "https://www.nav.no/no/NAV+og+samfunn/Kontakt+NAV/Relatert+informasjon/ta-bilde-av-vedleggene-med-mobilen";
 
         String[] strings = HTMLLenkeParser.splittLinjeEtterAntallTegn(langUrL, 50);

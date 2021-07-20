@@ -2,12 +2,12 @@ package no.nav.sosialhjelp.soknad.business.pdf.helpers;
 
 import com.github.jknack.handlebars.Handlebars;
 import no.nav.sosialhjelp.soknad.tekster.NavMessageSource;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
 import java.util.Properties;
@@ -16,18 +16,18 @@ import static no.nav.sosialhjelp.soknad.business.pdf.HandlebarContext.SPRAK;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
-public class HentSvaralternativerHelperTest {
+@ExtendWith(MockitoExtension.class)
+class HentSvaralternativerHelperTest {
 
     private Handlebars handlebars;
 
     @InjectMocks
-    HentSvaralternativerHelper hentSvaralternativerHelper;
+    private HentSvaralternativerHelper hentSvaralternativerHelper;
     
     @Mock
-    NavMessageSource navMessageSource;
+    private NavMessageSource navMessageSource;
 
-    @Before
+    @BeforeEach
     public void setup() {
         handlebars = new Handlebars();
         handlebars.registerHelper(hentSvaralternativerHelper.getNavn(), hentSvaralternativerHelper);
@@ -35,7 +35,7 @@ public class HentSvaralternativerHelperTest {
 
 
     @Test
-    public void skalHenteAlleValg() throws IOException {
+    void skalHenteAlleValg() throws IOException {
         Properties tekstFiler = new Properties();
         leggTilValgtekster(tekstFiler);
         when(navMessageSource.getBundleFor("soknadsosialhjelp", SPRAK)).thenReturn(tekstFiler);
@@ -48,7 +48,7 @@ public class HentSvaralternativerHelperTest {
     }
     
     @Test
-    public void skalFiltrereBortTeksterSomIkkeErValg() throws IOException {
+    void skalFiltrereBortTeksterSomIkkeErValg() throws IOException {
         Properties tekstFiler = new Properties();
         leggTilValgtekster(tekstFiler);
         leggTilTeksterSomIkkeErValgbare(tekstFiler);
@@ -68,7 +68,7 @@ public class HentSvaralternativerHelperTest {
     }
     
     @Test
-    public void skalFiltrereBortUndervalg() throws IOException {
+    void skalFiltrereBortUndervalg() throws IOException {
         Properties tekstFiler = new Properties();
         leggTilValgtekster(tekstFiler);
         leggTilUndervalgtekster(tekstFiler);

@@ -9,12 +9,12 @@ import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.SosialhjelpPdfGenerator;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.StaticSubjectHandlerService;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.inject.Inject;
 import java.util.Optional;
@@ -25,9 +25,9 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(SpringJUnit4ClassRunner.class)
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = SoknadServiceIntegrationTestContext.class)
-public class SoknadServiceIntegrasjonsTest {
+class SoknadServiceIntegrasjonsTest {
     private final String EN_BEHANDLINGSID = "EN_BEHANDLINGSID";
 
     @Inject
@@ -42,7 +42,7 @@ public class SoknadServiceIntegrasjonsTest {
     @Inject
     private SosialhjelpPdfGenerator sosialhjelpPdfGenerator;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         System.setProperty("environment.name", "test");
         SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
@@ -51,14 +51,14 @@ public class SoknadServiceIntegrasjonsTest {
         when(sosialhjelpPdfGenerator.generate(any(JsonInternalSoknad.class), anyBoolean())).thenReturn(new byte[]{1, 2, 3});
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         SubjectHandler.resetOidcSubjectHandlerService();
         System.clearProperty("environment.name");
     }
 
     @Test
-    public void avbrytSoknadSletterSoknadenFraLokalDb() {
+    void avbrytSoknadSletterSoknadenFraLokalDb() {
         soknadService.avbrytSoknad(EN_BEHANDLINGSID);
 
         verify(soknadUnderArbeidRepository).slettSoknad(any(SoknadUnderArbeid.class), anyString());

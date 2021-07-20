@@ -3,11 +3,11 @@ package no.nav.sosialhjelp.soknad.business.db.repositories.sendtsoknad;
 import no.nav.sosialhjelp.soknad.business.db.RepositoryTestSupport;
 import no.nav.sosialhjelp.soknad.business.db.config.DbTestConfig;
 import no.nav.sosialhjelp.soknad.domain.SendtSoknad;
-import org.junit.After;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.inject.Inject;
 import java.time.LocalDateTime;
@@ -15,10 +15,11 @@ import java.time.temporal.ChronoUnit;
 
 import static java.time.LocalDateTime.now;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
-@RunWith(SpringJUnit4ClassRunner.class)
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {DbTestConfig.class})
-public class SendtSoknadRepositoryJdbcTest {
+class SendtSoknadRepositoryJdbcTest {
 
     private static final String EIER = "12345678901";
     private static final String EIER2 = "22222222222";
@@ -37,30 +38,32 @@ public class SendtSoknadRepositoryJdbcTest {
     @Inject
     private RepositoryTestSupport soknadRepositoryTestSupport;
 
-    @After
+    @AfterEach
     public void tearDown() {
         soknadRepositoryTestSupport.getJdbcTemplate().update("delete from SENDT_SOKNAD");
     }
 
     @Test
-    public void opprettSendtSoknadOppretterSendtSoknadIDatabasen() {
+    void opprettSendtSoknadOppretterSendtSoknadIDatabasen() {
         Long sendtSoknadId = sendtSoknadRepository.opprettSendtSoknad(lagSendtSoknad(EIER), EIER);
 
         assertThat(sendtSoknadId).isNotNull();
     }
 
-    @Test(expected = RuntimeException.class)
-    public void opprettSendtSoknadKasterRuntimeExceptionHvisEierErUlikSoknadseier() {
-        sendtSoknadRepository.opprettSendtSoknad(lagSendtSoknad(EIER), EIER2);
-    }
-
-    @Test(expected = RuntimeException.class)
-    public void opprettSendtSoknadKasterRuntimeExceptionHvisEierErNull() {
-        sendtSoknadRepository.opprettSendtSoknad(lagSendtSoknad(EIER), null);
+    @Test
+    void opprettSendtSoknadKasterRuntimeExceptionHvisEierErUlikSoknadseier() {
+        assertThatExceptionOfType(RuntimeException.class)
+                .isThrownBy(() -> sendtSoknadRepository.opprettSendtSoknad(lagSendtSoknad(EIER), EIER2));
     }
 
     @Test
-    public void hentSendtSoknadHenterSendtSoknadForEierOgBehandlingsid() {
+    void opprettSendtSoknadKasterRuntimeExceptionHvisEierErNull() {
+        assertThatExceptionOfType(RuntimeException.class)
+            .isThrownBy(() -> sendtSoknadRepository.opprettSendtSoknad(lagSendtSoknad(EIER), null));
+    }
+
+    @Test
+    void hentSendtSoknadHenterSendtSoknadForEierOgBehandlingsid() {
         sendtSoknadRepository.opprettSendtSoknad(lagSendtSoknad(EIER), EIER);
 
         SendtSoknad sendtSoknad = sendtSoknadRepository.hentSendtSoknad(BEHANDLINGSID, EIER).get();
@@ -78,7 +81,7 @@ public class SendtSoknadRepositoryJdbcTest {
     }
 
     @Test
-    public void oppdaterSendtSoknadVedSendingTilFiksOppdatererFiksIdOgSendtDato() {
+    void oppdaterSendtSoknadVedSendingTilFiksOppdatererFiksIdOgSendtDato() {
         sendtSoknadRepository.opprettSendtSoknad(lagSendtSoknadSomIkkeErSendtTilFiks(), EIER);
 
         sendtSoknadRepository.oppdaterSendtSoknadVedSendingTilFiks(FIKSFORSENDELSEID, BEHANDLINGSID, EIER);

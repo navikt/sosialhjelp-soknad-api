@@ -3,11 +3,11 @@ package no.nav.sosialhjelp.soknad.business.service.minesaker;
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata;
 import no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SoknadType;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -15,8 +15,8 @@ import java.util.Collections;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
-public class MineSakerMetadataServiceTest {
+@ExtendWith(MockitoExtension.class)
+class MineSakerMetadataServiceTest {
 
     @Mock
     private SoknadMetadataRepository soknadMetadataRepository;
@@ -25,7 +25,7 @@ public class MineSakerMetadataServiceTest {
     private MineSakerMetadataService mineSakerMetadataService;
 
     @Test
-    public void skalHenteInnsendteSoknaderForBruker() {
+    void skalHenteInnsendteSoknaderForBruker() {
         var soknadMetadata = new SoknadMetadata();
         soknadMetadata.fnr = "12345";
         soknadMetadata.behandlingsId = "beh123";
@@ -41,7 +41,7 @@ public class MineSakerMetadataServiceTest {
     }
 
     @Test
-    public void skalReturnereTomListeVedNull() {
+    void skalReturnereTomListeVedNull() {
         when(soknadMetadataRepository.hentAlleInnsendteSoknaderForBruker("12345"))
                 .thenReturn(null);
 
@@ -51,7 +51,7 @@ public class MineSakerMetadataServiceTest {
     }
 
     @Test
-    public void skalReturnereTomListeVedTomListe() {
+    void skalReturnereTomListeVedTomListe() {
         when(soknadMetadataRepository.hentAlleInnsendteSoknaderForBruker("12345"))
                 .thenReturn(Collections.emptyList());
 

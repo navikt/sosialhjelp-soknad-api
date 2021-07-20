@@ -12,14 +12,14 @@ import no.nav.sosialhjelp.soknad.domain.model.oidc.StaticSubjectHandlerService;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.inntekt.VerdiRessurs.VerdierFrontend;
 import no.nav.sosialhjelp.soknad.web.sikkerhet.Tilgangskontroll;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +33,7 @@ import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.VERDI_FRITIDSEIE
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.VERDI_KJORETOY;
 import static no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
@@ -40,8 +41,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
-public class VerdiRessursTest {
+@ExtendWith(MockitoExtension.class)
+class VerdiRessursTest {
 
     private static final String BEHANDLINGSID = "123";
     private static final String EIER = "123456789101";
@@ -58,21 +59,20 @@ public class VerdiRessursTest {
     @InjectMocks
     private VerdiRessurs verdiRessurs;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         System.setProperty("environment.name", "test");
         SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
-        when(textService.getJsonOkonomiTittel(anyString())).thenReturn("tittel");
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         SubjectHandler.resetOidcSubjectHandlerService();
         System.clearProperty("environment.name");
     }
 
     @Test
-    public void getVerdierSkalReturnereBekreftelseLikNullOgAltFalse(){
+    void getVerdierSkalReturnereBekreftelseLikNullOgAltFalse(){
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER)));
 
@@ -88,7 +88,7 @@ public class VerdiRessursTest {
     }
 
     @Test
-    public void getVerdierSkalReturnereBekreftelserLikTrue(){
+    void getVerdierSkalReturnereBekreftelserLikTrue(){
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithVerdier(true, asList(VERDI_BOLIG, VERDI_CAMPINGVOGN, VERDI_KJORETOY,
                         VERDI_FRITIDSEIENDOM, VERDI_ANNET), null));
@@ -105,7 +105,7 @@ public class VerdiRessursTest {
     }
 
     @Test
-    public void getVerdierSkalReturnereBeskrivelseAvAnnet(){
+    void getVerdierSkalReturnereBeskrivelseAvAnnet(){
         String beskrivelse = "Bestefars klokke";
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithVerdier(true, asList(VERDI_ANNET), beskrivelse));
@@ -118,11 +118,12 @@ public class VerdiRessursTest {
     }
 
     @Test
-    public void putVerdierSkalSetteAltFalseDersomManVelgerHarIkkeVerdier(){
+    void putVerdierSkalSetteAltFalseDersomManVelgerHarIkkeVerdier(){
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithVerdier(true, asList(VERDI_BOLIG, VERDI_CAMPINGVOGN, VERDI_KJORETOY,
                         VERDI_ANNET), "Bestefars klokke"));
+        when(textService.getJsonOkonomiTittel(anyString())).thenReturn("tittel");
 
         VerdierFrontend verdierFrontend = new VerdierFrontend();
         verdierFrontend.setBekreftelse(false);
@@ -139,11 +140,12 @@ public class VerdiRessursTest {
     }
 
     @Test
-    public void putVerdierSkalSetteAlleBekreftelserLikFalse(){
+    void putVerdierSkalSetteAlleBekreftelserLikFalse(){
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithVerdier(true, asList(VERDI_BOLIG, VERDI_CAMPINGVOGN,
                         VERDI_KJORETOY, VERDI_ANNET), "Bestefars klokke"));
+        when(textService.getJsonOkonomiTittel(anyString())).thenReturn("tittel");
 
         VerdierFrontend verdierFrontend = new VerdierFrontend();
         verdierFrontend.setBekreftelse(false);
@@ -163,10 +165,11 @@ public class VerdiRessursTest {
     }
 
     @Test
-    public void putVerdierSkalSetteNoenBekreftelser(){
+    void putVerdierSkalSetteNoenBekreftelser(){
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER)));
+        when(textService.getJsonOkonomiTittel(anyString())).thenReturn("tittel");
 
         VerdierFrontend verdierFrontend = new VerdierFrontend();
         verdierFrontend.setBekreftelse(true);
@@ -194,10 +197,11 @@ public class VerdiRessursTest {
     }
 
     @Test
-    public void putVerdierSkalSetteAlleBekreftelser(){
+    void putVerdierSkalSetteAlleBekreftelser(){
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER)));
+        when(textService.getJsonOkonomiTittel(anyString())).thenReturn("tittel");
 
         VerdierFrontend verdierFrontend = new VerdierFrontend();
         verdierFrontend.setBekreftelse(true);
@@ -225,10 +229,11 @@ public class VerdiRessursTest {
     }
 
     @Test
-    public void putVerdierSkalFjerneBeskrivelseAvAnnetDersomAnnetBlirAvkreftet(){
+    void putVerdierSkalFjerneBeskrivelseAvAnnetDersomAnnetBlirAvkreftet(){
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithVerdier(true, asList(VERDI_ANNET), "Vinylplater"));
+        when(textService.getJsonOkonomiTittel(anyString())).thenReturn("tittel");
 
         VerdierFrontend verdierFrontend = new VerdierFrontend();
         verdierFrontend.setBekreftelse(false);
@@ -244,21 +249,24 @@ public class VerdiRessursTest {
         assertThat(beskrivelse).isBlank();
     }
 
-    @Test(expected = AuthorizationException.class)
-    public void getVerdierSkalKasteAuthorizationExceptionVedManglendeTilgang() {
+    @Test
+    void getVerdierSkalKasteAuthorizationExceptionVedManglendeTilgang() {
         doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerHarTilgang();
 
-        verdiRessurs.hentVerdier(BEHANDLINGSID);
+        assertThatExceptionOfType(AuthorizationException.class)
+                .isThrownBy(() -> verdiRessurs.hentVerdier(BEHANDLINGSID));
 
         verifyNoInteractions(soknadUnderArbeidRepository);
     }
 
-    @Test(expected = AuthorizationException.class)
-    public void putVerdierSkalKasteAuthorizationExceptionVedManglendeTilgang() {
+    @Test
+    void putVerdierSkalKasteAuthorizationExceptionVedManglendeTilgang() {
         doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(BEHANDLINGSID);
 
         var verdierFrontend = new VerdierFrontend();
-        verdiRessurs.updateVerdier(BEHANDLINGSID, verdierFrontend);
+
+        assertThatExceptionOfType(AuthorizationException.class)
+                .isThrownBy(() -> verdiRessurs.updateVerdier(BEHANDLINGSID, verdierFrontend));
 
         verifyNoInteractions(soknadUnderArbeidRepository);
     }

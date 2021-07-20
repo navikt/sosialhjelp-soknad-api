@@ -13,8 +13,8 @@ import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.domain.VedleggType;
 import no.nav.sosialhjelp.soknad.domain.Vedleggstatus;
 import org.apache.cxf.attachment.ByteDataSource;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +27,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class FiksDokumentHelperTest {
+class FiksDokumentHelperTest {
     private static final String FILNAVN = "vedlegg.pdf";
     private static final String ANNET_FILNAVN = "annetVedlegg.jpg";
     private static final String SHA512 = "sha512";
@@ -47,7 +47,7 @@ public class FiksDokumentHelperTest {
 
     private FiksDokumentHelper fiksDokumentHelper;
 
-    @Before
+    @BeforeEach
     public void setup() {
         when(dokumentKrypterer.krypterData(any())).thenReturn(new byte[]{3, 2, 1});
         when(innsendingService.hentAlleOpplastedeVedleggForSoknad(any(SoknadUnderArbeid.class))).thenReturn(lagOpplastedeVedlegg());
@@ -58,7 +58,7 @@ public class FiksDokumentHelperTest {
     }
 
     @Test
-    public void lagDokumentForSoknadJsonLagerKorrektDokument() {
+    void lagDokumentForSoknadJsonLagerKorrektDokument() {
         Dokument soknadJson = fiksDokumentHelper.lagDokumentForSoknadJson(createEmptyJsonInternalSoknad(EIER));
 
         assertThat(soknadJson.getFilnavn()).isEqualTo("soknad.json");
@@ -68,7 +68,7 @@ public class FiksDokumentHelperTest {
     }
 
     @Test
-    public void lagDokumentForVedleggJsonLagerKorrektDokument() {
+    void lagDokumentForVedleggJsonLagerKorrektDokument() {
         Dokument vedleggJson = fiksDokumentHelper.lagDokumentForVedleggJson(lagInternalSoknadForVedlegg());
 
         assertThat(vedleggJson.getFilnavn()).isEqualTo("vedlegg.json");
@@ -78,7 +78,7 @@ public class FiksDokumentHelperTest {
     }
 
     @Test
-    public void lagDokumentForSaksbehandlerPdfLagerKorrektDokument() {
+    void lagDokumentForSaksbehandlerPdfLagerKorrektDokument() {
         Dokument saksbehandlerPdf = fiksDokumentHelper.lagDokumentForSaksbehandlerPdf(createEmptyJsonInternalSoknad(EIER));
 
         assertThat(saksbehandlerPdf.getFilnavn()).isEqualTo("Soknad.pdf");
@@ -88,7 +88,7 @@ public class FiksDokumentHelperTest {
     }
 
     @Test
-    public void lagDokumentForJuridiskPdfLagerKorrektDokument() {
+    void lagDokumentForJuridiskPdfLagerKorrektDokument() {
         Dokument juridiskPdf = fiksDokumentHelper.lagDokumentForJuridiskPdf(createEmptyJsonInternalSoknad(EIER));
 
         assertThat(juridiskPdf.getFilnavn()).isEqualTo("Soknad-juridisk.pdf");
@@ -98,7 +98,7 @@ public class FiksDokumentHelperTest {
     }
 
     @Test
-    public void lagDokumentForBrukerkvitteringPdfLagerKorrektDokument() {
+    void lagDokumentForBrukerkvitteringPdfLagerKorrektDokument() {
         Dokument brukerkvitteringPdf = fiksDokumentHelper.lagDokumentForBrukerkvitteringPdf();
 
         assertThat(brukerkvitteringPdf.getFilnavn()).isEqualTo("Brukerkvittering.pdf");
@@ -108,7 +108,7 @@ public class FiksDokumentHelperTest {
     }
 
     @Test
-    public void lagDokumentForEttersendelsePdfLagerKorrektDokument() {
+    void lagDokumentForEttersendelsePdfLagerKorrektDokument() {
         Dokument ettersendelsePdf = fiksDokumentHelper.lagDokumentForEttersendelsePdf(createEmptyJsonInternalSoknad(EIER), EIER);
 
         assertThat(ettersendelsePdf.getFilnavn()).isEqualTo("ettersendelse.pdf");
@@ -118,7 +118,7 @@ public class FiksDokumentHelperTest {
     }
 
     @Test
-    public void lagDokumentListeForVedleggReturnererRiktigeVedlegg() {
+    void lagDokumentListeForVedleggReturnererRiktigeVedlegg() {
         List<Dokument> dokumenter = fiksDokumentHelper.lagDokumentListeForVedlegg(new SoknadUnderArbeid());
 
         assertThat(dokumenter).hasSize(3);
@@ -128,7 +128,7 @@ public class FiksDokumentHelperTest {
     }
 
     @Test
-    public void opprettDokumentForVedleggOppretterDokumentKorrekt() {
+    void opprettDokumentForVedleggOppretterDokumentKorrekt() {
         OpplastetVedlegg opplastetVedlegg = new OpplastetVedlegg().withFilnavn(FILNAVN).withData(DATA);
 
         Dokument dokument = fiksDokumentHelper.opprettDokumentForVedlegg(opplastetVedlegg);
@@ -140,7 +140,7 @@ public class FiksDokumentHelperTest {
     }
 
     @Test
-    public void krypterOgOpprettByteDatasourceKryptererHvisSkalKryptereErTrue() {
+    void krypterOgOpprettByteDatasourceKryptererHvisSkalKryptereErTrue() {
         fiksDokumentHelper = new FiksDokumentHelper(true, dokumentKrypterer, innsendingService, sosialhjelpPdfGenerator);
 
         ByteDataSource dataSource = fiksDokumentHelper.krypterOgOpprettByteDatasource(FILNAVN, DATA);
@@ -151,7 +151,7 @@ public class FiksDokumentHelperTest {
     }
 
     @Test
-    public void krypterOgOpprettByteDatasourceKryptererIkkeHvisSkalKryptereErFalse() {
+    void krypterOgOpprettByteDatasourceKryptererIkkeHvisSkalKryptereErFalse() {
         ByteDataSource dataSource = fiksDokumentHelper.krypterOgOpprettByteDatasource(FILNAVN, DATA);
 
         assertThat(dataSource.getData()[0]).isEqualTo((byte) 1);

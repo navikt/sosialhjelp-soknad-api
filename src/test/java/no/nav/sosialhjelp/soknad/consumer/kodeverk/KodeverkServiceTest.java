@@ -4,11 +4,11 @@ import no.nav.sosialhjelp.soknad.consumer.kodeverk.dto.BeskrivelseDto;
 import no.nav.sosialhjelp.soknad.consumer.kodeverk.dto.BetydningDto;
 import no.nav.sosialhjelp.soknad.consumer.kodeverk.dto.KodeverkDto;
 import no.nav.sosialhjelp.soknad.consumer.redis.RedisService;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -22,8 +22,8 @@ import static no.nav.sosialhjelp.soknad.consumer.redis.CacheConstants.KOMMUNER_C
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
-public class KodeverkServiceTest {
+@ExtendWith(MockitoExtension.class)
+class KodeverkServiceTest {
 
     private final String kommunenr1 = "1234";
     private final String kommunenr2 = "5678";
@@ -46,7 +46,7 @@ public class KodeverkServiceTest {
     private KodeverkService kodeverkService;
 
     @Test
-    public void skalHenteKommunenummerForKommunenavn_fraConsumer() {
+    void skalHenteKommunenummerForKommunenavn_fraConsumer() {
         when(redisService.getString(KODEVERK_LAST_POLL_TIME_KEY)).thenReturn(null);
         when(kodeverkConsumer.hentKommuner()).thenReturn(kommuneKodeverk());
 
@@ -57,7 +57,7 @@ public class KodeverkServiceTest {
     }
 
     @Test
-    public void skalHenteKommunenummerForKommunenavn_fraCache() {
+    void skalHenteKommunenummerForKommunenavn_fraCache() {
         when(redisService.getString(KODEVERK_LAST_POLL_TIME_KEY)).thenReturn(LocalDateTime.now().minusMinutes(1).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
         when(redisService.get(KOMMUNER_CACHE_KEY, KodeverkDto.class)).thenReturn(kommuneKodeverk());
 
@@ -68,7 +68,7 @@ public class KodeverkServiceTest {
     }
 
     @Test
-    public void skalFeileHvisConsumerOgCacheGirNull() {
+    void skalFeileHvisConsumerOgCacheGirNull() {
         when(redisService.getString(KODEVERK_LAST_POLL_TIME_KEY)).thenReturn(LocalDateTime.now().minusMinutes(61).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
         when(redisService.get(KOMMUNER_CACHE_KEY, KodeverkDto.class)).thenReturn(null);
         when(kodeverkConsumer.hentKommuner()).thenReturn(null);
@@ -79,7 +79,7 @@ public class KodeverkServiceTest {
     }
 
     @Test
-    public void skalFeileHvisTermIkkeFinnes() {
+    void skalFeileHvisTermIkkeFinnes() {
         when(redisService.getString(KODEVERK_LAST_POLL_TIME_KEY)).thenReturn(null);
         when(redisService.get(KOMMUNER_CACHE_KEY, KodeverkDto.class)).thenReturn(kommuneKodeverk());
 
@@ -89,7 +89,7 @@ public class KodeverkServiceTest {
     }
 
     @Test
-    public void skalHentePoststedFraPostnummer_fraConsumer() {
+    void skalHentePoststedFraPostnummer_fraConsumer() {
         when(redisService.getString(KODEVERK_LAST_POLL_TIME_KEY)).thenReturn(null);
         when(kodeverkConsumer.hentPostnummer()).thenReturn(postnummerKodeverk());
 
@@ -100,7 +100,7 @@ public class KodeverkServiceTest {
     }
 
     @Test
-    public void skalHenteLandFraLandkode_fraConsumer() {
+    void skalHenteLandFraLandkode_fraConsumer() {
         when(redisService.getString(KODEVERK_LAST_POLL_TIME_KEY)).thenReturn(null);
         when(kodeverkConsumer.hentLandkoder()).thenReturn(landkoderKodeverk());
 
@@ -111,7 +111,7 @@ public class KodeverkServiceTest {
     }
 
     @Test
-    public void skalFeileHvisKodeverdiIkkeFinnes() {
+    void skalFeileHvisKodeverdiIkkeFinnes() {
         when(redisService.getString(KODEVERK_LAST_POLL_TIME_KEY)).thenReturn(null);
 
         var land = kodeverkService.getLand("ukjentLandkode");
@@ -120,7 +120,7 @@ public class KodeverkServiceTest {
     }
 
     @Test
-    public void skalFormatereLandKorrekt() {
+    void skalFormatereLandKorrekt() {
         var now = LocalDate.now();
         when(redisService.getString(KODEVERK_LAST_POLL_TIME_KEY)).thenReturn(null);
         when(kodeverkConsumer.hentLandkoder()).thenReturn(

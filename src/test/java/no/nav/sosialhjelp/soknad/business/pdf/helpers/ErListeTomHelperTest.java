@@ -3,8 +3,8 @@ package no.nav.sosialhjelp.soknad.business.pdf.helpers;
 import com.github.jknack.handlebars.Handlebars;
 import no.nav.sbl.soknadsosialhjelp.soknad.bostotte.JsonBostotte;
 import no.nav.sbl.soknadsosialhjelp.soknad.bostotte.JsonBostotteSak;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -12,11 +12,11 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ErListeTomHelperTest {
+class ErListeTomHelperTest {
 
     private Handlebars handlebars;
 
-    @Before
+    @BeforeEach
     public void setup() {
         handlebars = new Handlebars();
         ErListeTomHelper helper = new ErListeTomHelper();
@@ -24,13 +24,13 @@ public class ErListeTomHelperTest {
     }
 
     @Test
-    public void skalReturnereTomNarListaErTom() throws IOException {
+    void skalReturnereTomNarListaErTom() throws IOException {
         String compiled = handlebars.compileInline("{{#erListeTom saker}}tom{{else}}ikke tom{{/erListeTom}}").apply(new JsonBostotte());
         assertThat(compiled).isEqualTo("tom");
     }
 
     @Test
-    public void skalReturnereIkkeTomNarListaIkkeErTom() throws IOException {
+    void skalReturnereIkkeTomNarListaIkkeErTom() throws IOException {
         List<JsonBostotteSak> saker = new ArrayList<>();
         saker.add(new JsonBostotteSak());
         String compiled = handlebars.compileInline("{{#erListeTom saker}}tom{{else}}ikke tom{{/erListeTom}}").apply(new JsonBostotte().withSaker(saker));

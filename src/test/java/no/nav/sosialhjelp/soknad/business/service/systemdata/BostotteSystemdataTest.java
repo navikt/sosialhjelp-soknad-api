@@ -17,11 +17,11 @@ import no.nav.sosialhjelp.soknad.consumer.bostotte.dto.SakerDto;
 import no.nav.sosialhjelp.soknad.consumer.bostotte.dto.UtbetalingerDto;
 import no.nav.sosialhjelp.soknad.consumer.bostotte.dto.VedtakDto;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -36,8 +36,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
-public class BostotteSystemdataTest {
+@ExtendWith(MockitoExtension.class)
+class BostotteSystemdataTest {
     private static final String EIER = "12345678910";
 
     @Mock
@@ -50,7 +50,7 @@ public class BostotteSystemdataTest {
     private BostotteSystemdata bostotteSystemdata;
 
     @Test
-    public void updateSystemdata_soknadBlirOppdatertMedUtbetalingFraHusbanken() {
+    void updateSystemdata_soknadBlirOppdatertMedUtbetalingFraHusbanken() {
         // Variabler:
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid()
                 .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
@@ -74,7 +74,7 @@ public class BostotteSystemdataTest {
     }
 
     @Test
-    public void updateSystemdata_soknadBlirOppdatertMedToUtbetalingerFraHusbanken() {
+    void updateSystemdata_soknadBlirOppdatertMedToUtbetalingerFraHusbanken() {
         // Variabler:
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid()
                 .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
@@ -101,7 +101,7 @@ public class BostotteSystemdataTest {
     }
 
     @Test
-    public void updateSystemdata_soknadBlirOppdatertMedSakFraHusbanken() {
+    void updateSystemdata_soknadBlirOppdatertMedSakFraHusbanken() {
         // Variabler:
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid()
                 .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
@@ -128,7 +128,7 @@ public class BostotteSystemdataTest {
     }
 
     @Test
-    public void updateSystemdata_soknadBlirOppdatertMedToSakerFraHusbanken() {
+    void updateSystemdata_soknadBlirOppdatertMedToSakerFraHusbanken() {
         // Variabler:
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid()
                 .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
@@ -160,7 +160,7 @@ public class BostotteSystemdataTest {
     }
 
     @Test
-    public void updateSystemdata_soknadBlirOppdatertRiktigVedKommunikasjonsfeil() {
+    void updateSystemdata_soknadBlirOppdatertRiktigVedKommunikasjonsfeil() {
         // Variabler:
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid()
                 .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
@@ -178,7 +178,7 @@ public class BostotteSystemdataTest {
     }
 
     @Test
-    public void updateSystemdata_soknadBlirOppdatertRiktigVedKommunikasjonsfeil_ogBeholderGamleData() {
+    void updateSystemdata_soknadBlirOppdatertRiktigVedKommunikasjonsfeil_ogBeholderGamleData() {
         // Variabler:
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid()
                 .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
@@ -203,7 +203,7 @@ public class BostotteSystemdataTest {
     }
 
     @Test
-    public void updateSystemdata_saker_henterIkkeBostotteUtenSamtykke() {
+    void updateSystemdata_saker_henterIkkeBostotteUtenSamtykke() {
         // Variabler:
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid()
                 .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
@@ -218,7 +218,7 @@ public class BostotteSystemdataTest {
     }
 
     @Test
-    public void updateSystemdata_saker_fjernerGammelBostotteNarViIkkeHarSamtykke() {
+    void updateSystemdata_saker_fjernerGammelBostotteNarViIkkeHarSamtykke() {
         // Variabler:
         SoknadUnderArbeid soknadUnderArbeid1 = new SoknadUnderArbeid()
                 .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
@@ -246,7 +246,7 @@ public class BostotteSystemdataTest {
     }
 
     @Test
-    public void updateSystemdata_saker_bipersonerBlirFiltrertBort() {
+    void updateSystemdata_saker_bipersonerBlirFiltrertBort() {
         // Variabler:
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid()
                 .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
@@ -270,7 +270,7 @@ public class BostotteSystemdataTest {
     }
 
     @Test
-    public void updateSystemdata_utbetalinger_bipersonerBlirFiltrertBort() {
+    void updateSystemdata_utbetalinger_bipersonerBlirFiltrertBort() {
         // Variabler:
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid()
                 .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
@@ -294,7 +294,7 @@ public class BostotteSystemdataTest {
     }
 
     @Test
-    public void updateSystemdata_bareDataFraSisteManedBlirVist() {
+    void updateSystemdata_bareDataFraSisteManedBlirVist() {
         // Variabler:
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid()
                 .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
@@ -318,7 +318,7 @@ public class BostotteSystemdataTest {
     }
 
     @Test
-    public void updateSystemdata_dataFraDeSisteToManederBlirVistNarSisteManedErTom() {
+    void updateSystemdata_dataFraDeSisteToManederBlirVistNarSisteManedErTom() {
         // Variabler:
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid()
                 .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
@@ -346,7 +346,7 @@ public class BostotteSystemdataTest {
     }
 
     @Test
-    public void updateSystemdata_utbetalinger_henterIkkeBostotteUtenSamtykke() {
+    void updateSystemdata_utbetalinger_henterIkkeBostotteUtenSamtykke() {
         // Variabler:
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid()
                 .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
@@ -364,7 +364,7 @@ public class BostotteSystemdataTest {
     }
 
     @Test
-    public void updateSystemdata_utbetalinger_fjernerGammelBostotteNarViIkkeHarSamtykke() {
+    void updateSystemdata_utbetalinger_fjernerGammelBostotteNarViIkkeHarSamtykke() {
         // Variabler:
         SoknadUnderArbeid soknadUnderArbeid1 = new SoknadUnderArbeid()
                 .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));

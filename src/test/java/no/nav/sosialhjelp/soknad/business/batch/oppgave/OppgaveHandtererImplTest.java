@@ -2,13 +2,13 @@ package no.nav.sosialhjelp.soknad.business.batch.oppgave;
 
 import no.nav.sosialhjelp.soknad.business.batch.oppgave.fiks.FiksHandterer;
 import no.nav.sosialhjelp.soknad.business.db.repositories.oppgave.OppgaveRepository;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
@@ -19,8 +19,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
-public class OppgaveHandtererImplTest {
+@ExtendWith(MockitoExtension.class)
+class OppgaveHandtererImplTest {
 
     @Mock
     private FiksHandterer fiksHandterer;
@@ -35,7 +35,7 @@ public class OppgaveHandtererImplTest {
     private ArgumentCaptor<Oppgave> capturedOppgave;
 
     @Test
-    public void prosessereFeilendeOppgaveSkalSetteNesteForsok() {
+    void prosessereFeilendeOppgaveSkalSetteNesteForsok() {
         Oppgave oppgave = new Oppgave();
         oppgave.status = UNDER_ARBEID;
 

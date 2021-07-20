@@ -6,7 +6,7 @@ import no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.MetadataDto;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.NavnDto;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.SivilstandDto;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.SivilstandDto.SivilstandType;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -17,7 +17,7 @@ import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
-public class PdlPersonMapperHelperTest {
+class PdlPersonMapperHelperTest {
 
     private static final LocalDateTime NOV_30_KVELD = LocalDateTime.of(2020, 11, 30, 19, 0);
     private static final LocalDateTime DEC_1_MORGEN = LocalDateTime.of(2020, 12, 1, 7, 0);
@@ -28,7 +28,7 @@ public class PdlPersonMapperHelperTest {
     private final PdlPersonMapperHelper helper = new PdlPersonMapperHelper();
 
     @Test
-    public void ingenSivilstander_ingenVelges() {
+    void ingenSivilstander_ingenVelges() {
         var result_emptylist = helper.utledGjeldendeSivilstand(Collections.emptyList());
         var result_null = helper.utledGjeldendeSivilstand(null);
 
@@ -37,7 +37,7 @@ public class PdlPersonMapperHelperTest {
     }
 
     @Test
-    public void kunEnSivilstand_medUkjentMaster_ingenVelges() {
+    void kunEnSivilstand_medUkjentMaster_ingenVelges() {
         var sivilstand_ukjentMaster = createSivilstandMedFolkeregisterMetadata(SivilstandType.SKILT, "Ukjent", "DSF", DEC_1_KVELD, DEC_1_MIDDAG);
         var list = singletonList(sivilstand_ukjentMaster);
 
@@ -47,7 +47,7 @@ public class PdlPersonMapperHelperTest {
     }
 
     @Test
-    public void kunEnSivilstand_fraFreg_denEneVelges() {
+    void kunEnSivilstand_fraFreg_denEneVelges() {
         var sivilstand_fraFreg = createSivilstandMedFolkeregisterMetadata(SivilstandType.GIFT, "Freg", "KILDE_DSF", DEC_1_MIDDAG, DEC_1_MIDDAG);
         var list = singletonList(sivilstand_fraFreg);
 
@@ -56,7 +56,7 @@ public class PdlPersonMapperHelperTest {
     }
 
     @Test
-    public void kunEnUoppgittSivilstand_fraFreg_ingenVelges() {
+    void kunEnUoppgittSivilstand_fraFreg_ingenVelges() {
         var sivilstand_fraFreg = createSivilstandMedFolkeregisterMetadata(SivilstandType.UOPPGITT, "Freg", "KILDE_DSF", DEC_1_MIDDAG, DEC_1_MIDDAG);
         var list = singletonList(sivilstand_fraFreg);
 
@@ -65,7 +65,7 @@ public class PdlPersonMapperHelperTest {
     }
 
     @Test
-    public void kunEnSivilstand_fraPDL_oppgittAvBrukerSelv_denEneVelges() {
+    void kunEnSivilstand_fraPDL_oppgittAvBrukerSelv_denEneVelges() {
         var sivilstand_fraFreg = createSivilstand(SivilstandType.GIFT, "PDL", "Bruker selv", DEC_1_MIDDAG);
         var list = singletonList(sivilstand_fraFreg);
 
@@ -74,7 +74,7 @@ public class PdlPersonMapperHelperTest {
     }
 
     @Test
-    public void kunEnSivilstand_fraPDL_oppgittAvVerifisertSystem_denEneVelges() {
+    void kunEnSivilstand_fraPDL_oppgittAvVerifisertSystem_denEneVelges() {
         var sivilstand_fraFreg = createSivilstand(SivilstandType.GIFT, "PDL", "NAV", DEC_1_MIDDAG);
         var list = singletonList(sivilstand_fraFreg);
 
@@ -83,7 +83,7 @@ public class PdlPersonMapperHelperTest {
     }
 
     @Test
-    public void flereSivilstander_enFraFreg_enFraPdlMedEndringstidspunktNull_nyesteVelges() {
+    void flereSivilstander_enFraFreg_enFraPdlMedEndringstidspunktNull_nyesteVelges() {
         var sivilstand_fraFreg = createSivilstandMedFolkeregisterMetadata(SivilstandType.SKILT, "Freg", "DSF", DEC_1_MIDDAG, DEC_1_MIDDAG);
         var sivilstand_fraPdl = createSivilstand(SivilstandType.GIFT, "PDL", "NAV", null);
         var list = asList(sivilstand_fraFreg, sivilstand_fraPdl);
@@ -94,7 +94,7 @@ public class PdlPersonMapperHelperTest {
     }
 
     @Test
-    public void flereSivilstander_enFraFreg_enFraPdlSomErVerifisert_nyesteVelges() {
+    void flereSivilstander_enFraFreg_enFraPdlSomErVerifisert_nyesteVelges() {
         var sivilstand_fraFreg = createSivilstandMedFolkeregisterMetadata(SivilstandType.SKILT, "Freg", "DSF", DEC_1_MIDDAG, DEC_1_MIDDAG);
         var sivilstand_fraPdl = createSivilstand(SivilstandType.GIFT, "PDL", "NAV", DEC_1_KVELD);
         var list = asList(sivilstand_fraFreg, sivilstand_fraPdl);
@@ -105,7 +105,7 @@ public class PdlPersonMapperHelperTest {
     }
 
     @Test
-    public void flereSivilstander_enFraFregMedNyesteAjourholdtidspunkt_enFraPdlSomErVerifisert_nyesteVelges() {
+    void flereSivilstander_enFraFregMedNyesteAjourholdtidspunkt_enFraPdlSomErVerifisert_nyesteVelges() {
         var sivilstand_fraFreg = createSivilstandMedFolkeregisterMetadata(SivilstandType.SKILT, "Freg", "DSF", DEC_1_MIDDAG, DEC_2_MORGEN);
         var sivilstand_fraPdl = createSivilstand(SivilstandType.GIFT, "PDL", "NAV", DEC_1_KVELD);
         var list = asList(sivilstand_fraFreg, sivilstand_fraPdl);
@@ -116,7 +116,7 @@ public class PdlPersonMapperHelperTest {
     }
 
     @Test
-    public void flereSivilstander_enFraFregMedGammeltAjourholdtidspunkt_enFraPdlSomErVerifisert_nyesteVelges() {
+    void flereSivilstander_enFraFregMedGammeltAjourholdtidspunkt_enFraPdlSomErVerifisert_nyesteVelges() {
         var sivilstand_fraFreg = createSivilstandMedFolkeregisterMetadata(SivilstandType.SKILT, "Freg", "DSF", DEC_1_KVELD, NOV_30_KVELD);
         var sivilstand_fraPdl = createSivilstand(SivilstandType.GIFT, "PDL", "NAV", DEC_1_MIDDAG);
         var list = asList(sivilstand_fraFreg, sivilstand_fraPdl);
@@ -127,7 +127,7 @@ public class PdlPersonMapperHelperTest {
     }
 
     @Test
-    public void flereSivilstander_enFraFreg_enFraPdlSomErNyesteOgOppgittAvBrukerSelv_nyesteVelges() {
+    void flereSivilstander_enFraFreg_enFraPdlSomErNyesteOgOppgittAvBrukerSelv_nyesteVelges() {
         var sivilstand_fraFreg = createSivilstandMedFolkeregisterMetadata(SivilstandType.SKILT, "Freg", "DSF", DEC_1_KVELD, NOV_30_KVELD);
         var sivilstand_fraPdl = createSivilstand(SivilstandType.GIFT, "PDL", "Bruker selv", DEC_1_MIDDAG);
         var list = asList(sivilstand_fraFreg, sivilstand_fraPdl);
@@ -138,7 +138,7 @@ public class PdlPersonMapperHelperTest {
     }
 
     @Test
-    public void flereSivilstander_enFraFreg_enFraPdl_fregRegistrertTidligerEnnPdlSammeDag_nyesteVelges() {
+    void flereSivilstander_enFraFreg_enFraPdl_fregRegistrertTidligerEnnPdlSammeDag_nyesteVelges() {
         var sivilstand_fraFreg = createSivilstandMedFolkeregisterMetadata(SivilstandType.SKILT, "Freg", "DSF", DEC_1_MORGEN, NOV_30_KVELD);
         var sivilstand_fraPdl = createSivilstand(SivilstandType.GIFT, "PDL", "NAV", DEC_1_MIDDAG);
         var list = asList(sivilstand_fraFreg, sivilstand_fraPdl);
@@ -149,7 +149,7 @@ public class PdlPersonMapperHelperTest {
     }
 
     @Test
-    public void flereSivilstander_enFraFreg_enFraPdl_beggeRegistrertSamtidig_ingenVelges() {
+    void flereSivilstander_enFraFreg_enFraPdl_beggeRegistrertSamtidig_ingenVelges() {
         var sivilstand_fraFreg = createSivilstandMedFolkeregisterMetadata(SivilstandType.SKILT, "Freg", "DSF", DEC_1_KVELD, DEC_1_MIDDAG);
         var sivilstand_fraPdl = createSivilstand(SivilstandType.GIFT, "PDL", "NAV", DEC_1_MIDDAG);
         var list = asList(sivilstand_fraFreg, sivilstand_fraPdl);
@@ -160,7 +160,7 @@ public class PdlPersonMapperHelperTest {
     }
 
     @Test
-    public void flereSivilstander_enFraFreg_toFraPdl_toRegistrertSamtidigOgEnNyere_nyesteVelges() {
+    void flereSivilstander_enFraFreg_toFraPdl_toRegistrertSamtidigOgEnNyere_nyesteVelges() {
         var sivilstand_fraFreg = createSivilstandMedFolkeregisterMetadata(SivilstandType.SKILT, "Freg", "DSF", DEC_1_MORGEN, DEC_1_MORGEN);
         var sivilstand_fraPdl_1 = createSivilstand(SivilstandType.GIFT, "PDL", "NAV", DEC_1_MORGEN);
         var sivilstand_fraPdl_2 = createSivilstand(SivilstandType.ENKE_ELLER_ENKEMANN, "PDL", "NAV", DEC_1_MIDDAG);
@@ -172,7 +172,7 @@ public class PdlPersonMapperHelperTest {
     }
 
     @Test
-    public void flereSivilstander_enFraFreg_toFraPdl_enRegistrertTidligPaaDagenOgToSamtidigHvorEnErUoppgitt_ingenVelges() {
+    void flereSivilstander_enFraFreg_toFraPdl_enRegistrertTidligPaaDagenOgToSamtidigHvorEnErUoppgitt_ingenVelges() {
         var sivilstand_fraFreg = createSivilstandMedFolkeregisterMetadata(SivilstandType.SKILT, "Freg", "DSF", DEC_1_MIDDAG, DEC_1_MIDDAG);
         var sivilstand_fraPdl_1 = createSivilstand(SivilstandType.GIFT, "PDL", "NAV", DEC_1_MORGEN);
         var sivilstand_fraPdl_2 = createSivilstand(SivilstandType.UOPPGITT, "PDL", "NAV", DEC_1_MIDDAG);
@@ -184,7 +184,7 @@ public class PdlPersonMapperHelperTest {
     }
 
     @Test
-    public void flereSivilstander_enFraFreg_enFraPdlMedFlereEndringerHvorSisteEndringErNyereEnnFreg_nyesteVelges() {
+    void flereSivilstander_enFraFreg_enFraPdlMedFlereEndringerHvorSisteEndringErNyereEnnFreg_nyesteVelges() {
         var opprettet = new EndringDto("PDL", DEC_1_MORGEN, "Opprettet");
         var endring_1 = new EndringDto("PDL", DEC_1_MIDDAG, "Korriger");
         var endring_2 = new EndringDto("PDL", DEC_1_KVELD, "Korriger");
@@ -200,7 +200,7 @@ public class PdlPersonMapperHelperTest {
     }
 
     @Test
-    public void flereSivilstander_enFraFreg_enFraPdlMedFlereEndringerHvorSisteEndringSamtidigMedFregAjourholdtidspunkt_ingenVelges() {
+    void flereSivilstander_enFraFreg_enFraPdlMedFlereEndringerHvorSisteEndringSamtidigMedFregAjourholdtidspunkt_ingenVelges() {
         var opprettet = new EndringDto("PDL", DEC_1_MORGEN, "Opprettet");
         var endring_1 = new EndringDto("PDL", DEC_1_MIDDAG, "Korriger");
         var endring_2 = new EndringDto("PDL", DEC_1_KVELD, "Korriger");
@@ -216,7 +216,7 @@ public class PdlPersonMapperHelperTest {
     }
 
     @Test
-    public void ingenNavn_ingenVelges() {
+    void ingenNavn_ingenVelges() {
         var result_emptylist = helper.utledGjeldendeNavn(Collections.emptyList());
         var result_null = helper.utledGjeldendeNavn(null);
 
@@ -225,7 +225,7 @@ public class PdlPersonMapperHelperTest {
     }
 
     @Test
-    public void kunEttNavn_fraFreg_denEneVelges() {
+    void kunEttNavn_fraFreg_denEneVelges() {
         var navn_fraFreg = createNavnMedFolkeregisterMetadata("arne", "Freg", "DSF", DEC_1_MIDDAG, DEC_1_MIDDAG);
         var list = singletonList(navn_fraFreg);
 
@@ -235,7 +235,7 @@ public class PdlPersonMapperHelperTest {
     }
 
     @Test
-    public void flereNavn_ettFraFreg_ettFraPdl_nyesteVelges() {
+    void flereNavn_ettFraFreg_ettFraPdl_nyesteVelges() {
         var navn_fraFreg = createNavnMedFolkeregisterMetadata("arne", "Freg", "DSF", DEC_1_MIDDAG, DEC_1_MIDDAG);
         var navn_fraPdl = createNavn("bjarne", "PDL", "NAV", DEC_1_KVELD);
         var list = asList(navn_fraFreg, navn_fraPdl);
@@ -246,7 +246,7 @@ public class PdlPersonMapperHelperTest {
     }
 
     @Test
-    public void flereNavn_ettFraFreg_ettFraPdl_beggeRegistrertSamtidig_ingenVelges() {
+    void flereNavn_ettFraFreg_ettFraPdl_beggeRegistrertSamtidig_ingenVelges() {
         var navn_fraFreg = createNavnMedFolkeregisterMetadata("arne", "Freg", "DSF", DEC_1_KVELD, DEC_1_MIDDAG);
         var navn_fraPdl = createNavn("bjarne", "PDL", "NAV", DEC_1_MIDDAG);
         var list = asList(navn_fraFreg, navn_fraPdl);

@@ -5,7 +5,7 @@ import no.nav.sosialhjelp.soknad.domain.OpplastetVedlegg;
 import no.nav.sosialhjelp.soknad.domain.VedleggType;
 import no.nav.sosialhjelp.soknad.domain.Vedleggstatus;
 import org.jetbrains.annotations.NotNull;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -15,7 +15,7 @@ import static java.util.Arrays.asList;
 import static no.nav.sosialhjelp.soknad.web.rest.mappers.VedleggMapper.mapVedleggToSortedListOfEttersendteVedlegg;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class VedleggMapperTest {
+class VedleggMapperTest {
 
     private static final VedleggType BOSTOTTE = new VedleggType("bostotte|annetboutgift");
     private static final VedleggType SKATTEMELDING = new VedleggType("skatt|melding");
@@ -23,7 +23,7 @@ public class VedleggMapperTest {
     private static final String EIER = "12345678910";
 
     @Test
-    public void skalReturnereAlleVedleggSomSortertListeAvEttersendteVedleggHvisSoknadBleSendtForMindreEnn30DagerSiden() {
+    void skalReturnereAlleVedleggSomSortertListeAvEttersendteVedleggHvisSoknadBleSendtForMindreEnn30DagerSiden() {
         var innsendingstidspunkt = LocalDateTime.now();
         var opplastedeVedlegg = createOpplastetVedleggList();
         var originaleVedlegg = createOriginaleVedlegg();
@@ -40,7 +40,7 @@ public class VedleggMapperTest {
     }
 
     @Test
-    public void skalKunReturnereAnnetOgLastetOppHvisSoknadBleSendtForMerEnn30DagerSiden() {
+    void skalKunReturnereAnnetOgLastetOppHvisSoknadBleSendtForMerEnn30DagerSiden() {
         var innsendingstidspunkt = LocalDateTime.now().minusDays(31);
         var opplastedeVedlegg = createOpplastetVedleggList();
         var originaleVedlegg = createOriginaleVedlegg();

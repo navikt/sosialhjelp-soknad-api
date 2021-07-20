@@ -3,14 +3,14 @@ package no.nav.sosialhjelp.soknad.consumer.kodeverk.dto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class KodeverkDtoTest {
+class KodeverkDtoTest {
 
     @Test
-    public void skalDeserialisereResponse() throws JsonProcessingException {
+    void skalDeserialisereResponse() throws JsonProcessingException {
         String json = "{\"betydninger\":{ \"NOR\": [ {\"gyldigFra\": \"1900-01-01\",\"gyldigTil\": \"9999-12-31\",\"beskrivelser\": {\"nb\": {\"term\": \"NORGE\",\"tekst\": \"NORGE\" } } }] } } ";
 
         KodeverkDto response = new ObjectMapper()

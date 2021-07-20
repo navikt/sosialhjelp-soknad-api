@@ -4,13 +4,13 @@ import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.Batc
 import no.nav.sosialhjelp.soknad.business.service.HenvendelseService;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeidStatus;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -20,8 +20,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
-public class LagringsSchedulerTest {
+@ExtendWith(MockitoExtension.class)
+class LagringsSchedulerTest {
 
     @InjectMocks
     private LagringsScheduler scheduler = new LagringsScheduler();
@@ -30,13 +30,18 @@ public class LagringsSchedulerTest {
     @Mock
     private BatchSoknadUnderArbeidRepository batchSoknadUnderArbeidRepository;
 
-    @Before
+    @BeforeEach
     public void setup() {
         System.setProperty("sendsoknad.batch.enabled", "true");
     }
 
+    @AfterEach
+    public void teardown() {
+        System.clearProperty("sendsoknad.batch.enabled");
+    }
+
     @Test
-    public void skalAvbryteIHenvendelseOgSletteFraDatabase() throws InterruptedException {
+    void skalAvbryteIHenvendelseOgSletteFraDatabase() throws InterruptedException {
         String behandlingsId = "2";
         String tilknyttetBehandlingsId = "1";
         long soknadId = 2;
@@ -56,7 +61,7 @@ public class LagringsSchedulerTest {
     }
 
     @Test
-    public void skalIkkeAvbryteIHenvendelseOgSletteFraDatabaseDersomDetIkkeErEttersendelse() throws InterruptedException {
+    void skalIkkeAvbryteIHenvendelseOgSletteFraDatabaseDersomDetIkkeErEttersendelse() throws InterruptedException {
         String behandlingsId = "2";
         long soknadId = 2;
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid()
@@ -71,11 +76,6 @@ public class LagringsSchedulerTest {
 
         verify(henvendelseService, times(0)).avbrytSoknad(behandlingsId, true);
         verify(batchSoknadUnderArbeidRepository, times(0)).slettSoknad(anyLong());
-    }
-
-    @After
-    public void teardown() {
-        System.clearProperty("sendsoknad.batch.enabled");
     }
 
 }

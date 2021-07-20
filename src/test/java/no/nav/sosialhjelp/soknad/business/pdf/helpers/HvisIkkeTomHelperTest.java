@@ -1,21 +1,21 @@
 package no.nav.sosialhjelp.soknad.business.pdf.helpers;
 
 import com.github.jknack.handlebars.Handlebars;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(MockitoJUnitRunner.class)
-public class HvisIkkeTomHelperTest {
+@ExtendWith(MockitoExtension.class)
+class HvisIkkeTomHelperTest {
 
     private Handlebars handlebars;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         handlebars = new Handlebars();
         HvisIkkeTomHelper helper = new HvisIkkeTomHelper();
@@ -23,14 +23,14 @@ public class HvisIkkeTomHelperTest {
     }
 
     @Test
-    public void viserInnholdDersomVerdiIkkeErTom() throws IOException {
+    void viserInnholdDersomVerdiIkkeErTom() throws IOException {
         String compiled = handlebars.compileInline("{{#hvisIkkeTom \"verdi\" }}Ikke tom verdi{{/hvisIkkeTom}}").apply(new Object());
         assertThat(compiled).isEqualTo("Ikke tom verdi");
     }
 
 
     @Test
-    public void viserIkkeInnholdDersomVerdiErTom() throws IOException {
+    void viserIkkeInnholdDersomVerdiErTom() throws IOException {
         String compiled = handlebars.compileInline("{{#hvisIkkeTom \"\"}}Ikke tom verdi{{else}}Tom verdi{{/hvisIkkeTom}}").apply(new Object());
         assertThat(compiled).isEqualTo("Tom verdi");
     }

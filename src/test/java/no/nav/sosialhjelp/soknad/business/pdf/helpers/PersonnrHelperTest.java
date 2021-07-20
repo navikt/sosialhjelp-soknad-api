@@ -2,22 +2,21 @@ package no.nav.sosialhjelp.soknad.business.pdf.helpers;
 
 import com.github.jknack.handlebars.Handlebars;
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonEktefelle;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(MockitoJUnitRunner.class)
-public class PersonnrHelperTest {
+@ExtendWith(MockitoExtension.class)
+class PersonnrHelperTest {
 
     private Handlebars handlebars;
 
-
-    @Before
+    @BeforeEach
     public void setup() {
         handlebars = new Handlebars();
         PersonnrHelper personnrHelper = new PersonnrHelper();
@@ -25,7 +24,7 @@ public class PersonnrHelperTest {
     }
 
     @Test
-    public void skalHentePersonnr() throws IOException {
+    void skalHentePersonnr() throws IOException {
         JsonEktefelle ektefelle = new JsonEktefelle();
         ektefelle.setPersonIdentifikator("65432112345"); // Ikke ekte person
         String compiled = handlebars.compileInline("Personnr: {{personnr personIdentifikator }}").apply(ektefelle);
@@ -34,7 +33,7 @@ public class PersonnrHelperTest {
     }
 
     @Test
-    public void skalHenteTomStrengForUgyldigPersonIdentifikator() throws IOException {
+    void skalHenteTomStrengForUgyldigPersonIdentifikator() throws IOException {
         JsonEktefelle ektefelle = new JsonEktefelle();
         ektefelle.setPersonIdentifikator("1231231234");
         String compiled = handlebars.compileInline("Personnr: {{personnr personIdentifikator }}").apply(ektefelle);
@@ -48,7 +47,7 @@ public class PersonnrHelperTest {
     }
 
     @Test
-    public void skalHenteTomStrengForPersonIdentifikatorLikNull() throws IOException {
+    void skalHenteTomStrengForPersonIdentifikatorLikNull() throws IOException {
         JsonEktefelle ektefelle = new JsonEktefelle();
         ektefelle.setPersonIdentifikator(null);
         String compiled = handlebars.compileInline("Personnr: {{personnr personIdentifikator }}").apply(ektefelle);

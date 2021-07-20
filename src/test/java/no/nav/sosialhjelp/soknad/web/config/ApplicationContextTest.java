@@ -1,15 +1,15 @@
 package no.nav.sosialhjelp.soknad.web.config;
 
 import no.nav.sosialhjelp.soknad.web.oidc.OidcConfig;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.mock.jndi.SimpleNamingContextBuilder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import javax.naming.NamingException;
@@ -22,7 +22,7 @@ import java.util.Properties;
 import static java.lang.System.setProperty;
 
 @WebAppConfiguration
-@RunWith(SpringJUnit4ClassRunner.class)
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {SoknadinnsendingConfig.class, OidcConfig.class})
 @ActiveProfiles("no-redis")
 public class ApplicationContextTest {
@@ -30,7 +30,7 @@ public class ApplicationContextTest {
     public static final String ENVIRONMENT_TEST_PROPERTIES = "/environment-test.properties";
     private static SimpleNamingContextBuilder builder;
 
-    @BeforeClass
+    @BeforeAll
     public static void beforeClass() throws NamingException {
         load(ENVIRONMENT_TEST_PROPERTIES);
 
@@ -39,13 +39,13 @@ public class ApplicationContextTest {
         builder.activate();
     }
 
-    @AfterClass
+    @AfterAll
     public static void afterClass() throws Exception {
         builder.deactivate();
     }
 
     @Test
-    public void shouldSetupAppContext() {}
+    void shouldSetupAppContext() {}
 
     private static Properties load(String resourcePath) {
         Properties properties = new Properties();

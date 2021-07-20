@@ -15,14 +15,14 @@ import no.nav.sosialhjelp.soknad.domain.model.exception.SamletVedleggStorrelseFo
 import no.nav.sosialhjelp.soknad.domain.model.exception.UgyldigOpplastingTypeException;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.StaticSubjectHandlerService;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.imageio.ImageIO;
 import javax.imageio.stream.ImageOutputStream;
@@ -43,8 +43,8 @@ import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
-public class OpplastetVedleggServiceTest {
+@ExtendWith(MockitoExtension.class)
+class OpplastetVedleggServiceTest {
 
     private static final String BEHANDLINGSID = "123";
     private static final String FILNAVN1 = "Bifil.jpeg";
@@ -65,20 +65,20 @@ public class OpplastetVedleggServiceTest {
     @InjectMocks
     private OpplastetVedleggService opplastetVedleggService;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         System.setProperty("environment.name", "test");
         SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         SubjectHandler.resetOidcSubjectHandlerService();
         System.clearProperty("environment.name");
     }
 
     @Test
-    public void lagerFilnavn() {
+    void lagerFilnavn() {
         String filnavn = opplastetVedleggService.lagFilnavn("minfil.jpg", TikaFileType.JPEG, "5c2a1cea-ef05-4db6-9c98-1b6c9b3faa99");
         assertThat(filnavn).isEqualTo("minfil-5c2a1cea.jpg");
 
@@ -97,7 +97,7 @@ public class OpplastetVedleggServiceTest {
     }
 
     @Test
-    public void oppdatererVedleggStatusVedOpplastingAvVedlegg() throws IOException {
+    void oppdatererVedleggStatusVedOpplastingAvVedlegg() throws IOException {
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 new SoknadUnderArbeid().withJsonInternalSoknad(new JsonInternalSoknad()
                         .withVedlegg(new JsonVedleggSpesifikasjon().withVedlegg(Collections.singletonList(
@@ -121,7 +121,7 @@ public class OpplastetVedleggServiceTest {
     }
 
     @Test
-    public void sletterVedleggStatusVedSlettingAvOpplastingAvVedlegg() {
+    void sletterVedleggStatusVedSlettingAvOpplastingAvVedlegg() {
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 new SoknadUnderArbeid().withJsonInternalSoknad(new JsonInternalSoknad()
                         .withVedlegg(new JsonVedleggSpesifikasjon().withVedlegg(Collections.singletonList(
@@ -144,7 +144,7 @@ public class OpplastetVedleggServiceTest {
     }
 
     @Test
-    public void feilmeldingHvisSamletVedleggStorrelseOverskriderMaksgrense() throws IOException {
+    void feilmeldingHvisSamletVedleggStorrelseOverskriderMaksgrense() throws IOException {
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 new SoknadUnderArbeid()
                         .withJsonInternalSoknad(new JsonInternalSoknad().withVedlegg(
@@ -165,7 +165,7 @@ public class OpplastetVedleggServiceTest {
     }
 
     @Test
-    public void feilmeldingHvisFiltypeErUgyldigMenValidererMedTika() throws IOException {
+    void feilmeldingHvisFiltypeErUgyldigMenValidererMedTika() throws IOException {
         byte[] imageFile = createByteArrayFromJpeg();
 
         assertThatExceptionOfType(UgyldigOpplastingTypeException.class)

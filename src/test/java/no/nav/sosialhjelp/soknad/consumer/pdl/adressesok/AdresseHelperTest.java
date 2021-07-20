@@ -1,14 +1,14 @@
 package no.nav.sosialhjelp.soknad.consumer.pdl.adressesok;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.AdresseHelper.formatterKommunenavn;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class AdresseHelperTest {
+class AdresseHelperTest {
 
     @Test
-    public void skalFormatterKommunenavn() {
+    void skalFormatterKommunenavn() {
         assertThat(formatterKommunenavn(null)).isNull();
         assertThat(formatterKommunenavn("")).isEmpty();
         assertThat(formatterKommunenavn("OSLO")).isEqualTo("Oslo");

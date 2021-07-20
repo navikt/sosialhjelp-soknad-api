@@ -5,11 +5,11 @@ import no.nav.sosialhjelp.soknad.business.db.config.DbTestConfig;
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata;
 import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus;
 import no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SoknadType;
-import org.junit.After;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.inject.Inject;
 import java.time.LocalDateTime;
@@ -18,9 +18,9 @@ import java.util.List;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(SpringJUnit4ClassRunner.class)
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {DbTestConfig.class})
-public class BatchSoknadMetadataRepositoryJdbcTest {
+class BatchSoknadMetadataRepositoryJdbcTest {
 
     private static final String EIER = "11111111111";
     private final int dagerGammelSoknad = 20;
@@ -35,38 +35,38 @@ public class BatchSoknadMetadataRepositoryJdbcTest {
     @Inject
     private RepositoryTestSupport support;
 
-    @After
+    @AfterEach
     public void teardown() {
         support.getJdbcTemplate().update("DELETE FROM soknadmetadata WHERE behandlingsid = ?", behandlingsId);
     }
 
     @Test
-    public void hentForBatchSkalIkkeReturnereFerdige() {
+    void hentForBatchSkalIkkeReturnereFerdige() {
         opprettSoknadMetadata(soknadMetadata(behandlingsId, SoknadMetadataInnsendingStatus.FERDIG, dagerGammelSoknad));
         assertThat(batchSoknadMetadataRepository.hentForBatch(dagerGammelSoknad - 1)).isNotPresent();
     }
 
     @Test
-    public void hentForBatchSkalIkkeReturnereAvbruttAutomatisk() {
+    void hentForBatchSkalIkkeReturnereAvbruttAutomatisk() {
         opprettSoknadMetadata(soknadMetadata(behandlingsId, SoknadMetadataInnsendingStatus.AVBRUTT_AUTOMATISK, dagerGammelSoknad));
         assertThat(batchSoknadMetadataRepository.hentForBatch(dagerGammelSoknad - 1)).isNotPresent();
     }
 
     @Test
-    public void hentForBatchSkalIkkeReturnereAvbruttAvBruker() {
+    void hentForBatchSkalIkkeReturnereAvbruttAvBruker() {
         opprettSoknadMetadata(soknadMetadata(behandlingsId, SoknadMetadataInnsendingStatus.AVBRUTT_AV_BRUKER, dagerGammelSoknad));
         assertThat(batchSoknadMetadataRepository.hentForBatch(dagerGammelSoknad - 1)).isNotPresent();
     }
 
     @Test
-    public void hentForBatchBrukerEndringstidspunkt() {
+    void hentForBatchBrukerEndringstidspunkt() {
         opprettSoknadMetadata(soknadMetadata(behandlingsId, SoknadMetadataInnsendingStatus.UNDER_ARBEID, dagerGammelSoknad));
         assertThat(batchSoknadMetadataRepository.hentForBatch(dagerGammelSoknad - 1)).isPresent();
         assertThat(batchSoknadMetadataRepository.hentForBatch(dagerGammelSoknad + 1)).isNotPresent();
     }
 
     @Test
-    public void hentEldreEnnBrukerEndringstidspunktUavhengigAvStatus() {
+    void hentEldreEnnBrukerEndringstidspunktUavhengigAvStatus() {
         List<SoknadMetadataInnsendingStatus> statuser = asList(SoknadMetadataInnsendingStatus.UNDER_ARBEID, SoknadMetadataInnsendingStatus.FERDIG,
                 SoknadMetadataInnsendingStatus.AVBRUTT_AUTOMATISK, SoknadMetadataInnsendingStatus.AVBRUTT_AV_BRUKER);
         for (SoknadMetadataInnsendingStatus status : statuser) {

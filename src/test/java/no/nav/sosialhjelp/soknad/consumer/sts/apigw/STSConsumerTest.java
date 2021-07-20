@@ -1,11 +1,11 @@
 package no.nav.sosialhjelp.soknad.consumer.sts.apigw;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Invocation;
@@ -18,8 +18,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
-public class STSConsumerTest {
+@ExtendWith(MockitoExtension.class)
+class STSConsumerTest {
 
     @Mock
     private Client client;
@@ -31,7 +31,7 @@ public class STSConsumerTest {
     @InjectMocks
     private final STSConsumer consumer = new STSConsumer(client, "endpointurl");
 
-    @Before
+    @BeforeEach
     public void setUp() {
         when(client.target(anyString())).thenReturn(webTarget);
         when(webTarget.queryParam(anyString(), any())).thenReturn(webTarget);
@@ -40,7 +40,7 @@ public class STSConsumerTest {
     }
 
     @Test
-    public void getFssTokenSkalHenteTokenHvisCacheErTom() {
+    void getFssTokenSkalHenteTokenHvisCacheErTom() {
         FssToken fssToken = consumer.getFSSToken();
 
         assertThat(fssToken.getAccessToken()).isEqualTo("asdf");
@@ -50,7 +50,7 @@ public class STSConsumerTest {
     }
 
     @Test
-    public void toPafolgendeKallSkalSetteCache() {
+    void toPafolgendeKallSkalSetteCache() {
         FssToken first = consumer.getFSSToken();
 
         assertThat(first.getAccessToken()).isEqualTo("asdf");
@@ -67,7 +67,7 @@ public class STSConsumerTest {
     }
 
     @Test
-    public void utgattTokenSkalTriggeRenew() {
+    void utgattTokenSkalTriggeRenew() {
         // token som har gått ut
         when(request.get(FssToken.class)).thenReturn(new FssToken("asdf", "type", 59L));
 

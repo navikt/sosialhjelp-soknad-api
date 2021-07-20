@@ -8,11 +8,11 @@ import no.nav.sosialhjelp.soknad.business.db.repositories.opplastetvedlegg.Oppla
 import no.nav.sosialhjelp.soknad.domain.OpplastetVedlegg;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.domain.VedleggType;
-import org.junit.After;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.inject.Inject;
 import java.time.LocalDateTime;
@@ -20,9 +20,9 @@ import java.time.LocalDateTime;
 import static no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeidStatus.UNDER_ARBEID;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(SpringJUnit4ClassRunner.class)
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {DbTestConfig.class})
-public class BatchSoknadUnderArbeidRepositoryJdbcTest {
+class BatchSoknadUnderArbeidRepositoryJdbcTest {
 
     private static final String EIER = "12345678901";
     private static final String BEHANDLINGSID = "1100020";
@@ -44,14 +44,14 @@ public class BatchSoknadUnderArbeidRepositoryJdbcTest {
     @Inject
     private BatchOpplastetVedleggRepository batchOpplastetVedleggRepository;
 
-    @After
+    @AfterEach
     public void tearDown() {
         soknadRepositoryTestSupport.getJdbcTemplate().update("delete from SOKNAD_UNDER_ARBEID");
         soknadRepositoryTestSupport.getJdbcTemplate().update("delete from OPPLASTET_VEDLEGG");
     }
 
     @Test
-    public void hentSoknaderForBatchSkalFinneGamleSoknader() {
+    void hentSoknaderForBatchSkalFinneGamleSoknader() {
         var skalIkkeSlettes = lagSoknadUnderArbeid(BEHANDLINGSID, 13);
         var skalIkkeSlettesId = soknadUnderArbeidRepository.opprettSoknad(skalIkkeSlettes, EIER);
 
@@ -65,7 +65,7 @@ public class BatchSoknadUnderArbeidRepositoryJdbcTest {
     }
 
     @Test
-    public void slettSoknadGittSoknadUnderArbeidIdSkalSletteSoknad() {
+    void slettSoknadGittSoknadUnderArbeidIdSkalSletteSoknad() {
         var soknadUnderArbeid = lagSoknadUnderArbeid(BEHANDLINGSID, 15);
         var soknadUnderArbeidId = soknadUnderArbeidRepository.opprettSoknad(soknadUnderArbeid, EIER);
         soknadUnderArbeid.setSoknadId(soknadUnderArbeidId);

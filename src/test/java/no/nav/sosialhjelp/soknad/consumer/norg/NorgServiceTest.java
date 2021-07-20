@@ -6,13 +6,13 @@ import no.nav.sosialhjelp.soknad.consumer.redis.RedisService;
 import no.nav.sosialhjelp.soknad.domain.model.navenhet.NavEnhet;
 import no.nav.sosialhjelp.soknad.domain.model.navenhet.NavenhetFraLokalListe;
 import no.nav.sosialhjelp.soknad.domain.model.navenhet.NavenheterFraLokalListe;
-import org.junit.After;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.ws.rs.ServiceUnavailableException;
 import java.time.LocalDateTime;
@@ -33,8 +33,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
-public class NorgServiceTest {
+@ExtendWith(MockitoExtension.class)
+class NorgServiceTest {
 
     private static final String GT = "0101";
     private static final String ENHETSNUMMER = "0701";
@@ -48,13 +48,13 @@ public class NorgServiceTest {
     @InjectMocks
     private NorgService norgService;
 
-    @After
+    @AfterEach
     public void tearDown() {
         System.clearProperty("environment.name");
     }
 
     @Test
-    public void finnEnhetForGtBrukerTestOrgNrForTest() {
+    void finnEnhetForGtBrukerTestOrgNrForTest() {
         setProperty("environment.name", "test");
         when(norgConsumer.getEnhetForGeografiskTilknytning(GT)).thenReturn(lagRsNorgEnhet());
 
@@ -64,7 +64,7 @@ public class NorgServiceTest {
     }
 
     @Test
-    public void finnEnhetForGtBrukerOrgNrFraNorgForProd() {
+    void finnEnhetForGtBrukerOrgNrFraNorgForProd() {
         setProperty("environment.name", "p");
         when(norgConsumer.getEnhetForGeografiskTilknytning(GT)).thenReturn(lagRsNorgEnhet());
 
@@ -82,7 +82,7 @@ public class NorgServiceTest {
     }
 
     @Test
-    public void finnEnhetForLom() {
+    void finnEnhetForLom() {
         setProperty("environment.name", "p");
 
         String gt = "3434";
@@ -96,7 +96,7 @@ public class NorgServiceTest {
     }
 
     @Test
-    public void finnEnhetForSkjaak() {
+    void finnEnhetForSkjaak() {
         setProperty("environment.name", "p");
 
         String gt = "3432";
@@ -110,7 +110,7 @@ public class NorgServiceTest {
     }
 
     @Test
-    public void getEnheterForKommunenummer_forKommunerMedFlereNavenheter_skalReturnereRettAntall() {
+    void getEnheterForKommunenummer_forKommunerMedFlereNavenheter_skalReturnereRettAntall() {
         // Oslo
         List<NavEnhet> enheterForKommunenummer = norgService.getEnheterForKommunenummer("0301");
         assertThat(enheterForKommunenummer).hasSize(15);
@@ -129,7 +129,7 @@ public class NorgServiceTest {
     }
 
     @Test
-    public void getEnheterForKommunenummer_forKommunerEnNavenhet_skalReturnereEnNavenhet() {
+    void getEnheterForKommunenummer_forKommunerEnNavenhet_skalReturnereEnNavenhet() {
         // Viken
         List<String> kommuner = Arrays.asList("3001", "3002", "3003", "3004", "3005", "3006", "3007", "3011", "3012", "3013", "3014", "3015", "3016", "3017", "3018", "3019", "3020", "3021", "3022", "3023", "3024", "3025", "3026", "3027", "3028", "3029", "3030", "3031", "3032", "3033", "3034", "3035", "3036", "3037", "3038", "3039", "3040", "3041", "3042", "3043", "3044", "3045", "3046", "3047", "3048", "3049", "3050", "3051", "3052", "3053", "3054");
         kommuner.forEach(kommune -> {
@@ -201,9 +201,9 @@ public class NorgServiceTest {
         });
     }
 
-    @Ignore
+    @Disabled
     @Test
-    public void getAllNavenheterFromPath() {
+    void getAllNavenheterFromPath() {
         NavenheterFraLokalListe allNavenheterFromPath = norgService.getAllNavenheterFromPath();
         List<NavenhetFraLokalListe> navenhetnavnUlikKommunenavn = new ArrayList<>();
         List<NavenhetFraLokalListe> kommunenavnMedSpesifisertSted = new ArrayList<>();
@@ -287,7 +287,7 @@ public class NorgServiceTest {
     }
 
     @Test
-    public void skalHenteNavEnhetForGtFraConsumer() {
+    void skalHenteNavEnhetForGtFraConsumer() {
         when(norgConsumer.getEnhetForGeografiskTilknytning(GT)).thenReturn(lagRsNorgEnhet());
 
         NavEnhet navEnhet = norgService.getEnhetForGt(GT);
@@ -300,7 +300,7 @@ public class NorgServiceTest {
     }
 
     @Test
-    public void skalHenteNavEnhetForGtFraCache() {
+    void skalHenteNavEnhetForGtFraCache() {
         var mockEnhet = lagRsNorgEnhet();
         when(redisService.getString(anyString())).thenReturn(LocalDateTime.now().minusMinutes(1).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
         when(redisService.get(anyString(), any())).thenReturn(mockEnhet);
@@ -315,7 +315,7 @@ public class NorgServiceTest {
     }
 
     @Test
-    public void skalBrukeCacheSomFallbackDersomConsumerFeilerOgCacheFinnes() {
+    void skalBrukeCacheSomFallbackDersomConsumerFeilerOgCacheFinnes() {
         var mockEnhet = lagRsNorgEnhet();
         when(redisService.getString(anyString())).thenReturn(LocalDateTime.now().minusMinutes(60).minusSeconds(1).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
         when(redisService.get(anyString(), any())).thenReturn(mockEnhet);
@@ -331,7 +331,7 @@ public class NorgServiceTest {
     }
 
     @Test
-    public void skalKasteFeilHvisConsumerFeilerOgCacheErExpired() {
+    void skalKasteFeilHvisConsumerFeilerOgCacheErExpired() {
         when(redisService.getString(anyString())).thenReturn(LocalDateTime.now().minusMinutes(60).minusSeconds(1).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
         when(redisService.get(anyString(), any())).thenReturn(null);
         when(norgConsumer.getEnhetForGeografiskTilknytning(GT)).thenThrow(new TjenesteUtilgjengeligException("norg feiler", new ServiceUnavailableException()));
@@ -344,7 +344,7 @@ public class NorgServiceTest {
     }
 
     @Test
-    public void skalReturnereNullHvisConsumerReturnererNull() {
+    void skalReturnereNullHvisConsumerReturnererNull() {
         when(redisService.getString(anyString())).thenReturn(LocalDateTime.now().minusMinutes(60).minusSeconds(1).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
         when(norgConsumer.getEnhetForGeografiskTilknytning(GT)).thenReturn(null);
 

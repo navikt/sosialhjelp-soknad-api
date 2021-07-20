@@ -5,19 +5,19 @@ import no.nav.sosialhjelp.soknad.business.db.config.DbTestConfig;
 import no.nav.sosialhjelp.soknad.domain.OpplastetVedlegg;
 import no.nav.sosialhjelp.soknad.domain.VedleggType;
 import no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils;
-import org.junit.After;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.inject.Inject;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(SpringJUnit4ClassRunner.class)
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {DbTestConfig.class})
-public class BatchOpplastetVedleggRepositoryJdbcTest {
+class BatchOpplastetVedleggRepositoryJdbcTest {
 
     private static final String EIER = "12345678901";
     private static final byte[] DATA = {1, 2, 3, 4};
@@ -38,14 +38,14 @@ public class BatchOpplastetVedleggRepositoryJdbcTest {
     @Inject
     private RepositoryTestSupport soknadRepositoryTestSupport;
 
-    @After
+    @AfterEach
     public void tearDown() {
         soknadRepositoryTestSupport.getJdbcTemplate().update("delete from OPPLASTET_VEDLEGG");
         soknadRepositoryTestSupport.getJdbcTemplate().update("delete from SOKNAD_UNDER_ARBEID");
     }
 
     @Test
-    public void slettAlleVedleggForSoknadSletterAlleOpplastedeVedleggForGittSoknadId() {
+    void slettAlleVedleggForSoknadSletterAlleOpplastedeVedleggForGittSoknadId() {
         final String uuid = opprettOpplastetVedleggOgLagreIDb(lagOpplastetVedlegg(), EIER);
         final String uuidSammeSoknadOgEier = opprettOpplastetVedleggOgLagreIDb(lagOpplastetVedlegg(EIER, TYPE, SOKNADID), EIER);
         final String uuidSammeEierOgAnnenSoknad = opprettOpplastetVedleggOgLagreIDb(lagOpplastetVedlegg(EIER, TYPE2, SOKNADID3), EIER);

@@ -1,23 +1,23 @@
 package no.nav.sosialhjelp.soknad.web.rest.ressurser;
 
 import no.nav.sosialhjelp.soknad.web.utils.NedetidUtils;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(MockitoJUnitRunner.class)
-public class NedetidRessursTest {
+@ExtendWith(MockitoExtension.class)
+class NedetidRessursTest {
 
     @InjectMocks
     NedetidRessurs nedetidRessurs;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         System.clearProperty(NedetidUtils.NEDETID_START);
         System.clearProperty(NedetidUtils.NEDETID_SLUTT);
@@ -26,7 +26,7 @@ public class NedetidRessursTest {
     // Utenfor planlagt nedetid eller nedetid:
 
     @Test
-    public void whenNedetidIsNull_ShouldReturnNullAndFalse() {
+    void whenNedetidIsNull_ShouldReturnNullAndFalse() {
         NedetidRessurs.NedetidFrontend nedetidFrontend = nedetidRessurs.hentNedetidInformasjon();
         assertThat(nedetidFrontend.isNedetid).isFalse();
         assertThat(nedetidFrontend.isPlanlagtNedetid).isFalse();
@@ -48,7 +48,7 @@ public class NedetidRessursTest {
     }
 
     @Test
-    public void whenNedetidStarterOm15dager_ShouldReturnFalseAndNull() {
+    void whenNedetidStarterOm15dager_ShouldReturnFalseAndNull() {
         LocalDateTime nedetidStart = LocalDateTime.now().plusDays(15);
         LocalDateTime nedetidSlutt = LocalDateTime.now().plusDays(20);
         System.setProperty(NedetidUtils.NEDETID_START, nedetidStart.format(NedetidUtils.dateTimeFormatter));
@@ -62,7 +62,7 @@ public class NedetidRessursTest {
     }
 
     @Test
-    public void whenNedetidStarterOm14dagerAnd1min_ShouldReturnFalseAndNull() {
+    void whenNedetidStarterOm14dagerAnd1min_ShouldReturnFalseAndNull() {
         LocalDateTime nedetidStart = LocalDateTime.now().plusDays(14).plusMinutes(1);
         LocalDateTime nedetidSlutt = LocalDateTime.now().plusDays(20);
         System.setProperty(NedetidUtils.NEDETID_START, nedetidStart.format(NedetidUtils.dateTimeFormatter));
@@ -79,7 +79,7 @@ public class NedetidRessursTest {
     // Innenfor planlagt nedetid:
 
     @Test
-    public void whenNedetidStarterOm12dager_ShouldReturnPlanlagtNedetid() {
+    void whenNedetidStarterOm12dager_ShouldReturnPlanlagtNedetid() {
         LocalDateTime nedetidStart = LocalDateTime.now().plusDays(12);
         LocalDateTime nedetidSlutt = LocalDateTime.now().plusDays(20);
         System.setProperty(NedetidUtils.NEDETID_START, nedetidStart.format(NedetidUtils.dateTimeFormatter));
@@ -93,7 +93,7 @@ public class NedetidRessursTest {
     }
 
     @Test
-    public void whenNedetidStarterOm14dagerMinus1min_ShouldReturnPlanlagtNedetid() {
+    void whenNedetidStarterOm14dagerMinus1min_ShouldReturnPlanlagtNedetid() {
         LocalDateTime nedetidStart = LocalDateTime.now().plusDays(14).minusMinutes(1);
         LocalDateTime nedetidSlutt = LocalDateTime.now().plusDays(20);
         System.setProperty(NedetidUtils.NEDETID_START, nedetidStart.format(NedetidUtils.dateTimeFormatter));
@@ -109,7 +109,7 @@ public class NedetidRessursTest {
     // Innenfor nedetid:
 
     @Test
-    public void whenNedetidStartetfor1sekSiden_ShouldReturnNedetid() {
+    void whenNedetidStartetfor1sekSiden_ShouldReturnNedetid() {
         LocalDateTime nedetidStart = LocalDateTime.now().minusSeconds(1);
         LocalDateTime nedetidSlutt = LocalDateTime.now().plusDays(20);
         System.setProperty(NedetidUtils.NEDETID_START, nedetidStart.format(NedetidUtils.dateTimeFormatter));
@@ -123,7 +123,7 @@ public class NedetidRessursTest {
     }
 
     @Test
-    public void whenMidtINedetid_ShouldReturnNedetid() {
+    void whenMidtINedetid_ShouldReturnNedetid() {
         LocalDateTime nedetidStart = LocalDateTime.now().minusDays(5);
         LocalDateTime nedetidSlutt = LocalDateTime.now().plusDays(5);
         System.setProperty(NedetidUtils.NEDETID_START, nedetidStart.format(NedetidUtils.dateTimeFormatter));
@@ -137,7 +137,7 @@ public class NedetidRessursTest {
     }
 
     @Test
-    public void whenNedetidSlutterOm1min_ShouldReturnNedetid() {
+    void whenNedetidSlutterOm1min_ShouldReturnNedetid() {
         LocalDateTime nedetidStart = LocalDateTime.now().minusDays(2);
         LocalDateTime nedetidSlutt = LocalDateTime.now().plusMinutes(1);
         System.setProperty(NedetidUtils.NEDETID_START, nedetidStart.format(NedetidUtils.dateTimeFormatter));
@@ -154,7 +154,7 @@ public class NedetidRessursTest {
 
     // Etter nedetid
     @Test
-    public void whenNedetidSluttetFor1sekSiden_ShouldReturnFalse() {
+    void whenNedetidSluttetFor1sekSiden_ShouldReturnFalse() {
         LocalDateTime nedetidStart = LocalDateTime.now().minusDays(5);
         LocalDateTime nedetidSlutt = LocalDateTime.now().minusSeconds(1);
         System.setProperty(NedetidUtils.NEDETID_START, nedetidStart.format(NedetidUtils.dateTimeFormatter));
@@ -168,7 +168,7 @@ public class NedetidRessursTest {
     }
 
     @Test
-    public void whenNedetidSluttetFor1ArSiden_ShouldReturnFalse() {
+    void whenNedetidSluttetFor1ArSiden_ShouldReturnFalse() {
         LocalDateTime nedetidStart = LocalDateTime.now().minusDays(5);
         LocalDateTime nedetidSlutt = LocalDateTime.now().minusYears(1).plusDays(1);
         System.setProperty(NedetidUtils.NEDETID_START, nedetidStart.format(NedetidUtils.dateTimeFormatter));
@@ -184,7 +184,7 @@ public class NedetidRessursTest {
     // Rare caser
 
     @Test
-    public void whenSluttIsBeforeStart_ShouldReturnFalse() {
+    void whenSluttIsBeforeStart_ShouldReturnFalse() {
         LocalDateTime nedetidStart = LocalDateTime.now().plusDays(2);
         LocalDateTime nedetidSlutt = LocalDateTime.now().minusDays(1);
         System.setProperty(NedetidUtils.NEDETID_START, nedetidStart.format(NedetidUtils.dateTimeFormatter));
@@ -198,7 +198,7 @@ public class NedetidRessursTest {
     }
 
     @Test
-    public void whenPropertyIsNotInDateformat_ShouldReturnNullAndFalse() {
+    void whenPropertyIsNotInDateformat_ShouldReturnNullAndFalse() {
         System.setProperty(NedetidUtils.NEDETID_START, "noe");
         NedetidRessurs.NedetidFrontend nedetidFrontend = nedetidRessurs.hentNedetidInformasjon();
         assertThat(nedetidFrontend.isNedetid).isFalse();

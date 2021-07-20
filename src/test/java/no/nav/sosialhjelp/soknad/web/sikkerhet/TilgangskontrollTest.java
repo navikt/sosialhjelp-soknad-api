@@ -9,23 +9,24 @@ import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.domain.model.exception.AuthorizationException;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.StaticSubjectHandlerService;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
 import static no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
-public class TilgangskontrollTest {
+@ExtendWith(MockitoExtension.class)
+class TilgangskontrollTest {
 
     @InjectMocks
     private Tilgangskontroll tilgangskontroll;
@@ -36,20 +37,20 @@ public class TilgangskontrollTest {
     @Mock
     private PersonService personService;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         System.setProperty("environment.name", "test");
         SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         SubjectHandler.resetOidcSubjectHandlerService();
         System.clearProperty("environment.name");
     }
 
     @Test
-    public void skalGiTilgangForBruker() {
+    void skalGiTilgangForBruker() {
         String userId = SubjectHandler.getUserId();
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withEier(userId).withJsonInternalSoknad(createEmptyJsonInternalSoknad(userId));
         when(soknadUnderArbeidRepository.hentSoknadOptional(anyString(), anyString())).thenReturn(Optional.of(soknadUnderArbeid));
@@ -58,21 +59,25 @@ public class TilgangskontrollTest {
         assertThatNoException().isThrownBy(() -> tilgangskontroll.verifiserBrukerHarTilgangTilSoknad("123"));
     }
 
-    @Test(expected = AuthorizationException.class)
-    public void skalFeileForAndre() {
+    @Test
+    void skalFeileForAndre() {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad("other_user"));
         when(soknadUnderArbeidRepository.hentSoknadOptional(anyString(), anyString())).thenReturn(Optional.of(soknadUnderArbeid));
-        tilgangskontroll.verifiserBrukerHarTilgangTilSoknad("XXX");
-    }
 
-    @Test(expected = AuthorizationException.class)
-    public void skalFeileOmSoknadenIkkeFinnes() {
-        when(soknadUnderArbeidRepository.hentSoknadOptional(anyString(), anyString())).thenReturn(Optional.empty());
-        tilgangskontroll.verifiserBrukerHarTilgangTilSoknad("123");
+        assertThatExceptionOfType(AuthorizationException.class)
+                .isThrownBy(() -> tilgangskontroll.verifiserBrukerHarTilgangTilSoknad("XXX"));
     }
 
     @Test
-    public void skalGiTilgangForBrukerMetadata() {
+    void skalFeileOmSoknadenIkkeFinnes() {
+        when(soknadUnderArbeidRepository.hentSoknadOptional(anyString(), anyString())).thenReturn(Optional.empty());
+
+        assertThatExceptionOfType(AuthorizationException.class)
+                .isThrownBy(() -> tilgangskontroll.verifiserBrukerHarTilgangTilSoknad("123"));
+    }
+
+    @Test
+    void skalGiTilgangForBrukerMetadata() {
         var userId = SubjectHandler.getUserId();
         SoknadMetadata metadata = new SoknadMetadata();
         metadata.fnr = userId;
@@ -82,31 +87,38 @@ public class TilgangskontrollTest {
         assertThatNoException().isThrownBy(() -> tilgangskontroll.verifiserBrukerHarTilgangTilMetadata("123"));
     }
 
-    @Test(expected = AuthorizationException.class)
-    public void skalFeileForAndreMetadata() {
+    @Test
+    void skalFeileForAndreMetadata() {
         SoknadMetadata metadata = new SoknadMetadata();
         metadata.fnr = "other_user";
         when(soknadMetadataRepository.hent("123")).thenReturn(metadata);
-        tilgangskontroll.verifiserBrukerHarTilgangTilMetadata("123");
+
+        assertThatExceptionOfType(AuthorizationException.class)
+                .isThrownBy(() -> tilgangskontroll.verifiserBrukerHarTilgangTilMetadata("123"));
     }
 
-    @Test(expected = AuthorizationException.class)
-    public void skalFeileHvisEierErNull() {
-        tilgangskontroll.verifiserBrukerHarTilgangTilSoknad("");
+    @Test
+    void skalFeileHvisEierErNull() {
+        assertThatExceptionOfType(AuthorizationException.class)
+                .isThrownBy(() -> tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(""));
     }
 
-    @Test(expected = AuthorizationException.class)
-    public void skalFeileHvisBrukerHarAdressebeskyttelseStrengtFortrolig() {
+    @Test
+    void skalFeileHvisBrukerHarAdressebeskyttelseStrengtFortrolig() {
         var userId = SubjectHandler.getUserId();
         when(personService.hentAdressebeskyttelse(userId)).thenReturn(AdressebeskyttelseDto.Gradering.STRENGT_FORTROLIG);
-        tilgangskontroll.verifiserAtBrukerHarTilgang();
+
+        assertThatExceptionOfType(AuthorizationException.class)
+                .isThrownBy(() -> tilgangskontroll.verifiserAtBrukerHarTilgang());
     }
 
-    @Test(expected = AuthorizationException.class)
-    public void skalFeileHvisBrukerHarAdressebeskyttelseFortrolig() {
+    @Test
+    void skalFeileHvisBrukerHarAdressebeskyttelseFortrolig() {
         var userId = SubjectHandler.getUserId();
         when(personService.hentAdressebeskyttelse(userId)).thenReturn(AdressebeskyttelseDto.Gradering.FORTROLIG);
-        tilgangskontroll.verifiserAtBrukerHarTilgang();
+
+        assertThatExceptionOfType(AuthorizationException.class)
+                .isThrownBy(() -> tilgangskontroll.verifiserAtBrukerHarTilgang());
     }
 
 }

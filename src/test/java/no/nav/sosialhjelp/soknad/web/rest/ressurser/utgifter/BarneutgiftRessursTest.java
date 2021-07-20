@@ -14,14 +14,14 @@ import no.nav.sosialhjelp.soknad.domain.model.oidc.StaticSubjectHandlerService;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.utgifter.BarneutgiftRessurs.BarneutgifterFrontend;
 import no.nav.sosialhjelp.soknad.web.sikkerhet.Tilgangskontroll;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -36,6 +36,7 @@ import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTGIFTER_BARN_TA
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTGIFTER_SFO;
 import static no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
@@ -43,8 +44,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
-public class BarneutgiftRessursTest {
+@ExtendWith(MockitoExtension.class)
+class BarneutgiftRessursTest {
 
     private static final String BEHANDLINGSID = "123";
     private static final String EIER = "123456789101";
@@ -61,21 +62,20 @@ public class BarneutgiftRessursTest {
     @InjectMocks
     private BarneutgiftRessurs barneutgiftRessurs;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         System.setProperty("environment.name", "test");
         SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
-        when(textService.getJsonOkonomiTittel(anyString())).thenReturn("tittel");
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         SubjectHandler.resetOidcSubjectHandlerService();
         System.clearProperty("environment.name");
     }
 
     @Test
-    public void getBarneutgifterSkalReturnereBekreftelseLikNullOgAltFalse() {
+    void getBarneutgifterSkalReturnereBekreftelseLikNullOgAltFalse() {
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER)));
 
@@ -91,7 +91,7 @@ public class BarneutgiftRessursTest {
     }
 
     @Test
-    public void getBarneutgifterSkalReturnereHarForsorgerpliktLikFalseForPersonUtenBarn() {
+    void getBarneutgifterSkalReturnereHarForsorgerpliktLikFalseForPersonUtenBarn() {
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithBarneutgifter(false, false, Collections.emptyList()));
 
@@ -107,7 +107,7 @@ public class BarneutgiftRessursTest {
     }
 
     @Test
-    public void getBarneutgifterSkalReturnereBekreftelserLikTrue() {
+    void getBarneutgifterSkalReturnereBekreftelserLikTrue() {
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithBarneutgifter(true, true, asList(UTGIFTER_BARNEHAGE, UTGIFTER_SFO, UTGIFTER_BARN_FRITIDSAKTIVITETER,
                         UTGIFTER_BARN_TANNREGULERING, UTGIFTER_ANNET_BARN)));
@@ -124,11 +124,12 @@ public class BarneutgiftRessursTest {
     }
 
     @Test
-    public void putBarneutgifterSkalSetteAltFalseDersomManVelgerHarIkkeBarneutgifter() {
+    void putBarneutgifterSkalSetteAltFalseDersomManVelgerHarIkkeBarneutgifter() {
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithBarneutgifter(true, true, asList(UTGIFTER_BARNEHAGE, UTGIFTER_SFO,
                         UTGIFTER_BARN_FRITIDSAKTIVITETER, UTGIFTER_ANNET_BARN)));
+        when(textService.getJsonOkonomiTittel(anyString())).thenReturn("tittel");
 
         BarneutgifterFrontend barneutgifterFrontend = new BarneutgifterFrontend();
         barneutgifterFrontend.setBekreftelse(false);
@@ -148,10 +149,11 @@ public class BarneutgiftRessursTest {
     }
 
     @Test
-    public void putBarneutgifterSkalSetteNoenBekreftelser() {
+    void putBarneutgifterSkalSetteNoenBekreftelser() {
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER)));
+        when(textService.getJsonOkonomiTittel(anyString())).thenReturn("tittel");
 
         BarneutgifterFrontend barneutgifterFrontend = new BarneutgifterFrontend();
         barneutgifterFrontend.setBekreftelse(true);
@@ -181,10 +183,11 @@ public class BarneutgiftRessursTest {
     }
 
     @Test
-    public void putBarneutgifterSkalSetteAlleBekreftelser() {
+    void putBarneutgifterSkalSetteAlleBekreftelser() {
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER)));
+        when(textService.getJsonOkonomiTittel(anyString())).thenReturn("tittel");
 
         BarneutgifterFrontend barneutgifterFrontend = new BarneutgifterFrontend();
         barneutgifterFrontend.setBekreftelse(true);
@@ -213,21 +216,24 @@ public class BarneutgiftRessursTest {
         assertThat(opplysningerBarneutgifter.stream().anyMatch(barneutgift -> barneutgift.getType().equals(UTGIFTER_ANNET_BARN))).isTrue();
     }
 
-    @Test(expected = AuthorizationException.class)
-    public void getBarneutgifterSkalKasteAuthorizationExceptionVedManglendeTilgang() {
+    @Test
+    void getBarneutgifterSkalKasteAuthorizationExceptionVedManglendeTilgang() {
         doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerHarTilgang();
 
-        barneutgiftRessurs.hentBarneutgifter(BEHANDLINGSID);
+        assertThatExceptionOfType(AuthorizationException.class)
+                .isThrownBy(() -> barneutgiftRessurs.hentBarneutgifter(BEHANDLINGSID));
 
         verifyNoInteractions(soknadUnderArbeidRepository);
     }
 
-    @Test(expected = AuthorizationException.class)
-    public void putBarneutgifterSkalKasteAuthorizationExceptionVedManglendeTilgang() {
+    @Test
+    void putBarneutgifterSkalKasteAuthorizationExceptionVedManglendeTilgang() {
         doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
 
         var barneutgifterFrontend = new BarneutgifterFrontend();
-        barneutgiftRessurs.updateBarneutgifter(BEHANDLINGSID, barneutgifterFrontend);
+
+        assertThatExceptionOfType(AuthorizationException.class)
+                .isThrownBy(() -> barneutgiftRessurs.updateBarneutgifter(BEHANDLINGSID, barneutgifterFrontend));
 
         verifyNoInteractions(soknadUnderArbeidRepository);
     }

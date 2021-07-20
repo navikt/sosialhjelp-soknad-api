@@ -1,12 +1,12 @@
 package no.nav.sosialhjelp.soknad.business.pdf.helpers;
 
 import com.github.jknack.handlebars.Handlebars;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -18,18 +18,18 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
-public class HvisOkonomiskVerdiHelperTest {
+@ExtendWith(MockitoExtension.class)
+class HvisOkonomiskVerdiHelperTest {
 
     private Handlebars handlebars;
 
     @InjectMocks
-    HvisOkonomiskVerdiHelper hvisOkonomiskVerdiHelper;
+    private HvisOkonomiskVerdiHelper hvisOkonomiskVerdiHelper;
 
     @Mock
-    HentSvaralternativerHelper hentSvaralternativerHelper;
+    private HentSvaralternativerHelper hentSvaralternativerHelper;
 
-    @Before
+    @BeforeEach
     public void setup() {
         final Set<String> okonomiskVerdiTyper = new HashSet<>();
         okonomiskVerdiTyper.add("campingvogn");
@@ -41,14 +41,14 @@ public class HvisOkonomiskVerdiHelperTest {
     }
 
     @Test
-    public void skalGjenkjenneOkonomiskVerditype() throws IOException {
+    void skalGjenkjenneOkonomiskVerditype() throws IOException {
         String compiled = handlebars.compileInline("{{#hvisOkonomiskVerdi \"campingvogn\"}}campingvogn er en økonomisk verdi{{else}}ikke en økonomisk verdi{{/hvisOkonomiskVerdi}}").apply(new Object());
 
         assertThat(compiled).isEqualTo("campingvogn er en økonomisk verdi");
     }
 
     @Test
-    public void skalIkkeGjenkjenneOkonomiskVerditype() throws IOException {
+    void skalIkkeGjenkjenneOkonomiskVerditype() throws IOException {
         String compiled = handlebars.compileInline("{{#hvisOkonomiskVerdi \"stygtVeggpanel\"}}stygtVeggpanel er en økonomisk verdi{{else}}ikke en økonomisk verdi{{/hvisOkonomiskVerdi}}").apply(new Object());
 
         assertThat(compiled).isEqualTo("ikke en økonomisk verdi");

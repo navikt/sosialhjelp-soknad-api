@@ -3,19 +3,19 @@ package no.nav.sosialhjelp.soknad.consumer.dkif;
 import no.nav.sosialhjelp.soknad.consumer.dkif.dto.DigitalKontaktinfo;
 import no.nav.sosialhjelp.soknad.consumer.dkif.dto.DigitalKontaktinfoBolk;
 import no.nav.sosialhjelp.soknad.consumer.dkif.dto.Feil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
-public class DkifServiceTest {
+@ExtendWith(MockitoExtension.class)
+class DkifServiceTest {
 
     @Mock
     private DkifConsumer dkifConsumer;
@@ -27,7 +27,7 @@ public class DkifServiceTest {
     private String mobiltelefonnummer = "12345678";
 
     @Test
-    public void skalHenteMobiltelefonnummer() {
+    void skalHenteMobiltelefonnummer() {
         when(dkifConsumer.hentDigitalKontaktinfo(anyString())).thenReturn(createDigitalKontaktinfoBolk());
 
         String response = service.hentMobiltelefonnummer(ident);
@@ -36,7 +36,7 @@ public class DkifServiceTest {
     }
 
     @Test
-    public void skalReturnereNullHvis_DigitalKontaktinfoBolk_ErNull() {
+    void skalReturnereNullHvis_DigitalKontaktinfoBolk_ErNull() {
         when(dkifConsumer.hentDigitalKontaktinfo(anyString())).thenReturn(null);
 
         String response = service.hentMobiltelefonnummer(ident);
@@ -45,7 +45,7 @@ public class DkifServiceTest {
     }
 
     @Test
-    public void skalReturnereNullHvis_DigitalKontaktinfoBolk_Kontaktinfo_ErNull() {
+    void skalReturnereNullHvis_DigitalKontaktinfoBolk_Kontaktinfo_ErNull() {
         when(dkifConsumer.hentDigitalKontaktinfo(anyString())).thenReturn(new DigitalKontaktinfoBolk(null, null));
 
         String response = service.hentMobiltelefonnummer(ident);
@@ -54,7 +54,7 @@ public class DkifServiceTest {
     }
 
     @Test
-    public void skalReturnereNullHvis_DigitalKontaktinfoBolk_Kontaktinfo_Mobiltelefonnummer_ErNull() {
+    void skalReturnereNullHvis_DigitalKontaktinfoBolk_Kontaktinfo_Mobiltelefonnummer_ErNull() {
         when(dkifConsumer.hentDigitalKontaktinfo(anyString())).thenReturn(new DigitalKontaktinfoBolk(singletonMap(ident, new DigitalKontaktinfo(null)), null));
 
         String response = service.hentMobiltelefonnummer(ident);
@@ -63,7 +63,7 @@ public class DkifServiceTest {
     }
 
     @Test
-    public void skalReturnereNullHvis_DigitalKontaktinfoBolk_Feil_ErSatt() {
+    void skalReturnereNullHvis_DigitalKontaktinfoBolk_Feil_ErSatt() {
         when(dkifConsumer.hentDigitalKontaktinfo(anyString())).thenReturn(new DigitalKontaktinfoBolk(null, singletonMap(ident, new Feil("feil feil feil"))));
 
         String response = service.hentMobiltelefonnummer(ident);

@@ -5,20 +5,20 @@ import no.nav.sosialhjelp.soknad.business.db.config.DbTestConfig;
 import no.nav.sosialhjelp.soknad.domain.OpplastetVedlegg;
 import no.nav.sosialhjelp.soknad.domain.VedleggType;
 import no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils;
-import org.junit.After;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.inject.Inject;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(SpringJUnit4ClassRunner.class)
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {DbTestConfig.class})
-public class OpplastetVedleggRepositoryJdbcTest {
+class OpplastetVedleggRepositoryJdbcTest {
 
     private static final String EIER = "12345678901";
     private static final String EIER2 = "22222222222";
@@ -37,14 +37,14 @@ public class OpplastetVedleggRepositoryJdbcTest {
     @Inject
     private RepositoryTestSupport soknadRepositoryTestSupport;
 
-    @After
+    @AfterEach
     public void tearDown() {
         soknadRepositoryTestSupport.getJdbcTemplate().update("delete from OPPLASTET_VEDLEGG");
         soknadRepositoryTestSupport.getJdbcTemplate().update("delete from SOKNAD_UNDER_ARBEID");
     }
 
     @Test
-    public void opprettVedleggOppretterOpplastetVedleggIDatabasen() {
+    void opprettVedleggOppretterOpplastetVedleggIDatabasen() {
         OpplastetVedlegg opplastetVedlegg = lagOpplastetVedlegg();
 
         String uuidFraDb = opplastetVedleggRepository.opprettVedlegg(opplastetVedlegg, EIER);
@@ -53,7 +53,7 @@ public class OpplastetVedleggRepositoryJdbcTest {
     }
 
     @Test
-    public void hentVedleggHenterOpplastetVedleggSomFinnesForGittUuidOgEier() {
+    void hentVedleggHenterOpplastetVedleggSomFinnesForGittUuidOgEier() {
         final String uuid = opprettOpplastetVedleggOgLagreIDb(lagOpplastetVedlegg(), EIER);
 
         OpplastetVedlegg opplastetVedleggFraDb = opplastetVedleggRepository.hentVedlegg(uuid, EIER).get();
@@ -68,7 +68,7 @@ public class OpplastetVedleggRepositoryJdbcTest {
     }
 
     @Test
-    public void hentVedleggForSoknadHenterAlleVedleggForGittSoknadUnderArbeidId() {
+    void hentVedleggForSoknadHenterAlleVedleggForGittSoknadUnderArbeidId() {
         final String uuid = opprettOpplastetVedleggOgLagreIDb(lagOpplastetVedlegg(), EIER);
         final String uuidSammeSoknadOgEier = opprettOpplastetVedleggOgLagreIDb(lagOpplastetVedlegg(EIER, TYPE2, SOKNADID), EIER);
         opprettOpplastetVedleggOgLagreIDb(lagOpplastetVedlegg(EIER2, TYPE2, SOKNADID2), EIER2);
@@ -82,7 +82,7 @@ public class OpplastetVedleggRepositoryJdbcTest {
     }
 
     @Test
-    public void slettVedleggSletterOpplastetVedleggMedGittUuidOgEier() {
+    void slettVedleggSletterOpplastetVedleggMedGittUuidOgEier() {
         final String uuid = opprettOpplastetVedleggOgLagreIDb(lagOpplastetVedlegg(), EIER);
 
         opplastetVedleggRepository.slettVedlegg(uuid, EIER);
@@ -91,7 +91,7 @@ public class OpplastetVedleggRepositoryJdbcTest {
     }
 
     @Test
-    public void slettAlleVedleggForSoknadSletterAlleOpplastedeVedleggForGittSoknadIdOgEier() {
+    void slettAlleVedleggForSoknadSletterAlleOpplastedeVedleggForGittSoknadIdOgEier() {
         final String uuid = opprettOpplastetVedleggOgLagreIDb(lagOpplastetVedlegg(), EIER);
         final String uuidSammeSoknadOgEier = opprettOpplastetVedleggOgLagreIDb(lagOpplastetVedlegg(EIER, TYPE, SOKNADID), EIER);
         final String uuidSammeEierOgAnnenSoknad = opprettOpplastetVedleggOgLagreIDb(lagOpplastetVedlegg(EIER, TYPE2, SOKNADID3), EIER);

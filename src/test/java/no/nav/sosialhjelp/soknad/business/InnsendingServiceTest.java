@@ -10,12 +10,12 @@ import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata;
 import no.nav.sosialhjelp.soknad.domain.SendtSoknad;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.domain.VedleggType;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.springframework.transaction.support.SimpleTransactionStatus;
 import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -25,6 +25,7 @@ import java.util.Optional;
 
 import static java.time.LocalDateTime.now;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -32,8 +33,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
-public class InnsendingServiceTest {
+@MockitoSettings(strictness = Strictness.LENIENT)
+class InnsendingServiceTest {
     private static final Long SOKNAD_UNDER_ARBEID_ID = 1L;
     private static final Long SENDT_SOKNAD_ID = 2L;
     private static final String EIER = "12345678910";
@@ -62,7 +63,7 @@ public class InnsendingServiceTest {
     @InjectMocks
     private InnsendingService innsendingService;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         when(transactionTemplate.execute(any())).thenAnswer(invocation -> {
             Object[] args = invocation.getArguments();
@@ -74,7 +75,7 @@ public class InnsendingServiceTest {
     }
 
     @Test
-    public void opprettSendtSoknadOppretterSendtSoknadOgVedleggstatus() {
+    void opprettSendtSoknadOppretterSendtSoknadOgVedleggstatus() {
         innsendingService.opprettSendtSoknad(createSoknadUnderArbeid().
                 withJsonInternalSoknad(createJsonInternalSoknadWithOrgnrAndNavEnhetsnavn()));
 
@@ -83,7 +84,7 @@ public class InnsendingServiceTest {
     }
 
     @Test
-    public void mapSoknadUnderArbeidTilSendtSoknadMapperInfoRiktig() {
+    void mapSoknadUnderArbeidTilSendtSoknadMapperInfoRiktig() {
         SendtSoknad sendtSoknad = innsendingService.mapSoknadUnderArbeidTilSendtSoknad(createSoknadUnderArbeid().withJsonInternalSoknad(
                 createJsonInternalSoknadWithOrgnrAndNavEnhetsnavn()
         ));
@@ -99,14 +100,15 @@ public class InnsendingServiceTest {
         assertThat(sendtSoknad.getFiksforsendelseId()).isNull();
     }
 
-    @Test(expected = IllegalStateException.class)
-    public void mapSoknadUnderArbeidTilSendtSoknadKasterFeilHvisIkkeEttersendingOgMottakerinfoMangler() {
-        innsendingService.mapSoknadUnderArbeidTilSendtSoknad(createSoknadUnderArbeidUtenTilknyttetBehandlingsid()
-                .withJsonInternalSoknad(new JsonInternalSoknad().withMottaker(null)));
+    @Test
+    void mapSoknadUnderArbeidTilSendtSoknadKasterFeilHvisIkkeEttersendingOgMottakerinfoMangler() {
+        var soknadUnderArbeid = createSoknadUnderArbeidUtenTilknyttetBehandlingsid().withJsonInternalSoknad(new JsonInternalSoknad().withMottaker(null));
+        assertThatExceptionOfType(IllegalStateException.class)
+                .isThrownBy(() -> innsendingService.mapSoknadUnderArbeidTilSendtSoknad(soknadUnderArbeid));
     }
 
     @Test
-    public void finnSendtSoknadForEttersendelseHenterMottakerinfoFraSendtSoknadVedEttersendelse() {
+    void finnSendtSoknadForEttersendelseHenterMottakerinfoFraSendtSoknadVedEttersendelse() {
         SendtSoknad sendtSoknad = innsendingService.finnSendtSoknadForEttersendelse(createSoknadUnderArbeidForEttersendelse());
 
         assertThat(sendtSoknad.getOrgnummer()).isEqualTo(ORGNR);
@@ -115,7 +117,7 @@ public class InnsendingServiceTest {
     }
 
     @Test
-    public void finnSendtSoknadForEttersendelseHenterInfoFraSoknadMetadataHvisSendtSoknadMangler() {
+    void finnSendtSoknadForEttersendelseHenterInfoFraSoknadMetadataHvisSendtSoknadMangler() {
         when(sendtSoknadRepository.hentSendtSoknad(anyString(), anyString())).thenReturn(Optional.empty());
         when(soknadMetadataRepository.hent(anyString())).thenReturn(createSoknadMetadata());
 
@@ -125,12 +127,13 @@ public class InnsendingServiceTest {
         assertThat(soknadMedMottaksinfoFraMetadata.getNavEnhetsnavn()).isEqualTo(NAVENHETSNAVN_METADATA);
     }
 
-    @Test(expected = IllegalStateException.class)
-    public void finnSendtSoknadForEttersendelseKasterFeilHvisSendtSoknadOgMetadataManglerForEttersendelse() {
+    @Test
+    void finnSendtSoknadForEttersendelseKasterFeilHvisSendtSoknadOgMetadataManglerForEttersendelse() {
         when(sendtSoknadRepository.hentSendtSoknad(anyString(), anyString())).thenReturn(Optional.empty());
         when(soknadMetadataRepository.hent(anyString())).thenReturn(null);
 
-        innsendingService.finnSendtSoknadForEttersendelse(createSoknadUnderArbeidForEttersendelse());
+        assertThatExceptionOfType(IllegalStateException.class)
+                .isThrownBy(() -> innsendingService.finnSendtSoknadForEttersendelse(createSoknadUnderArbeidForEttersendelse()));
     }
 
     private SoknadUnderArbeid createSoknadUnderArbeid() {

@@ -13,19 +13,19 @@ import no.nav.sosialhjelp.soknad.domain.model.Matrikkeladresse;
 import no.nav.sosialhjelp.soknad.domain.model.Oppholdsadresse;
 import no.nav.sosialhjelp.soknad.domain.model.Person;
 import no.nav.sosialhjelp.soknad.domain.model.Vegadresse;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
-public class AdresseSystemdataTest {
+@ExtendWith(MockitoExtension.class)
+class AdresseSystemdataTest {
 
     private static final String EIER = "12345678901";
     private static final Vegadresse DEFAULT_VEGADRESSE = new Vegadresse("gateveien", 1, "A", "", "0123", "poststed", "0301", "H0101", "123456");
@@ -38,7 +38,7 @@ public class AdresseSystemdataTest {
     private AdresseSystemdata adresseSystemdata;
 
     @Test
-    public void skalOppdatereFolkeregistrertAdresse_vegadresse_fraPdl() {
+    void skalOppdatereFolkeregistrertAdresse_vegadresse_fraPdl() {
         var soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
 
         var personWithBostedsadresseVegadresse = createPersonWithBostedsadresseVegadresse();
@@ -55,7 +55,7 @@ public class AdresseSystemdataTest {
     }
 
     @Test
-    public void skalOppdatereFolkeregistrertAdresse_matrikkeladresse_fraPdl() {
+    void skalOppdatereFolkeregistrertAdresse_matrikkeladresse_fraPdl() {
         var soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         var personWithBostedsadresseMatrikkeladresse = createPersonWithBostedsadresseMatrikkeladresse();
         when(personService.hentPerson(anyString())).thenReturn(personWithBostedsadresseMatrikkeladresse);
@@ -73,7 +73,7 @@ public class AdresseSystemdataTest {
     }
 
     @Test
-    public void skalOppdatereOppholdsadresseOgPostAdresseMedMidlertidigAdresse_kontaktadresse_fraPdl() {
+    void skalOppdatereOppholdsadresseOgPostAdresseMedMidlertidigAdresse_kontaktadresse_fraPdl() {
         var soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia()
                 .withOppholdsadresse(new JsonAdresse().withAdresseValg(JsonAdresseValg.MIDLERTIDIG))
@@ -105,7 +105,7 @@ public class AdresseSystemdataTest {
     }
 
     @Test
-    public void skalOppdatereOppholdsadresseOgPostAdresseMedFolkeregistrertAdresse_fraPdl() {
+    void skalOppdatereOppholdsadresseOgPostAdresseMedFolkeregistrertAdresse_fraPdl() {
         var soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia()
                 .withOppholdsadresse(new JsonAdresse().withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT))
@@ -129,7 +129,7 @@ public class AdresseSystemdataTest {
     }
 
     @Test
-    public void skalIkkeOppdatereOppholdsadresseEllerPostAdresseDersomAdresseValgErNull_fraPdl() {
+    void skalIkkeOppdatereOppholdsadresseEllerPostAdresseDersomAdresseValgErNull_fraPdl() {
         var soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia()
                 .withOppholdsadresse(new JsonAdresse())

@@ -8,18 +8,19 @@ import no.nav.sosialhjelp.soknad.domain.model.exception.AuthorizationException;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.StaticSubjectHandlerService;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import no.nav.sosialhjelp.soknad.web.sikkerhet.Tilgangskontroll;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
 import static no.nav.sosialhjelp.soknad.web.rest.ressurser.begrunnelse.BegrunnelseRessurs.BegrunnelseFrontend;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
@@ -27,8 +28,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
-public class BegrunnelseRessursTest {
+@ExtendWith(MockitoExtension.class)
+class BegrunnelseRessursTest {
 
     private static final String BEHANDLINGSID = "123";
     private static final String EIER = "123456789101";
@@ -44,20 +45,20 @@ public class BegrunnelseRessursTest {
     @InjectMocks
     private BegrunnelseRessurs begrunnelseRessurs;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         System.setProperty("environment.name", "test");
         SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         SubjectHandler.resetOidcSubjectHandlerService();
         System.clearProperty("environment.name");
     }
 
     @Test
-    public void getBegrunnelseSkalReturnereBegrunnelseMedTommeStrenger(){
+    void getBegrunnelseSkalReturnereBegrunnelseMedTommeStrenger(){
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithBegrunnelse("", ""));
 
@@ -68,7 +69,7 @@ public class BegrunnelseRessursTest {
     }
 
     @Test
-    public void getBegrunnelseSkalReturnereBegrunnelse(){
+    void getBegrunnelseSkalReturnereBegrunnelse(){
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithBegrunnelse(SOKER_OM, SOKER_FORDI));
 
@@ -79,7 +80,7 @@ public class BegrunnelseRessursTest {
     }
 
     @Test
-    public void putBegrunnelseSkalSetteBegrunnelse(){
+    void putBegrunnelseSkalSetteBegrunnelse(){
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithBegrunnelse("", ""));
@@ -96,21 +97,24 @@ public class BegrunnelseRessursTest {
         assertThat(begrunnelse.getHvorforSoke()).isEqualTo(SOKER_FORDI);
     }
 
-    @Test(expected = AuthorizationException.class)
-    public void getBegrunnelseSkalKasteAuthorizationExceptionVedManglendeTilgang() {
+    @Test
+    void getBegrunnelseSkalKasteAuthorizationExceptionVedManglendeTilgang() {
         doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerHarTilgang();
 
-        begrunnelseRessurs.hentBegrunnelse(BEHANDLINGSID);
+        assertThatExceptionOfType(AuthorizationException.class)
+                .isThrownBy(() -> begrunnelseRessurs.hentBegrunnelse(BEHANDLINGSID));
 
         verifyNoInteractions(soknadUnderArbeidRepository);
     }
 
-    @Test(expected = AuthorizationException.class)
-    public void putBegrunnelseSkalKasteAuthorizationExceptionVedManglendeTilgang() {
+    @Test
+    void putBegrunnelseSkalKasteAuthorizationExceptionVedManglendeTilgang() {
         doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(BEHANDLINGSID);
 
         var begrunnelseFrontend = new BegrunnelseFrontend().withHvaSokesOm(SOKER_OM).withHvorforSoke(SOKER_FORDI);
-        begrunnelseRessurs.updateBegrunnelse(BEHANDLINGSID, begrunnelseFrontend);
+
+        assertThatExceptionOfType(AuthorizationException.class)
+                .isThrownBy(() -> begrunnelseRessurs.updateBegrunnelse(BEHANDLINGSID, begrunnelseFrontend));
 
         verifyNoInteractions(soknadUnderArbeidRepository);
     }

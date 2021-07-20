@@ -3,11 +3,11 @@ package no.nav.sosialhjelp.soknad.business.batch.oppgave.fiks;
 import no.nav.sosialhjelp.soknad.business.InnsendingService;
 import no.nav.sosialhjelp.soknad.business.batch.oppgave.Oppgave;
 import no.nav.sosialhjelp.soknad.domain.SendtSoknad;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static no.nav.sosialhjelp.soknad.business.batch.oppgave.OppgaveHandtererImpl.FORSTE_STEG_NY_INNSENDING;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -20,8 +20,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
-public class FiksHandtererTest {
+@ExtendWith(MockitoExtension.class)
+class FiksHandtererTest {
 
     private static final String AVSENDER = "123456789010";
     private static final String BEHANDLINGSID = "12345";
@@ -29,16 +29,16 @@ public class FiksHandtererTest {
     private static final String NAVENHETSNAVN = "NAV Sagene";
 
     @Mock
-    FiksSender fiksSender;
+    private FiksSender fiksSender;
 
     @Mock
-    InnsendingService innsendingService;
+    private InnsendingService innsendingService;
 
     @InjectMocks
-    FiksHandterer fiksHandterer;
+    private FiksHandterer fiksHandterer;
 
     @Test
-    public void kjorerKjede() {
+    void kjorerKjede() {
         when(innsendingService.hentSendtSoknad(BEHANDLINGSID, AVSENDER)).thenReturn(lagSendtSoknad());
         when(fiksSender.sendTilFiks(any(SendtSoknad.class))).thenReturn(FIKSFORSENDELSEID);
         Oppgave oppgave = opprettOppgave();
@@ -63,7 +63,7 @@ public class FiksHandtererTest {
     }
 
     @Test
-    public void lagrerFeilmelding() {
+    void lagrerFeilmelding() {
         when(innsendingService.hentSendtSoknad(BEHANDLINGSID, AVSENDER)).thenReturn(new SendtSoknad());
         when(fiksSender.sendTilFiks(any(SendtSoknad.class))).thenThrow(new RuntimeException("feilmelding123"));
         Oppgave oppgave = opprettOppgave();
@@ -78,7 +78,7 @@ public class FiksHandtererTest {
     }
 
     @Test
-    public void kjorerKjedeSelvOmFeilerForsteGang() {
+    void kjorerKjedeSelvOmFeilerForsteGang() {
         //Feks. dersom en ettersendelse sin svarPaForsendelseId er null
         when(innsendingService.hentSendtSoknad(BEHANDLINGSID, AVSENDER)).thenReturn(lagSendtEttersendelse());
         when(fiksSender.sendTilFiks(any(SendtSoknad.class)))

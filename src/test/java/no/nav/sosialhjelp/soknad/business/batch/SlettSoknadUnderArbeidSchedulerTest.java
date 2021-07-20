@@ -1,13 +1,13 @@
 package no.nav.sosialhjelp.soknad.business.batch;
 
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.BatchSoknadUnderArbeidRepository;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
 
@@ -16,8 +16,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
-public class SlettSoknadUnderArbeidSchedulerTest {
+@ExtendWith(MockitoExtension.class)
+class SlettSoknadUnderArbeidSchedulerTest {
 
     @Mock
     private BatchSoknadUnderArbeidRepository batchSoknadUnderArbeidRepository;
@@ -25,18 +25,18 @@ public class SlettSoknadUnderArbeidSchedulerTest {
     @InjectMocks
     private SlettSoknadUnderArbeidScheduler slettSoknadUnderArbeidScheduler;
 
-    @Before
+    @BeforeEach
     public void setup() {
         System.setProperty("sendsoknad.batch.enabled", "true");
     }
 
-    @After
+    @AfterEach
     public void teardown() {
         System.clearProperty("sendsoknad.batch.enabled");
     }
 
     @Test
-    public void skalSletteGamleSoknadUnderArbeid() {
+    void skalSletteGamleSoknadUnderArbeid() {
         when(batchSoknadUnderArbeidRepository.hentGamleSoknadUnderArbeidForBatch())
                 .thenReturn(Arrays.asList(1L, 2L));
 

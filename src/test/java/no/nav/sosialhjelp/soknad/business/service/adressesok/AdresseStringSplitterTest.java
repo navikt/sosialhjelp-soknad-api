@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.business.service.adressesok;
 
 import no.nav.sosialhjelp.soknad.consumer.kodeverk.KodeverkService;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Objects;
 
@@ -10,38 +10,38 @@ import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class AdresseStringSplitterTest {
+class AdresseStringSplitterTest {
 
     @Test
-    public void tomStrengGirBlanktSvar() {
+    void tomStrengGirBlanktSvar() {
         assertThat(AdresseStringSplitter.toSokedata(null,"").adresse).isBlank();
     }
     
     @Test
-    public void nullStrengGirNullSvar() {
+    void nullStrengGirNullSvar() {
         assertThat(AdresseStringSplitter.toSokedata(null, null).adresse).isNull();
     }
     
     @Test
-    public void kunAdresseVirker() {
+    void kunAdresseVirker() {
         assertThat(AdresseStringSplitter.toSokedata(null, "asdf").adresse).isEqualTo("asdf");
     }
     
     @Test
-    public void husnummer() {
+    void husnummer() {
         final Sokedata result = AdresseStringSplitter.toSokedata(null, "asdf 2");
         assertThat(result.adresse).isEqualTo("asdf");
         assertThat(result.husnummer).isEqualTo("2");
     }
 
     @Test
-    public void kunHusnummer() {
+    void kunHusnummer() {
         final Sokedata result = AdresseStringSplitter.toSokedata(null, "234");
         assertThat(result.husnummer).isEqualTo("234");
     }
     
     @Test
-    public void husbokstav() {
+    void husbokstav() {
         final Sokedata result = AdresseStringSplitter.toSokedata(null, "asdf 2G");
         assertThat(result.adresse).isEqualTo("asdf");
         assertThat(result.husnummer).isEqualTo("2");
@@ -49,14 +49,14 @@ public class AdresseStringSplitterTest {
     }
 
     @Test
-    public void husnummerOgBokstav() {
+    void husnummerOgBokstav() {
         final Sokedata result = AdresseStringSplitter.toSokedata(null, "212G");
         assertThat(result.husnummer).isEqualTo("212");
         assertThat(result.husbokstav).isEqualTo("G");
     }
     
     @Test
-    public void postnummer() {
+    void postnummer() {
         final Sokedata result = AdresseStringSplitter.toSokedata(null, "asdf 2G, 0882");
         assertThat(result.adresse).isEqualTo("asdf");
         assertThat(result.husnummer).isEqualTo("2");
@@ -65,7 +65,7 @@ public class AdresseStringSplitterTest {
     }
 
     @Test
-    public void postnummerMedMellomromFlyttet() {
+    void postnummerMedMellomromFlyttet() {
         final Sokedata result = AdresseStringSplitter.toSokedata(null, "asdf 2G ,0882");
         assertThat(result.adresse).isEqualTo("asdf");
         assertThat(result.husnummer).isEqualTo("2");
@@ -74,19 +74,19 @@ public class AdresseStringSplitterTest {
     }
 
     @Test
-    public void kunPostnummer() {
+    void kunPostnummer() {
         final Sokedata result = AdresseStringSplitter.toSokedata(null, "0882");
         assertThat(result.postnummer).isEqualTo("0882");
     }
 
     @Test
-    public void kunPostnummerMedMellomrom() {
+    void kunPostnummerMedMellomrom() {
         final Sokedata result = AdresseStringSplitter.toSokedata(null, "   0882   ");
         assertThat(result.postnummer).isEqualTo("0882");
     }
     
     @Test
-    public void poststed() {
+    void poststed() {
         final Sokedata result = AdresseStringSplitter.toSokedata(null, "asdf 2G, 0882 OSLO");
         assertThat(result.adresse).isEqualTo("asdf");
         assertThat(result.husnummer).isEqualTo("2");
@@ -96,21 +96,21 @@ public class AdresseStringSplitterTest {
     }
 
     @Test
-    public void kunGateOgPostnummer() {
+    void kunGateOgPostnummer() {
         final Sokedata result = AdresseStringSplitter.toSokedata(null, "Veivei, 0110 ");
         assertThat(result.adresse).isEqualTo("Veivei");
         assertThat(result.postnummer).isEqualTo("0110");
     }
 
     @Test
-    public void kunGateOgPoststed() {
+    void kunGateOgPoststed() {
         final Sokedata result = AdresseStringSplitter.toSokedata(null, "Veivei, OSLO");
         assertThat(result.adresse).isEqualTo("Veivei");
         assertThat(result.poststed).isEqualTo("OSLO");
     }
 
     @Test
-    public void dobbeltnavnPlussDiverseMellomrom() {
+    void dobbeltnavnPlussDiverseMellomrom() {
         final Sokedata result = AdresseStringSplitter.toSokedata(null, "    Nedre Glommas    Vei   211G  ,  0882  ØVRE OSLO   ");
         assertThat(result.adresse).isEqualTo("Nedre Glommas Vei");
         assertThat(result.husnummer).isEqualTo("211");
@@ -119,7 +119,7 @@ public class AdresseStringSplitterTest {
         assertThat(result.poststed).isEqualTo("ØVRE OSLO");
     }
     @Test
-    public void kompakt() {
+    void kompakt() {
         final Sokedata result = AdresseStringSplitter.toSokedata(null, " Nedre Glommas Vei211G,0882ØVRE OSLO   ");
         assertThat(result.adresse).isEqualTo("Nedre Glommas Vei");
         assertThat(result.husnummer).isEqualTo("211");
@@ -129,7 +129,7 @@ public class AdresseStringSplitterTest {
     }
 
     @Test
-    public void poststedUtenPostnummer() {
+    void poststedUtenPostnummer() {
         final Sokedata result = AdresseStringSplitter.toSokedata(null, "asdf 2G OSLO");
         assertThat(result.adresse).isEqualTo("asdf");
         assertThat(result.husnummer).isEqualTo("2");
@@ -138,7 +138,7 @@ public class AdresseStringSplitterTest {
     }
     
     @Test
-    public void utenHusnummer() {
+    void utenHusnummer() {
         final Sokedata result = AdresseStringSplitter.toSokedata(null, "asdf, 0882 OSLO");
         assertThat(result.adresse).isEqualTo("asdf");
         assertThat(result.postnummer).isEqualTo("0882");
@@ -146,7 +146,7 @@ public class AdresseStringSplitterTest {
     }
     
     @Test
-    public void skalKunneSokeMedKommunenavn() {
+    void skalKunneSokeMedKommunenavn() {
         final KodeverkService kodeverkService = mock(KodeverkService.class);
         when(kodeverkService.gjettKommunenummer(anyString())).thenReturn("0301");
         final Sokedata result = AdresseStringSplitter.toSokedata(kodeverkService, "asdf, OSLO");
@@ -156,7 +156,7 @@ public class AdresseStringSplitterTest {
     }
     
     @Test
-    public void skalFungereMedPoststedSelvMedKodeverk() {
+    void skalFungereMedPoststedSelvMedKodeverk() {
         final KodeverkService kodeverkService = mock(KodeverkService.class);
         when(kodeverkService.gjettKommunenummer(anyString())).thenReturn("0301");
         final Sokedata result = AdresseStringSplitter.toSokedata(kodeverkService, "asdf, 0756 OSLO");
@@ -167,7 +167,7 @@ public class AdresseStringSplitterTest {
     }
 
     @Test
-    public void postnummerMatchTest() {
+    void postnummerMatchTest() {
         Sokedata sokedata = AdresseStringSplitter.postnummerMatch("0001");
         assertThat(Objects.requireNonNull(sokedata).postnummer).isEqualTo("0001");
         sokedata = AdresseStringSplitter.postnummerMatch("0001 ");

@@ -1,12 +1,12 @@
 package no.nav.sosialhjelp.soknad.business.pdf.helpers;
 
 import com.github.jknack.handlebars.Handlebars;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -18,18 +18,18 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
-public class HvisBarneutgiftHelperTest {
+@ExtendWith(MockitoExtension.class)
+class HvisBarneutgiftHelperTest {
 
     private Handlebars handlebars;
 
     @InjectMocks
-    HvisBarneutgiftHelper hvisBarneutgiftHelper;
+    private HvisBarneutgiftHelper hvisBarneutgiftHelper;
 
     @Mock
-    HentSvaralternativerHelper hentSvaralternativerHelper;
+    private HentSvaralternativerHelper hentSvaralternativerHelper;
 
-    @Before
+    @BeforeEach
     public void setup() {
         final Set<String> barneutgiftTyper = new HashSet<>();
         barneutgiftTyper.add("barnehage");
@@ -41,14 +41,14 @@ public class HvisBarneutgiftHelperTest {
     }
 
     @Test
-    public void skalGjenkjenneBarneutgiftstype() throws IOException {
+    void skalGjenkjenneBarneutgiftstype() throws IOException {
         String compiled = handlebars.compileInline("{{#hvisBarneutgift \"barnehage\"}}barnehage er en barneutgift{{else}}ikke en barneutgift{{/hvisBarneutgift}}").apply(new Object());
 
         assertThat(compiled).isEqualTo("barnehage er en barneutgift");
     }
 
     @Test
-    public void skalIkkeGjenkjenneBarneutgiftstype() throws IOException {
+    void skalIkkeGjenkjenneBarneutgiftstype() throws IOException {
         String compiled = handlebars.compileInline("{{#hvisBarneutgift \"gretneBarn\"}}gretneBarn er en barneutgift{{else}}ikke en barneutgift{{/hvisBarneutgift}}").apply(new Object());
 
         assertThat(compiled).isEqualTo("ikke en barneutgift");

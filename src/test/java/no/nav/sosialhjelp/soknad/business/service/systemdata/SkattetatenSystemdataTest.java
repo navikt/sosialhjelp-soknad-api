@@ -9,13 +9,13 @@ import no.nav.sosialhjelp.soknad.consumer.organisasjon.OrganisasjonService;
 import no.nav.sosialhjelp.soknad.consumer.skatt.SkattbarInntektService;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.domain.model.utbetaling.Utbetaling;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -31,8 +31,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
-public class SkattetatenSystemdataTest {
+@ExtendWith(MockitoExtension.class)
+class SkattetatenSystemdataTest {
     private static final String EIER = "12345678901";
 
     private static final JsonOkonomiOpplysningUtbetaling JSON_OKONOMI_OPPLYSNING_UTBETALING = new JsonOkonomiOpplysningUtbetaling()
@@ -117,18 +117,18 @@ public class SkattetatenSystemdataTest {
     @Mock
     SkattbarInntektService skattbarInntektService;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         System.setProperty("tillatmock", "true");
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         System.setProperty("tillatmock", "false");
     }
 
     @Test
-    public void skalOppdatereUtbetalinger() {
+    void skalOppdatereUtbetalinger() {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid()
                 .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         setSamtykke(soknadUnderArbeid.getJsonInternalSoknad(), true);
@@ -147,7 +147,7 @@ public class SkattetatenSystemdataTest {
     }
 
     @Test
-    public void skalKunInkludereGyldigeOrganisasjonsnummer() {
+    void skalKunInkludereGyldigeOrganisasjonsnummer() {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid()
                 .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         setSamtykke(soknadUnderArbeid.getJsonInternalSoknad(), true);
@@ -168,7 +168,7 @@ public class SkattetatenSystemdataTest {
     }
 
     @Test
-    public void skalOppdatereUtbetalingerUtenAAOverskriveBrukerUtfylteUtbetalinger() {
+    void skalOppdatereUtbetalingerUtenAAOverskriveBrukerUtfylteUtbetalinger() {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid()
                 .withJsonInternalSoknad(createJsonInternalSoknadWithUtbetalinger());
         setSamtykke(soknadUnderArbeid.getJsonInternalSoknad(), true);
@@ -188,7 +188,7 @@ public class SkattetatenSystemdataTest {
     }
 
     @Test
-    public void skalIkkeHenteUtbetalingerUtenSamtykke() {
+    void skalIkkeHenteUtbetalingerUtenSamtykke() {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid()
                 .withJsonInternalSoknad(createJsonInternalSoknadWithUtbetalinger());
         setSamtykke(soknadUnderArbeid.getJsonInternalSoknad(), false);
@@ -205,7 +205,7 @@ public class SkattetatenSystemdataTest {
     }
 
     @Test
-    public void skalFjerneUtbetalingerNarViIkkeHarSamtykke() {
+    void skalFjerneUtbetalingerNarViIkkeHarSamtykke() {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid()
                 .withJsonInternalSoknad(createJsonInternalSoknadWithUtbetalinger());
         setSamtykke(soknadUnderArbeid.getJsonInternalSoknad(), true);
@@ -236,7 +236,7 @@ public class SkattetatenSystemdataTest {
     }
 
     @Test
-    public void updateSystemdata_soknadBlirOppdatertRiktigVedKommunikasjonsfeil_ogBeholderGamleData() {
+    void updateSystemdata_soknadBlirOppdatertRiktigVedKommunikasjonsfeil_ogBeholderGamleData() {
         // Variabler:
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid()
                 .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));

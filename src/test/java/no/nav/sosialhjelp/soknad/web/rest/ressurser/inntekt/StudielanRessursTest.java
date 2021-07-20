@@ -11,14 +11,14 @@ import no.nav.sosialhjelp.soknad.domain.model.oidc.StaticSubjectHandlerService;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.inntekt.StudielanRessurs.StudielanFrontend;
 import no.nav.sosialhjelp.soknad.web.sikkerhet.Tilgangskontroll;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +27,7 @@ import static java.util.Arrays.asList;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.STUDIELAN;
 import static no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
@@ -34,8 +35,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
-public class StudielanRessursTest {
+@ExtendWith(MockitoExtension.class)
+class StudielanRessursTest {
 
     private static final String BEHANDLINGSID = "123";
     private static final String EIER = "123456789101";
@@ -52,21 +53,20 @@ public class StudielanRessursTest {
     @InjectMocks
     private StudielanRessurs studielanRessurs;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         System.setProperty("environment.name", "test");
         SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
-        when(textService.getJsonOkonomiTittel(anyString())).thenReturn("tittel");
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         SubjectHandler.resetOidcSubjectHandlerService();
         System.clearProperty("environment.name");
     }
 
     @Test
-    public void getStudielanSkalReturnereNull(){
+    void getStudielanSkalReturnereNull(){
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithErStudentStudielanBekreftelse(true, null));
 
@@ -77,7 +77,7 @@ public class StudielanRessursTest {
     }
 
     @Test
-    public void getStudielanSkalReturnereBekreftetStudielan(){
+    void getStudielanSkalReturnereBekreftetStudielan(){
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithErStudentStudielanBekreftelse(true, true));
 
@@ -88,7 +88,7 @@ public class StudielanRessursTest {
     }
 
     @Test
-    public void getStudielanSkalReturnereHarIkkeStudielan(){
+    void getStudielanSkalReturnereHarIkkeStudielan(){
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithErStudentStudielanBekreftelse(true, false));
 
@@ -99,7 +99,7 @@ public class StudielanRessursTest {
     }
 
     @Test
-    public void getStudielanSkalReturnereSkalIkkeVisesHvisIkkeStudent(){
+    void getStudielanSkalReturnereSkalIkkeVisesHvisIkkeStudent(){
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithErStudentStudielanBekreftelse(false, null));
 
@@ -110,7 +110,7 @@ public class StudielanRessursTest {
     }
 
     @Test
-    public void getStudielanSkalReturnereSkalIkkeVisesHvisStudentSporsmalIkkeBesvart(){
+    void getStudielanSkalReturnereSkalIkkeVisesHvisStudentSporsmalIkkeBesvart(){
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithErStudentStudielanBekreftelse(null, null));
 
@@ -121,10 +121,11 @@ public class StudielanRessursTest {
     }
 
     @Test
-    public void putStudielanSkalSetteStudielanOgLeggeTilInntektstypen(){
+    void putStudielanSkalSetteStudielanOgLeggeTilInntektstypen(){
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER)));
+        when(textService.getJsonOkonomiTittel(anyString())).thenReturn("tittel");
 
         StudielanFrontend studielanFrontend = new StudielanFrontend();
         studielanFrontend.setBekreftelse(true);
@@ -143,13 +144,14 @@ public class StudielanRessursTest {
     }
 
     @Test
-    public void putStudielanSkalSetteHarIkkeStudielanOgSletteInntektstypen(){
+    void putStudielanSkalSetteHarIkkeStudielanOgSletteInntektstypen(){
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         SoknadUnderArbeid soknad = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         ArrayList<JsonOkonomioversiktInntekt> inntekt = new ArrayList<>();
         inntekt.add(new JsonOkonomioversiktInntekt().withType(STUDIELAN));
         soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOversikt().setInntekt(inntekt);
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(soknad);
+        when(textService.getJsonOkonomiTittel(anyString())).thenReturn("tittel");
 
         StudielanFrontend studielanFrontend = new StudielanFrontend();
         studielanFrontend.setBekreftelse(false);
@@ -167,21 +169,24 @@ public class StudielanRessursTest {
         assertThat(studielan.getVerdi()).isFalse();
     }
 
-    @Test(expected = AuthorizationException.class)
-    public void getStudielanSkalKasteAuthorizationExceptionVedManglendeTilgang() {
+    @Test
+    void getStudielanSkalKasteAuthorizationExceptionVedManglendeTilgang() {
         doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerHarTilgang();
 
-        studielanRessurs.hentStudielanBekreftelse(BEHANDLINGSID);
+        assertThatExceptionOfType(AuthorizationException.class)
+                .isThrownBy(() -> studielanRessurs.hentStudielanBekreftelse(BEHANDLINGSID));
 
         verifyNoInteractions(soknadUnderArbeidRepository);
     }
 
-    @Test(expected = AuthorizationException.class)
-    public void putStudielanSkalKasteAuthorizationExceptionVedManglendeTilgang() {
+    @Test
+    void putStudielanSkalKasteAuthorizationExceptionVedManglendeTilgang() {
         doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(BEHANDLINGSID);
 
         var studielanFrontend = new StudielanFrontend();
-        studielanRessurs.updateStudielan(BEHANDLINGSID, studielanFrontend);
+
+        assertThatExceptionOfType(AuthorizationException.class)
+                .isThrownBy(() -> studielanRessurs.updateStudielan(BEHANDLINGSID, studielanFrontend));
 
         verifyNoInteractions(soknadUnderArbeidRepository);
     }

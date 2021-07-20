@@ -8,13 +8,13 @@ import no.nav.sosialhjelp.soknad.consumer.organisasjon.OrganisasjonService;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.domain.model.utbetaling.Utbetaling;
 import no.nav.sosialhjelp.soknad.oppslag.utbetaling.UtbetalingService;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -29,8 +29,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
-public class UtbetalingerFraNavSystemdataTest {
+@ExtendWith(MockitoExtension.class)
+class UtbetalingerFraNavSystemdataTest {
 
     private static final String EIER = "12345678901";
 
@@ -117,18 +117,18 @@ public class UtbetalingerFraNavSystemdataTest {
     @InjectMocks
     private UtbetalingerFraNavSystemdata utbetalingerFraNavSystemdata;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         System.setProperty("tillatmock", "true");
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         System.setProperty("tillatmock", "false");
     }
 
     @Test
-    public void skalOppdatereUtbetalinger() {
+    void skalOppdatereUtbetalinger() {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         List<Utbetaling> nav_utbetalinger = Arrays.asList(NAV_UTBETALING_1, NAV_UTBETALING_2);
         when(utbetalingService.getUtbetalingerSiste40Dager(anyString())).thenReturn(nav_utbetalinger);
@@ -145,7 +145,7 @@ public class UtbetalingerFraNavSystemdataTest {
     }
 
     @Test
-    public void skalKunInkludereGyldigeOrganisasjonsnummer() {
+    void skalKunInkludereGyldigeOrganisasjonsnummer() {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         List<Utbetaling> nav_utbetalinger = Arrays.asList(NAV_UTBETALING_1, NAV_UTBETALING_2, NAV_UTBETALING_3);
         when(utbetalingService.getUtbetalingerSiste40Dager(anyString())).thenReturn(nav_utbetalinger);
@@ -164,7 +164,7 @@ public class UtbetalingerFraNavSystemdataTest {
     }
 
     @Test
-    public void skalIkksLasteNedUtbetalingerUtenSamtykke() {
+    void skalIkksLasteNedUtbetalingerUtenSamtykke() {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid()
                 .withJsonInternalSoknad(createJsonInternalSoknadWithUtbetalinger());
         List<Utbetaling> utbetalinger = Collections.singletonList(NAV_UTBETALING_1);

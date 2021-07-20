@@ -14,14 +14,14 @@ import no.nav.sosialhjelp.soknad.domain.Vedleggstatus;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.StaticSubjectHandlerService;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import org.joda.time.DateTimeUtils;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 import java.util.Optional;
@@ -38,8 +38,8 @@ import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
-public class SoknadServiceTest {
+@ExtendWith(MockitoExtension.class)
+class SoknadServiceTest {
 
     private static final String EIER = "Hans og Grete";
     private static final String BEHANDLINGSID = "123";
@@ -64,20 +64,20 @@ public class SoknadServiceTest {
 
 
     @SuppressWarnings("unchecked")
-    @Before
+    @BeforeEach
     public void before() {
         System.setProperty("environment.name", "test");
         SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         SubjectHandler.resetOidcSubjectHandlerService();
         System.clearProperty("environment.name");
     }
 
     @Test
-    public void skalStarteSoknad() {
+    void skalStarteSoknad() {
         DateTimeUtils.setCurrentMillisFixed(System.currentTimeMillis());
         when(henvendelsesConnector.startSoknad(anyString())).thenReturn("123");
         soknadService.startSoknad("");
@@ -97,7 +97,7 @@ public class SoknadServiceTest {
     }
 
     @Test
-    public void skalSendeSoknad() {
+    void skalSendeSoknad() {
         String testType = "testType";
         String testTilleggsinfo = "testTilleggsinfo";
         String testType2 = "testType2";
@@ -139,7 +139,7 @@ public class SoknadServiceTest {
     }
 
     @Test
-    public void skalAvbryteSoknad() {
+    void skalAvbryteSoknad() {
         when(soknadUnderArbeidRepository.hentSoknadOptional(eq(BEHANDLINGSID), anyString())).thenReturn(
                 Optional.of(new SoknadUnderArbeid()
                         .withBehandlingsId(BEHANDLINGSID)

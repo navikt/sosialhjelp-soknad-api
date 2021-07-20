@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.tekster;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -10,7 +10,7 @@ import java.util.Properties;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class NavMessageSourceTest {
+class NavMessageSourceTest {
     private Map<String, String> mockedCmsValues = new HashMap<>();
     {
         mockedCmsValues.put("classpath:sendsoknad_nb_NO", "felles.key=norsk felles fra minne");
@@ -20,7 +20,7 @@ public class NavMessageSourceTest {
     private NavMessageSource messageSource;
     private boolean diskFilesExist = true;
 
-    @Before
+    @BeforeEach
     public void setup() {
         messageSource = new NavMessageSource() {
             @Override
@@ -48,25 +48,25 @@ public class NavMessageSourceTest {
     }
 
     @Test
-    public void skalHenteSoknadensEgneTeksterOgFellesTeksterNorsk() {
+    void skalHenteSoknadensEgneTeksterOgFellesTeksterNorsk() {
         Properties properties = messageSource.getBundleFor("sendsoknad", new Locale("nb", "NO"));
         assertThat(properties.getProperty("felles.key")).isEqualTo("norsk felles fra minne");
     }
 
     @Test
-    public void skalHenteSoknadensEgneTeksterOgFellesTeksterEngelsk() {
+    void skalHenteSoknadensEgneTeksterOgFellesTeksterEngelsk() {
         Properties properties = messageSource.getBundleFor("sendsoknad", new Locale("en", "GB"));
         assertThat(properties.getProperty("felles.key")).isEqualTo("engelsk felles fra minne");
     }
 
     @Test
-    public void skalIkkeHenteAndreSoknadersTekster() {
+    void skalIkkeHenteAndreSoknadersTekster() {
         Properties properties = messageSource.getBundleFor("sendsoknad", new Locale("nb", "NO"));
         assertThat(properties).doesNotContainKey("annen.key");
     }
 
     @Test
-    public void skalHenteAlleTeksterHvisTypeMangler() {
+    void skalHenteAlleTeksterHvisTypeMangler() {
         Properties properties = messageSource.getBundleFor(null, new Locale("nb", "NO"));
         assertThat(properties.getProperty("felles.key")).isEqualTo("norsk felles fra minne");
     }

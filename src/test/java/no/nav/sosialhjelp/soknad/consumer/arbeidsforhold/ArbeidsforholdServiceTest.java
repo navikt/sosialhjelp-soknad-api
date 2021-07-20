@@ -8,12 +8,11 @@ import no.nav.sosialhjelp.soknad.consumer.arbeidsforhold.dto.PeriodeDto;
 import no.nav.sosialhjelp.soknad.consumer.arbeidsforhold.dto.PersonDto;
 import no.nav.sosialhjelp.soknad.consumer.organisasjon.OrganisasjonService;
 import no.nav.sosialhjelp.soknad.domain.model.Arbeidsforhold;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -26,8 +25,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
-public class ArbeidsforholdServiceTest {
+@ExtendWith(MockitoExtension.class)
+class ArbeidsforholdServiceTest {
 
     @Mock
     private ArbeidsforholdConsumer arbeidsforholdConsumer;
@@ -44,14 +43,10 @@ public class ArbeidsforholdServiceTest {
     private LocalDate fom = LocalDate.now().minusMonths(1);
     private LocalDate tom = LocalDate.now();
 
-    @Before
-    public void setUp() {
-        when(organisasjonService.hentOrgNavn(anyString())).thenReturn(orgNavn);
-    }
-
     @Test
-    public void skalMappeDtoTilArbeidsforhold() {
+    void skalMappeDtoTilArbeidsforhold() {
         when(arbeidsforholdConsumer.finnArbeidsforholdForArbeidstaker(fnr)).thenReturn(singletonList(createArbeidsforhold(true, fom, tom)));
+        when(organisasjonService.hentOrgNavn(anyString())).thenReturn(orgNavn);
 
         List<Arbeidsforhold> arbeidsforholdList = service.hentArbeidsforhold(fnr);
         Arbeidsforhold arbeidsforhold = arbeidsforholdList.get(0);
@@ -66,7 +61,7 @@ public class ArbeidsforholdServiceTest {
     }
 
     @Test
-    public void skalSetteArbeidsgivernavnTilOrgnrHvisArbeidsgiverErOrganisasjon() {
+    void skalSetteArbeidsgivernavnTilOrgnrHvisArbeidsgiverErOrganisasjon() {
         when(arbeidsforholdConsumer.finnArbeidsforholdForArbeidstaker(fnr)).thenReturn(singletonList(createArbeidsforhold(false, fom, tom)));
 
         List<Arbeidsforhold> arbeidsforholdList = service.hentArbeidsforhold(fnr);
@@ -77,9 +72,10 @@ public class ArbeidsforholdServiceTest {
     }
 
     @Test
-    public void skalAddereStillingsprosentFraArbeidsavtaler() {
+    void skalAddereStillingsprosentFraArbeidsavtaler() {
         when(arbeidsforholdConsumer.finnArbeidsforholdForArbeidstaker(fnr))
                 .thenReturn(singletonList(createArbeidsforholdMedFlereArbeidsavtaler(12.3, 45.6)));
+        when(organisasjonService.hentOrgNavn(anyString())).thenReturn(orgNavn);
 
         List<Arbeidsforhold> arbeidsforholdList = service.hentArbeidsforhold(fnr);
         Arbeidsforhold arbeidsforhold = arbeidsforholdList.get(0);
@@ -89,8 +85,9 @@ public class ArbeidsforholdServiceTest {
     }
 
     @Test
-    public void ansettelsesperiodeTomKanVæreNull() {
+    void ansettelsesperiodeTomKanVæreNull() {
         when(arbeidsforholdConsumer.finnArbeidsforholdForArbeidstaker(fnr)).thenReturn(singletonList(createArbeidsforhold(true, fom, null)));
+        when(organisasjonService.hentOrgNavn(anyString())).thenReturn(orgNavn);
 
         List<Arbeidsforhold> arbeidsforholdList = service.hentArbeidsforhold(fnr);
         Arbeidsforhold arbeidsforhold = arbeidsforholdList.get(0);

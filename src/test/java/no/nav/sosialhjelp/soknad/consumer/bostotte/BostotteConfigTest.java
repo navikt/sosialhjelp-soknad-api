@@ -1,16 +1,16 @@
 package no.nav.sosialhjelp.soknad.consumer.bostotte;
 
 import no.nav.sosialhjelp.soknad.web.selftest.Pingable;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(MockitoJUnitRunner.class)
-public class BostotteConfigTest {
+@ExtendWith(MockitoExtension.class)
+class BostotteConfigTest {
     @Test
-    public void bostotteConfig_verifiserStandardverdier() {
+    void bostotteConfig_verifiserStandardverdier() {
         BostotteConfig bostotteConfig = new BostotteConfig();
 
         assertThat(bostotteConfig.getBostotteImpl()).isNotNull();
@@ -18,7 +18,7 @@ public class BostotteConfigTest {
     }
 
     @Test
-    public void bostotteConfig_verifiserPingOppretting() {
+    void bostotteConfig_verifiserPingOppretting() {
         BostotteConfig bostotteConfig = new BostotteConfig();
 
         Pingable pingable = bostotteConfig.opprettHusbankenPing();

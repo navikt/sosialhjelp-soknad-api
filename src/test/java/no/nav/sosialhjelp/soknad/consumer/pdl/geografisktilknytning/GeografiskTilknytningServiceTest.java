@@ -3,17 +3,17 @@ package no.nav.sosialhjelp.soknad.consumer.pdl.geografisktilknytning;
 
 import no.nav.sosialhjelp.soknad.consumer.pdl.geografisktilknytning.dto.GeografiskTilknytningDto;
 import no.nav.sosialhjelp.soknad.consumer.pdl.geografisktilknytning.dto.GtType;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
-public class GeografiskTilknytningServiceTest {
+@ExtendWith(MockitoExtension.class)
+class GeografiskTilknytningServiceTest {
 
     @Mock
     private GeografiskTilknytningConsumer geografiskTilknytningConsumer;
@@ -25,7 +25,7 @@ public class GeografiskTilknytningServiceTest {
     private final String gt = "gt";
 
     @Test
-    public void skalReturnereBydelsnummer() {
+    void skalReturnereBydelsnummer() {
         when(geografiskTilknytningConsumer.hentGeografiskTilknytning(ident))
                 .thenReturn(new GeografiskTilknytningDto(GtType.BYDEL, null, gt, null));
 
@@ -34,7 +34,7 @@ public class GeografiskTilknytningServiceTest {
     }
 
     @Test
-    public void skalReturnereKommunenummer() {
+    void skalReturnereKommunenummer() {
         when(geografiskTilknytningConsumer.hentGeografiskTilknytning(ident))
                 .thenReturn(new GeografiskTilknytningDto(GtType.KOMMUNE, gt, null, null));
 
@@ -43,7 +43,7 @@ public class GeografiskTilknytningServiceTest {
     }
 
     @Test
-    public void skalReturnereNullHvisUtland() {
+    void skalReturnereNullHvisUtland() {
         when(geografiskTilknytningConsumer.hentGeografiskTilknytning(ident))
                 .thenReturn(new GeografiskTilknytningDto(GtType.UTLAND, null, null, gt));
 
@@ -52,7 +52,7 @@ public class GeografiskTilknytningServiceTest {
     }
 
     @Test
-    public void skalReturnereNullHvisUdefinert() {
+    void skalReturnereNullHvisUdefinert() {
         when(geografiskTilknytningConsumer.hentGeografiskTilknytning(ident))
                 .thenReturn(new GeografiskTilknytningDto(GtType.UDEFINERT, null, null, null));
 
@@ -61,7 +61,7 @@ public class GeografiskTilknytningServiceTest {
     }
 
     @Test
-    public void skalReturnereNullHvisConsumerGirNull() {
+    void skalReturnereNullHvisConsumerGirNull() {
         when(geografiskTilknytningConsumer.hentGeografiskTilknytning(ident))
                 .thenReturn(null);
 

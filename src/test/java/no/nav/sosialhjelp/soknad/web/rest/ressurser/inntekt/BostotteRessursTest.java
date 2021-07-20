@@ -17,14 +17,14 @@ import no.nav.sosialhjelp.soknad.domain.model.oidc.StaticSubjectHandlerService;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.inntekt.BostotteRessurs.BostotteFrontend;
 import no.nav.sosialhjelp.soknad.web.sikkerhet.Tilgangskontroll;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -37,6 +37,7 @@ import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_HUSBA
 import static no.nav.sosialhjelp.soknad.business.mappers.OkonomiMapper.setBekreftelse;
 import static no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.doNothing;
@@ -46,8 +47,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
-public class BostotteRessursTest {
+@ExtendWith(MockitoExtension.class)
+class BostotteRessursTest {
 
     private static final String BEHANDLINGSID = "123";
     private static final String EIER = "123456789101";
@@ -67,21 +68,20 @@ public class BostotteRessursTest {
     @InjectMocks
     private BostotteRessurs bostotteRessurs;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         System.setProperty("environment.name", "test");
         SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
-        when(textService.getJsonOkonomiTittel(anyString())).thenReturn("tittel");
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         SubjectHandler.resetOidcSubjectHandlerService();
         System.clearProperty("environment.name");
     }
 
     @Test
-    public void getBostotteSkalReturnereNull() {
+    void getBostotteSkalReturnereNull() {
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER)));
 
@@ -91,7 +91,7 @@ public class BostotteRessursTest {
     }
 
     @Test
-    public void getBostotteSkalReturnereBekreftetBostotte() {
+    void getBostotteSkalReturnereBekreftetBostotte() {
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithBostotte(true));
 
@@ -101,7 +101,7 @@ public class BostotteRessursTest {
     }
 
     @Test
-    public void getBostotteSkalReturnereHarIkkeBostotte() {
+    void getBostotteSkalReturnereHarIkkeBostotte() {
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithBostotte(false));
 
@@ -111,10 +111,11 @@ public class BostotteRessursTest {
     }
 
     @Test
-    public void putBostotteSkalSetteBostotteOgLeggeTilInntektstypen() {
+    void putBostotteSkalSetteBostotteOgLeggeTilInntektstypen() {
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER)));
+        when(textService.getJsonOkonomiTittel(anyString())).thenReturn("tittel");
 
         BostotteRessurs.BostotteFrontend bostotteFrontend = new BostotteRessurs.BostotteFrontend();
         bostotteFrontend.setBekreftelse(true);
@@ -133,13 +134,14 @@ public class BostotteRessursTest {
     }
 
     @Test
-    public void putBostotteSkalSetteHarIkkeBostotteOgSletteInntektstypen() {
+    void putBostotteSkalSetteHarIkkeBostotteOgSletteInntektstypen() {
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         SoknadUnderArbeid soknad = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         ArrayList<JsonOkonomioversiktInntekt> inntekt = new ArrayList<>();
         inntekt.add(new JsonOkonomioversiktInntekt().withType(BOSTOTTE));
         soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOversikt().setInntekt(inntekt);
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(soknad);
+        when(textService.getJsonOkonomiTittel(anyString())).thenReturn("tittel");
 
         BostotteRessurs.BostotteFrontend bostotteFrontend = new BostotteRessurs.BostotteFrontend();
         bostotteFrontend.setBekreftelse(false);
@@ -158,7 +160,7 @@ public class BostotteRessursTest {
     }
 
     @Test
-    public void bostotte_skalBareHaUtRiktigUtbetaling() {
+    void bostotte_skalBareHaUtRiktigUtbetaling() {
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithBostotteUtbetalinger(true, asList("tilfeldig", "salg", "lonn")));
 
@@ -168,7 +170,7 @@ public class BostotteRessursTest {
     }
 
     @Test
-    public void bostotte_skalIkkeHaUtbetaling() {
+    void bostotte_skalIkkeHaUtbetaling() {
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithBostotteUtbetalinger(false, asList("tilfeldig", "salg", "lonn")));
 
@@ -178,7 +180,7 @@ public class BostotteRessursTest {
     }
 
     @Test
-    public void bostotte_skalBareHaUtRiktigSak() {
+    void bostotte_skalBareHaUtRiktigSak() {
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithSaker(true, asList("tilfeldig", "salg", "lonn")));
 
@@ -188,7 +190,7 @@ public class BostotteRessursTest {
     }
 
     @Test
-    public void bostotte_skalIkkeHaSak() {
+    void bostotte_skalIkkeHaSak() {
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithSaker(false, asList("tilfeldig", "salg", "lonn")));
 
@@ -198,9 +200,10 @@ public class BostotteRessursTest {
     }
 
     @Test
-    public void bostotte_skalGiSamtykke() {
+    void bostotte_skalGiSamtykke() {
         SoknadUnderArbeid soknad = createJsonInternalSoknadWithSaker(false, asList("tilfeldig", "salg", "lonn"));
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(soknad);
+        when(textService.getJsonOkonomiTittel(anyString())).thenReturn("tittel");
 
         bostotteRessurs.updateSamtykke(BEHANDLINGSID, true, "token");
 
@@ -221,11 +224,12 @@ public class BostotteRessursTest {
     }
 
     @Test
-    public void bostotte_skalTaBortSamtykke() {
+    void bostotte_skalTaBortSamtykke() {
         SoknadUnderArbeid soknad = createJsonInternalSoknadWithSaker(false, asList("tilfeldig", "salg", "lonn"));
         JsonOkonomiopplysninger opplysninger = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger();
         setBekreftelse(opplysninger, BOSTOTTE_SAMTYKKE, true, "");
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(soknad);
+        when(textService.getJsonOkonomiTittel(anyString())).thenReturn("tittel");
 
         bostotteRessurs.updateSamtykke(BEHANDLINGSID, false, "token");
 
@@ -247,7 +251,7 @@ public class BostotteRessursTest {
     }
 
     @Test
-    public void bostotte_skalIkkeForandreSamtykke() {
+    void bostotte_skalIkkeForandreSamtykke() {
         SoknadUnderArbeid soknad = createJsonInternalSoknadWithSaker(false, asList("tilfeldig", "salg", "lonn"));
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(soknad);
 
@@ -263,30 +267,34 @@ public class BostotteRessursTest {
         assertThat(soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getBekreftelse()).isEmpty();
     }
 
-    @Test(expected = AuthorizationException.class)
-    public void getBostotteSkalKasteAuthorizationExceptionVedManglendeTilgang() {
+    @Test
+    void getBostotteSkalKasteAuthorizationExceptionVedManglendeTilgang() {
         doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerHarTilgang();
 
-        bostotteRessurs.hentBostotte(BEHANDLINGSID);
+        assertThatExceptionOfType(AuthorizationException.class)
+                .isThrownBy(() -> bostotteRessurs.hentBostotte(BEHANDLINGSID));
 
         verifyNoInteractions(soknadUnderArbeidRepository);
     }
 
-    @Test(expected = AuthorizationException.class)
-    public void putBostotteSkalKasteAuthorizationExceptionVedManglendeTilgang() {
+    @Test
+    void putBostotteSkalKasteAuthorizationExceptionVedManglendeTilgang() {
         doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(BEHANDLINGSID);
 
         var bostotteFrontend = new BostotteRessurs.BostotteFrontend();
-        bostotteRessurs.updateBostotte(BEHANDLINGSID, bostotteFrontend, "token");
+
+        assertThatExceptionOfType(AuthorizationException.class)
+                .isThrownBy(() -> bostotteRessurs.updateBostotte(BEHANDLINGSID, bostotteFrontend, "token"));
 
         verifyNoInteractions(soknadUnderArbeidRepository);
     }
 
-    @Test(expected = AuthorizationException.class)
-    public void putSamtykkeSkalKasteAuthorizationExceptionVedManglendeTilgang() {
+    @Test
+    void putSamtykkeSkalKasteAuthorizationExceptionVedManglendeTilgang() {
         doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(BEHANDLINGSID);
 
-        bostotteRessurs.updateSamtykke(BEHANDLINGSID, true, "token");
+        assertThatExceptionOfType(AuthorizationException.class)
+                .isThrownBy(() -> bostotteRessurs.updateSamtykke(BEHANDLINGSID, true, "token"));
 
         verifyNoInteractions(soknadUnderArbeidRepository);
     }

@@ -9,14 +9,14 @@ import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeidStatus;
 import no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SoknadType;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.ContextConfiguration;
 
 import java.time.LocalDateTime;
@@ -27,9 +27,9 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 @ContextConfiguration(classes = {DbTestConfig.class})
-public class AvbrytAutomatiskSchedulerTest {
+class AvbrytAutomatiskSchedulerTest {
 
     private static final String EIER = "11111111111";
     private static final String BEHANDLINGS_ID = "1100AAAAA";
@@ -44,13 +44,18 @@ public class AvbrytAutomatiskSchedulerTest {
     @Mock
     private BatchSoknadMetadataRepository batchSoknadMetadataRepository;
 
-    @Before
+    @BeforeEach
     public void setup() {
         System.setProperty("sendsoknad.batch.enabled", "true");
     }
 
+    @AfterEach
+    public void teardown() {
+        System.clearProperty("sendsoknad.batch.enabled");
+    }
+
     @Test
-    public void avbrytAutomatiskOgSlettGamleSoknader() {
+    void avbrytAutomatiskOgSlettGamleSoknader() {
         SoknadMetadata soknadMetadata = soknadMetadata(BEHANDLINGS_ID, SoknadMetadataInnsendingStatus.UNDER_ARBEID, DAGER_GAMMEL_SOKNAD + 1);
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid()
                 .withSoknadId(1L)
@@ -69,11 +74,6 @@ public class AvbrytAutomatiskSchedulerTest {
 
         assertThat(oppdatertSoknadMetadata.status).isEqualTo(SoknadMetadataInnsendingStatus.AVBRUTT_AUTOMATISK);
         verify(batchSoknadUnderArbeidRepository).slettSoknad(anyLong());
-    }
-
-    @After
-    public void teardown() {
-        System.clearProperty("sendsoknad.batch.enabled");
     }
 
     private SoknadMetadata soknadMetadata(String behandlingsId, SoknadMetadataInnsendingStatus status, int dagerSiden) {

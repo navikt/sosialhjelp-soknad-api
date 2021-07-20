@@ -12,14 +12,14 @@ import no.nav.sosialhjelp.soknad.domain.model.oidc.StaticSubjectHandlerService;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.inntekt.FormueRessurs.FormueFrontend;
 import no.nav.sosialhjelp.soknad.web.sikkerhet.Tilgangskontroll;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +34,7 @@ import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.FORMUE_SPAREKONT
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.FORMUE_VERDIPAPIRER;
 import static no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
@@ -41,8 +42,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
-public class FormueRessursTest {
+@ExtendWith(MockitoExtension.class)
+class FormueRessursTest {
 
     private static final String BEHANDLINGSID = "123";
     private static final String EIER = "123456789101";
@@ -59,21 +60,20 @@ public class FormueRessursTest {
     @InjectMocks
     private FormueRessurs formueRessurs;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         System.setProperty("environment.name", "test");
         SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
-        when(textService.getJsonOkonomiTittel(anyString())).thenReturn("tittel");
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         SubjectHandler.resetOidcSubjectHandlerService();
         System.clearProperty("environment.name");
     }
 
     @Test
-    public void getFormueSkalReturnereBekreftelserLikFalse() {
+    void getFormueSkalReturnereBekreftelserLikFalse() {
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER)));
 
@@ -89,7 +89,7 @@ public class FormueRessursTest {
     }
 
     @Test
-    public void getFormueSkalReturnereBekreftelserLikTrue() {
+    void getFormueSkalReturnereBekreftelserLikTrue() {
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithFormue(asList(FORMUE_BRUKSKONTO, FORMUE_BSU,
                         FORMUE_LIVSFORSIKRING, FORMUE_VERDIPAPIRER, FORMUE_SPAREKONTO, FORMUE_ANNET), null));
@@ -106,7 +106,7 @@ public class FormueRessursTest {
     }
 
     @Test
-    public void getFormueSkalReturnereBeskrivelseAvAnnet() {
+    void getFormueSkalReturnereBeskrivelseAvAnnet() {
         String beskrivelse = "Vinylplater";
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithFormue(asList(FORMUE_ANNET), beskrivelse));
@@ -118,11 +118,12 @@ public class FormueRessursTest {
     }
 
     @Test
-    public void putFormueSkalSetteAlleBekreftelserLikFalse() {
+    void putFormueSkalSetteAlleBekreftelserLikFalse() {
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithFormue(asList(FORMUE_BRUKSKONTO, FORMUE_BSU,
                         FORMUE_LIVSFORSIKRING, FORMUE_VERDIPAPIRER, FORMUE_SPAREKONTO, FORMUE_ANNET), "Vinylplater"));
+        when(textService.getJsonOkonomiTittel(anyString())).thenReturn("tittel");
 
         FormueFrontend formueFrontend = new FormueFrontend();
         formueRessurs.updateFormue(BEHANDLINGSID, formueFrontend);
@@ -141,10 +142,11 @@ public class FormueRessursTest {
     }
 
     @Test
-    public void putFormueSkalSetteNoenBekreftelser() {
+    void putFormueSkalSetteNoenBekreftelser() {
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER)));
+        when(textService.getJsonOkonomiTittel(anyString())).thenReturn("tittel");
 
         FormueFrontend formueFrontend = new FormueFrontend();
         formueFrontend.setBrukskonto(true);
@@ -173,10 +175,11 @@ public class FormueRessursTest {
     }
 
     @Test
-    public void putFormueSkalSetteAlleBekreftelser() {
+    void putFormueSkalSetteAlleBekreftelser() {
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER)));
+        when(textService.getJsonOkonomiTittel(anyString())).thenReturn("tittel");
 
         FormueFrontend formueFrontend = new FormueFrontend();
         formueFrontend.setBrukskonto(true);
@@ -205,10 +208,11 @@ public class FormueRessursTest {
     }
 
     @Test
-    public void putFormueSkalFjerneBeskrivelseAvAnnetDersomAnnetBlirAvkreftet() {
+    void putFormueSkalFjerneBeskrivelseAvAnnetDersomAnnetBlirAvkreftet() {
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithFormue(asList(FORMUE_ANNET), "Vinylplater"));
+        when(textService.getJsonOkonomiTittel(anyString())).thenReturn("tittel");
 
         FormueFrontend formueFrontend = new FormueFrontend();
         formueRessurs.updateFormue(BEHANDLINGSID, formueFrontend);
@@ -223,21 +227,24 @@ public class FormueRessursTest {
         assertThat(beskrivelse).isBlank();
     }
 
-    @Test(expected = AuthorizationException.class)
-    public void getFormueSkalKasteAuthorizationExceptionVedManglendeTilgang() {
+    @Test
+    void getFormueSkalKasteAuthorizationExceptionVedManglendeTilgang() {
         doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerHarTilgang();
 
-        formueRessurs.hentFormue(BEHANDLINGSID);
+        assertThatExceptionOfType(AuthorizationException.class)
+                .isThrownBy(() -> formueRessurs.hentFormue(BEHANDLINGSID));
 
         verifyNoInteractions(soknadUnderArbeidRepository);
     }
 
-    @Test(expected = AuthorizationException.class)
-    public void putFormueSkalKasteAuthorizationExceptionVedManglendeTilgang() {
+    @Test
+    void putFormueSkalKasteAuthorizationExceptionVedManglendeTilgang() {
         doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(BEHANDLINGSID);
 
         var formueFrontend = new FormueFrontend();
-        formueRessurs.updateFormue(BEHANDLINGSID, formueFrontend);
+
+        assertThatExceptionOfType(AuthorizationException.class)
+                .isThrownBy(() -> formueRessurs.updateFormue(BEHANDLINGSID, formueFrontend));
 
         verifyNoInteractions(soknadUnderArbeidRepository);
     }

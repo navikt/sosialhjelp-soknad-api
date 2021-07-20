@@ -10,17 +10,18 @@ import no.nav.sosialhjelp.soknad.domain.model.oidc.StaticSubjectHandlerService;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.utdanning.UtdanningRessurs.UtdanningFrontend;
 import no.nav.sosialhjelp.soknad.web.sikkerhet.Tilgangskontroll;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
@@ -28,8 +29,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
-public class UtdanningRessursTest {
+@ExtendWith(MockitoExtension.class)
+class UtdanningRessursTest {
 
     private static final String EIER = "123456789101";
     private static final String BEHANDLINGSID = "123";
@@ -46,20 +47,20 @@ public class UtdanningRessursTest {
     @InjectMocks
     private UtdanningRessurs utdanningRessurs;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         System.setProperty("environment.name", "test");
         SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         SubjectHandler.resetOidcSubjectHandlerService();
         System.clearProperty("environment.name");
     }
 
     @Test
-    public void getUtdanningSkalReturnereUtdanningUtenErStudentOgStudentgrad(){
+    void getUtdanningSkalReturnereUtdanningUtenErStudentOgStudentgrad(){
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithUtdanning(null, null));
 
@@ -70,7 +71,7 @@ public class UtdanningRessursTest {
     }
 
     @Test
-    public void getUtdanningSkalReturnereUtdanningMedErIkkeStudent(){
+    void getUtdanningSkalReturnereUtdanningMedErIkkeStudent(){
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithUtdanning(Boolean.FALSE, null));
 
@@ -81,7 +82,7 @@ public class UtdanningRessursTest {
     }
 
     @Test
-    public void getUtdanningSkalReturnereUtdanningMedErStudent(){
+    void getUtdanningSkalReturnereUtdanningMedErStudent(){
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithUtdanning(Boolean.TRUE, null));
 
@@ -92,7 +93,7 @@ public class UtdanningRessursTest {
     }
 
     @Test
-    public void getUtdanningSkalReturnereUtdanningMedErStudentOgStudentgradHeltid(){
+    void getUtdanningSkalReturnereUtdanningMedErStudentOgStudentgradHeltid(){
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithUtdanning(Boolean.TRUE, JsonUtdanning.Studentgrad.HELTID));
 
@@ -103,7 +104,7 @@ public class UtdanningRessursTest {
     }
 
     @Test
-    public void getUtdanningSkalReturnereUtdanningMedErStudentOgStudentgradDeltid(){
+    void getUtdanningSkalReturnereUtdanningMedErStudentOgStudentgradDeltid(){
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithUtdanning(Boolean.TRUE, JsonUtdanning.Studentgrad.DELTID));
 
@@ -114,7 +115,7 @@ public class UtdanningRessursTest {
     }
 
     @Test
-    public void putUtdanningSkalSetteUtdanningMedErStudent(){
+    void putUtdanningSkalSetteUtdanningMedErStudent(){
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithUtdanning(null, null));
@@ -131,7 +132,7 @@ public class UtdanningRessursTest {
     }
 
     @Test
-    public void putUtdanningSkalSetteUtdanningMedErStudentOgStudentgrad(){
+    void putUtdanningSkalSetteUtdanningMedErStudentOgStudentgrad(){
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithUtdanning(null, null));
@@ -149,7 +150,7 @@ public class UtdanningRessursTest {
     }
 
     @Test
-    public void putUtdanningSkalSetteUtdanningMedErIkkeStudentOgSletteStudentgrad(){
+    void putUtdanningSkalSetteUtdanningMedErIkkeStudentOgSletteStudentgrad(){
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithUtdanning(true, JsonUtdanning.Studentgrad.DELTID));
@@ -166,21 +167,24 @@ public class UtdanningRessursTest {
         assertThat(utdanning.getStudentgrad()).isNull();
     }
 
-    @Test(expected = AuthorizationException.class)
-    public void getUtdanningSkalKasteAuthorizationExceptionVedManglendeTilgang() {
+    @Test
+    void getUtdanningSkalKasteAuthorizationExceptionVedManglendeTilgang() {
         doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerHarTilgang();
 
-        utdanningRessurs.hentUtdanning(BEHANDLINGSID);
+        assertThatExceptionOfType(AuthorizationException.class)
+                .isThrownBy(() -> utdanningRessurs.hentUtdanning(BEHANDLINGSID));
 
         verifyNoInteractions(soknadUnderArbeidRepository);
     }
 
-    @Test(expected = AuthorizationException.class)
-    public void putUtdanningSkalKasteAuthorizationExceptionVedManglendeTilgang() {
+    @Test
+    void putUtdanningSkalKasteAuthorizationExceptionVedManglendeTilgang() {
         doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
 
         var utdanningFrontend = new UtdanningFrontend();
-        utdanningRessurs.updateUtdanning(BEHANDLINGSID, utdanningFrontend);
+
+        assertThatExceptionOfType(AuthorizationException.class)
+                .isThrownBy(() -> utdanningRessurs.updateUtdanning(BEHANDLINGSID, utdanningFrontend));
 
         verifyNoInteractions(soknadUnderArbeidRepository);
     }

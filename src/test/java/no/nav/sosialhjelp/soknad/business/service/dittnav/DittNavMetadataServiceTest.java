@@ -4,11 +4,11 @@ import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.SoknadM
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata;
 import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus;
 import no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SoknadType;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -19,8 +19,8 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
-public class DittNavMetadataServiceTest {
+@ExtendWith(MockitoExtension.class)
+class DittNavMetadataServiceTest {
 
     @Mock
     private SoknadMetadataRepository soknadMetadataRepository;
@@ -29,7 +29,7 @@ public class DittNavMetadataServiceTest {
     private DittNavMetadataService dittNavMetadataService;
 
     @Test
-    public void skalHenteAktivePabegynteSoknaderForBruker() {
+    void skalHenteAktivePabegynteSoknaderForBruker() {
         var soknadMetadata = createSoknadMetadata(false);
 
         when(soknadMetadataRepository.hentPabegynteSoknaderForBruker("12345", false))
@@ -44,7 +44,7 @@ public class DittNavMetadataServiceTest {
     }
 
     @Test
-    public void skalHenteInaktivePabegynteSoknaderForBruker() {
+    void skalHenteInaktivePabegynteSoknaderForBruker() {
         var soknadMetadata = createSoknadMetadata(true);
 
         when(soknadMetadataRepository.hentPabegynteSoknaderForBruker("12345", true))
@@ -59,7 +59,7 @@ public class DittNavMetadataServiceTest {
     }
 
     @Test
-    public void markerPabegyntSoknadSomLest_skalGiFalse_hvisRepositoryReturnererNull() {
+    void markerPabegyntSoknadSomLest_skalGiFalse_hvisRepositoryReturnererNull() {
         when(soknadMetadataRepository.hent(anyString()))
                 .thenReturn(null);
 
@@ -69,7 +69,7 @@ public class DittNavMetadataServiceTest {
     }
 
     @Test
-    public void markerPabegyntSoknadSomLest_skalGiFalse_hvisNoeFeiler() {
+    void markerPabegyntSoknadSomLest_skalGiFalse_hvisNoeFeiler() {
         var soknadMetadata = createSoknadMetadata(false);
 
         when(soknadMetadataRepository.hent(anyString()))

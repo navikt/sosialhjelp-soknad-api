@@ -1,13 +1,13 @@
 package no.nav.sosialhjelp.soknad.web.rest;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class LoggTest {
+class LoggTest {
 
     @Test
-    public void testMeldingOutput() {
+    void testMeldingOutput() {
         Logg logg = new Logg();
         String feilmelding = "Cannot read blabla of undefined";
         logg.setMessage(feilmelding);

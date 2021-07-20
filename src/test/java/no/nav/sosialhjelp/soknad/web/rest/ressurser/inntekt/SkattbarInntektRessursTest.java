@@ -14,20 +14,21 @@ import no.nav.sosialhjelp.soknad.domain.model.oidc.StaticSubjectHandlerService;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.inntekt.SkattbarInntektRessurs.SkattbarInntektFrontend;
 import no.nav.sosialhjelp.soknad.web.sikkerhet.Tilgangskontroll;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_SKATTEETATEN;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_SKATTEETATEN_SAMTYKKE;
 import static no.nav.sosialhjelp.soknad.business.mappers.OkonomiMapper.setBekreftelse;
 import static no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.doNothing;
@@ -37,8 +38,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
-public class SkattbarInntektRessursTest {
+@ExtendWith(MockitoExtension.class)
+class SkattbarInntektRessursTest {
 
     private static final String BEHANDLINGSID = "123";
     private static final String EIER = "123456789101";
@@ -58,22 +59,20 @@ public class SkattbarInntektRessursTest {
     @InjectMocks
     private SkattbarInntektRessurs skattbarInntektRessurs;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         System.setProperty("environment.name", "test");
         SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
-        when(textService.getJsonOkonomiTittel(anyString())).thenReturn("tittel");
-        doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(any());
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         SubjectHandler.resetOidcSubjectHandlerService();
         System.clearProperty("environment.name");
     }
 
     @Test
-    public void getSkattbarInntektSkalReturnereTomListe() {
+    void getSkattbarInntektSkalReturnereTomListe() {
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER)));
 
@@ -83,7 +82,7 @@ public class SkattbarInntektRessursTest {
     }
 
     @Test
-    public void getSkattbarInntektSkalReturnereBekreftetSkattbarInntekt() {
+    void getSkattbarInntektSkalReturnereBekreftetSkattbarInntekt() {
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithSkattbarInntekt(true));
 
@@ -93,7 +92,7 @@ public class SkattbarInntektRessursTest {
     }
 
     @Test
-    public void getSkattbarInntektSkalReturnereHarIkkeSkattbarInntekt() {
+    void getSkattbarInntektSkalReturnereHarIkkeSkattbarInntekt() {
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithSkattbarInntekt(false));
 
@@ -103,9 +102,11 @@ public class SkattbarInntektRessursTest {
     }
 
     @Test
-    public void skattbarInntekt_skalGiSamtykke() {
+    void skattbarInntekt_skalGiSamtykke() {
         SoknadUnderArbeid soknad = createJsonInternalSoknadWithSkattbarInntekt(false);
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(soknad);
+        when(textService.getJsonOkonomiTittel(anyString())).thenReturn("tittel");
+        doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(any());
 
         skattbarInntektRessurs.updateSamtykke(BEHANDLINGSID, true, "token");
 
@@ -126,11 +127,13 @@ public class SkattbarInntektRessursTest {
     }
 
     @Test
-    public void skattbarInntekt_skalTaBortSamtykke() {
+    void skattbarInntekt_skalTaBortSamtykke() {
         SoknadUnderArbeid soknad = createJsonInternalSoknadWithSkattbarInntekt(false);
         JsonOkonomiopplysninger opplysninger = soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger();
         setBekreftelse(opplysninger, UTBETALING_SKATTEETATEN_SAMTYKKE, true, "");
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(soknad);
+        when(textService.getJsonOkonomiTittel(anyString())).thenReturn("tittel");
+        doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(any());
 
         skattbarInntektRessurs.updateSamtykke(BEHANDLINGSID, false, "token");
 
@@ -152,9 +155,10 @@ public class SkattbarInntektRessursTest {
     }
 
     @Test
-    public void skattbarInntekt_skalIkkeForandreSamtykke() {
+    void skattbarInntekt_skalIkkeForandreSamtykke() {
         SoknadUnderArbeid soknad = createJsonInternalSoknadWithSkattbarInntekt(false);
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(soknad);
+        doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(any());
 
         skattbarInntektRessurs.updateSamtykke(BEHANDLINGSID, false, "token");
 
@@ -168,20 +172,22 @@ public class SkattbarInntektRessursTest {
         assertThat(soknad.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getBekreftelse()).isEmpty();
     }
 
-    @Test(expected = AuthorizationException.class)
-    public void getSkattbarInntektkalKasteAuthorizationExceptionVedManglendeTilgang() {
+    @Test
+    void getSkattbarInntektkalKasteAuthorizationExceptionVedManglendeTilgang() {
         doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerHarTilgang();
 
-        skattbarInntektRessurs.hentSkattbareInntekter(BEHANDLINGSID);
+        assertThatExceptionOfType(AuthorizationException.class)
+                .isThrownBy(() -> skattbarInntektRessurs.hentSkattbareInntekter(BEHANDLINGSID));
 
         verifyNoInteractions(soknadUnderArbeidRepository);
     }
 
-    @Test(expected = AuthorizationException.class)
-    public void putSamtykkeSkalKasteAuthorizationExceptionVedManglendeTilgang() {
+    @Test
+    void putSamtykkeSkalKasteAuthorizationExceptionVedManglendeTilgang() {
         doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(BEHANDLINGSID);
 
-        skattbarInntektRessurs.updateSamtykke(BEHANDLINGSID, true, "token");
+        assertThatExceptionOfType(AuthorizationException.class)
+                .isThrownBy(() -> skattbarInntektRessurs.updateSamtykke(BEHANDLINGSID, true, "token"));
 
         verifyNoInteractions(soknadUnderArbeidRepository);
     }

@@ -4,24 +4,22 @@ package no.nav.sosialhjelp.soknad.web.integration.security;
 import com.nimbusds.jwt.SignedJWT;
 import no.nav.sbl.soknadsosialhjelp.tjeneste.saksoversikt.PabegynteSoknaderRespons;
 import no.nav.security.token.support.core.JwtTokenConstants;
-import no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SosialhjelpInformasjon;
 import no.nav.sosialhjelp.soknad.web.integration.AbstractIT;
 import no.nav.sosialhjelp.soknad.web.integration.SoknadTester;
 import no.nav.sosialhjelp.soknad.web.oidc.JwtTokenGenerator;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.Response;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class SaksoversiktMetadataOidcRessursEndpointIT extends AbstractIT {
+class SaksoversiktMetadataOidcRessursEndpointIT extends AbstractIT {
     public static final String BRUKER = "11111111111";
     public static final String ANNEN_BRUKER = "22222222222";
-    private String skjemanummer = SosialhjelpInformasjon.SKJEMANUMMER;
 
     @Test
-    public void innsendte_skalGi401UtenToken() {
+    void innsendte_skalGi401UtenToken() {
         SoknadTester soknadTester = soknadOpprettet();
         String subUrl = "metadata/oidc/innsendte";
 
@@ -31,7 +29,7 @@ public class SaksoversiktMetadataOidcRessursEndpointIT extends AbstractIT {
     }
 
     @Test
-    public void ettersendelse_skalGi401UtenToken() {
+    void ettersendelse_skalGi401UtenToken() {
         SoknadTester soknadTester = soknadOpprettet();
         String subUrl = "metadata/oidc/ettersendelse";
 
@@ -41,7 +39,7 @@ public class SaksoversiktMetadataOidcRessursEndpointIT extends AbstractIT {
     }
 
     @Test
-    public void pabegynte_skalGi401UtenToken() {
+    void pabegynte_skalGi401UtenToken() {
         SoknadTester soknadTester = soknadOpprettet();
         String subUrl = "metadata/oidc/pabegynte";
 
@@ -51,7 +49,7 @@ public class SaksoversiktMetadataOidcRessursEndpointIT extends AbstractIT {
     }
 
     @Test
-    public void skalIkkeSePabegynteForAnnenBruker() {
+    void skalIkkeSePabegynteForAnnenBruker() {
         SoknadTester soknadTester = soknadOpprettet();
         String subUrl = "metadata/oidc/pabegynte";
         SignedJWT signedJWTForAnnenBruker = JwtTokenGenerator.createSignedJWT(ANNEN_BRUKER);
@@ -64,7 +62,7 @@ public class SaksoversiktMetadataOidcRessursEndpointIT extends AbstractIT {
     }
 
     @Test
-    public void ping_skalGi200UtenToken() {
+    void ping_skalGi200UtenToken() {
         SoknadTester soknadTester = soknadOpprettet();
         String subUrl = "metadata/oidc/ping";
 

@@ -4,14 +4,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.sosialhjelp.soknad.consumer.bostotte.dto.BostotteDto;
 import no.nav.sosialhjelp.soknad.web.selftest.Pingable;
 import org.apache.cxf.helpers.IOUtils;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
@@ -32,9 +31,9 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 @SuppressWarnings("unchecked")
-public class BostotteImplTest {
+class BostotteImplTest {
 
     @Mock
     private BostotteConfig config;
@@ -48,13 +47,8 @@ public class BostotteImplTest {
     @Captor
     ArgumentCaptor<RequestEntity<BostotteDto>> captor;
 
-    @Before
-    public void setUp() {
-        when(config.getUri()).thenReturn("uri");
-    }
-
     @Test
-    public void hentBostotte_testUrl_riktigUrlBlirSendtInnTilRestKallet() {
+    void hentBostotte_testUrl_riktigUrlBlirSendtInnTilRestKallet() {
         // Variabler:
         String configUrl = "http://magicUri";
         BostotteDto bostotteDto = new BostotteDto();
@@ -73,7 +67,7 @@ public class BostotteImplTest {
     }
 
     @Test
-    public void hentBostotte_testUrl_urlHarRiktigTilOgFraDato() {
+    void hentBostotte_testUrl_urlHarRiktigTilOgFraDato() {
         // Variabler:
         String configUrl = "http://magicUri";
         BostotteDto bostotteDto = new BostotteDto();
@@ -93,7 +87,7 @@ public class BostotteImplTest {
     }
 
     @Test
-    public void hentBostotte_testJson_testingJsonTranslation() throws IOException {
+    void hentBostotte_testJson_testingJsonTranslation() throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
 
         InputStream resourceAsStream = ClassLoader.getSystemResourceAsStream("husbanken/husbankenSvar.json");
@@ -112,13 +106,14 @@ public class BostotteImplTest {
     }
 
     @Test
-    public void hentBostotte_testUrl_overlevNullUrl() {
+    void hentBostotte_testUrl_overlevNullUrl() {
         // Variabler:
         String personIdentifikator = "121212123456";
         LocalDate fra = LocalDate.now().minusDays(30);
         LocalDate til = LocalDate.now();
 
         // Mocks:
+        when(config.getUri()).thenReturn("uri");
         when(operations.exchange(any(), any(Class.class))).thenThrow(new ResourceAccessException("TestException"));
 
         // Testkjøring:
@@ -126,13 +121,14 @@ public class BostotteImplTest {
     }
 
     @Test
-    public void hentBostotte_testUrl_overlevBadConnection() {
+    void hentBostotte_testUrl_overlevBadConnection() {
         // Variabler:
         String personIdentifikator = "121212123456";
         LocalDate fra = LocalDate.now().minusDays(30);
         LocalDate til = LocalDate.now();
 
         // Mocks:
+        when(config.getUri()).thenReturn("uri");
         when(operations.exchange(any(), any(Class.class))).thenThrow(new HttpClientErrorException(HttpStatus.BAD_REQUEST));
 
         // Testkjøring:
@@ -140,13 +136,14 @@ public class BostotteImplTest {
     }
 
     @Test
-    public void hentBostotte_testUrl_overlevBadData() {
+    void hentBostotte_testUrl_overlevBadData() {
         // Variabler:
         String personIdentifikator = "121212123456";
         LocalDate fra = LocalDate.now().minusDays(30);
         LocalDate til = LocalDate.now();
 
         // Mocks:
+        when(config.getUri()).thenReturn("uri");
         when(operations.exchange(any(), any(Class.class))).thenThrow(new HttpMessageNotReadableException("TestException", mock(HttpInputMessage.class)));
 
         // Testkjøring:
@@ -154,7 +151,7 @@ public class BostotteImplTest {
     }
 
     @Test
-    public void hentBostotte_opprettHusbankenPing() {
+    void hentBostotte_opprettHusbankenPing() {
         // Testkjøring:
         Pingable pingable = BostotteImpl.opprettHusbankenPing(config, new RestTemplate());
         assertThat(pingable).isNotNull();

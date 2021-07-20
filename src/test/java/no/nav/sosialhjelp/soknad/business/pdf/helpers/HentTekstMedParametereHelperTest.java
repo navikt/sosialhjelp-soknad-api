@@ -2,12 +2,12 @@ package no.nav.sosialhjelp.soknad.business.pdf.helpers;
 
 import com.github.jknack.handlebars.Handlebars;
 import no.nav.sosialhjelp.soknad.tekster.NavMessageSource;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
 import java.util.Properties;
@@ -18,8 +18,8 @@ import static no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.Sosia
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
-public class HentTekstMedParametereHelperTest {
+@ExtendWith(MockitoExtension.class)
+class HentTekstMedParametereHelperTest {
 
     private Handlebars handlebars;
 
@@ -29,14 +29,14 @@ public class HentTekstMedParametereHelperTest {
     @Mock
     NavMessageSource navMessageSource;
 
-    @Before
+    @BeforeEach
     public void setup() {
         handlebars = new Handlebars();
         handlebars.registerHelper(hentTekstMedParametereHelper.getNavn(), hentTekstMedParametereHelper);
     }
 
     @Test
-    public void hentTekstMedEnParameter() throws IOException {
+    void hentTekstMedEnParameter() throws IOException {
         final String testStreng = "<div>Parameter er satt til: {parameter}.</div>";
         final String key = "test";
         lagPropertiesMedTekstOgFilnavnNokkel(testStreng, key);
@@ -47,7 +47,7 @@ public class HentTekstMedParametereHelperTest {
     }
 
     @Test
-    public void hentTekstMedFlereParametere() throws IOException {
+    void hentTekstMedFlereParametere() throws IOException {
         final String testStreng = "<div>Parametere er satt til: {parameter1}, {parameter2}, {parameter3}.</div>";
         final String key = "test";
         lagPropertiesMedTekstOgFilnavnNokkel(testStreng, key);
@@ -60,7 +60,7 @@ public class HentTekstMedParametereHelperTest {
     }
     
     @Test
-    public void hentTekstMedUfullstendigParameter() throws IOException {
+    void hentTekstMedUfullstendigParameter() throws IOException {
         final String testStreng = "<div>Parameter er satt til: {parameter}.</div>";
         final String key = "test";
         lagPropertiesMedTekstOgFilnavnNokkel(testStreng, key);
@@ -71,7 +71,7 @@ public class HentTekstMedParametereHelperTest {
     }
     
     @Test
-    public void hentTekstUtenParametere() throws IOException {
+    void hentTekstUtenParametere() throws IOException {
         final String testStreng = "<div>Parameter er satt til: {parameter}.</div>";
         final String key = "test";
         lagPropertiesMedTekstOgFilnavnNokkel(testStreng, key);

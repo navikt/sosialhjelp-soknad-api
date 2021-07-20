@@ -5,11 +5,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.sosialhjelp.soknad.consumer.skatt.dto.SkattbarInntekt;
 import no.nav.sosialhjelp.soknad.domain.model.utbetaling.Utbetaling;
 import org.apache.cxf.helpers.IOUtils;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,8 +21,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
-public class SkattbarInntektServiceTest {
+@ExtendWith(MockitoExtension.class)
+class SkattbarInntektServiceTest {
 
     @Mock
     private SkattbarInntektConsumer skattbarInntektConsumer;
@@ -31,7 +31,7 @@ public class SkattbarInntektServiceTest {
     private SkattbarInntektService skattbarInntektService;
 
     @Test
-    public void hentSkattbarInntekt() {
+    void hentSkattbarInntekt() {
         SkattbarInntekt skattbarInntekt = readResponseFromPath("/skatt/InntektOgSkatt.json");
         when(skattbarInntektConsumer.hentSkattbarInntekt(anyString())).thenReturn(skattbarInntekt);
 
@@ -44,7 +44,7 @@ public class SkattbarInntektServiceTest {
     }
 
     @Test
-    public void hentSkattbarInntektForToMaanederIgnorererDaArbeidsgiver1IForrigeMaaned() {
+    void hentSkattbarInntektForToMaanederIgnorererDaArbeidsgiver1IForrigeMaaned() {
         SkattbarInntekt skattbarInntekt = readResponseFromPath("/skatt/InntektOgSkattToMaaneder.json");
         when(skattbarInntektConsumer.hentSkattbarInntekt(anyString())).thenReturn(skattbarInntekt);
 
@@ -53,7 +53,7 @@ public class SkattbarInntektServiceTest {
     }
 
     @Test
-    public void hentSkattbarInntektForToMaanederIForrigeMaanedBeggeMaanedeneOgArbeidsgiverneVilVaereMed() {
+    void hentSkattbarInntektForToMaanederIForrigeMaanedBeggeMaanedeneOgArbeidsgiverneVilVaereMed() {
         SkattbarInntekt skattbarInntekt = readResponseFromPath("/skatt/InntektOgSkattToMaanederToArbeidsgivere.json");
         when(skattbarInntektConsumer.hentSkattbarInntekt(anyString())).thenReturn(skattbarInntekt);
 

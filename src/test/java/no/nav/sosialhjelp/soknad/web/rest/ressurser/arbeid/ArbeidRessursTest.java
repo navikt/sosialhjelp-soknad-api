@@ -13,20 +13,21 @@ import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.arbeid.ArbeidRessurs.ArbeidFrontend;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.arbeid.ArbeidRessurs.ArbeidsforholdFrontend;
 import no.nav.sosialhjelp.soknad.web.sikkerhet.Tilgangskontroll;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
@@ -34,8 +35,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
-public class ArbeidRessursTest {
+@ExtendWith(MockitoExtension.class)
+class ArbeidRessursTest {
 
     private static final String BEHANDLINGSID = "123";
     private static final String EIER = "123456789101";
@@ -72,20 +73,20 @@ public class ArbeidRessursTest {
     private ArbeidRessurs arbeidRessurs;
 
 
-    @Before
+    @BeforeEach
     public void setUp() {
         System.setProperty("environment.name", "test");
         SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         SubjectHandler.resetOidcSubjectHandlerService();
         System.clearProperty("environment.name");
     }
 
     @Test
-    public void getArbeidSkalReturnereSystemArbeidsforholdRiktigKonvertert(){
+    void getArbeidSkalReturnereSystemArbeidsforholdRiktigKonvertert(){
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithArbeid(createArbeidsforholdListe(), null));
 
@@ -101,7 +102,7 @@ public class ArbeidRessursTest {
     }
 
     @Test
-    public void getArbeidSkalReturnereArbeidsforholdLikNull(){
+    void getArbeidSkalReturnereArbeidsforholdLikNull(){
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithArbeid(null, null));
 
@@ -111,7 +112,7 @@ public class ArbeidRessursTest {
     }
 
     @Test
-    public void getArbeidSkalReturnereKommentarTilArbeidsforholdLikNull(){
+    void getArbeidSkalReturnereKommentarTilArbeidsforholdLikNull(){
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithArbeid(null, null));
 
@@ -121,7 +122,7 @@ public class ArbeidRessursTest {
     }
 
     @Test
-    public void getArbeidSkalReturnereKommentarTilArbeidsforhold(){
+    void getArbeidSkalReturnereKommentarTilArbeidsforhold(){
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithArbeid(null, KOMMENTAR));
 
@@ -131,7 +132,7 @@ public class ArbeidRessursTest {
     }
 
     @Test
-    public void putArbeidSkalLageNyJsonKommentarTilArbeidsforholdDersomDenVarNull(){
+    void putArbeidSkalLageNyJsonKommentarTilArbeidsforholdDersomDenVarNull(){
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithArbeid(null, null));
@@ -146,7 +147,7 @@ public class ArbeidRessursTest {
     }
 
     @Test
-    public void putArbeidSkalOppdatereKommentarTilArbeidsforhold(){
+    void putArbeidSkalOppdatereKommentarTilArbeidsforhold(){
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithArbeid(null, "Tidligere kommentar"));
@@ -161,7 +162,7 @@ public class ArbeidRessursTest {
     }
 
     @Test
-    public void putArbeidSkalSetteLikNullDersomKommentarenErTom(){
+    void putArbeidSkalSetteLikNullDersomKommentarenErTom(){
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithArbeid(null, "Tidligere kommentar"));
@@ -174,21 +175,24 @@ public class ArbeidRessursTest {
         assertThat(kommentarTilArbeidsforhold).isNull();
     }
 
-    @Test(expected = AuthorizationException.class)
-    public void getArbeidSkalKasteAuthorizationExceptionVedManglendeTilgang() {
+    @Test
+    void getArbeidSkalKasteAuthorizationExceptionVedManglendeTilgang() {
         doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerHarTilgang();
 
-        arbeidRessurs.hentArbeid(BEHANDLINGSID);
+        assertThatExceptionOfType(AuthorizationException.class)
+                .isThrownBy(() -> arbeidRessurs.hentArbeid(BEHANDLINGSID));
 
         verifyNoInteractions(soknadUnderArbeidRepository);
     }
 
-    @Test(expected = AuthorizationException.class)
-    public void putArbeidSkalKasteAuthorizationExceptionVedManglendeTilgang() {
+    @Test
+    void putArbeidSkalKasteAuthorizationExceptionVedManglendeTilgang() {
         doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(BEHANDLINGSID);
 
         var arbeidFrontend = new ArbeidFrontend().withKommentarTilArbeidsforhold("");
-        arbeidRessurs.updateArbeid(BEHANDLINGSID, arbeidFrontend);
+
+        assertThatExceptionOfType(AuthorizationException.class)
+                .isThrownBy(() -> arbeidRessurs.updateArbeid(BEHANDLINGSID, arbeidFrontend));
 
         verifyNoInteractions(soknadUnderArbeidRepository);
     }

@@ -2,12 +2,12 @@ package no.nav.sosialhjelp.soknad.web.service;
 
 import no.nav.sosialhjelp.soknad.business.pdf.CmsTekst;
 import no.nav.sosialhjelp.soknad.tekster.NavMessageSource;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Locale;
 import java.util.Properties;
@@ -18,8 +18,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
-public class CmsTekstTest {
+@ExtendWith(MockitoExtension.class)
+class CmsTekstTest {
 
     @InjectMocks
     CmsTekst cmsTekst;
@@ -29,13 +29,13 @@ public class CmsTekstTest {
 
     Properties properties = new Properties();
 
-    @Before
+    @BeforeEach
     public void setup() {
         when(navMessageSource.getBundleFor(anyString(), any(Locale.class))).thenReturn(properties);
     }
 
     @Test
-    public void kallerMessageSourceToGangerMedOgUtenPrefixNarKeyIkkeEksisterer() {
+    void kallerMessageSourceToGangerMedOgUtenPrefixNarKeyIkkeEksisterer() {
         properties.put("min.key", "jegFinnes");
 
         String tekst = this.cmsTekst.getCmsTekst("min.key", null, "prefix", "bundlename", toLocale("nb_NO"));
@@ -54,7 +54,7 @@ public class CmsTekstTest {
     }
 
     @Test
-    public void getCmsTekstReturnererNullNarKeyMangler() {
+    void getCmsTekstReturnererNullNarKeyMangler() {
         String tekst = cmsTekst.getCmsTekst("min.key", null, "prefix", "bundlename", toLocale("nb_NO"));
 
         assertThat(tekst).isNull();

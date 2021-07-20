@@ -6,8 +6,8 @@ import no.nav.sosialhjelp.soknad.business.pdf.HandlebarRegistry;
 import no.nav.sosialhjelp.soknad.business.service.Miljovariabler;
 import no.nav.sosialhjelp.soknad.consumer.kodeverk.KodeverkService;
 import no.nav.sosialhjelp.soknad.tekster.NavMessageSource;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
@@ -17,7 +17,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.inject.Inject;
 import java.time.Clock;
@@ -31,28 +31,27 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 @SuppressWarnings("rawtypes")
-@RunWith(SpringJUnit4ClassRunner.class)
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {RegistryAwareHelperTest.HandlebarsHelperTestConfig.class})
 @ActiveProfiles("RegistryTest")
-public class RegistryAwareHelperTest {
+class RegistryAwareHelperTest {
 
-    public static final String NAVN = "navn";
     private static final Logger LOG = LoggerFactory.getLogger(RegistryAwareHelperTest.class);
     @Inject
-    List<RegistryAwareHelper> helpers;
+    private List<RegistryAwareHelper> helpers;
 
     @Inject
-    HandlebarRegistry registry;
+    private HandlebarRegistry registry;
 
     @Test
-    public void listUtRegistrerteHelpers() {
+    void listUtRegistrerteHelpers() {
         for (RegistryAwareHelper helper : helpers) {
             LOG.info("Helper: " + helper.getNavn());
         }
     }
 
     @Test
-    public void registryKaltMedHelper() {
+    void registryKaltMedHelper() {
         verify(registry, atLeastOnce()).registrerHelper(eq(ConcatHelper.NAVN), any(ConcatHelper.class));
         verify(registry, atLeastOnce()).registrerHelper(anyString(), any(RegistryAwareHelper.class));
     }

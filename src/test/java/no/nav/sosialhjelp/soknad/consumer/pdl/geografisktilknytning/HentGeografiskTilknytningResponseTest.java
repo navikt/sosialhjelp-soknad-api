@@ -6,20 +6,20 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import no.nav.sosialhjelp.soknad.consumer.pdl.geografisktilknytning.dto.GtType;
 import org.apache.cxf.helpers.IOUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class HentGeografiskTilknytningResponseTest {
+class HentGeografiskTilknytningResponseTest {
 
     private final ObjectMapper mapper = new ObjectMapper()
             .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
             .registerModule(new JavaTimeModule());
 
     @Test
-    public void deserialiseringAvResponseJson() throws IOException {
+    void deserialiseringAvResponseJson() throws IOException {
         var resourceAsStream = ClassLoader.getSystemResourceAsStream("pdl/pdlHentGeografiskTilknytningResponse.json");
         assertThat(resourceAsStream).isNotNull();
         var jsonString = IOUtils.toString(resourceAsStream);

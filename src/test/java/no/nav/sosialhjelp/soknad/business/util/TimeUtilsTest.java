@@ -1,16 +1,16 @@
 package no.nav.sosialhjelp.soknad.business.util;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class TimeUtilsTest {
+class TimeUtilsTest {
 
     @Test
-    public void skalKonvertereTilUtc() {
+    void skalKonvertereTilUtc() {
         var summerTime = LocalDateTime.of(2021, 6, 6, 12, 12, 12);
         var winterTime = LocalDateTime.of(2021, 1, 1, 12, 12, 12);
 

@@ -26,11 +26,11 @@ import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.domain.model.Barn;
 import no.nav.sosialhjelp.soknad.domain.model.Ektefelle;
 import org.joda.time.LocalDate;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Collections;
 import java.util.List;
@@ -48,8 +48,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
-public class FamilieSystemdataTest {
+@ExtendWith(MockitoExtension.class)
+class FamilieSystemdataTest {
 
     private static final String EIER = "12345678901";
     private static final Ektefelle EKTEFELLE = new Ektefelle()
@@ -165,7 +165,7 @@ public class FamilieSystemdataTest {
     private FamilieSystemdata familieSystemdata;
 
     @Test
-    public void skalSetteSivilstatusGiftMedEktefelle() throws JsonProcessingException {
+    void skalSetteSivilstatusGiftMedEktefelle() throws JsonProcessingException {
         no.nav.sosialhjelp.soknad.domain.model.Person person = new no.nav.sosialhjelp.soknad.domain.model.Person()
                 .withSivilstatus(GIFT.toString())
                 .withEktefelle(EKTEFELLE);
@@ -188,7 +188,7 @@ public class FamilieSystemdataTest {
     }
 
     @Test
-    public void skalIkkeSetteSivilstatusDersomEktefelleMangler() throws JsonProcessingException {
+    void skalIkkeSetteSivilstatusDersomEktefelleMangler() throws JsonProcessingException {
         no.nav.sosialhjelp.soknad.domain.model.Person person = new no.nav.sosialhjelp.soknad.domain.model.Person()
                 .withSivilstatus(GIFT.toString());
         when(personService.hentPerson(anyString())).thenReturn(person);
@@ -205,7 +205,7 @@ public class FamilieSystemdataTest {
     }
 
     @Test
-    public void skalIkkeSetteSivilstatusDersomAnnetEnnGift() throws JsonProcessingException {
+    void skalIkkeSetteSivilstatusDersomAnnetEnnGift() throws JsonProcessingException {
         sivilstatusSkalIkkeSettes(UGIFT, null);
         sivilstatusSkalIkkeSettes(SAMBOER, null);
         sivilstatusSkalIkkeSettes(ENKE, null);
@@ -219,7 +219,7 @@ public class FamilieSystemdataTest {
     }
 
     @Test
-    public void skalSetteSivilstatusGiftMedTomEktefelleDersomEktefelleHarDiskresjonskode() throws JsonProcessingException {
+    void skalSetteSivilstatusGiftMedTomEktefelleDersomEktefelleHarDiskresjonskode() throws JsonProcessingException {
         no.nav.sosialhjelp.soknad.domain.model.Person person = new no.nav.sosialhjelp.soknad.domain.model.Person()
                 .withSivilstatus(GIFT.toString())
                 .withEktefelle(EKTEFELLE_MED_DISKRESJONSKODE);
@@ -242,7 +242,7 @@ public class FamilieSystemdataTest {
     }
 
     @Test
-    public void skalSetteForsorgerpliktMedFlereBarn() throws JsonProcessingException {
+    void skalSetteForsorgerpliktMedFlereBarn() throws JsonProcessingException {
         when(personService.hentBarnForPerson(anyString())).thenReturn(asList(BARN, BARN_2));
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
 
@@ -264,7 +264,7 @@ public class FamilieSystemdataTest {
     }
 
     @Test
-    public void skalIkkeSetteForsorgerplikt() throws JsonProcessingException {
+    void skalIkkeSetteForsorgerplikt() throws JsonProcessingException {
         when(personService.hentBarnForPerson(anyString())).thenReturn(Collections.emptyList());
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
 
@@ -281,7 +281,7 @@ public class FamilieSystemdataTest {
     }
 
     @Test
-    public void skalIkkeOverskriveBrukerregistrerteBarnNaarDetFinnesSystemBarn() throws JsonProcessingException {
+    void skalIkkeOverskriveBrukerregistrerteBarnNaarDetFinnesSystemBarn() throws JsonProcessingException {
         JsonInternalSoknad jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER);
         jsonInternalSoknad.getSoknad().getData().getFamilie().getForsorgerplikt()
                 .withHarForsorgerplikt(new JsonHarForsorgerplikt()
@@ -316,7 +316,7 @@ public class FamilieSystemdataTest {
     }
 
     @Test
-    public void skalIkkeOverskriveBrukerregistrerteBarnEllerForsorgerpliktVerdiNaarDetIkkeFinnesSystemBarn() throws JsonProcessingException {
+    void skalIkkeOverskriveBrukerregistrerteBarnEllerForsorgerpliktVerdiNaarDetIkkeFinnesSystemBarn() throws JsonProcessingException {
         when(personService.hentBarnForPerson(anyString())).thenReturn(Collections.emptyList());
         JsonInternalSoknad jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER);
         jsonInternalSoknad.getSoknad().getData().getFamilie().getForsorgerplikt()
@@ -345,7 +345,7 @@ public class FamilieSystemdataTest {
     }
 
     @Test
-    public void skalIkkeOverskriveSamvaersgradOgHarDeltBostedOgBarnebidrag() throws JsonProcessingException {
+    void skalIkkeOverskriveSamvaersgradOgHarDeltBostedOgBarnebidrag() throws JsonProcessingException {
         when(personService.hentBarnForPerson(anyString())).thenReturn(asList(BARN, BARN_2));
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createJsonInternalSoknadWithBarnWithUserFilledInfoOnSystemBarn());
 

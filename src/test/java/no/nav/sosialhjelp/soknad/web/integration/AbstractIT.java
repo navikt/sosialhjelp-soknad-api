@@ -2,8 +2,8 @@ package no.nav.sosialhjelp.soknad.web.integration;
 
 import no.nav.sosialhjelp.soknad.web.server.SoknadsosialhjelpServer;
 import org.glassfish.jersey.test.TestProperties;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 
 import java.io.File;
 
@@ -13,7 +13,7 @@ public abstract class AbstractIT {
     private static final int PORT = 10001;
     private static SoknadsosialhjelpServer jetty;
 
-    @BeforeClass
+    @BeforeAll
     public static void beforeClass() throws Exception {
         System.setProperty("environment.name", "test");
         System.setProperty(TestProperties.CONTAINER_FACTORY, "org.glassfish.jersey.test.external.ExternalTestContainerFactory");
@@ -25,7 +25,7 @@ public abstract class AbstractIT {
         jetty.start();
     }
 
-    @AfterClass
+    @AfterAll
     public static void afterClass() {
         jetty.jetty.stop.run();
         System.clearProperty("environment.name");

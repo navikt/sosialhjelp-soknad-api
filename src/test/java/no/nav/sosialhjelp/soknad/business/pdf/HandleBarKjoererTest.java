@@ -23,12 +23,12 @@ import no.nav.sosialhjelp.soknad.business.pdf.helpers.SettInnHjelpetekstHelper;
 import no.nav.sosialhjelp.soknad.business.pdf.helpers.SettInnInfotekstHelper;
 import no.nav.sosialhjelp.soknad.business.pdf.helpers.SettInnKnappTilgjengeligTekstHelper;
 import no.nav.sosialhjelp.soknad.consumer.kodeverk.KodeverkService;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
 import java.util.Locale;
@@ -39,8 +39,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
-public class HandleBarKjoererTest {
+@ExtendWith(MockitoExtension.class)
+class HandleBarKjoererTest {
     private static final String FNR = "11111111111";
     @InjectMocks
     private HandleBarKjoerer handleBarKjoerer;
@@ -61,7 +61,7 @@ public class HandleBarKjoererTest {
     @Mock
     private KodeverkService kodeverkService;
 
-    @Before
+    @BeforeEach
     public void setup() {
         when(cmsTekst.getCmsTekst(any(String.class), any(Object[].class), anyString(), anyString(), any(Locale.class))).thenReturn("mock");
         handleBarKjoerer.registrerHelper("hentTekst", hentTekstHelper);
@@ -89,14 +89,14 @@ public class HandleBarKjoererTest {
     }
 
     @Test
-    public void fyllHtmlMalMedInnholdLagerHtmlFraJsonInternalSoknad() throws IOException {
+    void fyllHtmlMalMedInnholdLagerHtmlFraJsonInternalSoknad() throws IOException {
         String html = handleBarKjoerer.fyllHtmlMalMedInnhold(createEmptyJsonInternalSoknad(FNR), false);
 
         assertThat(html).contains(FNR);
     }
 
     @Test
-    public void skalTaBortUgyldigeTegn() throws IOException {
+    void skalTaBortUgyldigeTegn() throws IOException {
         String html = handleBarKjoerer.fyllHtmlMalMedInnhold(createEmptyJsonInternalSoknad("FNR\b\ntrall"), false);
 
         assertThat(html).contains("FNR\ntrall");
