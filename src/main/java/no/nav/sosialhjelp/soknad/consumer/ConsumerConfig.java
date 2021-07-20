@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.consumer;
 
-import no.nav.sosialhjelp.soknad.consumer.adresse.TpsAdresseSokService;
 import no.nav.sosialhjelp.soknad.consumer.dkif.DkifService;
 import no.nav.sosialhjelp.soknad.consumer.fiks.DokumentKrypterer;
 import no.nav.sosialhjelp.soknad.consumer.kodeverk.KodeverkService;
@@ -14,7 +13,6 @@ import no.nav.sosialhjelp.soknad.consumer.pdl.person.PdlPersonMapper;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.PersonService;
 import no.nav.sosialhjelp.soknad.consumer.redis.NoRedisConfig;
 import no.nav.sosialhjelp.soknad.consumer.redis.RedisConfig;
-import no.nav.sosialhjelp.soknad.consumer.restconfig.AdresseSokRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.ArbeidsforholdRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.DigisosApiRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.DkifRestConfig;
@@ -48,7 +46,6 @@ import org.springframework.context.annotation.Profile;
         GeografiskTilknytningService.class,
         ConsumerConfig.WsServices.class,
         DokumentKrypterer.class,
-        TpsAdresseSokService.class,
         NorgService.class,
         SkattbarInntektService.class,
         OrganisasjonService.class,
@@ -70,7 +67,6 @@ public class ConsumerConfig {
             PdlGeografiskTilknytningRestConfig.class,
             DigisosApiRestConfig.class,
             FiksWSConfig.class,
-            AdresseSokRestConfig.class,
             NorgRestConfig.class,
             OrganisasjonRestConfig.class,
             ArbeidsforholdRestConfig.class,
