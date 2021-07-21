@@ -56,6 +56,10 @@ public final class STSConfigurationUtility {
     }
 
     private static void configureStsClient(Client client, StsType stsType, String location, String username, String password) {
+        requireProperty("sts.url", location);
+        requireProperty("systemuser.username", username);
+        requireProperty("systemuser.password", password);
+
         new WSAddressingFeature().initialize(client, client.getBus());
 
         STSClient stsClient = createBasicSTSClient(client.getBus(), location, username, password, stsType);
@@ -112,11 +116,9 @@ public final class STSConfigurationUtility {
         policyEngine.setClientEndpointPolicy(endpointInfo, endpointPolicy.updatePolicy(policy, null));
     }
 
-    private static String requireProperty(String key) {
-        String property = System.getProperty(key);
+    private static void requireProperty(String key, String property) {
         if (property == null) {
             throw new RuntimeException("Required property " + key + " not available.");
         }
-        return property;
     }
 }
