@@ -8,8 +8,6 @@ import no.nav.sosialhjelp.soknad.consumer.organisasjon.OrganisasjonService;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.domain.model.utbetaling.Utbetaling;
 import no.nav.sosialhjelp.soknad.oppslag.utbetaling.UtbetalingService;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -116,16 +114,6 @@ class UtbetalingerFraNavSystemdataTest {
 
     @InjectMocks
     private UtbetalingerFraNavSystemdata utbetalingerFraNavSystemdata;
-
-    @BeforeEach
-    public void setUp() {
-        System.setProperty("tillatmock", "true");
-    }
-
-    @AfterEach
-    public void tearDown() {
-        System.setProperty("tillatmock", "false");
-    }
 
     @Test
     void skalOppdatereUtbetalinger() {

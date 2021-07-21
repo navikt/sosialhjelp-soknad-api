@@ -9,8 +9,6 @@ import no.nav.sosialhjelp.soknad.consumer.organisasjon.OrganisasjonService;
 import no.nav.sosialhjelp.soknad.consumer.skatt.SkattbarInntektService;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.domain.model.utbetaling.Utbetaling;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -109,23 +107,13 @@ class SkattetatenSystemdataTest {
     }
 
     @Mock
-    OrganisasjonService organisasjonService;
+    private OrganisasjonService organisasjonService;
 
     @InjectMocks
     private SkattetatenSystemdata skattetatenSystemdata;
 
     @Mock
-    SkattbarInntektService skattbarInntektService;
-
-    @BeforeEach
-    public void setUp() {
-        System.setProperty("tillatmock", "true");
-    }
-
-    @AfterEach
-    public void tearDown() {
-        System.setProperty("tillatmock", "false");
-    }
+    private SkattbarInntektService skattbarInntektService;
 
     @Test
     void skalOppdatereUtbetalinger() {
