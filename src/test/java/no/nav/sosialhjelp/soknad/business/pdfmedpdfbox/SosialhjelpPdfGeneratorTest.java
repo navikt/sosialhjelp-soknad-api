@@ -49,7 +49,6 @@ import no.nav.sbl.soknadsosialhjelp.soknad.utdanning.JsonUtdanning;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon;
-import no.nav.sosialhjelp.soknad.business.SoknadServiceIntegrationTestContext;
 import no.nav.sosialhjelp.soknad.consumer.kodeverk.KodeverkService;
 import no.nav.sosialhjelp.soknad.tekster.NavMessageSource;
 import org.apache.commons.io.FileUtils;
@@ -62,7 +61,6 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.context.ContextConfiguration;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -80,7 +78,6 @@ import static org.assertj.core.api.Assertions.fail;
 import static org.mockito.Mockito.mock;
 
 @ExtendWith(MockitoExtension.class)
-@ContextConfiguration(classes = SoknadServiceIntegrationTestContext.class)
 class SosialhjelpPdfGeneratorTest {
 
     private SosialhjelpPdfGenerator sosialhjelpPdfGenerator;
@@ -93,14 +90,11 @@ class SosialhjelpPdfGeneratorTest {
         navMessageSource.setBasenames(fellesBundle, bundle);
         navMessageSource.setDefaultEncoding("UTF-8");
 
-        sosialhjelpPdfGenerator = new SosialhjelpPdfGenerator();
-        sosialhjelpPdfGenerator.setNavMessageSource(navMessageSource);
-
         KodeverkService kodeverkService = mock(KodeverkService.class);
-        TextHelpers textHelpers = new TextHelpers();
-        textHelpers.setNavMessageSource(navMessageSource);
-        textHelpers.setKodeverkService(kodeverkService);
-        sosialhjelpPdfGenerator.setTextHelpers(textHelpers);
+
+        TextHelpers textHelpers = new TextHelpers(navMessageSource, kodeverkService);
+
+        sosialhjelpPdfGenerator = new SosialhjelpPdfGenerator(navMessageSource, textHelpers);
     }
 
     @Test

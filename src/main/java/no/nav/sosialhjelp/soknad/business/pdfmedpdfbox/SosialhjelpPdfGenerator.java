@@ -50,7 +50,6 @@ import org.apache.commons.lang3.LocaleUtils;
 import org.joda.time.LocalDate;
 import org.springframework.stereotype.Component;
 
-import javax.inject.Inject;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -75,11 +74,13 @@ import static no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.PdfGenerator.INNRY
 public class SosialhjelpPdfGenerator {
     private final String DATO_FORMAT = "d. MMMM yyyy";
 
-    @Inject
-    public NavMessageSource navMessageSource;
+    public final NavMessageSource navMessageSource;
+    public final TextHelpers textHelpers;
 
-    @Inject
-    public TextHelpers textHelpers;
+    public SosialhjelpPdfGenerator(NavMessageSource navMessageSource, TextHelpers textHelpers) {
+        this.navMessageSource = navMessageSource;
+        this.textHelpers = textHelpers;
+    }
 
     public byte[] generate(JsonInternalSoknad jsonInternalSoknad, boolean utvidetSoknad) {
         try {
@@ -166,14 +167,6 @@ public class SosialhjelpPdfGenerator {
         } catch (Exception e) {
             throw new PdfGenereringException("Kunne ikke generere Brukerkvittering.pdf", e);
         }
-    }
-
-    public void setNavMessageSource(NavMessageSource navMessageSource) {
-        this.navMessageSource = navMessageSource;
-    }
-
-    public void setTextHelpers(TextHelpers textHelpers) {
-        this.textHelpers = textHelpers;
     }
 
     public String getTekst(String key) {

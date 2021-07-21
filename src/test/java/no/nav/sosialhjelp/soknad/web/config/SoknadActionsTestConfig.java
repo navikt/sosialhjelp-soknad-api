@@ -12,7 +12,6 @@ import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.SoknadM
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.BatchSoknadUnderArbeidRepository;
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository;
 import no.nav.sosialhjelp.soknad.business.pdf.HtmlGenerator;
-import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.PdfGeneratorConfig;
 import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.SosialhjelpPdfGenerator;
 import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.TextHelpers;
 import no.nav.sosialhjelp.soknad.business.service.HenvendelseService;
@@ -45,7 +44,7 @@ import java.time.Clock;
 import static org.mockito.Mockito.mock;
 
 @Configuration
-@Import({DummyHolderConfig.class, PdfGeneratorConfig.class})
+@Import({DummyHolderConfig.class})
 public class SoknadActionsTestConfig {
 
     @Bean

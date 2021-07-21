@@ -6,7 +6,9 @@ import no.nav.sosialhjelp.soknad.business.batch.SlettLoggScheduler;
 import no.nav.sosialhjelp.soknad.business.batch.SlettSoknadUnderArbeidScheduler;
 import no.nav.sosialhjelp.soknad.business.batch.oppgave.OppgaveHandtererImpl;
 import no.nav.sosialhjelp.soknad.business.db.config.DbConfig;
-import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.PdfGeneratorConfig;
+import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.PdfGenerator;
+import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.SosialhjelpPdfGenerator;
+import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.TextHelpers;
 import no.nav.sosialhjelp.soknad.business.service.ServiceConfig;
 import no.nav.sosialhjelp.soknad.business.service.soknadservice.SystemdataUpdater;
 import no.nav.sosialhjelp.soknad.business.service.systemdata.AdresseSystemdata;
@@ -45,7 +47,9 @@ import org.springframework.context.annotation.Import;
         FamilieSystemdata.class,
         BostotteSystemdata.class,
         SkattetatenSystemdata.class,
-        PdfGeneratorConfig.class
+        PdfGenerator.class,
+        TextHelpers.class,
+        SosialhjelpPdfGenerator.class
 })
 public class BusinessConfig {
 
