@@ -139,11 +139,11 @@ public final class ServiceBuilder<T> {
         public PortTypeBuilder<U> withHttpsMock(boolean sslMockEnabled) {
             HTTPConduit httpConduit = (HTTPConduit) getClient(portType).getConduit();
             if (sslMockEnabled) {
-                httpConduit.setTlsClientParameters(new TLSClientParameters());
-            } else {
                 TLSClientParameters params = new TLSClientParameters();
                 params.setDisableCNCheck(true);
                 httpConduit.setTlsClientParameters(params);
+            } else {
+                httpConduit.setTlsClientParameters(new TLSClientParameters());
             }
             return this;
         }
