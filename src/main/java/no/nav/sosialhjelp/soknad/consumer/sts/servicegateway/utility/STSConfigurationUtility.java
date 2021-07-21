@@ -2,7 +2,6 @@ package no.nav.sosialhjelp.soknad.consumer.sts.servicegateway.utility;
 
 /* Originally from common-java-modules (no.nav.sbl.dialogarena.common.cxf) */
 
-import no.nav.sosialhjelp.soknad.consumer.sts.servicegateway.StsSecurityConstants;
 import no.nav.sosialhjelp.soknad.consumer.sts.servicegateway.StsType;
 import no.nav.sosialhjelp.soknad.consumer.sts.servicegateway.client.NAVOidcSTSClient;
 import org.apache.cxf.Bus;
@@ -27,7 +26,6 @@ import org.apache.neethi.Policy;
 import javax.xml.namespace.QName;
 import java.util.HashMap;
 
-import static no.nav.sosialhjelp.soknad.consumer.sts.servicegateway.StsType.ON_BEHALF_OF_WITH_JWT;
 import static no.nav.sosialhjelp.soknad.consumer.sts.servicegateway.StsType.SYSTEM_USER_IN_FSS;
 
 
@@ -52,33 +50,12 @@ public final class STSConfigurationUtility {
      * @param client CXF client
      */
 
-    public static void configureStsForSystemUserInFSS(Client client) {
-        configureStsClient(client, SYSTEM_USER_IN_FSS);
+    public static void configureStsForSystemUserInFSS(Client client, String location, String username, String password) {
+        configureStsClient(client, SYSTEM_USER_IN_FSS, location, username, password);
         setEndpointPolicyReference(client, "classpath:stspolicy.xml");
     }
 
-    /**
-     * Configures endpoint to get SAML token for the end user from STS in exchange for JWT token (OIDC).
-     * The SAML token will be added as a SupportingToken to the WS-Security headers.
-     * <p/>
-     * 1. Binds a WS-SecurityPolicy to the endpoint/client.
-     * The policy requires a SupportingToken of type IssuedToken.
-     * <p/>
-     * 2. Configures the location and credentials of the STS.
-     *
-     * @param client CXF client
-     */
-
-    public static void configureStsForOnBehalfOfWithJWT(Client client) {
-        configureStsClient(client, ON_BEHALF_OF_WITH_JWT);
-        setEndpointPolicyReference(client, "classpath:JwtSTSPolicy.xml");
-    }
-
-    private static void configureStsClient(Client client, StsType stsType) {
-        final String location = requireProperty(StsSecurityConstants.STS_URL_KEY);
-        final String username = requireProperty(StsSecurityConstants.SYSTEMUSER_USERNAME);
-        final String password = requireProperty(StsSecurityConstants.SYSTEMUSER_PASSWORD);
-
+    private static void configureStsClient(Client client, StsType stsType, String location, String username, String password) {
         new WSAddressingFeature().initialize(client, client.getBus());
 
         STSClient stsClient = createBasicSTSClient(client.getBus(), location, username, password, stsType);

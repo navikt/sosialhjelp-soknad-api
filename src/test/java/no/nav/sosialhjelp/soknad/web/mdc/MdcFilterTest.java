@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.web.mdc;
 
-import no.nav.sosialhjelp.soknad.consumer.sts.servicegateway.StsSecurityConstants;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.OidcSubjectHandlerService;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import no.nav.sosialhjelp.soknad.web.rest.SoknadApplication;
@@ -32,15 +31,15 @@ class MdcFilterTest {
     @BeforeEach
     public void setUp() {
         System.setProperty("environment.name", "test");
-        System.setProperty(StsSecurityConstants.SYSTEMUSER_USERNAME, MOCK_CONSUMER_ID);
+        System.setProperty("systemuser.username", MOCK_CONSUMER_ID);
         SubjectHandler.setSubjectHandlerService(new OidcSubjectHandlerService());
     }
 
     @AfterEach
     public void tearDown() {
-        System.clearProperty(StsSecurityConstants.SYSTEMUSER_USERNAME);
         SubjectHandler.resetOidcSubjectHandlerService();
         System.clearProperty("environment.name");
+        System.clearProperty("systemuser.username");
     }
 
     @Test

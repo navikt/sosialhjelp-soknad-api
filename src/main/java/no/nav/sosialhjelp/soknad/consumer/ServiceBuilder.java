@@ -18,7 +18,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static no.nav.sosialhjelp.soknad.consumer.sts.servicegateway.utility.STSConfigurationUtility.configureStsForOnBehalfOfWithJWT;
 import static no.nav.sosialhjelp.soknad.consumer.sts.servicegateway.utility.STSConfigurationUtility.configureStsForSystemUserInFSS;
 import static org.apache.cxf.frontend.ClientProxy.getClient;
 import static org.apache.cxf.ws.security.SecurityConstants.MUST_UNDERSTAND;
@@ -123,13 +122,8 @@ public final class ServiceBuilder<T> {
             this.portType = factoryBean;
         }
 
-        public PortTypeBuilder<U> withUserSecurity() {
-            configureStsForOnBehalfOfWithJWT(ClientProxy.getClient(portType));
-            return this;
-        }
-
-        public PortTypeBuilder<U> withSystemSecurity() {
-            configureStsForSystemUserInFSS(ClientProxy.getClient(portType));
+        public PortTypeBuilder<U> withSystemSecurity(String location, String username, String password) {
+            configureStsForSystemUserInFSS(ClientProxy.getClient(portType), location, username, password);
             return this;
         }
 
