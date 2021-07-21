@@ -8,13 +8,13 @@ import no.nav.sosialhjelp.soknad.web.utils.MiljoUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 
-import static java.lang.Boolean.parseBoolean;
-import static java.lang.System.getProperty;
-
 public class MetricsConfig {
 
     @Value("${sensu_client_host}")
     private String host;
+
+    @Value("${metrics.report.enabled}")
+    private boolean metricsReportEnabled;
 
     @Bean
     public TimerAspect timerAspect() {
@@ -23,7 +23,7 @@ public class MetricsConfig {
 
     public MetricsConfig() {
         String miljo = System.getenv("ENVIRONMENT_NAME");
-        if (!parseBoolean(getProperty("disable.metrics.report"))) {
+        if (metricsReportEnabled) {
             MetricsClient.enableMetrics(no.nav.sosialhjelp.metrics.MetricsConfig.resolveNaisConfig(MiljoUtils.getNaisAppName(), miljo, host));
         }
     }
