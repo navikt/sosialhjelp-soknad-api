@@ -62,7 +62,7 @@ public class OidcTokenValidatorConfig {
 
     private IssuerProperties selvbetjeningProperties() {
         var issuerProperties = new IssuerProperties(toUrl(discoveryUrl), Collections.singletonList(acceptedAudience), cookieName);
-        issuerProperties.setProxyUrl(proxyUrl(proxyUrl));
+        issuerProperties.setProxyUrl(proxyUrl(proxyUrl, SELVBETJENING));
         return issuerProperties;
     }
 
@@ -78,11 +78,11 @@ public class OidcTokenValidatorConfig {
         }
     }
 
-    private URL proxyUrl(String proxyUrl) {
+    private URL proxyUrl(String proxyUrl, String issuer) {
         try {
             return new URL(proxyUrl);
         } catch (MalformedURLException e) {
-            log.info("Kunne ikke parse property 'oidc.issuer.selvbetjening.proxy_url' til en URL. Fortsetter uten proxy.");
+            log.info("Kunne ikke parse property 'oidc.issuer.{}.proxy_url' til en URL. Fortsetter uten proxy.", issuer);
             return null;
         }
     }
