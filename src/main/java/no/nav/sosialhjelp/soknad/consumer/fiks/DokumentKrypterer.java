@@ -18,6 +18,7 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.operator.OutputEncryptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -33,6 +34,9 @@ import java.security.cert.X509Certificate;
 public class DokumentKrypterer {
 
     private static final Logger logger = LoggerFactory.getLogger(DokumentKrypterer.class);
+
+    @Value("${fiks.nokkelfil}")
+    private String fiksNokkelfil;
 
     private AlgorithmIdentifier encryptionScheme;
     private ASN1ObjectIdentifier cms;
@@ -75,18 +79,16 @@ public class DokumentKrypterer {
     }
 
     private X509Certificate lagFiksCertificate() {
-        String nokkelFil = System.getProperty("fiks.nokkelfil");
-
-        if (nokkelFil == null) {
-            throw new IllegalStateException("Propertien 'fiks.nokkelfil' mangler, må settes i Fasit");
+        if (fiksNokkelfil == null) {
+            throw new IllegalStateException("Propertien 'fiks.nokkelfil' mangler");
         }
 
         try {
-            InputStream publickey = getClass().getResourceAsStream("/svarutpublickey/" + nokkelFil);
+            InputStream publickey = getClass().getResourceAsStream("/svarutpublickey/" + fiksNokkelfil);
             return (X509Certificate) CertificateFactory.getInstance("X509")
                     .generateCertificate(publickey);
         } catch (CertificateException e) {
-            logger.error("Kunne ikke opprette certificate for Fiks: {}", nokkelFil, e);
+            logger.error("Kunne ikke opprette certificate for Fiks: {}", fiksNokkelfil, e);
             throw new RuntimeException(e);
         }
     }
