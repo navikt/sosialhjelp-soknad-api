@@ -9,12 +9,10 @@ import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeidStatus;
 import no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SoknadType;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.ContextConfiguration;
@@ -35,8 +33,6 @@ class AvbrytAutomatiskSchedulerTest {
     private static final String BEHANDLINGS_ID = "1100AAAAA";
     private static final int DAGER_GAMMEL_SOKNAD = 14;
 
-    @InjectMocks
-    private AvbrytAutomatiskSheduler scheduler = new AvbrytAutomatiskSheduler();
     @Mock
     private BatchSoknadUnderArbeidRepository batchSoknadUnderArbeidRepository;
     @Mock
@@ -44,14 +40,11 @@ class AvbrytAutomatiskSchedulerTest {
     @Mock
     private BatchSoknadMetadataRepository batchSoknadMetadataRepository;
 
+    private AvbrytAutomatiskSheduler scheduler;
+
     @BeforeEach
     public void setup() {
-        System.setProperty("sendsoknad.batch.enabled", "true");
-    }
-
-    @AfterEach
-    public void teardown() {
-        System.clearProperty("sendsoknad.batch.enabled");
+        scheduler = new AvbrytAutomatiskSheduler(soknadMetadataRepository, batchSoknadMetadataRepository, batchSoknadUnderArbeidRepository, true);
     }
 
     @Test

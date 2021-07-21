@@ -23,10 +23,8 @@ import no.nav.sosialhjelp.soknad.domain.SendtSoknad;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.domain.VedleggType;
 import no.nav.sosialhjelp.soknad.domain.Vedleggstatus;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
@@ -35,8 +33,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static java.lang.System.clearProperty;
-import static java.lang.System.setProperty;
 import static no.nav.sosialhjelp.soknad.business.batch.oppgave.fiks.FiksSender.ETTERSENDELSE_TIL_NAV;
 import static no.nav.sosialhjelp.soknad.business.batch.oppgave.fiks.FiksSender.SOKNAD_TIL_NAV;
 import static no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
@@ -68,7 +64,6 @@ class FiksSenderTest {
     @Mock
     private SosialhjelpPdfGenerator sosialhjelpPdfGenerator;
 
-    @InjectMocks
     private FiksSender fiksSender;
 
     private static final PostAdresse FAKE_ADRESSE = new PostAdresse()
@@ -87,13 +82,7 @@ class FiksSenderTest {
         when(sosialhjelpPdfGenerator.generateEttersendelsePdf(any(JsonInternalSoknad.class), anyString())).thenReturn(new byte[]{1, 2, 3});
         when(sosialhjelpPdfGenerator.generateBrukerkvitteringPdf()).thenReturn(new byte[]{1, 2, 3});
 
-        setProperty(FiksSender.KRYPTERING_DISABLED, "");
-        fiksSender = new FiksSender(forsendelsesService, dokumentKrypterer, innsendingService, sosialhjelpPdfGenerator);
-    }
-
-    @AfterEach
-    public void tearDown() {
-        clearProperty(FiksSender.KRYPTERING_DISABLED);
+        fiksSender = new FiksSender(forsendelsesService, dokumentKrypterer, innsendingService, sosialhjelpPdfGenerator, true);
     }
 
     @Test
@@ -122,10 +111,10 @@ class FiksSenderTest {
 
     @Test
     void opprettForsendelseSetterRiktigInfoPaForsendelsenUtenKryptering() {
+        fiksSender = new FiksSender(forsendelsesService, dokumentKrypterer, innsendingService, sosialhjelpPdfGenerator, false);
+
         when(innsendingService.hentSoknadUnderArbeid(anyString(), anyString()))
                 .thenReturn(new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER)).withEier(EIER));
-        setProperty(FiksSender.KRYPTERING_DISABLED, "true");
-        fiksSender = new FiksSender(forsendelsesService, dokumentKrypterer, innsendingService, sosialhjelpPdfGenerator);
         SendtSoknad sendtSoknad = lagSendtSoknad();
 
         Forsendelse forsendelse = fiksSender.opprettForsendelse(sendtSoknad, FAKE_ADRESSE);

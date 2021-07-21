@@ -4,10 +4,10 @@ import no.nav.sosialhjelp.metrics.MetricsFactory;
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.BatchSoknadUnderArbeidRepository;
 import no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils;
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import javax.inject.Inject;
 import java.time.LocalDateTime;
 
 import static org.slf4j.LoggerFactory.getLogger;
@@ -23,8 +23,16 @@ public class SlettSoknadUnderArbeidScheduler {
     private LocalDateTime batchStartTime;
     private int vellykket;
 
-    @Inject
-    private BatchSoknadUnderArbeidRepository batchSoknadUnderArbeidRepository;
+    private final BatchSoknadUnderArbeidRepository batchSoknadUnderArbeidRepository;
+    private final boolean batchEnabled;
+
+    public SlettSoknadUnderArbeidScheduler(
+            BatchSoknadUnderArbeidRepository batchSoknadUnderArbeidRepository,
+            @Value("${sendsoknad.batch.enabled}") boolean batchEnabled
+    ) {
+        this.batchSoknadUnderArbeidRepository = batchSoknadUnderArbeidRepository;
+        this.batchEnabled = batchEnabled;
+    }
 
     @Scheduled(cron = KLOKKEN_HALV_FEM_OM_NATTEN)
     public void slettGamleSoknadUnderArbeid() {
@@ -36,7 +44,7 @@ public class SlettSoknadUnderArbeidScheduler {
         batchStartTime = LocalDateTime.now();
         vellykket = 0;
 
-        if (Boolean.parseBoolean(System.getProperty("sendsoknad.batch.enabled", "true"))) {
+        if (batchEnabled) {
             logger.info("Starter sletting av soknadUnderArbeid som er eldre enn 14 dager");
             var batchTimer = MetricsFactory.createTimer("sosialhjelp.debug.slettSoknadUnderArbeid");
             batchTimer.start();

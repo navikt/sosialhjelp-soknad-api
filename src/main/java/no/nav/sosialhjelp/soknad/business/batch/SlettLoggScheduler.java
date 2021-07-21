@@ -9,10 +9,10 @@ import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.BatchSo
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata;
 import no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils;
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import javax.inject.Inject;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -30,12 +30,22 @@ public class SlettLoggScheduler {
     private LocalDateTime batchStartTime;
     private int vellykket;
 
-    @Inject
-    private BatchSoknadMetadataRepository batchSoknadMetadataRepository;
-    @Inject
-    private BatchSendtSoknadRepository batchSendtSoknadRepository;
-    @Inject
-    private OppgaveRepository oppgaveRepository;
+    private final BatchSoknadMetadataRepository batchSoknadMetadataRepository;
+    private final BatchSendtSoknadRepository batchSendtSoknadRepository;
+    private final OppgaveRepository oppgaveRepository;
+    private final boolean batchEnabled;
+
+    public SlettLoggScheduler(
+            BatchSoknadMetadataRepository batchSoknadMetadataRepository,
+            BatchSendtSoknadRepository batchSendtSoknadRepository,
+            OppgaveRepository oppgaveRepository,
+            @Value("${sendsoknad.batch.enabled}") boolean batchEnabled
+    ) {
+        this.batchSoknadMetadataRepository = batchSoknadMetadataRepository;
+        this.batchSendtSoknadRepository = batchSendtSoknadRepository;
+        this.oppgaveRepository = oppgaveRepository;
+        this.batchEnabled = batchEnabled;
+    }
 
     @Scheduled(cron = KLOKKEN_FEM_OM_NATTEN)
     public void slettLogger() {
@@ -46,7 +56,7 @@ public class SlettLoggScheduler {
 
         batchStartTime = LocalDateTime.now();
         vellykket = 0;
-        if (Boolean.parseBoolean(System.getProperty("sendsoknad.batch.enabled", "true"))) {
+        if (batchEnabled) {
             logger.info("Starter sletting av logger for ett år gamle søknader");
             Timer batchTimer = MetricsFactory.createTimer("sosialhjelp.debug.slettLogg");
             batchTimer.start();

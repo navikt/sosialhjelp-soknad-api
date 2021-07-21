@@ -1,11 +1,9 @@
 package no.nav.sosialhjelp.soknad.business.batch;
 
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.BatchSoknadUnderArbeidRepository;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -22,17 +20,11 @@ class SlettSoknadUnderArbeidSchedulerTest {
     @Mock
     private BatchSoknadUnderArbeidRepository batchSoknadUnderArbeidRepository;
 
-    @InjectMocks
-    private SlettSoknadUnderArbeidScheduler slettSoknadUnderArbeidScheduler;
+    private SlettSoknadUnderArbeidScheduler scheduler;
 
     @BeforeEach
-    public void setup() {
-        System.setProperty("sendsoknad.batch.enabled", "true");
-    }
-
-    @AfterEach
-    public void teardown() {
-        System.clearProperty("sendsoknad.batch.enabled");
+    void setUp() {
+        scheduler = new SlettSoknadUnderArbeidScheduler(batchSoknadUnderArbeidRepository, true);
     }
 
     @Test
@@ -40,7 +32,7 @@ class SlettSoknadUnderArbeidSchedulerTest {
         when(batchSoknadUnderArbeidRepository.hentGamleSoknadUnderArbeidForBatch())
                 .thenReturn(Arrays.asList(1L, 2L));
 
-        slettSoknadUnderArbeidScheduler.slettGamleSoknadUnderArbeid();
+        scheduler.slettGamleSoknadUnderArbeid();
 
          verify(batchSoknadUnderArbeidRepository, times(2)).slettSoknad(any());
     }

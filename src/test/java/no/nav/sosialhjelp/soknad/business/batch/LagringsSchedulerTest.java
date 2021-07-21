@@ -4,11 +4,9 @@ import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.Batc
 import no.nav.sosialhjelp.soknad.business.service.HenvendelseService;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeidStatus;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -23,21 +21,16 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class LagringsSchedulerTest {
 
-    @InjectMocks
-    private LagringsScheduler scheduler = new LagringsScheduler();
     @Mock
     private HenvendelseService henvendelseService;
     @Mock
     private BatchSoknadUnderArbeidRepository batchSoknadUnderArbeidRepository;
 
+    private LagringsScheduler scheduler;
+
     @BeforeEach
     public void setup() {
-        System.setProperty("sendsoknad.batch.enabled", "true");
-    }
-
-    @AfterEach
-    public void teardown() {
-        System.clearProperty("sendsoknad.batch.enabled");
+        scheduler = new LagringsScheduler(henvendelseService, batchSoknadUnderArbeidRepository, true);
     }
 
     @Test
