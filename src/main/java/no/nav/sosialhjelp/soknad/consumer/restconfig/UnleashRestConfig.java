@@ -23,12 +23,12 @@ public class UnleashRestConfig {
     @Value("${unleash_api_url}")
     private String endpoint;
 
-    @Value("${unleash_instance_id}")
+    @Value("${unleash_instance_id:prod-sbs}")
     private String instanceId;
 
     @Bean
     public Unleash unleashConsumer() {
-        return new DefaultUnleash(config(), new ByInstanceIdStrategy());
+        return new DefaultUnleash(config(), new ByInstanceIdStrategy(instanceId));
     }
 
     @Bean
