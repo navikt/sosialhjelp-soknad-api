@@ -394,10 +394,9 @@ public class DigisosApiImpl implements DigisosApi {
 
     private String createJws() {
         try {
-            String virksomhetsSertifikatPath = System.getProperty("virksomhetssertifikat_path", "/var/run/secrets/nais.io/virksomhetssertifikat");
-            VirksertCredentials virksertCredentials = objectMapper.readValue(FileUtils.readFileToString(new File(virksomhetsSertifikatPath + "/credentials.json"), StandardCharsets.UTF_8), VirksertCredentials.class);
+            VirksertCredentials virksertCredentials = objectMapper.readValue(FileUtils.readFileToString(new File(properties.getVirksomhetssertifikatPath() + "/credentials.json"), StandardCharsets.UTF_8), VirksertCredentials.class);
             KeyStore keyStore = KeyStore.getInstance("PKCS12");
-            String src = FileUtils.readFileToString(new File(virksomhetsSertifikatPath + "/key.p12.b64"), StandardCharsets.UTF_8);
+            String src = FileUtils.readFileToString(new File(properties.getVirksomhetssertifikatPath() + "/key.p12.b64"), StandardCharsets.UTF_8);
             keyStore.load(new ByteArrayInputStream(Base64.getDecoder().decode(src)), virksertCredentials.password.toCharArray());
 
             X509Certificate certificate = (X509Certificate) keyStore.getCertificate(virksertCredentials.alias);
