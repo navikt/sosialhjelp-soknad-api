@@ -4,25 +4,17 @@ import no.nav.sosialhjelp.soknad.consumer.kodeverk.KodeverkService;
 import no.nav.sosialhjelp.soknad.tekster.NavMessageSource;
 import org.springframework.stereotype.Component;
 
-import javax.inject.Inject;
-
 import static no.nav.sosialhjelp.soknad.business.service.systemdata.BasisPersonaliaSystemdata.PDL_STATSLOS;
 import static no.nav.sosialhjelp.soknad.business.service.systemdata.BasisPersonaliaSystemdata.PDL_UKJENT_STATSBORGERSKAP;
 
 @Component
 public class TextHelpers {
 
-    @Inject
-    public NavMessageSource navMessageSource;
+    public final NavMessageSource navMessageSource;
+    private final KodeverkService kodeverkService;
 
-    @Inject
-    private KodeverkService kodeverkService;
-
-    public void setNavMessageSource(NavMessageSource navMessageSource) {
+    public TextHelpers(NavMessageSource navMessageSource, KodeverkService kodeverkService) {
         this.navMessageSource = navMessageSource;
-    }
-
-    public void setKodeverkService(KodeverkService kodeverkService) {
         this.kodeverkService = kodeverkService;
     }
 

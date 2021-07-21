@@ -45,7 +45,7 @@ class SoknadServiceTest {
     private static final String BEHANDLINGSID = "123";
 
     @Mock
-    private HenvendelseService henvendelsesConnector;
+    private HenvendelseService henvendelseService;
     @Mock
     private OppgaveHandterer oppgaveHandterer;
     @Mock
@@ -79,11 +79,11 @@ class SoknadServiceTest {
     @Test
     void skalStarteSoknad() {
         DateTimeUtils.setCurrentMillisFixed(System.currentTimeMillis());
-        when(henvendelsesConnector.startSoknad(anyString())).thenReturn("123");
+        when(henvendelseService.startSoknad(anyString())).thenReturn("123");
         soknadService.startSoknad("");
 
         String bruker = SubjectHandler.getUserId();
-        verify(henvendelsesConnector).startSoknad(bruker);
+        verify(henvendelseService).startSoknad(bruker);
         ArgumentCaptor<SoknadUnderArbeid> argument = ArgumentCaptor.forClass(SoknadUnderArbeid.class);
         verify(soknadUnderArbeidRepository).opprettSoknad(argument.capture(), eq(bruker));
         List<JsonOkonomibekreftelse> bekreftelser = argument.getValue().getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getBekreftelse();
@@ -122,7 +122,7 @@ class SoknadServiceTest {
 
         ArgumentCaptor<SoknadUnderArbeid> soknadUnderArbeidCaptor = ArgumentCaptor.forClass(SoknadUnderArbeid.class);
         ArgumentCaptor<VedleggMetadataListe> vedleggCaptor = ArgumentCaptor.forClass(VedleggMetadataListe.class);
-        verify(henvendelsesConnector, atLeastOnce()).oppdaterMetadataVedAvslutningAvSoknad(eq(behandlingsId), vedleggCaptor.capture(), soknadUnderArbeidCaptor.capture(), eq(false));
+        verify(henvendelseService, atLeastOnce()).oppdaterMetadataVedAvslutningAvSoknad(eq(behandlingsId), vedleggCaptor.capture(), soknadUnderArbeidCaptor.capture(), eq(false));
         verify(oppgaveHandterer).leggTilOppgave(eq(behandlingsId), anyString());
 
         SoknadUnderArbeid capturedSoknadUnderArbeid = soknadUnderArbeidCaptor.getValue();
@@ -148,7 +148,7 @@ class SoknadServiceTest {
 
         soknadService.avbrytSoknad(BEHANDLINGSID);
 
-        verify(henvendelsesConnector).avbrytSoknad(BEHANDLINGSID, false);
+        verify(henvendelseService).avbrytSoknad(BEHANDLINGSID, false);
         verify(soknadUnderArbeidRepository).slettSoknad(any(SoknadUnderArbeid.class), anyString());
     }
 }

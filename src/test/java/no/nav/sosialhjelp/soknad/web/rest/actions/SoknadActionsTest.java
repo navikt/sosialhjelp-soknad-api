@@ -1,8 +1,6 @@
 package no.nav.sosialhjelp.soknad.web.rest.actions;
 
 import no.finn.unleash.Unleash;
-import no.nav.sosialhjelp.soknad.business.InnsendingService;
-import no.nav.sosialhjelp.soknad.business.batch.oppgave.OppgaveHandterer;
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository;
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata;
@@ -10,32 +8,26 @@ import no.nav.sosialhjelp.soknad.business.exceptions.SendingTilKommuneErIkkeAkti
 import no.nav.sosialhjelp.soknad.business.exceptions.SendingTilKommuneErMidlertidigUtilgjengeligException;
 import no.nav.sosialhjelp.soknad.business.exceptions.SendingTilKommuneUtilgjengeligException;
 import no.nav.sosialhjelp.soknad.business.exceptions.SoknadenHarNedetidException;
-import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.SosialhjelpPdfGenerator;
 import no.nav.sosialhjelp.soknad.business.service.digisosapi.DigisosApiService;
 import no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService;
-import no.nav.sosialhjelp.soknad.business.service.soknadservice.SystemdataUpdater;
-import no.nav.sosialhjelp.soknad.consumer.fiks.DigisosApi;
 import no.nav.sosialhjelp.soknad.consumer.fiks.KommuneInfoService;
 import no.nav.sosialhjelp.soknad.consumer.fiks.dto.KommuneStatus;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.domain.model.exception.AuthorizationException;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.StaticSubjectHandlerService;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
-import no.nav.sosialhjelp.soknad.tekster.NavMessageSource;
-import no.nav.sosialhjelp.soknad.web.config.SoknadActionsTestConfig;
 import no.nav.sosialhjelp.soknad.web.sikkerhet.Tilgangskontroll;
 import no.nav.sosialhjelp.soknad.web.utils.NedetidUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
-import javax.inject.Inject;
 import javax.servlet.ServletContext;
 import java.time.LocalDateTime;
-import java.util.Locale;
 
 import static no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
 import static no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus.SENDT_MED_DIGISOS_API;
@@ -48,47 +40,34 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {SoknadActionsTestConfig.class})
+@MockitoSettings(strictness = Strictness.LENIENT)
 class SoknadActionsTest {
 
     public static final String TESTKOMMUNE = "3002";
     public static final String KOMMUNE_I_SVARUT_LISTEN = "0301";
     private String EIER;
 
-    @Inject
-    private NavMessageSource tekster;
-    @Inject
+    @Mock
     private SoknadService soknadService;
-    @Inject
-    private OppgaveHandterer oppgaveHandterer;
-    @Inject
-    private InnsendingService innsendingService;
-    @Inject
-    private SystemdataUpdater systemdataUpdater;
-    @Inject
-    private DigisosApi digisosApi;
-    @Inject
+    @Mock
     private KommuneInfoService kommuneInfoService;
-    @Inject
+    @Mock
     private Tilgangskontroll tilgangskontroll;
-    @Inject
+    @Mock
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
-    @Inject
+    @Mock
     private SoknadMetadataRepository soknadMetadataRepository;
-    @Inject
+    @Mock
     private DigisosApiService digisosApiService;
-    @Inject
-    private SosialhjelpPdfGenerator sosialhjelpPdfGenerator;
-    @Inject
-    private SoknadActions actions;
-    @Inject
+    @Mock
     private Unleash unleash;
+
+    @InjectMocks
+    private SoknadActions actions;
 
     ServletContext context = mock(ServletContext.class);
 
@@ -96,8 +75,6 @@ class SoknadActionsTest {
     public void setUp() {
         System.setProperty("environment.name", "test");
         SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
-        reset(tekster);
-        when(tekster.finnTekst(eq("sendtSoknad.sendEpost.epostSubject"), any(Object[].class), any(Locale.class))).thenReturn("Emne");
         when(context.getRealPath(anyString())).thenReturn("");
         EIER = SubjectHandler.getUserId();
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
