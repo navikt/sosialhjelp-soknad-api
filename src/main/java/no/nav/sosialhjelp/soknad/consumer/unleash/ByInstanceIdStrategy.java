@@ -6,11 +6,14 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.Optional;
 
-import static java.lang.System.getProperty;
 
 public class ByInstanceIdStrategy implements Strategy {
 
-    private static final String INSTANCE_PROPERTY = "unleash_instance_id";
+    private final String instanceId;
+
+    public ByInstanceIdStrategy(String instanceId) {
+        this.instanceId = instanceId;
+    }
 
     @Override
     public String getName() {
@@ -29,6 +32,6 @@ public class ByInstanceIdStrategy implements Strategy {
     }
 
     private boolean isCurrentInstance(String instance) {
-        return getProperty(INSTANCE_PROPERTY, "prod-sbs").equals(instance);
+        return instanceId.equals(instance);
     }
 }

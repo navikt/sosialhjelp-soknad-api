@@ -12,11 +12,9 @@ import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata;
 import no.nav.sosialhjelp.soknad.domain.SendtSoknad;
 import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus;
 import no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SoknadType;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.ContextConfiguration;
@@ -38,8 +36,6 @@ class SlettLoggSchedulerTest {
     private static final int DAGER_GAMMEL_SOKNAD = 365;
     private static final String BEHANDLINGS_ID = "1100AAAAA";
 
-    @InjectMocks
-    private SlettLoggScheduler scheduler = new SlettLoggScheduler();
     @Mock
     private BatchSendtSoknadRepository batchSendtSoknadRepository;
     @Mock
@@ -49,14 +45,11 @@ class SlettLoggSchedulerTest {
     @Mock
     private OppgaveRepository oppgaveRepository;
 
-    @BeforeEach
-    public void setup() {
-        System.setProperty("sendsoknad.batch.enabled", "true");
-    }
+    private SlettLoggScheduler scheduler;
 
-    @AfterEach
-    public void teardown() {
-        System.clearProperty("sendsoknad.batch.enabled");
+    @BeforeEach
+    void setUp() {
+        scheduler = new SlettLoggScheduler(batchSoknadMetadataRepository, batchSendtSoknadRepository, oppgaveRepository, true);
     }
 
     @Test

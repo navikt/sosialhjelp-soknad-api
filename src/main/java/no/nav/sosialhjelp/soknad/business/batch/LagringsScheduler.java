@@ -8,10 +8,10 @@ import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import javax.inject.Inject;
 import java.util.List;
 
 import static org.slf4j.LoggerFactory.getLogger;
@@ -26,10 +26,19 @@ public class LagringsScheduler {
     private int vellykket;
     private int feilet;
 
-    @Inject
-    private HenvendelseService henvendelseService;
-    @Inject
-    private BatchSoknadUnderArbeidRepository batchSoknadUnderArbeidRepository;
+    private final HenvendelseService henvendelseService;
+    private final BatchSoknadUnderArbeidRepository batchSoknadUnderArbeidRepository;
+    private final boolean batchEnabled;
+
+    public LagringsScheduler(
+            HenvendelseService henvendelseService,
+            BatchSoknadUnderArbeidRepository batchSoknadUnderArbeidRepository,
+            @Value("${sendsoknad.batch.enabled}") boolean batchEnabled
+    ) {
+        this.henvendelseService = henvendelseService;
+        this.batchSoknadUnderArbeidRepository = batchSoknadUnderArbeidRepository;
+        this.batchEnabled = batchEnabled;
+    }
 
     @Scheduled(fixedRate = SCHEDULE_RATE_MS)
     public void slettForeldedeEttersendelserFraSoknadUnderArbeidDatabase() throws InterruptedException {
@@ -41,7 +50,7 @@ public class LagringsScheduler {
         batchStartTime = DateTime.now();
         vellykket = 0;
         feilet = 0;
-        if (Boolean.parseBoolean(System.getProperty("sendsoknad.batch.enabled", "true"))) {
+        if (batchEnabled) {
             logger.info("Starter flytting av søknader til henvendelse-jobb");
             Timer batchTimer = MetricsFactory.createTimer("debug.lagringsjobb");
             batchTimer.start();

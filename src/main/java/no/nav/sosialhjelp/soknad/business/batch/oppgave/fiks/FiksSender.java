@@ -18,9 +18,9 @@ import no.nav.sosialhjelp.soknad.domain.SendtSoknad;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,21 +32,25 @@ public class FiksSender {
 
     static final String SOKNAD_TIL_NAV = "Søknad til NAV";
     static final String ETTERSENDELSE_TIL_NAV = "Ettersendelse til NAV";
-    public static String KRYPTERING_DISABLED = "feature.fiks.kryptering.disabled";
-    private boolean SKAL_KRYPTERE = !Boolean.parseBoolean(System.getProperty(KRYPTERING_DISABLED, "false"));
 
     private static final Logger log = LoggerFactory.getLogger(FiksSender.class);
 
-    private ForsendelsesServiceV9 forsendelsesService;
-    private InnsendingService innsendingService;
-    private FiksDokumentHelper fiksDokumentHelper;
+    private final ForsendelsesServiceV9 forsendelsesService;
+    private final InnsendingService innsendingService;
+    private final FiksDokumentHelper fiksDokumentHelper;
+    private final boolean krypteringEnabled;
 
-    @Inject
-    public FiksSender(ForsendelsesServiceV9 forsendelsesService, DokumentKrypterer dokumentKrypterer,
-                      InnsendingService innsendingService, SosialhjelpPdfGenerator sosialhjelpPdfGenerator) {
+    public FiksSender(
+            ForsendelsesServiceV9 forsendelsesService,
+            DokumentKrypterer dokumentKrypterer,
+            InnsendingService innsendingService,
+            SosialhjelpPdfGenerator sosialhjelpPdfGenerator,
+            @Value("${feature.fiks.kryptering.enabled}") boolean krypteringEnabled
+    ) {
         this.forsendelsesService = forsendelsesService;
         this.innsendingService = innsendingService;
-        this.fiksDokumentHelper = new FiksDokumentHelper(SKAL_KRYPTERE, dokumentKrypterer, innsendingService, sosialhjelpPdfGenerator);
+        this.krypteringEnabled = krypteringEnabled;
+        this.fiksDokumentHelper = new FiksDokumentHelper(krypteringEnabled, dokumentKrypterer, innsendingService, sosialhjelpPdfGenerator);
     }
 
     private final Printkonfigurasjon fakePrintConfig = new Printkonfigurasjon()
@@ -82,8 +86,8 @@ public class FiksSender {
                 .withTittel(sendtSoknad.erEttersendelse() ? ETTERSENDELSE_TIL_NAV : SOKNAD_TIL_NAV)
                 .withKunDigitalLevering(false)
                 .withPrintkonfigurasjon(fakePrintConfig)
-                .withKryptert(SKAL_KRYPTERE)
-                .withKrevNiva4Innlogging(SKAL_KRYPTERE)
+                .withKryptert(krypteringEnabled)
+                .withKrevNiva4Innlogging(krypteringEnabled)
                 .withSvarPaForsendelse(svarPaForsendelseId)
                 .withDokumenter(hentDokumenterFraSoknad(soknadUnderArbeid))
                 .withMetadataFraAvleverendeSystem(
@@ -157,11 +161,4 @@ public class FiksSender {
         return fiksDokumenter;
     }
 
-    private String environmentNameIfTest() {
-        final String environment = System.getProperty("environment.name");
-        if (environment == null || "p".equals(environment)) {
-            return "";
-        }
-        return environment + "-";
-    }
 }

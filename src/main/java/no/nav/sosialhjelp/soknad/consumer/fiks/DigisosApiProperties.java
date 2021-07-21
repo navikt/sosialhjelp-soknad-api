@@ -10,8 +10,18 @@ public class DigisosApiProperties {
     private final String idPortenConfigUrl;
     private final String integrasjonsidFiks;
     private final String integrasjonpassordFiks;
+    private final String virksomhetssertifikatPath;
 
-    public DigisosApiProperties(String digisosApiEndpoint, String idPortenTokenUrl, String idPortenClientId, String idPortenScope, String idPortenConfigUrl, String integrasjonsidFiks, String integrasjonpassordFiks) {
+    public DigisosApiProperties(
+            String digisosApiEndpoint,
+            String idPortenTokenUrl,
+            String idPortenClientId,
+            String idPortenScope,
+            String idPortenConfigUrl,
+            String integrasjonsidFiks,
+            String integrasjonpassordFiks,
+            String virksomhetssertifikatPath
+    ) {
         this.digisosApiEndpoint = digisosApiEndpoint;
         this.idPortenTokenUrl = idPortenTokenUrl;
         this.idPortenClientId = idPortenClientId;
@@ -19,6 +29,7 @@ public class DigisosApiProperties {
         this.idPortenConfigUrl = idPortenConfigUrl;
         this.integrasjonsidFiks = integrasjonsidFiks;
         this.integrasjonpassordFiks = integrasjonpassordFiks;
+        this.virksomhetssertifikatPath = virksomhetssertifikatPath;
     }
 
     public String getDigisosApiEndpoint() {
@@ -47,5 +58,9 @@ public class DigisosApiProperties {
 
     public String getIntegrasjonpassordFiks() {
         return integrasjonpassordFiks;
+    }
+
+    public String getVirksomhetssertifikatPath() {
+        return virksomhetssertifikatPath;
     }
 }

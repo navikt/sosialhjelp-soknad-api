@@ -20,21 +20,7 @@ public class InformasjonService implements Miljovariabler {
         result.put("dittnav.link.url", dittnavUrl);
         result.put("soknad.ettersending.antalldager", antallDager);
 
-        result.putAll(getTestSpesifikkConfig());
-
         return result;
     }
-
-    private Map<String, String> getTestSpesifikkConfig() {
-        Map<String, String> testEnvVars = new HashMap<>();
-
-        for(String envVar : System.getProperties().stringPropertyNames()) {
-            if(envVar.startsWith("testconfig.")) {
-                testEnvVars.put(envVar, System.getProperty(envVar));
-            }
-        }
-        return testEnvVars;
-    }
-
 
 }

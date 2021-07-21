@@ -17,6 +17,18 @@ public class FiksWSConfig {
     @Value("${fiks.svarut.url}")
     private String fiksEndpoint;
 
+    @Value("${no.nav.sosialhjelp.soknad.sslMock:false}")
+    private boolean sslMockEnabled;
+
+    @Value("${sts.url}")
+    private String stsUrl;
+
+    @Value("${systemuser.username}")
+    private String username;
+
+    @Value("${systemuser.password}")
+    private String password;
+
     private ServiceBuilder<ForsendelsesServiceV9>.PortTypeBuilder<ForsendelsesServiceV9> factory() {
         final int receiveTimeout = 10 * 60_000;
         final int connectionTimeout = 10_000;
@@ -27,18 +39,18 @@ public class FiksWSConfig {
                 .withAddress(fiksEndpoint)
                 .withWsdl("classpath:/wsdl/svarUt.wsdl")
                 .build()
-                .withHttpsMock();
+                .withHttpsMock(sslMockEnabled);
     }
 
     @Bean
     public ForsendelsesServiceV9 forsendelsesServiceV9() {
-        var forsendelsesServiceV9 = factory().withSystemSecurity().get();
+        var forsendelsesServiceV9 = factory().withSystemSecurity(stsUrl, username, password).get();
         return createTimerProxyForWebService("FiksForsendelse", forsendelsesServiceV9, ForsendelsesServiceV9.class);
     }
 
     @Bean
     public Pingable forsendelsePing() {
-        ForsendelsesServiceV9 selftestEndpoint = factory().withSystemSecurity().get();
+        ForsendelsesServiceV9 selftestEndpoint = factory().withSystemSecurity(stsUrl, username, password).get();
         return new Pingable() {
             Ping.PingMetadata metadata = new Ping.PingMetadata(fiksEndpoint,"Fiks_v9", false);
 

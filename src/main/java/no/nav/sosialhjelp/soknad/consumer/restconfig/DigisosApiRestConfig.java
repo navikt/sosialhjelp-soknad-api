@@ -31,6 +31,8 @@ public class DigisosApiRestConfig {
     private String integrasjonsidFiks;
     @Value("${integrasjonpassord_fiks}")
     private String integrasjonpassordFiks;
+    @Value("${virksomhetssertifikat_path}")
+    private String virksomhetssertifikatPath;
 
     @Bean
     public DigisosApi digisosApi(RedisService redisService) {
@@ -61,6 +63,6 @@ public class DigisosApiRestConfig {
     }
 
     private DigisosApiProperties digisosApiProperties() {
-        return new DigisosApiProperties(digisosApiEndpoint, idPortenTokenUrl, idPortenClientId, idPortenScope, idPortenConfigUrl, integrasjonsidFiks, integrasjonpassordFiks);
+        return new DigisosApiProperties(digisosApiEndpoint, idPortenTokenUrl, idPortenClientId, idPortenScope, idPortenConfigUrl, integrasjonsidFiks, integrasjonpassordFiks, virksomhetssertifikatPath);
     }
 }
