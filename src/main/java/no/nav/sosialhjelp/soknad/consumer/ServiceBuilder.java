@@ -18,7 +18,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static java.lang.System.getProperty;
 import static no.nav.sosialhjelp.soknad.consumer.sts.servicegateway.utility.STSConfigurationUtility.configureStsForOnBehalfOfWithJWT;
 import static no.nav.sosialhjelp.soknad.consumer.sts.servicegateway.utility.STSConfigurationUtility.configureStsForSystemUserInFSS;
 import static org.apache.cxf.frontend.ClientProxy.getClient;
@@ -143,15 +142,14 @@ public final class ServiceBuilder<T> {
             return this;
         }
 
-        public PortTypeBuilder<U> withHttpsMock() {
+        public PortTypeBuilder<U> withHttpsMock(boolean sslMockEnabled) {
             HTTPConduit httpConduit = (HTTPConduit) getClient(portType).getConduit();
-            String property = getProperty("no.nav.sosialhjelp.soknad.sslMock");
-            if (property != null && property.equals("true")) {
+            if (sslMockEnabled) {
+                httpConduit.setTlsClientParameters(new TLSClientParameters());
+            } else {
                 TLSClientParameters params = new TLSClientParameters();
                 params.setDisableCNCheck(true);
                 httpConduit.setTlsClientParameters(params);
-            } else {
-                httpConduit.setTlsClientParameters(new TLSClientParameters());
             }
             return this;
         }

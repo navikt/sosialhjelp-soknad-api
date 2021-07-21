@@ -17,6 +17,9 @@ public class FiksWSConfig {
     @Value("${fiks.svarut.url}")
     private String fiksEndpoint;
 
+    @Value("${no.nav.sosialhjelp.soknad.sslMock:false}")
+    private boolean sslMockEnabled;
+
     private ServiceBuilder<ForsendelsesServiceV9>.PortTypeBuilder<ForsendelsesServiceV9> factory() {
         final int receiveTimeout = 10 * 60_000;
         final int connectionTimeout = 10_000;
@@ -27,7 +30,7 @@ public class FiksWSConfig {
                 .withAddress(fiksEndpoint)
                 .withWsdl("classpath:/wsdl/svarUt.wsdl")
                 .build()
-                .withHttpsMock();
+                .withHttpsMock(sslMockEnabled);
     }
 
     @Bean
