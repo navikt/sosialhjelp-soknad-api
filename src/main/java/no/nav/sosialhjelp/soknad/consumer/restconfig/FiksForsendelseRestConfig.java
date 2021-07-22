@@ -14,7 +14,7 @@ public class FiksForsendelseRestConfig {
     @Value("${svarut_url}")
     private String svarutUrl;
 
-    private String avsender = "";
+    private String avsender = "digisos_avsender";
     private String servicePassord = "";
 
     @Bean
