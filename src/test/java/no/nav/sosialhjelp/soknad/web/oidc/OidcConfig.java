@@ -2,12 +2,19 @@ package no.nav.sosialhjelp.soknad.web.oidc;
 
 import no.nav.security.token.support.core.configuration.MultiIssuerConfiguration;
 import no.nav.security.token.support.jaxrs.servlet.JaxrsJwtTokenValidationFilter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 
 @Configuration
 public class OidcConfig {
+
+    @Value("${tillatmock}")
+    private boolean tillatmock;
+
+    @Value("${start.oidc.withmock}")
+    private boolean startOidcWithMock;
 
     /**
      * Overskriver måten å hente ut OIDC-metadata. Istedenfor å hente det fra en internettadresse henter man det fra filsystemet.
@@ -24,7 +31,7 @@ public class OidcConfig {
     @Primary
     @Bean
     JaxrsJwtTokenValidationFilter FakeOidcTokenValidatorFilter(@SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection") MultiIssuerConfiguration multiIssuerConfiguration) {
-        if (isOidcMock()) {
+        if (tillatmock && startOidcWithMock) {
             return new FakeOidcTokenValidatorFilter(multiIssuerConfiguration);
         } else {
             return new JaxrsJwtTokenValidationFilter(multiIssuerConfiguration);
@@ -34,11 +41,6 @@ public class OidcConfig {
     @Bean
     JwkGenerator jwkGenerator() {
         return new JwkGenerator();
-    }
-
-    public static boolean isOidcMock() {
-        return "true".equalsIgnoreCase(System.getProperty("tillatmock")) &&
-                "true".equalsIgnoreCase(System.getProperty("start.oidc.withmock"));
     }
 
 }

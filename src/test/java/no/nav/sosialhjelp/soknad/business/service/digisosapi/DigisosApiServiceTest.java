@@ -67,26 +67,12 @@ class DigisosApiServiceTest {
     public void setUpBefore() {
         System.setProperty("environment.name", "test");
         SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
-
-        System.setProperty("idporten_config_url", "https://oidc-ver2.difi.no/idporten-oidc-provider/.well-known/openid-configuration");
-        System.setProperty("idporten_scope", "ks:fiks");
-        System.setProperty("idporten_clientid", "1c3631f4-dbf2-4c12-bdc4-156cbd53c625");
-        System.setProperty("idporten_token_url", "https://oidc-ver2.difi.no/idporten-oidc-provider/token");
-        System.setProperty("digisos_api_baseurl", "https://api.fiks.test.ks.no/");
-        System.setProperty("integrasjonsid_fiks", "c4bf2682-327f-4535-a087-c248d35978e1");
     }
 
     @AfterEach
     public void tearDown() {
         SubjectHandler.resetOidcSubjectHandlerService();
         System.clearProperty("environment.name");
-
-        System.clearProperty("idporten_config_url");
-        System.clearProperty("idporten_scope");
-        System.clearProperty("idporten_clientid");
-        System.clearProperty("idporten_token_url");
-        System.clearProperty("digisos_api_baseurl");
-        System.clearProperty("integrasjonsid_fiks");
     }
 
     @Test
