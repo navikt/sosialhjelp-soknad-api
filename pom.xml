@@ -787,6 +787,11 @@
             <artifactId>kryptering</artifactId>
             <version>${kryptering.version}</version>
         </dependency>
+        <dependency>
+            <groupId>no.ks.fiks.svarut</groupId>
+            <artifactId>svarut-rest-klient</artifactId>
+            <version>1.0.2</version>
+        </dependency>
 
         <!-- logging -->
         <dependency>
