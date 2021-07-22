@@ -3,12 +3,13 @@ package no.nav.sosialhjelp.soknad.web.config;
 import io.prometheus.client.CollectorRegistry;
 import io.prometheus.client.hotspot.DefaultExports;
 import no.nav.sosialhjelp.metrics.MetricsClient;
+import no.nav.sosialhjelp.metrics.MetricsConfig;
 import no.nav.sosialhjelp.metrics.aspects.TimerAspect;
 import no.nav.sosialhjelp.soknad.web.utils.MiljoUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 
-public class MetricsConfig {
+public class MetricsConfiguration {
 
     @Value("${sensu_client_host}")
     private String host;
@@ -21,16 +22,34 @@ public class MetricsConfig {
         return new TimerAspect();
     }
 
-    public MetricsConfig() {
-        String miljo = System.getenv("ENVIRONMENT_NAME");
+    @Bean
+    public MetricProperties metricProperties() {
+        var miljo = System.getenv("ENVIRONMENT_NAME");
+        var metricProperties = new MetricProperties(host, miljo);
         if (metricsReportEnabled) {
-            MetricsClient.enableMetrics(no.nav.sosialhjelp.metrics.MetricsConfig.resolveNaisConfig(MiljoUtils.getNaisAppName(), miljo, host));
+            metricProperties.enableMetrics();
         }
+        return metricProperties;
     }
 
     @Bean
     public CollectorRegistry collectorRegistry() {
         DefaultExports.initialize();
         return CollectorRegistry.defaultRegistry;
+    }
+
+    static class MetricProperties {
+
+        private final String host;
+        private final String miljo;
+
+        public MetricProperties(String host, String miljo) {
+            this.host = host;
+            this.miljo = miljo;
+        }
+
+        public void enableMetrics() {
+            MetricsClient.enableMetrics(MetricsConfig.resolveNaisConfig(MiljoUtils.getNaisAppName(), miljo, host));
+        }
     }
 }

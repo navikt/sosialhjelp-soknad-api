@@ -30,7 +30,7 @@ import org.springframework.context.annotation.Import;
         SoknadInnsendingDBConfig.class,
         HandlebarsConfig.class,
         OidcTokenValidatorConfig.class,
-        MetricsConfig.class,
+        MetricsConfiguration.class,
         SaksoversiktMetadataService.class,
         SoknadOversiktService.class,
         VirusScanConfig.class,
