@@ -8,10 +8,10 @@ import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.domain.model.exception.AuthorizationException;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import org.slf4j.Logger;
+import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Objects;
 import java.util.Optional;
@@ -22,7 +22,7 @@ import static no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.Adressebeskyttel
 import static no.nav.sosialhjelp.soknad.web.utils.XsrfGenerator.sjekkXsrfToken;
 import static org.slf4j.LoggerFactory.getLogger;
 
-@Named("tilgangskontroll")
+@Component
 public class Tilgangskontroll {
 
     private static final Logger logger = getLogger(Tilgangskontroll.class);
