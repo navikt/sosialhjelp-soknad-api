@@ -24,8 +24,8 @@
         </appender>
 
         <logger name="org.springframework" level="warn"/>
-        <logger name="org.springframework.jdbc" level="debug" />
-        <logger name="org.flywaydb" level="debug" />
+        <logger name="org.springframework.jdbc" level="info" />
+        <logger name="org.flywaydb" level="info" />
         <logger name="no.nav.sosialhjelp.soknad" level="debug"/>
         <logger name="org.apache.pdfbox" level="error"/>
         <logger name="klientlogger" level="debug"/>
