@@ -2,6 +2,7 @@ package no.nav.sosialhjelp.soknad.business.pdf.helpers;
 
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sosialhjelp.soknad.business.pdf.CmsTekst;
+import no.nav.sosialhjelp.soknad.business.pdf.HandleBarKjoerer;
 import no.nav.sosialhjelp.soknad.business.pdf.HandlebarRegistry;
 import no.nav.sosialhjelp.soknad.business.service.Miljovariabler;
 import no.nav.sosialhjelp.soknad.consumer.kodeverk.KodeverkService;
@@ -65,8 +66,8 @@ class RegistryAwareHelperTest {
     public static class HandlebarsHelperTestConfig {
 
         @Bean
-        public HandlebarRegistry register() {
-            return mock(HandlebarRegistry.class);
+        public HandleBarKjoerer handleBarKjoerer() {
+            return mock(HandleBarKjoerer.class);
         }
 
         @Bean

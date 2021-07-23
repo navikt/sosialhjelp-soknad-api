@@ -15,7 +15,6 @@ public class NoRedisConfig {
 
     @Bean
     public RedisService redisService() {
-
         log.error("Starter NoRedisService. Skal ikke skje i prod.");
         return new NoRedisService();
     }

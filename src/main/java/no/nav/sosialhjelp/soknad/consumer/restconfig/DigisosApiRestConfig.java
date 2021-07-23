@@ -63,6 +63,14 @@ public class DigisosApiRestConfig {
     }
 
     private DigisosApiProperties digisosApiProperties() {
-        return new DigisosApiProperties(digisosApiEndpoint, idPortenTokenUrl, idPortenClientId, idPortenScope, idPortenConfigUrl, integrasjonsidFiks, integrasjonpassordFiks, virksomhetssertifikatPath);
+        return new DigisosApiProperties(
+                digisosApiEndpoint,
+                idPortenTokenUrl,
+                idPortenClientId,
+                idPortenScope,
+                idPortenConfigUrl,
+                integrasjonsidFiks,
+                integrasjonpassordFiks,
+                virksomhetssertifikatPath);
     }
 }

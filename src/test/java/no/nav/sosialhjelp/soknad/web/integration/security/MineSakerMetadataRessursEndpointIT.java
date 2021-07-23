@@ -5,6 +5,7 @@ import no.nav.security.token.support.core.JwtTokenConstants;
 import no.nav.sosialhjelp.soknad.web.integration.AbstractIT;
 import no.nav.sosialhjelp.soknad.web.integration.SoknadTester;
 import no.nav.sosialhjelp.soknad.web.oidc.JwtTokenGenerator;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import javax.ws.rs.client.Invocation;
@@ -12,6 +13,7 @@ import javax.ws.rs.core.Response;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Disabled("migrer i-tester til springboottest")
 class MineSakerMetadataRessursEndpointIT extends AbstractIT {
 
     public static final String BRUKER = "11111111111";

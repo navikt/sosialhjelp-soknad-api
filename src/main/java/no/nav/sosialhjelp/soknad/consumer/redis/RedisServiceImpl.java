@@ -2,7 +2,6 @@ package no.nav.sosialhjelp.soknad.consumer.redis;
 
 import no.nav.sosialhjelp.api.fiks.KommuneInfo;
 import org.slf4j.Logger;
-import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
 import java.io.IOException;
@@ -14,7 +13,6 @@ import static no.nav.sosialhjelp.soknad.consumer.redis.RedisUtils.objectMapper;
 import static no.nav.sosialhjelp.soknad.consumer.redis.RedisUtils.toKommuneInfoMap;
 import static org.slf4j.LoggerFactory.getLogger;
 
-@Component
 public class RedisServiceImpl implements RedisService {
 
     private static final Logger log = getLogger(RedisServiceImpl.class);

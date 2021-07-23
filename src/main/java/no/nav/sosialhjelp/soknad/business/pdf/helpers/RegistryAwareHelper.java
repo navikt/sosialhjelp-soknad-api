@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.business.pdf.helpers;
 
 import com.github.jknack.handlebars.Helper;
-import no.nav.sosialhjelp.soknad.business.pdf.HandlebarRegistry;
+import no.nav.sosialhjelp.soknad.business.pdf.HandleBarKjoerer;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -14,11 +14,11 @@ import javax.inject.Inject;
 public abstract class RegistryAwareHelper<T> implements Helper<T> {
 
     @Inject
-    private HandlebarRegistry handlebarsRegistry;
+    private HandleBarKjoerer handleBarKjoerer;
 
     @PostConstruct
     public void registrer() {
-        handlebarsRegistry.registrerHelper(getNavn(), this);
+        handleBarKjoerer.registrerHelper(getNavn(), this);
     }
 
     public abstract String getNavn();

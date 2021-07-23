@@ -2,12 +2,11 @@ package no.nav.sosialhjelp.soknad.business.pdfmedpdfbox;
 
 import no.nav.sosialhjelp.soknad.consumer.kodeverk.KodeverkService;
 import no.nav.sosialhjelp.soknad.tekster.NavMessageSource;
-import org.springframework.stereotype.Component;
 
 import static no.nav.sosialhjelp.soknad.business.service.systemdata.BasisPersonaliaSystemdata.PDL_STATSLOS;
 import static no.nav.sosialhjelp.soknad.business.service.systemdata.BasisPersonaliaSystemdata.PDL_UKJENT_STATSBORGERSKAP;
 
-@Component
+//@Component
 public class TextHelpers {
 
     public final NavMessageSource navMessageSource;

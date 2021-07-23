@@ -5,7 +5,7 @@ import no.nav.sosialhjelp.soknad.consumer.skatt.dto.Inntekt;
 import no.nav.sosialhjelp.soknad.consumer.skatt.dto.OppgaveInntektsmottaker;
 import no.nav.sosialhjelp.soknad.consumer.skatt.dto.SkattbarInntekt;
 import no.nav.sosialhjelp.soknad.domain.model.utbetaling.Utbetaling;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
 
-@Service
+@Component
 public class SkattbarInntektService {
 
     private DateTimeFormatter arManedFormatter = DateTimeFormatter.ofPattern("yyyy-MM");

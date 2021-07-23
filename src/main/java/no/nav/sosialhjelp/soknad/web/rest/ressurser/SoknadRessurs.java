@@ -7,7 +7,7 @@ import no.nav.sosialhjelp.metrics.aspects.Timed;
 import no.nav.sosialhjelp.soknad.business.SoknadUnderArbeidService;
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository;
 import no.nav.sosialhjelp.soknad.business.exceptions.SoknadenHarNedetidException;
-import no.nav.sosialhjelp.soknad.business.pdf.HtmlGenerator;
+import no.nav.sosialhjelp.soknad.business.pdf.HandleBarKjoerer;
 import no.nav.sosialhjelp.soknad.business.service.HenvendelseService;
 import no.nav.sosialhjelp.soknad.business.service.OpplastetVedleggService;
 import no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService;
@@ -63,7 +63,7 @@ public class SoknadRessurs {
     private static final Logger log = getLogger(SoknadRessurs.class);
 
     private final SoknadService soknadService;
-    private final HtmlGenerator pdfTemplate;
+    private final HandleBarKjoerer pdfTemplate;
     private final SoknadUnderArbeidService soknadUnderArbeidService;
     private final SoknadUnderArbeidRepository soknadUnderArbeidRepository;
     private final SystemdataUpdater systemdata;
@@ -73,7 +73,7 @@ public class SoknadRessurs {
 
     public SoknadRessurs(
             SoknadService soknadService,
-            HtmlGenerator pdfTemplate,
+            HandleBarKjoerer pdfTemplate,
             SoknadUnderArbeidService soknadUnderArbeidService,
             SoknadUnderArbeidRepository soknadUnderArbeidRepository,
             SystemdataUpdater systemdata,

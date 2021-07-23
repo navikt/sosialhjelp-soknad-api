@@ -2,11 +2,9 @@ package no.nav.sosialhjelp.soknad.consumer.redis;
 
 
 import no.nav.sosialhjelp.api.fiks.KommuneInfo;
-import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
-@Component
 public class NoRedisService implements RedisService {
 
     @SuppressWarnings("rawtypes")

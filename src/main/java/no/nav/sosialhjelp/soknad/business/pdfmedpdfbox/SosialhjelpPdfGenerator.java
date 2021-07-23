@@ -48,7 +48,6 @@ import no.nav.sosialhjelp.soknad.business.util.JsonOkonomiUtils;
 import no.nav.sosialhjelp.soknad.tekster.NavMessageSource;
 import org.apache.commons.lang3.LocaleUtils;
 import org.joda.time.LocalDate;
-import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -70,7 +69,7 @@ import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_SKATT
 import static no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.PdfGenerator.INNRYKK_2;
 import static no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.PdfGenerator.INNRYKK_4;
 
-@Component
+//@Component
 public class SosialhjelpPdfGenerator {
     private final String DATO_FORMAT = "d. MMMM yyyy";
 

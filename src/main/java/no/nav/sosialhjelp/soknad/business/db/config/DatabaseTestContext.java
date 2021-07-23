@@ -3,6 +3,7 @@ package no.nav.sosialhjelp.soknad.business.db.config;
 import no.nav.sosialhjelp.soknad.business.db.SQLUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -16,9 +17,9 @@ import java.util.Properties;
 
 import static java.lang.System.getProperty;
 
+@Profile("(mock-alt|test)")
 @Configuration
 public class DatabaseTestContext {
-
 
     @Bean
     public DataSource dataSource() throws IOException {

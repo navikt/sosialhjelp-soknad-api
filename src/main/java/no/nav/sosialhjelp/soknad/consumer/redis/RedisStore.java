@@ -8,13 +8,11 @@ import io.lettuce.core.codec.ByteArrayCodec;
 import io.lettuce.core.codec.RedisCodec;
 import io.lettuce.core.codec.StringCodec;
 import org.slf4j.Logger;
-import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
-@Component
 public class RedisStore {
 
     private static final Logger log = getLogger(RedisStore.class);

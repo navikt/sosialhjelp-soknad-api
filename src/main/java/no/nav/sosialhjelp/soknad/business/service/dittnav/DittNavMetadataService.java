@@ -3,6 +3,7 @@ package no.nav.sosialhjelp.soknad.business.service.dittnav;
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.eksponerte.dto.PabegyntSoknadDto;
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.time.ZoneId;
@@ -20,6 +21,9 @@ public class DittNavMetadataService {
     private static final String SOKNAD_TITTEL = "Søknad om økonomisk sosialhjelp";
     private static final int SIKKERHETSNIVAA_3 = 3;
     private static final int SIKKERHETSNIVAA_4 = 4;
+
+    @Value("${environment.name}")
+    private String miljo;
 
     private final SoknadMetadataRepository soknadMetadataRepository;
 
@@ -77,7 +81,6 @@ public class DittNavMetadataService {
     }
 
     private String lagContextLenke() {
-        var miljo = System.getProperty("environment.name", "");
         var postfix = miljo.contains("q") ? String.format("-%s", miljo) : "";
         return "https://www" + postfix + ".nav.no/sosialhjelp/soknad/";
     }

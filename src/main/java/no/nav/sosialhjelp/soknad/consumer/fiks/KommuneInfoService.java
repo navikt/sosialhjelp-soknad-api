@@ -6,7 +6,6 @@ import no.nav.sosialhjelp.soknad.consumer.redis.RedisService;
 import no.nav.sosialhjelp.soknad.domain.model.util.KommuneTilNavEnhetMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
 import java.time.LocalDateTime;
@@ -20,7 +19,7 @@ import static no.nav.sosialhjelp.soknad.consumer.fiks.dto.KommuneStatus.SKAL_SEN
 import static no.nav.sosialhjelp.soknad.consumer.fiks.dto.KommuneStatus.SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD_OG_ETTERSENDELSER;
 import static no.nav.sosialhjelp.soknad.consumer.redis.CacheConstants.KOMMUNEINFO_LAST_POLL_TIME_KEY;
 
-@Component
+//@Component
 public class KommuneInfoService {
     private static final Logger log = LoggerFactory.getLogger(KommuneInfoService.class);
     private static final long MINUTES_TO_PASS_BETWEEN_POLL = 10;

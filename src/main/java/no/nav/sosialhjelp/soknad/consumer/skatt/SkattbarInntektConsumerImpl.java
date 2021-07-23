@@ -4,7 +4,6 @@ import no.nav.sosialhjelp.soknad.consumer.concurrency.RestCallContext;
 import no.nav.sosialhjelp.soknad.consumer.skatt.dto.SkattbarInntekt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Invocation;
@@ -16,7 +15,6 @@ import java.util.function.Function;
 
 import static no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils.feilmeldingUtenFnr;
 
-@Component
 public class SkattbarInntektConsumerImpl implements SkattbarInntektConsumer {
 
     private static final Logger log = LoggerFactory.getLogger(SkattbarInntektConsumerImpl.class);

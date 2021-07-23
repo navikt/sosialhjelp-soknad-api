@@ -1,7 +1,5 @@
 package no.nav.sosialhjelp.soknad.web.config;
 
-import io.prometheus.client.CollectorRegistry;
-import io.prometheus.client.hotspot.DefaultExports;
 import no.nav.sosialhjelp.metrics.MetricsClient;
 import no.nav.sosialhjelp.metrics.MetricsConfig;
 import no.nav.sosialhjelp.metrics.aspects.TimerAspect;
@@ -32,11 +30,11 @@ public class MetricsConfiguration {
         return metricProperties;
     }
 
-    @Bean
-    public CollectorRegistry collectorRegistry() {
-        DefaultExports.initialize();
-        return CollectorRegistry.defaultRegistry;
-    }
+//    @Bean
+//    public CollectorRegistry collectorRegistry() {
+//        DefaultExports.initialize();
+//        return CollectorRegistry.defaultRegistry;
+//    }
 
     static class MetricProperties {
 

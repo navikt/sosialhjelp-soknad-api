@@ -3,13 +3,12 @@ package no.nav.sosialhjelp.soknad.consumer.bostotte;
 import no.nav.sosialhjelp.soknad.web.selftest.Pingable;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
 @Configuration
-@ComponentScan(basePackageClasses = Bostotte.class)
+//@ComponentScan(basePackageClasses = Bostotte.class)
 public class BostotteConfig {
 
     @Value("${soknad.bostotte.url}")

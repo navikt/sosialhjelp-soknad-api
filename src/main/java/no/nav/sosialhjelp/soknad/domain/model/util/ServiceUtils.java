@@ -55,6 +55,16 @@ public final class ServiceUtils {
                 || miljo.equals("test");
     }
 
+    public static boolean envIsNonProduction() {
+        String miljo = System.getenv(ENVIRONMENT_NAME);
+        return miljo == null
+                || miljo.equals("q1")
+                || miljo.equals("labs-gcp")
+                || miljo.equals("dev-gcp")
+                || miljo.equals("local")
+                || miljo.equals("test");
+    }
+
     public static boolean isScheduledTasksDisabled(){
         return Boolean.parseBoolean(System.getProperty(IS_SCHEDULED_TASKS_DISABLED, "false"));
     }

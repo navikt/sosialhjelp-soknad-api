@@ -4,11 +4,13 @@ import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.SoknadM
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata;
 import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus;
 import no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SoknadType;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -27,6 +29,11 @@ class DittNavMetadataServiceTest {
 
     @InjectMocks
     private DittNavMetadataService dittNavMetadataService;
+
+    @BeforeEach
+    public void setUp() throws Exception {
+        ReflectionTestUtils.setField(dittNavMetadataService, "miljo", "q1");
+    }
 
     @Test
     void skalHenteAktivePabegynteSoknaderForBruker() {

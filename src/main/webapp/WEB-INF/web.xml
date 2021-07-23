@@ -24,59 +24,59 @@
         <param-value>no.nav.sosialhjelp.soknad.web.config.SoknadinnsendingConfig</param-value>
     </context-param>
 
-    <filter>
-        <filter-name>OidcTokenValidatorFilter</filter-name>
-        <filter-class>no.nav.sosialhjelp.soknad.web.oidc.OidcTokenValidatorFilter</filter-class>
-        <async-supported>true</async-supported>
-    </filter>
-    <filter-mapping>
-        <filter-name>OidcTokenValidatorFilter</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping>
+<!--    <filter>-->
+<!--        <filter-name>OidcTokenValidatorFilter</filter-name>-->
+<!--        <filter-class>no.nav.sosialhjelp.soknad.web.oidc.OidcTokenValidatorFilter</filter-class>-->
+<!--        <async-supported>true</async-supported>-->
+<!--    </filter>-->
+<!--    <filter-mapping>-->
+<!--        <filter-name>OidcTokenValidatorFilter</filter-name>-->
+<!--        <url-pattern>/*</url-pattern>-->
+<!--    </filter-mapping>-->
 
     <!--OpenAmLoginFilter blir erstattet ved kjøring i Jetty. Se JettyTestServer (context.setOverrideDescriptor(...)) og override-web.xml-->
-    <filter>
-        <filter-name>OpenAmLoginFilter</filter-name>
-        <filter-class>no.nav.sosialhjelp.soknad.web.saml.OpenAmLoginFilter</filter-class>
-        <async-supported>true</async-supported>
-    </filter>
-    <filter-mapping>
-        <filter-name>OpenAmLoginFilter</filter-name>
-        <url-pattern>/metadata/*</url-pattern>
-    </filter-mapping>
+<!--    <filter>-->
+<!--        <filter-name>OpenAmLoginFilter</filter-name>-->
+<!--        <filter-class>no.nav.sosialhjelp.soknad.web.saml.OpenAmLoginFilter</filter-class>-->
+<!--        <async-supported>true</async-supported>-->
+<!--    </filter>-->
+<!--    <filter-mapping>-->
+<!--        <filter-name>OpenAmLoginFilter</filter-name>-->
+<!--        <url-pattern>/metadata/*</url-pattern>-->
+<!--    </filter-mapping>-->
 
-    <filter>
-        <filter-name>charEncodingFilter</filter-name>
-        <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
-        <async-supported>true</async-supported>
-        <init-param>
-            <param-name>encoding</param-name>
-            <param-value>UTF-8</param-value>
-        </init-param>
-        <init-param>
-            <param-name>forceEncoding</param-name>
-            <param-value>true</param-value>
-        </init-param>
-    </filter>
-    <filter-mapping>
-        <filter-name>charEncodingFilter</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping>
+<!--    <filter>-->
+<!--        <filter-name>charEncodingFilter</filter-name>-->
+<!--        <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>-->
+<!--        <async-supported>true</async-supported>-->
+<!--        <init-param>-->
+<!--            <param-name>encoding</param-name>-->
+<!--            <param-value>UTF-8</param-value>-->
+<!--        </init-param>-->
+<!--        <init-param>-->
+<!--            <param-name>forceEncoding</param-name>-->
+<!--            <param-value>true</param-value>-->
+<!--        </init-param>-->
+<!--    </filter>-->
+<!--    <filter-mapping>-->
+<!--        <filter-name>charEncodingFilter</filter-name>-->
+<!--        <url-pattern>/*</url-pattern>-->
+<!--    </filter-mapping>-->
 
-    <servlet>
-        <servlet-name>SoknadAPI</servlet-name>
-        <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
-        <init-param>
-            <param-name>javax.ws.rs.Application</param-name>
-            <param-value>no.nav.sosialhjelp.soknad.web.rest.SoknadApplication</param-value>
-        </init-param>
-        <load-on-startup>1</load-on-startup>
-        <async-supported>true</async-supported>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>SoknadAPI</servlet-name>
-        <url-pattern>/*</url-pattern>
-    </servlet-mapping>
+<!--    <servlet>-->
+<!--        <servlet-name>SoknadAPI</servlet-name>-->
+<!--        <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>-->
+<!--        <init-param>-->
+<!--            <param-name>javax.ws.rs.Application</param-name>-->
+<!--            <param-value>no.nav.sosialhjelp.soknad.web.rest.SoknadApplication</param-value>-->
+<!--        </init-param>-->
+<!--        <load-on-startup>1</load-on-startup>-->
+<!--        <async-supported>true</async-supported>-->
+<!--    </servlet>-->
+<!--    <servlet-mapping>-->
+<!--        <servlet-name>SoknadAPI</servlet-name>-->
+<!--        <url-pattern>/*</url-pattern>-->
+<!--    </servlet-mapping>-->
     
     <resource-ref>
         <res-ref-name>jdbc/SoknadInnsendingDS</res-ref-name>
