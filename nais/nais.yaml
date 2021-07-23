@@ -64,10 +64,10 @@ spec:
 {{/each}}
   resources:
     limits:
-      cpu: 1000m
+      cpu: 2000m
       memory: {{memoryLimit}}
     requests:
-      cpu: 400m
+      cpu: 1000m
       memory: {{memoryRequest}}
   env:
 {{#each env}}
