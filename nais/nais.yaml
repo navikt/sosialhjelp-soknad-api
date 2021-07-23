@@ -67,7 +67,7 @@ spec:
       cpu: 1000m
       memory: {{memoryLimit}}
     requests:
-      cpu: 400m
+      cpu: 1000m
       memory: {{memoryRequest}}
   env:
 {{#each env}}
