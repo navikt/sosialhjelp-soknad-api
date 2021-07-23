@@ -10,8 +10,8 @@
     <artifactId>sosialhjelp-soknad-api</artifactId>
     <version>18.1.0-SNAPSHOT</version>
 
-<!--    <packaging>war</packaging>-->
-    <packaging>jar</packaging>
+    <packaging>war</packaging>
+<!--    <packaging>jar</packaging>-->
 
     <repositories>
         <repository>
