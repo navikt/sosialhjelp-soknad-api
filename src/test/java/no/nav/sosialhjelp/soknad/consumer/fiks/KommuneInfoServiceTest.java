@@ -323,6 +323,14 @@ class KommuneInfoServiceTest {
     }
 
     @Test
+    void behandlingsansvarligKommuneSkalReturnereKommunenavnHvisIngenBehandlingsansvarligOgKommuneInfoMapErNull() {
+        when(digisosApi.hentAlleKommuneInfo()).thenReturn(null);
+
+        String kommunenavn = kommuneInfoService.getBehandlingskommune(KOMMUNENR, "kommunenavn");
+        assertThat(kommunenavn).isEqualTo("kommunenavn");
+    }
+
+    @Test
     void skalHenteKommuneInfoFraCache_hvisLastTimePollErInnenfor() {
         KommuneInfo value = new KommuneInfo(KOMMUNENR, true, false, true, false, null, false, null);
         Map<String, KommuneInfo> kommuneInfoMap = new HashMap<>();
