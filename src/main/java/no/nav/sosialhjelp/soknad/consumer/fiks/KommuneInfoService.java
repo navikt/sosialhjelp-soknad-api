@@ -117,7 +117,7 @@ public class KommuneInfoService {
 
     private String behandlingsansvarlig(String kommunenummer) {
         var kommuneInfoMap = hentAlleKommuneInfo();
-        KommuneInfo kommuneInfo = kommuneInfoMap != null ? kommuneInfoMap.getOrDefault(kommunenummer, defaultKommuneInfo()) : defaultKommuneInfo();
+        var kommuneInfo = kommuneInfoMap != null ? kommuneInfoMap.getOrDefault(kommunenummer, defaultKommuneInfo()) : defaultKommuneInfo();
         return kommuneInfo.getBehandlingsansvarlig();
     }
 
