@@ -12,6 +12,7 @@ import java.util.Map;
 import static no.nav.sosialhjelp.soknad.consumer.redis.CacheConstants.KOMMUNEINFO_CACHE_KEY;
 import static no.nav.sosialhjelp.soknad.consumer.redis.RedisUtils.objectMapper;
 import static no.nav.sosialhjelp.soknad.consumer.redis.RedisUtils.toKommuneInfoMap;
+import static no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils.maskerFnr;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Component
@@ -35,7 +36,7 @@ public class RedisServiceImpl implements RedisService {
             try {
                 return objectMapper.readValue(value, requestedClass);
             } catch (IOException e) {
-                log.warn("Fant key={} i cache, men value var ikke {}", key, requestedClass.getSimpleName(), e);
+                log.warn("Fant key={} i cache, men value var ikke {}", maskerFnr(key), requestedClass.getSimpleName(), e);
                 return null;
             }
         } else {
@@ -73,9 +74,9 @@ public class RedisServiceImpl implements RedisService {
 
     private void handleResponse(String key, String result) {
         if (result != null && result.equalsIgnoreCase("OK")) {
-            log.debug("Redis put OK, key={}", key);
+            log.debug("Redis put OK, key={}", maskerFnr(key));
         } else {
-            log.warn("Redis put feilet eller fikk timeout, key={}", key);
+            log.warn("Redis put feilet eller fikk timeout, key={}", maskerFnr(key));
         }
     }
 }
