@@ -13,7 +13,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.function.Function;
 
-import static no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils.feilmeldingUtenFnr;
+import static no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils.maskerFnr;
 
 public class SkattbarInntektConsumerImpl implements SkattbarInntektConsumer {
 
@@ -57,7 +57,7 @@ public class SkattbarInntektConsumerImpl implements SkattbarInntektConsumer {
                 return new SkattbarInntekt();
             } else {
                 String melding = response.readEntity(String.class);
-                var feilmeldingUtenFnr = feilmeldingUtenFnr(melding);
+                var feilmeldingUtenFnr = maskerFnr(melding);
                 log.warn("Klarer ikke hente skatteopplysninger {} status {}} ", feilmeldingUtenFnr, response.getStatus());
                 return null;
             }

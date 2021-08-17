@@ -24,6 +24,8 @@ public class KommuneInfoService {
     private static final Logger log = LoggerFactory.getLogger(KommuneInfoService.class);
     private static final long MINUTES_TO_PASS_BETWEEN_POLL = 10;
 
+    private static final KommuneInfo DEFAULT_KOMMUNEINFO = new KommuneInfo("", false, false, false, false, null, false, null);
+
     private final DigisosApi digisosApi;
     private final RedisService redisService;
 
@@ -39,7 +41,7 @@ public class KommuneInfoService {
             return false;
         }
         return kommuneInfoMap
-                .getOrDefault(kommunenummer, new KommuneInfo("", false, false, false, false, null, false, null))
+                .getOrDefault(kommunenummer, DEFAULT_KOMMUNEINFO)
                 .getKanMottaSoknader();
     }
 
@@ -49,7 +51,7 @@ public class KommuneInfoService {
             return false;
         }
         return kommuneInfoMap
-                .getOrDefault(kommunenummer, new KommuneInfo("", false, false, false, false, null, false, null))
+                .getOrDefault(kommunenummer, DEFAULT_KOMMUNEINFO)
                 .getHarMidlertidigDeaktivertMottak();
     }
 
@@ -115,8 +117,10 @@ public class KommuneInfoService {
     }
 
     private String behandlingsansvarlig(String kommunenummer) {
-        return hentAlleKommuneInfo()
-                .getOrDefault(kommunenummer, new KommuneInfo("", false, false, false, false, null, false, null))
-                .getBehandlingsansvarlig();
+        var kommuneInfoMap = hentAlleKommuneInfo();
+        if (kommuneInfoMap == null) {
+            return null;
+        }
+        return kommuneInfoMap.getOrDefault(kommunenummer, DEFAULT_KOMMUNEINFO).getBehandlingsansvarlig();
     }
 }
