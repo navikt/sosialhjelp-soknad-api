@@ -23,7 +23,6 @@ import org.apache.pdfbox.text.PDFTextStripper;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
-import javax.inject.Inject;
 import javax.ws.rs.NotFoundException;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -47,14 +46,20 @@ public class OpplastetVedleggService {
     public static final Integer MAKS_SAMLET_VEDLEGG_STORRELSE_I_MB = 150;
     public static final Integer MAKS_SAMLET_VEDLEGG_STORRELSE = MAKS_SAMLET_VEDLEGG_STORRELSE_I_MB * 1024 * 1024; // 150 MB
     private static final Logger logger = getLogger(OpplastetVedleggService.class);
-    @Inject
-    private OpplastetVedleggRepository opplastetVedleggRepository;
 
-    @Inject
-    private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
+    private final OpplastetVedleggRepository opplastetVedleggRepository;
+    private final SoknadUnderArbeidRepository soknadUnderArbeidRepository;
+    private final VirusScanner virusScanner;
 
-    @Inject
-    private VirusScanner virusScanner;
+    public OpplastetVedleggService(
+            OpplastetVedleggRepository opplastetVedleggRepository,
+            SoknadUnderArbeidRepository soknadUnderArbeidRepository,
+            VirusScanner virusScanner
+    ) {
+        this.opplastetVedleggRepository = opplastetVedleggRepository;
+        this.soknadUnderArbeidRepository = soknadUnderArbeidRepository;
+        this.virusScanner = virusScanner;
+    }
 
     public OpplastetVedlegg saveVedleggAndUpdateVedleggstatus(String behandlingsId, String vedleggstype, byte[] data, String filnavn) {
         String eier = SubjectHandler.getUserId();
@@ -224,6 +229,7 @@ public class OpplastetVedleggService {
         if (filExtention != null && filExtention.length() > 0) {
             filnavn += filExtention;
         } else {
+            logger.info("Opplastet vedlegg mangler fil extension -> setter fil extension lik validert filtype = {}", fileType.getExtention());
             filnavn += fileType.getExtention();
         }
 
@@ -258,16 +264,13 @@ public class OpplastetVedleggService {
     }
 
     private void validerFiltypeForBilde(String filnavn) {
-        var filtype = findFileExtention(filnavn);
-        if (filtype == null) {
-            throw new UgyldigOpplastingTypeException(
-                    "Ugyldig filtype for opplasting. Kunne ikke finne filtype for fil.",
-                    null,
-                    "opplasting.feilmelding.feiltype");
+        var fileExtention = findFileExtention(filnavn);
+        if (fileExtention == null) {
+            logger.info("Opplastet bilde validerer OK, men mangler filtype for fil");
         }
         if (filnavn.endsWith(".jfif") || filnavn.endsWith(".pjpeg") || filnavn.endsWith(".pjp")) {
             throw new UgyldigOpplastingTypeException(
-                    String.format("Ugyldig filtype for opplasting. Filtype var %s", filtype),
+                    String.format("Ugyldig filtype for opplasting. Filtype var %s", fileExtention),
                     null,
                     "opplasting.feilmelding.feiltype");
         }

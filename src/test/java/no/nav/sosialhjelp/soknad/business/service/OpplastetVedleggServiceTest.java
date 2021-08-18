@@ -175,9 +175,26 @@ class OpplastetVedleggServiceTest {
         assertThatExceptionOfType(UgyldigOpplastingTypeException.class)
                 .isThrownBy(() -> opplastetVedleggService.saveVedleggAndUpdateVedleggstatus(BEHANDLINGSID, TYPE, imageFile, "filnavn.pjp"));
         assertThatExceptionOfType(UgyldigOpplastingTypeException.class)
-                .isThrownBy(() -> opplastetVedleggService.saveVedleggAndUpdateVedleggstatus(BEHANDLINGSID, TYPE, imageFile, "filnavnUtenFiltype"));
-        assertThatExceptionOfType(UgyldigOpplastingTypeException.class)
                 .isThrownBy(() -> opplastetVedleggService.saveVedleggAndUpdateVedleggstatus(BEHANDLINGSID, TYPE, "ikkeBildeEllerPdf".getBytes(), "filnavnUtenFiltype"));
+    }
+
+    @Test
+    void skalUtvideFilnavnHvisTikaValidererOkMenFilExtensionMangler() throws IOException {
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
+                new SoknadUnderArbeid().withJsonInternalSoknad(new JsonInternalSoknad()
+                        .withVedlegg(new JsonVedleggSpesifikasjon().withVedlegg(Collections.singletonList(
+                                new JsonVedlegg()
+                                        .withType(new VedleggType(TYPE).getType())
+                                        .withTilleggsinfo(new VedleggType(TYPE).getTilleggsinfo())
+                                        .withStatus("VedleggKreves")
+                        )))));
+        when(opplastetVedleggRepository.opprettVedlegg(any(OpplastetVedlegg.class), anyString())).thenReturn("321");
+
+        byte[] imageFile = createByteArrayFromJpeg();
+
+        var opplastetVedlegg = opplastetVedleggService.saveVedleggAndUpdateVedleggstatus(BEHANDLINGSID, TYPE, imageFile, "filnavnUtenFiltype");
+
+        assertThat(opplastetVedlegg.getFilnavn()).startsWith("filnavnUtenFiltype").endsWith(".jpg");
     }
 
     private byte[] createByteArrayFromJpeg() throws IOException {
