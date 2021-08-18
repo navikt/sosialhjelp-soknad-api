@@ -198,11 +198,13 @@ public class OpplastetVedleggService {
 
     String lagFilnavn(String opplastetNavn, TikaFileType fileType, String uuid) {
         String filnavn = opplastetNavn;
-        var filExtention = findFileExtention(opplastetNavn);
+        var fileExtension = findFileExtention(opplastetNavn);
 
-        int separator = opplastetNavn.lastIndexOf(".");
-        if (separator != -1) {
-            filnavn = opplastetNavn.substring(0, separator);
+        if (fileExtension != null) {
+            int separator = opplastetNavn.lastIndexOf(".");
+            if (separator != -1) {
+                filnavn = opplastetNavn.substring(0, separator);
+            }
         }
 
         try {
@@ -226,8 +228,8 @@ public class OpplastetVedleggService {
         }
 
         filnavn += "-" + uuid.split("-")[0];
-        if (filExtention != null && filExtention.length() > 0) {
-            filnavn += filExtention;
+        if (fileExtension != null && fileExtension.length() > 0) {
+            filnavn += fileExtension;
         } else {
             logger.info("Opplastet vedlegg mangler fil extension -> setter fil extension lik validert filtype = {}", fileType.getExtention());
             filnavn += fileType.getExtention();
@@ -260,7 +262,16 @@ public class OpplastetVedleggService {
         if (sisteIndexForPunktum < 0) {
             return null;
         }
-        return filnavn.substring(sisteIndexForPunktum);
+        var fileExtension = filnavn.substring(sisteIndexForPunktum);
+        if (!isValidFileExtension(fileExtension)) {
+            return null;
+        }
+        return fileExtension;
+    }
+
+    private boolean isValidFileExtension(String fileExtension) {
+        var validFileExtensions = List.of(".pdf", ".jpeg", ".jpg", ".png");
+        return validFileExtensions.contains(fileExtension);
     }
 
     private void validerFiltypeForBilde(String filnavn) {
