@@ -89,11 +89,11 @@ class OpplastetVedleggServiceTest {
         String medSpesialTegn = opplastetVedleggService.lagFilnavn("en.filmedææå()ogmyerartsjø.jpg", TikaFileType.JPEG, "abc-ef05");
         assertThat(medSpesialTegn).isEqualTo("enfilmedeeaogmyerartsjo-abc.jpg");
 
-        String utenExtention = opplastetVedleggService.lagFilnavn("minfil", TikaFileType.PNG, "abc-ef05");
-        assertThat(utenExtention).isEqualTo("minfil-abc.png");
+        String utenExtension = opplastetVedleggService.lagFilnavn("minfil", TikaFileType.PNG, "abc-ef05");
+        assertThat(utenExtension).isEqualTo("minfil-abc.png");
 
-        String forskjelligExtention = opplastetVedleggService.lagFilnavn("minfil.jpg", TikaFileType.PNG, "abc-ef05");
-        assertThat(forskjelligExtention).isEqualTo("minfil-abc.png");
+        String forskjelligExtension = opplastetVedleggService.lagFilnavn("minfil.jpg", TikaFileType.PNG, "abc-ef05");
+        assertThat(forskjelligExtension).isEqualTo("minfil-abc.png");
 
         String caseInsensitiveExtension = opplastetVedleggService.lagFilnavn("minfil.JPG", TikaFileType.JPEG, "abc-ef05");
         assertThat(caseInsensitiveExtension).isEqualTo("minfil-abc.JPG");

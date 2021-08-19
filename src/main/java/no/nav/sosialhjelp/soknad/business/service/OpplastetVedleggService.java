@@ -198,7 +198,7 @@ public class OpplastetVedleggService {
 
     String lagFilnavn(String opplastetNavn, TikaFileType fileType, String uuid) {
         String filnavn = opplastetNavn;
-        var fileExtension = findFileExtention(opplastetNavn);
+        var fileExtension = findFileExtension(opplastetNavn);
 
         if (fileExtension != null) {
             int separatorPosition = opplastetNavn.lastIndexOf(".");
@@ -231,8 +231,8 @@ public class OpplastetVedleggService {
         if (fileExtension != null && fileExtension.length() > 0 && erTikaOgFileExtensionEnige(fileExtension, fileType)) {
             filnavn += fileExtension;
         } else {
-            logger.info("Opplastet vedlegg mangler fil extension -> setter fil extension lik validert filtype = {}", fileType.getExtention());
-            filnavn += fileType.getExtention();
+            logger.info("Opplastet vedlegg mangler fil extension -> setter fil extension lik validert filtype = {}", fileType.getExtension());
+            filnavn += fileType.getExtension();
         }
 
         return filnavn;
@@ -257,7 +257,7 @@ public class OpplastetVedleggService {
         if (fileType == TikaFileType.UNKNOWN) {
             throw new UgyldigOpplastingTypeException(
                     String.format("Ugyldig filtype for opplasting. Mimetype var %s, filtype var %s",
-                            FileDetectionUtils.getMimeType(data), findFileExtention(filnavn)),
+                            FileDetectionUtils.getMimeType(data), findFileExtension(filnavn)),
                     null,
                     "opplasting.feilmelding.feiltype");
         }
@@ -270,7 +270,7 @@ public class OpplastetVedleggService {
         return fileType;
     }
 
-    private String findFileExtention(String filnavn) {
+    private String findFileExtension(String filnavn) {
         var sisteIndexForPunktum = filnavn.lastIndexOf(".");
         if (sisteIndexForPunktum < 0) {
             return null;
@@ -288,13 +288,13 @@ public class OpplastetVedleggService {
     }
 
     private void validerFiltypeForBilde(String filnavn) {
-        var fileExtention = findFileExtention(filnavn);
-        if (fileExtention == null) {
+        var fileExtension = findFileExtension(filnavn);
+        if (fileExtension == null) {
             logger.info("Opplastet bilde validerer OK, men mangler filtype for fil");
         }
         if (filnavn.toLowerCase().endsWith(".jfif") || filnavn.toLowerCase().endsWith(".pjpeg") || filnavn.toLowerCase().endsWith(".pjp")) {
             throw new UgyldigOpplastingTypeException(
-                    String.format("Ugyldig filtype for opplasting. Filtype var %s", fileExtention),
+                    String.format("Ugyldig filtype for opplasting. Filtype var %s", fileExtension),
                     null,
                     "opplasting.feilmelding.feiltype");
         }
