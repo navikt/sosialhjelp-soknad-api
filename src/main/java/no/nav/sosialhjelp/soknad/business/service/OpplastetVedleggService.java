@@ -23,7 +23,6 @@ import org.apache.pdfbox.text.PDFTextStripper;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
-import javax.inject.Inject;
 import javax.ws.rs.NotFoundException;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -47,14 +46,20 @@ public class OpplastetVedleggService {
     public static final Integer MAKS_SAMLET_VEDLEGG_STORRELSE_I_MB = 150;
     public static final Integer MAKS_SAMLET_VEDLEGG_STORRELSE = MAKS_SAMLET_VEDLEGG_STORRELSE_I_MB * 1024 * 1024; // 150 MB
     private static final Logger logger = getLogger(OpplastetVedleggService.class);
-    @Inject
-    private OpplastetVedleggRepository opplastetVedleggRepository;
 
-    @Inject
-    private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
+    private final OpplastetVedleggRepository opplastetVedleggRepository;
+    private final SoknadUnderArbeidRepository soknadUnderArbeidRepository;
+    private final VirusScanner virusScanner;
 
-    @Inject
-    private VirusScanner virusScanner;
+    public OpplastetVedleggService(
+            OpplastetVedleggRepository opplastetVedleggRepository,
+            SoknadUnderArbeidRepository soknadUnderArbeidRepository,
+            VirusScanner virusScanner
+    ) {
+        this.opplastetVedleggRepository = opplastetVedleggRepository;
+        this.soknadUnderArbeidRepository = soknadUnderArbeidRepository;
+        this.virusScanner = virusScanner;
+    }
 
     public OpplastetVedlegg saveVedleggAndUpdateVedleggstatus(String behandlingsId, String vedleggstype, byte[] data, String filnavn) {
         String eier = SubjectHandler.getUserId();
@@ -193,11 +198,13 @@ public class OpplastetVedleggService {
 
     String lagFilnavn(String opplastetNavn, TikaFileType fileType, String uuid) {
         String filnavn = opplastetNavn;
-        var filExtention = findFileExtention(opplastetNavn);
+        var fileExtension = findFileExtension(opplastetNavn);
 
-        int separator = opplastetNavn.lastIndexOf(".");
-        if (separator != -1) {
-            filnavn = opplastetNavn.substring(0, separator);
+        if (fileExtension != null) {
+            int separatorPosition = opplastetNavn.lastIndexOf(".");
+            if (separatorPosition != -1) {
+                filnavn = opplastetNavn.substring(0, separatorPosition);
+            }
         }
 
         try {
@@ -221,13 +228,27 @@ public class OpplastetVedleggService {
         }
 
         filnavn += "-" + uuid.split("-")[0];
-        if (filExtention != null && filExtention.length() > 0) {
-            filnavn += filExtention;
+        if (fileExtension != null && fileExtension.length() > 0 && erTikaOgFileExtensionEnige(fileExtension, fileType)) {
+            filnavn += fileExtension;
         } else {
-            filnavn += fileType.getExtention();
+            logger.info("Opplastet vedlegg mangler fil extension -> setter fil extension lik validert filtype = {}", fileType.getExtension());
+            filnavn += fileType.getExtension();
         }
 
         return filnavn;
+    }
+
+    private boolean erTikaOgFileExtensionEnige(String fileExtension, TikaFileType fileType) {
+        if (TikaFileType.JPEG.equals(fileType)) {
+            return ".jpg".equalsIgnoreCase(fileExtension) || ".jpeg".equalsIgnoreCase(fileExtension);
+        }
+        if (TikaFileType.PNG.equals(fileType)) {
+            return ".png".equalsIgnoreCase(fileExtension);
+        }
+        if (TikaFileType.PDF.equals(fileType)) {
+            return ".pdf".equalsIgnoreCase(fileExtension);
+        }
+        return false;
     }
 
     private TikaFileType validerFil(byte[] data, String filnavn) {
@@ -236,7 +257,7 @@ public class OpplastetVedleggService {
         if (fileType == TikaFileType.UNKNOWN) {
             throw new UgyldigOpplastingTypeException(
                     String.format("Ugyldig filtype for opplasting. Mimetype var %s, filtype var %s",
-                            FileDetectionUtils.getMimeType(data), findFileExtention(filnavn)),
+                            FileDetectionUtils.getMimeType(data), findFileExtension(filnavn)),
                     null,
                     "opplasting.feilmelding.feiltype");
         }
@@ -249,25 +270,31 @@ public class OpplastetVedleggService {
         return fileType;
     }
 
-    private String findFileExtention(String filnavn) {
+    private String findFileExtension(String filnavn) {
         var sisteIndexForPunktum = filnavn.lastIndexOf(".");
         if (sisteIndexForPunktum < 0) {
             return null;
         }
-        return filnavn.substring(sisteIndexForPunktum);
+        var fileExtension = filnavn.substring(sisteIndexForPunktum);
+        if (!isValidFileExtension(fileExtension)) {
+            return null;
+        }
+        return fileExtension;
+    }
+
+    private boolean isValidFileExtension(String fileExtension) {
+        var validFileExtensions = List.of(".pdf", ".jpeg", ".jpg", ".png");
+        return validFileExtensions.contains(fileExtension.toLowerCase());
     }
 
     private void validerFiltypeForBilde(String filnavn) {
-        var filtype = findFileExtention(filnavn);
-        if (filtype == null) {
-            throw new UgyldigOpplastingTypeException(
-                    "Ugyldig filtype for opplasting. Kunne ikke finne filtype for fil.",
-                    null,
-                    "opplasting.feilmelding.feiltype");
+        var fileExtension = findFileExtension(filnavn);
+        if (fileExtension == null) {
+            logger.info("Opplastet bilde validerer OK, men mangler filtype for fil");
         }
-        if (filnavn.endsWith(".jfif") || filnavn.endsWith(".pjpeg") || filnavn.endsWith(".pjp")) {
+        if (filnavn.toLowerCase().endsWith(".jfif") || filnavn.toLowerCase().endsWith(".pjpeg") || filnavn.toLowerCase().endsWith(".pjp")) {
             throw new UgyldigOpplastingTypeException(
-                    String.format("Ugyldig filtype for opplasting. Filtype var %s", filtype),
+                    String.format("Ugyldig filtype for opplasting. Filtype var %s", fileExtension),
                     null,
                     "opplasting.feilmelding.feiltype");
         }

@@ -6,13 +6,13 @@ public enum TikaFileType {
     PDF(".pdf"),
     UNKNOWN("");
 
-    private final String extention;
+    private final String extension;
 
-    TikaFileType(String extention) {
-        this.extention = extention;
+    TikaFileType(String extension) {
+        this.extension = extension;
     }
 
-    public String getExtention() {
-        return extention;
+    public String getExtension() {
+        return extension;
     }
 }
