@@ -201,9 +201,9 @@ public class OpplastetVedleggService {
         var fileExtension = findFileExtention(opplastetNavn);
 
         if (fileExtension != null) {
-            int separator = opplastetNavn.lastIndexOf(".");
-            if (separator != -1) {
-                filnavn = opplastetNavn.substring(0, separator);
+            int separatorPosition = opplastetNavn.lastIndexOf(".");
+            if (separatorPosition != -1) {
+                filnavn = opplastetNavn.substring(0, separatorPosition);
             }
         }
 
