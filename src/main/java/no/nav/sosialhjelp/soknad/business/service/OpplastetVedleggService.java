@@ -240,13 +240,13 @@ public class OpplastetVedleggService {
 
     private boolean erTikaOgFileExtensionEnige(String fileExtension, TikaFileType fileType) {
         if (TikaFileType.JPEG.equals(fileType)) {
-            return ".jpg".equals(fileExtension) || ".jpeg".equals(fileExtension);
+            return ".jpg".equalsIgnoreCase(fileExtension) || ".jpeg".equalsIgnoreCase(fileExtension);
         }
         if (TikaFileType.PNG.equals(fileType)) {
-            return ".png".equals(fileExtension);
+            return ".png".equalsIgnoreCase(fileExtension);
         }
         if (TikaFileType.PDF.equals(fileType)) {
-            return ".pdf".equals(fileExtension);
+            return ".pdf".equalsIgnoreCase(fileExtension);
         }
         return false;
     }
@@ -284,7 +284,7 @@ public class OpplastetVedleggService {
 
     private boolean isValidFileExtension(String fileExtension) {
         var validFileExtensions = List.of(".pdf", ".jpeg", ".jpg", ".png");
-        return validFileExtensions.contains(fileExtension);
+        return validFileExtensions.contains(fileExtension.toLowerCase());
     }
 
     private void validerFiltypeForBilde(String filnavn) {
@@ -292,7 +292,7 @@ public class OpplastetVedleggService {
         if (fileExtention == null) {
             logger.info("Opplastet bilde validerer OK, men mangler filtype for fil");
         }
-        if (filnavn.endsWith(".jfif") || filnavn.endsWith(".pjpeg") || filnavn.endsWith(".pjp")) {
+        if (filnavn.toLowerCase().endsWith(".jfif") || filnavn.toLowerCase().endsWith(".pjpeg") || filnavn.toLowerCase().endsWith(".pjp")) {
             throw new UgyldigOpplastingTypeException(
                     String.format("Ugyldig filtype for opplasting. Filtype var %s", fileExtention),
                     null,

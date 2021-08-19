@@ -94,6 +94,9 @@ class OpplastetVedleggServiceTest {
 
         String forskjelligExtention = opplastetVedleggService.lagFilnavn("minfil.jpg", TikaFileType.PNG, "abc-ef05");
         assertThat(forskjelligExtention).isEqualTo("minfil-abc.png");
+
+        String caseInsensitiveExtension = opplastetVedleggService.lagFilnavn("minfil.JPG", TikaFileType.JPEG, "abc-ef05");
+        assertThat(caseInsensitiveExtension).isEqualTo("minfil-abc.JPG");
     }
 
     @Test
