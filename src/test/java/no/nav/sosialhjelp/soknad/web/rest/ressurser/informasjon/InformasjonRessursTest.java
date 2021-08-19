@@ -10,7 +10,6 @@ import no.nav.sosialhjelp.soknad.consumer.pdl.person.PersonService;
 import no.nav.sosialhjelp.soknad.domain.model.exception.AuthorizationException;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.StaticSubjectHandlerService;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
-import no.nav.sosialhjelp.soknad.domain.model.util.KommuneTilNavEnhetMapper;
 import no.nav.sosialhjelp.soknad.tekster.NavMessageSource;
 import no.nav.sosialhjelp.soknad.web.sikkerhet.Tilgangskontroll;
 import org.junit.jupiter.api.AfterEach;
@@ -28,7 +27,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -110,32 +108,6 @@ class InformasjonRessursTest {
     void kastExceptionHvisIkkeSpraakErPaaRiktigFormat() {
         assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(() -> ressurs.hentTekster(SOKNADSTYPE, "NORSK"));
-    }
-
-    @Test
-    void skalHenteAllePaakobledeKommuner() {
-        String manueltPaakobletKommune = "0301";
-        String digisosKommune = "asdf";
-        String deaktivertDigisosKommune = "456456";
-
-        Map<String, KommuneInfo> map = new HashMap<>();
-        map.put(manueltPaakobletKommune, null);
-        map.put(digisosKommune, null);
-        map.put(deaktivertDigisosKommune, null);
-
-        when(kommuneInfoService.hentAlleKommuneInfo()).thenReturn(map);
-
-        when(kommuneInfoService.kanMottaSoknader(manueltPaakobletKommune)).thenReturn(true);
-        when(kommuneInfoService.kanMottaSoknader(digisosKommune)).thenReturn(true);
-        when(kommuneInfoService.kanMottaSoknader(deaktivertDigisosKommune)).thenReturn(false);
-
-        Set<String> tilgjengeligeKommuner = ressurs.hentTilgjengeligeKommuner();
-
-        assertThat(tilgjengeligeKommuner)
-                .hasSize(KommuneTilNavEnhetMapper.getDigisoskommuner().size() + 1)
-                .contains(manueltPaakobletKommune)
-                .contains(digisosKommune)
-                .doesNotContain(deaktivertDigisosKommune);
     }
 
     @Test

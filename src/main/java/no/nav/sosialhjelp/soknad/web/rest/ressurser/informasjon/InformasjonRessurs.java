@@ -33,12 +33,10 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import java.time.LocalDateTime;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
@@ -189,25 +187,6 @@ public class InformasjonRessurs {
     public String triggeKommunelogg(@QueryParam("kommunenummer") String kommunenummer) {
         logger.info("Kommuneinfo trigget for {}: {}", kommunenummer, kommuneInfoService.kommuneInfo(kommunenummer));
         return kommunenummer + " er logget. Sjekk kibana";
-    }
-
-    @Unprotected
-    @GET
-    @Path("/tilgjengelige_kommuner")
-    public Set<String> hentTilgjengeligeKommuner() {
-        if (NedetidUtils.isInnenforNedetid()) {
-            return new HashSet<>();
-        }
-        List<String> manueltPaakobledeKommuner = KommuneTilNavEnhetMapper.getDigisoskommuner();
-
-        Set<String> digisosApiKommuner = kommuneInfoService.hentAlleKommuneInfo().keySet().stream()
-                .filter(kommuneInfoService::kanMottaSoknader)
-                .collect(Collectors.toSet());
-
-        Set<String> union = new HashSet<>(manueltPaakobledeKommuner);
-        union.addAll(digisosApiKommuner);
-
-        return union;
     }
 
     @Unprotected
