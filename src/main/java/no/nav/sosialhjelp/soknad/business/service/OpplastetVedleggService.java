@@ -228,7 +228,7 @@ public class OpplastetVedleggService {
         }
 
         filnavn += "-" + uuid.split("-")[0];
-        if (fileExtension != null && fileExtension.length() > 0) {
+        if (fileExtension != null && fileExtension.length() > 0 && erTikaOgFileExtensionEnige(fileExtension, fileType)) {
             filnavn += fileExtension;
         } else {
             logger.info("Opplastet vedlegg mangler fil extension -> setter fil extension lik validert filtype = {}", fileType.getExtention());
@@ -236,6 +236,19 @@ public class OpplastetVedleggService {
         }
 
         return filnavn;
+    }
+
+    private boolean erTikaOgFileExtensionEnige(String fileExtension, TikaFileType fileType) {
+        if (TikaFileType.JPEG.equals(fileType)) {
+            return ".jpg".equals(fileExtension) || ".jpeg".equals(fileExtension);
+        }
+        if (TikaFileType.PNG.equals(fileType)) {
+            return ".png".equals(fileExtension);
+        }
+        if (TikaFileType.PDF.equals(fileType)) {
+            return ".pdf".equals(fileExtension);
+        }
+        return false;
     }
 
     private TikaFileType validerFil(byte[] data, String filnavn) {

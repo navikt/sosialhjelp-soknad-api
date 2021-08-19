@@ -93,7 +93,7 @@ class OpplastetVedleggServiceTest {
         assertThat(utenExtention).isEqualTo("minfil-abc.png");
 
         String forskjelligExtention = opplastetVedleggService.lagFilnavn("minfil.jpg", TikaFileType.PNG, "abc-ef05");
-        assertThat(forskjelligExtention).isEqualTo("minfil-abc.jpg");
+        assertThat(forskjelligExtention).isEqualTo("minfil-abc.png");
     }
 
     @Test
@@ -214,6 +214,25 @@ class OpplastetVedleggServiceTest {
         var opplastetVedlegg = opplastetVedleggService.saveVedleggAndUpdateVedleggstatus(BEHANDLINGSID, TYPE, imageFile, "filnavnMed.punktum");
 
         assertThat(opplastetVedlegg.getFilnavn()).startsWith("filnavnMedpunktum").endsWith(".jpg");
+    }
+
+    @Test
+    void skalEndreFilExtensionHvisTikaValidererSomNoeAnnetEnnFilnavnetTilsier() throws IOException {
+        when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
+                new SoknadUnderArbeid().withJsonInternalSoknad(new JsonInternalSoknad()
+                        .withVedlegg(new JsonVedleggSpesifikasjon().withVedlegg(Collections.singletonList(
+                                new JsonVedlegg()
+                                        .withType(new VedleggType(TYPE).getType())
+                                        .withTilleggsinfo(new VedleggType(TYPE).getTilleggsinfo())
+                                        .withStatus("VedleggKreves")
+                        )))));
+        when(opplastetVedleggRepository.opprettVedlegg(any(OpplastetVedlegg.class), anyString())).thenReturn("321");
+
+        byte[] imageFile = createByteArrayFromJpeg();
+
+        var opplastetVedlegg = opplastetVedleggService.saveVedleggAndUpdateVedleggstatus(BEHANDLINGSID, TYPE, imageFile, "filnavn.pdf");
+
+        assertThat(opplastetVedlegg.getFilnavn()).startsWith("filnavn").endsWith(".jpg");
     }
 
     private byte[] createByteArrayFromJpeg() throws IOException {
