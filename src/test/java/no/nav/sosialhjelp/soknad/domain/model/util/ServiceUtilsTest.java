@@ -73,6 +73,15 @@ class ServiceUtilsTest {
     }
 
     @Test
+    void skalFjerneFnrFraRedisFeilmelding() {
+        String str = "cache key=hent-person-12345612345";
+
+        String res = maskerFnr(str);
+
+        assertThat(res).isEqualTo("cache key=hent-person-[FNR]");
+    }
+
+    @Test
     void isNonProduction_skalGiTrue_forNonProd() {
         System.setProperty("environment.name", "q0");
         assertThat(isNonProduction()).isTrue();

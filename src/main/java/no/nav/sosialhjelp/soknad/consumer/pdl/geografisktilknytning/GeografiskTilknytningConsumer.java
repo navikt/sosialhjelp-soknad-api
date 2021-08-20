@@ -18,7 +18,7 @@ import java.util.Optional;
 import static java.util.Collections.singletonMap;
 import static no.nav.sosialhjelp.soknad.consumer.pdl.common.PdlApiQuery.HENT_GEOGRAFISK_TILKNYTNING;
 import static no.nav.sosialhjelp.soknad.consumer.pdl.common.Utils.pdlMapper;
-import static no.nav.sosialhjelp.soknad.consumer.redis.CacheConstants.GEOGRAFISK_TILKNYTNING_CACHE_KEY;
+import static no.nav.sosialhjelp.soknad.consumer.redis.CacheConstants.GEOGRAFISK_TILKNYTNING_CACHE_KEY_PREFIX;
 import static no.nav.sosialhjelp.soknad.consumer.redis.CacheConstants.PDL_CACHE_SECONDS;
 import static no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.HEADER_TEMA;
 import static no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.TEMA_KOM;
@@ -41,7 +41,7 @@ public class GeografiskTilknytningConsumer extends BasePdlConsumer {
     }
 
     private GeografiskTilknytningDto hentFraCache(String ident) {
-        return (GeografiskTilknytningDto) redisService.get(GEOGRAFISK_TILKNYTNING_CACHE_KEY + ident, GeografiskTilknytningDto.class);
+        return (GeografiskTilknytningDto) redisService.get(GEOGRAFISK_TILKNYTNING_CACHE_KEY_PREFIX + ident, GeografiskTilknytningDto.class);
     }
 
     private GeografiskTilknytningDto hentFraPdl(String ident) {
@@ -73,7 +73,7 @@ public class GeografiskTilknytningConsumer extends BasePdlConsumer {
 
     private void lagreTilCache(String ident, GeografiskTilknytningDto geografiskTilknytningDto) {
         try {
-            redisService.setex(GEOGRAFISK_TILKNYTNING_CACHE_KEY + ident, pdlMapper.writeValueAsBytes(geografiskTilknytningDto), PDL_CACHE_SECONDS);
+            redisService.setex(GEOGRAFISK_TILKNYTNING_CACHE_KEY_PREFIX + ident, pdlMapper.writeValueAsBytes(geografiskTilknytningDto), PDL_CACHE_SECONDS);
         } catch (JsonProcessingException e) {
             log.warn("Noe feilet ved serialisering av geografiskTilknytningDto fra Pdl - {}", geografiskTilknytningDto.getClass().getName(), e);
         }
