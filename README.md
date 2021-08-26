@@ -18,7 +18,7 @@ For å se json-representasjon av søknaden:
 `http://localhost:8181/sosialhjelp/soknad-api/representasjon/json/110000001`
 
 ### Tekster
-Sjekk ut `/scripts/README.md`. 
+Tekstfiler finnes her: `src/main/resources-filtered`.
 
 ### Samarbeid med frontend (fjerning av faktummodellen)
 Backenden kommer til å lagre hele søknaden som en json-fil (internalsoknad), og ved endringer som blir sendt fra frontend underveis i utfyllingen vil hele filen lagres. Vi må regne med at det kan skje at man får konflikt ved oppdatering av søknadsdataene mens bruker fyller ut søknaden. Ved en konflikt vil backenden sende exception'et SamtidigOppdateringException til frontenden. Frontenden må da forsøke å oppdatere på nytt (det er naturlig at frontenden gjør dette siden det er den som har full oversikt over hva som er fylt ut i søknaden, og siden det er den som vil endre data). 
