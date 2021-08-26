@@ -31,6 +31,7 @@
   "vaultEnabled": true,
   "tokenXEnabled": true,
   "personbrukerGcpCluster": "dev-gcp",
+  "dialogGcpCluster": "dev-gcp",
   "prometheusEnabled": true,
   "webProxyEnabled": true,
   "isGcp": false,
