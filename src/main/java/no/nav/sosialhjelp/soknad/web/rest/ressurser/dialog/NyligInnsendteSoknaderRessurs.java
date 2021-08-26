@@ -1,0 +1,43 @@
+package no.nav.sosialhjelp.soknad.web.rest.ressurser.dialog;
+
+import no.nav.security.token.support.core.api.ProtectedWithClaims;
+import no.nav.sosialhjelp.metrics.aspects.Timed;
+import no.nav.sosialhjelp.soknad.business.service.dialog.NyligInnsendteSoknaderService;
+import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
+import no.nav.sosialhjelp.soknad.web.rest.ressurser.dialog.dto.NyligInnsendteSoknaderDto;
+import org.springframework.stereotype.Controller;
+
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import java.util.List;
+
+import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+import static no.nav.sosialhjelp.soknad.web.utils.Constants.CLAIM_ACR_LEVEL_4;
+import static no.nav.sosialhjelp.soknad.web.utils.Constants.TOKENX;
+
+@Controller
+@ProtectedWithClaims(issuer = TOKENX, claimMap = {CLAIM_ACR_LEVEL_4})
+@Path("/dialog")
+@Produces(APPLICATION_JSON)
+@Timed
+public class NyligInnsendteSoknaderRessurs {
+
+    private static final Integer DEFAULT_ANTALL_MANEDER = 3;
+
+    private final NyligInnsendteSoknaderService nyligInnsendteSoknaderService;
+
+    public NyligInnsendteSoknaderRessurs(
+            NyligInnsendteSoknaderService nyligInnsendteSoknaderService
+    ) {
+        this.nyligInnsendteSoknaderService = nyligInnsendteSoknaderService;
+    }
+
+    @GET
+    @Path("/nylige")
+    public List<NyligInnsendteSoknaderDto> hentNyligInnsendteSoknader(@QueryParam("antallManeder") Integer antallManeder) {
+        var fnr = SubjectHandler.getUserId();
+        return nyligInnsendteSoknaderService.hentNyligInnsendteSoknader(fnr, antallManeder == null ? DEFAULT_ANTALL_MANEDER : antallManeder);
+    }
+}
