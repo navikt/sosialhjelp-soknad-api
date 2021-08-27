@@ -40,6 +40,7 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
+import org.springframework.http.HttpStatus;
 
 import javax.ws.rs.core.MediaType;
 import java.io.ByteArrayInputStream;
@@ -168,14 +169,20 @@ public class DigisosApiImpl implements DigisosApi {
                 log.warn("Timer: Sende fiks-request: {} ms", endTime - startTime);
             }
 
-            byte[] content = EntityUtils.toByteArray(response.getEntity());
+            if (HttpStatus.OK.value() == response.getStatusLine().getStatusCode()) {
+                byte[] content = EntityUtils.toByteArray(response.getEntity());
 
-            Map<String, KommuneInfo> kommuneInfoMap = toKommuneInfoMap(content);
-            // Oppdater kommuneInfoCache
-            redisService.setex(KOMMUNEINFO_CACHE_KEY, content, KOMMUNEINFO_CACHE_SECONDS);
-            redisService.set(KOMMUNEINFO_LAST_POLL_TIME_KEY, LocalDateTime.now().format(ISO_LOCAL_DATE_TIME).getBytes(StandardCharsets.UTF_8));
+                Map<String, KommuneInfo> kommuneInfoMap = toKommuneInfoMap(content);
+                // Oppdater kommuneInfoCache
+                redisService.setex(KOMMUNEINFO_CACHE_KEY, content, KOMMUNEINFO_CACHE_SECONDS);
+                redisService.set(KOMMUNEINFO_LAST_POLL_TIME_KEY, LocalDateTime.now().format(ISO_LOCAL_DATE_TIME).getBytes(StandardCharsets.UTF_8));
 
-            return kommuneInfoMap;
+                return kommuneInfoMap;
+            } else {
+                log.warn("Noe feil skjedde ved henting av KommuneInfo fra Fiks, {} - {}", response.getStatusLine().getStatusCode(), response.getStatusLine().getReasonPhrase());
+                return Collections.emptyMap();
+            }
+
         } catch (Exception e) {
             log.warn("Noe feil skjedde ved henting av KommuneInfo fra Fiks", e);
             return Collections.emptyMap();

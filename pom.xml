@@ -72,7 +72,7 @@
         <tika.version>1.25</tika.version>
         <logback.version>1.2.3</logback.version>
         <hsqldb.version>2.5.1</hsqldb.version>
-        <hikaricp.version>3.4.5</hikaricp.version>
+        <hikaricp.version>4.0.3</hikaricp.version>
         <ehcache.version>2.10.6</ehcache.version>
         <woodstox-core.version>6.2.6</woodstox-core.version>
         <joda-time.version>2.10.10</joda-time.version>
@@ -124,7 +124,7 @@
         <logstash-logback-encoder.version>6.6</logstash-logback-encoder.version>
         <hk2.version>2.6.1</hk2.version>
         <prometheus.version>0.11.0</prometheus.version>
-        <jsoup.version>1.13.1</jsoup.version>
+        <jsoup.version>1.14.2</jsoup.version>
         <oauth2-oidc-sdk.version>9.9</oauth2-oidc-sdk.version>
         <emoji-java.version>5.1.1</emoji-java.version>
         <java-support.version>7.5.2</java-support.version>
