@@ -2,7 +2,9 @@ package no.nav.sosialhjelp.soknad.consumer.fiksforsendelse;
 
 import no.ks.fiks.svarut.klient.SvarUtKlientApi;
 import no.ks.fiks.svarut.klient.model.Forsendelse;
+import org.springframework.stereotype.Component;
 
+@Component
 public class FiksForsendelseService {
 
     private final SvarUtKlientApi svarUtKlientApi;

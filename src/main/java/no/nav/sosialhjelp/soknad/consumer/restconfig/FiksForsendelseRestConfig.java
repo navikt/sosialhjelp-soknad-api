@@ -14,12 +14,15 @@ public class FiksForsendelseRestConfig {
     @Value("${svarut_url}")
     private String svarutUrl;
 
-    private String avsender = "digisos_avsender";
-    private String servicePassord = "";
+    @Value("${fiks_svarut_username}")
+    private String svarutUsername;
+
+    @Value("${fiks_svarut_password}")
+    private String svarutPassword;
 
     @Bean
     public SvarUtKlientApi svarUtKlientApi() {
-        var svarUt = new SvarUtKlientApiImpl(svarutUrl, avsender, servicePassord);
+        var svarUt = new SvarUtKlientApiImpl(svarutUrl, svarutUsername, svarutPassword);
         return createTimerProxyForWebService("SvarUt", svarUt, SvarUtKlientApi.class);
     }
 }

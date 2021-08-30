@@ -78,4 +78,5 @@ spec:
     - configmap: loginservice-idporten
 {{#unless isLabsGcp}}
     - secret: redis-password-soknad-api
+    - secret: fiks-svarut-credentials
 {{/unless}}
