@@ -120,7 +120,7 @@
         <neethi.version>3.1.1</neethi.version>
         <xmlsec.version>2.2.2</xmlsec.version>
         <rhino.version>1.7.13</rhino.version>
-        <opensaml.version>4.0.1</opensaml.version>
+        <opensaml.version>3.4.6</opensaml.version>
         <logstash-logback-encoder.version>6.6</logstash-logback-encoder.version>
         <hk2.version>2.6.1</hk2.version>
         <prometheus.version>0.12.0</prometheus.version>
