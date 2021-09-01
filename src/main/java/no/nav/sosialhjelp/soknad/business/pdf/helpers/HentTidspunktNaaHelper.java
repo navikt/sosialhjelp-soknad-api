@@ -2,10 +2,10 @@ package no.nav.sosialhjelp.soknad.business.pdf.helpers;
 
 
 import com.github.jknack.handlebars.Options;
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import org.springframework.stereotype.Component;
+
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 
 import static no.nav.sosialhjelp.soknad.business.pdf.HandlebarContext.SPRAK;
 
@@ -27,11 +27,11 @@ public class HentTidspunktNaaHelper extends RegistryAwareHelper<Object> {
     @Override
     public CharSequence apply(Object o, Options options) {
         
-        DateTime now = DateTime.now();
+        ZonedDateTime now = ZonedDateTime.now();
 
-        DateTimeFormatter datoFormatter = DateTimeFormat.forPattern("d. MMMM yyyy").withLocale(SPRAK);
-        DateTimeFormatter klokkeslettFormatter = DateTimeFormat.forPattern("HH:mm").withLocale(SPRAK);
+        DateTimeFormatter datoFormatter = DateTimeFormatter.ofPattern("d. MMMM yyyy", SPRAK);
+        DateTimeFormatter klokkeslettFormatter = DateTimeFormatter.ofPattern("HH:mm", SPRAK);
 
-        return datoFormatter.print(now) + " " + klokkeslettFormatter.print(now);
+        return now.format(datoFormatter) + " " + now.format(klokkeslettFormatter);
     }
 }

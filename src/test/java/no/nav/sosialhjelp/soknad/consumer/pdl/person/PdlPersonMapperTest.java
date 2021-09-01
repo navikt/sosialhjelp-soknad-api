@@ -477,7 +477,7 @@ class PdlPersonMapperTest {
         assertThat(barn.getMellomnavn()).isBlank();
         assertThat(barn.getEtternavn()).isEqualTo(ETTERNAVN.toUpperCase());
         assertThat(barn.getFnr()).isEqualTo(BARNIDENT);
-        assertThat(barn.getFodselsdato()).hasToString(new org.joda.time.LocalDate(FOEDSELSDATO_BARN.getYear(), FOEDSELSDATO_BARN.getMonthValue(), FOEDSELSDATO_BARN.getDayOfMonth()).toString());
+        assertThat(barn.getFodselsdato()).isEqualTo(LocalDate.of(FOEDSELSDATO_BARN.getYear(), FOEDSELSDATO_BARN.getMonthValue(), FOEDSELSDATO_BARN.getDayOfMonth()));
         assertThat(barn.erFolkeregistrertsammen()).isTrue();
     }
 

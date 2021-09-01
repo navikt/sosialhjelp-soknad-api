@@ -3,13 +3,13 @@ package no.nav.sosialhjelp.soknad.web.selftest.generators;
 import no.nav.sosialhjelp.soknad.web.selftest.domain.Selftest;
 import no.nav.sosialhjelp.soknad.web.selftest.domain.SelftestEndpoint;
 import org.apache.commons.io.IOUtils;
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -52,7 +52,7 @@ public final class SelftestHtmlGenerator {
         html = html.replace("${resultater}", join(tabellrader, "\n"));
         html = html.replace("${version}", selftestNullSafe.getApplication() + "-" + selftestNullSafe.getVersion());
         html = html.replace("${host}", "Host: " + host);
-        html = html.replace("${generert-tidspunkt}", DateTime.now().toString(DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")));
+        html = html.replace("${generert-tidspunkt}", ZonedDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
         html = html.replace("${feilende-komponenter}", join(feilendeKomponenter, ", "));
 
         return html;

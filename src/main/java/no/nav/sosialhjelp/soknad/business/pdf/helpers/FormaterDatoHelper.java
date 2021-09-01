@@ -1,8 +1,10 @@
 package no.nav.sosialhjelp.soknad.business.pdf.helpers;
 
 import com.github.jknack.handlebars.Options;
-import org.joda.time.LocalDate;
 import org.springframework.stereotype.Component;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 import static no.nav.sosialhjelp.soknad.business.pdf.HandlebarContext.SPRAK;
 
@@ -26,8 +28,7 @@ public class FormaterDatoHelper extends RegistryAwareHelper<String>{
         }
 
         final String format = options.param(0);
-        final LocalDate date = new LocalDate(datoStreng);
-        
-        return date.toString(format, SPRAK);            
+        final LocalDate date = LocalDate.parse(datoStreng);
+        return date.format(DateTimeFormatter.ofPattern(format, SPRAK));
     }
 }
