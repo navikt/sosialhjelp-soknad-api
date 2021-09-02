@@ -5,10 +5,10 @@ import no.nav.sosialhjelp.soknad.domain.model.Barn;
 import no.nav.sosialhjelp.soknad.domain.model.Ektefelle;
 import no.nav.sosialhjelp.soknad.domain.model.NavFodselsnummer;
 import no.nav.sosialhjelp.soknad.domain.model.Person;
-import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -117,7 +117,7 @@ public class PersonService {
 
     private LocalDate finnFodselsdatoFraFnr(String ident) {
         NavFodselsnummer fnr = new NavFodselsnummer(ident);
-        return new LocalDate(fnr.getBirthYear() + "-" + fnr.getMonth() + "-" + fnr.getDayInMonth());
+        return LocalDate.parse(fnr.getBirthYear() + "-" + fnr.getMonth() + "-" + fnr.getDayInMonth());
     }
 
     private void loggHvisIdentIkkeErFnr(String ektefelleIdent) {

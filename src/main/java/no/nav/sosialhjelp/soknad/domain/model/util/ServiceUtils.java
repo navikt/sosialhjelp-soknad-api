@@ -2,12 +2,6 @@ package no.nav.sosialhjelp.soknad.domain.model.util;
 
 import org.bouncycastle.jcajce.provider.digest.SHA512;
 import org.bouncycastle.util.encoders.Hex;
-import org.joda.time.DateTime;
-
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
-
 
 public final class ServiceUtils {
 
@@ -17,18 +11,6 @@ public final class ServiceUtils {
     public static final String ENVIRONMENT_NAME = "ENVIRONMENT_NAME";
     public static final String IS_SCHEDULED_TASKS_DISABLED = "scheduler.disable";
     public static final String IS_SENDING_TIL_DIGISOS_API_ENABLED = "digisosapi.sending.enable";
-
-    public static XMLGregorianCalendar stringTilXmldato(String dato) {
-        return lagDatatypeFactory().newXMLGregorianCalendar(DateTime.parse(dato).toGregorianCalendar());
-    }
-
-    public static DatatypeFactory lagDatatypeFactory() {
-        try {
-            return DatatypeFactory.newInstance();
-        } catch (DatatypeConfigurationException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     public static String getSha512FromByteArray(byte[] bytes) {
 

@@ -6,12 +6,13 @@ import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.Batc
 import no.nav.sosialhjelp.soknad.business.service.HenvendelseService;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils;
-import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import static org.slf4j.LoggerFactory.getLogger;
@@ -22,7 +23,7 @@ public class LagringsScheduler {
     private static final Logger logger = getLogger(LagringsScheduler.class);
     private static final int SCHEDULE_RATE_MS = 1000 * 60 * 60; // 1 time
     private static final int SCHEDULE_INTERRUPT_MS = 1000 * 60 * 10; // 10 min
-    private DateTime batchStartTime;
+    private ZonedDateTime batchStartTime;
     private int vellykket;
     private int feilet;
 
@@ -47,7 +48,7 @@ public class LagringsScheduler {
             return;
         }
 
-        batchStartTime = DateTime.now();
+        batchStartTime = ZonedDateTime.now();
         vellykket = 0;
         feilet = 0;
         if (batchEnabled) {
@@ -100,7 +101,7 @@ public class LagringsScheduler {
     }
 
     private boolean harGaattForLangTid() {
-        return DateTime.now().isAfter(batchStartTime.plusMillis(SCHEDULE_INTERRUPT_MS));
+        return ZonedDateTime.now().isAfter(batchStartTime.plus(SCHEDULE_INTERRUPT_MS, ChronoUnit.MILLIS));
     }
 }
 

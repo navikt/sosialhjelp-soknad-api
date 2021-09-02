@@ -47,10 +47,10 @@ import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon;
 import no.nav.sosialhjelp.soknad.business.util.JsonOkonomiUtils;
 import no.nav.sosialhjelp.soknad.tekster.NavMessageSource;
 import org.apache.commons.lang3.LocaleUtils;
-import org.joda.time.LocalDate;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -1773,9 +1773,9 @@ public class SosialhjelpPdfGenerator {
             return "";
         }
         Locale locale = new Locale("nb", "NO");
-        LocalDate localDate = new LocalDate(dato);
+        LocalDate localDate = LocalDate.parse(dato);
 
-        return localDate.toString(format, locale);
+        return localDate.format(DateTimeFormatter.ofPattern(format, locale));
     }
 
     private String formaterDatoOgTidspunkt(String isoTimestamp) {

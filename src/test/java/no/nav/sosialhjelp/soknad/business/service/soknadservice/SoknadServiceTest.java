@@ -13,7 +13,6 @@ import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.domain.Vedleggstatus;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.StaticSubjectHandlerService;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
-import org.joda.time.DateTimeUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -78,7 +77,6 @@ class SoknadServiceTest {
 
     @Test
     void skalStarteSoknad() {
-        DateTimeUtils.setCurrentMillisFixed(System.currentTimeMillis());
         when(henvendelseService.startSoknad(anyString())).thenReturn("123");
         soknadService.startSoknad("");
 
@@ -89,7 +87,6 @@ class SoknadServiceTest {
         List<JsonOkonomibekreftelse> bekreftelser = argument.getValue().getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getBekreftelse();
         assertThat(bekreftelser.stream().anyMatch(bekreftelse -> harBekreftelseFor(bekreftelse, UTBETALING_SKATTEETATEN_SAMTYKKE))).isFalse();
         assertThat(bekreftelser.stream().anyMatch(bekreftelse -> harBekreftelseFor(bekreftelse, BOSTOTTE_SAMTYKKE))).isFalse();
-        DateTimeUtils.setCurrentMillisSystem();
     }
 
     private boolean harBekreftelseFor(JsonOkonomibekreftelse bekreftelse, String bekreftelsesType) {
