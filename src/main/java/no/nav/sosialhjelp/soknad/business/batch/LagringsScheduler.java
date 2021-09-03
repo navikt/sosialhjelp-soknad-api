@@ -22,7 +22,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class LagringsScheduler {
 
     private static final Logger logger = getLogger(LagringsScheduler.class);
-    private static final int SCHEDULE_RATE_MS = 1000 * 60 * 60; // 1 time
+    private static final int SCHEDULE_RATE_MS = 1000 * 60 * 5; // 1 time todo// 5 min for test
     private static final int SCHEDULE_INTERRUPT_MS = 1000 * 60 * 10; // 10 min
     private ZonedDateTime batchStartTime;
     private int vellykket;
