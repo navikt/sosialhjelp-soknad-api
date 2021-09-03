@@ -52,8 +52,6 @@ public class LagringsScheduler {
             return;
         }
         if (leaderElection.isLeader()) {
-            logger.info("Yes - this is leader");
-
             batchStartTime = ZonedDateTime.now();
             vellykket = 0;
             feilet = 0;
@@ -72,10 +70,7 @@ public class LagringsScheduler {
             } else {
                 logger.warn("Batch disabled. Må sette environment property sendsoknad.batch.enabled til true for å sette den på igjen");
             }
-        } else {
-            logger.info("this is not leader - kjører ikke scheduled job");
         }
-
     }
 
     private void hentForeldedeEttersendelserFraDatabaseOgSlett(Timer metrikk) throws InterruptedException {
