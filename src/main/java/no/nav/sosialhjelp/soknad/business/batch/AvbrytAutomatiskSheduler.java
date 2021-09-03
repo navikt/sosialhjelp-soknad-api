@@ -6,6 +6,7 @@ import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.BatchSo
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.BatchSoknadUnderArbeidRepository;
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata;
+import no.nav.sosialhjelp.soknad.consumer.leaderelection.LeaderElection;
 import no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,17 +31,20 @@ public class AvbrytAutomatiskSheduler {
     private LocalDateTime batchStartTime;
     private int vellykket;
 
+    private final LeaderElection leaderElection;
     private final SoknadMetadataRepository soknadMetadataRepository;
     private final BatchSoknadMetadataRepository batchSoknadMetadataRepository;
     private final BatchSoknadUnderArbeidRepository batchSoknadUnderArbeidRepository;
     private final boolean batchEnabled;
 
     public AvbrytAutomatiskSheduler(
+            LeaderElection leaderElection,
             SoknadMetadataRepository soknadMetadataRepository,
             BatchSoknadMetadataRepository batchSoknadMetadataRepository,
             BatchSoknadUnderArbeidRepository batchSoknadUnderArbeidRepository,
             @Value("${sendsoknad.batch.enabled}") boolean batchEnabled
     ) {
+        this.leaderElection = leaderElection;
         this.soknadMetadataRepository = soknadMetadataRepository;
         this.batchSoknadMetadataRepository = batchSoknadMetadataRepository;
         this.batchSoknadUnderArbeidRepository = batchSoknadUnderArbeidRepository;
@@ -54,27 +58,29 @@ public class AvbrytAutomatiskSheduler {
             return;
         }
 
-        batchStartTime = LocalDateTime.now();
-        vellykket = 0;
-        if (batchEnabled) {
-            logger.info("Starter avbryting av gamle søknader");
-            Timer batchTimer = MetricsFactory.createTimer("sosialhjelp.debug.avbryt");
-            batchTimer.start();
+        if (leaderElection.isLeader()) {
+            batchStartTime = LocalDateTime.now();
+            vellykket = 0;
+            if (batchEnabled) {
+                logger.info("Starter avbryting av gamle søknader");
+                Timer batchTimer = MetricsFactory.createTimer("sosialhjelp.debug.avbryt");
+                batchTimer.start();
 
-            try {
-                avbryt();
-            } catch (RuntimeException e) {
-                logger.error("Batchjobb feilet", e);
-                batchTimer.setFailed();
-            } finally {
-                batchTimer.stop();
-                batchTimer.addFieldToReport("vellykket", vellykket);
-                batchTimer.report();
-                logger.info("Jobb fullført: {} vellykket", vellykket);
+                try {
+                    avbryt();
+                } catch (RuntimeException e) {
+                    logger.error("Batchjobb feilet", e);
+                    batchTimer.setFailed();
+                } finally {
+                    batchTimer.stop();
+                    batchTimer.addFieldToReport("vellykket", vellykket);
+                    batchTimer.report();
+                    logger.info("Jobb fullført: {} vellykket", vellykket);
+                }
+
+            } else {
+                logger.warn("Batch disabled. Må sette environment property sendsoknad.batch.enabled til true for å sette den på igjen");
             }
-
-        } else {
-            logger.warn("Batch disabled. Må sette environment property sendsoknad.batch.enabled til true for å sette den på igjen");
         }
     }
 

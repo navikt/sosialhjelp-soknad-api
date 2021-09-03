@@ -5,6 +5,7 @@ import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.BatchSo
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.BatchSoknadUnderArbeidRepository;
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata;
+import no.nav.sosialhjelp.soknad.consumer.leaderelection.LeaderElection;
 import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeidStatus;
@@ -34,6 +35,8 @@ class AvbrytAutomatiskSchedulerTest {
     private static final int DAGER_GAMMEL_SOKNAD = 14;
 
     @Mock
+    private LeaderElection leaderElection;
+    @Mock
     private BatchSoknadUnderArbeidRepository batchSoknadUnderArbeidRepository;
     @Mock
     private SoknadMetadataRepository soknadMetadataRepository;
@@ -44,7 +47,9 @@ class AvbrytAutomatiskSchedulerTest {
 
     @BeforeEach
     public void setup() {
-        scheduler = new AvbrytAutomatiskSheduler(soknadMetadataRepository, batchSoknadMetadataRepository, batchSoknadUnderArbeidRepository, true);
+        scheduler = new AvbrytAutomatiskSheduler(leaderElection, soknadMetadataRepository, batchSoknadMetadataRepository, batchSoknadUnderArbeidRepository, true);
+
+        when(leaderElection.isLeader()).thenReturn(true);
     }
 
     @Test
