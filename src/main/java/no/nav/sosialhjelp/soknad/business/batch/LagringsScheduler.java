@@ -4,6 +4,7 @@ import no.nav.sosialhjelp.metrics.MetricsFactory;
 import no.nav.sosialhjelp.metrics.Timer;
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.BatchSoknadUnderArbeidRepository;
 import no.nav.sosialhjelp.soknad.business.service.HenvendelseService;
+import no.nav.sosialhjelp.soknad.consumer.leaderelection.LeaderElection;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils;
 import org.slf4j.Logger;
@@ -27,15 +28,18 @@ public class LagringsScheduler {
     private int vellykket;
     private int feilet;
 
+    private final LeaderElection leaderElection;
     private final HenvendelseService henvendelseService;
     private final BatchSoknadUnderArbeidRepository batchSoknadUnderArbeidRepository;
     private final boolean batchEnabled;
 
     public LagringsScheduler(
+            LeaderElection leaderElection,
             HenvendelseService henvendelseService,
             BatchSoknadUnderArbeidRepository batchSoknadUnderArbeidRepository,
             @Value("${sendsoknad.batch.enabled}") boolean batchEnabled
     ) {
+        this.leaderElection = leaderElection;
         this.henvendelseService = henvendelseService;
         this.batchSoknadUnderArbeidRepository = batchSoknadUnderArbeidRepository;
         this.batchEnabled = batchEnabled;
@@ -47,25 +51,31 @@ public class LagringsScheduler {
             logger.warn("Scheduler is disabled");
             return;
         }
+        if (leaderElection.isLeader()) {
+            logger.info("Yes - this is leader");
 
-        batchStartTime = ZonedDateTime.now();
-        vellykket = 0;
-        feilet = 0;
-        if (batchEnabled) {
-            logger.info("Starter flytting av søknader til henvendelse-jobb");
-            Timer batchTimer = MetricsFactory.createTimer("debug.lagringsjobb");
-            batchTimer.start();
+            batchStartTime = ZonedDateTime.now();
+            vellykket = 0;
+            feilet = 0;
+            if (batchEnabled) {
+                logger.info("Starter flytting av søknader til henvendelse-jobb");
+                Timer batchTimer = MetricsFactory.createTimer("debug.lagringsjobb");
+                batchTimer.start();
 
-            hentForeldedeEttersendelserFraDatabaseOgSlett(batchTimer);
+                hentForeldedeEttersendelserFraDatabaseOgSlett(batchTimer);
 
-            batchTimer.stop();
-            batchTimer.addFieldToReport("vellykket", vellykket);
-            batchTimer.addFieldToReport("feilet", feilet);
-            batchTimer.report();
-            logger.info("Jobb fullført: {} vellykket, {} feilet", vellykket, feilet);
+                batchTimer.stop();
+                batchTimer.addFieldToReport("vellykket", vellykket);
+                batchTimer.addFieldToReport("feilet", feilet);
+                batchTimer.report();
+                logger.info("Jobb fullført: {} vellykket, {} feilet", vellykket, feilet);
+            } else {
+                logger.warn("Batch disabled. Må sette environment property sendsoknad.batch.enabled til true for å sette den på igjen");
+            }
         } else {
-            logger.warn("Batch disabled. Må sette environment property sendsoknad.batch.enabled til true for å sette den på igjen");
+            logger.info("this is not leader - kjører ikke scheduled job");
         }
+
     }
 
     private void hentForeldedeEttersendelserFraDatabaseOgSlett(Timer metrikk) throws InterruptedException {
