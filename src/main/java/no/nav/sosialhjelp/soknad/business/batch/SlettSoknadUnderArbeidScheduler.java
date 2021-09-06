@@ -2,6 +2,7 @@ package no.nav.sosialhjelp.soknad.business.batch;
 
 import no.nav.sosialhjelp.metrics.MetricsFactory;
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.BatchSoknadUnderArbeidRepository;
+import no.nav.sosialhjelp.soknad.consumer.leaderelection.LeaderElection;
 import no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,13 +24,16 @@ public class SlettSoknadUnderArbeidScheduler {
     private LocalDateTime batchStartTime;
     private int vellykket;
 
+    private final LeaderElection leaderElection;
     private final BatchSoknadUnderArbeidRepository batchSoknadUnderArbeidRepository;
     private final boolean batchEnabled;
 
     public SlettSoknadUnderArbeidScheduler(
+            LeaderElection leaderElection,
             BatchSoknadUnderArbeidRepository batchSoknadUnderArbeidRepository,
             @Value("${sendsoknad.batch.enabled}") boolean batchEnabled
     ) {
+        this.leaderElection = leaderElection;
         this.batchSoknadUnderArbeidRepository = batchSoknadUnderArbeidRepository;
         this.batchEnabled = batchEnabled;
     }
@@ -41,28 +45,30 @@ public class SlettSoknadUnderArbeidScheduler {
             return;
         }
 
-        batchStartTime = LocalDateTime.now();
-        vellykket = 0;
+        if (leaderElection.isLeader()) {
+            batchStartTime = LocalDateTime.now();
+            vellykket = 0;
 
-        if (batchEnabled) {
-            logger.info("Starter sletting av soknadUnderArbeid som er eldre enn 14 dager");
-            var batchTimer = MetricsFactory.createTimer("sosialhjelp.debug.slettSoknadUnderArbeid");
-            batchTimer.start();
+            if (batchEnabled) {
+                logger.info("Starter sletting av soknadUnderArbeid som er eldre enn 14 dager");
+                var batchTimer = MetricsFactory.createTimer("sosialhjelp.debug.slettSoknadUnderArbeid");
+                batchTimer.start();
 
-            try {
-                slett();
-            } catch (RuntimeException e) {
-                logger.error("Batchjobb feilet", e);
-                batchTimer.setFailed();
-            } finally {
-                batchTimer.stop();
-                batchTimer.addFieldToReport("vellykket", vellykket);
-                batchTimer.report();
-                logger.info("Jobb fullført: {} vellykket", vellykket);
+                try {
+                    slett();
+                } catch (RuntimeException e) {
+                    logger.error("Batchjobb feilet", e);
+                    batchTimer.setFailed();
+                } finally {
+                    batchTimer.stop();
+                    batchTimer.addFieldToReport("vellykket", vellykket);
+                    batchTimer.report();
+                    logger.info("Jobb fullført: {} vellykket", vellykket);
+                }
+
+            } else {
+                logger.warn("Batch disabled. Må sette environment property sendsoknad.batch.enabled til true for å sette den på igjen");
             }
-
-        } else {
-            logger.warn("Batch disabled. Må sette environment property sendsoknad.batch.enabled til true for å sette den på igjen");
         }
     }
 

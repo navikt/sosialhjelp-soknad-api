@@ -9,6 +9,7 @@ import no.nav.sosialhjelp.soknad.business.db.repositories.sendtsoknad.BatchSendt
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.BatchSoknadMetadataRepository;
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata;
+import no.nav.sosialhjelp.soknad.consumer.leaderelection.LeaderElection;
 import no.nav.sosialhjelp.soknad.domain.SendtSoknad;
 import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus;
 import no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SoknadType;
@@ -37,6 +38,8 @@ class SlettLoggSchedulerTest {
     private static final String BEHANDLINGS_ID = "1100AAAAA";
 
     @Mock
+    private LeaderElection leaderElection;
+    @Mock
     private BatchSendtSoknadRepository batchSendtSoknadRepository;
     @Mock
     private SoknadMetadataRepository soknadMetadataRepository;
@@ -49,7 +52,9 @@ class SlettLoggSchedulerTest {
 
     @BeforeEach
     void setUp() {
-        scheduler = new SlettLoggScheduler(batchSoknadMetadataRepository, batchSendtSoknadRepository, oppgaveRepository, true);
+        scheduler = new SlettLoggScheduler(leaderElection, batchSoknadMetadataRepository, batchSendtSoknadRepository, oppgaveRepository, true);
+
+        when(leaderElection.isLeader()).thenReturn(true);
     }
 
     @Test
