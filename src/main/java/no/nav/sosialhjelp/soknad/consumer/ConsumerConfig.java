@@ -3,6 +3,7 @@ package no.nav.sosialhjelp.soknad.consumer;
 import no.nav.sosialhjelp.soknad.consumer.dkif.DkifService;
 import no.nav.sosialhjelp.soknad.consumer.fiks.DokumentKrypterer;
 import no.nav.sosialhjelp.soknad.consumer.kodeverk.KodeverkService;
+import no.nav.sosialhjelp.soknad.consumer.leaderelection.LeaderElection;
 import no.nav.sosialhjelp.soknad.consumer.norg.NorgService;
 import no.nav.sosialhjelp.soknad.consumer.organisasjon.OrganisasjonService;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.PdlAdresseSokService;
@@ -54,7 +55,8 @@ import org.springframework.context.annotation.Profile;
         KontonummerService.class,
         UtbetalingService.class,
         BydelConfig.class,
-        BydelService.class
+        BydelService.class,
+        LeaderElection.class
 })
 
 public class ConsumerConfig {

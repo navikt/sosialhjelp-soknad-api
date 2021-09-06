@@ -22,10 +22,10 @@ import no.nav.sosialhjelp.soknad.domain.model.Matrikkeladresse;
 import no.nav.sosialhjelp.soknad.domain.model.Oppholdsadresse;
 import no.nav.sosialhjelp.soknad.domain.model.Person;
 import no.nav.sosialhjelp.soknad.domain.model.Vegadresse;
-import org.joda.time.LocalDate;
-import org.joda.time.Years;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -148,7 +148,7 @@ public class PdlPersonMapper {
 
     private LocalDate findFodselsdato(List<FoedselDto> foedsel) {
         return foedsel.stream().findFirst()
-                .map(foedselDto -> new LocalDate(foedselDto.getFoedselsdato().getYear(), foedselDto.getFoedselsdato().getMonthValue(), foedselDto.getFoedselsdato().getDayOfMonth()))
+                .map(foedselDto -> LocalDate.of(foedselDto.getFoedselsdato().getYear(), foedselDto.getFoedselsdato().getMonthValue(), foedselDto.getFoedselsdato().getDayOfMonth()))
                 .orElse(null);
     }
 
@@ -161,7 +161,7 @@ public class PdlPersonMapper {
         if (foedselsdato == null) {
             return 0;
         }
-        return Years.yearsBetween(foedselsdato, LocalDate.now()).getYears();
+        return Period.between(foedselsdato, LocalDate.now()).getYears();
     }
 
     private boolean isDoed(List<FolkeregisterpersonstatusDto> folkeregisterpersonstatus) {

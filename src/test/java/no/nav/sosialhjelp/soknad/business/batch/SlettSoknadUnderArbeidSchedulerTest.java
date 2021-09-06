@@ -1,6 +1,7 @@
 package no.nav.sosialhjelp.soknad.business.batch;
 
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.BatchSoknadUnderArbeidRepository;
+import no.nav.sosialhjelp.soknad.consumer.leaderelection.LeaderElection;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,13 +19,18 @@ import static org.mockito.Mockito.when;
 class SlettSoknadUnderArbeidSchedulerTest {
 
     @Mock
+    private LeaderElection leaderElection;
+
+    @Mock
     private BatchSoknadUnderArbeidRepository batchSoknadUnderArbeidRepository;
 
     private SlettSoknadUnderArbeidScheduler scheduler;
 
     @BeforeEach
     void setUp() {
-        scheduler = new SlettSoknadUnderArbeidScheduler(batchSoknadUnderArbeidRepository, true);
+        scheduler = new SlettSoknadUnderArbeidScheduler(leaderElection, batchSoknadUnderArbeidRepository, true);
+
+        when(leaderElection.isLeader()).thenReturn(true);
     }
 
     @Test
