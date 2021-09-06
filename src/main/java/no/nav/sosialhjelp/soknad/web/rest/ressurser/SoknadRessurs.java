@@ -63,7 +63,7 @@ public class SoknadRessurs {
     private static final Logger log = getLogger(SoknadRessurs.class);
 
     private final SoknadService soknadService;
-    private final HtmlGenerator pdfTemplate;
+    private final HtmlGenerator htmlGenerator;
     private final SoknadUnderArbeidService soknadUnderArbeidService;
     private final SoknadUnderArbeidRepository soknadUnderArbeidRepository;
     private final SystemdataUpdater systemdata;
@@ -73,7 +73,7 @@ public class SoknadRessurs {
 
     public SoknadRessurs(
             SoknadService soknadService,
-            HtmlGenerator pdfTemplate,
+            HtmlGenerator htmlGenerator,
             SoknadUnderArbeidService soknadUnderArbeidService,
             SoknadUnderArbeidRepository soknadUnderArbeidRepository,
             SystemdataUpdater systemdata,
@@ -82,7 +82,7 @@ public class SoknadRessurs {
             OpplastetVedleggService opplastetVedleggService
     ) {
         this.soknadService = soknadService;
-        this.pdfTemplate = pdfTemplate;
+        this.htmlGenerator = htmlGenerator;
         this.soknadUnderArbeidService = soknadUnderArbeidService;
         this.soknadUnderArbeidRepository = soknadUnderArbeidRepository;
         this.systemdata = systemdata;
@@ -130,7 +130,7 @@ public class SoknadRessurs {
             opplastetVedleggService.oppdaterVedleggsforventninger(soknadUnderArbeid, eier);
         }
 
-        return pdfTemplate.fyllHtmlMalMedInnhold(soknadUnderArbeid.getJsonInternalSoknad(), false);
+        return htmlGenerator.fyllHtmlMalMedInnhold(soknadUnderArbeid.getJsonInternalSoknad(), false);
     }
 
     @GET
