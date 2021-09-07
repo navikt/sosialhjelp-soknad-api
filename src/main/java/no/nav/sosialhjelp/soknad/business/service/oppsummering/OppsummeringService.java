@@ -50,12 +50,20 @@ public class OppsummeringService {
         return new Oppsummering(
                 Arrays.asList(
                         personopplysningerSteg.get(jsonInternalSoknad),
+<<<<<<< HEAD
                         begrunnelseSteg.get(jsonInternalSoknad),
+=======
+                        begrunnelseSteg.get(jsonInternalSoknad) //,
+>>>>>>> 51bfd24483 (utkast endepunkt til ny oppsummering-side. wip)
 //                        arbeidOgUtdanningSteg.get(jsonInternalSoknad),
 //                        familiesituasjonSteg.get(jsonInternalSoknad),
 //                        bosituasjonSteg.get(jsonInternalSoknad),
 //                        inntektOgFormueSteg.get(jsonInternalSoknad),
+<<<<<<< HEAD
                         utgifterOgGjeldSteg.get(jsonInternalSoknad)//,
+=======
+//                        utgifterOgGjeldSteg.get(jsonInternalSoknad),
+>>>>>>> 51bfd24483 (utkast endepunkt til ny oppsummering-side. wip)
 //                        okonomiskeOpplysningerOgVedleggSteg.get(jsonInternalSoknad)
                 ));
     }

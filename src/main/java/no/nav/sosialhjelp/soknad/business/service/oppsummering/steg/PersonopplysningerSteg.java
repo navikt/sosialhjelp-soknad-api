@@ -1,6 +1,7 @@
 package no.nav.sosialhjelp.soknad.business.service.oppsummering.steg;
 
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
+<<<<<<< HEAD
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresseValg;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonGateAdresse;
@@ -12,10 +13,13 @@ import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonStatsborgerskap;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonTelefonnummer;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Avsnitt;
+=======
+>>>>>>> 51bfd24483 (utkast endepunkt til ny oppsummering-side. wip)
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Felt;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Sporsmal;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Steg;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Type;
+<<<<<<< HEAD
 import org.slf4j.Logger;
 
 import java.util.List;
@@ -31,12 +35,24 @@ public class PersonopplysningerSteg {
 
     private static final Logger log = getLogger(PersonopplysningerSteg.class);
 
+=======
+
+import java.util.List;
+
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
+import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.StegUtils.createAvsnitt;
+
+public class PersonopplysningerSteg {
+
+>>>>>>> 51bfd24483 (utkast endepunkt til ny oppsummering-side. wip)
     public Steg get(JsonInternalSoknad jsonInternalSoknad) {
         var personalia = jsonInternalSoknad.getSoknad().getData().getPersonalia();
 
         return new Steg.Builder()
                 .withStegNr(1)
                 .withTittel("personaliabolk.tittel")
+<<<<<<< HEAD
                 .withAvsnitt(
                         List.of(
                                 personaliaAvsnitt(personalia),
@@ -232,4 +248,26 @@ public class PersonopplysningerSteg {
                         .build()
         );
     }
+=======
+                .withAvsnitt(List.of(
+                                createAvsnitt(
+                                        "kontakt.system.personalia.sporsmal",
+                                        singletonList(new Sporsmal(
+                                                "kontakt.system.personalia.infotekst.tekst",
+                                                List.of(
+                                                        new Felt("kontakt.system.personalia.navn", personalia.getNavn().getFornavn(), Type.TEKST),
+                                                        new Felt("kontakt.system.personalia.fnr", personalia.getPersonIdentifikator().getVerdi(), Type.TEKST),
+                                                        new Felt("kontakt.system.personalia.statsborgerskap", personalia.getStatsborgerskap().getVerdi(), Type.TEKST)
+                                                )
+                                        ))
+                                ),
+                                createAvsnitt("soknadsmottaker.sporsmal", emptyList()),
+                                createAvsnitt("kontakt.system.telefoninfo.sporsmal", emptyList()),
+                                createAvsnitt("kontakt.system.kontonummer.sporsmal", emptyList())
+                        )
+                )
+                .withErFerdigUtfylt(true)
+                .build();
+    }
+>>>>>>> 51bfd24483 (utkast endepunkt til ny oppsummering-side. wip)
 }

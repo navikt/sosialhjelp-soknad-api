@@ -1,6 +1,7 @@
 package no.nav.sosialhjelp.soknad.business.service.oppsummering.steg;
 
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
+<<<<<<< HEAD
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtgift;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktUtgift;
@@ -16,10 +17,14 @@ import java.util.stream.Collectors;
 
 import static java.lang.Boolean.TRUE;
 import static java.util.Collections.singletonList;
+=======
+import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Steg;
+>>>>>>> 51bfd24483 (utkast endepunkt til ny oppsummering-side. wip)
 
 public class UtgifterOgGjeldSteg {
 
     public Steg get(JsonInternalSoknad jsonInternalSoknad) {
+<<<<<<< HEAD
         var okonomi = jsonInternalSoknad.getSoknad().getData().getOkonomi();
 
         var boutgifterSporsmal = boutgifter(okonomi);
@@ -162,4 +167,10 @@ public class UtgifterOgGjeldSteg {
                                 .build()
                 ));
     }
+=======
+        // todo implement
+        return null;
+    }
+
+>>>>>>> 51bfd24483 (utkast endepunkt til ny oppsummering-side. wip)
 }

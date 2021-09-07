@@ -5,6 +5,7 @@ import java.util.List;
 public class Sporsmal {
     private final String tittel;
     private final List<Felt> felt;
+<<<<<<< HEAD
     private final boolean erUtfylt;
 
     public Sporsmal(
@@ -15,12 +16,21 @@ public class Sporsmal {
         this.tittel = tittel;
         this.felt = felt;
         this.erUtfylt = erUtfylt;
+=======
+
+    public Sporsmal(String tittel, List<Felt> felt) {
+        this.tittel = tittel;
+        this.felt = felt;
+>>>>>>> 51bfd24483 (utkast endepunkt til ny oppsummering-side. wip)
     }
 
     public Sporsmal(Builder builder) {
         this.tittel = builder.tittel;
         this.felt = builder.felt;
+<<<<<<< HEAD
         this.erUtfylt = builder.erUtfylt;
+=======
+>>>>>>> 51bfd24483 (utkast endepunkt til ny oppsummering-side. wip)
     }
 
     public String getTittel() {
@@ -31,6 +41,7 @@ public class Sporsmal {
         return felt;
     }
 
+<<<<<<< HEAD
     public boolean getErUtfylt() {
         return erUtfylt;
     }
@@ -39,6 +50,11 @@ public class Sporsmal {
         private String tittel;
         private List<Felt> felt;
         private boolean erUtfylt;
+=======
+    public static class Builder {
+        private String tittel;
+        private List<Felt> felt;
+>>>>>>> 51bfd24483 (utkast endepunkt til ny oppsummering-side. wip)
 
         public Builder() {}
 
@@ -52,11 +68,14 @@ public class Sporsmal {
             return this;
         }
 
+<<<<<<< HEAD
         public Builder withErUtfylt(boolean erUtfylt) {
             this.erUtfylt = erUtfylt;
             return this;
         }
 
+=======
+>>>>>>> 51bfd24483 (utkast endepunkt til ny oppsummering-side. wip)
         public Sporsmal build() {
             return new Sporsmal(this);
         }
