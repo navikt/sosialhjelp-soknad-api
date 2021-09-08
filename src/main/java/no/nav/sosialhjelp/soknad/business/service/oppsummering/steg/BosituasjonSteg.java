@@ -26,12 +26,15 @@ public class BosituasjonSteg {
                 .withTittel("bosituasjonbolk.tittel")
                 .withAvsnitt(emptyList())
 <<<<<<< HEAD
+<<<<<<< HEAD
                 .build();
 =======
         return null;
 >>>>>>> 51bfd24483 (utkast endepunkt til ny oppsummering-side. wip)
 =======
                 .withErFerdigUtfylt(true)
+=======
+>>>>>>> d2f2735ecc (`erUtfylt` pr sporsmal, ikke pr steg)
                 .build();
 >>>>>>> 75f48c35dc (utkast til de ulike stegene)
     }

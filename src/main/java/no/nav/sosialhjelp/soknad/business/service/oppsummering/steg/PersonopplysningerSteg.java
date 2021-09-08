@@ -252,21 +252,23 @@ public class PersonopplysningerSteg {
                 .withAvsnitt(List.of(
                                 createAvsnitt(
                                         "kontakt.system.personalia.sporsmal",
-                                        singletonList(new Sporsmal(
-                                                "kontakt.system.personalia.infotekst.tekst",
-                                                List.of(
-                                                        new Felt("kontakt.system.personalia.navn", personalia.getNavn().getFornavn(), Type.TEKST),
-                                                        new Felt("kontakt.system.personalia.fnr", personalia.getPersonIdentifikator().getVerdi(), Type.TEKST),
-                                                        new Felt("kontakt.system.personalia.statsborgerskap", personalia.getStatsborgerskap().getVerdi(), Type.TEKST)
-                                                )
-                                        ))
+                                        singletonList(
+                                                new Sporsmal.Builder()
+                                                        .withTittel("kontakt.system.personalia.infotekst.tekst")
+                                                        .withFelt(List.of(
+                                                                new Felt("kontakt.system.personalia.navn", personalia.getNavn().getFornavn(), Type.TEKST),
+                                                                new Felt("kontakt.system.personalia.fnr", personalia.getPersonIdentifikator().getVerdi(), Type.TEKST),
+                                                                new Felt("kontakt.system.personalia.statsborgerskap", personalia.getStatsborgerskap().getVerdi(), Type.TEKST)
+                                                        ))
+                                                        .withErUtfylt(true)
+                                                        .build()
+                                        )
                                 ),
                                 createAvsnitt("soknadsmottaker.sporsmal", emptyList()),
                                 createAvsnitt("kontakt.system.telefoninfo.sporsmal", emptyList()),
                                 createAvsnitt("kontakt.system.kontonummer.sporsmal", emptyList())
                         )
                 )
-                .withErFerdigUtfylt(true)
                 .build();
     }
 >>>>>>> 51bfd24483 (utkast endepunkt til ny oppsummering-side. wip)

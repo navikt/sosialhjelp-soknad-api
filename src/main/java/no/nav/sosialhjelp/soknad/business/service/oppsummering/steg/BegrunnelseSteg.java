@@ -98,7 +98,6 @@ public class BegrunnelseSteg {
                                         )
                                 )
                         )
-                .withErFerdigUtfylt(true)
                 .build();
     }
 >>>>>>> 51bfd24483 (utkast endepunkt til ny oppsummering-side. wip)

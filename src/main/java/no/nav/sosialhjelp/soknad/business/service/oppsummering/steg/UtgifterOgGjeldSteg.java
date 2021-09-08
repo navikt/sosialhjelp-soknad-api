@@ -180,7 +180,6 @@ public class UtgifterOgGjeldSteg {
                 .withStegNr(7)
                 .withTittel("utgifterbolk.tittel")
                 .withAvsnitt(emptyList())
-                .withErFerdigUtfylt(true)
                 .build();
 >>>>>>> 75f48c35dc (utkast til de ulike stegene)
     }
