@@ -14,7 +14,6 @@ public class OkonomiskeOpplysningerOgVedleggSteg {
                 .withStegNr(8)
                 .withTittel("opplysningerbolk.tittel")
                 .withAvsnitt(emptyList())
-                .withErFerdigUtfylt(true)
                 .build();
     }
 

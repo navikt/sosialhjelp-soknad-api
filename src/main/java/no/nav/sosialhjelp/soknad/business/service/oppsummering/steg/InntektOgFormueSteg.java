@@ -13,7 +13,6 @@ public class InntektOgFormueSteg {
                 .withStegNr(6)
                 .withTittel("inntektbolk.tittel")
                 .withAvsnitt(emptyList())
-                .withErFerdigUtfylt(true)
                 .build();
     }
 

@@ -43,7 +43,6 @@ public class BegrunnelseSteg {
                                         )
                                 )
                         )
-                .withErFerdigUtfylt(true)
                 .build();
     }
 }

@@ -13,7 +13,6 @@ public class FamiliesituasjonSteg {
                 .withStegNr(4)
                 .withTittel("familiebolk.tittel")
                 .withAvsnitt(emptyList())
-                .withErFerdigUtfylt(true)
                 .build();
     }
 

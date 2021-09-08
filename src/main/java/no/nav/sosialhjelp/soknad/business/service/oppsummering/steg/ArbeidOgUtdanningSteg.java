@@ -13,7 +13,6 @@ public class ArbeidOgUtdanningSteg {
                 .withStegNr(3)
                 .withTittel("arbeidbolk.tittel")
                 .withAvsnitt(emptyList())
-                .withErFerdigUtfylt(true)
                 .build();
     }
 }

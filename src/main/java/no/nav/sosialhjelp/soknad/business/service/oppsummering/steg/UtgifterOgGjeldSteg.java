@@ -14,7 +14,6 @@ public class UtgifterOgGjeldSteg {
                 .withStegNr(7)
                 .withTittel("utgifterbolk.tittel")
                 .withAvsnitt(emptyList())
-                .withErFerdigUtfylt(true)
                 .build();
     }
 

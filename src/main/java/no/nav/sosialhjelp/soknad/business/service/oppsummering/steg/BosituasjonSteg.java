@@ -13,7 +13,6 @@ public class BosituasjonSteg {
                 .withStegNr(5)
                 .withTittel("bosituasjonbolk.tittel")
                 .withAvsnitt(emptyList())
-                .withErFerdigUtfylt(true)
                 .build();
     }
 }
