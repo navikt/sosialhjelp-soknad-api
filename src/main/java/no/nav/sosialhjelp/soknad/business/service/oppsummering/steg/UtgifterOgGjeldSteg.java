@@ -21,9 +21,12 @@ import static java.util.Collections.singletonList;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Steg;
 >>>>>>> 51bfd24483 (utkast endepunkt til ny oppsummering-side. wip)
 
+import static java.util.Collections.emptyList;
+
 public class UtgifterOgGjeldSteg {
 
     public Steg get(JsonInternalSoknad jsonInternalSoknad) {
+<<<<<<< HEAD
 <<<<<<< HEAD
         var okonomi = jsonInternalSoknad.getSoknad().getData().getOkonomi();
 
@@ -170,6 +173,16 @@ public class UtgifterOgGjeldSteg {
 =======
         // todo implement
         return null;
+=======
+        var utgifter = jsonInternalSoknad.getSoknad().getData().getOkonomi().getOpplysninger().getUtgift();
+
+        return new Steg.Builder()
+                .withStegNr(7)
+                .withTittel("utgifterbolk.tittel")
+                .withAvsnitt(emptyList())
+                .withErFerdigUtfylt(true)
+                .build();
+>>>>>>> 75f48c35dc (utkast til de ulike stegene)
     }
 
 >>>>>>> 51bfd24483 (utkast endepunkt til ny oppsummering-side. wip)
