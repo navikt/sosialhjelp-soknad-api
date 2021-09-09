@@ -51,19 +51,27 @@ public class OppsummeringService {
                 Arrays.asList(
                         personopplysningerSteg.get(jsonInternalSoknad),
 <<<<<<< HEAD
+<<<<<<< HEAD
                         begrunnelseSteg.get(jsonInternalSoknad),
 =======
                         begrunnelseSteg.get(jsonInternalSoknad) //,
 >>>>>>> 51bfd24483 (utkast endepunkt til ny oppsummering-side. wip)
+=======
+                        begrunnelseSteg.get(jsonInternalSoknad),
+>>>>>>> d8cdea3cd5 (utgifterOgGjeld steg 7)
 //                        arbeidOgUtdanningSteg.get(jsonInternalSoknad),
 //                        familiesituasjonSteg.get(jsonInternalSoknad),
 //                        bosituasjonSteg.get(jsonInternalSoknad),
 //                        inntektOgFormueSteg.get(jsonInternalSoknad),
 <<<<<<< HEAD
+<<<<<<< HEAD
                         utgifterOgGjeldSteg.get(jsonInternalSoknad)//,
 =======
 //                        utgifterOgGjeldSteg.get(jsonInternalSoknad),
 >>>>>>> 51bfd24483 (utkast endepunkt til ny oppsummering-side. wip)
+=======
+                        utgifterOgGjeldSteg.get(jsonInternalSoknad)//,
+>>>>>>> d8cdea3cd5 (utgifterOgGjeld steg 7)
 //                        okonomiskeOpplysningerOgVedleggSteg.get(jsonInternalSoknad)
                 ));
     }
