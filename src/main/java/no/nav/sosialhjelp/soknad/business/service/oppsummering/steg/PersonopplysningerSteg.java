@@ -3,6 +3,7 @@ package no.nav.sosialhjelp.soknad.business.service.oppsummering.steg;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresseValg;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonGateAdresse;
@@ -12,6 +13,11 @@ import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonNavn;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonKontonummer;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonStatsborgerskap;
+=======
+import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
+import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonKontonummer;
+import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
+>>>>>>> 06e7e219e1 (avsnitt for telefonnummer og kontonummer oppdatert.)
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonTelefonnummer;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Avsnitt;
 =======
@@ -43,6 +49,7 @@ public class PersonopplysningerSteg {
 
 import java.util.List;
 
+import static java.lang.Boolean.TRUE;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 
@@ -56,6 +63,9 @@ public class PersonopplysningerSteg {
                 .withStegNr(1)
                 .withTittel("personaliabolk.tittel")
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 06e7e219e1 (avsnitt for telefonnummer og kontonummer oppdatert.)
                 .withAvsnitt(
                         List.of(
                                 personaliaAvsnitt(personalia),
@@ -79,7 +89,11 @@ public class PersonopplysningerSteg {
                                                 List.of(
                                                         new Felt.Builder()
                                                                 .withLabel("kontakt.system.personalia.navn")
+<<<<<<< HEAD
                                                                 .withSvar(fulltnavn(personalia.getNavn()))
+=======
+                                                                .withSvar(personalia.getNavn().getFornavn()) // todo helt navn
+>>>>>>> 06e7e219e1 (avsnitt for telefonnummer og kontonummer oppdatert.)
                                                                 .withType(Type.SYSTEMDATA)
                                                                 .build(),
                                                         new Felt.Builder()
@@ -89,6 +103,7 @@ public class PersonopplysningerSteg {
                                                                 .build(),
                                                         new Felt.Builder()
                                                                 .withLabel("kontakt.system.personalia.statsborgerskap")
+<<<<<<< HEAD
                                                                 .withSvar(Optional.ofNullable(personalia.getStatsborgerskap()).map(JsonStatsborgerskap::getVerdi).orElse(null))
                                                                 .withType(Type.SYSTEMDATA)
                                                                 .build()
@@ -265,24 +280,105 @@ public class PersonopplysningerSteg {
                                                                         new Felt("kontakt.system.personalia.statsborgerskap", personalia.getStatsborgerskap().getVerdi(), Type.TEKST)
                                                                 ))
                                                                 .withErUtfylt(true)
+=======
+                                                                .withSvar(personalia.getStatsborgerskap().getVerdi())
+                                                                .withType(Type.SYSTEMDATA)
+>>>>>>> 06e7e219e1 (avsnitt for telefonnummer og kontonummer oppdatert.)
                                                                 .build()
                                                 )
-                                        ).build(),
-                                new Avsnitt.Builder()
-                                        .withTittel("soknadsmottaker.sporsmal")
-                                        .withSporsmal(emptyList())
-                                        .build(),
-                                new Avsnitt.Builder()
-                                        .withTittel("kontakt.system.telefoninfo.sporsmal")
-                                        .withSporsmal(emptyList())
-                                        .build(),
-                                new Avsnitt.Builder()
-                                        .withTittel("kontakt.system.kontonummer.sporsmal")
-                                        .withSporsmal(emptyList())
+                                        )
+                                        .build()
+                        )
+                ).build();
+    }
+
+    private Avsnitt adresseOgNavKontorAvsnitt(JsonPersonalia personalia) {
+        var oppholdsadresse = personalia.getOppholdsadresse();
+        var adressetype = oppholdsadresse.getType();
+        // gatenavn, husnummer, husbokstav, postnummer, poststed
+        // adressevalg -> folkeregistrert, midlertidig, soknad
+        return new Avsnitt.Builder()
+                .withTittel("soknadsmottaker.sporsmal")
+                .withSporsmal(
+                        List.of(
+                                new Sporsmal.Builder()
+                                        .withTittel("")
+                                        .withErUtfylt(true)
+                                        .withFelt(emptyList())
                                         .build()
                         )
                 )
                 .build();
     }
+
+    private Avsnitt telefonnummerAvsnitt(JsonPersonalia personalia) {
+        var telefonnummer = personalia.getTelefonnummer();
+        var harUtfyltTelefonnummer = telefonnummer != null && !telefonnummer.getVerdi().isEmpty();
+
+        return new Avsnitt.Builder()
+                .withTittel("kontakt.system.telefoninfo.sporsmal") // skal variere ut fra kilde? systemdata eller bruker
+                .withSporsmal(
+                        List.of(
+                                new Sporsmal.Builder()
+                                        .withTittel("kontakt.system.telefoninfo.infotekst.tekst")
+                                        .withErUtfylt(harUtfyltTelefonnummer)
+                                        .withFelt(harUtfyltTelefonnummer ? telefonnummerFelt(telefonnummer) : null)
+                                        .build()
+                        )
+                )
+                .build();
+    }
+
+    private List<Felt> telefonnummerFelt(JsonTelefonnummer telefonnummer) {
+        var erSystemdata = telefonnummer.getKilde().equals(JsonKilde.SYSTEM);
+        return singletonList(
+                new Felt.Builder()
+                        .withLabel("kontakt.system.telefon.label")
+                        .withSvar(telefonnummer.getVerdi())
+                        .withType(erSystemdata ? Type.SYSTEMDATA : Type.TEKST)
+                        .build()
+        );
+    }
+
+    private Avsnitt kontonummerAvsnitt(JsonPersonalia personalia) {
+        var kontonummer = personalia.getKontonummer();
+        var harUtfyltKontonummer = kontonummer != null && (TRUE.equals(kontonummer.getHarIkkeKonto()) || !kontonummer.getVerdi().isEmpty());
+
+        return new Avsnitt.Builder()
+                .withTittel("kontakt.system.kontonummer.sporsmal") // skal variere ut fra kilde? systemdata eller bruker
+                .withSporsmal(
+                        List.of(
+                                new Sporsmal.Builder()
+                                        .withTittel("kontakt.system.kontonummer.label")
+                                        .withErUtfylt(harUtfyltKontonummer)
+                                        .withFelt(harUtfyltKontonummer ? kontonummerFelt(kontonummer) : null)
+                                        .build()
+                        )
+                )
+                .build();
+    }
+<<<<<<< HEAD
 >>>>>>> 51bfd24483 (utkast endepunkt til ny oppsummering-side. wip)
+=======
+
+    private List<Felt> kontonummerFelt(JsonKontonummer kontonummer) {
+        if (TRUE.equals(kontonummer.getHarIkkeKonto())) {
+            return singletonList(
+                    new Felt.Builder()
+                            .withSvar("kontakt.kontonummer.harikke.true")
+                            .withType(Type.CHECKBOX)
+                            .build()
+            );
+        }
+        var erSystemdata = kontonummer.getKilde().equals(JsonKilde.SYSTEM);
+
+        return singletonList(
+                new Felt.Builder()
+                        .withLabel("kontakt.system.kontonummer.label")
+                        .withSvar(kontonummer.getVerdi())
+                        .withType(erSystemdata ? Type.SYSTEMDATA : Type.TEKST)
+                        .build()
+        );
+    }
+>>>>>>> 06e7e219e1 (avsnitt for telefonnummer og kontonummer oppdatert.)
 }
