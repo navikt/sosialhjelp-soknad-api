@@ -4,6 +4,9 @@ import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 8599ae5c43 (litt mer utfyllende steg 1.)
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresseValg;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonGateAdresse;
@@ -50,7 +53,6 @@ public class PersonopplysningerSteg {
 import java.util.List;
 
 import static java.lang.Boolean.TRUE;
-import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 
 public class PersonopplysningerSteg {
@@ -90,10 +92,14 @@ public class PersonopplysningerSteg {
                                                         new Felt.Builder()
                                                                 .withLabel("kontakt.system.personalia.navn")
 <<<<<<< HEAD
+<<<<<<< HEAD
                                                                 .withSvar(fulltnavn(personalia.getNavn()))
 =======
                                                                 .withSvar(personalia.getNavn().getFornavn()) // todo helt navn
 >>>>>>> 06e7e219e1 (avsnitt for telefonnummer og kontonummer oppdatert.)
+=======
+                                                                .withSvar(personalia.getNavn().getFornavn()) // todo fornavn (mellomnavn) etternavn
+>>>>>>> 8599ae5c43 (litt mer utfyllende steg 1.)
                                                                 .withType(Type.SYSTEMDATA)
                                                                 .build(),
                                                         new Felt.Builder()
@@ -294,21 +300,49 @@ public class PersonopplysningerSteg {
 
     private Avsnitt adresseOgNavKontorAvsnitt(JsonPersonalia personalia) {
         var oppholdsadresse = personalia.getOppholdsadresse();
-        var adressetype = oppholdsadresse.getType();
-        // gatenavn, husnummer, husbokstav, postnummer, poststed
-        // adressevalg -> folkeregistrert, midlertidig, soknad
+
         return new Avsnitt.Builder()
                 .withTittel("soknadsmottaker.sporsmal")
                 .withSporsmal(
                         List.of(
                                 new Sporsmal.Builder()
-                                        .withTittel("")
+                                        .withTittel("soknadsmottaker.infotekst.tekst")
                                         .withErUtfylt(true)
-                                        .withFelt(emptyList())
+                                        .withFelt(
+                                                singletonList(
+                                                        new Felt.Builder()
+                                                                .withLabel(adresseLabel(oppholdsadresse.getAdresseValg()))
+                                                                .withSvar(adresseSvar(oppholdsadresse))
+                                                                .withType(Type.CHECKBOX)
+                                                                .build()
+                                                )
+                                        )
                                         .build()
                         )
                 )
                 .build();
+    }
+
+    private String adresseLabel(JsonAdresseValg adresseValg) {
+        if (adresseValg.equals(JsonAdresseValg.FOLKEREGISTRERT)) {
+            return "kontakt.system.oppholdsadresse.folkeregistrertAdresse";
+        } else if (adresseValg.equals(JsonAdresseValg.MIDLERTIDIG)) {
+            return "kontakt.system.oppholdsadresse.midlertidigAdresse";
+        } else {
+            return "kontakt.system.oppholdsadresse.valg.soknad";
+        }
+    }
+
+    private String adresseSvar(JsonAdresse oppholdsadresse) {
+        if (oppholdsadresse.getType().equals(JsonAdresse.Type.GATEADRESSE)) {
+            var gateadresse = (JsonGateAdresse) oppholdsadresse;
+            return gateadresse.getGatenavn(); // todo // gatenavn, husnummer, husbokstav, postnummer, poststed
+        }
+        if (oppholdsadresse.getType().equals(JsonAdresse.Type.MATRIKKELADRESSE) && oppholdsadresse instanceof JsonMatrikkelAdresse) {
+            var matrikkeladresse = (JsonMatrikkelAdresse) oppholdsadresse;
+            return matrikkeladresse.getGaardsnummer(); // todo mer
+        }
+        return "";
     }
 
     private Avsnitt telefonnummerAvsnitt(JsonPersonalia personalia) {
