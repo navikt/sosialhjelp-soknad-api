@@ -16,11 +16,14 @@ import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonNavn;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonKontonummer;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonStatsborgerskap;
+<<<<<<< HEAD
 =======
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonKontonummer;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
 >>>>>>> 06e7e219e1 (avsnitt for telefonnummer og kontonummer oppdatert.)
+=======
+>>>>>>> 7ba1c479ec (test PersonopplysningerSteg)
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonTelefonnummer;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Avsnitt;
 =======
@@ -32,6 +35,7 @@ import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Felt;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Sporsmal;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Steg;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Type;
+<<<<<<< HEAD
 <<<<<<< HEAD
 import org.slf4j.Logger;
 
@@ -49,15 +53,27 @@ public class PersonopplysningerSteg {
     private static final Logger log = getLogger(PersonopplysningerSteg.class);
 
 =======
+=======
+import org.slf4j.Logger;
+>>>>>>> 7ba1c479ec (test PersonopplysningerSteg)
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.lang.Boolean.TRUE;
 import static java.util.Collections.singletonList;
+import static org.slf4j.LoggerFactory.getLogger;
 
 public class PersonopplysningerSteg {
 
+<<<<<<< HEAD
 >>>>>>> 51bfd24483 (utkast endepunkt til ny oppsummering-side. wip)
+=======
+    private static final Logger log = getLogger(PersonopplysningerSteg.class);
+
+>>>>>>> 7ba1c479ec (test PersonopplysningerSteg)
     public Steg get(JsonInternalSoknad jsonInternalSoknad) {
         var personalia = jsonInternalSoknad.getSoknad().getData().getPersonalia();
 
@@ -93,6 +109,7 @@ public class PersonopplysningerSteg {
                                                                 .withLabel("kontakt.system.personalia.navn")
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
                                                                 .withSvar(fulltnavn(personalia.getNavn()))
 =======
                                                                 .withSvar(personalia.getNavn().getFornavn()) // todo helt navn
@@ -100,6 +117,9 @@ public class PersonopplysningerSteg {
 =======
                                                                 .withSvar(personalia.getNavn().getFornavn()) // todo fornavn (mellomnavn) etternavn
 >>>>>>> 8599ae5c43 (litt mer utfyllende steg 1.)
+=======
+                                                                .withSvar(fulltnavn(personalia.getNavn()))
+>>>>>>> 7ba1c479ec (test PersonopplysningerSteg)
                                                                 .withType(Type.SYSTEMDATA)
                                                                 .build(),
                                                         new Felt.Builder()
@@ -109,6 +129,7 @@ public class PersonopplysningerSteg {
                                                                 .build(),
                                                         new Felt.Builder()
                                                                 .withLabel("kontakt.system.personalia.statsborgerskap")
+<<<<<<< HEAD
 <<<<<<< HEAD
                                                                 .withSvar(Optional.ofNullable(personalia.getStatsborgerskap()).map(JsonStatsborgerskap::getVerdi).orElse(null))
                                                                 .withType(Type.SYSTEMDATA)
@@ -288,6 +309,9 @@ public class PersonopplysningerSteg {
                                                                 .withErUtfylt(true)
 =======
                                                                 .withSvar(personalia.getStatsborgerskap().getVerdi())
+=======
+                                                                .withSvar(Optional.ofNullable(personalia.getStatsborgerskap()).map(JsonStatsborgerskap::getVerdi).orElse(null))
+>>>>>>> 7ba1c479ec (test PersonopplysningerSteg)
                                                                 .withType(Type.SYSTEMDATA)
 >>>>>>> 06e7e219e1 (avsnitt for telefonnummer og kontonummer oppdatert.)
                                                                 .build()
@@ -298,13 +322,29 @@ public class PersonopplysningerSteg {
                 ).build();
     }
 
+    private String fulltnavn(JsonNavn navn) {
+        if (navn == null) {
+            log.warn("Personalia.getNavn er null?");
+            return "";
+        }
+
+        var optionalFornavn = Optional.ofNullable(navn.getFornavn());
+        var optionalMellomnavn = Optional.ofNullable(navn.getMellomnavn());
+        var optionalEtternavn = Optional.ofNullable(navn.getEtternavn());
+
+        return Stream.of(optionalFornavn, optionalMellomnavn, optionalEtternavn)
+                .map(opt -> opt.orElse(""))
+                .filter(s -> !s.isBlank())
+                .collect(Collectors.joining(" "));
+    }
+
     private Avsnitt adresseOgNavKontorAvsnitt(JsonPersonalia personalia) {
         var oppholdsadresse = personalia.getOppholdsadresse();
 
         return new Avsnitt.Builder()
                 .withTittel("soknadsmottaker.sporsmal")
                 .withSporsmal(
-                        List.of(
+                        singletonList(
                                 new Sporsmal.Builder()
                                         .withTittel("soknadsmottaker.infotekst.tekst")
                                         .withErUtfylt(true)
@@ -335,14 +375,36 @@ public class PersonopplysningerSteg {
 
     private String adresseSvar(JsonAdresse oppholdsadresse) {
         if (oppholdsadresse.getType().equals(JsonAdresse.Type.GATEADRESSE)) {
-            var gateadresse = (JsonGateAdresse) oppholdsadresse;
-            return gateadresse.getGatenavn(); // todo // gatenavn, husnummer, husbokstav, postnummer, poststed
+            return gateadresseString((JsonGateAdresse) oppholdsadresse);
         }
         if (oppholdsadresse.getType().equals(JsonAdresse.Type.MATRIKKELADRESSE) && oppholdsadresse instanceof JsonMatrikkelAdresse) {
-            var matrikkeladresse = (JsonMatrikkelAdresse) oppholdsadresse;
-            return matrikkeladresse.getGaardsnummer(); // todo mer
+            return matrikkeladresseString((JsonMatrikkelAdresse) oppholdsadresse);
         }
+        log.warn("Oppholdsadresse er verken GateAdresse eller MatrikkelAdresse. Burde ikke være mulig - må undersøkes nærmere");
         return "";
+    }
+
+    private String gateadresseString(JsonGateAdresse gateAdresse) {
+        // gatenavn husnummer+husbokstav, postnummer poststed
+        var optionalGateNavn = Optional.ofNullable(gateAdresse.getGatenavn());
+        var optionalHusnummer = Optional.ofNullable(gateAdresse.getHusnummer());
+        var optionalHusbokstav = Optional.ofNullable(gateAdresse.getHusbokstav());
+        var optionalPostnummer = Optional.ofNullable(gateAdresse.getPostnummer());
+        var optionalPoststed = Optional.ofNullable(gateAdresse.getPoststed());
+
+        var gatedel = optionalGateNavn.map(s -> s + " ").orElse("") + optionalHusnummer.orElse("") + optionalHusbokstav.orElse("");
+        var postdel = optionalPostnummer.map(s -> s + " ").orElse("") + optionalPoststed.orElse("");
+
+        return gatedel + ", " + postdel;
+    }
+
+    private String matrikkeladresseString(JsonMatrikkelAdresse matrikkelAdresse) {
+        // bruksenhetsnummer, kommunenummer // mer?
+
+        var optionalBruksenhetsnummer = Optional.ofNullable(matrikkelAdresse.getBruksnummer());
+        var optionalKommunenummer = Optional.ofNullable(matrikkelAdresse.getKommunenummer());
+
+        return optionalBruksenhetsnummer.map(s -> s + ", ").orElse("") + optionalKommunenummer.orElse("");
     }
 
     private Avsnitt telefonnummerAvsnitt(JsonPersonalia personalia) {
@@ -352,7 +414,7 @@ public class PersonopplysningerSteg {
         return new Avsnitt.Builder()
                 .withTittel("kontakt.system.telefoninfo.sporsmal") // skal variere ut fra kilde? systemdata eller bruker
                 .withSporsmal(
-                        List.of(
+                        singletonList(
                                 new Sporsmal.Builder()
                                         .withTittel("kontakt.system.telefoninfo.infotekst.tekst")
                                         .withErUtfylt(harUtfyltTelefonnummer)
@@ -379,9 +441,9 @@ public class PersonopplysningerSteg {
         var harUtfyltKontonummer = kontonummer != null && (TRUE.equals(kontonummer.getHarIkkeKonto()) || !kontonummer.getVerdi().isEmpty());
 
         return new Avsnitt.Builder()
-                .withTittel("kontakt.system.kontonummer.sporsmal") // skal variere ut fra kilde? systemdata eller bruker
+                .withTittel("kontakt.system.kontonummer.sporsmal")
                 .withSporsmal(
-                        List.of(
+                        singletonList(
                                 new Sporsmal.Builder()
                                         .withTittel("kontakt.system.kontonummer.label")
                                         .withErUtfylt(harUtfyltKontonummer)

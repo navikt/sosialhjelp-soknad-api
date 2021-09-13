@@ -63,12 +63,16 @@ public class Steg {
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     public List<Avsnitt> getAvsnitt() {
         return avsnitt;
     }
 
 =======
     public List<Avsnitt> getBolker() {
+=======
+    public List<Avsnitt> getAvsnitt() {
+>>>>>>> 7ba1c479ec (test PersonopplysningerSteg)
         return avsnitt;
     }
 
