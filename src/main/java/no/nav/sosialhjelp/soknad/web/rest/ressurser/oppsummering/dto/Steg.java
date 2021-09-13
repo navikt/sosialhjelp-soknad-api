@@ -32,7 +32,7 @@ public class Steg {
         return tittel;
     }
 
-    public List<Avsnitt> getBolker() {
+    public List<Avsnitt> getAvsnitt() {
         return avsnitt;
     }
 
