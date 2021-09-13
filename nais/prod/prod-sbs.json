@@ -34,6 +34,7 @@
   "webProxyEnabled": true,
   "isGcp": false,
   "isLabsGcp": false,
+  "leaderElectionEnabled": true,
   "env": {
     "AAREG_API_BASEURL": "https://api-gw.oera.no/aareg-services/api/",
     "DITTNAV_LINK_URL": "https://tjenester.nav.no/dittnav/",

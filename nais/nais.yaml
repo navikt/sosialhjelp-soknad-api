@@ -64,7 +64,7 @@ spec:
 {{#each ingresses}}
     - "{{this}}"
 {{/each}}
-  leaderElection: true
+  leaderElection: {{leaderElectionEnabled}}
   resources:
     limits:
       cpu: 1000m
