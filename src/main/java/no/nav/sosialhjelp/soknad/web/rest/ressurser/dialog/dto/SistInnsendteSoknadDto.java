@@ -3,13 +3,13 @@ package no.nav.sosialhjelp.soknad.web.rest.ressurser.dialog.dto;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class NyligInnsendteSoknaderDto {
+public class SistInnsendteSoknadDto {
 
     private final String digisosId;
     private final String enhetsnr;
     private final LocalDateTime innsendtDato;
 
-    public NyligInnsendteSoknaderDto(
+    public SistInnsendteSoknadDto(
             String digisosId,
             String enhetsnr,
             LocalDateTime innsendtDato

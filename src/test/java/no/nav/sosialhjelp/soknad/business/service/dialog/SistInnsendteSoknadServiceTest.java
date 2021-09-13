@@ -18,20 +18,20 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class NyligInnsendteSoknaderServiceTest {
+class SistInnsendteSoknadServiceTest {
 
     @Mock
     private SoknadMetadataRepository soknadMetadataRepository;
 
     @InjectMocks
-    private NyligInnsendteSoknaderService nyligInnsendteSoknaderService;
+    private SistInnsendteSoknadService sistInnsendteSoknadService;
 
     private final String fnr = "12345";
     private final String fiksForsendelseId = "fiksId";
     private final String navEnhet = "1234";
 
     @Test
-    void skalHenteSisteInnsendteSoknaderForBruker() {
+    void skalHenteSistInnsendteSoknadForBruker() {
         var innsendtDato = LocalDateTime.now().minusDays(1);
         var soknadMetadata = new SoknadMetadata();
         soknadMetadata.fnr = fnr;
@@ -42,23 +42,25 @@ class NyligInnsendteSoknaderServiceTest {
         when(soknadMetadataRepository.hentAlleInnsendteSoknaderForBruker(any()))
                 .thenReturn(Collections.singletonList(soknadMetadata));
 
-        var dto = nyligInnsendteSoknaderService.hentNyligInnsendteSoknader(fnr);
+        var dto = sistInnsendteSoknadService.hentSistInnsendteSoknad(fnr);
 
-        assertThat(dto).isNotEmpty();
+        assertThat(dto).isPresent();
         assertThat(dto.get().getDigisosId()).isEqualTo(fiksForsendelseId);
         assertThat(dto.get().getEnhetsnr()).isEqualTo(navEnhet);
         assertThat(dto.get().getInnsendtDato()).isEqualTo(innsendtDato.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
     }
 
     @Test
-    void skalHenteSisteInnsendteSoknaderForBruker_siste() {
+    void skalHenteSistInnsendteSoknadForBruker_siste() {
         var innsendtDatoNyest = LocalDateTime.now().minusDays(1);
         var innsendtDatoElst = LocalDateTime.now().minusDays(2);
+
         var soknadMetadata1 = new SoknadMetadata();
         soknadMetadata1.fnr = fnr;
         soknadMetadata1.fiksForsendelseId = fiksForsendelseId;
         soknadMetadata1.navEnhet = navEnhet;
         soknadMetadata1.innsendtDato = innsendtDatoNyest;
+
         var soknadMetadata2 = new SoknadMetadata();
         soknadMetadata2.fnr = fnr;
         soknadMetadata2.fiksForsendelseId = "fiksId2";
@@ -68,30 +70,30 @@ class NyligInnsendteSoknaderServiceTest {
         when(soknadMetadataRepository.hentAlleInnsendteSoknaderForBruker(any()))
                 .thenReturn(List.of(soknadMetadata1, soknadMetadata2));
 
-        var dto = nyligInnsendteSoknaderService.hentNyligInnsendteSoknader(fnr);
+        var dto = sistInnsendteSoknadService.hentSistInnsendteSoknad(fnr);
 
-        assertThat(dto).isNotEmpty();
+        assertThat(dto).isPresent();
         assertThat(dto.get().getDigisosId()).isEqualTo(fiksForsendelseId);
         assertThat(dto.get().getEnhetsnr()).isEqualTo(navEnhet);
         assertThat(dto.get().getInnsendtDato()).isEqualTo(innsendtDatoNyest.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
     }
 
     @Test
-    void skalReturnereTomListeVedNull() {
+    void skalReturnereEmptyOptionalVedNull() {
         when(soknadMetadataRepository.hentAlleInnsendteSoknaderForBruker(any()))
                 .thenReturn(null);
 
-        var dto = nyligInnsendteSoknaderService.hentNyligInnsendteSoknader(fnr);
+        var dto = sistInnsendteSoknadService.hentSistInnsendteSoknad(fnr);
 
         assertThat(dto).isEmpty();
     }
 
     @Test
-    void skalReturnereTomListeVedTomListe() {
+    void skalReturnereEmptyOptionalVedTomListe() {
         when(soknadMetadataRepository.hentAlleInnsendteSoknaderForBruker(any()))
                 .thenReturn(Collections.emptyList());
 
-        var dto = nyligInnsendteSoknaderService.hentNyligInnsendteSoknader(fnr);
+        var dto = sistInnsendteSoknadService.hentSistInnsendteSoknad(fnr);
 
         assertThat(dto).isEmpty();
     }
