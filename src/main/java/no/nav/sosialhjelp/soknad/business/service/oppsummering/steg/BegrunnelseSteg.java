@@ -34,6 +34,7 @@ public class BegrunnelseSteg {
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         var harUtfyltHvaSokesOm = begrunnelse.getHvaSokesOm() != null && !begrunnelse.getHvaSokesOm().isEmpty();
         var harUtfyltHvorforSoke = begrunnelse.getHvorforSoke() != null && !begrunnelse.getHvorforSoke().isEmpty();
 
@@ -83,13 +84,17 @@ public class BegrunnelseSteg {
 =======
         var harUtfyltHvaSokesOm = !begrunnelse.getHvaSokesOm().isEmpty();
         var harUtfyltHvorforSoke = !begrunnelse.getHvorforSoke().isEmpty();
+=======
+        var harUtfyltHvaSokesOm = begrunnelse.getHvaSokesOm() != null && !begrunnelse.getHvaSokesOm().isEmpty();
+        var harUtfyltHvorforSoke = begrunnelse.getHvorforSoke() != null && !begrunnelse.getHvorforSoke().isEmpty();
+>>>>>>> b4e49cb130 (begrunnelseSteg test)
 
 >>>>>>> 445b6b610d (bruk avsnitt builder)
         return new Steg.Builder()
                 .withStegNr(2)
                 .withTittel("begrunnelsebolk.tittel")
                 .withAvsnitt(
-                        List.of(
+                        singletonList(
                                 new Avsnitt.Builder()
                                         .withTittel("applikasjon.sidetittel.kortnavn")
                                         .withSporsmal(
@@ -126,7 +131,7 @@ public class BegrunnelseSteg {
     private List<Felt> hvorforSokeFelt(JsonBegrunnelse begrunnelse) {
         return singletonList(
                 new Felt.Builder()
-                        .withSvar(begrunnelse.getHvaSokesOm())
+                        .withSvar(begrunnelse.getHvorforSoke())
                         .withType(Type.TEKST)
                         .build());
 
