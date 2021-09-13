@@ -214,7 +214,7 @@ public class UtgifterOgGjeldSteg {
     private List<Sporsmal> boutgifter(JsonOkonomi okonomi) {
         var boutgiftBekreftelser = okonomi.getOpplysninger().getBekreftelse().stream().filter(b -> "boutgifter".equals(b.getType())).collect(Collectors.toList());
         var erBoutgifterUtfylt = !boutgiftBekreftelser.isEmpty() && boutgiftBekreftelser.get(0).getVerdi() != null;
-        var harBoutgifter = erBoutgifterUtfylt ? boutgiftBekreftelser.get(0).getVerdi() : null;
+        var harBoutgifter = erBoutgifterUtfylt && boutgiftBekreftelser.get(0).getVerdi().equals(TRUE);
 
         var sporsmalList = new ArrayList<Sporsmal>();
 
@@ -222,13 +222,11 @@ public class UtgifterOgGjeldSteg {
                 new Sporsmal.Builder()
                         .withTittel("utgifter.boutgift.sporsmal")
                         .withErUtfylt(erBoutgifterUtfylt)
-                        .withFelt(erBoutgifterUtfylt
-                                ? singletonList(new Felt.Builder().withSvar(harBoutgifter.toString()).withType(Type.CHECKBOX).build())
-                                : null)
+                        .withFelt(erBoutgifterUtfylt ? booleanFeltSvarList(harBoutgifter) : null)
                         .build()
         );
 
-        if (erBoutgifterUtfylt && TRUE.equals(harBoutgifter)) {
+        if (erBoutgifterUtfylt && harBoutgifter) {
             var utgifter = okonomi.getOpplysninger().getUtgift();
             var oversiktUtgift = okonomi.getOversikt().getUtgift();
 
@@ -242,10 +240,10 @@ public class UtgifterOgGjeldSteg {
 
             sporsmalList.add(
                     new Sporsmal.Builder()
-                    .withTittel("utgifter.boutgift.true.type.sporsmal")
-                    .withFelt(felter)
-                    .withErUtfylt(true)
-                    .build()
+                            .withTittel("utgifter.boutgift.true.type.sporsmal")
+                            .withFelt(felter)
+                            .withErUtfylt(true)
+                            .build()
             );
         }
 
@@ -255,20 +253,18 @@ public class UtgifterOgGjeldSteg {
     private List<Sporsmal> barneutgifter(JsonOkonomi okonomi) {
         var barneutgiftBekreftelser = okonomi.getOpplysninger().getBekreftelse().stream().filter(b -> "barneutgifter".equals(b.getType())).collect(Collectors.toList());
         var erBarneutgifterUtfylt = !barneutgiftBekreftelser.isEmpty() && barneutgiftBekreftelser.get(0).getVerdi() != null;
-        var harBarneutgifter = erBarneutgifterUtfylt ? barneutgiftBekreftelser.get(0).getVerdi() : null;
+        var harBarneutgifter = erBarneutgifterUtfylt && barneutgiftBekreftelser.get(0).getVerdi().equals(TRUE);
 
         var sporsmalList = new ArrayList<Sporsmal>();
         sporsmalList.add(
                 new Sporsmal.Builder()
                         .withTittel("utgifter.barn.sporsmal")
                         .withErUtfylt(erBarneutgifterUtfylt)
-                        .withFelt(erBarneutgifterUtfylt
-                                ? singletonList(new Felt.Builder().withSvar(harBarneutgifter.toString()).withType(Type.CHECKBOX).build())
-                                : null)
+                        .withFelt(erBarneutgifterUtfylt ? booleanFeltSvarList(harBarneutgifter) : null)
                         .build()
         );
 
-        if (erBarneutgifterUtfylt && TRUE.equals(harBarneutgifter)) {
+        if (erBarneutgifterUtfylt && harBarneutgifter) {
             var utgifter = okonomi.getOpplysninger().getUtgift();
             var oversiktUtgifter = okonomi.getOversikt().getUtgift();
 
@@ -289,6 +285,15 @@ public class UtgifterOgGjeldSteg {
         }
 
         return sporsmalList;
+    }
+
+    private List<Felt> booleanFeltSvarList(boolean value) {
+        return singletonList(
+                new Felt.Builder()
+                        .withSvar(String.valueOf(value))
+                        .withType(Type.CHECKBOX)
+                        .build()
+        );
     }
 
     private void addOpplysningUtgiftIfPresent(List<Felt> felter, List<JsonOkonomiOpplysningUtgift> utgifter, String type, String key) {
