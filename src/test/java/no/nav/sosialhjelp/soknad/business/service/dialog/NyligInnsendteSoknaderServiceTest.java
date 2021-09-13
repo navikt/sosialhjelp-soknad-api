@@ -11,6 +11,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -30,7 +31,7 @@ class NyligInnsendteSoknaderServiceTest {
     private final String navEnhet = "1234";
 
     @Test
-    void skalHenteNyligInnsendteSoknaderForBruker() {
+    void skalHenteSisteInnsendteSoknaderForBruker() {
         var innsendtDato = LocalDateTime.now().minusDays(1);
         var soknadMetadata = new SoknadMetadata();
         soknadMetadata.fnr = fnr;
@@ -38,35 +39,61 @@ class NyligInnsendteSoknaderServiceTest {
         soknadMetadata.navEnhet = navEnhet;
         soknadMetadata.innsendtDato = innsendtDato;
 
-        when(soknadMetadataRepository.hentInnsendteSoknaderForBrukerEtterTidspunkt(any(), any()))
+        when(soknadMetadataRepository.hentAlleInnsendteSoknaderForBruker(any()))
                 .thenReturn(Collections.singletonList(soknadMetadata));
 
-        var dtos = nyligInnsendteSoknaderService.hentNyligInnsendteSoknader(fnr, 3);
+        var dto = nyligInnsendteSoknaderService.hentNyligInnsendteSoknader(fnr);
 
-        assertThat(dtos).hasSize(1);
-        assertThat(dtos.get(0).getDigisosId()).isEqualTo(fiksForsendelseId);
-        assertThat(dtos.get(0).getEnhetsnr()).isEqualTo(navEnhet);
-        assertThat(dtos.get(0).getInnsendtDato()).isEqualTo(innsendtDato.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+        assertThat(dto).isNotEmpty();
+        assertThat(dto.get().getDigisosId()).isEqualTo(fiksForsendelseId);
+        assertThat(dto.get().getEnhetsnr()).isEqualTo(navEnhet);
+        assertThat(dto.get().getInnsendtDato()).isEqualTo(innsendtDato.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+    }
+
+    @Test
+    void skalHenteSisteInnsendteSoknaderForBruker_siste() {
+        var innsendtDatoNyest = LocalDateTime.now().minusDays(1);
+        var innsendtDatoElst = LocalDateTime.now().minusDays(2);
+        var soknadMetadata1 = new SoknadMetadata();
+        soknadMetadata1.fnr = fnr;
+        soknadMetadata1.fiksForsendelseId = fiksForsendelseId;
+        soknadMetadata1.navEnhet = navEnhet;
+        soknadMetadata1.innsendtDato = innsendtDatoNyest;
+        var soknadMetadata2 = new SoknadMetadata();
+        soknadMetadata2.fnr = fnr;
+        soknadMetadata2.fiksForsendelseId = "fiksId2";
+        soknadMetadata2.navEnhet = navEnhet;
+        soknadMetadata2.innsendtDato = innsendtDatoElst;
+
+        when(soknadMetadataRepository.hentAlleInnsendteSoknaderForBruker(any()))
+                .thenReturn(List.of(soknadMetadata1, soknadMetadata2));
+
+        var dto = nyligInnsendteSoknaderService.hentNyligInnsendteSoknader(fnr);
+
+        assertThat(dto).isNotEmpty();
+        assertThat(dto.get().getDigisosId()).isEqualTo(fiksForsendelseId);
+        assertThat(dto.get().getEnhetsnr()).isEqualTo(navEnhet);
+        assertThat(dto.get().getInnsendtDato()).isEqualTo(innsendtDatoNyest.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
     }
 
     @Test
     void skalReturnereTomListeVedNull() {
-        when(soknadMetadataRepository.hentInnsendteSoknaderForBrukerEtterTidspunkt(any(), any()))
+        when(soknadMetadataRepository.hentAlleInnsendteSoknaderForBruker(any()))
                 .thenReturn(null);
 
-        var dtos = nyligInnsendteSoknaderService.hentNyligInnsendteSoknader(fnr, 3);
+        var dto = nyligInnsendteSoknaderService.hentNyligInnsendteSoknader(fnr);
 
-        assertThat(dtos).isEmpty();
+        assertThat(dto).isEmpty();
     }
 
     @Test
     void skalReturnereTomListeVedTomListe() {
-        when(soknadMetadataRepository.hentInnsendteSoknaderForBrukerEtterTidspunkt(any(), any()))
+        when(soknadMetadataRepository.hentAlleInnsendteSoknaderForBruker(any()))
                 .thenReturn(Collections.emptyList());
 
-        var dtos = nyligInnsendteSoknaderService.hentNyligInnsendteSoknader(fnr, 3);
+        var dto = nyligInnsendteSoknaderService.hentNyligInnsendteSoknader(fnr);
 
-        assertThat(dtos).isEmpty();
+        assertThat(dto).isEmpty();
     }
 
 }

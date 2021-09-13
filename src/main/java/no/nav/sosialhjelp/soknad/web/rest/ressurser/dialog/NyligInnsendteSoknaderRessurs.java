@@ -10,8 +10,6 @@ import org.springframework.stereotype.Controller;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import java.util.List;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static no.nav.sosialhjelp.soknad.web.utils.Constants.CLAIM_ACR_LEVEL_4;
@@ -24,8 +22,6 @@ import static no.nav.sosialhjelp.soknad.web.utils.Constants.TOKENX;
 @Timed
 public class NyligInnsendteSoknaderRessurs {
 
-    private static final Integer DEFAULT_ANTALL_MANEDER = 3;
-
     private final NyligInnsendteSoknaderService nyligInnsendteSoknaderService;
 
     public NyligInnsendteSoknaderRessurs(
@@ -36,8 +32,8 @@ public class NyligInnsendteSoknaderRessurs {
 
     @GET
     @Path("/nylige")
-    public List<NyligInnsendteSoknaderDto> hentNyligInnsendteSoknader(@QueryParam("antallManeder") Integer antallManeder) {
+    public NyligInnsendteSoknaderDto hentNyligInnsendteSoknader() {
         var fnr = SubjectHandler.getUserId();
-        return nyligInnsendteSoknaderService.hentNyligInnsendteSoknader(fnr, antallManeder == null ? DEFAULT_ANTALL_MANEDER : antallManeder);
+        return nyligInnsendteSoknaderService.hentNyligInnsendteSoknader(fnr).orElse(null);
     }
 }
