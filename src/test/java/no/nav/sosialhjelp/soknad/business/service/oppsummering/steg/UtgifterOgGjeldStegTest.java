@@ -28,23 +28,11 @@ class UtgifterOgGjeldStegTest {
         var res = steg.get(soknad);
 
         assertThat(res.getAvsnitt()).hasSize(1);
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 203425777e (rydder i tester)
 
         var utgifterSporsmal = res.getAvsnitt().get(0).getSporsmal();
         assertThat(utgifterSporsmal).hasSize(2);
         assertThat(utgifterSporsmal.get(0).getErUtfylt()).isFalse(); // boutgifter
         assertThat(utgifterSporsmal.get(1).getErUtfylt()).isFalse(); // barneutgifter
-<<<<<<< HEAD
-=======
-        assertThat(res.getAvsnitt().get(0).getSporsmal()).hasSize(2);
-        assertThat(res.getAvsnitt().get(0).getSporsmal().get(0).getErUtfylt()).isFalse(); // boutgifter
-        assertThat(res.getAvsnitt().get(0).getSporsmal().get(1).getErUtfylt()).isFalse(); // barneutgifter
->>>>>>> bc36973927 (utgifter og gjeld test)
-=======
->>>>>>> 203425777e (rydder i tester)
     }
 
     @Test
@@ -53,36 +41,17 @@ class UtgifterOgGjeldStegTest {
                 new JsonOkonomibekreftelse()
                         .withType("boutgifter")
                         .withVerdi(Boolean.FALSE)
-<<<<<<< HEAD
-<<<<<<< HEAD
         );
-=======
-                );
->>>>>>> bc36973927 (utgifter og gjeld test)
-=======
-        );
->>>>>>> 203425777e (rydder i tester)
         var soknad = createSoknad(bekreftelser, null, null);
 
         var res = steg.get(soknad);
 
         assertThat(res.getAvsnitt()).hasSize(1);
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 203425777e (rydder i tester)
+
         var utgifterSporsmal = res.getAvsnitt().get(0).getSporsmal();
         assertThat(utgifterSporsmal).hasSize(2);
         assertThat(utgifterSporsmal.get(0).getErUtfylt()).isTrue(); // boutgifter
         assertThat(utgifterSporsmal.get(1).getErUtfylt()).isFalse(); // barneutgifter
-<<<<<<< HEAD
-=======
-        assertThat(res.getAvsnitt().get(0).getSporsmal()).hasSize(2);
-        assertThat(res.getAvsnitt().get(0).getSporsmal().get(0).getErUtfylt()).isTrue(); // boutgifter
-        assertThat(res.getAvsnitt().get(0).getSporsmal().get(1).getErUtfylt()).isFalse(); // barneutgifter
->>>>>>> bc36973927 (utgifter og gjeld test)
-=======
->>>>>>> 203425777e (rydder i tester)
     }
 
     @Test
@@ -102,22 +71,12 @@ class UtgifterOgGjeldStegTest {
                 new JsonOkonomioversiktUtgift().withType("husleie"),
                 new JsonOkonomioversiktUtgift().withType("boliglanAvdrag")
         );
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
 
->>>>>>> bc36973927 (utgifter og gjeld test)
-=======
->>>>>>> 203425777e (rydder i tester)
         var soknad = createSoknad(bekreftelser, opplysningUtgifter, oversiktUtgifter);
 
         var res = steg.get(soknad);
 
         assertThat(res.getAvsnitt()).hasSize(1);
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 203425777e (rydder i tester)
 
         var utgifterSporsmal = res.getAvsnitt().get(0).getSporsmal();
         assertThat(utgifterSporsmal).hasSize(3);
@@ -134,23 +93,6 @@ class UtgifterOgGjeldStegTest {
         assertThat(boutgifterFelter.get(5).getSvar()).isEqualTo("utgifter.boutgift.true.type.annenBoutgift");
 
         assertThat(utgifterSporsmal.get(2).getErUtfylt()).isFalse(); // barneutgifter
-<<<<<<< HEAD
-=======
-        assertThat(res.getAvsnitt().get(0).getSporsmal()).hasSize(3);
-        assertThat(res.getAvsnitt().get(0).getSporsmal().get(0).getErUtfylt()).isTrue(); // boutgifter
-        assertThat(res.getAvsnitt().get(0).getSporsmal().get(1).getErUtfylt()).isTrue();
-        assertThat(res.getAvsnitt().get(0).getSporsmal().get(1).getFelt()).hasSize(6);
-        assertThat(res.getAvsnitt().get(0).getSporsmal().get(1).getFelt().get(0).getSvar()).isEqualTo("utgifter.boutgift.true.type.husleie");
-        assertThat(res.getAvsnitt().get(0).getSporsmal().get(1).getFelt().get(1).getSvar()).isEqualTo("utgifter.boutgift.true.type.strom");
-        assertThat(res.getAvsnitt().get(0).getSporsmal().get(1).getFelt().get(2).getSvar()).isEqualTo("utgifter.boutgift.true.type.kommunalAvgift");
-        assertThat(res.getAvsnitt().get(0).getSporsmal().get(1).getFelt().get(3).getSvar()).isEqualTo("utgifter.boutgift.true.type.oppvarming");
-        assertThat(res.getAvsnitt().get(0).getSporsmal().get(1).getFelt().get(4).getSvar()).isEqualTo("utgifter.boutgift.true.type.boliglanAvdrag");
-        assertThat(res.getAvsnitt().get(0).getSporsmal().get(1).getFelt().get(5).getSvar()).isEqualTo("utgifter.boutgift.true.type.annenBoutgift");
-
-        assertThat(res.getAvsnitt().get(0).getSporsmal().get(2).getErUtfylt()).isFalse(); // barneutgifter
->>>>>>> bc36973927 (utgifter og gjeld test)
-=======
->>>>>>> 203425777e (rydder i tester)
     }
 
     @Test
@@ -165,23 +107,11 @@ class UtgifterOgGjeldStegTest {
         var res = steg.get(soknad);
 
         assertThat(res.getAvsnitt()).hasSize(1);
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 203425777e (rydder i tester)
 
         var utgifterSporsmal = res.getAvsnitt().get(0).getSporsmal();
         assertThat(utgifterSporsmal).hasSize(2);
         assertThat(utgifterSporsmal.get(0).getErUtfylt()).isFalse(); // boutgifter
         assertThat(utgifterSporsmal.get(1).getErUtfylt()).isTrue(); // barneutgifter
-<<<<<<< HEAD
-=======
-        assertThat(res.getAvsnitt().get(0).getSporsmal()).hasSize(2);
-        assertThat(res.getAvsnitt().get(0).getSporsmal().get(0).getErUtfylt()).isFalse(); // boutgifter
-        assertThat(res.getAvsnitt().get(0).getSporsmal().get(1).getErUtfylt()).isTrue(); // barneutgifter
->>>>>>> bc36973927 (utgifter og gjeld test)
-=======
->>>>>>> 203425777e (rydder i tester)
     }
 
     @Test
@@ -206,8 +136,6 @@ class UtgifterOgGjeldStegTest {
         var res = steg.get(soknad);
 
         assertThat(res.getAvsnitt()).hasSize(1);
-<<<<<<< HEAD
-<<<<<<< HEAD
 
         var utgifterSporsmal = res.getAvsnitt().get(0).getSporsmal();
         assertThat(utgifterSporsmal).hasSize(3);
@@ -222,36 +150,6 @@ class UtgifterOgGjeldStegTest {
         assertThat(barneutgifterFelter.get(2).getSvar()).isEqualTo("utgifter.barn.true.utgifter.sfo");
         assertThat(barneutgifterFelter.get(3).getSvar()).isEqualTo("utgifter.barn.true.utgifter.barnTannregulering");
         assertThat(barneutgifterFelter.get(4).getSvar()).isEqualTo("utgifter.barn.true.utgifter.annenBarneutgift");
-=======
-        assertThat(res.getAvsnitt().get(0).getSporsmal()).hasSize(3);
-        assertThat(res.getAvsnitt().get(0).getSporsmal().get(0).getErUtfylt()).isFalse(); // boutgifter
-        assertThat(res.getAvsnitt().get(0).getSporsmal().get(1).getErUtfylt()).isTrue(); // barneutgifter
-        assertThat(res.getAvsnitt().get(0).getSporsmal().get(2).getErUtfylt()).isTrue();
-        assertThat(res.getAvsnitt().get(0).getSporsmal().get(2).getFelt()).hasSize(5);
-        assertThat(res.getAvsnitt().get(0).getSporsmal().get(2).getFelt().get(0).getSvar()).isEqualTo("utgifter.barn.true.utgifter.barnFritidsaktiviteter");
-        assertThat(res.getAvsnitt().get(0).getSporsmal().get(2).getFelt().get(1).getSvar()).isEqualTo("utgifter.barn.true.utgifter.barnehage");
-        assertThat(res.getAvsnitt().get(0).getSporsmal().get(2).getFelt().get(2).getSvar()).isEqualTo("utgifter.barn.true.utgifter.sfo");
-        assertThat(res.getAvsnitt().get(0).getSporsmal().get(2).getFelt().get(3).getSvar()).isEqualTo("utgifter.barn.true.utgifter.barnTannregulering");
-        assertThat(res.getAvsnitt().get(0).getSporsmal().get(2).getFelt().get(4).getSvar()).isEqualTo("utgifter.barn.true.utgifter.annenBarneutgift");
-
-
->>>>>>> bc36973927 (utgifter og gjeld test)
-=======
-
-        var utgifterSporsmal = res.getAvsnitt().get(0).getSporsmal();
-        assertThat(utgifterSporsmal).hasSize(3);
-        assertThat(utgifterSporsmal.get(0).getErUtfylt()).isFalse(); // boutgifter
-        assertThat(utgifterSporsmal.get(1).getErUtfylt()).isTrue(); // barneutgifter
-        assertThat(utgifterSporsmal.get(2).getErUtfylt()).isTrue();
-
-        var barneutgifterFelter = utgifterSporsmal.get(2).getFelt();
-        assertThat(barneutgifterFelter).hasSize(5);
-        assertThat(barneutgifterFelter.get(0).getSvar()).isEqualTo("utgifter.barn.true.utgifter.barnFritidsaktiviteter");
-        assertThat(barneutgifterFelter.get(1).getSvar()).isEqualTo("utgifter.barn.true.utgifter.barnehage");
-        assertThat(barneutgifterFelter.get(2).getSvar()).isEqualTo("utgifter.barn.true.utgifter.sfo");
-        assertThat(barneutgifterFelter.get(3).getSvar()).isEqualTo("utgifter.barn.true.utgifter.barnTannregulering");
-        assertThat(barneutgifterFelter.get(4).getSvar()).isEqualTo("utgifter.barn.true.utgifter.annenBarneutgift");
->>>>>>> 203425777e (rydder i tester)
     }
 
     private JsonInternalSoknad createSoknad(List<JsonOkonomibekreftelse> bekreftelser, List<JsonOkonomiOpplysningUtgift> opplysningUtgifter, List<JsonOkonomioversiktUtgift> oversiktUtgifter) {

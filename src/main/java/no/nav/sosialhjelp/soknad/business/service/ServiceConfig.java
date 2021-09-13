@@ -33,10 +33,7 @@ import org.springframework.context.annotation.Import;
         DittNavMetadataService.class,
         PabegynteSoknaderService.class,
         AdresseSokService.class,
-<<<<<<< HEAD
         SistInnsendteSoknadService.class,
-=======
->>>>>>> 51bfd24483 (utkast endepunkt til ny oppsummering-side. wip)
         OppsummeringService.class
 })
 public class ServiceConfig {

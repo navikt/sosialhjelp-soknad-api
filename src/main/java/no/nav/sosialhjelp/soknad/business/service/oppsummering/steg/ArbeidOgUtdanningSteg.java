@@ -11,53 +11,17 @@ import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Sporsmal;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Steg;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Type;
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-import static java.util.Collections.emptyList;
-=======
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static java.util.Collections.singletonList;
-<<<<<<< HEAD
->>>>>>> ae6b7e6c66 (arbeid og utdanning steg. wip)
-=======
 import static no.nav.sbl.soknadsosialhjelp.soknad.utdanning.JsonUtdanning.Studentgrad.HELTID;
->>>>>>> bf594b2f5f (asdf)
 
-=======
->>>>>>> 51bfd24483 (utkast endepunkt til ny oppsummering-side. wip)
-=======
-import static java.util.Collections.emptyList;
-
->>>>>>> 75f48c35dc (utkast til de ulike stegene)
 public class ArbeidOgUtdanningSteg {
 
     public Steg get(JsonInternalSoknad jsonInternalSoknad) {
-<<<<<<< HEAD
-        // todo implement
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 75f48c35dc (utkast til de ulike stegene)
-        return new Steg.Builder()
-                .withStegNr(3)
-                .withTittel("arbeidbolk.tittel")
-                .withAvsnitt(emptyList())
-<<<<<<< HEAD
-<<<<<<< HEAD
-                .build();
-=======
-        return null;
->>>>>>> 51bfd24483 (utkast endepunkt til ny oppsummering-side. wip)
-=======
-                .withErFerdigUtfylt(true)
-=======
->>>>>>> d2f2735ecc (`erUtfylt` pr sporsmal, ikke pr steg)
-=======
         var arbeid = jsonInternalSoknad.getSoknad().getData().getArbeid();
         var utdanning = jsonInternalSoknad.getSoknad().getData().getUtdanning();
 
@@ -76,9 +40,7 @@ public class ArbeidOgUtdanningSteg {
                                         .build()
                         )
                 )
->>>>>>> ae6b7e6c66 (arbeid og utdanning steg. wip)
                 .build();
->>>>>>> 75f48c35dc (utkast til de ulike stegene)
     }
 
     private List<Sporsmal> arbeidsforholdSporsmal(JsonArbeid arbeid) {
