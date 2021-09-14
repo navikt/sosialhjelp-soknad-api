@@ -22,7 +22,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static java.util.Collections.singletonList;
+<<<<<<< HEAD
 >>>>>>> ae6b7e6c66 (arbeid og utdanning steg. wip)
+=======
+import static no.nav.sbl.soknadsosialhjelp.soknad.utdanning.JsonUtdanning.Studentgrad.HELTID;
+>>>>>>> bf594b2f5f (asdf)
 
 =======
 >>>>>>> 51bfd24483 (utkast endepunkt til ny oppsummering-side. wip)
@@ -182,10 +186,20 @@ public class ArbeidOgUtdanningSteg {
     }
 
     private List<Felt> erStudentFelt(boolean erStudent) {
-        return singletonList(new Felt.Builder().withSvar(String.valueOf(erStudent)).withType(Type.CHECKBOX).build());
+        return singletonList(
+                new Felt.Builder()
+                        .withSvar(erStudent ? "dinsituasjon.studerer.true" : "dinsituasjon.studerer.false")
+                        .withType(Type.CHECKBOX)
+                        .build()
+        );
     }
 
     private List<Felt> studentgradFelt(JsonUtdanning.Studentgrad studentgrad) {
-        return singletonList(new Felt.Builder().withSvar(studentgrad.value()).withType(Type.CHECKBOX).build());
+        return singletonList(
+                new Felt.Builder()
+                        .withSvar(studentgrad.equals(HELTID) ? "dinsituasjon.studerer.true.grad.heltid" : "dinsituasjon.studerer.true.grad.deltid")
+                        .withType(Type.CHECKBOX)
+                        .build()
+        );
     }
 }
