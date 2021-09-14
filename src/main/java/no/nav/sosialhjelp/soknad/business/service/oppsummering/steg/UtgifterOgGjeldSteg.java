@@ -54,7 +54,7 @@ public class UtgifterOgGjeldSteg {
                 new Sporsmal.Builder()
                         .withTittel("utgifter.boutgift.sporsmal")
                         .withErUtfylt(erBoutgifterUtfylt)
-                        .withFelt(erBoutgifterUtfylt ? booleanFeltSvarList(harBoutgifter) : null)
+                        .withFelt(erBoutgifterUtfylt ? harBoutgifterFelt(harBoutgifter) : null)
                         .build()
         );
 
@@ -92,7 +92,7 @@ public class UtgifterOgGjeldSteg {
                 new Sporsmal.Builder()
                         .withTittel("utgifter.barn.sporsmal")
                         .withErUtfylt(erBarneutgifterUtfylt)
-                        .withFelt(erBarneutgifterUtfylt ? booleanFeltSvarList(harBarneutgifter) : null)
+                        .withFelt(erBarneutgifterUtfylt ? harBarneutgifterFelt(harBarneutgifter) : null)
                         .build()
         );
 
@@ -119,10 +119,19 @@ public class UtgifterOgGjeldSteg {
         return sporsmalList;
     }
 
-    private List<Felt> booleanFeltSvarList(boolean value) {
+    private List<Felt> harBoutgifterFelt(boolean harBoutgifter) {
         return singletonList(
                 new Felt.Builder()
-                        .withSvar(String.valueOf(value))
+                        .withSvar(harBoutgifter ? "utgifter.boutgift.true" : "utgifter.boutgift.false")
+                        .withType(Type.CHECKBOX)
+                        .build()
+        );
+    }
+
+    private List<Felt> harBarneutgifterFelt(boolean harBarneutgifter) {
+        return singletonList(
+                new Felt.Builder()
+                        .withSvar(harBarneutgifter ? "utgifter.barn.true" : "utgifter.barn.false")
                         .withType(Type.CHECKBOX)
                         .build()
         );
