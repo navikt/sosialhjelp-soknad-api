@@ -21,10 +21,14 @@ class BegrunnelseStegTest {
 
         assertThat(res.getAvsnitt()).hasSize(1);
         assertThat(res.getAvsnitt().get(0).getSporsmal()).hasSize(2);
-        assertThat(res.getAvsnitt().get(0).getSporsmal().get(0).getErUtfylt()).isFalse();
-        assertThat(res.getAvsnitt().get(0).getSporsmal().get(0).getFelt()).isNull();
-        assertThat(res.getAvsnitt().get(0).getSporsmal().get(1).getErUtfylt()).isFalse();
-        assertThat(res.getAvsnitt().get(0).getSporsmal().get(1).getFelt()).isNull();
+
+        var hvaSokesOmSporsmal = res.getAvsnitt().get(0).getSporsmal().get(0);
+        assertThat(hvaSokesOmSporsmal.getErUtfylt()).isFalse();
+        assertThat(hvaSokesOmSporsmal.getFelt()).isNull();
+
+        var hvorforSokeSporsmal = res.getAvsnitt().get(0).getSporsmal().get(1);
+        assertThat(hvorforSokeSporsmal.getErUtfylt()).isFalse();
+        assertThat(hvorforSokeSporsmal.getFelt()).isNull();
     }
 
     @Test
@@ -33,12 +37,15 @@ class BegrunnelseStegTest {
 
         var res = this.steg.get(soknadMedBegrunnelse);
 
-        assertThat(res.getAvsnitt().get(0).getSporsmal().get(0).getErUtfylt()).isTrue();
-        assertThat(res.getAvsnitt().get(0).getSporsmal().get(0).getFelt().get(0).getSvar()).isEqualTo("hva jeg søker om");
-        assertThat(res.getAvsnitt().get(0).getSporsmal().get(0).getFelt().get(0).getType()).isEqualTo(Type.TEKST);
-        assertThat(res.getAvsnitt().get(0).getSporsmal().get(1).getErUtfylt()).isTrue();
-        assertThat(res.getAvsnitt().get(0).getSporsmal().get(1).getFelt().get(0).getSvar()).isEqualTo("hvorfor");
-        assertThat(res.getAvsnitt().get(0).getSporsmal().get(1).getFelt().get(0).getType()).isEqualTo(Type.TEKST);
+        var hvaSokesOmSporsmal = res.getAvsnitt().get(0).getSporsmal().get(0);
+        assertThat(hvaSokesOmSporsmal.getErUtfylt()).isTrue();
+        assertThat(hvaSokesOmSporsmal.getFelt().get(0).getSvar()).isEqualTo("hva jeg søker om");
+        assertThat(hvaSokesOmSporsmal.getFelt().get(0).getType()).isEqualTo(Type.TEKST);
+
+        var hvorforSokeSporsmal = res.getAvsnitt().get(0).getSporsmal().get(1);
+        assertThat(hvorforSokeSporsmal.getErUtfylt()).isTrue();
+        assertThat(hvorforSokeSporsmal.getFelt().get(0).getSvar()).isEqualTo("hvorfor");
+        assertThat(hvorforSokeSporsmal.getFelt().get(0).getType()).isEqualTo(Type.TEKST);
     }
 
     private JsonInternalSoknad createSoknad(String hvaSokesOm, String hvorforSoke) {
