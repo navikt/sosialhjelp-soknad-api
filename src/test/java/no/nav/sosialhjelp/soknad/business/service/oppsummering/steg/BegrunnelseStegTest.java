@@ -31,6 +31,7 @@ class BegrunnelseStegTest {
         var hvorforSokeSporsmal = res.getAvsnitt().get(0).getSporsmal().get(1);
         assertThat(hvorforSokeSporsmal.getErUtfylt()).isFalse();
         assertThat(hvorforSokeSporsmal.getFelt()).isNull();
+<<<<<<< HEAD
 =======
         var nullBegrunnelse = createSoknad(null, "");
 =======
@@ -46,6 +47,8 @@ class BegrunnelseStegTest {
         assertThat(res.getAvsnitt().get(0).getSporsmal().get(1).getErUtfylt()).isFalse();
         assertThat(res.getAvsnitt().get(0).getSporsmal().get(1).getFelt()).isNull();
 >>>>>>> b4e49cb130 (begrunnelseSteg test)
+=======
+>>>>>>> 26c6a51619 (rydd i test (II))
     }
 
     @Test
@@ -73,6 +76,7 @@ class BegrunnelseStegTest {
 
         var res = this.steg.get(soknadMedBegrunnelse);
 
+<<<<<<< HEAD
         assertThat(res.getAvsnitt().get(0).getSporsmal().get(0).getErUtfylt()).isTrue();
         assertThat(res.getAvsnitt().get(0).getSporsmal().get(0).getFelt().get(0).getSvar()).isEqualTo("hva jeg søker om");
         assertThat(res.getAvsnitt().get(0).getSporsmal().get(0).getFelt().get(0).getType()).isEqualTo(Type.TEKST);
@@ -80,6 +84,17 @@ class BegrunnelseStegTest {
         assertThat(res.getAvsnitt().get(0).getSporsmal().get(1).getFelt().get(0).getSvar()).isEqualTo("hvorfor");
         assertThat(res.getAvsnitt().get(0).getSporsmal().get(1).getFelt().get(0).getType()).isEqualTo(Type.TEKST);
 >>>>>>> b4e49cb130 (begrunnelseSteg test)
+=======
+        var hvaSokesOmSporsmal = res.getAvsnitt().get(0).getSporsmal().get(0);
+        assertThat(hvaSokesOmSporsmal.getErUtfylt()).isTrue();
+        assertThat(hvaSokesOmSporsmal.getFelt().get(0).getSvar()).isEqualTo("hva jeg søker om");
+        assertThat(hvaSokesOmSporsmal.getFelt().get(0).getType()).isEqualTo(Type.TEKST);
+
+        var hvorforSokeSporsmal = res.getAvsnitt().get(0).getSporsmal().get(1);
+        assertThat(hvorforSokeSporsmal.getErUtfylt()).isTrue();
+        assertThat(hvorforSokeSporsmal.getFelt().get(0).getSvar()).isEqualTo("hvorfor");
+        assertThat(hvorforSokeSporsmal.getFelt().get(0).getType()).isEqualTo(Type.TEKST);
+>>>>>>> 26c6a51619 (rydd i test (II))
     }
 
     private JsonInternalSoknad createSoknad(String hvaSokesOm, String hvorforSoke) {
