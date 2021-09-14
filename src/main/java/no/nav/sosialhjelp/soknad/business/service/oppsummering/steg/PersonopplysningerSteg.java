@@ -409,7 +409,7 @@ public class PersonopplysningerSteg {
 
     private Avsnitt telefonnummerAvsnitt(JsonPersonalia personalia) {
         var telefonnummer = personalia.getTelefonnummer();
-        var harUtfyltTelefonnummer = telefonnummer != null && !telefonnummer.getVerdi().isEmpty();
+        var harUtfyltTelefonnummer = telefonnummer != null && telefonnummer.getVerdi() != null && !telefonnummer.getVerdi().isEmpty();
 
         return new Avsnitt.Builder()
                 .withTittel("kontakt.system.telefoninfo.sporsmal") // skal variere ut fra kilde? systemdata eller bruker
@@ -438,7 +438,8 @@ public class PersonopplysningerSteg {
 
     private Avsnitt kontonummerAvsnitt(JsonPersonalia personalia) {
         var kontonummer = personalia.getKontonummer();
-        var harUtfyltKontonummer = kontonummer != null && (TRUE.equals(kontonummer.getHarIkkeKonto()) || !kontonummer.getVerdi().isEmpty());
+        var harValgtHarIkkeKonto = kontonummer != null && TRUE.equals(kontonummer.getHarIkkeKonto());
+        var harUtfyltKontonummer = kontonummer != null && ((kontonummer.getVerdi() != null && !kontonummer.getVerdi().isEmpty()) || harValgtHarIkkeKonto);
 
         return new Avsnitt.Builder()
                 .withTittel("kontakt.system.kontonummer.sporsmal")

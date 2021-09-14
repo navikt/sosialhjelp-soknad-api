@@ -326,7 +326,7 @@ class PersonopplysningerStegTest {
         assertThat(res2.getAvsnitt().get(2).getSporsmal().get(0).getFelt().get(0).getType()).isEqualTo(Type.TEKST);
 
         // telefonnummer ikke utfylt
-        var ikkeUtfyltTelefonnummer = new JsonTelefonnummer().withVerdi("");
+        var ikkeUtfyltTelefonnummer = new JsonTelefonnummer();
         var soknad3 = createSoknad(navnUtenMellomnavn, kontonummerSystemdata, ikkeUtfyltTelefonnummer, folkeregGateadresse);
         var res3 = steg.get(soknad3);
         assertThat(res3.getAvsnitt().get(2).getSporsmal().get(0).getErUtfylt()).isFalse();
@@ -362,7 +362,7 @@ class PersonopplysningerStegTest {
         assertThat(res3.getAvsnitt().get(3).getSporsmal().get(0).getFelt().get(0).getType()).isEqualTo(Type.CHECKBOX);
 
         // kontonummer ikke utfylt
-        var ikkeUtfylt = new JsonKontonummer().withVerdi("");
+        var ikkeUtfylt = new JsonKontonummer();
         var soknad4 = createSoknad(navnUtenMellomnavn, ikkeUtfylt, telefonnummerSystemdata, folkeregGateadresse);
         var res4 = steg.get(soknad4);
         assertThat(res4.getAvsnitt().get(3).getSporsmal().get(0).getErUtfylt()).isFalse();
