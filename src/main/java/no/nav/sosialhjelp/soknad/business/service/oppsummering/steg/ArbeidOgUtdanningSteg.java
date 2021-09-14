@@ -46,18 +46,24 @@ public class ArbeidOgUtdanningSteg {
         var harArbeidsforhold = arbeid.getForhold() != null && !arbeid.getForhold().isEmpty();
         var harKommentarTilArbeidsforhold = arbeid.getKommentarTilArbeidsforhold() != null && arbeid.getKommentarTilArbeidsforhold().getVerdi() != null;
 
-        return List.of(
+        var sporsmal = new ArrayList<Sporsmal>();
+        sporsmal.add(
                 new Sporsmal.Builder()
                         .withTittel(harArbeidsforhold ? "arbeidsforhold.infotekst" : "arbeidsforhold.ingen")
                         .withFelt(harArbeidsforhold ? arbeidsforholdFelter(arbeid.getForhold()) : null)
                         .withErUtfylt(true)
-                        .build(),
-                new Sporsmal.Builder()
-                        .withTittel("Kommentar til arbeidsforhold")
-                        .withFelt(harKommentarTilArbeidsforhold ? kommentarFelter(arbeid.getKommentarTilArbeidsforhold()) : null)
-                        .withErUtfylt(true)
                         .build()
         );
+        if (harKommentarTilArbeidsforhold) {
+            sporsmal.add(
+                    new Sporsmal.Builder()
+                            .withTittel("Kommentar til arbeidsforhold")
+                            .withFelt(kommentarFelter(arbeid.getKommentarTilArbeidsforhold()))
+                            .withErUtfylt(true)
+                            .build()
+            );
+        }
+        return sporsmal;
     }
 
     private List<Felt> arbeidsforholdFelter(List<JsonArbeidsforhold> arbeidsforholdList) {
@@ -115,8 +121,36 @@ public class ArbeidOgUtdanningSteg {
     }
 
     private List<Sporsmal> utdanningSporsmal(JsonUtdanning utdanning) {
-        // todo
+        var erUtdanningUtfylt = utdanning != null && utdanning.getErStudent() != null;
+        var erStudent = erUtdanningUtfylt && utdanning.getErStudent().equals(Boolean.TRUE);
+        var erStudentgradUtfylt = erStudent && utdanning.getStudentgrad() != null;
 
-        return null;
+        var sporsmal = new ArrayList<Sporsmal>();
+        sporsmal.add(
+                new Sporsmal.Builder()
+                        .withTittel("dinsituasjon.studerer.sporsmal")
+                        .withFelt(erUtdanningUtfylt ? erStudentFelt(erStudent) : null)
+                        .withErUtfylt(erUtdanningUtfylt)
+                        .build()
+        );
+
+        if (erStudent) {
+            sporsmal.add(
+                    new Sporsmal.Builder()
+                            .withTittel("dinsituasjon.studerer.true.grad.sporsmal")
+                            .withFelt(erStudentgradUtfylt ? studentgradFelt(utdanning.getStudentgrad()) : null)
+                            .withErUtfylt(erStudentgradUtfylt)
+                            .build()
+            );
+        }
+        return sporsmal;
+    }
+
+    private List<Felt> erStudentFelt(boolean erStudent) {
+        return singletonList(new Felt.Builder().withSvar(String.valueOf(erStudent)).withType(Type.CHECKBOX).build());
+    }
+
+    private List<Felt> studentgradFelt(JsonUtdanning.Studentgrad studentgrad) {
+        return singletonList(new Felt.Builder().withSvar(studentgrad.value()).withType(Type.CHECKBOX).build());
     }
 }

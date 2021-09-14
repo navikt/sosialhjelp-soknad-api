@@ -51,7 +51,7 @@ public class OppsummeringService {
                 Arrays.asList(
                         personopplysningerSteg.get(jsonInternalSoknad),
                         begrunnelseSteg.get(jsonInternalSoknad),
-//                        arbeidOgUtdanningSteg.get(jsonInternalSoknad),
+                        arbeidOgUtdanningSteg.get(jsonInternalSoknad),
 //                        familiesituasjonSteg.get(jsonInternalSoknad),
 //                        bosituasjonSteg.get(jsonInternalSoknad),
 //                        inntektOgFormueSteg.get(jsonInternalSoknad),
