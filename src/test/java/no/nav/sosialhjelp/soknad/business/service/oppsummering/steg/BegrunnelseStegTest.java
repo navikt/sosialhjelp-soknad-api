@@ -16,6 +16,7 @@ class BegrunnelseStegTest {
     @Test
     void nullEmptyBegrunnelse() {
 <<<<<<< HEAD
+<<<<<<< HEAD
         var soknadUtenBegrunnelse = createSoknad(null, "");
 
         var res = this.steg.get(soknadUtenBegrunnelse);
@@ -32,8 +33,11 @@ class BegrunnelseStegTest {
         assertThat(hvorforSokeSporsmal.getFelt()).isNull();
 =======
         var nullBegrunnelse = createSoknad(null, "");
+=======
+        var soknadUtenBegrunnelse = createSoknad(null, "");
+>>>>>>> 203425777e (rydder i tester)
 
-        var res = this.steg.get(nullBegrunnelse);
+        var res = this.steg.get(soknadUtenBegrunnelse);
 
         assertThat(res.getAvsnitt()).hasSize(1);
         assertThat(res.getAvsnitt().get(0).getSporsmal()).hasSize(2);
@@ -46,6 +50,7 @@ class BegrunnelseStegTest {
 
     @Test
     void utfyltBegrunnelse() {
+<<<<<<< HEAD
 <<<<<<< HEAD
         var soknadMedBegrunnelse = createSoknad("hva jeg søker om", "hvorfor");
 
@@ -62,8 +67,11 @@ class BegrunnelseStegTest {
         assertThat(hvorforSokeSporsmal.getFelt().get(0).getType()).isEqualTo(Type.TEKST);
 =======
         var nullBegrunnelse = createSoknad("hva jeg søker om", "hvorfor");
+=======
+        var soknadMedBegrunnelse = createSoknad("hva jeg søker om", "hvorfor");
+>>>>>>> 203425777e (rydder i tester)
 
-        var res = this.steg.get(nullBegrunnelse);
+        var res = this.steg.get(soknadMedBegrunnelse);
 
         assertThat(res.getAvsnitt().get(0).getSporsmal().get(0).getErUtfylt()).isTrue();
         assertThat(res.getAvsnitt().get(0).getSporsmal().get(0).getFelt().get(0).getSvar()).isEqualTo("hva jeg søker om");

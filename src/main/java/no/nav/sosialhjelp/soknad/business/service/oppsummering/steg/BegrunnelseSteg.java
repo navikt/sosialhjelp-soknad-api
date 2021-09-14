@@ -113,7 +113,6 @@ public class BegrunnelseSteg {
                                         ).build()
                         )
                 )
-
                 .build();
     }
 <<<<<<< HEAD
