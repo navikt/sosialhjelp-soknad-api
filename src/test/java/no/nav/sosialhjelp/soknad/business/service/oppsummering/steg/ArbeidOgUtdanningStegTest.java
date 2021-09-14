@@ -132,7 +132,7 @@ class ArbeidOgUtdanningStegTest {
         assertThat(res.getAvsnitt().get(1).getSporsmal()).hasSize(1);
         assertThat(res.getAvsnitt().get(1).getSporsmal().get(0).getErUtfylt()).isTrue();
         assertThat(res.getAvsnitt().get(1).getSporsmal().get(0).getFelt()).hasSize(1);
-        assertThat(res.getAvsnitt().get(1).getSporsmal().get(0).getFelt().get(0).getSvar()).isEqualTo("false");
+        assertThat(res.getAvsnitt().get(1).getSporsmal().get(0).getFelt().get(0).getSvar()).isEqualTo("dinsituasjon.studerer.false");
         assertThat(res.getAvsnitt().get(1).getSporsmal().get(0).getFelt().get(0).getType()).isEqualTo(Type.CHECKBOX);
     }
 
@@ -146,7 +146,7 @@ class ArbeidOgUtdanningStegTest {
 
         assertThat(res.getAvsnitt().get(1).getSporsmal().get(0).getErUtfylt()).isTrue();
         assertThat(res.getAvsnitt().get(1).getSporsmal().get(0).getFelt()).hasSize(1);
-        assertThat(res.getAvsnitt().get(1).getSporsmal().get(0).getFelt().get(0).getSvar()).isEqualTo("true");
+        assertThat(res.getAvsnitt().get(1).getSporsmal().get(0).getFelt().get(0).getSvar()).isEqualTo("dinsituasjon.studerer.true");
         assertThat(res.getAvsnitt().get(1).getSporsmal().get(0).getFelt().get(0).getType()).isEqualTo(Type.CHECKBOX);
 
         assertThat(res.getAvsnitt().get(1).getSporsmal().get(1).getErUtfylt()).isFalse();
@@ -162,12 +162,12 @@ class ArbeidOgUtdanningStegTest {
 
         assertThat(res.getAvsnitt().get(1).getSporsmal().get(0).getErUtfylt()).isTrue();
         assertThat(res.getAvsnitt().get(1).getSporsmal().get(0).getFelt()).hasSize(1);
-        assertThat(res.getAvsnitt().get(1).getSporsmal().get(0).getFelt().get(0).getSvar()).isEqualTo("true");
+        assertThat(res.getAvsnitt().get(1).getSporsmal().get(0).getFelt().get(0).getSvar()).isEqualTo("dinsituasjon.studerer.true");
         assertThat(res.getAvsnitt().get(1).getSporsmal().get(0).getFelt().get(0).getType()).isEqualTo(Type.CHECKBOX);
 
         assertThat(res.getAvsnitt().get(1).getSporsmal().get(1).getErUtfylt()).isTrue();
         assertThat(res.getAvsnitt().get(1).getSporsmal().get(1).getFelt()).hasSize(1);
-        assertThat(res.getAvsnitt().get(1).getSporsmal().get(1).getFelt().get(0).getSvar()).isEqualTo("heltid");
+        assertThat(res.getAvsnitt().get(1).getSporsmal().get(1).getFelt().get(0).getSvar()).isEqualTo("dinsituasjon.studerer.true.grad.heltid");
         assertThat(res.getAvsnitt().get(1).getSporsmal().get(1).getFelt().get(0).getType()).isEqualTo(Type.CHECKBOX);
     }
 
