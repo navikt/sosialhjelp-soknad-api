@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static java.util.Collections.singletonList;
+import static no.nav.sbl.soknadsosialhjelp.soknad.utdanning.JsonUtdanning.Studentgrad.HELTID;
 
 public class ArbeidOgUtdanningSteg {
 
@@ -147,10 +148,20 @@ public class ArbeidOgUtdanningSteg {
     }
 
     private List<Felt> erStudentFelt(boolean erStudent) {
-        return singletonList(new Felt.Builder().withSvar(String.valueOf(erStudent)).withType(Type.CHECKBOX).build());
+        return singletonList(
+                new Felt.Builder()
+                        .withSvar(erStudent ? "dinsituasjon.studerer.true" : "dinsituasjon.studerer.false")
+                        .withType(Type.CHECKBOX)
+                        .build()
+        );
     }
 
     private List<Felt> studentgradFelt(JsonUtdanning.Studentgrad studentgrad) {
-        return singletonList(new Felt.Builder().withSvar(studentgrad.value()).withType(Type.CHECKBOX).build());
+        return singletonList(
+                new Felt.Builder()
+                        .withSvar(studentgrad.equals(HELTID) ? "dinsituasjon.studerer.true.grad.heltid" : "dinsituasjon.studerer.true.grad.deltid")
+                        .withType(Type.CHECKBOX)
+                        .build()
+        );
     }
 }
