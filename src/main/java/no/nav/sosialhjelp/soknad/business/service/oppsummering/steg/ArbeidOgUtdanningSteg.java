@@ -12,7 +12,7 @@ import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Steg;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Type;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -68,48 +68,31 @@ public class ArbeidOgUtdanningSteg {
     }
 
     private List<Felt> arbeidsforholdFelter(List<JsonArbeidsforhold> arbeidsforholdList) {
-        // arbeidsgiver, startet i jobben, (sluttet i jobben), stillingsprosent
+
         return arbeidsforholdList.stream()
-                .map(this::toFelter)
-                .flatMap(Collection::stream)
+                .map(this::toFelt)
                 .collect(Collectors.toList());
     }
 
-    private ArrayList<Felt> toFelter(JsonArbeidsforhold arbeidsforhold) {
-        var felter = new ArrayList<Felt>();
+    private Felt toFelt(JsonArbeidsforhold arbeidsforhold) {
+        // arbeidsgiver, startet i jobben, (sluttet i jobben), stillingsprosent
+        var labelSvarMap = new LinkedHashMap<String, String>();
         if (arbeidsforhold.getArbeidsgivernavn() != null) {
-            felter.add(new Felt.Builder()
-                    .withLabel("arbeidsforhold.arbeidsgivernavn.label")
-                    .withSvar(arbeidsforhold.getArbeidsgivernavn())
-                    .withType(Type.SYSTEMDATA)
-                    .build()
-            );
+            labelSvarMap.put("arbeidsforhold.arbeidsgivernavn.label", arbeidsforhold.getArbeidsgivernavn());
         }
         if (arbeidsforhold.getFom() != null) {
-            felter.add(new Felt.Builder()
-                    .withLabel("arbeidsforhold.fom.label")
-                    .withSvar(arbeidsforhold.getFom())
-                    .withType(Type.SYSTEMDATA)
-                    .build()
-            );
+            labelSvarMap.put("arbeidsforhold.fom.label", arbeidsforhold.getFom());
         }
         if (arbeidsforhold.getTom() != null) {
-            felter.add(new Felt.Builder()
-                    .withLabel("arbeidsforhold.tom.label")
-                    .withSvar(arbeidsforhold.getTom())
-                    .withType(Type.SYSTEMDATA)
-                    .build()
-            );
+            labelSvarMap.put("arbeidsforhold.tom.label", arbeidsforhold.getTom());
         }
         if (arbeidsforhold.getStillingsprosent() != null) {
-            felter.add(new Felt.Builder()
-                    .withLabel("arbeidsforhold.stillingsprosent.label")
-                    .withSvar(arbeidsforhold.getStillingsprosent().toString())
-                    .withType(Type.SYSTEMDATA)
-                    .build()
-            );
+            labelSvarMap.put("arbeidsforhold.stillingsprosent.label", arbeidsforhold.getStillingsprosent().toString());
         }
-        return felter;
+        return new Felt.Builder()
+                .withType(Type.SYSTEMDATA_MAP)
+                .withLabelSvarMap(labelSvarMap)
+                .build();
     }
 
     private List<Felt> kommentarFelter(JsonKommentarTilArbeidsforhold kommentar) {

@@ -47,23 +47,23 @@ class ArbeidOgUtdanningStegTest {
         assertThat(res.getAvsnitt().get(0).getSporsmal()).hasSize(1);
         assertThat(res.getAvsnitt().get(0).getSporsmal().get(0).getTittel()).isEqualTo("arbeidsforhold.infotekst");
         assertThat(res.getAvsnitt().get(0).getSporsmal().get(0).getErUtfylt()).isTrue();
-        assertThat(res.getAvsnitt().get(0).getSporsmal().get(0).getFelt()).hasSize(4);
+        assertThat(res.getAvsnitt().get(0).getSporsmal().get(0).getFelt()).hasSize(1);
 
-        assertThat(res.getAvsnitt().get(0).getSporsmal().get(0).getFelt().get(0).getLabel()).isEqualTo("arbeidsforhold.arbeidsgivernavn.label");
-        assertThat(res.getAvsnitt().get(0).getSporsmal().get(0).getFelt().get(0).getSvar()).isEqualTo(arbeidsforholdMedSlutt.getArbeidsgivernavn());
-        assertThat(res.getAvsnitt().get(0).getSporsmal().get(0).getFelt().get(0).getType()).isEqualTo(Type.SYSTEMDATA);
+        var felt = res.getAvsnitt().get(0).getSporsmal().get(0).getFelt().get(0);
+        assertThat(felt.getType()).isEqualTo(Type.SYSTEMDATA_MAP);
+        assertThat(felt.getLabelSvarMap()).hasSize(4);
 
-        assertThat(res.getAvsnitt().get(0).getSporsmal().get(0).getFelt().get(1).getLabel()).isEqualTo("arbeidsforhold.fom.label");
-        assertThat(res.getAvsnitt().get(0).getSporsmal().get(0).getFelt().get(1).getSvar()).isEqualTo(arbeidsforholdMedSlutt.getFom());
-        assertThat(res.getAvsnitt().get(0).getSporsmal().get(0).getFelt().get(1).getType()).isEqualTo(Type.SYSTEMDATA);
+        assertThat(felt.getLabelSvarMap()).containsKey("arbeidsforhold.arbeidsgivernavn.label");
+        assertThat(felt.getLabelSvarMap().get("arbeidsforhold.arbeidsgivernavn.label")).isEqualTo(arbeidsforholdMedSlutt.getArbeidsgivernavn());
 
-        assertThat(res.getAvsnitt().get(0).getSporsmal().get(0).getFelt().get(2).getLabel()).isEqualTo("arbeidsforhold.tom.label");
-        assertThat(res.getAvsnitt().get(0).getSporsmal().get(0).getFelt().get(2).getSvar()).isEqualTo(arbeidsforholdMedSlutt.getTom());
-        assertThat(res.getAvsnitt().get(0).getSporsmal().get(0).getFelt().get(2).getType()).isEqualTo(Type.SYSTEMDATA);
+        assertThat(felt.getLabelSvarMap()).containsKey("arbeidsforhold.fom.label");
+        assertThat(felt.getLabelSvarMap().get("arbeidsforhold.fom.label")).isEqualTo(arbeidsforholdMedSlutt.getFom());
 
-        assertThat(res.getAvsnitt().get(0).getSporsmal().get(0).getFelt().get(3).getLabel()).isEqualTo("arbeidsforhold.stillingsprosent.label");
-        assertThat(res.getAvsnitt().get(0).getSporsmal().get(0).getFelt().get(3).getSvar()).isEqualTo(arbeidsforholdMedSlutt.getStillingsprosent().toString());
-        assertThat(res.getAvsnitt().get(0).getSporsmal().get(0).getFelt().get(3).getType()).isEqualTo(Type.SYSTEMDATA);
+        assertThat(felt.getLabelSvarMap()).containsKey("arbeidsforhold.tom.label");
+        assertThat(felt.getLabelSvarMap().get("arbeidsforhold.tom.label")).isEqualTo(arbeidsforholdMedSlutt.getTom());
+
+        assertThat(felt.getLabelSvarMap()).containsKey("arbeidsforhold.stillingsprosent.label");
+        assertThat(felt.getLabelSvarMap().get("arbeidsforhold.stillingsprosent.label")).isEqualTo(arbeidsforholdMedSlutt.getStillingsprosent().toString());
     }
 
     @Test
@@ -76,19 +76,22 @@ class ArbeidOgUtdanningStegTest {
         assertThat(res.getAvsnitt().get(0).getSporsmal()).hasSize(1);
         assertThat(res.getAvsnitt().get(0).getSporsmal().get(0).getTittel()).isEqualTo("arbeidsforhold.infotekst");
         assertThat(res.getAvsnitt().get(0).getSporsmal().get(0).getErUtfylt()).isTrue();
-        assertThat(res.getAvsnitt().get(0).getSporsmal().get(0).getFelt()).hasSize(3);
+        assertThat(res.getAvsnitt().get(0).getSporsmal().get(0).getFelt()).hasSize(1);
 
-        assertThat(res.getAvsnitt().get(0).getSporsmal().get(0).getFelt().get(0).getLabel()).isEqualTo("arbeidsforhold.arbeidsgivernavn.label");
-        assertThat(res.getAvsnitt().get(0).getSporsmal().get(0).getFelt().get(0).getSvar()).isEqualTo(arbeidsforholdUtenSlutt.getArbeidsgivernavn());
-        assertThat(res.getAvsnitt().get(0).getSporsmal().get(0).getFelt().get(0).getType()).isEqualTo(Type.SYSTEMDATA);
+        var felt = res.getAvsnitt().get(0).getSporsmal().get(0).getFelt().get(0);
+        assertThat(felt.getType()).isEqualTo(Type.SYSTEMDATA_MAP);
+        assertThat(felt.getLabelSvarMap()).hasSize(3);
 
-        assertThat(res.getAvsnitt().get(0).getSporsmal().get(0).getFelt().get(1).getLabel()).isEqualTo("arbeidsforhold.fom.label");
-        assertThat(res.getAvsnitt().get(0).getSporsmal().get(0).getFelt().get(1).getSvar()).isEqualTo(arbeidsforholdUtenSlutt.getFom());
-        assertThat(res.getAvsnitt().get(0).getSporsmal().get(0).getFelt().get(1).getType()).isEqualTo(Type.SYSTEMDATA);
+        assertThat(felt.getLabelSvarMap()).containsKey("arbeidsforhold.arbeidsgivernavn.label");
+        assertThat(felt.getLabelSvarMap().get("arbeidsforhold.arbeidsgivernavn.label")).isEqualTo(arbeidsforholdUtenSlutt.getArbeidsgivernavn());
 
-        assertThat(res.getAvsnitt().get(0).getSporsmal().get(0).getFelt().get(2).getLabel()).isEqualTo("arbeidsforhold.stillingsprosent.label");
-        assertThat(res.getAvsnitt().get(0).getSporsmal().get(0).getFelt().get(2).getSvar()).isEqualTo(arbeidsforholdUtenSlutt.getStillingsprosent().toString());
-        assertThat(res.getAvsnitt().get(0).getSporsmal().get(0).getFelt().get(2).getType()).isEqualTo(Type.SYSTEMDATA);
+        assertThat(felt.getLabelSvarMap()).containsKey("arbeidsforhold.fom.label");
+        assertThat(felt.getLabelSvarMap().get("arbeidsforhold.fom.label")).isEqualTo(arbeidsforholdUtenSlutt.getFom());
+
+        assertThat(felt.getLabelSvarMap()).doesNotContainKey("arbeidsforhold.tom.label");
+
+        assertThat(felt.getLabelSvarMap()).containsKey("arbeidsforhold.stillingsprosent.label");
+        assertThat(felt.getLabelSvarMap().get("arbeidsforhold.stillingsprosent.label")).isEqualTo(arbeidsforholdUtenSlutt.getStillingsprosent().toString());
     }
 
     @Test
