@@ -53,6 +53,7 @@ public class OppsummeringService {
 <<<<<<< HEAD
 <<<<<<< HEAD
                         begrunnelseSteg.get(jsonInternalSoknad),
+<<<<<<< HEAD
 =======
                         begrunnelseSteg.get(jsonInternalSoknad) //,
 >>>>>>> 51bfd24483 (utkast endepunkt til ny oppsummering-side. wip)
@@ -60,6 +61,9 @@ public class OppsummeringService {
                         begrunnelseSteg.get(jsonInternalSoknad),
 >>>>>>> d8cdea3cd5 (utgifterOgGjeld steg 7)
 //                        arbeidOgUtdanningSteg.get(jsonInternalSoknad),
+=======
+                        arbeidOgUtdanningSteg.get(jsonInternalSoknad),
+>>>>>>> a1df28b834 (arbeidOgUtdanning steg)
 //                        familiesituasjonSteg.get(jsonInternalSoknad),
 //                        bosituasjonSteg.get(jsonInternalSoknad),
 //                        inntektOgFormueSteg.get(jsonInternalSoknad),
