@@ -1,31 +1,20 @@
 package no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto;
 
 import java.util.List;
+import java.util.Map;
 
 public class Felt {
 
     private final String label;
     private final String svar;
+    private final Map<String, String> labelSvarMap;
     private final Type type;
     private final List<Vedlegg> vedlegg;
-
-    public Felt(String label, String svar, Type type, List<Vedlegg> vedlegg) {
-        this.label = label;
-        this.svar = svar;
-        this.type = type;
-        this.vedlegg = vedlegg;
-    }
-
-    public Felt(String label, String svar, Type type) {
-        this.label = label;
-        this.svar = svar;
-        this.type = type;
-        this.vedlegg = null;
-    }
 
     public Felt(Builder builder) {
         this.label = builder.label;
         this.svar = builder.svar;
+        this.labelSvarMap = builder.labelSvarMap;
         this.type = builder.type;
         this.vedlegg = builder.vedlegg;
     }
@@ -36,6 +25,10 @@ public class Felt {
 
     public String getSvar() {
         return svar;
+    }
+
+    public Map<String, String> getLabelSvarMap() {
+        return labelSvarMap;
     }
 
     public Type getType() {
@@ -49,6 +42,7 @@ public class Felt {
     public static class Builder {
         private String label;
         private String svar;
+        private Map<String, String> labelSvarMap;
         private Type type;
         private List<Vedlegg> vedlegg;
 
@@ -61,6 +55,11 @@ public class Felt {
 
         public Builder withSvar(String svar) {
             this.svar = svar;
+            return this;
+        }
+
+        public Builder withLabelSvarMap(Map<String, String> labelSvarMap) {
+            this.labelSvarMap = labelSvarMap;
             return this;
         }
 
