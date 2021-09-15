@@ -24,6 +24,6 @@ public class SistInnsendteSoknadService {
         return Optional.ofNullable(soknadMetadataRepository.hentAlleInnsendteSoknaderForBruker(fnr)).orElse(emptyList())
                 .stream()
                 .max(comparing(o -> o.innsendtDato))
-                .map(metadata -> new SistInnsendteSoknadDto(metadata.fiksForsendelseId, metadata.navEnhet, metadata.innsendtDato));
+                .map(metadata -> new SistInnsendteSoknadDto(metadata.fnr, metadata.navEnhet, metadata.innsendtDato));
     }
 }

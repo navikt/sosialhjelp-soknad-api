@@ -45,7 +45,7 @@ class SistInnsendteSoknadServiceTest {
         var dto = sistInnsendteSoknadService.hentSistInnsendteSoknad(fnr);
 
         assertThat(dto).isPresent();
-        assertThat(dto.get().getDigisosId()).isEqualTo(fiksForsendelseId);
+        assertThat(dto.get().getIdent()).isEqualTo(fnr);
         assertThat(dto.get().getEnhetsnr()).isEqualTo(navEnhet);
         assertThat(dto.get().getInnsendtDato()).isEqualTo(innsendtDato.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
     }
@@ -73,7 +73,7 @@ class SistInnsendteSoknadServiceTest {
         var dto = sistInnsendteSoknadService.hentSistInnsendteSoknad(fnr);
 
         assertThat(dto).isPresent();
-        assertThat(dto.get().getDigisosId()).isEqualTo(fiksForsendelseId);
+        assertThat(dto.get().getIdent()).isEqualTo(fnr);
         assertThat(dto.get().getEnhetsnr()).isEqualTo(navEnhet);
         assertThat(dto.get().getInnsendtDato()).isEqualTo(innsendtDatoNyest.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
     }
