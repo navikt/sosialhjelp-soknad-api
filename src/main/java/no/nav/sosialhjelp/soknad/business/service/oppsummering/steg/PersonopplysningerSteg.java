@@ -6,7 +6,6 @@ import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresseValg;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonGateAdresse;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonMatrikkelAdresse;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
-import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonNavn;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonKontonummer;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonStatsborgerskap;
@@ -20,11 +19,10 @@ import org.slf4j.Logger;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static java.lang.Boolean.TRUE;
 import static java.util.Collections.singletonList;
+import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.StegUtils.fulltnavn;
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class PersonopplysningerSteg {
@@ -78,22 +76,6 @@ public class PersonopplysningerSteg {
                                         .build()
                         )
                 ).build();
-    }
-
-    private String fulltnavn(JsonNavn navn) {
-        if (navn == null) {
-            log.warn("Personalia.getNavn er null?");
-            return "";
-        }
-
-        var optionalFornavn = Optional.ofNullable(navn.getFornavn());
-        var optionalMellomnavn = Optional.ofNullable(navn.getMellomnavn());
-        var optionalEtternavn = Optional.ofNullable(navn.getEtternavn());
-
-        return Stream.of(optionalFornavn, optionalMellomnavn, optionalEtternavn)
-                .map(opt -> opt.orElse(""))
-                .filter(s -> !s.isBlank())
-                .collect(Collectors.joining(" "));
     }
 
     private Avsnitt adresseOgNavKontorAvsnitt(JsonPersonalia personalia) {
