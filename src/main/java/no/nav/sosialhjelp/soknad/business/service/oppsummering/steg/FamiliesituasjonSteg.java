@@ -53,27 +53,23 @@ public class FamiliesituasjonSteg {
         var sporsmal = new ArrayList<Sporsmal>();
 
         if (!harUtfyltSivilstatusSporsmal) {
-            // ikke folkereg ektefelle -> ikke utfylt sporsmal
             sporsmal.add(brukerSivilstatusSporsmal(false, null));
         }
 
         if (harBrukerUtfyltSivilstatus && !harBrukerUtfyltEktefelle) {
-            // brukerreg sivilstatus ulik ektefelle
             sporsmal.add(brukerSivilstatusSporsmal(true, sivilstatus.getStatus()));
         }
 
         if (harBrukerUtfyltEktefelle) {
-            // brukerreg ektefelle med potensielt ikke utfylte felter
-            // todo implement
+            // todo bruker-registrert ektefelle via inputfelter
+            //  fornavn, (mellomnavn), etternavn, fødselsdato, personnummer, borDuSammenMedEktefelle?
         }
 
         if (harSystemEktefelleMedAdressebeskyttelse) {
-            // har systemregistrert ektefelle med adr.beskyttelse
             sporsmal.add(systemEktefelleMedAdressebeskyttelseSporsmal());
         }
 
-        if (harSystemEktefelle) {
-            // har systemregistrert ektefelle
+        if (harSystemEktefelle && !harSystemEktefelleMedAdressebeskyttelse) {
             sporsmal.add(systemEktefelleSporsmal(sivilstatus));
         }
 
@@ -207,7 +203,7 @@ public class FamiliesituasjonSteg {
     }
 
     private boolean harBarnMedKilde(JsonForsorgerplikt forsorgerplikt, JsonKilde kilde) {
-        var harForsorgerplikt = forsorgerplikt.getHarForsorgerplikt() != null && forsorgerplikt.getHarForsorgerplikt().getVerdi().equals(Boolean.TRUE);
+        var harForsorgerplikt = forsorgerplikt != null && forsorgerplikt.getHarForsorgerplikt() != null && forsorgerplikt.getHarForsorgerplikt().getVerdi().equals(Boolean.TRUE);
 
         return harForsorgerplikt && forsorgerplikt.getHarForsorgerplikt().getKilde().equals(kilde) &&
                 forsorgerplikt.getAnsvar() != null && forsorgerplikt.getAnsvar().stream().anyMatch(barn -> barn.getBarn().getKilde().equals(kilde));
