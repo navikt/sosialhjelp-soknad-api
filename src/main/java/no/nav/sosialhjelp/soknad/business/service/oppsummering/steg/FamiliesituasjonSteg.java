@@ -291,17 +291,23 @@ public class FamiliesituasjonSteg {
     }
 
     private String verdiToTekstKey(JsonBarnebidrag.Verdi verdi) {
+        String key;
         switch (verdi) {
             case MOTTAR:
-                return "familie.barn.true.barnebidrag.mottar";
+                key = "familie.barn.true.barnebidrag.mottar";
+                break;
             case BETALER:
-                return "familie.barn.true.barnebidrag.betaler";
+                key = "familie.barn.true.barnebidrag.betaler";
+                break;
             case BEGGE:
-                return "familie.barn.true.barnebidrag.begge";
+                key = "familie.barn.true.barnebidrag.begge";
+                break;
             case INGEN:
             default:
-                return "familie.barn.true.barnebidrag.ingen";
+                key = "familie.barn.true.barnebidrag.ingen";
+                break;
         }
+        return key;
     }
 
 }
