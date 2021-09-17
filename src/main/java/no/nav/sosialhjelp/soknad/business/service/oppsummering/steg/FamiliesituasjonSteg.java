@@ -97,21 +97,17 @@ public class FamiliesituasjonSteg {
     }
 
     private String statusToTekstKey(JsonSivilstatus.Status status) {
+        String key;
         switch (status) {
-            case ENKE:
-                return "familie.sivilstatus.enke";
-            case GIFT:
-                return "familie.sivilstatus.gift";
-            case SKILT:
-                return "familie.sivilstatus.skilt";
-            case SAMBOER:
-                return "familie.sivilstatus.samboer";
-            case SEPARERT:
-                return "familie.sivilstatus.separert";
-            case UGIFT:
-            default:
-                return "familie.sivilstatus.ugift";
+            case ENKE: key = "familie.sivilstatus.enke"; break;
+            case GIFT: key = "familie.sivilstatus.gift"; break;
+            case SKILT: key = "familie.sivilstatus.skilt"; break;
+            case SAMBOER: key = "familie.sivilstatus.samboer"; break;
+            case SEPARERT: key = "familie.sivilstatus.separert"; break;
+            case UGIFT: default: key = "familie.sivilstatus.ugift"; break;
         }
+
+        return key;
     }
 
     private Sporsmal systemEktefelleMedAdressebeskyttelseSporsmal() {
