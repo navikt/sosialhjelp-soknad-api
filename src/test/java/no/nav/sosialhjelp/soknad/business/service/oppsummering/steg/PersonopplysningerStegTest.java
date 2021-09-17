@@ -29,6 +29,7 @@ class PersonopplysningerStegTest {
     private final JsonGateAdresse folkeregGateadresse = new JsonGateAdresse().withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT).withType(JsonAdresse.Type.GATEADRESSE).withGatenavn("gate").withHusnummer("1").withHusbokstav("B").withPostnummer("0123").withPoststed("poststed");
 
     @Test
+
     void personalia_navnUtenMellomnavn() {
         var soknad = createSoknad(navnUtenMellomnavn, kontonummerSystemdata, telefonnummerSystemdata, folkeregGateadresse);
 
