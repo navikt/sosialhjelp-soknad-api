@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.StegUtils.fulltnavn;
 
@@ -48,36 +47,37 @@ public class FamiliesituasjonSteg {
         var harUtfyltSivilstatusSporsmal = sivilstatus != null && sivilstatus.getKilde() != null;
         var harSystemEktefelle = harUtfyltSivilstatusSporsmal && sivilstatus.getKilde().equals(JsonKilde.SYSTEM) && sivilstatus.getStatus().equals(JsonSivilstatus.Status.GIFT);
         var harSystemEktefelleMedAdressebeskyttelse = harSystemEktefelle && Boolean.TRUE.equals(sivilstatus.getEktefelleHarDiskresjonskode());
-        var harBrukerUtfyltSivilstatus = harUtfyltSivilstatusSporsmal && sivilstatus.getKilde().equals(JsonKilde.BRUKER);
+        var harBrukerUtfyltSivilstatus = harUtfyltSivilstatusSporsmal && !harSystemEktefelle && sivilstatus.getKilde().equals(JsonKilde.BRUKER);
         var harBrukerUtfyltEktefelle = harBrukerUtfyltSivilstatus && sivilstatus.getStatus().equals(JsonSivilstatus.Status.GIFT) && sivilstatus.getEktefelle() != null;
 
-        // ikke folkereg ektefelle -> ikke utfylt sporsmal
+        var sporsmal = new ArrayList<Sporsmal>();
+
         if (!harUtfyltSivilstatusSporsmal) {
-            return singletonList(brukerSivilstatusSporsmal(false, null));
+            // ikke folkereg ektefelle -> ikke utfylt sporsmal
+            sporsmal.add(brukerSivilstatusSporsmal(false, null));
         }
 
-        // brukerreg sivilstatus ulik ektefelle
         if (harBrukerUtfyltSivilstatus && !harBrukerUtfyltEktefelle) {
-            return singletonList(brukerSivilstatusSporsmal(true, sivilstatus.getStatus()));
+            // brukerreg sivilstatus ulik ektefelle
+            sporsmal.add(brukerSivilstatusSporsmal(true, sivilstatus.getStatus()));
         }
 
-        // brukerreg ektefelle med potensielt ikke utfylte felter
         if (harBrukerUtfyltEktefelle) {
+            // brukerreg ektefelle med potensielt ikke utfylte felter
             // todo implement
-//            return brukerUtfyltEktefelleSporsmal(sivilstatus);
         }
 
-        // har systemregistrert ektefelle med adr.beskyttelse
         if (harSystemEktefelleMedAdressebeskyttelse) {
-            return singletonList(systemEktefelleMedAdressebeskyttelseSporsmal());
+            // har systemregistrert ektefelle med adr.beskyttelse
+            sporsmal.add(systemEktefelleMedAdressebeskyttelseSporsmal());
         }
 
-        // har systemregistrert ektefelle
         if (harSystemEktefelle) {
-            return singletonList(systemEktefelleSporsmal(sivilstatus));
+            // har systemregistrert ektefelle
+            sporsmal.add(systemEktefelleSporsmal(sivilstatus));
         }
 
-        return emptyList();
+        return sporsmal;
     }
 
     private Sporsmal brukerSivilstatusSporsmal(boolean erUtfylt, JsonSivilstatus.Status status) {
@@ -99,12 +99,25 @@ public class FamiliesituasjonSteg {
     private String statusToTekstKey(JsonSivilstatus.Status status) {
         String key;
         switch (status) {
-            case ENKE: key = "familie.sivilstatus.enke"; break;
-            case GIFT: key = "familie.sivilstatus.gift"; break;
-            case SKILT: key = "familie.sivilstatus.skilt"; break;
-            case SAMBOER: key = "familie.sivilstatus.samboer"; break;
-            case SEPARERT: key = "familie.sivilstatus.separert"; break;
-            case UGIFT: default: key = "familie.sivilstatus.ugift"; break;
+            case ENKE:
+                key = "familie.sivilstatus.enke";
+                break;
+            case GIFT:
+                key = "familie.sivilstatus.gift";
+                break;
+            case SKILT:
+                key = "familie.sivilstatus.skilt";
+                break;
+            case SAMBOER:
+                key = "familie.sivilstatus.samboer";
+                break;
+            case SEPARERT:
+                key = "familie.sivilstatus.separert";
+                break;
+            case UGIFT:
+            default:
+                key = "familie.sivilstatus.ugift";
+                break;
         }
 
         return key;
@@ -167,25 +180,27 @@ public class FamiliesituasjonSteg {
         var sporsmal = new ArrayList<Sporsmal>();
 
         if (!harSystemBarn || !harBrukerBarn) {
-            addIngenRegistrerteBarnSporsmal(sporsmal);
+            sporsmal.add(ingenRegistrerteBarnSporsmal());
         }
 
         if (harSystemBarn) {
             forsorgerplikt.getAnsvar().stream()
                     .filter(barn -> barn.getBarn().getKilde().equals(JsonKilde.SYSTEM))
                     .forEach(barn -> {
-                                addSystemBarnSporsmal(sporsmal, barn);
-                                addDeltBostedSporsmal(sporsmal, barn);
+                                sporsmal.add(systemBarnSporsmal(barn));
+                                if (Boolean.TRUE.equals(barn.getErFolkeregistrertSammen().getVerdi())) {
+                                    sporsmal.add(deltBostedSporsmal(barn));
+                                }
                             }
                     );
         }
 
         if (harBrukerBarn) {
-            // todo brukerregistrerte barn
+            // todo brukerregistrerte barn. pt ikke støtte for dette i søknad
         }
 
         if (harSystemBarn || harBrukerBarn) {
-            addBarneBidragSporsmal(forsorgerplikt, sporsmal);
+            sporsmal.add(barneBidragSporsmal(forsorgerplikt));
         }
 
         return sporsmal;
@@ -198,24 +213,22 @@ public class FamiliesituasjonSteg {
                 forsorgerplikt.getAnsvar() != null && forsorgerplikt.getAnsvar().stream().anyMatch(barn -> barn.getBarn().getKilde().equals(kilde));
     }
 
-    private void addIngenRegistrerteBarnSporsmal(ArrayList<Sporsmal> sporsmal) {
-        sporsmal.add(
-                new Sporsmal.Builder()
-                        .withTittel("familierelasjon.ingen_registrerte_barn_tittel")
-                        .withErUtfylt(true)
-                        .withFelt(
-                                singletonList(
-                                        new Felt.Builder()
-                                                .withSvar("familierelasjon.ingen_registrerte_barn_tekst")
-                                                .withType(Type.SYSTEMDATA)
-                                                .build()
-                                )
+    private Sporsmal ingenRegistrerteBarnSporsmal() {
+        return new Sporsmal.Builder()
+                .withTittel("familierelasjon.ingen_registrerte_barn_tittel")
+                .withErUtfylt(true)
+                .withFelt(
+                        singletonList(
+                                new Felt.Builder()
+                                        .withSvar("familierelasjon.ingen_registrerte_barn_tekst")
+                                        .withType(Type.SYSTEMDATA)
+                                        .build()
                         )
-                        .build()
-        );
+                )
+                .build();
     }
 
-    private void addSystemBarnSporsmal(ArrayList<Sporsmal> sporsmal, JsonAnsvar barn) {
+    private Sporsmal systemBarnSporsmal(JsonAnsvar barn) {
         var labelSvarMap = new LinkedHashMap<String, String>();
         if (barn.getBarn().getNavn() != null) {
             labelSvarMap.put("familie.barn.true.barn.navn.label", fulltnavn(barn.getBarn().getNavn()));
@@ -227,61 +240,54 @@ public class FamiliesituasjonSteg {
             labelSvarMap.put("familierelasjon.samme_folkeregistrerte_adresse", Boolean.TRUE.equals(barn.getErFolkeregistrertSammen().getVerdi()) ? "system.familie.barn.true.barn.folkeregistrertsammen.true" : "system.familie.barn.true.barn.folkeregistrertsammen.false");
         }
 
-        sporsmal.add(
-                new Sporsmal.Builder()
-                        .withTittel("familie.barn.true.barn.sporsmal")
-                        .withErUtfylt(true)
-                        .withFelt(
-                                singletonList(
-                                        new Felt.Builder()
-                                                .withType(Type.SYSTEMDATA_MAP)
-                                                .withLabelSvarMap(labelSvarMap)
-                                                .build()
-                                )
+        return new Sporsmal.Builder()
+                .withTittel("familie.barn.true.barn.sporsmal")
+                .withErUtfylt(true)
+                .withFelt(
+                        singletonList(
+                                new Felt.Builder()
+                                        .withType(Type.SYSTEMDATA_MAP)
+                                        .withLabelSvarMap(labelSvarMap)
+                                        .build()
                         )
-                        .build()
-        );
+                )
+                .build();
     }
 
-    private void addDeltBostedSporsmal(ArrayList<Sporsmal> sporsmal, JsonAnsvar barn) {
-        if (Boolean.TRUE.equals(barn.getErFolkeregistrertSammen().getVerdi())) {
-            var harUtfyltDeltBostedSporsmal = barn.getHarDeltBosted() != null && barn.getHarDeltBosted().getVerdi() != null;
-            var svar = harUtfyltDeltBostedSporsmal && Boolean.TRUE.equals(barn.getHarDeltBosted().getVerdi()) ? "system.familie.barn.true.barn.deltbosted.true" : "system.familie.barn.true.barn.deltbosted.false";
+    private Sporsmal deltBostedSporsmal(JsonAnsvar barn) {
+        var harUtfyltDeltBostedSporsmal = barn.getHarDeltBosted() != null && barn.getHarDeltBosted().getVerdi() != null;
+        var svar = harUtfyltDeltBostedSporsmal && Boolean.TRUE.equals(barn.getHarDeltBosted().getVerdi()) ? "system.familie.barn.true.barn.deltbosted.true" : "system.familie.barn.true.barn.deltbosted.false";
 
-            sporsmal.add(
-                    new Sporsmal.Builder()
-                            .withTittel("system.familie.barn.true.barn.deltbosted.sporsmal")
-                            .withErUtfylt(harUtfyltDeltBostedSporsmal)
-                            .withFelt(harUtfyltDeltBostedSporsmal ?
-                                    singletonList(
-                                            new Felt.Builder()
-                                                    .withSvar(svar)
-                                                    .withType(Type.CHECKBOX)
-                                                    .build()
-                                    ) :
-                                    null)
-                            .build()
-            );
-        }
+        return new Sporsmal.Builder()
+                .withTittel("system.familie.barn.true.barn.deltbosted.sporsmal")
+                .withErUtfylt(harUtfyltDeltBostedSporsmal)
+                .withFelt(harUtfyltDeltBostedSporsmal ?
+                        singletonList(
+                                new Felt.Builder()
+                                        .withSvar(svar)
+                                        .withType(Type.CHECKBOX)
+                                        .build()
+                        ) :
+                        null)
+                .build();
+
     }
 
-    private void addBarneBidragSporsmal(JsonForsorgerplikt forsorgerplikt, ArrayList<Sporsmal> sporsmal) {
+    private Sporsmal barneBidragSporsmal(JsonForsorgerplikt forsorgerplikt) {
         var erUtfylt = forsorgerplikt.getBarnebidrag() != null && forsorgerplikt.getBarnebidrag().getVerdi() != null;
-        sporsmal.add(
-                new Sporsmal.Builder()
-                        .withTittel("familie.barn.true.barnebidrag.sporsmal")
-                        .withErUtfylt(erUtfylt)
-                        .withFelt(erUtfylt ?
-                                singletonList(
-                                        new Felt.Builder()
-                                                .withSvar(verdiToTekstKey(forsorgerplikt.getBarnebidrag().getVerdi()))
-                                                .withType(Type.CHECKBOX)
-                                                .build()
-                                ) :
-                                null
-                        )
-                        .build()
-        );
+        return new Sporsmal.Builder()
+                .withTittel("familie.barn.true.barnebidrag.sporsmal")
+                .withErUtfylt(erUtfylt)
+                .withFelt(erUtfylt ?
+                        singletonList(
+                                new Felt.Builder()
+                                        .withSvar(verdiToTekstKey(forsorgerplikt.getBarnebidrag().getVerdi()))
+                                        .withType(Type.CHECKBOX)
+                                        .build()
+                        ) :
+                        null
+                )
+                .build();
     }
 
     private String verdiToTekstKey(JsonBarnebidrag.Verdi verdi) {
