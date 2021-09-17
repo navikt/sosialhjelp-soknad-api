@@ -238,7 +238,6 @@ class PersonopplysningerStegTest {
     @Test
     void kontonummerIkkeUtfylt() {
         var ikkeUtfylt = new JsonKontonummer();
-
         var soknad = createSoknad(navnUtenMellomnavn, ikkeUtfylt, telefonnummerSystemdata, folkeregGateadresse);
 
         var res = steg.get(soknad);

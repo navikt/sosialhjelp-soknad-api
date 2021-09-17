@@ -29,7 +29,6 @@ public class UtgifterOgGjeldSteg {
         alleSporsmal.addAll(boutgifterSporsmal);
         alleSporsmal.addAll(barneutgifterSporsmal);
 
-
         return new Steg.Builder()
                 .withStegNr(7)
                 .withTittel("utgifterbolk.tittel") // Utgifter og gjeld

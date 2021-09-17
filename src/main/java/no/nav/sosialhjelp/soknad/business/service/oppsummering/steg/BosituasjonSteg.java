@@ -9,7 +9,6 @@ public class BosituasjonSteg {
 
     public Steg get(JsonInternalSoknad jsonInternalSoknad) {
         // todo implement
-
         return new Steg.Builder()
                 .withStegNr(5)
                 .withTittel("bosituasjonbolk.tittel")
