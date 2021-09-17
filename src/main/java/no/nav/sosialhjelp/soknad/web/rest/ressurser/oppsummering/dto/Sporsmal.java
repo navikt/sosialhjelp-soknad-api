@@ -40,7 +40,8 @@ public class Sporsmal {
         private List<Felt> felt;
         private boolean erUtfylt;
 
-        public Builder() {}
+        public Builder() {
+        }
 
         public Builder withTittel(String tittel) {
             this.tittel = tittel;
