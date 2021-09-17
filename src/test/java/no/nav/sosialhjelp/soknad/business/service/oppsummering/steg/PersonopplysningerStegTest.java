@@ -30,9 +30,9 @@ class PersonopplysningerStegTest {
 
     @Test
     void personalia_navnUtenMellomnavn() {
-        var soknad1 = createSoknad(navnUtenMellomnavn, kontonummerSystemdata, telefonnummerSystemdata, folkeregGateadresse);
+        var soknad = createSoknad(navnUtenMellomnavn, kontonummerSystemdata, telefonnummerSystemdata, folkeregGateadresse);
 
-        var res = steg.get(soknad1);
+        var res = steg.get(soknad);
         assertThat(res.getAvsnitt()).hasSize(4);
         assertThat(res.getAvsnitt().get(0).getSporsmal()).hasSize(1);
 
