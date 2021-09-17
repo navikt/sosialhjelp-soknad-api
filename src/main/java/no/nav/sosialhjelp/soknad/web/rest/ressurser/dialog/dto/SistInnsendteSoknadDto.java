@@ -5,26 +5,26 @@ import java.time.format.DateTimeFormatter;
 
 public class SistInnsendteSoknadDto {
 
-    private final String digisosId;
-    private final String enhetsnr;
+    private final String ident;
+    private final String navEnhet;
     private final LocalDateTime innsendtDato;
 
     public SistInnsendteSoknadDto(
-            String digisosId,
-            String enhetsnr,
+            String ident,
+            String navEnhet,
             LocalDateTime innsendtDato
     ) {
-        this.digisosId = digisosId;
-        this.enhetsnr = enhetsnr;
+        this.ident = ident;
+        this.navEnhet = navEnhet;
         this.innsendtDato = innsendtDato;
     }
 
-    public String getDigisosId() {
-        return digisosId;
+    public String getIdent() {
+        return ident;
     }
 
-    public String getEnhetsnr() {
-        return enhetsnr;
+    public String getNavEnhet() {
+        return navEnhet;
     }
 
     public String getInnsendtDato() {
