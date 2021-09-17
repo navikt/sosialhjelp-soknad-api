@@ -29,10 +29,11 @@ class PersonopplysningerStegTest {
     private final JsonGateAdresse folkeregGateadresse = new JsonGateAdresse().withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT).withType(JsonAdresse.Type.GATEADRESSE).withGatenavn("gate").withHusnummer("1").withHusbokstav("B").withPostnummer("0123").withPoststed("poststed");
 
     @Test
-    void personalia_navnUtenMellomnavn() {
-        var soknad1 = createSoknad(navnUtenMellomnavn, kontonummerSystemdata, telefonnummerSystemdata, folkeregGateadresse);
 
-        var res = steg.get(soknad1);
+    void personalia_navnUtenMellomnavn() {
+        var soknad = createSoknad(navnUtenMellomnavn, kontonummerSystemdata, telefonnummerSystemdata, folkeregGateadresse);
+
+        var res = steg.get(soknad);
         assertThat(res.getAvsnitt()).hasSize(4);
         assertThat(res.getAvsnitt().get(0).getSporsmal()).hasSize(1);
 

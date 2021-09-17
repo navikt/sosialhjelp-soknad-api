@@ -47,6 +47,7 @@ class UtgifterOgGjeldStegTest {
         var res = steg.get(soknad);
 
         assertThat(res.getAvsnitt()).hasSize(1);
+
         var utgifterSporsmal = res.getAvsnitt().get(0).getSporsmal();
         assertThat(utgifterSporsmal).hasSize(2);
         assertThat(utgifterSporsmal.get(0).getErUtfylt()).isTrue(); // boutgifter
@@ -70,6 +71,7 @@ class UtgifterOgGjeldStegTest {
                 new JsonOkonomioversiktUtgift().withType("husleie"),
                 new JsonOkonomioversiktUtgift().withType("boliglanAvdrag")
         );
+
         var soknad = createSoknad(bekreftelser, opplysningUtgifter, oversiktUtgifter);
 
         var res = steg.get(soknad);
