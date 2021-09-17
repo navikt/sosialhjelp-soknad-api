@@ -32,9 +32,10 @@ class ArbeidOgUtdanningStegTest {
 
         assertThat(res.getAvsnitt()).hasSize(2);
         assertThat(res.getAvsnitt().get(0).getSporsmal()).hasSize(1);
-        assertThat(res.getAvsnitt().get(0).getSporsmal().get(0).getTittel()).isEqualTo("arbeidsforhold.ingen");
-        assertThat(res.getAvsnitt().get(0).getSporsmal().get(0).getErUtfylt()).isTrue();
-        assertThat(res.getAvsnitt().get(0).getSporsmal().get(0).getFelt()).isNull();
+        var arbeidsforholdSporsmal = res.getAvsnitt().get(0).getSporsmal().get(0);
+        assertThat(arbeidsforholdSporsmal.getTittel()).isEqualTo("arbeidsforhold.ingen");
+        assertThat(arbeidsforholdSporsmal.getErUtfylt()).isTrue();
+        assertThat(arbeidsforholdSporsmal.getFelt()).isNull();
     }
 
     @Test
@@ -45,11 +46,12 @@ class ArbeidOgUtdanningStegTest {
 
         assertThat(res.getAvsnitt()).hasSize(2);
         assertThat(res.getAvsnitt().get(0).getSporsmal()).hasSize(1);
-        assertThat(res.getAvsnitt().get(0).getSporsmal().get(0).getTittel()).isEqualTo("arbeidsforhold.infotekst");
-        assertThat(res.getAvsnitt().get(0).getSporsmal().get(0).getErUtfylt()).isTrue();
-        assertThat(res.getAvsnitt().get(0).getSporsmal().get(0).getFelt()).hasSize(1);
+        var arbeidsforholdSporsmal = res.getAvsnitt().get(0).getSporsmal().get(0);
+        assertThat(arbeidsforholdSporsmal.getTittel()).isEqualTo("arbeidsforhold.infotekst");
+        assertThat(arbeidsforholdSporsmal.getErUtfylt()).isTrue();
+        assertThat(arbeidsforholdSporsmal.getFelt()).hasSize(1);
 
-        var felt = res.getAvsnitt().get(0).getSporsmal().get(0).getFelt().get(0);
+        var felt = arbeidsforholdSporsmal.getFelt().get(0);
         assertThat(felt.getType()).isEqualTo(Type.SYSTEMDATA_MAP);
         assertThat(felt.getLabelSvarMap()).hasSize(4);
 
@@ -74,11 +76,12 @@ class ArbeidOgUtdanningStegTest {
 
         assertThat(res.getAvsnitt()).hasSize(2);
         assertThat(res.getAvsnitt().get(0).getSporsmal()).hasSize(1);
-        assertThat(res.getAvsnitt().get(0).getSporsmal().get(0).getTittel()).isEqualTo("arbeidsforhold.infotekst");
-        assertThat(res.getAvsnitt().get(0).getSporsmal().get(0).getErUtfylt()).isTrue();
-        assertThat(res.getAvsnitt().get(0).getSporsmal().get(0).getFelt()).hasSize(1);
+        var arbeidsforholdSporsmal = res.getAvsnitt().get(0).getSporsmal().get(0);
+        assertThat(arbeidsforholdSporsmal.getTittel()).isEqualTo("arbeidsforhold.infotekst");
+        assertThat(arbeidsforholdSporsmal.getErUtfylt()).isTrue();
+        assertThat(arbeidsforholdSporsmal.getFelt()).hasSize(1);
 
-        var felt = res.getAvsnitt().get(0).getSporsmal().get(0).getFelt().get(0);
+        var felt = arbeidsforholdSporsmal.getFelt().get(0);
         assertThat(felt.getType()).isEqualTo(Type.SYSTEMDATA_MAP);
         assertThat(felt.getLabelSvarMap()).hasSize(3);
 
@@ -102,14 +105,16 @@ class ArbeidOgUtdanningStegTest {
 
         assertThat(res.getAvsnitt()).hasSize(2);
         assertThat(res.getAvsnitt().get(0).getSporsmal()).hasSize(2);
-        assertThat(res.getAvsnitt().get(0).getSporsmal().get(0).getTittel()).isEqualTo("arbeidsforhold.infotekst");
-        assertThat(res.getAvsnitt().get(0).getSporsmal().get(0).getErUtfylt()).isTrue();
+        var arbeidsforholdSporsmal = res.getAvsnitt().get(0).getSporsmal().get(0);
+        assertThat(arbeidsforholdSporsmal.getTittel()).isEqualTo("arbeidsforhold.infotekst");
+        assertThat(arbeidsforholdSporsmal.getErUtfylt()).isTrue();
 
-        assertThat(res.getAvsnitt().get(0).getSporsmal().get(1).getTittel()).isEqualTo("Kommentar til arbeidsforhold");
-        assertThat(res.getAvsnitt().get(0).getSporsmal().get(1).getErUtfylt()).isTrue();
-        assertThat(res.getAvsnitt().get(0).getSporsmal().get(1).getFelt()).hasSize(1);
-        assertThat(res.getAvsnitt().get(0).getSporsmal().get(1).getFelt().get(0).getSvar()).isEqualTo("kommentar");
-        assertThat(res.getAvsnitt().get(0).getSporsmal().get(1).getFelt().get(0).getType()).isEqualTo(Type.TEKST);
+        var arbeidsforholdKommentarSporsmal = res.getAvsnitt().get(0).getSporsmal().get(1);
+        assertThat(arbeidsforholdKommentarSporsmal.getTittel()).isEqualTo("Kommentar til arbeidsforhold");
+        assertThat(arbeidsforholdKommentarSporsmal.getErUtfylt()).isTrue();
+        assertThat(arbeidsforholdKommentarSporsmal.getFelt()).hasSize(1);
+        assertThat(arbeidsforholdKommentarSporsmal.getFelt().get(0).getSvar()).isEqualTo("kommentar");
+        assertThat(arbeidsforholdKommentarSporsmal.getFelt().get(0).getType()).isEqualTo(Type.TEKST);
     }
 
     @Test
@@ -120,9 +125,10 @@ class ArbeidOgUtdanningStegTest {
 
         assertThat(res.getAvsnitt()).hasSize(2);
         assertThat(res.getAvsnitt().get(1).getSporsmal()).hasSize(1);
-        assertThat(res.getAvsnitt().get(1).getSporsmal().get(0).getTittel()).isEqualTo("dinsituasjon.studerer.sporsmal");
-        assertThat(res.getAvsnitt().get(1).getSporsmal().get(0).getErUtfylt()).isFalse();
-        assertThat(res.getAvsnitt().get(1).getSporsmal().get(0).getFelt()).isNull();
+        var utdanningSporsmal = res.getAvsnitt().get(1).getSporsmal().get(0);
+        assertThat(utdanningSporsmal.getTittel()).isEqualTo("dinsituasjon.studerer.sporsmal");
+        assertThat(utdanningSporsmal.getErUtfylt()).isFalse();
+        assertThat(utdanningSporsmal.getFelt()).isNull();
     }
 
     @Test
@@ -133,10 +139,11 @@ class ArbeidOgUtdanningStegTest {
 
         assertThat(res.getAvsnitt()).hasSize(2);
         assertThat(res.getAvsnitt().get(1).getSporsmal()).hasSize(1);
-        assertThat(res.getAvsnitt().get(1).getSporsmal().get(0).getErUtfylt()).isTrue();
-        assertThat(res.getAvsnitt().get(1).getSporsmal().get(0).getFelt()).hasSize(1);
-        assertThat(res.getAvsnitt().get(1).getSporsmal().get(0).getFelt().get(0).getSvar()).isEqualTo("dinsituasjon.studerer.false");
-        assertThat(res.getAvsnitt().get(1).getSporsmal().get(0).getFelt().get(0).getType()).isEqualTo(Type.CHECKBOX);
+        var utdanningSporsmal = res.getAvsnitt().get(1).getSporsmal().get(0);
+        assertThat(utdanningSporsmal.getErUtfylt()).isTrue();
+        assertThat(utdanningSporsmal.getFelt()).hasSize(1);
+        assertThat(utdanningSporsmal.getFelt().get(0).getSvar()).isEqualTo("dinsituasjon.studerer.false");
+        assertThat(utdanningSporsmal.getFelt().get(0).getType()).isEqualTo(Type.CHECKBOX);
     }
 
     @Test
@@ -147,13 +154,15 @@ class ArbeidOgUtdanningStegTest {
 
         assertThat(res.getAvsnitt().get(1).getSporsmal()).hasSize(2);
 
-        assertThat(res.getAvsnitt().get(1).getSporsmal().get(0).getErUtfylt()).isTrue();
-        assertThat(res.getAvsnitt().get(1).getSporsmal().get(0).getFelt()).hasSize(1);
-        assertThat(res.getAvsnitt().get(1).getSporsmal().get(0).getFelt().get(0).getSvar()).isEqualTo("dinsituasjon.studerer.true");
-        assertThat(res.getAvsnitt().get(1).getSporsmal().get(0).getFelt().get(0).getType()).isEqualTo(Type.CHECKBOX);
+        var utdanningSporsmal = res.getAvsnitt().get(1).getSporsmal().get(0);
+        assertThat(utdanningSporsmal.getErUtfylt()).isTrue();
+        assertThat(utdanningSporsmal.getFelt()).hasSize(1);
+        assertThat(utdanningSporsmal.getFelt().get(0).getSvar()).isEqualTo("dinsituasjon.studerer.true");
+        assertThat(utdanningSporsmal.getFelt().get(0).getType()).isEqualTo(Type.CHECKBOX);
 
-        assertThat(res.getAvsnitt().get(1).getSporsmal().get(1).getErUtfylt()).isFalse();
-        assertThat(res.getAvsnitt().get(1).getSporsmal().get(1).getFelt()).isNull();
+        var studentgradSporsmal = res.getAvsnitt().get(1).getSporsmal().get(1);
+        assertThat(studentgradSporsmal.getErUtfylt()).isFalse();
+        assertThat(studentgradSporsmal.getFelt()).isNull();
     }
 
     @Test
@@ -163,15 +172,17 @@ class ArbeidOgUtdanningStegTest {
 
         assertThat(res.getAvsnitt().get(1).getSporsmal()).hasSize(2);
 
-        assertThat(res.getAvsnitt().get(1).getSporsmal().get(0).getErUtfylt()).isTrue();
-        assertThat(res.getAvsnitt().get(1).getSporsmal().get(0).getFelt()).hasSize(1);
-        assertThat(res.getAvsnitt().get(1).getSporsmal().get(0).getFelt().get(0).getSvar()).isEqualTo("dinsituasjon.studerer.true");
-        assertThat(res.getAvsnitt().get(1).getSporsmal().get(0).getFelt().get(0).getType()).isEqualTo(Type.CHECKBOX);
+        var utdanningSporsmal = res.getAvsnitt().get(1).getSporsmal().get(0);
+        assertThat(utdanningSporsmal.getErUtfylt()).isTrue();
+        assertThat(utdanningSporsmal.getFelt()).hasSize(1);
+        assertThat(utdanningSporsmal.getFelt().get(0).getSvar()).isEqualTo("dinsituasjon.studerer.true");
+        assertThat(utdanningSporsmal.getFelt().get(0).getType()).isEqualTo(Type.CHECKBOX);
 
-        assertThat(res.getAvsnitt().get(1).getSporsmal().get(1).getErUtfylt()).isTrue();
-        assertThat(res.getAvsnitt().get(1).getSporsmal().get(1).getFelt()).hasSize(1);
-        assertThat(res.getAvsnitt().get(1).getSporsmal().get(1).getFelt().get(0).getSvar()).isEqualTo("dinsituasjon.studerer.true.grad.heltid");
-        assertThat(res.getAvsnitt().get(1).getSporsmal().get(1).getFelt().get(0).getType()).isEqualTo(Type.CHECKBOX);
+        var studentgradSporsmal = res.getAvsnitt().get(1).getSporsmal().get(1);
+        assertThat(studentgradSporsmal.getErUtfylt()).isTrue();
+        assertThat(studentgradSporsmal.getFelt()).hasSize(1);
+        assertThat(studentgradSporsmal.getFelt().get(0).getSvar()).isEqualTo("dinsituasjon.studerer.true.grad.heltid");
+        assertThat(studentgradSporsmal.getFelt().get(0).getType()).isEqualTo(Type.CHECKBOX);
     }
 
     private JsonInternalSoknad createSoknad(JsonArbeid arbeid, JsonUtdanning utdanning) {
