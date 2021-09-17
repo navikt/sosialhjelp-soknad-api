@@ -6,16 +6,16 @@ import java.time.format.DateTimeFormatter;
 public class SistInnsendteSoknadDto {
 
     private final String ident;
-    private final String enhetsnr;
+    private final String navEnhet;
     private final LocalDateTime innsendtDato;
 
     public SistInnsendteSoknadDto(
             String ident,
-            String enhetsnr,
+            String navEnhet,
             LocalDateTime innsendtDato
     ) {
         this.ident = ident;
-        this.enhetsnr = enhetsnr;
+        this.navEnhet = navEnhet;
         this.innsendtDato = innsendtDato;
     }
 
@@ -23,8 +23,8 @@ public class SistInnsendteSoknadDto {
         return ident;
     }
 
-    public String getEnhetsnr() {
-        return enhetsnr;
+    public String getNavEnhet() {
+        return navEnhet;
     }
 
     public String getInnsendtDato() {
