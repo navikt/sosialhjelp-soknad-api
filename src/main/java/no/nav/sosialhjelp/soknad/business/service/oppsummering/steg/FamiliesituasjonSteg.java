@@ -175,7 +175,7 @@ public class FamiliesituasjonSteg {
 
         var sporsmal = new ArrayList<Sporsmal>();
 
-        if (!harSystemBarn || !harBrukerBarn) {
+        if (!harSystemBarn && !harBrukerBarn) {
             sporsmal.add(ingenRegistrerteBarnSporsmal());
         }
 
