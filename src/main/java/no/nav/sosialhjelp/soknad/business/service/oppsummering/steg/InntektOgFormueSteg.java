@@ -33,7 +33,7 @@ public class InntektOgFormueSteg {
         if (erStudent(jsonInternalSoknad.getSoknad().getData().getUtdanning())) {
             avsnitt.add(studielanAvsnitt());
         }
-        avsnitt.add(andreInntekterAvsnitt());
+        avsnitt.add(andreInntekterAvsnitt(okonomi));
         avsnitt.add(bankAvsnitt());
         avsnitt.add(annenFormueAvsnitt());
 
@@ -119,21 +119,21 @@ public class InntektOgFormueSteg {
     private Avsnitt navUtbetalingerAvsnitt() {
         return new Avsnitt.Builder()
                 .withTittel("navytelser.sporsmal")
-                .withSporsmal()
+                .withSporsmal(Collections.emptyList())
                 .build();
     }
 
     private Avsnitt bostotteHusbankenAvsnitt() {
         return new Avsnitt.Builder()
                 .withTittel("inntekt.bostotte.husbanken.tittel")
-                .withSporsmal()
+                .withSporsmal(Collections.emptyList())
                 .build();
     }
 
     private Avsnitt studielanAvsnitt() {
         return new Avsnitt.Builder()
                 .withTittel("inntekt.studielan.titel")
-                .withSporsmal()
+                .withSporsmal(Collections.emptyList())
                 .build();
     }
 
@@ -151,21 +151,21 @@ public class InntektOgFormueSteg {
 
         return new Avsnitt.Builder()
                 .withTittel("inntekt.inntekter.titel")
-                .withSporsmal()
+                .withSporsmal(Collections.emptyList())
                 .build();
     }
 
     private Avsnitt bankAvsnitt() {
         return new Avsnitt.Builder()
                 .withTittel("opplysninger.formue.bank.undertittel")
-                .withSporsmal()
+                .withSporsmal(Collections.emptyList())
                 .build();
     }
 
     private Avsnitt annenFormueAvsnitt() {
         return new Avsnitt.Builder()
                 .withTittel("opplysninger.formue.annen.undertittel")
-                .withSporsmal()
+                .withSporsmal(Collections.emptyList())
                 .build();
     }
 
