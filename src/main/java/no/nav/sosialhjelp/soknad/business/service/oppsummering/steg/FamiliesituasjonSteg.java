@@ -61,8 +61,7 @@ public class FamiliesituasjonSteg {
         }
 
         if (harBrukerUtfyltEktefelle) {
-            // todo bruker-registrert ektefelle via inputfelter
-            //  fornavn, (mellomnavn), etternavn, fødselsdato, personnummer, borDuSammenMedEktefelle?
+            sporsmal.add(brukerRegistrertEktefelle(sivilstatus));
         }
 
         if (harSystemEktefelleMedAdressebeskyttelse) {
@@ -115,8 +114,15 @@ public class FamiliesituasjonSteg {
                 key = "familie.sivilstatus.ugift";
                 break;
         }
-
         return key;
+    }
+
+    private Sporsmal brukerRegistrertEktefelle(JsonSivilstatus sivilstatus) {
+        // todo:
+        //  fornavn, (mellomnavn), etternavn, fødselsdato, personnummer, borSammen?
+        //  som 1 Sporsmal med labelSvarMap eller List<Sporsmal> ??
+
+        return null;
     }
 
     private Sporsmal systemEktefelleMedAdressebeskyttelseSporsmal() {
