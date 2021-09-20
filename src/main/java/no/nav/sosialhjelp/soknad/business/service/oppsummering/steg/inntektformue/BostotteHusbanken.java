@@ -1,0 +1,119 @@
+package no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.inntektformue;
+
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonDriftsinformasjon;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger;
+import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Avsnitt;
+import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Felt;
+import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Sporsmal;
+import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Type;
+
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+
+import static java.util.Collections.singletonList;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.BOSTOTTE;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.BOSTOTTE_SAMTYKKE;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_HUSBANKEN;
+import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.inntektformue.InntektFormueUtils.harBekreftelse;
+import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.inntektformue.InntektFormueUtils.harBekreftelseTrue;
+
+public class BostotteHusbanken {
+
+    public Avsnitt getAvsnitt(JsonOkonomiopplysninger opplysninger, JsonDriftsinformasjon driftsinformasjon) {
+        return new Avsnitt.Builder()
+                .withTittel("inntekt.bostotte.husbanken.tittel")
+                .withSporsmal(bostotteSporsmal(opplysninger, driftsinformasjon))
+                .build();
+    }
+
+    private ArrayList<Sporsmal> bostotteSporsmal(JsonOkonomiopplysninger opplysninger, JsonDriftsinformasjon driftsinformasjon) {
+        var harUtfyltBostotteSporsmal = harBekreftelse(opplysninger, BOSTOTTE);
+        var harSvartJaBostotte = harUtfyltBostotteSporsmal && harBekreftelseTrue(opplysninger, BOSTOTTE);
+
+        var harBostotteSamtykke = harUtfyltBostotteSporsmal && harBekreftelseTrue(opplysninger, BOSTOTTE_SAMTYKKE);
+        var fikkFeilMotHusbanken = Boolean.TRUE.equals(driftsinformasjon.getStotteFraHusbankenFeilet());
+
+        var sporsmal = new ArrayList<Sporsmal>();
+        sporsmal.add(
+                new Sporsmal.Builder()
+                        .withTittel("inntekt.bostotte.sporsmal.sporsmal")
+                        .withErUtfylt(harUtfyltBostotteSporsmal)
+                        .withFelt(harUtfyltBostotteSporsmal ?
+                                singletonList(
+                                        new Felt.Builder()
+                                                .withSvar(bostotteSvar(harSvartJaBostotte))
+                                                .withType(Type.CHECKBOX)
+                                                .build()
+                                ) :
+                                null
+                        )
+                        .build()
+        );
+
+        if (harSvartJaBostotte && fikkFeilMotHusbanken) {
+            sporsmal.add(
+                    new Sporsmal.Builder()
+                            .withTittel("Vi fikk ikke hentet opplysninger fra Husbanken") // Vi fikk ikke hentet opplysninger fra Husbanken
+                            .build()
+            );
+        }
+
+        if (harSvartJaBostotte && !fikkFeilMotHusbanken)
+            sporsmal.add(
+                    new Sporsmal.Builder()
+                            .withTittel("")
+                            .withErUtfylt(true)
+                            .withFelt(harBostotteSamtykke ? bostotteFelter(opplysninger) : ikkeHentetBostotte())
+                            .build()
+            );
+        return sporsmal;
+    }
+
+    private String bostotteSvar(boolean harSoktEllerMottattBostotte) {
+        return harSoktEllerMottattBostotte ? "inntekt.bostotte.sporsmal.true" : "inntekt.bostotte.sporsmal.false";
+    }
+
+    private List<Felt> bostotteFelter(JsonOkonomiopplysninger opplysninger) {
+        var felter = new ArrayList<Felt>();
+        opplysninger.getUtbetaling().stream()
+                .filter(utbetaling -> UTBETALING_HUSBANKEN.equals(utbetaling.getType()))
+                .forEach(utbetaling -> {
+                            var map = new LinkedHashMap<String, String>();
+                            map.put("inntekt.bostotte.utbetaling.mottaker", utbetaling.getMottaker().value());
+                            map.put("inntekt.bostotte.utbetaling.utbetalingsdato", utbetaling.getUtbetalingsdato());
+                            map.put("inntekt.bostotte.utbetaling.belop", utbetaling.getBelop().toString());
+
+                            felter.add(
+                                    new Felt.Builder()
+                                            .withLabelSvarMap(map)
+                                            .withType(Type.SYSTEMDATA_MAP)
+                                            .build()
+                            );
+                        }
+                );
+        opplysninger.getBostotte().getSaker()
+                .forEach(sak -> {
+                            var map = new LinkedHashMap<String, String>();
+                            map.put("inntekt.bostotte.sak.dato", sak.getDato());
+                            map.put("inntekt.bostotte.sak.status", sak.getStatus());
+
+                            felter.add(
+                                    new Felt.Builder()
+                                            .withLabelSvarMap(map)
+                                            .withType(Type.SYSTEMDATA_MAP)
+                                            .build()
+                            );
+                        }
+                );
+        return felter;
+    }
+
+    private List<Felt> ikkeHentetBostotte() {
+        return singletonList(
+                new Felt.Builder()
+                        .withSvar("inntekt.bostotte.mangler_samtykke")
+                        .build()
+        );
+    }
+}
