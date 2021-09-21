@@ -48,7 +48,7 @@ public class Bank {
                         .build()
         );
 
-        if (harValgtFormueType(oversikt, FORMUE_ANNET)) {
+        if (harUtfyltBankSporsmal && harValgtFormueType(oversikt, FORMUE_ANNET)) {
             var beskrivelseAvAnnet = opplysninger.getBeskrivelseAvAnnet();
             var harUtfyltAnnetFelt = beskrivelseAvAnnet != null && beskrivelseAvAnnet.getSparing() != null && !beskrivelseAvAnnet.getSparing().isBlank();
 
