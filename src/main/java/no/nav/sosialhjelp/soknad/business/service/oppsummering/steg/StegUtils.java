@@ -22,4 +22,8 @@ public final class StegUtils {
                 .filter(s -> !s.isBlank())
                 .collect(Collectors.joining(" "));
     }
+
+    public static boolean isNotNullOrEmtpy(String s) {
+        return s != null && !s.isEmpty();
+    }
 }

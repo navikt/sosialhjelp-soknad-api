@@ -18,6 +18,7 @@ import java.util.List;
 
 import static java.util.Collections.singletonList;
 import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.StegUtils.fulltnavn;
+import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.StegUtils.isNotNullOrEmtpy;
 
 public class FamiliesituasjonSteg {
 
@@ -118,11 +119,37 @@ public class FamiliesituasjonSteg {
     }
 
     private Sporsmal brukerRegistrertEktefelle(JsonSivilstatus sivilstatus) {
-        // todo:
-        //  fornavn, (mellomnavn), etternavn, fødselsdato, personnummer, borSammen?
-        //  som 1 Sporsmal med labelSvarMap eller List<Sporsmal> ??
+        // todo: som dette eller som liste av sporsmal?
+        var erUtfylt = isNotNullOrEmtpy(sivilstatus.getEktefelle().getNavn().getFornavn()) &&
+                isNotNullOrEmtpy(sivilstatus.getEktefelle().getNavn().getEtternavn()) &&
+                isNotNullOrEmtpy(sivilstatus.getEktefelle().getFodselsdato()) &&
+                isNotNullOrEmtpy(sivilstatus.getEktefelle().getPersonIdentifikator()) &&
+                sivilstatus.getBorSammenMed() != null;
 
-        return null;
+        var map = new LinkedHashMap<String, String>();
+        map.put("familie.sivilstatus.gift.ektefelle.navn.label", fulltnavn(sivilstatus.getEktefelle().getNavn()));
+        map.put("familie.sivilstatus.gift.ektefelle.fnr.label", sivilstatus.getEktefelle().getFodselsdato());
+        map.put("familie.sivilstatus.gift.ektefelle.pnr.label", sivilstatus.getEktefelle().getPersonIdentifikator());
+        map.put("familie.sivilstatus.gift.ektefelle.borsammen.sporsmal", borSammenMedSvar(sivilstatus));
+
+        return new Sporsmal.Builder()
+                .withTittel("familie.sivilstatus.gift.ektefelle.sporsmal")
+                .withErUtfylt(erUtfylt)
+                .withFelt(singletonList(
+                        new Felt.Builder()
+                                .withType(Type.SYSTEMDATA_MAP) //selv om dette ikke er systemdata?!?
+                                .withLabelSvarMap(map)
+                                .build()
+                ))
+                .build();
+    }
+
+    private String borSammenMedSvar(JsonSivilstatus sivilstatus) {
+        return sivilstatus.getBorSammenMed() != null ? borSammenKey(sivilstatus) : null;
+    }
+
+    private String borSammenKey(JsonSivilstatus sivilstatus) {
+        return Boolean.TRUE.equals(sivilstatus.getBorSammenMed()) ? "familie.sivilstatus.gift.ektefelle.borsammen.true" : "familie.sivilstatus.gift.ektefelle.borsammen.false";
     }
 
     private Sporsmal systemEktefelleMedAdressebeskyttelseSporsmal() {
