@@ -15,6 +15,19 @@ import java.util.List;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.BEKREFTELSE_BARNEUTGIFTER;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.BEKREFTELSE_BOUTGIFTER;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTGIFTER_ANNET_BARN;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTGIFTER_ANNET_BO;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTGIFTER_BARNEHAGE;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTGIFTER_BARN_FRITIDSAKTIVITETER;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTGIFTER_BARN_TANNREGULERING;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTGIFTER_BOLIGLAN_AVDRAG;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTGIFTER_HUSLEIE;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTGIFTER_KOMMUNAL_AVGIFT;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTGIFTER_OPPVARMING;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTGIFTER_SFO;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTGIFTER_STROM;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class UtgifterOgGjeldStegTest {
@@ -39,7 +52,7 @@ class UtgifterOgGjeldStegTest {
     void harIkkeBoutgifter() {
         var bekreftelser = singletonList(
                 new JsonOkonomibekreftelse()
-                        .withType("boutgifter")
+                        .withType(BEKREFTELSE_BOUTGIFTER)
                         .withVerdi(Boolean.FALSE)
         );
         var soknad = createSoknad(bekreftelser, null, null);
@@ -58,18 +71,18 @@ class UtgifterOgGjeldStegTest {
     void harBoutgifter() {
         var bekreftelser = singletonList(
                 new JsonOkonomibekreftelse()
-                        .withType("boutgifter")
+                        .withType(BEKREFTELSE_BOUTGIFTER)
                         .withVerdi(Boolean.TRUE)
         );
         var opplysningUtgifter = List.of(
-                new JsonOkonomiOpplysningUtgift().withType("strom"),
-                new JsonOkonomiOpplysningUtgift().withType("kommunalAvgift"),
-                new JsonOkonomiOpplysningUtgift().withType("oppvarming"),
-                new JsonOkonomiOpplysningUtgift().withType("annenBoutgift")
+                new JsonOkonomiOpplysningUtgift().withType(UTGIFTER_STROM),
+                new JsonOkonomiOpplysningUtgift().withType(UTGIFTER_KOMMUNAL_AVGIFT),
+                new JsonOkonomiOpplysningUtgift().withType(UTGIFTER_OPPVARMING),
+                new JsonOkonomiOpplysningUtgift().withType(UTGIFTER_ANNET_BO)
         );
         var oversiktUtgifter = List.of(
-                new JsonOkonomioversiktUtgift().withType("husleie"),
-                new JsonOkonomioversiktUtgift().withType("boliglanAvdrag")
+                new JsonOkonomioversiktUtgift().withType(UTGIFTER_HUSLEIE),
+                new JsonOkonomioversiktUtgift().withType(UTGIFTER_BOLIGLAN_AVDRAG)
         );
 
         var soknad = createSoknad(bekreftelser, opplysningUtgifter, oversiktUtgifter);
@@ -99,7 +112,7 @@ class UtgifterOgGjeldStegTest {
     void harIkkeBarneutgifter() {
         var bekreftelser = singletonList(
                 new JsonOkonomibekreftelse()
-                        .withType("barneutgifter")
+                        .withType(BEKREFTELSE_BARNEUTGIFTER)
                         .withVerdi(Boolean.FALSE)
         );
         var soknad = createSoknad(bekreftelser, null, null);
@@ -118,17 +131,17 @@ class UtgifterOgGjeldStegTest {
     void harBarneutgifter() {
         var bekreftelser = singletonList(
                 new JsonOkonomibekreftelse()
-                        .withType("barneutgifter")
+                        .withType(BEKREFTELSE_BARNEUTGIFTER)
                         .withVerdi(Boolean.TRUE)
         );
         var opplysningUtgifter = List.of(
-                new JsonOkonomiOpplysningUtgift().withType("barnFritidsaktiviteter"),
-                new JsonOkonomiOpplysningUtgift().withType("barnTannregulering"),
-                new JsonOkonomiOpplysningUtgift().withType("annenBarneutgift")
+                new JsonOkonomiOpplysningUtgift().withType(UTGIFTER_BARN_FRITIDSAKTIVITETER),
+                new JsonOkonomiOpplysningUtgift().withType(UTGIFTER_BARN_TANNREGULERING),
+                new JsonOkonomiOpplysningUtgift().withType(UTGIFTER_ANNET_BARN)
         );
         var oversiktUtgifter = List.of(
-                new JsonOkonomioversiktUtgift().withType("barnehage"),
-                new JsonOkonomioversiktUtgift().withType("sfo")
+                new JsonOkonomioversiktUtgift().withType(UTGIFTER_BARNEHAGE),
+                new JsonOkonomioversiktUtgift().withType(UTGIFTER_SFO)
         );
 
         var soknad = createSoknad(bekreftelser, opplysningUtgifter, oversiktUtgifter);
