@@ -2,6 +2,7 @@ package no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.inntektform
 
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonDriftsinformasjon;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Avsnitt;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Felt;
@@ -21,16 +22,16 @@ import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.innte
 public class SkattbarInntekt {
 
     public Avsnitt getAvsnitt(JsonOkonomi okonomi, JsonDriftsinformasjon driftsinformasjon) {
+        var opplysninger = okonomi.getOpplysninger();
         var fikkFeilMotSkatteetaten = Boolean.TRUE.equals(driftsinformasjon.getInntektFraSkatteetatenFeilet());
 
         return new Avsnitt.Builder()
                 .withTittel("utbetalinger.inntekt.skattbar.tittel")
-                .withSporsmal(skattbarInntektSporsmal(okonomi, fikkFeilMotSkatteetaten))
+                .withSporsmal(skattbarInntektSporsmal(opplysninger, fikkFeilMotSkatteetaten))
                 .build();
     }
 
-    private ArrayList<Sporsmal> skattbarInntektSporsmal(JsonOkonomi okonomi, boolean fikkFeilMotSkatteetaten) {
-        var opplysninger = okonomi.getOpplysninger();
+    private ArrayList<Sporsmal> skattbarInntektSporsmal(JsonOkonomiopplysninger opplysninger, boolean fikkFeilMotSkatteetaten) {
         var harSkatteetatenSamtykke = harBekreftelseTrue(opplysninger, UTBETALING_SKATTEETATEN_SAMTYKKE);
 
         var sporsmal = new ArrayList<Sporsmal>();
