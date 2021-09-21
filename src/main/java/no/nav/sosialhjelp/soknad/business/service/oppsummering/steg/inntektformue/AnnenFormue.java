@@ -26,6 +26,8 @@ import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.innte
 
 public class AnnenFormue {
 
+    private static final List<String> formueTyper = Arrays.asList(VERDI_BOLIG, VERDI_CAMPINGVOGN, VERDI_KJORETOY, VERDI_FRITIDSEIENDOM, VERDI_ANNET);
+
     public Avsnitt getAvsnitt(JsonOkonomi okonomi) {
         var oversikt = okonomi.getOversikt();
         var opplysninger = okonomi.getOpplysninger();
@@ -39,7 +41,6 @@ public class AnnenFormue {
     private List<Sporsmal> annenFormueSporsmal(JsonOkonomioversikt oversikt, JsonOkonomiopplysninger opplysninger) {
         var harUtfyltAnnenFormueSporsmal = harBekreftelse(opplysninger, BEKREFTELSE_VERDI);
         var harSvartJaAnnenFormue = harBekreftelseTrue(opplysninger, BEKREFTELSE_VERDI);
-        var utbetalingTyper = Arrays.asList(VERDI_BOLIG, VERDI_CAMPINGVOGN, VERDI_KJORETOY, VERDI_FRITIDSEIENDOM, VERDI_ANNET);
 
         var sporsmal = new ArrayList<Sporsmal>();
         sporsmal.add(
@@ -51,7 +52,7 @@ public class AnnenFormue {
         );
 
         if (harSvartJaAnnenFormue) {
-            var harSvartHvaEierDuSporsmal = opplysninger.getUtbetaling().stream().noneMatch(utbetaling -> utbetalingTyper.contains(utbetaling.getType()));
+            var harSvartHvaEierDuSporsmal = oversikt.getFormue().stream().anyMatch(utbetaling -> formueTyper.contains(utbetaling.getType()));
             sporsmal.add(
                     new Sporsmal.Builder()
                             .withTittel("inntekt.eierandeler.true.type.sporsmal")
