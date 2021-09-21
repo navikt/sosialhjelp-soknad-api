@@ -85,8 +85,8 @@ class BostotteHusbankenTest {
                 createBekreftelse(BOSTOTTE_SAMTYKKE, true)
         ));
         opplysninger.setUtbetaling(List.of(
-                createUtbetaling(42, "2020-01-01"),
-                createUtbetaling(1000, "2020-02-02")
+                createUtbetaling(42.0, "2020-01-01"),
+                createUtbetaling(1000.0, "2020-02-02")
         ));
         opplysninger.setBostotte(
                 new JsonBostotte()
@@ -119,7 +119,7 @@ class BostotteHusbankenTest {
                 .hasSize(3)
                 .containsEntry("inntekt.bostotte.utbetaling.mottaker", "Husstand")
                 .containsEntry("inntekt.bostotte.utbetaling.utbetalingsdato", "2020-01-01")
-                .containsEntry("inntekt.bostotte.utbetaling.belop", "42");
+                .containsEntry("inntekt.bostotte.utbetaling.belop", "42.0");
 
         var utbetaling2 = husbankenUtbetalingerSporsmal.getFelt().get(1);
         assertThat(utbetaling2.getType()).isEqualTo(Type.SYSTEMDATA_MAP);
@@ -127,7 +127,7 @@ class BostotteHusbankenTest {
                 .hasSize(3)
                 .containsEntry("inntekt.bostotte.utbetaling.mottaker", "Husstand")
                 .containsEntry("inntekt.bostotte.utbetaling.utbetalingsdato", "2020-02-02")
-                .containsEntry("inntekt.bostotte.utbetaling.belop", "1000");
+                .containsEntry("inntekt.bostotte.utbetaling.belop", "1000.0");
 
         var sak1 = husbankenUtbetalingerSporsmal.getFelt().get(2);
         assertThat(sak1.getType()).isEqualTo(Type.SYSTEMDATA_MAP);
@@ -146,12 +146,12 @@ class BostotteHusbankenTest {
         return new JsonOkonomibekreftelse().withType(type).withVerdi(verdi);
     }
 
-    private JsonOkonomiOpplysningUtbetaling createUtbetaling(Integer belop, String utbetalingsdato) {
+    private JsonOkonomiOpplysningUtbetaling createUtbetaling(Double belop, String utbetalingsdato) {
         return new JsonOkonomiOpplysningUtbetaling()
                 .withKilde(JsonKilde.SYSTEM)
                 .withType(UTBETALING_HUSBANKEN)
                 .withMottaker(JsonOkonomiOpplysningUtbetaling.Mottaker.HUSSTAND)
                 .withUtbetalingsdato(utbetalingsdato)
-                .withBelop(belop);
+                .withNetto(belop);
     }
 }

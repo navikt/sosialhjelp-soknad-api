@@ -83,7 +83,7 @@ public class BostotteHusbanken {
                             var map = new LinkedHashMap<String, String>();
                             map.put("inntekt.bostotte.utbetaling.mottaker", utbetaling.getMottaker().value());
                             map.put("inntekt.bostotte.utbetaling.utbetalingsdato", utbetaling.getUtbetalingsdato());
-                            map.put("inntekt.bostotte.utbetaling.belop", utbetaling.getBelop().toString());
+                            map.put("inntekt.bostotte.utbetaling.belop", utbetaling.getNetto().toString());
 
                             felter.add(
                                     new Felt.Builder()
