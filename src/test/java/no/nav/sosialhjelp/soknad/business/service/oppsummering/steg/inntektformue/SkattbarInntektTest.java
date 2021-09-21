@@ -19,13 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class SkattbarInntektTest {
 
-    private SkattbarInntekt skattbarInntekt = new SkattbarInntekt();
-
-    // mangler samtykke
-    // feil mot skatt
-    // ingen skattbare inntekter
-    // 1 eller flere skattbare inntekter
-
+    private final SkattbarInntekt skattbarInntekt = new SkattbarInntekt();
 
     @Test
     void manglerSamtykke() {
