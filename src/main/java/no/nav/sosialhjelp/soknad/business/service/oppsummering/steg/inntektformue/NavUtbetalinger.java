@@ -51,7 +51,6 @@ public class NavUtbetalinger {
                 .filter(utbetaling -> UTBETALING_NAVYTELSE.equals(utbetaling.getType()))
                 .map(utbetaling -> {
                     var map = new LinkedHashMap<String, String>();
-                    // type, beløp (netto), beløp (brutto), utbetaltdato
                     map.put("utbetalinger.utbetaling.type.label", utbetaling.getTittel());
                     map.put("utbetalinger.utbetaling.netto.label", utbetaling.getNetto().toString());
                     map.put("utbetalinger.utbetaling.brutto.label", utbetaling.getBrutto().toString());
