@@ -28,10 +28,10 @@ class AndreInntekterTest {
 
         var avsnitt = andreInntekter.getAvsnitt(opplysninger);
         assertThat(avsnitt.getSporsmal()).hasSize(1);
-        var harInntekterSporsmal = avsnitt.getSporsmal().get(0);
-        assertThat(harInntekterSporsmal.getTittel()).isEqualTo("inntekt.inntekter.sporsmal");
-        assertThat(harInntekterSporsmal.getErUtfylt()).isFalse();
-        assertThat(harInntekterSporsmal.getFelt()).isNull();
+        var harAndreInntekterSporsmal = avsnitt.getSporsmal().get(0);
+        assertThat(harAndreInntekterSporsmal.getTittel()).isEqualTo("inntekt.inntekter.sporsmal");
+        assertThat(harAndreInntekterSporsmal.getErUtfylt()).isFalse();
+        assertThat(harAndreInntekterSporsmal.getFelt()).isNull();
     }
 
     @Test
