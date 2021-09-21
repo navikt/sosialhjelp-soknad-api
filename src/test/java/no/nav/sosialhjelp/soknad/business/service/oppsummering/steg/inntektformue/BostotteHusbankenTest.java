@@ -93,7 +93,9 @@ class BostotteHusbankenTest {
                         .withSaker(List.of(
                                 new JsonBostotteSak()
                                         .withDato("2020-01-01")
-                                        .withStatus("Under behandling")
+                                        .withStatus("Vedtatt")
+                                        .withVedtaksstatus(JsonBostotteSak.Vedtaksstatus.INNVILGET)
+                                        .withBeskrivelse("Ekstra info")
                         ))
         );
 
@@ -132,7 +134,7 @@ class BostotteHusbankenTest {
         assertThat(sak1.getLabelSvarMap())
                 .hasSize(2)
                 .containsEntry("inntekt.bostotte.sak.dato", "2020-01-01")
-                .containsEntry("inntekt.bostotte.sak.status", "Under behandling");
+                .containsEntry("inntekt.bostotte.sak.status", "INNVILGET: Ekstra info");
     }
 
     private JsonOkonomiopplysninger createOpplysninger(List<JsonOkonomibekreftelse> bekreftelser) {

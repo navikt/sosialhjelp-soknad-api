@@ -1,6 +1,7 @@
 package no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.inntektformue;
 
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonDriftsinformasjon;
+import no.nav.sbl.soknadsosialhjelp.soknad.bostotte.JsonBostotteSak;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Avsnitt;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Felt;
@@ -96,7 +97,7 @@ public class BostotteHusbanken {
                 .forEach(sak -> {
                             var map = new LinkedHashMap<String, String>();
                             map.put("inntekt.bostotte.sak.dato", sak.getDato());
-                            map.put("inntekt.bostotte.sak.status", sak.getStatus());
+                            map.put("inntekt.bostotte.sak.status", bostotteSakStatus(sak));
 
                             felter.add(
                                     new Felt.Builder()
@@ -107,6 +108,14 @@ public class BostotteHusbanken {
                         }
                 );
         return felter;
+    }
+
+    private String bostotteSakStatus(JsonBostotteSak sak) {
+        var status = sak.getVedtaksstatus() != null ? sak.getVedtaksstatus().value() : sak.getStatus();
+        if (sak.getBeskrivelse() != null && !sak.getBeskrivelse().isBlank()) {
+            status += String.format(": %s", sak.getBeskrivelse());
+        }
+        return status;
     }
 
     private List<Felt> manglerSamtykkeFelt() {
