@@ -42,7 +42,7 @@ public class AndreInntekter {
         );
 
         if (harSvartJaAndreInntekter) {
-            var harSvartHvaHarDuMottattSporsmal = opplysninger.getUtbetaling().stream().noneMatch(utbetaling -> utbetalingTyper.contains(utbetaling.getType()));
+            var harSvartHvaHarDuMottattSporsmal = opplysninger.getUtbetaling().stream().anyMatch(utbetaling -> utbetalingTyper.contains(utbetaling.getType()));
             sporsmal.add(
                     new Sporsmal.Builder()
                             .withTittel("inntekt.inntekter.true.type.sporsmal")
