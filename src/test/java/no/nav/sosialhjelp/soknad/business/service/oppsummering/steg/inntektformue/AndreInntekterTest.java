@@ -68,10 +68,10 @@ class AndreInntekterTest {
         assertThat(harAndreInntekterSvar.getType()).isEqualTo(Type.CHECKBOX);
         assertThat(harAndreInntekterSvar.getSvar()).isEqualTo("inntekt.inntekter.true");
 
-        var hvaEierDuSporsmal = avsnitt.getSporsmal().get(1);
-        assertThat(hvaEierDuSporsmal.getTittel()).isEqualTo("inntekt.inntekter.true.type.sporsmal");
-        assertThat(hvaEierDuSporsmal.getErUtfylt()).isFalse();
-        assertThat(hvaEierDuSporsmal.getFelt()).isNull();
+        var hvaHarDuMottattSporsmal = avsnitt.getSporsmal().get(1);
+        assertThat(hvaHarDuMottattSporsmal.getTittel()).isEqualTo("inntekt.inntekter.true.type.sporsmal");
+        assertThat(hvaHarDuMottattSporsmal.getErUtfylt()).isFalse();
+        assertThat(hvaHarDuMottattSporsmal.getFelt()).isNull();
     }
 
     @Test
@@ -94,14 +94,14 @@ class AndreInntekterTest {
         assertThat(harAndreInntekterSvar.getType()).isEqualTo(Type.CHECKBOX);
         assertThat(harAndreInntekterSvar.getSvar()).isEqualTo("inntekt.inntekter.true");
 
-        var hvaEierDuSporsmal = avsnitt.getSporsmal().get(1);
-        assertThat(hvaEierDuSporsmal.getTittel()).isEqualTo("inntekt.inntekter.true.type.sporsmal");
-        assertThat(hvaEierDuSporsmal.getErUtfylt()).isTrue();
-        assertThat(hvaEierDuSporsmal.getFelt()).hasSize(2);
-        assertThat(hvaEierDuSporsmal.getFelt().get(0).getType()).isEqualTo(Type.CHECKBOX);
-        assertThat(hvaEierDuSporsmal.getFelt().get(0).getSvar()).isEqualTo("json.okonomi.opplysninger.inntekt.inntekter.utbytte");
-        assertThat(hvaEierDuSporsmal.getFelt().get(1).getType()).isEqualTo(Type.CHECKBOX);
-        assertThat(hvaEierDuSporsmal.getFelt().get(1).getSvar()).isEqualTo("json.okonomi.opplysninger.inntekt.inntekter.salg");
+        var hvaHarDuMottattSporsmal = avsnitt.getSporsmal().get(1);
+        assertThat(hvaHarDuMottattSporsmal.getTittel()).isEqualTo("inntekt.inntekter.true.type.sporsmal");
+        assertThat(hvaHarDuMottattSporsmal.getErUtfylt()).isTrue();
+        assertThat(hvaHarDuMottattSporsmal.getFelt()).hasSize(2);
+        assertThat(hvaHarDuMottattSporsmal.getFelt().get(0).getType()).isEqualTo(Type.CHECKBOX);
+        assertThat(hvaHarDuMottattSporsmal.getFelt().get(0).getSvar()).isEqualTo("json.okonomi.opplysninger.inntekt.inntekter.utbytte");
+        assertThat(hvaHarDuMottattSporsmal.getFelt().get(1).getType()).isEqualTo(Type.CHECKBOX);
+        assertThat(hvaHarDuMottattSporsmal.getFelt().get(1).getSvar()).isEqualTo("json.okonomi.opplysninger.inntekt.inntekter.salg");
     }
 
     @Test
@@ -123,12 +123,12 @@ class AndreInntekterTest {
         assertThat(harAndreInntekterSvar.getType()).isEqualTo(Type.CHECKBOX);
         assertThat(harAndreInntekterSvar.getSvar()).isEqualTo("inntekt.inntekter.true");
 
-        var hvaEierDuSporsmal = avsnitt.getSporsmal().get(1);
-        assertThat(hvaEierDuSporsmal.getTittel()).isEqualTo("inntekt.inntekter.true.type.sporsmal");
-        assertThat(hvaEierDuSporsmal.getErUtfylt()).isTrue();
-        assertThat(hvaEierDuSporsmal.getFelt()).hasSize(1);
-        assertThat(hvaEierDuSporsmal.getFelt().get(0).getType()).isEqualTo(Type.CHECKBOX);
-        assertThat(hvaEierDuSporsmal.getFelt().get(0).getSvar()).isEqualTo("json.okonomi.opplysninger.inntekt.inntekter.annet");
+        var hvaHarDuMottattSporsmal = avsnitt.getSporsmal().get(1);
+        assertThat(hvaHarDuMottattSporsmal.getTittel()).isEqualTo("inntekt.inntekter.true.type.sporsmal");
+        assertThat(hvaHarDuMottattSporsmal.getErUtfylt()).isTrue();
+        assertThat(hvaHarDuMottattSporsmal.getFelt()).hasSize(1);
+        assertThat(hvaHarDuMottattSporsmal.getFelt().get(0).getType()).isEqualTo(Type.CHECKBOX);
+        assertThat(hvaHarDuMottattSporsmal.getFelt().get(0).getSvar()).isEqualTo("json.okonomi.opplysninger.inntekt.inntekter.annet");
 
         var annetBeskrivelseSporsmal = avsnitt.getSporsmal().get(2);
         assertThat(annetBeskrivelseSporsmal.getTittel()).isEqualTo("inntekt.inntekter.true.type.annet");
@@ -161,12 +161,12 @@ class AndreInntekterTest {
         assertThat(harAndreInntekterSvar.getType()).isEqualTo(Type.CHECKBOX);
         assertThat(harAndreInntekterSvar.getSvar()).isEqualTo("inntekt.inntekter.true");
 
-        var hvaEierDuSporsmal = avsnitt.getSporsmal().get(1);
-        assertThat(hvaEierDuSporsmal.getTittel()).isEqualTo("inntekt.inntekter.true.type.sporsmal");
-        assertThat(hvaEierDuSporsmal.getErUtfylt()).isTrue();
-        assertThat(hvaEierDuSporsmal.getFelt()).hasSize(1);
-        assertThat(hvaEierDuSporsmal.getFelt().get(0).getType()).isEqualTo(Type.CHECKBOX);
-        assertThat(hvaEierDuSporsmal.getFelt().get(0).getSvar()).isEqualTo("json.okonomi.opplysninger.inntekt.inntekter.annet");
+        var hvaHarDuMottattSporsmal = avsnitt.getSporsmal().get(1);
+        assertThat(hvaHarDuMottattSporsmal.getTittel()).isEqualTo("inntekt.inntekter.true.type.sporsmal");
+        assertThat(hvaHarDuMottattSporsmal.getErUtfylt()).isTrue();
+        assertThat(hvaHarDuMottattSporsmal.getFelt()).hasSize(1);
+        assertThat(hvaHarDuMottattSporsmal.getFelt().get(0).getType()).isEqualTo(Type.CHECKBOX);
+        assertThat(hvaHarDuMottattSporsmal.getFelt().get(0).getSvar()).isEqualTo("json.okonomi.opplysninger.inntekt.inntekter.annet");
 
         var annetBeskrivelseSporsmal = avsnitt.getSporsmal().get(2);
         assertThat(annetBeskrivelseSporsmal.getTittel()).isEqualTo("inntekt.inntekter.true.type.annet");
