@@ -31,7 +31,7 @@ public class BostotteHusbanken {
         var harUtfyltBostotteSporsmal = harBekreftelse(opplysninger, BOSTOTTE);
         var harSvartJaBostotte = harUtfyltBostotteSporsmal && harBekreftelseTrue(opplysninger, BOSTOTTE);
 
-        var harBostotteSamtykke = harUtfyltBostotteSporsmal && harBekreftelseTrue(opplysninger, BOSTOTTE_SAMTYKKE);
+        var harBostotteSamtykke = harSvartJaBostotte && harBekreftelseTrue(opplysninger, BOSTOTTE_SAMTYKKE);
         var fikkFeilMotHusbanken = Boolean.TRUE.equals(driftsinformasjon.getStotteFraHusbankenFeilet());
 
         var sporsmal = new ArrayList<Sporsmal>();
@@ -64,7 +64,7 @@ public class BostotteHusbanken {
                     new Sporsmal.Builder()
                             .withTittel("")
                             .withErUtfylt(true)
-                            .withFelt(harBostotteSamtykke ? bostotteFelter(opplysninger) : ikkeHentetBostotte())
+                            .withFelt(harBostotteSamtykke ? bostotteFelter(opplysninger) : manglerSamtykkeFelt())
                             .build()
             );
         return sporsmal;
@@ -109,7 +109,7 @@ public class BostotteHusbanken {
         return felter;
     }
 
-    private List<Felt> ikkeHentetBostotte() {
+    private List<Felt> manglerSamtykkeFelt() {
         return singletonList(
                 new Felt.Builder()
                         .withSvar("inntekt.bostotte.mangler_samtykke")
