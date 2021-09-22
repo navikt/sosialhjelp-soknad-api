@@ -55,8 +55,8 @@ public class OppsummeringService {
 //                        familiesituasjonSteg.get(jsonInternalSoknad),
                         bosituasjonSteg.get(jsonInternalSoknad),
 //                        inntektOgFormueSteg.get(jsonInternalSoknad),
-                        utgifterOgGjeldSteg.get(jsonInternalSoknad)//,
-//                        okonomiskeOpplysningerOgVedleggSteg.get(jsonInternalSoknad)
+                        utgifterOgGjeldSteg.get(jsonInternalSoknad),
+                        okonomiskeOpplysningerOgVedleggSteg.get(jsonInternalSoknad)
                 ));
     }
 
