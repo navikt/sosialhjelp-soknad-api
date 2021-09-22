@@ -111,7 +111,7 @@ public class PersonopplysningerSteg {
                                                         new Felt.Builder()
                                                                 .withLabel(adresseLabel(oppholdsadresse.getAdresseValg()))
                                                                 .withSvar(adresseSvar(oppholdsadresse))
-                                                                .withType(Type.CHECKBOX)
+                                                                .withType(JsonAdresseValg.SOKNAD.equals(oppholdsadresse.getAdresseValg()) ? Type.TEKST : Type.SYSTEMDATA)
                                                                 .build()
                                                 )
                                         )
