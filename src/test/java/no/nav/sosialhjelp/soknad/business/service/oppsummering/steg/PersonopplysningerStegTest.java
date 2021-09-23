@@ -80,7 +80,7 @@ class PersonopplysningerStegTest {
         var adresseFelt = res.getAvsnitt().get(1).getSporsmal().get(0).getFelt().get(0);
         assertThat(adresseFelt.getLabel()).isEqualTo("kontakt.system.oppholdsadresse.folkeregistrertAdresse");
         assertThat(adresseFelt.getSvar()).isEqualTo("gate 1B, 0123 poststed");
-        assertThat(adresseFelt.getType()).isEqualTo(Type.CHECKBOX);
+        assertThat(adresseFelt.getType()).isEqualTo(Type.SYSTEMDATA);
     }
 
     @Test
@@ -97,7 +97,7 @@ class PersonopplysningerStegTest {
         var adresseFelt = res.getAvsnitt().get(1).getSporsmal().get(0).getFelt().get(0);
         assertThat(adresseFelt.getLabel()).isEqualTo("kontakt.system.oppholdsadresse.folkeregistrertAdresse");
         assertThat(adresseFelt.getSvar()).isEqualTo("bruksnummer, kommunenr");
-        assertThat(adresseFelt.getType()).isEqualTo(Type.CHECKBOX);
+        assertThat(adresseFelt.getType()).isEqualTo(Type.SYSTEMDATA);
     }
 
     @Test
@@ -116,7 +116,7 @@ class PersonopplysningerStegTest {
         var adresseFelt = res.getAvsnitt().get(1).getSporsmal().get(0).getFelt().get(0);
         assertThat(adresseFelt.getLabel()).isEqualTo("kontakt.system.oppholdsadresse.midlertidigAdresse");
         assertThat(adresseFelt.getSvar()).isEqualTo("gate 1, 0123 poststed");
-        assertThat(adresseFelt.getType()).isEqualTo(Type.CHECKBOX);
+        assertThat(adresseFelt.getType()).isEqualTo(Type.SYSTEMDATA);
     }
 
     @Test
@@ -135,7 +135,7 @@ class PersonopplysningerStegTest {
         var adresseFelt = res.getAvsnitt().get(1).getSporsmal().get(0).getFelt().get(0);
         assertThat(adresseFelt.getLabel()).isEqualTo("kontakt.system.oppholdsadresse.valg.soknad");
         assertThat(adresseFelt.getSvar()).isEqualTo("gate 1, 0123 poststed");
-        assertThat(adresseFelt.getType()).isEqualTo(Type.CHECKBOX);
+        assertThat(adresseFelt.getType()).isEqualTo(Type.TEKST);
     }
 
     @Test
