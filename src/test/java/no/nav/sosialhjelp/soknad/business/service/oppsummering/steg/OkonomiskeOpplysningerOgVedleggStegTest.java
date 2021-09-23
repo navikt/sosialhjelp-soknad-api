@@ -7,8 +7,10 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomioversikt;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtgift;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktFormue;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktInntekt;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktUtgift;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon;
 import org.junit.jupiter.api.Test;
 
@@ -23,6 +25,12 @@ import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.SLUTTOPPGJOER;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.STUDIELAN;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_FORSIKRING;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_NAVYTELSE;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTGIFTER_ANDRE_UTGIFTER;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTGIFTER_BARNEHAGE;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTGIFTER_BARN_FRITIDSAKTIVITETER;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTGIFTER_BOLIGLAN_AVDRAG;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTGIFTER_HUSLEIE;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTGIFTER_STROM;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
@@ -105,6 +113,39 @@ class OkonomiskeOpplysningerOgVedleggStegTest {
         assertThat(steg.getAvsnitt().get(0).getSporsmal().get(1).getErUtfylt()).isFalse();
     }
 
+    @Test
+    void utgifter() {
+        var soknad = createSoknad();
+        soknad.getSoknad().getData().getOkonomi().getOpplysninger()
+                .setUtgift(List.of(
+                        createOpplysningUtgift(UTGIFTER_BARN_FRITIDSAKTIVITETER, 42), // skal filtreres vekk
+                        createOpplysningUtgift(UTGIFTER_STROM, 111),
+                        createOpplysningUtgift(UTGIFTER_ANDRE_UTGIFTER, null)
+                ));
+
+        soknad.getSoknad().getData().getOkonomi().getOversikt()
+                .setUtgift(List.of(
+                        createOversiktUtgift(UTGIFTER_BARNEHAGE, 42), // skal filtreres vekk
+                        createOversiktUtgift(UTGIFTER_HUSLEIE, 111),
+                        createOversiktUtgift(BARNEBIDRAG, 111),
+                        createOversiktUtgift(UTGIFTER_BOLIGLAN_AVDRAG, null)
+                ));
+
+        var steg = okonomiskeOpplysningerOgVedleggSteg.get(soknad);
+
+        assertThat(steg.getAvsnitt()).hasSize(3);
+        var utgifterAvsnitt = steg.getAvsnitt().get(1);
+        assertThat(utgifterAvsnitt.getTittel()).isEqualTo("utgifterbolk.tittel");
+        assertThat(utgifterAvsnitt.getSporsmal()).hasSize(7);
+        assertThat(utgifterAvsnitt.getSporsmal().get(0).getErUtfylt()).isTrue();
+        assertThat(utgifterAvsnitt.getSporsmal().get(1).getErUtfylt()).isTrue();
+        assertThat(utgifterAvsnitt.getSporsmal().get(2).getErUtfylt()).isFalse();
+        assertThat(utgifterAvsnitt.getSporsmal().get(3).getErUtfylt()).isTrue();
+        assertThat(utgifterAvsnitt.getSporsmal().get(4).getErUtfylt()).isTrue();
+        assertThat(utgifterAvsnitt.getSporsmal().get(5).getErUtfylt()).isTrue();
+        assertThat(utgifterAvsnitt.getSporsmal().get(6).getErUtfylt()).isFalse();
+    }
+
     private JsonOkonomioversiktInntekt createInntekt(String type, Integer netto) {
         return new JsonOkonomioversiktInntekt()
                 .withType(type)
@@ -122,6 +163,19 @@ class OkonomiskeOpplysningerOgVedleggStegTest {
                 .withType(type)
                 .withBelop(belop);
     }
+
+    private JsonOkonomiOpplysningUtgift createOpplysningUtgift(String type, Integer belop) {
+        return new JsonOkonomiOpplysningUtgift()
+                .withType(type)
+                .withBelop(belop);
+    }
+
+    private JsonOkonomioversiktUtgift createOversiktUtgift(String type, Integer belop) {
+        return new JsonOkonomioversiktUtgift()
+                .withType(type)
+                .withBelop(belop);
+    }
+
 
     public JsonInternalSoknad createSoknad() {
         return new JsonInternalSoknad()
