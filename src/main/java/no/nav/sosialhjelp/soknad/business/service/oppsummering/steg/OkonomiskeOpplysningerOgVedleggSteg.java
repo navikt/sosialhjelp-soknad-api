@@ -99,15 +99,15 @@ public class OkonomiskeOpplysningerOgVedleggSteg {
             inntekter.stream()
                     .filter(it -> JOBB.equals(it.getType()))
                     .forEach(it -> {
-                                sporsmal.add(integerVerdiSporsmalMedTittel(soknadTypeToTitleKey.get(it.getType()), "opplysninger.arbeid.jobb.bruttolonn.label", it.getBrutto()));
-                                sporsmal.add(integerVerdiSporsmalMedTittel(soknadTypeToTitleKey.get(it.getType()), "opplysninger.arbeid.jobb.nettolonn.label", it.getNetto()));
+                                sporsmal.add(integerVerdiSporsmalMedTittel(getTitleKey(it.getType()), "opplysninger.arbeid.jobb.bruttolonn.label", it.getBrutto()));
+                                sporsmal.add(integerVerdiSporsmalMedTittel(getTitleKey(it.getType()), "opplysninger.arbeid.jobb.nettolonn.label", it.getNetto()));
                             }
                     );
 
             // Studielån
             inntekter.stream()
                     .filter(it -> STUDIELAN.equals(it.getType()))
-                    .forEach(it -> sporsmal.add(integerVerdiSporsmalMedTittel(soknadTypeToTitleKey.get(it.getType()), "opplysninger.arbeid.student.utbetaling.label", it.getNetto())));
+                    .forEach(it -> sporsmal.add(integerVerdiSporsmalMedTittel(getTitleKey(it.getType()), "opplysninger.arbeid.student.utbetaling.label", it.getNetto())));
 
             // Barnebidrag
             inntekter.stream()
@@ -126,7 +126,7 @@ public class OkonomiskeOpplysningerOgVedleggSteg {
         if (isNotEmpty(formuer)) {
             formuer.stream()
                     .filter(it -> formueTyper.contains(it.getType()))
-                    .forEach(it -> sporsmal.add(integerVerdiSporsmalMedTittel(soknadTypeToTitleKey.get(it.getType()), "opplysninger.inntekt.bankinnskudd." + it.getType() + ".saldo.label", it.getBelop())));
+                    .forEach(it -> sporsmal.add(integerVerdiSporsmalMedTittel(getTitleKey(it.getType()), "opplysninger.inntekt.bankinnskudd." + it.getType() + ".saldo.label", it.getBelop())));
         }
     }
 
@@ -139,11 +139,11 @@ public class OkonomiskeOpplysningerOgVedleggSteg {
 
             filteredUtbetalinger.stream()
                     .filter(it -> SLUTTOPPGJOER.equals(it.getType()))
-                    .forEach(it -> sporsmal.add(integerVerdiSporsmalMedTittel(soknadTypeToTitleKey.get(it.getType()), "opplysninger.arbeid.avsluttet.netto.label", it.getBelop())));
+                    .forEach(it -> sporsmal.add(integerVerdiSporsmalMedTittel(getTitleKey(it.getType()), "opplysninger.arbeid.avsluttet.netto.label", it.getBelop())));
 
             filteredUtbetalinger.stream()
                     .filter(it -> !SLUTTOPPGJOER.equals(it.getType()))
-                    .forEach(it -> sporsmal.add(integerVerdiSporsmalMedTittel(soknadTypeToTitleKey.get(it.getType()), "opplysninger.inntekt.inntekter." + it.getType() + ".sum.label", it.getBelop())));
+                    .forEach(it -> sporsmal.add(integerVerdiSporsmalMedTittel(getTitleKey(it.getType()), "opplysninger.inntekt.inntekter." + it.getType() + ".sum.label", it.getBelop())));
         }
     }
 
@@ -154,38 +154,38 @@ public class OkonomiskeOpplysningerOgVedleggSteg {
         if (isNotEmpty(opplysningUtgifter)) {
             opplysningUtgifter.stream()
                     .filter(it -> barneutgifter.contains(it.getType()))
-                    .forEach(it -> sporsmal.add(integerVerdiSporsmalMedTittel(soknadTypeToTitleKey.get(it.getType()), "opplysninger.utgifter.barn." + it.getType() + ".sisteregning.label", it.getBelop())));
+                    .forEach(it -> sporsmal.add(integerVerdiSporsmalMedTittel(getTitleKey(it.getType()), "opplysninger.utgifter.barn." + it.getType() + ".sisteregning.label", it.getBelop())));
 
             opplysningUtgifter.stream()
                     .filter(it -> boutgifter.contains(it.getType()))
-                    .forEach(it -> sporsmal.add(integerVerdiSporsmalMedTittel(soknadTypeToTitleKey.get(it.getType()), "opplysninger.utgifter.boutgift." + it.getType() + ".sisteregning.label", it.getBelop())));
+                    .forEach(it -> sporsmal.add(integerVerdiSporsmalMedTittel(getTitleKey(it.getType()), "opplysninger.utgifter.boutgift." + it.getType() + ".sisteregning.label", it.getBelop())));
 
             opplysningUtgifter.stream()
                     .filter(it -> UTGIFTER_ANDRE_UTGIFTER.equals(it.getType()))
-                    .forEach(it -> sporsmal.add(integerVerdiSporsmalMedTittel(soknadTypeToTitleKey.get(it.getType()), "opplysninger.ekstrainfo.utgifter.utgift.label", it.getBelop())));
+                    .forEach(it -> sporsmal.add(integerVerdiSporsmalMedTittel(getTitleKey(it.getType()), "opplysninger.ekstrainfo.utgifter.utgift.label", it.getBelop())));
         }
 
         var oversiktUtgifter = okonomi.getOversikt().getUtgift();
         if (isNotEmpty(oversiktUtgifter)) {
             oversiktUtgifter.stream()
                     .filter(it -> barneutgifter.contains(it.getType()))
-                    .forEach(it -> sporsmal.add(integerVerdiSporsmalMedTittel(soknadTypeToTitleKey.get(it.getType()), "opplysninger.utgifter.barn." + it.getType() + ".sistemnd.label", it.getBelop())));
+                    .forEach(it -> sporsmal.add(integerVerdiSporsmalMedTittel(getTitleKey(it.getType()), "opplysninger.utgifter.barn." + it.getType() + ".sistemnd.label", it.getBelop())));
 
             oversiktUtgifter.stream()
                     .filter(it -> BARNEBIDRAG.equals(it.getType()))
-                    .forEach(it -> sporsmal.add(integerVerdiSporsmalMedTittel(soknadTypeToTitleKey.get(it.getType()), "opplysninger.familiesituasjon.barnebidrag.betaler.betaler.label", it.getBelop())));
+                    .forEach(it -> sporsmal.add(integerVerdiSporsmalMedTittel(getTitleKey(it.getType()), "opplysninger.familiesituasjon.barnebidrag.betaler.betaler.label", it.getBelop())));
 
             oversiktUtgifter.stream()
                     .filter(it -> UTGIFTER_HUSLEIE.equals(it.getType()))
-                    .forEach(it -> sporsmal.add(integerVerdiSporsmalMedTittel(soknadTypeToTitleKey.get(it.getType()), "opplysninger.utgifter.boutgift.husleie.permnd.label", it.getBelop())));
+                    .forEach(it -> sporsmal.add(integerVerdiSporsmalMedTittel(getTitleKey(it.getType()), "opplysninger.utgifter.boutgift.husleie.permnd.label", it.getBelop())));
 
             oversiktUtgifter.stream()
                     .filter(it -> UTGIFTER_BOLIGLAN_AVDRAG.equals(it.getType()))
-                    .forEach(it -> sporsmal.add(integerVerdiSporsmalMedTittel(soknadTypeToTitleKey.get(it.getType()), "opplysninger.utgifter.boutgift.avdraglaan.avdrag.label", it.getBelop())));
+                    .forEach(it -> sporsmal.add(integerVerdiSporsmalMedTittel(getTitleKey(it.getType()), "opplysninger.utgifter.boutgift.avdraglaan.avdrag.label", it.getBelop())));
 
             oversiktUtgifter.stream()
                     .filter(it -> UTGIFTER_BOLIGLAN_RENTER.equals(it.getType()))
-                    .forEach(it -> sporsmal.add(integerVerdiSporsmalMedTittel(soknadTypeToTitleKey.get(it.getType()), "opplysninger.utgifter.boutgift.avdraglaan.renter.label", it.getBelop())));
+                    .forEach(it -> sporsmal.add(integerVerdiSporsmalMedTittel(getTitleKey(it.getType()), "opplysninger.utgifter.boutgift.avdraglaan.renter.label", it.getBelop())));
         }
 
         return sporsmal;
@@ -237,5 +237,9 @@ public class OkonomiskeOpplysningerOgVedleggSteg {
                     .build();
         }
         return singletonList(felt);
+    }
+
+    private String getTitleKey(String type) {
+        return "json.okonomi." + soknadTypeToTitleKey.get(type);
     }
 }
