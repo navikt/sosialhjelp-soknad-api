@@ -46,6 +46,7 @@ class ArbeidOgUtdanningStegTest {
 
         assertThat(res.getAvsnitt()).hasSize(2);
         assertThat(res.getAvsnitt().get(0).getSporsmal()).hasSize(1);
+
         var arbeidsforholdSporsmal = res.getAvsnitt().get(0).getSporsmal().get(0);
         assertThat(arbeidsforholdSporsmal.getTittel()).isEqualTo("arbeidsforhold.infotekst");
         assertThat(arbeidsforholdSporsmal.getErUtfylt()).isTrue();
