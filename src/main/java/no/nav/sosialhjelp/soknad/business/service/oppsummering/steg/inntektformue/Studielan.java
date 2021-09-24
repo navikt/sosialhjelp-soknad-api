@@ -29,7 +29,10 @@ public class Studielan {
                 new Sporsmal.Builder()
                         .withTittel("inntekt.studielan.sporsmal")
                         .withErUtfylt(harUtfyltStudielanSporsmal)
-                        .withFelt(harUtfyltStudielanSporsmal ? booleanVerdiFelt(harSvartJaStudielan, "inntekt.studielan.true", "inntekt.studielan.false") : null)
+                        .withFelt(harUtfyltStudielanSporsmal ?
+                                booleanVerdiFelt(harSvartJaStudielan, "inntekt.studielan.true", "inntekt.studielan.false") :
+                                null
+                        )
                         .build()
         );
     }

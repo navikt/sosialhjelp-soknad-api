@@ -51,7 +51,7 @@ public class BostotteHusbanken {
         if (harSvartJaBostotte && fikkFeilMotHusbanken) {
             sporsmal.add(
                     new Sporsmal.Builder()
-                            .withTittel("Vi fikk ikke hentet opplysninger fra Husbanken") // Vi fikk ikke hentet opplysninger fra Husbanken
+                            .withTittel("inntekt.bostotte.kontaktproblemer")
                             .build()
             );
         }
