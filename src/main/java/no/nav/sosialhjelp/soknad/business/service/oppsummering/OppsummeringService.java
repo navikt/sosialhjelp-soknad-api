@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.business.service.oppsummering;
 
+import no.nav.sosialhjelp.soknad.business.db.repositories.opplastetvedlegg.OpplastetVedleggRepository;
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository;
 import no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.ArbeidOgUtdanningSteg;
 import no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.BegrunnelseSteg;
@@ -19,6 +20,7 @@ import java.util.Arrays;
 public class OppsummeringService {
 
     private final SoknadUnderArbeidRepository soknadUnderArbeidRepository;
+    private final OpplastetVedleggRepository opplastetVedleggRepository;
 
     private final PersonopplysningerSteg personopplysningerSteg;
     private final BegrunnelseSteg begrunnelseSteg;
@@ -30,9 +32,11 @@ public class OppsummeringService {
     private final OkonomiskeOpplysningerOgVedleggSteg okonomiskeOpplysningerOgVedleggSteg;
 
     public OppsummeringService(
-            SoknadUnderArbeidRepository soknadUnderArbeidRepository
+            SoknadUnderArbeidRepository soknadUnderArbeidRepository,
+            OpplastetVedleggRepository opplastetVedleggRepository
     ) {
         this.soknadUnderArbeidRepository = soknadUnderArbeidRepository;
+        this.opplastetVedleggRepository = opplastetVedleggRepository;
 
         this.personopplysningerSteg = new PersonopplysningerSteg();
         this.begrunnelseSteg = new BegrunnelseSteg();
@@ -46,6 +50,8 @@ public class OppsummeringService {
 
     public Oppsummering hentOppsummering(String fnr, String behandlingsId) {
         var soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, fnr);
+        var opplastedeVedlegg = opplastetVedleggRepository.hentVedleggForSoknad(soknadUnderArbeid.getSoknadId(), fnr);
+
         var jsonInternalSoknad = soknadUnderArbeid.getJsonInternalSoknad();
         return new Oppsummering(
                 Arrays.asList(
@@ -55,8 +61,8 @@ public class OppsummeringService {
                         familiesituasjonSteg.get(jsonInternalSoknad),
                         bosituasjonSteg.get(jsonInternalSoknad),
                         inntektOgFormueSteg.get(jsonInternalSoknad),
-                        utgifterOgGjeldSteg.get(jsonInternalSoknad)//,
-//                        okonomiskeOpplysningerOgVedleggSteg.get(jsonInternalSoknad)
+                        utgifterOgGjeldSteg.get(jsonInternalSoknad),
+                        okonomiskeOpplysningerOgVedleggSteg.get(jsonInternalSoknad, opplastedeVedlegg)
                 ));
     }
 
