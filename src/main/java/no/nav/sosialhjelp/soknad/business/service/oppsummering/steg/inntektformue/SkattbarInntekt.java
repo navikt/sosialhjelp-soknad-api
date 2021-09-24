@@ -47,7 +47,8 @@ public class SkattbarInntekt {
         if (harSkatteetatenSamtykke && fikkFeilMotSkatteetaten) {
             sporsmal.add(
                     new Sporsmal.Builder()
-                            .withTittel("Vi fikk ikke hentet opplysninger fra Skatteetaten") // Vi fikk ikke hentet opplysninger fra Skatteetaten
+                            .withTittel("utbetalinger.skattbar.kontaktproblemer.oppsummering")
+                            .withErUtfylt(true)
                             .build()
             );
         }

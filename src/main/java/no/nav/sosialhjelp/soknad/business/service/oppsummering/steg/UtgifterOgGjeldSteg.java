@@ -45,11 +45,11 @@ public class UtgifterOgGjeldSteg {
 
         return new Steg.Builder()
                 .withStegNr(7)
-                .withTittel("utgifterbolk.tittel") // Utgifter og gjeld
+                .withTittel("utgifterbolk.tittel")
                 .withAvsnitt(
                         singletonList(
                                 new Avsnitt.Builder()
-                                        .withTittel("utgifterbolk.tittel") // Utgifter og gjeld
+                                        .withTittel("utgifter.tittel")
                                         .withSporsmal(alleSporsmal)
                                         .build()
                         )

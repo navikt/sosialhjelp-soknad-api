@@ -23,7 +23,7 @@ public class BosituasjonSteg {
                 .withAvsnitt(
                         singletonList(
                                 new Avsnitt.Builder()
-                                        .withTittel("bosituasjonbolk.tittel") // skal være "din bosituasjon"
+                                        .withTittel("bosituasjon.tittel")
                                         .withSporsmal(bosituasjonSporsmal(bosituasjon))
                                         .build()
                         )
@@ -36,7 +36,7 @@ public class BosituasjonSteg {
         var harUtfyltHvorMangeBorSammen = bosituasjon != null && bosituasjon.getAntallPersoner() != null;
 
         var hvordanBorDuSporsmal = new Sporsmal.Builder()
-                .withTittel("bosituasjon.sporsmal") // hvordan bor du
+                .withTittel("bosituasjon.sporsmal")
                 .withErUtfylt(harUtfyltHvorBorDu)
                 .withFelt(harUtfyltHvorBorDu ?
                         singletonList(
@@ -50,7 +50,7 @@ public class BosituasjonSteg {
                 .build();
 
         var hvorMangeBorSammenSporsmal = new Sporsmal.Builder()
-                .withTittel("bosituasjon.sporsmal") // hvordan bor du
+                .withTittel("bosituasjon.antallpersoner.sporsmal")
                 .withErUtfylt(harUtfyltHvorMangeBorSammen)
                 .withFelt(harUtfyltHvorMangeBorSammen ?
                         singletonList(
