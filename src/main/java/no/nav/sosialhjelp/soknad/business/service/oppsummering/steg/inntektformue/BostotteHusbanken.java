@@ -16,6 +16,7 @@ import static java.util.Collections.singletonList;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.BOSTOTTE;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.BOSTOTTE_SAMTYKKE;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_HUSBANKEN;
+import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.StegUtils.booleanVerdiFelt;
 import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.inntektformue.InntektFormueUtils.harBekreftelse;
 import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.inntektformue.InntektFormueUtils.harBekreftelseTrue;
 
@@ -41,12 +42,7 @@ public class BostotteHusbanken {
                         .withTittel("inntekt.bostotte.sporsmal.sporsmal")
                         .withErUtfylt(harUtfyltBostotteSporsmal)
                         .withFelt(harUtfyltBostotteSporsmal ?
-                                singletonList(
-                                        new Felt.Builder()
-                                                .withSvar(bostotteSvar(harSvartJaBostotte))
-                                                .withType(Type.CHECKBOX)
-                                                .build()
-                                ) :
+                                booleanVerdiFelt(harSvartJaBostotte, "inntekt.bostotte.sporsmal.true", "inntekt.bostotte.sporsmal.false") :
                                 null
                         )
                         .build()
@@ -69,10 +65,6 @@ public class BostotteHusbanken {
                             .build()
             );
         return sporsmal;
-    }
-
-    private String bostotteSvar(boolean harSoktEllerMottattBostotte) {
-        return harSoktEllerMottattBostotte ? "inntekt.bostotte.sporsmal.true" : "inntekt.bostotte.sporsmal.false";
     }
 
     private List<Felt> bostotteFelter(JsonOkonomiopplysninger opplysninger) {

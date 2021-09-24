@@ -16,6 +16,7 @@ import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_ANNET
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_FORSIKRING;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_SALG;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_UTBYTTE;
+import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.StegUtils.booleanVerdiFelt;
 import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.inntektformue.InntektFormueUtils.harBekreftelse;
 import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.inntektformue.InntektFormueUtils.harBekreftelseTrue;
 
@@ -37,7 +38,10 @@ public class AndreInntekter {
                 new Sporsmal.Builder()
                         .withTittel("inntekt.inntekter.sporsmal")
                         .withErUtfylt(harUtfyltAndreInntekterSporsmal)
-                        .withFelt(harUtfyltAndreInntekterSporsmal ? andreInntekterFelt(harSvartJaAndreInntekter) : null)
+                        .withFelt(harUtfyltAndreInntekterSporsmal ?
+                                booleanVerdiFelt(harSvartJaAndreInntekter, "inntekt.inntekter.true", "inntekt.inntekter.false") :
+                                null
+                        )
                         .build()
         );
 
@@ -67,15 +71,6 @@ public class AndreInntekter {
             }
         }
         return sporsmal;
-    }
-
-    private List<Felt> andreInntekterFelt(boolean harSvartJaAndreInntekter) {
-        return singletonList(
-                new Felt.Builder()
-                        .withType(Type.CHECKBOX)
-                        .withSvar(harSvartJaAndreInntekter ? "inntekt.inntekter.true" : "inntekt.inntekter.false")
-                        .build()
-        );
     }
 
     private List<Felt> andreinntekterFelter(JsonOkonomiopplysninger opplysninger) {

@@ -47,6 +47,7 @@ import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTGIFTER_OPPVARM
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTGIFTER_SFO;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTGIFTER_STROM;
 import static no.nav.sosialhjelp.soknad.business.mappers.TitleKeyMapper.soknadTypeToTitleKey;
+import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.StegUtils.integerVerdiSporsmalMedTittel;
 
 
 public class OkonomiskeOpplysningerOgVedleggSteg {
@@ -191,14 +192,6 @@ public class OkonomiskeOpplysningerOgVedleggSteg {
         }
 
         return sporsmal;
-    }
-
-    private Sporsmal integerVerdiSporsmalMedTittel(String tittel, String key, Integer verdi) {
-        return new Sporsmal.Builder()
-                .withTittel(tittel)
-                .withErUtfylt(verdi != null)
-                .withFelt(verdi != null ? singletonList(new Felt.Builder().withLabel(key).withSvar(verdi.toString()).withType(Type.TEKST).build()) : null)
-                .build();
     }
 
     private List<Sporsmal> vedleggSporsmal(JsonVedleggSpesifikasjon vedleggSpesifikasjon, List<OpplastetVedlegg> opplastedeVedlegg) {

@@ -17,6 +17,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import static java.util.Collections.singletonList;
+import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.StegUtils.booleanVerdiFelt;
 import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.StegUtils.fulltnavn;
 import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.StegUtils.isNotNullOrEmtpy;
 
@@ -285,19 +286,15 @@ public class FamiliesituasjonSteg {
 
     private Sporsmal deltBostedSporsmal(JsonAnsvar barn) {
         var harUtfyltDeltBostedSporsmal = barn.getHarDeltBosted() != null && barn.getHarDeltBosted().getVerdi() != null;
-        var svar = harUtfyltDeltBostedSporsmal && Boolean.TRUE.equals(barn.getHarDeltBosted().getVerdi()) ? "system.familie.barn.true.barn.deltbosted.true" : "system.familie.barn.true.barn.deltbosted.false";
+        var harSvartJaDeltBosted = harUtfyltDeltBostedSporsmal && Boolean.TRUE.equals(barn.getHarDeltBosted().getVerdi());
 
         return new Sporsmal.Builder()
                 .withTittel("system.familie.barn.true.barn.deltbosted.sporsmal")
                 .withErUtfylt(harUtfyltDeltBostedSporsmal)
                 .withFelt(harUtfyltDeltBostedSporsmal ?
-                        singletonList(
-                                new Felt.Builder()
-                                        .withSvar(svar)
-                                        .withType(Type.CHECKBOX)
-                                        .build()
-                        ) :
-                        null)
+                        booleanVerdiFelt(harSvartJaDeltBosted, "system.familie.barn.true.barn.deltbosted.true", "system.familie.barn.true.barn.deltbosted.false") :
+                        null
+                )
                 .build();
 
     }

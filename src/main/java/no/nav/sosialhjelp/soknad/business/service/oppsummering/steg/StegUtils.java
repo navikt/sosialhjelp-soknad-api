@@ -1,10 +1,16 @@
 package no.nav.sosialhjelp.soknad.business.service.oppsummering.steg;
 
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonNavn;
+import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Felt;
+import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Sporsmal;
+import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Type;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static java.util.Collections.singletonList;
 
 public final class StegUtils {
 
@@ -25,5 +31,22 @@ public final class StegUtils {
 
     public static boolean isNotNullOrEmtpy(String s) {
         return s != null && !s.isEmpty();
+    }
+
+    public static Sporsmal integerVerdiSporsmalMedTittel(String tittel, String key, Integer verdi) {
+        return new Sporsmal.Builder()
+                .withTittel(tittel)
+                .withErUtfylt(verdi != null)
+                .withFelt(verdi != null ? singletonList(new Felt.Builder().withLabel(key).withSvar(verdi.toString()).withType(Type.TEKST).build()) : null)
+                .build();
+    }
+
+    public static List<Felt> booleanVerdiFelt(boolean harSvartJa, String keyTrue, String keyFalse) {
+        return singletonList(
+                new Felt.Builder()
+                        .withType(Type.CHECKBOX)
+                        .withSvar(harSvartJa ? keyTrue : keyFalse)
+                        .build()
+        );
     }
 }

@@ -29,6 +29,7 @@ import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTGIFTER_KOMMUNA
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTGIFTER_OPPVARMING;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTGIFTER_SFO;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTGIFTER_STROM;
+import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.StegUtils.booleanVerdiFelt;
 
 public class UtgifterOgGjeldSteg {
 
@@ -67,7 +68,10 @@ public class UtgifterOgGjeldSteg {
                 new Sporsmal.Builder()
                         .withTittel("utgifter.boutgift.sporsmal")
                         .withErUtfylt(erBoutgifterUtfylt)
-                        .withFelt(erBoutgifterUtfylt ? harBoutgifterFelt(harBoutgifter) : null)
+                        .withFelt(erBoutgifterUtfylt ?
+                                booleanVerdiFelt(harBoutgifter, "utgifter.boutgift.true", "utgifter.boutgift.false") :
+                                null
+                        )
                         .build()
         );
 
@@ -105,7 +109,10 @@ public class UtgifterOgGjeldSteg {
                 new Sporsmal.Builder()
                         .withTittel("utgifter.barn.sporsmal")
                         .withErUtfylt(erBarneutgifterUtfylt)
-                        .withFelt(erBarneutgifterUtfylt ? harBarneutgifterFelt(harBarneutgifter) : null)
+                        .withFelt(erBarneutgifterUtfylt ?
+                                booleanVerdiFelt(harBarneutgifter, "utgifter.barn.true", "utgifter.barn.false") :
+                                null
+                        )
                         .build()
         );
 
@@ -130,24 +137,6 @@ public class UtgifterOgGjeldSteg {
         }
 
         return sporsmalList;
-    }
-
-    private List<Felt> harBoutgifterFelt(boolean harBoutgifter) {
-        return singletonList(
-                new Felt.Builder()
-                        .withSvar(harBoutgifter ? "utgifter.boutgift.true" : "utgifter.boutgift.false")
-                        .withType(Type.CHECKBOX)
-                        .build()
-        );
-    }
-
-    private List<Felt> harBarneutgifterFelt(boolean harBarneutgifter) {
-        return singletonList(
-                new Felt.Builder()
-                        .withSvar(harBarneutgifter ? "utgifter.barn.true" : "utgifter.barn.false")
-                        .withType(Type.CHECKBOX)
-                        .build()
-        );
     }
 
     private void addOpplysningUtgiftIfPresent(List<Felt> felter, List<JsonOkonomiOpplysningUtgift> utgifter, String type, String key) {
