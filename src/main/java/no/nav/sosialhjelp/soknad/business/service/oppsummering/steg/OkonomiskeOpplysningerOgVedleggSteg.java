@@ -162,7 +162,7 @@ public class OkonomiskeOpplysningerOgVedleggSteg {
 
             opplysningUtgifter.stream()
                     .filter(it -> UTGIFTER_ANDRE_UTGIFTER.equals(it.getType()))
-                    .forEach(it -> sporsmal.add(integerVerdiSporsmalMedTittel(getTitleKey(it.getType()), "opplysninger.ekstrainfo.utgifter.utgift.label", it.getBelop())));
+                    .forEach(it -> sporsmal.add(integerVerdiSporsmalMedTittel(it.getTittel(), "opplysninger.ekstrainfo.utgifter.utgift.label", it.getBelop())));
         }
 
         var oversiktUtgifter = okonomi.getOversikt().getUtgift();
@@ -204,7 +204,7 @@ public class OkonomiskeOpplysningerOgVedleggSteg {
                 .map(it -> new Sporsmal.Builder()
                         .withTittel(getTittelFrom(it.getType(), it.getTilleggsinfo()))
                         .withErUtfylt(true) // evt null
-                        .withFelt(getFelter(it))
+                        .withFelt(vedleggFelter(it))
                         .build()
                 )
                 .collect(Collectors.toList());
@@ -214,10 +214,11 @@ public class OkonomiskeOpplysningerOgVedleggSteg {
         return String.format("vedlegg.%s.%s.tittel", type, tilleggsinfo);
     }
 
-    private List<Felt> getFelter(JsonVedlegg vedlegg) {
+    private List<Felt> vedleggFelter(JsonVedlegg vedlegg) {
         Felt felt;
         if ("LastetOpp".equals(vedlegg.getStatus()) && isNotEmpty(vedlegg.getFiler())) {
             felt = new Felt.Builder()
+                    .withType(Type.VEDLEGG)
                     .withVedlegg(
                             vedlegg.getFiler().stream()
                                     .map(it -> new Vedlegg.Builder()

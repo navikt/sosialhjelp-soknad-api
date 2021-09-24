@@ -11,7 +11,10 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysn
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktFormue;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktInntekt;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktUtgift;
+import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler;
+import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon;
+import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Type;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -146,6 +149,46 @@ class OkonomiskeOpplysningerOgVedleggStegTest {
         assertThat(utgifterAvsnitt.getSporsmal().get(6).getErUtfylt()).isFalse();
     }
 
+    @Test
+    void vedlegg() {
+        var soknad = createSoknad();
+        soknad.getVedlegg().setVedlegg(List.of(
+                        createVedlegg("faktura", "oppvarming", "VedleggAlleredeSendt", null),
+                        createVedlegg("kontooversikt", "sparekonto", "VedleggKreves", null),
+                        createVedlegg("lonnslipp", "arbeid", "LastetOpp", List.of(new JsonFiler().withFilnavn("fil.jpg")))
+                )
+        );
+
+        var steg = okonomiskeOpplysningerOgVedleggSteg.get(soknad);
+
+        assertThat(steg.getAvsnitt()).hasSize(3);
+        var vedleggAvsnitt = steg.getAvsnitt().get(2);
+        assertThat(vedleggAvsnitt.getTittel()).isEqualTo("vedlegg.oppsummering.tittel");
+        assertThat(vedleggAvsnitt.getSporsmal()).hasSize(3);
+
+        var vedlegg1 = vedleggAvsnitt.getSporsmal().get(0);
+        assertThat(vedlegg1.getTittel()).isEqualTo("vedlegg.faktura.oppvarming.tittel");
+        assertThat(vedlegg1.getErUtfylt()).isTrue();
+        assertThat(vedlegg1.getFelt()).hasSize(1);
+        assertThat(vedlegg1.getFelt().get(0).getType()).isEqualTo(Type.TEKST);
+        assertThat(vedlegg1.getFelt().get(0).getSvar()).isEqualTo("opplysninger.vedlegg.alleredelastetopp");
+
+        var vedlegg2 = vedleggAvsnitt.getSporsmal().get(1);
+        assertThat(vedlegg2.getTittel()).isEqualTo("vedlegg.kontooversikt.sparekonto.tittel");
+        assertThat(vedlegg2.getErUtfylt()).isTrue();
+        assertThat(vedlegg2.getFelt()).hasSize(1);
+        assertThat(vedlegg2.getFelt().get(0).getType()).isEqualTo(Type.TEKST);
+        assertThat(vedlegg2.getFelt().get(0).getSvar()).isEqualTo("vedlegg.oppsummering.ikkelastetopp");
+
+        var vedlegg3 = vedleggAvsnitt.getSporsmal().get(2);
+        assertThat(vedlegg3.getTittel()).isEqualTo("vedlegg.lonnslipp.arbeid.tittel");
+        assertThat(vedlegg3.getErUtfylt()).isTrue();
+        assertThat(vedlegg3.getFelt()).hasSize(1);
+        assertThat(vedlegg3.getFelt().get(0).getType()).isEqualTo(Type.VEDLEGG);
+        assertThat(vedlegg3.getFelt().get(0).getVedlegg()).hasSize(1);
+        assertThat(vedlegg3.getFelt().get(0).getVedlegg().get(0).getFilnavn()).isEqualTo("fil.jpg");
+    }
+
     private JsonOkonomioversiktInntekt createInntekt(String type, Integer netto) {
         return new JsonOkonomioversiktInntekt()
                 .withType(type)
@@ -176,6 +219,13 @@ class OkonomiskeOpplysningerOgVedleggStegTest {
                 .withBelop(belop);
     }
 
+    private JsonVedlegg createVedlegg(String type, String tilleggsinfo, String status, List<JsonFiler> filer) {
+        return new JsonVedlegg()
+                .withType(type)
+                .withTilleggsinfo(tilleggsinfo)
+                .withStatus(status)
+                .withFiler(filer);
+    }
 
     public JsonInternalSoknad createSoknad() {
         return new JsonInternalSoknad()
