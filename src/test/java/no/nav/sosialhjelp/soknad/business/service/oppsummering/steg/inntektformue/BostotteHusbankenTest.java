@@ -75,7 +75,7 @@ class BostotteHusbankenTest {
         assertThat(harSoktBostotteSporsmal.getFelt().get(0).getSvar()).isEqualTo("inntekt.bostotte.sporsmal.true");
 
         var husbankenFeiletSporsmal = avsnitt.getSporsmal().get(1);
-        assertThat(husbankenFeiletSporsmal.getTittel()).isEqualTo("Vi fikk ikke hentet opplysninger fra Husbanken");
+        assertThat(husbankenFeiletSporsmal.getTittel()).isEqualTo("inntekt.bostotte.kontaktproblemer");
     }
 
     @Test

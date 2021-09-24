@@ -40,7 +40,7 @@ class SkattbarInntektTest {
         var avsnitt = skattbarInntekt.getAvsnitt(okonomi, driftsinformasjon);
 
         assertThat(avsnitt.getSporsmal()).hasSize(1);
-        assertThat(avsnitt.getSporsmal().get(0).getTittel()).isEqualTo("Vi fikk ikke hentet opplysninger fra Skatteetaten");
+        assertThat(avsnitt.getSporsmal().get(0).getTittel()).isEqualTo("utbetalinger.skattbar.kontaktproblemer.oppsummering");
     }
 
     @Test
