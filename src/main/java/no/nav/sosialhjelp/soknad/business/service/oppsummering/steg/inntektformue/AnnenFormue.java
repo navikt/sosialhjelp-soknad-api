@@ -19,6 +19,7 @@ import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.VERDI_BOLIG;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.VERDI_CAMPINGVOGN;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.VERDI_FRITIDSEIENDOM;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.VERDI_KJORETOY;
+import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.StegUtils.booleanVerdiFelt;
 import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.inntektformue.InntektFormueUtils.addFormueIfPresent;
 import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.inntektformue.InntektFormueUtils.harBekreftelse;
 import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.inntektformue.InntektFormueUtils.harBekreftelseTrue;
@@ -47,7 +48,10 @@ public class AnnenFormue {
                 new Sporsmal.Builder()
                         .withTittel("inntekt.eierandeler.sporsmal")
                         .withErUtfylt(harUtfyltAnnenFormueSporsmal)
-                        .withFelt(harUtfyltAnnenFormueSporsmal ? annenFormueFelt(harSvartJaAnnenFormue) : null)
+                        .withFelt(harUtfyltAnnenFormueSporsmal ?
+                                booleanVerdiFelt(harSvartJaAnnenFormue, "inntekt.eierandeler.true", "inntekt.eierandeler.false") :
+                                null
+                        )
                         .build()
         );
 
@@ -77,15 +81,6 @@ public class AnnenFormue {
             }
         }
         return sporsmal;
-    }
-
-    private List<Felt> annenFormueFelt(boolean harSvartJa) {
-        return singletonList(
-                new Felt.Builder()
-                        .withType(Type.CHECKBOX)
-                        .withSvar(harSvartJa ? "inntekt.eierandeler.true" : "inntekt.eierandeler.false")
-                        .build()
-        );
     }
 
     private List<Felt> annenFormueFelter(JsonOkonomioversikt oversikt) {

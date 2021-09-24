@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 
 import static java.util.Collections.singletonList;
 import static no.nav.sbl.soknadsosialhjelp.soknad.utdanning.JsonUtdanning.Studentgrad.HELTID;
+import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.StegUtils.booleanVerdiFelt;
 
 public class ArbeidOgUtdanningSteg {
 
@@ -113,7 +114,10 @@ public class ArbeidOgUtdanningSteg {
         sporsmal.add(
                 new Sporsmal.Builder()
                         .withTittel("dinsituasjon.studerer.sporsmal")
-                        .withFelt(erUtdanningUtfylt ? erStudentFelt(erStudent) : null)
+                        .withFelt(erUtdanningUtfylt ?
+                                booleanVerdiFelt(erStudent, "dinsituasjon.studerer.true", "dinsituasjon.studerer.false") :
+                                null
+                        )
                         .withErUtfylt(erUtdanningUtfylt)
                         .build()
         );
@@ -122,29 +126,14 @@ public class ArbeidOgUtdanningSteg {
             sporsmal.add(
                     new Sporsmal.Builder()
                             .withTittel("dinsituasjon.studerer.true.grad.sporsmal")
-                            .withFelt(erStudentgradUtfylt ? studentgradFelt(utdanning.getStudentgrad()) : null)
+                            .withFelt(erStudentgradUtfylt ?
+                                    booleanVerdiFelt(HELTID.equals(utdanning.getStudentgrad()), "dinsituasjon.studerer.true.grad.heltid", "dinsituasjon.studerer.true.grad.deltid") :
+                                    null
+                            )
                             .withErUtfylt(erStudentgradUtfylt)
                             .build()
             );
         }
         return sporsmal;
-    }
-
-    private List<Felt> erStudentFelt(boolean erStudent) {
-        return singletonList(
-                new Felt.Builder()
-                        .withSvar(erStudent ? "dinsituasjon.studerer.true" : "dinsituasjon.studerer.false")
-                        .withType(Type.CHECKBOX)
-                        .build()
-        );
-    }
-
-    private List<Felt> studentgradFelt(JsonUtdanning.Studentgrad studentgrad) {
-        return singletonList(
-                new Felt.Builder()
-                        .withSvar(studentgrad.equals(HELTID) ? "dinsituasjon.studerer.true.grad.heltid" : "dinsituasjon.studerer.true.grad.deltid")
-                        .withType(Type.CHECKBOX)
-                        .build()
-        );
     }
 }
