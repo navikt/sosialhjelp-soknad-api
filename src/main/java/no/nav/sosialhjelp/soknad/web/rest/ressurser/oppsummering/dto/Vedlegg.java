@@ -3,29 +3,29 @@ package no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto;
 public class Vedlegg {
 
     private final String filnavn;
-    private final String lenke;
+    private final String uuid;
 
-    public Vedlegg(String filnavn, String lenke) {
+    public Vedlegg(String filnavn, String uuid) {
         this.filnavn = filnavn;
-        this.lenke = lenke;
+        this.uuid = uuid;
     }
 
     public Vedlegg(Builder builder) {
         this.filnavn = builder.filnavn;
-        this.lenke = builder.lenke;
+        this.uuid = builder.uuid;
     }
 
     public String getFilnavn() {
         return filnavn;
     }
 
-    public String getLenke() {
-        return lenke;
+    public String getUuid() {
+        return uuid;
     }
 
     public static class Builder {
         private String filnavn;
-        private String lenke;
+        private String uuid;
 
         public Builder(){}
 
@@ -34,8 +34,8 @@ public class Vedlegg {
             return this;
         }
 
-        public Builder withLenke(String lenke) {
-            this.lenke = lenke;
+        public Builder withUuid(String uuid) {
+            this.uuid = uuid;
             return this;
         }
 

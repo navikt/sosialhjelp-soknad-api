@@ -3,8 +3,10 @@ package no.nav.sosialhjelp.soknad.business.service.oppsummering.steg;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi;
+import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon;
+import no.nav.sosialhjelp.soknad.domain.OpplastetVedlegg;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Avsnitt;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Felt;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Sporsmal;
@@ -54,18 +56,18 @@ public class OkonomiskeOpplysningerOgVedleggSteg {
     private static final List<String> barneutgifter = List.of(UTGIFTER_BARNEHAGE, UTGIFTER_SFO, UTGIFTER_BARN_FRITIDSAKTIVITETER, UTGIFTER_BARN_TANNREGULERING, UTGIFTER_ANNET_BARN);
     private static final List<String> boutgifter = List.of(UTGIFTER_HUSLEIE, UTGIFTER_STROM, UTGIFTER_KOMMUNAL_AVGIFT, UTGIFTER_OPPVARMING, UTGIFTER_BOLIGLAN_AVDRAG, UTGIFTER_BOLIGLAN_RENTER, UTGIFTER_ANNET_BO);
 
-    public Steg get(JsonInternalSoknad jsonInternalSoknad) {
+    public Steg get(JsonInternalSoknad jsonInternalSoknad, List<OpplastetVedlegg> opplastedeVedlegg) {
         var okonomi = jsonInternalSoknad.getSoknad().getData().getOkonomi();
         var vedlegg = jsonInternalSoknad.getVedlegg();
 
         return new Steg.Builder()
                 .withStegNr(8)
                 .withTittel("opplysningerbolk.tittel")
-                .withAvsnitt(okonomiOgVedleggAvsnitt(okonomi, vedlegg))
+                .withAvsnitt(okonomiOgVedleggAvsnitt(okonomi, vedlegg, opplastedeVedlegg))
                 .build();
     }
 
-    private List<Avsnitt> okonomiOgVedleggAvsnitt(JsonOkonomi okonomi, JsonVedleggSpesifikasjon vedleggSpesifikasjon) {
+    private List<Avsnitt> okonomiOgVedleggAvsnitt(JsonOkonomi okonomi, JsonVedleggSpesifikasjon vedleggSpesifikasjon, List<OpplastetVedlegg> opplastedeVedlegg) {
         var inntektAvsnitt = new Avsnitt.Builder()
                 .withTittel("inntektbolk.tittel")
                 .withSporsmal(inntekterSporsmal(okonomi))
@@ -78,7 +80,7 @@ public class OkonomiskeOpplysningerOgVedleggSteg {
 
         var vedleggAvsnitt = new Avsnitt.Builder()
                 .withTittel("vedlegg.oppsummering.tittel")
-                .withSporsmal(vedleggSporsmal(vedleggSpesifikasjon))
+                .withSporsmal(vedleggSporsmal(vedleggSpesifikasjon, opplastedeVedlegg))
                 .build();
 
         return List.of(inntektAvsnitt, utgifterAvsnitt, vedleggAvsnitt);
@@ -199,12 +201,12 @@ public class OkonomiskeOpplysningerOgVedleggSteg {
                 .build();
     }
 
-    private List<Sporsmal> vedleggSporsmal(JsonVedleggSpesifikasjon vedleggSpesifikasjon) {
+    private List<Sporsmal> vedleggSporsmal(JsonVedleggSpesifikasjon vedleggSpesifikasjon, List<OpplastetVedlegg> opplastedeVedlegg) {
         return vedleggSpesifikasjon.getVedlegg().stream()
                 .map(it -> new Sporsmal.Builder()
                         .withTittel(getTittelFrom(it.getType(), it.getTilleggsinfo()))
                         .withErUtfylt(true) // evt null
-                        .withFelt(vedleggFelter(it))
+                        .withFelt(vedleggFelter(it, opplastedeVedlegg))
                         .build()
                 )
                 .collect(Collectors.toList());
@@ -214,7 +216,7 @@ public class OkonomiskeOpplysningerOgVedleggSteg {
         return String.format("vedlegg.%s.%s.tittel", type, tilleggsinfo);
     }
 
-    private List<Felt> vedleggFelter(JsonVedlegg vedlegg) {
+    private List<Felt> vedleggFelter(JsonVedlegg vedlegg, List<OpplastetVedlegg> opplastedeVedlegg) {
         Felt felt;
         if ("LastetOpp".equals(vedlegg.getStatus()) && isNotEmpty(vedlegg.getFiler())) {
             felt = new Felt.Builder()
@@ -223,6 +225,7 @@ public class OkonomiskeOpplysningerOgVedleggSteg {
                             vedlegg.getFiler().stream()
                                     .map(it -> new Vedlegg.Builder()
                                             .withFilnavn(it.getFilnavn())
+                                            .withUuid(getUuidFraOpplastetVedlegg(it, opplastedeVedlegg))
                                             .build()
                                     )
                                     .collect(Collectors.toList())
@@ -238,6 +241,14 @@ public class OkonomiskeOpplysningerOgVedleggSteg {
                     .build();
         }
         return singletonList(felt);
+    }
+
+    private String getUuidFraOpplastetVedlegg(JsonFiler fil, List<OpplastetVedlegg> opplastedeVedlegg) {
+        return opplastedeVedlegg.stream()
+                .filter(opplastetVedlegg -> fil.getFilnavn().equals(opplastetVedlegg.getFilnavn()))
+                .findFirst()
+                .map(OpplastetVedlegg::getUuid)
+                .orElse(null);
     }
 
     private String getTitleKey(String type) {
