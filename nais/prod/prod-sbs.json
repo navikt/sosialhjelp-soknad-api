@@ -25,7 +25,7 @@
   "minReplicas": "2",
   "maxReplicas": "4",
   "memoryLimit": "4Gi",
-  "memoryRequest": "4Gi",
+  "memoryRequest": "2Gi",
   "vaultEnabled": true,
   "tokenXEnabled": true,
   "personbrukerGcpCluster": "prod-gcp",
