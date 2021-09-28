@@ -22,7 +22,7 @@
     "GCP": "true",
     "PORT": "8080",
     "AAREG_API_BASEURL": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/aareg/",
-    "DITTNAV_LINK_URL": "http://sosialhjelp-mock-alt/sosialhjelp/mock-alt/",
+    "DITTNAV_LINK_URL": "https://digisos-gcp.dev.nav.no/sosialhjelp/mock-alt/",
     "DKIF_API_BASEURL": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/dkif/",
     "OPPSLAG_API_BASEURL": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/oppslag-api/",
     "PDL_API_URL": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/pdl_endpoint_url/",
