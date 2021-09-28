@@ -31,6 +31,14 @@ public class FiksForsendelseRestConfig {
 
     private HttpClient httpClient() {
         var sslContextFactory = new SslContextFactory.Client();
-        return new HttpClient(sslContextFactory);
+        var httpClient = new HttpClient(sslContextFactory);
+        try {
+            httpClient.start();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        return httpClient;
+
     }
 }
