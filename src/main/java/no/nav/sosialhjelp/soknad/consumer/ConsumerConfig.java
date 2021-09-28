@@ -2,6 +2,7 @@ package no.nav.sosialhjelp.soknad.consumer;
 
 import no.nav.sosialhjelp.soknad.consumer.dkif.DkifService;
 import no.nav.sosialhjelp.soknad.consumer.fiks.DokumentKrypterer;
+import no.nav.sosialhjelp.soknad.consumer.fiksforsendelse.FiksForsendelseService;
 import no.nav.sosialhjelp.soknad.consumer.kodeverk.KodeverkService;
 import no.nav.sosialhjelp.soknad.consumer.leaderelection.LeaderElectionImpl;
 import no.nav.sosialhjelp.soknad.consumer.leaderelection.NoLeaderElection;
@@ -18,6 +19,7 @@ import no.nav.sosialhjelp.soknad.consumer.redis.RedisConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.ArbeidsforholdRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.DigisosApiRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.DkifRestConfig;
+import no.nav.sosialhjelp.soknad.consumer.restconfig.FiksForsendelseRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.KodeverkRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.NorgRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.OrganisasjonRestConfig;
@@ -58,7 +60,8 @@ import org.springframework.context.annotation.Profile;
         BydelConfig.class,
         BydelService.class,
         LeaderElectionImpl.class,
-        NoLeaderElection.class
+        NoLeaderElection.class,
+        FiksForsendelseService.class
 })
 
 public class ConsumerConfig {
@@ -79,7 +82,8 @@ public class ConsumerConfig {
             SkattbarInntektRestConfig.class,
             KodeverkRestConfig.class,
             UnleashRestConfig.class,
-            OppslagRestConfig.class
+            OppslagRestConfig.class,
+            FiksForsendelseRestConfig.class
     })
     public static class WsServices {
     }

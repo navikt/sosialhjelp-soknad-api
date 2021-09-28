@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import static no.nav.sosialhjelp.metrics.MetricsFactory.createTimerProxyForWebService;
+import static no.nav.sosialhjelp.metrics.MetricsFactory.createTimerProxy;
 
 @Configuration
 public class FiksForsendelseRestConfig {
@@ -23,6 +23,6 @@ public class FiksForsendelseRestConfig {
     @Bean
     public SvarUtKlientApi svarUtKlientApi() {
         var svarUt = new SvarUtKlientApiImpl(svarutUrl, svarutUsername, svarutPassword);
-        return createTimerProxyForWebService("SvarUt", svarUt, SvarUtKlientApi.class);
+        return createTimerProxy("SvarUt", svarUt, SvarUtKlientApi.class);
     }
 }

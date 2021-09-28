@@ -4,6 +4,9 @@ import no.ks.fiks.svarut.klient.SvarUtKlientApi;
 import no.ks.fiks.svarut.klient.model.Forsendelse;
 import org.springframework.stereotype.Component;
 
+import java.io.InputStream;
+import java.util.Map;
+
 @Component
 public class FiksForsendelseService {
 
@@ -13,7 +16,8 @@ public class FiksForsendelseService {
         this.svarUtKlientApi = svarUtKlientApi;
     }
 
-    public void send(Forsendelse forsendelse) {
-        svarUtKlientApi.sendForsendelse(forsendelse, null);
+    public String send(Forsendelse forsendelse, Map<String, InputStream> filnavnInputStreamMap) {
+        var forsendelseId = svarUtKlientApi.sendForsendelse(forsendelse, filnavnInputStreamMap);
+        return forsendelseId.getId().toString();
     }
 }
