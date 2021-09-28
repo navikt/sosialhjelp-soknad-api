@@ -43,6 +43,8 @@ spec:
         - application: mine-saker-api
           namespace: personbruker
           cluster: {{personbrukerGcpCluster}}
+        - application: sosialhjelp-dialog-api
+          cluster: {{dialogGcpCluster}}
 {{/if}}
 {{#if isGcp}}
     outbound:
@@ -62,6 +64,7 @@ spec:
 {{#each ingresses}}
     - "{{this}}"
 {{/each}}
+  leaderElection: {{leaderElectionEnabled}}
   resources:
     limits:
       cpu: 1000m

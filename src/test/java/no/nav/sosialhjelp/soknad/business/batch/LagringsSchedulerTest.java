@@ -2,6 +2,7 @@ package no.nav.sosialhjelp.soknad.business.batch;
 
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.BatchSoknadUnderArbeidRepository;
 import no.nav.sosialhjelp.soknad.business.service.HenvendelseService;
+import no.nav.sosialhjelp.soknad.consumer.leaderelection.LeaderElection;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeidStatus;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,6 +23,8 @@ import static org.mockito.Mockito.when;
 class LagringsSchedulerTest {
 
     @Mock
+    private LeaderElection leaderElection;
+    @Mock
     private HenvendelseService henvendelseService;
     @Mock
     private BatchSoknadUnderArbeidRepository batchSoknadUnderArbeidRepository;
@@ -30,7 +33,9 @@ class LagringsSchedulerTest {
 
     @BeforeEach
     public void setup() {
-        scheduler = new LagringsScheduler(henvendelseService, batchSoknadUnderArbeidRepository, true);
+        scheduler = new LagringsScheduler(leaderElection, henvendelseService, batchSoknadUnderArbeidRepository, true);
+
+        when(leaderElection.isLeader()).thenReturn(true);
     }
 
     @Test

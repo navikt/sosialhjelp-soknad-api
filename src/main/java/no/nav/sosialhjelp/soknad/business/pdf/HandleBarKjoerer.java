@@ -37,16 +37,6 @@ public class HandleBarKjoerer implements HtmlGenerator, HandlebarRegistry {
     }
 
     @Override
-    public String fyllHtmlMalMedInnhold(JsonInternalSoknad internalSoknad, String file, boolean erEttersending, String eier) throws IOException {
-        final HandlebarContext context = new HandlebarContext(internalSoknad, false, erEttersending, eier);
-
-        String renderedHtml = getHandlebars()
-                .compile(file)
-                .apply(Context.newBuilder(context).build());
-        return stripNonValidXMLCharacters(renderedHtml);
-    }
-
-    @Override
     public void registrerHelper(String name, Helper helper) {
         helpers.put(name, helper);
     }
