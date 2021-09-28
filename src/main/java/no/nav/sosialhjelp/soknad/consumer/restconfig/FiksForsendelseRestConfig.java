@@ -2,6 +2,8 @@ package no.nav.sosialhjelp.soknad.consumer.restconfig;
 
 import no.ks.fiks.svarut.klient.SvarUtKlientApi;
 import no.ks.fiks.svarut.klient.SvarUtKlientApiImpl;
+import org.eclipse.jetty.client.HttpClient;
+import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,7 +24,13 @@ public class FiksForsendelseRestConfig {
 
     @Bean
     public SvarUtKlientApi svarUtKlientApi() {
-        var svarUt = new SvarUtKlientApiImpl(svarutUrl, svarutUsername, svarutPassword);
+        var httpClient = httpClient();
+        var svarUt = new SvarUtKlientApiImpl(svarutUrl, httpClient, svarutUsername, svarutPassword);
         return createTimerProxy("SvarUt", svarUt, SvarUtKlientApi.class);
+    }
+
+    private HttpClient httpClient() {
+        var sslContextFactory = new SslContextFactory.Client();
+        return new HttpClient(sslContextFactory);
     }
 }
