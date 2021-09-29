@@ -22,7 +22,7 @@ public final class FileDetectionUtils {
             return TikaFileType.PDF;
         }
         if (type.equalsIgnoreCase("text/x-matlab")) {
-            log.info("Tika detekterte mimeType text/x-matlab. Vi antar at dette egentlig er en PDF (som ikke har korrekt magic bytes).");
+            log.info("Tika detekterte mimeType text/x-matlab. Vi antar at dette egentlig er en PDF, men som ikke har korrekte magic bytes (%PDF).");
             return TikaFileType.PDF;
         }
         if (type.equalsIgnoreCase("image/png")) {
