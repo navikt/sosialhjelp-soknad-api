@@ -82,7 +82,11 @@ public class SkattbarInntekt {
                 .map(utbetaling -> {
                     // arbeidsgivernavn, fom, tom, brutto, forskuddstrekk
                     var map = new LinkedHashMap<String, String>();
-                    map.put("utbetalinger.utbetaling.arbeidsgivernavn.label", utbetaling.getOrganisasjon().getNavn());
+                    if (utbetaling.getOrganisasjon() == null) {
+                        map.put("utbetalinger.utbetaling.arbeidsgivernavn.label", "Uten organisasjonsnummer");
+                    } else {
+                        map.put("utbetalinger.utbetaling.arbeidsgivernavn.label", utbetaling.getOrganisasjon().getNavn());
+                    }
                     map.put("utbetalinger.utbetaling.periodeFom.label", utbetaling.getPeriodeFom());
                     map.put("utbetalinger.utbetaling.periodeTom.label", utbetaling.getPeriodeTom());
                     map.put("utbetalinger.utbetaling.brutto.label", utbetaling.getBrutto().toString());
