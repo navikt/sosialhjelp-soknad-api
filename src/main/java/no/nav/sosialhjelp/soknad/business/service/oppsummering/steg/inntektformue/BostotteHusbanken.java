@@ -7,6 +7,7 @@ import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Avsnitt;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Felt;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Sporsmal;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Svar;
+import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.SvarType;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Type;
 
 import java.util.ArrayList;
@@ -21,8 +22,6 @@ import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.StegU
 import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.StegUtils.createSvar;
 import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.inntektformue.InntektFormueUtils.harBekreftelse;
 import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.inntektformue.InntektFormueUtils.harBekreftelseTrue;
-import static no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.SvarType.DATO;
-import static no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.SvarType.TEKST;
 
 public class BostotteHusbanken {
 
@@ -77,9 +76,9 @@ public class BostotteHusbanken {
                 .filter(utbetaling -> UTBETALING_HUSBANKEN.equals(utbetaling.getType()))
                 .forEach(utbetaling -> {
                             var map = new LinkedHashMap<String, Svar>();
-                            map.put("inntekt.bostotte.utbetaling.mottaker", createSvar(utbetaling.getMottaker().value(), TEKST));
-                            map.put("inntekt.bostotte.utbetaling.utbetalingsdato", createSvar(utbetaling.getUtbetalingsdato(), DATO));
-                            map.put("inntekt.bostotte.utbetaling.belop", createSvar(utbetaling.getNetto().toString(), TEKST));
+                            map.put("inntekt.bostotte.utbetaling.mottaker", createSvar(utbetaling.getMottaker().value(), SvarType.TEKST));
+                            map.put("inntekt.bostotte.utbetaling.utbetalingsdato", createSvar(utbetaling.getUtbetalingsdato(), SvarType.DATO));
+                            map.put("inntekt.bostotte.utbetaling.belop", createSvar(utbetaling.getNetto().toString(), SvarType.TEKST));
 
                             felter.add(
                                     new Felt.Builder()
@@ -92,8 +91,8 @@ public class BostotteHusbanken {
         opplysninger.getBostotte().getSaker()
                 .forEach(sak -> {
                             var map = new LinkedHashMap<String, Svar>();
-                            map.put("inntekt.bostotte.sak.dato", createSvar(sak.getDato(), DATO));
-                            map.put("inntekt.bostotte.sak.status", createSvar(bostotteSakStatus(sak), TEKST));
+                            map.put("inntekt.bostotte.sak.dato", createSvar(sak.getDato(), SvarType.DATO));
+                            map.put("inntekt.bostotte.sak.status", createSvar(bostotteSakStatus(sak), SvarType.TEKST));
 
                             felter.add(
                                     new Felt.Builder()
@@ -117,7 +116,7 @@ public class BostotteHusbanken {
     private List<Felt> manglerSamtykkeFelt() {
         return singletonList(
                 new Felt.Builder()
-                        .withSvar("inntekt.bostotte.mangler_samtykke")
+                        .withSvar(createSvar("inntekt.bostotte.mangler_samtykke", SvarType.LOCALE_TEKST))
                         .build()
         );
     }

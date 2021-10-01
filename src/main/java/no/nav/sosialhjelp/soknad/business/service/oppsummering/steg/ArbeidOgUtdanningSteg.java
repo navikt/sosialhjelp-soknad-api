@@ -10,6 +10,7 @@ import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Felt;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Sporsmal;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Steg;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Svar;
+import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.SvarType;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Type;
 
 import java.util.ArrayList;
@@ -21,8 +22,6 @@ import static java.util.Collections.singletonList;
 import static no.nav.sbl.soknadsosialhjelp.soknad.utdanning.JsonUtdanning.Studentgrad.HELTID;
 import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.StegUtils.booleanVerdiFelt;
 import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.StegUtils.createSvar;
-import static no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.SvarType.DATO;
-import static no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.SvarType.TEKST;
 
 public class ArbeidOgUtdanningSteg {
 
@@ -83,16 +82,16 @@ public class ArbeidOgUtdanningSteg {
         // arbeidsgiver, startet i jobben, (sluttet i jobben), stillingsprosent
         var labelSvarMap = new LinkedHashMap<String, Svar>();
         if (arbeidsforhold.getArbeidsgivernavn() != null) {
-            labelSvarMap.put("arbeidsforhold.arbeidsgivernavn.label", createSvar(arbeidsforhold.getArbeidsgivernavn(), TEKST));
+            labelSvarMap.put("arbeidsforhold.arbeidsgivernavn.label", createSvar(arbeidsforhold.getArbeidsgivernavn(), SvarType.TEKST));
         }
         if (arbeidsforhold.getFom() != null) {
-            labelSvarMap.put("arbeidsforhold.fom.label", createSvar(arbeidsforhold.getFom(), DATO));
+            labelSvarMap.put("arbeidsforhold.fom.label", createSvar(arbeidsforhold.getFom(), SvarType.DATO));
         }
         if (arbeidsforhold.getTom() != null) {
-            labelSvarMap.put("arbeidsforhold.tom.label", createSvar(arbeidsforhold.getTom(), DATO));
+            labelSvarMap.put("arbeidsforhold.tom.label", createSvar(arbeidsforhold.getTom(), SvarType.DATO));
         }
         if (arbeidsforhold.getStillingsprosent() != null) {
-            labelSvarMap.put("arbeidsforhold.stillingsprosent.label", createSvar(arbeidsforhold.getStillingsprosent().toString(), TEKST));
+            labelSvarMap.put("arbeidsforhold.stillingsprosent.label", createSvar(arbeidsforhold.getStillingsprosent().toString(), SvarType.TEKST));
         }
         return new Felt.Builder()
                 .withType(Type.SYSTEMDATA_MAP)
@@ -103,7 +102,7 @@ public class ArbeidOgUtdanningSteg {
     private List<Felt> kommentarFelter(JsonKommentarTilArbeidsforhold kommentar) {
         return singletonList(
                 new Felt.Builder()
-                        .withSvar(kommentar.getVerdi())
+                        .withSvar(createSvar(kommentar.getVerdi(), SvarType.TEKST))
                         .withType(Type.TEKST)
                         .build()
         );

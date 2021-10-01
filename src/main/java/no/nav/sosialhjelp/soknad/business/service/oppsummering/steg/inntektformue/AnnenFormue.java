@@ -6,6 +6,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomioversikt;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Avsnitt;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Felt;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Sporsmal;
+import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.SvarType;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Type;
 
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.VERDI_CAMPINGVOG
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.VERDI_FRITIDSEIENDOM;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.VERDI_KJORETOY;
 import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.StegUtils.booleanVerdiFelt;
+import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.StegUtils.createSvar;
 import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.inntektformue.InntektFormueUtils.addFormueIfPresent;
 import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.inntektformue.InntektFormueUtils.harBekreftelse;
 import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.inntektformue.InntektFormueUtils.harBekreftelseTrue;
@@ -73,7 +75,11 @@ public class AnnenFormue {
                                 .withTittel("inntekt.eierandeler.true.type.annet.true.beskrivelse.label")
                                 .withErUtfylt(harUtfyltAnnetFelt)
                                 .withFelt(harUtfyltAnnetFelt ?
-                                        singletonList(new Felt.Builder().withType(Type.TEKST).withSvar(beskrivelseAvAnnet.getVerdi()).build()) :
+                                        singletonList(
+                                                new Felt.Builder()
+                                                        .withType(Type.TEKST)
+                                                        .withSvar(createSvar(beskrivelseAvAnnet.getVerdi(), SvarType.TEKST))
+                                                        .build()) :
                                         null
                                 )
                                 .build()

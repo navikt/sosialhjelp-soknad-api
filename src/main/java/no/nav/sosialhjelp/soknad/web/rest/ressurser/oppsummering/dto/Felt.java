@@ -6,7 +6,7 @@ import java.util.Map;
 public class Felt {
 
     private final String label;
-    private final String svar;
+    private final Svar svar;
     private final Map<String, Svar> labelSvarMap;
     private final Type type;
     private final List<Vedlegg> vedlegg;
@@ -23,7 +23,7 @@ public class Felt {
         return label;
     }
 
-    public String getSvar() {
+    public Svar getSvar() {
         return svar;
     }
 
@@ -41,7 +41,7 @@ public class Felt {
 
     public static class Builder {
         private String label;
-        private String svar;
+        private Svar svar;
         private Map<String, Svar> labelSvarMap;
         private Type type;
         private List<Vedlegg> vedlegg;
@@ -53,7 +53,7 @@ public class Felt {
             return this;
         }
 
-        public Builder withSvar(String svar) {
+        public Builder withSvar(Svar svar) {
             this.svar = svar;
             return this;
         }

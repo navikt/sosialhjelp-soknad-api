@@ -8,6 +8,7 @@ import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Avsnitt;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Felt;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Sporsmal;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Steg;
+import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.SvarType;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Type;
 
 import java.util.ArrayList;
@@ -30,6 +31,7 @@ import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTGIFTER_OPPVARM
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTGIFTER_SFO;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTGIFTER_STROM;
 import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.StegUtils.booleanVerdiFelt;
+import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.StegUtils.createSvar;
 
 public class UtgifterOgGjeldSteg {
 
@@ -146,7 +148,7 @@ public class UtgifterOgGjeldSteg {
                 .findFirst()
                 .ifPresent(utgift -> felter.add(
                         new Felt.Builder()
-                                .withSvar(key)
+                                .withSvar(createSvar(key, SvarType.LOCALE_TEKST))
                                 .withType(Type.CHECKBOX)
                                 .build()
                 ));
@@ -159,7 +161,7 @@ public class UtgifterOgGjeldSteg {
                 .findFirst()
                 .ifPresent(utgift -> felter.add(
                         new Felt.Builder()
-                                .withSvar(key)
+                                .withSvar(createSvar(key, SvarType.LOCALE_TEKST))
                                 .withType(Type.CHECKBOX)
                                 .build()
                 ));

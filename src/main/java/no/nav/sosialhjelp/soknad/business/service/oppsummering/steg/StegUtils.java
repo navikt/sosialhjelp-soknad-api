@@ -39,7 +39,14 @@ public final class StegUtils {
         return new Sporsmal.Builder()
                 .withTittel(tittel)
                 .withErUtfylt(verdi != null)
-                .withFelt(verdi != null ? singletonList(new Felt.Builder().withLabel(key).withSvar(verdi.toString()).withType(Type.TEKST).build()) : null)
+                .withFelt(verdi != null ?
+                        singletonList(
+                                new Felt.Builder()
+                                        .withLabel(key)
+                                        .withSvar(createSvar(verdi.toString(), SvarType.TEKST))
+                                        .withType(Type.TEKST)
+                                        .build()) :
+                        null)
                 .build();
     }
 
@@ -47,7 +54,7 @@ public final class StegUtils {
         return singletonList(
                 new Felt.Builder()
                         .withType(Type.CHECKBOX)
-                        .withSvar(harSvartJa ? keyTrue : keyFalse)
+                        .withSvar(createSvar(harSvartJa ? keyTrue : keyFalse, SvarType.LOCALE_TEKST))
                         .build()
         );
     }

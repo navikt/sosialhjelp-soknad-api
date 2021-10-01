@@ -2,6 +2,7 @@ package no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.inntektform
 
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse;
+import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.SvarType;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Type;
 import org.junit.jupiter.api.Test;
 
@@ -43,6 +44,7 @@ class StudielanTest {
         assertThat(avsnitt.getSporsmal().get(0).getErUtfylt()).isTrue();
         assertThat(avsnitt.getSporsmal().get(0).getFelt()).hasSize(1);
         assertThat(avsnitt.getSporsmal().get(0).getFelt().get(0).getType()).isEqualTo(Type.CHECKBOX);
-        assertThat(avsnitt.getSporsmal().get(0).getFelt().get(0).getSvar()).isEqualTo("inntekt.studielan.true");
+        assertThat(avsnitt.getSporsmal().get(0).getFelt().get(0).getSvar().getValue()).isEqualTo("inntekt.studielan.true");
+        assertThat(avsnitt.getSporsmal().get(0).getFelt().get(0).getSvar().getType()).isEqualTo(SvarType.LOCALE_TEKST);
     }
 }
