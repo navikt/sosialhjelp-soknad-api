@@ -6,11 +6,13 @@ import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Avsnitt;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Felt;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Sporsmal;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Steg;
+import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.SvarType;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Type;
 
 import java.util.List;
 
 import static java.util.Collections.singletonList;
+import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.StegUtils.createSvar;
 
 public class BosituasjonSteg {
 
@@ -42,7 +44,7 @@ public class BosituasjonSteg {
                         singletonList(
                                 new Felt.Builder()
                                         .withType(Type.CHECKBOX)
-                                        .withSvar(botypeToTekstKey(bosituasjon.getBotype()))
+                                        .withSvar(createSvar(botypeToTekstKey(bosituasjon.getBotype()), SvarType.LOCALE))
                                         .build()
                         ) :
                         null
@@ -56,7 +58,7 @@ public class BosituasjonSteg {
                         singletonList(
                                 new Felt.Builder()
                                         .withType(Type.TEKST)
-                                        .withSvar(bosituasjon.getAntallPersoner().toString())
+                                        .withSvar(createSvar(bosituasjon.getAntallPersoner().toString(), SvarType.TEKST))
                                         .build()
                         ) :
                         null

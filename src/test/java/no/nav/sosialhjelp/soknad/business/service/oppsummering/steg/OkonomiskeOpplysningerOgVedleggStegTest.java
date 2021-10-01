@@ -15,6 +15,7 @@ import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon;
 import no.nav.sosialhjelp.soknad.domain.OpplastetVedlegg;
+import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.SvarType;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Type;
 import org.junit.jupiter.api.Test;
 
@@ -178,14 +179,16 @@ class OkonomiskeOpplysningerOgVedleggStegTest {
         assertThat(vedlegg1.getErUtfylt()).isTrue();
         assertThat(vedlegg1.getFelt()).hasSize(1);
         assertThat(vedlegg1.getFelt().get(0).getType()).isEqualTo(Type.TEKST);
-        assertThat(vedlegg1.getFelt().get(0).getSvar()).isEqualTo("opplysninger.vedlegg.alleredelastetopp");
+        assertThat(vedlegg1.getFelt().get(0).getSvar().getValue()).isEqualTo("opplysninger.vedlegg.alleredelastetopp");
+        assertThat(vedlegg1.getFelt().get(0).getSvar().getType()).isEqualTo(SvarType.LOCALE);
 
         var vedlegg2 = vedleggAvsnitt.getSporsmal().get(1);
         assertThat(vedlegg2.getTittel()).isEqualTo("vedlegg.kontooversikt.sparekonto.tittel");
         assertThat(vedlegg2.getErUtfylt()).isTrue();
         assertThat(vedlegg2.getFelt()).hasSize(1);
         assertThat(vedlegg2.getFelt().get(0).getType()).isEqualTo(Type.TEKST);
-        assertThat(vedlegg2.getFelt().get(0).getSvar()).isEqualTo("vedlegg.oppsummering.ikkelastetopp");
+        assertThat(vedlegg2.getFelt().get(0).getSvar().getValue()).isEqualTo("vedlegg.oppsummering.ikkelastetopp");
+        assertThat(vedlegg2.getFelt().get(0).getSvar().getType()).isEqualTo(SvarType.LOCALE);
 
         var vedlegg3 = vedleggAvsnitt.getSporsmal().get(2);
         assertThat(vedlegg3.getTittel()).isEqualTo("vedlegg.lonnslipp.arbeid.tittel");

@@ -3,9 +3,12 @@ package no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.inntektform
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomioversikt;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Felt;
+import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.SvarType;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Type;
 
 import java.util.List;
+
+import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.StegUtils.createSvar;
 
 public final class InntektFormueUtils {
 
@@ -33,7 +36,7 @@ public final class InntektFormueUtils {
                 .ifPresent(formue -> felter.add(
                         new Felt.Builder()
                                 .withType(Type.CHECKBOX)
-                                .withSvar(key)
+                                .withSvar(createSvar(key, SvarType.LOCALE))
                                 .build()
                 ));
     }

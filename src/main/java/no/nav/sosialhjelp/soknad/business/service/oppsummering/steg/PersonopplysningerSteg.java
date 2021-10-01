@@ -8,12 +8,12 @@ import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonMatrikkelAdresse;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonKontonummer;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
-import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonStatsborgerskap;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonTelefonnummer;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Avsnitt;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Felt;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Sporsmal;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Steg;
+import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.SvarType;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Type;
 import org.slf4j.Logger;
 
@@ -22,6 +22,7 @@ import java.util.Optional;
 
 import static java.lang.Boolean.TRUE;
 import static java.util.Collections.singletonList;
+import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.StegUtils.createSvar;
 import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.StegUtils.fulltnavn;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -58,17 +59,19 @@ public class PersonopplysningerSteg {
                                                 List.of(
                                                         new Felt.Builder()
                                                                 .withLabel("kontakt.system.personalia.navn")
-                                                                .withSvar(fulltnavn(personalia.getNavn()))
+                                                                .withSvar(createSvar(fulltnavn(personalia.getNavn()), SvarType.TEKST))
                                                                 .withType(Type.SYSTEMDATA)
                                                                 .build(),
                                                         new Felt.Builder()
                                                                 .withLabel("kontakt.system.personalia.fnr")
-                                                                .withSvar(personalia.getPersonIdentifikator().getVerdi())
+                                                                .withSvar(createSvar(personalia.getPersonIdentifikator().getVerdi(), SvarType.TEKST))
                                                                 .withType(Type.SYSTEMDATA)
                                                                 .build(),
                                                         new Felt.Builder()
                                                                 .withLabel("kontakt.system.personalia.statsborgerskap")
-                                                                .withSvar(Optional.ofNullable(personalia.getStatsborgerskap()).map(JsonStatsborgerskap::getVerdi).orElse(null))
+                                                                .withSvar(Optional.ofNullable(personalia.getStatsborgerskap())
+                                                                        .map(statsborgerskap -> createSvar(statsborgerskap.getVerdi(), SvarType.TEKST))
+                                                                        .orElse(null))
                                                                 .withType(Type.SYSTEMDATA)
                                                                 .build()
                                                 )
@@ -92,7 +95,7 @@ public class PersonopplysningerSteg {
                                                 singletonList(
                                                         new Felt.Builder()
                                                                 .withLabel(adresseLabel(oppholdsadresse.getAdresseValg()))
-                                                                .withSvar(adresseSvar(oppholdsadresse))
+                                                                .withSvar(createSvar(adresseSvar(oppholdsadresse), SvarType.TEKST))
                                                                 .withType(JsonAdresseValg.SOKNAD.equals(oppholdsadresse.getAdresseValg()) ? Type.TEKST : Type.SYSTEMDATA)
                                                                 .build()
                                                 )
@@ -170,7 +173,7 @@ public class PersonopplysningerSteg {
         return singletonList(
                 new Felt.Builder()
                         .withLabel("kontakt.system.telefon.label")
-                        .withSvar(telefonnummer.getVerdi())
+                        .withSvar(createSvar(telefonnummer.getVerdi(), SvarType.TEKST))
                         .withType(erSystemdata ? Type.SYSTEMDATA : Type.TEKST)
                         .build()
         );
@@ -199,7 +202,7 @@ public class PersonopplysningerSteg {
         if (TRUE.equals(kontonummer.getHarIkkeKonto())) {
             return singletonList(
                     new Felt.Builder()
-                            .withSvar("kontakt.kontonummer.harikke.true")
+                            .withSvar(createSvar("kontakt.kontonummer.harikke.true", SvarType.LOCALE))
                             .withType(Type.CHECKBOX)
                             .build()
             );
@@ -209,7 +212,7 @@ public class PersonopplysningerSteg {
         return singletonList(
                 new Felt.Builder()
                         .withLabel("kontakt.system.kontonummer.label")
-                        .withSvar(kontonummer.getVerdi())
+                        .withSvar(createSvar(kontonummer.getVerdi(), SvarType.TEKST))
                         .withType(erSystemdata ? Type.SYSTEMDATA : Type.TEKST)
                         .build()
         );

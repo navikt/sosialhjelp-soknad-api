@@ -4,6 +4,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Avsnitt;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Felt;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Sporsmal;
+import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.SvarType;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Type;
 
 import java.util.ArrayList;
@@ -17,6 +18,7 @@ import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_FORSI
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_SALG;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_UTBYTTE;
 import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.StegUtils.booleanVerdiFelt;
+import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.StegUtils.createSvar;
 import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.inntektformue.InntektFormueUtils.harBekreftelse;
 import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.inntektformue.InntektFormueUtils.harBekreftelseTrue;
 
@@ -63,7 +65,11 @@ public class AndreInntekter {
                                 .withTittel("inntekt.inntekter.true.type.annet")
                                 .withErUtfylt(harUtfyltAnnetFelt)
                                 .withFelt(harUtfyltAnnetFelt ?
-                                        singletonList(new Felt.Builder().withType(Type.TEKST).withSvar(beskrivelseAvAnnet.getUtbetaling()).build()) :
+                                        singletonList(
+                                                new Felt.Builder()
+                                                        .withType(Type.TEKST)
+                                                        .withSvar(createSvar(beskrivelseAvAnnet.getUtbetaling(), SvarType.TEKST))
+                                                        .build()) :
                                         null
                                 )
                                 .build()
@@ -89,7 +95,7 @@ public class AndreInntekter {
                 .ifPresent(utbetaling -> felter.add(
                         new Felt.Builder()
                                 .withType(Type.CHECKBOX)
-                                .withSvar(key)
+                                .withSvar(createSvar(key, SvarType.LOCALE))
                                 .build()
                 ));
     }

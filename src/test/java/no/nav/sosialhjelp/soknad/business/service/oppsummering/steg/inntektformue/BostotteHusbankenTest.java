@@ -7,6 +7,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse;
+import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.SvarType;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Type;
 import org.junit.jupiter.api.Test;
 
@@ -49,10 +50,12 @@ class BostotteHusbankenTest {
         assertThat(harSoktBostotteSporsmal.getErUtfylt()).isTrue();
         assertThat(harSoktBostotteSporsmal.getFelt()).hasSize(1);
         assertThat(harSoktBostotteSporsmal.getFelt().get(0).getType()).isEqualTo(Type.CHECKBOX);
-        assertThat(harSoktBostotteSporsmal.getFelt().get(0).getSvar()).isEqualTo("inntekt.bostotte.sporsmal.true");
+        assertThat(harSoktBostotteSporsmal.getFelt().get(0).getSvar().getValue()).isEqualTo("inntekt.bostotte.sporsmal.true");
+        assertThat(harSoktBostotteSporsmal.getFelt().get(0).getSvar().getType()).isEqualTo(SvarType.LOCALE);
 
         var manglerSamtykkeSporsmal = avsnitt.getSporsmal().get(1);
-        assertThat(manglerSamtykkeSporsmal.getFelt().get(0).getSvar()).isEqualTo("inntekt.bostotte.mangler_samtykke");
+        assertThat(manglerSamtykkeSporsmal.getFelt().get(0).getSvar().getValue()).isEqualTo("inntekt.bostotte.mangler_samtykke");
+        assertThat(manglerSamtykkeSporsmal.getFelt().get(0).getSvar().getType()).isEqualTo(SvarType.LOCALE);
     }
 
     @Test
@@ -72,7 +75,8 @@ class BostotteHusbankenTest {
         assertThat(harSoktBostotteSporsmal.getErUtfylt()).isTrue();
         assertThat(harSoktBostotteSporsmal.getFelt()).hasSize(1);
         assertThat(harSoktBostotteSporsmal.getFelt().get(0).getType()).isEqualTo(Type.CHECKBOX);
-        assertThat(harSoktBostotteSporsmal.getFelt().get(0).getSvar()).isEqualTo("inntekt.bostotte.sporsmal.true");
+        assertThat(harSoktBostotteSporsmal.getFelt().get(0).getSvar().getValue()).isEqualTo("inntekt.bostotte.sporsmal.true");
+        assertThat(harSoktBostotteSporsmal.getFelt().get(0).getSvar().getType()).isEqualTo(SvarType.LOCALE);
 
         var husbankenFeiletSporsmal = avsnitt.getSporsmal().get(1);
         assertThat(husbankenFeiletSporsmal.getTittel()).isEqualTo("inntekt.bostotte.kontaktproblemer");
@@ -107,7 +111,8 @@ class BostotteHusbankenTest {
         assertThat(harSoktBostotteSporsmal.getErUtfylt()).isTrue();
         assertThat(harSoktBostotteSporsmal.getFelt()).hasSize(1);
         assertThat(harSoktBostotteSporsmal.getFelt().get(0).getType()).isEqualTo(Type.CHECKBOX);
-        assertThat(harSoktBostotteSporsmal.getFelt().get(0).getSvar()).isEqualTo("inntekt.bostotte.sporsmal.true");
+        assertThat(harSoktBostotteSporsmal.getFelt().get(0).getSvar().getValue()).isEqualTo("inntekt.bostotte.sporsmal.true");
+        assertThat(harSoktBostotteSporsmal.getFelt().get(0).getSvar().getType()).isEqualTo(SvarType.LOCALE);
 
         var husbankenUtbetalingerSporsmal = avsnitt.getSporsmal().get(1);
         assertThat(husbankenUtbetalingerSporsmal.getErUtfylt()).isTrue();
