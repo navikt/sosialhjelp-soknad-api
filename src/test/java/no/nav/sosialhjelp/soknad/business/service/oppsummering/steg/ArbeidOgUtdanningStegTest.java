@@ -15,7 +15,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class ArbeidOgUtdanningStegTest {
 
-    private ArbeidOgUtdanningSteg steg = new ArbeidOgUtdanningSteg();
+    private final ArbeidOgUtdanningSteg steg = new ArbeidOgUtdanningSteg();
 
     private final JsonArbeidsforhold arbeidsforholdMedSlutt = new JsonArbeidsforhold().withArbeidsgivernavn("arbeidsgiver").withFom("01.01.2021").withTom("10.10.2021").withStillingsprosent(100);
     private final JsonArbeidsforhold arbeidsforholdUtenSlutt = new JsonArbeidsforhold().withArbeidsgivernavn("arbeidsgiver2").withFom("01.01.2021").withStillingsprosent(100);
@@ -57,16 +57,16 @@ class ArbeidOgUtdanningStegTest {
         assertThat(felt.getLabelSvarMap()).hasSize(4);
 
         assertThat(felt.getLabelSvarMap()).containsKey("arbeidsforhold.arbeidsgivernavn.label");
-        assertThat(felt.getLabelSvarMap().get("arbeidsforhold.arbeidsgivernavn.label")).isEqualTo(arbeidsforholdMedSlutt.getArbeidsgivernavn());
+        assertThat(felt.getLabelSvarMap().get("arbeidsforhold.arbeidsgivernavn.label").getValue()).isEqualTo(arbeidsforholdMedSlutt.getArbeidsgivernavn());
 
         assertThat(felt.getLabelSvarMap()).containsKey("arbeidsforhold.fom.label");
-        assertThat(felt.getLabelSvarMap().get("arbeidsforhold.fom.label")).isEqualTo(arbeidsforholdMedSlutt.getFom());
+        assertThat(felt.getLabelSvarMap().get("arbeidsforhold.fom.label").getValue()).isEqualTo(arbeidsforholdMedSlutt.getFom());
 
         assertThat(felt.getLabelSvarMap()).containsKey("arbeidsforhold.tom.label");
-        assertThat(felt.getLabelSvarMap().get("arbeidsforhold.tom.label")).isEqualTo(arbeidsforholdMedSlutt.getTom());
+        assertThat(felt.getLabelSvarMap().get("arbeidsforhold.tom.label").getValue()).isEqualTo(arbeidsforholdMedSlutt.getTom());
 
         assertThat(felt.getLabelSvarMap()).containsKey("arbeidsforhold.stillingsprosent.label");
-        assertThat(felt.getLabelSvarMap().get("arbeidsforhold.stillingsprosent.label")).isEqualTo(arbeidsforholdMedSlutt.getStillingsprosent().toString());
+        assertThat(felt.getLabelSvarMap().get("arbeidsforhold.stillingsprosent.label").getValue()).isEqualTo(arbeidsforholdMedSlutt.getStillingsprosent().toString());
     }
 
     @Test
@@ -87,15 +87,15 @@ class ArbeidOgUtdanningStegTest {
         assertThat(felt.getLabelSvarMap()).hasSize(3);
 
         assertThat(felt.getLabelSvarMap()).containsKey("arbeidsforhold.arbeidsgivernavn.label");
-        assertThat(felt.getLabelSvarMap().get("arbeidsforhold.arbeidsgivernavn.label")).isEqualTo(arbeidsforholdUtenSlutt.getArbeidsgivernavn());
+        assertThat(felt.getLabelSvarMap().get("arbeidsforhold.arbeidsgivernavn.label").getValue()).isEqualTo(arbeidsforholdUtenSlutt.getArbeidsgivernavn());
 
         assertThat(felt.getLabelSvarMap()).containsKey("arbeidsforhold.fom.label");
-        assertThat(felt.getLabelSvarMap().get("arbeidsforhold.fom.label")).isEqualTo(arbeidsforholdUtenSlutt.getFom());
+        assertThat(felt.getLabelSvarMap().get("arbeidsforhold.fom.label").getValue()).isEqualTo(arbeidsforholdUtenSlutt.getFom());
 
         assertThat(felt.getLabelSvarMap()).doesNotContainKey("arbeidsforhold.tom.label");
 
         assertThat(felt.getLabelSvarMap()).containsKey("arbeidsforhold.stillingsprosent.label");
-        assertThat(felt.getLabelSvarMap().get("arbeidsforhold.stillingsprosent.label")).isEqualTo(arbeidsforholdUtenSlutt.getStillingsprosent().toString());
+        assertThat(felt.getLabelSvarMap().get("arbeidsforhold.stillingsprosent.label").getValue()).isEqualTo(arbeidsforholdUtenSlutt.getStillingsprosent().toString());
     }
 
     @Test
