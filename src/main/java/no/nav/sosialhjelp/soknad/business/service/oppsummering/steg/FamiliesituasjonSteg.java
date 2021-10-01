@@ -10,6 +10,8 @@ import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Avsnitt;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Felt;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Sporsmal;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Steg;
+import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Svar;
+import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.SvarType;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Type;
 
 import java.util.ArrayList;
@@ -18,6 +20,7 @@ import java.util.List;
 
 import static java.util.Collections.singletonList;
 import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.StegUtils.booleanVerdiFelt;
+import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.StegUtils.createSvar;
 import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.StegUtils.fulltnavn;
 import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.StegUtils.isNotNullOrEmtpy;
 
@@ -84,7 +87,7 @@ public class FamiliesituasjonSteg {
                 .withFelt(erUtfylt ?
                         singletonList(
                                 new Felt.Builder()
-                                        .withSvar(statusToTekstKey(status))
+                                        .withSvar(createSvar(statusToTekstKey(status), SvarType.LOCALE_TEKST))
                                         .withType(Type.CHECKBOX)
                                         .build()
                         ) :
@@ -127,11 +130,11 @@ public class FamiliesituasjonSteg {
                 isNotNullOrEmtpy(sivilstatus.getEktefelle().getPersonIdentifikator()) &&
                 sivilstatus.getBorSammenMed() != null;
 
-        var map = new LinkedHashMap<String, String>();
-        map.put("familie.sivilstatus.gift.ektefelle.navn.label", fulltnavn(sivilstatus.getEktefelle().getNavn()));
-        map.put("familie.sivilstatus.gift.ektefelle.fnr.label", sivilstatus.getEktefelle().getFodselsdato());
-        map.put("familie.sivilstatus.gift.ektefelle.pnr.label", sivilstatus.getEktefelle().getPersonIdentifikator());
-        map.put("familie.sivilstatus.gift.ektefelle.borsammen.sporsmal", borSammenMedSvar(sivilstatus));
+        var map = new LinkedHashMap<String, Svar>();
+        map.put("familie.sivilstatus.gift.ektefelle.navn.label", createSvar(fulltnavn(sivilstatus.getEktefelle().getNavn()), SvarType.TEKST));
+        map.put("familie.sivilstatus.gift.ektefelle.fnr.label", createSvar(sivilstatus.getEktefelle().getFodselsdato(), SvarType.DATO));
+        map.put("familie.sivilstatus.gift.ektefelle.pnr.label", createSvar(sivilstatus.getEktefelle().getPersonIdentifikator(), SvarType.TEKST));
+        map.put("familie.sivilstatus.gift.ektefelle.borsammen.sporsmal", createSvar(borSammenMedSvar(sivilstatus), SvarType.LOCALE_TEKST));
 
         return new Sporsmal.Builder()
                 .withTittel("familie.sivilstatus.gift.ektefelle.sporsmal")
@@ -160,7 +163,7 @@ public class FamiliesituasjonSteg {
                 .withFelt(
                         singletonList(
                                 new Felt.Builder()
-                                        .withSvar("system.familie.sivilstatus.ikkeTilgang.label")
+                                        .withSvar(createSvar("system.familie.sivilstatus.ikkeTilgang.label", SvarType.LOCALE_TEKST))
                                         .withType(Type.SYSTEMDATA)
                                         .build()
                         )
@@ -170,16 +173,16 @@ public class FamiliesituasjonSteg {
 
     private Sporsmal systemEktefelleSporsmal(JsonSivilstatus sivilstatus) {
         var ektefelle = sivilstatus.getEktefelle();
-        var labelSvarMap = new LinkedHashMap<String, String>();
+        var labelSvarMap = new LinkedHashMap<String, Svar>();
         labelSvarMap.put("system.familie.sivilstatus.label", null);
         if (ektefelle.getNavn() != null) {
-            labelSvarMap.put("system.familie.sivilstatus.gift.ektefelle.navn", fulltnavn(ektefelle.getNavn()));
+            labelSvarMap.put("system.familie.sivilstatus.gift.ektefelle.navn", createSvar(fulltnavn(ektefelle.getNavn()), SvarType.TEKST));
         }
         if (ektefelle.getFodselsdato() != null) {
-            labelSvarMap.put("system.familie.sivilstatus.gift.ektefelle.fodselsdato", ektefelle.getFodselsdato());
+            labelSvarMap.put("system.familie.sivilstatus.gift.ektefelle.fodselsdato", createSvar(ektefelle.getFodselsdato(), SvarType.DATO));
         }
         if (sivilstatus.getFolkeregistrertMedEktefelle() != null) {
-            labelSvarMap.put("system.familie.sivilstatus.gift.ektefelle.folkereg", Boolean.TRUE.equals(sivilstatus.getFolkeregistrertMedEktefelle()) ? "system.familie.sivilstatus.gift.ektefelle.folkeregistrertsammen.true" : "system.familie.sivilstatus.gift.ektefelle.folkeregistrertsammen.false");
+            labelSvarMap.put("system.familie.sivilstatus.gift.ektefelle.folkereg", createSvar(Boolean.TRUE.equals(sivilstatus.getFolkeregistrertMedEktefelle()) ? "system.familie.sivilstatus.gift.ektefelle.folkeregistrertsammen.true" : "system.familie.sivilstatus.gift.ektefelle.folkeregistrertsammen.false", SvarType.LOCALE_TEKST));
         }
 
         return new Sporsmal.Builder()
@@ -250,7 +253,7 @@ public class FamiliesituasjonSteg {
                 .withFelt(
                         singletonList(
                                 new Felt.Builder()
-                                        .withSvar("familierelasjon.ingen_registrerte_barn_tekst")
+                                        .withSvar(createSvar("familierelasjon.ingen_registrerte_barn_tekst", SvarType.LOCALE_TEKST))
                                         .withType(Type.SYSTEMDATA)
                                         .build()
                         )
@@ -259,15 +262,15 @@ public class FamiliesituasjonSteg {
     }
 
     private Sporsmal systemBarnSporsmal(JsonAnsvar barn) {
-        var labelSvarMap = new LinkedHashMap<String, String>();
+        var labelSvarMap = new LinkedHashMap<String, Svar>();
         if (barn.getBarn().getNavn() != null) {
-            labelSvarMap.put("familie.barn.true.barn.navn.label", fulltnavn(barn.getBarn().getNavn()));
+            labelSvarMap.put("familie.barn.true.barn.navn.label", createSvar(fulltnavn(barn.getBarn().getNavn()), SvarType.TEKST));
         }
         if (barn.getBarn().getFodselsdato() != null) {
-            labelSvarMap.put("familierelasjon.fodselsdato", barn.getBarn().getFodselsdato());
+            labelSvarMap.put("familierelasjon.fodselsdato", createSvar(barn.getBarn().getFodselsdato(), SvarType.DATO));
         }
         if (barn.getErFolkeregistrertSammen() != null) {
-            labelSvarMap.put("familierelasjon.samme_folkeregistrerte_adresse", Boolean.TRUE.equals(barn.getErFolkeregistrertSammen().getVerdi()) ? "system.familie.barn.true.barn.folkeregistrertsammen.true" : "system.familie.barn.true.barn.folkeregistrertsammen.false");
+            labelSvarMap.put("familierelasjon.samme_folkeregistrerte_adresse", createSvar(Boolean.TRUE.equals(barn.getErFolkeregistrertSammen().getVerdi()) ? "system.familie.barn.true.barn.folkeregistrertsammen.true" : "system.familie.barn.true.barn.folkeregistrertsammen.false", SvarType.LOCALE_TEKST));
         }
 
         return new Sporsmal.Builder()
@@ -307,7 +310,7 @@ public class FamiliesituasjonSteg {
                 .withFelt(erUtfylt ?
                         singletonList(
                                 new Felt.Builder()
-                                        .withSvar(verdiToTekstKey(forsorgerplikt.getBarnebidrag().getVerdi()))
+                                        .withSvar(createSvar(verdiToTekstKey(forsorgerplikt.getBarnebidrag().getVerdi()), SvarType.LOCALE_TEKST))
                                         .withType(Type.CHECKBOX)
                                         .build()
                         ) :

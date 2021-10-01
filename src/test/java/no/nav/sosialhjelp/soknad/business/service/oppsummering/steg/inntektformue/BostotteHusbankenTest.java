@@ -7,6 +7,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse;
+import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.SvarType;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Type;
 import org.junit.jupiter.api.Test;
 
@@ -49,10 +50,12 @@ class BostotteHusbankenTest {
         assertThat(harSoktBostotteSporsmal.getErUtfylt()).isTrue();
         assertThat(harSoktBostotteSporsmal.getFelt()).hasSize(1);
         assertThat(harSoktBostotteSporsmal.getFelt().get(0).getType()).isEqualTo(Type.CHECKBOX);
-        assertThat(harSoktBostotteSporsmal.getFelt().get(0).getSvar()).isEqualTo("inntekt.bostotte.sporsmal.true");
+        assertThat(harSoktBostotteSporsmal.getFelt().get(0).getSvar().getValue()).isEqualTo("inntekt.bostotte.sporsmal.true");
+        assertThat(harSoktBostotteSporsmal.getFelt().get(0).getSvar().getType()).isEqualTo(SvarType.LOCALE_TEKST);
 
         var manglerSamtykkeSporsmal = avsnitt.getSporsmal().get(1);
-        assertThat(manglerSamtykkeSporsmal.getFelt().get(0).getSvar()).isEqualTo("inntekt.bostotte.mangler_samtykke");
+        assertThat(manglerSamtykkeSporsmal.getFelt().get(0).getSvar().getValue()).isEqualTo("inntekt.bostotte.mangler_samtykke");
+        assertThat(manglerSamtykkeSporsmal.getFelt().get(0).getSvar().getType()).isEqualTo(SvarType.LOCALE_TEKST);
     }
 
     @Test
@@ -72,7 +75,8 @@ class BostotteHusbankenTest {
         assertThat(harSoktBostotteSporsmal.getErUtfylt()).isTrue();
         assertThat(harSoktBostotteSporsmal.getFelt()).hasSize(1);
         assertThat(harSoktBostotteSporsmal.getFelt().get(0).getType()).isEqualTo(Type.CHECKBOX);
-        assertThat(harSoktBostotteSporsmal.getFelt().get(0).getSvar()).isEqualTo("inntekt.bostotte.sporsmal.true");
+        assertThat(harSoktBostotteSporsmal.getFelt().get(0).getSvar().getValue()).isEqualTo("inntekt.bostotte.sporsmal.true");
+        assertThat(harSoktBostotteSporsmal.getFelt().get(0).getSvar().getType()).isEqualTo(SvarType.LOCALE_TEKST);
 
         var husbankenFeiletSporsmal = avsnitt.getSporsmal().get(1);
         assertThat(husbankenFeiletSporsmal.getTittel()).isEqualTo("inntekt.bostotte.kontaktproblemer");
@@ -107,7 +111,8 @@ class BostotteHusbankenTest {
         assertThat(harSoktBostotteSporsmal.getErUtfylt()).isTrue();
         assertThat(harSoktBostotteSporsmal.getFelt()).hasSize(1);
         assertThat(harSoktBostotteSporsmal.getFelt().get(0).getType()).isEqualTo(Type.CHECKBOX);
-        assertThat(harSoktBostotteSporsmal.getFelt().get(0).getSvar()).isEqualTo("inntekt.bostotte.sporsmal.true");
+        assertThat(harSoktBostotteSporsmal.getFelt().get(0).getSvar().getValue()).isEqualTo("inntekt.bostotte.sporsmal.true");
+        assertThat(harSoktBostotteSporsmal.getFelt().get(0).getSvar().getType()).isEqualTo(SvarType.LOCALE_TEKST);
 
         var husbankenUtbetalingerSporsmal = avsnitt.getSporsmal().get(1);
         assertThat(husbankenUtbetalingerSporsmal.getErUtfylt()).isTrue();
@@ -115,26 +120,23 @@ class BostotteHusbankenTest {
 
         var utbetaling1 = husbankenUtbetalingerSporsmal.getFelt().get(0);
         assertThat(utbetaling1.getType()).isEqualTo(Type.SYSTEMDATA_MAP);
-        assertThat(utbetaling1.getLabelSvarMap())
-                .hasSize(3)
-                .containsEntry("inntekt.bostotte.utbetaling.mottaker", "Husstand")
-                .containsEntry("inntekt.bostotte.utbetaling.utbetalingsdato", "2020-01-01")
-                .containsEntry("inntekt.bostotte.utbetaling.belop", "42.0");
+        assertThat(utbetaling1.getLabelSvarMap()).hasSize(3);
+        assertThat(utbetaling1.getLabelSvarMap().get("inntekt.bostotte.utbetaling.mottaker").getValue()).isEqualTo("Husstand");
+        assertThat(utbetaling1.getLabelSvarMap().get("inntekt.bostotte.utbetaling.utbetalingsdato").getValue()).isEqualTo("2020-01-01");
+        assertThat(utbetaling1.getLabelSvarMap().get("inntekt.bostotte.utbetaling.belop").getValue()).isEqualTo("42.0");
 
         var utbetaling2 = husbankenUtbetalingerSporsmal.getFelt().get(1);
         assertThat(utbetaling2.getType()).isEqualTo(Type.SYSTEMDATA_MAP);
-        assertThat(utbetaling2.getLabelSvarMap())
-                .hasSize(3)
-                .containsEntry("inntekt.bostotte.utbetaling.mottaker", "Husstand")
-                .containsEntry("inntekt.bostotte.utbetaling.utbetalingsdato", "2020-02-02")
-                .containsEntry("inntekt.bostotte.utbetaling.belop", "1000.0");
+        assertThat(utbetaling2.getLabelSvarMap()).hasSize(3);
+        assertThat(utbetaling2.getLabelSvarMap().get("inntekt.bostotte.utbetaling.mottaker").getValue()).isEqualTo("Husstand");
+        assertThat(utbetaling2.getLabelSvarMap().get("inntekt.bostotte.utbetaling.utbetalingsdato").getValue()).isEqualTo("2020-02-02");
+        assertThat(utbetaling2.getLabelSvarMap().get("inntekt.bostotte.utbetaling.belop").getValue()).isEqualTo("1000.0");
 
         var sak1 = husbankenUtbetalingerSporsmal.getFelt().get(2);
         assertThat(sak1.getType()).isEqualTo(Type.SYSTEMDATA_MAP);
-        assertThat(sak1.getLabelSvarMap())
-                .hasSize(2)
-                .containsEntry("inntekt.bostotte.sak.dato", "2020-01-01")
-                .containsEntry("inntekt.bostotte.sak.status", "INNVILGET: Ekstra info");
+        assertThat(sak1.getLabelSvarMap()).hasSize(2);
+        assertThat(sak1.getLabelSvarMap().get("inntekt.bostotte.sak.dato").getValue()).isEqualTo("2020-01-01");
+        assertThat(sak1.getLabelSvarMap().get("inntekt.bostotte.sak.status").getValue()).isEqualTo("INNVILGET: Ekstra info");
     }
 
     private JsonOkonomiopplysninger createOpplysninger(List<JsonOkonomibekreftelse> bekreftelser) {

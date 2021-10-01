@@ -7,6 +7,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomioversikt;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibeskrivelserAvAnnet;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktFormue;
+import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.SvarType;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Type;
 import org.junit.jupiter.api.Test;
 
@@ -55,15 +56,17 @@ class BankTest {
         assertThat(bankSporsmal.getErUtfylt()).isTrue();
         assertThat(bankSporsmal.getFelt()).hasSize(2);
         assertThat(bankSporsmal.getFelt().get(0).getType()).isEqualTo(Type.CHECKBOX);
-        assertThat(bankSporsmal.getFelt().get(0).getSvar()).isEqualTo("inntekt.bankinnskudd.true.type.brukskonto");
+        assertThat(bankSporsmal.getFelt().get(0).getSvar().getValue()).isEqualTo("inntekt.bankinnskudd.true.type.brukskonto");
+        assertThat(bankSporsmal.getFelt().get(0).getSvar().getType()).isEqualTo(SvarType.LOCALE_TEKST);
         assertThat(bankSporsmal.getFelt().get(1).getType()).isEqualTo(Type.CHECKBOX);
-        assertThat(bankSporsmal.getFelt().get(1).getSvar()).isEqualTo("inntekt.bankinnskudd.true.type.annet");
+        assertThat(bankSporsmal.getFelt().get(1).getSvar().getValue()).isEqualTo("inntekt.bankinnskudd.true.type.annet");
+        assertThat(bankSporsmal.getFelt().get(1).getSvar().getType()).isEqualTo(SvarType.LOCALE_TEKST);
 
         var beskrivelseAnnetSporsmal = avsnitt.getSporsmal().get(1);
         assertThat(beskrivelseAnnetSporsmal.getErUtfylt()).isTrue();
         assertThat(beskrivelseAnnetSporsmal.getFelt()).hasSize(1);
         assertThat(beskrivelseAnnetSporsmal.getFelt().get(0).getType()).isEqualTo(Type.TEKST);
-        assertThat(beskrivelseAnnetSporsmal.getFelt().get(0).getSvar()).isEqualTo("sparing");
+        assertThat(beskrivelseAnnetSporsmal.getFelt().get(0).getSvar().getValue()).isEqualTo("sparing");
     }
 
     private JsonOkonomi createOkonomi(boolean harBekreftelse) {

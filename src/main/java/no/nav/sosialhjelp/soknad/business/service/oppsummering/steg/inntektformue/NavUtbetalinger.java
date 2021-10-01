@@ -5,6 +5,8 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Avsnitt;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Felt;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Sporsmal;
+import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Svar;
+import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.SvarType;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Type;
 
 import java.util.LinkedHashMap;
@@ -13,6 +15,7 @@ import java.util.stream.Collectors;
 
 import static java.util.Collections.singletonList;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_NAVYTELSE;
+import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.StegUtils.createSvar;
 
 public class NavUtbetalinger {
 
@@ -50,11 +53,11 @@ public class NavUtbetalinger {
         return opplysninger.getUtbetaling().stream()
                 .filter(utbetaling -> UTBETALING_NAVYTELSE.equals(utbetaling.getType()))
                 .map(utbetaling -> {
-                    var map = new LinkedHashMap<String, String>();
-                    map.put("utbetalinger.utbetaling.type.label", utbetaling.getTittel());
-                    map.put("utbetalinger.utbetaling.netto.label", utbetaling.getNetto().toString());
-                    map.put("utbetalinger.utbetaling.brutto.label", utbetaling.getBrutto().toString());
-                    map.put("utbetalinger.utbetaling.utbetalingsdato.label", utbetaling.getUtbetalingsdato());
+                    var map = new LinkedHashMap<String, Svar>();
+                    map.put("utbetalinger.utbetaling.type.label", createSvar(utbetaling.getTittel(), SvarType.TEKST));
+                    map.put("utbetalinger.utbetaling.netto.label", createSvar(utbetaling.getNetto().toString(), SvarType.TEKST));
+                    map.put("utbetalinger.utbetaling.brutto.label", createSvar(utbetaling.getBrutto().toString(), SvarType.TEKST));
+                    map.put("utbetalinger.utbetaling.utbetalingsdato.label", createSvar(utbetaling.getUtbetalingsdato(), SvarType.DATO));
 
                     return new Sporsmal.Builder()
                             .withTittel("utbetalinger.utbetaling.sporsmal")

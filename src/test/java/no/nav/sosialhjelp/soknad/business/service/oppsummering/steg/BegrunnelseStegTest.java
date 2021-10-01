@@ -39,12 +39,12 @@ class BegrunnelseStegTest {
 
         var hvaSokesOmSporsmal = res.getAvsnitt().get(0).getSporsmal().get(0);
         assertThat(hvaSokesOmSporsmal.getErUtfylt()).isTrue();
-        assertThat(hvaSokesOmSporsmal.getFelt().get(0).getSvar()).isEqualTo("hva jeg søker om");
+        assertThat(hvaSokesOmSporsmal.getFelt().get(0).getSvar().getValue()).isEqualTo("hva jeg søker om");
         assertThat(hvaSokesOmSporsmal.getFelt().get(0).getType()).isEqualTo(Type.TEKST);
 
         var hvorforSokeSporsmal = res.getAvsnitt().get(0).getSporsmal().get(1);
         assertThat(hvorforSokeSporsmal.getErUtfylt()).isTrue();
-        assertThat(hvorforSokeSporsmal.getFelt().get(0).getSvar()).isEqualTo("hvorfor");
+        assertThat(hvorforSokeSporsmal.getFelt().get(0).getSvar().getValue()).isEqualTo("hvorfor");
         assertThat(hvorforSokeSporsmal.getFelt().get(0).getType()).isEqualTo(Type.TEKST);
     }
 

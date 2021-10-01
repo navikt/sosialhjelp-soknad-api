@@ -36,7 +36,7 @@ public class Sporsmal {
     }
 
     public boolean containsFeltWithSvar(String svar) {
-        return felt != null && felt.stream().anyMatch(f -> svar.equals(f.getSvar()));
+        return felt != null && felt.stream().anyMatch(f -> svar.equals(f.getSvar().getValue()));
     }
 
     public static class Builder {

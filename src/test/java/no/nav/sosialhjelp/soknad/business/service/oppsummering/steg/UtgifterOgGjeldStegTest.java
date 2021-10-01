@@ -98,12 +98,12 @@ class UtgifterOgGjeldStegTest {
 
         var boutgifterFelter = utgifterSporsmal.get(1).getFelt();
         assertThat(boutgifterFelter).hasSize(6);
-        assertThat(boutgifterFelter.get(0).getSvar()).isEqualTo("utgifter.boutgift.true.type.husleie");
-        assertThat(boutgifterFelter.get(1).getSvar()).isEqualTo("utgifter.boutgift.true.type.strom");
-        assertThat(boutgifterFelter.get(2).getSvar()).isEqualTo("utgifter.boutgift.true.type.kommunalAvgift");
-        assertThat(boutgifterFelter.get(3).getSvar()).isEqualTo("utgifter.boutgift.true.type.oppvarming");
-        assertThat(boutgifterFelter.get(4).getSvar()).isEqualTo("utgifter.boutgift.true.type.boliglanAvdrag");
-        assertThat(boutgifterFelter.get(5).getSvar()).isEqualTo("utgifter.boutgift.true.type.annenBoutgift");
+        assertThat(boutgifterFelter.get(0).getSvar().getValue()).isEqualTo("utgifter.boutgift.true.type.husleie");
+        assertThat(boutgifterFelter.get(1).getSvar().getValue()).isEqualTo("utgifter.boutgift.true.type.strom");
+        assertThat(boutgifterFelter.get(2).getSvar().getValue()).isEqualTo("utgifter.boutgift.true.type.kommunalAvgift");
+        assertThat(boutgifterFelter.get(3).getSvar().getValue()).isEqualTo("utgifter.boutgift.true.type.oppvarming");
+        assertThat(boutgifterFelter.get(4).getSvar().getValue()).isEqualTo("utgifter.boutgift.true.type.boliglanAvdrag");
+        assertThat(boutgifterFelter.get(5).getSvar().getValue()).isEqualTo("utgifter.boutgift.true.type.annenBoutgift");
 
         assertThat(utgifterSporsmal.get(2).getErUtfylt()).isFalse(); // barneutgifter
     }
@@ -158,11 +158,11 @@ class UtgifterOgGjeldStegTest {
 
         var barneutgifterFelter = utgifterSporsmal.get(2).getFelt();
         assertThat(barneutgifterFelter).hasSize(5);
-        assertThat(barneutgifterFelter.get(0).getSvar()).isEqualTo("utgifter.barn.true.utgifter.barnFritidsaktiviteter");
-        assertThat(barneutgifterFelter.get(1).getSvar()).isEqualTo("utgifter.barn.true.utgifter.barnehage");
-        assertThat(barneutgifterFelter.get(2).getSvar()).isEqualTo("utgifter.barn.true.utgifter.sfo");
-        assertThat(barneutgifterFelter.get(3).getSvar()).isEqualTo("utgifter.barn.true.utgifter.barnTannregulering");
-        assertThat(barneutgifterFelter.get(4).getSvar()).isEqualTo("utgifter.barn.true.utgifter.annenBarneutgift");
+        assertThat(barneutgifterFelter.get(0).getSvar().getValue()).isEqualTo("utgifter.barn.true.utgifter.barnFritidsaktiviteter");
+        assertThat(barneutgifterFelter.get(1).getSvar().getValue()).isEqualTo("utgifter.barn.true.utgifter.barnehage");
+        assertThat(barneutgifterFelter.get(2).getSvar().getValue()).isEqualTo("utgifter.barn.true.utgifter.sfo");
+        assertThat(barneutgifterFelter.get(3).getSvar().getValue()).isEqualTo("utgifter.barn.true.utgifter.barnTannregulering");
+        assertThat(barneutgifterFelter.get(4).getSvar().getValue()).isEqualTo("utgifter.barn.true.utgifter.annenBarneutgift");
     }
 
     private JsonInternalSoknad createSoknad(List<JsonOkonomibekreftelse> bekreftelser, List<JsonOkonomiOpplysningUtgift> opplysningUtgifter, List<JsonOkonomioversiktUtgift> oversiktUtgifter) {

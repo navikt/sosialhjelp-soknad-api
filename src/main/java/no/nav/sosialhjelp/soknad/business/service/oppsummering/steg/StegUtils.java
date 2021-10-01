@@ -3,6 +3,8 @@ package no.nav.sosialhjelp.soknad.business.service.oppsummering.steg;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonNavn;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Felt;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Sporsmal;
+import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Svar;
+import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.SvarType;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Type;
 
 import java.util.List;
@@ -37,7 +39,14 @@ public final class StegUtils {
         return new Sporsmal.Builder()
                 .withTittel(tittel)
                 .withErUtfylt(verdi != null)
-                .withFelt(verdi != null ? singletonList(new Felt.Builder().withLabel(key).withSvar(verdi.toString()).withType(Type.TEKST).build()) : null)
+                .withFelt(verdi != null ?
+                        singletonList(
+                                new Felt.Builder()
+                                        .withLabel(key)
+                                        .withSvar(createSvar(verdi.toString(), SvarType.TEKST))
+                                        .withType(Type.TEKST)
+                                        .build()) :
+                        null)
                 .build();
     }
 
@@ -45,8 +54,15 @@ public final class StegUtils {
         return singletonList(
                 new Felt.Builder()
                         .withType(Type.CHECKBOX)
-                        .withSvar(harSvartJa ? keyTrue : keyFalse)
+                        .withSvar(createSvar(harSvartJa ? keyTrue : keyFalse, SvarType.LOCALE_TEKST))
                         .build()
         );
+    }
+
+    public static Svar createSvar(String value, SvarType type) {
+        return new Svar.Builder()
+                .withValue(value)
+                .withType(type)
+                .build();
     }
 }
