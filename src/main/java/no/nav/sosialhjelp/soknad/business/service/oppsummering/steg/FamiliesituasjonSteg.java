@@ -23,7 +23,7 @@ import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.StegU
 import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.StegUtils.fulltnavn;
 import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.StegUtils.isNotNullOrEmtpy;
 import static no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.SvarType.DATO;
-import static no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.SvarType.LOCALE;
+import static no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.SvarType.LOCALE_TEKST;
 import static no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.SvarType.TEKST;
 
 public class FamiliesituasjonSteg {
@@ -136,7 +136,7 @@ public class FamiliesituasjonSteg {
         map.put("familie.sivilstatus.gift.ektefelle.navn.label", createSvar(fulltnavn(sivilstatus.getEktefelle().getNavn()), TEKST));
         map.put("familie.sivilstatus.gift.ektefelle.fnr.label", createSvar(sivilstatus.getEktefelle().getFodselsdato(), DATO));
         map.put("familie.sivilstatus.gift.ektefelle.pnr.label", createSvar(sivilstatus.getEktefelle().getPersonIdentifikator(), TEKST));
-        map.put("familie.sivilstatus.gift.ektefelle.borsammen.sporsmal", createSvar(borSammenMedSvar(sivilstatus), LOCALE));
+        map.put("familie.sivilstatus.gift.ektefelle.borsammen.sporsmal", createSvar(borSammenMedSvar(sivilstatus), LOCALE_TEKST));
 
         return new Sporsmal.Builder()
                 .withTittel("familie.sivilstatus.gift.ektefelle.sporsmal")
@@ -184,7 +184,7 @@ public class FamiliesituasjonSteg {
             labelSvarMap.put("system.familie.sivilstatus.gift.ektefelle.fodselsdato", createSvar(ektefelle.getFodselsdato(), DATO));
         }
         if (sivilstatus.getFolkeregistrertMedEktefelle() != null) {
-            labelSvarMap.put("system.familie.sivilstatus.gift.ektefelle.folkereg", createSvar(Boolean.TRUE.equals(sivilstatus.getFolkeregistrertMedEktefelle()) ? "system.familie.sivilstatus.gift.ektefelle.folkeregistrertsammen.true" : "system.familie.sivilstatus.gift.ektefelle.folkeregistrertsammen.false", LOCALE));
+            labelSvarMap.put("system.familie.sivilstatus.gift.ektefelle.folkereg", createSvar(Boolean.TRUE.equals(sivilstatus.getFolkeregistrertMedEktefelle()) ? "system.familie.sivilstatus.gift.ektefelle.folkeregistrertsammen.true" : "system.familie.sivilstatus.gift.ektefelle.folkeregistrertsammen.false", LOCALE_TEKST));
         }
 
         return new Sporsmal.Builder()
@@ -272,7 +272,7 @@ public class FamiliesituasjonSteg {
             labelSvarMap.put("familierelasjon.fodselsdato", createSvar(barn.getBarn().getFodselsdato(), DATO));
         }
         if (barn.getErFolkeregistrertSammen() != null) {
-            labelSvarMap.put("familierelasjon.samme_folkeregistrerte_adresse", createSvar(Boolean.TRUE.equals(barn.getErFolkeregistrertSammen().getVerdi()) ? "system.familie.barn.true.barn.folkeregistrertsammen.true" : "system.familie.barn.true.barn.folkeregistrertsammen.false", LOCALE));
+            labelSvarMap.put("familierelasjon.samme_folkeregistrerte_adresse", createSvar(Boolean.TRUE.equals(barn.getErFolkeregistrertSammen().getVerdi()) ? "system.familie.barn.true.barn.folkeregistrertsammen.true" : "system.familie.barn.true.barn.folkeregistrertsammen.false", LOCALE_TEKST));
         }
 
         return new Sporsmal.Builder()
