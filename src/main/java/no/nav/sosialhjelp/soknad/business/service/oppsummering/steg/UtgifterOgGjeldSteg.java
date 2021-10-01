@@ -148,7 +148,7 @@ public class UtgifterOgGjeldSteg {
                 .findFirst()
                 .ifPresent(utgift -> felter.add(
                         new Felt.Builder()
-                                .withSvar(createSvar(key, SvarType.LOCALE))
+                                .withSvar(createSvar(key, SvarType.LOCALE_TEKST))
                                 .withType(Type.CHECKBOX)
                                 .build()
                 ));
@@ -161,7 +161,7 @@ public class UtgifterOgGjeldSteg {
                 .findFirst()
                 .ifPresent(utgift -> felter.add(
                         new Felt.Builder()
-                                .withSvar(createSvar(key, SvarType.LOCALE))
+                                .withSvar(createSvar(key, SvarType.LOCALE_TEKST))
                                 .withType(Type.CHECKBOX)
                                 .build()
                 ));

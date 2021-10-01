@@ -202,7 +202,7 @@ public class PersonopplysningerSteg {
         if (TRUE.equals(kontonummer.getHarIkkeKonto())) {
             return singletonList(
                     new Felt.Builder()
-                            .withSvar(createSvar("kontakt.kontonummer.harikke.true", SvarType.LOCALE))
+                            .withSvar(createSvar("kontakt.kontonummer.harikke.true", SvarType.LOCALE_TEKST))
                             .withType(Type.CHECKBOX)
                             .build()
             );

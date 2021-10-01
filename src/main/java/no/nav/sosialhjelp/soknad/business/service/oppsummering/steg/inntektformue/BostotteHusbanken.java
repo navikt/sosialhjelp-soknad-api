@@ -116,7 +116,7 @@ public class BostotteHusbanken {
     private List<Felt> manglerSamtykkeFelt() {
         return singletonList(
                 new Felt.Builder()
-                        .withSvar(createSvar("inntekt.bostotte.mangler_samtykke", SvarType.LOCALE))
+                        .withSvar(createSvar("inntekt.bostotte.mangler_samtykke", SvarType.LOCALE_TEKST))
                         .build()
         );
     }

@@ -51,11 +51,11 @@ class BostotteHusbankenTest {
         assertThat(harSoktBostotteSporsmal.getFelt()).hasSize(1);
         assertThat(harSoktBostotteSporsmal.getFelt().get(0).getType()).isEqualTo(Type.CHECKBOX);
         assertThat(harSoktBostotteSporsmal.getFelt().get(0).getSvar().getValue()).isEqualTo("inntekt.bostotte.sporsmal.true");
-        assertThat(harSoktBostotteSporsmal.getFelt().get(0).getSvar().getType()).isEqualTo(SvarType.LOCALE);
+        assertThat(harSoktBostotteSporsmal.getFelt().get(0).getSvar().getType()).isEqualTo(SvarType.LOCALE_TEKST);
 
         var manglerSamtykkeSporsmal = avsnitt.getSporsmal().get(1);
         assertThat(manglerSamtykkeSporsmal.getFelt().get(0).getSvar().getValue()).isEqualTo("inntekt.bostotte.mangler_samtykke");
-        assertThat(manglerSamtykkeSporsmal.getFelt().get(0).getSvar().getType()).isEqualTo(SvarType.LOCALE);
+        assertThat(manglerSamtykkeSporsmal.getFelt().get(0).getSvar().getType()).isEqualTo(SvarType.LOCALE_TEKST);
     }
 
     @Test
@@ -76,7 +76,7 @@ class BostotteHusbankenTest {
         assertThat(harSoktBostotteSporsmal.getFelt()).hasSize(1);
         assertThat(harSoktBostotteSporsmal.getFelt().get(0).getType()).isEqualTo(Type.CHECKBOX);
         assertThat(harSoktBostotteSporsmal.getFelt().get(0).getSvar().getValue()).isEqualTo("inntekt.bostotte.sporsmal.true");
-        assertThat(harSoktBostotteSporsmal.getFelt().get(0).getSvar().getType()).isEqualTo(SvarType.LOCALE);
+        assertThat(harSoktBostotteSporsmal.getFelt().get(0).getSvar().getType()).isEqualTo(SvarType.LOCALE_TEKST);
 
         var husbankenFeiletSporsmal = avsnitt.getSporsmal().get(1);
         assertThat(husbankenFeiletSporsmal.getTittel()).isEqualTo("inntekt.bostotte.kontaktproblemer");
@@ -112,7 +112,7 @@ class BostotteHusbankenTest {
         assertThat(harSoktBostotteSporsmal.getFelt()).hasSize(1);
         assertThat(harSoktBostotteSporsmal.getFelt().get(0).getType()).isEqualTo(Type.CHECKBOX);
         assertThat(harSoktBostotteSporsmal.getFelt().get(0).getSvar().getValue()).isEqualTo("inntekt.bostotte.sporsmal.true");
-        assertThat(harSoktBostotteSporsmal.getFelt().get(0).getSvar().getType()).isEqualTo(SvarType.LOCALE);
+        assertThat(harSoktBostotteSporsmal.getFelt().get(0).getSvar().getType()).isEqualTo(SvarType.LOCALE_TEKST);
 
         var husbankenUtbetalingerSporsmal = avsnitt.getSporsmal().get(1);
         assertThat(husbankenUtbetalingerSporsmal.getErUtfylt()).isTrue();

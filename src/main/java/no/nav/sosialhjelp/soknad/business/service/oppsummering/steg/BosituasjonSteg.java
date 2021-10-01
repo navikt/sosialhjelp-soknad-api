@@ -44,7 +44,7 @@ public class BosituasjonSteg {
                         singletonList(
                                 new Felt.Builder()
                                         .withType(Type.CHECKBOX)
-                                        .withSvar(createSvar(botypeToTekstKey(bosituasjon.getBotype()), SvarType.LOCALE))
+                                        .withSvar(createSvar(botypeToTekstKey(bosituasjon.getBotype()), SvarType.LOCALE_TEKST))
                                         .build()
                         ) :
                         null

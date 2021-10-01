@@ -54,7 +54,7 @@ public final class StegUtils {
         return singletonList(
                 new Felt.Builder()
                         .withType(Type.CHECKBOX)
-                        .withSvar(createSvar(harSvartJa ? keyTrue : keyFalse, SvarType.LOCALE))
+                        .withSvar(createSvar(harSvartJa ? keyTrue : keyFalse, SvarType.LOCALE_TEKST))
                         .build()
         );
     }

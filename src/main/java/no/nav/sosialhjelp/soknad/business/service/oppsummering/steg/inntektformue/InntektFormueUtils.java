@@ -36,7 +36,7 @@ public final class InntektFormueUtils {
                 .ifPresent(formue -> felter.add(
                         new Felt.Builder()
                                 .withType(Type.CHECKBOX)
-                                .withSvar(createSvar(key, SvarType.LOCALE))
+                                .withSvar(createSvar(key, SvarType.LOCALE_TEKST))
                                 .build()
                 ));
     }

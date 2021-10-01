@@ -62,7 +62,7 @@ class BosituasjonStegTest {
         assertThat(botypeSporsmal.getErUtfylt()).isTrue();
         assertThat(botypeSporsmal.getFelt()).hasSize(1);
         assertThat(botypeSporsmal.getFelt().get(0).getSvar().getValue()).isEqualTo("bosituasjon.annet");
-        assertThat(botypeSporsmal.getFelt().get(0).getSvar().getType()).isEqualTo(SvarType.LOCALE);
+        assertThat(botypeSporsmal.getFelt().get(0).getSvar().getType()).isEqualTo(SvarType.LOCALE_TEKST);
 
         var antallPersonerSporsmal = res.getAvsnitt().get(0).getSporsmal().get(1);
         assertThat(antallPersonerSporsmal.getErUtfylt()).isFalse();
@@ -81,7 +81,7 @@ class BosituasjonStegTest {
         assertThat(botypeSporsmal.getErUtfylt()).isTrue();
         assertThat(botypeSporsmal.getFelt()).hasSize(1);
         assertThat(botypeSporsmal.getFelt().get(0).getSvar().getValue()).isEqualTo("bosituasjon.annet.botype.krisesenter");
-        assertThat(botypeSporsmal.getFelt().get(0).getSvar().getType()).isEqualTo(SvarType.LOCALE);
+        assertThat(botypeSporsmal.getFelt().get(0).getSvar().getType()).isEqualTo(SvarType.LOCALE_TEKST);
 
         var antallPersonerSporsmal = res.getAvsnitt().get(0).getSporsmal().get(1);
         assertThat(antallPersonerSporsmal.getErUtfylt()).isTrue();

@@ -50,7 +50,7 @@ class AnnenFormueTest {
         var harAnnenFormueSvar = harAnnenFormueSporsmal.getFelt().get(0);
         assertThat(harAnnenFormueSvar.getType()).isEqualTo(Type.CHECKBOX);
         assertThat(harAnnenFormueSvar.getSvar().getValue()).isEqualTo("inntekt.eierandeler.false");
-        assertThat(harAnnenFormueSvar.getSvar().getType()).isEqualTo(SvarType.LOCALE);
+        assertThat(harAnnenFormueSvar.getSvar().getType()).isEqualTo(SvarType.LOCALE_TEKST);
     }
 
     @Test
@@ -69,7 +69,7 @@ class AnnenFormueTest {
         var harAnnenFormueSvar = harAnnenFormueSporsmal.getFelt().get(0);
         assertThat(harAnnenFormueSvar.getType()).isEqualTo(Type.CHECKBOX);
         assertThat(harAnnenFormueSvar.getSvar().getValue()).isEqualTo("inntekt.eierandeler.true");
-        assertThat(harAnnenFormueSvar.getSvar().getType()).isEqualTo(SvarType.LOCALE);
+        assertThat(harAnnenFormueSvar.getSvar().getType()).isEqualTo(SvarType.LOCALE_TEKST);
 
         var hvaEierDuSporsmal = avsnitt.getSporsmal().get(1);
         assertThat(hvaEierDuSporsmal.getErUtfylt()).isFalse();
@@ -98,17 +98,17 @@ class AnnenFormueTest {
         var harAnnenFormueSvar = harAnnenFormueSporsmal.getFelt().get(0);
         assertThat(harAnnenFormueSvar.getType()).isEqualTo(Type.CHECKBOX);
         assertThat(harAnnenFormueSvar.getSvar().getValue()).isEqualTo("inntekt.eierandeler.true");
-        assertThat(harAnnenFormueSvar.getSvar().getType()).isEqualTo(SvarType.LOCALE);
+        assertThat(harAnnenFormueSvar.getSvar().getType()).isEqualTo(SvarType.LOCALE_TEKST);
 
         var hvaEierDuSporsmal = avsnitt.getSporsmal().get(1);
         assertThat(hvaEierDuSporsmal.getErUtfylt()).isTrue();
         assertThat(hvaEierDuSporsmal.getFelt()).hasSize(2);
         assertThat(hvaEierDuSporsmal.getFelt().get(0).getType()).isEqualTo(Type.CHECKBOX);
         assertThat(hvaEierDuSporsmal.getFelt().get(0).getSvar().getValue()).isEqualTo("inntekt.eierandeler.true.type.bolig");
-        assertThat(hvaEierDuSporsmal.getFelt().get(0).getSvar().getType()).isEqualTo(SvarType.LOCALE);
+        assertThat(hvaEierDuSporsmal.getFelt().get(0).getSvar().getType()).isEqualTo(SvarType.LOCALE_TEKST);
         assertThat(hvaEierDuSporsmal.getFelt().get(1).getType()).isEqualTo(Type.CHECKBOX);
         assertThat(hvaEierDuSporsmal.getFelt().get(1).getSvar().getValue()).isEqualTo("inntekt.eierandeler.true.type.annet");
-        assertThat(hvaEierDuSporsmal.getFelt().get(1).getSvar().getType()).isEqualTo(SvarType.LOCALE);
+        assertThat(hvaEierDuSporsmal.getFelt().get(1).getSvar().getType()).isEqualTo(SvarType.LOCALE_TEKST);
 
         var annetBeskrivelseSporsmal = avsnitt.getSporsmal().get(2);
         assertThat(annetBeskrivelseSporsmal.getErUtfylt()).isTrue();

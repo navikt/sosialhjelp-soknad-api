@@ -229,7 +229,7 @@ public class OkonomiskeOpplysningerOgVedleggSteg {
         } else {
             felt = new Felt.Builder()
                     .withType(Type.TEKST)
-                    .withSvar(createSvar("VedleggAlleredeSendt".equals(vedlegg.getStatus()) ? "opplysninger.vedlegg.alleredelastetopp" : "vedlegg.oppsummering.ikkelastetopp", SvarType.LOCALE))
+                    .withSvar(createSvar("VedleggAlleredeSendt".equals(vedlegg.getStatus()) ? "opplysninger.vedlegg.alleredelastetopp" : "vedlegg.oppsummering.ikkelastetopp", SvarType.LOCALE_TEKST))
                     .build();
         }
         return singletonList(felt);

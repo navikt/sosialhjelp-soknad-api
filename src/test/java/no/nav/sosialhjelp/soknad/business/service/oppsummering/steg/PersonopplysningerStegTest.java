@@ -233,7 +233,7 @@ class PersonopplysningerStegTest {
 
         var kontonummerFelt = kontonummerSporsmal.getFelt().get(0);
         assertThat(kontonummerFelt.getSvar().getValue()).isEqualTo("kontakt.kontonummer.harikke.true");
-        assertThat(kontonummerFelt.getSvar().getType()).isEqualTo(SvarType.LOCALE);
+        assertThat(kontonummerFelt.getSvar().getType()).isEqualTo(SvarType.LOCALE_TEKST);
         assertThat(kontonummerFelt.getType()).isEqualTo(Type.CHECKBOX);
     }
 

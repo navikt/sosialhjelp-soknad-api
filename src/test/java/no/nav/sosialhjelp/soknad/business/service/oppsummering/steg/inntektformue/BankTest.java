@@ -57,10 +57,10 @@ class BankTest {
         assertThat(bankSporsmal.getFelt()).hasSize(2);
         assertThat(bankSporsmal.getFelt().get(0).getType()).isEqualTo(Type.CHECKBOX);
         assertThat(bankSporsmal.getFelt().get(0).getSvar().getValue()).isEqualTo("inntekt.bankinnskudd.true.type.brukskonto");
-        assertThat(bankSporsmal.getFelt().get(0).getSvar().getType()).isEqualTo(SvarType.LOCALE);
+        assertThat(bankSporsmal.getFelt().get(0).getSvar().getType()).isEqualTo(SvarType.LOCALE_TEKST);
         assertThat(bankSporsmal.getFelt().get(1).getType()).isEqualTo(Type.CHECKBOX);
         assertThat(bankSporsmal.getFelt().get(1).getSvar().getValue()).isEqualTo("inntekt.bankinnskudd.true.type.annet");
-        assertThat(bankSporsmal.getFelt().get(1).getSvar().getType()).isEqualTo(SvarType.LOCALE);
+        assertThat(bankSporsmal.getFelt().get(1).getSvar().getType()).isEqualTo(SvarType.LOCALE_TEKST);
 
         var beskrivelseAnnetSporsmal = avsnitt.getSporsmal().get(1);
         assertThat(beskrivelseAnnetSporsmal.getErUtfylt()).isTrue();

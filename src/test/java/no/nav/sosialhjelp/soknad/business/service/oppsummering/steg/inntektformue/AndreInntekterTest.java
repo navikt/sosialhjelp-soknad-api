@@ -50,7 +50,7 @@ class AndreInntekterTest {
         var harAndreInntekterSvar = harAndreInntekterSporsmal.getFelt().get(0);
         assertThat(harAndreInntekterSvar.getType()).isEqualTo(Type.CHECKBOX);
         assertThat(harAndreInntekterSvar.getSvar().getValue()).isEqualTo("inntekt.inntekter.false");
-        assertThat(harAndreInntekterSvar.getSvar().getType()).isEqualTo(SvarType.LOCALE);
+        assertThat(harAndreInntekterSvar.getSvar().getType()).isEqualTo(SvarType.LOCALE_TEKST);
     }
 
     @Test
@@ -69,7 +69,7 @@ class AndreInntekterTest {
         var harAndreInntekterSvar = harAndreInntekterSporsmal.getFelt().get(0);
         assertThat(harAndreInntekterSvar.getType()).isEqualTo(Type.CHECKBOX);
         assertThat(harAndreInntekterSvar.getSvar().getValue()).isEqualTo("inntekt.inntekter.true");
-        assertThat(harAndreInntekterSvar.getSvar().getType()).isEqualTo(SvarType.LOCALE);
+        assertThat(harAndreInntekterSvar.getSvar().getType()).isEqualTo(SvarType.LOCALE_TEKST);
 
         var hvaHarDuMottattSporsmal = avsnitt.getSporsmal().get(1);
         assertThat(hvaHarDuMottattSporsmal.getTittel()).isEqualTo("inntekt.inntekter.true.type.sporsmal");
@@ -96,7 +96,7 @@ class AndreInntekterTest {
         var harAndreInntekterSvar = harAndreInntekterSporsmal.getFelt().get(0);
         assertThat(harAndreInntekterSvar.getType()).isEqualTo(Type.CHECKBOX);
         assertThat(harAndreInntekterSvar.getSvar().getValue()).isEqualTo("inntekt.inntekter.true");
-        assertThat(harAndreInntekterSvar.getSvar().getType()).isEqualTo(SvarType.LOCALE);
+        assertThat(harAndreInntekterSvar.getSvar().getType()).isEqualTo(SvarType.LOCALE_TEKST);
 
         var hvaHarDuMottattSporsmal = avsnitt.getSporsmal().get(1);
         assertThat(hvaHarDuMottattSporsmal.getTittel()).isEqualTo("inntekt.inntekter.true.type.sporsmal");
@@ -104,10 +104,10 @@ class AndreInntekterTest {
         assertThat(hvaHarDuMottattSporsmal.getFelt()).hasSize(2);
         assertThat(hvaHarDuMottattSporsmal.getFelt().get(0).getType()).isEqualTo(Type.CHECKBOX);
         assertThat(hvaHarDuMottattSporsmal.getFelt().get(0).getSvar().getValue()).isEqualTo("json.okonomi.opplysninger.inntekt.inntekter.utbytte");
-        assertThat(hvaHarDuMottattSporsmal.getFelt().get(0).getSvar().getType()).isEqualTo(SvarType.LOCALE);
+        assertThat(hvaHarDuMottattSporsmal.getFelt().get(0).getSvar().getType()).isEqualTo(SvarType.LOCALE_TEKST);
         assertThat(hvaHarDuMottattSporsmal.getFelt().get(1).getType()).isEqualTo(Type.CHECKBOX);
         assertThat(hvaHarDuMottattSporsmal.getFelt().get(1).getSvar().getValue()).isEqualTo("json.okonomi.opplysninger.inntekt.inntekter.salg");
-        assertThat(hvaHarDuMottattSporsmal.getFelt().get(1).getSvar().getType()).isEqualTo(SvarType.LOCALE);
+        assertThat(hvaHarDuMottattSporsmal.getFelt().get(1).getSvar().getType()).isEqualTo(SvarType.LOCALE_TEKST);
     }
 
     @Test

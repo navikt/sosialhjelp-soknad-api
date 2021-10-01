@@ -95,7 +95,7 @@ public class AndreInntekter {
                 .ifPresent(utbetaling -> felter.add(
                         new Felt.Builder()
                                 .withType(Type.CHECKBOX)
-                                .withSvar(createSvar(key, SvarType.LOCALE))
+                                .withSvar(createSvar(key, SvarType.LOCALE_TEKST))
                                 .build()
                 ));
     }

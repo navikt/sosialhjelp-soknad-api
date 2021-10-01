@@ -145,7 +145,7 @@ class ArbeidOgUtdanningStegTest {
         assertThat(utdanningSporsmal.getErUtfylt()).isTrue();
         assertThat(utdanningSporsmal.getFelt()).hasSize(1);
         assertThat(utdanningSporsmal.getFelt().get(0).getSvar().getValue()).isEqualTo("dinsituasjon.studerer.false");
-        assertThat(utdanningSporsmal.getFelt().get(0).getSvar().getType()).isEqualTo(SvarType.LOCALE);
+        assertThat(utdanningSporsmal.getFelt().get(0).getSvar().getType()).isEqualTo(SvarType.LOCALE_TEKST);
         assertThat(utdanningSporsmal.getFelt().get(0).getType()).isEqualTo(Type.CHECKBOX);
     }
 
@@ -161,7 +161,7 @@ class ArbeidOgUtdanningStegTest {
         assertThat(utdanningSporsmal.getErUtfylt()).isTrue();
         assertThat(utdanningSporsmal.getFelt()).hasSize(1);
         assertThat(utdanningSporsmal.getFelt().get(0).getSvar().getValue()).isEqualTo("dinsituasjon.studerer.true");
-        assertThat(utdanningSporsmal.getFelt().get(0).getSvar().getType()).isEqualTo(SvarType.LOCALE);
+        assertThat(utdanningSporsmal.getFelt().get(0).getSvar().getType()).isEqualTo(SvarType.LOCALE_TEKST);
         assertThat(utdanningSporsmal.getFelt().get(0).getType()).isEqualTo(Type.CHECKBOX);
 
         var studentgradSporsmal = res.getAvsnitt().get(1).getSporsmal().get(1);
@@ -180,14 +180,14 @@ class ArbeidOgUtdanningStegTest {
         assertThat(utdanningSporsmal.getErUtfylt()).isTrue();
         assertThat(utdanningSporsmal.getFelt()).hasSize(1);
         assertThat(utdanningSporsmal.getFelt().get(0).getSvar().getValue()).isEqualTo("dinsituasjon.studerer.true");
-        assertThat(utdanningSporsmal.getFelt().get(0).getSvar().getType()).isEqualTo(SvarType.LOCALE);
+        assertThat(utdanningSporsmal.getFelt().get(0).getSvar().getType()).isEqualTo(SvarType.LOCALE_TEKST);
         assertThat(utdanningSporsmal.getFelt().get(0).getType()).isEqualTo(Type.CHECKBOX);
 
         var studentgradSporsmal = res.getAvsnitt().get(1).getSporsmal().get(1);
         assertThat(studentgradSporsmal.getErUtfylt()).isTrue();
         assertThat(studentgradSporsmal.getFelt()).hasSize(1);
         assertThat(studentgradSporsmal.getFelt().get(0).getSvar().getValue()).isEqualTo("dinsituasjon.studerer.true.grad.heltid");
-        assertThat(studentgradSporsmal.getFelt().get(0).getSvar().getType()).isEqualTo(SvarType.LOCALE);
+        assertThat(studentgradSporsmal.getFelt().get(0).getSvar().getType()).isEqualTo(SvarType.LOCALE_TEKST);
         assertThat(studentgradSporsmal.getFelt().get(0).getType()).isEqualTo(Type.CHECKBOX);
     }
 

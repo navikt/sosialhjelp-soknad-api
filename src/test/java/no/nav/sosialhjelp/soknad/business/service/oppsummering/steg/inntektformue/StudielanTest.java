@@ -45,6 +45,6 @@ class StudielanTest {
         assertThat(avsnitt.getSporsmal().get(0).getFelt()).hasSize(1);
         assertThat(avsnitt.getSporsmal().get(0).getFelt().get(0).getType()).isEqualTo(Type.CHECKBOX);
         assertThat(avsnitt.getSporsmal().get(0).getFelt().get(0).getSvar().getValue()).isEqualTo("inntekt.studielan.true");
-        assertThat(avsnitt.getSporsmal().get(0).getFelt().get(0).getSvar().getType()).isEqualTo(SvarType.LOCALE);
+        assertThat(avsnitt.getSporsmal().get(0).getFelt().get(0).getSvar().getType()).isEqualTo(SvarType.LOCALE_TEKST);
     }
 }
