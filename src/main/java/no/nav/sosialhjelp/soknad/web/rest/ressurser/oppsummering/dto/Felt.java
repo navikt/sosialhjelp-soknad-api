@@ -7,7 +7,7 @@ public class Felt {
 
     private final String label;
     private final String svar;
-    private final Map<String, String> labelSvarMap;
+    private final Map<String, Svar> labelSvarMap;
     private final Type type;
     private final List<Vedlegg> vedlegg;
 
@@ -27,7 +27,7 @@ public class Felt {
         return svar;
     }
 
-    public Map<String, String> getLabelSvarMap() {
+    public Map<String, Svar> getLabelSvarMap() {
         return labelSvarMap;
     }
 
@@ -42,7 +42,7 @@ public class Felt {
     public static class Builder {
         private String label;
         private String svar;
-        private Map<String, String> labelSvarMap;
+        private Map<String, Svar> labelSvarMap;
         private Type type;
         private List<Vedlegg> vedlegg;
 
@@ -58,7 +58,7 @@ public class Felt {
             return this;
         }
 
-        public Builder withLabelSvarMap(Map<String, String> labelSvarMap) {
+        public Builder withLabelSvarMap(Map<String, Svar> labelSvarMap) {
             this.labelSvarMap = labelSvarMap;
             return this;
         }

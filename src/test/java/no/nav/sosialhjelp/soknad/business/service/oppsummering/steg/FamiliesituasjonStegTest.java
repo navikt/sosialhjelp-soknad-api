@@ -75,12 +75,12 @@ class FamiliesituasjonStegTest {
         assertThat(sivilstatusSporsmal.getErUtfylt()).isFalse(); // fnr og pnr mangler
         assertThat(sivilstatusSporsmal.getFelt()).hasSize(1);
         assertThat(sivilstatusSporsmal.getFelt().get(0).getType()).isEqualTo(Type.SYSTEMDATA_MAP);
-        assertThat(sivilstatusSporsmal.getFelt().get(0).getLabelSvarMap())
-                .hasSize(4)
-                .containsEntry("familie.sivilstatus.gift.ektefelle.navn.label", "Gul Knapp")
-                .containsEntry("familie.sivilstatus.gift.ektefelle.fnr.label", null)
-                .containsEntry("familie.sivilstatus.gift.ektefelle.pnr.label", null)
-                .containsEntry("familie.sivilstatus.gift.ektefelle.borsammen.sporsmal", "familie.sivilstatus.gift.ektefelle.borsammen.true");
+        var labelSvarMap = sivilstatusSporsmal.getFelt().get(0).getLabelSvarMap();
+        assertThat(labelSvarMap).hasSize(4);
+        assertThat(labelSvarMap.get("familie.sivilstatus.gift.ektefelle.navn.label").getValue()).isEqualTo("Gul Knapp");
+        assertThat(labelSvarMap.get("familie.sivilstatus.gift.ektefelle.fnr.label").getValue()).isNull();
+        assertThat(labelSvarMap.get("familie.sivilstatus.gift.ektefelle.pnr.label").getValue()).isNull();
+        assertThat(labelSvarMap.get("familie.sivilstatus.gift.ektefelle.borsammen.sporsmal").getValue()).isEqualTo("familie.sivilstatus.gift.ektefelle.borsammen.true");
     }
 
     @Test
@@ -123,13 +123,12 @@ class FamiliesituasjonStegTest {
         assertThat(sivilstatusSporsmal.getErUtfylt()).isTrue();
         assertThat(sivilstatusSporsmal.getFelt()).hasSize(1);
         assertThat(sivilstatusSporsmal.getFelt().get(0).getType()).isEqualTo(Type.SYSTEMDATA_MAP);
-
-        assertThat(sivilstatusSporsmal.getFelt().get(0).getLabelSvarMap())
-                .hasSize(4)
-                .containsKey("system.familie.sivilstatus.label")
-                .containsEntry("system.familie.sivilstatus.gift.ektefelle.navn", "Gul Knapp")
-                .containsEntry("system.familie.sivilstatus.gift.ektefelle.fodselsdato", "1999-12-31")
-                .containsEntry("system.familie.sivilstatus.gift.ektefelle.folkereg", "system.familie.sivilstatus.gift.ektefelle.folkeregistrertsammen.true");
+        var labelSvarMap = sivilstatusSporsmal.getFelt().get(0).getLabelSvarMap();
+        assertThat(labelSvarMap).hasSize(4);
+        assertThat(labelSvarMap.get("system.familie.sivilstatus.label")).isNull();
+        assertThat(labelSvarMap.get("system.familie.sivilstatus.gift.ektefelle.navn").getValue()).isEqualTo("Gul Knapp");
+        assertThat(labelSvarMap.get("system.familie.sivilstatus.gift.ektefelle.fodselsdato").getValue()).isEqualTo("1999-12-31");
+        assertThat(labelSvarMap.get("system.familie.sivilstatus.gift.ektefelle.folkereg").getValue()).isEqualTo("system.familie.sivilstatus.gift.ektefelle.folkeregistrertsammen.true");
     }
 
     @Test
@@ -174,11 +173,11 @@ class FamiliesituasjonStegTest {
         var systemBarnSporsmal = forsorgerpliktSporsmal.get(0);
         assertThat(systemBarnSporsmal.getErUtfylt()).isTrue();
         assertThat(systemBarnSporsmal.getFelt().get(0).getType()).isEqualTo(Type.SYSTEMDATA_MAP);
-        assertThat(systemBarnSporsmal.getFelt().get(0).getLabelSvarMap())
-                .hasSize(3)
-                .containsEntry("familie.barn.true.barn.navn.label", "Grønn Jakke")
-                .containsEntry("familierelasjon.fodselsdato", "2020-02-02")
-                .containsEntry("familierelasjon.samme_folkeregistrerte_adresse", "system.familie.barn.true.barn.folkeregistrertsammen.true");
+        var labelSvarMap = systemBarnSporsmal.getFelt().get(0).getLabelSvarMap();
+        assertThat(labelSvarMap).hasSize(3);
+        assertThat(labelSvarMap.get("familie.barn.true.barn.navn.label").getValue()).isEqualTo("Grønn Jakke");
+        assertThat(labelSvarMap.get("familierelasjon.fodselsdato").getValue()).isEqualTo("2020-02-02");
+        assertThat(labelSvarMap.get("familierelasjon.samme_folkeregistrerte_adresse").getValue()).isEqualTo("system.familie.barn.true.barn.folkeregistrertsammen.true");
 
         var deltBostedSporsmal = forsorgerpliktSporsmal.get(1);
         assertThat(deltBostedSporsmal.getErUtfylt()).isFalse();

@@ -3,6 +3,8 @@ package no.nav.sosialhjelp.soknad.business.service.oppsummering.steg;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonNavn;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Felt;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Sporsmal;
+import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Svar;
+import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.SvarType;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Type;
 
 import java.util.List;
@@ -48,5 +50,12 @@ public final class StegUtils {
                         .withSvar(harSvartJa ? keyTrue : keyFalse)
                         .build()
         );
+    }
+
+    public static Svar createSvar(String value, SvarType type) {
+        return new Svar.Builder()
+                .withValue(value)
+                .withType(type)
+                .build();
     }
 }

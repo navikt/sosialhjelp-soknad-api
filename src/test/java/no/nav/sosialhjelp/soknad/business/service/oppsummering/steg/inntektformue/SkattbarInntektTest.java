@@ -76,13 +76,12 @@ class SkattbarInntektTest {
         assertThat(sporsmal.getFelt()).hasSize(1);
         var felt = sporsmal.getFelt().get(0);
         assertThat(felt.getType()).isEqualTo(Type.SYSTEMDATA_MAP);
-        assertThat(felt.getLabelSvarMap())
-                .hasSize(5)
-                .containsEntry("utbetalinger.utbetaling.arbeidsgivernavn.label", "arbeidsgiver")
-                .containsEntry("utbetalinger.utbetaling.periodeFom.label", "2020-01-01")
-                .containsEntry("utbetalinger.utbetaling.periodeTom.label", "2020-02-01")
-                .containsEntry("utbetalinger.utbetaling.brutto.label", "1234.0")
-                .containsEntry("utbetalinger.utbetaling.skattetrekk.label", "123.0");
+        assertThat(felt.getLabelSvarMap()).hasSize(5);
+        assertThat(felt.getLabelSvarMap().get("utbetalinger.utbetaling.arbeidsgivernavn.label").getValue()).isEqualTo("arbeidsgiver");
+        assertThat(felt.getLabelSvarMap().get("utbetalinger.utbetaling.periodeFom.label").getValue()).isEqualTo("2020-01-01");
+        assertThat(felt.getLabelSvarMap().get("utbetalinger.utbetaling.periodeTom.label").getValue()).isEqualTo("2020-02-01");
+        assertThat(felt.getLabelSvarMap().get("utbetalinger.utbetaling.brutto.label").getValue()).isEqualTo("1234.0");
+        assertThat(felt.getLabelSvarMap().get("utbetalinger.utbetaling.skattetrekk.label").getValue()).isEqualTo("123.0");
     }
 
     @Test

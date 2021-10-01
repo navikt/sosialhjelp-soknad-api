@@ -7,6 +7,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysn
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Avsnitt;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Felt;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Sporsmal;
+import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Svar;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Type;
 
 import java.util.ArrayList;
@@ -17,7 +18,10 @@ import java.util.stream.Collectors;
 
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_SKATTEETATEN;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_SKATTEETATEN_SAMTYKKE;
+import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.StegUtils.createSvar;
 import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.inntektformue.InntektFormueUtils.harBekreftelseTrue;
+import static no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.SvarType.DATO;
+import static no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.SvarType.TEKST;
 
 public class SkattbarInntekt {
 
@@ -81,16 +85,16 @@ public class SkattbarInntekt {
                 //.collect(Collectors.groupingBy()) ??
                 .map(utbetaling -> {
                     // arbeidsgivernavn, fom, tom, brutto, forskuddstrekk
-                    var map = new LinkedHashMap<String, String>();
+                    var map = new LinkedHashMap<String, Svar>();
                     if (utbetaling.getOrganisasjon() == null) {
-                        map.put("utbetalinger.utbetaling.arbeidsgivernavn.label", "Uten organisasjonsnummer");
+                        map.put("utbetalinger.utbetaling.arbeidsgivernavn.label", createSvar("Uten organisasjonsnummer", TEKST));
                     } else {
-                        map.put("utbetalinger.utbetaling.arbeidsgivernavn.label", utbetaling.getOrganisasjon().getNavn());
+                        map.put("utbetalinger.utbetaling.arbeidsgivernavn.label", createSvar(utbetaling.getOrganisasjon().getNavn(), TEKST));
                     }
-                    map.put("utbetalinger.utbetaling.periodeFom.label", utbetaling.getPeriodeFom());
-                    map.put("utbetalinger.utbetaling.periodeTom.label", utbetaling.getPeriodeTom());
-                    map.put("utbetalinger.utbetaling.brutto.label", utbetaling.getBrutto().toString());
-                    map.put("utbetalinger.utbetaling.skattetrekk.label", utbetaling.getSkattetrekk().toString());
+                    map.put("utbetalinger.utbetaling.periodeFom.label", createSvar(utbetaling.getPeriodeFom(), DATO));
+                    map.put("utbetalinger.utbetaling.periodeTom.label", createSvar(utbetaling.getPeriodeTom(), DATO));
+                    map.put("utbetalinger.utbetaling.brutto.label", createSvar(utbetaling.getBrutto().toString(), TEKST));
+                    map.put("utbetalinger.utbetaling.skattetrekk.label", createSvar(utbetaling.getSkattetrekk().toString(), TEKST));
 
                     return new Felt.Builder()
                             .withType(Type.SYSTEMDATA_MAP)
