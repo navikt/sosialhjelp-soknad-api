@@ -11,7 +11,6 @@
     "systemuser-credentials-soknad-api"
   ],
   "kvPaths": {
-    "/var/run/secrets/nais.io/vault": "/kv/prod/sbs/sosialhjelp-soknad-api/teamdigisos",
     "/var/run/secrets/datasource": "/oracle/data/prod/creds/soknadsosialhjel_p-user",
     "/var/run/secrets/nais.io/virksomhetssertifikat": "/secret/virksomhetssertifikat/prod/maskinporten",
     "/apigw/norg2api": "/apikey/apigw/prod/norg2.api.v1/soknadsosialhjelp-server",
