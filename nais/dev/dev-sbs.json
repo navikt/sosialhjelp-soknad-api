@@ -6,6 +6,10 @@
     "https://www-q0.dev.nav.no/sosialhjelp/soknad-api",
     "https://www-q0.nav.no/sosialhjelp/soknad-api"
   ],
+  "envsecret": [
+    "redis-password-soknad-api",
+    "fiks-integrasjon-secret"
+  ],
   "kvPaths": {
     "/var/run/secrets/nais.io/vault": "/kv/preprod/sbs/sosialhjelp-soknad-api/teamdigisos",
     "/var/run/secrets/datasource": "/oracle/data/dev/creds/soknadsosialhjelp_q0-user",

@@ -79,6 +79,6 @@ spec:
 {{/each}}
   envFrom:
     - configmap: loginservice-idporten
-{{#unless isLabsGcp}}
-    - secret: redis-password-soknad-api
-{{/unless}}
+{{#each envsecret}}
+    - secret: "{{this}}"
+{{/each}}

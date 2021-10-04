@@ -5,6 +5,10 @@
     "https://sosialhjelp-soknad-api.nais.oera.no/",
     "https://www.nav.no/sosialhjelp/soknad-api"
   ],
+  "envsecret": [
+    "redis-password-soknad-api",
+    "fiks-integrasjon-secret"
+  ],
   "kvPaths": {
     "/var/run/secrets/nais.io/vault": "/kv/prod/sbs/sosialhjelp-soknad-api/teamdigisos",
     "/var/run/secrets/datasource": "/oracle/data/prod/creds/soknadsosialhjel_p-user",
