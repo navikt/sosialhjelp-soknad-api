@@ -4,6 +4,7 @@
   "ingresses": [
     "https://sosialhjelp-soknad-api.labs.nais.io/sosialhjelp/soknad-api"
   ],
+  "envsecret": [],
   "minReplicas": "1",
   "maxReplicas": "1",
   "memoryLimit": "2Gi",
