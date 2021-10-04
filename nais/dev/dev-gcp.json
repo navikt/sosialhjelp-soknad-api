@@ -4,6 +4,9 @@
   "ingresses": [
     "https://sosialhjelp-soknad-api-gcp.dev.nav.no/sosialhjelp/soknad-api"
   ],
+  "envsecret": [
+    "redis-password-soknad-api"
+  ],
   "minReplicas": "1",
   "maxReplicas": "1",
   "memoryLimit": "2Gi",

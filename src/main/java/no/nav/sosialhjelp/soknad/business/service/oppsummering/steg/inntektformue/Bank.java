@@ -6,6 +6,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomioversikt;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Avsnitt;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Felt;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Sporsmal;
+import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.SvarType;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Type;
 
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.FORMUE_BSU;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.FORMUE_LIVSFORSIKRING;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.FORMUE_SPAREKONTO;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.FORMUE_VERDIPAPIRER;
+import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.StegUtils.createSvar;
 import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.inntektformue.InntektFormueUtils.addFormueIfPresent;
 import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.inntektformue.InntektFormueUtils.harBekreftelseTrue;
 import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.inntektformue.InntektFormueUtils.harValgtFormueType;
@@ -57,7 +59,11 @@ public class Bank {
                             .withTittel("inntekt.bankinnskudd.true.type.annet.true.beskrivelse.label")
                             .withErUtfylt(harUtfyltAnnetFelt)
                             .withFelt(harUtfyltAnnetFelt ?
-                                    singletonList(new Felt.Builder().withType(Type.TEKST).withSvar(beskrivelseAvAnnet.getSparing()).build()) :
+                                    singletonList(
+                                            new Felt.Builder()
+                                                    .withType(Type.TEKST)
+                                                    .withSvar(createSvar(beskrivelseAvAnnet.getSparing(), SvarType.TEKST))
+                                                    .build()) :
                                     null)
                             .build()
             );

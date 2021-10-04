@@ -64,24 +64,24 @@ class NavUtbetalingerTest {
         assertThat(sporsmalUtbetaling1.getErUtfylt()).isTrue();
         assertThat(sporsmalUtbetaling1.getFelt()).hasSize(1);
         assertThat(sporsmalUtbetaling1.getFelt().get(0).getType()).isEqualTo(Type.SYSTEMDATA_MAP);
-        assertThat(sporsmalUtbetaling1.getFelt().get(0).getLabelSvarMap())
-                .hasSize(4)
-                .containsEntry("utbetalinger.utbetaling.type.label", "Dagpenger")
-                .containsEntry("utbetalinger.utbetaling.netto.label", "1234.0")
-                .containsEntry("utbetalinger.utbetaling.brutto.label", "2234.0")
-                .containsEntry("utbetalinger.utbetaling.utbetalingsdato.label", "2021-01-01");
+        var labelSvarMap1 = sporsmalUtbetaling1.getFelt().get(0).getLabelSvarMap();
+        assertThat(labelSvarMap1).hasSize(4);
+        assertThat(labelSvarMap1.get("utbetalinger.utbetaling.type.label").getValue()).isEqualTo("Dagpenger");
+        assertThat(labelSvarMap1.get("utbetalinger.utbetaling.netto.label").getValue()).isEqualTo("1234.0");
+        assertThat(labelSvarMap1.get("utbetalinger.utbetaling.brutto.label").getValue()).isEqualTo("2234.0");
+        assertThat(labelSvarMap1.get("utbetalinger.utbetaling.utbetalingsdato.label").getValue()).isEqualTo("2021-01-01");
 
         var sporsmalUtbetaling2 = avsnitt.getSporsmal().get(1);
         assertThat(sporsmalUtbetaling2.getTittel()).isEqualTo("utbetalinger.utbetaling.sporsmal");
         assertThat(sporsmalUtbetaling2.getErUtfylt()).isTrue();
         assertThat(sporsmalUtbetaling2.getFelt()).hasSize(1);
         assertThat(sporsmalUtbetaling2.getFelt().get(0).getType()).isEqualTo(Type.SYSTEMDATA_MAP);
-        assertThat(sporsmalUtbetaling2.getFelt().get(0).getLabelSvarMap())
-                .hasSize(4)
-                .containsEntry("utbetalinger.utbetaling.type.label", "Uføre")
-                .containsEntry("utbetalinger.utbetaling.netto.label", "42.0")
-                .containsEntry("utbetalinger.utbetaling.brutto.label", "1042.0")
-                .containsEntry("utbetalinger.utbetaling.utbetalingsdato.label", "2021-03-03");
+        var labelSvarMap2 = sporsmalUtbetaling2.getFelt().get(0).getLabelSvarMap();
+        assertThat(labelSvarMap2).hasSize(4);
+        assertThat(labelSvarMap2.get("utbetalinger.utbetaling.type.label").getValue()).isEqualTo("Uføre");
+        assertThat(labelSvarMap2.get("utbetalinger.utbetaling.netto.label").getValue()).isEqualTo("42.0");
+        assertThat(labelSvarMap2.get("utbetalinger.utbetaling.brutto.label").getValue()).isEqualTo("1042.0");
+        assertThat(labelSvarMap2.get("utbetalinger.utbetaling.utbetalingsdato.label").getValue()).isEqualTo("2021-03-03");
     }
 
     private JsonOkonomiOpplysningUtbetaling createUtbetaling(String tittel, Double netto, String utbetalingsdato) {

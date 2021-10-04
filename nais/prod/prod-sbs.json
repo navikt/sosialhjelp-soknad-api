@@ -5,8 +5,12 @@
     "https://sosialhjelp-soknad-api.nais.oera.no/",
     "https://www.nav.no/sosialhjelp/soknad-api"
   ],
+  "envsecret": [
+    "redis-password-soknad-api",
+    "fiks-integrasjon-secret",
+    "systemuser-credentials-soknad-api"
+  ],
   "kvPaths": {
-    "/var/run/secrets/nais.io/vault": "/kv/prod/sbs/sosialhjelp-soknad-api/teamdigisos",
     "/var/run/secrets/datasource": "/oracle/data/prod/creds/soknadsosialhjel_p-user",
     "/var/run/secrets/nais.io/virksomhetssertifikat": "/secret/virksomhetssertifikat/prod/maskinporten",
     "/apigw/norg2api": "/apikey/apigw/prod/norg2.api.v1/soknadsosialhjelp-server",
@@ -49,6 +53,7 @@
     "KODEVERK_API_URL": "https://api-gw.oera.no/kodeverk/api/",
     "LOGINSERVICE_URL": "https://loginservice.nav.no/login",
     "NORG2_API_V1_URL": "https://api-gw.oera.no/norg2/api/v1/",
+    "OPENAM_RESTURL": "https://itjenester.oera.no/esso",
     "OPPSLAG_API_BASEURL": "https://api-gw.oera.no/sosialhjelp-oppslag-api/api/",
     "PDL_API_URL": "https://api-gw.oera.no/pdl-api/graphql",
     "UNLEASH_API_URL": "https://unleash.nais.io/api",
