@@ -8,7 +8,8 @@
   ],
   "envsecret": [
     "redis-password-soknad-api",
-    "fiks-integrasjon-secret"
+    "fiks-integrasjon-secret",
+    "systemuser-credentials-soknad-api"
   ],
   "kvPaths": {
     "/var/run/secrets/nais.io/vault": "/kv/preprod/sbs/sosialhjelp-soknad-api-intern/teamdigisos",
