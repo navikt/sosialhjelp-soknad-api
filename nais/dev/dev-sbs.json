@@ -67,7 +67,7 @@
     "SOKNAD_BOSTOTTE_PING_URL": "https://api.demo.husbanken.no/bostotte/minbostotte/ping",
     "SOKNAD_ETTERSENDING_ANTALLDAGER": "300",
     "SECURITYTOKENSERVICE_APIGW_URL": "https://api-gw-q1.oera.no/security-token-service/rest/v1/sts/token",
-    "SVARUT_URL": "https://test.svarut.ks.no",
+    "SVARUT_URL": "https://svarut.fiks.test.ks.no",
     "IS_SENDING_TIL_DIGISOS_API_ENABLED": "true",
     "IS_ALLTID_SEND_TIL_NAV_TESTKOMMUNE": "false",
     "IS_ALLTID_HENT_KOMMUNEINFO_FRA_NAV_TESTKOMMUNE": "false",
