@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.consumer.fiksforsendelse;
+package no.nav.sosialhjelp.soknad.consumer.svarut;
 
 import no.ks.fiks.svarut.klient.SvarUtKlientApi;
 import no.ks.fiks.svarut.klient.model.Forsendelse;
@@ -8,11 +8,11 @@ import java.io.InputStream;
 import java.util.Map;
 
 @Component
-public class FiksForsendelseService {
+public class SvarUtService {
 
     private final SvarUtKlientApi svarUtKlientApi;
 
-    public FiksForsendelseService(SvarUtKlientApi svarUtKlientApi) {
+    public SvarUtService(SvarUtKlientApi svarUtKlientApi) {
         this.svarUtKlientApi = svarUtKlientApi;
     }
 

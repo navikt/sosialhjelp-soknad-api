@@ -2,7 +2,6 @@ package no.nav.sosialhjelp.soknad.consumer;
 
 import no.nav.sosialhjelp.soknad.consumer.dkif.DkifService;
 import no.nav.sosialhjelp.soknad.consumer.fiks.DokumentKrypterer;
-import no.nav.sosialhjelp.soknad.consumer.fiksforsendelse.FiksForsendelseService;
 import no.nav.sosialhjelp.soknad.consumer.kodeverk.KodeverkService;
 import no.nav.sosialhjelp.soknad.consumer.leaderelection.LeaderElectionImpl;
 import no.nav.sosialhjelp.soknad.consumer.leaderelection.NoLeaderElection;
@@ -19,7 +18,6 @@ import no.nav.sosialhjelp.soknad.consumer.redis.RedisConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.ArbeidsforholdRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.DigisosApiRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.DkifRestConfig;
-import no.nav.sosialhjelp.soknad.consumer.restconfig.FiksForsendelseRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.KodeverkRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.NorgRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.OrganisasjonRestConfig;
@@ -28,8 +26,10 @@ import no.nav.sosialhjelp.soknad.consumer.restconfig.PdlGeografiskTilknytningRes
 import no.nav.sosialhjelp.soknad.consumer.restconfig.PdlHentPersonRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.STSTokenRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.SkattbarInntektRestConfig;
+import no.nav.sosialhjelp.soknad.consumer.restconfig.SvarUtRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.UnleashRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.skatt.SkattbarInntektService;
+import no.nav.sosialhjelp.soknad.consumer.svarut.SvarUtService;
 import no.nav.sosialhjelp.soknad.consumer.wsconfig.FiksWSConfig;
 import no.nav.sosialhjelp.soknad.oppslag.OppslagRestConfig;
 import no.nav.sosialhjelp.soknad.oppslag.kontonummer.KontonummerService;
@@ -61,7 +61,7 @@ import org.springframework.context.annotation.Profile;
         BydelService.class,
         LeaderElectionImpl.class,
         NoLeaderElection.class,
-        FiksForsendelseService.class
+        SvarUtService.class
 })
 
 public class ConsumerConfig {
@@ -83,7 +83,7 @@ public class ConsumerConfig {
             KodeverkRestConfig.class,
             UnleashRestConfig.class,
             OppslagRestConfig.class,
-            FiksForsendelseRestConfig.class
+            SvarUtRestConfig.class
     })
     public static class WsServices {
     }

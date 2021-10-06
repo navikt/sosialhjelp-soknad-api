@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
 import static no.nav.sosialhjelp.metrics.MetricsFactory.createTimerProxy;
 
 @Configuration
-public class FiksForsendelseRestConfig {
+public class SvarUtRestConfig {
 
     @Value("${svarut_url}")
     private String svarutUrl;
@@ -39,6 +39,5 @@ public class FiksForsendelseRestConfig {
         }
 
         return httpClient;
-
     }
 }

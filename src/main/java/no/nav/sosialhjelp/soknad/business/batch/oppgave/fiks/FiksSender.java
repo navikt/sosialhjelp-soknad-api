@@ -19,7 +19,7 @@ import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
 import no.nav.sosialhjelp.soknad.business.InnsendingService;
 import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.SosialhjelpPdfGenerator;
 import no.nav.sosialhjelp.soknad.consumer.fiks.DokumentKrypterer;
-import no.nav.sosialhjelp.soknad.consumer.fiksforsendelse.FiksForsendelseService;
+import no.nav.sosialhjelp.soknad.consumer.svarut.SvarUtService;
 import no.nav.sosialhjelp.soknad.domain.SendtSoknad;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import org.slf4j.Logger;
@@ -52,7 +52,7 @@ public class FiksSender {
     private final InnsendingService innsendingService;
     private final FiksDokumentHelper fiksDokumentHelper;
     private final boolean krypteringEnabled;
-    private final FiksForsendelseService fiksForsendelseService;
+    private final SvarUtService svarUtService;
     private final FiksDokumentHelperRest fiksDokumentHelperRest;
     private final Unleash unleash;
 
@@ -62,14 +62,14 @@ public class FiksSender {
             InnsendingService innsendingService,
             SosialhjelpPdfGenerator sosialhjelpPdfGenerator,
             @Value("${feature.fiks.kryptering.enabled}") boolean krypteringEnabled,
-            FiksForsendelseService fiksForsendelseService,
+            SvarUtService svarUtService,
             Unleash unleash
     ) {
         this.forsendelsesService = forsendelsesService;
         this.innsendingService = innsendingService;
         this.krypteringEnabled = krypteringEnabled;
         this.fiksDokumentHelper = new FiksDokumentHelper(krypteringEnabled, dokumentKrypterer, innsendingService, sosialhjelpPdfGenerator);
-        this.fiksForsendelseService = fiksForsendelseService;
+        this.svarUtService = svarUtService;
         this.fiksDokumentHelperRest = new FiksDokumentHelperRest(krypteringEnabled, dokumentKrypterer, innsendingService, sosialhjelpPdfGenerator);
         this.unleash = unleash;
     }
@@ -98,7 +98,7 @@ public class FiksSender {
     public String sendTilFiksRestservice(SendtSoknad sendtSoknad) {
         var filnavnInputStreamMap = new HashMap<String, InputStream>();
         final var forsendelse = createForsendelse(sendtSoknad, filnavnInputStreamMap);
-        return fiksForsendelseService.send(forsendelse, filnavnInputStreamMap);
+        return svarUtService.send(forsendelse, filnavnInputStreamMap);
     }
 
     public String sendTilFiksWebservice(SendtSoknad sendtSoknad) {
