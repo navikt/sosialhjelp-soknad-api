@@ -49,7 +49,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <tjenestespesifikasjon.version>1.2021.01.21-11.34-02f5eb27bb76</tjenestespesifikasjon.version>
-        <sosialhjelp-common.version>1.f76ffa9</sosialhjelp-common.version>
+        <sosialhjelp-common.version>1.7f835b6-SNAPSHOT</sosialhjelp-common.version>
         <filformat.version>1.2021.08.27-10.29-41cf5ce1230a</filformat.version>
 
         <spring.version>5.3.9</spring.version>
@@ -63,7 +63,7 @@
         <flyway-core.version>7.14.0</flyway-core.version>
         <flyway-maven-plugin.version>7.14.0</flyway-maven-plugin.version>
         <handlebars.version>4.2.0</handlebars.version>
-        <jackson.version>2.12.3</jackson.version>
+        <jackson.version>2.13.0</jackson.version>
         <pdfbox.version>2.0.24</pdfbox.version>
         <jempbox.version>1.8.16</jempbox.version>
         <bouncycastle.version>1.69</bouncycastle.version>
@@ -134,7 +134,6 @@
         <objenesis.version>2.6</objenesis.version>
         <saaj-impl.version>1.5.1</saaj-impl.version>
         <mimepull.version>1.9.15</mimepull.version>
-        <kotlin.version>1.5.10</kotlin.version>
         <relaxng-datatype.version>2.3.3</relaxng-datatype.version>
         <json.version>20210307</json.version>
     </properties>
@@ -483,6 +482,23 @@
     </dependencyManagement>
 
     <dependencies>
+        <!-- Kotlin -->
+        <dependency>
+            <groupId>org.jetbrains.kotlinx</groupId>
+            <artifactId>kotlinx-coroutines-core</artifactId>
+            <version>1.5.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains.kotlinx</groupId>
+            <artifactId>kotlinx-coroutines-slf4j</artifactId>
+            <version>1.5.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains.kotlinx</groupId>
+            <artifactId>kotlinx-coroutines-reactor</artifactId>
+            <version>1.5.2</version>
+        </dependency>
+
         <!-- Filformat -->
         <dependency>
             <groupId>no.nav.sbl.dialogarena</groupId>
@@ -522,6 +538,11 @@
         <dependency>
             <groupId>no.nav.sosialhjelp</groupId>
             <artifactId>sosialhjelp-common-kommuneinfo-client</artifactId>
+            <version>${sosialhjelp-common.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>no.nav.sosialhjelp</groupId>
+            <artifactId>sosialhjelp-common-idporten-client</artifactId>
             <version>${sosialhjelp-common.version}</version>
         </dependency>
 
