@@ -1,7 +1,10 @@
 package no.nav.sosialhjelp.soknad.consumer;
 
+import no.nav.sosialhjelp.soknad.config.MockProxiedWebClientConfig;
+import no.nav.sosialhjelp.soknad.config.ProxiedWebClientConfig;
 import no.nav.sosialhjelp.soknad.consumer.dkif.DkifService;
 import no.nav.sosialhjelp.soknad.consumer.fiks.DokumentKrypterer;
+import no.nav.sosialhjelp.soknad.consumer.fiks.KommuneInfoClientConfig;
 import no.nav.sosialhjelp.soknad.consumer.kodeverk.KodeverkService;
 import no.nav.sosialhjelp.soknad.consumer.leaderelection.LeaderElectionImpl;
 import no.nav.sosialhjelp.soknad.consumer.leaderelection.NoLeaderElection;
@@ -40,6 +43,9 @@ import org.springframework.context.annotation.Profile;
 @Configuration
 @EnableCaching
 @Import({
+        ProxiedWebClientConfig.class,
+        MockProxiedWebClientConfig.class,
+        KommuneInfoClientConfig.class,
         RedisConfig.class,
         NoRedisConfig.class,
         PersonService.class,
