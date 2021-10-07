@@ -48,9 +48,13 @@ public class SvarUtConsumerImpl implements SvarUtConsumer {
             }
             multiPart.close();
 
+            log.info("request til {}", baseUrl + "/tjenester/api/forsendelse/v1/sendForsendelse");
+
             var response = webTarget
                     .request(MediaType.APPLICATION_JSON_TYPE)
                     .post(Entity.entity(multiPart, multiPart.getMediaType()), String.class);
+
+            log.info("response {}", response);
 
             return objectMapper.readValue(response, ForsendelsesId.class);
 //            return response
