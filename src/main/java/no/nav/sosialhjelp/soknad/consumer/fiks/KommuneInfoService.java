@@ -6,6 +6,7 @@ import no.nav.sosialhjelp.client.kommuneinfo.KommuneInfoClient;
 import no.nav.sosialhjelp.soknad.consumer.fiks.dto.KommuneStatus;
 import no.nav.sosialhjelp.soknad.consumer.redis.RedisService;
 import no.nav.sosialhjelp.soknad.domain.model.util.KommuneTilNavEnhetMapper;
+import no.nav.sosialhjelp.soknad.idporten.IdPortenService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,13 +36,13 @@ public class KommuneInfoService {
 
     private static final KommuneInfo DEFAULT_KOMMUNEINFO = new KommuneInfo("", false, false, false, false, null, false, null);
 
-    private final DigisosApi digisosApi;
     private final KommuneInfoClient kommuneInfoClient;
+    private final IdPortenService idPortenService;
     private final RedisService redisService;
 
-    public KommuneInfoService(DigisosApi digisosApi, KommuneInfoClient kommuneInfoClient, RedisService redisService) {
-        this.digisosApi = digisosApi;
+    public KommuneInfoService(KommuneInfoClient kommuneInfoClient, IdPortenService idPortenService, RedisService redisService) {
         this.kommuneInfoClient = kommuneInfoClient;
+        this.idPortenService = idPortenService;
         this.redisService = redisService;
     }
 
@@ -73,9 +74,8 @@ public class KommuneInfoService {
             }
             log.info("hentAlleKommuneInfo - cache er tom.");
         }
-        DigisosApiImpl.IdPortenAccessTokenResponse accessToken = digisosApi.getVirksertAccessToken();
-
-        var kommuneInfoList = kommuneInfoClient.getAll(accessToken.accessToken);
+        var accessToken = idPortenService.getToken();
+        var kommuneInfoList = kommuneInfoClient.getAll(accessToken.getToken());
         oppdaterCache(kommuneInfoList);
 
         var kommuneInfoMap = Optional.ofNullable(kommuneInfoList).orElse(Collections.emptyList())

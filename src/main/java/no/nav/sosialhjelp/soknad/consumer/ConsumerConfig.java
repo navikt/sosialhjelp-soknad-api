@@ -32,6 +32,8 @@ import no.nav.sosialhjelp.soknad.consumer.restconfig.SkattbarInntektRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.UnleashRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.skatt.SkattbarInntektService;
 import no.nav.sosialhjelp.soknad.consumer.wsconfig.FiksWSConfig;
+import no.nav.sosialhjelp.soknad.idporten.IdPortenClientConfig;
+import no.nav.sosialhjelp.soknad.idporten.IdPortenServiceImpl;
 import no.nav.sosialhjelp.soknad.oppslag.OppslagRestConfig;
 import no.nav.sosialhjelp.soknad.oppslag.kontonummer.KontonummerService;
 import no.nav.sosialhjelp.soknad.oppslag.utbetaling.UtbetalingService;
@@ -46,6 +48,8 @@ import org.springframework.context.annotation.Profile;
         ProxiedWebClientConfig.class,
         MockProxiedWebClientConfig.class,
         KommuneInfoClientConfig.class,
+        IdPortenClientConfig.class,
+        IdPortenServiceImpl.class,
         RedisConfig.class,
         NoRedisConfig.class,
         PersonService.class,

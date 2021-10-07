@@ -2,8 +2,10 @@ package no.nav.sosialhjelp.soknad.consumer.fiks;
 
 import no.nav.sosialhjelp.api.fiks.KommuneInfo;
 import no.nav.sosialhjelp.client.kommuneinfo.KommuneInfoClient;
+import no.nav.sosialhjelp.idporten.client.AccessToken;
 import no.nav.sosialhjelp.soknad.consumer.fiks.dto.KommuneStatus;
 import no.nav.sosialhjelp.soknad.consumer.redis.RedisService;
+import no.nav.sosialhjelp.soknad.idporten.IdPortenService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -34,10 +36,10 @@ class KommuneInfoServiceTest {
     private static final String KOMMUNENR_MED_KONFIG = "2222";
 
     @Mock
-    private DigisosApi digisosApi;
+    private KommuneInfoClient kommuneInfoClient;
 
     @Mock
-    private KommuneInfoClient kommuneInfoClient;
+    private IdPortenService idPortenService;
 
     @Mock
     private RedisService redisService;
@@ -45,17 +47,16 @@ class KommuneInfoServiceTest {
     @InjectMocks
     private KommuneInfoService kommuneInfoService;
 
-    private final DigisosApiImpl.IdPortenAccessTokenResponse idPortenAccessTokenResponse = new DigisosApiImpl.IdPortenAccessTokenResponse();
+    private final AccessToken accessToken = new AccessToken("tokenz", 123);
 
     @BeforeEach
     public void setUp() {
-        idPortenAccessTokenResponse.accessToken = "tokenz";
         when(redisService.getString(any())).thenReturn(null);
     }
 
     @Test
     void kommuneUtenKonfigurasjonSkalGikanMottaSoknaderFalse() {
-        when(digisosApi.getVirksertAccessToken()).thenReturn(idPortenAccessTokenResponse);
+        when(idPortenService.getToken()).thenReturn(accessToken);
         KommuneInfo kommuneInfo = new KommuneInfo(KOMMUNENR_MED_KONFIG, true, false, true, false, null, false, null);
         when(kommuneInfoClient.getAll(anyString())).thenReturn(List.of(kommuneInfo));
 
@@ -65,7 +66,7 @@ class KommuneInfoServiceTest {
 
     @Test
     void kommuneMedKonfigurasjonSkalGikanMottaSoknaderLikKonfigurasjon() {
-        when(digisosApi.getVirksertAccessToken()).thenReturn(idPortenAccessTokenResponse);
+        when(idPortenService.getToken()).thenReturn(accessToken);
         // True
         KommuneInfo kommuneInfo = new KommuneInfo(KOMMUNENR_MED_KONFIG, true, false, false, false, null, false, null);
         when(kommuneInfoClient.getAll(anyString())).thenReturn(List.of(kommuneInfo));
@@ -83,7 +84,7 @@ class KommuneInfoServiceTest {
 
     @Test
     void kommuneUtenKonfigurasjonSkalGiharMidlertidigDeaktivertMottakFalse() {
-        when(digisosApi.getVirksertAccessToken()).thenReturn(idPortenAccessTokenResponse);
+        when(idPortenService.getToken()).thenReturn(accessToken);
         KommuneInfo kommuneInfo = new KommuneInfo(KOMMUNENR_MED_KONFIG, true, false, true, false, null, false, null);
         when(kommuneInfoClient.getAll(anyString())).thenReturn(List.of(kommuneInfo));
 
@@ -93,7 +94,7 @@ class KommuneInfoServiceTest {
 
     @Test
     void kommuneMedKonfigurasjonSkalGiharMidlertidigDeaktivertMottakLikKonfigurasjon() {
-        when(digisosApi.getVirksertAccessToken()).thenReturn(idPortenAccessTokenResponse);
+        when(idPortenService.getToken()).thenReturn(accessToken);
         // True
         KommuneInfo kommuneInfo = new KommuneInfo(KOMMUNENR_MED_KONFIG, true, false, true, false, null, false, null);
         when(kommuneInfoClient.getAll(anyString())).thenReturn(List.of(kommuneInfo));
@@ -111,7 +112,7 @@ class KommuneInfoServiceTest {
 
     @Test
     void kommuneInfo_fiks_feiler_og_cache_er_tom() {
-        when(digisosApi.getVirksertAccessToken()).thenReturn(idPortenAccessTokenResponse);
+        when(idPortenService.getToken()).thenReturn(accessToken);
         when(kommuneInfoClient.getAll(anyString())).thenReturn(emptyList());
         when(redisService.getKommuneInfos()).thenReturn(null);
 
@@ -121,7 +122,7 @@ class KommuneInfoServiceTest {
 
     @Test
     void kommuneInfo_case1_ingen_konfigurasjon() {
-        when(digisosApi.getVirksertAccessToken()).thenReturn(idPortenAccessTokenResponse);
+        when(idPortenService.getToken()).thenReturn(accessToken);
         // Case 1
         KommuneInfo kommuneInfo = new KommuneInfo(KOMMUNENR_MED_KONFIG, true, false, true, false, null, false, null);
         when(kommuneInfoClient.getAll(anyString())).thenReturn(List.of(kommuneInfo));
@@ -132,7 +133,7 @@ class KommuneInfoServiceTest {
 
     @Test
     void kommuneInfo_case2_deaktivert_mottak_8_permutasjoner_0000_0111() {
-        when(digisosApi.getVirksertAccessToken()).thenReturn(idPortenAccessTokenResponse);
+        when(idPortenService.getToken()).thenReturn(accessToken);
 
         // Kun deaktivert mottak (permutasjon 0 = 0000)
         KommuneInfo value = new KommuneInfo(KOMMUNENR, false, false, false, false, null, false, null);
@@ -200,7 +201,7 @@ class KommuneInfoServiceTest {
 
     @Test
     void kommuneInfo_case3_aktivert_mottak() {
-        when(digisosApi.getVirksertAccessToken()).thenReturn(idPortenAccessTokenResponse);
+        when(idPortenService.getToken()).thenReturn(accessToken);
 
         // Kun aktivert mottak (permutasjon 8 = 1000)
         KommuneInfo value = new KommuneInfo(KOMMUNENR, true, false, false, false, null, false, null);
@@ -220,7 +221,7 @@ class KommuneInfoServiceTest {
 
     @Test
     void kommuneInfo_case4_aktivert_mottak_og_innsyn() {
-        when(digisosApi.getVirksertAccessToken()).thenReturn(idPortenAccessTokenResponse);
+        when(idPortenService.getToken()).thenReturn(accessToken);
 
         // Case 4 (permutasjon 12 = 1100)
         KommuneInfo value = new KommuneInfo(KOMMUNENR, true, true, false, false, null, false, null);
@@ -239,7 +240,7 @@ class KommuneInfoServiceTest {
 
     @Test
     void kommuneInfo_case5_aktivert_mottak_og_innsyn_men_midlertidig_deaktivert_mottak() {
-        when(digisosApi.getVirksertAccessToken()).thenReturn(idPortenAccessTokenResponse);
+        when(idPortenService.getToken()).thenReturn(accessToken);
 
         // Case 5 (permutasjon 14 = 1110)
         KommuneInfo value = new KommuneInfo(KOMMUNENR, true, true, true, false, null, false, null);
@@ -265,7 +266,7 @@ class KommuneInfoServiceTest {
 
     @Test
     void kommuneInfo_case6_aktivert_mottak_og_innsyn_men_midlertidig_deaktivert_mottak_og_innsyn() {
-        when(digisosApi.getVirksertAccessToken()).thenReturn(idPortenAccessTokenResponse);
+        when(idPortenService.getToken()).thenReturn(accessToken);
 
         // Case 6 (permutasjon 15 = 1111)
         KommuneInfo value = new KommuneInfo(KOMMUNENR, true, true, true, true, null, false, null);
@@ -278,7 +279,7 @@ class KommuneInfoServiceTest {
 
     @Test
     void behandlingsansvarligKommuneSkalReturneresUtenKommuneINavnet() {
-        when(digisosApi.getVirksertAccessToken()).thenReturn(idPortenAccessTokenResponse);
+        when(idPortenService.getToken()).thenReturn(accessToken);
         KommuneInfo value = new KommuneInfo(KOMMUNENR, true, false, true, false, null, false, "nabokommunenavn kommune");
         when(kommuneInfoClient.getAll(anyString())).thenReturn(List.of(value));
 
@@ -288,7 +289,7 @@ class KommuneInfoServiceTest {
 
     @Test
     void behandlingsansvarligKommuneSkalReturnereKommunenavnHvisIngenBehandlingsansvarlig() {
-        when(digisosApi.getVirksertAccessToken()).thenReturn(idPortenAccessTokenResponse);
+        when(idPortenService.getToken()).thenReturn(accessToken);
         KommuneInfo value = new KommuneInfo(KOMMUNENR, true, false, true, false, null, false, null);
         when(kommuneInfoClient.getAll(anyString())).thenReturn(List.of(value));
 
@@ -298,7 +299,7 @@ class KommuneInfoServiceTest {
 
     @Test
     void behandlingsansvarligKommuneSkalReturnereKommunenavnHvisIngenBehandlingsansvarligOgKommuneInfoMapErNull() {
-        when(digisosApi.getVirksertAccessToken()).thenReturn(idPortenAccessTokenResponse);
+        when(idPortenService.getToken()).thenReturn(accessToken);
         when(kommuneInfoClient.getAll(anyString())).thenReturn(null);
 
         String kommunenavn = kommuneInfoService.getBehandlingskommune(KOMMUNENR, "kommunenavn");
@@ -322,7 +323,7 @@ class KommuneInfoServiceTest {
 
     @Test
     void skalHenteKommuneInfoFraFiks_hvisLastPollTimeOverskriderGrense() {
-        when(digisosApi.getVirksertAccessToken()).thenReturn(idPortenAccessTokenResponse);
+        when(idPortenService.getToken()).thenReturn(accessToken);
         KommuneInfo value = new KommuneInfo(KOMMUNENR, true, false, true, false, null, false, null);
 
         when(redisService.getString(KOMMUNEINFO_LAST_POLL_TIME_KEY)).thenReturn(LocalDateTime.now().minusMinutes(12).format(ISO_LOCAL_DATE_TIME));
@@ -336,7 +337,7 @@ class KommuneInfoServiceTest {
 
     @Test
     void hentKommuneInfoFraFiksFeiler_brukCache() {
-        when(digisosApi.getVirksertAccessToken()).thenReturn(idPortenAccessTokenResponse);
+        when(idPortenService.getToken()).thenReturn(accessToken);
         KommuneInfo value = new KommuneInfo(KOMMUNENR, true, false, true, false, null, false, null);
         Map<String, KommuneInfo> kommuneInfoMap = new HashMap<>();
         kommuneInfoMap.put(KOMMUNENR, value);
@@ -355,7 +356,7 @@ class KommuneInfoServiceTest {
 
     @Test
     void hentKommuneInfoFraFiksFeiler_cacheErTom() {
-        when(digisosApi.getVirksertAccessToken()).thenReturn(idPortenAccessTokenResponse);
+        when(idPortenService.getToken()).thenReturn(accessToken);
         when(redisService.getString(KOMMUNEINFO_LAST_POLL_TIME_KEY)).thenReturn(LocalDateTime.now().minusMinutes(12).format(ISO_LOCAL_DATE_TIME));
         when(kommuneInfoClient.getAll(anyString())).thenReturn(emptyList());
         when(redisService.getKommuneInfos()).thenReturn(null);
@@ -370,7 +371,7 @@ class KommuneInfoServiceTest {
 
     @Test
     void hentAlleKommuneInfo_fiksFeiler_skalHenteFraCache() {
-        when(digisosApi.getVirksertAccessToken()).thenReturn(idPortenAccessTokenResponse);
+        when(idPortenService.getToken()).thenReturn(accessToken);
         KommuneInfo value = new KommuneInfo(KOMMUNENR, true, false, true, false, null, false, null);
         Map<String, KommuneInfo> cachedKommuneInfoMap = new HashMap<>();
         cachedKommuneInfoMap.put(KOMMUNENR, value);
