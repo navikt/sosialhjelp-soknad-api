@@ -7,6 +7,7 @@ import no.ks.fiks.svarut.klient.model.ForsendelsesId;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.MultiPart;
 import org.glassfish.jersey.media.multipart.file.StreamDataBodyPart;
+import org.slf4j.Logger;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Entity;
@@ -15,7 +16,11 @@ import javax.ws.rs.core.MediaType;
 import java.io.InputStream;
 import java.util.Map;
 
+import static org.slf4j.LoggerFactory.getLogger;
+
 public class SvarUtConsumerImpl implements SvarUtConsumer {
+
+    private static final Logger log = getLogger(SvarUtConsumerImpl.class);
 
     private final ObjectMapper objectMapper = new ObjectMapper();
     private Client client;
@@ -43,11 +48,13 @@ public class SvarUtConsumerImpl implements SvarUtConsumer {
             }
             multiPart.close();
 
-            var response = webTarget.request(MediaType.APPLICATION_JSON_TYPE)
-                    .post(Entity.entity(multiPart, multiPart.getMediaType()));
+            var response = webTarget
+                    .request(MediaType.APPLICATION_JSON_TYPE)
+                    .post(Entity.entity(multiPart, multiPart.getMediaType()), String.class);
 
-            return response
-                    .readEntity(ForsendelsesId.class);
+            return objectMapper.readValue(response, ForsendelsesId.class);
+//            return response
+//                    .readEntity(ForsendelsesId.class);
 
         } catch (RuntimeException e) {
             throw e;
