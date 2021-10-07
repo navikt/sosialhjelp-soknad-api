@@ -380,7 +380,8 @@ public class DigisosApiImpl implements DigisosApi {
         return String.format("/digisos/api/v1/soknader/%s/%s", kommunenummer, navEkseternRefId);
     }
 
-    private IdPortenAccessTokenResponse getVirksertAccessToken() {
+    @Override
+    public IdPortenAccessTokenResponse getVirksertAccessToken() {
         String jws = createJws();
         HttpPost httpPost = new HttpPost(properties.getIdPortenTokenUrl());
 

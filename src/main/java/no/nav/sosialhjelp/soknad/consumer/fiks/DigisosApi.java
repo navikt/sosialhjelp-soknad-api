@@ -12,4 +12,6 @@ public interface DigisosApi {
     Map<String, KommuneInfo> hentAlleKommuneInfo();
 
     String krypterOgLastOppFiler(String soknadJson, String tilleggsinformasjonJson, String vedleggJson, List<FilOpplasting> dokumenter, String kommunenr, String navEkseternRefId, String token);
+
+    DigisosApiImpl.IdPortenAccessTokenResponse getVirksertAccessToken();
 }

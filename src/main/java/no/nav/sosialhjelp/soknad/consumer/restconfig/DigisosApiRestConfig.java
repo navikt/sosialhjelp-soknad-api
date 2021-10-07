@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.consumer.restconfig;
 
+import no.nav.sosialhjelp.client.kommuneinfo.KommuneInfoClient;
 import no.nav.sosialhjelp.soknad.consumer.fiks.DigisosApi;
 import no.nav.sosialhjelp.soknad.consumer.fiks.DigisosApiImpl;
 import no.nav.sosialhjelp.soknad.consumer.fiks.DigisosApiProperties;
@@ -41,8 +42,8 @@ public class DigisosApiRestConfig {
     }
 
     @Bean
-    public KommuneInfoService kommuneInfoService(DigisosApi digisosapi, RedisService redisService) {
-        return new KommuneInfoService(digisosapi, redisService);
+    public KommuneInfoService kommuneInfoService(DigisosApi digisosapi, KommuneInfoClient kommuneInfoClient, RedisService redisService) {
+        return new KommuneInfoService(digisosapi, kommuneInfoClient, redisService);
     }
 
     @Bean
