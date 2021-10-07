@@ -124,11 +124,16 @@ class InformasjonRessursTest {
     void skalReturnereMappetListeOverDigisosKommuner() {
         Map<String, KommuneInfo> digisosKommuner = new HashMap<>();
         digisosKommuner.put("1234", new KommuneInfo("1234", true, true, false, false, null, false, null));
+        digisosKommuner.put("5678", new KommuneInfo("5678", true, true, true, false, null, false, null));
         Map<String, InformasjonRessurs.KommuneInfoFrontend> mappedeKommuner = ressurs.mapDigisosKommuner(digisosKommuner);
 
         assertThat(mappedeKommuner.get("1234")).isNotNull();
         assertThat(mappedeKommuner.get("1234").kanMottaSoknader).isTrue();
         assertThat(mappedeKommuner.get("1234").kanOppdatereStatus).isTrue();
+
+        assertThat(mappedeKommuner.get("5678")).isNotNull();
+        assertThat(mappedeKommuner.get("5678").kanMottaSoknader).isFalse();
+        assertThat(mappedeKommuner.get("5678").kanOppdatereStatus).isTrue();
     }
 
     @Test
