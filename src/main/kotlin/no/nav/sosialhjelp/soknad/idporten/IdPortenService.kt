@@ -4,7 +4,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import no.nav.sosialhjelp.idporten.client.AccessToken
 import no.nav.sosialhjelp.idporten.client.IdPortenClient
-import no.nav.sosialhjelp.soknad.idporten.IdPortenServiceImpl.CachedToken.Companion.shouldRenewToken
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime
 
@@ -29,6 +28,13 @@ class IdPortenServiceImpl(
         return cachedToken!!.accessToken
     }
 
+    private fun shouldRenewToken(token: CachedToken?): Boolean {
+        if (token == null) {
+            return true
+        }
+        return token.isExpired()
+    }
+
     private data class CachedToken(
         val accessToken: AccessToken,
         val created: LocalDateTime
@@ -36,17 +42,8 @@ class IdPortenServiceImpl(
         // 10 sek buffer fra expiresIn
         val expirationTime: LocalDateTime = LocalDateTime.now().plusSeconds(accessToken.expiresIn - 10L)
 
-        companion object {
-            fun shouldRenewToken(token: CachedToken?): Boolean {
-                if (token == null) {
-                    return true
-                }
-                return isExpired(token)
-            }
-
-            private fun isExpired(token: CachedToken): Boolean {
-                return token.expirationTime.isBefore(LocalDateTime.now())
-            }
+        fun isExpired(): Boolean {
+            return expirationTime.isBefore(LocalDateTime.now())
         }
     }
 }
