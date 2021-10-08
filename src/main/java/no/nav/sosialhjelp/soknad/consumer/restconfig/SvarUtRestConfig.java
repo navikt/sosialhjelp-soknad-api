@@ -3,6 +3,7 @@ package no.nav.sosialhjelp.soknad.consumer.restconfig;
 import no.nav.sosialhjelp.soknad.consumer.common.rest.RestUtils;
 import no.nav.sosialhjelp.soknad.consumer.svarut.SvarUtConsumer;
 import no.nav.sosialhjelp.soknad.consumer.svarut.SvarUtConsumerImpl;
+import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -42,6 +43,7 @@ public class SvarUtRestConfig {
                 .readTimeout(SVARUT_TIMEOUT)
                 .build();
         return RestUtils.createClient(restConfig)
+                .register(MultiPartFeature.class)
                 .register((ClientRequestFilter) requestContext -> requestContext.getHeaders().put(AUTHORIZATION.toString(), singletonList(getBasicAuthentication())));
     }
 
