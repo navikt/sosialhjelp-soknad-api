@@ -22,6 +22,7 @@ import static java.util.Collections.singletonList;
 import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.StegUtils.booleanVerdiFelt;
 import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.StegUtils.createSvar;
 import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.StegUtils.fulltnavn;
+import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.StegUtils.harBarnMedKilde;
 import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.StegUtils.isNotNullOrEmtpy;
 
 public class FamiliesituasjonSteg {
@@ -237,13 +238,6 @@ public class FamiliesituasjonSteg {
         }
 
         return sporsmal;
-    }
-
-    private boolean harBarnMedKilde(JsonForsorgerplikt forsorgerplikt, JsonKilde kilde) {
-        var harForsorgerplikt = forsorgerplikt != null && forsorgerplikt.getHarForsorgerplikt() != null && forsorgerplikt.getHarForsorgerplikt().getVerdi().equals(Boolean.TRUE);
-
-        return harForsorgerplikt && forsorgerplikt.getHarForsorgerplikt().getKilde().equals(kilde) &&
-                forsorgerplikt.getAnsvar() != null && forsorgerplikt.getAnsvar().stream().anyMatch(barn -> barn.getBarn().getKilde().equals(kilde));
     }
 
     private Sporsmal ingenRegistrerteBarnSporsmal() {
