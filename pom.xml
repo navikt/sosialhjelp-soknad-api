@@ -672,11 +672,11 @@
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>com.fasterxml.jackson.core</groupId>-->
-<!--            <artifactId>jackson-core</artifactId>-->
-<!--            <version>${jackson.version}</version>-->
-<!--        </dependency>-->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.jaxrs</groupId>
             <artifactId>jackson-jaxrs-json-provider</artifactId>
@@ -803,11 +803,11 @@
             <artifactId>streaming-klient</artifactId>
             <version>${streaming-klient.version}</version>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>no.ks.fiks</groupId>-->
-<!--            <artifactId>kryptering</artifactId>-->
-<!--            <version>${kryptering.version}</version>-->
-<!--        </dependency>-->
+        <dependency>
+            <groupId>no.ks.fiks</groupId>
+            <artifactId>kryptering</artifactId>
+            <version>${kryptering.version}</version>
+        </dependency>
         <dependency>
             <groupId>no.ks.fiks.svarut</groupId>
             <artifactId>svarut-rest-klient</artifactId>
