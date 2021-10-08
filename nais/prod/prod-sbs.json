@@ -8,7 +8,8 @@
   "envsecret": [
     "redis-password-soknad-api",
     "fiks-integrasjon-secret",
-    "systemuser-credentials-soknad-api"
+    "systemuser-credentials-soknad-api",
+    "fiks-svarut-credentials"
   ],
   "kvPaths": {
     "/var/run/secrets/datasource": "/oracle/data/prod/creds/soknadsosialhjel_p-user",
