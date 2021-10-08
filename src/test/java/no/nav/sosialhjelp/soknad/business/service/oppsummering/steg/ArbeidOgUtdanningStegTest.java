@@ -112,7 +112,7 @@ class ArbeidOgUtdanningStegTest {
         assertThat(arbeidsforholdSporsmal.getErUtfylt()).isTrue();
 
         var arbeidsforholdKommentarSporsmal = res.getAvsnitt().get(0).getSporsmal().get(1);
-        assertThat(arbeidsforholdKommentarSporsmal.getTittel()).isEqualTo("Kommentar til arbeidsforhold");
+        assertThat(arbeidsforholdKommentarSporsmal.getTittel()).isEqualTo("opplysninger.arbeidsituasjon.kommentarer.label");
         assertThat(arbeidsforholdKommentarSporsmal.getErUtfylt()).isTrue();
         assertThat(arbeidsforholdKommentarSporsmal.getFelt()).hasSize(1);
         assertThat(arbeidsforholdKommentarSporsmal.getFelt().get(0).getSvar().getValue()).isEqualTo("kommentar");
