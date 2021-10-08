@@ -1,6 +1,8 @@
 package no.nav.sosialhjelp.soknad.business.service.oppsummering.steg;
 
+import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonNavn;
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonForsorgerplikt;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Felt;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Sporsmal;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Svar;
@@ -57,6 +59,13 @@ public final class StegUtils {
                         .withSvar(createSvar(harSvartJa ? keyTrue : keyFalse, SvarType.LOCALE_TEKST))
                         .build()
         );
+    }
+
+    public static boolean harBarnMedKilde(JsonForsorgerplikt forsorgerplikt, JsonKilde kilde) {
+        var harForsorgerplikt = forsorgerplikt != null && forsorgerplikt.getHarForsorgerplikt() != null && forsorgerplikt.getHarForsorgerplikt().getVerdi().equals(Boolean.TRUE);
+
+        return harForsorgerplikt && forsorgerplikt.getHarForsorgerplikt().getKilde().equals(kilde) &&
+                forsorgerplikt.getAnsvar() != null && forsorgerplikt.getAnsvar().stream().anyMatch(barn -> barn.getBarn().getKilde().equals(kilde));
     }
 
     public static Svar createSvar(String value, SvarType type) {
