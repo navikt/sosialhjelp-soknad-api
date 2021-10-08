@@ -29,6 +29,7 @@ import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.FORMUE_VERDIPAPI
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.JOBB;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.SLUTTOPPGJOER;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.STUDIELAN;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_ANNET;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_FORSIKRING;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_NAVYTELSE;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTGIFTER_ANDRE_UTGIFTER;
@@ -107,16 +108,21 @@ class OkonomiskeOpplysningerOgVedleggStegTest {
                 .setUtbetaling(List.of(
                         createUtbetaling(UTBETALING_NAVYTELSE, 42), // skal filtreres vekk
                         createUtbetaling(SLUTTOPPGJOER, 111),
-                        createUtbetaling(UTBETALING_FORSIKRING, null)
+                        createUtbetaling(UTBETALING_FORSIKRING, null),
+                        createUtbetaling(UTBETALING_ANNET, null)
                 ));
 
         var steg = okonomiskeOpplysningerOgVedleggSteg.get(soknad, emptyList());
 
         assertThat(steg.getAvsnitt()).hasSize(3);
         assertThat(steg.getAvsnitt().get(0).getTittel()).isEqualTo("inntektbolk.tittel");
-        assertThat(steg.getAvsnitt().get(0).getSporsmal()).hasSize(2);
+        assertThat(steg.getAvsnitt().get(0).getSporsmal()).hasSize(3);
         assertThat(steg.getAvsnitt().get(0).getSporsmal().get(0).getErUtfylt()).isTrue();
+        assertThat(steg.getAvsnitt().get(0).getSporsmal().get(0).getTittel()).isEqualTo("json.okonomi.opplysninger.arbeid.avsluttet");
         assertThat(steg.getAvsnitt().get(0).getSporsmal().get(1).getErUtfylt()).isFalse();
+        assertThat(steg.getAvsnitt().get(0).getSporsmal().get(1).getTittel()).isEqualTo("json.okonomi.opplysninger.inntekt.inntekter.forsikringsutbetalinger");
+        assertThat(steg.getAvsnitt().get(0).getSporsmal().get(2).getErUtfylt()).isFalse();
+        assertThat(steg.getAvsnitt().get(0).getSporsmal().get(2).getTittel()).isEqualTo("json.okonomi.opplysninger.inntekt.inntekter.annet");
     }
 
     @Test
