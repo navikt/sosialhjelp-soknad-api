@@ -184,7 +184,6 @@ public class FamiliesituasjonSteg {
     private Sporsmal systemEktefelleSporsmal(JsonSivilstatus sivilstatus) {
         var ektefelle = sivilstatus.getEktefelle();
         var labelSvarMap = new LinkedHashMap<String, Svar>();
-        labelSvarMap.put("system.familie.sivilstatus.label", null);
         if (ektefelle.getNavn() != null) {
             labelSvarMap.put("system.familie.sivilstatus.gift.ektefelle.navn", createSvar(fulltnavn(ektefelle.getNavn()), SvarType.TEKST));
         }
