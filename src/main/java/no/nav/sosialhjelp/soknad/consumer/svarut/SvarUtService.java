@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.consumer.svarut;
 
+import no.ks.fiks.svarut.klient.SvarUtKlientApi;
 import no.ks.fiks.svarut.klient.model.Forsendelse;
 import org.springframework.stereotype.Component;
 
@@ -9,14 +10,24 @@ import java.util.Map;
 @Component
 public class SvarUtService {
 
-    private final SvarUtConsumer svarUtConsumer;
+//    private final SvarUtConsumer svarUtConsumer;
+    private final SvarUtKlientApi svarUtKlientApi;
 
-    public SvarUtService(SvarUtConsumer svarUtConsumer) {
-        this.svarUtConsumer = svarUtConsumer;
+//    public SvarUtService(SvarUtConsumer svarUtConsumer) {
+//        this.svarUtConsumer = svarUtConsumer;
+//    }
+
+    public SvarUtService(SvarUtKlientApi svarUtKlientApi) {
+        this.svarUtKlientApi = svarUtKlientApi;
     }
 
+//    public String send(Forsendelse forsendelse, Map<String, InputStream> filnavnInputStreamMap) {
+//        var forsendelseId = svarUtConsumer.sendForsendelse(forsendelse, filnavnInputStreamMap);
+//        return forsendelseId.getId().toString();
+//    }
+
     public String send(Forsendelse forsendelse, Map<String, InputStream> filnavnInputStreamMap) {
-        var forsendelseId = svarUtConsumer.sendForsendelse(forsendelse, filnavnInputStreamMap);
+        var forsendelseId = svarUtKlientApi.sendForsendelse(forsendelse, filnavnInputStreamMap);
         return forsendelseId.getId().toString();
     }
 }
