@@ -21,6 +21,9 @@ open class ProxiedWebClientConfig(
     open fun proxiedWebClient(): WebClient =
         WebClient.builder()
             .clientConnector(getProxiedReactorClientHttpConnector(proxyUrl))
+            .codecs {
+                it.defaultCodecs().maxInMemorySize(16 * 1024 * 1024)
+            }
             .build()
 
     private fun getProxiedReactorClientHttpConnector(proxyUrl: String): ReactorClientHttpConnector {
@@ -44,6 +47,9 @@ open class MockProxiedWebClientConfig {
     open fun proxiedWebClient(): WebClient =
         WebClient.builder()
             .clientConnector(getUnproxiedReactorClientHttpConnector())
+            .codecs {
+                it.defaultCodecs().maxInMemorySize(16 * 1024 * 1024)
+            }
             .build()
 
     fun getUnproxiedReactorClientHttpConnector(): ReactorClientHttpConnector {
