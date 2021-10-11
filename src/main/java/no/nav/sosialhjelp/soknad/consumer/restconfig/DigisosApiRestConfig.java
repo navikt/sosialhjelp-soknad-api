@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import static no.nav.sosialhjelp.metrics.MetricsFactory.createTimerProxyForWebService;
+import static no.nav.sosialhjelp.metrics.MetricsFactory.createTimerProxy;
 import static no.nav.sosialhjelp.soknad.web.selftest.Pingable.Ping.feilet;
 import static no.nav.sosialhjelp.soknad.web.selftest.Pingable.Ping.lyktes;
 
@@ -29,7 +29,7 @@ public class DigisosApiRestConfig {
     @Bean
     public DigisosApi digisosApi(KommuneInfoService kommuneInfoService) {
         var digisosApi = new DigisosApiImpl(digisosApiProperties(), kommuneInfoService);
-        return createTimerProxyForWebService("DigisosApi", digisosApi, DigisosApi.class); // timerProxyForWebService fordi metrikkene er prefixet med 'ws'. Dette kan/bør endres senere
+        return createTimerProxy("DigisosApi", digisosApi, DigisosApi.class);
     }
 
     @Bean
