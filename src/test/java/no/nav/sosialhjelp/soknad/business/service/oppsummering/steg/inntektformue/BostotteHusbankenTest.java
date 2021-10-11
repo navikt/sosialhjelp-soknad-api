@@ -80,6 +80,7 @@ class BostotteHusbankenTest {
 
         var husbankenFeiletSporsmal = avsnitt.getSporsmal().get(1);
         assertThat(husbankenFeiletSporsmal.getTittel()).isEqualTo("inntekt.bostotte.kontaktproblemer");
+        assertThat(husbankenFeiletSporsmal.getErUtfylt()).isTrue();
     }
 
     @Test

@@ -55,6 +55,7 @@ public class BostotteHusbanken {
             sporsmal.add(
                     new Sporsmal.Builder()
                             .withTittel("inntekt.bostotte.kontaktproblemer")
+                            .withErUtfylt(true)
                             .build()
             );
         }
