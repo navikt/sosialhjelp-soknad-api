@@ -8,16 +8,22 @@ import no.nav.sosialhjelp.soknad.consumer.exceptions.TjenesteUtilgjengeligExcept
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.MultiPart;
 import org.glassfish.jersey.media.multipart.file.StreamDataBodyPart;
+import org.slf4j.Logger;
 
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.io.InputStream;
 import java.util.Map;
 
+import static org.slf4j.LoggerFactory.getLogger;
+
 public class SvarUtConsumerImpl implements SvarUtConsumer {
+
+    private static final Logger log = getLogger(SvarUtConsumerImpl.class);
 
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final Client client;
@@ -58,4 +64,13 @@ public class SvarUtConsumerImpl implements SvarUtConsumer {
         }
     }
 
+    @Override
+    public void ping() {
+        var request = client.target(baseUrl + "/tjenester/api/forsendelse/v1/forsendelseTyper").request();
+        try (Response response = request.get()) {
+            if (response.getStatus() != 200) {
+                log.warn("Ping feilet mot SvarUt. {} - {}", response.getStatus(), response.getStatusInfo().getReasonPhrase());
+            }
+        }
+    }
 }

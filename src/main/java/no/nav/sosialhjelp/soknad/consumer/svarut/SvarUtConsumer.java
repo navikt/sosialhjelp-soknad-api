@@ -8,4 +8,5 @@ import java.util.Map;
 
 public interface SvarUtConsumer {
     ForsendelsesId sendForsendelse(Forsendelse forsendelse, Map<String, InputStream> data);
+    void ping();
 }
