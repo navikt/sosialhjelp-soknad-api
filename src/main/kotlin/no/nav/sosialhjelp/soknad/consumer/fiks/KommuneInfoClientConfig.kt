@@ -3,6 +3,7 @@ package no.nav.sosialhjelp.soknad.consumer.fiks
 import no.nav.sosialhjelp.client.kommuneinfo.FiksProperties
 import no.nav.sosialhjelp.client.kommuneinfo.KommuneInfoClient
 import no.nav.sosialhjelp.client.kommuneinfo.KommuneInfoClientImpl
+import no.nav.sosialhjelp.metrics.MetricsFactory.createTimerProxy
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -18,10 +19,8 @@ open class KommuneInfoClientConfig(
 
     @Bean
     open fun kommuneInfoClient(): KommuneInfoClient {
-        return KommuneInfoClientImpl(
-            proxiedWebClient,
-            fiksProperties()
-        )
+        val kommuneInfoClient = KommuneInfoClientImpl(proxiedWebClient, fiksProperties())
+        return createTimerProxy("KommuneInfoClient", kommuneInfoClient, KommuneInfoClientImpl::class.java)
     }
 
     private fun fiksProperties(): FiksProperties {
