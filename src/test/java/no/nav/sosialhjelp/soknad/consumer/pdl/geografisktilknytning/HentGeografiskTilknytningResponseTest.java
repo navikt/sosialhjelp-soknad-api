@@ -5,10 +5,11 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import no.nav.sosialhjelp.soknad.consumer.pdl.geografisktilknytning.dto.GtType;
-import org.apache.cxf.helpers.IOUtils;
+import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -22,7 +23,7 @@ class HentGeografiskTilknytningResponseTest {
     void deserialiseringAvResponseJson() throws IOException {
         var resourceAsStream = ClassLoader.getSystemResourceAsStream("pdl/pdlHentGeografiskTilknytningResponse.json");
         assertThat(resourceAsStream).isNotNull();
-        var jsonString = IOUtils.toString(resourceAsStream);
+        var jsonString = IOUtils.toString(resourceAsStream, StandardCharsets.UTF_8);
 
         var response = mapper.readValue(jsonString, new TypeReference<HentGeografiskTilknytningResponse>() {});
 

@@ -9,13 +9,14 @@ import no.nav.sosialhjelp.soknad.domain.model.navenhet.NavEnhet;
 import no.nav.sosialhjelp.soknad.domain.model.navenhet.NavenhetFraLokalListe;
 import no.nav.sosialhjelp.soknad.domain.model.navenhet.NavenheterFraLokalListe;
 import no.nav.sosialhjelp.soknad.domain.model.util.KommuneTilNavEnhetMapper;
-import org.apache.cxf.helpers.IOUtils;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -158,7 +159,7 @@ public class NorgService {
             if (resourceAsStream == null) {
                 return null;
             }
-            String json = IOUtils.toString(resourceAsStream);
+            String json = IOUtils.toString(resourceAsStream, StandardCharsets.UTF_8);
             return new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false).readValue(json, NavenheterFraLokalListe.class);
         } catch (IOException e) {
             logger.error("IOException ved henting av navenheter fra lokal liste", e);

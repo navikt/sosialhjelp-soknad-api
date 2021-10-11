@@ -33,7 +33,6 @@ import no.nav.sosialhjelp.soknad.consumer.restconfig.SvarUtRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.UnleashRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.skatt.SkattbarInntektService;
 import no.nav.sosialhjelp.soknad.consumer.svarut.SvarUtService;
-import no.nav.sosialhjelp.soknad.consumer.wsconfig.FiksWSConfig;
 import no.nav.sosialhjelp.soknad.idporten.IdPortenClientConfig;
 import no.nav.sosialhjelp.soknad.idporten.IdPortenServiceImpl;
 import no.nav.sosialhjelp.soknad.oppslag.OppslagRestConfig;
@@ -83,7 +82,6 @@ public class ConsumerConfig {
             PdlAdresseSokRestConfig.class,
             PdlGeografiskTilknytningRestConfig.class,
             DigisosApiRestConfig.class,
-            FiksWSConfig.class,
             NorgRestConfig.class,
             OrganisasjonRestConfig.class,
             ArbeidsforholdRestConfig.class,

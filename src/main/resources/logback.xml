@@ -24,11 +24,7 @@
 
     <logger name="org.apache.http.impl.client" level="info"/>
 
-    <logger name="no.nav.sosialhjelp.soknad.consumer.common.cxf.CXFMaskSAMLTokenLoggingOutInterceptor" level="OFF"/>
-
     <logger name="org.apache.http.client.protocol.ResponseProcessCookies" level="ERROR"/>
-
-    <logger name="org.apache.cxf" level="OFF"/>
 
     <logger name="no.nav.sosialhjelp.soknad.consumer.common.rest.ClientLogFilter" level="WARN"/>
 
