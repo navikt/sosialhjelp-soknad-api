@@ -4,11 +4,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import no.ks.fiks.svarut.klient.model.Dokument;
 import no.ks.fiks.svarut.klient.model.Forsendelse;
 import no.ks.fiks.svarut.klient.model.ForsendelsesId;
+import no.nav.sosialhjelp.soknad.consumer.exceptions.TjenesteUtilgjengeligException;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.MultiPart;
 import org.glassfish.jersey.media.multipart.file.StreamDataBodyPart;
-import org.slf4j.Logger;
 
+import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
@@ -16,11 +17,7 @@ import javax.ws.rs.core.MediaType;
 import java.io.InputStream;
 import java.util.Map;
 
-import static org.slf4j.LoggerFactory.getLogger;
-
 public class SvarUtConsumerImpl implements SvarUtConsumer {
-
-    private static final Logger log = getLogger(SvarUtConsumerImpl.class);
 
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final Client client;
@@ -48,20 +45,16 @@ public class SvarUtConsumerImpl implements SvarUtConsumer {
             }
             multiPart.close();
 
-            log.info("request til {}", baseUrl + "/tjenester/api/forsendelse/v1/sendForsendelse");
-
             var response = webTarget
                     .request(MediaType.APPLICATION_JSON_TYPE)
                     .post(Entity.entity(multiPart, multiPart.getMediaType()), String.class);
 
-            log.info("response {}", response);
-
             return objectMapper.readValue(response, ForsendelsesId.class);
 
-        } catch (RuntimeException e) {
+        } catch (ClientErrorException e) {
             throw e;
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new TjenesteUtilgjengeligException("Noe feilet ved kall til SvarUt (rest)", e);
         }
     }
 
