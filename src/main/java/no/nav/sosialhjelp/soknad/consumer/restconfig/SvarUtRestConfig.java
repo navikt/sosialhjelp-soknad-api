@@ -3,6 +3,7 @@ package no.nav.sosialhjelp.soknad.consumer.restconfig;
 import no.nav.sosialhjelp.soknad.consumer.common.rest.RestUtils;
 import no.nav.sosialhjelp.soknad.consumer.svarut.SvarUtConsumer;
 import no.nav.sosialhjelp.soknad.consumer.svarut.SvarUtConsumerImpl;
+import no.nav.sosialhjelp.soknad.web.selftest.Pingable;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -15,6 +16,8 @@ import java.nio.charset.StandardCharsets;
 
 import static java.util.Collections.singletonList;
 import static no.nav.sosialhjelp.metrics.MetricsFactory.createTimerProxy;
+import static no.nav.sosialhjelp.soknad.web.selftest.Pingable.Ping.feilet;
+import static no.nav.sosialhjelp.soknad.web.selftest.Pingable.Ping.lyktes;
 import static org.eclipse.jetty.http.HttpHeader.AUTHORIZATION;
 
 @Configuration
@@ -35,6 +38,19 @@ public class SvarUtRestConfig {
     public SvarUtConsumer svarUtConsumer() {
         var svarUt = new SvarUtConsumerImpl(svarutUrl, svarUtClient());
         return createTimerProxy("SvarUt", svarUt, SvarUtConsumer.class);
+    }
+
+    @Bean
+    public Pingable svarUtPing(SvarUtConsumer svarUtConsumer) {
+        return () -> {
+            Pingable.Ping.PingMetadata metadata = new Pingable.Ping.PingMetadata(svarutUrl, "SvarUt", false);
+            try {
+                svarUtConsumer.ping();
+                return lyktes(metadata);
+            } catch (Exception e) {
+                return feilet(metadata, e);
+            }
+        };
     }
 
     private Client svarUtClient() {
