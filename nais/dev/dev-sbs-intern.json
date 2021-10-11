@@ -9,7 +9,8 @@
   "envsecret": [
     "redis-password-soknad-api",
     "fiks-integrasjon-secret",
-    "systemuser-credentials-soknad-api"
+    "systemuser-credentials-soknad-api",
+    "fiks-svarut-credentials"
   ],
   "kvPaths": {
     "/var/run/secrets/datasource": "/oracle/data/dev/creds/soknadsosialhjelp_q1-user",
@@ -66,6 +67,7 @@
     "SOKNAD_BOSTOTTE_PING_URL": "https://api.demo.husbanken.no/bostotte/minbostotte/ping",
     "SOKNAD_ETTERSENDING_ANTALLDAGER": "300",
     "SECURITYTOKENSERVICE_APIGW_URL": "https://api-gw-q1.oera.no/security-token-service/rest/v1/sts/token",
+    "SVARUT_URL": "https://test.svarut.ks.no",
     "IS_SENDING_TIL_DIGISOS_API_ENABLED": "true",
     "IS_ALLTID_SEND_TIL_NAV_TESTKOMMUNE": "true",
     "IS_ALLTID_HENT_KOMMUNEINFO_FRA_NAV_TESTKOMMUNE": "true",

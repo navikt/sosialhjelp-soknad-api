@@ -52,6 +52,11 @@
         <sosialhjelp-common.version>1.5e5ff30</sosialhjelp-common.version>
         <filformat.version>1.2021.08.27-10.29-41cf5ce1230a</filformat.version>
 
+        <!-- Fiks/KS -->
+        <svarut-rest-klient.version>1.0.2</svarut-rest-klient.version>
+        <kryptering.version>1.1.1</kryptering.version>
+        <streaming-klient.version>1.0.15</streaming-klient.version>
+
         <spring.version>5.3.9</spring.version>
         <jetty.version>9.4.43.v20210629</jetty.version>
         <jersey.version>2.34</jersey.version>
@@ -109,9 +114,6 @@
         <jakarta.xml.version>2.3.3</jakarta.xml.version>
         <jakarta.xml.soap-api.version>1.4.2</jakarta.xml.soap-api.version>
         <jakarta.jws.version>2.1.0</jakarta.jws.version>
-
-        <kryptering.version>1.1.1</kryptering.version>
-        <streaming-klient.version>1.0.15</streaming-klient.version>
 
         <!-- Versjoner for test dependencies -->
         <hamcrest.version>2.2</hamcrest.version>
@@ -221,6 +223,11 @@
             <!-- Jackson -->
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-core</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-annotations</artifactId>
                 <version>${jackson.version}</version>
             </dependency>
@@ -323,6 +330,13 @@
                 <groupId>org.opensaml</groupId>
                 <artifactId>opensaml-security-api</artifactId>
                 <version>${opensaml.version}</version>
+            </dependency>
+
+            <!-- Fiks -->
+            <dependency>
+                <groupId>no.ks.fiks</groupId>
+                <artifactId>kryptering</artifactId>
+                <version>${kryptering.version}</version>
             </dependency>
 
             <!-- diverse -->
@@ -866,6 +880,11 @@
             <groupId>no.ks.fiks</groupId>
             <artifactId>kryptering</artifactId>
             <version>${kryptering.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>no.ks.fiks.svarut</groupId>
+            <artifactId>svarut-rest-klient</artifactId>
+            <version>${svarut-rest-klient.version}</version>
         </dependency>
 
         <!-- logging -->

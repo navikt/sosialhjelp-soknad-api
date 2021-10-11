@@ -29,8 +29,10 @@ import no.nav.sosialhjelp.soknad.consumer.restconfig.PdlGeografiskTilknytningRes
 import no.nav.sosialhjelp.soknad.consumer.restconfig.PdlHentPersonRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.STSTokenRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.SkattbarInntektRestConfig;
+import no.nav.sosialhjelp.soknad.consumer.restconfig.SvarUtRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.UnleashRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.skatt.SkattbarInntektService;
+import no.nav.sosialhjelp.soknad.consumer.svarut.SvarUtService;
 import no.nav.sosialhjelp.soknad.consumer.wsconfig.FiksWSConfig;
 import no.nav.sosialhjelp.soknad.idporten.IdPortenClientConfig;
 import no.nav.sosialhjelp.soknad.idporten.IdPortenServiceImpl;
@@ -68,7 +70,8 @@ import org.springframework.context.annotation.Profile;
         BydelConfig.class,
         BydelService.class,
         LeaderElectionImpl.class,
-        NoLeaderElection.class
+        NoLeaderElection.class,
+        SvarUtService.class
 })
 
 public class ConsumerConfig {
@@ -89,7 +92,8 @@ public class ConsumerConfig {
             SkattbarInntektRestConfig.class,
             KodeverkRestConfig.class,
             UnleashRestConfig.class,
-            OppslagRestConfig.class
+            OppslagRestConfig.class,
+            SvarUtRestConfig.class
     })
     public static class WsServices {
     }
