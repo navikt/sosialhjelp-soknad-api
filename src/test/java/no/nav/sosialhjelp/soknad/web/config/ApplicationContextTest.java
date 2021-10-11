@@ -24,7 +24,7 @@ import static java.lang.System.setProperty;
 @WebAppConfiguration
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {SoknadinnsendingConfig.class, OidcConfig.class})
-@ActiveProfiles("no-redis")
+@ActiveProfiles({"no-redis", "test"})
 public class ApplicationContextTest {
 
     public static final String ENVIRONMENT_TEST_PROPERTIES = "/environment-test.properties";

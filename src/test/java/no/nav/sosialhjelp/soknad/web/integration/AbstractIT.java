@@ -20,6 +20,8 @@ public abstract class AbstractIT {
         System.setProperty(TestProperties.CONTAINER_PORT, "" + PORT);
         System.setProperty(TestProperties.LOG_TRAFFIC, "true");
         System.setProperty("jersey.test.host", "localhost");
+        // dummy proxy url
+        System.setProperty("HTTPS_PROXY", "http://localhost:" + PORT);
         jetty = new SoknadsosialhjelpServer(PORT, new File("src/test/resources/override-web-integration.xml"), "/sosialhjelp/soknad-api");
         setProperty("start.oidc.withmock", "false"); // pga. Testene validerer oidc-filtre
         jetty.start();
