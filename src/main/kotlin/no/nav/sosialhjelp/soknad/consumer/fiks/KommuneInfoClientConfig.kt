@@ -20,7 +20,7 @@ open class KommuneInfoClientConfig(
     @Bean
     open fun kommuneInfoClient(): KommuneInfoClient {
         val kommuneInfoClient = KommuneInfoClientImpl(proxiedWebClient, fiksProperties())
-        return createTimerProxy("KommuneInfoClient", kommuneInfoClient, KommuneInfoClientImpl::class.java)
+        return createTimerProxy("KommuneInfoClient", kommuneInfoClient, KommuneInfoClient::class.java)
     }
 
     private fun fiksProperties(): FiksProperties {
