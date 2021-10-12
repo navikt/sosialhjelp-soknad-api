@@ -125,8 +125,6 @@
         <jsoup.version>1.14.2</jsoup.version>
         <oauth2-oidc-sdk.version>9.15</oauth2-oidc-sdk.version>
         <emoji-java.version>5.1.1</emoji-java.version>
-        <java-support.version>7.5.2</java-support.version>
-        <cryptacular.version>1.2.4</cryptacular.version>
         <stax-ex.version>1.8.3</stax-ex.version>
         <objenesis.version>2.6</objenesis.version>
         <mimepull.version>1.9.15</mimepull.version>
@@ -328,16 +326,6 @@
                 <groupId>com.nimbusds</groupId>
                 <artifactId>oauth2-oidc-sdk</artifactId>
                 <version>${oauth2-oidc-sdk.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>net.shibboleth.utilities</groupId>
-                <artifactId>java-support</artifactId>
-                <version>${java-support.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.cryptacular</groupId>
-                <artifactId>cryptacular</artifactId>
-                <version>${cryptacular.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.jvnet.staxex</groupId>
