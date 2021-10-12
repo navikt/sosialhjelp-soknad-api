@@ -119,7 +119,6 @@
         <!-- Versjoner identifisert av maven-enforcer-plugin -->
         <asm.version>9.2</asm.version>
         <neethi.version>3.1.1</neethi.version>
-        <xmlsec.version>2.2.3</xmlsec.version>
         <rhino.version>1.7.13</rhino.version>
         <logstash-logback-encoder.version>6.6</logstash-logback-encoder.version>
         <hk2.version>2.6.1</hk2.version>
@@ -315,11 +314,6 @@
                 <groupId>com.nimbusds</groupId>
                 <artifactId>nimbus-jose-jwt</artifactId>
                 <version>${nimbus-jose-jwt.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.santuario</groupId>
-                <artifactId>xmlsec</artifactId>
-                <version>${xmlsec.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.ow2.asm</groupId>
