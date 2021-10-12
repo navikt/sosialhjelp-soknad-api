@@ -34,6 +34,7 @@ import no.nav.sosialhjelp.soknad.consumer.restconfig.UnleashRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.skatt.SkattbarInntektService;
 import no.nav.sosialhjelp.soknad.consumer.svarut.SvarUtService;
 import no.nav.sosialhjelp.soknad.idporten.IdPortenClientConfig;
+import no.nav.sosialhjelp.soknad.idporten.IdPortenClientConfigMockAlt;
 import no.nav.sosialhjelp.soknad.idporten.IdPortenServiceImpl;
 import no.nav.sosialhjelp.soknad.oppslag.OppslagRestConfig;
 import no.nav.sosialhjelp.soknad.oppslag.kontonummer.KontonummerService;
@@ -50,6 +51,7 @@ import org.springframework.context.annotation.Profile;
         MockProxiedWebClientConfig.class,
         KommuneInfoClientConfig.class,
         IdPortenClientConfig.class,
+        IdPortenClientConfigMockAlt.class,
         IdPortenServiceImpl.class,
         RedisConfig.class,
         NoRedisConfig.class,
