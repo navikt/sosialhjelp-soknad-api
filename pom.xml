@@ -132,7 +132,6 @@
         <stax-ex.version>1.8.3</stax-ex.version>
         <objenesis.version>2.6</objenesis.version>
         <mimepull.version>1.9.15</mimepull.version>
-        <relaxng-datatype.version>2.3.3</relaxng-datatype.version>
         <json.version>20210307</json.version>
         <byte-buddy.version>1.11.5</byte-buddy.version>
     </properties>
@@ -301,11 +300,6 @@
             </dependency>
 
             <!-- diverse -->
-            <dependency>
-                <groupId>com.sun.xml.bind.external</groupId>
-                <artifactId>relaxng-datatype</artifactId>
-                <version>${relaxng-datatype.version}</version>
-            </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
