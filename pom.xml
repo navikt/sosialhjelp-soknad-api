@@ -125,7 +125,6 @@
         <jsoup.version>1.14.2</jsoup.version>
         <oauth2-oidc-sdk.version>9.15</oauth2-oidc-sdk.version>
         <emoji-java.version>5.1.1</emoji-java.version>
-        <stax-ex.version>1.8.3</stax-ex.version>
         <objenesis.version>2.6</objenesis.version>
         <mimepull.version>1.9.15</mimepull.version>
         <json.version>20210307</json.version>
@@ -326,11 +325,6 @@
                 <groupId>com.nimbusds</groupId>
                 <artifactId>oauth2-oidc-sdk</artifactId>
                 <version>${oauth2-oidc-sdk.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.jvnet.staxex</groupId>
-                <artifactId>stax-ex</artifactId>
-                <version>${stax-ex.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.objenesis</groupId>
