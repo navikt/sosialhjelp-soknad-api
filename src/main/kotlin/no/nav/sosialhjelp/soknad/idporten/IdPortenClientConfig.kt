@@ -1,7 +1,9 @@
 package no.nav.sosialhjelp.soknad.idporten
 
 import no.nav.sosialhjelp.idporten.client.IdPortenClient
+import no.nav.sosialhjelp.idporten.client.IdPortenClientImpl
 import no.nav.sosialhjelp.idporten.client.IdPortenProperties
+import no.nav.sosialhjelp.metrics.MetricsFactory.createTimerProxy
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -19,10 +21,8 @@ open class IdPortenClientConfig(
 
     @Bean
     open fun idPortenClient(): IdPortenClient {
-        return IdPortenClient(
-            webClient = proxiedWebClient,
-            idPortenProperties = idPortenProperties()
-        )
+        val idPortenClient = IdPortenClientImpl(webClient = proxiedWebClient, idPortenProperties = idPortenProperties())
+        return createTimerProxy("IdPortenClient", idPortenClient, IdPortenClient::class.java)
     }
 
     fun idPortenProperties(): IdPortenProperties {
