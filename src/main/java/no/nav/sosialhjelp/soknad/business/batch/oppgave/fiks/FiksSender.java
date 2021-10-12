@@ -231,6 +231,7 @@ public class FiksSender {
                 .withKunDigitalLevering(false)
                 .withUtskriftsKonfigurasjon(fakeUtskriftsConfig)
                 .withKryptert(krypteringEnabled)
+                .withKrevNiva4Innlogging(krypteringEnabled)
                 .withSvarPaForsendelse(svarPaForsendelseId)
                 .withDokumenter(hentDokumenterFraSoknads(soknadUnderArbeid, map))
                 .withMetadataFraAvleverendeSystem(
