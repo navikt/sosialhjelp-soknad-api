@@ -3,6 +3,7 @@ package no.nav.sosialhjelp.soknad.consumer.restconfig;
 import no.nav.sosialhjelp.soknad.consumer.common.rest.RestUtils;
 import no.nav.sosialhjelp.soknad.consumer.skatt.SkattbarInntektConsumer;
 import no.nav.sosialhjelp.soknad.consumer.skatt.SkattbarInntektConsumerImpl;
+import no.nav.sosialhjelp.soknad.maskinporten.MaskinportenClient;
 import no.nav.sosialhjelp.soknad.web.selftest.Pingable;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -25,8 +26,8 @@ public class SkattbarInntektRestConfig {
     private String endpoint;
 
     @Bean
-    public SkattbarInntektConsumer skattbarInntektConsumer() {
-        return new SkattbarInntektConsumerImpl(skattbarInntektClient(), endpoint);
+    public SkattbarInntektConsumer skattbarInntektConsumer(MaskinportenClient maskinportenClient) {
+        return new SkattbarInntektConsumerImpl(skattbarInntektClient(), endpoint, maskinportenClient);
     }
 
     @Bean

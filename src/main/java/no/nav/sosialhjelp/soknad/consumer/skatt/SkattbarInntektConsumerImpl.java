@@ -2,6 +2,7 @@ package no.nav.sosialhjelp.soknad.consumer.skatt;
 
 import no.nav.sosialhjelp.soknad.consumer.concurrency.RestCallContext;
 import no.nav.sosialhjelp.soknad.consumer.skatt.dto.SkattbarInntekt;
+import no.nav.sosialhjelp.soknad.maskinporten.MaskinportenClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -21,14 +22,16 @@ public class SkattbarInntektConsumerImpl implements SkattbarInntektConsumer {
 
     private static final Logger log = LoggerFactory.getLogger(SkattbarInntektConsumerImpl.class);
 
-    private Client client;
-    private String endpoint;
+    private final Client client;
+    private final String endpoint;
+    private final MaskinportenClient maskinportenClient;
 
-    private Function<Sokedata, RestCallContext> restCallContextSelector;
+    private final Function<Sokedata, RestCallContext> restCallContextSelector;
 
-    public SkattbarInntektConsumerImpl(Client client, String endpoint) {
+    public SkattbarInntektConsumerImpl(Client client, String endpoint, MaskinportenClient maskinportenClient) {
         this.client = client;
         this.endpoint = endpoint;
+        this.maskinportenClient = maskinportenClient;
 
         restCallContextSelector = (sokedata -> new RestCallContext.Builder()
                 .withClient(client)
@@ -45,6 +48,7 @@ public class SkattbarInntektConsumerImpl implements SkattbarInntektConsumer {
                 .withTom(LocalDate.now()).withIdentifikator(fnummer);
 
         Invocation.Builder request = getRequest(sokedata);
+        // todo request.header(HttpHeaders.AUTHORIZATION, BEARER + maskinportenClient.getTokenString());
 
         try (Response response = request.get()) {
             if (log.isDebugEnabled()) {

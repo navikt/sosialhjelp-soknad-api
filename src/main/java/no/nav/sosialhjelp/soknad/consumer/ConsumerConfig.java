@@ -37,6 +37,7 @@ import no.nav.sosialhjelp.soknad.consumer.wsconfig.FiksWSConfig;
 import no.nav.sosialhjelp.soknad.idporten.IdPortenClientConfig;
 import no.nav.sosialhjelp.soknad.idporten.IdPortenClientConfigMockAlt;
 import no.nav.sosialhjelp.soknad.idporten.IdPortenServiceImpl;
+import no.nav.sosialhjelp.soknad.maskinporten.MaskinportenClientConfig;
 import no.nav.sosialhjelp.soknad.oppslag.OppslagRestConfig;
 import no.nav.sosialhjelp.soknad.oppslag.kontonummer.KontonummerService;
 import no.nav.sosialhjelp.soknad.oppslag.utbetaling.UtbetalingService;
@@ -54,6 +55,7 @@ import org.springframework.context.annotation.Profile;
         IdPortenClientConfig.class,
         IdPortenClientConfigMockAlt.class,
         IdPortenServiceImpl.class,
+        MaskinportenClientConfig.class,
         RedisConfig.class,
         NoRedisConfig.class,
         PersonService.class,

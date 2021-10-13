@@ -18,6 +18,7 @@
   "isGcp": true,
   "isLabsGcp": true,
   "leaderElectionEnabled": false,
+  "maskinportenEnabled": false,
   "env": {
     "MAIN_CLASS": "no.nav.sosialhjelp.soknad.web.mock.MockAltSoknadsosialhjelpServer",
     "GCP": "true",
