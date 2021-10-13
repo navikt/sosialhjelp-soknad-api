@@ -90,6 +90,8 @@ public class SkattbarInntektConsumerImpl implements SkattbarInntektConsumer {
 
     private Invocation.Builder lagRequest(RestCallContext executionContext, Sokedata sokedata) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM");
+//        NEW  https://<env>/api/innrapportert/inntektsmottaker/v1/<rettighetspakke>/<personidentifikator>/inntekter?fraOgMed=<YYYY-MM>[&tilOgMed=<YYYY-MM>][&opplysningspliktig=<opplysningspliktig>]
+//        OLD https://<env>/api/innrapportert/inntektsmottaker/<rettighetspakke>/<personidentifikator>/oppgave/inntekt?fraOgMed=<YYYY-MM>[&tilOgMed=<YYYY-MM>]
         WebTarget b = executionContext.getClient().target(String.format("%s%s/oppgave/inntekt", endpoint, sokedata.identifikator))
                 .queryParam("fraOgMed", sokedata.fom.format(formatter))
                 .queryParam("tilOgMed", sokedata.tom.format(formatter));
