@@ -45,11 +45,11 @@ class SkatteetatenClientImpl(
             .onErrorMap(WebClientResponseException::class.java) { e ->
                 val feilmeldingUtenFnr = maskerFnr(e.responseBodyAsString)
                 log.warn("Klarer ikke hente skatteopplysninger {} status {} ", feilmeldingUtenFnr, e.statusCode)
-                null
+                throw e
             }
             .onErrorMap { e ->
                 log.warn("Klarer ikke hente skatteopplysninger", e)
-                null
+                throw e
             }
             .block()
     }

@@ -25,6 +25,7 @@ import static java.util.stream.Collectors.toList;
 @Service
 public class SkattbarInntektService {
 
+    private static final String SKATTEETATEN_MASKINPORTEN_ENABLED = "sosialhjelp.soknad.skatteetaten-maskinporten-enabled";
     private final DateTimeFormatter arManedFormatter = DateTimeFormatter.ofPattern("yyyy-MM");
 
     private final SkattbarInntektConsumer consumer;
@@ -42,8 +43,16 @@ public class SkattbarInntektService {
     }
 
     public List<Utbetaling> hentUtbetalinger(String fnummer) {
-        // todo: bruk unleash til å switche mellom hvilken klient vi bruker
-        SkattbarInntekt skattbarInntekt = consumer.hentSkattbarInntekt(fnummer);
+        SkattbarInntekt skattbarInntekt;
+        if (unleash.isEnabled(SKATTEETATEN_MASKINPORTEN_ENABLED, false)) {
+            try {
+                skattbarInntekt = skatteetatenClient.hentSkattbarinntekt(fnummer);
+            } catch (Exception e) {
+                skattbarInntekt = consumer.hentSkattbarInntekt(fnummer);
+            }
+        } else {
+            skattbarInntekt = consumer.hentSkattbarInntekt(fnummer);
+        }
 
         return filtrerUtbetalingerSlikAtViFaarSisteMaanedFraHverArbeidsgiver(mapTilUtbetalinger(skattbarInntekt));
     }
