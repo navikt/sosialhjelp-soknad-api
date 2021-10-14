@@ -1,10 +1,12 @@
 package no.nav.sosialhjelp.soknad.consumer.skatt;
 
+import no.finn.unleash.Unleash;
 import no.nav.sosialhjelp.soknad.consumer.skatt.dto.Forskuddstrekk;
 import no.nav.sosialhjelp.soknad.consumer.skatt.dto.Inntekt;
 import no.nav.sosialhjelp.soknad.consumer.skatt.dto.OppgaveInntektsmottaker;
 import no.nav.sosialhjelp.soknad.consumer.skatt.dto.SkattbarInntekt;
 import no.nav.sosialhjelp.soknad.domain.model.utbetaling.Utbetaling;
+import no.nav.sosialhjelp.soknad.skatteetaten.SkatteetatenClient;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -23,16 +25,24 @@ import static java.util.stream.Collectors.toList;
 @Service
 public class SkattbarInntektService {
 
-    private DateTimeFormatter arManedFormatter = DateTimeFormatter.ofPattern("yyyy-MM");
+    private final DateTimeFormatter arManedFormatter = DateTimeFormatter.ofPattern("yyyy-MM");
 
-    private SkattbarInntektConsumer consumer;
+    private final SkattbarInntektConsumer consumer;
+    private final SkatteetatenClient skatteetatenClient;
+    private final Unleash unleash;
 
-    public SkattbarInntektService(SkattbarInntektConsumer consumer) {
+    public SkattbarInntektService(
+            SkattbarInntektConsumer consumer,
+            SkatteetatenClient skatteetatenClient,
+            Unleash unleash
+    ) {
         this.consumer = consumer;
+        this.skatteetatenClient = skatteetatenClient;
+        this.unleash = unleash;
     }
 
     public List<Utbetaling> hentUtbetalinger(String fnummer) {
-
+        // todo: bruk unleash til å switche mellom hvilken klient vi bruker
         SkattbarInntekt skattbarInntekt = consumer.hentSkattbarInntekt(fnummer);
 
         return filtrerUtbetalingerSlikAtViFaarSisteMaanedFraHverArbeidsgiver(mapTilUtbetalinger(skattbarInntekt));

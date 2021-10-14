@@ -2,7 +2,6 @@ package no.nav.sosialhjelp.soknad.consumer.skatt;
 
 import no.nav.sosialhjelp.soknad.consumer.concurrency.RestCallContext;
 import no.nav.sosialhjelp.soknad.consumer.skatt.dto.SkattbarInntekt;
-import no.nav.sosialhjelp.soknad.maskinporten.MaskinportenClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -24,14 +23,12 @@ public class SkattbarInntektConsumerImpl implements SkattbarInntektConsumer {
 
     private final Client client;
     private final String endpoint;
-    private final MaskinportenClient maskinportenClient;
 
     private final Function<Sokedata, RestCallContext> restCallContextSelector;
 
-    public SkattbarInntektConsumerImpl(Client client, String endpoint, MaskinportenClient maskinportenClient) {
+    public SkattbarInntektConsumerImpl(Client client, String endpoint) {
         this.client = client;
         this.endpoint = endpoint;
-        this.maskinportenClient = maskinportenClient;
 
         restCallContextSelector = (sokedata -> new RestCallContext.Builder()
                 .withClient(client)
@@ -48,7 +45,6 @@ public class SkattbarInntektConsumerImpl implements SkattbarInntektConsumer {
                 .withTom(LocalDate.now()).withIdentifikator(fnummer);
 
         Invocation.Builder request = getRequest(sokedata);
-        // todo request.header(HttpHeaders.AUTHORIZATION, BEARER + maskinportenClient.getTokenString());
 
         try (Response response = request.get()) {
             if (log.isDebugEnabled()) {
@@ -90,8 +86,6 @@ public class SkattbarInntektConsumerImpl implements SkattbarInntektConsumer {
 
     private Invocation.Builder lagRequest(RestCallContext executionContext, Sokedata sokedata) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM");
-//        NEW  https://<env>/api/innrapportert/inntektsmottaker/v1/<rettighetspakke>/<personidentifikator>/inntekter?fraOgMed=<YYYY-MM>[&tilOgMed=<YYYY-MM>][&opplysningspliktig=<opplysningspliktig>]
-//        OLD https://<env>/api/innrapportert/inntektsmottaker/<rettighetspakke>/<personidentifikator>/oppgave/inntekt?fraOgMed=<YYYY-MM>[&tilOgMed=<YYYY-MM>]
         WebTarget b = executionContext.getClient().target(String.format("%s%s/oppgave/inntekt", endpoint, sokedata.identifikator))
                 .queryParam("fraOgMed", sokedata.fom.format(formatter))
                 .queryParam("tilOgMed", sokedata.tom.format(formatter));

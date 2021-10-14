@@ -14,7 +14,7 @@ open class MaskinportenClientConfig(
 
     @Bean
     open fun maskinportenClient(): MaskinportenClient {
-        val maskinportenClient = MaskinportenClientImpl(webClient = proxiedWebClient)
+        val maskinportenClient = MaskinportenClientImpl(proxiedWebClient)
         return MetricsFactory.createTimerProxy("MaskinportenClient", maskinportenClient, MaskinportenClient::class.java)
     }
 }

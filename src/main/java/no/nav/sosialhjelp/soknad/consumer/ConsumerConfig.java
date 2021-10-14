@@ -41,6 +41,7 @@ import no.nav.sosialhjelp.soknad.maskinporten.MaskinportenClientConfig;
 import no.nav.sosialhjelp.soknad.oppslag.OppslagRestConfig;
 import no.nav.sosialhjelp.soknad.oppslag.kontonummer.KontonummerService;
 import no.nav.sosialhjelp.soknad.oppslag.utbetaling.UtbetalingService;
+import no.nav.sosialhjelp.soknad.skatteetaten.SkatteetatenClientConfig;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -56,6 +57,7 @@ import org.springframework.context.annotation.Profile;
         IdPortenClientConfigMockAlt.class,
         IdPortenServiceImpl.class,
         MaskinportenClientConfig.class,
+        SkatteetatenClientConfig.class,
         RedisConfig.class,
         NoRedisConfig.class,
         PersonService.class,
