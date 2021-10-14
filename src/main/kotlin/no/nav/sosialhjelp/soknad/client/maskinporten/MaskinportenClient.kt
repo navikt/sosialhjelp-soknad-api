@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.maskinporten
+package no.nav.sosialhjelp.soknad.client.maskinporten
 
 import org.springframework.web.reactive.function.client.WebClient
 

@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.maskinporten
+package no.nav.sosialhjelp.soknad.client.maskinporten
 
 import no.nav.sosialhjelp.metrics.MetricsFactory
 import org.springframework.context.annotation.Bean
