@@ -21,7 +21,6 @@ interface SkatteetatenClient {
 
 class SkatteetatenClientImpl(
     private val webClient: WebClient,
-    private val baseurl: String,
     private val maskinportenClient: MaskinportenClient
 ) : SkatteetatenClient {
 
@@ -32,7 +31,8 @@ class SkatteetatenClientImpl(
 
         return webClient.get()
             .uri { uriBuilder ->
-                uriBuilder.path("$baseurl{personidentifikator}/inntekter")
+                uriBuilder
+                    .path("{personidentifikator}/inntekter")
                     .queryParam("fraOgMed", sokedata.fom.format(formatter))
                     .queryParam("tilOgMed", sokedata.tom.format(formatter))
                     .build(sokedata.identifikator)

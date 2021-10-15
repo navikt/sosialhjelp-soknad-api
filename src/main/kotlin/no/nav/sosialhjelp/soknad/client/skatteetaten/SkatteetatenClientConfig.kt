@@ -16,7 +16,12 @@ open class SkatteetatenClientConfig(
 
     @Bean
     open fun skatteetatenClient(): SkatteetatenClient {
-        val skatteetatenClient = SkatteetatenClientImpl(proxiedWebClient, baseurl, maskinportenClient)
+        val skatteetatenClient = SkatteetatenClientImpl(skatteetatenWebClient, maskinportenClient)
         return createTimerProxy("SkatteetatenApi", skatteetatenClient, SkatteetatenClient::class.java)
     }
+
+    private val skatteetatenWebClient: WebClient
+        get() = proxiedWebClient.mutate()
+            .baseUrl(baseurl)
+            .build()
 }
