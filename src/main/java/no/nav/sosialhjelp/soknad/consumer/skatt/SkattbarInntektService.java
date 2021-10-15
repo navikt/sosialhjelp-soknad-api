@@ -7,6 +7,7 @@ import no.nav.sosialhjelp.soknad.consumer.skatt.dto.Inntekt;
 import no.nav.sosialhjelp.soknad.consumer.skatt.dto.OppgaveInntektsmottaker;
 import no.nav.sosialhjelp.soknad.consumer.skatt.dto.SkattbarInntekt;
 import no.nav.sosialhjelp.soknad.domain.model.utbetaling.Utbetaling;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -21,9 +22,12 @@ import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
+import static org.slf4j.LoggerFactory.getLogger;
 
 @Service
 public class SkattbarInntektService {
+
+    private static final Logger log = getLogger(SkattbarInntektService.class);
 
     private static final String SKATTEETATEN_MASKINPORTEN_ENABLED = "sosialhjelp.soknad.skatteetaten-maskinporten-enabled";
     private final DateTimeFormatter arManedFormatter = DateTimeFormatter.ofPattern("yyyy-MM");
@@ -48,6 +52,7 @@ public class SkattbarInntektService {
             try {
                 skattbarInntekt = skatteetatenClient.hentSkattbarinntekt(fnummer);
             } catch (Exception e) {
+                log.warn("Noe feilet mot Skatteetaten med maskinporten. Fallback til gammel løsning", e);
                 skattbarInntekt = consumer.hentSkattbarInntekt(fnummer);
             }
         } else {
