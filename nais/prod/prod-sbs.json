@@ -39,7 +39,7 @@
   "isGcp": false,
   "isLabsGcp": false,
   "leaderElectionEnabled": true,
-  "maskinportenEnabled": false,
+  "maskinportenEnabled": true,
   "env": {
     "AAREG_API_BASEURL": "https://api-gw.oera.no/aareg-services/api/",
     "DITTNAV_LINK_URL": "https://www.nav.no/person/dittnav/",
