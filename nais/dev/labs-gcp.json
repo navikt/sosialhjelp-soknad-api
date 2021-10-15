@@ -38,6 +38,7 @@
     "IDPORTEN_CONFIG_URL": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/well-known/idporten",
     "KODEVERK_API_URL": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/kodeverk/api/",
     "LOGINSERVICE_URL": "https://digisos.labs.nais.io/sosialhjelp/mock-alt/login",
+    "MASKINPORTEN_WELL_KNOWN_URL": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/well-known/maskinporten",
     "OIDC_ISSUER_SELVBETJENING_DISCOVERYURL": "https://digisos.labs.nais.io/sosialhjelp/mock-alt-api/well-known/selvbetjening",
     "OIDC_ISSUER_TOKENX_DISCOVERYURL": "https://digisos.labs.nais.io/sosialhjelp/mock-alt-api/well-known/tokenx",
     "NORG2_API_V1_URL": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/norg_endpoint_url/",
