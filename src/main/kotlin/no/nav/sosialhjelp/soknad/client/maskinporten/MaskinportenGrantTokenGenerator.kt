@@ -16,7 +16,7 @@ import java.util.UUID
 
 class MaskinportenGrantTokenGenerator(
     private val maskinportenConfig: MaskinportenConfig,
-    private val wellKnown: WellKnown
+    private val issuer: String
 ) {
 
     /**
@@ -31,7 +31,7 @@ class MaskinportenGrantTokenGenerator(
     }
 
     fun getJwt(): String {
-        return SignedJWT(signatureHeader, createJwtClaimSet(wellKnown.issuer))
+        return SignedJWT(signatureHeader, createJwtClaimSet(issuer))
             .apply { sign(RSASSASigner(privateRsaKey.toPrivateKey())) }
             .serialize()
     }
