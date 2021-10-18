@@ -43,7 +43,8 @@ class SkatteetatenClientImpl(
             .bodyToMono<SkattbarInntekt>()
             .onErrorReturn(
                 WebClientResponseException.NotFound::class.java,
-                SkattbarInntekt().also { log.info("Ingen skattbar inntekt funnet") })
+                SkattbarInntekt().also { log.info("Ingen skattbar inntekt funnet") }
+            )
             .onErrorMap(WebClientResponseException::class.java) { e ->
                 val feilmeldingUtenFnr = maskerFnr(e.responseBodyAsString)
                 log.warn("Klarer ikke hente skatteopplysninger {} status {} ", feilmeldingUtenFnr, e.statusCode)
