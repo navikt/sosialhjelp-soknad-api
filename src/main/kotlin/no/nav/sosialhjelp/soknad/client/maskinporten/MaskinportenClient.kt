@@ -57,5 +57,4 @@ class MaskinportenClientImpl(
         private const val GRANT_TYPE = "urn:ietf:params:oauth:grant-type:jwt-bearer"
         private val log = LoggerFactory.getLogger(MaskinportenClientImpl::class.java)
     }
-
 }
