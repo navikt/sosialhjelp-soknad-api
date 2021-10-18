@@ -96,9 +96,9 @@
         <lettuce.version>6.0.8.RELEASE</lettuce.version>
         <unleash.version>3.3.4</unleash.version>
         <resilience4j.version>1.7.1</resilience4j.version>
+        <reactor-core.version>3.4.10</reactor-core.version>
 
         <kotlinx-coroutines.version>1.5.2</kotlinx-coroutines.version>
-        <mockk.version>1.12.0</mockk.version>
 
         <flyway.placeholders.driver>oracle.jdbc.OracleDriver</flyway.placeholders.driver>
         <flyway.placeholders.encoding>ISO-8859-1</flyway.placeholders.encoding>
@@ -120,6 +120,8 @@
         <junit-jupiter.version>5.7.2</junit-jupiter.version>
         <mockito.version>3.12.4</mockito.version>
         <assertj.version>3.20.2</assertj.version>
+        <mockk.version>1.12.0</mockk.version>
+        <mockwebserver3-junit5.version>5.0.0-alpha.2</mockwebserver3-junit5.version>
 
         <!-- Versjoner identifisert av maven-enforcer-plugin -->
         <asm.version>9.2</asm.version>
@@ -246,7 +248,7 @@
             <dependency>
                 <groupId>io.projectreactor</groupId>
                 <artifactId>reactor-core</artifactId>
-                <version>3.4.10</version>
+                <version>${reactor-core.version}</version>
             </dependency>
 
             <!-- Jetty -->
@@ -537,12 +539,6 @@
             <groupId>org.jetbrains.kotlinx</groupId>
             <artifactId>kotlinx-coroutines-reactor</artifactId>
             <version>${kotlinx-coroutines.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.mockk</groupId>
-            <artifactId>mockk</artifactId>
-            <version>${mockk.version}</version>
-            <scope>test</scope>
         </dependency>
 
         <!-- Filformat -->
@@ -1189,6 +1185,18 @@
                     <artifactId>junit</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>io.mockk</groupId>
+            <artifactId>mockk</artifactId>
+            <version>${mockk.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>mockwebserver3-junit5</artifactId>
+            <version>${mockwebserver3-junit5.version}</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
