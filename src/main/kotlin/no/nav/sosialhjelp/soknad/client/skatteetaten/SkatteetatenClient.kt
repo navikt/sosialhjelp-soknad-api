@@ -56,6 +56,7 @@ class SkatteetatenClientImpl(
 
     override fun ping() {
         webClient.options()
+            .headers { it.add(HttpHeaders.AUTHORIZATION, BEARER + maskinportenClient.getTokenString()) }
             .retrieve()
             .toBodilessEntity()
             .doOnError { log.warn("SkatteetatenApi - ping feilet") }
