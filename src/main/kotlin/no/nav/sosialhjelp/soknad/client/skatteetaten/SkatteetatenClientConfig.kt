@@ -2,6 +2,9 @@ package no.nav.sosialhjelp.soknad.client.skatteetaten
 
 import no.nav.sosialhjelp.metrics.MetricsFactory.createTimerProxy
 import no.nav.sosialhjelp.soknad.client.maskinporten.MaskinportenClient
+import no.nav.sosialhjelp.soknad.web.selftest.Pingable
+import no.nav.sosialhjelp.soknad.web.selftest.Pingable.Ping
+import no.nav.sosialhjelp.soknad.web.selftest.Pingable.Ping.PingMetadata
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -18,6 +21,19 @@ open class SkatteetatenClientConfig(
     open fun skatteetatenClient(): SkatteetatenClient {
         val skatteetatenClient = SkatteetatenClientImpl(skatteetatenWebClient, maskinportenClient)
         return createTimerProxy("SkatteetatenApi", skatteetatenClient, SkatteetatenClient::class.java)
+    }
+
+    @Bean
+    open fun skatteetatenPing(skatteetatenClient: SkatteetatenClient): Pingable {
+        return Pingable {
+            val metadata = PingMetadata(baseurl, "SkatteetatenApi", false)
+            try {
+                skatteetatenClient.ping()
+                Ping.lyktes(metadata)
+            } catch (e: Exception) {
+                Ping.feilet(metadata, e)
+            }
+        }
     }
 
     private val skatteetatenWebClient: WebClient

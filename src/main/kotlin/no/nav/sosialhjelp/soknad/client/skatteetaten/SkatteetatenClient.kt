@@ -55,7 +55,11 @@ class SkatteetatenClientImpl(
     }
 
     override fun ping() {
-        TODO("Not yet implemented")
+        webClient.options()
+            .retrieve()
+            .toBodilessEntity()
+            .doOnError { log.warn("SkatteetatenApi - ping feilet") }
+            .block()
     }
 
     companion object {
