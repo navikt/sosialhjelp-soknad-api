@@ -21,14 +21,14 @@ open class MaskinportenClientConfig(
     @Bean
     @Profile("!test")
     open fun maskinportenClient(): MaskinportenClient {
-        val maskinportenClient = MaskinportenClientImpl(proxiedWebClient, maskinportenConfig, wellknown)
+        val maskinportenClient = MaskinportenClientImpl(proxiedWebClient, maskinportenProperties, wellknown)
         return MetricsFactory.createTimerProxy("MaskinportenClient", maskinportenClient, MaskinportenClient::class.java)
     }
 
     @Bean
     @Profile("test")
     open fun maskinportenClientTest(): MaskinportenClient {
-        return MaskinportenClientImpl(proxiedWebClient, maskinportenConfig, WellKnown("issuer", "token_url"))
+        return MaskinportenClientImpl(proxiedWebClient, maskinportenProperties, WellKnown("issuer", "token_url"))
     }
 
     private val wellknown: WellKnown
@@ -40,8 +40,8 @@ open class MaskinportenClientConfig(
             .doOnError { log.warn("Feil ved henting av WellKnown for Maskinporten", it) }
             .block()!!
 
-    private val maskinportenConfig: MaskinportenConfig
-        get() = MaskinportenConfig(
+    private val maskinportenProperties: MaskinportenProperties
+        get() = MaskinportenProperties(
             clientId = clientId,
             jwkPrivate = clientJwk,
             scope = scopes,

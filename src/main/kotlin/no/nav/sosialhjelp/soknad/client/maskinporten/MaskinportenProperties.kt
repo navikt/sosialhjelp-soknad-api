@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.client.maskinporten
 
-data class MaskinportenConfig(
+data class MaskinportenProperties(
     val clientId: String,
     val jwkPrivate: String,
     val scope: String,

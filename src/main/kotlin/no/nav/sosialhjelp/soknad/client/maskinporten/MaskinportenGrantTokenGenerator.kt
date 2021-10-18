@@ -15,7 +15,7 @@ import java.util.Date
 import java.util.UUID
 
 class MaskinportenGrantTokenGenerator(
-    private val maskinportenConfig: MaskinportenConfig,
+    private val maskinportenProperties: MaskinportenProperties,
     private val issuer: String
 ) {
 
@@ -23,11 +23,11 @@ class MaskinportenGrantTokenGenerator(
      * Generer privateRsaKey hvis maskinportenConfig.jwkPrivate == generateRSA, og appen ikke kjører i prod.
      * Dvs at rsaKey genereres i ved lokal kjøring, i test eller mot mock-alt.
      */
-    private val privateRsaKey = if (maskinportenConfig.jwkPrivate == "generateRSA") {
+    private val privateRsaKey = if (maskinportenProperties.jwkPrivate == "generateRSA") {
         if (!ServiceUtils.isNonProduction()) throw IllegalStateException("Generation of RSA keys is not allowed in prod")
         RSAKeyGenerator(2048).keyUse(KeyUse.SIGNATURE).keyID(UUID.randomUUID().toString()).generate()
     } else {
-        RSAKey.parse(maskinportenConfig.jwkPrivate)
+        RSAKey.parse(maskinportenProperties.jwkPrivate)
     }
 
     fun getJwt(): String {
@@ -40,8 +40,8 @@ class MaskinportenGrantTokenGenerator(
         val now: Instant = Instant.now()
         return JWTClaimsSet.Builder()
             .audience(audience)
-            .issuer(maskinportenConfig.clientId)
-            .claim(SCOPE_CLAIM, maskinportenConfig.scope)
+            .issuer(maskinportenProperties.clientId)
+            .claim(SCOPE_CLAIM, maskinportenProperties.scope)
             .issueTime(Date.from(now))
             .expirationTime(Date.from(now.plusSeconds(120))) // 120s eller noe annet?
             .build()

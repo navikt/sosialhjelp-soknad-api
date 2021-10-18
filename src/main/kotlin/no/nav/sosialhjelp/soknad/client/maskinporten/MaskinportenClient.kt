@@ -16,12 +16,12 @@ interface MaskinportenClient {
 
 class MaskinportenClientImpl(
     private val webClient: WebClient,
-    maskinportenConfig: MaskinportenConfig,
+    maskinportenProperties: MaskinportenProperties,
     private val wellKnown: WellKnown
 ) : MaskinportenClient {
 
     private var tokenCache = TokenCache()
-    private val tokenGenerator = MaskinportenGrantTokenGenerator(maskinportenConfig, wellKnown.issuer)
+    private val tokenGenerator = MaskinportenGrantTokenGenerator(maskinportenProperties, wellKnown.issuer)
 
     override fun getTokenString(): String {
         return getTokenFraCache().parsedString
