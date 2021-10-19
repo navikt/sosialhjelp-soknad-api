@@ -1,10 +1,15 @@
 package no.nav.sosialhjelp.soknad.consumer;
 
-import no.nav.sosialhjelp.soknad.config.MockProxiedWebClientConfig;
-import no.nav.sosialhjelp.soknad.config.ProxiedWebClientConfig;
+import no.nav.sosialhjelp.soknad.client.config.MockProxiedWebClientConfig;
+import no.nav.sosialhjelp.soknad.client.config.ProxiedWebClientConfig;
+import no.nav.sosialhjelp.soknad.client.fiks.KommuneInfoClientConfig;
+import no.nav.sosialhjelp.soknad.client.idporten.IdPortenClientConfig;
+import no.nav.sosialhjelp.soknad.client.idporten.IdPortenClientConfigMockAlt;
+import no.nav.sosialhjelp.soknad.client.idporten.IdPortenServiceImpl;
+import no.nav.sosialhjelp.soknad.client.maskinporten.MaskinportenClientConfig;
+import no.nav.sosialhjelp.soknad.client.skatteetaten.SkatteetatenClientConfig;
 import no.nav.sosialhjelp.soknad.consumer.dkif.DkifService;
 import no.nav.sosialhjelp.soknad.consumer.fiks.DokumentKrypterer;
-import no.nav.sosialhjelp.soknad.consumer.fiks.KommuneInfoClientConfig;
 import no.nav.sosialhjelp.soknad.consumer.kodeverk.KodeverkService;
 import no.nav.sosialhjelp.soknad.consumer.leaderelection.LeaderElectionImpl;
 import no.nav.sosialhjelp.soknad.consumer.leaderelection.NoLeaderElection;
@@ -33,9 +38,6 @@ import no.nav.sosialhjelp.soknad.consumer.restconfig.SvarUtRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.UnleashRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.skatt.SkattbarInntektService;
 import no.nav.sosialhjelp.soknad.consumer.svarut.SvarUtService;
-import no.nav.sosialhjelp.soknad.idporten.IdPortenClientConfig;
-import no.nav.sosialhjelp.soknad.idporten.IdPortenClientConfigMockAlt;
-import no.nav.sosialhjelp.soknad.idporten.IdPortenServiceImpl;
 import no.nav.sosialhjelp.soknad.oppslag.OppslagRestConfig;
 import no.nav.sosialhjelp.soknad.oppslag.kontonummer.KontonummerService;
 import no.nav.sosialhjelp.soknad.oppslag.utbetaling.UtbetalingService;
@@ -53,6 +55,8 @@ import org.springframework.context.annotation.Profile;
         IdPortenClientConfig.class,
         IdPortenClientConfigMockAlt.class,
         IdPortenServiceImpl.class,
+        MaskinportenClientConfig.class,
+        SkatteetatenClientConfig.class,
         RedisConfig.class,
         NoRedisConfig.class,
         PersonService.class,

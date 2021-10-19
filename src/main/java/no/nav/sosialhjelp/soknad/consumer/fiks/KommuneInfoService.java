@@ -3,10 +3,10 @@ package no.nav.sosialhjelp.soknad.consumer.fiks;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import no.nav.sosialhjelp.api.fiks.KommuneInfo;
 import no.nav.sosialhjelp.client.kommuneinfo.KommuneInfoClient;
+import no.nav.sosialhjelp.soknad.client.idporten.IdPortenService;
 import no.nav.sosialhjelp.soknad.consumer.fiks.dto.KommuneStatus;
 import no.nav.sosialhjelp.soknad.consumer.redis.RedisService;
 import no.nav.sosialhjelp.soknad.domain.model.util.KommuneTilNavEnhetMapper;
-import no.nav.sosialhjelp.soknad.idporten.IdPortenService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

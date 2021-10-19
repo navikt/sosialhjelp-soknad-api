@@ -39,6 +39,7 @@
   "isGcp": false,
   "isLabsGcp": false,
   "leaderElectionEnabled": true,
+  "maskinportenEnabled": true,
   "env": {
     "AAREG_API_BASEURL": "https://api-gw.oera.no/aareg-services/api/",
     "DITTNAV_LINK_URL": "https://www.nav.no/person/dittnav/",
@@ -63,6 +64,7 @@
     "SOKNAD_BOSTOTTE_PING_URL": "https://api.husbanken.no/bostotte/minbostotte/ping",
     "SOKNAD_ETTERSENDING_ANTALLDAGER": "300",
     "SECURITYTOKENSERVICE_APIGW_URL": "https://api-gw.oera.no/security-token-service/rest/v1/sts/token",
+    "SKATTEETATEN_API_BASEURL": "https://api.skatteetaten.no/api/innrapportert/inntektsmottaker/v1/digisos/",
     "SVARUT_URL": "https://svarut.ks.no",
     "IS_SENDING_TIL_DIGISOS_API_ENABLED": "true",
     "IS_ALLTID_SEND_TIL_NAV_TESTKOMMUNE": "false",

@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.mock.jndi.SimpleNamingContextBuilder;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -24,7 +23,6 @@ import static java.lang.System.setProperty;
 @WebAppConfiguration
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {SoknadinnsendingConfig.class, OidcConfig.class})
-@ActiveProfiles({"no-redis", "test"})
 public class ApplicationContextTest {
 
     public static final String ENVIRONMENT_TEST_PROPERTIES = "/environment-test.properties";
