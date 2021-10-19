@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.idporten
+package no.nav.sosialhjelp.soknad.client.idporten
 
 import no.nav.sosialhjelp.idporten.client.AccessToken
 import no.nav.sosialhjelp.idporten.client.IdPortenAccessTokenResponse

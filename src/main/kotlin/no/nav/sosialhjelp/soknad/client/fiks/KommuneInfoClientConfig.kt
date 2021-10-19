@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.consumer.fiks
+package no.nav.sosialhjelp.soknad.client.fiks
 
 import no.nav.sosialhjelp.client.kommuneinfo.FiksProperties
 import no.nav.sosialhjelp.client.kommuneinfo.KommuneInfoClient

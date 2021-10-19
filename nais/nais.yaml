@@ -25,6 +25,13 @@ spec:
     min: {{minReplicas}}
     max: {{maxReplicas}}
   webproxy: {{webProxyEnabled}}
+{{#if maskinportenEnabled}}
+  maskinporten:
+    enabled: true
+    scopes:
+      consumes:
+        - name: "skatteetaten:inntekt"
+{{/if}}
 {{#if vaultEnabled}}
   vault:
     enabled: true

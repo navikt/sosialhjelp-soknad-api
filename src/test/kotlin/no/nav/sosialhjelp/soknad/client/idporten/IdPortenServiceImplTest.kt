@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.idporten
+package no.nav.sosialhjelp.soknad.client.idporten
 
 import io.mockk.clearAllMocks
 import io.mockk.coEvery

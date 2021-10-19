@@ -21,10 +21,10 @@ public class SkattbarInntektConsumerImpl implements SkattbarInntektConsumer {
 
     private static final Logger log = LoggerFactory.getLogger(SkattbarInntektConsumerImpl.class);
 
-    private Client client;
-    private String endpoint;
+    private final Client client;
+    private final String endpoint;
 
-    private Function<Sokedata, RestCallContext> restCallContextSelector;
+    private final Function<Sokedata, RestCallContext> restCallContextSelector;
 
     public SkattbarInntektConsumerImpl(Client client, String endpoint) {
         this.client = client;

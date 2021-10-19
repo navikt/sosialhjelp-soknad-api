@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.config
+package no.nav.sosialhjelp.soknad.client.config
 
 import io.netty.resolver.DefaultAddressResolverGroup
 import org.springframework.beans.factory.annotation.Value

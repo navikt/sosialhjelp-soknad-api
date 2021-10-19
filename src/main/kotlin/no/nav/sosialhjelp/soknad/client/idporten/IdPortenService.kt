@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.idporten
+package no.nav.sosialhjelp.soknad.client.idporten
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
