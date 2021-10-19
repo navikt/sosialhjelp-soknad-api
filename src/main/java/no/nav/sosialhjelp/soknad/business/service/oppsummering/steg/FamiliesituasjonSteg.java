@@ -4,6 +4,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonAnsvar;
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonBarnebidrag;
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonEktefelle;
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonForsorgerplikt;
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Avsnitt;
@@ -22,6 +23,7 @@ import static java.util.Collections.singletonList;
 import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.StegUtils.booleanVerdiFelt;
 import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.StegUtils.createSvar;
 import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.StegUtils.fulltnavn;
+import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.StegUtils.harBarnMedKilde;
 import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.StegUtils.isNotNullOrEmtpy;
 
 public class FamiliesituasjonSteg {
@@ -124,16 +126,17 @@ public class FamiliesituasjonSteg {
 
     private Sporsmal brukerRegistrertEktefelle(JsonSivilstatus sivilstatus) {
         // todo: som dette eller som liste av sporsmal?
-        var erUtfylt = isNotNullOrEmtpy(sivilstatus.getEktefelle().getNavn().getFornavn()) &&
-                isNotNullOrEmtpy(sivilstatus.getEktefelle().getNavn().getEtternavn()) &&
-                isNotNullOrEmtpy(sivilstatus.getEktefelle().getFodselsdato()) &&
-                isNotNullOrEmtpy(sivilstatus.getEktefelle().getPersonIdentifikator()) &&
+        var ektefelle = sivilstatus.getEktefelle();
+        var erUtfylt = isNotNullOrEmtpy(ektefelle.getNavn().getFornavn()) &&
+                isNotNullOrEmtpy(ektefelle.getNavn().getEtternavn()) &&
+                isNotNullOrEmtpy(ektefelle.getFodselsdato()) &&
+                isNotNullOrEmtpy(ektefelle.getPersonIdentifikator()) &&
                 sivilstatus.getBorSammenMed() != null;
 
         var map = new LinkedHashMap<String, Svar>();
-        map.put("familie.sivilstatus.gift.ektefelle.navn.label", createSvar(fulltnavn(sivilstatus.getEktefelle().getNavn()), SvarType.TEKST));
-        map.put("familie.sivilstatus.gift.ektefelle.fnr.label", createSvar(sivilstatus.getEktefelle().getFodselsdato(), SvarType.DATO));
-        map.put("familie.sivilstatus.gift.ektefelle.pnr.label", createSvar(sivilstatus.getEktefelle().getPersonIdentifikator(), SvarType.TEKST));
+        map.put("familie.sivilstatus.gift.ektefelle.navn.label", createSvar(fulltnavn(ektefelle.getNavn()), SvarType.TEKST));
+        map.put("familie.sivilstatus.gift.ektefelle.fnr.label", createSvar(ektefelle.getFodselsdato(), SvarType.DATO));
+        map.put("familie.sivilstatus.gift.ektefelle.pnr.label", createSvar(personnummerFraFnr(ektefelle), SvarType.TEKST));
         map.put("familie.sivilstatus.gift.ektefelle.borsammen.sporsmal", createSvar(borSammenMedSvar(sivilstatus), SvarType.LOCALE_TEKST));
 
         return new Sporsmal.Builder()
@@ -146,6 +149,13 @@ public class FamiliesituasjonSteg {
                                 .build()
                 ))
                 .build();
+    }
+
+    private String personnummerFraFnr(JsonEktefelle ektefelle) {
+        if (ektefelle.getPersonIdentifikator() != null && ektefelle.getPersonIdentifikator().length() == 11) {
+            return ektefelle.getPersonIdentifikator().substring(6, 11);
+        }
+        return ektefelle.getPersonIdentifikator();
     }
 
     private String borSammenMedSvar(JsonSivilstatus sivilstatus) {
@@ -174,7 +184,6 @@ public class FamiliesituasjonSteg {
     private Sporsmal systemEktefelleSporsmal(JsonSivilstatus sivilstatus) {
         var ektefelle = sivilstatus.getEktefelle();
         var labelSvarMap = new LinkedHashMap<String, Svar>();
-        labelSvarMap.put("system.familie.sivilstatus.label", null);
         if (ektefelle.getNavn() != null) {
             labelSvarMap.put("system.familie.sivilstatus.gift.ektefelle.navn", createSvar(fulltnavn(ektefelle.getNavn()), SvarType.TEKST));
         }
@@ -237,13 +246,6 @@ public class FamiliesituasjonSteg {
         }
 
         return sporsmal;
-    }
-
-    private boolean harBarnMedKilde(JsonForsorgerplikt forsorgerplikt, JsonKilde kilde) {
-        var harForsorgerplikt = forsorgerplikt != null && forsorgerplikt.getHarForsorgerplikt() != null && forsorgerplikt.getHarForsorgerplikt().getVerdi().equals(Boolean.TRUE);
-
-        return harForsorgerplikt && forsorgerplikt.getHarForsorgerplikt().getKilde().equals(kilde) &&
-                forsorgerplikt.getAnsvar() != null && forsorgerplikt.getAnsvar().stream().anyMatch(barn -> barn.getBarn().getKilde().equals(kilde));
     }
 
     private Sporsmal ingenRegistrerteBarnSporsmal() {

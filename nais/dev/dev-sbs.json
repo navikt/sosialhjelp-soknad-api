@@ -6,8 +6,13 @@
     "https://www-q0.dev.nav.no/sosialhjelp/soknad-api",
     "https://www-q0.nav.no/sosialhjelp/soknad-api"
   ],
+  "envsecret": [
+    "redis-password-soknad-api",
+    "fiks-integrasjon-secret",
+    "systemuser-credentials-soknad-api",
+    "fiks-svarut-credentials"
+  ],
   "kvPaths": {
-    "/var/run/secrets/nais.io/vault": "/kv/preprod/sbs/sosialhjelp-soknad-api/teamdigisos",
     "/var/run/secrets/datasource": "/oracle/data/dev/creds/soknadsosialhjelp_q0-user",
     "/var/run/secrets/nais.io/virksomhetssertifikat": "/secret/virksomhetssertifikat/preprod/shared",
     "/var/run/secrets/nais.io/appdynamics": "/apikey/appdynamics/dev",
@@ -36,6 +41,7 @@
   "isGcp": false,
   "isLabsGcp": false,
   "leaderElectionEnabled": true,
+  "maskinportenEnabled": true,
   "env": {
     "AAREG_API_BASEURL": "https://api-gw-q1.oera.no/aareg-services/api/",
     "DITTNAV_LINK_URL": "https://www.dev.nav.no/person/dittnav",
@@ -51,6 +57,7 @@
     "KODEVERK_API_URL": "https://api-gw-q1.oera.no/kodeverk/api/",
     "LOGINSERVICE_URL": "https://loginservice.dev.nav.no/login",
     "NORG2_API_V1_URL": "https://api-gw-q1.oera.no/norg2/api/v1/",
+    "OPENAM_RESTURL": "https://itjenester-q0.oera.no/esso",
     "OPPSLAG_API_BASEURL": "https://api-gw-q1.oera.no/sosialhjelp-oppslag-api/api/",
     "PDL_API_URL": "https://api-gw-q1.oera.no/pdl-api/graphql",
     "UNLEASH_API_URL": "https://unleash.nais.io/api",
@@ -61,6 +68,8 @@
     "SOKNAD_BOSTOTTE_PING_URL": "https://api.demo.husbanken.no/bostotte/minbostotte/ping",
     "SOKNAD_ETTERSENDING_ANTALLDAGER": "300",
     "SECURITYTOKENSERVICE_APIGW_URL": "https://api-gw-q1.oera.no/security-token-service/rest/v1/sts/token",
+    "SKATTEETATEN_API_BASEURL": "https://api-test.sits.no/api/innrapportert/inntektsmottaker/v1/digisos/",
+    "SVARUT_URL": "https://test.svarut.ks.no",
     "IS_SENDING_TIL_DIGISOS_API_ENABLED": "true",
     "IS_ALLTID_SEND_TIL_NAV_TESTKOMMUNE": "false",
     "IS_ALLTID_HENT_KOMMUNEINFO_FRA_NAV_TESTKOMMUNE": "false",

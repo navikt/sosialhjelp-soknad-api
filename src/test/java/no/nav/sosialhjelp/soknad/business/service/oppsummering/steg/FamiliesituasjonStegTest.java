@@ -127,8 +127,7 @@ class FamiliesituasjonStegTest {
         assertThat(sivilstatusSporsmal.getFelt()).hasSize(1);
         assertThat(sivilstatusSporsmal.getFelt().get(0).getType()).isEqualTo(Type.SYSTEMDATA_MAP);
         var labelSvarMap = sivilstatusSporsmal.getFelt().get(0).getLabelSvarMap();
-        assertThat(labelSvarMap).hasSize(4);
-        assertThat(labelSvarMap.get("system.familie.sivilstatus.label")).isNull();
+        assertThat(labelSvarMap).hasSize(3);
         assertThat(labelSvarMap.get("system.familie.sivilstatus.gift.ektefelle.navn").getValue()).isEqualTo("Gul Knapp");
         assertThat(labelSvarMap.get("system.familie.sivilstatus.gift.ektefelle.fodselsdato").getValue()).isEqualTo("1999-12-31");
         assertThat(labelSvarMap.get("system.familie.sivilstatus.gift.ektefelle.folkereg").getValue()).isEqualTo("system.familie.sivilstatus.gift.ektefelle.folkeregistrertsammen.true");

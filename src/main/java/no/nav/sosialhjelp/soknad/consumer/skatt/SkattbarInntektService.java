@@ -1,10 +1,13 @@
 package no.nav.sosialhjelp.soknad.consumer.skatt;
 
+import no.finn.unleash.Unleash;
+import no.nav.sosialhjelp.soknad.client.skatteetaten.SkatteetatenClient;
 import no.nav.sosialhjelp.soknad.consumer.skatt.dto.Forskuddstrekk;
 import no.nav.sosialhjelp.soknad.consumer.skatt.dto.Inntekt;
 import no.nav.sosialhjelp.soknad.consumer.skatt.dto.OppgaveInntektsmottaker;
 import no.nav.sosialhjelp.soknad.consumer.skatt.dto.SkattbarInntekt;
 import no.nav.sosialhjelp.soknad.domain.model.utbetaling.Utbetaling;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -19,21 +22,42 @@ import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
+import static org.slf4j.LoggerFactory.getLogger;
 
 @Service
 public class SkattbarInntektService {
 
-    private DateTimeFormatter arManedFormatter = DateTimeFormatter.ofPattern("yyyy-MM");
+    private static final Logger log = getLogger(SkattbarInntektService.class);
 
-    private SkattbarInntektConsumer consumer;
+    private static final String SKATTEETATEN_MASKINPORTEN_ENABLED = "sosialhjelp.soknad.skatteetaten-maskinporten-enabled";
+    private final DateTimeFormatter arManedFormatter = DateTimeFormatter.ofPattern("yyyy-MM");
 
-    public SkattbarInntektService(SkattbarInntektConsumer consumer) {
+    private final SkattbarInntektConsumer consumer;
+    private final SkatteetatenClient skatteetatenClient;
+    private final Unleash unleash;
+
+    public SkattbarInntektService(
+            SkattbarInntektConsumer consumer,
+            SkatteetatenClient skatteetatenClient,
+            Unleash unleash
+    ) {
         this.consumer = consumer;
+        this.skatteetatenClient = skatteetatenClient;
+        this.unleash = unleash;
     }
 
     public List<Utbetaling> hentUtbetalinger(String fnummer) {
-
-        SkattbarInntekt skattbarInntekt = consumer.hentSkattbarInntekt(fnummer);
+        SkattbarInntekt skattbarInntekt;
+        if (unleash.isEnabled(SKATTEETATEN_MASKINPORTEN_ENABLED, false)) {
+            try {
+                skattbarInntekt = skatteetatenClient.hentSkattbarinntekt(fnummer);
+            } catch (Exception e) {
+                log.warn("Noe feilet mot Skatteetaten med maskinporten. Fallback til gammel løsning", e);
+                skattbarInntekt = consumer.hentSkattbarInntekt(fnummer);
+            }
+        } else {
+            skattbarInntekt = consumer.hentSkattbarInntekt(fnummer);
+        }
 
         return filtrerUtbetalingerSlikAtViFaarSisteMaanedFraHverArbeidsgiver(mapTilUtbetalinger(skattbarInntekt));
     }

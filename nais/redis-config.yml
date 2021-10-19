@@ -3,10 +3,13 @@ kind: "Application"
 metadata:
   labels:
     team: teamdigisos
+  annotations:
+    "nais.io/run-as-group": "0"
+    "nais.io/read-only-file-system": "false"
   name: sosialhjelp-soknad-api-redis
   namespace: teamdigisos
 spec:
-  image: bitnami/redis:6.0.8
+  image: bitnami/redis:6.0.16
   port: 6379
   replicas: # A single Redis-app doesn't scale
     min: 1

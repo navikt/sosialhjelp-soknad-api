@@ -6,7 +6,7 @@ metadata:
   name: sosialhjelp-soknad-api-redisexporter
   namespace: teamdigisos
 spec:
-  image: oliver006/redis_exporter:v1.11.1
+  image: oliver006/redis_exporter:v1.27.1
   port: 9121
   prometheus:
     enabled: true

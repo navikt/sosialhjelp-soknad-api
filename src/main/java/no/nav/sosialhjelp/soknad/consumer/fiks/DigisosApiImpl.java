@@ -5,12 +5,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.module.kotlin.KotlinModule;
-import com.nimbusds.jose.JOSEException;
-import com.nimbusds.jose.JWSAlgorithm;
-import com.nimbusds.jose.JWSHeader;
-import com.nimbusds.jose.crypto.RSASSASigner;
-import com.nimbusds.jwt.JWTClaimsSet;
-import com.nimbusds.jwt.SignedJWT;
 import no.ks.fiks.streaming.klient.FilForOpplasting;
 import no.ks.kryptering.CMSKrypteringImpl;
 import no.ks.kryptering.CMSStreamKryptering;
@@ -18,16 +12,11 @@ import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper;
 import no.nav.sosialhjelp.api.fiks.KommuneInfo;
 import no.nav.sosialhjelp.soknad.consumer.fiks.dto.FilMetadata;
 import no.nav.sosialhjelp.soknad.consumer.fiks.dto.FilOpplasting;
-import no.nav.sosialhjelp.soknad.consumer.redis.RedisService;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpRequestRetryHandler;
 import org.apache.http.client.ServiceUnavailableRetryStrategy;
 import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.methods.RequestBuilder;
@@ -37,36 +26,22 @@ import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.DefaultHttpRequestRetryHandler;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
-import org.springframework.http.HttpStatus;
 
 import javax.ws.rs.core.MediaType;
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
-import java.net.URI;
 import java.nio.charset.StandardCharsets;
-import java.security.KeyPair;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
 import java.security.Security;
-import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Base64;
-import java.util.Calendar;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -81,11 +56,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME;
-import static no.nav.sosialhjelp.soknad.consumer.redis.CacheConstants.KOMMUNEINFO_CACHE_KEY;
-import static no.nav.sosialhjelp.soknad.consumer.redis.CacheConstants.KOMMUNEINFO_CACHE_SECONDS;
-import static no.nav.sosialhjelp.soknad.consumer.redis.CacheConstants.KOMMUNEINFO_LAST_POLL_TIME_KEY;
-import static no.nav.sosialhjelp.soknad.consumer.redis.RedisUtils.toKommuneInfoMap;
 import static no.nav.sosialhjelp.soknad.domain.model.mock.MockUtils.isMockAltProfil;
 import static no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.HEADER_INTEGRASJON_ID;
 import static no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.HEADER_INTEGRASJON_PASSORD;
@@ -104,31 +74,23 @@ public class DigisosApiImpl implements DigisosApi {
             .createObjectMapper()
             .registerModule(new KotlinModule());
 
-    private RedisService redisService;
+    private KommuneInfoService kommuneInfoService;
     private DigisosApiProperties properties;
     private HttpRequestRetryHandler retryHandler;
     private ServiceUnavailableRetryStrategy serviceUnavailableRetryStrategy;
 
     private ExecutorCompletionService<Void> executor = new ExecutorCompletionService<>(Executors.newCachedThreadPool());
-    private IdPortenOidcConfiguration idPortenOidcConfiguration;
     private byte[] fiksPublicKey = null;
     private CMSStreamKryptering kryptering = new CMSKrypteringImpl();
 
     public DigisosApiImpl(
             DigisosApiProperties properties,
-            RedisService redisService
+            KommuneInfoService kommuneInfoService
     ) {
-        this.redisService = redisService;
+        this.kommuneInfoService = kommuneInfoService;
         this.properties = properties;
         this.retryHandler = new DefaultHttpRequestRetryHandler();
         this.serviceUnavailableRetryStrategy = new FiksServiceUnavailableRetryStrategy();
-
-        String idPortenConfigUrl = properties.getIdPortenConfigUrl();
-        try {
-            idPortenOidcConfiguration = objectMapper.readValue(URI.create(idPortenConfigUrl).toURL(), IdPortenOidcConfiguration.class);
-        } catch (IOException e) {
-            log.error("Henting av idportens konfigurasjon feilet. idPortenConfigUrl={}", idPortenConfigUrl, e);
-        }
     }
 
     static String getDigisosIdFromResponse(String errorResponse, String behandlingsId) {
@@ -144,48 +106,9 @@ public class DigisosApiImpl implements DigisosApi {
 
     @Override
     public void ping() {
-        Map<String, KommuneInfo> kommuneInfo = hentAlleKommuneInfo();
+        Map<String, KommuneInfo> kommuneInfo = kommuneInfoService.hentAlleKommuneInfo();
         if (kommuneInfo.isEmpty()) {
             throw new IllegalStateException("Fikk ikke kontakt med digisosapi");
-        }
-    }
-
-    @Override
-    public Map<String, KommuneInfo> hentAlleKommuneInfo() {
-        IdPortenAccessTokenResponse accessToken = getVirksertAccessToken();
-        try (CloseableHttpClient client = clientBuilder().build()) {
-            HttpGet http = new HttpGet(properties.getDigisosApiEndpoint() + "digisos/api/v1/nav/kommuner/");
-            http.setHeader(ACCEPT.name(), MediaType.APPLICATION_JSON);
-            http.setHeader(HEADER_INTEGRASJON_ID, properties.getIntegrasjonsidFiks());
-            http.setHeader(HEADER_INTEGRASJON_PASSORD, properties.getIntegrasjonpassordFiks());
-            http.setHeader(AUTHORIZATION.name(), "Bearer " + accessToken.accessToken);
-
-            long startTime = System.currentTimeMillis();
-            CloseableHttpResponse response = client.execute(http);
-            long endTime = System.currentTimeMillis();
-            if (endTime - startTime > 8000) {
-                log.error("Timer: Sende fiks-request: {} ms", endTime - startTime);
-            } else if (endTime - startTime > 2000) {
-                log.warn("Timer: Sende fiks-request: {} ms", endTime - startTime);
-            }
-
-            if (HttpStatus.OK.value() == response.getStatusLine().getStatusCode()) {
-                byte[] content = EntityUtils.toByteArray(response.getEntity());
-
-                Map<String, KommuneInfo> kommuneInfoMap = toKommuneInfoMap(content);
-                // Oppdater kommuneInfoCache
-                redisService.setex(KOMMUNEINFO_CACHE_KEY, content, KOMMUNEINFO_CACHE_SECONDS);
-                redisService.set(KOMMUNEINFO_LAST_POLL_TIME_KEY, LocalDateTime.now().format(ISO_LOCAL_DATE_TIME).getBytes(StandardCharsets.UTF_8));
-
-                return kommuneInfoMap;
-            } else {
-                log.warn("Noe feil skjedde ved henting av KommuneInfo fra Fiks, {} - {}", response.getStatusLine().getStatusCode(), response.getStatusLine().getReasonPhrase());
-                return Collections.emptyMap();
-            }
-
-        } catch (Exception e) {
-            log.warn("Noe feil skjedde ved henting av KommuneInfo fra Fiks", e);
-            return Collections.emptyMap();
         }
     }
 
@@ -380,84 +303,11 @@ public class DigisosApiImpl implements DigisosApi {
         return String.format("/digisos/api/v1/soknader/%s/%s", kommunenummer, navEkseternRefId);
     }
 
-    private IdPortenAccessTokenResponse getVirksertAccessToken() {
-        String jws = createJws();
-        HttpPost httpPost = new HttpPost(properties.getIdPortenTokenUrl());
-
-        List<NameValuePair> params = new ArrayList<>();
-        params.add(new BasicNameValuePair("grant_type", "urn:ietf:params:oauth:grant-type:jwt-bearer"));
-        params.add(new BasicNameValuePair("assertion", jws));
-
-        try (CloseableHttpClient client = clientBuilder().build()) {
-
-            httpPost.setEntity(new UrlEncodedFormEntity(params));
-            CloseableHttpResponse response = client.execute(httpPost);
-
-            return objectMapper.readValue(EntityUtils.toString(response.getEntity()), IdPortenAccessTokenResponse.class);
-        } catch (IOException e) {
-            throw new IllegalStateException("Far ikke tak i virksomhets accessToken", e);
-        }
-    }
-
-    private String createJws() {
-        try {
-            VirksertCredentials virksertCredentials = objectMapper.readValue(FileUtils.readFileToString(new File(properties.getVirksomhetssertifikatPath() + "/credentials.json"), StandardCharsets.UTF_8), VirksertCredentials.class);
-            KeyStore keyStore = KeyStore.getInstance("PKCS12");
-            String src = FileUtils.readFileToString(new File(properties.getVirksomhetssertifikatPath() + "/key.p12.b64"), StandardCharsets.UTF_8);
-            keyStore.load(new ByteArrayInputStream(Base64.getDecoder().decode(src)), virksertCredentials.password.toCharArray());
-
-            X509Certificate certificate = (X509Certificate) keyStore.getCertificate(virksertCredentials.alias);
-
-            KeyPair keyPair = new KeyPair(certificate.getPublicKey(), (PrivateKey) keyStore.getKey(virksertCredentials.alias, virksertCredentials.password.toCharArray()));
-
-            Date date = new Date();
-            Calendar instance = Calendar.getInstance();
-            instance.setTime(date);
-            instance.add(Calendar.SECOND, 100);
-            Date expDate = instance.getTime();
-
-            log.debug("Public certificate length {} (virksomhetssertifikat)", keyPair.getPublic().getEncoded().length);
-
-            SignedJWT signedJWT = new SignedJWT(
-                    new JWSHeader.Builder(JWSAlgorithm.RS256).x509CertChain(Collections.singletonList((com.nimbusds.jose.util.Base64.encode(certificate.getEncoded())))).build(),
-                    new JWTClaimsSet.Builder()
-                            .audience(idPortenOidcConfiguration.issuer)
-                            .issuer(properties.getIdPortenClientId())
-                            .issueTime(date)
-                            .jwtID(UUID.randomUUID().toString())
-                            .expirationTime(expDate)
-                            .claim("scope", properties.getIdPortenScope())
-                            .build());
-            signedJWT.sign(new RSASSASigner(keyPair.getPrivate()));
-            return signedJWT.serialize();
-
-        } catch (IOException | KeyStoreException | NoSuchAlgorithmException | CertificateException | UnrecoverableKeyException | JOSEException e) {
-            throw new IllegalStateException("Far ikke tak i jws token", e);
-        }
-    }
-
-    @SuppressWarnings("WeakerAccess")
-    static class VirksertCredentials {
-        public String alias;
-        public String password;
-        public String type;
-    }
-
     @JsonIgnoreProperties(ignoreUnknown = true)
     static class IdPortenOidcConfiguration {
         @JsonProperty(value = "issuer", required = true)
         String issuer;
         @JsonProperty(value = "token_endpoint", required = true)
         String tokenEndpoint;
-    }
-
-    @JsonIgnoreProperties(ignoreUnknown = true)
-    static class IdPortenAccessTokenResponse {
-        @JsonProperty(value = "access_token", required = true)
-        String accessToken;
-        @JsonProperty(value = "expires_in", required = true)
-        Integer expiresIn;
-        @JsonProperty(value = "scope", required = true)
-        String scope;
     }
 }

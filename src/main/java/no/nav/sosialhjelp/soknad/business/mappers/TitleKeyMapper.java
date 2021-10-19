@@ -13,6 +13,7 @@ import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.FORMUE_VERDIPAPI
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.JOBB;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.SLUTTOPPGJOER;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.STUDIELAN;
+import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_ANNET;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_FORSIKRING;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_SALG;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_UTBYTTE;
@@ -64,6 +65,7 @@ public final class TitleKeyMapper {
         soknadTypeToTitleKey.put(UTBETALING_UTBYTTE, "opplysninger.inntekt.inntekter.utbytte");
         soknadTypeToTitleKey.put(UTBETALING_SALG, "opplysninger.inntekt.inntekter.salg");
         soknadTypeToTitleKey.put(UTBETALING_FORSIKRING, "opplysninger.inntekt.inntekter.forsikringsutbetalinger");
+        soknadTypeToTitleKey.put(UTBETALING_ANNET, "opplysninger.inntekt.inntekter.annet");
         soknadTypeToTitleKey.put(SLUTTOPPGJOER, "opplysninger.arbeid.avsluttet");
         soknadTypeToTitleKey.put(UTGIFTER_STROM, "opplysninger.utgifter.boutgift.strom");
         soknadTypeToTitleKey.put(UTGIFTER_KOMMUNAL_AVGIFT, "opplysninger.utgifter.boutgift.kommunaleavgifter");

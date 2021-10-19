@@ -1,5 +1,13 @@
 package no.nav.sosialhjelp.soknad.consumer;
 
+import no.nav.sosialhjelp.soknad.client.config.MockProxiedWebClientConfig;
+import no.nav.sosialhjelp.soknad.client.config.ProxiedWebClientConfig;
+import no.nav.sosialhjelp.soknad.client.fiks.KommuneInfoClientConfig;
+import no.nav.sosialhjelp.soknad.client.idporten.IdPortenClientConfig;
+import no.nav.sosialhjelp.soknad.client.idporten.IdPortenClientConfigMockAlt;
+import no.nav.sosialhjelp.soknad.client.idporten.IdPortenServiceImpl;
+import no.nav.sosialhjelp.soknad.client.maskinporten.MaskinportenClientConfig;
+import no.nav.sosialhjelp.soknad.client.skatteetaten.SkatteetatenClientConfig;
 import no.nav.sosialhjelp.soknad.consumer.dkif.DkifService;
 import no.nav.sosialhjelp.soknad.consumer.fiks.DokumentKrypterer;
 import no.nav.sosialhjelp.soknad.consumer.kodeverk.KodeverkService;
@@ -26,8 +34,10 @@ import no.nav.sosialhjelp.soknad.consumer.restconfig.PdlGeografiskTilknytningRes
 import no.nav.sosialhjelp.soknad.consumer.restconfig.PdlHentPersonRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.STSTokenRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.SkattbarInntektRestConfig;
+import no.nav.sosialhjelp.soknad.consumer.restconfig.SvarUtRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.UnleashRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.skatt.SkattbarInntektService;
+import no.nav.sosialhjelp.soknad.consumer.svarut.SvarUtService;
 import no.nav.sosialhjelp.soknad.consumer.wsconfig.FiksWSConfig;
 import no.nav.sosialhjelp.soknad.oppslag.OppslagRestConfig;
 import no.nav.sosialhjelp.soknad.oppslag.kontonummer.KontonummerService;
@@ -40,6 +50,14 @@ import org.springframework.context.annotation.Profile;
 @Configuration
 @EnableCaching
 @Import({
+        ProxiedWebClientConfig.class,
+        MockProxiedWebClientConfig.class,
+        KommuneInfoClientConfig.class,
+        IdPortenClientConfig.class,
+        IdPortenClientConfigMockAlt.class,
+        IdPortenServiceImpl.class,
+        MaskinportenClientConfig.class,
+        SkatteetatenClientConfig.class,
         RedisConfig.class,
         NoRedisConfig.class,
         PersonService.class,
@@ -58,7 +76,8 @@ import org.springframework.context.annotation.Profile;
         BydelConfig.class,
         BydelService.class,
         LeaderElectionImpl.class,
-        NoLeaderElection.class
+        NoLeaderElection.class,
+        SvarUtService.class
 })
 
 public class ConsumerConfig {
@@ -79,7 +98,8 @@ public class ConsumerConfig {
             SkattbarInntektRestConfig.class,
             KodeverkRestConfig.class,
             UnleashRestConfig.class,
-            OppslagRestConfig.class
+            OppslagRestConfig.class,
+            SvarUtRestConfig.class
     })
     public static class WsServices {
     }

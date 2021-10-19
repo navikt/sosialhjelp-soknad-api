@@ -4,6 +4,7 @@
   "ingresses": [
     "https://sosialhjelp-soknad-api.labs.nais.io/sosialhjelp/soknad-api"
   ],
+  "envsecret": [],
   "minReplicas": "1",
   "maxReplicas": "1",
   "memoryLimit": "2Gi",
@@ -17,6 +18,7 @@
   "isGcp": true,
   "isLabsGcp": true,
   "leaderElectionEnabled": false,
+  "maskinportenEnabled": false,
   "env": {
     "MAIN_CLASS": "no.nav.sosialhjelp.soknad.web.mock.MockAltSoknadsosialhjelpServer",
     "GCP": "true",
@@ -36,6 +38,7 @@
     "IDPORTEN_CONFIG_URL": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/well-known/idporten",
     "KODEVERK_API_URL": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/kodeverk/api/",
     "LOGINSERVICE_URL": "https://digisos.labs.nais.io/sosialhjelp/mock-alt/login",
+    "MASKINPORTEN_WELL_KNOWN_URL": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/well-known/maskinporten",
     "OIDC_ISSUER_SELVBETJENING_DISCOVERYURL": "https://digisos.labs.nais.io/sosialhjelp/mock-alt-api/well-known/selvbetjening",
     "OIDC_ISSUER_TOKENX_DISCOVERYURL": "https://digisos.labs.nais.io/sosialhjelp/mock-alt-api/well-known/tokenx",
     "NORG2_API_V1_URL": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/norg_endpoint_url/",
@@ -44,6 +47,8 @@
     "SOKNAD_BOSTOTTE_PING_URL": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/husbanken/ping",
     "SOKNAD_ETTERSENDING_ANTALLDAGER": "180",
     "SECURITYTOKENSERVICE_APIGW_URL": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/appgw/",
+    "SKATTEETATEN_API_BASEURL": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/skatteetaten/",
+    "SVARUT_URL": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/svarut/",
     "IS_SENDING_TIL_DIGISOS_API_ENABLED": "true",
     "IS_ALLTID_SEND_TIL_NAV_TESTKOMMUNE": "false",
     "IS_ALLTID_HENT_KOMMUNEINFO_FRA_NAV_TESTKOMMUNE": "false",

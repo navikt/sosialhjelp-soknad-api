@@ -1,6 +1,8 @@
 package no.nav.sosialhjelp.soknad.business.service.oppsummering.steg;
 
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
+import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonForsorgerplikt;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtgift;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktUtgift;
@@ -32,18 +34,21 @@ import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTGIFTER_SFO;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTGIFTER_STROM;
 import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.StegUtils.booleanVerdiFelt;
 import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.StegUtils.createSvar;
+import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.StegUtils.harBarnMedKilde;
 
 public class UtgifterOgGjeldSteg {
 
     public Steg get(JsonInternalSoknad jsonInternalSoknad) {
         var okonomi = jsonInternalSoknad.getSoknad().getData().getOkonomi();
+        var forsorgerplikt = jsonInternalSoknad.getSoknad().getData().getFamilie().getForsorgerplikt();
 
         var boutgifterSporsmal = boutgifter(okonomi);
         var barneutgifterSporsmal = barneutgifter(okonomi);
 
-        var alleSporsmal = new ArrayList<Sporsmal>();
-        alleSporsmal.addAll(boutgifterSporsmal);
-        alleSporsmal.addAll(barneutgifterSporsmal);
+        var alleSporsmal = new ArrayList<>(boutgifterSporsmal);
+        if (harBarn(forsorgerplikt)) {
+            alleSporsmal.addAll(barneutgifterSporsmal);
+        }
 
         return new Steg.Builder()
                 .withStegNr(7)
@@ -99,6 +104,10 @@ public class UtgifterOgGjeldSteg {
         }
 
         return sporsmalList;
+    }
+
+    private boolean harBarn(JsonForsorgerplikt forsorgerplikt) {
+        return harBarnMedKilde(forsorgerplikt, JsonKilde.SYSTEM) || harBarnMedKilde(forsorgerplikt, JsonKilde.BRUKER);
     }
 
     private List<Sporsmal> barneutgifter(JsonOkonomi okonomi) {

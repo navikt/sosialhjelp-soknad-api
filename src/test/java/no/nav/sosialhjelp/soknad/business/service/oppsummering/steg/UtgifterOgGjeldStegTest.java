@@ -3,6 +3,14 @@ package no.nav.sosialhjelp.soknad.business.service.oppsummering.steg;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonData;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
+import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
+import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonNavn;
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonAnsvar;
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonBarn;
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonErFolkeregistrertSammen;
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonFamilie;
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonForsorgerplikt;
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonHarForsorgerplikt;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomioversikt;
@@ -43,9 +51,8 @@ class UtgifterOgGjeldStegTest {
         assertThat(res.getAvsnitt()).hasSize(1);
 
         var utgifterSporsmal = res.getAvsnitt().get(0).getSporsmal();
-        assertThat(utgifterSporsmal).hasSize(2);
+        assertThat(utgifterSporsmal).hasSize(1);
         assertThat(utgifterSporsmal.get(0).getErUtfylt()).isFalse(); // boutgifter
-        assertThat(utgifterSporsmal.get(1).getErUtfylt()).isFalse(); // barneutgifter
     }
 
     @Test
@@ -62,9 +69,8 @@ class UtgifterOgGjeldStegTest {
         assertThat(res.getAvsnitt()).hasSize(1);
 
         var utgifterSporsmal = res.getAvsnitt().get(0).getSporsmal();
-        assertThat(utgifterSporsmal).hasSize(2);
+        assertThat(utgifterSporsmal).hasSize(1);
         assertThat(utgifterSporsmal.get(0).getErUtfylt()).isTrue(); // boutgifter
-        assertThat(utgifterSporsmal.get(1).getErUtfylt()).isFalse(); // barneutgifter
     }
 
     @Test
@@ -92,7 +98,7 @@ class UtgifterOgGjeldStegTest {
         assertThat(res.getAvsnitt()).hasSize(1);
 
         var utgifterSporsmal = res.getAvsnitt().get(0).getSporsmal();
-        assertThat(utgifterSporsmal).hasSize(3);
+        assertThat(utgifterSporsmal).hasSize(2);
         assertThat(utgifterSporsmal.get(0).getErUtfylt()).isTrue(); // boutgifter
         assertThat(utgifterSporsmal.get(1).getErUtfylt()).isTrue();
 
@@ -104,8 +110,6 @@ class UtgifterOgGjeldStegTest {
         assertThat(boutgifterFelter.get(3).getSvar().getValue()).isEqualTo("utgifter.boutgift.true.type.oppvarming");
         assertThat(boutgifterFelter.get(4).getSvar().getValue()).isEqualTo("utgifter.boutgift.true.type.boliglanAvdrag");
         assertThat(boutgifterFelter.get(5).getSvar().getValue()).isEqualTo("utgifter.boutgift.true.type.annenBoutgift");
-
-        assertThat(utgifterSporsmal.get(2).getErUtfylt()).isFalse(); // barneutgifter
     }
 
     @Test
@@ -122,9 +126,8 @@ class UtgifterOgGjeldStegTest {
         assertThat(res.getAvsnitt()).hasSize(1);
 
         var utgifterSporsmal = res.getAvsnitt().get(0).getSporsmal();
-        assertThat(utgifterSporsmal).hasSize(2);
+        assertThat(utgifterSporsmal).hasSize(1);
         assertThat(utgifterSporsmal.get(0).getErUtfylt()).isFalse(); // boutgifter
-        assertThat(utgifterSporsmal.get(1).getErUtfylt()).isTrue(); // barneutgifter
     }
 
     @Test
@@ -145,6 +148,7 @@ class UtgifterOgGjeldStegTest {
         );
 
         var soknad = createSoknad(bekreftelser, opplysningUtgifter, oversiktUtgifter);
+        setForsorgerplikt(soknad.getSoknad().getData().getFamilie());
 
         var res = steg.get(soknad);
 
@@ -176,8 +180,28 @@ class UtgifterOgGjeldStegTest {
                                         .withOversikt(new JsonOkonomioversikt()
                                                 .withUtgift(oversiktUtgifter))
                                 )
+                                .withFamilie(new JsonFamilie()
+                                        .withForsorgerplikt(new JsonForsorgerplikt()))
                         )
                 );
+    }
+
+    private void setForsorgerplikt(JsonFamilie familie) {
+        familie.setForsorgerplikt(
+                new JsonForsorgerplikt()
+                        .withHarForsorgerplikt(new JsonHarForsorgerplikt()
+                                .withKilde(JsonKilde.SYSTEM)
+                                .withVerdi(Boolean.TRUE))
+                        .withAnsvar(singletonList(new JsonAnsvar()
+                                .withBarn(new JsonBarn()
+                                        .withKilde(JsonKilde.SYSTEM)
+                                        .withNavn(new JsonNavn().withFornavn("Grønn").withEtternavn("Jakke"))
+                                        .withFodselsdato("2020-02-02")
+                                        .withPersonIdentifikator("11111111111"))
+                                .withErFolkeregistrertSammen(new JsonErFolkeregistrertSammen().withVerdi(Boolean.TRUE))
+                                .withHarDeltBosted(null)))
+                        .withBarnebidrag(null)
+        );
     }
 
 }

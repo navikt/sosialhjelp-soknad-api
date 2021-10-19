@@ -30,11 +30,11 @@ public class SkattbarInntektRestConfig {
     }
 
     @Bean
-    public Pingable skattbarInntektRestPing() {
+    public Pingable skattbarInntektRestPing(SkattbarInntektConsumer skattbarInntektConsumer) {
         return () -> {
             Pingable.Ping.PingMetadata metadata = new Pingable.Ping.PingMetadata(endpoint, "Skatteetaten", false);
             try {
-                skattbarInntektConsumer().ping();
+                skattbarInntektConsumer.ping();
                 return lyktes(metadata);
             } catch (Exception e) {
                 return feilet(metadata, e);

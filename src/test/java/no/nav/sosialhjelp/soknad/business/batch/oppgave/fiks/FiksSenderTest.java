@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.business.batch.oppgave.fiks;
 
+import no.finn.unleash.Unleash;
 import no.ks.svarut.servicesv9.Brevtype;
 import no.ks.svarut.servicesv9.Dokument;
 import no.ks.svarut.servicesv9.Forsendelse;
@@ -18,6 +19,7 @@ import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon;
 import no.nav.sosialhjelp.soknad.business.InnsendingService;
 import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.SosialhjelpPdfGenerator;
 import no.nav.sosialhjelp.soknad.consumer.fiks.DokumentKrypterer;
+import no.nav.sosialhjelp.soknad.consumer.svarut.SvarUtService;
 import no.nav.sosialhjelp.soknad.domain.OpplastetVedlegg;
 import no.nav.sosialhjelp.soknad.domain.SendtSoknad;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
@@ -63,6 +65,10 @@ class FiksSenderTest {
     private InnsendingService innsendingService;
     @Mock
     private SosialhjelpPdfGenerator sosialhjelpPdfGenerator;
+    @Mock
+    private SvarUtService svarUtService;
+    @Mock
+    private Unleash unleash;
 
     private FiksSender fiksSender;
 
@@ -81,8 +87,9 @@ class FiksSenderTest {
         when(sosialhjelpPdfGenerator.generate(any(JsonInternalSoknad.class), anyBoolean())).thenReturn(new byte[]{1, 2, 3});
         when(sosialhjelpPdfGenerator.generateEttersendelsePdf(any(JsonInternalSoknad.class), anyString())).thenReturn(new byte[]{1, 2, 3});
         when(sosialhjelpPdfGenerator.generateBrukerkvitteringPdf()).thenReturn(new byte[]{1, 2, 3});
+        when(unleash.isEnabled(any())).thenReturn(false);
 
-        fiksSender = new FiksSender(forsendelsesService, dokumentKrypterer, innsendingService, sosialhjelpPdfGenerator, true);
+        fiksSender = new FiksSender(forsendelsesService, dokumentKrypterer, innsendingService, sosialhjelpPdfGenerator, true, svarUtService, unleash);
     }
 
     @Test
@@ -111,7 +118,7 @@ class FiksSenderTest {
 
     @Test
     void opprettForsendelseSetterRiktigInfoPaForsendelsenUtenKryptering() {
-        fiksSender = new FiksSender(forsendelsesService, dokumentKrypterer, innsendingService, sosialhjelpPdfGenerator, false);
+        fiksSender = new FiksSender(forsendelsesService, dokumentKrypterer, innsendingService, sosialhjelpPdfGenerator, false, svarUtService, unleash);
 
         when(innsendingService.hentSoknadUnderArbeid(anyString(), anyString()))
                 .thenReturn(new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER)).withEier(EIER));

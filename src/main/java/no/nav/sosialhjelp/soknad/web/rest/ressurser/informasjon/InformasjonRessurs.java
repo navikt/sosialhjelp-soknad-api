@@ -238,10 +238,10 @@ public class InformasjonRessurs {
     public Map<String, KommuneInfoFrontend> mapDigisosKommuner(Map<String, KommuneInfo> digisosKommuner) {
         return digisosKommuner.values().stream()
                 .filter(KommuneInfo::getKanMottaSoknader)
-                .map(KommuneInfo -> new KommuneInfoFrontend()
-                        .withKommunenummer(KommuneInfo.getKommunenummer())
-                        .withKanMottaSoknader(KommuneInfo.getKanMottaSoknader())
-                        .withKanOppdatereStatus(KommuneInfo.getKanOppdatereStatus()))
+                .map(kommuneInfo -> new KommuneInfoFrontend()
+                        .withKommunenummer(kommuneInfo.getKommunenummer())
+                        .withKanMottaSoknader(kommuneInfo.getKanMottaSoknader() && !kommuneInfo.getHarMidlertidigDeaktivertMottak())
+                        .withKanOppdatereStatus(kommuneInfo.getKanOppdatereStatus()))
                 .collect(Collectors.toMap(KommuneInfoFrontend::getKommunenummer, kommuneInfoFrontend -> kommuneInfoFrontend));
     }
 

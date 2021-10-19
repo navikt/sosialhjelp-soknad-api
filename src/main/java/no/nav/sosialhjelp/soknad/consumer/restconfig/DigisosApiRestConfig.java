@@ -1,5 +1,7 @@
 package no.nav.sosialhjelp.soknad.consumer.restconfig;
 
+import no.nav.sosialhjelp.client.kommuneinfo.KommuneInfoClient;
+import no.nav.sosialhjelp.soknad.client.idporten.IdPortenService;
 import no.nav.sosialhjelp.soknad.consumer.fiks.DigisosApi;
 import no.nav.sosialhjelp.soknad.consumer.fiks.DigisosApiImpl;
 import no.nav.sosialhjelp.soknad.consumer.fiks.DigisosApiProperties;
@@ -10,7 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import static no.nav.sosialhjelp.metrics.MetricsFactory.createTimerProxyForWebService;
+import static no.nav.sosialhjelp.metrics.MetricsFactory.createTimerProxy;
 import static no.nav.sosialhjelp.soknad.web.selftest.Pingable.Ping.feilet;
 import static no.nav.sosialhjelp.soknad.web.selftest.Pingable.Ping.lyktes;
 
@@ -19,30 +21,20 @@ public class DigisosApiRestConfig {
 
     @Value("${digisos_api_baseurl}")
     private String digisosApiEndpoint;
-    @Value("${idporten_token_url}")
-    private String idPortenTokenUrl;
-    @Value("${idporten_clientid}")
-    private String idPortenClientId;
-    @Value("${idporten_scope}")
-    private String idPortenScope;
-    @Value("${idporten_config_url}")
-    private String idPortenConfigUrl;
     @Value("${integrasjonsid_fiks}")
     private String integrasjonsidFiks;
     @Value("${integrasjonpassord_fiks}")
     private String integrasjonpassordFiks;
-    @Value("${virksomhetssertifikat_path}")
-    private String virksomhetssertifikatPath;
 
     @Bean
-    public DigisosApi digisosApi(RedisService redisService) {
-        var digisosApi = new DigisosApiImpl(digisosApiProperties(), redisService);
-        return createTimerProxyForWebService("DigisosApi", digisosApi, DigisosApi.class); // timerProxyForWebService fordi metrikkene er prefixet med 'ws'. Dette kan/bør endres senere
+    public DigisosApi digisosApi(KommuneInfoService kommuneInfoService) {
+        var digisosApi = new DigisosApiImpl(digisosApiProperties(), kommuneInfoService);
+        return createTimerProxy("DigisosApi", digisosApi, DigisosApi.class);
     }
 
     @Bean
-    public KommuneInfoService kommuneInfoService(DigisosApi digisosapi, RedisService redisService) {
-        return new KommuneInfoService(digisosapi, redisService);
+    public KommuneInfoService kommuneInfoService(KommuneInfoClient kommuneInfoClient, IdPortenService idPortenService, RedisService redisService) {
+        return new KommuneInfoService(kommuneInfoClient, idPortenService, redisService);
     }
 
     @Bean
@@ -63,6 +55,6 @@ public class DigisosApiRestConfig {
     }
 
     private DigisosApiProperties digisosApiProperties() {
-        return new DigisosApiProperties(digisosApiEndpoint, idPortenTokenUrl, idPortenClientId, idPortenScope, idPortenConfigUrl, integrasjonsidFiks, integrasjonpassordFiks, virksomhetssertifikatPath);
+        return new DigisosApiProperties(digisosApiEndpoint, integrasjonsidFiks, integrasjonpassordFiks);
     }
 }

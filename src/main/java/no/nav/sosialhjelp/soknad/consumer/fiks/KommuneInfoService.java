@@ -1,16 +1,23 @@
 package no.nav.sosialhjelp.soknad.consumer.fiks;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import no.nav.sosialhjelp.api.fiks.KommuneInfo;
+import no.nav.sosialhjelp.client.kommuneinfo.KommuneInfoClient;
+import no.nav.sosialhjelp.soknad.client.idporten.IdPortenService;
 import no.nav.sosialhjelp.soknad.consumer.fiks.dto.KommuneStatus;
 import no.nav.sosialhjelp.soknad.consumer.redis.RedisService;
 import no.nav.sosialhjelp.soknad.domain.model.util.KommuneTilNavEnhetMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
-import javax.inject.Inject;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 import static no.nav.sosialhjelp.soknad.consumer.fiks.dto.KommuneStatus.FIKS_NEDETID_OG_TOM_CACHE;
@@ -18,21 +25,24 @@ import static no.nav.sosialhjelp.soknad.consumer.fiks.dto.KommuneStatus.HAR_KONF
 import static no.nav.sosialhjelp.soknad.consumer.fiks.dto.KommuneStatus.MANGLER_KONFIGURASJON;
 import static no.nav.sosialhjelp.soknad.consumer.fiks.dto.KommuneStatus.SKAL_SENDE_SOKNADER_OG_ETTERSENDELSER_VIA_FDA;
 import static no.nav.sosialhjelp.soknad.consumer.fiks.dto.KommuneStatus.SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD_OG_ETTERSENDELSER;
+import static no.nav.sosialhjelp.soknad.consumer.redis.CacheConstants.KOMMUNEINFO_CACHE_KEY;
+import static no.nav.sosialhjelp.soknad.consumer.redis.CacheConstants.KOMMUNEINFO_CACHE_SECONDS;
 import static no.nav.sosialhjelp.soknad.consumer.redis.CacheConstants.KOMMUNEINFO_LAST_POLL_TIME_KEY;
+import static no.nav.sosialhjelp.soknad.consumer.redis.RedisUtils.objectMapper;
 
-@Component
 public class KommuneInfoService {
     private static final Logger log = LoggerFactory.getLogger(KommuneInfoService.class);
     private static final long MINUTES_TO_PASS_BETWEEN_POLL = 10;
 
     private static final KommuneInfo DEFAULT_KOMMUNEINFO = new KommuneInfo("", false, false, false, false, null, false, null);
 
-    private final DigisosApi digisosApi;
+    private final KommuneInfoClient kommuneInfoClient;
+    private final IdPortenService idPortenService;
     private final RedisService redisService;
 
-    @Inject
-    public KommuneInfoService(DigisosApi digisosApi, RedisService redisService) {
-        this.digisosApi = digisosApi;
+    public KommuneInfoService(KommuneInfoClient kommuneInfoClient, IdPortenService idPortenService, RedisService redisService) {
+        this.kommuneInfoClient = kommuneInfoClient;
+        this.idPortenService = idPortenService;
         this.redisService = redisService;
     }
 
@@ -64,8 +74,14 @@ public class KommuneInfoService {
             }
             log.info("hentAlleKommuneInfo - cache er tom.");
         }
+        var accessToken = idPortenService.getToken();
+        var kommuneInfoList = kommuneInfoClient.getAll(accessToken.getToken());
+        oppdaterCache(kommuneInfoList);
 
-        Map<String, KommuneInfo> kommuneInfoMap = digisosApi.hentAlleKommuneInfo();
+        var kommuneInfoMap = Optional.ofNullable(kommuneInfoList).orElse(Collections.emptyList())
+                .stream()
+                .collect(Collectors.toMap(KommuneInfo::getKommunenummer, Function.identity()));
+
         if (kommuneInfoMap == null || kommuneInfoMap.isEmpty()) {
             Map<String, KommuneInfo> cachedMap = redisService.getKommuneInfos();
             if (cachedMap != null && !cachedMap.isEmpty()) {
@@ -123,5 +139,16 @@ public class KommuneInfoService {
             return null;
         }
         return kommuneInfoMap.getOrDefault(kommunenummer, DEFAULT_KOMMUNEINFO).getBehandlingsansvarlig();
+    }
+
+    private void oppdaterCache(List<KommuneInfo> kommuneInfoList) {
+        try {
+            if (kommuneInfoList != null && !kommuneInfoList.isEmpty()) {
+                redisService.setex(KOMMUNEINFO_CACHE_KEY, objectMapper.writeValueAsBytes(kommuneInfoList), KOMMUNEINFO_CACHE_SECONDS);
+                redisService.set(KOMMUNEINFO_LAST_POLL_TIME_KEY, LocalDateTime.now().format(ISO_LOCAL_DATE_TIME).getBytes(StandardCharsets.UTF_8));
+            }
+        } catch (JsonProcessingException e) {
+            log.warn("Noe galt skjedde ved mapping av kommuneinfolist for caching i redis", e);
+        }
     }
 }

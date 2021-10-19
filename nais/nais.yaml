@@ -25,6 +25,13 @@ spec:
     min: {{minReplicas}}
     max: {{maxReplicas}}
   webproxy: {{webProxyEnabled}}
+{{#if maskinportenEnabled}}
+  maskinporten:
+    enabled: true
+    scopes:
+      consumes:
+        - name: "skatteetaten:inntekt"
+{{/if}}
 {{#if vaultEnabled}}
   vault:
     enabled: true
@@ -79,6 +86,6 @@ spec:
 {{/each}}
   envFrom:
     - configmap: loginservice-idporten
-{{#unless isLabsGcp}}
-    - secret: redis-password-soknad-api
-{{/unless}}
+{{#each envsecret}}
+    - secret: "{{this}}"
+{{/each}}

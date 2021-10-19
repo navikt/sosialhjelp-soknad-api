@@ -62,7 +62,7 @@ public class ArbeidOgUtdanningSteg {
         if (harKommentarTilArbeidsforhold) {
             sporsmal.add(
                     new Sporsmal.Builder()
-                            .withTittel("Kommentar til arbeidsforhold")
+                            .withTittel("opplysninger.arbeidsituasjon.kommentarer.label")
                             .withFelt(kommentarFelter(arbeid.getKommentarTilArbeidsforhold()))
                             .withErUtfylt(true)
                             .build()

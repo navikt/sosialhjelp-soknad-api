@@ -45,29 +45,35 @@
 
     <properties>
         <java.jdk.version>11</java.jdk.version>
+        <kotlin.version>1.5.30</kotlin.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <tjenestespesifikasjon.version>1.2021.01.21-11.34-02f5eb27bb76</tjenestespesifikasjon.version>
-        <sosialhjelp-common.version>1.f76ffa9</sosialhjelp-common.version>
-        <filformat.version>1.2021.08.27-10.29-41cf5ce1230a</filformat.version>
+        <sosialhjelp-common.version>1.00018ba</sosialhjelp-common.version>
+        <filformat.version>1.2021.09.30-11.03-6bbd4cc2a49a</filformat.version>
 
-        <spring.version>5.3.9</spring.version>
-        <jetty.version>9.4.43.v20210629</jetty.version>
-        <jersey.version>2.34</jersey.version>
-        <token-validation.version>1.3.8</token-validation.version>
-        <nimbus-jose-jwt.version>9.13</nimbus-jose-jwt.version>
+        <!-- Fiks/KS -->
+        <svarut-rest-klient.version>1.0.2</svarut-rest-klient.version>
+        <kryptering.version>1.1.1</kryptering.version>
+        <streaming-klient.version>1.0.15</streaming-klient.version>
+
+        <spring.version>5.3.11</spring.version>
+        <jetty.version>9.4.44.v20210927</jetty.version>
+        <jersey.version>2.35</jersey.version>
+        <token-validation.version>1.3.9</token-validation.version>
+        <nimbus-jose-jwt.version>9.15</nimbus-jose-jwt.version>
         <cxf.version>3.4.4</cxf.version>
         <wss4j.version>2.3.2</wss4j.version>
-        <ojdbc.version>19.10.0.0</ojdbc.version>
+        <ojdbc.version>19.12.0.0</ojdbc.version>
         <flyway-core.version>7.14.0</flyway-core.version>
         <flyway-maven-plugin.version>7.14.0</flyway-maven-plugin.version>
         <handlebars.version>4.2.0</handlebars.version>
-        <jackson.version>2.12.3</jackson.version>
+        <jackson.version>2.13.0</jackson.version>
         <pdfbox.version>2.0.24</pdfbox.version>
         <jempbox.version>1.8.16</jempbox.version>
         <bouncycastle.version>1.69</bouncycastle.version>
         <httpclient.version>4.5.13</httpclient.version>
-        <guava.version>30.1.1-jre</guava.version>
+        <guava.version>31.0.1-jre</guava.version>
         <stax2-api.version>4.2.1</stax2-api.version>
         <tika.version>2.1.0</tika.version>
         <logback.version>1.2.3</logback.version>
@@ -75,7 +81,7 @@
         <hikaricp.version>4.0.3</hikaricp.version>
         <ehcache.version>2.10.9.2</ehcache.version>
         <woodstox-core.version>6.2.6</woodstox-core.version>
-        <joda-time.version>2.10.10</joda-time.version>
+        <joda-time.version>2.10.12</joda-time.version>
         <slf4j.version>1.7.32</slf4j.version>
         <commons-codec.version>1.15</commons-codec.version>
         <commons-io.version>2.11.0</commons-io.version>
@@ -90,6 +96,10 @@
         <lettuce.version>6.0.8.RELEASE</lettuce.version>
         <unleash.version>3.3.4</unleash.version>
         <resilience4j.version>1.7.1</resilience4j.version>
+        <reactor-core.version>3.4.10</reactor-core.version>
+        <reactor-netty-http.version>1.0.11</reactor-netty-http.version>
+
+        <kotlinx-coroutines.version>1.5.2</kotlinx-coroutines.version>
 
         <flyway.placeholders.driver>oracle.jdbc.OracleDriver</flyway.placeholders.driver>
         <flyway.placeholders.encoding>ISO-8859-1</flyway.placeholders.encoding>
@@ -106,14 +116,12 @@
         <jakarta.xml.soap-api.version>1.4.2</jakarta.xml.soap-api.version>
         <jakarta.jws.version>2.1.0</jakarta.jws.version>
 
-        <kryptering.version>1.1.1</kryptering.version>
-        <streaming-klient.version>1.0.15</streaming-klient.version>
-
         <!-- Versjoner for test dependencies -->
         <hamcrest.version>2.2</hamcrest.version>
-        <junit-jupiter.version>5.7.2</junit-jupiter.version>
-        <mockito.version>3.12.4</mockito.version>
+        <junit-jupiter.version>5.8.1</junit-jupiter.version>
+        <mockito.version>4.0.0</mockito.version>
         <assertj.version>3.20.2</assertj.version>
+        <mockk.version>1.12.0</mockk.version>
 
         <!-- Versjoner identifisert av maven-enforcer-plugin -->
         <asm.version>9.2</asm.version>
@@ -125,7 +133,7 @@
         <hk2.version>2.6.1</hk2.version>
         <prometheus.version>0.12.0</prometheus.version>
         <jsoup.version>1.14.2</jsoup.version>
-        <oauth2-oidc-sdk.version>9.15</oauth2-oidc-sdk.version>
+        <oauth2-oidc-sdk.version>9.18</oauth2-oidc-sdk.version>
         <emoji-java.version>5.1.1</emoji-java.version>
         <java-support.version>7.5.2</java-support.version>
         <cryptacular.version>1.2.4</cryptacular.version>
@@ -133,14 +141,26 @@
         <objenesis.version>2.6</objenesis.version>
         <saaj-impl.version>1.5.1</saaj-impl.version>
         <mimepull.version>1.9.15</mimepull.version>
-        <kotlin.version>1.5.10</kotlin.version>
         <relaxng-datatype.version>2.3.3</relaxng-datatype.version>
         <json.version>20210307</json.version>
+        <byte-buddy.version>1.11.21</byte-buddy.version>
     </properties>
 
     <dependencyManagement>
         <!-- Dependencies identifisert av maven-enforcer-plugin -->
         <dependencies>
+            <!-- Kotlin -->
+            <dependency>
+                <groupId>org.jetbrains.kotlin</groupId>
+                <artifactId>kotlin-stdlib</artifactId>
+                <version>${kotlin.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jetbrains.kotlin</groupId>
+                <artifactId>kotlin-reflect</artifactId>
+                <version>${kotlin.version}</version>
+            </dependency>
+
             <!-- Spring -->
             <dependency>
                 <groupId>org.springframework</groupId>
@@ -205,6 +225,11 @@
             <!-- Jackson -->
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-core</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-annotations</artifactId>
                 <version>${jackson.version}</version>
             </dependency>
@@ -212,6 +237,18 @@
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>
                 <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.module</groupId>
+                <artifactId>jackson-module-kotlin</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+
+            <!-- Reactor netty -->
+            <dependency>
+                <groupId>io.projectreactor</groupId>
+                <artifactId>reactor-core</artifactId>
+                <version>${reactor-core.version}</version>
             </dependency>
 
             <!-- Jetty -->
@@ -295,6 +332,13 @@
                 <groupId>org.opensaml</groupId>
                 <artifactId>opensaml-security-api</artifactId>
                 <version>${opensaml.version}</version>
+            </dependency>
+
+            <!-- Fiks -->
+            <dependency>
+                <groupId>no.ks.fiks</groupId>
+                <artifactId>kryptering</artifactId>
+                <version>${kryptering.version}</version>
             </dependency>
 
             <!-- diverse -->
@@ -466,10 +510,37 @@
                 <version>${aspectjweaver.version}</version>
                 <scope>runtime</scope>
             </dependency>
+            <dependency>
+                <groupId>net.bytebuddy</groupId>
+                <artifactId>byte-buddy</artifactId>
+                <version>${byte-buddy.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>net.bytebuddy</groupId>
+                <artifactId>byte-buddy-agent</artifactId>
+                <version>${byte-buddy.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
     <dependencies>
+        <!-- Kotlin -->
+        <dependency>
+            <groupId>org.jetbrains.kotlinx</groupId>
+            <artifactId>kotlinx-coroutines-core</artifactId>
+            <version>${kotlinx-coroutines.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains.kotlinx</groupId>
+            <artifactId>kotlinx-coroutines-slf4j</artifactId>
+            <version>${kotlinx-coroutines.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains.kotlinx</groupId>
+            <artifactId>kotlinx-coroutines-reactor</artifactId>
+            <version>${kotlinx-coroutines.version}</version>
+        </dependency>
+
         <!-- Filformat -->
         <dependency>
             <groupId>no.nav.sbl.dialogarena</groupId>
@@ -504,6 +575,16 @@
         <dependency>
             <groupId>no.nav.sosialhjelp</groupId>
             <artifactId>sosialhjelp-common-metrics</artifactId>
+            <version>${sosialhjelp-common.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>no.nav.sosialhjelp</groupId>
+            <artifactId>sosialhjelp-common-kommuneinfo-client</artifactId>
+            <version>${sosialhjelp-common.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>no.nav.sosialhjelp</groupId>
+            <artifactId>sosialhjelp-common-idporten-client</artifactId>
             <version>${sosialhjelp-common.version}</version>
         </dependency>
 
@@ -555,6 +636,13 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-jdbc</artifactId>
             <version>${spring.version}</version>
+        </dependency>
+
+        <!-- Reactor netty -->
+        <dependency>
+            <groupId>io.projectreactor.netty</groupId>
+            <artifactId>reactor-netty-http</artifactId>
+            <version>${reactor-netty-http.version}</version>
         </dependency>
 
         <!-- Jersey avhengigheter -->
@@ -673,11 +761,6 @@
             <artifactId>jackson-datatype-jsr310</artifactId>
             <version>${jackson.version}</version>
         </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.module</groupId>
-            <artifactId>jackson-module-kotlin</artifactId>
-            <version>${jackson.version}</version>
-        </dependency>
 
         <!-- Database avhengigheter -->
         <dependency>
@@ -793,6 +876,11 @@
             <groupId>no.ks.fiks</groupId>
             <artifactId>kryptering</artifactId>
             <version>${kryptering.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>no.ks.fiks.svarut</groupId>
+            <artifactId>svarut-rest-klient</artifactId>
+            <version>${svarut-rest-klient.version}</version>
         </dependency>
 
         <!-- logging -->
@@ -1098,6 +1186,12 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        <dependency>
+            <groupId>io.mockk</groupId>
+            <artifactId>mockk</artifactId>
+            <version>${mockk.version}</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -1196,6 +1290,129 @@
                 </executions>
             </plugin>
             <plugin>
+                <artifactId>kotlin-maven-plugin</artifactId>
+                <groupId>org.jetbrains.kotlin</groupId>
+                <version>${kotlin.version}</version>
+                <executions>
+                    <execution>
+                        <id>compile</id>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                        <configuration>
+                            <sourceDirs>
+                                <sourceDir>${project.basedir}/src/main/kotlin</sourceDir>
+                                <sourceDir>${project.basedir}/src/main/java</sourceDir>
+                            </sourceDirs>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>test-compile</id>
+                        <goals>
+                            <goal>test-compile</goal>
+                        </goals>
+                        <configuration>
+                            <sourceDirs>
+                                <sourceDir>${project.basedir}/src/main/kotlin</sourceDir>
+                                <sourceDir>${project.basedir}/src/main/java</sourceDir>
+                            </sourceDirs>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <executions>
+                    <execution>
+                        <id>default-compile</id>
+                        <phase>none</phase>
+                    </execution>
+                    <execution>
+                        <id>default-testCompile</id>
+                        <phase>none</phase>
+                    </execution>
+                    <execution>
+                        <id>java-compile</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>java-test-compile</id>
+                        <phase>test-compile</phase>
+                        <goals>
+                            <goal>testCompile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>3.2.0</version>
+                <executions>
+                    <execution>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>${project.basedir}/src/main/kotlin</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>3.0.0</version>
+                <executions>
+                    <execution>
+                        <id>ktlint</id>
+                        <phase>validate</phase>
+                        <configuration>
+                            <target name="ktlint">
+                                <java taskname="ktlint" dir="${basedir}" fork="true" failonerror="true"
+                                      classpathref="maven.plugin.classpath" classname="com.pinterest.ktlint.Main">
+                                    <arg value="src/**/*.kt"/>
+                                </java>
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>ktlint-format</id>
+                        <configuration>
+                            <target name="ktlint">
+                                <java taskname="ktlint" dir="${basedir}" fork="true" failonerror="true"
+                                      classpathref="maven.plugin.classpath" classname="com.pinterest.ktlint.Main">
+                                    <arg value="-F"/>
+                                    <arg value="src/**/*.kt"/>
+                                </java>
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.pinterest</groupId>
+                        <artifactId>ktlint</artifactId>
+                        <version>0.42.1</version>
+                    </dependency>
+                    <!-- additional 3rd party ruleset(s) can be specified here -->
+                </dependencies>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>3.2.0</version>
@@ -1251,7 +1468,8 @@
 
                     <forkCount>3</forkCount>
                     <reuseForks>true</reuseForks>
-                    <argLine>-Xmx1024m -XX:MaxPermSize=256m</argLine> <!-- Gi nok minne for å unngå terminerende JVM-er -->
+                    <argLine>-Xmx1024m -XX:MaxPermSize=256m
+                    </argLine> <!-- Gi nok minne for å unngå terminerende JVM-er -->
 
                     <systemPropertyVariables>
                         <java.awt.headless>true</java.awt.headless>
