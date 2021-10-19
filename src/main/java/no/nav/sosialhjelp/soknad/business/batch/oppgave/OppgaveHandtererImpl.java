@@ -12,12 +12,13 @@ import org.springframework.context.annotation.Import;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import javax.inject.Inject;
 import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Optional;
 
 import static java.lang.Math.pow;
+import static no.nav.sosialhjelp.soknad.consumer.mdc.MDCOperations.MDC_BEHANDLINGS_ID;
+import static no.nav.sosialhjelp.soknad.consumer.mdc.MDCOperations.putToMDC;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Service
@@ -36,13 +37,13 @@ public class OppgaveHandtererImpl implements OppgaveHandterer {
     private static final int RAPPORTER_RATE = 15 * 60 * 1000; // hvert kvarter
     private static final int RETRY_STUCK_RATE = 15 * 60 * 1000; // hvert kvarter
 
-    @Inject
-    private
-    FiksHandterer fiksHandterer;
+    private final FiksHandterer fiksHandterer;
+    private final OppgaveRepository oppgaveRepository;
 
-    @Inject
-    private
-    OppgaveRepository oppgaveRepository;
+    public OppgaveHandtererImpl(FiksHandterer fiksHandterer, OppgaveRepository oppgaveRepository) {
+        this.fiksHandterer = fiksHandterer;
+        this.oppgaveRepository = oppgaveRepository;
+    }
 
     @Scheduled(fixedDelay = PROSESS_RATE)
     public void prosesserOppgaver() {
@@ -63,6 +64,8 @@ public class OppgaveHandtererImpl implements OppgaveHandterer {
             event.addTagToReport("oppgavetype", oppgave.type);
             event.addTagToReport("steg", oppgave.steg + "");
             event.addFieldToReport("behandlingsid", oppgave.behandlingsId);
+
+            putToMDC(MDC_BEHANDLINGS_ID, oppgave.behandlingsId);
 
             try {
                 fiksHandterer.eksekver(oppgave);
