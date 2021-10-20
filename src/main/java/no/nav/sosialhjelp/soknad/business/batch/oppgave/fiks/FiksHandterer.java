@@ -9,8 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import javax.inject.Inject;
-
 import static no.nav.sosialhjelp.soknad.business.util.MetricsUtils.navKontorTilInfluxNavn;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 
@@ -20,11 +18,13 @@ public class FiksHandterer {
     public static final String FIKS_OPPGAVE = "FiksOppgave";
     private static final Logger logger = LoggerFactory.getLogger(FiksHandterer.class);
 
-    @Inject
-    private FiksSender fiksSender;
+    private final FiksSender fiksSender;
+    private final InnsendingService innsendingService;
 
-    @Inject
-    private InnsendingService innsendingService;
+    public FiksHandterer(FiksSender fiksSender, InnsendingService innsendingService) {
+        this.fiksSender = fiksSender;
+        this.innsendingService = innsendingService;
+    }
 
     public void eksekver(Oppgave oppgaveKjede) {
         final String behandlingsId = oppgaveKjede.behandlingsId;
