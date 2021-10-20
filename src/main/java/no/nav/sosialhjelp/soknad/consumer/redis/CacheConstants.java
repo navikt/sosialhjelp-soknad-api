@@ -27,5 +27,8 @@ public final class CacheConstants {
     public static final long PDL_CACHE_SECONDS = 30 * 60L; // 30 minutter
 
     public static final String DKIF_CACHE_KEY_PREFIX = "dkif-";
-    public static final long DKIF_CACHE_SECONDS = 30 * 60L; // 30 min
+    public static final String KONTONUMMER_CACHE_KEY_PREFIX = "kontonummer-";
+    public static final String NAVUTBETALINGER_CACHE_KEY_PREFIX = "navutbetalinger-";
+
+    public static final long CACHE_30_MINUTES_IN_SECONDS = 30 * 60L;
 }

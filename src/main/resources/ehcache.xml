@@ -17,7 +17,4 @@
 
     <diskStore path="/tmp/default/path"/>
 
-    <cache name="kontonummerOppslagCache" maxElementsInMemory="1000" overflowToDisk="false" timeToLiveSeconds="3600"  />
-    <cache name="utbetalingerOppslagCache" maxElementsInMemory="1000" overflowToDisk="false" timeToLiveSeconds="3600"  />
-
 </ehcache>

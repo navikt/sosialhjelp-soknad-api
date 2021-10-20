@@ -1,6 +1,7 @@
 package no.nav.sosialhjelp.soknad.oppslag;
 
 import no.nav.sosialhjelp.soknad.consumer.common.rest.RestUtils;
+import no.nav.sosialhjelp.soknad.consumer.redis.RedisService;
 import no.nav.sosialhjelp.soknad.web.selftest.Pingable;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -20,8 +21,8 @@ public class OppslagRestConfig {
     private String endpoint;
 
     @Bean
-    public OppslagConsumer oppslagConsumer() {
-        return new OppslagConsumerImpl(oppslagClient(), endpoint);
+    public OppslagConsumer oppslagConsumer(RedisService redisService) {
+        return new OppslagConsumerImpl(oppslagClient(), endpoint, redisService);
     }
 
     @Bean
