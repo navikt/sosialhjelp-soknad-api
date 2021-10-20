@@ -6,18 +6,19 @@ import no.nav.sosialhjelp.soknad.business.batch.oppgave.Oppgave.Status;
 import no.nav.sosialhjelp.soknad.business.batch.oppgave.fiks.FiksHandterer;
 import no.nav.sosialhjelp.soknad.business.batch.oppgave.fiks.FiksSender;
 import no.nav.sosialhjelp.soknad.business.db.repositories.oppgave.OppgaveRepository;
+import no.nav.sosialhjelp.soknad.consumer.mdc.MDCOperations;
 import no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils;
 import org.slf4j.Logger;
 import org.springframework.context.annotation.Import;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import javax.inject.Inject;
 import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Optional;
 
 import static java.lang.Math.pow;
+import static no.nav.sosialhjelp.soknad.consumer.mdc.MDCOperations.MDC_BEHANDLINGS_ID;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Service
@@ -36,13 +37,13 @@ public class OppgaveHandtererImpl implements OppgaveHandterer {
     private static final int RAPPORTER_RATE = 15 * 60 * 1000; // hvert kvarter
     private static final int RETRY_STUCK_RATE = 15 * 60 * 1000; // hvert kvarter
 
-    @Inject
-    private
-    FiksHandterer fiksHandterer;
+    private final FiksHandterer fiksHandterer;
+    private final OppgaveRepository oppgaveRepository;
 
-    @Inject
-    private
-    OppgaveRepository oppgaveRepository;
+    public OppgaveHandtererImpl(FiksHandterer fiksHandterer, OppgaveRepository oppgaveRepository) {
+        this.fiksHandterer = fiksHandterer;
+        this.oppgaveRepository = oppgaveRepository;
+    }
 
     @Scheduled(fixedDelay = PROSESS_RATE)
     public void prosesserOppgaver() {
@@ -64,6 +65,8 @@ public class OppgaveHandtererImpl implements OppgaveHandterer {
             event.addTagToReport("steg", oppgave.steg + "");
             event.addFieldToReport("behandlingsid", oppgave.behandlingsId);
 
+            MDCOperations.putToMDC(MDC_BEHANDLINGS_ID, oppgave.behandlingsId);
+
             try {
                 fiksHandterer.eksekver(oppgave);
             } catch (Exception e) {
@@ -77,6 +80,7 @@ public class OppgaveHandtererImpl implements OppgaveHandterer {
                 oppgave.status = Status.KLAR;
             }
             oppgaveRepository.oppdater(oppgave);
+            MDCOperations.remove(MDC_BEHANDLINGS_ID);
         }
 
     }

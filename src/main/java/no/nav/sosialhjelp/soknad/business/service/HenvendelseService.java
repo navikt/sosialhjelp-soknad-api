@@ -2,6 +2,7 @@ package no.nav.sosialhjelp.soknad.business.service;
 
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata;
+import no.nav.sosialhjelp.soknad.consumer.mdc.MDCOperations;
 import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.domain.model.exception.SosialhjelpSoknadApiException;
@@ -14,6 +15,7 @@ import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static no.nav.sosialhjelp.soknad.consumer.mdc.MDCOperations.putToMDC;
 import static no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus.AVBRUTT_AUTOMATISK;
 import static no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus.AVBRUTT_AV_BRUKER;
 import static no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus.FERDIG;
@@ -58,6 +60,7 @@ public class HenvendelseService {
         if (!behandlingsId.startsWith(applikasjonsprefix)) {
             throw new SosialhjelpSoknadApiException("Tildelt sekvensrom for behandlingsId er brukt opp. Kan ikke generer behandlingsId " + behandlingsId);
         }
+        putToMDC(MDCOperations.MDC_BEHANDLINGS_ID, behandlingsId);
         return behandlingsId;
     }
 
