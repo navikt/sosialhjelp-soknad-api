@@ -1,13 +1,14 @@
 package no.nav.sosialhjelp.soknad.oppslag;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import io.github.resilience4j.retry.Retry;
 import no.nav.sosialhjelp.soknad.consumer.mdc.MDCOperations;
+import no.nav.sosialhjelp.soknad.consumer.redis.RedisService;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import no.nav.sosialhjelp.soknad.oppslag.kontonummer.KontonummerDto;
 import no.nav.sosialhjelp.soknad.oppslag.utbetaling.UtbetalingerResponseDto;
 import org.eclipse.jetty.http.HttpHeader;
 import org.slf4j.Logger;
-import org.springframework.cache.annotation.Cacheable;
 
 import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.NotFoundException;
@@ -15,7 +16,12 @@ import javax.ws.rs.ServerErrorException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.GenericType;
+import java.util.Optional;
 
+import static no.nav.sosialhjelp.soknad.consumer.redis.CacheConstants.CACHE_30_MINUTES_IN_SECONDS;
+import static no.nav.sosialhjelp.soknad.consumer.redis.CacheConstants.KONTONUMMER_CACHE_KEY_PREFIX;
+import static no.nav.sosialhjelp.soknad.consumer.redis.CacheConstants.NAVUTBETALINGER_CACHE_KEY_PREFIX;
+import static no.nav.sosialhjelp.soknad.consumer.redis.RedisUtils.objectMapper;
 import static no.nav.sosialhjelp.soknad.consumer.retry.RetryUtils.retryConfig;
 import static no.nav.sosialhjelp.soknad.consumer.retry.RetryUtils.withRetry;
 import static no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.BEARER;
@@ -30,14 +36,20 @@ public class OppslagConsumerImpl implements OppslagConsumer {
     private final Client client;
     private final String endpoint;
     private final Retry retry;
+    private final RedisService redisService;
 
-    public OppslagConsumerImpl(Client client, String endpoint) {
+    public OppslagConsumerImpl(
+            Client client,
+            String endpoint,
+            RedisService redisService
+    ) {
         this.client = client;
         this.endpoint = endpoint;
         this.retry = retryConfig(
                 endpoint,
                 new Class[]{ServerErrorException.class},
                 log);
+        this.redisService = redisService;
     }
 
     @Override
@@ -51,11 +63,21 @@ public class OppslagConsumerImpl implements OppslagConsumer {
     }
 
     @Override
-    @Cacheable("kontonummerOppslagCache")
     public KontonummerDto getKontonummer(String ident) {
+        return Optional.ofNullable(hentKontonummerFraCache(ident))
+                .orElse(hentKontonummerFraOppslagApi(ident));
+    }
+
+    private KontonummerDto hentKontonummerFraCache(String ident) {
+        return (KontonummerDto) redisService.get(KONTONUMMER_CACHE_KEY_PREFIX + ident, KontonummerDto.class);
+    }
+
+    private KontonummerDto hentKontonummerFraOppslagApi(String ident) {
         var request = lagRequest(endpoint + "kontonummer");
         try {
-            return withRetry(retry, () -> request.get(KontonummerDto.class));
+            var kontonummerDto = withRetry(retry, () -> request.get(KontonummerDto.class));
+            lagreKontonummerTilCache(ident, kontonummerDto);
+            return kontonummerDto;
         } catch (NotAuthorizedException e) {
             log.warn("oppslag.kontonummer - 401 Unauthorized - {}", e.getMessage());
             return null;
@@ -68,15 +90,41 @@ public class OppslagConsumerImpl implements OppslagConsumer {
         }
     }
 
+    private void lagreKontonummerTilCache(String ident, KontonummerDto kontonummerDto) {
+        try {
+            redisService.setex(KONTONUMMER_CACHE_KEY_PREFIX + ident, objectMapper.writeValueAsBytes(kontonummerDto), CACHE_30_MINUTES_IN_SECONDS);
+        } catch (JsonProcessingException e) {
+            log.warn("Noe feilet ved lagring av kontonummerDto til redis", e);
+        }
+    }
+
     @Override
-    @Cacheable("utbetalingerOppslagCache")
     public UtbetalingerResponseDto getUtbetalingerSiste40Dager(String ident) {
+        return Optional.ofNullable(hentNavUtbetalingerFraCache(ident))
+                .orElse(hentNavUtbetalingerFraOppslagApi(ident));
+    }
+
+    private UtbetalingerResponseDto hentNavUtbetalingerFraCache(String ident) {
+        return (UtbetalingerResponseDto) redisService.get(KONTONUMMER_CACHE_KEY_PREFIX + ident, UtbetalingerResponseDto.class);
+    }
+
+    private UtbetalingerResponseDto hentNavUtbetalingerFraOppslagApi(String ident) {
         var request = lagRequest(endpoint + "utbetalinger");
         try {
-            return withRetry(retry, () -> request.get(new GenericType<UtbetalingerResponseDto>() {}));
+            var utbetalingerResponseDto = withRetry(retry, () -> request.get(new GenericType<UtbetalingerResponseDto>() {}));
+            lagreNavUtbetalingerTilCache(ident, utbetalingerResponseDto);
+            return utbetalingerResponseDto;
         } catch (Exception e) {
             log.error("oppslag.utbetalinger - Noe uventet feilet", e);
             return null;
+        }
+    }
+
+    private void lagreNavUtbetalingerTilCache(String ident, UtbetalingerResponseDto utbetalingerResponseDto) {
+        try {
+            redisService.setex(NAVUTBETALINGER_CACHE_KEY_PREFIX + ident, objectMapper.writeValueAsBytes(utbetalingerResponseDto), CACHE_30_MINUTES_IN_SECONDS);
+        } catch (JsonProcessingException e) {
+            log.warn("Noe feilet ved lagring av utbetalingerResponseDto til redis", e);
         }
     }
 

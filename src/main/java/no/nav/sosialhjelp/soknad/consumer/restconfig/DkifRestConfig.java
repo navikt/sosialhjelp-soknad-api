@@ -3,6 +3,7 @@ package no.nav.sosialhjelp.soknad.consumer.restconfig;
 import no.nav.sosialhjelp.soknad.consumer.common.rest.RestUtils;
 import no.nav.sosialhjelp.soknad.consumer.dkif.DkifConsumer;
 import no.nav.sosialhjelp.soknad.consumer.dkif.DkifConsumerImpl;
+import no.nav.sosialhjelp.soknad.consumer.redis.RedisService;
 import no.nav.sosialhjelp.soknad.web.selftest.Pingable;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -25,16 +26,16 @@ public class DkifRestConfig {
     private String endpoint;
 
     @Bean
-    public DkifConsumer dkifConsumer() {
-        return new DkifConsumerImpl(dkifClient(), endpoint);
+    public DkifConsumer dkifConsumer(RedisService redisService) {
+        return new DkifConsumerImpl(dkifClient(), endpoint, redisService);
     }
 
     @Bean
-    public Pingable dkifRestPing() {
+    public Pingable dkifRestPing(DkifConsumer dkifConsumer) {
         return () -> {
             Pingable.Ping.PingMetadata metadata = new Pingable.Ping.PingMetadata(endpoint, "Dkif", false);
             try {
-                dkifConsumer().ping();
+                dkifConsumer.ping();
                 return lyktes(metadata);
             } catch (Exception e) {
                 return feilet(metadata, e);
