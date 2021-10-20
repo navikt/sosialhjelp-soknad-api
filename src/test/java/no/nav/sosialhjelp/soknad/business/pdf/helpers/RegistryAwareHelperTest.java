@@ -14,8 +14,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.Profile;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -33,7 +31,6 @@ import static org.mockito.Mockito.verify;
 @SuppressWarnings("rawtypes")
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {RegistryAwareHelperTest.HandlebarsHelperTestConfig.class})
-@ActiveProfiles("RegistryTest")
 class RegistryAwareHelperTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(RegistryAwareHelperTest.class);
@@ -61,7 +58,6 @@ class RegistryAwareHelperTest {
     @Import({
             CmsTekst.class
     })
-    @Profile("RegistryTest")
     public static class HandlebarsHelperTestConfig {
 
         @Bean
