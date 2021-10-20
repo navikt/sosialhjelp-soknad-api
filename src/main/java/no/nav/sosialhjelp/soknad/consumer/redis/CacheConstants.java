@@ -25,4 +25,7 @@ public final class CacheConstants {
     public static final String ADRESSEBESKYTTELSE_CACHE_KEY_PREFIX = "hentperson-adressebeskyttelse-";
     public static final String GEOGRAFISK_TILKNYTNING_CACHE_KEY_PREFIX = "hent-geografisktilknytning-";
     public static final long PDL_CACHE_SECONDS = 30 * 60L; // 30 minutter
+
+    public static final String DKIF_CACHE_KEY_PREFIX = "dkif-";
+    public static final long DKIF_CACHE_SECONDS = 30 * 60L; // 30 min
 }
