@@ -105,7 +105,7 @@ public class OppslagConsumerImpl implements OppslagConsumer {
     }
 
     private UtbetalingerResponseDto hentNavUtbetalingerFraCache(String ident) {
-        return (UtbetalingerResponseDto) redisService.get(KONTONUMMER_CACHE_KEY_PREFIX + ident, UtbetalingerResponseDto.class);
+        return (UtbetalingerResponseDto) redisService.get(NAVUTBETALINGER_CACHE_KEY_PREFIX + ident, UtbetalingerResponseDto.class);
     }
 
     private UtbetalingerResponseDto hentNavUtbetalingerFraOppslagApi(String ident) {
