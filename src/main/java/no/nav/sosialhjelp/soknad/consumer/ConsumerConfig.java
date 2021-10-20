@@ -41,13 +41,11 @@ import no.nav.sosialhjelp.soknad.consumer.svarut.SvarUtService;
 import no.nav.sosialhjelp.soknad.oppslag.OppslagRestConfig;
 import no.nav.sosialhjelp.soknad.oppslag.kontonummer.KontonummerService;
 import no.nav.sosialhjelp.soknad.oppslag.utbetaling.UtbetalingService;
-import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
 
 @Configuration
-@EnableCaching
 @Import({
         ProxiedWebClientConfig.class,
         MockProxiedWebClientConfig.class,
