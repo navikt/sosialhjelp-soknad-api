@@ -79,7 +79,7 @@ class RegistryAwareHelperTest {
             return mock(KodeverkService.class);
         }
 
-        @Bean()
+        @Bean
         public Miljovariabler informasjonService() {
             return mock(Miljovariabler.class);
         }

@@ -1,7 +1,5 @@
 package no.nav.sosialhjelp.soknad.consumer.fiks;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.module.kotlin.KotlinModule;
@@ -301,13 +299,5 @@ public class DigisosApiImpl implements DigisosApi {
 
     private String getLastOppFilerPath(String kommunenummer, String navEkseternRefId) {
         return String.format("/digisos/api/v1/soknader/%s/%s", kommunenummer, navEkseternRefId);
-    }
-
-    @JsonIgnoreProperties(ignoreUnknown = true)
-    static class IdPortenOidcConfiguration {
-        @JsonProperty(value = "issuer", required = true)
-        String issuer;
-        @JsonProperty(value = "token_endpoint", required = true)
-        String tokenEndpoint;
     }
 }
