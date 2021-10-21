@@ -50,8 +50,11 @@ public class PersonService {
             return null;
         }
 
-        List<Barn> alleBarn = pdlPerson.getForelderBarnRelasjon().stream()
+        var forelderBarnRelasjoner = pdlPerson.getForelderBarnRelasjon().stream()
                 .filter(forelderBarnRelasjonDto -> forelderBarnRelasjonDto.getRelatertPersonsRolle().equalsIgnoreCase(BARN))
+                .collect(Collectors.toList());
+
+        List<Barn> alleBarn = forelderBarnRelasjoner.stream()
                 .map(forelderBarnRelasjonDto -> {
                     var barnIdent = forelderBarnRelasjonDto.getRelatertPersonsIdent();
 
@@ -65,7 +68,7 @@ public class PersonService {
                     }
 
                     loggHvisIdentIkkeErFnr(barnIdent);
-                    var pdlBarn = pdlHentPersonConsumer.hentBarn(barnIdent);
+                    var pdlBarn = pdlHentPersonConsumer.hentBarn(barnIdent, forelderBarnRelasjoner.indexOf(forelderBarnRelasjonDto));
                     return pdlPersonMapper.mapToBarn(pdlBarn, barnIdent, pdlPerson);
                 })
                 .collect(Collectors.toList());

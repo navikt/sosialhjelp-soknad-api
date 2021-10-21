@@ -19,11 +19,12 @@ import static no.nav.sosialhjelp.soknad.consumer.pdl.common.PdlApiQuery.HENT_EKT
 import static no.nav.sosialhjelp.soknad.consumer.pdl.common.PdlApiQuery.HENT_PERSON;
 import static no.nav.sosialhjelp.soknad.consumer.pdl.common.PdlApiQuery.HENT_PERSON_ADRESSEBESKYTTELSE;
 import static no.nav.sosialhjelp.soknad.consumer.pdl.common.Utils.pdlMapper;
-import static no.nav.sosialhjelp.soknad.consumer.redis.CacheConstants.ADRESSEBESKYTTELSE_CACHE_KEY_PREFIX;
-import static no.nav.sosialhjelp.soknad.consumer.redis.CacheConstants.BARN_CACHE_KEY_PREFIX;
-import static no.nav.sosialhjelp.soknad.consumer.redis.CacheConstants.EKTEFELLE_CACHE_KEY_PREFIX;
-import static no.nav.sosialhjelp.soknad.consumer.redis.CacheConstants.PDL_CACHE_SECONDS;
-import static no.nav.sosialhjelp.soknad.consumer.redis.CacheConstants.PERSON_CACHE_KEY_PREFIX;
+import static no.nav.sosialhjelp.soknad.consumer.redis.CacheConstants.CACHE_30_MINUTES_IN_SECONDS;
+import static no.nav.sosialhjelp.soknad.consumer.redis.CacheType.HENTPERSON;
+import static no.nav.sosialhjelp.soknad.consumer.redis.CacheType.HENTPERSON_ADRESSEBESKYTTELSE;
+import static no.nav.sosialhjelp.soknad.consumer.redis.CacheType.HENTPERSON_BARN;
+import static no.nav.sosialhjelp.soknad.consumer.redis.CacheType.HENTPERSON_EKTEFELLE;
+import static no.nav.sosialhjelp.soknad.consumer.redis.RedisUtils.cacheKey;
 import static no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.HEADER_TEMA;
 import static no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.TEMA_KOM;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -46,7 +47,7 @@ public class PdlHentPersonConsumerImpl extends BasePdlConsumer implements PdlHen
     }
 
     private PdlPerson hentPersonFraCache(String ident) {
-        return (PdlPerson) redisService.get(PERSON_CACHE_KEY_PREFIX + ident, PdlPerson.class);
+        return (PdlPerson) redisService.get(cacheKey(HENTPERSON, ident), PdlPerson.class);
     }
 
     private PdlPerson hentPersonFraPdl(String ident) {
@@ -57,7 +58,7 @@ public class PdlHentPersonConsumerImpl extends BasePdlConsumer implements PdlHen
             checkForPdlApiErrors(pdlResponse);
 
             var pdlPerson = pdlResponse.getData().getHentPerson();
-            lagreTilCache(PERSON_CACHE_KEY_PREFIX, ident, pdlPerson);
+            lagreTilCache(cacheKey(HENTPERSON, ident), pdlPerson);
             return pdlPerson;
         } catch (PdlApiException e) {
             throw e;
@@ -68,16 +69,16 @@ public class PdlHentPersonConsumerImpl extends BasePdlConsumer implements PdlHen
     }
 
     @Override
-    public PdlBarn hentBarn(String ident) {
-        return Optional.ofNullable(hentBarnFraCache(ident))
-                .orElse(hentBarnFraPdl(ident));
+    public PdlBarn hentBarn(String ident, int index) {
+        return Optional.ofNullable(hentBarnFraCache(ident, index))
+                .orElse(hentBarnFraPdl(ident, index));
     }
 
-    private PdlBarn hentBarnFraCache(String ident) {
-        return (PdlBarn) redisService.get(BARN_CACHE_KEY_PREFIX + ident, PdlBarn.class);
+    private PdlBarn hentBarnFraCache(String ident, int index) {
+        return (PdlBarn) redisService.get(cacheKey(HENTPERSON_BARN, ident) + "_" + index, PdlBarn.class);
     }
 
-    private PdlBarn hentBarnFraPdl(String ident) {
+    private PdlBarn hentBarnFraPdl(String ident, int index) {
         try {
             var response = withRetry(() -> hentPersonRequest(endpoint).post(requestEntity(HENT_BARN, variables(ident)), String.class));
             var pdlResponse = pdlMapper.readValue(response, new TypeReference<HentPersonResponse<PdlBarn>>() {});
@@ -85,7 +86,7 @@ public class PdlHentPersonConsumerImpl extends BasePdlConsumer implements PdlHen
             checkForPdlApiErrors(pdlResponse);
 
             var pdlBarn = pdlResponse.getData().getHentPerson();
-            lagreTilCache(BARN_CACHE_KEY_PREFIX, ident, pdlBarn);
+            lagreTilCache(cacheKey(HENTPERSON_BARN, ident) + "_" + index, pdlBarn);
             return pdlBarn;
         } catch (PdlApiException e) {
             throw e;
@@ -102,7 +103,7 @@ public class PdlHentPersonConsumerImpl extends BasePdlConsumer implements PdlHen
     }
 
     private PdlEktefelle hentEktefelleFraCache(String ident) {
-        return (PdlEktefelle) redisService.get(EKTEFELLE_CACHE_KEY_PREFIX + ident, PdlEktefelle.class);
+        return (PdlEktefelle) redisService.get(cacheKey(HENTPERSON_EKTEFELLE, ident), PdlEktefelle.class);
     }
 
     private PdlEktefelle hentEktefelleFraPdl(String ident) {
@@ -113,7 +114,7 @@ public class PdlHentPersonConsumerImpl extends BasePdlConsumer implements PdlHen
             checkForPdlApiErrors(pdlResponse);
 
             var pdlEktefelle = pdlResponse.getData().getHentPerson();
-            lagreTilCache(EKTEFELLE_CACHE_KEY_PREFIX, ident, pdlEktefelle);
+            lagreTilCache(cacheKey(HENTPERSON_EKTEFELLE, ident), pdlEktefelle);
             return pdlEktefelle;
         } catch (PdlApiException e) {
             throw e;
@@ -130,7 +131,7 @@ public class PdlHentPersonConsumerImpl extends BasePdlConsumer implements PdlHen
     }
 
     private PdlAdressebeskyttelse hentAdressebeskyttelseFraCache(String ident) {
-        return (PdlAdressebeskyttelse) redisService.get(ADRESSEBESKYTTELSE_CACHE_KEY_PREFIX + ident, PdlAdressebeskyttelse.class);
+        return (PdlAdressebeskyttelse) redisService.get(cacheKey(HENTPERSON_ADRESSEBESKYTTELSE, ident), PdlAdressebeskyttelse.class);
     }
 
     private PdlAdressebeskyttelse hentAdressebeskyttelseFraPdl(String ident) {
@@ -141,7 +142,7 @@ public class PdlHentPersonConsumerImpl extends BasePdlConsumer implements PdlHen
             checkForPdlApiErrors(pdlResponse);
 
             var pdlAdressebeskyttelse = pdlResponse.getData().getHentPerson();
-            lagreTilCache(ADRESSEBESKYTTELSE_CACHE_KEY_PREFIX, ident, pdlAdressebeskyttelse);
+            lagreTilCache(cacheKey(HENTPERSON_ADRESSEBESKYTTELSE, ident), pdlAdressebeskyttelse);
             return pdlAdressebeskyttelse;
         } catch (PdlApiException e) {
             throw e;
@@ -162,9 +163,9 @@ public class PdlHentPersonConsumerImpl extends BasePdlConsumer implements PdlHen
                 .header(HEADER_TEMA, TEMA_KOM);
     }
 
-    private void lagreTilCache(String prefix, String ident, Object pdlResponse) {
+    private void lagreTilCache(String key, Object pdlResponse) {
         try {
-            redisService.setex(prefix + ident, pdlMapper.writeValueAsBytes(pdlResponse), PDL_CACHE_SECONDS);
+            redisService.setex(key, pdlMapper.writeValueAsBytes(pdlResponse), CACHE_30_MINUTES_IN_SECONDS);
         } catch (JsonProcessingException e) {
             log.warn("Noe feilet ved serialisering av response fra Pdl - {}", pdlResponse.getClass().getName(), e);
         }

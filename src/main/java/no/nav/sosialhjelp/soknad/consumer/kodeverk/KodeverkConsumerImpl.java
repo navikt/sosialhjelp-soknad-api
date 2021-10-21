@@ -17,7 +17,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 
 import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME;
-import static no.nav.sosialhjelp.soknad.consumer.redis.CacheConstants.KODEVERK_CACHE_SECONDS;
+import static no.nav.sosialhjelp.soknad.consumer.redis.CacheConstants.CACHE_24_HOURS_IN_SECONDS;
 import static no.nav.sosialhjelp.soknad.consumer.redis.CacheConstants.KODEVERK_LAST_POLL_TIME_KEY;
 import static no.nav.sosialhjelp.soknad.consumer.redis.CacheConstants.KOMMUNER_CACHE_KEY;
 import static no.nav.sosialhjelp.soknad.consumer.redis.CacheConstants.LANDKODER_CACHE_KEY;
@@ -109,7 +109,7 @@ public class KodeverkConsumerImpl implements KodeverkConsumer {
 
     private void oppdaterCache(String key, KodeverkDto kodeverk) {
         try {
-            redisService.setex(key, kodeverkMapper().writeValueAsBytes(kodeverk), KODEVERK_CACHE_SECONDS);
+            redisService.setex(key, kodeverkMapper().writeValueAsBytes(kodeverk), CACHE_24_HOURS_IN_SECONDS);
             redisService.set(KODEVERK_LAST_POLL_TIME_KEY, LocalDateTime.now().format(ISO_LOCAL_DATE_TIME).getBytes(StandardCharsets.UTF_8));
         } catch (JsonProcessingException e) {
             logger.warn("Noe galt skjedde ved oppdatering av kodeverk til Redis", e);

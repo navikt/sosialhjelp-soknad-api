@@ -24,6 +24,7 @@ import static java.util.Collections.singletonList;
 import static no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.SivilstandDto.SivilstandType.GIFT;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -116,7 +117,7 @@ class PersonServiceTest {
 
         when(mockPdlPerson.getForelderBarnRelasjon()).thenReturn(asList(new ForelderBarnRelasjonDto(BARN_IDENT, "BARN", "MOR")));
 
-        when(pdlHentPersonConsumer.hentBarn(any())).thenReturn(mockPdlBarn);
+        when(pdlHentPersonConsumer.hentBarn(any(), anyInt())).thenReturn(mockPdlBarn);
         when(pdlPersonMapper.mapToBarn(any(), any(), any())).thenReturn(barn);
 
         List<Barn> result = personService.hentBarnForPerson("ident");
@@ -131,7 +132,7 @@ class PersonServiceTest {
 
         when(mockPdlPerson.getForelderBarnRelasjon()).thenReturn(asList(new ForelderBarnRelasjonDto(BARN_IDENT, "BARN", "MOR")));
 
-        when(pdlHentPersonConsumer.hentBarn(any())).thenReturn(mockPdlBarn);
+        when(pdlHentPersonConsumer.hentBarn(any(), anyInt())).thenReturn(mockPdlBarn);
         when(pdlPersonMapper.mapToBarn(any(), any(), any())).thenReturn(null);
 
         List<Barn> result = personService.hentBarnForPerson("ident");
@@ -148,7 +149,7 @@ class PersonServiceTest {
         List<Barn> result = personService.hentBarnForPerson("ident");
 
         assertThat(result).isEmpty();
-        verify(pdlHentPersonConsumer, times(0)).hentBarn(anyString());
+        verify(pdlHentPersonConsumer, times(0)).hentBarn(anyString(), anyInt());
         verify(pdlPersonMapper, times(0)).mapToBarn(any(), anyString(), any());
     }
 
@@ -161,7 +162,7 @@ class PersonServiceTest {
         List<Barn> result = personService.hentBarnForPerson("ident");
 
         assertThat(result).isEmpty();
-        verify(pdlHentPersonConsumer, times(0)).hentBarn(anyString());
+        verify(pdlHentPersonConsumer, times(0)).hentBarn(anyString(), anyInt());
         verify(pdlPersonMapper, times(0)).mapToBarn(any(), anyString(), any());
     }
 

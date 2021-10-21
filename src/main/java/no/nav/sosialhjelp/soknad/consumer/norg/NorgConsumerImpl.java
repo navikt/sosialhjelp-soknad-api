@@ -20,9 +20,9 @@ import java.time.LocalDateTime;
 import static java.lang.System.getenv;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+import static no.nav.sosialhjelp.soknad.consumer.redis.CacheConstants.CACHE_24_HOURS_IN_SECONDS;
 import static no.nav.sosialhjelp.soknad.consumer.redis.CacheConstants.GT_CACHE_KEY_PREFIX;
 import static no.nav.sosialhjelp.soknad.consumer.redis.CacheConstants.GT_LAST_POLL_TIME_PREFIX;
-import static no.nav.sosialhjelp.soknad.consumer.redis.CacheConstants.NORG_CACHE_SECONDS;
 import static no.nav.sosialhjelp.soknad.consumer.redis.RedisUtils.objectMapper;
 import static no.nav.sosialhjelp.soknad.consumer.retry.RetryUtils.DEFAULT_EXPONENTIAL_BACKOFF_MULTIPLIER;
 import static no.nav.sosialhjelp.soknad.consumer.retry.RetryUtils.DEFAULT_INITIAL_WAIT_INTERVAL_MILLIS;
@@ -123,7 +123,7 @@ public class NorgConsumerImpl implements NorgConsumer {
 
     private void lagreTilCache(String geografiskTilknytning, RsNorgEnhet rsNorgEnhet) {
         try {
-            redisService.setex(GT_CACHE_KEY_PREFIX + geografiskTilknytning, objectMapper.writeValueAsBytes(rsNorgEnhet), NORG_CACHE_SECONDS);
+            redisService.setex(GT_CACHE_KEY_PREFIX + geografiskTilknytning, objectMapper.writeValueAsBytes(rsNorgEnhet), CACHE_24_HOURS_IN_SECONDS);
             redisService.set(GT_LAST_POLL_TIME_PREFIX + geografiskTilknytning, LocalDateTime.now().format(ISO_LOCAL_DATE_TIME).getBytes(UTF_8));
         } catch (JsonProcessingException e) {
             logger.warn("Noe galt skjedde ved oppdatering av kodeverk til Redis", e);

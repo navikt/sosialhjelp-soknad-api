@@ -46,7 +46,7 @@ public class PdlIntegrationTestConfig {
 
         @SneakyThrows
         @Override
-        public PdlBarn hentBarn(String ident) {
+        public PdlBarn hentBarn(String ident, int index) {
             var resourceAsStream = ClassLoader.getSystemResourceAsStream("pdl/pdlBarnResponse.json");
             var jsonString = IOUtils.toString(resourceAsStream);
 

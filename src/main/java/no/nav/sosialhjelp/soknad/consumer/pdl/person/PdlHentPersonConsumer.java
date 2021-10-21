@@ -4,7 +4,7 @@ public interface PdlHentPersonConsumer {
 
     PdlPerson hentPerson(String ident);
 
-    PdlBarn hentBarn(String ident);
+    PdlBarn hentBarn(String ident, int index);
 
     PdlEktefelle hentEktefelle(String ident);
 

@@ -19,8 +19,9 @@ import javax.ws.rs.core.GenericType;
 import java.util.Optional;
 
 import static no.nav.sosialhjelp.soknad.consumer.redis.CacheConstants.CACHE_30_MINUTES_IN_SECONDS;
-import static no.nav.sosialhjelp.soknad.consumer.redis.CacheConstants.KONTONUMMER_CACHE_KEY_PREFIX;
-import static no.nav.sosialhjelp.soknad.consumer.redis.CacheConstants.NAVUTBETALINGER_CACHE_KEY_PREFIX;
+import static no.nav.sosialhjelp.soknad.consumer.redis.CacheType.KONTONUMMER;
+import static no.nav.sosialhjelp.soknad.consumer.redis.CacheType.NAVUTBETALINGER;
+import static no.nav.sosialhjelp.soknad.consumer.redis.RedisUtils.cacheKey;
 import static no.nav.sosialhjelp.soknad.consumer.redis.RedisUtils.objectMapper;
 import static no.nav.sosialhjelp.soknad.consumer.retry.RetryUtils.retryConfig;
 import static no.nav.sosialhjelp.soknad.consumer.retry.RetryUtils.withRetry;
@@ -69,7 +70,7 @@ public class OppslagConsumerImpl implements OppslagConsumer {
     }
 
     private KontonummerDto hentKontonummerFraCache(String ident) {
-        return (KontonummerDto) redisService.get(KONTONUMMER_CACHE_KEY_PREFIX + ident, KontonummerDto.class);
+        return (KontonummerDto) redisService.get(cacheKey(KONTONUMMER, ident), KontonummerDto.class);
     }
 
     private KontonummerDto hentKontonummerFraOppslagApi(String ident) {
@@ -92,7 +93,7 @@ public class OppslagConsumerImpl implements OppslagConsumer {
 
     private void lagreKontonummerTilCache(String ident, KontonummerDto kontonummerDto) {
         try {
-            redisService.setex(KONTONUMMER_CACHE_KEY_PREFIX + ident, objectMapper.writeValueAsBytes(kontonummerDto), CACHE_30_MINUTES_IN_SECONDS);
+            redisService.setex(cacheKey(KONTONUMMER, ident), objectMapper.writeValueAsBytes(kontonummerDto), CACHE_30_MINUTES_IN_SECONDS);
         } catch (JsonProcessingException e) {
             log.warn("Noe feilet ved lagring av kontonummerDto til redis", e);
         }
@@ -105,7 +106,7 @@ public class OppslagConsumerImpl implements OppslagConsumer {
     }
 
     private UtbetalingerResponseDto hentNavUtbetalingerFraCache(String ident) {
-        return (UtbetalingerResponseDto) redisService.get(NAVUTBETALINGER_CACHE_KEY_PREFIX + ident, UtbetalingerResponseDto.class);
+        return (UtbetalingerResponseDto) redisService.get(cacheKey(NAVUTBETALINGER, ident), UtbetalingerResponseDto.class);
     }
 
     private UtbetalingerResponseDto hentNavUtbetalingerFraOppslagApi(String ident) {
@@ -122,7 +123,7 @@ public class OppslagConsumerImpl implements OppslagConsumer {
 
     private void lagreNavUtbetalingerTilCache(String ident, UtbetalingerResponseDto utbetalingerResponseDto) {
         try {
-            redisService.setex(NAVUTBETALINGER_CACHE_KEY_PREFIX + ident, objectMapper.writeValueAsBytes(utbetalingerResponseDto), CACHE_30_MINUTES_IN_SECONDS);
+            redisService.setex(cacheKey(NAVUTBETALINGER, ident), objectMapper.writeValueAsBytes(utbetalingerResponseDto), CACHE_30_MINUTES_IN_SECONDS);
         } catch (JsonProcessingException e) {
             log.warn("Noe feilet ved lagring av utbetalingerResponseDto til redis", e);
         }

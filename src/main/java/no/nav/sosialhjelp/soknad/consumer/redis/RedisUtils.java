@@ -6,14 +6,17 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.kotlin.KotlinModule;
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper;
 import no.nav.sosialhjelp.api.fiks.KommuneInfo;
+import no.nav.sosialhjelp.soknad.consumer.mdc.MDCOperations;
 import org.slf4j.Logger;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static no.nav.sosialhjelp.soknad.consumer.mdc.MDCOperations.MDC_BEHANDLINGS_ID;
 import static org.slf4j.LoggerFactory.getLogger;
 
 public final class RedisUtils {
@@ -39,4 +42,14 @@ public final class RedisUtils {
         }
         return null;
     }
+
+    public static String cacheKey(CacheType type, String ident) {
+        final var behandlingsId = Optional.ofNullable(MDCOperations.getFromMDC(MDC_BEHANDLINGS_ID));
+        if (behandlingsId.isPresent()) {
+            return type.getPrefix() + behandlingsId.get();
+        }
+        log.info("behandlingsId ikke satt i MDC");
+        return type.getPrefix() + ident;
+    }
+
 }

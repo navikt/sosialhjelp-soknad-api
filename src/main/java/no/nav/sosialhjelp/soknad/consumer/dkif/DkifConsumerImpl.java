@@ -19,7 +19,8 @@ import javax.ws.rs.core.Response;
 import java.util.Optional;
 
 import static no.nav.sosialhjelp.soknad.consumer.redis.CacheConstants.CACHE_30_MINUTES_IN_SECONDS;
-import static no.nav.sosialhjelp.soknad.consumer.redis.CacheConstants.DKIF_CACHE_KEY_PREFIX;
+import static no.nav.sosialhjelp.soknad.consumer.redis.CacheType.DKIF;
+import static no.nav.sosialhjelp.soknad.consumer.redis.RedisUtils.cacheKey;
 import static no.nav.sosialhjelp.soknad.consumer.redis.RedisUtils.objectMapper;
 import static no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.HEADER_CALL_ID;
 import static no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.HEADER_CONSUMER_ID;
@@ -62,7 +63,7 @@ public class DkifConsumerImpl implements DkifConsumer {
     }
 
     private DigitalKontaktinfoBolk hentFraCache(String ident) {
-        return (DigitalKontaktinfoBolk) redisService.get(DKIF_CACHE_KEY_PREFIX + ident, DigitalKontaktinfoBolk.class);
+        return (DigitalKontaktinfoBolk) redisService.get(cacheKey(DKIF, ident), DigitalKontaktinfoBolk.class);
     }
 
     private DigitalKontaktinfoBolk hentFraDkif(String ident) {
@@ -88,7 +89,7 @@ public class DkifConsumerImpl implements DkifConsumer {
 
     private void lagreTilCache(String ident, DigitalKontaktinfoBolk digitalKontaktinfoBolk) {
         try {
-            redisService.setex(DKIF_CACHE_KEY_PREFIX + ident, objectMapper.writeValueAsBytes(digitalKontaktinfoBolk), CACHE_30_MINUTES_IN_SECONDS);
+            redisService.setex(cacheKey(DKIF, ident), objectMapper.writeValueAsBytes(digitalKontaktinfoBolk), CACHE_30_MINUTES_IN_SECONDS);
         } catch (JsonProcessingException e) {
             logger.warn("Noe feilet ved lagring av digitalKontaktinfoBolk til redis", e);
         }
