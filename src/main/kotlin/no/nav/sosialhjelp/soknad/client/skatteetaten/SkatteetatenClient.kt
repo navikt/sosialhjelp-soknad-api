@@ -11,6 +11,7 @@ import org.springframework.http.MediaType
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
 import org.springframework.web.reactive.function.client.bodyToMono
+import reactor.core.publisher.Mono
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -42,10 +43,10 @@ class SkatteetatenClientImpl(
             .headers { it.add(HttpHeaders.AUTHORIZATION, BEARER + maskinportenClient.getTokenString()) }
             .retrieve()
             .bodyToMono<SkattbarInntekt>()
-            .onErrorReturn(
-                WebClientResponseException.NotFound::class.java,
-                SkattbarInntekt().also { log.info("Ingen skattbar inntekt funnet") }
-            )
+            .onErrorResume(WebClientResponseException.NotFound::class.java) {
+                log.info("Ingen skattbar inntekt funnet")
+                Mono.just(SkattbarInntekt())
+            }
             .onErrorMap(WebClientResponseException::class.java) { e ->
                 val feilmeldingUtenFnr = maskerFnr(e.responseBodyAsString)
                 log.warn("Klarer ikke hente skatteopplysninger {} status {} ", feilmeldingUtenFnr, e.statusCode)
