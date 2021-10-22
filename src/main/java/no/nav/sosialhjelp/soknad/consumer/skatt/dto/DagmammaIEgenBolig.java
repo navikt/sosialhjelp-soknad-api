@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.consumer.skatt.dto;
-
-public class DagmammaIEgenBolig {
-}
+//package no.nav.sosialhjelp.soknad.consumer.skatt.dto;
+//
+//public class DagmammaIEgenBolig {
+//}

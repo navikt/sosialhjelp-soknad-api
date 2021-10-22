@@ -1,8 +1,8 @@
 package no.nav.sosialhjelp.soknad.client.skatteetaten
 
 import no.nav.sosialhjelp.soknad.client.maskinporten.MaskinportenClient
+import no.nav.sosialhjelp.soknad.client.skatteetaten.dto.SkattbarInntekt
 import no.nav.sosialhjelp.soknad.consumer.skatt.SkattbarInntektConsumerImpl.Sokedata
-import no.nav.sosialhjelp.soknad.consumer.skatt.dto.SkattbarInntekt
 import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.BEARER
 import no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils
 import no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils.maskerFnr
