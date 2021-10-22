@@ -27,7 +27,8 @@ class SkatteetatenClientImpl(
     override fun hentSkattbarinntekt(fnr: String): SkattbarInntekt? {
         val sokedata = Sokedata()
             .withFom(LocalDate.now().minusMonths(if (LocalDate.now().dayOfMonth > 10) 1 else 2.toLong()))
-            .withTom(LocalDate.now()).withIdentifikator(fnr)
+            .withTom(LocalDate.now())
+            .withIdentifikator(System.getenv("TESTBRUKER_SKATT") ?: fnr)
 
         return webClient.get()
             .uri { uriBuilder ->
