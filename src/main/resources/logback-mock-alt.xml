@@ -9,9 +9,9 @@
     </appender>
 
     <logger name="no.nav.sosialhjelp.soknad" level="info"/>
-    <logger name="no.nav.security.token.support" level="info"/>
+    <logger name="no.nav.security" level="debug"/>
 
-    <root level="INFO">
+    <root level="info">
         <appender-ref ref="Console"/>
     </root>
 </configuration>
