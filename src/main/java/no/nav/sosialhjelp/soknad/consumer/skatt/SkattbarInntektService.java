@@ -2,10 +2,9 @@ package no.nav.sosialhjelp.soknad.consumer.skatt;
 
 import no.finn.unleash.Unleash;
 import no.nav.sosialhjelp.soknad.client.skatteetaten.SkatteetatenClient;
-import no.nav.sosialhjelp.soknad.consumer.skatt.dto.Forskuddstrekk;
-import no.nav.sosialhjelp.soknad.consumer.skatt.dto.Inntekt;
-import no.nav.sosialhjelp.soknad.consumer.skatt.dto.OppgaveInntektsmottaker;
-import no.nav.sosialhjelp.soknad.consumer.skatt.dto.SkattbarInntekt;
+import no.nav.sosialhjelp.soknad.client.skatteetaten.dto.Inntekt;
+import no.nav.sosialhjelp.soknad.client.skatteetaten.dto.OppgaveInntektsmottaker;
+import no.nav.sosialhjelp.soknad.client.skatteetaten.dto.SkattbarInntekt;
 import no.nav.sosialhjelp.soknad.domain.model.utbetaling.Utbetaling;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
@@ -88,44 +87,44 @@ public class SkattbarInntektService {
         List<Utbetaling> dagmammaIEgenBolig = new ArrayList<>();
         List<Utbetaling> lottOgPartInnenFiske = new ArrayList<>();
 
-        skattbarInntekt.oppgaveInntektsmottaker.forEach(oppgaveInntektsmottaker -> {
-            YearMonth kalenderManed = YearMonth.parse(oppgaveInntektsmottaker.kalendermaaned, arManedFormatter);
+        skattbarInntekt.getOppgaveInntektsmottaker().forEach(oppgaveInntektsmottaker -> {
+            YearMonth kalenderManed = YearMonth.parse(oppgaveInntektsmottaker.getKalendermaaned(), arManedFormatter);
             LocalDate fom = kalenderManed.atDay(1);
             LocalDate tom = kalenderManed.atEndOfMonth();
-            oppgaveInntektsmottaker.inntekt.stream()
-                    .filter(inntekt -> inntekt.inngaarIGrunnlagForTrekk)
+            oppgaveInntektsmottaker.getInntekt().stream()
+                    .filter(inntekt -> inntekt.getInngaarIGrunnlagForTrekk())
                     .collect(toList()).forEach(inntekt -> {
-                if (inntekt.loennsinntekt != null) {
-                    utbetalingerLonn.add(getUtbetaling(oppgaveInntektsmottaker, fom, tom, inntekt, "Lønn"));
-                }
-                if (inntekt.pensjonEllerTrygd != null) {
-                    utbetalingerPensjon.add(getUtbetaling(oppgaveInntektsmottaker, fom, tom, inntekt, "Pensjon"));
-                }
-                if (inntekt.dagmammaIEgenBolig != null) {
-                    dagmammaIEgenBolig.add(getUtbetaling(oppgaveInntektsmottaker, fom, tom, inntekt, "Dagmamma i egen bolig"));
-                }
-                if (inntekt.lottOgPartInnenFiske != null) {
-                    lottOgPartInnenFiske.add(getUtbetaling(oppgaveInntektsmottaker, fom, tom, inntekt, "Lott og part innen fiske"));
-                }
-            });
+                        if (inntekt.getLoennsinntekt() != null) {
+                            utbetalingerLonn.add(getUtbetaling(oppgaveInntektsmottaker, fom, tom, inntekt, "Lønn"));
+                        }
+                        if (inntekt.getPensjonEllerTrygd() != null) {
+                            utbetalingerPensjon.add(getUtbetaling(oppgaveInntektsmottaker, fom, tom, inntekt, "Pensjon"));
+                        }
+                        if (inntekt.getDagmammaIEgenBolig() != null) {
+                            dagmammaIEgenBolig.add(getUtbetaling(oppgaveInntektsmottaker, fom, tom, inntekt, "Dagmamma i egen bolig"));
+                        }
+                        if (inntekt.getLottOgPartInnenFiske() != null) {
+                            lottOgPartInnenFiske.add(getUtbetaling(oppgaveInntektsmottaker, fom, tom, inntekt, "Lott og part innen fiske"));
+                        }
+                    });
         });
 
         List<Utbetaling> forskuddstrekk = new ArrayList<>();
-        for (OppgaveInntektsmottaker oppgaveInntektsmottaker : skattbarInntekt.oppgaveInntektsmottaker) {
-            YearMonth kalenderManed = YearMonth.parse(oppgaveInntektsmottaker.kalendermaaned, arManedFormatter);
+        skattbarInntekt.getOppgaveInntektsmottaker().forEach(oppgaveInntektsmottaker -> {
+            YearMonth kalenderManed = YearMonth.parse(oppgaveInntektsmottaker.getKalendermaaned(), arManedFormatter);
             LocalDate fom = kalenderManed.atDay(1);
             LocalDate tom = kalenderManed.atEndOfMonth();
-            for (Forskuddstrekk f : oppgaveInntektsmottaker.forskuddstrekk) {
+            oppgaveInntektsmottaker.getForskuddstrekk().forEach(f -> {
                 Utbetaling utbetaling = new Utbetaling();
                 utbetaling.tittel = "Forskuddstrekk";
-                utbetaling.skattetrekk = f.beloep;
+                utbetaling.skattetrekk = f.getBeloep();
                 utbetaling.periodeFom = fom;
                 utbetaling.periodeTom = tom;
                 utbetaling.type = "skatteopplysninger";
-                utbetaling.orgnummer = oppgaveInntektsmottaker.opplysningspliktigId;
+                utbetaling.orgnummer = oppgaveInntektsmottaker.getOpplysningspliktigId();
                 forskuddstrekk.add(utbetaling);
-            }
-        }
+            });
+        });
 
         List<Utbetaling> aggregertUtbetaling = new ArrayList<>();
         aggregertUtbetaling.addAll(utbetalingerLonn);
@@ -180,11 +179,11 @@ public class SkattbarInntektService {
     private Utbetaling getUtbetaling(OppgaveInntektsmottaker oppgaveInntektsmottaker, LocalDate fom, LocalDate tom, Inntekt inntekt, String tittel) {
         Utbetaling utbetaling = new Utbetaling();
         utbetaling.tittel = tittel;
-        utbetaling.brutto = inntekt.beloep;
+        utbetaling.brutto = inntekt.getBeloep();
         utbetaling.periodeFom = fom;
         utbetaling.periodeTom = tom;
         utbetaling.type = "skatteopplysninger";
-        utbetaling.orgnummer = oppgaveInntektsmottaker.opplysningspliktigId;
+        utbetaling.orgnummer = oppgaveInntektsmottaker.getOpplysningspliktigId();
         return utbetaling;
     }
 
