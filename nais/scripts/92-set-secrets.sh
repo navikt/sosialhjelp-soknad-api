@@ -1,6 +1,5 @@
 echo "Export apikeys"
 export NORG2_API_V1_APIKEY=$(cat /apigw/norg2api/x-nav-apiKey)
-export SKATT_INNTEKTSMOTTAKER_APIKEY=$(cat /apigw/skatt_inntektsmottakerapi/x-nav-apiKey)
 export EREGAPI_APIKEY=$(cat /apigw/eregapi/x-nav-apiKey)
 export AAREGAPI_APIKEY=$(cat /apigw/aaregapi/x-nav-apiKey)
 export STSTOKEN_APIKEY=$(cat /apigw/securitytokenservicetoken/x-nav-apiKey)

@@ -1,12 +1,10 @@
 package no.nav.sosialhjelp.soknad.consumer.skatt;
 
-import no.finn.unleash.Unleash;
 import no.nav.sosialhjelp.soknad.client.skatteetaten.SkatteetatenClient;
 import no.nav.sosialhjelp.soknad.client.skatteetaten.dto.Inntekt;
 import no.nav.sosialhjelp.soknad.client.skatteetaten.dto.OppgaveInntektsmottaker;
 import no.nav.sosialhjelp.soknad.client.skatteetaten.dto.SkattbarInntekt;
 import no.nav.sosialhjelp.soknad.domain.model.utbetaling.Utbetaling;
-import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -21,43 +19,22 @@ import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
-import static org.slf4j.LoggerFactory.getLogger;
 
 @Service
 public class SkattbarInntektService {
 
-    private static final Logger log = getLogger(SkattbarInntektService.class);
-
-    private static final String SKATTEETATEN_MASKINPORTEN_ENABLED = "sosialhjelp.soknad.skatteetaten-maskinporten-enabled";
-    private final DateTimeFormatter arManedFormatter = DateTimeFormatter.ofPattern("yyyy-MM");
-
-    private final SkattbarInntektConsumer consumer;
+    private final DateTimeFormatter arManedFormatter;
     private final SkatteetatenClient skatteetatenClient;
-    private final Unleash unleash;
 
     public SkattbarInntektService(
-            SkattbarInntektConsumer consumer,
-            SkatteetatenClient skatteetatenClient,
-            Unleash unleash
+            SkatteetatenClient skatteetatenClient
     ) {
-        this.consumer = consumer;
         this.skatteetatenClient = skatteetatenClient;
-        this.unleash = unleash;
+        this.arManedFormatter = DateTimeFormatter.ofPattern("yyyy-MM");
     }
 
     public List<Utbetaling> hentUtbetalinger(String fnummer) {
-        SkattbarInntekt skattbarInntekt;
-        if (unleash.isEnabled(SKATTEETATEN_MASKINPORTEN_ENABLED, false)) {
-            try {
-                skattbarInntekt = skatteetatenClient.hentSkattbarinntekt(fnummer);
-            } catch (Exception e) {
-                log.warn("Noe feilet mot Skatteetaten med maskinporten. Fallback til gammel løsning", e);
-                skattbarInntekt = consumer.hentSkattbarInntekt(fnummer);
-            }
-        } else {
-            skattbarInntekt = consumer.hentSkattbarInntekt(fnummer);
-        }
-
+        var skattbarInntekt = skatteetatenClient.hentSkattbarinntekt(fnummer);
         return filtrerUtbetalingerSlikAtViFaarSisteMaanedFraHverArbeidsgiver(mapTilUtbetalinger(skattbarInntekt));
     }
 
@@ -92,7 +69,7 @@ public class SkattbarInntektService {
             LocalDate fom = kalenderManed.atDay(1);
             LocalDate tom = kalenderManed.atEndOfMonth();
             oppgaveInntektsmottaker.getInntekt().stream()
-                    .filter(inntekt -> inntekt.getInngaarIGrunnlagForTrekk())
+                    .filter(Inntekt::getInngaarIGrunnlagForTrekk)
                     .collect(toList()).forEach(inntekt -> {
                         if (inntekt.getLoennsinntekt() != null) {
                             utbetalingerLonn.add(getUtbetaling(oppgaveInntektsmottaker, fom, tom, inntekt, "Lønn"));
