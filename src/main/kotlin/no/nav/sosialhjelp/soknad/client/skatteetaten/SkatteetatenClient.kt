@@ -2,7 +2,7 @@ package no.nav.sosialhjelp.soknad.client.skatteetaten
 
 import no.nav.sosialhjelp.soknad.client.maskinporten.MaskinportenClient
 import no.nav.sosialhjelp.soknad.client.skatteetaten.dto.SkattbarInntekt
-import no.nav.sosialhjelp.soknad.consumer.skatt.SkattbarInntektConsumerImpl.Sokedata
+import no.nav.sosialhjelp.soknad.client.skatteetaten.dto.Sokedata
 import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.BEARER
 import no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils
 import no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils.maskerFnr
@@ -29,10 +29,11 @@ class SkatteetatenClientImpl(
     override fun hentSkattbarinntekt(fnr: String): SkattbarInntekt? {
         val identifikator = if (!ServiceUtils.isNonProduction()) fnr else System.getenv("TESTBRUKER_SKATT") ?: fnr
 
-        val sokedata = Sokedata()
-            .withFom(LocalDate.now().minusMonths(if (LocalDate.now().dayOfMonth > 10) 1 else 2.toLong()))
-            .withTom(LocalDate.now())
-            .withIdentifikator(identifikator)
+        val sokedata = Sokedata(
+            identifikator = identifikator,
+            fom = LocalDate.now().minusMonths(if (LocalDate.now().dayOfMonth > 10) 1 else 2.toLong()),
+            tom = LocalDate.now()
+        )
 
         return webClient.get()
             .uri { uriBuilder ->

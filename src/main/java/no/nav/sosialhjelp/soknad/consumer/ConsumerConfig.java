@@ -33,7 +33,6 @@ import no.nav.sosialhjelp.soknad.consumer.restconfig.PdlAdresseSokRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.PdlGeografiskTilknytningRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.PdlHentPersonRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.STSTokenRestConfig;
-import no.nav.sosialhjelp.soknad.consumer.restconfig.SkattbarInntektRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.SvarUtRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.UnleashRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.skatt.SkattbarInntektService;
@@ -93,7 +92,6 @@ public class ConsumerConfig {
             ArbeidsforholdRestConfig.class,
             STSTokenRestConfig.class,
             DkifRestConfig.class,
-            SkattbarInntektRestConfig.class,
             KodeverkRestConfig.class,
             UnleashRestConfig.class,
             OppslagRestConfig.class,
