@@ -6,7 +6,7 @@ import no.finn.unleash.Unleash;
 import no.nav.sosialhjelp.soknad.client.skatteetaten.SkatteetatenClient;
 import no.nav.sosialhjelp.soknad.client.skatteetaten.dto.SkattbarInntekt;
 import no.nav.sosialhjelp.soknad.domain.model.utbetaling.Utbetaling;
-import org.apache.cxf.helpers.IOUtils;
+import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,6 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -84,7 +85,7 @@ class SkattbarInntektServiceTest {
             if (resourceAsStream == null) {
                 return null;
             }
-            String json = IOUtils.toString(resourceAsStream);
+            String json = IOUtils.toString(resourceAsStream, StandardCharsets.UTF_8);
             return new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false).readValue(json, SkattbarInntekt.class);
         } catch (IOException e) {
             return null;

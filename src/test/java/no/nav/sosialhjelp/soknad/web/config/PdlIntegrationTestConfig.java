@@ -11,10 +11,14 @@ import no.nav.sosialhjelp.soknad.consumer.pdl.person.PdlBarn;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.PdlEktefelle;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.PdlHentPersonConsumer;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.PdlPerson;
-import org.apache.cxf.helpers.IOUtils;
+import org.apache.commons.io.IOUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+
+import java.nio.charset.StandardCharsets;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @Configuration
 public class PdlIntegrationTestConfig {
@@ -38,7 +42,8 @@ public class PdlIntegrationTestConfig {
         @Override
         public PdlPerson hentPerson(String ident) {
             var resourceAsStream = ClassLoader.getSystemResourceAsStream("pdl/pdlPersonResponse.json");
-            var jsonString = IOUtils.toString(resourceAsStream);
+            assertThat(resourceAsStream).isNotNull();
+            var jsonString = IOUtils.toString(resourceAsStream, StandardCharsets.UTF_8);
 
             var pdlPersonResponse = mapper.readValue(jsonString, new TypeReference<HentPersonResponse<PdlPerson>>() {});
             return pdlPersonResponse.getData().getHentPerson();
@@ -48,7 +53,8 @@ public class PdlIntegrationTestConfig {
         @Override
         public PdlBarn hentBarn(String ident, int index) {
             var resourceAsStream = ClassLoader.getSystemResourceAsStream("pdl/pdlBarnResponse.json");
-            var jsonString = IOUtils.toString(resourceAsStream);
+            assertThat(resourceAsStream).isNotNull();
+            var jsonString = IOUtils.toString(resourceAsStream, StandardCharsets.UTF_8);
 
             var pdlPersonResponse = mapper.readValue(jsonString, new TypeReference<HentPersonResponse<PdlBarn>>() {});
             return pdlPersonResponse.getData().getHentPerson();
@@ -58,7 +64,8 @@ public class PdlIntegrationTestConfig {
         @Override
         public PdlEktefelle hentEktefelle(String ident) {
             var resourceAsStream = ClassLoader.getSystemResourceAsStream("pdl/pdlEktefelleResponse.json");
-            var jsonString = IOUtils.toString(resourceAsStream);
+            assertThat(resourceAsStream).isNotNull();
+            var jsonString = IOUtils.toString(resourceAsStream, StandardCharsets.UTF_8);
 
             var pdlPersonResponse = mapper.readValue(jsonString, new TypeReference<HentPersonResponse<PdlEktefelle>>() {});
             return pdlPersonResponse.getData().getHentPerson();
@@ -68,7 +75,8 @@ public class PdlIntegrationTestConfig {
         @Override
         public PdlAdressebeskyttelse hentAdressebeskyttelse(String ident) {
             var resourceAsStream = ClassLoader.getSystemResourceAsStream("pdl/pdlAdressebeskyttelseTomResponse.json");
-            var jsonString = IOUtils.toString(resourceAsStream);
+            assertThat(resourceAsStream).isNotNull();
+            var jsonString = IOUtils.toString(resourceAsStream, StandardCharsets.UTF_8);
 
             var pdlPersonResponse = mapper.readValue(jsonString, new TypeReference<HentPersonResponse<PdlAdressebeskyttelse>>() {});
             return pdlPersonResponse.getData().getHentPerson();
