@@ -62,8 +62,6 @@
         <jersey.version>2.35</jersey.version>
         <token-validation.version>1.3.9</token-validation.version>
         <nimbus-jose-jwt.version>9.15</nimbus-jose-jwt.version>
-        <cxf.version>3.4.4</cxf.version>
-        <wss4j.version>2.3.2</wss4j.version>
         <ojdbc.version>19.12.0.0</ojdbc.version>
         <flyway-core.version>7.14.0</flyway-core.version>
         <flyway-maven-plugin.version>7.14.0</flyway-maven-plugin.version>
@@ -74,13 +72,10 @@
         <bouncycastle.version>1.69</bouncycastle.version>
         <httpclient.version>4.5.13</httpclient.version>
         <guava.version>31.0.1-jre</guava.version>
-        <stax2-api.version>4.2.1</stax2-api.version>
         <tika.version>2.1.0</tika.version>
         <logback.version>1.2.3</logback.version>
         <hsqldb.version>2.6.0</hsqldb.version>
         <hikaricp.version>4.0.3</hikaricp.version>
-        <ehcache.version>2.10.9.2</ehcache.version>
-        <woodstox-core.version>6.2.6</woodstox-core.version>
         <joda-time.version>2.10.12</joda-time.version>
         <slf4j.version>1.7.32</slf4j.version>
         <commons-codec.version>1.15</commons-codec.version>
@@ -110,11 +105,8 @@
         <jakarta.inject-api.version>1.0.3</jakarta.inject-api.version>
         <jakarta.servlet-api.version>4.0.4</jakarta.servlet-api.version>
         <jakarta.validation-api.version>2.0.2</jakarta.validation-api.version>
-        <jakarta.websocket-api.version>1.1.2</jakarta.websocket-api.version>
         <jakarta.ws.version>2.1.6</jakarta.ws.version>
         <jakarta.xml.version>2.3.3</jakarta.xml.version>
-        <jakarta.xml.soap-api.version>1.4.2</jakarta.xml.soap-api.version>
-        <jakarta.jws.version>2.1.0</jakarta.jws.version>
 
         <!-- Versjoner for test dependencies -->
         <hamcrest.version>2.2</hamcrest.version>
@@ -125,23 +117,14 @@
 
         <!-- Versjoner identifisert av maven-enforcer-plugin -->
         <asm.version>9.2</asm.version>
-        <neethi.version>3.1.1</neethi.version>
-        <xmlsec.version>2.2.3</xmlsec.version>
         <rhino.version>1.7.13</rhino.version>
-        <opensaml.version>3.4.6</opensaml.version>
         <logstash-logback-encoder.version>6.6</logstash-logback-encoder.version>
         <hk2.version>2.6.1</hk2.version>
         <prometheus.version>0.12.0</prometheus.version>
-        <jsoup.version>1.14.2</jsoup.version>
         <oauth2-oidc-sdk.version>9.18</oauth2-oidc-sdk.version>
         <emoji-java.version>5.1.1</emoji-java.version>
-        <java-support.version>7.5.2</java-support.version>
-        <cryptacular.version>1.2.4</cryptacular.version>
-        <stax-ex.version>1.8.3</stax-ex.version>
-        <objenesis.version>2.6</objenesis.version>
-        <saaj-impl.version>1.5.1</saaj-impl.version>
+        <objenesis.version>3.1</objenesis.version>
         <mimepull.version>1.9.15</mimepull.version>
-        <relaxng-datatype.version>2.3.3</relaxng-datatype.version>
         <json.version>20210307</json.version>
         <byte-buddy.version>1.11.21</byte-buddy.version>
     </properties>
@@ -215,11 +198,6 @@
                 <groupId>jakarta.xml.bind</groupId>
                 <artifactId>jakarta.xml.bind-api</artifactId>
                 <version>${jakarta.xml.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>jakarta.xml.soap</groupId>
-                <artifactId>jakarta.xml.soap-api</artifactId>
-                <version>${jakarta.xml.soap-api.version}</version>
             </dependency>
 
             <!-- Jackson -->
@@ -307,33 +285,6 @@
                 <version>${hk2.version}</version>
             </dependency>
 
-            <!-- opensaml -->
-            <dependency>
-                <groupId>org.opensaml</groupId>
-                <artifactId>opensaml-saml-api</artifactId>
-                <version>${opensaml.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.opensaml</groupId>
-                <artifactId>opensaml-core</artifactId>
-                <version>${opensaml.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.opensaml</groupId>
-                <artifactId>opensaml-profile-api</artifactId>
-                <version>${opensaml.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.opensaml</groupId>
-                <artifactId>opensaml-xmlsec-api</artifactId>
-                <version>${opensaml.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.opensaml</groupId>
-                <artifactId>opensaml-security-api</artifactId>
-                <version>${opensaml.version}</version>
-            </dependency>
-
             <!-- Fiks -->
             <dependency>
                 <groupId>no.ks.fiks</groupId>
@@ -342,11 +293,6 @@
             </dependency>
 
             <!-- diverse -->
-            <dependency>
-                <groupId>com.sun.xml.bind.external</groupId>
-                <artifactId>relaxng-datatype</artifactId>
-                <version>${relaxng-datatype.version}</version>
-            </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
@@ -364,19 +310,9 @@
                 <version>${nimbus-jose-jwt.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.apache.santuario</groupId>
-                <artifactId>xmlsec</artifactId>
-                <version>${xmlsec.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>org.ow2.asm</groupId>
                 <artifactId>asm</artifactId>
                 <version>${asm.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.neethi</groupId>
-                <artifactId>neethi</artifactId>
-                <version>${neethi.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.mozilla</groupId>
@@ -389,29 +325,9 @@
                 <version>${oauth2-oidc-sdk.version}</version>
             </dependency>
             <dependency>
-                <groupId>net.shibboleth.utilities</groupId>
-                <artifactId>java-support</artifactId>
-                <version>${java-support.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.cryptacular</groupId>
-                <artifactId>cryptacular</artifactId>
-                <version>${cryptacular.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.jvnet.staxex</groupId>
-                <artifactId>stax-ex</artifactId>
-                <version>${stax-ex.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>org.objenesis</groupId>
                 <artifactId>objenesis</artifactId>
                 <version>${objenesis.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.sun.xml.messaging.saaj</groupId>
-                <artifactId>saaj-impl</artifactId>
-                <version>${saaj-impl.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.jvnet.mimepull</groupId>
@@ -449,26 +365,6 @@
                 <version>${httpcore.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.apache.wss4j</groupId>
-                <artifactId>wss4j-ws-security-common</artifactId>
-                <version>${wss4j.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.apache.geronimo.specs</groupId>
-                        <artifactId>geronimo-javamail_1.4_spec</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.geronimo.javamail</groupId>
-                        <artifactId>geronimo-javamail_1.4_mail</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.wss4j</groupId>
-                <artifactId>wss4j-ws-security-dom</artifactId>
-                <version>${wss4j.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>org.bouncycastle</groupId>
                 <artifactId>bcprov-jdk15on</artifactId>
                 <version>${bouncycastle.version}</version>
@@ -488,11 +384,6 @@
                         <artifactId>jsr305</artifactId>
                     </exclusion>
                 </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.woodstox</groupId>
-                <artifactId>woodstox-core</artifactId>
-                <version>${woodstox-core.version}</version>
             </dependency>
             <dependency>
                 <groupId>net.minidev</groupId>
@@ -558,11 +449,6 @@
         <dependency>
             <groupId>no.nav.tjenestespesifikasjoner</groupId>
             <artifactId>soeknadsskjemasosialhjelp-v1-saksoversiktdefinisjon</artifactId>
-            <version>${tjenestespesifikasjon.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.tjenestespesifikasjoner</groupId>
-            <artifactId>svarut-ks-forsendelsesservice</artifactId>
             <version>${tjenestespesifikasjon.version}</version>
         </dependency>
 
@@ -701,34 +587,14 @@
             <artifactId>jakarta.xml.bind-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>jakarta.xml.soap</groupId>
-            <artifactId>jakarta.xml.soap-api</artifactId>
-        </dependency>
-        <dependency>
             <groupId>jakarta.inject</groupId>
             <artifactId>jakarta.inject-api</artifactId>
             <version>${jakarta.inject-api.version}</version>
         </dependency>
         <dependency>
-            <groupId>jakarta.jws</groupId>
-            <artifactId>jakarta.jws-api</artifactId>
-            <version>${jakarta.jws.version}</version>
-        </dependency>
-        <dependency>
             <groupId>jakarta.validation</groupId>
             <artifactId>jakarta.validation-api</artifactId>
             <version>${jakarta.validation-api.version}</version>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>jakarta.xml.ws</groupId>
-            <artifactId>jakarta.xml.ws-api</artifactId>
-            <version>${jakarta.xml.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>jakarta.websocket</groupId>
-            <artifactId>jakarta.websocket-api</artifactId>
-            <version>${jakarta.websocket-api.version}</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
@@ -795,77 +661,6 @@
             <version>${resilience4j.version}</version>
         </dependency>
 
-        <!-- CXF avhengigheter -->
-        <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-core</artifactId>
-            <version>${cxf.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-frontend-jaxws</artifactId>
-            <version>${cxf.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.apache.geronimo.specs</groupId>
-                    <artifactId>geronimo-javamail_1.4_spec</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-ws-policy</artifactId>
-            <version>${cxf.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.apache.geronimo.specs</groupId>
-                    <artifactId>geronimo-javamail_1.4_spec</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-transports-http</artifactId>
-            <version>${cxf.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.apache.geronimo.specs</groupId>
-                    <artifactId>geronimo-javamail_1.4_spec</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-ws-security</artifactId>
-            <version>${cxf.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>commons-logging</groupId>
-                    <artifactId>commons-logging</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.ehcache</groupId>
-                    <artifactId>ehcache</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-frontend-simple</artifactId>
-            <version>${cxf.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.apache.geronimo.specs</groupId>
-                    <artifactId>geronimo-javamail_1.4_spec</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-features-logging</artifactId>
-            <version>${cxf.version}</version>
-        </dependency>
-
         <!-- Fiks -->
         <dependency>
             <groupId>no.ks.fiks</groupId>
@@ -898,14 +693,6 @@
             <groupId>net.logstash.logback</groupId>
             <artifactId>logstash-logback-encoder</artifactId>
             <version>${logstash-logback-encoder.version}</version>
-            <scope>runtime</scope>
-        </dependency>
-
-        <!-- slf4j -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>log4j-over-slf4j</artifactId>
-            <version>${slf4j.version}</version>
             <scope>runtime</scope>
         </dependency>
 
@@ -1035,12 +822,6 @@
         </dependency>
 
         <!-- Avhengigheter med runtime scope -->
-        <dependency>
-            <groupId>org.codehaus.woodstox</groupId>
-            <artifactId>stax2-api</artifactId>
-            <version>${stax2-api.version}</version>
-            <scope>runtime</scope>
-        </dependency>
 
         <!-- diverse avhengigheter -->
         <dependency>
@@ -1089,16 +870,6 @@
             <groupId>no.finn.unleash</groupId>
             <artifactId>unleash-client-java</artifactId>
             <version>${unleash.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>net.sf.ehcache</groupId>
-            <artifactId>ehcache</artifactId>
-            <version>${ehcache.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jsoup</groupId>
-            <artifactId>jsoup</artifactId>
-            <version>${jsoup.version}</version>
         </dependency>
 
         <!-- Test dependencies -->
@@ -1262,20 +1033,6 @@
         </pluginManagement>
 
         <plugins>
-            <plugin>
-                <groupId>org.apache.cxf</groupId>
-                <artifactId>cxf-codegen-plugin</artifactId>
-                <version>3.3.9</version>
-                <executions>
-                    <execution>
-                        <id>wsdl-to-java</id>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>wsdl2java</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>

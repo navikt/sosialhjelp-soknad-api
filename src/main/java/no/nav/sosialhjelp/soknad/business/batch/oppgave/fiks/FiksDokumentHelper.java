@@ -3,7 +3,7 @@ package no.nav.sosialhjelp.soknad.business.batch.oppgave.fiks;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
-import no.ks.svarut.servicesv9.Dokument;
+import no.ks.fiks.svarut.klient.model.Dokument;
 import no.nav.sbl.soknadsosialhjelp.json.AdresseMixIn;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
@@ -15,12 +15,13 @@ import no.nav.sosialhjelp.soknad.business.util.FileDetectionUtils;
 import no.nav.sosialhjelp.soknad.consumer.fiks.DokumentKrypterer;
 import no.nav.sosialhjelp.soknad.domain.OpplastetVedlegg;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
-import org.apache.cxf.attachment.ByteDataSource;
 import org.slf4j.Logger;
 
-import javax.activation.DataHandler;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator.ensureValidSoknad;
@@ -33,9 +34,9 @@ public class FiksDokumentHelper {
     private final ObjectWriter writer;
 
     private final boolean skalKryptere;
-    private DokumentKrypterer dokumentKrypterer;
-    private InnsendingService innsendingService;
-    private SosialhjelpPdfGenerator sosialhjelpPdfGenerator;
+    private final DokumentKrypterer dokumentKrypterer;
+    private final InnsendingService innsendingService;
+    private final SosialhjelpPdfGenerator sosialhjelpPdfGenerator;
 
     public FiksDokumentHelper(boolean skalKryptere, DokumentKrypterer dokumentKrypterer, InnsendingService innsendingService, SosialhjelpPdfGenerator sosialhjelpPdfGenerator) {
         this.skalKryptere = skalKryptere;
@@ -48,98 +49,99 @@ public class FiksDokumentHelper {
         writer = mapper.writerWithDefaultPrettyPrinter();
     }
 
-    Dokument lagDokumentForSoknadJson(JsonInternalSoknad internalSoknad) {
+    Dokument lagDokumentForSoknadJson(JsonInternalSoknad internalSoknad, Map<String, InputStream> map) {
         final String filnavn = "soknad.json";
         final String mimetype = "application/json";
         byte[] soknadJson = mapJsonSoknadTilFil(internalSoknad.getSoknad());
 
-        ByteDataSource dataSource = krypterOgOpprettByteDatasource(filnavn, soknadJson);
+        var byteArrayInputStream = krypterOgOpprettByteArrayInputStream(soknadJson);
+        map.put(filnavn, byteArrayInputStream);
+
         return new Dokument()
                 .withFilnavn(filnavn)
-                .withMimetype(mimetype)
-                .withEkskluderesFraPrint(true)
-                .withData(new DataHandler(dataSource));
+                .withMimeType(mimetype)
+                .withEkskluderesFraUtskrift(true);
     }
 
-    Dokument lagDokumentForVedleggJson(JsonInternalSoknad internalSoknad) {
+    Dokument lagDokumentForVedleggJson(JsonInternalSoknad internalSoknad, Map<String, InputStream> map) {
         final String filnavn = "vedlegg.json";
         final String mimetype = "application/json";
         byte[] vedleggJson = mapJsonVedleggTilFil(internalSoknad.getVedlegg());
 
-        ByteDataSource dataSource = krypterOgOpprettByteDatasource(filnavn, vedleggJson);
+        var byteArrayInputStream = krypterOgOpprettByteArrayInputStream(vedleggJson);
+        map.put(filnavn, byteArrayInputStream);
         return new Dokument()
                 .withFilnavn(filnavn)
-                .withMimetype(mimetype)
-                .withEkskluderesFraPrint(true)
-                .withData(new DataHandler(dataSource));
+                .withMimeType(mimetype)
+                .withEkskluderesFraUtskrift(true);
     }
 
-    Dokument lagDokumentForSaksbehandlerPdf(JsonInternalSoknad internalSoknad) {
+    Dokument lagDokumentForSaksbehandlerPdf(JsonInternalSoknad internalSoknad, Map<String, InputStream> map) {
         final String filnavn = "Soknad.pdf";
         final String mimetype = "application/pdf";
 
         byte[] soknadPdf = sosialhjelpPdfGenerator.generate(internalSoknad, false);
-        return genererDokumentFraByteArray(filnavn, mimetype, soknadPdf, false);
+        return genererDokumentFraByteArray(filnavn, mimetype, soknadPdf, false, map);
     }
 
-    Dokument lagDokumentForJuridiskPdf(JsonInternalSoknad internalSoknad) {
+    Dokument lagDokumentForJuridiskPdf(JsonInternalSoknad internalSoknad, Map<String, InputStream> map) {
         final String filnavn = "Soknad-juridisk.pdf";
         final String mimetype = "application/pdf";
 
         byte[] juridiskPdf = sosialhjelpPdfGenerator.generate(internalSoknad, true);
-        return genererDokumentFraByteArray(filnavn, mimetype, juridiskPdf, false);
+        return genererDokumentFraByteArray(filnavn, mimetype, juridiskPdf, false, map);
     }
 
-    Dokument lagDokumentForBrukerkvitteringPdf() {
+    Dokument lagDokumentForBrukerkvitteringPdf(Map<String, InputStream> map) {
         final String filnavn = "Brukerkvittering.pdf";
         final String mimetype = "application/pdf";
         byte[] pdf = sosialhjelpPdfGenerator.generateBrukerkvitteringPdf();
 
-        return genererDokumentFraByteArray(filnavn, mimetype, pdf, true);
+        return genererDokumentFraByteArray(filnavn, mimetype, pdf, true, map);
     }
 
-    Dokument lagDokumentForEttersendelsePdf(JsonInternalSoknad internalSoknad, String eier) {
+    Dokument lagDokumentForEttersendelsePdf(JsonInternalSoknad internalSoknad, String eier, Map<String, InputStream> map) {
         final String filnavn = "ettersendelse.pdf";
         final String mimetype = "application/pdf";
 
         byte[] pdf = sosialhjelpPdfGenerator.generateEttersendelsePdf(internalSoknad, eier);
-        return genererDokumentFraByteArray(filnavn, mimetype, pdf, false);
+        return genererDokumentFraByteArray(filnavn, mimetype, pdf, false, map);
     }
 
-    private Dokument genererDokumentFraByteArray(String filnavn, String mimetype, byte[] bytes, boolean eksluderesFraPrint) {
-        ByteDataSource dataSource = krypterOgOpprettByteDatasource(filnavn, bytes);
+    private Dokument genererDokumentFraByteArray(String filnavn, String mimetype, byte[] bytes, boolean eksluderesFraUtskrift, Map<String, InputStream> map) {
+        var byteArrayInputStream = krypterOgOpprettByteArrayInputStream(bytes);
+
+        map.put(filnavn, byteArrayInputStream);
         return new Dokument()
                 .withFilnavn(filnavn)
-                .withMimetype(mimetype)
-                .withEkskluderesFraPrint(eksluderesFraPrint)
-                .withData(new DataHandler(dataSource));
+                .withMimeType(mimetype)
+                .withEkskluderesFraUtskrift(eksluderesFraUtskrift);
     }
 
-    List<Dokument> lagDokumentListeForVedlegg(SoknadUnderArbeid soknadUnderArbeid) {
+    List<Dokument> lagDokumentListeForVedlegg(SoknadUnderArbeid soknadUnderArbeid, Map<String, InputStream> map) {
         final List<OpplastetVedlegg> opplastedeVedlegg = innsendingService.hentAlleOpplastedeVedleggForSoknad(soknadUnderArbeid);
         return opplastedeVedlegg.stream()
-                .map(this::opprettDokumentForVedlegg)
+                .map((OpplastetVedlegg opplastetVedlegg) -> opprettDokumentForVedlegg(opplastetVedlegg, map))
                 .collect(Collectors.toList());
     }
 
-    Dokument opprettDokumentForVedlegg(OpplastetVedlegg opplastetVedlegg) {
+    Dokument opprettDokumentForVedlegg(OpplastetVedlegg opplastetVedlegg, Map<String, InputStream> map) {
         final String filnavn = opplastetVedlegg.getFilnavn();
+
+        var byteArrayInputStream = krypterOgOpprettByteArrayInputStream(opplastetVedlegg.getData());
+        map.put(filnavn, byteArrayInputStream);
+
         return new Dokument()
                 .withFilnavn(filnavn)
-                .withMimetype(FileDetectionUtils.getMimeType(opplastetVedlegg.getData()))
-                .withEkskluderesFraPrint(true)
-                .withData(new DataHandler(krypterOgOpprettByteDatasource(filnavn, opplastetVedlegg.getData())));
+                .withMimeType(FileDetectionUtils.getMimeType(opplastetVedlegg.getData()))
+                .withEkskluderesFraUtskrift(true);
     }
 
-    ByteDataSource krypterOgOpprettByteDatasource(String filnavn, byte[] fil) {
+    ByteArrayInputStream krypterOgOpprettByteArrayInputStream(byte[] fil) {
         if (skalKryptere) {
             fil = dokumentKrypterer.krypterData(fil);
         }
-
-        ByteDataSource dataSource = new ByteDataSource(fil);
-        dataSource.setName(filnavn);
-        dataSource.setContentType("application/octet-stream");
-        return dataSource;
+        return new ByteArrayInputStream(fil);
     }
 
     private byte[] mapJsonSoknadTilFil(JsonSoknad jsonSoknad) {
@@ -163,4 +165,5 @@ public class FiksDokumentHelper {
             throw new RuntimeException(e);
         }
     }
+
 }

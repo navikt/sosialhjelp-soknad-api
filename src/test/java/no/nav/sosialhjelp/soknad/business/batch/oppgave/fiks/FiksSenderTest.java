@@ -1,12 +1,8 @@
 package no.nav.sosialhjelp.soknad.business.batch.oppgave.fiks;
 
-import no.finn.unleash.Unleash;
-import no.ks.svarut.servicesv9.Brevtype;
-import no.ks.svarut.servicesv9.Dokument;
-import no.ks.svarut.servicesv9.Forsendelse;
-import no.ks.svarut.servicesv9.ForsendelsesServiceV9;
-import no.ks.svarut.servicesv9.OrganisasjonDigitalAdresse;
-import no.ks.svarut.servicesv9.PostAdresse;
+import no.ks.fiks.svarut.klient.model.Digitaladresse;
+import no.ks.fiks.svarut.klient.model.Dokument;
+import no.ks.fiks.svarut.klient.model.Forsendelse;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonData;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonDriftsinformasjon;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
@@ -31,9 +27,12 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
+import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 import static no.nav.sosialhjelp.soknad.business.batch.oppgave.fiks.FiksSender.ETTERSENDELSE_TIL_NAV;
 import static no.nav.sosialhjelp.soknad.business.batch.oppgave.fiks.FiksSender.SOKNAD_TIL_NAV;
@@ -51,14 +50,12 @@ import static org.mockito.Mockito.when;
 @MockitoSettings(strictness = Strictness.LENIENT)
 class FiksSenderTest {
 
-    private static final String FIKSFORSENDELSE_ID = "6767";
+    private static final String FIKSFORSENDELSE_ID = UUID.randomUUID().toString();
     private static final String FILNAVN = "filnavn.jpg";
     private static final String ORGNUMMER = "9999";
     private static final String NAVENHETSNAVN = "NAV Sagene";
     private static final String BEHANDLINGSID = "12345";
     private static final String EIER = "12345678910";
-    @Mock
-    private ForsendelsesServiceV9 forsendelsesService;
     @Mock
     private DokumentKrypterer dokumentKrypterer;
     @Mock
@@ -67,15 +64,8 @@ class FiksSenderTest {
     private SosialhjelpPdfGenerator sosialhjelpPdfGenerator;
     @Mock
     private SvarUtService svarUtService;
-    @Mock
-    private Unleash unleash;
 
     private FiksSender fiksSender;
-
-    private static final PostAdresse FAKE_ADRESSE = new PostAdresse()
-            .withNavn(NAVENHETSNAVN)
-            .withPostnr("0000")
-            .withPoststed("Ikke send");
 
     @BeforeEach
     public void setUp() {
@@ -87,27 +77,28 @@ class FiksSenderTest {
         when(sosialhjelpPdfGenerator.generate(any(JsonInternalSoknad.class), anyBoolean())).thenReturn(new byte[]{1, 2, 3});
         when(sosialhjelpPdfGenerator.generateEttersendelsePdf(any(JsonInternalSoknad.class), anyString())).thenReturn(new byte[]{1, 2, 3});
         when(sosialhjelpPdfGenerator.generateBrukerkvitteringPdf()).thenReturn(new byte[]{1, 2, 3});
-        when(unleash.isEnabled(any())).thenReturn(false);
 
-        fiksSender = new FiksSender(forsendelsesService, dokumentKrypterer, innsendingService, sosialhjelpPdfGenerator, true, svarUtService, unleash);
+        fiksSender = new FiksSender(dokumentKrypterer, innsendingService, sosialhjelpPdfGenerator, true, svarUtService);
     }
 
     @Test
-    void opprettForsendelseSetterRiktigInfoPaForsendelsenMedKryptering() {
+    void createForsendelseSetterRiktigInfoPaForsendelsenMedKryptering() {
         when(innsendingService.hentSoknadUnderArbeid(anyString(), anyString()))
                 .thenReturn(new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER)));
         SendtSoknad sendtSoknad = lagSendtSoknad();
 
-        Forsendelse forsendelse = fiksSender.opprettForsendelse(sendtSoknad, FAKE_ADRESSE);
+        var filnavnInputStreamMap = new HashMap<String, InputStream>();
 
-        OrganisasjonDigitalAdresse adresse = (OrganisasjonDigitalAdresse) forsendelse.getMottaker().getDigitalAdresse();
-        assertThat(adresse.getOrgnr()).isEqualTo(ORGNUMMER);
+        Forsendelse forsendelse = fiksSender.createForsendelse(sendtSoknad, filnavnInputStreamMap);
+
+        Digitaladresse adresse = forsendelse.getMottaker().getDigitalAdresse();
+        assertThat(adresse.getOrganisasjonsNummer()).isEqualTo(ORGNUMMER);
         assertThat(forsendelse.getMottaker().getPostAdresse().getNavn()).isEqualTo(NAVENHETSNAVN);
         assertThat(forsendelse.getAvgivendeSystem()).isEqualTo("digisos_avsender");
-        assertThat(forsendelse.getForsendelseType()).isEqualTo("nav.digisos");
-        assertThat(forsendelse.getEksternref()).isEqualTo(BEHANDLINGSID);
+        assertThat(forsendelse.getForsendelsesType()).isEqualTo("nav.digisos");
+        assertThat(forsendelse.getEksternReferanse()).isEqualTo(BEHANDLINGSID);
         assertThat(forsendelse.isKunDigitalLevering()).isFalse();
-        assertThat(forsendelse.getPrintkonfigurasjon().getBrevtype()).isEqualTo(Brevtype.APOST);
+        assertThat(forsendelse.getUtskriftsKonfigurasjon().isTosidig()).isTrue();
         assertThat(forsendelse.isKryptert()).isTrue();
         assertThat(forsendelse.isKrevNiva4Innlogging()).isTrue();
         assertThat(forsendelse.getSvarPaForsendelse()).isNull();
@@ -118,13 +109,15 @@ class FiksSenderTest {
 
     @Test
     void opprettForsendelseSetterRiktigInfoPaForsendelsenUtenKryptering() {
-        fiksSender = new FiksSender(forsendelsesService, dokumentKrypterer, innsendingService, sosialhjelpPdfGenerator, false, svarUtService, unleash);
+        fiksSender = new FiksSender(dokumentKrypterer, innsendingService, sosialhjelpPdfGenerator, false, svarUtService);
 
         when(innsendingService.hentSoknadUnderArbeid(anyString(), anyString()))
                 .thenReturn(new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER)).withEier(EIER));
         SendtSoknad sendtSoknad = lagSendtSoknad();
 
-        Forsendelse forsendelse = fiksSender.opprettForsendelse(sendtSoknad, FAKE_ADRESSE);
+        var filnavnInputStreamMap = new HashMap<String, InputStream>();
+
+        Forsendelse forsendelse = fiksSender.createForsendelse(sendtSoknad, filnavnInputStreamMap);
 
         assertThat(forsendelse.isKryptert()).isFalse();
         assertThat(forsendelse.isKrevNiva4Innlogging()).isFalse();
@@ -132,18 +125,20 @@ class FiksSenderTest {
     }
 
     @Test
-    void opprettForsendelseSetterRiktigTittelForNySoknad() {
+    void createForsendelseSetterRiktigTittelForNySoknad() {
         when(innsendingService.hentSoknadUnderArbeid(anyString(), anyString()))
                 .thenReturn(new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER)).withEier(EIER));
         SendtSoknad sendtSoknad = lagSendtSoknad();
 
-        Forsendelse forsendelse = fiksSender.opprettForsendelse(sendtSoknad, new PostAdresse());
+        var filnavnInputStreamMap = new HashMap<String, InputStream>();
+
+        Forsendelse forsendelse = fiksSender.createForsendelse(sendtSoknad, filnavnInputStreamMap);
 
         assertThat(forsendelse.getTittel()).isEqualTo(SOKNAD_TIL_NAV);
     }
 
     @Test
-    void opprettForsendelseSetterRiktigTittelForEttersendelse() {
+    void createForsendelseSetterRiktigTittelForEttersendelse() {
         when(innsendingService.hentSoknadUnderArbeid(anyString(), anyString())).thenReturn(new SoknadUnderArbeid()
                 .withTilknyttetBehandlingsId("12345")
                 .withJsonInternalSoknad(lagInternalSoknadForEttersending())
@@ -151,7 +146,9 @@ class FiksSenderTest {
         //when(any(SoknadUnderArbeid.class).getJsonInternalSoknad()).thenReturn(lagInternalSoknadForEttersending());
         SendtSoknad sendtSoknad = lagSendtSoknad().withTilknyttetBehandlingsId("12345");
 
-        Forsendelse forsendelse = fiksSender.opprettForsendelse(sendtSoknad, new PostAdresse());
+        var filnavnInputStreamMap = new HashMap<String, InputStream>();
+
+        Forsendelse forsendelse = fiksSender.createForsendelse(sendtSoknad, filnavnInputStreamMap);
 
         assertThat(forsendelse.getTittel()).isEqualTo(ETTERSENDELSE_TIL_NAV);
     }
@@ -164,14 +161,20 @@ class FiksSenderTest {
                 .withFiksforsendelseId(null));
         SendtSoknad sendtEttersendelse = lagSendtEttersendelse();
 
+        var filnavnInputStreamMap = new HashMap<String, InputStream>();
+
         assertThatExceptionOfType(IllegalStateException.class)
-                .isThrownBy(() -> fiksSender.opprettForsendelse(sendtEttersendelse, new PostAdresse()));
+                .isThrownBy(() -> fiksSender.createForsendelse(sendtEttersendelse, filnavnInputStreamMap));
     }
 
     @Test
     void hentDokumenterFraSoknadReturnererFireDokumenterForSoknadUtenVedlegg() {
-        List<Dokument> fiksDokumenter = fiksSender.hentDokumenterFraSoknad(new SoknadUnderArbeid()
-                .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER)));
+        var filnavnInputStreamMap = new HashMap<String, InputStream>();
+
+        List<Dokument> fiksDokumenter = fiksSender.hentDokumenterFraSoknad(
+                new SoknadUnderArbeid()
+                        .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER)),
+                filnavnInputStreamMap);
 
         assertThat(fiksDokumenter).hasSize(5);
         assertThat(fiksDokumenter.get(0).getFilnavn()).isEqualTo("soknad.json");
@@ -183,11 +186,14 @@ class FiksSenderTest {
 
     @Test
     void hentDokumenterFraSoknadReturnererTreDokumenterForEttersendingMedEtVedlegg() {
+        var filnavnInputStreamMap = new HashMap<String, InputStream>();
         when(innsendingService.hentAlleOpplastedeVedleggForSoknad(any(SoknadUnderArbeid.class))).thenReturn(lagOpplastetVedlegg());
 
-        List<Dokument> fiksDokumenter = fiksSender.hentDokumenterFraSoknad(new SoknadUnderArbeid()
-                .withTilknyttetBehandlingsId("123")
-                .withJsonInternalSoknad(lagInternalSoknadForEttersending()));
+        List<Dokument> fiksDokumenter = fiksSender.hentDokumenterFraSoknad(
+                new SoknadUnderArbeid()
+                    .withTilknyttetBehandlingsId("123")
+                    .withJsonInternalSoknad(lagInternalSoknadForEttersending()),
+                filnavnInputStreamMap);
 
         assertThat(fiksDokumenter).hasSize(4);
         assertThat(fiksDokumenter.get(0).getFilnavn()).isEqualTo("ettersendelse.pdf");
@@ -198,14 +204,16 @@ class FiksSenderTest {
 
     @Test
     void hentDokumenterFraSoknadKasterFeilHvisSoknadManglerForNySoknad() {
+        var filnavnInputStreamMap = new HashMap<String, InputStream>();
         assertThatExceptionOfType(RuntimeException.class)
-                .isThrownBy(() -> fiksSender.hentDokumenterFraSoknad(new SoknadUnderArbeid()));
+                .isThrownBy(() -> fiksSender.hentDokumenterFraSoknad(new SoknadUnderArbeid(), filnavnInputStreamMap));
     }
 
     @Test
     void hentDokumenterFraSoknadKasterFeilHvisVedleggManglerForEttersending() {
+        var filnavnInputStreamMap = new HashMap<String, InputStream>();
         assertThatExceptionOfType(RuntimeException.class)
-                .isThrownBy(() -> fiksSender.hentDokumenterFraSoknad(new SoknadUnderArbeid().withTilknyttetBehandlingsId("123")));
+                .isThrownBy(() -> fiksSender.hentDokumenterFraSoknad(new SoknadUnderArbeid().withTilknyttetBehandlingsId("123"), filnavnInputStreamMap));
     }
 
     private JsonInternalSoknad lagInternalSoknadForEttersending() {
