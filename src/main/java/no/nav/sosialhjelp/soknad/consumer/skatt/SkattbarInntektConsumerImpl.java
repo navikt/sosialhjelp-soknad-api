@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.consumer.skatt;
 
+import no.nav.sosialhjelp.soknad.client.skatteetaten.dto.SkattbarInntekt;
 import no.nav.sosialhjelp.soknad.consumer.concurrency.RestCallContext;
-import no.nav.sosialhjelp.soknad.consumer.skatt.dto.SkattbarInntekt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;

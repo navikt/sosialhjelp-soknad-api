@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.finn.unleash.Unleash;
 import no.nav.sosialhjelp.soknad.client.skatteetaten.SkatteetatenClient;
-import no.nav.sosialhjelp.soknad.consumer.skatt.dto.SkattbarInntekt;
+import no.nav.sosialhjelp.soknad.client.skatteetaten.dto.SkattbarInntekt;
 import no.nav.sosialhjelp.soknad.domain.model.utbetaling.Utbetaling;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.BeforeEach;

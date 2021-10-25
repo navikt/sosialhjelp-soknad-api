@@ -52,7 +52,7 @@ open class MockProxiedWebClientConfig {
             }
             .build()
 
-    fun getUnproxiedReactorClientHttpConnector(): ReactorClientHttpConnector {
+    private fun getUnproxiedReactorClientHttpConnector(): ReactorClientHttpConnector {
         val httpClient: HttpClient = HttpClient
             .newConnection()
             .resolver(DefaultAddressResolverGroup.INSTANCE)
