@@ -10,7 +10,8 @@
     "redis-password-soknad-api",
     "fiks-integrasjon-secret",
     "systemuser-credentials-soknad-api",
-    "fiks-svarut-credentials"
+    "fiks-svarut-credentials",
+    "testbruker-skatteetaten"
   ],
   "kvPaths": {
     "/var/run/secrets/datasource": "/oracle/data/dev/creds/soknadsosialhjelp_q0-user",
