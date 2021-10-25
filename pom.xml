@@ -510,7 +510,7 @@
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
-            <artifactId>spring-context-support</artifactId>
+            <artifactId>spring-webflux</artifactId>
             <version>${spring.version}</version>
         </dependency>
         <dependency>

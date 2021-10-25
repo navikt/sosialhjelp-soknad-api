@@ -6,7 +6,7 @@ import no.nav.sosialhjelp.soknad.consumer.exceptions.TjenesteUtilgjengeligExcept
 import no.nav.sosialhjelp.soknad.consumer.pdl.BasePdlConsumer;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.AdresseSokResult;
 import no.nav.sosialhjelp.soknad.consumer.pdl.common.PdlApiQuery;
-import no.nav.sosialhjelp.soknad.consumer.sts.apigw.STSConsumer;
+import no.nav.sosialhjelp.soknad.consumer.sts.STSConsumer;
 import org.slf4j.Logger;
 
 import javax.ws.rs.client.Client;

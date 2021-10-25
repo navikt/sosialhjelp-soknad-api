@@ -7,7 +7,7 @@ import no.nav.sosialhjelp.soknad.consumer.exceptions.TjenesteUtilgjengeligExcept
 import no.nav.sosialhjelp.soknad.consumer.pdl.BasePdlConsumer;
 import no.nav.sosialhjelp.soknad.consumer.pdl.geografisktilknytning.dto.GeografiskTilknytningDto;
 import no.nav.sosialhjelp.soknad.consumer.redis.RedisService;
-import no.nav.sosialhjelp.soknad.consumer.sts.apigw.STSConsumer;
+import no.nav.sosialhjelp.soknad.consumer.sts.STSConsumer;
 import org.slf4j.Logger;
 
 import javax.ws.rs.client.Client;

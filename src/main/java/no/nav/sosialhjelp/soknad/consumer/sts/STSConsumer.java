@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.consumer.sts.apigw;
+package no.nav.sosialhjelp.soknad.consumer.sts;
 
 import no.nav.sosialhjelp.soknad.consumer.exceptions.TjenesteUtilgjengeligException;
 import no.nav.sosialhjelp.soknad.domain.model.exception.SosialhjelpSoknadApiException;
