@@ -29,7 +29,6 @@
     "OPPSLAG_API_BASEURL": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/oppslag-api/",
     "PDL_API_URL": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/pdl_endpoint_url/",
     "UNLEASH_API_URL": "https://unleash.nais.io/api",
-    "EKSTERNAPP_SKATT_DATASAMARBEID_API_INNTEKTSMOTTAKER_URL": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/skatteetaten/",
     "EREG_API_BASEURL": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/freg/",
     "FIKS_NOKKELFIL": "svarut_public_test.pem",
     "DIGISOS_API_BASEURL": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/fiks/",
