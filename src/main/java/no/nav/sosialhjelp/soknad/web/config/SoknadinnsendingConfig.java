@@ -19,7 +19,6 @@ import org.springframework.context.annotation.Import;
 @Configuration
 @Import({
         BusinessConfig.class,
-        CacheConfig.class,
         ConsumerConfig.class,
         ContentConfig.class,
         HandlebarsConfig.class,

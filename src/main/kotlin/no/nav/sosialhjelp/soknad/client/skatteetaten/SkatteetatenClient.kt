@@ -1,9 +1,10 @@
 package no.nav.sosialhjelp.soknad.client.skatteetaten
 
 import no.nav.sosialhjelp.soknad.client.maskinporten.MaskinportenClient
-import no.nav.sosialhjelp.soknad.consumer.skatt.SkattbarInntektConsumerImpl.Sokedata
-import no.nav.sosialhjelp.soknad.consumer.skatt.dto.SkattbarInntekt
+import no.nav.sosialhjelp.soknad.client.skatteetaten.dto.SkattbarInntekt
+import no.nav.sosialhjelp.soknad.client.skatteetaten.dto.Sokedata
 import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.BEARER
+import no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils
 import no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils.maskerFnr
 import org.slf4j.LoggerFactory.getLogger
 import org.springframework.http.HttpHeaders
@@ -11,6 +12,7 @@ import org.springframework.http.MediaType
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
 import org.springframework.web.reactive.function.client.bodyToMono
+import reactor.core.publisher.Mono
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -25,9 +27,13 @@ class SkatteetatenClientImpl(
 ) : SkatteetatenClient {
 
     override fun hentSkattbarinntekt(fnr: String): SkattbarInntekt? {
-        val sokedata = Sokedata()
-            .withFom(LocalDate.now().minusMonths(if (LocalDate.now().dayOfMonth > 10) 1 else 2.toLong()))
-            .withTom(LocalDate.now()).withIdentifikator(fnr)
+        val identifikator = if (!ServiceUtils.isNonProduction()) fnr else System.getenv("TESTBRUKER_SKATT") ?: fnr
+
+        val sokedata = Sokedata(
+            identifikator = identifikator,
+            fom = LocalDate.now().minusMonths(if (LocalDate.now().dayOfMonth > 10) 1 else 2.toLong()),
+            tom = LocalDate.now()
+        )
 
         return webClient.get()
             .uri { uriBuilder ->
@@ -41,10 +47,10 @@ class SkatteetatenClientImpl(
             .headers { it.add(HttpHeaders.AUTHORIZATION, BEARER + maskinportenClient.getTokenString()) }
             .retrieve()
             .bodyToMono<SkattbarInntekt>()
-            .onErrorReturn(
-                WebClientResponseException.NotFound::class.java,
-                SkattbarInntekt().also { log.info("Ingen skattbar inntekt funnet") }
-            )
+            .onErrorResume(WebClientResponseException.NotFound::class.java) {
+                log.info("Ingen skattbar inntekt funnet")
+                Mono.just(SkattbarInntekt())
+            }
             .onErrorMap(WebClientResponseException::class.java) { e ->
                 val feilmeldingUtenFnr = maskerFnr(e.responseBodyAsString)
                 log.warn("Klarer ikke hente skatteopplysninger {} status {} ", feilmeldingUtenFnr, e.statusCode)

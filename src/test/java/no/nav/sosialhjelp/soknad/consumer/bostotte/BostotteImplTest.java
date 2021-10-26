@@ -3,7 +3,7 @@ package no.nav.sosialhjelp.soknad.consumer.bostotte;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.sosialhjelp.soknad.consumer.bostotte.dto.BostotteDto;
 import no.nav.sosialhjelp.soknad.web.selftest.Pingable;
-import org.apache.cxf.helpers.IOUtils;
+import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -23,6 +23,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -82,8 +83,8 @@ class BostotteImplTest {
         // Testkjøring:
         assertThat(bostotte.hentBostotte(personIdentifikator, "", fra,til)).isEqualTo(bostotteDto);
         verify(operations).exchange(captor.capture(), any(Class.class));
-        assertThat(captor.getValue().getUrl().toString()).contains("fra=" + fra.toString());
-        assertThat(captor.getValue().getUrl().toString()).contains("til=" + til.toString());
+        assertThat(captor.getValue().getUrl().toString()).contains("fra=" + fra);
+        assertThat(captor.getValue().getUrl().toString()).contains("til=" + til);
     }
 
     @Test
@@ -92,7 +93,7 @@ class BostotteImplTest {
 
         InputStream resourceAsStream = ClassLoader.getSystemResourceAsStream("husbanken/husbankenSvar.json");
         assertThat(resourceAsStream).isNotNull();
-        String jsonString = IOUtils.toString(resourceAsStream);
+        String jsonString = IOUtils.toString(resourceAsStream, StandardCharsets.UTF_8);
 
         BostotteDto bostotteDto = objectMapper.readValue(jsonString, BostotteDto.class);
 

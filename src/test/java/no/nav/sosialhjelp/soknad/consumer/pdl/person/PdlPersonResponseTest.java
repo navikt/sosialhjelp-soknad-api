@@ -4,11 +4,12 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import org.apache.cxf.helpers.IOUtils;
+import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -22,7 +23,7 @@ class PdlPersonResponseTest {
     void deserialiseringAvPdlPersonResponseJson() throws IOException {
         InputStream resourceAsStream = ClassLoader.getSystemResourceAsStream("pdl/pdlPersonResponse.json");
         assertThat(resourceAsStream).isNotNull();
-        var jsonString = IOUtils.toString(resourceAsStream);
+        var jsonString = IOUtils.toString(resourceAsStream, StandardCharsets.UTF_8);
 
         var pdlPersonResponse = mapper.readValue(jsonString, new TypeReference<HentPersonResponse<PdlPerson>>() {});
 

@@ -33,21 +33,17 @@ import no.nav.sosialhjelp.soknad.consumer.restconfig.PdlAdresseSokRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.PdlGeografiskTilknytningRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.PdlHentPersonRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.STSTokenRestConfig;
-import no.nav.sosialhjelp.soknad.consumer.restconfig.SkattbarInntektRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.SvarUtRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.UnleashRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.skatt.SkattbarInntektService;
 import no.nav.sosialhjelp.soknad.consumer.svarut.SvarUtService;
-import no.nav.sosialhjelp.soknad.consumer.wsconfig.FiksWSConfig;
 import no.nav.sosialhjelp.soknad.oppslag.OppslagRestConfig;
 import no.nav.sosialhjelp.soknad.oppslag.kontonummer.KontonummerService;
 import no.nav.sosialhjelp.soknad.oppslag.utbetaling.UtbetalingService;
-import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 @Configuration
-@EnableCaching
 @Import({
         ProxiedWebClientConfig.class,
         MockProxiedWebClientConfig.class,
@@ -87,13 +83,11 @@ public class ConsumerConfig {
             PdlAdresseSokRestConfig.class,
             PdlGeografiskTilknytningRestConfig.class,
             DigisosApiRestConfig.class,
-            FiksWSConfig.class,
             NorgRestConfig.class,
             OrganisasjonRestConfig.class,
             ArbeidsforholdRestConfig.class,
             STSTokenRestConfig.class,
             DkifRestConfig.class,
-            SkattbarInntektRestConfig.class,
             KodeverkRestConfig.class,
             UnleashRestConfig.class,
             OppslagRestConfig.class,
