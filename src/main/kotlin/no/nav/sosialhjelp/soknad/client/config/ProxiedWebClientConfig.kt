@@ -1,6 +1,7 @@
 package no.nav.sosialhjelp.soknad.client.config
 
 import io.netty.resolver.DefaultAddressResolverGroup
+import no.nav.sosialhjelp.soknad.mock.MockAltApiHostFilterWebClient
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -47,6 +48,7 @@ open class MockProxiedWebClientConfig {
     open fun proxiedWebClient(): WebClient =
         WebClient.builder()
             .clientConnector(getUnproxiedReactorClientHttpConnector())
+            .filter(MockAltApiHostFilterWebClient())
             .codecs {
                 it.defaultCodecs().maxInMemorySize(16 * 1024 * 1024)
             }
