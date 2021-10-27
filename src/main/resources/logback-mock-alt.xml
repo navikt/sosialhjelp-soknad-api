@@ -11,7 +11,7 @@
     <logger name="no.nav.sosialhjelp.soknad" level="info"/>
     <logger name="no.nav.security" level="debug"/>
 
-    <root level="info">
+    <root level="debug">
         <appender-ref ref="Console"/>
     </root>
 </configuration>
