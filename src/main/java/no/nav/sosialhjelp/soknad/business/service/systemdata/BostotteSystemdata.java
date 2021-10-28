@@ -100,9 +100,9 @@ public class BostotteSystemdata {
 
     private boolean harViDataFraSiste30Dager(Bostotte bostotte) {
         boolean harNyeSaker = bostotte.getSaker().stream()
-                .anyMatch(sakerDto -> sakerDto.getDato().isAfter(LocalDate.now().minusDays(30)));
+                .anyMatch(sak -> sak.getDato().isAfter(LocalDate.now().minusDays(30)));
         boolean harNyeUtbetalinger = bostotte.getUtbetalinger().stream()
-                .anyMatch(utbetalingerDto -> utbetalingerDto.getUtbetalingsdato().isAfter(LocalDate.now().minusDays(30)));
+                .anyMatch(utbetaling -> utbetaling.getUtbetalingsdato().isAfter(LocalDate.now().minusDays(30)));
         return harNyeSaker || harNyeUtbetalinger;
     }
 
@@ -131,10 +131,10 @@ public class BostotteSystemdata {
     private Bostotte toDomain(no.nav.sosialhjelp.soknad.consumer.bostotte.dto.BostotteDto bostotteDto) {
         return new Bostotte(
                 bostotteDto.saker.stream()
-                        .map(sak -> new Sak(sak.getDato(), sak.getStatus(), toDomain(sak.getVedtak()), sak.getRolle()))
+                        .map(sakerDto -> new Sak(sakerDto.getDato(), sakerDto.getStatus(), toDomain(sakerDto.getVedtak()), sakerDto.getRolle()))
                         .collect(Collectors.toList()),
                 bostotteDto.utbetalinger.stream()
-                        .map(utbetaling -> new Utbetaling(utbetaling.getUtbetalingsdato(), utbetaling.getBelop(), utbetaling.getMottaker(), utbetaling.getRolle()))
+                        .map(utbetalingerDto -> new Utbetaling(utbetalingerDto.getUtbetalingsdato(), utbetalingerDto.getBelop(), utbetalingerDto.getMottaker(), utbetalingerDto.getRolle()))
                         .collect(Collectors.toList())
         );
     }
@@ -149,7 +149,7 @@ public class BostotteSystemdata {
     private List<JsonOkonomiOpplysningUtbetaling> mapToJsonOkonomiOpplysningUtbetalinger(Bostotte bostotte, boolean trengerViDataFraDeSiste60Dager) {
         int filterDays = trengerViDataFraDeSiste60Dager ? 60 : 30;
         return bostotte.getUtbetalinger().stream()
-                .filter(utbetalingDto -> utbetalingDto.getUtbetalingsdato().isAfter(LocalDate.now().minusDays(filterDays)))
+                .filter(utbetaling -> utbetaling.getUtbetalingsdato().isAfter(LocalDate.now().minusDays(filterDays)))
                 .map(this::mapToJsonOkonomiOpplysningUtbetaling)
                 .collect(Collectors.toList());
     }
@@ -172,7 +172,7 @@ public class BostotteSystemdata {
     private List<JsonBostotteSak> mapToBostotteSaker(Bostotte bostotte, boolean trengerViDataFraDeSiste60Dager) {
         int filterDays = trengerViDataFraDeSiste60Dager ? 60 : 30;
         return bostotte.getSaker().stream()
-                .filter(sakerDto -> sakerDto.getDato().isAfter(LocalDate.now().minusDays(filterDays)))
+                .filter(sak -> sak.getDato().isAfter(LocalDate.now().minusDays(filterDays)))
                 .map(this::mapToBostotteSak)
                 .collect(Collectors.toList());
     }
