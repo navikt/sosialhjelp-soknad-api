@@ -3,8 +3,8 @@ package no.nav.sosialhjelp.soknad.consumer.arbeidsforhold;
 import no.nav.sosialhjelp.soknad.consumer.arbeidsforhold.dto.ArbeidsforholdDto;
 import no.nav.sosialhjelp.soknad.consumer.exceptions.TjenesteUtilgjengeligException;
 import no.nav.sosialhjelp.soknad.consumer.mdc.MDCOperations;
-import no.nav.sosialhjelp.soknad.consumer.sts.apigw.FssToken;
-import no.nav.sosialhjelp.soknad.consumer.sts.apigw.STSConsumer;
+import no.nav.sosialhjelp.soknad.consumer.sts.FssToken;
+import no.nav.sosialhjelp.soknad.consumer.sts.STSConsumer;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import org.slf4j.Logger;
 

@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.consumer.sts.apigw;
+package no.nav.sosialhjelp.soknad.consumer.sts;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.consumer.sts.apigw;
+package no.nav.sosialhjelp.soknad.consumer.sts;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
