@@ -114,6 +114,7 @@
         <mockito.version>4.0.0</mockito.version>
         <assertj.version>3.20.2</assertj.version>
         <mockk.version>1.12.0</mockk.version>
+        <mockwebserver.version>5.0.0-alpha.2</mockwebserver.version>
 
         <!-- Versjoner identifisert av maven-enforcer-plugin -->
         <asm.version>9.2</asm.version>
@@ -141,6 +142,11 @@
             <dependency>
                 <groupId>org.jetbrains.kotlin</groupId>
                 <artifactId>kotlin-stdlib-common</artifactId>
+                <version>${kotlin.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jetbrains.kotlin</groupId>
+                <artifactId>kotlin-stdlib-jdk8</artifactId>
                 <version>${kotlin.version}</version>
             </dependency>
             <dependency>
@@ -966,6 +972,12 @@
             <groupId>io.mockk</groupId>
             <artifactId>mockk</artifactId>
             <version>${mockk.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>mockwebserver3</artifactId>
+            <version>${mockwebserver.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
