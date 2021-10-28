@@ -8,7 +8,7 @@ import no.nav.sosialhjelp.soknad.consumer.mdc.MDCOperations;
 import no.nav.sosialhjelp.soknad.consumer.pdl.common.PdlBaseResponse;
 import no.nav.sosialhjelp.soknad.consumer.pdl.common.PdlRequest;
 import no.nav.sosialhjelp.soknad.consumer.retry.RetryUtils;
-import no.nav.sosialhjelp.soknad.consumer.sts.apigw.STSConsumer;
+import no.nav.sosialhjelp.soknad.consumer.sts.STSConsumer;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import org.slf4j.Logger;
 

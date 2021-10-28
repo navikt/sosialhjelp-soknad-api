@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.consumer.sts.apigw;
+package no.nav.sosialhjelp.soknad.consumer.sts;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
