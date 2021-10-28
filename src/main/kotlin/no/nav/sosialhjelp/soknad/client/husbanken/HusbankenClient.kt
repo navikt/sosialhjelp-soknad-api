@@ -24,6 +24,7 @@ class HusbankenClientImpl(
             .headers { it.add(HttpHeaders.AUTHORIZATION, token) }
             .retrieve()
             .bodyToMono<BostotteDto>()
+            .doOnSuccess { log.info("Hentet bostøtte informasjon fra Husbanken!") }
             .doOnError(WebClientResponseException::class.java) { e ->
                 when {
                     e.statusCode.is4xxClientError -> log.error("Problemer med å koble opp mot Husbanken!", e)
