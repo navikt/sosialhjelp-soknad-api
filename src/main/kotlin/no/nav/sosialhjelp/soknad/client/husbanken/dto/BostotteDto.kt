@@ -37,11 +37,11 @@ data class SakDto(
 data class VedtakDto(
     val kode: String,
     val beskrivelse: String,
-    val type: String?
+    val type: String
 )
 
 data class UtbetalingDto(
-    val utbetalingsdato: LocalDate?,
+    val utbetalingsdato: LocalDate,
     val belop: BigDecimal,
     val mottaker: BostotteMottaker,
     val rolle: BostotteRolle

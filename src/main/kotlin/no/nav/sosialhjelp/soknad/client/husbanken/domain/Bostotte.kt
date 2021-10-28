@@ -25,11 +25,11 @@ data class Sak(
 data class Vedtak(
     val kode: String,
     val beskrivelse: String,
-    val type: String?
+    val type: String
 )
 
 data class Utbetaling(
-    val utbetalingsdato: LocalDate?,
+    val utbetalingsdato: LocalDate,
     val belop: BigDecimal,
     val mottaker: BostotteMottaker,
     val rolle: BostotteRolle
