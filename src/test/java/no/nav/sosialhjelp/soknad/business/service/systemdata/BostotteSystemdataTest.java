@@ -8,14 +8,14 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse;
 import no.nav.sosialhjelp.soknad.business.service.TextService;
-import no.nav.sosialhjelp.soknad.consumer.bostotte.BostotteImpl;
-import no.nav.sosialhjelp.soknad.consumer.bostotte.dto.BostotteDto;
-import no.nav.sosialhjelp.soknad.consumer.bostotte.dto.BostotteMottaker;
-import no.nav.sosialhjelp.soknad.consumer.bostotte.dto.BostotteRolle;
-import no.nav.sosialhjelp.soknad.consumer.bostotte.dto.BostotteStatus;
-import no.nav.sosialhjelp.soknad.consumer.bostotte.dto.SakerDto;
-import no.nav.sosialhjelp.soknad.consumer.bostotte.dto.UtbetalingerDto;
-import no.nav.sosialhjelp.soknad.consumer.bostotte.dto.VedtakDto;
+import no.nav.sosialhjelp.soknad.client.husbanken.HusbankenClient;
+import no.nav.sosialhjelp.soknad.client.husbanken.dto.BostotteDto;
+import no.nav.sosialhjelp.soknad.client.husbanken.dto.SakDto;
+import no.nav.sosialhjelp.soknad.client.husbanken.dto.UtbetalingDto;
+import no.nav.sosialhjelp.soknad.client.husbanken.dto.VedtakDto;
+import no.nav.sosialhjelp.soknad.client.husbanken.enums.BostotteMottaker;
+import no.nav.sosialhjelp.soknad.client.husbanken.enums.BostotteRolle;
+import no.nav.sosialhjelp.soknad.client.husbanken.enums.BostotteStatus;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,8 +26,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static java.util.Collections.emptyList;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.BOSTOTTE_SAMTYKKE;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_HUSBANKEN;
 import static no.nav.sbl.soknadsosialhjelp.soknad.bostotte.JsonBostotteSak.Vedtaksstatus.AVSLAG;
@@ -41,7 +43,7 @@ class BostotteSystemdataTest {
     private static final String EIER = "12345678910";
 
     @Mock
-    private BostotteImpl bostotte;
+    private HusbankenClient husbankenClient;
 
     @Mock
     private TextService textService;
@@ -58,10 +60,10 @@ class BostotteSystemdataTest {
         BostotteMottaker mottaker = BostotteMottaker.HUSSTAND;
         BigDecimal netto = BigDecimal.valueOf(10000.5);
         LocalDate utbetalingsDato = LocalDate.now();
-        BostotteDto bostotteDto = new BostotteDto().withUtbetaling(new UtbetalingerDto().with(mottaker, netto, utbetalingsDato, BostotteRolle.HOVEDPERSON));
+        BostotteDto bostotteDto = new BostotteDto(emptyList(), List.of(new UtbetalingDto(utbetalingsDato, netto, mottaker, BostotteRolle.HOVEDPERSON)));
 
         // Mock:
-        when(bostotte.hentBostotte(any(), any(), any(), any())).thenReturn(bostotteDto);
+        when(husbankenClient.hentBostotte(any(), any(), any())).thenReturn(Optional.of(bostotteDto));
 
         // Kjøring:
         bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
@@ -83,12 +85,16 @@ class BostotteSystemdataTest {
         BigDecimal netto1 = BigDecimal.valueOf(10000);
         BigDecimal netto2 = BigDecimal.valueOf(20000);
         LocalDate utbetalingsDato = LocalDate.now();
-        BostotteDto bostotteDto = new BostotteDto()
-                .withUtbetaling(new UtbetalingerDto().with(mottaker, netto1, utbetalingsDato.minusDays(32), BostotteRolle.HOVEDPERSON))
-                .withUtbetaling(new UtbetalingerDto().with(mottaker, netto2, utbetalingsDato, BostotteRolle.HOVEDPERSON));
+        BostotteDto bostotteDto = new BostotteDto(
+                emptyList(),
+                List.of(
+                        new UtbetalingDto(utbetalingsDato.minusDays(32), netto1, mottaker, BostotteRolle.HOVEDPERSON), 
+                        new UtbetalingDto(utbetalingsDato, netto2, mottaker, BostotteRolle.HOVEDPERSON)
+                )
+        );
 
         // Mock:
-        when(bostotte.hentBostotte(any(), any(), any(), any())).thenReturn(bostotteDto);
+        when(husbankenClient.hentBostotte(any(), any(), any())).thenReturn(Optional.of(bostotteDto));
 
         // Kjøring:
         bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
@@ -106,12 +112,11 @@ class BostotteSystemdataTest {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid()
                 .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         settBostotteSamtykkePaSoknad(soknadUnderArbeid.getJsonInternalSoknad(), true);
-        SakerDto sakerDto = lagSak(LocalDate.now().withDayOfMonth(1), BostotteStatus.UNDER_BEHANDLING, BostotteRolle.HOVEDPERSON, null, null, null);
-        BostotteDto bostotteDto = new BostotteDto()
-                .withSak(sakerDto);
+        SakDto sakDto = lagSak(LocalDate.now().withDayOfMonth(1), BostotteStatus.UNDER_BEHANDLING, BostotteRolle.HOVEDPERSON, null, null, null);
+        BostotteDto bostotteDto = new BostotteDto(List.of(sakDto), emptyList());
 
         // Mock:
-        when(bostotte.hentBostotte(any(), any(), any(), any())).thenReturn(bostotteDto);
+        when(husbankenClient.hentBostotte(any(), any(), any())).thenReturn(Optional.of(bostotteDto));
 
         // Kjøring:
         bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
@@ -121,8 +126,8 @@ class BostotteSystemdataTest {
         JsonBostotteSak sak = saker.get(0);
         assertThat(sak.getKilde()).isEqualTo(JsonKildeSystem.SYSTEM);
         assertThat(sak.getType()).isEqualTo(UTBETALING_HUSBANKEN);
-        assertThat(sak.getDato()).isEqualTo(sakerDto.getDato().toString());
-        assertThat(sak.getStatus()).isEqualToIgnoringCase(sakerDto.getStatus().toString());
+        assertThat(sak.getDato()).isEqualTo(LocalDate.of(sakDto.getAr(), sakDto.getMnd(), 1).toString());
+        assertThat(sak.getStatus()).isEqualToIgnoringCase(sakDto.getStatus().toString());
         assertThat(sak.getBeskrivelse()).isNull();
         assertThat(soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getDriftsinformasjon().getStotteFraHusbankenFeilet()).isFalse();
     }
@@ -133,14 +138,12 @@ class BostotteSystemdataTest {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid()
                 .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         settBostotteSamtykkePaSoknad(soknadUnderArbeid.getJsonInternalSoknad(), true);
-        SakerDto sakerDto1 = lagSak(LocalDate.now().withDayOfMonth(1), BostotteStatus.UNDER_BEHANDLING, BostotteRolle.HOVEDPERSON, null, null, null);
-        SakerDto sakerDto2 = lagSak(LocalDate.now().withDayOfMonth(1), BostotteStatus.VEDTATT, BostotteRolle.HOVEDPERSON, "V02", "Avslag - For høy inntekt", AVSLAG);
-        BostotteDto bostotteDto = new BostotteDto()
-                .withSak(sakerDto1)
-                .withSak(sakerDto2);
+        SakDto sakDto1 = lagSak(LocalDate.now().withDayOfMonth(1), BostotteStatus.UNDER_BEHANDLING, BostotteRolle.HOVEDPERSON, null, null, null);
+        SakDto sakDto2 = lagSak(LocalDate.now().withDayOfMonth(1), BostotteStatus.VEDTATT, BostotteRolle.HOVEDPERSON, "V02", "Avslag - For høy inntekt", AVSLAG);
+        BostotteDto bostotteDto = new BostotteDto(List.of(sakDto1, sakDto2), emptyList());
 
         // Mock:
-        when(bostotte.hentBostotte(any(), any(), any(), any())).thenReturn(bostotteDto);
+        when(husbankenClient.hentBostotte(any(), any(), any())).thenReturn(Optional.of(bostotteDto));
 
         // Kjøring:
         bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
@@ -149,13 +152,13 @@ class BostotteSystemdataTest {
         assertThat(saker).hasSize(2);
         JsonBostotteSak sak1 = saker.get(0);
         JsonBostotteSak sak2 = saker.get(1);
-        assertThat(sak1.getDato()).isEqualTo(sakerDto1.getDato().toString());
-        assertThat(sak1.getStatus()).isEqualToIgnoringCase(sakerDto1.getStatus().toString());
+        assertThat(sak1.getDato()).isEqualTo(LocalDate.of(sakDto1.getAr(), sakDto1.getMnd(), 1).toString());
+        assertThat(sak1.getStatus()).isEqualToIgnoringCase(sakDto1.getStatus().toString());
         assertThat(sak1.getBeskrivelse()).isNull();
-        assertThat(sak2.getDato()).isEqualTo(sakerDto2.getDato().toString());
-        assertThat(sak2.getStatus()).isEqualToIgnoringCase(sakerDto2.status.toString());
-        assertThat(sak2.getBeskrivelse()).isEqualTo(sakerDto2.getVedtak().getBeskrivelse());
-        assertThat(sak2.getVedtaksstatus().value()).isEqualTo(sakerDto2.getVedtak().getType());
+        assertThat(sak2.getDato()).isEqualTo(LocalDate.of(sakDto2.getAr(), sakDto2.getMnd(), 1).toString());
+        assertThat(sak2.getStatus()).isEqualToIgnoringCase(sakDto2.getStatus().toString());
+        assertThat(sak2.getBeskrivelse()).isEqualTo(sakDto2.getVedtak().getBeskrivelse());
+        assertThat(sak2.getVedtaksstatus().value()).isEqualTo(sakDto2.getVedtak().getType());
         assertThat(soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getDriftsinformasjon().getStotteFraHusbankenFeilet()).isFalse();
     }
 
@@ -167,7 +170,7 @@ class BostotteSystemdataTest {
         settBostotteSamtykkePaSoknad(soknadUnderArbeid.getJsonInternalSoknad(), true);
 
         // Mock:
-        when(bostotte.hentBostotte(any(), any(), any(), any())).thenReturn(null);
+        when(husbankenClient.hentBostotte(any(), any(), any())).thenReturn(Optional.empty());
 
         // Kjøring:
         bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
@@ -192,7 +195,7 @@ class BostotteSystemdataTest {
         settBostotteSamtykkePaSoknad(soknadUnderArbeid.getJsonInternalSoknad(), true);
 
         // Mock:
-        when(bostotte.hentBostotte(any(), any(), any(), any())).thenReturn(null);
+        when(husbankenClient.hentBostotte(any(), any(), any())).thenReturn(Optional.empty());
 
         // Kjøring:
         bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
@@ -223,12 +226,11 @@ class BostotteSystemdataTest {
         SoknadUnderArbeid soknadUnderArbeid1 = new SoknadUnderArbeid()
                 .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         settBostotteSamtykkePaSoknad(soknadUnderArbeid1.getJsonInternalSoknad(), true);
-        SakerDto sakerDto = lagSak(LocalDate.now().withDayOfMonth(1), BostotteStatus.UNDER_BEHANDLING, BostotteRolle.HOVEDPERSON, null, null, null);
-        BostotteDto bostotteDto = new BostotteDto()
-                .withSak(sakerDto);
+        SakDto sakDto = lagSak(LocalDate.now().withDayOfMonth(1), BostotteStatus.UNDER_BEHANDLING, BostotteRolle.HOVEDPERSON, null, null, null);
+        BostotteDto bostotteDto = new BostotteDto(List.of(sakDto), emptyList());
 
         // Mock:
-        when(bostotte.hentBostotte(any(), any(), any(), any())).thenReturn(bostotteDto);
+        when(husbankenClient.hentBostotte(any(), any(), any())).thenReturn(Optional.of(bostotteDto));
 
         // Kjøring:
         bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid1, "");
@@ -251,14 +253,12 @@ class BostotteSystemdataTest {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid()
                 .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         settBostotteSamtykkePaSoknad(soknadUnderArbeid.getJsonInternalSoknad(), true);
-        SakerDto sakerDto1 = lagSak(LocalDate.now().withDayOfMonth(1), BostotteStatus.UNDER_BEHANDLING, BostotteRolle.HOVEDPERSON, null, null, null);
-        SakerDto sakerDto2 = lagSak(LocalDate.now().withDayOfMonth(1), BostotteStatus.VEDTATT, BostotteRolle.BIPERSON, "V02", "Avslag - For høy inntekt", AVSLAG);
-        BostotteDto bostotteDto = new BostotteDto()
-                .withSak(sakerDto1)
-                .withSak(sakerDto2);
+        SakDto sakDto1 = lagSak(LocalDate.now().withDayOfMonth(1), BostotteStatus.UNDER_BEHANDLING, BostotteRolle.HOVEDPERSON, null, null, null);
+        SakDto sakDto2 = lagSak(LocalDate.now().withDayOfMonth(1), BostotteStatus.VEDTATT, BostotteRolle.BIPERSON, "V02", "Avslag - For høy inntekt", AVSLAG);
+        BostotteDto bostotteDto = new BostotteDto(List.of(sakDto1, sakDto2), emptyList());
 
         // Mock:
-        when(bostotte.hentBostotte(any(), any(), any(), any())).thenReturn(bostotteDto);
+        when(husbankenClient.hentBostotte(any(), any(), any())).thenReturn(Optional.of(bostotteDto));
 
         // Kjøring:
         bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
@@ -266,7 +266,7 @@ class BostotteSystemdataTest {
         List<JsonBostotteSak> saker = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getBostotte().getSaker();
         assertThat(saker).hasSize(1);
         JsonBostotteSak sak1 = saker.get(0);
-        assertThat(sak1.getStatus()).isEqualToIgnoringCase(sakerDto1.getStatus().toString());
+        assertThat(sak1.getStatus()).isEqualToIgnoringCase(sakDto1.getStatus().toString());
     }
 
     @Test
@@ -275,14 +275,12 @@ class BostotteSystemdataTest {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid()
                 .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         settBostotteSamtykkePaSoknad(soknadUnderArbeid.getJsonInternalSoknad(), true);
-        UtbetalingerDto utbetalingerDto1 = new UtbetalingerDto().with(BostotteMottaker.KOMMUNE, BigDecimal.valueOf(10000), LocalDate.now().minusDays(32), BostotteRolle.HOVEDPERSON);
-        UtbetalingerDto utbetalingerDto2 = new UtbetalingerDto().with(BostotteMottaker.HUSSTAND, BigDecimal.valueOf(20000), LocalDate.now().minusDays(32), BostotteRolle.BIPERSON);
-        BostotteDto bostotteDto = new BostotteDto()
-                .withUtbetaling(utbetalingerDto1)
-                .withUtbetaling(utbetalingerDto2);
+        UtbetalingDto utbetalingDto1 = new UtbetalingDto(LocalDate.now().minusDays(32), BigDecimal.valueOf(10000), BostotteMottaker.KOMMUNE, BostotteRolle.HOVEDPERSON);
+        UtbetalingDto utbetalingDto2 = new UtbetalingDto(LocalDate.now().minusDays(32), BigDecimal.valueOf(20000), BostotteMottaker.HUSSTAND, BostotteRolle.BIPERSON);
+        BostotteDto bostotteDto = new BostotteDto(emptyList(), List.of(utbetalingDto1, utbetalingDto2));
 
         // Mock:
-        when(bostotte.hentBostotte(any(), any(), any(), any())).thenReturn(bostotteDto);
+        when(husbankenClient.hentBostotte(any(), any(), any())).thenReturn(Optional.of(bostotteDto));
 
         // Kjøring:
         bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
@@ -290,7 +288,7 @@ class BostotteSystemdataTest {
         List<JsonOkonomiOpplysningUtbetaling> utbetalinger = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getUtbetaling();
         assertThat(utbetalinger).hasSize(1);
         JsonOkonomiOpplysningUtbetaling utbetaling = utbetalinger.get(0);
-        assertThat(utbetaling.getNetto()).isEqualTo(utbetalingerDto1.getBelop().longValue());
+        assertThat(utbetaling.getNetto()).isEqualTo(utbetalingDto1.getBelop().longValue());
     }
 
     @Test
@@ -299,14 +297,12 @@ class BostotteSystemdataTest {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid()
                 .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         settBostotteSamtykkePaSoknad(soknadUnderArbeid.getJsonInternalSoknad(), true);
-        SakerDto sakerDto1 = lagSak(LocalDate.now().withDayOfMonth(1), BostotteStatus.UNDER_BEHANDLING, BostotteRolle.HOVEDPERSON, null, null, null);
-        SakerDto sakerDto2 = lagSak(LocalDate.now().withDayOfMonth(1).minusDays(32), BostotteStatus.VEDTATT, BostotteRolle.HOVEDPERSON, "V02", "Avslag - For høy inntekt", AVSLAG);
-        BostotteDto bostotteDto = new BostotteDto()
-                .withSak(sakerDto1)
-                .withSak(sakerDto2);
+        SakDto sakDto1 = lagSak(LocalDate.now().withDayOfMonth(1), BostotteStatus.UNDER_BEHANDLING, BostotteRolle.HOVEDPERSON, null, null, null);
+        SakDto sakDto2 = lagSak(LocalDate.now().withDayOfMonth(1).minusDays(32), BostotteStatus.VEDTATT, BostotteRolle.HOVEDPERSON, "V02", "Avslag - For høy inntekt", AVSLAG);
+        BostotteDto bostotteDto = new BostotteDto(List.of(sakDto1, sakDto2), emptyList());
 
         // Mock:
-        when(bostotte.hentBostotte(any(), any(), any(), any())).thenReturn(bostotteDto);
+        when(husbankenClient.hentBostotte(any(), any(), any())).thenReturn(Optional.of(bostotteDto));
 
         // Kjøring:
         bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
@@ -314,7 +310,7 @@ class BostotteSystemdataTest {
         List<JsonBostotteSak> saker = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getBostotte().getSaker();
         assertThat(saker).hasSize(1);
         JsonBostotteSak sak1 = saker.get(0);
-        assertThat(sak1.getStatus()).isEqualToIgnoringCase(sakerDto1.getStatus().toString());
+        assertThat(sak1.getStatus()).isEqualToIgnoringCase(sakDto1.getStatus().toString());
     }
 
     @Test
@@ -329,12 +325,11 @@ class BostotteSystemdataTest {
         } else {
             testDate = LocalDate.now().withDayOfMonth(1).minusMonths(1);
         }
-        SakerDto sakerDto2 = lagSak(testDate, BostotteStatus.VEDTATT, BostotteRolle.HOVEDPERSON, "V02", "Avslag - For høy inntekt", AVSLAG);
-        BostotteDto bostotteDto = new BostotteDto()
-                .withSak(sakerDto2);
+        SakDto sakDto2 = lagSak(testDate, BostotteStatus.VEDTATT, BostotteRolle.HOVEDPERSON, "V02", "Avslag - For høy inntekt", AVSLAG);
+        BostotteDto bostotteDto = new BostotteDto(List.of(sakDto2), emptyList());
 
         // Mock:
-        when(bostotte.hentBostotte(any(), any(), any(), any())).thenReturn(bostotteDto);
+        when(husbankenClient.hentBostotte(any(), any(), any())).thenReturn(Optional.of(bostotteDto));
 
         // Kjøring:
         bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
@@ -342,7 +337,7 @@ class BostotteSystemdataTest {
         List<JsonBostotteSak> saker = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getBostotte().getSaker();
         assertThat(saker).hasSize(1);
         JsonBostotteSak sak1 = saker.get(0);
-        assertThat(sak1.getStatus()).isEqualToIgnoringCase(sakerDto2.getStatus().toString());
+        assertThat(sak1.getStatus()).isEqualToIgnoringCase(sakDto2.getStatus().toString());
     }
 
     @Test
@@ -369,12 +364,11 @@ class BostotteSystemdataTest {
         SoknadUnderArbeid soknadUnderArbeid1 = new SoknadUnderArbeid()
                 .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         settBostotteSamtykkePaSoknad(soknadUnderArbeid1.getJsonInternalSoknad(), true);
-        UtbetalingerDto utbetalingerDto = new UtbetalingerDto().with(BostotteMottaker.KOMMUNE, BigDecimal.valueOf(10000), LocalDate.now().minusDays(32), BostotteRolle.HOVEDPERSON);
-        BostotteDto bostotteDto = new BostotteDto()
-                .withUtbetaling(utbetalingerDto);
+        UtbetalingDto utbetalingDto = new UtbetalingDto(LocalDate.now().minusDays(32), BigDecimal.valueOf(10000), BostotteMottaker.KOMMUNE, BostotteRolle.HOVEDPERSON);
+        BostotteDto bostotteDto = new BostotteDto(emptyList(), List.of(utbetalingDto));
 
         // Mock:
-        when(bostotte.hentBostotte(any(), any(), any(), any())).thenReturn(bostotteDto);
+        when(husbankenClient.hentBostotte(any(), any(), any())).thenReturn(Optional.of(bostotteDto));
 
         // Kjøring:
         bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid1, "");
@@ -394,12 +388,12 @@ class BostotteSystemdataTest {
         assertThat(utbetalinger2).isEmpty();
     }
 
-    private SakerDto lagSak(LocalDate saksDato, BostotteStatus status, BostotteRolle rolle, String kode, String beskrivelse, JsonBostotteSak.Vedtaksstatus vedtaksstatus) {
+    private SakDto lagSak(LocalDate saksDato, BostotteStatus status, BostotteRolle rolle, String kode, String beskrivelse, JsonBostotteSak.Vedtaksstatus vedtaksstatus) {
         VedtakDto vedtakDto = null;
         if(kode != null) {
-            vedtakDto = new VedtakDto().with(kode, beskrivelse, vedtaksstatus.toString());
+            vedtakDto = new VedtakDto(kode, beskrivelse, vedtaksstatus.toString());
         }
-        return new SakerDto().with(saksDato.getMonthValue(), saksDato.getYear(), status, vedtakDto, rolle);
+        return new SakDto(saksDato.getMonthValue(), saksDato.getYear(), status, vedtakDto, rolle);
     }
 
     private void settBostotteSamtykkePaSoknad(JsonInternalSoknad jsonInternalSoknad, boolean harSamtykke) {

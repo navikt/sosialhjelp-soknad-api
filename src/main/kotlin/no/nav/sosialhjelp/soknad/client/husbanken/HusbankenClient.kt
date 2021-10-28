@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.client.husbanken
 
-import no.nav.sosialhjelp.soknad.consumer.bostotte.dto.BostotteDto
+import no.nav.sosialhjelp.soknad.client.husbanken.dto.BostotteDto
 import org.slf4j.LoggerFactory.getLogger
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
