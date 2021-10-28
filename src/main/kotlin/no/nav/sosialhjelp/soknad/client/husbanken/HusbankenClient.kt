@@ -2,6 +2,7 @@ package no.nav.sosialhjelp.soknad.client.husbanken
 
 import no.nav.sosialhjelp.soknad.client.husbanken.dto.BostotteDto
 import org.slf4j.LoggerFactory.getLogger
+import org.springframework.http.HttpHeaders
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
 import org.springframework.web.reactive.function.client.bodyToMono
@@ -20,7 +21,7 @@ class HusbankenClientImpl(
     override fun hentBostotte(token: String, fra: LocalDate, til: LocalDate): Optional<BostotteDto> {
         return webClient.get()
             .uri { it.queryParam("fra", fra).queryParam("til", til).build() }
-            .headers { it.setBearerAuth(token) }
+            .headers { it.add(HttpHeaders.AUTHORIZATION, token) }
             .retrieve()
             .bodyToMono<BostotteDto>()
             .doOnError(WebClientResponseException::class.java) { e ->
