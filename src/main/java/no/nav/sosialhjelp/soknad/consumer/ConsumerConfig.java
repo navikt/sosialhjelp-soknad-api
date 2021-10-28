@@ -3,6 +3,7 @@ package no.nav.sosialhjelp.soknad.consumer;
 import no.nav.sosialhjelp.soknad.client.config.MockProxiedWebClientConfig;
 import no.nav.sosialhjelp.soknad.client.config.ProxiedWebClientConfig;
 import no.nav.sosialhjelp.soknad.client.fiks.KommuneInfoClientConfig;
+import no.nav.sosialhjelp.soknad.client.husbanken.HusbankenClientConfig;
 import no.nav.sosialhjelp.soknad.client.idporten.IdPortenClientConfig;
 import no.nav.sosialhjelp.soknad.client.idporten.IdPortenClientConfigMockAlt;
 import no.nav.sosialhjelp.soknad.client.idporten.IdPortenServiceImpl;
@@ -53,6 +54,7 @@ import org.springframework.context.annotation.Import;
         IdPortenServiceImpl.class,
         MaskinportenClientConfig.class,
         SkatteetatenClientConfig.class,
+        HusbankenClientConfig.class,
         RedisConfig.class,
         NoRedisConfig.class,
         PersonService.class,
