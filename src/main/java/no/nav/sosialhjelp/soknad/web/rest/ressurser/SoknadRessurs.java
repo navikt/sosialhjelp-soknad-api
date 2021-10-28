@@ -10,6 +10,7 @@ import no.nav.sosialhjelp.soknad.business.exceptions.SoknadenHarNedetidException
 import no.nav.sosialhjelp.soknad.business.pdf.HtmlGenerator;
 import no.nav.sosialhjelp.soknad.business.service.HenvendelseService;
 import no.nav.sosialhjelp.soknad.business.service.OpplastetVedleggService;
+import no.nav.sosialhjelp.soknad.business.service.oppsummering.OppsummeringService;
 import no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService;
 import no.nav.sosialhjelp.soknad.business.service.soknadservice.SystemdataUpdater;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
@@ -70,6 +71,7 @@ public class SoknadRessurs {
     private final Tilgangskontroll tilgangskontroll;
     private final HenvendelseService henvendelseService;
     private final OpplastetVedleggService opplastetVedleggService;
+    private final OppsummeringService oppsummeringService;
 
     public SoknadRessurs(
             SoknadService soknadService,
@@ -79,7 +81,8 @@ public class SoknadRessurs {
             SystemdataUpdater systemdata,
             Tilgangskontroll tilgangskontroll,
             HenvendelseService henvendelseService,
-            OpplastetVedleggService opplastetVedleggService
+            OpplastetVedleggService opplastetVedleggService,
+            OppsummeringService oppsummeringService
     ) {
         this.soknadService = soknadService;
         this.htmlGenerator = htmlGenerator;
@@ -89,6 +92,7 @@ public class SoknadRessurs {
         this.tilgangskontroll = tilgangskontroll;
         this.henvendelseService = henvendelseService;
         this.opplastetVedleggService = opplastetVedleggService;
+        this.oppsummeringService = oppsummeringService;
     }
 
     private static Cookie xsrfCookie(String behandlingId) {
@@ -128,6 +132,12 @@ public class SoknadRessurs {
                 || soknadUnderArbeid.getJsonInternalSoknad().getVedlegg().getVedlegg().isEmpty()) {
             log.info("Oppdaterer vedleggsforventninger for soknad {} fra oppsummeringssiden, ettersom side 8 ble hoppet over", behandlingsId);
             opplastetVedleggService.oppdaterVedleggsforventninger(soknadUnderArbeid, eier);
+        }
+
+        try {
+            oppsummeringService.hentOppsummering(eier, behandlingsId);
+        } catch (Exception e) {
+            log.warn("Noe uventet feilet ved generering av ny oppsummeringsside", e);
         }
 
         return htmlGenerator.fyllHtmlMalMedInnhold(soknadUnderArbeid.getJsonInternalSoknad(), false);
