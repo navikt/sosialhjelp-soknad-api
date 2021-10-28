@@ -22,7 +22,7 @@ public class CORSFilter implements ContainerResponseFilter {
         var origin = Optional.ofNullable(requestContext.getHeaderString("Origin")).orElse("*");
         if (ServiceUtils.isNonProduction() || ALLOWED_ORIGINS.contains(origin)) {
             responseContext.getHeaders().add("Access-Control-Allow-Origin", origin);
-            responseContext.getHeaders().add("Access-Control-Allow-Headers", "Origin, Content-Type, Accept, X-XSRF-TOKEN, Nav-Call-Id, Authorization");
+            responseContext.getHeaders().add("Access-Control-Allow-Headers", "Origin, Content-Type, Accept, X-XSRF-TOKEN, Nav-Call-Id, Authorization, sentry-trace");
             responseContext.getHeaders().add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
             responseContext.getHeaders().add("Access-Control-Allow-Credentials", "true");
         }
