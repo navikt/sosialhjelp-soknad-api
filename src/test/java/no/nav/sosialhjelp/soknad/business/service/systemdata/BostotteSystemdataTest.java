@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.business.service.systemdata;
 
+import no.finn.unleash.Unleash;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.bostotte.JsonBostotteSak;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
@@ -16,12 +17,14 @@ import no.nav.sosialhjelp.soknad.client.husbanken.dto.VedtakDto;
 import no.nav.sosialhjelp.soknad.client.husbanken.enums.BostotteMottaker;
 import no.nav.sosialhjelp.soknad.client.husbanken.enums.BostotteRolle;
 import no.nav.sosialhjelp.soknad.client.husbanken.enums.BostotteStatus;
+import no.nav.sosialhjelp.soknad.consumer.bostotte.Bostotte;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -36,11 +39,16 @@ import static no.nav.sbl.soknadsosialhjelp.soknad.bostotte.JsonBostotteSak.Vedta
 import static no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
-@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 class BostotteSystemdataTest {
     private static final String EIER = "12345678910";
+
+    @Mock
+    private Bostotte bostotteConsumer;
 
     @Mock
     private HusbankenClient husbankenClient;
@@ -48,8 +56,16 @@ class BostotteSystemdataTest {
     @Mock
     private TextService textService;
 
+    @Mock
+    private Unleash unleash;
+
     @InjectMocks
     private BostotteSystemdata bostotteSystemdata;
+
+    @BeforeEach
+    void setUp() {
+        when(unleash.isEnabled(anyString(), anyBoolean())).thenReturn(true);
+    }
 
     @Test
     void updateSystemdata_soknadBlirOppdatertMedUtbetalingFraHusbanken() {

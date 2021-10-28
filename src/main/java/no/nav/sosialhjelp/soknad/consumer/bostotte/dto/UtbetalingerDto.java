@@ -1,6 +1,8 @@
 package no.nav.sosialhjelp.soknad.consumer.bostotte.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import no.nav.sosialhjelp.soknad.client.husbanken.enums.BostotteMottaker;
+import no.nav.sosialhjelp.soknad.client.husbanken.enums.BostotteRolle;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
