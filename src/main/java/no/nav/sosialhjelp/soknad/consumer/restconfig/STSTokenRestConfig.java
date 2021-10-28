@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.consumer.restconfig;
 
 import no.nav.sosialhjelp.soknad.consumer.common.rest.RestUtils;
-import no.nav.sosialhjelp.soknad.consumer.sts.apigw.STSConsumer;
+import no.nav.sosialhjelp.soknad.consumer.sts.STSConsumer;
 import no.nav.sosialhjelp.soknad.web.selftest.Pingable;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
