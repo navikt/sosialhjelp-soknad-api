@@ -32,7 +32,10 @@ data class SakDto(
     val status: BostotteStatus,
     val vedtak: VedtakDto?,
     val rolle: BostotteRolle
-)
+) {
+    val dato: LocalDate
+        get() = LocalDate.of(ar, mnd, 1)
+}
 
 data class VedtakDto(
     val kode: String,
@@ -48,7 +51,7 @@ data class UtbetalingDto(
 )
 
 val SakDto.toDomain: Sak
-    get() = Sak(mnd, ar, status, vedtak?.toDomain, rolle)
+    get() = Sak(dato, status, vedtak?.toDomain, rolle)
 
 val VedtakDto.toDomain: Vedtak
     get() = Vedtak(kode, beskrivelse, type)

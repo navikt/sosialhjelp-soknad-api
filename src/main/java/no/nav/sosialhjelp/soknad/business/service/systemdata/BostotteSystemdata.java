@@ -128,13 +128,13 @@ public class BostotteSystemdata {
         }
     }
 
-    private Bostotte toDomain(no.nav.sosialhjelp.soknad.consumer.bostotte.dto.BostotteDto dto) {
+    private Bostotte toDomain(no.nav.sosialhjelp.soknad.consumer.bostotte.dto.BostotteDto bostotteDto) {
         return new Bostotte(
-                dto.saker.stream()
-                        .map(sakerDto -> new Sak(sakerDto.mnd, sakerDto.ar, sakerDto.status, toDomain(sakerDto.vedtak), sakerDto.rolle))
+                bostotteDto.saker.stream()
+                        .map(sak -> new Sak(sak.getDato(), sak.getStatus(), toDomain(sak.getVedtak()), sak.getRolle()))
                         .collect(Collectors.toList()),
-                dto.utbetalinger.stream()
-                        .map(utbetalingerDto -> new Utbetaling(utbetalingerDto.utbetalingsdato, utbetalingerDto.belop, utbetalingerDto.mottaker, utbetalingerDto.rolle))
+                bostotteDto.utbetalinger.stream()
+                        .map(utbetaling -> new Utbetaling(utbetaling.getUtbetalingsdato(), utbetaling.getBelop(), utbetaling.getMottaker(), utbetaling.getRolle()))
                         .collect(Collectors.toList())
         );
     }

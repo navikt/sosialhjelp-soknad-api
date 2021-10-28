@@ -12,15 +12,11 @@ data class Bostotte(
 )
 
 data class Sak(
-    val mnd: Int,
-    val ar: Int,
+    val dato: LocalDate,
     val status: BostotteStatus,
     val vedtak: Vedtak?,
     val rolle: BostotteRolle
-) {
-    val dato: LocalDate
-        get() = LocalDate.of(ar, mnd, 1)
-}
+)
 
 data class Vedtak(
     val kode: String,
