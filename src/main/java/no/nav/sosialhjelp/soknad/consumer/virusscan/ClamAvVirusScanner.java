@@ -6,10 +6,10 @@ import no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.RequestEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpServerErrorException;
-import org.springframework.web.client.RestOperations;
+import org.springframework.web.reactive.function.BodyInserters;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import java.net.URI;
 
@@ -25,16 +25,14 @@ public class ClamAvVirusScanner implements VirusScanner {
 
     private static final Logger logger = LoggerFactory.getLogger(ClamAvVirusScanner.class);
 
-    private final URI uri;
-    private final RestOperations operations;
+    private final WebClient webClient;
     private final Retry retry;
 
     @Value("${soknad.vedlegg.virusscan.enabled}")
     private boolean enabled;
 
-    public ClamAvVirusScanner(URI uri, RestOperations operations) {
-        this.uri = uri;
-        this.operations = operations;
+    public ClamAvVirusScanner(URI uri, WebClient webClient) {
+        this.webClient = webClient;
         this.retry = retryConfig(
                 uri.toString(),
                 DEFAULT_MAX_ATTEMPTS,
@@ -60,7 +58,7 @@ public class ClamAvVirusScanner implements VirusScanner {
             }
             logger.info("Scanner {} bytes for fileType {} (fra Tika)", data.length, fileType);
 
-            ScanResult[] scanResults = withRetry(retry, () -> putForObject(uri, data));
+            ScanResult[] scanResults = withRetry(retry, () -> putForObject(data));
 
             if (scanResults.length != 1) {
                 logger.warn("Uventet respons med lengde {}, forventet lengde er 1", scanResults.length);
@@ -79,7 +77,11 @@ public class ClamAvVirusScanner implements VirusScanner {
         }
     }
 
-    private ScanResult[] putForObject(URI uri, Object payload) {
-        return operations.exchange(RequestEntity.put(uri).body(payload), ScanResult[].class).getBody();
+    private ScanResult[] putForObject(Object payload) {
+        return webClient.put()
+                .body(BodyInserters.fromValue(payload))
+                .retrieve()
+                .bodyToMono(ScanResult[].class)
+                .block();
     }
 }
