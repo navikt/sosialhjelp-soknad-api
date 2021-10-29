@@ -1,134 +1,104 @@
 package no.nav.sosialhjelp.soknad.client.husbanken
 
+import mockwebserver3.MockResponse
+import mockwebserver3.MockWebServer
+import no.nav.sosialhjelp.soknad.client.husbanken.dto.BostotteDto
+import org.apache.commons.io.IOUtils
+import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatNoException
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import org.springframework.http.HttpHeaders
+import org.springframework.http.MediaType
+import org.springframework.web.reactive.function.client.WebClient
+import java.nio.charset.StandardCharsets
+import java.time.LocalDate
+
+
 internal class HusbankenClientImplTest {
 
-    /*
-    todo - skriv om til kotlin tester med mockwebserver
+    private val mockWebServer = MockWebServer()
+    private val webClient = WebClient.create(mockWebServer.url("/").toString())
 
-    @Mock
-    private BostotteConfig config;
+    val husbankenClient = HusbankenClientImpl(webClient)
 
-    @Mock
-    private RestOperations operations;
+    @BeforeEach
+    internal fun setUp() {
+        mockWebServer.start()
+    }
 
-    @InjectMocks
-    private BostotteImpl bostotte;
-
-    @Captor
-    ArgumentCaptor<RequestEntity<BostotteDto>> captor;
-
-    @Test
-    void hentBostotte_testUrl_riktigUrlBlirSendtInnTilRestKallet() {
-        // Variabler:
-        String configUrl = "http://magicUri";
-        BostotteDto bostotteDto = new BostotteDto();
-        String personIdentifikator = "121212123456";
-        LocalDate fra = LocalDate.now().minusDays(30);
-        LocalDate til = LocalDate.now();
-
-        // Mocks:
-        when(config.getUri()).thenReturn(configUrl);
-        when(operations.exchange(any(), any(Class.class))).thenReturn(ResponseEntity.ok(bostotteDto));
-
-        // Testkjøring:
-        assertThat(bostotte.hentBostotte(personIdentifikator, "", fra,til)).isEqualTo(bostotteDto);
-        verify(operations).exchange(captor.capture(), any(Class.class));
-        assertThat(captor.getValue().getUrl().toString()).startsWith(configUrl);
+    @AfterEach
+    internal fun tearDown() {
+        mockWebServer.close()
     }
 
     @Test
-    void hentBostotte_testUrl_urlHarRiktigTilOgFraDato() {
-        // Variabler:
-        String configUrl = "http://magicUri";
-        BostotteDto bostotteDto = new BostotteDto();
-        String personIdentifikator = "121212123456";
-        LocalDate fra = LocalDate.now().minusDays(30);
-        LocalDate til = LocalDate.now();
+    internal fun hentBostotte_returnererOptionalBostotte() {
+        val fra = LocalDate.now().minusDays(30)
+        val til = LocalDate.now()
+        val inputStream = ClassLoader.getSystemResourceAsStream("husbanken/husbankenSvar.json")
 
-        // Mocks:
-        when(config.getUri()).thenReturn(configUrl);
-        when(operations.exchange(any(), any(Class.class))).thenReturn(ResponseEntity.ok(bostotteDto));
+        mockWebServer.enqueue(
+            MockResponse()
+                .setResponseCode(200)
+                .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .setBody(IOUtils.toString(inputStream, StandardCharsets.UTF_8))
+        )
 
-        // Testkjøring:
-        assertThat(bostotte.hentBostotte(personIdentifikator, "", fra,til)).isEqualTo(bostotteDto);
-        verify(operations).exchange(captor.capture(), any(Class.class));
-        assertThat(captor.getValue().getUrl().toString()).contains("fra=" + fra);
-        assertThat(captor.getValue().getUrl().toString()).contains("til=" + til);
+        val bostotte = husbankenClient.hentBostotte("token", fra, til)
+
+        assertThat(bostotte).isPresent
+        assertThat(bostotte.get()).isInstanceOf(BostotteDto::class.java)
+
+        val dto = bostotte.get()
+        assertThat(dto.saker).hasSize(3)
+        assertThat(dto.saker?.get(0)?.vedtak?.type).isEqualTo("INNVILGET")
+        assertThat(dto.utbetalinger).hasSize(2)
+        assertThat(dto.utbetalinger?.get(0)?.utbetalingsdato).isEqualTo(LocalDate.of(2019,7,20))
+        assertThat(dto.utbetalinger?.get(0)?.belop?.toDouble()).isEqualTo(4300.5)
+        assertThat(dto.utbetalinger?.get(1)?.utbetalingsdato).isEqualTo(LocalDate.of(2019,8,20))
+        assertThat(dto.utbetalinger?.get(1)?.belop?.toDouble()).isEqualTo(4300.0)
     }
 
     @Test
-    void hentBostotte_testJson_testingJsonTranslation() throws IOException {
-        ObjectMapper objectMapper = new ObjectMapper();
+    internal fun `hentBostotte 5xx feil`() {
+        val fra = LocalDate.now().minusDays(30)
+        val til = LocalDate.now()
 
-        InputStream resourceAsStream = ClassLoader.getSystemResourceAsStream("husbanken/husbankenSvar.json");
-        assertThat(resourceAsStream).isNotNull();
-        String jsonString = IOUtils.toString(resourceAsStream, StandardCharsets.UTF_8);
+        mockWebServer.enqueue(
+            MockResponse()
+                .setResponseCode(503)
+        )
 
-        BostotteDto bostotteDto = objectMapper.readValue(jsonString, BostotteDto.class);
+        val bostotte = husbankenClient.hentBostotte("token", fra, til)
 
-        assertThat(bostotteDto.getSaker()).hasSize(3);
-        assertThat(bostotteDto.getSaker().get(0).getVedtak().getType()).isEqualTo("INNVILGET");
-        assertThat(bostotteDto.getUtbetalinger()).hasSize(2);
-        assertThat(bostotteDto.getUtbetalinger().get(0).getUtbetalingsdato()).isEqualTo(LocalDate.of(2019,7,20));
-        assertThat(bostotteDto.getUtbetalinger().get(0).getBelop().doubleValue()).isEqualTo(4300.5);
-        assertThat(bostotteDto.getUtbetalinger().get(1).getUtbetalingsdato()).isEqualTo(LocalDate.of(2019,8,20));
-        assertThat(bostotteDto.getUtbetalinger().get(1).getBelop().doubleValue()).isEqualTo(4300);
+        assertThat(bostotte).isNotPresent
     }
 
     @Test
-    void hentBostotte_testUrl_overlevNullUrl() {
-        // Variabler:
-        String personIdentifikator = "121212123456";
-        LocalDate fra = LocalDate.now().minusDays(30);
-        LocalDate til = LocalDate.now();
+    internal fun `hentBostotte 4xx feil`() {
+        val fra = LocalDate.now().minusDays(30)
+        val til = LocalDate.now()
 
-        // Mocks:
-        when(config.getUri()).thenReturn("uri");
-        when(operations.exchange(any(), any(Class.class))).thenThrow(new ResourceAccessException("TestException"));
+        mockWebServer.enqueue(
+            MockResponse()
+                .setResponseCode(400)
+        )
 
-        // Testkjøring:
-        assertThat(bostotte.hentBostotte(personIdentifikator, "", fra,til)).isNull();
+        val bostotte = husbankenClient.hentBostotte("token", fra, til)
+
+        assertThat(bostotte).isNotPresent
     }
 
     @Test
-    void hentBostotte_testUrl_overlevBadConnection() {
-        // Variabler:
-        String personIdentifikator = "121212123456";
-        LocalDate fra = LocalDate.now().minusDays(30);
-        LocalDate til = LocalDate.now();
+    internal fun `ping kaster ikke feil`() {
+        mockWebServer.enqueue(
+            MockResponse()
+                .setResponseCode(200)
+                .setBody("OK")
+        )
 
-        // Mocks:
-        when(config.getUri()).thenReturn("uri");
-        when(operations.exchange(any(), any(Class.class))).thenThrow(new HttpClientErrorException(HttpStatus.BAD_REQUEST));
-
-        // Testkjøring:
-        assertThat(bostotte.hentBostotte(personIdentifikator, "", fra,til)).isNull();
+        assertThatNoException().isThrownBy { husbankenClient.ping() }
     }
-
-    @Test
-    void hentBostotte_testUrl_overlevBadData() {
-        // Variabler:
-        String personIdentifikator = "121212123456";
-        LocalDate fra = LocalDate.now().minusDays(30);
-        LocalDate til = LocalDate.now();
-
-        // Mocks:
-        when(config.getUri()).thenReturn("uri");
-        when(operations.exchange(any(), any(Class.class))).thenThrow(new HttpMessageNotReadableException("TestException", mock(HttpInputMessage.class)));
-
-        // Testkjøring:
-        assertThat(bostotte.hentBostotte(personIdentifikator, "", fra,til)).isNull();
-    }
-
-    @Test
-    void hentBostotte_opprettHusbankenPing() {
-        // Testkjøring:
-        Pingable pingable = BostotteImpl.opprettHusbankenPing(config, new RestTemplate());
-        assertThat(pingable).isNotNull();
-        assertThat(pingable.ping()).isNotNull();
-    }
-
-     */
-
-
 }
