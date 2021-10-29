@@ -45,7 +45,6 @@
     "NORG2_API_V1_URL": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/norg_endpoint_url/",
     "SCHEDULER_DISABLE": "false",
     "SOKNAD_BOSTOTTE_URL": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/husbanken",
-    "SOKNAD_BOSTOTTE_PING_URL": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/husbanken/ping",
     "SOKNAD_ETTERSENDING_ANTALLDAGER": "180",
     "SECURITYTOKENSERVICE_APIGW_URL": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/appgw/",
     "SKATTEETATEN_API_BASEURL": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/skatteetaten/",

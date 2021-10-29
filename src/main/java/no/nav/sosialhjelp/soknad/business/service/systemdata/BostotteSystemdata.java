@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.business.service.systemdata;
 
-import no.finn.unleash.Unleash;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.bostotte.JsonBostotte;
 import no.nav.sbl.soknadsosialhjelp.soknad.bostotte.JsonBostotteSak;
@@ -14,9 +13,7 @@ import no.nav.sosialhjelp.soknad.client.husbanken.HusbankenClient;
 import no.nav.sosialhjelp.soknad.client.husbanken.domain.Bostotte;
 import no.nav.sosialhjelp.soknad.client.husbanken.domain.Sak;
 import no.nav.sosialhjelp.soknad.client.husbanken.domain.Utbetaling;
-import no.nav.sosialhjelp.soknad.client.husbanken.domain.Vedtak;
 import no.nav.sosialhjelp.soknad.client.husbanken.dto.BostotteDto;
-import no.nav.sosialhjelp.soknad.client.husbanken.enums.BostotteRolle;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import org.apache.commons.text.WordUtils;
 import org.springframework.stereotype.Component;
@@ -36,31 +33,22 @@ import static no.nav.sosialhjelp.soknad.business.mappers.TitleKeyMapper.soknadTy
 @Component
 public class BostotteSystemdata {
 
-    private static final String BRUK_NY_HUSBANKEN_CLIENT = "sosialhjelp.soknad.bruk-ny-husbanken-client";
-
-    private final no.nav.sosialhjelp.soknad.consumer.bostotte.Bostotte bostotteConsumer;
     private final HusbankenClient husbankenClient;
     private final TextService textService;
-    private final Unleash unleash;
 
     public BostotteSystemdata(
-            no.nav.sosialhjelp.soknad.consumer.bostotte.Bostotte bostotteConsumer,
             HusbankenClient husbankenClient,
-            TextService textService,
-            Unleash unleash
+            TextService textService
     ) {
-        this.bostotteConsumer = bostotteConsumer;
         this.husbankenClient = husbankenClient;
         this.textService = textService;
-        this.unleash = unleash;
     }
 
     public void updateSystemdataIn(SoknadUnderArbeid soknadUnderArbeid, String token) {
         JsonSoknad soknad = soknadUnderArbeid.getJsonInternalSoknad().getSoknad();
         JsonOkonomi okonomi = soknad.getData().getOkonomi();
         if(okonomi.getOpplysninger().getBekreftelse().stream().anyMatch(bekreftelse -> bekreftelse.getType().equalsIgnoreCase(BOSTOTTE_SAMTYKKE) && bekreftelse.getVerdi())) {
-            String personIdentifikator = soknad.getData().getPersonalia().getPersonIdentifikator().getVerdi();
-            Bostotte bostotte = innhentBostotteFraHusbanken(personIdentifikator, token);
+            Bostotte bostotte = innhentBostotteFraHusbanken(token);
             if (bostotte != null) {
                 okonomi.getOpplysninger().getBekreftelse().stream()
                         .filter(bekreftelse -> bekreftelse.getType().equalsIgnoreCase(BOSTOTTE_SAMTYKKE))
@@ -106,44 +94,9 @@ public class BostotteSystemdata {
         return harNyeSaker || harNyeUtbetalinger;
     }
 
-    private Bostotte innhentBostotteFraHusbanken(String personIdentifikator, String token) {
-        if (unleash.isEnabled(BRUK_NY_HUSBANKEN_CLIENT, false)) {
-            // webclient kotlin versjon
-            var optionalDto = husbankenClient.hentBostotte(token, LocalDate.now().minusDays(60), LocalDate.now());
-            return optionalDto.map(BostotteDto::toDomain).orElse(null);
-        } else {
-            // resttemplate java versjon
-            no.nav.sosialhjelp.soknad.consumer.bostotte.dto.BostotteDto bostotteDto = bostotteConsumer.hentBostotte(personIdentifikator, token, LocalDate.now().minusDays(60), LocalDate.now());
-            if (bostotteDto != null) {
-                bostotteDto.saker = bostotteDto.getSaker().stream()
-                        .filter(sakerDto -> sakerDto.getRolle().equals(BostotteRolle.HOVEDPERSON))
-                        .collect(Collectors.toList());
-                bostotteDto.utbetalinger = bostotteDto.getUtbetalinger().stream()
-                        .filter(utbetalingerDto -> utbetalingerDto.getRolle().equals(BostotteRolle.HOVEDPERSON))
-                        .collect(Collectors.toList());
-
-                return toDomain(bostotteDto);
-            }
-            return null;
-        }
-    }
-
-    private Bostotte toDomain(no.nav.sosialhjelp.soknad.consumer.bostotte.dto.BostotteDto bostotteDto) {
-        return new Bostotte(
-                bostotteDto.saker.stream()
-                        .map(sakerDto -> new Sak(sakerDto.getDato(), sakerDto.getStatus(), toDomain(sakerDto.getVedtak()), sakerDto.getRolle()))
-                        .collect(Collectors.toList()),
-                bostotteDto.utbetalinger.stream()
-                        .map(utbetalingerDto -> new Utbetaling(utbetalingerDto.getUtbetalingsdato(), utbetalingerDto.getBelop(), utbetalingerDto.getMottaker(), utbetalingerDto.getRolle()))
-                        .collect(Collectors.toList())
-        );
-    }
-
-    private Vedtak toDomain(no.nav.sosialhjelp.soknad.consumer.bostotte.dto.VedtakDto dto) {
-        if (dto != null) {
-            return new Vedtak(dto.kode, dto.beskrivelse, dto.type);
-        }
-        return null;
+    private Bostotte innhentBostotteFraHusbanken(String token) {
+        var optionalDto = husbankenClient.hentBostotte(token, LocalDate.now().minusDays(60), LocalDate.now());
+        return optionalDto.map(BostotteDto::toDomain).orElse(null);
     }
 
     private List<JsonOkonomiOpplysningUtbetaling> mapToJsonOkonomiOpplysningUtbetalinger(Bostotte bostotte, boolean trengerViDataFraDeSiste60Dager) {
