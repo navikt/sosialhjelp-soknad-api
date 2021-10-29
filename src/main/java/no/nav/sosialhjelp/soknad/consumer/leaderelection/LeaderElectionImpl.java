@@ -6,7 +6,6 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import java.net.URI;
 import java.net.UnknownHostException;
 import java.time.LocalDateTime;
 
@@ -21,19 +20,20 @@ public class LeaderElectionImpl implements LeaderElection {
     private static final Logger log = getLogger(LeaderElectionImpl.class);
 
     private final WebClient webClient;
-    private final ObjectMapper mapper = new ObjectMapper();
+    private final String electorPath;
     private final String hostname;
     private String leader;
+    private final ObjectMapper mapper = new ObjectMapper();
     private LocalDateTime lastCallTime = LocalDateTime.MIN;
 
-    public LeaderElectionImpl(WebClient webClient) throws UnknownHostException {
-        this.webClient = webClient;
+    public LeaderElectionImpl(WebClient.Builder nonProxiedWebClientBuilder) throws UnknownHostException {
+        this.electorPath = System.getenv(ELECTOR_PATH);
+        this.webClient = nonProxiedWebClientBuilder.baseUrl("http://" + electorPath).build();
         this.hostname = getLocalHost().getHostName();
     }
 
     @Override
     public boolean isLeader() {
-        String electorPath = System.getenv(ELECTOR_PATH);
         if (electorPath == null) {
             log.warn("LeaderElection - manglende systemvariabel={}.", ELECTOR_PATH);
             return true;
@@ -41,7 +41,6 @@ public class LeaderElectionImpl implements LeaderElection {
         if (leader == null || lastCallTime.isBefore(LocalDateTime.now().minusMinutes(2))){
             try {
                 final var response = webClient.get()
-                        .uri(URI.create("http://" + electorPath).toString())
                         .retrieve()
                         .bodyToMono(String.class)
                         .block();
