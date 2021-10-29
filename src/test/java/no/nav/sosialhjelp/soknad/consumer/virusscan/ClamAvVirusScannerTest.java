@@ -1,34 +1,34 @@
 package no.nav.sosialhjelp.soknad.consumer.virusscan;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import mockwebserver3.MockResponse;
+import mockwebserver3.MockWebServer;
 import no.nav.sosialhjelp.soknad.domain.model.exception.OpplastingException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.RequestEntity;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.web.reactive.function.client.WebClient;
 
+import java.io.IOException;
 import java.net.URI;
 
+import static no.nav.sosialhjelp.soknad.consumer.redis.RedisUtils.objectMapper;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 
 @ExtendWith(MockitoExtension.class)
 class ClamAvVirusScannerTest {
 
+    private final MockWebServer mockWebServer = new MockWebServer();
+    private final WebClient webClient = WebClient.create(mockWebServer.url("/").toString());
     private final URI uri = URI.create("www.test.com");
-    private final RestTemplate restTemplate = mock(RestTemplate.class);
 
-    private final ClamAvVirusScanner virusScanner = new ClamAvVirusScanner(uri, restTemplate);
+    private final ClamAvVirusScanner virusScanner = new ClamAvVirusScanner(uri, webClient);
 
     private String filnavn = "virustest";
     private String behandlingsId = "1100001";
@@ -36,18 +36,24 @@ class ClamAvVirusScannerTest {
 
     @BeforeEach
     public void setUp() throws Exception {
+        mockWebServer.start();
         setField(virusScanner, "enabled", true);
     }
 
     @AfterEach
-    public void tearDown() {
+    public void tearDown() throws IOException {
+        mockWebServer.close();
         System.clearProperty("environment.name");
     }
 
     @Test
-    void scanFile_scanningIsEnabled_throwsException() {
-        when(restTemplate.exchange(any(RequestEntity.class), eq(ScanResult[].class)))
-                .thenReturn(ResponseEntity.ok(new ScanResult[]{new ScanResult(filnavn, Result.FOUND)}));
+    void scanFile_scanningIsEnabled_throwsException() throws JsonProcessingException {
+        mockWebServer.enqueue(
+                new MockResponse()
+                        .setResponseCode(200)
+                        .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                        .setBody(objectMapper.writeValueAsString(new ScanResult[]{new ScanResult(filnavn, Result.FOUND)}))
+        );
 
         assertThatExceptionOfType(OpplastingException.class)
                 .isThrownBy(() -> virusScanner.scan(filnavn, data, behandlingsId, "pdf"))
@@ -67,44 +73,48 @@ class ClamAvVirusScannerTest {
         System.setProperty("environment.name", "test");
 
         assertThatExceptionOfType(OpplastingException.class)
-            .isThrownBy(() -> virusScanner.scan("virustest", data, behandlingsId, "pdf"));
-
-        verify(restTemplate, times(0)).exchange(any(RequestEntity.class), eq(ScanResult[].class));
+                .isThrownBy(() -> virusScanner.scan("virustest", data, behandlingsId, "pdf"));
     }
 
     @Test
-    void scanFile_resultatHasWrongLength_isNotInfected() {
-        when(restTemplate.exchange(any(RequestEntity.class), eq(ScanResult[].class)))
-                .thenReturn(ResponseEntity.ok(new ScanResult[]{
-                        new ScanResult("test", Result.FOUND),
-                        new ScanResult("test", Result.FOUND)
-                }));
+    void scanFile_resultatHasWrongLength_isNotInfected() throws JsonProcessingException {
+        mockWebServer.enqueue(
+                new MockResponse()
+                        .setResponseCode(200)
+                        .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                        .setBody(objectMapper.writeValueAsString(new ScanResult[]{
+                                new ScanResult("test", Result.FOUND),
+                                new ScanResult("test", Result.FOUND)
+                        }))
+        );
 
         assertThatCode(() -> virusScanner.scan(filnavn, data, behandlingsId, "png"))
-            .doesNotThrowAnyException();
-
-        verify(restTemplate, times(1)).exchange(any(RequestEntity.class), eq(ScanResult[].class));
+                .doesNotThrowAnyException();
     }
 
     @Test
-    void scanFile_resultatIsOK_isNotInfected() {
-        when(restTemplate.exchange(any(RequestEntity.class), eq(ScanResult[].class)))
-                .thenReturn(ResponseEntity.ok(new ScanResult[]{new ScanResult("test", Result.OK)}));
+    void scanFile_resultatIsOK_isNotInfected() throws JsonProcessingException {
+        mockWebServer.enqueue(
+                new MockResponse()
+                        .setResponseCode(200)
+                        .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                        .setBody(objectMapper.writeValueAsString(new ScanResult[]{new ScanResult("test", Result.OK)}))
+        );
 
         assertThatCode(() -> virusScanner.scan(filnavn, data, behandlingsId, "jpg"))
                 .doesNotThrowAnyException();
-
-        verify(restTemplate, times(1)).exchange(any(RequestEntity.class), eq(ScanResult[].class));
     }
 
     @Test
-    void scanFile_resultatIsNotOK_isInfected() {
-        when(restTemplate.exchange(any(RequestEntity.class), eq(ScanResult[].class)))
-                .thenReturn(ResponseEntity.ok(new ScanResult[]{new ScanResult("test", Result.FOUND)}));
+    void scanFile_resultatIsNotOK_isInfected() throws JsonProcessingException {
+        mockWebServer.enqueue(
+                new MockResponse()
+                        .setResponseCode(200)
+                        .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                        .setBody(objectMapper.writeValueAsString(new ScanResult[]{new ScanResult("test", Result.FOUND)}))
+        );
 
         assertThatExceptionOfType(OpplastingException.class)
                 .isThrownBy(() -> virusScanner.scan(filnavn, data, behandlingsId, "pdf"));
-
-        verify(restTemplate, times(1)).exchange(any(RequestEntity.class), eq(ScanResult[].class));
     }
 }
