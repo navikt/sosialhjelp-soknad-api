@@ -62,7 +62,6 @@
     "SCHEDULER_DISABLE": "false",
     "SOKNADSOSIALHJELPDATASOURCE_URL": "jdbc:oracle:thin:@d32dbfl003.oera-t.local:1521/soknadsosialhjelp_q1",
     "SOKNAD_BOSTOTTE_URL": "https://api.demo.husbanken.no/bostotte/minbostotte",
-    "SOKNAD_BOSTOTTE_PING_URL": "https://api.demo.husbanken.no/bostotte/minbostotte/ping",
     "SOKNAD_ETTERSENDING_ANTALLDAGER": "300",
     "SECURITYTOKENSERVICE_APIGW_URL": "https://api-gw-q1.oera.no/security-token-service/rest/v1/sts/token",
     "SKATTEETATEN_API_BASEURL": "https://api-test.sits.no/api/innrapportert/inntektsmottaker/v1/digisos/",
