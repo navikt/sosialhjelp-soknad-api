@@ -35,32 +35,33 @@ class SkatteetatenClientImpl(
             tom = LocalDate.now()
         )
 
-        return webClient.get()
-            .uri { uriBuilder ->
-                uriBuilder
-                    .path("{personidentifikator}/inntekter")
-                    .queryParam("fraOgMed", sokedata.fom.format(formatter))
-                    .queryParam("tilOgMed", sokedata.tom.format(formatter))
-                    .build(sokedata.identifikator)
-            }
-            .accept(MediaType.APPLICATION_JSON)
-            .headers { it.add(HttpHeaders.AUTHORIZATION, BEARER + maskinportenClient.getTokenString()) }
-            .retrieve()
-            .bodyToMono<SkattbarInntekt>()
-            .onErrorResume(WebClientResponseException.NotFound::class.java) {
-                log.info("Ingen skattbar inntekt funnet")
-                Mono.just(SkattbarInntekt())
-            }
-            .onErrorMap(WebClientResponseException::class.java) { e ->
-                val feilmeldingUtenFnr = maskerFnr(e.responseBodyAsString)
-                log.warn("Klarer ikke hente skatteopplysninger {} status {} ", feilmeldingUtenFnr, e.statusCode)
-                throw e
-            }
-            .onErrorMap { e ->
-                log.warn("Klarer ikke hente skatteopplysninger", e)
-                throw e
-            }
-            .block()
+        return try {
+            webClient.get()
+                .uri { uriBuilder ->
+                    uriBuilder
+                        .path("{personidentifikator}/inntekter")
+                        .queryParam("fraOgMed", sokedata.fom.format(formatter))
+                        .queryParam("tilOgMed", sokedata.tom.format(formatter))
+                        .build(sokedata.identifikator)
+                }
+                .accept(MediaType.APPLICATION_JSON)
+                .headers { it.add(HttpHeaders.AUTHORIZATION, BEARER + maskinportenClient.getTokenString()) }
+                .retrieve()
+                .bodyToMono<SkattbarInntekt>()
+                .onErrorResume(WebClientResponseException.NotFound::class.java) {
+                    log.info("Ingen skattbar inntekt funnet")
+                    Mono.just(SkattbarInntekt())
+                }
+                .doOnError { e ->
+                    when (e) {
+                        is WebClientResponseException -> log.warn("Klarer ikke hente skatteopplysninger {} status {} ", maskerFnr(e.responseBodyAsString), e.statusCode)
+                        else -> log.warn("Klarer ikke hente skatteopplysninger - Exception-type: ${e::class.java}")
+                    }
+                }
+                .block()
+        } catch (e: Exception) {
+            return null
+        }
     }
 
     override fun ping() {
