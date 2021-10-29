@@ -59,7 +59,7 @@ class SkatteetatenClientImpl(
                     }
                 }
                 .block()
-        } catch (e:Exception) {
+        } catch (e: Exception) {
             return null
         }
     }
