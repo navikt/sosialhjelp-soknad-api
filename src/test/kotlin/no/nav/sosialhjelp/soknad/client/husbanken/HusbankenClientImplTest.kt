@@ -15,7 +15,6 @@ import org.springframework.web.reactive.function.client.WebClient
 import java.nio.charset.StandardCharsets
 import java.time.LocalDate
 
-
 internal class HusbankenClientImplTest {
 
     private val mockWebServer = MockWebServer()
@@ -55,9 +54,9 @@ internal class HusbankenClientImplTest {
         assertThat(dto.saker).hasSize(3)
         assertThat(dto.saker?.get(0)?.vedtak?.type).isEqualTo("INNVILGET")
         assertThat(dto.utbetalinger).hasSize(2)
-        assertThat(dto.utbetalinger?.get(0)?.utbetalingsdato).isEqualTo(LocalDate.of(2019,7,20))
+        assertThat(dto.utbetalinger?.get(0)?.utbetalingsdato).isEqualTo(LocalDate.of(2019, 7, 20))
         assertThat(dto.utbetalinger?.get(0)?.belop?.toDouble()).isEqualTo(4300.5)
-        assertThat(dto.utbetalinger?.get(1)?.utbetalingsdato).isEqualTo(LocalDate.of(2019,8,20))
+        assertThat(dto.utbetalinger?.get(1)?.utbetalingsdato).isEqualTo(LocalDate.of(2019, 8, 20))
         assertThat(dto.utbetalinger?.get(1)?.belop?.toDouble()).isEqualTo(4300.0)
     }
 
