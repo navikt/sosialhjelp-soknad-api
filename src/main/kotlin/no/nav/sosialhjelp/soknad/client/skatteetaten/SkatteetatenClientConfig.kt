@@ -12,7 +12,7 @@ import org.springframework.web.reactive.function.client.WebClient
 
 @Configuration
 open class SkatteetatenClientConfig(
-    private val proxiedWebClient: WebClient,
+    private val proxiedWebClientBuilder: WebClient.Builder,
     @Value("\${skatteetaten_api_baseurl}") private val baseurl: String,
     private val maskinportenClient: MaskinportenClient
 ) {
@@ -37,7 +37,7 @@ open class SkatteetatenClientConfig(
     }
 
     private val skatteetatenWebClient: WebClient
-        get() = proxiedWebClient.mutate()
+        get() = proxiedWebClientBuilder
             .baseUrl(baseurl)
             .build()
 }
