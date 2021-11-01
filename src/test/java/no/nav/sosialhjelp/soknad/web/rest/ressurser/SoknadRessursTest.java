@@ -22,7 +22,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -207,16 +206,6 @@ class SoknadRessursTest {
                 .isThrownBy(() -> ressurs.hentXsrfCookie(BEHANDLINGSID, response));
 
         verifyNoInteractions(henvendelseService);
-    }
-
-    @Test
-    void getOppsummeringSkalKasteAuthorizationExceptionVedManglendeTilgang() throws IOException {
-        doThrow(new AuthorizationException("Not for you my friend")).when(tilgangskontroll).verifiserAtBrukerHarTilgang();
-
-        assertThatExceptionOfType(AuthorizationException.class)
-                .isThrownBy(() -> ressurs.hentOppsummering(BEHANDLINGSID));
-
-        verifyNoInteractions(soknadUnderArbeidRepository);
     }
 
     @Test

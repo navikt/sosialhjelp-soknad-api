@@ -20,7 +20,6 @@ import org.springframework.context.annotation.Import;
         BusinessConfig.class,
         ConsumerConfig.class,
         ContentConfig.class,
-        HandlebarsConfig.class,
         OidcTokenValidatorConfig.class,
         MetricsConfiguration.class,
         SaksoversiktMetadataService.class,

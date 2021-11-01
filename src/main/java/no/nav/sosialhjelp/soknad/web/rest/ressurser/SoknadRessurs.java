@@ -7,7 +7,6 @@ import no.nav.sosialhjelp.metrics.aspects.Timed;
 import no.nav.sosialhjelp.soknad.business.SoknadUnderArbeidService;
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository;
 import no.nav.sosialhjelp.soknad.business.exceptions.SoknadenHarNedetidException;
-import no.nav.sosialhjelp.soknad.business.pdf.HtmlGenerator;
 import no.nav.sosialhjelp.soknad.business.service.HenvendelseService;
 import no.nav.sosialhjelp.soknad.business.service.OpplastetVedleggService;
 import no.nav.sosialhjelp.soknad.business.service.oppsummering.OppsummeringService;
@@ -33,7 +32,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -64,7 +62,6 @@ public class SoknadRessurs {
     private static final Logger log = getLogger(SoknadRessurs.class);
 
     private final SoknadService soknadService;
-    private final HtmlGenerator htmlGenerator;
     private final SoknadUnderArbeidService soknadUnderArbeidService;
     private final SoknadUnderArbeidRepository soknadUnderArbeidRepository;
     private final SystemdataUpdater systemdata;
@@ -75,7 +72,6 @@ public class SoknadRessurs {
 
     public SoknadRessurs(
             SoknadService soknadService,
-            HtmlGenerator htmlGenerator,
             SoknadUnderArbeidService soknadUnderArbeidService,
             SoknadUnderArbeidRepository soknadUnderArbeidRepository,
             SystemdataUpdater systemdata,
@@ -85,7 +81,6 @@ public class SoknadRessurs {
             OppsummeringService oppsummeringService
     ) {
         this.soknadService = soknadService;
-        this.htmlGenerator = htmlGenerator;
         this.soknadUnderArbeidService = soknadUnderArbeidService;
         this.soknadUnderArbeidRepository = soknadUnderArbeidRepository;
         this.systemdata = systemdata;
@@ -117,30 +112,6 @@ public class SoknadRessurs {
         response.addCookie(xsrfCookieMedBehandlingsid(behandlingsId));
         henvendelseService.oppdaterSistEndretDatoPaaMetadata(behandlingsId);
         return true;
-    }
-
-    @GET
-    @Path("/{behandlingsId}")
-    @Produces("application/vnd.oppsummering+html")
-    public String hentOppsummering(@PathParam("behandlingsId") String behandlingsId) throws IOException {
-        tilgangskontroll.verifiserAtBrukerHarTilgang();
-        String eier = SubjectHandler.getUserId();
-        var soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
-
-        if (soknadUnderArbeid.getJsonInternalSoknad().getVedlegg() == null
-                || soknadUnderArbeid.getJsonInternalSoknad().getVedlegg().getVedlegg() == null
-                || soknadUnderArbeid.getJsonInternalSoknad().getVedlegg().getVedlegg().isEmpty()) {
-            log.info("Oppdaterer vedleggsforventninger for soknad {} fra oppsummeringssiden, ettersom side 8 ble hoppet over", behandlingsId);
-            opplastetVedleggService.oppdaterVedleggsforventninger(soknadUnderArbeid, eier);
-        }
-
-        try {
-            oppsummeringService.hentOppsummering(eier, behandlingsId);
-        } catch (Exception e) {
-            log.warn("Noe uventet feilet ved generering av ny oppsummeringsside", e);
-        }
-
-        return htmlGenerator.fyllHtmlMalMedInnhold(soknadUnderArbeid.getJsonInternalSoknad(), false);
     }
 
     @GET

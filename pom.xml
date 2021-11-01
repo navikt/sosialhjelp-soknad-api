@@ -65,7 +65,6 @@
         <ojdbc.version>19.12.0.0</ojdbc.version>
         <flyway-core.version>7.14.0</flyway-core.version>
         <flyway-maven-plugin.version>7.14.0</flyway-maven-plugin.version>
-        <handlebars.version>4.2.0</handlebars.version>
         <jackson.version>2.13.0</jackson.version>
         <pdfbox.version>2.0.24</pdfbox.version>
         <jempbox.version>1.8.16</jempbox.version>
@@ -835,11 +834,6 @@
         <!-- Avhengigheter med runtime scope -->
 
         <!-- diverse avhengigheter -->
-        <dependency>
-            <groupId>com.github.jknack</groupId>
-            <artifactId>handlebars</artifactId>
-            <version>${handlebars.version}</version>
-        </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-text</artifactId>
