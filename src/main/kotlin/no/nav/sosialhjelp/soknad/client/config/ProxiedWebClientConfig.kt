@@ -13,13 +13,12 @@ open class ProxiedWebClientConfig(
 ) {
 
     @Bean
-    open fun proxiedWebClient(): WebClient =
+    open fun proxiedWebClientBuilder(): WebClient.Builder =
         WebClient.builder()
             .clientConnector(getProxiedReactorClientHttpConnector(proxyUrl))
             .codecs {
                 it.defaultCodecs().maxInMemorySize(16 * 1024 * 1024)
             }
-            .build()
 }
 
 @Profile("(mock-alt|test)")
@@ -27,13 +26,12 @@ open class ProxiedWebClientConfig(
 open class MockProxiedWebClientConfig {
 
     @Bean
-    open fun proxiedWebClient(): WebClient =
+    open fun proxiedWebClientBuilder(): WebClient.Builder =
         WebClient.builder()
             .clientConnector(getUnproxiedReactorClientHttpConnector())
             .codecs {
                 it.defaultCodecs().maxInMemorySize(16 * 1024 * 1024)
             }
-            .build()
 }
 
 @Configuration

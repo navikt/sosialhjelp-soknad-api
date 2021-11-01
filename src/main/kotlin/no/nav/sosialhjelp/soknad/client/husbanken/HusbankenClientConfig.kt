@@ -9,7 +9,7 @@ import org.springframework.web.reactive.function.client.WebClient
 
 @Configuration
 open class HusbankenClientConfig(
-    private val proxiedWebClient: WebClient,
+    private val proxiedWebClientBuilder: WebClient.Builder,
     @Value("\${soknad.bostotte.url}") private val bostotteBaseUrl: String
 ) {
 
@@ -33,7 +33,7 @@ open class HusbankenClientConfig(
     }
 
     private val husbankenWebClient: WebClient
-        get() = proxiedWebClient.mutate()
+        get() = proxiedWebClientBuilder
             .baseUrl(bostotteBaseUrl)
             .build()
 }
