@@ -20,6 +20,7 @@ import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.BOSTOTTE_SAMTYKK
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_HUSBANKEN;
 import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.StegUtils.booleanVerdiFelt;
 import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.StegUtils.createSvar;
+import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.inntektformue.InntektFormueUtils.getBekreftelse;
 import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.inntektformue.InntektFormueUtils.harBekreftelse;
 import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.inntektformue.InntektFormueUtils.harBekreftelseTrue;
 
@@ -73,6 +74,40 @@ public class BostotteHusbanken {
 
     private List<Felt> bostotteFelter(JsonOkonomiopplysninger opplysninger) {
         var felter = new ArrayList<Felt>();
+
+        var bostotteBekreftelse = getBekreftelse(opplysninger, BOSTOTTE_SAMTYKKE);
+
+        // info om tidspunkt for henting av data fra Husbanken
+        felter.add(
+                new Felt.Builder()
+                        .withType(Type.TEKST)
+                        .withSvar(createSvar(bostotteBekreftelse.getBekreftelsesDato(), SvarType.DATO))
+                        .build()
+        );
+
+        var harUtbetalinger = opplysninger.getUtbetaling().stream().anyMatch(utbetaling -> UTBETALING_HUSBANKEN.equals(utbetaling.getType()));
+        var harSaker = !opplysninger.getBostotte().getSaker().isEmpty();
+
+        // hvis ingen utbetalinger eller saker:
+        if (!harUtbetalinger && !harSaker) {
+            felter.add(
+                    new Felt.Builder()
+                            .withType(Type.TEKST)
+                            .withSvar(createSvar("inntekt.bostotte.ikkefunnet", SvarType.LOCALE_TEKST))
+                            .build()
+            );
+        }
+
+        // hvis ingen utbetalinger, men har saker
+        if (!harUtbetalinger && harSaker) {
+            felter.add(
+                    new Felt.Builder()
+                            .withType(Type.TEKST)
+                            .withSvar(createSvar("inntekt.bostotte.utbetalingerIkkefunnet", SvarType.LOCALE_TEKST))
+                            .build()
+            );
+        }
+
         opplysninger.getUtbetaling().stream()
                 .filter(utbetaling -> UTBETALING_HUSBANKEN.equals(utbetaling.getType()))
                 .forEach(utbetaling -> {
@@ -89,6 +124,16 @@ public class BostotteHusbanken {
                             );
                         }
                 );
+
+        // hvis ingen saker, men har utbetalinger
+        if (harUtbetalinger && !harSaker) {
+            felter.add(
+                    new Felt.Builder()
+                            .withType(Type.TEKST)
+                            .withSvar(createSvar("inntekt.bostotte.sakerIkkefunnet", SvarType.LOCALE_TEKST))
+                            .build()
+            );
+        }
         opplysninger.getBostotte().getSaker()
                 .forEach(sak -> {
                             var map = new LinkedHashMap<String, Svar>();
