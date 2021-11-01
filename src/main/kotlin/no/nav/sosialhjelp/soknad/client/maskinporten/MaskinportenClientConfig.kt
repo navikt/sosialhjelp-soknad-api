@@ -11,7 +11,7 @@ import org.springframework.web.reactive.function.client.bodyToMono
 
 @Configuration
 open class MaskinportenClientConfig(
-    private val proxiedWebClient: WebClient,
+    private val proxiedWebClientBuilder: WebClient.Builder,
     @Value("\${maskinporten_clientid}") private val clientId: String,
     @Value("\${maskinporten_scopes}") private val scopes: String,
     @Value("\${maskinporten_well_known_url}") private val wellKnownUrl: String,
@@ -21,18 +21,21 @@ open class MaskinportenClientConfig(
     @Bean
     @Profile("!test")
     open fun maskinportenClient(): MaskinportenClient {
-        val maskinportenClient = MaskinportenClientImpl(proxiedWebClient, maskinportenProperties, wellknown)
+        val maskinportenClient = MaskinportenClientImpl(maskinPortenWebClient, maskinportenProperties, wellknown)
         return MetricsFactory.createTimerProxy("MaskinportenClient", maskinportenClient, MaskinportenClient::class.java)
     }
 
     @Bean
     @Profile("test")
     open fun maskinportenClientTest(): MaskinportenClient {
-        return MaskinportenClientImpl(proxiedWebClient, maskinportenProperties, WellKnown("issuer", "token_url"))
+        return MaskinportenClientImpl(maskinPortenWebClient, maskinportenProperties, WellKnown("issuer", "token_url"))
     }
 
+    private val maskinPortenWebClient: WebClient
+        get() = proxiedWebClientBuilder.build()
+
     private val wellknown: WellKnown
-        get() = proxiedWebClient.get()
+        get() = maskinPortenWebClient.get()
             .uri(wellKnownUrl)
             .retrieve()
             .bodyToMono<WellKnown>()

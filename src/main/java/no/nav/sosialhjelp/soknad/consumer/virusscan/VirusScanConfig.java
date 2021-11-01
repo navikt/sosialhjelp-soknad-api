@@ -13,8 +13,8 @@ public class VirusScanConfig {
     private static final URI DEFAULT_CLAM_URI = URI.create("http://clamav.nais.svc.nais.local/scan");
 
     @Bean
-    public VirusScanner virusScanner(WebClient webClient) {
-        final var clamAvWebClient = webClient.mutate()
+    public VirusScanner virusScanner(WebClient.Builder nonProxiedWebClientBuilder) {
+        final var clamAvWebClient = nonProxiedWebClientBuilder
                 .baseUrl(DEFAULT_CLAM_URI.toString())
                 .build();
 
