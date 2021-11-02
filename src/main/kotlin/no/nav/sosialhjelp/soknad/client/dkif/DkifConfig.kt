@@ -37,6 +37,11 @@ open class DkifConfig(
         }
     }
 
+    @Bean
+    open fun mobiltelefonService(dkifClient: DkifClient): MobiltelefonService {
+        return MobiltelefonServiceImpl(dkifClient)
+    }
+
     private val client: Client
         get() {
             val apiKey = System.getenv(DKIFAPI_APIKEY)
