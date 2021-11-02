@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import static java.util.Collections.singletonList;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_SKATTEETATEN;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_SKATTEETATEN_SAMTYKKE;
 import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.StegUtils.createSvar;
@@ -42,7 +43,7 @@ public class SkattbarInntekt {
             sporsmal.add(
                     new Sporsmal.Builder()
                             .withTittel("utbetalinger.inntekt.skattbar.mangler_samtykke")
-                            .withErUtfylt(true) // alltid true (eller null)
+                            .withErUtfylt(true)
                             .build()
             );
         }
@@ -57,40 +58,44 @@ public class SkattbarInntekt {
         }
 
         if (harSkatteetatenSamtykke && !fikkFeilMotSkatteetaten) {
-            sporsmal.add(
-                    new Sporsmal.Builder()
-                            .withTittel("utbetalinger.inntekt.skattbar.har_gitt_samtykke")
-                            // undertittel? Tidspunkt for henting av inntekt fra Skatteetaten // bekreftelse.getBekreftelsesDato
-                            .withErUtfylt(true)
-                            .withFelt(skattbarInntektFelter(getBekreftelse(opplysninger, UTBETALING_SKATTEETATEN_SAMTYKKE), opplysninger.getUtbetaling()))
-                            .build()
+            sporsmal.add(bekreftelsesTidspunktSporsmal(getBekreftelse(opplysninger, UTBETALING_SKATTEETATEN_SAMTYKKE)));
+
+            sporsmal.add(new Sporsmal.Builder()
+                    .withTittel("utbetalinger.inntekt.skattbar.inntekt.tittel")
+                    .withFelt(skattbarInntektFelter(opplysninger.getUtbetaling()))
+                    .withErUtfylt(true)
+                    .build()
             );
         }
         return sporsmal;
     }
 
-    private List<Felt> skattbarInntektFelter(JsonOkonomibekreftelse bekreftelse, List<JsonOkonomiOpplysningUtbetaling> utbetalinger) {
+    private Sporsmal bekreftelsesTidspunktSporsmal(JsonOkonomibekreftelse skatteetatenBekreftelse) {
+        return new Sporsmal.Builder()
+                .withTittel("utbetalinger.inntekt.skattbar.har_gitt_samtykke")
+                .withFelt(singletonList(
+                        new Felt.Builder()
+                                .withType(Type.TEKST)
+                                .withSvar(createSvar(skatteetatenBekreftelse.getBekreftelsesDato(), SvarType.TIDSPUNKT))
+                                .build()
+                ))
+                .withErUtfylt(true)
+                .build();
+    }
+
+    private List<Felt> skattbarInntektFelter(List<JsonOkonomiOpplysningUtbetaling> utbetalinger) {
         var harSkattbareInntekter = utbetalinger != null && utbetalinger.stream().anyMatch(utbetaling -> UTBETALING_SKATTEETATEN.equals(utbetaling.getType()));
 
         var feltListe = new ArrayList<Felt>();
-        feltListe.add(
-                new Felt.Builder()
-                        .withType(Type.TEKST)
-                        .withSvar(createSvar(bekreftelse.getBekreftelsesDato(), SvarType.TIDSPUNKT))
-                        .build()
-        );
 
         if (!harSkattbareInntekter) {
-            // ingen skattbare inntekter
             feltListe.add(
                     new Felt.Builder()
                             .withType(Type.TEKST)
                             .withSvar(createSvar("utbetalinger.inntekt.skattbar.ingen", SvarType.LOCALE_TEKST))
                             .build()
             );
-        }
-
-        if (harSkattbareInntekter) {
+        } else {
             // todo: gruppere pr mnd og organisasjon? summere inntekter og skattetrekk
             utbetalinger.stream()
                     .filter(utbetaling -> UTBETALING_SKATTEETATEN.equals(utbetaling.getType()))
