@@ -3,6 +3,7 @@ package no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.inntektform
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonDriftsinformasjon;
 import no.nav.sbl.soknadsosialhjelp.soknad.bostotte.JsonBostotteSak;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Avsnitt;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Felt;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Sporsmal;
@@ -12,7 +13,6 @@ import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Type;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.List;
 
 import static java.util.Collections.singletonList;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.BOSTOTTE;
@@ -61,44 +61,64 @@ public class BostotteHusbanken {
             );
         }
 
-        if (harSvartJaBostotte && !fikkFeilMotHusbanken)
+        if (harSvartJaBostotte && !fikkFeilMotHusbanken && !harBostotteSamtykke) {
             sporsmal.add(
                     new Sporsmal.Builder()
-                            .withTittel("")
+                            .withTittel("inntekt.bostotte.mangler_samtykke")
                             .withErUtfylt(true)
-                            .withFelt(harBostotteSamtykke ? bostotteFelter(opplysninger) : manglerSamtykkeFelt())
-                            .build()
-            );
-        return sporsmal;
-    }
-
-    private List<Felt> bostotteFelter(JsonOkonomiopplysninger opplysninger) {
-        var felter = new ArrayList<Felt>();
-
-        var bostotteBekreftelse = getBekreftelse(opplysninger, BOSTOTTE_SAMTYKKE);
-
-        // info om tidspunkt for henting av data fra Husbanken
-        felter.add(
-                new Felt.Builder()
-                        .withType(Type.TEKST)
-                        .withSvar(createSvar(bostotteBekreftelse.getBekreftelsesDato(), SvarType.DATO))
-                        .build()
-        );
-
-        var harUtbetalinger = opplysninger.getUtbetaling().stream().anyMatch(utbetaling -> UTBETALING_HUSBANKEN.equals(utbetaling.getType()));
-        var harSaker = !opplysninger.getBostotte().getSaker().isEmpty();
-
-        // hvis ingen utbetalinger eller saker:
-        if (!harUtbetalinger && !harSaker) {
-            felter.add(
-                    new Felt.Builder()
-                            .withType(Type.TEKST)
-                            .withSvar(createSvar("inntekt.bostotte.ikkefunnet", SvarType.LOCALE_TEKST))
                             .build()
             );
         }
 
-        // hvis ingen utbetalinger, men har saker
+        if (harSvartJaBostotte && !fikkFeilMotHusbanken && harBostotteSamtykke) {
+            var harUtbetalinger = harHusbankenUtbetalinger(opplysninger);
+            var harSaker = !opplysninger.getBostotte().getSaker().isEmpty();
+
+            sporsmal.add(bekreftelseTidspunktSporsmal(getBekreftelse(opplysninger, BOSTOTTE_SAMTYKKE)));
+
+            if (!harUtbetalinger && !harSaker) {
+                sporsmal.add(ingenUtbetalingerEllerSakerSporsmal());
+            } else {
+                sporsmal.add(utbetalingerSporsmal(opplysninger));
+                sporsmal.add(sakerSporsmal(opplysninger));
+            }
+        }
+
+        return sporsmal;
+    }
+
+    private Sporsmal bekreftelseTidspunktSporsmal(JsonOkonomibekreftelse bostotteBekreftelse) {
+        return new Sporsmal.Builder()
+                .withTittel("inntekt.bostotte.har_gitt_samtykke")
+                .withFelt(singletonList(
+                        new Felt.Builder()
+                                .withType(Type.TEKST)
+                                .withSvar(createSvar(bostotteBekreftelse.getBekreftelsesDato(), SvarType.TIDSPUNKT))
+                                .build()
+                ))
+                .withErUtfylt(true)
+                .build();
+    }
+
+    private Sporsmal ingenUtbetalingerEllerSakerSporsmal() {
+        return new Sporsmal.Builder()
+                .withTittel("")
+                .withFelt(singletonList(
+                        new Felt.Builder()
+                                .withType(Type.TEKST)
+                                .withSvar(createSvar("inntekt.bostotte.ikkefunnet", SvarType.LOCALE_TEKST))
+                                .build()
+                ))
+                .withErUtfylt(true)
+                .build();
+    }
+
+    private Sporsmal utbetalingerSporsmal(JsonOkonomiopplysninger opplysninger) {
+        var harUtbetalinger = harHusbankenUtbetalinger(opplysninger);
+        var harSaker = !opplysninger.getBostotte().getSaker().isEmpty();
+
+        var felter = new ArrayList<Felt>();
+
         if (!harUtbetalinger && harSaker) {
             felter.add(
                     new Felt.Builder()
@@ -106,26 +126,38 @@ public class BostotteHusbanken {
                             .withSvar(createSvar("inntekt.bostotte.utbetalingerIkkefunnet", SvarType.LOCALE_TEKST))
                             .build()
             );
+        } else {
+            opplysninger.getUtbetaling().stream()
+                    .filter(utbetaling -> UTBETALING_HUSBANKEN.equals(utbetaling.getType()))
+                    .forEach(utbetaling -> {
+                                var map = new LinkedHashMap<String, Svar>();
+                                map.put("inntekt.bostotte.utbetaling.mottaker", createSvar(utbetaling.getMottaker().value(), SvarType.TEKST));
+                                map.put("inntekt.bostotte.utbetaling.utbetalingsdato", createSvar(utbetaling.getUtbetalingsdato(), SvarType.DATO));
+                                map.put("inntekt.bostotte.utbetaling.belop", createSvar(utbetaling.getNetto().toString(), SvarType.TEKST));
+
+                                felter.add(
+                                        new Felt.Builder()
+                                                .withLabelSvarMap(map)
+                                                .withType(Type.SYSTEMDATA_MAP)
+                                                .build()
+                                );
+                            }
+                    );
         }
 
-        opplysninger.getUtbetaling().stream()
-                .filter(utbetaling -> UTBETALING_HUSBANKEN.equals(utbetaling.getType()))
-                .forEach(utbetaling -> {
-                            var map = new LinkedHashMap<String, Svar>();
-                            map.put("inntekt.bostotte.utbetaling.mottaker", createSvar(utbetaling.getMottaker().value(), SvarType.TEKST));
-                            map.put("inntekt.bostotte.utbetaling.utbetalingsdato", createSvar(utbetaling.getUtbetalingsdato(), SvarType.DATO));
-                            map.put("inntekt.bostotte.utbetaling.belop", createSvar(utbetaling.getNetto().toString(), SvarType.TEKST));
+        return new Sporsmal.Builder()
+                .withTittel("inntekt.bostotte.utbetaling")
+                .withFelt(felter)
+                .withErUtfylt(true)
+                .build();
+    }
 
-                            felter.add(
-                                    new Felt.Builder()
-                                            .withLabelSvarMap(map)
-                                            .withType(Type.SYSTEMDATA_MAP)
-                                            .build()
-                            );
-                        }
-                );
+    private Sporsmal sakerSporsmal(JsonOkonomiopplysninger opplysninger) {
+        var harUtbetalinger = harHusbankenUtbetalinger(opplysninger);
+        var harSaker = !opplysninger.getBostotte().getSaker().isEmpty();
 
-        // hvis ingen saker, men har utbetalinger
+        var felter = new ArrayList<Felt>();
+
         if (harUtbetalinger && !harSaker) {
             felter.add(
                     new Felt.Builder()
@@ -133,22 +165,29 @@ public class BostotteHusbanken {
                             .withSvar(createSvar("inntekt.bostotte.sakerIkkefunnet", SvarType.LOCALE_TEKST))
                             .build()
             );
-        }
-        opplysninger.getBostotte().getSaker()
-                .forEach(sak -> {
-                            var map = new LinkedHashMap<String, Svar>();
-                            map.put("inntekt.bostotte.sak.dato", createSvar(sak.getDato(), SvarType.DATO));
-                            map.put("inntekt.bostotte.sak.status", createSvar(bostotteSakStatus(sak), SvarType.TEKST));
+        } else {
+            opplysninger.getBostotte().getSaker()
+                    .forEach(sak -> {
+                        var map = new LinkedHashMap<String, Svar>();
+                        map.put("inntekt.bostotte.sak.dato", createSvar(sak.getDato(), SvarType.DATO));
+                        map.put("inntekt.bostotte.sak.status", createSvar(bostotteSakStatus(sak), SvarType.TEKST));
 
-                            felter.add(
-                                    new Felt.Builder()
-                                            .withLabelSvarMap(map)
-                                            .withType(Type.SYSTEMDATA_MAP)
-                                            .build()
-                            );
-                        }
-                );
-        return felter;
+                        felter.add(
+                                new Felt.Builder()
+                                        .withLabelSvarMap(map)
+                                        .withType(Type.SYSTEMDATA_MAP)
+                                        .build());
+                    });
+        }
+        return new Sporsmal.Builder()
+                .withTittel("inntekt.bostotte.sak")
+                .withFelt(felter)
+                .withErUtfylt(true)
+                .build();
+    }
+
+    private boolean harHusbankenUtbetalinger(JsonOkonomiopplysninger opplysninger) {
+        return opplysninger.getUtbetaling().stream().anyMatch(utbetaling -> UTBETALING_HUSBANKEN.equals(utbetaling.getType()));
     }
 
     private String bostotteSakStatus(JsonBostotteSak sak) {
@@ -157,13 +196,5 @@ public class BostotteHusbanken {
             status += String.format(": %s", sak.getBeskrivelse());
         }
         return status;
-    }
-
-    private List<Felt> manglerSamtykkeFelt() {
-        return singletonList(
-                new Felt.Builder()
-                        .withSvar(createSvar("inntekt.bostotte.mangler_samtykke", SvarType.LOCALE_TEKST))
-                        .build()
-        );
     }
 }
