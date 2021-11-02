@@ -1,9 +1,11 @@
 package no.nav.sosialhjelp.soknad.business.service.systemdata;
 
+import no.finn.unleash.Unleash;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonTelefonnummer;
 import no.nav.sosialhjelp.soknad.business.service.soknadservice.Systemdata;
+import no.nav.sosialhjelp.soknad.client.dkif.MobiltelefonService;
 import no.nav.sosialhjelp.soknad.consumer.dkif.DkifService;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import org.slf4j.Logger;
@@ -16,10 +18,20 @@ public class TelefonnummerSystemdata implements Systemdata {
 
     private static final Logger log = getLogger(TelefonnummerSystemdata.class);
 
-    private final DkifService dkifService;
+    private static final String DKIF_BRUK_NY_CLIENT = "sosialhjelp.soknad.dkif-bruk-ny-client";
 
-    public TelefonnummerSystemdata(DkifService dkifService) {
+    private final DkifService dkifService;
+    private final MobiltelefonService mobiltelefonService;
+    private final Unleash unleash;
+
+    public TelefonnummerSystemdata(
+            DkifService dkifService,
+            MobiltelefonService mobiltelefonService,
+            Unleash unleash
+    ) {
         this.dkifService = dkifService;
+        this.mobiltelefonService = mobiltelefonService;
+        this.unleash = unleash;
     }
 
     @Override
@@ -40,6 +52,18 @@ public class TelefonnummerSystemdata implements Systemdata {
     }
 
     public String innhentSystemverdiTelefonnummer(final String personIdentifikator) {
+        if (unleash.isEnabled(DKIF_BRUK_NY_CLIENT, false)) {
+            try {
+                return norskTelefonnummer(mobiltelefonService.hent(personIdentifikator));
+            } catch (Exception e) {
+                log.warn("Kunne ikke hente telefonnummer fra Dkif (ny client). Prøver gammel client", e);
+                return hentMobiltelefonnummerGammelClient(personIdentifikator);
+            }
+        }
+        return hentMobiltelefonnummerGammelClient(personIdentifikator);
+    }
+
+    private String hentMobiltelefonnummerGammelClient(final String personIdentifikator) {
         String mobiltelefonnummer;
         try {
             mobiltelefonnummer = dkifService.hentMobiltelefonnummer(personIdentifikator);
