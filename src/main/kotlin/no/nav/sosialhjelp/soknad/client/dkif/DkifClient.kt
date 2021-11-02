@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.client.dkif
 
 import com.fasterxml.jackson.core.JsonProcessingException
-import no.nav.sosialhjelp.soknad.consumer.dkif.dto.DigitalKontaktinfoBolk
+import no.nav.sosialhjelp.soknad.client.dkif.dto.DigitalKontaktinfoBolk
 import no.nav.sosialhjelp.soknad.consumer.exceptions.TjenesteUtilgjengeligException
 import no.nav.sosialhjelp.soknad.consumer.mdc.MDCOperations
 import no.nav.sosialhjelp.soknad.consumer.redis.CacheConstants

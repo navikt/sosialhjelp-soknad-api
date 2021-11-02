@@ -2,9 +2,9 @@ package no.nav.sosialhjelp.soknad.client.dkif
 
 import io.mockk.every
 import io.mockk.mockk
-import no.nav.sosialhjelp.soknad.consumer.dkif.dto.DigitalKontaktinfo
-import no.nav.sosialhjelp.soknad.consumer.dkif.dto.DigitalKontaktinfoBolk
-import no.nav.sosialhjelp.soknad.consumer.dkif.dto.Feil
+import no.nav.sosialhjelp.soknad.client.dkif.dto.DigitalKontaktinfo
+import no.nav.sosialhjelp.soknad.client.dkif.dto.DigitalKontaktinfoBolk
+import no.nav.sosialhjelp.soknad.client.dkif.dto.Feil
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.util.Collections.singletonMap
@@ -19,7 +19,7 @@ internal class MobiltelefonServiceTest {
 
     @Test
     internal fun skalHenteMobiltelefonnummer() {
-        every { dkifClient.hentDigitalKontaktinfo(any()) } returns createDigitalKontaktinfoBolk()
+        every { dkifClient.hentDigitalKontaktinfo(any()) } returns DigitalKontaktinfoBolk(singletonMap(ident, DigitalKontaktinfo(mobiltelefonnummer)), null)
 
         val response = mobiltelefonService.hent(ident)
 
@@ -60,12 +60,5 @@ internal class MobiltelefonServiceTest {
         val response = mobiltelefonService.hent(ident)
 
         assertThat(response).isNull()
-    }
-
-    private fun createDigitalKontaktinfoBolk(): DigitalKontaktinfoBolk {
-        return DigitalKontaktinfoBolk(
-            singletonMap(ident, DigitalKontaktinfo(mobiltelefonnummer)),
-            null
-        )
     }
 }
