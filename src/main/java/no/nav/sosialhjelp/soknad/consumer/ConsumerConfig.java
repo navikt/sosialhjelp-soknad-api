@@ -12,7 +12,6 @@ import no.nav.sosialhjelp.soknad.client.idporten.IdPortenClientConfigMockAlt;
 import no.nav.sosialhjelp.soknad.client.idporten.IdPortenServiceImpl;
 import no.nav.sosialhjelp.soknad.client.maskinporten.MaskinportenClientConfig;
 import no.nav.sosialhjelp.soknad.client.skatteetaten.SkatteetatenClientConfig;
-import no.nav.sosialhjelp.soknad.consumer.dkif.DkifService;
 import no.nav.sosialhjelp.soknad.consumer.fiks.DokumentKrypterer;
 import no.nav.sosialhjelp.soknad.consumer.kodeverk.KodeverkService;
 import no.nav.sosialhjelp.soknad.consumer.leaderelection.LeaderElectionImpl;
@@ -29,7 +28,6 @@ import no.nav.sosialhjelp.soknad.consumer.redis.NoRedisConfig;
 import no.nav.sosialhjelp.soknad.consumer.redis.RedisConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.ArbeidsforholdRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.DigisosApiRestConfig;
-import no.nav.sosialhjelp.soknad.consumer.restconfig.DkifRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.KodeverkRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.NorgRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.OrganisasjonRestConfig;
@@ -72,7 +70,6 @@ import org.springframework.context.annotation.Import;
         NorgService.class,
         SkattbarInntektService.class,
         OrganisasjonService.class,
-        DkifService.class,
         KodeverkService.class,
         KontonummerService.class,
         UtbetalingService.class,
@@ -95,7 +92,6 @@ public class ConsumerConfig {
             OrganisasjonRestConfig.class,
             ArbeidsforholdRestConfig.class,
             STSTokenRestConfig.class,
-            DkifRestConfig.class,
             KodeverkRestConfig.class,
             UnleashRestConfig.class,
             OppslagRestConfig.class,
