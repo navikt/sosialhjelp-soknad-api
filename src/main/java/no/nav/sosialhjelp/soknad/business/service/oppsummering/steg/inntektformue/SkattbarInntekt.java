@@ -76,7 +76,7 @@ public class SkattbarInntekt {
         feltListe.add(
                 new Felt.Builder()
                         .withType(Type.TEKST)
-                        .withSvar(createSvar(bekreftelse.getBekreftelsesDato(), SvarType.DATO))
+                        .withSvar(createSvar(bekreftelse.getBekreftelsesDato(), SvarType.TIDSPUNKT))
                         .build()
         );
 

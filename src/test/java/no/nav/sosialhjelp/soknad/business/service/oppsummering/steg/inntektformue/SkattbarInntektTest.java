@@ -60,7 +60,7 @@ class SkattbarInntektTest {
         var datoFelt = sporsmal.getFelt().get(0);
         assertThat(datoFelt.getType()).isEqualTo(Type.TEKST);
         assertThat(datoFelt.getSvar().getValue()).isEqualTo("2018-10-04T13:37:00.134Z");
-        assertThat(datoFelt.getSvar().getType()).isEqualTo(SvarType.DATO);
+        assertThat(datoFelt.getSvar().getType()).isEqualTo(SvarType.TIDSPUNKT);
 
         var ingenInntekterFelt = sporsmal.getFelt().get(1);
         assertThat(ingenInntekterFelt.getType()).isEqualTo(Type.TEKST);
@@ -89,7 +89,7 @@ class SkattbarInntektTest {
         var datoFelt = sporsmal.getFelt().get(0);
         assertThat(datoFelt.getType()).isEqualTo(Type.TEKST);
         assertThat(datoFelt.getSvar().getValue()).isEqualTo("2018-10-04T13:37:00.134Z");
-        assertThat(datoFelt.getSvar().getType()).isEqualTo(SvarType.DATO);
+        assertThat(datoFelt.getSvar().getType()).isEqualTo(SvarType.TIDSPUNKT);
 
         var inntekterFelt = sporsmal.getFelt().get(1);
         assertThat(inntekterFelt.getType()).isEqualTo(Type.SYSTEMDATA_MAP);
