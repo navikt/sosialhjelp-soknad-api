@@ -26,6 +26,9 @@ import java.util.stream.Collectors;
 
 import static no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator.ensureValidSoknad;
 import static no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator.ensureValidVedlegg;
+import static no.nav.sosialhjelp.soknad.business.util.MimeTypes.APPLICATION_JSON;
+import static no.nav.sosialhjelp.soknad.business.util.MimeTypes.APPLICATION_PDF;
+import static no.nav.sosialhjelp.soknad.business.util.MimeTypes.TEXT_X_MATLAB;
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class FiksDokumentHelper {
@@ -51,7 +54,6 @@ public class FiksDokumentHelper {
 
     Dokument lagDokumentForSoknadJson(JsonInternalSoknad internalSoknad, Map<String, InputStream> map) {
         final String filnavn = "soknad.json";
-        final String mimetype = "application/json";
         byte[] soknadJson = mapJsonSoknadTilFil(internalSoknad.getSoknad());
 
         var byteArrayInputStream = krypterOgOpprettByteArrayInputStream(soknadJson);
@@ -59,53 +61,48 @@ public class FiksDokumentHelper {
 
         return new Dokument()
                 .withFilnavn(filnavn)
-                .withMimeType(mimetype)
+                .withMimeType(APPLICATION_JSON)
                 .withEkskluderesFraUtskrift(true);
     }
 
     Dokument lagDokumentForVedleggJson(JsonInternalSoknad internalSoknad, Map<String, InputStream> map) {
         final String filnavn = "vedlegg.json";
-        final String mimetype = "application/json";
         byte[] vedleggJson = mapJsonVedleggTilFil(internalSoknad.getVedlegg());
 
         var byteArrayInputStream = krypterOgOpprettByteArrayInputStream(vedleggJson);
         map.put(filnavn, byteArrayInputStream);
         return new Dokument()
                 .withFilnavn(filnavn)
-                .withMimeType(mimetype)
+                .withMimeType(APPLICATION_JSON)
                 .withEkskluderesFraUtskrift(true);
     }
 
     Dokument lagDokumentForSaksbehandlerPdf(JsonInternalSoknad internalSoknad, Map<String, InputStream> map) {
         final String filnavn = "Soknad.pdf";
-        final String mimetype = "application/pdf";
 
         byte[] soknadPdf = sosialhjelpPdfGenerator.generate(internalSoknad, false);
-        return genererDokumentFraByteArray(filnavn, mimetype, soknadPdf, false, map);
+        return genererDokumentFraByteArray(filnavn, APPLICATION_PDF, soknadPdf, false, map);
     }
 
     Dokument lagDokumentForJuridiskPdf(JsonInternalSoknad internalSoknad, Map<String, InputStream> map) {
         final String filnavn = "Soknad-juridisk.pdf";
-        final String mimetype = "application/pdf";
 
         byte[] juridiskPdf = sosialhjelpPdfGenerator.generate(internalSoknad, true);
-        return genererDokumentFraByteArray(filnavn, mimetype, juridiskPdf, false, map);
+        return genererDokumentFraByteArray(filnavn, APPLICATION_PDF, juridiskPdf, false, map);
     }
 
     Dokument lagDokumentForBrukerkvitteringPdf(Map<String, InputStream> map) {
         final String filnavn = "Brukerkvittering.pdf";
-        final String mimetype = "application/pdf";
         byte[] pdf = sosialhjelpPdfGenerator.generateBrukerkvitteringPdf();
 
-        return genererDokumentFraByteArray(filnavn, mimetype, pdf, true, map);
+        return genererDokumentFraByteArray(filnavn, APPLICATION_PDF, pdf, true, map);
     }
 
     Dokument lagDokumentForEttersendelsePdf(JsonInternalSoknad internalSoknad, String eier, Map<String, InputStream> map) {
         final String filnavn = "ettersendelse.pdf";
-        final String mimetype = "application/pdf";
 
         byte[] pdf = sosialhjelpPdfGenerator.generateEttersendelsePdf(internalSoknad, eier);
-        return genererDokumentFraByteArray(filnavn, mimetype, pdf, false, map);
+        return genererDokumentFraByteArray(filnavn, APPLICATION_PDF, pdf, false, map);
     }
 
     private Dokument genererDokumentFraByteArray(String filnavn, String mimetype, byte[] bytes, boolean eksluderesFraUtskrift, Map<String, InputStream> map) {
@@ -131,9 +128,12 @@ public class FiksDokumentHelper {
         var byteArrayInputStream = krypterOgOpprettByteArrayInputStream(opplastetVedlegg.getData());
         map.put(filnavn, byteArrayInputStream);
 
+        final var detectedMimeType = FileDetectionUtils.getMimeType(opplastetVedlegg.getData());
+        final var mimetype = detectedMimeType.equalsIgnoreCase(TEXT_X_MATLAB) ? APPLICATION_PDF : detectedMimeType;
+
         return new Dokument()
                 .withFilnavn(filnavn)
-                .withMimeType(FileDetectionUtils.getMimeTypeForSending(opplastetVedlegg.getData()))
+                .withMimeType(mimetype)
                 .withEkskluderesFraUtskrift(true);
     }
 

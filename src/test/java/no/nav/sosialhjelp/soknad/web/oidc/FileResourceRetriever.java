@@ -9,6 +9,8 @@ import java.io.InputStream;
 import java.net.URL;
 import java.nio.charset.Charset;
 
+import static no.nav.sosialhjelp.soknad.business.util.MimeTypes.APPLICATION_JSON;
+
 public class FileResourceRetriever extends ProxyAwareResourceRetriever {
 
     private final String metadataFile;
@@ -24,7 +26,7 @@ public class FileResourceRetriever extends ProxyAwareResourceRetriever {
     @Override
     public Resource retrieveResource(URL url) {
         String content = getContentFromFile(url);
-        return new Resource(content, "application/json");
+        return new Resource(content, APPLICATION_JSON);
     }
 
     private String getContentFromFile(URL url){

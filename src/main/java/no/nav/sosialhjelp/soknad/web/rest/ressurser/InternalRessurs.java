@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
+import static no.nav.sosialhjelp.soknad.business.util.MimeTypes.APPLICATION_JSON;
 import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.http.HttpHeaders.ACCEPT;
 
@@ -46,7 +47,7 @@ public class InternalRessurs {
     public Response getSelftest(@HeaderParam(value = ACCEPT) String accept) throws IOException {
         var selftest = selftestService.lagSelftest();
         var response = Response.ok();
-        if ("application/json".equalsIgnoreCase(accept)) {
+        if (APPLICATION_JSON.equalsIgnoreCase(accept)) {
             response.type(MediaType.APPLICATION_JSON).entity(SelftestJsonGenerator.generate(selftest)).build();
         } else {
             response.type(MediaType.TEXT_HTML).entity(SelftestHtmlGenerator.generate(selftest, getHost())).build();
