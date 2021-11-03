@@ -7,6 +7,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOrganisasjon;
+import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.SvarType;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Type;
 import org.junit.jupiter.api.Test;
 
@@ -50,43 +51,61 @@ class SkattbarInntektTest {
 
         var avsnitt = skattbarInntekt.getAvsnitt(okonomi, driftsinformasjon);
 
-        assertThat(avsnitt.getSporsmal()).hasSize(1);
-        var sporsmal = avsnitt.getSporsmal().get(0);
-        assertThat(sporsmal.getTittel()).isEqualTo("utbetalinger.inntekt.skattbar.har_gitt_samtykke");
-        assertThat(sporsmal.getErUtfylt()).isTrue();
-        assertThat(sporsmal.getFelt()).isEmpty();
+        assertThat(avsnitt.getSporsmal()).hasSize(2);
+
+        var bekreftelseTidspunktSporsmal = avsnitt.getSporsmal().get(0);
+        assertThat(bekreftelseTidspunktSporsmal.getTittel()).isEqualTo("utbetalinger.inntekt.skattbar.har_gitt_samtykke");
+        assertThat(bekreftelseTidspunktSporsmal.getErUtfylt()).isTrue();
+        assertThat(bekreftelseTidspunktSporsmal.getFelt()).hasSize(1);
+        var bekreftelseTidspunkt = bekreftelseTidspunktSporsmal.getFelt().get(0);
+        assertThat(bekreftelseTidspunkt.getType()).isEqualTo(Type.TEKST);
+        assertThat(bekreftelseTidspunkt.getSvar().getValue()).isEqualTo("2018-10-04T13:37:00.134Z");
+        assertThat(bekreftelseTidspunkt.getSvar().getType()).isEqualTo(SvarType.TIDSPUNKT);
+
+        var inntekterSporsmal = avsnitt.getSporsmal().get(1);
+        assertThat(inntekterSporsmal.getTittel()).isEqualTo("utbetalinger.inntekt.skattbar.inntekt.tittel");
+        assertThat(inntekterSporsmal.getErUtfylt()).isTrue();
+        assertThat(inntekterSporsmal.getFelt()).hasSize(1);
+        var ingenInntekter = inntekterSporsmal.getFelt().get(0);
+        assertThat(ingenInntekter.getType()).isEqualTo(Type.TEKST);
+        assertThat(ingenInntekter.getSvar().getValue()).isEqualTo("utbetalinger.inntekt.skattbar.ingen");
+        assertThat(ingenInntekter.getSvar().getType()).isEqualTo(SvarType.LOCALE_TEKST);
     }
 
     @Test
     void harEnSkattbarInntekt() {
         var okonomi = createOkonomi(true);
         okonomi.getOpplysninger()
-                .setUtbetaling(List.of(
-                        createUtbetaling("2020-01-01", "2020-02-01", 1234d, 123d)
-                        )
+                .setUtbetaling(
+                        List.of(createUtbetaling("2020-01-01", "2020-02-01", 1234d, 123d))
                 );
         var driftsinformasjon = new JsonDriftsinformasjon();
 
         var avsnitt = skattbarInntekt.getAvsnitt(okonomi, driftsinformasjon);
 
-        assertThat(avsnitt.getSporsmal()).hasSize(1);
-        var sporsmal = avsnitt.getSporsmal().get(0);
-        assertThat(sporsmal.getTittel()).isEqualTo("utbetalinger.inntekt.skattbar.har_gitt_samtykke");
-        assertThat(sporsmal.getErUtfylt()).isTrue();
-        assertThat(sporsmal.getFelt()).hasSize(1);
-        var felt = sporsmal.getFelt().get(0);
-        assertThat(felt.getType()).isEqualTo(Type.SYSTEMDATA_MAP);
-        assertThat(felt.getLabelSvarMap()).hasSize(5);
-        assertThat(felt.getLabelSvarMap().get("utbetalinger.utbetaling.arbeidsgivernavn.label").getValue()).isEqualTo("arbeidsgiver");
-        assertThat(felt.getLabelSvarMap().get("utbetalinger.utbetaling.periodeFom.label").getValue()).isEqualTo("2020-01-01");
-        assertThat(felt.getLabelSvarMap().get("utbetalinger.utbetaling.periodeTom.label").getValue()).isEqualTo("2020-02-01");
-        assertThat(felt.getLabelSvarMap().get("utbetalinger.utbetaling.brutto.label").getValue()).isEqualTo("1234.0");
-        assertThat(felt.getLabelSvarMap().get("utbetalinger.utbetaling.skattetrekk.label").getValue()).isEqualTo("123.0");
-    }
+        assertThat(avsnitt.getSporsmal()).hasSize(2);
 
-    @Test
-    void skalGruppereSkattbareInntekter() {
-        // todo
+        var bekreftelseTidspunktSporsmal = avsnitt.getSporsmal().get(0);
+        assertThat(bekreftelseTidspunktSporsmal.getTittel()).isEqualTo("utbetalinger.inntekt.skattbar.har_gitt_samtykke");
+        assertThat(bekreftelseTidspunktSporsmal.getErUtfylt()).isTrue();
+        assertThat(bekreftelseTidspunktSporsmal.getFelt()).hasSize(1);
+        var bekreftelseTidspunkt = bekreftelseTidspunktSporsmal.getFelt().get(0);
+        assertThat(bekreftelseTidspunkt.getType()).isEqualTo(Type.TEKST);
+        assertThat(bekreftelseTidspunkt.getSvar().getValue()).isEqualTo("2018-10-04T13:37:00.134Z");
+        assertThat(bekreftelseTidspunkt.getSvar().getType()).isEqualTo(SvarType.TIDSPUNKT);
+
+        var inntekterSporsmal = avsnitt.getSporsmal().get(1);
+        assertThat(inntekterSporsmal.getTittel()).isEqualTo("utbetalinger.inntekt.skattbar.inntekt.tittel");
+        assertThat(inntekterSporsmal.getErUtfylt()).isTrue();
+        assertThat(inntekterSporsmal.getFelt()).hasSize(1);
+        var inntekt = inntekterSporsmal.getFelt().get(0);
+        assertThat(inntekt.getType()).isEqualTo(Type.SYSTEMDATA_MAP);
+        assertThat(inntekt.getLabelSvarMap()).hasSize(5);
+        assertThat(inntekt.getLabelSvarMap().get("utbetalinger.utbetaling.arbeidsgivernavn.label").getValue()).isEqualTo("arbeidsgiver");
+        assertThat(inntekt.getLabelSvarMap().get("utbetalinger.utbetaling.periodeFom.label").getValue()).isEqualTo("2020-01-01");
+        assertThat(inntekt.getLabelSvarMap().get("utbetalinger.utbetaling.periodeTom.label").getValue()).isEqualTo("2020-02-01");
+        assertThat(inntekt.getLabelSvarMap().get("utbetalinger.utbetaling.brutto.label").getValue()).isEqualTo("1234.0");
+        assertThat(inntekt.getLabelSvarMap().get("utbetalinger.utbetaling.skattetrekk.label").getValue()).isEqualTo("123.0");
     }
 
     private JsonOkonomi createOkonomi(boolean harSamtykke) {
@@ -98,6 +117,7 @@ class SkattbarInntektTest {
                                                 new JsonOkonomibekreftelse()
                                                         .withType(UTBETALING_SKATTEETATEN_SAMTYKKE)
                                                         .withVerdi(harSamtykke)
+                                                        .withBekreftelsesDato("2018-10-04T13:37:00.134Z")
                                         )
                                 )
                 );

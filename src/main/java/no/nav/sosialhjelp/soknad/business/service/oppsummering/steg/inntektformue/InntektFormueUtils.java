@@ -2,6 +2,7 @@ package no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.inntektform
 
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomioversikt;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Felt;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.SvarType;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Type;
@@ -22,6 +23,10 @@ public final class InntektFormueUtils {
 
     public static boolean harBekreftelseTrue(JsonOkonomiopplysninger opplysninger, String type) {
         return opplysninger.getBekreftelse().stream().anyMatch(bekreftelse -> type.equals(bekreftelse.getType()) && Boolean.TRUE.equals(bekreftelse.getVerdi()));
+    }
+
+    public static JsonOkonomibekreftelse getBekreftelse(JsonOkonomiopplysninger opplysninger, String type) {
+        return opplysninger.getBekreftelse().stream().filter(bekreftelse -> type.equals(bekreftelse.getType())).findFirst().orElse(null);
     }
 
     public static boolean harValgtFormueType(JsonOkonomioversikt oversikt, String type) {
