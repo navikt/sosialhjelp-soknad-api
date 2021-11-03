@@ -16,6 +16,7 @@ import java.util.List;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.BEKREFTELSE_SPARING;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.FORMUE_ANNET;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.FORMUE_BRUKSKONTO;
+import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.OppsummeringTestUtils.validateFeltMedSvar;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class BankTest {
@@ -55,18 +56,13 @@ class BankTest {
         var bankSporsmal = avsnitt.getSporsmal().get(0);
         assertThat(bankSporsmal.getErUtfylt()).isTrue();
         assertThat(bankSporsmal.getFelt()).hasSize(2);
-        assertThat(bankSporsmal.getFelt().get(0).getType()).isEqualTo(Type.CHECKBOX);
-        assertThat(bankSporsmal.getFelt().get(0).getSvar().getValue()).isEqualTo("inntekt.bankinnskudd.true.type.brukskonto");
-        assertThat(bankSporsmal.getFelt().get(0).getSvar().getType()).isEqualTo(SvarType.LOCALE_TEKST);
-        assertThat(bankSporsmal.getFelt().get(1).getType()).isEqualTo(Type.CHECKBOX);
-        assertThat(bankSporsmal.getFelt().get(1).getSvar().getValue()).isEqualTo("inntekt.bankinnskudd.true.type.annet");
-        assertThat(bankSporsmal.getFelt().get(1).getSvar().getType()).isEqualTo(SvarType.LOCALE_TEKST);
+        validateFeltMedSvar(bankSporsmal.getFelt().get(0), Type.CHECKBOX, SvarType.LOCALE_TEKST, "inntekt.bankinnskudd.true.type.brukskonto");
+        validateFeltMedSvar(bankSporsmal.getFelt().get(1), Type.CHECKBOX, SvarType.LOCALE_TEKST, "inntekt.bankinnskudd.true.type.annet");
 
         var beskrivelseAnnetSporsmal = avsnitt.getSporsmal().get(1);
         assertThat(beskrivelseAnnetSporsmal.getErUtfylt()).isTrue();
         assertThat(beskrivelseAnnetSporsmal.getFelt()).hasSize(1);
-        assertThat(beskrivelseAnnetSporsmal.getFelt().get(0).getType()).isEqualTo(Type.TEKST);
-        assertThat(beskrivelseAnnetSporsmal.getFelt().get(0).getSvar().getValue()).isEqualTo("sparing");
+        validateFeltMedSvar(beskrivelseAnnetSporsmal.getFelt().get(0), Type.TEKST, SvarType.TEKST, "sparing");
     }
 
     private JsonOkonomi createOkonomi(boolean harBekreftelse) {

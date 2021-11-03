@@ -20,6 +20,7 @@ import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Type;
 import org.junit.jupiter.api.Test;
 
 import static java.util.Collections.singletonList;
+import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.OppsummeringTestUtils.validateFeltMedSvar;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class FamiliesituasjonStegTest {
@@ -52,9 +53,7 @@ class FamiliesituasjonStegTest {
         var sivilstatusSporsmal = res.getAvsnitt().get(0).getSporsmal().get(0);
         assertThat(sivilstatusSporsmal.getErUtfylt()).isTrue();
         assertThat(sivilstatusSporsmal.getFelt()).hasSize(1);
-        assertThat(sivilstatusSporsmal.getFelt().get(0).getSvar().getValue()).isEqualTo("familie.sivilstatus.ugift");
-        assertThat(sivilstatusSporsmal.getFelt().get(0).getSvar().getType()).isEqualTo(SvarType.LOCALE_TEKST);
-        assertThat(sivilstatusSporsmal.getFelt().get(0).getType()).isEqualTo(Type.CHECKBOX);
+        validateFeltMedSvar(sivilstatusSporsmal.getFelt().get(0), Type.CHECKBOX, SvarType.LOCALE_TEKST, "familie.sivilstatus.ugift");
     }
 
     @Test
@@ -100,9 +99,7 @@ class FamiliesituasjonStegTest {
         var sivilstatusSporsmal = res.getAvsnitt().get(0).getSporsmal().get(0);
         assertThat(sivilstatusSporsmal.getErUtfylt()).isTrue();
         assertThat(sivilstatusSporsmal.getFelt()).hasSize(1);
-        assertThat(sivilstatusSporsmal.getFelt().get(0).getSvar().getValue()).isEqualTo("system.familie.sivilstatus.ikkeTilgang.label");
-        assertThat(sivilstatusSporsmal.getFelt().get(0).getSvar().getType()).isEqualTo(SvarType.LOCALE_TEKST);
-        assertThat(sivilstatusSporsmal.getFelt().get(0).getType()).isEqualTo(Type.SYSTEMDATA);
+        validateFeltMedSvar(sivilstatusSporsmal.getFelt().get(0), Type.SYSTEMDATA, SvarType.LOCALE_TEKST, "system.familie.sivilstatus.ikkeTilgang.label");
     }
 
     @Test
@@ -145,9 +142,7 @@ class FamiliesituasjonStegTest {
         assertThat(res.getAvsnitt().get(1).getSporsmal()).hasSize(1);
         var forsorgerpliktSporsmal = res.getAvsnitt().get(1).getSporsmal().get(0);
         assertThat(forsorgerpliktSporsmal.getErUtfylt()).isTrue();
-        assertThat(forsorgerpliktSporsmal.getFelt().get(0).getType()).isEqualTo(Type.SYSTEMDATA);
-        assertThat(forsorgerpliktSporsmal.getFelt().get(0).getSvar().getValue()).isEqualTo("familierelasjon.ingen_registrerte_barn_tekst");
-        assertThat(forsorgerpliktSporsmal.getFelt().get(0).getSvar().getType()).isEqualTo(SvarType.LOCALE_TEKST);
+        validateFeltMedSvar(forsorgerpliktSporsmal.getFelt().get(0), Type.SYSTEMDATA, SvarType.LOCALE_TEKST, "familierelasjon.ingen_registrerte_barn_tekst");
     }
 
     @Test
@@ -223,15 +218,13 @@ class FamiliesituasjonStegTest {
 
         var deltBostedSporsmal = forsorgerpliktSporsmal.get(1);
         assertThat(deltBostedSporsmal.getErUtfylt()).isTrue();
-        assertThat(deltBostedSporsmal.getFelt().get(0).getType()).isEqualTo(Type.CHECKBOX);
-        assertThat(deltBostedSporsmal.getFelt().get(0).getSvar().getValue()).isEqualTo("system.familie.barn.true.barn.deltbosted.true");
-        assertThat(deltBostedSporsmal.getFelt().get(0).getSvar().getType()).isEqualTo(SvarType.LOCALE_TEKST);
+        assertThat(deltBostedSporsmal.getFelt()).hasSize(1);
+        validateFeltMedSvar(deltBostedSporsmal.getFelt().get(0), Type.CHECKBOX, SvarType.LOCALE_TEKST, "system.familie.barn.true.barn.deltbosted.true");
 
         var barnebidragSporsmal = forsorgerpliktSporsmal.get(2);
         assertThat(barnebidragSporsmal.getErUtfylt()).isTrue();
-        assertThat(barnebidragSporsmal.getFelt().get(0).getType()).isEqualTo(Type.CHECKBOX);
-        assertThat(barnebidragSporsmal.getFelt().get(0).getSvar().getValue()).isEqualTo("familie.barn.true.barnebidrag.betaler");
-        assertThat(barnebidragSporsmal.getFelt().get(0).getSvar().getType()).isEqualTo(SvarType.LOCALE_TEKST);
+        assertThat(barnebidragSporsmal.getFelt()).hasSize(1);
+        validateFeltMedSvar(barnebidragSporsmal.getFelt().get(0), Type.CHECKBOX, SvarType.LOCALE_TEKST, "familie.barn.true.barnebidrag.betaler");
     }
 
     private JsonInternalSoknad createSoknad(JsonSivilstatus sivilstatus, JsonForsorgerplikt forsorgerplikt) {
