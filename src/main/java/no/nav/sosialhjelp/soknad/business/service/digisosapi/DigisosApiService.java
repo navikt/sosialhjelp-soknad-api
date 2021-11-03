@@ -36,6 +36,8 @@ import static no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator.ensureV
 import static no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator.ensureValidVedlegg;
 import static no.nav.sosialhjelp.soknad.business.util.JsonVedleggUtils.getVedleggFromInternalSoknad;
 import static no.nav.sosialhjelp.soknad.business.util.MetricsUtils.navKontorTilInfluxNavn;
+import static no.nav.sosialhjelp.soknad.business.util.MimeTypes.APPLICATION_PDF;
+import static no.nav.sosialhjelp.soknad.business.util.MimeTypes.TEXT_X_MATLAB;
 import static no.nav.sosialhjelp.soknad.business.util.SenderUtils.createPrefixedBehandlingsIdInNonProd;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -134,10 +136,9 @@ public class DigisosApiService {
 
     private FilOpplasting lagDokumentForSaksbehandlerPdf(SoknadUnderArbeid soknadUnderArbeid) {
         String filnavn = "Soknad.pdf";
-        String mimetype = "application/pdf";
 
         byte[] soknadPdf = sosialhjelpPdfGenerator.generate(soknadUnderArbeid.getJsonInternalSoknad(), false);
-        return opprettFilOpplastingFraByteArray(filnavn, mimetype, soknadPdf);
+        return opprettFilOpplastingFraByteArray(filnavn, APPLICATION_PDF, soknadPdf);
     }
 
     private List<FilOpplasting> lagDokumentListeForVedlegg(SoknadUnderArbeid soknadUnderArbeid) {
@@ -149,34 +150,34 @@ public class DigisosApiService {
 
     private FilOpplasting lagDokumentForEttersendelsePdf(JsonInternalSoknad internalSoknad, String eier) {
         String filnavn = "ettersendelse.pdf";
-        String mimetype = "application/pdf";
 
         byte[] pdf = sosialhjelpPdfGenerator.generateEttersendelsePdf(internalSoknad, eier);
-        return opprettFilOpplastingFraByteArray(filnavn, mimetype, pdf);
+        return opprettFilOpplastingFraByteArray(filnavn, APPLICATION_PDF, pdf);
     }
 
     private FilOpplasting lagDokumentForBrukerkvitteringPdf() {
         String filnavn = "Brukerkvittering.pdf";
-        String mimetype = "application/pdf";
         byte[] pdf = sosialhjelpPdfGenerator.generateBrukerkvitteringPdf();
 
-        return opprettFilOpplastingFraByteArray(filnavn, mimetype, pdf);
+        return opprettFilOpplastingFraByteArray(filnavn, APPLICATION_PDF, pdf);
     }
 
     private FilOpplasting lagDokumentForJuridiskPdf(JsonInternalSoknad internalSoknad) {
         String filnavn = "Soknad-juridisk.pdf";
-        String mimetype = "application/pdf";
 
         byte[] pdf = sosialhjelpPdfGenerator.generate(internalSoknad, true);
-        return opprettFilOpplastingFraByteArray(filnavn, mimetype, pdf);
+        return opprettFilOpplastingFraByteArray(filnavn, APPLICATION_PDF, pdf);
     }
 
     private FilOpplasting opprettDokumentForVedlegg(OpplastetVedlegg opplastetVedlegg) {
         byte[] pdf = opplastetVedlegg.getData();
 
+        final var detectedMimeType = FileDetectionUtils.getMimeType(opplastetVedlegg.getData());
+        final var mimetype = detectedMimeType.equalsIgnoreCase(TEXT_X_MATLAB) ? APPLICATION_PDF : detectedMimeType;
+        
         return new FilOpplasting(new FilMetadata()
                 .withFilnavn(opplastetVedlegg.getFilnavn())
-                .withMimetype(FileDetectionUtils.getMimeType(opplastetVedlegg.getData()))
+                .withMimetype(mimetype)
                 .withStorrelse((long) pdf.length),
                 new ByteArrayInputStream(pdf));
     }
