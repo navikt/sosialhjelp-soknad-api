@@ -34,4 +34,12 @@ public final class FileDetectionUtils {
 
         return TikaFileType.UNKNOWN;
     }
+
+    public static String getMimeTypeForSending(byte[] bytes) {
+        final var detected = new Tika().detect(bytes);
+        if (detected.equalsIgnoreCase("text/x-matlab")) {
+            return "application/pdf";
+        }
+        return detected;
+    }
 }

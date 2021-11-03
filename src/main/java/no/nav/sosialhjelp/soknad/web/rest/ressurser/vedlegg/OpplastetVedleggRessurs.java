@@ -75,7 +75,7 @@ public class OpplastetVedleggRessurs {
         } else {
             return Response.noContent().build();
         }
-        String mimetype = FileDetectionUtils.getMimeType(opplastetVedlegg.getData());
+        String mimetype = FileDetectionUtils.getMimeTypeForSending(opplastetVedlegg.getData());
         return Response.ok(opplastetVedlegg.getData()).type(mimetype).build();
     }
 

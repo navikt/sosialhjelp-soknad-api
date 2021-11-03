@@ -133,7 +133,7 @@ public class FiksDokumentHelper {
 
         return new Dokument()
                 .withFilnavn(filnavn)
-                .withMimeType(FileDetectionUtils.getMimeType(opplastetVedlegg.getData()))
+                .withMimeType(FileDetectionUtils.getMimeTypeForSending(opplastetVedlegg.getData()))
                 .withEkskluderesFraUtskrift(true);
     }
 

@@ -176,7 +176,7 @@ public class DigisosApiService {
 
         return new FilOpplasting(new FilMetadata()
                 .withFilnavn(opplastetVedlegg.getFilnavn())
-                .withMimetype(FileDetectionUtils.getMimeType(opplastetVedlegg.getData()))
+                .withMimetype(FileDetectionUtils.getMimeTypeForSending(opplastetVedlegg.getData()))
                 .withStorrelse((long) pdf.length),
                 new ByteArrayInputStream(pdf));
     }
