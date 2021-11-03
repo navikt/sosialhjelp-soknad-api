@@ -77,7 +77,7 @@ public class BostotteHusbanken {
             sporsmal.add(bekreftelseTidspunktSporsmal(getBekreftelse(opplysninger, BOSTOTTE_SAMTYKKE)));
 
             if (!harUtbetalinger && !harSaker) {
-                sporsmal.add(ingenUtbetalingerEllerSakerSporsmal());
+                sporsmal.add(sporsmalMedIngenUtbetalingerEllerSakerSvar());
             } else {
                 sporsmal.add(utbetalingerSporsmal(opplysninger));
                 sporsmal.add(sakerSporsmal(opplysninger));
@@ -100,7 +100,7 @@ public class BostotteHusbanken {
                 .build();
     }
 
-    private Sporsmal ingenUtbetalingerEllerSakerSporsmal() {
+    private Sporsmal sporsmalMedIngenUtbetalingerEllerSakerSvar() {
         return new Sporsmal.Builder()
                 .withTittel("")
                 .withFelt(singletonList(
