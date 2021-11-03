@@ -1,14 +1,16 @@
 package no.nav.sosialhjelp.soknad.client.dkif
 
 import org.slf4j.LoggerFactory.getLogger
-import org.springframework.stereotype.Component
 
-@Component
-open class MobiltelefonService(
+interface MobiltelefonService {
+    fun hent(ident: String): String?
+}
+
+class MobiltelefonServiceImpl(
     private val dkifClient: DkifClient
-) {
+) : MobiltelefonService {
 
-    fun hent(ident: String): String? {
+    override fun hent(ident: String): String? {
         val digitalKontaktinfoBolk = dkifClient.hentDigitalKontaktinfo(ident)
         if (digitalKontaktinfoBolk == null) {
             log.warn("Dkif.api - response er null")
@@ -26,6 +28,6 @@ open class MobiltelefonService(
     }
 
     companion object {
-        private val log = getLogger(MobiltelefonService::class.java)
+        private val log = getLogger(MobiltelefonServiceImpl::class.java)
     }
 }
