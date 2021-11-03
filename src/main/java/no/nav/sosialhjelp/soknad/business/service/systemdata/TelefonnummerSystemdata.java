@@ -45,7 +45,7 @@ public class TelefonnummerSystemdata implements Systemdata {
         try {
             return norskTelefonnummer(mobiltelefonService.hent(personIdentifikator));
         } catch (Exception e) {
-            log.warn("Kunne ikke hente telefonnummer fra Dkif (ny client). Prøver gammel client", e);
+            log.warn("Kunne ikke hente telefonnummer fra Dkif", e);
             return null;
         }
     }
