@@ -32,6 +32,8 @@ import java.io.InputStream;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.MediaType.MULTIPART_FORM_DATA;
+import static no.nav.sosialhjelp.soknad.business.util.MimeTypes.APPLICATION_PDF;
+import static no.nav.sosialhjelp.soknad.business.util.MimeTypes.TEXT_X_MATLAB;
 import static no.nav.sosialhjelp.soknad.web.utils.Constants.CLAIM_ACR_LEVEL_4;
 import static no.nav.sosialhjelp.soknad.web.utils.Constants.SELVBETJENING;
 
@@ -75,7 +77,8 @@ public class OpplastetVedleggRessurs {
         } else {
             return Response.noContent().build();
         }
-        String mimetype = FileDetectionUtils.getMimeType(opplastetVedlegg.getData());
+        final var detectedMimeType = FileDetectionUtils.getMimeType(opplastetVedlegg.getData());
+        final var mimetype = detectedMimeType.equalsIgnoreCase(TEXT_X_MATLAB) ? APPLICATION_PDF : detectedMimeType;
         return Response.ok(opplastetVedlegg.getData()).type(mimetype).build();
     }
 

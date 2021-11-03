@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
+import static no.nav.sosialhjelp.soknad.business.util.MimeTypes.APPLICATION_PDF;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
@@ -86,16 +87,16 @@ class DigisosApiServiceTest {
 
         FilMetadata metadataFil1 = filOpplastings.get(0).metadata;
         assertThat(metadataFil1.filnavn).isEqualTo("Soknad.pdf");
-        assertThat(metadataFil1.mimetype).isEqualTo("application/pdf");
+        assertThat(metadataFil1.mimetype).isEqualTo(APPLICATION_PDF);
 
 
         FilMetadata metadataFil3 = filOpplastings.get(1).metadata;
         assertThat(metadataFil3.filnavn).isEqualTo("Soknad-juridisk.pdf");
-        assertThat(metadataFil3.mimetype).isEqualTo("application/pdf");
+        assertThat(metadataFil3.mimetype).isEqualTo(APPLICATION_PDF);
 
         FilMetadata metadataFil4 = filOpplastings.get(2).metadata;
         assertThat(metadataFil4.filnavn).isEqualTo("Brukerkvittering.pdf");
-        assertThat(metadataFil4.mimetype).isEqualTo("application/pdf");
+        assertThat(metadataFil4.mimetype).isEqualTo(APPLICATION_PDF);
     }
 
     @Test
