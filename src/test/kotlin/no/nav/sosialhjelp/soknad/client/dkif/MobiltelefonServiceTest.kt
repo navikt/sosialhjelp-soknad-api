@@ -12,7 +12,7 @@ import java.util.Collections.singletonMap
 internal class MobiltelefonServiceTest {
 
     private val dkifClient: DkifClient = mockk()
-    private val mobiltelefonService = MobiltelefonService(dkifClient)
+    private val mobiltelefonService = MobiltelefonServiceImpl(dkifClient)
 
     private val ident = "99988877777"
     private val mobiltelefonnummer = "12345678"
