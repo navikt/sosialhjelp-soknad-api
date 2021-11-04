@@ -1,12 +1,12 @@
 package no.nav.sosialhjelp.soknad.consumer.organisasjon;
 
-import no.nav.sosialhjelp.soknad.consumer.organisasjon.dto.NavnDto;
-import no.nav.sosialhjelp.soknad.consumer.organisasjon.dto.OrganisasjonNoekkelinfoDto;
+import no.nav.sosialhjelp.soknad.client.organisasjon.OrganisasjonClient;
+import no.nav.sosialhjelp.soknad.client.organisasjon.dto.NavnDto;
+import no.nav.sosialhjelp.soknad.client.organisasjon.dto.OrganisasjonNoekkelinfoDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,13 +17,16 @@ public class OrganisasjonService {
 
     private static final Logger log = LoggerFactory.getLogger(OrganisasjonService.class);
 
-    @Inject
-    private OrganisasjonConsumer organisasjonConsumer;
+    private final OrganisasjonClient organisasjonClient;
+
+    public OrganisasjonService(OrganisasjonClient organisasjonClient) {
+        this.organisasjonClient = organisasjonClient;
+    }
 
     public String hentOrgNavn(String orgnr) {
         if (orgnr != null) {
             try {
-                OrganisasjonNoekkelinfoDto noekkelinfo = organisasjonConsumer.hentOrganisasjonNoekkelinfo(orgnr);
+                OrganisasjonNoekkelinfoDto noekkelinfo = organisasjonClient.hentOrganisasjonNoekkelinfo(orgnr);
                 if (noekkelinfo == null) {
                     log.warn("Kunne ikke hente orgnr fra Ereg: {}", orgnr);
                     return orgnr;
