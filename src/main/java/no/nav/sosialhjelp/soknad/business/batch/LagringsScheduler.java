@@ -4,7 +4,7 @@ import no.nav.sosialhjelp.metrics.MetricsFactory;
 import no.nav.sosialhjelp.metrics.Timer;
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.BatchSoknadUnderArbeidRepository;
 import no.nav.sosialhjelp.soknad.business.service.HenvendelseService;
-import no.nav.sosialhjelp.soknad.consumer.leaderelection.LeaderElection;
+import no.nav.sosialhjelp.soknad.client.leaderelection.LeaderElection;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils;
 import org.slf4j.Logger;

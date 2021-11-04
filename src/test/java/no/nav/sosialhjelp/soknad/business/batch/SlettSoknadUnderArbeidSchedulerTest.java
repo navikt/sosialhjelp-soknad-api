@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.business.batch;
 
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.BatchSoknadUnderArbeidRepository;
-import no.nav.sosialhjelp.soknad.consumer.leaderelection.LeaderElection;
+import no.nav.sosialhjelp.soknad.client.leaderelection.LeaderElection;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

@@ -9,13 +9,13 @@ import no.nav.sosialhjelp.soknad.client.husbanken.HusbankenClientConfig;
 import no.nav.sosialhjelp.soknad.client.idporten.IdPortenClientConfig;
 import no.nav.sosialhjelp.soknad.client.idporten.IdPortenClientConfigMockAlt;
 import no.nav.sosialhjelp.soknad.client.idporten.IdPortenServiceImpl;
+import no.nav.sosialhjelp.soknad.client.leaderelection.LeaderElectionConfig;
 import no.nav.sosialhjelp.soknad.client.maskinporten.MaskinportenClientConfig;
 import no.nav.sosialhjelp.soknad.client.organisasjon.OrganisasjonConfig;
+import no.nav.sosialhjelp.soknad.client.norg.NorgConfig;
 import no.nav.sosialhjelp.soknad.client.skatteetaten.SkatteetatenClientConfig;
 import no.nav.sosialhjelp.soknad.consumer.fiks.DokumentKrypterer;
 import no.nav.sosialhjelp.soknad.consumer.kodeverk.KodeverkService;
-import no.nav.sosialhjelp.soknad.consumer.leaderelection.LeaderElectionImpl;
-import no.nav.sosialhjelp.soknad.consumer.leaderelection.NoLeaderElection;
 import no.nav.sosialhjelp.soknad.consumer.norg.NorgService;
 import no.nav.sosialhjelp.soknad.consumer.organisasjon.OrganisasjonService;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.PdlAdresseSokService;
@@ -29,7 +29,6 @@ import no.nav.sosialhjelp.soknad.consumer.redis.RedisConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.ArbeidsforholdRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.DigisosApiRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.KodeverkRestConfig;
-import no.nav.sosialhjelp.soknad.consumer.restconfig.NorgRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.PdlAdresseSokRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.PdlGeografiskTilknytningRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.PdlHentPersonRestConfig;
@@ -58,6 +57,7 @@ import org.springframework.context.annotation.Import;
         HusbankenClientConfig.class,
         OrganisasjonConfig.class,
         DkifConfig.class,
+        NorgConfig.class,
         RedisConfig.class,
         NoRedisConfig.class,
         PersonService.class,
@@ -74,8 +74,7 @@ import org.springframework.context.annotation.Import;
         UtbetalingService.class,
         BydelConfig.class,
         BydelService.class,
-        LeaderElectionImpl.class,
-        NoLeaderElection.class,
+        LeaderElectionConfig.class,
         SvarUtService.class
 })
 
@@ -87,7 +86,6 @@ public class ConsumerConfig {
             PdlAdresseSokRestConfig.class,
             PdlGeografiskTilknytningRestConfig.class,
             DigisosApiRestConfig.class,
-            NorgRestConfig.class,
             ArbeidsforholdRestConfig.class,
             STSTokenRestConfig.class,
             KodeverkRestConfig.class,
