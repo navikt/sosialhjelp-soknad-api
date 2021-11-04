@@ -1,7 +1,8 @@
 package no.nav.sosialhjelp.soknad.consumer.norg;
 
+import no.nav.sosialhjelp.soknad.client.norg.NorgClient;
+import no.nav.sosialhjelp.soknad.client.norg.dto.NavEnhetDto;
 import no.nav.sosialhjelp.soknad.consumer.exceptions.TjenesteUtilgjengeligException;
-import no.nav.sosialhjelp.soknad.consumer.norg.dto.RsNorgEnhet;
 import no.nav.sosialhjelp.soknad.consumer.redis.RedisService;
 import no.nav.sosialhjelp.soknad.domain.model.navenhet.NavEnhet;
 import no.nav.sosialhjelp.soknad.domain.model.navenhet.NavenhetFraLokalListe;
@@ -42,11 +43,13 @@ class NorgServiceTest {
     private static final String ORGNUMMER_TEST = "910940066";
 
     @Mock
-    private NorgConsumer norgConsumer;
+    private NorgClient norgClient;
     @Mock
     private RedisService redisService;
     @InjectMocks
     private NorgService norgService;
+
+    private NavEnhetDto navEnhetDto = new NavEnhetDto("Nav Enhet", ENHETSNUMMER);
 
     @AfterEach
     public void tearDown() {
@@ -56,7 +59,7 @@ class NorgServiceTest {
     @Test
     void finnEnhetForGtBrukerTestOrgNrForTest() {
         setProperty("environment.name", "test");
-        when(norgConsumer.getEnhetForGeografiskTilknytning(GT)).thenReturn(lagRsNorgEnhet());
+        when(norgClient.hentNavEnhetForGeografiskTilknytning(GT)).thenReturn(navEnhetDto);
 
         NavEnhet navEnhet = norgService.getEnhetForGt(GT);
 
@@ -66,19 +69,11 @@ class NorgServiceTest {
     @Test
     void finnEnhetForGtBrukerOrgNrFraNorgForProd() {
         setProperty("environment.name", "p");
-        when(norgConsumer.getEnhetForGeografiskTilknytning(GT)).thenReturn(lagRsNorgEnhet());
+        when(norgClient.hentNavEnhetForGeografiskTilknytning(GT)).thenReturn(navEnhetDto);
 
         NavEnhet navEnhet = norgService.getEnhetForGt(GT);
 
         assertThat(navEnhet.sosialOrgnr).isEqualTo(ORGNUMMER_PROD);
-    }
-
-    private RsNorgEnhet lagRsNorgEnhet() {
-        RsNorgEnhet rsNorgEnhet = new RsNorgEnhet();
-        rsNorgEnhet.enhetNr = ENHETSNUMMER;
-        rsNorgEnhet.navn = "Nav Enhet";
-        rsNorgEnhet.orgNrTilKommunaltNavKontor = ORGNUMMER_PROD;
-        return rsNorgEnhet;
     }
 
     @Test
@@ -87,9 +82,8 @@ class NorgServiceTest {
 
         String gt = "3434";
         String sosialOrgNummer = "974592274";
-        RsNorgEnhet norgEnhet = lagRsNorgEnhet();
-        norgEnhet.enhetNr = "0513";
-        when(norgConsumer.getEnhetForGeografiskTilknytning(gt)).thenReturn(norgEnhet);
+        var navEnhetDtoLom = new NavEnhetDto("Nav Enhet", "0513");
+        when(norgClient.hentNavEnhetForGeografiskTilknytning(gt)).thenReturn(navEnhetDtoLom);
 
         NavEnhet navEnhet = norgService.getEnhetForGt(gt);
         assertThat(navEnhet.sosialOrgnr).isEqualTo(sosialOrgNummer);
@@ -101,9 +95,8 @@ class NorgServiceTest {
 
         String gt = "3432";
         String sosialOrgNummer = "976641175";
-        RsNorgEnhet norgEnhet = lagRsNorgEnhet();
-        norgEnhet.enhetNr = "0513";
-        when(norgConsumer.getEnhetForGeografiskTilknytning(gt)).thenReturn(norgEnhet);
+        var navEnhetDtoSjaak = new NavEnhetDto("Nav Enhet", "0513");
+        when(norgClient.hentNavEnhetForGeografiskTilknytning(gt)).thenReturn(navEnhetDtoSjaak);
 
         NavEnhet navEnhet = norgService.getEnhetForGt(gt);
         assertThat(navEnhet.sosialOrgnr).isEqualTo(sosialOrgNummer);
@@ -288,44 +281,42 @@ class NorgServiceTest {
 
     @Test
     void skalHenteNavEnhetForGtFraConsumer() {
-        when(norgConsumer.getEnhetForGeografiskTilknytning(GT)).thenReturn(lagRsNorgEnhet());
+        when(norgClient.hentNavEnhetForGeografiskTilknytning(GT)).thenReturn(navEnhetDto);
 
         NavEnhet navEnhet = norgService.getEnhetForGt(GT);
 
         assertThat(navEnhet.sosialOrgnr).isEqualTo(ORGNUMMER_PROD);
 
-        verify(norgConsumer, times(1)).getEnhetForGeografiskTilknytning(GT);
+        verify(norgClient, times(1)).hentNavEnhetForGeografiskTilknytning(GT);
         verify(redisService, times(1)).getString(anyString());
         verify(redisService, times(0)).get(anyString(), any());
     }
 
     @Test
     void skalHenteNavEnhetForGtFraCache() {
-        var mockEnhet = lagRsNorgEnhet();
         when(redisService.getString(anyString())).thenReturn(LocalDateTime.now().minusMinutes(1).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
-        when(redisService.get(anyString(), any())).thenReturn(mockEnhet);
+        when(redisService.get(anyString(), any())).thenReturn(navEnhetDto);
 
         var navEnhet = norgService.getEnhetForGt(GT);
 
         assertThat(navEnhet.sosialOrgnr).isEqualTo(ORGNUMMER_PROD);
 
-        verify(norgConsumer, times(0)).getEnhetForGeografiskTilknytning(GT);
+        verify(norgClient, times(0)).hentNavEnhetForGeografiskTilknytning(GT);
         verify(redisService, times(1)).getString(anyString());
         verify(redisService, times(1)).get(anyString(), any());
     }
 
     @Test
     void skalBrukeCacheSomFallbackDersomConsumerFeilerOgCacheFinnes() {
-        var mockEnhet = lagRsNorgEnhet();
         when(redisService.getString(anyString())).thenReturn(LocalDateTime.now().minusMinutes(60).minusSeconds(1).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
-        when(redisService.get(anyString(), any())).thenReturn(mockEnhet);
-        when(norgConsumer.getEnhetForGeografiskTilknytning(GT)).thenThrow(new TjenesteUtilgjengeligException("norg feiler", new ServiceUnavailableException()));
+        when(redisService.get(anyString(), any())).thenReturn(navEnhetDto);
+        when(norgClient.hentNavEnhetForGeografiskTilknytning(GT)).thenThrow(new TjenesteUtilgjengeligException("norg feiler", new ServiceUnavailableException()));
 
         var navEnhet = norgService.getEnhetForGt(GT);
 
         assertThat(navEnhet.sosialOrgnr).isEqualTo(ORGNUMMER_PROD);
 
-        verify(norgConsumer, times(1)).getEnhetForGeografiskTilknytning(GT);
+        verify(norgClient, times(1)).hentNavEnhetForGeografiskTilknytning(GT);
         verify(redisService, times(1)).getString(anyString());
         verify(redisService, times(1)).get(anyString(), any());
     }
@@ -334,11 +325,11 @@ class NorgServiceTest {
     void skalKasteFeilHvisConsumerFeilerOgCacheErExpired() {
         when(redisService.getString(anyString())).thenReturn(LocalDateTime.now().minusMinutes(60).minusSeconds(1).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
         when(redisService.get(anyString(), any())).thenReturn(null);
-        when(norgConsumer.getEnhetForGeografiskTilknytning(GT)).thenThrow(new TjenesteUtilgjengeligException("norg feiler", new ServiceUnavailableException()));
+        when(norgClient.hentNavEnhetForGeografiskTilknytning(GT)).thenThrow(new TjenesteUtilgjengeligException("norg feiler", new ServiceUnavailableException()));
 
         assertThatExceptionOfType(TjenesteUtilgjengeligException.class).isThrownBy(() -> norgService.getEnhetForGt(GT));
 
-        verify(norgConsumer, times(1)).getEnhetForGeografiskTilknytning(GT);
+        verify(norgClient, times(1)).hentNavEnhetForGeografiskTilknytning(GT);
         verify(redisService, times(1)).getString(anyString());
         verify(redisService, times(1)).get(anyString(), any());
     }
@@ -346,13 +337,13 @@ class NorgServiceTest {
     @Test
     void skalReturnereNullHvisConsumerReturnererNull() {
         when(redisService.getString(anyString())).thenReturn(LocalDateTime.now().minusMinutes(60).minusSeconds(1).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
-        when(norgConsumer.getEnhetForGeografiskTilknytning(GT)).thenReturn(null);
+        when(norgClient.hentNavEnhetForGeografiskTilknytning(GT)).thenReturn(null);
 
         var navEnhet = norgService.getEnhetForGt(GT);
 
         assertThat(navEnhet).isNull();
 
-        verify(norgConsumer, times(1)).getEnhetForGeografiskTilknytning(GT);
+        verify(norgClient, times(1)).hentNavEnhetForGeografiskTilknytning(GT);
         verify(redisService, times(1)).getString(anyString());
         verify(redisService, times(0)).get(anyString(), any()); // sjekker ikke cache hvis consumer returnerer null (404 not found)
     }

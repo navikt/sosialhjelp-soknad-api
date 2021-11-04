@@ -2,8 +2,9 @@ package no.nav.sosialhjelp.soknad.consumer.norg;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import no.nav.sosialhjelp.soknad.client.norg.NorgClient;
+import no.nav.sosialhjelp.soknad.client.norg.dto.NavEnhetDto;
 import no.nav.sosialhjelp.soknad.consumer.exceptions.TjenesteUtilgjengeligException;
-import no.nav.sosialhjelp.soknad.consumer.norg.dto.RsNorgEnhet;
 import no.nav.sosialhjelp.soknad.consumer.redis.RedisService;
 import no.nav.sosialhjelp.soknad.domain.model.navenhet.NavEnhet;
 import no.nav.sosialhjelp.soknad.domain.model.navenhet.NavenhetFraLokalListe;
@@ -32,13 +33,19 @@ public class NorgService {
     private static final String NAVENHET_PATH = "/navenhet.json";
     private static final long MINUTES_TO_PASS_BETWEEN_POLL = 60;
 
-    private final NorgConsumer norgConsumer;
+//    private final NorgConsumer norgConsumer;
+    private final NorgClient norgClient;
     private final RedisService redisService;
 
     private List<NavenhetFraLokalListe> cachedNavenheterFraLokalListe;
 
-    public NorgService(NorgConsumer norgConsumer, RedisService redisService) {
-        this.norgConsumer = norgConsumer;
+    public NorgService(
+//            NorgConsumer norgConsumer,
+            NorgClient norgClient,
+            RedisService redisService
+    ) {
+//        this.norgConsumer = norgConsumer;
+        this.norgClient = norgClient;
         this.redisService = redisService;
     }
 
@@ -64,17 +71,17 @@ public class NorgService {
             throw new IllegalArgumentException("GT ikke på gyldig format: " + gt);
         }
 
-        var norgEnhet = hentFraCacheEllerConsumer(gt);
+        var navEnhetDto = hentFraCacheEllerConsumer(gt);
 
-        if (norgEnhet == null) {
+        if (navEnhetDto == null) {
             logger.warn("Kunne ikke finne NorgEnhet for gt: {}", gt);
             return null;
         }
 
         NavEnhet enhet = new NavEnhet();
-        enhet.enhetNr = norgEnhet.enhetNr;
-        enhet.navn = norgEnhet.navn;
-        if (norgEnhet.enhetNr.equals("0513") && gt.equals("3434")) {
+        enhet.enhetNr = navEnhetDto.getEnhetNr();
+        enhet.navn = navEnhetDto.getNavn();
+        if (navEnhetDto.getEnhetNr().equals("0513") && gt.equals("3434")) {
             /*
             Jira sak 1200
 
@@ -82,18 +89,18 @@ public class NorgService {
             Dette er en midlertidig fix for å få denne casen til å fungere.
             */
             enhet.sosialOrgnr = "974592274";
-        } else if (norgEnhet.enhetNr.equals("0511") && gt.equals("3432")) {
+        } else if (navEnhetDto.getEnhetNr().equals("0511") && gt.equals("3432")) {
             enhet.sosialOrgnr = "964949204";
-        } else if (norgEnhet.enhetNr.equals("1620") && gt.equals("5014")) {
+        } else if (navEnhetDto.getEnhetNr().equals("1620") && gt.equals("5014")) {
             enhet.sosialOrgnr = "913071751";
         } else {
-            enhet.sosialOrgnr = KommuneTilNavEnhetMapper.getOrganisasjonsnummer(norgEnhet.enhetNr);
+            enhet.sosialOrgnr = KommuneTilNavEnhetMapper.getOrganisasjonsnummer(navEnhetDto.getEnhetNr());
         }
 
         return enhet;
     }
 
-    private RsNorgEnhet hentFraCacheEllerConsumer(String gt) {
+    private NavEnhetDto hentFraCacheEllerConsumer(String gt) {
         if (skalBrukeCache(gt)) {
             var cached = hentFraCache(gt);
             if (cached != null) {
@@ -113,15 +120,15 @@ public class NorgService {
         return lastPollTime.plusMinutes(MINUTES_TO_PASS_BETWEEN_POLL).isAfter(LocalDateTime.now());
     }
 
-    private RsNorgEnhet hentFraCache(String gt) {
-        return (RsNorgEnhet) redisService.get(GT_CACHE_KEY_PREFIX + gt, RsNorgEnhet.class);
+    private NavEnhetDto hentFraCache(String gt) {
+        return (NavEnhetDto) redisService.get(GT_CACHE_KEY_PREFIX + gt, NavEnhetDto.class);
     }
 
-    private RsNorgEnhet hentFraConsumerMedCacheSomFallback(String gt) {
+    private NavEnhetDto hentFraConsumerMedCacheSomFallback(String gt) {
         try {
-            var rsNorgEnhet = norgConsumer.getEnhetForGeografiskTilknytning(gt);
-            if (rsNorgEnhet != null) {
-                return rsNorgEnhet;
+            var navEnhetDto = norgClient.hentNavEnhetForGeografiskTilknytning(gt);
+            if (navEnhetDto != null) {
+                return navEnhetDto;
             }
         } catch (TjenesteUtilgjengeligException e) {
             // Norg feiler -> prøv å hent tidligere cached verdi

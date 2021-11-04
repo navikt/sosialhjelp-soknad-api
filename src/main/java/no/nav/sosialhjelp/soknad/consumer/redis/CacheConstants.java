@@ -31,4 +31,5 @@ public final class CacheConstants {
     public static final String NAVUTBETALINGER_CACHE_KEY_PREFIX = "navutbetalinger-";
 
     public static final long CACHE_30_MINUTES_IN_SECONDS = 30 * 60L;
+    public static final long CACHE_24_HOURS_IN_SECONDS = 24 * 60 * 60L;
 }
