@@ -23,7 +23,7 @@ class OrganisasjonClientImpl(
 ) : OrganisasjonClient {
 
     override fun ping() {
-        // FIXME: faker ping med OPTIONS-kall til samme tjeneste med NAV ITs orgnr
+        // faker ping med OPTIONS-kall til samme tjeneste med NAV ITs orgnr
         val request: Invocation.Builder = client.target(baseurl + "v1/organisasjon/990983666/noekkelinfo").request()
         request.options().use { response ->
             if (response.status != 200) {
