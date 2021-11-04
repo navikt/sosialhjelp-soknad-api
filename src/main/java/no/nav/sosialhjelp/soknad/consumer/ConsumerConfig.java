@@ -13,6 +13,7 @@ import no.nav.sosialhjelp.soknad.client.leaderelection.LeaderElectionConfig;
 import no.nav.sosialhjelp.soknad.client.maskinporten.MaskinportenClientConfig;
 import no.nav.sosialhjelp.soknad.client.norg.NorgConfig;
 import no.nav.sosialhjelp.soknad.client.skatteetaten.SkatteetatenClientConfig;
+import no.nav.sosialhjelp.soknad.client.virusscan.VirusScanConfig;
 import no.nav.sosialhjelp.soknad.consumer.fiks.DokumentKrypterer;
 import no.nav.sosialhjelp.soknad.consumer.kodeverk.KodeverkService;
 import no.nav.sosialhjelp.soknad.consumer.norg.NorgService;
@@ -73,10 +74,9 @@ import org.springframework.context.annotation.Import;
         UtbetalingService.class,
         BydelConfig.class,
         BydelService.class,
-//        LeaderElectionImpl.class,
-//        NoLeaderElection.class,
         LeaderElectionConfig.class,
-        SvarUtService.class
+        SvarUtService.class,
+        VirusScanConfig.class
 })
 
 public class ConsumerConfig {

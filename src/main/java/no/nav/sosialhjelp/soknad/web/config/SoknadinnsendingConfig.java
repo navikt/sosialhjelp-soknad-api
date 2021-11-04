@@ -2,8 +2,6 @@ package no.nav.sosialhjelp.soknad.web.config;
 
 import no.nav.sosialhjelp.soknad.business.BusinessConfig;
 import no.nav.sosialhjelp.soknad.consumer.ConsumerConfig;
-import no.nav.sosialhjelp.soknad.consumer.restconfig.DigisosApiRestConfig;
-import no.nav.sosialhjelp.soknad.consumer.virusscan.VirusScanConfig;
 import no.nav.sosialhjelp.soknad.web.oidc.OidcTokenValidatorConfig;
 import no.nav.sosialhjelp.soknad.web.selftest.SelftestService;
 import no.nav.sosialhjelp.soknad.web.service.SaksoversiktMetadataService;
@@ -25,8 +23,6 @@ import org.springframework.context.annotation.Import;
         MetricsConfiguration.class,
         SaksoversiktMetadataService.class,
         SoknadOversiktService.class,
-        VirusScanConfig.class,
-        DigisosApiRestConfig.class,
         SelftestService.class,
         Tilgangskontroll.class
 })
