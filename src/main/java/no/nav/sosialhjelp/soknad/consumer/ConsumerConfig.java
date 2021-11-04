@@ -9,13 +9,12 @@ import no.nav.sosialhjelp.soknad.client.husbanken.HusbankenClientConfig;
 import no.nav.sosialhjelp.soknad.client.idporten.IdPortenClientConfig;
 import no.nav.sosialhjelp.soknad.client.idporten.IdPortenClientConfigMockAlt;
 import no.nav.sosialhjelp.soknad.client.idporten.IdPortenServiceImpl;
+import no.nav.sosialhjelp.soknad.client.leaderelection.LeaderElectionConfig;
 import no.nav.sosialhjelp.soknad.client.maskinporten.MaskinportenClientConfig;
 import no.nav.sosialhjelp.soknad.client.norg.NorgConfig;
 import no.nav.sosialhjelp.soknad.client.skatteetaten.SkatteetatenClientConfig;
 import no.nav.sosialhjelp.soknad.consumer.fiks.DokumentKrypterer;
 import no.nav.sosialhjelp.soknad.consumer.kodeverk.KodeverkService;
-import no.nav.sosialhjelp.soknad.consumer.leaderelection.LeaderElectionImpl;
-import no.nav.sosialhjelp.soknad.consumer.leaderelection.NoLeaderElection;
 import no.nav.sosialhjelp.soknad.consumer.norg.NorgService;
 import no.nav.sosialhjelp.soknad.consumer.organisasjon.OrganisasjonService;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.PdlAdresseSokService;
@@ -74,8 +73,9 @@ import org.springframework.context.annotation.Import;
         UtbetalingService.class,
         BydelConfig.class,
         BydelService.class,
-        LeaderElectionImpl.class,
-        NoLeaderElection.class,
+//        LeaderElectionImpl.class,
+//        NoLeaderElection.class,
+        LeaderElectionConfig.class,
         SvarUtService.class
 })
 
