@@ -18,6 +18,7 @@ import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.SvarType;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Type;
 import org.junit.jupiter.api.Test;
 
+import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.OppsummeringTestUtils.validateFeltMedSvar;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class PersonopplysningerStegTest {
@@ -38,20 +39,11 @@ class PersonopplysningerStegTest {
         assertThat(res.getAvsnitt()).hasSize(4);
         assertThat(res.getAvsnitt().get(0).getSporsmal()).hasSize(1);
 
-        var felter = res.getAvsnitt().get(0).getSporsmal().get(0).getFelt();
-        assertThat(felter).hasSize(3);
-
-        var navnFelt = felter.get(0);
-        assertThat(navnFelt.getSvar().getValue()).isEqualTo("fornavn etternavn");
-        assertThat(navnFelt.getType()).isEqualTo(Type.SYSTEMDATA);
-
-        var personIdentifikatorFelt = felter.get(1);
-        assertThat(personIdentifikatorFelt.getSvar().getValue()).isEqualTo("11111111111");
-        assertThat(personIdentifikatorFelt.getType()).isEqualTo(Type.SYSTEMDATA);
-
-        var statsborgerskapFelt = felter.get(2);
-        assertThat(statsborgerskapFelt.getSvar().getValue()).isEqualTo("NOR");
-        assertThat(statsborgerskapFelt.getType()).isEqualTo(Type.SYSTEMDATA);
+        var personaliaSporsmal = res.getAvsnitt().get(0).getSporsmal().get(0);
+        assertThat(personaliaSporsmal.getFelt()).hasSize(3);
+        validateFeltMedSvar(personaliaSporsmal.getFelt().get(0), Type.SYSTEMDATA, SvarType.TEKST, "fornavn etternavn");
+        validateFeltMedSvar(personaliaSporsmal.getFelt().get(1), Type.SYSTEMDATA, SvarType.TEKST, "11111111111");
+        validateFeltMedSvar(personaliaSporsmal.getFelt().get(2), Type.SYSTEMDATA, SvarType.TEKST, "NOR");
     }
 
     @Test
@@ -61,11 +53,12 @@ class PersonopplysningerStegTest {
 
         var res = steg.get(soknad);
 
-        var navnFelt = res.getAvsnitt().get(0).getSporsmal().get(0).getFelt().get(0);
-        assertThat(navnFelt.getSvar().getValue()).isEqualTo("fornavn mellomnavn etternavn");
-
-        var statsborgerskapFelt = res.getAvsnitt().get(0).getSporsmal().get(0).getFelt().get(2);
-        assertThat(statsborgerskapFelt.getSvar().getValue()).isNull();
+        var personaliaAvsnitt = res.getAvsnitt().get(0);
+        var personaliaSporsmal = personaliaAvsnitt.getSporsmal().get(0);
+        assertThat(personaliaSporsmal.getFelt()).hasSize(3);
+        validateFeltMedSvar(personaliaSporsmal.getFelt().get(0), Type.SYSTEMDATA, SvarType.TEKST, "fornavn mellomnavn etternavn");
+        validateFeltMedSvar(personaliaSporsmal.getFelt().get(1), Type.SYSTEMDATA, SvarType.TEKST, "11111111111");
+        validateFeltMedSvar(personaliaSporsmal.getFelt().get(2), Type.SYSTEMDATA, SvarType.TEKST, null);
     }
 
     @Test
@@ -75,13 +68,16 @@ class PersonopplysningerStegTest {
         var res = steg.get(soknad);
 
         assertThat(res.getAvsnitt()).hasSize(4);
-        assertThat(res.getAvsnitt().get(1).getSporsmal()).hasSize(1);
-        assertThat(res.getAvsnitt().get(1).getSporsmal().get(0).getFelt()).hasSize(1);
 
-        var adresseFelt = res.getAvsnitt().get(1).getSporsmal().get(0).getFelt().get(0);
+        var adresseAvsnitt = res.getAvsnitt().get(1);
+        assertThat(adresseAvsnitt.getSporsmal()).hasSize(1);
+
+        var adresseSporsmal = adresseAvsnitt.getSporsmal().get(0);
+        assertThat(adresseSporsmal.getFelt()).hasSize(1);
+
+        var adresseFelt = adresseSporsmal.getFelt().get(0);
         assertThat(adresseFelt.getLabel()).isEqualTo("kontakt.system.oppholdsadresse.folkeregistrertAdresse");
-        assertThat(adresseFelt.getSvar().getValue()).isEqualTo("gate 1B, 0123 poststed");
-        assertThat(adresseFelt.getType()).isEqualTo(Type.SYSTEMDATA);
+        validateFeltMedSvar(adresseFelt, Type.SYSTEMDATA, SvarType.TEKST, "gate 1B, 0123 poststed");
     }
 
     @Test
@@ -95,10 +91,17 @@ class PersonopplysningerStegTest {
 
         var res = steg.get(soknad);
 
-        var adresseFelt = res.getAvsnitt().get(1).getSporsmal().get(0).getFelt().get(0);
+        assertThat(res.getAvsnitt()).hasSize(4);
+
+        var adresseAvsnitt = res.getAvsnitt().get(1);
+        assertThat(adresseAvsnitt.getSporsmal()).hasSize(1);
+
+        var adresseSporsmal = adresseAvsnitt.getSporsmal().get(0);
+        assertThat(adresseSporsmal.getFelt()).hasSize(1);
+
+        var adresseFelt = adresseSporsmal.getFelt().get(0);
         assertThat(adresseFelt.getLabel()).isEqualTo("kontakt.system.oppholdsadresse.folkeregistrertAdresse");
-        assertThat(adresseFelt.getSvar().getValue()).isEqualTo("bruksnummer, kommunenr");
-        assertThat(adresseFelt.getType()).isEqualTo(Type.SYSTEMDATA);
+        validateFeltMedSvar(adresseFelt, Type.SYSTEMDATA, SvarType.TEKST, "bruksnummer, kommunenr");
     }
 
     @Test
@@ -114,10 +117,17 @@ class PersonopplysningerStegTest {
 
         var res = steg.get(soknad);
 
-        var adresseFelt = res.getAvsnitt().get(1).getSporsmal().get(0).getFelt().get(0);
+        assertThat(res.getAvsnitt()).hasSize(4);
+
+        var adresseAvsnitt = res.getAvsnitt().get(1);
+        assertThat(adresseAvsnitt.getSporsmal()).hasSize(1);
+
+        var adresseSporsmal = adresseAvsnitt.getSporsmal().get(0);
+        assertThat(adresseSporsmal.getFelt()).hasSize(1);
+
+        var adresseFelt = adresseSporsmal.getFelt().get(0);
         assertThat(adresseFelt.getLabel()).isEqualTo("kontakt.system.oppholdsadresse.midlertidigAdresse");
-        assertThat(adresseFelt.getSvar().getValue()).isEqualTo("gate 1, 0123 poststed");
-        assertThat(adresseFelt.getType()).isEqualTo(Type.SYSTEMDATA);
+        validateFeltMedSvar(adresseFelt, Type.SYSTEMDATA, SvarType.TEKST, "gate 1, 0123 poststed");
     }
 
     @Test
@@ -133,10 +143,17 @@ class PersonopplysningerStegTest {
 
         var res = steg.get(soknad);
 
-        var adresseFelt = res.getAvsnitt().get(1).getSporsmal().get(0).getFelt().get(0);
+        assertThat(res.getAvsnitt()).hasSize(4);
+
+        var adresseAvsnitt = res.getAvsnitt().get(1);
+        assertThat(adresseAvsnitt.getSporsmal()).hasSize(1);
+
+        var adresseSporsmal = adresseAvsnitt.getSporsmal().get(0);
+        assertThat(adresseSporsmal.getFelt()).hasSize(1);
+
+        var adresseFelt = adresseSporsmal.getFelt().get(0);
         assertThat(adresseFelt.getLabel()).isEqualTo("kontakt.system.oppholdsadresse.valg.soknad");
-        assertThat(adresseFelt.getSvar().getValue()).isEqualTo("gate 1, 0123 poststed");
-        assertThat(adresseFelt.getType()).isEqualTo(Type.TEKST);
+        validateFeltMedSvar(adresseFelt, Type.TEKST, SvarType.TEKST, "gate 1, 0123 poststed");
     }
 
     @Test
@@ -146,15 +163,14 @@ class PersonopplysningerStegTest {
         var res = steg.get(soknad1);
 
         assertThat(res.getAvsnitt()).hasSize(4);
-        assertThat(res.getAvsnitt().get(2).getSporsmal()).hasSize(1);
 
-        var telefonnummerSporsmal = res.getAvsnitt().get(2).getSporsmal().get(0);
+        var telefonnummerAvsnitt = res.getAvsnitt().get(2);
+        assertThat(telefonnummerAvsnitt.getSporsmal()).hasSize(1);
+
+        var telefonnummerSporsmal = telefonnummerAvsnitt.getSporsmal().get(0);
         assertThat(telefonnummerSporsmal.getErUtfylt()).isTrue();
         assertThat(telefonnummerSporsmal.getFelt()).hasSize(1);
-
-        var telefonnummerFelt = telefonnummerSporsmal.getFelt().get(0);
-        assertThat(telefonnummerFelt.getSvar().getValue()).isEqualTo(telefonnummerSystemdata.getVerdi());
-        assertThat(telefonnummerFelt.getType()).isEqualTo(Type.SYSTEMDATA);
+        validateFeltMedSvar(telefonnummerSporsmal.getFelt().get(0), Type.SYSTEMDATA, SvarType.TEKST, telefonnummerSystemdata.getVerdi());
     }
 
     @Test
@@ -166,12 +182,15 @@ class PersonopplysningerStegTest {
 
         var res = steg.get(soknad);
 
-        var telefonnummerSporsmal = res.getAvsnitt().get(2).getSporsmal().get(0);
-        assertThat(telefonnummerSporsmal.getErUtfylt()).isTrue();
+        assertThat(res.getAvsnitt()).hasSize(4);
 
-        var telefonnummerFelt = telefonnummerSporsmal.getFelt().get(0);
-        assertThat(telefonnummerFelt.getSvar().getValue()).isEqualTo(telefonnummerBruker.getVerdi());
-        assertThat(telefonnummerFelt.getType()).isEqualTo(Type.TEKST);
+        var telefonnummerAvsnitt = res.getAvsnitt().get(2);
+        assertThat(telefonnummerAvsnitt.getSporsmal()).hasSize(1);
+
+        var telefonnummerSporsmal = telefonnummerAvsnitt.getSporsmal().get(0);
+        assertThat(telefonnummerSporsmal.getErUtfylt()).isTrue();
+        assertThat(telefonnummerSporsmal.getFelt()).hasSize(1);
+        validateFeltMedSvar(telefonnummerSporsmal.getFelt().get(0), Type.TEKST, SvarType.TEKST, telefonnummerBruker.getVerdi());
     }
 
     @Test
@@ -181,7 +200,12 @@ class PersonopplysningerStegTest {
 
         var res = steg.get(soknad);
 
-        var telefonnummerSporsmal = res.getAvsnitt().get(2).getSporsmal().get(0);
+        assertThat(res.getAvsnitt()).hasSize(4);
+
+        var telefonnummerAvsnitt = res.getAvsnitt().get(2);
+        assertThat(telefonnummerAvsnitt.getSporsmal()).hasSize(1);
+
+        var telefonnummerSporsmal = telefonnummerAvsnitt.getSporsmal().get(0);
         assertThat(telefonnummerSporsmal.getErUtfylt()).isFalse();
         assertThat(telefonnummerSporsmal.getFelt()).isNull();
     }
@@ -193,15 +217,14 @@ class PersonopplysningerStegTest {
         var res = steg.get(soknad);
 
         assertThat(res.getAvsnitt()).hasSize(4);
-        assertThat(res.getAvsnitt().get(3).getSporsmal()).hasSize(1);
 
-        var kontonummerSporsmal = res.getAvsnitt().get(3).getSporsmal().get(0);
+        var kontonummerAvsnitt = res.getAvsnitt().get(3);
+        assertThat(kontonummerAvsnitt.getSporsmal()).hasSize(1);
+
+        var kontonummerSporsmal = kontonummerAvsnitt.getSporsmal().get(0);
         assertThat(kontonummerSporsmal.getErUtfylt()).isTrue();
         assertThat(kontonummerSporsmal.getFelt()).hasSize(1);
-
-        var kontonummerFelt = kontonummerSporsmal.getFelt().get(0);
-        assertThat(kontonummerFelt.getSvar().getValue()).isEqualTo(kontonummerSystemdata.getVerdi());
-        assertThat(kontonummerFelt.getType()).isEqualTo(Type.SYSTEMDATA);
+        validateFeltMedSvar(kontonummerSporsmal.getFelt().get(0), Type.SYSTEMDATA, SvarType.TEKST, kontonummerSystemdata.getVerdi());
     }
 
     @Test
@@ -213,12 +236,15 @@ class PersonopplysningerStegTest {
 
         var res = steg.get(soknad);
 
-        var kontonummerSporsmal = res.getAvsnitt().get(3).getSporsmal().get(0);
-        assertThat(kontonummerSporsmal.getErUtfylt()).isTrue();
+        assertThat(res.getAvsnitt()).hasSize(4);
 
-        var kontonummerFelt = kontonummerSporsmal.getFelt().get(0);
-        assertThat(kontonummerFelt.getSvar().getValue()).isEqualTo(kontonummerBruker.getVerdi());
-        assertThat(kontonummerFelt.getType()).isEqualTo(Type.TEKST);
+        var kontonummerAvsnitt = res.getAvsnitt().get(3);
+        assertThat(kontonummerAvsnitt.getSporsmal()).hasSize(1);
+
+        var kontonummerSporsmal = kontonummerAvsnitt.getSporsmal().get(0);
+        assertThat(kontonummerSporsmal.getErUtfylt()).isTrue();
+        assertThat(kontonummerSporsmal.getFelt()).hasSize(1);
+        validateFeltMedSvar(kontonummerSporsmal.getFelt().get(0), Type.TEKST, SvarType.TEKST, kontonummerBruker.getVerdi());
     }
 
     @Test
@@ -228,13 +254,15 @@ class PersonopplysningerStegTest {
 
         var res = steg.get(soknad);
 
-        var kontonummerSporsmal = res.getAvsnitt().get(3).getSporsmal().get(0);
-        assertThat(kontonummerSporsmal.getErUtfylt()).isTrue();
+        assertThat(res.getAvsnitt()).hasSize(4);
 
-        var kontonummerFelt = kontonummerSporsmal.getFelt().get(0);
-        assertThat(kontonummerFelt.getSvar().getValue()).isEqualTo("kontakt.kontonummer.harikke.true");
-        assertThat(kontonummerFelt.getSvar().getType()).isEqualTo(SvarType.LOCALE_TEKST);
-        assertThat(kontonummerFelt.getType()).isEqualTo(Type.CHECKBOX);
+        var kontonummerAvsnitt = res.getAvsnitt().get(3);
+        assertThat(kontonummerAvsnitt.getSporsmal()).hasSize(1);
+
+        var kontonummerSporsmal = kontonummerAvsnitt.getSporsmal().get(0);
+        assertThat(kontonummerSporsmal.getErUtfylt()).isTrue();
+        assertThat(kontonummerSporsmal.getFelt()).hasSize(1);
+        validateFeltMedSvar(kontonummerSporsmal.getFelt().get(0), Type.CHECKBOX, SvarType.LOCALE_TEKST, "kontakt.kontonummer.harikke.true");
     }
 
     @Test

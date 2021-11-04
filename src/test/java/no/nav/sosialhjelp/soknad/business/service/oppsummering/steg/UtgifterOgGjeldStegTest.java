@@ -17,6 +17,8 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomioversikt;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtgift;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktUtgift;
+import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.SvarType;
+import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Type;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -36,6 +38,7 @@ import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTGIFTER_KOMMUNA
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTGIFTER_OPPVARMING;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTGIFTER_SFO;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTGIFTER_STROM;
+import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.OppsummeringTestUtils.validateFeltMedSvar;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class UtgifterOgGjeldStegTest {
@@ -104,12 +107,12 @@ class UtgifterOgGjeldStegTest {
 
         var boutgifterFelter = utgifterSporsmal.get(1).getFelt();
         assertThat(boutgifterFelter).hasSize(6);
-        assertThat(boutgifterFelter.get(0).getSvar().getValue()).isEqualTo("utgifter.boutgift.true.type.husleie");
-        assertThat(boutgifterFelter.get(1).getSvar().getValue()).isEqualTo("utgifter.boutgift.true.type.strom");
-        assertThat(boutgifterFelter.get(2).getSvar().getValue()).isEqualTo("utgifter.boutgift.true.type.kommunalAvgift");
-        assertThat(boutgifterFelter.get(3).getSvar().getValue()).isEqualTo("utgifter.boutgift.true.type.oppvarming");
-        assertThat(boutgifterFelter.get(4).getSvar().getValue()).isEqualTo("utgifter.boutgift.true.type.boliglanAvdrag");
-        assertThat(boutgifterFelter.get(5).getSvar().getValue()).isEqualTo("utgifter.boutgift.true.type.annenBoutgift");
+        validateFeltMedSvar(boutgifterFelter.get(0), Type.CHECKBOX, SvarType.LOCALE_TEKST, "utgifter.boutgift.true.type.husleie");
+        validateFeltMedSvar(boutgifterFelter.get(1), Type.CHECKBOX, SvarType.LOCALE_TEKST, "utgifter.boutgift.true.type.strom");
+        validateFeltMedSvar(boutgifterFelter.get(2), Type.CHECKBOX, SvarType.LOCALE_TEKST, "utgifter.boutgift.true.type.kommunalAvgift");
+        validateFeltMedSvar(boutgifterFelter.get(3), Type.CHECKBOX, SvarType.LOCALE_TEKST, "utgifter.boutgift.true.type.oppvarming");
+        validateFeltMedSvar(boutgifterFelter.get(4), Type.CHECKBOX, SvarType.LOCALE_TEKST, "utgifter.boutgift.true.type.boliglanAvdrag");
+        validateFeltMedSvar(boutgifterFelter.get(5), Type.CHECKBOX, SvarType.LOCALE_TEKST, "utgifter.boutgift.true.type.annenBoutgift");
     }
 
     @Test
@@ -162,11 +165,11 @@ class UtgifterOgGjeldStegTest {
 
         var barneutgifterFelter = utgifterSporsmal.get(2).getFelt();
         assertThat(barneutgifterFelter).hasSize(5);
-        assertThat(barneutgifterFelter.get(0).getSvar().getValue()).isEqualTo("utgifter.barn.true.utgifter.barnFritidsaktiviteter");
-        assertThat(barneutgifterFelter.get(1).getSvar().getValue()).isEqualTo("utgifter.barn.true.utgifter.barnehage");
-        assertThat(barneutgifterFelter.get(2).getSvar().getValue()).isEqualTo("utgifter.barn.true.utgifter.sfo");
-        assertThat(barneutgifterFelter.get(3).getSvar().getValue()).isEqualTo("utgifter.barn.true.utgifter.barnTannregulering");
-        assertThat(barneutgifterFelter.get(4).getSvar().getValue()).isEqualTo("utgifter.barn.true.utgifter.annenBarneutgift");
+        validateFeltMedSvar(barneutgifterFelter.get(0), Type.CHECKBOX, SvarType.LOCALE_TEKST, "utgifter.barn.true.utgifter.barnFritidsaktiviteter");
+        validateFeltMedSvar(barneutgifterFelter.get(1), Type.CHECKBOX, SvarType.LOCALE_TEKST, "utgifter.barn.true.utgifter.barnehage");
+        validateFeltMedSvar(barneutgifterFelter.get(2), Type.CHECKBOX, SvarType.LOCALE_TEKST, "utgifter.barn.true.utgifter.sfo");
+        validateFeltMedSvar(barneutgifterFelter.get(3), Type.CHECKBOX, SvarType.LOCALE_TEKST, "utgifter.barn.true.utgifter.barnTannregulering");
+        validateFeltMedSvar(barneutgifterFelter.get(4), Type.CHECKBOX, SvarType.LOCALE_TEKST, "utgifter.barn.true.utgifter.annenBarneutgift");
     }
 
     private JsonInternalSoknad createSoknad(List<JsonOkonomibekreftelse> bekreftelser, List<JsonOkonomiOpplysningUtgift> opplysningUtgifter, List<JsonOkonomioversiktUtgift> oversiktUtgifter) {

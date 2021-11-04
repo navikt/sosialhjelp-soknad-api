@@ -6,8 +6,10 @@ import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.bosituasjon.JsonBosituasjon;
 import no.nav.sbl.soknadsosialhjelp.soknad.bosituasjon.JsonBosituasjon.Botype;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.SvarType;
+import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Type;
 import org.junit.jupiter.api.Test;
 
+import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.OppsummeringTestUtils.validateFeltMedSvar;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class BosituasjonStegTest {
@@ -46,8 +48,7 @@ class BosituasjonStegTest {
         var antallPersonerSporsmal = res.getAvsnitt().get(0).getSporsmal().get(1);
         assertThat(antallPersonerSporsmal.getErUtfylt()).isTrue();
         assertThat(antallPersonerSporsmal.getFelt()).hasSize(1);
-        assertThat(antallPersonerSporsmal.getFelt().get(0).getSvar().getValue()).isEqualTo("0");
-        assertThat(antallPersonerSporsmal.getFelt().get(0).getSvar().getType()).isEqualTo(SvarType.TEKST);
+        validateFeltMedSvar(antallPersonerSporsmal.getFelt().get(0), Type.TEKST, SvarType.TEKST, "0");
     }
 
     @Test
@@ -61,8 +62,7 @@ class BosituasjonStegTest {
         var botypeSporsmal = res.getAvsnitt().get(0).getSporsmal().get(0);
         assertThat(botypeSporsmal.getErUtfylt()).isTrue();
         assertThat(botypeSporsmal.getFelt()).hasSize(1);
-        assertThat(botypeSporsmal.getFelt().get(0).getSvar().getValue()).isEqualTo("bosituasjon.annet");
-        assertThat(botypeSporsmal.getFelt().get(0).getSvar().getType()).isEqualTo(SvarType.LOCALE_TEKST);
+        validateFeltMedSvar(botypeSporsmal.getFelt().get(0), Type.CHECKBOX, SvarType.LOCALE_TEKST, "bosituasjon.annet");
 
         var antallPersonerSporsmal = res.getAvsnitt().get(0).getSporsmal().get(1);
         assertThat(antallPersonerSporsmal.getErUtfylt()).isFalse();
@@ -80,14 +80,12 @@ class BosituasjonStegTest {
         var botypeSporsmal = res.getAvsnitt().get(0).getSporsmal().get(0);
         assertThat(botypeSporsmal.getErUtfylt()).isTrue();
         assertThat(botypeSporsmal.getFelt()).hasSize(1);
-        assertThat(botypeSporsmal.getFelt().get(0).getSvar().getValue()).isEqualTo("bosituasjon.annet.botype.krisesenter");
-        assertThat(botypeSporsmal.getFelt().get(0).getSvar().getType()).isEqualTo(SvarType.LOCALE_TEKST);
+        validateFeltMedSvar(botypeSporsmal.getFelt().get(0), Type.CHECKBOX, SvarType.LOCALE_TEKST, "bosituasjon.annet.botype.krisesenter");
 
         var antallPersonerSporsmal = res.getAvsnitt().get(0).getSporsmal().get(1);
         assertThat(antallPersonerSporsmal.getErUtfylt()).isTrue();
         assertThat(antallPersonerSporsmal.getFelt()).hasSize(1);
-        assertThat(antallPersonerSporsmal.getFelt().get(0).getSvar().getValue()).isEqualTo("11");
-        assertThat(antallPersonerSporsmal.getFelt().get(0).getSvar().getType()).isEqualTo(SvarType.TEKST);
+        validateFeltMedSvar(antallPersonerSporsmal.getFelt().get(0), Type.TEKST, SvarType.TEKST, "11");
     }
 
     private JsonInternalSoknad createSoknad(Botype botype, Integer antallPersoner) {
