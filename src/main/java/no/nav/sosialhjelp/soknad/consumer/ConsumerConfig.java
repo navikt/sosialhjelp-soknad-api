@@ -10,6 +10,7 @@ import no.nav.sosialhjelp.soknad.client.idporten.IdPortenClientConfig;
 import no.nav.sosialhjelp.soknad.client.idporten.IdPortenClientConfigMockAlt;
 import no.nav.sosialhjelp.soknad.client.idporten.IdPortenServiceImpl;
 import no.nav.sosialhjelp.soknad.client.maskinporten.MaskinportenClientConfig;
+import no.nav.sosialhjelp.soknad.client.organisasjon.OrganisasjonConfig;
 import no.nav.sosialhjelp.soknad.client.skatteetaten.SkatteetatenClientConfig;
 import no.nav.sosialhjelp.soknad.consumer.fiks.DokumentKrypterer;
 import no.nav.sosialhjelp.soknad.consumer.kodeverk.KodeverkService;
@@ -29,7 +30,6 @@ import no.nav.sosialhjelp.soknad.consumer.restconfig.ArbeidsforholdRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.DigisosApiRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.KodeverkRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.NorgRestConfig;
-import no.nav.sosialhjelp.soknad.consumer.restconfig.OrganisasjonRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.PdlAdresseSokRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.PdlGeografiskTilknytningRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.PdlHentPersonRestConfig;
@@ -56,6 +56,7 @@ import org.springframework.context.annotation.Import;
         MaskinportenClientConfig.class,
         SkatteetatenClientConfig.class,
         HusbankenClientConfig.class,
+        OrganisasjonConfig.class,
         DkifConfig.class,
         RedisConfig.class,
         NoRedisConfig.class,
@@ -87,7 +88,6 @@ public class ConsumerConfig {
             PdlGeografiskTilknytningRestConfig.class,
             DigisosApiRestConfig.class,
             NorgRestConfig.class,
-            OrganisasjonRestConfig.class,
             ArbeidsforholdRestConfig.class,
             STSTokenRestConfig.class,
             KodeverkRestConfig.class,
