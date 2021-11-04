@@ -17,7 +17,6 @@ public final class CacheConstants {
 
     public static final String GT_CACHE_KEY_PREFIX = "GT-";
     public static final String GT_LAST_POLL_TIME_PREFIX = "GT-last-poll-time-";
-    public static final long NORG_CACHE_SECONDS = 24 * 60 * 60L; // 24 timer
 
     public static final String PERSON_CACHE_KEY_PREFIX = "hentperson-person-";
     public static final String BARN_CACHE_KEY_PREFIX = "hentperson-barn-";
@@ -31,4 +30,5 @@ public final class CacheConstants {
     public static final String NAVUTBETALINGER_CACHE_KEY_PREFIX = "navutbetalinger-";
 
     public static final long CACHE_30_MINUTES_IN_SECONDS = 30 * 60L;
+    public static final long CACHE_24_HOURS_IN_SECONDS = 24 * 60 * 60L;
 }
