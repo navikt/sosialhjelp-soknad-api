@@ -33,18 +33,15 @@ public class NorgService {
     private static final String NAVENHET_PATH = "/navenhet.json";
     private static final long MINUTES_TO_PASS_BETWEEN_POLL = 60;
 
-//    private final NorgConsumer norgConsumer;
     private final NorgClient norgClient;
     private final RedisService redisService;
 
     private List<NavenhetFraLokalListe> cachedNavenheterFraLokalListe;
 
     public NorgService(
-//            NorgConsumer norgConsumer,
             NorgClient norgClient,
             RedisService redisService
     ) {
-//        this.norgConsumer = norgConsumer;
         this.norgClient = norgClient;
         this.redisService = redisService;
     }
