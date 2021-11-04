@@ -16,6 +16,7 @@ import java.util.List;
 import static java.util.Collections.singletonList;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_SKATTEETATEN;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_SKATTEETATEN_SAMTYKKE;
+import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.OppsummeringTestUtils.validateFeltMedSvar;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class SkattbarInntektTest {
@@ -57,19 +58,13 @@ class SkattbarInntektTest {
         assertThat(bekreftelseTidspunktSporsmal.getTittel()).isEqualTo("utbetalinger.inntekt.skattbar.har_gitt_samtykke");
         assertThat(bekreftelseTidspunktSporsmal.getErUtfylt()).isTrue();
         assertThat(bekreftelseTidspunktSporsmal.getFelt()).hasSize(1);
-        var bekreftelseTidspunkt = bekreftelseTidspunktSporsmal.getFelt().get(0);
-        assertThat(bekreftelseTidspunkt.getType()).isEqualTo(Type.TEKST);
-        assertThat(bekreftelseTidspunkt.getSvar().getValue()).isEqualTo("2018-10-04T13:37:00.134Z");
-        assertThat(bekreftelseTidspunkt.getSvar().getType()).isEqualTo(SvarType.TIDSPUNKT);
+        validateFeltMedSvar(bekreftelseTidspunktSporsmal.getFelt().get(0), Type.TEKST, SvarType.TIDSPUNKT, "2018-10-04T13:37:00.134Z");
 
         var inntekterSporsmal = avsnitt.getSporsmal().get(1);
         assertThat(inntekterSporsmal.getTittel()).isEqualTo("utbetalinger.inntekt.skattbar.inntekt.tittel");
         assertThat(inntekterSporsmal.getErUtfylt()).isTrue();
         assertThat(inntekterSporsmal.getFelt()).hasSize(1);
-        var ingenInntekter = inntekterSporsmal.getFelt().get(0);
-        assertThat(ingenInntekter.getType()).isEqualTo(Type.TEKST);
-        assertThat(ingenInntekter.getSvar().getValue()).isEqualTo("utbetalinger.inntekt.skattbar.ingen");
-        assertThat(ingenInntekter.getSvar().getType()).isEqualTo(SvarType.LOCALE_TEKST);
+        validateFeltMedSvar(inntekterSporsmal.getFelt().get(0), Type.TEKST, SvarType.LOCALE_TEKST, "utbetalinger.inntekt.skattbar.ingen");
     }
 
     @Test
@@ -89,10 +84,7 @@ class SkattbarInntektTest {
         assertThat(bekreftelseTidspunktSporsmal.getTittel()).isEqualTo("utbetalinger.inntekt.skattbar.har_gitt_samtykke");
         assertThat(bekreftelseTidspunktSporsmal.getErUtfylt()).isTrue();
         assertThat(bekreftelseTidspunktSporsmal.getFelt()).hasSize(1);
-        var bekreftelseTidspunkt = bekreftelseTidspunktSporsmal.getFelt().get(0);
-        assertThat(bekreftelseTidspunkt.getType()).isEqualTo(Type.TEKST);
-        assertThat(bekreftelseTidspunkt.getSvar().getValue()).isEqualTo("2018-10-04T13:37:00.134Z");
-        assertThat(bekreftelseTidspunkt.getSvar().getType()).isEqualTo(SvarType.TIDSPUNKT);
+        validateFeltMedSvar(bekreftelseTidspunktSporsmal.getFelt().get(0), Type.TEKST, SvarType.TIDSPUNKT, "2018-10-04T13:37:00.134Z");
 
         var inntekterSporsmal = avsnitt.getSporsmal().get(1);
         assertThat(inntekterSporsmal.getTittel()).isEqualTo("utbetalinger.inntekt.skattbar.inntekt.tittel");

@@ -12,6 +12,7 @@ import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Type;
 import org.junit.jupiter.api.Test;
 
 import static java.util.Collections.singletonList;
+import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.OppsummeringTestUtils.validateFeltMedSvar;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class ArbeidOgUtdanningStegTest {
@@ -115,8 +116,7 @@ class ArbeidOgUtdanningStegTest {
         assertThat(arbeidsforholdKommentarSporsmal.getTittel()).isEqualTo("opplysninger.arbeidsituasjon.kommentarer.label");
         assertThat(arbeidsforholdKommentarSporsmal.getErUtfylt()).isTrue();
         assertThat(arbeidsforholdKommentarSporsmal.getFelt()).hasSize(1);
-        assertThat(arbeidsforholdKommentarSporsmal.getFelt().get(0).getSvar().getValue()).isEqualTo("kommentar");
-        assertThat(arbeidsforholdKommentarSporsmal.getFelt().get(0).getType()).isEqualTo(Type.TEKST);
+        validateFeltMedSvar(arbeidsforholdKommentarSporsmal.getFelt().get(0), Type.TEKST, SvarType.TEKST, "kommentar");
     }
 
     @Test
@@ -144,9 +144,7 @@ class ArbeidOgUtdanningStegTest {
         var utdanningSporsmal = res.getAvsnitt().get(1).getSporsmal().get(0);
         assertThat(utdanningSporsmal.getErUtfylt()).isTrue();
         assertThat(utdanningSporsmal.getFelt()).hasSize(1);
-        assertThat(utdanningSporsmal.getFelt().get(0).getSvar().getValue()).isEqualTo("dinsituasjon.studerer.false");
-        assertThat(utdanningSporsmal.getFelt().get(0).getSvar().getType()).isEqualTo(SvarType.LOCALE_TEKST);
-        assertThat(utdanningSporsmal.getFelt().get(0).getType()).isEqualTo(Type.CHECKBOX);
+        validateFeltMedSvar(utdanningSporsmal.getFelt().get(0), Type.CHECKBOX, SvarType.LOCALE_TEKST, "dinsituasjon.studerer.false");
     }
 
     @Test
@@ -160,9 +158,7 @@ class ArbeidOgUtdanningStegTest {
         var utdanningSporsmal = res.getAvsnitt().get(1).getSporsmal().get(0);
         assertThat(utdanningSporsmal.getErUtfylt()).isTrue();
         assertThat(utdanningSporsmal.getFelt()).hasSize(1);
-        assertThat(utdanningSporsmal.getFelt().get(0).getSvar().getValue()).isEqualTo("dinsituasjon.studerer.true");
-        assertThat(utdanningSporsmal.getFelt().get(0).getSvar().getType()).isEqualTo(SvarType.LOCALE_TEKST);
-        assertThat(utdanningSporsmal.getFelt().get(0).getType()).isEqualTo(Type.CHECKBOX);
+        validateFeltMedSvar(utdanningSporsmal.getFelt().get(0), Type.CHECKBOX, SvarType.LOCALE_TEKST, "dinsituasjon.studerer.true");
 
         var studentgradSporsmal = res.getAvsnitt().get(1).getSporsmal().get(1);
         assertThat(studentgradSporsmal.getErUtfylt()).isFalse();
@@ -179,16 +175,12 @@ class ArbeidOgUtdanningStegTest {
         var utdanningSporsmal = res.getAvsnitt().get(1).getSporsmal().get(0);
         assertThat(utdanningSporsmal.getErUtfylt()).isTrue();
         assertThat(utdanningSporsmal.getFelt()).hasSize(1);
-        assertThat(utdanningSporsmal.getFelt().get(0).getSvar().getValue()).isEqualTo("dinsituasjon.studerer.true");
-        assertThat(utdanningSporsmal.getFelt().get(0).getSvar().getType()).isEqualTo(SvarType.LOCALE_TEKST);
-        assertThat(utdanningSporsmal.getFelt().get(0).getType()).isEqualTo(Type.CHECKBOX);
+        validateFeltMedSvar(utdanningSporsmal.getFelt().get(0), Type.CHECKBOX, SvarType.LOCALE_TEKST, "dinsituasjon.studerer.true");
 
         var studentgradSporsmal = res.getAvsnitt().get(1).getSporsmal().get(1);
         assertThat(studentgradSporsmal.getErUtfylt()).isTrue();
         assertThat(studentgradSporsmal.getFelt()).hasSize(1);
-        assertThat(studentgradSporsmal.getFelt().get(0).getSvar().getValue()).isEqualTo("dinsituasjon.studerer.true.grad.heltid");
-        assertThat(studentgradSporsmal.getFelt().get(0).getSvar().getType()).isEqualTo(SvarType.LOCALE_TEKST);
-        assertThat(studentgradSporsmal.getFelt().get(0).getType()).isEqualTo(Type.CHECKBOX);
+        validateFeltMedSvar(studentgradSporsmal.getFelt().get(0), Type.CHECKBOX, SvarType.LOCALE_TEKST, "dinsituasjon.studerer.true.grad.heltid");
     }
 
     private JsonInternalSoknad createSoknad(JsonArbeid arbeid, JsonUtdanning utdanning) {
