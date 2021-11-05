@@ -17,12 +17,13 @@ import java.util.Collections;
 import java.util.List;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+import static no.nav.sosialhjelp.soknad.web.utils.Constants.CLAIM_ACR_LEVEL_3;
 import static no.nav.sosialhjelp.soknad.web.utils.Constants.CLAIM_ACR_LEVEL_4;
 import static no.nav.sosialhjelp.soknad.web.utils.Constants.TOKENX;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Controller
-@ProtectedWithClaims(issuer = TOKENX, claimMap = {CLAIM_ACR_LEVEL_4})
+@ProtectedWithClaims(issuer = TOKENX, claimMap = {CLAIM_ACR_LEVEL_3, CLAIM_ACR_LEVEL_4})
 @Path("/minesaker")
 @Timed
 @Produces(APPLICATION_JSON)
