@@ -14,15 +14,15 @@ import no.nav.sosialhjelp.soknad.business.service.adressesok.AdresseForslagType;
 import no.nav.sosialhjelp.soknad.business.service.adressesok.AdresseSokService;
 import no.nav.sosialhjelp.soknad.consumer.fiks.KommuneInfoService;
 import no.nav.sosialhjelp.soknad.consumer.kodeverk.KodeverkService;
-import no.nav.sosialhjelp.soknad.consumer.norg.NorgService;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.bydel.BydelService;
 import no.nav.sosialhjelp.soknad.consumer.pdl.geografisktilknytning.GeografiskTilknytningService;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.domain.model.mock.MockUtils;
-import no.nav.sosialhjelp.soknad.domain.model.navenhet.NavEnhet;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import no.nav.sosialhjelp.soknad.domain.model.util.KommuneTilNavEnhetMapper;
 import no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils;
+import no.nav.sosialhjelp.soknad.navenhet.NavEnhet;
+import no.nav.sosialhjelp.soknad.navenhet.NavEnhetService;
 import no.nav.sosialhjelp.soknad.web.sikkerhet.Tilgangskontroll;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,7 +57,7 @@ public class NavEnhetRessurs {
 
     private final Tilgangskontroll tilgangskontroll;
     private final SoknadUnderArbeidRepository soknadUnderArbeidRepository;
-    private final NorgService norgService;
+    private final NavEnhetService navEnhetService;
     private final KommuneInfoService kommuneInfoService;
     private final BydelService bydelService;
     private final AdresseSokService adresseSokService;
@@ -67,7 +67,7 @@ public class NavEnhetRessurs {
     public NavEnhetRessurs(
             Tilgangskontroll tilgangskontroll,
             SoknadUnderArbeidRepository soknadUnderArbeidRepository,
-            NorgService norgService,
+            NavEnhetService navEnhetService,
             KommuneInfoService kommuneInfoService,
             BydelService bydelService,
             AdresseSokService adresseSokService,
@@ -76,7 +76,7 @@ public class NavEnhetRessurs {
     ) {
         this.tilgangskontroll = tilgangskontroll;
         this.soknadUnderArbeidRepository = soknadUnderArbeidRepository;
-        this.norgService = norgService;
+        this.navEnhetService = navEnhetService;
         this.kommuneInfoService = kommuneInfoService;
         this.bydelService = bydelService;
         this.adresseSokService = adresseSokService;
@@ -176,7 +176,7 @@ public class NavEnhetRessurs {
         }
 
         var geografiskTilknytning = geografiskTilknytningService.hentGeografiskTilknytning(ident);
-        var navEnhet = norgService.getEnhetForGt(geografiskTilknytning);
+        var navEnhet = navEnhetService.getEnhetForGt(geografiskTilknytning);
         var navEnhetFrontend = mapToNavEnhetFrontend(navEnhet, geografiskTilknytning, kommunenummer, valgtEnhetNr);
         return navEnhetFrontend == null ? Collections.emptyList() : Collections.singletonList(navEnhetFrontend);
     }
@@ -209,15 +209,15 @@ public class NavEnhetRessurs {
         }
 
         var isDigisosKommune = isDigisosKommune(kommunenummer);
-        var sosialOrgnr = isDigisosKommune ? navEnhet.sosialOrgnr : null;
-        var enhetNr = isDigisosKommune ? navEnhet.enhetNr : null;
+        var sosialOrgnr = isDigisosKommune ? navEnhet.getSosialOrgNr() : null;
+        var enhetNr = isDigisosKommune ? navEnhet.getEnhetNr() : null;
 
         var valgt = enhetNr != null && enhetNr.equals(valgtEnhetNr);
 
         var kommunenavn = kodeverkService.getKommunenavn(kommunenummer);
 
         return new NavEnhetRessurs.NavEnhetFrontend()
-                .withEnhetsnavn(navEnhet.navn)
+                .withEnhetsnavn(navEnhet.getNavn())
                 .withKommunenavn(kommuneInfoService.getBehandlingskommune(kommunenummer, kommunenavn))
                 .withOrgnr(sosialOrgnr)
                 .withEnhetsnr(enhetNr)
@@ -239,12 +239,12 @@ public class NavEnhetRessurs {
 
         for (AdresseForslag adresseForslag : adresseForslagene) {
             if (adresseForslag.type != null && adresseForslag.type.equals(AdresseForslagType.MATRIKKELADRESSE)) {
-                List<NavEnhet> navenheter = norgService.getEnheterForKommunenummer(adresseForslag.kommunenummer);
+                List<NavEnhet> navenheter = navEnhetService.getEnheterForKommunenummer(adresseForslag.kommunenummer);
                 navenheter.forEach(navEnhet -> addToNavEnhetFrontendListe(navEnhetFrontendListe, adresseForslag.geografiskTilknytning, adresseForslag, navEnhet, valgtEnhetNr));
                 log.info("Matrikkeladresse ble brukt. Returnerer {} navenheter", navenheter.size());
             } else {
                 var geografiskTilknytning = getGeografiskTilknytningFromAdresseForslag(adresseForslag);
-                var navEnhet = norgService.getEnhetForGt(geografiskTilknytning);
+                var navEnhet = navEnhetService.getEnhetForGt(geografiskTilknytning);
                 addToNavEnhetFrontendListe(navEnhetFrontendListe, geografiskTilknytning, adresseForslag, navEnhet, valgtEnhetNr);
             }
         }
@@ -277,13 +277,13 @@ public class NavEnhetRessurs {
         }
 
         boolean digisosKommune = isDigisosKommune(kommunenummer);
-        String sosialOrgnr = digisosKommune ? navEnhet.sosialOrgnr : null;
-        String enhetNr = digisosKommune ? navEnhet.enhetNr : null;
+        String sosialOrgnr = digisosKommune ? navEnhet.getSosialOrgNr() : null;
+        String enhetNr = digisosKommune ? navEnhet.getEnhetNr() : null;
 
         boolean valgt = enhetNr != null && enhetNr.equals(valgtEnhetNr);
-        String kommunenavnFraAdresseforslag = adresseForslag.kommunenavn != null ? adresseForslag.kommunenavn : navEnhet.kommunenavn;
+        String kommunenavnFraAdresseforslag = adresseForslag.kommunenavn != null ? adresseForslag.kommunenavn : navEnhet.getKommunenavn();
         return new NavEnhetRessurs.NavEnhetFrontend()
-                .withEnhetsnavn(navEnhet.navn)
+                .withEnhetsnavn(navEnhet.getNavn())
                 .withKommunenavn(kommuneInfoService.getBehandlingskommune(kommunenummer, kommunenavnFraAdresseforslag))
                 .withOrgnr(sosialOrgnr)
                 .withEnhetsnr(enhetNr)
