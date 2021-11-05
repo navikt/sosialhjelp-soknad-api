@@ -12,15 +12,15 @@ import no.nav.sosialhjelp.soknad.business.service.adressesok.AdresseSokService;
 import no.nav.sosialhjelp.soknad.consumer.exceptions.PdlApiException;
 import no.nav.sosialhjelp.soknad.consumer.fiks.KommuneInfoService;
 import no.nav.sosialhjelp.soknad.consumer.kodeverk.KodeverkService;
-import no.nav.sosialhjelp.soknad.consumer.norg.NorgService;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.bydel.BydelService;
 import no.nav.sosialhjelp.soknad.consumer.pdl.geografisktilknytning.GeografiskTilknytningService;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.domain.model.exception.AuthorizationException;
-import no.nav.sosialhjelp.soknad.domain.model.navenhet.NavEnhet;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.StaticSubjectHandlerService;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import no.nav.sosialhjelp.soknad.domain.model.util.KommuneTilNavEnhetMapper;
+import no.nav.sosialhjelp.soknad.navenhet.NavEnhetService;
+import no.nav.sosialhjelp.soknad.navenhet.domain.NavEnhet;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.personalia.NavEnhetRessurs.NavEnhetFrontend;
 import no.nav.sosialhjelp.soknad.web.sikkerhet.Tilgangskontroll;
 import org.junit.jupiter.api.AfterEach;
@@ -96,8 +96,8 @@ class NavEnhetRessursTest {
     private static final AdresseForslag SOKNADSMOTTAKER_FORSLAG_2 = new AdresseForslag();
     private static final AdresseForslag SOKNADSMOTTAKER_FORSLAG_BYDEL_MARKA = new AdresseForslag();
 
-    private static final NavEnhet NAV_ENHET = new NavEnhet();
-    private static final NavEnhet NAV_ENHET_2 = new NavEnhet();
+    private static final NavEnhet NAV_ENHET = new NavEnhet(ENHETSNR, ENHETSNAVN, null, ORGNR);
+    private static final NavEnhet NAV_ENHET_2 = new NavEnhet(ENHETSNR_2, ENHETSNAVN_2, null, ORGNR_2);
     private static final String EIER = "123456789101";
 
     static {
@@ -105,17 +105,9 @@ class NavEnhetRessursTest {
         SOKNADSMOTTAKER_FORSLAG.kommunenavn = KOMMUNENAVN;
         SOKNADSMOTTAKER_FORSLAG.kommunenummer = KOMMUNENR;
 
-        NAV_ENHET.navn = ENHETSNAVN;
-        NAV_ENHET.sosialOrgnr = ORGNR;
-        NAV_ENHET.enhetNr = ENHETSNR;
-
         SOKNADSMOTTAKER_FORSLAG_2.geografiskTilknytning = ENHETSNAVN_2;
         SOKNADSMOTTAKER_FORSLAG_2.kommunenavn = KOMMUNENAVN_2;
         SOKNADSMOTTAKER_FORSLAG_2.kommunenummer = KOMMUNENR_2;
-
-        NAV_ENHET_2.navn = ENHETSNAVN_2;
-        NAV_ENHET_2.sosialOrgnr = ORGNR_2;
-        NAV_ENHET_2.enhetNr = ENHETSNR_2;
 
         SOKNADSMOTTAKER_FORSLAG_BYDEL_MARKA.geografiskTilknytning = BYDEL_MARKA;
         SOKNADSMOTTAKER_FORSLAG_BYDEL_MARKA.kommunenavn = KOMMUNENAVN_2;
@@ -132,7 +124,7 @@ class NavEnhetRessursTest {
     private AdresseSokService adresseSokService;
 
     @Mock
-    private NorgService norgService;
+    private NavEnhetService navEnhetService;
 
     @Mock
     private KommuneInfoService kommuneInfoService;
@@ -170,8 +162,8 @@ class NavEnhetRessursTest {
 
         when(adresseSokService.finnAdresseFraSoknad(any(JsonPersonalia.class), eq("soknad")))
                 .thenReturn(Arrays.asList(SOKNADSMOTTAKER_FORSLAG, SOKNADSMOTTAKER_FORSLAG_2));
-        when(norgService.getEnhetForGt(ENHETSNAVN)).thenReturn(NAV_ENHET);
-        when(norgService.getEnhetForGt(ENHETSNAVN_2)).thenReturn(NAV_ENHET_2);
+        when(navEnhetService.getEnhetForGt(ENHETSNAVN)).thenReturn(NAV_ENHET);
+        when(navEnhetService.getEnhetForGt(ENHETSNAVN_2)).thenReturn(NAV_ENHET_2);
         when(kommuneInfoService.getBehandlingskommune(KOMMUNENR, KOMMUNENAVN)).thenReturn(KOMMUNENAVN);
         when(kommuneInfoService.getBehandlingskommune(KOMMUNENR_2, KOMMUNENAVN_2)).thenReturn(KOMMUNENAVN_2);
 
@@ -192,7 +184,7 @@ class NavEnhetRessursTest {
         when(adresseSokService.finnAdresseFraSoknad(any(JsonPersonalia.class), eq("soknad")))
                 .thenReturn(singletonList(SOKNADSMOTTAKER_FORSLAG_BYDEL_MARKA));
         when(bydelService.getBydelTilForMarka(SOKNADSMOTTAKER_FORSLAG_BYDEL_MARKA)).thenReturn(annenBydel);
-        when(norgService.getEnhetForGt(annenBydel)).thenReturn(NAV_ENHET_2);
+        when(navEnhetService.getEnhetForGt(annenBydel)).thenReturn(NAV_ENHET_2);
         when(kommuneInfoService.getBehandlingskommune(KOMMUNENR_2, KOMMUNENAVN_2)).thenReturn(KOMMUNENAVN_2);
 
         var navEnhetFrontends = navEnhetRessurs.hentNavEnheter(BEHANDLINGSID);
@@ -266,7 +258,7 @@ class NavEnhetRessursTest {
                 .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT));
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(soknadUnderArbeid);
         when(geografiskTilknytningService.hentGeografiskTilknytning(anyString())).thenReturn(OPPHOLDSADRESSE_KOMMUNENR);
-        when(norgService.getEnhetForGt(OPPHOLDSADRESSE_KOMMUNENR)).thenReturn(NAV_ENHET);
+        when(navEnhetService.getEnhetForGt(OPPHOLDSADRESSE_KOMMUNENR)).thenReturn(NAV_ENHET);
         when(kodeverkService.getKommunenavn(OPPHOLDSADRESSE_KOMMUNENR)).thenReturn(KOMMUNENAVN);
         when(kommuneInfoService.getBehandlingskommune(OPPHOLDSADRESSE_KOMMUNENR, KOMMUNENAVN)).thenReturn(KOMMUNENAVN);
 
@@ -283,7 +275,7 @@ class NavEnhetRessursTest {
                 .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT));
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(soknadUnderArbeid);
         when(geografiskTilknytningService.hentGeografiskTilknytning(anyString())).thenReturn(OPPHOLDSADRESSE_BYDELSNR);
-        when(norgService.getEnhetForGt(OPPHOLDSADRESSE_BYDELSNR)).thenReturn(NAV_ENHET);
+        when(navEnhetService.getEnhetForGt(OPPHOLDSADRESSE_BYDELSNR)).thenReturn(NAV_ENHET);
         when(kodeverkService.getKommunenavn(OPPHOLDSADRESSE_KOMMUNENR)).thenReturn(KOMMUNENAVN);
         when(kommuneInfoService.getBehandlingskommune(OPPHOLDSADRESSE_KOMMUNENR, KOMMUNENAVN)).thenReturn(KOMMUNENAVN);
 
@@ -305,7 +297,7 @@ class NavEnhetRessursTest {
         when(adresseSokService.finnAdresseFraSoknad(any(JsonPersonalia.class), eq("folkeregistrert")))
                 .thenReturn(singletonList(SOKNADSMOTTAKER_FORSLAG));
 
-        when(norgService.getEnhetForGt(SOKNADSMOTTAKER_FORSLAG.geografiskTilknytning)).thenReturn(NAV_ENHET);
+        when(navEnhetService.getEnhetForGt(SOKNADSMOTTAKER_FORSLAG.geografiskTilknytning)).thenReturn(NAV_ENHET);
 
         var navEnhetFrontends = navEnhetRessurs.hentNavEnheter(BEHANDLINGSID);
         assertThat(navEnhetFrontends).hasSize(1);
