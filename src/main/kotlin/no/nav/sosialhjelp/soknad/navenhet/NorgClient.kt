@@ -1,9 +1,8 @@
-package no.nav.sosialhjelp.soknad.client.norg
+package no.nav.sosialhjelp.soknad.navenhet
 
 import com.fasterxml.jackson.core.JsonProcessingException
 import kotlinx.coroutines.runBlocking
 import no.nav.sosialhjelp.kotlin.utils.retry
-import no.nav.sosialhjelp.soknad.client.norg.dto.NavEnhetDto
 import no.nav.sosialhjelp.soknad.consumer.exceptions.TjenesteUtilgjengeligException
 import no.nav.sosialhjelp.soknad.consumer.mdc.MDCOperations
 import no.nav.sosialhjelp.soknad.consumer.redis.CacheConstants.CACHE_24_HOURS_IN_SECONDS
@@ -16,6 +15,7 @@ import no.nav.sosialhjelp.soknad.consumer.retry.RetryUtils.DEFAULT_INITIAL_WAIT_
 import no.nav.sosialhjelp.soknad.consumer.retry.RetryUtils.DEFAULT_MAX_ATTEMPTS
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler
 import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants
+import no.nav.sosialhjelp.soknad.navenhet.dto.NavEnhetDto
 import org.slf4j.LoggerFactory.getLogger
 import java.nio.charset.StandardCharsets
 import java.time.LocalDateTime

@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.client.norg.dto
+package no.nav.sosialhjelp.soknad.navenhet.dto
 
 import no.nav.sosialhjelp.soknad.domain.model.util.KommuneTilNavEnhetMapper
 import no.nav.sosialhjelp.soknad.navenhet.domain.NavEnhet
