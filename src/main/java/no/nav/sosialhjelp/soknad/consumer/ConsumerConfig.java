@@ -66,7 +66,6 @@ import org.springframework.context.annotation.Import;
         GeografiskTilknytningService.class,
         ConsumerConfig.WsServices.class,
         DokumentKrypterer.class,
-//        NorgService.class,
         SkattbarInntektService.class,
         OrganisasjonService.class,
         KodeverkService.class,
