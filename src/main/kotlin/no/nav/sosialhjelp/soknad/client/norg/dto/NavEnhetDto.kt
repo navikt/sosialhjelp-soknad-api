@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.client.norg.dto
 
 import no.nav.sosialhjelp.soknad.domain.model.util.KommuneTilNavEnhetMapper
-import no.nav.sosialhjelp.soknad.navenhet.NavEnhet
+import no.nav.sosialhjelp.soknad.navenhet.domain.NavEnhet
 
 data class NavEnhetDto(
     val navn: String,

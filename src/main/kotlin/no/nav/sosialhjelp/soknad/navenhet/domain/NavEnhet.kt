@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.navenhet
+package no.nav.sosialhjelp.soknad.navenhet.domain
 
 import no.nav.sosialhjelp.soknad.domain.model.util.KommuneTilNavEnhetMapper
 
