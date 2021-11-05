@@ -3,7 +3,7 @@ package no.nav.sosialhjelp.soknad.navenhet
 import no.nav.sosialhjelp.soknad.domain.model.util.KommuneTilNavEnhetMapper
 
 data class NavEnhet(
-    val enhetNr: String,
+    val enhetNr: String?,
     val navn: String,
     val kommunenavn: String?,
     val sosialOrgNr: String?

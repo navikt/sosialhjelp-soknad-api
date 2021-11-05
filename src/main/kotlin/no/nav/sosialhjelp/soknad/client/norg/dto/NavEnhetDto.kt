@@ -13,13 +13,13 @@ fun NavEnhetDto.toNavEnhet(gt: String): NavEnhet {
         enhetNr = enhetNr,
         navn = navn,
         kommunenavn = null,
-        sosialOrgNr = getSosialOrgNr(this, gt)
+        sosialOrgNr = getSosialOrgNr(enhetNr, gt)
     )
 }
 
-private fun getSosialOrgNr(navEnhetDto: NavEnhetDto, gt: String): String {
+private fun getSosialOrgNr(enhetNr: String?, gt: String): String {
     return when {
-        navEnhetDto.enhetNr == "0513" && gt == "3434" -> {
+        enhetNr == "0513" && gt == "3434" -> {
             /*
                 Jira sak 1200
 
@@ -28,8 +28,8 @@ private fun getSosialOrgNr(navEnhetDto: NavEnhetDto, gt: String): String {
                 */
             "974592274"
         }
-        navEnhetDto.enhetNr == "0511" && gt == "3432" -> "964949204"
-        navEnhetDto.enhetNr == "1620" && gt == "5014" -> "913071751"
-        else -> KommuneTilNavEnhetMapper.getOrganisasjonsnummer(navEnhetDto.enhetNr)
+        enhetNr == "0511" && gt == "3432" -> "964949204"
+        enhetNr == "1620" && gt == "5014" -> "913071751"
+        else -> KommuneTilNavEnhetMapper.getOrganisasjonsnummer(enhetNr)
     }
 }
