@@ -17,7 +17,7 @@ fun NavEnhetDto.toNavEnhet(gt: String): NavEnhet {
     )
 }
 
-private fun getSosialOrgNr(enhetNr: String?, gt: String): String {
+private fun getSosialOrgNr(enhetNr: String?, gt: String): String? {
     return when {
         enhetNr == "0513" && gt == "3434" -> {
             /*
