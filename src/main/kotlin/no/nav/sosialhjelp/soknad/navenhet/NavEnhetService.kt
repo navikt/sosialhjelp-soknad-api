@@ -8,6 +8,10 @@ import no.nav.sosialhjelp.soknad.consumer.redis.CacheConstants.GT_CACHE_KEY_PREF
 import no.nav.sosialhjelp.soknad.consumer.redis.CacheConstants.GT_LAST_POLL_TIME_PREFIX
 import no.nav.sosialhjelp.soknad.consumer.redis.RedisService
 import no.nav.sosialhjelp.soknad.consumer.redis.RedisUtils.objectMapper
+import no.nav.sosialhjelp.soknad.navenhet.domain.NavEnhet
+import no.nav.sosialhjelp.soknad.navenhet.domain.NavEnhetFraLokalListe
+import no.nav.sosialhjelp.soknad.navenhet.domain.NavEnheterFraLokalListe
+import no.nav.sosialhjelp.soknad.navenhet.domain.toNavEnhet
 import org.apache.commons.io.IOUtils
 import org.slf4j.LoggerFactory.getLogger
 import java.io.IOException
