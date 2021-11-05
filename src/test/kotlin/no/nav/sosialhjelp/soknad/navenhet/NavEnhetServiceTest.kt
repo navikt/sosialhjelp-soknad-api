@@ -4,10 +4,9 @@ import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
-import no.nav.sosialhjelp.soknad.client.norg.NorgClient
-import no.nav.sosialhjelp.soknad.client.norg.dto.NavEnhetDto
 import no.nav.sosialhjelp.soknad.consumer.exceptions.TjenesteUtilgjengeligException
 import no.nav.sosialhjelp.soknad.consumer.redis.RedisService
+import no.nav.sosialhjelp.soknad.navenhet.dto.NavEnhetDto
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.AfterEach

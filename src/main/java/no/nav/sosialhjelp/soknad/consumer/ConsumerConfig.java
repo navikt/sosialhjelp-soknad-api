@@ -11,7 +11,6 @@ import no.nav.sosialhjelp.soknad.client.idporten.IdPortenClientConfigMockAlt;
 import no.nav.sosialhjelp.soknad.client.idporten.IdPortenServiceImpl;
 import no.nav.sosialhjelp.soknad.client.leaderelection.LeaderElectionConfig;
 import no.nav.sosialhjelp.soknad.client.maskinporten.MaskinportenClientConfig;
-import no.nav.sosialhjelp.soknad.client.norg.NorgConfig;
 import no.nav.sosialhjelp.soknad.client.organisasjon.OrganisasjonConfig;
 import no.nav.sosialhjelp.soknad.client.skatteetaten.SkatteetatenClientConfig;
 import no.nav.sosialhjelp.soknad.client.virusscan.VirusScanConfig;
@@ -37,6 +36,7 @@ import no.nav.sosialhjelp.soknad.consumer.restconfig.SvarUtRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.UnleashRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.skatt.SkattbarInntektService;
 import no.nav.sosialhjelp.soknad.consumer.svarut.SvarUtService;
+import no.nav.sosialhjelp.soknad.navenhet.NavEnhetConfig;
 import no.nav.sosialhjelp.soknad.oppslag.OppslagRestConfig;
 import no.nav.sosialhjelp.soknad.oppslag.kontonummer.KontonummerService;
 import no.nav.sosialhjelp.soknad.oppslag.utbetaling.UtbetalingService;
@@ -57,7 +57,7 @@ import org.springframework.context.annotation.Import;
         HusbankenClientConfig.class,
         OrganisasjonConfig.class,
         DkifConfig.class,
-        NorgConfig.class,
+        NavEnhetConfig.class,
         RedisConfig.class,
         NoRedisConfig.class,
         PersonService.class,
