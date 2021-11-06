@@ -160,7 +160,6 @@ class AdresseRessursTest {
                 .thenReturn(singletonList(
                         new NavEnhetFrontend("1", "1111", "Folkeregistrert NavEnhet", "4321", null, null, null, null, null)
                 ));
-//                        .withEnhetsnavn("Folkeregistrert NavEnhet").withOrgnr("1")));
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
 
         AdresserFrontend adresserFrontend = new AdresserFrontend()
@@ -183,7 +182,6 @@ class AdresseRessursTest {
                 createJsonInternalSoknadWithOppholdsadresse(JsonAdresseValg.SOKNAD));
         when(navEnhetRessurs.findSoknadsmottaker(anyString(), any(JsonSoknad.class), eq("midlertidig"), any()))
                 .thenReturn(singletonList(
-//                        new NavEnhetRessurs.NavEnhetFrontend().withEnhetsnavn("Midlertidig NavEnhet").withOrgnr("2")
                         new NavEnhetFrontend("2", "2222", "Midlertidig NavEnhet", "kommune", "4321", null, null, null, null)
                 ));
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
@@ -208,7 +206,6 @@ class AdresseRessursTest {
                 createJsonInternalSoknadWithOppholdsadresse(JsonAdresseValg.FOLKEREGISTRERT));
         when(navEnhetRessurs.findSoknadsmottaker(anyString(), any(JsonSoknad.class), eq("soknad"), any()))
                 .thenReturn(singletonList(
-//                        new NavEnhetRessurs.NavEnhetFrontend().withEnhetsnavn("Soknad NavEnhet").withOrgnr("3")
                         new NavEnhetFrontend("3", "333", "Soknad NavEnhet", "4321", null, null, null, null, null)
                 ));
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
