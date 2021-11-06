@@ -17,6 +17,7 @@ import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.Sokn
 import no.nav.sosialhjelp.soknad.business.service.adressesok.AdresseForslag
 import no.nav.sosialhjelp.soknad.business.service.adressesok.AdresseSokService
 import no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService
+import no.nav.sosialhjelp.soknad.consumer.exceptions.PdlApiException
 import no.nav.sosialhjelp.soknad.consumer.fiks.KommuneInfoService
 import no.nav.sosialhjelp.soknad.consumer.kodeverk.KodeverkService
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.bydel.BydelService
@@ -85,19 +86,18 @@ internal class NavEnhetRessursTest {
     }
 
     init {
-            SOKNADSMOTTAKER_FORSLAG.geografiskTilknytning = ENHETSNAVN
-            SOKNADSMOTTAKER_FORSLAG.kommunenavn = KOMMUNENAVN
-            SOKNADSMOTTAKER_FORSLAG.kommunenummer = KOMMUNENR
+        SOKNADSMOTTAKER_FORSLAG.geografiskTilknytning = ENHETSNAVN
+        SOKNADSMOTTAKER_FORSLAG.kommunenavn = KOMMUNENAVN
+        SOKNADSMOTTAKER_FORSLAG.kommunenummer = KOMMUNENR
 
-            SOKNADSMOTTAKER_FORSLAG_2.geografiskTilknytning = ENHETSNAVN_2
-            SOKNADSMOTTAKER_FORSLAG_2.kommunenavn = KOMMUNENAVN_2
-            SOKNADSMOTTAKER_FORSLAG_2.kommunenummer = KOMMUNENR_2
+        SOKNADSMOTTAKER_FORSLAG_2.geografiskTilknytning = ENHETSNAVN_2
+        SOKNADSMOTTAKER_FORSLAG_2.kommunenavn = KOMMUNENAVN_2
+        SOKNADSMOTTAKER_FORSLAG_2.kommunenummer = KOMMUNENR_2
 
-            SOKNADSMOTTAKER_FORSLAG_BYDEL_MARKA.geografiskTilknytning = BYDEL_MARKA
-            SOKNADSMOTTAKER_FORSLAG_BYDEL_MARKA.kommunenavn = KOMMUNENAVN_2
-            SOKNADSMOTTAKER_FORSLAG_BYDEL_MARKA.kommunenummer = KOMMUNENR_2
+        SOKNADSMOTTAKER_FORSLAG_BYDEL_MARKA.geografiskTilknytning = BYDEL_MARKA
+        SOKNADSMOTTAKER_FORSLAG_BYDEL_MARKA.kommunenavn = KOMMUNENAVN_2
+        SOKNADSMOTTAKER_FORSLAG_BYDEL_MARKA.kommunenummer = KOMMUNENR_2
     }
-
 
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
     private val tilgangskontroll: Tilgangskontroll = mockk()
@@ -118,10 +118,8 @@ internal class NavEnhetRessursTest {
         System.setProperty("environment.name", "test")
         SubjectHandler.setSubjectHandlerService(StaticSubjectHandlerService())
         every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
-        every { kommuneInfoService.kanMottaSoknader(KOMMUNENR) } returns true
-        every { kommuneInfoService.kanMottaSoknader(KOMMUNENR_2) } returns true
-        every { kommuneInfoService.harMidlertidigDeaktivertMottak(KOMMUNENR) } returns true
-        every { kommuneInfoService.harMidlertidigDeaktivertMottak(KOMMUNENR_2) } returns true
+        every { kommuneInfoService.kanMottaSoknader(any()) } returns true
+        every { kommuneInfoService.harMidlertidigDeaktivertMottak(any()) } returns true
     }
 
     @AfterEach
@@ -245,17 +243,67 @@ internal class NavEnhetRessursTest {
 
     @Test
     internal fun hentNavEnheter_oppholdsadresseFolkeregistrert_skalBrukeKommunenummerFraGtOgKommunenavnFraKodeverk() {
-        TODO("Not yet implemented")
+        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(
+            SoknadService.createEmptyJsonInternalSoknad(EIER)
+        )
+        soknadUnderArbeid.jsonInternalSoknad.soknad.withMottaker(SOKNADSMOTTAKER).data.personalia
+            .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT))
+
+        every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns soknadUnderArbeid
+        every { geografiskTilknytningService.hentGeografiskTilknytning(any()) } returns OPPHOLDSADRESSE_KOMMUNENR
+        every { navEnhetService.getEnhetForGt(OPPHOLDSADRESSE_KOMMUNENR) } returns NAV_ENHET
+        every { kodeverkService.getKommunenavn(OPPHOLDSADRESSE_KOMMUNENR) } returns KOMMUNENAVN
+        every { kommuneInfoService.getBehandlingskommune(OPPHOLDSADRESSE_KOMMUNENR, KOMMUNENAVN) } returns KOMMUNENAVN
+
+        val response = navEnhetRessurs.hentNavEnheter(BEHANDLINGSID)
+
+        assertThat(response!!).hasSize(1)
+        assertThat(response[0].kommuneNr).isEqualTo(OPPHOLDSADRESSE_KOMMUNENR)
+        assertThat(response[0].kommunenavn).isEqualTo(KOMMUNENAVN)
     }
 
     @Test
     internal fun hentNavEnheter_oppholdsadresseFolkeregistrert_skalBrukeBydelsnummerFraGtOgKommunenavnFraKodeverk() {
-        TODO("Not yet implemented")
+        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(
+            SoknadService.createEmptyJsonInternalSoknad(EIER)
+        )
+        soknadUnderArbeid.jsonInternalSoknad.soknad.withMottaker(SOKNADSMOTTAKER).data.personalia
+            .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT))
+
+        every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns soknadUnderArbeid
+        every { geografiskTilknytningService.hentGeografiskTilknytning(any()) } returns OPPHOLDSADRESSE_BYDELSNR
+        every { navEnhetService.getEnhetForGt(OPPHOLDSADRESSE_BYDELSNR) } returns NAV_ENHET
+        every { kodeverkService.getKommunenavn(OPPHOLDSADRESSE_KOMMUNENR) } returns KOMMUNENAVN
+        every { kommuneInfoService.getBehandlingskommune(OPPHOLDSADRESSE_KOMMUNENR, KOMMUNENAVN) } returns KOMMUNENAVN
+
+        val response = navEnhetRessurs.hentNavEnheter(BEHANDLINGSID)
+
+        assertThat(response!!).hasSize(1)
+        assertThat(response[0].kommuneNr).isEqualTo(OPPHOLDSADRESSE_KOMMUNENR)
+        assertThat(response[0].kommunenavn).isEqualTo(KOMMUNENAVN)
     }
 
     @Test
     internal fun hentNavEnheter_oppholdsadresseFolkeregistrert_skalBrukeAdressesokSomFallback() {
-        TODO("Not yet implemented")
+        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(
+            SoknadService.createEmptyJsonInternalSoknad(EIER)
+        )
+        soknadUnderArbeid.jsonInternalSoknad.soknad.withMottaker(SOKNADSMOTTAKER).data.personalia
+            .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT))
+
+        every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns soknadUnderArbeid
+        every { geografiskTilknytningService.hentGeografiskTilknytning(any()) } throws PdlApiException("pdl feil")
+        every { adresseSokService.finnAdresseFraSoknad(any(), "folkeregistrert") } returns listOf(SOKNADSMOTTAKER_FORSLAG)
+        every { navEnhetService.getEnhetForGt(SOKNADSMOTTAKER_FORSLAG.geografiskTilknytning) } returns NAV_ENHET
+        every { kommuneInfoService.getBehandlingskommune(KOMMUNENR, KOMMUNENAVN) } returns KOMMUNENAVN
+
+        val response = navEnhetRessurs.hentNavEnheter(BEHANDLINGSID)
+
+        assertThat(response!!).hasSize(1)
+        assertThat(response[0].kommuneNr).isEqualTo(KOMMUNENR)
+        assertThat(response[0].kommunenavn).isEqualTo(KOMMUNENAVN)
+
+        verify { kodeverkService wasNot Called }
     }
 
     @Test

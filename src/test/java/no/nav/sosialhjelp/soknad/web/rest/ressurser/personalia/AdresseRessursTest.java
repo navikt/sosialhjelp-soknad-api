@@ -13,6 +13,8 @@ import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.domain.model.exception.AuthorizationException;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.StaticSubjectHandlerService;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
+import no.nav.sosialhjelp.soknad.navenhet.NavEnhetRessurs;
+import no.nav.sosialhjelp.soknad.navenhet.dto.NavEnhetFrontend;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.personalia.AdresseRessurs.AdresseFrontend;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.personalia.AdresseRessurs.AdresserFrontend;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.personalia.AdresseRessurs.GateadresseFrontend;
@@ -155,19 +157,22 @@ class AdresseRessursTest {
         when(adresseSystemdata.createDeepCopyOfJsonAdresse(any(JsonAdresse.class))).thenCallRealMethod();
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(soknadUnderArbeidIRepo);
         when(navEnhetRessurs.findSoknadsmottaker(anyString(), any(JsonSoknad.class), eq("folkeregistrert"), any()))
-                .thenReturn(singletonList(new NavEnhetRessurs.NavEnhetFrontend().withEnhetsnavn("Folkeregistrert NavEnhet").withOrgnr("1")));
+                .thenReturn(singletonList(
+                        new NavEnhetFrontend("1", "1111", "Folkeregistrert NavEnhet", "4321", null, null, null, null, null)
+                ));
+//                        .withEnhetsnavn("Folkeregistrert NavEnhet").withOrgnr("1")));
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
 
         AdresserFrontend adresserFrontend = new AdresserFrontend()
                 .withValg(JsonAdresseValg.FOLKEREGISTRERT);
-        final List<NavEnhetRessurs.NavEnhetFrontend> navEnheter = adresseRessurs.updateAdresse(BEHANDLINGSID, adresserFrontend);
+        final List<NavEnhetFrontend> navEnheter = adresseRessurs.updateAdresse(BEHANDLINGSID, adresserFrontend);
 
         final SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
         final JsonAdresse oppholdsadresse = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getOppholdsadresse();
         assertThat(oppholdsadresse.getKilde()).isEqualTo(JsonKilde.SYSTEM);
         assertThat(oppholdsadresse).isEqualTo(adresseSystemdata.createDeepCopyOfJsonAdresse(JSON_SYS_MATRIKKELADRESSE).withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT));
         assertThat(navEnheter).hasSize(1);
-        assertThat(navEnheter.get(0).enhetsnavn).isEqualTo("Folkeregistrert NavEnhet");
+        assertThat(navEnheter.get(0).getEnhetsnavn()).isEqualTo("Folkeregistrert NavEnhet");
     }
 
     @Test
@@ -177,12 +182,15 @@ class AdresseRessursTest {
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithOppholdsadresse(JsonAdresseValg.SOKNAD));
         when(navEnhetRessurs.findSoknadsmottaker(anyString(), any(JsonSoknad.class), eq("midlertidig"), any()))
-                .thenReturn(singletonList(new NavEnhetRessurs.NavEnhetFrontend().withEnhetsnavn("Midlertidig NavEnhet").withOrgnr("2")));
+                .thenReturn(singletonList(
+//                        new NavEnhetRessurs.NavEnhetFrontend().withEnhetsnavn("Midlertidig NavEnhet").withOrgnr("2")
+                        new NavEnhetFrontend("2", "2222", "Midlertidig NavEnhet", "kommune", "4321", null, null, null, null)
+                ));
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
 
         AdresserFrontend adresserFrontend = new AdresserFrontend();
         adresserFrontend.withValg(JsonAdresseValg.MIDLERTIDIG);
-        final List<NavEnhetRessurs.NavEnhetFrontend> navEnheter = adresseRessurs.updateAdresse(BEHANDLINGSID, adresserFrontend);
+        final List<NavEnhetFrontend> navEnheter = adresseRessurs.updateAdresse(BEHANDLINGSID, adresserFrontend);
 
         final SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
         final JsonAdresse oppholdsadresse = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getOppholdsadresse();
@@ -190,7 +198,7 @@ class AdresseRessursTest {
         assertThat(oppholdsadresse).isEqualTo(JSON_SYS_USTRUKTURERT_ADRESSE);
         assertThat(oppholdsadresse.getAdresseValg()).isEqualTo(JsonAdresseValg.MIDLERTIDIG);
         assertThat(navEnheter).hasSize(1);
-        assertThat(navEnheter.get(0).enhetsnavn).isEqualTo("Midlertidig NavEnhet");
+        assertThat(navEnheter.get(0).getEnhetsnavn()).isEqualTo("Midlertidig NavEnhet");
     }
 
     @Test
@@ -199,14 +207,17 @@ class AdresseRessursTest {
         when(soknadUnderArbeidRepository.hentSoknad(anyString(), anyString())).thenReturn(
                 createJsonInternalSoknadWithOppholdsadresse(JsonAdresseValg.FOLKEREGISTRERT));
         when(navEnhetRessurs.findSoknadsmottaker(anyString(), any(JsonSoknad.class), eq("soknad"), any()))
-                .thenReturn(singletonList(new NavEnhetRessurs.NavEnhetFrontend().withEnhetsnavn("Soknad NavEnhet").withOrgnr("3")));
+                .thenReturn(singletonList(
+//                        new NavEnhetRessurs.NavEnhetFrontend().withEnhetsnavn("Soknad NavEnhet").withOrgnr("3")
+                        new NavEnhetFrontend("3", "333", "Soknad NavEnhet", "4321", null, null, null, null, null)
+                ));
         doNothing().when(tilgangskontroll).verifiserAtBrukerKanEndreSoknad(anyString());
 
         AdresserFrontend adresserFrontend = new AdresserFrontend().withSoknad(new AdresseFrontend());
         adresserFrontend.withValg(JsonAdresseValg.SOKNAD);
         adresserFrontend.soknad.setType(JsonAdresse.Type.GATEADRESSE);
         adresserFrontend.soknad.setGateadresse(new GateadresseFrontend().withGatenavn("Søknadsgata"));
-        final List<NavEnhetRessurs.NavEnhetFrontend> navEnheter = adresseRessurs.updateAdresse(BEHANDLINGSID, adresserFrontend);
+        final List<NavEnhetFrontend> navEnheter = adresseRessurs.updateAdresse(BEHANDLINGSID, adresserFrontend);
 
         final SoknadUnderArbeid soknadUnderArbeid = catchSoknadUnderArbeidSentToOppdaterSoknadsdata();
         final JsonAdresse oppholdsadresse = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getOppholdsadresse();
@@ -214,7 +225,7 @@ class AdresseRessursTest {
         assertThat(((JsonGateAdresse) oppholdsadresse).getGatenavn()).isEqualTo("Søknadsgata");
         assertThat(oppholdsadresse.getAdresseValg()).isEqualTo(JsonAdresseValg.SOKNAD);
         assertThat(navEnheter).hasSize(1);
-        assertThat(navEnheter.get(0).enhetsnavn).isEqualTo("Soknad NavEnhet");
+        assertThat(navEnheter.get(0).getEnhetsnavn()).isEqualTo("Soknad NavEnhet");
     }
 
     @Test

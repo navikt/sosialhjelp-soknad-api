@@ -1,6 +1,7 @@
 package no.nav.sosialhjelp.soknad.web.rest;
 
 import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
+import no.nav.sosialhjelp.soknad.navenhet.NavEnhetRessurs;
 import no.nav.sosialhjelp.soknad.web.mdc.MdcFilter;
 import no.nav.sosialhjelp.soknad.web.oidc.OidcResourceFilteringFeature;
 import no.nav.sosialhjelp.soknad.web.sikkerhet.CORSFilter;
@@ -22,6 +23,8 @@ public class SoknadApplication extends ResourceConfig {
         // returnerer litt for mye informasjon i sine feilmeldinger. Desse ExceptionMappers har @Provider-annotationer
         // og blir automatisk trukket inn hvis du tar tar inn hele Jackson-pakken for JSON.
         packages("no.nav.sosialhjelp.soknad.web.rest");
+        register(NavEnhetRessurs.class);
+
         register(JacksonJaxbJsonProvider.class);
         register(MultiPartFeature.class);
 

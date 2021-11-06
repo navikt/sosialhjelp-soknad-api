@@ -39,7 +39,7 @@ import javax.ws.rs.core.MediaType
 @Path("/soknader/{behandlingsId}/personalia")
 @Timed
 @Produces(MediaType.APPLICATION_JSON)
-class NavEnhetRessurs(
+open class NavEnhetRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val navEnhetService: NavEnhetService,
@@ -52,7 +52,7 @@ class NavEnhetRessurs(
 
     @GET
     @Path("/navEnheter")
-    fun hentNavEnheter(@PathParam("behandlingsId") behandlingsId: String): List<NavEnhetFrontend>? {
+    open fun hentNavEnheter(@PathParam("behandlingsId") behandlingsId: String): List<NavEnhetFrontend>? {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
         val eier = SubjectHandler.getUserId()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).jsonInternalSoknad.soknad
@@ -74,7 +74,7 @@ class NavEnhetRessurs(
 
     @GET
     @Path("/navEnhet")
-    fun hentValgtNavEnhet(@PathParam("behandlingsId") behandlingsId: String): NavEnhetFrontend? {
+    open fun hentValgtNavEnhet(@PathParam("behandlingsId") behandlingsId: String): NavEnhetFrontend? {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
         val eier = SubjectHandler.getUserId()
         val soknadsmottaker = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).jsonInternalSoknad.soknad.mottaker
@@ -97,7 +97,7 @@ class NavEnhetRessurs(
 
     @PUT
     @Path("/navEnheter")
-    fun updateNavEnhet(@PathParam("behandlingsId") behandlingsId: String, navEnhetFrontend: NavEnhetFrontend) {
+    open fun updateNavEnhet(@PathParam("behandlingsId") behandlingsId: String, navEnhetFrontend: NavEnhetFrontend) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         val eier = SubjectHandler.getUserId()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
@@ -123,7 +123,7 @@ class NavEnhetRessurs(
         return navEnhetsnavn.split(SPLITTER)[1]
     }
 
-    fun findSoknadsmottaker(
+    open fun findSoknadsmottaker(
         eier: String,
         soknad: JsonSoknad,
         valg: String?,
