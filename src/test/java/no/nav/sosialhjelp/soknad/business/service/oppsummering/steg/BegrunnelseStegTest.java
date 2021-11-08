@@ -4,9 +4,11 @@ import no.nav.sbl.soknadsosialhjelp.soknad.JsonData;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.begrunnelse.JsonBegrunnelse;
+import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.SvarType;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Type;
 import org.junit.jupiter.api.Test;
 
+import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.OppsummeringTestUtils.validateFeltMedSvar;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class BegrunnelseStegTest {
@@ -39,13 +41,11 @@ class BegrunnelseStegTest {
 
         var hvaSokesOmSporsmal = res.getAvsnitt().get(0).getSporsmal().get(0);
         assertThat(hvaSokesOmSporsmal.getErUtfylt()).isTrue();
-        assertThat(hvaSokesOmSporsmal.getFelt().get(0).getSvar().getValue()).isEqualTo("hva jeg søker om");
-        assertThat(hvaSokesOmSporsmal.getFelt().get(0).getType()).isEqualTo(Type.TEKST);
+        validateFeltMedSvar(hvaSokesOmSporsmal.getFelt().get(0), Type.TEKST, SvarType.TEKST, "hva jeg søker om");
 
         var hvorforSokeSporsmal = res.getAvsnitt().get(0).getSporsmal().get(1);
         assertThat(hvorforSokeSporsmal.getErUtfylt()).isTrue();
-        assertThat(hvorforSokeSporsmal.getFelt().get(0).getSvar().getValue()).isEqualTo("hvorfor");
-        assertThat(hvorforSokeSporsmal.getFelt().get(0).getType()).isEqualTo(Type.TEKST);
+        validateFeltMedSvar(hvorforSokeSporsmal.getFelt().get(0), Type.TEKST, SvarType.TEKST, "hvorfor");
     }
 
     private JsonInternalSoknad createSoknad(String hvaSokesOm, String hvorforSoke) {

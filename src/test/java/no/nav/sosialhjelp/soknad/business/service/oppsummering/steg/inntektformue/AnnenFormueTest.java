@@ -17,6 +17,7 @@ import java.util.List;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.BEKREFTELSE_VERDI;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.VERDI_ANNET;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.VERDI_BOLIG;
+import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.OppsummeringTestUtils.validateFeltMedSvar;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class AnnenFormueTest {
@@ -46,11 +47,7 @@ class AnnenFormueTest {
         var harAnnenFormueSporsmal = avsnitt.getSporsmal().get(0);
         assertThat(harAnnenFormueSporsmal.getErUtfylt()).isTrue();
         assertThat(harAnnenFormueSporsmal.getFelt()).hasSize(1);
-
-        var harAnnenFormueSvar = harAnnenFormueSporsmal.getFelt().get(0);
-        assertThat(harAnnenFormueSvar.getType()).isEqualTo(Type.CHECKBOX);
-        assertThat(harAnnenFormueSvar.getSvar().getValue()).isEqualTo("inntekt.eierandeler.false");
-        assertThat(harAnnenFormueSvar.getSvar().getType()).isEqualTo(SvarType.LOCALE_TEKST);
+        validateFeltMedSvar(harAnnenFormueSporsmal.getFelt().get(0), Type.CHECKBOX, SvarType.LOCALE_TEKST, "inntekt.eierandeler.false");
     }
 
     @Test
@@ -65,11 +62,7 @@ class AnnenFormueTest {
         var harAnnenFormueSporsmal = avsnitt.getSporsmal().get(0);
         assertThat(harAnnenFormueSporsmal.getErUtfylt()).isTrue();
         assertThat(harAnnenFormueSporsmal.getFelt()).hasSize(1);
-
-        var harAnnenFormueSvar = harAnnenFormueSporsmal.getFelt().get(0);
-        assertThat(harAnnenFormueSvar.getType()).isEqualTo(Type.CHECKBOX);
-        assertThat(harAnnenFormueSvar.getSvar().getValue()).isEqualTo("inntekt.eierandeler.true");
-        assertThat(harAnnenFormueSvar.getSvar().getType()).isEqualTo(SvarType.LOCALE_TEKST);
+        validateFeltMedSvar(harAnnenFormueSporsmal.getFelt().get(0), Type.CHECKBOX, SvarType.LOCALE_TEKST, "inntekt.eierandeler.true");
 
         var hvaEierDuSporsmal = avsnitt.getSporsmal().get(1);
         assertThat(hvaEierDuSporsmal.getErUtfylt()).isFalse();
@@ -94,27 +87,18 @@ class AnnenFormueTest {
         var harAnnenFormueSporsmal = avsnitt.getSporsmal().get(0);
         assertThat(harAnnenFormueSporsmal.getErUtfylt()).isTrue();
         assertThat(harAnnenFormueSporsmal.getFelt()).hasSize(1);
-
-        var harAnnenFormueSvar = harAnnenFormueSporsmal.getFelt().get(0);
-        assertThat(harAnnenFormueSvar.getType()).isEqualTo(Type.CHECKBOX);
-        assertThat(harAnnenFormueSvar.getSvar().getValue()).isEqualTo("inntekt.eierandeler.true");
-        assertThat(harAnnenFormueSvar.getSvar().getType()).isEqualTo(SvarType.LOCALE_TEKST);
+        validateFeltMedSvar(harAnnenFormueSporsmal.getFelt().get(0), Type.CHECKBOX, SvarType.LOCALE_TEKST, "inntekt.eierandeler.true");
 
         var hvaEierDuSporsmal = avsnitt.getSporsmal().get(1);
         assertThat(hvaEierDuSporsmal.getErUtfylt()).isTrue();
         assertThat(hvaEierDuSporsmal.getFelt()).hasSize(2);
-        assertThat(hvaEierDuSporsmal.getFelt().get(0).getType()).isEqualTo(Type.CHECKBOX);
-        assertThat(hvaEierDuSporsmal.getFelt().get(0).getSvar().getValue()).isEqualTo("inntekt.eierandeler.true.type.bolig");
-        assertThat(hvaEierDuSporsmal.getFelt().get(0).getSvar().getType()).isEqualTo(SvarType.LOCALE_TEKST);
-        assertThat(hvaEierDuSporsmal.getFelt().get(1).getType()).isEqualTo(Type.CHECKBOX);
-        assertThat(hvaEierDuSporsmal.getFelt().get(1).getSvar().getValue()).isEqualTo("inntekt.eierandeler.true.type.annet");
-        assertThat(hvaEierDuSporsmal.getFelt().get(1).getSvar().getType()).isEqualTo(SvarType.LOCALE_TEKST);
+        validateFeltMedSvar(hvaEierDuSporsmal.getFelt().get(0), Type.CHECKBOX, SvarType.LOCALE_TEKST, "inntekt.eierandeler.true.type.bolig");
+        validateFeltMedSvar(hvaEierDuSporsmal.getFelt().get(1), Type.CHECKBOX, SvarType.LOCALE_TEKST, "inntekt.eierandeler.true.type.annet");
 
         var annetBeskrivelseSporsmal = avsnitt.getSporsmal().get(2);
         assertThat(annetBeskrivelseSporsmal.getErUtfylt()).isTrue();
         assertThat(annetBeskrivelseSporsmal.getFelt()).hasSize(1);
-        assertThat(annetBeskrivelseSporsmal.getFelt().get(0).getType()).isEqualTo(Type.TEKST);
-        assertThat(annetBeskrivelseSporsmal.getFelt().get(0).getSvar().getValue()).isEqualTo("verdi");
+        validateFeltMedSvar(annetBeskrivelseSporsmal.getFelt().get(0), Type.TEKST, SvarType.TEKST, "verdi");
     }
 
     private JsonOkonomi createOkonomi(boolean harBekreftelse) {

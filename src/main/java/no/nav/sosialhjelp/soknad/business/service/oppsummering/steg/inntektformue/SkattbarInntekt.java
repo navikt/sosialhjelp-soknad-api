@@ -4,6 +4,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.JsonDriftsinformasjon;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling;
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Avsnitt;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Felt;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Sporsmal;
@@ -12,14 +13,14 @@ import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.SvarType;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Type;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.stream.Collectors;
 
+import static java.util.Collections.singletonList;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_SKATTEETATEN;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_SKATTEETATEN_SAMTYKKE;
 import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.StegUtils.createSvar;
+import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.inntektformue.InntektFormueUtils.getBekreftelse;
 import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.inntektformue.InntektFormueUtils.harBekreftelseTrue;
 
 public class SkattbarInntekt {
@@ -42,7 +43,7 @@ public class SkattbarInntekt {
             sporsmal.add(
                     new Sporsmal.Builder()
                             .withTittel("utbetalinger.inntekt.skattbar.mangler_samtykke")
-                            .withErUtfylt(true) // alltid true (eller null)
+                            .withErUtfylt(true)
                             .build()
             );
         }
@@ -57,49 +58,67 @@ public class SkattbarInntekt {
         }
 
         if (harSkatteetatenSamtykke && !fikkFeilMotSkatteetaten) {
-            sporsmal.add(
-                    new Sporsmal.Builder()
-                            .withTittel("utbetalinger.inntekt.skattbar.har_gitt_samtykke")
-                            // undertittel? Tidspunkt for henting av inntekt fra Skatteetaten // bekreftelse.getBekreftelsesDato
-                            .withErUtfylt(true)
-                            .withFelt(skattbarInntektFelter(opplysninger.getUtbetaling()))
-                            .build()
+            sporsmal.add(bekreftelsesTidspunktSporsmal(getBekreftelse(opplysninger, UTBETALING_SKATTEETATEN_SAMTYKKE)));
+
+            sporsmal.add(new Sporsmal.Builder()
+                    .withTittel("utbetalinger.inntekt.skattbar.inntekt.tittel")
+                    .withFelt(skattbarInntektFelter(opplysninger.getUtbetaling()))
+                    .withErUtfylt(true)
+                    .build()
             );
         }
         return sporsmal;
     }
 
+    private Sporsmal bekreftelsesTidspunktSporsmal(JsonOkonomibekreftelse skatteetatenBekreftelse) {
+        return new Sporsmal.Builder()
+                .withTittel("utbetalinger.inntekt.skattbar.har_gitt_samtykke")
+                .withFelt(singletonList(
+                        new Felt.Builder()
+                                .withType(Type.TEKST)
+                                .withSvar(createSvar(skatteetatenBekreftelse.getBekreftelsesDato(), SvarType.TIDSPUNKT))
+                                .build()
+                ))
+                .withErUtfylt(true)
+                .build();
+    }
+
     private List<Felt> skattbarInntektFelter(List<JsonOkonomiOpplysningUtbetaling> utbetalinger) {
         var harSkattbareInntekter = utbetalinger != null && utbetalinger.stream().anyMatch(utbetaling -> UTBETALING_SKATTEETATEN.equals(utbetaling.getType()));
 
+        var feltListe = new ArrayList<Felt>();
+
         if (!harSkattbareInntekter) {
-            // mer info her?
-            return Collections.emptyList();
+            feltListe.add(
+                    new Felt.Builder()
+                            .withType(Type.TEKST)
+                            .withSvar(createSvar("utbetalinger.inntekt.skattbar.ingen", SvarType.LOCALE_TEKST))
+                            .build()
+            );
+        } else {
+            // todo: gruppere pr mnd og organisasjon? summere inntekter og skattetrekk
+            utbetalinger.stream()
+                    .filter(utbetaling -> UTBETALING_SKATTEETATEN.equals(utbetaling.getType()))
+                    .forEach(utbetaling -> {
+                        var map = new LinkedHashMap<String, Svar>();
+                        if (utbetaling.getOrganisasjon() == null) {
+                            map.put("utbetalinger.utbetaling.arbeidsgivernavn.label", createSvar("Uten organisasjonsnummer", SvarType.TEKST));
+                        } else {
+                            map.put("utbetalinger.utbetaling.arbeidsgivernavn.label", createSvar(utbetaling.getOrganisasjon().getNavn(), SvarType.TEKST));
+                        }
+                        map.put("utbetalinger.utbetaling.periodeFom.label", createSvar(utbetaling.getPeriodeFom(), SvarType.DATO));
+                        map.put("utbetalinger.utbetaling.periodeTom.label", createSvar(utbetaling.getPeriodeTom(), SvarType.DATO));
+                        map.put("utbetalinger.utbetaling.brutto.label", createSvar(utbetaling.getBrutto().toString(), SvarType.TEKST));
+                        map.put("utbetalinger.utbetaling.skattetrekk.label", createSvar(utbetaling.getSkattetrekk().toString(), SvarType.TEKST));
+
+                        feltListe.add(
+                                new Felt.Builder()
+                                        .withType(Type.SYSTEMDATA_MAP)
+                                        .withLabelSvarMap(map)
+                                        .build());
+                    });
         }
 
-        // todo: gruppere pr mnd og organisasjon? summere inntekter og skattetrekk
-
-        return utbetalinger.stream()
-                .filter(utbetaling -> UTBETALING_SKATTEETATEN.equals(utbetaling.getType()))
-                //.collect(Collectors.groupingBy()) ??
-                .map(utbetaling -> {
-                    // arbeidsgivernavn, fom, tom, brutto, forskuddstrekk
-                    var map = new LinkedHashMap<String, Svar>();
-                    if (utbetaling.getOrganisasjon() == null) {
-                        map.put("utbetalinger.utbetaling.arbeidsgivernavn.label", createSvar("Uten organisasjonsnummer", SvarType.TEKST));
-                    } else {
-                        map.put("utbetalinger.utbetaling.arbeidsgivernavn.label", createSvar(utbetaling.getOrganisasjon().getNavn(), SvarType.TEKST));
-                    }
-                    map.put("utbetalinger.utbetaling.periodeFom.label", createSvar(utbetaling.getPeriodeFom(), SvarType.DATO));
-                    map.put("utbetalinger.utbetaling.periodeTom.label", createSvar(utbetaling.getPeriodeTom(), SvarType.DATO));
-                    map.put("utbetalinger.utbetaling.brutto.label", createSvar(utbetaling.getBrutto().toString(), SvarType.TEKST));
-                    map.put("utbetalinger.utbetaling.skattetrekk.label", createSvar(utbetaling.getSkattetrekk().toString(), SvarType.TEKST));
-
-                    return new Felt.Builder()
-                            .withType(Type.SYSTEMDATA_MAP)
-                            .withLabelSvarMap(map)
-                            .build();
-                })
-                .collect(Collectors.toList());
+        return feltListe;
     }
 }

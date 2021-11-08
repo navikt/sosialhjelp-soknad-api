@@ -11,7 +11,7 @@ import org.springframework.web.reactive.function.client.WebClient
 
 @Configuration
 open class KommuneInfoClientConfig(
-    private val proxiedWebClient: WebClient,
+    private val proxiedWebClientBuilder: WebClient.Builder,
     @Value("\${digisos_api_baseurl}") private val digisosApiEndpoint: String,
     @Value("\${integrasjonsid_fiks}") private val integrasjonsidFiks: String,
     @Value("\${integrasjonpassord_fiks}") private val integrasjonpassordFiks: String
@@ -19,9 +19,12 @@ open class KommuneInfoClientConfig(
 
     @Bean
     open fun kommuneInfoClient(): KommuneInfoClient {
-        val kommuneInfoClient = KommuneInfoClientImpl(proxiedWebClient, fiksProperties())
+        val kommuneInfoClient = KommuneInfoClientImpl(kommuneInfoWebClient, fiksProperties())
         return createTimerProxy("KommuneInfoClient", kommuneInfoClient, KommuneInfoClient::class.java)
     }
+
+    private val kommuneInfoWebClient: WebClient
+        get() = proxiedWebClientBuilder.build()
 
     private fun fiksProperties(): FiksProperties {
         return FiksProperties(

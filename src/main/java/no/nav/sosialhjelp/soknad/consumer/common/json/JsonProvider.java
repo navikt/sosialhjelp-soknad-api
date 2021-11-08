@@ -5,6 +5,7 @@ package no.nav.sosialhjelp.soknad.consumer.common.json;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
+import com.fasterxml.jackson.module.kotlin.KotlinModule;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.Produces;
@@ -30,6 +31,7 @@ public class JsonProvider extends JacksonJaxbJsonProvider {
     public static ObjectMapper applyDefaultConfiguration(ObjectMapper objectMapper) {
         objectMapper
                 .registerModule(new JavaTimeModule())
+                .registerModule(new KotlinModule())
                 .configure(FAIL_ON_UNKNOWN_PROPERTIES, false)
                 .configure(ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
 

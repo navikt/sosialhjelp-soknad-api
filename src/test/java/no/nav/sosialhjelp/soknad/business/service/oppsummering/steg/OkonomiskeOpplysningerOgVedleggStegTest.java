@@ -38,6 +38,7 @@ import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTGIFTER_BARN_FR
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTGIFTER_BOLIGLAN_AVDRAG;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTGIFTER_HUSLEIE;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTGIFTER_STROM;
+import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.OppsummeringTestUtils.validateFeltMedSvar;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
@@ -184,17 +185,13 @@ class OkonomiskeOpplysningerOgVedleggStegTest {
         assertThat(vedlegg1.getTittel()).isEqualTo("vedlegg.faktura.oppvarming.tittel");
         assertThat(vedlegg1.getErUtfylt()).isTrue();
         assertThat(vedlegg1.getFelt()).hasSize(1);
-        assertThat(vedlegg1.getFelt().get(0).getType()).isEqualTo(Type.TEKST);
-        assertThat(vedlegg1.getFelt().get(0).getSvar().getValue()).isEqualTo("opplysninger.vedlegg.alleredelastetopp");
-        assertThat(vedlegg1.getFelt().get(0).getSvar().getType()).isEqualTo(SvarType.LOCALE_TEKST);
+        validateFeltMedSvar(vedlegg1.getFelt().get(0), Type.TEKST, SvarType.LOCALE_TEKST, "opplysninger.vedlegg.alleredelastetopp");
 
         var vedlegg2 = vedleggAvsnitt.getSporsmal().get(1);
         assertThat(vedlegg2.getTittel()).isEqualTo("vedlegg.kontooversikt.sparekonto.tittel");
         assertThat(vedlegg2.getErUtfylt()).isTrue();
         assertThat(vedlegg2.getFelt()).hasSize(1);
-        assertThat(vedlegg2.getFelt().get(0).getType()).isEqualTo(Type.TEKST);
-        assertThat(vedlegg2.getFelt().get(0).getSvar().getValue()).isEqualTo("vedlegg.oppsummering.ikkelastetopp");
-        assertThat(vedlegg2.getFelt().get(0).getSvar().getType()).isEqualTo(SvarType.LOCALE_TEKST);
+        validateFeltMedSvar(vedlegg2.getFelt().get(0), Type.TEKST, SvarType.LOCALE_TEKST, "vedlegg.oppsummering.ikkelastetopp");
 
         var vedlegg3 = vedleggAvsnitt.getSporsmal().get(2);
         assertThat(vedlegg3.getTittel()).isEqualTo("vedlegg.lonnslipp.arbeid.tittel");

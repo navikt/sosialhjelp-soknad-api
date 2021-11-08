@@ -1,7 +1,8 @@
 package no.nav.sosialhjelp.soknad.consumer.organisasjon;
 
-import no.nav.sosialhjelp.soknad.consumer.organisasjon.dto.NavnDto;
-import no.nav.sosialhjelp.soknad.consumer.organisasjon.dto.OrganisasjonNoekkelinfoDto;
+import no.nav.sosialhjelp.soknad.client.organisasjon.OrganisasjonClient;
+import no.nav.sosialhjelp.soknad.client.organisasjon.dto.NavnDto;
+import no.nav.sosialhjelp.soknad.client.organisasjon.dto.OrganisasjonNoekkelinfoDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -16,7 +17,7 @@ import static org.mockito.Mockito.when;
 class OrganisasjonServiceTest {
 
     @Mock
-    private OrganisasjonConsumer organisasjonConsumer;
+    private OrganisasjonClient organisasjonClient;
 
     @InjectMocks
     private OrganisasjonService service;
@@ -25,7 +26,7 @@ class OrganisasjonServiceTest {
 
     @Test
     void skalHentOrgNavnMedNullINavnelinjer() {
-        when(organisasjonConsumer.hentOrganisasjonNoekkelinfo(anyString())).thenReturn(createOrgNoekkelinfoResponseWithNulls());
+        when(organisasjonClient.hentOrganisasjonNoekkelinfo(anyString())).thenReturn(createOrgNoekkelinfoResponseWithNulls());
 
         String orgNavn = service.hentOrgNavn(orgnr);
 
@@ -34,7 +35,7 @@ class OrganisasjonServiceTest {
 
     @Test
     void skalHentOrgNavnMedTommeStringsINavnelinjer() {
-        when(organisasjonConsumer.hentOrganisasjonNoekkelinfo(anyString())).thenReturn(createOrgNoekkelinfoResponseWithEmptyStrings());
+        when(organisasjonClient.hentOrganisasjonNoekkelinfo(anyString())).thenReturn(createOrgNoekkelinfoResponseWithEmptyStrings());
 
         String orgNavn = service.hentOrgNavn(orgnr);
 
@@ -50,7 +51,7 @@ class OrganisasjonServiceTest {
 
     @Test
     void skalReturnereOrgNrSomOrgNavnHvisNoekkelinfoErNull() {
-        when(organisasjonConsumer.hentOrganisasjonNoekkelinfo(anyString())).thenReturn(null);
+        when(organisasjonClient.hentOrganisasjonNoekkelinfo(anyString())).thenReturn(null);
 
         String orgNavn = service.hentOrgNavn(orgnr);
 
@@ -59,7 +60,7 @@ class OrganisasjonServiceTest {
 
     @Test
     void skalReturnereOrgNrSomOrgNavnHvisConsumerKasterFeil() {
-        when(organisasjonConsumer.hentOrganisasjonNoekkelinfo(anyString())).thenThrow(new RuntimeException("noe feil"));
+        when(organisasjonClient.hentOrganisasjonNoekkelinfo(anyString())).thenThrow(new RuntimeException("noe feil"));
 
         String orgNavn = service.hentOrgNavn(orgnr);
 

@@ -3,19 +3,19 @@ package no.nav.sosialhjelp.soknad.consumer;
 import no.nav.sosialhjelp.soknad.client.config.MockProxiedWebClientConfig;
 import no.nav.sosialhjelp.soknad.client.config.NonProxiedWebClientConfig;
 import no.nav.sosialhjelp.soknad.client.config.ProxiedWebClientConfig;
+import no.nav.sosialhjelp.soknad.client.dkif.DkifConfig;
 import no.nav.sosialhjelp.soknad.client.fiks.KommuneInfoClientConfig;
 import no.nav.sosialhjelp.soknad.client.husbanken.HusbankenClientConfig;
 import no.nav.sosialhjelp.soknad.client.idporten.IdPortenClientConfig;
 import no.nav.sosialhjelp.soknad.client.idporten.IdPortenClientConfigMockAlt;
 import no.nav.sosialhjelp.soknad.client.idporten.IdPortenServiceImpl;
+import no.nav.sosialhjelp.soknad.client.leaderelection.LeaderElectionConfig;
 import no.nav.sosialhjelp.soknad.client.maskinporten.MaskinportenClientConfig;
+import no.nav.sosialhjelp.soknad.client.organisasjon.OrganisasjonConfig;
 import no.nav.sosialhjelp.soknad.client.skatteetaten.SkatteetatenClientConfig;
-import no.nav.sosialhjelp.soknad.consumer.dkif.DkifService;
+import no.nav.sosialhjelp.soknad.client.virusscan.VirusScanConfig;
 import no.nav.sosialhjelp.soknad.consumer.fiks.DokumentKrypterer;
 import no.nav.sosialhjelp.soknad.consumer.kodeverk.KodeverkService;
-import no.nav.sosialhjelp.soknad.consumer.leaderelection.LeaderElectionImpl;
-import no.nav.sosialhjelp.soknad.consumer.leaderelection.NoLeaderElection;
-import no.nav.sosialhjelp.soknad.consumer.norg.NorgService;
 import no.nav.sosialhjelp.soknad.consumer.organisasjon.OrganisasjonService;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.PdlAdresseSokService;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.bydel.BydelConfig;
@@ -27,10 +27,7 @@ import no.nav.sosialhjelp.soknad.consumer.redis.NoRedisConfig;
 import no.nav.sosialhjelp.soknad.consumer.redis.RedisConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.ArbeidsforholdRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.DigisosApiRestConfig;
-import no.nav.sosialhjelp.soknad.consumer.restconfig.DkifRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.KodeverkRestConfig;
-import no.nav.sosialhjelp.soknad.consumer.restconfig.NorgRestConfig;
-import no.nav.sosialhjelp.soknad.consumer.restconfig.OrganisasjonRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.PdlAdresseSokRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.PdlGeografiskTilknytningRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.PdlHentPersonRestConfig;
@@ -39,6 +36,7 @@ import no.nav.sosialhjelp.soknad.consumer.restconfig.SvarUtRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.UnleashRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.skatt.SkattbarInntektService;
 import no.nav.sosialhjelp.soknad.consumer.svarut.SvarUtService;
+import no.nav.sosialhjelp.soknad.navenhet.NavEnhetConfig;
 import no.nav.sosialhjelp.soknad.oppslag.OppslagRestConfig;
 import no.nav.sosialhjelp.soknad.oppslag.kontonummer.KontonummerService;
 import no.nav.sosialhjelp.soknad.oppslag.utbetaling.UtbetalingService;
@@ -57,6 +55,9 @@ import org.springframework.context.annotation.Import;
         MaskinportenClientConfig.class,
         SkatteetatenClientConfig.class,
         HusbankenClientConfig.class,
+        OrganisasjonConfig.class,
+        DkifConfig.class,
+        NavEnhetConfig.class,
         RedisConfig.class,
         NoRedisConfig.class,
         PersonService.class,
@@ -65,18 +66,16 @@ import org.springframework.context.annotation.Import;
         GeografiskTilknytningService.class,
         ConsumerConfig.WsServices.class,
         DokumentKrypterer.class,
-        NorgService.class,
         SkattbarInntektService.class,
         OrganisasjonService.class,
-        DkifService.class,
         KodeverkService.class,
         KontonummerService.class,
         UtbetalingService.class,
         BydelConfig.class,
         BydelService.class,
-        LeaderElectionImpl.class,
-        NoLeaderElection.class,
-        SvarUtService.class
+        LeaderElectionConfig.class,
+        SvarUtService.class,
+        VirusScanConfig.class
 })
 
 public class ConsumerConfig {
@@ -87,11 +86,8 @@ public class ConsumerConfig {
             PdlAdresseSokRestConfig.class,
             PdlGeografiskTilknytningRestConfig.class,
             DigisosApiRestConfig.class,
-            NorgRestConfig.class,
-            OrganisasjonRestConfig.class,
             ArbeidsforholdRestConfig.class,
             STSTokenRestConfig.class,
-            DkifRestConfig.class,
             KodeverkRestConfig.class,
             UnleashRestConfig.class,
             OppslagRestConfig.class,

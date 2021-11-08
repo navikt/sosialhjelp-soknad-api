@@ -7,7 +7,7 @@ import no.nav.sosialhjelp.soknad.business.db.repositories.oppgave.OppgaveReposit
 import no.nav.sosialhjelp.soknad.business.db.repositories.sendtsoknad.BatchSendtSoknadRepository;
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.BatchSoknadMetadataRepository;
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata;
-import no.nav.sosialhjelp.soknad.consumer.leaderelection.LeaderElection;
+import no.nav.sosialhjelp.soknad.client.leaderelection.LeaderElection;
 import no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Value;

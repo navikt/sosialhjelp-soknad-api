@@ -17,7 +17,7 @@ import org.springframework.web.reactive.function.client.awaitBody
 @Profile("!mock-alt")
 @Configuration
 open class IdPortenClientConfig(
-    private val proxiedWebClient: WebClient,
+    private val proxiedWebClientBuilder: WebClient.Builder,
     @Value("\${idporten_token_url}") private val tokenUrl: String,
     @Value("\${idporten_clientid}") private val clientId: String,
     @Value("\${idporten_scope}") private val scope: String,
@@ -27,41 +27,45 @@ open class IdPortenClientConfig(
 
     @Bean
     open fun idPortenClient(): IdPortenClient {
-        val idPortenClient = IdPortenClientImpl(webClient = proxiedWebClient, idPortenProperties = idPortenProperties())
+        val idPortenClient = IdPortenClientImpl(idPortenWebClient, idPortenProperties)
         return createTimerProxy("IdPortenClient", idPortenClient, IdPortenClient::class.java)
     }
 
-    fun idPortenProperties(): IdPortenProperties {
-        return IdPortenProperties(
+    private val idPortenWebClient: WebClient
+        get() = proxiedWebClientBuilder.build()
+
+    private val idPortenProperties: IdPortenProperties
+        get() = IdPortenProperties(
             tokenUrl = tokenUrl,
             clientId = clientId,
             scope = scope,
             configUrl = configUrl,
             virksomhetSertifikatPath = virksomhetssertifikatPath
         )
-    }
 }
 
 @Profile("mock-alt")
 @Configuration
 open class IdPortenClientConfigMockAlt(
-    private val proxiedWebClient: WebClient,
+    private val proxiedWebClientBuilder: WebClient.Builder,
     @Value("\${idporten_token_url}") private val tokenUrl: String
 ) {
     @Bean
     open fun idPortenClient(): IdPortenClient {
-        val idPortenClient =
-            IdPortenClientMockAlt(proxiedWebClient, tokenUrl)
+        val idPortenClient = IdPortenClientMockAlt(idPortenWebClient, tokenUrl)
         return createTimerProxy("IdPortenClient", idPortenClient, IdPortenClient::class.java)
     }
 
+    private val idPortenWebClient: WebClient
+        get() = proxiedWebClientBuilder.build()
+
     private class IdPortenClientMockAlt(
-        private val proxiedWebClient: WebClient,
+        private val idPortenWebClient: WebClient,
         private val tokenUrl: String
     ) : IdPortenClient {
 
         override suspend fun requestToken(attempts: Int, headers: HttpHeaders): AccessToken {
-            val response = proxiedWebClient.post()
+            val response = idPortenWebClient.post()
                 .uri(tokenUrl)
                 .retrieve()
                 .awaitBody<IdPortenAccessTokenResponse>()
