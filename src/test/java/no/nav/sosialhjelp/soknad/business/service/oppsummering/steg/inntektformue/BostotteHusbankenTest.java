@@ -33,6 +33,7 @@ class BostotteHusbankenTest {
         assertThat(avsnitt.getSporsmal()).hasSize(1);
 
         var harSoktBostotteSporsmal = avsnitt.getSporsmal().get(0);
+        assertThat(harSoktBostotteSporsmal.getTittel()).isEqualTo("inntekt.bostotte.sporsmal.sporsmal");
         assertThat(harSoktBostotteSporsmal.getErUtfylt()).isFalse();
         assertThat(harSoktBostotteSporsmal.getFelt()).isNull();
     }
@@ -48,6 +49,7 @@ class BostotteHusbankenTest {
         assertThat(avsnitt.getSporsmal()).hasSize(2);
 
         var harSoktBostotteSporsmal = avsnitt.getSporsmal().get(0);
+        assertThat(harSoktBostotteSporsmal.getTittel()).isEqualTo("inntekt.bostotte.sporsmal.sporsmal");
         assertThat(harSoktBostotteSporsmal.getErUtfylt()).isTrue();
         assertThat(harSoktBostotteSporsmal.getFelt()).hasSize(1);
         validateFeltMedSvar(harSoktBostotteSporsmal.getFelt().get(0), Type.CHECKBOX, SvarType.LOCALE_TEKST, "inntekt.bostotte.sporsmal.true");
@@ -71,6 +73,7 @@ class BostotteHusbankenTest {
         assertThat(avsnitt.getSporsmal()).hasSize(2);
 
         var harSoktBostotteSporsmal = avsnitt.getSporsmal().get(0);
+        assertThat(harSoktBostotteSporsmal.getTittel()).isEqualTo("inntekt.bostotte.sporsmal.sporsmal");
         assertThat(harSoktBostotteSporsmal.getErUtfylt()).isTrue();
         assertThat(harSoktBostotteSporsmal.getFelt()).hasSize(1);
         validateFeltMedSvar(harSoktBostotteSporsmal.getFelt().get(0), Type.CHECKBOX, SvarType.LOCALE_TEKST, "inntekt.bostotte.sporsmal.true");
@@ -106,6 +109,7 @@ class BostotteHusbankenTest {
         assertThat(avsnitt.getSporsmal()).hasSize(4);
 
         var harSoktBostotteSporsmal = avsnitt.getSporsmal().get(0);
+        assertThat(harSoktBostotteSporsmal.getTittel()).isEqualTo("inntekt.bostotte.sporsmal.sporsmal");
         assertThat(harSoktBostotteSporsmal.getErUtfylt()).isTrue();
         assertThat(harSoktBostotteSporsmal.getFelt()).hasSize(1);
         validateFeltMedSvar(harSoktBostotteSporsmal.getFelt().get(0), Type.CHECKBOX, SvarType.LOCALE_TEKST, "inntekt.bostotte.sporsmal.true");
@@ -160,6 +164,7 @@ class BostotteHusbankenTest {
         assertThat(avsnitt.getSporsmal()).hasSize(4);
 
         var harSoktBostotteSporsmal = avsnitt.getSporsmal().get(0);
+        assertThat(harSoktBostotteSporsmal.getTittel()).isEqualTo("inntekt.bostotte.sporsmal.sporsmal");
         assertThat(harSoktBostotteSporsmal.getErUtfylt()).isTrue();
         assertThat(harSoktBostotteSporsmal.getFelt()).hasSize(1);
         validateFeltMedSvar(harSoktBostotteSporsmal.getFelt().get(0), Type.CHECKBOX, SvarType.LOCALE_TEKST, "inntekt.bostotte.sporsmal.true");
@@ -186,6 +191,39 @@ class BostotteHusbankenTest {
     }
 
     @Test
+    void nullsafe_utbetaling_mottaker() {
+        var opplysninger = createOpplysninger(List.of(
+                createBekreftelse(BOSTOTTE, true),
+                createBekreftelse(BOSTOTTE_SAMTYKKE, true)
+        ));
+        opplysninger.setUtbetaling(List.of(
+                createUtbetaling(42.0, "2020-01-01")
+                        .withMottaker(null)
+        ));
+        opplysninger.setBostotte(new JsonBostotte());
+
+        var avsnitt = bostotteHusbanken.getAvsnitt(opplysninger, new JsonDriftsinformasjon());
+
+        assertThat(avsnitt.getSporsmal()).hasSize(4);
+
+        var harSoktBostotteSporsmal = avsnitt.getSporsmal().get(0);
+        assertThat(harSoktBostotteSporsmal.getTittel()).isEqualTo("inntekt.bostotte.sporsmal.sporsmal");
+
+        var bekreftelseTidspunktSporsmal = avsnitt.getSporsmal().get(1);
+        assertThat(bekreftelseTidspunktSporsmal.getTittel()).isEqualTo("inntekt.bostotte.har_gitt_samtykke");
+
+        var utbetalingerSporsmal = avsnitt.getSporsmal().get(2);
+        assertThat(utbetalingerSporsmal.getTittel()).isEqualTo("inntekt.bostotte.utbetaling");
+        assertThat(utbetalingerSporsmal.getFelt()).hasSize(1);
+        var utbetaling = utbetalingerSporsmal.getFelt().get(0);
+        assertThat(utbetaling.getType()).isEqualTo(Type.SYSTEMDATA_MAP);
+        assertThat(utbetaling.getLabelSvarMap().get("inntekt.bostotte.utbetaling.mottaker").getValue()).isEmpty();
+
+        var sakerSporsmal = avsnitt.getSporsmal().get(3);
+        assertThat(sakerSporsmal.getTittel()).isEqualTo("inntekt.bostotte.sak");
+    }
+
+    @Test
     void harSoktEllerMottattBostotteOgSamtykke_utenUtbetalinger_medSaker() {
         var opplysninger = createOpplysninger(List.of(
                 createBekreftelse(BOSTOTTE, true),
@@ -208,6 +246,7 @@ class BostotteHusbankenTest {
         assertThat(avsnitt.getSporsmal()).hasSize(4);
 
         var harSoktBostotteSporsmal = avsnitt.getSporsmal().get(0);
+        assertThat(harSoktBostotteSporsmal.getTittel()).isEqualTo("inntekt.bostotte.sporsmal.sporsmal");
         assertThat(harSoktBostotteSporsmal.getErUtfylt()).isTrue();
         assertThat(harSoktBostotteSporsmal.getFelt()).hasSize(1);
         validateFeltMedSvar(harSoktBostotteSporsmal.getFelt().get(0), Type.CHECKBOX, SvarType.LOCALE_TEKST, "inntekt.bostotte.sporsmal.true");
@@ -218,6 +257,7 @@ class BostotteHusbankenTest {
         validateFeltMedSvar(bekreftelseTidspunktSporsmal.getFelt().get(0), Type.TEKST, SvarType.TIDSPUNKT, "2018-10-04T13:37:00.134Z");
 
         var utbetalingerSporsmal = avsnitt.getSporsmal().get(2);
+        assertThat(utbetalingerSporsmal.getTittel()).isEqualTo("inntekt.bostotte.utbetaling");
         assertThat(utbetalingerSporsmal.getErUtfylt()).isTrue();
         assertThat(utbetalingerSporsmal.getFelt()).hasSize(1);
         validateFeltMedSvar(utbetalingerSporsmal.getFelt().get(0), Type.TEKST, SvarType.LOCALE_TEKST, "inntekt.bostotte.utbetalingerIkkefunnet");
