@@ -10,6 +10,7 @@ import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Sporsmal;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Svar;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.SvarType;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.oppsummering.dto.Type;
+import org.slf4j.Logger;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -23,8 +24,11 @@ import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.StegU
 import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.inntektformue.InntektFormueUtils.getBekreftelse;
 import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.inntektformue.InntektFormueUtils.harBekreftelse;
 import static no.nav.sosialhjelp.soknad.business.service.oppsummering.steg.inntektformue.InntektFormueUtils.harBekreftelseTrue;
+import static org.slf4j.LoggerFactory.getLogger;
 
 public class BostotteHusbanken {
+
+    private static final Logger log = getLogger(BostotteHusbanken.class);
 
     public Avsnitt getAvsnitt(JsonOkonomiopplysninger opplysninger, JsonDriftsinformasjon driftsinformasjon) {
         return new Avsnitt.Builder()
@@ -131,7 +135,10 @@ public class BostotteHusbanken {
                     .filter(utbetaling -> UTBETALING_HUSBANKEN.equals(utbetaling.getType()))
                     .forEach(utbetaling -> {
                                 var map = new LinkedHashMap<String, Svar>();
-                                map.put("inntekt.bostotte.utbetaling.mottaker", createSvar(utbetaling.getMottaker().value(), SvarType.TEKST));
+                                if (utbetaling.getMottaker() == null) {
+                                    log.warn("Utbetaling.mottaker er null?");
+                                }
+                                map.put("inntekt.bostotte.utbetaling.mottaker", createSvar(utbetaling.getMottaker() == null ? "" : utbetaling.getMottaker().value(), SvarType.TEKST));
                                 map.put("inntekt.bostotte.utbetaling.utbetalingsdato", createSvar(utbetaling.getUtbetalingsdato(), SvarType.DATO));
                                 map.put("inntekt.bostotte.utbetaling.belop", createSvar(utbetaling.getNetto().toString(), SvarType.TEKST));
 
