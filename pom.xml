@@ -89,7 +89,7 @@
         <aspectjweaver.version>1.9.7</aspectjweaver.version>
         <jaxb-runtime.version>2.3.4</jaxb-runtime.version>
         <lettuce.version>6.0.8.RELEASE</lettuce.version>
-        <unleash.version>3.3.4</unleash.version>
+        <unleash.version>4.2.1</unleash.version>
         <resilience4j.version>1.7.1</resilience4j.version>
         <reactor-core.version>3.4.10</reactor-core.version>
         <reactor-netty-http.version>1.0.11</reactor-netty-http.version>
