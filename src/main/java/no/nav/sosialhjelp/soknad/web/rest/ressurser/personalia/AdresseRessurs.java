@@ -9,6 +9,8 @@ import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.Sokn
 import no.nav.sosialhjelp.soknad.business.service.systemdata.AdresseSystemdata;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
+import no.nav.sosialhjelp.soknad.navenhet.NavEnhetRessurs;
+import no.nav.sosialhjelp.soknad.navenhet.dto.NavEnhetFrontend;
 import no.nav.sosialhjelp.soknad.web.rest.mappers.AdresseMapper;
 import no.nav.sosialhjelp.soknad.web.sikkerhet.Tilgangskontroll;
 import org.springframework.stereotype.Controller;
@@ -38,7 +40,12 @@ public class AdresseRessurs {
     private final SoknadUnderArbeidRepository soknadUnderArbeidRepository;
     private final NavEnhetRessurs navEnhetRessurs;
 
-    public AdresseRessurs(Tilgangskontroll tilgangskontroll, AdresseSystemdata adresseSystemdata, SoknadUnderArbeidRepository soknadUnderArbeidRepository, NavEnhetRessurs navEnhetRessurs) {
+    public AdresseRessurs(
+            Tilgangskontroll tilgangskontroll,
+            AdresseSystemdata adresseSystemdata,
+            SoknadUnderArbeidRepository soknadUnderArbeidRepository,
+            NavEnhetRessurs navEnhetRessurs
+    ) {
         this.tilgangskontroll = tilgangskontroll;
         this.adresseSystemdata = adresseSystemdata;
         this.soknadUnderArbeidRepository = soknadUnderArbeidRepository;
@@ -63,7 +70,7 @@ public class AdresseRessurs {
     }
 
     @PUT
-    public List<NavEnhetRessurs.NavEnhetFrontend> updateAdresse(@PathParam("behandlingsId") String behandlingsId, AdresserFrontend adresserFrontend) {
+    public List<NavEnhetFrontend> updateAdresse(@PathParam("behandlingsId") String behandlingsId, AdresserFrontend adresserFrontend) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId);
         String eier = SubjectHandler.getUserId();
         SoknadUnderArbeid soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
