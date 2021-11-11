@@ -65,8 +65,7 @@ public class ArbeidsforholdConsumerImpl implements ArbeidsforholdConsumer {
     public List<ArbeidsforholdDto> finnArbeidsforholdForArbeidstaker(String fodselsnummer) {
         Invocation.Builder request = lagRequest(endpoint + "v1/arbeidstaker/arbeidsforhold", fodselsnummer);
         try {
-            return request.get(new GenericType<List<ArbeidsforholdDto>>() {
-            });
+            return request.get(new GenericType<List<ArbeidsforholdDto>>() {});
         } catch (BadRequestException e) {
             log.warn("Aareg.api - 400 Bad Request - Ugyldig(e) parameter(e) i request", e);
             return null;
