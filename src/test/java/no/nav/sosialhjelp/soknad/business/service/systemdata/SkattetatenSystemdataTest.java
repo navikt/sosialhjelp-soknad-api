@@ -9,11 +9,13 @@ import no.nav.sosialhjelp.soknad.consumer.skatt.SkattbarInntektService;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.domain.model.utbetaling.Utbetaling;
 import no.nav.sosialhjelp.soknad.organisasjon.OrganisasjonService;
+import no.nav.sosialhjelp.soknad.skattbarinntekt.SkattbarInntektServiceNy;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -29,7 +31,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
-@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 class SkattetatenSystemdataTest {
     private static final String EIER = "12345678901";
 
@@ -107,6 +109,9 @@ class SkattetatenSystemdataTest {
     }
 
     @Mock
+    private SkattbarInntektServiceNy skattbarInntektServiceNy;
+
+    @Mock
     private OrganisasjonService organisasjonService;
 
     @Mock
@@ -114,6 +119,11 @@ class SkattetatenSystemdataTest {
 
     @InjectMocks
     private SkattetatenSystemdata skattetatenSystemdata;
+
+    @BeforeEach
+    void setUp() {
+        when(skattbarInntektServiceNy.hentUtbetalinger(anyString())).thenReturn(null);
+    }
 
     @Test
     void skalOppdatereUtbetalinger() {

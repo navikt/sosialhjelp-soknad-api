@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.client.skatteetaten.dto
+package no.nav.sosialhjelp.soknad.skattbarinntekt.dto
 
 import java.time.LocalDate
 

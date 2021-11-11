@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.client.skatteetaten
+package no.nav.sosialhjelp.soknad.skattbarinntekt
 
 import no.nav.sosialhjelp.metrics.MetricsFactory.createTimerProxy
 import no.nav.sosialhjelp.soknad.client.maskinporten.MaskinportenClient
@@ -11,11 +11,16 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.web.reactive.function.client.WebClient
 
 @Configuration
-open class SkatteetatenClientConfig(
+open class SkattbarInntektConfig(
     private val proxiedWebClientBuilder: WebClient.Builder,
     @Value("\${skatteetaten_api_baseurl}") private val baseurl: String,
     private val maskinportenClient: MaskinportenClient
 ) {
+
+    @Bean
+    open fun skattbarInntektServiceNy(skatteetatenClient: SkatteetatenClient): SkattbarInntektServiceNy {
+        return SkattbarInntektServiceNy(skatteetatenClient)
+    }
 
     @Bean
     open fun skatteetatenClient(): SkatteetatenClient {
