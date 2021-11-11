@@ -38,7 +38,7 @@ import no.nav.sosialhjelp.soknad.oppslag.OppslagRestConfig;
 import no.nav.sosialhjelp.soknad.oppslag.kontonummer.KontonummerService;
 import no.nav.sosialhjelp.soknad.oppslag.utbetaling.UtbetalingService;
 import no.nav.sosialhjelp.soknad.organisasjon.OrganisasjonConfig;
-import no.nav.sosialhjelp.soknad.skattbarinntekt.SkatteetatenClientConfig;
+import no.nav.sosialhjelp.soknad.skattbarinntekt.SkattbarInntektConfig;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
@@ -52,7 +52,7 @@ import org.springframework.context.annotation.Import;
         IdPortenClientConfigMockAlt.class,
         IdPortenServiceImpl.class,
         MaskinportenClientConfig.class,
-        SkatteetatenClientConfig.class,
+        SkattbarInntektConfig.class,
         HusbankenClientConfig.class,
         OrganisasjonConfig.class,
         DkifConfig.class,

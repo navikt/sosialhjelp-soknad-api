@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.web.reactive.function.client.WebClient
 
 @Configuration
-open class SkatteetatenClientConfig(
+open class SkattbarInntektConfig(
     private val proxiedWebClientBuilder: WebClient.Builder,
     @Value("\${skatteetaten_api_baseurl}") private val baseurl: String,
     private val maskinportenClient: MaskinportenClient
