@@ -6,14 +6,13 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysn
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetalingKomponent;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOrganisasjon;
 import no.nav.sosialhjelp.soknad.business.service.TextService;
-import no.nav.sosialhjelp.soknad.consumer.organisasjon.OrganisasjonService;
 import no.nav.sosialhjelp.soknad.consumer.skatt.SkattbarInntektService;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.domain.model.utbetaling.Utbetaling;
+import no.nav.sosialhjelp.soknad.organisasjon.OrganisasjonService;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
-import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -31,14 +30,19 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class SkattetatenSystemdata {
     public static final Logger log = getLogger(SkattetatenSystemdata.class);
 
-    @Inject
-    private SkattbarInntektService skattbarInntektService;
+    private final SkattbarInntektService skattbarInntektService;
+    private final OrganisasjonService organisasjonService;
+    private final TextService textService;
 
-    @Inject
-    private OrganisasjonService organisasjonService;
-
-    @Inject
-    private TextService textService;
+    public SkattetatenSystemdata(
+            SkattbarInntektService skattbarInntektService,
+            OrganisasjonService organisasjonService,
+            TextService textService
+    ) {
+        this.skattbarInntektService = skattbarInntektService;
+        this.organisasjonService = organisasjonService;
+        this.textService = textService;
+    }
 
     public void updateSystemdataIn(SoknadUnderArbeid soknadUnderArbeid) {
         JsonData jsonData = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData();

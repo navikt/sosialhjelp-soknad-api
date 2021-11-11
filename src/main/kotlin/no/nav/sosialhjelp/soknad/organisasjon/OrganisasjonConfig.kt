@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.client.organisasjon
+package no.nav.sosialhjelp.soknad.organisasjon
 
 import no.nav.sosialhjelp.soknad.consumer.common.rest.RestUtils
 import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants
@@ -16,6 +16,11 @@ import javax.ws.rs.client.ClientRequestFilter
 open class OrganisasjonConfig(
     @Value("\${ereg_api_baseurl}") private val baseurl: String
 ) {
+
+    @Bean
+    open fun organisasjonService(organisasjonClient: OrganisasjonClient): OrganisasjonService {
+        return OrganisasjonService(organisasjonClient)
+    }
 
     @Bean
     open fun organisasjonClient(): OrganisasjonClient {

@@ -4,13 +4,12 @@ import no.nav.sosialhjelp.soknad.consumer.arbeidsforhold.dto.ArbeidsforholdDto;
 import no.nav.sosialhjelp.soknad.consumer.arbeidsforhold.dto.OrganisasjonDto;
 import no.nav.sosialhjelp.soknad.consumer.arbeidsforhold.dto.PeriodeDto;
 import no.nav.sosialhjelp.soknad.consumer.arbeidsforhold.dto.PersonDto;
-import no.nav.sosialhjelp.soknad.consumer.organisasjon.OrganisasjonService;
 import no.nav.sosialhjelp.soknad.domain.model.Arbeidsforhold;
+import no.nav.sosialhjelp.soknad.organisasjon.OrganisasjonService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import javax.inject.Inject;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,11 +20,13 @@ public class ArbeidsforholdService {
 
     private static final Logger log = LoggerFactory.getLogger(ArbeidsforholdService.class);
 
-    @Inject
-    private ArbeidsforholdConsumer arbeidsforholdConsumer;
+    private final ArbeidsforholdConsumer arbeidsforholdConsumer;
+    private final OrganisasjonService organisasjonService;
 
-    @Inject
-    private OrganisasjonService organisasjonService;
+    public ArbeidsforholdService(ArbeidsforholdConsumer arbeidsforholdConsumer, OrganisasjonService organisasjonService) {
+        this.arbeidsforholdConsumer = arbeidsforholdConsumer;
+        this.organisasjonService = organisasjonService;
+    }
 
     public List<Arbeidsforhold> hentArbeidsforhold(String fnr) {
         var arbeidsforholdDtos = arbeidsforholdConsumer.finnArbeidsforholdForArbeidstaker(fnr);
