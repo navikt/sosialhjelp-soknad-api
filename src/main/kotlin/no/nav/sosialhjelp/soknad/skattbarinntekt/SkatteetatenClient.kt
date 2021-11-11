@@ -1,11 +1,11 @@
-package no.nav.sosialhjelp.soknad.client.skatteetaten
+package no.nav.sosialhjelp.soknad.skattbarinntekt
 
 import no.nav.sosialhjelp.soknad.client.maskinporten.MaskinportenClient
-import no.nav.sosialhjelp.soknad.client.skatteetaten.dto.SkattbarInntekt
-import no.nav.sosialhjelp.soknad.client.skatteetaten.dto.Sokedata
 import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.BEARER
 import no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils
 import no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils.maskerFnr
+import no.nav.sosialhjelp.soknad.skattbarinntekt.dto.SkattbarInntekt
+import no.nav.sosialhjelp.soknad.skattbarinntekt.dto.Sokedata
 import org.slf4j.LoggerFactory.getLogger
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType

@@ -4,8 +4,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.mockk.every
 import io.mockk.mockk
-import no.nav.sosialhjelp.soknad.client.skatteetaten.SkatteetatenClient
-import no.nav.sosialhjelp.soknad.client.skatteetaten.dto.SkattbarInntekt
+import no.nav.sosialhjelp.soknad.skattbarinntekt.dto.SkattbarInntekt
 import org.apache.commons.io.IOUtils
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test

@@ -1,8 +1,7 @@
-package no.nav.sosialhjelp.soknad.client.skatteetaten
+package no.nav.sosialhjelp.soknad.skattbarinntekt
 
 import no.nav.sosialhjelp.metrics.MetricsFactory.createTimerProxy
 import no.nav.sosialhjelp.soknad.client.maskinporten.MaskinportenClient
-import no.nav.sosialhjelp.soknad.skattbarinntekt.SkattbarInntektServiceNy
 import no.nav.sosialhjelp.soknad.web.selftest.Pingable
 import no.nav.sosialhjelp.soknad.web.selftest.Pingable.Ping
 import no.nav.sosialhjelp.soknad.web.selftest.Pingable.Ping.PingMetadata

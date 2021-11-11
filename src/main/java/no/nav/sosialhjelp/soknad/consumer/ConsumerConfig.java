@@ -11,7 +11,6 @@ import no.nav.sosialhjelp.soknad.client.idporten.IdPortenClientConfigMockAlt;
 import no.nav.sosialhjelp.soknad.client.idporten.IdPortenServiceImpl;
 import no.nav.sosialhjelp.soknad.client.leaderelection.LeaderElectionConfig;
 import no.nav.sosialhjelp.soknad.client.maskinporten.MaskinportenClientConfig;
-import no.nav.sosialhjelp.soknad.client.skatteetaten.SkatteetatenClientConfig;
 import no.nav.sosialhjelp.soknad.client.virusscan.VirusScanConfig;
 import no.nav.sosialhjelp.soknad.consumer.fiks.DokumentKrypterer;
 import no.nav.sosialhjelp.soknad.consumer.kodeverk.KodeverkService;
@@ -39,6 +38,7 @@ import no.nav.sosialhjelp.soknad.oppslag.OppslagRestConfig;
 import no.nav.sosialhjelp.soknad.oppslag.kontonummer.KontonummerService;
 import no.nav.sosialhjelp.soknad.oppslag.utbetaling.UtbetalingService;
 import no.nav.sosialhjelp.soknad.organisasjon.OrganisasjonConfig;
+import no.nav.sosialhjelp.soknad.skattbarinntekt.SkatteetatenClientConfig;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 

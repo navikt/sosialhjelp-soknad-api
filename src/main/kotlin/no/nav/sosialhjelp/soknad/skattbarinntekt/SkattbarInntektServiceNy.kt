@@ -1,10 +1,9 @@
 package no.nav.sosialhjelp.soknad.skattbarinntekt
 
-import no.nav.sosialhjelp.soknad.client.skatteetaten.SkatteetatenClient
-import no.nav.sosialhjelp.soknad.client.skatteetaten.dto.getForskuddstrekk
-import no.nav.sosialhjelp.soknad.client.skatteetaten.dto.grupperOgSummerEtterUtbetalingsStartDato
-import no.nav.sosialhjelp.soknad.client.skatteetaten.dto.mapToUtbetalinger
 import no.nav.sosialhjelp.soknad.skattbarinntekt.domain.Utbetaling
+import no.nav.sosialhjelp.soknad.skattbarinntekt.dto.getForskuddstrekk
+import no.nav.sosialhjelp.soknad.skattbarinntekt.dto.grupperOgSummerEtterUtbetalingsStartDato
+import no.nav.sosialhjelp.soknad.skattbarinntekt.dto.mapToUtbetalinger
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
