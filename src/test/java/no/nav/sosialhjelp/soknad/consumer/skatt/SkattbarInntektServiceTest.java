@@ -2,6 +2,7 @@ package no.nav.sosialhjelp.soknad.consumer.skatt;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.module.kotlin.KotlinModule;
 import no.nav.sosialhjelp.soknad.client.skatteetaten.SkatteetatenClient;
 import no.nav.sosialhjelp.soknad.client.skatteetaten.dto.SkattbarInntekt;
 import no.nav.sosialhjelp.soknad.domain.model.utbetaling.Utbetaling;
@@ -64,7 +65,6 @@ class SkattbarInntektServiceTest {
         assertThat(utbetalinger.stream().collect(Collectors.groupingBy(o -> o.orgnummer)).entrySet()).hasSize(2);
     }
 
-
     private SkattbarInntekt readResponseFromPath(String path) {
         try {
             InputStream resourceAsStream = this.getClass().getResourceAsStream(path);
@@ -72,7 +72,10 @@ class SkattbarInntektServiceTest {
                 return null;
             }
             String json = IOUtils.toString(resourceAsStream, StandardCharsets.UTF_8);
-            return new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false).readValue(json, SkattbarInntekt.class);
+            return new ObjectMapper()
+                    .registerModule(new KotlinModule())
+                    .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+                    .readValue(json, SkattbarInntekt.class);
         } catch (IOException e) {
             return null;
         }
