@@ -5,8 +5,8 @@ data class SkattbarInntekt(
 )
 
 data class OppgaveInntektsmottaker(
-    val kalendermaaned: String? = null,
-    val opplysningspliktigId: String? = null,
+    val kalendermaaned: String,
+    val opplysningspliktigId: String,
     val inntekt: List<Inntekt> = ArrayList(),
     val forskuddstrekk: List<Forskuddstrekk> = ArrayList()
 )
