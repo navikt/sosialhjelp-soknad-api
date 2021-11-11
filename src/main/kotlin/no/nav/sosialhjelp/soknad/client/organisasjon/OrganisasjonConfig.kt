@@ -2,6 +2,7 @@ package no.nav.sosialhjelp.soknad.client.organisasjon
 
 import no.nav.sosialhjelp.soknad.consumer.common.rest.RestUtils
 import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants
+import no.nav.sosialhjelp.soknad.organisasjon.OrganisasjonService
 import no.nav.sosialhjelp.soknad.web.selftest.Pingable
 import no.nav.sosialhjelp.soknad.web.selftest.Pingable.Ping
 import no.nav.sosialhjelp.soknad.web.selftest.Pingable.Ping.PingMetadata
@@ -16,6 +17,11 @@ import javax.ws.rs.client.ClientRequestFilter
 open class OrganisasjonConfig(
     @Value("\${ereg_api_baseurl}") private val baseurl: String
 ) {
+
+    @Bean
+    open fun organisasjonService(organisasjonClient: OrganisasjonClient): OrganisasjonService {
+        return OrganisasjonService(organisasjonClient)
+    }
 
     @Bean
     open fun organisasjonClient(): OrganisasjonClient {

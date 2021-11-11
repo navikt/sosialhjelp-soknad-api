@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.business.service.systemdata;
 
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOrganisasjon;
-import no.nav.sosialhjelp.soknad.consumer.organisasjon.OrganisasjonService;
+import no.nav.sosialhjelp.soknad.organisasjon.OrganisasjonService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

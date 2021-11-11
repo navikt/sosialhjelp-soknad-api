@@ -16,7 +16,6 @@ import no.nav.sosialhjelp.soknad.client.skatteetaten.SkatteetatenClientConfig;
 import no.nav.sosialhjelp.soknad.client.virusscan.VirusScanConfig;
 import no.nav.sosialhjelp.soknad.consumer.fiks.DokumentKrypterer;
 import no.nav.sosialhjelp.soknad.consumer.kodeverk.KodeverkService;
-import no.nav.sosialhjelp.soknad.consumer.organisasjon.OrganisasjonService;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.PdlAdresseSokService;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.bydel.BydelConfig;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.bydel.BydelService;
@@ -67,7 +66,6 @@ import org.springframework.context.annotation.Import;
         ConsumerConfig.WsServices.class,
         DokumentKrypterer.class,
         SkattbarInntektService.class,
-        OrganisasjonService.class,
         KodeverkService.class,
         KontonummerService.class,
         UtbetalingService.class,
