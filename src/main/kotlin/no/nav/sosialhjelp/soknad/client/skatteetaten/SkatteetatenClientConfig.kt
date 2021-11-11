@@ -2,6 +2,7 @@ package no.nav.sosialhjelp.soknad.client.skatteetaten
 
 import no.nav.sosialhjelp.metrics.MetricsFactory.createTimerProxy
 import no.nav.sosialhjelp.soknad.client.maskinporten.MaskinportenClient
+import no.nav.sosialhjelp.soknad.skattbarinntekt.SkattbarInntektServiceNy
 import no.nav.sosialhjelp.soknad.web.selftest.Pingable
 import no.nav.sosialhjelp.soknad.web.selftest.Pingable.Ping
 import no.nav.sosialhjelp.soknad.web.selftest.Pingable.Ping.PingMetadata
@@ -16,6 +17,11 @@ open class SkatteetatenClientConfig(
     @Value("\${skatteetaten_api_baseurl}") private val baseurl: String,
     private val maskinportenClient: MaskinportenClient
 ) {
+
+    @Bean
+    open fun skattbarInntektServiceNy(skatteetatenClient: SkatteetatenClient): SkattbarInntektServiceNy {
+        return SkattbarInntektServiceNy(skatteetatenClient)
+    }
 
     @Bean
     open fun skatteetatenClient(): SkatteetatenClient {
