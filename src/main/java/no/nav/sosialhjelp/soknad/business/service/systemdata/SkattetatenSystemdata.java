@@ -87,7 +87,8 @@ public class SkattetatenSystemdata {
             var utbetalingList = skattbarInntektServiceNy.hentUtbetalinger(personIdentifikator);
             if (utbetalingList != null) {
                 utbetalingList.stream()
-                        .map(this::mapToJsonOkonomiOpplysningUtbetaling).collect(Collectors.toList());
+                        .map(this::mapToJsonOkonomiOpplysningUtbetaling)
+                        .collect(Collectors.toList());
             }
         } catch (Exception e) {
             log.warn("Noe feilet ved innhenting av skattbar inntekt med ny SkattbarInntektService", e);
