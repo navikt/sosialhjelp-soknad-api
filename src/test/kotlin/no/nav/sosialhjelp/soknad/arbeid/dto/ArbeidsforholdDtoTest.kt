@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.client.arbeidsforhold.dto
+package no.nav.sosialhjelp.soknad.arbeid.dto
 
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
