@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.client.organisasjon.dto
+package no.nav.sosialhjelp.soknad.organisasjon.dto
 
 data class OrganisasjonNoekkelinfoDto(
     val navn: NavnDto,

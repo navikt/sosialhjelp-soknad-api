@@ -2,9 +2,8 @@ package no.nav.sosialhjelp.soknad.organisasjon
 
 import io.mockk.every
 import io.mockk.mockk
-import no.nav.sosialhjelp.soknad.client.organisasjon.OrganisasjonClient
-import no.nav.sosialhjelp.soknad.client.organisasjon.dto.NavnDto
-import no.nav.sosialhjelp.soknad.client.organisasjon.dto.OrganisasjonNoekkelinfoDto
+import no.nav.sosialhjelp.soknad.organisasjon.dto.NavnDto
+import no.nav.sosialhjelp.soknad.organisasjon.dto.OrganisasjonNoekkelinfoDto
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 

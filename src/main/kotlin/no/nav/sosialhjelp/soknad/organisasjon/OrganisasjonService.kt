@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.organisasjon
 
-import no.nav.sosialhjelp.soknad.client.organisasjon.OrganisasjonClient
 import org.slf4j.LoggerFactory
 
 open class OrganisasjonService(

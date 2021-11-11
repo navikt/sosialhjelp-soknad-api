@@ -1,10 +1,10 @@
-package no.nav.sosialhjelp.soknad.client.organisasjon
+package no.nav.sosialhjelp.soknad.organisasjon
 
-import no.nav.sosialhjelp.soknad.client.organisasjon.dto.OrganisasjonNoekkelinfoDto
 import no.nav.sosialhjelp.soknad.consumer.exceptions.TjenesteUtilgjengeligException
 import no.nav.sosialhjelp.soknad.consumer.mdc.MDCOperations
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler
 import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants
+import no.nav.sosialhjelp.soknad.organisasjon.dto.OrganisasjonNoekkelinfoDto
 import org.slf4j.LoggerFactory.getLogger
 import javax.ws.rs.BadRequestException
 import javax.ws.rs.NotFoundException
