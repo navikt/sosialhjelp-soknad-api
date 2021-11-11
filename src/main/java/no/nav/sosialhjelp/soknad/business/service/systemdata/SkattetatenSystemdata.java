@@ -10,10 +10,12 @@ import no.nav.sosialhjelp.soknad.consumer.skatt.SkattbarInntektService;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.domain.model.utbetaling.Utbetaling;
 import no.nav.sosialhjelp.soknad.organisasjon.OrganisasjonService;
+import no.nav.sosialhjelp.soknad.skattbarinntekt.SkattbarInntektServiceNy;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,15 +33,18 @@ public class SkattetatenSystemdata {
     public static final Logger log = getLogger(SkattetatenSystemdata.class);
 
     private final SkattbarInntektService skattbarInntektService;
+    private final SkattbarInntektServiceNy skattbarInntektServiceNy;
     private final OrganisasjonService organisasjonService;
     private final TextService textService;
 
     public SkattetatenSystemdata(
             SkattbarInntektService skattbarInntektService,
+            SkattbarInntektServiceNy skattbarInntektServiceNy,
             OrganisasjonService organisasjonService,
             TextService textService
     ) {
         this.skattbarInntektService = skattbarInntektService;
+        this.skattbarInntektServiceNy = skattbarInntektServiceNy;
         this.organisasjonService = organisasjonService;
         this.textService = textService;
     }
@@ -77,6 +82,17 @@ public class SkattetatenSystemdata {
 
     private List<JsonOkonomiOpplysningUtbetaling> innhentSkattbarSystemregistrertInntekt(String personIdentifikator) {
         List<Utbetaling> utbetalinger = skattbarInntektService.hentUtbetalinger(personIdentifikator);
+
+        try {
+            var utbetalingList = skattbarInntektServiceNy.hentUtbetalinger(personIdentifikator);
+            if (utbetalingList != null) {
+                utbetalingList.stream()
+                        .map(this::mapToJsonOkonomiOpplysningUtbetaling)
+                        .collect(Collectors.toList());
+            }
+        } catch (Exception e) {
+            log.warn("Noe feilet ved innhenting av skattbar inntekt med ny SkattbarInntektService", e);
+        }
 
         if (utbetalinger == null) {
             return null;
@@ -148,5 +164,23 @@ public class SkattetatenSystemdata {
         s = s.replace(",", ".");
         s = s.replace("\u00A0", "");
         return parseDouble(deleteWhitespace(s));
+    }
+
+    private JsonOkonomiOpplysningUtbetaling mapToJsonOkonomiOpplysningUtbetaling(no.nav.sosialhjelp.soknad.skattbarinntekt.domain.Utbetaling utbetaling) {
+        return new JsonOkonomiOpplysningUtbetaling()
+                .withKilde(JsonKilde.SYSTEM)
+                .withType(no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_SKATTEETATEN)
+                .withTittel(utbetaling.getTittel())
+                .withBelop(null)
+                .withNetto(null)
+                .withBrutto(utbetaling.getBrutto())
+                .withSkattetrekk(utbetaling.getSkattetrekk())
+                .withOrganisasjon(mapToJsonOrganisasjon(utbetaling.getOrgnummer()))
+                .withAndreTrekk(null)
+                .withPeriodeFom(utbetaling.getPeriodeFom() != null ? utbetaling.getPeriodeFom().toString() : null)
+                .withPeriodeTom(utbetaling.getPeriodeTom() != null ? utbetaling.getPeriodeTom().toString() : null)
+                .withUtbetalingsdato(null)
+                .withKomponenter(Collections.emptyList())
+                .withOverstyrtAvBruker(false);
     }
 }

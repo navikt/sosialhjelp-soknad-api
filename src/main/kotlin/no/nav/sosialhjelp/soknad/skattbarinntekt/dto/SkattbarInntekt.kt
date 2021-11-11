@@ -1,12 +1,12 @@
-package no.nav.sosialhjelp.soknad.client.skatteetaten.dto
+package no.nav.sosialhjelp.soknad.skattbarinntekt.dto
 
 data class SkattbarInntekt(
     val oppgaveInntektsmottaker: List<OppgaveInntektsmottaker> = java.util.ArrayList()
 )
 
 data class OppgaveInntektsmottaker(
-    val kalendermaaned: String? = null,
-    val opplysningspliktigId: String? = null,
+    val kalendermaaned: String,
+    val opplysningspliktigId: String,
     val inntekt: List<Inntekt> = ArrayList(),
     val forskuddstrekk: List<Forskuddstrekk> = ArrayList()
 )

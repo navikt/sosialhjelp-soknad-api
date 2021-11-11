@@ -1,10 +1,10 @@
 package no.nav.sosialhjelp.soknad.consumer.skatt;
 
-import no.nav.sosialhjelp.soknad.client.skatteetaten.SkatteetatenClient;
-import no.nav.sosialhjelp.soknad.client.skatteetaten.dto.Inntekt;
-import no.nav.sosialhjelp.soknad.client.skatteetaten.dto.OppgaveInntektsmottaker;
-import no.nav.sosialhjelp.soknad.client.skatteetaten.dto.SkattbarInntekt;
 import no.nav.sosialhjelp.soknad.domain.model.utbetaling.Utbetaling;
+import no.nav.sosialhjelp.soknad.skattbarinntekt.SkatteetatenClient;
+import no.nav.sosialhjelp.soknad.skattbarinntekt.dto.Inntekt;
+import no.nav.sosialhjelp.soknad.skattbarinntekt.dto.OppgaveInntektsmottaker;
+import no.nav.sosialhjelp.soknad.skattbarinntekt.dto.SkattbarInntekt;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
