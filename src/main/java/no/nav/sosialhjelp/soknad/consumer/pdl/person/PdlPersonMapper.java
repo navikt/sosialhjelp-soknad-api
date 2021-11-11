@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.consumer.pdl.person;
 
 import com.google.common.collect.ImmutableMap;
-import no.nav.sosialhjelp.soknad.consumer.kodeverk.KodeverkService;
+import no.nav.sosialhjelp.soknad.client.kodeverk.KodeverkService;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.AdressebeskyttelseDto;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.AdressebeskyttelseDto.Gradering;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.BostedsadresseDto;

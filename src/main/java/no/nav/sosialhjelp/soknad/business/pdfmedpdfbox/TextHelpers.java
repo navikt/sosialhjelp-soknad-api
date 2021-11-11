@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.business.pdfmedpdfbox;
 
-import no.nav.sosialhjelp.soknad.consumer.kodeverk.KodeverkService;
+import no.nav.sosialhjelp.soknad.client.kodeverk.KodeverkService;
 import no.nav.sosialhjelp.soknad.tekster.NavMessageSource;
 import org.springframework.stereotype.Component;
 

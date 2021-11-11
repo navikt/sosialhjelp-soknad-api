@@ -9,12 +9,12 @@ import no.nav.sosialhjelp.soknad.client.husbanken.HusbankenClientConfig;
 import no.nav.sosialhjelp.soknad.client.idporten.IdPortenClientConfig;
 import no.nav.sosialhjelp.soknad.client.idporten.IdPortenClientConfigMockAlt;
 import no.nav.sosialhjelp.soknad.client.idporten.IdPortenServiceImpl;
+import no.nav.sosialhjelp.soknad.client.kodeverk.KodeverkConfig;
 import no.nav.sosialhjelp.soknad.client.leaderelection.LeaderElectionConfig;
 import no.nav.sosialhjelp.soknad.client.maskinporten.MaskinportenClientConfig;
 import no.nav.sosialhjelp.soknad.client.skatteetaten.SkatteetatenClientConfig;
 import no.nav.sosialhjelp.soknad.client.virusscan.VirusScanConfig;
 import no.nav.sosialhjelp.soknad.consumer.fiks.DokumentKrypterer;
-import no.nav.sosialhjelp.soknad.consumer.kodeverk.KodeverkService;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.PdlAdresseSokService;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.bydel.BydelConfig;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.bydel.BydelService;
@@ -25,7 +25,6 @@ import no.nav.sosialhjelp.soknad.consumer.redis.NoRedisConfig;
 import no.nav.sosialhjelp.soknad.consumer.redis.RedisConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.ArbeidsforholdRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.DigisosApiRestConfig;
-import no.nav.sosialhjelp.soknad.consumer.restconfig.KodeverkRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.PdlAdresseSokRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.PdlGeografiskTilknytningRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.PdlHentPersonRestConfig;
@@ -57,6 +56,7 @@ import org.springframework.context.annotation.Import;
         OrganisasjonConfig.class,
         DkifConfig.class,
         NavEnhetConfig.class,
+        KodeverkConfig.class,
         RedisConfig.class,
         NoRedisConfig.class,
         PersonService.class,
@@ -66,7 +66,6 @@ import org.springframework.context.annotation.Import;
         ConsumerConfig.WsServices.class,
         DokumentKrypterer.class,
         SkattbarInntektService.class,
-        KodeverkService.class,
         KontonummerService.class,
         UtbetalingService.class,
         BydelConfig.class,
@@ -86,7 +85,6 @@ public class ConsumerConfig {
             DigisosApiRestConfig.class,
             ArbeidsforholdRestConfig.class,
             STSTokenRestConfig.class,
-            KodeverkRestConfig.class,
             UnleashRestConfig.class,
             OppslagRestConfig.class,
             SvarUtRestConfig.class
