@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.consumer;
 
+import no.nav.sosialhjelp.soknad.arbeid.ArbeidsforholdConfig;
 import no.nav.sosialhjelp.soknad.client.config.MockProxiedWebClientConfig;
 import no.nav.sosialhjelp.soknad.client.config.NonProxiedWebClientConfig;
 import no.nav.sosialhjelp.soknad.client.config.ProxiedWebClientConfig;
@@ -22,7 +23,6 @@ import no.nav.sosialhjelp.soknad.consumer.pdl.person.PdlPersonMapper;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.PersonService;
 import no.nav.sosialhjelp.soknad.consumer.redis.NoRedisConfig;
 import no.nav.sosialhjelp.soknad.consumer.redis.RedisConfig;
-import no.nav.sosialhjelp.soknad.consumer.restconfig.ArbeidsforholdRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.DigisosApiRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.KodeverkRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.PdlAdresseSokRestConfig;
@@ -55,6 +55,7 @@ import org.springframework.context.annotation.Import;
         SkattbarInntektConfig.class,
         HusbankenClientConfig.class,
         OrganisasjonConfig.class,
+        ArbeidsforholdConfig.class,
         DkifConfig.class,
         NavEnhetConfig.class,
         RedisConfig.class,
@@ -84,7 +85,7 @@ public class ConsumerConfig {
             PdlAdresseSokRestConfig.class,
             PdlGeografiskTilknytningRestConfig.class,
             DigisosApiRestConfig.class,
-            ArbeidsforholdRestConfig.class,
+//            ArbeidsforholdRestConfig.class,
             STSTokenRestConfig.class,
             KodeverkRestConfig.class,
             UnleashRestConfig.class,

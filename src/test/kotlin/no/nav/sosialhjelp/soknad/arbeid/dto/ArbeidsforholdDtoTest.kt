@@ -31,6 +31,5 @@ internal class ArbeidsforholdDtoTest {
         assertThat(dto.arbeidsforholdId).isEqualTo("abc-321")
         assertThat(dto.arbeidsgiver).isExactlyInstanceOf(OrganisasjonDto::class.java)
         assertThat(dto.arbeidstaker.offentligIdent).isEqualTo("31126700000")
-        assertThat(dto.navArbeidsforholdId).isEqualTo(123456L)
     }
 }

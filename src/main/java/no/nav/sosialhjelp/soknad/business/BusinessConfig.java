@@ -21,7 +21,6 @@ import no.nav.sosialhjelp.soknad.business.service.systemdata.SkattetatenSystemda
 import no.nav.sosialhjelp.soknad.business.service.systemdata.TelefonnummerSystemdata;
 import no.nav.sosialhjelp.soknad.business.service.systemdata.UtbetalingerFraNavSystemdata;
 import no.nav.sosialhjelp.soknad.consumer.ConsumerConfig;
-import no.nav.sosialhjelp.soknad.consumer.arbeidsforhold.ArbeidsforholdService;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
@@ -32,7 +31,7 @@ import org.springframework.context.annotation.Import;
         DbConfig.class,
         ConsumerConfig.class,
         ServiceConfig.class,
-        ArbeidsforholdService.class,
+//        ArbeidsforholdService.class,
         OppgaveHandtererImpl.class,
         AvbrytAutomatiskSheduler.class,
         SlettSoknadUnderArbeidScheduler.class,

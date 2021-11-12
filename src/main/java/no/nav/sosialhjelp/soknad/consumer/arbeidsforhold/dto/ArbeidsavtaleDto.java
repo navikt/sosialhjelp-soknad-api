@@ -1,20 +1,20 @@
-package no.nav.sosialhjelp.soknad.consumer.arbeidsforhold.dto;
-
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class ArbeidsavtaleDto {
-
-    private final double stillingsprosent;
-
-    @JsonCreator
-    public ArbeidsavtaleDto(@JsonProperty("stillingsprosent") double stillingsprosent) {
-        this.stillingsprosent = stillingsprosent;
-    }
-
-    public double getStillingsprosent() {
-        return stillingsprosent;
-    }
-}
+//package no.nav.sosialhjelp.soknad.consumer.arbeidsforhold.dto;
+//
+//import com.fasterxml.jackson.annotation.JsonCreator;
+//import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+//import com.fasterxml.jackson.annotation.JsonProperty;
+//
+//@JsonIgnoreProperties(ignoreUnknown = true)
+//public class ArbeidsavtaleDto {
+//
+//    private final double stillingsprosent;
+//
+//    @JsonCreator
+//    public ArbeidsavtaleDto(@JsonProperty("stillingsprosent") double stillingsprosent) {
+//        this.stillingsprosent = stillingsprosent;
+//    }
+//
+//    public double getStillingsprosent() {
+//        return stillingsprosent;
+//    }
+//}

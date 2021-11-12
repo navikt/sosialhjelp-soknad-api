@@ -31,7 +31,7 @@ class ArbeidsforholdClientImpl(
     private val stsConsumer: STSConsumer
 ) : ArbeidsforholdClient {
 
-    private val callId: String? get() =  MDCOperations.getFromMDC(MDCOperations.MDC_CALL_ID)
+    private val callId: String? get() = MDCOperations.getFromMDC(MDCOperations.MDC_CALL_ID)
     private val consumerId: String? get() = SubjectHandler.getConsumerId()
     private val userToken: String? get() = SubjectHandler.getToken()
     private val sokeperiode: Sokeperiode get() = Sokeperiode(LocalDate.now().minusMonths(3), LocalDate.now())
@@ -42,10 +42,10 @@ class ArbeidsforholdClientImpl(
             .header(HeaderConstants.HEADER_CALL_ID, callId)
             .header(HeaderConstants.HEADER_CONSUMER_ID, consumerId)
             .options().use { response ->
-            if (response.status != 200) {
-                throw RuntimeException("Aareg.api - Feil statuskode ved ping: ${response.status}, respons: ${response.readEntity(String::class.java)}")
+                if (response.status != 200) {
+                    throw RuntimeException("Aareg.api - Feil statuskode ved ping: ${response.status}, respons: ${response.readEntity(String::class.java)}")
+                }
             }
-        }
     }
 
     override fun finnArbeidsforholdForArbeidstaker(fodselsnummer: String): List<ArbeidsforholdDto>? {
@@ -68,17 +68,23 @@ class ArbeidsforholdClientImpl(
         } catch (e: NotAuthorizedException) {
             log.warn("Aareg.api - 401 Unauthorized- Token mangler eller er ugyldig", e)
             return null
-        } catch (e: ForbiddenException){
+        } catch (e: ForbiddenException) {
             log.warn("Aareg.api - 403 Forbidden - Ingen tilgang til forespurt ressurs", e)
             return null
         } catch (e: NotFoundException) {
             log.warn("Aareg.api - 404 Not Found- Fant ikke arbeidsforhold for bruker", e)
             return null
         } catch (e: ServiceUnavailableException) {
-            log.error("Aareg.api - ${e.response.status} ${e.response.statusInfo.reasonPhrase} - Tjenesten er ikke tilgjengelig", e)
+            log.error(
+                "Aareg.api - ${e.response.status} ${e.response.statusInfo.reasonPhrase} - Tjenesten er ikke tilgjengelig",
+                e
+            )
             throw TjenesteUtilgjengeligException("AAREG", e)
         } catch (e: InternalServerErrorException) {
-            log.error("Aareg.api - ${e.response.status} ${e.response.statusInfo.reasonPhrase} - Tjenesten er ikke tilgjengelig", e)
+            log.error(
+                "Aareg.api - ${e.response.status} ${e.response.statusInfo.reasonPhrase} - Tjenesten er ikke tilgjengelig",
+                e
+            )
             throw TjenesteUtilgjengeligException("AAREG", e)
         } catch (e: Exception) {
             log.error("Aareg.api - Noe uventet feilet", e)

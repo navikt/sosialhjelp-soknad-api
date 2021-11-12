@@ -6,11 +6,11 @@ import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktInntekt;
+import no.nav.sosialhjelp.soknad.arbeid.ArbeidsforholdService;
+import no.nav.sosialhjelp.soknad.arbeid.domain.Arbeidsforhold;
 import no.nav.sosialhjelp.soknad.business.service.TextService;
-import no.nav.sosialhjelp.soknad.consumer.arbeidsforhold.ArbeidsforholdService;
 import no.nav.sosialhjelp.soknad.consumer.skatt.SkattbarInntektService;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
-import no.nav.sosialhjelp.soknad.domain.model.Arbeidsforhold;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -36,24 +36,11 @@ class ArbeidsforholdSystemdataTest {
 
     private static final String EIER = "12345678901";
 
-    private static final Arbeidsforhold ARBEIDSFORHOLD_LONNSLIPP = new Arbeidsforhold();
-    private static final Arbeidsforhold ARBEIDSFORHOLD_SLUTTOPPGJOR = new Arbeidsforhold();
     private static final String tom_lonnslipp = LocalDateTime.now().plusDays(40).format(DateTimeFormatter.ISO_DATE);
     private static final String tom_sluttoppgjor = LocalDateTime.now().plusDays(10).format(DateTimeFormatter.ISO_DATE);
 
-    static {
-        ARBEIDSFORHOLD_LONNSLIPP.arbeidsgivernavn = "Good Corp.";
-        ARBEIDSFORHOLD_LONNSLIPP.fom = "1337-01-01";
-        ARBEIDSFORHOLD_LONNSLIPP.tom = tom_lonnslipp;
-        ARBEIDSFORHOLD_LONNSLIPP.fastStillingsprosent = 50L;
-        ARBEIDSFORHOLD_LONNSLIPP.harFastStilling = true;
-
-        ARBEIDSFORHOLD_SLUTTOPPGJOR.arbeidsgivernavn = "Evil Corp.";
-        ARBEIDSFORHOLD_SLUTTOPPGJOR.fom = "1337-02-02";
-        ARBEIDSFORHOLD_SLUTTOPPGJOR.tom = tom_sluttoppgjor;
-        ARBEIDSFORHOLD_SLUTTOPPGJOR.fastStillingsprosent = 30L;
-        ARBEIDSFORHOLD_SLUTTOPPGJOR.harFastStilling = false;
-    }
+    private static final Arbeidsforhold ARBEIDSFORHOLD_LONNSLIPP = new Arbeidsforhold(null, "Good Corp.", "1337-01-01", tom_lonnslipp, 50L, true);
+    private static final Arbeidsforhold ARBEIDSFORHOLD_SLUTTOPPGJOR = new Arbeidsforhold(null, "Evil Corp.", "1337-02-02", tom_sluttoppgjor, 30L, false);
 
     @Mock
     private ArbeidsforholdService arbeidsforholdService;
@@ -170,11 +157,11 @@ class ArbeidsforholdSystemdataTest {
 
 
     private void assertThatArbeidsforholdIsCorrectlyConverted(Arbeidsforhold arbeidsforhold, JsonArbeidsforhold jsonArbeidsforhold) {
-        assertThat(jsonArbeidsforhold.getArbeidsgivernavn()).isEqualTo(arbeidsforhold.arbeidsgivernavn);
-        assertThat(jsonArbeidsforhold.getFom()).isEqualTo(arbeidsforhold.fom);
-        assertThat(jsonArbeidsforhold.getTom()).isEqualTo(arbeidsforhold.tom);
-        assertThat(Long.valueOf(jsonArbeidsforhold.getStillingsprosent())).isEqualTo(arbeidsforhold.fastStillingsprosent);
-        if (arbeidsforhold.harFastStilling) {
+        assertThat(jsonArbeidsforhold.getArbeidsgivernavn()).isEqualTo(arbeidsforhold.getArbeidsgivernavn());
+        assertThat(jsonArbeidsforhold.getFom()).isEqualTo(arbeidsforhold.getFom());
+        assertThat(jsonArbeidsforhold.getTom()).isEqualTo(arbeidsforhold.getTom());
+        assertThat(Long.valueOf(jsonArbeidsforhold.getStillingsprosent())).isEqualTo(arbeidsforhold.getFastStillingsprosent());
+        if (arbeidsforhold.getHarFastStilling()) {
             assertThat(jsonArbeidsforhold.getStillingstype()).isEqualTo(JsonArbeidsforhold.Stillingstype.FAST);
         } else {
             assertThat(jsonArbeidsforhold.getStillingstype()).isEqualTo(JsonArbeidsforhold.Stillingstype.VARIABEL);
