@@ -8,11 +8,11 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 data class ArbeidsforholdDto(
-    val ansettelsesperiode: AnsettelsesperiodeDto,
-    val arbeidsavtaler: List<ArbeidsavtaleDto>,
-    val arbeidsforholdId: String,
-    val arbeidsgiver: OpplysningspliktigArbeidsgiverDto,
-    val arbeidstaker: PersonDto
+    val ansettelsesperiode: AnsettelsesperiodeDto?,
+    val arbeidsavtaler: List<ArbeidsavtaleDto>?,
+    val arbeidsforholdId: String?,
+    val arbeidsgiver: OpplysningspliktigArbeidsgiverDto?,
+    val arbeidstaker: PersonDto?
 )
 
 data class AnsettelsesperiodeDto(
@@ -50,9 +50,9 @@ fun ArbeidsforholdDto.toDomain(organisasjonService: OrganisasjonService): Arbeid
     return Arbeidsforhold(
         orgnr = if (this.arbeidsgiver is OrganisasjonDto) this.arbeidsgiver.organisasjonsnummer else null,
         arbeidsgivernavn = if (this.arbeidsgiver is OrganisasjonDto) organisasjonService.hentOrgNavn(this.arbeidsgiver.organisasjonsnummer) else "Privatperson",
-        fom = this.ansettelsesperiode.periode.fom.format(DateTimeFormatter.ISO_LOCAL_DATE),
-        tom = this.ansettelsesperiode.periode.tom?.format(DateTimeFormatter.ISO_LOCAL_DATE) ?: null,
-        fastStillingsprosent = this.arbeidsavtaler.sumOf { it.stillingsprosent }.toLong(),
-        harFastStilling = this.arbeidsavtaler.isNotEmpty()
+        fom = this.ansettelsesperiode?.periode?.fom?.format(DateTimeFormatter.ISO_LOCAL_DATE),
+        tom = this.ansettelsesperiode?.periode?.tom?.format(DateTimeFormatter.ISO_LOCAL_DATE),
+        fastStillingsprosent = this.arbeidsavtaler?.sumOf { it.stillingsprosent }?.toLong(),
+        harFastStilling = this.arbeidsavtaler?.isNotEmpty()
     )
 }
