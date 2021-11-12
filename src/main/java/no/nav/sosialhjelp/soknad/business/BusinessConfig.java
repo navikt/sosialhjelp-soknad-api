@@ -31,7 +31,6 @@ import org.springframework.context.annotation.Import;
         DbConfig.class,
         ConsumerConfig.class,
         ServiceConfig.class,
-//        ArbeidsforholdService.class,
         OppgaveHandtererImpl.class,
         AvbrytAutomatiskSheduler.class,
         SlettSoknadUnderArbeidScheduler.class,
