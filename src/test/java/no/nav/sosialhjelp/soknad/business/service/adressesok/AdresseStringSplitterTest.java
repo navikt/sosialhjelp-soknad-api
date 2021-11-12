@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.business.service.adressesok;
 
-import no.nav.sosialhjelp.soknad.consumer.kodeverk.KodeverkService;
+import no.nav.sosialhjelp.soknad.client.kodeverk.KodeverkService;
 import org.junit.jupiter.api.Test;
 
 import java.util.Objects;

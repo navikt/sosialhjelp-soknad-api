@@ -6,7 +6,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
 import no.nav.security.token.support.core.api.ProtectedWithClaims;
 import no.nav.sosialhjelp.metrics.aspects.Timed;
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository;
-import no.nav.sosialhjelp.soknad.consumer.kodeverk.KodeverkService;
+import no.nav.sosialhjelp.soknad.client.kodeverk.KodeverkService;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.NavnFrontend;
 import no.nav.sosialhjelp.soknad.web.sikkerhet.Tilgangskontroll;
@@ -34,7 +34,11 @@ public class BasisPersonaliaRessurs {
     private final SoknadUnderArbeidRepository soknadUnderArbeidRepository;
     private final Tilgangskontroll tilgangskontroll;
 
-    public BasisPersonaliaRessurs(KodeverkService kodeverkService, SoknadUnderArbeidRepository soknadUnderArbeidRepository, Tilgangskontroll tilgangskontroll) {
+    public BasisPersonaliaRessurs(
+            KodeverkService kodeverkService,
+            SoknadUnderArbeidRepository soknadUnderArbeidRepository,
+            Tilgangskontroll tilgangskontroll
+    ) {
         this.kodeverkService = kodeverkService;
         this.soknadUnderArbeidRepository = soknadUnderArbeidRepository;
         this.tilgangskontroll = tilgangskontroll;
