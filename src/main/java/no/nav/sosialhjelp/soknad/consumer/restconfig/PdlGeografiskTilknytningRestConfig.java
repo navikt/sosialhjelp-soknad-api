@@ -1,9 +1,9 @@
 package no.nav.sosialhjelp.soknad.consumer.restconfig;
 
+import no.nav.sosialhjelp.soknad.client.sts.StsClient;
 import no.nav.sosialhjelp.soknad.consumer.common.rest.RestUtils;
 import no.nav.sosialhjelp.soknad.consumer.pdl.geografisktilknytning.GeografiskTilknytningConsumer;
 import no.nav.sosialhjelp.soknad.consumer.redis.RedisService;
-import no.nav.sosialhjelp.soknad.consumer.sts.STSConsumer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 
@@ -21,8 +21,8 @@ public class PdlGeografiskTilknytningRestConfig {
     private String endpoint;
 
     @Bean
-    public GeografiskTilknytningConsumer geografiskTilknytningConsumer(STSConsumer stsConsumer, RedisService redisService) {
-        return new GeografiskTilknytningConsumer(pdlGeografiskTilknytningClient(), endpoint, stsConsumer, redisService);
+    public GeografiskTilknytningConsumer geografiskTilknytningConsumer(StsClient stsClient, RedisService redisService) {
+        return new GeografiskTilknytningConsumer(pdlGeografiskTilknytningClient(), endpoint, stsClient, redisService);
     }
 
     private Client pdlGeografiskTilknytningClient() {

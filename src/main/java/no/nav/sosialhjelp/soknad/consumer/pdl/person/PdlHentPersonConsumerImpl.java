@@ -2,11 +2,11 @@ package no.nav.sosialhjelp.soknad.consumer.pdl.person;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import no.nav.sosialhjelp.soknad.client.sts.StsClient;
 import no.nav.sosialhjelp.soknad.consumer.exceptions.PdlApiException;
 import no.nav.sosialhjelp.soknad.consumer.exceptions.TjenesteUtilgjengeligException;
 import no.nav.sosialhjelp.soknad.consumer.pdl.BasePdlConsumer;
 import no.nav.sosialhjelp.soknad.consumer.redis.RedisService;
-import no.nav.sosialhjelp.soknad.consumer.sts.STSConsumer;
 import org.slf4j.Logger;
 
 import javax.ws.rs.client.Client;
@@ -34,8 +34,8 @@ public class PdlHentPersonConsumerImpl extends BasePdlConsumer implements PdlHen
 
     private final RedisService redisService;
 
-    public PdlHentPersonConsumerImpl(Client client, String endpoint, STSConsumer stsConsumer, RedisService redisService) {
-        super(client, endpoint, stsConsumer, log);
+    public PdlHentPersonConsumerImpl(Client client, String endpoint, StsClient stsClient, RedisService redisService) {
+        super(client, endpoint, stsClient, log);
         this.redisService = redisService;
     }
 

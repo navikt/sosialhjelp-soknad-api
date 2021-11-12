@@ -3,12 +3,12 @@ package no.nav.sosialhjelp.soknad.consumer.pdl;
 import com.fasterxml.jackson.databind.JsonNode;
 import io.github.resilience4j.retry.Retry;
 import io.vavr.CheckedFunction0;
+import no.nav.sosialhjelp.soknad.client.sts.StsClient;
 import no.nav.sosialhjelp.soknad.consumer.exceptions.PdlApiException;
 import no.nav.sosialhjelp.soknad.consumer.mdc.MDCOperations;
 import no.nav.sosialhjelp.soknad.consumer.pdl.common.PdlBaseResponse;
 import no.nav.sosialhjelp.soknad.consumer.pdl.common.PdlRequest;
 import no.nav.sosialhjelp.soknad.consumer.retry.RetryUtils;
-import no.nav.sosialhjelp.soknad.consumer.sts.STSConsumer;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import org.slf4j.Logger;
 
@@ -38,13 +38,13 @@ public abstract class BasePdlConsumer {
 
     protected final Client client;
     protected final String endpoint;
-    protected final STSConsumer stsConsumer;
+    protected final StsClient stsClient;
     protected final Retry retry;
 
-    protected BasePdlConsumer(Client client, String endpoint, STSConsumer stsConsumer, Logger log) {
+    protected BasePdlConsumer(Client client, String endpoint, StsClient stsClient, Logger log) {
         this.client = client;
         this.endpoint = endpoint;
-        this.stsConsumer = stsConsumer;
+        this.stsClient = stsClient;
         this.retry = retryConfig(
                 endpoint,
                 DEFAULT_MAX_ATTEMPTS,
@@ -77,14 +77,14 @@ public abstract class BasePdlConsumer {
     protected Invocation.Builder baseRequest(String endpoint) {
         var consumerId = SubjectHandler.getConsumerId();
         var callId = MDCOperations.getFromMDC(MDCOperations.MDC_CALL_ID);
-        var fssToken = stsConsumer.getFSSToken();
+        var fssToken = stsClient.getFssToken();
 
         return client.target(endpoint)
                 .request(MediaType.APPLICATION_JSON_TYPE)
-                .header(AUTHORIZATION.name(), BEARER + fssToken.getAccessToken())
+                .header(AUTHORIZATION.name(), BEARER + fssToken.getAccess_token())
                 .header(HEADER_CALL_ID, callId)
                 .header(HEADER_CONSUMER_ID, consumerId)
-                .header(HEADER_CONSUMER_TOKEN, BEARER + fssToken.getAccessToken());
+                .header(HEADER_CONSUMER_TOKEN, BEARER + fssToken.getAccess_token());
     }
 
     protected  <T> T withRetry(CheckedFunction0<T> supplier) {
