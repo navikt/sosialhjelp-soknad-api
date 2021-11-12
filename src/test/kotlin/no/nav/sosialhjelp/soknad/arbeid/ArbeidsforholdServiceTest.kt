@@ -77,7 +77,7 @@ internal class ArbeidsforholdServiceTest {
 
         assertThat(arbeidsforhold.arbeidsgivernavn).isEqualTo(orgNavn)
         assertThat(arbeidsforhold.harFastStilling).isTrue
-        assertThat(arbeidsforhold.fastStillingsprosent.toLong()).isEqualTo(100L)
+        assertThat(arbeidsforhold.fastStillingsprosent).isEqualTo(100L)
         assertThat(arbeidsforhold.orgnr).isEqualTo(orgnr)
         assertThat(arbeidsforhold.fom).isEqualTo(fom.format(DateTimeFormatter.ISO_LOCAL_DATE))
         assertThat(arbeidsforhold.tom).isNull()

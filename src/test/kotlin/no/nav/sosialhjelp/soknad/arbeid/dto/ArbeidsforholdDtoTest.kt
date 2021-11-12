@@ -24,12 +24,12 @@ internal class ArbeidsforholdDtoTest {
         val jsonString = IOUtils.toString(resourceAsStream, StandardCharsets.UTF_8)
         val arbeidsforholdDtoList = objectMapper.readValue<List<ArbeidsforholdDto>>(jsonString)
         val dto = arbeidsforholdDtoList[0]
-        assertThat(dto.ansettelsesperiode.periode.fom).hasToString("2014-07-01")
-        assertThat(dto.ansettelsesperiode.periode.tom).hasToString("2015-12-31")
+        assertThat(dto.ansettelsesperiode?.periode?.fom).hasToString("2014-07-01")
+        assertThat(dto.ansettelsesperiode?.periode?.tom).hasToString("2015-12-31")
         assertThat(dto.arbeidsavtaler).hasSize(1)
-        assertThat(dto.arbeidsavtaler[0].stillingsprosent).isEqualTo(49.5)
+        assertThat(dto.arbeidsavtaler!![0].stillingsprosent).isEqualTo(49.5)
         assertThat(dto.arbeidsforholdId).isEqualTo("abc-321")
         assertThat(dto.arbeidsgiver).isExactlyInstanceOf(OrganisasjonDto::class.java)
-        assertThat(dto.arbeidstaker.offentligIdent).isEqualTo("31126700000")
+        assertThat(dto.arbeidstaker?.offentligIdent).isEqualTo("31126700000")
     }
 }
