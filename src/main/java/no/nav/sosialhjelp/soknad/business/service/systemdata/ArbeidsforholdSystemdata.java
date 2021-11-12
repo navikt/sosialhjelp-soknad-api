@@ -7,16 +7,15 @@ import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktInntekt;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
+import no.nav.sosialhjelp.soknad.arbeid.ArbeidsforholdService;
+import no.nav.sosialhjelp.soknad.arbeid.domain.Arbeidsforhold;
 import no.nav.sosialhjelp.soknad.business.service.TextService;
 import no.nav.sosialhjelp.soknad.business.service.soknadservice.Systemdata;
-import no.nav.sosialhjelp.soknad.consumer.arbeidsforhold.ArbeidsforholdService;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
-import no.nav.sosialhjelp.soknad.domain.model.Arbeidsforhold;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import javax.inject.Inject;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,11 +32,13 @@ public class ArbeidsforholdSystemdata implements Systemdata {
 
     private static final Logger LOG = LoggerFactory.getLogger(ArbeidsforholdSystemdata.class);
 
-    @Inject
-    private ArbeidsforholdService arbeidsforholdService;
+    private final ArbeidsforholdService arbeidsforholdService;
+    private final TextService textService;
 
-    @Inject
-    private TextService textService;
+    public ArbeidsforholdSystemdata(ArbeidsforholdService arbeidsforholdService, TextService textService) {
+        this.arbeidsforholdService = arbeidsforholdService;
+        this.textService = textService;
+    }
 
     @Override
     public void updateSystemdataIn(SoknadUnderArbeid soknadUnderArbeid, String token) {
@@ -91,12 +92,12 @@ public class ArbeidsforholdSystemdata implements Systemdata {
 
     private JsonArbeidsforhold mapToJsonArbeidsforhold(Arbeidsforhold arbeidsforhold) {
         return new JsonArbeidsforhold()
-                .withArbeidsgivernavn(arbeidsforhold.arbeidsgivernavn)
-                .withFom(arbeidsforhold.fom)
-                .withTom(arbeidsforhold.tom)
+                .withArbeidsgivernavn(arbeidsforhold.getArbeidsgivernavn())
+                .withFom(arbeidsforhold.getFom())
+                .withTom(arbeidsforhold.getTom())
                 .withKilde(JsonKilde.SYSTEM)
-                .withStillingsprosent(Math.toIntExact(arbeidsforhold.fastStillingsprosent))
-                .withStillingstype(tilJsonStillingstype(arbeidsforhold.harFastStilling))
+                .withStillingsprosent(Math.toIntExact(arbeidsforhold.getFastStillingsprosent()))
+                .withStillingstype(tilJsonStillingstype(arbeidsforhold.getHarFastStilling()))
                 .withOverstyrtAvBruker(Boolean.FALSE);
     }
 
