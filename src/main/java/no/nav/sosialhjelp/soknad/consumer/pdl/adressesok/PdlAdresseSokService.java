@@ -4,7 +4,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonGateAdresse;
 import no.nav.sosialhjelp.soknad.business.service.adressesok.AdresseForslag;
 import no.nav.sosialhjelp.soknad.business.service.adressesok.AdresseStringSplitter;
 import no.nav.sosialhjelp.soknad.business.service.adressesok.Sokedata;
-import no.nav.sosialhjelp.soknad.consumer.kodeverk.KodeverkService;
+import no.nav.sosialhjelp.soknad.client.kodeverk.KodeverkService;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.AdresseSokHit;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.Criteria;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.Direction;

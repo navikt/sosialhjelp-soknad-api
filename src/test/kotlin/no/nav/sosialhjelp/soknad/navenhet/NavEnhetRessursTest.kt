@@ -17,9 +17,9 @@ import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.Sokn
 import no.nav.sosialhjelp.soknad.business.service.adressesok.AdresseForslag
 import no.nav.sosialhjelp.soknad.business.service.adressesok.AdresseSokService
 import no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService
+import no.nav.sosialhjelp.soknad.client.kodeverk.KodeverkService
 import no.nav.sosialhjelp.soknad.consumer.exceptions.PdlApiException
 import no.nav.sosialhjelp.soknad.consumer.fiks.KommuneInfoService
-import no.nav.sosialhjelp.soknad.consumer.kodeverk.KodeverkService
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.bydel.BydelService
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.bydel.BydelService.BYDEL_MARKA
 import no.nav.sosialhjelp.soknad.consumer.pdl.geografisktilknytning.GeografiskTilknytningService

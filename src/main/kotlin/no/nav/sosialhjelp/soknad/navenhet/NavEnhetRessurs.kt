@@ -12,8 +12,8 @@ import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.Sokn
 import no.nav.sosialhjelp.soknad.business.service.adressesok.AdresseForslag
 import no.nav.sosialhjelp.soknad.business.service.adressesok.AdresseForslagType
 import no.nav.sosialhjelp.soknad.business.service.adressesok.AdresseSokService
+import no.nav.sosialhjelp.soknad.client.kodeverk.KodeverkService
 import no.nav.sosialhjelp.soknad.consumer.fiks.KommuneInfoService
-import no.nav.sosialhjelp.soknad.consumer.kodeverk.KodeverkService
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.bydel.BydelService
 import no.nav.sosialhjelp.soknad.consumer.pdl.geografisktilknytning.GeografiskTilknytningService
 import no.nav.sosialhjelp.soknad.domain.model.mock.MockUtils

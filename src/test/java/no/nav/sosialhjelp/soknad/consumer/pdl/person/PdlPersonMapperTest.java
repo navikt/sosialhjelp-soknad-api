@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.consumer.pdl.person;
 
-import no.nav.sosialhjelp.soknad.consumer.kodeverk.KodeverkService;
+import no.nav.sosialhjelp.soknad.client.kodeverk.KodeverkService;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.AdressebeskyttelseDto;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.BostedsadresseDto;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.EndringDto;
