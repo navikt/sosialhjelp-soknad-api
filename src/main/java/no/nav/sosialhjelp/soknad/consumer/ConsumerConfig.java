@@ -30,7 +30,6 @@ import no.nav.sosialhjelp.soknad.consumer.restconfig.PdlHentPersonRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.STSTokenRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.SvarUtRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.UnleashRestConfig;
-import no.nav.sosialhjelp.soknad.consumer.skatt.SkattbarInntektService;
 import no.nav.sosialhjelp.soknad.consumer.svarut.SvarUtService;
 import no.nav.sosialhjelp.soknad.navenhet.NavEnhetConfig;
 import no.nav.sosialhjelp.soknad.oppslag.OppslagRestConfig;
@@ -65,7 +64,6 @@ import org.springframework.context.annotation.Import;
         GeografiskTilknytningService.class,
         ConsumerConfig.WsServices.class,
         DokumentKrypterer.class,
-        SkattbarInntektService.class,
         KontonummerService.class,
         UtbetalingService.class,
         BydelConfig.class,
