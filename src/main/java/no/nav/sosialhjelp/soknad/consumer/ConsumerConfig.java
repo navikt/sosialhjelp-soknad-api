@@ -84,7 +84,6 @@ public class ConsumerConfig {
             PdlAdresseSokRestConfig.class,
             PdlGeografiskTilknytningRestConfig.class,
             DigisosApiRestConfig.class,
-//            ArbeidsforholdRestConfig.class,
             STSTokenRestConfig.class,
             UnleashRestConfig.class,
             OppslagRestConfig.class,
