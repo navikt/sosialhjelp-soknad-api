@@ -1,12 +1,12 @@
 package no.nav.sosialhjelp.soknad.consumer.pdl.adressesok;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import no.nav.sosialhjelp.soknad.client.sts.StsClient;
 import no.nav.sosialhjelp.soknad.consumer.exceptions.PdlApiException;
 import no.nav.sosialhjelp.soknad.consumer.exceptions.TjenesteUtilgjengeligException;
 import no.nav.sosialhjelp.soknad.consumer.pdl.BasePdlConsumer;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.AdresseSokResult;
 import no.nav.sosialhjelp.soknad.consumer.pdl.common.PdlApiQuery;
-import no.nav.sosialhjelp.soknad.consumer.sts.STSConsumer;
 import org.slf4j.Logger;
 
 import javax.ws.rs.client.Client;
@@ -20,8 +20,8 @@ public class PdlAdresseSokConsumer extends BasePdlConsumer {
 
     private static final Logger log = getLogger(PdlAdresseSokConsumer.class);
 
-    public PdlAdresseSokConsumer(Client client, String endpoint, STSConsumer stsConsumer) {
-        super(client, endpoint, stsConsumer, log);
+    public PdlAdresseSokConsumer(Client client, String endpoint, StsClient stsClient) {
+        super(client, endpoint, stsClient, log);
     }
 
     public AdresseSokResult getAdresseSokResult(Map<String, Object> variables) {

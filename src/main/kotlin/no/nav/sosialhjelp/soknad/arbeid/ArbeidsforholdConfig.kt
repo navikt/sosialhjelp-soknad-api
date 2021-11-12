@@ -4,8 +4,8 @@ import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import no.nav.sosialhjelp.soknad.client.sts.StsClient
 import no.nav.sosialhjelp.soknad.consumer.common.rest.RestUtils
-import no.nav.sosialhjelp.soknad.consumer.sts.STSConsumer
 import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.HEADER_NAV_APIKEY
 import no.nav.sosialhjelp.soknad.organisasjon.OrganisasjonService
 import no.nav.sosialhjelp.soknad.web.selftest.Pingable
@@ -20,7 +20,7 @@ import javax.ws.rs.client.ClientRequestFilter
 @Configuration
 open class ArbeidsforholdConfig(
     @Value("\${aareg_api_baseurl}") private val baseurl: String,
-    private val stsConsumer: STSConsumer,
+    private val stsClient: StsClient,
     private val organisasjonService: OrganisasjonService
 ) {
 
@@ -31,7 +31,7 @@ open class ArbeidsforholdConfig(
 
     @Bean
     open fun arbeidsforholdClient(): ArbeidsforholdClient {
-        return ArbeidsforholdClientImpl(arbeidsforholdClient, baseurl, stsConsumer)
+        return ArbeidsforholdClientImpl(arbeidsforholdClient, baseurl, stsClient)
     }
 
     @Bean
