@@ -1,9 +1,9 @@
 package no.nav.sosialhjelp.soknad.arbeid
 
 import no.nav.sosialhjelp.soknad.arbeid.dto.ArbeidsforholdDto
+import no.nav.sosialhjelp.soknad.client.sts.StsClient
 import no.nav.sosialhjelp.soknad.consumer.exceptions.TjenesteUtilgjengeligException
 import no.nav.sosialhjelp.soknad.consumer.mdc.MDCOperations
-import no.nav.sosialhjelp.soknad.consumer.sts.STSConsumer
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler
 import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants
 import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.BEARER
@@ -28,7 +28,7 @@ interface ArbeidsforholdClient {
 class ArbeidsforholdClientImpl(
     private val client: Client,
     private val baseurl: String,
-    private val stsConsumer: STSConsumer
+    private val stsClient: StsClient
 ) : ArbeidsforholdClient {
 
     private val callId: String? get() = MDCOperations.getFromMDC(MDCOperations.MDC_CALL_ID)
@@ -59,32 +59,26 @@ class ArbeidsforholdClientImpl(
                 .header(HttpHeader.AUTHORIZATION.name, BEARER + userToken) // brukers token
                 .header(HeaderConstants.HEADER_CALL_ID, callId)
                 .header(HeaderConstants.HEADER_CONSUMER_ID, consumerId)
-                .header(HeaderConstants.HEADER_CONSUMER_TOKEN, BEARER + stsConsumer.fssToken.accessToken)
+                .header(HeaderConstants.HEADER_CONSUMER_TOKEN, BEARER + stsClient.getFssToken().access_token)
                 .header(HeaderConstants.HEADER_NAV_PERSONIDENT, fodselsnummer)
                 .get(object : GenericType<List<ArbeidsforholdDto>>() {})
         } catch (e: BadRequestException) {
             log.warn("Aareg.api - 400 Bad Request - Ugyldig(e) parameter(e) i request", e)
             return null
         } catch (e: NotAuthorizedException) {
-            log.warn("Aareg.api - 401 Unauthorized- Token mangler eller er ugyldig", e)
+            log.warn("Aareg.api - 401 Unauthorized - Token mangler eller er ugyldig", e)
             return null
         } catch (e: ForbiddenException) {
             log.warn("Aareg.api - 403 Forbidden - Ingen tilgang til forespurt ressurs", e)
             return null
         } catch (e: NotFoundException) {
-            log.warn("Aareg.api - 404 Not Found- Fant ikke arbeidsforhold for bruker", e)
+            log.warn("Aareg.api - 404 Not Found - Fant ikke arbeidsforhold for bruker", e)
             return null
         } catch (e: ServiceUnavailableException) {
-            log.error(
-                "Aareg.api - ${e.response.status} ${e.response.statusInfo.reasonPhrase} - Tjenesten er ikke tilgjengelig",
-                e
-            )
+            log.error("Aareg.api - ${e.response.statusInfo} - Tjenesten er ikke tilgjengelig", e)
             throw TjenesteUtilgjengeligException("AAREG", e)
         } catch (e: InternalServerErrorException) {
-            log.error(
-                "Aareg.api - ${e.response.status} ${e.response.statusInfo.reasonPhrase} - Tjenesten er ikke tilgjengelig",
-                e
-            )
+            log.error("Aareg.api - ${e.response.statusInfo} - Tjenesten er ikke tilgjengelig", e)
             throw TjenesteUtilgjengeligException("AAREG", e)
         } catch (e: Exception) {
             log.error("Aareg.api - Noe uventet feilet", e)

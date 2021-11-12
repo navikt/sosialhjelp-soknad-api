@@ -2,12 +2,12 @@ package no.nav.sosialhjelp.soknad.consumer.pdl.geografisktilknytning;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import no.nav.sosialhjelp.soknad.client.sts.StsClient;
 import no.nav.sosialhjelp.soknad.consumer.exceptions.PdlApiException;
 import no.nav.sosialhjelp.soknad.consumer.exceptions.TjenesteUtilgjengeligException;
 import no.nav.sosialhjelp.soknad.consumer.pdl.BasePdlConsumer;
 import no.nav.sosialhjelp.soknad.consumer.pdl.geografisktilknytning.dto.GeografiskTilknytningDto;
 import no.nav.sosialhjelp.soknad.consumer.redis.RedisService;
-import no.nav.sosialhjelp.soknad.consumer.sts.STSConsumer;
 import org.slf4j.Logger;
 
 import javax.ws.rs.client.Client;
@@ -30,8 +30,8 @@ public class GeografiskTilknytningConsumer extends BasePdlConsumer {
 
     private final RedisService redisService;
 
-    public GeografiskTilknytningConsumer(Client client, String endpoint, STSConsumer stsConsumer, RedisService redisService) {
-        super(client, endpoint, stsConsumer, log);
+    public GeografiskTilknytningConsumer(Client client, String endpoint, StsClient stsClient, RedisService redisService) {
+        super(client, endpoint, stsClient, log);
         this.redisService = redisService;
     }
 

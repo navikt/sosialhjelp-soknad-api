@@ -1,8 +1,8 @@
 package no.nav.sosialhjelp.soknad.consumer.restconfig;
 
+import no.nav.sosialhjelp.soknad.client.sts.StsClient;
 import no.nav.sosialhjelp.soknad.consumer.common.rest.RestUtils;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.PdlAdresseSokConsumer;
-import no.nav.sosialhjelp.soknad.consumer.sts.STSConsumer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 
@@ -20,8 +20,8 @@ public class PdlAdresseSokRestConfig {
     private String endpoint;
 
     @Bean
-    public PdlAdresseSokConsumer pdlAdresseSokConsumer(STSConsumer stsConsumer) {
-        return new PdlAdresseSokConsumer(pdlAdresseSokClient(), endpoint, stsConsumer);
+    public PdlAdresseSokConsumer pdlAdresseSokConsumer(StsClient stsClient) {
+        return new PdlAdresseSokConsumer(pdlAdresseSokClient(), endpoint, stsClient);
     }
 
     private Client pdlAdresseSokClient() {
