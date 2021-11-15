@@ -9,17 +9,4 @@ data class FssToken(
 ) {
 
     fun getExpirationTime(): LocalDateTime = LocalDateTime.now().plusSeconds(expires_in - 10L)
-
-    companion object {
-        fun shouldRenewToken(token: FssToken?): Boolean {
-            if (token == null) {
-                return true
-            }
-            return isExpired(token)
-        }
-
-        private fun isExpired(token: FssToken): Boolean {
-            return token.getExpirationTime().isBefore(LocalDateTime.now())
-        }
-    }
 }

@@ -1,10 +1,10 @@
 package no.nav.sosialhjelp.soknad.client.sts
 
 import no.nav.sosialhjelp.soknad.client.sts.dto.FssToken
-import no.nav.sosialhjelp.soknad.client.sts.dto.FssToken.Companion.shouldRenewToken
 import no.nav.sosialhjelp.soknad.consumer.exceptions.TjenesteUtilgjengeligException
 import no.nav.sosialhjelp.soknad.domain.model.exception.SosialhjelpSoknadApiException
 import org.slf4j.LoggerFactory.getLogger
+import java.time.LocalDateTime
 import javax.ws.rs.ClientErrorException
 import javax.ws.rs.ServerErrorException
 import javax.ws.rs.client.Client
@@ -57,6 +57,17 @@ class StsClientImpl(
         }
         log.debug("Bruker cachet token fra STS")
         return cachedFssToken!!
+    }
+
+    fun shouldRenewToken(token: FssToken?): Boolean {
+        if (token == null) {
+            return true
+        }
+        return isExpired(token)
+    }
+
+    private fun isExpired(token: FssToken): Boolean {
+        return token.getExpirationTime().isBefore(LocalDateTime.now())
     }
 
     companion object {

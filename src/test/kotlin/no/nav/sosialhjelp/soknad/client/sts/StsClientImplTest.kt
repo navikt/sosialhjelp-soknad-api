@@ -37,7 +37,6 @@ internal class StsClientImplTest {
         assertThat(fssToken.access_token).isEqualTo("asdf")
         assertThat(fssToken.token_type).isEqualTo("type")
         assertThat(fssToken.expires_in).isEqualTo(3600L)
-        assertThat(fssToken.isExpired).isFalse
     }
 
     @Test
@@ -53,5 +52,20 @@ internal class StsClientImplTest {
         assertThat(second).isEqualTo(first)
         verify(exactly = 1) { request.get(FssToken::class.java) }
         verify(exactly = 1) { client.target(any<String>()) }
+    }
+
+    @Test
+    internal fun utloptTokenSkalFornyes() {
+        val tokenMedNegativLevetid = FssToken("asdf", "type", -10L)
+        assertThat(stsClient.shouldRenewToken(tokenMedNegativLevetid)).isTrue
+
+        val tokenMedKortLevetid = FssToken("asdf", "type", 1L)
+        assertThat(stsClient.shouldRenewToken(tokenMedKortLevetid)).isTrue
+
+        val tokenMedLittLengreLevetid = FssToken("asdf", "type", 12L)
+        assertThat(stsClient.shouldRenewToken(tokenMedLittLengreLevetid)).isFalse
+
+        val tokenMedLangLevetid = FssToken("asdf", "type", 3600L)
+        assertThat(stsClient.shouldRenewToken(tokenMedLangLevetid)).isFalse
     }
 }
