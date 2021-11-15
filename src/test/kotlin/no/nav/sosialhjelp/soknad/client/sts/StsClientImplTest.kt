@@ -55,6 +55,26 @@ internal class StsClientImplTest {
     }
 
     @Test
+    internal fun kortExpiresInSkalTriggeNyHenting() {
+        // token med kort expires_in
+        every { request.get(FssToken::class.java) } returns FssToken("asdf", "type", 2L)
+        val first = stsClient.getFssToken()
+
+        assertThat(first.access_token).isEqualTo("asdf")
+        assertThat(first.expires_in).isEqualTo(2L)
+
+        // skal trigge henting av nytt token
+        every { request.get(FssToken::class.java) } returns FssToken("qwer", "type", 3600L)
+        val second = stsClient.getFssToken()
+
+        assertThat(second.access_token).isEqualTo("qwer")
+        assertThat(second.expires_in).isEqualTo(3600L)
+
+        verify(exactly = 2) { request.get(FssToken::class.java) }
+        verify(exactly = 2) { client.target(any<String>()) }
+    }
+
+    @Test
     internal fun utloptTokenSkalFornyes() {
         val tokenMedNegativLevetid = FssToken("asdf", "type", -10L)
         assertThat(stsClient.shouldRenewToken(tokenMedNegativLevetid)).isTrue

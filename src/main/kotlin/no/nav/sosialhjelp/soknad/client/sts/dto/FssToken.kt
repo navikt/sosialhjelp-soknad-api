@@ -8,5 +8,5 @@ data class FssToken(
     val expires_in: Long
 ) {
 
-    fun getExpirationTime(): LocalDateTime = LocalDateTime.now().plusSeconds(expires_in - 10L)
+    val refreshTime: LocalDateTime = LocalDateTime.now().plusSeconds(expires_in - 10L)
 }

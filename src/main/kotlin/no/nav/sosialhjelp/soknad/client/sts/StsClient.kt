@@ -67,7 +67,7 @@ class StsClientImpl(
     }
 
     private fun isExpired(token: FssToken): Boolean {
-        return token.getExpirationTime().isBefore(LocalDateTime.now())
+        return token.refreshTime.isBefore(LocalDateTime.now())
     }
 
     companion object {
