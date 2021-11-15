@@ -3,14 +3,11 @@ package no.nav.sosialhjelp.soknad.business.service.systemdata;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling;
-import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetalingKomponent;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse;
-import no.nav.sosialhjelp.soknad.consumer.skatt.SkattbarInntektService;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
-import no.nav.sosialhjelp.soknad.domain.model.utbetaling.Utbetaling;
 import no.nav.sosialhjelp.soknad.organisasjon.OrganisasjonService;
-import no.nav.sosialhjelp.soknad.skattbarinntekt.SkattbarInntektServiceNy;
-import org.junit.jupiter.api.BeforeEach;
+import no.nav.sosialhjelp.soknad.skattbarinntekt.SkattbarInntektService;
+import no.nav.sosialhjelp.soknad.skattbarinntekt.domain.Utbetaling;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -26,7 +23,6 @@ import java.util.List;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_SKATTEETATEN;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_SKATTEETATEN_SAMTYKKE;
 import static no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
-import static no.nav.sosialhjelp.soknad.business.service.systemdata.UtbetalingerFraNavSystemdata.tilIntegerMedAvrunding;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
@@ -40,76 +36,23 @@ class SkattetatenSystemdataTest {
             .withType("Vaffelsalg")
             .withBelop(1000000);
 
-    private static final LocalDate UTBETALINGSDATO = LocalDate.now().minusDays(5);
     private static final LocalDate PERIODE_FOM = LocalDate.now().minusDays(40);
     private static final LocalDate PERIODE_TOM = LocalDate.now().minusDays(10);
 
     private static final String TITTEL = "Onkel Skrue penger";
-    private static final double NETTO = 60000.0;
     private static final double BRUTTO = 3880.0;
     private static final double SKATT = -1337.0;
-    private static final double TREKK = -500.0;
 
     private static final String TITTEL_2 = "Lønnsinntekt";
-    private static final double NETTO_2 = 10000.0;
     private static final double BRUTTO_2 = 12500.0;
     private static final double SKATT_2 = -2500.0;
-    private static final double TREKK_2 = 0.0;
-    private static final String KOMPONENTTYPE_2 = "Månedslønn";
-    private static final double KOMPONENTBELOP_2 = 10000.0;
-    private static final String SATSTYPE_2 = "Årslønn";
-    private static final double SATSBELOP_2 = 120000.0;
-    private static final double SATSANTALL_2 = 12.0;
     private static final String ORGANISASJONSNR = "012345678";
+    private static final String ORGANISASJONSNR_ANNEN = "999888777";
     private static final String PERSONNR = "01010011111";
 
-    private static final Utbetaling SKATTBAR_UTBETALING_ANNEN = new Utbetaling();
-    private static final Utbetaling SKATTBAR_UTBETALING = new Utbetaling();
-    private static final Utbetaling SKATTBAR_UTBETALING_FRA_PRIVATPERSON = new Utbetaling();
-    private static final Utbetaling.Komponent SKATTBAR_KOMPONENT = new Utbetaling.Komponent();
-
-    static {
-        SKATTBAR_UTBETALING.tittel = TITTEL_2;
-        SKATTBAR_UTBETALING.netto = NETTO_2;
-        SKATTBAR_UTBETALING.brutto = BRUTTO_2;
-        SKATTBAR_UTBETALING.skattetrekk = SKATT_2;
-        SKATTBAR_UTBETALING.andreTrekk = TREKK_2;
-        SKATTBAR_UTBETALING.utbetalingsdato = UTBETALINGSDATO;
-        SKATTBAR_UTBETALING.periodeFom = PERIODE_FOM;
-        SKATTBAR_UTBETALING.periodeTom = PERIODE_TOM;
-        SKATTBAR_UTBETALING.orgnummer = ORGANISASJONSNR;
-
-        SKATTBAR_UTBETALING_ANNEN.tittel = TITTEL;
-        SKATTBAR_UTBETALING_ANNEN.netto = NETTO;
-        SKATTBAR_UTBETALING_ANNEN.brutto = BRUTTO;
-        SKATTBAR_UTBETALING_ANNEN.skattetrekk = SKATT;
-        SKATTBAR_UTBETALING_ANNEN.andreTrekk = TREKK;
-        SKATTBAR_UTBETALING_ANNEN.utbetalingsdato = UTBETALINGSDATO;
-        SKATTBAR_UTBETALING_ANNEN.periodeFom = PERIODE_FOM;
-        SKATTBAR_UTBETALING_ANNEN.periodeTom = PERIODE_TOM;
-
-        SKATTBAR_UTBETALING_FRA_PRIVATPERSON.tittel = TITTEL_2;
-        SKATTBAR_UTBETALING_FRA_PRIVATPERSON.netto = NETTO_2;
-        SKATTBAR_UTBETALING_FRA_PRIVATPERSON.brutto = BRUTTO_2;
-        SKATTBAR_UTBETALING_FRA_PRIVATPERSON.skattetrekk = SKATT_2;
-        SKATTBAR_UTBETALING_FRA_PRIVATPERSON.andreTrekk = TREKK_2;
-        SKATTBAR_UTBETALING_FRA_PRIVATPERSON.utbetalingsdato = UTBETALINGSDATO;
-        SKATTBAR_UTBETALING_FRA_PRIVATPERSON.periodeFom = PERIODE_FOM;
-        SKATTBAR_UTBETALING_FRA_PRIVATPERSON.periodeTom = PERIODE_TOM;
-        SKATTBAR_UTBETALING_FRA_PRIVATPERSON.orgnummer = PERSONNR;
-
-        SKATTBAR_KOMPONENT.type = KOMPONENTTYPE_2;
-        SKATTBAR_KOMPONENT.belop = KOMPONENTBELOP_2;
-        SKATTBAR_KOMPONENT.satsType = SATSTYPE_2;
-        SKATTBAR_KOMPONENT.satsBelop = SATSBELOP_2;
-        SKATTBAR_KOMPONENT.satsAntall = SATSANTALL_2;
-
-        SKATTBAR_UTBETALING.komponenter = Collections.singletonList(SKATTBAR_KOMPONENT);
-        SKATTBAR_UTBETALING_ANNEN.komponenter = Collections.singletonList(SKATTBAR_KOMPONENT);
-    }
-
-    @Mock
-    private SkattbarInntektServiceNy skattbarInntektServiceNy;
+    private static final Utbetaling SKATTBAR_UTBETALING_ANNEN = new Utbetaling("skatteopplysninger", BRUTTO, SKATT, PERIODE_FOM, PERIODE_TOM, TITTEL, ORGANISASJONSNR_ANNEN);
+    private static final Utbetaling SKATTBAR_UTBETALING = new Utbetaling("skatteopplysninger", BRUTTO_2, SKATT_2, PERIODE_FOM, PERIODE_TOM, TITTEL_2, ORGANISASJONSNR);
+    private static final Utbetaling SKATTBAR_UTBETALING_FRA_PRIVATPERSON = new Utbetaling("skatteopplysninger", BRUTTO_2, SKATT_2, PERIODE_FOM, PERIODE_TOM, TITTEL_2, PERSONNR);
 
     @Mock
     private OrganisasjonService organisasjonService;
@@ -119,11 +62,6 @@ class SkattetatenSystemdataTest {
 
     @InjectMocks
     private SkattetatenSystemdata skattetatenSystemdata;
-
-    @BeforeEach
-    void setUp() {
-        when(skattbarInntektServiceNy.hentUtbetalinger(anyString())).thenReturn(null);
-    }
 
     @Test
     void skalOppdatereUtbetalinger() {
@@ -160,7 +98,7 @@ class SkattetatenSystemdataTest {
         JsonOkonomiOpplysningUtbetaling utbetaling_2 = jsonUtbetalinger.get(2);
 
         assertThat(jsonUtbetalinger).hasSize(3);
-        assertThat(utbetaling.getOrganisasjon()).isNull();
+        assertThat(utbetaling.getOrganisasjon().getOrganisasjonsnummer()).isEqualTo(ORGANISASJONSNR_ANNEN);
         assertThat(utbetaling_1.getOrganisasjon().getOrganisasjonsnummer()).isEqualTo(ORGANISASJONSNR);
         assertThat(utbetaling_2.getOrganisasjon()).isNull();
     }
@@ -278,26 +216,15 @@ class SkattetatenSystemdataTest {
 
     private void assertThatUtbetalingIsCorrectlyConverted(Utbetaling utbetaling, JsonOkonomiOpplysningUtbetaling jsonUtbetaling, String type) {
         assertThat(jsonUtbetaling.getType()).isEqualTo(type);
-        assertThat(jsonUtbetaling.getTittel()).isEqualTo(utbetaling.tittel);
-        assertThat(jsonUtbetaling.getBelop()).isEqualTo(tilIntegerMedAvrunding(String.valueOf(utbetaling.netto)));
-        assertThat(jsonUtbetaling.getBrutto()).isEqualTo(utbetaling.brutto);
-        assertThat(jsonUtbetaling.getNetto()).isEqualTo(utbetaling.netto);
-        assertThat(jsonUtbetaling.getUtbetalingsdato()).isEqualTo(utbetaling.utbetalingsdato.toString());
-        assertThat(jsonUtbetaling.getPeriodeFom()).isEqualTo(utbetaling.periodeFom.toString());
-        assertThat(jsonUtbetaling.getPeriodeTom()).isEqualTo(utbetaling.periodeTom.toString());
-        assertThat(jsonUtbetaling.getSkattetrekk()).isEqualTo(utbetaling.skattetrekk);
-        assertThat(jsonUtbetaling.getAndreTrekk()).isEqualTo(utbetaling.andreTrekk);
+        assertThat(jsonUtbetaling.getTittel()).isEqualTo(utbetaling.getTittel());
+        assertThat(jsonUtbetaling.getBelop()).isNull();
+        assertThat(jsonUtbetaling.getBrutto()).isEqualTo(utbetaling.getBrutto());
+        assertThat(jsonUtbetaling.getNetto()).isNull();
+        assertThat(jsonUtbetaling.getUtbetalingsdato()).isNull();
+        assertThat(jsonUtbetaling.getPeriodeFom()).isEqualTo(utbetaling.getPeriodeFom() == null ? null : utbetaling.getPeriodeFom().toString());
+        assertThat(jsonUtbetaling.getPeriodeTom()).isEqualTo(utbetaling.getPeriodeTom() == null ? null : utbetaling.getPeriodeTom().toString());
+        assertThat(jsonUtbetaling.getSkattetrekk()).isEqualTo(utbetaling.getSkattetrekk());
+        assertThat(jsonUtbetaling.getAndreTrekk()).isNull();
         assertThat(jsonUtbetaling.getOverstyrtAvBruker()).isFalse();
-        if (!utbetaling.komponenter.isEmpty()) {
-            for (int i = 0; i < utbetaling.komponenter.size(); i++) {
-                Utbetaling.Komponent komponent = utbetaling.komponenter.get(i);
-                JsonOkonomiOpplysningUtbetalingKomponent jsonKomponent = jsonUtbetaling.getKomponenter().get(i);
-                assertThat(jsonKomponent.getType()).isEqualTo(komponent.type);
-                assertThat(jsonKomponent.getBelop()).isEqualTo(komponent.belop);
-                assertThat(jsonKomponent.getSatsType()).isEqualTo(komponent.satsType);
-                assertThat(jsonKomponent.getSatsAntall()).isEqualTo(komponent.satsAntall);
-                assertThat(jsonKomponent.getSatsBelop()).isEqualTo(komponent.satsBelop);
-            }
-        }
     }
 }
