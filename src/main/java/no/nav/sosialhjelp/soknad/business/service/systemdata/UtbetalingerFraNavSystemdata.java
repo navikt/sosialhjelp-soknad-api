@@ -112,9 +112,9 @@ public class UtbetalingerFraNavSystemdata implements Systemdata {
                     new JsonOkonomiOpplysningUtbetalingKomponent()
                             .withBelop(komponent.getBelop())
                             .withType(komponent.getType())
-                            .withSatsBelop(komponent.getSatsbelop())
-                            .withSatsType(komponent.getSatstype())
-                            .withSatsAntall(komponent.getSatsantall()))
+                            .withSatsBelop(komponent.getSatsBelop())
+                            .withSatsType(komponent.getSatsType())
+                            .withSatsAntall(komponent.getSatsAntall()))
                     .collect(Collectors.toList());
         }
         return new ArrayList<>();
