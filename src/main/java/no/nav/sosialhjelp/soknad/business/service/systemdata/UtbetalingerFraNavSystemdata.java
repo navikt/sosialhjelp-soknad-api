@@ -7,8 +7,9 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysn
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOrganisasjon;
 import no.nav.sosialhjelp.soknad.business.service.soknadservice.Systemdata;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
-import no.nav.sosialhjelp.soknad.domain.model.utbetaling.Utbetaling;
-import no.nav.sosialhjelp.soknad.oppslag.utbetaling.UtbetalingService;
+import no.nav.sosialhjelp.soknad.navutbetalinger.NavUtbetalingerService;
+import no.nav.sosialhjelp.soknad.navutbetalinger.domain.Komponent;
+import no.nav.sosialhjelp.soknad.navutbetalinger.domain.NavUtbetaling;
 import no.nav.sosialhjelp.soknad.organisasjon.OrganisasjonService;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
@@ -29,14 +30,14 @@ public class UtbetalingerFraNavSystemdata implements Systemdata {
     public static final Logger log = getLogger(UtbetalingerFraNavSystemdata.class);
 
     private final OrganisasjonService organisasjonService;
-    private final UtbetalingService utbetalingService;
+    private final NavUtbetalingerService navUtbetalingerService;
 
     public UtbetalingerFraNavSystemdata(
             OrganisasjonService organisasjonService,
-            UtbetalingService utbetalingService
+            NavUtbetalingerService navUtbetalingerService
     ) {
         this.organisasjonService = organisasjonService;
-        this.utbetalingService = utbetalingService;
+        this.navUtbetalingerService = navUtbetalingerService;
     }
 
     @Override
@@ -62,7 +63,7 @@ public class UtbetalingerFraNavSystemdata implements Systemdata {
     }
 
     private List<JsonOkonomiOpplysningUtbetaling> innhentNavSystemregistrertInntekt(String personIdentifikator) {
-        var utbetalinger = utbetalingService.getUtbetalingerSiste40Dager(personIdentifikator);
+        var utbetalinger = navUtbetalingerService.getUtbetalingerSiste40Dager(personIdentifikator);
         if (utbetalinger == null) {
             return null;
         }
@@ -87,33 +88,34 @@ public class UtbetalingerFraNavSystemdata implements Systemdata {
         return null;
     }
 
-    private JsonOkonomiOpplysningUtbetaling mapToJsonOkonomiOpplysningUtbetaling(Utbetaling utbetaling) {
+    private JsonOkonomiOpplysningUtbetaling mapToJsonOkonomiOpplysningUtbetaling(NavUtbetaling navUtbetaling) {
         return new JsonOkonomiOpplysningUtbetaling()
                 .withKilde(JsonKilde.SYSTEM)
                 .withType(UTBETALING_NAVYTELSE)
-                .withTittel(utbetaling.tittel)
-                .withBelop(tilIntegerMedAvrunding(String.valueOf(utbetaling.netto)))
-                .withNetto(utbetaling.netto)
-                .withBrutto(utbetaling.brutto)
-                .withSkattetrekk(utbetaling.skattetrekk)
-                .withOrganisasjon(mapToJsonOrganisasjon(utbetaling.orgnummer))
-                .withAndreTrekk(utbetaling.andreTrekk)
-                .withPeriodeFom(utbetaling.periodeFom != null ? utbetaling.periodeFom.toString() : null)
-                .withPeriodeTom(utbetaling.periodeTom != null ? utbetaling.periodeTom.toString() : null)
-                .withUtbetalingsdato(utbetaling.utbetalingsdato == null ? null : utbetaling.utbetalingsdato.toString())
-                .withKomponenter(tilUtbetalingskomponentListe(utbetaling.komponenter))
+                .withTittel(navUtbetaling.getTittel())
+                .withBelop(tilIntegerMedAvrunding(String.valueOf(navUtbetaling.getNetto())))
+                .withNetto(navUtbetaling.getNetto())
+                .withBrutto(navUtbetaling.getBrutto())
+                .withSkattetrekk(navUtbetaling.getSkattetrekk())
+                .withOrganisasjon(mapToJsonOrganisasjon(navUtbetaling.getOrgnummer()))
+                .withAndreTrekk(navUtbetaling.getAndreTrekk())
+                .withPeriodeFom(navUtbetaling.getPeriodeFom() != null ? navUtbetaling.getPeriodeFom().toString() : null)
+                .withPeriodeTom(navUtbetaling.getPeriodeTom() != null ? navUtbetaling.getPeriodeTom().toString() : null)
+                .withUtbetalingsdato(navUtbetaling.getUtbetalingsdato() == null ? null : navUtbetaling.getUtbetalingsdato().toString())
+                .withKomponenter(tilUtbetalingskomponentListe(navUtbetaling.getKomponenter()))
                 .withOverstyrtAvBruker(false);
     }
 
-    private List<JsonOkonomiOpplysningUtbetalingKomponent> tilUtbetalingskomponentListe(List<Utbetaling.Komponent> komponenter) {
+    private List<JsonOkonomiOpplysningUtbetalingKomponent> tilUtbetalingskomponentListe(List<Komponent> komponenter) {
         if (komponenter != null) {
             return komponenter.stream().map(komponent ->
                     new JsonOkonomiOpplysningUtbetalingKomponent()
-                            .withBelop(komponent.belop)
-                            .withType(komponent.type)
-                            .withSatsBelop(komponent.satsBelop)
-                            .withSatsType(komponent.satsType)
-                            .withSatsAntall(komponent.satsAntall)).collect(Collectors.toList());
+                            .withBelop(komponent.getBelop())
+                            .withType(komponent.getType())
+                            .withSatsBelop(komponent.getSatsbelop())
+                            .withSatsType(komponent.getSatstype())
+                            .withSatsAntall(komponent.getSatsantall()))
+                    .collect(Collectors.toList());
         }
         return new ArrayList<>();
     }
