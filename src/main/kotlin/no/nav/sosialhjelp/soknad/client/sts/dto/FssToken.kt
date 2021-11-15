@@ -7,6 +7,6 @@ data class FssToken(
     val token_type: String,
     val expires_in: Long
 ) {
-    private val expirationTime: LocalDateTime = LocalDateTime.now().plusSeconds(expires_in - 60L)
-    val isExpired: Boolean = expirationTime.isBefore(LocalDateTime.now())
+
+    val refreshTime: LocalDateTime = LocalDateTime.now().plusSeconds(expires_in - 10L)
 }

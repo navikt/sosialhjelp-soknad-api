@@ -4,6 +4,7 @@ import no.nav.sosialhjelp.soknad.client.sts.dto.FssToken
 import no.nav.sosialhjelp.soknad.consumer.exceptions.TjenesteUtilgjengeligException
 import no.nav.sosialhjelp.soknad.domain.model.exception.SosialhjelpSoknadApiException
 import org.slf4j.LoggerFactory.getLogger
+import java.time.LocalDateTime
 import javax.ws.rs.ClientErrorException
 import javax.ws.rs.ServerErrorException
 import javax.ws.rs.client.Client
@@ -33,14 +34,16 @@ class StsClientImpl(
     }
 
     override fun getFssToken(): FssToken {
-        if (shouldRenew(cachedFssToken)) {
+        if (shouldRenewToken(cachedFssToken)) {
+            log.info("Henter nytt token fra STS")
             return try {
-                client.target(baseurl)
+                val fssToken = client.target(baseurl)
                     .queryParam("grant_type", "client_credentials")
                     .queryParam("scope", "openid")
                     .request()
                     .get(FssToken::class.java)
-                    .also { cachedFssToken = it }
+                cachedFssToken = fssToken
+                fssToken
             } catch (e: ClientErrorException) {
                 log.warn("STS - ${e.response.statusInfo}", e)
                 throw SosialhjelpSoknadApiException("STS - ${e.response.statusInfo}. Endpoint=$baseurl", e)
@@ -56,11 +59,18 @@ class StsClientImpl(
         return cachedFssToken!!
     }
 
-    private fun shouldRenew(fssToken: FssToken?): Boolean {
-        return fssToken?.isExpired ?: true
+    fun shouldRenewToken(token: FssToken?): Boolean {
+        if (token == null) {
+            return true
+        }
+        return isExpired(token)
+    }
+
+    private fun isExpired(token: FssToken): Boolean {
+        return token.refreshTime.isBefore(LocalDateTime.now())
     }
 
     companion object {
-        private val log = getLogger(StsClient::class.java)
+        private val log = getLogger(StsClientImpl::class.java)
     }
 }
