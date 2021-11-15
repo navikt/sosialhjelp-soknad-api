@@ -7,6 +7,19 @@ data class FssToken(
     val token_type: String,
     val expires_in: Long
 ) {
-    private val expirationTime: LocalDateTime = LocalDateTime.now().plusSeconds(expires_in - 60L)
-    val isExpired: Boolean = expirationTime.isBefore(LocalDateTime.now())
+
+    val expirationTime: LocalDateTime = LocalDateTime.now().plusSeconds(expires_in - 10L)
+
+    companion object {
+        fun shouldRenewToken(token: FssToken?): Boolean {
+            if (token == null) {
+                return true
+            }
+            return isExpired(token)
+        }
+
+        private fun isExpired(token: FssToken): Boolean {
+            return token.expirationTime.isBefore(LocalDateTime.now())
+        }
+    }
 }
