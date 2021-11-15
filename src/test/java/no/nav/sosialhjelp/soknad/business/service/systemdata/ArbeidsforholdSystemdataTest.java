@@ -9,8 +9,8 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktI
 import no.nav.sosialhjelp.soknad.arbeid.ArbeidsforholdService;
 import no.nav.sosialhjelp.soknad.arbeid.domain.Arbeidsforhold;
 import no.nav.sosialhjelp.soknad.business.service.TextService;
-import no.nav.sosialhjelp.soknad.consumer.skatt.SkattbarInntektService;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
+import no.nav.sosialhjelp.soknad.skattbarinntekt.SkattbarInntektService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

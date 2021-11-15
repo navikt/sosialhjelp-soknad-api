@@ -88,7 +88,7 @@ public class ApplicationExceptionMapper implements ExceptionMapper<SosialhjelpSo
             return status(INTERNAL_SERVER_ERROR).type(APPLICATION_JSON).entity(new Feilmelding("unexpected_error", "Noe uventet feilet.")).build();
         } else if (e instanceof PdlApiException){
             response = serverError().header(NO_BIGIP_5XX_REDIRECT, true);
-            logger.warn("Kall til PDL feilet", e);
+            logger.error("Kall til PDL feilet", e);
         } else {
             response = serverError().header(NO_BIGIP_5XX_REDIRECT, true);
             logger.error("REST-kall feilet", e);

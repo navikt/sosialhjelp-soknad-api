@@ -11,17 +11,17 @@ import org.junit.jupiter.api.Test
 import java.io.IOException
 import java.nio.charset.StandardCharsets
 
-internal class SkattbarInntektServiceNyTest {
+internal class SkattbarInntektServiceTest {
 
     private val skatteetatenClient: SkatteetatenClient = mockk()
-    private val skattbarInntektServiceNy = SkattbarInntektServiceNy(skatteetatenClient)
+    private val skattbarInntektService = SkattbarInntektService(skatteetatenClient)
 
     @Test
     internal fun `hentSkattbarInntekt`() {
         val skattbarInntekt = readResponseFromPath("/skatt/InntektOgSkatt.json")
         every { skatteetatenClient.hentSkattbarinntekt(any()) } returns skattbarInntekt
 
-        val utbetalinger = skattbarInntektServiceNy.hentUtbetalinger("01234567")
+        val utbetalinger = skattbarInntektService.hentUtbetalinger("01234567")
         val utbetalingPerTittel = utbetalinger?.groupBy { it.tittel }
         val lonn = utbetalingPerTittel?.get("Lønnsinntekt")!!
 
@@ -33,7 +33,7 @@ internal class SkattbarInntektServiceNyTest {
     fun `hentSkattbarInntekt for 2 maaneder ignorerer da arbeidsgiver 1 i forrige maaned`() {
         val skattbarInntekt = readResponseFromPath("/skatt/InntektOgSkattToMaaneder.json")
         every { skatteetatenClient.hentSkattbarinntekt(any()) } returns skattbarInntekt
-        val utbetalinger = skattbarInntektServiceNy.hentUtbetalinger("01234567")
+        val utbetalinger = skattbarInntektService.hentUtbetalinger("01234567")
         assertThat(utbetalinger).hasSize(2)
     }
 
@@ -41,7 +41,7 @@ internal class SkattbarInntektServiceNyTest {
     fun `hentSkattbarInntekt for 2 maaneder i forrige maaned begge maanedene og arbeidsgiverne vil vaere med`() {
         val skattbarInntekt = readResponseFromPath("/skatt/InntektOgSkattToMaanederToArbeidsgivere.json")
         every { skatteetatenClient.hentSkattbarinntekt(any()) } returns skattbarInntekt
-        val utbetalinger = skattbarInntektServiceNy.hentUtbetalinger("01234567")
+        val utbetalinger = skattbarInntektService.hentUtbetalinger("01234567")
         assertThat(utbetalinger).hasSize(2)
         assertThat(utbetalinger!!.groupBy { it.orgnummer }.entries).hasSize(2)
     }
