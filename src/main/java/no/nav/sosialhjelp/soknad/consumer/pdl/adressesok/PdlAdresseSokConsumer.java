@@ -40,7 +40,7 @@ public class PdlAdresseSokConsumer extends BasePdlConsumer {
             log.warn("PDL - feil oppdaget i response: {}", e.getMessage(), e);
             throw e;
         } catch (Exception e) {
-            log.warn("Kall til PDL feilet (adresseSok)");
+            log.error("Kall til PDL feilet (adresseSok)");
             throw new TjenesteUtilgjengeligException("Noe uventet feilet ved kall til PDL", e);
         }
     }
