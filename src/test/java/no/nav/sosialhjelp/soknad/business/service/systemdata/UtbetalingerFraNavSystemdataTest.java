@@ -63,7 +63,7 @@ class UtbetalingerFraNavSystemdataTest {
     private static final String PERSONNR = "01010011111";
 
     private static final Komponent NAV_KOMPONENT = new Komponent(KOMPONENTTYPE, KOMPONENTBELOP, SATSTYPE, SATSBELOP, SATSANTALL);
-    private static final NavUtbetaling NAV_UTBETALING_1 = new NavUtbetaling("type", NETTO, BRUTTO, SKATT, TREKK, null, UTBETALINGSDATO, PERIODE_FOM, PERIODE_TOM, singletonList(NAV_KOMPONENT), TITTEL, null);
+    private static final NavUtbetaling NAV_UTBETALING_1 = new NavUtbetaling("type", NETTO, BRUTTO, SKATT, TREKK, null, UTBETALINGSDATO, PERIODE_FOM, PERIODE_TOM, singletonList(NAV_KOMPONENT), TITTEL, "orgnr");
     private static final NavUtbetaling NAV_UTBETALING_2 = new NavUtbetaling("type", NETTO_2, BRUTTO_2, SKATT_2, TREKK_2, null, UTBETALINGSDATO, PERIODE_FOM, PERIODE_TOM, emptyList(), TITTEL_2, ORGANISASJONSNR);
     private static final NavUtbetaling NAV_UTBETALING_3 = new NavUtbetaling("type", NETTO_2, BRUTTO_2, SKATT_2, TREKK_2, null, UTBETALINGSDATO, PERIODE_FOM, PERIODE_TOM, singletonList(NAV_KOMPONENT), TITTEL_2, PERSONNR);
 
