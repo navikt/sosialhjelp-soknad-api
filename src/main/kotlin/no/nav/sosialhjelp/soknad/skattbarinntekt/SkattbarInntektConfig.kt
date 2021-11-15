@@ -18,8 +18,8 @@ open class SkattbarInntektConfig(
 ) {
 
     @Bean
-    open fun skattbarInntektServiceNy(skatteetatenClient: SkatteetatenClient): SkattbarInntektServiceNy {
-        return SkattbarInntektServiceNy(skatteetatenClient)
+    open fun skattbarInntektService(skatteetatenClient: SkatteetatenClient): SkattbarInntektService {
+        return SkattbarInntektService(skatteetatenClient)
     }
 
     @Bean
