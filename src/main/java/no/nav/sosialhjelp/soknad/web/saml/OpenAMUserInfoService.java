@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.web.saml;
 
+import no.nav.sosialhjelp.soknad.consumer.common.rest.RestConfig;
 import no.nav.sosialhjelp.soknad.consumer.common.rest.RestUtils;
 import no.nav.sosialhjelp.soknad.domain.model.exception.SamlUnauthorizedException;
 
@@ -12,7 +13,6 @@ import java.util.List;
 import java.util.Map;
 
 import static java.util.stream.Collectors.toMap;
-import static no.nav.sosialhjelp.soknad.consumer.common.rest.RestUtils.DEFAULT_CONFIG;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 public class OpenAMUserInfoService {
@@ -22,7 +22,8 @@ public class OpenAMUserInfoService {
     public static final String BASE_PATH = "/identity/json/attributes";
 
     private final URI endpointURL;
-    private final Client client = RestUtils.createClient(DEFAULT_CONFIG.withDisableParameterLogging(true));
+    private final RestConfig restConfig = new RestConfig.Builder().withDisableParameterLogging(true).build();
+    private final Client client = RestUtils.createClient(restConfig);
 
     public OpenAMUserInfoService() {
         this.endpointURL = resolveEndpointURL();
@@ -77,10 +78,7 @@ public class OpenAMUserInfoService {
 
     public String getUrl(String token, List<String> attributes) {
         UriBuilder uriBuilder = UriBuilder.fromUri(endpointURL).path(BASE_PATH).queryParam("subjectid", token);
-        attributes.forEach(a ->
-        {
-            uriBuilder.queryParam("attributenames", a);
-        });
+        attributes.forEach(a -> uriBuilder.queryParam("attributenames", a));
         return uriBuilder.toString();
     }
 
