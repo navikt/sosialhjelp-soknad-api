@@ -8,6 +8,7 @@ import no.nav.sosialhjelp.soknad.business.service.TextService;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.organisasjon.OrganisasjonService;
 import no.nav.sosialhjelp.soknad.skattbarinntekt.SkattbarInntektService;
+import no.nav.sosialhjelp.soknad.skattbarinntekt.domain.Utbetaling;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
@@ -97,21 +98,16 @@ public class SkattetatenSystemdata {
         return null;
     }
 
-    private JsonOkonomiOpplysningUtbetaling mapToJsonOkonomiOpplysningUtbetaling(no.nav.sosialhjelp.soknad.skattbarinntekt.domain.Utbetaling utbetaling) {
+    private JsonOkonomiOpplysningUtbetaling mapToJsonOkonomiOpplysningUtbetaling(Utbetaling utbetaling) {
         return new JsonOkonomiOpplysningUtbetaling()
                 .withKilde(JsonKilde.SYSTEM)
                 .withType(no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_SKATTEETATEN)
                 .withTittel(utbetaling.getTittel())
-//                .withBelop(null)
-//                .withNetto(null)
                 .withBrutto(utbetaling.getBrutto())
                 .withSkattetrekk(utbetaling.getSkattetrekk())
                 .withOrganisasjon(mapToJsonOrganisasjon(utbetaling.getOrgnummer()))
-//                .withAndreTrekk(null)
                 .withPeriodeFom(utbetaling.getPeriodeFom() != null ? utbetaling.getPeriodeFom().toString() : null)
                 .withPeriodeTom(utbetaling.getPeriodeTom() != null ? utbetaling.getPeriodeTom().toString() : null)
-//                .withUtbetalingsdato(null)
-//                .withKomponenter(null)
                 .withOverstyrtAvBruker(false);
     }
 }
