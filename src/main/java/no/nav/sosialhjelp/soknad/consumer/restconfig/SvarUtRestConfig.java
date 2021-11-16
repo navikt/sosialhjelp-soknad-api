@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.consumer.restconfig;
 
+import no.nav.sosialhjelp.soknad.consumer.common.rest.RestConfig;
 import no.nav.sosialhjelp.soknad.consumer.common.rest.RestUtils;
 import no.nav.sosialhjelp.soknad.consumer.svarut.SvarUtConsumer;
 import no.nav.sosialhjelp.soknad.consumer.svarut.SvarUtConsumerImpl;
@@ -54,9 +55,9 @@ public class SvarUtRestConfig {
     }
 
     private Client svarUtClient() {
-        var restConfig = RestUtils.RestConfig.builder()
-                .connectTimeout(SVARUT_TIMEOUT)
-                .readTimeout(SVARUT_TIMEOUT)
+        var restConfig = new RestConfig.Builder()
+                .withConnectTimeout(SVARUT_TIMEOUT)
+                .withReadTimeout(SVARUT_TIMEOUT)
                 .build();
         return RestUtils.createClient(restConfig)
                 .register(MultiPartFeature.class)
