@@ -19,7 +19,7 @@ import no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.UkjentBostedDto;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.VegadresseDto;
 import no.nav.sosialhjelp.soknad.domain.model.Barn;
 import no.nav.sosialhjelp.soknad.domain.model.Ektefelle;
-import no.nav.sosialhjelp.soknad.domain.model.Person;
+import no.nav.sosialhjelp.soknad.person.domain.Person;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

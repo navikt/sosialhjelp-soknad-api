@@ -13,11 +13,11 @@ import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
 import no.nav.sosialhjelp.soknad.business.service.soknadservice.Systemdata;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.PersonService;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
-import no.nav.sosialhjelp.soknad.domain.model.Bostedsadresse;
-import no.nav.sosialhjelp.soknad.domain.model.Kontaktadresse;
-import no.nav.sosialhjelp.soknad.domain.model.Matrikkeladresse;
-import no.nav.sosialhjelp.soknad.domain.model.Oppholdsadresse;
-import no.nav.sosialhjelp.soknad.domain.model.Vegadresse;
+import no.nav.sosialhjelp.soknad.person.domain.Bostedsadresse;
+import no.nav.sosialhjelp.soknad.person.domain.Kontaktadresse;
+import no.nav.sosialhjelp.soknad.person.domain.Matrikkeladresse;
+import no.nav.sosialhjelp.soknad.person.domain.Oppholdsadresse;
+import no.nav.sosialhjelp.soknad.person.domain.Vegadresse;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 

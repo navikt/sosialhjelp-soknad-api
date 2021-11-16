@@ -15,13 +15,13 @@ import no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.SivilstandDto;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.StatsborgerskapDto;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.VegadresseDto;
 import no.nav.sosialhjelp.soknad.domain.model.Barn;
-import no.nav.sosialhjelp.soknad.domain.model.Bostedsadresse;
 import no.nav.sosialhjelp.soknad.domain.model.Ektefelle;
-import no.nav.sosialhjelp.soknad.domain.model.Kontaktadresse;
-import no.nav.sosialhjelp.soknad.domain.model.Matrikkeladresse;
-import no.nav.sosialhjelp.soknad.domain.model.Oppholdsadresse;
-import no.nav.sosialhjelp.soknad.domain.model.Person;
-import no.nav.sosialhjelp.soknad.domain.model.Vegadresse;
+import no.nav.sosialhjelp.soknad.person.domain.Bostedsadresse;
+import no.nav.sosialhjelp.soknad.person.domain.Kontaktadresse;
+import no.nav.sosialhjelp.soknad.person.domain.Matrikkeladresse;
+import no.nav.sosialhjelp.soknad.person.domain.Oppholdsadresse;
+import no.nav.sosialhjelp.soknad.person.domain.Person;
+import no.nav.sosialhjelp.soknad.person.domain.Vegadresse;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -75,16 +75,18 @@ public class PdlPersonMapper {
         if (pdlPerson == null) {
             return null;
         }
-        return new Person()
-                .withFornavn(findFornavn(pdlPerson.getNavn()))
-                .withMellomnavn(findMellomnavn(pdlPerson.getNavn()))
-                .withEtternavn(findEtternavn(pdlPerson.getNavn()))
-                .withFnr(ident)
-                .withSivilstatus(findSivilstatus(pdlPerson.getSivilstand()))
-                .withStatsborgerskap(findStatsborgerskap(pdlPerson.getStatsborgerskap()))
-                .withBostedsadresse(mapToBostedsadresse(pdlPerson.getBostedsadresse()))
-                .withOppholdsadresse(mapToOppholdssadresse(pdlPerson.getOppholdsadresse(), pdlPerson.getBostedsadresse()))
-                .withKontaktadresse(maptoKontaktadresse(pdlPerson.getKontaktadresse(), pdlPerson.getBostedsadresse()));
+        return new Person(
+                findFornavn(pdlPerson.getNavn()),
+                findMellomnavn(pdlPerson.getNavn()),
+                findEtternavn(pdlPerson.getNavn()),
+                ident,
+                findSivilstatus(pdlPerson.getSivilstand()),
+                findStatsborgerskap(pdlPerson.getStatsborgerskap()),
+                null,
+                mapToBostedsadresse(pdlPerson.getBostedsadresse()),
+                mapToOppholdssadresse(pdlPerson.getOppholdsadresse(), pdlPerson.getBostedsadresse()),
+                maptoKontaktadresse(pdlPerson.getKontaktadresse(), pdlPerson.getBostedsadresse())
+        );
     }
 
     public Barn mapToBarn(PdlBarn pdlBarn, String barnIdent, PdlPerson pdlPerson) {

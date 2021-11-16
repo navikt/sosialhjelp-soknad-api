@@ -4,7 +4,7 @@ import no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.AdressebeskyttelseDto.G
 import no.nav.sosialhjelp.soknad.domain.model.Barn;
 import no.nav.sosialhjelp.soknad.domain.model.Ektefelle;
 import no.nav.sosialhjelp.soknad.domain.model.NavFodselsnummer;
-import no.nav.sosialhjelp.soknad.domain.model.Person;
+import no.nav.sosialhjelp.soknad.person.domain.Person;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
@@ -39,8 +39,9 @@ public class PersonService {
             return null;
         }
 
-        return pdlPersonMapper.mapToPerson(pdlPerson, ident)
-                .withEktefelle(hentEktefelle(pdlPerson));
+        var person = pdlPersonMapper.mapToPerson(pdlPerson, ident);
+        person.setEktefelle(hentEktefelle(pdlPerson));
+        return person;
     }
 
     public List<Barn> hentBarnForPerson(String ident) {
