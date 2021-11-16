@@ -5,13 +5,10 @@ import io.github.resilience4j.retry.Retry;
 import no.nav.sosialhjelp.soknad.consumer.mdc.MDCOperations;
 import no.nav.sosialhjelp.soknad.consumer.redis.RedisService;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
-import no.nav.sosialhjelp.soknad.oppslag.kontonummer.KontonummerDto;
 import no.nav.sosialhjelp.soknad.oppslag.utbetaling.UtbetalingerResponseDto;
 import org.eclipse.jetty.http.HttpHeader;
 import org.slf4j.Logger;
 
-import javax.ws.rs.NotAuthorizedException;
-import javax.ws.rs.NotFoundException;
 import javax.ws.rs.ServerErrorException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Invocation;
@@ -19,7 +16,6 @@ import javax.ws.rs.core.GenericType;
 import java.util.Optional;
 
 import static no.nav.sosialhjelp.soknad.consumer.redis.CacheConstants.CACHE_30_MINUTES_IN_SECONDS;
-import static no.nav.sosialhjelp.soknad.consumer.redis.CacheConstants.KONTONUMMER_CACHE_KEY_PREFIX;
 import static no.nav.sosialhjelp.soknad.consumer.redis.CacheConstants.NAVUTBETALINGER_CACHE_KEY_PREFIX;
 import static no.nav.sosialhjelp.soknad.consumer.redis.RedisUtils.objectMapper;
 import static no.nav.sosialhjelp.soknad.consumer.retry.RetryUtils.retryConfig;
@@ -59,42 +55,6 @@ public class OppslagConsumerImpl implements OppslagConsumer {
             if (response.getStatus() != 200) {
                 log.warn("Ping feilet mot oppslag.kontonummer: {}", response.getStatus());
             }
-        }
-    }
-
-    @Override
-    public KontonummerDto getKontonummer(String ident) {
-        return Optional.ofNullable(hentKontonummerFraCache(ident))
-                .orElse(hentKontonummerFraOppslagApi(ident));
-    }
-
-    private KontonummerDto hentKontonummerFraCache(String ident) {
-        return (KontonummerDto) redisService.get(KONTONUMMER_CACHE_KEY_PREFIX + ident, KontonummerDto.class);
-    }
-
-    private KontonummerDto hentKontonummerFraOppslagApi(String ident) {
-        var request = lagRequest(endpoint + "kontonummer");
-        try {
-            var kontonummerDto = withRetry(retry, () -> request.get(KontonummerDto.class));
-            lagreKontonummerTilCache(ident, kontonummerDto);
-            return kontonummerDto;
-        } catch (NotAuthorizedException e) {
-            log.warn("oppslag.kontonummer - 401 Unauthorized - {}", e.getMessage());
-            return null;
-        } catch (NotFoundException e) {
-            log.warn("oppslag.kontonummer - 404 Not Found - {}", e.getMessage());
-            return null;
-        } catch (Exception e) {
-            log.error("oppslag.kontonummer - Noe uventet feilet", e);
-            return null;
-        }
-    }
-
-    private void lagreKontonummerTilCache(String ident, KontonummerDto kontonummerDto) {
-        try {
-            redisService.setex(KONTONUMMER_CACHE_KEY_PREFIX + ident, objectMapper.writeValueAsBytes(kontonummerDto), CACHE_30_MINUTES_IN_SECONDS);
-        } catch (JsonProcessingException e) {
-            log.warn("Noe feilet ved lagring av kontonummerDto til redis", e);
         }
     }
 

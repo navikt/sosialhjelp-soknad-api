@@ -30,9 +30,9 @@ import no.nav.sosialhjelp.soknad.consumer.restconfig.DigisosApiRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.PdlAdresseSokRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.PdlGeografiskTilknytningRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.PdlHentPersonRestConfig;
+import no.nav.sosialhjelp.soknad.kontonummer.KontonummerConfig;
 import no.nav.sosialhjelp.soknad.navenhet.NavEnhetConfig;
 import no.nav.sosialhjelp.soknad.oppslag.OppslagRestConfig;
-import no.nav.sosialhjelp.soknad.oppslag.kontonummer.KontonummerService;
 import no.nav.sosialhjelp.soknad.oppslag.utbetaling.UtbetalingService;
 import no.nav.sosialhjelp.soknad.organisasjon.OrganisasjonConfig;
 import no.nav.sosialhjelp.soknad.skattbarinntekt.SkattbarInntektConfig;
@@ -58,6 +58,7 @@ import org.springframework.context.annotation.Import;
         NavEnhetConfig.class,
         KodeverkConfig.class,
         StsConfig.class,
+        KontonummerConfig.class,
         FeatureToggleConfig.class,
         RedisConfig.class,
         NoRedisConfig.class,
@@ -67,7 +68,6 @@ import org.springframework.context.annotation.Import;
         GeografiskTilknytningService.class,
         ConsumerConfig.WsServices.class,
         DokumentKrypterer.class,
-        KontonummerService.class,
         UtbetalingService.class,
         BydelConfig.class,
         BydelService.class,
