@@ -24,9 +24,9 @@ data class Vegadresse(
     val husnummer: Int?,
     val husbokstav: String?,
     val tilleggsnavn: String?,
-    val postnummer: String,
+    val postnummer: String?,
     val poststed: String?,
-    val kommunenummer: String,
+    val kommunenummer: String?,
     val bruksenhetsnummer: String?,
     val bydelsnummer: String?
 )
@@ -36,9 +36,9 @@ data class Vegadresse(
  */
 data class Matrikkeladresse(
     val matrikkelId: String,
-    val postnummer: String,
+    val postnummer: String?,
     val poststed: String?,
     val tilleggsnavn: String?,
-    val kommunenummer: String,
+    val kommunenummer: String?,
     val bruksenhetsnummer: String?
 )
