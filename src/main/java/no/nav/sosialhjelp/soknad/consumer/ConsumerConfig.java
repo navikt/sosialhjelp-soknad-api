@@ -14,6 +14,7 @@ import no.nav.sosialhjelp.soknad.client.idporten.IdPortenServiceImpl;
 import no.nav.sosialhjelp.soknad.client.kodeverk.KodeverkConfig;
 import no.nav.sosialhjelp.soknad.client.leaderelection.LeaderElectionConfig;
 import no.nav.sosialhjelp.soknad.client.maskinporten.MaskinportenClientConfig;
+import no.nav.sosialhjelp.soknad.client.pdl.PdlConfig;
 import no.nav.sosialhjelp.soknad.client.sts.StsConfig;
 import no.nav.sosialhjelp.soknad.client.svarut.SvarUtConfig;
 import no.nav.sosialhjelp.soknad.client.virusscan.VirusScanConfig;
@@ -21,14 +22,12 @@ import no.nav.sosialhjelp.soknad.consumer.fiks.DokumentKrypterer;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.PdlAdresseSokService;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.bydel.BydelConfig;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.bydel.BydelService;
-import no.nav.sosialhjelp.soknad.consumer.pdl.geografisktilknytning.GeografiskTilknytningService;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.PdlPersonMapper;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.PersonService;
 import no.nav.sosialhjelp.soknad.consumer.redis.NoRedisConfig;
 import no.nav.sosialhjelp.soknad.consumer.redis.RedisConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.DigisosApiRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.PdlAdresseSokRestConfig;
-import no.nav.sosialhjelp.soknad.consumer.restconfig.PdlGeografiskTilknytningRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.PdlHentPersonRestConfig;
 import no.nav.sosialhjelp.soknad.kontonummer.KontonummerConfig;
 import no.nav.sosialhjelp.soknad.navenhet.NavEnhetConfig;
@@ -44,6 +43,7 @@ import org.springframework.context.annotation.Import;
         MockProxiedWebClientConfig.class,
         NonProxiedWebClientConfig.class,
         SvarUtConfig.class,
+        PdlConfig.class,
         KommuneInfoClientConfig.class,
         IdPortenClientConfig.class,
         IdPortenClientConfigMockAlt.class,
@@ -65,7 +65,6 @@ import org.springframework.context.annotation.Import;
         PersonService.class,
         PdlPersonMapper.class,
         PdlAdresseSokService.class,
-        GeografiskTilknytningService.class,
         ConsumerConfig.WsServices.class,
         DokumentKrypterer.class,
         BydelConfig.class,
@@ -80,7 +79,6 @@ public class ConsumerConfig {
     @Import({
             PdlHentPersonRestConfig.class,
             PdlAdresseSokRestConfig.class,
-            PdlGeografiskTilknytningRestConfig.class,
             DigisosApiRestConfig.class,
     })
     public static class WsServices {
