@@ -15,7 +15,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus;
 import no.nav.sosialhjelp.soknad.business.service.soknadservice.Systemdata;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.PersonService;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
-import no.nav.sosialhjelp.soknad.domain.model.Barn;
+import no.nav.sosialhjelp.soknad.person.domain.Barn;
 import no.nav.sosialhjelp.soknad.person.domain.Ektefelle;
 import org.springframework.stereotype.Component;
 
@@ -155,7 +155,7 @@ public class FamilieSystemdata implements Systemdata {
                         .withHarDiskresjonskode(false))
                 .withErFolkeregistrertSammen(new JsonErFolkeregistrertSammen()
                         .withKilde(JsonKildeSystem.SYSTEM)
-                        .withVerdi(barn.erFolkeregistrertsammen()));
+                        .withVerdi(barn.getFolkeregistrertSammen()));
     }
 
 }

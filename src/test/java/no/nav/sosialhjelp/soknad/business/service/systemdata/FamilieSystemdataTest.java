@@ -23,7 +23,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSamvarsgrad;
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.PersonService;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
-import no.nav.sosialhjelp.soknad.domain.model.Barn;
+import no.nav.sosialhjelp.soknad.person.domain.Barn;
 import no.nav.sosialhjelp.soknad.person.domain.Ektefelle;
 import no.nav.sosialhjelp.soknad.person.domain.Person;
 import org.junit.jupiter.api.Test;
@@ -79,21 +79,8 @@ class FamilieSystemdataTest {
     private static final LocalDate FODSELSDATO_BARN_3 = LocalDate.parse("2003-02-05");
     private static final Integer SAMVARSGRAD_BARN_3 = 30;
 
-    private static final Barn BARN = new Barn()
-            .withFornavn(FORNAVN_BARN)
-            .withMellomnavn(MELLOMNAVN_BARN)
-            .withEtternavn(ETTERNAVN_BARN)
-            .withFodselsdato(FODSELSDATO_BARN)
-            .withFnr(FNR_BARN)
-            .withFolkeregistrertsammen(ER_FOLKEREGISTRERT_SAMMEN_BARN);
-
-    private static final Barn BARN_2 = new Barn()
-            .withFornavn(FORNAVN_BARN_2)
-            .withMellomnavn(MELLOMNAVN_BARN_2)
-            .withEtternavn(ETTERNAVN_BARN_2)
-            .withFodselsdato(FODSELSDATO_BARN_2)
-            .withFnr(FNR_BARN_2)
-            .withFolkeregistrertsammen(ER_FOLKEREGISTRERT_SAMMEN_BARN_2);
+    private static final Barn BARN = new Barn(FORNAVN_BARN, MELLOMNAVN_BARN, ETTERNAVN_BARN, FNR_BARN, FODSELSDATO_BARN, ER_FOLKEREGISTRERT_SAMMEN_BARN);
+    private static final Barn BARN_2 = new Barn(FORNAVN_BARN_2, MELLOMNAVN_BARN_2, ETTERNAVN_BARN_2, FNR_BARN_2, FODSELSDATO_BARN_2, ER_FOLKEREGISTRERT_SAMMEN_BARN_2);
 
     private static final JsonAnsvar JSON_ANSVAR = new JsonAnsvar()
             .withBarn(new JsonBarn()
@@ -396,7 +383,7 @@ class FamilieSystemdataTest {
     private void assertThatAnsvarIsCorrectlyConverted(Barn barn, JsonAnsvar jsonAnsvar) {
         JsonBarn jsonBarn = jsonAnsvar.getBarn();
 
-        assertThat(barn.erFolkeregistrertsammen()).isEqualTo(jsonAnsvar.getErFolkeregistrertSammen() == null ? null : jsonAnsvar.getErFolkeregistrertSammen().getVerdi());
+        assertThat(barn.getFolkeregistrertSammen()).isEqualTo(jsonAnsvar.getErFolkeregistrertSammen() == null ? null : jsonAnsvar.getErFolkeregistrertSammen().getVerdi());
 
         assertThat(barn.getFnr()).isEqualTo(jsonBarn.getPersonIdentifikator());
         if (barn.getFodselsdato() != null){

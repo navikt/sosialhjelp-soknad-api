@@ -17,7 +17,7 @@ import no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.SivilstandDto;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.StatsborgerskapDto;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.UkjentBostedDto;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.VegadresseDto;
-import no.nav.sosialhjelp.soknad.domain.model.Barn;
+import no.nav.sosialhjelp.soknad.person.domain.Barn;
 import no.nav.sosialhjelp.soknad.person.domain.Ektefelle;
 import no.nav.sosialhjelp.soknad.person.domain.Person;
 import org.junit.jupiter.api.BeforeEach;
@@ -478,7 +478,7 @@ class PdlPersonMapperTest {
         assertThat(barn.getEtternavn()).isEqualTo(ETTERNAVN.toUpperCase());
         assertThat(barn.getFnr()).isEqualTo(BARNIDENT);
         assertThat(barn.getFodselsdato()).isEqualTo(LocalDate.of(FOEDSELSDATO_BARN.getYear(), FOEDSELSDATO_BARN.getMonthValue(), FOEDSELSDATO_BARN.getDayOfMonth()));
-        assertThat(barn.erFolkeregistrertsammen()).isTrue();
+        assertThat(barn.getFolkeregistrertSammen()).isTrue();
     }
 
     @Test
@@ -578,7 +578,7 @@ class PdlPersonMapperTest {
 
         Barn barn = mapper.mapToBarn(pdlBarn, BARNIDENT, pdlPerson);
 
-        assertThat(barn.erFolkeregistrertsammen()).isFalse();
+        assertThat(barn.getFolkeregistrertSammen()).isFalse();
     }
 
     @Test
@@ -603,7 +603,7 @@ class PdlPersonMapperTest {
 
         Barn barn = mapper.mapToBarn(pdlBarn, BARNIDENT, pdlPerson);
 
-        assertThat(barn.erFolkeregistrertsammen()).isFalse();
+        assertThat(barn.getFolkeregistrertSammen()).isFalse();
     }
 
     @Test

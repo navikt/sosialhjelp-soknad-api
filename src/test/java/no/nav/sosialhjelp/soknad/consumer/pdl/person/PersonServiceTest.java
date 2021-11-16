@@ -5,7 +5,7 @@ import no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.EndringDto;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.ForelderBarnRelasjonDto;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.MetadataDto;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.SivilstandDto;
-import no.nav.sosialhjelp.soknad.domain.model.Barn;
+import no.nav.sosialhjelp.soknad.person.domain.Barn;
 import no.nav.sosialhjelp.soknad.person.domain.Ektefelle;
 import no.nav.sosialhjelp.soknad.person.domain.Person;
 import org.junit.jupiter.api.Test;
@@ -52,7 +52,7 @@ class PersonServiceTest {
 
     private final Person person = new Person("fornavn", "mellomnavn", "etternavn", "fnr", "ugift", emptyList(), null, null, null, null);
     private final Ektefelle ektefelle = new Ektefelle("fornavn", null, "etternavn", LocalDate.now(), "fnr2", true, false);
-    private final Barn barn = new Barn();
+    private final Barn barn = new Barn("fornavn", null, "etternavn", "barnident", null, true);
 
     @Test
     void skalHentePersonMedEktefelle() {

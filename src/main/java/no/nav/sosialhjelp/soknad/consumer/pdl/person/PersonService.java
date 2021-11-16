@@ -1,8 +1,8 @@
 package no.nav.sosialhjelp.soknad.consumer.pdl.person;
 
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.AdressebeskyttelseDto.Gradering;
-import no.nav.sosialhjelp.soknad.domain.model.Barn;
 import no.nav.sosialhjelp.soknad.domain.model.NavFodselsnummer;
+import no.nav.sosialhjelp.soknad.person.domain.Barn;
 import no.nav.sosialhjelp.soknad.person.domain.Ektefelle;
 import no.nav.sosialhjelp.soknad.person.domain.Person;
 import org.slf4j.Logger;

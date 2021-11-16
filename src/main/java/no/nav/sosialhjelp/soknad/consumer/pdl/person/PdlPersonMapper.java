@@ -14,7 +14,7 @@ import no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.OppholdsadresseDto;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.SivilstandDto;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.StatsborgerskapDto;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.VegadresseDto;
-import no.nav.sosialhjelp.soknad.domain.model.Barn;
+import no.nav.sosialhjelp.soknad.person.domain.Barn;
 import no.nav.sosialhjelp.soknad.person.domain.Bostedsadresse;
 import no.nav.sosialhjelp.soknad.person.domain.Ektefelle;
 import no.nav.sosialhjelp.soknad.person.domain.Kontaktadresse;
@@ -96,13 +96,14 @@ public class PdlPersonMapper {
         if (isMyndig(pdlBarn.getFoedsel()) || isDoed(pdlBarn.getFolkeregisterpersonstatus())) {
             return null;
         }
-        return new Barn()
-                .withFornavn(findFornavn(pdlBarn.getNavn()))
-                .withMellomnavn(findMellomnavn(pdlBarn.getNavn()))
-                .withEtternavn(findEtternavn(pdlBarn.getNavn()))
-                .withFnr(barnIdent)
-                .withFodselsdato(findFodselsdato(pdlBarn.getFoedsel()))
-                .withFolkeregistrertsammen(isFolkeregistrertSammen(pdlPerson.getBostedsadresse(), pdlBarn.getBostedsadresse()));
+        return new Barn(
+                findFornavn(pdlBarn.getNavn()),
+                findMellomnavn(pdlBarn.getNavn()),
+                findEtternavn(pdlBarn.getNavn()),
+                barnIdent,
+                findFodselsdato(pdlBarn.getFoedsel()),
+                isFolkeregistrertSammen(pdlPerson.getBostedsadresse(), pdlBarn.getBostedsadresse())
+        );
     }
 
     public Ektefelle mapToEktefelle(PdlEktefelle pdlEktefelle, String ektefelleIdent, PdlPerson pdlPerson) {
