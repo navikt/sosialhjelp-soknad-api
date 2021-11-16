@@ -16,12 +16,15 @@ open class NavUtbetalingerService(
         }
 
         val utbetalinger = responseDto.utbetalinger.map { it.toDomain }
-        log.info("Antall navytelser utbetaling ${utbetalinger.size}, ${komponenterLogg(utbetalinger)}")
+        log.info("Antall navytelser utbetaling ${utbetalinger.size}. ${komponenterLogg(utbetalinger)}")
         return utbetalinger
     }
 
     private fun komponenterLogg(utbetalinger: List<NavUtbetaling>): String {
-        return utbetalinger.joinToString(prefix = "antall komponenter: ", separator = ", ") { "Utbetaling${utbetalinger.indexOf(it)} - ${it.komponenter.size}" }
+        if (utbetalinger.isEmpty()) {
+            return ""
+        }
+        return utbetalinger.joinToString(prefix = "Antall komponenter: ", separator = ", ") { "Utbetaling${utbetalinger.indexOf(it)} - ${it.komponenter.size}" }
     }
 
     companion object {
