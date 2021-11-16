@@ -24,7 +24,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.PersonService;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.domain.model.Barn;
-import no.nav.sosialhjelp.soknad.domain.model.Ektefelle;
+import no.nav.sosialhjelp.soknad.person.domain.Ektefelle;
 import no.nav.sosialhjelp.soknad.person.domain.Person;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -53,19 +53,9 @@ import static org.mockito.Mockito.when;
 class FamilieSystemdataTest {
 
     private static final String EIER = "12345678901";
-    private static final Ektefelle EKTEFELLE = new Ektefelle()
-            .withFornavn("Av")
-            .withMellomnavn("Og")
-            .withEtternavn("På")
-            .withFnr("11111111111")
-            .withFodselsdato(LocalDate.parse("1993-02-01"));
-
-    private static final Ektefelle TOM_EKTEFELLE = new Ektefelle()
-            .withFornavn("")
-            .withMellomnavn("")
-            .withEtternavn("");
-
-    private static final Ektefelle EKTEFELLE_MED_DISKRESJONSKODE = new Ektefelle().withIkketilgangtilektefelle(true);
+    private static final Ektefelle EKTEFELLE = new Ektefelle("Av", "Og", "På", LocalDate.parse("1993-02-01"), "11111111111", false, false);
+    private static final Ektefelle TOM_EKTEFELLE = new Ektefelle("", "", "", null, null, false, true);
+    private static final Ektefelle EKTEFELLE_MED_DISKRESJONSKODE = new Ektefelle(true);
 
     private static final String FORNAVN_BARN = "Rudolf";
     private static final String MELLOMNAVN_BARN = "Rød På";

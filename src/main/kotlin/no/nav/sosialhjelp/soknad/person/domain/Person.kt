@@ -1,7 +1,5 @@
 package no.nav.sosialhjelp.soknad.person.domain
 
-import no.nav.sosialhjelp.soknad.domain.model.Ektefelle
-
 data class Person(
     val fornavn: String,
     val mellomnavn: String?,

@@ -15,8 +15,8 @@ import no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.SivilstandDto;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.StatsborgerskapDto;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.VegadresseDto;
 import no.nav.sosialhjelp.soknad.domain.model.Barn;
-import no.nav.sosialhjelp.soknad.domain.model.Ektefelle;
 import no.nav.sosialhjelp.soknad.person.domain.Bostedsadresse;
+import no.nav.sosialhjelp.soknad.person.domain.Ektefelle;
 import no.nav.sosialhjelp.soknad.person.domain.Kontaktadresse;
 import no.nav.sosialhjelp.soknad.person.domain.Matrikkeladresse;
 import no.nav.sosialhjelp.soknad.person.domain.Oppholdsadresse;
@@ -110,17 +110,17 @@ public class PdlPersonMapper {
             return null;
         }
         if (hasAdressebeskyttelse(pdlEktefelle.getAdressebeskyttelse())) {
-            return new Ektefelle()
-                    .withIkketilgangtilektefelle(true);
+            return new Ektefelle(true);
         }
-        return new Ektefelle()
-                .withFornavn(findFornavn(pdlEktefelle.getNavn()))
-                .withMellomnavn(findMellomnavn(pdlEktefelle.getNavn()))
-                .withEtternavn(findEtternavn(pdlEktefelle.getNavn()))
-                .withFnr(ektefelleIdent)
-                .withFodselsdato(findFodselsdato(pdlEktefelle.getFoedsel()))
-                .withIkketilgangtilektefelle(false)
-                .withFolkeregistrertsammen(isFolkeregistrertSammen(pdlPerson.getBostedsadresse(), pdlEktefelle.getBostedsadresse()));
+        return new Ektefelle(
+                findFornavn(pdlEktefelle.getNavn()),
+                findMellomnavn(pdlEktefelle.getNavn()),
+                findEtternavn(pdlEktefelle.getNavn()),
+                findFodselsdato(pdlEktefelle.getFoedsel()),
+                ektefelleIdent,
+                isFolkeregistrertSammen(pdlPerson.getBostedsadresse(), pdlEktefelle.getBostedsadresse()),
+                false
+        );
     }
 
     public Gradering mapToAdressebeskyttelse(PdlAdressebeskyttelse pdlAdressebeskyttelse) {
