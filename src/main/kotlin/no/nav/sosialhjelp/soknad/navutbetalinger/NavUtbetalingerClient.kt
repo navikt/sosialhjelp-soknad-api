@@ -34,7 +34,7 @@ class NavUtbetalingerClientImpl(
             .request()
             .get().use { response ->
                 if (response.status != 200) {
-                    log.warn("Ping feilet mot oppslag.utbetalinger: ${response.statusInfo}")
+                    log.warn("Ping feilet mot Utbetalinger: ${response.statusInfo}")
                 }
             }
     }
@@ -61,7 +61,7 @@ class NavUtbetalingerClientImpl(
             lagreTilCache(ident, response)
             response
         } catch (e: Exception) {
-            log.error("oppslag.utbetalinger - Noe uventet feilet", e)
+            log.error("Utbetalinger - Noe uventet feilet", e)
             return null
         }
     }
