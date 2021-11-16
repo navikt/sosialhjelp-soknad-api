@@ -31,7 +31,7 @@ open class StsConfig(
         return Pingable {
             val metadata = PingMetadata(baseurl, "STSClient", false)
             try {
-                stsClient().ping()
+                stsClient.ping()
                 Ping.lyktes(metadata)
             } catch (e: Exception) {
                 Ping.feilet(metadata, e)

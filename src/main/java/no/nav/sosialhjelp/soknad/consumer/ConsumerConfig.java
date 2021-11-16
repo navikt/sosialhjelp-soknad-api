@@ -15,6 +15,7 @@ import no.nav.sosialhjelp.soknad.client.kodeverk.KodeverkConfig;
 import no.nav.sosialhjelp.soknad.client.leaderelection.LeaderElectionConfig;
 import no.nav.sosialhjelp.soknad.client.maskinporten.MaskinportenClientConfig;
 import no.nav.sosialhjelp.soknad.client.sts.StsConfig;
+import no.nav.sosialhjelp.soknad.client.svarut.SvarUtConfig;
 import no.nav.sosialhjelp.soknad.client.virusscan.VirusScanConfig;
 import no.nav.sosialhjelp.soknad.consumer.fiks.DokumentKrypterer;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.PdlAdresseSokService;
@@ -29,8 +30,6 @@ import no.nav.sosialhjelp.soknad.consumer.restconfig.DigisosApiRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.PdlAdresseSokRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.PdlGeografiskTilknytningRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.PdlHentPersonRestConfig;
-import no.nav.sosialhjelp.soknad.consumer.restconfig.SvarUtRestConfig;
-import no.nav.sosialhjelp.soknad.consumer.svarut.SvarUtService;
 import no.nav.sosialhjelp.soknad.kontonummer.KontonummerConfig;
 import no.nav.sosialhjelp.soknad.navenhet.NavEnhetConfig;
 import no.nav.sosialhjelp.soknad.navutbetalinger.NavUtbetalingerConfig;
@@ -44,6 +43,7 @@ import org.springframework.context.annotation.Import;
         ProxiedWebClientConfig.class,
         MockProxiedWebClientConfig.class,
         NonProxiedWebClientConfig.class,
+        SvarUtConfig.class,
         KommuneInfoClientConfig.class,
         IdPortenClientConfig.class,
         IdPortenClientConfigMockAlt.class,
@@ -71,7 +71,6 @@ import org.springframework.context.annotation.Import;
         BydelConfig.class,
         BydelService.class,
         LeaderElectionConfig.class,
-        SvarUtService.class,
         VirusScanConfig.class
 })
 
@@ -83,7 +82,6 @@ public class ConsumerConfig {
             PdlAdresseSokRestConfig.class,
             PdlGeografiskTilknytningRestConfig.class,
             DigisosApiRestConfig.class,
-            SvarUtRestConfig.class
     })
     public static class WsServices {
     }
