@@ -36,7 +36,7 @@ class KontonummerClientImpl(
             .request()
             .get().use { response ->
                 if (response.status != 200) {
-                    log.warn("Ping feilet mot oppslag.kontonummer: ${response.statusInfo}")
+                    log.warn("Ping feilet mot Kontonummer: ${response.statusInfo}")
                 }
             }
     }
@@ -63,13 +63,13 @@ class KontonummerClientImpl(
             lagreKontonummerTilCache(ident, response)
             response
         } catch (e: NotAuthorizedException) {
-            log.warn("oppslag.kontonummer - 401 Unauthorized - {}", e.message)
+            log.warn("Kontonummer - 401 Unauthorized - {}", e.message)
             null
         } catch (e: NotFoundException) {
-            log.warn("oppslag.kontonummer - 404 Not Found - {}", e.message)
+            log.warn("Kontonummer - 404 Not Found - {}", e.message)
             null
         } catch (e: Exception) {
-            log.error("oppslag.kontonummer - Noe uventet feilet", e)
+            log.error("Kontonummer - Noe uventet feilet", e)
             null
         }
     }
