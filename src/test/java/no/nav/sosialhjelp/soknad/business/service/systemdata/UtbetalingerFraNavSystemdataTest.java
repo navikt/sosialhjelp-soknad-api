@@ -5,8 +5,9 @@ import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetalingKomponent;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
-import no.nav.sosialhjelp.soknad.domain.model.utbetaling.Utbetaling;
-import no.nav.sosialhjelp.soknad.oppslag.utbetaling.UtbetalingService;
+import no.nav.sosialhjelp.soknad.navutbetalinger.NavUtbetalingerService;
+import no.nav.sosialhjelp.soknad.navutbetalinger.domain.Komponent;
+import no.nav.sosialhjelp.soknad.navutbetalinger.domain.NavUtbetaling;
 import no.nav.sosialhjelp.soknad.organisasjon.OrganisasjonService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,9 +18,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 import static no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_NAVYTELSE;
 import static no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
 import static no.nav.sosialhjelp.soknad.business.service.systemdata.UtbetalingerFraNavSystemdata.tilIntegerMedAvrunding;
@@ -60,57 +62,16 @@ class UtbetalingerFraNavSystemdataTest {
     private static final String ORGANISASJONSNR = "012345678";
     private static final String PERSONNR = "01010011111";
 
-    private static final Utbetaling.Komponent NAV_KOMPONENT = new Utbetaling.Komponent();
-    private static final Utbetaling NAV_UTBETALING_1 = new Utbetaling();
-    private static final Utbetaling NAV_UTBETALING_2 = new Utbetaling();
-    private static final Utbetaling NAV_UTBETALING_3 = new Utbetaling();
-
-    static {
-        NAV_UTBETALING_1.tittel = TITTEL;
-        NAV_UTBETALING_1.netto = NETTO;
-        NAV_UTBETALING_1.brutto = BRUTTO;
-        NAV_UTBETALING_1.skattetrekk = SKATT;
-        NAV_UTBETALING_1.andreTrekk = TREKK;
-        NAV_UTBETALING_1.utbetalingsdato = UTBETALINGSDATO;
-        NAV_UTBETALING_1.periodeFom = PERIODE_FOM;
-        NAV_UTBETALING_1.periodeTom = PERIODE_TOM;
-
-        NAV_KOMPONENT.type = KOMPONENTTYPE;
-        NAV_KOMPONENT.belop = KOMPONENTBELOP;
-        NAV_KOMPONENT.satsType = SATSTYPE;
-        NAV_KOMPONENT.satsBelop = SATSBELOP;
-        NAV_KOMPONENT.satsAntall = SATSANTALL;
-
-        NAV_UTBETALING_1.komponenter = Collections.singletonList(NAV_KOMPONENT);
-
-        NAV_UTBETALING_2.tittel = TITTEL_2;
-        NAV_UTBETALING_2.netto = NETTO_2;
-        NAV_UTBETALING_2.brutto = BRUTTO_2;
-        NAV_UTBETALING_2.skattetrekk = SKATT_2;
-        NAV_UTBETALING_2.andreTrekk = TREKK_2;
-        NAV_UTBETALING_2.utbetalingsdato = UTBETALINGSDATO;
-        NAV_UTBETALING_2.periodeFom = PERIODE_FOM;
-        NAV_UTBETALING_2.periodeTom = PERIODE_TOM;
-        NAV_UTBETALING_2.orgnummer = ORGANISASJONSNR;
-
-        NAV_UTBETALING_3.tittel = TITTEL_2;
-        NAV_UTBETALING_3.netto = NETTO_2;
-        NAV_UTBETALING_3.brutto = BRUTTO_2;
-        NAV_UTBETALING_3.skattetrekk = SKATT_2;
-        NAV_UTBETALING_3.andreTrekk = TREKK_2;
-        NAV_UTBETALING_3.utbetalingsdato = UTBETALINGSDATO;
-        NAV_UTBETALING_3.periodeFom = PERIODE_FOM;
-        NAV_UTBETALING_3.periodeTom = PERIODE_TOM;
-        NAV_UTBETALING_3.orgnummer = PERSONNR;
-
-        NAV_UTBETALING_2.komponenter = Collections.singletonList(NAV_KOMPONENT);
-    }
+    private static final Komponent NAV_KOMPONENT = new Komponent(KOMPONENTTYPE, KOMPONENTBELOP, SATSTYPE, SATSBELOP, SATSANTALL);
+    private static final NavUtbetaling NAV_UTBETALING_1 = new NavUtbetaling("type", NETTO, BRUTTO, SKATT, TREKK, null, UTBETALINGSDATO, PERIODE_FOM, PERIODE_TOM, singletonList(NAV_KOMPONENT), TITTEL, "orgnr");
+    private static final NavUtbetaling NAV_UTBETALING_2 = new NavUtbetaling("type", NETTO_2, BRUTTO_2, SKATT_2, TREKK_2, null, UTBETALINGSDATO, PERIODE_FOM, PERIODE_TOM, emptyList(), TITTEL_2, ORGANISASJONSNR);
+    private static final NavUtbetaling NAV_UTBETALING_3 = new NavUtbetaling("type", NETTO_2, BRUTTO_2, SKATT_2, TREKK_2, null, UTBETALINGSDATO, PERIODE_FOM, PERIODE_TOM, singletonList(NAV_KOMPONENT), TITTEL_2, PERSONNR);
 
     @Mock
     private OrganisasjonService organisasjonService;
 
     @Mock
-    private UtbetalingService utbetalingService;
+    private NavUtbetalingerService navUtbetalingerService;
 
     @InjectMocks
     private UtbetalingerFraNavSystemdata utbetalingerFraNavSystemdata;
@@ -118,8 +79,8 @@ class UtbetalingerFraNavSystemdataTest {
     @Test
     void skalOppdatereUtbetalinger() {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
-        List<Utbetaling> nav_utbetalinger = Arrays.asList(NAV_UTBETALING_1, NAV_UTBETALING_2);
-        when(utbetalingService.getUtbetalingerSiste40Dager(anyString())).thenReturn(nav_utbetalinger);
+        List<NavUtbetaling> nav_utbetalinger = Arrays.asList(NAV_UTBETALING_1, NAV_UTBETALING_2);
+        when(navUtbetalingerService.getUtbetalingerSiste40Dager(anyString())).thenReturn(nav_utbetalinger);
 
         utbetalingerFraNavSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
 
@@ -135,8 +96,8 @@ class UtbetalingerFraNavSystemdataTest {
     @Test
     void skalKunInkludereGyldigeOrganisasjonsnummer() {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
-        List<Utbetaling> nav_utbetalinger = Arrays.asList(NAV_UTBETALING_1, NAV_UTBETALING_2, NAV_UTBETALING_3);
-        when(utbetalingService.getUtbetalingerSiste40Dager(anyString())).thenReturn(nav_utbetalinger);
+        List<NavUtbetaling> nav_utbetalinger = Arrays.asList(NAV_UTBETALING_1, NAV_UTBETALING_2, NAV_UTBETALING_3);
+        when(navUtbetalingerService.getUtbetalingerSiste40Dager(anyString())).thenReturn(nav_utbetalinger);
 
         utbetalingerFraNavSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
 
@@ -155,8 +116,8 @@ class UtbetalingerFraNavSystemdataTest {
     void skalIkksLasteNedUtbetalingerUtenSamtykke() {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid()
                 .withJsonInternalSoknad(createJsonInternalSoknadWithUtbetalinger());
-        List<Utbetaling> utbetalinger = Collections.singletonList(NAV_UTBETALING_1);
-        when(utbetalingService.getUtbetalingerSiste40Dager(anyString())).thenReturn(utbetalinger);
+        List<NavUtbetaling> utbetalinger = singletonList(NAV_UTBETALING_1);
+        when(navUtbetalingerService.getUtbetalingerSiste40Dager(anyString())).thenReturn(utbetalinger);
 
         utbetalingerFraNavSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
 
@@ -178,27 +139,27 @@ class UtbetalingerFraNavSystemdataTest {
         return jsonInternalSoknad;
     }
 
-    private void assertThatUtbetalingIsCorrectlyConverted(Utbetaling utbetaling, JsonOkonomiOpplysningUtbetaling jsonUtbetaling, String type) {
+    private void assertThatUtbetalingIsCorrectlyConverted(NavUtbetaling navUtbetaling, JsonOkonomiOpplysningUtbetaling jsonUtbetaling, String type) {
         assertThat(jsonUtbetaling.getType()).isEqualTo(type);
-        assertThat(jsonUtbetaling.getTittel()).isEqualTo(utbetaling.tittel);
-        assertThat(jsonUtbetaling.getBelop()).isEqualTo(tilIntegerMedAvrunding(String.valueOf(utbetaling.netto)));
-        assertThat(jsonUtbetaling.getBrutto()).isEqualTo(utbetaling.brutto);
-        assertThat(jsonUtbetaling.getNetto()).isEqualTo(utbetaling.netto);
-        assertThat(jsonUtbetaling.getUtbetalingsdato()).isEqualTo(utbetaling.utbetalingsdato.toString());
-        assertThat(jsonUtbetaling.getPeriodeFom()).isEqualTo(utbetaling.periodeFom.toString());
-        assertThat(jsonUtbetaling.getPeriodeTom()).isEqualTo(utbetaling.periodeTom.toString());
-        assertThat(jsonUtbetaling.getSkattetrekk()).isEqualTo(utbetaling.skattetrekk);
-        assertThat(jsonUtbetaling.getAndreTrekk()).isEqualTo(utbetaling.andreTrekk);
+        assertThat(jsonUtbetaling.getTittel()).isEqualTo(navUtbetaling.getTittel());
+        assertThat(jsonUtbetaling.getBelop()).isEqualTo(tilIntegerMedAvrunding(String.valueOf(navUtbetaling.getNetto())));
+        assertThat(jsonUtbetaling.getBrutto()).isEqualTo(navUtbetaling.getBrutto());
+        assertThat(jsonUtbetaling.getNetto()).isEqualTo(navUtbetaling.getNetto());
+        assertThat(jsonUtbetaling.getUtbetalingsdato()).isEqualTo(navUtbetaling.getUtbetalingsdato().toString());
+        assertThat(jsonUtbetaling.getPeriodeFom()).isEqualTo(navUtbetaling.getPeriodeFom().toString());
+        assertThat(jsonUtbetaling.getPeriodeTom()).isEqualTo(navUtbetaling.getPeriodeTom().toString());
+        assertThat(jsonUtbetaling.getSkattetrekk()).isEqualTo(navUtbetaling.getSkattetrekk());
+        assertThat(jsonUtbetaling.getAndreTrekk()).isEqualTo(navUtbetaling.getAndreTrekk());
         assertThat(jsonUtbetaling.getOverstyrtAvBruker()).isFalse();
-        if (!utbetaling.komponenter.isEmpty()) {
-            for (int i = 0; i < utbetaling.komponenter.size(); i++) {
-                Utbetaling.Komponent komponent = utbetaling.komponenter.get(i);
+        if (!navUtbetaling.getKomponenter().isEmpty()) {
+            for (int i = 0; i < navUtbetaling.getKomponenter().size(); i++) {
+                Komponent komponent = navUtbetaling.getKomponenter().get(i);
                 JsonOkonomiOpplysningUtbetalingKomponent jsonKomponent = jsonUtbetaling.getKomponenter().get(i);
-                assertThat(jsonKomponent.getType()).isEqualTo(komponent.type);
-                assertThat(jsonKomponent.getBelop()).isEqualTo(komponent.belop);
-                assertThat(jsonKomponent.getSatsType()).isEqualTo(komponent.satsType);
-                assertThat(jsonKomponent.getSatsAntall()).isEqualTo(komponent.satsAntall);
-                assertThat(jsonKomponent.getSatsBelop()).isEqualTo(komponent.satsBelop);
+                assertThat(jsonKomponent.getType()).isEqualTo(komponent.getType());
+                assertThat(jsonKomponent.getBelop()).isEqualTo(komponent.getBelop());
+                assertThat(jsonKomponent.getSatsType()).isEqualTo(komponent.getSatsType());
+                assertThat(jsonKomponent.getSatsAntall()).isEqualTo(komponent.getSatsAntall());
+                assertThat(jsonKomponent.getSatsBelop()).isEqualTo(komponent.getSatsBelop());
             }
         }
     }
