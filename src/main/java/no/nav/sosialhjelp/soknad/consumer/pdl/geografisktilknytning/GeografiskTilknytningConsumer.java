@@ -57,7 +57,7 @@ public class GeografiskTilknytningConsumer extends BasePdlConsumer {
         } catch (PdlApiException e) {
             throw e;
         } catch (Exception e) {
-            log.warn("Kall til PDL feilet (hentGeografiskTilknytning)");
+            log.error("Kall til PDL feilet (hentGeografiskTilknytning)");
             throw new TjenesteUtilgjengeligException("Noe uventet feilet ved kall til PDL", e);
         }
     }
@@ -75,7 +75,7 @@ public class GeografiskTilknytningConsumer extends BasePdlConsumer {
         try {
             redisService.setex(GEOGRAFISK_TILKNYTNING_CACHE_KEY_PREFIX + ident, pdlMapper.writeValueAsBytes(geografiskTilknytningDto), PDL_CACHE_SECONDS);
         } catch (JsonProcessingException e) {
-            log.warn("Noe feilet ved serialisering av geografiskTilknytningDto fra Pdl - {}", geografiskTilknytningDto.getClass().getName(), e);
+            log.error("Noe feilet ved serialisering av geografiskTilknytningDto fra Pdl - {}", geografiskTilknytningDto.getClass().getName(), e);
         }
     }
 }

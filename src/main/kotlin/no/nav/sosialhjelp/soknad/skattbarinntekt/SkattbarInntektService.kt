@@ -7,7 +7,7 @@ import no.nav.sosialhjelp.soknad.skattbarinntekt.dto.mapToUtbetalinger
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-open class SkattbarInntektServiceNy(
+open class SkattbarInntektService(
     private val skatteetatenClient: SkatteetatenClient
 ) {
 

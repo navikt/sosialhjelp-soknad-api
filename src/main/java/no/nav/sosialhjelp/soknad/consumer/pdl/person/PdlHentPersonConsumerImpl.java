@@ -62,7 +62,7 @@ public class PdlHentPersonConsumerImpl extends BasePdlConsumer implements PdlHen
         } catch (PdlApiException e) {
             throw e;
         } catch (Exception e) {
-            log.warn("Kall til PDL feilet (hentPerson)");
+            log.error("Kall til PDL feilet (hentPerson)");
             throw new TjenesteUtilgjengeligException("Noe uventet feilet ved kall til PDL", e);
         }
     }
@@ -90,7 +90,7 @@ public class PdlHentPersonConsumerImpl extends BasePdlConsumer implements PdlHen
         } catch (PdlApiException e) {
             throw e;
         } catch (Exception e) {
-            log.warn("Kall til PDL feilet (hentBarn)");
+            log.error("Kall til PDL feilet (hentBarn)");
             throw new TjenesteUtilgjengeligException("Noe uventet feilet ved kall til PDL", e);
         }
     }
@@ -118,7 +118,7 @@ public class PdlHentPersonConsumerImpl extends BasePdlConsumer implements PdlHen
         } catch (PdlApiException e) {
             throw e;
         } catch (Exception e) {
-            log.warn("Kall til PDL feilet (hentEktefelle)");
+            log.error("Kall til PDL feilet (hentEktefelle)");
             throw new TjenesteUtilgjengeligException("Noe uventet feilet ved kall til PDL", e);
         }
     }
@@ -146,7 +146,7 @@ public class PdlHentPersonConsumerImpl extends BasePdlConsumer implements PdlHen
         } catch (PdlApiException e) {
             throw e;
         } catch (Exception e) {
-            log.warn("Kall til PDL feilet (hentPersonAdressebeskyttelse)");
+            log.error("Kall til PDL feilet (hentPersonAdressebeskyttelse)");
             throw new TjenesteUtilgjengeligException("Noe uventet feilet ved kall til PDL", e);
         }
     }
@@ -166,7 +166,7 @@ public class PdlHentPersonConsumerImpl extends BasePdlConsumer implements PdlHen
         try {
             redisService.setex(prefix + ident, pdlMapper.writeValueAsBytes(pdlResponse), PDL_CACHE_SECONDS);
         } catch (JsonProcessingException e) {
-            log.warn("Noe feilet ved serialisering av response fra Pdl - {}", pdlResponse.getClass().getName(), e);
+            log.error("Noe feilet ved serialisering av response fra Pdl - {}", pdlResponse.getClass().getName(), e);
         }
     }
 }
