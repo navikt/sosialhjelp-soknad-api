@@ -17,9 +17,9 @@ import no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.SivilstandDto;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.StatsborgerskapDto;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.UkjentBostedDto;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.VegadresseDto;
-import no.nav.sosialhjelp.soknad.domain.model.Barn;
-import no.nav.sosialhjelp.soknad.domain.model.Ektefelle;
-import no.nav.sosialhjelp.soknad.domain.model.Person;
+import no.nav.sosialhjelp.soknad.person.domain.Barn;
+import no.nav.sosialhjelp.soknad.person.domain.Ektefelle;
+import no.nav.sosialhjelp.soknad.person.domain.Person;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -271,13 +271,13 @@ class PdlPersonMapperTest {
         Ektefelle ektefelle = mapper.mapToEktefelle(pdlEktefelle, EKTEFELLEIDENT, pdlPerson);
 
         assertThat(ektefelle).isNotNull();
-        assertThat(ektefelle.harIkketilgangtilektefelle()).isFalse();
+        assertThat(ektefelle.getIkkeTilgangTilEktefelle()).isFalse();
         assertThat(ektefelle.getFornavn()).isEqualTo(FORNAVN.toUpperCase());
         assertThat(ektefelle.getMellomnavn()).isEqualTo(MELLOMNAVN.toUpperCase());
         assertThat(ektefelle.getEtternavn()).isEqualTo(ETTERNAVN.toUpperCase());
         assertThat(ektefelle.getFnr()).isEqualTo(EKTEFELLEIDENT);
         assertThat(ektefelle.getFodselsdato()).hasToString("1970-01-01");
-        assertThat(ektefelle.erFolkeregistrertsammen()).isTrue();
+        assertThat(ektefelle.getFolkeregistrertSammen()).isTrue();
     }
 
     @Test
@@ -302,7 +302,7 @@ class PdlPersonMapperTest {
         Ektefelle ektefelle = mapper.mapToEktefelle(pdlEktefelle, EKTEFELLEIDENT, pdlPerson);
 
         assertThat(ektefelle).isNotNull();
-        assertThat(ektefelle.erFolkeregistrertsammen()).isFalse();
+        assertThat(ektefelle.getFolkeregistrertSammen()).isFalse();
     }
 
     @Test
@@ -327,7 +327,7 @@ class PdlPersonMapperTest {
         Ektefelle ektefelle = mapper.mapToEktefelle(pdlEktefelle, EKTEFELLEIDENT, pdlPerson);
 
         assertThat(ektefelle).isNotNull();
-        assertThat(ektefelle.erFolkeregistrertsammen()).isTrue();
+        assertThat(ektefelle.getFolkeregistrertSammen()).isTrue();
     }
 
     @Test
@@ -352,13 +352,13 @@ class PdlPersonMapperTest {
         Ektefelle ektefelle = mapper.mapToEktefelle(pdlEktefelle, EKTEFELLEIDENT, pdlPerson);
 
         assertThat(ektefelle).isNotNull();
-        assertThat(ektefelle.harIkketilgangtilektefelle()).isTrue();
+        assertThat(ektefelle.getIkkeTilgangTilEktefelle()).isTrue();
         assertThat(ektefelle.getFornavn()).isNull();
         assertThat(ektefelle.getMellomnavn()).isNull();
         assertThat(ektefelle.getEtternavn()).isNull();
         assertThat(ektefelle.getFnr()).isNull();
         assertThat(ektefelle.getFodselsdato()).isNull();
-        assertThat(ektefelle.erFolkeregistrertsammen()).isFalse();
+        assertThat(ektefelle.getFolkeregistrertSammen()).isFalse();
     }
 
     @Test
@@ -399,7 +399,7 @@ class PdlPersonMapperTest {
 
         Ektefelle ektefelle = mapper.mapToEktefelle(pdlEktefelle, EKTEFELLEIDENT, pdlPerson);
 
-        assertThat(ektefelle.erFolkeregistrertsammen()).isFalse();
+        assertThat(ektefelle.getFolkeregistrertSammen()).isFalse();
     }
 
     @Test
@@ -423,7 +423,7 @@ class PdlPersonMapperTest {
 
         Ektefelle ektefelle = mapper.mapToEktefelle(pdlEktefelle, EKTEFELLEIDENT, pdlPerson);
 
-        assertThat(ektefelle.erFolkeregistrertsammen()).isFalse();
+        assertThat(ektefelle.getFolkeregistrertSammen()).isFalse();
     }
 
     @Test
@@ -447,7 +447,7 @@ class PdlPersonMapperTest {
 
         Ektefelle ektefelle = mapper.mapToEktefelle(pdlEktefelle, EKTEFELLEIDENT, pdlPerson);
 
-        assertThat(ektefelle.erFolkeregistrertsammen()).isTrue();
+        assertThat(ektefelle.getFolkeregistrertSammen()).isTrue();
     }
 
     @Test
@@ -478,7 +478,7 @@ class PdlPersonMapperTest {
         assertThat(barn.getEtternavn()).isEqualTo(ETTERNAVN.toUpperCase());
         assertThat(barn.getFnr()).isEqualTo(BARNIDENT);
         assertThat(barn.getFodselsdato()).isEqualTo(LocalDate.of(FOEDSELSDATO_BARN.getYear(), FOEDSELSDATO_BARN.getMonthValue(), FOEDSELSDATO_BARN.getDayOfMonth()));
-        assertThat(barn.erFolkeregistrertsammen()).isTrue();
+        assertThat(barn.getFolkeregistrertSammen()).isTrue();
     }
 
     @Test
@@ -578,7 +578,7 @@ class PdlPersonMapperTest {
 
         Barn barn = mapper.mapToBarn(pdlBarn, BARNIDENT, pdlPerson);
 
-        assertThat(barn.erFolkeregistrertsammen()).isFalse();
+        assertThat(barn.getFolkeregistrertSammen()).isFalse();
     }
 
     @Test
@@ -603,7 +603,7 @@ class PdlPersonMapperTest {
 
         Barn barn = mapper.mapToBarn(pdlBarn, BARNIDENT, pdlPerson);
 
-        assertThat(barn.erFolkeregistrertsammen()).isFalse();
+        assertThat(barn.getFolkeregistrertSammen()).isFalse();
     }
 
     @Test

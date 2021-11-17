@@ -7,18 +7,18 @@ import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonMatrikkelAdresse;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.PersonService;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
-import no.nav.sosialhjelp.soknad.domain.model.Bostedsadresse;
-import no.nav.sosialhjelp.soknad.domain.model.Kontaktadresse;
-import no.nav.sosialhjelp.soknad.domain.model.Matrikkeladresse;
-import no.nav.sosialhjelp.soknad.domain.model.Oppholdsadresse;
-import no.nav.sosialhjelp.soknad.domain.model.Person;
-import no.nav.sosialhjelp.soknad.domain.model.Vegadresse;
+import no.nav.sosialhjelp.soknad.person.domain.Bostedsadresse;
+import no.nav.sosialhjelp.soknad.person.domain.Matrikkeladresse;
+import no.nav.sosialhjelp.soknad.person.domain.Oppholdsadresse;
+import no.nav.sosialhjelp.soknad.person.domain.Person;
+import no.nav.sosialhjelp.soknad.person.domain.Vegadresse;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import static java.util.Collections.emptyList;
 import static no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -41,7 +41,7 @@ class AdresseSystemdataTest {
     void skalOppdatereFolkeregistrertAdresse_vegadresse_fraPdl() {
         var soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
 
-        var personWithBostedsadresseVegadresse = createPersonWithBostedsadresseVegadresse();
+        var personWithBostedsadresseVegadresse = createPersonWithBostedsadresse(new Bostedsadresse("", DEFAULT_VEGADRESSE, null));
         when(personService.hentPerson(anyString())).thenReturn(personWithBostedsadresseVegadresse);
 
         adresseSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
@@ -57,7 +57,20 @@ class AdresseSystemdataTest {
     @Test
     void skalOppdatereFolkeregistrertAdresse_matrikkeladresse_fraPdl() {
         var soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
-        var personWithBostedsadresseMatrikkeladresse = createPersonWithBostedsadresseMatrikkeladresse();
+        var personWithBostedsadresseMatrikkeladresse = createPersonWithBostedsadresse(
+                new Bostedsadresse(
+                        "",
+                        null,
+                        new Matrikkeladresse(
+                                "matrikkelId",
+                                "postnummer",
+                                "poststed",
+                                "tilleggsnavn",
+                                "kommunenummer",
+                                "bruksenhetsnummer"
+                        )
+                )
+        );
         when(personService.hentPerson(anyString())).thenReturn(personWithBostedsadresseMatrikkeladresse);
 
         adresseSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
@@ -79,7 +92,10 @@ class AdresseSystemdataTest {
                 .withOppholdsadresse(new JsonAdresse().withAdresseValg(JsonAdresseValg.MIDLERTIDIG))
                 .withPostadresse(new JsonAdresse().withAdresseValg(JsonAdresseValg.MIDLERTIDIG));
 
-        var personWithOppholdsadresse = createPersonWithOppholdsadresseVegadresse();
+        var personWithOppholdsadresse = createPersonWithBostedsadresseOgOppholdsadresse(
+                new Bostedsadresse("", DEFAULT_VEGADRESSE, null),
+                new Oppholdsadresse("", ANNEN_VEGADRESSE)
+        );
         when(personService.hentPerson(anyString())).thenReturn(personWithOppholdsadresse);
 
         adresseSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
@@ -111,7 +127,7 @@ class AdresseSystemdataTest {
                 .withOppholdsadresse(new JsonAdresse().withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT))
                 .withPostadresse(new JsonAdresse().withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT));
 
-        var personWithBostedsadresseVegadresse = createPersonWithBostedsadresseVegadresse();
+        var personWithBostedsadresseVegadresse = createPersonWithBostedsadresse(new Bostedsadresse("", DEFAULT_VEGADRESSE, null));
         when(personService.hentPerson(anyString())).thenReturn(personWithBostedsadresseVegadresse);
 
         adresseSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
@@ -135,7 +151,7 @@ class AdresseSystemdataTest {
                 .withOppholdsadresse(new JsonAdresse())
                 .withPostadresse(new JsonAdresse());
 
-        var personWithBostedsadresseVegadresse = createPersonWithBostedsadresseVegadresse();
+        var personWithBostedsadresseVegadresse = createPersonWithBostedsadresse(new Bostedsadresse("", DEFAULT_VEGADRESSE, null));
         when(personService.hentPerson(anyString())).thenReturn(personWithBostedsadresseVegadresse);
 
         adresseSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
@@ -159,41 +175,13 @@ class AdresseSystemdataTest {
         assertThat(gateAdresse.getLandkode()).isEqualTo("NOR");
         assertThat(gateAdresse.getPostnummer()).isEqualTo(vegadresse.getPostnummer());
         assertThat(gateAdresse.getPoststed()).isEqualTo(vegadresse.getPoststed());
-
     }
 
-    private Person createPersonWithBostedsadresseVegadresse() {
-        return new Person()
-                .withBostedsadresse(new Bostedsadresse("", DEFAULT_VEGADRESSE, null));
+    private Person createPersonWithBostedsadresse(Bostedsadresse bostedsadresse) {
+        return new Person("fornavn", "mellomnavn", "etternavn", EIER, "ugift", emptyList(), null, bostedsadresse, null, null);
     }
 
-    private Person createPersonWithBostedsadresseMatrikkeladresse() {
-        return new Person()
-                .withBostedsadresse(
-                        new Bostedsadresse(
-                                "",
-                                null,
-                                new Matrikkeladresse(
-                                        "matrikkelId",
-                                        "postnummer",
-                                        "poststed",
-                                        "tilleggsnavn",
-                                        "kommunenummer",
-                                        "bruksenhetsnummer"
-                                )
-                        )
-                );
-    }
-
-    private Person createPersonWithKontaktadresseVegadresse() {
-        return new Person()
-                .withBostedsadresse(new Bostedsadresse("", DEFAULT_VEGADRESSE, null))
-                .withKontaktadresse(new Kontaktadresse("", ANNEN_VEGADRESSE));
-    }
-
-    private Person createPersonWithOppholdsadresseVegadresse() {
-        return new Person()
-                .withBostedsadresse(new Bostedsadresse("", DEFAULT_VEGADRESSE, null))
-                .withOppholdsadresse(new Oppholdsadresse("", ANNEN_VEGADRESSE));
+    private Person createPersonWithBostedsadresseOgOppholdsadresse(Bostedsadresse bostedsadresse, Oppholdsadresse oppholdsadresse) {
+        return new Person("fornavn", "mellomnavn", "etternavn", EIER, "ugift", emptyList(), null, bostedsadresse, oppholdsadresse, null);
     }
 }
