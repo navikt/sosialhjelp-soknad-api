@@ -75,7 +75,7 @@ class PdlAdresseSokServiceTest {
     void skalKasteFeil_AdresseSokGirFlereHits() {
         var adressesokResult = createAdressesokResultDto(List.of(
                 new AdressesokHitDto(vegadresseMedBydelsnummer(), 0.5F),
-                new AdressesokHitDto(vegadresseMedBydelsnummer(), 0.7F)
+                new AdressesokHitDto(vegadresseUtenBydelsnummer(), 0.7F)
         ));
 
         when(pdlAdresseSokConsumer.getAdresseSokResult(any())).thenReturn(adressesokResult);
@@ -175,6 +175,6 @@ class PdlAdresseSokServiceTest {
     }
 
     private AdressesokResultDto createAdressesokResultDto(List<AdressesokHitDto> hits) {
-        return new AdressesokResultDto(hits, 1,1, hits.size());
+        return new AdressesokResultDto(hits, 1,1, hits == null ? 0 : hits.size());
     }
 }
