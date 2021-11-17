@@ -4,7 +4,10 @@ data class Criteria(
     val fieldName: String,
     val searchRule: Map<String, String>
 ) {
-    constructor(fieldName: FieldName, searchRule: SearchRule, value: String) : this(fieldName.value, mapOf(searchRule.keyName to value))
+    constructor(fieldName: FieldName, searchRule: SearchRule, value: String) : this(
+        fieldName.value,
+        mapOf(searchRule.keyName to value)
+    )
 }
 
 enum class FieldName(
@@ -18,9 +21,9 @@ enum class FieldName(
     VEGADRESSE_KOMMUNENUMMER("vegadresse.kommunenummer");
 }
 
-enum class SearchRule (
+enum class SearchRule(
     val keyName: String
-){
+) {
     EQUALS("equals"),
     CONTAINS("contains"),
     FUZZY("fuzzy"),

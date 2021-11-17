@@ -5,7 +5,6 @@ import no.nav.sosialhjelp.soknad.adressesok.domain.AdresseForslagType
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.AdresseHelper
 import no.nav.sosialhjelp.soknad.domain.model.util.KommuneTilNavEnhetMapper
 
-
 data class AdressesokDataDto(
     val sokAdresse: AdressesokResultDto
 )
