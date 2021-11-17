@@ -49,5 +49,6 @@ data class VegadresseDto(
     private val kommunenavnFormattert: String
         get() = KommuneTilNavEnhetMapper.IKS_KOMMUNER.getOrDefault(kommunenummer, formatterKommunenavn(kommunenavn))
 
-    private val bydelsnummerOrKommunenummer: String? get() = bydelsnummer ?: kommunenummer
+    private val bydelsnummerOrKommunenummer: String?
+        get() = bydelsnummer ?: kommunenummer
 }
