@@ -23,8 +23,9 @@ import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSamvarsgrad;
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.PersonService;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
-import no.nav.sosialhjelp.soknad.domain.model.Barn;
-import no.nav.sosialhjelp.soknad.domain.model.Ektefelle;
+import no.nav.sosialhjelp.soknad.person.domain.Barn;
+import no.nav.sosialhjelp.soknad.person.domain.Ektefelle;
+import no.nav.sosialhjelp.soknad.person.domain.Person;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -32,10 +33,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
-import java.util.Collections;
 import java.util.List;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 import static no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator.ensureValidInternalSoknad;
 import static no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus.Status.ENKE;
 import static no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus.Status.GIFT;
@@ -52,19 +53,9 @@ import static org.mockito.Mockito.when;
 class FamilieSystemdataTest {
 
     private static final String EIER = "12345678901";
-    private static final Ektefelle EKTEFELLE = new Ektefelle()
-            .withFornavn("Av")
-            .withMellomnavn("Og")
-            .withEtternavn("På")
-            .withFnr("11111111111")
-            .withFodselsdato(LocalDate.parse("1993-02-01"));
-
-    private static final Ektefelle TOM_EKTEFELLE = new Ektefelle()
-            .withFornavn("")
-            .withMellomnavn("")
-            .withEtternavn("");
-
-    private static final Ektefelle EKTEFELLE_MED_DISKRESJONSKODE = new Ektefelle().withIkketilgangtilektefelle(true);
+    private static final Ektefelle EKTEFELLE = new Ektefelle("Av", "Og", "På", LocalDate.parse("1993-02-01"), "11111111111", false, false);
+    private static final Ektefelle TOM_EKTEFELLE = new Ektefelle("", "", "", null, null, false, true);
+    private static final Ektefelle EKTEFELLE_MED_DISKRESJONSKODE = new Ektefelle(true);
 
     private static final String FORNAVN_BARN = "Rudolf";
     private static final String MELLOMNAVN_BARN = "Rød På";
@@ -88,21 +79,8 @@ class FamilieSystemdataTest {
     private static final LocalDate FODSELSDATO_BARN_3 = LocalDate.parse("2003-02-05");
     private static final Integer SAMVARSGRAD_BARN_3 = 30;
 
-    private static final Barn BARN = new Barn()
-            .withFornavn(FORNAVN_BARN)
-            .withMellomnavn(MELLOMNAVN_BARN)
-            .withEtternavn(ETTERNAVN_BARN)
-            .withFodselsdato(FODSELSDATO_BARN)
-            .withFnr(FNR_BARN)
-            .withFolkeregistrertsammen(ER_FOLKEREGISTRERT_SAMMEN_BARN);
-
-    private static final Barn BARN_2 = new Barn()
-            .withFornavn(FORNAVN_BARN_2)
-            .withMellomnavn(MELLOMNAVN_BARN_2)
-            .withEtternavn(ETTERNAVN_BARN_2)
-            .withFodselsdato(FODSELSDATO_BARN_2)
-            .withFnr(FNR_BARN_2)
-            .withFolkeregistrertsammen(ER_FOLKEREGISTRERT_SAMMEN_BARN_2);
+    private static final Barn BARN = new Barn(FORNAVN_BARN, MELLOMNAVN_BARN, ETTERNAVN_BARN, FNR_BARN, FODSELSDATO_BARN, ER_FOLKEREGISTRERT_SAMMEN_BARN);
+    private static final Barn BARN_2 = new Barn(FORNAVN_BARN_2, MELLOMNAVN_BARN_2, ETTERNAVN_BARN_2, FNR_BARN_2, FODSELSDATO_BARN_2, ER_FOLKEREGISTRERT_SAMMEN_BARN_2);
 
     private static final JsonAnsvar JSON_ANSVAR = new JsonAnsvar()
             .withBarn(new JsonBarn()
@@ -166,9 +144,7 @@ class FamilieSystemdataTest {
 
     @Test
     void skalSetteSivilstatusGiftMedEktefelle() throws JsonProcessingException {
-        no.nav.sosialhjelp.soknad.domain.model.Person person = new no.nav.sosialhjelp.soknad.domain.model.Person()
-                .withSivilstatus(GIFT.toString())
-                .withEktefelle(EKTEFELLE);
+        Person person = createPerson(GIFT.toString(), EKTEFELLE);
         when(personService.hentPerson(anyString())).thenReturn(person);
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
 
@@ -189,8 +165,7 @@ class FamilieSystemdataTest {
 
     @Test
     void skalIkkeSetteSivilstatusDersomEktefelleMangler() throws JsonProcessingException {
-        no.nav.sosialhjelp.soknad.domain.model.Person person = new no.nav.sosialhjelp.soknad.domain.model.Person()
-                .withSivilstatus(GIFT.toString());
+        Person person = createPerson(GIFT.toString(), null);
         when(personService.hentPerson(anyString())).thenReturn(person);
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
 
@@ -220,9 +195,7 @@ class FamilieSystemdataTest {
 
     @Test
     void skalSetteSivilstatusGiftMedTomEktefelleDersomEktefelleHarDiskresjonskode() throws JsonProcessingException {
-        no.nav.sosialhjelp.soknad.domain.model.Person person = new no.nav.sosialhjelp.soknad.domain.model.Person()
-                .withSivilstatus(GIFT.toString())
-                .withEktefelle(EKTEFELLE_MED_DISKRESJONSKODE);
+        Person person = createPerson(GIFT.toString(), EKTEFELLE_MED_DISKRESJONSKODE);
         when(personService.hentPerson(anyString())).thenReturn(person);
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
 
@@ -265,7 +238,7 @@ class FamilieSystemdataTest {
 
     @Test
     void skalIkkeSetteForsorgerplikt() throws JsonProcessingException {
-        when(personService.hentBarnForPerson(anyString())).thenReturn(Collections.emptyList());
+        when(personService.hentBarnForPerson(anyString())).thenReturn(emptyList());
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
 
         familieSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
@@ -317,7 +290,7 @@ class FamilieSystemdataTest {
 
     @Test
     void skalIkkeOverskriveBrukerregistrerteBarnEllerForsorgerpliktVerdiNaarDetIkkeFinnesSystemBarn() throws JsonProcessingException {
-        when(personService.hentBarnForPerson(anyString())).thenReturn(Collections.emptyList());
+        when(personService.hentBarnForPerson(anyString())).thenReturn(emptyList());
         JsonInternalSoknad jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER);
         jsonInternalSoknad.getSoknad().getData().getFamilie().getForsorgerplikt()
                 .withHarForsorgerplikt(new JsonHarForsorgerplikt()
@@ -369,9 +342,8 @@ class FamilieSystemdataTest {
     }
 
     private void sivilstatusSkalIkkeSettes(JsonSivilstatus.Status status, Ektefelle ektefelle) throws JsonProcessingException {
-        no.nav.sosialhjelp.soknad.domain.model.Person person = new no.nav.sosialhjelp.soknad.domain.model.Person()
-                .withSivilstatus(status.toString())
-                .withEktefelle(ektefelle);
+        Person person = createPerson(status.toString(), ektefelle);
+
         when(personService.hentPerson(anyString())).thenReturn(person);
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
 
@@ -411,7 +383,7 @@ class FamilieSystemdataTest {
     private void assertThatAnsvarIsCorrectlyConverted(Barn barn, JsonAnsvar jsonAnsvar) {
         JsonBarn jsonBarn = jsonAnsvar.getBarn();
 
-        assertThat(barn.erFolkeregistrertsammen()).isEqualTo(jsonAnsvar.getErFolkeregistrertSammen() == null ? null : jsonAnsvar.getErFolkeregistrertSammen().getVerdi());
+        assertThat(barn.getFolkeregistrertSammen()).isEqualTo(jsonAnsvar.getErFolkeregistrertSammen() == null ? null : jsonAnsvar.getErFolkeregistrertSammen().getVerdi());
 
         assertThat(barn.getFnr()).isEqualTo(jsonBarn.getPersonIdentifikator());
         if (barn.getFodselsdato() != null){
@@ -434,5 +406,9 @@ class FamilieSystemdataTest {
         assertThat(ektefelle.getFornavn()).isEqualTo(jsonEktefelle.getNavn().getFornavn());
         assertThat(ektefelle.getMellomnavn()).isEqualTo(jsonEktefelle.getNavn().getMellomnavn());
         assertThat(ektefelle.getEtternavn()).isEqualTo(jsonEktefelle.getNavn().getEtternavn());
+    }
+
+    private Person createPerson(String sivilstatus, Ektefelle ektefelle) {
+        return new Person("fornavn", "mellomnavn", "etternavn", EIER, sivilstatus, emptyList(), ektefelle, null, null, null);
     }
 }

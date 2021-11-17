@@ -6,7 +6,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonSokernavn;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.PersonService;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
-import no.nav.sosialhjelp.soknad.domain.model.Person;
+import no.nav.sosialhjelp.soknad.person.domain.Person;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -59,12 +59,8 @@ class BasisPersonaliaSystemdataTest {
 
     @Test
     void skalOppdatereNordiskPersonalia() {
-        Person person = new Person()
-                .withFornavn(FORNAVN)
-                .withMellomnavn(MELLOMNAVN)
-                .withEtternavn(ETTERNAVN)
-                .withStatsborgerskap(List.of(NORSK_STATSBORGERSKAP));
-        SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
+        var person = new Person(FORNAVN, MELLOMNAVN, ETTERNAVN, EIER, "ugift", List.of(NORSK_STATSBORGERSKAP), null, null, null, null);
+        var soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         when(personService.hentPerson(anyString())).thenReturn(person);
 
         basisPersonaliaSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
@@ -85,11 +81,7 @@ class BasisPersonaliaSystemdataTest {
 
     @Test
     void skalPrioritereNorskOverNordiskStatsborgerskap() {
-        Person person = new Person()
-                .withFornavn(FORNAVN)
-                .withMellomnavn(MELLOMNAVN)
-                .withEtternavn(ETTERNAVN)
-                .withStatsborgerskap(List.of(NORDISK_STATSBORGERSKAP, NORSK_STATSBORGERSKAP));
+        var person = new Person(FORNAVN, MELLOMNAVN, ETTERNAVN, EIER, "ugift", List.of(NORDISK_STATSBORGERSKAP, NORSK_STATSBORGERSKAP), null, null, null, null);
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         when(personService.hentPerson(anyString())).thenReturn(person);
 
@@ -105,11 +97,7 @@ class BasisPersonaliaSystemdataTest {
 
     @Test
     void skalPrioritereNordiskStatsborgerskap() {
-        Person person = new Person()
-                .withFornavn(FORNAVN)
-                .withMellomnavn(MELLOMNAVN)
-                .withEtternavn(ETTERNAVN)
-                .withStatsborgerskap(List.of(IKKE_NORDISK_STATSBORGERSKAP, NORDISK_STATSBORGERSKAP));
+        var person = new Person(FORNAVN, MELLOMNAVN, ETTERNAVN, EIER, "ugift", List.of(IKKE_NORDISK_STATSBORGERSKAP, NORDISK_STATSBORGERSKAP), null, null, null, null);
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         when(personService.hentPerson(anyString())).thenReturn(person);
 
@@ -125,11 +113,7 @@ class BasisPersonaliaSystemdataTest {
 
     @Test
     void skalOppdatereIkkeNordiskPersonalia() {
-        Person person = new Person()
-                .withFornavn(FORNAVN)
-                .withMellomnavn(MELLOMNAVN)
-                .withEtternavn(ETTERNAVN)
-                .withStatsborgerskap(List.of(IKKE_NORDISK_STATSBORGERSKAP));
+        var person = new Person(FORNAVN, MELLOMNAVN, ETTERNAVN, EIER, "ugift", List.of(IKKE_NORDISK_STATSBORGERSKAP), null, null, null, null);
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         when(personService.hentPerson(anyString())).thenReturn(person);
 
@@ -152,11 +136,7 @@ class BasisPersonaliaSystemdataTest {
     //Denne skal fjernes når TPS har oppdatert til å bruke ukjent som XXX istedenfor ???
     @Test
     void skalikkeSendeMedStatsborgerskapForUkjent_TPS() {
-        Person person = new Person()
-                .withFornavn(FORNAVN)
-                .withMellomnavn(MELLOMNAVN)
-                .withEtternavn(ETTERNAVN)
-                .withStatsborgerskap(List.of("???"));
+        var person = new Person(FORNAVN, MELLOMNAVN, ETTERNAVN, EIER, "ugift", List.of("???"), null, null, null, null);
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         when(personService.hentPerson(anyString())).thenReturn(person);
 
@@ -170,11 +150,7 @@ class BasisPersonaliaSystemdataTest {
 
     @Test
     void skalikkeSendeMedStatsborgerskapForUkjent_PDL() {
-        Person person = new Person()
-                .withFornavn(FORNAVN)
-                .withMellomnavn(MELLOMNAVN)
-                .withEtternavn(ETTERNAVN)
-                .withStatsborgerskap(List.of(PDL_UKJENT_STATSBORGERSKAP));
+        var person = new Person(FORNAVN, MELLOMNAVN, ETTERNAVN, EIER, "ugift", List.of(PDL_UKJENT_STATSBORGERSKAP), null, null, null, null);
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         when(personService.hentPerson(anyString())).thenReturn(person);
 

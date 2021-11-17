@@ -15,8 +15,8 @@ import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus;
 import no.nav.sosialhjelp.soknad.business.service.soknadservice.Systemdata;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.PersonService;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
-import no.nav.sosialhjelp.soknad.domain.model.Barn;
-import no.nav.sosialhjelp.soknad.domain.model.Ektefelle;
+import no.nav.sosialhjelp.soknad.person.domain.Barn;
+import no.nav.sosialhjelp.soknad.person.domain.Ektefelle;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
@@ -100,12 +100,12 @@ public class FamilieSystemdata implements Systemdata {
                 .withKilde(JsonKilde.SYSTEM)
                 .withStatus(status)
                 .withEktefelle(tilSystemregistrertJsonEktefelle(ektefelle))
-                .withEktefelleHarDiskresjonskode(ektefelle.harIkketilgangtilektefelle())
-                .withFolkeregistrertMedEktefelle(ektefelle.erFolkeregistrertsammen());
+                .withEktefelleHarDiskresjonskode(ektefelle.getIkkeTilgangTilEktefelle())
+                .withFolkeregistrertMedEktefelle(ektefelle.getFolkeregistrertSammen());
     }
 
     private static JsonEktefelle tilSystemregistrertJsonEktefelle(Ektefelle ektefelle) {
-        if (ektefelle == null || ektefelle.harIkketilgangtilektefelle()) {
+        if (ektefelle == null || ektefelle.getIkkeTilgangTilEktefelle()) {
             return new JsonEktefelle().withNavn(new JsonNavn()
                     .withFornavn("")
                     .withMellomnavn("")
@@ -155,7 +155,7 @@ public class FamilieSystemdata implements Systemdata {
                         .withHarDiskresjonskode(false))
                 .withErFolkeregistrertSammen(new JsonErFolkeregistrertSammen()
                         .withKilde(JsonKildeSystem.SYSTEM)
-                        .withVerdi(barn.erFolkeregistrertsammen()));
+                        .withVerdi(barn.getFolkeregistrertSammen()));
     }
 
 }

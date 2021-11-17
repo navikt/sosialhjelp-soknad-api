@@ -1,10 +1,10 @@
 package no.nav.sosialhjelp.soknad.consumer.pdl.person;
 
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.AdressebeskyttelseDto.Gradering;
-import no.nav.sosialhjelp.soknad.domain.model.Barn;
-import no.nav.sosialhjelp.soknad.domain.model.Ektefelle;
 import no.nav.sosialhjelp.soknad.domain.model.NavFodselsnummer;
-import no.nav.sosialhjelp.soknad.domain.model.Person;
+import no.nav.sosialhjelp.soknad.person.domain.Barn;
+import no.nav.sosialhjelp.soknad.person.domain.Ektefelle;
+import no.nav.sosialhjelp.soknad.person.domain.Person;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
@@ -39,8 +39,9 @@ public class PersonService {
             return null;
         }
 
-        return pdlPersonMapper.mapToPerson(pdlPerson, ident)
-                .withEktefelle(hentEktefelle(pdlPerson));
+        var person = pdlPersonMapper.mapToPerson(pdlPerson, ident);
+        person.setEktefelle(hentEktefelle(pdlPerson));
+        return person;
     }
 
     public List<Barn> hentBarnForPerson(String ident) {
@@ -86,14 +87,7 @@ public class PersonService {
                 }
                 if (erFDAT(ektefelleIdent)) {
                     log.info("Sivilstand.relatertVedSivilstand (ektefelleIdent) er FDAT -> kaller ikke hentPerson for ektefelle");
-                    return new Ektefelle()
-                            .withFornavn("")
-                            .withMellomnavn("")
-                            .withEtternavn("")
-                            .withFodselsdato(finnFodselsdatoFraFnr(ektefelleIdent))
-                            .withFnr(ektefelleIdent)
-                            .withFolkeregistrertsammen(false)
-                            .withIkketilgangtilektefelle(false);
+                    return new Ektefelle("", "", "", finnFodselsdatoFraFnr(ektefelleIdent), ektefelleIdent, false, false);
                 }
 
                 loggHvisIdentIkkeErFnr(ektefelleIdent);

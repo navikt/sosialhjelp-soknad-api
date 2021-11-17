@@ -5,9 +5,9 @@ import no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.EndringDto;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.ForelderBarnRelasjonDto;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.MetadataDto;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.SivilstandDto;
-import no.nav.sosialhjelp.soknad.domain.model.Barn;
-import no.nav.sosialhjelp.soknad.domain.model.Ektefelle;
-import no.nav.sosialhjelp.soknad.domain.model.Person;
+import no.nav.sosialhjelp.soknad.person.domain.Barn;
+import no.nav.sosialhjelp.soknad.person.domain.Ektefelle;
+import no.nav.sosialhjelp.soknad.person.domain.Person;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.SivilstandDto.SivilstandType.GIFT;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -49,9 +50,9 @@ class PersonServiceTest {
     private final PdlEktefelle mockPdlEktefelle = mock(PdlEktefelle.class);
     private final PdlBarn mockPdlBarn = mock(PdlBarn.class);
 
-    private final Person person = new Person();
-    private final Ektefelle ektefelle = new Ektefelle();
-    private final Barn barn = new Barn();
+    private final Person person = new Person("fornavn", "mellomnavn", "etternavn", "fnr", "ugift", emptyList(), null, null, null, null);
+    private final Ektefelle ektefelle = new Ektefelle("fornavn", null, "etternavn", LocalDate.now(), "fnr2", true, false);
+    private final Barn barn = new Barn("fornavn", null, "etternavn", "barnident", null, true);
 
     @Test
     void skalHentePersonMedEktefelle() {
