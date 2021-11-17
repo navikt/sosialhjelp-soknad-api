@@ -14,11 +14,12 @@ import no.nav.sosialhjelp.soknad.business.service.adressesok.AdresseForslagType
 import no.nav.sosialhjelp.soknad.business.service.adressesok.AdresseSokService
 import no.nav.sosialhjelp.soknad.client.kodeverk.KodeverkService
 import no.nav.sosialhjelp.soknad.consumer.fiks.KommuneInfoService
-import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.bydel.BydelService
 import no.nav.sosialhjelp.soknad.domain.model.mock.MockUtils
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler
 import no.nav.sosialhjelp.soknad.domain.model.util.KommuneTilNavEnhetMapper
 import no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils
+import no.nav.sosialhjelp.soknad.navenhet.bydel.BydelFordelingService
+import no.nav.sosialhjelp.soknad.navenhet.bydel.BydelFordelingService.Companion.BYDEL_MARKA
 import no.nav.sosialhjelp.soknad.navenhet.domain.NavEnhet
 import no.nav.sosialhjelp.soknad.navenhet.dto.NavEnhetFrontend
 import no.nav.sosialhjelp.soknad.navenhet.gt.GeografiskTilknytningService
@@ -44,7 +45,7 @@ open class NavEnhetRessurs(
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val navEnhetService: NavEnhetService,
     private val kommuneInfoService: KommuneInfoService,
-    private val bydelService: BydelService,
+    private val bydelFordelingService: BydelFordelingService,
     private val adresseSokService: AdresseSokService,
     private val geografiskTilknytningService: GeografiskTilknytningService,
     private val kodeverkService: KodeverkService
@@ -301,8 +302,8 @@ open class NavEnhetRessurs(
     }
 
     private fun getGeografiskTilknytningFromAdresseForslag(adresseForslag: AdresseForslag): String {
-        return if (BydelService.BYDEL_MARKA == adresseForslag.geografiskTilknytning) {
-            bydelService.getBydelTilForMarka(adresseForslag)
+        return if (BYDEL_MARKA == adresseForslag.geografiskTilknytning) {
+            bydelFordelingService.getBydelTilForMarka(adresseForslag)
         } else {
             // flere special cases her?
             adresseForslag.geografiskTilknytning
