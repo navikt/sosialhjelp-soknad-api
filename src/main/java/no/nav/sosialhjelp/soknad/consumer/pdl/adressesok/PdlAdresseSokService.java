@@ -1,17 +1,18 @@
 package no.nav.sosialhjelp.soknad.consumer.pdl.adressesok;
 
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonGateAdresse;
+import no.nav.sosialhjelp.soknad.adressesok.dto.AdressesokHitDto;
+import no.nav.sosialhjelp.soknad.adressesok.dto.VegadresseDto;
+import no.nav.sosialhjelp.soknad.adressesok.sok.Criteria;
+import no.nav.sosialhjelp.soknad.adressesok.sok.Direction;
+import no.nav.sosialhjelp.soknad.adressesok.sok.FieldName;
+import no.nav.sosialhjelp.soknad.adressesok.sok.Paging;
+import no.nav.sosialhjelp.soknad.adressesok.sok.SearchRule;
+import no.nav.sosialhjelp.soknad.adressesok.sok.SortBy;
 import no.nav.sosialhjelp.soknad.business.service.adressesok.AdresseForslag;
 import no.nav.sosialhjelp.soknad.business.service.adressesok.AdresseStringSplitter;
 import no.nav.sosialhjelp.soknad.business.service.adressesok.Sokedata;
 import no.nav.sosialhjelp.soknad.client.kodeverk.KodeverkService;
-import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.AdresseSokHit;
-import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.Criteria;
-import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.Direction;
-import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.FieldName;
-import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.Paging;
-import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.SearchRule;
-import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.VegadresseDto;
 import no.nav.sosialhjelp.soknad.domain.model.exception.SosialhjelpSoknadApiException;
 import no.nav.sosialhjelp.soknad.domain.model.util.KommuneTilNavEnhetMapper;
 import org.slf4j.Logger;
@@ -27,18 +28,18 @@ import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
+import static no.nav.sosialhjelp.soknad.adressesok.sok.FieldName.VEGADRESSE_ADRESSENAVN;
+import static no.nav.sosialhjelp.soknad.adressesok.sok.FieldName.VEGADRESSE_HUSBOKSTAV;
+import static no.nav.sosialhjelp.soknad.adressesok.sok.FieldName.VEGADRESSE_HUSNUMMER;
+import static no.nav.sosialhjelp.soknad.adressesok.sok.FieldName.VEGADRESSE_KOMMUNENUMMER;
+import static no.nav.sosialhjelp.soknad.adressesok.sok.FieldName.VEGADRESSE_POSTNUMMER;
+import static no.nav.sosialhjelp.soknad.adressesok.sok.FieldName.VEGADRESSE_POSTSTED;
+import static no.nav.sosialhjelp.soknad.adressesok.sok.SearchRule.CONTAINS;
+import static no.nav.sosialhjelp.soknad.adressesok.sok.SearchRule.EQUALS;
+import static no.nav.sosialhjelp.soknad.adressesok.sok.SearchRule.WILDCARD;
 import static no.nav.sosialhjelp.soknad.business.service.adressesok.AdresseForslagType.GATEADRESSE;
 import static no.nav.sosialhjelp.soknad.business.service.adressesok.AdresseStringSplitter.isAddressTooShortOrNull;
 import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.AdresseHelper.formatterKommunenavn;
-import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.FieldName.VEGADRESSE_ADRESSENAVN;
-import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.FieldName.VEGADRESSE_HUSBOKSTAV;
-import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.FieldName.VEGADRESSE_HUSNUMMER;
-import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.FieldName.VEGADRESSE_KOMMUNENUMMER;
-import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.FieldName.VEGADRESSE_POSTNUMMER;
-import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.FieldName.VEGADRESSE_POSTSTED;
-import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.SearchRule.CONTAINS;
-import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.SearchRule.EQUALS;
-import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.SearchRule.WILDCARD;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -86,11 +87,11 @@ public class PdlAdresseSokService {
         }
         var adresseSokResult = pdlAdresseSokConsumer.getAdresseSokResult(toVariablesForFritekstSok(sokedata));
         return adresseSokResult.getHits().stream()
-                .map(AdresseSokHit::getVegadresse)
+                .map(AdressesokHitDto::getVegadresse)
                 .collect(Collectors.toList());
     }
 
-    private VegadresseDto resolveVegadresse(List<AdresseSokHit> hits) {
+    private VegadresseDto resolveVegadresse(List<AdressesokHitDto> hits) {
         if (hits.isEmpty()) {
             log.warn("Ingen hits i adressesok");
             throw new SosialhjelpSoknadApiException("PDL adressesok - ingen hits");
@@ -147,7 +148,7 @@ public class PdlAdresseSokService {
 
     private Map<String, Object> toVariablesForFritekstSok(Sokedata sokedata) {
         var variables = new HashMap<String, Object>();
-        variables.put(PAGING, new Paging(1, 30, singletonList(new Paging.SortBy(VEGADRESSE_HUSNUMMER.getName(), Direction.ASC))));
+        variables.put(PAGING, new Paging(1, 30, singletonList(new SortBy(VEGADRESSE_HUSNUMMER.getValue(), Direction.ASC))));
 
         if (sokedata == null) {
             throw new IllegalArgumentException("kan ikke soke uten sokedata");
@@ -188,17 +189,14 @@ public class PdlAdresseSokService {
         if (WILDCARD.equals(searchRule)) {
             value += WILDCARD_SUFFIX;
         }
-        return new Criteria.Builder()
-                .withFieldName(fieldName)
-                .withSearchRule(searchRule, value)
-                .build();
+        return new Criteria(fieldName, searchRule, value);
     }
 
     private AdresseForslag toAdresseForslag(VegadresseDto vegadresseDto) {
         var kommunenavnFormattert = formatterKommunenavn(vegadresseDto.getKommunenavn());
         var adresse = new AdresseForslag();
         adresse.adresse = vegadresseDto.getAdressenavn();
-        adresse.husnummer = vegadresseDto.getHusnummer().toString();
+        adresse.husnummer = vegadresseDto.getHusnummer() == null ? null : vegadresseDto.getHusnummer().toString();
         adresse.husbokstav = vegadresseDto.getHusbokstav();
         adresse.kommunenummer = vegadresseDto.getKommunenummer();
         adresse.kommunenavn = KommuneTilNavEnhetMapper.IKS_KOMMUNER.getOrDefault(vegadresseDto.getKommunenummer(), kommunenavnFormattert);
