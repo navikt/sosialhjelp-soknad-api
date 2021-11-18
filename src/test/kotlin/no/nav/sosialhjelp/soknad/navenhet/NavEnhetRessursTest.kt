@@ -22,7 +22,6 @@ import no.nav.sosialhjelp.soknad.consumer.exceptions.PdlApiException
 import no.nav.sosialhjelp.soknad.consumer.fiks.KommuneInfoService
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.bydel.BydelService
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.bydel.BydelService.BYDEL_MARKA
-import no.nav.sosialhjelp.soknad.consumer.pdl.geografisktilknytning.GeografiskTilknytningService
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.domain.model.exception.AuthorizationException
 import no.nav.sosialhjelp.soknad.domain.model.oidc.StaticSubjectHandlerService
@@ -30,6 +29,7 @@ import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler
 import no.nav.sosialhjelp.soknad.domain.model.util.KommuneTilNavEnhetMapper
 import no.nav.sosialhjelp.soknad.navenhet.domain.NavEnhet
 import no.nav.sosialhjelp.soknad.navenhet.dto.NavEnhetFrontend
+import no.nav.sosialhjelp.soknad.navenhet.gt.GeografiskTilknytningService
 import no.nav.sosialhjelp.soknad.web.sikkerhet.Tilgangskontroll
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType

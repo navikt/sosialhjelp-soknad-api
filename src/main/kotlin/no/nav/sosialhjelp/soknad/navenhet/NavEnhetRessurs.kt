@@ -15,13 +15,13 @@ import no.nav.sosialhjelp.soknad.business.service.adressesok.AdresseSokService
 import no.nav.sosialhjelp.soknad.client.kodeverk.KodeverkService
 import no.nav.sosialhjelp.soknad.consumer.fiks.KommuneInfoService
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.bydel.BydelService
-import no.nav.sosialhjelp.soknad.consumer.pdl.geografisktilknytning.GeografiskTilknytningService
 import no.nav.sosialhjelp.soknad.domain.model.mock.MockUtils
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler
 import no.nav.sosialhjelp.soknad.domain.model.util.KommuneTilNavEnhetMapper
 import no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils
 import no.nav.sosialhjelp.soknad.navenhet.domain.NavEnhet
 import no.nav.sosialhjelp.soknad.navenhet.dto.NavEnhetFrontend
+import no.nav.sosialhjelp.soknad.navenhet.gt.GeografiskTilknytningService
 import no.nav.sosialhjelp.soknad.web.sikkerhet.Tilgangskontroll
 import no.nav.sosialhjelp.soknad.web.utils.Constants
 import org.slf4j.LoggerFactory
@@ -154,17 +154,17 @@ open class NavEnhetRessurs(
 
     private fun mapToNavEnhetFrontend(
         navEnhet: NavEnhet?,
-        geografiskTilknytning: String,
+        geografiskTilknytning: String?,
         kommunenummer: String?,
         valgtEnhetNr: String?
     ): NavEnhetFrontend? {
         var valgtKommunenummer: String? = kommunenummer
         if (navEnhet == null) {
-            log.warn("Kunne ikke hente NAV-enhet: {} , i kommune: {}", geografiskTilknytning, kommunenummer)
+            log.warn("Kunne ikke hente NAV-enhet: $geografiskTilknytning , i kommune: $kommunenummer")
             return null
         }
         if (valgtKommunenummer == null || valgtKommunenummer.length != 4) {
-            log.warn("Kommunenummer hadde ikke 4 tegn, var {}", valgtKommunenummer)
+            log.warn("Kommunenummer hadde ikke 4 tegn, var $valgtKommunenummer")
             return null
         }
         if (ServiceUtils.isNonProduction() && MockUtils.isAlltidHentKommuneInfoFraNavTestkommune()) {
