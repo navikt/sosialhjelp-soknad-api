@@ -3,12 +3,12 @@ package no.nav.sosialhjelp.soknad.web.sikkerhet;
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository;
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata;
-import no.nav.sosialhjelp.soknad.consumer.pdl.person.PersonService;
-import no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.AdressebeskyttelseDto;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.domain.model.exception.AuthorizationException;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.StaticSubjectHandlerService;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
+import no.nav.sosialhjelp.soknad.person.PersonService;
+import no.nav.sosialhjelp.soknad.person.dto.Gradering;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -54,7 +54,7 @@ class TilgangskontrollTest {
         String userId = SubjectHandler.getUserId();
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withEier(userId).withJsonInternalSoknad(createEmptyJsonInternalSoknad(userId));
         when(soknadUnderArbeidRepository.hentSoknadOptional(anyString(), anyString())).thenReturn(Optional.of(soknadUnderArbeid));
-        when(personService.hentAdressebeskyttelse(userId)).thenReturn(AdressebeskyttelseDto.Gradering.UGRADERT);
+        when(personService.hentAdressebeskyttelse(userId)).thenReturn(Gradering.UGRADERT);
 
         assertThatNoException().isThrownBy(() -> tilgangskontroll.verifiserBrukerHarTilgangTilSoknad("123"));
     }
@@ -82,7 +82,7 @@ class TilgangskontrollTest {
         SoknadMetadata metadata = new SoknadMetadata();
         metadata.fnr = userId;
         when(soknadMetadataRepository.hent("123")).thenReturn(metadata);
-        when(personService.hentAdressebeskyttelse(userId)).thenReturn(AdressebeskyttelseDto.Gradering.UGRADERT);
+        when(personService.hentAdressebeskyttelse(userId)).thenReturn(Gradering.UGRADERT);
 
         assertThatNoException().isThrownBy(() -> tilgangskontroll.verifiserBrukerHarTilgangTilMetadata("123"));
     }
@@ -106,7 +106,7 @@ class TilgangskontrollTest {
     @Test
     void skalFeileHvisBrukerHarAdressebeskyttelseStrengtFortrolig() {
         var userId = SubjectHandler.getUserId();
-        when(personService.hentAdressebeskyttelse(userId)).thenReturn(AdressebeskyttelseDto.Gradering.STRENGT_FORTROLIG);
+        when(personService.hentAdressebeskyttelse(userId)).thenReturn(Gradering.STRENGT_FORTROLIG);
 
         assertThatExceptionOfType(AuthorizationException.class)
                 .isThrownBy(() -> tilgangskontroll.verifiserAtBrukerHarTilgang());
@@ -115,7 +115,7 @@ class TilgangskontrollTest {
     @Test
     void skalFeileHvisBrukerHarAdressebeskyttelseFortrolig() {
         var userId = SubjectHandler.getUserId();
-        when(personService.hentAdressebeskyttelse(userId)).thenReturn(AdressebeskyttelseDto.Gradering.FORTROLIG);
+        when(personService.hentAdressebeskyttelse(userId)).thenReturn(Gradering.FORTROLIG);
 
         assertThatExceptionOfType(AuthorizationException.class)
                 .isThrownBy(() -> tilgangskontroll.verifiserAtBrukerHarTilgang());

@@ -8,4 +8,3 @@ fun formatterKommunenavn(kommunenavn: String?): String? {
         ?.map { if (it != "og") WordUtils.capitalize(it, '-') else it }
         ?.joinToString(" ") { it }
 }
-

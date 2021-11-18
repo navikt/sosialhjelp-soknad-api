@@ -22,8 +22,6 @@ import no.nav.sosialhjelp.soknad.consumer.fiks.DokumentKrypterer;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.PdlAdresseSokService;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.bydel.BydelConfig;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.bydel.BydelService;
-import no.nav.sosialhjelp.soknad.consumer.pdl.person.PdlPersonMapper;
-import no.nav.sosialhjelp.soknad.consumer.pdl.person.PersonService;
 import no.nav.sosialhjelp.soknad.consumer.redis.NoRedisConfig;
 import no.nav.sosialhjelp.soknad.consumer.redis.RedisConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.DigisosApiRestConfig;
@@ -33,6 +31,7 @@ import no.nav.sosialhjelp.soknad.kontonummer.KontonummerConfig;
 import no.nav.sosialhjelp.soknad.navenhet.NavEnhetConfig;
 import no.nav.sosialhjelp.soknad.navutbetalinger.NavUtbetalingerConfig;
 import no.nav.sosialhjelp.soknad.organisasjon.OrganisasjonConfig;
+import no.nav.sosialhjelp.soknad.person.PersonConfig;
 import no.nav.sosialhjelp.soknad.skattbarinntekt.SkattbarInntektConfig;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -44,6 +43,7 @@ import org.springframework.context.annotation.Import;
         NonProxiedWebClientConfig.class,
         SvarUtConfig.class,
         PdlConfig.class,
+        PersonConfig.class,
         KommuneInfoClientConfig.class,
         IdPortenClientConfig.class,
         IdPortenClientConfigMockAlt.class,
@@ -62,8 +62,6 @@ import org.springframework.context.annotation.Import;
         FeatureToggleConfig.class,
         RedisConfig.class,
         NoRedisConfig.class,
-        PersonService.class,
-        PdlPersonMapper.class,
         PdlAdresseSokService.class,
         ConsumerConfig.WsServices.class,
         DokumentKrypterer.class,

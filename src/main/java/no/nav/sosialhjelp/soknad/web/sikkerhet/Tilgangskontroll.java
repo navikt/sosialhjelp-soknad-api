@@ -3,10 +3,11 @@ package no.nav.sosialhjelp.soknad.web.sikkerhet;
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository;
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata;
-import no.nav.sosialhjelp.soknad.consumer.pdl.person.PersonService;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.domain.model.exception.AuthorizationException;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
+import no.nav.sosialhjelp.soknad.person.PersonService;
+import no.nav.sosialhjelp.soknad.person.dto.Gradering;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -16,9 +17,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Objects;
 import java.util.Optional;
 
-import static no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.AdressebeskyttelseDto.Gradering.FORTROLIG;
-import static no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.AdressebeskyttelseDto.Gradering.STRENGT_FORTROLIG;
-import static no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.AdressebeskyttelseDto.Gradering.STRENGT_FORTROLIG_UTLAND;
 import static no.nav.sosialhjelp.soknad.web.utils.XsrfGenerator.sjekkXsrfToken;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -87,7 +85,7 @@ public class Tilgangskontroll {
 
     private void verifiserAtBrukerIkkeHarAdressebeskyttelse(String ident) {
         var adressebeskyttelse = personService.hentAdressebeskyttelse(ident);
-        if (FORTROLIG.equals(adressebeskyttelse) || STRENGT_FORTROLIG.equals(adressebeskyttelse) || STRENGT_FORTROLIG_UTLAND.equals(adressebeskyttelse)) {
+        if (Gradering.FORTROLIG.equals(adressebeskyttelse) || Gradering.STRENGT_FORTROLIG.equals(adressebeskyttelse) || Gradering.STRENGT_FORTROLIG_UTLAND.equals(adressebeskyttelse)) {
             throw new AuthorizationException("Bruker har ikke tilgang til søknaden.");
         }
     }

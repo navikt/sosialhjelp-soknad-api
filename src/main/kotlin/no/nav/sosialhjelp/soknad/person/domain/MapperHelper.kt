@@ -1,0 +1,125 @@
+package no.nav.sosialhjelp.soknad.person.domain
+
+import no.nav.sosialhjelp.soknad.person.dto.EndringDto
+import no.nav.sosialhjelp.soknad.person.dto.FolkeregisterMetadataDto
+import no.nav.sosialhjelp.soknad.person.dto.MetadataDto
+import no.nav.sosialhjelp.soknad.person.dto.NavnDto
+import no.nav.sosialhjelp.soknad.person.dto.SivilstandDto
+import no.nav.sosialhjelp.soknad.person.dto.SivilstandType
+import org.slf4j.LoggerFactory
+import java.time.LocalDateTime
+import java.util.Set
+import java.util.stream.Collectors
+
+class MapperHelper {
+
+    companion object {
+        private val log = LoggerFactory.getLogger(MapperHelper::class.java)
+
+        private const val FREG = "FREG"
+        private const val PDL = "PDL"
+        private val MASTERS = Set.of(FREG, PDL)
+        private const val BRUKER_SELV = "Bruker selv"
+    }
+
+    fun utledGjeldendeSivilstand(sivilstander: List<SivilstandDto>?): SivilstandDto? {
+        if (sivilstander == null || sivilstander.isEmpty()) {
+            return null
+        }
+        // sorter sivilstander på synkende endringstidspunkt
+        sivilstander.sortedByDescending { getEndringstidspunktOrNull(it) }
+
+        if (sivilstander.size > 1) {
+            log.info(
+                "Flere gjeldende sivilstander funnet i PDL: [{}]",
+                sivilstander.stream().map { dto: SivilstandDto ->
+                    dto.type.toString()
+                }.collect(Collectors.joining(","))
+            )
+        }
+        val sistEndredeSivilstand = sivilstander[0]
+        if (sistEndredeSivilstand == null || flereSivilstanderRegistrertSamtidig(sistEndredeSivilstand, sivilstander) ||
+            sistEndredeSivilstand.type == SivilstandType.UOPPGITT ||
+            //  Kommentert ut fordi vi ikke er 100% sikre på om vi skal vise sivilstander fra udokumenterte kilder (master == "bruker selv").
+            //  Hvis disse skal filtreres vekk, kan linjen kommenteres inn igjen.
+            //  || erKildeUdokumentert(sistEndredeSivilstand)
+            !MASTERS.contains(sistEndredeSivilstand.metadata.master.uppercase())
+        ) {
+            return null
+        }
+        if (erKildeUdokumentert(sistEndredeSivilstand.metadata)) {
+            log.info(
+                "PDL sivilstand er udokumentert (kilde = {})",
+                sisteEndringOrNull(sistEndredeSivilstand.metadata)?.kilde
+            )
+        }
+        return sistEndredeSivilstand
+    }
+
+    fun utledGjeldendeNavn(navn: List<NavnDto>?): NavnDto? {
+        if (navn == null || navn.isEmpty()) {
+            return null
+        }
+
+        navn.sortedByDescending { getEndringstidspunktOrNull(it) }
+
+        if (navn.size > 1) {
+            log.info("Flere gjeldende navn funnet i PDL")
+        }
+        val sistEndredeNavn = navn[0]
+        if (flereNavnRegistrertSamtidig(sistEndredeNavn, navn) ||
+            // Kommentert ut fordi vi ikke er 100% sikre på om vi skal vise navn fra udokumenterte kilder (master == "bruker selv").
+            // Hvis disse skal filtreres vekk, kan linjen kommenteres inn igjen.
+            // || erKildeUdokumentert(sistEndredeNavn)
+            !MASTERS.contains(sistEndredeNavn.metadata.master.uppercase())
+        ) {
+            return null
+        }
+        if (erKildeUdokumentert(sistEndredeNavn.metadata)) {
+            log.info("PDL navn er udokumentert (kilde = {})", sisteEndringOrNull(sistEndredeNavn.metadata)?.kilde)
+        }
+        return sistEndredeNavn
+    }
+
+    private fun getEndringstidspunktOrNull(sivilstandDto: SivilstandDto): LocalDateTime? {
+        return getEndringstidspunktOrNull(sivilstandDto.metadata, sivilstandDto.folkeregistermetadata)
+    }
+
+    private fun getEndringstidspunktOrNull(navnDto: NavnDto): LocalDateTime? {
+        return getEndringstidspunktOrNull(navnDto.metadata, navnDto.folkeregistermetadata)
+    }
+
+    private fun getEndringstidspunktOrNull(metadata: MetadataDto, folkeregistermetadata: FolkeregisterMetadataDto?): LocalDateTime? {
+        return if (metadata.master.equals(FREG, ignoreCase = true)) {
+            folkeregistermetadata?.ajourholdstidspunkt
+        } else {
+            return metadata.endringer.maxByOrNull { it.registrert }?.registrert
+        }
+    }
+
+    private fun sisteEndringOrNull(metadata: MetadataDto): EndringDto? {
+        return metadata.endringer.maxByOrNull { it.registrert }
+    }
+
+    private fun flereSivilstanderRegistrertSamtidig(first: SivilstandDto, list: List<SivilstandDto>): Boolean {
+        return list.stream()
+            .filter { dto: SivilstandDto ->
+                getEndringstidspunktOrNull(dto) == getEndringstidspunktOrNull(first)
+            }
+            .count() > 1
+    }
+
+    private fun flereNavnRegistrertSamtidig(first: NavnDto, list: List<NavnDto>): Boolean {
+        return list.stream()
+            .filter { dto: NavnDto ->
+                getEndringstidspunktOrNull(dto) == getEndringstidspunktOrNull(first)
+            }
+            .count() > 1
+    }
+
+    private fun erKildeUdokumentert(metadata: MetadataDto): Boolean {
+        return PDL.equals(metadata.master, ignoreCase = true) &&
+            sisteEndringOrNull(metadata) != null &&
+            sisteEndringOrNull(metadata)!!.kilde == BRUKER_SELV
+    }
+}
