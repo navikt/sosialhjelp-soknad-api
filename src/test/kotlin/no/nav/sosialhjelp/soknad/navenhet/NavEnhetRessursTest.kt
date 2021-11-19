@@ -13,9 +13,9 @@ import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresseValg
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonGateAdresse
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
+import no.nav.sosialhjelp.soknad.adressesok.domain.AdresseForslag
+import no.nav.sosialhjelp.soknad.adressesok.domain.AdresseForslagType
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
-import no.nav.sosialhjelp.soknad.business.service.adressesok.AdresseForslag
-import no.nav.sosialhjelp.soknad.business.service.adressesok.AdresseSokService
 import no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService
 import no.nav.sosialhjelp.soknad.client.kodeverk.KodeverkService
 import no.nav.sosialhjelp.soknad.consumer.exceptions.PdlApiException
@@ -29,6 +29,7 @@ import no.nav.sosialhjelp.soknad.navenhet.bydel.BydelFordelingService
 import no.nav.sosialhjelp.soknad.navenhet.bydel.BydelFordelingService.Companion.BYDEL_MARKA_OSLO
 import no.nav.sosialhjelp.soknad.navenhet.domain.NavEnhet
 import no.nav.sosialhjelp.soknad.navenhet.dto.NavEnhetFrontend
+import no.nav.sosialhjelp.soknad.navenhet.finnadresse.FinnAdresseService
 import no.nav.sosialhjelp.soknad.navenhet.gt.GeografiskTilknytningService
 import no.nav.sosialhjelp.soknad.web.sikkerhet.Tilgangskontroll
 import org.assertj.core.api.Assertions.assertThat
@@ -76,32 +77,18 @@ internal class NavEnhetRessursTest {
             .withEnhetsnummer(ENHETSNR_2)
             .withKommunenummer(KOMMUNENR_2)
 
-        private val SOKNADSMOTTAKER_FORSLAG = AdresseForslag()
-        private val SOKNADSMOTTAKER_FORSLAG_2 = AdresseForslag()
-        private val SOKNADSMOTTAKER_FORSLAG_BYDEL_MARKA = AdresseForslag()
+        private val SOKNADSMOTTAKER_FORSLAG = AdresseForslag(null, null, null, KOMMUNENR, KOMMUNENAVN, null, null, ENHETSNAVN, null, null, AdresseForslagType.GATEADRESSE)
+        private val SOKNADSMOTTAKER_FORSLAG_2 = AdresseForslag(null, null, null, KOMMUNENR_2, KOMMUNENAVN_2, null, null, ENHETSNAVN_2, null, null, AdresseForslagType.GATEADRESSE)
+        private val SOKNADSMOTTAKER_FORSLAG_BYDEL_MARKA = AdresseForslag(null, null, null, KOMMUNENR_2, KOMMUNENAVN_2, null, null, BYDEL_MARKA_OSLO, null, null, AdresseForslagType.GATEADRESSE)
 
         private val NAV_ENHET = NavEnhet(ENHETSNR, ENHETSNAVN, null, ORGNR)
         private val NAV_ENHET_2 = NavEnhet(ENHETSNR_2, ENHETSNAVN_2, null, ORGNR_2)
         private const val EIER = "123456789101"
     }
 
-    init {
-        SOKNADSMOTTAKER_FORSLAG.geografiskTilknytning = ENHETSNAVN
-        SOKNADSMOTTAKER_FORSLAG.kommunenavn = KOMMUNENAVN
-        SOKNADSMOTTAKER_FORSLAG.kommunenummer = KOMMUNENR
-
-        SOKNADSMOTTAKER_FORSLAG_2.geografiskTilknytning = ENHETSNAVN_2
-        SOKNADSMOTTAKER_FORSLAG_2.kommunenavn = KOMMUNENAVN_2
-        SOKNADSMOTTAKER_FORSLAG_2.kommunenummer = KOMMUNENR_2
-
-        SOKNADSMOTTAKER_FORSLAG_BYDEL_MARKA.geografiskTilknytning = BYDEL_MARKA_OSLO
-        SOKNADSMOTTAKER_FORSLAG_BYDEL_MARKA.kommunenavn = KOMMUNENAVN_2
-        SOKNADSMOTTAKER_FORSLAG_BYDEL_MARKA.kommunenummer = KOMMUNENR_2
-    }
-
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
     private val tilgangskontroll: Tilgangskontroll = mockk()
-    private val adresseSokService: AdresseSokService = mockk()
+    private val finnAdresseService: FinnAdresseService = mockk()
     private val navEnhetService: NavEnhetService = mockk()
     private val kommuneInfoService: KommuneInfoService = mockk()
     private val bydelFordelingService: BydelFordelingService = mockk()
@@ -109,7 +96,7 @@ internal class NavEnhetRessursTest {
     private val kodeverkService: KodeverkService = mockk()
 
     private val navEnhetRessurs = NavEnhetRessurs(
-        tilgangskontroll, soknadUnderArbeidRepository, navEnhetService, kommuneInfoService, bydelFordelingService, adresseSokService, geografiskTilknytningService, kodeverkService
+        tilgangskontroll, soknadUnderArbeidRepository, navEnhetService, kommuneInfoService, bydelFordelingService, finnAdresseService, geografiskTilknytningService, kodeverkService
     )
 
     @BeforeEach
@@ -137,7 +124,7 @@ internal class NavEnhetRessursTest {
             .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(JsonAdresseValg.SOKNAD))
 
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns soknadUnderArbeid
-        every { adresseSokService.finnAdresseFraSoknad(any(), "soknad") } returns listOf(SOKNADSMOTTAKER_FORSLAG, SOKNADSMOTTAKER_FORSLAG_2)
+        every { finnAdresseService.finnAdresseFraSoknad(any(), "soknad") } returns listOf(SOKNADSMOTTAKER_FORSLAG, SOKNADSMOTTAKER_FORSLAG_2)
         every { navEnhetService.getEnhetForGt(ENHETSNAVN) } returns NAV_ENHET
         every { navEnhetService.getEnhetForGt(ENHETSNAVN_2) } returns NAV_ENHET_2
         every { kommuneInfoService.getBehandlingskommune(KOMMUNENR, KOMMUNENAVN) } returns KOMMUNENAVN
@@ -160,7 +147,7 @@ internal class NavEnhetRessursTest {
             .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(JsonAdresseValg.SOKNAD))
 
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns soknadUnderArbeid
-        every { adresseSokService.finnAdresseFraSoknad(any(), "soknad") } returns listOf(SOKNADSMOTTAKER_FORSLAG_BYDEL_MARKA)
+        every { finnAdresseService.finnAdresseFraSoknad(any(), "soknad") } returns listOf(SOKNADSMOTTAKER_FORSLAG_BYDEL_MARKA)
         every { bydelFordelingService.getBydelTilForMarka(SOKNADSMOTTAKER_FORSLAG_BYDEL_MARKA) } returns annenBydel
         every { navEnhetService.getEnhetForGt(annenBydel) } returns NAV_ENHET_2
         every { kommuneInfoService.getBehandlingskommune(KOMMUNENR_2, KOMMUNENAVN_2) } returns KOMMUNENAVN_2
@@ -194,7 +181,7 @@ internal class NavEnhetRessursTest {
             .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(null))
 
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns soknadUnderArbeid
-        every { adresseSokService.finnAdresseFraSoknad(any(), null) } returns emptyList()
+        every { finnAdresseService.finnAdresseFraSoknad(any(), null) } returns emptyList()
 
         val response = navEnhetRessurs.hentNavEnheter(BEHANDLINGSID)
         assertThat(response).isEmpty()
@@ -293,7 +280,7 @@ internal class NavEnhetRessursTest {
 
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns soknadUnderArbeid
         every { geografiskTilknytningService.hentGeografiskTilknytning(any()) } throws PdlApiException("pdl feil")
-        every { adresseSokService.finnAdresseFraSoknad(any(), "folkeregistrert") } returns listOf(SOKNADSMOTTAKER_FORSLAG)
+        every { finnAdresseService.finnAdresseFraSoknad(any(), "folkeregistrert") } returns listOf(SOKNADSMOTTAKER_FORSLAG)
         every { navEnhetService.getEnhetForGt(SOKNADSMOTTAKER_FORSLAG.geografiskTilknytning) } returns NAV_ENHET
         every { kommuneInfoService.getBehandlingskommune(KOMMUNENR, KOMMUNENAVN) } returns KOMMUNENAVN
 

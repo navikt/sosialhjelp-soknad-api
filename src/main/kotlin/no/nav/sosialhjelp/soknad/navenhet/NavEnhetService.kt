@@ -20,7 +20,7 @@ import java.time.format.DateTimeFormatter
 
 interface NavEnhetService {
     fun getEnhetForGt(gt: String?): NavEnhet?
-    fun getEnheterForKommunenummer(kommunenummer: String): List<NavEnhet>?
+    fun getEnheterForKommunenummer(kommunenummer: String?): List<NavEnhet>?
 }
 
 class NavEnhetServiceImpl(
@@ -43,7 +43,7 @@ class NavEnhetServiceImpl(
         return navEnhetDto.toNavEnhet(gt)
     }
 
-    override fun getEnheterForKommunenummer(kommunenummer: String): List<NavEnhet>? {
+    override fun getEnheterForKommunenummer(kommunenummer: String?): List<NavEnhet>? {
         return getNavenhetForKommunenummerFraCacheEllerLokalListe(kommunenummer)
             ?.map { it.toNavEnhet() }
             ?.distinct()
@@ -88,7 +88,7 @@ class NavEnhetServiceImpl(
         return null
     }
 
-    private fun getNavenhetForKommunenummerFraCacheEllerLokalListe(kommunenummer: String): List<NavEnhetFraLokalListe>? {
+    private fun getNavenhetForKommunenummerFraCacheEllerLokalListe(kommunenummer: String?): List<NavEnhetFraLokalListe>? {
         if (cachedNavenheterFraLokalListe == null) {
             val (navEnheter) = getAllNavenheterFromPath() ?: throw IllegalStateException("Fant ingen navenheter i path: $NAVENHET_PATH")
             cachedNavenheterFraLokalListe = navEnheter

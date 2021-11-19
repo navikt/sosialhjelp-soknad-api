@@ -1,7 +1,9 @@
 package no.nav.sosialhjelp.soknad.navenhet
 
+import no.nav.sosialhjelp.soknad.adressesok.AdressesokService
 import no.nav.sosialhjelp.soknad.consumer.common.rest.RestUtils
 import no.nav.sosialhjelp.soknad.consumer.redis.RedisService
+import no.nav.sosialhjelp.soknad.navenhet.finnadresse.FinnAdresseService
 import no.nav.sosialhjelp.soknad.navenhet.gt.GeografiskTilknytningClient
 import no.nav.sosialhjelp.soknad.navenhet.gt.GeografiskTilknytningService
 import no.nav.sosialhjelp.soknad.web.selftest.Pingable
@@ -44,5 +46,10 @@ open class NavEnhetConfig(
     @Bean
     open fun geografiskTilknytningService(): GeografiskTilknytningService {
         return GeografiskTilknytningService(geografiskTilknytningClient)
+    }
+
+    @Bean
+    open fun finnAdresseService(adressesokService: AdressesokService): FinnAdresseService {
+        return FinnAdresseService(adressesokService)
     }
 }

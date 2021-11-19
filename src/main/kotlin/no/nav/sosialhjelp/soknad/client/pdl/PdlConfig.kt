@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.client.pdl
 
+import no.nav.sosialhjelp.soknad.adressesok.AdressesokClient
 import no.nav.sosialhjelp.soknad.client.sts.StsClient
 import no.nav.sosialhjelp.soknad.consumer.common.rest.RestUtils
 import no.nav.sosialhjelp.soknad.consumer.redis.RedisService
@@ -22,6 +23,11 @@ open class PdlConfig(
     @Bean
     open fun geografiskTilknytningClient(): GeografiskTilknytningClient {
         return GeografiskTilknytningClient(client, baseurl, stsClient, redisService)
+    }
+
+    @Bean
+    open fun adressesokClient(): AdressesokClient {
+        return AdressesokClient(client, baseurl, stsClient)
     }
 
     @Bean

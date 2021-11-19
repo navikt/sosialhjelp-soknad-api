@@ -8,10 +8,9 @@ import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonMatrikkelAdresse
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.metrics.aspects.Timed
+import no.nav.sosialhjelp.soknad.adressesok.domain.AdresseForslag
+import no.nav.sosialhjelp.soknad.adressesok.domain.AdresseForslagType
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
-import no.nav.sosialhjelp.soknad.business.service.adressesok.AdresseForslag
-import no.nav.sosialhjelp.soknad.business.service.adressesok.AdresseForslagType
-import no.nav.sosialhjelp.soknad.business.service.adressesok.AdresseSokService
 import no.nav.sosialhjelp.soknad.client.kodeverk.KodeverkService
 import no.nav.sosialhjelp.soknad.consumer.fiks.KommuneInfoService
 import no.nav.sosialhjelp.soknad.domain.model.mock.MockUtils
@@ -22,6 +21,7 @@ import no.nav.sosialhjelp.soknad.navenhet.bydel.BydelFordelingService
 import no.nav.sosialhjelp.soknad.navenhet.bydel.BydelFordelingService.Companion.BYDEL_MARKA_OSLO
 import no.nav.sosialhjelp.soknad.navenhet.domain.NavEnhet
 import no.nav.sosialhjelp.soknad.navenhet.dto.NavEnhetFrontend
+import no.nav.sosialhjelp.soknad.navenhet.finnadresse.FinnAdresseService
 import no.nav.sosialhjelp.soknad.navenhet.gt.GeografiskTilknytningService
 import no.nav.sosialhjelp.soknad.web.sikkerhet.Tilgangskontroll
 import no.nav.sosialhjelp.soknad.web.utils.Constants
@@ -46,7 +46,7 @@ open class NavEnhetRessurs(
     private val navEnhetService: NavEnhetService,
     private val kommuneInfoService: KommuneInfoService,
     private val bydelFordelingService: BydelFordelingService,
-    private val adresseSokService: AdresseSokService,
+    private val finnAdresseService: FinnAdresseService,
     private val geografiskTilknytningService: GeografiskTilknytningService,
     private val kodeverkService: KodeverkService
 ) {
@@ -194,21 +194,21 @@ open class NavEnhetRessurs(
         valg: String?,
         valgtEnhetNr: String?
     ): List<NavEnhetFrontend>? {
-        val adresseForslagene = adresseSokService.finnAdresseFraSoknad(personalia, valg)
+        val adresseForslagList = finnAdresseService.finnAdresseFraSoknad(personalia, valg)
         /*
          * Vi fjerner nå duplikate NAV-enheter med forskjellige bydelsnumre gjennom
          * bruk av distinct. Hvis det er viktig med riktig bydelsnummer bør dette kallet
          * fjernes og brukeren må besvare hvilken bydel han/hun oppholder seg i.
          */
         val navEnhetFrontendListe: MutableList<NavEnhetFrontend> = mutableListOf()
-        for (adresseForslag in adresseForslagene) {
-            if (adresseForslag.type != null && adresseForslag.type == AdresseForslagType.MATRIKKELADRESSE) {
+        for (adresseForslag in adresseForslagList) {
+            if (adresseForslag.type == AdresseForslagType.MATRIKKELADRESSE) {
                 val navenheter = navEnhetService.getEnheterForKommunenummer(adresseForslag.kommunenummer)
                 navenheter!!
                     .forEach {
                         addToNavEnhetFrontendListe(
                             navEnhetFrontendListe,
-                            adresseForslag.geografiskTilknytning,
+                            adresseForslag.geografiskTilknytning!!,
                             adresseForslag,
                             it,
                             valgtEnhetNr
@@ -306,7 +306,7 @@ open class NavEnhetRessurs(
             bydelFordelingService.getBydelTilForMarka(adresseForslag)
         } else {
             // flere special cases her?
-            adresseForslag.geografiskTilknytning
+            adresseForslag.geografiskTilknytning!!
         }
     }
 
