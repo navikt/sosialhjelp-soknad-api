@@ -1,11 +1,12 @@
 package no.nav.sosialhjelp.soknad.consumer.pdl.adressesok;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import no.nav.sosialhjelp.soknad.adressesok.dto.AdressesokResultDto;
+import no.nav.sosialhjelp.soknad.client.pdl.AdressesokDto;
 import no.nav.sosialhjelp.soknad.client.sts.StsClient;
 import no.nav.sosialhjelp.soknad.consumer.exceptions.PdlApiException;
 import no.nav.sosialhjelp.soknad.consumer.exceptions.TjenesteUtilgjengeligException;
 import no.nav.sosialhjelp.soknad.consumer.pdl.BasePdlConsumer;
-import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.AdresseSokResult;
 import no.nav.sosialhjelp.soknad.consumer.pdl.common.PdlApiQuery;
 import org.slf4j.Logger;
 
@@ -24,18 +25,18 @@ public class PdlAdresseSokConsumer extends BasePdlConsumer {
         super(client, endpoint, stsClient, log);
     }
 
-    public AdresseSokResult getAdresseSokResult(Map<String, Object> variables) {
+    public AdressesokResultDto getAdresseSokResult(Map<String, Object> variables) {
         var query = PdlApiQuery.ADRESSE_SOK;
         try {
             var request = adresseSokRequest(endpoint);
             var requestEntity = requestEntity(query, variables);
             var body = withRetry(() -> request.post(requestEntity, String.class));
 
-            var pdlResponse = pdlMapper.readValue(body, new TypeReference<AdresseSokResponse>() {});
+            var pdlResponse = pdlMapper.readValue(body, new TypeReference<AdressesokDto>() {});
 
-            checkForPdlApiErrors(pdlResponse);
+            pdlResponse.checkForPdlApiErrors();
 
-            return pdlResponse.getData().getAdresseSokResult();
+            return pdlResponse.getData().getSokAdresse();
         } catch (PdlApiException e) {
             log.warn("PDL - feil oppdaget i response: {}", e.getMessage(), e);
             throw e;

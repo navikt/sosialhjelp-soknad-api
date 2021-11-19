@@ -1,24 +1,21 @@
 package no.nav.sosialhjelp.soknad.consumer.pdl.adressesok;
 
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonGateAdresse;
-import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.AdresseSokHit;
-import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.AdresseSokResult;
-import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.dto.VegadresseDto;
+import no.nav.sosialhjelp.soknad.adressesok.dto.AdressesokHitDto;
+import no.nav.sosialhjelp.soknad.adressesok.dto.AdressesokResultDto;
+import no.nav.sosialhjelp.soknad.adressesok.dto.VegadresseDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Arrays;
 import java.util.List;
 
 import static java.util.Collections.emptyList;
-import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -56,10 +53,9 @@ class PdlAdresseSokServiceTest {
 
     @Test
     void skalKasteFeil_AdresseSokResultHitsErNull() {
-        var adresseSokResultMock = mock(AdresseSokResult.class);
-        when(adresseSokResultMock.getHits()).thenReturn(null);
+        var adressesokResult = createAdressesokResultDto(null);
 
-        when(pdlAdresseSokConsumer.getAdresseSokResult(any())).thenReturn(adresseSokResultMock);
+        when(pdlAdresseSokConsumer.getAdresseSokResult(any())).thenReturn(adressesokResult);
 
         assertThatExceptionOfType(RuntimeException.class)
                 .isThrownBy(() -> pdlAdresseSokService.getAdresseForslag(folkeregistretAdresse));
@@ -67,10 +63,9 @@ class PdlAdresseSokServiceTest {
 
     @Test
     void skalKasteFeil_AdresseSokGirTomListe() {
-        var adresseSokResultMock = mock(AdresseSokResult.class);
-        when(adresseSokResultMock.getHits()).thenReturn(emptyList());
+        var adressesokResult = createAdressesokResultDto(emptyList());
 
-        when(pdlAdresseSokConsumer.getAdresseSokResult(any())).thenReturn(adresseSokResultMock);
+        when(pdlAdresseSokConsumer.getAdresseSokResult(any())).thenReturn(adressesokResult);
 
         assertThatExceptionOfType(RuntimeException.class)
                 .isThrownBy(() -> pdlAdresseSokService.getAdresseForslag(folkeregistretAdresse));
@@ -78,10 +73,12 @@ class PdlAdresseSokServiceTest {
 
     @Test
     void skalKasteFeil_AdresseSokGirFlereHits() {
-        var adresseSokResultMock = mock(AdresseSokResult.class);
-        when(adresseSokResultMock.getHits()).thenReturn(List.of(mock(AdresseSokHit.class), mock(AdresseSokHit.class)));
+        var adressesokResult = createAdressesokResultDto(List.of(
+                new AdressesokHitDto(vegadresseMedBydelsnummer(), 0.5F),
+                new AdressesokHitDto(vegadresseUtenBydelsnummer(), 0.7F)
+        ));
 
-        when(pdlAdresseSokConsumer.getAdresseSokResult(any())).thenReturn(adresseSokResultMock);
+        when(pdlAdresseSokConsumer.getAdresseSokResult(any())).thenReturn(adressesokResult);
 
         assertThatExceptionOfType(RuntimeException.class)
                 .isThrownBy(() -> pdlAdresseSokService.getAdresseForslag(folkeregistretAdresse));
@@ -89,13 +86,11 @@ class PdlAdresseSokServiceTest {
 
     @Test
     void skalReturnereAdresseForslagMedGeografiskTilknytningLikBydelsnummer() {
-        var hitMock = mock(AdresseSokHit.class);
-        when(hitMock.getVegadresse()).thenReturn(vegadresseMedBydelsnummer());
+        var adressesokResult = createAdressesokResultDto(List.of(
+                new AdressesokHitDto(vegadresseMedBydelsnummer(), 0.5F)
+        ));
 
-        var adresseSokResultMock = mock(AdresseSokResult.class);
-        when(adresseSokResultMock.getHits()).thenReturn(singletonList(hitMock));
-
-        when(pdlAdresseSokConsumer.getAdresseSokResult(any())).thenReturn(adresseSokResultMock);
+        when(pdlAdresseSokConsumer.getAdresseSokResult(any())).thenReturn(adressesokResult);
 
         var adresseForslag = pdlAdresseSokService.getAdresseForslag(folkeregistretAdresse);
         assertThat(adresseForslag.geografiskTilknytning).isEqualTo(BYDELSNUMMER);
@@ -103,12 +98,11 @@ class PdlAdresseSokServiceTest {
 
     @Test
     void skalReturnereAdresseForslagMedGeografiskTilknytningLikKommunenummer() {
-        var hitMock = mock(AdresseSokHit.class);
-        when(hitMock.getVegadresse()).thenReturn(vegadresseUtenBydelsnummer());
-        var adresseSokResultMock = mock(AdresseSokResult.class);
-        when(adresseSokResultMock.getHits()).thenReturn(singletonList(hitMock));
+        var adressesokResult = createAdressesokResultDto(List.of(
+                new AdressesokHitDto(vegadresseUtenBydelsnummer(), 0.5F)
+        ));
 
-        when(pdlAdresseSokConsumer.getAdresseSokResult(any())).thenReturn(adresseSokResultMock);
+        when(pdlAdresseSokConsumer.getAdresseSokResult(any())).thenReturn(adressesokResult);
 
         var adresseForslag = pdlAdresseSokService.getAdresseForslag(folkeregistretAdresse);
         assertThat(adresseForslag.geografiskTilknytning).isEqualTo(KOMMUNENUMMER);
@@ -116,15 +110,12 @@ class PdlAdresseSokServiceTest {
 
     @Test
     void skalKasteFeil_flereHitsMedUlikeKommunenavn() {
-        var hitMock = mock(AdresseSokHit.class);
-        when(hitMock.getVegadresse()).thenReturn(vegadresse("kommune1", "0101", null));
-        var hitMock2 = mock(AdresseSokHit.class);
-        when(hitMock2.getVegadresse()).thenReturn(vegadresse("kommune2", "0101", null));
+        var adressesokResult = createAdressesokResultDto(List.of(
+                new AdressesokHitDto(vegadresse("kommune1", "0101", null), 0.5F),
+                new AdressesokHitDto(vegadresse("kommune2", "0101", null), 0.5F)
+        ));
 
-        var adresseSokResultMock = mock(AdresseSokResult.class);
-        when(adresseSokResultMock.getHits()).thenReturn(Arrays.asList(hitMock, hitMock2));
-
-        when(pdlAdresseSokConsumer.getAdresseSokResult(any())).thenReturn(adresseSokResultMock);
+        when(pdlAdresseSokConsumer.getAdresseSokResult(any())).thenReturn(adressesokResult);
 
         assertThatExceptionOfType(RuntimeException.class)
                 .isThrownBy(() -> pdlAdresseSokService.getAdresseForslag(folkeregistretAdresse));
@@ -132,15 +123,12 @@ class PdlAdresseSokServiceTest {
 
     @Test
     void skalKasteFeil_flereHitsMedUlikeKommunenummer() {
-        var hitMock = mock(AdresseSokHit.class);
-        when(hitMock.getVegadresse()).thenReturn(vegadresse("kommune", "1111", null));
-        var hitMock2 = mock(AdresseSokHit.class);
-        when(hitMock2.getVegadresse()).thenReturn(vegadresse("kommune", "2222", null));
+        var adressesokResult = createAdressesokResultDto(List.of(
+                new AdressesokHitDto(vegadresse("kommune", "1111", null), 0.5F),
+                new AdressesokHitDto(vegadresse("kommune", "2222", null), 0.5F)
+        ));
 
-        var adresseSokResultMock = mock(AdresseSokResult.class);
-        when(adresseSokResultMock.getHits()).thenReturn(Arrays.asList(hitMock, hitMock2));
-
-        when(pdlAdresseSokConsumer.getAdresseSokResult(any())).thenReturn(adresseSokResultMock);
+        when(pdlAdresseSokConsumer.getAdresseSokResult(any())).thenReturn(adressesokResult);
 
         assertThatExceptionOfType(RuntimeException.class)
                 .isThrownBy(() -> pdlAdresseSokService.getAdresseForslag(folkeregistretAdresse));
@@ -148,15 +136,12 @@ class PdlAdresseSokServiceTest {
 
     @Test
     void skalKasteFeil_flereHitsMedUlikeBydelsnummer() {
-        var hitMock = mock(AdresseSokHit.class);
-        when(hitMock.getVegadresse()).thenReturn(vegadresse("kommune", "1111", "030101"));
-        var hitMock2 = mock(AdresseSokHit.class);
-        when(hitMock2.getVegadresse()).thenReturn(vegadresse("kommune", "1111", "030102"));
+        var adressesokResult = createAdressesokResultDto(List.of(
+                new AdressesokHitDto(vegadresse("kommune", "1111", "030101"), 0.5F),
+                new AdressesokHitDto(vegadresse("kommune", "1111", "030102"), 0.5F)
+        ));
 
-        var adresseSokResultMock = mock(AdresseSokResult.class);
-        when(adresseSokResultMock.getHits()).thenReturn(Arrays.asList(hitMock, hitMock2));
-
-        when(pdlAdresseSokConsumer.getAdresseSokResult(any())).thenReturn(adresseSokResultMock);
+        when(pdlAdresseSokConsumer.getAdresseSokResult(any())).thenReturn(adressesokResult);
 
         assertThatExceptionOfType(RuntimeException.class)
                 .isThrownBy(() -> pdlAdresseSokService.getAdresseForslag(folkeregistretAdresse));
@@ -164,15 +149,12 @@ class PdlAdresseSokServiceTest {
 
     @Test
     void skalReturnereAdresseForslagVedFlereHitsHvisDeHarSammeKommunenummerKommunenavnOgBydelsnummer() {
-        var hitMock = mock(AdresseSokHit.class);
-        when(hitMock.getVegadresse()).thenReturn(vegadresse("Oslo", "1111", "030101"));
-        var hitMock2 = mock(AdresseSokHit.class);
-        when(hitMock2.getVegadresse()).thenReturn(vegadresse("Oslo", "1111", "030101"));
+        var adressesokResult = createAdressesokResultDto(List.of(
+                new AdressesokHitDto(vegadresse("Oslo", "1111", "030101"), 0.5F),
+                new AdressesokHitDto(vegadresse("Oslo", "1111", "030101"), 0.5F)
+        ));
 
-        var adresseSokResultMock = mock(AdresseSokResult.class);
-        when(adresseSokResultMock.getHits()).thenReturn(Arrays.asList(hitMock, hitMock2));
-
-        when(pdlAdresseSokConsumer.getAdresseSokResult(any())).thenReturn(adresseSokResultMock);
+        when(pdlAdresseSokConsumer.getAdresseSokResult(any())).thenReturn(adressesokResult);
 
         var adresseForslag = pdlAdresseSokService.getAdresseForslag(folkeregistretAdresse);
         assertThat(adresseForslag.kommunenavn).isEqualTo("Oslo");
@@ -190,5 +172,9 @@ class PdlAdresseSokServiceTest {
 
     private VegadresseDto vegadresse(String kommunenavn, String kommunenummer, String bydelsnummer) {
         return new VegadresseDto("matrikkelId", 1, "B", "Testveien", kommunenavn, kommunenummer, "0123", "Oslo", bydelsnummer);
+    }
+
+    private AdressesokResultDto createAdressesokResultDto(List<AdressesokHitDto> hits) {
+        return new AdressesokResultDto(hits, 1,1, hits == null ? 0 : hits.size());
     }
 }
