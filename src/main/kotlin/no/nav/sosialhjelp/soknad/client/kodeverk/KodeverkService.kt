@@ -1,11 +1,11 @@
 package no.nav.sosialhjelp.soknad.client.kodeverk
 
 import no.nav.sosialhjelp.soknad.client.kodeverk.dto.KodeverkDto
-import no.nav.sosialhjelp.soknad.consumer.redis.CacheConstants
-import no.nav.sosialhjelp.soknad.consumer.redis.CacheConstants.KOMMUNER_CACHE_KEY
-import no.nav.sosialhjelp.soknad.consumer.redis.CacheConstants.LANDKODER_CACHE_KEY
-import no.nav.sosialhjelp.soknad.consumer.redis.CacheConstants.POSTNUMMER_CACHE_KEY
-import no.nav.sosialhjelp.soknad.consumer.redis.RedisService
+import no.nav.sosialhjelp.soknad.client.redis.KODEVERK_LAST_POLL_TIME_KEY
+import no.nav.sosialhjelp.soknad.client.redis.KOMMUNER_CACHE_KEY
+import no.nav.sosialhjelp.soknad.client.redis.LANDKODER_CACHE_KEY
+import no.nav.sosialhjelp.soknad.client.redis.POSTNUMMER_CACHE_KEY
+import no.nav.sosialhjelp.soknad.client.redis.RedisService
 import org.slf4j.LoggerFactory
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -53,7 +53,7 @@ open class KodeverkService(
     }
 
     private fun skalBrukeCache(): Boolean {
-        return redisService.getString(CacheConstants.KODEVERK_LAST_POLL_TIME_KEY)
+        return redisService.getString(KODEVERK_LAST_POLL_TIME_KEY)
             ?.let {
                 val lastPollTime = LocalDateTime.parse(it, DateTimeFormatter.ISO_LOCAL_DATE_TIME)
                 lastPollTime.plusMinutes(MINUTES_TO_PASS_BETWEEN_POLL).isAfter(LocalDateTime.now())

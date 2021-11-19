@@ -1,10 +1,10 @@
 package no.nav.sosialhjelp.soknad.consumer.restconfig;
 
+import no.nav.sosialhjelp.soknad.client.redis.RedisService;
 import no.nav.sosialhjelp.soknad.client.sts.StsClient;
 import no.nav.sosialhjelp.soknad.consumer.common.rest.RestUtils;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.PdlHentPersonConsumer;
 import no.nav.sosialhjelp.soknad.consumer.pdl.person.PdlHentPersonConsumerImpl;
-import no.nav.sosialhjelp.soknad.consumer.redis.RedisService;
 import no.nav.sosialhjelp.soknad.web.selftest.Pingable;
 import no.nav.sosialhjelp.soknad.web.selftest.Pingable.Ping.PingMetadata;
 import org.springframework.beans.factory.annotation.Value;

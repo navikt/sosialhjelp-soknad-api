@@ -4,8 +4,8 @@ import no.nav.sosialhjelp.api.fiks.KommuneInfo;
 import no.nav.sosialhjelp.client.kommuneinfo.KommuneInfoClient;
 import no.nav.sosialhjelp.idporten.client.AccessToken;
 import no.nav.sosialhjelp.soknad.client.idporten.IdPortenService;
+import no.nav.sosialhjelp.soknad.client.redis.RedisService;
 import no.nav.sosialhjelp.soknad.consumer.fiks.dto.KommuneStatus;
-import no.nav.sosialhjelp.soknad.consumer.redis.RedisService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -20,7 +20,7 @@ import java.util.Map;
 
 import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 import static java.util.Collections.emptyList;
-import static no.nav.sosialhjelp.soknad.consumer.redis.CacheConstants.KOMMUNEINFO_LAST_POLL_TIME_KEY;
+import static no.nav.sosialhjelp.soknad.client.redis.CacheConstantsKt.KOMMUNEINFO_LAST_POLL_TIME_KEY;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
