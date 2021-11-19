@@ -33,6 +33,6 @@ open class BydelFordelingService(
     }
 
     companion object {
-        const val BYDEL_MARKA = "030117"
+        const val BYDEL_MARKA_OSLO = "030117"
     }
 }

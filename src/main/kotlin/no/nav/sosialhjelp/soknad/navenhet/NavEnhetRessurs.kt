@@ -19,7 +19,7 @@ import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler
 import no.nav.sosialhjelp.soknad.domain.model.util.KommuneTilNavEnhetMapper
 import no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils
 import no.nav.sosialhjelp.soknad.navenhet.bydel.BydelFordelingService
-import no.nav.sosialhjelp.soknad.navenhet.bydel.BydelFordelingService.Companion.BYDEL_MARKA
+import no.nav.sosialhjelp.soknad.navenhet.bydel.BydelFordelingService.Companion.BYDEL_MARKA_OSLO
 import no.nav.sosialhjelp.soknad.navenhet.domain.NavEnhet
 import no.nav.sosialhjelp.soknad.navenhet.dto.NavEnhetFrontend
 import no.nav.sosialhjelp.soknad.navenhet.gt.GeografiskTilknytningService
@@ -302,7 +302,7 @@ open class NavEnhetRessurs(
     }
 
     private fun getGeografiskTilknytningFromAdresseForslag(adresseForslag: AdresseForslag): String {
-        return if (BYDEL_MARKA == adresseForslag.geografiskTilknytning) {
+        return if (BYDEL_MARKA_OSLO == adresseForslag.geografiskTilknytning) {
             bydelFordelingService.getBydelTilForMarka(adresseForslag)
         } else {
             // flere special cases her?
