@@ -20,8 +20,6 @@ import no.nav.sosialhjelp.soknad.client.svarut.SvarUtConfig;
 import no.nav.sosialhjelp.soknad.client.virusscan.VirusScanConfig;
 import no.nav.sosialhjelp.soknad.consumer.fiks.DokumentKrypterer;
 import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.PdlAdresseSokService;
-import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.bydel.BydelConfig;
-import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.bydel.BydelService;
 import no.nav.sosialhjelp.soknad.consumer.redis.NoRedisConfig;
 import no.nav.sosialhjelp.soknad.consumer.redis.RedisConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.DigisosApiRestConfig;
@@ -29,6 +27,7 @@ import no.nav.sosialhjelp.soknad.consumer.restconfig.PdlAdresseSokRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.PdlHentPersonRestConfig;
 import no.nav.sosialhjelp.soknad.kontonummer.KontonummerConfig;
 import no.nav.sosialhjelp.soknad.navenhet.NavEnhetConfig;
+import no.nav.sosialhjelp.soknad.navenhet.bydel.BydelConfig;
 import no.nav.sosialhjelp.soknad.navutbetalinger.NavUtbetalingerConfig;
 import no.nav.sosialhjelp.soknad.organisasjon.OrganisasjonConfig;
 import no.nav.sosialhjelp.soknad.person.PersonConfig;
@@ -66,7 +65,6 @@ import org.springframework.context.annotation.Import;
         ConsumerConfig.WsServices.class,
         DokumentKrypterer.class,
         BydelConfig.class,
-        BydelService.class,
         LeaderElectionConfig.class,
         VirusScanConfig.class
 })
