@@ -6,8 +6,8 @@ import no.nav.sosialhjelp.kotlin.utils.retry
 import no.nav.sosialhjelp.soknad.client.redis.CACHE_24_HOURS_IN_SECONDS
 import no.nav.sosialhjelp.soknad.client.redis.GT_CACHE_KEY_PREFIX
 import no.nav.sosialhjelp.soknad.client.redis.GT_LAST_POLL_TIME_PREFIX
-import no.nav.sosialhjelp.soknad.client.redis.RedisObjectMapper
 import no.nav.sosialhjelp.soknad.client.redis.RedisService
+import no.nav.sosialhjelp.soknad.client.redis.RedisUtils.redisObjectMapper
 import no.nav.sosialhjelp.soknad.consumer.exceptions.TjenesteUtilgjengeligException
 import no.nav.sosialhjelp.soknad.consumer.mdc.MDCOperations
 import no.nav.sosialhjelp.soknad.consumer.retry.RetryUtils.DEFAULT_EXPONENTIAL_BACKOFF_MULTIPLIER
@@ -95,7 +95,7 @@ class NorgClientImpl(
         try {
             redisService.setex(
                 GT_CACHE_KEY_PREFIX + geografiskTilknytning,
-                RedisObjectMapper().redisObjectMapper.writeValueAsBytes(navEnhetDto),
+                redisObjectMapper.writeValueAsBytes(navEnhetDto),
                 CACHE_24_HOURS_IN_SECONDS
             )
             redisService.set(
