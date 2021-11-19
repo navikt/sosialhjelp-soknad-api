@@ -20,13 +20,13 @@ import no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService
 import no.nav.sosialhjelp.soknad.client.kodeverk.KodeverkService
 import no.nav.sosialhjelp.soknad.consumer.exceptions.PdlApiException
 import no.nav.sosialhjelp.soknad.consumer.fiks.KommuneInfoService
-import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.bydel.BydelService
-import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.bydel.BydelService.BYDEL_MARKA
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.domain.model.exception.AuthorizationException
 import no.nav.sosialhjelp.soknad.domain.model.oidc.StaticSubjectHandlerService
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler
 import no.nav.sosialhjelp.soknad.domain.model.util.KommuneTilNavEnhetMapper
+import no.nav.sosialhjelp.soknad.navenhet.bydel.BydelFordelingService
+import no.nav.sosialhjelp.soknad.navenhet.bydel.BydelFordelingService.Companion.BYDEL_MARKA_OSLO
 import no.nav.sosialhjelp.soknad.navenhet.domain.NavEnhet
 import no.nav.sosialhjelp.soknad.navenhet.dto.NavEnhetFrontend
 import no.nav.sosialhjelp.soknad.navenhet.gt.GeografiskTilknytningService
@@ -94,7 +94,7 @@ internal class NavEnhetRessursTest {
         SOKNADSMOTTAKER_FORSLAG_2.kommunenavn = KOMMUNENAVN_2
         SOKNADSMOTTAKER_FORSLAG_2.kommunenummer = KOMMUNENR_2
 
-        SOKNADSMOTTAKER_FORSLAG_BYDEL_MARKA.geografiskTilknytning = BYDEL_MARKA
+        SOKNADSMOTTAKER_FORSLAG_BYDEL_MARKA.geografiskTilknytning = BYDEL_MARKA_OSLO
         SOKNADSMOTTAKER_FORSLAG_BYDEL_MARKA.kommunenavn = KOMMUNENAVN_2
         SOKNADSMOTTAKER_FORSLAG_BYDEL_MARKA.kommunenummer = KOMMUNENR_2
     }
@@ -104,12 +104,12 @@ internal class NavEnhetRessursTest {
     private val adresseSokService: AdresseSokService = mockk()
     private val navEnhetService: NavEnhetService = mockk()
     private val kommuneInfoService: KommuneInfoService = mockk()
-    private val bydelService: BydelService = mockk()
+    private val bydelFordelingService: BydelFordelingService = mockk()
     private val geografiskTilknytningService: GeografiskTilknytningService = mockk()
     private val kodeverkService: KodeverkService = mockk()
 
     private val navEnhetRessurs = NavEnhetRessurs(
-        tilgangskontroll, soknadUnderArbeidRepository, navEnhetService, kommuneInfoService, bydelService, adresseSokService, geografiskTilknytningService, kodeverkService
+        tilgangskontroll, soknadUnderArbeidRepository, navEnhetService, kommuneInfoService, bydelFordelingService, adresseSokService, geografiskTilknytningService, kodeverkService
     )
 
     @BeforeEach
@@ -161,7 +161,7 @@ internal class NavEnhetRessursTest {
 
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns soknadUnderArbeid
         every { adresseSokService.finnAdresseFraSoknad(any(), "soknad") } returns listOf(SOKNADSMOTTAKER_FORSLAG_BYDEL_MARKA)
-        every { bydelService.getBydelTilForMarka(SOKNADSMOTTAKER_FORSLAG_BYDEL_MARKA) } returns annenBydel
+        every { bydelFordelingService.getBydelTilForMarka(SOKNADSMOTTAKER_FORSLAG_BYDEL_MARKA) } returns annenBydel
         every { navEnhetService.getEnhetForGt(annenBydel) } returns NAV_ENHET_2
         every { kommuneInfoService.getBehandlingskommune(KOMMUNENR_2, KOMMUNENAVN_2) } returns KOMMUNENAVN_2
 
