@@ -33,7 +33,7 @@ public class MineSakerMetadataService {
 
     public List<InnsendtSoknadDto> hentInnsendteSoknader(String fnr) {
         var innsendteSoknader = Optional.ofNullable(soknadMetadataRepository.hentAlleInnsendteSoknaderForBruker(fnr)).orElse(emptyList());
-        log.info("Fant {} innsendte soknader", innsendteSoknader.size());
+        log.debug("Fant {} innsendte soknader", innsendteSoknader.size());
         return innsendteSoknader.stream().findFirst()
                 .map(soknadMetadata -> singletonList(new InnsendtSoknadDto(TEMA_NAVN, TEMA_KODE_KOM, toUtc(soknadMetadata.innsendtDato, ZoneId.systemDefault()))))
                 .orElse(emptyList());
