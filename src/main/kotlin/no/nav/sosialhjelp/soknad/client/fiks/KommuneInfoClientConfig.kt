@@ -4,6 +4,8 @@ import no.nav.sosialhjelp.client.kommuneinfo.FiksProperties
 import no.nav.sosialhjelp.client.kommuneinfo.KommuneInfoClient
 import no.nav.sosialhjelp.client.kommuneinfo.KommuneInfoClientImpl
 import no.nav.sosialhjelp.metrics.MetricsFactory.createTimerProxy
+import no.nav.sosialhjelp.soknad.client.idporten.IdPortenService
+import no.nav.sosialhjelp.soknad.consumer.redis.RedisService
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -16,6 +18,15 @@ open class KommuneInfoClientConfig(
     @Value("\${integrasjonsid_fiks}") private val integrasjonsidFiks: String,
     @Value("\${integrasjonpassord_fiks}") private val integrasjonpassordFiks: String
 ) {
+
+    @Bean
+    open fun kommuneInfoService(
+        kommuneInfoClient: KommuneInfoClient,
+        idPortenService: IdPortenService,
+        redisService: RedisService
+    ): KommuneInfoService {
+        return KommuneInfoService(kommuneInfoClient, idPortenService, redisService)
+    }
 
     @Bean
     open fun kommuneInfoClient(): KommuneInfoClient {
