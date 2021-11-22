@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.client.pdl
 
-import no.nav.sosialhjelp.soknad.adressesok.AdressesokClient
 import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.HEADER_NAV_APIKEY
 import no.nav.sosialhjelp.soknad.navenhet.gt.GeografiskTilknytningClient
 import no.nav.sosialhjelp.soknad.web.selftest.Pingable
@@ -13,11 +12,6 @@ import javax.ws.rs.client.ClientRequestFilter
 open class PdlConfig(
     @Value("\${pdl_api_url}") private val baseurl: String
 ) {
-
-    @Bean
-    open fun adressesokClient(): AdressesokClient {
-        return AdressesokClient(client, baseurl, stsClient)
-    }
 
     @Bean
     open fun pdlPing(geografiskTilknytningClient: GeografiskTilknytningClient): Pingable {
