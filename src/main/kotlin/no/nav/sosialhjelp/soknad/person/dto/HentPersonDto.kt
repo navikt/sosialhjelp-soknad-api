@@ -59,7 +59,7 @@ data class EndringDto(
 )
 
 data class FolkeregisterMetadataDto(
-    val ajourholdstidspunkt: LocalDateTime,
+    val ajourholdstidspunkt: LocalDateTime?,
     val kilde: String?
 )
 

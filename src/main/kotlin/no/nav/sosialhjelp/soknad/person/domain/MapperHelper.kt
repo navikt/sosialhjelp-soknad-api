@@ -8,8 +8,6 @@ import no.nav.sosialhjelp.soknad.person.dto.SivilstandDto
 import no.nav.sosialhjelp.soknad.person.dto.SivilstandType
 import org.slf4j.LoggerFactory
 import java.time.LocalDateTime
-import java.util.Set
-import java.util.stream.Collectors
 
 class MapperHelper {
 
@@ -18,7 +16,7 @@ class MapperHelper {
 
         private const val FREG = "FREG"
         private const val PDL = "PDL"
-        private val MASTERS = Set.of(FREG, PDL)
+        private val MASTERS = setOf(FREG, PDL)
         private const val BRUKER_SELV = "Bruker selv"
     }
 
@@ -31,10 +29,7 @@ class MapperHelper {
 
         if (sivilstander.size > 1) {
             log.info(
-                "Flere gjeldende sivilstander funnet i PDL: [{}]",
-                sivilstander.stream().map { dto: SivilstandDto ->
-                    dto.type.toString()
-                }.collect(Collectors.joining(","))
+                "Flere gjeldende sivilstander funnet i PDL: [{}]", sivilstander.joinToString(separator = ",") { it.type.toString() }
             )
         }
         val sistEndredeSivilstand = sivilstander[0]
@@ -102,19 +97,11 @@ class MapperHelper {
     }
 
     private fun flereSivilstanderRegistrertSamtidig(first: SivilstandDto, list: List<SivilstandDto>): Boolean {
-        return list.stream()
-            .filter { dto: SivilstandDto ->
-                getEndringstidspunktOrNull(dto) == getEndringstidspunktOrNull(first)
-            }
-            .count() > 1
+        return list.count { getEndringstidspunktOrNull(it) == getEndringstidspunktOrNull(first) } > 1
     }
 
     private fun flereNavnRegistrertSamtidig(first: NavnDto, list: List<NavnDto>): Boolean {
-        return list.stream()
-            .filter { dto: NavnDto ->
-                getEndringstidspunktOrNull(dto) == getEndringstidspunktOrNull(first)
-            }
-            .count() > 1
+        return list.count { getEndringstidspunktOrNull(it) == getEndringstidspunktOrNull(first) } > 1
     }
 
     private fun erKildeUdokumentert(metadata: MetadataDto): Boolean {
