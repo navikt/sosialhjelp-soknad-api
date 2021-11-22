@@ -21,6 +21,11 @@ open class GeografiskTilknytningConfig(
         return GeografiskTilknytningClient(client, baseurl, stsClient, redisService)
     }
 
+    @Bean
+    open fun geografiskTilknytningService(geografiskTilknytningClient: GeografiskTilknytningClient): GeografiskTilknytningService {
+        return GeografiskTilknytningService(geografiskTilknytningClient)
+    }
+
     private val client: Client
         get() = RestUtils.createClient().register(pdlApiKeyRequestFilter)
 }
