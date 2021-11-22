@@ -4,8 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import no.nav.sosialhjelp.api.fiks.KommuneInfo;
 import no.nav.sosialhjelp.client.kommuneinfo.KommuneInfoClient;
 import no.nav.sosialhjelp.soknad.client.idporten.IdPortenService;
+import no.nav.sosialhjelp.soknad.client.redis.RedisService;
 import no.nav.sosialhjelp.soknad.consumer.fiks.dto.KommuneStatus;
-import no.nav.sosialhjelp.soknad.consumer.redis.RedisService;
 import no.nav.sosialhjelp.soknad.domain.model.util.KommuneTilNavEnhetMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,15 +20,15 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+import static no.nav.sosialhjelp.soknad.client.redis.CacheConstantsKt.KOMMUNEINFO_CACHE_KEY;
+import static no.nav.sosialhjelp.soknad.client.redis.CacheConstantsKt.KOMMUNEINFO_CACHE_SECONDS;
+import static no.nav.sosialhjelp.soknad.client.redis.CacheConstantsKt.KOMMUNEINFO_LAST_POLL_TIME_KEY;
 import static no.nav.sosialhjelp.soknad.consumer.fiks.dto.KommuneStatus.FIKS_NEDETID_OG_TOM_CACHE;
 import static no.nav.sosialhjelp.soknad.consumer.fiks.dto.KommuneStatus.HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT;
 import static no.nav.sosialhjelp.soknad.consumer.fiks.dto.KommuneStatus.MANGLER_KONFIGURASJON;
 import static no.nav.sosialhjelp.soknad.consumer.fiks.dto.KommuneStatus.SKAL_SENDE_SOKNADER_OG_ETTERSENDELSER_VIA_FDA;
 import static no.nav.sosialhjelp.soknad.consumer.fiks.dto.KommuneStatus.SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD_OG_ETTERSENDELSER;
-import static no.nav.sosialhjelp.soknad.consumer.redis.CacheConstants.KOMMUNEINFO_CACHE_KEY;
-import static no.nav.sosialhjelp.soknad.consumer.redis.CacheConstants.KOMMUNEINFO_CACHE_SECONDS;
-import static no.nav.sosialhjelp.soknad.consumer.redis.CacheConstants.KOMMUNEINFO_LAST_POLL_TIME_KEY;
-import static no.nav.sosialhjelp.soknad.consumer.redis.RedisUtils.objectMapper;
+import static no.nav.sosialhjelp.soknad.consumer.redis.RedisUtils.redisObjectMapper;
 
 public class KommuneInfoService {
     private static final Logger log = LoggerFactory.getLogger(KommuneInfoService.class);
@@ -144,7 +144,7 @@ public class KommuneInfoService {
     private void oppdaterCache(List<KommuneInfo> kommuneInfoList) {
         try {
             if (kommuneInfoList != null && !kommuneInfoList.isEmpty()) {
-                redisService.setex(KOMMUNEINFO_CACHE_KEY, objectMapper.writeValueAsBytes(kommuneInfoList), KOMMUNEINFO_CACHE_SECONDS);
+                redisService.setex(KOMMUNEINFO_CACHE_KEY, redisObjectMapper.writeValueAsBytes(kommuneInfoList), KOMMUNEINFO_CACHE_SECONDS);
                 redisService.set(KOMMUNEINFO_LAST_POLL_TIME_KEY, LocalDateTime.now().format(ISO_LOCAL_DATE_TIME).getBytes(StandardCharsets.UTF_8));
             }
         } catch (JsonProcessingException e) {

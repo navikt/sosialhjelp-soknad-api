@@ -6,9 +6,9 @@ import no.nav.sosialhjelp.soknad.client.kodeverk.KodeverkService.Companion.SPRAA
 import no.nav.sosialhjelp.soknad.client.kodeverk.dto.BeskrivelseDto
 import no.nav.sosialhjelp.soknad.client.kodeverk.dto.BetydningDto
 import no.nav.sosialhjelp.soknad.client.kodeverk.dto.KodeverkDto
-import no.nav.sosialhjelp.soknad.consumer.redis.CacheConstants.KODEVERK_LAST_POLL_TIME_KEY
-import no.nav.sosialhjelp.soknad.consumer.redis.CacheConstants.KOMMUNER_CACHE_KEY
-import no.nav.sosialhjelp.soknad.consumer.redis.RedisService
+import no.nav.sosialhjelp.soknad.client.redis.KODEVERK_LAST_POLL_TIME_KEY
+import no.nav.sosialhjelp.soknad.client.redis.KOMMUNER_CACHE_KEY
+import no.nav.sosialhjelp.soknad.client.redis.RedisService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.time.LocalDate

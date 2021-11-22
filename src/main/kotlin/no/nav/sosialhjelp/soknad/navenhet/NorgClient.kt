@@ -3,13 +3,13 @@ package no.nav.sosialhjelp.soknad.navenhet
 import com.fasterxml.jackson.core.JsonProcessingException
 import kotlinx.coroutines.runBlocking
 import no.nav.sosialhjelp.kotlin.utils.retry
+import no.nav.sosialhjelp.soknad.client.redis.CACHE_24_HOURS_IN_SECONDS
+import no.nav.sosialhjelp.soknad.client.redis.GT_CACHE_KEY_PREFIX
+import no.nav.sosialhjelp.soknad.client.redis.GT_LAST_POLL_TIME_PREFIX
+import no.nav.sosialhjelp.soknad.client.redis.RedisService
+import no.nav.sosialhjelp.soknad.client.redis.RedisUtils.redisObjectMapper
 import no.nav.sosialhjelp.soknad.consumer.exceptions.TjenesteUtilgjengeligException
 import no.nav.sosialhjelp.soknad.consumer.mdc.MDCOperations
-import no.nav.sosialhjelp.soknad.consumer.redis.CacheConstants.CACHE_24_HOURS_IN_SECONDS
-import no.nav.sosialhjelp.soknad.consumer.redis.CacheConstants.GT_CACHE_KEY_PREFIX
-import no.nav.sosialhjelp.soknad.consumer.redis.CacheConstants.GT_LAST_POLL_TIME_PREFIX
-import no.nav.sosialhjelp.soknad.consumer.redis.RedisService
-import no.nav.sosialhjelp.soknad.consumer.redis.RedisUtils.objectMapper
 import no.nav.sosialhjelp.soknad.consumer.retry.RetryUtils.DEFAULT_EXPONENTIAL_BACKOFF_MULTIPLIER
 import no.nav.sosialhjelp.soknad.consumer.retry.RetryUtils.DEFAULT_INITIAL_WAIT_INTERVAL_MILLIS
 import no.nav.sosialhjelp.soknad.consumer.retry.RetryUtils.DEFAULT_MAX_ATTEMPTS
@@ -95,7 +95,7 @@ class NorgClientImpl(
         try {
             redisService.setex(
                 GT_CACHE_KEY_PREFIX + geografiskTilknytning,
-                objectMapper.writeValueAsBytes(navEnhetDto),
+                redisObjectMapper.writeValueAsBytes(navEnhetDto),
                 CACHE_24_HOURS_IN_SECONDS
             )
             redisService.set(
