@@ -12,13 +12,12 @@ import javax.ws.rs.client.Client
 @Configuration
 open class AdressesokConfig(
     @Value("\${pdl_api_url}") private val baseurl: String,
-    private val adressesokClient: AdressesokClient,
     private val kodeverkService: KodeverkService,
     private val stsClient: StsClient
 ) : PdlConfig(baseurl) {
 
     @Bean
-    open fun adressesokService(): AdressesokService {
+    open fun adressesokService(adressesokClient: AdressesokClient): AdressesokService {
         return AdressesokService(adressesokClient, kodeverkService)
     }
 
