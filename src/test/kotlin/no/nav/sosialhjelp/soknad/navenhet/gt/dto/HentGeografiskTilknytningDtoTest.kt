@@ -1,14 +1,21 @@
 package no.nav.sosialhjelp.soknad.navenhet.gt.dto
 
+import com.fasterxml.jackson.databind.DeserializationFeature
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import no.nav.sosialhjelp.soknad.client.pdl.HentGeografiskTilknytningDto
-import no.nav.sosialhjelp.soknad.consumer.pdl.common.Utils.pdlMapper
 import org.apache.commons.io.IOUtils
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.nio.charset.StandardCharsets
 
 internal class HentGeografiskTilknytningDtoTest {
+
+    private val pdlMapper: ObjectMapper = jacksonObjectMapper()
+        .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
+        .registerModule(JavaTimeModule())
 
     @Test
     fun deserialiseringAvResponseJson() {

@@ -62,10 +62,11 @@ open class PdlDtoMapper(
         )
     }
 
-    open fun barnDtoToDomain(barnDto: BarnDto, barnIdent: String, personDto: PersonDto): Barn? {
-        return if (hasAdressebeskyttelse(barnDto.adressebeskyttelse) || isMyndig(barnDto.foedsel) || isDoed(barnDto.folkeregisterpersonstatus)) {
-            null
-        } else Barn(
+    open fun barnDtoToDomain(barnDto: BarnDto?, barnIdent: String, personDto: PersonDto): Barn? {
+        if (barnDto == null || hasAdressebeskyttelse(barnDto.adressebeskyttelse) || isMyndig(barnDto.foedsel) || isDoed(barnDto.folkeregisterpersonstatus)) {
+            return null
+        }
+        return Barn(
             findFornavn(barnDto.navn),
             findMellomnavn(barnDto.navn),
             findEtternavn(barnDto.navn),

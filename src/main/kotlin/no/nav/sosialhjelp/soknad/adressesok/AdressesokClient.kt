@@ -10,7 +10,6 @@ import no.nav.sosialhjelp.soknad.client.sts.StsClient
 import no.nav.sosialhjelp.soknad.consumer.exceptions.PdlApiException
 import no.nav.sosialhjelp.soknad.consumer.exceptions.TjenesteUtilgjengeligException
 import no.nav.sosialhjelp.soknad.consumer.pdl.common.PdlApiQuery
-import no.nav.sosialhjelp.soknad.consumer.pdl.common.Utils.pdlMapper
 import no.nav.sosialhjelp.soknad.consumer.retry.RetryUtils
 import org.slf4j.LoggerFactory.getLogger
 import javax.ws.rs.ProcessingException
