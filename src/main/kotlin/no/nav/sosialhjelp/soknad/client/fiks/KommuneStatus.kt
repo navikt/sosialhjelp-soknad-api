@@ -1,6 +1,6 @@
-package no.nav.sosialhjelp.soknad.consumer.fiks.dto;
+package no.nav.sosialhjelp.soknad.client.fiks
 
-public enum KommuneStatus {
+enum class KommuneStatus {
     HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT,
     MANGLER_KONFIGURASJON,
     SKAL_SENDE_SOKNADER_OG_ETTERSENDELSER_VIA_FDA,
