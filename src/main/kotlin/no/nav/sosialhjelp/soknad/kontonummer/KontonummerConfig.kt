@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.kontonummer
 
+import no.nav.sosialhjelp.soknad.client.redis.RedisService
 import no.nav.sosialhjelp.soknad.consumer.common.rest.RestUtils
-import no.nav.sosialhjelp.soknad.consumer.redis.RedisService
 import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.HEADER_NAV_APIKEY
 import no.nav.sosialhjelp.soknad.web.selftest.Pingable
 import no.nav.sosialhjelp.soknad.web.selftest.Pingable.Ping

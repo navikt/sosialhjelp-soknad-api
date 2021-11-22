@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.navenhet
 
+import no.nav.sosialhjelp.soknad.client.redis.RedisService
 import no.nav.sosialhjelp.soknad.consumer.common.rest.RestUtils
-import no.nav.sosialhjelp.soknad.consumer.redis.RedisService
 import no.nav.sosialhjelp.soknad.navenhet.gt.GeografiskTilknytningClient
 import no.nav.sosialhjelp.soknad.navenhet.gt.GeografiskTilknytningService
 import no.nav.sosialhjelp.soknad.web.selftest.Pingable
