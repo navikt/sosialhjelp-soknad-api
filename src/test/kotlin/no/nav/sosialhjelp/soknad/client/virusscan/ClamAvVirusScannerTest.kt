@@ -2,9 +2,9 @@ package no.nav.sosialhjelp.soknad.client.virusscan
 
 import mockwebserver3.MockResponse
 import mockwebserver3.MockWebServer
+import no.nav.sosialhjelp.soknad.client.redis.RedisUtils.redisObjectMapper
 import no.nav.sosialhjelp.soknad.client.virusscan.dto.Result
 import no.nav.sosialhjelp.soknad.client.virusscan.dto.ScanResult
-import no.nav.sosialhjelp.soknad.consumer.redis.RedisUtils
 import no.nav.sosialhjelp.soknad.domain.model.exception.OpplastingException
 import org.assertj.core.api.Assertions.assertThatCode
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
@@ -43,7 +43,7 @@ class ClamAvVirusScannerTest {
             MockResponse()
                 .setResponseCode(200)
                 .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .setBody(RedisUtils.objectMapper.writeValueAsString(arrayOf(ScanResult(filnavn, Result.FOUND))))
+                .setBody(redisObjectMapper.writeValueAsString(arrayOf(ScanResult(filnavn, Result.FOUND))))
         )
         assertThatExceptionOfType(OpplastingException::class.java)
             .isThrownBy { virusScanner.scan(filnavn, data, behandlingsId, "pdf") }
@@ -71,7 +71,7 @@ class ClamAvVirusScannerTest {
                 .setResponseCode(200)
                 .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .setBody(
-                    RedisUtils.objectMapper.writeValueAsString(
+                    redisObjectMapper.writeValueAsString(
                         arrayOf(
                             ScanResult("test", Result.FOUND),
                             ScanResult("test", Result.FOUND)
@@ -89,7 +89,7 @@ class ClamAvVirusScannerTest {
             MockResponse()
                 .setResponseCode(200)
                 .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .setBody(RedisUtils.objectMapper.writeValueAsString(arrayOf(ScanResult("test", Result.OK))))
+                .setBody(redisObjectMapper.writeValueAsString(arrayOf(ScanResult("test", Result.OK))))
         )
         assertThatCode { virusScanner.scan(filnavn, data, behandlingsId, "jpg") }
             .doesNotThrowAnyException()
@@ -101,7 +101,7 @@ class ClamAvVirusScannerTest {
             MockResponse()
                 .setResponseCode(200)
                 .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .setBody(RedisUtils.objectMapper.writeValueAsString(arrayOf(ScanResult("test", Result.FOUND))))
+                .setBody(redisObjectMapper.writeValueAsString(arrayOf(ScanResult("test", Result.FOUND))))
         )
         assertThatExceptionOfType(OpplastingException::class.java)
             .isThrownBy { virusScanner.scan(filnavn, data, behandlingsId, "pdf") }

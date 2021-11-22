@@ -2,12 +2,14 @@ package no.nav.sosialhjelp.soknad.client.kodeverk
 
 import com.fasterxml.jackson.core.JsonProcessingException
 import no.nav.sosialhjelp.soknad.client.kodeverk.dto.KodeverkDto
+import no.nav.sosialhjelp.soknad.client.redis.KODEVERK_CACHE_SECONDS
+import no.nav.sosialhjelp.soknad.client.redis.KODEVERK_LAST_POLL_TIME_KEY
+import no.nav.sosialhjelp.soknad.client.redis.KOMMUNER_CACHE_KEY
+import no.nav.sosialhjelp.soknad.client.redis.LANDKODER_CACHE_KEY
+import no.nav.sosialhjelp.soknad.client.redis.POSTNUMMER_CACHE_KEY
+import no.nav.sosialhjelp.soknad.client.redis.RedisService
+import no.nav.sosialhjelp.soknad.client.redis.RedisUtils.redisObjectMapper
 import no.nav.sosialhjelp.soknad.consumer.mdc.MDCOperations
-import no.nav.sosialhjelp.soknad.consumer.redis.CacheConstants
-import no.nav.sosialhjelp.soknad.consumer.redis.CacheConstants.KODEVERK_CACHE_SECONDS
-import no.nav.sosialhjelp.soknad.consumer.redis.CacheConstants.KODEVERK_LAST_POLL_TIME_KEY
-import no.nav.sosialhjelp.soknad.consumer.redis.RedisService
-import no.nav.sosialhjelp.soknad.consumer.redis.RedisUtils.objectMapper
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler
 import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.HEADER_CALL_ID
 import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.HEADER_CONSUMER_ID
@@ -44,15 +46,15 @@ class KodeverkClientImpl(
     }
 
     override fun hentPostnummer(): KodeverkDto? {
-        return hentKodeverk(POSTNUMMER, CacheConstants.POSTNUMMER_CACHE_KEY)
+        return hentKodeverk(POSTNUMMER, POSTNUMMER_CACHE_KEY)
     }
 
     override fun hentKommuner(): KodeverkDto? {
-        return hentKodeverk(KOMMUNER, CacheConstants.KOMMUNER_CACHE_KEY)
+        return hentKodeverk(KOMMUNER, KOMMUNER_CACHE_KEY)
     }
 
     override fun hentLandkoder(): KodeverkDto? {
-        return hentKodeverk(LANDKODER, CacheConstants.LANDKODER_CACHE_KEY)
+        return hentKodeverk(LANDKODER, LANDKODER_CACHE_KEY)
     }
 
     private fun lagRequest(uri: URI): Invocation.Builder {
@@ -84,7 +86,7 @@ class KodeverkClientImpl(
 
     private fun oppdaterCache(key: String, kodeverk: KodeverkDto) {
         try {
-            redisService.setex(key, objectMapper.writeValueAsBytes(kodeverk), KODEVERK_CACHE_SECONDS)
+            redisService.setex(key, redisObjectMapper.writeValueAsBytes(kodeverk), KODEVERK_CACHE_SECONDS)
             redisService.set(
                 KODEVERK_LAST_POLL_TIME_KEY,
                 LocalDateTime.now().format(ISO_LOCAL_DATE_TIME).toByteArray(StandardCharsets.UTF_8)

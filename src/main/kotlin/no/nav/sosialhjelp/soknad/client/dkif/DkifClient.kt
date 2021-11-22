@@ -2,11 +2,12 @@ package no.nav.sosialhjelp.soknad.client.dkif
 
 import com.fasterxml.jackson.core.JsonProcessingException
 import no.nav.sosialhjelp.soknad.client.dkif.dto.DigitalKontaktinfoBolk
+import no.nav.sosialhjelp.soknad.client.redis.CACHE_30_MINUTES_IN_SECONDS
+import no.nav.sosialhjelp.soknad.client.redis.DKIF_CACHE_KEY_PREFIX
+import no.nav.sosialhjelp.soknad.client.redis.RedisService
+import no.nav.sosialhjelp.soknad.client.redis.RedisUtils.redisObjectMapper
 import no.nav.sosialhjelp.soknad.consumer.exceptions.TjenesteUtilgjengeligException
 import no.nav.sosialhjelp.soknad.consumer.mdc.MDCOperations
-import no.nav.sosialhjelp.soknad.consumer.redis.CacheConstants
-import no.nav.sosialhjelp.soknad.consumer.redis.RedisService
-import no.nav.sosialhjelp.soknad.consumer.redis.RedisUtils
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler
 import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants
 import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.BEARER
@@ -44,7 +45,7 @@ class DkifClientImpl(
 
     private fun hentFraCache(ident: String): DigitalKontaktinfoBolk? {
         return redisService.get(
-            CacheConstants.DKIF_CACHE_KEY_PREFIX + ident,
+            DKIF_CACHE_KEY_PREFIX + ident,
             DigitalKontaktinfoBolk::class.java
         ) as? DigitalKontaktinfoBolk
     }
@@ -71,9 +72,9 @@ class DkifClientImpl(
     private fun lagreTilCache(ident: String, digitalKontaktinfoBolk: DigitalKontaktinfoBolk) {
         try {
             redisService.setex(
-                CacheConstants.DKIF_CACHE_KEY_PREFIX + ident,
-                RedisUtils.objectMapper.writeValueAsBytes(digitalKontaktinfoBolk),
-                CacheConstants.CACHE_30_MINUTES_IN_SECONDS
+                DKIF_CACHE_KEY_PREFIX + ident,
+                redisObjectMapper.writeValueAsBytes(digitalKontaktinfoBolk),
+                CACHE_30_MINUTES_IN_SECONDS
             )
         } catch (e: JsonProcessingException) {
             log.warn("Noe feilet ved lagring av digitalKontaktinfoBolk til redis", e)

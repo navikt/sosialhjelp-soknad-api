@@ -11,12 +11,13 @@ import no.nav.sosialhjelp.metrics.aspects.Timed
 import no.nav.sosialhjelp.soknad.adressesok.domain.AdresseForslag
 import no.nav.sosialhjelp.soknad.adressesok.domain.AdresseForslagType
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
+import no.nav.sosialhjelp.soknad.client.fiks.KommuneInfoService
 import no.nav.sosialhjelp.soknad.client.kodeverk.KodeverkService
-import no.nav.sosialhjelp.soknad.consumer.fiks.KommuneInfoService
 import no.nav.sosialhjelp.soknad.domain.model.mock.MockUtils
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler
 import no.nav.sosialhjelp.soknad.domain.model.util.KommuneTilNavEnhetMapper
 import no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils
+import no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils.isSendingTilFiksEnabled
 import no.nav.sosialhjelp.soknad.navenhet.bydel.BydelFordelingService
 import no.nav.sosialhjelp.soknad.navenhet.bydel.BydelFordelingService.Companion.BYDEL_MARKA_OSLO
 import no.nav.sosialhjelp.soknad.navenhet.domain.NavEnhet
@@ -112,7 +113,7 @@ open class NavEnhetRessurs(
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
     }
 
-    private fun createNavEnhetsnavn(enhetsnavn: String, kommunenavn: String): String {
+    private fun createNavEnhetsnavn(enhetsnavn: String, kommunenavn: String?): String {
         return enhetsnavn + SPLITTER + kommunenavn
     }
 
@@ -286,17 +287,15 @@ open class NavEnhetRessurs(
     }
 
     private fun getKommunenummer(oppholdsadresse: JsonAdresse): String? {
-        var kommunenummer: String? = null
-        when (oppholdsadresse) {
-            is JsonMatrikkelAdresse -> kommunenummer = oppholdsadresse.kommunenummer
-            is JsonGateAdresse -> kommunenummer = oppholdsadresse.kommunenummer
+        return when (oppholdsadresse) {
+            is JsonMatrikkelAdresse -> oppholdsadresse.kommunenummer
+            is JsonGateAdresse -> oppholdsadresse.kommunenummer
+            else -> null
         }
-        return kommunenummer
     }
 
     private fun isDigisosKommune(kommunenummer: String): Boolean {
-        val isNyDigisosApiKommuneMedMottakAktivert =
-            kommuneInfoService.kanMottaSoknader(kommunenummer) && ServiceUtils.isSendingTilFiksEnabled()
+        val isNyDigisosApiKommuneMedMottakAktivert = kommuneInfoService.kanMottaSoknader(kommunenummer) && isSendingTilFiksEnabled()
         val isGammelSvarUtKommune = KommuneTilNavEnhetMapper.getDigisoskommuner().contains(kommunenummer)
         return isNyDigisosApiKommuneMedMottakAktivert || isGammelSvarUtKommune
     }

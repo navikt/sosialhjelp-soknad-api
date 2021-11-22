@@ -10,8 +10,8 @@ import no.nav.sosialhjelp.soknad.business.exceptions.SendingTilKommuneUtilgjenge
 import no.nav.sosialhjelp.soknad.business.exceptions.SoknadenHarNedetidException;
 import no.nav.sosialhjelp.soknad.business.service.digisosapi.DigisosApiService;
 import no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService;
-import no.nav.sosialhjelp.soknad.consumer.fiks.KommuneInfoService;
-import no.nav.sosialhjelp.soknad.consumer.fiks.dto.KommuneStatus;
+import no.nav.sosialhjelp.soknad.client.fiks.KommuneInfoService;
+import no.nav.sosialhjelp.soknad.client.fiks.KommuneStatus;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.domain.model.exception.AuthorizationException;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.StaticSubjectHandlerService;

@@ -7,7 +7,7 @@ import no.nav.sosialhjelp.soknad.client.config.NonProxiedWebClientConfig;
 import no.nav.sosialhjelp.soknad.client.config.ProxiedWebClientConfig;
 import no.nav.sosialhjelp.soknad.client.dkif.DkifConfig;
 import no.nav.sosialhjelp.soknad.client.featuretoggle.FeatureToggleConfig;
-import no.nav.sosialhjelp.soknad.client.fiks.KommuneInfoClientConfig;
+import no.nav.sosialhjelp.soknad.client.fiks.KommuneInfoConfig;
 import no.nav.sosialhjelp.soknad.client.husbanken.HusbankenClientConfig;
 import no.nav.sosialhjelp.soknad.client.idporten.IdPortenClientConfig;
 import no.nav.sosialhjelp.soknad.client.idporten.IdPortenClientConfigMockAlt;
@@ -16,17 +16,18 @@ import no.nav.sosialhjelp.soknad.client.kodeverk.KodeverkConfig;
 import no.nav.sosialhjelp.soknad.client.leaderelection.LeaderElectionConfig;
 import no.nav.sosialhjelp.soknad.client.maskinporten.MaskinportenClientConfig;
 import no.nav.sosialhjelp.soknad.client.pdl.PdlConfig;
+import no.nav.sosialhjelp.soknad.client.redis.NoRedisConfig;
+import no.nav.sosialhjelp.soknad.client.redis.RedisConfig;
 import no.nav.sosialhjelp.soknad.client.sts.StsConfig;
 import no.nav.sosialhjelp.soknad.client.svarut.SvarUtConfig;
 import no.nav.sosialhjelp.soknad.client.virusscan.VirusScanConfig;
 import no.nav.sosialhjelp.soknad.consumer.fiks.DokumentKrypterer;
-import no.nav.sosialhjelp.soknad.consumer.redis.NoRedisConfig;
-import no.nav.sosialhjelp.soknad.consumer.redis.RedisConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.DigisosApiRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.PdlHentPersonRestConfig;
 import no.nav.sosialhjelp.soknad.kontonummer.KontonummerConfig;
 import no.nav.sosialhjelp.soknad.navenhet.NavEnhetConfig;
 import no.nav.sosialhjelp.soknad.navenhet.bydel.BydelConfig;
+import no.nav.sosialhjelp.soknad.navenhet.gt.GeografiskTilknytningConfig;
 import no.nav.sosialhjelp.soknad.navutbetalinger.NavUtbetalingerConfig;
 import no.nav.sosialhjelp.soknad.organisasjon.OrganisasjonConfig;
 import no.nav.sosialhjelp.soknad.person.PersonConfig;
@@ -41,9 +42,10 @@ import org.springframework.context.annotation.Import;
         NonProxiedWebClientConfig.class,
         SvarUtConfig.class,
         PdlConfig.class,
+        GeografiskTilknytningConfig.class,
         PersonConfig.class,
         AdressesokConfig.class,
-        KommuneInfoClientConfig.class,
+        KommuneInfoConfig.class,
         IdPortenClientConfig.class,
         IdPortenClientConfigMockAlt.class,
         IdPortenServiceImpl.class,

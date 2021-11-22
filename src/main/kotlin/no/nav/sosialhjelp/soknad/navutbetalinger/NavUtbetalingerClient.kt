@@ -3,11 +3,11 @@ package no.nav.sosialhjelp.soknad.navutbetalinger
 import com.fasterxml.jackson.core.JsonProcessingException
 import kotlinx.coroutines.runBlocking
 import no.nav.sosialhjelp.kotlin.utils.retry
+import no.nav.sosialhjelp.soknad.client.redis.CACHE_30_MINUTES_IN_SECONDS
+import no.nav.sosialhjelp.soknad.client.redis.NAVUTBETALINGER_CACHE_KEY_PREFIX
+import no.nav.sosialhjelp.soknad.client.redis.RedisService
+import no.nav.sosialhjelp.soknad.client.redis.RedisUtils.redisObjectMapper
 import no.nav.sosialhjelp.soknad.consumer.mdc.MDCOperations
-import no.nav.sosialhjelp.soknad.consumer.redis.CacheConstants.CACHE_30_MINUTES_IN_SECONDS
-import no.nav.sosialhjelp.soknad.consumer.redis.CacheConstants.NAVUTBETALINGER_CACHE_KEY_PREFIX
-import no.nav.sosialhjelp.soknad.consumer.redis.RedisService
-import no.nav.sosialhjelp.soknad.consumer.redis.RedisUtils.objectMapper
 import no.nav.sosialhjelp.soknad.consumer.retry.RetryUtils
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler
 import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants
@@ -77,7 +77,7 @@ class NavUtbetalingerClientImpl(
         try {
             redisService.setex(
                 NAVUTBETALINGER_CACHE_KEY_PREFIX + ident,
-                objectMapper.writeValueAsBytes(navUtbetalingerDto),
+                redisObjectMapper.writeValueAsBytes(navUtbetalingerDto),
                 CACHE_30_MINUTES_IN_SECONDS
             )
         } catch (e: JsonProcessingException) {

@@ -4,7 +4,7 @@ data class NavEnhetFrontend(
     val orgnr: String?,
     val enhetsnr: String?,
     val enhetsnavn: String,
-    val kommunenavn: String,
+    val kommunenavn: String?,
     val kommuneNr: String? = null,
     val behandlingsansvarlig: String? = null,
     val valgt: Boolean? = null,
