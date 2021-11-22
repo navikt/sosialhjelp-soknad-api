@@ -262,7 +262,7 @@ internal class KommuneInfoServiceTest {
     @Test
     internal fun behandlingsansvarligKommuneSkalReturnereKommunenavnHvisIngenBehandlingsansvarligOgKommuneInfoMapErNull() {
         every { kommuneInfoClient.getAll(any()) } returns emptyList()
-        every { redisService.getKommuneInfos()} returns null
+        every { redisService.getKommuneInfos() } returns null
 
         val kommunenavn = kommuneInfoService.getBehandlingskommune(KOMMUNENR, "kommunenavn")
         assertThat(kommunenavn).isEqualTo("kommunenavn")
@@ -328,8 +328,7 @@ internal class KommuneInfoServiceTest {
     @Test
     internal fun hentAlleKommuneInfo_fiksFeiler_skalHenteFraCache() {
         val value = KommuneInfo(KOMMUNENR, true, false, true, false, null, false, null)
-        val cachedKommuneInfoMap: MutableMap<String, KommuneInfo> = HashMap()
-        cachedKommuneInfoMap[KOMMUNENR] = value
+        val cachedKommuneInfoMap = mapOf(KOMMUNENR to value)
 
         every { kommuneInfoClient.getAll(any()) } returns emptyList()
         every { redisService.getKommuneInfos() } returns cachedKommuneInfoMap
