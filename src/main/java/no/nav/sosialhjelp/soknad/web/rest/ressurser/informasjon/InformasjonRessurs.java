@@ -10,9 +10,10 @@ import no.nav.sosialhjelp.soknad.business.service.adressesok.AdresseForslag;
 import no.nav.sosialhjelp.soknad.business.service.adressesok.AdresseSokService;
 import no.nav.sosialhjelp.soknad.business.service.informasjon.PabegynteSoknaderService;
 import no.nav.sosialhjelp.soknad.client.fiks.KommuneInfoService;
-import no.nav.sosialhjelp.soknad.consumer.pdl.person.PersonService;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import no.nav.sosialhjelp.soknad.domain.model.util.KommuneTilNavEnhetMapper;
+import no.nav.sosialhjelp.soknad.person.PersonService;
+import no.nav.sosialhjelp.soknad.person.dto.Gradering;
 import no.nav.sosialhjelp.soknad.tekster.NavMessageSource;
 import no.nav.sosialhjelp.soknad.web.rest.Logg;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.NyligInnsendteSoknaderResponse;
@@ -40,9 +41,6 @@ import java.util.Properties;
 import java.util.stream.Collectors;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.AdressebeskyttelseDto.Gradering.FORTROLIG;
-import static no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.AdressebeskyttelseDto.Gradering.STRENGT_FORTROLIG;
-import static no.nav.sosialhjelp.soknad.consumer.pdl.person.dto.AdressebeskyttelseDto.Gradering.STRENGT_FORTROLIG_UTLAND;
 import static no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SosialhjelpInformasjon.BUNDLE_NAME;
 import static no.nav.sosialhjelp.soknad.web.utils.Constants.CLAIM_ACR_LEVEL_4;
 import static no.nav.sosialhjelp.soknad.web.utils.Constants.SELVBETJENING;
@@ -144,7 +142,7 @@ public class InformasjonRessurs {
         boolean harTilgang = true;
         String sperrekode = "";
 
-        if (FORTROLIG.equals(adressebeskyttelse) || STRENGT_FORTROLIG.equals(adressebeskyttelse) || STRENGT_FORTROLIG_UTLAND.equals(adressebeskyttelse)) {
+        if (Gradering.FORTROLIG.equals(adressebeskyttelse) || Gradering.STRENGT_FORTROLIG.equals(adressebeskyttelse) || Gradering.STRENGT_FORTROLIG_UTLAND.equals(adressebeskyttelse)) {
             harTilgang = false;
             sperrekode = "bruker";
         }

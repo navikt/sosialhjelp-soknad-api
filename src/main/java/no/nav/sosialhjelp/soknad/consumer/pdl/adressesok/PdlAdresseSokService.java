@@ -28,6 +28,7 @@ import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
+import static no.nav.sosialhjelp.soknad.adressesok.AdressesokUtilsKt.formatterKommunenavn;
 import static no.nav.sosialhjelp.soknad.adressesok.sok.FieldName.VEGADRESSE_ADRESSENAVN;
 import static no.nav.sosialhjelp.soknad.adressesok.sok.FieldName.VEGADRESSE_HUSBOKSTAV;
 import static no.nav.sosialhjelp.soknad.adressesok.sok.FieldName.VEGADRESSE_HUSNUMMER;
@@ -39,7 +40,6 @@ import static no.nav.sosialhjelp.soknad.adressesok.sok.SearchRule.EQUALS;
 import static no.nav.sosialhjelp.soknad.adressesok.sok.SearchRule.WILDCARD;
 import static no.nav.sosialhjelp.soknad.business.service.adressesok.AdresseForslagType.GATEADRESSE;
 import static no.nav.sosialhjelp.soknad.business.service.adressesok.AdresseStringSplitter.isAddressTooShortOrNull;
-import static no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.AdresseHelper.formatterKommunenavn;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 import static org.slf4j.LoggerFactory.getLogger;
 

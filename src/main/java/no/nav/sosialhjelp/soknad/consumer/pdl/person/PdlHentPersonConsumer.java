@@ -1,14 +1,19 @@
 package no.nav.sosialhjelp.soknad.consumer.pdl.person;
 
+import no.nav.sosialhjelp.soknad.person.dto.BarnDto;
+import no.nav.sosialhjelp.soknad.person.dto.EktefelleDto;
+import no.nav.sosialhjelp.soknad.person.dto.PersonAdressebeskyttelseDto;
+import no.nav.sosialhjelp.soknad.person.dto.PersonDto;
+
 public interface PdlHentPersonConsumer {
 
-    PdlPerson hentPerson(String ident);
+    PersonDto hentPerson(String ident);
 
-    PdlBarn hentBarn(String ident);
+    BarnDto hentBarn(String ident);
 
-    PdlEktefelle hentEktefelle(String ident);
+    EktefelleDto hentEktefelle(String ident);
 
-    PdlAdressebeskyttelse hentAdressebeskyttelse(String ident);
+    PersonAdressebeskyttelseDto hentAdressebeskyttelse(String ident);
 
     void ping();
 }

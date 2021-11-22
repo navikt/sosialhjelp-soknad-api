@@ -21,7 +21,7 @@ data class Oppholdsadresse(
 )
 
 data class Vegadresse(
-    val adressenavn: String,
+    val adressenavn: String?,
     val husnummer: Int?,
     val husbokstav: String?,
     val tilleggsnavn: String?,
@@ -36,7 +36,7 @@ data class Vegadresse(
  * I JsonMatrikkeladresse kan vi sette "kommunenummer", "gaardsnummer", "bruksnummer", "festenummer", "seksjonsnummer", "undernummer"
  */
 data class Matrikkeladresse(
-    val matrikkelId: String,
+    val matrikkelId: String?,
     val postnummer: String?,
     val poststed: String?,
     val tilleggsnavn: String?,
