@@ -28,6 +28,7 @@ import no.nav.sosialhjelp.soknad.consumer.restconfig.PdlHentPersonRestConfig;
 import no.nav.sosialhjelp.soknad.kontonummer.KontonummerConfig;
 import no.nav.sosialhjelp.soknad.navenhet.NavEnhetConfig;
 import no.nav.sosialhjelp.soknad.navenhet.bydel.BydelConfig;
+import no.nav.sosialhjelp.soknad.navenhet.gt.GeografiskTilknytningConfig;
 import no.nav.sosialhjelp.soknad.navutbetalinger.NavUtbetalingerConfig;
 import no.nav.sosialhjelp.soknad.organisasjon.OrganisasjonConfig;
 import no.nav.sosialhjelp.soknad.person.PersonConfig;
@@ -42,6 +43,7 @@ import org.springframework.context.annotation.Import;
         NonProxiedWebClientConfig.class,
         SvarUtConfig.class,
         PdlConfig.class,
+        GeografiskTilknytningConfig.class,
         PersonConfig.class,
         KommuneInfoConfig.class,
         IdPortenClientConfig.class,

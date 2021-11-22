@@ -2,8 +2,6 @@ package no.nav.sosialhjelp.soknad.navenhet
 
 import no.nav.sosialhjelp.soknad.client.redis.RedisService
 import no.nav.sosialhjelp.soknad.consumer.common.rest.RestUtils
-import no.nav.sosialhjelp.soknad.navenhet.gt.GeografiskTilknytningClient
-import no.nav.sosialhjelp.soknad.navenhet.gt.GeografiskTilknytningService
 import no.nav.sosialhjelp.soknad.web.selftest.Pingable
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
@@ -14,8 +12,7 @@ import org.springframework.context.annotation.Import
 @Import(NavEnhetRessurs::class)
 open class NavEnhetConfig(
     @Value("\${norg_rest_url}") private val baseurl: String,
-    private val redisService: RedisService,
-    private val geografiskTilknytningClient: GeografiskTilknytningClient
+    private val redisService: RedisService
 ) {
 
     @Bean
@@ -39,10 +36,5 @@ open class NavEnhetConfig(
                 Pingable.Ping.feilet(metadata, e)
             }
         }
-    }
-
-    @Bean
-    open fun geografiskTilknytningService(): GeografiskTilknytningService {
-        return GeografiskTilknytningService(geografiskTilknytningClient)
     }
 }
