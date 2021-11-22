@@ -6,14 +6,14 @@ import kotlinx.coroutines.runBlocking
 import no.nav.sosialhjelp.kotlin.utils.retry
 import no.nav.sosialhjelp.soknad.client.pdl.HentGeografiskTilknytningDto
 import no.nav.sosialhjelp.soknad.client.pdl.PdlClient
+import no.nav.sosialhjelp.soknad.client.redis.GEOGRAFISK_TILKNYTNING_CACHE_KEY_PREFIX
+import no.nav.sosialhjelp.soknad.client.redis.PDL_CACHE_SECONDS
+import no.nav.sosialhjelp.soknad.client.redis.RedisService
 import no.nav.sosialhjelp.soknad.client.sts.StsClient
 import no.nav.sosialhjelp.soknad.consumer.exceptions.PdlApiException
 import no.nav.sosialhjelp.soknad.consumer.exceptions.TjenesteUtilgjengeligException
 import no.nav.sosialhjelp.soknad.consumer.pdl.common.PdlApiQuery.HENT_GEOGRAFISK_TILKNYTNING
 import no.nav.sosialhjelp.soknad.consumer.pdl.common.Utils.pdlMapper
-import no.nav.sosialhjelp.soknad.consumer.redis.CacheConstants.GEOGRAFISK_TILKNYTNING_CACHE_KEY_PREFIX
-import no.nav.sosialhjelp.soknad.consumer.redis.CacheConstants.PDL_CACHE_SECONDS
-import no.nav.sosialhjelp.soknad.consumer.redis.RedisService
 import no.nav.sosialhjelp.soknad.consumer.retry.RetryUtils
 import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.HEADER_TEMA
 import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.TEMA_KOM

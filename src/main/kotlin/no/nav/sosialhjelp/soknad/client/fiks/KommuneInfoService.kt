@@ -9,11 +9,11 @@ import no.nav.sosialhjelp.soknad.client.fiks.KommuneStatus.MANGLER_KONFIGURASJON
 import no.nav.sosialhjelp.soknad.client.fiks.KommuneStatus.SKAL_SENDE_SOKNADER_OG_ETTERSENDELSER_VIA_FDA
 import no.nav.sosialhjelp.soknad.client.fiks.KommuneStatus.SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD_OG_ETTERSENDELSER
 import no.nav.sosialhjelp.soknad.client.idporten.IdPortenService
-import no.nav.sosialhjelp.soknad.consumer.redis.CacheConstants.KOMMUNEINFO_CACHE_KEY
-import no.nav.sosialhjelp.soknad.consumer.redis.CacheConstants.KOMMUNEINFO_CACHE_SECONDS
-import no.nav.sosialhjelp.soknad.consumer.redis.CacheConstants.KOMMUNEINFO_LAST_POLL_TIME_KEY
-import no.nav.sosialhjelp.soknad.consumer.redis.RedisService
-import no.nav.sosialhjelp.soknad.consumer.redis.RedisUtils.objectMapper
+import no.nav.sosialhjelp.soknad.client.redis.KOMMUNEINFO_CACHE_KEY
+import no.nav.sosialhjelp.soknad.client.redis.KOMMUNEINFO_CACHE_SECONDS
+import no.nav.sosialhjelp.soknad.client.redis.KOMMUNEINFO_LAST_POLL_TIME_KEY
+import no.nav.sosialhjelp.soknad.client.redis.RedisService
+import no.nav.sosialhjelp.soknad.client.redis.RedisUtils.redisObjectMapper
 import no.nav.sosialhjelp.soknad.domain.model.util.KommuneTilNavEnhetMapper
 import org.slf4j.LoggerFactory.getLogger
 import java.nio.charset.StandardCharsets.UTF_8
@@ -40,7 +40,7 @@ open class KommuneInfoService(
 
     open fun hentAlleKommuneInfo(): Map<String, KommuneInfo>? {
         if (skalBrukeCache()) {
-            val cachedMap = redisService.kommuneInfos
+            val cachedMap = redisService.getKommuneInfos()
             if (cachedMap != null && cachedMap.isNotEmpty()) {
                 return cachedMap
             }
@@ -53,7 +53,7 @@ open class KommuneInfoService(
         val kommuneInfoMap = kommuneInfoList.associateBy { it.kommunenummer }
 
         if (kommuneInfoMap.isEmpty()) {
-            val cachedMap = redisService.kommuneInfos
+            val cachedMap = redisService.getKommuneInfos()
             if (cachedMap != null && cachedMap.isNotEmpty()) {
                 log.info("hentAlleKommuneInfo - feiler mot Fiks. Bruker cache mens Fiks er nede.")
                 return cachedMap
@@ -66,10 +66,7 @@ open class KommuneInfoService(
 
     private fun skalBrukeCache(): Boolean {
         return redisService.getString(KOMMUNEINFO_LAST_POLL_TIME_KEY)
-            ?.let {
-                LocalDateTime.parse(it, ISO_LOCAL_DATE_TIME).plusMinutes(MINUTES_TO_PASS_BETWEEN_POLL)
-                    .isAfter(LocalDateTime.now())
-            }
+            ?.let { LocalDateTime.parse(it, ISO_LOCAL_DATE_TIME).plusMinutes(MINUTES_TO_PASS_BETWEEN_POLL).isAfter(LocalDateTime.now()) }
             ?: false
     }
 
@@ -101,7 +98,7 @@ open class KommuneInfoService(
             if (kommuneInfoList != null && kommuneInfoList.isNotEmpty()) {
                 redisService.setex(
                     KOMMUNEINFO_CACHE_KEY,
-                    objectMapper.writeValueAsBytes(kommuneInfoList),
+                    redisObjectMapper.writeValueAsBytes(kommuneInfoList),
                     KOMMUNEINFO_CACHE_SECONDS
                 )
                 redisService.set(

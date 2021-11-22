@@ -10,8 +10,9 @@ import no.nav.sosialhjelp.api.fiks.KommuneInfo
 import no.nav.sosialhjelp.client.kommuneinfo.KommuneInfoClient
 import no.nav.sosialhjelp.idporten.client.AccessToken
 import no.nav.sosialhjelp.soknad.client.idporten.IdPortenService
-import no.nav.sosialhjelp.soknad.consumer.redis.CacheConstants
-import no.nav.sosialhjelp.soknad.consumer.redis.RedisService
+import no.nav.sosialhjelp.soknad.client.redis.KOMMUNEINFO_CACHE_KEY
+import no.nav.sosialhjelp.soknad.client.redis.KOMMUNEINFO_LAST_POLL_TIME_KEY
+import no.nav.sosialhjelp.soknad.client.redis.RedisService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -38,8 +39,8 @@ internal class KommuneInfoServiceTest {
 
         every { redisService.getString(any()) } returns null
         every { idPortenService.getToken() } returns accessToken
-        every { redisService.setex(CacheConstants.KOMMUNEINFO_CACHE_KEY, any(), any()) } just Runs
-        every { redisService.set(CacheConstants.KOMMUNEINFO_LAST_POLL_TIME_KEY, any()) } just Runs
+        every { redisService.setex(KOMMUNEINFO_CACHE_KEY, any(), any()) } just Runs
+        every { redisService.set(KOMMUNEINFO_LAST_POLL_TIME_KEY, any()) } just Runs
     }
 
     @Test
@@ -97,7 +98,7 @@ internal class KommuneInfoServiceTest {
     @Test
     internal fun kommuneInfo_fiks_feiler_og_cache_er_tom() {
         every { kommuneInfoClient.getAll(any()) } returns emptyList()
-        every { redisService.kommuneInfos } returns null
+        every { redisService.getKommuneInfos() } returns null
 
         val kommuneStatus = kommuneInfoService.kommuneInfo(KOMMUNENR)
         assertThat(kommuneStatus).isEqualTo(KommuneStatus.FIKS_NEDETID_OG_TOM_CACHE)
@@ -261,7 +262,7 @@ internal class KommuneInfoServiceTest {
     @Test
     internal fun behandlingsansvarligKommuneSkalReturnereKommunenavnHvisIngenBehandlingsansvarligOgKommuneInfoMapErNull() {
         every { kommuneInfoClient.getAll(any()) } returns emptyList()
-        every { redisService.kommuneInfos } returns null
+        every { redisService.getKommuneInfos()} returns null
 
         val kommunenavn = kommuneInfoService.getBehandlingskommune(KOMMUNENR, "kommunenavn")
         assertThat(kommunenavn).isEqualTo("kommunenavn")
@@ -272,25 +273,25 @@ internal class KommuneInfoServiceTest {
         val value = KommuneInfo(KOMMUNENR, true, false, true, false, null, false, null)
         val kommuneInfoMap = mapOf(KOMMUNENR to value)
 
-        every { redisService.getString(CacheConstants.KOMMUNEINFO_LAST_POLL_TIME_KEY) } returns LocalDateTime.now().minusMinutes(2).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
-        every { redisService.kommuneInfos } returns kommuneInfoMap
+        every { redisService.getString(KOMMUNEINFO_LAST_POLL_TIME_KEY) } returns LocalDateTime.now().minusMinutes(2).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+        every { redisService.getKommuneInfos() } returns kommuneInfoMap
 
         kommuneInfoService.kanMottaSoknader(KOMMUNENR)
 
-        verify(exactly = 1) { redisService.getString(CacheConstants.KOMMUNEINFO_LAST_POLL_TIME_KEY) }
-        verify(exactly = 1) { redisService.kommuneInfos }
+        verify(exactly = 1) { redisService.getString(KOMMUNEINFO_LAST_POLL_TIME_KEY) }
+        verify(exactly = 1) { redisService.getKommuneInfos() }
     }
 
     @Test
     internal fun skalHenteKommuneInfoFraFiks_hvisLastPollTimeOverskriderGrense() {
         val value = KommuneInfo(KOMMUNENR, true, false, true, false, null, false, null)
-        every { redisService.getString(CacheConstants.KOMMUNEINFO_LAST_POLL_TIME_KEY) } returns LocalDateTime.now().minusMinutes(12).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+        every { redisService.getString(KOMMUNEINFO_LAST_POLL_TIME_KEY) } returns LocalDateTime.now().minusMinutes(12).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
         every { kommuneInfoClient.getAll(any()) } returns listOf(value)
 
         kommuneInfoService.kanMottaSoknader(KOMMUNENR)
 
-        verify(exactly = 1) { redisService.getString(CacheConstants.KOMMUNEINFO_LAST_POLL_TIME_KEY) }
-        verify(exactly = 0) { redisService.kommuneInfos }
+        verify(exactly = 1) { redisService.getString(KOMMUNEINFO_LAST_POLL_TIME_KEY) }
+        verify(exactly = 0) { redisService.getKommuneInfos() }
     }
 
     @Test
@@ -298,30 +299,30 @@ internal class KommuneInfoServiceTest {
         val value = KommuneInfo(KOMMUNENR, true, false, true, false, null, false, null)
         val kommuneInfoMap = mapOf(KOMMUNENR to value)
 
-        every { redisService.getString(CacheConstants.KOMMUNEINFO_LAST_POLL_TIME_KEY) } returns LocalDateTime.now().minusMinutes(12).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+        every { redisService.getString(KOMMUNEINFO_LAST_POLL_TIME_KEY) } returns LocalDateTime.now().minusMinutes(12).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
         every { kommuneInfoClient.getAll(any()) } returns emptyList()
-        every { redisService.kommuneInfos } returns kommuneInfoMap
+        every { redisService.getKommuneInfos() } returns kommuneInfoMap
 
         val kanMottaSoknader = kommuneInfoService.kanMottaSoknader(KOMMUNENR)
 
         assertThat(kanMottaSoknader).isTrue
 
-        verify(exactly = 1) { redisService.getString(CacheConstants.KOMMUNEINFO_LAST_POLL_TIME_KEY) }
-        verify(exactly = 1) { redisService.kommuneInfos }
+        verify(exactly = 1) { redisService.getString(KOMMUNEINFO_LAST_POLL_TIME_KEY) }
+        verify(exactly = 1) { redisService.getKommuneInfos() }
     }
 
     @Test
     internal fun hentKommuneInfoFraFiksFeiler_cacheErTom() {
-        every { redisService.getString(CacheConstants.KOMMUNEINFO_LAST_POLL_TIME_KEY) } returns LocalDateTime.now().minusMinutes(12).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+        every { redisService.getString(KOMMUNEINFO_LAST_POLL_TIME_KEY) } returns LocalDateTime.now().minusMinutes(12).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
         every { kommuneInfoClient.getAll(any()) } returns emptyList()
-        every { redisService.kommuneInfos } returns null
+        every { redisService.getKommuneInfos() } returns null
 
         val kanMottaSoknader = kommuneInfoService.kanMottaSoknader(KOMMUNENR)
 
         assertThat(kanMottaSoknader).isFalse
 
-        verify(exactly = 1) { redisService.getString(CacheConstants.KOMMUNEINFO_LAST_POLL_TIME_KEY) }
-        verify(exactly = 1) { redisService.kommuneInfos }
+        verify(exactly = 1) { redisService.getString(KOMMUNEINFO_LAST_POLL_TIME_KEY) }
+        verify(exactly = 1) { redisService.getKommuneInfos() }
     }
 
     @Test
@@ -331,7 +332,7 @@ internal class KommuneInfoServiceTest {
         cachedKommuneInfoMap[KOMMUNENR] = value
 
         every { kommuneInfoClient.getAll(any()) } returns emptyList()
-        every { redisService.kommuneInfos } returns cachedKommuneInfoMap
+        every { redisService.getKommuneInfos() } returns cachedKommuneInfoMap
 
         val kommuneInfoMap = kommuneInfoService.hentAlleKommuneInfo()
         assertThat(kommuneInfoMap).isEqualTo(cachedKommuneInfoMap)
