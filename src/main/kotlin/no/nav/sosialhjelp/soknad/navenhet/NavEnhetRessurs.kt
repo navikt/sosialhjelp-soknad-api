@@ -28,7 +28,6 @@ import no.nav.sosialhjelp.soknad.web.sikkerhet.Tilgangskontroll
 import no.nav.sosialhjelp.soknad.web.utils.Constants
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Controller
-import java.util.stream.Collectors
 import javax.ws.rs.GET
 import javax.ws.rs.PUT
 import javax.ws.rs.Path
@@ -228,7 +227,7 @@ open class NavEnhetRessurs(
                 )
             }
         }
-        return navEnhetFrontendListe.stream().distinct().collect(Collectors.toList())
+        return navEnhetFrontendListe.distinct()
     }
 
     private fun addToNavEnhetFrontendListe(
