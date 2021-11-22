@@ -1,12 +1,9 @@
 package no.nav.sosialhjelp.soknad.consumer.restconfig;
 
-import no.nav.sosialhjelp.client.kommuneinfo.KommuneInfoClient;
-import no.nav.sosialhjelp.soknad.client.idporten.IdPortenService;
-import no.nav.sosialhjelp.soknad.client.redis.RedisService;
+import no.nav.sosialhjelp.soknad.client.fiks.KommuneInfoService;
 import no.nav.sosialhjelp.soknad.consumer.fiks.DigisosApi;
 import no.nav.sosialhjelp.soknad.consumer.fiks.DigisosApiImpl;
 import no.nav.sosialhjelp.soknad.consumer.fiks.DigisosApiProperties;
-import no.nav.sosialhjelp.soknad.consumer.fiks.KommuneInfoService;
 import no.nav.sosialhjelp.soknad.web.selftest.Pingable;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -30,11 +27,6 @@ public class DigisosApiRestConfig {
     public DigisosApi digisosApi(KommuneInfoService kommuneInfoService) {
         var digisosApi = new DigisosApiImpl(digisosApiProperties(), kommuneInfoService);
         return createTimerProxy("DigisosApi", digisosApi, DigisosApi.class);
-    }
-
-    @Bean
-    public KommuneInfoService kommuneInfoService(KommuneInfoClient kommuneInfoClient, IdPortenService idPortenService, RedisService redisService) {
-        return new KommuneInfoService(kommuneInfoClient, idPortenService, redisService);
     }
 
     @Bean
