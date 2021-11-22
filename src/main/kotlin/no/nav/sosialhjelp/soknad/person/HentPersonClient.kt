@@ -4,7 +4,12 @@ import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.module.kotlin.readValue
 import kotlinx.coroutines.runBlocking
 import no.nav.sosialhjelp.kotlin.utils.retry
+import no.nav.sosialhjelp.soknad.client.config.RetryUtils
 import no.nav.sosialhjelp.soknad.client.pdl.HentPersonDto
+import no.nav.sosialhjelp.soknad.client.pdl.PdlApiQuery.HENT_ADRESSEBESKYTTELSE
+import no.nav.sosialhjelp.soknad.client.pdl.PdlApiQuery.HENT_BARN
+import no.nav.sosialhjelp.soknad.client.pdl.PdlApiQuery.HENT_EKTEFELLE
+import no.nav.sosialhjelp.soknad.client.pdl.PdlApiQuery.HENT_PERSON
 import no.nav.sosialhjelp.soknad.client.pdl.PdlClient
 import no.nav.sosialhjelp.soknad.client.redis.ADRESSEBESKYTTELSE_CACHE_KEY_PREFIX
 import no.nav.sosialhjelp.soknad.client.redis.BARN_CACHE_KEY_PREFIX
@@ -15,11 +20,6 @@ import no.nav.sosialhjelp.soknad.client.redis.RedisService
 import no.nav.sosialhjelp.soknad.client.sts.StsClient
 import no.nav.sosialhjelp.soknad.consumer.exceptions.PdlApiException
 import no.nav.sosialhjelp.soknad.consumer.exceptions.TjenesteUtilgjengeligException
-import no.nav.sosialhjelp.soknad.consumer.pdl.common.PdlApiQuery.HENT_ADRESSEBESKYTTELSE
-import no.nav.sosialhjelp.soknad.consumer.pdl.common.PdlApiQuery.HENT_BARN
-import no.nav.sosialhjelp.soknad.consumer.pdl.common.PdlApiQuery.HENT_EKTEFELLE
-import no.nav.sosialhjelp.soknad.consumer.pdl.common.PdlApiQuery.HENT_PERSON
-import no.nav.sosialhjelp.soknad.consumer.retry.RetryUtils
 import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.HEADER_TEMA
 import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.TEMA_KOM
 import no.nav.sosialhjelp.soknad.person.dto.BarnDto
