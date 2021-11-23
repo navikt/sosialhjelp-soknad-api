@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.navenhet.bydel
 
-import no.nav.sosialhjelp.soknad.business.service.adressesok.AdresseForslag
+import no.nav.sosialhjelp.soknad.adressesok.domain.AdresseForslag
 import org.apache.commons.lang3.StringUtils
 
 open class BydelFordelingService(
@@ -9,10 +9,10 @@ open class BydelFordelingService(
 
     open fun getBydelTilForMarka(adresseForslag: AdresseForslag): String {
         return markaBydelFordeling
-            .filter { it.veiadresse.trim().equals(adresseForslag.adresse.trim(), true) }
+            .filter { it.veiadresse.trim().equals(adresseForslag.adresse?.trim(), true) }
             .filter { isInHusnummerFordeling(it.husnummerfordeling, adresseForslag.husnummer) }
             .firstOrNull()
-            ?.bydelTil ?: adresseForslag.geografiskTilknytning
+            ?.bydelTil ?: adresseForslag.geografiskTilknytning ?: ""
     }
 
     private fun isInHusnummerFordeling(husnummerfordeling: List<Husnummerfordeling>, husnummer: String?): Boolean {

@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.consumer;
 
+import no.nav.sosialhjelp.soknad.adressesok.AdressesokConfig;
 import no.nav.sosialhjelp.soknad.arbeid.ArbeidsforholdConfig;
 import no.nav.sosialhjelp.soknad.client.config.MockProxiedWebClientConfig;
 import no.nav.sosialhjelp.soknad.client.config.NonProxiedWebClientConfig;
@@ -21,9 +22,7 @@ import no.nav.sosialhjelp.soknad.client.sts.StsConfig;
 import no.nav.sosialhjelp.soknad.client.svarut.SvarUtConfig;
 import no.nav.sosialhjelp.soknad.client.virusscan.VirusScanConfig;
 import no.nav.sosialhjelp.soknad.consumer.fiks.DokumentKrypterer;
-import no.nav.sosialhjelp.soknad.consumer.pdl.adressesok.PdlAdresseSokService;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.DigisosApiRestConfig;
-import no.nav.sosialhjelp.soknad.consumer.restconfig.PdlAdresseSokRestConfig;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.PdlHentPersonRestConfig;
 import no.nav.sosialhjelp.soknad.kontonummer.KontonummerConfig;
 import no.nav.sosialhjelp.soknad.navenhet.NavEnhetConfig;
@@ -45,6 +44,7 @@ import org.springframework.context.annotation.Import;
         PdlConfig.class,
         GeografiskTilknytningConfig.class,
         PersonConfig.class,
+        AdressesokConfig.class,
         KommuneInfoConfig.class,
         IdPortenClientConfig.class,
         IdPortenClientConfigMockAlt.class,
@@ -63,7 +63,6 @@ import org.springframework.context.annotation.Import;
         FeatureToggleConfig.class,
         RedisConfig.class,
         NoRedisConfig.class,
-        PdlAdresseSokService.class,
         ConsumerConfig.WsServices.class,
         DokumentKrypterer.class,
         BydelConfig.class,
@@ -76,7 +75,6 @@ public class ConsumerConfig {
     @Configuration
     @Import({
             PdlHentPersonRestConfig.class,
-            PdlAdresseSokRestConfig.class,
             DigisosApiRestConfig.class,
     })
     public static class WsServices {

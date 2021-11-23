@@ -1,10 +1,10 @@
 package no.nav.sosialhjelp.soknad.navenhet.bydel
 
-import no.nav.sosialhjelp.soknad.business.service.adressesok.AdresseForslag
+import no.nav.sosialhjelp.soknad.adressesok.domain.AdresseForslag
+import no.nav.sosialhjelp.soknad.adressesok.domain.AdresseForslagType
 import no.nav.sosialhjelp.soknad.navenhet.bydel.BydelFordelingService.Companion.BYDEL_MARKA_OSLO
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import java.util.Arrays
 
 internal class BydelFordelingServiceTest {
 
@@ -41,15 +41,11 @@ internal class BydelFordelingServiceTest {
     }
 
     private fun createAdresseForslag(adresse: String, husnummer: String): AdresseForslag {
-        val af = AdresseForslag()
-        af.adresse = adresse
-        af.husnummer = husnummer
-        af.geografiskTilknytning = BYDEL_MARKA_OSLO
-        return af
+        return AdresseForslag(adresse, husnummer, null, null, null, null, null, BYDEL_MARKA_OSLO, null, null, AdresseForslagType.GATEADRESSE)
     }
 
     private fun markaBydelFordeling(): List<BydelFordeling> {
-        return Arrays.asList(
+        return listOf(
             BydelFordeling(
                 TESTVEIEN,
                 "gatekode",
@@ -61,7 +57,7 @@ internal class BydelFordelingServiceTest {
             BydelFordeling(
                 TESTGATEN,
                 "gatekode",
-                Arrays.asList(
+                listOf(
                     Husnummerfordeling(1, 99, HusnummerfordelingType.ODD),
                     Husnummerfordeling(2, 100, HusnummerfordelingType.EVEN)
                 ),
@@ -72,7 +68,7 @@ internal class BydelFordelingServiceTest {
             BydelFordeling(
                 TESTGATEN,
                 "gatekode",
-                Arrays.asList(
+                listOf(
                     Husnummerfordeling(101, 9999, HusnummerfordelingType.ODD),
                     Husnummerfordeling(102, 9999, HusnummerfordelingType.EVEN)
                 ),

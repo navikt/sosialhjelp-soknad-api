@@ -4,7 +4,7 @@ import no.nav.sosialhjelp.soknad.adressesok.AdressesokUtils.formatterKommunenavn
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
-internal class AdressesokUtilsKtTest {
+internal class AdressesokUtilsTest {
 
     @Test
     fun skalFormatterKommunenavn() {

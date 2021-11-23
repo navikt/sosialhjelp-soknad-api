@@ -1,7 +1,9 @@
 package no.nav.sosialhjelp.soknad.navenhet
 
+import no.nav.sosialhjelp.soknad.adressesok.AdressesokService
 import no.nav.sosialhjelp.soknad.client.redis.RedisService
 import no.nav.sosialhjelp.soknad.consumer.common.rest.RestUtils
+import no.nav.sosialhjelp.soknad.navenhet.finnadresse.FinnAdresseService
 import no.nav.sosialhjelp.soknad.web.selftest.Pingable
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
@@ -36,5 +38,10 @@ open class NavEnhetConfig(
                 Pingable.Ping.feilet(metadata, e)
             }
         }
+    }
+
+    @Bean
+    open fun finnAdresseService(adressesokService: AdressesokService): FinnAdresseService {
+        return FinnAdresseService(adressesokService)
     }
 }

@@ -4,10 +4,10 @@ import no.nav.security.token.support.core.api.ProtectedWithClaims;
 import no.nav.security.token.support.core.api.Unprotected;
 import no.nav.sosialhjelp.api.fiks.KommuneInfo;
 import no.nav.sosialhjelp.metrics.aspects.Timed;
+import no.nav.sosialhjelp.soknad.adressesok.AdressesokService;
+import no.nav.sosialhjelp.soknad.adressesok.domain.AdresseForslag;
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sosialhjelp.soknad.business.service.InformasjonService;
-import no.nav.sosialhjelp.soknad.business.service.adressesok.AdresseForslag;
-import no.nav.sosialhjelp.soknad.business.service.adressesok.AdresseSokService;
 import no.nav.sosialhjelp.soknad.business.service.informasjon.PabegynteSoknaderService;
 import no.nav.sosialhjelp.soknad.client.fiks.KommuneInfoService;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
@@ -63,7 +63,7 @@ public class InformasjonRessurs {
 
     private final InformasjonService informasjon;
     private final NavMessageSource messageSource;
-    private final AdresseSokService adresseSokService;
+    private final AdressesokService adresseSokService;
     private final KommuneInfoService kommuneInfoService;
     private final PersonService personService;
     private final Tilgangskontroll tilgangskontroll;
@@ -73,7 +73,7 @@ public class InformasjonRessurs {
     public InformasjonRessurs(
             InformasjonService informasjon,
             NavMessageSource messageSource,
-            AdresseSokService adresseSokService,
+            AdressesokService adresseSokService,
             KommuneInfoService kommuneInfoService,
             PersonService personService,
             Tilgangskontroll tilgangskontroll,
