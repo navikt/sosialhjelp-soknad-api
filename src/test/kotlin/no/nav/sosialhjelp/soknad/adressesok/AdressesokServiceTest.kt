@@ -27,12 +27,12 @@ internal class AdressesokServiceTest {
 
     private val adressesokService = AdressesokService(adressesokClient, kodeverkService)
 
-//    @Test
-//    fun skalKasteFeil_AdresseSokResultErNull() {
-//        every { adressesokClient.getAdressesokResult(any()) } returns null
-//        assertThatExceptionOfType(RuntimeException::class.java)
-//            .isThrownBy { adressesokService.getAdresseForslag(folkeregistretAdresse) }
-//    }
+    @Test
+    fun skalKasteFeil_AdresseSokResultErNull() {
+        every { adressesokClient.getAdressesokResult(any()) } returns null
+        assertThatExceptionOfType(RuntimeException::class.java)
+            .isThrownBy { adressesokService.getAdresseForslag(folkeregistretAdresse) }
+    }
 
     @Test
     fun skalKasteFeil_SokedataErNull() {

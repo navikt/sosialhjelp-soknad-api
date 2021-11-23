@@ -23,9 +23,8 @@ open class AdressesokClient(
     stsClient: StsClient
 ) : PdlClient(client, baseurl, stsClient) {
 
-    open fun getAdressesokResult(variables: Map<String, Any>): AdressesokResultDto {
+    open fun getAdressesokResult(variables: Map<String, Any>): AdressesokResultDto? {
         return try {
-            // retry
             val response = runBlocking {
                 retry(
                     attempts = RetryUtils.DEFAULT_MAX_ATTEMPTS,
@@ -39,7 +38,7 @@ open class AdressesokClient(
             }
             val pdlResponse = pdlMapper.readValue<AdressesokDto>(response)
             pdlResponse.checkForPdlApiErrors()
-            pdlResponse.data!!.sokAdresse
+            pdlResponse.data?.sokAdresse
         } catch (e: PdlApiException) {
             log.warn("PDL - feil oppdaget i response: {}", e.message, e)
             throw e
