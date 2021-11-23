@@ -25,7 +25,7 @@ open class AdressesokService(
 
     open fun getAdresseForslag(adresse: JsonGateAdresse?): AdresseForslag {
         val adresseSokResult = adressesokClient.getAdressesokResult(toVariables(adresse))
-        val vegadresse = resolveVegadresse(adresseSokResult.hits ?: emptyList())
+        val vegadresse = resolveVegadresse(adresseSokResult?.hits ?: emptyList())
         return vegadresse.toAdresseForslag()
     }
 
