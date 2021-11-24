@@ -16,7 +16,6 @@
   "kvPaths": {
     "/var/run/secrets/datasource": "/oracle/data/dev/creds/soknadsosialhjelp_q0-user",
     "/var/run/secrets/nais.io/virksomhetssertifikat": "/secret/virksomhetssertifikat/preprod/shared",
-    "/var/run/secrets/nais.io/appdynamics": "/apikey/appdynamics/dev",
     "/apigw/norg2api": "/apikey/apigw/dev/norg2.api.v1/soknadsosialhjelp-server_q1",
     "/apigw/eregapi": "apikey/apigw/dev/ereg.api/sosialhjelp-soknad-api_q1",
     "/apigw/aaregapi": "apikey/apigw/dev/aareg.api/sosialhjelp-soknad-api_q1",
