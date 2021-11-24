@@ -1,7 +1,6 @@
 package no.nav.sosialhjelp.soknad.client.fiks.digisosapi
 
 import no.nav.sosialhjelp.soknad.consumer.exceptions.TjenesteUtilgjengeligException
-import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.BEARER
 import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.HEADER_INTEGRASJON_ID
 import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.HEADER_INTEGRASJON_PASSORD
 import org.slf4j.LoggerFactory.getLogger
@@ -35,7 +34,7 @@ class DokumentlagerClientImpl(
             .header(ACCEPT, MediaType.WILDCARD)
             .header(HEADER_INTEGRASJON_ID, properties.integrasjonsidFiks)
             .header(HEADER_INTEGRASJON_PASSORD, properties.integrasjonpassordFiks)
-            .header(AUTHORIZATION, BEARER + token)
+            .header(AUTHORIZATION, token)
             .retrieve()
             .bodyToMono<ByteArray>()
             .onErrorMap(WebClientResponseException::class.java) { e ->
