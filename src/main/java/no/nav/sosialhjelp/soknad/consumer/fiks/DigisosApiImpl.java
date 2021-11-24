@@ -8,7 +8,7 @@ import no.ks.kryptering.CMSKrypteringImpl;
 import no.ks.kryptering.CMSStreamKryptering;
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper;
 import no.nav.sosialhjelp.api.fiks.KommuneInfo;
-import no.nav.sosialhjelp.soknad.client.fiks.KommuneInfoService;
+import no.nav.sosialhjelp.soknad.client.fiks.kommuneinfo.KommuneInfoService;
 import no.nav.sosialhjelp.soknad.consumer.fiks.dto.FilMetadata;
 import no.nav.sosialhjelp.soknad.consumer.fiks.dto.FilOpplasting;
 import org.apache.commons.io.IOUtils;

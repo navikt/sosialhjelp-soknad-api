@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.consumer.restconfig;
 
-import no.nav.sosialhjelp.soknad.client.fiks.KommuneInfoService;
+import no.nav.sosialhjelp.soknad.client.fiks.kommuneinfo.KommuneInfoService;
 import no.nav.sosialhjelp.soknad.consumer.fiks.DigisosApi;
 import no.nav.sosialhjelp.soknad.consumer.fiks.DigisosApiImpl;
 import no.nav.sosialhjelp.soknad.consumer.fiks.DigisosApiProperties;

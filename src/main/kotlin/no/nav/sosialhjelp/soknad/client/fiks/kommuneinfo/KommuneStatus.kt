@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.client.fiks
+package no.nav.sosialhjelp.soknad.client.fiks.kommuneinfo
 
 enum class KommuneStatus {
     HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT,

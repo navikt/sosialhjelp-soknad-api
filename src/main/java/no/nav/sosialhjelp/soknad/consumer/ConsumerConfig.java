@@ -7,7 +7,7 @@ import no.nav.sosialhjelp.soknad.client.config.NonProxiedWebClientConfig;
 import no.nav.sosialhjelp.soknad.client.config.ProxiedWebClientConfig;
 import no.nav.sosialhjelp.soknad.client.dkif.DkifConfig;
 import no.nav.sosialhjelp.soknad.client.featuretoggle.FeatureToggleConfig;
-import no.nav.sosialhjelp.soknad.client.fiks.KommuneInfoConfig;
+import no.nav.sosialhjelp.soknad.client.fiks.kommuneinfo.KommuneInfoConfig;
 import no.nav.sosialhjelp.soknad.client.husbanken.HusbankenClientConfig;
 import no.nav.sosialhjelp.soknad.client.idporten.IdPortenClientConfig;
 import no.nav.sosialhjelp.soknad.client.idporten.IdPortenClientConfigMockAlt;
