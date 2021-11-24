@@ -8,6 +8,7 @@ import no.ks.kryptering.CMSKrypteringImpl;
 import no.ks.kryptering.CMSStreamKryptering;
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper;
 import no.nav.sosialhjelp.api.fiks.KommuneInfo;
+import no.nav.sosialhjelp.soknad.client.fiks.digisosapi.DokumentlagerClient;
 import no.nav.sosialhjelp.soknad.client.fiks.kommuneinfo.KommuneInfoService;
 import no.nav.sosialhjelp.soknad.consumer.fiks.dto.FilMetadata;
 import no.nav.sosialhjelp.soknad.consumer.fiks.dto.FilOpplasting;
@@ -17,8 +18,6 @@ import org.apache.http.client.ServiceUnavailableRetryStrategy;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.client.methods.RequestBuilder;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
@@ -28,16 +27,12 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 
-import javax.ws.rs.core.MediaType;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.nio.charset.StandardCharsets;
 import java.security.Security;
-import java.security.cert.CertificateException;
-import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -60,7 +55,6 @@ import static no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.HEADER
 import static no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.HEADER_INTEGRASJON_PASSORD;
 import static no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils.isNonProduction;
 import static no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils.stripVekkFnutter;
-import static org.eclipse.jetty.http.HttpHeader.ACCEPT;
 import static org.eclipse.jetty.http.HttpHeader.AUTHORIZATION;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -75,6 +69,7 @@ public class DigisosApiImpl implements DigisosApi {
 
     private final KommuneInfoService kommuneInfoService;
     private final DigisosApiProperties properties;
+    private final DokumentlagerClient dokumentlagerClient;
     private final HttpRequestRetryHandler retryHandler;
     private final ServiceUnavailableRetryStrategy serviceUnavailableRetryStrategy;
 
@@ -84,10 +79,12 @@ public class DigisosApiImpl implements DigisosApi {
 
     public DigisosApiImpl(
             DigisosApiProperties properties,
-            KommuneInfoService kommuneInfoService
+            KommuneInfoService kommuneInfoService,
+            DokumentlagerClient dokumentlagerClient
     ) {
         this.kommuneInfoService = kommuneInfoService;
         this.properties = properties;
+        this.dokumentlagerClient = dokumentlagerClient;
         this.retryHandler = new DefaultHttpRequestRetryHandler();
         this.serviceUnavailableRetryStrategy = new FiksServiceUnavailableRetryStrategy();
     }
@@ -123,7 +120,7 @@ public class DigisosApiImpl implements DigisosApi {
         List<Future<Void>> krypteringFutureList = Collections.synchronizedList(new ArrayList<>(dokumenter.size()));
         String digisosId;
         try {
-            X509Certificate fiksX509Certificate = getFiksPublicKeyX509Certificate(token);
+            X509Certificate fiksX509Certificate = dokumentlagerClient.getDokumentlagerPublicKeyX509Certificate(token);
             digisosId = lastOppFiler(soknadJson, tilleggsinformasjonJson, vedleggJson, dokumenter.stream()
                     .map(dokument -> new FilOpplasting(dokument.metadata, krypter(dokument.data, krypteringFutureList, fiksX509Certificate)))
                     .collect(Collectors.toList()), kommunenr, behandlingsId, token);
@@ -134,48 +131,6 @@ public class DigisosApiImpl implements DigisosApi {
             krypteringFutureList.stream().filter(f -> !f.isDone() && !f.isCancelled()).forEach(future -> future.cancel(true));
         }
         return digisosId;
-    }
-
-    private X509Certificate getFiksPublicKeyX509Certificate(String token) {
-        fetchFiksPublicKeyIfNull(token);
-        return generateX509CertificateFromFiksPublicKey();
-    }
-
-    private void fetchFiksPublicKeyIfNull(String token) {
-        // Fiks public key skal aldri endres. Isåfall vil Fiks gi en tydelig beskjed.
-        //Denne integrasjonen kan feile så fiksPublicKey blir derfor cachet.
-        if (fiksPublicKey == null) {
-            try (CloseableHttpClient client = clientBuilder().build()) {
-                HttpUriRequest request = RequestBuilder.get().setUri(properties.getDigisosApiEndpoint() + "/digisos/api/v1/dokumentlager-public-key")
-                        .addHeader(ACCEPT.name(), MediaType.WILDCARD)
-                        .addHeader(HEADER_INTEGRASJON_ID, properties.getIntegrasjonsidFiks())
-                        .addHeader(HEADER_INTEGRASJON_PASSORD, properties.getIntegrasjonpassordFiks())
-                        .addHeader(AUTHORIZATION.name(), token).build();
-
-                CloseableHttpResponse response = client.execute(request);
-                int statusCode = response.getStatusLine().getStatusCode();
-                if (statusCode >= 300) {
-                    log.error("Statuscode ved henting av sertifikat {} - {}, response:{}",
-                            statusCode,
-                            response.getStatusLine().getReasonPhrase(),
-                            EntityUtils.toString(response.getEntity()));
-                }
-                fiksPublicKey = IOUtils.toByteArray(response.getEntity().getContent());
-            } catch (IOException e) {
-                log.error("Henting av FIKS publicKey feilet.", e);
-            }
-        }
-    }
-
-    private X509Certificate generateX509CertificateFromFiksPublicKey() {
-        try {
-            return (X509Certificate) CertificateFactory
-                    .getInstance("X.509")
-                    .generateCertificate(new ByteArrayInputStream(fiksPublicKey));
-
-        } catch (CertificateException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     private InputStream krypter(InputStream dokumentStream, List<Future<Void>> krypteringFutureList, X509Certificate fiksX509Certificate) {

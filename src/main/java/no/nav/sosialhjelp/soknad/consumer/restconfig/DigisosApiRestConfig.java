@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.consumer.restconfig;
 
+import no.nav.sosialhjelp.soknad.client.fiks.digisosapi.DokumentlagerClient;
 import no.nav.sosialhjelp.soknad.client.fiks.kommuneinfo.KommuneInfoService;
 import no.nav.sosialhjelp.soknad.consumer.fiks.DigisosApi;
 import no.nav.sosialhjelp.soknad.consumer.fiks.DigisosApiImpl;
@@ -24,8 +25,8 @@ public class DigisosApiRestConfig {
     private String integrasjonpassordFiks;
 
     @Bean
-    public DigisosApi digisosApi(KommuneInfoService kommuneInfoService) {
-        var digisosApi = new DigisosApiImpl(digisosApiProperties(), kommuneInfoService);
+    public DigisosApi digisosApi(KommuneInfoService kommuneInfoService, DokumentlagerClient dokumentlagerClient) {
+        var digisosApi = new DigisosApiImpl(digisosApiProperties(), kommuneInfoService, dokumentlagerClient);
         return createTimerProxy("DigisosApi", digisosApi, DigisosApi.class);
     }
 
