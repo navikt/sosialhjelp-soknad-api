@@ -24,7 +24,6 @@ import no.nav.sosialhjelp.soknad.client.svarut.SvarUtConfig;
 import no.nav.sosialhjelp.soknad.client.virusscan.VirusScanConfig;
 import no.nav.sosialhjelp.soknad.consumer.fiks.DokumentKrypterer;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.DigisosApiRestConfig;
-import no.nav.sosialhjelp.soknad.consumer.restconfig.PdlHentPersonRestConfig;
 import no.nav.sosialhjelp.soknad.kontonummer.KontonummerConfig;
 import no.nav.sosialhjelp.soknad.navenhet.NavEnhetConfig;
 import no.nav.sosialhjelp.soknad.navenhet.bydel.BydelConfig;
@@ -65,21 +64,13 @@ import org.springframework.context.annotation.Import;
         FeatureToggleConfig.class,
         RedisConfig.class,
         NoRedisConfig.class,
-        ConsumerConfig.WsServices.class,
         DokumentKrypterer.class,
         BydelConfig.class,
         LeaderElectionConfig.class,
-        VirusScanConfig.class
+        VirusScanConfig.class,
+        DigisosApiRestConfig.class
 })
 
 public class ConsumerConfig {
-
-    @Configuration
-    @Import({
-            PdlHentPersonRestConfig.class,
-            DigisosApiRestConfig.class,
-    })
-    public static class WsServices {
-    }
 
 }

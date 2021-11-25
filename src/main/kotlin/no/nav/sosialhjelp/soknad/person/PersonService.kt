@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.person
 
-import no.nav.sosialhjelp.soknad.consumer.pdl.person.PdlHentPersonConsumer
 import no.nav.sosialhjelp.soknad.domain.model.NavFodselsnummer
 import no.nav.sosialhjelp.soknad.person.domain.Barn
 import no.nav.sosialhjelp.soknad.person.domain.Ektefelle
@@ -14,13 +13,13 @@ import org.slf4j.LoggerFactory.getLogger
 import java.time.LocalDate
 
 open class PersonService(
-    private val pdlHentPersonConsumer: PdlHentPersonConsumer,
+    private val hentPersonClient: HentPersonClient,
     private val helper: MapperHelper,
     private val mapper: PdlDtoMapper
 ) {
 
     open fun hentPerson(ident: String): Person? {
-        val personDto = pdlHentPersonConsumer.hentPerson(ident) ?: return null
+        val personDto = hentPersonClient.hentPerson(ident) ?: return null
         val person = mapper.personDtoToDomain(personDto, ident)
         if (person != null) {
             person.ektefelle = hentEktefelle(personDto)
@@ -28,9 +27,9 @@ open class PersonService(
         return person
     }
 
-    open fun hentBarnForPerson(ident: String?): List<Barn>? {
-        val personDto = pdlHentPersonConsumer.hentPerson(ident)
-        if (personDto == null || personDto.forelderBarnRelasjon == null) {
+    open fun hentBarnForPerson(ident: String): List<Barn>? {
+        val personDto = hentPersonClient.hentPerson(ident)
+        if (personDto?.forelderBarnRelasjon == null) {
             return null
         }
         return personDto.forelderBarnRelasjon
@@ -45,14 +44,14 @@ open class PersonService(
                     return null
                 }
                 loggHvisIdentIkkeErFnr(it.relatertPersonsIdent)
-                val pdlBarn = pdlHentPersonConsumer.hentBarn(it.relatertPersonsIdent)
+                val pdlBarn = hentPersonClient.hentBarn(it.relatertPersonsIdent)
                 mapper.barnDtoToDomain(pdlBarn, it.relatertPersonsIdent, personDto)
             }
             .filterNotNull()
     }
 
     private fun hentEktefelle(personDto: PersonDto?): Ektefelle? {
-        if (personDto != null && personDto.sivilstand != null && !personDto.sivilstand.isEmpty()) {
+        if (personDto?.sivilstand != null && personDto.sivilstand.isNotEmpty()) {
             val sivilstand = helper.utledGjeldendeSivilstand(personDto.sivilstand)
             if (sivilstand != null && (SivilstandType.GIFT === sivilstand.type || SivilstandType.REGISTRERT_PARTNER === sivilstand.type)) {
                 val ektefelleIdent = sivilstand.relatertVedSivilstand
@@ -65,15 +64,15 @@ open class PersonService(
                     return Ektefelle("", "", "", finnFodselsdatoFraFnr(ektefelleIdent), ektefelleIdent, false, false)
                 }
                 loggHvisIdentIkkeErFnr(ektefelleIdent)
-                val ektefelleDto = pdlHentPersonConsumer.hentEktefelle(ektefelleIdent)
+                val ektefelleDto = hentPersonClient.hentEktefelle(ektefelleIdent)
                 return mapper.ektefelleDtoToDomain(ektefelleDto, ektefelleIdent, personDto)
             }
         }
         return null
     }
 
-    open fun hentAdressebeskyttelse(ident: String?): Gradering? {
-        val personAdressebeskyttelseDto = pdlHentPersonConsumer.hentAdressebeskyttelse(ident)
+    open fun hentAdressebeskyttelse(ident: String): Gradering? {
+        val personAdressebeskyttelseDto = hentPersonClient.hentAdressebeskyttelse(ident)
         return mapper.personAdressebeskyttelseDtoToGradering(personAdressebeskyttelseDto)
     }
 

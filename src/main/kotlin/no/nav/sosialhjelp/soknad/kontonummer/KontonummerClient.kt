@@ -3,12 +3,14 @@ package no.nav.sosialhjelp.soknad.kontonummer
 import com.fasterxml.jackson.core.JsonProcessingException
 import kotlinx.coroutines.runBlocking
 import no.nav.sosialhjelp.kotlin.utils.retry
+import no.nav.sosialhjelp.soknad.client.config.RetryUtils.DEFAULT_EXPONENTIAL_BACKOFF_MULTIPLIER
+import no.nav.sosialhjelp.soknad.client.config.RetryUtils.DEFAULT_INITIAL_WAIT_INTERVAL_MILLIS
+import no.nav.sosialhjelp.soknad.client.config.RetryUtils.DEFAULT_MAX_ATTEMPTS
 import no.nav.sosialhjelp.soknad.client.redis.CACHE_30_MINUTES_IN_SECONDS
 import no.nav.sosialhjelp.soknad.client.redis.KONTONUMMER_CACHE_KEY_PREFIX
 import no.nav.sosialhjelp.soknad.client.redis.RedisService
 import no.nav.sosialhjelp.soknad.client.redis.RedisUtils.redisObjectMapper
 import no.nav.sosialhjelp.soknad.consumer.mdc.MDCOperations
-import no.nav.sosialhjelp.soknad.consumer.retry.RetryUtils
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler
 import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants
 import no.nav.sosialhjelp.soknad.kontonummer.dto.KontonummerDto
@@ -47,9 +49,9 @@ class KontonummerClientImpl(
         return try {
             val response: KontonummerDto = runBlocking {
                 retry(
-                    attempts = RetryUtils.DEFAULT_MAX_ATTEMPTS,
-                    initialDelay = RetryUtils.DEFAULT_INITIAL_WAIT_INTERVAL_MILLIS,
-                    factor = RetryUtils.DEFAULT_EXPONENTIAL_BACKOFF_MULTIPLIER,
+                    attempts = DEFAULT_MAX_ATTEMPTS,
+                    initialDelay = DEFAULT_INITIAL_WAIT_INTERVAL_MILLIS,
+                    factor = DEFAULT_EXPONENTIAL_BACKOFF_MULTIPLIER,
                     retryableExceptions = arrayOf(ServerErrorException::class)
                 ) {
                     client.target(baseurl + "kontonummer")
