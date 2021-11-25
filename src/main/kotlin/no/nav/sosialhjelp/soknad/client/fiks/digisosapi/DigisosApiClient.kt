@@ -220,7 +220,7 @@ class DigisosApiClientImpl(
             log.info("Sendte inn søknad $navEksternRefId til kommune $kommunenummer og fikk digisosid: $digisosId")
             return digisosId
         } catch (e: Exception) {
-            throw IllegalStateException("Opplasting av $navEksternRefId til fiks-digisos-api feilet", e.cause)
+            throw IllegalStateException("Opplasting av $navEksternRefId til fiks-digisos-api feilet", e)
         }
     }
 
