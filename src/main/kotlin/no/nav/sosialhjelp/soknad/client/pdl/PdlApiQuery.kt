@@ -18,7 +18,6 @@ object PdlApiQuery {
     val HENT_GEOGRAFISK_TILKNYTNING = readGraphQLQueryFromFile("graphql/pdl-geografisktilknytning-query.graphql")
     // flere queries?
 
-    // flere queries?
     private fun readGraphQLQueryFromFile(file: String): String {
         val classPathResource = ClassPathResource(file)
         try {
