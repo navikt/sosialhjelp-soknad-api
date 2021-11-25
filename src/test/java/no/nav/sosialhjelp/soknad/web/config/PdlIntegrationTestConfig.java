@@ -7,7 +7,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.kotlin.KotlinModule;
 import lombok.SneakyThrows;
 import no.nav.sosialhjelp.soknad.client.pdl.HentPersonDto;
-import no.nav.sosialhjelp.soknad.consumer.pdl.person.PdlHentPersonConsumer;
+import no.nav.sosialhjelp.soknad.person.HentPersonClient;
 import no.nav.sosialhjelp.soknad.person.dto.BarnDto;
 import no.nav.sosialhjelp.soknad.person.dto.EktefelleDto;
 import no.nav.sosialhjelp.soknad.person.dto.PersonAdressebeskyttelseDto;
@@ -29,11 +29,11 @@ public class PdlIntegrationTestConfig {
      */
     @Primary
     @Bean
-    public PdlHentPersonConsumer pdlHentPersonConsumer() {
-        return new PdlHentPersonConsumerMock();
+    public HentPersonClient hentPersonClient() {
+        return new HentPersonClientMock();
     }
 
-    static class PdlHentPersonConsumerMock implements PdlHentPersonConsumer {
+    static class HentPersonClientMock implements HentPersonClient {
 
         private final ObjectMapper mapper = new ObjectMapper()
                 .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
@@ -82,11 +82,6 @@ public class PdlIntegrationTestConfig {
 
             var pdlPersonResponse = mapper.readValue(jsonString, new TypeReference<HentPersonDto<PersonAdressebeskyttelseDto>>() {});
             return pdlPersonResponse.getData().getHentPerson();
-        }
-
-        @Override
-        public void ping() {
-
         }
     }
 }

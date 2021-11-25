@@ -4,14 +4,13 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import kotlinx.coroutines.runBlocking
 import no.nav.sosialhjelp.kotlin.utils.retry
 import no.nav.sosialhjelp.soknad.adressesok.dto.AdressesokResultDto
+import no.nav.sosialhjelp.soknad.client.config.RetryUtils
 import no.nav.sosialhjelp.soknad.client.pdl.AdressesokDto
+import no.nav.sosialhjelp.soknad.client.pdl.PdlApiQuery.ADRESSE_SOK
 import no.nav.sosialhjelp.soknad.client.pdl.PdlClient
 import no.nav.sosialhjelp.soknad.client.sts.StsClient
 import no.nav.sosialhjelp.soknad.consumer.exceptions.PdlApiException
 import no.nav.sosialhjelp.soknad.consumer.exceptions.TjenesteUtilgjengeligException
-import no.nav.sosialhjelp.soknad.consumer.pdl.common.PdlApiQuery
-import no.nav.sosialhjelp.soknad.consumer.pdl.common.Utils.pdlMapper
-import no.nav.sosialhjelp.soknad.consumer.retry.RetryUtils
 import org.slf4j.LoggerFactory.getLogger
 import javax.ws.rs.ProcessingException
 import javax.ws.rs.WebApplicationException
@@ -33,7 +32,7 @@ open class AdressesokClient(
                     retryableExceptions = arrayOf(WebApplicationException::class, ProcessingException::class)
                 ) {
                     baseRequest
-                        .post(requestEntity(PdlApiQuery.ADRESSE_SOK, variables), String::class.java)
+                        .post(requestEntity(ADRESSE_SOK, variables), String::class.java)
                 }
             }
             val pdlResponse = pdlMapper.readValue<AdressesokDto>(response)

@@ -1,9 +1,12 @@
 package no.nav.sosialhjelp.soknad.client.pdl
 
+import com.fasterxml.jackson.databind.DeserializationFeature
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.sosialhjelp.soknad.client.sts.StsClient
 import no.nav.sosialhjelp.soknad.client.sts.dto.FssToken
 import no.nav.sosialhjelp.soknad.consumer.mdc.MDCOperations
-import no.nav.sosialhjelp.soknad.consumer.pdl.common.PdlRequest
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler
 import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants
 import org.eclipse.jetty.http.HttpHeader
@@ -37,8 +40,10 @@ abstract class PdlClient(
     }
 
     protected open fun requestEntity(query: String, variables: Map<String, Any>): Entity<PdlRequest> {
-        val request = PdlRequest(query, variables)
-        return Entity.entity(request, MediaType.APPLICATION_JSON_TYPE)
+        return Entity.entity(
+            PdlRequest(query, variables),
+            MediaType.APPLICATION_JSON_TYPE
+        )
     }
 
     protected val baseRequest: Invocation.Builder
@@ -48,4 +53,8 @@ abstract class PdlClient(
             .header(HeaderConstants.HEADER_CALL_ID, callId)
             .header(HeaderConstants.HEADER_CONSUMER_ID, consumerId)
             .header(HeaderConstants.HEADER_CONSUMER_TOKEN, HeaderConstants.BEARER + fssToken.access_token)
+
+    protected val pdlMapper: ObjectMapper = jacksonObjectMapper()
+        .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
+        .registerModule(JavaTimeModule())
 }
