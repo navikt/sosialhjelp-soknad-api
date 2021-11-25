@@ -23,9 +23,8 @@ import org.springframework.core.io.InputStreamResource
 import org.springframework.http.ContentDisposition
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
-import org.springframework.http.MediaType
-import org.springframework.http.MediaType.APPLICATION_JSON
-import org.springframework.http.MediaType.APPLICATION_OCTET_STREAM
+import org.springframework.http.MediaType.APPLICATION_JSON_VALUE
+import org.springframework.http.MediaType.APPLICATION_OCTET_STREAM_VALUE
 import org.springframework.http.ResponseEntity
 import org.springframework.util.LinkedMultiValueMap
 import org.springframework.util.MultiValueMap
@@ -252,7 +251,7 @@ class DigisosApiClientImpl(
         }
 
         filerForOpplasting.forEach {
-            body.add("metadata", createHttpEntityOfString(getJson(it), "metadata"))
+            body.add("metadata", createHttpEntity(getJson(it), "metadata", null, "text/plain;charset=UTF-8"))
             body.add(it.filnavn, createHttpEntityOfFile(it, it.filnavn))
         }
 
@@ -260,14 +259,14 @@ class DigisosApiClientImpl(
     }
 
     private fun createHttpEntityOfString(body: String, name: String): HttpEntity<Any> {
-        return createHttpEntity(body, name, null, APPLICATION_JSON)
+        return createHttpEntity(body, name, null, APPLICATION_JSON_VALUE)
     }
 
     private fun createHttpEntityOfFile(file: FilForOpplasting<Any>, name: String): HttpEntity<Any> {
-        return createHttpEntity(InputStreamResource(file.data), name, file.filnavn, APPLICATION_OCTET_STREAM)
+        return createHttpEntity(InputStreamResource(file.data), name, file.filnavn, APPLICATION_OCTET_STREAM_VALUE)
     }
 
-    private fun createHttpEntity(body: Any, name: String, filename: String?, mediaType: MediaType): HttpEntity<Any> {
+    private fun createHttpEntity(body: Any, name: String, filename: String?, mediaType: String): HttpEntity<Any> {
         val headerMap = LinkedMultiValueMap<String, String>()
         val builder = ContentDisposition
             .builder("form-data")
@@ -276,7 +275,7 @@ class DigisosApiClientImpl(
         val contentDisposition = builder.build()
 
         headerMap.add(HttpHeaders.CONTENT_DISPOSITION, contentDisposition.toString())
-        headerMap.add(HttpHeaders.CONTENT_TYPE, mediaType.toString())
+        headerMap.add(HttpHeaders.CONTENT_TYPE, mediaType)
         return HttpEntity(body, headerMap)
     }
 
