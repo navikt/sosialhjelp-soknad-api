@@ -7,12 +7,12 @@ import no.ks.fiks.streaming.klient.FilForOpplasting
 import no.ks.kryptering.CMSKrypteringImpl
 import no.ks.kryptering.CMSStreamKryptering
 import no.nav.sosialhjelp.kotlin.utils.retry
+import no.nav.sosialhjelp.soknad.client.config.RetryUtils
 import no.nav.sosialhjelp.soknad.client.fiks.digisosapi.Utils.digisosObjectMapper
 import no.nav.sosialhjelp.soknad.client.fiks.digisosapi.Utils.getDigisosIdFromResponse
 import no.nav.sosialhjelp.soknad.client.fiks.kommuneinfo.KommuneInfoService
 import no.nav.sosialhjelp.soknad.consumer.fiks.dto.FilMetadata
 import no.nav.sosialhjelp.soknad.consumer.fiks.dto.FilOpplasting
-import no.nav.sosialhjelp.soknad.consumer.retry.RetryUtils
 import no.nav.sosialhjelp.soknad.domain.model.mock.MockUtils
 import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants
 import no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils
