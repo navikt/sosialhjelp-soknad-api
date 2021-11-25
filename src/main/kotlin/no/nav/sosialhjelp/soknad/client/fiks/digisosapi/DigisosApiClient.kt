@@ -23,12 +23,16 @@ import org.springframework.core.io.InputStreamResource
 import org.springframework.http.ContentDisposition
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
+import org.springframework.http.MediaType
+import org.springframework.http.MediaType.APPLICATION_JSON
+import org.springframework.http.MediaType.APPLICATION_OCTET_STREAM
 import org.springframework.http.ResponseEntity
 import org.springframework.util.LinkedMultiValueMap
 import org.springframework.util.MultiValueMap
 import org.springframework.web.client.HttpServerErrorException
 import org.springframework.web.reactive.function.BodyInserters
 import org.springframework.web.reactive.function.client.WebClient
+import org.springframework.web.reactive.function.client.WebClientResponseException
 import org.springframework.web.reactive.function.client.toEntity
 import java.io.IOException
 import java.io.InputStream
@@ -198,22 +202,21 @@ class DigisosApiClientImpl(
                         .body(BodyInserters.fromMultipartData(multipartData))
                         .retrieve()
                         .toEntity<String>()
+                        .doOnError({ it is WebClientResponseException }) {
+                            val errorResponse = (it as WebClientResponseException).responseBodyAsString
+                            val digisosIdFromResponse = getDigisosIdFromResponse(errorResponse, navEksternRefId)
+                            val endTime = System.currentTimeMillis()
+                            digisosIdFromResponse
+                                ?.let { digisosId ->
+                                    log.warn("Søknad $navEksternRefId er allerede sendt til fiks-digisos-api med id $digisosId. Returner digisos-id som normalt så brukeren blir rutet til innsyn. ErrorResponse var: $errorResponse")
+                                    digisosId
+                                }
+                                ?: throw IllegalStateException("Opplasting av $navEksternRefId til fiks-digisos-api feilet etter ${endTime - startTime} ms med status ${it.statusCode.reasonPhrase} og response: $errorResponse")
+                        }
                         .awaitSingle()
                 }
             }
 
-            val endTime = System.currentTimeMillis()
-
-            if (entity.statusCodeValue >= 300) {
-                val errorResponse = entity.body
-                val digisosIdFromResponse = getDigisosIdFromResponse(errorResponse, navEksternRefId)
-                digisosIdFromResponse
-                    ?.let {
-                        log.warn("Søknad $navEksternRefId er allerede sendt til fiks-digisos-api med id $it. Returner digisos-id som normalt så brukeren blir rutet til innsyn. ErrorResponse var: $errorResponse")
-                        return it
-                    }
-                    ?: throw IllegalStateException("Opplasting av $navEksternRefId til fiks-digisos-api feilet etter ${endTime - startTime} ms med status ${entity.statusCode.reasonPhrase} og response: $errorResponse")
-            }
             val digisosId = stripVekkFnutter(entity.body)
             log.info("Sendte inn søknad $navEksternRefId til kommune $kommunenummer og fikk digisosid: $digisosId")
             return digisosId
@@ -242,16 +245,6 @@ class DigisosApiClientImpl(
                     .build()
             }
 
-//        val builder = MultipartBodyBuilder()
-//        builder.part("tilleggsinformasjonJson", tilleggsinformasjonJson, MediaType.APPLICATION_JSON)
-//        builder.part("soknadJson", soknadJson, MediaType.APPLICATION_JSON)
-//        builder.part("vedleggJson", vedleggJson, MediaType.APPLICATION_JSON)
-//
-//        filerForOpplasting.forEach {
-//            builder.part("metadata", getJson(it), MediaType.APPLICATION_JSON)
-//            builder.part(it.filnavn, it.data, MediaType.APPLICATION_OCTET_STREAM)
-//        }
-
         val body = LinkedMultiValueMap<String, Any>().apply {
             add("tilleggsinformasjonJson", createHttpEntityOfString(tilleggsinformasjonJson, "tilleggsinformasjonJson"))
             add("soknadJson", createHttpEntityOfString(soknadJson, "soknadJson"))
@@ -267,22 +260,23 @@ class DigisosApiClientImpl(
     }
 
     private fun createHttpEntityOfString(body: String, name: String): HttpEntity<Any> {
-        return createHttpEntity(body, name, null, "text/plain;charset=UTF-8")
+        return createHttpEntity(body, name, null, APPLICATION_JSON)
     }
 
     private fun createHttpEntityOfFile(file: FilForOpplasting<Any>, name: String): HttpEntity<Any> {
-        return createHttpEntity(InputStreamResource(file.data), name, file.filnavn, "application/octet-stream")
+        return createHttpEntity(InputStreamResource(file.data), name, file.filnavn, APPLICATION_OCTET_STREAM)
     }
 
-    private fun createHttpEntity(body: Any, name: String, filename: String?, contentType: String): HttpEntity<Any> {
+    private fun createHttpEntity(body: Any, name: String, filename: String?, mediaType: MediaType): HttpEntity<Any> {
         val headerMap = LinkedMultiValueMap<String, String>()
-        val builder: ContentDisposition.Builder = ContentDisposition
+        val builder = ContentDisposition
             .builder("form-data")
             .name(name)
-        val contentDisposition: ContentDisposition = if (filename == null) builder.build() else builder.filename(filename).build()
+        filename?.let { builder.filename(it) }
+        val contentDisposition = builder.build()
 
         headerMap.add(HttpHeaders.CONTENT_DISPOSITION, contentDisposition.toString())
-        headerMap.add(HttpHeaders.CONTENT_TYPE, contentType)
+        headerMap.add(HttpHeaders.CONTENT_TYPE, mediaType.toString())
         return HttpEntity(body, headerMap)
     }
 
