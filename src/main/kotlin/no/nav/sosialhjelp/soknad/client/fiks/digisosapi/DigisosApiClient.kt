@@ -23,7 +23,6 @@ import org.springframework.core.io.InputStreamResource
 import org.springframework.http.ContentDisposition
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
-import org.springframework.http.MediaType.APPLICATION_JSON_VALUE
 import org.springframework.http.MediaType.APPLICATION_OCTET_STREAM_VALUE
 import org.springframework.http.ResponseEntity
 import org.springframework.util.LinkedMultiValueMap
@@ -251,7 +250,7 @@ class DigisosApiClientImpl(
         }
 
         filerForOpplasting.forEach {
-            body.add("metadata", createHttpEntity(getJson(it), "metadata", null, "text/plain;charset=UTF-8"))
+            body.add("metadata", createHttpEntity(getJson(it), "metadata", null, "application/json;charset=UTF-8"))
             body.add(it.filnavn, createHttpEntityOfFile(it, it.filnavn))
         }
 
@@ -259,7 +258,7 @@ class DigisosApiClientImpl(
     }
 
     private fun createHttpEntityOfString(body: String, name: String): HttpEntity<Any> {
-        return createHttpEntity(body, name, null, APPLICATION_JSON_VALUE)
+        return createHttpEntity(body, name, null, "application/json;charset=UTF-8")
     }
 
     private fun createHttpEntityOfFile(file: FilForOpplasting<Any>, name: String): HttpEntity<Any> {
