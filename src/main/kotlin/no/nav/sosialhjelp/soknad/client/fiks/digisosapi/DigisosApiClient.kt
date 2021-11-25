@@ -253,14 +253,14 @@ class DigisosApiClientImpl(
 //        }
 
         val body = LinkedMultiValueMap<String, Any>().apply {
-            add("tilleggsinformasjonJson", createHttpEntityOfString(tilleggsinformasjonJson, "tilleggsinformasjon.json"))
-            add("soknadJson", createHttpEntityOfString(soknadJson, "soknad.json"))
-            add("vedleggJson", createHttpEntityOfString(vedleggJson, "vedlegg.json"))
+            add("tilleggsinformasjonJson", createHttpEntityOfString(tilleggsinformasjonJson, "tilleggsinformasjonJson"))
+            add("soknadJson", createHttpEntityOfString(soknadJson, "soknadJson"))
+            add("vedleggJson", createHttpEntityOfString(vedleggJson, "vedleggJson"))
         }
 
-        filerForOpplasting.forEachIndexed { index, fil ->
-            body.add("metadata", createHttpEntityOfString(getJson(fil), "metadata"))
-            body.add(fil.filnavn, createHttpEntityOfFile(fil, fil.filnavn))
+        filerForOpplasting.forEach {
+            body.add("metadata", createHttpEntityOfString(getJson(it), "metadata"))
+            body.add(it.filnavn, createHttpEntityOfFile(it, it.filnavn))
         }
 
         return body
