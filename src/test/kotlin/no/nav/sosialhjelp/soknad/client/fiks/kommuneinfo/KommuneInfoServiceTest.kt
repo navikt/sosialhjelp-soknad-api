@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.client.fiks
+package no.nav.sosialhjelp.soknad.client.fiks.kommuneinfo
 
 import io.mockk.Runs
 import io.mockk.clearAllMocks

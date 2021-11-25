@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile
 import org.springframework.web.reactive.function.client.WebClient
+import reactor.netty.http.client.HttpClient
 
 @Profile("!(mock-alt|test)")
 @Configuration
@@ -19,6 +20,9 @@ open class ProxiedWebClientConfig(
             .codecs {
                 it.defaultCodecs().maxInMemorySize(16 * 1024 * 1024)
             }
+
+    @Bean
+    open fun proxiedHttpClient(): HttpClient = proxiedHttpClient(proxyUrl)
 }
 
 @Profile("(mock-alt|test)")
@@ -32,6 +36,9 @@ open class MockProxiedWebClientConfig {
             .codecs {
                 it.defaultCodecs().maxInMemorySize(16 * 1024 * 1024)
             }
+
+    @Bean
+    open fun proxiedHttpClient(): HttpClient = unproxiedHttpClient()
 }
 
 @Configuration

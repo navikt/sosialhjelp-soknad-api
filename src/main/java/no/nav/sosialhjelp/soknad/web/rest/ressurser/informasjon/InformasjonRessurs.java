@@ -9,7 +9,7 @@ import no.nav.sosialhjelp.soknad.adressesok.domain.AdresseForslag;
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sosialhjelp.soknad.business.service.InformasjonService;
 import no.nav.sosialhjelp.soknad.business.service.informasjon.PabegynteSoknaderService;
-import no.nav.sosialhjelp.soknad.client.fiks.KommuneInfoService;
+import no.nav.sosialhjelp.soknad.client.fiks.kommuneinfo.KommuneInfoService;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import no.nav.sosialhjelp.soknad.domain.model.util.KommuneTilNavEnhetMapper;
 import no.nav.sosialhjelp.soknad.person.PersonService;
