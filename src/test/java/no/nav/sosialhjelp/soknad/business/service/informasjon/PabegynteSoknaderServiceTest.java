@@ -24,13 +24,13 @@ class PabegynteSoknaderServiceTest {
     private SoknadMetadataRepository soknadMetadataRepository;
 
     @InjectMocks
-    private PabegynteSoknaderService informasjonService;
+    private PabegynteSoknaderService pabegynteSoknaderService;
 
     @Test
     void brukerHarIngenPabegynteSoknader() {
         when(soknadMetadataRepository.hentPabegynteSoknaderForBruker(anyString())).thenReturn(emptyList());
 
-        assertThat(informasjonService.hentPabegynteSoknaderForBruker("fnr")).isEmpty();
+        assertThat(pabegynteSoknaderService.hentPabegynteSoknaderForBruker("fnr")).isEmpty();
     }
 
     @Test
@@ -42,7 +42,7 @@ class PabegynteSoknaderServiceTest {
 
         when(soknadMetadataRepository.hentPabegynteSoknaderForBruker(anyString())).thenReturn(singletonList(soknadMetadata));
 
-        var pabegyntSoknadList = informasjonService.hentPabegynteSoknaderForBruker("fnr");
+        var pabegyntSoknadList = pabegynteSoknaderService.hentPabegynteSoknaderForBruker("fnr");
         assertThat(pabegyntSoknadList).hasSize(1);
         assertThat(pabegyntSoknadList.get(0).getSistOppdatert()).isEqualTo(now.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
         assertThat(pabegyntSoknadList.get(0).getBehandlingsId()).isEqualTo("id");

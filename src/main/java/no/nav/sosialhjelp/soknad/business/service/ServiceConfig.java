@@ -17,7 +17,6 @@ import org.springframework.context.annotation.Import;
 
 @Configuration
 @Import({
-        InformasjonService.class,
         SoknadService.class,
         InnsendtSoknadService.class,
         EttersendingService.class,

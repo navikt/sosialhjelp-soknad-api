@@ -3,7 +3,6 @@ package no.nav.sosialhjelp.soknad.web.rest.ressurser.informasjon;
 import no.nav.sosialhjelp.api.fiks.KommuneInfo;
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata;
-import no.nav.sosialhjelp.soknad.business.service.InformasjonService;
 import no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService;
 import no.nav.sosialhjelp.soknad.client.fiks.kommuneinfo.KommuneInfoService;
 import no.nav.sosialhjelp.soknad.domain.model.exception.AuthorizationException;
@@ -46,8 +45,6 @@ class InformasjonRessursTest {
     public static final String SOKNADSTYPE = "type";
 
     @Spy
-    private InformasjonService informasjonService;
-    @Spy
     private SoknadService soknadService;
     @Mock
     private NavMessageSource messageSource;
@@ -75,14 +72,6 @@ class InformasjonRessursTest {
     public void tearDown() {
         SubjectHandler.resetOidcSubjectHandlerService();
         System.clearProperty("environment.name");
-    }
-
-    @Test
-    void miljovariablerInneholderAlleVariableneViTrenger() {
-        Map<String, String> miljovariabler = ressurs.hentMiljovariabler();
-
-        assertThat(miljovariabler).containsKey("dittnav.link.url");
-        assertThat(miljovariabler).containsKey("soknad.ettersending.antalldager");
     }
 
     @Test
