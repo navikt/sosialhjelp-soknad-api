@@ -19,11 +19,12 @@ import no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils
 import no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils.stripVekkFnutter
 import org.apache.commons.io.IOUtils
 import org.slf4j.LoggerFactory
+import org.springframework.core.io.InputStreamResource
+import org.springframework.http.ContentDisposition
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
-import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
-import org.springframework.http.client.MultipartBodyBuilder
+import org.springframework.util.LinkedMultiValueMap
 import org.springframework.util.MultiValueMap
 import org.springframework.web.client.HttpServerErrorException
 import org.springframework.web.reactive.function.BodyInserters
@@ -226,7 +227,7 @@ class DigisosApiClientImpl(
         tilleggsinformasjonJson: String,
         soknadJson: String,
         vedleggJson: String
-    ): MultiValueMap<String, HttpEntity<*>> {
+    ): MultiValueMap<String, Any> {
         val filerForOpplasting = dokumenter
             .map {
                 FilForOpplasting.builder<Any>()
@@ -241,16 +242,48 @@ class DigisosApiClientImpl(
                     .build()
             }
 
-        val builder = MultipartBodyBuilder()
-        builder.part("tilleggsinformasjonJson", tilleggsinformasjonJson, MediaType.APPLICATION_JSON)
-        builder.part("soknadJson", soknadJson, MediaType.APPLICATION_JSON)
-        builder.part("vedleggJson", vedleggJson, MediaType.APPLICATION_JSON)
+//        val builder = MultipartBodyBuilder()
+//        builder.part("tilleggsinformasjonJson", tilleggsinformasjonJson, MediaType.APPLICATION_JSON)
+//        builder.part("soknadJson", soknadJson, MediaType.APPLICATION_JSON)
+//        builder.part("vedleggJson", vedleggJson, MediaType.APPLICATION_JSON)
+//
+//        filerForOpplasting.forEach {
+//            builder.part("metadata", getJson(it), MediaType.APPLICATION_JSON)
+//            builder.part(it.filnavn, it.data, MediaType.APPLICATION_OCTET_STREAM)
+//        }
 
-        filerForOpplasting.forEach {
-            builder.part("metadata", getJson(it), MediaType.APPLICATION_JSON)
-            builder.part(it.filnavn, it.data, MediaType.APPLICATION_OCTET_STREAM)
+        val body = LinkedMultiValueMap<String, Any>().apply {
+            add("tilleggsinformasjonJson", createHttpEntityOfString(tilleggsinformasjonJson, "tilleggsinformasjon.json"))
+            add("soknadJson", createHttpEntityOfString(soknadJson, "soknad.json"))
+            add("vedleggJson", createHttpEntityOfString(vedleggJson, "vedlegg.json"))
         }
-        return builder.build()
+
+        filerForOpplasting.forEachIndexed { index, fil ->
+            body.add("metadata", createHttpEntityOfString(getJson(fil), "metadata"))
+            body.add(fil.filnavn, createHttpEntityOfFile(fil, fil.filnavn))
+        }
+
+        return body
+    }
+
+    private fun createHttpEntityOfString(body: String, name: String): HttpEntity<Any> {
+        return createHttpEntity(body, name, null, "text/plain;charset=UTF-8")
+    }
+
+    private fun createHttpEntityOfFile(file: FilForOpplasting<Any>, name: String): HttpEntity<Any> {
+        return createHttpEntity(InputStreamResource(file.data), name, file.filnavn, "application/octet-stream")
+    }
+
+    private fun createHttpEntity(body: Any, name: String, filename: String?, contentType: String): HttpEntity<Any> {
+        val headerMap = LinkedMultiValueMap<String, String>()
+        val builder: ContentDisposition.Builder = ContentDisposition
+            .builder("form-data")
+            .name(name)
+        val contentDisposition: ContentDisposition = if (filename == null) builder.build() else builder.filename(filename).build()
+
+        headerMap.add(HttpHeaders.CONTENT_DISPOSITION, contentDisposition.toString())
+        headerMap.add(HttpHeaders.CONTENT_TYPE, contentType)
+        return HttpEntity(body, headerMap)
     }
 
     private fun getJson(objectFilForOpplasting: FilForOpplasting<Any>): String {
