@@ -16,6 +16,7 @@ import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.SosialhjelpPdfGenerator;
 import no.nav.sosialhjelp.soknad.business.service.HenvendelseService;
 import no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadMetricsService;
 import no.nav.sosialhjelp.soknad.business.util.FileDetectionUtils;
+import no.nav.sosialhjelp.soknad.client.fiks.digisosapi.DigisosApiClient;
 import no.nav.sosialhjelp.soknad.consumer.fiks.DigisosApi;
 import no.nav.sosialhjelp.soknad.consumer.fiks.dto.FilMetadata;
 import no.nav.sosialhjelp.soknad.consumer.fiks.dto.FilOpplasting;
@@ -26,7 +27,6 @@ import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
-import javax.inject.Inject;
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,28 +46,36 @@ public class DigisosApiService {
 
     private static final Logger log = getLogger(DigisosApiService.class);
 
-    @Inject
-    private DigisosApi digisosApi;
-
-    @Inject
-    private SosialhjelpPdfGenerator sosialhjelpPdfGenerator;
-
-    @Inject
-    private InnsendingService innsendingService;
-
-    @Inject
-    private HenvendelseService henvendelseService;
-
-    @Inject
-    private SoknadUnderArbeidService soknadUnderArbeidService;
-
-    @Inject
-    private SoknadMetricsService soknadMetricsService;
-
-    @Inject
-    private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
+    private final DigisosApi digisosApi;
+    private final SosialhjelpPdfGenerator sosialhjelpPdfGenerator;
+    private final InnsendingService innsendingService;
+    private final HenvendelseService henvendelseService;
+    private final SoknadUnderArbeidService soknadUnderArbeidService;
+    private final SoknadMetricsService soknadMetricsService;
+    private final SoknadUnderArbeidRepository soknadUnderArbeidRepository;
+    private final DigisosApiClient digisosApiClient;
 
     private final ObjectMapper objectMapper = JsonSosialhjelpObjectMapper.createObjectMapper();
+
+    public DigisosApiService(
+            DigisosApi digisosApi,
+            SosialhjelpPdfGenerator sosialhjelpPdfGenerator,
+            InnsendingService innsendingService,
+            HenvendelseService henvendelseService,
+            SoknadUnderArbeidService soknadUnderArbeidService,
+            SoknadMetricsService soknadMetricsService,
+            SoknadUnderArbeidRepository soknadUnderArbeidRepository,
+            DigisosApiClient digisosApiClient
+    ) {
+        this.digisosApi = digisosApi;
+        this.sosialhjelpPdfGenerator = sosialhjelpPdfGenerator;
+        this.innsendingService = innsendingService;
+        this.henvendelseService = henvendelseService;
+        this.soknadUnderArbeidService = soknadUnderArbeidService;
+        this.soknadMetricsService = soknadMetricsService;
+        this.soknadUnderArbeidRepository = soknadUnderArbeidRepository;
+        this.digisosApiClient = digisosApiClient;
+    }
 
     List<FilOpplasting> lagDokumentListe(SoknadUnderArbeid soknadUnderArbeid) {
         JsonInternalSoknad internalSoknad = soknadUnderArbeid.getJsonInternalSoknad();
@@ -119,7 +127,7 @@ public class DigisosApiService {
     String sendOgKrypter(String soknadJson, String tilleggsinformasjonJson, String vedleggJson, List<FilOpplasting> filOpplastinger, String kommunenr, String navEnhetsnavn, String behandlingsId, String token) {
         Event event = lagForsoktSendtDigisosApiEvent(navEnhetsnavn);
         try {
-            return digisosApi.krypterOgLastOppFiler(soknadJson, tilleggsinformasjonJson, vedleggJson, filOpplastinger, kommunenr, behandlingsId, token);
+            return digisosApiClient.krypterOgLastOppFiler(soknadJson, tilleggsinformasjonJson, vedleggJson, filOpplastinger, kommunenr, behandlingsId, token);
         } catch (Exception e) {
             event.setFailed();
             throw e;

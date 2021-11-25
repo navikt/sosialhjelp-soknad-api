@@ -2,6 +2,7 @@ package no.nav.sosialhjelp.soknad.client.fiks.digisosapi
 
 import io.netty.channel.ChannelOption
 import no.nav.sosialhjelp.soknad.client.fiks.digisosapi.Utils.digisosObjectMapper
+import no.nav.sosialhjelp.soknad.client.fiks.kommuneinfo.KommuneInfoService
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -22,6 +23,15 @@ open class DigisosApiConfig(
     @Bean
     open fun dokumentlagerClient(fiksWebClient: WebClient): DokumentlagerClient {
         return DokumentlagerClientImpl(fiksWebClient, properties)
+    }
+
+    @Bean
+    open fun digisosApiClient(
+        fiksWebClient: WebClient,
+        kommuneInfoService: KommuneInfoService,
+        dokumentlagerClient: DokumentlagerClient
+    ): DigisosApiClient {
+        return DigisosApiClientImpl(fiksWebClient, kommuneInfoService, dokumentlagerClient, properties)
     }
 
     @Bean

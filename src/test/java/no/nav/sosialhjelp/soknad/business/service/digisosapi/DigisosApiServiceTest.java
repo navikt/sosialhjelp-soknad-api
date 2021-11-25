@@ -12,6 +12,7 @@ import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.Sokn
 import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.SosialhjelpPdfGenerator;
 import no.nav.sosialhjelp.soknad.business.service.HenvendelseService;
 import no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadMetricsService;
+import no.nav.sosialhjelp.soknad.client.fiks.digisosapi.DigisosApiClient;
 import no.nav.sosialhjelp.soknad.consumer.fiks.DigisosApi;
 import no.nav.sosialhjelp.soknad.consumer.fiks.dto.FilMetadata;
 import no.nav.sosialhjelp.soknad.consumer.fiks.dto.FilOpplasting;
@@ -60,6 +61,8 @@ class DigisosApiServiceTest {
     private SoknadMetricsService soknadMetricsService;
     @Mock
     private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
+    @Mock
+    private DigisosApiClient digisosApiClient;
 
     @InjectMocks
     private DigisosApiService digisosApiService;
@@ -145,7 +148,7 @@ class DigisosApiServiceTest {
         when(sosialhjelpPdfGenerator.generate(any(JsonInternalSoknad.class), anyBoolean())).thenReturn(new byte[]{1, 2, 3});
         when(sosialhjelpPdfGenerator.generateBrukerkvitteringPdf()).thenReturn(new byte[]{1, 2, 3});
 
-        when(digisosApi.krypterOgLastOppFiler(anyString(), anyString(), anyString(), any(), anyString(), anyString(), anyString()))
+        when(digisosApiClient.krypterOgLastOppFiler(anyString(), anyString(), anyString(), any(), anyString(), anyString(), anyString()))
                 .thenReturn("digisosid");
 
         digisosApiService.sendSoknad(soknadUnderArbeid, "token", "0301");
