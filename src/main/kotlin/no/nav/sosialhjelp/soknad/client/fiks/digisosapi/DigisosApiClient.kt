@@ -19,9 +19,12 @@ import no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils
 import no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils.stripVekkFnutter
 import org.apache.commons.io.IOUtils
 import org.slf4j.LoggerFactory
+import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
+import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
-import org.springframework.util.LinkedMultiValueMap
+import org.springframework.http.client.MultipartBodyBuilder
+import org.springframework.util.MultiValueMap
 import org.springframework.web.client.HttpServerErrorException
 import org.springframework.web.reactive.function.BodyInserters
 import org.springframework.web.reactive.function.client.WebClient
@@ -223,7 +226,7 @@ class DigisosApiClientImpl(
         tilleggsinformasjonJson: String,
         soknadJson: String,
         vedleggJson: String
-    ): LinkedMultiValueMap<String, Any> {
+    ): MultiValueMap<String, HttpEntity<*>> {
         val filerForOpplasting = dokumenter
             .map {
                 FilForOpplasting.builder<Any>()
@@ -238,19 +241,19 @@ class DigisosApiClientImpl(
                     .build()
             }
 
-        val multipartData = LinkedMultiValueMap<String, Any>().apply {
-            add("tilleggsinformasjonJson", tilleggsinformasjonJson)
-            add("soknadJson", soknadJson)
-            add("vedleggJson", vedleggJson)
-        }
+        val builder = MultipartBodyBuilder()
+        builder.part("tilleggsinformasjonJson", tilleggsinformasjonJson, MediaType.APPLICATION_JSON)
+        builder.part("soknadJson", soknadJson, MediaType.APPLICATION_JSON)
+        builder.part("vedleggJson", vedleggJson, MediaType.APPLICATION_JSON)
+
         filerForOpplasting.forEach {
-            multipartData.add("metadata", getJson(it))
-            multipartData.add(it.filnavn, it.data)
+            builder.part("metadata", getJson(it), MediaType.APPLICATION_JSON)
+            builder.part(it.filnavn, it.data, MediaType.APPLICATION_OCTET_STREAM)
         }
-        return multipartData
+        return builder.build()
     }
 
-    private fun getJson(objectFilForOpplasting: FilForOpplasting<Any>): String? {
+    private fun getJson(objectFilForOpplasting: FilForOpplasting<Any>): String {
         return try {
             digisosObjectMapper.writeValueAsString(objectFilForOpplasting.metadata)
         } catch (e: JsonProcessingException) {
