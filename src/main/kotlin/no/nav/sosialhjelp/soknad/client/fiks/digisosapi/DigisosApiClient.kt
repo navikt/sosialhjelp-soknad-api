@@ -184,33 +184,33 @@ class DigisosApiClientImpl(
         try {
             HttpClientBuilder.create().setDefaultRequestConfig(requestConfig).build()
                 .use { client ->
-                val post = HttpPost(properties.digisosApiEndpoint + "/digisos/api/v1/soknader/$kommunenummer/$navEksternRefId")
-                post.setHeader("requestid", UUID.randomUUID().toString())
-                post.setHeader(HttpHeader.AUTHORIZATION.name, token)
-                post.setHeader(HEADER_INTEGRASJON_ID, properties.integrasjonsidFiks)
-                post.setHeader(HEADER_INTEGRASJON_PASSORD, properties.integrasjonpassordFiks)
-                post.entity = multipartEntity
-                val startTime = System.currentTimeMillis()
-                val response: CloseableHttpResponse = client.execute(post)
-                val endTime = System.currentTimeMillis()
-                if (response.statusLine.statusCode >= 300) {
-                    val errorResponse = EntityUtils.toString(response.entity)
-                    val fiksDigisosId = getDigisosIdFromResponse(errorResponse, navEksternRefId)
-                    if (fiksDigisosId != null) {
-                        log.warn("Søknad $navEksternRefId er allerede sendt til fiks-digisos-api med id $fiksDigisosId. Returner digisos-id som normalt så brukeren blir rutet til innsyn. ErrorResponse var: $errorResponse")
-                        return fiksDigisosId
+                    val post = HttpPost(properties.digisosApiEndpoint + "/digisos/api/v1/soknader/$kommunenummer/$navEksternRefId")
+                    post.setHeader("requestid", UUID.randomUUID().toString())
+                    post.setHeader(HttpHeader.AUTHORIZATION.name, token)
+                    post.setHeader(HEADER_INTEGRASJON_ID, properties.integrasjonsidFiks)
+                    post.setHeader(HEADER_INTEGRASJON_PASSORD, properties.integrasjonpassordFiks)
+                    post.entity = multipartEntity
+                    val startTime = System.currentTimeMillis()
+                    val response: CloseableHttpResponse = client.execute(post)
+                    val endTime = System.currentTimeMillis()
+                    if (response.statusLine.statusCode >= 300) {
+                        val errorResponse = EntityUtils.toString(response.entity)
+                        val fiksDigisosId = getDigisosIdFromResponse(errorResponse, navEksternRefId)
+                        if (fiksDigisosId != null) {
+                            log.warn("Søknad $navEksternRefId er allerede sendt til fiks-digisos-api med id $fiksDigisosId. Returner digisos-id som normalt så brukeren blir rutet til innsyn. ErrorResponse var: $errorResponse")
+                            return fiksDigisosId
+                        }
+                        throw IllegalStateException("Opplasting av $navEksternRefId til fiks-digisos-api feilet etter ${endTime - startTime} ms med status ${response.statusLine.reasonPhrase} og response: $errorResponse")
                     }
-                    throw IllegalStateException("Opplasting av $navEksternRefId til fiks-digisos-api feilet etter ${endTime - startTime} ms med status ${response.statusLine.reasonPhrase} og response: $errorResponse")
+                    val digisosId = stripVekkFnutter(EntityUtils.toString(response.entity))
+                    log.info(
+                        "Sendte inn søknad {} til kommune {} og fikk digisosid: {}",
+                        navEksternRefId,
+                        kommunenummer,
+                        digisosId
+                    )
+                    return digisosId
                 }
-                val digisosId = stripVekkFnutter(EntityUtils.toString(response.entity))
-                log.info(
-                    "Sendte inn søknad {} til kommune {} og fikk digisosid: {}",
-                    navEksternRefId,
-                    kommunenummer,
-                    digisosId
-                )
-                return digisosId
-            }
         } catch (e: IOException) {
             throw IllegalStateException("Opplasting av $navEksternRefId til fiks-digisos-api feilet", e)
         }
@@ -246,7 +246,12 @@ class DigisosApiClientImpl(
 
         filerForOpplasting.forEach {
             entitybuilder.addTextBody("metadata", getJson(it))
-            entitybuilder.addBinaryBody(it.getFilnavn(), it.getData(), ContentType.APPLICATION_OCTET_STREAM, it.getFilnavn())
+            entitybuilder.addBinaryBody(
+                it.getFilnavn(),
+                it.getData(),
+                ContentType.APPLICATION_OCTET_STREAM,
+                it.getFilnavn()
+            )
         }
 
         return entitybuilder.build()
