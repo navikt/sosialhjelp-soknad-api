@@ -1,45 +1,35 @@
 package no.nav.sosialhjelp.soknad.client.fiks.digisosapi
 
 import com.fasterxml.jackson.core.JsonProcessingException
-import kotlinx.coroutines.reactor.awaitSingle
-import kotlinx.coroutines.runBlocking
 import no.ks.fiks.streaming.klient.FilForOpplasting
 import no.ks.kryptering.CMSKrypteringImpl
 import no.ks.kryptering.CMSStreamKryptering
-import no.nav.sosialhjelp.kotlin.utils.retry
-import no.nav.sosialhjelp.soknad.client.config.RetryUtils
 import no.nav.sosialhjelp.soknad.client.fiks.digisosapi.Utils.digisosObjectMapper
 import no.nav.sosialhjelp.soknad.client.fiks.digisosapi.Utils.getDigisosIdFromResponse
 import no.nav.sosialhjelp.soknad.client.fiks.kommuneinfo.KommuneInfoService
 import no.nav.sosialhjelp.soknad.consumer.fiks.dto.FilMetadata
 import no.nav.sosialhjelp.soknad.consumer.fiks.dto.FilOpplasting
 import no.nav.sosialhjelp.soknad.domain.model.mock.MockUtils
-import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants
+import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.HEADER_INTEGRASJON_ID
+import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.HEADER_INTEGRASJON_PASSORD
 import no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils
 import no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils.stripVekkFnutter
 import org.apache.commons.io.IOUtils
+import org.apache.http.client.config.RequestConfig
+import org.apache.http.client.methods.CloseableHttpResponse
+import org.apache.http.client.methods.HttpPost
+import org.apache.http.entity.ContentType
+import org.apache.http.entity.mime.HttpMultipartMode
+import org.apache.http.entity.mime.MultipartEntityBuilder
+import org.apache.http.impl.client.HttpClientBuilder
+import org.apache.http.util.EntityUtils
+import org.eclipse.jetty.http.HttpHeader
 import org.slf4j.LoggerFactory
-import org.springframework.core.io.InputStreamResource
-import org.springframework.http.ContentDisposition
-import org.springframework.http.HttpEntity
-import org.springframework.http.HttpHeaders
-import org.springframework.http.MediaType
-import org.springframework.http.MediaType.APPLICATION_JSON
-import org.springframework.http.MediaType.APPLICATION_OCTET_STREAM
-import org.springframework.http.MediaType.APPLICATION_OCTET_STREAM_VALUE
-import org.springframework.http.ResponseEntity
-import org.springframework.http.client.MultipartBodyBuilder
-import org.springframework.util.LinkedMultiValueMap
-import org.springframework.util.MultiValueMap
-import org.springframework.web.client.HttpServerErrorException
-import org.springframework.web.reactive.function.BodyInserters
-import org.springframework.web.reactive.function.client.WebClient
-import org.springframework.web.reactive.function.client.WebClientResponseException
-import org.springframework.web.reactive.function.client.toEntity
 import java.io.IOException
 import java.io.InputStream
 import java.io.PipedInputStream
 import java.io.PipedOutputStream
+import java.nio.charset.StandardCharsets
 import java.security.Security
 import java.security.cert.X509Certificate
 import java.util.Collections
@@ -68,7 +58,6 @@ interface DigisosApiClient {
 }
 
 class DigisosApiClientImpl(
-    private val fiksWebClient: WebClient,
     private val kommuneInfoService: KommuneInfoService,
     private val dokumentlagerClient: DokumentlagerClient,
     private val properties: DigisosApiProperties
@@ -184,56 +173,55 @@ class DigisosApiClientImpl(
         navEksternRefId: String,
         token: String
     ): String {
-        val multipartData = multipartData(dokumenter, tilleggsinformasjonJson, soknadJson, vedleggJson)
+        val multipartEntity = multipartEntity(dokumenter, tilleggsinformasjonJson, soknadJson, vedleggJson)
+
+        val requestConfig = RequestConfig.custom()
+            .setConnectTimeout(SENDING_TIL_FIKS_TIMEOUT)
+            .setConnectionRequestTimeout(SENDING_TIL_FIKS_TIMEOUT)
+            .setSocketTimeout(SENDING_TIL_FIKS_TIMEOUT)
+            .build()
+
         try {
-            val startTime = System.currentTimeMillis()
-
-            val entity: ResponseEntity<String> = runBlocking {
-                retry(
-                    attempts = RetryUtils.DEFAULT_MAX_ATTEMPTS,
-                    initialDelay = RetryUtils.DEFAULT_INITIAL_WAIT_INTERVAL_MILLIS,
-                    factor = RetryUtils.DEFAULT_EXPONENTIAL_BACKOFF_MULTIPLIER,
-                    retryableExceptions = arrayOf(HttpServerErrorException::class)
-                ) {
-                    fiksWebClient.post()
-                        .uri("/digisos/api/v1/soknader/$kommunenummer/$navEksternRefId")
-                        .header("requestid", UUID.randomUUID().toString())
-                        .header(HeaderConstants.HEADER_INTEGRASJON_ID, properties.integrasjonsidFiks)
-                        .header(HeaderConstants.HEADER_INTEGRASJON_PASSORD, properties.integrasjonpassordFiks)
-                        .header(HttpHeaders.AUTHORIZATION, token)
-                        .contentType(MediaType.MULTIPART_FORM_DATA)
-                        .body(BodyInserters.fromMultipartData(multipartData))
-                        .retrieve()
-                        .toEntity<String>()
-                        .doOnError({ it is WebClientResponseException }) {
-                            val errorResponse = (it as WebClientResponseException).responseBodyAsString
-                            val digisosIdFromResponse = getDigisosIdFromResponse(errorResponse, navEksternRefId)
-                            val endTime = System.currentTimeMillis()
-                            digisosIdFromResponse
-                                ?.let { digisosId ->
-                                    log.warn("Søknad $navEksternRefId er allerede sendt til fiks-digisos-api med id $digisosId. Returner digisos-id som normalt så brukeren blir rutet til innsyn. ErrorResponse var: $errorResponse")
-                                    digisosId
-                                }
-                                ?: throw IllegalStateException("Opplasting av $navEksternRefId til fiks-digisos-api feilet etter ${endTime - startTime} ms med status ${it.statusCode.reasonPhrase} og response: $errorResponse")
-                        }
-                        .awaitSingle()
+            HttpClientBuilder.create().setDefaultRequestConfig(requestConfig).build()
+                .use { client ->
+                val post = HttpPost(properties.digisosApiEndpoint + "/digisos/api/v1/soknader/$kommunenummer/$navEksternRefId")
+                post.setHeader("requestid", UUID.randomUUID().toString())
+                post.setHeader(HttpHeader.AUTHORIZATION.name, token)
+                post.setHeader(HEADER_INTEGRASJON_ID, properties.integrasjonsidFiks)
+                post.setHeader(HEADER_INTEGRASJON_PASSORD, properties.integrasjonpassordFiks)
+                post.entity = multipartEntity
+                val startTime = System.currentTimeMillis()
+                val response: CloseableHttpResponse = client.execute(post)
+                val endTime = System.currentTimeMillis()
+                if (response.statusLine.statusCode >= 300) {
+                    val errorResponse = EntityUtils.toString(response.entity)
+                    val fiksDigisosId = getDigisosIdFromResponse(errorResponse, navEksternRefId)
+                    if (fiksDigisosId != null) {
+                        log.warn("Søknad $navEksternRefId er allerede sendt til fiks-digisos-api med id $fiksDigisosId. Returner digisos-id som normalt så brukeren blir rutet til innsyn. ErrorResponse var: $errorResponse")
+                        return fiksDigisosId
+                    }
+                    throw IllegalStateException("Opplasting av $navEksternRefId til fiks-digisos-api feilet etter ${endTime - startTime} ms med status ${response.statusLine.reasonPhrase} og response: $errorResponse")
                 }
+                val digisosId = stripVekkFnutter(EntityUtils.toString(response.entity))
+                log.info(
+                    "Sendte inn søknad {} til kommune {} og fikk digisosid: {}",
+                    navEksternRefId,
+                    kommunenummer,
+                    digisosId
+                )
+                return digisosId
             }
-
-            val digisosId = stripVekkFnutter(entity.body)
-            log.info("Sendte inn søknad $navEksternRefId til kommune $kommunenummer og fikk digisosid: $digisosId")
-            return digisosId
-        } catch (e: Exception) {
+        } catch (e: IOException) {
             throw IllegalStateException("Opplasting av $navEksternRefId til fiks-digisos-api feilet", e)
         }
     }
 
-    private fun multipartData(
+    private fun multipartEntity(
         dokumenter: List<FilOpplasting>,
         tilleggsinformasjonJson: String,
         soknadJson: String,
         vedleggJson: String
-    ): MultiValueMap<String, HttpEntity<*>> {
+    ): org.apache.http.HttpEntity? {
         val filerForOpplasting = dokumenter
             .map {
                 FilForOpplasting.builder<Any>()
@@ -248,51 +236,20 @@ class DigisosApiClientImpl(
                     .build()
             }
 
-        val multipart = MultipartBodyBuilder()
-        multipart.part("tilleggsinformasjonJson", tilleggsinformasjonJson).contentType(APPLICATION_JSON)
-        multipart.part("soknadJson", soknadJson).contentType(APPLICATION_JSON)
-        multipart.part("vedleggJson", vedleggJson).contentType(APPLICATION_JSON)
+        val entitybuilder = MultipartEntityBuilder.create()
+        entitybuilder.setCharset(StandardCharsets.UTF_8)
+        entitybuilder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE)
+
+        entitybuilder.addTextBody("tilleggsinformasjonJson", tilleggsinformasjonJson, ContentType.APPLICATION_JSON)
+        entitybuilder.addTextBody("soknadJson", soknadJson, ContentType.APPLICATION_JSON)
+        entitybuilder.addTextBody("vedleggJson", vedleggJson, ContentType.APPLICATION_JSON)
 
         filerForOpplasting.forEach {
-            multipart.part("metadata", getJson(it)).contentType(APPLICATION_JSON)
-                .headers { h -> h.setContentDispositionFormData("metadata", null) }
-            multipart.part(it.filnavn, it.data).contentType(APPLICATION_OCTET_STREAM).filename(it.filnavn)
-                .headers { h -> h.setContentDispositionFormData(it.filnavn, it.filnavn) }
+            entitybuilder.addTextBody("metadata", getJson(it))
+            entitybuilder.addBinaryBody(it.getFilnavn(), it.getData(), ContentType.APPLICATION_OCTET_STREAM, it.getFilnavn())
         }
 
-//        val body = LinkedMultiValueMap<String, Any>().apply {
-//            add("tilleggsinformasjonJson", createHttpEntityOfString(tilleggsinformasjonJson, "tilleggsinformasjonJson"))
-//            add("soknadJson", createHttpEntityOfString(soknadJson, "soknadJson"))
-//            add("vedleggJson", createHttpEntityOfString(vedleggJson, "vedleggJson"))
-//        }
-//
-//        filerForOpplasting.forEach {
-//            body.add("metadata", createHttpEntity(getJson(it), "metadata", null, "application/json;charset=UTF-8"))
-//            body.add(it.filnavn, createHttpEntityOfFile(it, it.filnavn))
-//        }
-
-        return multipart.build()
-    }
-
-    private fun createHttpEntityOfString(body: String, name: String): HttpEntity<Any> {
-        return createHttpEntity(body, name, null, "application/json;charset=UTF-8")
-    }
-
-    private fun createHttpEntityOfFile(file: FilForOpplasting<Any>, name: String): HttpEntity<Any> {
-        return createHttpEntity(InputStreamResource(file.data), name, file.filnavn, APPLICATION_OCTET_STREAM_VALUE)
-    }
-
-    private fun createHttpEntity(body: Any, name: String, filename: String?, mediaType: String): HttpEntity<Any> {
-        val headerMap = LinkedMultiValueMap<String, String>()
-        val builder = ContentDisposition
-            .builder("form-data")
-            .name(name)
-        filename?.let { builder.filename(it) }
-        val contentDisposition = builder.build()
-
-        headerMap.add(HttpHeaders.CONTENT_DISPOSITION, contentDisposition.toString())
-        headerMap.add(HttpHeaders.CONTENT_TYPE, mediaType)
-        return HttpEntity(body, headerMap)
+        return entitybuilder.build()
     }
 
     private fun getJson(objectFilForOpplasting: FilForOpplasting<Any>): String {
@@ -305,5 +262,8 @@ class DigisosApiClientImpl(
 
     companion object {
         private val log = LoggerFactory.getLogger(DigisosApiClientImpl::class.java)
+
+        private const val SENDING_TIL_FIKS_TIMEOUT = 5 * 60 * 1000 // 5 minutter
+
     }
 }
