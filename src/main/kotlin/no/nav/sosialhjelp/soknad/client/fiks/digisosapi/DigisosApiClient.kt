@@ -24,9 +24,12 @@ import org.springframework.http.ContentDisposition
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
+import org.springframework.http.MediaType.APPLICATION_OCTET_STREAM
 import org.springframework.http.MediaType.APPLICATION_OCTET_STREAM_VALUE
 import org.springframework.http.ResponseEntity
+import org.springframework.http.client.MultipartBodyBuilder
 import org.springframework.util.LinkedMultiValueMap
+import org.springframework.util.MultiValueMap
 import org.springframework.web.client.HttpServerErrorException
 import org.springframework.web.reactive.function.BodyInserters
 import org.springframework.web.reactive.function.client.WebClient
@@ -229,7 +232,7 @@ class DigisosApiClientImpl(
         tilleggsinformasjonJson: String,
         soknadJson: String,
         vedleggJson: String
-    ): LinkedMultiValueMap<String, Any> {
+    ): MultiValueMap<String, HttpEntity<*>> {
         val filerForOpplasting = dokumenter
             .map {
                 FilForOpplasting.builder<Any>()
@@ -244,18 +247,29 @@ class DigisosApiClientImpl(
                     .build()
             }
 
-        val body = LinkedMultiValueMap<String, Any>().apply {
-            add("tilleggsinformasjonJson", createHttpEntityOfString(tilleggsinformasjonJson, "tilleggsinformasjonJson"))
-            add("soknadJson", createHttpEntityOfString(soknadJson, "soknadJson"))
-            add("vedleggJson", createHttpEntityOfString(vedleggJson, "vedleggJson"))
-        }
+        val multipart = MultipartBodyBuilder()
+
+        multipart.part("tilleggsinformasjonJson", tilleggsinformasjonJson, MediaType.APPLICATION_JSON)
+        multipart.part("soknadJson", soknadJson, MediaType.APPLICATION_JSON)
+        multipart.part("vedleggJson", vedleggJson, MediaType.APPLICATION_JSON)
 
         filerForOpplasting.forEach {
-            body.add("metadata", createHttpEntity(getJson(it), "metadata", null, "application/json;charset=UTF-8"))
-            body.add(it.filnavn, createHttpEntityOfFile(it, it.filnavn))
+            multipart.part("metadata", getJson(it), MediaType.APPLICATION_JSON)
+            multipart.part(it.filnavn, it.data, APPLICATION_OCTET_STREAM)
         }
 
-        return body
+//        val body = LinkedMultiValueMap<String, Any>().apply {
+//            add("tilleggsinformasjonJson", createHttpEntityOfString(tilleggsinformasjonJson, "tilleggsinformasjonJson"))
+//            add("soknadJson", createHttpEntityOfString(soknadJson, "soknadJson"))
+//            add("vedleggJson", createHttpEntityOfString(vedleggJson, "vedleggJson"))
+//        }
+//
+//        filerForOpplasting.forEach {
+//            body.add("metadata", createHttpEntity(getJson(it), "metadata", null, "application/json;charset=UTF-8"))
+//            body.add(it.filnavn, createHttpEntityOfFile(it, it.filnavn))
+//        }
+
+        return multipart.build()
     }
 
     private fun createHttpEntityOfString(body: String, name: String): HttpEntity<Any> {
