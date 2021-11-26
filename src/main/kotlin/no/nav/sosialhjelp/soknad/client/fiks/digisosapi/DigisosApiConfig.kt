@@ -35,8 +35,8 @@ open class DigisosApiConfig(
     }
 
     @Bean
-    open fun fiksWebClient(webClientBuilder: WebClient.Builder, proxiedHttpClient: HttpClient): WebClient =
-        webClientBuilder
+    open fun fiksWebClient(proxiedHttpClient: HttpClient): WebClient =
+        WebClient.builder()
             .baseUrl(digisosApiEndpoint)
             .clientConnector(
                 ReactorClientHttpConnector(
