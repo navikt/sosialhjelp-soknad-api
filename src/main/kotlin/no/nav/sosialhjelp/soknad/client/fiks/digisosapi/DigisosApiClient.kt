@@ -258,7 +258,6 @@ class DigisosApiClientImpl(
                 .headers { h -> h.setContentDispositionFormData("metadata", null) }
             multipart.part(it.filnavn, it.data).contentType(APPLICATION_OCTET_STREAM).filename(it.filnavn)
                 .headers { h -> h.setContentDispositionFormData(it.filnavn, it.filnavn) }
-
         }
 
 //        val body = LinkedMultiValueMap<String, Any>().apply {
