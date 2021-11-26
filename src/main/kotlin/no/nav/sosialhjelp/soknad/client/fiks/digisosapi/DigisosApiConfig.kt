@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.http.client.reactive.ReactorClientHttpConnector
 import org.springframework.http.codec.json.Jackson2JsonDecoder
 import org.springframework.http.codec.json.Jackson2JsonEncoder
+import org.springframework.http.codec.multipart.MultipartHttpMessageWriter
 import org.springframework.web.reactive.function.client.WebClient
 import reactor.netty.http.client.HttpClient
 import java.time.Duration
@@ -49,6 +50,8 @@ open class DigisosApiConfig(
                 it.defaultCodecs().maxInMemorySize(16 * 1024 * 1024)
                 it.defaultCodecs().jackson2JsonDecoder(Jackson2JsonDecoder(digisosObjectMapper))
                 it.defaultCodecs().jackson2JsonEncoder(Jackson2JsonEncoder(digisosObjectMapper))
+                it.defaultCodecs().multipartCodecs().encoder(Jackson2JsonEncoder(digisosObjectMapper))
+                it.defaultCodecs().multipartCodecs().writer(MultipartHttpMessageWriter())
             }
             .build()
 
