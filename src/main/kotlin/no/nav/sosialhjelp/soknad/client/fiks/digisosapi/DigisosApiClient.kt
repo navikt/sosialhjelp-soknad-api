@@ -246,12 +246,7 @@ class DigisosApiClientImpl(
 
         filerForOpplasting.forEach {
             entitybuilder.addTextBody("metadata", getJson(it))
-            entitybuilder.addBinaryBody(
-                it.getFilnavn(),
-                it.getData(),
-                ContentType.APPLICATION_OCTET_STREAM,
-                it.getFilnavn()
-            )
+            entitybuilder.addBinaryBody(it.filnavn, it.data, ContentType.APPLICATION_OCTET_STREAM, it.filnavn)
         }
 
         return entitybuilder.build()
@@ -269,6 +264,5 @@ class DigisosApiClientImpl(
         private val log = LoggerFactory.getLogger(DigisosApiClientImpl::class.java)
 
         private const val SENDING_TIL_FIKS_TIMEOUT = 5 * 60 * 1000 // 5 minutter
-
     }
 }
