@@ -23,10 +23,10 @@ import org.springframework.core.io.InputStreamResource
 import org.springframework.http.ContentDisposition
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
+import org.springframework.http.MediaType
 import org.springframework.http.MediaType.APPLICATION_OCTET_STREAM_VALUE
 import org.springframework.http.ResponseEntity
 import org.springframework.util.LinkedMultiValueMap
-import org.springframework.util.MultiValueMap
 import org.springframework.web.client.HttpServerErrorException
 import org.springframework.web.reactive.function.BodyInserters
 import org.springframework.web.reactive.function.client.WebClient
@@ -197,6 +197,7 @@ class DigisosApiClientImpl(
                         .header(HeaderConstants.HEADER_INTEGRASJON_ID, properties.integrasjonsidFiks)
                         .header(HeaderConstants.HEADER_INTEGRASJON_PASSORD, properties.integrasjonpassordFiks)
                         .header(HttpHeaders.AUTHORIZATION, token)
+                        .contentType(MediaType.MULTIPART_FORM_DATA)
                         .body(BodyInserters.fromMultipartData(multipartData))
                         .retrieve()
                         .toEntity<String>()
@@ -228,7 +229,7 @@ class DigisosApiClientImpl(
         tilleggsinformasjonJson: String,
         soknadJson: String,
         vedleggJson: String
-    ): MultiValueMap<String, Any> {
+    ): LinkedMultiValueMap<String, Any> {
         val filerForOpplasting = dokumenter
             .map {
                 FilForOpplasting.builder<Any>()
