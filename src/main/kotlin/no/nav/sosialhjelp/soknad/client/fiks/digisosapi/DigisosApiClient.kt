@@ -24,6 +24,7 @@ import org.springframework.http.ContentDisposition
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
+import org.springframework.http.MediaType.APPLICATION_JSON
 import org.springframework.http.MediaType.APPLICATION_OCTET_STREAM
 import org.springframework.http.MediaType.APPLICATION_OCTET_STREAM_VALUE
 import org.springframework.http.ResponseEntity
@@ -248,14 +249,16 @@ class DigisosApiClientImpl(
             }
 
         val multipart = MultipartBodyBuilder()
-
-        multipart.part("tilleggsinformasjonJson", tilleggsinformasjonJson, MediaType.APPLICATION_JSON)
-        multipart.part("soknadJson", soknadJson, MediaType.APPLICATION_JSON)
-        multipart.part("vedleggJson", vedleggJson, MediaType.APPLICATION_JSON)
+        multipart.part("tilleggsinformasjonJson", tilleggsinformasjonJson).contentType(APPLICATION_JSON)
+        multipart.part("soknadJson", soknadJson).contentType(APPLICATION_JSON)
+        multipart.part("vedleggJson", vedleggJson).contentType(APPLICATION_JSON)
 
         filerForOpplasting.forEach {
-            multipart.part("metadata", getJson(it), MediaType.APPLICATION_JSON)
-            multipart.part(it.filnavn, it.data, APPLICATION_OCTET_STREAM)
+            multipart.part("metadata", getJson(it)).contentType(APPLICATION_JSON)
+                .headers { h -> h.setContentDispositionFormData("metadata", null) }
+            multipart.part(it.filnavn, it.data).contentType(APPLICATION_OCTET_STREAM).filename(it.filnavn)
+                .headers { h -> h.setContentDispositionFormData(it.filnavn, it.filnavn) }
+
         }
 
 //        val body = LinkedMultiValueMap<String, Any>().apply {
