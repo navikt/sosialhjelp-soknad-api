@@ -81,7 +81,7 @@ internal class OkonomiskeOpplysningerOgVedleggStegTest {
     fun utbetalinger() {
         val soknad = createSoknad()
         soknad.soknad.data.okonomi.opplysninger.utbetaling = java.util.List.of(
-            createUtbetaling(SoknadJsonTyper.UTBETALING_NAVYTELSE, 42), // skal filtreres vekk
+            createUtbetaling(SoknadJsonTyper.UTBETALING_NAVYTELSE, 42),  // skal filtreres vekk
             createUtbetaling(SoknadJsonTyper.SLUTTOPPGJOER, 111),
             createUtbetaling(SoknadJsonTyper.UTBETALING_FORSIKRING, null),
             createUtbetaling(SoknadJsonTyper.UTBETALING_ANNET, null)
@@ -103,12 +103,12 @@ internal class OkonomiskeOpplysningerOgVedleggStegTest {
     fun utgifter() {
         val soknad = createSoknad()
         soknad.soknad.data.okonomi.opplysninger.utgift = listOf(
-            createOpplysningUtgift(SoknadJsonTyper.UTGIFTER_BARN_FRITIDSAKTIVITETER, 42), // skal filtreres vekk
+            createOpplysningUtgift(SoknadJsonTyper.UTGIFTER_BARN_FRITIDSAKTIVITETER, 42),  // skal filtreres vekk
             createOpplysningUtgift(SoknadJsonTyper.UTGIFTER_STROM, 111),
             createOpplysningUtgift(SoknadJsonTyper.UTGIFTER_ANDRE_UTGIFTER, null)
         )
         soknad.soknad.data.okonomi.oversikt.utgift = listOf(
-            createOversiktUtgift(SoknadJsonTyper.UTGIFTER_BARNEHAGE, 42), // skal filtreres vekk
+            createOversiktUtgift(SoknadJsonTyper.UTGIFTER_BARNEHAGE, 42),  // skal filtreres vekk
             createOversiktUtgift(SoknadJsonTyper.UTGIFTER_HUSLEIE, 111),
             createOversiktUtgift(SoknadJsonTyper.BARNEBIDRAG, 111),
             createOversiktUtgift(SoknadJsonTyper.UTGIFTER_BOLIGLAN_AVDRAG, null)

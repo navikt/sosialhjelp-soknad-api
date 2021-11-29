@@ -98,9 +98,9 @@ class FamiliesituasjonSteg {
         // todo: som dette eller som liste av sporsmal?
         val ektefelle = sivilstatus!!.ektefelle
         val erUtfylt = isNotNullOrEmtpy(ektefelle.navn.fornavn) &&
-            isNotNullOrEmtpy(ektefelle.navn.etternavn) &&
-            isNotNullOrEmtpy(ektefelle.fodselsdato) &&
-            isNotNullOrEmtpy(ektefelle.personIdentifikator) && sivilstatus.borSammenMed != null
+                isNotNullOrEmtpy(ektefelle.navn.etternavn) &&
+                isNotNullOrEmtpy(ektefelle.fodselsdato) &&
+                isNotNullOrEmtpy(ektefelle.personIdentifikator) && sivilstatus.borSammenMed != null
         val map = LinkedHashMap<String, Svar>()
         map["familie.sivilstatus.gift.ektefelle.navn.label"] =
             createSvar(fulltnavn(ektefelle.navn), SvarType.TEKST)
