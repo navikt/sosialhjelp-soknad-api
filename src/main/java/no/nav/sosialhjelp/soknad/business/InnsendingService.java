@@ -17,7 +17,6 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import javax.inject.Inject;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,18 +26,28 @@ import static org.slf4j.LoggerFactory.getLogger;
 @Component
 public class InnsendingService {
     private static final Logger logger = getLogger(InnsendingService.class);
-    @Inject
-    private TransactionTemplate transactionTemplate;
-    @Inject
-    private SendtSoknadRepository sendtSoknadRepository;
-    @Inject
-    private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
-    @Inject
-    private OpplastetVedleggRepository opplastetVedleggRepository;
-    @Inject
-    private SoknadUnderArbeidService soknadUnderArbeidService;
-    @Inject
-    private SoknadMetadataRepository soknadMetadataRepository;
+    private final TransactionTemplate transactionTemplate;
+    private final SendtSoknadRepository sendtSoknadRepository;
+    private final SoknadUnderArbeidRepository soknadUnderArbeidRepository;
+    private final OpplastetVedleggRepository opplastetVedleggRepository;
+    private final SoknadUnderArbeidService soknadUnderArbeidService;
+    private final SoknadMetadataRepository soknadMetadataRepository;
+
+    public InnsendingService(
+            TransactionTemplate transactionTemplate,
+            SendtSoknadRepository sendtSoknadRepository,
+            SoknadUnderArbeidRepository soknadUnderArbeidRepository,
+            OpplastetVedleggRepository opplastetVedleggRepository,
+            SoknadUnderArbeidService soknadUnderArbeidService,
+            SoknadMetadataRepository soknadMetadataRepository
+    ) {
+        this.transactionTemplate = transactionTemplate;
+        this.sendtSoknadRepository = sendtSoknadRepository;
+        this.soknadUnderArbeidRepository = soknadUnderArbeidRepository;
+        this.opplastetVedleggRepository = opplastetVedleggRepository;
+        this.soknadUnderArbeidService = soknadUnderArbeidService;
+        this.soknadMetadataRepository = soknadMetadataRepository;
+    }
 
     public void opprettSendtSoknad(SoknadUnderArbeid soknadUnderArbeid) {
         if (soknadUnderArbeid == null || soknadUnderArbeid.getSoknadId() == null) {

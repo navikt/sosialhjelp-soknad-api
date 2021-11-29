@@ -3,7 +3,6 @@ package no.nav.sosialhjelp.soknad.web.rest.ressurser.informasjon;
 import no.nav.sosialhjelp.api.fiks.KommuneInfo;
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata;
-import no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService;
 import no.nav.sosialhjelp.soknad.client.fiks.kommuneinfo.KommuneInfoService;
 import no.nav.sosialhjelp.soknad.domain.model.exception.AuthorizationException;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.StaticSubjectHandlerService;
@@ -17,7 +16,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
@@ -44,8 +42,6 @@ class InformasjonRessursTest {
 
     public static final String SOKNADSTYPE = "type";
 
-    @Spy
-    private SoknadService soknadService;
     @Mock
     private NavMessageSource messageSource;
     @Mock

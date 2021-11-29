@@ -10,7 +10,6 @@ import no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SoknadType;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
-import javax.inject.Inject;
 import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -29,11 +28,13 @@ public class HenvendelseService {
 
     private static final Logger logger = getLogger(HenvendelseService.class);
 
-    @Inject
-    private SoknadMetadataRepository soknadMetadataRepository;
+    private final SoknadMetadataRepository soknadMetadataRepository;
+    private final Clock clock;
 
-    @Inject
-    private Clock clock;
+    public HenvendelseService(SoknadMetadataRepository soknadMetadataRepository, Clock clock) {
+        this.soknadMetadataRepository = soknadMetadataRepository;
+        this.clock = clock;
+    }
 
     public String startSoknad(String fnr) {
         logger.info("Starter søknad");

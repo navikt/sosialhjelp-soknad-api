@@ -14,7 +14,6 @@ import no.nav.sosialhjelp.soknad.web.service.SaksoversiktMetadataService;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Controller;
 
-import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -36,8 +35,11 @@ public class SaksoversiktMetadataRessurs {
 
     private static final Logger logger = getLogger(SaksoversiktMetadataRessurs.class);
 
-    @Inject
-    private SaksoversiktMetadataService saksoversiktMetadataService;
+    private final SaksoversiktMetadataService saksoversiktMetadataService;
+
+    public SaksoversiktMetadataRessurs(SaksoversiktMetadataService saksoversiktMetadataService) {
+        this.saksoversiktMetadataService = saksoversiktMetadataService;
+    }
 
     @GET
     @Path("/innsendte")

@@ -13,7 +13,6 @@ import no.nav.sosialhjelp.soknad.business.service.soknadservice.EttersendingServ
 import no.nav.sosialhjelp.soknad.tekster.NavMessageSource;
 import org.springframework.stereotype.Service;
 
-import javax.inject.Inject;
 import java.time.Clock;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -33,17 +32,22 @@ import static no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.Sokna
 @Service
 public class SaksoversiktMetadataService {
 
-    @Inject
-    private SoknadMetadataRepository soknadMetadataRepository;
+    private final SoknadMetadataRepository soknadMetadataRepository;
+    private final EttersendingService ettersendingService;
+    private final NavMessageSource navMessageSource;
+    private final Clock clock;
 
-    @Inject
-    private EttersendingService ettersendingService;
-
-    @Inject
-    private NavMessageSource navMessageSource;
-
-    @Inject
-    Clock clock;
+    public SaksoversiktMetadataService(
+            SoknadMetadataRepository soknadMetadataRepository,
+            EttersendingService ettersendingService,
+            NavMessageSource navMessageSource,
+            Clock clock
+    ) {
+        this.soknadMetadataRepository = soknadMetadataRepository;
+        this.ettersendingService = ettersendingService;
+        this.navMessageSource = navMessageSource;
+        this.clock = clock;
+    }
 
     public List<InnsendtSoknad> hentInnsendteSoknaderForFnr(String fnr) {
         Properties bundle = getBundle();

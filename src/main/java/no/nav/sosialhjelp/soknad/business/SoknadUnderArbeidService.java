@@ -13,7 +13,6 @@ import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.Sokn
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import org.springframework.stereotype.Component;
 
-import javax.inject.Inject;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.Comparator;
@@ -22,9 +21,12 @@ import java.util.Comparator;
 @Component
 public class SoknadUnderArbeidService {
 
-    @Inject
-    private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
-    
+    private final SoknadUnderArbeidRepository soknadUnderArbeidRepository;
+
+    public SoknadUnderArbeidService(SoknadUnderArbeidRepository soknadUnderArbeidRepository) {
+        this.soknadUnderArbeidRepository = soknadUnderArbeidRepository;
+    }
+
     public void settInnsendingstidspunktPaSoknad(SoknadUnderArbeid soknadUnderArbeid) {
         if (soknadUnderArbeid == null) {
             throw new RuntimeException("Søknad under arbeid mangler");

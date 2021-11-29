@@ -17,7 +17,6 @@ import no.nav.sosialhjelp.soknad.domain.model.exception.EttersendelseSendtForSen
 import no.nav.sosialhjelp.soknad.domain.model.exception.SosialhjelpSoknadApiException;
 import org.springframework.stereotype.Component;
 
-import javax.inject.Inject;
 import java.time.Clock;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -35,17 +34,22 @@ import static no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.Sokna
 public class EttersendingService {
     public static final int ETTERSENDELSE_FRIST_DAGER = 300;
 
-    @Inject
-    HenvendelseService henvendelseService;
+    private final HenvendelseService henvendelseService;
+    private final SoknadUnderArbeidRepository soknadUnderArbeidRepository;
+    private final Unleash unleash;
+    private final Clock clock;
 
-    @Inject
-    private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
-
-    @Inject
-    private Unleash unleash;
-
-    @Inject
-    Clock clock;
+    public EttersendingService(
+            HenvendelseService henvendelseService,
+            SoknadUnderArbeidRepository soknadUnderArbeidRepository,
+            Unleash unleash,
+            Clock clock
+    ) {
+        this.henvendelseService = henvendelseService;
+        this.soknadUnderArbeidRepository = soknadUnderArbeidRepository;
+        this.unleash = unleash;
+        this.clock = clock;
+    }
 
     public String start(String behandlingsIdDetEttersendesPaa) {
         SoknadMetadata originalSoknad = hentOgVerifiserSoknad(behandlingsIdDetEttersendesPaa);

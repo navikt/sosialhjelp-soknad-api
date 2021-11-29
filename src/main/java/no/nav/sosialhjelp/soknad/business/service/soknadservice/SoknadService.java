@@ -31,7 +31,6 @@ import no.nav.sosialhjelp.soknad.business.batch.oppgave.OppgaveHandterer;
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository;
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata;
 import no.nav.sosialhjelp.soknad.business.service.HenvendelseService;
-import no.nav.sosialhjelp.soknad.business.service.TextService;
 import no.nav.sosialhjelp.soknad.business.service.systemdata.BostotteSystemdata;
 import no.nav.sosialhjelp.soknad.business.service.systemdata.SkattetatenSystemdata;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
@@ -43,7 +42,6 @@ import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.inject.Inject;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -65,35 +63,37 @@ public class SoknadService {
 
     private static final Logger logger = getLogger(SoknadService.class);
 
-    @Inject
-    private HenvendelseService henvendelseService;
+    private final HenvendelseService henvendelseService;
+    private final OppgaveHandterer oppgaveHandterer;
+    private final SoknadMetricsService soknadMetricsService;
+    private final InnsendingService innsendingService;
+    private final EttersendingService ettersendingService;
+    private final SoknadUnderArbeidRepository soknadUnderArbeidRepository;
+    private final SystemdataUpdater systemdataUpdater;
+    private final BostotteSystemdata bostotteSystemdata;
+    private final SkattetatenSystemdata skattetatenSystemdata;
 
-    @Inject
-    private OppgaveHandterer oppgaveHandterer;
-
-    @Inject
-    private SoknadMetricsService soknadMetricsService;
-
-    @Inject
-    private InnsendingService innsendingService;
-
-    @Inject
-    private EttersendingService ettersendingService;
-
-    @Inject
-    private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
-
-    @Inject
-    private SystemdataUpdater systemdataUpdater;
-
-    @Inject
-    private BostotteSystemdata bostotteSystemdata;
-
-    @Inject
-    private SkattetatenSystemdata skattetatenSystemdata;
-
-    @Inject
-    private TextService textService;
+    public SoknadService(
+            HenvendelseService henvendelseService,
+            OppgaveHandterer oppgaveHandterer,
+            SoknadMetricsService soknadMetricsService,
+            InnsendingService innsendingService,
+            EttersendingService ettersendingService,
+            SoknadUnderArbeidRepository soknadUnderArbeidRepository,
+            SystemdataUpdater systemdataUpdater,
+            BostotteSystemdata bostotteSystemdata,
+            SkattetatenSystemdata skattetatenSystemdata
+    ) {
+        this.henvendelseService = henvendelseService;
+        this.oppgaveHandterer = oppgaveHandterer;
+        this.soknadMetricsService = soknadMetricsService;
+        this.innsendingService = innsendingService;
+        this.ettersendingService = ettersendingService;
+        this.soknadUnderArbeidRepository = soknadUnderArbeidRepository;
+        this.systemdataUpdater = systemdataUpdater;
+        this.bostotteSystemdata = bostotteSystemdata;
+        this.skattetatenSystemdata = skattetatenSystemdata;
+    }
 
     @Transactional
     public String startSoknad(String token) {

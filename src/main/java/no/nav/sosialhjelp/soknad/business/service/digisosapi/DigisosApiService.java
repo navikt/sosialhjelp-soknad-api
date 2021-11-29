@@ -26,7 +26,6 @@ import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
-import javax.inject.Inject;
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,28 +45,33 @@ public class DigisosApiService {
 
     private static final Logger log = getLogger(DigisosApiService.class);
 
-    @Inject
-    private DigisosApi digisosApi;
-
-    @Inject
-    private SosialhjelpPdfGenerator sosialhjelpPdfGenerator;
-
-    @Inject
-    private InnsendingService innsendingService;
-
-    @Inject
-    private HenvendelseService henvendelseService;
-
-    @Inject
-    private SoknadUnderArbeidService soknadUnderArbeidService;
-
-    @Inject
-    private SoknadMetricsService soknadMetricsService;
-
-    @Inject
-    private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
+    private final DigisosApi digisosApi;
+    private final SosialhjelpPdfGenerator sosialhjelpPdfGenerator;
+    private final InnsendingService innsendingService;
+    private final HenvendelseService henvendelseService;
+    private final SoknadUnderArbeidService soknadUnderArbeidService;
+    private final SoknadMetricsService soknadMetricsService;
+    private final SoknadUnderArbeidRepository soknadUnderArbeidRepository;
 
     private final ObjectMapper objectMapper = JsonSosialhjelpObjectMapper.createObjectMapper();
+
+    public DigisosApiService(
+            DigisosApi digisosApi,
+            SosialhjelpPdfGenerator sosialhjelpPdfGenerator,
+            InnsendingService innsendingService,
+            HenvendelseService henvendelseService,
+            SoknadUnderArbeidService soknadUnderArbeidService,
+            SoknadMetricsService soknadMetricsService,
+            SoknadUnderArbeidRepository soknadUnderArbeidRepository
+    ) {
+        this.digisosApi = digisosApi;
+        this.sosialhjelpPdfGenerator = sosialhjelpPdfGenerator;
+        this.innsendingService = innsendingService;
+        this.henvendelseService = henvendelseService;
+        this.soknadUnderArbeidService = soknadUnderArbeidService;
+        this.soknadMetricsService = soknadMetricsService;
+        this.soknadUnderArbeidRepository = soknadUnderArbeidRepository;
+    }
 
     List<FilOpplasting> lagDokumentListe(SoknadUnderArbeid soknadUnderArbeid) {
         JsonInternalSoknad internalSoknad = soknadUnderArbeid.getJsonInternalSoknad();

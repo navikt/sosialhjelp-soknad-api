@@ -24,7 +24,6 @@ import no.nav.sosialhjelp.soknad.web.utils.NedetidUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Controller;
 
-import javax.inject.Inject;
 import javax.servlet.ServletContext;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
@@ -59,26 +58,31 @@ public class SoknadActions {
     private static final String SVARUT = "SVARUT";
     private static final String FIKS_DIGISOS_API = "FIKS_DIGISOS_API";
 
-    @Inject
-    private SoknadService soknadService;
+    private final SoknadService soknadService;
+    private final KommuneInfoService kommuneInfoService;
+    private final Tilgangskontroll tilgangskontroll;
+    private final SoknadUnderArbeidRepository soknadUnderArbeidRepository;
+    private final SoknadMetadataRepository soknadMetadataRepository;
+    private final DigisosApiService digisosApiService;
+    private final Unleash unleash;
 
-    @Inject
-    private KommuneInfoService kommuneInfoService;
-
-    @Inject
-    private Tilgangskontroll tilgangskontroll;
-
-    @Inject
-    private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
-
-    @Inject
-    private SoknadMetadataRepository soknadMetadataRepository;
-
-    @Inject
-    private DigisosApiService digisosApiService;
-
-    @Inject
-    private Unleash unleash;
+    public SoknadActions(
+            SoknadService soknadService,
+            KommuneInfoService kommuneInfoService,
+            Tilgangskontroll tilgangskontroll,
+            SoknadUnderArbeidRepository soknadUnderArbeidRepository,
+            SoknadMetadataRepository soknadMetadataRepository,
+            DigisosApiService digisosApiService,
+            Unleash unleash
+    ) {
+        this.soknadService = soknadService;
+        this.kommuneInfoService = kommuneInfoService;
+        this.tilgangskontroll = tilgangskontroll;
+        this.soknadUnderArbeidRepository = soknadUnderArbeidRepository;
+        this.soknadMetadataRepository = soknadMetadataRepository;
+        this.digisosApiService = digisosApiService;
+        this.unleash = unleash;
+    }
 
     @POST
     @Path("/send")
