@@ -26,9 +26,9 @@ import org.junit.jupiter.api.Test
 import java.lang.Boolean
 
 internal class UtgifterOgGjeldStegTest {
-    
+
     private val steg = UtgifterOgGjeldSteg()
-    
+
     @Test
     fun boutgifterIkkeUtfylt() {
         val soknad = createSoknad(emptyList(), null, null)

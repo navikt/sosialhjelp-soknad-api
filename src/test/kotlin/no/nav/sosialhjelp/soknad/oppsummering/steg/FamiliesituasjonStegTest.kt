@@ -18,7 +18,6 @@ import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus
 import no.nav.sosialhjelp.soknad.oppsummering.dto.SvarType
 import no.nav.sosialhjelp.soknad.oppsummering.dto.Type
 import no.nav.sosialhjelp.soknad.oppsummering.steg.OppsummeringTestUtils.validateFeltMedSvar
-
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -233,18 +232,18 @@ internal class FamiliesituasjonStegTest {
 
         val res = steg.get(soknad)
         assertThat(res.avsnitt).hasSize(2)
-        
+
         val forsorgerpliktSporsmal = res.avsnitt[1].sporsmal
         assertThat(forsorgerpliktSporsmal).hasSize(3)
-        
+
         val systemBarnSporsmal = forsorgerpliktSporsmal[0]
         assertThat(systemBarnSporsmal.erUtfylt).isTrue
-        
+
         val deltBostedSporsmal = forsorgerpliktSporsmal[1]
         assertThat(deltBostedSporsmal.erUtfylt).isTrue
         assertThat(deltBostedSporsmal.felt).hasSize(1)
         validateFeltMedSvar(deltBostedSporsmal.felt!![0], Type.CHECKBOX, SvarType.LOCALE_TEKST, "system.familie.barn.true.barn.deltbosted.true")
-        
+
         val barnebidragSporsmal = forsorgerpliktSporsmal[2]
         assertThat(barnebidragSporsmal.erUtfylt).isTrue
         assertThat(barnebidragSporsmal.felt).hasSize(1)

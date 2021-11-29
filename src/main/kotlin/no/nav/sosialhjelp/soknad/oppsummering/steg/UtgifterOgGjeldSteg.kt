@@ -27,7 +27,6 @@ import no.nav.sosialhjelp.soknad.oppsummering.dto.SvarType
 import no.nav.sosialhjelp.soknad.oppsummering.dto.Type
 import no.nav.sosialhjelp.soknad.oppsummering.steg.StegUtils.createSvar
 
-
 class UtgifterOgGjeldSteg {
     fun get(jsonInternalSoknad: JsonInternalSoknad): Steg {
         val okonomi = jsonInternalSoknad.soknad.data.okonomi
