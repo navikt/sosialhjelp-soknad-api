@@ -31,7 +31,8 @@ import org.springframework.context.annotation.Import;
         DittNavMetadataService.class,
         PabegynteSoknaderService.class,
         SistInnsendteSoknadService.class,
-        OppsummeringService.class
+        OppsummeringService.class,
+        no.nav.sosialhjelp.soknad.oppsummering.OppsummeringService.class
 })
 public class ServiceConfig {
 }
