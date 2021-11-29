@@ -11,13 +11,13 @@ import no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SoknadType;
 import no.nav.sosialhjelp.soknad.tekster.NavMessageSource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.internal.stubbing.answers.ReturnsArgumentAt;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -35,33 +35,36 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 class SaksoversiktMetadataServiceTest {
 
     @Mock
-    SoknadMetadataRepository soknadMetadataRepository;
+    private SoknadMetadataRepository soknadMetadataRepository;
 
     @Mock
-    EttersendingService ettersendingService;
+    private EttersendingService ettersendingService;
 
     @Mock
-    NavMessageSource navMessageSource;
+    private NavMessageSource navMessageSource;
+
+    @Mock
+    private Clock clock;
 
     @InjectMocks
-    SaksoversiktMetadataService saksoversiktMetadataService;
+    private SaksoversiktMetadataService saksoversiktMetadataService;
 
     @Captor
-    ArgumentCaptor<LocalDateTime> timeCaptor;
+    private ArgumentCaptor<LocalDateTime> timeCaptor;
 
-
-    SoknadMetadata soknadMetadata;
+    private SoknadMetadata soknadMetadata;
 
     @BeforeEach
     public void setUp() {
         Properties props = mock(Properties.class);
         when(props.getProperty(anyString())).then(new ReturnsArgumentAt(0));
 
-        saksoversiktMetadataService.clock = Clock.fixed(LocalDateTime.of(2018, 5, 31, 13, 33, 37).atZone(ZoneId.systemDefault()).toInstant(), ZoneId.systemDefault());
+        when(clock.getZone()).thenReturn(ZoneId.systemDefault());
+        when(clock.instant()).thenReturn(LocalDateTime.of(2018, 5, 31, 13, 33, 37).atZone(ZoneId.systemDefault()).toInstant());
         when(navMessageSource.getBundleFor(anyString(), any())).thenReturn(props);
 
         soknadMetadata = new SoknadMetadata();

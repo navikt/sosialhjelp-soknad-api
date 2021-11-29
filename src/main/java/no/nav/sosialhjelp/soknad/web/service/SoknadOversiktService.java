@@ -5,7 +5,6 @@ import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.soknadoversikt.SoknadOversiktRessurs.SoknadOversikt;
 import org.springframework.stereotype.Service;
 
-import javax.inject.Inject;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -18,8 +17,11 @@ public class SoknadOversiktService {
     static final String KILDE_SOKNAD_API = "soknad-api";
     static final String DEFAULT_TITTEL = "Økonomisk sosialhjelp";
 
-    @Inject
-    private SoknadMetadataRepository soknadMetadataRepository;
+    private final SoknadMetadataRepository soknadMetadataRepository;
+
+    public SoknadOversiktService(SoknadMetadataRepository soknadMetadataRepository) {
+        this.soknadMetadataRepository = soknadMetadataRepository;
+    }
 
     public List<SoknadOversikt> hentSvarUtSoknaderFor(String fnr) {
 

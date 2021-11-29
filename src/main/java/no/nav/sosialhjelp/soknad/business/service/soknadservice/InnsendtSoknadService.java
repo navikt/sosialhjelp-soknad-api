@@ -9,7 +9,6 @@ import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus;
 import no.nav.sosialhjelp.soknad.domain.Vedleggstatus;
 import org.springframework.stereotype.Component;
 
-import javax.inject.Inject;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -29,8 +28,7 @@ public class InnsendtSoknadService {
 
     public static final String SKJEMANUMMER_KVITTERING = "L7";
 
-    @Inject
-    private HenvendelseService henvendelseService;
+    private final HenvendelseService henvendelseService;
 
     private Predicate<VedleggMetadata> ikkeKvittering = v -> !SKJEMANUMMER_KVITTERING.equals(v.skjema);
     private Predicate<VedleggMetadata> lastetOpp = v -> v.status.er(Vedleggstatus.LastetOpp);
@@ -38,6 +36,10 @@ public class InnsendtSoknadService {
 
     private DateTimeFormatter datoFormatter = DateTimeFormatter.ofPattern("d. MMMM yyyy");
     private DateTimeFormatter tidFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+
+    public InnsendtSoknadService(HenvendelseService henvendelseService) {
+        this.henvendelseService = henvendelseService;
+    }
 
     static long soknadsalderIMinutter(LocalDateTime tidspunktSendt) {
         if (tidspunktSendt == null) return -1;
