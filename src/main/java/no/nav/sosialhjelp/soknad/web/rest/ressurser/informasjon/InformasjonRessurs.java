@@ -7,7 +7,6 @@ import no.nav.sosialhjelp.metrics.aspects.Timed;
 import no.nav.sosialhjelp.soknad.adressesok.AdressesokService;
 import no.nav.sosialhjelp.soknad.adressesok.domain.AdresseForslag;
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.SoknadMetadataRepository;
-import no.nav.sosialhjelp.soknad.business.service.InformasjonService;
 import no.nav.sosialhjelp.soknad.business.service.informasjon.PabegynteSoknaderService;
 import no.nav.sosialhjelp.soknad.client.fiks.kommuneinfo.KommuneInfoService;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
@@ -61,7 +60,6 @@ public class InformasjonRessurs {
     private static final Logger klientlogger = LoggerFactory.getLogger("klientlogger");
     private static final int FJORTEN_DAGER = 14;
 
-    private final InformasjonService informasjon;
     private final NavMessageSource messageSource;
     private final AdressesokService adresseSokService;
     private final KommuneInfoService kommuneInfoService;
@@ -71,7 +69,6 @@ public class InformasjonRessurs {
     private final PabegynteSoknaderService pabegynteSoknaderService;
 
     public InformasjonRessurs(
-            InformasjonService informasjon,
             NavMessageSource messageSource,
             AdressesokService adresseSokService,
             KommuneInfoService kommuneInfoService,
@@ -80,7 +77,6 @@ public class InformasjonRessurs {
             SoknadMetadataRepository soknadMetadataRepository,
             PabegynteSoknaderService pabegynteSoknaderService
             ) {
-        this.informasjon = informasjon;
         this.messageSource = messageSource;
         this.adresseSokService = adresseSokService;
         this.kommuneInfoService = kommuneInfoService;
@@ -88,12 +84,6 @@ public class InformasjonRessurs {
         this.tilgangskontroll = tilgangskontroll;
         this.soknadMetadataRepository = soknadMetadataRepository;
         this.pabegynteSoknaderService = pabegynteSoknaderService;
-    }
-
-    @GET
-    @Path("/miljovariabler")
-    public Map<String, String> hentMiljovariabler() {
-        return informasjon.hentMiljovariabler();
     }
 
     @GET
