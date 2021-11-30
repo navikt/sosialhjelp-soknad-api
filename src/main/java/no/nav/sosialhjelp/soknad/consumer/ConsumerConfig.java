@@ -29,6 +29,7 @@ import no.nav.sosialhjelp.soknad.navenhet.NavEnhetConfig;
 import no.nav.sosialhjelp.soknad.navenhet.bydel.BydelConfig;
 import no.nav.sosialhjelp.soknad.navenhet.gt.GeografiskTilknytningConfig;
 import no.nav.sosialhjelp.soknad.navutbetalinger.NavUtbetalingerConfig;
+import no.nav.sosialhjelp.soknad.oppsummering.OppsummeringConfig;
 import no.nav.sosialhjelp.soknad.organisasjon.OrganisasjonConfig;
 import no.nav.sosialhjelp.soknad.person.PersonConfig;
 import no.nav.sosialhjelp.soknad.skattbarinntekt.SkattbarInntektConfig;
@@ -68,7 +69,8 @@ import org.springframework.context.annotation.Import;
         BydelConfig.class,
         LeaderElectionConfig.class,
         VirusScanConfig.class,
-        DigisosApiRestConfig.class
+        DigisosApiRestConfig.class,
+        OppsummeringConfig.class
 })
 
 public class ConsumerConfig {
