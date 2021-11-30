@@ -5,6 +5,8 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import kotlinx.coroutines.runBlocking
 import no.nav.sosialhjelp.kotlin.utils.retry
 import no.nav.sosialhjelp.soknad.client.config.RetryUtils
+import no.nav.sosialhjelp.soknad.client.exceptions.PdlApiException
+import no.nav.sosialhjelp.soknad.client.exceptions.TjenesteUtilgjengeligException
 import no.nav.sosialhjelp.soknad.client.pdl.HentPersonDto
 import no.nav.sosialhjelp.soknad.client.pdl.PdlApiQuery.HENT_ADRESSEBESKYTTELSE
 import no.nav.sosialhjelp.soknad.client.pdl.PdlApiQuery.HENT_BARN
@@ -18,14 +20,13 @@ import no.nav.sosialhjelp.soknad.client.redis.PDL_CACHE_SECONDS
 import no.nav.sosialhjelp.soknad.client.redis.PERSON_CACHE_KEY_PREFIX
 import no.nav.sosialhjelp.soknad.client.redis.RedisService
 import no.nav.sosialhjelp.soknad.client.sts.StsClient
-import no.nav.sosialhjelp.soknad.consumer.exceptions.PdlApiException
-import no.nav.sosialhjelp.soknad.consumer.exceptions.TjenesteUtilgjengeligException
 import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.HEADER_TEMA
 import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.TEMA_KOM
 import no.nav.sosialhjelp.soknad.person.dto.BarnDto
 import no.nav.sosialhjelp.soknad.person.dto.EktefelleDto
 import no.nav.sosialhjelp.soknad.person.dto.PersonAdressebeskyttelseDto
 import no.nav.sosialhjelp.soknad.person.dto.PersonDto
+import org.apache.commons.lang3.exception.ExceptionUtils
 import org.slf4j.LoggerFactory.getLogger
 import javax.ws.rs.ProcessingException
 import javax.ws.rs.WebApplicationException
@@ -72,9 +73,9 @@ class HentPersonClientImpl(
             pdlPerson
         } catch (e: PdlApiException) {
             throw e
-        } catch (e: java.lang.Exception) {
+        } catch (e: Exception) {
             log.error("Kall til PDL feilet (hentPerson)")
-            throw TjenesteUtilgjengeligException("Noe uventet feilet ved kall til PDL", e)
+            throw TjenesteUtilgjengeligException("Noe uventet feilet ved kall til PDL", ExceptionUtils.getRootCause(e))
         }
     }
 
@@ -105,9 +106,9 @@ class HentPersonClientImpl(
             pdlEktefelle
         } catch (e: PdlApiException) {
             throw e
-        } catch (e: java.lang.Exception) {
+        } catch (e: Exception) {
             log.error("Kall til PDL feilet (hentEktefelle)")
-            throw TjenesteUtilgjengeligException("Noe uventet feilet ved kall til PDL", e)
+            throw TjenesteUtilgjengeligException("Noe uventet feilet ved kall til PDL", ExceptionUtils.getRootCause(e))
         }
     }
 
@@ -138,9 +139,9 @@ class HentPersonClientImpl(
             pdlBarn
         } catch (e: PdlApiException) {
             throw e
-        } catch (e: java.lang.Exception) {
+        } catch (e: Exception) {
             log.error("Kall til PDL feilet (hentBarn)")
-            throw TjenesteUtilgjengeligException("Noe uventet feilet ved kall til PDL", e)
+            throw TjenesteUtilgjengeligException("Noe uventet feilet ved kall til PDL", ExceptionUtils.getRootCause(e))
         }
     }
 
@@ -177,7 +178,7 @@ class HentPersonClientImpl(
             throw e
         } catch (e: Exception) {
             log.error("Kall til PDL feilet (hentPersonAdressebeskyttelse)")
-            throw TjenesteUtilgjengeligException("Noe uventet feilet ved kall til PDL", e)
+            throw TjenesteUtilgjengeligException("Noe uventet feilet ved kall til PDL", ExceptionUtils.getRootCause(e))
         }
     }
 

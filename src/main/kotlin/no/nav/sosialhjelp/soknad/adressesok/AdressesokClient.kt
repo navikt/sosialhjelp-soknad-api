@@ -5,12 +5,13 @@ import kotlinx.coroutines.runBlocking
 import no.nav.sosialhjelp.kotlin.utils.retry
 import no.nav.sosialhjelp.soknad.adressesok.dto.AdressesokResultDto
 import no.nav.sosialhjelp.soknad.client.config.RetryUtils
+import no.nav.sosialhjelp.soknad.client.exceptions.PdlApiException
+import no.nav.sosialhjelp.soknad.client.exceptions.TjenesteUtilgjengeligException
 import no.nav.sosialhjelp.soknad.client.pdl.AdressesokDto
 import no.nav.sosialhjelp.soknad.client.pdl.PdlApiQuery.ADRESSE_SOK
 import no.nav.sosialhjelp.soknad.client.pdl.PdlClient
 import no.nav.sosialhjelp.soknad.client.sts.StsClient
-import no.nav.sosialhjelp.soknad.consumer.exceptions.PdlApiException
-import no.nav.sosialhjelp.soknad.consumer.exceptions.TjenesteUtilgjengeligException
+import org.apache.commons.lang3.exception.ExceptionUtils
 import org.slf4j.LoggerFactory.getLogger
 import javax.ws.rs.ProcessingException
 import javax.ws.rs.WebApplicationException
@@ -43,7 +44,7 @@ open class AdressesokClient(
             throw e
         } catch (e: Exception) {
             log.error("Kall til PDL feilet (adresseSok)")
-            throw TjenesteUtilgjengeligException("Noe uventet feilet ved kall til PDL", e)
+            throw TjenesteUtilgjengeligException("Noe uventet feilet ved kall til PDL", ExceptionUtils.getRootCause(e))
         }
     }
 

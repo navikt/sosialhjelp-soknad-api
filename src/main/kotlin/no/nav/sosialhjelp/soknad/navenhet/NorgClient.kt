@@ -6,16 +6,17 @@ import no.nav.sosialhjelp.kotlin.utils.retry
 import no.nav.sosialhjelp.soknad.client.config.RetryUtils.DEFAULT_EXPONENTIAL_BACKOFF_MULTIPLIER
 import no.nav.sosialhjelp.soknad.client.config.RetryUtils.DEFAULT_INITIAL_WAIT_INTERVAL_MILLIS
 import no.nav.sosialhjelp.soknad.client.config.RetryUtils.DEFAULT_MAX_ATTEMPTS
+import no.nav.sosialhjelp.soknad.client.exceptions.TjenesteUtilgjengeligException
 import no.nav.sosialhjelp.soknad.client.redis.CACHE_24_HOURS_IN_SECONDS
 import no.nav.sosialhjelp.soknad.client.redis.GT_CACHE_KEY_PREFIX
 import no.nav.sosialhjelp.soknad.client.redis.GT_LAST_POLL_TIME_PREFIX
 import no.nav.sosialhjelp.soknad.client.redis.RedisService
 import no.nav.sosialhjelp.soknad.client.redis.RedisUtils.redisObjectMapper
-import no.nav.sosialhjelp.soknad.consumer.exceptions.TjenesteUtilgjengeligException
 import no.nav.sosialhjelp.soknad.consumer.mdc.MDCOperations
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler
 import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants
 import no.nav.sosialhjelp.soknad.navenhet.dto.NavEnhetDto
+import org.apache.commons.lang3.exception.ExceptionUtils
 import org.slf4j.LoggerFactory.getLogger
 import java.nio.charset.StandardCharsets
 import java.time.LocalDateTime
@@ -65,7 +66,7 @@ class NorgClientImpl(
             null
         } catch (e: RuntimeException) {
             log.warn("Noe uventet feilet ved kall til NORG/gt", e)
-            throw TjenesteUtilgjengeligException("NORG", e)
+            throw TjenesteUtilgjengeligException("NORG", ExceptionUtils.getRootCause(e))
         }
     }
 
