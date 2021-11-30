@@ -8,8 +8,6 @@ import no.nav.sosialhjelp.soknad.business.SoknadUnderArbeidService;
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository;
 import no.nav.sosialhjelp.soknad.business.exceptions.SoknadenHarNedetidException;
 import no.nav.sosialhjelp.soknad.business.service.HenvendelseService;
-import no.nav.sosialhjelp.soknad.business.service.OpplastetVedleggService;
-import no.nav.sosialhjelp.soknad.business.service.oppsummering.OppsummeringService;
 import no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService;
 import no.nav.sosialhjelp.soknad.business.service.soknadservice.SystemdataUpdater;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
@@ -67,8 +65,6 @@ public class SoknadRessurs {
     private final SystemdataUpdater systemdata;
     private final Tilgangskontroll tilgangskontroll;
     private final HenvendelseService henvendelseService;
-    private final OpplastetVedleggService opplastetVedleggService;
-    private final OppsummeringService oppsummeringService;
 
     public SoknadRessurs(
             SoknadService soknadService,
@@ -76,9 +72,7 @@ public class SoknadRessurs {
             SoknadUnderArbeidRepository soknadUnderArbeidRepository,
             SystemdataUpdater systemdata,
             Tilgangskontroll tilgangskontroll,
-            HenvendelseService henvendelseService,
-            OpplastetVedleggService opplastetVedleggService,
-            OppsummeringService oppsummeringService
+            HenvendelseService henvendelseService
     ) {
         this.soknadService = soknadService;
         this.soknadUnderArbeidService = soknadUnderArbeidService;
@@ -86,8 +80,6 @@ public class SoknadRessurs {
         this.systemdata = systemdata;
         this.tilgangskontroll = tilgangskontroll;
         this.henvendelseService = henvendelseService;
-        this.opplastetVedleggService = opplastetVedleggService;
-        this.oppsummeringService = oppsummeringService;
     }
 
     private static Cookie xsrfCookie(String behandlingId) {

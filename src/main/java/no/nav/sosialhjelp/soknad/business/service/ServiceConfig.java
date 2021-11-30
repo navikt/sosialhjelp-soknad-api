@@ -7,7 +7,6 @@ import no.nav.sosialhjelp.soknad.business.service.digisosapi.DigisosApiService;
 import no.nav.sosialhjelp.soknad.business.service.dittnav.DittNavMetadataService;
 import no.nav.sosialhjelp.soknad.business.service.informasjon.PabegynteSoknaderService;
 import no.nav.sosialhjelp.soknad.business.service.minesaker.MineSakerMetadataService;
-import no.nav.sosialhjelp.soknad.business.service.oppsummering.OppsummeringService;
 import no.nav.sosialhjelp.soknad.business.service.soknadservice.EttersendingService;
 import no.nav.sosialhjelp.soknad.business.service.soknadservice.InnsendtSoknadService;
 import no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadMetricsService;
@@ -30,9 +29,7 @@ import org.springframework.context.annotation.Import;
         MineSakerMetadataService.class,
         DittNavMetadataService.class,
         PabegynteSoknaderService.class,
-        SistInnsendteSoknadService.class,
-        OppsummeringService.class,
-        no.nav.sosialhjelp.soknad.oppsummering.OppsummeringService.class
+        SistInnsendteSoknadService.class
 })
 public class ServiceConfig {
 }
