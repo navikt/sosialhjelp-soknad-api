@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.client.fiks.digisosapi
 
-import no.nav.sosialhjelp.soknad.consumer.exceptions.TjenesteUtilgjengeligException
+import no.nav.sosialhjelp.soknad.client.exceptions.TjenesteUtilgjengeligException
 import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.HEADER_INTEGRASJON_ID
 import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.HEADER_INTEGRASJON_PASSORD
 import org.slf4j.LoggerFactory.getLogger
@@ -39,7 +39,7 @@ class DokumentlagerClientImpl(
             .bodyToMono<ByteArray>()
             .onErrorMap(WebClientResponseException::class.java) { e ->
                 log.warn("Fiks - getDokumentlagerPublicKey feilet - ${e.statusCode} ${e.statusText}", e)
-                TjenesteUtilgjengeligException("Noe feilet ved henting av dokumentlager publickey fra Fiks - ${e.message}", e)
+                TjenesteUtilgjengeligException("Noe feilet ved henting av dokumentlager publickey fra Fiks - ${e.message}", e.rootCause)
             }
             .block()
 
