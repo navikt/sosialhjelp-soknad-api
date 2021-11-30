@@ -18,12 +18,12 @@ import javax.ws.rs.core.MediaType
 @Path("/soknader/{behandlingsId}/oppsummering")
 @Timed
 @Produces(MediaType.APPLICATION_JSON)
-class OppsummeringRessurs(
+open class OppsummeringRessurs(
     private val oppsummeringService: OppsummeringService,
     private val tilgangskontroll: Tilgangskontroll
 ) {
     @GET
-    fun getOppsummering(@PathParam("behandlingsId") behandlingsId: String): Oppsummering {
+    open fun getOppsummering(@PathParam("behandlingsId") behandlingsId: String): Oppsummering {
         tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(behandlingsId)
         val eier = SubjectHandler.getUserId()
         return oppsummeringService.hentOppsummering(eier, behandlingsId)
