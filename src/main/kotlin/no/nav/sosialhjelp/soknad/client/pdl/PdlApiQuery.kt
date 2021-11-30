@@ -22,8 +22,9 @@ object PdlApiQuery {
         val classPathResource = ClassPathResource(file)
         try {
             BufferedReader(InputStreamReader(classPathResource.inputStream, StandardCharsets.UTF_8))
-                .use { reader -> return reader.lines().collect(Collectors.joining("\n"))
-            }
+                .use { reader ->
+                    return reader.lines().collect(Collectors.joining("\n"))
+                }
         } catch (e: IOException) {
             throw PdlApiException("Failed to read graphql-file: $file", e)
         }
