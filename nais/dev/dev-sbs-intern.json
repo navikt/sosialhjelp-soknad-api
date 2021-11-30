@@ -3,8 +3,7 @@
   "namespace": "teamdigisos",
   "ingresses": [
     "https://sosialhjelp-soknad-api-intern.dev.nav.no/sosialhjelp/soknad-api",
-    "https://www-q1.dev.nav.no/sosialhjelp/soknad-api",
-    "https://www-q1.nav.no/sosialhjelp/soknad-api"
+    "https://www-q1.dev.nav.no/sosialhjelp/soknad-api"
   ],
   "envsecret": [
     "redis-password-soknad-api",
