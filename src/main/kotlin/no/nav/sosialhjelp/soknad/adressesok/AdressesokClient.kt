@@ -11,7 +11,6 @@ import no.nav.sosialhjelp.soknad.client.pdl.AdressesokDto
 import no.nav.sosialhjelp.soknad.client.pdl.PdlApiQuery.ADRESSE_SOK
 import no.nav.sosialhjelp.soknad.client.pdl.PdlClient
 import no.nav.sosialhjelp.soknad.client.sts.StsClient
-import org.apache.commons.lang3.exception.ExceptionUtils
 import org.slf4j.LoggerFactory.getLogger
 import javax.ws.rs.ProcessingException
 import javax.ws.rs.WebApplicationException
@@ -44,7 +43,7 @@ open class AdressesokClient(
             throw e
         } catch (e: Exception) {
             log.error("Kall til PDL feilet (adresseSok)")
-            throw TjenesteUtilgjengeligException("Noe uventet feilet ved kall til PDL", ExceptionUtils.getRootCause(e))
+            throw TjenesteUtilgjengeligException("Noe uventet feilet ved kall til PDL", e)
         }
     }
 

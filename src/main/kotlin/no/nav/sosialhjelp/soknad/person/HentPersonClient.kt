@@ -26,7 +26,6 @@ import no.nav.sosialhjelp.soknad.person.dto.BarnDto
 import no.nav.sosialhjelp.soknad.person.dto.EktefelleDto
 import no.nav.sosialhjelp.soknad.person.dto.PersonAdressebeskyttelseDto
 import no.nav.sosialhjelp.soknad.person.dto.PersonDto
-import org.apache.commons.lang3.exception.ExceptionUtils
 import org.slf4j.LoggerFactory.getLogger
 import javax.ws.rs.ProcessingException
 import javax.ws.rs.WebApplicationException
@@ -75,7 +74,7 @@ class HentPersonClientImpl(
             throw e
         } catch (e: Exception) {
             log.error("Kall til PDL feilet (hentPerson)")
-            throw TjenesteUtilgjengeligException("Noe uventet feilet ved kall til PDL", ExceptionUtils.getRootCause(e))
+            throw TjenesteUtilgjengeligException("Noe uventet feilet ved kall til PDL", e)
         }
     }
 
@@ -108,7 +107,7 @@ class HentPersonClientImpl(
             throw e
         } catch (e: Exception) {
             log.error("Kall til PDL feilet (hentEktefelle)")
-            throw TjenesteUtilgjengeligException("Noe uventet feilet ved kall til PDL", ExceptionUtils.getRootCause(e))
+            throw TjenesteUtilgjengeligException("Noe uventet feilet ved kall til PDL", e)
         }
     }
 
@@ -141,7 +140,7 @@ class HentPersonClientImpl(
             throw e
         } catch (e: Exception) {
             log.error("Kall til PDL feilet (hentBarn)")
-            throw TjenesteUtilgjengeligException("Noe uventet feilet ved kall til PDL", ExceptionUtils.getRootCause(e))
+            throw TjenesteUtilgjengeligException("Noe uventet feilet ved kall til PDL", e)
         }
     }
 
@@ -178,7 +177,7 @@ class HentPersonClientImpl(
             throw e
         } catch (e: Exception) {
             log.error("Kall til PDL feilet (hentPersonAdressebeskyttelse)")
-            throw TjenesteUtilgjengeligException("Noe uventet feilet ved kall til PDL", ExceptionUtils.getRootCause(e))
+            throw TjenesteUtilgjengeligException("Noe uventet feilet ved kall til PDL", e)
         }
     }
 

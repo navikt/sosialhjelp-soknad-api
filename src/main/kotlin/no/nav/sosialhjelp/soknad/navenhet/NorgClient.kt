@@ -16,7 +16,6 @@ import no.nav.sosialhjelp.soknad.consumer.mdc.MDCOperations
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler
 import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants
 import no.nav.sosialhjelp.soknad.navenhet.dto.NavEnhetDto
-import org.apache.commons.lang3.exception.ExceptionUtils
 import org.slf4j.LoggerFactory.getLogger
 import java.nio.charset.StandardCharsets
 import java.time.LocalDateTime
@@ -66,7 +65,7 @@ class NorgClientImpl(
             null
         } catch (e: RuntimeException) {
             log.warn("Noe uventet feilet ved kall til NORG/gt", e)
-            throw TjenesteUtilgjengeligException("NORG", ExceptionUtils.getRootCause(e))
+            throw TjenesteUtilgjengeligException("NORG", e)
         }
     }
 

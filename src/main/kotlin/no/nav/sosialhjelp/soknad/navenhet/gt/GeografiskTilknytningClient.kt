@@ -17,7 +17,6 @@ import no.nav.sosialhjelp.soknad.client.sts.StsClient
 import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.HEADER_TEMA
 import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.TEMA_KOM
 import no.nav.sosialhjelp.soknad.navenhet.gt.dto.GeografiskTilknytningDto
-import org.apache.commons.lang3.exception.ExceptionUtils
 import org.slf4j.LoggerFactory.getLogger
 import javax.ws.rs.ProcessingException
 import javax.ws.rs.WebApplicationException
@@ -58,7 +57,7 @@ class GeografiskTilknytningClient(
             throw e
         } catch (e: Exception) {
             log.error("Kall til PDL feilet (hentGeografiskTilknytning)")
-            throw TjenesteUtilgjengeligException("Noe uventet feilet ved kall til PDL", ExceptionUtils.getRootCause(e))
+            throw TjenesteUtilgjengeligException("Noe uventet feilet ved kall til PDL", e)
         }
     }
 
