@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.client.fiks.digisosapi
 
-import no.nav.sosialhjelp.soknad.consumer.exceptions.TjenesteUtilgjengeligException
+import no.nav.sosialhjelp.soknad.client.exceptions.TjenesteUtilgjengeligException
 import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.HEADER_INTEGRASJON_ID
 import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.HEADER_INTEGRASJON_PASSORD
 import org.slf4j.LoggerFactory.getLogger
