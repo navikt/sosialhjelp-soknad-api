@@ -47,7 +47,8 @@ class DokumentlagerClientImpl(
 
         try {
             val certificateFactory = CertificateFactory.getInstance("X.509")
-            return certificateFactory.generateCertificate(ByteArrayInputStream(publicKey)) as X509Certificate
+            return (certificateFactory.generateCertificate(ByteArrayInputStream(publicKey)) as X509Certificate)
+                .also { cachedPublicKey = it }
         } catch (e: CertificateException) {
             throw RuntimeException(e)
         }
