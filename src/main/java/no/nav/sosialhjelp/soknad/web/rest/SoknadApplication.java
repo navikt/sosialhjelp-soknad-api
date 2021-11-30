@@ -1,6 +1,7 @@
 package no.nav.sosialhjelp.soknad.web.rest;
 
 import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
+import no.nav.sosialhjelp.soknad.arbeid.ArbeidRessurs;
 import no.nav.sosialhjelp.soknad.navenhet.NavEnhetRessurs;
 import no.nav.sosialhjelp.soknad.oppsummering.OppsummeringRessurs;
 import no.nav.sosialhjelp.soknad.web.mdc.MdcFilter;
@@ -26,6 +27,7 @@ public class SoknadApplication extends ResourceConfig {
         packages("no.nav.sosialhjelp.soknad.web.rest");
         register(NavEnhetRessurs.class);
         register(OppsummeringRessurs.class);
+        register(ArbeidRessurs.class);
 
         register(JacksonJaxbJsonProvider.class);
         register(MultiPartFeature.class);
