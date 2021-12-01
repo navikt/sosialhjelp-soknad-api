@@ -11,8 +11,8 @@ import no.nav.sosialhjelp.soknad.business.service.informasjon.PabegynteSoknaderS
 import no.nav.sosialhjelp.soknad.client.fiks.kommuneinfo.KommuneInfoService;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import no.nav.sosialhjelp.soknad.domain.model.util.KommuneTilNavEnhetMapper;
-import no.nav.sosialhjelp.soknad.person.PersonService;
-import no.nav.sosialhjelp.soknad.person.dto.Gradering;
+import no.nav.sosialhjelp.soknad.personalia.person.PersonService;
+import no.nav.sosialhjelp.soknad.personalia.person.dto.Gradering;
 import no.nav.sosialhjelp.soknad.tekster.NavMessageSource;
 import no.nav.sosialhjelp.soknad.web.rest.Logg;
 import no.nav.sosialhjelp.soknad.web.rest.ressurser.NyligInnsendteSoknaderResponse;

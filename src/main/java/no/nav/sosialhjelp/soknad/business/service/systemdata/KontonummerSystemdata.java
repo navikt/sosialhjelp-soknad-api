@@ -5,7 +5,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonKontonummer;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
 import no.nav.sosialhjelp.soknad.business.service.soknadservice.Systemdata;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
-import no.nav.sosialhjelp.soknad.kontonummer.KontonummerService;
+import no.nav.sosialhjelp.soknad.personalia.kontonummer.KontonummerService;
 import org.springframework.stereotype.Component;
 
 
