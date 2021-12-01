@@ -31,7 +31,6 @@ public class SoknadApplication extends ResourceConfig {
         register(OppsummeringRessurs.class);
         register(StudielanRessurs.class);
         register(BostotteRessurs.class);
-//        register(SkattbarInntektRessurs.class);
         register(ArbeidRessurs.class);
 
         register(JacksonJaxbJsonProvider.class);
