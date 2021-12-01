@@ -9,12 +9,12 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger;
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling;
 import no.nav.sosialhjelp.soknad.business.service.TextService;
-import no.nav.sosialhjelp.soknad.client.husbanken.HusbankenClient;
-import no.nav.sosialhjelp.soknad.client.husbanken.domain.Bostotte;
-import no.nav.sosialhjelp.soknad.client.husbanken.domain.Sak;
-import no.nav.sosialhjelp.soknad.client.husbanken.domain.Utbetaling;
-import no.nav.sosialhjelp.soknad.client.husbanken.dto.BostotteDto;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
+import no.nav.sosialhjelp.soknad.inntekt.husbanken.HusbankenClient;
+import no.nav.sosialhjelp.soknad.inntekt.husbanken.domain.Bostotte;
+import no.nav.sosialhjelp.soknad.inntekt.husbanken.domain.Sak;
+import no.nav.sosialhjelp.soknad.inntekt.husbanken.domain.Utbetaling;
+import no.nav.sosialhjelp.soknad.inntekt.husbanken.dto.BostotteDto;
 import org.apache.commons.text.WordUtils;
 import org.springframework.stereotype.Component;
 
