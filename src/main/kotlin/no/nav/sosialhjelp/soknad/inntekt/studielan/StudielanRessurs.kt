@@ -23,13 +23,13 @@ import javax.ws.rs.core.MediaType
 @Path("/soknader/{behandlingsId}/inntekt/studielan")
 @Timed
 @Produces(MediaType.APPLICATION_JSON)
-class StudielanRessurs(
+open class StudielanRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val textService: TextService
 ) {
     @GET
-    fun hentStudielanBekreftelse(@PathParam("behandlingsId") behandlingsId: String): StudielanFrontend {
+    open fun hentStudielanBekreftelse(@PathParam("behandlingsId") behandlingsId: String): StudielanFrontend {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
         val eier = SubjectHandler.getUserId()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).jsonInternalSoknad
@@ -51,7 +51,7 @@ class StudielanRessurs(
     }
 
     @PUT
-    fun updateStudielan(@PathParam("behandlingsId") behandlingsId: String, studielanFrontend: StudielanFrontend) {
+    open fun updateStudielan(@PathParam("behandlingsId") behandlingsId: String, studielanFrontend: StudielanFrontend) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         val eier = SubjectHandler.getUserId()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
