@@ -1,7 +1,6 @@
 package no.nav.sosialhjelp.soknad.inntekt.studielan
 
 import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.STUDIELAN
-
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.metrics.aspects.Timed
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository

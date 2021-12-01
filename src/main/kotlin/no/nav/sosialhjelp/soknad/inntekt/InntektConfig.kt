@@ -10,6 +10,4 @@ import org.springframework.context.annotation.Import
     StudielanRessurs::class,
     BostotteRessurs::class
 )
-open class InntektConfig {
-
-}
+open class InntektConfig
