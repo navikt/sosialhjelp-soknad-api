@@ -71,7 +71,7 @@ open class FormueRessurs(
             okonomi.opplysninger.bekreftelse = ArrayList()
         }
         val hasAnyFormueType = formueFrontend.brukskonto || formueFrontend.bsu || formueFrontend.sparekonto ||
-                formueFrontend.livsforsikring || formueFrontend.verdipapirer || formueFrontend.annet
+            formueFrontend.livsforsikring || formueFrontend.verdipapirer || formueFrontend.annet
         setBekreftelse(
             okonomi.opplysninger,
             BEKREFTELSE_SPARING,
