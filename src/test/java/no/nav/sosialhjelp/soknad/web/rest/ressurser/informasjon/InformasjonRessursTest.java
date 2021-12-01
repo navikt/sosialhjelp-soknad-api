@@ -7,7 +7,7 @@ import no.nav.sosialhjelp.soknad.client.fiks.kommuneinfo.KommuneInfoService;
 import no.nav.sosialhjelp.soknad.domain.model.exception.AuthorizationException;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.StaticSubjectHandlerService;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
-import no.nav.sosialhjelp.soknad.person.PersonService;
+import no.nav.sosialhjelp.soknad.personalia.person.PersonService;
 import no.nav.sosialhjelp.soknad.tekster.NavMessageSource;
 import no.nav.sosialhjelp.soknad.web.sikkerhet.Tilgangskontroll;
 import org.junit.jupiter.api.AfterEach;

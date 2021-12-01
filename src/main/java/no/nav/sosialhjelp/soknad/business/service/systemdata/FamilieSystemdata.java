@@ -14,9 +14,9 @@ import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonHarForsorgerplikt;
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus;
 import no.nav.sosialhjelp.soknad.business.service.soknadservice.Systemdata;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
-import no.nav.sosialhjelp.soknad.person.PersonService;
-import no.nav.sosialhjelp.soknad.person.domain.Barn;
-import no.nav.sosialhjelp.soknad.person.domain.Ektefelle;
+import no.nav.sosialhjelp.soknad.personalia.person.PersonService;
+import no.nav.sosialhjelp.soknad.personalia.person.domain.Barn;
+import no.nav.sosialhjelp.soknad.personalia.person.domain.Ektefelle;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;

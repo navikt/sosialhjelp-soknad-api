@@ -8,8 +8,8 @@ import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonSokernavn;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonStatsborgerskap;
 import no.nav.sosialhjelp.soknad.business.service.soknadservice.Systemdata;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
-import no.nav.sosialhjelp.soknad.person.PersonService;
-import no.nav.sosialhjelp.soknad.person.domain.Person;
+import no.nav.sosialhjelp.soknad.personalia.person.PersonService;
+import no.nav.sosialhjelp.soknad.personalia.person.domain.Person;
 import org.springframework.stereotype.Component;
 
 @Component

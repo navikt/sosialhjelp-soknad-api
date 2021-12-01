@@ -4,8 +4,8 @@ import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonTelefonnummer;
 import no.nav.sosialhjelp.soknad.business.service.soknadservice.Systemdata;
-import no.nav.sosialhjelp.soknad.client.dkif.MobiltelefonService;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
+import no.nav.sosialhjelp.soknad.personalia.telefonnummer.MobiltelefonService;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
