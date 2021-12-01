@@ -34,14 +34,14 @@ import javax.ws.rs.core.MediaType
 @Path("/soknader/{behandlingsId}/inntekt/bostotte")
 @Timed
 @Produces(MediaType.APPLICATION_JSON)
-class BostotteRessurs(
+open class BostotteRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val bostotteSystemdata: BostotteSystemdata,
     private val textService: TextService
 ) {
     @GET
-    fun hentBostotte(@PathParam("behandlingsId") behandlingsId: String): BostotteFrontend {
+    open fun hentBostotte(@PathParam("behandlingsId") behandlingsId: String): BostotteFrontend {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
         val eier = SubjectHandler.getUserId()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).jsonInternalSoknad
@@ -58,7 +58,7 @@ class BostotteRessurs(
     }
 
     @PUT
-    fun updateBostotte(
+    open fun updateBostotte(
         @PathParam("behandlingsId") behandlingsId: String,
         bostotteFrontend: BostotteFrontend,
         @HeaderParam(value = HttpHeaders.AUTHORIZATION) token: String
@@ -97,7 +97,7 @@ class BostotteRessurs(
 
     @POST
     @Path(value = "/samtykke")
-    fun updateSamtykke(
+    open fun updateSamtykke(
         @PathParam("behandlingsId") behandlingsId: String,
         samtykke: Boolean,
         @HeaderParam(value = HttpHeaders.AUTHORIZATION) token: String
