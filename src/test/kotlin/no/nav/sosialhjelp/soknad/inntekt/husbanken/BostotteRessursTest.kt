@@ -92,7 +92,7 @@ internal class BostotteRessursTest {
         every { textService.getJsonOkonomiTittel(any()) } returns "tittel"
 
         val argument = slot<SoknadUnderArbeid>()
-        every {soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(argument), any()) } just runs
+        every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(argument), any()) } just runs
 
         val bostotteFrontend = BostotteFrontend(true, null, null, null, null, null)
         bostotteRessurs.updateBostotte(BEHANDLINGSID, bostotteFrontend, "token")
@@ -121,7 +121,7 @@ internal class BostotteRessursTest {
         } returns soknad
         every { textService.getJsonOkonomiTittel(any()) } returns "tittel"
         val argument = slot<SoknadUnderArbeid>()
-        every {soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(argument), any()) } just runs
+        every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(argument), any()) } just runs
 
         val bostotteFrontend = BostotteFrontend(false, null, null, null, null, null)
         bostotteRessurs.updateBostotte(BEHANDLINGSID, bostotteFrontend, "token")
@@ -188,7 +188,7 @@ internal class BostotteRessursTest {
         every { textService.getJsonOkonomiTittel(any()) } returns "tittel"
 
         val argument = slot<SoknadUnderArbeid>()
-        every {soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(argument), any()) } just runs
+        every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(argument), any()) } just runs
 
         val systemdataSlot = slot<SoknadUnderArbeid>()
         every { bostotteSystemdata.updateSystemdataIn(capture(systemdataSlot), any()) } just runs
@@ -220,7 +220,7 @@ internal class BostotteRessursTest {
         every { textService.getJsonOkonomiTittel(any()) } returns "tittel"
 
         val argument = slot<SoknadUnderArbeid>()
-        every {soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(argument), any()) } just runs
+        every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(argument), any()) } just runs
 
         val systemdataSlot = slot<SoknadUnderArbeid>()
         every { bostotteSystemdata.updateSystemdataIn(capture(systemdataSlot), any()) } just runs
@@ -302,7 +302,7 @@ internal class BostotteRessursTest {
 
     private fun catchSoknadUnderArbeidSentToOppdaterSoknadsdata(): SoknadUnderArbeid {
         val argument = slot<SoknadUnderArbeid>()
-        every {soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(argument), any()) } just runs
+        every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(argument), any()) } just runs
         return argument.captured
     }
 
