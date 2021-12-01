@@ -2,6 +2,7 @@ package no.nav.sosialhjelp.soknad.web.config;
 
 import no.nav.sosialhjelp.soknad.business.BusinessConfig;
 import no.nav.sosialhjelp.soknad.consumer.ConsumerConfig;
+import no.nav.sosialhjelp.soknad.inntekt.InntektConfig;
 import no.nav.sosialhjelp.soknad.web.oidc.OidcTokenValidatorConfig;
 import no.nav.sosialhjelp.soknad.web.selftest.SelftestService;
 import no.nav.sosialhjelp.soknad.web.service.SaksoversiktMetadataService;
@@ -23,7 +24,8 @@ import org.springframework.context.annotation.Import;
         SaksoversiktMetadataService.class,
         SoknadOversiktService.class,
         SelftestService.class,
-        Tilgangskontroll.class
+        Tilgangskontroll.class,
+        InntektConfig.class
 })
 @ComponentScan(basePackages = "no.nav.sosialhjelp.soknad.web.rest")
 public class SoknadinnsendingConfig {
