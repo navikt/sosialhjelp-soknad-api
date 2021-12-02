@@ -5,6 +5,7 @@ import no.nav.sosialhjelp.soknad.arbeid.ArbeidRessurs;
 import no.nav.sosialhjelp.soknad.inntekt.formue.FormueRessurs;
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.BostotteRessurs;
 import no.nav.sosialhjelp.soknad.inntekt.studielan.StudielanRessurs;
+import no.nav.sosialhjelp.soknad.inntekt.verdi.VerdiRessurs;
 import no.nav.sosialhjelp.soknad.navenhet.NavEnhetRessurs;
 import no.nav.sosialhjelp.soknad.oppsummering.OppsummeringRessurs;
 import no.nav.sosialhjelp.soknad.web.mdc.MdcFilter;
@@ -34,6 +35,7 @@ public class SoknadApplication extends ResourceConfig {
         register(StudielanRessurs.class);
         register(BostotteRessurs.class);
         register(FormueRessurs.class);
+        register(VerdiRessurs.class);
 
         register(JacksonJaxbJsonProvider.class);
         register(MultiPartFeature.class);
