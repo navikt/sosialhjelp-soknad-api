@@ -7,9 +7,9 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysn
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOrganisasjon;
 import no.nav.sosialhjelp.soknad.business.service.soknadservice.Systemdata;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
-import no.nav.sosialhjelp.soknad.navutbetalinger.NavUtbetalingerService;
-import no.nav.sosialhjelp.soknad.navutbetalinger.domain.Komponent;
-import no.nav.sosialhjelp.soknad.navutbetalinger.domain.NavUtbetaling;
+import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.NavUtbetalingerService;
+import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.domain.Komponent;
+import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.domain.NavUtbetaling;
 import no.nav.sosialhjelp.soknad.organisasjon.OrganisasjonService;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
