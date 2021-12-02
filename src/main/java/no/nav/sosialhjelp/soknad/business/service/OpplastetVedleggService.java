@@ -8,7 +8,6 @@ import no.nav.sosialhjelp.soknad.business.db.repositories.opplastetvedlegg.Oppla
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository;
 import no.nav.sosialhjelp.soknad.business.util.FileDetectionUtils;
 import no.nav.sosialhjelp.soknad.business.util.TikaFileType;
-import no.nav.sosialhjelp.soknad.client.virusscan.VirusScanner;
 import no.nav.sosialhjelp.soknad.domain.OpplastetVedlegg;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.domain.VedleggType;
@@ -17,6 +16,7 @@ import no.nav.sosialhjelp.soknad.domain.model.exception.SamletVedleggStorrelseFo
 import no.nav.sosialhjelp.soknad.domain.model.exception.UgyldigOpplastingTypeException;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils;
+import no.nav.sosialhjelp.soknad.vedlegg.virusscan.VirusScanner;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException;
 import org.apache.pdfbox.text.PDFTextStripper;

@@ -10,7 +10,7 @@ import no.nav.sosialhjelp.soknad.arbeid.ArbeidsforholdService;
 import no.nav.sosialhjelp.soknad.arbeid.domain.Arbeidsforhold;
 import no.nav.sosialhjelp.soknad.business.service.TextService;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
-import no.nav.sosialhjelp.soknad.skattbarinntekt.SkattbarInntektService;
+import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkattbarInntektService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
