@@ -3,6 +3,7 @@ package no.nav.sosialhjelp.soknad.web.rest;
 import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
 import no.nav.sosialhjelp.soknad.api.dialog.SistInnsendteSoknadRessurs;
 import no.nav.sosialhjelp.soknad.api.dittnav.DittNavMetadataRessurs;
+import no.nav.sosialhjelp.soknad.api.innsyn.SoknadOversiktRessurs;
 import no.nav.sosialhjelp.soknad.api.minesaker.MineSakerMetadataRessurs;
 import no.nav.sosialhjelp.soknad.arbeid.ArbeidRessurs;
 import no.nav.sosialhjelp.soknad.inntekt.andreinntekter.UtbetalingRessurs;
@@ -49,6 +50,7 @@ public class SoknadApplication extends ResourceConfig {
         register(DittNavMetadataRessurs.class);
         register(MineSakerMetadataRessurs.class);
         register(SistInnsendteSoknadRessurs.class);
+        register(SoknadOversiktRessurs.class);
 
         register(JacksonJaxbJsonProvider.class);
         register(MultiPartFeature.class);

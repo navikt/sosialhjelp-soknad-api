@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.api.dittnav
 
+import no.nav.sosialhjelp.soknad.api.LenkeUtils.lenkeTilPabegyntSoknad
 import no.nav.sosialhjelp.soknad.api.TimeUtils.toUtc
 import no.nav.sosialhjelp.soknad.api.dittnav.dto.PabegyntSoknadDto
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.SoknadMetadataRepository
@@ -56,16 +57,6 @@ class DittNavMetadataService(
 
     private fun eventId(behandlingsId: String, aktiv: Boolean): String {
         return behandlingsId + "_" + if (aktiv) "aktiv" else "inaktiv"
-    }
-
-    private fun lenkeTilPabegyntSoknad(behandlingsId: String): String {
-        return lagContextLenke() + "skjema/" + behandlingsId + "/0"
-    }
-
-    private fun lagContextLenke(): String {
-        val miljo = System.getProperty("environment.name", "")
-        val postfix = if (miljo.contains("q")) "-$miljo.dev" else ""
-        return "https://www$postfix.nav.no/sosialhjelp/soknad/"
     }
 
     companion object {
