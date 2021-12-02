@@ -2,7 +2,6 @@ package no.nav.sosialhjelp.soknad.business.service;
 
 import no.nav.sosialhjelp.soknad.business.InnsendingService;
 import no.nav.sosialhjelp.soknad.business.SoknadUnderArbeidService;
-import no.nav.sosialhjelp.soknad.business.service.dialog.SistInnsendteSoknadService;
 import no.nav.sosialhjelp.soknad.business.service.digisosapi.DigisosApiService;
 import no.nav.sosialhjelp.soknad.business.service.informasjon.PabegynteSoknaderService;
 import no.nav.sosialhjelp.soknad.business.service.soknadservice.EttersendingService;
@@ -24,8 +23,7 @@ import org.springframework.context.annotation.Import;
         SoknadUnderArbeidService.class,
         TextService.class,
         OpplastetVedleggService.class,
-        PabegynteSoknaderService.class,
-        SistInnsendteSoknadService.class
+        PabegynteSoknaderService.class
 })
 public class ServiceConfig {
 }

@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.web.config;
 
+import no.nav.sosialhjelp.soknad.api.dialog.DialogApiConfig;
 import no.nav.sosialhjelp.soknad.api.dittnav.DittNavConfig;
 import no.nav.sosialhjelp.soknad.api.minesaker.MineSakerConfig;
 import no.nav.sosialhjelp.soknad.business.BusinessConfig;
@@ -29,7 +30,8 @@ import org.springframework.context.annotation.Import;
         Tilgangskontroll.class,
         InntektConfig.class,
         DittNavConfig.class,
-        MineSakerConfig.class
+        MineSakerConfig.class,
+        DialogApiConfig.class
 })
 @ComponentScan(basePackages = "no.nav.sosialhjelp.soknad.web.rest")
 public class SoknadinnsendingConfig {
