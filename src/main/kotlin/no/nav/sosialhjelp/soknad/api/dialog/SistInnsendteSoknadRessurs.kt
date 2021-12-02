@@ -17,12 +17,12 @@ import javax.ws.rs.core.MediaType
 @Produces(MediaType.APPLICATION_JSON)
 @Timed
 open class SistInnsendteSoknadRessurs(
-    private val nyligInnsendteSoknaderService: SistInnsendteSoknadService
+    private val sistInnsendteSoknadService: SistInnsendteSoknadService
 ) {
     @GET
     @Path("/sistInnsendteSoknad")
-    open fun hentNyligInnsendteSoknader(): SistInnsendteSoknadDto? {
+    open fun hentSistInnsendteSoknad(): SistInnsendteSoknadDto? {
         val fnr = SubjectHandler.getUserId()
-        return nyligInnsendteSoknaderService.hentSistInnsendteSoknad(fnr)
+        return sistInnsendteSoknadService.hentSistInnsendteSoknad(fnr)
     }
 }
