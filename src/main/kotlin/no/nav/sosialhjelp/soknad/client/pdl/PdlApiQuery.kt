@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.client.pdl
 
-import no.nav.sosialhjelp.soknad.consumer.exceptions.PdlApiException
+import no.nav.sosialhjelp.soknad.client.exceptions.PdlApiException
 import org.springframework.core.io.ClassPathResource
 import java.io.BufferedReader
 import java.io.IOException
@@ -21,9 +21,10 @@ object PdlApiQuery {
     private fun readGraphQLQueryFromFile(file: String): String {
         val classPathResource = ClassPathResource(file)
         try {
-            BufferedReader(InputStreamReader(classPathResource.inputStream, StandardCharsets.UTF_8)).use { reader ->
-                return reader.lines().collect(Collectors.joining("\n"))
-            }
+            BufferedReader(InputStreamReader(classPathResource.inputStream, StandardCharsets.UTF_8))
+                .use { reader ->
+                    return reader.lines().collect(Collectors.joining("\n"))
+                }
         } catch (e: IOException) {
             throw PdlApiException("Failed to read graphql-file: $file", e)
         }

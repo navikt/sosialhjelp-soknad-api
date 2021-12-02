@@ -2,7 +2,7 @@ package no.nav.sosialhjelp.soknad.client.pdl
 
 import com.fasterxml.jackson.databind.JsonNode
 import no.nav.sosialhjelp.soknad.adressesok.dto.AdressesokDataDto
-import no.nav.sosialhjelp.soknad.consumer.exceptions.PdlApiException
+import no.nav.sosialhjelp.soknad.client.exceptions.PdlApiException
 import no.nav.sosialhjelp.soknad.navenhet.gt.dto.HentGeografiskTilknytning
 import no.nav.sosialhjelp.soknad.personalia.person.dto.HentPersonDataDto
 

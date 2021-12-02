@@ -5,6 +5,8 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import kotlinx.coroutines.runBlocking
 import no.nav.sosialhjelp.kotlin.utils.retry
 import no.nav.sosialhjelp.soknad.client.config.RetryUtils
+import no.nav.sosialhjelp.soknad.client.exceptions.PdlApiException
+import no.nav.sosialhjelp.soknad.client.exceptions.TjenesteUtilgjengeligException
 import no.nav.sosialhjelp.soknad.client.pdl.HentPersonDto
 import no.nav.sosialhjelp.soknad.client.pdl.PdlApiQuery.HENT_ADRESSEBESKYTTELSE
 import no.nav.sosialhjelp.soknad.client.pdl.PdlApiQuery.HENT_BARN
@@ -18,8 +20,6 @@ import no.nav.sosialhjelp.soknad.client.redis.PDL_CACHE_SECONDS
 import no.nav.sosialhjelp.soknad.client.redis.PERSON_CACHE_KEY_PREFIX
 import no.nav.sosialhjelp.soknad.client.redis.RedisService
 import no.nav.sosialhjelp.soknad.client.sts.StsClient
-import no.nav.sosialhjelp.soknad.consumer.exceptions.PdlApiException
-import no.nav.sosialhjelp.soknad.consumer.exceptions.TjenesteUtilgjengeligException
 import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.HEADER_TEMA
 import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.TEMA_KOM
 import no.nav.sosialhjelp.soknad.personalia.person.dto.BarnDto
@@ -72,7 +72,7 @@ class HentPersonClientImpl(
             pdlPerson
         } catch (e: PdlApiException) {
             throw e
-        } catch (e: java.lang.Exception) {
+        } catch (e: Exception) {
             log.error("Kall til PDL feilet (hentPerson)")
             throw TjenesteUtilgjengeligException("Noe uventet feilet ved kall til PDL", e)
         }
@@ -105,7 +105,7 @@ class HentPersonClientImpl(
             pdlEktefelle
         } catch (e: PdlApiException) {
             throw e
-        } catch (e: java.lang.Exception) {
+        } catch (e: Exception) {
             log.error("Kall til PDL feilet (hentEktefelle)")
             throw TjenesteUtilgjengeligException("Noe uventet feilet ved kall til PDL", e)
         }
@@ -138,7 +138,7 @@ class HentPersonClientImpl(
             pdlBarn
         } catch (e: PdlApiException) {
             throw e
-        } catch (e: java.lang.Exception) {
+        } catch (e: Exception) {
             log.error("Kall til PDL feilet (hentBarn)")
             throw TjenesteUtilgjengeligException("Noe uventet feilet ved kall til PDL", e)
         }
