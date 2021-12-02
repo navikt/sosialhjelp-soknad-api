@@ -115,7 +115,7 @@ internal class UtbetalingRessursTest {
 
         val slot = slot<SoknadUnderArbeid>()
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(slot), any()) } just runs
-        
+
         val utbetalingerFrontend = UtbetalingerFrontend(bekreftelse = false)
         utbetalingRessurs.updateUtbetalinger(BEHANDLINGSID, utbetalingerFrontend)
 
@@ -138,7 +138,7 @@ internal class UtbetalingRessursTest {
 
         val slot = slot<SoknadUnderArbeid>()
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(slot), any()) } just runs
-        
+
         val utbetalingerFrontend = UtbetalingerFrontend(bekreftelse = false)
         utbetalingRessurs.updateUtbetalinger(BEHANDLINGSID, utbetalingerFrontend)
 
@@ -161,7 +161,7 @@ internal class UtbetalingRessursTest {
 
         val slot = slot<SoknadUnderArbeid>()
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(slot), any()) } just runs
-        
+
         val utbetalingerFrontend = UtbetalingerFrontend(
             bekreftelse = true,
             utbytte = false,
@@ -193,7 +193,7 @@ internal class UtbetalingRessursTest {
 
         val slot = slot<SoknadUnderArbeid>()
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(slot), any()) } just runs
-        
+
         val utbetalingerFrontend = UtbetalingerFrontend(
             bekreftelse = true,
             utbytte = true,
@@ -227,7 +227,7 @@ internal class UtbetalingRessursTest {
 
         val slot = slot<SoknadUnderArbeid>()
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(slot), any()) } just runs
-        
+
         val utbetalingerFrontend = UtbetalingerFrontend(bekreftelse = false)
         utbetalingRessurs.updateUtbetalinger(BEHANDLINGSID, utbetalingerFrontend)
 
