@@ -4,6 +4,7 @@ import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
 import no.nav.sosialhjelp.soknad.arbeid.ArbeidRessurs;
 import no.nav.sosialhjelp.soknad.inntekt.formue.FormueRessurs;
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.BostotteRessurs;
+import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.SystemregistrertInntektRessurs;
 import no.nav.sosialhjelp.soknad.inntekt.studielan.StudielanRessurs;
 import no.nav.sosialhjelp.soknad.inntekt.verdi.VerdiRessurs;
 import no.nav.sosialhjelp.soknad.navenhet.NavEnhetRessurs;
@@ -36,6 +37,7 @@ public class SoknadApplication extends ResourceConfig {
         register(BostotteRessurs.class);
         register(FormueRessurs.class);
         register(VerdiRessurs.class);
+        register(SystemregistrertInntektRessurs.class);
 
         register(JacksonJaxbJsonProvider.class);
         register(MultiPartFeature.class);
