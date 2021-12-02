@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.inntekt
 
+import no.nav.sosialhjelp.soknad.inntekt.andreinntekter.UtbetalingRessurs
 import no.nav.sosialhjelp.soknad.inntekt.formue.FormueRessurs
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.BostotteRessurs
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.SystemregistrertInntektRessurs
@@ -14,6 +15,7 @@ import org.springframework.context.annotation.Import
     BostotteRessurs::class,
     FormueRessurs::class,
     VerdiRessurs::class,
-    SystemregistrertInntektRessurs::class
+    SystemregistrertInntektRessurs::class,
+    UtbetalingRessurs::class,
 )
 open class InntektConfig
