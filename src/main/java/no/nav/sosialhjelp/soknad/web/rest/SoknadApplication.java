@@ -6,6 +6,7 @@ import no.nav.sosialhjelp.soknad.inntekt.andreinntekter.UtbetalingRessurs;
 import no.nav.sosialhjelp.soknad.inntekt.formue.FormueRessurs;
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.BostotteRessurs;
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.SystemregistrertInntektRessurs;
+import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkattbarInntektRessurs;
 import no.nav.sosialhjelp.soknad.inntekt.studielan.StudielanRessurs;
 import no.nav.sosialhjelp.soknad.inntekt.verdi.VerdiRessurs;
 import no.nav.sosialhjelp.soknad.navenhet.NavEnhetRessurs;
@@ -40,6 +41,7 @@ public class SoknadApplication extends ResourceConfig {
         register(VerdiRessurs.class);
         register(SystemregistrertInntektRessurs.class);
         register(UtbetalingRessurs.class);
+        register(SkattbarInntektRessurs.class);
 
         register(JacksonJaxbJsonProvider.class);
         register(MultiPartFeature.class);
