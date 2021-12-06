@@ -31,7 +31,7 @@ import no.nav.sosialhjelp.soknad.oppsummering.OppsummeringConfig;
 import no.nav.sosialhjelp.soknad.organisasjon.OrganisasjonConfig;
 import no.nav.sosialhjelp.soknad.personalia.kontonummer.KontonummerConfig;
 import no.nav.sosialhjelp.soknad.personalia.person.PersonConfig;
-import no.nav.sosialhjelp.soknad.personalia.telefonnummer.DkifConfig;
+import no.nav.sosialhjelp.soknad.personalia.telefonnummer.TelefonnummerConfig;
 import no.nav.sosialhjelp.soknad.vedlegg.virusscan.VirusScanConfig;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -56,7 +56,7 @@ import org.springframework.context.annotation.Import;
         HusbankenClientConfig.class,
         OrganisasjonConfig.class,
         ArbeidsforholdConfig.class,
-        DkifConfig.class,
+        TelefonnummerConfig.class,
         NavEnhetConfig.class,
         KodeverkConfig.class,
         StsConfig.class,

@@ -14,7 +14,7 @@ import javax.ws.rs.client.ClientRequestContext
 import javax.ws.rs.client.ClientRequestFilter
 
 @Configuration
-open class DkifConfig(
+open class TelefonnummerConfig(
     @Value("\${dkif_api_baseurl}") private val baseurl: String,
     private val redisService: RedisService
 ) {
@@ -40,6 +40,11 @@ open class DkifConfig(
     @Bean
     open fun mobiltelefonService(dkifClient: DkifClient): MobiltelefonService {
         return MobiltelefonServiceImpl(dkifClient)
+    }
+
+    @Bean
+    open fun telefonnummerSystemdata(mobiltelefonService: MobiltelefonService): TelefonnummerSystemdata {
+        return TelefonnummerSystemdata(mobiltelefonService)
     }
 
     private val client: Client
