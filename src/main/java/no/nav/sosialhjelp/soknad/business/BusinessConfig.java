@@ -15,7 +15,6 @@ import no.nav.sosialhjelp.soknad.business.service.systemdata.AdresseSystemdata;
 import no.nav.sosialhjelp.soknad.business.service.systemdata.BasisPersonaliaSystemdata;
 import no.nav.sosialhjelp.soknad.business.service.systemdata.BostotteSystemdata;
 import no.nav.sosialhjelp.soknad.business.service.systemdata.FamilieSystemdata;
-import no.nav.sosialhjelp.soknad.business.service.systemdata.TelefonnummerSystemdata;
 import no.nav.sosialhjelp.soknad.business.service.systemdata.UtbetalingerFraNavSystemdata;
 import no.nav.sosialhjelp.soknad.consumer.ConsumerConfig;
 import org.springframework.context.annotation.Configuration;
@@ -32,7 +31,6 @@ import org.springframework.context.annotation.Import;
         AvbrytAutomatiskSheduler.class,
         SlettSoknadUnderArbeidScheduler.class,
         SystemdataUpdater.class,
-        TelefonnummerSystemdata.class,
         UtbetalingerFraNavSystemdata.class,
         BasisPersonaliaSystemdata.class,
         AdresseSystemdata.class,
