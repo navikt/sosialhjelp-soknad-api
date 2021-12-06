@@ -23,15 +23,14 @@ class SkatteetatenSystemdata(
         val jsonData = soknadUnderArbeid.jsonInternalSoknad.soknad.data
         val personIdentifikator = jsonData.personalia.personIdentifikator.verdi
         val okonomiOpplysningUtbetalinger = jsonData.okonomi.opplysninger.utbetaling
-        if (jsonData.okonomi.opplysninger.bekreftelse.any {
-            it.type.equals(UTBETALING_SKATTEETATEN_SAMTYKKE, ignoreCase = true) && it.verdi
-        }
-        ) {
+        val bekreftelser = jsonData.okonomi.opplysninger.bekreftelse
+
+        if (bekreftelser.any { it.type.equals(UTBETALING_SKATTEETATEN_SAMTYKKE, ignoreCase = true) && it.verdi }) {
             val systemUtbetalingerSkattbar = innhentSkattbarSystemregistrertInntekt(personIdentifikator)
             if (systemUtbetalingerSkattbar == null) {
                 soknadUnderArbeid.jsonInternalSoknad.soknad.driftsinformasjon.inntektFraSkatteetatenFeilet = true
             } else {
-                jsonData.okonomi.opplysninger.bekreftelse
+                bekreftelser
                     .firstOrNull { it.type.equals(UTBETALING_SKATTEETATEN_SAMTYKKE, ignoreCase = true) }
                     ?.withBekreftelsesDato(SoknadUnderArbeidService.nowWithForcedNanoseconds())
                 fjernGamleUtbetalinger(okonomiOpplysningUtbetalinger)
