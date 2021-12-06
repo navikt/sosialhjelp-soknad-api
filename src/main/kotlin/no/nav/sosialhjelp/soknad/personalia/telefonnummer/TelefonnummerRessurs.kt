@@ -20,16 +20,14 @@ import javax.ws.rs.core.MediaType
 @ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4])
 @Path("/soknader/{behandlingsId}/personalia/telefonnummer")
 @Timed
-@Produces(
-    MediaType.APPLICATION_JSON
-)
-class TelefonnummerRessurs(
+@Produces(MediaType.APPLICATION_JSON)
+open class TelefonnummerRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val telefonnummerSystemdata: TelefonnummerSystemdata,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository
 ) {
     @GET
-    fun hentTelefonnummer(@PathParam("behandlingsId") behandlingsId: String?): TelefonnummerFrontend {
+    open fun hentTelefonnummer(@PathParam("behandlingsId") behandlingsId: String?): TelefonnummerFrontend {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
         val eier = SubjectHandler.getUserId()
         val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
@@ -47,7 +45,7 @@ class TelefonnummerRessurs(
     }
 
     @PUT
-    fun updateTelefonnummer(
+    open fun updateTelefonnummer(
         @PathParam("behandlingsId") behandlingsId: String?,
         telefonnummerFrontend: TelefonnummerFrontend
     ) {
