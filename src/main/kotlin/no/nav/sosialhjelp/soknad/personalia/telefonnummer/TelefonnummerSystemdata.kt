@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory
 class TelefonnummerSystemdata(
     private val mobiltelefonService: MobiltelefonService
 ) : Systemdata {
-    override fun updateSystemdataIn(soknadUnderArbeid: SoknadUnderArbeid, token: String) {
+    override fun updateSystemdataIn(soknadUnderArbeid: SoknadUnderArbeid, token: String?) {
         val personalia = soknadUnderArbeid.jsonInternalSoknad.soknad.data.personalia
         val telefonnummer = personalia.telefonnummer
         if (telefonnummer == null || telefonnummer.kilde == JsonKilde.SYSTEM) {
