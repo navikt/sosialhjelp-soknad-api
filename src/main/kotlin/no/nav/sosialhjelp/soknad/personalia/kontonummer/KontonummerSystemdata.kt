@@ -7,7 +7,7 @@ import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
 class KontonummerSystemdata(
     private val kontonummerService: KontonummerService
 ) : Systemdata {
-    override fun updateSystemdataIn(soknadUnderArbeid: SoknadUnderArbeid, token: String) {
+    override fun updateSystemdataIn(soknadUnderArbeid: SoknadUnderArbeid, token: String?) {
         val personalia = soknadUnderArbeid.jsonInternalSoknad.soknad.data.personalia
         val kontonummer = personalia.kontonummer
         val personIdentifikator = personalia.personIdentifikator.verdi
