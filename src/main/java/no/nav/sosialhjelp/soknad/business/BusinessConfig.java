@@ -12,11 +12,9 @@ import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.TextHelpers;
 import no.nav.sosialhjelp.soknad.business.service.ServiceConfig;
 import no.nav.sosialhjelp.soknad.business.service.soknadservice.SystemdataUpdater;
 import no.nav.sosialhjelp.soknad.business.service.systemdata.AdresseSystemdata;
-import no.nav.sosialhjelp.soknad.business.service.systemdata.ArbeidsforholdSystemdata;
 import no.nav.sosialhjelp.soknad.business.service.systemdata.BasisPersonaliaSystemdata;
 import no.nav.sosialhjelp.soknad.business.service.systemdata.BostotteSystemdata;
 import no.nav.sosialhjelp.soknad.business.service.systemdata.FamilieSystemdata;
-import no.nav.sosialhjelp.soknad.business.service.systemdata.SkattetatenSystemdata;
 import no.nav.sosialhjelp.soknad.business.service.systemdata.TelefonnummerSystemdata;
 import no.nav.sosialhjelp.soknad.business.service.systemdata.UtbetalingerFraNavSystemdata;
 import no.nav.sosialhjelp.soknad.consumer.ConsumerConfig;
@@ -36,12 +34,10 @@ import org.springframework.context.annotation.Import;
         SystemdataUpdater.class,
         TelefonnummerSystemdata.class,
         UtbetalingerFraNavSystemdata.class,
-        ArbeidsforholdSystemdata.class,
         BasisPersonaliaSystemdata.class,
         AdresseSystemdata.class,
         FamilieSystemdata.class,
         BostotteSystemdata.class,
-        SkattetatenSystemdata.class,
         PdfGenerator.class,
         TextHelpers.class,
         SosialhjelpPdfGenerator.class

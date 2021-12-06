@@ -11,7 +11,6 @@ import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.Sokn
 import no.nav.sosialhjelp.soknad.business.mappers.OkonomiMapper.removeBekreftelserIfPresent
 import no.nav.sosialhjelp.soknad.business.mappers.OkonomiMapper.setBekreftelse
 import no.nav.sosialhjelp.soknad.business.service.TextService
-import no.nav.sosialhjelp.soknad.business.service.systemdata.SkattetatenSystemdata
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler
 import no.nav.sosialhjelp.soknad.web.sikkerhet.Tilgangskontroll
 import no.nav.sosialhjelp.soknad.web.utils.Constants
@@ -34,7 +33,7 @@ import javax.ws.rs.core.MediaType
 open class SkattbarInntektRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
-    private val skattetatenSystemdata: SkattetatenSystemdata,
+    private val skatteetatenSystemdata: SkatteetatenSystemdata,
     private val textService: TextService
 ) {
     @GET
@@ -79,7 +78,7 @@ open class SkattbarInntektRessurs(
             )
         }
         if (skalLagre) {
-            skattetatenSystemdata.updateSystemdataIn(soknad)
+            skatteetatenSystemdata.updateSystemdataIn(soknad)
             soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
         }
     }

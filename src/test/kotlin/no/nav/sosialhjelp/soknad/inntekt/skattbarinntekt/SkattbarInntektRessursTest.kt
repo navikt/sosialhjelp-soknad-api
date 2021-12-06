@@ -13,7 +13,6 @@ import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.Sokn
 import no.nav.sosialhjelp.soknad.business.mappers.OkonomiMapper
 import no.nav.sosialhjelp.soknad.business.service.TextService
 import no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService
-import no.nav.sosialhjelp.soknad.business.service.systemdata.SkattetatenSystemdata
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.domain.model.exception.AuthorizationException
 import no.nav.sosialhjelp.soknad.domain.model.oidc.StaticSubjectHandlerService
@@ -29,10 +28,10 @@ internal class SkattbarInntektRessursTest {
 
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
     private val tilgangskontroll: Tilgangskontroll = mockk()
-    private val skattetatenSystemdata: SkattetatenSystemdata = mockk()
+    private val skatteetatenSystemdata: SkatteetatenSystemdata = mockk()
     private val textService: TextService = mockk()
     private val skattbarInntektRessurs =
-        SkattbarInntektRessurs(tilgangskontroll, soknadUnderArbeidRepository, skattetatenSystemdata, textService)
+        SkattbarInntektRessurs(tilgangskontroll, soknadUnderArbeidRepository, skatteetatenSystemdata, textService)
 
     @BeforeEach
     fun setUp() {
@@ -88,12 +87,12 @@ internal class SkattbarInntektRessursTest {
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(soknadUnderArbeidSlot), any()) } just runs
 
         val systemdataSlot = slot<SoknadUnderArbeid>()
-        every { skattetatenSystemdata.updateSystemdataIn(capture(systemdataSlot)) } just runs
+        every { skatteetatenSystemdata.updateSystemdataIn(capture(systemdataSlot)) } just runs
 
         skattbarInntektRessurs.updateSamtykke(BEHANDLINGSID, true, "token")
 
         // Sjekker kaller til bostotteSystemdata
-        verify { skattetatenSystemdata.updateSystemdataIn(systemdataSlot.captured) }
+        verify { skatteetatenSystemdata.updateSystemdataIn(systemdataSlot.captured) }
 
         val okonomi = systemdataSlot.captured.jsonInternalSoknad.soknad.data.okonomi
         val fangetBekreftelse = okonomi.opplysninger.bekreftelse[0]
@@ -121,12 +120,12 @@ internal class SkattbarInntektRessursTest {
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(soknadUnderArbeidSlot), any()) } just runs
 
         val systemdataSlot = slot<SoknadUnderArbeid>()
-        every { skattetatenSystemdata.updateSystemdataIn(capture(systemdataSlot)) } just runs
+        every { skatteetatenSystemdata.updateSystemdataIn(capture(systemdataSlot)) } just runs
 
         skattbarInntektRessurs.updateSamtykke(BEHANDLINGSID, false, "token")
 
         // Sjekker kaller til skattbarInntektSystemdata
-        verify { skattetatenSystemdata.updateSystemdataIn(systemdataSlot.captured) }
+        verify { skatteetatenSystemdata.updateSystemdataIn(systemdataSlot.captured) }
 
         val okonomi = systemdataSlot.captured.jsonInternalSoknad.soknad.data.okonomi
         val fangetBekreftelse = okonomi.opplysninger.bekreftelse[0]
@@ -152,7 +151,7 @@ internal class SkattbarInntektRessursTest {
         skattbarInntektRessurs.updateSamtykke(BEHANDLINGSID, false, "token")
 
         // Sjekker kaller til skattbarInntektSystemdata
-        verify(exactly = 0) { skattetatenSystemdata.updateSystemdataIn(any()) }
+        verify(exactly = 0) { skatteetatenSystemdata.updateSystemdataIn(any()) }
 
         // Sjekker lagring av soknaden
         verify(exactly = 0) { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) }
