@@ -45,7 +45,7 @@ import javax.ws.rs.core.MediaType
 @Path("/informasjon")
 @Produces(MediaType.APPLICATION_JSON)
 @Timed
-class InformasjonRessurs(
+open class InformasjonRessurs(
     private val messageSource: NavMessageSource,
     private val adresseSokService: AdressesokService,
     private val kommuneInfoService: KommuneInfoService,
@@ -61,7 +61,7 @@ class InformasjonRessurs(
 
     @GET
     @Path("/fornavn")
-    fun hentFornavn(): Map<String?, String?>? {
+    open fun hentFornavn(): Map<String?, String?>? {
         val fnr = SubjectHandler.getUserId()
         val (fornavn1) = personService.hentPerson(fnr) ?: return HashMap()
         val fornavn = fornavn1 ?: ""
@@ -73,7 +73,7 @@ class InformasjonRessurs(
     @Unprotected
     @GET
     @Path("/tekster")
-    fun hentTekster(@QueryParam("type") type: String, @QueryParam("sprak") sprak: String?): Properties? {
+    open fun hentTekster(@QueryParam("type") type: String, @QueryParam("sprak") sprak: String?): Properties? {
         var type = type
         var sprak = sprak
         if (sprak == null || sprak.trim { it <= ' ' }.isEmpty()) {
@@ -92,7 +92,7 @@ class InformasjonRessurs(
 
     @GET
     @Path("/utslagskriterier/sosialhjelp")
-    fun getUtslagskriterier(): Map<String, Any>? {
+    open fun getUtslagskriterier(): Map<String, Any>? {
         val uid = SubjectHandler.getUserId()
         val adressebeskyttelse = personService.hentAdressebeskyttelse(uid)
         val resultat: MutableMap<String, Any> = java.util.HashMap()
@@ -109,13 +109,13 @@ class InformasjonRessurs(
 
     @GET
     @Path("/adressesok")
-    fun adresseSok(@QueryParam("sokestreng") sokestreng: String?): List<AdresseForslag?>? {
+    open fun adresseSok(@QueryParam("sokestreng") sokestreng: String?): List<AdresseForslag?>? {
         return adresseSokService.sokEtterAdresser(sokestreng)
     }
 
     @POST
     @Path("/actions/logg")
-    fun loggFraKlient(logg: Logg) {
+    open fun loggFraKlient(logg: Logg) {
         val level = logg.level
         when (level) {
             "INFO" -> klientlogger.info(logg.melding())
@@ -127,7 +127,7 @@ class InformasjonRessurs(
 
     @GET
     @Path("/kommunelogg")
-    fun triggeKommunelogg(@QueryParam("kommunenummer") kommunenummer: String): String? {
+    open fun triggeKommunelogg(@QueryParam("kommunenummer") kommunenummer: String): String? {
         logger.info(
             "Kommuneinfo trigget for {}: {}",
             kommunenummer,
@@ -139,7 +139,7 @@ class InformasjonRessurs(
     @Unprotected
     @GET
     @Path("/kommuneinfo")
-    fun hentKommuneinfo(): Map<String, KommuneInfoFrontend> {
+    open fun hentKommuneinfo(): Map<String, KommuneInfoFrontend> {
         if (NedetidUtils.isInnenforNedetid()) {
             return java.util.HashMap()
         }
@@ -150,7 +150,7 @@ class InformasjonRessurs(
 
     @GET
     @Path("/harNyligInnsendteSoknader")
-    fun harNyligInnsendteSoknader(): NyligInnsendteSoknaderResponse {
+    open fun harNyligInnsendteSoknader(): NyligInnsendteSoknaderResponse {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
         val eier = SubjectHandler.getUserId()
         val grense = LocalDateTime.now().minusDays(FJORTEN_DAGER.toLong())
@@ -160,7 +160,7 @@ class InformasjonRessurs(
 
     @GET
     @Path("/pabegynteSoknader")
-    fun hentPabegynteSoknader(): List<PabegyntSoknad> {
+    open fun hentPabegynteSoknader(): List<PabegyntSoknad> {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
         val fnr = SubjectHandler.getUserId()
         logger.debug("Henter pabegynte soknader for bruker")
