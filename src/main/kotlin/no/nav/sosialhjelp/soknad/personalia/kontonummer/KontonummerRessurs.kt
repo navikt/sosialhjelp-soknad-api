@@ -57,11 +57,11 @@ open class KontonummerRessurs(
         if (kontonummerFrontend.brukerdefinert) {
             kontonummer.kilde = JsonKilde.BRUKER
             kontonummer.verdi = if (kontonummerFrontend.brukerutfyltVerdi == "") null else kontonummerFrontend.brukerutfyltVerdi
-            kontonummer.harIkkeKonto = kontonummerFrontend.harIkkeKonto
+            kontonummer.setHarIkkeKonto(kontonummerFrontend.harIkkeKonto ?: null)
         } else if (kontonummer.kilde == JsonKilde.BRUKER) {
             kontonummer.kilde = JsonKilde.SYSTEM
             kontonummerSystemdata.updateSystemdataIn(soknad, "")
-            kontonummer.harIkkeKonto = null
+            kontonummer.setHarIkkeKonto(null)
         }
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
     }
