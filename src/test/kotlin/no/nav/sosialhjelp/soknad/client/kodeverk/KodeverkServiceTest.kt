@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.client.kodeverk
 
+import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
 import no.nav.sosialhjelp.soknad.client.kodeverk.KodeverkService.Companion.SPRAAKKODE_NB
@@ -10,6 +11,7 @@ import no.nav.sosialhjelp.soknad.client.redis.KODEVERK_LAST_POLL_TIME_KEY
 import no.nav.sosialhjelp.soknad.client.redis.KOMMUNER_CACHE_KEY
 import no.nav.sosialhjelp.soknad.client.redis.RedisService
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -33,6 +35,11 @@ internal class KodeverkServiceTest {
     private val kodeverkClient: KodeverkClient = mockk()
     private val redisService: RedisService = mockk()
     private val kodeverkService = KodeverkService(kodeverkClient, redisService)
+
+    @BeforeEach
+    internal fun setUp() {
+        clearAllMocks()
+    }
 
     @Test
     internal fun `skal hente kommunenummer for kommunenavn fra client`() {

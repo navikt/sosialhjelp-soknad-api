@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.arbeid
 
+import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
 import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper
@@ -17,6 +18,7 @@ import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkattbarInntektService
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkatteetatenSystemdata
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -29,6 +31,11 @@ internal class ArbeidsforholdSystemdataTest {
 
     private val arbeidsforholdSystemdata = ArbeidsforholdSystemdata(arbeidsforholdService, textService)
     private val skatteetatenSystemdata = SkatteetatenSystemdata(skattbarInntektService, mockk(), textService)
+
+    @BeforeEach
+    internal fun setUp() {
+        clearAllMocks()
+    }
 
     @Test
     fun skalOppdatereArbeidsforhold() {
@@ -99,14 +106,17 @@ internal class ArbeidsforholdSystemdataTest {
     @Test
     fun skalFjerneArbeidsforholdOgFjerneUtbetalingOgInntekt() {
         val soknadUnderArbeid = SoknadUnderArbeid()
+            .withEier(EIER)
             .withJsonInternalSoknad(createSoknadUnderArbeidWithArbeidsforholdAndSluttOppgjorAndLonnslipp())
+
+        every { arbeidsforholdService.hentArbeidsforhold(any()) } returns null
 
         arbeidsforholdSystemdata.updateSystemdataIn(soknadUnderArbeid, "")
 
         val jsonArbeidsforholdList = soknadUnderArbeid.jsonInternalSoknad.soknad.data.arbeid.forhold
         val utbetalinger = soknadUnderArbeid.jsonInternalSoknad.soknad.data.okonomi.opplysninger.utbetaling
         val inntekter = soknadUnderArbeid.jsonInternalSoknad.soknad.data.okonomi.oversikt.inntekt
-        assertThat(jsonArbeidsforholdList).isEmpty()
+        assertThat(jsonArbeidsforholdList).isNull()
         assertThat(utbetalinger).isEmpty()
         assertThat(inntekter).isEmpty()
     }

@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.personalia.person
 
+import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -19,6 +20,7 @@ import no.nav.sosialhjelp.soknad.personalia.person.dto.PersonDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.SivilstandDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.SivilstandType
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -41,6 +43,11 @@ internal class PersonServiceTest {
     private val mockPersonDto = mockk<PersonDto>()
     private val mockEktefelleDto = mockk<EktefelleDto>()
     private val mockBarnDto = mockk<BarnDto>()
+
+    @BeforeEach
+    internal fun setUp() {
+        clearAllMocks()
+    }
 
     @Test
     fun skalHentePersonMedEktefelle() {
@@ -142,7 +149,7 @@ internal class PersonServiceTest {
         every { mockPersonDto.forelderBarnRelasjon } returns listOf(ForelderBarnRelasjonDto(FDAT_IDENT, "BARN", "MOR"))
 
         val result = personService.hentBarnForPerson("ident")
-        assertThat(result).isEmpty()
+        assertThat(result).isNull()
 
         verify(exactly = 0) { hentPersonClient.hentBarn(any()) }
         verify(exactly = 0) { mapper.barnDtoToDomain(any(), any(), any()) }

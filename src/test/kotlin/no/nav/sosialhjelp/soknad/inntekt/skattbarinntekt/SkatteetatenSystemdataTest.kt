@@ -168,7 +168,8 @@ internal class SkatteetatenSystemdataTest {
         bekreftelser.removeIf { it.type.equals(SoknadJsonTyper.UTBETALING_SKATTEETATEN_SAMTYKKE, ignoreCase = true) }
         bekreftelser
             .add(
-                JsonOkonomibekreftelse().withKilde(JsonKilde.SYSTEM)
+                JsonOkonomibekreftelse()
+                    .withKilde(JsonKilde.SYSTEM)
                     .withType(SoknadJsonTyper.UTBETALING_SKATTEETATEN_SAMTYKKE)
                     .withVerdi(harSamtykke)
                     .withTittel("beskrivelse")

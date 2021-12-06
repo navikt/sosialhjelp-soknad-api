@@ -31,9 +31,9 @@ class ArbeidsforholdSystemdata(
         updateVedleggForventninger(internalSoknad, textService)
     }
 
-    fun innhentSystemArbeidsforhold(personIdentifikator: String?): List<JsonArbeidsforhold>? {
+    fun innhentSystemArbeidsforhold(personIdentifikator: String): List<JsonArbeidsforhold>? {
         val arbeidsforholds: List<Arbeidsforhold>? = try {
-            arbeidsforholdService.hentArbeidsforhold(personIdentifikator!!)
+            arbeidsforholdService.hentArbeidsforhold(personIdentifikator)
         } catch (e: Exception) {
             LOG.warn("Kunne ikke hente arbeidsforhold", e)
             null
