@@ -103,7 +103,8 @@ internal class InformasjonRessursTest {
     @Test
     fun skalReturnereMappetListeOverDigisosKommuner() {
         val digisosKommuner: MutableMap<String, KommuneInfo> = HashMap()
-        digisosKommuner["1234"] = KommuneInfo("1234",
+        digisosKommuner["1234"] = KommuneInfo(
+            "1234",
             kanMottaSoknader = true,
             kanOppdatereStatus = true,
             harMidlertidigDeaktivertMottak = false,
@@ -112,7 +113,8 @@ internal class InformasjonRessursTest {
             harNksTilgang = false,
             behandlingsansvarlig = null
         )
-        digisosKommuner["5678"] = KommuneInfo("5678",
+        digisosKommuner["5678"] = KommuneInfo(
+            "5678",
             kanMottaSoknader = true,
             kanOppdatereStatus = true,
             harMidlertidigDeaktivertMottak = true,
