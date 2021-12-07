@@ -26,11 +26,11 @@ open class BostotteSystemdata(
     private val textService: TextService
 ) {
 
-    open fun updateSystemdataIn(soknadUnderArbeid: SoknadUnderArbeid, token: String?) {
+    open fun updateSystemdataIn(soknadUnderArbeid: SoknadUnderArbeid, token: String) {
         val soknad = soknadUnderArbeid.jsonInternalSoknad.soknad
         val okonomi = soknad.data.okonomi
         if (okonomi.opplysninger.bekreftelse.any { it.type.equals(BOSTOTTE_SAMTYKKE, ignoreCase = true) && it.verdi }) {
-            val bostotte = token?.let { innhentBostotteFraHusbanken(it) }
+            val bostotte = innhentBostotteFraHusbanken(token)
             if (bostotte != null) {
                 okonomi.opplysninger.bekreftelse
                     .firstOrNull { it.type.equals(BOSTOTTE_SAMTYKKE, ignoreCase = true) }
