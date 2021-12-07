@@ -12,7 +12,6 @@ import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.TextHelpers;
 import no.nav.sosialhjelp.soknad.business.service.ServiceConfig;
 import no.nav.sosialhjelp.soknad.business.service.soknadservice.SystemdataUpdater;
 import no.nav.sosialhjelp.soknad.business.service.systemdata.BostotteSystemdata;
-import no.nav.sosialhjelp.soknad.business.service.systemdata.UtbetalingerFraNavSystemdata;
 import no.nav.sosialhjelp.soknad.consumer.ConsumerConfig;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -28,7 +27,6 @@ import org.springframework.context.annotation.Import;
         AvbrytAutomatiskSheduler.class,
         SlettSoknadUnderArbeidScheduler.class,
         SystemdataUpdater.class,
-        UtbetalingerFraNavSystemdata.class,
         BostotteSystemdata.class,
         PdfGenerator.class,
         TextHelpers.class,
