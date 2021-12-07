@@ -21,7 +21,7 @@ import no.nav.sosialhjelp.soknad.client.sts.StsConfig;
 import no.nav.sosialhjelp.soknad.client.svarut.SvarUtConfig;
 import no.nav.sosialhjelp.soknad.consumer.fiks.DokumentKrypterer;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.DigisosApiRestConfig;
-import no.nav.sosialhjelp.soknad.inntekt.husbanken.HusbankenClientConfig;
+import no.nav.sosialhjelp.soknad.inntekt.husbanken.BostotteConfig;
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.NavUtbetalingerConfig;
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkattbarInntektConfig;
 import no.nav.sosialhjelp.soknad.navenhet.NavEnhetConfig;
@@ -53,7 +53,7 @@ import org.springframework.context.annotation.Import;
         IdPortenServiceImpl.class,
         MaskinportenClientConfig.class,
         SkattbarInntektConfig.class,
-        HusbankenClientConfig.class,
+        BostotteConfig.class,
         OrganisasjonConfig.class,
         ArbeidsforholdConfig.class,
         TelefonnummerConfig.class,
