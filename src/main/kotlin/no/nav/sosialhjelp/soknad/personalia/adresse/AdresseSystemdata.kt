@@ -9,7 +9,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonPostboksAdresse
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonUstrukturertAdresse
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia
-import no.nav.sosialhjelp.soknad.business.service.soknadservice.Systemdata
+import no.nav.sosialhjelp.soknad.common.systemdata.Systemdata
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Bostedsadresse

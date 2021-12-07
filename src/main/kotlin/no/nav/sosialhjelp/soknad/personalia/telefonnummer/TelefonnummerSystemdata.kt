@@ -2,13 +2,14 @@ package no.nav.sosialhjelp.soknad.personalia.telefonnummer
 
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonTelefonnummer
-import no.nav.sosialhjelp.soknad.business.service.soknadservice.Systemdata
+import no.nav.sosialhjelp.soknad.common.systemdata.Systemdata
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
 import org.slf4j.LoggerFactory
 
 class TelefonnummerSystemdata(
     private val mobiltelefonService: MobiltelefonService
 ) : Systemdata {
+
     override fun updateSystemdataIn(soknadUnderArbeid: SoknadUnderArbeid) {
         val personalia = soknadUnderArbeid.jsonInternalSoknad.soknad.data.personalia
         val telefonnummer = personalia.telefonnummer

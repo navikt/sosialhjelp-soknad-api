@@ -31,6 +31,7 @@ import no.nav.sosialhjelp.soknad.business.batch.oppgave.OppgaveHandterer;
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository;
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata;
 import no.nav.sosialhjelp.soknad.business.service.HenvendelseService;
+import no.nav.sosialhjelp.soknad.common.systemdata.SystemdataUpdater;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeidStatus;
 import no.nav.sosialhjelp.soknad.domain.Vedleggstatus;

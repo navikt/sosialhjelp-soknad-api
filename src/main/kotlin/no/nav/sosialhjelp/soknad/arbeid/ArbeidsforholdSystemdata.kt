@@ -15,7 +15,7 @@ import no.nav.sosialhjelp.soknad.business.mappers.OkonomiMapper.removeInntektIfP
 import no.nav.sosialhjelp.soknad.business.mappers.OkonomiMapper.removeUtbetalingIfPresentInOpplysninger
 import no.nav.sosialhjelp.soknad.business.mappers.TitleKeyMapper.soknadTypeToTitleKey
 import no.nav.sosialhjelp.soknad.business.service.TextService
-import no.nav.sosialhjelp.soknad.business.service.soknadservice.Systemdata
+import no.nav.sosialhjelp.soknad.common.systemdata.Systemdata
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
 import org.slf4j.LoggerFactory
 

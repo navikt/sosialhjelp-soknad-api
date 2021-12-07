@@ -9,7 +9,7 @@ import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.Sokn
 import no.nav.sosialhjelp.soknad.business.exceptions.SoknadenHarNedetidException;
 import no.nav.sosialhjelp.soknad.business.service.HenvendelseService;
 import no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService;
-import no.nav.sosialhjelp.soknad.business.service.soknadservice.SystemdataUpdater;
+import no.nav.sosialhjelp.soknad.common.systemdata.SystemdataUpdater;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import no.nav.sosialhjelp.soknad.web.sikkerhet.Tilgangskontroll;

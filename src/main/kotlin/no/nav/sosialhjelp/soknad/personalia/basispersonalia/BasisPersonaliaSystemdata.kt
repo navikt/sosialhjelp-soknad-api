@@ -6,7 +6,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonIdentifikator
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonSokernavn
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonStatsborgerskap
-import no.nav.sosialhjelp.soknad.business.service.soknadservice.Systemdata
+import no.nav.sosialhjelp.soknad.common.systemdata.Systemdata
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Person
