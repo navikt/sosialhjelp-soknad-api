@@ -1,7 +1,9 @@
 package no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt
 
 import no.nav.sosialhjelp.metrics.MetricsFactory.createTimerProxy
+import no.nav.sosialhjelp.soknad.business.service.TextService
 import no.nav.sosialhjelp.soknad.client.maskinporten.MaskinportenClient
+import no.nav.sosialhjelp.soknad.organisasjon.OrganisasjonService
 import no.nav.sosialhjelp.soknad.web.selftest.Pingable
 import no.nav.sosialhjelp.soknad.web.selftest.Pingable.Ping
 import no.nav.sosialhjelp.soknad.web.selftest.Pingable.Ping.PingMetadata
@@ -39,6 +41,15 @@ open class SkattbarInntektConfig(
                 Ping.feilet(metadata, e)
             }
         }
+    }
+
+    @Bean
+    open fun skatteetatenSystemdata(
+        skattbarInntektService: SkattbarInntektService,
+        organisasjonService: OrganisasjonService,
+        textService: TextService
+    ): SkatteetatenSystemdata {
+        return SkatteetatenSystemdata(skattbarInntektService, organisasjonService, textService)
     }
 
     private val skatteetatenWebClient: WebClient

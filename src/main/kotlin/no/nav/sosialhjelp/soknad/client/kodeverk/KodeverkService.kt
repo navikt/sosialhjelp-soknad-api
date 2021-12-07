@@ -87,8 +87,7 @@ open class KodeverkService(
                 val dtos = it.value
                 if (dtos.isNotEmpty() && dtos[0].beskrivelser?.get(SPRAAKKODE_NB)?.term != null) {
                     term.equals(dtos[0].beskrivelser?.get(SPRAAKKODE_NB)?.term, ignoreCase = true)
-                }
-                false
+                } else false
             }
             ?.key
     }
