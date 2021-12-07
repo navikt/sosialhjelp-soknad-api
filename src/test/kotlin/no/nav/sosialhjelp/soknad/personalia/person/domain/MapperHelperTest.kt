@@ -95,7 +95,7 @@ internal class MapperHelperTest {
             DEC_1_MIDDAG,
             DEC_1_MIDDAG
         )
-        val sivilstandFraPdl = createSivilstand(SivilstandType.GIFT, "PDL", "NAV", DEC_1_MIDDAG)
+        val sivilstandFraPdl = createSivilstand(SivilstandType.GIFT, "PDL", "NAV", DEC_1_MORGEN)
         val list = listOf(sivilstandFraFreg, sivilstandFraPdl)
         val result = helper.utledGjeldendeSivilstand(list)
         assertThat(result).isEqualTo(sivilstandFraFreg)

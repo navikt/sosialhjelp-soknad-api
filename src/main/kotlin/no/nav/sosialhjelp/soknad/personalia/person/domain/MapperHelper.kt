@@ -25,15 +25,15 @@ class MapperHelper {
             return null
         }
         // sorter sivilstander på synkende endringstidspunkt
-        sivilstander.sortedByDescending { getEndringstidspunktOrNull(it) }
+        val sorted = sivilstander.sortedWith(compareBy(nullsLast(reverseOrder())) { getEndringstidspunktOrNull(it) })
 
-        if (sivilstander.size > 1) {
+        if (sorted.size > 1) {
             log.info(
-                "Flere gjeldende sivilstander funnet i PDL: [{}]", sivilstander.joinToString(separator = ",") { it.type.toString() }
+                "Flere gjeldende sivilstander funnet i PDL: [{}]", sorted.joinToString(separator = ",") { it.type.toString() }
             )
         }
-        val sistEndredeSivilstand = sivilstander[0]
-        if (sistEndredeSivilstand == null || flereSivilstanderRegistrertSamtidig(sistEndredeSivilstand, sivilstander) ||
+        val sistEndredeSivilstand = sorted[0]
+        if (sistEndredeSivilstand == null || flereSivilstanderRegistrertSamtidig(sistEndredeSivilstand, sorted) ||
             sistEndredeSivilstand.type == SivilstandType.UOPPGITT ||
             //  Kommentert ut fordi vi ikke er 100% sikre på om vi skal vise sivilstander fra udokumenterte kilder (master == "bruker selv").
             //  Hvis disse skal filtreres vekk, kan linjen kommenteres inn igjen.
@@ -55,14 +55,13 @@ class MapperHelper {
         if (navn == null || navn.isEmpty()) {
             return null
         }
+        val sorted = navn.sortedWith(compareBy(nullsLast(reverseOrder())) { getEndringstidspunktOrNull(it) })
 
-        navn.sortedByDescending { getEndringstidspunktOrNull(it) }
-
-        if (navn.size > 1) {
+        if (sorted.size > 1) {
             log.info("Flere gjeldende navn funnet i PDL")
         }
-        val sistEndredeNavn = navn[0]
-        if (flereNavnRegistrertSamtidig(sistEndredeNavn, navn) ||
+        val sistEndredeNavn = sorted[0]
+        if (flereNavnRegistrertSamtidig(sistEndredeNavn, sorted) ||
             // Kommentert ut fordi vi ikke er 100% sikre på om vi skal vise navn fra udokumenterte kilder (master == "bruker selv").
             // Hvis disse skal filtreres vekk, kan linjen kommenteres inn igjen.
             // || erKildeUdokumentert(sistEndredeNavn)

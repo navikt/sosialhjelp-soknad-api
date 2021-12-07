@@ -31,7 +31,7 @@ internal class NavUtbetalingerServiceTest {
             "orgnr"
         )
 
-        every { navUtbetalingerClient.getUtbetalingerSiste40Dager(any()) } returns NavUtbetalingerDto(listOf(utbetaling), true)
+        every { navUtbetalingerClient.getUtbetalingerSiste40Dager(any()) } returns NavUtbetalingerDto(listOf(utbetaling), false)
 
         val navUtbetalinger = navUtbetalingerService.getUtbetalingerSiste40Dager("ident")
 
@@ -73,7 +73,7 @@ internal class NavUtbetalingerServiceTest {
             "orgnr"
         )
 
-        every { navUtbetalingerClient.getUtbetalingerSiste40Dager(any()) } returns NavUtbetalingerDto(listOf(utbetaling), true)
+        every { navUtbetalingerClient.getUtbetalingerSiste40Dager(any()) } returns NavUtbetalingerDto(listOf(utbetaling), false)
 
         val navUtbetalinger = navUtbetalingerService.getUtbetalingerSiste40Dager("ident")
 

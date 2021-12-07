@@ -32,12 +32,12 @@ import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.Sokn
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata;
 import no.nav.sosialhjelp.soknad.business.service.HenvendelseService;
 import no.nav.sosialhjelp.soknad.business.service.systemdata.BostotteSystemdata;
-import no.nav.sosialhjelp.soknad.business.service.systemdata.SkattetatenSystemdata;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeidStatus;
 import no.nav.sosialhjelp.soknad.domain.Vedleggstatus;
 import no.nav.sosialhjelp.soknad.domain.model.exception.SosialhjelpSoknadApiException;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
+import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkatteetatenSystemdata;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -71,7 +71,7 @@ public class SoknadService {
     private final SoknadUnderArbeidRepository soknadUnderArbeidRepository;
     private final SystemdataUpdater systemdataUpdater;
     private final BostotteSystemdata bostotteSystemdata;
-    private final SkattetatenSystemdata skattetatenSystemdata;
+    private final SkatteetatenSystemdata skatteetatenSystemdata;
 
     public SoknadService(
             HenvendelseService henvendelseService,
@@ -82,7 +82,7 @@ public class SoknadService {
             SoknadUnderArbeidRepository soknadUnderArbeidRepository,
             SystemdataUpdater systemdataUpdater,
             BostotteSystemdata bostotteSystemdata,
-            SkattetatenSystemdata skattetatenSystemdata
+            SkatteetatenSystemdata skatteetatenSystemdata
     ) {
         this.henvendelseService = henvendelseService;
         this.oppgaveHandterer = oppgaveHandterer;
@@ -92,7 +92,7 @@ public class SoknadService {
         this.soknadUnderArbeidRepository = soknadUnderArbeidRepository;
         this.systemdataUpdater = systemdataUpdater;
         this.bostotteSystemdata = bostotteSystemdata;
-        this.skattetatenSystemdata = skattetatenSystemdata;
+        this.skatteetatenSystemdata = skatteetatenSystemdata;
     }
 
     @Transactional
@@ -203,7 +203,7 @@ public class SoknadService {
         final String eier = SubjectHandler.getUserId();
         final SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
         if (harSkatteetatenSamtykke) {
-            skattetatenSystemdata.updateSystemdataIn(soknadUnderArbeid);
+            skatteetatenSystemdata.updateSystemdataIn(soknadUnderArbeid);
         }
         if (harBostotteSamtykke) {
             bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid, token);

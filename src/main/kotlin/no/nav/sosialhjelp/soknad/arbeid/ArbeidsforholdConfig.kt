@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import no.nav.sosialhjelp.soknad.business.service.TextService
 import no.nav.sosialhjelp.soknad.client.sts.StsClient
 import no.nav.sosialhjelp.soknad.consumer.common.rest.RestUtils
 import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.HEADER_NAV_APIKEY
@@ -47,6 +48,14 @@ open class ArbeidsforholdConfig(
                 Ping.feilet(metadata, e)
             }
         }
+    }
+
+    @Bean
+    open fun arbeidsforholdSystemdata(
+        arbeidsforholdService: ArbeidsforholdService,
+        textService: TextService
+    ): ArbeidsforholdSystemdata {
+        return ArbeidsforholdSystemdata(arbeidsforholdService, textService)
     }
 
     private val arbeidsforholdClient: Client
