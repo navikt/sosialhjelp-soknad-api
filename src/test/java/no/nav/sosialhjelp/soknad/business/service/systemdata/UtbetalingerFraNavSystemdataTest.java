@@ -82,7 +82,7 @@ class UtbetalingerFraNavSystemdataTest {
         List<NavUtbetaling> nav_utbetalinger = Arrays.asList(NAV_UTBETALING_1, NAV_UTBETALING_2);
         when(navUtbetalingerService.getUtbetalingerSiste40Dager(anyString())).thenReturn(nav_utbetalinger);
 
-        utbetalingerFraNavSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
+        utbetalingerFraNavSystemdata.updateSystemdataIn(soknadUnderArbeid);
 
         List<JsonOkonomiOpplysningUtbetaling> jsonUtbetalinger = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getUtbetaling();
         JsonOkonomiOpplysningUtbetaling utbetaling = jsonUtbetalinger.get(0);
@@ -99,7 +99,7 @@ class UtbetalingerFraNavSystemdataTest {
         List<NavUtbetaling> nav_utbetalinger = Arrays.asList(NAV_UTBETALING_1, NAV_UTBETALING_2, NAV_UTBETALING_3);
         when(navUtbetalingerService.getUtbetalingerSiste40Dager(anyString())).thenReturn(nav_utbetalinger);
 
-        utbetalingerFraNavSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
+        utbetalingerFraNavSystemdata.updateSystemdataIn(soknadUnderArbeid);
 
         List<JsonOkonomiOpplysningUtbetaling> jsonUtbetalinger = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getUtbetaling();
         JsonOkonomiOpplysningUtbetaling utbetaling = jsonUtbetalinger.get(0);
@@ -119,7 +119,7 @@ class UtbetalingerFraNavSystemdataTest {
         List<NavUtbetaling> utbetalinger = singletonList(NAV_UTBETALING_1);
         when(navUtbetalingerService.getUtbetalingerSiste40Dager(anyString())).thenReturn(utbetalinger);
 
-        utbetalingerFraNavSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
+        utbetalingerFraNavSystemdata.updateSystemdataIn(soknadUnderArbeid);
 
         List<JsonOkonomiOpplysningUtbetaling> jsonUtbetalinger = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getOkonomi().getOpplysninger().getUtbetaling();
         JsonOkonomiOpplysningUtbetaling utbetaling = jsonUtbetalinger.get(0);

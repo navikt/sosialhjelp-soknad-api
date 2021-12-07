@@ -31,7 +31,7 @@ public class BasisPersonaliaSystemdata implements Systemdata {
     }
 
     @Override
-    public void updateSystemdataIn(SoknadUnderArbeid soknadUnderArbeid, String token) {
+    public void updateSystemdataIn(SoknadUnderArbeid soknadUnderArbeid) {
         final JsonPersonalia personalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
         final String personIdentifikator = personalia.getPersonIdentifikator().getVerdi();
         final JsonPersonalia systemPersonalia = innhentSystemBasisPersonalia(personIdentifikator);

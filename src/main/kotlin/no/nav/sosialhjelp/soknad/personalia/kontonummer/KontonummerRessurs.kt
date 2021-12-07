@@ -60,7 +60,7 @@ open class KontonummerRessurs(
             kontonummer.setHarIkkeKonto(kontonummerFrontend.harIkkeKonto ?: null)
         } else if (kontonummer.kilde == JsonKilde.BRUKER) {
             kontonummer.kilde = JsonKilde.SYSTEM
-            kontonummerSystemdata.updateSystemdataIn(soknad, "")
+            kontonummerSystemdata.updateSystemdataIn(soknad)
             kontonummer.setHarIkkeKonto(null)
         }
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)

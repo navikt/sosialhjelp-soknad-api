@@ -41,7 +41,7 @@ public class UtbetalingerFraNavSystemdata implements Systemdata {
     }
 
     @Override
-    public void updateSystemdataIn(SoknadUnderArbeid soknadUnderArbeid, String token) {
+    public void updateSystemdataIn(SoknadUnderArbeid soknadUnderArbeid) {
         JsonData jsonData = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData();
         String personIdentifikator = jsonData.getPersonalia().getPersonIdentifikator().getVerdi();
         List<JsonOkonomiOpplysningUtbetaling> okonomiOpplysningUtbetalinger = jsonData.getOkonomi().getOpplysninger().getUtbetaling();

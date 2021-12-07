@@ -148,7 +148,7 @@ class FamilieSystemdataTest {
         when(personService.hentPerson(anyString())).thenReturn(person);
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
 
-        familieSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
+        familieSystemdata.updateSystemdataIn(soknadUnderArbeid);
 
         String internalSoknad = writer.writeValueAsString(soknadUnderArbeid.getJsonInternalSoknad());
         ensureValidInternalSoknad(internalSoknad);
@@ -169,7 +169,7 @@ class FamilieSystemdataTest {
         when(personService.hentPerson(anyString())).thenReturn(person);
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
 
-        familieSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
+        familieSystemdata.updateSystemdataIn(soknadUnderArbeid);
 
         String internalSoknad = writer.writeValueAsString(soknadUnderArbeid.getJsonInternalSoknad());
         ensureValidInternalSoknad(internalSoknad);
@@ -199,7 +199,7 @@ class FamilieSystemdataTest {
         when(personService.hentPerson(anyString())).thenReturn(person);
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
 
-        familieSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
+        familieSystemdata.updateSystemdataIn(soknadUnderArbeid);
 
         String internalSoknad = writer.writeValueAsString(soknadUnderArbeid.getJsonInternalSoknad());
         ensureValidInternalSoknad(internalSoknad);
@@ -219,7 +219,7 @@ class FamilieSystemdataTest {
         when(personService.hentBarnForPerson(anyString())).thenReturn(asList(BARN, BARN_2));
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
 
-        familieSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
+        familieSystemdata.updateSystemdataIn(soknadUnderArbeid);
 
         String internalSoknad = writer.writeValueAsString(soknadUnderArbeid.getJsonInternalSoknad());
         ensureValidInternalSoknad(internalSoknad);
@@ -241,7 +241,7 @@ class FamilieSystemdataTest {
         when(personService.hentBarnForPerson(anyString())).thenReturn(emptyList());
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
 
-        familieSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
+        familieSystemdata.updateSystemdataIn(soknadUnderArbeid);
 
         String internalSoknad = writer.writeValueAsString(soknadUnderArbeid.getJsonInternalSoknad());
         ensureValidInternalSoknad(internalSoknad);
@@ -265,7 +265,7 @@ class FamilieSystemdataTest {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid()
                 .withJsonInternalSoknad(jsonInternalSoknad);
 
-        familieSystemdata.updateSystemdataIn(soknadUnderArbeid, "token");
+        familieSystemdata.updateSystemdataIn(soknadUnderArbeid);
 
         String internalSoknad = writer.writeValueAsString(soknadUnderArbeid.getJsonInternalSoknad());
         ensureValidInternalSoknad(internalSoknad);
@@ -300,7 +300,7 @@ class FamilieSystemdataTest {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid()
                 .withJsonInternalSoknad(jsonInternalSoknad);
 
-        familieSystemdata.updateSystemdataIn(soknadUnderArbeid, "token");
+        familieSystemdata.updateSystemdataIn(soknadUnderArbeid);
 
         String internalSoknad = writer.writeValueAsString(soknadUnderArbeid.getJsonInternalSoknad());
         ensureValidInternalSoknad(internalSoknad);
@@ -322,7 +322,7 @@ class FamilieSystemdataTest {
         when(personService.hentBarnForPerson(anyString())).thenReturn(asList(BARN, BARN_2));
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createJsonInternalSoknadWithBarnWithUserFilledInfoOnSystemBarn());
 
-        familieSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
+        familieSystemdata.updateSystemdataIn(soknadUnderArbeid);
 
         String internalSoknad = writer.writeValueAsString(soknadUnderArbeid.getJsonInternalSoknad());
         ensureValidInternalSoknad(internalSoknad);
@@ -347,7 +347,7 @@ class FamilieSystemdataTest {
         when(personService.hentPerson(anyString())).thenReturn(person);
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
 
-        familieSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
+        familieSystemdata.updateSystemdataIn(soknadUnderArbeid);
 
         String internalSoknad = writer.writeValueAsString(soknadUnderArbeid.getJsonInternalSoknad());
         ensureValidInternalSoknad(internalSoknad);

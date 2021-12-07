@@ -46,7 +46,7 @@ internal class ArbeidsforholdSystemdataTest {
         every { arbeidsforholdService.hentArbeidsforhold(any()) } returns arbeidsforholdList
         every { textService.getJsonOkonomiTittel(any()) } returns "tittel"
 
-        arbeidsforholdSystemdata.updateSystemdataIn(soknadUnderArbeid, "")
+        arbeidsforholdSystemdata.updateSystemdataIn(soknadUnderArbeid)
 
         val jsonArbeidsforholdList = soknadUnderArbeid.jsonInternalSoknad.soknad.data.arbeid.forhold
         val jsonArbeidsforhold = jsonArbeidsforholdList[0]
@@ -71,7 +71,7 @@ internal class ArbeidsforholdSystemdataTest {
         every { skattbarInntektService.hentUtbetalinger(any()) } returns null
 
         skatteetatenSystemdata.updateSystemdataIn(soknadUnderArbeid)
-        arbeidsforholdSystemdata.updateSystemdataIn(soknadUnderArbeid, "")
+        arbeidsforholdSystemdata.updateSystemdataIn(soknadUnderArbeid)
 
         val inntekt = soknadUnderArbeid.jsonInternalSoknad.soknad.data.okonomi.oversikt.inntekt[0]
         assertThat(inntekt.kilde).isEqualTo(JsonKilde.BRUKER)
@@ -94,7 +94,7 @@ internal class ArbeidsforholdSystemdataTest {
         every { skattbarInntektService.hentUtbetalinger(any()) } returns null
 
         skatteetatenSystemdata.updateSystemdataIn(soknadUnderArbeid)
-        arbeidsforholdSystemdata.updateSystemdataIn(soknadUnderArbeid, "")
+        arbeidsforholdSystemdata.updateSystemdataIn(soknadUnderArbeid)
 
         val utbetaling = soknadUnderArbeid.jsonInternalSoknad.soknad.data.okonomi.opplysninger.utbetaling[0]
         assertThat(utbetaling.kilde).isEqualTo(JsonKilde.BRUKER)
@@ -111,7 +111,7 @@ internal class ArbeidsforholdSystemdataTest {
 
         every { arbeidsforholdService.hentArbeidsforhold(any()) } returns null
 
-        arbeidsforholdSystemdata.updateSystemdataIn(soknadUnderArbeid, "")
+        arbeidsforholdSystemdata.updateSystemdataIn(soknadUnderArbeid)
 
         val jsonArbeidsforholdList = soknadUnderArbeid.jsonInternalSoknad.soknad.data.arbeid.forhold
         val utbetalinger = soknadUnderArbeid.jsonInternalSoknad.soknad.data.okonomi.opplysninger.utbetaling

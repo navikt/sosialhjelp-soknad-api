@@ -106,7 +106,7 @@ internal class KontonummerRessursTest {
     fun putKontonummerSkalOverskriveBrukerutfyltKontonummerMedSystemKontonummer() {
         startWithBrukerKontonummerAndSystemKontonummerInTPS()
         every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
-        every { kontonummerSystemdata.updateSystemdataIn(any(), any()) } answers { callOriginal() }
+        every { kontonummerSystemdata.updateSystemdataIn(any()) } answers { callOriginal() }
 
         val slot = slot<SoknadUnderArbeid>()
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(slot), any()) } just runs

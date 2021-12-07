@@ -43,7 +43,7 @@ class BasisPersonaliaSystemdataTest {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         when(personService.hentPerson(anyString())).thenReturn(null);
 
-        basisPersonaliaSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
+        basisPersonaliaSystemdata.updateSystemdataIn(soknadUnderArbeid);
 
         JsonPersonalia jsonPersonalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
 
@@ -63,7 +63,7 @@ class BasisPersonaliaSystemdataTest {
         var soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         when(personService.hentPerson(anyString())).thenReturn(person);
 
-        basisPersonaliaSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
+        basisPersonaliaSystemdata.updateSystemdataIn(soknadUnderArbeid);
 
         JsonPersonalia jsonPersonalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
 
@@ -85,7 +85,7 @@ class BasisPersonaliaSystemdataTest {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         when(personService.hentPerson(anyString())).thenReturn(person);
 
-        basisPersonaliaSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
+        basisPersonaliaSystemdata.updateSystemdataIn(soknadUnderArbeid);
 
         JsonPersonalia jsonPersonalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
 
@@ -101,7 +101,7 @@ class BasisPersonaliaSystemdataTest {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         when(personService.hentPerson(anyString())).thenReturn(person);
 
-        basisPersonaliaSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
+        basisPersonaliaSystemdata.updateSystemdataIn(soknadUnderArbeid);
 
         JsonPersonalia jsonPersonalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
 
@@ -117,7 +117,7 @@ class BasisPersonaliaSystemdataTest {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         when(personService.hentPerson(anyString())).thenReturn(person);
 
-        basisPersonaliaSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
+        basisPersonaliaSystemdata.updateSystemdataIn(soknadUnderArbeid);
 
         JsonPersonalia jsonPersonalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
 
@@ -140,7 +140,7 @@ class BasisPersonaliaSystemdataTest {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         when(personService.hentPerson(anyString())).thenReturn(person);
 
-        basisPersonaliaSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
+        basisPersonaliaSystemdata.updateSystemdataIn(soknadUnderArbeid);
 
         JsonPersonalia jsonPersonalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
 
@@ -154,7 +154,7 @@ class BasisPersonaliaSystemdataTest {
         SoknadUnderArbeid soknadUnderArbeid = new SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER));
         when(personService.hentPerson(anyString())).thenReturn(person);
 
-        basisPersonaliaSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
+        basisPersonaliaSystemdata.updateSystemdataIn(soknadUnderArbeid);
 
         JsonPersonalia jsonPersonalia = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia();
 

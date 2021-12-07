@@ -63,7 +63,7 @@ open class TelefonnummerRessurs(
             }
         } else {
             jsonTelefonnummer.kilde = JsonKilde.SYSTEM
-            telefonnummerSystemdata.updateSystemdataIn(soknad, "")
+            telefonnummerSystemdata.updateSystemdataIn(soknad)
         }
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
     }

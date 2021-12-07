@@ -14,7 +14,7 @@ public class SystemdataUpdater {
         this.systemdatas = systemdatas;
     }
 
-    public void update(SoknadUnderArbeid soknadUnderArbeid, String token) {
-        systemdatas.forEach(s -> s.updateSystemdataIn(soknadUnderArbeid, token));
+    public void update(SoknadUnderArbeid soknadUnderArbeid) {
+        systemdatas.forEach(s -> s.updateSystemdataIn(soknadUnderArbeid));
     }
 }

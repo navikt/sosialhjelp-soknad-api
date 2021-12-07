@@ -124,7 +124,7 @@ internal class TelefonnummerRessursTest {
             createJsonInternalSoknadWithTelefonnummer(JsonKilde.BRUKER, TELEFONNUMMER_BRUKER)
         every { telefonnummerSystemdata.innhentSystemverdiTelefonnummer(any()) } returns TELEFONNUMMER_SYSTEM
         every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
-        every { telefonnummerSystemdata.updateSystemdataIn(any(), any()) } answers { callOriginal() }
+        every { telefonnummerSystemdata.updateSystemdataIn(any()) } answers { callOriginal() }
 
         val soknadUnderArbeidSlot = slot<SoknadUnderArbeid>()
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(soknadUnderArbeidSlot), any()) } just runs

@@ -120,7 +120,7 @@ public class SoknadService {
                 .withOpprettetDato(LocalDateTime.now())
                 .withSistEndretDato(LocalDateTime.now());
 
-        systemdataUpdater.update(soknadUnderArbeid, token);
+        systemdataUpdater.update(soknadUnderArbeid);
 
         soknadUnderArbeidRepository.opprettSoknad(soknadUnderArbeid, aktorId);
 

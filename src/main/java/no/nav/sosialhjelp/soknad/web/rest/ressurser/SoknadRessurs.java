@@ -112,7 +112,7 @@ public class SoknadRessurs {
         tilgangskontroll.verifiserAtBrukerHarTilgang();
         final String eier = SubjectHandler.getUserId();
         final SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
-        systemdata.update(soknadUnderArbeid, token);
+        systemdata.update(soknadUnderArbeid);
 
         final JsonInternalSoknad updatedJsonInternalSoknad = soknadUnderArbeid.getJsonInternalSoknad();
         SoknadUnderArbeid notUpdatedSoknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);

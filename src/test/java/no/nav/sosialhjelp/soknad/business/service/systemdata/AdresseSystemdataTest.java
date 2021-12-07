@@ -44,7 +44,7 @@ class AdresseSystemdataTest {
         var personWithBostedsadresseVegadresse = createPersonWithBostedsadresse(new Bostedsadresse("", DEFAULT_VEGADRESSE, null));
         when(personService.hentPerson(anyString())).thenReturn(personWithBostedsadresseVegadresse);
 
-        adresseSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
+        adresseSystemdata.updateSystemdataIn(soknadUnderArbeid);
 
         var folkeregistrertAdresse = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getFolkeregistrertAdresse();
         var bostedsadresseVegadresse = personWithBostedsadresseVegadresse.getBostedsadresse().getVegadresse();
@@ -73,7 +73,7 @@ class AdresseSystemdataTest {
         );
         when(personService.hentPerson(anyString())).thenReturn(personWithBostedsadresseMatrikkeladresse);
 
-        adresseSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
+        adresseSystemdata.updateSystemdataIn(soknadUnderArbeid);
 
         var folkeregistrertAdresse = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getFolkeregistrertAdresse();
 
@@ -98,7 +98,7 @@ class AdresseSystemdataTest {
         );
         when(personService.hentPerson(anyString())).thenReturn(personWithOppholdsadresse);
 
-        adresseSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
+        adresseSystemdata.updateSystemdataIn(soknadUnderArbeid);
 
         var folkeregistrertAdresse = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getFolkeregistrertAdresse();
         var oppholdsadresse = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getOppholdsadresse();
@@ -130,7 +130,7 @@ class AdresseSystemdataTest {
         var personWithBostedsadresseVegadresse = createPersonWithBostedsadresse(new Bostedsadresse("", DEFAULT_VEGADRESSE, null));
         when(personService.hentPerson(anyString())).thenReturn(personWithBostedsadresseVegadresse);
 
-        adresseSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
+        adresseSystemdata.updateSystemdataIn(soknadUnderArbeid);
 
         var folkeregistrertAdresse = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getFolkeregistrertAdresse();
         var oppholdsadresse = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getOppholdsadresse();
@@ -154,7 +154,7 @@ class AdresseSystemdataTest {
         var personWithBostedsadresseVegadresse = createPersonWithBostedsadresse(new Bostedsadresse("", DEFAULT_VEGADRESSE, null));
         when(personService.hentPerson(anyString())).thenReturn(personWithBostedsadresseVegadresse);
 
-        adresseSystemdata.updateSystemdataIn(soknadUnderArbeid, "");
+        adresseSystemdata.updateSystemdataIn(soknadUnderArbeid);
 
         var oppholdsadresse = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getOppholdsadresse();
         var postadresse = soknadUnderArbeid.getJsonInternalSoknad().getSoknad().getData().getPersonalia().getPostadresse();
