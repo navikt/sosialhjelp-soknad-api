@@ -10,7 +10,7 @@ import java.time.LocalDate
 import java.util.Optional
 
 interface HusbankenClient {
-    fun hentBostotte(token: String, fra: LocalDate, til: LocalDate): Optional<BostotteDto>
+    fun hentBostotte(token: String?, fra: LocalDate, til: LocalDate): Optional<BostotteDto>
     fun ping()
 }
 
@@ -18,11 +18,11 @@ class HusbankenClientImpl(
     private val webClient: WebClient
 ) : HusbankenClient {
 
-    override fun hentBostotte(token: String, fra: LocalDate, til: LocalDate): Optional<BostotteDto> {
+    override fun hentBostotte(token: String?, fra: LocalDate, til: LocalDate): Optional<BostotteDto> {
         return try {
             webClient.get()
                 .uri { it.queryParam("fra", fra).queryParam("til", til).build() }
-                .headers { it.add(HttpHeaders.AUTHORIZATION, token) }
+                .headers { headers -> token?.let { headers.add(HttpHeaders.AUTHORIZATION, it) } }
                 .retrieve()
                 .bodyToMono<BostotteDto>()
                 .doOnSuccess { log.info("Hentet bostøtte informasjon fra Husbanken!") }

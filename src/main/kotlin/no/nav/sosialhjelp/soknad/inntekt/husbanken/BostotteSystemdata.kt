@@ -26,7 +26,7 @@ open class BostotteSystemdata(
     private val textService: TextService
 ) {
 
-    open fun updateSystemdataIn(soknadUnderArbeid: SoknadUnderArbeid, token: String) {
+    open fun updateSystemdataIn(soknadUnderArbeid: SoknadUnderArbeid, token: String?) {
         val soknad = soknadUnderArbeid.jsonInternalSoknad.soknad
         val okonomi = soknad.data.okonomi
         if (okonomi.opplysninger.bekreftelse.any { it.type.equals(BOSTOTTE_SAMTYKKE, ignoreCase = true) && it.verdi }) {
@@ -73,7 +73,7 @@ open class BostotteSystemdata(
         return harNyeSaker || harNyeUtbetalinger
     }
 
-    private fun innhentBostotteFraHusbanken(token: String): Bostotte? {
+    private fun innhentBostotteFraHusbanken(token: String?): Bostotte? {
         val optionalDto = husbankenClient.hentBostotte(token, LocalDate.now().minusDays(60), LocalDate.now())
         return optionalDto.map { it.toDomain() }.orElse(null)
     }

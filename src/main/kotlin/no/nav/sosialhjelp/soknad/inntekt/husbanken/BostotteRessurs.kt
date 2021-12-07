@@ -99,7 +99,7 @@ open class BostotteRessurs(
     open fun updateSamtykke(
         @PathParam("behandlingsId") behandlingsId: String,
         samtykke: Boolean,
-        @HeaderParam(value = HttpHeaders.AUTHORIZATION) token: String
+        @HeaderParam(value = HttpHeaders.AUTHORIZATION) token: String?
     ) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         val eier = SubjectHandler.getUserId()
