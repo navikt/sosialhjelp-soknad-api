@@ -45,5 +45,4 @@ open class BasisPersonaliaRessurs(
             nordiskBorger = if (jsonPersonalia.nordiskBorger != null) jsonPersonalia.nordiskBorger.verdi else null
         )
     }
-
 }

@@ -99,9 +99,11 @@ internal class BasisPersonaliaSystemdataTest {
     @Test
     fun skalPrioritereNordiskStatsborgerskap() {
         val person = Person(
-            FORNAVN, MELLOMNAVN, ETTERNAVN, EIER, "ugift", listOf(
+            FORNAVN, MELLOMNAVN, ETTERNAVN, EIER, "ugift",
+            listOf(
                 IKKE_NORDISK_STATSBORGERSKAP, NORDISK_STATSBORGERSKAP
-            ), null, null, null, null
+            ),
+            null, null, null, null
         )
         val soknadUnderArbeid = SoknadUnderArbeid()
             .withJsonInternalSoknad(SoknadService.createEmptyJsonInternalSoknad(EIER))
@@ -119,9 +121,11 @@ internal class BasisPersonaliaSystemdataTest {
     @Test
     fun skalOppdatereIkkeNordiskPersonalia() {
         val person = Person(
-            FORNAVN, MELLOMNAVN, ETTERNAVN, EIER, "ugift", listOf(
+            FORNAVN, MELLOMNAVN, ETTERNAVN, EIER, "ugift",
+            listOf(
                 IKKE_NORDISK_STATSBORGERSKAP
-            ), null, null, null, null
+            ),
+            null, null, null, null
         )
         val soknadUnderArbeid = SoknadUnderArbeid()
             .withJsonInternalSoknad(SoknadService.createEmptyJsonInternalSoknad(EIER))
@@ -142,7 +146,7 @@ internal class BasisPersonaliaSystemdataTest {
         assertThat(jsonPersonalia.nordiskBorger.verdi).isFalse
     }
 
-    //Denne skal fjernes når TPS har oppdatert til å bruke ukjent som XXX istedenfor ???
+    // Denne skal fjernes når TPS har oppdatert til å bruke ukjent som XXX istedenfor ???
     @Test
     fun skalikkeSendeMedStatsborgerskapForUkjent_TPS() {
         val person = Person(FORNAVN, MELLOMNAVN, ETTERNAVN, EIER, "ugift", listOf("???"), null, null, null, null)

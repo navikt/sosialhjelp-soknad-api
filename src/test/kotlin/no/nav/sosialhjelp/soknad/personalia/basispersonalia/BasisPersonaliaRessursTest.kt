@@ -54,11 +54,11 @@ internal class BasisPersonaliaRessursTest {
     fun basisPersonaliaSkalReturnereSystemBasisPersonalia() {
         every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
-                createJsonInternalSoknadWithBasisPersonalia(
-                    withStatsborgerskap = true,
-                    withNordiskBorger = true,
-                    erNordisk = true
-                )
+            createJsonInternalSoknadWithBasisPersonalia(
+                withStatsborgerskap = true,
+                withNordiskBorger = true,
+                erNordisk = true
+            )
         every { kodeverkService.getLand("NOR") } returns "Norge"
 
         val basisPersonaliaFrontend = basisPersonaliaRessurs.hentBasisPersonalia(BEHANDLINGSID)
@@ -69,11 +69,11 @@ internal class BasisPersonaliaRessursTest {
     fun basisPersonaliaSkalReturnereBasisPersonaliaUtenStatsborgerskapOgNordiskBorger() {
         every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
-                createJsonInternalSoknadWithBasisPersonalia(
-                    withStatsborgerskap = false,
-                    withNordiskBorger = false,
-                    erNordisk = true
-                )
+            createJsonInternalSoknadWithBasisPersonalia(
+                withStatsborgerskap = false,
+                withNordiskBorger = false,
+                erNordisk = true
+            )
 
         val basisPersonaliaFrontend = basisPersonaliaRessurs.hentBasisPersonalia(BEHANDLINGSID)
         assertThatPersonaliaIsCorrectlyConverted(basisPersonaliaFrontend, JSON_PERSONALIA_UTEN_STAT_OG_NORDISK)

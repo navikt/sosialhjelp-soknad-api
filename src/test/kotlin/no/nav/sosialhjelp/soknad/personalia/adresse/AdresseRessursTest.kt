@@ -114,7 +114,7 @@ internal class AdresseRessursTest {
     fun adresserSkalReturnereAdresserLikNull() {
         every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
-                createJsonInternalSoknadWithOppholdsadresse(null)
+            createJsonInternalSoknadWithOppholdsadresse(null)
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
         every { adresseSystemdata.innhentMidlertidigAdresse(any()) } returns null
         val adresserFrontend = adresseRessurs.hentAdresser(BEHANDLINGSID)
@@ -152,7 +152,7 @@ internal class AdresseRessursTest {
         every { adresseSystemdata.innhentMidlertidigAdresse(any()) } returns JSON_SYS_USTRUKTURERT_ADRESSE
         every { adresseSystemdata.createDeepCopyOfJsonAdresse(any()) } answers { callOriginal() }
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
-                createJsonInternalSoknadWithOppholdsadresse(JsonAdresseValg.SOKNAD)
+            createJsonInternalSoknadWithOppholdsadresse(JsonAdresseValg.SOKNAD)
         every { navEnhetRessurs.findSoknadsmottaker(any(), any(), any(), any()) } returns listOf(
             NavEnhetFrontend("2", "2222", "Midlertidig NavEnhet", "kommune", "4321", null, null, null, null)
         )
@@ -180,7 +180,7 @@ internal class AdresseRessursTest {
         every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
         every { adresseSystemdata.createDeepCopyOfJsonAdresse(any()) } answers { callOriginal() }
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
-                createJsonInternalSoknadWithOppholdsadresse(JsonAdresseValg.FOLKEREGISTRERT)
+            createJsonInternalSoknadWithOppholdsadresse(JsonAdresseValg.FOLKEREGISTRERT)
         every { navEnhetRessurs.findSoknadsmottaker(any(), any(), any(), any()) } returns listOf(
             NavEnhetFrontend("3", "333", "Soknad NavEnhet", "4321", null, null, null, null, null)
         )
