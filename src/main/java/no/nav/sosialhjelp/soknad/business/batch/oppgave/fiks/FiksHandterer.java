@@ -2,9 +2,9 @@ package no.nav.sosialhjelp.soknad.business.batch.oppgave.fiks;
 
 import no.nav.sosialhjelp.metrics.Event;
 import no.nav.sosialhjelp.metrics.MetricsFactory;
-import no.nav.sosialhjelp.soknad.business.InnsendingService;
 import no.nav.sosialhjelp.soknad.business.batch.oppgave.Oppgave;
 import no.nav.sosialhjelp.soknad.domain.SendtSoknad;
+import no.nav.sosialhjelp.soknad.innsending.InnsendingService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;

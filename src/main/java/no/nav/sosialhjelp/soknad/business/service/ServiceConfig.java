@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.business.service;
 
-import no.nav.sosialhjelp.soknad.business.InnsendingService;
 import no.nav.sosialhjelp.soknad.business.SoknadUnderArbeidService;
 import no.nav.sosialhjelp.soknad.business.service.digisosapi.DigisosApiService;
 import no.nav.sosialhjelp.soknad.business.service.soknadservice.EttersendingService;
@@ -18,7 +17,6 @@ import org.springframework.context.annotation.Import;
         DigisosApiService.class,
         SoknadMetricsService.class,
         HenvendelseService.class,
-        InnsendingService.class,
         SoknadUnderArbeidService.class,
         TextService.class,
         OpplastetVedleggService.class,

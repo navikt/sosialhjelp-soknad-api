@@ -8,7 +8,6 @@ import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
 import no.nav.sosialhjelp.metrics.Event;
 import no.nav.sosialhjelp.metrics.MetricsFactory;
-import no.nav.sosialhjelp.soknad.business.InnsendingService;
 import no.nav.sosialhjelp.soknad.business.SoknadUnderArbeidService;
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository;
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata;
@@ -23,6 +22,7 @@ import no.nav.sosialhjelp.soknad.domain.OpplastetVedlegg;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.domain.Vedleggstatus;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
+import no.nav.sosialhjelp.soknad.innsending.InnsendingService;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 

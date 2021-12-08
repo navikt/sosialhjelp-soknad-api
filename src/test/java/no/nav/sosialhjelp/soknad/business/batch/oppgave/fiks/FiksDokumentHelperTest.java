@@ -5,13 +5,13 @@ import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon;
-import no.nav.sosialhjelp.soknad.business.InnsendingService;
 import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.SosialhjelpPdfGenerator;
 import no.nav.sosialhjelp.soknad.consumer.fiks.DokumentKrypterer;
 import no.nav.sosialhjelp.soknad.domain.OpplastetVedlegg;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.domain.VedleggType;
 import no.nav.sosialhjelp.soknad.domain.Vedleggstatus;
+import no.nav.sosialhjelp.soknad.innsending.InnsendingService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
