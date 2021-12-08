@@ -8,6 +8,9 @@ import no.nav.sosialhjelp.soknad.api.minesaker.MineSakerConfig;
 import no.nav.sosialhjelp.soknad.business.BusinessConfig;
 import no.nav.sosialhjelp.soknad.consumer.ConsumerConfig;
 import no.nav.sosialhjelp.soknad.inntekt.InntektConfig;
+import no.nav.sosialhjelp.soknad.personalia.adresse.AdresseConfig;
+import no.nav.sosialhjelp.soknad.personalia.basispersonalia.BasisPersonaliaConfig;
+import no.nav.sosialhjelp.soknad.personalia.familie.FamilieConfig;
 import no.nav.sosialhjelp.soknad.web.oidc.OidcTokenValidatorConfig;
 import no.nav.sosialhjelp.soknad.web.selftest.SelftestService;
 import no.nav.sosialhjelp.soknad.web.service.SaksoversiktMetadataService;
@@ -33,7 +36,10 @@ import org.springframework.context.annotation.Import;
         MineSakerConfig.class,
         DialogApiConfig.class,
         SoknadOversiktConfig.class,
-        InformasjonConfig.class
+        InformasjonConfig.class,
+        AdresseConfig.class,
+        BasisPersonaliaConfig.class,
+        FamilieConfig.class
 })
 @ComponentScan(basePackages = "no.nav.sosialhjelp.soknad.web.rest")
 public class SoknadinnsendingConfig {

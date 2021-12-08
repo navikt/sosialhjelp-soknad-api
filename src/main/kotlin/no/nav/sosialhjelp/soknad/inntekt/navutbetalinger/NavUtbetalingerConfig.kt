@@ -3,6 +3,7 @@ package no.nav.sosialhjelp.soknad.inntekt.navutbetalinger
 import no.nav.sosialhjelp.soknad.client.redis.RedisService
 import no.nav.sosialhjelp.soknad.consumer.common.rest.RestUtils
 import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.HEADER_NAV_APIKEY
+import no.nav.sosialhjelp.soknad.organisasjon.OrganisasjonService
 import no.nav.sosialhjelp.soknad.web.selftest.Pingable
 import no.nav.sosialhjelp.soknad.web.selftest.Pingable.Ping
 import no.nav.sosialhjelp.soknad.web.selftest.Pingable.Ping.PingMetadata
@@ -39,6 +40,14 @@ open class NavUtbetalingerConfig(
                 Ping.feilet(metadata, e)
             }
         }
+    }
+
+    @Bean
+    open fun utbetalingerFraNavSystemdata(
+        organisasjonService: OrganisasjonService,
+        navUtbetalingerService: NavUtbetalingerService
+    ): UtbetalingerFraNavSystemdata {
+        return UtbetalingerFraNavSystemdata(organisasjonService, navUtbetalingerService)
     }
 
     private val client: Client

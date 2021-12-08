@@ -91,7 +91,7 @@ internal class SkattbarInntektRessursTest {
 
         skattbarInntektRessurs.updateSamtykke(BEHANDLINGSID, true, "token")
 
-        // Sjekker kaller til bostotteSystemdata
+        // Sjekker kaller til skatteetatenSystemdata
         verify { skatteetatenSystemdata.updateSystemdataIn(systemdataSlot.captured) }
 
         val okonomi = systemdataSlot.captured.jsonInternalSoknad.soknad.data.okonomi

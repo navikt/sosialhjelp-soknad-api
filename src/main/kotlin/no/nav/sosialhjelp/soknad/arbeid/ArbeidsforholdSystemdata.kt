@@ -15,7 +15,7 @@ import no.nav.sosialhjelp.soknad.business.mappers.OkonomiMapper.removeInntektIfP
 import no.nav.sosialhjelp.soknad.business.mappers.OkonomiMapper.removeUtbetalingIfPresentInOpplysninger
 import no.nav.sosialhjelp.soknad.business.mappers.TitleKeyMapper.soknadTypeToTitleKey
 import no.nav.sosialhjelp.soknad.business.service.TextService
-import no.nav.sosialhjelp.soknad.business.service.soknadservice.Systemdata
+import no.nav.sosialhjelp.soknad.common.systemdata.Systemdata
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
 import org.slf4j.LoggerFactory
 
@@ -24,7 +24,7 @@ class ArbeidsforholdSystemdata(
     private val textService: TextService
 ) : Systemdata {
 
-    override fun updateSystemdataIn(soknadUnderArbeid: SoknadUnderArbeid, token: String?) {
+    override fun updateSystemdataIn(soknadUnderArbeid: SoknadUnderArbeid) {
         val eier = soknadUnderArbeid.eier
         val internalSoknad = soknadUnderArbeid.jsonInternalSoknad
         internalSoknad.soknad.data.arbeid.forhold = innhentSystemArbeidsforhold(eier)
