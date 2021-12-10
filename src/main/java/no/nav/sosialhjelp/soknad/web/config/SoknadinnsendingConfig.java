@@ -14,6 +14,7 @@ import no.nav.sosialhjelp.soknad.personalia.adresse.AdresseConfig;
 import no.nav.sosialhjelp.soknad.personalia.basispersonalia.BasisPersonaliaConfig;
 import no.nav.sosialhjelp.soknad.personalia.familie.FamilieConfig;
 import no.nav.sosialhjelp.soknad.utdanning.UtdanningConfig;
+import no.nav.sosialhjelp.soknad.utgifter.UtgifterConfig;
 import no.nav.sosialhjelp.soknad.web.oidc.OidcTokenValidatorConfig;
 import no.nav.sosialhjelp.soknad.web.selftest.SelftestService;
 import no.nav.sosialhjelp.soknad.web.service.SaksoversiktMetadataService;
@@ -45,7 +46,8 @@ import org.springframework.context.annotation.Import;
         FamilieConfig.class,
         BegrunnelseConfig.class,
         BosituasjonConfig.class,
-        UtdanningConfig.class
+        UtdanningConfig.class,
+        UtgifterConfig.class
 })
 @ComponentScan(basePackages = "no.nav.sosialhjelp.soknad.web.rest")
 public class SoknadinnsendingConfig {
