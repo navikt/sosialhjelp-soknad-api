@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Import
 
 @Configuration
 @Import(
+    BarneutgiftRessurs::class,
     BoutgiftRessurs::class
 )
 open class UtgifterConfig
