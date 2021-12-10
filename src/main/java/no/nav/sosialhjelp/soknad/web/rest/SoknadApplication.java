@@ -24,6 +24,7 @@ import no.nav.sosialhjelp.soknad.personalia.familie.ForsorgerpliktRessurs;
 import no.nav.sosialhjelp.soknad.personalia.familie.SivilstatusRessurs;
 import no.nav.sosialhjelp.soknad.personalia.kontonummer.KontonummerRessurs;
 import no.nav.sosialhjelp.soknad.personalia.telefonnummer.TelefonnummerRessurs;
+import no.nav.sosialhjelp.soknad.utdanning.UtdanningRessurs;
 import no.nav.sosialhjelp.soknad.web.mdc.MdcFilter;
 import no.nav.sosialhjelp.soknad.web.oidc.OidcResourceFilteringFeature;
 import no.nav.sosialhjelp.soknad.web.sikkerhet.CORSFilter;
@@ -65,6 +66,7 @@ public class SoknadApplication extends ResourceConfig {
         register(BosituasjonRessurs.class);
         register(ForsorgerpliktRessurs.class);
         register(SivilstatusRessurs.class);
+        register(UtdanningRessurs.class);
 
         // eksterne
         register(DittNavMetadataRessurs.class);
