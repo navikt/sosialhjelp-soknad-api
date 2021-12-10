@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.personalia.familie
 
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonNavn
-import no.nav.sosialhjelp.soknad.personalia.basispersonalia.dto.NavnFrontend
+import no.nav.sosialhjelp.soknad.personalia.familie.dto.NavnFrontend
 
 object PersonMapper {
 

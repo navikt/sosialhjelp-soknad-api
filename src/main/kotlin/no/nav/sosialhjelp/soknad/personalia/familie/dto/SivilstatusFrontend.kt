@@ -1,7 +1,6 @@
 package no.nav.sosialhjelp.soknad.personalia.familie.dto
 
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus
-import no.nav.sosialhjelp.soknad.personalia.basispersonalia.dto.NavnFrontend
 
 data class SivilstatusFrontend(
     val kildeErSystem: Boolean?,
