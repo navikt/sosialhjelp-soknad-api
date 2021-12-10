@@ -20,6 +20,7 @@ import no.nav.sosialhjelp.soknad.navenhet.NavEnhetRessurs;
 import no.nav.sosialhjelp.soknad.oppsummering.OppsummeringRessurs;
 import no.nav.sosialhjelp.soknad.personalia.adresse.AdresseRessurs;
 import no.nav.sosialhjelp.soknad.personalia.basispersonalia.BasisPersonaliaRessurs;
+import no.nav.sosialhjelp.soknad.personalia.familie.ForsorgerpliktRessurs;
 import no.nav.sosialhjelp.soknad.personalia.kontonummer.KontonummerRessurs;
 import no.nav.sosialhjelp.soknad.personalia.telefonnummer.TelefonnummerRessurs;
 import no.nav.sosialhjelp.soknad.web.mdc.MdcFilter;
@@ -61,6 +62,7 @@ public class SoknadApplication extends ResourceConfig {
         register(BasisPersonaliaRessurs.class);
         register(BegrunnelseRessurs.class);
         register(BosituasjonRessurs.class);
+        register(ForsorgerpliktRessurs.class);
 
         // eksterne
         register(DittNavMetadataRessurs.class);
