@@ -7,6 +7,7 @@ import no.nav.sosialhjelp.soknad.api.informasjon.InformasjonRessurs;
 import no.nav.sosialhjelp.soknad.api.innsyn.SoknadOversiktRessurs;
 import no.nav.sosialhjelp.soknad.api.minesaker.MineSakerMetadataRessurs;
 import no.nav.sosialhjelp.soknad.arbeid.ArbeidRessurs;
+import no.nav.sosialhjelp.soknad.begrunnelse.BegrunnelseRessurs;
 import no.nav.sosialhjelp.soknad.inntekt.andreinntekter.UtbetalingRessurs;
 import no.nav.sosialhjelp.soknad.inntekt.formue.FormueRessurs;
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.BostotteRessurs;
@@ -57,6 +58,7 @@ public class SoknadApplication extends ResourceConfig {
         register(InformasjonRessurs.class);
         register(AdresseRessurs.class);
         register(BasisPersonaliaRessurs.class);
+        register(BegrunnelseRessurs.class);
 
         // eksterne
         register(DittNavMetadataRessurs.class);
