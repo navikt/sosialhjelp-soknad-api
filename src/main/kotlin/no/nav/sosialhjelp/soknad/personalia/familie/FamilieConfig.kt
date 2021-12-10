@@ -7,7 +7,8 @@ import org.springframework.context.annotation.Import
 
 @Configuration
 @Import(
-    ForsorgerpliktRessurs::class
+    ForsorgerpliktRessurs::class,
+    SivilstatusRessurs::class
 )
 open class FamilieConfig(
     private val personService: PersonService
