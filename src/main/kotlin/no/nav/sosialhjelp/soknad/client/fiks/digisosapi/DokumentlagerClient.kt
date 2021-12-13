@@ -16,7 +16,7 @@ import java.security.cert.X509Certificate
 import javax.ws.rs.core.MediaType
 
 interface DokumentlagerClient {
-    fun getDokumentlagerPublicKeyX509Certificate(token: String): X509Certificate
+    fun getDokumentlagerPublicKeyX509Certificate(token: String?): X509Certificate
 }
 
 class DokumentlagerClientImpl(
@@ -26,7 +26,7 @@ class DokumentlagerClientImpl(
 
     private var cachedPublicKey: X509Certificate? = null
 
-    override fun getDokumentlagerPublicKeyX509Certificate(token: String): X509Certificate {
+    override fun getDokumentlagerPublicKeyX509Certificate(token: String?): X509Certificate {
         cachedPublicKey?.let { return it }
 
         val publicKey = fiksWebClient.get()
