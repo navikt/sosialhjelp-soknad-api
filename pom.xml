@@ -91,7 +91,7 @@
         <unleash.version>3.3.4</unleash.version>
         <resilience4j.version>1.7.1</resilience4j.version>
         <reactor-core.version>3.4.10</reactor-core.version>
-        <reactor-netty-http.version>1.0.11</reactor-netty-http.version>
+        <reactor-netty-http.version>1.0.13</reactor-netty-http.version>
         <log4j.version>2.15.0</log4j.version>
 
         <kotlinx-coroutines.version>1.5.2</kotlinx-coroutines.version>
