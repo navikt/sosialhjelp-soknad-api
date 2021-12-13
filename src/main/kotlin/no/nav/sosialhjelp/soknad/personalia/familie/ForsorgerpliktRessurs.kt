@@ -23,6 +23,7 @@ import no.nav.sosialhjelp.soknad.business.mappers.OkonomiMapper.removeUtgiftIfPr
 import no.nav.sosialhjelp.soknad.business.service.TextService
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler
+import no.nav.sosialhjelp.soknad.personalia.familie.PersonMapper.fulltNavn
 import no.nav.sosialhjelp.soknad.personalia.familie.PersonMapper.getPersonnummerFromFnr
 import no.nav.sosialhjelp.soknad.personalia.familie.PersonMapper.mapToJsonNavn
 import no.nav.sosialhjelp.soknad.personalia.familie.dto.AnsvarFrontend
@@ -239,7 +240,7 @@ open class ForsorgerpliktRessurs(
         return if (barn == null) {
             null
         } else BarnFrontend(
-            navn = NavnFrontend(barn.navn.fornavn, barn.navn.mellomnavn, barn.navn.etternavn),
+            navn = NavnFrontend(barn.navn.fornavn, barn.navn.mellomnavn, barn.navn.etternavn, fulltNavn(barn.navn)),
             fodselsdato = barn.fodselsdato,
             personnummer = getPersonnummerFromFnr(barn.personIdentifikator),
             fodselsnummer = barn.personIdentifikator

@@ -7,6 +7,7 @@ import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.metrics.aspects.Timed
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler
+import no.nav.sosialhjelp.soknad.personalia.familie.PersonMapper.fulltNavn
 import no.nav.sosialhjelp.soknad.personalia.familie.PersonMapper.getPersonnummerFromFnr
 import no.nav.sosialhjelp.soknad.personalia.familie.PersonMapper.mapToJsonNavn
 import no.nav.sosialhjelp.soknad.personalia.familie.dto.EktefelleFrontend
@@ -67,7 +68,7 @@ open class SivilstatusRessurs(
     private fun addEktefelleFrontend(jsonEktefelle: JsonEktefelle): EktefelleFrontend {
         val navn = jsonEktefelle.navn
         return EktefelleFrontend(
-            navn = NavnFrontend(navn.fornavn, navn.mellomnavn, navn.etternavn),
+            navn = NavnFrontend(navn.fornavn, navn.mellomnavn, navn.etternavn, fulltNavn(navn)),
             fodselsdato = jsonEktefelle.fodselsdato,
             personnummer = getPersonnummerFromFnr(jsonEktefelle.personIdentifikator)
         )
