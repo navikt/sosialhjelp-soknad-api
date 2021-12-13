@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.vedlegg.dto
 
 data class FilFrontend(
-    val filnavn: String?,
+    val filNavn: String?,
     val uuid: String?
 )
