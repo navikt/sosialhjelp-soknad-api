@@ -15,7 +15,6 @@ import no.nav.sosialhjelp.soknad.business.mappers.OkonomiMapper.removeUtgiftIfPr
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggFrontend
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggRadFrontend
 import org.apache.commons.lang3.StringUtils.isEmpty
-import java.util.Optional
 import javax.ws.rs.NotFoundException
 
 object OkonomiskeOpplysningerMapper {
@@ -99,27 +98,28 @@ object OkonomiskeOpplysningerMapper {
         jsonOkonomi: JsonOkonomi,
         soknadType: String?
     ) {
-        jsonOkonomi.opplysninger.utgift
+        var eksisterendeOpplysningUtgift = jsonOkonomi.opplysninger.utgift
             .firstOrNull { it.type == soknadType }
-            ?.let { eksisterendeOpplysningUtgift ->
-                if (vedleggFrontend.type == "annet|annet") {
-                    val annenUtgift = Optional.of(
-                        JsonOkonomiOpplysningUtgift()
-                            .withType(SoknadJsonTyper.UTGIFTER_ANDRE_UTGIFTER)
-                            .withTittel("Annen (brukerangitt): ")
-                    )
-                    val utgifter = jsonOkonomi.opplysninger.utgift
-                    if (checkIfTypeAnnetAnnetShouldBeRemoved(vedleggFrontend)) {
-                        removeUtgiftIfPresentInOpplysninger(utgifter, soknadType)
-                        return
-                    } else {
-                        addUtgiftIfNotPresentInOpplysninger(utgifter, soknadType, annenUtgift.get().tittel)
-                    }
-                }
+
+        if (vedleggFrontend.type == "annet|annet") {
+            eksisterendeOpplysningUtgift = JsonOkonomiOpplysningUtgift()
+                    .withType(SoknadJsonTyper.UTGIFTER_ANDRE_UTGIFTER)
+                    .withTittel("Annen (brukerangitt): ")
+            val utgifter = jsonOkonomi.opplysninger.utgift
+            if (checkIfTypeAnnetAnnetShouldBeRemoved(vedleggFrontend)) {
+                removeUtgiftIfPresentInOpplysninger(utgifter, soknadType)
+                return
+            } else {
+                addUtgiftIfNotPresentInOpplysninger(utgifter, soknadType, eksisterendeOpplysningUtgift.tittel)
+            }
+        }
+
+        eksisterendeOpplysningUtgift
+            ?.let { utgift ->
                 val utgifter = jsonOkonomi.opplysninger.utgift
                     .filter { it.type != soknadType }
                     .toMutableList()
-                utgifter.addAll(mapToOppysningUtgiftList(vedleggFrontend.rader, eksisterendeOpplysningUtgift))
+                utgifter.addAll(mapToOppysningUtgiftList(vedleggFrontend.rader, utgift))
                 jsonOkonomi.opplysninger.utgift = utgifter
             }
             ?: throw NotFoundException("Dette vedlegget tilhører $soknadType utgift som har blitt tatt bort fra søknaden. Har du flere tabber oppe samtidig?")
