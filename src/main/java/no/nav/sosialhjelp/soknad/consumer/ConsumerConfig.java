@@ -5,7 +5,6 @@ import no.nav.sosialhjelp.soknad.arbeid.ArbeidsforholdConfig;
 import no.nav.sosialhjelp.soknad.client.config.MockProxiedWebClientConfig;
 import no.nav.sosialhjelp.soknad.client.config.NonProxiedWebClientConfig;
 import no.nav.sosialhjelp.soknad.client.config.ProxiedWebClientConfig;
-import no.nav.sosialhjelp.soknad.client.featuretoggle.FeatureToggleConfig;
 import no.nav.sosialhjelp.soknad.client.fiks.digisosapi.DigisosApiConfig;
 import no.nav.sosialhjelp.soknad.client.fiks.kommuneinfo.KommuneInfoConfig;
 import no.nav.sosialhjelp.soknad.client.idporten.IdPortenClientConfig;
@@ -19,6 +18,7 @@ import no.nav.sosialhjelp.soknad.client.redis.NoRedisConfig;
 import no.nav.sosialhjelp.soknad.client.redis.RedisConfig;
 import no.nav.sosialhjelp.soknad.client.sts.StsConfig;
 import no.nav.sosialhjelp.soknad.client.svarut.SvarUtConfig;
+import no.nav.sosialhjelp.soknad.client.unleash.UnleashConfig;
 import no.nav.sosialhjelp.soknad.consumer.fiks.DokumentKrypterer;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.DigisosApiRestConfig;
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.BostotteConfig;
@@ -62,7 +62,7 @@ import org.springframework.context.annotation.Import;
         StsConfig.class,
         KontonummerConfig.class,
         NavUtbetalingerConfig.class,
-        FeatureToggleConfig.class,
+        UnleashConfig.class,
         RedisConfig.class,
         NoRedisConfig.class,
         DokumentKrypterer.class,

@@ -3,13 +3,16 @@ package no.nav.sosialhjelp.soknad.web.rest;
 import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
 import no.nav.sosialhjelp.soknad.api.dialog.SistInnsendteSoknadRessurs;
 import no.nav.sosialhjelp.soknad.api.dittnav.DittNavMetadataRessurs;
+import no.nav.sosialhjelp.soknad.api.featuretoggle.FeatureToggleRessurs;
 import no.nav.sosialhjelp.soknad.api.informasjon.InformasjonRessurs;
 import no.nav.sosialhjelp.soknad.api.innsyn.SoknadOversiktRessurs;
 import no.nav.sosialhjelp.soknad.api.minesaker.MineSakerMetadataRessurs;
+import no.nav.sosialhjelp.soknad.api.nedetid.NedetidRessurs;
 import no.nav.sosialhjelp.soknad.arbeid.ArbeidRessurs;
 import no.nav.sosialhjelp.soknad.begrunnelse.BegrunnelseRessurs;
 import no.nav.sosialhjelp.soknad.bosituasjon.BosituasjonRessurs;
 import no.nav.sosialhjelp.soknad.ettersending.EttersendingRessurs;
+import no.nav.sosialhjelp.soknad.health.InternalRessurs;
 import no.nav.sosialhjelp.soknad.inntekt.andreinntekter.UtbetalingRessurs;
 import no.nav.sosialhjelp.soknad.inntekt.formue.FormueRessurs;
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.BostotteRessurs;
@@ -52,6 +55,9 @@ public class SoknadApplication extends ResourceConfig {
         // og blir automatisk trukket inn hvis du tar tar inn hele Jackson-pakken for JSON.
         packages("no.nav.sosialhjelp.soknad.web.rest");
         // interne
+        register(InternalRessurs.class);
+        register(FeatureToggleRessurs.class);
+        register(NedetidRessurs.class);
         register(NavEnhetRessurs.class);
         register(OppsummeringRessurs.class);
         register(ArbeidRessurs.class);

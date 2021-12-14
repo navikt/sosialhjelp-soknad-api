@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.client.featuretoggle
+package no.nav.sosialhjelp.soknad.client.unleash
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
