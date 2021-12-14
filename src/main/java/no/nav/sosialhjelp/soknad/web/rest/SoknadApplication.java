@@ -15,6 +15,7 @@ import no.nav.sosialhjelp.soknad.begrunnelse.BegrunnelseRessurs;
 import no.nav.sosialhjelp.soknad.bosituasjon.BosituasjonRessurs;
 import no.nav.sosialhjelp.soknad.ettersending.EttersendingRessurs;
 import no.nav.sosialhjelp.soknad.health.InternalRessurs;
+import no.nav.sosialhjelp.soknad.innsending.SoknadActions;
 import no.nav.sosialhjelp.soknad.innsending.SoknadRessurs;
 import no.nav.sosialhjelp.soknad.inntekt.andreinntekter.UtbetalingRessurs;
 import no.nav.sosialhjelp.soknad.inntekt.formue.FormueRessurs;
@@ -59,6 +60,7 @@ public class SoknadApplication extends ResourceConfig {
         packages("no.nav.sosialhjelp.soknad.web.rest");
         // interne
         register(SoknadRessurs.class);
+        register(SoknadActions.class);
         register(InternalRessurs.class);
         register(FeatureToggleRessurs.class);
         register(NedetidRessurs.class);

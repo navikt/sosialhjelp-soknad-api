@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Import
 
 @Configuration
 @Import(
-    SoknadRessurs::class
+    SoknadRessurs::class,
+    SoknadActions::class
 )
 open class InnsendingConfig
