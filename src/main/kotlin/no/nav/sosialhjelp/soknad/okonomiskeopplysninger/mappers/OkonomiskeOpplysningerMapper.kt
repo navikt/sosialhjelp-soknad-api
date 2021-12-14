@@ -103,8 +103,8 @@ object OkonomiskeOpplysningerMapper {
 
         if (vedleggFrontend.type == "annet|annet") {
             eksisterendeOpplysningUtgift = JsonOkonomiOpplysningUtgift()
-                    .withType(SoknadJsonTyper.UTGIFTER_ANDRE_UTGIFTER)
-                    .withTittel("Annen (brukerangitt): ")
+                .withType(SoknadJsonTyper.UTGIFTER_ANDRE_UTGIFTER)
+                .withTittel("Annen (brukerangitt): ")
             val utgifter = jsonOkonomi.opplysninger.utgift
             if (checkIfTypeAnnetAnnetShouldBeRemoved(vedleggFrontend)) {
                 removeUtgiftIfPresentInOpplysninger(utgifter, soknadType)
