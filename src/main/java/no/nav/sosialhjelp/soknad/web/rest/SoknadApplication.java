@@ -9,6 +9,7 @@ import no.nav.sosialhjelp.soknad.api.minesaker.MineSakerMetadataRessurs;
 import no.nav.sosialhjelp.soknad.arbeid.ArbeidRessurs;
 import no.nav.sosialhjelp.soknad.begrunnelse.BegrunnelseRessurs;
 import no.nav.sosialhjelp.soknad.bosituasjon.BosituasjonRessurs;
+import no.nav.sosialhjelp.soknad.ettersending.EttersendingRessurs;
 import no.nav.sosialhjelp.soknad.inntekt.andreinntekter.UtbetalingRessurs;
 import no.nav.sosialhjelp.soknad.inntekt.formue.FormueRessurs;
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.BostotteRessurs;
@@ -17,6 +18,7 @@ import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkattbarInntektRessurs;
 import no.nav.sosialhjelp.soknad.inntekt.studielan.StudielanRessurs;
 import no.nav.sosialhjelp.soknad.inntekt.verdi.VerdiRessurs;
 import no.nav.sosialhjelp.soknad.navenhet.NavEnhetRessurs;
+import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.OkonomiskeOpplysningerRessurs;
 import no.nav.sosialhjelp.soknad.oppsummering.OppsummeringRessurs;
 import no.nav.sosialhjelp.soknad.personalia.adresse.AdresseRessurs;
 import no.nav.sosialhjelp.soknad.personalia.basispersonalia.BasisPersonaliaRessurs;
@@ -73,6 +75,8 @@ public class SoknadApplication extends ResourceConfig {
         register(BarneutgiftRessurs.class);
         register(BoutgiftRessurs.class);
         register(OpplastetVedleggRessurs.class);
+        register(OkonomiskeOpplysningerRessurs.class);
+        register(EttersendingRessurs.class);
 
         // eksterne
         register(DittNavMetadataRessurs.class);
