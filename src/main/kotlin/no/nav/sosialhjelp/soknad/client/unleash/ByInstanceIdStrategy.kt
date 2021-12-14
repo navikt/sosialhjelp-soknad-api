@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.client.featuretoggle
+package no.nav.sosialhjelp.soknad.client.unleash
 
 import no.finn.unleash.strategy.Strategy
 
