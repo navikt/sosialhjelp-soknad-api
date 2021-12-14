@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.client.featuretoggle
+package no.nav.sosialhjelp.soknad.client.unleash
 
 import no.finn.unleash.DefaultUnleash
 import no.finn.unleash.Unleash
@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
 @Configuration
-open class FeatureToggleConfig(
+open class UnleashConfig(
     @Value("\${unleash_api_url}") private val baseurl: String,
     @Value("\${unleash_instance_id:prod-sbs}") private val instanceId: String
 ) {

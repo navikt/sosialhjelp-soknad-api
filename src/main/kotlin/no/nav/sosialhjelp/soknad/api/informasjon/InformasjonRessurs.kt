@@ -9,6 +9,7 @@ import no.nav.sosialhjelp.soknad.adressesok.domain.AdresseForslag
 import no.nav.sosialhjelp.soknad.api.informasjon.dto.KommuneInfoFrontend
 import no.nav.sosialhjelp.soknad.api.informasjon.dto.NyligInnsendteSoknaderResponse
 import no.nav.sosialhjelp.soknad.api.informasjon.dto.PabegyntSoknad
+import no.nav.sosialhjelp.soknad.api.nedetid.NedetidUtils
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.client.fiks.kommuneinfo.KommuneInfoService
 import no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SosialhjelpInformasjon
@@ -22,7 +23,6 @@ import no.nav.sosialhjelp.soknad.tekster.NavMessageSource
 import no.nav.sosialhjelp.soknad.web.rest.Logg
 import no.nav.sosialhjelp.soknad.web.sikkerhet.Tilgangskontroll
 import no.nav.sosialhjelp.soknad.web.utils.Constants
-import no.nav.sosialhjelp.soknad.web.utils.NedetidUtils
 import org.apache.commons.lang3.LocaleUtils
 import org.apache.commons.lang3.StringUtils
 import org.slf4j.LoggerFactory
@@ -64,9 +64,8 @@ open class InformasjonRessurs(
     open fun hentFornavn(): Map<String?, String?>? {
         val fnr = SubjectHandler.getUserId()
         val (fornavn1) = personService.hentPerson(fnr) ?: return HashMap()
-        val fornavn = fornavn1 ?: ""
         val fornavnMap: MutableMap<String?, String?> = HashMap()
-        fornavnMap["fornavn"] = fornavn
+        fornavnMap["fornavn"] = fornavn1
         return fornavnMap
     }
 
@@ -140,8 +139,8 @@ open class InformasjonRessurs(
     @GET
     @Path("/kommuneinfo")
     open fun hentKommuneinfo(): Map<String, KommuneInfoFrontend> {
-        if (NedetidUtils.isInnenforNedetid()) {
-            return java.util.HashMap()
+        if (NedetidUtils.isInnenforNedetid) {
+            return emptyMap()
         }
         val manueltPakobledeKommuner = mapManueltPakobledeKommuner(KommuneTilNavEnhetMapper.getDigisoskommuner())
         val digisosKommuner = mapDigisosKommuner(kommuneInfoService.hentAlleKommuneInfo())
