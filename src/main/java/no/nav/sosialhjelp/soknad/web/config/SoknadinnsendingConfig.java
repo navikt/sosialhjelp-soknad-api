@@ -13,6 +13,7 @@ import no.nav.sosialhjelp.soknad.business.BusinessConfig;
 import no.nav.sosialhjelp.soknad.consumer.ConsumerConfig;
 import no.nav.sosialhjelp.soknad.ettersending.EttersendingConfig;
 import no.nav.sosialhjelp.soknad.health.HealthConfig;
+import no.nav.sosialhjelp.soknad.innsending.InnsendingConfig;
 import no.nav.sosialhjelp.soknad.inntekt.InntektConfig;
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.OkonomiskeOpplysningerConfig;
 import no.nav.sosialhjelp.soknad.personalia.adresse.AdresseConfig;
@@ -59,7 +60,8 @@ import org.springframework.context.annotation.Import;
         EttersendingConfig.class,
         HealthConfig.class,
         FeatureToggleConfig.class,
-        NedetidConfig.class
+        NedetidConfig.class,
+        InnsendingConfig.class
 })
 @ComponentScan(basePackages = "no.nav.sosialhjelp.soknad.web.rest")
 public class SoknadinnsendingConfig {
