@@ -20,13 +20,13 @@ import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.OkonomiskeOpplysningerCo
 import no.nav.sosialhjelp.soknad.personalia.adresse.AdresseConfig;
 import no.nav.sosialhjelp.soknad.personalia.basispersonalia.BasisPersonaliaConfig;
 import no.nav.sosialhjelp.soknad.personalia.familie.FamilieConfig;
+import no.nav.sosialhjelp.soknad.tilgangskontroll.TilgangskontrollConfig;
 import no.nav.sosialhjelp.soknad.utdanning.UtdanningConfig;
 import no.nav.sosialhjelp.soknad.utgifter.UtgifterConfig;
 import no.nav.sosialhjelp.soknad.vedlegg.VedleggConfig;
 import no.nav.sosialhjelp.soknad.web.oidc.OidcTokenValidatorConfig;
 import no.nav.sosialhjelp.soknad.web.selftest.SelftestService;
 import no.nav.sosialhjelp.soknad.web.service.SaksoversiktMetadataService;
-import no.nav.sosialhjelp.soknad.web.sikkerhet.Tilgangskontroll;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
@@ -42,7 +42,6 @@ import org.springframework.context.annotation.Import;
         MetricsConfiguration.class,
         SaksoversiktMetadataService.class,
         SelftestService.class,
-        Tilgangskontroll.class,
         InnsendingConfig.class,
         InntektConfig.class,
         DittNavConfig.class,
@@ -64,7 +63,8 @@ import org.springframework.context.annotation.Import;
         FeatureToggleConfig.class,
         NedetidConfig.class,
         SaksoversiktConfig.class,
-        InnsendingConfig.class
+        InnsendingConfig.class,
+        TilgangskontrollConfig.class
 })
 @ComponentScan(basePackages = "no.nav.sosialhjelp.soknad.web.rest")
 public class SoknadinnsendingConfig {

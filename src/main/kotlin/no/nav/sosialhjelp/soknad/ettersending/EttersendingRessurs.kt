@@ -9,7 +9,7 @@ import no.nav.sosialhjelp.soknad.ettersending.dto.EttersendtVedlegg
 import no.nav.sosialhjelp.soknad.ettersending.innsendtsoknad.BehandlingsKjede
 import no.nav.sosialhjelp.soknad.ettersending.innsendtsoknad.InnsendtSoknadService
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.mappers.VedleggMapper
-import no.nav.sosialhjelp.soknad.web.sikkerhet.Tilgangskontroll
+import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import no.nav.sosialhjelp.soknad.web.utils.Constants
 import org.springframework.stereotype.Controller
 import javax.ws.rs.GET
