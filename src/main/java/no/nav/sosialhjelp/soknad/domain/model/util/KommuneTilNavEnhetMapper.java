@@ -491,6 +491,6 @@ public final class KommuneTilNavEnhetMapper {
 
     private static boolean isNonProduction() {
         String miljo = System.getProperty("environment.name", "");
-        return miljo.contains("q") || miljo.equals("dev-gcp") || miljo.equals("labs-gcp") || miljo.equals("local");
+        return miljo.contains("q") || miljo.equals("test") || miljo.equals("dev-gcp") || miljo.equals("labs-gcp") || miljo.equals("local");
     }
 }
