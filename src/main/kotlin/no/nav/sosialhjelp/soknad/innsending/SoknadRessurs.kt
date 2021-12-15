@@ -7,7 +7,6 @@ import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.metrics.aspects.Timed
 import no.nav.sosialhjelp.soknad.api.nedetid.NedetidUtils
 import no.nav.sosialhjelp.soknad.api.nedetid.NedetidUtils.NEDETID_SLUTT
-import no.nav.sosialhjelp.soknad.business.SoknadUnderArbeidService
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.business.exceptions.SoknadenHarNedetidException
 import no.nav.sosialhjelp.soknad.business.service.HenvendelseService
@@ -16,6 +15,7 @@ import no.nav.sosialhjelp.soknad.common.systemdata.SystemdataUpdater
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler
 import no.nav.sosialhjelp.soknad.innsending.dto.BekreftelseRessurs
+import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import no.nav.sosialhjelp.soknad.tilgangskontroll.XsrfGenerator
 import no.nav.sosialhjelp.soknad.web.utils.Constants

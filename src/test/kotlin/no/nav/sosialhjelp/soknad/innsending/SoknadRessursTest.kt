@@ -10,7 +10,6 @@ import io.mockk.slot
 import io.mockk.verify
 import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.BOSTOTTE_SAMTYKKE
 import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_SKATTEETATEN_SAMTYKKE
-import no.nav.sosialhjelp.soknad.business.SoknadUnderArbeidService
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.business.mappers.OkonomiMapper
 import no.nav.sosialhjelp.soknad.business.service.HenvendelseService
@@ -22,6 +21,7 @@ import no.nav.sosialhjelp.soknad.domain.model.exception.AuthorizationException
 import no.nav.sosialhjelp.soknad.domain.model.oidc.StaticSubjectHandlerService
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler
 import no.nav.sosialhjelp.soknad.innsending.dto.BekreftelseRessurs
+import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType

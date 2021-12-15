@@ -42,6 +42,7 @@ import org.springframework.context.annotation.Import;
         MetricsConfiguration.class,
         SaksoversiktMetadataService.class,
         SelftestService.class,
+        InnsendingConfig.class,
         InntektConfig.class,
         DittNavConfig.class,
         MineSakerConfig.class,
