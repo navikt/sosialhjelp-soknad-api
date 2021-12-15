@@ -7,6 +7,7 @@ import no.nav.sosialhjelp.metrics.aspects.Timed
 import no.nav.sosialhjelp.soknad.adressesok.AdressesokService
 import no.nav.sosialhjelp.soknad.adressesok.domain.AdresseForslag
 import no.nav.sosialhjelp.soknad.api.informasjon.dto.KommuneInfoFrontend
+import no.nav.sosialhjelp.soknad.api.informasjon.dto.Logg
 import no.nav.sosialhjelp.soknad.api.informasjon.dto.NyligInnsendteSoknaderResponse
 import no.nav.sosialhjelp.soknad.api.informasjon.dto.PabegyntSoknad
 import no.nav.sosialhjelp.soknad.api.nedetid.NedetidUtils
@@ -20,7 +21,6 @@ import no.nav.sosialhjelp.soknad.personalia.person.dto.Gradering.FORTROLIG
 import no.nav.sosialhjelp.soknad.personalia.person.dto.Gradering.STRENGT_FORTROLIG
 import no.nav.sosialhjelp.soknad.personalia.person.dto.Gradering.STRENGT_FORTROLIG_UTLAND
 import no.nav.sosialhjelp.soknad.tekster.NavMessageSource
-import no.nav.sosialhjelp.soknad.web.rest.Logg
 import no.nav.sosialhjelp.soknad.web.sikkerhet.Tilgangskontroll
 import no.nav.sosialhjelp.soknad.web.utils.Constants
 import org.apache.commons.lang3.LocaleUtils
@@ -115,8 +115,7 @@ open class InformasjonRessurs(
     @POST
     @Path("/actions/logg")
     open fun loggFraKlient(logg: Logg) {
-        val level = logg.level
-        when (level) {
+        when (logg.level) {
             "INFO" -> klientlogger.info(logg.melding())
             "WARN" -> klientlogger.warn(logg.melding())
             "ERROR" -> klientlogger.error(logg.melding())
