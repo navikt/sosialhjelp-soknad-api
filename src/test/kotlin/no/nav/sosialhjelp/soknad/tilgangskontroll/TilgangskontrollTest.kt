@@ -26,7 +26,7 @@ internal class TilgangskontrollTest {
     private val personService: PersonService = mockk()
 
     private val tilgangskontroll = Tilgangskontroll(soknadMetadataRepository, soknadUnderArbeidRepository, personService)
-    
+
     @BeforeEach
     fun setUp() {
         System.setProperty("environment.name", "test")
@@ -47,7 +47,7 @@ internal class TilgangskontrollTest {
             .withJsonInternalSoknad(createEmptyJsonInternalSoknad(userId))
         every { soknadUnderArbeidRepository.hentSoknadOptional(any(), any()) } returns Optional.of(soknadUnderArbeid)
         every { personService.hentAdressebeskyttelse(userId) } returns Gradering.UGRADERT
-        
+
         assertThatNoException()
             .isThrownBy { tilgangskontroll.verifiserBrukerHarTilgangTilSoknad("123") }
     }
