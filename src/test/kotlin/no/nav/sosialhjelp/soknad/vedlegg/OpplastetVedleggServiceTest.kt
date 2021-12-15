@@ -52,7 +52,6 @@ internal class OpplastetVedleggServiceTest {
         clearAllMocks()
         every { virusScanner.scan(any(), any(), any(), any()) } just runs
         every { opplastetVedleggRepository.slettVedlegg(any(), any()) } just runs
-
     }
 
     @AfterEach
