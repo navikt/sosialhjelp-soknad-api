@@ -94,10 +94,6 @@ internal class TilgangskontrollTest {
 
     @Test
     fun skalFeileHvisEierErNull() {
-        val userId = SubjectHandler.getUserId()
-        val soknadUnderArbeid = SoknadUnderArbeid()
-            .withEier(null)
-            .withJsonInternalSoknad(createEmptyJsonInternalSoknad(userId))
         every { soknadUnderArbeidRepository.hentSoknadOptional(any(), any()) } returns Optional.of(SoknadUnderArbeid())
 
         assertThatExceptionOfType(AuthorizationException::class.java)
