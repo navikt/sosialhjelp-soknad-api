@@ -37,13 +37,13 @@ open class InnsendingService(
     }
 
     open fun finnOgSlettSoknadUnderArbeidVedSendingTilFiks(behandlingsId: String?, eier: String?) {
-        logger.debug("Henter søknad under arbeid for behandlingsid {} og eier {}", behandlingsId, eier)
+        logger.debug("Henter søknad under arbeid for behandlingsid $behandlingsId og eier $eier")
         val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknadOptional(behandlingsId, eier)
         soknadUnderArbeid.ifPresent { soknadUnderArbeidRepository.slettSoknad(it, eier) }
     }
 
     open fun oppdaterSendtSoknadVedSendingTilFiks(fiksforsendelseId: String?, behandlingsId: String?, eier: String?) {
-        logger.debug("Oppdaterer sendt søknad for behandlingsid {} og eier {}", behandlingsId, eier)
+        logger.debug("Oppdaterer sendt søknad for behandlingsid $behandlingsId og eier $eier")
         sendtSoknadRepository.oppdaterSendtSoknadVedSendingTilFiks(fiksforsendelseId, behandlingsId, eier)
     }
 
@@ -84,7 +84,8 @@ open class InnsendingService(
 
     private fun finnSendtSoknadForEttersendelsePaGammeltFormat(tilknyttetBehandlingsId: String): SendtSoknad? {
         val originalSoknadGammeltFormat = soknadMetadataRepository.hent(tilknyttetBehandlingsId) ?: return null
-        return SendtSoknad().withOrgnummer(originalSoknadGammeltFormat.orgnr)
+        return SendtSoknad()
+            .withOrgnummer(originalSoknadGammeltFormat.orgnr)
             .withNavEnhetsnavn(originalSoknadGammeltFormat.navEnhet)
             .withFiksforsendelseId(originalSoknadGammeltFormat.fiksForsendelseId)
     }
