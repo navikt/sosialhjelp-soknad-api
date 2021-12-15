@@ -11,10 +11,13 @@ import no.nav.sosialhjelp.soknad.oppsummering.steg.InntektOgFormueSteg
 import no.nav.sosialhjelp.soknad.oppsummering.steg.OkonomiskeOpplysningerOgVedleggSteg
 import no.nav.sosialhjelp.soknad.oppsummering.steg.PersonopplysningerSteg
 import no.nav.sosialhjelp.soknad.oppsummering.steg.UtgifterOgGjeldSteg
+import no.nav.sosialhjelp.soknad.vedlegg.OpplastetVedleggService
+import org.slf4j.LoggerFactory.getLogger
 
 class OppsummeringService(
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
-    private val opplastetVedleggRepository: OpplastetVedleggRepository
+    private val opplastetVedleggRepository: OpplastetVedleggRepository,
+    private val opplastetVedleggService: OpplastetVedleggService
 ) {
     private val personopplysningerSteg = PersonopplysningerSteg()
     private val begrunnelseSteg = BegrunnelseSteg()
@@ -27,6 +30,12 @@ class OppsummeringService(
 
     fun hentOppsummering(fnr: String, behandlingsId: String): Oppsummering {
         val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, fnr)
+
+        if (soknadUnderArbeid.jsonInternalSoknad.vedlegg == null || soknadUnderArbeid.jsonInternalSoknad.vedlegg.vedlegg == null || soknadUnderArbeid.jsonInternalSoknad.vedlegg.vedlegg.isEmpty()) {
+            log.info("Oppdaterer vedleggsforventninger for soknad $behandlingsId fra oppsummeringssiden, ettersom side 8 ble hoppet over")
+            opplastetVedleggService.oppdaterVedleggsforventninger(soknadUnderArbeid, fnr)
+        }
+
         val opplastedeVedlegg = opplastetVedleggRepository.hentVedleggForSoknad(soknadUnderArbeid.soknadId, fnr)
         val jsonInternalSoknad = soknadUnderArbeid.jsonInternalSoknad
         return Oppsummering(
@@ -41,5 +50,9 @@ class OppsummeringService(
                 okonomiskeOpplysningerOgVedleggSteg.get(jsonInternalSoknad, opplastedeVedlegg)
             )
         )
+    }
+
+    companion object {
+        private val log = getLogger(OppsummeringService::class.java)
     }
 }

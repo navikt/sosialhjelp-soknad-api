@@ -21,7 +21,6 @@ import org.springframework.context.annotation.Import;
         InnsendingService.class,
         SoknadUnderArbeidService.class,
         TextService.class,
-        OpplastetVedleggService.class,
 })
 public class ServiceConfig {
 }

@@ -3,7 +3,6 @@ package no.nav.sosialhjelp.soknad.vedlegg
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.metrics.aspects.Timed
 import no.nav.sosialhjelp.soknad.business.db.repositories.opplastetvedlegg.OpplastetVedleggRepository
-import no.nav.sosialhjelp.soknad.business.service.OpplastetVedleggService
 import no.nav.sosialhjelp.soknad.business.util.FileDetectionUtils
 import no.nav.sosialhjelp.soknad.business.util.MimeTypes
 import no.nav.sosialhjelp.soknad.domain.OpplastetVedlegg

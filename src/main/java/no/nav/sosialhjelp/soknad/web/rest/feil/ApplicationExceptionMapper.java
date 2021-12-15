@@ -33,7 +33,7 @@ import static javax.ws.rs.core.Response.Status.SERVICE_UNAVAILABLE;
 import static javax.ws.rs.core.Response.Status.UNSUPPORTED_MEDIA_TYPE;
 import static javax.ws.rs.core.Response.serverError;
 import static javax.ws.rs.core.Response.status;
-import static no.nav.sosialhjelp.soknad.business.service.OpplastetVedleggService.MAKS_SAMLET_VEDLEGG_STORRELSE_I_MB;
+import static no.nav.sosialhjelp.soknad.vedlegg.OpplastetVedleggService.MAKS_SAMLET_VEDLEGG_STORRELSE_I_MB;
 import static no.nav.sosialhjelp.soknad.web.rest.feil.Feilmelding.NO_BIGIP_5XX_REDIRECT;
 
 @Provider
