@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.innsending.dto
 
 data class SendTilUrlFrontend(
-    val sendTil: String?,
+    val sendtTil: String?,
     val id: String?
 )
