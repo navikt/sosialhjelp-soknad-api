@@ -4,10 +4,10 @@ import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.metrics.aspects.Timed
 import no.nav.sosialhjelp.soknad.business.db.repositories.opplastetvedlegg.OpplastetVedleggRepository
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
-import no.nav.sosialhjelp.soknad.business.domain.BehandlingsKjede
-import no.nav.sosialhjelp.soknad.business.service.soknadservice.InnsendtSoknadService
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler
 import no.nav.sosialhjelp.soknad.ettersending.dto.EttersendtVedlegg
+import no.nav.sosialhjelp.soknad.ettersending.innsendtsoknad.BehandlingsKjede
+import no.nav.sosialhjelp.soknad.ettersending.innsendtsoknad.InnsendtSoknadService
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.mappers.VedleggMapper
 import no.nav.sosialhjelp.soknad.web.sikkerhet.Tilgangskontroll
 import no.nav.sosialhjelp.soknad.web.utils.Constants
