@@ -13,7 +13,9 @@ import org.springframework.transaction.support.TransactionTemplate
 
 @Configuration
 @Import(
-    SoknadUnderArbeidConfig::class
+    SoknadUnderArbeidConfig::class,
+    SoknadRessurs::class,
+    SoknadActions::class
 )
 open class InnsendingConfig {
 
@@ -36,3 +38,4 @@ open class InnsendingConfig {
         )
     }
 }
+
