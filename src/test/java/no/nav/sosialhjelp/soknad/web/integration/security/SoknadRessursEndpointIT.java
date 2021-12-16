@@ -19,7 +19,7 @@ class SoknadRessursEndpointIT extends AbstractIT {
 
         Response response = soknadTester.sendsoknadResource(url, webTarget -> webTarget
                 .queryParam("fnr", ANNEN_BRUKER)
-                .queryParam("ettersendTil", soknadTester.getBrukerBehandlingId() )) //fake annen bruker, se FakeLoginFilter
+                .queryParam("ettersendTil", soknadTester.getBrukerBehandlingId() ))
                 .buildPost(null)
                 .invoke();
         assertThat(response.getStatus()).isEqualTo(Response.Status.UNAUTHORIZED.getStatusCode());
