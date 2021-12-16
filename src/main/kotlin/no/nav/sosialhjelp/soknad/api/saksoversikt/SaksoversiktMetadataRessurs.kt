@@ -7,7 +7,6 @@ import no.nav.sbl.soknadsosialhjelp.tjeneste.saksoversikt.PingRespons
 import no.nav.security.token.support.core.api.Unprotected
 import no.nav.sosialhjelp.metrics.aspects.Timed
 import no.nav.sosialhjelp.soknad.web.saml.SamlSubjectHandler
-import no.nav.sosialhjelp.soknad.web.service.SaksoversiktMetadataService
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Controller
 import javax.ws.rs.GET
