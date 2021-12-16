@@ -1,5 +1,8 @@
 package no.nav.sosialhjelp.soknad.api.informasjon.dto
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 data class Logg(
     val level: String?,
     val message: String?,
