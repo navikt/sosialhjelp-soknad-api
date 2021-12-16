@@ -10,7 +10,7 @@ open class NavMessageSource : ReloadableResourceBundleMessageSource() {
     private val basenames: MutableMap<String, String> = HashMap()
     private var fellesBasename: String? = null
 
-    fun getBundleFor(type: String?, locale: Locale): Properties? {
+    open fun getBundleFor(type: String?, locale: Locale): Properties {
         return if (basenames.containsKey(type)) {
             val properties = Properties()
 
@@ -23,7 +23,7 @@ open class NavMessageSource : ReloadableResourceBundleMessageSource() {
             }
             properties
         } else {
-            getMergedProperties(locale).properties
+            getMergedProperties(locale).properties!!
         }
     }
 
@@ -48,7 +48,7 @@ open class NavMessageSource : ReloadableResourceBundleMessageSource() {
         return type + "_" + locale.language + if ("" == locale.country) "" else "_" + locale.country
     }
 
-    fun setBasenames(fellesBundle: Bundle, vararg soknadBundles: Bundle) {
+    open fun setBasenames(fellesBundle: Bundle, vararg soknadBundles: Bundle) {
         fellesBasename = fellesBundle.propertiesFile
 
         val basenameStrings: MutableList<String?> = ArrayList()
@@ -62,7 +62,7 @@ open class NavMessageSource : ReloadableResourceBundleMessageSource() {
         setBasenames(*basenameStrings.toTypedArray())
     }
 
-    fun getBasenames(): Map<String, String> {
+    open fun getBasenames(): Map<String, String> {
         return basenames
     }
 

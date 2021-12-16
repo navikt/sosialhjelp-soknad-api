@@ -61,10 +61,10 @@ open class InformasjonRessurs(
 
     @GET
     @Path("/fornavn")
-    open fun hentFornavn(): Map<String?, String?>? {
+    open fun hentFornavn(): Map<String, String>? {
         val fnr = SubjectHandler.getUserId()
         val (fornavn1) = personService.hentPerson(fnr) ?: return HashMap()
-        val fornavnMap: MutableMap<String?, String?> = HashMap()
+        val fornavnMap = mutableMapOf<String, String>()
         fornavnMap["fornavn"] = fornavn1
         return fornavnMap
     }
@@ -80,13 +80,13 @@ open class InformasjonRessurs(
         }
         if (StringUtils.isNotEmpty(type) && SosialhjelpInformasjon.BUNDLE_NAME != type.lowercase(Locale.getDefault())) {
             val prefiksetType = "soknad" + type.lowercase(Locale.getDefault())
-            logger.warn("Type {} matcher ikke et bundlename - forsøker med prefiks {}", type, prefiksetType)
+            logger.warn("Type $type matcher ikke et bundlename - forsøker med prefiks $prefiksetType")
             if (SosialhjelpInformasjon.BUNDLE_NAME == prefiksetType) {
                 type = prefiksetType
             }
         }
         val locale = LocaleUtils.toLocale(sprak)
-        return messageSource!!.getBundleFor(type, locale)
+        return messageSource.getBundleFor(type, locale)
     }
 
     @GET
@@ -94,7 +94,7 @@ open class InformasjonRessurs(
     open fun getUtslagskriterier(): Map<String, Any>? {
         val uid = SubjectHandler.getUserId()
         val adressebeskyttelse = personService.hentAdressebeskyttelse(uid)
-        val resultat: MutableMap<String, Any> = java.util.HashMap()
+        val resultat = mutableMapOf<String, Any>()
         var harTilgang = true
         var sperrekode = ""
         if (FORTROLIG == adressebeskyttelse || STRENGT_FORTROLIG == adressebeskyttelse || STRENGT_FORTROLIG_UTLAND == adressebeskyttelse) {

@@ -7,6 +7,6 @@ open class TextService(
 ) {
     open fun getJsonOkonomiTittel(key: String?): String? {
         val properties = navMessageSource.getBundleFor("sendsoknad", Locale("nb", "NO"))
-        return properties?.getProperty("json.okonomi.$key")
+        return properties.getProperty("json.okonomi.$key")
     }
 }

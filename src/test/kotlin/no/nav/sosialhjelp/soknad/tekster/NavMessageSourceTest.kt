@@ -43,13 +43,13 @@ internal class NavMessageSourceTest {
     @Test
     fun skalHenteSoknadensEgneTeksterOgFellesTeksterNorsk() {
         val properties = messageSource!!.getBundleFor("sendsoknad", Locale("nb", "NO"))
-        assertThat(properties!!.getProperty("felles.key")).isEqualTo("norsk felles fra minne")
+        assertThat(properties.getProperty("felles.key")).isEqualTo("norsk felles fra minne")
     }
 
     @Test
     fun skalHenteSoknadensEgneTeksterOgFellesTeksterEngelsk() {
         val properties = messageSource!!.getBundleFor("sendsoknad", Locale("en", "GB"))
-        assertThat(properties!!.getProperty("felles.key")).isEqualTo("engelsk felles fra minne")
+        assertThat(properties.getProperty("felles.key")).isEqualTo("engelsk felles fra minne")
     }
 
     @Test
@@ -61,6 +61,6 @@ internal class NavMessageSourceTest {
     @Test
     fun skalHenteAlleTeksterHvisTypeMangler() {
         val properties = messageSource!!.getBundleFor(null, Locale("nb", "NO"))
-        assertThat(properties!!.getProperty("felles.key")).isEqualTo("norsk felles fra minne")
+        assertThat(properties.getProperty("felles.key")).isEqualTo("norsk felles fra minne")
     }
 }
