@@ -34,17 +34,6 @@
         <url-pattern>/*</url-pattern>
     </filter-mapping>
 
-    <!--OpenAmLoginFilter blir erstattet ved kjøring i Jetty. Se JettyTestServer (context.setOverrideDescriptor(...)) og override-web.xml-->
-    <filter>
-        <filter-name>OpenAmLoginFilter</filter-name>
-        <filter-class>no.nav.sosialhjelp.soknad.web.saml.OpenAmLoginFilter</filter-class>
-        <async-supported>true</async-supported>
-    </filter>
-    <filter-mapping>
-        <filter-name>OpenAmLoginFilter</filter-name>
-        <url-pattern>/metadata/*</url-pattern>
-    </filter-mapping>
-
     <filter>
         <filter-name>charEncodingFilter</filter-name>
         <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>

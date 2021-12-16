@@ -10,7 +10,6 @@ import java.time.Clock
 
 @Configuration
 @Import(
-    SaksoversiktMetadataRessurs::class,
     SaksoversiktMetadataOidcRessurs::class
 )
 open class SaksoversiktConfig {
