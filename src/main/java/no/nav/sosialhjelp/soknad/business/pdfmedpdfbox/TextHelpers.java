@@ -4,8 +4,8 @@ import no.nav.sosialhjelp.soknad.client.kodeverk.KodeverkService;
 import no.nav.sosialhjelp.soknad.tekster.NavMessageSource;
 import org.springframework.stereotype.Component;
 
-import static no.nav.sosialhjelp.soknad.business.service.systemdata.BasisPersonaliaSystemdata.PDL_STATSLOS;
-import static no.nav.sosialhjelp.soknad.business.service.systemdata.BasisPersonaliaSystemdata.PDL_UKJENT_STATSBORGERSKAP;
+import static no.nav.sosialhjelp.soknad.personalia.basispersonalia.BasisPersonaliaSystemdata.PDL_STATSLOS;
+import static no.nav.sosialhjelp.soknad.personalia.basispersonalia.BasisPersonaliaSystemdata.PDL_UKJENT_STATSBORGERSKAP;
 
 @Component
 public class TextHelpers {

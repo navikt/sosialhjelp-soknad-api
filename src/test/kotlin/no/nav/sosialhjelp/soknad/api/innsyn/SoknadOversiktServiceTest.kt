@@ -1,0 +1,50 @@
+package no.nav.sosialhjelp.soknad.api.innsyn
+
+import io.mockk.every
+import io.mockk.mockk
+import no.nav.sosialhjelp.soknad.api.innsyn.SoknadOversiktService.Companion.DEFAULT_TITTEL
+import no.nav.sosialhjelp.soknad.api.innsyn.SoknadOversiktService.Companion.KILDE_SOKNAD_API
+import no.nav.sosialhjelp.soknad.api.innsyn.dto.SoknadOversiktDto
+import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.SoknadMetadataRepository
+import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata
+import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus
+import no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SoknadType
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import java.sql.Timestamp
+import java.time.LocalDateTime
+
+internal class SoknadOversiktServiceTest {
+    private val soknadMetadataRepository: SoknadMetadataRepository = mockk()
+    private val service = SoknadOversiktService(soknadMetadataRepository)
+
+    private var soknadMetadata: SoknadMetadata? = null
+
+    @BeforeEach
+    fun setUp() {
+        soknadMetadata = SoknadMetadata()
+        soknadMetadata!!.fnr = "12345"
+        soknadMetadata!!.behandlingsId = "beh123"
+        soknadMetadata!!.type = SoknadType.SEND_SOKNAD_KOMMUNAL
+        soknadMetadata!!.innsendtDato = LocalDateTime.of(2018, 4, 11, 13, 30, 0)
+        soknadMetadata!!.sistEndretDato = LocalDateTime.of(2018, 4, 11, 13, 30, 0)
+        soknadMetadata!!.status = SoknadMetadataInnsendingStatus.UNDER_ARBEID
+    }
+
+    @Test
+    fun hentAlleSoknaderForBruker() {
+        every { soknadMetadataRepository.hentSvarUtInnsendteSoknaderForBruker("12345") } returns listOf(soknadMetadata)
+        val resultat: List<SoknadOversiktDto> = service.hentSvarUtSoknaderFor("12345")
+        assertThat(resultat).hasSize(1)
+
+        val soknad = resultat[0]
+        assertThat(soknad.fiksDigisosId).isNull()
+        assertThat(soknad.soknadTittel).contains(DEFAULT_TITTEL).contains(soknadMetadata!!.behandlingsId)
+        assertThat(soknad.status).isEqualTo(SoknadMetadataInnsendingStatus.UNDER_ARBEID.toString())
+        assertThat(soknad.sistOppdatert).isEqualTo(Timestamp.valueOf(soknadMetadata!!.innsendtDato))
+        assertThat(soknad.antallNyeOppgaver).isNull()
+        assertThat(soknad.kilde).isEqualTo(KILDE_SOKNAD_API)
+        assertThat(soknad.url).contains(soknadMetadata!!.behandlingsId)
+    }
+}

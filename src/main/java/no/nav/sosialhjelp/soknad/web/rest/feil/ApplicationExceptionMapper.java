@@ -6,7 +6,7 @@ import no.nav.sosialhjelp.soknad.business.exceptions.SendingTilKommuneUtilgjenge
 import no.nav.sosialhjelp.soknad.business.exceptions.SoknadUnderArbeidIkkeFunnetException;
 import no.nav.sosialhjelp.soknad.business.exceptions.SoknadenHarNedetidException;
 import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.PdfGenereringException;
-import no.nav.sosialhjelp.soknad.consumer.exceptions.PdlApiException;
+import no.nav.sosialhjelp.soknad.client.exceptions.PdlApiException;
 import no.nav.sosialhjelp.soknad.consumer.exceptions.SikkerhetsBegrensningException;
 import no.nav.sosialhjelp.soknad.consumer.exceptions.TjenesteUtilgjengeligException;
 import no.nav.sosialhjelp.soknad.domain.model.exception.AuthorizationException;
@@ -33,7 +33,7 @@ import static javax.ws.rs.core.Response.Status.SERVICE_UNAVAILABLE;
 import static javax.ws.rs.core.Response.Status.UNSUPPORTED_MEDIA_TYPE;
 import static javax.ws.rs.core.Response.serverError;
 import static javax.ws.rs.core.Response.status;
-import static no.nav.sosialhjelp.soknad.business.service.OpplastetVedleggService.MAKS_SAMLET_VEDLEGG_STORRELSE_I_MB;
+import static no.nav.sosialhjelp.soknad.vedlegg.OpplastetVedleggService.MAKS_SAMLET_VEDLEGG_STORRELSE_I_MB;
 import static no.nav.sosialhjelp.soknad.web.rest.feil.Feilmelding.NO_BIGIP_5XX_REDIRECT;
 
 @Provider
@@ -62,7 +62,7 @@ public class ApplicationExceptionMapper implements ExceptionMapper<SosialhjelpSo
         } else if (e instanceof EttersendelseSendtForSentException) {
             response = serverError().header(NO_BIGIP_5XX_REDIRECT, true);
             logger.info("REST-kall feilet: {}", e.getMessage(), e);
-        } else if (e instanceof TjenesteUtilgjengeligException) {
+        } else if (e instanceof TjenesteUtilgjengeligException || e instanceof no.nav.sosialhjelp.soknad.client.exceptions.TjenesteUtilgjengeligException) {
             response = serverError().header(NO_BIGIP_5XX_REDIRECT, true);
             logger.warn("REST-kall feilet: Ekstern tjeneste er utilgjengelig", e);
         } else if (e instanceof SikkerhetsBegrensningException) {

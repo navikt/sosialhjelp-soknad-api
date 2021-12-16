@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.client.fiks.digisosapi
 
-import no.nav.sosialhjelp.soknad.consumer.exceptions.TjenesteUtilgjengeligException
+import no.nav.sosialhjelp.soknad.client.exceptions.TjenesteUtilgjengeligException
 import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.HEADER_INTEGRASJON_ID
 import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.HEADER_INTEGRASJON_PASSORD
 import org.slf4j.LoggerFactory.getLogger
@@ -16,7 +16,7 @@ import java.security.cert.X509Certificate
 import javax.ws.rs.core.MediaType
 
 interface DokumentlagerClient {
-    fun getDokumentlagerPublicKeyX509Certificate(token: String): X509Certificate
+    fun getDokumentlagerPublicKeyX509Certificate(token: String?): X509Certificate
 }
 
 class DokumentlagerClientImpl(
@@ -26,7 +26,7 @@ class DokumentlagerClientImpl(
 
     private var cachedPublicKey: X509Certificate? = null
 
-    override fun getDokumentlagerPublicKeyX509Certificate(token: String): X509Certificate {
+    override fun getDokumentlagerPublicKeyX509Certificate(token: String?): X509Certificate {
         cachedPublicKey?.let { return it }
 
         val publicKey = fiksWebClient.get()
@@ -47,7 +47,8 @@ class DokumentlagerClientImpl(
 
         try {
             val certificateFactory = CertificateFactory.getInstance("X.509")
-            return certificateFactory.generateCertificate(ByteArrayInputStream(publicKey)) as X509Certificate
+            return (certificateFactory.generateCertificate(ByteArrayInputStream(publicKey)) as X509Certificate)
+                .also { cachedPublicKey = it }
         } catch (e: CertificateException) {
             throw RuntimeException(e)
         }

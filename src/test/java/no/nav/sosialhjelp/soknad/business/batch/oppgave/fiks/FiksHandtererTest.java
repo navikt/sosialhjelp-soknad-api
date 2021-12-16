@@ -1,8 +1,8 @@
 package no.nav.sosialhjelp.soknad.business.batch.oppgave.fiks;
 
-import no.nav.sosialhjelp.soknad.business.InnsendingService;
 import no.nav.sosialhjelp.soknad.business.batch.oppgave.Oppgave;
 import no.nav.sosialhjelp.soknad.domain.SendtSoknad;
+import no.nav.sosialhjelp.soknad.innsending.InnsendingService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

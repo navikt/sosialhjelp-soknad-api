@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import no.nav.sosialhjelp.soknad.business.service.TextService
 import no.nav.sosialhjelp.soknad.client.sts.StsClient
 import no.nav.sosialhjelp.soknad.consumer.common.rest.RestUtils
 import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.HEADER_NAV_APIKEY
@@ -14,10 +15,12 @@ import no.nav.sosialhjelp.soknad.web.selftest.Pingable.Ping.PingMetadata
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Import
 import javax.ws.rs.client.Client
 import javax.ws.rs.client.ClientRequestFilter
 
 @Configuration
+@Import(ArbeidRessurs::class)
 open class ArbeidsforholdConfig(
     @Value("\${aareg_api_baseurl}") private val baseurl: String,
     private val stsClient: StsClient,
@@ -45,6 +48,14 @@ open class ArbeidsforholdConfig(
                 Ping.feilet(metadata, e)
             }
         }
+    }
+
+    @Bean
+    open fun arbeidsforholdSystemdata(
+        arbeidsforholdService: ArbeidsforholdService,
+        textService: TextService
+    ): ArbeidsforholdSystemdata {
+        return ArbeidsforholdSystemdata(arbeidsforholdService, textService)
     }
 
     private val arbeidsforholdClient: Client

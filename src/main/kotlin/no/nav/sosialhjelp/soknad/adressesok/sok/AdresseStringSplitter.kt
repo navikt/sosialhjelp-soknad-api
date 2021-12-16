@@ -10,7 +10,7 @@ object AdresseStringSplitter {
             Sokedata(adresse = adresse)
         } else firstNonNull(
             postnummerMatch(adresse),
-            fullstendigGateadresseMatch(kodeverkService, adresse)!!,
+            fullstendigGateadresseMatch(kodeverkService, adresse),
             Sokedata(adresse = adresse)
         )
     }
@@ -30,9 +30,9 @@ object AdresseStringSplitter {
     }
 
     private fun getKommunenummer(kodeverkService: KodeverkService?, kommunenavn: String?): String? {
-        return if (kommunenavn != null && !kommunenavn.trim { it <= ' ' }
-            .isEmpty() && kodeverkService != null
-        ) kodeverkService.gjettKommunenummer(kommunenavn) else null
+        return if (kommunenavn != null && kommunenavn.trim { it <= ' ' }.isNotEmpty() && kodeverkService != null) {
+            kodeverkService.gjettKommunenummer(kommunenavn)
+        } else null
     }
 
     fun postnummerMatch(adresse: String?): Sokedata? {

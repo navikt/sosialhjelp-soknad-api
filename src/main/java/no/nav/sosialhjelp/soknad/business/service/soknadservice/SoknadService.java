@@ -26,24 +26,23 @@ import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon;
 import no.nav.sosialhjelp.metrics.MetricsFactory;
 import no.nav.sosialhjelp.metrics.Timer;
-import no.nav.sosialhjelp.soknad.business.InnsendingService;
 import no.nav.sosialhjelp.soknad.business.batch.oppgave.OppgaveHandterer;
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository;
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata;
 import no.nav.sosialhjelp.soknad.business.service.HenvendelseService;
-import no.nav.sosialhjelp.soknad.business.service.TextService;
-import no.nav.sosialhjelp.soknad.business.service.systemdata.BostotteSystemdata;
-import no.nav.sosialhjelp.soknad.business.service.systemdata.SkattetatenSystemdata;
+import no.nav.sosialhjelp.soknad.common.systemdata.SystemdataUpdater;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeidStatus;
 import no.nav.sosialhjelp.soknad.domain.Vedleggstatus;
 import no.nav.sosialhjelp.soknad.domain.model.exception.SosialhjelpSoknadApiException;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
+import no.nav.sosialhjelp.soknad.innsending.InnsendingService;
+import no.nav.sosialhjelp.soknad.inntekt.husbanken.BostotteSystemdata;
+import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkatteetatenSystemdata;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.inject.Inject;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -65,35 +64,37 @@ public class SoknadService {
 
     private static final Logger logger = getLogger(SoknadService.class);
 
-    @Inject
-    private HenvendelseService henvendelseService;
+    private final HenvendelseService henvendelseService;
+    private final OppgaveHandterer oppgaveHandterer;
+    private final SoknadMetricsService soknadMetricsService;
+    private final InnsendingService innsendingService;
+    private final EttersendingService ettersendingService;
+    private final SoknadUnderArbeidRepository soknadUnderArbeidRepository;
+    private final SystemdataUpdater systemdataUpdater;
+    private final BostotteSystemdata bostotteSystemdata;
+    private final SkatteetatenSystemdata skatteetatenSystemdata;
 
-    @Inject
-    private OppgaveHandterer oppgaveHandterer;
-
-    @Inject
-    private SoknadMetricsService soknadMetricsService;
-
-    @Inject
-    private InnsendingService innsendingService;
-
-    @Inject
-    private EttersendingService ettersendingService;
-
-    @Inject
-    private SoknadUnderArbeidRepository soknadUnderArbeidRepository;
-
-    @Inject
-    private SystemdataUpdater systemdataUpdater;
-
-    @Inject
-    private BostotteSystemdata bostotteSystemdata;
-
-    @Inject
-    private SkattetatenSystemdata skattetatenSystemdata;
-
-    @Inject
-    private TextService textService;
+    public SoknadService(
+            HenvendelseService henvendelseService,
+            OppgaveHandterer oppgaveHandterer,
+            SoknadMetricsService soknadMetricsService,
+            InnsendingService innsendingService,
+            EttersendingService ettersendingService,
+            SoknadUnderArbeidRepository soknadUnderArbeidRepository,
+            SystemdataUpdater systemdataUpdater,
+            BostotteSystemdata bostotteSystemdata,
+            SkatteetatenSystemdata skatteetatenSystemdata
+    ) {
+        this.henvendelseService = henvendelseService;
+        this.oppgaveHandterer = oppgaveHandterer;
+        this.soknadMetricsService = soknadMetricsService;
+        this.innsendingService = innsendingService;
+        this.ettersendingService = ettersendingService;
+        this.soknadUnderArbeidRepository = soknadUnderArbeidRepository;
+        this.systemdataUpdater = systemdataUpdater;
+        this.bostotteSystemdata = bostotteSystemdata;
+        this.skatteetatenSystemdata = skatteetatenSystemdata;
+    }
 
     @Transactional
     public String startSoknad(String token) {
@@ -120,7 +121,7 @@ public class SoknadService {
                 .withOpprettetDato(LocalDateTime.now())
                 .withSistEndretDato(LocalDateTime.now());
 
-        systemdataUpdater.update(soknadUnderArbeid, token);
+        systemdataUpdater.update(soknadUnderArbeid);
 
         soknadUnderArbeidRepository.opprettSoknad(soknadUnderArbeid, aktorId);
 
@@ -203,7 +204,7 @@ public class SoknadService {
         final String eier = SubjectHandler.getUserId();
         final SoknadUnderArbeid soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier);
         if (harSkatteetatenSamtykke) {
-            skattetatenSystemdata.updateSystemdataIn(soknadUnderArbeid);
+            skatteetatenSystemdata.updateSystemdataIn(soknadUnderArbeid);
         }
         if (harBostotteSamtykke) {
             bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid, token);
