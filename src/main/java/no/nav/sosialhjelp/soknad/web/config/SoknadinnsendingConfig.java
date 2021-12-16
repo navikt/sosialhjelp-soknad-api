@@ -26,7 +26,6 @@ import no.nav.sosialhjelp.soknad.utgifter.UtgifterConfig;
 import no.nav.sosialhjelp.soknad.vedlegg.VedleggConfig;
 import no.nav.sosialhjelp.soknad.web.oidc.OidcTokenValidatorConfig;
 import no.nav.sosialhjelp.soknad.web.selftest.SelftestService;
-import no.nav.sosialhjelp.soknad.web.service.SaksoversiktMetadataService;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
@@ -40,7 +39,6 @@ import org.springframework.context.annotation.Import;
         ContentConfig.class,
         OidcTokenValidatorConfig.class,
         MetricsConfiguration.class,
-        SaksoversiktMetadataService.class,
         SelftestService.class,
         InnsendingConfig.class,
         InntektConfig.class,
