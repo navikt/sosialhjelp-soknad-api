@@ -209,17 +209,10 @@ class OpplastetVedleggService(
         }
 
         filnavn += "-" + uuid.split("-").toTypedArray()[0]
-        if (fileExtension != null && fileExtension.isNotEmpty() && erTikaOgFileExtensionEnige(
-                fileExtension,
-                fileType
-            )
-        ) {
+        if (fileExtension != null && fileExtension.isNotEmpty() && erTikaOgFileExtensionEnige(fileExtension, fileType)) {
             filnavn += fileExtension
         } else {
-            logger.info(
-                "Opplastet vedlegg mangler fil extension -> setter fil extension lik validert filtype = {}",
-                fileType.extension
-            )
+            logger.info("Opplastet vedlegg mangler fil extension -> setter fil extension lik validert filtype = ${fileType.extension}")
             filnavn += fileType.extension
         }
 
@@ -242,12 +235,10 @@ class OpplastetVedleggService(
         val fileType = detectTikaType(data)
 
         if (fileType == TikaFileType.UNKNOWN) {
+            val mimeType = getMimeType(data)
+            val filType = findFileExtension(filnavn)
             throw UgyldigOpplastingTypeException(
-                "Ugyldig filtype for opplasting. Mimetype var ${getMimeType(data)}, filtype var ${
-                findFileExtension(
-                    filnavn
-                )
-                }",
+                "Ugyldig filtype for opplasting. Mimetype var $mimeType, filtype var $filType",
                 null,
                 "opplasting.feilmelding.feiltype"
             )
@@ -282,7 +273,8 @@ class OpplastetVedleggService(
         if (fileExtension == null) {
             logger.info("Opplastet bilde validerer OK, men mangler filtype for fil")
         }
-        if (filnavn.lowercase(Locale.getDefault()).endsWith(".jfif") || filnavn.lowercase(Locale.getDefault()).endsWith(".pjpeg") || filnavn.lowercase(Locale.getDefault()).endsWith(".pjp")) {
+        val lowercaseFilenavn = filnavn.lowercase(Locale.getDefault())
+        if (lowercaseFilenavn.endsWith(".jfif") || lowercaseFilenavn.endsWith(".pjpeg") || lowercaseFilenavn.endsWith(".pjp")) {
             throw UgyldigOpplastingTypeException(
                 "Ugyldig filtype for opplasting. Filtype var $fileExtension",
                 null,
@@ -301,13 +293,18 @@ class OpplastetVedleggService(
                     }
                     if (document.isEncrypted) {
                         throw UgyldigOpplastingTypeException(
-                            "PDF kan ikke være kryptert.", null,
+                            "PDF kan ikke være kryptert.",
+                            null,
                             "opplasting.feilmelding.pdf.kryptert"
                         )
                     }
                 }
         } catch (e: InvalidPasswordException) {
-            throw UgyldigOpplastingTypeException("PDF kan ikke være krypert.", null, "opplasting.feilmelding.pdf.kryptert")
+            throw UgyldigOpplastingTypeException(
+                "PDF kan ikke være krypert.",
+                null,
+                "opplasting.feilmelding.pdf.kryptert"
+            )
         } catch (e: IOException) {
             throw OpplastingException("Kunne ikke lagre fil", e, "vedlegg.opplasting.feil.generell")
         }
