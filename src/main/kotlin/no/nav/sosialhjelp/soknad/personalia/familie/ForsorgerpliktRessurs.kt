@@ -20,7 +20,6 @@ import no.nav.sosialhjelp.soknad.business.mappers.OkonomiMapper.addInntektIfNotP
 import no.nav.sosialhjelp.soknad.business.mappers.OkonomiMapper.addUtgiftIfNotPresentInOversikt
 import no.nav.sosialhjelp.soknad.business.mappers.OkonomiMapper.removeInntektIfPresentInOversikt
 import no.nav.sosialhjelp.soknad.business.mappers.OkonomiMapper.removeUtgiftIfPresentInOversikt
-import no.nav.sosialhjelp.soknad.business.service.TextService
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler
 import no.nav.sosialhjelp.soknad.personalia.familie.PersonMapper.fulltNavn
@@ -30,6 +29,7 @@ import no.nav.sosialhjelp.soknad.personalia.familie.dto.AnsvarFrontend
 import no.nav.sosialhjelp.soknad.personalia.familie.dto.BarnFrontend
 import no.nav.sosialhjelp.soknad.personalia.familie.dto.ForsorgerpliktFrontend
 import no.nav.sosialhjelp.soknad.personalia.familie.dto.NavnFrontend
+import no.nav.sosialhjelp.soknad.tekster.TextService
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import no.nav.sosialhjelp.soknad.web.utils.Constants
 import org.springframework.stereotype.Controller

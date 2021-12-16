@@ -10,8 +10,7 @@ import org.springframework.context.annotation.Import;
 @Import({
         SoknadService.class,
         DigisosApiService.class,
-        SoknadMetricsService.class,
-        TextService.class,
+        SoknadMetricsService.class
 })
 public class ServiceConfig {
 }

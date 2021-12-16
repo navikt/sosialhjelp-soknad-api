@@ -12,12 +12,12 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysn
 import no.nav.sosialhjelp.soknad.business.mappers.OkonomiMapper.addUtbetalingIfNotPresentInOpplysninger
 import no.nav.sosialhjelp.soknad.business.mappers.OkonomiMapper.removeUtbetalingIfPresentInOpplysninger
 import no.nav.sosialhjelp.soknad.business.mappers.TitleKeyMapper.soknadTypeToTitleKey
-import no.nav.sosialhjelp.soknad.business.service.TextService
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService.Companion.nowWithForcedNanoseconds
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.domain.Bostotte
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.domain.Sak
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.domain.Utbetaling
+import no.nav.sosialhjelp.soknad.tekster.TextService
 import org.apache.commons.text.WordUtils
 import java.time.LocalDate
 

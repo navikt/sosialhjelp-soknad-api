@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.inntekt.husbanken
 
 import no.nav.sosialhjelp.metrics.MetricsFactory
-import no.nav.sosialhjelp.soknad.business.service.TextService
+import no.nav.sosialhjelp.soknad.tekster.TextService
 import no.nav.sosialhjelp.soknad.web.selftest.Pingable
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean

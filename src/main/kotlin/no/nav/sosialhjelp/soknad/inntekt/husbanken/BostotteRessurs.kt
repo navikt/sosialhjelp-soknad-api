@@ -13,8 +13,8 @@ import no.nav.sosialhjelp.metrics.aspects.Timed
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.business.mappers.OkonomiMapper
 import no.nav.sosialhjelp.soknad.business.mappers.TitleKeyMapper
-import no.nav.sosialhjelp.soknad.business.service.TextService
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler
+import no.nav.sosialhjelp.soknad.tekster.TextService
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import no.nav.sosialhjelp.soknad.web.utils.Constants
 import org.springframework.http.HttpHeaders

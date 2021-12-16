@@ -37,12 +37,12 @@ class SaksoversiktMetadataService(
                 .withAvsender(
                     Part()
                         .withType(Part.Type.BRUKER)
-                        .withVisningsNavn(bundle.getProperty("saksoversikt.mottaker.deg"))
+                        .withVisningsNavn(bundle?.getProperty("saksoversikt.mottaker.deg"))
                 )
                 .withMottaker(
                     Part()
                         .withType(Part.Type.NAV)
-                        .withVisningsNavn(bundle.getProperty("saksoversikt.mottaker.nav"))
+                        .withVisningsNavn(bundle?.getProperty("saksoversikt.mottaker.nav"))
                 )
                 .withBehandlingsId(it.behandlingsId)
                 .withInnsendtDato(tilDate(it.innsendtDato))
@@ -50,15 +50,15 @@ class SaksoversiktMetadataService(
                     Hoveddokument()
                         .withTittel(
                             if (it.type == SoknadType.SEND_SOKNAD_KOMMUNAL) {
-                                bundle.getProperty("saksoversikt.soknadsnavn")
+                                bundle?.getProperty("saksoversikt.soknadsnavn")
                             } else {
-                                bundle.getProperty("saksoversikt.soknadsnavn.ettersending")
+                                bundle?.getProperty("saksoversikt.soknadsnavn.ettersending")
                             }
                         )
                 )
                 .withVedlegg(tilInnsendteVedlegg(it.vedlegg, bundle))
                 .withTema("KOM")
-                .withTemanavn(bundle.getProperty("saksoversikt.temanavn"))
+                .withTemanavn(bundle?.getProperty("saksoversikt.temanavn"))
                 .withLenke(lagEttersendelseLenke(it.behandlingsId))
         }
     }
@@ -82,13 +82,13 @@ class SaksoversiktMetadataService(
         return soknader.map {
             EttersendingsSoknad()
                 .withBehandlingsId(it.behandlingsId)
-                .withTittel(bundle.getProperty("saksoversikt.soknadsnavn") + " (" + it.innsendtDato.format(datoFormatter) + ")")
+                .withTittel(bundle?.getProperty("saksoversikt.soknadsnavn") + " (" + it.innsendtDato.format(datoFormatter) + ")")
                 .withLenke(lagEttersendelseLenke(it.behandlingsId))
                 .withVedlegg(finnManglendeVedlegg(it, bundle))
         }
     }
 
-    private fun finnManglendeVedlegg(soknad: SoknadMetadata, bundle: Properties): List<Vedlegg> {
+    private fun finnManglendeVedlegg(soknad: SoknadMetadata, bundle: Properties?): List<Vedlegg> {
         val nyesteSoknad = ettersendingService.hentNyesteSoknadIKjede(soknad)
         return nyesteSoknad.vedlegg.vedleggListe
             .asSequence()
@@ -96,18 +96,18 @@ class SaksoversiktMetadataService(
             .filter { !JsonVedleggUtils.isVedleggskravAnnet(it) }
             .map { "vedlegg." + it.skjema + "." + it.tillegg + ".tittel" }
             .distinct()
-            .map { bundle.getProperty(it) }
+            .map { bundle?.getProperty(it) }
             .map { Vedlegg().withTittel(it) }
             .toList()
     }
 
-    private fun tilInnsendteVedlegg(vedlegg: VedleggMetadataListe, bundle: Properties): List<Vedlegg> {
+    private fun tilInnsendteVedlegg(vedlegg: VedleggMetadataListe, bundle: Properties?): List<Vedlegg> {
         return vedlegg.vedleggListe
             .asSequence()
             .filter { it.status.er(Vedleggstatus.LastetOpp) }
             .map { "vedlegg." + it.skjema + "." + it.tillegg + ".tittel" }
             .distinct()
-            .map { bundle.getProperty(it) }
+            .map { bundle?.getProperty(it) }
             .map { Vedlegg().withTittel(it) }
             .toList()
     }
@@ -116,7 +116,7 @@ class SaksoversiktMetadataService(
         return Date.from(innsendtDato.atZone(ZoneId.systemDefault()).toInstant())
     }
 
-    private val bundle: Properties get() = navMessageSource.getBundleFor("soknadsosialhjelp", Locale("nb", "NO"))
+    private val bundle: Properties? get() = navMessageSource.getBundleFor("soknadsosialhjelp", Locale("nb", "NO"))
 
     private fun lagFortsettSoknadLenke(behandlingsId: String): String {
         return lagContextLenke() + "skjema/" + behandlingsId + "/0"
