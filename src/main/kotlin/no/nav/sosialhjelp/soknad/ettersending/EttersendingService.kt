@@ -107,11 +107,11 @@ class EttersendingService(
         val antallNyereSoknader = henvendelseService.hentAntallInnsendteSoknaderEtterTidspunkt(soknad.fnr, soknad.innsendtDato).toLong()
         throw EttersendelseSendtForSentException(
             "Kan ikke starte ettersendelse $dagerEtterFrist dager etter frist, " +
-                    "dagens dato: ${LocalDateTime.now().format(dateTimeFormatter)}, " +
-                    "soknadens dato: ${soknad.innsendtDato.format(dateTimeFormatter)}, " +
-                    "frist($ETTERSENDELSE_FRIST_DAGER dager): ${LocalDateTime.now().minusDays(ETTERSENDELSE_FRIST_DAGER.toLong()).format(dateTimeFormatter)}. " +
-                    "Antall ettersendelser som er sendt på denne søknaden tidligere er: $antallEttersendelser. " +
-                    "Antall nyere søknader denne brukeren har: $antallNyereSoknader",
+                "dagens dato: ${LocalDateTime.now().format(dateTimeFormatter)}, " +
+                "soknadens dato: ${soknad.innsendtDato.format(dateTimeFormatter)}, " +
+                "frist($ETTERSENDELSE_FRIST_DAGER dager): ${LocalDateTime.now().minusDays(ETTERSENDELSE_FRIST_DAGER.toLong()).format(dateTimeFormatter)}. " +
+                "Antall ettersendelser som er sendt på denne søknaden tidligere er: $antallEttersendelser. " +
+                "Antall nyere søknader denne brukeren har: $antallNyereSoknader",
         )
     }
 
