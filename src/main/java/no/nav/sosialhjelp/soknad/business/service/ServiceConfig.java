@@ -15,7 +15,6 @@ import org.springframework.context.annotation.Import;
         SoknadMetricsService.class,
         HenvendelseService.class,
         TextService.class,
-        OpplastetVedleggService.class,
 })
 public class ServiceConfig {
 }
