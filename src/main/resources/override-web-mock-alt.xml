@@ -4,16 +4,4 @@
          xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
          version="3.0">
 
-    <filter>
-        <filter-name>OpenAmLoginFilter</filter-name>
-        <filter-class>no.nav.sosialhjelp.soknad.web.saml.FakeLoginFilter</filter-class>
-        <init-param>
-            <param-name>defaultFnr</param-name>
-            <param-value>11111111111</param-value>
-        </init-param>
-    </filter>
-    <filter-mapping>
-        <filter-name>OpenAmLoginFilter</filter-name>
-        <url-pattern>/metadata/*</url-pattern>
-    </filter-mapping>
 </web-app>

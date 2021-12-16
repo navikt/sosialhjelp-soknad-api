@@ -9,7 +9,6 @@ import no.nav.sosialhjelp.soknad.api.innsyn.SoknadOversiktRessurs;
 import no.nav.sosialhjelp.soknad.api.minesaker.MineSakerMetadataRessurs;
 import no.nav.sosialhjelp.soknad.api.nedetid.NedetidRessurs;
 import no.nav.sosialhjelp.soknad.api.saksoversikt.SaksoversiktMetadataOidcRessurs;
-import no.nav.sosialhjelp.soknad.api.saksoversikt.SaksoversiktMetadataRessurs;
 import no.nav.sosialhjelp.soknad.arbeid.ArbeidRessurs;
 import no.nav.sosialhjelp.soknad.begrunnelse.BegrunnelseRessurs;
 import no.nav.sosialhjelp.soknad.bosituasjon.BosituasjonRessurs;
@@ -95,7 +94,6 @@ public class SoknadApplication extends ResourceConfig {
         register(MineSakerMetadataRessurs.class);
         register(SistInnsendteSoknadRessurs.class);
         register(SoknadOversiktRessurs.class);
-        register(SaksoversiktMetadataRessurs.class);
         register(SaksoversiktMetadataOidcRessurs.class);
 
         register(JacksonJaxbJsonProvider.class);
