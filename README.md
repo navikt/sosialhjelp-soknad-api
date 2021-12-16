@@ -27,7 +27,7 @@ Ved innsending vil søknadsdata låses ned slik at man ikke kan endre dem mer (d
 
 ### Autentisering 
 Alle endepunkt er autentisering `Azure AD B2C` cookie validert via `token-support`. 
-Dette fordi `Saksoversikt-api` fortsatt er på SAML. 
+
 I tillegg krever noen endepunkter et `access-token` fra `idporten`, som brukeren får via `sosialhjelp-login-api`. Dette brukes mot `FIKS` og mot `Husbanken`.
 
 ### Bruk av pakker fra Github Package Registry
