@@ -2,17 +2,19 @@ package no.nav.sosialhjelp.soknad.ettersending.innsendtsoknad
 
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata.VedleggMetadata
-import no.nav.sosialhjelp.soknad.business.service.HenvendelseService
 import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus
 import no.nav.sosialhjelp.soknad.domain.Vedleggstatus
 import no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SoknadType
 import no.nav.sosialhjelp.soknad.ettersending.innsendtsoknad.EttersendelseUtils.soknadSendtForMindreEnn30DagerSiden
+import no.nav.sosialhjelp.soknad.innsending.HenvendelseService
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 import java.util.function.Predicate
 
-class InnsendtSoknadService(private val henvendelseService: HenvendelseService) {
+class InnsendtSoknadService(
+    private val henvendelseService: HenvendelseService
+) {
     private val ikkeKvittering = Predicate<VedleggMetadata> { SKJEMANUMMER_KVITTERING != it.skjema }
     private val lastetOpp = Predicate<VedleggMetadata> { it.status.er(Vedleggstatus.LastetOpp) }
     private val ikkeLastetOpp = lastetOpp.negate()
@@ -21,55 +23,55 @@ class InnsendtSoknadService(private val henvendelseService: HenvendelseService) 
 
     fun hentBehandlingskjede(behandlingsId: String): BehandlingsKjede {
         val originalSoknad = hentOriginalSoknad(behandlingsId)
-        val ettersendelser = hentEttersendelser(originalSoknad.behandlingsId)
+        val ettersendelser = hentEttersendelser(originalSoknad?.behandlingsId)
         return BehandlingsKjede(
             originalSoknad = konverter(originalSoknad),
             ettersendelser = ettersendelser.map { konverter(it) }
         )
     }
 
-    private fun hentOriginalSoknad(behandlingsId: String): SoknadMetadata {
+    private fun hentOriginalSoknad(behandlingsId: String): SoknadMetadata? {
         var soknad = henvendelseService.hentSoknad(behandlingsId)
-        if (soknad.type == SoknadType.SEND_SOKNAD_KOMMUNAL_ETTERSENDING) {
+        if (soknad?.type == SoknadType.SEND_SOKNAD_KOMMUNAL_ETTERSENDING) {
             soknad = henvendelseService.hentSoknad(soknad.tilknyttetBehandlingsId)
         }
         return soknad
     }
 
-    private fun hentEttersendelser(behandlingsId: String): List<SoknadMetadata> {
+    private fun hentEttersendelser(behandlingsId: String?): List<SoknadMetadata> {
         return henvendelseService.hentBehandlingskjede(behandlingsId)
             .filter { it.status == SoknadMetadataInnsendingStatus.FERDIG }
             .sortedWith(Comparator.comparing { it.innsendtDato })
     }
 
-    private fun konverter(metadata: SoknadMetadata): InnsendtSoknad {
+    private fun konverter(metadata: SoknadMetadata?): InnsendtSoknad {
         return InnsendtSoknad(
-            behandlingsId = metadata.behandlingsId,
-            innsendtDato = metadata.innsendtDato.format(datoFormatter),
-            innsendtTidspunkt = metadata.innsendtDato.format(tidFormatter),
-            soknadsalderIMinutter = soknadsalderIMinutter(metadata.innsendtDato),
-            innsendteVedlegg = tilVedlegg(metadata.vedlegg.vedleggListe, lastetOpp),
-            ikkeInnsendteVedlegg = if (soknadSendtForMindreEnn30DagerSiden(metadata.innsendtDato.toLocalDate())) tilVedlegg(metadata.vedlegg.vedleggListe, ikkeLastetOpp) else null,
-            navenhet = metadata.navEnhet,
-            orgnummer = metadata.orgnr
+            behandlingsId = metadata?.behandlingsId,
+            innsendtDato = metadata?.innsendtDato?.format(datoFormatter),
+            innsendtTidspunkt = metadata?.innsendtDato?.format(tidFormatter),
+            soknadsalderIMinutter = soknadsalderIMinutter(metadata?.innsendtDato),
+            innsendteVedlegg = tilVedlegg(metadata?.vedlegg?.vedleggListe, lastetOpp),
+            ikkeInnsendteVedlegg = if (metadata?.innsendtDato?.toLocalDate()?.let { soknadSendtForMindreEnn30DagerSiden(it) } == true) tilVedlegg(metadata.vedlegg?.vedleggListe, ikkeLastetOpp) else null,
+            navenhet = metadata?.navEnhet,
+            orgnummer = metadata?.orgnr
         )
     }
 
-    fun getInnsendingstidspunkt(behandlingsId: String): LocalDateTime {
+    fun getInnsendingstidspunkt(behandlingsId: String): LocalDateTime? {
         val soknadMetadata = hentOriginalSoknad(behandlingsId)
-        return soknadMetadata.innsendtDato
+        return soknadMetadata?.innsendtDato
     }
 
     private fun tilVedlegg(
-        vedlegg: List<VedleggMetadata>,
+        vedlegg: List<VedleggMetadata>?,
         status: Predicate<VedleggMetadata>
     ): List<Vedlegg> {
         val vedleggMedRiktigStatus = vedlegg
-            .filter { ikkeKvittering.test(it) }
-            .filter { status.test(it) }
+            ?.filter { ikkeKvittering.test(it) }
+            ?.filter { status.test(it) }
 
         val unikeVedlegg: MutableMap<String, Vedlegg> = HashMap()
-        vedleggMedRiktigStatus.forEach {
+        vedleggMedRiktigStatus?.forEach {
             val sammensattnavn = it.skjema + "|" + it.tillegg
             if (!unikeVedlegg.containsKey(sammensattnavn)) {
                 unikeVedlegg[sammensattnavn] = Vedlegg(

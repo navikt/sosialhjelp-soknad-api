@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Import
 import org.springframework.transaction.support.TransactionTemplate
+import java.time.Clock
 
 @Configuration
 @Import(
@@ -36,5 +37,13 @@ open class InnsendingConfig {
             soknadUnderArbeidService,
             soknadMetadataRepository
         )
+    }
+
+    @Bean
+    open fun henvendelseService(
+        soknadMetadataRepository: SoknadMetadataRepository,
+        clock: Clock
+    ): HenvendelseService {
+        return HenvendelseService(soknadMetadataRepository, clock)
     }
 }

@@ -8,7 +8,6 @@ import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata.VedleggMetadata
-import no.nav.sosialhjelp.soknad.business.service.HenvendelseService
 import no.nav.sosialhjelp.soknad.business.util.JsonVedleggUtils
 import no.nav.sosialhjelp.soknad.business.util.JsonVedleggUtils.isVedleggskravAnnet
 import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus.FERDIG
@@ -18,6 +17,7 @@ import no.nav.sosialhjelp.soknad.domain.Vedleggstatus
 import no.nav.sosialhjelp.soknad.domain.model.exception.EttersendelseSendtForSentException
 import no.nav.sosialhjelp.soknad.domain.model.exception.SosialhjelpSoknadApiException
 import no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SoknadType
+import no.nav.sosialhjelp.soknad.innsending.HenvendelseService
 import java.time.Clock
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -81,15 +81,15 @@ class EttersendingService(
             }
     }
 
-    private fun hentOgVerifiserSoknad(behandlingsId: String?): SoknadMetadata? {
-        var soknad = henvendelseService.hentSoknad(behandlingsId)
+    private fun hentOgVerifiserSoknad(behandlingsId: String?): SoknadMetadata {
+        var soknad: SoknadMetadata? = henvendelseService.hentSoknad(behandlingsId)
             ?: throw IllegalStateException("SoknadMetadata til behandlingsid $behandlingsId finnes ikke")
 
-        if (soknad.type == SoknadType.SEND_SOKNAD_KOMMUNAL_ETTERSENDING) {
+        if (soknad?.type == SoknadType.SEND_SOKNAD_KOMMUNAL_ETTERSENDING) {
             soknad = henvendelseService.hentSoknad(soknad.tilknyttetBehandlingsId)
         }
 
-        if (soknad.status != FERDIG) {
+        if (soknad?.status != FERDIG) {
             throw SosialhjelpSoknadApiException("Kan ikke starte ettersendelse på noe som ikke er innsendt")
         } else if (soknad.innsendtDato.isBefore(LocalDateTime.now(clock).minusDays(ETTERSENDELSE_FRIST_DAGER.toLong()))) {
             throwDetailedExceptionForEttersendelserEtterFrist(soknad)

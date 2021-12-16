@@ -11,7 +11,6 @@ import org.springframework.context.annotation.Import;
         SoknadService.class,
         DigisosApiService.class,
         SoknadMetricsService.class,
-        HenvendelseService.class,
         TextService.class,
 })
 public class ServiceConfig {
