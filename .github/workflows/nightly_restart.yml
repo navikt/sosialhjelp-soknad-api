@@ -52,7 +52,7 @@ jobs:
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           RESOURCE: nais.yaml
-          CLUSTER: dev-sbs-intern
+          CLUSTER: dev-sbs
           VARS: nais/dev/dev-sbs-intern.json
           REF: ${{ github.sha }}
           PRINT_PAYLOAD: true
