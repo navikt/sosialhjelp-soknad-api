@@ -4,6 +4,7 @@ import no.nav.sosialhjelp.soknad.business.db.repositories.opplastetvedlegg.Oppla
 import no.nav.sosialhjelp.soknad.business.db.repositories.sendtsoknad.SendtSoknadRepository
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiConfig
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidConfig
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
 import org.springframework.context.annotation.Bean
@@ -14,6 +15,7 @@ import org.springframework.transaction.support.TransactionTemplate
 @Configuration
 @Import(
     SoknadUnderArbeidConfig::class,
+    DigisosApiConfig::class,
     SoknadRessurs::class,
     SoknadActions::class
 )
