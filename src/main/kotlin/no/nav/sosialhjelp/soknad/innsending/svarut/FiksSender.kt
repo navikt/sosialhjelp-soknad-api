@@ -87,12 +87,16 @@ class FiksSender(
         svarPaForsendelseId: ForsendelsesId?
     ) {
         check(
-            !(sendtSoknad.erEttersendelse() && (svarPaForsendelseId == null || svarPaForsendelseId.id == null || svarPaForsendelseId.id.toString()
-                .isEmpty()))
+            !(
+                sendtSoknad.erEttersendelse() && (
+                    svarPaForsendelseId == null || svarPaForsendelseId.id == null || svarPaForsendelseId.id.toString()
+                        .isEmpty()
+                    )
+                )
         ) {
             "Ettersendelse med behandlingsId " + sendtSoknad.behandlingsId +
-                    " er knyttet til en søknad med behandlingsId " + sendtSoknad.tilknyttetBehandlingsId +
-                    " som ikke har mottat fiksForsendelseId. Innsending til SvarUt vil feile nå og bli forsøkt på nytt senere."
+                " er knyttet til en søknad med behandlingsId " + sendtSoknad.tilknyttetBehandlingsId +
+                " som ikke har mottat fiksForsendelseId. Innsending til SvarUt vil feile nå og bli forsøkt på nytt senere."
         }
     }
 

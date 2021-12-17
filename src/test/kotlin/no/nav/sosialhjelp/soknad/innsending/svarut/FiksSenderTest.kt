@@ -109,11 +109,11 @@ internal class FiksSenderTest {
     @Test
     fun createForsendelseSetterRiktigTittelForEttersendelse() {
         every { innsendingService.hentSoknadUnderArbeid(any(), any()) } returns SoknadUnderArbeid()
-                .withTilknyttetBehandlingsId("12345")
-                .withJsonInternalSoknad(lagInternalSoknadForEttersending())
-                .withEier(EIER)
+            .withTilknyttetBehandlingsId("12345")
+            .withJsonInternalSoknad(lagInternalSoknadForEttersending())
+            .withEier(EIER)
 
-        //when(any(SoknadUnderArbeid.class).getJsonInternalSoknad()).thenReturn(lagInternalSoknadForEttersending());
+        // when(any(SoknadUnderArbeid.class).getJsonInternalSoknad()).thenReturn(lagInternalSoknadForEttersending());
         val sendtSoknad = lagSendtSoknad().withTilknyttetBehandlingsId("12345")
         val filnavnInputStreamMap = HashMap<String, InputStream>()
         val forsendelse = fiksSender!!.createForsendelse(sendtSoknad, filnavnInputStreamMap)
@@ -180,10 +180,12 @@ internal class FiksSenderTest {
     fun hentDokumenterFraSoknadKasterFeilHvisVedleggManglerForEttersending() {
         val filnavnInputStreamMap = HashMap<String, InputStream>()
         assertThatExceptionOfType(RuntimeException::class.java)
-            .isThrownBy { fiksSender!!.hentDokumenterFraSoknad(
-                SoknadUnderArbeid().withTilknyttetBehandlingsId("123"),
-                filnavnInputStreamMap
-            ) }
+            .isThrownBy {
+                fiksSender!!.hentDokumenterFraSoknad(
+                    SoknadUnderArbeid().withTilknyttetBehandlingsId("123"),
+                    filnavnInputStreamMap
+                )
+            }
     }
 
     private fun lagInternalSoknadForEttersending(): JsonInternalSoknad {

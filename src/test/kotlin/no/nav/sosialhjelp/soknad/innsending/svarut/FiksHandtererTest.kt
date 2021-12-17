@@ -16,7 +16,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 internal class FiksHandtererTest {
-    
+
     private val fiksSender: FiksSender = mockk()
     private val innsendingService: InnsendingService = mockk()
     private val fiksHandterer = FiksHandterer(fiksSender, innsendingService)
@@ -65,7 +65,7 @@ internal class FiksHandtererTest {
 
     @Test
     fun kjorerKjedeSelvOmFeilerForsteGang() {
-        //Feks. dersom en ettersendelse sin svarPaForsendelseId er null
+        // Feks. dersom en ettersendelse sin svarPaForsendelseId er null
         every { innsendingService.hentSendtSoknad(BEHANDLINGSID, AVSENDER) } returns lagSendtEttersendelse()
         every { fiksSender.sendTilFiks(any()) } throws IllegalStateException("Ettersendelse har svarPaForsendelseId null") andThen FIKSFORSENDELSEID
         val oppgave = opprettOppgave()
