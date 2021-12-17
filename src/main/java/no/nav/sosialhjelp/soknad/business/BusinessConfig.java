@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.business;
 
-import no.nav.sosialhjelp.soknad.business.batch.AvbrytAutomatiskSheduler;
 import no.nav.sosialhjelp.soknad.business.batch.LagringsScheduler;
 import no.nav.sosialhjelp.soknad.business.batch.SlettLoggScheduler;
 import no.nav.sosialhjelp.soknad.business.batch.SlettSoknadUnderArbeidScheduler;
@@ -21,7 +20,6 @@ import org.springframework.context.annotation.Import;
         DbConfig.class,
         ConsumerConfig.class,
         ServiceConfig.class,
-        AvbrytAutomatiskSheduler.class,
         SlettSoknadUnderArbeidScheduler.class,
         SystemdataUpdater.class,
         PdfGenerator.class,
