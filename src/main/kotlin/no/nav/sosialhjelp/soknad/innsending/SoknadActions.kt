@@ -12,7 +12,6 @@ import no.nav.sosialhjelp.soknad.business.exceptions.SendingTilKommuneErIkkeAkti
 import no.nav.sosialhjelp.soknad.business.exceptions.SendingTilKommuneErMidlertidigUtilgjengeligException
 import no.nav.sosialhjelp.soknad.business.exceptions.SendingTilKommuneUtilgjengeligException
 import no.nav.sosialhjelp.soknad.business.exceptions.SoknadenHarNedetidException
-import no.nav.sosialhjelp.soknad.business.service.digisosapi.DigisosApiService
 import no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService
 import no.nav.sosialhjelp.soknad.business.util.JsonVedleggUtils
 import no.nav.sosialhjelp.soknad.business.util.JsonVedleggUtils.FEATURE_UTVIDE_VEDLEGGJSON
@@ -29,6 +28,7 @@ import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler
 import no.nav.sosialhjelp.soknad.domain.model.util.KommuneTilNavEnhetMapper
 import no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils.isNonProduction
 import no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils.isSendingTilFiksEnabled
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiService
 import no.nav.sosialhjelp.soknad.innsending.dto.SendTilUrlFrontend
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import no.nav.sosialhjelp.soknad.web.utils.Constants
