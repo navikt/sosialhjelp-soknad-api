@@ -5,6 +5,7 @@ import no.nav.sosialhjelp.soknad.business.db.repositories.sendtsoknad.BatchSendt
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.BatchSoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.BatchSoknadUnderArbeidRepository
+import no.nav.sosialhjelp.soknad.business.service.HenvendelseService
 import no.nav.sosialhjelp.soknad.client.leaderelection.LeaderElection
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
@@ -18,17 +19,25 @@ open class SchedulerConfig(
     private val soknadMetadataRepository: SoknadMetadataRepository,
     private val batchSendtSoknadRepository: BatchSendtSoknadRepository,
     private val batchSoknadUnderArbeidRepository: BatchSoknadUnderArbeidRepository,
-    private val batchOpplastetVedleggRepository: BatchOpplastetVedleggRepository
+    private val batchOpplastetVedleggRepository: BatchOpplastetVedleggRepository,
+    private val henvendelseService: HenvendelseService
 ) {
 
     @Bean
-    open fun avbrytAutomatiskSheduler(): AvbrytAutomatiskScheduler {
+    open fun avbrytAutomatiskScheduler(): AvbrytAutomatiskScheduler {
         return AvbrytAutomatiskScheduler(
             leaderElection,
             soknadMetadataRepository,
             batchSoknadMetadataRepository,
             batchSoknadUnderArbeidRepository,
             batchEnabled
+        )
+    }
+
+    @Bean
+    open fun lagringsScheduler(): LagringsScheduler {
+        return LagringsScheduler(
+            leaderElection, henvendelseService, batchSoknadUnderArbeidRepository, batchEnabled
         )
     }
 }

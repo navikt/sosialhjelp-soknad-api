@@ -21,7 +21,7 @@
 
     <logger name="org.apache.pdfbox" level="error"/>
 
-    <logger name="no.nav.sosialhjelp.soknad.business.batch.LagringsScheduler" level="info"/>
+    <logger name="no.nav.sosialhjelp.soknad.scheduled.LagringsScheduler" level="info"/>
 
     <logger name="klientlogger" level="debug"/>
 
