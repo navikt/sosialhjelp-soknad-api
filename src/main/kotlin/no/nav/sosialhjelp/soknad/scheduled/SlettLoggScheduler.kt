@@ -42,7 +42,7 @@ class SlettLoggScheduler(
                     batchTimer.stop()
                     batchTimer.addFieldToReport("vellykket", vellykket)
                     batchTimer.report()
-                    logger.info("Jobb fullført for sletting av logg: $vellykket vellykket", )
+                    logger.info("Jobb fullført for sletting av logg: $vellykket vellykket")
                 }
             } else {
                 logger.warn("Batch disabled. Må sette environment property sendsoknad.batch.enabled til true for å sette den på igjen")

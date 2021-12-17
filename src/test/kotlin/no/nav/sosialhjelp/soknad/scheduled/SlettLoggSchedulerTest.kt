@@ -98,7 +98,6 @@ internal class SlettLoggSchedulerTest {
         verify(exactly = 1) { oppgaveRepository.slettOppgave(BEHANDLINGS_ID) }
         verify(exactly = 0) { batchSendtSoknadRepository.slettSendtSoknad(sendtSoknad.sendtSoknadId) }
         verify(exactly = 1) { batchSoknadMetadataRepository.slettSoknadMetaData(BEHANDLINGS_ID) }
-
     }
 
     @Test

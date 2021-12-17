@@ -27,7 +27,7 @@ internal class AvbrytAutomatiskSchedulerTest {
     private val batchSoknadUnderArbeidRepository: BatchSoknadUnderArbeidRepository = mockk()
     private val soknadMetadataRepository: SoknadMetadataRepository = mockk()
     private val batchSoknadMetadataRepository: BatchSoknadMetadataRepository = mockk()
-    
+
     private val scheduler = AvbrytAutomatiskScheduler(
         leaderElection,
         soknadMetadataRepository,
@@ -35,7 +35,7 @@ internal class AvbrytAutomatiskSchedulerTest {
         batchSoknadUnderArbeidRepository,
         true
     )
-    
+
     @BeforeEach
     fun setup() {
         every { leaderElection.isLeader() } returns true

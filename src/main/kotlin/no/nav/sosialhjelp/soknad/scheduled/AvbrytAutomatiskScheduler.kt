@@ -43,7 +43,7 @@ class AvbrytAutomatiskScheduler(
                     batchTimer.stop()
                     batchTimer.addFieldToReport("vellykket", vellykket)
                     batchTimer.report()
-                    logger.info("Jobb fullført: $vellykket vellykket", )
+                    logger.info("Jobb fullført: $vellykket vellykket")
                 }
             } else {
                 logger.warn("Batch disabled. Må sette environment property sendsoknad.batch.enabled til true for å sette den på igjen")
@@ -69,7 +69,7 @@ class AvbrytAutomatiskScheduler(
             vellykket++
 
             if (harGaattForLangTid()) {
-                logger.warn("Jobben har kjørt i mer enn $SCHEDULE_INTERRUPT_S s. Den blir derfor terminert", )
+                logger.warn("Jobben har kjørt i mer enn $SCHEDULE_INTERRUPT_S s. Den blir derfor terminert",)
                 return
             }
             soknad = batchSoknadMetadataRepository.hentForBatch(DAGER_GAMMELT)
