@@ -26,7 +26,6 @@ import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon;
 import no.nav.sosialhjelp.metrics.MetricsFactory;
 import no.nav.sosialhjelp.metrics.Timer;
-import no.nav.sosialhjelp.soknad.business.batch.oppgave.OppgaveHandterer;
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository;
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata;
 import no.nav.sosialhjelp.soknad.business.service.HenvendelseService;
@@ -38,6 +37,7 @@ import no.nav.sosialhjelp.soknad.domain.model.exception.SosialhjelpSoknadApiExce
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
 import no.nav.sosialhjelp.soknad.ettersending.EttersendingService;
 import no.nav.sosialhjelp.soknad.innsending.InnsendingService;
+import no.nav.sosialhjelp.soknad.innsending.svarut.OppgaveHandterer;
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.BostotteSystemdata;
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkatteetatenSystemdata;
 import org.slf4j.Logger;

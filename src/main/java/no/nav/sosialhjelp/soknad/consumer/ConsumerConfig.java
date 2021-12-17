@@ -17,10 +17,9 @@ import no.nav.sosialhjelp.soknad.client.pdl.PdlConfig;
 import no.nav.sosialhjelp.soknad.client.redis.NoRedisConfig;
 import no.nav.sosialhjelp.soknad.client.redis.RedisConfig;
 import no.nav.sosialhjelp.soknad.client.sts.StsConfig;
-import no.nav.sosialhjelp.soknad.client.svarut.SvarUtConfig;
 import no.nav.sosialhjelp.soknad.client.unleash.UnleashConfig;
-import no.nav.sosialhjelp.soknad.consumer.fiks.DokumentKrypterer;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.DigisosApiRestConfig;
+import no.nav.sosialhjelp.soknad.innsending.svarut.SvarUtConfig;
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.BostotteConfig;
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.NavUtbetalingerConfig;
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkattbarInntektConfig;
@@ -65,7 +64,6 @@ import org.springframework.context.annotation.Import;
         UnleashConfig.class,
         RedisConfig.class,
         NoRedisConfig.class,
-        DokumentKrypterer.class,
         BydelConfig.class,
         LeaderElectionConfig.class,
         VirusScanConfig.class,
