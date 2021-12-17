@@ -6,10 +6,10 @@ import io.mockk.slot
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata.VedleggMetadata
-import no.nav.sosialhjelp.soknad.business.service.soknadservice.EttersendingService
-import no.nav.sosialhjelp.soknad.business.service.soknadservice.EttersendingService.ETTERSENDELSE_FRIST_DAGER
 import no.nav.sosialhjelp.soknad.domain.Vedleggstatus
 import no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SoknadType
+import no.nav.sosialhjelp.soknad.ettersending.EttersendingService
+import no.nav.sosialhjelp.soknad.ettersending.EttersendingService.Companion.ETTERSENDELSE_FRIST_DAGER
 import no.nav.sosialhjelp.soknad.tekster.NavMessageSource
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
@@ -95,7 +95,7 @@ internal class SaksoversiktMetadataServiceTest {
         every {
             soknadMetadataRepository.hentInnsendteSoknaderForBrukerEtterTidspunkt(any(), any())
         } returns listOf(soknadMetadata)
-        every { ettersendingService.hentNyesteSoknadIKjede(any()) } returns soknadMetadata
+        every { ettersendingService.hentNyesteSoknadIKjede(any()) } returns soknadMetadata!!
 
         val resultat = saksoversiktMetadataService.hentSoknaderBrukerKanEttersendePa("12345")
 
@@ -112,7 +112,7 @@ internal class SaksoversiktMetadataServiceTest {
         every {
             soknadMetadataRepository.hentInnsendteSoknaderForBrukerEtterTidspunkt(any(), capture(timeSlot))
         } returns listOf(soknadMetadata)
-        every { ettersendingService.hentNyesteSoknadIKjede(any()) } returns soknadMetadata
+        every { ettersendingService.hentNyesteSoknadIKjede(any()) } returns soknadMetadata!!
 
         saksoversiktMetadataService.hentSoknaderBrukerKanEttersendePa("12345")
 

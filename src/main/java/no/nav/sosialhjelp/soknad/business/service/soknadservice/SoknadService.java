@@ -36,6 +36,7 @@ import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeidStatus;
 import no.nav.sosialhjelp.soknad.domain.Vedleggstatus;
 import no.nav.sosialhjelp.soknad.domain.model.exception.SosialhjelpSoknadApiException;
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
+import no.nav.sosialhjelp.soknad.ettersending.EttersendingService;
 import no.nav.sosialhjelp.soknad.innsending.InnsendingService;
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.BostotteSystemdata;
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkatteetatenSystemdata;
