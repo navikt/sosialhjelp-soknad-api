@@ -36,7 +36,7 @@ jobs:
           VARS: nais/dev/labs-gcp.json
           REF: ${{ github.sha }}
           PRINT_PAYLOAD: true
-          IMAGE: ${{ env.DOCKER_TAG }
+          IMAGE: ${{ env.DOCKER_TAG }}
       - name: Restart dev-sbs
         uses: nais/deploy/actions/deploy@v1
         env:
