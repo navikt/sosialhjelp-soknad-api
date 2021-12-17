@@ -88,4 +88,3 @@ class AvbrytAutomatiskScheduler(
         private const val DAGER_GAMMELT = 7 * 2
     }
 }
-

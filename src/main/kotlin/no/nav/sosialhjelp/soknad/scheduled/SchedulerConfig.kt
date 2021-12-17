@@ -31,5 +31,4 @@ open class SchedulerConfig(
             batchEnabled
         )
     }
-
 }
