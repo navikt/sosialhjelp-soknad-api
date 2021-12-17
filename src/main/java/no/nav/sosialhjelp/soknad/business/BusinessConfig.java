@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.business;
 
-import no.nav.sosialhjelp.soknad.business.batch.SlettSoknadUnderArbeidScheduler;
 import no.nav.sosialhjelp.soknad.business.db.config.DbConfig;
 import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.PdfGenerator;
 import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.SosialhjelpPdfGenerator;
@@ -16,7 +15,6 @@ import org.springframework.context.annotation.Import;
         DbConfig.class,
         ConsumerConfig.class,
         ServiceConfig.class,
-        SlettSoknadUnderArbeidScheduler.class,
         SystemdataUpdater.class,
         PdfGenerator.class,
         TextHelpers.class,

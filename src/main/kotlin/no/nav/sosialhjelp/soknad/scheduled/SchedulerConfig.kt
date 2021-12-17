@@ -1,7 +1,6 @@
 package no.nav.sosialhjelp.soknad.scheduled
 
 import no.nav.sosialhjelp.soknad.business.db.repositories.oppgave.OppgaveRepository
-import no.nav.sosialhjelp.soknad.business.db.repositories.opplastetvedlegg.BatchOpplastetVedleggRepository
 import no.nav.sosialhjelp.soknad.business.db.repositories.sendtsoknad.BatchSendtSoknadRepository
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.BatchSoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.SoknadMetadataRepository
@@ -20,7 +19,6 @@ open class SchedulerConfig(
     private val soknadMetadataRepository: SoknadMetadataRepository,
     private val batchSendtSoknadRepository: BatchSendtSoknadRepository,
     private val batchSoknadUnderArbeidRepository: BatchSoknadUnderArbeidRepository,
-    private val batchOpplastetVedleggRepository: BatchOpplastetVedleggRepository,
     private val oppgaveRepository: OppgaveRepository,
     private val henvendelseService: HenvendelseService
 ) {
@@ -38,9 +36,7 @@ open class SchedulerConfig(
 
     @Bean
     open fun lagringsScheduler(): LagringsScheduler {
-        return LagringsScheduler(
-            leaderElection, henvendelseService, batchSoknadUnderArbeidRepository, batchEnabled
-        )
+        return LagringsScheduler(leaderElection, henvendelseService, batchSoknadUnderArbeidRepository, batchEnabled)
     }
 
     @Bean
@@ -48,5 +44,10 @@ open class SchedulerConfig(
         return SlettLoggScheduler(
             leaderElection, batchSoknadMetadataRepository, batchSendtSoknadRepository, oppgaveRepository, batchEnabled
         )
+    }
+
+    @Bean
+    open fun slettSoknadUnderArbeidScheduler(): SlettSoknadUnderArbeidScheduler {
+        return SlettSoknadUnderArbeidScheduler(leaderElection, batchSoknadUnderArbeidRepository, batchEnabled)
     }
 }
