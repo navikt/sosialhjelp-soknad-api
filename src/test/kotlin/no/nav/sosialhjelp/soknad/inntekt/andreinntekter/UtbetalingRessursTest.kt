@@ -18,11 +18,11 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreft
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibeskrivelserAvAnnet
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.business.service.TextService
-import no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.domain.model.exception.AuthorizationException
 import no.nav.sosialhjelp.soknad.domain.model.oidc.StaticSubjectHandlerService
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler
+import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.inntekt.andreinntekter.UtbetalingRessurs.UtbetalingerFrontend
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import org.assertj.core.api.Assertions.assertThat
@@ -61,7 +61,7 @@ internal class UtbetalingRessursTest {
         every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
         every {
             soknadUnderArbeidRepository.hentSoknad(any<String>(), any())
-        } returns SoknadUnderArbeid().withJsonInternalSoknad(SoknadService.createEmptyJsonInternalSoknad(EIER))
+        } returns SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
 
         val utbetalingerFrontend = utbetalingRessurs.hentUtbetalinger(BEHANDLINGSID)
         assertThat(utbetalingerFrontend.bekreftelse).isNull()
@@ -157,7 +157,7 @@ internal class UtbetalingRessursTest {
         every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
         every {
             soknadUnderArbeidRepository.hentSoknad(any<String>(), any())
-        } returns SoknadUnderArbeid().withJsonInternalSoknad(SoknadService.createEmptyJsonInternalSoknad(EIER))
+        } returns SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
 
         val slot = slot<SoknadUnderArbeid>()
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(slot), any()) } just runs
@@ -189,7 +189,7 @@ internal class UtbetalingRessursTest {
         every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
         every {
             soknadUnderArbeidRepository.hentSoknad(any<String>(), any())
-        } returns SoknadUnderArbeid().withJsonInternalSoknad(SoknadService.createEmptyJsonInternalSoknad(EIER))
+        } returns SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
 
         val slot = slot<SoknadUnderArbeid>()
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(slot), any()) } just runs
@@ -266,7 +266,7 @@ internal class UtbetalingRessursTest {
         beskrivelseAvAnnet: String?
     ): SoknadUnderArbeid {
         val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(
-            SoknadService.createEmptyJsonInternalSoknad(
+            createEmptyJsonInternalSoknad(
                 EIER
             )
         )

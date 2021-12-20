@@ -10,11 +10,11 @@ import io.mockk.verify
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker
 import no.nav.sosialhjelp.soknad.begrunnelse.BegrunnelseRessurs.BegrunnelseFrontend
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
-import no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.domain.model.exception.AuthorizationException
 import no.nav.sosialhjelp.soknad.domain.model.oidc.StaticSubjectHandlerService
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler
+import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
@@ -101,9 +101,7 @@ internal class BegrunnelseRessursTest {
     }
 
     private fun createJsonInternalSoknadWithBegrunnelse(hvaSokesOm: String, hvorforSoke: String): SoknadUnderArbeid {
-        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(
-            createEmptyJsonInternalSoknad(EIER)
-        )
+        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
         soknadUnderArbeid.jsonInternalSoknad.soknad.data.begrunnelse
             .withHvaSokesOm(hvaSokesOm)
             .withHvorforSoke(hvorforSoke)

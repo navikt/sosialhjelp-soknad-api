@@ -5,8 +5,8 @@ import io.mockk.mockk
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonTelefonnummer
-import no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
+import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -18,9 +18,8 @@ internal class TelefonnummerSystemdataTest {
     @Test
     fun skalOppdatereTelefonnummerUtenLandkode() {
         every { mobiltelefonService.hent(any()) } returns TELEFONNUMMER_SYSTEM
-        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(
-            SoknadService.createEmptyJsonInternalSoknad(EIER)
-        )
+
+        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
         telefonnummerSystemdata.updateSystemdataIn(soknadUnderArbeid)
 
         val jsonPersonalia = soknadUnderArbeid.jsonInternalSoknad.soknad.data.personalia
@@ -31,9 +30,8 @@ internal class TelefonnummerSystemdataTest {
     @Test
     fun skalOppdatereTelefonnummerMedLandkode() {
         every { mobiltelefonService.hent(any()) } returns "+47$TELEFONNUMMER_SYSTEM"
-        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(
-            SoknadService.createEmptyJsonInternalSoknad(EIER)
-        )
+
+        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
         telefonnummerSystemdata.updateSystemdataIn(soknadUnderArbeid)
 
         val jsonPersonalia = soknadUnderArbeid.jsonInternalSoknad.soknad.data.personalia
@@ -43,9 +41,7 @@ internal class TelefonnummerSystemdataTest {
 
     @Test
     fun skalIkkeOppdatereTelefonnummerDersomKildeErBruker() {
-        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(
-            createJsonInternalSoknadWithUserDefinedTelefonnummer()
-        )
+        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createJsonInternalSoknadWithUserDefinedTelefonnummer())
         telefonnummerSystemdata.updateSystemdataIn(soknadUnderArbeid)
 
         val jsonPersonalia = soknadUnderArbeid.jsonInternalSoknad.soknad.data.personalia
@@ -56,9 +52,8 @@ internal class TelefonnummerSystemdataTest {
     @Test
     fun skalSetteNullDersomTelefonnummerErTomStreng() {
         every { mobiltelefonService.hent(any()) } returns ""
-        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(
-            SoknadService.createEmptyJsonInternalSoknad(EIER)
-        )
+
+        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
         telefonnummerSystemdata.updateSystemdataIn(soknadUnderArbeid)
 
         val jsonPersonalia = soknadUnderArbeid.jsonInternalSoknad.soknad.data.personalia
@@ -68,9 +63,8 @@ internal class TelefonnummerSystemdataTest {
     @Test
     fun skalSetteNullDersomTelefonnummerErNull() {
         every { mobiltelefonService.hent(any()) } returns null
-        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(
-            SoknadService.createEmptyJsonInternalSoknad(EIER)
-        )
+
+        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
         telefonnummerSystemdata.updateSystemdataIn(soknadUnderArbeid)
 
         val jsonPersonalia = soknadUnderArbeid.jsonInternalSoknad.soknad.data.personalia
@@ -78,9 +72,10 @@ internal class TelefonnummerSystemdataTest {
     }
 
     private fun createJsonInternalSoknadWithUserDefinedTelefonnummer(): JsonInternalSoknad {
-        val jsonInternalSoknad = SoknadService.createEmptyJsonInternalSoknad(EIER)
-        jsonInternalSoknad.soknad.data.personalia.telefonnummer =
-            JsonTelefonnummer().withKilde(JsonKilde.BRUKER).withVerdi(TELEFONNUMMER_BRUKER)
+        val jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER)
+        jsonInternalSoknad.soknad.data.personalia.telefonnummer = JsonTelefonnummer()
+            .withKilde(JsonKilde.BRUKER)
+            .withVerdi(TELEFONNUMMER_BRUKER)
         return jsonInternalSoknad
     }
 

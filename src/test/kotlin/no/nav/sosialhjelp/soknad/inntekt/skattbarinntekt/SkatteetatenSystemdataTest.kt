@@ -9,8 +9,8 @@ import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse
-import no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
+import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.domain.Utbetaling
 import no.nav.sosialhjelp.soknad.organisasjon.OrganisasjonService
 import org.assertj.core.api.Assertions.assertThat
@@ -31,8 +31,7 @@ internal class SkatteetatenSystemdataTest {
 
     @Test
     fun skalOppdatereUtbetalinger() {
-        val soknadUnderArbeid = SoknadUnderArbeid()
-            .withJsonInternalSoknad(SoknadService.createEmptyJsonInternalSoknad(EIER))
+        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
         setSamtykke(soknadUnderArbeid.jsonInternalSoknad, true)
         val skattbareUtbetalinger = listOf(SKATTBAR_UTBETALING, SKATTBAR_UTBETALING_ANNEN)
         every { skattbarInntektService.hentUtbetalinger(any()) } returns skattbareUtbetalinger
@@ -49,8 +48,7 @@ internal class SkatteetatenSystemdataTest {
 
     @Test
     fun skalKunInkludereGyldigeOrganisasjonsnummer() {
-        val soknadUnderArbeid = SoknadUnderArbeid()
-            .withJsonInternalSoknad(SoknadService.createEmptyJsonInternalSoknad(EIER))
+        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
         setSamtykke(soknadUnderArbeid.jsonInternalSoknad, true)
         val skattbareUtbetalinger =
             listOf(SKATTBAR_UTBETALING_ANNEN, SKATTBAR_UTBETALING, SKATTBAR_UTBETALING_FRA_PRIVATPERSON)
@@ -68,8 +66,7 @@ internal class SkatteetatenSystemdataTest {
 
     @Test
     fun skalOppdatereUtbetalingerUtenAAOverskriveBrukerUtfylteUtbetalinger() {
-        val soknadUnderArbeid = SoknadUnderArbeid()
-            .withJsonInternalSoknad(createJsonInternalSoknadWithUtbetalinger())
+        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createJsonInternalSoknadWithUtbetalinger())
         setSamtykke(soknadUnderArbeid.jsonInternalSoknad, true)
         val utbetalinger = listOf(SKATTBAR_UTBETALING_ANNEN)
         every { skattbarInntektService.hentUtbetalinger(any()) } returns utbetalinger
@@ -87,8 +84,7 @@ internal class SkatteetatenSystemdataTest {
 
     @Test
     fun skalIkkeHenteUtbetalingerUtenSamtykke() {
-        val soknadUnderArbeid = SoknadUnderArbeid()
-            .withJsonInternalSoknad(createJsonInternalSoknadWithUtbetalinger())
+        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createJsonInternalSoknadWithUtbetalinger())
         setSamtykke(soknadUnderArbeid.jsonInternalSoknad, false)
 
         skatteetatenSystemdata.updateSystemdataIn(soknadUnderArbeid)
@@ -103,8 +99,7 @@ internal class SkatteetatenSystemdataTest {
 
     @Test
     fun skalFjerneUtbetalingerNarViIkkeHarSamtykke() {
-        val soknadUnderArbeid = SoknadUnderArbeid()
-            .withJsonInternalSoknad(createJsonInternalSoknadWithUtbetalinger())
+        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createJsonInternalSoknadWithUtbetalinger())
         setSamtykke(soknadUnderArbeid.jsonInternalSoknad, true)
         val utbetalinger = listOf(SKATTBAR_UTBETALING_ANNEN)
         every { skattbarInntektService.hentUtbetalinger(any()) } returns utbetalinger
@@ -134,8 +129,7 @@ internal class SkatteetatenSystemdataTest {
     @Test
     fun updateSystemdata_soknadBlirOppdatertRiktigVedKommunikasjonsfeil_ogBeholderGamleData() {
         // Variabler:
-        val soknadUnderArbeid = SoknadUnderArbeid()
-            .withJsonInternalSoknad(SoknadService.createEmptyJsonInternalSoknad(EIER))
+        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
         setSamtykke(soknadUnderArbeid.jsonInternalSoknad, true)
         val utbetalinger = soknadUnderArbeid.jsonInternalSoknad
             .soknad.data.okonomi.opplysninger.utbetaling
@@ -155,7 +149,7 @@ internal class SkatteetatenSystemdataTest {
     }
 
     private fun createJsonInternalSoknadWithUtbetalinger(): JsonInternalSoknad {
-        val jsonInternalSoknad = SoknadService.createEmptyJsonInternalSoknad(EIER)
+        val jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER)
         val jsonUtbetalinger: MutableList<JsonOkonomiOpplysningUtbetaling> = ArrayList()
         setSamtykke(jsonInternalSoknad, true)
         jsonUtbetalinger.add(JSON_OKONOMI_OPPLYSNING_UTBETALING)
