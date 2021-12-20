@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.health
 
 import no.nav.security.token.support.core.api.Unprotected
-import no.nav.sosialhjelp.soknad.business.util.MimeTypes
+import no.nav.sosialhjelp.soknad.common.filedetection.MimeTypes
 import no.nav.sosialhjelp.soknad.web.selftest.SelftestService
 import no.nav.sosialhjelp.soknad.web.selftest.generators.SelftestHtmlGenerator
 import no.nav.sosialhjelp.soknad.web.selftest.generators.SelftestJsonGenerator

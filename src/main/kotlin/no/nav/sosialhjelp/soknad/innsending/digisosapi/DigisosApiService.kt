@@ -16,10 +16,10 @@ import no.nav.sosialhjelp.soknad.business.service.HenvendelseService
 import no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadMetricsService
 import no.nav.sosialhjelp.soknad.business.util.JsonVedleggUtils.getVedleggFromInternalSoknad
 import no.nav.sosialhjelp.soknad.business.util.MetricsUtils
-import no.nav.sosialhjelp.soknad.business.util.MimeTypes.APPLICATION_PDF
-import no.nav.sosialhjelp.soknad.business.util.MimeTypes.TEXT_X_MATLAB
 import no.nav.sosialhjelp.soknad.business.util.SenderUtils.createPrefixedBehandlingsIdInNonProd
 import no.nav.sosialhjelp.soknad.common.filedetection.FileDetectionUtils.getMimeType
+import no.nav.sosialhjelp.soknad.common.filedetection.MimeTypes.APPLICATION_PDF
+import no.nav.sosialhjelp.soknad.common.filedetection.MimeTypes.TEXT_X_MATLAB
 import no.nav.sosialhjelp.soknad.consumer.fiks.DigisosApi
 import no.nav.sosialhjelp.soknad.consumer.fiks.dto.FilMetadata
 import no.nav.sosialhjelp.soknad.consumer.fiks.dto.FilOpplasting

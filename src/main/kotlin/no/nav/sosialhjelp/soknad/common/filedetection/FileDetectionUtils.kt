@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.common.filedetection
 
-import no.nav.sosialhjelp.soknad.business.util.MimeTypes
 import org.apache.tika.Tika
 import org.slf4j.LoggerFactory
 
