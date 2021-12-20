@@ -12,8 +12,8 @@ import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
 import no.nav.sosialhjelp.soknad.business.db.repositories.opplastetvedlegg.OpplastetVedleggRepository
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
-import no.nav.sosialhjelp.soknad.business.util.TikaFileType
-import no.nav.sosialhjelp.soknad.business.util.TikaFileType.JPEG
+import no.nav.sosialhjelp.soknad.common.filedetection.TikaFileType.JPEG
+import no.nav.sosialhjelp.soknad.common.filedetection.TikaFileType.PNG
 import no.nav.sosialhjelp.soknad.domain.OpplastetVedlegg
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.domain.VedleggType
@@ -75,10 +75,10 @@ internal class OpplastetVedleggServiceTest {
         val medSpesialTegn = opplastetVedleggService.lagFilnavn("en.filmedææå()ogmyerartsjø.jpg", JPEG, "abc-ef05")
         assertThat(medSpesialTegn).isEqualTo("enfilmedeeaogmyerartsjo-abc.jpg")
 
-        val utenExtension = opplastetVedleggService.lagFilnavn("minfil", TikaFileType.PNG, "abc-ef05")
+        val utenExtension = opplastetVedleggService.lagFilnavn("minfil", PNG, "abc-ef05")
         assertThat(utenExtension).isEqualTo("minfil-abc.png")
 
-        val forskjelligExtension = opplastetVedleggService.lagFilnavn("minfil.jpg", TikaFileType.PNG, "abc-ef05")
+        val forskjelligExtension = opplastetVedleggService.lagFilnavn("minfil.jpg", PNG, "abc-ef05")
         assertThat(forskjelligExtension).isEqualTo("minfil-abc.png")
 
         val caseInsensitiveExtension = opplastetVedleggService.lagFilnavn("minfil.JPG", JPEG, "abc-ef05")
