@@ -35,7 +35,7 @@ class AvbrytAutomatiskScheduler(
                 val batchTimer = MetricsFactory.createTimer("sosialhjelp.debug.avbryt")
                 batchTimer.start()
                 try {
-                    avbryt()
+                    avbrytSoknader()
                 } catch (e: RuntimeException) {
                     logger.error("Batchjobb feilet", e)
                     batchTimer.setFailed()
@@ -51,7 +51,7 @@ class AvbrytAutomatiskScheduler(
         }
     }
 
-    private fun avbryt() {
+    private fun avbrytSoknader() {
         var soknad = batchSoknadMetadataRepository.hentForBatch(DAGER_GAMMELT)
 
         while (soknad.isPresent) {
