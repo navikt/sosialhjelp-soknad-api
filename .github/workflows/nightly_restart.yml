@@ -21,7 +21,7 @@ jobs:
         uses: nais/deploy/actions/deploy@v1
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
-          RESOURCE: nais.yaml
+          RESOURCE: nais/nais.yaml
           CLUSTER: dev-gcp
           VARS: nais/dev/dev-gcp.json
           REF: ${{ github.sha }}
@@ -31,7 +31,7 @@ jobs:
         uses: nais/deploy/actions/deploy@v1
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
-          RESOURCE: nais.yaml
+          RESOURCE: nais/nais.yaml
           CLUSTER: labs-gcp
           VARS: nais/dev/labs-gcp.json
           REF: ${{ github.sha }}
@@ -41,7 +41,7 @@ jobs:
         uses: nais/deploy/actions/deploy@v1
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
-          RESOURCE: nais.yaml
+          RESOURCE: nais/nais.yaml
           CLUSTER: dev-sbs
           VARS: nais/dev/dev-sbs.json
           REF: ${{ github.sha }}
@@ -51,7 +51,7 @@ jobs:
         uses: nais/deploy/actions/deploy@v1
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
-          RESOURCE: nais.yaml
+          RESOURCE: nais/nais.yaml
           CLUSTER: dev-sbs
           VARS: nais/dev/dev-sbs-intern.json
           REF: ${{ github.sha }}
