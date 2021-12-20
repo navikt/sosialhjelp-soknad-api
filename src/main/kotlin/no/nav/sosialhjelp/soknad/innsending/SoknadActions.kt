@@ -12,7 +12,6 @@ import no.nav.sosialhjelp.soknad.business.exceptions.SendingTilKommuneErIkkeAkti
 import no.nav.sosialhjelp.soknad.business.exceptions.SendingTilKommuneErMidlertidigUtilgjengeligException
 import no.nav.sosialhjelp.soknad.business.exceptions.SendingTilKommuneUtilgjengeligException
 import no.nav.sosialhjelp.soknad.business.exceptions.SoknadenHarNedetidException
-import no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService
 import no.nav.sosialhjelp.soknad.business.util.JsonVedleggUtils
 import no.nav.sosialhjelp.soknad.business.util.JsonVedleggUtils.FEATURE_UTVIDE_VEDLEGGJSON
 import no.nav.sosialhjelp.soknad.client.fiks.kommuneinfo.KommuneInfoService
