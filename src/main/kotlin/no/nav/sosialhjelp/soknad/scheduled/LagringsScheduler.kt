@@ -58,7 +58,7 @@ class LagringsScheduler(
 
                 // Avslutt prosessen hvis det er gått for lang tid. Tyder på at noe er nede.
                 if (harGaattForLangTid()) {
-                    logger.warn("Jobben har kjørt i mer enn $SCHEDULE_INTERRUPT_MS ms. Den blir derfor terminert")
+                    logger.warn("Jobben har kjørt i mer enn $SCHEDULE_INTERRUPT_MS ms. Den blir derfor stoppet")
                     metrikk.addFieldToReport("avbruttPgaTid", true)
                     return
                 }
