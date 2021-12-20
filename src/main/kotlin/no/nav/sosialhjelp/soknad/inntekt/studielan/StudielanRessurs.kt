@@ -4,9 +4,9 @@ import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.STUDIELAN
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.metrics.aspects.Timed
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
-import no.nav.sosialhjelp.soknad.business.mappers.OkonomiMapper
-import no.nav.sosialhjelp.soknad.business.mappers.TitleKeyMapper
 import no.nav.sosialhjelp.soknad.business.service.TextService
+import no.nav.sosialhjelp.soknad.common.mapper.OkonomiMapper
+import no.nav.sosialhjelp.soknad.common.mapper.TitleKeyMapper
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import no.nav.sosialhjelp.soknad.web.utils.Constants

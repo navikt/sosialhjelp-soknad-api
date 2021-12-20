@@ -9,7 +9,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.nio.charset.Charset;
 
-import static no.nav.sosialhjelp.soknad.business.util.MimeTypes.APPLICATION_JSON;
+import static no.nav.sosialhjelp.soknad.common.filedetection.MimeTypes.APPLICATION_JSON;
 
 public class FileResourceRetriever extends ProxyAwareResourceRetriever {
 

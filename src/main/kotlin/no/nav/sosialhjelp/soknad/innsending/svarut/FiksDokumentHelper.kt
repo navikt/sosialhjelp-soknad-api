@@ -12,10 +12,10 @@ import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
 import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.SosialhjelpPdfGenerator
-import no.nav.sosialhjelp.soknad.business.util.FileDetectionUtils
-import no.nav.sosialhjelp.soknad.business.util.MimeTypes.APPLICATION_JSON
-import no.nav.sosialhjelp.soknad.business.util.MimeTypes.APPLICATION_PDF
-import no.nav.sosialhjelp.soknad.business.util.MimeTypes.TEXT_X_MATLAB
+import no.nav.sosialhjelp.soknad.common.filedetection.FileDetectionUtils.getMimeType
+import no.nav.sosialhjelp.soknad.common.filedetection.MimeTypes.APPLICATION_JSON
+import no.nav.sosialhjelp.soknad.common.filedetection.MimeTypes.APPLICATION_PDF
+import no.nav.sosialhjelp.soknad.common.filedetection.MimeTypes.TEXT_X_MATLAB
 import no.nav.sosialhjelp.soknad.domain.OpplastetVedlegg
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.innsending.InnsendingService
@@ -119,7 +119,7 @@ class FiksDokumentHelper(
         val byteArrayInputStream = krypterOgOpprettByteArrayInputStream(opplastetVedlegg.data)
         map[filnavn] = byteArrayInputStream
 
-        val detectedMimeType = FileDetectionUtils.getMimeType(opplastetVedlegg.data)
+        val detectedMimeType = getMimeType(opplastetVedlegg.data)
         val mimetype = if (detectedMimeType.equals(TEXT_X_MATLAB, ignoreCase = true)) APPLICATION_PDF else detectedMimeType
         return Dokument()
             .withFilnavn(filnavn)
