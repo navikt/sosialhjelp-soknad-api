@@ -16,12 +16,12 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreft
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktInntekt
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.business.service.TextService
-import no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.common.mapper.OkonomiMapper
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.domain.model.exception.AuthorizationException
 import no.nav.sosialhjelp.soknad.domain.model.oidc.StaticSubjectHandlerService
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler
+import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.BostotteRessurs.BostotteFrontend
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import org.assertj.core.api.Assertions.assertThat

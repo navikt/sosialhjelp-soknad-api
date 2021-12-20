@@ -25,17 +25,17 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktI
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktUtgift
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.business.service.TextService
-import no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.domain.model.exception.AuthorizationException
 import no.nav.sosialhjelp.soknad.domain.model.oidc.StaticSubjectHandlerService
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler
+import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.personalia.familie.dto.AnsvarFrontend
 import no.nav.sosialhjelp.soknad.personalia.familie.dto.BarnFrontend
 import no.nav.sosialhjelp.soknad.personalia.familie.dto.ForsorgerpliktFrontend
 import no.nav.sosialhjelp.soknad.personalia.familie.dto.NavnFrontend
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
-import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
@@ -71,9 +71,9 @@ internal class ForsorgerpliktRessursTest {
             createJsonInternalSoknadWithForsorgerplikt(null, null, null)
 
         val forsorgerpliktFrontend = forsorgerpliktRessurs.hentForsorgerplikt(BEHANDLINGSID)
-        Assertions.assertThat(forsorgerpliktFrontend.harForsorgerplikt).isNull()
-        Assertions.assertThat(forsorgerpliktFrontend.barnebidrag).isNull()
-        Assertions.assertThat(forsorgerpliktFrontend.ansvar).isNull()
+        assertThat(forsorgerpliktFrontend.harForsorgerplikt).isNull()
+        assertThat(forsorgerpliktFrontend.barnebidrag).isNull()
+        assertThat(forsorgerpliktFrontend.ansvar).isNull()
     }
 
     @Test
@@ -88,9 +88,9 @@ internal class ForsorgerpliktRessursTest {
             createJsonInternalSoknadWithForsorgerplikt(true, null, listOf(jsonAnsvar))
 
         val forsorgerpliktFrontend = forsorgerpliktRessurs.hentForsorgerplikt(BEHANDLINGSID)
-        Assertions.assertThat(forsorgerpliktFrontend.harForsorgerplikt).isTrue
-        Assertions.assertThat(forsorgerpliktFrontend.barnebidrag).isNull()
-        Assertions.assertThat(forsorgerpliktFrontend.ansvar).hasSize(1)
+        assertThat(forsorgerpliktFrontend.harForsorgerplikt).isTrue
+        assertThat(forsorgerpliktFrontend.barnebidrag).isNull()
+        assertThat(forsorgerpliktFrontend.ansvar).hasSize(1)
         assertThatAnsvarIsCorrectlyConverted(forsorgerpliktFrontend.ansvar!![0], jsonAnsvar)
     }
 
@@ -106,9 +106,9 @@ internal class ForsorgerpliktRessursTest {
             createJsonInternalSoknadWithForsorgerplikt(true, null, listOf(jsonAnsvar))
 
         val forsorgerpliktFrontend = forsorgerpliktRessurs.hentForsorgerplikt(BEHANDLINGSID)
-        Assertions.assertThat(forsorgerpliktFrontend.harForsorgerplikt).isTrue
-        Assertions.assertThat(forsorgerpliktFrontend.barnebidrag).isNull()
-        Assertions.assertThat(forsorgerpliktFrontend.ansvar).hasSize(1)
+        assertThat(forsorgerpliktFrontend.harForsorgerplikt).isTrue
+        assertThat(forsorgerpliktFrontend.barnebidrag).isNull()
+        assertThat(forsorgerpliktFrontend.ansvar).hasSize(1)
         assertThatAnsvarIsCorrectlyConverted(forsorgerpliktFrontend.ansvar!![0], jsonAnsvar)
     }
 
@@ -121,9 +121,9 @@ internal class ForsorgerpliktRessursTest {
             createJsonInternalSoknadWithForsorgerplikt(true, null, listOf(jsonAnsvar, jsonAnsvar_2))
 
         val forsorgerpliktFrontend = forsorgerpliktRessurs.hentForsorgerplikt(BEHANDLINGSID)
-        Assertions.assertThat(forsorgerpliktFrontend.harForsorgerplikt).isTrue
-        Assertions.assertThat(forsorgerpliktFrontend.barnebidrag).isNull()
-        Assertions.assertThat(forsorgerpliktFrontend.ansvar).hasSize(2)
+        assertThat(forsorgerpliktFrontend.harForsorgerplikt).isTrue
+        assertThat(forsorgerpliktFrontend.barnebidrag).isNull()
+        assertThat(forsorgerpliktFrontend.ansvar).hasSize(2)
         assertThatAnsvarIsCorrectlyConverted(forsorgerpliktFrontend.ansvar!![0], jsonAnsvar)
         assertThatAnsvarIsCorrectlyConverted(forsorgerpliktFrontend.ansvar!![1], jsonAnsvar_2)
     }
@@ -136,9 +136,9 @@ internal class ForsorgerpliktRessursTest {
             createJsonInternalSoknadWithForsorgerplikt(true, Verdi.BEGGE, listOf(jsonAnsvar))
 
         val forsorgerpliktFrontend = forsorgerpliktRessurs.hentForsorgerplikt(BEHANDLINGSID)
-        Assertions.assertThat(forsorgerpliktFrontend.harForsorgerplikt).isTrue
-        Assertions.assertThat(forsorgerpliktFrontend.barnebidrag).isEqualTo(Verdi.BEGGE)
-        Assertions.assertThat(forsorgerpliktFrontend.ansvar).hasSize(1)
+        assertThat(forsorgerpliktFrontend.harForsorgerplikt).isTrue
+        assertThat(forsorgerpliktFrontend.barnebidrag).isEqualTo(Verdi.BEGGE)
+        assertThat(forsorgerpliktFrontend.ansvar).hasSize(1)
         assertThatAnsvarIsCorrectlyConverted(forsorgerpliktFrontend.ansvar!![0], jsonAnsvar)
     }
 
@@ -156,9 +156,9 @@ internal class ForsorgerpliktRessursTest {
 
         val soknadUnderArbeid = soknadUnderArbeidSlot.captured
         val forsorgerplikt = soknadUnderArbeid.jsonInternalSoknad.soknad.data.familie.forsorgerplikt
-        Assertions.assertThat(forsorgerplikt.barnebidrag.verdi).isEqualTo(Verdi.BETALER)
-        Assertions.assertThat(forsorgerplikt.harForsorgerplikt).isNull()
-        Assertions.assertThat(forsorgerplikt.ansvar).isNull()
+        assertThat(forsorgerplikt.barnebidrag.verdi).isEqualTo(Verdi.BETALER)
+        assertThat(forsorgerplikt.harForsorgerplikt).isNull()
+        assertThat(forsorgerplikt.ansvar).isNull()
     }
 
     @Test
@@ -184,9 +184,9 @@ internal class ForsorgerpliktRessursTest {
         val forsorgerplikt = soknadUnderArbeid.jsonInternalSoknad.soknad.data.familie.forsorgerplikt
         val inntekter = soknadUnderArbeid.jsonInternalSoknad.soknad.data.okonomi.oversikt.inntekt
         val utgifter = soknadUnderArbeid.jsonInternalSoknad.soknad.data.okonomi.oversikt.utgift
-        Assertions.assertThat(forsorgerplikt.barnebidrag).isNull()
-        Assertions.assertThat(inntekter.isEmpty()).isTrue
-        Assertions.assertThat(utgifter.isEmpty()).isTrue
+        assertThat(forsorgerplikt.barnebidrag).isNull()
+        assertThat(inntekter.isEmpty()).isTrue
+        assertThat(utgifter.isEmpty()).isTrue
     }
 
     @Test
@@ -205,10 +205,10 @@ internal class ForsorgerpliktRessursTest {
 
         val soknadUnderArbeid = soknadUnderArbeidSlot.captured
         val forsorgerplikt = soknadUnderArbeid.jsonInternalSoknad.soknad.data.familie.forsorgerplikt
-        Assertions.assertThat(forsorgerplikt.barnebidrag).isNull()
-        Assertions.assertThat(forsorgerplikt.harForsorgerplikt.verdi).isTrue
-        Assertions.assertThat(forsorgerplikt.ansvar[0].harDeltBosted.verdi).isTrue
-        Assertions.assertThat(forsorgerplikt.ansvar[1].samvarsgrad.verdi).isEqualTo(30)
+        assertThat(forsorgerplikt.barnebidrag).isNull()
+        assertThat(forsorgerplikt.harForsorgerplikt.verdi).isTrue
+        assertThat(forsorgerplikt.ansvar[0].harDeltBosted.verdi).isTrue
+        assertThat(forsorgerplikt.ansvar[1].samvarsgrad.verdi).isEqualTo(30)
     }
 
     @Test
@@ -229,10 +229,10 @@ internal class ForsorgerpliktRessursTest {
 
         val soknadUnderArbeid = soknadUnderArbeidSlot.captured
         val forsorgerplikt = soknadUnderArbeid.jsonInternalSoknad.soknad.data.familie.forsorgerplikt
-        Assertions.assertThat(forsorgerplikt.barnebidrag).isNull()
-        Assertions.assertThat(forsorgerplikt.harForsorgerplikt.verdi).isTrue
-        Assertions.assertThat(forsorgerplikt.ansvar[0].harDeltBosted.verdi).isTrue
-        Assertions.assertThat(forsorgerplikt.ansvar[1].samvarsgrad.verdi).isEqualTo(30)
+        assertThat(forsorgerplikt.barnebidrag).isNull()
+        assertThat(forsorgerplikt.harForsorgerplikt.verdi).isTrue
+        assertThat(forsorgerplikt.ansvar[0].harDeltBosted.verdi).isTrue
+        assertThat(forsorgerplikt.ansvar[1].samvarsgrad.verdi).isEqualTo(30)
         val brukerregistrertAnsvar = forsorgerplikt.ansvar[2]
         assertThatAnsvarIsCorrectlyConverted(BRUKERREGISTRERT_BARN, brukerregistrertAnsvar)
     }
@@ -253,8 +253,8 @@ internal class ForsorgerpliktRessursTest {
 
         val soknadUnderArbeid = soknadUnderArbeidSlot.captured
         val forsorgerplikt = soknadUnderArbeid.jsonInternalSoknad.soknad.data.familie.forsorgerplikt
-        Assertions.assertThat(forsorgerplikt.barnebidrag).isNull()
-        Assertions.assertThat(forsorgerplikt.harForsorgerplikt.verdi).isTrue
+        assertThat(forsorgerplikt.barnebidrag).isNull()
+        assertThat(forsorgerplikt.harForsorgerplikt.verdi).isTrue
         val brukerregistrertAnsvar = forsorgerplikt.ansvar[0]
         assertThatAnsvarIsCorrectlyConverted(BRUKERREGISTRERT_BARN, brukerregistrertAnsvar)
     }
@@ -317,19 +317,19 @@ internal class ForsorgerpliktRessursTest {
     ) {
         val barnFrontend = ansvarFrontend?.barn
         val jsonBarn = jsonAnsvar.barn
-        Assertions.assertThat(ansvarFrontend?.borSammenMed)
+        assertThat(ansvarFrontend?.borSammenMed)
             .isEqualTo(if (jsonAnsvar.borSammenMed == null) null else jsonAnsvar.borSammenMed.verdi)
-        Assertions.assertThat(ansvarFrontend?.harDeltBosted)
+        assertThat(ansvarFrontend?.harDeltBosted)
             .isEqualTo(if (jsonAnsvar.harDeltBosted == null) null else jsonAnsvar.harDeltBosted.verdi)
-        Assertions.assertThat(ansvarFrontend?.samvarsgrad)
+        assertThat(ansvarFrontend?.samvarsgrad)
             .isEqualTo(if (jsonAnsvar.samvarsgrad == null) null else jsonAnsvar.samvarsgrad.verdi)
-        Assertions.assertThat(ansvarFrontend?.erFolkeregistrertSammen)
+        assertThat(ansvarFrontend?.erFolkeregistrertSammen)
             .isEqualTo(if (jsonAnsvar.erFolkeregistrertSammen == null) null else jsonAnsvar.erFolkeregistrertSammen.verdi)
-        Assertions.assertThat(barnFrontend?.fodselsnummer).isEqualTo(jsonBarn.personIdentifikator)
-        Assertions.assertThat(barnFrontend?.fodselsdato).isEqualTo(jsonBarn.fodselsdato)
-        Assertions.assertThat(barnFrontend?.navn?.fornavn).isEqualTo(jsonBarn.navn.fornavn)
-        Assertions.assertThat(barnFrontend?.navn?.mellomnavn).isEqualTo(jsonBarn.navn.mellomnavn)
-        Assertions.assertThat(barnFrontend?.navn?.etternavn).isEqualTo(jsonBarn.navn.etternavn)
+        assertThat(barnFrontend?.fodselsnummer).isEqualTo(jsonBarn.personIdentifikator)
+        assertThat(barnFrontend?.fodselsdato).isEqualTo(jsonBarn.fodselsdato)
+        assertThat(barnFrontend?.navn?.fornavn).isEqualTo(jsonBarn.navn.fornavn)
+        assertThat(barnFrontend?.navn?.mellomnavn).isEqualTo(jsonBarn.navn.mellomnavn)
+        assertThat(barnFrontend?.navn?.etternavn).isEqualTo(jsonBarn.navn.etternavn)
     }
 
     private fun createJsonInternalSoknadWithForsorgerplikt(
@@ -337,9 +337,7 @@ internal class ForsorgerpliktRessursTest {
         barnebidrag: Verdi?,
         ansvars: List<JsonAnsvar>?
     ): SoknadUnderArbeid {
-        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(
-            createEmptyJsonInternalSoknad(EIER)
-        )
+        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
         soknadUnderArbeid.jsonInternalSoknad.soknad.data.familie
             .withForsorgerplikt(
                 JsonForsorgerplikt()
