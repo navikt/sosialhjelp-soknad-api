@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.client.svarut
+package no.nav.sosialhjelp.soknad.innsending.svarut.client
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue

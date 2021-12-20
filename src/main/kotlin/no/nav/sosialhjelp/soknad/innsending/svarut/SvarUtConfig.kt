@@ -1,7 +1,13 @@
-package no.nav.sosialhjelp.soknad.client.svarut
+package no.nav.sosialhjelp.soknad.innsending.svarut
 
+import no.nav.sosialhjelp.soknad.business.db.repositories.oppgave.OppgaveRepository
+import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.SosialhjelpPdfGenerator
 import no.nav.sosialhjelp.soknad.consumer.common.rest.RestConfig
 import no.nav.sosialhjelp.soknad.consumer.common.rest.RestUtils
+import no.nav.sosialhjelp.soknad.innsending.InnsendingService
+import no.nav.sosialhjelp.soknad.innsending.svarut.client.SvarUtClient
+import no.nav.sosialhjelp.soknad.innsending.svarut.client.SvarUtClientImpl
+import no.nav.sosialhjelp.soknad.innsending.svarut.client.SvarUtService
 import no.nav.sosialhjelp.soknad.web.selftest.Pingable
 import org.glassfish.jersey.media.multipart.MultiPartFeature
 import org.springframework.beans.factory.annotation.Value
@@ -17,8 +23,41 @@ import javax.xml.bind.DatatypeConverter
 open class SvarUtConfig(
     @Value("\${svarut_url}") private var baseurl: String,
     @Value("\${fiks_svarut_username}") private val svarutUsername: String?,
-    @Value("\${fiks_svarut_password}") private val svarutPassword: String?
+    @Value("\${fiks_svarut_password}") private val svarutPassword: String?,
+    @Value("\${feature.fiks.kryptering.enabled}") private val krypteringEnabled: Boolean,
+    @Value("\${fiks.nokkelfil}") private val fiksNokkelfil: String?
 ) {
+
+    @Bean
+    open fun fiksSender(
+        dokumentKrypterer: DokumentKrypterer,
+        innsendingService: InnsendingService,
+        sosialhjelpPdfGenerator: SosialhjelpPdfGenerator,
+        svarutService: SvarUtService
+    ): FiksSender {
+        return FiksSender(
+            dokumentKrypterer,
+            innsendingService,
+            sosialhjelpPdfGenerator,
+            krypteringEnabled,
+            svarutService
+        )
+    }
+
+    @Bean
+    open fun dokumentKrypterer(): DokumentKrypterer {
+        return DokumentKrypterer(fiksNokkelfil)
+    }
+
+    @Bean
+    open fun fiksHandterer(fiksSender: FiksSender, innsendingService: InnsendingService): FiksHandterer {
+        return FiksHandterer(fiksSender, innsendingService)
+    }
+
+    @Bean
+    open fun oppgaveHandterer(fiksHandterer: FiksHandterer, oppgaveRepository: OppgaveRepository): OppgaveHandterer {
+        return OppgaveHandtererImpl(fiksHandterer, oppgaveRepository)
+    }
 
     @Bean
     open fun svarUtService(svarUtClient: SvarUtClient): SvarUtService {

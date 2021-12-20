@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.client.svarut
+package no.nav.sosialhjelp.soknad.innsending.svarut.client
 
 import no.ks.fiks.svarut.klient.model.Forsendelse
 import java.io.InputStream
