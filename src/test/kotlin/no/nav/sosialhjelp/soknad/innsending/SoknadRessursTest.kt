@@ -11,10 +11,10 @@ import io.mockk.verify
 import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.BOSTOTTE_SAMTYKKE
 import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_SKATTEETATEN_SAMTYKKE
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
-import no.nav.sosialhjelp.soknad.business.mappers.OkonomiMapper
 import no.nav.sosialhjelp.soknad.business.service.HenvendelseService
 import no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService
 import no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad
+import no.nav.sosialhjelp.soknad.common.mapper.OkonomiMapper
 import no.nav.sosialhjelp.soknad.common.systemdata.SystemdataUpdater
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.domain.model.exception.AuthorizationException
