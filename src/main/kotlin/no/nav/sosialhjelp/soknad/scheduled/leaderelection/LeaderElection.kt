@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.client.leaderelection
+package no.nav.sosialhjelp.soknad.scheduled.leaderelection
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import org.slf4j.LoggerFactory.getLogger

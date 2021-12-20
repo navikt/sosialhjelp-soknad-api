@@ -13,11 +13,11 @@ import no.nav.sosialhjelp.soknad.business.db.repositories.sendtsoknad.BatchSendt
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.BatchSoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata
-import no.nav.sosialhjelp.soknad.client.leaderelection.LeaderElection
 import no.nav.sosialhjelp.soknad.domain.SendtSoknad
 import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus
 import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus.UNDER_ARBEID
 import no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SoknadType
+import no.nav.sosialhjelp.soknad.scheduled.leaderelection.LeaderElection
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
