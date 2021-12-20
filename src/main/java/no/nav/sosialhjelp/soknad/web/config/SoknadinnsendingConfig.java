@@ -20,6 +20,7 @@ import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.OkonomiskeOpplysningerCo
 import no.nav.sosialhjelp.soknad.personalia.adresse.AdresseConfig;
 import no.nav.sosialhjelp.soknad.personalia.basispersonalia.BasisPersonaliaConfig;
 import no.nav.sosialhjelp.soknad.personalia.familie.FamilieConfig;
+import no.nav.sosialhjelp.soknad.scheduled.SchedulerConfig;
 import no.nav.sosialhjelp.soknad.tilgangskontroll.TilgangskontrollConfig;
 import no.nav.sosialhjelp.soknad.utdanning.UtdanningConfig;
 import no.nav.sosialhjelp.soknad.utgifter.UtgifterConfig;
@@ -62,7 +63,8 @@ import org.springframework.context.annotation.Import;
         NedetidConfig.class,
         SaksoversiktConfig.class,
         InnsendingConfig.class,
-        TilgangskontrollConfig.class
+        TilgangskontrollConfig.class,
+        SchedulerConfig.class
 })
 @ComponentScan(basePackages = "no.nav.sosialhjelp.soknad.web.rest")
 public class SoknadinnsendingConfig {
