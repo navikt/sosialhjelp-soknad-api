@@ -5,8 +5,8 @@ import io.mockk.mockk
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonIdentifikator
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonSokernavn
-import no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
+import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Person
 import org.assertj.core.api.Assertions.assertThat
@@ -19,8 +19,7 @@ internal class BasisPersonaliaSystemdataTest {
 
     @Test
     fun skalIkkeOppdatereDersomPersonaliaErNull() {
-        val soknadUnderArbeid = SoknadUnderArbeid()
-            .withJsonInternalSoknad(SoknadService.createEmptyJsonInternalSoknad(EIER))
+        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
         every { personService.hentPerson(any()) } returns null
 
         basisPersonaliaSystemdata.updateSystemdataIn(soknadUnderArbeid)
@@ -50,8 +49,7 @@ internal class BasisPersonaliaSystemdataTest {
             null,
             null
         )
-        val soknadUnderArbeid = SoknadUnderArbeid()
-            .withJsonInternalSoknad(SoknadService.createEmptyJsonInternalSoknad(EIER))
+        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
         every { personService.hentPerson(any()) } returns person
 
         basisPersonaliaSystemdata.updateSystemdataIn(soknadUnderArbeid)
@@ -83,8 +81,7 @@ internal class BasisPersonaliaSystemdataTest {
             null,
             null
         )
-        val soknadUnderArbeid = SoknadUnderArbeid()
-            .withJsonInternalSoknad(SoknadService.createEmptyJsonInternalSoknad(EIER))
+        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
         every { personService.hentPerson(any()) } returns person
 
         basisPersonaliaSystemdata.updateSystemdataIn(soknadUnderArbeid)
@@ -105,8 +102,7 @@ internal class BasisPersonaliaSystemdataTest {
             ),
             null, null, null, null
         )
-        val soknadUnderArbeid = SoknadUnderArbeid()
-            .withJsonInternalSoknad(SoknadService.createEmptyJsonInternalSoknad(EIER))
+        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
         every { personService.hentPerson(any()) } returns person
 
         basisPersonaliaSystemdata.updateSystemdataIn(soknadUnderArbeid)
@@ -127,8 +123,7 @@ internal class BasisPersonaliaSystemdataTest {
             ),
             null, null, null, null
         )
-        val soknadUnderArbeid = SoknadUnderArbeid()
-            .withJsonInternalSoknad(SoknadService.createEmptyJsonInternalSoknad(EIER))
+        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
         every { personService.hentPerson(any()) } returns person
 
         basisPersonaliaSystemdata.updateSystemdataIn(soknadUnderArbeid)
@@ -150,8 +145,7 @@ internal class BasisPersonaliaSystemdataTest {
     @Test
     fun skalikkeSendeMedStatsborgerskapForUkjent_TPS() {
         val person = Person(FORNAVN, MELLOMNAVN, ETTERNAVN, EIER, "ugift", listOf("???"), null, null, null, null)
-        val soknadUnderArbeid = SoknadUnderArbeid()
-            .withJsonInternalSoknad(SoknadService.createEmptyJsonInternalSoknad(EIER))
+        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
         every { personService.hentPerson(any()) } returns person
 
         basisPersonaliaSystemdata.updateSystemdataIn(soknadUnderArbeid)
@@ -175,8 +169,7 @@ internal class BasisPersonaliaSystemdataTest {
             null,
             null
         )
-        val soknadUnderArbeid = SoknadUnderArbeid()
-            .withJsonInternalSoknad(SoknadService.createEmptyJsonInternalSoknad(EIER))
+        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
         every { personService.hentPerson(any()) } returns person
 
         basisPersonaliaSystemdata.updateSystemdataIn(soknadUnderArbeid)

@@ -23,8 +23,8 @@ import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonHarDeltBosted
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonHarForsorgerplikt
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSamvarsgrad
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus
-import no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
+import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Barn
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Ektefelle
@@ -52,8 +52,7 @@ internal class FamilieSystemdataTest {
         every { personService.hentPerson(any()) } returns person
         every { personService.hentBarnForPerson(any()) } returns null
 
-        val soknadUnderArbeid = SoknadUnderArbeid()
-            .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
+        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
         familieSystemdata.updateSystemdataIn(soknadUnderArbeid)
 
         val internalSoknad = writer.writeValueAsString(soknadUnderArbeid.jsonInternalSoknad)
@@ -74,8 +73,7 @@ internal class FamilieSystemdataTest {
         every { personService.hentPerson(any()) } returns person
         every { personService.hentBarnForPerson(any()) } returns null
 
-        val soknadUnderArbeid = SoknadUnderArbeid()
-            .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
+        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
         familieSystemdata.updateSystemdataIn(soknadUnderArbeid)
 
         val internalSoknad = writer.writeValueAsString(soknadUnderArbeid.jsonInternalSoknad)
@@ -104,8 +102,7 @@ internal class FamilieSystemdataTest {
         every { personService.hentPerson(any()) } returns person
         every { personService.hentBarnForPerson(any()) } returns null
 
-        val soknadUnderArbeid = SoknadUnderArbeid()
-            .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
+        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
         familieSystemdata.updateSystemdataIn(soknadUnderArbeid)
 
         val internalSoknad = writer.writeValueAsString(soknadUnderArbeid.jsonInternalSoknad)
@@ -125,8 +122,7 @@ internal class FamilieSystemdataTest {
         every { personService.hentPerson(any()) } returns null
         every { personService.hentBarnForPerson(any()) } returns listOf(BARN, BARN_2)
 
-        val soknadUnderArbeid = SoknadUnderArbeid()
-            .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
+        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
         familieSystemdata.updateSystemdataIn(soknadUnderArbeid)
 
         val internalSoknad = writer.writeValueAsString(soknadUnderArbeid.jsonInternalSoknad)
@@ -148,8 +144,7 @@ internal class FamilieSystemdataTest {
         every { personService.hentPerson(any()) } returns null
         every { personService.hentBarnForPerson(any()) } returns emptyList()
 
-        val soknadUnderArbeid = SoknadUnderArbeid()
-            .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
+        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
         familieSystemdata.updateSystemdataIn(soknadUnderArbeid)
 
         val internalSoknad = writer.writeValueAsString(soknadUnderArbeid.jsonInternalSoknad)
@@ -174,8 +169,7 @@ internal class FamilieSystemdataTest {
                     .withVerdi(true)
             )
             .withAnsvar(listOf(JSON_ANSVAR, JSON_ANSVAR_2, JSON_ANSVAR_3_BRUKERREGISTRERT))
-        val soknadUnderArbeid = SoknadUnderArbeid()
-            .withJsonInternalSoknad(jsonInternalSoknad)
+        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(jsonInternalSoknad)
         familieSystemdata.updateSystemdataIn(soknadUnderArbeid)
 
         val internalSoknad = writer.writeValueAsString(soknadUnderArbeid.jsonInternalSoknad)
@@ -211,8 +205,7 @@ internal class FamilieSystemdataTest {
                     .withVerdi(true)
             )
             .withAnsvar(listOf(JSON_ANSVAR_3_BRUKERREGISTRERT))
-        val soknadUnderArbeid = SoknadUnderArbeid()
-            .withJsonInternalSoknad(jsonInternalSoknad)
+        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(jsonInternalSoknad)
         familieSystemdata.updateSystemdataIn(soknadUnderArbeid)
 
         val internalSoknad = writer.writeValueAsString(soknadUnderArbeid.jsonInternalSoknad)
@@ -259,8 +252,7 @@ internal class FamilieSystemdataTest {
         every { personService.hentPerson(any()) } returns person
         every { personService.hentBarnForPerson(any()) } returns null
 
-        val soknadUnderArbeid = SoknadUnderArbeid()
-            .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
+        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
         familieSystemdata.updateSystemdataIn(soknadUnderArbeid)
 
         val internalSoknad = writer.writeValueAsString(soknadUnderArbeid.jsonInternalSoknad)
