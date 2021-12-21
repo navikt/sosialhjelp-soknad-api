@@ -5,7 +5,6 @@ import no.nav.sosialhjelp.soknad.common.filedetection.MimeTypes
 import no.nav.sosialhjelp.soknad.health.selftest.SelftestService
 import no.nav.sosialhjelp.soknad.health.selftest.generators.SelftestHtmlGenerator
 import no.nav.sosialhjelp.soknad.health.selftest.generators.SelftestJsonGenerator
-
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpHeaders
 import org.springframework.stereotype.Controller
