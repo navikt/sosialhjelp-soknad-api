@@ -17,6 +17,7 @@ import no.nav.sosialhjelp.soknad.health.HealthConfig;
 import no.nav.sosialhjelp.soknad.health.selftest.SelftestService;
 import no.nav.sosialhjelp.soknad.innsending.InnsendingConfig;
 import no.nav.sosialhjelp.soknad.inntekt.InntektConfig;
+import no.nav.sosialhjelp.soknad.metrics.MetricsConfig;
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.OkonomiskeOpplysningerConfig;
 import no.nav.sosialhjelp.soknad.personalia.adresse.AdresseConfig;
 import no.nav.sosialhjelp.soknad.personalia.basispersonalia.BasisPersonaliaConfig;
@@ -64,7 +65,8 @@ import org.springframework.context.annotation.Import;
         SaksoversiktConfig.class,
         InnsendingConfig.class,
         TilgangskontrollConfig.class,
-        SchedulerConfig.class
+        SchedulerConfig.class,
+        MetricsConfig.class
 })
 @ComponentScan(basePackages = "no.nav.sosialhjelp.soknad.web.rest")
 public class SoknadinnsendingConfig {

@@ -3,10 +3,10 @@ package no.nav.sosialhjelp.soknad.innsending.digisosapi
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.SosialhjelpPdfGenerator
 import no.nav.sosialhjelp.soknad.business.service.HenvendelseService
-import no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadMetricsService
 import no.nav.sosialhjelp.soknad.consumer.fiks.DigisosApi
 import no.nav.sosialhjelp.soknad.innsending.InnsendingService
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
+import no.nav.sosialhjelp.soknad.metrics.SoknadMetricsService
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
