@@ -183,7 +183,7 @@ open class SoknadService(
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier)
     }
 
-    fun startEttersending(behandlingsIdSoknad: String?): String {
+    fun startEttersending(behandlingsIdSoknad: String?): String? {
         return ettersendingService.start(behandlingsIdSoknad)
     }
 

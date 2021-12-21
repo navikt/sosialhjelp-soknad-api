@@ -18,7 +18,6 @@ import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidS
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import no.nav.sosialhjelp.soknad.tilgangskontroll.XsrfGenerator
 import no.nav.sosialhjelp.soknad.web.utils.Constants
-import org.slf4j.LoggerFactory
 import org.springframework.http.HttpHeaders
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.RequestBody
@@ -139,15 +138,15 @@ open class SoknadRessurs(
         @QueryParam("ettersendTil") behandlingsId: String?,
         @Context response: HttpServletResponse,
         @HeaderParam(value = HttpHeaders.AUTHORIZATION) token: String?
-    ): Map<String, String> {
+    ): Map<String, String?> {
         if (NedetidUtils.isInnenforNedetid) {
             throw SoknadenHarNedetidException(
                 "Soknaden har nedetid fram til ${NedetidUtils.getNedetidAsStringOrNull(NEDETID_SLUTT)}"
             )
         }
         tilgangskontroll.verifiserAtBrukerHarTilgang()
-        val result: MutableMap<String, String> = HashMap()
-        val opprettetBehandlingsId: String = if (behandlingsId == null) {
+        val result: MutableMap<String, String?> = HashMap()
+        val opprettetBehandlingsId = if (behandlingsId == null) {
             soknadService.startSoknad(token)
         } else {
             val eier = SubjectHandler.getUserId()
@@ -173,15 +172,15 @@ open class SoknadRessurs(
 
     companion object {
         const val XSRF_TOKEN = "XSRF-TOKEN-SOKNAD-API"
-        private val log = LoggerFactory.getLogger(SoknadRessurs::class.java)
-        private fun xsrfCookie(behandlingId: String): Cookie {
+
+        private fun xsrfCookie(behandlingId: String?): Cookie {
             val xsrfCookie = Cookie(XSRF_TOKEN, XsrfGenerator.generateXsrfToken(behandlingId))
             xsrfCookie.path = "/"
             xsrfCookie.secure = true
             return xsrfCookie
         }
 
-        private fun xsrfCookieMedBehandlingsid(behandlingId: String): Cookie {
+        private fun xsrfCookieMedBehandlingsid(behandlingId: String?): Cookie {
             val xsrfCookie = Cookie(XSRF_TOKEN + "-" + behandlingId, XsrfGenerator.generateXsrfToken(behandlingId))
             xsrfCookie.path = "/"
             xsrfCookie.secure = true

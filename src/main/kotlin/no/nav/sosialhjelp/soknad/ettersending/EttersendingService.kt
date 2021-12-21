@@ -29,7 +29,7 @@ class EttersendingService(
     private val unleash: Unleash,
     private val clock: Clock
 ) {
-    fun start(behandlingsIdDetEttersendesPaa: String?): String {
+    fun start(behandlingsIdDetEttersendesPaa: String?): String? {
         val originalSoknad = hentOgVerifiserSoknad(behandlingsIdDetEttersendesPaa)
         val nyesteSoknad = hentNyesteSoknadIKjede(originalSoknad)
 
