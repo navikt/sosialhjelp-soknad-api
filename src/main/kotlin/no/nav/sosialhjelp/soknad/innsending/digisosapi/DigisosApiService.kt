@@ -14,7 +14,6 @@ import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata.VedleggMetadataL
 import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.SosialhjelpPdfGenerator
 import no.nav.sosialhjelp.soknad.business.service.HenvendelseService
 import no.nav.sosialhjelp.soknad.business.util.JsonVedleggUtils.getVedleggFromInternalSoknad
-import no.nav.sosialhjelp.soknad.business.util.MetricsUtils
 import no.nav.sosialhjelp.soknad.business.util.SenderUtils.createPrefixedBehandlingsIdInNonProd
 import no.nav.sosialhjelp.soknad.common.filedetection.FileDetectionUtils.getMimeType
 import no.nav.sosialhjelp.soknad.common.filedetection.MimeTypes.APPLICATION_PDF
@@ -28,6 +27,7 @@ import no.nav.sosialhjelp.soknad.domain.Vedleggstatus
 import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler.getUserId
 import no.nav.sosialhjelp.soknad.innsending.InnsendingService
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
+import no.nav.sosialhjelp.soknad.metrics.MetricsUtils.navKontorTilInfluxNavn
 import no.nav.sosialhjelp.soknad.metrics.SoknadMetricsService
 import org.slf4j.LoggerFactory
 import java.io.ByteArrayInputStream
@@ -117,7 +117,7 @@ class DigisosApiService(
 
     private fun lagForsoktSendtDigisosApiEvent(navEnhetsnavn: String): Event {
         val event = MetricsFactory.createEvent("fiks.digisosapi.sendt")
-        event.addTagToReport("mottaker", MetricsUtils.navKontorTilInfluxNavn(navEnhetsnavn))
+        event.addTagToReport("mottaker", navKontorTilInfluxNavn(navEnhetsnavn))
         return event
     }
 

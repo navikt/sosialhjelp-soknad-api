@@ -3,11 +3,11 @@ package no.nav.sosialhjelp.soknad.metrics
 import no.nav.sosialhjelp.metrics.MetricsFactory
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata.VedleggMetadata
 import no.nav.sosialhjelp.soknad.business.util.JsonVedleggUtils
-import no.nav.sosialhjelp.soknad.business.util.MetricsUtils
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.domain.Vedleggstatus
 import no.nav.sosialhjelp.soknad.domain.model.PersonAlder
 import no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SosialhjelpInformasjon
+import no.nav.sosialhjelp.soknad.metrics.MetricsUtils.getProsent
 import org.slf4j.LoggerFactory
 
 class SoknadMetricsService {
@@ -55,9 +55,9 @@ class SoknadMetricsService {
         event.addFieldToReport("antall.innsendt", antallInnsendt)
         event.addFieldToReport("antall.levertTidligere", antallLevertTidligere)
         event.addFieldToReport("antall.ikkeLevert", antallIkkeLevert)
-        event.addFieldToReport("prosent.innsendt", MetricsUtils.getProsent(antallInnsendt, totaltAntall))
-        event.addFieldToReport("prosent.levertTidligere", MetricsUtils.getProsent(antallLevertTidligere, totaltAntall))
-        event.addFieldToReport("prosent.ikkeLevert", MetricsUtils.getProsent(antallIkkeLevert, totaltAntall))
+        event.addFieldToReport("prosent.innsendt", getProsent(antallInnsendt, totaltAntall))
+        event.addFieldToReport("prosent.levertTidligere", getProsent(antallLevertTidligere, totaltAntall))
+        event.addFieldToReport("prosent.ikkeLevert", getProsent(antallIkkeLevert, totaltAntall))
         event.report()
     }
 
