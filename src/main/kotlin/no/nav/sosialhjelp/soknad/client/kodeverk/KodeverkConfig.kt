@@ -7,7 +7,7 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.sosialhjelp.soknad.client.redis.RedisService
 import no.nav.sosialhjelp.soknad.consumer.common.rest.RestUtils
 import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.HEADER_NAV_APIKEY
-import no.nav.sosialhjelp.soknad.web.selftest.Pingable
+import no.nav.sosialhjelp.soknad.health.selftest.Pingable
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -33,12 +33,12 @@ open class KodeverkConfig(
     @Bean
     open fun kodeverkRestPing(kodeverkClient: KodeverkClient): Pingable {
         return Pingable {
-            val metadata = Pingable.Ping.PingMetadata(baseurl, "Kodeverk", false)
+            val metadata = Pingable.PingMetadata(baseurl, "Kodeverk", false)
             try {
                 kodeverkClient.ping()
-                Pingable.Ping.lyktes(metadata)
+                Pingable.lyktes(metadata)
             } catch (e: Exception) {
-                Pingable.Ping.feilet(metadata, e)
+                Pingable.feilet(metadata, e)
             }
         }
     }

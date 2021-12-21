@@ -3,9 +3,7 @@ package no.nav.sosialhjelp.soknad.personalia.telefonnummer
 import no.nav.sosialhjelp.soknad.client.redis.RedisService
 import no.nav.sosialhjelp.soknad.consumer.common.rest.RestUtils
 import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants
-import no.nav.sosialhjelp.soknad.web.selftest.Pingable
-import no.nav.sosialhjelp.soknad.web.selftest.Pingable.Ping
-import no.nav.sosialhjelp.soknad.web.selftest.Pingable.Ping.PingMetadata
+import no.nav.sosialhjelp.soknad.health.selftest.Pingable
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -29,12 +27,12 @@ open class TelefonnummerConfig(
     @Bean
     open fun dkifRestPing(dkifClient: DkifClient): Pingable {
         return Pingable {
-            val metadata = PingMetadata(baseurl, "Dkif", false)
+            val metadata = Pingable.PingMetadata(baseurl, "Dkif", false)
             try {
                 dkifClient.ping()
-                Ping.lyktes(metadata)
+                Pingable.lyktes(metadata)
             } catch (e: Exception) {
-                Ping.feilet(metadata, e)
+                Pingable.feilet(metadata, e)
             }
         }
     }
