@@ -12,6 +12,7 @@ import no.nav.sosialhjelp.soknad.api.saksoversikt.SaksoversiktMetadataOidcRessur
 import no.nav.sosialhjelp.soknad.arbeid.ArbeidRessurs;
 import no.nav.sosialhjelp.soknad.begrunnelse.BegrunnelseRessurs;
 import no.nav.sosialhjelp.soknad.bosituasjon.BosituasjonRessurs;
+import no.nav.sosialhjelp.soknad.common.mdc.MdcFilter;
 import no.nav.sosialhjelp.soknad.ettersending.EttersendingRessurs;
 import no.nav.sosialhjelp.soknad.health.InternalRessurs;
 import no.nav.sosialhjelp.soknad.innsending.SoknadActions;
@@ -36,7 +37,6 @@ import no.nav.sosialhjelp.soknad.utdanning.UtdanningRessurs;
 import no.nav.sosialhjelp.soknad.utgifter.BarneutgiftRessurs;
 import no.nav.sosialhjelp.soknad.utgifter.BoutgiftRessurs;
 import no.nav.sosialhjelp.soknad.vedlegg.OpplastetVedleggRessurs;
-import no.nav.sosialhjelp.soknad.web.mdc.MdcFilter;
 import no.nav.sosialhjelp.soknad.web.oidc.OidcResourceFilteringFeature;
 import no.nav.sosialhjelp.soknad.web.sikkerhet.CORSFilter;
 import no.nav.sosialhjelp.soknad.web.sikkerhet.HeaderFilter;
