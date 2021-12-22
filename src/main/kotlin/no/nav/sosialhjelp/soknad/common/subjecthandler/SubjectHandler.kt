@@ -14,7 +14,7 @@ interface SubjectHandler {
 }
 
 @Component
-class AzureAdSubjectHandlerImpl: SubjectHandler {
+class AzureAdSubjectHandlerImpl : SubjectHandler {
 
     private val tokenValidationContext: TokenValidationContext
         get() {
