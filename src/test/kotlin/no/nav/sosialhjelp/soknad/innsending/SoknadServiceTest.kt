@@ -15,11 +15,11 @@ import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata.VedleggMetadataListe
 import no.nav.sosialhjelp.soknad.business.service.HenvendelseService
+import no.nav.sosialhjelp.soknad.common.subjecthandler.StaticSubjectHandlerImpl
+import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.common.systemdata.SystemdataUpdater
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.domain.Vedleggstatus
-import no.nav.sosialhjelp.soknad.domain.model.oidc.StaticSubjectHandlerService
-import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler
 import no.nav.sosialhjelp.soknad.ettersending.EttersendingService
 import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.innsending.svarut.OppgaveHandterer
@@ -59,7 +59,7 @@ internal class SoknadServiceTest {
     @BeforeEach
     fun before() {
         System.setProperty("environment.name", "test")
-        SubjectHandler.setSubjectHandlerService(StaticSubjectHandlerService())
+        SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
 
         clearAllMocks()
         every { soknadMetricsService.reportStartSoknad(any()) } just runs
@@ -68,7 +68,7 @@ internal class SoknadServiceTest {
 
     @AfterEach
     fun tearDown() {
-        SubjectHandler.resetOidcSubjectHandlerService()
+        SubjectHandlerUtils.resetSubjectHandlerImpl()
         System.clearProperty("environment.name")
     }
 
@@ -81,7 +81,7 @@ internal class SoknadServiceTest {
 
         soknadService.startSoknad("")
 
-        val bruker = SubjectHandler.getUserId()
+        val bruker = SubjectHandlerUtils.getUserIdFromToken()
         verify { henvendelseService.startSoknad(bruker) }
 
         val bekreftelser =

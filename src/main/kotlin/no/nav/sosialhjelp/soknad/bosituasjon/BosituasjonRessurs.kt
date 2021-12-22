@@ -5,7 +5,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.metrics.aspects.Timed
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
-import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler
+import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import no.nav.sosialhjelp.soknad.web.utils.Constants
 import org.springframework.stereotype.Controller
@@ -28,7 +28,7 @@ open class BosituasjonRessurs(
     @GET
     open fun hentBosituasjon(@PathParam("behandlingsId") behandlingsId: String?): BosituasjonFrontend {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
-        val eier = SubjectHandler.getUserId()
+        val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).jsonInternalSoknad
         val bosituasjon = soknad.soknad.data.bosituasjon
         return BosituasjonFrontend(bosituasjon.botype, bosituasjon.antallPersoner)
@@ -40,7 +40,7 @@ open class BosituasjonRessurs(
         bosituasjonFrontend: BosituasjonFrontend
     ) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
-        val eier = SubjectHandler.getUserId()
+        val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
         val bosituasjon = soknad.jsonInternalSoknad.soknad.data.bosituasjon
         bosituasjon.kilde = JsonKildeBruker.BRUKER

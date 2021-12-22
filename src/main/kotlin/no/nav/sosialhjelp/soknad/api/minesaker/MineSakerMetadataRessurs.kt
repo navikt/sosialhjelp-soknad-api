@@ -5,7 +5,7 @@ import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.security.token.support.core.api.Unprotected
 import no.nav.sosialhjelp.metrics.aspects.Timed
 import no.nav.sosialhjelp.soknad.api.minesaker.dto.InnsendtSoknadDto
-import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler
+import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.web.utils.Constants.CLAIM_ACR_LEVEL_3
 import no.nav.sosialhjelp.soknad.web.utils.Constants.CLAIM_ACR_LEVEL_4
 import no.nav.sosialhjelp.soknad.web.utils.Constants.TOKENX
@@ -36,7 +36,7 @@ open class MineSakerMetadataRessurs(
             log.info("Endepunkt for å hente info om innsendte søknader for mine-saker er ikke enabled. Returnerer tom liste.")
             return emptyList()
         }
-        val fnr = SubjectHandler.getUserId()
+        val fnr = SubjectHandlerUtils.getUserIdFromToken()
         return mineSakerMetadataService.hentInnsendteSoknader(fnr)
     }
 

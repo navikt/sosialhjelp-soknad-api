@@ -2,8 +2,8 @@ package no.nav.sosialhjelp.soknad.tilgangskontroll
 
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
+import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.domain.model.exception.AuthorizationException
-import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
 import no.nav.sosialhjelp.soknad.personalia.person.dto.Gradering
 import org.slf4j.LoggerFactory
@@ -23,7 +23,7 @@ class Tilgangskontroll(
     }
 
     fun verifiserBrukerHarTilgangTilSoknad(behandlingsId: String?) {
-        val soknadUnderArbeidOptional = soknadUnderArbeidRepository.hentSoknadOptional(behandlingsId, SubjectHandler.getUserId())
+        val soknadUnderArbeidOptional = soknadUnderArbeidRepository.hentSoknadOptional(behandlingsId, SubjectHandlerUtils.getUserIdFromToken())
         val eier = if (soknadUnderArbeidOptional.isPresent) {
             soknadUnderArbeidOptional.get().eier
         } else {
@@ -47,7 +47,7 @@ class Tilgangskontroll(
         if (Objects.isNull(eier)) {
             throw AuthorizationException("Søknaden har ingen eier")
         }
-        val fnr = SubjectHandler.getUserId()
+        val fnr = SubjectHandlerUtils.getUserIdFromToken()
         if (fnr != eier) {
             throw AuthorizationException("Fnr stemmer ikke overens med eieren til søknaden")
         }
@@ -55,7 +55,7 @@ class Tilgangskontroll(
     }
 
     fun verifiserAtBrukerHarTilgang() {
-        val fnr = SubjectHandler.getUserId()
+        val fnr = SubjectHandlerUtils.getUserIdFromToken()
         if (Objects.isNull(fnr)) {
             throw AuthorizationException("Ingen tilgang når fnr ikke er satt")
         }

@@ -6,7 +6,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.metrics.aspects.Timed
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
-import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler
+import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.personalia.familie.PersonMapper.fulltNavn
 import no.nav.sosialhjelp.soknad.personalia.familie.PersonMapper.getPersonnummerFromFnr
 import no.nav.sosialhjelp.soknad.personalia.familie.PersonMapper.mapToJsonNavn
@@ -37,7 +37,7 @@ open class SivilstatusRessurs(
     @GET
     open fun hentSivilstatus(@PathParam("behandlingsId") behandlingsId: String): SivilstatusFrontend? {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
-        val eier = SubjectHandler.getUserId()
+        val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).jsonInternalSoknad
         val jsonSivilstatus = soknad.soknad.data.familie.sivilstatus ?: return null
 
@@ -50,7 +50,7 @@ open class SivilstatusRessurs(
         sivilstatusFrontend: SivilstatusFrontend
     ) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
-        val eier = SubjectHandler.getUserId()
+        val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
         val familie = soknad.jsonInternalSoknad.soknad.data.familie
         if (familie.sivilstatus == null) {

@@ -2,7 +2,7 @@ package no.nav.sosialhjelp.soknad.oppsummering
 
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.metrics.aspects.Timed
-import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler
+import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.oppsummering.dto.Oppsummering
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import no.nav.sosialhjelp.soknad.web.utils.Constants
@@ -25,7 +25,7 @@ open class OppsummeringRessurs(
     @GET
     open fun getOppsummering(@PathParam("behandlingsId") behandlingsId: String): Oppsummering {
         tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(behandlingsId)
-        val eier = SubjectHandler.getUserId()
+        val eier = SubjectHandlerUtils.getUserIdFromToken()
         return oppsummeringService.hentOppsummering(eier, behandlingsId)
     }
 }

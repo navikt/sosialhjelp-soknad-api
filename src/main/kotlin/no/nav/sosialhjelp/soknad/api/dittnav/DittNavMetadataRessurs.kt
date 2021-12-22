@@ -5,7 +5,7 @@ import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.metrics.aspects.Timed
 import no.nav.sosialhjelp.soknad.api.dittnav.dto.MarkerPabegyntSoknadSomLestDto
 import no.nav.sosialhjelp.soknad.api.dittnav.dto.PabegyntSoknadDto
-import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler
+import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.web.utils.Constants.CLAIM_ACR_LEVEL_3
 import no.nav.sosialhjelp.soknad.web.utils.Constants.CLAIM_ACR_LEVEL_4
 import no.nav.sosialhjelp.soknad.web.utils.Constants.SELVBETJENING
@@ -34,7 +34,7 @@ open class DittNavMetadataRessurs(
             log.info("Endepunkt for å hente info om påbegynte søknader for dittNav er ikke enabled. Returnerer tom liste.")
             return emptyList()
         }
-        val fnr = SubjectHandler.getUserId()
+        val fnr = SubjectHandlerUtils.getUserIdFromToken()
         return dittNavMetadataService.hentAktivePabegynteSoknader(fnr)
     }
 
@@ -45,7 +45,7 @@ open class DittNavMetadataRessurs(
             log.info("Endepunkt for å hente info om påbegynte søknader for dittNav er ikke enabled. Returnerer tom liste.")
             return emptyList()
         }
-        val fnr = SubjectHandler.getUserId()
+        val fnr = SubjectHandlerUtils.getUserIdFromToken()
         return dittNavMetadataService.hentInaktivePabegynteSoknader(fnr)
     }
 
@@ -56,7 +56,7 @@ open class DittNavMetadataRessurs(
             log.info("Endepunkt for å oppdatere lestDittNav for påbegynt søknad er ikke enabled. Returnerer false.")
             return false
         }
-        val fnr = SubjectHandler.getUserId()
+        val fnr = SubjectHandlerUtils.getUserIdFromToken()
         val behandlingsId = dto.grupperingsId
         val somLest = dittNavMetadataService.oppdaterLestDittNavForPabegyntSoknad(behandlingsId, fnr)
         log.info("Pabegynt søknad med behandlingsId={} har fått lestDittNav={}", behandlingsId, somLest)

@@ -5,7 +5,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresseValg
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.metrics.aspects.Timed
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
-import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler
+import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.navenhet.NavEnhetRessurs
 import no.nav.sosialhjelp.soknad.navenhet.dto.NavEnhetFrontend
 import no.nav.sosialhjelp.soknad.personalia.adresse.dto.AdresserFrontend
@@ -33,7 +33,7 @@ open class AdresseRessurs(
     @GET
     open fun hentAdresser(@PathParam("behandlingsId") behandlingsId: String): AdresserFrontend {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
-        val eier = SubjectHandler.getUserId()
+        val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
         val personIdentifikator = soknad.jsonInternalSoknad.soknad.data.personalia.personIdentifikator.verdi
         val jsonOppholdsadresse = soknad.jsonInternalSoknad.soknad.data.personalia.oppholdsadresse
@@ -54,7 +54,7 @@ open class AdresseRessurs(
         adresserFrontend: AdresserFrontend
     ): List<NavEnhetFrontend>? {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
-        val eier = SubjectHandler.getUserId()
+        val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
         val personalia = soknad.jsonInternalSoknad.soknad.data.personalia
         when (adresserFrontend.valg) {

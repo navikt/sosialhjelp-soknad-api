@@ -18,13 +18,13 @@ import no.nav.sosialhjelp.soknad.business.util.SenderUtils.createPrefixedBehandl
 import no.nav.sosialhjelp.soknad.common.filedetection.FileDetectionUtils.getMimeType
 import no.nav.sosialhjelp.soknad.common.filedetection.MimeTypes.APPLICATION_PDF
 import no.nav.sosialhjelp.soknad.common.filedetection.MimeTypes.TEXT_X_MATLAB
+import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils.getUserIdFromToken
 import no.nav.sosialhjelp.soknad.consumer.fiks.DigisosApi
 import no.nav.sosialhjelp.soknad.consumer.fiks.dto.FilMetadata
 import no.nav.sosialhjelp.soknad.consumer.fiks.dto.FilOpplasting
 import no.nav.sosialhjelp.soknad.domain.OpplastetVedlegg
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.domain.Vedleggstatus
-import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler.getUserId
 import no.nav.sosialhjelp.soknad.innsending.InnsendingService
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
 import no.nav.sosialhjelp.soknad.metrics.MetricsUtils.navKontorTilInfluxNavn
@@ -202,7 +202,7 @@ class DigisosApiService(
 
         slettSoknadUnderArbeidEtterSendingTilFiks(soknadUnderArbeid)
 
-        soknadMetricsService.reportSendSoknadMetrics(getUserId(), soknadUnderArbeid, vedlegg.vedleggListe)
+        soknadMetricsService.reportSendSoknadMetrics(getUserIdFromToken(), soknadUnderArbeid, vedlegg.vedleggListe)
         return digisosId
     }
 

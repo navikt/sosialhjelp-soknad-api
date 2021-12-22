@@ -13,11 +13,11 @@ import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_SKATTEETATEN
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.business.service.HenvendelseService
 import no.nav.sosialhjelp.soknad.common.mapper.OkonomiMapper
+import no.nav.sosialhjelp.soknad.common.subjecthandler.StaticSubjectHandlerImpl
+import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.common.systemdata.SystemdataUpdater
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.domain.model.exception.AuthorizationException
-import no.nav.sosialhjelp.soknad.domain.model.oidc.StaticSubjectHandlerService
-import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler
 import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.innsending.dto.BekreftelseRessurs
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
@@ -46,7 +46,7 @@ internal class SoknadRessursTest {
     @BeforeEach
     fun setUp() {
         System.setProperty("environment.name", "test")
-        SubjectHandler.setSubjectHandlerService(StaticSubjectHandlerService())
+        SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
 
         clearAllMocks()
         every { henvendelseService.oppdaterSistEndretDatoPaaMetadata(any()) } just runs
@@ -54,7 +54,7 @@ internal class SoknadRessursTest {
 
     @AfterEach
     fun tearDown() {
-        SubjectHandler.resetOidcSubjectHandlerService()
+        SubjectHandlerUtils.resetSubjectHandlerImpl()
         System.clearProperty("environment.name")
     }
 

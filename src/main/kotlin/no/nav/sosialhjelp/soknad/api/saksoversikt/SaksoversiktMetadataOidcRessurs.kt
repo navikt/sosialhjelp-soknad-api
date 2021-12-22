@@ -7,7 +7,7 @@ import no.nav.sbl.soknadsosialhjelp.tjeneste.saksoversikt.PingRespons
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.security.token.support.core.api.Unprotected
 import no.nav.sosialhjelp.metrics.aspects.Timed
-import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler
+import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.web.utils.Constants.CLAIM_ACR_LEVEL_3
 import no.nav.sosialhjelp.soknad.web.utils.Constants.CLAIM_ACR_LEVEL_4
 import no.nav.sosialhjelp.soknad.web.utils.Constants.SELVBETJENING
@@ -33,7 +33,7 @@ open class SaksoversiktMetadataOidcRessurs(
     @GET
     @Path("/innsendte")
     open fun hentInnsendteSoknaderForBruker(): InnsendteSoknaderRespons {
-        val fnr = SubjectHandler.getUserId()
+        val fnr = SubjectHandlerUtils.getUserIdFromToken()
         logger.debug("Henter metadata for innsendte soknader med oidc")
         val innsendteSoknader = saksoversiktMetadataService.hentInnsendteSoknaderForFnr(fnr)
         return InnsendteSoknaderRespons()
@@ -43,7 +43,7 @@ open class SaksoversiktMetadataOidcRessurs(
     @GET
     @Path("/ettersendelse")
     open fun hentSoknaderBrukerKanEttersendePa(): EttersendingerRespons {
-        val fnr = SubjectHandler.getUserId()
+        val fnr = SubjectHandlerUtils.getUserIdFromToken()
         logger.debug("Henter metadata for ettersendelse med oidc")
         val ettersendingsSoknader = saksoversiktMetadataService.hentSoknaderBrukerKanEttersendePa(fnr)
         return EttersendingerRespons()
@@ -53,7 +53,7 @@ open class SaksoversiktMetadataOidcRessurs(
     @GET
     @Path("/pabegynte")
     open fun hentPabegynteSoknaderForBruker(): PabegynteSoknaderRespons {
-        val fnr = SubjectHandler.getUserId()
+        val fnr = SubjectHandlerUtils.getUserIdFromToken()
         logger.debug("Henter metadata for pabegynte med oidc")
         return try {
             val pabegynte = saksoversiktMetadataService.hentPabegynteSoknaderForBruker(fnr)

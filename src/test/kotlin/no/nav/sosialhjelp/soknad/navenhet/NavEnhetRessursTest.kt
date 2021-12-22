@@ -19,10 +19,10 @@ import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.Sokn
 import no.nav.sosialhjelp.soknad.client.exceptions.PdlApiException
 import no.nav.sosialhjelp.soknad.client.fiks.kommuneinfo.KommuneInfoService
 import no.nav.sosialhjelp.soknad.client.kodeverk.KodeverkService
+import no.nav.sosialhjelp.soknad.common.subjecthandler.StaticSubjectHandlerImpl
+import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.domain.model.exception.AuthorizationException
-import no.nav.sosialhjelp.soknad.domain.model.oidc.StaticSubjectHandlerService
-import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler
 import no.nav.sosialhjelp.soknad.domain.model.util.KommuneTilNavEnhetMapper
 import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.navenhet.bydel.BydelFordelingService
@@ -103,7 +103,7 @@ internal class NavEnhetRessursTest {
     internal fun setUp() {
         clearAllMocks()
         System.setProperty("environment.name", "test")
-        SubjectHandler.setSubjectHandlerService(StaticSubjectHandlerService())
+        SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
         every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
         every { kommuneInfoService.kanMottaSoknader(any()) } returns true
         every { kommuneInfoService.harMidlertidigDeaktivertMottak(any()) } returns true
@@ -111,7 +111,7 @@ internal class NavEnhetRessursTest {
 
     @AfterEach
     internal fun tearDown() {
-        SubjectHandler.resetOidcSubjectHandlerService()
+        SubjectHandlerUtils.resetSubjectHandlerImpl()
         System.clearProperty("environment.name")
     }
 
