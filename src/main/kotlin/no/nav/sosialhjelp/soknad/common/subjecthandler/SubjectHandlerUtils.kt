@@ -21,7 +21,7 @@ object SubjectHandlerUtils {
     }
 
     fun setNewSubjectHandlerImpl(subjectHandlerImpl: SubjectHandler) {
-        if (ServiceUtils.isNonProduction()) {
+        if (!ServiceUtils.isNonProduction()) {
             log.error("Forsøker å sette en annen SubjectHandlerImpl i prod!")
             throw RuntimeException("Forsøker å sette en annen SubjectHandlerImpl i prod!")
         } else {
