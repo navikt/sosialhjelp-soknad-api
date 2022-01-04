@@ -9,8 +9,8 @@ import no.nav.sosialhjelp.soknad.client.redis.LANDKODER_CACHE_KEY
 import no.nav.sosialhjelp.soknad.client.redis.POSTNUMMER_CACHE_KEY
 import no.nav.sosialhjelp.soknad.client.redis.RedisService
 import no.nav.sosialhjelp.soknad.client.redis.RedisUtils.redisObjectMapper
+import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.consumer.mdc.MDCOperations
-import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler
 import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.HEADER_CALL_ID
 import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.HEADER_CONSUMER_ID
 import org.slf4j.LoggerFactory.getLogger
@@ -63,7 +63,7 @@ class KodeverkClientImpl(
             .queryParam("spraak", "nb")
             .request()
             .header(HEADER_CALL_ID, MDCOperations.getFromMDC(MDCOperations.MDC_CALL_ID))
-            .header(HEADER_CONSUMER_ID, SubjectHandler.getConsumerId())
+            .header(HEADER_CONSUMER_ID, SubjectHandlerUtils.getConsumerId())
     }
 
     private fun hentKodeverk(kodeverksnavn: String, key: String): KodeverkDto? {

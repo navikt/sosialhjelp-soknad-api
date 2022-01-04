@@ -32,13 +32,13 @@ import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata.VedleggMetadata
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata.VedleggMetadataListe
 import no.nav.sosialhjelp.soknad.business.service.HenvendelseService
 import no.nav.sosialhjelp.soknad.business.util.JsonVedleggUtils.getVedleggFromInternalSoknad
+import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.common.systemdata.SystemdataUpdater
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.domain.Vedleggstatus
 import no.nav.sosialhjelp.soknad.domain.model.exception.SosialhjelpSoknadApiException
 import no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SosialhjelpInformasjon
-import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler
 import no.nav.sosialhjelp.soknad.ettersending.EttersendingService
 import no.nav.sosialhjelp.soknad.innsending.svarut.OppgaveHandterer
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.BostotteSystemdata
@@ -71,7 +71,7 @@ open class SoknadService(
 
         val startTimer = createDebugTimer("startTimer", mainUid)
 
-        val aktorId = SubjectHandler.getUserId()
+        val aktorId = SubjectHandlerUtils.getUserIdFromToken()
         val henvendelseTimer = createDebugTimer("startHenvendelse", mainUid)
         val behandlingsId = henvendelseService.startSoknad(aktorId)
         henvendelseTimer.stop()
@@ -104,7 +104,7 @@ open class SoknadService(
 
     @Transactional
     open fun sendSoknad(behandlingsId: String) {
-        val eier = SubjectHandler.getUserId()
+        val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
 
         log.info("Starter innsending av søknad med behandlingsId {}", behandlingsId)
@@ -156,7 +156,7 @@ open class SoknadService(
 
     @Transactional
     open fun avbrytSoknad(behandlingsId: String?) {
-        val eier = SubjectHandler.getUserId()
+        val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknadUnderArbeidOptional = soknadUnderArbeidRepository.hentSoknadOptional(behandlingsId, eier)
         if (soknadUnderArbeidOptional.isPresent) {
             soknadUnderArbeidRepository.slettSoknad(soknadUnderArbeidOptional.get(), eier)
@@ -172,7 +172,7 @@ open class SoknadService(
         harSkatteetatenSamtykke: Boolean,
         token: String?
     ) {
-        val eier = SubjectHandler.getUserId()
+        val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
         if (harSkatteetatenSamtykke) {
             skatteetatenSystemdata.updateSystemdataIn(soknadUnderArbeid)

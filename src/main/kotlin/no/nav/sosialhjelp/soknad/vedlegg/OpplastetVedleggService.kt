@@ -10,6 +10,7 @@ import no.nav.sosialhjelp.soknad.business.util.JsonVedleggUtils
 import no.nav.sosialhjelp.soknad.common.filedetection.FileDetectionUtils.detectTikaType
 import no.nav.sosialhjelp.soknad.common.filedetection.FileDetectionUtils.getMimeType
 import no.nav.sosialhjelp.soknad.common.filedetection.TikaFileType
+import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.domain.OpplastetVedlegg
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.domain.VedleggType
@@ -17,7 +18,6 @@ import no.nav.sosialhjelp.soknad.domain.Vedleggstatus
 import no.nav.sosialhjelp.soknad.domain.model.exception.OpplastingException
 import no.nav.sosialhjelp.soknad.domain.model.exception.SamletVedleggStorrelseForStorException
 import no.nav.sosialhjelp.soknad.domain.model.exception.UgyldigOpplastingTypeException
-import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler
 import no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils
 import no.nav.sosialhjelp.soknad.vedlegg.virusscan.VirusScanner
 import org.apache.pdfbox.pdmodel.PDDocument
@@ -46,7 +46,7 @@ class OpplastetVedleggService(
     ): OpplastetVedlegg {
         var filnavn = filnavn
 
-        val eier = SubjectHandler.getUserId()
+        val eier = SubjectHandlerUtils.getUserIdFromToken()
         val sha512 = ServiceUtils.getSha512FromByteArray(data)
 
         val fileType = validerFil(data, filnavn)
@@ -99,7 +99,7 @@ class OpplastetVedleggService(
     }
 
     fun sjekkOmSoknadUnderArbeidTotalVedleggStorrelseOverskriderMaksgrense(behandlingsId: String?, data: ByteArray) {
-        val eier = SubjectHandler.getUserId()
+        val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
         val soknadId = soknadUnderArbeid.soknadId
 
@@ -120,7 +120,7 @@ class OpplastetVedleggService(
     }
 
     fun deleteVedleggAndUpdateVedleggstatus(behandlingsId: String?, vedleggId: String?) {
-        val eier = SubjectHandler.getUserId()
+        val eier = SubjectHandlerUtils.getUserIdFromToken()
         val opplastetVedlegg = opplastetVedleggRepository.hentVedlegg(vedleggId, eier).orElse(null) ?: return
 
         val vedleggstype = opplastetVedlegg.vedleggType.sammensattType

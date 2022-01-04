@@ -5,9 +5,9 @@ import no.nav.sosialhjelp.soknad.client.redis.CACHE_30_MINUTES_IN_SECONDS
 import no.nav.sosialhjelp.soknad.client.redis.DKIF_CACHE_KEY_PREFIX
 import no.nav.sosialhjelp.soknad.client.redis.RedisService
 import no.nav.sosialhjelp.soknad.client.redis.RedisUtils.redisObjectMapper
+import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.consumer.exceptions.TjenesteUtilgjengeligException
 import no.nav.sosialhjelp.soknad.consumer.mdc.MDCOperations
-import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler
 import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants
 import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.BEARER
 import no.nav.sosialhjelp.soknad.personalia.telefonnummer.dto.DigitalKontaktinfoBolk
@@ -82,13 +82,11 @@ class DkifClientImpl(
     }
 
     private fun lagRequest(endpoint: String, ident: String): Invocation.Builder {
-        val consumerId = SubjectHandler.getConsumerId()
-        val callId = MDCOperations.getFromMDC(MDCOperations.MDC_CALL_ID)
         return client.target(endpoint)
             .request()
-            .header(HttpHeader.AUTHORIZATION.name, BEARER + SubjectHandler.getToken())
-            .header(HeaderConstants.HEADER_CALL_ID, callId)
-            .header(HeaderConstants.HEADER_CONSUMER_ID, consumerId)
+            .header(HttpHeader.AUTHORIZATION.name, BEARER + SubjectHandlerUtils.getToken())
+            .header(HeaderConstants.HEADER_CALL_ID, MDCOperations.getFromMDC(MDCOperations.MDC_CALL_ID))
+            .header(HeaderConstants.HEADER_CONSUMER_ID, SubjectHandlerUtils.getConsumerId())
             .header(HeaderConstants.HEADER_NAV_PERSONIDENTER, ident)
     }
 

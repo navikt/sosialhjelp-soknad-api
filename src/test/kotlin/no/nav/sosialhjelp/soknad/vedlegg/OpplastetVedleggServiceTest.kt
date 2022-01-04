@@ -14,13 +14,13 @@ import no.nav.sosialhjelp.soknad.business.db.repositories.opplastetvedlegg.Oppla
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.common.filedetection.TikaFileType.JPEG
 import no.nav.sosialhjelp.soknad.common.filedetection.TikaFileType.PNG
+import no.nav.sosialhjelp.soknad.common.subjecthandler.StaticSubjectHandlerImpl
+import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.domain.OpplastetVedlegg
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.domain.VedleggType
 import no.nav.sosialhjelp.soknad.domain.model.exception.SamletVedleggStorrelseForStorException
 import no.nav.sosialhjelp.soknad.domain.model.exception.UgyldigOpplastingTypeException
-import no.nav.sosialhjelp.soknad.domain.model.oidc.StaticSubjectHandlerService
-import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler
 import no.nav.sosialhjelp.soknad.vedlegg.OpplastetVedleggService.Companion.MAKS_SAMLET_VEDLEGG_STORRELSE
 import no.nav.sosialhjelp.soknad.vedlegg.virusscan.VirusScanner
 import org.assertj.core.api.Assertions.assertThat
@@ -47,7 +47,7 @@ internal class OpplastetVedleggServiceTest {
     @BeforeEach
     fun setUp() {
         System.setProperty("environment.name", "test")
-        SubjectHandler.setSubjectHandlerService(StaticSubjectHandlerService())
+        SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
 
         clearAllMocks()
         every { virusScanner.scan(any(), any(), any(), any()) } just runs
@@ -56,7 +56,7 @@ internal class OpplastetVedleggServiceTest {
 
     @AfterEach
     fun tearDown() {
-        SubjectHandler.resetOidcSubjectHandlerService()
+        SubjectHandlerUtils.resetSubjectHandlerImpl()
         System.clearProperty("environment.name")
     }
 

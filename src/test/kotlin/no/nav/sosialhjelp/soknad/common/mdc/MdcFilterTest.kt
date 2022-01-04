@@ -2,12 +2,12 @@ package no.nav.sosialhjelp.soknad.common.mdc
 
 import io.mockk.every
 import io.mockk.mockk
+import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerImpl
+import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.consumer.mdc.MDCOperations
 import no.nav.sosialhjelp.soknad.consumer.mdc.MDCOperations.MDC_BEHANDLINGS_ID
 import no.nav.sosialhjelp.soknad.consumer.mdc.MDCOperations.MDC_CALL_ID
 import no.nav.sosialhjelp.soknad.consumer.mdc.MDCOperations.getFromMDC
-import no.nav.sosialhjelp.soknad.domain.model.oidc.OidcSubjectHandlerService
-import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler
 import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.HEADER_CALL_ID
 import no.nav.sosialhjelp.soknad.web.rest.SoknadApplication
 import org.assertj.core.api.Assertions.assertThat
@@ -26,12 +26,12 @@ internal class MdcFilterTest {
     fun setUp() {
         System.setProperty("environment.name", "test")
         System.setProperty("systemuser.username", MOCK_CONSUMER_ID)
-        SubjectHandler.setSubjectHandlerService(OidcSubjectHandlerService())
+        SubjectHandlerUtils.setNewSubjectHandlerImpl(SubjectHandlerImpl())
     }
 
     @AfterEach
     fun tearDown() {
-        SubjectHandler.resetOidcSubjectHandlerService()
+        SubjectHandlerUtils.resetSubjectHandlerImpl()
         System.clearProperty("environment.name")
         System.clearProperty("systemuser.username")
     }

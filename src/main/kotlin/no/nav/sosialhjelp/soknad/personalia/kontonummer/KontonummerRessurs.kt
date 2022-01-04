@@ -4,7 +4,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.metrics.aspects.Timed
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
-import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler
+import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import no.nav.sosialhjelp.soknad.web.utils.Constants
 import org.springframework.stereotype.Controller
@@ -28,7 +28,7 @@ open class KontonummerRessurs(
     @GET
     open fun hentKontonummer(@PathParam("behandlingsId") behandlingsId: String): KontonummerFrontend {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
-        val eier = SubjectHandler.getUserId()
+        val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
         val kontonummer = soknadUnderArbeid.jsonInternalSoknad.soknad.data.personalia.kontonummer
         val systemverdi: String? = if (kontonummer.kilde == JsonKilde.SYSTEM) {
@@ -50,7 +50,7 @@ open class KontonummerRessurs(
         kontonummerFrontend: KontonummerFrontend
     ) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
-        val eier = SubjectHandler.getUserId()
+        val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
         val personalia = soknad.jsonInternalSoknad.soknad.data.personalia
         val kontonummer = personalia.kontonummer

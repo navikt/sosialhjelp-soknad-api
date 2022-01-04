@@ -17,7 +17,7 @@ import no.nav.sosialhjelp.soknad.business.service.TextService
 import no.nav.sosialhjelp.soknad.common.mapper.OkonomiMapper.addFormueIfCheckedElseDeleteInOversikt
 import no.nav.sosialhjelp.soknad.common.mapper.OkonomiMapper.setBekreftelse
 import no.nav.sosialhjelp.soknad.common.mapper.TitleKeyMapper.soknadTypeToTitleKey
-import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler
+import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import no.nav.sosialhjelp.soknad.web.utils.Constants
 import org.springframework.stereotype.Controller
@@ -41,7 +41,7 @@ open class VerdiRessurs(
     @GET
     open fun hentVerdier(@PathParam("behandlingsId") behandlingsId: String): VerdierFrontend {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
-        val eier = SubjectHandler.getUserId()
+        val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).jsonInternalSoknad
         val okonomi = soknad.soknad.data.okonomi
 
@@ -63,7 +63,7 @@ open class VerdiRessurs(
     @PUT
     open fun updateVerdier(@PathParam("behandlingsId") behandlingsId: String, verdierFrontend: VerdierFrontend) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
-        val eier = SubjectHandler.getUserId()
+        val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
         val okonomi = soknad.jsonInternalSoknad.soknad.data.okonomi
         if (okonomi.opplysninger.bekreftelse == null) {
