@@ -2,7 +2,7 @@ package no.nav.sosialhjelp.soknad.common.mdc
 
 import io.mockk.every
 import io.mockk.mockk
-import no.nav.sosialhjelp.soknad.common.subjecthandler.AzureAdSubjectHandlerImpl
+import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerImpl
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.consumer.mdc.MDCOperations
 import no.nav.sosialhjelp.soknad.consumer.mdc.MDCOperations.MDC_BEHANDLINGS_ID
@@ -26,7 +26,7 @@ internal class MdcFilterTest {
     fun setUp() {
         System.setProperty("environment.name", "test")
         System.setProperty("systemuser.username", MOCK_CONSUMER_ID)
-        SubjectHandlerUtils.setNewSubjectHandlerImpl(AzureAdSubjectHandlerImpl())
+        SubjectHandlerUtils.setNewSubjectHandlerImpl(SubjectHandlerImpl())
     }
 
     @AfterEach

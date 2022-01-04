@@ -33,14 +33,12 @@ internal class XsrfGeneratorTest {
         sjekkXsrfToken(token, "1L")
         sjekkXsrfToken(tokenYesterday, "1L")
         sjekkAtMetodeKasterException(token, 2L)
-//        (SubjectHandler.getSubjectHandlerService() as StaticSubjectHandlerService).setFakeToken("Token2")
-//        (SubjectHandler.getSubjectHandlerService() as StaticSubjectHandlerService).setUser("12345")
         sjekkAtMetodeKasterException(token, 1L)
     }
 
     private fun sjekkAtMetodeKasterException(token: String, soknadId: Long) {
         try {
-            sjekkXsrfToken(token, "soknadId")
+            sjekkXsrfToken(token, soknadId.toString())
             Assertions.fail<Any>("Kastet ikke exception")
         } catch (ex: AuthorizationException) {
         }

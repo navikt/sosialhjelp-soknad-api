@@ -6,7 +6,7 @@ import no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils
 object SubjectHandlerUtils {
 
     private val log by logger()
-    private var subjectHandlerService: SubjectHandler = AzureAdSubjectHandlerImpl()
+    private var subjectHandlerService: SubjectHandler = SubjectHandlerImpl()
 
     fun getUserIdFromToken(): String {
         return subjectHandlerService.getUserIdFromToken()
@@ -30,6 +30,6 @@ object SubjectHandlerUtils {
     }
 
     fun resetSubjectHandlerImpl() {
-        subjectHandlerService = AzureAdSubjectHandlerImpl()
+        subjectHandlerService = SubjectHandlerImpl()
     }
 }
