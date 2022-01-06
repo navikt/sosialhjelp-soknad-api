@@ -4,7 +4,6 @@ import no.nav.sosialhjelp.soknad.business.db.repositories.opplastetvedlegg.Oppla
 import no.nav.sosialhjelp.soknad.business.db.repositories.sendtsoknad.SendtSoknadRepository
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
-import no.nav.sosialhjelp.soknad.business.service.HenvendelseService
 import no.nav.sosialhjelp.soknad.common.systemdata.SystemdataUpdater
 import no.nav.sosialhjelp.soknad.ettersending.EttersendingService
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiConfig
@@ -18,6 +17,7 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Import
 import org.springframework.transaction.support.TransactionTemplate
+import java.time.Clock
 
 @Configuration
 @Import(
@@ -70,5 +70,13 @@ open class InnsendingConfig {
             bostotteSystemdata,
             skatteetatenSystemdata
         )
+    }
+
+    @Bean
+    open fun henvendelseService(
+        soknadMetadataRepository: SoknadMetadataRepository,
+        clock: Clock
+    ): HenvendelseService {
+        return HenvendelseService(soknadMetadataRepository, clock)
     }
 }

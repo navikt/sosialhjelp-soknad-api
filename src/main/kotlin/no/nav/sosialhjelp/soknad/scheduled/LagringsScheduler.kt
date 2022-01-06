@@ -3,9 +3,9 @@ package no.nav.sosialhjelp.soknad.scheduled
 import no.nav.sosialhjelp.metrics.MetricsFactory
 import no.nav.sosialhjelp.metrics.Timer
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.BatchSoknadUnderArbeidRepository
-import no.nav.sosialhjelp.soknad.business.service.HenvendelseService
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils
+import no.nav.sosialhjelp.soknad.innsending.HenvendelseService
 import no.nav.sosialhjelp.soknad.scheduled.leaderelection.LeaderElection
 import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Scheduled

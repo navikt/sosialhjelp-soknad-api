@@ -8,7 +8,6 @@ import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata.VedleggMetadata
-import no.nav.sosialhjelp.soknad.business.service.HenvendelseService
 import no.nav.sosialhjelp.soknad.business.util.JsonVedleggUtils
 import no.nav.sosialhjelp.soknad.business.util.JsonVedleggUtils.isVedleggskravAnnet
 import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus.FERDIG
@@ -18,6 +17,7 @@ import no.nav.sosialhjelp.soknad.domain.Vedleggstatus
 import no.nav.sosialhjelp.soknad.domain.model.exception.EttersendelseSendtForSentException
 import no.nav.sosialhjelp.soknad.domain.model.exception.SosialhjelpSoknadApiException
 import no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SoknadType
+import no.nav.sosialhjelp.soknad.innsending.HenvendelseService
 import java.time.Clock
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter

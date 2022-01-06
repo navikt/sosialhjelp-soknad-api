@@ -5,7 +5,6 @@ import org.springframework.context.annotation.Import;
 
 @Configuration
 @Import({
-        HenvendelseService.class,
         TextService.class,
 })
 public class ServiceConfig {
