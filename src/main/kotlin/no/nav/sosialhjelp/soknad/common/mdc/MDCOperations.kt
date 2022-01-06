@@ -16,7 +16,7 @@ object MDCOperations {
     private val RANDOM = SecureRandom()
 
     fun generateCallId(): String {
-        return "CallId_${systemTime}_${randomNumber}"
+        return "CallId_${systemTime}_$randomNumber"
     }
 
     fun getFromMDC(key: String?): String? {
