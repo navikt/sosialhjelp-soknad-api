@@ -3,7 +3,7 @@ package no.nav.sosialhjelp.soknad.navenhet.gt
 import no.nav.sosialhjelp.soknad.client.pdl.PdlConfig
 import no.nav.sosialhjelp.soknad.client.redis.RedisService
 import no.nav.sosialhjelp.soknad.client.sts.StsClient
-import no.nav.sosialhjelp.soknad.consumer.common.rest.RestUtils
+import no.nav.sosialhjelp.soknad.common.rest.RestUtils
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration

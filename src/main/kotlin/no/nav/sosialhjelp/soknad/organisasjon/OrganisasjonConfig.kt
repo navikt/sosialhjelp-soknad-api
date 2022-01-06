@@ -1,13 +1,12 @@
 package no.nav.sosialhjelp.soknad.organisasjon
 
-import no.nav.sosialhjelp.soknad.consumer.common.rest.RestUtils
-import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants
+import no.nav.sosialhjelp.soknad.common.rest.RestUtils
+import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.HEADER_NAV_APIKEY
 import no.nav.sosialhjelp.soknad.health.selftest.Pingable
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import javax.ws.rs.client.Client
-import javax.ws.rs.client.ClientRequestContext
 import javax.ws.rs.client.ClientRequestFilter
 
 @Configuration
@@ -42,14 +41,7 @@ open class OrganisasjonConfig(
         get() {
             val apiKey = System.getenv(EREGAPI_APIKEY)
             return RestUtils.createClient()
-                .register(
-                    ClientRequestFilter { requestContext: ClientRequestContext ->
-                        requestContext.headers.putSingle(
-                            HeaderConstants.HEADER_NAV_APIKEY,
-                            apiKey
-                        )
-                    }
-                )
+                .register(ClientRequestFilter { it.headers.putSingle(HEADER_NAV_APIKEY, apiKey) })
         }
 
     companion object {

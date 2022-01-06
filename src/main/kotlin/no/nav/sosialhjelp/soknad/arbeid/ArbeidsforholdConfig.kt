@@ -6,7 +6,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.sosialhjelp.soknad.business.service.TextService
 import no.nav.sosialhjelp.soknad.client.sts.StsClient
-import no.nav.sosialhjelp.soknad.consumer.common.rest.RestUtils
+import no.nav.sosialhjelp.soknad.common.rest.RestUtils
 import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.HEADER_NAV_APIKEY
 import no.nav.sosialhjelp.soknad.health.selftest.Pingable
 import no.nav.sosialhjelp.soknad.organisasjon.OrganisasjonService
@@ -59,9 +59,7 @@ open class ArbeidsforholdConfig(
     private val arbeidsforholdClient: Client
         get() = RestUtils.createClient()
             .register(arbeidsforholdMapper)
-            .register(
-                ClientRequestFilter { it.headers.putSingle(HEADER_NAV_APIKEY, System.getenv(AAREGAPI_APIKEY)) }
-            )
+            .register(ClientRequestFilter { it.headers.putSingle(HEADER_NAV_APIKEY, System.getenv(AAREGAPI_APIKEY)) })
 
     private val arbeidsforholdMapper: ObjectMapper
         get() = jacksonObjectMapper()
