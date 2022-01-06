@@ -10,10 +10,10 @@ import no.ks.fiks.svarut.klient.model.PostAdresse
 import no.ks.fiks.svarut.klient.model.UtskriftsKonfigurasjon
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.SosialhjelpPdfGenerator
-import no.nav.sosialhjelp.soknad.business.util.SenderUtils
 import no.nav.sosialhjelp.soknad.domain.SendtSoknad
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.innsending.InnsendingService
+import no.nav.sosialhjelp.soknad.innsending.SenderUtils.createPrefixedBehandlingsIdInNonProd
 import no.nav.sosialhjelp.soknad.innsending.svarut.client.SvarUtService
 import org.slf4j.LoggerFactory
 import java.io.InputStream
@@ -58,7 +58,7 @@ class FiksSender(
             )
             .withAvgivendeSystem("digisos_avsender")
             .withForsendelsesType("nav.digisos")
-            .withEksternReferanse(SenderUtils.createPrefixedBehandlingsIdInNonProd(sendtSoknad.behandlingsId))
+            .withEksternReferanse(createPrefixedBehandlingsIdInNonProd(sendtSoknad.behandlingsId))
             .withTittel(if (sendtSoknad.erEttersendelse()) ETTERSENDELSE_TIL_NAV else SOKNAD_TIL_NAV)
             .withKunDigitalLevering(false)
             .withUtskriftsKonfigurasjon(fakeUtskriftsConfig)
