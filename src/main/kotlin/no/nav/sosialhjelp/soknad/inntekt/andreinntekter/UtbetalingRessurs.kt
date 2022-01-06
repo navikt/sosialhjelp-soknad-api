@@ -11,11 +11,11 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibeskriv
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.metrics.aspects.Timed
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
-import no.nav.sosialhjelp.soknad.business.mappers.OkonomiMapper.addUtbetalingIfCheckedElseDeleteInOpplysninger
-import no.nav.sosialhjelp.soknad.business.mappers.OkonomiMapper.setBekreftelse
-import no.nav.sosialhjelp.soknad.business.mappers.TitleKeyMapper.soknadTypeToTitleKey
 import no.nav.sosialhjelp.soknad.business.service.TextService
-import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler
+import no.nav.sosialhjelp.soknad.common.mapper.OkonomiMapper.addUtbetalingIfCheckedElseDeleteInOpplysninger
+import no.nav.sosialhjelp.soknad.common.mapper.OkonomiMapper.setBekreftelse
+import no.nav.sosialhjelp.soknad.common.mapper.TitleKeyMapper.soknadTypeToTitleKey
+import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import no.nav.sosialhjelp.soknad.web.utils.Constants
 import org.springframework.stereotype.Controller
@@ -39,7 +39,7 @@ open class UtbetalingRessurs(
     @GET
     open fun hentUtbetalinger(@PathParam("behandlingsId") behandlingsId: String): UtbetalingerFrontend {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
-        val eier = SubjectHandler.getUserId()
+        val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).jsonInternalSoknad
         val opplysninger = soknad.soknad.data.okonomi.opplysninger
 
@@ -63,7 +63,7 @@ open class UtbetalingRessurs(
         utbetalingerFrontend: UtbetalingerFrontend
     ) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
-        val eier = SubjectHandler.getUserId()
+        val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
         val opplysninger = soknad.jsonInternalSoknad.soknad.data.okonomi.opplysninger
         if (opplysninger.bekreftelse == null) {

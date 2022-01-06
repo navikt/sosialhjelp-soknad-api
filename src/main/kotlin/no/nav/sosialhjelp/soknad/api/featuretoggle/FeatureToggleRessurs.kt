@@ -2,7 +2,7 @@ package no.nav.sosialhjelp.soknad.api.featuretoggle
 
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.metrics.aspects.Timed
-import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler
+import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.web.utils.Constants
 import org.apache.commons.lang3.StringUtils
 import org.springframework.context.annotation.Configuration
@@ -28,7 +28,7 @@ open class FeatureToggleRessurs {
 
     @GET
     open fun featureToggles(): Map<String, Boolean> {
-        val uid = SubjectHandler.getUserId()
+        val uid = SubjectHandlerUtils.getUserIdFromToken()
         val featureToggles: MutableMap<String, Boolean> = HashMap()
         featureToggles["modalV2"] = FeatureToggleUtils.enableModalV2(uid)
         return featureToggles

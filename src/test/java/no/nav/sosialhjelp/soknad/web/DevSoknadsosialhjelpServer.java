@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.web;
 
-import no.nav.sosialhjelp.soknad.domain.model.oidc.StaticSubjectHandlerService;
-import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler;
+import no.nav.sosialhjelp.soknad.common.subjecthandler.StaticSubjectHandlerImpl;
+import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils;
 import no.nav.sosialhjelp.soknad.web.server.SoknadsosialhjelpServer;
 
 import java.io.File;
@@ -15,7 +15,7 @@ public class DevSoknadsosialhjelpServer {
 
         final SoknadsosialhjelpServer server = new SoknadsosialhjelpServer(PORT, new File("src/test/resources/override-web.xml"), "/sosialhjelp/soknad-api");
         if (isOidcMock()) {
-            SubjectHandler.setSubjectHandlerService(new StaticSubjectHandlerService());
+            SubjectHandlerUtils.INSTANCE.setNewSubjectHandlerImpl(new StaticSubjectHandlerImpl());
         }
 
         server.start();

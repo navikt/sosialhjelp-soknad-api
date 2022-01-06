@@ -13,8 +13,8 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreft
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktInntekt
 import no.nav.sosialhjelp.soknad.arbeid.domain.Arbeidsforhold
 import no.nav.sosialhjelp.soknad.business.service.TextService
-import no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
+import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkattbarInntektService
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkatteetatenSystemdata
 import org.assertj.core.api.Assertions.assertThat
@@ -40,7 +40,7 @@ internal class ArbeidsforholdSystemdataTest {
     @Test
     fun skalOppdatereArbeidsforhold() {
         val soknadUnderArbeid = SoknadUnderArbeid()
-            .withJsonInternalSoknad(SoknadService.createEmptyJsonInternalSoknad(EIER))
+            .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
             .withEier(EIER)
         val arbeidsforholdList = listOf(ARBEIDSFORHOLD_LONNSLIPP, ARBEIDSFORHOLD_SLUTTOPPGJOR)
         every { arbeidsforholdService.hentArbeidsforhold(any()) } returns arbeidsforholdList
@@ -60,7 +60,7 @@ internal class ArbeidsforholdSystemdataTest {
     @Test
     fun skalLeggeTilInntektForLonnslipp() {
         val soknadUnderArbeid = SoknadUnderArbeid()
-            .withJsonInternalSoknad(SoknadService.createEmptyJsonInternalSoknad(EIER))
+            .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
             .withEier(EIER)
         setSamtykke(soknadUnderArbeid.jsonInternalSoknad, true)
         soknadUnderArbeid.jsonInternalSoknad.soknad.driftsinformasjon.inntektFraSkatteetatenFeilet = true
@@ -83,7 +83,7 @@ internal class ArbeidsforholdSystemdataTest {
     @Test
     fun skalLeggeTilUtbetalingForSluttoppgjor() {
         val soknadUnderArbeid = SoknadUnderArbeid()
-            .withJsonInternalSoknad(SoknadService.createEmptyJsonInternalSoknad(EIER))
+            .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
             .withEier(EIER)
         setSamtykke(soknadUnderArbeid.jsonInternalSoknad, true)
         soknadUnderArbeid.jsonInternalSoknad.soknad.driftsinformasjon.inntektFraSkatteetatenFeilet = true
@@ -122,7 +122,7 @@ internal class ArbeidsforholdSystemdataTest {
     }
 
     private fun createSoknadUnderArbeidWithArbeidsforholdAndSluttOppgjorAndLonnslipp(): JsonInternalSoknad {
-        val jsonInternalSoknad = SoknadService.createEmptyJsonInternalSoknad(EIER)
+        val jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER)
         jsonInternalSoknad.soknad.data.arbeid.forhold.add(JsonArbeidsforhold())
         jsonInternalSoknad.soknad.data.okonomi.opplysninger.utbetaling.add(
             JsonOkonomiOpplysningUtbetaling().withType(SoknadJsonTyper.SLUTTOPPGJOER)

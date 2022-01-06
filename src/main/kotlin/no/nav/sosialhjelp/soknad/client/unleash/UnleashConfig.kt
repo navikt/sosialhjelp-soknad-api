@@ -6,9 +6,7 @@ import no.finn.unleash.repository.FeatureToggleResponse
 import no.finn.unleash.repository.HttpToggleFetcher
 import no.finn.unleash.repository.ToggleFetcher
 import no.finn.unleash.util.UnleashConfig
-import no.nav.sosialhjelp.soknad.web.selftest.Pingable
-import no.nav.sosialhjelp.soknad.web.selftest.Pingable.Ping
-import no.nav.sosialhjelp.soknad.web.selftest.Pingable.Ping.PingMetadata
+import no.nav.sosialhjelp.soknad.health.selftest.Pingable
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -32,16 +30,16 @@ open class UnleashConfig(
     @Bean
     open fun unleashRestPing(unleashToggleFetcher: ToggleFetcher): Pingable? {
         return Pingable {
-            val metadata = PingMetadata(baseurl, "Unleash", false)
+            val metadata = Pingable.PingMetadata(baseurl, "Unleash", false)
             try {
                 val status = unleashToggleFetcher.fetchToggles().status
                 if (status == FeatureToggleResponse.Status.CHANGED || status == FeatureToggleResponse.Status.NOT_CHANGED) {
-                    Ping.lyktes(metadata)
+                    Pingable.lyktes(metadata)
                 } else {
-                    Ping.feilet(metadata, "Ping mot Unleash på $baseurl. Ga status $status")
+                    Pingable.feilet(metadata, "Ping mot Unleash på $baseurl. Ga status $status")
                 }
             } catch (e: Exception) {
-                Ping.feilet(metadata, e)
+                Pingable.feilet(metadata, e)
             }
         }
     }

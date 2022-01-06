@@ -8,10 +8,8 @@ import no.nav.sosialhjelp.soknad.business.service.TextService
 import no.nav.sosialhjelp.soknad.client.sts.StsClient
 import no.nav.sosialhjelp.soknad.consumer.common.rest.RestUtils
 import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.HEADER_NAV_APIKEY
+import no.nav.sosialhjelp.soknad.health.selftest.Pingable
 import no.nav.sosialhjelp.soknad.organisasjon.OrganisasjonService
-import no.nav.sosialhjelp.soknad.web.selftest.Pingable
-import no.nav.sosialhjelp.soknad.web.selftest.Pingable.Ping
-import no.nav.sosialhjelp.soknad.web.selftest.Pingable.Ping.PingMetadata
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -40,12 +38,12 @@ open class ArbeidsforholdConfig(
     @Bean
     open fun arbeidsforholdPing(arbeidsforholdClient: ArbeidsforholdClient): Pingable {
         return Pingable {
-            val metadata = PingMetadata(baseurl, "Aareg", false)
+            val metadata = Pingable.PingMetadata(baseurl, "Aareg", false)
             try {
                 arbeidsforholdClient.ping()
-                Ping.lyktes(metadata)
+                Pingable.lyktes(metadata)
             } catch (e: Exception) {
-                Ping.feilet(metadata, e)
+                Pingable.feilet(metadata, e)
             }
         }
     }

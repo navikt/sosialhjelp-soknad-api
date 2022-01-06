@@ -1,9 +1,9 @@
 package no.nav.sosialhjelp.soknad.tilgangskontroll
 
+import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.domain.model.exception.AuthorizationException
 import no.nav.sosialhjelp.soknad.domain.model.exception.SosialhjelpSoknadApiException
 import no.nav.sosialhjelp.soknad.domain.model.mock.MockUtils
-import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler
 import org.apache.commons.codec.binary.Base64
 import java.security.InvalidKeyException
 import java.security.NoSuchAlgorithmException
@@ -20,7 +20,7 @@ object XsrfGenerator {
     fun generateXsrfToken(
         behandlingsId: String?,
         date: String = ZonedDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")),
-        token: String? = SubjectHandler.getToken()
+        token: String? = SubjectHandlerUtils.getToken()
     ): String {
         return try {
             val signKey = token + behandlingsId + date

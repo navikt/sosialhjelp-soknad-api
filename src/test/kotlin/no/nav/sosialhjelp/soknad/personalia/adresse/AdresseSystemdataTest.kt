@@ -7,8 +7,8 @@ import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresseValg
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonGateAdresse
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonMatrikkelAdresse
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
-import no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
+import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Bostedsadresse
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Matrikkeladresse
@@ -25,9 +25,7 @@ internal class AdresseSystemdataTest {
 
     @Test
     fun skalOppdatereFolkeregistrertAdresse_vegadresse_fraPdl() {
-        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(
-            SoknadService.createEmptyJsonInternalSoknad(EIER)
-        )
+        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
         val personWithBostedsadresseVegadresse =
             createPersonWithBostedsadresse(Bostedsadresse("", DEFAULT_VEGADRESSE, null))
         every { personService.hentPerson(any()) } returns personWithBostedsadresseVegadresse
@@ -43,9 +41,7 @@ internal class AdresseSystemdataTest {
 
     @Test
     fun skalOppdatereFolkeregistrertAdresse_matrikkeladresse_fraPdl() {
-        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(
-            SoknadService.createEmptyJsonInternalSoknad(EIER)
-        )
+        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
         val personWithBostedsadresseMatrikkeladresse = createPersonWithBostedsadresse(
             Bostedsadresse(
                 "",
@@ -75,9 +71,7 @@ internal class AdresseSystemdataTest {
 
     @Test
     fun skalOppdatereOppholdsadresseOgPostAdresseMedMidlertidigAdresse_kontaktadresse_fraPdl() {
-        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(
-            SoknadService.createEmptyJsonInternalSoknad(EIER)
-        )
+        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
         soknadUnderArbeid.jsonInternalSoknad.soknad.data.personalia
             .withOppholdsadresse(JsonAdresse().withAdresseValg(JsonAdresseValg.MIDLERTIDIG))
             .withPostadresse(JsonAdresse().withAdresseValg(JsonAdresseValg.MIDLERTIDIG))
@@ -107,9 +101,7 @@ internal class AdresseSystemdataTest {
 
     @Test
     fun skalOppdatereOppholdsadresseOgPostAdresseMedFolkeregistrertAdresse_fraPdl() {
-        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(
-            SoknadService.createEmptyJsonInternalSoknad(EIER)
-        )
+        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
         soknadUnderArbeid.jsonInternalSoknad.soknad.data.personalia
             .withOppholdsadresse(JsonAdresse().withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT))
             .withPostadresse(JsonAdresse().withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT))
@@ -132,11 +124,7 @@ internal class AdresseSystemdataTest {
 
     @Test
     fun skalIkkeOppdatereOppholdsadresseEllerPostAdresseDersomAdresseValgErNull_fraPdl() {
-        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(
-            SoknadService.createEmptyJsonInternalSoknad(
-                EIER
-            )
-        )
+        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
         soknadUnderArbeid.jsonInternalSoknad.soknad.data.personalia
             .withOppholdsadresse(JsonAdresse())
             .withPostadresse(JsonAdresse())

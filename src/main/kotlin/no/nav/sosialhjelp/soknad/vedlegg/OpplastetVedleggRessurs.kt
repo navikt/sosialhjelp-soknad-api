@@ -3,12 +3,12 @@ package no.nav.sosialhjelp.soknad.vedlegg
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.metrics.aspects.Timed
 import no.nav.sosialhjelp.soknad.business.db.repositories.opplastetvedlegg.OpplastetVedleggRepository
-import no.nav.sosialhjelp.soknad.business.util.FileDetectionUtils
-import no.nav.sosialhjelp.soknad.business.util.MimeTypes
+import no.nav.sosialhjelp.soknad.common.filedetection.FileDetectionUtils.getMimeType
+import no.nav.sosialhjelp.soknad.common.filedetection.MimeTypes
+import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.domain.OpplastetVedlegg
 import no.nav.sosialhjelp.soknad.domain.model.exception.OpplastingException
 import no.nav.sosialhjelp.soknad.domain.model.mock.MockUtils
-import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import no.nav.sosialhjelp.soknad.vedlegg.dto.FilFrontend
 import no.nav.sosialhjelp.soknad.web.utils.Constants
@@ -46,7 +46,7 @@ open class OpplastetVedleggRessurs(
     @Produces(MediaType.APPLICATION_JSON)
     open fun getVedlegg(@PathParam("vedleggId") vedleggId: String): OpplastetVedlegg {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
-        val eier = SubjectHandler.getUserId()
+        val eier = SubjectHandlerUtils.getUserIdFromToken()
         return opplastetVedleggRepository.hentVedlegg(vedleggId, eier).orElse(null)
     }
 
@@ -55,14 +55,14 @@ open class OpplastetVedleggRessurs(
     @Produces(MediaType.APPLICATION_JSON)
     open fun getVedleggFil(@PathParam("vedleggId") vedleggId: String, @Context response: HttpServletResponse): Response {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
-        val eier = SubjectHandler.getUserId()
+        val eier = SubjectHandlerUtils.getUserIdFromToken()
         val opplastetVedlegg = opplastetVedleggRepository.hentVedlegg(vedleggId, eier).orElse(null)
         if (opplastetVedlegg != null) {
             response.setHeader("Content-Disposition", "attachment; filename=\"" + opplastetVedlegg.filnavn + "\"")
         } else {
             return Response.noContent().build()
         }
-        val detectedMimeType = FileDetectionUtils.getMimeType(opplastetVedlegg.data)
+        val detectedMimeType = getMimeType(opplastetVedlegg.data)
         val mimetype = if (detectedMimeType.equals(MimeTypes.TEXT_X_MATLAB, ignoreCase = true)) MimeTypes.APPLICATION_PDF else detectedMimeType
         return Response.ok(opplastetVedlegg.data).type(mimetype).build()
     }

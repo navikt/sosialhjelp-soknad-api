@@ -1,0 +1,172 @@
+package no.nav.sosialhjelp.soknad.innsending
+
+import io.mockk.clearAllMocks
+import io.mockk.every
+import io.mockk.just
+import io.mockk.mockk
+import io.mockk.runs
+import io.mockk.slot
+import io.mockk.verify
+import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.BOSTOTTE_SAMTYKKE
+import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_SKATTEETATEN_SAMTYKKE
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse
+import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
+import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
+import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
+import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata.VedleggMetadataListe
+import no.nav.sosialhjelp.soknad.common.subjecthandler.StaticSubjectHandlerImpl
+import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
+import no.nav.sosialhjelp.soknad.common.systemdata.SystemdataUpdater
+import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
+import no.nav.sosialhjelp.soknad.domain.Vedleggstatus
+import no.nav.sosialhjelp.soknad.ettersending.EttersendingService
+import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
+import no.nav.sosialhjelp.soknad.innsending.svarut.OppgaveHandterer
+import no.nav.sosialhjelp.soknad.inntekt.husbanken.BostotteSystemdata
+import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkatteetatenSystemdata
+import no.nav.sosialhjelp.soknad.metrics.SoknadMetricsService
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import java.util.Optional
+
+internal class SoknadServiceTest {
+
+    private val henvendelseService: HenvendelseService = mockk()
+    private val oppgaveHandterer: OppgaveHandterer = mockk()
+    private val systemdataUpdater: SystemdataUpdater = mockk()
+    private val soknadMetricsService: SoknadMetricsService = mockk()
+    private val innsendingService: InnsendingService = mockk()
+    private val ettersendingService: EttersendingService = mockk()
+    private val bostotteSystemdata: BostotteSystemdata = mockk()
+    private val skatteetatenSystemdata: SkatteetatenSystemdata = mockk()
+    private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
+
+    private val soknadService = SoknadService(
+        henvendelseService,
+        oppgaveHandterer,
+        soknadMetricsService,
+        innsendingService,
+        ettersendingService,
+        soknadUnderArbeidRepository,
+        systemdataUpdater,
+        bostotteSystemdata,
+        skatteetatenSystemdata
+    )
+
+    @BeforeEach
+    fun before() {
+        System.setProperty("environment.name", "test")
+        SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
+
+        clearAllMocks()
+        every { soknadMetricsService.reportStartSoknad(any()) } just runs
+        every { systemdataUpdater.update(any()) } just runs
+    }
+
+    @AfterEach
+    fun tearDown() {
+        SubjectHandlerUtils.resetSubjectHandlerImpl()
+        System.clearProperty("environment.name")
+    }
+
+    @Test
+    fun skalStarteSoknad() {
+        every { henvendelseService.startSoknad(any()) } returns "123"
+
+        val soknadUnderArbeidSlot = slot<SoknadUnderArbeid>()
+        every { soknadUnderArbeidRepository.opprettSoknad(capture(soknadUnderArbeidSlot), any()) } returns 123L
+
+        soknadService.startSoknad("")
+
+        val bruker = SubjectHandlerUtils.getUserIdFromToken()
+        verify { henvendelseService.startSoknad(bruker) }
+
+        val bekreftelser =
+            soknadUnderArbeidSlot.captured.jsonInternalSoknad.soknad.data.okonomi.opplysninger.bekreftelse
+        assertThat(bekreftelser.any { harBekreftelseFor(it, UTBETALING_SKATTEETATEN_SAMTYKKE) }).isFalse
+        assertThat(bekreftelser.any { harBekreftelseFor(it, BOSTOTTE_SAMTYKKE) }).isFalse
+    }
+
+    private fun harBekreftelseFor(bekreftelse: JsonOkonomibekreftelse, bekreftelsesType: String): Boolean {
+        return bekreftelse.verdi && bekreftelse.type.equals(bekreftelsesType, ignoreCase = true)
+    }
+
+    @Test
+    fun skalSendeSoknad() {
+        val testType = "testType"
+        val testTilleggsinfo = "testTilleggsinfo"
+        val testType2 = "testType2"
+        val testTilleggsinfo2 = "testTilleggsinfo2"
+        val jsonVedlegg = mutableListOf(
+            JsonVedlegg()
+                .withType(testType)
+                .withTilleggsinfo(testTilleggsinfo)
+                .withStatus(Vedleggstatus.LastetOpp.toString()),
+            JsonVedlegg()
+                .withType(testType2)
+                .withTilleggsinfo(testTilleggsinfo2)
+                .withStatus(Vedleggstatus.LastetOpp.toString())
+        )
+
+        val behandlingsId = "123"
+        val aktorId = "123456"
+        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(aktorId))
+        soknadUnderArbeid.jsonInternalSoknad.vedlegg = JsonVedleggSpesifikasjon().withVedlegg(jsonVedlegg)
+        every { soknadUnderArbeidRepository.hentSoknad(behandlingsId, any()) } returns soknadUnderArbeid
+
+        val soknadUnderArbeidSlot = slot<SoknadUnderArbeid>()
+        val vedleggSlot = slot<VedleggMetadataListe>()
+        every {
+            henvendelseService.oppdaterMetadataVedAvslutningAvSoknad(
+                behandlingsId, capture(vedleggSlot), capture(soknadUnderArbeidSlot), false
+            )
+        } just runs
+
+        every { oppgaveHandterer.leggTilOppgave(any(), any()) } just runs
+        every { innsendingService.opprettSendtSoknad(any()) } just runs
+        every { soknadMetricsService.reportSendSoknadMetrics(any(), any(), any()) } just runs
+
+        soknadService.sendSoknad(behandlingsId)
+
+        verify { oppgaveHandterer.leggTilOppgave(behandlingsId, any()) }
+
+        val capturedSoknadUnderArbeid = soknadUnderArbeidSlot.captured
+        assertThat(capturedSoknadUnderArbeid).isEqualTo(soknadUnderArbeid)
+
+        val capturedVedlegg = vedleggSlot.captured
+        assertThat(capturedVedlegg.vedleggListe).hasSize(2)
+        assertThat(capturedVedlegg.vedleggListe[0].filnavn).isEqualTo(testType)
+        assertThat(capturedVedlegg.vedleggListe[0].skjema).isEqualTo(testType)
+        assertThat(capturedVedlegg.vedleggListe[0].tillegg).isEqualTo(testTilleggsinfo)
+        assertThat(capturedVedlegg.vedleggListe[1].filnavn).isEqualTo(testType2)
+        assertThat(capturedVedlegg.vedleggListe[1].skjema).isEqualTo(testType2)
+        assertThat(capturedVedlegg.vedleggListe[1].tillegg).isEqualTo(testTilleggsinfo2)
+    }
+
+    @Test
+    fun skalAvbryteSoknad() {
+        every { soknadUnderArbeidRepository.hentSoknadOptional(BEHANDLINGSID, any()) } returns Optional.of(
+            SoknadUnderArbeid()
+                .withBehandlingsId(BEHANDLINGSID)
+                .withVersjon(1L)
+                .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
+        )
+
+        every { soknadUnderArbeidRepository.slettSoknad(any(), any()) } just runs
+        every { henvendelseService.avbrytSoknad(any(), any()) } just runs
+        every { soknadMetricsService.reportAvbruttSoknad(any()) } just runs
+
+        soknadService.avbrytSoknad(BEHANDLINGSID)
+
+        verify { henvendelseService.avbrytSoknad(BEHANDLINGSID, false) }
+        verify { soknadUnderArbeidRepository.slettSoknad(any(), any()) }
+        verify { soknadMetricsService.reportAvbruttSoknad(false) }
+    }
+
+    companion object {
+        private const val EIER = "Hans og Grete"
+        private const val BEHANDLINGSID = "123"
+    }
+}

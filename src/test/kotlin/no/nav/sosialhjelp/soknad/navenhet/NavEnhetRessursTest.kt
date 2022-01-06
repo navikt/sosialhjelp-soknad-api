@@ -16,15 +16,15 @@ import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sosialhjelp.soknad.adressesok.domain.AdresseForslag
 import no.nav.sosialhjelp.soknad.adressesok.domain.AdresseForslagType
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
-import no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService
 import no.nav.sosialhjelp.soknad.client.exceptions.PdlApiException
 import no.nav.sosialhjelp.soknad.client.fiks.kommuneinfo.KommuneInfoService
 import no.nav.sosialhjelp.soknad.client.kodeverk.KodeverkService
+import no.nav.sosialhjelp.soknad.common.subjecthandler.StaticSubjectHandlerImpl
+import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.domain.model.exception.AuthorizationException
-import no.nav.sosialhjelp.soknad.domain.model.oidc.StaticSubjectHandlerService
-import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler
 import no.nav.sosialhjelp.soknad.domain.model.util.KommuneTilNavEnhetMapper
+import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.navenhet.bydel.BydelFordelingService
 import no.nav.sosialhjelp.soknad.navenhet.bydel.BydelFordelingService.Companion.BYDEL_MARKA_OSLO
 import no.nav.sosialhjelp.soknad.navenhet.domain.NavEnhet
@@ -103,7 +103,7 @@ internal class NavEnhetRessursTest {
     internal fun setUp() {
         clearAllMocks()
         System.setProperty("environment.name", "test")
-        SubjectHandler.setSubjectHandlerService(StaticSubjectHandlerService())
+        SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
         every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
         every { kommuneInfoService.kanMottaSoknader(any()) } returns true
         every { kommuneInfoService.harMidlertidigDeaktivertMottak(any()) } returns true
@@ -111,15 +111,13 @@ internal class NavEnhetRessursTest {
 
     @AfterEach
     internal fun tearDown() {
-        SubjectHandler.resetOidcSubjectHandlerService()
+        SubjectHandlerUtils.resetSubjectHandlerImpl()
         System.clearProperty("environment.name")
     }
 
     @Test
     internal fun hentNavEnheter_oppholdsadresseFraAdressesok_skalReturnereEnheterRiktigKonvertert() {
-        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(
-            SoknadService.createEmptyJsonInternalSoknad(EIER)
-        )
+        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
         soknadUnderArbeid.jsonInternalSoknad.soknad.withMottaker(SOKNADSMOTTAKER).data.personalia
             .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(JsonAdresseValg.SOKNAD))
 
@@ -140,9 +138,7 @@ internal class NavEnhetRessursTest {
     @Test
     internal fun hentNavEnheter_oppholdsadresseFraAdressesok_skalReturnereEnheterRiktigKonvertertVedBydelMarka() {
         val annenBydel = "030112"
-        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(
-            SoknadService.createEmptyJsonInternalSoknad(EIER)
-        )
+        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
         soknadUnderArbeid.jsonInternalSoknad.soknad.withMottaker(SOKNADSMOTTAKER_2).data.personalia
             .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(JsonAdresseValg.SOKNAD))
 
@@ -159,9 +155,7 @@ internal class NavEnhetRessursTest {
 
     @Test
     internal fun hentValgtNavEnhet_skalReturnereEnhetRiktigKonvertert() {
-        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(
-            SoknadService.createEmptyJsonInternalSoknad(EIER)
-        )
+        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
         soknadUnderArbeid.jsonInternalSoknad.soknad.withMottaker(SOKNADSMOTTAKER).data.personalia
             .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT))
 
@@ -174,9 +168,7 @@ internal class NavEnhetRessursTest {
 
     @Test
     internal fun hentNavEnheter_oppholdsadresseIkkeValgt_skalReturnereTomListe() {
-        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(
-            SoknadService.createEmptyJsonInternalSoknad(EIER)
-        )
+        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
         soknadUnderArbeid.jsonInternalSoknad.soknad.data.personalia
             .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(null))
 
@@ -189,9 +181,7 @@ internal class NavEnhetRessursTest {
 
     @Test
     internal fun hentValgtNavEnhet_oppholdsadresseIkkeValgt_skalReturnereNull() {
-        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(
-            SoknadService.createEmptyJsonInternalSoknad(EIER)
-        )
+        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
         soknadUnderArbeid.jsonInternalSoknad.soknad.data.personalia
             .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(null))
 
@@ -203,9 +193,7 @@ internal class NavEnhetRessursTest {
 
     @Test
     internal fun updateNavEnhet_skalSetteNavEnhet() {
-        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(
-            SoknadService.createEmptyJsonInternalSoknad(EIER)
-        )
+        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
         soknadUnderArbeid.jsonInternalSoknad.soknad.withMottaker(SOKNADSMOTTAKER).data.personalia
             .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT))
 
@@ -230,9 +218,7 @@ internal class NavEnhetRessursTest {
 
     @Test
     internal fun hentNavEnheter_oppholdsadresseFolkeregistrert_skalBrukeKommunenummerFraGtOgKommunenavnFraKodeverk() {
-        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(
-            SoknadService.createEmptyJsonInternalSoknad(EIER)
-        )
+        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
         soknadUnderArbeid.jsonInternalSoknad.soknad.withMottaker(SOKNADSMOTTAKER).data.personalia
             .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT))
 
@@ -251,9 +237,7 @@ internal class NavEnhetRessursTest {
 
     @Test
     internal fun hentNavEnheter_oppholdsadresseFolkeregistrert_skalBrukeBydelsnummerFraGtOgKommunenavnFraKodeverk() {
-        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(
-            SoknadService.createEmptyJsonInternalSoknad(EIER)
-        )
+        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
         soknadUnderArbeid.jsonInternalSoknad.soknad.withMottaker(SOKNADSMOTTAKER).data.personalia
             .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT))
 
@@ -272,9 +256,7 @@ internal class NavEnhetRessursTest {
 
     @Test
     internal fun hentNavEnheter_oppholdsadresseFolkeregistrert_skalBrukeAdressesokSomFallback() {
-        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(
-            SoknadService.createEmptyJsonInternalSoknad(EIER)
-        )
+        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
         soknadUnderArbeid.jsonInternalSoknad.soknad.withMottaker(SOKNADSMOTTAKER).data.personalia
             .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT))
 

@@ -9,8 +9,8 @@ import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonMatrikkelAdresse
 import no.nav.sosialhjelp.soknad.adressesok.AdressesokService
 import no.nav.sosialhjelp.soknad.adressesok.domain.AdresseForslag
 import no.nav.sosialhjelp.soknad.adressesok.domain.AdresseForslagType
-import no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
+import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -37,7 +37,7 @@ internal class FinnAdresseServiceTest {
     @Test
     fun finnAdresseFraSoknadGirRiktigAdresseForFolkeregistrertGateadresse() {
         every { adressesokService.getAdresseForslag(any()) } returns lagAdresseForslag(KOMMUNENUMMER, KOMMUNENAVN1)
-        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(SoknadService.createEmptyJsonInternalSoknad(EIER))
+        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
         val personalia = soknadUnderArbeid.jsonInternalSoknad.soknad.data.personalia
         personalia.folkeregistrertAdresse = createGateadresse()
         val adresseForslagene = finnAdresseService.finnAdresseFraSoknad(personalia, JsonAdresseValg.FOLKEREGISTRERT.toString())
@@ -51,7 +51,7 @@ internal class FinnAdresseServiceTest {
 
     @Test
     fun finnAdresseFraSoknadGirRiktigAdresseForFolkeregistrertMatrikkeladresse() {
-        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(SoknadService.createEmptyJsonInternalSoknad(EIER))
+        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
         val personalia = soknadUnderArbeid.jsonInternalSoknad.soknad.data.personalia
         personalia.folkeregistrertAdresse = createMatrikkeladresse()
         val adresseForslagene = finnAdresseService.finnAdresseFraSoknad(personalia, JsonAdresseValg.FOLKEREGISTRERT.toString())
@@ -64,7 +64,7 @@ internal class FinnAdresseServiceTest {
 
     @Test
     fun finnAdresseFraSoknadReturnererTomListeHvisAdresseValgMangler() {
-        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(SoknadService.createEmptyJsonInternalSoknad(EIER))
+        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
         val personalia = soknadUnderArbeid.jsonInternalSoknad.soknad.data.personalia
         personalia.oppholdsadresse = createGateadresse()
         val adresseForslagene = finnAdresseService.finnAdresseFraSoknad(personalia, null)
