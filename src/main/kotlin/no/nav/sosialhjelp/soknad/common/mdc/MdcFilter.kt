@@ -1,7 +1,6 @@
 package no.nav.sosialhjelp.soknad.common.mdc
 
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
-import no.nav.sosialhjelp.soknad.consumer.mdc.MDCOperations
 import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants
 import javax.ws.rs.container.ContainerRequestContext
 import javax.ws.rs.container.ContainerRequestFilter

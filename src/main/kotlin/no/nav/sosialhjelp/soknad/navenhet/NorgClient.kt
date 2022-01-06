@@ -12,8 +12,8 @@ import no.nav.sosialhjelp.soknad.client.redis.GT_CACHE_KEY_PREFIX
 import no.nav.sosialhjelp.soknad.client.redis.GT_LAST_POLL_TIME_PREFIX
 import no.nav.sosialhjelp.soknad.client.redis.RedisService
 import no.nav.sosialhjelp.soknad.client.redis.RedisUtils.redisObjectMapper
+import no.nav.sosialhjelp.soknad.common.mdc.MDCOperations
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
-import no.nav.sosialhjelp.soknad.consumer.mdc.MDCOperations
 import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants
 import no.nav.sosialhjelp.soknad.navenhet.dto.NavEnhetDto
 import org.slf4j.LoggerFactory.getLogger
@@ -61,7 +61,7 @@ class NorgClientImpl(
             lagreTilCache(geografiskTilknytning, rsNorgEnhet)
             rsNorgEnhet
         } catch (e: NotFoundException) {
-            log.warn("Fant ikke norgenhet for gt {}", geografiskTilknytning)
+            log.warn("Fant ikke norgenhet for gt $geografiskTilknytning")
             null
         } catch (e: RuntimeException) {
             log.warn("Noe uventet feilet ved kall til NORG/gt", e)

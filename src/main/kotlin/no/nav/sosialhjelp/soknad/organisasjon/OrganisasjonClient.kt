@@ -1,8 +1,8 @@
 package no.nav.sosialhjelp.soknad.organisasjon
 
+import no.nav.sosialhjelp.soknad.common.mdc.MDCOperations
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.consumer.exceptions.TjenesteUtilgjengeligException
-import no.nav.sosialhjelp.soknad.consumer.mdc.MDCOperations
 import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants
 import no.nav.sosialhjelp.soknad.organisasjon.dto.OrganisasjonNoekkelinfoDto
 import org.slf4j.LoggerFactory.getLogger
