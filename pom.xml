@@ -90,7 +90,7 @@
         <lettuce.version>6.1.5.RELEASE</lettuce.version>
         <unleash.version>3.3.4</unleash.version>
         <resilience4j.version>1.7.1</resilience4j.version>
-        <reactor-core.version>3.4.10</reactor-core.version>
+        <reactor-core.version>3.4.13</reactor-core.version>
         <reactor-netty-http.version>1.0.14</reactor-netty-http.version>
         <log4j.version>2.17.1</log4j.version>
 
