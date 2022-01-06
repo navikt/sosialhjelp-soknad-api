@@ -72,7 +72,7 @@
         <httpclient.version>4.5.13</httpclient.version>
         <guava.version>31.0.1-jre</guava.version>
         <tika.version>2.2.1</tika.version>
-        <logback.version>1.2.7</logback.version>
+        <logback.version>1.2.10</logback.version>
         <hsqldb.version>2.6.1</hsqldb.version>
         <hikaricp.version>4.0.3</hikaricp.version>
         <joda-time.version>2.10.12</joda-time.version>
@@ -121,7 +121,7 @@
         <rhino.version>1.7.13</rhino.version>
         <logstash-logback-encoder.version>6.6</logstash-logback-encoder.version>
         <hk2.version>2.6.1</hk2.version>
-        <prometheus.version>0.12.0</prometheus.version>
+        <prometheus.version>0.14.1</prometheus.version>
         <oauth2-oidc-sdk.version>9.18</oauth2-oidc-sdk.version>
         <emoji-java.version>5.1.1</emoji-java.version>
         <objenesis.version>3.1</objenesis.version>
