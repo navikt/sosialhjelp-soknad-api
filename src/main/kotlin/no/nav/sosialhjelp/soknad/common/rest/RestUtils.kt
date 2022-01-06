@@ -54,6 +54,6 @@ object RestUtils {
     private val metricName: String
         get() {
             val element = Thread.currentThread().stackTrace[3]
-            return String.format("rest.client.%s.%s", element.className, element.methodName)
+            return "rest.client.${element.className}.${element.methodName}"
         }
 }

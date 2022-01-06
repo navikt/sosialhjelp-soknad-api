@@ -27,7 +27,7 @@ class ClientLogFilter(
 ) : ClientResponseFilter, ClientRequestFilter {
 
     override fun filter(clientRequestContext: ClientRequestContext) {
-        LOG.info("{} {}", clientRequestContext.method, uriForLogging(clientRequestContext))
+        log.info("${clientRequestContext.method} ${uriForLogging(clientRequestContext)}")
         val requestHeaders = clientRequestContext.headers
         ofNullable(MDCOperations.getFromMDC(MDCOperations.MDC_CALL_ID)).ifPresent { callId: String ->
             Arrays.stream(HeaderConstants.NAV_CALL_ID_HEADER_NAMES).forEach { headerName: String ->
@@ -54,14 +54,14 @@ class ClientLogFilter(
         if (!filterConfig.disableMetrics) {
             val timer = MetricsFactory.createTimer(filterConfig.metricName)
             timer.start()
-            clientRequestContext.setProperty(NAME, Data(timer))
+            clientRequestContext.setProperty(name, Data(timer))
         }
     }
 
     private fun toCookieString(cookie: Any): String {
         return when (cookie) {
             is String -> cookie
-            is Cookie -> cookie.name + "=" + cookie.value
+            is Cookie -> "${cookie.name}=${cookie.value}"
             else -> throw IllegalArgumentException()
         }
     }
@@ -71,13 +71,13 @@ class ClientLogFilter(
     }
 
     fun requestFailed(request: ClientRequestContext, throwable: Throwable) {
-        LOG.warn(throwable.message, throwable)
+        log.warn(throwable.message, throwable)
         requestComplete(request, 520, throwable)
     }
 
     private fun requestComplete(clientRequestContext: ClientRequestContext, status: Int, throwable: Throwable?) {
         if (!filterConfig.disableMetrics) {
-            val data = clientRequestContext.getProperty(NAME) as Data
+            val data = clientRequestContext.getProperty(name) as Data
             val timer = data.timer
             val uri = clientRequestContext.uri
             val host = uri.host
@@ -122,8 +122,8 @@ class ClientLogFilter(
     }
 
     companion object {
-        private val LOG = LoggerFactory.getLogger(ClientLogFilter::class.java)
-        private val NAME = ClientLogFilter::class.java.name
+        private val log = LoggerFactory.getLogger(ClientLogFilter::class.java)
+        private val name = ClientLogFilter::class.java.name
         private const val CSRF_TOKEN = "csrf-token"
     }
 }
