@@ -30,7 +30,6 @@ import no.nav.sosialhjelp.metrics.Timer
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata.VedleggMetadata
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata.VedleggMetadataListe
-import no.nav.sosialhjelp.soknad.business.util.JsonVedleggUtils.getVedleggFromInternalSoknad
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.common.systemdata.SystemdataUpdater
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
@@ -39,6 +38,7 @@ import no.nav.sosialhjelp.soknad.domain.Vedleggstatus
 import no.nav.sosialhjelp.soknad.domain.model.exception.SosialhjelpSoknadApiException
 import no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SosialhjelpInformasjon
 import no.nav.sosialhjelp.soknad.ettersending.EttersendingService
+import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils.getVedleggFromInternalSoknad
 import no.nav.sosialhjelp.soknad.innsending.svarut.OppgaveHandterer
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.BostotteSystemdata
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkatteetatenSystemdata

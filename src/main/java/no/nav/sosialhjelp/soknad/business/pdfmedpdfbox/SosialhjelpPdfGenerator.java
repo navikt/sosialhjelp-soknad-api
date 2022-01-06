@@ -44,7 +44,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.utdanning.JsonUtdanning;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon;
-import no.nav.sosialhjelp.soknad.business.util.JsonOkonomiUtils;
+import no.nav.sosialhjelp.soknad.common.utils.JsonOkonomiUtils;
 import no.nav.sosialhjelp.soknad.tekster.NavMessageSource;
 import org.apache.commons.lang3.LocaleUtils;
 import org.springframework.stereotype.Component;
@@ -1396,7 +1396,7 @@ public class SosialhjelpPdfGenerator {
         pdf.addBlankLine();
 
         if (utvidetSoknad) {
-            if (JsonOkonomiUtils.isOkonomiskeOpplysningerBekreftet(okonomi)) {
+            if (JsonOkonomiUtils.INSTANCE.isOkonomiskeOpplysningerBekreftet(okonomi)) {
                 skrivInfotekst(pdf, "opplysninger.informasjon.avsnitt1", "opplysninger.informasjon.avsnitt2", "opplysninger.informasjon.lenke");
                 skrivOkonomiskeOpplysningerModal(pdf);
             } else {

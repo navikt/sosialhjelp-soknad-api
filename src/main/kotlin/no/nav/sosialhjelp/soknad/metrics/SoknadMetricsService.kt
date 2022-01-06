@@ -2,11 +2,11 @@ package no.nav.sosialhjelp.soknad.metrics
 
 import no.nav.sosialhjelp.metrics.MetricsFactory
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata.VedleggMetadata
-import no.nav.sosialhjelp.soknad.business.util.JsonVedleggUtils
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.domain.Vedleggstatus
 import no.nav.sosialhjelp.soknad.domain.model.PersonAlder
 import no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SosialhjelpInformasjon
+import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils.isVedleggskravAnnet
 import no.nav.sosialhjelp.soknad.metrics.MetricsUtils.getProsent
 import org.slf4j.LoggerFactory
 
@@ -67,7 +67,7 @@ class SoknadMetricsService {
         var antallIkkeLevert = 0
         var totaltAntall = 0
         for (vedlegg in vedleggList) {
-            if (!JsonVedleggUtils.isVedleggskravAnnet(vedlegg)) {
+            if (!isVedleggskravAnnet(vedlegg)) {
                 totaltAntall++
                 when (vedlegg.status) {
                     Vedleggstatus.LastetOpp -> antallInnsendt++

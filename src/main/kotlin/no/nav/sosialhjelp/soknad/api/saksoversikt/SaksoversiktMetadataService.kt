@@ -9,11 +9,11 @@ import no.nav.sbl.soknadsosialhjelp.tjeneste.saksoversikt.Vedlegg
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata.VedleggMetadataListe
-import no.nav.sosialhjelp.soknad.business.util.JsonVedleggUtils
 import no.nav.sosialhjelp.soknad.domain.Vedleggstatus
 import no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SoknadType
 import no.nav.sosialhjelp.soknad.ettersending.EttersendingService
 import no.nav.sosialhjelp.soknad.ettersending.EttersendingService.Companion.ETTERSENDELSE_FRIST_DAGER
+import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils.isVedleggskravAnnet
 import no.nav.sosialhjelp.soknad.tekster.NavMessageSource
 import java.time.Clock
 import java.time.LocalDateTime
@@ -93,7 +93,7 @@ class SaksoversiktMetadataService(
         return nyesteSoknad.vedlegg.vedleggListe
             .asSequence()
             .filter { it.status.er(Vedleggstatus.VedleggKreves) }
-            .filter { !JsonVedleggUtils.isVedleggskravAnnet(it) }
+            .filter { !isVedleggskravAnnet(it) }
             .map { "vedlegg." + it.skjema + "." + it.tillegg + ".tittel" }
             .distinct()
             .map { bundle.getProperty(it) }
