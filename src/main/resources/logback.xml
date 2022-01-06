@@ -29,7 +29,7 @@
 
     <logger name="org.apache.http.client.protocol.ResponseProcessCookies" level="ERROR"/>
 
-    <logger name="no.nav.sosialhjelp.soknad.consumer.common.rest.ClientLogFilter" level="WARN"/>
+    <logger name="no.nav.sosialhjelp.soknad.common.rest.ClientLogFilter" level="WARN"/>
 
     <root level="${ROOT_LOG_LEVEL:-INFO}">
         <appender-ref ref="stdout_json"/>
