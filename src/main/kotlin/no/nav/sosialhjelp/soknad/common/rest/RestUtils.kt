@@ -2,8 +2,8 @@ package no.nav.sosialhjelp.soknad.common.rest
 
 /* Originally from common-java-modules (no.nav.sbl.dialogarena.common.rest) */
 
+import no.nav.sosialhjelp.soknad.common.json.JsonProvider
 import no.nav.sosialhjelp.soknad.common.rest.ClientLogFilter.ClientLogFilterConfig
-import no.nav.sosialhjelp.soknad.consumer.common.json.JsonProvider
 import org.glassfish.jersey.client.ClientConfig
 import org.glassfish.jersey.client.ClientProperties
 import org.glassfish.jersey.client.JerseyClientBuilder
