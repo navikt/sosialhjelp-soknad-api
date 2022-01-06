@@ -6,7 +6,6 @@ import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata.VedleggMetadata
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
 import org.slf4j.LoggerFactory
 import java.util.UUID
-import java.util.function.Consumer
 
 object JsonVedleggUtils {
     private val log = LoggerFactory.getLogger(JsonVedleggUtils::class.java)
@@ -39,14 +38,14 @@ object JsonVedleggUtils {
     ) {
         if (isUtvideVedleggJsonFeatureActive) {
             log.info("hendelsetype og hendelsereferanse blir inkludert i vedlegg.json")
-            jsonVedleggSpesifikasjon.vedlegg.forEach(Consumer { vedlegg: JsonVedlegg ->
-                if (isVedleggskravAnnet(vedlegg)) {
-                    vedlegg.hendelseType = JsonVedlegg.HendelseType.BRUKER
+            jsonVedleggSpesifikasjon.vedlegg.forEach {
+                if (isVedleggskravAnnet(it)) {
+                    it.hendelseType = JsonVedlegg.HendelseType.BRUKER
                 } else if (isSoknad) {
-                    vedlegg.hendelseType = JsonVedlegg.HendelseType.SOKNAD
-                    vedlegg.hendelseReferanse = UUID.randomUUID().toString()
+                    it.hendelseType = JsonVedlegg.HendelseType.SOKNAD
+                    it.hendelseReferanse = UUID.randomUUID().toString()
                 }
-            })
+            }
         }
     }
 }
