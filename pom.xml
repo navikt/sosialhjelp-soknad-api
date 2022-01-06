@@ -121,7 +121,7 @@
         <rhino.version>1.7.13</rhino.version>
         <logstash-logback-encoder.version>6.6</logstash-logback-encoder.version>
         <hk2.version>2.6.1</hk2.version>
-        <prometheus.version>0.13.0</prometheus.version>
+        <prometheus.version>0.14.1</prometheus.version>
         <oauth2-oidc-sdk.version>9.18</oauth2-oidc-sdk.version>
         <emoji-java.version>5.1.1</emoji-java.version>
         <objenesis.version>3.1</objenesis.version>
