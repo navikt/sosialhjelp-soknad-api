@@ -2,7 +2,7 @@ package no.nav.sosialhjelp.soknad.web.integration;
 
 
 import no.nav.security.token.support.core.JwtTokenConstants;
-import no.nav.sosialhjelp.soknad.consumer.common.json.JsonProvider;
+import no.nav.sosialhjelp.soknad.common.json.JsonProvider;
 import no.nav.sosialhjelp.soknad.web.oidc.JwtTokenGenerator;
 import no.nav.sosialhjelp.soknad.web.rest.SoknadApplication;
 import org.glassfish.jersey.test.JerseyTest;

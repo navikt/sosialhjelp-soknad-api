@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.personalia.telefonnummer.dto
 
 import com.fasterxml.jackson.module.kotlin.readValue
-import no.nav.sosialhjelp.soknad.consumer.common.json.JsonProvider.createObjectMapper
+import no.nav.sosialhjelp.soknad.common.json.JsonProvider.Companion.createObjectMapper
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
