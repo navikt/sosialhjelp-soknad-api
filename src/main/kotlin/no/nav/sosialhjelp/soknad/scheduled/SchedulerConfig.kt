@@ -5,7 +5,7 @@ import no.nav.sosialhjelp.soknad.business.db.repositories.sendtsoknad.BatchSendt
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.BatchSoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.BatchSoknadUnderArbeidRepository
-import no.nav.sosialhjelp.soknad.business.service.HenvendelseService
+import no.nav.sosialhjelp.soknad.innsending.HenvendelseService
 import no.nav.sosialhjelp.soknad.scheduled.leaderelection.LeaderElection
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean

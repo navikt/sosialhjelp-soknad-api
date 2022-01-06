@@ -2,8 +2,8 @@ package no.nav.sosialhjelp.soknad.ettersending
 
 import no.finn.unleash.Unleash
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
-import no.nav.sosialhjelp.soknad.business.service.HenvendelseService
 import no.nav.sosialhjelp.soknad.ettersending.innsendtsoknad.InnsendtSoknadService
+import no.nav.sosialhjelp.soknad.innsending.HenvendelseService
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Import

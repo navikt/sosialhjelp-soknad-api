@@ -9,7 +9,6 @@ import no.nav.sosialhjelp.soknad.api.nedetid.NedetidUtils
 import no.nav.sosialhjelp.soknad.api.nedetid.NedetidUtils.NEDETID_SLUTT
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.business.exceptions.SoknadenHarNedetidException
-import no.nav.sosialhjelp.soknad.business.service.HenvendelseService
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.common.systemdata.SystemdataUpdater
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid

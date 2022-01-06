@@ -6,9 +6,9 @@ import io.mockk.mockk
 import io.mockk.runs
 import io.mockk.verify
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.BatchSoknadUnderArbeidRepository
-import no.nav.sosialhjelp.soknad.business.service.HenvendelseService
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeidStatus
+import no.nav.sosialhjelp.soknad.innsending.HenvendelseService
 import no.nav.sosialhjelp.soknad.scheduled.leaderelection.LeaderElection
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test

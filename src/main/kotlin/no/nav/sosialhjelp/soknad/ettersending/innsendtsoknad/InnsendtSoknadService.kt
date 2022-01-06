@@ -2,17 +2,19 @@ package no.nav.sosialhjelp.soknad.ettersending.innsendtsoknad
 
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata.VedleggMetadata
-import no.nav.sosialhjelp.soknad.business.service.HenvendelseService
 import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus
 import no.nav.sosialhjelp.soknad.domain.Vedleggstatus
 import no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SoknadType
 import no.nav.sosialhjelp.soknad.ettersending.innsendtsoknad.EttersendelseUtils.soknadSendtForMindreEnn30DagerSiden
+import no.nav.sosialhjelp.soknad.innsending.HenvendelseService
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 import java.util.function.Predicate
 
-class InnsendtSoknadService(private val henvendelseService: HenvendelseService) {
+class InnsendtSoknadService(
+    private val henvendelseService: HenvendelseService
+) {
     private val ikkeKvittering = Predicate<VedleggMetadata> { SKJEMANUMMER_KVITTERING != it.skjema }
     private val lastetOpp = Predicate<VedleggMetadata> { it.status.er(Vedleggstatus.LastetOpp) }
     private val ikkeLastetOpp = lastetOpp.negate()
