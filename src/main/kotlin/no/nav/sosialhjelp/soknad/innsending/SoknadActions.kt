@@ -12,8 +12,6 @@ import no.nav.sosialhjelp.soknad.business.exceptions.SendingTilKommuneErIkkeAkti
 import no.nav.sosialhjelp.soknad.business.exceptions.SendingTilKommuneErMidlertidigUtilgjengeligException
 import no.nav.sosialhjelp.soknad.business.exceptions.SendingTilKommuneUtilgjengeligException
 import no.nav.sosialhjelp.soknad.business.exceptions.SoknadenHarNedetidException
-import no.nav.sosialhjelp.soknad.business.util.JsonVedleggUtils
-import no.nav.sosialhjelp.soknad.business.util.JsonVedleggUtils.FEATURE_UTVIDE_VEDLEGGJSON
 import no.nav.sosialhjelp.soknad.client.fiks.kommuneinfo.KommuneInfoService
 import no.nav.sosialhjelp.soknad.client.fiks.kommuneinfo.KommuneStatus
 import no.nav.sosialhjelp.soknad.client.fiks.kommuneinfo.KommuneStatus.HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT
@@ -27,6 +25,8 @@ import no.nav.sosialhjelp.soknad.domain.model.mock.MockUtils.isAlltidSendTilNavT
 import no.nav.sosialhjelp.soknad.domain.model.util.KommuneTilNavEnhetMapper
 import no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils.isNonProduction
 import no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils.isSendingTilFiksEnabled
+import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils.FEATURE_UTVIDE_VEDLEGGJSON
+import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils.addHendelseTypeAndHendelseReferanse
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiService
 import no.nav.sosialhjelp.soknad.innsending.dto.SendTilUrlFrontend
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
@@ -121,7 +121,7 @@ open class SoknadActions(
     ) {
         val jsonVedleggSpesifikasjon = soknadUnderArbeid.jsonInternalSoknad.vedlegg
         val isUtvideVedleggJsonFeatureActive = unleash.isEnabled(FEATURE_UTVIDE_VEDLEGGJSON, false)
-        JsonVedleggUtils.addHendelseTypeAndHendelseReferanse(
+        addHendelseTypeAndHendelseReferanse(
             jsonVedleggSpesifikasjon,
             !soknadUnderArbeid.erEttersendelse(),
             isUtvideVedleggJsonFeatureActive

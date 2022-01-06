@@ -6,11 +6,11 @@ import io.mockk.mockk
 import io.mockk.runs
 import io.mockk.verify
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata.VedleggMetadata
-import no.nav.sosialhjelp.soknad.business.util.JsonVedleggUtils
 import no.nav.sosialhjelp.soknad.domain.Vedleggstatus
 import no.nav.sosialhjelp.soknad.domain.Vedleggstatus.LastetOpp
 import no.nav.sosialhjelp.soknad.domain.Vedleggstatus.VedleggAlleredeSendt
 import no.nav.sosialhjelp.soknad.domain.Vedleggstatus.VedleggKreves
+import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils
 import org.junit.jupiter.api.Test
 
 internal class SoknadMetricsServiceTest {
