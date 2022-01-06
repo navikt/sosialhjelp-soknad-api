@@ -47,7 +47,6 @@ object RestUtils {
             .build()
     }
 
-//    @SneakyThrows
     private fun defaultSSLContext(): SSLContext {
         return SSLContext.getDefault()
     }
