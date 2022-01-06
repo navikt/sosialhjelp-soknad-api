@@ -10,11 +10,11 @@ import io.mockk.verify
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonTelefonnummer
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
-import no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService
+import no.nav.sosialhjelp.soknad.common.subjecthandler.StaticSubjectHandlerImpl
+import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.domain.model.exception.AuthorizationException
-import no.nav.sosialhjelp.soknad.domain.model.oidc.StaticSubjectHandlerService
-import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler
+import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.personalia.telefonnummer.TelefonnummerRessurs.TelefonnummerFrontend
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import org.assertj.core.api.Assertions.assertThat
@@ -33,12 +33,12 @@ internal class TelefonnummerRessursTest {
     @BeforeEach
     fun setUp() {
         System.setProperty("environment.name", "test")
-        SubjectHandler.setSubjectHandlerService(StaticSubjectHandlerService())
+        SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
     }
 
     @AfterEach
     fun tearDown() {
-        SubjectHandler.resetOidcSubjectHandlerService()
+        SubjectHandlerUtils.resetSubjectHandlerImpl()
         System.clearProperty("environment.name")
     }
 
@@ -49,6 +49,7 @@ internal class TelefonnummerRessursTest {
             createJsonInternalSoknadWithTelefonnummer(JsonKilde.SYSTEM, TELEFONNUMMER_SYSTEM)
 
         val telefonnummerFrontend: TelefonnummerFrontend = telefonnummerRessurs.hentTelefonnummer(BEHANDLINGSID)
+
         assertThat(telefonnummerFrontend.brukerutfyltVerdi).isNull()
         assertThat(telefonnummerFrontend.systemverdi).isEqualTo(TELEFONNUMMER_SYSTEM)
         assertThat(telefonnummerFrontend.brukerdefinert).isFalse
@@ -62,6 +63,7 @@ internal class TelefonnummerRessursTest {
         every { telefonnummerSystemdata.innhentSystemverdiTelefonnummer(any()) } returns null
 
         val telefonnummerFrontend: TelefonnummerFrontend = telefonnummerRessurs.hentTelefonnummer(BEHANDLINGSID)
+
         assertThat(telefonnummerFrontend.brukerutfyltVerdi).isNull()
         assertThat(telefonnummerFrontend.systemverdi).isNull()
         assertThat(telefonnummerFrontend.brukerdefinert).isTrue
@@ -72,9 +74,10 @@ internal class TelefonnummerRessursTest {
         every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
             createJsonInternalSoknadWithTelefonnummer(JsonKilde.BRUKER, TELEFONNUMMER_BRUKER)
-
         every { telefonnummerSystemdata.innhentSystemverdiTelefonnummer(any()) } returns TELEFONNUMMER_SYSTEM
-        val telefonnummerFrontend: TelefonnummerFrontend = telefonnummerRessurs.hentTelefonnummer(BEHANDLINGSID)
+
+        val telefonnummerFrontend = telefonnummerRessurs.hentTelefonnummer(BEHANDLINGSID)
+
         assertThat(telefonnummerFrontend.brukerutfyltVerdi).isEqualTo(TELEFONNUMMER_BRUKER)
         assertThat(telefonnummerFrontend.systemverdi).isEqualTo(TELEFONNUMMER_SYSTEM)
         assertThat(telefonnummerFrontend.brukerdefinert).isTrue
@@ -89,8 +92,9 @@ internal class TelefonnummerRessursTest {
         val soknadUnderArbeidSlot = slot<SoknadUnderArbeid>()
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(soknadUnderArbeidSlot), any()) } just runs
 
-        val telefonnummerFrontend =
-            TelefonnummerFrontend(brukerdefinert = true, brukerutfyltVerdi = TELEFONNUMMER_BRUKER)
+        val telefonnummerFrontend = TelefonnummerFrontend(
+            brukerdefinert = true, brukerutfyltVerdi = TELEFONNUMMER_BRUKER
+        )
         telefonnummerRessurs.updateTelefonnummer(BEHANDLINGSID, telefonnummerFrontend)
 
         val soknadUnderArbeid = soknadUnderArbeidSlot.captured
@@ -108,8 +112,9 @@ internal class TelefonnummerRessursTest {
         val soknadUnderArbeidSlot = slot<SoknadUnderArbeid>()
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(soknadUnderArbeidSlot), any()) } just runs
 
-        val telefonnummerFrontend =
-            TelefonnummerFrontend(brukerdefinert = true, brukerutfyltVerdi = TELEFONNUMMER_BRUKER)
+        val telefonnummerFrontend = TelefonnummerFrontend(
+            brukerdefinert = true, brukerutfyltVerdi = TELEFONNUMMER_BRUKER
+        )
         telefonnummerRessurs.updateTelefonnummer(BEHANDLINGSID, telefonnummerFrontend)
 
         val soknadUnderArbeid = soknadUnderArbeidSlot.captured
@@ -161,9 +166,7 @@ internal class TelefonnummerRessursTest {
     }
 
     private fun createJsonInternalSoknadWithTelefonnummer(kilde: JsonKilde?, verdi: String?): SoknadUnderArbeid {
-        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(
-            SoknadService.createEmptyJsonInternalSoknad(EIER)
-        )
+        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
         soknadUnderArbeid.jsonInternalSoknad.soknad.data.personalia
             .withTelefonnummer(
                 if (verdi == null) null else JsonTelefonnummer()

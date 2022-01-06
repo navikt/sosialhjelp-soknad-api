@@ -7,8 +7,9 @@ import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling
-import no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
+import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
+import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.UtbetalingerFraNavSystemdata.Companion.tilIntegerMedAvrunding
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.domain.Komponent
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.domain.NavUtbetaling
 import no.nav.sosialhjelp.soknad.organisasjon.OrganisasjonService
@@ -32,9 +33,7 @@ internal class UtbetalingerFraNavSystemdataTest {
 
     @Test
     fun skalOppdatereUtbetalinger() {
-        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(
-            SoknadService.createEmptyJsonInternalSoknad(EIER)
-        )
+        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
         val navUtbetalinger = listOf(NAV_UTBETALING_1, NAV_UTBETALING_2)
         every { navUtbetalingerService.getUtbetalingerSiste40Dager(any()) } returns navUtbetalinger
 
@@ -50,9 +49,7 @@ internal class UtbetalingerFraNavSystemdataTest {
 
     @Test
     fun skalKunInkludereGyldigeOrganisasjonsnummer() {
-        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(
-            SoknadService.createEmptyJsonInternalSoknad(EIER)
-        )
+        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
         val navUtbetalinger = listOf(NAV_UTBETALING_1, NAV_UTBETALING_2, NAV_UTBETALING_3)
         every { navUtbetalingerService.getUtbetalingerSiste40Dager(any()) } returns navUtbetalinger
 
@@ -70,8 +67,7 @@ internal class UtbetalingerFraNavSystemdataTest {
 
     @Test
     fun skalIkksLasteNedUtbetalingerUtenSamtykke() {
-        val soknadUnderArbeid = SoknadUnderArbeid()
-            .withJsonInternalSoknad(createJsonInternalSoknadWithUtbetalinger())
+        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createJsonInternalSoknadWithUtbetalinger())
         val utbetalinger = listOf(NAV_UTBETALING_1)
         every { navUtbetalingerService.getUtbetalingerSiste40Dager(any()) } returns utbetalinger
 
@@ -123,7 +119,7 @@ internal class UtbetalingerFraNavSystemdataTest {
     }
 
     private fun createJsonInternalSoknadWithUtbetalinger(): JsonInternalSoknad {
-        val jsonInternalSoknad = SoknadService.createEmptyJsonInternalSoknad(EIER)
+        val jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER)
         val jsonUtbetalinger: MutableList<JsonOkonomiOpplysningUtbetaling> = ArrayList()
         jsonUtbetalinger.add(JSON_OKONOMI_OPPLYSNING_UTBETALING)
         jsonInternalSoknad.soknad.data.okonomi.opplysninger.withUtbetaling(jsonUtbetalinger)
@@ -137,8 +133,7 @@ internal class UtbetalingerFraNavSystemdataTest {
     ) {
         assertThat(jsonUtbetaling.type).isEqualTo(type)
         assertThat(jsonUtbetaling.tittel).isEqualTo(navUtbetaling.tittel)
-        assertThat(jsonUtbetaling.belop)
-            .isEqualTo(UtbetalingerFraNavSystemdata.tilIntegerMedAvrunding(navUtbetaling.netto.toString()))
+        assertThat(jsonUtbetaling.belop).isEqualTo(tilIntegerMedAvrunding(navUtbetaling.netto.toString()))
         assertThat(jsonUtbetaling.brutto).isEqualTo(navUtbetaling.brutto)
         assertThat(jsonUtbetaling.netto).isEqualTo(navUtbetaling.netto)
         assertThat(jsonUtbetaling.utbetalingsdato).isEqualTo(navUtbetaling.utbetalingsdato.toString())

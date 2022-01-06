@@ -11,8 +11,8 @@ import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeSystem
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse
-import no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
+import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.dto.BostotteDto
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.dto.SakDto
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.dto.UtbetalingDto
@@ -44,8 +44,7 @@ internal class BostotteSystemdataTest {
     @Test
     fun updateSystemdata_soknadBlirOppdatertMedUtbetalingFraHusbanken() {
         // Variabler:
-        val soknadUnderArbeid = SoknadUnderArbeid()
-            .withJsonInternalSoknad(SoknadService.createEmptyJsonInternalSoknad(EIER))
+        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
         settBostotteSamtykkePaSoknad(soknadUnderArbeid.jsonInternalSoknad, true)
         val mottaker = BostotteMottaker.HUSSTAND
         val netto = BigDecimal.valueOf(10000.5)
@@ -70,8 +69,7 @@ internal class BostotteSystemdataTest {
     @Test
     fun updateSystemdata_soknadBlirOppdatertMedToUtbetalingerFraHusbanken() {
         // Variabler:
-        val soknadUnderArbeid = SoknadUnderArbeid()
-            .withJsonInternalSoknad(SoknadService.createEmptyJsonInternalSoknad(EIER))
+        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
         settBostotteSamtykkePaSoknad(soknadUnderArbeid.jsonInternalSoknad, true)
         val mottaker = BostotteMottaker.HUSSTAND
         val netto1 = BigDecimal.valueOf(10000)
@@ -100,8 +98,7 @@ internal class BostotteSystemdataTest {
     @Test
     fun updateSystemdata_soknadBlirOppdatertMedSakFraHusbanken() {
         // Variabler:
-        val soknadUnderArbeid = SoknadUnderArbeid()
-            .withJsonInternalSoknad(SoknadService.createEmptyJsonInternalSoknad(EIER))
+        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
         settBostotteSamtykkePaSoknad(soknadUnderArbeid.jsonInternalSoknad, true)
         val sakDto = lagSak(
             LocalDate.now().withDayOfMonth(1),
@@ -132,8 +129,7 @@ internal class BostotteSystemdataTest {
     @Test
     fun updateSystemdata_soknadBlirOppdatertMedToSakerFraHusbanken() {
         // Variabler:
-        val soknadUnderArbeid = SoknadUnderArbeid()
-            .withJsonInternalSoknad(SoknadService.createEmptyJsonInternalSoknad(EIER))
+        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
         settBostotteSamtykkePaSoknad(soknadUnderArbeid.jsonInternalSoknad, true)
         val sakDto1 = lagSak(
             LocalDate.now().withDayOfMonth(1),
@@ -175,8 +171,7 @@ internal class BostotteSystemdataTest {
     @Test
     fun updateSystemdata_soknadBlirOppdatertRiktigVedKommunikasjonsfeil() {
         // Variabler:
-        val soknadUnderArbeid = SoknadUnderArbeid()
-            .withJsonInternalSoknad(SoknadService.createEmptyJsonInternalSoknad(EIER))
+        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
         settBostotteSamtykkePaSoknad(soknadUnderArbeid.jsonInternalSoknad, true)
 
         // Mock:
@@ -192,8 +187,7 @@ internal class BostotteSystemdataTest {
     @Test
     fun updateSystemdata_soknadBlirOppdatertRiktigVedKommunikasjonsfeil_ogBeholderGamleData() {
         // Variabler:
-        val soknadUnderArbeid = SoknadUnderArbeid()
-            .withJsonInternalSoknad(SoknadService.createEmptyJsonInternalSoknad(EIER))
+        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
         val opplysninger = soknadUnderArbeid.jsonInternalSoknad.soknad.data.okonomi.opplysninger
         opplysninger.bostotte.saker.add(
             JsonBostotteSak()
@@ -216,8 +210,7 @@ internal class BostotteSystemdataTest {
     @Test
     fun updateSystemdata_saker_henterIkkeBostotteUtenSamtykke() {
         // Variabler:
-        val soknadUnderArbeid = SoknadUnderArbeid()
-            .withJsonInternalSoknad(SoknadService.createEmptyJsonInternalSoknad(EIER))
+        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
         settBostotteSamtykkePaSoknad(soknadUnderArbeid.jsonInternalSoknad, false)
 
         // Kjøring:
@@ -230,8 +223,7 @@ internal class BostotteSystemdataTest {
     @Test
     fun updateSystemdata_saker_fjernerGammelBostotteNarViIkkeHarSamtykke() {
         // Variabler:
-        val soknadUnderArbeid1 = SoknadUnderArbeid()
-            .withJsonInternalSoknad(SoknadService.createEmptyJsonInternalSoknad(EIER))
+        val soknadUnderArbeid1 = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
         settBostotteSamtykkePaSoknad(soknadUnderArbeid1.jsonInternalSoknad, true)
         val sakDto = lagSak(
             LocalDate.now().withDayOfMonth(1),
@@ -261,8 +253,7 @@ internal class BostotteSystemdataTest {
     @Test
     fun updateSystemdata_saker_bipersonerBlirFiltrertBort() {
         // Variabler:
-        val soknadUnderArbeid = SoknadUnderArbeid()
-            .withJsonInternalSoknad(SoknadService.createEmptyJsonInternalSoknad(EIER))
+        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
         settBostotteSamtykkePaSoknad(soknadUnderArbeid.jsonInternalSoknad, true)
         val sakDto1 = lagSak(
             LocalDate.now().withDayOfMonth(1),
@@ -296,8 +287,7 @@ internal class BostotteSystemdataTest {
     @Test
     fun updateSystemdata_utbetalinger_bipersonerBlirFiltrertBort() {
         // Variabler:
-        val soknadUnderArbeid = SoknadUnderArbeid()
-            .withJsonInternalSoknad(SoknadService.createEmptyJsonInternalSoknad(EIER))
+        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
         settBostotteSamtykkePaSoknad(soknadUnderArbeid.jsonInternalSoknad, true)
         val utbetalingDto1 = UtbetalingDto(
             LocalDate.now().minusDays(32),
@@ -327,8 +317,7 @@ internal class BostotteSystemdataTest {
     @Test
     fun updateSystemdata_bareDataFraSisteManedBlirVist() {
         // Variabler:
-        val soknadUnderArbeid = SoknadUnderArbeid()
-            .withJsonInternalSoknad(SoknadService.createEmptyJsonInternalSoknad(EIER))
+        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
         settBostotteSamtykkePaSoknad(soknadUnderArbeid.jsonInternalSoknad, true)
         val sakDto1 = lagSak(
             LocalDate.now().withDayOfMonth(1),
@@ -362,8 +351,7 @@ internal class BostotteSystemdataTest {
     @Test
     fun updateSystemdata_dataFraDeSisteToManederBlirVistNarSisteManedErTom() {
         // Variabler:
-        val soknadUnderArbeid = SoknadUnderArbeid()
-            .withJsonInternalSoknad(SoknadService.createEmptyJsonInternalSoknad(EIER))
+        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
         settBostotteSamtykkePaSoknad(soknadUnderArbeid.jsonInternalSoknad, true)
         val testDate: LocalDate
         testDate = if (LocalDate.now().dayOfMonth >= 30) {
@@ -395,8 +383,7 @@ internal class BostotteSystemdataTest {
     @Test
     fun updateSystemdata_utbetalinger_henterIkkeBostotteUtenSamtykke() {
         // Variabler:
-        val soknadUnderArbeid = SoknadUnderArbeid()
-            .withJsonInternalSoknad(SoknadService.createEmptyJsonInternalSoknad(EIER))
+        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
         settBostotteSamtykkePaSoknad(soknadUnderArbeid.jsonInternalSoknad, false)
 
         // Kjøring:
@@ -412,8 +399,7 @@ internal class BostotteSystemdataTest {
     @Test
     fun updateSystemdata_utbetalinger_fjernerGammelBostotteNarViIkkeHarSamtykke() {
         // Variabler:
-        val soknadUnderArbeid1 = SoknadUnderArbeid()
-            .withJsonInternalSoknad(SoknadService.createEmptyJsonInternalSoknad(EIER))
+        val soknadUnderArbeid1 = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
         settBostotteSamtykkePaSoknad(soknadUnderArbeid1.jsonInternalSoknad, true)
         val utbetalingDto = UtbetalingDto(
             LocalDate.now().minusDays(32),

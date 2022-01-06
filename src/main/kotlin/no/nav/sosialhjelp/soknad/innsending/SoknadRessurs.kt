@@ -9,10 +9,9 @@ import no.nav.sosialhjelp.soknad.api.nedetid.NedetidUtils
 import no.nav.sosialhjelp.soknad.api.nedetid.NedetidUtils.NEDETID_SLUTT
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.business.exceptions.SoknadenHarNedetidException
-import no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService
+import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.common.systemdata.SystemdataUpdater
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
-import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler
 import no.nav.sosialhjelp.soknad.innsending.dto.BekreftelseRessurs
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
@@ -69,7 +68,7 @@ open class SoknadRessurs(
         @HeaderParam(value = HttpHeaders.AUTHORIZATION) token: String?
     ): Boolean {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
-        val eier = SubjectHandler.getUserId()
+        val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
         systemdata.update(soknadUnderArbeid)
 
@@ -112,7 +111,7 @@ open class SoknadRessurs(
         @HeaderParam(value = HttpHeaders.AUTHORIZATION) token: String?
     ): List<BekreftelseRessurs> {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
-        val eier = SubjectHandler.getUserId()
+        val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
 
         val bekreftelser: MutableList<JsonOkonomibekreftelse> = mutableListOf()
@@ -150,7 +149,7 @@ open class SoknadRessurs(
         val opprettetBehandlingsId: String = if (behandlingsId == null) {
             soknadService.startSoknad(token)
         } else {
-            val eier = SubjectHandler.getUserId()
+            val eier = SubjectHandlerUtils.getUserIdFromToken()
             val soknadUnderArbeid = soknadUnderArbeidRepository.hentEttersendingMedTilknyttetBehandlingsId(behandlingsId, eier)
             if (soknadUnderArbeid.isPresent) {
                 soknadUnderArbeid.get().behandlingsId

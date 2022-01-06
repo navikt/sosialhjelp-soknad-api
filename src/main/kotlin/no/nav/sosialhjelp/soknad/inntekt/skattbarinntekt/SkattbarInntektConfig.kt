@@ -2,11 +2,9 @@ package no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt
 
 import no.nav.sosialhjelp.metrics.MetricsFactory.createTimerProxy
 import no.nav.sosialhjelp.soknad.client.maskinporten.MaskinportenClient
+import no.nav.sosialhjelp.soknad.health.selftest.Pingable
 import no.nav.sosialhjelp.soknad.organisasjon.OrganisasjonService
 import no.nav.sosialhjelp.soknad.tekster.TextService
-import no.nav.sosialhjelp.soknad.web.selftest.Pingable
-import no.nav.sosialhjelp.soknad.web.selftest.Pingable.Ping
-import no.nav.sosialhjelp.soknad.web.selftest.Pingable.Ping.PingMetadata
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -33,12 +31,12 @@ open class SkattbarInntektConfig(
     @Bean
     open fun skatteetatenPing(skatteetatenClient: SkatteetatenClient): Pingable {
         return Pingable {
-            val metadata = PingMetadata(baseurl, "SkatteetatenApi", false)
+            val metadata = Pingable.PingMetadata(baseurl, "SkatteetatenApi", false)
             try {
                 skatteetatenClient.ping()
-                Ping.lyktes(metadata)
+                Pingable.lyktes(metadata)
             } catch (e: Exception) {
-                Ping.feilet(metadata, e)
+                Pingable.feilet(metadata, e)
             }
         }
     }

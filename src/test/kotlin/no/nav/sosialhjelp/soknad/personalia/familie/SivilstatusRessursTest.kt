@@ -13,11 +13,11 @@ import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonNavn
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonEktefelle
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
-import no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad
+import no.nav.sosialhjelp.soknad.common.subjecthandler.StaticSubjectHandlerImpl
+import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.domain.model.exception.AuthorizationException
-import no.nav.sosialhjelp.soknad.domain.model.oidc.StaticSubjectHandlerService
-import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler
+import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.personalia.familie.PersonMapper.getPersonnummerFromFnr
 import no.nav.sosialhjelp.soknad.personalia.familie.dto.EktefelleFrontend
 import no.nav.sosialhjelp.soknad.personalia.familie.dto.NavnFrontend
@@ -39,14 +39,14 @@ internal class SivilstatusRessursTest {
     @BeforeEach
     fun setUp() {
         System.setProperty("environment.name", "test")
-        SubjectHandler.setSubjectHandlerService(StaticSubjectHandlerService())
+        SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
 
         clearAllMocks()
     }
 
     @AfterEach
     fun tearDown() {
-        SubjectHandler.resetOidcSubjectHandlerService()
+        SubjectHandlerUtils.resetSubjectHandlerImpl()
         System.clearProperty("environment.name")
     }
 
@@ -54,10 +54,7 @@ internal class SivilstatusRessursTest {
     fun sivilstatusSkalReturnereNull() {
         every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
-            createJsonInternalSoknadWithSivilstatus(
-                null, null, null,
-                null, null, null
-            )
+            createJsonInternalSoknadWithSivilstatus(null, null, null, null, null, null)
 
         val sivilstatusFrontend = sivilstatusRessurs.hentSivilstatus(BEHANDLINGSID)
         assertThat(sivilstatusFrontend).isNull()
@@ -68,8 +65,7 @@ internal class SivilstatusRessursTest {
         every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
             createJsonInternalSoknadWithSivilstatus(
-                true, JsonSivilstatus.Status.GIFT, null,
-                null, null, null
+                true, JsonSivilstatus.Status.GIFT, null, null, null, null
             )
 
         val sivilstatusFrontend = sivilstatusRessurs.hentSivilstatus(BEHANDLINGSID)
@@ -85,8 +81,7 @@ internal class SivilstatusRessursTest {
         every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
             createJsonInternalSoknadWithSivilstatus(
-                true, JsonSivilstatus.Status.GIFT, JSON_EKTEFELLE,
-                null, null, true
+                true, JsonSivilstatus.Status.GIFT, JSON_EKTEFELLE, null, null, true
             )
 
         val sivilstatusFrontend = sivilstatusRessurs.hentSivilstatus(BEHANDLINGSID)
@@ -103,8 +98,7 @@ internal class SivilstatusRessursTest {
         every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
             createJsonInternalSoknadWithSivilstatus(
-                false, JsonSivilstatus.Status.GIFT, JSON_EKTEFELLE,
-                false, true, null
+                false, JsonSivilstatus.Status.GIFT, JSON_EKTEFELLE, false, true, null
             )
 
         val sivilstatusFrontend = sivilstatusRessurs.hentSivilstatus(BEHANDLINGSID)
@@ -121,8 +115,7 @@ internal class SivilstatusRessursTest {
         every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
             createJsonInternalSoknadWithSivilstatus(
-                false, JsonSivilstatus.Status.GIFT, JSON_EKTEFELLE,
-                true, null, null
+                false, JsonSivilstatus.Status.GIFT, JSON_EKTEFELLE, true, null, null
             )
 
         val sivilstatusFrontend = sivilstatusRessurs.hentSivilstatus(BEHANDLINGSID)
@@ -137,10 +130,7 @@ internal class SivilstatusRessursTest {
     fun putSivilstatusSkalKunneSetteAlleTyperSivilstatus() {
         every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
-            createJsonInternalSoknadWithSivilstatus(
-                null, null, null,
-                null, null, null
-            )
+            createJsonInternalSoknadWithSivilstatus(null, null, null, null, null, null)
 
         assertThatPutSivilstatusSetterRiktigStatus(JsonSivilstatus.Status.GIFT)
         assertThatPutSivilstatusSetterRiktigStatus(JsonSivilstatus.Status.ENKE)
@@ -154,10 +144,7 @@ internal class SivilstatusRessursTest {
     fun putSivilstatusSkalSetteStatusGiftOgEktefelle() {
         every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
-            createJsonInternalSoknadWithSivilstatus(
-                null, null, null,
-                null, null, null
-            )
+            createJsonInternalSoknadWithSivilstatus(null, null, null, null, null, null)
 
         val soknadUnderArbeidSlot = slot<SoknadUnderArbeid>()
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(soknadUnderArbeidSlot), any()) } just runs
@@ -188,8 +175,9 @@ internal class SivilstatusRessursTest {
     fun putSivilstatusSkalKasteAuthorizationExceptionVedManglendeTilgang() {
         every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } throws AuthorizationException("Not for you my friend")
 
-        val sivilstatusFrontend =
-            SivilstatusFrontend(false, JsonSivilstatus.Status.GIFT, EKTEFELLE_FRONTEND, null, null, null)
+        val sivilstatusFrontend = SivilstatusFrontend(
+            false, JsonSivilstatus.Status.GIFT, EKTEFELLE_FRONTEND, null, null, null
+        )
 
         assertThatExceptionOfType(AuthorizationException::class.java)
             .isThrownBy { sivilstatusRessurs.updateSivilstatus(BEHANDLINGSID, sivilstatusFrontend) }
@@ -229,9 +217,7 @@ internal class SivilstatusRessursTest {
         folkeregistrertMed: Boolean?,
         borSammen: Boolean?
     ): SoknadUnderArbeid {
-        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(
-            createEmptyJsonInternalSoknad(EIER)
-        )
+        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
         soknadUnderArbeid.jsonInternalSoknad.soknad.data.familie
             .withSivilstatus(
                 if (brukerutfylt == null) null else JsonSivilstatus()

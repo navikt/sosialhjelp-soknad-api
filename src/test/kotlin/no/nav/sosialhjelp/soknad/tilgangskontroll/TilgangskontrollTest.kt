@@ -5,11 +5,11 @@ import io.mockk.mockk
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata
-import no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad
+import no.nav.sosialhjelp.soknad.common.subjecthandler.StaticSubjectHandlerImpl
+import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.domain.model.exception.AuthorizationException
-import no.nav.sosialhjelp.soknad.domain.model.oidc.StaticSubjectHandlerService
-import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler
+import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
 import no.nav.sosialhjelp.soknad.personalia.person.dto.Gradering
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
@@ -30,18 +30,18 @@ internal class TilgangskontrollTest {
     @BeforeEach
     fun setUp() {
         System.setProperty("environment.name", "test")
-        SubjectHandler.setSubjectHandlerService(StaticSubjectHandlerService())
+        SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
     }
 
     @AfterEach
     fun tearDown() {
-        SubjectHandler.resetOidcSubjectHandlerService()
+        SubjectHandlerUtils.resetSubjectHandlerImpl()
         System.clearProperty("environment.name")
     }
 
     @Test
     fun skalGiTilgangForBruker() {
-        val userId = SubjectHandler.getUserId()
+        val userId = SubjectHandlerUtils.getUserIdFromToken()
         val soknadUnderArbeid = SoknadUnderArbeid()
             .withEier(userId)
             .withJsonInternalSoknad(createEmptyJsonInternalSoknad(userId))
@@ -54,8 +54,7 @@ internal class TilgangskontrollTest {
 
     @Test
     fun skalFeileForAndre() {
-        val soknadUnderArbeid = SoknadUnderArbeid()
-            .withJsonInternalSoknad(createEmptyJsonInternalSoknad("other_user"))
+        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad("other_user"))
         every { soknadUnderArbeidRepository.hentSoknadOptional(any(), any()) } returns Optional.of(soknadUnderArbeid)
 
         assertThatExceptionOfType(AuthorizationException::class.java)
@@ -72,7 +71,7 @@ internal class TilgangskontrollTest {
 
     @Test
     fun skalGiTilgangForBrukerMetadata() {
-        val userId = SubjectHandler.getUserId()
+        val userId = SubjectHandlerUtils.getUserIdFromToken()
         val metadata = SoknadMetadata()
         metadata.fnr = userId
         every { soknadMetadataRepository.hent("123") } returns metadata
@@ -102,7 +101,7 @@ internal class TilgangskontrollTest {
 
     @Test
     fun skalFeileHvisBrukerHarAdressebeskyttelseStrengtFortrolig() {
-        val userId = SubjectHandler.getUserId()
+        val userId = SubjectHandlerUtils.getUserIdFromToken()
         every { personService.hentAdressebeskyttelse(userId) } returns Gradering.STRENGT_FORTROLIG
         assertThatExceptionOfType(AuthorizationException::class.java)
             .isThrownBy { tilgangskontroll.verifiserAtBrukerHarTilgang() }
@@ -110,7 +109,7 @@ internal class TilgangskontrollTest {
 
     @Test
     fun skalFeileHvisBrukerHarAdressebeskyttelseFortrolig() {
-        val userId = SubjectHandler.getUserId()
+        val userId = SubjectHandlerUtils.getUserIdFromToken()
         every { personService.hentAdressebeskyttelse(userId) } returns Gradering.FORTROLIG
         assertThatExceptionOfType(AuthorizationException::class.java)
             .isThrownBy { tilgangskontroll.verifiserAtBrukerHarTilgang() }

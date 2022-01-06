@@ -3,7 +3,7 @@ package no.nav.sosialhjelp.soknad.api.innsyn
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.metrics.aspects.Timed
 import no.nav.sosialhjelp.soknad.api.innsyn.dto.SoknadOversiktDto
-import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler
+import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import no.nav.sosialhjelp.soknad.web.utils.Constants
 import org.slf4j.LoggerFactory
@@ -26,7 +26,7 @@ open class SoknadOversiktRessurs(
     @Path("/soknader")
     open fun hentInnsendteSoknaderForBruker(): List<SoknadOversiktDto> {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
-        val fnr = SubjectHandler.getUserId()
+        val fnr = SubjectHandlerUtils.getUserIdFromToken()
         logger.debug("Henter alle søknader")
         val soknader: List<SoknadOversiktDto> = service.hentSvarUtSoknaderFor(fnr)
         logger.debug("Hentet {} søknader for bruker", soknader.size)

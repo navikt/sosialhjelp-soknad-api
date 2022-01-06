@@ -13,8 +13,8 @@ import no.nav.sosialhjelp.soknad.api.informasjon.dto.PabegyntSoknad
 import no.nav.sosialhjelp.soknad.api.nedetid.NedetidUtils
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.client.fiks.kommuneinfo.KommuneInfoService
+import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SosialhjelpInformasjon
-import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler
 import no.nav.sosialhjelp.soknad.domain.model.util.KommuneTilNavEnhetMapper
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
 import no.nav.sosialhjelp.soknad.personalia.person.dto.Gradering.FORTROLIG
@@ -62,7 +62,7 @@ open class InformasjonRessurs(
     @GET
     @Path("/fornavn")
     open fun hentFornavn(): Map<String, String>? {
-        val fnr = SubjectHandler.getUserId()
+        val fnr = SubjectHandlerUtils.getUserIdFromToken()
         val (fornavn1) = personService.hentPerson(fnr) ?: return HashMap()
         val fornavnMap = mutableMapOf<String, String>()
         fornavnMap["fornavn"] = fornavn1
@@ -92,7 +92,7 @@ open class InformasjonRessurs(
     @GET
     @Path("/utslagskriterier/sosialhjelp")
     open fun getUtslagskriterier(): Map<String, Any>? {
-        val uid = SubjectHandler.getUserId()
+        val uid = SubjectHandlerUtils.getUserIdFromToken()
         val adressebeskyttelse = personService.hentAdressebeskyttelse(uid)
         val resultat = mutableMapOf<String, Any>()
         var harTilgang = true
@@ -150,7 +150,7 @@ open class InformasjonRessurs(
     @Path("/harNyligInnsendteSoknader")
     open fun harNyligInnsendteSoknader(): NyligInnsendteSoknaderResponse {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
-        val eier = SubjectHandler.getUserId()
+        val eier = SubjectHandlerUtils.getUserIdFromToken()
         val grense = LocalDateTime.now().minusDays(FJORTEN_DAGER.toLong())
         val nyligSendteSoknader = soknadMetadataRepository.hentInnsendteSoknaderForBrukerEtterTidspunkt(eier, grense)
         return NyligInnsendteSoknaderResponse(nyligSendteSoknader?.size ?: 0)
@@ -160,7 +160,7 @@ open class InformasjonRessurs(
     @Path("/pabegynteSoknader")
     open fun hentPabegynteSoknader(): List<PabegyntSoknad> {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
-        val fnr = SubjectHandler.getUserId()
+        val fnr = SubjectHandlerUtils.getUserIdFromToken()
         logger.debug("Henter pabegynte soknader for bruker")
         return pabegynteSoknaderService.hentPabegynteSoknaderForBruker(fnr)
     }

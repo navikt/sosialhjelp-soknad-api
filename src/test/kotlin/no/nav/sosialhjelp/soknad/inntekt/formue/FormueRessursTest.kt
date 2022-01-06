@@ -12,11 +12,11 @@ import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibeskrivelserAvAnnet
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktFormue
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
-import no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService
+import no.nav.sosialhjelp.soknad.common.subjecthandler.StaticSubjectHandlerImpl
+import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.domain.model.exception.AuthorizationException
-import no.nav.sosialhjelp.soknad.domain.model.oidc.StaticSubjectHandlerService
-import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler
+import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.inntekt.formue.FormueRessurs.FormueFrontend
 import no.nav.sosialhjelp.soknad.tekster.TextService
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
@@ -40,12 +40,12 @@ internal class FormueRessursTest {
     fun setUp() {
         clearAllMocks()
         System.setProperty("environment.name", "test")
-        SubjectHandler.setSubjectHandlerService(StaticSubjectHandlerService())
+        SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
     }
 
     @AfterEach
     fun tearDown() {
-        SubjectHandler.resetOidcSubjectHandlerService()
+        SubjectHandlerUtils.resetSubjectHandlerImpl()
         System.clearProperty("environment.name")
     }
 
@@ -54,7 +54,7 @@ internal class FormueRessursTest {
         every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
         every {
             soknadUnderArbeidRepository.hentSoknad(any<String>(), any())
-        } returns SoknadUnderArbeid().withJsonInternalSoknad(SoknadService.createEmptyJsonInternalSoknad(EIER))
+        } returns SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
         val formueFrontend = formueRessurs.hentFormue(BEHANDLINGSID)
         assertThat(formueFrontend.brukskonto).isFalse
         assertThat(formueFrontend.bsu).isFalse
@@ -144,7 +144,7 @@ internal class FormueRessursTest {
         every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
         every {
             soknadUnderArbeidRepository.hentSoknad(any<String>(), any())
-        } returns SoknadUnderArbeid().withJsonInternalSoknad(SoknadService.createEmptyJsonInternalSoknad(EIER))
+        } returns SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
         every { textService.getJsonOkonomiTittel(any()) } returns "tittel"
 
         val slot = slot<SoknadUnderArbeid>()
@@ -181,7 +181,7 @@ internal class FormueRessursTest {
         every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
         every {
             soknadUnderArbeidRepository.hentSoknad(any<String>(), any())
-        } returns SoknadUnderArbeid().withJsonInternalSoknad(SoknadService.createEmptyJsonInternalSoknad(EIER))
+        } returns SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
         every { textService.getJsonOkonomiTittel(any()) } returns "tittel"
 
         val slot = slot<SoknadUnderArbeid>()
@@ -260,7 +260,7 @@ internal class FormueRessursTest {
         beskrivelseAvAnnet: String?
     ): SoknadUnderArbeid {
         val soknadUnderArbeid = SoknadUnderArbeid()
-            .withJsonInternalSoknad(SoknadService.createEmptyJsonInternalSoknad(EIER))
+            .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
 
         val formuer = formueTyper.map {
             JsonOkonomioversiktFormue()

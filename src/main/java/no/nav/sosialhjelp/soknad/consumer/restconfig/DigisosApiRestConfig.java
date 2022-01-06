@@ -5,14 +5,12 @@ import no.nav.sosialhjelp.soknad.client.fiks.kommuneinfo.KommuneInfoService;
 import no.nav.sosialhjelp.soknad.consumer.fiks.DigisosApi;
 import no.nav.sosialhjelp.soknad.consumer.fiks.DigisosApiImpl;
 import no.nav.sosialhjelp.soknad.consumer.fiks.DigisosApiProperties;
-import no.nav.sosialhjelp.soknad.web.selftest.Pingable;
+import no.nav.sosialhjelp.soknad.health.selftest.Pingable;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import static no.nav.sosialhjelp.metrics.MetricsFactory.createTimerProxy;
-import static no.nav.sosialhjelp.soknad.web.selftest.Pingable.Ping.feilet;
-import static no.nav.sosialhjelp.soknad.web.selftest.Pingable.Ping.lyktes;
 
 @Configuration
 public class DigisosApiRestConfig {
@@ -33,15 +31,15 @@ public class DigisosApiRestConfig {
     @Bean
     public Pingable digisosPing(DigisosApi digisosApi) {
         return new Pingable() {
-            Ping.PingMetadata metadata = new Ping.PingMetadata(digisosApiEndpoint, "DigisosApi", false);
+            PingMetadata metadata = new PingMetadata(digisosApiEndpoint, "DigisosApi", false);
 
             @Override
             public Ping ping() {
                 try {
                     digisosApi.ping();
-                    return lyktes(metadata);
+                    return Pingable.Companion.lyktes(metadata);
                 } catch (Exception e) {
-                    return feilet(metadata, e);
+                    return Pingable.Companion.feilet(metadata, e);
                 }
             }
         };

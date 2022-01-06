@@ -2,9 +2,9 @@ package no.nav.sosialhjelp.soknad.arbeid
 
 import no.nav.sosialhjelp.soknad.arbeid.dto.ArbeidsforholdDto
 import no.nav.sosialhjelp.soknad.client.sts.StsClient
+import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.consumer.exceptions.TjenesteUtilgjengeligException
 import no.nav.sosialhjelp.soknad.consumer.mdc.MDCOperations
-import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler
 import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants
 import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.BEARER
 import org.eclipse.jetty.http.HttpHeader
@@ -32,8 +32,8 @@ class ArbeidsforholdClientImpl(
 ) : ArbeidsforholdClient {
 
     private val callId: String? get() = MDCOperations.getFromMDC(MDCOperations.MDC_CALL_ID)
-    private val consumerId: String? get() = SubjectHandler.getConsumerId()
-    private val userToken: String? get() = SubjectHandler.getToken()
+    private val consumerId: String? get() = SubjectHandlerUtils.getConsumerId()
+    private val userToken: String? get() = SubjectHandlerUtils.getToken()
     private val sokeperiode: Sokeperiode get() = Sokeperiode(LocalDate.now().minusMonths(3), LocalDate.now())
 
     override fun ping() {

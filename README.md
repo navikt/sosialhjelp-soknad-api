@@ -26,8 +26,8 @@ Backenden kommer til å lagre hele søknaden som en json-fil (internalsoknad), o
 Ved innsending vil søknadsdata låses ned slik at man ikke kan endre dem mer (dette er for å unngå at det gjøres endringer etter at brukeren har trykket på send).
 
 ### Autentisering 
-Alle endepunkt er autentisering `Azure AD B2C` cookie validert via `token-support`, unntatt endepunktene i `SaksoversiktMetadataRessurs` som er validert med `EksternSSO` `SAML` token fra `OpenAM`. 
-Dette fordi `Saksoversikt-api` fortsatt er på SAML. 
+Alle endepunkt er autentisering `Azure AD B2C` cookie validert via `token-support`. 
+
 I tillegg krever noen endepunkter et `access-token` fra `idporten`, som brukeren får via `sosialhjelp-login-api`. Dette brukes mot `FIKS` og mot `Husbanken`.
 
 ### Bruk av pakker fra Github Package Registry

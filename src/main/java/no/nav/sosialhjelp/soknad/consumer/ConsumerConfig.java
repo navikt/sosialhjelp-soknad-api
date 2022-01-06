@@ -11,16 +11,14 @@ import no.nav.sosialhjelp.soknad.client.idporten.IdPortenClientConfig;
 import no.nav.sosialhjelp.soknad.client.idporten.IdPortenClientConfigMockAlt;
 import no.nav.sosialhjelp.soknad.client.idporten.IdPortenServiceImpl;
 import no.nav.sosialhjelp.soknad.client.kodeverk.KodeverkConfig;
-import no.nav.sosialhjelp.soknad.client.leaderelection.LeaderElectionConfig;
 import no.nav.sosialhjelp.soknad.client.maskinporten.MaskinportenClientConfig;
 import no.nav.sosialhjelp.soknad.client.pdl.PdlConfig;
 import no.nav.sosialhjelp.soknad.client.redis.NoRedisConfig;
 import no.nav.sosialhjelp.soknad.client.redis.RedisConfig;
 import no.nav.sosialhjelp.soknad.client.sts.StsConfig;
-import no.nav.sosialhjelp.soknad.client.svarut.SvarUtConfig;
 import no.nav.sosialhjelp.soknad.client.unleash.UnleashConfig;
-import no.nav.sosialhjelp.soknad.consumer.fiks.DokumentKrypterer;
 import no.nav.sosialhjelp.soknad.consumer.restconfig.DigisosApiRestConfig;
+import no.nav.sosialhjelp.soknad.innsending.svarut.SvarUtConfig;
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.BostotteConfig;
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.NavUtbetalingerConfig;
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkattbarInntektConfig;
@@ -32,6 +30,7 @@ import no.nav.sosialhjelp.soknad.organisasjon.OrganisasjonConfig;
 import no.nav.sosialhjelp.soknad.personalia.kontonummer.KontonummerConfig;
 import no.nav.sosialhjelp.soknad.personalia.person.PersonConfig;
 import no.nav.sosialhjelp.soknad.personalia.telefonnummer.TelefonnummerConfig;
+import no.nav.sosialhjelp.soknad.scheduled.leaderelection.LeaderElectionConfig;
 import no.nav.sosialhjelp.soknad.vedlegg.virusscan.VirusScanConfig;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -65,7 +64,6 @@ import org.springframework.context.annotation.Import;
         UnleashConfig.class,
         RedisConfig.class,
         NoRedisConfig.class,
-        DokumentKrypterer.class,
         BydelConfig.class,
         LeaderElectionConfig.class,
         VirusScanConfig.class,

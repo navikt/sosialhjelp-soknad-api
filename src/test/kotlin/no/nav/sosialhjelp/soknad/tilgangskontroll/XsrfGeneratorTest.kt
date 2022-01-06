@@ -1,8 +1,8 @@
 package no.nav.sosialhjelp.soknad.tilgangskontroll
 
+import no.nav.sosialhjelp.soknad.common.subjecthandler.StaticSubjectHandlerImpl
+import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.domain.model.exception.AuthorizationException
-import no.nav.sosialhjelp.soknad.domain.model.oidc.StaticSubjectHandlerService
-import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler
 import no.nav.sosialhjelp.soknad.tilgangskontroll.XsrfGenerator.generateXsrfToken
 import no.nav.sosialhjelp.soknad.tilgangskontroll.XsrfGenerator.sjekkXsrfToken
 import org.assertj.core.api.Assertions
@@ -17,12 +17,12 @@ internal class XsrfGeneratorTest {
     @BeforeEach
     fun setUp() {
         System.setProperty("environment.name", "test")
-        SubjectHandler.setSubjectHandlerService(StaticSubjectHandlerService())
+        SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
     }
 
     @AfterEach
     fun tearDown() {
-        SubjectHandler.resetOidcSubjectHandlerService()
+        SubjectHandlerUtils.resetSubjectHandlerImpl()
         System.clearProperty("environment.name")
     }
 
@@ -33,14 +33,12 @@ internal class XsrfGeneratorTest {
         sjekkXsrfToken(token, "1L")
         sjekkXsrfToken(tokenYesterday, "1L")
         sjekkAtMetodeKasterException(token, 2L)
-        (SubjectHandler.getSubjectHandlerService() as StaticSubjectHandlerService).setFakeToken("Token2")
-        (SubjectHandler.getSubjectHandlerService() as StaticSubjectHandlerService).setUser("12345")
         sjekkAtMetodeKasterException(token, 1L)
     }
 
     private fun sjekkAtMetodeKasterException(token: String, soknadId: Long) {
         try {
-            sjekkXsrfToken(token, "soknadId")
+            sjekkXsrfToken(token, soknadId.toString())
             Assertions.fail<Any>("Kastet ikke exception")
         } catch (ex: AuthorizationException) {
         }

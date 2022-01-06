@@ -1,6 +1,7 @@
 package no.nav.sosialhjelp.soknad.business.pdfmedpdfbox;
 
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonData;
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonDriftsinformasjon;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad;
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknadsmottaker;
@@ -13,6 +14,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeidsforhold.Stillingsty
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonKommentarTilArbeidsforhold;
 import no.nav.sbl.soknadsosialhjelp.soknad.begrunnelse.JsonBegrunnelse;
 import no.nav.sbl.soknadsosialhjelp.soknad.bosituasjon.JsonBosituasjon;
+import no.nav.sbl.soknadsosialhjelp.soknad.bostotte.JsonBostotte;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeSystem;
@@ -71,7 +73,6 @@ import java.util.Collections;
 
 import static no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde.BRUKER;
 import static no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde.SYSTEM;
-import static no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService.createEmptyJsonInternalSoknad;
 import static no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SosialhjelpInformasjon.BUNDLE_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
@@ -866,5 +867,63 @@ class SosialhjelpPdfGeneratorTest {
         finally {
             file.deleteOnExit();
         }
+    }
+
+    private static JsonInternalSoknad createEmptyJsonInternalSoknad(String eier) {
+        return new JsonInternalSoknad().withSoknad(new JsonSoknad()
+                .withData(new JsonData()
+                        .withPersonalia(new JsonPersonalia()
+                                .withPersonIdentifikator(new JsonPersonIdentifikator()
+                                        .withKilde(JsonPersonIdentifikator.Kilde.SYSTEM)
+                                        .withVerdi(eier)
+                                )
+                                .withNavn(new JsonSokernavn()
+                                        .withKilde(JsonSokernavn.Kilde.SYSTEM)
+                                        .withFornavn("")
+                                        .withMellomnavn("")
+                                        .withEtternavn("")
+                                )
+                                .withKontonummer(new JsonKontonummer()
+                                        .withKilde(JsonKilde.SYSTEM)
+                                )
+                        )
+                        .withArbeid(new JsonArbeid())
+                        .withUtdanning(new JsonUtdanning()
+                                .withKilde(JsonKilde.BRUKER)
+                        )
+                        .withFamilie(new JsonFamilie()
+                                .withForsorgerplikt(new JsonForsorgerplikt())
+                        )
+                        .withBegrunnelse(new JsonBegrunnelse()
+                                .withKilde(JsonKildeBruker.BRUKER)
+                                .withHvorforSoke("")
+                                .withHvaSokesOm("")
+                        )
+                        .withBosituasjon(new JsonBosituasjon()
+                                .withKilde(JsonKildeBruker.BRUKER)
+                        )
+                        .withOkonomi(new JsonOkonomi()
+                                .withOpplysninger(new JsonOkonomiopplysninger()
+                                        .withUtbetaling(new ArrayList<>())
+                                        .withUtgift(new ArrayList<>())
+                                        .withBostotte(new JsonBostotte())
+                                        .withBekreftelse(new ArrayList<>())
+                                )
+                                .withOversikt(new JsonOkonomioversikt()
+                                        .withInntekt(new ArrayList<>())
+                                        .withUtgift(new ArrayList<>())
+                                        .withFormue(new ArrayList<>())
+                                )
+                        )
+                )
+                .withMottaker(new JsonSoknadsmottaker()
+                        .withNavEnhetsnavn("")
+                        .withEnhetsnummer(""))
+                .withDriftsinformasjon(new JsonDriftsinformasjon()
+                        .withUtbetalingerFraNavFeilet(false)
+                        .withInntektFraSkatteetatenFeilet(false)
+                        .withStotteFraHusbankenFeilet(false))
+                .withKompatibilitet(new ArrayList<>())
+        ).withVedlegg(new JsonVedleggSpesifikasjon());
     }
 }

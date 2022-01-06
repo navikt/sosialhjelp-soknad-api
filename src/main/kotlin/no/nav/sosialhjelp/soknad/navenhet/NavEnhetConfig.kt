@@ -3,8 +3,10 @@ package no.nav.sosialhjelp.soknad.navenhet
 import no.nav.sosialhjelp.soknad.adressesok.AdressesokService
 import no.nav.sosialhjelp.soknad.client.redis.RedisService
 import no.nav.sosialhjelp.soknad.consumer.common.rest.RestUtils
+import no.nav.sosialhjelp.soknad.health.selftest.Pingable
+import no.nav.sosialhjelp.soknad.health.selftest.Pingable.Companion.feilet
+import no.nav.sosialhjelp.soknad.health.selftest.Pingable.Companion.lyktes
 import no.nav.sosialhjelp.soknad.navenhet.finnadresse.FinnAdresseService
-import no.nav.sosialhjelp.soknad.web.selftest.Pingable
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -30,12 +32,12 @@ open class NavEnhetConfig(
     @Bean
     open fun norgPing(norgClient: NorgClient): Pingable {
         return Pingable {
-            val metadata = Pingable.Ping.PingMetadata(baseurl, "Norg2", false)
+            val metadata = Pingable.PingMetadata(baseurl, "Norg2", false)
             try {
                 norgClient.ping()
-                Pingable.Ping.lyktes(metadata)
+                lyktes(metadata)
             } catch (e: Exception) {
-                Pingable.Ping.feilet(metadata, e)
+                feilet(metadata, e)
             }
         }
     }

@@ -2,9 +2,7 @@ package no.nav.sosialhjelp.soknad.organisasjon
 
 import no.nav.sosialhjelp.soknad.consumer.common.rest.RestUtils
 import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants
-import no.nav.sosialhjelp.soknad.web.selftest.Pingable
-import no.nav.sosialhjelp.soknad.web.selftest.Pingable.Ping
-import no.nav.sosialhjelp.soknad.web.selftest.Pingable.Ping.PingMetadata
+import no.nav.sosialhjelp.soknad.health.selftest.Pingable
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -30,12 +28,12 @@ open class OrganisasjonConfig(
     @Bean
     open fun organisasjonRestPing(organisasjonClient: OrganisasjonClient): Pingable? {
         return Pingable {
-            val metadata = PingMetadata(baseurl, "Organisasjon", false)
+            val metadata = Pingable.PingMetadata(baseurl, "Organisasjon", false)
             try {
                 organisasjonClient.ping()
-                Ping.lyktes(metadata)
+                Pingable.lyktes(metadata)
             } catch (e: Exception) {
-                Ping.feilet(metadata, e)
+                Pingable.feilet(metadata, e)
             }
         }
     }

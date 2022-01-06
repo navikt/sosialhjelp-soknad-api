@@ -18,11 +18,11 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreft
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibeskrivelserAvAnnet
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktFormue
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
-import no.nav.sosialhjelp.soknad.business.service.soknadservice.SoknadService
+import no.nav.sosialhjelp.soknad.common.subjecthandler.StaticSubjectHandlerImpl
+import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.domain.model.exception.AuthorizationException
-import no.nav.sosialhjelp.soknad.domain.model.oidc.StaticSubjectHandlerService
-import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler
+import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.inntekt.verdi.VerdiRessurs.VerdierFrontend
 import no.nav.sosialhjelp.soknad.tekster.TextService
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
@@ -46,12 +46,12 @@ internal class VerdiRessursTest {
     fun setUp() {
         clearAllMocks()
         System.setProperty("environment.name", "test")
-        SubjectHandler.setSubjectHandlerService(StaticSubjectHandlerService())
+        SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
     }
 
     @AfterEach
     fun tearDown() {
-        SubjectHandler.resetOidcSubjectHandlerService()
+        SubjectHandlerUtils.resetSubjectHandlerImpl()
         System.clearProperty("environment.name")
     }
 
@@ -59,7 +59,7 @@ internal class VerdiRessursTest {
     fun getVerdierSkalReturnereBekreftelseLikNullOgAltFalse() {
         every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
-            SoknadUnderArbeid().withJsonInternalSoknad(SoknadService.createEmptyJsonInternalSoknad(EIER))
+            SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
 
         val verdierFrontend = verdiRessurs.hentVerdier(BEHANDLINGSID)
         assertThat(verdierFrontend.bekreftelse).isNull()
@@ -98,10 +98,7 @@ internal class VerdiRessursTest {
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
             createJsonInternalSoknadWithVerdier(true, listOf(VERDI_ANNET), beskrivelse)
 
-        val verdierFrontend: VerdierFrontend =
-            verdiRessurs.hentVerdier(
-                BEHANDLINGSID
-            )
+        val verdierFrontend: VerdierFrontend = verdiRessurs.hentVerdier(BEHANDLINGSID)
         assertThat(verdierFrontend.bekreftelse).isTrue
         assertThat(verdierFrontend.annet).isTrue
         assertThat(verdierFrontend.beskrivelseAvAnnet).isEqualTo(beskrivelse)
@@ -113,9 +110,7 @@ internal class VerdiRessursTest {
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
             createJsonInternalSoknadWithVerdier(
                 true,
-                listOf(
-                    VERDI_BOLIG, VERDI_CAMPINGVOGN, VERDI_KJORETOY, VERDI_ANNET
-                ),
+                listOf(VERDI_BOLIG, VERDI_CAMPINGVOGN, VERDI_KJORETOY, VERDI_ANNET),
                 "Bestefars klokke"
             )
         every { textService.getJsonOkonomiTittel(any()) } returns "tittel"
@@ -165,7 +160,7 @@ internal class VerdiRessursTest {
     fun putVerdierSkalSetteNoenBekreftelser() {
         every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
-            SoknadUnderArbeid().withJsonInternalSoknad(SoknadService.createEmptyJsonInternalSoknad(EIER))
+            SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
         every { textService.getJsonOkonomiTittel(any()) } returns "tittel"
 
         val slot = slot<SoknadUnderArbeid>()
@@ -199,7 +194,7 @@ internal class VerdiRessursTest {
     fun putVerdierSkalSetteAlleBekreftelser() {
         every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
-            SoknadUnderArbeid().withJsonInternalSoknad(SoknadService.createEmptyJsonInternalSoknad(EIER))
+            SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
         every { textService.getJsonOkonomiTittel(any()) } returns "tittel"
 
         val slot = slot<SoknadUnderArbeid>()
@@ -275,11 +270,7 @@ internal class VerdiRessursTest {
         verdiTyper: List<String>,
         beskrivelseAvAnnet: String?
     ): SoknadUnderArbeid {
-        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(
-            SoknadService.createEmptyJsonInternalSoknad(
-                EIER
-            )
-        )
+        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
         val verdier: MutableList<JsonOkonomioversiktFormue> = ArrayList()
         for (verdi in verdiTyper) {
             verdier.add(

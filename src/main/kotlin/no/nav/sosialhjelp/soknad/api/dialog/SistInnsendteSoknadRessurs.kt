@@ -3,7 +3,7 @@ package no.nav.sosialhjelp.soknad.api.dialog
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.metrics.aspects.Timed
 import no.nav.sosialhjelp.soknad.api.dialog.dto.SistInnsendteSoknadDto
-import no.nav.sosialhjelp.soknad.domain.model.oidc.SubjectHandler
+import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.web.utils.Constants
 import org.springframework.stereotype.Controller
 import javax.ws.rs.GET
@@ -22,7 +22,7 @@ open class SistInnsendteSoknadRessurs(
     @GET
     @Path("/sistInnsendteSoknad")
     open fun hentSistInnsendteSoknad(): SistInnsendteSoknadDto? {
-        val fnr = SubjectHandler.getUserId()
+        val fnr = SubjectHandlerUtils.getUserIdFromToken()
         return sistInnsendteSoknadService.hentSistInnsendteSoknad(fnr)
     }
 }
