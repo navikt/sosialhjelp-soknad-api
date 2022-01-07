@@ -4,7 +4,7 @@ import no.nav.sosialhjelp.metrics.MetricsFactory
 import no.nav.sosialhjelp.soknad.business.batch.oppgave.Oppgave
 import no.nav.sosialhjelp.soknad.business.batch.oppgave.Oppgave.Status
 import no.nav.sosialhjelp.soknad.business.db.repositories.oppgave.OppgaveRepository
-import no.nav.sosialhjelp.soknad.common.mdc.MDCOperations
+import no.nav.sosialhjelp.soknad.common.mdc.MdcOperations
 import no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils.isScheduledTasksDisabled
 import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Scheduled
@@ -37,7 +37,7 @@ class OppgaveHandtererImpl(
             event.addTagToReport("steg", oppgave.steg.toString() + "")
             event.addFieldToReport("behandlingsid", oppgave.behandlingsId)
 
-            MDCOperations.putToMDC(MDCOperations.MDC_BEHANDLINGS_ID, oppgave.behandlingsId)
+            MdcOperations.putToMDC(MdcOperations.MDC_BEHANDLINGS_ID, oppgave.behandlingsId)
 
             try {
                 fiksHandterer.eksekver(oppgave)
@@ -52,7 +52,7 @@ class OppgaveHandtererImpl(
                 oppgave.status = Status.KLAR
             }
             oppgaveRepository.oppdater(oppgave)
-            MDCOperations.remove(MDCOperations.MDC_BEHANDLINGS_ID)
+            MdcOperations.remove(MdcOperations.MDC_BEHANDLINGS_ID)
         }
     }
 

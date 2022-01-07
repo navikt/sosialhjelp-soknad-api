@@ -12,7 +12,7 @@ import no.nav.sosialhjelp.soknad.client.redis.GT_CACHE_KEY_PREFIX
 import no.nav.sosialhjelp.soknad.client.redis.GT_LAST_POLL_TIME_PREFIX
 import no.nav.sosialhjelp.soknad.client.redis.RedisService
 import no.nav.sosialhjelp.soknad.client.redis.RedisUtils.redisObjectMapper
-import no.nav.sosialhjelp.soknad.common.mdc.MDCOperations
+import no.nav.sosialhjelp.soknad.common.mdc.MdcOperations
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants
 import no.nav.sosialhjelp.soknad.navenhet.dto.NavEnhetDto
@@ -86,7 +86,7 @@ class NorgClientImpl(
     private fun lagRequest(endpoint: String): Invocation.Builder {
         return client.target(endpoint)
             .request()
-            .header(HeaderConstants.HEADER_CALL_ID, MDCOperations.getFromMDC(MDCOperations.MDC_CALL_ID))
+            .header(HeaderConstants.HEADER_CALL_ID, MdcOperations.getFromMDC(MdcOperations.MDC_CALL_ID))
             .header(HeaderConstants.HEADER_CONSUMER_ID, SubjectHandlerUtils.getConsumerId())
             .header(HeaderConstants.HEADER_NAV_APIKEY, System.getenv(NORG2_API_V1_APIKEY))
     }

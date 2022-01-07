@@ -10,7 +10,7 @@ import no.nav.sosialhjelp.soknad.client.redis.CACHE_30_MINUTES_IN_SECONDS
 import no.nav.sosialhjelp.soknad.client.redis.KONTONUMMER_CACHE_KEY_PREFIX
 import no.nav.sosialhjelp.soknad.client.redis.RedisService
 import no.nav.sosialhjelp.soknad.client.redis.RedisUtils.redisObjectMapper
-import no.nav.sosialhjelp.soknad.common.mdc.MDCOperations
+import no.nav.sosialhjelp.soknad.common.mdc.MdcOperations
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants
 import no.nav.sosialhjelp.soknad.personalia.kontonummer.dto.KontonummerDto
@@ -57,7 +57,7 @@ class KontonummerClientImpl(
                     client.target(baseurl + "kontonummer")
                         .request()
                         .header(HttpHeader.AUTHORIZATION.name, HeaderConstants.BEARER + SubjectHandlerUtils.getToken())
-                        .header(HeaderConstants.HEADER_CALL_ID, MDCOperations.getFromMDC(MDCOperations.MDC_CALL_ID))
+                        .header(HeaderConstants.HEADER_CALL_ID, MdcOperations.getFromMDC(MdcOperations.MDC_CALL_ID))
                         .header(HeaderConstants.HEADER_CONSUMER_ID, SubjectHandlerUtils.getConsumerId())
                         .get(KontonummerDto::class.java)
                 }

@@ -9,12 +9,12 @@ import javax.ws.rs.ext.Provider
 @Provider
 class MdcFilter : ContainerRequestFilter {
     override fun filter(requestContext: ContainerRequestContext) {
-        val callId = requestContext.getHeaderString(HeaderConstants.HEADER_CALL_ID) ?: MDCOperations.generateCallId()
+        val callId = requestContext.getHeaderString(HeaderConstants.HEADER_CALL_ID) ?: MdcOperations.generateCallId()
         val consumerId = SubjectHandlerUtils.getConsumerId()
         val behandlingsId = requestContext.uriInfo.pathParameters.getFirst("behandlingsId")
 
-        MDCOperations.putToMDC(MDCOperations.MDC_CALL_ID, callId)
-        MDCOperations.putToMDC(MDCOperations.MDC_CONSUMER_ID, consumerId)
-        MDCOperations.putToMDC(MDCOperations.MDC_BEHANDLINGS_ID, behandlingsId)
+        MdcOperations.putToMDC(MdcOperations.MDC_CALL_ID, callId)
+        MdcOperations.putToMDC(MdcOperations.MDC_CONSUMER_ID, consumerId)
+        MdcOperations.putToMDC(MdcOperations.MDC_BEHANDLINGS_ID, behandlingsId)
     }
 }

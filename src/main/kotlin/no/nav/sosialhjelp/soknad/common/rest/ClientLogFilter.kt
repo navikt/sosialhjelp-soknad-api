@@ -4,7 +4,7 @@ package no.nav.sosialhjelp.soknad.common.rest
 
 import no.nav.sosialhjelp.metrics.MetricsFactory
 import no.nav.sosialhjelp.metrics.Timer
-import no.nav.sosialhjelp.soknad.common.mdc.MDCOperations
+import no.nav.sosialhjelp.soknad.common.mdc.MdcOperations
 import no.nav.sosialhjelp.soknad.common.rest.RestUtils.CSRF_COOKIE_NAVN
 import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants
 import no.nav.sosialhjelp.soknad.web.utils.MiljoUtils
@@ -29,7 +29,7 @@ class ClientLogFilter(
     override fun filter(clientRequestContext: ClientRequestContext) {
         log.info("${clientRequestContext.method} ${uriForLogging(clientRequestContext)}")
         val requestHeaders = clientRequestContext.headers
-        MDCOperations.getFromMDC(MDCOperations.MDC_CALL_ID)?.let { callId ->
+        MdcOperations.getFromMDC(MdcOperations.MDC_CALL_ID)?.let { callId ->
             Arrays.stream(HeaderConstants.NAV_CALL_ID_HEADER_NAMES)
                 .forEach { headerName -> requestHeaders.add(headerName, callId) }
         }

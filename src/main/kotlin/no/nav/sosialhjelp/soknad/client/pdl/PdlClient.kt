@@ -6,7 +6,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.sosialhjelp.soknad.client.sts.StsClient
 import no.nav.sosialhjelp.soknad.client.sts.dto.FssToken
-import no.nav.sosialhjelp.soknad.common.mdc.MDCOperations
+import no.nav.sosialhjelp.soknad.common.mdc.MdcOperations
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants
 import org.eclipse.jetty.http.HttpHeader
@@ -21,7 +21,7 @@ abstract class PdlClient(
     private val stsClient: StsClient
 ) {
 
-    private val callId: String? get() = MDCOperations.getFromMDC(MDCOperations.MDC_CALL_ID)
+    private val callId: String? get() = MdcOperations.getFromMDC(MdcOperations.MDC_CALL_ID)
     private val consumerId: String get() = SubjectHandlerUtils.getConsumerId()
     private val fssToken: FssToken get() = stsClient.getFssToken()
 

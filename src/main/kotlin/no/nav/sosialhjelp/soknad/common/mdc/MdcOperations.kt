@@ -8,12 +8,12 @@ import java.security.SecureRandom
 /**
  * Utility-klasse for kommunikasjon med MDC.
  */
-object MDCOperations {
+object MdcOperations {
     const val MDC_CALL_ID = "callId"
     const val MDC_BEHANDLINGS_ID = "behandlingsId"
     const val MDC_CONSUMER_ID = "consumerId"
 
-    private val RANDOM = SecureRandom()
+    private val random = SecureRandom()
 
     fun generateCallId(): String {
         return "CallId_${systemTime}_$randomNumber"
@@ -32,7 +32,7 @@ object MDCOperations {
     }
 
     private val randomNumber: Int
-        get() = RANDOM.nextInt(Int.MAX_VALUE)
+        get() = random.nextInt(Int.MAX_VALUE)
     private val systemTime: Long
         get() = System.currentTimeMillis()
 }

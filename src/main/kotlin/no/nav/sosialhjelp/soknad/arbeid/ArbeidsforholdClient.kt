@@ -2,7 +2,7 @@ package no.nav.sosialhjelp.soknad.arbeid
 
 import no.nav.sosialhjelp.soknad.arbeid.dto.ArbeidsforholdDto
 import no.nav.sosialhjelp.soknad.client.sts.StsClient
-import no.nav.sosialhjelp.soknad.common.mdc.MDCOperations
+import no.nav.sosialhjelp.soknad.common.mdc.MdcOperations
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.consumer.exceptions.TjenesteUtilgjengeligException
 import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants
@@ -31,7 +31,7 @@ class ArbeidsforholdClientImpl(
     private val stsClient: StsClient
 ) : ArbeidsforholdClient {
 
-    private val callId: String? get() = MDCOperations.getFromMDC(MDCOperations.MDC_CALL_ID)
+    private val callId: String? get() = MdcOperations.getFromMDC(MdcOperations.MDC_CALL_ID)
     private val consumerId: String? get() = SubjectHandlerUtils.getConsumerId()
     private val userToken: String? get() = SubjectHandlerUtils.getToken()
     private val sokeperiode: Sokeperiode get() = Sokeperiode(LocalDate.now().minusMonths(3), LocalDate.now())

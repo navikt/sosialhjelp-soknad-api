@@ -5,7 +5,7 @@ import no.nav.sosialhjelp.soknad.client.redis.CACHE_30_MINUTES_IN_SECONDS
 import no.nav.sosialhjelp.soknad.client.redis.DKIF_CACHE_KEY_PREFIX
 import no.nav.sosialhjelp.soknad.client.redis.RedisService
 import no.nav.sosialhjelp.soknad.client.redis.RedisUtils.redisObjectMapper
-import no.nav.sosialhjelp.soknad.common.mdc.MDCOperations
+import no.nav.sosialhjelp.soknad.common.mdc.MdcOperations
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.consumer.exceptions.TjenesteUtilgjengeligException
 import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants
@@ -85,7 +85,7 @@ class DkifClientImpl(
         return client.target(endpoint)
             .request()
             .header(HttpHeader.AUTHORIZATION.name, BEARER + SubjectHandlerUtils.getToken())
-            .header(HeaderConstants.HEADER_CALL_ID, MDCOperations.getFromMDC(MDCOperations.MDC_CALL_ID))
+            .header(HeaderConstants.HEADER_CALL_ID, MdcOperations.getFromMDC(MdcOperations.MDC_CALL_ID))
             .header(HeaderConstants.HEADER_CONSUMER_ID, SubjectHandlerUtils.getConsumerId())
             .header(HeaderConstants.HEADER_NAV_PERSONIDENTER, ident)
     }
