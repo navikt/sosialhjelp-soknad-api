@@ -76,10 +76,10 @@ spec:
   leaderElection: {{leaderElectionEnabled}}
   resources:
     limits:
-      cpu: 1000m
+      cpu: {{cpuLimit}}
       memory: {{memoryLimit}}
     requests:
-      cpu: 400m
+      cpu: {{cpuRequest}}
       memory: {{memoryRequest}}
   env:
 {{#each env}}
