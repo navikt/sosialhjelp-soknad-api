@@ -56,10 +56,16 @@ object StegUtils {
         )
     }
 
-    fun harBarnMedKilde(forsorgerplikt: JsonForsorgerplikt?, kilde: JsonKilde): Boolean {
+    fun harSystemRegistreteBarn(forsorgerplikt: JsonForsorgerplikt?): Boolean {
         val harForsorgerplikt = forsorgerplikt != null && forsorgerplikt.harForsorgerplikt != null && forsorgerplikt.harForsorgerplikt.verdi == java.lang.Boolean.TRUE
-        return harForsorgerplikt && forsorgerplikt!!.harForsorgerplikt.kilde == kilde && forsorgerplikt.ansvar != null && forsorgerplikt.ansvar
-            .any { it.barn.kilde == kilde }
+        return harForsorgerplikt && forsorgerplikt!!.harForsorgerplikt.kilde == JsonKilde.SYSTEM && forsorgerplikt.ansvar != null && forsorgerplikt.ansvar
+            .any { it.barn.kilde == JsonKilde.SYSTEM }
+    }
+
+    fun harBrukerRegistrerteBarn(forsorgerplikt: JsonForsorgerplikt?): Boolean {
+        val harForsorgerplikt = forsorgerplikt != null && forsorgerplikt.harForsorgerplikt != null && forsorgerplikt.harForsorgerplikt.verdi == java.lang.Boolean.TRUE
+        return harForsorgerplikt && forsorgerplikt!!.ansvar != null && forsorgerplikt.ansvar
+            .any { it.barn.kilde == JsonKilde.BRUKER }
     }
 
     fun createSvar(value: String?, type: SvarType): Svar {

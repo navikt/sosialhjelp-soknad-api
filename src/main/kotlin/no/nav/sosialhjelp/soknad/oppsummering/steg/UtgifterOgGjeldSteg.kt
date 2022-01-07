@@ -14,7 +14,6 @@ import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTGIFTER_OPPVARMING
 import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTGIFTER_SFO
 import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTGIFTER_STROM
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
-import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonForsorgerplikt
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtgift
@@ -26,6 +25,8 @@ import no.nav.sosialhjelp.soknad.oppsummering.dto.Steg
 import no.nav.sosialhjelp.soknad.oppsummering.dto.SvarType
 import no.nav.sosialhjelp.soknad.oppsummering.dto.Type
 import no.nav.sosialhjelp.soknad.oppsummering.steg.StegUtils.createSvar
+import no.nav.sosialhjelp.soknad.oppsummering.steg.StegUtils.harBrukerRegistrerteBarn
+import no.nav.sosialhjelp.soknad.oppsummering.steg.StegUtils.harSystemRegistreteBarn
 
 class UtgifterOgGjeldSteg {
     fun get(jsonInternalSoknad: JsonInternalSoknad): Steg {
@@ -87,10 +88,7 @@ class UtgifterOgGjeldSteg {
     }
 
     private fun harBarn(forsorgerplikt: JsonForsorgerplikt): Boolean {
-        return StegUtils.harBarnMedKilde(forsorgerplikt, JsonKilde.SYSTEM) || StegUtils.harBarnMedKilde(
-            forsorgerplikt,
-            JsonKilde.BRUKER
-        )
+        return harSystemRegistreteBarn(forsorgerplikt) || harBrukerRegistrerteBarn(forsorgerplikt)
     }
 
     private fun barneutgifter(okonomi: JsonOkonomi): List<Sporsmal> {
