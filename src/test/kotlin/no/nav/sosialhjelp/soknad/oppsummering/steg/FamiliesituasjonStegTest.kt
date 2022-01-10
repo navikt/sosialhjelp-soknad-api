@@ -344,7 +344,7 @@ internal class FamiliesituasjonStegTest {
         val labelSvarMap = brukerregistrerteBarnSporsmal.felt!![0].labelSvarMap
         assertThat(labelSvarMap).hasSize(2)
         assertThat(labelSvarMap!!["familie.barn.true.barn.navn.label"]!!.value).isEqualTo("Grønn Jakke")
-//        assertThat(labelSvarMap["familierelasjon.fodselsdato"]!!.value).isEqualTo("2020-02-02")
+        assertThat(labelSvarMap).doesNotContainKey("familierelasjon.fodselsdato")
         assertThat(labelSvarMap["familierelasjon.samme_folkeregistrerte_adresse"]!!.value).isEqualTo("system.familie.barn.true.barn.folkeregistrertsammen.true")
 
         val deltBostedSporsmal = forsorgerpliktSporsmal[1]
