@@ -16,6 +16,8 @@ import no.nav.sosialhjelp.soknad.oppsummering.dto.SvarType
 import no.nav.sosialhjelp.soknad.oppsummering.dto.Type
 import no.nav.sosialhjelp.soknad.oppsummering.steg.StegUtils.createSvar
 import no.nav.sosialhjelp.soknad.oppsummering.steg.StegUtils.fulltnavn
+import no.nav.sosialhjelp.soknad.oppsummering.steg.StegUtils.harBrukerRegistrerteBarn
+import no.nav.sosialhjelp.soknad.oppsummering.steg.StegUtils.harSystemRegistrerteBarn
 import no.nav.sosialhjelp.soknad.oppsummering.steg.StegUtils.isNotNullOrEmtpy
 
 class FamiliesituasjonSteg {
@@ -186,8 +188,8 @@ class FamiliesituasjonSteg {
     }
 
     private fun forsorgerpliktSporsmal(forsorgerplikt: JsonForsorgerplikt?): List<Sporsmal> {
-        val harSystemBarn = StegUtils.harBarnMedKilde(forsorgerplikt, JsonKilde.SYSTEM)
-        val harBrukerBarn = StegUtils.harBarnMedKilde(forsorgerplikt, JsonKilde.BRUKER)
+        val harSystemBarn = harSystemRegistrerteBarn(forsorgerplikt)
+        val harBrukerBarn = harBrukerRegistrerteBarn(forsorgerplikt)
         val sporsmal = ArrayList<Sporsmal>()
         if (!harSystemBarn && !harBrukerBarn) {
             sporsmal.add(ingenRegistrerteBarnSporsmal())
@@ -203,7 +205,14 @@ class FamiliesituasjonSteg {
                 }
         }
         if (harBrukerBarn) {
-            // todo brukerregistrerte barn. pt ikke støtte for dette i søknad
+            forsorgerplikt?.ansvar
+                ?.filter { it.barn.kilde == JsonKilde.BRUKER }
+                ?.forEach {
+                    sporsmal.add(brukerBarnSporsmal(it))
+                    if (it.borSammenMed != null && java.lang.Boolean.TRUE == it.borSammenMed.verdi) {
+                        sporsmal.add(deltBostedSporsmal(it))
+                    }
+                }
         }
         if (harSystemBarn || harBrukerBarn) {
             sporsmal.add(barneBidragSporsmal(forsorgerplikt))
@@ -225,22 +234,35 @@ class FamiliesituasjonSteg {
     }
 
     private fun systemBarnSporsmal(barn: JsonAnsvar): Sporsmal {
+        return barnSporsmal(barn, erSystemRegistrert = true)
+    }
+
+    private fun brukerBarnSporsmal(barn: JsonAnsvar): Sporsmal {
+        return barnSporsmal(barn, erSystemRegistrert = false)
+    }
+
+    private fun barnSporsmal(barn: JsonAnsvar, erSystemRegistrert: Boolean): Sporsmal {
         val labelSvarMap = LinkedHashMap<String, Svar>()
         if (barn.barn.navn != null) {
-            labelSvarMap["familie.barn.true.barn.navn.label"] =
-                createSvar(fulltnavn(barn.barn.navn), SvarType.TEKST)
+            labelSvarMap["familie.barn.true.barn.navn.label"] = createSvar(fulltnavn(barn.barn.navn), SvarType.TEKST)
         }
         if (barn.barn.fodselsdato != null) {
             labelSvarMap["familierelasjon.fodselsdato"] = createSvar(barn.barn.fodselsdato, SvarType.DATO)
         }
-        if (barn.erFolkeregistrertSammen != null) {
+        if (erSystemRegistrert && barn.erFolkeregistrertSammen != null) {
             labelSvarMap["familierelasjon.samme_folkeregistrerte_adresse"] = createSvar(
                 if (java.lang.Boolean.TRUE == barn.erFolkeregistrertSammen.verdi) "system.familie.barn.true.barn.folkeregistrertsammen.true" else "system.familie.barn.true.barn.folkeregistrertsammen.false",
                 SvarType.LOCALE_TEKST
             )
         }
+        if (!erSystemRegistrert && barn.borSammenMed != null) {
+            labelSvarMap["familierelasjon.bor_sammen"] = createSvar(
+                if (java.lang.Boolean.TRUE == barn.borSammenMed.verdi) "familie.barn.true.barn.borsammen.true" else "familie.barn.true.barn.borsammen.false",
+                SvarType.LOCALE_TEKST
+            )
+        }
         return Sporsmal(
-            tittel = "familie.barn.true.barn.sporsmal",
+            tittel = if (erSystemRegistrert) "familie.barn.true.barn.sporsmal" else "familierelasjon.faktum.lagttil",
             erUtfylt = true,
             felt = listOf(
                 Felt(
