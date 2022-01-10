@@ -3,9 +3,7 @@ package no.nav.sosialhjelp.soknad.api.featuretoggle
 import no.finn.unleash.Unleash
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.metrics.aspects.Timed
-import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.web.utils.Constants
-import org.apache.commons.lang3.StringUtils
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Import
 import org.springframework.stereotype.Controller
