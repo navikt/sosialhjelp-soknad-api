@@ -209,7 +209,7 @@ class FamiliesituasjonSteg {
                 ?.filter { it.barn.kilde == JsonKilde.BRUKER }
                 ?.forEach {
                     sporsmal.add(brukerBarnSporsmal(it))
-                    if (it.erFolkeregistrertSammen != null && java.lang.Boolean.TRUE == it.erFolkeregistrertSammen.verdi) {
+                    if (it.borSammenMed != null && java.lang.Boolean.TRUE == it.borSammenMed.verdi) {
                         sporsmal.add(deltBostedSporsmal(it))
                     }
                 }
@@ -234,14 +234,14 @@ class FamiliesituasjonSteg {
     }
 
     private fun systemBarnSporsmal(barn: JsonAnsvar): Sporsmal {
-        return barnSporsmal("familie.barn.true.barn.sporsmal", barn)
+        return barnSporsmal(barn, erSystemRegistrert = true)
     }
 
     private fun brukerBarnSporsmal(barn: JsonAnsvar): Sporsmal {
-        return barnSporsmal("familierelasjon.faktum.lagttil", barn)
+        return barnSporsmal(barn, erSystemRegistrert = false)
     }
 
-    private fun barnSporsmal(tittel: String, barn: JsonAnsvar): Sporsmal {
+    private fun barnSporsmal(barn: JsonAnsvar, erSystemRegistrert: Boolean): Sporsmal {
         val labelSvarMap = LinkedHashMap<String, Svar>()
         if (barn.barn.navn != null) {
             labelSvarMap["familie.barn.true.barn.navn.label"] = createSvar(fulltnavn(barn.barn.navn), SvarType.TEKST)
@@ -249,14 +249,20 @@ class FamiliesituasjonSteg {
         if (barn.barn.fodselsdato != null) {
             labelSvarMap["familierelasjon.fodselsdato"] = createSvar(barn.barn.fodselsdato, SvarType.DATO)
         }
-        if (barn.erFolkeregistrertSammen != null) {
+        if (erSystemRegistrert && barn.erFolkeregistrertSammen != null) {
             labelSvarMap["familierelasjon.samme_folkeregistrerte_adresse"] = createSvar(
                 if (java.lang.Boolean.TRUE == barn.erFolkeregistrertSammen.verdi) "system.familie.barn.true.barn.folkeregistrertsammen.true" else "system.familie.barn.true.barn.folkeregistrertsammen.false",
                 SvarType.LOCALE_TEKST
             )
         }
+        if (!erSystemRegistrert && barn.borSammenMed != null) {
+            labelSvarMap["familierelasjon.bor_sammen"] = createSvar(
+                if (java.lang.Boolean.TRUE == barn.borSammenMed.verdi) "familie.barn.true.barn.borsammen.true" else "familie.barn.true.barn.borsammen.false",
+                SvarType.LOCALE_TEKST
+            )
+        }
         return Sporsmal(
-            tittel = tittel,
+            tittel = if (erSystemRegistrert) "familie.barn.true.barn.sporsmal" else "familierelasjon.faktum.lagttil",
             erUtfylt = true,
             felt = listOf(
                 Felt(

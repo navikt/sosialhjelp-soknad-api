@@ -8,6 +8,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonNavn
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonAnsvar
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonBarn
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonBarnebidrag
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonBorSammenMed
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonEktefelle
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonErFolkeregistrertSammen
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonFamilie
@@ -20,6 +21,7 @@ import no.nav.sosialhjelp.soknad.oppsummering.dto.Type
 import no.nav.sosialhjelp.soknad.oppsummering.steg.OppsummeringTestUtils.validateFeltMedSvar
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import java.lang.Boolean
 
 internal class FamiliesituasjonStegTest {
 
@@ -186,6 +188,8 @@ internal class FamiliesituasjonStegTest {
         assertThat(labelSvarMap!!["familie.barn.true.barn.navn.label"]!!.value).isEqualTo("Grønn Jakke")
         assertThat(labelSvarMap["familierelasjon.fodselsdato"]!!.value).isEqualTo("2020-02-02")
         assertThat(labelSvarMap["familierelasjon.samme_folkeregistrerte_adresse"]!!.value).isEqualTo("system.familie.barn.true.barn.folkeregistrertsammen.true")
+        assertThat(labelSvarMap).doesNotContainKey("familierelasjon.bor_sammen")
+
 
         val deltBostedSporsmal = forsorgerpliktSporsmal[1]
         assertThat(deltBostedSporsmal.erUtfylt).isFalse
@@ -267,7 +271,10 @@ internal class FamiliesituasjonStegTest {
                                 .withNavn(JsonNavn().withFornavn("Grønn").withEtternavn("Jakke"))
                                 .withFodselsdato("2020-02-02")
                         )
-                        .withErFolkeregistrertSammen(JsonErFolkeregistrertSammen().withVerdi(java.lang.Boolean.TRUE))
+                        .withBorSammenMed(
+                            JsonBorSammenMed()
+                                .withVerdi(Boolean.TRUE)
+                        )
                         .withHarDeltBosted(null)
                 )
             )
@@ -288,7 +295,8 @@ internal class FamiliesituasjonStegTest {
         assertThat(labelSvarMap).hasSize(3)
         assertThat(labelSvarMap!!["familie.barn.true.barn.navn.label"]!!.value).isEqualTo("Grønn Jakke")
         assertThat(labelSvarMap["familierelasjon.fodselsdato"]!!.value).isEqualTo("2020-02-02")
-        assertThat(labelSvarMap["familierelasjon.samme_folkeregistrerte_adresse"]!!.value).isEqualTo("system.familie.barn.true.barn.folkeregistrertsammen.true")
+        assertThat(labelSvarMap).doesNotContainKey("familierelasjon.samme_folkeregistrerte_adresse")
+        assertThat(labelSvarMap["familierelasjon.bor_sammen"]!!.value).isEqualTo("familie.barn.true.barn.borsammen.true")
 
         val deltBostedSporsmal = forsorgerpliktSporsmal[1]
         assertThat(deltBostedSporsmal.erUtfylt).isFalse
@@ -316,13 +324,13 @@ internal class FamiliesituasjonStegTest {
                                 .withNavn(JsonNavn().withFornavn("Grønn").withEtternavn("Jakke"))
                                 .withFodselsdato(null)
                         )
-                        .withErFolkeregistrertSammen(
-                            JsonErFolkeregistrertSammen()
-                                .withVerdi(java.lang.Boolean.TRUE)
+                        .withBorSammenMed(
+                            JsonBorSammenMed()
+                                .withVerdi(Boolean.TRUE)
                         )
                         .withHarDeltBosted(
                             JsonHarDeltBosted()
-                                .withVerdi(java.lang.Boolean.TRUE)
+                                .withVerdi(Boolean.TRUE)
                         )
                 )
             )
@@ -345,7 +353,8 @@ internal class FamiliesituasjonStegTest {
         assertThat(labelSvarMap).hasSize(2)
         assertThat(labelSvarMap!!["familie.barn.true.barn.navn.label"]!!.value).isEqualTo("Grønn Jakke")
         assertThat(labelSvarMap).doesNotContainKey("familierelasjon.fodselsdato")
-        assertThat(labelSvarMap["familierelasjon.samme_folkeregistrerte_adresse"]!!.value).isEqualTo("system.familie.barn.true.barn.folkeregistrertsammen.true")
+        assertThat(labelSvarMap).doesNotContainKey("familierelasjon.samme_folkeregistrerte_adresse")
+        assertThat(labelSvarMap["familierelasjon.bor_sammen"]!!.value).isEqualTo("familie.barn.true.barn.borsammen.true")
 
         val deltBostedSporsmal = forsorgerpliktSporsmal[1]
         assertThat(deltBostedSporsmal.erUtfylt).isTrue
