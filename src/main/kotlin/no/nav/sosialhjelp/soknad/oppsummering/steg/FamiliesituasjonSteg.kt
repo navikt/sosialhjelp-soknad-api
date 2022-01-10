@@ -17,7 +17,7 @@ import no.nav.sosialhjelp.soknad.oppsummering.dto.Type
 import no.nav.sosialhjelp.soknad.oppsummering.steg.StegUtils.createSvar
 import no.nav.sosialhjelp.soknad.oppsummering.steg.StegUtils.fulltnavn
 import no.nav.sosialhjelp.soknad.oppsummering.steg.StegUtils.harBrukerRegistrerteBarn
-import no.nav.sosialhjelp.soknad.oppsummering.steg.StegUtils.harSystemRegistreteBarn
+import no.nav.sosialhjelp.soknad.oppsummering.steg.StegUtils.harSystemRegistrerteBarn
 import no.nav.sosialhjelp.soknad.oppsummering.steg.StegUtils.isNotNullOrEmtpy
 
 class FamiliesituasjonSteg {
@@ -188,7 +188,7 @@ class FamiliesituasjonSteg {
     }
 
     private fun forsorgerpliktSporsmal(forsorgerplikt: JsonForsorgerplikt?): List<Sporsmal> {
-        val harSystemBarn = harSystemRegistreteBarn(forsorgerplikt)
+        val harSystemBarn = harSystemRegistrerteBarn(forsorgerplikt)
         val harBrukerBarn = harBrukerRegistrerteBarn(forsorgerplikt)
         val sporsmal = ArrayList<Sporsmal>()
         if (!harSystemBarn && !harBrukerBarn) {
