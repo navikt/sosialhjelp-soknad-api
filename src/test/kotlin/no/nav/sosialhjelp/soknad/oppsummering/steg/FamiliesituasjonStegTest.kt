@@ -190,7 +190,6 @@ internal class FamiliesituasjonStegTest {
         assertThat(labelSvarMap["familierelasjon.samme_folkeregistrerte_adresse"]!!.value).isEqualTo("system.familie.barn.true.barn.folkeregistrertsammen.true")
         assertThat(labelSvarMap).doesNotContainKey("familierelasjon.bor_sammen")
 
-
         val deltBostedSporsmal = forsorgerpliktSporsmal[1]
         assertThat(deltBostedSporsmal.erUtfylt).isFalse
         assertThat(deltBostedSporsmal.felt).isNull()
