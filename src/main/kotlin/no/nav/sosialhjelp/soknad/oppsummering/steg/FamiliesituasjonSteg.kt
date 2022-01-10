@@ -233,32 +233,6 @@ class FamiliesituasjonSteg {
         )
     }
 
-//    private fun systemBarnSporsmal(barn: JsonAnsvar): Sporsmal {
-//        val labelSvarMap = LinkedHashMap<String, Svar>()
-//        if (barn.barn.navn != null) {
-//            labelSvarMap["familie.barn.true.barn.navn.label"] = createSvar(fulltnavn(barn.barn.navn), SvarType.TEKST)
-//        }
-//        if (barn.barn.fodselsdato != null) {
-//            labelSvarMap["familierelasjon.fodselsdato"] = createSvar(barn.barn.fodselsdato, SvarType.DATO)
-//        }
-//        if (barn.erFolkeregistrertSammen != null) {
-//            labelSvarMap["familierelasjon.samme_folkeregistrerte_adresse"] = createSvar(
-//                if (java.lang.Boolean.TRUE == barn.erFolkeregistrertSammen.verdi) "system.familie.barn.true.barn.folkeregistrertsammen.true" else "system.familie.barn.true.barn.folkeregistrertsammen.false",
-//                SvarType.LOCALE_TEKST
-//            )
-//        }
-//        return Sporsmal(
-//            tittel = "familie.barn.true.barn.sporsmal",
-//            erUtfylt = true,
-//            felt = listOf(
-//                Felt(
-//                    type = Type.SYSTEMDATA_MAP,
-//                    labelSvarMap = labelSvarMap
-//                )
-//            )
-//        )
-//    }
-//
     private fun systemBarnSporsmal(barn: JsonAnsvar): Sporsmal {
         return barnSporsmal("familie.barn.true.barn.sporsmal", barn)
     }
