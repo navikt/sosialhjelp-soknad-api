@@ -6,11 +6,7 @@ import org.junit.jupiter.api.Test
 internal class FeatureToggleUtilsTest {
 
     @Test
-    fun enableModalV2Test() {
-        Assertions.assertThat(FeatureToggleUtils.enableModalV2("1234")).isTrue
-        Assertions.assertThat(FeatureToggleUtils.enableModalV2("1235")).isFalse
-        Assertions.assertThat(FeatureToggleUtils.enableModalV2("asdf")).isFalse
-        Assertions.assertThat(FeatureToggleUtils.enableModalV2(null)).isFalse
-        Assertions.assertThat(FeatureToggleUtils.enableModalV2("01234")).isTrue
+    fun leggTilBarnTest() {
+        // Todo: Finne en god måte å teste unleash-funksjonalitet på?
     }
 }
