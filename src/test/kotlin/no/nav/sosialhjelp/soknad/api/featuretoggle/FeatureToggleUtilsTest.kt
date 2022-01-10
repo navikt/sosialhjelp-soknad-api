@@ -15,7 +15,7 @@ internal class FeatureToggleUtilsTest {
     fun leggTilBarnTest() {
         every { unleash.isEnabled(any(), any<Boolean>()) } returns true
 
-        val response = featureToggleRessurs.featureToggles();
+        val response = featureToggleRessurs.featureToggles()
         Assertions.assertThat(response["leggeTilBarn"]).isTrue
     }
 }
