@@ -55,7 +55,7 @@ interface DigisosApiClient {
         dokumenter: List<FilOpplasting>,
         kommunenr: String,
         navEksternRefId: String,
-        token: String
+        token: String?
     ): String
 }
 
@@ -89,7 +89,7 @@ class DigisosApiClientImpl(
         dokumenter: List<FilOpplasting>,
         kommunenr: String,
         navEksternRefId: String,
-        token: String
+        token: String?
     ): String {
         val krypteringFutureList = Collections.synchronizedList(ArrayList<Future<Void>>(dokumenter.size))
         val digisosId: String
@@ -192,7 +192,7 @@ class DigisosApiClientImpl(
         dokumenter: List<FilOpplasting>,
         kommunenummer: String,
         behandlingsId: String,
-        token: String
+        token: String?
     ): String {
         val filer: MutableList<FilForOpplasting<Any>> = mutableListOf()
 

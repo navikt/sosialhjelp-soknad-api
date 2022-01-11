@@ -128,7 +128,7 @@ class DigisosApiService(
     ): String {
         return try {
             log.info("Forsøker å ta i bruk kotlin-versjon av klient mot DigisosApi")
-            digisosApiClient.krypterOgLastOppFiler(soknadJson, tilleggsinformasjonJson, vedleggJson, filOpplastinger, kommunenr, behandlingsId, token!!)
+            digisosApiClient.krypterOgLastOppFiler(soknadJson, tilleggsinformasjonJson, vedleggJson, filOpplastinger, kommunenr, behandlingsId, token)
         } catch (e: Exception) {
             log.warn("Noe feilet ved sending via kotlin-versjon av klient mot DigisosApi - Fallback til java-versjon", e)
             sendMedJavaClient(soknadJson, tilleggsinformasjonJson, vedleggJson, filOpplastinger, kommunenr, behandlingsId, token)
