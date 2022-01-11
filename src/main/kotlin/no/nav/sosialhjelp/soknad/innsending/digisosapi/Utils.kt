@@ -19,4 +19,8 @@ object Utils {
         }
         return null
     }
+
+    fun stripVekkFnutter(tekstMedFnutt: String): String {
+        return tekstMedFnutt.replace("\"", "")
+    }
 }
