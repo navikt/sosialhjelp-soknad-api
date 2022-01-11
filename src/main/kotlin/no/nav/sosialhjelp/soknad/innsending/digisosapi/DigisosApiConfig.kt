@@ -6,6 +6,7 @@ import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.SosialhjelpPdfGenerator
 import no.nav.sosialhjelp.soknad.consumer.fiks.DigisosApi
 import no.nav.sosialhjelp.soknad.innsending.HenvendelseService
 import no.nav.sosialhjelp.soknad.innsending.InnsendingService
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.digisosObjectMapper
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
 import no.nav.sosialhjelp.soknad.metrics.SoknadMetricsService
 import org.springframework.beans.factory.annotation.Value
@@ -52,8 +53,8 @@ open class DigisosApiConfig(
     }
 
     @Bean
-    open fun fiksWebClient(proxiedHttpClient: HttpClient): WebClient =
-        WebClient.builder()
+    open fun fiksWebClient(proxiedWebClientBuilder: WebClient.Builder, proxiedHttpClient: HttpClient): WebClient =
+        proxiedWebClientBuilder
             .baseUrl(digisosApiEndpoint)
             .clientConnector(
                 ReactorClientHttpConnector(
@@ -64,8 +65,8 @@ open class DigisosApiConfig(
             )
             .codecs {
                 it.defaultCodecs().maxInMemorySize(16 * 1024 * 1024)
-                it.defaultCodecs().jackson2JsonDecoder(Jackson2JsonDecoder(Utils.digisosObjectMapper))
-                it.defaultCodecs().jackson2JsonEncoder(Jackson2JsonEncoder(Utils.digisosObjectMapper))
+                it.defaultCodecs().jackson2JsonDecoder(Jackson2JsonDecoder(digisosObjectMapper))
+                it.defaultCodecs().jackson2JsonEncoder(Jackson2JsonEncoder(digisosObjectMapper))
             }
             .build()
 
