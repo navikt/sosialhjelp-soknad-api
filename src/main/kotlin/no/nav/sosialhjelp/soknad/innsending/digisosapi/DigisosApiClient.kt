@@ -254,7 +254,7 @@ class DigisosApiClientImpl(
                 return digisosId
             }
         } catch (e: IOException) {
-            throw IllegalStateException(String.format("Opplasting av %s til fiks-digisos-api feilet", behandlingsId), e)
+            throw IllegalStateException("Opplasting av $behandlingsId til fiks-digisos-api feilet", e)
         }
     }
 
