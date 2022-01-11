@@ -2,8 +2,8 @@ package no.nav.sosialhjelp.soknad.client.fiks.digisosapi
 
 import com.fasterxml.jackson.module.kotlin.readValue
 import no.nav.sosialhjelp.api.fiks.KommuneInfo
-import no.nav.sosialhjelp.soknad.client.fiks.digisosapi.Utils.digisosObjectMapper
-import no.nav.sosialhjelp.soknad.client.fiks.digisosapi.Utils.getDigisosIdFromResponse
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.digisosObjectMapper
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.getDigisosIdFromResponse
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 

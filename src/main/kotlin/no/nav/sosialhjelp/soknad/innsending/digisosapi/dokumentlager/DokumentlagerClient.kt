@@ -1,8 +1,9 @@
-package no.nav.sosialhjelp.soknad.client.fiks.digisosapi
+package no.nav.sosialhjelp.soknad.innsending.digisosapi.dokumentlager
 
 import no.nav.sosialhjelp.soknad.client.exceptions.TjenesteUtilgjengeligException
 import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.HEADER_INTEGRASJON_ID
 import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.HEADER_INTEGRASJON_PASSORD
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiProperties
 import org.slf4j.LoggerFactory.getLogger
 import org.springframework.http.HttpHeaders.ACCEPT
 import org.springframework.http.HttpHeaders.AUTHORIZATION

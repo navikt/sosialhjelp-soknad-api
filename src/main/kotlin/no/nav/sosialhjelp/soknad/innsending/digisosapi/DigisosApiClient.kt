@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.client.fiks.digisosapi
+package no.nav.sosialhjelp.soknad.innsending.digisosapi
 
 import com.fasterxml.jackson.core.JsonProcessingException
 import kotlinx.coroutines.reactor.awaitSingle
@@ -8,8 +8,6 @@ import no.ks.kryptering.CMSKrypteringImpl
 import no.ks.kryptering.CMSStreamKryptering
 import no.nav.sosialhjelp.kotlin.utils.retry
 import no.nav.sosialhjelp.soknad.client.config.RetryUtils
-import no.nav.sosialhjelp.soknad.client.fiks.digisosapi.Utils.digisosObjectMapper
-import no.nav.sosialhjelp.soknad.client.fiks.digisosapi.Utils.getDigisosIdFromResponse
 import no.nav.sosialhjelp.soknad.client.fiks.kommuneinfo.KommuneInfoService
 import no.nav.sosialhjelp.soknad.consumer.fiks.dto.FilMetadata
 import no.nav.sosialhjelp.soknad.consumer.fiks.dto.FilOpplasting
@@ -17,6 +15,9 @@ import no.nav.sosialhjelp.soknad.domain.model.mock.MockUtils
 import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants
 import no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils
 import no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils.stripVekkFnutter
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.digisosObjectMapper
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.getDigisosIdFromResponse
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.dokumentlager.DokumentlagerClient
 import org.apache.commons.io.IOUtils
 import org.slf4j.LoggerFactory
 import org.springframework.core.io.InputStreamResource

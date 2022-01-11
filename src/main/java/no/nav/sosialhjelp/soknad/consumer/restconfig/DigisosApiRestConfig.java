@@ -1,11 +1,11 @@
 package no.nav.sosialhjelp.soknad.consumer.restconfig;
 
-import no.nav.sosialhjelp.soknad.client.fiks.digisosapi.DokumentlagerClient;
 import no.nav.sosialhjelp.soknad.client.fiks.kommuneinfo.KommuneInfoService;
 import no.nav.sosialhjelp.soknad.consumer.fiks.DigisosApi;
 import no.nav.sosialhjelp.soknad.consumer.fiks.DigisosApiImpl;
 import no.nav.sosialhjelp.soknad.consumer.fiks.DigisosApiProperties;
 import no.nav.sosialhjelp.soknad.health.selftest.Pingable;
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.dokumentlager.DokumentlagerClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

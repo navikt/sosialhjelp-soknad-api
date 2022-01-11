@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.client.fiks.digisosapi.dto
+package no.nav.sosialhjelp.soknad.innsending.digisosapi.dto
 
 import java.io.InputStream
 
