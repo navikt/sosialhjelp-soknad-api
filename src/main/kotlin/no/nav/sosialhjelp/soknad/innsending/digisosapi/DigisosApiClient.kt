@@ -71,6 +71,12 @@ class DigisosApiClientImpl(
     private val retryHandler = DefaultHttpRequestRetryHandler()
     private val serviceUnavailableRetryStrategy = FiksServiceUnavailableRetryStrategy()
 
+    private val requestConfig = RequestConfig.custom()
+        .setConnectTimeout(SENDING_TIL_FIKS_TIMEOUT)
+        .setConnectionRequestTimeout(SENDING_TIL_FIKS_TIMEOUT)
+        .setSocketTimeout(SENDING_TIL_FIKS_TIMEOUT)
+        .build()
+
     override fun ping() {
         val kommuneInfo = kommuneInfoService.hentAlleKommuneInfo()
         check(kommuneInfo != null && kommuneInfo.isNotEmpty()) { "Fikk ikke kontakt med digisosapi" }
@@ -189,6 +195,7 @@ class DigisosApiClientImpl(
         token: String
     ): String {
         val filer: MutableList<FilForOpplasting<Any>> = mutableListOf()
+
         dokumenter.forEach { dokument: FilOpplasting ->
             filer.add(
                 FilForOpplasting.builder<Any>()
@@ -203,30 +210,19 @@ class DigisosApiClientImpl(
                     .build()
             )
         }
+
         val entitybuilder = MultipartEntityBuilder.create()
         entitybuilder.setCharset(StandardCharsets.UTF_8)
         entitybuilder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE)
-        entitybuilder.addTextBody(
-            "tilleggsinformasjonJson",
-            tilleggsinformasjonJson,
-            APPLICATION_JSON
-        ) // Må være første fil
+
+        entitybuilder.addTextBody("tilleggsinformasjonJson", tilleggsinformasjonJson, APPLICATION_JSON) // Må være første fil
         entitybuilder.addTextBody("soknadJson", soknadJson, APPLICATION_JSON)
         entitybuilder.addTextBody("vedleggJson", vedleggJson, APPLICATION_JSON)
         filer.forEach {
             entitybuilder.addTextBody("metadata", getJson(it))
-            entitybuilder.addBinaryBody(
-                it.filnavn,
-                it.data,
-                APPLICATION_OCTET_STREAM,
-                it.filnavn
-            )
+            entitybuilder.addBinaryBody(it.filnavn, it.data, APPLICATION_OCTET_STREAM, it.filnavn)
         }
-        val requestConfig = RequestConfig.custom()
-            .setConnectTimeout(SENDING_TIL_FIKS_TIMEOUT)
-            .setConnectionRequestTimeout(SENDING_TIL_FIKS_TIMEOUT)
-            .setSocketTimeout(SENDING_TIL_FIKS_TIMEOUT)
-            .build()
+
         try {
             clientBuilder().setDefaultRequestConfig(requestConfig).build().use { client ->
                 val post = HttpPost(properties.digisosApiEndpoint + "/digisos/api/v1/soknader/$kommunenummer/$behandlingsId")
@@ -235,6 +231,7 @@ class DigisosApiClientImpl(
                 post.setHeader(HEADER_INTEGRASJON_ID, properties.integrasjonsidFiks)
                 post.setHeader(HEADER_INTEGRASJON_PASSORD, properties.integrasjonpassordFiks)
                 post.entity = entitybuilder.build()
+
                 val startTime = System.currentTimeMillis()
                 val response = client.execute(post)
                 val endTime = System.currentTimeMillis()
