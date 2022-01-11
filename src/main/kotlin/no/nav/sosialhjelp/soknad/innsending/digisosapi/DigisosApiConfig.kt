@@ -1,8 +1,10 @@
 package no.nav.sosialhjelp.soknad.innsending.digisosapi
 
 import io.netty.channel.ChannelOption
+import no.finn.unleash.Unleash
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.SosialhjelpPdfGenerator
+import no.nav.sosialhjelp.soknad.client.fiks.kommuneinfo.KommuneInfoService
 import no.nav.sosialhjelp.soknad.consumer.fiks.DigisosApi
 import no.nav.sosialhjelp.soknad.innsending.HenvendelseService
 import no.nav.sosialhjelp.soknad.innsending.InnsendingService
@@ -15,6 +17,7 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.http.client.reactive.ReactorClientHttpConnector
 import org.springframework.http.codec.json.Jackson2JsonDecoder
 import org.springframework.http.codec.json.Jackson2JsonEncoder
+import org.springframework.http.codec.multipart.MultipartHttpMessageWriter
 import org.springframework.web.reactive.function.client.WebClient
 import reactor.netty.http.client.HttpClient
 import java.time.Duration
@@ -29,27 +32,40 @@ open class DigisosApiConfig(
     @Bean
     open fun digisosApiService(
         digisosApi: DigisosApi,
+        digisosApiClient: DigisosApiClient,
         sosialhjelpPdfGenerator: SosialhjelpPdfGenerator,
         innsendingService: InnsendingService,
         henvendelseService: HenvendelseService,
         soknadUnderArbeidService: SoknadUnderArbeidService,
         soknadMetricsService: SoknadMetricsService,
-        soknadUnderArbeidRepository: SoknadUnderArbeidRepository
+        soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
+        unleash: Unleash
     ): DigisosApiService {
         return DigisosApiService(
             digisosApi,
+            digisosApiClient,
             sosialhjelpPdfGenerator,
             innsendingService,
             henvendelseService,
             soknadUnderArbeidService,
             soknadMetricsService,
-            soknadUnderArbeidRepository
+            soknadUnderArbeidRepository,
+            unleash
         )
     }
 
     @Bean
     open fun dokumentlagerClient(fiksWebClient: WebClient): DokumentlagerClient {
         return DokumentlagerClientImpl(fiksWebClient, properties)
+    }
+
+    @Bean
+    open fun digisosApiClient(
+        fiksWebClient: WebClient,
+        kommuneInfoService: KommuneInfoService,
+        dokumentlagerClient: DokumentlagerClient
+    ): DigisosApiClient {
+        return DigisosApiClientImpl(fiksWebClient, kommuneInfoService, dokumentlagerClient, properties)
     }
 
     @Bean
@@ -67,6 +83,8 @@ open class DigisosApiConfig(
                 it.defaultCodecs().maxInMemorySize(16 * 1024 * 1024)
                 it.defaultCodecs().jackson2JsonDecoder(Jackson2JsonDecoder(digisosObjectMapper))
                 it.defaultCodecs().jackson2JsonEncoder(Jackson2JsonEncoder(digisosObjectMapper))
+                it.defaultCodecs().multipartCodecs().encoder(Jackson2JsonEncoder(digisosObjectMapper))
+                it.defaultCodecs().multipartCodecs().writer(MultipartHttpMessageWriter())
             }
             .build()
 
