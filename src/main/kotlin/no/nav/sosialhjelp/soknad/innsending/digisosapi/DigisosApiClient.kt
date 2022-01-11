@@ -229,7 +229,7 @@ class DigisosApiClientImpl(
             .build()
         try {
             clientBuilder().setDefaultRequestConfig(requestConfig).build().use { client ->
-                val post = HttpPost(properties.digisosApiEndpoint + getLastOppFilerPath(kommunenummer, behandlingsId))
+                val post = HttpPost(properties.digisosApiEndpoint + "/digisos/api/v1/soknader/$kommunenummer/$behandlingsId")
                 post.setHeader("requestid", UUID.randomUUID().toString())
                 post.setHeader(AUTHORIZATION.name, token)
                 post.setHeader(HEADER_INTEGRASJON_ID, properties.integrasjonsidFiks)
@@ -264,10 +264,6 @@ class DigisosApiClientImpl(
         } catch (e: JsonProcessingException) {
             throw IllegalStateException(e)
         }
-    }
-
-    private fun getLastOppFilerPath(kommunenummer: String, navEksternRefId: String): String {
-        return "/digisos/api/v1/soknader/$kommunenummer/$navEksternRefId"
     }
 
     companion object {
