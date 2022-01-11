@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.client.fiks.digisosapi
+package no.nav.sosialhjelp.soknad.innsending.digisosapi
 
 import no.nav.sosialhjelp.soknad.client.exceptions.TjenesteUtilgjengeligException
 import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.HEADER_INTEGRASJON_ID
