@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.client.fiks.digisosapi
+package no.nav.sosialhjelp.soknad.innsending.digisosapi
 
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper
