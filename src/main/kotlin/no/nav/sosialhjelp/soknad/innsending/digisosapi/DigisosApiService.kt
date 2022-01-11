@@ -90,13 +90,13 @@ class DigisosApiService(
     }
 
     private fun sendOgKrypter(
-        soknadJson: String?,
-        tilleggsinformasjonJson: String?,
-        vedleggJson: String?,
-        filOpplastinger: List<FilOpplasting>?,
-        kommunenr: String?,
+        soknadJson: String,
+        tilleggsinformasjonJson: String,
+        vedleggJson: String,
+        filOpplastinger: List<FilOpplasting>,
+        kommunenr: String,
         navEnhetsnavn: String,
-        behandlingsId: String?,
+        behandlingsId: String,
         token: String?
     ): String {
         val event = lagForsoktSendtDigisosApiEvent(navEnhetsnavn)
@@ -118,17 +118,17 @@ class DigisosApiService(
     }
 
     private fun sendMedKotlinClient(
-        soknadJson: String?,
-        tilleggsinformasjonJson: String?,
-        vedleggJson: String?,
-        filOpplastinger: List<FilOpplasting>?,
-        kommunenr: String?,
-        behandlingsId: String?,
+        soknadJson: String,
+        tilleggsinformasjonJson: String,
+        vedleggJson: String,
+        filOpplastinger: List<FilOpplasting>,
+        kommunenr: String,
+        behandlingsId: String,
         token: String?
     ): String {
         return try {
             log.info("Forsøker å ta i bruk kotlin-versjon av klient mot DigisosApi")
-            digisosApiClient.krypterOgLastOppFiler(soknadJson!!, tilleggsinformasjonJson!!, vedleggJson!!, filOpplastinger!!, kommunenr!!, behandlingsId!!, token!!)
+            digisosApiClient.krypterOgLastOppFiler(soknadJson, tilleggsinformasjonJson, vedleggJson, filOpplastinger, kommunenr, behandlingsId, token!!)
         } catch (e: Exception) {
             log.warn("Noe feilet ved sending via kotlin-versjon av klient mot DigisosApi - Fallback til java-versjon", e)
             sendMedJavaClient(soknadJson, tilleggsinformasjonJson, vedleggJson, filOpplastinger, kommunenr, behandlingsId, token)
@@ -136,12 +136,12 @@ class DigisosApiService(
     }
 
     private fun sendMedJavaClient(
-        soknadJson: String?,
-        tilleggsinformasjonJson: String?,
-        vedleggJson: String?,
-        filOpplastinger: List<FilOpplasting>?,
-        kommunenr: String?,
-        behandlingsId: String?,
+        soknadJson: String,
+        tilleggsinformasjonJson: String,
+        vedleggJson: String,
+        filOpplastinger: List<FilOpplasting>,
+        kommunenr: String,
+        behandlingsId: String,
         token: String?
     ): String {
         return digisosApi.krypterOgLastOppFiler(
@@ -213,7 +213,7 @@ class DigisosApiService(
         )
     }
 
-    fun sendSoknad(soknadUnderArbeid: SoknadUnderArbeid, token: String?, kommunenummer: String?): String {
+    fun sendSoknad(soknadUnderArbeid: SoknadUnderArbeid, token: String?, kommunenummer: String): String {
         var behandlingsId = soknadUnderArbeid.behandlingsId
         soknadUnderArbeidService.settInnsendingstidspunktPaSoknad(soknadUnderArbeid)
         log.info("Starter innsending av søknad med behandlingsId {}, skal sendes til DigisosApi", behandlingsId)
