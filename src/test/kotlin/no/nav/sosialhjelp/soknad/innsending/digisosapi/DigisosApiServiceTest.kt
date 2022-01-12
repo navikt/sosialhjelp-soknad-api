@@ -6,7 +6,6 @@ import io.mockk.just
 import io.mockk.mockk
 import io.mockk.runs
 import io.mockk.verify
-import no.finn.unleash.Unleash
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknadsmottaker
@@ -18,7 +17,6 @@ import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.SosialhjelpPdfGenerator
 import no.nav.sosialhjelp.soknad.common.filedetection.MimeTypes
 import no.nav.sosialhjelp.soknad.common.subjecthandler.StaticSubjectHandlerImpl
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
-import no.nav.sosialhjelp.soknad.consumer.fiks.DigisosApi
 import no.nav.sosialhjelp.soknad.domain.OpplastetVedlegg
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.domain.VedleggType
@@ -35,7 +33,6 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 internal class DigisosApiServiceTest {
-    private val digisosApi: DigisosApi = mockk()
     private val digisosApiClient: DigisosApiClient = mockk()
     private val sosialhjelpPdfGenerator: SosialhjelpPdfGenerator = mockk()
     private val innsendingService: InnsendingService = mockk()
@@ -43,18 +40,15 @@ internal class DigisosApiServiceTest {
     private val soknadUnderArbeidService: SoknadUnderArbeidService = mockk()
     private val soknadMetricsService: SoknadMetricsService = mockk()
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
-    private val unleash: Unleash = mockk()
 
     private val digisosApiService = DigisosApiService(
-        digisosApi,
         digisosApiClient,
         sosialhjelpPdfGenerator,
         innsendingService,
         henvendelseService,
         soknadUnderArbeidService,
         soknadMetricsService,
-        soknadUnderArbeidRepository,
-        unleash
+        soknadUnderArbeidRepository
     )
 
     @BeforeEach
@@ -63,8 +57,6 @@ internal class DigisosApiServiceTest {
         SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
 
         clearAllMocks()
-
-        every { unleash.isEnabled(any(), any<Boolean>()) } returns false
     }
 
     @AfterEach
@@ -143,7 +135,7 @@ internal class DigisosApiServiceTest {
 
         every { sosialhjelpPdfGenerator.generate(any(), any()) } returns byteArrayOf(1, 2, 3)
         every { sosialhjelpPdfGenerator.generateBrukerkvitteringPdf() } returns byteArrayOf(1, 2, 3)
-        every { digisosApi.krypterOgLastOppFiler(any(), any(), any(), any(), any(), any(), any()) } returns "digisosid"
+        every { digisosApiClient.krypterOgLastOppFiler(any(), any(), any(), any(), any(), any(), any()) } returns "digisosid"
         every { soknadUnderArbeidService.settInnsendingstidspunktPaSoknad(any()) } just runs
         every { henvendelseService.oppdaterMetadataVedAvslutningAvSoknad(any(), any(), any(), any()) } just runs
         every { innsendingService.hentAlleOpplastedeVedleggForSoknad(any()) } returns lagOpplastetVedlegg()
