@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.web.rest.feil;
 
-import no.nav.sosialhjelp.soknad.consumer.exceptions.SikkerhetsBegrensningException;
-import no.nav.sosialhjelp.soknad.consumer.exceptions.TjenesteUtilgjengeligException;
+import no.nav.sosialhjelp.soknad.client.exceptions.SikkerhetsBegrensningException;
+import no.nav.sosialhjelp.soknad.client.exceptions.TjenesteUtilgjengeligException;
 import no.nav.sosialhjelp.soknad.domain.model.exception.AuthorizationException;
 import no.nav.sosialhjelp.soknad.domain.model.exception.EttersendelseSendtForSentException;
 import no.nav.sosialhjelp.soknad.domain.model.exception.OpplastingException;

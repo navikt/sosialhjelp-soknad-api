@@ -11,7 +11,7 @@ import no.nav.sosialhjelp.soknad.api.saksoversikt.SaksoversiktConfig;
 import no.nav.sosialhjelp.soknad.begrunnelse.BegrunnelseConfig;
 import no.nav.sosialhjelp.soknad.bosituasjon.BosituasjonConfig;
 import no.nav.sosialhjelp.soknad.business.BusinessConfig;
-import no.nav.sosialhjelp.soknad.consumer.ConsumerConfig;
+import no.nav.sosialhjelp.soknad.client.ClientConfig;
 import no.nav.sosialhjelp.soknad.ettersending.EttersendingConfig;
 import no.nav.sosialhjelp.soknad.health.HealthConfig;
 import no.nav.sosialhjelp.soknad.health.selftest.SelftestService;
@@ -37,7 +37,7 @@ import org.springframework.context.annotation.Import;
 @Configuration
 @Import({
         BusinessConfig.class,
-        ConsumerConfig.class,
+        ClientConfig.class,
         ContentConfig.class,
         OidcTokenValidatorConfig.class,
         MetricsConfiguration.class,
