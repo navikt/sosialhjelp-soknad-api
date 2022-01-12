@@ -1,6 +1,7 @@
 package no.nav.sosialhjelp.soknad.innsending.digisosapi
 
 import com.fasterxml.jackson.core.JsonProcessingException
+import no.finn.unleash.Unleash
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator.ensureValidSoknad
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator.ensureValidVedlegg
@@ -34,12 +35,14 @@ import java.io.ByteArrayInputStream
 
 class DigisosApiService(
     private val digisosApi: DigisosApi,
+    private val digisosApiClient: DigisosApiClient,
     private val sosialhjelpPdfGenerator: SosialhjelpPdfGenerator,
     private val innsendingService: InnsendingService,
     private val henvendelseService: HenvendelseService,
     private val soknadUnderArbeidService: SoknadUnderArbeidService,
     private val soknadMetricsService: SoknadMetricsService,
-    private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository
+    private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
+    private val unleash: Unleash
 ) {
     private val objectMapper = JsonSosialhjelpObjectMapper.createObjectMapper()
 
@@ -86,33 +89,70 @@ class DigisosApiService(
         return filOpplastinger
     }
 
-    fun sendOgKrypter(
-        soknadJson: String?,
-        tilleggsinformasjonJson: String?,
-        vedleggJson: String?,
-        filOpplastinger: List<FilOpplasting>?,
-        kommunenr: String?,
+    private fun sendOgKrypter(
+        soknadJson: String,
+        tilleggsinformasjonJson: String,
+        vedleggJson: String,
+        filOpplastinger: List<FilOpplasting>,
+        kommunenr: String,
         navEnhetsnavn: String,
-        behandlingsId: String?,
+        behandlingsId: String,
         token: String?
     ): String {
         val event = lagForsoktSendtDigisosApiEvent(navEnhetsnavn)
+
+        val brukKotlinClient = unleash.isEnabled(BRUK_KOTLIN_CLIENT, false)
+
         return try {
-            digisosApi.krypterOgLastOppFiler(
-                soknadJson,
-                tilleggsinformasjonJson,
-                vedleggJson,
-                filOpplastinger,
-                kommunenr,
-                behandlingsId,
-                token
-            )
+            if (brukKotlinClient) {
+                sendMedKotlinClient(soknadJson, tilleggsinformasjonJson, vedleggJson, filOpplastinger, kommunenr, behandlingsId, token)
+            } else {
+                sendMedJavaClient(soknadJson, tilleggsinformasjonJson, vedleggJson, filOpplastinger, kommunenr, behandlingsId, token)
+            }
         } catch (e: Exception) {
             event.setFailed()
             throw e
         } finally {
             event.report()
         }
+    }
+
+    private fun sendMedKotlinClient(
+        soknadJson: String,
+        tilleggsinformasjonJson: String,
+        vedleggJson: String,
+        filOpplastinger: List<FilOpplasting>,
+        kommunenr: String,
+        behandlingsId: String,
+        token: String?
+    ): String {
+        return try {
+            log.info("Forsøker å ta i bruk kotlin-versjon av klient mot DigisosApi")
+            digisosApiClient.krypterOgLastOppFiler(soknadJson, tilleggsinformasjonJson, vedleggJson, filOpplastinger, kommunenr, behandlingsId, token)
+        } catch (e: Exception) {
+            log.warn("Noe feilet ved sending via kotlin-versjon av klient mot DigisosApi - Fallback til java-versjon", e)
+            sendMedJavaClient(soknadJson, tilleggsinformasjonJson, vedleggJson, filOpplastinger, kommunenr, behandlingsId, token)
+        }
+    }
+
+    private fun sendMedJavaClient(
+        soknadJson: String,
+        tilleggsinformasjonJson: String,
+        vedleggJson: String,
+        filOpplastinger: List<FilOpplasting>,
+        kommunenr: String,
+        behandlingsId: String,
+        token: String?
+    ): String {
+        return digisosApi.krypterOgLastOppFiler(
+            soknadJson,
+            tilleggsinformasjonJson,
+            vedleggJson,
+            filOpplastinger,
+            kommunenr,
+            behandlingsId,
+            token
+        )
     }
 
     private fun lagForsoktSendtDigisosApiEvent(navEnhetsnavn: String): Event {
@@ -173,7 +213,7 @@ class DigisosApiService(
         )
     }
 
-    fun sendSoknad(soknadUnderArbeid: SoknadUnderArbeid, token: String?, kommunenummer: String?): String {
+    fun sendSoknad(soknadUnderArbeid: SoknadUnderArbeid, token: String?, kommunenummer: String): String {
         var behandlingsId = soknadUnderArbeid.behandlingsId
         soknadUnderArbeidService.settInnsendingstidspunktPaSoknad(soknadUnderArbeid)
         log.info("Starter innsending av søknad med behandlingsId {}, skal sendes til DigisosApi", behandlingsId)
@@ -266,5 +306,7 @@ class DigisosApiService(
 
     companion object {
         private val log = LoggerFactory.getLogger(DigisosApiService::class.java)
+
+        const val BRUK_KOTLIN_CLIENT = "sosialhjelp.soknad.bruk-digisosapi-kotlin-client"
     }
 }

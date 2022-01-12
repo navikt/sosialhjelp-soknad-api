@@ -6,6 +6,7 @@ import io.mockk.just
 import io.mockk.mockk
 import io.mockk.runs
 import io.mockk.verify
+import no.finn.unleash.Unleash
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknadsmottaker
@@ -34,22 +35,26 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 internal class DigisosApiServiceTest {
-    private val innsendingService: InnsendingService = mockk()
-    private val sosialhjelpPdfGenerator: SosialhjelpPdfGenerator = mockk()
-    private val soknadUnderArbeidService: SoknadUnderArbeidService = mockk()
-    private val henvendelseService: HenvendelseService = mockk()
     private val digisosApi: DigisosApi = mockk()
+    private val digisosApiClient: DigisosApiClient = mockk()
+    private val sosialhjelpPdfGenerator: SosialhjelpPdfGenerator = mockk()
+    private val innsendingService: InnsendingService = mockk()
+    private val henvendelseService: HenvendelseService = mockk()
+    private val soknadUnderArbeidService: SoknadUnderArbeidService = mockk()
     private val soknadMetricsService: SoknadMetricsService = mockk()
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
+    private val unleash: Unleash = mockk()
 
     private val digisosApiService = DigisosApiService(
         digisosApi,
+        digisosApiClient,
         sosialhjelpPdfGenerator,
         innsendingService,
         henvendelseService,
         soknadUnderArbeidService,
         soknadMetricsService,
-        soknadUnderArbeidRepository
+        soknadUnderArbeidRepository,
+        unleash
     )
 
     @BeforeEach
@@ -58,6 +63,8 @@ internal class DigisosApiServiceTest {
         SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
 
         clearAllMocks()
+
+        every { unleash.isEnabled(any(), any<Boolean>()) } returns false
     }
 
     @AfterEach
