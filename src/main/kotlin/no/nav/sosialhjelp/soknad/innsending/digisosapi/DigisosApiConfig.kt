@@ -1,12 +1,10 @@
 package no.nav.sosialhjelp.soknad.innsending.digisosapi
 
 import io.netty.channel.ChannelOption
-import no.finn.unleash.Unleash
 import no.nav.sosialhjelp.metrics.MetricsFactory
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.SosialhjelpPdfGenerator
 import no.nav.sosialhjelp.soknad.client.fiks.kommuneinfo.KommuneInfoService
-import no.nav.sosialhjelp.soknad.consumer.fiks.DigisosApi
 import no.nav.sosialhjelp.soknad.health.selftest.Pingable
 import no.nav.sosialhjelp.soknad.innsending.HenvendelseService
 import no.nav.sosialhjelp.soknad.innsending.InnsendingService
@@ -32,26 +30,22 @@ open class DigisosApiConfig(
 
     @Bean
     open fun digisosApiService(
-        digisosApi: DigisosApi,
         digisosApiClient: DigisosApiClient,
         sosialhjelpPdfGenerator: SosialhjelpPdfGenerator,
         innsendingService: InnsendingService,
         henvendelseService: HenvendelseService,
         soknadUnderArbeidService: SoknadUnderArbeidService,
         soknadMetricsService: SoknadMetricsService,
-        soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
-        unleash: Unleash
+        soknadUnderArbeidRepository: SoknadUnderArbeidRepository
     ): DigisosApiService {
         return DigisosApiService(
-            digisosApi,
             digisosApiClient,
             sosialhjelpPdfGenerator,
             innsendingService,
             henvendelseService,
             soknadUnderArbeidService,
             soknadMetricsService,
-            soknadUnderArbeidRepository,
-            unleash
+            soknadUnderArbeidRepository
         )
     }
 
