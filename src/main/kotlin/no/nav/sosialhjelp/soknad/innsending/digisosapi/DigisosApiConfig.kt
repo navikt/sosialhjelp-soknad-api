@@ -1,9 +1,13 @@
 package no.nav.sosialhjelp.soknad.innsending.digisosapi
 
 import io.netty.channel.ChannelOption
+import no.finn.unleash.Unleash
+import no.nav.sosialhjelp.metrics.MetricsFactory
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.SosialhjelpPdfGenerator
+import no.nav.sosialhjelp.soknad.client.fiks.kommuneinfo.KommuneInfoService
 import no.nav.sosialhjelp.soknad.consumer.fiks.DigisosApi
+import no.nav.sosialhjelp.soknad.health.selftest.Pingable
 import no.nav.sosialhjelp.soknad.innsending.HenvendelseService
 import no.nav.sosialhjelp.soknad.innsending.InnsendingService
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.digisosObjectMapper
@@ -29,27 +33,40 @@ open class DigisosApiConfig(
     @Bean
     open fun digisosApiService(
         digisosApi: DigisosApi,
+        digisosApiClient: DigisosApiClient,
         sosialhjelpPdfGenerator: SosialhjelpPdfGenerator,
         innsendingService: InnsendingService,
         henvendelseService: HenvendelseService,
         soknadUnderArbeidService: SoknadUnderArbeidService,
         soknadMetricsService: SoknadMetricsService,
-        soknadUnderArbeidRepository: SoknadUnderArbeidRepository
+        soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
+        unleash: Unleash
     ): DigisosApiService {
         return DigisosApiService(
             digisosApi,
+            digisosApiClient,
             sosialhjelpPdfGenerator,
             innsendingService,
             henvendelseService,
             soknadUnderArbeidService,
             soknadMetricsService,
-            soknadUnderArbeidRepository
+            soknadUnderArbeidRepository,
+            unleash
         )
     }
 
     @Bean
     open fun dokumentlagerClient(fiksWebClient: WebClient): DokumentlagerClient {
         return DokumentlagerClientImpl(fiksWebClient, properties)
+    }
+
+    @Bean
+    open fun digisosApiClient(
+        kommuneInfoService: KommuneInfoService,
+        dokumentlagerClient: DokumentlagerClient
+    ): DigisosApiClient {
+        val digisosApiClient = DigisosApiClientImpl(kommuneInfoService, dokumentlagerClient, properties)
+        return MetricsFactory.createTimerProxy("DigisosApi", digisosApiClient, DigisosApiClient::class.java)
     }
 
     @Bean
@@ -69,6 +86,19 @@ open class DigisosApiConfig(
                 it.defaultCodecs().jackson2JsonEncoder(Jackson2JsonEncoder(digisosObjectMapper))
             }
             .build()
+
+    @Bean
+    open fun digisosApiPing(digisosApiClient: DigisosApiClient): Pingable {
+        return Pingable {
+            val metadata = Pingable.PingMetadata(digisosApiEndpoint, "DigisosApi", true)
+            try {
+                digisosApiClient.ping()
+                Pingable.lyktes(metadata)
+            } catch (e: Exception) {
+                Pingable.feilet(metadata, e)
+            }
+        }
+    }
 
     private val properties = DigisosApiProperties(digisosApiEndpoint, integrasjonsidFiks, integrasjonpassordFiks)
 
