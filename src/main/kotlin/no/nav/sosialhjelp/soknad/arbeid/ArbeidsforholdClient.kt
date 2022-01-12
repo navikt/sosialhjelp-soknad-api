@@ -1,10 +1,10 @@
 package no.nav.sosialhjelp.soknad.arbeid
 
 import no.nav.sosialhjelp.soknad.arbeid.dto.ArbeidsforholdDto
+import no.nav.sosialhjelp.soknad.client.exceptions.TjenesteUtilgjengeligException
 import no.nav.sosialhjelp.soknad.client.sts.StsClient
 import no.nav.sosialhjelp.soknad.common.mdc.MdcOperations
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
-import no.nav.sosialhjelp.soknad.consumer.exceptions.TjenesteUtilgjengeligException
 import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants
 import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.BEARER
 import org.eclipse.jetty.http.HttpHeader

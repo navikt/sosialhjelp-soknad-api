@@ -1,8 +1,7 @@
 package no.nav.sosialhjelp.soknad.client.sts
 
+import no.nav.sosialhjelp.soknad.client.exceptions.TjenesteUtilgjengeligException
 import no.nav.sosialhjelp.soknad.client.sts.dto.FssToken
-import no.nav.sosialhjelp.soknad.consumer.exceptions.TjenesteUtilgjengeligException
-import no.nav.sosialhjelp.soknad.domain.model.exception.SosialhjelpSoknadApiException
 import org.slf4j.LoggerFactory.getLogger
 import java.time.LocalDateTime
 import javax.ws.rs.ClientErrorException
@@ -46,13 +45,13 @@ class StsClientImpl(
                 fssToken
             } catch (e: ClientErrorException) {
                 log.warn("STS - ${e.response.statusInfo}", e)
-                throw SosialhjelpSoknadApiException("STS - ${e.response.statusInfo}. Endpoint=$baseurl", e)
+                throw TjenesteUtilgjengeligException("STS - ${e.response.statusInfo}. Endpoint=$baseurl", e)
             } catch (e: ServerErrorException) {
                 log.error("STS - ${e.response.statusInfo} - Tjenesten er ikke tilgjengelig", e)
                 throw TjenesteUtilgjengeligException("STS - ${e.response.statusInfo}. Endpoint=$baseurl", e)
             } catch (e: Exception) {
                 log.error("Noe feil skjedde ved henting av token fra STS i FSS.")
-                throw SosialhjelpSoknadApiException("Noe feil skjedde ved henting av token fra STS i FSS. Endpoint=$baseurl", e)
+                throw TjenesteUtilgjengeligException("Noe feil skjedde ved henting av token fra STS i FSS. Endpoint=$baseurl", e)
             }
         }
         log.debug("Bruker cachet token fra STS")
