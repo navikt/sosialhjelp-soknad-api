@@ -6,9 +6,6 @@ import no.ks.kryptering.CMSKrypteringImpl
 import no.ks.kryptering.CMSStreamKryptering
 import no.nav.sosialhjelp.kotlin.utils.logger
 import no.nav.sosialhjelp.soknad.client.fiks.kommuneinfo.KommuneInfoService
-import no.nav.sosialhjelp.soknad.consumer.fiks.FiksServiceUnavailableRetryStrategy
-import no.nav.sosialhjelp.soknad.consumer.fiks.dto.FilMetadata
-import no.nav.sosialhjelp.soknad.consumer.fiks.dto.FilOpplasting
 import no.nav.sosialhjelp.soknad.domain.model.mock.MockUtils
 import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.HEADER_INTEGRASJON_ID
 import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.HEADER_INTEGRASJON_PASSORD
@@ -16,6 +13,8 @@ import no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.digisosObjectMapper
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.getDigisosIdFromResponse
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.stripVekkFnutter
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilMetadata
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilOpplasting
 import org.apache.commons.io.IOUtils
 import org.apache.http.client.config.RequestConfig
 import org.apache.http.client.methods.HttpPost
@@ -201,10 +200,11 @@ class DigisosApiClientImpl(
                 FilForOpplasting.builder<Any>()
                     .filnavn(dokument.metadata.filnavn)
                     .metadata(
-                        FilMetadata()
-                            .withFilnavn(dokument.metadata.filnavn)
-                            .withMimetype(dokument.metadata.mimetype)
-                            .withStorrelse(dokument.metadata.storrelse)
+                        FilMetadata(
+                            filnavn = dokument.metadata.filnavn,
+                            mimetype = dokument.metadata.mimetype,
+                            storrelse = dokument.metadata.storrelse
+                        )
                     )
                     .data(dokument.data)
                     .build()

@@ -1,7 +1,6 @@
 package no.nav.sosialhjelp.soknad.innsending.digisosapi
 
 import com.fasterxml.jackson.core.JsonProcessingException
-import no.finn.unleash.Unleash
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator.ensureValidSoknad
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator.ensureValidVedlegg
@@ -17,9 +16,6 @@ import no.nav.sosialhjelp.soknad.common.filedetection.FileDetectionUtils.getMime
 import no.nav.sosialhjelp.soknad.common.filedetection.MimeTypes.APPLICATION_PDF
 import no.nav.sosialhjelp.soknad.common.filedetection.MimeTypes.TEXT_X_MATLAB
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils.getUserIdFromToken
-import no.nav.sosialhjelp.soknad.consumer.fiks.DigisosApi
-import no.nav.sosialhjelp.soknad.consumer.fiks.dto.FilMetadata
-import no.nav.sosialhjelp.soknad.consumer.fiks.dto.FilOpplasting
 import no.nav.sosialhjelp.soknad.domain.OpplastetVedlegg
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.domain.Vedleggstatus
@@ -27,6 +23,8 @@ import no.nav.sosialhjelp.soknad.innsending.HenvendelseService
 import no.nav.sosialhjelp.soknad.innsending.InnsendingService
 import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils.getVedleggFromInternalSoknad
 import no.nav.sosialhjelp.soknad.innsending.SenderUtils.createPrefixedBehandlingsIdInNonProd
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilMetadata
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilOpplasting
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
 import no.nav.sosialhjelp.soknad.metrics.MetricsUtils.navKontorTilInfluxNavn
 import no.nav.sosialhjelp.soknad.metrics.SoknadMetricsService
@@ -34,15 +32,13 @@ import org.slf4j.LoggerFactory
 import java.io.ByteArrayInputStream
 
 class DigisosApiService(
-    private val digisosApi: DigisosApi,
     private val digisosApiClient: DigisosApiClient,
     private val sosialhjelpPdfGenerator: SosialhjelpPdfGenerator,
     private val innsendingService: InnsendingService,
     private val henvendelseService: HenvendelseService,
     private val soknadUnderArbeidService: SoknadUnderArbeidService,
     private val soknadMetricsService: SoknadMetricsService,
-    private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
-    private val unleash: Unleash
+    private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository
 ) {
     private val objectMapper = JsonSosialhjelpObjectMapper.createObjectMapper()
 
@@ -101,58 +97,14 @@ class DigisosApiService(
     ): String {
         val event = lagForsoktSendtDigisosApiEvent(navEnhetsnavn)
 
-        val brukKotlinClient = unleash.isEnabled(BRUK_KOTLIN_CLIENT, false)
-
         return try {
-            if (brukKotlinClient) {
-                sendMedKotlinClient(soknadJson, tilleggsinformasjonJson, vedleggJson, filOpplastinger, kommunenr, behandlingsId, token)
-            } else {
-                sendMedJavaClient(soknadJson, tilleggsinformasjonJson, vedleggJson, filOpplastinger, kommunenr, behandlingsId, token)
-            }
+            digisosApiClient.krypterOgLastOppFiler(soknadJson, tilleggsinformasjonJson, vedleggJson, filOpplastinger, kommunenr, behandlingsId, token)
         } catch (e: Exception) {
             event.setFailed()
             throw e
         } finally {
             event.report()
         }
-    }
-
-    private fun sendMedKotlinClient(
-        soknadJson: String,
-        tilleggsinformasjonJson: String,
-        vedleggJson: String,
-        filOpplastinger: List<FilOpplasting>,
-        kommunenr: String,
-        behandlingsId: String,
-        token: String?
-    ): String {
-        return try {
-            log.info("Forsøker å ta i bruk kotlin-versjon av klient mot DigisosApi")
-            digisosApiClient.krypterOgLastOppFiler(soknadJson, tilleggsinformasjonJson, vedleggJson, filOpplastinger, kommunenr, behandlingsId, token)
-        } catch (e: Exception) {
-            log.warn("Noe feilet ved sending via kotlin-versjon av klient mot DigisosApi - Fallback til java-versjon", e)
-            sendMedJavaClient(soknadJson, tilleggsinformasjonJson, vedleggJson, filOpplastinger, kommunenr, behandlingsId, token)
-        }
-    }
-
-    private fun sendMedJavaClient(
-        soknadJson: String,
-        tilleggsinformasjonJson: String,
-        vedleggJson: String,
-        filOpplastinger: List<FilOpplasting>,
-        kommunenr: String,
-        behandlingsId: String,
-        token: String?
-    ): String {
-        return digisosApi.krypterOgLastOppFiler(
-            soknadJson,
-            tilleggsinformasjonJson,
-            vedleggJson,
-            filOpplastinger,
-            kommunenr,
-            behandlingsId,
-            token
-        )
     }
 
     private fun lagForsoktSendtDigisosApiEvent(navEnhetsnavn: String): Event {
@@ -195,21 +147,23 @@ class DigisosApiService(
         val detectedMimeType = getMimeType(opplastetVedlegg.data)
         val mimetype = if (detectedMimeType.equals(TEXT_X_MATLAB, ignoreCase = true)) APPLICATION_PDF else detectedMimeType
         return FilOpplasting(
-            FilMetadata()
-                .withFilnavn(opplastetVedlegg.filnavn)
-                .withMimetype(mimetype)
-                .withStorrelse(pdf.size.toLong()),
-            ByteArrayInputStream(pdf)
+            metadata = FilMetadata(
+                filnavn = opplastetVedlegg.filnavn,
+                mimetype = mimetype,
+                storrelse = pdf.size.toLong()
+            ),
+            data = ByteArrayInputStream(pdf)
         )
     }
 
     private fun opprettFilOpplastingFraByteArray(filnavn: String, mimetype: String, bytes: ByteArray): FilOpplasting {
         return FilOpplasting(
-            FilMetadata()
-                .withFilnavn(filnavn)
-                .withMimetype(mimetype)
-                .withStorrelse(bytes.size.toLong()),
-            ByteArrayInputStream(bytes)
+            metadata = FilMetadata(
+                filnavn = filnavn,
+                mimetype = mimetype,
+                storrelse = bytes.size.toLong()
+            ),
+            data = ByteArrayInputStream(bytes)
         )
     }
 
@@ -306,7 +260,5 @@ class DigisosApiService(
 
     companion object {
         private val log = LoggerFactory.getLogger(DigisosApiService::class.java)
-
-        const val BRUK_KOTLIN_CLIENT = "sosialhjelp.soknad.bruk-digisosapi-kotlin-client"
     }
 }
