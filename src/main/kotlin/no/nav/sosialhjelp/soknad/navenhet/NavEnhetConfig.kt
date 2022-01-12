@@ -2,7 +2,7 @@ package no.nav.sosialhjelp.soknad.navenhet
 
 import no.nav.sosialhjelp.soknad.adressesok.AdressesokService
 import no.nav.sosialhjelp.soknad.client.redis.RedisService
-import no.nav.sosialhjelp.soknad.consumer.common.rest.RestUtils
+import no.nav.sosialhjelp.soknad.common.rest.RestUtils
 import no.nav.sosialhjelp.soknad.health.selftest.Pingable
 import no.nav.sosialhjelp.soknad.health.selftest.Pingable.Companion.feilet
 import no.nav.sosialhjelp.soknad.health.selftest.Pingable.Companion.lyktes

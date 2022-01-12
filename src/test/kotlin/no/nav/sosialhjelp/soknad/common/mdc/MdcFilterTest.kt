@@ -2,12 +2,12 @@ package no.nav.sosialhjelp.soknad.common.mdc
 
 import io.mockk.every
 import io.mockk.mockk
+import no.nav.sosialhjelp.soknad.common.mdc.MdcOperations.MDC_BEHANDLINGS_ID
+import no.nav.sosialhjelp.soknad.common.mdc.MdcOperations.MDC_CALL_ID
+import no.nav.sosialhjelp.soknad.common.mdc.MdcOperations.MDC_CONSUMER_ID
+import no.nav.sosialhjelp.soknad.common.mdc.MdcOperations.getFromMDC
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerImpl
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
-import no.nav.sosialhjelp.soknad.consumer.mdc.MDCOperations
-import no.nav.sosialhjelp.soknad.consumer.mdc.MDCOperations.MDC_BEHANDLINGS_ID
-import no.nav.sosialhjelp.soknad.consumer.mdc.MDCOperations.MDC_CALL_ID
-import no.nav.sosialhjelp.soknad.consumer.mdc.MDCOperations.getFromMDC
 import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.HEADER_CALL_ID
 import no.nav.sosialhjelp.soknad.web.rest.SoknadApplication
 import org.assertj.core.api.Assertions.assertThat
@@ -70,7 +70,7 @@ internal class MdcFilterTest {
         val filter = MdcFilter()
         filter.filter(request)
 
-        assertThat(getFromMDC(MDCOperations.MDC_CONSUMER_ID)).isEqualTo(MOCK_CONSUMER_ID)
+        assertThat(getFromMDC(MDC_CONSUMER_ID)).isEqualTo(MOCK_CONSUMER_ID)
     }
 
     @Test

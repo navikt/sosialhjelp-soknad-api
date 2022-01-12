@@ -8,8 +8,6 @@ import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata.VedleggMetadata
-import no.nav.sosialhjelp.soknad.business.util.JsonVedleggUtils
-import no.nav.sosialhjelp.soknad.business.util.JsonVedleggUtils.isVedleggskravAnnet
 import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus.FERDIG
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeidStatus
@@ -18,6 +16,8 @@ import no.nav.sosialhjelp.soknad.domain.model.exception.EttersendelseSendtForSen
 import no.nav.sosialhjelp.soknad.domain.model.exception.SosialhjelpSoknadApiException
 import no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SoknadType
 import no.nav.sosialhjelp.soknad.innsending.HenvendelseService
+import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils.FEATURE_UTVIDE_VEDLEGGJSON
+import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils.isVedleggskravAnnet
 import java.time.Clock
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -136,7 +136,7 @@ class EttersendingService(
             val annetVedlegg = VedleggMetadata()
             annetVedlegg.skjema = "annet"
             annetVedlegg.tillegg = "annet"
-            if (unleash.isEnabled(JsonVedleggUtils.FEATURE_UTVIDE_VEDLEGGJSON, false)) {
+            if (unleash.isEnabled(FEATURE_UTVIDE_VEDLEGGJSON, false)) {
                 annetVedlegg.hendelseType = JsonVedlegg.HendelseType.BRUKER
             }
             manglendeVedlegg.add(annetVedlegg)
