@@ -41,7 +41,7 @@ class SubjectHandlerImpl : SubjectHandler {
     }
 
     override fun getConsumerId(): String {
-        return System.getProperty("systemuser.username") ?: "srvsoknadsosialhje"
+        return "srvsoknadsosialhje"
     }
 
     companion object {
