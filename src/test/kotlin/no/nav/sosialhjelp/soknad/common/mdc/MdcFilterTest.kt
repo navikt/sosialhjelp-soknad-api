@@ -25,7 +25,6 @@ internal class MdcFilterTest {
     @BeforeEach
     fun setUp() {
         System.setProperty("environment.name", "test")
-        System.setProperty("systemuser.username", MOCK_CONSUMER_ID)
         SubjectHandlerUtils.setNewSubjectHandlerImpl(SubjectHandlerImpl())
     }
 
@@ -33,7 +32,6 @@ internal class MdcFilterTest {
     fun tearDown() {
         SubjectHandlerUtils.resetSubjectHandlerImpl()
         System.clearProperty("environment.name")
-        System.clearProperty("systemuser.username")
     }
 
     @Test
@@ -70,7 +68,7 @@ internal class MdcFilterTest {
         val filter = MdcFilter()
         filter.filter(request)
 
-        assertThat(getFromMDC(MDC_CONSUMER_ID)).isEqualTo(MOCK_CONSUMER_ID)
+        assertThat(getFromMDC(MDC_CONSUMER_ID)).isEqualTo("srvsoknadsosialhje")
     }
 
     @Test
@@ -91,7 +89,6 @@ internal class MdcFilterTest {
 
     companion object {
         private const val MOCK_CALL_ID = "mock_call_id"
-        private const val MOCK_CONSUMER_ID = "mock_consumer_id"
         private const val MOCK_BEHANDLINGS_ID = "mock_behandlings_id"
     }
 }
