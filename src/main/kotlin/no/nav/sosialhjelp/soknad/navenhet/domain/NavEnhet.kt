@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.navenhet.domain
 
-import no.nav.sosialhjelp.soknad.domain.model.util.KommuneTilNavEnhetMapper
+import no.nav.sosialhjelp.soknad.common.mapper.KommuneTilNavEnhetMapper
 
 data class NavEnhet(
     val enhetNr: String?,

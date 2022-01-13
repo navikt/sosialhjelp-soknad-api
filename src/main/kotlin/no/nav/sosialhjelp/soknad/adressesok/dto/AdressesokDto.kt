@@ -3,7 +3,7 @@ package no.nav.sosialhjelp.soknad.adressesok.dto
 import no.nav.sosialhjelp.soknad.adressesok.AdressesokUtils.formatterKommunenavn
 import no.nav.sosialhjelp.soknad.adressesok.domain.AdresseForslag
 import no.nav.sosialhjelp.soknad.adressesok.domain.AdresseForslagType
-import no.nav.sosialhjelp.soknad.domain.model.util.KommuneTilNavEnhetMapper
+import no.nav.sosialhjelp.soknad.common.mapper.KommuneTilNavEnhetMapper
 
 data class AdressesokDataDto(
     val sokAdresse: AdressesokResultDto
@@ -46,7 +46,7 @@ data class VegadresseDto(
         )
     }
 
-    private val kommunenavnFormattert: String
+    private val kommunenavnFormattert: String?
         get() = KommuneTilNavEnhetMapper.IKS_KOMMUNER.getOrDefault(kommunenummer, formatterKommunenavn(kommunenavn))
 
     private val bydelsnummerOrKommunenummer: String?
