@@ -8,9 +8,8 @@ import io.mockk.mockk
 import io.mockk.runs
 import io.mockk.verify
 import no.finn.unleash.Unleash
-import no.nav.sosialhjelp.soknad.api.nedetid.NedetidUtils
-import no.nav.sosialhjelp.soknad.api.nedetid.NedetidUtils.NEDETID_SLUTT
-import no.nav.sosialhjelp.soknad.api.nedetid.NedetidUtils.NEDETID_START
+import no.nav.sosialhjelp.soknad.api.nedetid.NedetidService
+import no.nav.sosialhjelp.soknad.api.nedetid.NedetidService.Companion.dateTimeFormatter
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata
@@ -50,6 +49,7 @@ internal class SoknadActionsTest {
     private val soknadMetadataRepository: SoknadMetadataRepository = mockk()
     private val digisosApiService: DigisosApiService = mockk()
     private val unleash: Unleash = mockk()
+    private val nedetidService: NedetidService = mockk()
 
     private val actions = SoknadActions(
         soknadService,
@@ -58,7 +58,8 @@ internal class SoknadActionsTest {
         soknadUnderArbeidRepository,
         soknadMetadataRepository,
         digisosApiService,
-        unleash
+        unleash,
+        nedetidService
     )
 
     var context: ServletContext = mockk()
@@ -73,22 +74,21 @@ internal class SoknadActionsTest {
         EIER = SubjectHandlerUtils.getUserIdFromToken()
         every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
         every { unleash.isEnabled(any(), any<Boolean>()) } returns true
+        every { nedetidService.isInnenforNedetid } returns false
     }
 
     @AfterEach
     fun tearDown() {
         System.clearProperty("digisosapi.sending.alltidTilTestkommune.enable")
         System.clearProperty("digisosapi.sending.enable")
-        System.clearProperty(NEDETID_START)
-        System.clearProperty(NEDETID_SLUTT)
         SubjectHandlerUtils.resetSubjectHandlerImpl()
         System.clearProperty("environment.name")
     }
 
     @Test
     fun sendSoknadINedetidSkalKasteException() {
-        System.setProperty(NEDETID_START, LocalDateTime.now().minusDays(1).format(NedetidUtils.dateTimeFormatter))
-        System.setProperty(NEDETID_SLUTT, LocalDateTime.now().plusDays(2).format(NedetidUtils.dateTimeFormatter))
+        every { nedetidService.isInnenforNedetid } returns true
+        every { nedetidService.nedetidSluttAsString } returns LocalDateTime.now().plusDays(2).format(dateTimeFormatter)
 
         assertThatExceptionOfType(SoknadenHarNedetidException::class.java)
             .isThrownBy { actions.sendSoknad("behandlingsId", context, "") }

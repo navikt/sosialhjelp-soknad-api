@@ -10,7 +10,7 @@ import no.nav.sosialhjelp.soknad.api.informasjon.dto.KommuneInfoFrontend
 import no.nav.sosialhjelp.soknad.api.informasjon.dto.Logg
 import no.nav.sosialhjelp.soknad.api.informasjon.dto.NyligInnsendteSoknaderResponse
 import no.nav.sosialhjelp.soknad.api.informasjon.dto.PabegyntSoknad
-import no.nav.sosialhjelp.soknad.api.nedetid.NedetidUtils
+import no.nav.sosialhjelp.soknad.api.nedetid.NedetidService
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.client.fiks.kommuneinfo.KommuneInfoService
 import no.nav.sosialhjelp.soknad.common.mapper.KommuneTilNavEnhetMapper
@@ -52,7 +52,8 @@ open class InformasjonRessurs(
     private val personService: PersonService,
     private val tilgangskontroll: Tilgangskontroll,
     private val soknadMetadataRepository: SoknadMetadataRepository,
-    private val pabegynteSoknaderService: PabegynteSoknaderService
+    private val pabegynteSoknaderService: PabegynteSoknaderService,
+    private val nedetidService: NedetidService
 ) {
 
     private val logger = LoggerFactory.getLogger(InformasjonRessurs::class.java)
@@ -138,7 +139,7 @@ open class InformasjonRessurs(
     @GET
     @Path("/kommuneinfo")
     open fun hentKommuneinfo(): Map<String, KommuneInfoFrontend> {
-        if (NedetidUtils.isInnenforNedetid) {
+        if (nedetidService.isInnenforNedetid) {
             return emptyMap()
         }
         val manueltPakobledeKommuner = mapManueltPakobledeKommuner(KommuneTilNavEnhetMapper.digisoskommuner)
