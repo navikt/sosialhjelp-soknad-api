@@ -26,7 +26,7 @@
 
     <filter>
         <filter-name>OidcTokenValidatorFilter</filter-name>
-        <filter-class>no.nav.sosialhjelp.soknad.web.oidc.OidcTokenValidatorFilter</filter-class>
+        <filter-class>no.nav.sosialhjelp.soknad.common.oidc.OidcTokenValidatorFilter</filter-class>
         <async-supported>true</async-supported>
     </filter>
     <filter-mapping>
