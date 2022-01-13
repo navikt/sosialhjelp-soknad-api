@@ -13,6 +13,10 @@ import no.nav.sosialhjelp.soknad.arbeid.ArbeidRessurs;
 import no.nav.sosialhjelp.soknad.begrunnelse.BegrunnelseRessurs;
 import no.nav.sosialhjelp.soknad.bosituasjon.BosituasjonRessurs;
 import no.nav.sosialhjelp.soknad.common.mdc.MdcFilter;
+import no.nav.sosialhjelp.soknad.common.rest.feil.ApplicationExceptionMapper;
+import no.nav.sosialhjelp.soknad.common.rest.feil.ThrowableMapper;
+import no.nav.sosialhjelp.soknad.common.rest.provider.JsonToTextPlainBodyWriter;
+import no.nav.sosialhjelp.soknad.common.rest.provider.SoknadObjectMapperProvider;
 import no.nav.sosialhjelp.soknad.ettersending.EttersendingRessurs;
 import no.nav.sosialhjelp.soknad.health.InternalRessurs;
 import no.nav.sosialhjelp.soknad.innsending.SoknadActions;
@@ -98,6 +102,11 @@ public class SoknadApplication extends ResourceConfig {
 
         register(JacksonJaxbJsonProvider.class);
         register(MultiPartFeature.class);
+        register(JsonToTextPlainBodyWriter.class);
+        register(SoknadObjectMapperProvider.class);
+
+        register(ApplicationExceptionMapper.class);
+        register(ThrowableMapper.class);
 
         // Filters
         register(HeaderFilter.class);
