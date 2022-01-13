@@ -2,6 +2,7 @@ package no.nav.sosialhjelp.soknad.common.rest.feil
 
 import no.nav.sosialhjelp.soknad.business.exceptions.SamtidigOppdateringException
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import java.net.URI
 import javax.ws.rs.NotFoundException
@@ -13,7 +14,9 @@ import javax.ws.rs.ext.Provider
 
 @Provider
 @Component
-class ThrowableMapper : ExceptionMapper<Throwable> {
+class ThrowableMapper(
+    @Value("\${loginservice.url}") private val loginserviceUrl: String
+) : ExceptionMapper<Throwable> {
 
     override fun toResponse(e: Throwable): Response {
         return when (e) {
@@ -54,7 +57,7 @@ class ThrowableMapper : ExceptionMapper<Throwable> {
     }
 
     private fun createUnauthorizedWithLoginLocationResponse(message: String): Response {
-        val loginUrl = URI.create(System.getProperty("loginservice.url"))
+        val loginUrl = URI.create(loginserviceUrl)
         return Response.status(Response.Status.UNAUTHORIZED.statusCode)
             .location(loginUrl)
             .type(MediaType.APPLICATION_JSON)
