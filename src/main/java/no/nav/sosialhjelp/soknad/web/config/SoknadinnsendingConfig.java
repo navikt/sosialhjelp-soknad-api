@@ -12,6 +12,8 @@ import no.nav.sosialhjelp.soknad.begrunnelse.BegrunnelseConfig;
 import no.nav.sosialhjelp.soknad.bosituasjon.BosituasjonConfig;
 import no.nav.sosialhjelp.soknad.business.BusinessConfig;
 import no.nav.sosialhjelp.soknad.client.ClientConfig;
+import no.nav.sosialhjelp.soknad.common.rest.feil.ApplicationExceptionMapper;
+import no.nav.sosialhjelp.soknad.common.rest.feil.ThrowableMapper;
 import no.nav.sosialhjelp.soknad.ettersending.EttersendingConfig;
 import no.nav.sosialhjelp.soknad.health.HealthConfig;
 import no.nav.sosialhjelp.soknad.health.selftest.SelftestService;
@@ -66,7 +68,9 @@ import org.springframework.context.annotation.Import;
         InnsendingConfig.class,
         TilgangskontrollConfig.class,
         SchedulerConfig.class,
-        MetricsConfig.class
+        MetricsConfig.class,
+        ApplicationExceptionMapper.class,
+        ThrowableMapper.class
 })
 @ComponentScan(basePackages = "no.nav.sosialhjelp.soknad.web.rest")
 public class SoknadinnsendingConfig {
