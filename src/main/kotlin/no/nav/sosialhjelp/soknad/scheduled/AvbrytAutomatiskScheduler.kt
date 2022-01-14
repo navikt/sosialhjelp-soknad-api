@@ -5,7 +5,6 @@ import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.BatchSo
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.BatchSoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus.AVBRUTT_AUTOMATISK
-import no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils
 import no.nav.sosialhjelp.soknad.scheduled.leaderelection.LeaderElection
 import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Scheduled
@@ -16,14 +15,15 @@ class AvbrytAutomatiskScheduler(
     private val soknadMetadataRepository: SoknadMetadataRepository,
     private val batchSoknadMetadataRepository: BatchSoknadMetadataRepository,
     private val batchSoknadUnderArbeidRepository: BatchSoknadUnderArbeidRepository,
-    private val batchEnabled: Boolean
+    private val batchEnabled: Boolean,
+    private val schedulerDisabled: Boolean
 ) {
     private var batchStartTime: LocalDateTime? = null
     private var vellykket = 0
 
     @Scheduled(cron = KLOKKEN_FIRE_OM_NATTEN)
     fun avbrytGamleSoknader() {
-        if (ServiceUtils.isScheduledTasksDisabled()) {
+        if (schedulerDisabled) {
             logger.warn("Scheduler is disabled")
             return
         }

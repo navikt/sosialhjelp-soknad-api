@@ -2,7 +2,6 @@ package no.nav.sosialhjelp.soknad.scheduled
 
 import no.nav.sosialhjelp.metrics.MetricsFactory
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.BatchSoknadUnderArbeidRepository
-import no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils
 import no.nav.sosialhjelp.soknad.scheduled.leaderelection.LeaderElection
 import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Scheduled
@@ -11,14 +10,15 @@ import java.time.LocalDateTime
 class SlettSoknadUnderArbeidScheduler(
     private val leaderElection: LeaderElection,
     private val batchSoknadUnderArbeidRepository: BatchSoknadUnderArbeidRepository,
-    private val batchEnabled: Boolean
+    private val batchEnabled: Boolean,
+    private val schedulerDisabled: Boolean
 ) {
     private var batchStartTime: LocalDateTime? = null
     private var vellykket = 0
 
     @Scheduled(cron = KLOKKEN_HALV_FEM_OM_NATTEN)
     fun slettGamleSoknadUnderArbeid() {
-        if (ServiceUtils.isScheduledTasksDisabled()) {
+        if (schedulerDisabled) {
             logger.warn("Scheduler is disabled")
             return
         }

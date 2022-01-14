@@ -1,10 +1,9 @@
 package no.nav.sosialhjelp.soknad.web.config;
 
-
-import no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils;
 import no.nav.sosialhjelp.soknad.tekster.NavMessageSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -19,6 +18,9 @@ public class ContentConfig {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
     private static final long FEM_MINUTTER = 1000*60*5;
+
+    @Value("${scheduler.disable}")
+    private boolean schedulerDisabled;
 
     @Bean
     public NavMessageSource navMessageSource() {
@@ -37,7 +39,7 @@ public class ContentConfig {
 
     @Scheduled(fixedRate = FEM_MINUTTER)
     private void slettCache() {
-        if (ServiceUtils.isScheduledTasksDisabled()) {
+        if (schedulerDisabled) {
             logger.info("Scheduler is disabled");
             return;
         }

@@ -33,7 +33,8 @@ internal class AvbrytAutomatiskSchedulerTest {
         soknadMetadataRepository,
         batchSoknadMetadataRepository,
         batchSoknadUnderArbeidRepository,
-        true
+        batchEnabled = true,
+        schedulerDisabled = false
     )
 
     @BeforeEach

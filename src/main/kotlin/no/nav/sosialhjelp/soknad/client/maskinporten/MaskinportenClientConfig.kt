@@ -1,6 +1,7 @@
 package no.nav.sosialhjelp.soknad.client.maskinporten
 
 import no.nav.sosialhjelp.metrics.MetricsFactory
+import no.nav.sosialhjelp.soknad.common.ServiceUtils
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
@@ -16,19 +17,20 @@ open class MaskinportenClientConfig(
     @Value("\${maskinporten_scopes}") private val scopes: String,
     @Value("\${maskinporten_well_known_url}") private val wellKnownUrl: String,
     @Value("\${maskinporten_client_jwk}") private val clientJwk: String,
+    private val serviceUtils: ServiceUtils
 ) {
 
     @Bean
     @Profile("!test")
     open fun maskinportenClient(): MaskinportenClient {
-        val maskinportenClient = MaskinportenClientImpl(maskinPortenWebClient, maskinportenProperties, wellknown)
+        val maskinportenClient = MaskinportenClientImpl(maskinPortenWebClient, maskinportenProperties, wellknown, serviceUtils)
         return MetricsFactory.createTimerProxy("MaskinportenClient", maskinportenClient, MaskinportenClient::class.java)
     }
 
     @Bean
     @Profile("test")
     open fun maskinportenClientTest(): MaskinportenClient {
-        return MaskinportenClientImpl(maskinPortenWebClient, maskinportenProperties, WellKnown("issuer", "token_url"))
+        return MaskinportenClientImpl(maskinPortenWebClient, maskinportenProperties, WellKnown("issuer", "token_url"), serviceUtils)
     }
 
     private val maskinPortenWebClient: WebClient

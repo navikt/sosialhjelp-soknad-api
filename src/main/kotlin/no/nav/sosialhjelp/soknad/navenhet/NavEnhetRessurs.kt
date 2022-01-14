@@ -13,11 +13,9 @@ import no.nav.sosialhjelp.soknad.adressesok.domain.AdresseForslagType
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.client.fiks.kommuneinfo.KommuneInfoService
 import no.nav.sosialhjelp.soknad.client.kodeverk.KodeverkService
+import no.nav.sosialhjelp.soknad.common.ServiceUtils
 import no.nav.sosialhjelp.soknad.common.mapper.KommuneTilNavEnhetMapper
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
-import no.nav.sosialhjelp.soknad.domain.model.mock.MockUtils.isAlltidHentKommuneInfoFraNavTestkommune
-import no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils.isNonProduction
-import no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils.isSendingTilFiksEnabled
 import no.nav.sosialhjelp.soknad.navenhet.bydel.BydelFordelingService
 import no.nav.sosialhjelp.soknad.navenhet.bydel.BydelFordelingService.Companion.BYDEL_MARKA_OSLO
 import no.nav.sosialhjelp.soknad.navenhet.domain.NavEnhet
@@ -48,7 +46,8 @@ open class NavEnhetRessurs(
     private val bydelFordelingService: BydelFordelingService,
     private val finnAdresseService: FinnAdresseService,
     private val geografiskTilknytningService: GeografiskTilknytningService,
-    private val kodeverkService: KodeverkService
+    private val kodeverkService: KodeverkService,
+    private val serviceUtils: ServiceUtils
 ) {
 
     @GET
@@ -168,7 +167,7 @@ open class NavEnhetRessurs(
             log.warn("Kommunenummer hadde ikke 4 tegn, var $valgtKommunenummer")
             return null
         }
-        if (isNonProduction() && isAlltidHentKommuneInfoFraNavTestkommune()) {
+        if (serviceUtils.isNonProduction() && serviceUtils.isAlltidHentKommuneInfoFraNavTestkommune()) {
             log.error("Sender til Nav-testkommune (3002). Du skal aldri se denne meldingen i PROD")
             valgtKommunenummer = "3002"
         }
@@ -263,7 +262,7 @@ open class NavEnhetRessurs(
             log.warn("Kommunenummer hadde ikke 4 tegn, var $kommunenummer")
             return null
         }
-        if (isNonProduction() && isAlltidHentKommuneInfoFraNavTestkommune()) {
+        if (serviceUtils.isNonProduction() && serviceUtils.isAlltidHentKommuneInfoFraNavTestkommune()) {
             log.error("Sender til Nav-testkommune (3002). Du skal aldri se denne meldingen i PROD")
             kommunenummer = "3002"
         }
@@ -294,7 +293,7 @@ open class NavEnhetRessurs(
     }
 
     private fun isDigisosKommune(kommunenummer: String): Boolean {
-        val isNyDigisosApiKommuneMedMottakAktivert = kommuneInfoService.kanMottaSoknader(kommunenummer) && isSendingTilFiksEnabled()
+        val isNyDigisosApiKommuneMedMottakAktivert = kommuneInfoService.kanMottaSoknader(kommunenummer) && serviceUtils.isSendingTilFiksEnabled()
         val isGammelSvarUtKommune = KommuneTilNavEnhetMapper.digisoskommuner.contains(kommunenummer)
         return isNyDigisosApiKommuneMedMottakAktivert || isGammelSvarUtKommune
     }
