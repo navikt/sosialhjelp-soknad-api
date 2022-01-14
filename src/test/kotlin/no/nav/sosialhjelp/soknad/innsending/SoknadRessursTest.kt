@@ -10,6 +10,7 @@ import io.mockk.slot
 import io.mockk.verify
 import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.BOSTOTTE_SAMTYKKE
 import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_SKATTEETATEN_SAMTYKKE
+import no.nav.sosialhjelp.soknad.api.nedetid.NedetidService
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.common.mapper.OkonomiMapper
 import no.nav.sosialhjelp.soknad.common.subjecthandler.StaticSubjectHandlerImpl
@@ -39,8 +40,9 @@ internal class SoknadRessursTest {
     private val systemdata: SystemdataUpdater = mockk()
     private val tilgangskontroll: Tilgangskontroll = mockk()
     private val henvendelseService: HenvendelseService = mockk()
+    private val nedetidService: NedetidService = mockk()
 
-    private val ressurs = SoknadRessurs(soknadService, soknadUnderArbeidService, soknadUnderArbeidRepository, systemdata, tilgangskontroll, henvendelseService)
+    private val ressurs = SoknadRessurs(soknadService, soknadUnderArbeidService, soknadUnderArbeidRepository, systemdata, tilgangskontroll, henvendelseService, nedetidService)
 
     @BeforeEach
     fun setUp() {
@@ -49,6 +51,7 @@ internal class SoknadRessursTest {
 
         clearAllMocks()
         every { henvendelseService.oppdaterSistEndretDatoPaaMetadata(any()) } just runs
+        every { nedetidService.isInnenforNedetid } returns false
     }
 
     @AfterEach

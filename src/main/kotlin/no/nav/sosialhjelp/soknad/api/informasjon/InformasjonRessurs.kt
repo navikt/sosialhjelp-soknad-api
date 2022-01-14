@@ -10,12 +10,12 @@ import no.nav.sosialhjelp.soknad.api.informasjon.dto.KommuneInfoFrontend
 import no.nav.sosialhjelp.soknad.api.informasjon.dto.Logg
 import no.nav.sosialhjelp.soknad.api.informasjon.dto.NyligInnsendteSoknaderResponse
 import no.nav.sosialhjelp.soknad.api.informasjon.dto.PabegyntSoknad
-import no.nav.sosialhjelp.soknad.api.nedetid.NedetidUtils
+import no.nav.sosialhjelp.soknad.api.nedetid.NedetidService
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.client.fiks.kommuneinfo.KommuneInfoService
+import no.nav.sosialhjelp.soknad.common.mapper.KommuneTilNavEnhetMapper
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SosialhjelpInformasjon
-import no.nav.sosialhjelp.soknad.domain.model.util.KommuneTilNavEnhetMapper
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
 import no.nav.sosialhjelp.soknad.personalia.person.dto.Gradering.FORTROLIG
 import no.nav.sosialhjelp.soknad.personalia.person.dto.Gradering.STRENGT_FORTROLIG
@@ -52,7 +52,8 @@ open class InformasjonRessurs(
     private val personService: PersonService,
     private val tilgangskontroll: Tilgangskontroll,
     private val soknadMetadataRepository: SoknadMetadataRepository,
-    private val pabegynteSoknaderService: PabegynteSoknaderService
+    private val pabegynteSoknaderService: PabegynteSoknaderService,
+    private val nedetidService: NedetidService
 ) {
 
     private val logger = LoggerFactory.getLogger(InformasjonRessurs::class.java)
@@ -138,10 +139,10 @@ open class InformasjonRessurs(
     @GET
     @Path("/kommuneinfo")
     open fun hentKommuneinfo(): Map<String, KommuneInfoFrontend> {
-        if (NedetidUtils.isInnenforNedetid) {
+        if (nedetidService.isInnenforNedetid) {
             return emptyMap()
         }
-        val manueltPakobledeKommuner = mapManueltPakobledeKommuner(KommuneTilNavEnhetMapper.getDigisoskommuner())
+        val manueltPakobledeKommuner = mapManueltPakobledeKommuner(KommuneTilNavEnhetMapper.digisoskommuner)
         val digisosKommuner = mapDigisosKommuner(kommuneInfoService.hentAlleKommuneInfo())
         return mergeManuelleKommunerMedDigisosKommuner(manueltPakobledeKommuner, digisosKommuner)
     }

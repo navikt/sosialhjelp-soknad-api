@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test
 
 internal class ThrowableMapperTest {
 
-    private val mapper = ThrowableMapper()
+    private val mapper = ThrowableMapper("loginserviceUrl")
 
     @Test
     fun skalGi409ConflictVedSamtidigOppdateringException() {

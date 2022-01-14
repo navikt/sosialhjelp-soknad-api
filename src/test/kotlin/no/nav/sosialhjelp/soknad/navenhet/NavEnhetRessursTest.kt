@@ -19,11 +19,11 @@ import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.Sokn
 import no.nav.sosialhjelp.soknad.client.exceptions.PdlApiException
 import no.nav.sosialhjelp.soknad.client.fiks.kommuneinfo.KommuneInfoService
 import no.nav.sosialhjelp.soknad.client.kodeverk.KodeverkService
+import no.nav.sosialhjelp.soknad.common.mapper.KommuneTilNavEnhetMapper
 import no.nav.sosialhjelp.soknad.common.subjecthandler.StaticSubjectHandlerImpl
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.domain.model.exception.AuthorizationException
-import no.nav.sosialhjelp.soknad.domain.model.util.KommuneTilNavEnhetMapper
 import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.navenhet.bydel.BydelFordelingService
 import no.nav.sosialhjelp.soknad.navenhet.bydel.BydelFordelingService.Companion.BYDEL_MARKA_OSLO
@@ -59,12 +59,12 @@ internal class NavEnhetRessursTest {
 
         private const val ENHETSNAVN = "NAV Testenhet"
         private const val KOMMUNENAVN = "Test kommune"
-        private val KOMMUNENR = KommuneTilNavEnhetMapper.getDigisoskommuner()[0]
+        private val KOMMUNENR = KommuneTilNavEnhetMapper.digisoskommuner[0]
         private const val ENHETSNR = "1234"
         private const val ORGNR = "123456789"
         private const val ENHETSNAVN_2 = "NAV Van"
         private const val KOMMUNENAVN_2 = "Enummok kommune"
-        private val KOMMUNENR_2 = KommuneTilNavEnhetMapper.getDigisoskommuner()[1]
+        private val KOMMUNENR_2 = KommuneTilNavEnhetMapper.digisoskommuner[1]
         private const val ENHETSNR_2 = "5678"
         private const val ORGNR_2 = "987654321"
         private val SOKNADSMOTTAKER = JsonSoknadsmottaker()
