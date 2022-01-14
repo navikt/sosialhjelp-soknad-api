@@ -3,6 +3,7 @@ package no.nav.sosialhjelp.soknad.business.db.config;
 import no.nav.sosialhjelp.soknad.health.selftest.Pingable;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
@@ -12,7 +13,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.sql.DataSource;
 
-
+@Profile("!(mock-alt | test)")
 @Configuration
 @EnableTransactionManagement
 public class SoknadInnsendingDBConfig {

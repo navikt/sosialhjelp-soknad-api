@@ -21,21 +21,34 @@ import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.Sokn
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.transaction.support.TransactionTemplate;
 
-import javax.inject.Inject;
 import javax.sql.DataSource;
-import java.time.Clock;
+import java.io.IOException;
+
+import static no.nav.sosialhjelp.soknad.business.db.config.DatabaseTestContext.buildDataSource;
 
 @Configuration
 @Import(value = {DatabaseTestContext.class})
 @EnableTransactionManagement()
 public class DbTestConfig {
 
-    public static final Clock clock = Clock.systemDefaultZone();
+    @Bean
+    public DataSource dataSource() throws IOException {
+        return buildDataSource();
+    }
 
-    @Inject
-    private DataSource dataSource;
+    @Bean
+    public DataSourceTransactionManager transactionManager(DataSource dataSource) {
+        return new DataSourceTransactionManager(dataSource);
+    }
+
+    @Bean
+    public TransactionTemplate transactionTemplate(DataSourceTransactionManager transactionManager) {
+        return new TransactionTemplate(transactionManager);
+    }
 
     @Bean
     public SoknadMetadataRepository soknadMetadataRepository() {
@@ -78,13 +91,7 @@ public class DbTestConfig {
     }
 
     @Bean
-    public RepositoryTestSupport testSupport() {
+    public RepositoryTestSupport testSupport(DataSource dataSource) {
         return new TestSupport(dataSource);
     }
-
-    @Bean
-    public Clock clock() {
-        return clock;
-    }
-
 }
