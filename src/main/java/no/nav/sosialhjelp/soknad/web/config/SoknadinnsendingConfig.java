@@ -12,6 +12,7 @@ import no.nav.sosialhjelp.soknad.begrunnelse.BegrunnelseConfig;
 import no.nav.sosialhjelp.soknad.bosituasjon.BosituasjonConfig;
 import no.nav.sosialhjelp.soknad.business.BusinessConfig;
 import no.nav.sosialhjelp.soknad.client.ClientConfig;
+import no.nav.sosialhjelp.soknad.common.ServiceUtils;
 import no.nav.sosialhjelp.soknad.common.oidc.OidcTokenValidatorConfig;
 import no.nav.sosialhjelp.soknad.common.rest.feil.ApplicationExceptionMapper;
 import no.nav.sosialhjelp.soknad.common.rest.feil.ThrowableMapper;
@@ -70,7 +71,8 @@ import org.springframework.context.annotation.Import;
         SchedulerConfig.class,
         MetricsConfig.class,
         ApplicationExceptionMapper.class,
-        ThrowableMapper.class
+        ThrowableMapper.class,
+        ServiceUtils.class
 })
 @ComponentScan(basePackages = "no.nav.sosialhjelp.soknad.web.rest")
 public class SoknadinnsendingConfig {

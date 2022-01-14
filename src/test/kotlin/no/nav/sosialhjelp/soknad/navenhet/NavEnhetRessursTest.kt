@@ -19,6 +19,7 @@ import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.Sokn
 import no.nav.sosialhjelp.soknad.client.exceptions.PdlApiException
 import no.nav.sosialhjelp.soknad.client.fiks.kommuneinfo.KommuneInfoService
 import no.nav.sosialhjelp.soknad.client.kodeverk.KodeverkService
+import no.nav.sosialhjelp.soknad.common.ServiceUtils
 import no.nav.sosialhjelp.soknad.common.mapper.KommuneTilNavEnhetMapper
 import no.nav.sosialhjelp.soknad.common.subjecthandler.StaticSubjectHandlerImpl
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
@@ -94,9 +95,10 @@ internal class NavEnhetRessursTest {
     private val bydelFordelingService: BydelFordelingService = mockk()
     private val geografiskTilknytningService: GeografiskTilknytningService = mockk()
     private val kodeverkService: KodeverkService = mockk()
+    private val serviceUtils: ServiceUtils = mockk()
 
     private val navEnhetRessurs = NavEnhetRessurs(
-        tilgangskontroll, soknadUnderArbeidRepository, navEnhetService, kommuneInfoService, bydelFordelingService, finnAdresseService, geografiskTilknytningService, kodeverkService
+        tilgangskontroll, soknadUnderArbeidRepository, navEnhetService, kommuneInfoService, bydelFordelingService, finnAdresseService, geografiskTilknytningService, kodeverkService, serviceUtils
     )
 
     @BeforeEach
@@ -107,6 +109,9 @@ internal class NavEnhetRessursTest {
         every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
         every { kommuneInfoService.kanMottaSoknader(any()) } returns true
         every { kommuneInfoService.harMidlertidigDeaktivertMottak(any()) } returns true
+        every { serviceUtils.isNonProduction() } returns false
+        every { serviceUtils.isSendingTilFiksEnabled() } returns true
+        every { serviceUtils.isAlltidHentKommuneInfoFraNavTestkommune() } returns false
     }
 
     @AfterEach

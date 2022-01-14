@@ -18,7 +18,13 @@ internal class LagringsSchedulerTest {
     private val henvendelseService: HenvendelseService = mockk()
     private val batchSoknadUnderArbeidRepository: BatchSoknadUnderArbeidRepository = mockk()
 
-    private val scheduler = LagringsScheduler(leaderElection, henvendelseService, batchSoknadUnderArbeidRepository, true)
+    private val scheduler = LagringsScheduler(
+        leaderElection,
+        henvendelseService,
+        batchSoknadUnderArbeidRepository,
+        batchEnabled = true,
+        schedulerDisabled = false
+    )
 
     @BeforeEach
     fun setup() {

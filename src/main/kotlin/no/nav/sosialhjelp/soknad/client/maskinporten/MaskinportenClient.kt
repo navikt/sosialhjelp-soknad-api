@@ -2,6 +2,7 @@ package no.nav.sosialhjelp.soknad.client.maskinporten
 
 import com.nimbusds.jwt.SignedJWT
 import no.nav.sosialhjelp.soknad.client.maskinporten.dto.MaskinportenResponse
+import no.nav.sosialhjelp.soknad.common.ServiceUtils
 import org.slf4j.LoggerFactory
 import org.springframework.http.MediaType
 import org.springframework.util.LinkedMultiValueMap
@@ -17,11 +18,12 @@ interface MaskinportenClient {
 class MaskinportenClientImpl(
     private val webClient: WebClient,
     maskinportenProperties: MaskinportenProperties,
-    private val wellKnown: WellKnown
+    private val wellKnown: WellKnown,
+    serviceUtils: ServiceUtils
 ) : MaskinportenClient {
 
     private var tokenCache = TokenCache()
-    private val tokenGenerator = MaskinportenGrantTokenGenerator(maskinportenProperties, wellKnown.issuer)
+    private val tokenGenerator = MaskinportenGrantTokenGenerator(maskinportenProperties, wellKnown.issuer, serviceUtils)
 
     override fun getTokenString(): String {
         return getTokenFraCache().parsedString

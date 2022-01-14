@@ -16,7 +16,7 @@ internal class OppgaveHandtererImplTest {
     private val fiksHandterer: FiksHandterer = mockk()
     private val oppgaveRepository: OppgaveRepository = mockk()
 
-    private val oppgaveHandterer = OppgaveHandtererImpl(fiksHandterer, oppgaveRepository)
+    private val oppgaveHandterer = OppgaveHandtererImpl(fiksHandterer, oppgaveRepository, schedulerDisabled = false)
 
     private val oppgaveSlot = slot<Oppgave>()
 

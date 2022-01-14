@@ -14,7 +14,12 @@ internal class SlettSoknadUnderArbeidSchedulerTest {
     private val leaderElection: LeaderElection = mockk()
     private val batchSoknadUnderArbeidRepository: BatchSoknadUnderArbeidRepository = mockk()
 
-    private val scheduler = SlettSoknadUnderArbeidScheduler(leaderElection, batchSoknadUnderArbeidRepository, true)
+    private val scheduler = SlettSoknadUnderArbeidScheduler(
+        leaderElection,
+        batchSoknadUnderArbeidRepository,
+        batchEnabled = true,
+        schedulerDisabled = false
+    )
 
     @BeforeEach
     fun setUp() {

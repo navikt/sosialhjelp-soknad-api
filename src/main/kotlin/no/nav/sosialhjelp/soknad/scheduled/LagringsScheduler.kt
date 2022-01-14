@@ -4,7 +4,6 @@ import no.nav.sosialhjelp.metrics.MetricsFactory
 import no.nav.sosialhjelp.metrics.Timer
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.BatchSoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
-import no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils
 import no.nav.sosialhjelp.soknad.innsending.HenvendelseService
 import no.nav.sosialhjelp.soknad.scheduled.leaderelection.LeaderElection
 import org.slf4j.LoggerFactory
@@ -16,7 +15,8 @@ class LagringsScheduler(
     private val leaderElection: LeaderElection,
     private val henvendelseService: HenvendelseService,
     private val batchSoknadUnderArbeidRepository: BatchSoknadUnderArbeidRepository,
-    private val batchEnabled: Boolean
+    private val batchEnabled: Boolean,
+    private val schedulerDisabled: Boolean
 ) {
     private var batchStartTime: ZonedDateTime? = null
     private var vellykket = 0
@@ -24,7 +24,7 @@ class LagringsScheduler(
 
     @Scheduled(fixedRate = SCHEDULE_RATE_MS)
     fun slettForeldedeEttersendelserFraSoknadUnderArbeidDatabase() {
-        if (ServiceUtils.isScheduledTasksDisabled()) {
+        if (schedulerDisabled) {
             logger.warn("Scheduler is disabled")
             return
         }

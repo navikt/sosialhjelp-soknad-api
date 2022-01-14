@@ -8,10 +8,6 @@ public final class ServiceUtils {
     private ServiceUtils() {
     }
 
-    public static final String ENVIRONMENT_NAME = "ENVIRONMENT_NAME";
-    public static final String IS_SCHEDULED_TASKS_DISABLED = "scheduler.disable";
-    public static final String IS_SENDING_TIL_DIGISOS_API_ENABLED = "digisosapi.sending.enable";
-
     public static String getSha512FromByteArray(byte[] bytes) {
 
         if (bytes == null) {
@@ -35,14 +31,6 @@ public final class ServiceUtils {
                 || miljo.equals("dev-gcp")
                 || miljo.equals("local")
                 || miljo.equals("test");
-    }
-
-    public static boolean isScheduledTasksDisabled(){
-        return Boolean.parseBoolean(System.getProperty(IS_SCHEDULED_TASKS_DISABLED, "false"));
-    }
-
-    public static boolean isSendingTilFiksEnabled(){
-        return Boolean.parseBoolean(System.getProperty(IS_SENDING_TIL_DIGISOS_API_ENABLED, "false"));
     }
 
     public static String stripVekkFnutter(String tekstMedFnutt) {
