@@ -1,16 +1,11 @@
 package no.nav.sosialhjelp.soknad.web.sikkerhet;
 
-import no.nav.sosialhjelp.soknad.common.ServiceUtils;
 import no.nav.sosialhjelp.soknad.web.rest.SoknadApplication;
 import org.glassfish.jersey.server.ContainerResponse;
 import org.glassfish.jersey.test.util.server.ContainerRequestBuilder;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
@@ -19,14 +14,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-@ExtendWith(MockitoExtension.class)
 class CORSFilterTest {
 
-    @Mock
-    private ServiceUtils serviceUtils;
-
-    @InjectMocks
-    private CORSFilter corsFilter;
+    private final CORSFilter corsFilter = new CORSFilter();
 
     private final ContainerResponse response = mock(ContainerResponse.class);
 
@@ -34,7 +24,6 @@ class CORSFilterTest {
     public void setUp() throws Exception {
         MultivaluedMap<String, Object> headers = new MultivaluedHashMap<>();
         when(response.getHeaders()).thenReturn(headers);
-        when(serviceUtils.isNonProduction()).thenReturn(false);
     }
 
     @AfterEach
@@ -74,7 +63,7 @@ class CORSFilterTest {
 
     @Test
     void setCorsHeaders_inTestWithUnknownOrigin_shouldSetCorsHeaders() {
-        when(serviceUtils.isNonProduction()).thenReturn(true);
+        System.setProperty("environment.name", "q0");
 
         var unknownOrigin = "https://www.unknown.no";
 
