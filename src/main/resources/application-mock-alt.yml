@@ -112,5 +112,10 @@ digisosapi.henting.alltidTestkommune.enable: ${IS_ALLTID_HENT_KOMMUNEINFO_FRA_NA
 sendsoknad.batch.enabled: true
 feature.fiks.kryptering.enabled: true
 
+#Nedetid
+nedetid.start: ${NEDETID_START:}
+nedetid.slutt: ${NEDETID_SLUTT:}
+
 # Mockting
 tillatmock: true
+start.oidc.withmock: false
