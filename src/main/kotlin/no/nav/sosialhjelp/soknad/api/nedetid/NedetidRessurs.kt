@@ -2,8 +2,6 @@ package no.nav.sosialhjelp.soknad.api.nedetid
 
 import no.nav.security.token.support.core.api.Unprotected
 import no.nav.sosialhjelp.metrics.aspects.Timed
-import no.nav.sosialhjelp.soknad.api.nedetid.NedetidUtils.NEDETID_SLUTT
-import no.nav.sosialhjelp.soknad.api.nedetid.NedetidUtils.NEDETID_START
 import no.nav.sosialhjelp.soknad.api.nedetid.dto.NedetidFrontend
 import org.springframework.stereotype.Controller
 import javax.ws.rs.GET
@@ -16,19 +14,21 @@ import javax.ws.rs.core.MediaType
 @Path("/nedetid")
 @Timed
 @Produces(MediaType.APPLICATION_JSON)
-open class NedetidRessurs {
+open class NedetidRessurs(
+    private val nedetidService: NedetidService
+) {
 
     @GET
     open fun hentNedetidInformasjon(): NedetidFrontend {
         return NedetidFrontend(
-            isNedetid = NedetidUtils.isInnenforNedetid,
-            isPlanlagtNedetid = NedetidUtils.isInnenforPlanlagtNedetid,
-            nedetidStart = NedetidUtils.getNedetidAsStringOrNull(NEDETID_START),
-            nedetidSlutt = NedetidUtils.getNedetidAsStringOrNull(NEDETID_SLUTT),
-            nedetidStartText = NedetidUtils.getNedetidAsHumanReadable(NEDETID_START),
-            nedetidSluttText = NedetidUtils.getNedetidAsHumanReadable(NEDETID_SLUTT),
-            nedetidStartTextEn = NedetidUtils.getNedetidAsHumanReadableEn(NEDETID_START),
-            nedetidSluttTextEn = NedetidUtils.getNedetidAsHumanReadableEn(NEDETID_SLUTT)
+            isNedetid = nedetidService.isInnenforNedetid,
+            isPlanlagtNedetid = nedetidService.isInnenforPlanlagtNedetid,
+            nedetidStart = nedetidService.nedetidStartAsString,
+            nedetidSlutt = nedetidService.nedetidSluttAsString,
+            nedetidStartText = nedetidService.nedetidStartAsHumanReadable,
+            nedetidSluttText = nedetidService.nedetidSluttAsHumanReadable,
+            nedetidStartTextEn = nedetidService.nedetidStartAsHumanReadableEn,
+            nedetidSluttTextEn = nedetidService.nedetidSluttAsHumanReadableEn
         )
     }
 }

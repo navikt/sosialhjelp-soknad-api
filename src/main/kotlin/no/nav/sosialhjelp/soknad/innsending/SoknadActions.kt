@@ -3,9 +3,7 @@ package no.nav.sosialhjelp.soknad.innsending
 import no.finn.unleash.Unleash
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.metrics.aspects.Timed
-import no.nav.sosialhjelp.soknad.api.nedetid.NedetidUtils
-import no.nav.sosialhjelp.soknad.api.nedetid.NedetidUtils.NEDETID_SLUTT
-import no.nav.sosialhjelp.soknad.api.nedetid.NedetidUtils.getNedetidAsStringOrNull
+import no.nav.sosialhjelp.soknad.api.nedetid.NedetidService
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.business.exceptions.SendingTilKommuneErIkkeAktivertException
@@ -55,7 +53,8 @@ open class SoknadActions(
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val soknadMetadataRepository: SoknadMetadataRepository,
     private val digisosApiService: DigisosApiService,
-    private val unleash: Unleash
+    private val unleash: Unleash,
+    private val nedetidService: NedetidService
 ) {
     @POST
     @Path("/send")
@@ -64,8 +63,8 @@ open class SoknadActions(
         @Context servletContext: ServletContext?,
         @HeaderParam(value = HttpHeaders.AUTHORIZATION) token: String?
     ): SendTilUrlFrontend {
-        if (NedetidUtils.isInnenforNedetid) {
-            throw SoknadenHarNedetidException("Soknaden har nedetid fram til ${getNedetidAsStringOrNull(NEDETID_SLUTT)}")
+        if (nedetidService.isInnenforNedetid) {
+            throw SoknadenHarNedetidException("Soknaden har nedetid fram til ${nedetidService.nedetidSluttAsString}")
         }
 
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
