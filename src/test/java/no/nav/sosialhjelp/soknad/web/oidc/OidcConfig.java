@@ -30,7 +30,7 @@ public class OidcConfig {
     /** Overskriver filteret for å validere token */
     @Primary
     @Bean
-    JaxrsJwtTokenValidationFilter FakeOidcTokenValidatorFilter(@SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection") MultiIssuerConfiguration multiIssuerConfiguration) {
+    JaxrsJwtTokenValidationFilter jaxrsJwtTokenValidationFilter(@SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection") MultiIssuerConfiguration multiIssuerConfiguration) {
         if (tillatmock && startOidcWithMock) {
             return new FakeOidcTokenValidatorFilter(multiIssuerConfiguration);
         } else {
