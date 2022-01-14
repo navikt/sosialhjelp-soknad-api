@@ -3,12 +3,14 @@ package no.nav.sosialhjelp.soknad.web.integration.security;
 
 import no.nav.sosialhjelp.soknad.web.integration.AbstractIT;
 import no.nav.sosialhjelp.soknad.web.integration.SoknadTester;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import javax.ws.rs.core.Response;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Disabled("migrer i-tester til springboottest")
 class SoknadRessursEndpointIT extends AbstractIT {
     static final String ANNEN_BRUKER = "22222222222";
 

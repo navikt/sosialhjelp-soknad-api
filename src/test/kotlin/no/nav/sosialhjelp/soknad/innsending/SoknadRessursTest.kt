@@ -100,6 +100,7 @@ internal class SoknadRessursTest {
     @Test
     fun opprettSoknadMedBehandlingsidSomIkkeHarEttersendingSkalStarteNyEttersending() {
         every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
+        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
         val response: HttpServletResponse = mockk()
         every { response.addCookie(any()) } just runs
         every {
@@ -115,6 +116,7 @@ internal class SoknadRessursTest {
     @Test
     fun opprettSoknadMedBehandlingsidSomHarEttersendingSkalIkkeStarteNyEttersending() {
         every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
+        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
         val response: HttpServletResponse = mockk()
         every { response.addCookie(any()) } just runs
         every {

@@ -3,10 +3,12 @@ package no.nav.sosialhjelp.soknad.web.config;
 import no.nav.sosialhjelp.soknad.web.oidc.OidcConfig;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.mock.jndi.SimpleNamingContextBuilder;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -20,9 +22,11 @@ import java.util.Properties;
 
 import static java.lang.System.setProperty;
 
+@Disabled
 @WebAppConfiguration
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {SoknadinnsendingConfig.class, OidcConfig.class})
+@ActiveProfiles(profiles = {"test", "no-redis"})
 public class ApplicationContextTest {
 
     public static final String ENVIRONMENT_TEST_PROPERTIES = "/environment-test.properties";
