@@ -48,10 +48,12 @@ import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Configuration;
 
 /**
  * Jersey 2 config
  */
+@Configuration
 public class SoknadApplication extends ResourceConfig {
 
     private static final Logger logger = LoggerFactory.getLogger(SoknadApplication.class);
