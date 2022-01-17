@@ -7,7 +7,7 @@ srvsoknadsosialhjelp.server.password: ${SRVSOKNADSOSIALHJELP_SERVER_PASSWORD}
 applicationName: sosialhjelp-soknad-api
 
 server:
-  port: 8181
+  port: 8080
   servlet:
     context-path: '/sosialhjelp/soknad-api'
 
