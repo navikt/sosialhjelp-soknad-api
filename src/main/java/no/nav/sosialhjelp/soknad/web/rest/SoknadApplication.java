@@ -62,7 +62,7 @@ public class SoknadApplication extends ResourceConfig {
         // JacksonJaxbJsonProvider registreres manuelt for å unngå å dra inn Jacksons egne ExceptionMappers, som
         // returnerer litt for mye informasjon i sine feilmeldinger. Desse ExceptionMappers har @Provider-annotationer
         // og blir automatisk trukket inn hvis du tar tar inn hele Jackson-pakken for JSON.
-        packages("no.nav.sosialhjelp.soknad.web.rest");
+
         // interne
         register(SoknadRessurs.class);
         register(SoknadActions.class);
