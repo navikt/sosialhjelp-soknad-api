@@ -31,12 +31,6 @@ sensu_client_port: 8989
 
 environment.name: ${ENVIRONMENT_NAME:local}
 
-#db
-#db.driverClassName: org.hsqldb.jdbcDriver
-#db.url: jdbc:hsqldb:mem:sendsoknad
-#db.username: sa
-#db.password:
-
 # rest
 digisos_api_baseurl: ${DIGISOS_API_BASEURL:http://localhost:8989/sosialhjelp/mock-alt-api/fiks/}
 ereg_api_baseurl: ${EREG_API_BASEURL:http://localhost:8989/sosialhjelp/mock-alt-api/freg/}

@@ -33,12 +33,6 @@ sensu_client_port: 3030
 
 environment.name: ${ENVIRONMENT_NAME}
 
-#db
-#db.driverClassName: oracle.jdbc.driver.OracleDriver
-#db.url: ${SOKNADSOSIALHJELPDATASOURCE_URL}
-#db.username: ${SOKNADSOSIALHJELPDATASOURCE_USERNAME}
-#db.password: ${SOKNADSOSIALHJELPDATASOURCE_PASSWORD}
-
 # rest
 digisos_api_baseurl: ${DIGISOS_API_BASEURL}
 ereg_api_baseurl: ${EREG_API_BASEURL}
