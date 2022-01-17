@@ -22,7 +22,6 @@
   "leaderElectionEnabled": false,
   "maskinportenEnabled": false,
   "env": {
-    "MAIN_CLASS": "no.nav.sosialhjelp.soknad.Application",
     "SPRING_PROFILES_ACTIVE": "mock-alt,log-console,no-redis",
     "GCP": "true",
     "PORT": "8080",
