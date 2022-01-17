@@ -46,19 +46,12 @@ dkif_api_baseurl: ${DKIF_API_BASEURL:http://localhost:8989/sosialhjelp/mock-alt-
 pdl_api_url: ${PDL_API_URL:http://localhost:8989/sosialhjelp/mock-alt-api/pdl_endpoint_url/}
 kodeverk_api_url: ${KODEVERK_API_URL:http://localhost:8989/sosialhjelp/mock-alt-api/kodeverk/api/}
 unleash_api_url: ${UNLEASH_API_URL:https://unleash.nais.io/api}
-norg_rest_url: ${NORG_REST_URL:http://localhost:8989/sosialhjelp/mock-alt-api/norg_endpoint_url/}
+norg_rest_url: ${NORG2_API_V1_URL:http://localhost:8989/sosialhjelp/mock-alt-api/norg_endpoint_url/}
 oppslag_api_baseurl: ${OPPSLAG_API_BASEURL:http://localhost:8989/sosialhjelp/mock-alt-api/oppslag-api/}
-skatteetaten_inntektsmottaker_url: ${EKSTERNAPP_SKATT_DATASAMARBEID_API_INNTEKTSMOTTAKER_URL:http://localhost:8989/sosialhjelp/mock-alt-api/skatteetaten/}
 soknad.bostotte.url: ${SOKNAD_BOSTOTTE_URL:http://localhost:8989/sosialhjelp/mock-alt-api/husbanken}
-soknad.bostotte.ping.url: ${SOKNAD_BOSTOTTE_PING_URL:http://localhost:8989/sosialhjelp/mock-alt-api/husbanken/ping}
 dittnav.link.url: ${DITTNAV_LINK_URL:http://localhost:8989/sosialhjelp/mock-alt-api/www/nav/}
 svarut_url: ${SVARUT_URL:http://localhost:8989/sosialhjelp/mock-alt-api/svarut/}
 skatteetaten_api_baseurl: ${SKATTEETATEN_API_BASEURL:http://localhost:8989/sosialhjelp/mock-alt-api/skatteetaten/}
-
-# mocket
-fiks.svarut.url: http://dummy.no/url
-sts.url: http://dummy.no/url
-openam.restUrl: ${OPENAM_RESTURL:http://127.0.0.1:8989/openam/}
 
 # fiks
 fiks.nokkelfil: ${FIKS_NOKKELFIL:svarut_public_test.pem}

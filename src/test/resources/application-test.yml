@@ -78,7 +78,6 @@ unleash_api_url: https://unleash.nais.io/api
 kodeverk_api_url: https://api-gw-q1.oera.no/kodeverk/api/
 oppslag_api_baseurl: https://api-gw-q1.oera.no/sosiahjelp-oppslag-api/api/
 soknad.bostotte.url: http://bostotte.url
-openam.restUrl: http://e34jbsl01634.devillo.no:8080/openam/
 dittnav.link.url: http://www.nav.no/dittnav
 norg_rest_url: https://app-t8.adeo.no/norg2/api/v1/
 svarut_url: https://svaruturl
