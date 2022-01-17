@@ -1165,7 +1165,6 @@
                             <goal>repackage</goal>
                         </goals>
                         <configuration>
-                            <finalName>sosialhjelp-soknad-api-boot</finalName>
                             <mainClass>
                                 no.nav.sosialhjelp.soknad.Application
                             </mainClass>
