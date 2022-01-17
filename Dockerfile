@@ -1,7 +1,7 @@
 FROM navikt/java:11
 
 #COPY /target/sosialhjelp-soknad-api /app
-COPY /target/sosialhjelp-soknad-api-boot.jar app.jar
+COPY /target/sosialhjelp-soknad-api /app
 COPY /nais/scripts /init-scripts
 
 ENV JAVA_OPTS="-XX:MaxRAMPercentage=50"
