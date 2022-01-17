@@ -7,6 +7,14 @@
   "envsecret": [
     "redis-password-soknad-api"
   ],
+  "outboundExternalHosts": [
+    "digisos.ekstern.dev.nav.no",
+    "unleash.nais.io"
+  ],
+  "outboundRulesApplications": [
+    "sosialhjelp-mock-alt-api-mock",
+    "sosialhjelp-soknad-api-redis"
+  ],
   "minReplicas": "1",
   "maxReplicas": "1",
   "memoryLimit": "2Gi",

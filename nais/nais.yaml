@@ -58,12 +58,17 @@ spec:
 {{#if isGcp}}
     outbound:
       external:
-        - host: "digisos-gcp.dev.nav.no"
-        - host: "digisos.labs.nais.io"
-        - host: "unleash.nais.io"
+      {{#each outboundExternalHosts}}
+         - host: "{{this}}"
+      {{else}}
+        []
+      {{/each}}
       rules:
-        - application: sosialhjelp-mock-alt-api
-        - application: sosialhjelp-soknad-api-redis
+      {{#each outboundRulesApplications}}
+        - application: "{{this}}"
+      {{else}}
+        []
+      {{/each}}
 {{/if}}
 {{#if isGcp}}
   filesFrom:
