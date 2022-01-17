@@ -1165,7 +1165,7 @@
                             <goal>repackage</goal>
                         </goals>
                         <configuration>
-                            <classifier>spring-boot</classifier>
+                            <finalName>sosialhjelp-soknad-api-boot</finalName>
                             <mainClass>
                                 no.nav.sosialhjelp.soknad.Application
                             </mainClass>

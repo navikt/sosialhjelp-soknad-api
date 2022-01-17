@@ -2,4 +2,4 @@
 /target
 */target
 !target/sosialhjelp-soknad-api
-!target/sosialhjelp-soknad-api-spring-boot
+!target/sosialhjelp-soknad-api-boot
