@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.integrationtest
 
 import no.nav.sosialhjelp.client.utils.Constants.BEARER
-import no.nav.sosialhjelp.soknad.TestApplication
+import no.nav.sosialhjelp.soknad.Application
 import no.nav.sosialhjelp.soknad.integrationtest.IntegrationTestUtils.opprettSoknad
 import no.nav.sosialhjelp.soknad.web.oidc.JwtTokenGenerator
 import no.nav.sosialhjelp.soknad.web.oidc.OidcConfig
@@ -15,7 +15,7 @@ import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.reactive.server.WebTestClient
 
 @ContextConfiguration(classes = [OidcConfig::class, PdlIntegrationTestConfig::class])
-@SpringBootTest(classes = [TestApplication::class], webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(classes = [Application::class], webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles(profiles = ["no-redis", "test"])
 class MineSakerMetadataRessursEndpointIT {
 
