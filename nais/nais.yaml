@@ -52,7 +52,7 @@ spec:
         - application: mine-saker-api
           namespace: personbruker
           cluster: {{personbrukerGcpCluster}}
-        - application: sosialhjelp-dialog-api
+        - application: {{sosialhjelpDialogApi}}
           cluster: {{dialogGcpCluster}}
 {{/if}}
 {{#if isGcp}}

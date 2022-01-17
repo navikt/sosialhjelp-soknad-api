@@ -25,6 +25,7 @@
   "tokenXEnabled": false,
   "personbrukerGcpCluster": "dev-gcp",
   "dialogGcpCluster": "dev-gcp",
+  "sosialhjelpDialogApi": "sosialhjelp-dialog-api-mock",
   "prometheusEnabled": false,
   "webProxyEnabled": false,
   "isGcp": true,
