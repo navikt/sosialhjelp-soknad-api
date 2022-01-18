@@ -12,14 +12,14 @@ class OidcTokenValidatorFilter(
 ) : Filter {
 
     override fun init(filterConfig: FilterConfig) {
-        //no op
+        // no op
     }
 
     override fun doFilter(servletRequest: ServletRequest, servletResponse: ServletResponse, filterChain: FilterChain) {
-        jaxrsJwtTokenValidationFilter!!.doFilter(servletRequest, servletResponse, filterChain)
+        jaxrsJwtTokenValidationFilter.doFilter(servletRequest, servletResponse, filterChain)
     }
 
     override fun destroy() {
-        jaxrsJwtTokenValidationFilter!!.destroy()
+        jaxrsJwtTokenValidationFilter.destroy()
     }
 }
