@@ -12,9 +12,6 @@ public class MetricsConfiguration {
     @Value("${sensu_client_host}")
     private String host;
 
-    @Value("${sensu_client_port}")
-    private String port;
-
     @Value("${metrics.report.enabled}")
     private boolean metricsReportEnabled;
 
@@ -26,33 +23,24 @@ public class MetricsConfiguration {
     @Bean
     public MetricProperties metricProperties() {
         var miljo = System.getenv("ENVIRONMENT_NAME");
-        var metricProperties = new MetricProperties(host, miljo, port);
+        var metricProperties = new MetricProperties(host, miljo);
         if (metricsReportEnabled) {
             metricProperties.enableMetrics();
         }
         return metricProperties;
     }
 
-//    @Bean
-//    public CollectorRegistry collectorRegistry() {
-//        DefaultExports.initialize();
-//        return CollectorRegistry.defaultRegistry;
-//    }
-
     static class MetricProperties {
 
         private final String host;
         private final String miljo;
-        private final String port;
 
-        public MetricProperties(String host, String miljo, String port) {
+        public MetricProperties(String host, String miljo) {
             this.host = host;
             this.miljo = miljo;
-            this.port = port;
         }
 
         public void enableMetrics() {
-            System.setProperty("sensu_client_port", port);
             MetricsClient.enableMetrics(MetricsConfig.resolveNaisConfig(MiljoUtils.getNaisAppName(), miljo, host));
         }
     }
