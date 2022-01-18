@@ -8,8 +8,6 @@ applicationName: sosialhjelp-soknad-api
 
 server:
   port: ${PORT:8181}
-  servlet:
-    context-path: '/sosialhjelp/soknad-api'
 
 spring:
   flyway:

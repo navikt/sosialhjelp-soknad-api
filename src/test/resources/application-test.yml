@@ -7,10 +7,6 @@ srvsoknadsosialhjelp.server.password: pw123
 # Brukes av MetricsClient:
 applicationName: sosialhjelp-soknad-api
 
-server:
-  servlet:
-    context-path: '/sosialhjelp/soknad-api'
-
 spring:
   flyway:
     enabled: false

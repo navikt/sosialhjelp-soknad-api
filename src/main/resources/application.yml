@@ -8,12 +8,15 @@ applicationName: sosialhjelp-soknad-api
 
 server:
   port: 8080
-  servlet:
-    context-path: '/sosialhjelp/soknad-api'
+#  servlet:
+#    context-path: '/sosialhjelp/soknad-api'
 
 spring:
   main:
     banner-mode: off
+  jersey:
+    application-path: '/sosialhjelp/soknad-api'
+    type: filter
   flyway:
     enabled: true
     url: ${SOKNADSOSIALHJELPDATASOURCE_URL}
@@ -26,6 +29,13 @@ spring:
     username: ${SOKNADSOSIALHJELPDATASOURCE_USERNAME}
     password: ${SOKNADSOSIALHJELPDATASOURCE_PASSWORD}
 
+# Prometheus
+management:
+  endpoints:
+    web:
+      base-path: "/internal"
+      exposure:
+        include: info, health, metrics, prometheus
 
 metrics.report.enabled: true
 sensu_client_host: sensu.nais
