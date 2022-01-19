@@ -8,15 +8,19 @@ applicationName: sosialhjelp-soknad-api
 
 server:
   port: 8080
-#  servlet:
-#    context-path: '/sosialhjelp/soknad-api'
+  servlet:
+    context-path: '/sosialhjelp/soknad-api'
 
 spring:
   main:
     banner-mode: off
   jersey:
-    application-path: '/sosialhjelp/soknad-api'
-    type: filter
+    application-path: '/'
+#    type: filter
+#    servlet:
+#      load-on-startup: 1
+#    filter:
+#      order: -10000
   flyway:
     enabled: true
     url: ${SOKNADSOSIALHJELPDATASOURCE_URL}
