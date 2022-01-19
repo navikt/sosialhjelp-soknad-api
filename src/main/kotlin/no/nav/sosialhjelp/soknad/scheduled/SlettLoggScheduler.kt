@@ -4,7 +4,6 @@ import no.nav.sosialhjelp.metrics.MetricsFactory
 import no.nav.sosialhjelp.soknad.business.db.repositories.oppgave.OppgaveRepository
 import no.nav.sosialhjelp.soknad.business.db.repositories.sendtsoknad.BatchSendtSoknadRepository
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.BatchSoknadMetadataRepository
-import no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils
 import no.nav.sosialhjelp.soknad.scheduled.leaderelection.LeaderElection
 import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Scheduled
@@ -15,14 +14,15 @@ class SlettLoggScheduler(
     private val batchSoknadMetadataRepository: BatchSoknadMetadataRepository,
     private val batchSendtSoknadRepository: BatchSendtSoknadRepository,
     private val oppgaveRepository: OppgaveRepository,
-    private val batchEnabled: Boolean
+    private val batchEnabled: Boolean,
+    private val schedulerDisabled: Boolean
 ) {
     private var batchStartTime: LocalDateTime? = null
     private var vellykket = 0
 
     @Scheduled(cron = KLOKKEN_FEM_OM_NATTEN)
     fun slettLogger() {
-        if (ServiceUtils.isScheduledTasksDisabled()) {
+        if (schedulerDisabled) {
             logger.warn("Scheduler is disabled")
             return
         }

@@ -16,9 +16,6 @@ import no.nav.sosialhjelp.soknad.common.filedetection.FileDetectionUtils.getMime
 import no.nav.sosialhjelp.soknad.common.filedetection.MimeTypes.APPLICATION_PDF
 import no.nav.sosialhjelp.soknad.common.filedetection.MimeTypes.TEXT_X_MATLAB
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils.getUserIdFromToken
-import no.nav.sosialhjelp.soknad.consumer.fiks.DigisosApi
-import no.nav.sosialhjelp.soknad.consumer.fiks.dto.FilMetadata
-import no.nav.sosialhjelp.soknad.consumer.fiks.dto.FilOpplasting
 import no.nav.sosialhjelp.soknad.domain.OpplastetVedlegg
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.domain.Vedleggstatus
@@ -26,6 +23,8 @@ import no.nav.sosialhjelp.soknad.innsending.HenvendelseService
 import no.nav.sosialhjelp.soknad.innsending.InnsendingService
 import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils.getVedleggFromInternalSoknad
 import no.nav.sosialhjelp.soknad.innsending.SenderUtils.createPrefixedBehandlingsIdInNonProd
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilMetadata
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilOpplasting
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
 import no.nav.sosialhjelp.soknad.metrics.MetricsUtils.navKontorTilInfluxNavn
 import no.nav.sosialhjelp.soknad.metrics.SoknadMetricsService
@@ -33,7 +32,7 @@ import org.slf4j.LoggerFactory
 import java.io.ByteArrayInputStream
 
 class DigisosApiService(
-    private val digisosApi: DigisosApi,
+    private val digisosApiClient: DigisosApiClient,
     private val sosialhjelpPdfGenerator: SosialhjelpPdfGenerator,
     private val innsendingService: InnsendingService,
     private val henvendelseService: HenvendelseService,
@@ -86,27 +85,20 @@ class DigisosApiService(
         return filOpplastinger
     }
 
-    fun sendOgKrypter(
-        soknadJson: String?,
-        tilleggsinformasjonJson: String?,
-        vedleggJson: String?,
-        filOpplastinger: List<FilOpplasting>?,
-        kommunenr: String?,
+    private fun sendOgKrypter(
+        soknadJson: String,
+        tilleggsinformasjonJson: String,
+        vedleggJson: String,
+        filOpplastinger: List<FilOpplasting>,
+        kommunenr: String,
         navEnhetsnavn: String,
-        behandlingsId: String?,
+        behandlingsId: String,
         token: String?
     ): String {
         val event = lagForsoktSendtDigisosApiEvent(navEnhetsnavn)
+
         return try {
-            digisosApi.krypterOgLastOppFiler(
-                soknadJson,
-                tilleggsinformasjonJson,
-                vedleggJson,
-                filOpplastinger,
-                kommunenr,
-                behandlingsId,
-                token
-            )
+            digisosApiClient.krypterOgLastOppFiler(soknadJson, tilleggsinformasjonJson, vedleggJson, filOpplastinger, kommunenr, behandlingsId, token)
         } catch (e: Exception) {
             event.setFailed()
             throw e
@@ -155,25 +147,27 @@ class DigisosApiService(
         val detectedMimeType = getMimeType(opplastetVedlegg.data)
         val mimetype = if (detectedMimeType.equals(TEXT_X_MATLAB, ignoreCase = true)) APPLICATION_PDF else detectedMimeType
         return FilOpplasting(
-            FilMetadata()
-                .withFilnavn(opplastetVedlegg.filnavn)
-                .withMimetype(mimetype)
-                .withStorrelse(pdf.size.toLong()),
-            ByteArrayInputStream(pdf)
+            metadata = FilMetadata(
+                filnavn = opplastetVedlegg.filnavn,
+                mimetype = mimetype,
+                storrelse = pdf.size.toLong()
+            ),
+            data = ByteArrayInputStream(pdf)
         )
     }
 
     private fun opprettFilOpplastingFraByteArray(filnavn: String, mimetype: String, bytes: ByteArray): FilOpplasting {
         return FilOpplasting(
-            FilMetadata()
-                .withFilnavn(filnavn)
-                .withMimetype(mimetype)
-                .withStorrelse(bytes.size.toLong()),
-            ByteArrayInputStream(bytes)
+            metadata = FilMetadata(
+                filnavn = filnavn,
+                mimetype = mimetype,
+                storrelse = bytes.size.toLong()
+            ),
+            data = ByteArrayInputStream(bytes)
         )
     }
 
-    fun sendSoknad(soknadUnderArbeid: SoknadUnderArbeid, token: String?, kommunenummer: String?): String {
+    fun sendSoknad(soknadUnderArbeid: SoknadUnderArbeid, token: String?, kommunenummer: String): String {
         var behandlingsId = soknadUnderArbeid.behandlingsId
         soknadUnderArbeidService.settInnsendingstidspunktPaSoknad(soknadUnderArbeid)
         log.info("Starter innsending av søknad med behandlingsId {}, skal sendes til DigisosApi", behandlingsId)

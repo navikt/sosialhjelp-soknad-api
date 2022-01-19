@@ -5,7 +5,6 @@ import no.nav.sosialhjelp.soknad.business.batch.oppgave.Oppgave
 import no.nav.sosialhjelp.soknad.business.batch.oppgave.Oppgave.Status
 import no.nav.sosialhjelp.soknad.business.db.repositories.oppgave.OppgaveRepository
 import no.nav.sosialhjelp.soknad.common.mdc.MdcOperations
-import no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils.isScheduledTasksDisabled
 import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Scheduled
 import java.time.LocalDateTime
@@ -17,12 +16,13 @@ interface OppgaveHandterer {
 
 class OppgaveHandtererImpl(
     private val fiksHandterer: FiksHandterer,
-    private val oppgaveRepository: OppgaveRepository
+    private val oppgaveRepository: OppgaveRepository,
+    private val schedulerDisabled: Boolean
 ) : OppgaveHandterer {
 
     @Scheduled(fixedDelay = PROSESS_RATE)
     fun prosesserOppgaver() {
-        if (isScheduledTasksDisabled()) {
+        if (schedulerDisabled) {
             logger.info("Scheduler is disabled")
             return
         }
@@ -58,7 +58,7 @@ class OppgaveHandtererImpl(
 
     @Scheduled(fixedDelay = RETRY_STUCK_RATE)
     fun retryStuckUnderArbeid() {
-        if (isScheduledTasksDisabled()) {
+        if (schedulerDisabled) {
             logger.info("Scheduler is disabled")
             return
         }
@@ -74,7 +74,7 @@ class OppgaveHandtererImpl(
 
     @Scheduled(fixedRate = RAPPORTER_RATE)
     fun rapporterFeilede() {
-        if (isScheduledTasksDisabled()) {
+        if (schedulerDisabled) {
             logger.info("Scheduler is disabled")
             return
         }

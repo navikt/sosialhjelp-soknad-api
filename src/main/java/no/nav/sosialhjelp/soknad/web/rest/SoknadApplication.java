@@ -13,6 +13,11 @@ import no.nav.sosialhjelp.soknad.arbeid.ArbeidRessurs;
 import no.nav.sosialhjelp.soknad.begrunnelse.BegrunnelseRessurs;
 import no.nav.sosialhjelp.soknad.bosituasjon.BosituasjonRessurs;
 import no.nav.sosialhjelp.soknad.common.mdc.MdcFilter;
+import no.nav.sosialhjelp.soknad.common.oidc.OidcResourceFilteringFeature;
+import no.nav.sosialhjelp.soknad.common.rest.feil.ApplicationExceptionMapper;
+import no.nav.sosialhjelp.soknad.common.rest.feil.ThrowableMapper;
+import no.nav.sosialhjelp.soknad.common.rest.provider.JsonToTextPlainBodyWriter;
+import no.nav.sosialhjelp.soknad.common.rest.provider.SoknadObjectMapperProvider;
 import no.nav.sosialhjelp.soknad.ettersending.EttersendingRessurs;
 import no.nav.sosialhjelp.soknad.health.InternalRessurs;
 import no.nav.sosialhjelp.soknad.innsending.SoknadActions;
@@ -37,7 +42,6 @@ import no.nav.sosialhjelp.soknad.utdanning.UtdanningRessurs;
 import no.nav.sosialhjelp.soknad.utgifter.BarneutgiftRessurs;
 import no.nav.sosialhjelp.soknad.utgifter.BoutgiftRessurs;
 import no.nav.sosialhjelp.soknad.vedlegg.OpplastetVedleggRessurs;
-import no.nav.sosialhjelp.soknad.web.oidc.OidcResourceFilteringFeature;
 import no.nav.sosialhjelp.soknad.web.sikkerhet.CORSFilter;
 import no.nav.sosialhjelp.soknad.web.sikkerhet.HeaderFilter;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
@@ -98,6 +102,11 @@ public class SoknadApplication extends ResourceConfig {
 
         register(JacksonJaxbJsonProvider.class);
         register(MultiPartFeature.class);
+        register(JsonToTextPlainBodyWriter.class);
+        register(SoknadObjectMapperProvider.class);
+
+        register(ApplicationExceptionMapper.class);
+        register(ThrowableMapper.class);
 
         // Filters
         register(HeaderFilter.class);

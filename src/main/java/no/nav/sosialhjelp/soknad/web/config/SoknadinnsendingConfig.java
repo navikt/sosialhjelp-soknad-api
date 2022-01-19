@@ -11,7 +11,11 @@ import no.nav.sosialhjelp.soknad.api.saksoversikt.SaksoversiktConfig;
 import no.nav.sosialhjelp.soknad.begrunnelse.BegrunnelseConfig;
 import no.nav.sosialhjelp.soknad.bosituasjon.BosituasjonConfig;
 import no.nav.sosialhjelp.soknad.business.BusinessConfig;
-import no.nav.sosialhjelp.soknad.consumer.ConsumerConfig;
+import no.nav.sosialhjelp.soknad.client.ClientConfig;
+import no.nav.sosialhjelp.soknad.common.ServiceUtils;
+import no.nav.sosialhjelp.soknad.common.oidc.OidcTokenValidatorConfig;
+import no.nav.sosialhjelp.soknad.common.rest.feil.ApplicationExceptionMapper;
+import no.nav.sosialhjelp.soknad.common.rest.feil.ThrowableMapper;
 import no.nav.sosialhjelp.soknad.ettersending.EttersendingConfig;
 import no.nav.sosialhjelp.soknad.health.HealthConfig;
 import no.nav.sosialhjelp.soknad.health.selftest.SelftestService;
@@ -27,7 +31,6 @@ import no.nav.sosialhjelp.soknad.tilgangskontroll.TilgangskontrollConfig;
 import no.nav.sosialhjelp.soknad.utdanning.UtdanningConfig;
 import no.nav.sosialhjelp.soknad.utgifter.UtgifterConfig;
 import no.nav.sosialhjelp.soknad.vedlegg.VedleggConfig;
-import no.nav.sosialhjelp.soknad.web.oidc.OidcTokenValidatorConfig;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
@@ -37,7 +40,7 @@ import org.springframework.context.annotation.Import;
 @Configuration
 @Import({
         BusinessConfig.class,
-        ConsumerConfig.class,
+        ClientConfig.class,
         ContentConfig.class,
         OidcTokenValidatorConfig.class,
         MetricsConfiguration.class,
@@ -66,7 +69,10 @@ import org.springframework.context.annotation.Import;
         InnsendingConfig.class,
         TilgangskontrollConfig.class,
         SchedulerConfig.class,
-        MetricsConfig.class
+        MetricsConfig.class,
+        ApplicationExceptionMapper.class,
+        ThrowableMapper.class,
+        ServiceUtils.class
 })
 @ComponentScan(basePackages = "no.nav.sosialhjelp.soknad.web.rest")
 public class SoknadinnsendingConfig {

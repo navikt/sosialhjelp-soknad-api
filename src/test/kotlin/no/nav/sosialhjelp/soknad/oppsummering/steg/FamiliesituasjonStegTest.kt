@@ -8,6 +8,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonNavn
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonAnsvar
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonBarn
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonBarnebidrag
+import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonBorSammenMed
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonEktefelle
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonErFolkeregistrertSammen
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonFamilie
@@ -20,6 +21,7 @@ import no.nav.sosialhjelp.soknad.oppsummering.dto.Type
 import no.nav.sosialhjelp.soknad.oppsummering.steg.OppsummeringTestUtils.validateFeltMedSvar
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import java.lang.Boolean
 
 internal class FamiliesituasjonStegTest {
 
@@ -133,7 +135,7 @@ internal class FamiliesituasjonStegTest {
     }
 
     @Test
-    fun ingenSystemBarn() {
+    fun ingenBarn() {
         val forsorgerplikt = JsonForsorgerplikt()
         val soknad = createSoknad(null, forsorgerplikt)
 
@@ -186,6 +188,7 @@ internal class FamiliesituasjonStegTest {
         assertThat(labelSvarMap!!["familie.barn.true.barn.navn.label"]!!.value).isEqualTo("Grønn Jakke")
         assertThat(labelSvarMap["familierelasjon.fodselsdato"]!!.value).isEqualTo("2020-02-02")
         assertThat(labelSvarMap["familierelasjon.samme_folkeregistrerte_adresse"]!!.value).isEqualTo("system.familie.barn.true.barn.folkeregistrertsammen.true")
+        assertThat(labelSvarMap).doesNotContainKey("familierelasjon.bor_sammen")
 
         val deltBostedSporsmal = forsorgerpliktSporsmal[1]
         assertThat(deltBostedSporsmal.erUtfylt).isFalse
@@ -238,6 +241,119 @@ internal class FamiliesituasjonStegTest {
 
         val systemBarnSporsmal = forsorgerpliktSporsmal[0]
         assertThat(systemBarnSporsmal.erUtfylt).isTrue
+
+        val deltBostedSporsmal = forsorgerpliktSporsmal[1]
+        assertThat(deltBostedSporsmal.erUtfylt).isTrue
+        assertThat(deltBostedSporsmal.felt).hasSize(1)
+        validateFeltMedSvar(deltBostedSporsmal.felt!![0], Type.CHECKBOX, SvarType.LOCALE_TEKST, "system.familie.barn.true.barn.deltbosted.true")
+
+        val barnebidragSporsmal = forsorgerpliktSporsmal[2]
+        assertThat(barnebidragSporsmal.erUtfylt).isTrue
+        assertThat(barnebidragSporsmal.felt).hasSize(1)
+        validateFeltMedSvar(barnebidragSporsmal.felt!![0], Type.CHECKBOX, SvarType.LOCALE_TEKST, "familie.barn.true.barnebidrag.betaler")
+    }
+
+    @Test
+    fun harBrukerregistrerteBarn_ikkeUtfyltDeltBosted_ikkeUtfyltBarnebidrag() {
+        val forsorgerplikt = JsonForsorgerplikt()
+            .withHarForsorgerplikt(
+                JsonHarForsorgerplikt()
+                    .withKilde(JsonKilde.SYSTEM)
+                    .withVerdi(java.lang.Boolean.TRUE)
+            )
+            .withAnsvar(
+                listOf(
+                    JsonAnsvar()
+                        .withBarn(
+                            JsonBarn()
+                                .withKilde(JsonKilde.BRUKER)
+                                .withNavn(JsonNavn().withFornavn("Grønn").withEtternavn("Jakke"))
+                                .withFodselsdato("2020-02-02")
+                        )
+                        .withBorSammenMed(
+                            JsonBorSammenMed()
+                                .withVerdi(Boolean.TRUE)
+                        )
+                        .withHarDeltBosted(null)
+                )
+            )
+            .withBarnebidrag(null)
+        val soknad = createSoknad(null, forsorgerplikt)
+
+        val res = steg.get(soknad)
+        assertThat(res.avsnitt).hasSize(2)
+
+        val forsorgerpliktSporsmal = res.avsnitt[1].sporsmal
+        assertThat(forsorgerpliktSporsmal).hasSize(3)
+
+        val brukerregistrerteBarnSporsmal = forsorgerpliktSporsmal[0]
+        assertThat(brukerregistrerteBarnSporsmal.erUtfylt).isTrue
+        assertThat(brukerregistrerteBarnSporsmal.felt!![0].type).isEqualTo(Type.SYSTEMDATA_MAP)
+
+        val labelSvarMap = brukerregistrerteBarnSporsmal.felt!![0].labelSvarMap
+        assertThat(labelSvarMap).hasSize(3)
+        assertThat(labelSvarMap!!["familie.barn.true.barn.navn.label"]!!.value).isEqualTo("Grønn Jakke")
+        assertThat(labelSvarMap["familierelasjon.fodselsdato"]!!.value).isEqualTo("2020-02-02")
+        assertThat(labelSvarMap).doesNotContainKey("familierelasjon.samme_folkeregistrerte_adresse")
+        assertThat(labelSvarMap["familierelasjon.bor_sammen"]!!.value).isEqualTo("familie.barn.true.barn.borsammen.true")
+
+        val deltBostedSporsmal = forsorgerpliktSporsmal[1]
+        assertThat(deltBostedSporsmal.erUtfylt).isFalse
+        assertThat(deltBostedSporsmal.felt).isNull()
+
+        val barnebidragSporsmal = forsorgerpliktSporsmal[2]
+        assertThat(barnebidragSporsmal.erUtfylt).isFalse
+        assertThat(barnebidragSporsmal.felt).isNull()
+    }
+
+    @Test
+    fun harBrukerregistrerteBarn_utfyltDeltBosted_utfyltBarnebidrag() {
+        val forsorgerplikt = JsonForsorgerplikt()
+            .withHarForsorgerplikt(
+                JsonHarForsorgerplikt()
+                    .withKilde(JsonKilde.SYSTEM)
+                    .withVerdi(java.lang.Boolean.TRUE)
+            )
+            .withAnsvar(
+                listOf(
+                    JsonAnsvar()
+                        .withBarn(
+                            JsonBarn()
+                                .withKilde(JsonKilde.BRUKER)
+                                .withNavn(JsonNavn().withFornavn("Grønn").withEtternavn("Jakke"))
+                                .withFodselsdato(null)
+                        )
+                        .withBorSammenMed(
+                            JsonBorSammenMed()
+                                .withVerdi(Boolean.TRUE)
+                        )
+                        .withHarDeltBosted(
+                            JsonHarDeltBosted()
+                                .withVerdi(Boolean.TRUE)
+                        )
+                )
+            )
+            .withBarnebidrag(
+                JsonBarnebidrag()
+                    .withVerdi(JsonBarnebidrag.Verdi.BETALER)
+            )
+        val soknad = createSoknad(null, forsorgerplikt)
+
+        val res = steg.get(soknad)
+        assertThat(res.avsnitt).hasSize(2)
+
+        val forsorgerpliktSporsmal = res.avsnitt[1].sporsmal
+        assertThat(forsorgerpliktSporsmal).hasSize(3)
+
+        val brukerregistrerteBarnSporsmal = forsorgerpliktSporsmal[0]
+        assertThat(brukerregistrerteBarnSporsmal.erUtfylt).isTrue
+
+        val labelSvarMap = brukerregistrerteBarnSporsmal.felt!![0].labelSvarMap
+        assertThat(labelSvarMap).hasSize(2)
+        assertThat(labelSvarMap!!["familie.barn.true.barn.navn.label"]!!.value).isEqualTo("Grønn Jakke")
+        assertThat(labelSvarMap).doesNotContainKey("familierelasjon.fodselsdato")
+        assertThat(labelSvarMap).doesNotContainKey("familierelasjon.samme_folkeregistrerte_adresse")
+        assertThat(labelSvarMap["familierelasjon.bor_sammen"]!!.value).isEqualTo("familie.barn.true.barn.borsammen.true")
 
         val deltBostedSporsmal = forsorgerpliktSporsmal[1]
         assertThat(deltBostedSporsmal.erUtfylt).isTrue

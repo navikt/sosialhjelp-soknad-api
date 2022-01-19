@@ -5,8 +5,7 @@ import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_SKATTEETATEN
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.metrics.aspects.Timed
-import no.nav.sosialhjelp.soknad.api.nedetid.NedetidUtils
-import no.nav.sosialhjelp.soknad.api.nedetid.NedetidUtils.NEDETID_SLUTT
+import no.nav.sosialhjelp.soknad.api.nedetid.NedetidService
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.business.exceptions.SoknadenHarNedetidException
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
@@ -46,7 +45,8 @@ open class SoknadRessurs(
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val systemdata: SystemdataUpdater,
     private val tilgangskontroll: Tilgangskontroll,
-    private val henvendelseService: HenvendelseService
+    private val henvendelseService: HenvendelseService,
+    private val nedetidService: NedetidService
 ) {
     @GET
     @Path("/{behandlingsId}/xsrfCookie")
@@ -139,9 +139,9 @@ open class SoknadRessurs(
         @Context response: HttpServletResponse,
         @HeaderParam(value = HttpHeaders.AUTHORIZATION) token: String?
     ): Map<String, String> {
-        if (NedetidUtils.isInnenforNedetid) {
+        if (nedetidService.isInnenforNedetid) {
             throw SoknadenHarNedetidException(
-                "Soknaden har nedetid fram til ${NedetidUtils.getNedetidAsStringOrNull(NEDETID_SLUTT)}"
+                "Soknaden har nedetid fram til ${nedetidService.nedetidSluttAsString}"
             )
         }
         tilgangskontroll.verifiserAtBrukerHarTilgang()

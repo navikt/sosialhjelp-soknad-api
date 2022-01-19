@@ -35,7 +35,8 @@ internal class SlettLoggSchedulerTest {
         batchSoknadMetadataRepository,
         batchSendtSoknadRepository,
         oppgaveRepository,
-        true
+        batchEnabled = true,
+        schedulerDisabled = false
     )
 
     @BeforeEach

@@ -8,6 +8,7 @@ import io.mockk.mockk
 import io.mockk.runs
 import io.mockk.verify
 import no.nav.sosialhjelp.api.fiks.KommuneInfo
+import no.nav.sosialhjelp.soknad.api.nedetid.NedetidService
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.client.fiks.kommuneinfo.KommuneInfoService
 import no.nav.sosialhjelp.soknad.common.subjecthandler.StaticSubjectHandlerImpl
@@ -30,6 +31,7 @@ internal class InformasjonRessursTest {
     private val personService: PersonService = mockk()
     private val tilgangskontroll: Tilgangskontroll = mockk()
     private val soknadMetadataRepository: SoknadMetadataRepository = mockk()
+    private val nedetidService: NedetidService = mockk()
 
     private val ressurs = InformasjonRessurs(
         messageSource,
@@ -38,7 +40,8 @@ internal class InformasjonRessursTest {
         personService,
         tilgangskontroll,
         soknadMetadataRepository,
-        mockk()
+        mockk(),
+        nedetidService
     )
 
     var norskBokmaal = Locale("nb", "NO")

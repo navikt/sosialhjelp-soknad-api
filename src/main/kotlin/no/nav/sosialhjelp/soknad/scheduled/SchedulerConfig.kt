@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Configuration
 @Configuration
 open class SchedulerConfig(
     @Value("\${sendsoknad.batch.enabled}") private val batchEnabled: Boolean,
+    @Value("\${scheduler.disable}") private val schedulerDisabled: Boolean,
     private val leaderElection: LeaderElection,
     private val batchSoknadMetadataRepository: BatchSoknadMetadataRepository,
     private val soknadMetadataRepository: SoknadMetadataRepository,
@@ -30,24 +31,25 @@ open class SchedulerConfig(
             soknadMetadataRepository,
             batchSoknadMetadataRepository,
             batchSoknadUnderArbeidRepository,
-            batchEnabled
+            batchEnabled,
+            schedulerDisabled
         )
     }
 
     @Bean
     open fun lagringsScheduler(): LagringsScheduler {
-        return LagringsScheduler(leaderElection, henvendelseService, batchSoknadUnderArbeidRepository, batchEnabled)
+        return LagringsScheduler(leaderElection, henvendelseService, batchSoknadUnderArbeidRepository, batchEnabled, schedulerDisabled)
     }
 
     @Bean
     open fun slettLoggScheduler(): SlettLoggScheduler {
         return SlettLoggScheduler(
-            leaderElection, batchSoknadMetadataRepository, batchSendtSoknadRepository, oppgaveRepository, batchEnabled
+            leaderElection, batchSoknadMetadataRepository, batchSendtSoknadRepository, oppgaveRepository, batchEnabled, schedulerDisabled
         )
     }
 
     @Bean
     open fun slettSoknadUnderArbeidScheduler(): SlettSoknadUnderArbeidScheduler {
-        return SlettSoknadUnderArbeidScheduler(leaderElection, batchSoknadUnderArbeidRepository, batchEnabled)
+        return SlettSoknadUnderArbeidScheduler(leaderElection, batchSoknadUnderArbeidRepository, batchEnabled, schedulerDisabled)
     }
 }

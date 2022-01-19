@@ -9,14 +9,15 @@ import com.nimbusds.jose.jwk.RSAKey
 import com.nimbusds.jose.jwk.gen.RSAKeyGenerator
 import com.nimbusds.jwt.JWTClaimsSet
 import com.nimbusds.jwt.SignedJWT
-import no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils
+import no.nav.sosialhjelp.soknad.common.ServiceUtils
 import java.time.Instant
 import java.util.Date
 import java.util.UUID
 
 class MaskinportenGrantTokenGenerator(
     private val maskinportenProperties: MaskinportenProperties,
-    private val issuer: String
+    private val issuer: String,
+    serviceUtils: ServiceUtils
 ) {
 
     /**
@@ -24,7 +25,7 @@ class MaskinportenGrantTokenGenerator(
      * Dvs at rsaKey genereres i ved lokal kjøring, i test eller mot mock-alt.
      */
     private val privateRsaKey = if (maskinportenProperties.jwkPrivate == "generateRSA") {
-        if (!ServiceUtils.isNonProduction()) throw IllegalStateException("Generation of RSA keys is not allowed in prod")
+        if (!serviceUtils.isNonProduction()) throw IllegalStateException("Generation of RSA keys is not allowed in prod")
         RSAKeyGenerator(2048).keyUse(KeyUse.SIGNATURE).keyID(UUID.randomUUID().toString()).generate()
     } else {
         RSAKey.parse(maskinportenProperties.jwkPrivate)
