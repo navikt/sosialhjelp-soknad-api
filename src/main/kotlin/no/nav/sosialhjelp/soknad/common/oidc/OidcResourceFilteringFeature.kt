@@ -24,16 +24,14 @@ class OidcResourceFilteringFeature(
     }
 
     private fun isClassAllowedInProd(resourceInfo: ResourceInfo): Boolean {
-        return ALLOWED_CLASSES.contains(resourceInfo.resourceClass) ||
-                ALLOWED_PARENT_CLASSES.contains(resourceInfo.resourceClass.enclosingClass)
+        return ALLOWED_CLASSES.contains(resourceInfo.resourceClass) || ALLOWED_PARENT_CLASSES.contains(resourceInfo.resourceClass.enclosingClass)
     }
 
     private val isAllowedWhenNotRunningInProd: Boolean
         get() = ServiceUtils.isNonProduction() && isOidcMock
 
     private val isOidcMock: Boolean
-        get() = "true".equals(tillatmock, ignoreCase = true) &&
-            "true".equals(startOidcMock, ignoreCase = true)
+        get() = "true".equals(tillatmock, ignoreCase = true) && "true".equals(startOidcMock, ignoreCase = true)
 
     companion object {
         private val ALLOWED_CLASSES =
