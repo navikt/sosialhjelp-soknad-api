@@ -14,8 +14,8 @@ class TextHelpers(
                 "YYY",
                 ignoreCase = true
             ) || landForkortelse.equals(
-                BasisPersonaliaSystemdata.PDL_UKJENT_STATSBORGERSKAP, ignoreCase = true
-            )
+                    BasisPersonaliaSystemdata.PDL_UKJENT_STATSBORGERSKAP, ignoreCase = true
+                )
         ) {
             return "Vi har ikke opplysninger om ditt statsborgerskap"
         } else if (landForkortelse.equals(
