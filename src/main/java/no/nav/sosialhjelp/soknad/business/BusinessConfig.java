@@ -5,6 +5,7 @@ import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.PdfGenerator;
 import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.SosialhjelpPdfGenerator;
 import no.nav.sosialhjelp.soknad.business.service.ServiceConfig;
 import no.nav.sosialhjelp.soknad.common.systemdata.SystemdataUpdater;
+import no.nav.sosialhjelp.soknad.pdf.PdfUtils;
 import no.nav.sosialhjelp.soknad.pdf.TextHelpers;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -16,6 +17,7 @@ import org.springframework.context.annotation.Import;
         SystemdataUpdater.class,
         PdfGenerator.class,
         TextHelpers.class,
+        PdfUtils.class,
         SosialhjelpPdfGenerator.class
 })
 public class BusinessConfig {
