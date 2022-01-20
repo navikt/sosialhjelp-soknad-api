@@ -4,7 +4,7 @@ import no.nav.security.token.support.core.configuration.IssuerProperties
 import no.nav.security.token.support.core.configuration.MultiIssuerConfiguration
 import no.nav.security.token.support.core.configuration.ProxyAwareResourceRetriever
 import no.nav.security.token.support.jaxrs.servlet.JaxrsJwtTokenValidationFilter
-import no.nav.sosialhjelp.soknad.web.utils.Constants
+import no.nav.sosialhjelp.soknad.common.Constants
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
