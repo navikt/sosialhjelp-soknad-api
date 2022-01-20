@@ -49,7 +49,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <tjenestespesifikasjon.version>1.2021.01.21-11.34-02f5eb27bb76</tjenestespesifikasjon.version>
-        <sosialhjelp-common.version>1.615c94f</sosialhjelp-common.version>
+        <sosialhjelp-common.version>1.92c7849</sosialhjelp-common.version>
         <filformat.version>1.2022.01.04-11.48-cd5236e6ccf4</filformat.version>
 
         <!-- Fiks/KS -->
@@ -111,7 +111,7 @@
         <!-- Versjoner for test dependencies -->
         <hamcrest.version>2.2</hamcrest.version>
         <junit-jupiter.version>5.8.2</junit-jupiter.version>
-        <mockito.version>4.0.0</mockito.version>
+        <mockito.version>4.2.0</mockito.version>
         <assertj.version>3.22.0</assertj.version>
         <mockk.version>1.12.2</mockk.version>
         <mockwebserver.version>5.0.0-alpha.2</mockwebserver.version>
