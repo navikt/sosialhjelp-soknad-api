@@ -20,7 +20,7 @@ internal class CORSFilterTest {
     @BeforeEach
     fun setUp() {
         val headers: MultivaluedMap<String, Any> = MultivaluedHashMap()
-        every {response.headers } returns headers
+        every { response.headers } returns headers
     }
 
     @AfterEach
