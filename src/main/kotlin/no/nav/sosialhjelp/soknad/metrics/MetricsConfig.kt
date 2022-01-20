@@ -5,7 +5,7 @@ import io.prometheus.client.hotspot.DefaultExports
 import no.nav.sosialhjelp.metrics.MetricsClient
 import no.nav.sosialhjelp.metrics.MetricsConfig.resolveNaisConfig
 import no.nav.sosialhjelp.metrics.aspects.TimerAspect
-import no.nav.sosialhjelp.soknad.web.utils.MiljoUtils
+import no.nav.sosialhjelp.soknad.common.MiljoUtils.naisAppName
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -47,7 +47,7 @@ open class MetricsConfig(
         private val miljo: String?
     ) {
         fun enableMetrics() {
-            MetricsClient.enableMetrics(resolveNaisConfig(MiljoUtils.getNaisAppName(), miljo, host))
+            MetricsClient.enableMetrics(resolveNaisConfig(naisAppName, miljo, host))
         }
     }
 }
