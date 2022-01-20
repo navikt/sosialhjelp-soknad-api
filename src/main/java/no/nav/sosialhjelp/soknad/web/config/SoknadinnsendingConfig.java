@@ -43,7 +43,6 @@ import org.springframework.context.annotation.Import;
         ClientConfig.class,
         ContentConfig.class,
         OidcTokenValidatorConfig.class,
-        MetricsConfiguration.class,
         SelftestService.class,
         InnsendingConfig.class,
         InntektConfig.class,
