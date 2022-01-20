@@ -3,8 +3,8 @@ package no.nav.sosialhjelp.soknad.common.subjecthandler
 import no.nav.security.token.support.core.context.TokenValidationContext
 import no.nav.security.token.support.jaxrs.JaxrsTokenValidationContextHolder
 import no.nav.sosialhjelp.kotlin.utils.logger
-import no.nav.sosialhjelp.soknad.web.utils.Constants.SELVBETJENING
-import no.nav.sosialhjelp.soknad.web.utils.Constants.TOKENX
+import no.nav.sosialhjelp.soknad.common.Constants.SELVBETJENING
+import no.nav.sosialhjelp.soknad.common.Constants.TOKENX
 import org.springframework.stereotype.Component
 
 interface SubjectHandler {

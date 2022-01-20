@@ -12,12 +12,12 @@ import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.metrics.aspects.Timed
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.business.service.TextService
+import no.nav.sosialhjelp.soknad.common.Constants
 import no.nav.sosialhjelp.soknad.common.mapper.OkonomiMapper.addUtbetalingIfCheckedElseDeleteInOpplysninger
 import no.nav.sosialhjelp.soknad.common.mapper.OkonomiMapper.setBekreftelse
 import no.nav.sosialhjelp.soknad.common.mapper.TitleKeyMapper.soknadTypeToTitleKey
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
-import no.nav.sosialhjelp.soknad.web.utils.Constants
 import org.springframework.stereotype.Controller
 import javax.ws.rs.GET
 import javax.ws.rs.PUT

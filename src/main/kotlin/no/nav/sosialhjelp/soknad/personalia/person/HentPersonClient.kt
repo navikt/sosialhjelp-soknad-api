@@ -20,8 +20,8 @@ import no.nav.sosialhjelp.soknad.client.redis.PDL_CACHE_SECONDS
 import no.nav.sosialhjelp.soknad.client.redis.PERSON_CACHE_KEY_PREFIX
 import no.nav.sosialhjelp.soknad.client.redis.RedisService
 import no.nav.sosialhjelp.soknad.client.sts.StsClient
-import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.HEADER_TEMA
-import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.TEMA_KOM
+import no.nav.sosialhjelp.soknad.common.Constants.HEADER_TEMA
+import no.nav.sosialhjelp.soknad.common.Constants.TEMA_KOM
 import no.nav.sosialhjelp.soknad.personalia.person.dto.BarnDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.EktefelleDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.PersonAdressebeskyttelseDto

@@ -4,10 +4,10 @@ import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.security.token.support.core.api.Unprotected
 import no.nav.sosialhjelp.metrics.aspects.Timed
 import no.nav.sosialhjelp.soknad.api.minesaker.dto.InnsendtSoknadDto
+import no.nav.sosialhjelp.soknad.common.Constants.CLAIM_ACR_LEVEL_3
+import no.nav.sosialhjelp.soknad.common.Constants.CLAIM_ACR_LEVEL_4
+import no.nav.sosialhjelp.soknad.common.Constants.TOKENX
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
-import no.nav.sosialhjelp.soknad.web.utils.Constants.CLAIM_ACR_LEVEL_3
-import no.nav.sosialhjelp.soknad.web.utils.Constants.CLAIM_ACR_LEVEL_4
-import no.nav.sosialhjelp.soknad.web.utils.Constants.TOKENX
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Controller
 import javax.ws.rs.GET

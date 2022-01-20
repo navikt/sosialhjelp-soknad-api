@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.client.sts
 
+import no.nav.sosialhjelp.soknad.common.Constants.HEADER_NAV_APIKEY
 import no.nav.sosialhjelp.soknad.common.rest.RestUtils
-import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants
 import no.nav.sosialhjelp.soknad.health.selftest.Pingable
 import org.eclipse.jetty.http.HttpHeader
 import org.springframework.beans.factory.annotation.Value
@@ -39,7 +39,7 @@ open class StsConfig(
 
     private val client: Client = RestUtils.createClient()
         .register(ClientRequestFilter { it.headers.putSingle(HttpHeader.AUTHORIZATION.toString(), basicAuthentication) })
-        .register(ClientRequestFilter { it.headers.putSingle(HeaderConstants.HEADER_NAV_APIKEY, System.getenv(STSTOKEN_APIKEY)) })
+        .register(ClientRequestFilter { it.headers.putSingle(HEADER_NAV_APIKEY, System.getenv(STSTOKEN_APIKEY)) })
 
     private val basicAuthentication: String
         get() {
