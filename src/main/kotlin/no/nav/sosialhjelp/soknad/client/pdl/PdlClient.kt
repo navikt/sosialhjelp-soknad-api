@@ -6,9 +6,12 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.sosialhjelp.soknad.client.sts.StsClient
 import no.nav.sosialhjelp.soknad.client.sts.dto.FssToken
+import no.nav.sosialhjelp.soknad.common.Constants.BEARER
+import no.nav.sosialhjelp.soknad.common.Constants.HEADER_CALL_ID
+import no.nav.sosialhjelp.soknad.common.Constants.HEADER_CONSUMER_ID
+import no.nav.sosialhjelp.soknad.common.Constants.HEADER_CONSUMER_TOKEN
 import no.nav.sosialhjelp.soknad.common.mdc.MdcOperations
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
-import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants
 import org.eclipse.jetty.http.HttpHeader
 import javax.ws.rs.client.Client
 import javax.ws.rs.client.Entity
@@ -29,8 +32,8 @@ abstract class PdlClient(
         client
             .target(baseurl)
             .request()
-            .header(HeaderConstants.HEADER_CALL_ID, callId)
-            .header(HeaderConstants.HEADER_CONSUMER_ID, consumerId)
+            .header(HEADER_CALL_ID, callId)
+            .header(HEADER_CONSUMER_ID, consumerId)
             .options()
             .use { response ->
                 if (response.status != 200) {
@@ -49,10 +52,10 @@ abstract class PdlClient(
     protected val baseRequest: Invocation.Builder
         get() = client.target(baseurl)
             .request(MediaType.APPLICATION_JSON_TYPE)
-            .header(HttpHeader.AUTHORIZATION.name, HeaderConstants.BEARER + fssToken.access_token)
-            .header(HeaderConstants.HEADER_CALL_ID, callId)
-            .header(HeaderConstants.HEADER_CONSUMER_ID, consumerId)
-            .header(HeaderConstants.HEADER_CONSUMER_TOKEN, HeaderConstants.BEARER + fssToken.access_token)
+            .header(HttpHeader.AUTHORIZATION.name, BEARER + fssToken.access_token)
+            .header(HEADER_CALL_ID, callId)
+            .header(HEADER_CONSUMER_ID, consumerId)
+            .header(HEADER_CONSUMER_TOKEN, BEARER + fssToken.access_token)
 
     protected val pdlMapper: ObjectMapper = jacksonObjectMapper()
         .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)

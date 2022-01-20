@@ -4,10 +4,11 @@ package no.nav.sosialhjelp.soknad.common.rest
 
 import no.nav.sosialhjelp.metrics.MetricsFactory
 import no.nav.sosialhjelp.metrics.Timer
+import no.nav.sosialhjelp.soknad.common.Constants.HEADER_CONSUMER_ID
+import no.nav.sosialhjelp.soknad.common.Constants.NAV_CALL_ID_HEADER_NAMES
 import no.nav.sosialhjelp.soknad.common.MiljoUtils.naisAppName
 import no.nav.sosialhjelp.soknad.common.mdc.MdcOperations
 import no.nav.sosialhjelp.soknad.common.rest.RestUtils.CSRF_COOKIE_NAVN
-import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants
 import org.apache.commons.lang3.exception.ExceptionUtils
 import org.slf4j.LoggerFactory
 import java.net.URI
@@ -30,10 +31,10 @@ class ClientLogFilter(
         log.info("${clientRequestContext.method} ${uriForLogging(clientRequestContext)}")
         val requestHeaders = clientRequestContext.headers
         MdcOperations.getFromMDC(MdcOperations.MDC_CALL_ID)?.let { callId ->
-            Arrays.stream(HeaderConstants.NAV_CALL_ID_HEADER_NAMES)
+            Arrays.stream(NAV_CALL_ID_HEADER_NAMES)
                 .forEach { headerName -> requestHeaders.add(headerName, callId) }
         }
-        requestHeaders.add(HeaderConstants.HEADER_CONSUMER_ID, naisAppName)
+        requestHeaders.add(HEADER_CONSUMER_ID, naisAppName)
         requestHeaders.add(CSRF_COOKIE_NAVN, CSRF_TOKEN)
         requestHeaders.add(HttpHeaders.COOKIE, Cookie(CSRF_COOKIE_NAVN, CSRF_TOKEN))
 

@@ -14,8 +14,8 @@ import no.nav.sosialhjelp.soknad.client.redis.GEOGRAFISK_TILKNYTNING_CACHE_KEY_P
 import no.nav.sosialhjelp.soknad.client.redis.PDL_CACHE_SECONDS
 import no.nav.sosialhjelp.soknad.client.redis.RedisService
 import no.nav.sosialhjelp.soknad.client.sts.StsClient
-import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.HEADER_TEMA
-import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.TEMA_KOM
+import no.nav.sosialhjelp.soknad.common.Constants.HEADER_TEMA
+import no.nav.sosialhjelp.soknad.common.Constants.TEMA_KOM
 import no.nav.sosialhjelp.soknad.navenhet.gt.dto.GeografiskTilknytningDto
 import org.slf4j.LoggerFactory.getLogger
 import javax.ws.rs.ProcessingException

@@ -1,8 +1,8 @@
 package no.nav.sosialhjelp.soknad.innsending.digisosapi
 
 import no.nav.sosialhjelp.soknad.client.exceptions.TjenesteUtilgjengeligException
-import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.HEADER_INTEGRASJON_ID
-import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.HEADER_INTEGRASJON_PASSORD
+import no.nav.sosialhjelp.soknad.common.Constants.HEADER_INTEGRASJON_ID
+import no.nav.sosialhjelp.soknad.common.Constants.HEADER_INTEGRASJON_PASSORD
 import org.slf4j.LoggerFactory.getLogger
 import org.springframework.http.HttpHeaders.ACCEPT
 import org.springframework.http.HttpHeaders.AUTHORIZATION
