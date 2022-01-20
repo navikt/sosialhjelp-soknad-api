@@ -9,10 +9,10 @@ import no.nav.sosialhjelp.soknad.client.redis.LANDKODER_CACHE_KEY
 import no.nav.sosialhjelp.soknad.client.redis.POSTNUMMER_CACHE_KEY
 import no.nav.sosialhjelp.soknad.client.redis.RedisService
 import no.nav.sosialhjelp.soknad.client.redis.RedisUtils.redisObjectMapper
+import no.nav.sosialhjelp.soknad.common.Constants.HEADER_CALL_ID
+import no.nav.sosialhjelp.soknad.common.Constants.HEADER_CONSUMER_ID
 import no.nav.sosialhjelp.soknad.common.mdc.MdcOperations
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
-import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.HEADER_CALL_ID
-import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.HEADER_CONSUMER_ID
 import org.slf4j.LoggerFactory.getLogger
 import java.net.URI
 import java.nio.charset.StandardCharsets
