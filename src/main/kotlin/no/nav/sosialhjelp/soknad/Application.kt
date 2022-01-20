@@ -3,21 +3,33 @@ package no.nav.sosialhjelp.soknad
 import no.nav.sosialhjelp.soknad.domain.model.mock.MockUtils
 import no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils
 import org.springframework.boot.autoconfigure.SpringBootApplication
-import org.springframework.boot.runApplication
+import org.springframework.boot.builder.SpringApplicationBuilder
 
 @SpringBootApplication
-open class Application
+open class Application {
 
-fun main(args: Array<String>) {
-    if (!ServiceUtils.isNonProduction() && MockUtils.isMockAltProfil()) {
-        throw Error("mockAltProfil har blitt satt til true i prod. Stopper applikasjonen da dette er en sikkerhetsrisiko.")
-    }
-    if (!ServiceUtils.isNonProduction() && MockUtils.isRunningWithInMemoryDb()) {
-        throw Error("no.nav.sosialhjelp.soknad.hsqldb har blitt satt til true i prod. Stopper applikasjonen da dette er en sikkerhetsrisiko.")
-    }
-    if (!ServiceUtils.isNonProduction() && (MockUtils.isAlltidHentKommuneInfoFraNavTestkommune() || MockUtils.isAlltidSendTilNavTestkommune())) {
-        throw Error("Alltid send eller hent fra NavTestkommune er satt til true i prod. Stopper applikasjonen da dette er en sikkerhetsrisiko.")
+    fun configure(builder: SpringApplicationBuilder): SpringApplicationBuilder {
+        return configureApplication(builder)
     }
 
-    runApplication<Application>(*args).registerShutdownHook()
+    companion object {
+        @JvmStatic
+        fun main(args: Array<String>) {
+            configureApplication(SpringApplicationBuilder()).run(*args)
+        }
+
+        private fun configureApplication(builder: SpringApplicationBuilder): SpringApplicationBuilder {
+            if (!ServiceUtils.isNonProduction() && MockUtils.isMockAltProfil()) {
+                throw Error("mockAltProfil har blitt satt til true i prod. Stopper applikasjonen da dette er en sikkerhetsrisiko.")
+            }
+            if (!ServiceUtils.isNonProduction() && MockUtils.isRunningWithInMemoryDb()) {
+                throw Error("no.nav.sosialhjelp.soknad.hsqldb har blitt satt til true i prod. Stopper applikasjonen da dette er en sikkerhetsrisiko.")
+            }
+            if (!ServiceUtils.isNonProduction() && (MockUtils.isAlltidHentKommuneInfoFraNavTestkommune() || MockUtils.isAlltidSendTilNavTestkommune())) {
+                throw Error("Alltid send eller hent fra NavTestkommune er satt til true i prod. Stopper applikasjonen da dette er en sikkerhetsrisiko.")
+            }
+            return builder
+                .sources(Application::class.java)
+        }
+    }
 }
