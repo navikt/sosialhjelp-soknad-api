@@ -14,7 +14,7 @@ import no.nav.sosialhjelp.soknad.begrunnelse.BegrunnelseRessurs;
 import no.nav.sosialhjelp.soknad.bosituasjon.BosituasjonRessurs;
 import no.nav.sosialhjelp.soknad.common.filter.CORSFilter;
 import no.nav.sosialhjelp.soknad.common.filter.HeaderFilter;
-import no.nav.sosialhjelp.soknad.common.mdc.MdcFilter;
+import no.nav.sosialhjelp.soknad.common.filter.MdcFilter;
 import no.nav.sosialhjelp.soknad.common.oidc.OidcResourceFilteringFeature;
 import no.nav.sosialhjelp.soknad.common.rest.feil.ApplicationExceptionMapper;
 import no.nav.sosialhjelp.soknad.common.rest.feil.ThrowableMapper;

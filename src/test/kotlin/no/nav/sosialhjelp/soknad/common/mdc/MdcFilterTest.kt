@@ -2,6 +2,7 @@ package no.nav.sosialhjelp.soknad.common.mdc
 
 import io.mockk.every
 import io.mockk.mockk
+import no.nav.sosialhjelp.soknad.common.filter.MdcFilter
 import no.nav.sosialhjelp.soknad.common.mdc.MdcOperations.MDC_BEHANDLINGS_ID
 import no.nav.sosialhjelp.soknad.common.mdc.MdcOperations.MDC_CALL_ID
 import no.nav.sosialhjelp.soknad.common.mdc.MdcOperations.MDC_CONSUMER_ID
