@@ -73,6 +73,7 @@ class SoknadMetricsService {
                     Vedleggstatus.LastetOpp -> antallInnsendt++
                     Vedleggstatus.VedleggAlleredeSendt -> antallLevertTidligere++
                     Vedleggstatus.VedleggKreves -> antallIkkeLevert++
+                    else -> continue
                 }
             }
         }

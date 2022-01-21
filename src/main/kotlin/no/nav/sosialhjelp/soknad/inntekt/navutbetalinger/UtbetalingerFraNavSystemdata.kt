@@ -101,13 +101,10 @@ class UtbetalingerFraNavSystemdata(
         }
 
         private fun tilDouble(s: String): Double? {
-            var s = s
             if (StringUtils.isBlank(s)) {
                 return null
             }
-            s = s.replace(",", ".")
-            s = s.replace("\u00A0", "")
-            return StringUtils.deleteWhitespace(s).toDouble()
+            return StringUtils.deleteWhitespace(s.replace(",", ".").replace("\u00A0", "")).toDouble()
         }
     }
 }

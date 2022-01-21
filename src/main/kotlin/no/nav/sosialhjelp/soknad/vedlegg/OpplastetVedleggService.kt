@@ -42,9 +42,9 @@ class OpplastetVedleggService(
         behandlingsId: String?,
         vedleggstype: String,
         data: ByteArray,
-        filnavn: String
+        originalfilnavn: String
     ): OpplastetVedlegg {
-        var filnavn = filnavn
+        var filnavn = originalfilnavn
 
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val sha512 = ServiceUtils.getSha512FromByteArray(data)
@@ -209,11 +209,11 @@ class OpplastetVedleggService(
         }
 
         filnavn += "-" + uuid.split("-").toTypedArray()[0]
-        if (fileExtension != null && fileExtension.isNotEmpty() && erTikaOgFileExtensionEnige(fileExtension, fileType)) {
-            filnavn += fileExtension
+        filnavn += if (fileExtension != null && fileExtension.isNotEmpty() && erTikaOgFileExtensionEnige(fileExtension, fileType)) {
+            fileExtension
         } else {
             logger.info("Opplastet vedlegg mangler fil extension -> setter fil extension lik validert filtype = ${fileType.extension}")
-            filnavn += fileType.extension
+            fileType.extension
         }
 
         return filnavn
