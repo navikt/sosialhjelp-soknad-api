@@ -25,7 +25,7 @@ class BasisPersonaliaSystemdata(
         personalia.nordiskBorger = systemPersonalia.nordiskBorger
     }
 
-    fun innhentSystemBasisPersonalia(personIdentifikator: String?): JsonPersonalia? {
+    private fun innhentSystemBasisPersonalia(personIdentifikator: String?): JsonPersonalia? {
         val person = personService.hentPerson(personIdentifikator!!) ?: return null
         return mapToJsonPersonalia(person)
     }
@@ -47,9 +47,9 @@ class BasisPersonaliaSystemdata(
     private fun mapToJsonSokernavn(person: Person): JsonSokernavn {
         return JsonSokernavn()
             .withKilde(JsonSokernavn.Kilde.SYSTEM)
-            .withFornavn(person.fornavn ?: "")
+            .withFornavn(person.fornavn)
             .withMellomnavn(person.mellomnavn ?: "")
-            .withEtternavn(person.etternavn ?: "")
+            .withEtternavn(person.etternavn)
     }
 
     private fun mapToJsonStatsborgerskap(person: Person): JsonStatsborgerskap? {

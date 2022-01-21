@@ -82,14 +82,14 @@ class EttersendingService(
     }
 
     private fun hentOgVerifiserSoknad(behandlingsId: String?): SoknadMetadata? {
-        var soknad = henvendelseService.hentSoknad(behandlingsId)
+        var soknad: SoknadMetadata? = henvendelseService.hentSoknad(behandlingsId)
             ?: throw IllegalStateException("SoknadMetadata til behandlingsid $behandlingsId finnes ikke")
 
-        if (soknad.type == SoknadType.SEND_SOKNAD_KOMMUNAL_ETTERSENDING) {
+        if (soknad?.type == SoknadType.SEND_SOKNAD_KOMMUNAL_ETTERSENDING) {
             soknad = henvendelseService.hentSoknad(soknad.tilknyttetBehandlingsId)
         }
 
-        if (soknad.status != FERDIG) {
+        if (soknad?.status != FERDIG) {
             throw SosialhjelpSoknadApiException("Kan ikke starte ettersendelse på noe som ikke er innsendt")
         } else if (soknad.innsendtDato.isBefore(LocalDateTime.now(clock).minusDays(ETTERSENDELSE_FRIST_DAGER.toLong()))) {
             throwDetailedExceptionForEttersendelserEtterFrist(soknad)
@@ -122,7 +122,7 @@ class EttersendingService(
             ?: originalSoknad
     }
 
-    fun hentAntallEttersendelserSendtPaSoknad(behandlingsId: String?): Long {
+    private fun hentAntallEttersendelserSendtPaSoknad(behandlingsId: String?): Long {
         return henvendelseService.hentBehandlingskjede(behandlingsId)
             .count { it.status == FERDIG }.toLong()
     }
