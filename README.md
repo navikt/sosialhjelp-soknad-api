@@ -6,7 +6,7 @@
 ## Sosialhjelp-soknad-api
 
 ### Kjøring lokalt mot mock-alt
-Bruk MockAltSoknadsosialhjelpServer istedenfor DevSoknadsosialhjelpServer.\
+Start `Application.kt` med profilene `mock-alt,no-redis,log-console`.\
 Krever at sosialhjelp-mock-alt-api også kjører lokalt.
 
 ### Kjøring lokalt
