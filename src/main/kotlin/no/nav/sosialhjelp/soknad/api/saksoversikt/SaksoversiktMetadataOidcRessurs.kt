@@ -60,7 +60,7 @@ open class SaksoversiktMetadataOidcRessurs(
             PabegynteSoknaderRespons()
                 .withPabegynteSoknader(pabegynte)
         } catch (e: Exception) {
-            logger.error("Uthenting av påbegynte søknader feilet. Var fnr tom? {}", fnr == null || fnr == "", e)
+            logger.error("Uthenting av påbegynte søknader feilet. Var fnr tom? {}", fnr.isBlank(), e)
             throw e
         }
     }

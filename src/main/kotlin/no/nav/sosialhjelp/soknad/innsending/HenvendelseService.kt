@@ -81,7 +81,7 @@ class HenvendelseService(
         logger.info("Søknad avsluttet $behandlingsId ${meta.skjema}, ${vedlegg.vedleggListe.size}")
     }
 
-    fun hentSoknad(behandlingsId: String?): SoknadMetadata {
+    fun hentSoknad(behandlingsId: String?): SoknadMetadata? {
         return soknadMetadataRepository.hent(behandlingsId)
     }
 

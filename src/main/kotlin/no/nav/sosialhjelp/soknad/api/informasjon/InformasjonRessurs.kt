@@ -73,9 +73,9 @@ open class InformasjonRessurs(
     @Unprotected
     @GET
     @Path("/tekster")
-    open fun hentTekster(@QueryParam("type") type: String, @QueryParam("sprak") sprak: String?): Properties? {
-        var type = type
-        var sprak = sprak
+    open fun hentTekster(@QueryParam("type") queryType: String, @QueryParam("sprak") querySprak: String?): Properties? {
+        var type = queryType
+        var sprak = querySprak
         if (sprak == null || sprak.trim { it <= ' ' }.isEmpty()) {
             sprak = "nb_NO"
         }
@@ -87,7 +87,7 @@ open class InformasjonRessurs(
             }
         }
         val locale = LocaleUtils.toLocale(sprak)
-        return messageSource!!.getBundleFor(type, locale)
+        return messageSource.getBundleFor(type, locale)
     }
 
     @GET

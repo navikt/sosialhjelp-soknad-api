@@ -2,19 +2,12 @@ package no.nav.sosialhjelp.soknad.client.redis
 
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.fasterxml.jackson.module.kotlin.readValue
+import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper
 import no.nav.sosialhjelp.api.fiks.KommuneInfo
 import org.slf4j.LoggerFactory
 import java.io.IOException
-
-class RedisObjectMapper {
-    val redisObjectMapper = JsonSosialhjelpObjectMapper.createObjectMapper()
-        .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
-        .registerModule(KotlinModule())
-        .registerModule(JavaTimeModule())
-}
 
 object RedisUtils {
 
@@ -22,7 +15,7 @@ object RedisUtils {
 
     val redisObjectMapper = JsonSosialhjelpObjectMapper.createObjectMapper()
         .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
-        .registerModule(KotlinModule())
+        .registerKotlinModule()
         .registerModule(JavaTimeModule())
 
     fun toKommuneInfoMap(value: ByteArray?): Map<String, KommuneInfo>? {

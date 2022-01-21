@@ -132,7 +132,7 @@ open class PdlDtoMapper(
 
     private fun findSivilstatus(sivilstand: List<SivilstandDto>?): String? {
         val sivilstandDto = helper.utledGjeldendeSivilstand(sivilstand)
-        return if (sivilstandDto != null) MAP_PDLSIVILSTAND_TIL_JSONSIVILSTATUS.get(sivilstandDto.type) else ""
+        return if (sivilstandDto != null) MAP_PDLSIVILSTAND_TIL_JSONSIVILSTATUS[sivilstandDto.type] else ""
     }
 
     private fun findStatsborgerskap(statsborgerskap: List<StatsborgerskapDto>?): List<String> {
@@ -172,7 +172,7 @@ open class PdlDtoMapper(
         return if (bostedsadresse == null || bostedsadresse.isEmpty()) {
             null
         } else bostedsadresse
-            .firstOrNull { it?.ukjentBosted == null && (it?.vegadresse != null || it?.matrikkeladresse != null) }
+            .firstOrNull { it.ukjentBosted == null && (it.vegadresse != null || it.matrikkeladresse != null) }
     }
 
     private fun getMatrikkelId(bostedsadresseDto: BostedsadresseDto?): String? {
@@ -220,8 +220,8 @@ open class PdlDtoMapper(
             ?.let {
                 Bostedsadresse(
                     it.coAdressenavn,
-                    if (it.vegadresse == null) null else mapToVegadresse(it.vegadresse),
-                    if (it.matrikkeladresse == null) null else mapToMatrikkeladresse(it.matrikkeladresse)
+                    it.vegadresse?.let { adr -> mapToVegadresse(adr) },
+                    it.matrikkeladresse?.let { adr -> mapToMatrikkeladresse(adr) }
                 )
             } ?: return null
     }
@@ -292,7 +292,7 @@ open class PdlDtoMapper(
         return poststed?.uppercase()
     }
 
-    private fun mapToMatrikkeladresse(dto: MatrikkeladresseDto): Matrikkeladresse? {
+    private fun mapToMatrikkeladresse(dto: MatrikkeladresseDto): Matrikkeladresse {
         return Matrikkeladresse(
             dto.matrikkelId,
             dto.postnummer,

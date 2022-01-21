@@ -86,7 +86,7 @@ class EttersendingService(
             ?: throw IllegalStateException("SoknadMetadata til behandlingsid $behandlingsId finnes ikke")
 
         if (soknad.type == SoknadType.SEND_SOKNAD_KOMMUNAL_ETTERSENDING) {
-            soknad = henvendelseService.hentSoknad(soknad.tilknyttetBehandlingsId)
+            henvendelseService.hentSoknad(soknad.tilknyttetBehandlingsId)?.let { soknad = it }
         }
 
         if (soknad.status != FERDIG) {
@@ -122,7 +122,7 @@ class EttersendingService(
             ?: originalSoknad
     }
 
-    fun hentAntallEttersendelserSendtPaSoknad(behandlingsId: String?): Long {
+    private fun hentAntallEttersendelserSendtPaSoknad(behandlingsId: String?): Long {
         return henvendelseService.hentBehandlingskjede(behandlingsId)
             .count { it.status == FERDIG }.toLong()
     }

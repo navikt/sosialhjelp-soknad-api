@@ -33,7 +33,7 @@ class MapperHelper {
             )
         }
         val sistEndredeSivilstand = sorted[0]
-        if (sistEndredeSivilstand == null || flereSivilstanderRegistrertSamtidig(sistEndredeSivilstand, sorted) ||
+        if (flereSivilstanderRegistrertSamtidig(sistEndredeSivilstand, sorted) ||
             sistEndredeSivilstand.type == SivilstandType.UOPPGITT ||
             //  Kommentert ut fordi vi ikke er 100% sikre på om vi skal vise sivilstander fra udokumenterte kilder (master == "bruker selv").
             //  Hvis disse skal filtreres vekk, kan linjen kommenteres inn igjen.
@@ -43,10 +43,7 @@ class MapperHelper {
             return null
         }
         if (erKildeUdokumentert(sistEndredeSivilstand.metadata)) {
-            log.info(
-                "PDL sivilstand er udokumentert (kilde = {})",
-                sisteEndringOrNull(sistEndredeSivilstand.metadata)?.kilde
-            )
+            log.info("PDL sivilstand er udokumentert (kilde = ${sisteEndringOrNull(sistEndredeSivilstand.metadata)?.kilde})")
         }
         return sistEndredeSivilstand
     }

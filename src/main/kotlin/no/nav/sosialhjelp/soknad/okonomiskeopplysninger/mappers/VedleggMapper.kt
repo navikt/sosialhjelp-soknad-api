@@ -68,10 +68,8 @@ object VedleggMapper {
     private fun getRadListWithAvdragAndRenter(jsonOkonomi: JsonOkonomi): List<VedleggRadFrontend> {
         val avdragRad = getRadListFromOversiktUtgift(jsonOkonomi, UTGIFTER_BOLIGLAN_AVDRAG)
         val renterRad = getRadListFromOversiktUtgift(jsonOkonomi, SoknadJsonTyper.UTGIFTER_BOLIGLAN_RENTER)
-        if (avdragRad != null) {
-            for (i in avdragRad.indices) {
-                avdragRad[i].renter = renterRad[i].renter
-            }
+        for (i in avdragRad.indices) {
+            avdragRad[i].renter = renterRad[i].renter
         }
         return avdragRad
     }
@@ -184,7 +182,7 @@ object VedleggMapper {
         return VedleggRadFrontend(belop = utgift.belop)
     }
 
-    fun mapJsonFilerAndOpplastedeVedleggToFilerFrontend(
+    private fun mapJsonFilerAndOpplastedeVedleggToFilerFrontend(
         filer: List<JsonFiler>,
         opplastedeVedlegg: List<OpplastetVedlegg>
     ): List<FilFrontend> {

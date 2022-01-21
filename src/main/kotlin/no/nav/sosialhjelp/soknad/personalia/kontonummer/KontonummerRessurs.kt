@@ -57,7 +57,7 @@ open class KontonummerRessurs(
         if (kontonummerFrontend.brukerdefinert) {
             kontonummer.kilde = JsonKilde.BRUKER
             kontonummer.verdi = if (kontonummerFrontend.brukerutfyltVerdi == "") null else kontonummerFrontend.brukerutfyltVerdi
-            kontonummer.setHarIkkeKonto(kontonummerFrontend.harIkkeKonto ?: null)
+            kontonummer.setHarIkkeKonto(kontonummerFrontend.harIkkeKonto)
         } else if (kontonummer.kilde == JsonKilde.BRUKER) {
             kontonummer.kilde = JsonKilde.SYSTEM
             kontonummerSystemdata.updateSystemdataIn(soknad)
