@@ -9,10 +9,10 @@ import io.mockk.slot
 import io.mockk.verify
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
+import no.nav.sosialhjelp.soknad.common.exceptions.AuthorizationException
 import no.nav.sosialhjelp.soknad.common.subjecthandler.StaticSubjectHandlerImpl
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
-import no.nav.sosialhjelp.soknad.domain.model.exception.AuthorizationException
 import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.personalia.kontonummer.KontonummerRessurs.KontonummerFrontend
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll

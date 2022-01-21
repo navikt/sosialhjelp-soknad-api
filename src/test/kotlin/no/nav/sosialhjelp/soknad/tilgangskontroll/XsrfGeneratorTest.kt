@@ -1,8 +1,8 @@
 package no.nav.sosialhjelp.soknad.tilgangskontroll
 
+import no.nav.sosialhjelp.soknad.common.exceptions.AuthorizationException
 import no.nav.sosialhjelp.soknad.common.subjecthandler.StaticSubjectHandlerImpl
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
-import no.nav.sosialhjelp.soknad.domain.model.exception.AuthorizationException
 import no.nav.sosialhjelp.soknad.tilgangskontroll.XsrfGenerator.generateXsrfToken
 import no.nav.sosialhjelp.soknad.tilgangskontroll.XsrfGenerator.sjekkXsrfToken
 import org.assertj.core.api.Assertions

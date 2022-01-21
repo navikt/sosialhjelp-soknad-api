@@ -14,7 +14,7 @@ import no.nav.sosialhjelp.soknad.adressesok.sok.SearchRule
 import no.nav.sosialhjelp.soknad.adressesok.sok.Sokedata
 import no.nav.sosialhjelp.soknad.adressesok.sok.SortBy
 import no.nav.sosialhjelp.soknad.client.kodeverk.KodeverkService
-import no.nav.sosialhjelp.soknad.domain.model.exception.SosialhjelpSoknadApiException
+import no.nav.sosialhjelp.soknad.common.exceptions.SosialhjelpSoknadApiException
 import org.apache.commons.lang3.StringUtils
 import org.slf4j.LoggerFactory
 
