@@ -1344,18 +1344,9 @@
                     </execution>
                 </executions>
                 <configuration>
-<!--                    <argLine>-->
-<!--                        &#45;&#45;illegal-access=permit-->
-<!--                    </argLine>-->
                     <classesDirectory>${project.build.outputDirectory}</classesDirectory>
                 </configuration>
-<!--                <dependencies>-->
-<!--                    <dependency>-->
-<!--                        <groupId>org.glassfish.jaxb</groupId>-->
-<!--                        <artifactId>jaxb-runtime</artifactId>-->
-<!--                        <version>${jaxb-runtime.version}</version>-->
-<!--                    </dependency>-->
-<!--                </dependencies>-->
+
             </plugin>
 
             <plugin>
@@ -1368,10 +1359,6 @@
                     <excludes>
                         <exclude>*IT</exclude>
                     </excludes>
-
-                    <argLine>
-                        --illegal-access=permit
-                    </argLine>
 
                     <forkCount>3</forkCount>
                     <reuseForks>true</reuseForks>
