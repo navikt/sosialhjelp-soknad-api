@@ -4,7 +4,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
 import static no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils.isNonProduction;
-import static no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils.maskerFnr;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class ServiceUtilsTest {
@@ -12,73 +11,6 @@ class ServiceUtilsTest {
     @AfterEach
     public void tearDown() {
         System.clearProperty("environment.name");
-    }
-
-    @Test
-    void skalStrippeVekkFnutter() {
-        String utenFnutter = ServiceUtils.stripVekkFnutter("\"123\"");
-        assertThat(utenFnutter).isEqualTo("123");
-    }
-
-    @Test
-    void skalFjerne_alleFnr_fraFeilmelding() {
-        String str = "12121212121 feilmelding som har flere fnr 12345678911 og 11111111111";
-
-        String res = maskerFnr(str);
-
-        assertThat(res).isEqualTo("[FNR] feilmelding som har flere fnr [FNR] og [FNR]");
-    }
-
-    @Test
-    void skalFjerne_fnr_fraUrl() {
-        String str = "/ekstern/skatt/datasamarbeid/api/innrapportert/inntektsmottaker/11111111111/oppgave/inntekt?fnr=12121212121&a=b";
-
-        String res = maskerFnr(str);
-
-        assertThat(res).isEqualTo("/ekstern/skatt/datasamarbeid/api/innrapportert/inntektsmottaker/[FNR]/oppgave/inntekt?fnr=[FNR]&a=b");
-    }
-
-    @Test
-    void skalIkkeFjerne_12siffretTall_fraFeilmelding() {
-        String str = "feilmelding som har for langt fnr 111112222233";
-
-        String res = maskerFnr(str);
-
-        assertThat(res).isEqualTo(str);
-    }
-
-    @Test
-    void skalIkkeFjerne_10siffretTall_fraFeilmelding() {
-        String str = "feilmelding som har for kort fnr 1111122222";
-
-        String res = maskerFnr(str);
-
-        assertThat(res).isEqualTo(str);
-    }
-
-    @Test
-    void skalFjerne_11siffretTallWrappetMedHermetegn_fraFeilmelding() {
-        String str = "feilmelding som har fnr \"12345612345\"";
-
-        String res = maskerFnr(str);
-
-        assertThat(res).isEqualTo("feilmelding som har fnr \"[FNR]\"");
-    }
-
-    @Test
-    void skalIkkeFeile_medNull_iFeilmelding() {
-        String res = maskerFnr(null);
-
-        assertThat(res).isNull();
-    }
-
-    @Test
-    void skalFjerneFnrFraRedisFeilmelding() {
-        String str = "cache key=hent-person-12345612345";
-
-        String res = maskerFnr(str);
-
-        assertThat(res).isEqualTo("cache key=hent-person-[FNR]");
     }
 
     @Test
