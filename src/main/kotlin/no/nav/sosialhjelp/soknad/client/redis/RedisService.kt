@@ -2,7 +2,7 @@ package no.nav.sosialhjelp.soknad.client.redis
 
 import no.nav.sosialhjelp.api.fiks.KommuneInfo
 import no.nav.sosialhjelp.soknad.client.redis.RedisUtils.redisObjectMapper
-import no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils.maskerFnr
+import no.nav.sosialhjelp.soknad.common.LoggingUtils.maskerFnr
 import org.slf4j.LoggerFactory.getLogger
 import java.io.IOException
 import java.nio.charset.StandardCharsets

@@ -1,13 +1,8 @@
-package no.nav.sosialhjelp.soknad.client.fiks.kommuneinfo
+package no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo
 
 import com.fasterxml.jackson.core.JsonProcessingException
 import no.nav.sosialhjelp.api.fiks.KommuneInfo
 import no.nav.sosialhjelp.client.kommuneinfo.KommuneInfoClient
-import no.nav.sosialhjelp.soknad.client.fiks.kommuneinfo.KommuneStatus.FIKS_NEDETID_OG_TOM_CACHE
-import no.nav.sosialhjelp.soknad.client.fiks.kommuneinfo.KommuneStatus.HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT
-import no.nav.sosialhjelp.soknad.client.fiks.kommuneinfo.KommuneStatus.MANGLER_KONFIGURASJON
-import no.nav.sosialhjelp.soknad.client.fiks.kommuneinfo.KommuneStatus.SKAL_SENDE_SOKNADER_OG_ETTERSENDELSER_VIA_FDA
-import no.nav.sosialhjelp.soknad.client.fiks.kommuneinfo.KommuneStatus.SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD_OG_ETTERSENDELSER
 import no.nav.sosialhjelp.soknad.client.idporten.IdPortenService
 import no.nav.sosialhjelp.soknad.client.redis.KOMMUNEINFO_CACHE_KEY
 import no.nav.sosialhjelp.soknad.client.redis.KOMMUNEINFO_CACHE_SECONDS
@@ -15,6 +10,11 @@ import no.nav.sosialhjelp.soknad.client.redis.KOMMUNEINFO_LAST_POLL_TIME_KEY
 import no.nav.sosialhjelp.soknad.client.redis.RedisService
 import no.nav.sosialhjelp.soknad.client.redis.RedisUtils.redisObjectMapper
 import no.nav.sosialhjelp.soknad.common.mapper.KommuneTilNavEnhetMapper
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus.FIKS_NEDETID_OG_TOM_CACHE
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus.HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus.MANGLER_KONFIGURASJON
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus.SKAL_SENDE_SOKNADER_OG_ETTERSENDELSER_VIA_FDA
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus.SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD_OG_ETTERSENDELSER
 import org.slf4j.LoggerFactory.getLogger
 import java.nio.charset.StandardCharsets.UTF_8
 import java.time.LocalDateTime

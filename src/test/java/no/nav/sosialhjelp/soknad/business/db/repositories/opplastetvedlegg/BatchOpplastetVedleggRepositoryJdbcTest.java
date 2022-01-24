@@ -4,7 +4,7 @@ import no.nav.sosialhjelp.soknad.business.db.RepositoryTestSupport;
 import no.nav.sosialhjelp.soknad.business.db.config.DbTestConfig;
 import no.nav.sosialhjelp.soknad.domain.OpplastetVedlegg;
 import no.nav.sosialhjelp.soknad.domain.VedleggType;
-import no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils;
+import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,7 +21,7 @@ class BatchOpplastetVedleggRepositoryJdbcTest {
 
     private static final String EIER = "12345678901";
     private static final byte[] DATA = {1, 2, 3, 4};
-    private static final String SHA512 = ServiceUtils.getSha512FromByteArray(DATA);
+    private static final String SHA512 = VedleggUtils.INSTANCE.getSha512FromByteArray(DATA);
     private static final String TYPE = "bostotte|annetboutgift";
     private static final String TYPE2 = "dokumentasjon|aksjer";
     private static final Long SOKNADID = 1L;
