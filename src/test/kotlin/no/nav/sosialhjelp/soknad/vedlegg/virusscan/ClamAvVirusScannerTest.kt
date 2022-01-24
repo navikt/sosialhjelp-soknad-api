@@ -6,7 +6,7 @@ import mockwebserver3.MockResponse
 import mockwebserver3.MockWebServer
 import no.nav.sosialhjelp.soknad.client.redis.RedisUtils.redisObjectMapper
 import no.nav.sosialhjelp.soknad.common.ServiceUtils
-import no.nav.sosialhjelp.soknad.domain.model.exception.OpplastingException
+import no.nav.sosialhjelp.soknad.vedlegg.exceptions.OpplastingException
 import no.nav.sosialhjelp.soknad.vedlegg.virusscan.dto.Result
 import no.nav.sosialhjelp.soknad.vedlegg.virusscan.dto.ScanResult
 import org.assertj.core.api.Assertions.assertThatCode

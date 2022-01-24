@@ -2,12 +2,12 @@ package no.nav.sosialhjelp.soknad.common.rest.feil
 
 import no.nav.sosialhjelp.soknad.client.exceptions.SikkerhetsBegrensningException
 import no.nav.sosialhjelp.soknad.client.exceptions.TjenesteUtilgjengeligException
+import no.nav.sosialhjelp.soknad.common.exceptions.AuthorizationException
+import no.nav.sosialhjelp.soknad.common.exceptions.EttersendelseSendtForSentException
+import no.nav.sosialhjelp.soknad.common.exceptions.SosialhjelpSoknadApiException
 import no.nav.sosialhjelp.soknad.common.rest.feil.Feilmelding.Companion.NO_BIGIP_5XX_REDIRECT
-import no.nav.sosialhjelp.soknad.domain.model.exception.AuthorizationException
-import no.nav.sosialhjelp.soknad.domain.model.exception.EttersendelseSendtForSentException
-import no.nav.sosialhjelp.soknad.domain.model.exception.OpplastingException
-import no.nav.sosialhjelp.soknad.domain.model.exception.SosialhjelpSoknadApiException
-import no.nav.sosialhjelp.soknad.domain.model.exception.UgyldigOpplastingTypeException
+import no.nav.sosialhjelp.soknad.vedlegg.exceptions.OpplastingException
+import no.nav.sosialhjelp.soknad.vedlegg.exceptions.UgyldigOpplastingTypeException
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
