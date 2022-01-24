@@ -22,7 +22,7 @@ class ApplicationContextTest {
     @Test
     fun skalReturnereRettAntallBundles() {
         val source: NavMessageSource = contentConfig!!.navMessageSource()
-        val basenames = source.basenames
+        val basenames = source.getBasenames()
         assertThat(basenames).hasSize(1)
     }
 }
