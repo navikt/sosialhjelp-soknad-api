@@ -6,7 +6,7 @@
 
 <!--    <context-param>-->
 <!--        <param-name>contextConfigLocation</param-name>-->
-<!--        <param-value>no.nav.sosialhjelp.soknad.web.config.SoknadinnsendingConfig,no.nav.sosialhjelp.soknad.web.oidc.OidcConfig,no.nav.sosialhjelp.soknad.web.config.PdlIntegrationTestConfig</param-value>-->
+<!--        <param-value>no.nav.sosialhjelp.soknad.config.ApplicationConfig,no.nav.sosialhjelp.soknad.web.oidc.OidcConfig,no.nav.sosialhjelp.soknad.web.config.PdlIntegrationTestConfig</param-value>-->
 <!--    </context-param>-->
 
 <!--</web-app>-->

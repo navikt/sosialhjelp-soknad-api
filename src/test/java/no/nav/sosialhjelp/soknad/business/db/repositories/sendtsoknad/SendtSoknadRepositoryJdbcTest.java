@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.business.db.repositories.sendtsoknad;
 
 import no.nav.sosialhjelp.soknad.business.db.RepositoryTestSupport;
-import no.nav.sosialhjelp.soknad.business.db.config.DbTestConfig;
+import no.nav.sosialhjelp.soknad.config.DbTestConfig;
 import no.nav.sosialhjelp.soknad.domain.SendtSoknad;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;

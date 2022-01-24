@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.business.db.repositories.opplastetvedlegg;
 
 import no.nav.sosialhjelp.soknad.business.db.RepositoryTestSupport;
-import no.nav.sosialhjelp.soknad.business.db.config.DbTestConfig;
+import no.nav.sosialhjelp.soknad.config.DbTestConfig;
 import no.nav.sosialhjelp.soknad.domain.OpplastetVedlegg;
 import no.nav.sosialhjelp.soknad.domain.VedleggType;
 import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils;
