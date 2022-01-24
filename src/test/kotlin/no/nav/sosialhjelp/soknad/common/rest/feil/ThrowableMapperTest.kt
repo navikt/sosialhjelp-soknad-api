@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.common.rest.feil
 
-import no.nav.sosialhjelp.soknad.business.exceptions.SamtidigOppdateringException
+import no.nav.sosialhjelp.soknad.common.exceptions.SamtidigOppdateringException
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 

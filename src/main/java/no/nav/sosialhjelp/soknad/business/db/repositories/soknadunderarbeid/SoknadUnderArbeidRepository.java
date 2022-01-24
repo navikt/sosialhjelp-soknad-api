@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid;
 
-import no.nav.sosialhjelp.soknad.business.exceptions.SamtidigOppdateringException;
+import no.nav.sosialhjelp.soknad.common.exceptions.SamtidigOppdateringException;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 
 import java.util.Optional;
