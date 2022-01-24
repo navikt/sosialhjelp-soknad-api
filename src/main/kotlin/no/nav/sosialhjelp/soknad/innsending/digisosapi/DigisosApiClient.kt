@@ -5,7 +5,6 @@ import no.ks.fiks.streaming.klient.FilForOpplasting
 import no.ks.kryptering.CMSKrypteringImpl
 import no.ks.kryptering.CMSStreamKryptering
 import no.nav.sosialhjelp.kotlin.utils.logger
-import no.nav.sosialhjelp.soknad.client.fiks.kommuneinfo.KommuneInfoService
 import no.nav.sosialhjelp.soknad.common.Constants.HEADER_INTEGRASJON_ID
 import no.nav.sosialhjelp.soknad.common.Constants.HEADER_INTEGRASJON_PASSORD
 import no.nav.sosialhjelp.soknad.domain.model.mock.MockUtils
@@ -15,6 +14,7 @@ import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.getDigisosIdFromRes
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.stripVekkFnutter
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilMetadata
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilOpplasting
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
 import org.apache.commons.io.IOUtils
 import org.apache.http.client.config.RequestConfig
 import org.apache.http.client.methods.HttpPost
