@@ -149,7 +149,6 @@ open class SoknadRessurs(
         val opprettetBehandlingsId: String = if (behandlingsId == null) {
             soknadService.startSoknad(token)
         } else {
-            tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
             val eier = SubjectHandlerUtils.getUserIdFromToken()
             val soknadUnderArbeid = soknadUnderArbeidRepository.hentEttersendingMedTilknyttetBehandlingsId(behandlingsId, eier)
             if (soknadUnderArbeid.isPresent) {
