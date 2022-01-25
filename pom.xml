@@ -1362,8 +1362,7 @@
 
                     <forkCount>3</forkCount>
                     <reuseForks>true</reuseForks>
-                    <argLine>-Xmx1024m -XX:MaxPermSize=256m
-                    </argLine> <!-- Gi nok minne for å unngå terminerende JVM-er -->
+                    <argLine>-Xmx1024m</argLine> <!-- Gi nok minne for å unngå terminerende JVM-er -->
 
                     <systemPropertyVariables>
                         <java.awt.headless>true</java.awt.headless>
