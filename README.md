@@ -1,14 +1,25 @@
 [![Build image](https://github.com/navikt/sosialhjelp-soknad-api/actions/workflows/build.yml/badge.svg?branch=master)](https://github.com/navikt/sosialhjelp-soknad-api/actions/workflows/build.yml)
 [![Deploy til prod-sbs](https://github.com/navikt/sosialhjelp-soknad-api/actions/workflows/deploy_prod.yml/badge.svg)](https://github.com/navikt/sosialhjelp-soknad-api/actions/workflows/deploy_prod.yml)
 
-## Sosialhjelp-soknad-api
+# Sosialhjelp-soknad-api
+Backend-applikasjon for søknad om økonomisk sosialhjelp.
 
-Teknologi:
-* Java 11/Kotlin
+## Henvendelser
+Spørsmål knyttet til koden eller teamet kan stilles til teamdigisos@nav.no.
+
+### For NAV-ansatte
+Interne henvendelser kan sendes via Slack i kanalen #team_digisos.
+
+## Teknologi:
+* Java/Kotlin
+* JDK 11
 * Maven
 * Spring Boot + Jersey
 * Oracle DB
 * Redis (cache)
+
+### Krav
+* JDK 11
 
 ### Kjøring lokalt mot mock-alt
 Start `Application.kt` med profilene `mock-alt,no-redis,log-console`.\
@@ -33,8 +44,8 @@ For å kunne konsumere pakker fra Github Package Registry kjøres `mvn install -
 Mer info: https://github.com/navikt/utvikling/blob/master/Konsumere%20biblioteker%20fra%20Github%20Package%20Registry.md
 
 ### Ktlint
-Her brukes `maven-antrun-plugin` for sjekking og formattering av kotlin-kode - ref https://github.com/pinterest/ktlint#integration
+Her brukes `maven-antrun-plugin` for linting av kotlin-kode - ref https://github.com/pinterest/ktlint#integration
 
-To check code style - `mvn antrun:run@ktlint` (it's also bound to `mvn validate`).
+Sjekke kode - `mvn antrun:run@ktlint` (også bundet til `mvn validate`).
 
-To run formatter - `mvn antrun:run@ktlint-format`.
+Formattere kode - `mvn antrun:run@ktlint-format`.
