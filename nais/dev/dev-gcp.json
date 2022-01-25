@@ -7,6 +7,14 @@
   "envsecret": [
     "redis-password-soknad-api"
   ],
+  "outboundExternalHosts": [
+    "digisos-gcp.dev.nav.no",
+    "unleash.nais.io"
+  ],
+  "outboundRulesApplications": [
+    "sosialhjelp-mock-alt-api",
+    "sosialhjelp-soknad-api-redis"
+  ],
   "minReplicas": "1",
   "maxReplicas": "1",
   "memoryLimit": "2Gi",
@@ -17,6 +25,7 @@
   "tokenXEnabled": false,
   "personbrukerGcpCluster": "dev-gcp",
   "dialogGcpCluster": "dev-gcp",
+  "sosialhjelpDialogApi": "sosialhjelp-dialog-api",
   "prometheusEnabled": false,
   "webProxyEnabled": false,
   "isGcp": true,
