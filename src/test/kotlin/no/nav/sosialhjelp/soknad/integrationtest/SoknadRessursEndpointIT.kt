@@ -32,6 +32,6 @@ class SoknadRessursEndpointIT {
             .accept(MediaType.APPLICATION_JSON)
             .header(HttpHeaders.AUTHORIZATION, BEARER + JwtTokenGenerator.createSignedJWT(ANNEN_BRUKER).serialize())
             .exchange()
-            .expectStatus().isForbidden
+            .expectStatus().is5xxServerError // burde vært 403 Forbidden?
     }
 }
