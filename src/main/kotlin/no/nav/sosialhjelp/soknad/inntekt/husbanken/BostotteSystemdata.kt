@@ -9,7 +9,6 @@ import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeSystem
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling
-import no.nav.sosialhjelp.soknad.business.service.TextService
 import no.nav.sosialhjelp.soknad.common.mapper.OkonomiMapper.addUtbetalingIfNotPresentInOpplysninger
 import no.nav.sosialhjelp.soknad.common.mapper.OkonomiMapper.removeUtbetalingIfPresentInOpplysninger
 import no.nav.sosialhjelp.soknad.common.mapper.TitleKeyMapper.soknadTypeToTitleKey
@@ -18,6 +17,7 @@ import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidS
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.domain.Bostotte
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.domain.Sak
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.domain.Utbetaling
+import no.nav.sosialhjelp.soknad.tekster.TextService
 import org.apache.commons.text.WordUtils
 import java.time.LocalDate
 

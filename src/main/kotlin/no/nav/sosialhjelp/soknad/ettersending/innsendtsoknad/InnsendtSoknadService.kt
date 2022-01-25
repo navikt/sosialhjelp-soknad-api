@@ -23,16 +23,16 @@ class InnsendtSoknadService(
 
     fun hentBehandlingskjede(behandlingsId: String): BehandlingsKjede {
         val originalSoknad = hentOriginalSoknad(behandlingsId)
-        val ettersendelser = hentEttersendelser(originalSoknad.behandlingsId)
+        val ettersendelser = originalSoknad?.let { hentEttersendelser(it.behandlingsId) }
         return BehandlingsKjede(
-            originalSoknad = konverter(originalSoknad),
-            ettersendelser = ettersendelser.map { konverter(it) }
+            originalSoknad = originalSoknad?.let { konverter(it) },
+            ettersendelser = ettersendelser?.map { konverter(it) }
         )
     }
 
-    private fun hentOriginalSoknad(behandlingsId: String): SoknadMetadata {
+    private fun hentOriginalSoknad(behandlingsId: String): SoknadMetadata? {
         var soknad = henvendelseService.hentSoknad(behandlingsId)
-        if (soknad.type == SoknadType.SEND_SOKNAD_KOMMUNAL_ETTERSENDING) {
+        if (soknad?.type == SoknadType.SEND_SOKNAD_KOMMUNAL_ETTERSENDING) {
             soknad = henvendelseService.hentSoknad(soknad.tilknyttetBehandlingsId)
         }
         return soknad
@@ -57,9 +57,9 @@ class InnsendtSoknadService(
         )
     }
 
-    fun getInnsendingstidspunkt(behandlingsId: String): LocalDateTime {
+    fun getInnsendingstidspunkt(behandlingsId: String): LocalDateTime? {
         val soknadMetadata = hentOriginalSoknad(behandlingsId)
-        return soknadMetadata.innsendtDato
+        return soknadMetadata?.innsendtDato
     }
 
     private fun tilVedlegg(

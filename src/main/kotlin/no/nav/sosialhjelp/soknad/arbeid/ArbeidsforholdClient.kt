@@ -3,10 +3,13 @@ package no.nav.sosialhjelp.soknad.arbeid
 import no.nav.sosialhjelp.soknad.arbeid.dto.ArbeidsforholdDto
 import no.nav.sosialhjelp.soknad.client.exceptions.TjenesteUtilgjengeligException
 import no.nav.sosialhjelp.soknad.client.sts.StsClient
+import no.nav.sosialhjelp.soknad.common.Constants.BEARER
+import no.nav.sosialhjelp.soknad.common.Constants.HEADER_CALL_ID
+import no.nav.sosialhjelp.soknad.common.Constants.HEADER_CONSUMER_ID
+import no.nav.sosialhjelp.soknad.common.Constants.HEADER_CONSUMER_TOKEN
+import no.nav.sosialhjelp.soknad.common.Constants.HEADER_NAV_PERSONIDENT
 import no.nav.sosialhjelp.soknad.common.mdc.MdcOperations
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
-import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants
-import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.BEARER
 import org.eclipse.jetty.http.HttpHeader
 import org.slf4j.LoggerFactory.getLogger
 import java.time.LocalDate
@@ -39,8 +42,8 @@ class ArbeidsforholdClientImpl(
     override fun ping() {
         client.target(baseurl + "ping")
             .request()
-            .header(HeaderConstants.HEADER_CALL_ID, callId)
-            .header(HeaderConstants.HEADER_CONSUMER_ID, consumerId)
+            .header(HEADER_CALL_ID, callId)
+            .header(HEADER_CONSUMER_ID, consumerId)
             .options().use { response ->
                 if (response.status != 200) {
                     throw RuntimeException("Aareg.api - Feil statuskode ved ping: ${response.status}, respons: ${response.readEntity(String::class.java)}")
@@ -57,10 +60,10 @@ class ArbeidsforholdClientImpl(
                 .queryParam("ansettelsesperiodeTom", sokeperiode.tom.format(DateTimeFormatter.ISO_LOCAL_DATE))
                 .request()
                 .header(HttpHeader.AUTHORIZATION.name, BEARER + userToken) // brukers token
-                .header(HeaderConstants.HEADER_CALL_ID, callId)
-                .header(HeaderConstants.HEADER_CONSUMER_ID, consumerId)
-                .header(HeaderConstants.HEADER_CONSUMER_TOKEN, BEARER + stsClient.getFssToken().access_token)
-                .header(HeaderConstants.HEADER_NAV_PERSONIDENT, fodselsnummer)
+                .header(HEADER_CALL_ID, callId)
+                .header(HEADER_CONSUMER_ID, consumerId)
+                .header(HEADER_CONSUMER_TOKEN, BEARER + stsClient.getFssToken().access_token)
+                .header(HEADER_NAV_PERSONIDENT, fodselsnummer)
                 .get(object : GenericType<List<ArbeidsforholdDto>>() {})
         } catch (e: BadRequestException) {
             log.warn("Aareg.api - 400 Bad Request - Ugyldig(e) parameter(e) i request", e)

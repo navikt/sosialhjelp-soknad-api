@@ -10,10 +10,10 @@ import io.mockk.verify
 import no.nav.sosialhjelp.api.fiks.KommuneInfo
 import no.nav.sosialhjelp.soknad.api.nedetid.NedetidService
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.SoknadMetadataRepository
-import no.nav.sosialhjelp.soknad.client.fiks.kommuneinfo.KommuneInfoService
+import no.nav.sosialhjelp.soknad.common.exceptions.AuthorizationException
 import no.nav.sosialhjelp.soknad.common.subjecthandler.StaticSubjectHandlerImpl
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
-import no.nav.sosialhjelp.soknad.domain.model.exception.AuthorizationException
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
 import no.nav.sosialhjelp.soknad.tekster.NavMessageSource
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll

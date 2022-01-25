@@ -2,10 +2,10 @@ package no.nav.sosialhjelp.soknad.oppsummering
 
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.metrics.aspects.Timed
+import no.nav.sosialhjelp.soknad.common.Constants
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.oppsummering.dto.Oppsummering
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
-import no.nav.sosialhjelp.soknad.web.utils.Constants
 import org.springframework.stereotype.Controller
 import javax.ws.rs.GET
 import javax.ws.rs.Path

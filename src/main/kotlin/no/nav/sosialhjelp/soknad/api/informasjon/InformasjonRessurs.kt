@@ -12,17 +12,17 @@ import no.nav.sosialhjelp.soknad.api.informasjon.dto.NyligInnsendteSoknaderRespo
 import no.nav.sosialhjelp.soknad.api.informasjon.dto.PabegyntSoknad
 import no.nav.sosialhjelp.soknad.api.nedetid.NedetidService
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.SoknadMetadataRepository
-import no.nav.sosialhjelp.soknad.client.fiks.kommuneinfo.KommuneInfoService
+import no.nav.sosialhjelp.soknad.common.Constants
 import no.nav.sosialhjelp.soknad.common.mapper.KommuneTilNavEnhetMapper
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SosialhjelpInformasjon
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
 import no.nav.sosialhjelp.soknad.personalia.person.dto.Gradering.FORTROLIG
 import no.nav.sosialhjelp.soknad.personalia.person.dto.Gradering.STRENGT_FORTROLIG
 import no.nav.sosialhjelp.soknad.personalia.person.dto.Gradering.STRENGT_FORTROLIG_UTLAND
 import no.nav.sosialhjelp.soknad.tekster.NavMessageSource
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
-import no.nav.sosialhjelp.soknad.web.utils.Constants
 import org.apache.commons.lang3.LocaleUtils
 import org.apache.commons.lang3.StringUtils
 import org.slf4j.LoggerFactory
@@ -73,9 +73,9 @@ open class InformasjonRessurs(
     @Unprotected
     @GET
     @Path("/tekster")
-    open fun hentTekster(@QueryParam("type") type: String, @QueryParam("sprak") sprak: String?): Properties? {
-        var type = type
-        var sprak = sprak
+    open fun hentTekster(@QueryParam("type") queryType: String, @QueryParam("sprak") querySprak: String?): Properties? {
+        var type = queryType
+        var sprak = querySprak
         if (sprak == null || sprak.trim { it <= ' ' }.isEmpty()) {
             sprak = "nb_NO"
         }
@@ -87,7 +87,7 @@ open class InformasjonRessurs(
             }
         }
         val locale = LocaleUtils.toLocale(sprak)
-        return messageSource!!.getBundleFor(type, locale)
+        return messageSource.getBundleFor(type, locale)
     }
 
     @GET

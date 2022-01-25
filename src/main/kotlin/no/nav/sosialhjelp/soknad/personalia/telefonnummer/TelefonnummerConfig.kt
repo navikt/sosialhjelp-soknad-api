@@ -1,8 +1,8 @@
 package no.nav.sosialhjelp.soknad.personalia.telefonnummer
 
 import no.nav.sosialhjelp.soknad.client.redis.RedisService
+import no.nav.sosialhjelp.soknad.common.Constants.HEADER_NAV_APIKEY
 import no.nav.sosialhjelp.soknad.common.rest.RestUtils
-import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants
 import no.nav.sosialhjelp.soknad.health.selftest.Pingable
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
@@ -50,7 +50,7 @@ open class TelefonnummerConfig(
         get() {
             val apiKey = System.getenv(DKIFAPI_APIKEY)
             return RestUtils.createClient()
-                .register(ClientRequestFilter { it.headers.putSingle(HeaderConstants.HEADER_NAV_APIKEY, apiKey) })
+                .register(ClientRequestFilter { it.headers.putSingle(HEADER_NAV_APIKEY, apiKey) })
         }
 
     companion object {

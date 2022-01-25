@@ -12,11 +12,11 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysn
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktInntekt
 import no.nav.sosialhjelp.soknad.arbeid.domain.Arbeidsforhold
-import no.nav.sosialhjelp.soknad.business.service.TextService
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkattbarInntektService
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkatteetatenSystemdata
+import no.nav.sosialhjelp.soknad.tekster.TextService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test

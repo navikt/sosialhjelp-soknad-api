@@ -1,10 +1,10 @@
 package no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt
 
 import no.nav.sosialhjelp.metrics.MetricsFactory.createTimerProxy
-import no.nav.sosialhjelp.soknad.business.service.TextService
 import no.nav.sosialhjelp.soknad.client.maskinporten.MaskinportenClient
 import no.nav.sosialhjelp.soknad.health.selftest.Pingable
 import no.nav.sosialhjelp.soknad.organisasjon.OrganisasjonService
+import no.nav.sosialhjelp.soknad.tekster.TextService
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration

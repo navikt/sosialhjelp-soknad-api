@@ -1,22 +1,22 @@
 package no.nav.sosialhjelp.soknad.common.rest.feil
 
-import no.nav.sosialhjelp.soknad.business.exceptions.SendingTilKommuneErIkkeAktivertException
-import no.nav.sosialhjelp.soknad.business.exceptions.SendingTilKommuneErMidlertidigUtilgjengeligException
-import no.nav.sosialhjelp.soknad.business.exceptions.SendingTilKommuneUtilgjengeligException
-import no.nav.sosialhjelp.soknad.business.exceptions.SoknadUnderArbeidIkkeFunnetException
-import no.nav.sosialhjelp.soknad.business.exceptions.SoknadenHarNedetidException
 import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.PdfGenereringException
 import no.nav.sosialhjelp.soknad.client.exceptions.IkkeFunnetException
 import no.nav.sosialhjelp.soknad.client.exceptions.PdlApiException
 import no.nav.sosialhjelp.soknad.client.exceptions.SikkerhetsBegrensningException
 import no.nav.sosialhjelp.soknad.client.exceptions.TjenesteUtilgjengeligException
-import no.nav.sosialhjelp.soknad.domain.model.exception.AuthorizationException
-import no.nav.sosialhjelp.soknad.domain.model.exception.EttersendelseSendtForSentException
-import no.nav.sosialhjelp.soknad.domain.model.exception.OpplastingException
-import no.nav.sosialhjelp.soknad.domain.model.exception.SamletVedleggStorrelseForStorException
-import no.nav.sosialhjelp.soknad.domain.model.exception.SosialhjelpSoknadApiException
-import no.nav.sosialhjelp.soknad.domain.model.exception.UgyldigOpplastingTypeException
+import no.nav.sosialhjelp.soknad.common.exceptions.AuthorizationException
+import no.nav.sosialhjelp.soknad.common.exceptions.EttersendelseSendtForSentException
+import no.nav.sosialhjelp.soknad.common.exceptions.SendingTilKommuneErIkkeAktivertException
+import no.nav.sosialhjelp.soknad.common.exceptions.SendingTilKommuneErMidlertidigUtilgjengeligException
+import no.nav.sosialhjelp.soknad.common.exceptions.SendingTilKommuneUtilgjengeligException
+import no.nav.sosialhjelp.soknad.common.exceptions.SoknadUnderArbeidIkkeFunnetException
+import no.nav.sosialhjelp.soknad.common.exceptions.SoknadenHarNedetidException
+import no.nav.sosialhjelp.soknad.common.exceptions.SosialhjelpSoknadApiException
 import no.nav.sosialhjelp.soknad.vedlegg.OpplastetVedleggService
+import no.nav.sosialhjelp.soknad.vedlegg.exceptions.OpplastingException
+import no.nav.sosialhjelp.soknad.vedlegg.exceptions.SamletVedleggStorrelseForStorException
+import no.nav.sosialhjelp.soknad.vedlegg.exceptions.UgyldigOpplastingTypeException
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import javax.ws.rs.core.MediaType
@@ -50,7 +50,7 @@ class ApplicationExceptionMapper : ExceptionMapper<SosialhjelpSoknadApiException
             is AuthorizationException -> {
                 response = Response.status(Response.Status.FORBIDDEN)
                 logger.warn("Ikke tilgang til ressurs", e)
-                return response.type(MediaType.APPLICATION_JSON).entity(Feilmelding(e.getId(), "Ikke tilgang til ressurs"))
+                return response.type(MediaType.APPLICATION_JSON).entity(Feilmelding(e.id, "Ikke tilgang til ressurs"))
                     .build()
             }
             is IkkeFunnetException -> {

@@ -8,9 +8,11 @@ import no.nav.sosialhjelp.soknad.client.redis.CACHE_30_MINUTES_IN_SECONDS
 import no.nav.sosialhjelp.soknad.client.redis.NAVUTBETALINGER_CACHE_KEY_PREFIX
 import no.nav.sosialhjelp.soknad.client.redis.RedisService
 import no.nav.sosialhjelp.soknad.client.redis.RedisUtils.redisObjectMapper
+import no.nav.sosialhjelp.soknad.common.Constants.BEARER
+import no.nav.sosialhjelp.soknad.common.Constants.HEADER_CALL_ID
+import no.nav.sosialhjelp.soknad.common.Constants.HEADER_CONSUMER_ID
 import no.nav.sosialhjelp.soknad.common.mdc.MdcOperations
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
-import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.NavUtbetalingerDto
 import org.eclipse.jetty.http.HttpHeader
 import org.slf4j.LoggerFactory.getLogger
@@ -52,9 +54,9 @@ class NavUtbetalingerClientImpl(
                 ) {
                     client.target(baseurl + "utbetalinger")
                         .request()
-                        .header(HttpHeader.AUTHORIZATION.name, HeaderConstants.BEARER + SubjectHandlerUtils.getToken())
-                        .header(HeaderConstants.HEADER_CALL_ID, MdcOperations.getFromMDC(MdcOperations.MDC_CALL_ID))
-                        .header(HeaderConstants.HEADER_CONSUMER_ID, SubjectHandlerUtils.getConsumerId())
+                        .header(HttpHeader.AUTHORIZATION.name, BEARER + SubjectHandlerUtils.getToken())
+                        .header(HEADER_CALL_ID, MdcOperations.getFromMDC(MdcOperations.MDC_CALL_ID))
+                        .header(HEADER_CONSUMER_ID, SubjectHandlerUtils.getConsumerId())
                         .get(NavUtbetalingerDto::class.java)
                 }
             }
