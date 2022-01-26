@@ -21,13 +21,6 @@ import javax.sql.DataSource
 @EnableTransactionManagement
 open class SoknadInnsendingDBConfig {
 
-    //    @Bean
-    //    public DataSource dataSource() {
-    //        return DataSourceBuilder.create().build();
-    //        JndiDataSourceLookup lookup = new JndiDataSourceLookup();
-    //        return lookup.getDataSource("jdbc/SoknadInnsendingDS");
-    //    }
-
     @Bean
     open fun transactionManager(dataSource: DataSource): PlatformTransactionManager {
         return DataSourceTransactionManager(dataSource)
