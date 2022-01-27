@@ -11,10 +11,4 @@ open class FilterConfig {
     open fun characterEncodingFilter(): CharacterEncodingFilter {
         return CharacterEncodingFilter("UTF-8", true)
     }
-
-//    @Bean
-//    @Profile("!(mock-alt | test)")
-//    open fun oidcTokenValidatorFilter(): OidcTokenValidatorFilter {
-//        return OidcTokenValidatorFilter(jaxrsJwtTokenValidationFilter)
-//    }
 }
