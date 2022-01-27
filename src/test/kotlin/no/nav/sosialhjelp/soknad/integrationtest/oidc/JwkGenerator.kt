@@ -15,7 +15,7 @@ object JwkGenerator {
     val defaultRSAKey: RSAKey
         get() = jwkSet.getKeyByKeyId(DEFAULT_KEYID) as RSAKey
 
-    val jwkSet: JWKSet
+    private val jwkSet: JWKSet
         get() = try {
             JWKSet.parse(
                 IOUtils.readInputStreamToString(

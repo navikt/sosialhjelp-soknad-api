@@ -13,8 +13,8 @@ class FileResourceRetriever(
     private val metadataFile: String,
     private val metadataTokenxFile: String,
     private val jwksFile: String
-) :
-    ProxyAwareResourceRetriever() {
+) : ProxyAwareResourceRetriever() {
+
     override fun retrieveResource(url: URL): Resource {
         val content = getContentFromFile(url)
         return Resource(content, APPLICATION_JSON)
@@ -36,8 +36,7 @@ class FileResourceRetriever(
         }
     }
 
-    @Throws(IOException::class)
-    private fun getInputStream(file: String): InputStream {
+    private fun getInputStream(file: String): InputStream? {
         return FileResourceRetriever::class.java.getResourceAsStream(file)
     }
 
