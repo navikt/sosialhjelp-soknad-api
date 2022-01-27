@@ -24,7 +24,6 @@ import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidS
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
-import org.assertj.core.util.Lists
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -135,7 +134,7 @@ internal class SoknadRessursTest {
         every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
         every { soknadService.oppdaterSamtykker(any(), any(), any(), any()) } just runs
 
-        val samtykkeListe = Lists.emptyList<BekreftelseRessurs>()
+        val samtykkeListe = emptyList<BekreftelseRessurs>()
         val token = "token"
         ressurs.oppdaterSamtykker(BEHANDLINGSID, samtykkeListe, token)
 
@@ -149,7 +148,7 @@ internal class SoknadRessursTest {
 
         val bekreftelse1 = BekreftelseRessurs(BOSTOTTE_SAMTYKKE, true)
         val bekreftelse2 = BekreftelseRessurs(UTBETALING_SKATTEETATEN_SAMTYKKE, true)
-        val samtykkeListe: List<BekreftelseRessurs> = Lists.newArrayList(bekreftelse1, bekreftelse2)
+        val samtykkeListe: List<BekreftelseRessurs> = listOf(bekreftelse1, bekreftelse2)
         val token = "token"
         ressurs.oppdaterSamtykker(BEHANDLINGSID, samtykkeListe, token)
 
@@ -163,7 +162,7 @@ internal class SoknadRessursTest {
 
         val bekreftelse1 = BekreftelseRessurs(BOSTOTTE_SAMTYKKE, true)
         val bekreftelse2 = BekreftelseRessurs(UTBETALING_SKATTEETATEN_SAMTYKKE, false)
-        val samtykkeListe: List<BekreftelseRessurs> = Lists.newArrayList(bekreftelse1, bekreftelse2)
+        val samtykkeListe: List<BekreftelseRessurs> = listOf(bekreftelse1, bekreftelse2)
         val token = "token"
         ressurs.oppdaterSamtykker(BEHANDLINGSID, samtykkeListe, token)
 
