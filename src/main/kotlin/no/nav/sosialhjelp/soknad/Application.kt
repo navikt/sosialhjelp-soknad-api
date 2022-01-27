@@ -15,7 +15,9 @@ open class Application {
     companion object {
         @JvmStatic
         fun main(args: Array<String>) {
-            configureApplication(SpringApplicationBuilder()).run(*args)
+            configureApplication(SpringApplicationBuilder())
+                .run(*args)
+                .registerShutdownHook()
         }
 
         private fun configureApplication(builder: SpringApplicationBuilder): SpringApplicationBuilder {
