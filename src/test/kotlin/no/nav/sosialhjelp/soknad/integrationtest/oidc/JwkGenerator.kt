@@ -19,9 +19,8 @@ object JwkGenerator {
         get() = try {
             JWKSet.parse(
                 IOUtils.readInputStreamToString(
-                    JwkGenerator::class.java.getResourceAsStream(
-                        DEFAULT_JWKSET_FILE
-                    ), Charset.forName("UTF-8")
+                    JwkGenerator::class.java.getResourceAsStream(DEFAULT_JWKSET_FILE),
+                    Charset.forName("UTF-8")
                 )
             )
         } catch (io: IOException) {

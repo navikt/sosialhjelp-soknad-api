@@ -34,8 +34,12 @@ object JwtTokenGenerator {
     }
 
     private fun buildClaimSet(
-        subject: String?, issuer: String?, audience: String?, authLevel: String?,
-        expiry: Int, uniqueName: String?
+        subject: String?,
+        issuer: String?,
+        audience: String?,
+        authLevel: String?,
+        expiry: Int,
+        uniqueName: String?
     ): JWTClaimsSet {
         val now = Date()
         return JWTClaimsSet.Builder()
