@@ -3,8 +3,8 @@ package no.nav.sosialhjelp.soknad.integrationtest
 import no.nav.sosialhjelp.client.utils.Constants.BEARER
 import no.nav.sosialhjelp.soknad.Application
 import no.nav.sosialhjelp.soknad.integrationtest.IntegrationTestUtils.opprettSoknad
-import no.nav.sosialhjelp.soknad.web.oidc.JwtTokenGenerator
-import no.nav.sosialhjelp.soknad.web.oidc.OidcConfig
+import no.nav.sosialhjelp.soknad.integrationtest.oidc.JwtTokenGenerator
+import no.nav.sosialhjelp.soknad.integrationtest.oidc.OidcConfig
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest

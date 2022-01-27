@@ -4,8 +4,8 @@ import no.nav.sbl.soknadsosialhjelp.tjeneste.saksoversikt.PabegynteSoknaderRespo
 import no.nav.sosialhjelp.client.utils.Constants.BEARER
 import no.nav.sosialhjelp.soknad.Application
 import no.nav.sosialhjelp.soknad.integrationtest.IntegrationTestUtils.opprettSoknad
-import no.nav.sosialhjelp.soknad.web.oidc.JwtTokenGenerator
-import no.nav.sosialhjelp.soknad.web.oidc.OidcConfig
+import no.nav.sosialhjelp.soknad.integrationtest.oidc.JwtTokenGenerator
+import no.nav.sosialhjelp.soknad.integrationtest.oidc.OidcConfig
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired

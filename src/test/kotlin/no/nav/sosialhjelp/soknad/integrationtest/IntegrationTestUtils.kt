@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.integrationtest
 
 import no.nav.sosialhjelp.client.utils.Constants
-import no.nav.sosialhjelp.soknad.web.oidc.JwtTokenGenerator
+import no.nav.sosialhjelp.soknad.integrationtest.oidc.JwtTokenGenerator
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.test.web.reactive.server.WebTestClient
