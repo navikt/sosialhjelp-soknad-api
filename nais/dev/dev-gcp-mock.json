@@ -33,7 +33,7 @@
   "leaderElectionEnabled": false,
   "maskinportenEnabled": false,
   "env": {
-    "MAIN_CLASS": "no.nav.sosialhjelp.soknad.web.mock.MockAltSoknadsosialhjelpServer",
+    "SPRING_PROFILES_ACTIVE": "mock-alt,log-console,no-redis",
     "GCP": "true",
     "PORT": "8080",
     "AAREG_API_BASEURL": "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api/aareg/",
