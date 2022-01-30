@@ -1,6 +1,7 @@
 package no.nav.sosialhjelp.soknad.web.config;
 
-import no.nav.sosialhjelp.soknad.web.oidc.OidcConfig;
+import no.nav.sosialhjelp.soknad.config.ApplicationConfig;
+import no.nav.sosialhjelp.soknad.integrationtest.oidc.OidcConfig;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -22,7 +23,7 @@ import static java.lang.System.setProperty;
 
 @WebAppConfiguration
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {SoknadinnsendingConfig.class, OidcConfig.class})
+@ContextConfiguration(classes = {ApplicationConfig.class, OidcConfig.class})
 public class ApplicationContextTest {
 
     public static final String ENVIRONMENT_TEST_PROPERTIES = "/environment-test.properties";

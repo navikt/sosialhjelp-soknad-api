@@ -2,9 +2,9 @@ package no.nav.sosialhjelp.soknad.web.integration.security;
 
 import com.nimbusds.jwt.SignedJWT;
 import no.nav.security.token.support.core.JwtTokenConstants;
+import no.nav.sosialhjelp.soknad.integrationtest.oidc.JwtTokenGenerator;
 import no.nav.sosialhjelp.soknad.web.integration.AbstractIT;
 import no.nav.sosialhjelp.soknad.web.integration.SoknadTester;
-import no.nav.sosialhjelp.soknad.web.oidc.JwtTokenGenerator;
 import org.junit.jupiter.api.Test;
 
 import javax.ws.rs.client.Entity;
@@ -21,7 +21,7 @@ class SoknadActionsEndpointIT extends AbstractIT {
     void sendSoknad_skalGiForbiddenMedAnnenBruker() {
         SoknadTester soknadTester = soknadOpprettet();
         String subUrl = "soknader/" + soknadTester.getBrukerBehandlingId() + "/actions/send";
-        SignedJWT signedJWTforAnnenBruker = JwtTokenGenerator.createSignedJWT(DIFFERENT_USER_THAN_THE_ONE_CURRENTLY_LOGGED_IN);
+        SignedJWT signedJWTforAnnenBruker = JwtTokenGenerator.INSTANCE.createSignedJWT(DIFFERENT_USER_THAN_THE_ONE_CURRENTLY_LOGGED_IN);
 
         Response responseForAnnenBruker = sendPostRequest(soknadTester, subUrl, Entity.json(""), signedJWTforAnnenBruker.serialize(), null);
 

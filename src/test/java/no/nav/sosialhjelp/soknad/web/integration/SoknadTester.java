@@ -3,7 +3,7 @@ package no.nav.sosialhjelp.soknad.web.integration;
 
 import no.nav.security.token.support.core.JwtTokenConstants;
 import no.nav.sosialhjelp.soknad.common.json.JsonProvider;
-import no.nav.sosialhjelp.soknad.web.oidc.JwtTokenGenerator;
+import no.nav.sosialhjelp.soknad.integrationtest.oidc.JwtTokenGenerator;
 import no.nav.sosialhjelp.soknad.web.rest.SoknadApplication;
 import org.glassfish.jersey.test.JerseyTest;
 
@@ -32,7 +32,7 @@ public class SoknadTester extends JerseyTest {
     private SoknadTester() {
         super();
         this.user = "11111111111";
-        this.token = JwtTokenGenerator.createSignedJWT(this.user).serialize();
+        this.token = JwtTokenGenerator.INSTANCE.createSignedJWT(this.user).serialize();
     }
 
     public static SoknadTester startSoknad() throws Exception {
