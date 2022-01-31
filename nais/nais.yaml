@@ -55,7 +55,6 @@ spec:
         - application: {{sosialhjelpDialogApi}}
           cluster: {{dialogGcpCluster}}
 {{/if}}
-{{#if isGcp}}
     outbound:
       external:
       {{#each outboundExternalHosts}}
@@ -69,7 +68,6 @@ spec:
       {{else}}
         []
       {{/each}}
-{{/if}}
 {{#if isGcp}}
   filesFrom:
     - secret: virksomhetssertifikat
