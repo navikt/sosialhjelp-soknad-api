@@ -4,9 +4,9 @@ package no.nav.sosialhjelp.soknad.web.integration.security;
 import com.nimbusds.jwt.SignedJWT;
 import no.nav.sbl.soknadsosialhjelp.tjeneste.saksoversikt.PabegynteSoknaderRespons;
 import no.nav.security.token.support.core.JwtTokenConstants;
+import no.nav.sosialhjelp.soknad.integrationtest.oidc.JwtTokenGenerator;
 import no.nav.sosialhjelp.soknad.web.integration.AbstractIT;
 import no.nav.sosialhjelp.soknad.web.integration.SoknadTester;
-import no.nav.sosialhjelp.soknad.web.oidc.JwtTokenGenerator;
 import org.junit.jupiter.api.Test;
 
 import javax.ws.rs.client.Invocation;
@@ -52,7 +52,7 @@ class SaksoversiktMetadataOidcRessursEndpointIT extends AbstractIT {
     void skalIkkeSePabegynteForAnnenBruker() {
         SoknadTester soknadTester = soknadOpprettet();
         String subUrl = "metadata/oidc/pabegynte";
-        SignedJWT signedJWTForAnnenBruker = JwtTokenGenerator.createSignedJWT(ANNEN_BRUKER);
+        SignedJWT signedJWTForAnnenBruker = JwtTokenGenerator.INSTANCE.createSignedJWT(ANNEN_BRUKER);
 
         Response responseForAnnenBruker = sendGetRequest(soknadTester, subUrl, signedJWTForAnnenBruker);
 
