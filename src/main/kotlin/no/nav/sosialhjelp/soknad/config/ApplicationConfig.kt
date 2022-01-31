@@ -15,6 +15,7 @@ import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.SosialhjelpPdfGenerator
 import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.TextHelpers
 import no.nav.sosialhjelp.soknad.client.ClientConfig
 import no.nav.sosialhjelp.soknad.common.ServiceUtils
+import no.nav.sosialhjelp.soknad.common.filter.FilterConfig
 import no.nav.sosialhjelp.soknad.common.oidc.OidcTokenValidatorConfig
 import no.nav.sosialhjelp.soknad.common.rest.feil.ApplicationExceptionMapper
 import no.nav.sosialhjelp.soknad.common.rest.feil.ThrowableMapper
@@ -80,6 +81,7 @@ import org.springframework.context.annotation.Import
     DbConfig::class,
     PdfGenerator::class,
     TextHelpers::class,
-    SosialhjelpPdfGenerator::class
+    SosialhjelpPdfGenerator::class,
+    FilterConfig::class
 )
 open class ApplicationConfig
