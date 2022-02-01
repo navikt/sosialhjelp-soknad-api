@@ -70,12 +70,14 @@ spec:
         []
       {{/each}}
       {{/if}}
+      {{#if isGcp}}
       {{#each outboundRulesFssApplications}}
         - application: "{{this}}"
           cluster: {{fssCluster}}
       {{else}}
         []
       {{/each}}
+      {{/if}}
 {{#if isGcp}}
   filesFrom:
     - secret: virksomhetssertifikat
