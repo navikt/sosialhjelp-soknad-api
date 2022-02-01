@@ -26,6 +26,7 @@
     "/serviceuser/srvsoknadsosialhjelp-server-sbs": "serviceuser/data/prod/srvsoknadsosialhjelp-server-sbs"
   },
   "outboundExternalHosts": [
+    "ver2.maskinporten.no",
     "sosialhjelp-fss-proxy.prod-fss-pub.nais.io"
   ],
   "outboundRulesFssApplications": [
