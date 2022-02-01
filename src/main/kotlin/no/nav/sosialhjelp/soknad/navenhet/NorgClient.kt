@@ -16,7 +16,6 @@ import no.nav.sosialhjelp.soknad.client.tokenx.TokendingsService
 import no.nav.sosialhjelp.soknad.common.Constants.BEARER
 import no.nav.sosialhjelp.soknad.common.Constants.HEADER_CALL_ID
 import no.nav.sosialhjelp.soknad.common.Constants.HEADER_CONSUMER_ID
-import no.nav.sosialhjelp.soknad.common.Constants.HEADER_NAV_APIKEY
 import no.nav.sosialhjelp.soknad.common.mdc.MdcOperations
 import no.nav.sosialhjelp.soknad.common.mdc.MdcOperations.MDC_CALL_ID
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
@@ -103,7 +102,6 @@ class NorgClientImpl(
             .request()
             .header(HEADER_CALL_ID, MdcOperations.getFromMDC(MDC_CALL_ID))
             .header(HEADER_CONSUMER_ID, SubjectHandlerUtils.getConsumerId())
-            .header(HEADER_NAV_APIKEY, System.getenv(NORG2_API_V1_APIKEY))
     }
 
     private fun lagreTilCache(geografiskTilknytning: String, navEnhetDto: NavEnhetDto) {
@@ -124,7 +122,5 @@ class NorgClientImpl(
 
     companion object {
         private val log = getLogger(NorgClientImpl::class.java)
-
-        private const val NORG2_API_V1_APIKEY = "NORG2_API_V1_APIKEY"
     }
 }
