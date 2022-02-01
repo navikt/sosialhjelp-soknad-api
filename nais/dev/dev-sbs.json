@@ -25,9 +25,6 @@
     "/serviceuser/srvsoknadsosialhjelp-server": "serviceuser/data/dev/srvsoknadsosialhjelp-server",
     "/serviceuser/srvsoknadsosialhjelp-server-sbs": "serviceuser/data/dev/srvsoknadsosialhjelp-server-sbs"
   },
-  "outboundRulesFssApplications": [
-    "sosialhjelp-fss-proxy"
-  ],
   "fssCluster": "dev-fss",
   "minReplicas": "1",
   "maxReplicas": "4",
