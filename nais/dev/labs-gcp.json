@@ -8,7 +8,7 @@
   "digisos.labs.nais.io",
   "unleash.nais.io"
 ],
-  "outboundRulesApplications": [
+  "outboundRulesGcpApplications": [
     "sosialhjelp-mock-alt-api",
     "sosialhjelp-soknad-api-redis"
   ],

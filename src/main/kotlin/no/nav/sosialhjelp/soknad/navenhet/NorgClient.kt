@@ -12,12 +12,16 @@ import no.nav.sosialhjelp.soknad.client.redis.GT_CACHE_KEY_PREFIX
 import no.nav.sosialhjelp.soknad.client.redis.GT_LAST_POLL_TIME_PREFIX
 import no.nav.sosialhjelp.soknad.client.redis.RedisService
 import no.nav.sosialhjelp.soknad.client.redis.RedisUtils.redisObjectMapper
+import no.nav.sosialhjelp.soknad.client.tokenx.TokendingsService
+import no.nav.sosialhjelp.soknad.common.Constants.BEARER
 import no.nav.sosialhjelp.soknad.common.Constants.HEADER_CALL_ID
 import no.nav.sosialhjelp.soknad.common.Constants.HEADER_CONSUMER_ID
 import no.nav.sosialhjelp.soknad.common.Constants.HEADER_NAV_APIKEY
 import no.nav.sosialhjelp.soknad.common.mdc.MdcOperations
 import no.nav.sosialhjelp.soknad.common.mdc.MdcOperations.MDC_CALL_ID
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
+import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils.getToken
+import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils.getUserIdFromToken
 import no.nav.sosialhjelp.soknad.navenhet.dto.NavEnhetDto
 import org.slf4j.LoggerFactory.getLogger
 import java.nio.charset.StandardCharsets
@@ -27,6 +31,7 @@ import javax.ws.rs.NotFoundException
 import javax.ws.rs.ServerErrorException
 import javax.ws.rs.client.Client
 import javax.ws.rs.client.Invocation
+import javax.ws.rs.core.HttpHeaders.AUTHORIZATION
 
 interface NorgClient {
     fun hentNavEnhetForGeografiskTilknytning(geografiskTilknytning: String): NavEnhetDto?
@@ -36,7 +41,9 @@ interface NorgClient {
 class NorgClientImpl(
     private val client: Client,
     private val baseurl: String,
-    private val redisService: RedisService
+    private val redisService: RedisService,
+    private val tokendingsService: TokendingsService,
+    private val fssProxyAudience: String
 ) : NorgClient {
 
     override fun hentNavEnhetForGeografiskTilknytning(geografiskTilknytning: String): NavEnhetDto? {
@@ -49,7 +56,12 @@ class NorgClientImpl(
                     factor = DEFAULT_EXPONENTIAL_BACKOFF_MULTIPLIER,
                     retryableExceptions = arrayOf(ServerErrorException::class)
                 ) {
-                    request.get()
+                    val tokenXToken = tokendingsService.exchangeToken(
+                        getUserIdFromToken(), getToken(), fssProxyAudience
+                    )
+                    request
+                        .header(AUTHORIZATION, BEARER + tokenXToken)
+                        .get()
                 }
             }
             if (response.status != 200) {

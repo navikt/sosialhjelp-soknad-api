@@ -11,7 +11,7 @@
     "digisos.ekstern.dev.nav.no",
     "unleash.nais.io"
   ],
-  "outboundRulesApplications": [
+  "outboundRulesGcpApplications": [
     "sosialhjelp-mock-alt-api-mock",
     "sosialhjelp-soknad-api-redis"
   ],

@@ -25,6 +25,13 @@
     "/serviceuser/srvsoknadsosialhjelp-server": "serviceuser/data/prod/srvsoknadsosialhjelp-server",
     "/serviceuser/srvsoknadsosialhjelp-server-sbs": "serviceuser/data/prod/srvsoknadsosialhjelp-server-sbs"
   },
+  "outboundExternalHosts": [
+    "sosialhjelp-fss-proxy.prod-fss-pub.nais.io"
+  ],
+  "outboundRulesFssApplications": [
+    "sosialhjelp-fss-proxy"
+  ],
+  "fssCluster": "prod-fss",
   "minReplicas": "2",
   "maxReplicas": "4",
   "memoryLimit": "4Gi",
@@ -49,13 +56,14 @@
     "DKIF_API_BASEURL": "https://api-gw.oera.no/dkif/api/",
     "EREG_API_BASEURL": "https://api-gw.oera.no/ereg/api/",
     "FIKS_NOKKELFIL": "svarut_public_prod.pem",
+    "FSS_PROXY_AUDIENCE": "prod-fss:teamdigisos:sosialhjelp-fss-proxy",
     "DIGISOS_API_BASEURL": "https://api.fiks.ks.no/",
     "IDPORTEN_TOKEN_URL": "https://oidc.difi.no/idporten-oidc-provider/token",
     "IDPORTEN_CLIENTID": "bd520e59-6e01-4669-a7c8-f68fa2cac362",
     "IDPORTEN_CONFIG_URL": "https://oidc.difi.no/idporten-oidc-provider/.well-known/openid-configuration",
     "KODEVERK_API_URL": "https://api-gw.oera.no/kodeverk/api/",
     "LOGINSERVICE_URL": "https://loginservice.nav.no/login",
-    "NORG2_API_V1_URL": "https://api-gw.oera.no/norg2/api/v1/",
+    "NORG2_API_V1_URL": "https://sosialhjelp-fss-proxy.prod-fss-pub.nais.io/proxy/norg",
     "OPPSLAG_API_BASEURL": "https://api-gw.oera.no/sosialhjelp-oppslag-api/api/",
     "PDL_API_URL": "https://api-gw.oera.no/pdl-api/graphql",
     "UNLEASH_API_URL": "https://unleash.nais.io/api",
