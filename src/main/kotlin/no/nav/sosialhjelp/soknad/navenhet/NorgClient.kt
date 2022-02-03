@@ -34,7 +34,6 @@ import javax.ws.rs.core.HttpHeaders.AUTHORIZATION
 
 interface NorgClient {
     fun hentNavEnhetForGeografiskTilknytning(geografiskTilknytning: String): NavEnhetDto?
-    fun ping()
 }
 
 class NorgClientImpl(
@@ -81,20 +80,6 @@ class NorgClientImpl(
             log.warn("Noe uventet feilet ved kall til NORG/gt", e)
             throw TjenesteUtilgjengeligException("NORG", e)
         }
-    }
-
-    override fun ping() {
-        /*
-         * Erstatt denne metoden med et skikkelig ping-kall. Vi bruker nå et
-         * urelatert tjenestekall fordi denne gir raskt svar (og verifiserer
-         * at vi når tjenesten).
-         */
-        lagRequest(baseurl + "kodeverk/EnhetstyperNorg")
-            .get().use { response ->
-                if (response.status != 200) {
-                    throw RuntimeException("Feil statuskode ved kall mot NORG/gt: ${response.status}, respons: ${response.readEntity(String::class.java)}")
-                }
-            }
     }
 
     private fun lagRequest(endpoint: String): Invocation.Builder {

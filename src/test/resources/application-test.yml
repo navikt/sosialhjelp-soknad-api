@@ -81,7 +81,8 @@ kodeverk_api_url: https://api-gw-q1.oera.no/kodeverk/api/
 oppslag_api_baseurl: https://api-gw-q1.oera.no/sosiahjelp-oppslag-api/api/
 soknad.bostotte.url: http://bostotte.url
 dittnav.link.url: http://www.nav.no/dittnav
-norg_rest_url: https://app-t8.adeo.no/norg2/api/v1/
+norg_proxy_url: https://fss-proxy/proxy/norg
+fss_proxy_ping_url: http://fss-proxy/ping
 svarut_url: https://svaruturl
 skatteetaten_api_baseurl: https://skatteetatenurl
 

@@ -4,9 +4,6 @@ import no.nav.sosialhjelp.soknad.adressesok.AdressesokService
 import no.nav.sosialhjelp.soknad.client.redis.RedisService
 import no.nav.sosialhjelp.soknad.client.tokenx.TokendingsService
 import no.nav.sosialhjelp.soknad.common.rest.RestUtils
-import no.nav.sosialhjelp.soknad.health.selftest.Pingable
-import no.nav.sosialhjelp.soknad.health.selftest.Pingable.Companion.feilet
-import no.nav.sosialhjelp.soknad.health.selftest.Pingable.Companion.lyktes
 import no.nav.sosialhjelp.soknad.navenhet.finnadresse.FinnAdresseService
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
@@ -16,7 +13,7 @@ import org.springframework.context.annotation.Import
 @Configuration
 @Import(NavEnhetRessurs::class)
 open class NavEnhetConfig(
-    @Value("\${norg_rest_url}") private val baseurl: String,
+    @Value("\${norg_proxy_url}") private val baseurl: String,
     @Value("\${fss_proxy_audience}") private val fssProxyAudience: String,
     private val tokendingsService: TokendingsService,
     private val redisService: RedisService
@@ -30,19 +27,6 @@ open class NavEnhetConfig(
     @Bean
     open fun navEnhetService(norgClient: NorgClient): NavEnhetService {
         return NavEnhetServiceImpl(norgClient, redisService)
-    }
-
-    @Bean
-    open fun norgPing(norgClient: NorgClient): Pingable {
-        return Pingable {
-            val metadata = Pingable.PingMetadata(baseurl, "Norg2", false)
-            try {
-                norgClient.ping()
-                lyktes(metadata)
-            } catch (e: Exception) {
-                feilet(metadata, e)
-            }
-        }
     }
 
     @Bean
