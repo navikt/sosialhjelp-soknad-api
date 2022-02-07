@@ -68,7 +68,7 @@ class KodeverkClientImpl(
     }
 
     private fun kodeverkUri(kodeverksnavn: String): URI {
-        return URI.create("$baseurl/kodeverk/$kodeverksnavn")
+        return URI.create("$baseurl/$kodeverksnavn")
     }
 
     private fun oppdaterCache(key: String, kodeverk: KodeverkDto) {
