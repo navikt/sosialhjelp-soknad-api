@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.inntekt.navutbetalinger
 
 import no.nav.sosialhjelp.soknad.client.redis.RedisService
-import no.nav.sosialhjelp.soknad.common.Constants.HEADER_NAV_APIKEY
+import no.nav.sosialhjelp.soknad.client.tokenx.TokendingsService
 import no.nav.sosialhjelp.soknad.common.rest.RestUtils
 import no.nav.sosialhjelp.soknad.health.selftest.Pingable
 import no.nav.sosialhjelp.soknad.organisasjon.OrganisasjonService
@@ -9,12 +9,13 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import javax.ws.rs.client.Client
-import javax.ws.rs.client.ClientRequestFilter
 
 @Configuration
 open class NavUtbetalingerConfig(
     @Value("\${oppslag_api_baseurl}") private val baseurl: String,
-    private val redisService: RedisService
+    @Value("\${oppslag_api_audience}") private val oppslagApiAudience: String,
+    private val redisService: RedisService,
+    private val tokendingsService: TokendingsService
 ) {
 
     @Bean
@@ -24,7 +25,7 @@ open class NavUtbetalingerConfig(
 
     @Bean
     open fun navUtbetalingerClient(): NavUtbetalingerClient {
-        return NavUtbetalingerClientImpl(client, baseurl, redisService)
+        return NavUtbetalingerClientImpl(client, baseurl, redisService, oppslagApiAudience, tokendingsService)
     }
 
     @Bean
@@ -50,11 +51,4 @@ open class NavUtbetalingerConfig(
 
     private val client: Client
         get() = RestUtils.createClient()
-            .register(
-                ClientRequestFilter { it.headers.putSingle(HEADER_NAV_APIKEY, System.getenv(OPPSLAGAPI_APIKEY)) }
-            )
-
-    companion object {
-        private const val OPPSLAGAPI_APIKEY = "OPPSLAGAPI_APIKEY"
-    }
 }

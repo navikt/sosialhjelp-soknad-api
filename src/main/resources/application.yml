@@ -77,6 +77,7 @@ tokendings_url: ${TOKEN_X_WELL_KNOWN_URL}
 tokendings_client_id: ${TOKEN_X_CLIENT_ID}
 tokendings_private_jwk: ${TOKEN_X_PRIVATE_JWK}
 fss_proxy_audience: ${FSS_PROXY_AUDIENCE}
+oppslag_api_audience: ${OPPSLAG_API_AUDIENCE}
 
 # svarut:
 fiks_svarut_username: ${FIKS_SVARUT_USERNAME}

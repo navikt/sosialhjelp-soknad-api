@@ -8,6 +8,7 @@ import no.nav.sosialhjelp.soknad.client.redis.CACHE_30_MINUTES_IN_SECONDS
 import no.nav.sosialhjelp.soknad.client.redis.NAVUTBETALINGER_CACHE_KEY_PREFIX
 import no.nav.sosialhjelp.soknad.client.redis.RedisService
 import no.nav.sosialhjelp.soknad.client.redis.RedisUtils.redisObjectMapper
+import no.nav.sosialhjelp.soknad.client.tokenx.TokendingsService
 import no.nav.sosialhjelp.soknad.common.Constants.BEARER
 import no.nav.sosialhjelp.soknad.common.Constants.HEADER_CALL_ID
 import no.nav.sosialhjelp.soknad.common.Constants.HEADER_CONSUMER_ID
@@ -27,7 +28,9 @@ interface NavUtbetalingerClient {
 class NavUtbetalingerClientImpl(
     private val client: Client,
     private val baseurl: String,
-    private val redisService: RedisService
+    private val redisService: RedisService,
+    private val oppslagApiAudience: String,
+    private val tokendingsService: TokendingsService
 ) : NavUtbetalingerClient {
 
     override fun ping() {
@@ -52,9 +55,12 @@ class NavUtbetalingerClientImpl(
                     factor = RetryUtils.DEFAULT_EXPONENTIAL_BACKOFF_MULTIPLIER,
                     retryableExceptions = arrayOf(ServerErrorException::class)
                 ) {
+                    val tokenXToken = tokendingsService.exchangeToken(
+                        SubjectHandlerUtils.getUserIdFromToken(), SubjectHandlerUtils.getToken(), oppslagApiAudience
+                    )
                     client.target(baseurl + "utbetalinger")
                         .request()
-                        .header(HttpHeader.AUTHORIZATION.name, BEARER + SubjectHandlerUtils.getToken())
+                        .header(HttpHeader.AUTHORIZATION.name, BEARER + tokenXToken)
                         .header(HEADER_CALL_ID, MdcOperations.getFromMDC(MdcOperations.MDC_CALL_ID))
                         .header(HEADER_CONSUMER_ID, SubjectHandlerUtils.getConsumerId())
                         .get(NavUtbetalingerDto::class.java)
