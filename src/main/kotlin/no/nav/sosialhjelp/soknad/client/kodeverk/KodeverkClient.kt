@@ -23,7 +23,6 @@ import javax.ws.rs.client.Client
 import javax.ws.rs.client.Invocation
 
 interface KodeverkClient {
-    fun ping()
     fun hentPostnummer(): KodeverkDto?
     fun hentKommuner(): KodeverkDto?
     fun hentLandkoder(): KodeverkDto?
@@ -35,16 +34,6 @@ class KodeverkClientImpl(
     private val redisService: RedisService
 ) : KodeverkClient {
 
-    override fun ping() {
-        // Kaller GET /v1/kodeverk ettersom kodeverk ikke har dedikert ping-endepunkt
-        lagRequest(URI.create(baseurl + "v1/kodeverk/")).get()
-            .use { response ->
-                if (response.status != 200) {
-                    throw RuntimeException("Ping mot kodeverk feilet: ${response.status}, respons: ${response.readEntity(String::class.java)}")
-                }
-            }
-    }
-
     override fun hentPostnummer(): KodeverkDto? {
         return hentKodeverk(POSTNUMMER, POSTNUMMER_CACHE_KEY)
     }
@@ -55,15 +44,6 @@ class KodeverkClientImpl(
 
     override fun hentLandkoder(): KodeverkDto? {
         return hentKodeverk(LANDKODER, LANDKODER_CACHE_KEY)
-    }
-
-    private fun lagRequest(uri: URI): Invocation.Builder {
-        return client.target(uri)
-            .queryParam("ekskluderUgyldige", true)
-            .queryParam("spraak", "nb")
-            .request()
-            .header(HEADER_CALL_ID, MdcOperations.getFromMDC(MdcOperations.MDC_CALL_ID))
-            .header(HEADER_CONSUMER_ID, SubjectHandlerUtils.getConsumerId())
     }
 
     private fun hentKodeverk(kodeverksnavn: String, key: String): KodeverkDto? {
@@ -80,8 +60,15 @@ class KodeverkClientImpl(
         }
     }
 
+    private fun lagRequest(uri: URI): Invocation.Builder {
+        return client.target(uri)
+            .request()
+            .header(HEADER_CALL_ID, MdcOperations.getFromMDC(MdcOperations.MDC_CALL_ID))
+            .header(HEADER_CONSUMER_ID, SubjectHandlerUtils.getConsumerId())
+    }
+
     private fun kodeverkUri(kodeverksnavn: String): URI {
-        return URI.create(baseurl + "v1/kodeverk/" + kodeverksnavn + "/koder/betydninger")
+        return URI.create("$baseurl/kodeverk/$kodeverksnavn")
     }
 
     private fun oppdaterCache(key: String, kodeverk: KodeverkDto) {

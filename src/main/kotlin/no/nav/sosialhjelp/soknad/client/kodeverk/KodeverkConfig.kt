@@ -5,18 +5,15 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.sosialhjelp.soknad.client.redis.RedisService
-import no.nav.sosialhjelp.soknad.common.Constants.HEADER_NAV_APIKEY
 import no.nav.sosialhjelp.soknad.common.rest.RestUtils
-import no.nav.sosialhjelp.soknad.health.selftest.Pingable
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import javax.ws.rs.client.Client
-import javax.ws.rs.client.ClientRequestFilter
 
 @Configuration
 open class KodeverkConfig(
-    @Value("\${kodeverk_api_url}") private val baseurl: String,
+    @Value("\${kodeverk_proxy_url}") private val baseurl: String,
     private val redisService: RedisService
 ) {
 
@@ -30,33 +27,11 @@ open class KodeverkConfig(
         return KodeverkClientImpl(client, baseurl, redisService)
     }
 
-    @Bean
-    open fun kodeverkRestPing(kodeverkClient: KodeverkClient): Pingable {
-        return Pingable {
-            val metadata = Pingable.PingMetadata(baseurl, "Kodeverk", false)
-            try {
-                kodeverkClient.ping()
-                Pingable.lyktes(metadata)
-            } catch (e: Exception) {
-                Pingable.feilet(metadata, e)
-            }
-        }
-    }
-
     private val client: Client
-        get() {
-            val apiKey = System.getenv(KODEVERKAPI_APIKEY)
-            return RestUtils.createClient()
-                .register(kodeverkMapper)
-                .register(ClientRequestFilter { it.headers.putSingle(HEADER_NAV_APIKEY, apiKey) })
-        }
+        get() = RestUtils.createClient().register(kodeverkMapper)
 
     open val kodeverkMapper: ObjectMapper
         get() = jacksonObjectMapper()
             .registerModule(JavaTimeModule())
             .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
-
-    companion object {
-        private const val KODEVERKAPI_APIKEY = "KODEVERKAPI_APIKEY"
-    }
 }

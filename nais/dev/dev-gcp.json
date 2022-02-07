@@ -49,7 +49,7 @@
     "IDPORTEN_TOKEN_URL": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/idporten/idporten-oidc-provider/token",
     "IDPORTEN_CLIENTID": "id2",
     "IDPORTEN_CONFIG_URL": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/well-known/idporten",
-    "KODEVERK_API_URL": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/kodeverk/api/",
+    "KODEVERK_PROXY_URL": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/kodeverk/api/",
     "LOGINSERVICE_URL": "https://digisos-gcp.dev.nav.no/sosialhjelp/mock-alt/login",
     "MASKINPORTEN_WELL_KNOWN_URL": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/well-known/maskinporten",
     "OIDC_ISSUER_SELVBETJENING_DISCOVERYURL": "https://digisos-gcp.dev.nav.no/sosialhjelp/mock-alt-api/well-known/selvbetjening",
