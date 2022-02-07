@@ -1,6 +1,7 @@
 package no.nav.sosialhjelp.soknad.client.kodeverk
 
 import com.fasterxml.jackson.core.JsonProcessingException
+import kotlinx.coroutines.runBlocking
 import no.nav.sosialhjelp.soknad.client.kodeverk.dto.KodeverkDto
 import no.nav.sosialhjelp.soknad.client.redis.KODEVERK_CACHE_SECONDS
 import no.nav.sosialhjelp.soknad.client.redis.KODEVERK_LAST_POLL_TIME_KEY
@@ -9,6 +10,8 @@ import no.nav.sosialhjelp.soknad.client.redis.LANDKODER_CACHE_KEY
 import no.nav.sosialhjelp.soknad.client.redis.POSTNUMMER_CACHE_KEY
 import no.nav.sosialhjelp.soknad.client.redis.RedisService
 import no.nav.sosialhjelp.soknad.client.redis.RedisUtils.redisObjectMapper
+import no.nav.sosialhjelp.soknad.client.tokenx.TokendingsService
+import no.nav.sosialhjelp.soknad.common.Constants.BEARER
 import no.nav.sosialhjelp.soknad.common.Constants.HEADER_CALL_ID
 import no.nav.sosialhjelp.soknad.common.Constants.HEADER_CONSUMER_ID
 import no.nav.sosialhjelp.soknad.common.mdc.MdcOperations
@@ -20,7 +23,7 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME
 import javax.ws.rs.ClientErrorException
 import javax.ws.rs.client.Client
-import javax.ws.rs.client.Invocation
+import javax.ws.rs.core.HttpHeaders.AUTHORIZATION
 
 interface KodeverkClient {
     fun hentPostnummer(): KodeverkDto?
@@ -31,7 +34,9 @@ interface KodeverkClient {
 class KodeverkClientImpl(
     private val client: Client,
     private val baseurl: String,
-    private val redisService: RedisService
+    private val redisService: RedisService,
+    private val tokendingsService: TokendingsService,
+    private val fssProxyAudience: String
 ) : KodeverkClient {
 
     override fun hentPostnummer(): KodeverkDto? {
@@ -48,7 +53,17 @@ class KodeverkClientImpl(
 
     private fun hentKodeverk(kodeverksnavn: String, key: String): KodeverkDto? {
         return try {
-            val kodeverk = lagRequest(kodeverkUri(kodeverksnavn)).get(KodeverkDto::class.java)
+            val tokenXToken = runBlocking {
+                tokendingsService.exchangeToken(
+                    SubjectHandlerUtils.getUserIdFromToken(), SubjectHandlerUtils.getToken(), fssProxyAudience
+                )
+            }
+            val kodeverk = client.target(kodeverkUri(kodeverksnavn))
+                .request()
+                .header(AUTHORIZATION, BEARER + tokenXToken)
+                .header(HEADER_CALL_ID, MdcOperations.getFromMDC(MdcOperations.MDC_CALL_ID))
+                .header(HEADER_CONSUMER_ID, SubjectHandlerUtils.getConsumerId())
+                .get(KodeverkDto::class.java)
             oppdaterCache(key, kodeverk)
             kodeverk
         } catch (e: ClientErrorException) {
@@ -58,13 +73,6 @@ class KodeverkClientImpl(
             log.error("Kodeverk - noe uventet feilet", e)
             null
         }
-    }
-
-    private fun lagRequest(uri: URI): Invocation.Builder {
-        return client.target(uri)
-            .request()
-            .header(HEADER_CALL_ID, MdcOperations.getFromMDC(MdcOperations.MDC_CALL_ID))
-            .header(HEADER_CONSUMER_ID, SubjectHandlerUtils.getConsumerId())
     }
 
     private fun kodeverkUri(kodeverksnavn: String): URI {

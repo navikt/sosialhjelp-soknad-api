@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.sosialhjelp.soknad.client.redis.RedisService
+import no.nav.sosialhjelp.soknad.client.tokenx.TokendingsService
 import no.nav.sosialhjelp.soknad.common.rest.RestUtils
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
@@ -14,7 +15,9 @@ import javax.ws.rs.client.Client
 @Configuration
 open class KodeverkConfig(
     @Value("\${kodeverk_proxy_url}") private val baseurl: String,
-    private val redisService: RedisService
+    @Value("\${fss_proxy_audience}") private val fssProxyAudience: String,
+    private val redisService: RedisService,
+    private val tokendingsService: TokendingsService
 ) {
 
     @Bean
@@ -24,7 +27,7 @@ open class KodeverkConfig(
 
     @Bean
     open fun kodeverkClient(): KodeverkClient {
-        return KodeverkClientImpl(client, baseurl, redisService)
+        return KodeverkClientImpl(client, baseurl, redisService, tokendingsService, fssProxyAudience)
     }
 
     private val client: Client
