@@ -3,7 +3,6 @@ package no.nav.sosialhjelp.soknad.personalia.kontonummer
 import no.nav.sosialhjelp.soknad.client.redis.RedisService
 import no.nav.sosialhjelp.soknad.client.tokenx.TokendingsService
 import no.nav.sosialhjelp.soknad.common.rest.RestUtils
-import no.nav.sosialhjelp.soknad.health.selftest.Pingable
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -27,19 +26,6 @@ open class KontonummerConfig(
     @Bean
     open fun kontonummerClient(): KontonummerClient {
         return KontonummerClientImpl(client, baseurl, redisService, oppslagApiAudience, tokendingsService)
-    }
-
-    @Bean
-    open fun kontonummerPing(kontonummerClient: KontonummerClient): Pingable {
-        return Pingable {
-            val metadata = Pingable.PingMetadata(baseurl, "Oppslag - kontonummer", false)
-            try {
-                kontonummerClient.ping()
-                Pingable.lyktes(metadata)
-            } catch (e: Exception) {
-                Pingable.feilet(metadata, e)
-            }
-        }
     }
 
     @Bean

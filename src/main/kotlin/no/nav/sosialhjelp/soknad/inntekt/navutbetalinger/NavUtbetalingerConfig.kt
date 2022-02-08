@@ -3,7 +3,6 @@ package no.nav.sosialhjelp.soknad.inntekt.navutbetalinger
 import no.nav.sosialhjelp.soknad.client.redis.RedisService
 import no.nav.sosialhjelp.soknad.client.tokenx.TokendingsService
 import no.nav.sosialhjelp.soknad.common.rest.RestUtils
-import no.nav.sosialhjelp.soknad.health.selftest.Pingable
 import no.nav.sosialhjelp.soknad.organisasjon.OrganisasjonService
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
@@ -26,19 +25,6 @@ open class NavUtbetalingerConfig(
     @Bean
     open fun navUtbetalingerClient(): NavUtbetalingerClient {
         return NavUtbetalingerClientImpl(client, baseurl, redisService, oppslagApiAudience, tokendingsService)
-    }
-
-    @Bean
-    open fun navUtbetalingerPing(navUtbetalingerClient: NavUtbetalingerClient): Pingable {
-        return Pingable {
-            val metadata = Pingable.PingMetadata(baseurl, "Oppslag - navUtbetalinger", false)
-            try {
-                navUtbetalingerClient.ping()
-                Pingable.lyktes(metadata)
-            } catch (e: Exception) {
-                Pingable.feilet(metadata, e)
-            }
-        }
     }
 
     @Bean
