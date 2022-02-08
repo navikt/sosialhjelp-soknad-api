@@ -29,13 +29,13 @@ class TokendingsService(
     }
 
     suspend fun exchangeToken(subject: String, token: String, audience: String): String {
-        hentFraCache("$audience$subject")?.let { return it }
+        hentFraCache("$audience-$subject")?.let { return it }
 
         val jwt = createSignedAssertion(tokendingsClientId, tokendingsClient.audience, privateRsaKey)
 
         return try {
             tokendingsClient.exchangeToken(token, jwt, audience).accessToken
-                .also { lagreTilCache("$audience$subject", it) }
+                .also { lagreTilCache("$audience-$subject", it) }
         } catch (e: WebClientResponseException) {
             log.warn("Error message from server: ${e.responseBodyAsString}")
             throw e
@@ -43,7 +43,7 @@ class TokendingsService(
     }
 
     private fun hentFraCache(key: String): String? {
-        return redisService.get(TOKENDINGS_CACHE_KEY_PREFIX + key, String::class.java) as? String
+        return redisService.getString(TOKENDINGS_CACHE_KEY_PREFIX + key)
     }
 
     private fun lagreTilCache(key: String, onBehalfToken: String) {
