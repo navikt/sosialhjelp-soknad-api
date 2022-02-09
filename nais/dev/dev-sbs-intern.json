@@ -60,6 +60,8 @@
     "IDPORTEN_CLIENTID": "1c3631f4-dbf2-4c12-bdc4-156cbd53c625",
     "IDPORTEN_CONFIG_URL": "https://oidc-ver2.difi.no/idporten-oidc-provider/.well-known/openid-configuration",
     "KODEVERK_API_URL": "https://api-gw-q1.oera.no/kodeverk/api/",
+    "KRR_AUDIENCE": "dev-gcp:team-rocket:digdir-krr-proxy",
+    "KRR_BASEURL": "https://digdir-krr-proxy.dev.intern.nav.no",
     "LOGINSERVICE_URL": "https://loginservice.dev.nav.no/login",
     "NORG_PROXY_URL": "https://sosialhjelp-fss-proxy.dev-fss-pub.nais.io/proxy/norg/",
     "OPPSLAG_API_BASEURL": "https://api-gw-q1.oera.no/sosialhjelp-oppslag-api/api/",

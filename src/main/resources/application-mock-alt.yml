@@ -35,6 +35,8 @@ ereg_api_baseurl: ${EREG_API_BASEURL:http://localhost:8989/sosialhjelp/mock-alt-
 aareg_api_baseurl: ${AAREG_API_BASEURL:http://localhost:8989/sosialhjelp/mock-alt-api/aareg/}
 securitytokenservice_apigw_url: ${SECURITYTOKENSERVICE_APIGW_URL:http://localhost:8989/sosialhjelp/mock-alt-api/appgw/}
 dkif_api_baseurl: ${DKIF_API_BASEURL:http://localhost:8989/sosialhjelp/mock-alt-api/dkif/}
+krr_baseurl: ${KRR_BASEURL:http://localhost:8989/sosialhjelp/mock-alt-api/krr_endpoint_url/}
+krr_audience: ${KRR_AUDIENCE:dummyAudience}
 pdl_api_url: ${PDL_API_URL:http://localhost:8989/sosialhjelp/mock-alt-api/pdl_endpoint_url/}
 kodeverk_api_url: ${KODEVERK_API_URL:http://localhost:8989/sosialhjelp/mock-alt-api/kodeverk/api/}
 unleash_api_url: ${UNLEASH_API_URL:https://unleash.nais.io/api}
