@@ -12,7 +12,6 @@ import no.nav.sosialhjelp.soknad.begrunnelse.BegrunnelseConfig
 import no.nav.sosialhjelp.soknad.bosituasjon.BosituasjonConfig
 import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.PdfGenerator
 import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.SosialhjelpPdfGenerator
-import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.TextHelpers
 import no.nav.sosialhjelp.soknad.client.ClientConfig
 import no.nav.sosialhjelp.soknad.client.tokenx.TokendingsConfig
 import no.nav.sosialhjelp.soknad.common.ServiceUtils
@@ -28,6 +27,8 @@ import no.nav.sosialhjelp.soknad.innsending.InnsendingConfig
 import no.nav.sosialhjelp.soknad.inntekt.InntektConfig
 import no.nav.sosialhjelp.soknad.metrics.MetricsConfig
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.OkonomiskeOpplysningerConfig
+import no.nav.sosialhjelp.soknad.pdf.PdfUtils
+import no.nav.sosialhjelp.soknad.pdf.TextHelpers
 import no.nav.sosialhjelp.soknad.personalia.adresse.AdresseConfig
 import no.nav.sosialhjelp.soknad.personalia.basispersonalia.BasisPersonaliaConfig
 import no.nav.sosialhjelp.soknad.personalia.familie.FamilieConfig
@@ -82,6 +83,7 @@ import org.springframework.context.annotation.Import
     DbConfig::class,
     PdfGenerator::class,
     TextHelpers::class,
+    PdfUtils::class,
     SosialhjelpPdfGenerator::class,
     FilterConfig::class,
     TokendingsConfig::class
