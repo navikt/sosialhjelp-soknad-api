@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.common.rest.feil
 
-import no.nav.sosialhjelp.soknad.business.exceptions.SamtidigOppdateringException
+import no.nav.sosialhjelp.soknad.common.exceptions.SamtidigOppdateringException
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component

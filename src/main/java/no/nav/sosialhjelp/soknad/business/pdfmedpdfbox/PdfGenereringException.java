@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.business.pdfmedpdfbox;
 
-import no.nav.sosialhjelp.soknad.domain.model.exception.SosialhjelpSoknadApiException;
+import no.nav.sosialhjelp.soknad.common.exceptions.SosialhjelpSoknadApiException;
 
 public class PdfGenereringException extends SosialhjelpSoknadApiException {
 

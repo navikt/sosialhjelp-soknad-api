@@ -5,8 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.sosialhjelp.soknad.client.redis.RedisService
+import no.nav.sosialhjelp.soknad.common.Constants.HEADER_NAV_APIKEY
 import no.nav.sosialhjelp.soknad.common.rest.RestUtils
-import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.HEADER_NAV_APIKEY
 import no.nav.sosialhjelp.soknad.health.selftest.Pingable
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean

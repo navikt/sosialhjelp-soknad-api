@@ -8,6 +8,7 @@ import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.metrics.aspects.Timed
 import no.nav.sosialhjelp.soknad.business.db.repositories.opplastetvedlegg.OpplastetVedleggRepository
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
+import no.nav.sosialhjelp.soknad.common.Constants
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.common.utils.JsonOkonomiUtils.isOkonomiskeOpplysningerBekreftet
 import no.nav.sosialhjelp.soknad.domain.OpplastetVedlegg
@@ -28,7 +29,6 @@ import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.mappers.VedleggTypeToSok
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.mappers.VedleggTypeToSoknadTypeMapper.vedleggTypeToSoknadType
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import no.nav.sosialhjelp.soknad.vedlegg.dto.FilFrontend
-import no.nav.sosialhjelp.soknad.web.utils.Constants
 import org.springframework.stereotype.Controller
 import javax.ws.rs.GET
 import javax.ws.rs.PUT

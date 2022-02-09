@@ -1,6 +1,7 @@
 package no.nav.sosialhjelp.soknad.health.selftest
 
-import no.nav.sosialhjelp.soknad.web.utils.MiljoUtils
+import no.nav.sosialhjelp.soknad.common.MiljoUtils.naisAppImage
+import no.nav.sosialhjelp.soknad.common.MiljoUtils.naisAppName
 import org.apache.commons.lang3.exception.ExceptionUtils
 import org.slf4j.LoggerFactory
 import org.springframework.context.ApplicationContext
@@ -22,8 +23,8 @@ class SelftestService(
     fun lagSelftest(): Selftest {
         doPing()
         return Selftest(
-            application = MiljoUtils.getNaisAppName(),
-            version = MiljoUtils.getNaisAppImage(),
+            application = naisAppName,
+            version = naisAppImage,
             timestamp = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME),
             aggregateResult = aggregertStatus,
             checks = result?.map { lagSelftestEndpoint(it) }

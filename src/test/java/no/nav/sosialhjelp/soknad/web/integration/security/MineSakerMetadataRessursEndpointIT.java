@@ -2,9 +2,9 @@ package no.nav.sosialhjelp.soknad.web.integration.security;
 
 import com.nimbusds.jwt.SignedJWT;
 import no.nav.security.token.support.core.JwtTokenConstants;
+import no.nav.sosialhjelp.soknad.integrationtest.oidc.JwtTokenGenerator;
 import no.nav.sosialhjelp.soknad.web.integration.AbstractIT;
 import no.nav.sosialhjelp.soknad.web.integration.SoknadTester;
-import no.nav.sosialhjelp.soknad.web.oidc.JwtTokenGenerator;
 import org.junit.jupiter.api.Test;
 
 import javax.ws.rs.client.Invocation;
@@ -31,7 +31,7 @@ class MineSakerMetadataRessursEndpointIT extends AbstractIT {
     void pabegynte_skalGi401MedAnnenIssuer() {
         SoknadTester soknadTester = soknadOpprettet();
         String subUrl = "minesaker/innsendte";
-        SignedJWT signedJWTMedAnnenIssuer = JwtTokenGenerator.createSignedJWT(BRUKER);
+        SignedJWT signedJWTMedAnnenIssuer = JwtTokenGenerator.INSTANCE.createSignedJWT(BRUKER);
 
         Response response = sendGetRequest(soknadTester, subUrl, signedJWTMedAnnenIssuer);
 

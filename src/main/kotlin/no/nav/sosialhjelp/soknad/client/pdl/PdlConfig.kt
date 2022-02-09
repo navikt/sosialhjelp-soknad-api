@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.client.pdl
 
-import no.nav.sosialhjelp.soknad.domain.model.util.HeaderConstants.HEADER_NAV_APIKEY
+import no.nav.sosialhjelp.soknad.common.Constants.HEADER_NAV_APIKEY
 import no.nav.sosialhjelp.soknad.health.selftest.Pingable
 import no.nav.sosialhjelp.soknad.navenhet.gt.GeografiskTilknytningClient
 import org.springframework.beans.factory.annotation.Value

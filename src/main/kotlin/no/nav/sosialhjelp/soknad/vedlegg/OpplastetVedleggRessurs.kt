@@ -3,15 +3,15 @@ package no.nav.sosialhjelp.soknad.vedlegg
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.metrics.aspects.Timed
 import no.nav.sosialhjelp.soknad.business.db.repositories.opplastetvedlegg.OpplastetVedleggRepository
+import no.nav.sosialhjelp.soknad.common.Constants
 import no.nav.sosialhjelp.soknad.common.filedetection.FileDetectionUtils.getMimeType
 import no.nav.sosialhjelp.soknad.common.filedetection.MimeTypes
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.domain.OpplastetVedlegg
-import no.nav.sosialhjelp.soknad.domain.model.exception.OpplastingException
 import no.nav.sosialhjelp.soknad.domain.model.mock.MockUtils
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import no.nav.sosialhjelp.soknad.vedlegg.dto.FilFrontend
-import no.nav.sosialhjelp.soknad.web.utils.Constants
+import no.nav.sosialhjelp.soknad.vedlegg.exceptions.OpplastingException
 import org.apache.commons.io.IOUtils
 import org.glassfish.jersey.media.multipart.FormDataBodyPart
 import org.glassfish.jersey.media.multipart.FormDataParam

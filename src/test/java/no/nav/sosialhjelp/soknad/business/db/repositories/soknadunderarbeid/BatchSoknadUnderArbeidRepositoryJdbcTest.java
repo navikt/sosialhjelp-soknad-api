@@ -2,9 +2,9 @@ package no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid;
 
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sosialhjelp.soknad.business.db.RepositoryTestSupport;
-import no.nav.sosialhjelp.soknad.business.db.config.DbTestConfig;
 import no.nav.sosialhjelp.soknad.business.db.repositories.opplastetvedlegg.BatchOpplastetVedleggRepository;
 import no.nav.sosialhjelp.soknad.business.db.repositories.opplastetvedlegg.OpplastetVedleggRepository;
+import no.nav.sosialhjelp.soknad.config.DbTestConfig;
 import no.nav.sosialhjelp.soknad.domain.OpplastetVedlegg;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.domain.VedleggType;

@@ -4,9 +4,9 @@ import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.metrics.aspects.Timed
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
+import no.nav.sosialhjelp.soknad.common.Constants
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
-import no.nav.sosialhjelp.soknad.web.utils.Constants
 import org.springframework.stereotype.Controller
 import javax.ws.rs.GET
 import javax.ws.rs.PUT
@@ -57,7 +57,7 @@ open class KontonummerRessurs(
         if (kontonummerFrontend.brukerdefinert) {
             kontonummer.kilde = JsonKilde.BRUKER
             kontonummer.verdi = if (kontonummerFrontend.brukerutfyltVerdi == "") null else kontonummerFrontend.brukerutfyltVerdi
-            kontonummer.setHarIkkeKonto(kontonummerFrontend.harIkkeKonto ?: null)
+            kontonummer.setHarIkkeKonto(kontonummerFrontend.harIkkeKonto)
         } else if (kontonummer.kilde == JsonKilde.BRUKER) {
             kontonummer.kilde = JsonKilde.SYSTEM
             kontonummerSystemdata.updateSystemdataIn(soknad)

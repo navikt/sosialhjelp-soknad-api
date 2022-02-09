@@ -14,11 +14,11 @@ import no.nav.sosialhjelp.soknad.domain.OpplastetVedlegg
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.domain.VedleggType
 import no.nav.sosialhjelp.soknad.domain.Vedleggstatus
-import no.nav.sosialhjelp.soknad.domain.model.exception.OpplastingException
-import no.nav.sosialhjelp.soknad.domain.model.exception.SamletVedleggStorrelseForStorException
-import no.nav.sosialhjelp.soknad.domain.model.exception.UgyldigOpplastingTypeException
-import no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils
 import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils
+import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils.getSha512FromByteArray
+import no.nav.sosialhjelp.soknad.vedlegg.exceptions.OpplastingException
+import no.nav.sosialhjelp.soknad.vedlegg.exceptions.SamletVedleggStorrelseForStorException
+import no.nav.sosialhjelp.soknad.vedlegg.exceptions.UgyldigOpplastingTypeException
 import no.nav.sosialhjelp.soknad.vedlegg.virusscan.VirusScanner
 import org.apache.pdfbox.pdmodel.PDDocument
 import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException
@@ -42,12 +42,12 @@ class OpplastetVedleggService(
         behandlingsId: String?,
         vedleggstype: String,
         data: ByteArray,
-        filnavn: String
+        originalfilnavn: String
     ): OpplastetVedlegg {
-        var filnavn = filnavn
+        var filnavn = originalfilnavn
 
         val eier = SubjectHandlerUtils.getUserIdFromToken()
-        val sha512 = ServiceUtils.getSha512FromByteArray(data)
+        val sha512 = getSha512FromByteArray(data)
 
         val fileType = validerFil(data, filnavn)
         virusScanner.scan(filnavn, data, behandlingsId!!, fileType.name)
@@ -209,11 +209,11 @@ class OpplastetVedleggService(
         }
 
         filnavn += "-" + uuid.split("-").toTypedArray()[0]
-        if (fileExtension != null && fileExtension.isNotEmpty() && erTikaOgFileExtensionEnige(fileExtension, fileType)) {
-            filnavn += fileExtension
+        filnavn += if (fileExtension != null && fileExtension.isNotEmpty() && erTikaOgFileExtensionEnige(fileExtension, fileType)) {
+            fileExtension
         } else {
             logger.info("Opplastet vedlegg mangler fil extension -> setter fil extension lik validert filtype = ${fileType.extension}")
-            filnavn += fileType.extension
+            fileType.extension
         }
 
         return filnavn

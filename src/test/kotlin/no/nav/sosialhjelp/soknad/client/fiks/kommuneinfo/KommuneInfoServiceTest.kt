@@ -13,6 +13,8 @@ import no.nav.sosialhjelp.soknad.client.idporten.IdPortenService
 import no.nav.sosialhjelp.soknad.client.redis.KOMMUNEINFO_CACHE_KEY
 import no.nav.sosialhjelp.soknad.client.redis.KOMMUNEINFO_LAST_POLL_TIME_KEY
 import no.nav.sosialhjelp.soknad.client.redis.RedisService
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
