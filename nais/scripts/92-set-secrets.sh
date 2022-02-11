@@ -1,5 +1,4 @@
 echo "Export apikeys"
-export EREGAPI_APIKEY=$(cat /apigw/eregapi/x-nav-apiKey)
 export AAREGAPI_APIKEY=$(cat /apigw/aaregapi/x-nav-apiKey)
 export STSTOKEN_APIKEY=$(cat /apigw/securitytokenservicetoken/x-nav-apiKey)
 export DKIFAPI_APIKEY=$(cat /apigw/dkifapi/x-nav-apiKey)

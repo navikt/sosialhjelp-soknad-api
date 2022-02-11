@@ -15,7 +15,6 @@
   "kvPaths": {
     "/var/run/secrets/datasource": "/oracle/data/dev/creds/soknadsosialhjelp_q0-user",
     "/var/run/secrets/nais.io/virksomhetssertifikat": "/secret/virksomhetssertifikat/preprod/shared",
-    "/apigw/eregapi": "apikey/apigw/dev/ereg.api/sosialhjelp-soknad-api_q1",
     "/apigw/aaregapi": "apikey/apigw/dev/aareg.api/sosialhjelp-soknad-api_q1",
     "/apigw/securitytokenservicetoken": "apikey/apigw/dev/security-token-service-token/sosialhjelp-soknad-api_q1",
     "/apigw/dkifapi": "apikey/apigw/dev/dkif.api/sosialhjelp-soknad-api_q1",
@@ -51,7 +50,7 @@
     "AAREG_API_BASEURL": "https://api-gw-q1.oera.no/aareg-services/api/",
     "DITTNAV_LINK_URL": "https://www.dev.nav.no/person/dittnav",
     "DKIF_API_BASEURL": "https://api-gw-q1.oera.no/dkif/api/",
-    "EREG_API_BASEURL": "https://api-gw-q1.oera.no/ereg/api/",
+    "EREG_PROXY_URL": "https://sosialhjelp-fss-proxy.dev-fss-pub.nais.io/proxy/ereg/",
     "FIKS_NOKKELFIL": "svarut_public_test.pem",
     "FSS_PROXY_AUDIENCE": "dev-fss:teamdigisos:sosialhjelp-fss-proxy",
     "FSS_PROXY_PING_URL": "https://sosialhjelp-fss-proxy.dev-fss-pub.nais.io/ping",
