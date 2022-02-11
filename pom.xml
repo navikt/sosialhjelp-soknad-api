@@ -333,7 +333,6 @@
                 <groupId>org.glassfish.jersey.containers</groupId>
                 <artifactId>jersey-container-servlet-core</artifactId>
                 <version>${jersey.version}</version>
-<!--                <scope>test</scope>-->
             </dependency>
 
             <!-- hk2 -->
@@ -973,8 +972,6 @@
             <version>${emoji-java.version}</version>
         </dependency>
 
-        <!-- Avhengigheter med runtime scope -->
-
         <!-- diverse avhengigheter -->
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -1319,18 +1316,6 @@
                     <!-- additional 3rd party ruleset(s) can be specified here -->
                 </dependencies>
             </plugin>
-<!--            <plugin>-->
-<!--                <groupId>org.apache.maven.plugins</groupId>-->
-<!--                <artifactId>maven-jar-plugin</artifactId>-->
-<!--                <version>3.2.0</version>-->
-<!--                <configuration>-->
-<!--                    <archive>-->
-<!--                        <manifest>-->
-<!--                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>-->
-<!--                        </manifest>-->
-<!--                    </archive>-->
-<!--                </configuration>-->
-<!--            </plugin>-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
