@@ -181,7 +181,7 @@ class DigisosApiService(
         val vedleggJson = getVedleggJson(soknadUnderArbeid)
 
         if (MiljoUtils.isNonProduction()) {
-            behandlingsId = createPrefixedBehandlingsId(behandlingsId, MiljoUtils.environmentName)
+            behandlingsId = createPrefixedBehandlingsId(behandlingsId)
         }
         val enhetsnummer = soknadUnderArbeid.jsonInternalSoknad.soknad.mottaker.enhetsnummer
         val navEnhetsnavn = soknadUnderArbeid.jsonInternalSoknad.soknad.mottaker.navEnhetsnavn

@@ -3,7 +3,6 @@ package no.nav.sosialhjelp.soknad.api.innsyn
 import no.nav.sosialhjelp.soknad.api.LenkeUtils.lagEttersendelseLenke
 import no.nav.sosialhjelp.soknad.api.innsyn.dto.SoknadOversiktDto
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.SoknadMetadataRepository
-import no.nav.sosialhjelp.soknad.common.MiljoUtils
 import java.sql.Timestamp
 
 class SoknadOversiktService(
@@ -19,7 +18,7 @@ class SoknadOversiktService(
                 sistOppdatert = Timestamp.valueOf(it.sistEndretDato),
                 antallNyeOppgaver = null,
                 kilde = KILDE_SOKNAD_API,
-                url = lagEttersendelseLenke(it.behandlingsId, MiljoUtils.environmentName)
+                url = lagEttersendelseLenke(it.behandlingsId)
             )
         }
     }

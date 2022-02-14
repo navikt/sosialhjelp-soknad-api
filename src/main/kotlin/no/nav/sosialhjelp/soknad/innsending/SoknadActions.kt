@@ -96,7 +96,7 @@ open class SoknadActions(
                 throw SendingTilKommuneUtilgjengeligException("Sending til kommune $kommunenummer er ikke tilgjengelig fordi fiks har nedetid og kommuneinfo-cache er tom.")
             }
             MANGLER_KONFIGURASJON, HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT -> {
-                if (!KommuneTilNavEnhetMapper.getDigisoskommuner().contains(kommunenummer)) {
+                if (!KommuneTilNavEnhetMapper.digisoskommuner.contains(kommunenummer)) {
                     throw SendingTilKommuneErIkkeAktivertException("Sending til kommune $kommunenummer er ikke aktivert og kommunen er ikke i listen over svarUt-kommuner")
                 }
                 log.info("BehandlingsId $behandlingsId sendes til SvarUt (sfa. Fiks-konfigurasjon).")

@@ -467,7 +467,6 @@ object KommuneTilNavEnhetMapper {
      *
      * @return Liste med kommunenumre.
      */
-    fun getDigisoskommuner(): List<String> {
-        return if (MiljoUtils.isNonProduction()) TEST_DIGISOS_KOMMUNER else PROD_DIGISOS_KOMMUNER
-    }
+    val digisoskommuner: List<String>
+        get() = if (MiljoUtils.isNonProduction()) TEST_DIGISOS_KOMMUNER else PROD_DIGISOS_KOMMUNER
 }

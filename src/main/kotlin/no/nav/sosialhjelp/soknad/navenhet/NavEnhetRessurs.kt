@@ -296,7 +296,7 @@ open class NavEnhetRessurs(
 
     private fun isDigisosKommune(kommunenummer: String): Boolean {
         val isNyDigisosApiKommuneMedMottakAktivert = kommuneInfoService.kanMottaSoknader(kommunenummer) && serviceUtils.isSendingTilFiksEnabled()
-        val isGammelSvarUtKommune = KommuneTilNavEnhetMapper.getDigisoskommuner().contains(kommunenummer)
+        val isGammelSvarUtKommune = KommuneTilNavEnhetMapper.digisoskommuner.contains(kommunenummer)
         return isNyDigisosApiKommuneMedMottakAktivert || isGammelSvarUtKommune
     }
 

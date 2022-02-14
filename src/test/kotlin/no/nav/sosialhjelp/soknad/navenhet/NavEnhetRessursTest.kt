@@ -62,12 +62,12 @@ internal class NavEnhetRessursTest {
 
         private const val ENHETSNAVN = "NAV Testenhet"
         private const val KOMMUNENAVN = "Test kommune"
-        private val KOMMUNENR = KommuneTilNavEnhetMapper.getDigisoskommuner()[0]
+        private val KOMMUNENR = KommuneTilNavEnhetMapper.digisoskommuner[0]
         private const val ENHETSNR = "1234"
         private const val ORGNR = "123456789"
         private const val ENHETSNAVN_2 = "NAV Van"
         private const val KOMMUNENAVN_2 = "Enummok kommune"
-        private val KOMMUNENR_2 = KommuneTilNavEnhetMapper.getDigisoskommuner()[1]
+        private val KOMMUNENR_2 = KommuneTilNavEnhetMapper.digisoskommuner[1]
         private const val ENHETSNR_2 = "5678"
         private const val ORGNR_2 = "987654321"
         private val SOKNADSMOTTAKER = JsonSoknadsmottaker()

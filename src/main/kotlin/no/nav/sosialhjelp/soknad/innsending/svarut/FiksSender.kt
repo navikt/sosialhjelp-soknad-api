@@ -75,7 +75,7 @@ class FiksSender(
 
     private fun getBehandlingsId(sendtSoknad: SendtSoknad): String? {
         return if (MiljoUtils.isNonProduction()) {
-            createPrefixedBehandlingsId(sendtSoknad.behandlingsId, MiljoUtils.environmentName)
+            createPrefixedBehandlingsId(sendtSoknad.behandlingsId)
         } else {
             sendtSoknad.behandlingsId
         }
