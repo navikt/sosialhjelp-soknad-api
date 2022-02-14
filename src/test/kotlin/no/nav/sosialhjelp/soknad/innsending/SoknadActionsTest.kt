@@ -71,17 +71,18 @@ internal class SoknadActionsTest {
 
     @BeforeEach
     fun setUp() {
+        clearAllMocks()
+
+        mockkObject(MiljoUtils)
+        every { MiljoUtils.isNonProduction() } returns true
         SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
 
-        clearAllMocks()
         every { context.getRealPath(any()) } returns ""
         EIER = SubjectHandlerUtils.getUserIdFromToken()
         every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
         every { unleash.isEnabled(any(), any<Boolean>()) } returns true
         every { nedetidService.isInnenforNedetid } returns false
         every { serviceUtils.isAlltidSendTilNavTestkommune() } returns false
-        mockkObject(MiljoUtils)
-        every { MiljoUtils.isNonProduction() } returns true
     }
 
     @AfterEach

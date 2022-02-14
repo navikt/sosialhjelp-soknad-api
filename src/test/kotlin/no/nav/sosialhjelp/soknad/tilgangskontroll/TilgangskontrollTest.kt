@@ -2,9 +2,11 @@ package no.nav.sosialhjelp.soknad.tilgangskontroll
 
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.mockkObject
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata
+import no.nav.sosialhjelp.soknad.common.MiljoUtils
 import no.nav.sosialhjelp.soknad.common.ServiceUtils
 import no.nav.sosialhjelp.soknad.common.exceptions.AuthorizationException
 import no.nav.sosialhjelp.soknad.common.subjecthandler.StaticSubjectHandlerImpl
@@ -31,6 +33,9 @@ internal class TilgangskontrollTest {
 
     @BeforeEach
     fun setUp() {
+        mockkObject(MiljoUtils)
+        every { MiljoUtils.isNonProduction() } returns true
+
         SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
 
         every { serviceUtils.isMockAltProfil() } returns false

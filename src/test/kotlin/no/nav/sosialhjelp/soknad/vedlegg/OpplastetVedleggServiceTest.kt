@@ -4,6 +4,7 @@ import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
+import io.mockk.mockkObject
 import io.mockk.runs
 import io.mockk.slot
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
@@ -12,6 +13,7 @@ import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
 import no.nav.sosialhjelp.soknad.business.db.repositories.opplastetvedlegg.OpplastetVedleggRepository
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
+import no.nav.sosialhjelp.soknad.common.MiljoUtils
 import no.nav.sosialhjelp.soknad.common.filedetection.TikaFileType.JPEG
 import no.nav.sosialhjelp.soknad.common.filedetection.TikaFileType.PNG
 import no.nav.sosialhjelp.soknad.common.subjecthandler.StaticSubjectHandlerImpl
@@ -46,9 +48,13 @@ internal class OpplastetVedleggServiceTest {
 
     @BeforeEach
     fun setUp() {
+        clearAllMocks()
+
+        mockkObject(MiljoUtils)
+        every { MiljoUtils.isNonProduction() } returns true
+
         SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
 
-        clearAllMocks()
         every { virusScanner.scan(any(), any(), any(), any()) } just runs
         every { opplastetVedleggRepository.slettVedlegg(any(), any()) } just runs
     }
