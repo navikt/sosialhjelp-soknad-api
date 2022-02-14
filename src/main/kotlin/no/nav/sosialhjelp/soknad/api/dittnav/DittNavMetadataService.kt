@@ -4,14 +4,13 @@ import no.nav.sosialhjelp.soknad.api.LenkeUtils.lenkeTilPabegyntSoknad
 import no.nav.sosialhjelp.soknad.api.TimeUtils.toUtc
 import no.nav.sosialhjelp.soknad.api.dittnav.dto.PabegyntSoknadDto
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.SoknadMetadataRepository
-import no.nav.sosialhjelp.soknad.common.ServiceUtils
+import no.nav.sosialhjelp.soknad.common.MiljoUtils
 import org.slf4j.LoggerFactory
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
 class DittNavMetadataService(
-    private val soknadMetadataRepository: SoknadMetadataRepository,
-    private val serviceUtils: ServiceUtils
+    private val soknadMetadataRepository: SoknadMetadataRepository
 ) {
     fun hentAktivePabegynteSoknader(fnr: String): List<PabegyntSoknadDto> {
         return hentPabegynteSoknader(fnr, true)
@@ -29,7 +28,7 @@ class DittNavMetadataService(
                 eventId(it.behandlingsId, aktiv),
                 it.behandlingsId,
                 SOKNAD_TITTEL,
-                lenkeTilPabegyntSoknad(it.behandlingsId, serviceUtils.environmentName),
+                lenkeTilPabegyntSoknad(it.behandlingsId, MiljoUtils.environmentName),
                 SIKKERHETSNIVAA_3, // hvis ikke vil ikke innloggede nivå 3 brukere se noe på DittNav
                 toUtc(it.sistEndretDato, ZoneId.systemDefault()).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME),
                 aktiv

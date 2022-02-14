@@ -4,6 +4,7 @@ import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
+import io.mockk.mockkObject
 import io.mockk.runs
 import io.mockk.verify
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
@@ -14,7 +15,7 @@ import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.SosialhjelpPdfGenerator
-import no.nav.sosialhjelp.soknad.common.ServiceUtils
+import no.nav.sosialhjelp.soknad.common.MiljoUtils
 import no.nav.sosialhjelp.soknad.common.filedetection.MimeTypes
 import no.nav.sosialhjelp.soknad.common.subjecthandler.StaticSubjectHandlerImpl
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
@@ -41,7 +42,6 @@ internal class DigisosApiServiceTest {
     private val soknadUnderArbeidService: SoknadUnderArbeidService = mockk()
     private val soknadMetricsService: SoknadMetricsService = mockk()
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
-    private val serviceUtils: ServiceUtils = mockk()
 
     private val digisosApiService = DigisosApiService(
         digisosApiClient,
@@ -50,8 +50,7 @@ internal class DigisosApiServiceTest {
         henvendelseService,
         soknadUnderArbeidService,
         soknadMetricsService,
-        soknadUnderArbeidRepository,
-        serviceUtils
+        soknadUnderArbeidRepository
     )
 
     @BeforeEach
@@ -129,8 +128,9 @@ internal class DigisosApiServiceTest {
 
     @Test
     fun etterInnsendingSkalSoknadUnderArbeidSlettes() {
-        every { serviceUtils.isNonProduction() } returns true
-        every { serviceUtils.environmentName } returns "test"
+        mockkObject(MiljoUtils)
+        every { MiljoUtils.isNonProduction() } returns true
+        every { MiljoUtils.environmentName } returns "test"
 
         val soknadUnderArbeid = SoknadUnderArbeid()
             .withJsonInternalSoknad(createEmptyJsonInternalSoknad("12345678910"))

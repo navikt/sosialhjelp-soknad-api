@@ -3,9 +3,10 @@ package no.nav.sosialhjelp.soknad.api.dittnav
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.mockkObject
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata
-import no.nav.sosialhjelp.soknad.common.ServiceUtils
+import no.nav.sosialhjelp.soknad.common.MiljoUtils
 import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus
 import no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SoknadType
 import org.assertj.core.api.Assertions.assertThat
@@ -16,14 +17,14 @@ import java.time.LocalDateTime
 internal class DittNavMetadataServiceTest {
 
     private val soknadMetadataRepository: SoknadMetadataRepository = mockk()
-    private val serviceUtils: ServiceUtils = mockk()
-    private val dittNavMetadataService = DittNavMetadataService(soknadMetadataRepository, serviceUtils)
+    private val dittNavMetadataService = DittNavMetadataService(soknadMetadataRepository)
 
     @BeforeEach
     internal fun setUp() {
         clearAllMocks()
 
-        every { serviceUtils.environmentName } returns "p"
+        mockkObject(MiljoUtils)
+        every { MiljoUtils.environmentName } returns "p"
     }
 
     @Test

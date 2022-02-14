@@ -3,7 +3,7 @@ package no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt
 import no.nav.sosialhjelp.soknad.client.maskinporten.MaskinportenClient
 import no.nav.sosialhjelp.soknad.common.Constants.BEARER
 import no.nav.sosialhjelp.soknad.common.LoggingUtils.maskerFnr
-import no.nav.sosialhjelp.soknad.common.ServiceUtils
+import no.nav.sosialhjelp.soknad.common.MiljoUtils
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.dto.SkattbarInntekt
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.dto.Sokedata
 import org.slf4j.LoggerFactory.getLogger
@@ -23,12 +23,11 @@ interface SkatteetatenClient {
 
 class SkatteetatenClientImpl(
     private val webClient: WebClient,
-    private val maskinportenClient: MaskinportenClient,
-    private val serviceUtils: ServiceUtils
+    private val maskinportenClient: MaskinportenClient
 ) : SkatteetatenClient {
 
     override fun hentSkattbarinntekt(fnr: String): SkattbarInntekt? {
-        val identifikator = if (!serviceUtils.isNonProduction()) fnr else System.getenv("TESTBRUKER_SKATT") ?: fnr
+        val identifikator = if (!MiljoUtils.isNonProduction()) fnr else System.getenv("TESTBRUKER_SKATT") ?: fnr
 
         val sokedata = Sokedata(
             identifikator = identifikator,

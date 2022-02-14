@@ -5,6 +5,7 @@ import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
+import io.mockk.mockkObject
 import io.mockk.runs
 import io.mockk.verify
 import no.finn.unleash.Unleash
@@ -13,6 +14,7 @@ import no.nav.sosialhjelp.soknad.api.nedetid.NedetidService.Companion.dateTimeFo
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata
+import no.nav.sosialhjelp.soknad.common.MiljoUtils
 import no.nav.sosialhjelp.soknad.common.ServiceUtils
 import no.nav.sosialhjelp.soknad.common.exceptions.AuthorizationException
 import no.nav.sosialhjelp.soknad.common.exceptions.SendingTilKommuneErIkkeAktivertException
@@ -77,8 +79,9 @@ internal class SoknadActionsTest {
         every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
         every { unleash.isEnabled(any(), any<Boolean>()) } returns true
         every { nedetidService.isInnenforNedetid } returns false
-        every { serviceUtils.isNonProduction() } returns true
         every { serviceUtils.isAlltidSendTilNavTestkommune() } returns false
+        mockkObject(MiljoUtils)
+        every { MiljoUtils.isNonProduction() } returns true
     }
 
     @AfterEach

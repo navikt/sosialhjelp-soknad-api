@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.common.oidc
 
 import no.nav.security.token.support.jaxrs.JwtTokenContainerRequestFilter
-import no.nav.sosialhjelp.soknad.common.ServiceUtils
+import no.nav.sosialhjelp.soknad.common.MiljoUtils
 import org.glassfish.jersey.server.wadl.processor.OptionsMethodProcessor
 import org.glassfish.jersey.server.wadl.processor.WadlModelProcessor.OptionsHandler
 import org.springframework.beans.factory.annotation.Value
@@ -13,8 +13,7 @@ import javax.ws.rs.core.FeatureContext
 @Component
 class OidcResourceFilteringFeature(
     @Value("\${tillatmock}") private val tillatmock: String,
-    @Value("\${start.oidc.withmock}") private val startOidcMock: String,
-    private val serviceUtils: ServiceUtils
+    @Value("\${start.oidc.withmock}") private val startOidcMock: String
 ) : DynamicFeature {
     override fun configure(resourceInfo: ResourceInfo, context: FeatureContext) {
         if (isClassAllowedInProd(resourceInfo) || isAllowedWhenNotRunningInProd) {
@@ -31,7 +30,7 @@ class OidcResourceFilteringFeature(
     }
 
     private val isAllowedWhenNotRunningInProd: Boolean
-        get() = serviceUtils.isNonProduction() && isOidcMock
+        get() = MiljoUtils.isNonProduction() && isOidcMock
 
     private val isOidcMock: Boolean
         get() = "true".equals(tillatmock, ignoreCase = true) &&

@@ -8,16 +8,16 @@ data class NavEnhetDto(
     val enhetNr: String,
 )
 
-fun NavEnhetDto.toNavEnhet(gt: String, isNonProd: Boolean): NavEnhet {
+fun NavEnhetDto.toNavEnhet(gt: String): NavEnhet {
     return NavEnhet(
         enhetNr = enhetNr,
         navn = navn,
         kommunenavn = null,
-        sosialOrgNr = getSosialOrgNr(enhetNr, gt, isNonProd)
+        sosialOrgNr = getSosialOrgNr(enhetNr, gt)
     )
 }
 
-private fun getSosialOrgNr(enhetNr: String?, gt: String, isNonProd: Boolean): String? {
+private fun getSosialOrgNr(enhetNr: String?, gt: String): String? {
     return when {
         enhetNr == "0513" && gt == "3434" -> {
             /*
@@ -30,6 +30,6 @@ private fun getSosialOrgNr(enhetNr: String?, gt: String, isNonProd: Boolean): St
         }
         enhetNr == "0511" && gt == "3432" -> "964949204"
         enhetNr == "1620" && gt == "5014" -> "913071751"
-        else -> getOrganisasjonsnummer(enhetNr, isNonProd)
+        else -> getOrganisasjonsnummer(enhetNr)
     }
 }

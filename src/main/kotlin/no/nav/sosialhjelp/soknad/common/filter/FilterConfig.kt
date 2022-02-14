@@ -2,13 +2,9 @@ package no.nav.sosialhjelp.soknad.common.filter
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.context.annotation.Import
 import org.springframework.web.filter.CharacterEncodingFilter
 
 @Configuration
-@Import(
-    CORSFilter::class
-)
 open class FilterConfig {
 
     @Bean

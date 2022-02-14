@@ -7,7 +7,7 @@ internal class KommuneTilNavEnhetMapperTest {
 
     @Test
     fun testGetOrganisasjonsnummerOfNull() {
-        val result = KommuneTilNavEnhetMapper.getOrganisasjonsnummer(null, true)
+        val result = KommuneTilNavEnhetMapper.getOrganisasjonsnummer(null)
         assertThat(result).isNull()
     }
 }

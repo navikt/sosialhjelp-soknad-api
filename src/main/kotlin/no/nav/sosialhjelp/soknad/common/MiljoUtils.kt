@@ -7,6 +7,7 @@ object MiljoUtils {
     private const val NAIS_APP_IMAGE = "NAIS_APP_IMAGE"
     private const val NAIS_APP_NAME = "NAIS_APP_NAME"
     private const val NAIS_CLUSTER_NAME = "NAIS_CLUSTER_NAME"
+    private const val ENVIRONMENT_NAME = "ENVIRONMENT_NAME"
 
     private val log by logger()
 
@@ -32,4 +33,7 @@ object MiljoUtils {
         val clusterName = System.getenv(NAIS_CLUSTER_NAME)
         return clusterName == null || !clusterName.contains("prod")
     }
+
+    val environmentName: String
+        get() = System.getenv(ENVIRONMENT_NAME) ?: ""
 }

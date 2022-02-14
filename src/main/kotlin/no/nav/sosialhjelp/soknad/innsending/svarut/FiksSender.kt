@@ -10,7 +10,7 @@ import no.ks.fiks.svarut.klient.model.PostAdresse
 import no.ks.fiks.svarut.klient.model.UtskriftsKonfigurasjon
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.SosialhjelpPdfGenerator
-import no.nav.sosialhjelp.soknad.common.ServiceUtils
+import no.nav.sosialhjelp.soknad.common.MiljoUtils
 import no.nav.sosialhjelp.soknad.domain.SendtSoknad
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.innsending.InnsendingService
@@ -27,8 +27,7 @@ class FiksSender(
     private val innsendingService: InnsendingService,
     sosialhjelpPdfGenerator: SosialhjelpPdfGenerator,
     private val krypteringEnabled: Boolean,
-    private val svarUtService: SvarUtService,
-    private val serviceUtils: ServiceUtils
+    private val svarUtService: SvarUtService
 ) {
     private val fakeUtskriftsConfig = UtskriftsKonfigurasjon()
         .withUtskriftMedFarger(true)
@@ -75,8 +74,8 @@ class FiksSender(
     }
 
     private fun getBehandlingsId(sendtSoknad: SendtSoknad): String? {
-        return if (serviceUtils.isNonProduction()) {
-            createPrefixedBehandlingsId(sendtSoknad.behandlingsId, serviceUtils.environmentName)
+        return if (MiljoUtils.isNonProduction()) {
+            createPrefixedBehandlingsId(sendtSoknad.behandlingsId, MiljoUtils.environmentName)
         } else {
             sendtSoknad.behandlingsId
         }

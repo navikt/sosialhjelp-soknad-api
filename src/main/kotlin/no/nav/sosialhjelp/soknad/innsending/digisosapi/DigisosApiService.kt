@@ -12,7 +12,7 @@ import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.Sokn
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata.VedleggMetadata
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata.VedleggMetadataListe
 import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.SosialhjelpPdfGenerator
-import no.nav.sosialhjelp.soknad.common.ServiceUtils
+import no.nav.sosialhjelp.soknad.common.MiljoUtils
 import no.nav.sosialhjelp.soknad.common.filedetection.FileDetectionUtils.getMimeType
 import no.nav.sosialhjelp.soknad.common.filedetection.MimeTypes.APPLICATION_PDF
 import no.nav.sosialhjelp.soknad.common.filedetection.MimeTypes.TEXT_X_MATLAB
@@ -39,8 +39,7 @@ class DigisosApiService(
     private val henvendelseService: HenvendelseService,
     private val soknadUnderArbeidService: SoknadUnderArbeidService,
     private val soknadMetricsService: SoknadMetricsService,
-    private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
-    private val serviceUtils: ServiceUtils
+    private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository
 ) {
     private val objectMapper = JsonSosialhjelpObjectMapper.createObjectMapper()
 
@@ -181,8 +180,8 @@ class DigisosApiService(
         val tilleggsinformasjonJson = getTilleggsinformasjonJson(soknadUnderArbeid.jsonInternalSoknad.soknad)
         val vedleggJson = getVedleggJson(soknadUnderArbeid)
 
-        if (serviceUtils.isNonProduction()) {
-            behandlingsId = createPrefixedBehandlingsId(behandlingsId, serviceUtils.environmentName)
+        if (MiljoUtils.isNonProduction()) {
+            behandlingsId = createPrefixedBehandlingsId(behandlingsId, MiljoUtils.environmentName)
         }
         val enhetsnummer = soknadUnderArbeid.jsonInternalSoknad.soknad.mottaker.enhetsnummer
         val navEnhetsnavn = soknadUnderArbeid.jsonInternalSoknad.soknad.mottaker.navEnhetsnavn

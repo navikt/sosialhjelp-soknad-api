@@ -5,12 +5,13 @@ import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
+import io.mockk.mockkObject
 import io.mockk.runs
 import io.mockk.verify
 import no.nav.sosialhjelp.api.fiks.KommuneInfo
 import no.nav.sosialhjelp.soknad.api.nedetid.NedetidService
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.SoknadMetadataRepository
-import no.nav.sosialhjelp.soknad.common.ServiceUtils
+import no.nav.sosialhjelp.soknad.common.MiljoUtils
 import no.nav.sosialhjelp.soknad.common.exceptions.AuthorizationException
 import no.nav.sosialhjelp.soknad.common.subjecthandler.StaticSubjectHandlerImpl
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
@@ -33,7 +34,6 @@ internal class InformasjonRessursTest {
     private val tilgangskontroll: Tilgangskontroll = mockk()
     private val soknadMetadataRepository: SoknadMetadataRepository = mockk()
     private val nedetidService: NedetidService = mockk()
-    private val serviceUtils: ServiceUtils = mockk()
 
     private val ressurs = InformasjonRessurs(
         messageSource,
@@ -43,8 +43,7 @@ internal class InformasjonRessursTest {
         tilgangskontroll,
         soknadMetadataRepository,
         mockk(),
-        nedetidService,
-        serviceUtils
+        nedetidService
     )
 
     var norskBokmaal = Locale("nb", "NO")
@@ -54,7 +53,8 @@ internal class InformasjonRessursTest {
         clearAllMocks()
         SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
 
-        every { serviceUtils.isNonProduction() } returns true
+        mockkObject(MiljoUtils)
+        every { MiljoUtils.isNonProduction() } returns true
     }
 
     @AfterEach

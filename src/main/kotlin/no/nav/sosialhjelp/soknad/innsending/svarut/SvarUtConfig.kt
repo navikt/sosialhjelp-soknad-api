@@ -2,7 +2,6 @@ package no.nav.sosialhjelp.soknad.innsending.svarut
 
 import no.nav.sosialhjelp.soknad.business.db.repositories.oppgave.OppgaveRepository
 import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.SosialhjelpPdfGenerator
-import no.nav.sosialhjelp.soknad.common.ServiceUtils
 import no.nav.sosialhjelp.soknad.common.rest.RestConfig
 import no.nav.sosialhjelp.soknad.common.rest.RestUtils
 import no.nav.sosialhjelp.soknad.health.selftest.Pingable
@@ -27,8 +26,7 @@ open class SvarUtConfig(
     @Value("\${fiks_svarut_password}") private val svarutPassword: String?,
     @Value("\${feature.fiks.kryptering.enabled}") private val krypteringEnabled: Boolean,
     @Value("\${fiks.nokkelfil}") private val fiksNokkelfil: String?,
-    @Value("\${scheduler.disable}") private val schedulerDisabled: Boolean,
-    private val serviceUtils: ServiceUtils
+    @Value("\${scheduler.disable}") private val schedulerDisabled: Boolean
 ) {
 
     @Bean
@@ -43,8 +41,7 @@ open class SvarUtConfig(
             innsendingService,
             sosialhjelpPdfGenerator,
             krypteringEnabled,
-            svarutService,
-            serviceUtils
+            svarutService
         )
     }
 

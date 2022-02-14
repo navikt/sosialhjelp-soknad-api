@@ -7,6 +7,7 @@ import no.ks.kryptering.CMSStreamKryptering
 import no.nav.sosialhjelp.kotlin.utils.logger
 import no.nav.sosialhjelp.soknad.common.Constants.HEADER_INTEGRASJON_ID
 import no.nav.sosialhjelp.soknad.common.Constants.HEADER_INTEGRASJON_PASSORD
+import no.nav.sosialhjelp.soknad.common.MiljoUtils
 import no.nav.sosialhjelp.soknad.common.ServiceUtils
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.digisosObjectMapper
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.getDigisosIdFromResponse
@@ -137,7 +138,7 @@ class DigisosApiClientImpl(
             val pipedOutputStream = PipedOutputStream(pipedInputStream)
             val krypteringFuture = executor.submit {
                 try {
-                    if (serviceUtils.isNonProduction() && serviceUtils.isMockAltProfil()) {
+                    if (MiljoUtils.isNonProduction() && serviceUtils.isMockAltProfil()) {
                         IOUtils.copy(dokumentStream, pipedOutputStream)
                     } else {
                         kryptering.krypterData(

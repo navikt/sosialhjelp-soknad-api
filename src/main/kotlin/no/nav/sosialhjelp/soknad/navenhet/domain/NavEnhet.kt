@@ -21,11 +21,11 @@ data class NavEnhetFraLokalListe(
     val enhetsnavn: String
 )
 
-fun NavEnhetFraLokalListe.toNavEnhet(isNonProd: Boolean): NavEnhet {
+fun NavEnhetFraLokalListe.toNavEnhet(): NavEnhet {
     return NavEnhet(
         enhetNr = enhetsnummer,
         navn = enhetsnavn,
         kommunenavn = kommunenavn,
-        sosialOrgNr = getOrganisasjonsnummer(enhetsnummer, isNonProd)
+        sosialOrgNr = getOrganisasjonsnummer(enhetsnummer)
     )
 }

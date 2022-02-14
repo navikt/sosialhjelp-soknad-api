@@ -7,6 +7,7 @@ import no.nav.sosialhjelp.soknad.api.nedetid.NedetidService
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.common.Constants
+import no.nav.sosialhjelp.soknad.common.MiljoUtils
 import no.nav.sosialhjelp.soknad.common.ServiceUtils
 import no.nav.sosialhjelp.soknad.common.exceptions.SendingTilKommuneErIkkeAktivertException
 import no.nav.sosialhjelp.soknad.common.exceptions.SendingTilKommuneErMidlertidigUtilgjengeligException
@@ -95,7 +96,7 @@ open class SoknadActions(
                 throw SendingTilKommuneUtilgjengeligException("Sending til kommune $kommunenummer er ikke tilgjengelig fordi fiks har nedetid og kommuneinfo-cache er tom.")
             }
             MANGLER_KONFIGURASJON, HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT -> {
-                if (!KommuneTilNavEnhetMapper.getDigisoskommuner(serviceUtils.isNonProduction()).contains(kommunenummer)) {
+                if (!KommuneTilNavEnhetMapper.getDigisoskommuner().contains(kommunenummer)) {
                     throw SendingTilKommuneErIkkeAktivertException("Sending til kommune $kommunenummer er ikke aktivert og kommunen er ikke i listen over svarUt-kommuner")
                 }
                 log.info("BehandlingsId $behandlingsId sendes til SvarUt (sfa. Fiks-konfigurasjon).")
@@ -128,7 +129,7 @@ open class SoknadActions(
     }
 
     fun getKommunenummerOrMock(soknadUnderArbeid: SoknadUnderArbeid): String {
-        return if (serviceUtils.isNonProduction() && serviceUtils.isAlltidSendTilNavTestkommune()) {
+        return if (MiljoUtils.isNonProduction() && serviceUtils.isAlltidSendTilNavTestkommune()) {
             log.error("Sender til Nav-testkommune (3002). Du skal aldri se denne meldingen i PROD")
             "3002"
         } else {

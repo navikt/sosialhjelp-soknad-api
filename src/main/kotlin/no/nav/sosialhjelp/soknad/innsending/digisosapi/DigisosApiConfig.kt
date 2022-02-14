@@ -52,8 +52,7 @@ open class DigisosApiConfig(
             henvendelseService,
             soknadUnderArbeidService,
             soknadMetricsService,
-            soknadUnderArbeidRepository,
-            serviceUtils
+            soknadUnderArbeidRepository
         )
     }
 
