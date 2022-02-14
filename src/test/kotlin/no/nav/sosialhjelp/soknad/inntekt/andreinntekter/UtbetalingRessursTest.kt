@@ -50,7 +50,6 @@ internal class UtbetalingRessursTest {
 
         mockkObject(MiljoUtils)
         every { MiljoUtils.isNonProduction() } returns true
-
         SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
 
         every { textService.getJsonOkonomiTittel(any()) } returns "tittel"
