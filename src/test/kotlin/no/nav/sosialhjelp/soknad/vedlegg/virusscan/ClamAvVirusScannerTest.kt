@@ -2,6 +2,7 @@ package no.nav.sosialhjelp.soknad.vedlegg.virusscan
 
 import io.mockk.every
 import io.mockk.mockkObject
+import io.mockk.unmockkObject
 import mockwebserver3.MockResponse
 import mockwebserver3.MockWebServer
 import no.nav.sosialhjelp.soknad.client.redis.RedisUtils.redisObjectMapper
@@ -41,6 +42,7 @@ class ClamAvVirusScannerTest {
     @AfterEach
     fun tearDown() {
         mockWebServer.close()
+        unmockkObject(MiljoUtils)
     }
 
     @Test

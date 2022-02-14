@@ -7,6 +7,7 @@ import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.runs
 import io.mockk.slot
+import io.mockk.unmockkObject
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
@@ -52,7 +53,6 @@ internal class OpplastetVedleggServiceTest {
 
         mockkObject(MiljoUtils)
         every { MiljoUtils.isNonProduction() } returns true
-
         SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
 
         every { virusScanner.scan(any(), any(), any(), any()) } just runs
@@ -62,6 +62,7 @@ internal class OpplastetVedleggServiceTest {
     @AfterEach
     fun tearDown() {
         SubjectHandlerUtils.resetSubjectHandlerImpl()
+        unmockkObject(MiljoUtils)
     }
 
     @Test

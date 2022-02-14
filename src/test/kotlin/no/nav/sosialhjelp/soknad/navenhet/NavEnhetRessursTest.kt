@@ -8,6 +8,7 @@ import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.runs
 import io.mockk.slot
+import io.mockk.unmockkObject
 import io.mockk.verify
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknadsmottaker
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse
@@ -106,19 +107,21 @@ internal class NavEnhetRessursTest {
     @BeforeEach
     internal fun setUp() {
         clearAllMocks()
+
+        mockkObject(MiljoUtils)
+        every { MiljoUtils.isNonProduction() } returns true
         SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
         every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
         every { kommuneInfoService.kanMottaSoknader(any()) } returns true
         every { kommuneInfoService.harMidlertidigDeaktivertMottak(any()) } returns true
         every { serviceUtils.isSendingTilFiksEnabled() } returns true
         every { serviceUtils.isAlltidHentKommuneInfoFraNavTestkommune() } returns false
-        mockkObject(MiljoUtils)
-        every { MiljoUtils.isNonProduction() } returns false
     }
 
     @AfterEach
     internal fun tearDown() {
         SubjectHandlerUtils.resetSubjectHandlerImpl()
+        unmockkObject(MiljoUtils)
     }
 
     @Test

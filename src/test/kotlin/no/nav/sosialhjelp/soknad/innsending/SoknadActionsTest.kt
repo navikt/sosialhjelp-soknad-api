@@ -7,6 +7,7 @@ import io.mockk.just
 import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.runs
+import io.mockk.unmockkObject
 import io.mockk.verify
 import no.finn.unleash.Unleash
 import no.nav.sosialhjelp.soknad.api.nedetid.NedetidService
@@ -88,6 +89,7 @@ internal class SoknadActionsTest {
     @AfterEach
     fun tearDown() {
         SubjectHandlerUtils.resetSubjectHandlerImpl()
+        unmockkObject(MiljoUtils)
     }
 
     @Test

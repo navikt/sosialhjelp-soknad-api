@@ -3,11 +3,13 @@ package no.nav.sosialhjelp.soknad.common.filter
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkObject
+import io.mockk.unmockkObject
 import no.nav.sosialhjelp.soknad.common.MiljoUtils
 import no.nav.sosialhjelp.soknad.web.rest.SoknadApplication
 import org.assertj.core.api.Assertions.assertThat
 import org.glassfish.jersey.server.ContainerResponse
 import org.glassfish.jersey.test.util.server.ContainerRequestBuilder
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import javax.ws.rs.core.MultivaluedHashMap
@@ -23,6 +25,11 @@ internal class CORSFilterTest {
         val headers: MultivaluedMap<String, Any> = MultivaluedHashMap()
         every { response.headers } returns headers
         mockkObject(MiljoUtils)
+    }
+
+    @AfterEach
+    internal fun tearDown() {
+        unmockkObject(MiljoUtils)
     }
 
     @Test

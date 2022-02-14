@@ -5,13 +5,16 @@ import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
+import io.mockk.mockkObject
 import io.mockk.runs
 import io.mockk.slot
+import io.mockk.unmockkObject
 import io.mockk.verify
 import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.BOSTOTTE_SAMTYKKE
 import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_SKATTEETATEN_SAMTYKKE
 import no.nav.sosialhjelp.soknad.api.nedetid.NedetidService
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
+import no.nav.sosialhjelp.soknad.common.MiljoUtils
 import no.nav.sosialhjelp.soknad.common.exceptions.AuthorizationException
 import no.nav.sosialhjelp.soknad.common.mapper.OkonomiMapper
 import no.nav.sosialhjelp.soknad.common.subjecthandler.StaticSubjectHandlerImpl
@@ -46,9 +49,12 @@ internal class SoknadRessursTest {
 
     @BeforeEach
     fun setUp() {
+        clearAllMocks()
+
+        mockkObject(MiljoUtils)
+        every { MiljoUtils.isNonProduction() } returns true
         SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
 
-        clearAllMocks()
         every { henvendelseService.oppdaterSistEndretDatoPaaMetadata(any()) } just runs
         every { nedetidService.isInnenforNedetid } returns false
     }
@@ -56,6 +62,7 @@ internal class SoknadRessursTest {
     @AfterEach
     fun tearDown() {
         SubjectHandlerUtils.resetSubjectHandlerImpl()
+        unmockkObject(MiljoUtils)
     }
 
     @Test

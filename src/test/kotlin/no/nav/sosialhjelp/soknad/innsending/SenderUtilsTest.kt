@@ -2,6 +2,7 @@ package no.nav.sosialhjelp.soknad.innsending
 
 import io.mockk.every
 import io.mockk.mockkObject
+import io.mockk.unmockkObject
 import no.nav.sosialhjelp.soknad.common.MiljoUtils
 import no.nav.sosialhjelp.soknad.innsending.SenderUtils.createPrefixedBehandlingsId
 import org.assertj.core.api.Assertions.assertThat
@@ -22,5 +23,7 @@ internal class SenderUtilsTest {
         every { MiljoUtils.environmentName } returns "q1"
         prefixedBehandlingsId = createPrefixedBehandlingsId(originalBehandlingsId)
         assertThat(prefixedBehandlingsId).isEqualTo("q1-$originalBehandlingsId")
+
+        unmockkObject(MiljoUtils)
     }
 }

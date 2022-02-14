@@ -4,6 +4,7 @@ import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkObject
+import io.mockk.unmockkObject
 import io.mockk.verify
 import no.nav.sosialhjelp.soknad.client.exceptions.TjenesteUtilgjengeligException
 import no.nav.sosialhjelp.soknad.client.redis.RedisService
@@ -11,6 +12,7 @@ import no.nav.sosialhjelp.soknad.common.MiljoUtils
 import no.nav.sosialhjelp.soknad.navenhet.dto.NavEnhetDto
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
@@ -35,6 +37,11 @@ internal class NavEnhetServiceTest {
         clearAllMocks()
         mockkObject(MiljoUtils)
         every { MiljoUtils.isNonProduction() } returns true
+    }
+
+    @AfterEach
+    internal fun tearDown() {
+        unmockkObject(MiljoUtils)
     }
 
     @Test

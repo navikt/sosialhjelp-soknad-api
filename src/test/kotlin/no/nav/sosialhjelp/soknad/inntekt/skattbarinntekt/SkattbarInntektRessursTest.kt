@@ -3,13 +3,16 @@ package no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
+import io.mockk.mockkObject
 import io.mockk.runs
 import io.mockk.slot
+import io.mockk.unmockkObject
 import io.mockk.verify
 import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
+import no.nav.sosialhjelp.soknad.common.MiljoUtils
 import no.nav.sosialhjelp.soknad.common.exceptions.AuthorizationException
 import no.nav.sosialhjelp.soknad.common.mapper.OkonomiMapper
 import no.nav.sosialhjelp.soknad.common.subjecthandler.StaticSubjectHandlerImpl
@@ -35,12 +38,15 @@ internal class SkattbarInntektRessursTest {
 
     @BeforeEach
     fun setUp() {
+        mockkObject(MiljoUtils)
+        every { MiljoUtils.isNonProduction() } returns true
         SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
     }
 
     @AfterEach
     fun tearDown() {
         SubjectHandlerUtils.resetSubjectHandlerImpl()
+        unmockkObject(MiljoUtils)
     }
 
     @Test
@@ -68,7 +74,12 @@ internal class SkattbarInntektRessursTest {
     @Test
     fun skattbarInntektSkalReturnereHarIkkeSkattbarInntekt() {
         every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
-        every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns createJsonInternalSoknadWithSkattbarInntekt(false)
+        every {
+            soknadUnderArbeidRepository.hentSoknad(
+                any<String>(),
+                any()
+            )
+        } returns createJsonInternalSoknadWithSkattbarInntekt(false)
 
         val skattbarInntektFrontend = skattbarInntektRessurs.hentSkattbareInntekter(BEHANDLINGSID)
         assertThat(skattbarInntektFrontend.inntektFraSkatteetaten).isEmpty()

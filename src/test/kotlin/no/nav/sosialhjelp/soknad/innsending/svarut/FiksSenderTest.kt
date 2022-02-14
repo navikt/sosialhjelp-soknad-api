@@ -3,6 +3,7 @@ package no.nav.sosialhjelp.soknad.innsending.svarut
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkObject
+import io.mockk.unmockkObject
 import io.mockk.verify
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonData
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonDriftsinformasjon
@@ -25,6 +26,7 @@ import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJ
 import no.nav.sosialhjelp.soknad.innsending.svarut.client.SvarUtService
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.io.InputStream
@@ -53,6 +55,11 @@ internal class FiksSenderTest {
         every { innsendingService.hentAlleOpplastedeVedleggForSoknad(any()) } returns emptyList()
 
         fiksSender = FiksSender(dokumentKrypterer, innsendingService, sosialhjelpPdfGenerator, true, svarUtService)
+    }
+
+    @AfterEach
+    internal fun tearDown() {
+        unmockkObject(MiljoUtils)
     }
 
     @Test

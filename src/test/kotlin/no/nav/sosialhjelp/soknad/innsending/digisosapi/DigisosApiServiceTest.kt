@@ -6,6 +6,7 @@ import io.mockk.just
 import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.runs
+import io.mockk.unmockkObject
 import io.mockk.verify
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad
@@ -56,12 +57,16 @@ internal class DigisosApiServiceTest {
     @BeforeEach
     fun setUpBefore() {
         clearAllMocks()
+
+        mockkObject(MiljoUtils)
+        every { MiljoUtils.isNonProduction() } returns true
         SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
     }
 
     @AfterEach
     fun tearDown() {
         SubjectHandlerUtils.resetSubjectHandlerImpl()
+        unmockkObject(MiljoUtils)
     }
 
     @Test
@@ -148,6 +153,8 @@ internal class DigisosApiServiceTest {
         digisosApiService.sendSoknad(soknadUnderArbeid, "token", "0301")
 
         verify(exactly = 1) { soknadUnderArbeidRepository.slettSoknad(any(), any()) }
+
+        unmockkObject(MiljoUtils)
     }
 
     private fun lagInternalSoknadForEttersending(): JsonInternalSoknad {

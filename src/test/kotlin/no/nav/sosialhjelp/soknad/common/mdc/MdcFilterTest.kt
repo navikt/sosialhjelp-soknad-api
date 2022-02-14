@@ -3,6 +3,7 @@ package no.nav.sosialhjelp.soknad.common.mdc
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkObject
+import io.mockk.unmockkObject
 import no.nav.sosialhjelp.soknad.common.Constants.HEADER_CALL_ID
 import no.nav.sosialhjelp.soknad.common.MiljoUtils
 import no.nav.sosialhjelp.soknad.common.filter.MdcFilter
@@ -29,13 +30,13 @@ internal class MdcFilterTest {
     fun setUp() {
         mockkObject(MiljoUtils)
         every { MiljoUtils.isNonProduction() } returns true
-
         SubjectHandlerUtils.setNewSubjectHandlerImpl(SubjectHandlerImpl())
     }
 
     @AfterEach
     fun tearDown() {
         SubjectHandlerUtils.resetSubjectHandlerImpl()
+        unmockkObject(MiljoUtils)
     }
 
     @Test

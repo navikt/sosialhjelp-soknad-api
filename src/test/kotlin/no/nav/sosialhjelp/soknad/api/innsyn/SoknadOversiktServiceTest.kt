@@ -3,6 +3,7 @@ package no.nav.sosialhjelp.soknad.api.innsyn
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkObject
+import io.mockk.unmockkObject
 import no.nav.sosialhjelp.soknad.api.innsyn.SoknadOversiktService.Companion.DEFAULT_TITTEL
 import no.nav.sosialhjelp.soknad.api.innsyn.SoknadOversiktService.Companion.KILDE_SOKNAD_API
 import no.nav.sosialhjelp.soknad.api.innsyn.dto.SoknadOversiktDto
@@ -12,6 +13,7 @@ import no.nav.sosialhjelp.soknad.common.MiljoUtils
 import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus
 import no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SoknadType
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.sql.Timestamp
@@ -35,6 +37,11 @@ internal class SoknadOversiktServiceTest {
 
         mockkObject(MiljoUtils)
         every { MiljoUtils.environmentName } returns "p"
+    }
+
+    @AfterEach
+    internal fun tearDown() {
+        unmockkObject(MiljoUtils)
     }
 
     @Test
