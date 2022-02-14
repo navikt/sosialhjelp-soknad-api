@@ -51,7 +51,6 @@ internal class BoutgiftRessursTest {
 
     @BeforeEach
     fun setUp() {
-        System.setProperty("environment.name", "test")
         SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
 
         clearAllMocks()
@@ -61,7 +60,6 @@ internal class BoutgiftRessursTest {
     @AfterEach
     fun tearDown() {
         SubjectHandlerUtils.resetSubjectHandlerImpl()
-        System.clearProperty("environment.name")
     }
 
     @Test

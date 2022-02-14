@@ -42,14 +42,12 @@ internal class BostotteRessursTest {
     @BeforeEach
     fun setUp() {
         clearAllMocks()
-        System.setProperty("environment.name", "test")
         SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
     }
 
     @AfterEach
     fun tearDown() {
         SubjectHandlerUtils.resetSubjectHandlerImpl()
-        System.clearProperty("environment.name")
     }
 
     @Test

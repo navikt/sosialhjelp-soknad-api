@@ -13,6 +13,7 @@ import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
 import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.SosialhjelpPdfGenerator
+import no.nav.sosialhjelp.soknad.common.ServiceUtils
 import no.nav.sosialhjelp.soknad.domain.OpplastetVedlegg
 import no.nav.sosialhjelp.soknad.domain.SendtSoknad
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
@@ -34,12 +35,13 @@ internal class FiksSenderTest {
     private val innsendingService: InnsendingService = mockk()
     private val sosialhjelpPdfGenerator: SosialhjelpPdfGenerator = mockk()
     private val svarUtService: SvarUtService = mockk()
+    private val serviceUtils: ServiceUtils = mockk()
 
     private var fiksSender: FiksSender? = null
 
     @BeforeEach
     fun setUp() {
-        System.clearProperty("environment.name")
+        every { serviceUtils.isNonProduction() } returns false
         every { dokumentKrypterer.krypterData(any()) } returns byteArrayOf(3, 2, 1)
         every { innsendingService.finnSendtSoknadForEttersendelse(any()) } returns SendtSoknad()
             .withFiksforsendelseId(FIKSFORSENDELSE_ID)
@@ -49,7 +51,7 @@ internal class FiksSenderTest {
         every { sosialhjelpPdfGenerator.generateBrukerkvitteringPdf() } returns byteArrayOf(1, 2, 3)
         every { innsendingService.hentAlleOpplastedeVedleggForSoknad(any()) } returns emptyList()
 
-        fiksSender = FiksSender(dokumentKrypterer, innsendingService, sosialhjelpPdfGenerator, true, svarUtService)
+        fiksSender = FiksSender(dokumentKrypterer, innsendingService, sosialhjelpPdfGenerator, true, svarUtService, serviceUtils)
     }
 
     @Test
@@ -79,7 +81,9 @@ internal class FiksSenderTest {
 
     @Test
     fun opprettForsendelseSetterRiktigInfoPaForsendelsenUtenKryptering() {
-        fiksSender = FiksSender(dokumentKrypterer, innsendingService, sosialhjelpPdfGenerator, false, svarUtService)
+        every { serviceUtils.isNonProduction() } returns true
+        every { serviceUtils.environmentName } returns "test"
+        fiksSender = FiksSender(dokumentKrypterer, innsendingService, sosialhjelpPdfGenerator, false, svarUtService, serviceUtils)
         every { innsendingService.hentSoknadUnderArbeid(any(), any()) } returns SoknadUnderArbeid()
             .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
             .withEier(EIER)

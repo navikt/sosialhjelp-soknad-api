@@ -57,7 +57,6 @@ internal class SoknadServiceTest {
 
     @BeforeEach
     fun before() {
-        System.setProperty("environment.name", "test")
         SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
 
         clearAllMocks()
@@ -68,7 +67,6 @@ internal class SoknadServiceTest {
     @AfterEach
     fun tearDown() {
         SubjectHandlerUtils.resetSubjectHandlerImpl()
-        System.clearProperty("environment.name")
     }
 
     @Test

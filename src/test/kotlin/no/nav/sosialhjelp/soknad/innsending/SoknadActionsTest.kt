@@ -69,7 +69,6 @@ internal class SoknadActionsTest {
 
     @BeforeEach
     fun setUp() {
-        System.setProperty("environment.name", "test")
         SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
 
         clearAllMocks()
@@ -85,7 +84,6 @@ internal class SoknadActionsTest {
     @AfterEach
     fun tearDown() {
         SubjectHandlerUtils.resetSubjectHandlerImpl()
-        System.clearProperty("environment.name")
     }
 
     @Test

@@ -16,29 +16,27 @@ internal class XsrfGeneratorTest {
 
     @BeforeEach
     fun setUp() {
-        System.setProperty("environment.name", "test")
         SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
     }
 
     @AfterEach
     fun tearDown() {
         SubjectHandlerUtils.resetSubjectHandlerImpl()
-        System.clearProperty("environment.name")
     }
 
     @Test
     fun skalGenerereBasertPaaInput() {
         val token = generateXsrfToken("1L")
         val tokenYesterday = generateXsrfToken("1L", ZonedDateTime.now().minusDays(1).format(DateTimeFormatter.ofPattern("yyyyMMdd")))
-        sjekkXsrfToken(token, "1L")
-        sjekkXsrfToken(tokenYesterday, "1L")
+        sjekkXsrfToken(token, "1L", false)
+        sjekkXsrfToken(tokenYesterday, "1L", false)
         sjekkAtMetodeKasterException(token, 2L)
         sjekkAtMetodeKasterException(token, 1L)
     }
 
     private fun sjekkAtMetodeKasterException(token: String, soknadId: Long) {
         try {
-            sjekkXsrfToken(token, soknadId.toString())
+            sjekkXsrfToken(token, soknadId.toString(), false)
             Assertions.fail<Any>("Kastet ikke exception")
         } catch (ex: AuthorizationException) {
         }

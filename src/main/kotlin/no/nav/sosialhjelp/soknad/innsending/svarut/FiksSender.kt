@@ -10,10 +10,11 @@ import no.ks.fiks.svarut.klient.model.PostAdresse
 import no.ks.fiks.svarut.klient.model.UtskriftsKonfigurasjon
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.SosialhjelpPdfGenerator
+import no.nav.sosialhjelp.soknad.common.ServiceUtils
 import no.nav.sosialhjelp.soknad.domain.SendtSoknad
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.innsending.InnsendingService
-import no.nav.sosialhjelp.soknad.innsending.SenderUtils.createPrefixedBehandlingsIdInNonProd
+import no.nav.sosialhjelp.soknad.innsending.SenderUtils.createPrefixedBehandlingsId
 import no.nav.sosialhjelp.soknad.innsending.svarut.client.SvarUtService
 import org.slf4j.LoggerFactory
 import java.io.InputStream
@@ -26,7 +27,8 @@ class FiksSender(
     private val innsendingService: InnsendingService,
     sosialhjelpPdfGenerator: SosialhjelpPdfGenerator,
     private val krypteringEnabled: Boolean,
-    private val svarUtService: SvarUtService
+    private val svarUtService: SvarUtService,
+    private val serviceUtils: ServiceUtils
 ) {
     private val fakeUtskriftsConfig = UtskriftsKonfigurasjon()
         .withUtskriftMedFarger(true)
@@ -58,7 +60,7 @@ class FiksSender(
             )
             .withAvgivendeSystem("digisos_avsender")
             .withForsendelsesType("nav.digisos")
-            .withEksternReferanse(createPrefixedBehandlingsIdInNonProd(sendtSoknad.behandlingsId))
+            .withEksternReferanse(getBehandlingsId(sendtSoknad))
             .withTittel(if (sendtSoknad.erEttersendelse()) ETTERSENDELSE_TIL_NAV else SOKNAD_TIL_NAV)
             .withKunDigitalLevering(false)
             .withUtskriftsKonfigurasjon(fakeUtskriftsConfig)
@@ -70,6 +72,14 @@ class FiksSender(
                 NoarkMetadataFraAvleverendeSaksSystem()
                     .withDokumentetsDato(Date.valueOf(sendtSoknad.brukerFerdigDato.toLocalDate()))
             )
+    }
+
+    private fun getBehandlingsId(sendtSoknad: SendtSoknad): String? {
+        return if (serviceUtils.isNonProduction()) {
+            createPrefixedBehandlingsId(sendtSoknad.behandlingsId, serviceUtils.environmentName)
+        } else {
+            sendtSoknad.behandlingsId
+        }
     }
 
     private fun getSvarPaForsendelseId(

@@ -5,6 +5,7 @@ import no.nav.sosialhjelp.soknad.client.redis.GT_CACHE_KEY_PREFIX
 import no.nav.sosialhjelp.soknad.client.redis.GT_LAST_POLL_TIME_PREFIX
 import no.nav.sosialhjelp.soknad.client.redis.RedisService
 import no.nav.sosialhjelp.soknad.client.redis.RedisUtils.redisObjectMapper
+import no.nav.sosialhjelp.soknad.common.ServiceUtils
 import no.nav.sosialhjelp.soknad.navenhet.domain.NavEnhet
 import no.nav.sosialhjelp.soknad.navenhet.domain.NavEnhetFraLokalListe
 import no.nav.sosialhjelp.soknad.navenhet.domain.NavEnheterFraLokalListe
@@ -25,7 +26,8 @@ interface NavEnhetService {
 
 class NavEnhetServiceImpl(
     private val norgClient: NorgClient,
-    private val redisService: RedisService
+    private val redisService: RedisService,
+    private val serviceUtils: ServiceUtils
 ) : NavEnhetService {
 
     private var cachedNavenheterFraLokalListe: List<NavEnhetFraLokalListe>? = null
@@ -40,12 +42,12 @@ class NavEnhetServiceImpl(
             log.warn("Kunne ikke finne NorgEnhet for gt: $gt")
             return null
         }
-        return navEnhetDto.toNavEnhet(gt)
+        return navEnhetDto.toNavEnhet(gt, serviceUtils.isNonProduction())
     }
 
     override fun getEnheterForKommunenummer(kommunenummer: String?): List<NavEnhet>? {
         return getNavenhetForKommunenummerFraCacheEllerLokalListe(kommunenummer)
-            ?.map { it.toNavEnhet() }
+            ?.map { it.toNavEnhet(serviceUtils.isNonProduction()) }
             ?.distinct()
     }
 

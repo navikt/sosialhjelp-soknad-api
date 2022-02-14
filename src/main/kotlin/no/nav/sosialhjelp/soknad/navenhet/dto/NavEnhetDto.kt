@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.navenhet.dto
 
-import no.nav.sosialhjelp.soknad.common.mapper.KommuneTilNavEnhetMapper
+import no.nav.sosialhjelp.soknad.common.mapper.KommuneTilNavEnhetMapper.getOrganisasjonsnummer
 import no.nav.sosialhjelp.soknad.navenhet.domain.NavEnhet
 
 data class NavEnhetDto(
@@ -8,16 +8,16 @@ data class NavEnhetDto(
     val enhetNr: String,
 )
 
-fun NavEnhetDto.toNavEnhet(gt: String): NavEnhet {
+fun NavEnhetDto.toNavEnhet(gt: String, isNonProd: Boolean): NavEnhet {
     return NavEnhet(
         enhetNr = enhetNr,
         navn = navn,
         kommunenavn = null,
-        sosialOrgNr = getSosialOrgNr(enhetNr, gt)
+        sosialOrgNr = getSosialOrgNr(enhetNr, gt, isNonProd)
     )
 }
 
-private fun getSosialOrgNr(enhetNr: String?, gt: String): String? {
+private fun getSosialOrgNr(enhetNr: String?, gt: String, isNonProd: Boolean): String? {
     return when {
         enhetNr == "0513" && gt == "3434" -> {
             /*
@@ -30,6 +30,6 @@ private fun getSosialOrgNr(enhetNr: String?, gt: String): String? {
         }
         enhetNr == "0511" && gt == "3432" -> "964949204"
         enhetNr == "1620" && gt == "5014" -> "913071751"
-        else -> KommuneTilNavEnhetMapper.getOrganisasjonsnummer(enhetNr)
+        else -> getOrganisasjonsnummer(enhetNr, isNonProd)
     }
 }

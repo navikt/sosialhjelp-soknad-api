@@ -10,6 +10,7 @@ import io.mockk.verify
 import no.nav.sosialhjelp.api.fiks.KommuneInfo
 import no.nav.sosialhjelp.soknad.api.nedetid.NedetidService
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.SoknadMetadataRepository
+import no.nav.sosialhjelp.soknad.common.ServiceUtils
 import no.nav.sosialhjelp.soknad.common.exceptions.AuthorizationException
 import no.nav.sosialhjelp.soknad.common.subjecthandler.StaticSubjectHandlerImpl
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
@@ -32,6 +33,7 @@ internal class InformasjonRessursTest {
     private val tilgangskontroll: Tilgangskontroll = mockk()
     private val soknadMetadataRepository: SoknadMetadataRepository = mockk()
     private val nedetidService: NedetidService = mockk()
+    private val serviceUtils: ServiceUtils = mockk()
 
     private val ressurs = InformasjonRessurs(
         messageSource,
@@ -41,7 +43,8 @@ internal class InformasjonRessursTest {
         tilgangskontroll,
         soknadMetadataRepository,
         mockk(),
-        nedetidService
+        nedetidService,
+        serviceUtils
     )
 
     var norskBokmaal = Locale("nb", "NO")
@@ -49,14 +52,14 @@ internal class InformasjonRessursTest {
     @BeforeEach
     fun setUp() {
         clearAllMocks()
-        System.setProperty("environment.name", "test")
         SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
+
+        every { serviceUtils.isNonProduction() } returns true
     }
 
     @AfterEach
     fun tearDown() {
         SubjectHandlerUtils.resetSubjectHandlerImpl()
-        System.clearProperty("environment.name")
     }
 
     @Test

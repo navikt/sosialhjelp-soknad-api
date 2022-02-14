@@ -25,7 +25,7 @@ class MaskinportenGrantTokenGenerator(
      * Dvs at rsaKey genereres i ved lokal kjøring, i test eller mot mock-alt.
      */
     private val privateRsaKey = if (maskinportenProperties.jwkPrivate == "generateRSA") {
-        if (!serviceUtils.isNonProduction()) throw IllegalStateException("Generation of RSA keys is not allowed in prod")
+        if (!serviceUtils.isMockAltProfil()) throw IllegalStateException("Generation of RSA keys is not allowed in prod")
         RSAKeyGenerator(2048).keyUse(KeyUse.SIGNATURE).keyID(UUID.randomUUID().toString()).generate()
     } else {
         RSAKey.parse(maskinportenProperties.jwkPrivate)

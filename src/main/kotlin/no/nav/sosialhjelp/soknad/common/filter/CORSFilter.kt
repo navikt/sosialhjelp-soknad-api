@@ -1,17 +1,21 @@
 package no.nav.sosialhjelp.soknad.common.filter
 
-import no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils
+import no.nav.sosialhjelp.soknad.common.ServiceUtils
+import org.springframework.stereotype.Component
 import javax.ws.rs.container.ContainerRequestContext
 import javax.ws.rs.container.ContainerResponseContext
 import javax.ws.rs.container.ContainerResponseFilter
 import javax.ws.rs.ext.Provider
 
 @Provider
-class CORSFilter : ContainerResponseFilter {
+@Component
+class CORSFilter(
+    private val serviceUtils: ServiceUtils
+) : ContainerResponseFilter {
 
     override fun filter(requestContext: ContainerRequestContext, responseContext: ContainerResponseContext) {
         val origin = requestContext.getHeaderString("Origin") ?: "*"
-        if (ServiceUtils.isNonProduction() || ALLOWED_ORIGINS.contains(origin)) {
+        if (serviceUtils.isNonProduction() || ALLOWED_ORIGINS.contains(origin)) {
             responseContext.headers.add("Access-Control-Allow-Origin", origin)
             responseContext.headers.add(
                 "Access-Control-Allow-Headers",

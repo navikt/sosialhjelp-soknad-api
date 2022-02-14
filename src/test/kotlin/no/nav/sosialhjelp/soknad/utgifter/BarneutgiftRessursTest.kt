@@ -44,7 +44,6 @@ internal class BarneutgiftRessursTest {
 
     @BeforeEach
     fun setUp() {
-        System.setProperty("environment.name", "test")
         SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
         clearAllMocks()
         every { textService.getJsonOkonomiTittel(any()) } returns "tittel"
@@ -53,7 +52,6 @@ internal class BarneutgiftRessursTest {
     @AfterEach
     fun tearDown() {
         SubjectHandlerUtils.resetSubjectHandlerImpl()
-        System.clearProperty("environment.name")
     }
 
     @Test

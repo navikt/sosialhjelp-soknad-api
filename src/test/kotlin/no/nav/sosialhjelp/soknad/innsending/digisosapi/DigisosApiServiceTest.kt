@@ -14,6 +14,7 @@ import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.SosialhjelpPdfGenerator
+import no.nav.sosialhjelp.soknad.common.ServiceUtils
 import no.nav.sosialhjelp.soknad.common.filedetection.MimeTypes
 import no.nav.sosialhjelp.soknad.common.subjecthandler.StaticSubjectHandlerImpl
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
@@ -40,6 +41,7 @@ internal class DigisosApiServiceTest {
     private val soknadUnderArbeidService: SoknadUnderArbeidService = mockk()
     private val soknadMetricsService: SoknadMetricsService = mockk()
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
+    private val serviceUtils: ServiceUtils = mockk()
 
     private val digisosApiService = DigisosApiService(
         digisosApiClient,
@@ -48,21 +50,19 @@ internal class DigisosApiServiceTest {
         henvendelseService,
         soknadUnderArbeidService,
         soknadMetricsService,
-        soknadUnderArbeidRepository
+        soknadUnderArbeidRepository,
+        serviceUtils
     )
 
     @BeforeEach
     fun setUpBefore() {
-        System.setProperty("environment.name", "test")
-        SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
-
         clearAllMocks()
+        SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
     }
 
     @AfterEach
     fun tearDown() {
         SubjectHandlerUtils.resetSubjectHandlerImpl()
-        System.clearProperty("environment.name")
     }
 
     @Test
@@ -129,6 +129,9 @@ internal class DigisosApiServiceTest {
 
     @Test
     fun etterInnsendingSkalSoknadUnderArbeidSlettes() {
+        every { serviceUtils.isNonProduction() } returns true
+        every { serviceUtils.environmentName } returns "test"
+
         val soknadUnderArbeid = SoknadUnderArbeid()
             .withJsonInternalSoknad(createEmptyJsonInternalSoknad("12345678910"))
             .withEier("eier")

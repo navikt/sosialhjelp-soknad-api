@@ -38,7 +38,6 @@ internal class SivilstatusRessursTest {
 
     @BeforeEach
     fun setUp() {
-        System.setProperty("environment.name", "test")
         SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
 
         clearAllMocks()
@@ -47,7 +46,6 @@ internal class SivilstatusRessursTest {
     @AfterEach
     fun tearDown() {
         SubjectHandlerUtils.resetSubjectHandlerImpl()
-        System.clearProperty("environment.name")
     }
 
     @Test

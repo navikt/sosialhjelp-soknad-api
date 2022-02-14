@@ -2,6 +2,7 @@ package no.nav.sosialhjelp.soknad.navenhet
 
 import no.nav.sosialhjelp.soknad.adressesok.AdressesokService
 import no.nav.sosialhjelp.soknad.client.redis.RedisService
+import no.nav.sosialhjelp.soknad.common.ServiceUtils
 import no.nav.sosialhjelp.soknad.common.rest.RestUtils
 import no.nav.sosialhjelp.soknad.health.selftest.Pingable
 import no.nav.sosialhjelp.soknad.health.selftest.Pingable.Companion.feilet
@@ -16,7 +17,8 @@ import org.springframework.context.annotation.Import
 @Import(NavEnhetRessurs::class)
 open class NavEnhetConfig(
     @Value("\${norg_rest_url}") private val baseurl: String,
-    private val redisService: RedisService
+    private val redisService: RedisService,
+    private val serviceUtils: ServiceUtils
 ) {
 
     @Bean
@@ -26,7 +28,7 @@ open class NavEnhetConfig(
 
     @Bean
     open fun navEnhetService(norgClient: NorgClient): NavEnhetService {
-        return NavEnhetServiceImpl(norgClient, redisService)
+        return NavEnhetServiceImpl(norgClient, redisService, serviceUtils)
     }
 
     @Bean

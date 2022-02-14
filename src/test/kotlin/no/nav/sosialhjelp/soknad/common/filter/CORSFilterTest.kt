@@ -2,11 +2,11 @@ package no.nav.sosialhjelp.soknad.common.filter
 
 import io.mockk.every
 import io.mockk.mockk
+import no.nav.sosialhjelp.soknad.common.ServiceUtils
 import no.nav.sosialhjelp.soknad.web.rest.SoknadApplication
 import org.assertj.core.api.Assertions.assertThat
 import org.glassfish.jersey.server.ContainerResponse
 import org.glassfish.jersey.test.util.server.ContainerRequestBuilder
-import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import javax.ws.rs.core.MultivaluedHashMap
@@ -14,7 +14,8 @@ import javax.ws.rs.core.MultivaluedMap
 
 internal class CORSFilterTest {
 
-    private val corsFilter = CORSFilter()
+    private val serviceUtils: ServiceUtils = mockk()
+    private val corsFilter = CORSFilter(serviceUtils)
     private val response = mockk<ContainerResponse>()
 
     @BeforeEach
@@ -23,13 +24,9 @@ internal class CORSFilterTest {
         every { response.headers } returns headers
     }
 
-    @AfterEach
-    fun tearDown() {
-        System.clearProperty("environment.name")
-    }
-
     @Test
     fun setCorsHeaders_inProdWithUnknownOrigin_shouldNotSetCorsHeaders() {
+        every { serviceUtils.isNonProduction() } returns false
         val unknownOrigin = "https://www.unknown.no"
         val request = ContainerRequestBuilder
             .from("requestUri", "GET", SoknadApplication())
@@ -41,6 +38,7 @@ internal class CORSFilterTest {
 
     @Test
     fun setCorsHeaders_inProdWithTrustedOrigin_shouldSetCorsHeaders() {
+        every { serviceUtils.isNonProduction() } returns true
         val trustedOrigin = "https://www.nav.no"
         val request = ContainerRequestBuilder
             .from("requestUri", "GET", SoknadApplication())
@@ -55,7 +53,7 @@ internal class CORSFilterTest {
 
     @Test
     fun setCorsHeaders_inTestWithUnknownOrigin_shouldSetCorsHeaders() {
-        System.setProperty("environment.name", "q0")
+        every { serviceUtils.isNonProduction() } returns true
         val unknownOrigin = "https://www.unknown.no"
         val request = ContainerRequestBuilder
             .from("requestUri", "GET", SoknadApplication())

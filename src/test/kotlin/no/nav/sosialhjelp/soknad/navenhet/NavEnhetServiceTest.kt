@@ -6,10 +6,10 @@ import io.mockk.mockk
 import io.mockk.verify
 import no.nav.sosialhjelp.soknad.client.exceptions.TjenesteUtilgjengeligException
 import no.nav.sosialhjelp.soknad.client.redis.RedisService
+import no.nav.sosialhjelp.soknad.common.ServiceUtils
 import no.nav.sosialhjelp.soknad.navenhet.dto.NavEnhetDto
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
-import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
@@ -25,23 +25,20 @@ internal class NavEnhetServiceTest {
 
     private val norgClient: NorgClient = mockk()
     private val redisService: RedisService = mockk()
-    private val navEnhetService = NavEnhetServiceImpl(norgClient, redisService)
+    private val serviceUtils: ServiceUtils = mockk()
+    private val navEnhetService = NavEnhetServiceImpl(norgClient, redisService, serviceUtils)
 
     private val navEnhetDto = NavEnhetDto("Nav Enhet", ENHETSNUMMER)
 
     @BeforeEach
     internal fun setUp() {
         clearAllMocks()
-    }
 
-    @AfterEach
-    internal fun tearDown() {
-        System.clearProperty("environment.name")
+        every { serviceUtils.isNonProduction() } returns true
     }
 
     @Test
     internal fun finnEnhetForGtBrukerTestOrgNrForTest() {
-        System.setProperty("environment.name", "test")
         every { norgClient.hentNavEnhetForGeografiskTilknytning(GT) } returns navEnhetDto
         every { redisService.getString(any()) } returns null
         val navEnhet = navEnhetService.getEnhetForGt(GT)
@@ -50,7 +47,7 @@ internal class NavEnhetServiceTest {
 
     @Test
     fun finnEnhetForGtBrukerOrgNrFraNorgForProd() {
-        System.setProperty("environment.name", "p")
+        every { serviceUtils.isNonProduction() } returns false
         every { redisService.getString(any()) } returns null
         every { norgClient.hentNavEnhetForGeografiskTilknytning(GT) } returns navEnhetDto
         val navEnhet = navEnhetService.getEnhetForGt(GT)
@@ -59,7 +56,7 @@ internal class NavEnhetServiceTest {
 
     @Test
     fun finnEnhetForLom() {
-        System.setProperty("environment.name", "p")
+        every { serviceUtils.isNonProduction() } returns false
         val gt = "3434"
         val sosialOrgNummer = "974592274"
         val navEnhetDtoLom = NavEnhetDto("Nav Enhet", "0513")
@@ -71,7 +68,7 @@ internal class NavEnhetServiceTest {
 
     @Test
     fun finnEnhetForSkjaak() {
-        System.setProperty("environment.name", "p")
+        every { serviceUtils.isNonProduction() } returns false
         val gt = "3432"
         val sosialOrgNummer = "976641175"
         val navEnhetDtoSjaak = NavEnhetDto("Nav Enhet", "0513")
@@ -263,6 +260,7 @@ internal class NavEnhetServiceTest {
 
     @Test
     fun skalHenteNavEnhetForGtFraConsumer() {
+        every { serviceUtils.isNonProduction() } returns false
         every { redisService.getString(any()) } returns null
         every { norgClient.hentNavEnhetForGeografiskTilknytning(GT) } returns navEnhetDto
         val navEnhet = navEnhetService.getEnhetForGt(GT)
@@ -274,6 +272,7 @@ internal class NavEnhetServiceTest {
 
     @Test
     fun skalHenteNavEnhetForGtFraCache() {
+        every { serviceUtils.isNonProduction() } returns false
         every { redisService.getString(any()) } returns LocalDateTime.now().minusMinutes(1).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
         every { redisService.get(any(), any()) } returns navEnhetDto
         val navEnhet = navEnhetService.getEnhetForGt(GT)
@@ -285,6 +284,7 @@ internal class NavEnhetServiceTest {
 
     @Test
     fun skalBrukeCacheSomFallbackDersomConsumerFeilerOgCacheFinnes() {
+        every { serviceUtils.isNonProduction() } returns false
         every { redisService.getString(any()) } returns LocalDateTime.now().minusMinutes(60).minusSeconds(1).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
         every { redisService.get(any(), any()) } returns navEnhetDto
         every { norgClient.hentNavEnhetForGeografiskTilknytning(GT) } throws TjenesteUtilgjengeligException("norg feiler", ServiceUnavailableException())

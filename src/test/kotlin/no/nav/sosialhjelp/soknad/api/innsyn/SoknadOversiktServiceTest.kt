@@ -7,6 +7,7 @@ import no.nav.sosialhjelp.soknad.api.innsyn.SoknadOversiktService.Companion.KILD
 import no.nav.sosialhjelp.soknad.api.innsyn.dto.SoknadOversiktDto
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata
+import no.nav.sosialhjelp.soknad.common.ServiceUtils
 import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus
 import no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SoknadType
 import org.assertj.core.api.Assertions.assertThat
@@ -17,7 +18,8 @@ import java.time.LocalDateTime
 
 internal class SoknadOversiktServiceTest {
     private val soknadMetadataRepository: SoknadMetadataRepository = mockk()
-    private val service = SoknadOversiktService(soknadMetadataRepository)
+    private val serviceUtils: ServiceUtils = mockk()
+    private val service = SoknadOversiktService(soknadMetadataRepository, serviceUtils)
 
     private var soknadMetadata: SoknadMetadata? = null
 
@@ -30,6 +32,8 @@ internal class SoknadOversiktServiceTest {
         soknadMetadata!!.innsendtDato = LocalDateTime.of(2018, 4, 11, 13, 30, 0)
         soknadMetadata!!.sistEndretDato = LocalDateTime.of(2018, 4, 11, 13, 30, 0)
         soknadMetadata!!.status = SoknadMetadataInnsendingStatus.UNDER_ARBEID
+
+        every { serviceUtils.environmentName } returns "p"
     }
 
     @Test

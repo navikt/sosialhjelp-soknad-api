@@ -239,8 +239,8 @@ object KommuneTilNavEnhetMapper {
         "1517" to "910229567", // NAV Hareid - Ulstein - Sande - OBS: Sendes til vårt orgnummer i FIKS!
     )
 
-    fun getOrganisasjonsnummer(enhetNr: String?): String? {
-        return if (isNonProduction) TEST_ORGANISASJONSNUMMER[enhetNr] else PROD_ORGANISASJONSNUMMER[enhetNr]
+    fun getOrganisasjonsnummer(enhetNr: String?, isNonProd: Boolean): String? {
+        return if (isNonProd) TEST_ORGANISASJONSNUMMER[enhetNr] else PROD_ORGANISASJONSNUMMER[enhetNr]
     }
 
     private val TEST_DIGISOS_KOMMUNER = listOf(
@@ -465,12 +465,7 @@ object KommuneTilNavEnhetMapper {
      *
      * @return Liste med kommunenumre.
      */
-    val digisoskommuner: List<String>
-        get() = if (isNonProduction) TEST_DIGISOS_KOMMUNER else PROD_DIGISOS_KOMMUNER
-
-    private val isNonProduction: Boolean
-        get() {
-            val miljo = System.getProperty("environment.name", "")
-            return miljo.contains("q") || miljo == "test" || miljo == "dev-gcp" || miljo == "labs-gcp" || miljo == "local"
-        }
+    fun getDigisoskommuner(isNonProd: Boolean): List<String> {
+        return if (isNonProd) TEST_DIGISOS_KOMMUNER else PROD_DIGISOS_KOMMUNER
+    }
 }
