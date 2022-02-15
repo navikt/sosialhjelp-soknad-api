@@ -1,7 +1,5 @@
 package no.nav.sosialhjelp.soknad.domain.model.mock;
 
-import static no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils.isNonProduction;
-
 public final class MockUtils {
 
     private MockUtils() {
@@ -19,10 +17,10 @@ public final class MockUtils {
     }
 
     public static boolean isAlltidSendTilNavTestkommune(){
-        return Boolean.parseBoolean(System.getProperty(IS_ALLTID_SEND_TIL_NAV_TESTKOMMUNE, "false")) && isNonProduction();
+        return Boolean.parseBoolean(System.getProperty(IS_ALLTID_SEND_TIL_NAV_TESTKOMMUNE, "false"));
     }
 
     public static boolean isAlltidHentKommuneInfoFraNavTestkommune(){
-        return Boolean.parseBoolean(System.getProperty(IS_ALLTID_HENT_KOMMUNEINFO_FRA_NAV_TESTKOMMUNE, "false")) && isNonProduction();
+        return Boolean.parseBoolean(System.getProperty(IS_ALLTID_HENT_KOMMUNEINFO_FRA_NAV_TESTKOMMUNE, "false"));
     }
 }
