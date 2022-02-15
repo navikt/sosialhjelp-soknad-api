@@ -5,8 +5,10 @@ import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
+import io.mockk.mockkObject
 import io.mockk.runs
 import io.mockk.slot
+import io.mockk.unmockkObject
 import io.mockk.verify
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknadsmottaker
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse
@@ -18,6 +20,7 @@ import no.nav.sosialhjelp.soknad.adressesok.domain.AdresseForslagType
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.client.exceptions.PdlApiException
 import no.nav.sosialhjelp.soknad.client.kodeverk.KodeverkService
+import no.nav.sosialhjelp.soknad.common.MiljoUtils
 import no.nav.sosialhjelp.soknad.common.ServiceUtils
 import no.nav.sosialhjelp.soknad.common.exceptions.AuthorizationException
 import no.nav.sosialhjelp.soknad.common.mapper.KommuneTilNavEnhetMapper
@@ -104,12 +107,13 @@ internal class NavEnhetRessursTest {
     @BeforeEach
     internal fun setUp() {
         clearAllMocks()
-        System.setProperty("environment.name", "test")
+
+        mockkObject(MiljoUtils)
+        every { MiljoUtils.isNonProduction() } returns true
         SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
         every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
         every { kommuneInfoService.kanMottaSoknader(any()) } returns true
         every { kommuneInfoService.harMidlertidigDeaktivertMottak(any()) } returns true
-        every { serviceUtils.isNonProduction() } returns false
         every { serviceUtils.isSendingTilFiksEnabled() } returns true
         every { serviceUtils.isAlltidHentKommuneInfoFraNavTestkommune() } returns false
     }
@@ -117,7 +121,7 @@ internal class NavEnhetRessursTest {
     @AfterEach
     internal fun tearDown() {
         SubjectHandlerUtils.resetSubjectHandlerImpl()
-        System.clearProperty("environment.name")
+        unmockkObject(MiljoUtils)
     }
 
     @Test

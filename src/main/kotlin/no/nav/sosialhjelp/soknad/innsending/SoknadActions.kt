@@ -7,6 +7,7 @@ import no.nav.sosialhjelp.soknad.api.nedetid.NedetidService
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.common.Constants
+import no.nav.sosialhjelp.soknad.common.MiljoUtils
 import no.nav.sosialhjelp.soknad.common.ServiceUtils
 import no.nav.sosialhjelp.soknad.common.exceptions.SendingTilKommuneErIkkeAktivertException
 import no.nav.sosialhjelp.soknad.common.exceptions.SendingTilKommuneErMidlertidigUtilgjengeligException
@@ -128,7 +129,7 @@ open class SoknadActions(
     }
 
     fun getKommunenummerOrMock(soknadUnderArbeid: SoknadUnderArbeid): String {
-        return if (serviceUtils.isNonProduction() && serviceUtils.isAlltidSendTilNavTestkommune()) {
+        return if (MiljoUtils.isNonProduction() && serviceUtils.isAlltidSendTilNavTestkommune()) {
             log.error("Sender til Nav-testkommune (3002). Du skal aldri se denne meldingen i PROD")
             "3002"
         } else {

@@ -4,6 +4,7 @@ import io.netty.channel.ChannelOption
 import no.nav.sosialhjelp.metrics.MetricsFactory
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.SosialhjelpPdfGenerator
+import no.nav.sosialhjelp.soknad.common.ServiceUtils
 import no.nav.sosialhjelp.soknad.health.selftest.Pingable
 import no.nav.sosialhjelp.soknad.innsending.HenvendelseService
 import no.nav.sosialhjelp.soknad.innsending.InnsendingService
@@ -30,7 +31,8 @@ import java.time.Duration
 open class DigisosApiConfig(
     @Value("\${digisos_api_baseurl}") private val digisosApiEndpoint: String,
     @Value("\${integrasjonsid_fiks}") private val integrasjonsidFiks: String,
-    @Value("\${integrasjonpassord_fiks}") private val integrasjonpassordFiks: String
+    @Value("\${integrasjonpassord_fiks}") private val integrasjonpassordFiks: String,
+    private val serviceUtils: ServiceUtils
 ) {
 
     @Bean
@@ -64,7 +66,7 @@ open class DigisosApiConfig(
         kommuneInfoService: KommuneInfoService,
         dokumentlagerClient: DokumentlagerClient
     ): DigisosApiClient {
-        val digisosApiClient = DigisosApiClientImpl(kommuneInfoService, dokumentlagerClient, properties)
+        val digisosApiClient = DigisosApiClientImpl(kommuneInfoService, dokumentlagerClient, properties, serviceUtils)
         return MetricsFactory.createTimerProxy("DigisosApi", digisosApiClient, DigisosApiClient::class.java)
     }
 

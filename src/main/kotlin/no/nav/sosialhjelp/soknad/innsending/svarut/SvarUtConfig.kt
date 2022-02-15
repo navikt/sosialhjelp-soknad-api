@@ -26,7 +26,7 @@ open class SvarUtConfig(
     @Value("\${fiks_svarut_password}") private val svarutPassword: String?,
     @Value("\${feature.fiks.kryptering.enabled}") private val krypteringEnabled: Boolean,
     @Value("\${fiks.nokkelfil}") private val fiksNokkelfil: String?,
-    @Value("\${scheduler.disable}") private val schedulerDisabled: Boolean,
+    @Value("\${scheduler.disable}") private val schedulerDisabled: Boolean
 ) {
 
     @Bean

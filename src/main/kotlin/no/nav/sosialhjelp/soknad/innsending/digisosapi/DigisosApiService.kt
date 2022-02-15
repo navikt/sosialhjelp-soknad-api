@@ -12,6 +12,7 @@ import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.Sokn
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata.VedleggMetadata
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata.VedleggMetadataListe
 import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.SosialhjelpPdfGenerator
+import no.nav.sosialhjelp.soknad.common.MiljoUtils
 import no.nav.sosialhjelp.soknad.common.filedetection.FileDetectionUtils.getMimeType
 import no.nav.sosialhjelp.soknad.common.filedetection.MimeTypes.APPLICATION_PDF
 import no.nav.sosialhjelp.soknad.common.filedetection.MimeTypes.TEXT_X_MATLAB
@@ -22,7 +23,7 @@ import no.nav.sosialhjelp.soknad.domain.Vedleggstatus
 import no.nav.sosialhjelp.soknad.innsending.HenvendelseService
 import no.nav.sosialhjelp.soknad.innsending.InnsendingService
 import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils.getVedleggFromInternalSoknad
-import no.nav.sosialhjelp.soknad.innsending.SenderUtils.createPrefixedBehandlingsIdInNonProd
+import no.nav.sosialhjelp.soknad.innsending.SenderUtils.createPrefixedBehandlingsId
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilMetadata
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilOpplasting
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
@@ -179,7 +180,9 @@ class DigisosApiService(
         val tilleggsinformasjonJson = getTilleggsinformasjonJson(soknadUnderArbeid.jsonInternalSoknad.soknad)
         val vedleggJson = getVedleggJson(soknadUnderArbeid)
 
-        behandlingsId = createPrefixedBehandlingsIdInNonProd(behandlingsId)
+        if (MiljoUtils.isNonProduction()) {
+            behandlingsId = createPrefixedBehandlingsId(behandlingsId)
+        }
         val enhetsnummer = soknadUnderArbeid.jsonInternalSoknad.soknad.mottaker.enhetsnummer
         val navEnhetsnavn = soknadUnderArbeid.jsonInternalSoknad.soknad.mottaker.navEnhetsnavn
         log.info("Starter kryptering av filer for $behandlingsId, skal sende til kommune $kommunenummer med enhetsnummer $enhetsnummer og navenhetsnavn $navEnhetsnavn")

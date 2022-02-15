@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.common.filter
 
-import no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils
+import no.nav.sosialhjelp.soknad.common.MiljoUtils
 import javax.ws.rs.container.ContainerRequestContext
 import javax.ws.rs.container.ContainerResponseContext
 import javax.ws.rs.container.ContainerResponseFilter
@@ -11,7 +11,7 @@ class CORSFilter : ContainerResponseFilter {
 
     override fun filter(requestContext: ContainerRequestContext, responseContext: ContainerResponseContext) {
         val origin = requestContext.getHeaderString("Origin") ?: "*"
-        if (ServiceUtils.isNonProduction() || ALLOWED_ORIGINS.contains(origin)) {
+        if (MiljoUtils.isNonProduction() || ALLOWED_ORIGINS.contains(origin)) {
             responseContext.headers.add("Access-Control-Allow-Origin", origin)
             responseContext.headers.add(
                 "Access-Control-Allow-Headers",

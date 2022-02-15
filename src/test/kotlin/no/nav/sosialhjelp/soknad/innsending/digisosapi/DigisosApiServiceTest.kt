@@ -4,7 +4,9 @@ import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
+import io.mockk.mockkObject
 import io.mockk.runs
+import io.mockk.unmockkObject
 import io.mockk.verify
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad
@@ -14,6 +16,7 @@ import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.SosialhjelpPdfGenerator
+import no.nav.sosialhjelp.soknad.common.MiljoUtils
 import no.nav.sosialhjelp.soknad.common.filedetection.MimeTypes
 import no.nav.sosialhjelp.soknad.common.subjecthandler.StaticSubjectHandlerImpl
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
@@ -53,16 +56,17 @@ internal class DigisosApiServiceTest {
 
     @BeforeEach
     fun setUpBefore() {
-        System.setProperty("environment.name", "test")
-        SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
-
         clearAllMocks()
+
+        mockkObject(MiljoUtils)
+        every { MiljoUtils.isNonProduction() } returns true
+        SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
     }
 
     @AfterEach
     fun tearDown() {
         SubjectHandlerUtils.resetSubjectHandlerImpl()
-        System.clearProperty("environment.name")
+        unmockkObject(MiljoUtils)
     }
 
     @Test
@@ -129,6 +133,10 @@ internal class DigisosApiServiceTest {
 
     @Test
     fun etterInnsendingSkalSoknadUnderArbeidSlettes() {
+        mockkObject(MiljoUtils)
+        every { MiljoUtils.isNonProduction() } returns true
+        every { MiljoUtils.environmentName } returns "test"
+
         val soknadUnderArbeid = SoknadUnderArbeid()
             .withJsonInternalSoknad(createEmptyJsonInternalSoknad("12345678910"))
             .withEier("eier")
@@ -145,6 +153,8 @@ internal class DigisosApiServiceTest {
         digisosApiService.sendSoknad(soknadUnderArbeid, "token", "0301")
 
         verify(exactly = 1) { soknadUnderArbeidRepository.slettSoknad(any(), any()) }
+
+        unmockkObject(MiljoUtils)
     }
 
     private fun lagInternalSoknadForEttersending(): JsonInternalSoknad {
