@@ -13,8 +13,10 @@ import no.nav.sosialhjelp.soknad.adressesok.domain.AdresseForslagType
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.client.kodeverk.KodeverkService
 import no.nav.sosialhjelp.soknad.common.Constants
+import no.nav.sosialhjelp.soknad.common.MiljoUtils
 import no.nav.sosialhjelp.soknad.common.ServiceUtils
 import no.nav.sosialhjelp.soknad.common.mapper.KommuneTilNavEnhetMapper
+import no.nav.sosialhjelp.soknad.common.mapper.KommuneTilNavEnhetMapper.getOrganisasjonsnummer
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
 import no.nav.sosialhjelp.soknad.navenhet.bydel.BydelFordelingService
@@ -89,7 +91,7 @@ open class NavEnhetRessurs(
                 kommuneNr = kommunenummer,
                 isMottakDeaktivert = !isDigisosKommune(kommunenummer),
                 isMottakMidlertidigDeaktivert = kommuneInfoService.harMidlertidigDeaktivertMottak(kommunenummer),
-                orgnr = KommuneTilNavEnhetMapper.getOrganisasjonsnummer(soknadsmottaker.enhetsnummer), // Brukes ikke etter at kommunene er på Fiks konfigurasjon og burde ikke bli brukt av frontend.
+                orgnr = getOrganisasjonsnummer(soknadsmottaker.enhetsnummer), // Brukes ikke etter at kommunene er på Fiks konfigurasjon og burde ikke bli brukt av frontend.
                 valgt = true
             )
         }
@@ -167,7 +169,7 @@ open class NavEnhetRessurs(
             log.warn("Kommunenummer hadde ikke 4 tegn, var $valgtKommunenummer")
             return null
         }
-        if (serviceUtils.isNonProduction() && serviceUtils.isAlltidHentKommuneInfoFraNavTestkommune()) {
+        if (MiljoUtils.isNonProduction() && serviceUtils.isAlltidHentKommuneInfoFraNavTestkommune()) {
             log.error("Sender til Nav-testkommune (3002). Du skal aldri se denne meldingen i PROD")
             valgtKommunenummer = "3002"
         }
@@ -262,7 +264,7 @@ open class NavEnhetRessurs(
             log.warn("Kommunenummer hadde ikke 4 tegn, var $kommunenummer")
             return null
         }
-        if (serviceUtils.isNonProduction() && serviceUtils.isAlltidHentKommuneInfoFraNavTestkommune()) {
+        if (MiljoUtils.isNonProduction() && serviceUtils.isAlltidHentKommuneInfoFraNavTestkommune()) {
             log.error("Sender til Nav-testkommune (3002). Du skal aldri se denne meldingen i PROD")
             kommunenummer = "3002"
         }

@@ -14,6 +14,7 @@ import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.PdfGenerator
 import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.SosialhjelpPdfGenerator
 import no.nav.sosialhjelp.soknad.client.ClientConfig
 import no.nav.sosialhjelp.soknad.common.ServiceUtils
+import no.nav.sosialhjelp.soknad.common.filter.FilterConfig
 import no.nav.sosialhjelp.soknad.common.oidc.OidcTokenValidatorConfig
 import no.nav.sosialhjelp.soknad.common.rest.feil.ApplicationExceptionMapper
 import no.nav.sosialhjelp.soknad.common.rest.feil.ThrowableMapper

@@ -13,7 +13,7 @@ import no.nav.sosialhjelp.soknad.api.informasjon.dto.PabegyntSoknad
 import no.nav.sosialhjelp.soknad.api.nedetid.NedetidService
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.common.Constants
-import no.nav.sosialhjelp.soknad.common.mapper.KommuneTilNavEnhetMapper
+import no.nav.sosialhjelp.soknad.common.mapper.KommuneTilNavEnhetMapper.digisoskommuner
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SosialhjelpInformasjon
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
@@ -142,7 +142,7 @@ open class InformasjonRessurs(
         if (nedetidService.isInnenforNedetid) {
             return emptyMap()
         }
-        val manueltPakobledeKommuner = mapManueltPakobledeKommuner(KommuneTilNavEnhetMapper.digisoskommuner)
+        val manueltPakobledeKommuner = mapManueltPakobledeKommuner(digisoskommuner)
         val digisosKommuner = mapDigisosKommuner(kommuneInfoService.hentAlleKommuneInfo())
         return mergeManuelleKommunerMedDigisosKommuner(manueltPakobledeKommuner, digisosKommuner)
     }

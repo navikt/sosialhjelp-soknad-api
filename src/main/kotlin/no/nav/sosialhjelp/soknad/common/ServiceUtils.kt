@@ -12,20 +12,12 @@ open class ServiceUtils(
     private val env: Environment
 ) {
 
-    open fun isNonProduction(): Boolean {
-        // Bruk isNonProduction() -sjekk fremfor å sjekke om miljø configurert som prod. På denne måten er default-configurasjon vår alltid prodlik.
-        // Slik at ved evt. endringer eller feilkonfigurasjoner, vil ikke prod bli ødelagt. Feks. ved sende ekte søknader til testkommuner som ikke finnes.
-        // Prod-konfigurasjon i test vil oppdages raskt og man vil ikke klare å skape problemer for prod da man trenger secrets som ikke er tilgjengelig i testmiljøer.
-        val clusterName = System.getenv("NAIS_CLUSTER_NAME")
-        return clusterName == null || !clusterName.contains("prod")
-    }
-
     open fun isSendingTilFiksEnabled(): Boolean {
         return digisosSendingEnabled
     }
 
     open fun isMockAltProfil(): Boolean {
-        return env.activeProfiles.any { it.equals("mock-alt") }
+        return env.activeProfiles.any { it.equals("mock-alt") || it.equals("test") }
     }
 
     open fun isAlltidSendTilNavTestkommune(): Boolean {
