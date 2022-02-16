@@ -15,7 +15,6 @@ import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
 import no.nav.sosialhjelp.soknad.tekster.NavMessageSource
-import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.AfterEach
@@ -28,7 +27,6 @@ internal class InformasjonRessursTest {
     private val messageSource: NavMessageSource = mockk()
     private val kommuneInfoService: KommuneInfoService = mockk()
     private val personService: PersonService = mockk()
-    private val tilgangskontroll: Tilgangskontroll = mockk()
     private val soknadMetadataRepository: SoknadMetadataRepository = mockk()
     private val nedetidService: NedetidService = mockk()
 
@@ -37,7 +35,6 @@ internal class InformasjonRessursTest {
         mockk(),
         kommuneInfoService,
         personService,
-        tilgangskontroll,
         soknadMetadataRepository,
         mockk(),
         nedetidService
@@ -154,19 +151,8 @@ internal class InformasjonRessursTest {
         assertThat(margedKommuner["1234"]!!.kanOppdatereStatus).isTrue
     }
 
-//    @Test
-//    fun harNyligInnsendteSoknader_AuthorizationExceptionVedManglendeTilgang() {
-//        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } throws AuthorizationException("Not for you my friend")
-//
-//        assertThatExceptionOfType(AuthorizationException::class.java)
-//            .isThrownBy { ressurs.harNyligInnsendteSoknader() }
-//
-//        verify { soknadMetadataRepository wasNot called }
-//    }
-
     @Test
     fun harNyligInnsendteSoknader_tomResponse() {
-//        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
         every { soknadMetadataRepository.hentInnsendteSoknaderForBrukerEtterTidspunkt(any(), any()) } returns emptyList()
 
         val response = ressurs.harNyligInnsendteSoknader()
@@ -176,7 +162,6 @@ internal class InformasjonRessursTest {
 
     @Test
     fun harNyligInnsendteSoknader_tomResponse_null() {
-//        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
         every { soknadMetadataRepository.hentInnsendteSoknaderForBrukerEtterTidspunkt(any(), any()) } returns null
 
         val response = ressurs.harNyligInnsendteSoknader()
@@ -186,7 +171,6 @@ internal class InformasjonRessursTest {
 
     @Test
     fun harNyligInnsendteSoknader_flereSoknaderResponse() {
-//        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
         every { soknadMetadataRepository.hentInnsendteSoknaderForBrukerEtterTidspunkt(any(), any()) } returns listOf(
             mockk(), mockk()
         )
