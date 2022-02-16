@@ -27,7 +27,7 @@
   },
   "minReplicas": "2",
   "maxReplicas": "4",
-  "memoryLimit": "4Gi",
+  "memoryLimit": "6Gi",
   "memoryRequest": "1250Mi",
   "cpuLimit": "1000m",
   "cpuRequest": "100m",
