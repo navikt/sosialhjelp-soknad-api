@@ -103,7 +103,7 @@ internal class SoknadRessursTest {
 
     @Test
     fun opprettSoknadMedBehandlingsidSomIkkeHarEttersendingSkalStarteNyEttersending() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
+        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(BEHANDLINGSID) } just runs
         val response: HttpServletResponse = mockk()
         every { response.addCookie(any()) } just runs
         every {
@@ -118,7 +118,7 @@ internal class SoknadRessursTest {
 
     @Test
     fun opprettSoknadMedBehandlingsidSomHarEttersendingSkalIkkeStarteNyEttersending() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
+        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(BEHANDLINGSID) } just runs
         val response: HttpServletResponse = mockk()
         every { response.addCookie(any()) } just runs
         every {
@@ -271,7 +271,7 @@ internal class SoknadRessursTest {
 
     @Test
     fun opprettSoknadSkalKasteAuthorizationExceptionVedManglendeTilgang() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } throws AuthorizationException("Not for you my friend")
+        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(BEHANDLINGSID) } throws AuthorizationException("Not for you my friend")
 
         assertThatExceptionOfType(AuthorizationException::class.java)
             .isThrownBy { ressurs.opprettSoknad(BEHANDLINGSID, mockk(), "token") }
