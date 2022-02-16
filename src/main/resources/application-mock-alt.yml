@@ -1,0 +1,106 @@
+application.name: sosialhjelp-soknad-api
+
+srvsoknadsosialhjelp.server.username: ${SRVSOKNADSOSIALHJELP_SERVER_USERNAME:srvuser}
+srvsoknadsosialhjelp.server.password: ${SRVSOKNADSOSIALHJELP_SERVER_PASSWORD:pw123}
+
+# Brukes av MetricsClient:
+applicationName: sosialhjelp-soknad-api
+
+server:
+  port: ${PORT:8181}
+
+spring:
+  flyway:
+    enabled: false
+#    baseline-on-migrate: true
+#    url: jdbc:hsqldb:mem:sendsoknad;sql.syntax_ora=true
+#    user: sa
+#    password:
+#    driver-class-name: org.hsqldb.jdbcDriver
+  datasource:
+    driver-class-name: org.hsqldb.jdbcDriver
+    url: jdbc:hsqldb:mem:sendsoknad;sql.syntax_ora=true
+    username: sa
+    password:
+
+metrics.report.enabled: false
+sensu_client_host: 127.0.0.1
+sensu_client_port: 8989
+
+environment.name: ${ENVIRONMENT_NAME:local}
+
+# rest
+digisos_api_baseurl: ${DIGISOS_API_BASEURL:http://localhost:8989/sosialhjelp/mock-alt-api/fiks/}
+ereg_api_baseurl: ${EREG_API_BASEURL:http://localhost:8989/sosialhjelp/mock-alt-api/freg/}
+aareg_api_baseurl: ${AAREG_API_BASEURL:http://localhost:8989/sosialhjelp/mock-alt-api/aareg/}
+securitytokenservice_apigw_url: ${SECURITYTOKENSERVICE_APIGW_URL:http://localhost:8989/sosialhjelp/mock-alt-api/appgw/}
+dkif_api_baseurl: ${DKIF_API_BASEURL:http://localhost:8989/sosialhjelp/mock-alt-api/dkif/}
+pdl_api_url: ${PDL_API_URL:http://localhost:8989/sosialhjelp/mock-alt-api/pdl_endpoint_url/}
+kodeverk_api_url: ${KODEVERK_API_URL:http://localhost:8989/sosialhjelp/mock-alt-api/kodeverk/api/}
+unleash_api_url: ${UNLEASH_API_URL:https://unleash.nais.io/api}
+norg_rest_url: ${NORG2_API_V1_URL:http://localhost:8989/sosialhjelp/mock-alt-api/norg_endpoint_url/}
+oppslag_api_baseurl: ${OPPSLAG_API_BASEURL:http://localhost:8989/sosialhjelp/mock-alt-api/oppslag-api/}
+soknad.bostotte.url: ${SOKNAD_BOSTOTTE_URL:http://localhost:8989/sosialhjelp/mock-alt-api/husbanken}
+dittnav.link.url: ${DITTNAV_LINK_URL:http://localhost:8989/sosialhjelp/mock-alt-api/www/nav/}
+svarut_url: ${SVARUT_URL:http://localhost:8989/sosialhjelp/mock-alt-api/svarut/}
+skatteetaten_api_baseurl: ${SKATTEETATEN_API_BASEURL:http://localhost:8989/sosialhjelp/mock-alt-api/skatteetaten/}
+
+# fiks
+fiks.nokkelfil: ${FIKS_NOKKELFIL:svarut_public_test.pem}
+
+# svarut
+fiks_svarut_username: fiks_username
+fiks_svarut_password: fiks_pw
+
+# idporten
+integrasjonsid_fiks: id1
+integrasjonpassord_fiks: pw1
+idporten_token_url: ${IDPORTEN_TOKEN_URL:http://localhost:8989/sosialhjelp/mock-alt-api/idporten/idporten-oidc-provider/token}
+idporten_clientid: id2
+idporten_scope: ks:fiks
+idporten_config_url: ${IDPORTEN_CONFIG_URL:http://localhost:8989/sosialhjelp/mock-alt-api/well-known/idporten}
+
+# maskinporten
+maskinporten_clientid: maskinporten_clientid
+maskinporten_scopes: scopes
+maskinporten_well_known_url: ${MASKINPORTEN_WELL_KNOWN_URL:http://localhost:8989/sosialhjelp/mock-alt-api/well-known/maskinporten}
+maskinporten_client_jwk: generateRSA
+
+# vault
+virksomhetssertifikat_path: ${VIRKSOMHETSSERTIFIKAT_PATH:/var/run/secrets/nais.io/virksomhetssertifikat}
+
+# OIDC
+oidc.issuer.selvbetjening.cookie_name: localhost-idtoken
+oidc.issuer.selvbetjening.accepted_audience: someaudience
+oidc.issuer.selvbetjening.discoveryurl: ${OIDC_ISSUER_SELVBETJENING_DISCOVERYURL:http://localhost:8989/sosialhjelp/mock-alt-api/well-known/selvbetjening}
+oidc.issuer.selvbetjening.proxy_url: dummy
+
+oidc.issuer.tokenx.discoveryurl: ${OIDC_ISSUER_TOKENX_DISCOVERYURL:http://localhost:8989/sosialhjelp/mock-alt-api/well-known/tokenx}
+oidc.issuer.tokenx.accepted_audience: someaudience
+
+loginservice.url: ${LOGINSERVICE_URL:http://localhost:3009/sosialhjelp/mock-alt/login}
+
+soknad.vedlegg.virusscan.enabled: false
+soknad.ettersending.antalldager: 180
+
+# redis
+redis_host: ${REDIS_HOST:localhost}
+redis_port: 6379
+redis_password: ${REDIS_PASSWORD:pw}
+
+# Feature toggles
+unleash_instance_id: ${UNLEASH_INSTANCE_ID:labs-gcp}
+scheduler.disable: ${SCHEDULER_DISABLE:false}
+digisosapi.sending.enable: ${IS_SENDING_TIL_DIGISOS_API_ENABLED:true}
+digisosapi.sending.alltidTilTestkommune.enable: ${IS_ALLTID_SEND_TIL_NAV_TESTKOMMUNE:false}
+digisosapi.henting.alltidTestkommune.enable: ${IS_ALLTID_HENT_KOMMUNEINFO_FRA_NAV_TESTKOMMUNE:false}
+sendsoknad.batch.enabled: true
+feature.fiks.kryptering.enabled: true
+
+#Nedetid
+nedetid.start: ${NEDETID_START:}
+nedetid.slutt: ${NEDETID_SLUTT:}
+
+# Mockting
+tillatmock: true
+start.oidc.withmock: false

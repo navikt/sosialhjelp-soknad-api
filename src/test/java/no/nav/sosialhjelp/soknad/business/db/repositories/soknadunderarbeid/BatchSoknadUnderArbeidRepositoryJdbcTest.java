@@ -2,9 +2,9 @@ package no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid;
 
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad;
 import no.nav.sosialhjelp.soknad.business.db.RepositoryTestSupport;
-import no.nav.sosialhjelp.soknad.business.db.config.DbTestConfig;
 import no.nav.sosialhjelp.soknad.business.db.repositories.opplastetvedlegg.BatchOpplastetVedleggRepository;
 import no.nav.sosialhjelp.soknad.business.db.repositories.opplastetvedlegg.OpplastetVedleggRepository;
+import no.nav.sosialhjelp.soknad.config.DbTestConfig;
 import no.nav.sosialhjelp.soknad.domain.OpplastetVedlegg;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import no.nav.sosialhjelp.soknad.domain.VedleggType;
@@ -84,8 +84,8 @@ class BatchSoknadUnderArbeidRepositoryJdbcTest {
                 .withEier(EIER)
                 .withJsonInternalSoknad(JSON_INTERNAL_SOKNAD)
                 .withStatus(UNDER_ARBEID)
-                .withOpprettetDato(LocalDateTime.now().minusDays(antallDagerSiden))
-                .withSistEndretDato(LocalDateTime.now().minusDays(antallDagerSiden));
+                .withOpprettetDato(LocalDateTime.now().minusDays(antallDagerSiden).minusMinutes(5))
+                .withSistEndretDato(LocalDateTime.now().minusDays(antallDagerSiden).minusMinutes(5));
     }
 
     private OpplastetVedlegg lagOpplastetVedlegg(Long soknadId) {

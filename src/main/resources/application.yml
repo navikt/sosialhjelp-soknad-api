@@ -1,0 +1,114 @@
+application.name: sosialhjelp-soknad-api
+
+srvsoknadsosialhjelp.server.username: ${SRVSOKNADSOSIALHJELP_SERVER_USERNAME}
+srvsoknadsosialhjelp.server.password: ${SRVSOKNADSOSIALHJELP_SERVER_PASSWORD}
+
+# Brukes av MetricsClient:
+applicationName: sosialhjelp-soknad-api
+
+server:
+  port: 8080
+  servlet:
+    context-path: '/sosialhjelp/soknad-api'
+
+spring:
+  main:
+    banner-mode: off
+  jersey:
+    application-path: '/'
+#    type: filter
+#    servlet:
+#      load-on-startup: 1
+#    filter:
+#      order: -10000
+  flyway:
+    enabled: true
+    url: ${SOKNADSOSIALHJELPDATASOURCE_URL}
+    user: ${SOKNADSOSIALHJELPDATASOURCE_USERNAME}
+    password: ${SOKNADSOSIALHJELPDATASOURCE_PASSWORD}
+    driver-class-name: oracle.jdbc.OracleDriver
+  datasource:
+    driver-class-name: oracle.jdbc.OracleDriver
+    url: ${SOKNADSOSIALHJELPDATASOURCE_URL}
+    username: ${SOKNADSOSIALHJELPDATASOURCE_USERNAME}
+    password: ${SOKNADSOSIALHJELPDATASOURCE_PASSWORD}
+
+metrics.report.enabled: true
+sensu_client_host: sensu.nais
+sensu_client_port: 3030
+
+environment.name: ${ENVIRONMENT_NAME}
+
+# rest
+digisos_api_baseurl: ${DIGISOS_API_BASEURL}
+ereg_api_baseurl: ${EREG_API_BASEURL}
+aareg_api_baseurl: ${AAREG_API_BASEURL}
+securitytokenservice_apigw_url: ${SECURITYTOKENSERVICE_APIGW_URL}
+dkif_api_baseurl: ${DKIF_API_BASEURL}
+pdl_api_url: ${PDL_API_URL}
+unleash_api_url: ${UNLEASH_API_URL}
+kodeverk_api_url: ${KODEVERK_API_URL}
+oppslag_api_baseurl: ${OPPSLAG_API_BASEURL}
+norg_rest_url: ${NORG2_API_V1_URL}
+dittnav.link.url: ${DITTNAV_LINK_URL}
+soknad.bostotte.url: ${SOKNAD_BOSTOTTE_URL}
+svarut_url: ${SVARUT_URL}
+skatteetaten_api_baseurl: ${SKATTEETATEN_API_BASEURL}
+
+fiks.nokkelfil: ${FIKS_NOKKELFIL}
+
+# idporten
+integrasjonsid_fiks: ${INTEGRASJONSID_FIKS}
+integrasjonpassord_fiks: ${INTEGRASJONPASSORD_FIKS}
+idporten_token_url: ${IDPORTEN_TOKEN_URL}
+idporten_clientid: ${IDPORTEN_CLIENTID}
+idporten_scope: ks:fiks
+idporten_config_url: ${IDPORTEN_CONFIG_URL}
+
+# maskinporten
+maskinporten_clientid: ${MASKINPORTEN_CLIENT_ID}
+maskinporten_scopes: ${MASKINPORTEN_SCOPES}
+maskinporten_well_known_url: ${MASKINPORTEN_WELL_KNOWN_URL}
+maskinporten_client_jwk: ${MASKINPORTEN_CLIENT_JWK}
+
+# svarut:
+fiks_svarut_username: ${FIKS_SVARUT_USERNAME}
+fiks_svarut_password: ${FIKS_SVARUT_PASSWORD}
+
+# vault
+virksomhetssertifikat_path: /var/run/secrets/nais.io/virksomhetssertifikat
+
+# OIDC
+oidc.issuer.selvbetjening.discoveryurl: ${LOGINSERVICE_IDPORTEN_DISCOVERY_URL}
+oidc.issuer.selvbetjening.accepted_audience: ${LOGINSERVICE_IDPORTEN_AUDIENCE}
+oidc.issuer.selvbetjening.cookie_name: selvbetjening-idtoken
+oidc.issuer.selvbetjening.proxy_url: http://webproxy-nais.nav.no:8088
+loginservice.url: ${LOGINSERVICE_URL}
+
+oidc.issuer.tokenx.discoveryurl: ${TOKEN_X_WELL_KNOWN_URL}
+oidc.issuer.tokenx.accepted_audience: ${TOKEN_X_CLIENT_ID}
+tokenx.private_jwk: ${TOKEN_X_PRIVATE_JWK}
+
+# redis
+redis_host: ${REDIS_HOST}
+redis_port: 6379
+redis_password: ${REDIS_PASSWORD}
+
+soknad.ettersending.antalldager: ${SOKNAD_ETTERSENDING_ANTALLDAGER}
+
+# feature toggles
+unleash_instance_id: ${UNLEASH_INSTANCE_ID:prod-sbs}
+soknad.vedlegg.virusscan.enabled: true
+scheduler.disable: ${SCHEDULER_DISABLE}
+digisosapi.sending.enable: ${IS_SENDING_TIL_DIGISOS_API_ENABLED}
+digisosapi.sending.alltidTilTestkommune.enable: ${IS_ALLTID_SEND_TIL_NAV_TESTKOMMUNE}
+digisosapi.henting.alltidTestkommune.enable: ${IS_ALLTID_HENT_KOMMUNEINFO_FRA_NAV_TESTKOMMUNE}
+sendsoknad.batch.enabled: true
+feature.fiks.kryptering.enabled: true
+
+#Nedetid
+nedetid.start: ${NEDETID_START}
+nedetid.slutt: ${NEDETID_SLUTT}
+
+tillatmock: ${TILLATMOCK}
+start.oidc.withmock: false

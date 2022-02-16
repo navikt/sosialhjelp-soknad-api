@@ -2,6 +2,9 @@ package no.nav.sosialhjelp.soknad.common.filter
 
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.mockkObject
+import io.mockk.unmockkObject
+import no.nav.sosialhjelp.soknad.common.MiljoUtils
 import no.nav.sosialhjelp.soknad.web.rest.SoknadApplication
 import org.assertj.core.api.Assertions.assertThat
 import org.glassfish.jersey.server.ContainerResponse
@@ -21,15 +24,17 @@ internal class CORSFilterTest {
     fun setUp() {
         val headers: MultivaluedMap<String, Any> = MultivaluedHashMap()
         every { response.headers } returns headers
+        mockkObject(MiljoUtils)
     }
 
     @AfterEach
-    fun tearDown() {
-        System.clearProperty("environment.name")
+    internal fun tearDown() {
+        unmockkObject(MiljoUtils)
     }
 
     @Test
     fun setCorsHeaders_inProdWithUnknownOrigin_shouldNotSetCorsHeaders() {
+        every { MiljoUtils.isNonProduction() } returns false
         val unknownOrigin = "https://www.unknown.no"
         val request = ContainerRequestBuilder
             .from("requestUri", "GET", SoknadApplication())
@@ -41,6 +46,7 @@ internal class CORSFilterTest {
 
     @Test
     fun setCorsHeaders_inProdWithTrustedOrigin_shouldSetCorsHeaders() {
+        every { MiljoUtils.isNonProduction() } returns true
         val trustedOrigin = "https://www.nav.no"
         val request = ContainerRequestBuilder
             .from("requestUri", "GET", SoknadApplication())
@@ -55,7 +61,7 @@ internal class CORSFilterTest {
 
     @Test
     fun setCorsHeaders_inTestWithUnknownOrigin_shouldSetCorsHeaders() {
-        System.setProperty("environment.name", "q0")
+        every { MiljoUtils.isNonProduction() } returns true
         val unknownOrigin = "https://www.unknown.no"
         val request = ContainerRequestBuilder
             .from("requestUri", "GET", SoknadApplication())
