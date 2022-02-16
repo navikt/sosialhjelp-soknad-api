@@ -150,7 +150,7 @@ open class InformasjonRessurs(
     @GET
     @Path("/harNyligInnsendteSoknader")
     open fun harNyligInnsendteSoknader(): NyligInnsendteSoknaderResponse {
-        tilgangskontroll.verifiserAtBrukerHarTilgang()
+//        tilgangskontroll.verifiserAtBrukerHarTilgang()
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val grense = LocalDateTime.now().minusDays(FJORTEN_DAGER.toLong())
         val nyligSendteSoknader = soknadMetadataRepository.hentInnsendteSoknaderForBrukerEtterTidspunkt(eier, grense)

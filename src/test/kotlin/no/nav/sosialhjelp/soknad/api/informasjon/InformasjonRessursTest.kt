@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.api.informasjon
 
-import io.mockk.called
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.just
@@ -13,7 +12,6 @@ import no.nav.sosialhjelp.api.fiks.KommuneInfo
 import no.nav.sosialhjelp.soknad.api.nedetid.NedetidService
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.common.MiljoUtils
-import no.nav.sosialhjelp.soknad.common.exceptions.AuthorizationException
 import no.nav.sosialhjelp.soknad.common.subjecthandler.StaticSubjectHandlerImpl
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
@@ -158,15 +156,15 @@ internal class InformasjonRessursTest {
         assertThat(margedKommuner["1234"]!!.kanOppdatereStatus).isTrue
     }
 
-    @Test
-    fun harNyligInnsendteSoknader_AuthorizationExceptionVedManglendeTilgang() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } throws AuthorizationException("Not for you my friend")
-
-        assertThatExceptionOfType(AuthorizationException::class.java)
-            .isThrownBy { ressurs.harNyligInnsendteSoknader() }
-
-        verify { soknadMetadataRepository wasNot called }
-    }
+//    @Test
+//    fun harNyligInnsendteSoknader_AuthorizationExceptionVedManglendeTilgang() {
+//        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } throws AuthorizationException("Not for you my friend")
+//
+//        assertThatExceptionOfType(AuthorizationException::class.java)
+//            .isThrownBy { ressurs.harNyligInnsendteSoknader() }
+//
+//        verify { soknadMetadataRepository wasNot called }
+//    }
 
     @Test
     fun harNyligInnsendteSoknader_tomResponse() {
