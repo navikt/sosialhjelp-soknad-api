@@ -147,7 +147,7 @@ open class SoknadRessurs(
         if (behandlingsId == null) {
             tilgangskontroll.verifiserAtBrukerHarTilgang()
         } else {
-            tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
+            tilgangskontroll.verifiserBrukerHarTilgangTilMetadata(behandlingsId)
         }
         val result: MutableMap<String, String> = HashMap()
         val opprettetBehandlingsId: String = if (behandlingsId == null) {
