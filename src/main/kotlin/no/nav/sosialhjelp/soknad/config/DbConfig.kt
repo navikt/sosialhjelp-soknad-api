@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.config
 
-import no.nav.sosialhjelp.soknad.business.db.config.SoknadInnsendingDBConfig
 import no.nav.sosialhjelp.soknad.business.db.repositories.oppgave.OppgaveRepositoryJdbc
 import no.nav.sosialhjelp.soknad.business.db.repositories.opplastetvedlegg.BatchOpplastetVedleggRepositoryJdbc
 import no.nav.sosialhjelp.soknad.business.db.repositories.opplastetvedlegg.OpplastetVedleggRepositoryJdbc

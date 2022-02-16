@@ -9,6 +9,11 @@ object MiljoUtils {
     private const val NAIS_CLUSTER_NAME = "NAIS_CLUSTER_NAME"
     private const val ENVIRONMENT_NAME = "ENVIRONMENT_NAME"
 
+    private const val IS_ALLTID_SEND_TIL_NAV_TESTKOMMUNE = "IS_ALLTID_SEND_TIL_NAV_TESTKOMMUNE"
+    private const val IS_ALLTID_HENT_KOMMUNEINFO_FRA_NAV_TESTKOMMUNE = "IS_ALLTID_HENT_KOMMUNEINFO_FRA_NAV_TESTKOMMUNE"
+    private const val TILLATMOCK = "TILLATMOCK"
+    private const val IN_MEMORY_DATABASE = "IN_MEMORY_DATABASE"
+
     private val log by logger()
 
     val naisAppImage: String
@@ -18,12 +23,8 @@ object MiljoUtils {
         get() = getenv(NAIS_APP_NAME, "sosialhjelp-soknad-api")
 
     private fun getenv(env: String, defaultValue: String): String {
-        return try {
-            System.getenv(env)
-        } catch (e: Exception) {
-            log.warn("Fant ikke env variabel ($env), bruker default verdi: ($defaultValue)")
-            defaultValue
-        }
+        return System.getenv(env)
+            ?: (defaultValue.also { log.warn("Fant ikke env variabel ($env), bruker default verdi: ($defaultValue)") })
     }
 
     fun isNonProduction(): Boolean {
@@ -36,4 +37,24 @@ object MiljoUtils {
 
     val environmentName: String
         get() = System.getenv(ENVIRONMENT_NAME) ?: ""
+
+    fun isAlltidSendTilNavTestkommune(): Boolean {
+        val value = System.getenv(IS_ALLTID_SEND_TIL_NAV_TESTKOMMUNE) ?: "false"
+        return value.toBoolean()
+    }
+
+    fun isAlltidHentKommuneInfoFraNavTestkommune(): Boolean {
+        val value = System.getenv(IS_ALLTID_HENT_KOMMUNEINFO_FRA_NAV_TESTKOMMUNE) ?: "false"
+        return value.toBoolean()
+    }
+
+    fun isTillatMock(): Boolean {
+        val value = System.getenv(TILLATMOCK) ?: "false"
+        return value.toBoolean()
+    }
+
+    fun isRunningWithInMemoryDb(): Boolean {
+        val value = System.getenv(IN_MEMORY_DATABASE) ?: "false"
+        return value.toBoolean()
+    }
 }
