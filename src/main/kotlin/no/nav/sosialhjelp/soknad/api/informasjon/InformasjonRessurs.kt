@@ -160,7 +160,7 @@ open class InformasjonRessurs(
     @GET
     @Path("/pabegynteSoknader")
     open fun hentPabegynteSoknader(): List<PabegyntSoknad> {
-        tilgangskontroll.verifiserAtBrukerHarTilgang()
+//        tilgangskontroll.verifiserAtBrukerHarTilgang()
         val fnr = SubjectHandlerUtils.getUserIdFromToken()
         logger.debug("Henter pabegynte soknader for bruker")
         return pabegynteSoknaderService.hentPabegynteSoknaderForBruker(fnr)

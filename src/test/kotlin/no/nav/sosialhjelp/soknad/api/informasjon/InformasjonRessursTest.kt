@@ -2,10 +2,8 @@ package no.nav.sosialhjelp.soknad.api.informasjon
 
 import io.mockk.clearAllMocks
 import io.mockk.every
-import io.mockk.just
 import io.mockk.mockk
 import io.mockk.mockkObject
-import io.mockk.runs
 import io.mockk.unmockkObject
 import io.mockk.verify
 import no.nav.sosialhjelp.api.fiks.KommuneInfo
@@ -168,7 +166,7 @@ internal class InformasjonRessursTest {
 
     @Test
     fun harNyligInnsendteSoknader_tomResponse() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
+//        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
         every { soknadMetadataRepository.hentInnsendteSoknaderForBrukerEtterTidspunkt(any(), any()) } returns emptyList()
 
         val response = ressurs.harNyligInnsendteSoknader()
@@ -178,7 +176,7 @@ internal class InformasjonRessursTest {
 
     @Test
     fun harNyligInnsendteSoknader_tomResponse_null() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
+//        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
         every { soknadMetadataRepository.hentInnsendteSoknaderForBrukerEtterTidspunkt(any(), any()) } returns null
 
         val response = ressurs.harNyligInnsendteSoknader()
@@ -188,7 +186,7 @@ internal class InformasjonRessursTest {
 
     @Test
     fun harNyligInnsendteSoknader_flereSoknaderResponse() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
+//        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
         every { soknadMetadataRepository.hentInnsendteSoknaderForBrukerEtterTidspunkt(any(), any()) } returns listOf(
             mockk(), mockk()
         )
