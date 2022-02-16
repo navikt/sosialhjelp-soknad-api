@@ -144,7 +144,11 @@ open class SoknadRessurs(
                 "Soknaden har nedetid fram til ${nedetidService.nedetidSluttAsString}"
             )
         }
-        tilgangskontroll.verifiserAtBrukerHarTilgang()
+        if (behandlingsId == null) {
+            tilgangskontroll.verifiserAtBrukerHarTilgang()
+        } else {
+            tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
+        }
         val result: MutableMap<String, String> = HashMap()
         val opprettetBehandlingsId: String = if (behandlingsId == null) {
             soknadService.startSoknad(token)
