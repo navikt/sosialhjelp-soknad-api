@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.navenhet.domain
 
-import no.nav.sosialhjelp.soknad.common.mapper.KommuneTilNavEnhetMapper
+import no.nav.sosialhjelp.soknad.common.mapper.KommuneTilNavEnhetMapper.getOrganisasjonsnummer
 
 data class NavEnhet(
     val enhetNr: String?,
@@ -26,6 +26,6 @@ fun NavEnhetFraLokalListe.toNavEnhet(): NavEnhet {
         enhetNr = enhetsnummer,
         navn = enhetsnavn,
         kommunenavn = kommunenavn,
-        sosialOrgNr = KommuneTilNavEnhetMapper.getOrganisasjonsnummer(enhetsnummer)
+        sosialOrgNr = getOrganisasjonsnummer(enhetsnummer)
     )
 }

@@ -3,7 +3,6 @@ package no.nav.sosialhjelp.soknad.tilgangskontroll
 import no.nav.sosialhjelp.soknad.common.exceptions.AuthorizationException
 import no.nav.sosialhjelp.soknad.common.exceptions.SosialhjelpSoknadApiException
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
-import no.nav.sosialhjelp.soknad.domain.model.mock.MockUtils
 import org.apache.commons.codec.binary.Base64
 import java.security.InvalidKeyException
 import java.security.NoSuchAlgorithmException
@@ -35,10 +34,10 @@ object XsrfGenerator {
         }
     }
 
-    fun sjekkXsrfToken(givenToken: String?, behandlingsId: String?) {
+    fun sjekkXsrfToken(givenToken: String?, behandlingsId: String?, isMockProfil: Boolean) {
         val token = generateXsrfToken(behandlingsId)
         val valid = token == givenToken || generateXsrfToken(behandlingsId, ZonedDateTime.now().minusDays(1).format(DateTimeFormatter.ofPattern("yyyyMMdd"))) == givenToken
-        if (!valid && !MockUtils.isMockAltProfil()) {
+        if (!valid && !isMockProfil) {
             throw AuthorizationException("Feil token")
         }
     }

@@ -1,5 +1,7 @@
 package no.nav.sosialhjelp.soknad.common.mapper
 
+import no.nav.sosialhjelp.soknad.common.MiljoUtils
+
 object KommuneTilNavEnhetMapper {
 
     val IKS_KOMMUNER: Map<String, String> = mapOf(
@@ -240,7 +242,7 @@ object KommuneTilNavEnhetMapper {
     )
 
     fun getOrganisasjonsnummer(enhetNr: String?): String? {
-        return if (isNonProduction) TEST_ORGANISASJONSNUMMER[enhetNr] else PROD_ORGANISASJONSNUMMER[enhetNr]
+        return if (MiljoUtils.isNonProduction()) TEST_ORGANISASJONSNUMMER[enhetNr] else PROD_ORGANISASJONSNUMMER[enhetNr]
     }
 
     private val TEST_DIGISOS_KOMMUNER = listOf(
@@ -466,11 +468,5 @@ object KommuneTilNavEnhetMapper {
      * @return Liste med kommunenumre.
      */
     val digisoskommuner: List<String>
-        get() = if (isNonProduction) TEST_DIGISOS_KOMMUNER else PROD_DIGISOS_KOMMUNER
-
-    private val isNonProduction: Boolean
-        get() {
-            val miljo = System.getProperty("environment.name", "")
-            return miljo.contains("q") || miljo == "test" || miljo == "dev-gcp" || miljo == "labs-gcp" || miljo == "local"
-        }
+        get() = if (MiljoUtils.isNonProduction()) TEST_DIGISOS_KOMMUNER else PROD_DIGISOS_KOMMUNER
 }
