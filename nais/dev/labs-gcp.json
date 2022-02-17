@@ -59,6 +59,7 @@
     "SECURITYTOKENSERVICE_APIGW_URL": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/appgw/",
     "SKATTEETATEN_API_BASEURL": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/skatteetaten/",
     "SVARUT_URL": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/svarut/",
+    "TOKEN_X_WELL_KNOWN_URL": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/well-known/tokenx",
     "IS_SENDING_TIL_DIGISOS_API_ENABLED": "true",
     "IS_ALLTID_SEND_TIL_NAV_TESTKOMMUNE": "false",
     "IS_ALLTID_HENT_KOMMUNEINFO_FRA_NAV_TESTKOMMUNE": "false",
