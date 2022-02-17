@@ -52,6 +52,8 @@ import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon;
 import no.nav.sosialhjelp.soknad.client.kodeverk.KodeverkService;
+import no.nav.sosialhjelp.soknad.pdf.PdfUtils;
+import no.nav.sosialhjelp.soknad.pdf.TextHelpers;
 import no.nav.sosialhjelp.soknad.tekster.NavMessageSource;
 import org.apache.commons.io.FileUtils;
 import org.apache.pdfbox.preflight.PreflightDocument;
@@ -93,9 +95,11 @@ class SosialhjelpPdfGeneratorTest {
 
         KodeverkService kodeverkService = mock(KodeverkService.class);
 
-        TextHelpers textHelpers = new TextHelpers(navMessageSource, kodeverkService);
+        TextHelpers textHelpers = new TextHelpers(kodeverkService);
 
-        sosialhjelpPdfGenerator = new SosialhjelpPdfGenerator(navMessageSource, textHelpers);
+        PdfUtils pdfUtils = new PdfUtils(navMessageSource);
+
+        sosialhjelpPdfGenerator = new SosialhjelpPdfGenerator(navMessageSource, textHelpers, pdfUtils);
     }
 
     @Test

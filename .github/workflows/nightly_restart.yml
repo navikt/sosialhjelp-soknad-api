@@ -8,7 +8,7 @@ jobs:
     name: Nattlig restart
     runs-on: ubuntu-latest
     env:
-      DOCKER_IMAGE: docker.pkg.github.com/${{ github.repository }}/sosialhjelp-soknad-api
+      DOCKER_IMAGE: ghcr.io/${{ github.repository }}/sosialhjelp-soknad-api
     steps:
       - uses: actions/checkout@v2
       - name: Create artifact version
@@ -47,23 +47,23 @@ jobs:
           REF: ${{ github.sha }}
           PRINT_PAYLOAD: true
           IMAGE: ${{ env.DOCKER_TAG }}
-#      - name: Restart dev-sbs
-#        uses: nais/deploy/actions/deploy@v1
-#        env:
-#          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
-#          RESOURCE: nais/nais.yaml
-#          CLUSTER: dev-sbs
-#          VARS: nais/dev/dev-sbs.json
-#          REF: ${{ github.sha }}
-#          PRINT_PAYLOAD: true
-#          IMAGE: ${{ env.DOCKER_TAG }}
-#      - name: Restart dev-sbs-intern
-#        uses: nais/deploy/actions/deploy@v1
-#        env:
-#          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
-#          RESOURCE: nais/nais.yaml
-#          CLUSTER: dev-sbs
-#          VARS: nais/dev/dev-sbs-intern.json
-#          REF: ${{ github.sha }}
-#          PRINT_PAYLOAD: true
-#          IMAGE: ${{ env.DOCKER_TAG }}
+      - name: Restart dev-sbs
+        uses: nais/deploy/actions/deploy@v1
+        env:
+          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
+          RESOURCE: nais/nais.yaml
+          CLUSTER: dev-sbs
+          VARS: nais/dev/dev-sbs.json
+          REF: ${{ github.sha }}
+          PRINT_PAYLOAD: true
+          IMAGE: ${{ env.DOCKER_TAG }}
+      - name: Restart dev-sbs-intern
+        uses: nais/deploy/actions/deploy@v1
+        env:
+          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
+          RESOURCE: nais/nais.yaml
+          CLUSTER: dev-sbs
+          VARS: nais/dev/dev-sbs-intern.json
+          REF: ${{ github.sha }}
+          PRINT_PAYLOAD: true
+          IMAGE: ${{ env.DOCKER_TAG }}

@@ -4,8 +4,10 @@ import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
+import io.mockk.mockkObject
 import io.mockk.runs
 import io.mockk.slot
+import io.mockk.unmockkObject
 import io.mockk.verify
 import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.BOSTOTTE_SAMTYKKE
 import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_SKATTEETATEN_SAMTYKKE
@@ -14,6 +16,7 @@ import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata.VedleggMetadataListe
+import no.nav.sosialhjelp.soknad.common.MiljoUtils
 import no.nav.sosialhjelp.soknad.common.subjecthandler.StaticSubjectHandlerImpl
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.common.systemdata.SystemdataUpdater
@@ -57,10 +60,12 @@ internal class SoknadServiceTest {
 
     @BeforeEach
     fun before() {
-        System.setProperty("environment.name", "test")
+        clearAllMocks()
+
+        mockkObject(MiljoUtils)
+        every { MiljoUtils.isNonProduction() } returns true
         SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
 
-        clearAllMocks()
         every { soknadMetricsService.reportStartSoknad(any()) } just runs
         every { systemdataUpdater.update(any()) } just runs
     }
@@ -68,7 +73,7 @@ internal class SoknadServiceTest {
     @AfterEach
     fun tearDown() {
         SubjectHandlerUtils.resetSubjectHandlerImpl()
-        System.clearProperty("environment.name")
+        unmockkObject(MiljoUtils)
     }
 
     @Test
