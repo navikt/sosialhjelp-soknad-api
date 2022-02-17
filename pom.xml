@@ -109,6 +109,9 @@
         <jakarta.ws.version>2.1.6</jakarta.ws.version>
         <jakarta.xml.version>2.3.3</jakarta.xml.version>
 
+        <java-jwt.version>3.18.3</java-jwt.version>
+        <jwks-rsa.version>0.20.0</jwks-rsa.version>
+
         <!-- Versjoner for test dependencies -->
         <hamcrest.version>2.2</hamcrest.version>
         <junit-jupiter.version>5.8.2</junit-jupiter.version>
@@ -793,6 +796,18 @@
             <artifactId>hsqldb</artifactId>
             <version>${hsqldb.version}</version>
             <scope>runtime</scope>
+        </dependency>
+
+        <!-- Tokendings -->
+        <dependency>
+            <groupId>com.auth0</groupId>
+            <artifactId>java-jwt</artifactId>
+            <version>${java-jwt.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.auth0</groupId>
+            <artifactId>jwks-rsa</artifactId>
+            <version>${jwks-rsa.version}</version>
         </dependency>
 
         <!-- Redis -->

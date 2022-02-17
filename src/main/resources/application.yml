@@ -71,6 +71,11 @@ maskinporten_scopes: ${MASKINPORTEN_SCOPES}
 maskinporten_well_known_url: ${MASKINPORTEN_WELL_KNOWN_URL}
 maskinporten_client_jwk: ${MASKINPORTEN_CLIENT_JWK}
 
+# tokenx
+tokendings_url: ${TOKEN_X_WELL_KNOWN_URL}
+tokendings_client_id: ${TOKEN_X_CLIENT_ID}
+tokendings_private_jwk: ${TOKEN_X_PRIVATE_JWK}
+
 # svarut:
 fiks_svarut_username: ${FIKS_SVARUT_USERNAME}
 fiks_svarut_password: ${FIKS_SVARUT_PASSWORD}
