@@ -58,16 +58,26 @@ spec:
     outbound:
       external:
       {{#each outboundExternalHosts}}
-         - host: "{{this}}"
+        - host: "{{this}}"
       {{else}}
         []
       {{/each}}
       rules:
-      {{#each outboundRulesApplications}}
+      {{#if isGcp}}
+      {{#each outboundRulesGcpApplications}}
         - application: "{{this}}"
       {{else}}
         []
       {{/each}}
+      {{/if}}
+      {{#unless isGcp}}
+      {{#each outboundRulesFssApplications}}
+        - application: "{{this}}"
+          cluster: {{fssCluster}}
+      {{else}}
+        []
+      {{/each}}
+      {{/unless}}
 {{#if isGcp}}
   filesFrom:
     - secret: virksomhetssertifikat

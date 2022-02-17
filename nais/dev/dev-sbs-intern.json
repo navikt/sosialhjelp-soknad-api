@@ -15,7 +15,6 @@
   "kvPaths": {
     "/var/run/secrets/datasource": "/oracle/data/dev/creds/soknadsosialhjelp_q1-user",
     "/var/run/secrets/nais.io/virksomhetssertifikat": "/secret/virksomhetssertifikat/preprod/shared",
-    "/apigw/norg2api": "/apikey/apigw/dev/norg2.api.v1/soknadsosialhjelp-server_q1",
     "/apigw/eregapi": "apikey/apigw/dev/ereg.api/sosialhjelp-soknad-api_q1",
     "/apigw/aaregapi": "apikey/apigw/dev/aareg.api/sosialhjelp-soknad-api_q1",
     "/apigw/securitytokenservicetoken": "apikey/apigw/dev/security-token-service-token/sosialhjelp-soknad-api_q1",
@@ -26,6 +25,10 @@
     "/serviceuser/srvsoknadsosialhjelp-server": "serviceuser/data/dev/srvsoknadsosialhjelp-server",
     "/serviceuser/srvsoknadsosialhjelp-server-sbs": "serviceuser/data/dev/srvsoknadsosialhjelp-server-sbs"
   },
+  "outboundRulesFssApplications": [
+    "sosialhjelp-fss-proxy"
+  ],
+  "fssCluster": "dev-fss",
   "minReplicas": "1",
   "maxReplicas": "4",
   "memoryLimit": "2Gi",
@@ -50,13 +53,15 @@
     "DKIF_API_BASEURL": "https://api-gw-q1.oera.no/dkif/api/",
     "EREG_API_BASEURL": "https://api-gw-q1.oera.no/ereg/api/",
     "FIKS_NOKKELFIL": "svarut_public_test.pem",
+    "FSS_PROXY_AUDIENCE": "dev-fss:teamdigisos:sosialhjelp-fss-proxy",
+    "FSS_PROXY_PING_URL": "https://sosialhjelp-fss-proxy.dev-fss-pub.nais.io/ping",
     "DIGISOS_API_BASEURL": "https://api.fiks.test.ks.no/",
     "IDPORTEN_TOKEN_URL": "https://oidc-ver2.difi.no/idporten-oidc-provider/token",
     "IDPORTEN_CLIENTID": "1c3631f4-dbf2-4c12-bdc4-156cbd53c625",
     "IDPORTEN_CONFIG_URL": "https://oidc-ver2.difi.no/idporten-oidc-provider/.well-known/openid-configuration",
     "KODEVERK_API_URL": "https://api-gw-q1.oera.no/kodeverk/api/",
     "LOGINSERVICE_URL": "https://loginservice.dev.nav.no/login",
-    "NORG2_API_V1_URL": "https://api-gw-q1.oera.no/norg2/api/v1/",
+    "NORG_PROXY_URL": "https://sosialhjelp-fss-proxy.dev-fss-pub.nais.io/proxy/norg/",
     "OPPSLAG_API_BASEURL": "https://api-gw-q1.oera.no/sosialhjelp-oppslag-api/api/",
     "PDL_API_URL": "https://api-gw-q1.oera.no/pdl-api/graphql",
     "UNLEASH_API_URL": "https://unleash.nais.io/api",
