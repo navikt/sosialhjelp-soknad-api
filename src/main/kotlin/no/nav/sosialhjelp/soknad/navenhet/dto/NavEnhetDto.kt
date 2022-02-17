@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.navenhet.dto
 
-import no.nav.sosialhjelp.soknad.common.mapper.KommuneTilNavEnhetMapper
+import no.nav.sosialhjelp.soknad.common.mapper.KommuneTilNavEnhetMapper.getOrganisasjonsnummer
 import no.nav.sosialhjelp.soknad.navenhet.domain.NavEnhet
 
 data class NavEnhetDto(
@@ -30,6 +30,6 @@ private fun getSosialOrgNr(enhetNr: String?, gt: String): String? {
         }
         enhetNr == "0511" && gt == "3432" -> "964949204"
         enhetNr == "1620" && gt == "5014" -> "913071751"
-        else -> KommuneTilNavEnhetMapper.getOrganisasjonsnummer(enhetNr)
+        else -> getOrganisasjonsnummer(enhetNr)
     }
 }

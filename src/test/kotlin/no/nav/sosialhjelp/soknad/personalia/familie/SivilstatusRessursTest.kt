@@ -5,14 +5,17 @@ import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
+import io.mockk.mockkObject
 import io.mockk.runs
 import io.mockk.slot
+import io.mockk.unmockkObject
 import io.mockk.verify
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonNavn
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonEktefelle
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
+import no.nav.sosialhjelp.soknad.common.MiljoUtils
 import no.nav.sosialhjelp.soknad.common.exceptions.AuthorizationException
 import no.nav.sosialhjelp.soknad.common.subjecthandler.StaticSubjectHandlerImpl
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
@@ -38,16 +41,17 @@ internal class SivilstatusRessursTest {
 
     @BeforeEach
     fun setUp() {
-        System.setProperty("environment.name", "test")
-        SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
-
         clearAllMocks()
+
+        mockkObject(MiljoUtils)
+        every { MiljoUtils.isNonProduction() } returns true
+        SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
     }
 
     @AfterEach
     fun tearDown() {
         SubjectHandlerUtils.resetSubjectHandlerImpl()
-        System.clearProperty("environment.name")
+        unmockkObject(MiljoUtils)
     }
 
     @Test
