@@ -17,7 +17,16 @@ open class MockAltTestDbConfig {
 
     @Bean
     open fun dataSource(): DataSource {
-        return buildDataSource()
+        val dataSource = DriverManagerDataSource()
+        // dataSource.setSuppressClose(true);
+        val env = dbProperties("hsqldb.properties")
+        dataSource.setDriverClassName(env.getProperty("db.driverClassName"))
+        dataSource.url = env.getProperty("db.url")
+        dataSource.username = env.getProperty("db.username")
+        dataSource.password = env.getProperty("db.password")
+        System.setProperty(SQLUtils.DIALECT_PROPERTY, "hsqldb")
+        createNonJpaTables(dataSource)
+        return dataSource
     }
 
     @Bean
@@ -31,19 +40,6 @@ open class MockAltTestDbConfig {
     }
 
     companion object {
-        fun buildDataSource(): DataSource {
-            val dataSource = DriverManagerDataSource()
-            // dataSource.setSuppressClose(true);
-            val env = dbProperties("hsqldb.properties")
-            dataSource.setDriverClassName(env.getProperty("db.driverClassName"))
-            dataSource.url = env.getProperty("db.url")
-            dataSource.username = env.getProperty("db.username")
-            dataSource.password = env.getProperty("db.password")
-            System.setProperty(SQLUtils.DIALECT_PROPERTY, "hsqldb")
-            createNonJpaTables(dataSource)
-            return dataSource
-        }
-
         private fun dbProperties(propertyFileName: String): Properties {
             val env = Properties()
             env.load(this::class.java.getResourceAsStream("/$propertyFileName"))
