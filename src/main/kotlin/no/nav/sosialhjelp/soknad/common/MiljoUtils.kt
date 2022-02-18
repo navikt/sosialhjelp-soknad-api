@@ -1,10 +1,20 @@
 package no.nav.sosialhjelp.soknad.common
 
+import no.nav.sosialhjelp.kotlin.utils.logger
+
 object MiljoUtils {
 
     private const val NAIS_APP_IMAGE = "NAIS_APP_IMAGE"
     private const val NAIS_APP_NAME = "NAIS_APP_NAME"
     private const val NAIS_CLUSTER_NAME = "NAIS_CLUSTER_NAME"
+    private const val ENVIRONMENT_NAME = "ENVIRONMENT_NAME"
+
+    private const val IS_ALLTID_SEND_TIL_NAV_TESTKOMMUNE = "IS_ALLTID_SEND_TIL_NAV_TESTKOMMUNE"
+    private const val IS_ALLTID_HENT_KOMMUNEINFO_FRA_NAV_TESTKOMMUNE = "IS_ALLTID_HENT_KOMMUNEINFO_FRA_NAV_TESTKOMMUNE"
+    private const val TILLATMOCK = "TILLATMOCK"
+    private const val IN_MEMORY_DATABASE = "IN_MEMORY_DATABASE"
+
+    private val log by logger()
 
     val naisAppImage: String
         get() = getenv(NAIS_APP_IMAGE, "version")
@@ -13,11 +23,8 @@ object MiljoUtils {
         get() = getenv(NAIS_APP_NAME, "sosialhjelp-soknad-api")
 
     private fun getenv(env: String, defaultValue: String): String {
-        return try {
-            System.getenv(env)
-        } catch (e: Exception) {
-            defaultValue
-        }
+        return System.getenv(env)
+            ?: (defaultValue.also { log.warn("Fant ikke env variabel ($env), bruker default verdi: ($defaultValue)") })
     }
 
     fun isNonProduction(): Boolean {
@@ -26,5 +33,28 @@ object MiljoUtils {
         // Prod-konfigurasjon i test vil oppdages raskt og man vil ikke klare å skape problemer for prod da man trenger secrets som ikke er tilgjengelig i testmiljøer.
         val clusterName = System.getenv(NAIS_CLUSTER_NAME)
         return clusterName == null || !clusterName.contains("prod")
+    }
+
+    val environmentName: String
+        get() = System.getenv(ENVIRONMENT_NAME) ?: ""
+
+    fun isAlltidSendTilNavTestkommune(): Boolean {
+        val value = System.getenv(IS_ALLTID_SEND_TIL_NAV_TESTKOMMUNE) ?: "false"
+        return value.toBoolean()
+    }
+
+    fun isAlltidHentKommuneInfoFraNavTestkommune(): Boolean {
+        val value = System.getenv(IS_ALLTID_HENT_KOMMUNEINFO_FRA_NAV_TESTKOMMUNE) ?: "false"
+        return value.toBoolean()
+    }
+
+    fun isTillatMock(): Boolean {
+        val value = System.getenv(TILLATMOCK) ?: "false"
+        return value.toBoolean()
+    }
+
+    fun isRunningWithInMemoryDb(): Boolean {
+        val value = System.getenv(IN_MEMORY_DATABASE) ?: "false"
+        return value.toBoolean()
     }
 }

@@ -13,7 +13,7 @@ import no.nav.sosialhjelp.soknad.api.informasjon.dto.PabegyntSoknad
 import no.nav.sosialhjelp.soknad.api.nedetid.NedetidService
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.common.Constants
-import no.nav.sosialhjelp.soknad.common.mapper.KommuneTilNavEnhetMapper
+import no.nav.sosialhjelp.soknad.common.mapper.KommuneTilNavEnhetMapper.digisoskommuner
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SosialhjelpInformasjon
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
@@ -22,7 +22,6 @@ import no.nav.sosialhjelp.soknad.personalia.person.dto.Gradering.FORTROLIG
 import no.nav.sosialhjelp.soknad.personalia.person.dto.Gradering.STRENGT_FORTROLIG
 import no.nav.sosialhjelp.soknad.personalia.person.dto.Gradering.STRENGT_FORTROLIG_UTLAND
 import no.nav.sosialhjelp.soknad.tekster.NavMessageSource
-import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import org.apache.commons.lang3.LocaleUtils
 import org.apache.commons.lang3.StringUtils
 import org.slf4j.LoggerFactory
@@ -50,7 +49,6 @@ open class InformasjonRessurs(
     private val adresseSokService: AdressesokService,
     private val kommuneInfoService: KommuneInfoService,
     private val personService: PersonService,
-    private val tilgangskontroll: Tilgangskontroll,
     private val soknadMetadataRepository: SoknadMetadataRepository,
     private val pabegynteSoknaderService: PabegynteSoknaderService,
     private val nedetidService: NedetidService
@@ -142,7 +140,7 @@ open class InformasjonRessurs(
         if (nedetidService.isInnenforNedetid) {
             return emptyMap()
         }
-        val manueltPakobledeKommuner = mapManueltPakobledeKommuner(KommuneTilNavEnhetMapper.digisoskommuner)
+        val manueltPakobledeKommuner = mapManueltPakobledeKommuner(digisoskommuner)
         val digisosKommuner = mapDigisosKommuner(kommuneInfoService.hentAlleKommuneInfo())
         return mergeManuelleKommunerMedDigisosKommuner(manueltPakobledeKommuner, digisosKommuner)
     }
@@ -150,7 +148,6 @@ open class InformasjonRessurs(
     @GET
     @Path("/harNyligInnsendteSoknader")
     open fun harNyligInnsendteSoknader(): NyligInnsendteSoknaderResponse {
-        tilgangskontroll.verifiserAtBrukerHarTilgang()
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val grense = LocalDateTime.now().minusDays(FJORTEN_DAGER.toLong())
         val nyligSendteSoknader = soknadMetadataRepository.hentInnsendteSoknaderForBrukerEtterTidspunkt(eier, grense)
@@ -160,7 +157,6 @@ open class InformasjonRessurs(
     @GET
     @Path("/pabegynteSoknader")
     open fun hentPabegynteSoknader(): List<PabegyntSoknad> {
-        tilgangskontroll.verifiserAtBrukerHarTilgang()
         val fnr = SubjectHandlerUtils.getUserIdFromToken()
         logger.debug("Henter pabegynte soknader for bruker")
         return pabegynteSoknaderService.hentPabegynteSoknaderForBruker(fnr)

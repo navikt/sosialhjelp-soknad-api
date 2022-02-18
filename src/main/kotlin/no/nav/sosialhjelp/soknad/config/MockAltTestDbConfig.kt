@@ -17,49 +17,29 @@ open class MockAltTestDbConfig {
 
     @Bean
     open fun dataSource(): DataSource {
-        return buildDataSource()
+        val dataSource = DriverManagerDataSource()
+        // dataSource.setSuppressClose(true);
+        val env = dbProperties("hsqldb.properties")
+        dataSource.setDriverClassName(env.getProperty("db.driverClassName"))
+        dataSource.url = env.getProperty("db.url")
+        dataSource.username = env.getProperty("db.username")
+        dataSource.password = env.getProperty("db.password")
+        System.setProperty(SQLUtils.DIALECT_PROPERTY, "hsqldb")
+        createNonJpaTables(dataSource)
+        return dataSource
     }
 
     @Bean
-    open fun transactionManager(): DataSourceTransactionManager {
-        return DataSourceTransactionManager(dataSource())
+    open fun transactionManager(dataSource: DataSource): DataSourceTransactionManager {
+        return DataSourceTransactionManager(dataSource)
     }
 
     @Bean
-    open fun transactionTemplate(): TransactionTemplate? {
-        return TransactionTemplate(transactionManager())
+    open fun transactionTemplate(transactionManager: DataSourceTransactionManager): TransactionTemplate? {
+        return TransactionTemplate(transactionManager)
     }
 
     companion object {
-        fun buildDataSource(): DataSource {
-            return if (erInMemoryDatabase()) {
-                buildDataSource("hsqldb.properties")
-            } else {
-                buildDataSource("oracledb.properties")
-            }
-        }
-
-        private fun erInMemoryDatabase(): Boolean {
-            val dbProp = System.getProperty("no.nav.sosialhjelp.soknad.hsqldb", "true")
-            return dbProp == null || dbProp.equals("true", ignoreCase = true)
-        }
-
-        fun buildDataSource(propertyFileName: String): DataSource {
-            val dataSource = DriverManagerDataSource()
-            //
-            // dataSource.setSuppressClose(true);
-            val env = dbProperties(propertyFileName)
-            dataSource.setDriverClassName(env.getProperty("db.driverClassName"))
-            dataSource.url = env.getProperty("db.url")
-            dataSource.username = env.getProperty("db.username")
-            dataSource.password = env.getProperty("db.password")
-            if (erInMemoryDatabase()) {
-                System.setProperty(SQLUtils.DIALECT_PROPERTY, "hsqldb")
-                createNonJpaTables(dataSource)
-            }
-            return dataSource
-        }
-
         private fun dbProperties(propertyFileName: String): Properties {
             val env = Properties()
             env.load(this::class.java.getResourceAsStream("/$propertyFileName"))

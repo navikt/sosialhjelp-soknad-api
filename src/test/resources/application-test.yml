@@ -25,8 +25,6 @@ metrics.report.enabled: false
 sensu_client_host: 127.0.0.1
 sensu_client_port: 8989
 
-no.nav.sosialhjelp.soknad.hsqldb: true
-
   # Andre properties
 soknad.ettersending.antalldager: 42
 sendsoknad.batch.enabled: false
@@ -64,6 +62,7 @@ tokendings_url: tokendings_endpoint_url
 tokendings_client_id: localhost:teamdigisos:sosialhjelp-dialog-api
 tokendings_private_jwk: generateRSA
 fss_proxy_audience: dummyAudience
+oppslag_api_audience: dummyAudience
 
 # svarut:
 fiks_svarut_username: username
@@ -77,7 +76,7 @@ securitytokenservice_apigw_url: https://api-gw-q0.oera.no/security-token-service
 dkif_api_baseurl: https://api-gw-q0.oera.no/dkif/api/
 pdl_api_url: https://api-gw-q1.oera.no/pdl-api/graphql
 unleash_api_url: https://unleash.nais.io/api
-kodeverk_api_url: https://api-gw-q1.oera.no/kodeverk/api/
+kodeverk_proxy_url: https://api-gw-q1.oera.no/kodeverk/api/
 oppslag_api_baseurl: https://api-gw-q1.oera.no/sosiahjelp-oppslag-api/api/
 soknad.bostotte.url: http://bostotte.url
 dittnav.link.url: http://www.nav.no/dittnav
