@@ -12,16 +12,17 @@ open class OppslagApiConfig(
     private val nonProxiedWebClientBuilder: WebClient.Builder,
 ) {
 
+    private val pingurl = "${oppslagApiUrl}ping"
+
     @Bean
     open fun oppslagApiPingClient(): OppslagApiPingClient {
-        val pingurl = "${oppslagApiUrl}ping"
         return OppslagApiPingClient(oppslagApiWebClient, pingurl)
     }
 
     @Bean
     open fun oppslagApiPing(oppslagApiPingClient: OppslagApiPingClient): Pingable {
         return Pingable {
-            val metadata = Pingable.PingMetadata(oppslagApiUrl, "sosialhjelp-oppslag-api", false)
+            val metadata = Pingable.PingMetadata(pingurl, "sosialhjelp-oppslag-api", false)
             try {
                 oppslagApiPingClient.ping()
                 Pingable.lyktes(metadata)
