@@ -42,7 +42,7 @@
     "OPPSLAG_API_BASEURL": "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api/oppslag-api/",
     "PDL_API_URL": "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api/pdl_endpoint_url/",
     "UNLEASH_API_URL": "https://unleash.nais.io/api",
-    "EREG_API_BASEURL": "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api/freg/",
+    "EREG_PROXY_URL": "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api/ereg/",
     "FIKS_NOKKELFIL": "svarut_public_test.pem",
     "FSS_PROXY_PING_URL": "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api/fss-proxy/ping",
     "DIGISOS_API_BASEURL": "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api/fiks/",
