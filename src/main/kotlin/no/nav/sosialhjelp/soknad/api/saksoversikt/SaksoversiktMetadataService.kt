@@ -6,6 +6,8 @@ import no.nav.sbl.soknadsosialhjelp.tjeneste.saksoversikt.InnsendtSoknad
 import no.nav.sbl.soknadsosialhjelp.tjeneste.saksoversikt.PabegyntSoknad
 import no.nav.sbl.soknadsosialhjelp.tjeneste.saksoversikt.Part
 import no.nav.sbl.soknadsosialhjelp.tjeneste.saksoversikt.Vedlegg
+import no.nav.sosialhjelp.soknad.api.LenkeUtils.lagEttersendelseLenke
+import no.nav.sosialhjelp.soknad.api.LenkeUtils.lenkeTilPabegyntSoknad
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata.VedleggMetadataListe
@@ -70,7 +72,7 @@ class SaksoversiktMetadataService(
                 .withBehandlingsId(it.behandlingsId)
                 .withTittel("Søknad om økonomisk sosialhjelp")
                 .withSisteEndring(tilDate(it.sistEndretDato))
-                .withLenke(lagFortsettSoknadLenke(it.behandlingsId))
+                .withLenke(lenkeTilPabegyntSoknad(it.behandlingsId))
         }
     }
 
@@ -117,23 +119,4 @@ class SaksoversiktMetadataService(
     }
 
     private val bundle: Properties get() = navMessageSource.getBundleFor("soknadsosialhjelp", Locale("nb", "NO"))
-
-    private fun lagFortsettSoknadLenke(behandlingsId: String): String {
-        return lagContextLenke() + "skjema/" + behandlingsId + "/0"
-    }
-
-    companion object {
-        fun lagEttersendelseLenke(behandlingsId: String): String {
-            return lagContextLenke() + "skjema/" + behandlingsId + "/ettersendelse"
-        }
-
-        private fun lagContextLenke(): String {
-            val miljo = System.getProperty("environment.name", "")
-            var tjenesterPostfix = ""
-            if (miljo.contains("q")) {
-                tjenesterPostfix = "-$miljo.dev"
-            }
-            return "https://www$tjenesterPostfix.nav.no/sosialhjelp/soknad/"
-        }
-    }
 }
