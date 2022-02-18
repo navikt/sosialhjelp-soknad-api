@@ -21,7 +21,6 @@ import javax.ws.rs.ServerErrorException
 import javax.ws.rs.client.Client
 
 interface NavUtbetalingerClient {
-    fun ping()
     fun getUtbetalingerSiste40Dager(ident: String): NavUtbetalingerDto?
 }
 
@@ -32,17 +31,6 @@ class NavUtbetalingerClientImpl(
     private val oppslagApiAudience: String,
     private val tokendingsService: TokendingsService
 ) : NavUtbetalingerClient {
-
-    override fun ping() {
-        client
-            .target(baseurl + "ping")
-            .request()
-            .get().use { response ->
-                if (response.status != 200) {
-                    log.warn("Ping feilet mot Utbetalinger: ${response.statusInfo}")
-                }
-            }
-    }
 
     override fun getUtbetalingerSiste40Dager(ident: String): NavUtbetalingerDto? {
         hentFraCache(ident)?.let { return it }
