@@ -20,12 +20,12 @@
     "/apigw/securitytokenservicetoken": "apikey/apigw/dev/security-token-service-token/sosialhjelp-soknad-api_q1",
     "/apigw/dkifapi": "apikey/apigw/dev/dkif.api/sosialhjelp-soknad-api_q1",
     "/apigw/pdlapi": "apikey/apigw/dev/pdl-api/sosialhjelp-soknad-api_q1",
-    "/apigw/sosialhjelp_oppslag_api": "apikey/apigw/dev/sosialhjelp-oppslag-api/sosialhjelp-soknad-api_q1",
     "/serviceuser/srvsoknadsosialhjelp-server": "serviceuser/data/dev/srvsoknadsosialhjelp-server",
     "/serviceuser/srvsoknadsosialhjelp-server-sbs": "serviceuser/data/dev/srvsoknadsosialhjelp-server-sbs"
   },
   "outboundRulesFssApplications": [
-    "sosialhjelp-fss-proxy"
+    "sosialhjelp-fss-proxy",
+    "sosialhjelp-oppslag-api"
   ],
   "fssCluster": "dev-fss",
   "minReplicas": "1",
@@ -61,7 +61,8 @@
     "KODEVERK_PROXY_URL": "https://sosialhjelp-fss-proxy.dev-fss-pub.nais.io/proxy/kodeverk/",
     "LOGINSERVICE_URL": "https://loginservice.dev.nav.no/login",
     "NORG_PROXY_URL": "https://sosialhjelp-fss-proxy.dev-fss-pub.nais.io/proxy/norg/",
-    "OPPSLAG_API_BASEURL": "https://api-gw-q1.oera.no/sosialhjelp-oppslag-api/api/",
+    "OPPSLAG_API_AUDIENCE": "dev-fss:teamdigisos:sosialhjelp-oppslag-api",
+    "OPPSLAG_API_BASEURL": "https://sosialhjelp-oppslag-api.dev-fss-pub.nais.io/api/",
     "PDL_API_URL": "https://api-gw-q1.oera.no/pdl-api/graphql",
     "UNLEASH_API_URL": "https://unleash.nais.io/api",
     "SCHEDULER_DISABLE": "false",

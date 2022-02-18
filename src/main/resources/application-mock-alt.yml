@@ -72,6 +72,7 @@ tokendings_url: ${TOKEN_X_WELL_KNOWN_URL:http://localhost:8989/sosialhjelp/mock-
 tokendings_client_id: ${TOKEN_X_CLIENT_ID:localhost:teamdigisos:sosialhjelp-dialog-api}
 tokendings_private_jwk: ${TOKEN_X_PRIVATE_JWK:generateRSA}
 fss_proxy_audience: ${FSS_PROXY_AUDIENCE:dummyAudience}
+oppslag_api_audience: ${OPPSLAG_API_AUDIENCE:dummyAudience}
 
 # vault
 virksomhetssertifikat_path: ${VIRKSOMHETSSERTIFIKAT_PATH:/var/run/secrets/nais.io/virksomhetssertifikat}
