@@ -25,7 +25,6 @@ import javax.ws.rs.client.Client
 import javax.ws.rs.core.HttpHeaders.AUTHORIZATION
 
 interface KontonummerClient {
-    fun ping()
     fun getKontonummer(ident: String): KontonummerDto?
 }
 
@@ -36,17 +35,6 @@ class KontonummerClientImpl(
     private val oppslagApiAudience: String,
     private val tokendingsService: TokendingsService
 ) : KontonummerClient {
-
-    override fun ping() {
-        client
-            .target(baseurl + "ping")
-            .request()
-            .get().use { response ->
-                if (response.status != 200) {
-                    log.warn("Ping feilet mot Kontonummer: ${response.statusInfo}")
-                }
-            }
-    }
 
     override fun getKontonummer(ident: String): KontonummerDto? {
         hentKontonummerFraCache(ident)?.let { return it }
