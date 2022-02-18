@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.vedlegg.virusscan
 
-import no.nav.sosialhjelp.soknad.common.ServiceUtils
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -9,13 +8,12 @@ import org.springframework.web.reactive.function.client.WebClient
 @Configuration
 open class VirusScanConfig(
     private val nonProxiedWebClientBuilder: WebClient.Builder,
-    @Value("\${soknad.vedlegg.virusscan.enabled}") private val enabled: Boolean,
-    private val serviceUtils: ServiceUtils
+    @Value("\${soknad.vedlegg.virusscan.enabled}") private val enabled: Boolean
 ) {
 
     @Bean
     open fun virusScanner(): VirusScanner {
-        return ClamAvVirusScanner(virusScannerWebClient, enabled, serviceUtils)
+        return ClamAvVirusScanner(virusScannerWebClient, enabled)
     }
 
     private val virusScannerWebClient: WebClient

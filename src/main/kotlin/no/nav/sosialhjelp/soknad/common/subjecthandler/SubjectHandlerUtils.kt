@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.common.subjecthandler
 
 import no.nav.sosialhjelp.kotlin.utils.logger
-import no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils
+import no.nav.sosialhjelp.soknad.common.MiljoUtils
 
 object SubjectHandlerUtils {
 
@@ -21,7 +21,7 @@ object SubjectHandlerUtils {
     }
 
     fun setNewSubjectHandlerImpl(subjectHandlerImpl: SubjectHandler) {
-        if (!ServiceUtils.isNonProduction()) {
+        if (!MiljoUtils.isNonProduction()) {
             log.error("Forsøker å sette en annen SubjectHandlerImpl i prod!")
             throw RuntimeException("Forsøker å sette en annen SubjectHandlerImpl i prod!")
         } else {

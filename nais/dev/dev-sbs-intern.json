@@ -20,7 +20,6 @@
     "/apigw/securitytokenservicetoken": "apikey/apigw/dev/security-token-service-token/sosialhjelp-soknad-api_q1",
     "/apigw/dkifapi": "apikey/apigw/dev/dkif.api/sosialhjelp-soknad-api_q1",
     "/apigw/pdlapi": "apikey/apigw/dev/pdl-api/sosialhjelp-soknad-api_q1",
-    "/apigw/kodeverkapi": "apikey/apigw/dev/kodeverk.rest-api/sosialhjelp-soknad-api_q1",
     "/apigw/sosialhjelp_oppslag_api": "apikey/apigw/dev/sosialhjelp-oppslag-api/sosialhjelp-soknad-api_q1",
     "/serviceuser/srvsoknadsosialhjelp-server": "serviceuser/data/dev/srvsoknadsosialhjelp-server",
     "/serviceuser/srvsoknadsosialhjelp-server-sbs": "serviceuser/data/dev/srvsoknadsosialhjelp-server-sbs"
@@ -60,7 +59,7 @@
     "IDPORTEN_TOKEN_URL": "https://oidc-ver2.difi.no/idporten-oidc-provider/token",
     "IDPORTEN_CLIENTID": "1c3631f4-dbf2-4c12-bdc4-156cbd53c625",
     "IDPORTEN_CONFIG_URL": "https://oidc-ver2.difi.no/idporten-oidc-provider/.well-known/openid-configuration",
-    "KODEVERK_API_URL": "https://api-gw-q1.oera.no/kodeverk/api/",
+    "KODEVERK_PROXY_URL": "https://sosialhjelp-fss-proxy.dev-fss-pub.nais.io/proxy/kodeverk/",
     "LOGINSERVICE_URL": "https://loginservice.dev.nav.no/login",
     "NORG_PROXY_URL": "https://sosialhjelp-fss-proxy.dev-fss-pub.nais.io/proxy/norg/",
     "OPPSLAG_API_AUDIENCE": "dev-fss:teamdigisos:sosialhjelp-oppslag-api",
