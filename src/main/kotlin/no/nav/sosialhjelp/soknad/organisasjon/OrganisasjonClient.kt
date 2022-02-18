@@ -1,17 +1,23 @@
 package no.nav.sosialhjelp.soknad.organisasjon
 
+import kotlinx.coroutines.runBlocking
 import no.nav.sosialhjelp.soknad.client.exceptions.TjenesteUtilgjengeligException
+import no.nav.sosialhjelp.soknad.client.tokenx.TokendingsService
+import no.nav.sosialhjelp.soknad.common.Constants.BEARER
 import no.nav.sosialhjelp.soknad.common.Constants.HEADER_CALL_ID
 import no.nav.sosialhjelp.soknad.common.Constants.HEADER_CONSUMER_ID
 import no.nav.sosialhjelp.soknad.common.mdc.MdcOperations
 import no.nav.sosialhjelp.soknad.common.mdc.MdcOperations.MDC_CALL_ID
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
+import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils.getToken
+import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils.getUserIdFromToken
 import no.nav.sosialhjelp.soknad.organisasjon.dto.OrganisasjonNoekkelinfoDto
 import org.slf4j.LoggerFactory.getLogger
 import javax.ws.rs.BadRequestException
 import javax.ws.rs.NotFoundException
 import javax.ws.rs.ServerErrorException
 import javax.ws.rs.client.Client
+import javax.ws.rs.core.HttpHeaders
 
 interface OrganisasjonClient {
     fun hentOrganisasjonNoekkelinfo(orgnr: String): OrganisasjonNoekkelinfoDto?
@@ -20,12 +26,18 @@ interface OrganisasjonClient {
 class OrganisasjonClientImpl(
     private val client: Client,
     private val baseurl: String,
+    private val fssProxyAudience: String,
+    private val tokendingsService: TokendingsService
 ) : OrganisasjonClient {
 
     override fun hentOrganisasjonNoekkelinfo(orgnr: String): OrganisasjonNoekkelinfoDto? {
         return try {
+            val tokenXtoken = runBlocking {
+                tokendingsService.exchangeToken(getUserIdFromToken(), getToken(), fssProxyAudience)
+            }
             client.target("${baseurl}organisasjon/$orgnr")
                 .request()
+                .header(HttpHeaders.AUTHORIZATION, BEARER + tokenXtoken)
                 .header(HEADER_CALL_ID, MdcOperations.getFromMDC(MDC_CALL_ID))
                 .header(HEADER_CONSUMER_ID, SubjectHandlerUtils.getConsumerId())
                 .get(OrganisasjonNoekkelinfoDto::class.java)
