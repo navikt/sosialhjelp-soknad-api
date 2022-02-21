@@ -1,7 +1,0 @@
-# For å gå mot en testdatabase når du kjører lokalt kan du lage en kopi av denne uten .default-endelsen og legge inn riktig passord.
-db.driverClassName=oracle.jdbc.driver.OracleDriver
-db.url=jdbc:oracle:thin:@d32dbfl003.oera-t.local:1521/soknadsosialhjelp_t1
-db.username=soknadsosialhjelp
-db.password=<LEGG INN PASSORD FRA FASIT HER>
-db.dialect=org.hibernate.dialect.Oracle10gDialect
-db.erHsqldb=false

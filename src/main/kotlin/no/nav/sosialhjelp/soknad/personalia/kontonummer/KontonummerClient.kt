@@ -10,40 +10,31 @@ import no.nav.sosialhjelp.soknad.client.redis.CACHE_30_MINUTES_IN_SECONDS
 import no.nav.sosialhjelp.soknad.client.redis.KONTONUMMER_CACHE_KEY_PREFIX
 import no.nav.sosialhjelp.soknad.client.redis.RedisService
 import no.nav.sosialhjelp.soknad.client.redis.RedisUtils.redisObjectMapper
+import no.nav.sosialhjelp.soknad.client.tokenx.TokendingsService
 import no.nav.sosialhjelp.soknad.common.Constants.BEARER
 import no.nav.sosialhjelp.soknad.common.Constants.HEADER_CALL_ID
 import no.nav.sosialhjelp.soknad.common.Constants.HEADER_CONSUMER_ID
 import no.nav.sosialhjelp.soknad.common.mdc.MdcOperations
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.personalia.kontonummer.dto.KontonummerDto
-import org.eclipse.jetty.http.HttpHeader
 import org.slf4j.LoggerFactory.getLogger
 import javax.ws.rs.NotAuthorizedException
 import javax.ws.rs.NotFoundException
 import javax.ws.rs.ServerErrorException
 import javax.ws.rs.client.Client
+import javax.ws.rs.core.HttpHeaders.AUTHORIZATION
 
 interface KontonummerClient {
-    fun ping()
     fun getKontonummer(ident: String): KontonummerDto?
 }
 
 class KontonummerClientImpl(
     private val client: Client,
     private val baseurl: String,
-    private val redisService: RedisService
+    private val redisService: RedisService,
+    private val oppslagApiAudience: String,
+    private val tokendingsService: TokendingsService
 ) : KontonummerClient {
-
-    override fun ping() {
-        client
-            .target(baseurl + "ping")
-            .request()
-            .get().use { response ->
-                if (response.status != 200) {
-                    log.warn("Ping feilet mot Kontonummer: ${response.statusInfo}")
-                }
-            }
-    }
 
     override fun getKontonummer(ident: String): KontonummerDto? {
         hentKontonummerFraCache(ident)?.let { return it }
@@ -56,9 +47,12 @@ class KontonummerClientImpl(
                     factor = DEFAULT_EXPONENTIAL_BACKOFF_MULTIPLIER,
                     retryableExceptions = arrayOf(ServerErrorException::class)
                 ) {
+                    val tokenXToken = tokendingsService.exchangeToken(
+                        SubjectHandlerUtils.getUserIdFromToken(), SubjectHandlerUtils.getToken(), oppslagApiAudience
+                    )
                     client.target(baseurl + "kontonummer")
                         .request()
-                        .header(HttpHeader.AUTHORIZATION.name, BEARER + SubjectHandlerUtils.getToken())
+                        .header(AUTHORIZATION, BEARER + tokenXToken)
                         .header(HEADER_CALL_ID, MdcOperations.getFromMDC(MdcOperations.MDC_CALL_ID))
                         .header(HEADER_CONSUMER_ID, SubjectHandlerUtils.getConsumerId())
                         .get(KontonummerDto::class.java)

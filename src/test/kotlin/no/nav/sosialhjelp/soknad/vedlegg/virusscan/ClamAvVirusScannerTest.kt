@@ -1,11 +1,12 @@
 package no.nav.sosialhjelp.soknad.vedlegg.virusscan
 
 import io.mockk.every
-import io.mockk.mockk
+import io.mockk.mockkObject
+import io.mockk.unmockkObject
 import mockwebserver3.MockResponse
 import mockwebserver3.MockWebServer
 import no.nav.sosialhjelp.soknad.client.redis.RedisUtils.redisObjectMapper
-import no.nav.sosialhjelp.soknad.common.ServiceUtils
+import no.nav.sosialhjelp.soknad.common.MiljoUtils
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.OpplastingException
 import no.nav.sosialhjelp.soknad.vedlegg.virusscan.dto.Result
 import no.nav.sosialhjelp.soknad.vedlegg.virusscan.dto.ScanResult
@@ -23,9 +24,8 @@ class ClamAvVirusScannerTest {
     private val mockWebServer = MockWebServer()
     private val webClient = WebClient.create(mockWebServer.url("/").toString())
     private val enabled = true
-    private val serviceUtils: ServiceUtils = mockk()
 
-    private val virusScanner = ClamAvVirusScanner(webClient, enabled, serviceUtils)
+    private val virusScanner = ClamAvVirusScanner(webClient, enabled)
 
     private val filnavn = "virustest"
     private val behandlingsId = "1100001"
@@ -35,12 +35,14 @@ class ClamAvVirusScannerTest {
     fun setUp() {
         mockWebServer.start()
 
-        every { serviceUtils.isNonProduction() } returns false
+        mockkObject(MiljoUtils)
+        every { MiljoUtils.isNonProduction() } returns false
     }
 
     @AfterEach
     fun tearDown() {
         mockWebServer.close()
+        unmockkObject(MiljoUtils)
     }
 
     @Test
@@ -58,14 +60,14 @@ class ClamAvVirusScannerTest {
 
     @Test
     fun scanFile_scanningIsNotEnabled_doesNotThrowException() {
-        val virusScanner2 = ClamAvVirusScanner(webClient, false, serviceUtils)
+        val virusScanner2 = ClamAvVirusScanner(webClient, false)
         assertThatCode { virusScanner2.scan(filnavn, data, behandlingsId, "pdf") }
             .doesNotThrowAnyException()
     }
 
     @Test
     fun scanFile_filenameIsVirustest_isInfected() {
-        every { serviceUtils.isNonProduction() } returns true
+        every { MiljoUtils.isNonProduction() } returns true
         assertThatExceptionOfType(OpplastingException::class.java)
             .isThrownBy { virusScanner.scan("virustest", data, behandlingsId, "pdf") }
     }

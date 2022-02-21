@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.common.oidc
 
 import no.nav.security.token.support.jaxrs.JwtTokenContainerRequestFilter
-import no.nav.sosialhjelp.soknad.domain.model.util.ServiceUtils
+import no.nav.sosialhjelp.soknad.common.MiljoUtils
 import org.glassfish.jersey.server.wadl.processor.OptionsMethodProcessor
 import org.glassfish.jersey.server.wadl.processor.WadlModelProcessor.OptionsHandler
 import org.springframework.beans.factory.annotation.Value
@@ -28,7 +28,7 @@ class OidcResourceFilteringFeature(
     }
 
     private val isAllowedWhenNotRunningInProd: Boolean
-        get() = ServiceUtils.isNonProduction() && isOidcMock
+        get() = MiljoUtils.isNonProduction() && isOidcMock
 
     private val isOidcMock: Boolean
         get() = "true".equals(tillatmock, ignoreCase = true) && "true".equals(startOidcMock, ignoreCase = true)

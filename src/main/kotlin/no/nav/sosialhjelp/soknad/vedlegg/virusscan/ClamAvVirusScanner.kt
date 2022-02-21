@@ -5,7 +5,7 @@ import no.nav.sosialhjelp.kotlin.utils.retry
 import no.nav.sosialhjelp.soknad.client.config.RetryUtils.DEFAULT_EXPONENTIAL_BACKOFF_MULTIPLIER
 import no.nav.sosialhjelp.soknad.client.config.RetryUtils.DEFAULT_INITIAL_WAIT_INTERVAL_MILLIS
 import no.nav.sosialhjelp.soknad.client.config.RetryUtils.DEFAULT_MAX_ATTEMPTS
-import no.nav.sosialhjelp.soknad.common.ServiceUtils
+import no.nav.sosialhjelp.soknad.common.MiljoUtils
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.OpplastingException
 import no.nav.sosialhjelp.soknad.vedlegg.virusscan.dto.Result
 import no.nav.sosialhjelp.soknad.vedlegg.virusscan.dto.ScanResult
@@ -24,8 +24,7 @@ interface VirusScanner {
 
 class ClamAvVirusScanner(
     private val virusScannerWebClient: WebClient,
-    private val enabled: Boolean,
-    private val serviceUtils: ServiceUtils
+    private val enabled: Boolean
 ) : VirusScanner {
 
     override fun scan(filnavn: String, data: ByteArray, behandlingsId: String, fileType: String) {
@@ -42,7 +41,7 @@ class ClamAvVirusScanner(
 
     private fun isInfected(filnavn: String, data: ByteArray, behandlingsId: String, fileType: String): Boolean {
         try {
-            if (serviceUtils.isNonProduction() && filnavn.startsWith("virustest")) {
+            if (MiljoUtils.isNonProduction() && filnavn.startsWith("virustest")) {
                 return true
             }
             log.info("Scanner ${data.size} bytes for fileType $fileType (fra Tika)")

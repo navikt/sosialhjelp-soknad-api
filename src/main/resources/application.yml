@@ -41,15 +41,14 @@ environment.name: ${ENVIRONMENT_NAME}
 
 # rest
 digisos_api_baseurl: ${DIGISOS_API_BASEURL}
-ereg_api_baseurl: ${EREG_API_BASEURL}
+ereg_proxy_url: ${EREG_PROXY_URL}
 aareg_api_baseurl: ${AAREG_API_BASEURL}
 securitytokenservice_apigw_url: ${SECURITYTOKENSERVICE_APIGW_URL}
 dkif_api_baseurl: ${DKIF_API_BASEURL}
 krr_baseurl: ${KRR_BASEURL}
-krr_audience: ${KRR_AUDIENCE}
 pdl_api_url: ${PDL_API_URL}
 unleash_api_url: ${UNLEASH_API_URL}
-kodeverk_api_url: ${KODEVERK_API_URL}
+kodeverk_proxy_url: ${KODEVERK_PROXY_URL}
 oppslag_api_baseurl: ${OPPSLAG_API_BASEURL}
 norg_proxy_url: ${NORG_PROXY_URL}
 fss_proxy_ping_url: ${FSS_PROXY_PING_URL}
@@ -79,6 +78,8 @@ tokendings_url: ${TOKEN_X_WELL_KNOWN_URL}
 tokendings_client_id: ${TOKEN_X_CLIENT_ID}
 tokendings_private_jwk: ${TOKEN_X_PRIVATE_JWK}
 fss_proxy_audience: ${FSS_PROXY_AUDIENCE}
+oppslag_api_audience: ${OPPSLAG_API_AUDIENCE}
+krr_audience: ${KRR_AUDIENCE}
 
 # svarut:
 fiks_svarut_username: ${FIKS_SVARUT_USERNAME}

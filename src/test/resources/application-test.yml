@@ -25,8 +25,6 @@ metrics.report.enabled: false
 sensu_client_host: 127.0.0.1
 sensu_client_port: 8989
 
-no.nav.sosialhjelp.soknad.hsqldb: true
-
   # Andre properties
 soknad.ettersending.antalldager: 42
 sendsoknad.batch.enabled: false
@@ -64,6 +62,8 @@ tokendings_url: tokendings_endpoint_url
 tokendings_client_id: localhost:teamdigisos:sosialhjelp-dialog-api
 tokendings_private_jwk: generateRSA
 fss_proxy_audience: dummyAudience
+oppslag_api_audience: dummyAudience
+krr_audience: dummyAudience
 
 # svarut:
 fiks_svarut_username: username
@@ -71,16 +71,15 @@ fiks_svarut_password: pwpwpwpw
 
 # rest
 digisos_api_baseurl: ${DIGISOS_API_BASEURL:https://api.fiks.test.ks.no/}
-ereg_api_baseurl: https://api-gw-q0.oera.no/ereg/api/
+ereg_proxy_url: https://fss-proxy/proxy/ereg/
 aareg_api_baseurl: https://api-gw-q0.oera.no/aareg/api/
 securitytokenservice_apigw_url: https://api-gw-q0.oera.no/security-token-service/rest/v1/sts/token
 dkif_api_baseurl: https://api-gw-q0.oera.no/dkif/api/
 krr_baseurl: http://krr/
-krr_audience: dummyAudience
 pdl_api_url: https://api-gw-q1.oera.no/pdl-api/graphql
 unleash_api_url: https://unleash.nais.io/api
-kodeverk_api_url: https://api-gw-q1.oera.no/kodeverk/api/
-oppslag_api_baseurl: https://api-gw-q1.oera.no/sosiahjelp-oppslag-api/api/
+kodeverk_proxy_url: https://fss-proxy/proxy/kodeverk/
+oppslag_api_baseurl: https://sosialhjelp-oppslag-api/api/
 soknad.bostotte.url: http://bostotte.url
 dittnav.link.url: http://www.nav.no/dittnav
 norg_proxy_url: https://fss-proxy/proxy/norg

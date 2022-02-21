@@ -2,6 +2,8 @@ package no.nav.sosialhjelp.soknad.innsending.svarut
 
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.mockkObject
+import io.mockk.unmockkObject
 import io.mockk.verify
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonData
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonDriftsinformasjon
@@ -13,6 +15,7 @@ import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
 import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.SosialhjelpPdfGenerator
+import no.nav.sosialhjelp.soknad.common.MiljoUtils
 import no.nav.sosialhjelp.soknad.domain.OpplastetVedlegg
 import no.nav.sosialhjelp.soknad.domain.SendtSoknad
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
@@ -23,6 +26,7 @@ import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJ
 import no.nav.sosialhjelp.soknad.innsending.svarut.client.SvarUtService
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.io.InputStream
@@ -39,7 +43,8 @@ internal class FiksSenderTest {
 
     @BeforeEach
     fun setUp() {
-        System.clearProperty("environment.name")
+        mockkObject(MiljoUtils)
+        every { MiljoUtils.isNonProduction() } returns false
         every { dokumentKrypterer.krypterData(any()) } returns byteArrayOf(3, 2, 1)
         every { innsendingService.finnSendtSoknadForEttersendelse(any()) } returns SendtSoknad()
             .withFiksforsendelseId(FIKSFORSENDELSE_ID)
@@ -50,6 +55,11 @@ internal class FiksSenderTest {
         every { innsendingService.hentAlleOpplastedeVedleggForSoknad(any()) } returns emptyList()
 
         fiksSender = FiksSender(dokumentKrypterer, innsendingService, sosialhjelpPdfGenerator, true, svarUtService)
+    }
+
+    @AfterEach
+    internal fun tearDown() {
+        unmockkObject(MiljoUtils)
     }
 
     @Test
@@ -79,6 +89,8 @@ internal class FiksSenderTest {
 
     @Test
     fun opprettForsendelseSetterRiktigInfoPaForsendelsenUtenKryptering() {
+        every { MiljoUtils.isNonProduction() } returns true
+        every { MiljoUtils.environmentName } returns "test"
         fiksSender = FiksSender(dokumentKrypterer, innsendingService, sosialhjelpPdfGenerator, false, svarUtService)
         every { innsendingService.hentSoknadUnderArbeid(any(), any()) } returns SoknadUnderArbeid()
             .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))

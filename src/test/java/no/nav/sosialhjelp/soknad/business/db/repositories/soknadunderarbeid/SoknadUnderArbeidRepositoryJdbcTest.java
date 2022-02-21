@@ -13,6 +13,7 @@ import no.nav.sosialhjelp.soknad.domain.VedleggType;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -29,6 +30,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {DbTestConfig.class})
+@ActiveProfiles("test")
 class SoknadUnderArbeidRepositoryJdbcTest {
 
     private static final String EIER = "12345678901";
