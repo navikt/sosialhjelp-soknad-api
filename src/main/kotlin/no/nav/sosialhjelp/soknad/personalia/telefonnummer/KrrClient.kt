@@ -34,7 +34,8 @@ class KrrClient(
         client
             .target("$krrUrl/rest/ping")
             .request()
-            .options().use {
+            .options() // burde være GET
+            .use {
                 if (it.status != 200) {
                     log.warn("Ping feilet mot Krr: {}", it.status)
                 }
@@ -42,8 +43,7 @@ class KrrClient(
     }
 
     fun getDigitalKontaktinformasjon(ident: String): DigitalKontaktinformasjon? {
-//        return hentFraCache(ident) ?: hentFraServer(ident)
-        return hentFraServer(ident)
+        return hentFraCache(ident) ?: hentFraServer(ident)
     }
 
     private fun hentFraCache(ident: String): DigitalKontaktinformasjon? {
@@ -62,7 +62,7 @@ class KrrClient(
                 .header(HEADER_CALL_ID, MdcOperations.getFromMDC(MDC_CALL_ID))
                 .header(HEADER_NAV_PERSONIDENT, ident)
                 .get(DigitalKontaktinformasjon::class.java)
-//                .also { lagreTilCache(ident, it) }
+                .also { lagreTilCache(ident, it) }
         } catch (e: NotAuthorizedException) {
             log.warn("Krr - 401 Unauthorized - {}", e.message)
             null
