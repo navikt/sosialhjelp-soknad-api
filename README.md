@@ -1,21 +1,29 @@
-![](https://github.com/navikt/sosialhjelp-soknad-api/workflows/Build%20image/badge.svg?branch=master)
-![](https://github.com/navikt/sosialhjelp-soknad-api/workflows/Deploy%20Dev/badge.svg?)
-![](https://github.com/navikt/sosialhjelp-soknad-api/workflows/Deploy%20Prod/badge.svg?)
-![](https://github.com/navikt/sosialhjelp-soknad-api/workflows/Deploy%20GCP/badge.svg?)
+[![Build image](https://github.com/navikt/sosialhjelp-soknad-api/actions/workflows/build.yml/badge.svg?branch=master)](https://github.com/navikt/sosialhjelp-soknad-api/actions/workflows/build.yml)
+[![Deploy til prod-sbs](https://github.com/navikt/sosialhjelp-soknad-api/actions/workflows/deploy_prod.yml/badge.svg)](https://github.com/navikt/sosialhjelp-soknad-api/actions/workflows/deploy_prod.yml)
 
-## Sosialhjelp-soknad-api
+# Sosialhjelp-soknad-api
+Backend-applikasjon for søknad om økonomisk sosialhjelp.
+
+## Henvendelser
+Spørsmål knyttet til koden eller teamet kan stilles til teamdigisos@nav.no.
+
+### For NAV-ansatte
+Interne henvendelser kan sendes via Slack i kanalen #team_digisos.
+
+## Teknologi:
+* Java/Kotlin
+* JDK 11
+* Maven
+* Spring Boot + Jersey
+* Oracle DB
+* Redis (cache)
+
+### Krav
+* JDK 11
 
 ### Kjøring lokalt mot mock-alt
-Bruk MockAltSoknadsosialhjelpServer istedenfor DevSoknadsosialhjelpServer.\
+Start `Application.kt` med profilene `mock-alt,no-redis,log-console`.\
 Krever at sosialhjelp-mock-alt-api også kjører lokalt.
-
-### Kjøring lokalt
-Backenden kan startes ved å kjøre main-metoden i DevSoknadsosialhjelpServer. Den kjører på port 8181. I utgangspunktet kjører backenden lokalt mot en in memory-database, men hvis du ønsker å kjøre mot en faktisk database kan du lage en kopi av filen `oracledb.properties.default`, fjerne .default-endelsen og fylle inn verdiene for databasen du vil teste mot (`oracledb.properties` er ignorert i gitignore og vil ikke bli sjekket inn). 
-
-Husk å kjøre mvn clean install (evt process-resources) før du kjører lokalt slik at du får med tekster. For å teste søknaden lokalt trenger du også å ha frontenden kjørende. 
-
-For å se json-representasjon av søknaden: 
-`http://localhost:8181/sosialhjelp/soknad-api/representasjon/json/110000001`
 
 ### Tekster
 Tekstfiler finnes her: `src/main/resources-filtered`.
@@ -36,8 +44,8 @@ For å kunne konsumere pakker fra Github Package Registry kjøres `mvn install -
 Mer info: https://github.com/navikt/utvikling/blob/master/Konsumere%20biblioteker%20fra%20Github%20Package%20Registry.md
 
 ### Ktlint
-Her brukes `maven-antrun-plugin` for sjekking og formattering av kotlin-kode - ref https://github.com/pinterest/ktlint#integration
+Her brukes `maven-antrun-plugin` for linting av kotlin-kode - ref https://github.com/pinterest/ktlint#integration
 
-To check code style - `mvn antrun:run@ktlint` (it's also bound to `mvn validate`).
+Sjekke kode - `mvn antrun:run@ktlint` (også bundet til `mvn validate`).
 
-To run formatter - `mvn antrun:run@ktlint-format`.
+Formattere kode - `mvn antrun:run@ktlint-format`.

@@ -15,6 +15,7 @@ class OidcResourceFilteringFeature(
     @Value("\${tillatmock}") private val tillatmock: String,
     @Value("\${start.oidc.withmock}") private val startOidcMock: String
 ) : DynamicFeature {
+
     override fun configure(resourceInfo: ResourceInfo, context: FeatureContext) {
         if (isClassAllowedInProd(resourceInfo) || isAllowedWhenNotRunningInProd) {
             return
@@ -23,18 +24,14 @@ class OidcResourceFilteringFeature(
     }
 
     private fun isClassAllowedInProd(resourceInfo: ResourceInfo): Boolean {
-        return (
-            ALLOWED_CLASSES.contains(resourceInfo.resourceClass) ||
-                ALLOWED_PARENT_CLASSES.contains(resourceInfo.resourceClass.enclosingClass)
-            )
+        return ALLOWED_CLASSES.contains(resourceInfo.resourceClass) || ALLOWED_PARENT_CLASSES.contains(resourceInfo.resourceClass.enclosingClass)
     }
 
     private val isAllowedWhenNotRunningInProd: Boolean
         get() = MiljoUtils.isNonProduction() && isOidcMock
 
     private val isOidcMock: Boolean
-        get() = "true".equals(tillatmock, ignoreCase = true) &&
-            "true".equals(startOidcMock, ignoreCase = true)
+        get() = "true".equals(tillatmock, ignoreCase = true) && "true".equals(startOidcMock, ignoreCase = true)
 
     companion object {
         private val ALLOWED_CLASSES =

@@ -27,7 +27,6 @@ import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidS
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
-import org.assertj.core.util.Lists
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -104,7 +103,7 @@ internal class SoknadRessursTest {
 
     @Test
     fun opprettSoknadMedBehandlingsidSomIkkeHarEttersendingSkalStarteNyEttersending() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
+        every { tilgangskontroll.verifiserBrukerHarTilgangTilMetadata(BEHANDLINGSID) } just runs
         val response: HttpServletResponse = mockk()
         every { response.addCookie(any()) } just runs
         every {
@@ -119,7 +118,7 @@ internal class SoknadRessursTest {
 
     @Test
     fun opprettSoknadMedBehandlingsidSomHarEttersendingSkalIkkeStarteNyEttersending() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
+        every { tilgangskontroll.verifiserBrukerHarTilgangTilMetadata(BEHANDLINGSID) } just runs
         val response: HttpServletResponse = mockk()
         every { response.addCookie(any()) } just runs
         every {
@@ -140,7 +139,7 @@ internal class SoknadRessursTest {
         every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
         every { soknadService.oppdaterSamtykker(any(), any(), any(), any()) } just runs
 
-        val samtykkeListe = Lists.emptyList<BekreftelseRessurs>()
+        val samtykkeListe = emptyList<BekreftelseRessurs>()
         val token = "token"
         ressurs.oppdaterSamtykker(BEHANDLINGSID, samtykkeListe, token)
 
@@ -154,7 +153,7 @@ internal class SoknadRessursTest {
 
         val bekreftelse1 = BekreftelseRessurs(BOSTOTTE_SAMTYKKE, true)
         val bekreftelse2 = BekreftelseRessurs(UTBETALING_SKATTEETATEN_SAMTYKKE, true)
-        val samtykkeListe: List<BekreftelseRessurs> = Lists.newArrayList(bekreftelse1, bekreftelse2)
+        val samtykkeListe: List<BekreftelseRessurs> = listOf(bekreftelse1, bekreftelse2)
         val token = "token"
         ressurs.oppdaterSamtykker(BEHANDLINGSID, samtykkeListe, token)
 
@@ -168,7 +167,7 @@ internal class SoknadRessursTest {
 
         val bekreftelse1 = BekreftelseRessurs(BOSTOTTE_SAMTYKKE, true)
         val bekreftelse2 = BekreftelseRessurs(UTBETALING_SKATTEETATEN_SAMTYKKE, false)
-        val samtykkeListe: List<BekreftelseRessurs> = Lists.newArrayList(bekreftelse1, bekreftelse2)
+        val samtykkeListe: List<BekreftelseRessurs> = listOf(bekreftelse1, bekreftelse2)
         val token = "token"
         ressurs.oppdaterSamtykker(BEHANDLINGSID, samtykkeListe, token)
 
@@ -272,7 +271,7 @@ internal class SoknadRessursTest {
 
     @Test
     fun opprettSoknadSkalKasteAuthorizationExceptionVedManglendeTilgang() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } throws AuthorizationException("Not for you my friend")
+        every { tilgangskontroll.verifiserBrukerHarTilgangTilMetadata(BEHANDLINGSID) } throws AuthorizationException("Not for you my friend")
 
         assertThatExceptionOfType(AuthorizationException::class.java)
             .isThrownBy { ressurs.opprettSoknad(BEHANDLINGSID, mockk(), "token") }

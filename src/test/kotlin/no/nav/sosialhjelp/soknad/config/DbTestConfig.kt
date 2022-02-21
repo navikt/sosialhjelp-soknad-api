@@ -2,8 +2,6 @@ package no.nav.sosialhjelp.soknad.config
 
 import no.nav.sosialhjelp.soknad.business.db.RepositoryTestSupport
 import no.nav.sosialhjelp.soknad.business.db.TestSupport
-import no.nav.sosialhjelp.soknad.business.db.config.DatabaseTestContext
-import no.nav.sosialhjelp.soknad.business.db.config.DatabaseTestContext.buildDataSource
 import no.nav.sosialhjelp.soknad.business.db.repositories.opplastetvedlegg.BatchOpplastetVedleggRepository
 import no.nav.sosialhjelp.soknad.business.db.repositories.opplastetvedlegg.BatchOpplastetVedleggRepositoryJdbc
 import no.nav.sosialhjelp.soknad.business.db.repositories.opplastetvedlegg.OpplastetVedleggRepository
@@ -23,30 +21,13 @@ import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.Sokn
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Import
-import org.springframework.jdbc.datasource.DataSourceTransactionManager
 import org.springframework.transaction.annotation.EnableTransactionManagement
-import org.springframework.transaction.support.TransactionTemplate
 import javax.sql.DataSource
 
 @Configuration
-@Import(value = [DatabaseTestContext::class])
+@Import(value = [MockAltTestDbConfig::class])
 @EnableTransactionManagement
 open class DbTestConfig {
-
-    @Bean
-    open fun dataSource(): DataSource {
-        return buildDataSource()
-    }
-
-    @Bean
-    open fun transactionManager(dataSource: DataSource): DataSourceTransactionManager {
-        return DataSourceTransactionManager(dataSource)
-    }
-
-    @Bean
-    open fun transactionTemplate(transactionManager: DataSourceTransactionManager): TransactionTemplate {
-        return TransactionTemplate(transactionManager)
-    }
 
     @Bean
     open fun soknadMetadataRepository(): SoknadMetadataRepository {
@@ -89,7 +70,7 @@ open class DbTestConfig {
     }
 
     @Bean
-    open fun testSupport(dataSource: DataSource?): RepositoryTestSupport {
+    open fun testSupport(dataSource: DataSource): RepositoryTestSupport {
         return TestSupport(dataSource)
     }
 }

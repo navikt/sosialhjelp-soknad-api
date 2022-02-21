@@ -4,6 +4,7 @@ import no.nav.sosialhjelp.soknad.client.pdl.PdlConfig
 import no.nav.sosialhjelp.soknad.client.redis.RedisService
 import no.nav.sosialhjelp.soknad.client.sts.StsClient
 import no.nav.sosialhjelp.soknad.common.rest.RestUtils
+import no.nav.sosialhjelp.soknad.health.selftest.Pingable
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -24,6 +25,19 @@ open class GeografiskTilknytningConfig(
     @Bean
     open fun geografiskTilknytningService(geografiskTilknytningClient: GeografiskTilknytningClient): GeografiskTilknytningService {
         return GeografiskTilknytningService(geografiskTilknytningClient)
+    }
+
+    @Bean
+    open fun pdlPing(geografiskTilknytningClient: GeografiskTilknytningClient): Pingable {
+        return Pingable {
+            val metadata = Pingable.PingMetadata(baseurl, "PDL", true)
+            try {
+                geografiskTilknytningClient.ping()
+                Pingable.lyktes(metadata)
+            } catch (e: Exception) {
+                Pingable.feilet(metadata, e)
+            }
+        }
     }
 
     private val client: Client

@@ -25,15 +25,15 @@ class SubjectHandlerImpl : SubjectHandler {
 
     override fun getUserIdFromToken(): String {
         return when {
-            tokenValidationContext.hasTokenFor(TOKENX) -> getUserIdFromTokenXToken()
-            else -> tokenValidationContext.getClaims(SELVBETJENING).subject
+            tokenValidationContext.hasTokenFor(TOKENX) -> getUserIdFromTokenWithIssuer(TOKENX)
+            else -> getUserIdFromTokenWithIssuer(SELVBETJENING)
         }
     }
 
-    private fun getUserIdFromTokenXToken(): String {
-        val pid: String? = tokenValidationContext.getClaims(TOKENX).getStringClaim(CLAIM_PID)
-        val sub: String? = tokenValidationContext.getClaims(TOKENX).subject
-        return pid ?: sub ?: throw RuntimeException("Could not find any userId for tokenX in pid or sub claim")
+    private fun getUserIdFromTokenWithIssuer(issuer: String): String {
+        val pid: String? = tokenValidationContext.getClaims(issuer).getStringClaim(CLAIM_PID)
+        val sub: String? = tokenValidationContext.getClaims(issuer).subject
+        return pid ?: sub ?: throw RuntimeException("Could not find any userId for token in pid or sub claim")
     }
 
     override fun getToken(): String {

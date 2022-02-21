@@ -1,6 +1,7 @@
 package no.nav.sosialhjelp.soknad.client.kodeverk
 
 import com.fasterxml.jackson.core.JsonProcessingException
+import kotlinx.coroutines.runBlocking
 import no.nav.sosialhjelp.soknad.client.kodeverk.dto.KodeverkDto
 import no.nav.sosialhjelp.soknad.client.redis.KODEVERK_CACHE_SECONDS
 import no.nav.sosialhjelp.soknad.client.redis.KODEVERK_LAST_POLL_TIME_KEY
@@ -9,6 +10,8 @@ import no.nav.sosialhjelp.soknad.client.redis.LANDKODER_CACHE_KEY
 import no.nav.sosialhjelp.soknad.client.redis.POSTNUMMER_CACHE_KEY
 import no.nav.sosialhjelp.soknad.client.redis.RedisService
 import no.nav.sosialhjelp.soknad.client.redis.RedisUtils.redisObjectMapper
+import no.nav.sosialhjelp.soknad.client.tokenx.TokendingsService
+import no.nav.sosialhjelp.soknad.common.Constants.BEARER
 import no.nav.sosialhjelp.soknad.common.Constants.HEADER_CALL_ID
 import no.nav.sosialhjelp.soknad.common.Constants.HEADER_CONSUMER_ID
 import no.nav.sosialhjelp.soknad.common.mdc.MdcOperations
@@ -20,10 +23,9 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME
 import javax.ws.rs.ClientErrorException
 import javax.ws.rs.client.Client
-import javax.ws.rs.client.Invocation
+import javax.ws.rs.core.HttpHeaders.AUTHORIZATION
 
 interface KodeverkClient {
-    fun ping()
     fun hentPostnummer(): KodeverkDto?
     fun hentKommuner(): KodeverkDto?
     fun hentLandkoder(): KodeverkDto?
@@ -32,18 +34,10 @@ interface KodeverkClient {
 class KodeverkClientImpl(
     private val client: Client,
     private val baseurl: String,
-    private val redisService: RedisService
+    private val redisService: RedisService,
+    private val tokendingsService: TokendingsService,
+    private val fssProxyAudience: String
 ) : KodeverkClient {
-
-    override fun ping() {
-        // Kaller GET /v1/kodeverk ettersom kodeverk ikke har dedikert ping-endepunkt
-        lagRequest(URI.create(baseurl + "v1/kodeverk/")).get()
-            .use { response ->
-                if (response.status != 200) {
-                    throw RuntimeException("Ping mot kodeverk feilet: ${response.status}, respons: ${response.readEntity(String::class.java)}")
-                }
-            }
-    }
 
     override fun hentPostnummer(): KodeverkDto? {
         return hentKodeverk(POSTNUMMER, POSTNUMMER_CACHE_KEY)
@@ -57,18 +51,19 @@ class KodeverkClientImpl(
         return hentKodeverk(LANDKODER, LANDKODER_CACHE_KEY)
     }
 
-    private fun lagRequest(uri: URI): Invocation.Builder {
-        return client.target(uri)
-            .queryParam("ekskluderUgyldige", true)
-            .queryParam("spraak", "nb")
-            .request()
-            .header(HEADER_CALL_ID, MdcOperations.getFromMDC(MdcOperations.MDC_CALL_ID))
-            .header(HEADER_CONSUMER_ID, SubjectHandlerUtils.getConsumerId())
-    }
-
     private fun hentKodeverk(kodeverksnavn: String, key: String): KodeverkDto? {
         return try {
-            val kodeverk = lagRequest(kodeverkUri(kodeverksnavn)).get(KodeverkDto::class.java)
+            val tokenXToken = runBlocking {
+                tokendingsService.exchangeToken(
+                    SubjectHandlerUtils.getUserIdFromToken(), SubjectHandlerUtils.getToken(), fssProxyAudience
+                )
+            }
+            val kodeverk = client.target(kodeverkUri(kodeverksnavn))
+                .request()
+                .header(AUTHORIZATION, BEARER + tokenXToken)
+                .header(HEADER_CALL_ID, MdcOperations.getFromMDC(MdcOperations.MDC_CALL_ID))
+                .header(HEADER_CONSUMER_ID, SubjectHandlerUtils.getConsumerId())
+                .get(KodeverkDto::class.java)
             oppdaterCache(key, kodeverk)
             kodeverk
         } catch (e: ClientErrorException) {
@@ -81,7 +76,7 @@ class KodeverkClientImpl(
     }
 
     private fun kodeverkUri(kodeverksnavn: String): URI {
-        return URI.create(baseurl + "v1/kodeverk/" + kodeverksnavn + "/koder/betydninger")
+        return URI.create("$baseurl$kodeverksnavn")
     }
 
     private fun oppdaterCache(key: String, kodeverk: KodeverkDto) {
