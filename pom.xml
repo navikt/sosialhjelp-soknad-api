@@ -61,7 +61,7 @@
         <spring.version>5.3.15</spring.version>
         <jetty.version>9.4.44.v20210927</jetty.version>
         <jersey.version>2.35</jersey.version>
-        <token-validation.version>1.3.10</token-validation.version>
+        <token-validation.version>1.3.17</token-validation.version>
         <nimbus-jose-jwt.version>9.16.1</nimbus-jose-jwt.version>
         <ojdbc.version>19.13.0.0.1</ojdbc.version>
         <flyway-core.version>7.15.0</flyway-core.version>
@@ -75,7 +75,6 @@
         <tika.version>2.2.1</tika.version>
         <logback.version>1.2.10</logback.version>
         <hsqldb.version>2.6.1</hsqldb.version>
-        <hikaricp.version>4.0.3</hikaricp.version>
         <joda-time.version>2.10.12</joda-time.version>
         <slf4j.version>1.7.32</slf4j.version>
         <commons-codec.version>1.15</commons-codec.version>
@@ -90,7 +89,6 @@
         <jaxb-runtime.version>2.3.6</jaxb-runtime.version>
         <lettuce.version>6.1.6.RELEASE</lettuce.version>
         <unleash.version>3.3.4</unleash.version>
-        <resilience4j.version>1.7.1</resilience4j.version>
         <reactor-core.version>3.4.14</reactor-core.version>
         <reactor-netty-http.version>1.0.15</reactor-netty-http.version>
         <log4j.version>2.17.1</log4j.version>
@@ -124,7 +122,6 @@
         <asm.version>9.2</asm.version>
         <rhino.version>1.7.14</rhino.version>
         <logstash-logback-encoder.version>7.0.1</logstash-logback-encoder.version>
-        <hk2.version>2.6.1</hk2.version>
         <prometheus.version>0.14.1</prometheus.version>
         <oauth2-oidc-sdk.version>9.22</oauth2-oidc-sdk.version>
         <emoji-java.version>5.1.1</emoji-java.version>
@@ -135,7 +132,6 @@
         <gson.version>2.8.9</gson.version>
         <netty.version>4.1.72.Final</netty.version>
         <micrometer.version>1.8.2</micrometer.version>
-        <hibernate-validator.version>6.2.0.Final</hibernate-validator.version>
     </properties>
 
     <dependencyManagement>
@@ -273,81 +269,6 @@
                 <groupId>org.eclipse.jetty</groupId>
                 <artifactId>jetty-client</artifactId>
                 <version>${jetty.version}</version>
-            </dependency>
-
-            <!-- jersey -->
-            <dependency>
-                <groupId>org.glassfish.jersey.core</groupId>
-                <artifactId>jersey-server</artifactId>
-                <version>${jersey.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.glassfish.hk2.external</groupId>
-                        <artifactId>javax.inject</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.glassfish.hk2.external</groupId>
-                        <artifactId>jakarta.inject</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.glassfish.jersey.ext</groupId>
-                <artifactId>jersey-spring5</artifactId>
-                <version>${jersey.version}</version>
-                <scope>runtime</scope>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.glassfish.hk2.external</groupId>
-                        <artifactId>javax.inject</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.glassfish.hk2.external</groupId>
-                        <artifactId>jakarta.inject</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.glassfish.jersey.core</groupId>
-                <artifactId>jersey-client</artifactId>
-                <version>${jersey.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.glassfish.jersey.core</groupId>
-                <artifactId>jersey-common</artifactId>
-                <version>${jersey.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.glassfish.jersey.inject</groupId>
-                <artifactId>jersey-hk2</artifactId>
-                <version>${jersey.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.glassfish.jersey.containers</groupId>
-                <artifactId>jersey-container-servlet-core</artifactId>
-                <version>${jersey.version}</version>
-            </dependency>
-
-            <!-- hk2 -->
-            <dependency>
-                <groupId>org.glassfish.hk2</groupId>
-                <artifactId>hk2-locator</artifactId>
-                <version>${hk2.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.glassfish.hk2</groupId>
-                <artifactId>hk2-utils</artifactId>
-                <version>${hk2.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.glassfish.hk2.external</groupId>
-                <artifactId>aopalliance-repackaged</artifactId>
-                <version>${hk2.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.glassfish.hk2</groupId>
-                <artifactId>hk2-api</artifactId>
-                <version>${hk2.version}</version>
             </dependency>
 
             <!-- Fiks -->
@@ -557,11 +478,6 @@
                 <groupId>io.micrometer</groupId>
                 <artifactId>micrometer-core</artifactId>
                 <version>${micrometer.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.hibernate.validator</groupId>
-                <artifactId>hibernate-validator</artifactId>
-                <version>${hibernate-validator.version}</version>
             </dependency>
             <dependency>
                 <groupId>ch.qos.logback</groupId>
@@ -817,13 +733,6 @@
             <version>${lettuce.version}</version>
         </dependency>
 
-        <!-- resilience4j -->
-        <dependency>
-            <groupId>io.github.resilience4j</groupId>
-            <artifactId>resilience4j-retry</artifactId>
-            <version>${resilience4j.version}</version>
-        </dependency>
-
         <!-- Fiks -->
         <dependency>
             <groupId>no.ks.fiks</groupId>
@@ -912,11 +821,6 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        <dependency>
-            <groupId>com.zaxxer</groupId>
-            <artifactId>HikariCP</artifactId>
-            <version>${hikaricp.version}</version>
-        </dependency>
 
         <!-- pdfbox / pdf -->
         <dependency>
@@ -1003,10 +907,6 @@
                     <artifactId>spring-boot-starter-web</artifactId>
                 </exclusion>
                 <exclusion>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-starter-jersey</artifactId>
-                </exclusion>
-                <exclusion>
                     <groupId>javax.inject</groupId>
                     <artifactId>javax.inject</artifactId>
                 </exclusion>
@@ -1029,10 +929,6 @@
             <scope>test</scope>
             <version>${jersey.version}</version>
             <exclusions>
-                <exclusion>
-                    <groupId>org.glassfish.hk2.external</groupId>
-                    <artifactId>jakarta.inject</artifactId>
-                </exclusion>
                 <exclusion>
                     <groupId>junit</groupId>
                     <artifactId>junit</artifactId>
@@ -1143,9 +1039,7 @@
                             <goal>repackage</goal>
                         </goals>
                         <configuration>
-                            <mainClass>
-                                no.nav.sosialhjelp.soknad.Application
-                            </mainClass>
+                            <mainClass>no.nav.sosialhjelp.soknad.Application</mainClass>
                         </configuration>
                     </execution>
                 </executions>
