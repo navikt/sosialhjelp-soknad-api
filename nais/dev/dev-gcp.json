@@ -32,7 +32,7 @@
   "isLabsGcp": false,
   "leaderElectionEnabled": false,
   "maskinportenEnabled": false,
-  "azureEnabled": false,
+  "azureEnabled": true,
   "env": {
     "SPRING_PROFILES_ACTIVE": "mock-alt,log-console,no-redis",
     "GCP": "true",

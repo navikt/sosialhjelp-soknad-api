@@ -31,7 +31,6 @@ spec:
   azure:
     application:
       enabled: {{azureEnabled}}
-      tenant: {{azureTenant}}
 {{/if}}
 {{#if maskinportenEnabled}}
   maskinporten:
