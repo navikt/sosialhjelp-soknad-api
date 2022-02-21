@@ -1,7 +1,6 @@
 package no.nav.sosialhjelp.soknad.personalia.telefonnummer
 
 import no.finn.unleash.Unleash
-import no.nav.sosialhjelp.kotlin.utils.logger
 import no.nav.sosialhjelp.soknad.client.redis.RedisService
 import no.nav.sosialhjelp.soknad.client.tokenx.TokendingsService
 import no.nav.sosialhjelp.soknad.common.Constants.HEADER_NAV_APIKEY
@@ -12,7 +11,6 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Import
 import javax.ws.rs.client.Client
-import javax.ws.rs.client.ClientRequestContext
 import javax.ws.rs.client.ClientRequestFilter
 
 @Configuration
@@ -81,19 +79,6 @@ open class TelefonnummerConfig(
 
     private val krrClient: Client
         get() = RestUtils.createClient()
-            .register(LoggingFilter())
-
-    class LoggingFilter : ClientRequestFilter {
-        override fun filter(requestContext: ClientRequestContext) {
-            log.info("uri: ${requestContext.uri}, headers: ${requestContext.stringHeaders}")
-            val entityString = requestContext.entity as? String
-            if (entityString != null) log.info("entity: $entityString")
-        }
-
-        companion object {
-            private val log by logger()
-        }
-    }
 
     companion object {
         private const val DKIFAPI_APIKEY = "DKIFAPI_APIKEY"
