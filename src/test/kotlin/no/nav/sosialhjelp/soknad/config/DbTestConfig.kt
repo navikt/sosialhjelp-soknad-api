@@ -18,7 +18,6 @@ import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.Batc
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.BatchSoknadUnderArbeidRepositoryJdbc
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepositoryJdbc
-import no.nav.sosialhjelp.soknad.config.MockAltTestDbConfig.Companion.buildDataSource
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Import
