@@ -15,7 +15,6 @@ import javax.ws.rs.client.Client
 import javax.ws.rs.client.ClientRequestContext
 import javax.ws.rs.client.ClientRequestFilter
 
-
 @Configuration
 @Import(TelefonnummerRessurs::class)
 open class TelefonnummerConfig(
