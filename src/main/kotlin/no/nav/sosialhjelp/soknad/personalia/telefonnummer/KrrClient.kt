@@ -55,8 +55,12 @@ class KrrClient(
 
     private fun hentFraServer(ident: String): DigitalKontaktinformasjon? {
         return try {
+
+            val url = "$krrUrl/rest/v1/person"
+            log.info("url: $url")
+
             client
-                .target("$krrUrl/rest/v1/person")
+                .target(url)
                 .request()
                 .header(AUTHORIZATION, BEARER + tokenxToken(ident))
                 .header(HEADER_CALL_ID, MdcOperations.getFromMDC(MDC_CALL_ID))
