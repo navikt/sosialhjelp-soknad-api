@@ -85,7 +85,9 @@ open class TelefonnummerConfig(
 
     class LoggingFilter : ClientRequestFilter {
         override fun filter(requestContext: ClientRequestContext) {
-            log.info(requestContext.entity.toString())
+            log.info("uri: ${requestContext.uri}, headers: ${requestContext.stringHeaders}")
+            val entityString = requestContext.entity as? String
+            if (entityString != null) log.info("entity: $entityString")
         }
 
         companion object {
