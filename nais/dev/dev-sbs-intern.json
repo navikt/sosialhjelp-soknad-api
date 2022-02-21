@@ -44,6 +44,8 @@
   "isLabsGcp": false,
   "leaderElectionEnabled": true,
   "maskinportenEnabled": true,
+  "azureEnabled": true,
+  "azureTenant": "trygdeetaten.no",
   "env": {
     "SPRING_PROFILES_ACTIVE": "log-kibana",
     "AAREG_API_BASEURL": "https://api-gw-q1.oera.no/aareg-services/api/",

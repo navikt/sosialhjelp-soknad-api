@@ -27,6 +27,12 @@ spec:
     min: {{minReplicas}}
     max: {{maxReplicas}}
   webproxy: {{webProxyEnabled}}
+{{#if azureEnabled}}
+  azure:
+    application:
+      enabled: {{azureEnabled}}
+      tenant: {{azureTenant}}
+{{/if}}
 {{#if maskinportenEnabled}}
   maskinporten:
     enabled: true
@@ -63,13 +69,9 @@ spec:
         []
       {{/each}}
       rules:
-      {{#if isGcp}}
       {{#each outboundRulesGcpApplications}}
         - application: "{{this}}"
-      {{else}}
-        []
       {{/each}}
-      {{/if}}
       {{#unless isGcp}}
       {{#each outboundRulesFssApplications}}
         - application: "{{this}}"
