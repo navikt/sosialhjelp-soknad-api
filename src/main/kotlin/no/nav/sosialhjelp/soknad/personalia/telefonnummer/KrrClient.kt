@@ -42,7 +42,8 @@ class KrrClient(
     }
 
     fun getDigitalKontaktinformasjon(ident: String): DigitalKontaktinformasjon? {
-        return hentFraCache(ident) ?: hentFraServer(ident)
+//        return hentFraCache(ident) ?: hentFraServer(ident)
+        return hentFraServer(ident)
     }
 
     private fun hentFraCache(ident: String): DigitalKontaktinformasjon? {
@@ -61,7 +62,7 @@ class KrrClient(
                 .header(HEADER_CALL_ID, MdcOperations.getFromMDC(MDC_CALL_ID))
                 .header(HEADER_NAV_PERSONIDENT, ident)
                 .get(DigitalKontaktinformasjon::class.java)
-                .also { lagreTilCache(ident, it) }
+//                .also { lagreTilCache(ident, it) }
         } catch (e: NotAuthorizedException) {
             log.warn("Krr - 401 Unauthorized - {}", e.message)
             null
@@ -69,7 +70,7 @@ class KrrClient(
             log.warn("Krr - 403 Forbidden - {}", e.message)
             null
         } catch (e: NotFoundException) {
-            log.warn("Krr - 404 Not Found - {}", e.message)
+            log.info("Krr - 404 Not Found")
             null
         } catch (e: RuntimeException) {
             log.error("Krr - Noe uventet feilet", e)

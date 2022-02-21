@@ -50,7 +50,7 @@ open class TelefonnummerConfig(
     @Bean
     open fun krrPing(krrClient: KrrClient): Pingable {
         return Pingable {
-            val metadata = Pingable.PingMetadata(baseurl, "KRR", false)
+            val metadata = Pingable.PingMetadata(krrUrl, "krr-proxy", false)
             try {
                 krrClient.ping()
                 Pingable.lyktes(metadata)
