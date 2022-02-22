@@ -57,7 +57,7 @@ class KrrProxyClient(
     private fun hentFraServer(ident: String): DigitalKontaktinformasjon? {
         return try {
             client
-                .target("$krrUrl/rest/v1/person")
+                .target("${krrUrl}rest/v1/person")
                 .request()
                 .header(AUTHORIZATION, BEARER + tokenxToken)
                 .header(HEADER_CALL_ID, MdcOperations.getFromMDC(MDC_CALL_ID))
