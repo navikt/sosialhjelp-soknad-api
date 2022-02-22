@@ -34,7 +34,6 @@ digisos_api_baseurl: ${DIGISOS_API_BASEURL:http://localhost:8989/sosialhjelp/moc
 ereg_proxy_url: ${EREG_PROXY_URL:http://localhost:8989/sosialhjelp/mock-alt-api/ereg/}
 aareg_api_baseurl: ${AAREG_API_BASEURL:http://localhost:8989/sosialhjelp/mock-alt-api/aareg/}
 securitytokenservice_apigw_url: ${SECURITYTOKENSERVICE_APIGW_URL:http://localhost:8989/sosialhjelp/mock-alt-api/appgw/}
-dkif_api_baseurl: ${DKIF_API_BASEURL:http://localhost:8989/sosialhjelp/mock-alt-api/dkif/}
 krr_proxy_url: ${KRR_PROXY_URL:http://localhost:8989/sosialhjelp/mock-alt-api/krr_endpoint_url/}
 pdl_api_url: ${PDL_API_URL:http://localhost:8989/sosialhjelp/mock-alt-api/pdl_endpoint_url/}
 kodeverk_proxy_url: ${KODEVERK_PROXY_URL:http://localhost:8989/sosialhjelp/mock-alt-api/kodeverk/}

@@ -74,7 +74,6 @@ digisos_api_baseurl: ${DIGISOS_API_BASEURL:https://api.fiks.test.ks.no/}
 ereg_proxy_url: https://fss-proxy/proxy/ereg/
 aareg_api_baseurl: https://api-gw-q0.oera.no/aareg/api/
 securitytokenservice_apigw_url: https://api-gw-q0.oera.no/security-token-service/rest/v1/sts/token
-dkif_api_baseurl: https://api-gw-q0.oera.no/dkif/api/
 krr_proxy_url: http://krr/
 pdl_api_url: https://api-gw-q1.oera.no/pdl-api/graphql
 unleash_api_url: https://unleash.nais.io/api

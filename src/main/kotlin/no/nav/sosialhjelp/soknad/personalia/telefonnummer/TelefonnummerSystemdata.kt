@@ -27,7 +27,7 @@ class TelefonnummerSystemdata(
         return try {
             norskTelefonnummer(mobiltelefonService.hent(personIdentifikator!!))
         } catch (e: Exception) {
-            log.warn("Kunne ikke hente telefonnummer fra Dkif", e)
+            log.warn("Kunne ikke hente telefonnummer fra Krr", e)
             null
         }
     }
