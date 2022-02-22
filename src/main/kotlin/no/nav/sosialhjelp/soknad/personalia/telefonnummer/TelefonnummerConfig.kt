@@ -47,20 +47,6 @@ open class TelefonnummerConfig(
         }
     }
 
-//    TODO: Kan legges til når vi ikke lengre kaller KRR via fss-proxy
-//    @Bean
-//    open fun krrPing(krrClient: KrrClient): Pingable {
-//        return Pingable {
-//            val metadata = Pingable.PingMetadata(krrUrl, "krr-proxy", false)
-//            try {
-//                krrClient.ping()
-//                Pingable.lyktes(metadata)
-//            } catch (e: Exception) {
-//                Pingable.feilet(metadata, e)
-//            }
-//        }
-//    }
-
     @Bean
     open fun mobiltelefonService(dkifClient: DkifClient, krrProxyClient: KrrProxyClient): MobiltelefonService {
         return MobiltelefonServiceImpl(dkifClient, krrProxyClient, unleash)

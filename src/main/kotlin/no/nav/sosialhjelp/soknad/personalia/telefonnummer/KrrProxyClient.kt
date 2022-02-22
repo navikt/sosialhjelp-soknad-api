@@ -30,18 +30,6 @@ class KrrProxyClient(
     private val tokendingsService: TokendingsService,
     private val redisService: RedisService
 ) {
-//
-//    fun ping() {
-//        client
-//            .target("$krrUrl/rest/ping")
-//            .request()
-//            .options() // burde være GET
-//            .use {
-//                if (it.status != 200) {
-//                    log.warn("Ping feilet mot Krr: {}", it.status)
-//                }
-//            }
-//    }
 
     fun getDigitalKontaktinformasjon(ident: String): DigitalKontaktinformasjon? {
         return hentFraCache(ident) ?: hentFraServer(ident)
