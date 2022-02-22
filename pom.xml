@@ -50,7 +50,7 @@
 
         <tjenestespesifikasjon.version>1.2021.01.21-11.34-02f5eb27bb76</tjenestespesifikasjon.version>
         <sosialhjelp-common.version>1.92c7849</sosialhjelp-common.version>
-        <filformat.version>1.2022.01.04-11.48-cd5236e6ccf4</filformat.version>
+        <filformat.version>1.2022.01.30-13.18-01cd95216e0b</filformat.version>
 
         <!-- Fiks/KS -->
         <svarut-rest-klient.version>1.0.2</svarut-rest-klient.version>
