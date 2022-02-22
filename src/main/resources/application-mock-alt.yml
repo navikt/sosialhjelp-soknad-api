@@ -35,6 +35,7 @@ ereg_proxy_url: ${EREG_PROXY_URL:http://localhost:8989/sosialhjelp/mock-alt-api/
 aareg_api_baseurl: ${AAREG_API_BASEURL:http://localhost:8989/sosialhjelp/mock-alt-api/aareg/}
 securitytokenservice_apigw_url: ${SECURITYTOKENSERVICE_APIGW_URL:http://localhost:8989/sosialhjelp/mock-alt-api/appgw/}
 dkif_api_baseurl: ${DKIF_API_BASEURL:http://localhost:8989/sosialhjelp/mock-alt-api/dkif/}
+krr_proxy_url: ${KRR_PROXY_URL:http://localhost:8989/sosialhjelp/mock-alt-api/krr_endpoint_url/}
 pdl_api_url: ${PDL_API_URL:http://localhost:8989/sosialhjelp/mock-alt-api/pdl_endpoint_url/}
 kodeverk_proxy_url: ${KODEVERK_PROXY_URL:http://localhost:8989/sosialhjelp/mock-alt-api/kodeverk/}
 unleash_api_url: ${UNLEASH_API_URL:https://unleash.nais.io/api}
@@ -73,6 +74,7 @@ tokendings_client_id: ${TOKEN_X_CLIENT_ID:localhost:teamdigisos:sosialhjelp-dial
 tokendings_private_jwk: ${TOKEN_X_PRIVATE_JWK:generateRSA}
 fss_proxy_audience: ${FSS_PROXY_AUDIENCE:dummyAudience}
 oppslag_api_audience: ${OPPSLAG_API_AUDIENCE:dummyAudience}
+krr_audience: ${KRR_AUDIENCE:dummyAudience}
 
 # vault
 virksomhetssertifikat_path: ${VIRKSOMHETSSERTIFIKAT_PATH:/var/run/secrets/nais.io/virksomhetssertifikat}

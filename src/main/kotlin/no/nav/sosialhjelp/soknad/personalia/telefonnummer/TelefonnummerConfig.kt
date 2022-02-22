@@ -1,6 +1,8 @@
 package no.nav.sosialhjelp.soknad.personalia.telefonnummer
 
+import no.finn.unleash.Unleash
 import no.nav.sosialhjelp.soknad.client.redis.RedisService
+import no.nav.sosialhjelp.soknad.client.tokenx.TokendingsService
 import no.nav.sosialhjelp.soknad.common.Constants.HEADER_NAV_APIKEY
 import no.nav.sosialhjelp.soknad.common.rest.RestUtils
 import no.nav.sosialhjelp.soknad.health.selftest.Pingable
@@ -15,12 +17,21 @@ import javax.ws.rs.client.ClientRequestFilter
 @Import(TelefonnummerRessurs::class)
 open class TelefonnummerConfig(
     @Value("\${dkif_api_baseurl}") private val baseurl: String,
-    private val redisService: RedisService
+    @Value("\${krr_proxy_url}") private val krrProxyUrl: String,
+    @Value("\${fss_proxy_audience}") private val fssProxyAudience: String,
+    private val redisService: RedisService,
+    private val tokendingsService: TokendingsService,
+    private val unleash: Unleash
 ) {
 
     @Bean
     open fun dkifClient(): DkifClient {
         return DkifClientImpl(client, baseurl, redisService)
+    }
+
+    @Bean
+    open fun krrClient(): KrrProxyClient {
+        return KrrProxyClient(krrClient, krrProxyUrl, fssProxyAudience, tokendingsService, redisService)
     }
 
     @Bean
@@ -37,8 +48,8 @@ open class TelefonnummerConfig(
     }
 
     @Bean
-    open fun mobiltelefonService(dkifClient: DkifClient): MobiltelefonService {
-        return MobiltelefonServiceImpl(dkifClient)
+    open fun mobiltelefonService(dkifClient: DkifClient, krrProxyClient: KrrProxyClient): MobiltelefonService {
+        return MobiltelefonServiceImpl(dkifClient, krrProxyClient, unleash)
     }
 
     @Bean
@@ -52,6 +63,9 @@ open class TelefonnummerConfig(
             return RestUtils.createClient()
                 .register(ClientRequestFilter { it.headers.putSingle(HEADER_NAV_APIKEY, apiKey) })
         }
+
+    private val krrClient: Client
+        get() = RestUtils.createClient()
 
     companion object {
         private const val DKIFAPI_APIKEY = "DKIFAPI_APIKEY"

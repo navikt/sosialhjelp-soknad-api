@@ -27,6 +27,11 @@ spec:
     min: {{minReplicas}}
     max: {{maxReplicas}}
   webproxy: {{webProxyEnabled}}
+{{#if azureEnabled}}
+  azure:
+    application:
+      enabled: {{azureEnabled}}
+{{/if}}
 {{#if maskinportenEnabled}}
   maskinporten:
     enabled: true
