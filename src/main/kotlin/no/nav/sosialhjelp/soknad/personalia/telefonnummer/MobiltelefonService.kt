@@ -9,7 +9,7 @@ interface MobiltelefonService {
 
 class MobiltelefonServiceImpl(
     private val dkifClient: DkifClient,
-    private val krrClient: KrrClient,
+    private val krrProxyClient: KrrProxyClient,
     private val unleash: Unleash
 ) : MobiltelefonService {
 
@@ -39,7 +39,7 @@ class MobiltelefonServiceImpl(
     }
 
     private fun hentFraKrr(ident: String): String? {
-        val digitalKontaktinformasjon = krrClient.getDigitalKontaktinformasjon(ident)
+        val digitalKontaktinformasjon = krrProxyClient.getDigitalKontaktinformasjon(ident)
         if (digitalKontaktinformasjon == null) {
             log.warn("Krr - response er null")
             return null

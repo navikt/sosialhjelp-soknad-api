@@ -15,9 +15,9 @@ import java.util.Collections.singletonMap
 internal class MobiltelefonServiceTest {
 
     private val dkifClient: DkifClient = mockk()
-    private val krrClient: KrrClient = mockk()
+    private val krrProxyClient: KrrProxyClient = mockk()
     private val unleash: Unleash = mockk()
-    private val mobiltelefonService = MobiltelefonServiceImpl(dkifClient, krrClient, unleash)
+    private val mobiltelefonService = MobiltelefonServiceImpl(dkifClient, krrProxyClient, unleash)
 
     private val ident = "99988877777"
     private val mobiltelefonnummer = "12345678"
@@ -75,7 +75,7 @@ internal class MobiltelefonServiceTest {
     @Test
     internal fun `krr - skalHenteMobiltelefonnummer`() {
         every { unleash.isEnabled(any(), any<Boolean>()) } returns true
-        every { krrClient.getDigitalKontaktinformasjon(any()) } returns DigitalKontaktinformasjon(ident, true, true, false, mobiltelefonnummer)
+        every { krrProxyClient.getDigitalKontaktinformasjon(any()) } returns DigitalKontaktinformasjon(ident, true, true, false, mobiltelefonnummer)
 
         val response = mobiltelefonService.hent(ident)
 
@@ -85,7 +85,7 @@ internal class MobiltelefonServiceTest {
     @Test
     internal fun `krr - skal returnere null hvis DigitalKontaktinfoBolk er null`() {
         every { unleash.isEnabled(any(), any<Boolean>()) } returns true
-        every { krrClient.getDigitalKontaktinformasjon(any()) } returns null
+        every { krrProxyClient.getDigitalKontaktinformasjon(any()) } returns null
 
         val response = mobiltelefonService.hent(ident)
 
@@ -95,7 +95,7 @@ internal class MobiltelefonServiceTest {
     @Test
     internal fun `krr - skal returnere null hvis Mobiltelefonnummer er null`() {
         every { unleash.isEnabled(any(), any<Boolean>()) } returns true
-        every { krrClient.getDigitalKontaktinformasjon(any()) } returns DigitalKontaktinformasjon(ident, true, true, false, null)
+        every { krrProxyClient.getDigitalKontaktinformasjon(any()) } returns DigitalKontaktinformasjon(ident, true, true, false, null)
 
         val response = mobiltelefonService.hent(ident)
 

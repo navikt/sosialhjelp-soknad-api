@@ -15,6 +15,7 @@ import no.nav.sosialhjelp.soknad.common.Constants.HEADER_NAV_PERSONIDENT
 import no.nav.sosialhjelp.soknad.common.mdc.MdcOperations
 import no.nav.sosialhjelp.soknad.common.mdc.MdcOperations.MDC_CALL_ID
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils.getToken
+import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils.getUserIdFromToken
 import no.nav.sosialhjelp.soknad.personalia.telefonnummer.dto.DigitalKontaktinformasjon
 import javax.ws.rs.ForbiddenException
 import javax.ws.rs.NotAuthorizedException
@@ -22,25 +23,25 @@ import javax.ws.rs.NotFoundException
 import javax.ws.rs.client.Client
 import javax.ws.rs.core.HttpHeaders.AUTHORIZATION
 
-class KrrClient(
+class KrrProxyClient(
     private val client: Client,
     private val krrUrl: String,
     private val krrAudience: String,
     private val tokendingsService: TokendingsService,
     private val redisService: RedisService
 ) {
-
-    fun ping() {
-        client
-            .target("$krrUrl/rest/ping")
-            .request()
-            .options() // burde være GET
-            .use {
-                if (it.status != 200) {
-                    log.warn("Ping feilet mot Krr: {}", it.status)
-                }
-            }
-    }
+//
+//    fun ping() {
+//        client
+//            .target("$krrUrl/rest/ping")
+//            .request()
+//            .options() // burde være GET
+//            .use {
+//                if (it.status != 200) {
+//                    log.warn("Ping feilet mot Krr: {}", it.status)
+//                }
+//            }
+//    }
 
     fun getDigitalKontaktinformasjon(ident: String): DigitalKontaktinformasjon? {
         return hentFraCache(ident) ?: hentFraServer(ident)
@@ -58,7 +59,7 @@ class KrrClient(
             client
                 .target("$krrUrl/rest/v1/person")
                 .request()
-                .header(AUTHORIZATION, BEARER + tokenxToken(ident))
+                .header(AUTHORIZATION, BEARER + tokenxToken)
                 .header(HEADER_CALL_ID, MdcOperations.getFromMDC(MDC_CALL_ID))
                 .header(HEADER_NAV_PERSONIDENT, ident)
                 .get(DigitalKontaktinformasjon::class.java)
@@ -90,9 +91,10 @@ class KrrClient(
         }
     }
 
-    private fun tokenxToken(ident: String): String = runBlocking {
-        tokendingsService.exchangeToken(ident, getToken(), krrAudience)
-    }
+    private val tokenxToken: String
+        get() = runBlocking {
+            tokendingsService.exchangeToken(getUserIdFromToken(), getToken(), krrAudience)
+        }
 
     companion object {
         private val log by logger()

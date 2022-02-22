@@ -17,8 +17,8 @@ import javax.ws.rs.client.ClientRequestFilter
 @Import(TelefonnummerRessurs::class)
 open class TelefonnummerConfig(
     @Value("\${dkif_api_baseurl}") private val baseurl: String,
-    @Value("\${krr_baseurl}") private val krrUrl: String,
-    @Value("\${krr_audience}") private val krrAudience: String,
+    @Value("\${krr_proxy_url}") private val krrProxyUrl: String,
+    @Value("\${fss_proxy_audience}") private val fssProxyAudience: String,
     private val redisService: RedisService,
     private val tokendingsService: TokendingsService,
     private val unleash: Unleash
@@ -30,8 +30,8 @@ open class TelefonnummerConfig(
     }
 
     @Bean
-    open fun krrClient(): KrrClient {
-        return KrrClient(krrClient, krrUrl, krrAudience, tokendingsService, redisService)
+    open fun krrClient(): KrrProxyClient {
+        return KrrProxyClient(krrClient, krrProxyUrl, fssProxyAudience, tokendingsService, redisService)
     }
 
     @Bean
@@ -47,22 +47,23 @@ open class TelefonnummerConfig(
         }
     }
 
-    @Bean
-    open fun krrPing(krrClient: KrrClient): Pingable {
-        return Pingable {
-            val metadata = Pingable.PingMetadata(krrUrl, "krr-proxy", false)
-            try {
-                krrClient.ping()
-                Pingable.lyktes(metadata)
-            } catch (e: Exception) {
-                Pingable.feilet(metadata, e)
-            }
-        }
-    }
+//    TODO: Kan legges til når vi ikke lengre kaller KRR via fss-proxy
+//    @Bean
+//    open fun krrPing(krrClient: KrrClient): Pingable {
+//        return Pingable {
+//            val metadata = Pingable.PingMetadata(krrUrl, "krr-proxy", false)
+//            try {
+//                krrClient.ping()
+//                Pingable.lyktes(metadata)
+//            } catch (e: Exception) {
+//                Pingable.feilet(metadata, e)
+//            }
+//        }
+//    }
 
     @Bean
-    open fun mobiltelefonService(dkifClient: DkifClient, krrClient: KrrClient): MobiltelefonService {
-        return MobiltelefonServiceImpl(dkifClient, krrClient, unleash)
+    open fun mobiltelefonService(dkifClient: DkifClient, krrProxyClient: KrrProxyClient): MobiltelefonService {
+        return MobiltelefonServiceImpl(dkifClient, krrProxyClient, unleash)
     }
 
     @Bean
