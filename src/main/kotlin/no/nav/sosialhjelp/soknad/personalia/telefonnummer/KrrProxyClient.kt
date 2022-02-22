@@ -75,7 +75,7 @@ class KrrProxyClient(
                 CACHE_30_MINUTES_IN_SECONDS
             )
         } catch (e: JsonProcessingException) {
-            log.warn("Noe feilet ved lagring av digitalKontaktinfoBolk til redis", e)
+            log.warn("Noe feilet ved lagring av krr-informasjon til redis", e)
         }
     }
 
