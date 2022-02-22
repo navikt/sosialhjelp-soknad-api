@@ -43,6 +43,7 @@
   "isLabsGcp": false,
   "leaderElectionEnabled": true,
   "maskinportenEnabled": true,
+  "azureEnabled": true,
   "env": {
     "SPRING_PROFILES_ACTIVE": "log-kibana",
     "AAREG_API_BASEURL": "https://api-gw.oera.no/aareg-services/api/",
@@ -57,6 +58,7 @@
     "IDPORTEN_CLIENTID": "bd520e59-6e01-4669-a7c8-f68fa2cac362",
     "IDPORTEN_CONFIG_URL": "https://oidc.difi.no/idporten-oidc-provider/.well-known/openid-configuration",
     "KODEVERK_PROXY_URL": "https://sosialhjelp-fss-proxy.prod-fss-pub.nais.io/proxy/kodeverk/",
+    "KRR_PROXY_URL": "https://sosialhjelp-fss-proxy.prod-fss-pub.nais.io/proxy/krr/",
     "LOGINSERVICE_URL": "https://loginservice.nav.no/login",
     "NORG_PROXY_URL": "https://sosialhjelp-fss-proxy.prod-fss-pub.nais.io/proxy/norg/",
     "OPPSLAG_API_AUDIENCE": "prod-fss:teamdigisos:sosialhjelp-oppslag-api",
