@@ -37,7 +37,6 @@
     "PORT": "8080",
     "AAREG_API_BASEURL": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/aareg/",
     "DITTNAV_LINK_URL": "https://digisos.labs.nais.io/sosialhjelp/mock-alt/",
-    "DKIF_API_BASEURL": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/dkif/",
     "OPPSLAG_API_BASEURL": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/oppslag-api/",
     "PDL_API_URL": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/pdl_endpoint_url/",
     "UNLEASH_API_URL": "https://unleash.nais.io/api",

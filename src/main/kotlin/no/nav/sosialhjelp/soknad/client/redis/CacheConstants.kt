@@ -20,7 +20,6 @@ const val ADRESSEBESKYTTELSE_CACHE_KEY_PREFIX = "hentperson-adressebeskyttelse-"
 const val GEOGRAFISK_TILKNYTNING_CACHE_KEY_PREFIX = "hent-geografisktilknytning-"
 const val PDL_CACHE_SECONDS = 30 * 60L // 30 minutter
 
-const val DKIF_CACHE_KEY_PREFIX = "dkif-"
 const val KRR_CACHE_KEY_PREFIX = "krr-"
 const val KONTONUMMER_CACHE_KEY_PREFIX = "kontonummer-"
 const val NAVUTBETALINGER_CACHE_KEY_PREFIX = "navutbetalinger-"
