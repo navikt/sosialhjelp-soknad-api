@@ -63,7 +63,6 @@ tokendings_client_id: localhost:teamdigisos:sosialhjelp-dialog-api
 tokendings_private_jwk: generateRSA
 fss_proxy_audience: dummyAudience
 oppslag_api_audience: dummyAudience
-krr_audience: dummyAudience
 
 # svarut:
 fiks_svarut_username: username

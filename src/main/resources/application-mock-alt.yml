@@ -73,7 +73,6 @@ tokendings_client_id: ${TOKEN_X_CLIENT_ID:localhost:teamdigisos:sosialhjelp-dial
 tokendings_private_jwk: ${TOKEN_X_PRIVATE_JWK:generateRSA}
 fss_proxy_audience: ${FSS_PROXY_AUDIENCE:dummyAudience}
 oppslag_api_audience: ${OPPSLAG_API_AUDIENCE:dummyAudience}
-krr_audience: ${KRR_AUDIENCE:dummyAudience}
 
 # vault
 virksomhetssertifikat_path: ${VIRKSOMHETSSERTIFIKAT_PATH:/var/run/secrets/nais.io/virksomhetssertifikat}
