@@ -1,7 +1,6 @@
 package no.nav.sosialhjelp.soknad.adressesok
 
 import no.nav.sosialhjelp.soknad.client.kodeverk.KodeverkService
-import no.nav.sosialhjelp.soknad.client.sts.StsClient
 import no.nav.sosialhjelp.soknad.common.rest.RestUtils
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
@@ -12,7 +11,6 @@ import javax.ws.rs.client.Client
 open class AdressesokConfig(
     @Value("\${pdl_api_url}") private val baseurl: String,
     private val kodeverkService: KodeverkService,
-    private val stsClient: StsClient
 ) {
 
     @Bean
@@ -22,7 +20,7 @@ open class AdressesokConfig(
 
     @Bean
     open fun adressesokClient(): AdressesokClient {
-        return AdressesokClient(client, baseurl, stsClient)
+        return AdressesokClient(client, baseurl)
     }
 
     private val client: Client

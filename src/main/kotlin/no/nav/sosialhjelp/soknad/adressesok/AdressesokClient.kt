@@ -10,7 +10,6 @@ import no.nav.sosialhjelp.soknad.client.exceptions.TjenesteUtilgjengeligExceptio
 import no.nav.sosialhjelp.soknad.client.pdl.AdressesokDto
 import no.nav.sosialhjelp.soknad.client.pdl.PdlApiQuery.ADRESSE_SOK
 import no.nav.sosialhjelp.soknad.client.pdl.PdlClient
-import no.nav.sosialhjelp.soknad.client.sts.StsClient
 import org.slf4j.LoggerFactory.getLogger
 import javax.ws.rs.ProcessingException
 import javax.ws.rs.WebApplicationException
@@ -19,8 +18,7 @@ import javax.ws.rs.client.Client
 open class AdressesokClient(
     client: Client,
     baseurl: String,
-    stsClient: StsClient
-) : PdlClient(client, baseurl, stsClient) {
+) : PdlClient(client, baseurl) {
 
     open fun getAdressesokResult(variables: Map<String, Any>): AdressesokResultDto? {
         return try {

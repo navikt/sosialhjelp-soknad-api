@@ -13,7 +13,6 @@ import no.nav.sosialhjelp.soknad.client.pdl.PdlClient
 import no.nav.sosialhjelp.soknad.client.redis.GEOGRAFISK_TILKNYTNING_CACHE_KEY_PREFIX
 import no.nav.sosialhjelp.soknad.client.redis.PDL_CACHE_SECONDS
 import no.nav.sosialhjelp.soknad.client.redis.RedisService
-import no.nav.sosialhjelp.soknad.client.sts.StsClient
 import no.nav.sosialhjelp.soknad.common.Constants.HEADER_TEMA
 import no.nav.sosialhjelp.soknad.common.Constants.TEMA_KOM
 import no.nav.sosialhjelp.soknad.navenhet.gt.dto.GeografiskTilknytningDto
@@ -25,9 +24,8 @@ import javax.ws.rs.client.Client
 class GeografiskTilknytningClient(
     client: Client,
     baseurl: String,
-    stsClient: StsClient,
     private val redisService: RedisService
-) : PdlClient(client, baseurl, stsClient) {
+) : PdlClient(client, baseurl) {
 
     fun hentGeografiskTilknytning(ident: String): GeografiskTilknytningDto? {
         hentFraCache(ident)?.let { return it }

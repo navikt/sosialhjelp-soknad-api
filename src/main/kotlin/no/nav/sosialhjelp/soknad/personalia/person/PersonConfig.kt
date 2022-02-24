@@ -2,7 +2,6 @@ package no.nav.sosialhjelp.soknad.personalia.person
 
 import no.nav.sosialhjelp.soknad.client.kodeverk.KodeverkService
 import no.nav.sosialhjelp.soknad.client.redis.RedisService
-import no.nav.sosialhjelp.soknad.client.sts.StsClient
 import no.nav.sosialhjelp.soknad.common.rest.RestUtils
 import no.nav.sosialhjelp.soknad.personalia.person.domain.MapperHelper
 import no.nav.sosialhjelp.soknad.personalia.person.domain.PdlDtoMapper
@@ -14,7 +13,6 @@ import javax.ws.rs.client.Client
 @Configuration
 open class PersonConfig(
     @Value("\${pdl_api_url}") private val baseurl: String,
-    private val stsClient: StsClient,
     private val redisService: RedisService,
     kodeverkService: KodeverkService
 ) {
@@ -29,7 +27,7 @@ open class PersonConfig(
 
     @Bean
     open fun hentPersonClient(): HentPersonClient {
-        return HentPersonClientImpl(client, baseurl, stsClient, redisService)
+        return HentPersonClientImpl(client, baseurl, redisService)
     }
 
     private val client: Client
