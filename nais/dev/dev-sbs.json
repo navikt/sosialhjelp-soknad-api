@@ -62,7 +62,7 @@
     "NORG_PROXY_URL": "https://sosialhjelp-fss-proxy.dev-fss-pub.nais.io/proxy/norg/",
     "OPPSLAG_API_AUDIENCE": "dev-fss:teamdigisos:sosialhjelp-oppslag-api",
     "OPPSLAG_API_BASEURL": "https://sosialhjelp-oppslag-api.dev-fss-pub.nais.io/api/",
-    "PDL_API_URL": "https://api-gw-q1.oera.no/pdl-api/graphql",
+    "PDL_API_URL": "https://pdl-api.dev-fss-pub.nais.io/graphql",
     "PDL_API_AUDIENCE": "dev-fss:pdl:pdl-api",
     "PDL_API_SCOPE": "dev-fss.pdl.pdl-api",
     "UNLEASH_API_URL": "https://unleash.nais.io/api",
