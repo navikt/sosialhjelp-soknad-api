@@ -38,7 +38,7 @@
     "GCP": "true",
     "PORT": "8080",
     "AAREG_API_BASEURL": "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api/aareg/",
-    "AZURE_APP_WELL_KNOWN_URL": "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api/azure-well-known/azuread",
+    "AZURE_OPENID_CONFIG_TOKEN_ENDPOINT": "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api/azuretoken/azuread",
     "AZURE_APP_CLIENT_ID": "someaudience",
     "AZURE_APP_CLIENT_SECRET": "secret",
     "DITTNAV_LINK_URL": "https://digisos.ekstern.dev.nav.no/sosialhjelp/mock-alt/",

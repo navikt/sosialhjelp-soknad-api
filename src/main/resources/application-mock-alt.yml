@@ -68,14 +68,14 @@ maskinporten_well_known_url: ${MASKINPORTEN_WELL_KNOWN_URL:http://localhost:8989
 maskinporten_client_jwk: generateRSA
 
 # tokenx
-tokendings_url: ${TOKEN_X_WELL_KNOWN_URL:http://localhost:8989/sosialhjelp/mock-alt-api/well-known/selvbetjening}
+tokendings_url: ${TOKEN_X_WELL_KNOWN_URL:http://localhost:8989/sosialhjelp/mock-alt-api/well-known/tokenx}
 tokendings_client_id: ${TOKEN_X_CLIENT_ID:localhost:teamdigisos:sosialhjelp-dialog-api}
 tokendings_private_jwk: ${TOKEN_X_PRIVATE_JWK:generateRSA}
 fss_proxy_audience: ${FSS_PROXY_AUDIENCE:dummyAudience}
 oppslag_api_audience: ${OPPSLAG_API_AUDIENCE:dummyAudience}
 
 # azuread
-azure_url: ${AZURE_APP_WELL_KNOWN_URL:http://localhost:8989/sosialhjelp/mock-alt-api/well-known/azuread}
+azure_token_endpoint: ${AZURE_OPENID_CONFIG_TOKEN_ENDPOINT:http://localhost:8989/sosialhjelp/mock-alt-api/azuretoken/azuread}
 azure_client_id: ${AZURE_APP_CLIENT_ID:localhost:teamdigisos:sosialhjelp-soknad-api}
 azure_client_secret: ${AZURE_APP_CLIENT_SECRET}
 

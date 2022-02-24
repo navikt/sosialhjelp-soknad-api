@@ -65,7 +65,7 @@ fss_proxy_audience: dummyAudience
 oppslag_api_audience: dummyAudience
 
 # azuread
-azure_url: azure_wellknown_url
+azure_token_endpoint: azure_token_endpoint
 azure_client_id: localhost:teamdigisos:sosialhjelp-soknad-api
 azure_client_secret: clientSecret
 

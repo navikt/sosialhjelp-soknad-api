@@ -80,7 +80,7 @@ fss_proxy_audience: ${FSS_PROXY_AUDIENCE}
 oppslag_api_audience: ${OPPSLAG_API_AUDIENCE}
 
 # azuread
-azure_url: ${AZURE_APP_WELL_KNOWN_URL}
+azure_token_endpoint: ${AZURE_OPENID_CONFIG_TOKEN_ENDPOINT}
 azure_client_id: ${AZURE_APP_CLIENT_ID}
 azure_client_secret: ${AZURE_APP_CLIENT_SECRET}
 
