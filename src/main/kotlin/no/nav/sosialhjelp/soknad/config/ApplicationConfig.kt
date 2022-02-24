@@ -13,6 +13,7 @@ import no.nav.sosialhjelp.soknad.bosituasjon.BosituasjonConfig
 import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.PdfGenerator
 import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.SosialhjelpPdfGenerator
 import no.nav.sosialhjelp.soknad.client.ClientConfig
+import no.nav.sosialhjelp.soknad.client.azure.AzureadConfig
 import no.nav.sosialhjelp.soknad.client.fssproxy.FssProxyConfig
 import no.nav.sosialhjelp.soknad.client.oppslagapi.OppslagApiConfig
 import no.nav.sosialhjelp.soknad.client.tokenx.TokendingsConfig
@@ -89,6 +90,7 @@ import org.springframework.context.annotation.Import
     SosialhjelpPdfGenerator::class,
     FilterConfig::class,
     TokendingsConfig::class,
+    AzureadConfig::class,
     FssProxyConfig::class,
     OppslagApiConfig::class
 )

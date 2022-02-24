@@ -74,6 +74,11 @@ tokendings_private_jwk: ${TOKEN_X_PRIVATE_JWK:generateRSA}
 fss_proxy_audience: ${FSS_PROXY_AUDIENCE:dummyAudience}
 oppslag_api_audience: ${OPPSLAG_API_AUDIENCE:dummyAudience}
 
+# azuread
+azure_url: ${AZURE_APP_WELL_KNOWN_URL:http://localhost:8989/sosialhjelp/mock-alt-api/well-known/azuread}
+azure_client_id: ${AZURE_APP_CLIENT_ID:localhost:teamdigisos:sosialhjelp-soknad-api}
+azure_client_secret: ${AZURE_APP_CLIENT_SECRET}
+
 # vault
 virksomhetssertifikat_path: ${VIRKSOMHETSSERTIFIKAT_PATH:/var/run/secrets/nais.io/virksomhetssertifikat}
 
