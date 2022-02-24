@@ -63,11 +63,13 @@ tokendings_client_id: localhost:teamdigisos:sosialhjelp-dialog-api
 tokendings_private_jwk: generateRSA
 fss_proxy_audience: dummyAudience
 oppslag_api_audience: dummyAudience
+pdl_api_audience: dummyAudience
 
 # azuread
 azure_token_endpoint: azure_token_endpoint
 azure_client_id: localhost:teamdigisos:sosialhjelp-soknad-api
 azure_client_secret: clientSecret
+pdl_api_scope: dummyScope
 
 # svarut:
 fiks_svarut_username: username
