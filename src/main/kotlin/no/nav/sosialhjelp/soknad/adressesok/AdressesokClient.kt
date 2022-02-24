@@ -4,20 +4,25 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import kotlinx.coroutines.runBlocking
 import no.nav.sosialhjelp.kotlin.utils.retry
 import no.nav.sosialhjelp.soknad.adressesok.dto.AdressesokResultDto
+import no.nav.sosialhjelp.soknad.client.azure.AzureadService
 import no.nav.sosialhjelp.soknad.client.config.RetryUtils
 import no.nav.sosialhjelp.soknad.client.exceptions.PdlApiException
 import no.nav.sosialhjelp.soknad.client.exceptions.TjenesteUtilgjengeligException
 import no.nav.sosialhjelp.soknad.client.pdl.AdressesokDto
 import no.nav.sosialhjelp.soknad.client.pdl.PdlApiQuery.ADRESSE_SOK
 import no.nav.sosialhjelp.soknad.client.pdl.PdlClient
+import no.nav.sosialhjelp.soknad.common.Constants.BEARER
 import org.slf4j.LoggerFactory.getLogger
 import javax.ws.rs.ProcessingException
 import javax.ws.rs.WebApplicationException
 import javax.ws.rs.client.Client
+import javax.ws.rs.core.HttpHeaders.AUTHORIZATION
 
 open class AdressesokClient(
     client: Client,
     baseurl: String,
+    private val azureadService: AzureadService,
+    private val pdlScope: String
 ) : PdlClient(client, baseurl) {
 
     open fun getAdressesokResult(variables: Map<String, Any>): AdressesokResultDto? {
@@ -30,6 +35,7 @@ open class AdressesokClient(
                     retryableExceptions = arrayOf(WebApplicationException::class, ProcessingException::class)
                 ) {
                     baseRequest
+                        .header(AUTHORIZATION, BEARER + azureadService.getSystemToken(pdlScope))
                         .post(requestEntity(ADRESSE_SOK, variables), String::class.java)
                 }
             }
