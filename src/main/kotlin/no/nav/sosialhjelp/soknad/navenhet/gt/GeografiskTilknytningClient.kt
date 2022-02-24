@@ -13,17 +13,23 @@ import no.nav.sosialhjelp.soknad.client.pdl.PdlClient
 import no.nav.sosialhjelp.soknad.client.redis.GEOGRAFISK_TILKNYTNING_CACHE_KEY_PREFIX
 import no.nav.sosialhjelp.soknad.client.redis.PDL_CACHE_SECONDS
 import no.nav.sosialhjelp.soknad.client.redis.RedisService
+import no.nav.sosialhjelp.soknad.client.tokenx.TokendingsService
+import no.nav.sosialhjelp.soknad.common.Constants.BEARER
 import no.nav.sosialhjelp.soknad.common.Constants.HEADER_TEMA
 import no.nav.sosialhjelp.soknad.common.Constants.TEMA_KOM
+import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils.getToken
 import no.nav.sosialhjelp.soknad.navenhet.gt.dto.GeografiskTilknytningDto
 import org.slf4j.LoggerFactory.getLogger
 import javax.ws.rs.ProcessingException
 import javax.ws.rs.WebApplicationException
 import javax.ws.rs.client.Client
+import javax.ws.rs.core.HttpHeaders.AUTHORIZATION
 
 class GeografiskTilknytningClient(
     client: Client,
     baseurl: String,
+    private val pdlAudience: String,
+    private val tokendingsService: TokendingsService,
     private val redisService: RedisService
 ) : PdlClient(client, baseurl) {
 
@@ -40,6 +46,7 @@ class GeografiskTilknytningClient(
                 ) {
                     baseRequest
                         .header(HEADER_TEMA, TEMA_KOM)
+                        .header(AUTHORIZATION, BEARER + tokendingsService.exchangeToken(ident, getToken(), pdlAudience))
                         .post(requestEntity(HENT_GEOGRAFISK_TILKNYTNING, variables(ident)), String::class.java)
                 }
             }
