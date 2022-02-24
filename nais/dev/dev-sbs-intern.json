@@ -63,6 +63,8 @@
     "OPPSLAG_API_AUDIENCE": "dev-fss:teamdigisos:sosialhjelp-oppslag-api",
     "OPPSLAG_API_BASEURL": "https://sosialhjelp-oppslag-api.dev-fss-pub.nais.io/api/",
     "PDL_API_URL": "https://api-gw-q1.oera.no/pdl-api/graphql",
+    "PDL_API_AUDIENCE": "dev-fss:pdl:pdl-api",
+    "PDL_API_SCOPE": "dev-fss.pdl.pdl-api",
     "UNLEASH_API_URL": "https://unleash.nais.io/api",
     "SCHEDULER_DISABLE": "false",
     "SOKNADSOSIALHJELPDATASOURCE_URL": "jdbc:oracle:thin:@d32dbfl003.oera-t.local:1521/soknadsosialhjelp_q1",
