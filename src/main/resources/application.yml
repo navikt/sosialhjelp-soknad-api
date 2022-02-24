@@ -79,6 +79,11 @@ tokendings_private_jwk: ${TOKEN_X_PRIVATE_JWK}
 fss_proxy_audience: ${FSS_PROXY_AUDIENCE}
 oppslag_api_audience: ${OPPSLAG_API_AUDIENCE}
 
+# azuread
+azure_token_endpoint: ${AZURE_OPENID_CONFIG_TOKEN_ENDPOINT}
+azure_client_id: ${AZURE_APP_CLIENT_ID}
+azure_client_secret: ${AZURE_APP_CLIENT_SECRET}
+
 # svarut:
 fiks_svarut_username: ${FIKS_SVARUT_USERNAME}
 fiks_svarut_password: ${FIKS_SVARUT_PASSWORD}

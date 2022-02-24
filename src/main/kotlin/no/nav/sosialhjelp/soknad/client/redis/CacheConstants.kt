@@ -25,6 +25,8 @@ const val KONTONUMMER_CACHE_KEY_PREFIX = "kontonummer-"
 const val NAVUTBETALINGER_CACHE_KEY_PREFIX = "navutbetalinger-"
 
 const val TOKENDINGS_CACHE_KEY_PREFIX = "tokendings-"
+const val AZURE_SYSTEM_TOKEN = "azure-"
 
+const val CACHE_30_SECONDS = 30L
 const val CACHE_30_MINUTES_IN_SECONDS = 30 * 60L
 const val CACHE_24_HOURS_IN_SECONDS = 24 * 60 * 60L
