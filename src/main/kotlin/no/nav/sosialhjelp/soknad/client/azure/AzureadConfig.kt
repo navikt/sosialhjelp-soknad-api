@@ -6,6 +6,7 @@ import no.nav.sosialhjelp.soknad.client.tokenx.WellKnown
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Profile
 import org.springframework.web.reactive.function.client.WebClient
 
 @Configuration
@@ -17,9 +18,20 @@ open class AzureadConfig(
     private val redisService: RedisService
 ) {
 
+    @Profile("!test")
     @Bean
     open fun azureClient(): AzureadClient {
         return AzureadClient(azureWebClient, wellKnown, azureClientSecret)
+    }
+
+    @Profile("test")
+    @Bean
+    open fun azureClientTest(): AzureadClient {
+        return AzureadClient(
+            azureWebClient,
+            WellKnown("iss-localhost", "authorizationEndpoint", "tokenEndpoint", "jwksUri"),
+            azureClientSecret
+        )
     }
 
     @Bean
