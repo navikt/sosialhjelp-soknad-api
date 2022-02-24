@@ -10,7 +10,6 @@ import no.nav.sosialhjelp.soknad.client.idporten.IdPortenClientConfigMockAlt
 import no.nav.sosialhjelp.soknad.client.idporten.IdPortenServiceImpl
 import no.nav.sosialhjelp.soknad.client.kodeverk.KodeverkConfig
 import no.nav.sosialhjelp.soknad.client.maskinporten.MaskinportenClientConfig
-import no.nav.sosialhjelp.soknad.client.pdl.PdlConfig
 import no.nav.sosialhjelp.soknad.client.redis.NoRedisConfig
 import no.nav.sosialhjelp.soknad.client.redis.RedisConfig
 import no.nav.sosialhjelp.soknad.client.sts.StsConfig
@@ -38,7 +37,6 @@ import org.springframework.context.annotation.Import
     MockProxiedWebClientConfig::class,
     NonProxiedWebClientConfig::class,
     SvarUtConfig::class,
-    PdlConfig::class,
     GeografiskTilknytningConfig::class,
     PersonConfig::class,
     AdressesokConfig::class,
