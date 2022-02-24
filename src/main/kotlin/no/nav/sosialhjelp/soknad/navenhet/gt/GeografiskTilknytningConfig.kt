@@ -1,7 +1,6 @@
 package no.nav.sosialhjelp.soknad.navenhet.gt
 
 import no.nav.sosialhjelp.soknad.client.redis.RedisService
-import no.nav.sosialhjelp.soknad.client.sts.StsClient
 import no.nav.sosialhjelp.soknad.common.rest.RestUtils
 import no.nav.sosialhjelp.soknad.health.selftest.Pingable
 import org.springframework.beans.factory.annotation.Value
@@ -12,13 +11,12 @@ import javax.ws.rs.client.Client
 @Configuration
 open class GeografiskTilknytningConfig(
     @Value("\${pdl_api_url}") private val baseurl: String,
-    private val stsClient: StsClient,
     private val redisService: RedisService
 ) {
 
     @Bean
     open fun geografiskTilknytningClient(): GeografiskTilknytningClient {
-        return GeografiskTilknytningClient(client, baseurl, stsClient, redisService)
+        return GeografiskTilknytningClient(client, baseurl, redisService)
     }
 
     @Bean
