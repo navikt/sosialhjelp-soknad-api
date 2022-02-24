@@ -17,12 +17,12 @@ open class AzureadConfig(
 
     @Bean
     open fun azureClient(): AzureadClient {
-        return AzureadClient(azureWebClient, azureTokenEndpoint, azureClientSecret)
+        return AzureadClient(azureWebClient, azureTokenEndpoint, azureClientId, azureClientSecret)
     }
 
     @Bean
     open fun azuredingsService(azureClient: AzureadClient): AzureadService {
-        return AzureadService(azureClient, azureClientId, redisService)
+        return AzureadService(azureClient, redisService)
     }
 
     private val azureWebClient: WebClient

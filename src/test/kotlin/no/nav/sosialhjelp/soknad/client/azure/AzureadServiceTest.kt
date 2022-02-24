@@ -15,10 +15,9 @@ import org.junit.jupiter.api.Test
 internal class AzureadServiceTest {
 
     private val azureClient: AzureadClient = mockk()
-    private val azureClientId = "azureClientId"
     private val redisService: RedisService = mockk()
 
-    private val azureadService = AzureadService(azureClient, azureClientId, redisService)
+    private val azureadService = AzureadService(azureClient, redisService)
 
     private val scope = "scope"
     private val systemtoken = "systemtoken"
@@ -43,7 +42,7 @@ internal class AzureadServiceTest {
 
             val mockToken: AzureadTokenResponse = mockk()
             every { mockToken.accessToken } returns systemtoken
-            coEvery { azureClient.getSystemToken(any(), any()) } returns mockToken
+            coEvery { azureClient.getSystemToken(any()) } returns mockToken
 
             val token = azureadService.getSystemToken(scope)
             assertThat(token).isEqualTo(systemtoken)

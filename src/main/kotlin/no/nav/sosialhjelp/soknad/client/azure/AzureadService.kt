@@ -8,7 +8,6 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 
 class AzureadService(
     private val azureClient: AzureadClient,
-    private val azureClientId: String,
     private val redisService: RedisService
 ) {
 
@@ -16,7 +15,7 @@ class AzureadService(
         redisService.getString("$AZURE_SYSTEM_TOKEN$scope")?.let { return it }
 
         return try {
-            azureClient.getSystemToken(azureClientId, scope).accessToken
+            azureClient.getSystemToken(scope).accessToken
                 .also { lagreTilCache(scope, it) }
         } catch (e: WebClientResponseException) {
             log.warn("Error message from server: ${e.responseBodyAsString}")
