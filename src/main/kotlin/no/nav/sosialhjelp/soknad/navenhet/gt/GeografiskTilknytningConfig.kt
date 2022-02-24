@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.navenhet.gt
 
-import no.nav.sosialhjelp.soknad.client.pdl.PdlConfig
 import no.nav.sosialhjelp.soknad.client.redis.RedisService
 import no.nav.sosialhjelp.soknad.client.sts.StsClient
 import no.nav.sosialhjelp.soknad.common.rest.RestUtils
@@ -15,7 +14,7 @@ open class GeografiskTilknytningConfig(
     @Value("\${pdl_api_url}") private val baseurl: String,
     private val stsClient: StsClient,
     private val redisService: RedisService
-) : PdlConfig(baseurl) {
+) {
 
     @Bean
     open fun geografiskTilknytningClient(): GeografiskTilknytningClient {
@@ -41,5 +40,5 @@ open class GeografiskTilknytningConfig(
     }
 
     private val client: Client
-        get() = RestUtils.createClient().register(pdlApiKeyRequestFilter)
+        get() = RestUtils.createClient()
 }

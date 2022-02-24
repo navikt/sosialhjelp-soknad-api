@@ -1,7 +1,6 @@
 package no.nav.sosialhjelp.soknad.personalia.person
 
 import no.nav.sosialhjelp.soknad.client.kodeverk.KodeverkService
-import no.nav.sosialhjelp.soknad.client.pdl.PdlConfig
 import no.nav.sosialhjelp.soknad.client.redis.RedisService
 import no.nav.sosialhjelp.soknad.client.sts.StsClient
 import no.nav.sosialhjelp.soknad.common.rest.RestUtils
@@ -18,7 +17,7 @@ open class PersonConfig(
     private val stsClient: StsClient,
     private val redisService: RedisService,
     kodeverkService: KodeverkService
-) : PdlConfig(baseurl) {
+) {
 
     private val helper: MapperHelper = MapperHelper()
     private val mapper = PdlDtoMapper(kodeverkService, helper)
@@ -34,5 +33,5 @@ open class PersonConfig(
     }
 
     private val client: Client
-        get() = RestUtils.createClient().register(pdlApiKeyRequestFilter)
+        get() = RestUtils.createClient()
 }

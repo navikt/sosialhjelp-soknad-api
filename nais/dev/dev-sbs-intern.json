@@ -17,8 +17,7 @@
     "/var/run/secrets/datasource": "/oracle/data/dev/creds/soknadsosialhjelp_q1-user",
     "/var/run/secrets/nais.io/virksomhetssertifikat": "/secret/virksomhetssertifikat/preprod/shared",
     "/apigw/aaregapi": "apikey/apigw/dev/aareg.api/sosialhjelp-soknad-api_q1",
-    "/apigw/securitytokenservicetoken": "apikey/apigw/dev/security-token-service-token/sosialhjelp-soknad-api_q1",
-    "/apigw/pdlapi": "apikey/apigw/dev/pdl-api/sosialhjelp-soknad-api_q1"
+    "/apigw/securitytokenservicetoken": "apikey/apigw/dev/security-token-service-token/sosialhjelp-soknad-api_q1"
   },
   "outboundRulesFssApplications": [
     "sosialhjelp-fss-proxy",
