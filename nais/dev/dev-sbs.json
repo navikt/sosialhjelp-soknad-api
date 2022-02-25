@@ -6,6 +6,7 @@
     "https://www-q0.dev.nav.no/sosialhjelp/soknad-api"
   ],
   "envsecret": [
+    "serviceuser-srvsoknadsosialhjelp-server",
     "redis-password-soknad-api",
     "fiks-integrasjon-secret",
     "systemuser-credentials-soknad-api",
@@ -17,8 +18,7 @@
     "/var/run/secrets/nais.io/virksomhetssertifikat": "/secret/virksomhetssertifikat/preprod/shared",
     "/apigw/aaregapi": "apikey/apigw/dev/aareg.api/sosialhjelp-soknad-api_q1",
     "/apigw/securitytokenservicetoken": "apikey/apigw/dev/security-token-service-token/sosialhjelp-soknad-api_q1",
-    "/apigw/pdlapi": "apikey/apigw/dev/pdl-api/sosialhjelp-soknad-api_q1",
-    "/serviceuser/srvsoknadsosialhjelp-server": "serviceuser/data/dev/srvsoknadsosialhjelp-server"
+    "/apigw/pdlapi": "apikey/apigw/dev/pdl-api/sosialhjelp-soknad-api_q1"
   },
   "outboundRulesFssApplications": [
     "sosialhjelp-fss-proxy",
