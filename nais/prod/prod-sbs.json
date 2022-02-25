@@ -17,8 +17,7 @@
     "/apigw/aaregapi": "apikey/apigw/prod/aareg.api/sosialhjelp-soknad-api",
     "/apigw/securitytokenservicetoken": "apikey/apigw/prod/security-token-service-token/sosialhjelp-soknad-api",
     "/apigw/pdlapi": "apikey/apigw/prod/pdl-api/sosialhjelp-soknad-api",
-    "/serviceuser/srvsoknadsosialhjelp-server": "serviceuser/data/prod/srvsoknadsosialhjelp-server",
-    "/serviceuser/srvsoknadsosialhjelp-server-sbs": "serviceuser/data/prod/srvsoknadsosialhjelp-server-sbs"
+    "/serviceuser/srvsoknadsosialhjelp-server": "serviceuser/data/prod/srvsoknadsosialhjelp-server"
   },
   "outboundRulesFssApplications": [
     "sosialhjelp-fss-proxy",
