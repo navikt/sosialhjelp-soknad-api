@@ -1,9 +1,9 @@
 package no.nav.sosialhjelp.soknad.personalia.person
 
+import no.nav.sosialhjelp.soknad.client.azure.AzureadService
 import no.nav.sosialhjelp.soknad.client.kodeverk.KodeverkService
-import no.nav.sosialhjelp.soknad.client.pdl.PdlConfig
 import no.nav.sosialhjelp.soknad.client.redis.RedisService
-import no.nav.sosialhjelp.soknad.client.sts.StsClient
+import no.nav.sosialhjelp.soknad.client.tokenx.TokendingsService
 import no.nav.sosialhjelp.soknad.common.rest.RestUtils
 import no.nav.sosialhjelp.soknad.personalia.person.domain.MapperHelper
 import no.nav.sosialhjelp.soknad.personalia.person.domain.PdlDtoMapper
@@ -15,10 +15,13 @@ import javax.ws.rs.client.Client
 @Configuration
 open class PersonConfig(
     @Value("\${pdl_api_url}") private val baseurl: String,
-    private val stsClient: StsClient,
+    @Value("\${pdl_api_scope}") private val pdlScope: String,
+    @Value("\${pdl_api_audience}") private val pdlAudience: String,
     private val redisService: RedisService,
+    private val tokendingsService: TokendingsService,
+    private val azureadService: AzureadService,
     kodeverkService: KodeverkService
-) : PdlConfig(baseurl) {
+) {
 
     private val helper: MapperHelper = MapperHelper()
     private val mapper = PdlDtoMapper(kodeverkService, helper)
@@ -30,9 +33,9 @@ open class PersonConfig(
 
     @Bean
     open fun hentPersonClient(): HentPersonClient {
-        return HentPersonClientImpl(client, baseurl, stsClient, redisService)
+        return HentPersonClientImpl(client, baseurl, pdlScope, pdlAudience, redisService, tokendingsService, azureadService)
     }
 
     private val client: Client
-        get() = RestUtils.createClient().register(pdlApiKeyRequestFilter)
+        get() = RestUtils.createClient()
 }

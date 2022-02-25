@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.module.kotlin.readValue
 import kotlinx.coroutines.runBlocking
 import no.nav.sosialhjelp.kotlin.utils.retry
+import no.nav.sosialhjelp.soknad.client.azure.AzureadService
 import no.nav.sosialhjelp.soknad.client.config.RetryUtils
 import no.nav.sosialhjelp.soknad.client.exceptions.PdlApiException
 import no.nav.sosialhjelp.soknad.client.exceptions.TjenesteUtilgjengeligException
@@ -19,9 +20,11 @@ import no.nav.sosialhjelp.soknad.client.redis.EKTEFELLE_CACHE_KEY_PREFIX
 import no.nav.sosialhjelp.soknad.client.redis.PDL_CACHE_SECONDS
 import no.nav.sosialhjelp.soknad.client.redis.PERSON_CACHE_KEY_PREFIX
 import no.nav.sosialhjelp.soknad.client.redis.RedisService
-import no.nav.sosialhjelp.soknad.client.sts.StsClient
+import no.nav.sosialhjelp.soknad.client.tokenx.TokendingsService
+import no.nav.sosialhjelp.soknad.common.Constants.BEARER
 import no.nav.sosialhjelp.soknad.common.Constants.HEADER_TEMA
 import no.nav.sosialhjelp.soknad.common.Constants.TEMA_KOM
+import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils.getToken
 import no.nav.sosialhjelp.soknad.personalia.person.dto.BarnDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.EktefelleDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.PersonAdressebeskyttelseDto
@@ -30,6 +33,7 @@ import org.slf4j.LoggerFactory.getLogger
 import javax.ws.rs.ProcessingException
 import javax.ws.rs.WebApplicationException
 import javax.ws.rs.client.Client
+import javax.ws.rs.core.HttpHeaders.AUTHORIZATION
 
 interface HentPersonClient {
     fun hentPerson(ident: String): PersonDto?
@@ -41,9 +45,12 @@ interface HentPersonClient {
 class HentPersonClientImpl(
     client: Client,
     baseurl: String,
-    stsClient: StsClient,
-    private val redisService: RedisService
-) : PdlClient(client, baseurl, stsClient), HentPersonClient {
+    private val pdlScope: String,
+    private val pdlAudience: String,
+    private val redisService: RedisService,
+    private val tokendingsService: TokendingsService,
+    private val azureadService: AzureadService
+) : PdlClient(client, baseurl), HentPersonClient {
 
     override fun hentPerson(ident: String): PersonDto? {
         return hentPersonFraCache(ident) ?: hentPersonFraPdl(ident)
@@ -62,7 +69,9 @@ class HentPersonClientImpl(
                     factor = RetryUtils.DEFAULT_EXPONENTIAL_BACKOFF_MULTIPLIER,
                     retryableExceptions = arrayOf(WebApplicationException::class, ProcessingException::class)
                 ) {
-                    hentPersonRequest.post(requestEntity(HENT_PERSON, variables(ident)), String::class.java)
+                    hentPersonRequest
+                        .header(AUTHORIZATION, BEARER + tokenXtoken(ident))
+                        .post(requestEntity(HENT_PERSON, variables(ident)), String::class.java)
                 }
             }
             val pdlResponse = pdlMapper.readValue<HentPersonDto<PersonDto>>(response)
@@ -95,7 +104,9 @@ class HentPersonClientImpl(
                     factor = RetryUtils.DEFAULT_EXPONENTIAL_BACKOFF_MULTIPLIER,
                     retryableExceptions = arrayOf(WebApplicationException::class, ProcessingException::class)
                 ) {
-                    hentPersonRequest.post(requestEntity(HENT_EKTEFELLE, variables(ident)), String::class.java)
+                    hentPersonRequest
+                        .header(AUTHORIZATION, BEARER + azureadService.getSystemToken(pdlScope))
+                        .post(requestEntity(HENT_EKTEFELLE, variables(ident)), String::class.java)
                 }
             }
             val pdlResponse = pdlMapper.readValue<HentPersonDto<EktefelleDto>>(response)
@@ -128,7 +139,9 @@ class HentPersonClientImpl(
                     factor = RetryUtils.DEFAULT_EXPONENTIAL_BACKOFF_MULTIPLIER,
                     retryableExceptions = arrayOf(WebApplicationException::class, ProcessingException::class)
                 ) {
-                    hentPersonRequest.post(requestEntity(HENT_BARN, variables(ident)), String::class.java)
+                    hentPersonRequest
+                        .header(AUTHORIZATION, BEARER + azureadService.getSystemToken(pdlScope))
+                        .post(requestEntity(HENT_BARN, variables(ident)), String::class.java)
                 }
             }
             val pdlResponse = pdlMapper.readValue<HentPersonDto<BarnDto>>(response)
@@ -164,7 +177,9 @@ class HentPersonClientImpl(
                     factor = RetryUtils.DEFAULT_EXPONENTIAL_BACKOFF_MULTIPLIER,
                     retryableExceptions = arrayOf(WebApplicationException::class, ProcessingException::class)
                 ) {
-                    hentPersonRequest.post(requestEntity(HENT_ADRESSEBESKYTTELSE, variables(ident)), String::class.java)
+                    hentPersonRequest
+                        .header(AUTHORIZATION, BEARER + tokenXtoken(ident))
+                        .post(requestEntity(HENT_ADRESSEBESKYTTELSE, variables(ident)), String::class.java)
                 }
             }
 
@@ -180,6 +195,8 @@ class HentPersonClientImpl(
             throw TjenesteUtilgjengeligException("Noe uventet feilet ved kall til PDL", e)
         }
     }
+
+    private suspend fun tokenXtoken(ident: String) = tokendingsService.exchangeToken(ident, getToken(), pdlAudience)
 
     private fun variables(ident: String): Map<String, Any> {
         return mapOf("historikk" to false, "ident" to ident)

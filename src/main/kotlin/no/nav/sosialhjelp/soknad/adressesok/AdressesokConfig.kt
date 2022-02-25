@@ -1,8 +1,7 @@
 package no.nav.sosialhjelp.soknad.adressesok
 
+import no.nav.sosialhjelp.soknad.client.azure.AzureadService
 import no.nav.sosialhjelp.soknad.client.kodeverk.KodeverkService
-import no.nav.sosialhjelp.soknad.client.pdl.PdlConfig
-import no.nav.sosialhjelp.soknad.client.sts.StsClient
 import no.nav.sosialhjelp.soknad.common.rest.RestUtils
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
@@ -12,9 +11,10 @@ import javax.ws.rs.client.Client
 @Configuration
 open class AdressesokConfig(
     @Value("\${pdl_api_url}") private val baseurl: String,
+    @Value("\${pdl_api_scope}") private val pdlScope: String,
+    private val azureadService: AzureadService,
     private val kodeverkService: KodeverkService,
-    private val stsClient: StsClient
-) : PdlConfig(baseurl) {
+) {
 
     @Bean
     open fun adressesokService(adressesokClient: AdressesokClient): AdressesokService {
@@ -23,9 +23,9 @@ open class AdressesokConfig(
 
     @Bean
     open fun adressesokClient(): AdressesokClient {
-        return AdressesokClient(client, baseurl, stsClient)
+        return AdressesokClient(client, baseurl, azureadService, pdlScope)
     }
 
     private val client: Client
-        get() = RestUtils.createClient().register(pdlApiKeyRequestFilter)
+        get() = RestUtils.createClient()
 }

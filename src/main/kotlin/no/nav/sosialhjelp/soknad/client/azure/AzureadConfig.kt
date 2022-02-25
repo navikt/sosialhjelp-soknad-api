@@ -21,7 +21,7 @@ open class AzureadConfig(
     }
 
     @Bean
-    open fun azuredingsService(azureClient: AzureadClient): AzureadService {
+    open fun azureadService(azureClient: AzureadClient): AzureadService {
         return AzureadService(azureClient, redisService)
     }
 
