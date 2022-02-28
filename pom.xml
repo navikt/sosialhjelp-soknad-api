@@ -108,7 +108,7 @@
         <jakarta.xml.version>2.3.3</jakarta.xml.version>
 
         <java-jwt.version>3.18.3</java-jwt.version>
-        <jwks-rsa.version>0.20.1</jwks-rsa.version>
+        <jwks-rsa.version>0.20.2</jwks-rsa.version>
 
         <!-- Versjoner for test dependencies -->
         <hamcrest.version>2.2</hamcrest.version>
