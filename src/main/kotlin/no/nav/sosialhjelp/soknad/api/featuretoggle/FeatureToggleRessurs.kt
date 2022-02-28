@@ -28,7 +28,6 @@ open class FeatureToggleRessurs(private val unleash: Unleash) {
     @GET
     open fun featureToggles(): Map<String, Boolean> {
         val featureToggles: MutableMap<String, Boolean> = HashMap()
-        featureToggles["leggeTilBarn"] = false
         return featureToggles
     }
 }
