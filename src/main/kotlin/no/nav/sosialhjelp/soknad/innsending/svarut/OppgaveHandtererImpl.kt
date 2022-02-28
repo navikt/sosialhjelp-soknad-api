@@ -3,8 +3,8 @@ package no.nav.sosialhjelp.soknad.innsending.svarut
 import no.nav.sosialhjelp.metrics.MetricsFactory
 import no.nav.sosialhjelp.soknad.business.batch.oppgave.Oppgave
 import no.nav.sosialhjelp.soknad.business.batch.oppgave.Oppgave.Status
-import no.nav.sosialhjelp.soknad.business.db.repositories.oppgave.OppgaveRepository
 import no.nav.sosialhjelp.soknad.common.mdc.MdcOperations
+import no.nav.sosialhjelp.soknad.db.repositories.oppgave.OppgaveRepository
 import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Scheduled
 import java.time.LocalDateTime

@@ -1,9 +1,9 @@
 package no.nav.sosialhjelp.soknad.innsending.svarut
 
-import no.nav.sosialhjelp.soknad.business.db.repositories.oppgave.OppgaveRepository
 import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.SosialhjelpPdfGenerator
 import no.nav.sosialhjelp.soknad.common.rest.RestConfig
 import no.nav.sosialhjelp.soknad.common.rest.RestUtils
+import no.nav.sosialhjelp.soknad.db.repositories.oppgave.OppgaveRepository
 import no.nav.sosialhjelp.soknad.health.selftest.Pingable
 import no.nav.sosialhjelp.soknad.innsending.InnsendingService
 import no.nav.sosialhjelp.soknad.innsending.svarut.client.SvarUtClient
