@@ -9,7 +9,6 @@
     "serviceuser-srvsoknadsosialhjelp-server",
     "redis-password-soknad-api",
     "fiks-integrasjon-secret",
-    "systemuser-credentials-soknad-api",
     "fiks-svarut-credentials",
     "testbruker-skatteetaten"
   ],
