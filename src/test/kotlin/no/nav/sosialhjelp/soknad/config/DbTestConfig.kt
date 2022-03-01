@@ -2,10 +2,6 @@ package no.nav.sosialhjelp.soknad.config
 
 import no.nav.sosialhjelp.soknad.business.db.RepositoryTestSupport
 import no.nav.sosialhjelp.soknad.business.db.TestSupport
-import no.nav.sosialhjelp.soknad.business.db.repositories.sendtsoknad.BatchSendtSoknadRepository
-import no.nav.sosialhjelp.soknad.business.db.repositories.sendtsoknad.BatchSendtSoknadRepositoryJdbc
-import no.nav.sosialhjelp.soknad.business.db.repositories.sendtsoknad.SendtSoknadRepository
-import no.nav.sosialhjelp.soknad.business.db.repositories.sendtsoknad.SendtSoknadRepositoryJdbc
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.BatchSoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.BatchSoknadMetadataRepositoryJdbc
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.SoknadMetadataRepository
@@ -18,6 +14,10 @@ import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.BatchOpplastet
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.BatchOpplastetVedleggRepositoryJdbc
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRepository
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRepositoryJdbc
+import no.nav.sosialhjelp.soknad.db.repositories.sendtsoknad.BatchSendtSoknadRepository
+import no.nav.sosialhjelp.soknad.db.repositories.sendtsoknad.BatchSendtSoknadRepositoryJdbc
+import no.nav.sosialhjelp.soknad.db.repositories.sendtsoknad.SendtSoknadRepository
+import no.nav.sosialhjelp.soknad.db.repositories.sendtsoknad.SendtSoknadRepositoryJdbc
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Import
