@@ -20,7 +20,6 @@ import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonNavn;
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonAnsvar;
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonBarn;
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonBarnebidrag;
-import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonBorSammenMed;
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonEktefelle;
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonErFolkeregistrertSammen;
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonFamilie;
@@ -635,7 +634,7 @@ public class SosialhjelpPdfGenerator {
 
             // Forsørgerplikt
             JsonForsorgerplikt forsorgerplikt = familie.getForsorgerplikt();
-            if (forsorgerplikt != null && forsorgerplikt.getHarForsorgerplikt() != null && forsorgerplikt.getHarForsorgerplikt().getVerdi()) {
+            if (forsorgerplikt != null && forsorgerplikt.getHarForsorgerplikt() != null && Boolean.TRUE.equals(forsorgerplikt.getHarForsorgerplikt().getVerdi())) {
                 if (utvidetSoknad) {
                     pdf.skrivTekst(getTekst("familierelasjon.ingress_folkeregisteret"));
                     long antallBarnFraFolkeregisteret = forsorgerplikt.getAnsvar().stream()
@@ -648,14 +647,7 @@ public class SosialhjelpPdfGenerator {
                 //pdf.addBlankLine();
 
                 List<JsonAnsvar> listeOverAnsvar = forsorgerplikt.getAnsvar();
-                leggTilBarn(pdf, utvidetSoknad, listeOverAnsvar, JsonKilde.SYSTEM);
-
-                if (utvidetSoknad) {
-                    pdf.skrivTekst(getTekst("familierelasjon.faktum.lagttil"));
-                    pdf.skrivTekst(getTekst("familierelasjon.faktum.leggtil"));
-                    pdf.skrivTekst(getTekst("familierelasjon.faktum.leggtil.hjelpetekst.tekst"));
-                }
-                leggTilBarn(pdf, utvidetSoknad, listeOverAnsvar, JsonKilde.BRUKER);
+                leggTilBarn(pdf, utvidetSoknad, listeOverAnsvar);
 
                 // Mottar eller betaler du barnebidrag for ett eller flere av barna?
                 pdf.skrivTekstBold(getTekst("familie.barn.true.barnebidrag.sporsmal"));
@@ -677,7 +669,6 @@ public class SosialhjelpPdfGenerator {
             } else {
                 if (utvidetSoknad) {
                     pdf.skrivH3(getTekst("familierelasjon.ingen_registrerte_barn_tittel"));
-                    pdf.skrivTekst(getTekst("familierelasjon.faktum.lagttil"));
                 }
                 pdf.skrivTekst(getTekst("familierelasjon.ingen_registrerte_barn_tekst"));
             }
@@ -687,47 +678,31 @@ public class SosialhjelpPdfGenerator {
         pdf.addBlankLine();
     }
 
-    private void leggTilBarn(PdfGenerator pdf, boolean utvidetSoknad, List<JsonAnsvar> listeOverAnsvar, JsonKilde kilde) throws IOException {
+    private void leggTilBarn(PdfGenerator pdf, boolean utvidetSoknad, List<JsonAnsvar> listeOverAnsvar) throws IOException {
         for (JsonAnsvar ansvar : listeOverAnsvar) {
             JsonBarn barn = ansvar.getBarn();
-            if (barn.getKilde().equals(kilde)) {
-                if (barn.getHarDiskresjonskode() == null || !barn.getHarDiskresjonskode()) {
-                    // navn
-                    JsonNavn navnPaBarn = barn.getNavn();
-                    String navnPaBarnTekst = getJsonNavnTekst(navnPaBarn);
-                    pdfUtils.skrivTekstMedGuard(pdf, navnPaBarnTekst, "familie.barn.true.barn.navn.label");
+            if (barn.getKilde().equals(JsonKilde.SYSTEM) && barn.getHarDiskresjonskode() == null || !barn.getHarDiskresjonskode()) {
+                // navn
+                JsonNavn navnPaBarn = barn.getNavn();
+                String navnPaBarnTekst = getJsonNavnTekst(navnPaBarn);
+                pdfUtils.skrivTekstMedGuard(pdf, navnPaBarnTekst, "familie.barn.true.barn.navn.label");
 
-                    // Fødselsdato
-                    String fodselsdato = formaterDato(barn.getFodselsdato(), DATO_FORMAT);
-                    pdfUtils.skrivTekstMedGuard(pdf, fodselsdato, "kontakt.system.personalia.fodselsdato");
+                // Fødselsdato
+                String fodselsdato = formaterDato(barn.getFodselsdato(), DATO_FORMAT);
+                pdfUtils.skrivTekstMedGuard(pdf, fodselsdato, "kontakt.system.personalia.fodselsdato");
 
-                    if (barn.getKilde().equals(JsonKilde.SYSTEM)) {
-                        // Samme folkeregistrerte adresse
-                        JsonErFolkeregistrertSammen erFolkeregistrertSammen = ansvar.getErFolkeregistrertSammen();
-                        if (erFolkeregistrertSammen != null) {
-                            if (erFolkeregistrertSammen.getVerdi() != null && erFolkeregistrertSammen.getVerdi()) {
-                                pdfUtils.skrivTekstMedGuard(pdf, "Ja", "familierelasjon.samme_folkeregistrerte_adresse");
-                                leggTilDeltBosted(pdf, ansvar, true, utvidetSoknad);
-                            } else {
-                                pdfUtils.skrivTekstMedGuard(pdf, "Nei", "familierelasjon.samme_folkeregistrerte_adresse");
-                                leggTilDeltBosted(pdf, ansvar, false, utvidetSoknad);
-                            }
-                        }
+                // Samme folkeregistrerte adresse
+                JsonErFolkeregistrertSammen erFolkeregistrertSammen = ansvar.getErFolkeregistrertSammen();
+                if (erFolkeregistrertSammen != null) {
+                    if (erFolkeregistrertSammen.getVerdi() != null && erFolkeregistrertSammen.getVerdi()) {
+                        pdfUtils.skrivTekstMedGuard(pdf, "Ja", "familierelasjon.samme_folkeregistrerte_adresse");
+                        leggTilDeltBosted(pdf, ansvar, true, utvidetSoknad);
                     } else {
-                        // Svart at barnet bor på samme adresse
-                        JsonBorSammenMed borSammen = ansvar.getBorSammenMed();
-                        if (borSammen != null) {
-                            if (borSammen.getVerdi() != null && borSammen.getVerdi()) {
-                                pdfUtils.skrivTekstMedGuard(pdf, "Ja", "familierelasjon.bor_sammen");
-                                leggTilDeltBosted(pdf, ansvar, true, utvidetSoknad);
-                            } else {
-                                pdfUtils.skrivTekstMedGuard(pdf, "Nei", "familierelasjon.bor_sammen");
-                                leggTilDeltBosted(pdf, ansvar, false, utvidetSoknad);
-                            }
-                        }
+                        pdfUtils.skrivTekstMedGuard(pdf, "Nei", "familierelasjon.samme_folkeregistrerte_adresse");
+                        leggTilDeltBosted(pdf, ansvar, false, utvidetSoknad);
                     }
-                    pdf.addBlankLine();
                 }
+                pdf.addBlankLine();
             }
         }
     }

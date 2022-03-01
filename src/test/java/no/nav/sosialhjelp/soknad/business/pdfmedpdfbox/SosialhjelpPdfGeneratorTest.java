@@ -327,23 +327,6 @@ class SosialhjelpPdfGeneratorTest {
                 .withFamilie(
                         new JsonFamilie()
                                 .withSivilstatus(
-//                                        new JsonSivilstatus()
-//                                                .withKilde(BRUKER)
-//                                                .withStatus(JsonSivilstatus.Status.GIFT)
-//                                                .withEktefelle(
-//                                                        new JsonEktefelle()
-//                                                                .withNavn(
-//                                                                        new JsonNavn()
-//                                                                                .withFornavn("Leia")
-//                                                                                .withMellomnavn("Mellomnavn")
-//                                                                                .withEtternavn("Skywalker")
-//                                                                )
-//                                                                .withPersonIdentifikator("0101195011223")
-//                                                )
-//                                                .withBorSammenMed(true)
-//                                        new JsonSivilstatus()
-//                                                .withKilde(BRUKER)
-//                                                .withStatus(JsonSivilstatus.Status.SKILT)
                                         new JsonSivilstatus()
                                                 .withKilde(BRUKER)
                                                 .withStatus(JsonSivilstatus.Status.GIFT)
@@ -670,23 +653,6 @@ class SosialhjelpPdfGeneratorTest {
                 .withFamilie(
                         new JsonFamilie()
                                 .withSivilstatus(
-//                                        new JsonSivilstatus()
-//                                                .withKilde(BRUKER)
-//                                                .withStatus(JsonSivilstatus.Status.GIFT)
-//                                                .withEktefelle(
-//                                                        new JsonEktefelle()
-//                                                                .withNavn(
-//                                                                        new JsonNavn()
-//                                                                                .withFornavn("Leia")
-//                                                                                .withMellomnavn("Mellomnavn")
-//                                                                                .withEtternavn("Skywalker")
-//                                                                )
-//                                                                .withPersonIdentifikator("0101195011223")
-//                                                )
-//                                                .withBorSammenMed(true)
-//                                        new JsonSivilstatus()
-//                                                .withKilde(BRUKER)
-//                                                .withStatus(JsonSivilstatus.Status.SKILT)
                                         new JsonSivilstatus()
                                                 .withKilde(SYSTEM)
                                                 .withStatus(JsonSivilstatus.Status.GIFT)

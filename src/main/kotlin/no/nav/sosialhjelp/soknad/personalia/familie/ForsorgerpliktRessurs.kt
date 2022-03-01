@@ -25,7 +25,6 @@ import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.personalia.familie.PersonMapper.fulltNavn
 import no.nav.sosialhjelp.soknad.personalia.familie.PersonMapper.getPersonnummerFromFnr
-import no.nav.sosialhjelp.soknad.personalia.familie.PersonMapper.mapToJsonNavn
 import no.nav.sosialhjelp.soknad.personalia.familie.dto.AnsvarFrontend
 import no.nav.sosialhjelp.soknad.personalia.familie.dto.BarnFrontend
 import no.nav.sosialhjelp.soknad.personalia.familie.dto.ForsorgerpliktFrontend
@@ -135,48 +134,11 @@ open class ForsorgerpliktRessurs(
                 }
             }
         }
-        val brukerregistrertAnsvar: MutableList<JsonAnsvar> = ArrayList()
-        if (forsorgerpliktFrontend.brukerregistrertAnsvar != null && forsorgerpliktFrontend.brukerregistrertAnsvar.isNotEmpty()) {
-            for (ansvarFrontend in forsorgerpliktFrontend.brukerregistrertAnsvar) {
-                val ansvar = JsonAnsvar()
-                    .withBarn(
-                        JsonBarn()
-                            .withKilde(JsonKilde.BRUKER)
-                            .withNavn(mapToJsonNavn(ansvarFrontend?.barn?.navn))
-                            .withFodselsdato(ansvarFrontend?.barn?.fodselsdato)
-                    )
-                setBorSammenDeltBostedAndSamvarsgrad(ansvarFrontend, ansvar)
-                if (erAnsvarIkkeTomt(ansvar)) {
-                    brukerregistrertAnsvar.add(ansvar)
-                }
-            }
-            if (forsorgerplikt.harForsorgerplikt == null || forsorgerplikt.harForsorgerplikt.verdi == false) {
-                forsorgerplikt.harForsorgerplikt = JsonHarForsorgerplikt().withKilde(JsonKilde.BRUKER).withVerdi(true)
-            }
-        } else {
-            if (forsorgerplikt.harForsorgerplikt != null && forsorgerplikt.harForsorgerplikt.kilde == JsonKilde.BRUKER) {
-                forsorgerplikt.harForsorgerplikt = JsonHarForsorgerplikt().withKilde(JsonKilde.SYSTEM).withVerdi(false)
-                removeBarneutgifterFromSoknad(soknad)
-            }
+        if (forsorgerplikt.harForsorgerplikt != null && forsorgerplikt.harForsorgerplikt.kilde == JsonKilde.BRUKER) {
+            forsorgerplikt.harForsorgerplikt = JsonHarForsorgerplikt().withKilde(JsonKilde.SYSTEM).withVerdi(false)
+            removeBarneutgifterFromSoknad(soknad)
         }
-        systemAnsvar.addAll(brukerregistrertAnsvar)
         forsorgerplikt.ansvar = if (systemAnsvar.isEmpty()) null else systemAnsvar
-    }
-
-    private fun erAnsvarIkkeTomt(ansvar: JsonAnsvar): Boolean {
-        val navn = ansvar.barn.navn
-        if (navn.fornavn.isNotEmpty()) {
-            return true
-        }
-        if (navn.mellomnavn.isNotEmpty()) {
-            return true
-        }
-        if (navn.etternavn.isNotEmpty()) {
-            return true
-        }
-        return if (ansvar.barn.fodselsdato != null && ansvar.barn.fodselsdato.isNotEmpty()) {
-            true
-        } else false
     }
 
     private fun setBorSammenDeltBostedAndSamvarsgrad(ansvarFrontend: AnsvarFrontend?, ansvar: JsonAnsvar) {
@@ -212,15 +174,10 @@ open class ForsorgerpliktRessurs(
                 .filter { it.barn.kilde == JsonKilde.SYSTEM }
                 .map { mapToAnsvarFrontend(it) }
 
-        val brukerregistrertAnsvar: List<AnsvarFrontend?>? =
-            if (jsonForsorgerplikt.ansvar == null) null else jsonForsorgerplikt.ansvar
-                .filter { it.barn.kilde == JsonKilde.BRUKER }
-                .map { mapToAnsvarFrontend(it) }
         return ForsorgerpliktFrontend(
             harForsorgerplikt = if (jsonForsorgerplikt.harForsorgerplikt == null) null else jsonForsorgerplikt.harForsorgerplikt.verdi,
             barnebidrag = if (jsonForsorgerplikt.barnebidrag == null) null else jsonForsorgerplikt.barnebidrag.verdi,
-            ansvar = ansvar,
-            brukerregistrertAnsvar = brukerregistrertAnsvar
+            ansvar = ansvar
         )
     }
 
