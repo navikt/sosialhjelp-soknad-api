@@ -35,8 +35,7 @@ class SendtSoknadRepositoryJdbc : NamedParameterJdbcDaoSupport(), SendtSoknadRep
         )
         jdbcTemplate
             .update(
-                "insert into SENDT_SOKNAD (sendt_soknad_id, behandlingsid, tilknyttetbehandlingsid, eier, fiksforsendelseid, orgnr, navenhetsnavn, brukeropprettetdato, brukerferdigdato, sendtdato)" +
-                    " values (?,?,?,?,?,?,?,?,?,?)",
+                "insert into SENDT_SOKNAD (sendt_soknad_id, behandlingsid, tilknyttetbehandlingsid, eier, fiksforsendelseid, orgnr, navenhetsnavn, brukeropprettetdato, brukerferdigdato, sendtdato) values (?,?,?,?,?,?,?,?,?,?)",
                 sendtSoknadId,
                 sendtSoknad.behandlingsId,
                 sendtSoknad.tilknyttetBehandlingsId,
@@ -54,19 +53,20 @@ class SendtSoknadRepositoryJdbc : NamedParameterJdbcDaoSupport(), SendtSoknadRep
     override fun hentSendtSoknad(behandlingsId: String, eier: String?): Optional<SendtSoknad> {
         return jdbcTemplate.query(
             "select * from SENDT_SOKNAD where EIER = ? and BEHANDLINGSID = ?",
-            SendtSoknadRowMapper(), eier, behandlingsId
+            SendtSoknadRowMapper(),
+            eier,
+            behandlingsId
         ).stream().findFirst()
     }
 
     override fun oppdaterSendtSoknadVedSendingTilFiks(fiksforsendelseId: String?, behandlingsId: String?, eier: String?) {
-        jdbcTemplate
-            .update(
-                "update SENDT_SOKNAD set FIKSFORSENDELSEID = ?, SENDTDATO = ? where BEHANDLINGSID = ? and EIER = ?",
-                fiksforsendelseId,
-                Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant()),
-                behandlingsId,
-                eier
-            )
+        jdbcTemplate.update(
+            "update SENDT_SOKNAD set FIKSFORSENDELSEID = ?, SENDTDATO = ? where BEHANDLINGSID = ? and EIER = ?",
+            fiksforsendelseId,
+            Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant()),
+            behandlingsId,
+            eier
+        )
     }
 
     private fun sjekkOmBrukerEierSendtSoknad(sendtSoknad: SendtSoknad, eier: String?) {

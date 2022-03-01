@@ -30,8 +30,7 @@ open class OppgaveRepositoryJdbc : NamedParameterJdbcDaoSupport(), OppgaveReposi
             oppgave.status = Oppgave.Status.valueOf(rs.getString("status"))
             oppgave.steg = rs.getInt("steg")
             oppgave.oppgaveData = Oppgave.JAXB.unmarshal(rs.getString("oppgavedata"), FiksData::class.java)
-            oppgave.oppgaveResultat =
-                Oppgave.JAXB.unmarshal(rs.getString("oppgaveresultat"), FiksResultat::class.java)
+            oppgave.oppgaveResultat = Oppgave.JAXB.unmarshal(rs.getString("oppgaveresultat"), FiksResultat::class.java)
             oppgave.opprettet = timestampTilTid(rs.getTimestamp("opprettet"))
             oppgave.sistKjort = timestampTilTid(rs.getTimestamp("sistkjort"))
             oppgave.nesteForsok = timestampTilTid(rs.getTimestamp("nesteforsok"))
@@ -47,8 +46,7 @@ open class OppgaveRepositoryJdbc : NamedParameterJdbcDaoSupport(), OppgaveReposi
     override fun opprett(oppgave: Oppgave) {
         oppgave.id = jdbcTemplate.queryForObject(selectNextSequenceValue("OPPGAVE_ID_SEQ"), Long::class.java)
         jdbcTemplate.update(
-            "INSERT INTO oppgave (id, behandlingsid, type, status, steg, oppgavedata, oppgaveresultat, " +
-                "opprettet, sistkjort, nesteforsok, retries) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            "INSERT INTO oppgave (id, behandlingsid, type, status, steg, oppgavedata, oppgaveresultat, opprettet, sistkjort, nesteforsok, retries) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
             oppgave.id,
             oppgave.behandlingsId,
             oppgave.type,
@@ -65,8 +63,7 @@ open class OppgaveRepositoryJdbc : NamedParameterJdbcDaoSupport(), OppgaveReposi
 
     override fun oppdater(oppgave: Oppgave) {
         jdbcTemplate.update(
-            "UPDATE oppgave SET status = ?, steg = ?, oppgavedata = ?, oppgaveresultat = ?, " +
-                "nesteforsok = ?, retries = ? WHERE id = ?",
+            "UPDATE oppgave SET status = ?, steg = ?, oppgavedata = ?, oppgaveresultat = ?, nesteforsok = ?, retries = ? WHERE id = ?",
             oppgave.status.name,
             oppgave.steg,
             Oppgave.JAXB.marshal(oppgave.oppgaveData),
@@ -80,7 +77,8 @@ open class OppgaveRepositoryJdbc : NamedParameterJdbcDaoSupport(), OppgaveReposi
     override fun hentOppgave(behandlingsId: String): Optional<Oppgave> {
         return jdbcTemplate.query(
             "SELECT * FROM oppgave WHERE behandlingsid = ?",
-            oppgaveRowMapper, behandlingsId
+            oppgaveRowMapper,
+            behandlingsId
         ).stream().findFirst()
     }
 
@@ -88,24 +86,22 @@ open class OppgaveRepositoryJdbc : NamedParameterJdbcDaoSupport(), OppgaveReposi
         val select =
             "SELECT * FROM oppgave WHERE status = ? and (nesteforsok is null OR nesteforsok < ?) " + SQLUtils.limit(1)
         while (true) {
-            val resultat =
-                jdbcTemplate.query(
-                    select, oppgaveRowMapper, Oppgave.Status.KLAR.name,
-                    tidTilTimestamp(
-                        LocalDateTime.now()
-                    )
-                )
-                    .stream().findFirst()
+            val resultat = jdbcTemplate.query(
+                select,
+                oppgaveRowMapper,
+                Oppgave.Status.KLAR.name,
+                tidTilTimestamp(LocalDateTime.now())
+            ).stream().findFirst()
             if (!resultat.isPresent) {
                 return Optional.empty()
             }
             val update = "UPDATE oppgave SET status = ?, sistkjort = ? WHERE status = ? AND id = ?"
             val rowsAffected = jdbcTemplate.update(
-                update, Oppgave.Status.UNDER_ARBEID.name,
-                tidTilTimestamp(
-                    LocalDateTime.now()
-                ),
-                Oppgave.Status.KLAR.name, resultat.get().id
+                update,
+                Oppgave.Status.UNDER_ARBEID.name,
+                tidTilTimestamp(LocalDateTime.now()),
+                Oppgave.Status.KLAR.name,
+                resultat.get().id
             )
             if (rowsAffected == 1) {
                 return resultat
@@ -119,9 +115,7 @@ open class OppgaveRepositoryJdbc : NamedParameterJdbcDaoSupport(), OppgaveReposi
             updateSql,
             Oppgave.Status.KLAR.name,
             Oppgave.Status.UNDER_ARBEID.name,
-            tidTilTimestamp(
-                LocalDateTime.now().minusHours(1)
-            )
+            tidTilTimestamp(LocalDateTime.now().minusHours(1))
         )
     }
 
@@ -129,15 +123,15 @@ open class OppgaveRepositoryJdbc : NamedParameterJdbcDaoSupport(), OppgaveReposi
         val statuser: MutableMap<String, Int> = HashMap()
         statuser["feilede"] = jdbcTemplate.queryForObject(
             "SELECT count(*) FROM oppgave WHERE status = ?",
-            Int::class.java, Oppgave.Status.FEILET.name
+            Int::class.java,
+            Oppgave.Status.FEILET.name
         )
-        statuser["lengearbeid"] =
-            jdbcTemplate.queryForObject(
-                "SELECT count(*) FROM oppgave WHERE status = ? AND sistkjort < ?",
-                Int::class.java,
-                Oppgave.Status.UNDER_ARBEID.name,
-                tidTilTimestamp(LocalDateTime.now().minusMinutes(10))
-            )
+        statuser["lengearbeid"] = jdbcTemplate.queryForObject(
+            "SELECT count(*) FROM oppgave WHERE status = ? AND sistkjort < ?",
+            Int::class.java,
+            Oppgave.Status.UNDER_ARBEID.name,
+            tidTilTimestamp(LocalDateTime.now().minusMinutes(10))
+        )
         return statuser
     }
 
