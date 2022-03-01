@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid;
 
-import no.nav.sosialhjelp.soknad.business.db.repositories.opplastetvedlegg.BatchOpplastetVedleggRepository;
+import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.BatchOpplastetVedleggRepository;
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
 import org.springframework.stereotype.Component;

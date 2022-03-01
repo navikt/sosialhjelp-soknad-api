@@ -52,21 +52,12 @@ open class OpplastetVedleggRepositoryJdbc : NamedParameterJdbcDaoSupport(), Oppl
     }
 
     override fun slettVedlegg(uuid: String?, eier: String) {
-        jdbcTemplate
-            .update(
-                "delete from OPPLASTET_VEDLEGG where EIER = ? and UUID = ?",
-                eier,
-                uuid
-            )
+        jdbcTemplate.update("delete from OPPLASTET_VEDLEGG where EIER = ? and UUID = ?", eier, uuid)
     }
 
     override fun slettAlleVedleggForSoknad(soknadId: Long, eier: String) {
         jdbcTemplate
-            .update(
-                "delete from OPPLASTET_VEDLEGG where EIER = ? and SOKNAD_UNDER_ARBEID_ID = ?",
-                eier,
-                soknadId
-            )
+            .update("delete from OPPLASTET_VEDLEGG where EIER = ? and SOKNAD_UNDER_ARBEID_ID = ?", eier, soknadId)
     }
 
     override fun hentSamletVedleggStorrelse(soknadId: Long, eier: String): Int {
