@@ -35,7 +35,6 @@ import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJ
 import no.nav.sosialhjelp.soknad.personalia.familie.dto.AnsvarFrontend
 import no.nav.sosialhjelp.soknad.personalia.familie.dto.BarnFrontend
 import no.nav.sosialhjelp.soknad.personalia.familie.dto.ForsorgerpliktFrontend
-import no.nav.sosialhjelp.soknad.personalia.familie.dto.NavnFrontend
 import no.nav.sosialhjelp.soknad.tekster.TextService
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import org.assertj.core.api.Assertions.assertThat
@@ -156,7 +155,7 @@ internal class ForsorgerpliktRessursTest {
         val soknadUnderArbeidSlot = slot<SoknadUnderArbeid>()
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(soknadUnderArbeidSlot), any()) } just runs
 
-        val forsorgerpliktFrontend = ForsorgerpliktFrontend(null, Verdi.BETALER, null, null)
+        val forsorgerpliktFrontend = ForsorgerpliktFrontend(null, Verdi.BETALER, null)
         forsorgerpliktRessurs.updateForsorgerplikt(BEHANDLINGSID, forsorgerpliktFrontend)
 
         val soknadUnderArbeid = soknadUnderArbeidSlot.captured
@@ -182,7 +181,7 @@ internal class ForsorgerpliktRessursTest {
         val soknadUnderArbeidSlot = slot<SoknadUnderArbeid>()
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(soknadUnderArbeidSlot), any()) } just runs
 
-        val forsorgerpliktFrontend = ForsorgerpliktFrontend(null, null, null, null)
+        val forsorgerpliktFrontend = ForsorgerpliktFrontend(null, null, null)
         forsorgerpliktRessurs.updateForsorgerplikt(BEHANDLINGSID, forsorgerpliktFrontend)
 
         val soknadUnderArbeid = soknadUnderArbeidSlot.captured
@@ -205,7 +204,7 @@ internal class ForsorgerpliktRessursTest {
         val soknadUnderArbeidSlot = slot<SoknadUnderArbeid>()
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(soknadUnderArbeidSlot), any()) } just runs
 
-        val forsorgerpliktFrontend = ForsorgerpliktFrontend(null, null, listOf(createBarnMedDeltBosted(), createBarnMedSamvarsgrad()), null)
+        val forsorgerpliktFrontend = ForsorgerpliktFrontend(null, null, listOf(createBarnMedDeltBosted(), createBarnMedSamvarsgrad()))
         forsorgerpliktRessurs.updateForsorgerplikt(BEHANDLINGSID, forsorgerpliktFrontend)
 
         val soknadUnderArbeid = soknadUnderArbeidSlot.captured
@@ -214,54 +213,6 @@ internal class ForsorgerpliktRessursTest {
         assertThat(forsorgerplikt.harForsorgerplikt.verdi).isTrue
         assertThat(forsorgerplikt.ansvar[0].harDeltBosted.verdi).isTrue
         assertThat(forsorgerplikt.ansvar[1].samvarsgrad.verdi).isEqualTo(30)
-    }
-
-    @Test
-    fun putForsorgerpliktSkalLeggeTilBrukerregistrertBarnVedSidenAvSystemregistrerte() {
-        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
-        val jsonAnsvar = JsonAnsvar().withBarn(JSON_BARN)
-        val jsonansvar2 = JsonAnsvar().withBarn(JSON_BARN_2)
-        every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
-            createJsonInternalSoknadWithForsorgerplikt(true, null, listOf(jsonAnsvar, jsonansvar2))
-
-        val soknadUnderArbeidSlot = slot<SoknadUnderArbeid>()
-        every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(soknadUnderArbeidSlot), any()) } just runs
-
-        val forsorgerpliktFrontend = ForsorgerpliktFrontend(
-            null, null, listOf(createBarnMedDeltBosted(), createBarnMedSamvarsgrad()), listOf(BRUKERREGISTRERT_BARN)
-        )
-        forsorgerpliktRessurs.updateForsorgerplikt(BEHANDLINGSID, forsorgerpliktFrontend)
-
-        val soknadUnderArbeid = soknadUnderArbeidSlot.captured
-        val forsorgerplikt = soknadUnderArbeid.jsonInternalSoknad.soknad.data.familie.forsorgerplikt
-        assertThat(forsorgerplikt.barnebidrag).isNull()
-        assertThat(forsorgerplikt.harForsorgerplikt.verdi).isTrue
-        assertThat(forsorgerplikt.ansvar[0].harDeltBosted.verdi).isTrue
-        assertThat(forsorgerplikt.ansvar[1].samvarsgrad.verdi).isEqualTo(30)
-        val brukerregistrertAnsvar = forsorgerplikt.ansvar[2]
-        assertThatAnsvarIsCorrectlyConverted(BRUKERREGISTRERT_BARN, brukerregistrertAnsvar)
-    }
-
-    @Test
-    fun putForsorgerpliktSkalLeggeTilBrukerregistrertBarnOgSetteHarForsorgerplikt() {
-        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
-        every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
-            createJsonInternalSoknadWithForsorgerplikt(false, null, ArrayList())
-
-        val soknadUnderArbeidSlot = slot<SoknadUnderArbeid>()
-        every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(soknadUnderArbeidSlot), any()) } just runs
-
-        val forsorgerpliktFrontend = ForsorgerpliktFrontend(
-            null, null, null, listOf(BRUKERREGISTRERT_BARN)
-        )
-        forsorgerpliktRessurs.updateForsorgerplikt(BEHANDLINGSID, forsorgerpliktFrontend)
-
-        val soknadUnderArbeid = soknadUnderArbeidSlot.captured
-        val forsorgerplikt = soknadUnderArbeid.jsonInternalSoknad.soknad.data.familie.forsorgerplikt
-        assertThat(forsorgerplikt.barnebidrag).isNull()
-        assertThat(forsorgerplikt.harForsorgerplikt.verdi).isTrue
-        val brukerregistrertAnsvar = forsorgerplikt.ansvar[0]
-        assertThatAnsvarIsCorrectlyConverted(BRUKERREGISTRERT_BARN, brukerregistrertAnsvar)
     }
 
     @Test
@@ -278,7 +229,7 @@ internal class ForsorgerpliktRessursTest {
     fun putForsorgerpliktSkalKasteAuthorizationExceptionVedManglendeTilgang() {
         every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } throws AuthorizationException("Not for you my friend")
 
-        val forsorgerpliktFrontend = ForsorgerpliktFrontend(null, null, listOf(BRUKERREGISTRERT_BARN), null)
+        val forsorgerpliktFrontend = ForsorgerpliktFrontend(null, null, listOf(createBarnMedSamvarsgrad()))
 
         assertThatExceptionOfType(AuthorizationException::class.java)
             .isThrownBy { forsorgerpliktRessurs.updateForsorgerplikt(BEHANDLINGSID, forsorgerpliktFrontend) }
@@ -384,17 +335,5 @@ internal class ForsorgerpliktRessursTest {
             )
             .withFodselsdato("1770-12-16")
             .withPersonIdentifikator("22222222222")
-        private val BRUKERREGISTRERT_BARN = AnsvarFrontend(
-            barn = BarnFrontend(
-                navn = NavnFrontend("Harry", "Trollmann", "Potter"),
-                fodselsdato = "1991-01-01",
-                personnummer = null,
-                fodselsnummer = null
-            ),
-            borSammenMed = true,
-            erFolkeregistrertSammen = null,
-            harDeltBosted = true,
-            samvarsgrad = null
-        )
     }
 }

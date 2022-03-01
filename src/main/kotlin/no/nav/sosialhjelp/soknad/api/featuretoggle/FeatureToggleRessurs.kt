@@ -18,8 +18,6 @@ import javax.ws.rs.core.MediaType
 )
 open class FeatureToggleConfig
 
-const val FEATURE_LEGGE_TIL_BARN = "sosialhjelp.soknad.legge-til-barn"
-
 @Controller
 @ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4])
 @Path("/feature-toggle")
@@ -30,7 +28,6 @@ open class FeatureToggleRessurs(private val unleash: Unleash) {
     @GET
     open fun featureToggles(): Map<String, Boolean> {
         val featureToggles: MutableMap<String, Boolean> = HashMap()
-        featureToggles["leggeTilBarn"] = unleash.isEnabled(FEATURE_LEGGE_TIL_BARN, false)
         return featureToggles
     }
 }
