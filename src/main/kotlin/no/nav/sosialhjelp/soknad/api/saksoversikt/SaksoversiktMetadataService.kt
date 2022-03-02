@@ -8,9 +8,9 @@ import no.nav.sbl.soknadsosialhjelp.tjeneste.saksoversikt.Part
 import no.nav.sbl.soknadsosialhjelp.tjeneste.saksoversikt.Vedlegg
 import no.nav.sosialhjelp.soknad.api.LenkeUtils.lagEttersendelseLenke
 import no.nav.sosialhjelp.soknad.api.LenkeUtils.lenkeTilPabegyntSoknad
-import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata.VedleggMetadataListe
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.domain.Vedleggstatus
 import no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SoknadType
 import no.nav.sosialhjelp.soknad.ettersending.EttersendingService
@@ -31,7 +31,7 @@ class SaksoversiktMetadataService(
     private val navMessageSource: NavMessageSource,
     private val clock: Clock
 ) {
-    fun hentInnsendteSoknaderForFnr(fnr: String?): List<InnsendtSoknad> {
+    fun hentInnsendteSoknaderForFnr(fnr: String): List<InnsendtSoknad> {
         val bundle = bundle
         val soknader = soknadMetadataRepository.hentAlleInnsendteSoknaderForBruker(fnr)
         return soknader.map {
@@ -65,7 +65,7 @@ class SaksoversiktMetadataService(
         }
     }
 
-    fun hentPabegynteSoknaderForBruker(fnr: String?): List<PabegyntSoknad> {
+    fun hentPabegynteSoknaderForBruker(fnr: String): List<PabegyntSoknad> {
         val soknader = soknadMetadataRepository.hentPabegynteSoknaderForBruker(fnr)
         return soknader.map {
             PabegyntSoknad()
@@ -76,7 +76,7 @@ class SaksoversiktMetadataService(
         }
     }
 
-    fun hentSoknaderBrukerKanEttersendePa(fnr: String?): List<EttersendingsSoknad> {
+    fun hentSoknaderBrukerKanEttersendePa(fnr: String): List<EttersendingsSoknad> {
         val bundle = bundle
         val ettersendelseFrist = LocalDateTime.now(clock).minusDays(ETTERSENDELSE_FRIST_DAGER.toLong())
         val datoFormatter = DateTimeFormatter.ofPattern("d. MMMM yyyy")

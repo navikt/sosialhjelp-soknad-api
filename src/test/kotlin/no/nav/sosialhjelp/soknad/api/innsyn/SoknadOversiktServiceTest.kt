@@ -7,9 +7,9 @@ import io.mockk.unmockkObject
 import no.nav.sosialhjelp.soknad.api.innsyn.SoknadOversiktService.Companion.DEFAULT_TITTEL
 import no.nav.sosialhjelp.soknad.api.innsyn.SoknadOversiktService.Companion.KILDE_SOKNAD_API
 import no.nav.sosialhjelp.soknad.api.innsyn.dto.SoknadOversiktDto
-import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata
 import no.nav.sosialhjelp.soknad.common.MiljoUtils
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus
 import no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SoknadType
 import org.assertj.core.api.Assertions.assertThat
@@ -46,7 +46,7 @@ internal class SoknadOversiktServiceTest {
 
     @Test
     fun hentAlleSoknaderForBruker() {
-        every { soknadMetadataRepository.hentSvarUtInnsendteSoknaderForBruker("12345") } returns listOf(soknadMetadata)
+        every { soknadMetadataRepository.hentSvarUtInnsendteSoknaderForBruker("12345") } returns listOf(soknadMetadata!!)
         val resultat: List<SoknadOversiktDto> = service.hentSvarUtSoknaderFor("12345")
         assertThat(resultat).hasSize(1)
 

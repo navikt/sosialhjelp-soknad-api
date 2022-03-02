@@ -1,10 +1,10 @@
 package no.nav.sosialhjelp.soknad.tilgangskontroll
 
-import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.common.ServiceUtils
 import no.nav.sosialhjelp.soknad.common.exceptions.AuthorizationException
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
 import no.nav.sosialhjelp.soknad.personalia.person.dto.Gradering
 import org.slf4j.LoggerFactory
@@ -38,7 +38,7 @@ class Tilgangskontroll(
         var eier = "undefined"
         try {
             val metadata = soknadMetadataRepository.hent(behandlingsId)
-            eier = metadata.fnr
+            metadata?.fnr?.let { eier = it }
         } catch (e: Exception) {
             logger.warn("Kunne ikke avgjøre hvem som eier søknad med behandlingsId $behandlingsId -> Ikke tilgang.", e)
         }
