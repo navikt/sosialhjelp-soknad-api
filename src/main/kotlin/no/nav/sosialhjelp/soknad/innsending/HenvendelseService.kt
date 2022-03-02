@@ -1,10 +1,10 @@
 package no.nav.sosialhjelp.soknad.innsending
 
-import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata.VedleggMetadataListe
 import no.nav.sosialhjelp.soknad.common.exceptions.SosialhjelpSoknadApiException
 import no.nav.sosialhjelp.soknad.common.mdc.MdcOperations
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus
 import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus.AVBRUTT_AUTOMATISK
 import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus.AVBRUTT_AV_BRUKER
@@ -59,7 +59,7 @@ class HenvendelseService(
     }
 
     fun hentAntallInnsendteSoknaderEtterTidspunkt(fnr: String?, tidspunkt: LocalDateTime?): Int {
-        return soknadMetadataRepository.hentAntallInnsendteSoknaderEtterTidspunkt(fnr, tidspunkt)
+        return soknadMetadataRepository.hentAntallInnsendteSoknaderEtterTidspunkt(fnr, tidspunkt) ?: 0
     }
 
     fun oppdaterMetadataVedAvslutningAvSoknad(
@@ -69,16 +69,16 @@ class HenvendelseService(
         brukerDigisosApi: Boolean
     ) {
         val meta = soknadMetadataRepository.hent(behandlingsId)
-        meta.vedlegg = vedlegg
-        if (meta.type != SoknadType.SEND_SOKNAD_KOMMUNAL_ETTERSENDING) {
-            meta.orgnr = soknadUnderArbeid.jsonInternalSoknad.mottaker.organisasjonsnummer
-            meta.navEnhet = soknadUnderArbeid.jsonInternalSoknad.mottaker.navEnhetsnavn
+        meta?.vedlegg = vedlegg
+        if (meta?.type != SoknadType.SEND_SOKNAD_KOMMUNAL_ETTERSENDING) {
+            meta?.orgnr = soknadUnderArbeid.jsonInternalSoknad.mottaker.organisasjonsnummer
+            meta?.navEnhet = soknadUnderArbeid.jsonInternalSoknad.mottaker.navEnhetsnavn
         }
-        meta.sistEndretDato = LocalDateTime.now(clock)
-        meta.innsendtDato = LocalDateTime.now(clock)
-        meta.status = if (brukerDigisosApi) SENDT_MED_DIGISOS_API else FERDIG
+        meta?.sistEndretDato = LocalDateTime.now(clock)
+        meta?.innsendtDato = LocalDateTime.now(clock)
+        meta?.status = if (brukerDigisosApi) SENDT_MED_DIGISOS_API else FERDIG
         soknadMetadataRepository.oppdater(meta)
-        logger.info("Søknad avsluttet $behandlingsId ${meta.skjema}, ${vedlegg.vedleggListe.size}")
+        logger.info("Søknad avsluttet $behandlingsId ${meta?.skjema}, ${vedlegg.vedleggListe.size}")
     }
 
     fun hentSoknad(behandlingsId: String?): SoknadMetadata? {
@@ -87,14 +87,14 @@ class HenvendelseService(
 
     fun oppdaterSistEndretDatoPaaMetadata(behandlingsId: String?) {
         val hentet = soknadMetadataRepository.hent(behandlingsId)
-        hentet.sistEndretDato = LocalDateTime.now(clock)
+        hentet?.sistEndretDato = LocalDateTime.now(clock)
         soknadMetadataRepository.oppdater(hentet)
     }
 
     fun avbrytSoknad(behandlingsId: String?, avbruttAutomatisk: Boolean) {
         val metadata = soknadMetadataRepository.hent(behandlingsId)
-        metadata.status = if (avbruttAutomatisk) AVBRUTT_AUTOMATISK else AVBRUTT_AV_BRUKER
-        metadata.sistEndretDato = LocalDateTime.now(clock)
+        metadata?.status = if (avbruttAutomatisk) AVBRUTT_AUTOMATISK else AVBRUTT_AV_BRUKER
+        metadata?.sistEndretDato = LocalDateTime.now(clock)
         soknadMetadataRepository.oppdater(metadata)
     }
 

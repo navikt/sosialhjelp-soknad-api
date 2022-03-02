@@ -3,9 +3,9 @@ package no.nav.sosialhjelp.soknad.api.saksoversikt
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot
-import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata.VedleggMetadata
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.domain.Vedleggstatus
 import no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SoknadType
 import no.nav.sosialhjelp.soknad.ettersending.EttersendingService
@@ -77,7 +77,7 @@ internal class SaksoversiktMetadataServiceTest {
 
     @Test
     fun henterInnsendteForBruker() {
-        every { soknadMetadataRepository.hentAlleInnsendteSoknaderForBruker("12345") } returns listOf(soknadMetadata)
+        every { soknadMetadataRepository.hentAlleInnsendteSoknaderForBruker("12345") } returns listOf(soknadMetadata!!)
 
         val resultat = saksoversiktMetadataService.hentInnsendteSoknaderForFnr("12345")
 
@@ -94,7 +94,7 @@ internal class SaksoversiktMetadataServiceTest {
     fun hentForEttersendelse() {
         every {
             soknadMetadataRepository.hentInnsendteSoknaderForBrukerEtterTidspunkt(any(), any())
-        } returns listOf(soknadMetadata)
+        } returns listOf(soknadMetadata!!)
         every { ettersendingService.hentNyesteSoknadIKjede(any()) } returns soknadMetadata!!
 
         val resultat = saksoversiktMetadataService.hentSoknaderBrukerKanEttersendePa("12345")
@@ -111,7 +111,7 @@ internal class SaksoversiktMetadataServiceTest {
         val timeSlot = slot<LocalDateTime>()
         every {
             soknadMetadataRepository.hentInnsendteSoknaderForBrukerEtterTidspunkt(any(), capture(timeSlot))
-        } returns listOf(soknadMetadata)
+        } returns listOf(soknadMetadata!!)
         every { ettersendingService.hentNyesteSoknadIKjede(any()) } returns soknadMetadata!!
 
         saksoversiktMetadataService.hentSoknaderBrukerKanEttersendePa("12345")

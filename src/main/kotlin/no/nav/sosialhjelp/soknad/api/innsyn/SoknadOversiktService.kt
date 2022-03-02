@@ -2,7 +2,7 @@ package no.nav.sosialhjelp.soknad.api.innsyn
 
 import no.nav.sosialhjelp.soknad.api.LenkeUtils.lagEttersendelseLenke
 import no.nav.sosialhjelp.soknad.api.innsyn.dto.SoknadOversiktDto
-import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.SoknadMetadataRepository
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
 import java.sql.Timestamp
 
 class SoknadOversiktService(

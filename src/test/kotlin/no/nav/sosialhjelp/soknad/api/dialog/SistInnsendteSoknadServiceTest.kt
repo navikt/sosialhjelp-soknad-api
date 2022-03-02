@@ -2,8 +2,8 @@ package no.nav.sosialhjelp.soknad.api.dialog
 
 import io.mockk.every
 import io.mockk.mockk
-import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
@@ -58,14 +58,6 @@ internal class SistInnsendteSoknadServiceTest {
         assertThat(dto?.ident).isEqualTo(fnr)
         assertThat(dto?.navEnhet).isEqualTo(navEnhet)
         assertThat(dto?.innsendtDato).isEqualTo(innsendtDatoNyest.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME))
-    }
-
-    @Test
-    fun skalReturnereNullVedNull() {
-        every { soknadMetadataRepository.hentAlleInnsendteSoknaderForBruker(any()) } returns null
-
-        val dto = sistInnsendteSoknadService.hentSistInnsendteSoknad(fnr)
-        assertThat(dto).isNull()
     }
 
     @Test
