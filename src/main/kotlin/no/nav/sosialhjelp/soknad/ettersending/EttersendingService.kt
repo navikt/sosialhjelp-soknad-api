@@ -5,11 +5,11 @@ import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
-import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata.VedleggMetadata
 import no.nav.sosialhjelp.soknad.common.exceptions.EttersendelseSendtForSentException
 import no.nav.sosialhjelp.soknad.common.exceptions.SosialhjelpSoknadApiException
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus.FERDIG
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeidStatus

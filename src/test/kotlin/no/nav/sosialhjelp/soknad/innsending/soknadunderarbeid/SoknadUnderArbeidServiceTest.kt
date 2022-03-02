@@ -4,7 +4,7 @@ import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.runs
-import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime

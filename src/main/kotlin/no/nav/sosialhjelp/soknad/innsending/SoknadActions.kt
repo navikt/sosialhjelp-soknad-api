@@ -4,7 +4,6 @@ import no.finn.unleash.Unleash
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.metrics.aspects.Timed
 import no.nav.sosialhjelp.soknad.api.nedetid.NedetidService
-import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.common.Constants
 import no.nav.sosialhjelp.soknad.common.MiljoUtils
 import no.nav.sosialhjelp.soknad.common.ServiceUtils
@@ -15,6 +14,7 @@ import no.nav.sosialhjelp.soknad.common.exceptions.SoknadenHarNedetidException
 import no.nav.sosialhjelp.soknad.common.mapper.KommuneTilNavEnhetMapper
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus.SENDT_MED_DIGISOS_API
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils.FEATURE_UTVIDE_VEDLEGGJSON

@@ -6,9 +6,9 @@ import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonKommentarTilArbeidsforhold
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.metrics.aspects.Timed
-import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.common.Constants
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import org.apache.commons.lang3.StringUtils
 import org.springframework.stereotype.Controller
