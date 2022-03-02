@@ -116,8 +116,8 @@ internal class SoknadServiceTest {
         )
 
         val behandlingsId = "123"
-        val aktorId = "123456"
-        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(aktorId))
+        val eier = "123456"
+        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(eier))
         soknadUnderArbeid.jsonInternalSoknad.vedlegg = JsonVedleggSpesifikasjon().withVedlegg(jsonVedlegg)
         every { soknadUnderArbeidRepository.hentSoknad(behandlingsId, any()) } returns soknadUnderArbeid
 
