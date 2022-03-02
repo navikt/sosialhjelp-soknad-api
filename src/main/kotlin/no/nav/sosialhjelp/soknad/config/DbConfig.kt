@@ -25,7 +25,8 @@ import java.time.Clock
     BatchSoknadMetadataRepositoryJdbc::class,
     BatchSendtSoknadRepositoryJdbc::class,
     OppgaveRepositoryJdbc::class,
-    SoknadInnsendingDBConfig::class
+    SoknadInnsendingDBConfig::class,
+    PostgresDbConfig::class
 )
 open class DbConfig {
 
