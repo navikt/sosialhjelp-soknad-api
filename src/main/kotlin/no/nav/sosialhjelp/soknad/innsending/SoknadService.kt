@@ -70,9 +70,9 @@ open class SoknadService(
 
         val startTimer = createDebugTimer("startTimer", mainUid)
 
-        val aktorId = SubjectHandlerUtils.getUserIdFromToken()
+        val eier = SubjectHandlerUtils.getUserIdFromToken()
         val henvendelseTimer = createDebugTimer("startHenvendelse", mainUid)
-        val behandlingsId = henvendelseService.startSoknad(aktorId)
+        val behandlingsId = henvendelseService.startSoknad(eier)
         henvendelseTimer.stop()
         henvendelseTimer.report()
 
@@ -82,16 +82,16 @@ open class SoknadService(
 
         val soknadUnderArbeid = SoknadUnderArbeid()
             .withVersjon(1L)
-            .withEier(aktorId)
+            .withEier(eier)
             .withBehandlingsId(behandlingsId)
-            .withJsonInternalSoknad(createEmptyJsonInternalSoknad(aktorId))
+            .withJsonInternalSoknad(createEmptyJsonInternalSoknad(eier))
             .withStatus(SoknadUnderArbeidStatus.UNDER_ARBEID)
             .withOpprettetDato(LocalDateTime.now())
             .withSistEndretDato(LocalDateTime.now())
 
         systemdataUpdater.update(soknadUnderArbeid)
 
-        soknadUnderArbeidRepository.opprettSoknad(soknadUnderArbeid, aktorId)
+        soknadUnderArbeidRepository.opprettSoknad(soknadUnderArbeid, eier)
 
         oprettIDbTimer.stop()
         oprettIDbTimer.report()
