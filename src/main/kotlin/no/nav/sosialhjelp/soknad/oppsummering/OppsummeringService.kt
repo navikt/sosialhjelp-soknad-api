@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.oppsummering
 
-import no.nav.sosialhjelp.soknad.business.db.repositories.opplastetvedlegg.OpplastetVedleggRepository
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
+import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRepository
 import no.nav.sosialhjelp.soknad.oppsummering.dto.Oppsummering
 import no.nav.sosialhjelp.soknad.oppsummering.steg.ArbeidOgUtdanningSteg
 import no.nav.sosialhjelp.soknad.oppsummering.steg.BegrunnelseSteg

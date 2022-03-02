@@ -1,10 +1,10 @@
 package no.nav.sosialhjelp.soknad.scheduled
 
-import no.nav.sosialhjelp.soknad.business.db.repositories.oppgave.OppgaveRepository
-import no.nav.sosialhjelp.soknad.business.db.repositories.sendtsoknad.BatchSendtSoknadRepository
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.BatchSoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.BatchSoknadUnderArbeidRepository
+import no.nav.sosialhjelp.soknad.db.repositories.oppgave.OppgaveRepository
+import no.nav.sosialhjelp.soknad.db.repositories.sendtsoknad.BatchSendtSoknadRepository
 import no.nav.sosialhjelp.soknad.innsending.HenvendelseService
 import no.nav.sosialhjelp.soknad.scheduled.leaderelection.LeaderElection
 import org.springframework.beans.factory.annotation.Value

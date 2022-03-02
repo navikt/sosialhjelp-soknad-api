@@ -2,10 +2,10 @@ package no.nav.sosialhjelp.soknad.ettersending
 
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.metrics.aspects.Timed
-import no.nav.sosialhjelp.soknad.business.db.repositories.opplastetvedlegg.OpplastetVedleggRepository
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.common.Constants
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
+import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRepository
 import no.nav.sosialhjelp.soknad.ettersending.dto.EttersendtVedlegg
 import no.nav.sosialhjelp.soknad.ettersending.innsendtsoknad.BehandlingsKjede
 import no.nav.sosialhjelp.soknad.ettersending.innsendtsoknad.InnsendtSoknadService
