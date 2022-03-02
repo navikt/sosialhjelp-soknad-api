@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid
 
-import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 

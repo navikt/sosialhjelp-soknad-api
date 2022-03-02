@@ -1,8 +1,8 @@
 package no.nav.sosialhjelp.soknad.tilgangskontroll
 
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.SoknadMetadataRepository
-import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.common.ServiceUtils
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration

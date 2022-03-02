@@ -14,7 +14,6 @@ import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSamvarsgrad
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.metrics.aspects.Timed
-import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.common.Constants
 import no.nav.sosialhjelp.soknad.common.mapper.OkonomiMapper
 import no.nav.sosialhjelp.soknad.common.mapper.OkonomiMapper.addInntektIfNotPresentInOversikt
@@ -22,6 +21,7 @@ import no.nav.sosialhjelp.soknad.common.mapper.OkonomiMapper.addUtgiftIfNotPrese
 import no.nav.sosialhjelp.soknad.common.mapper.OkonomiMapper.removeInntektIfPresentInOversikt
 import no.nav.sosialhjelp.soknad.common.mapper.OkonomiMapper.removeUtgiftIfPresentInOversikt
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.personalia.familie.PersonMapper.fulltNavn
 import no.nav.sosialhjelp.soknad.personalia.familie.PersonMapper.getPersonnummerFromFnr

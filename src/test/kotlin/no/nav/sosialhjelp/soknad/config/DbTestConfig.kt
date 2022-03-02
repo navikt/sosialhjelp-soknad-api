@@ -6,8 +6,6 @@ import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.SoknadM
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.SoknadMetadataRepositoryJdbc
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.BatchSoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.BatchSoknadUnderArbeidRepositoryJdbc
-import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
-import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepositoryJdbc
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.BatchOpplastetVedleggRepository
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.BatchOpplastetVedleggRepositoryJdbc
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRepository
@@ -18,10 +16,13 @@ import no.nav.sosialhjelp.soknad.db.repositories.sendtsoknad.SendtSoknadReposito
 import no.nav.sosialhjelp.soknad.db.repositories.sendtsoknad.SendtSoknadRepositoryJdbc
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.BatchSoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.BatchSoknadMetadataRepositoryJdbc
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepositoryJdbc
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Import
 import org.springframework.transaction.annotation.EnableTransactionManagement
+import org.springframework.transaction.support.TransactionTemplate
 import javax.sql.DataSource
 
 @Configuration
@@ -40,8 +41,11 @@ open class DbTestConfig {
     }
 
     @Bean
-    open fun soknadUnderArbeidRepository(): SoknadUnderArbeidRepository {
-        return SoknadUnderArbeidRepositoryJdbc()
+    open fun soknadUnderArbeidRepository(
+        transactionTemplate: TransactionTemplate,
+        opplastetVedleggRepository: OpplastetVedleggRepository
+    ): SoknadUnderArbeidRepository {
+        return SoknadUnderArbeidRepositoryJdbc(transactionTemplate, opplastetVedleggRepository)
     }
 
     @Bean
