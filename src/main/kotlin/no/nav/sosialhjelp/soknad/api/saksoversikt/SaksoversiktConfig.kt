@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.api.saksoversikt
 
-import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.SoknadMetadataRepository
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.ettersending.EttersendingService
 import no.nav.sosialhjelp.soknad.tekster.NavMessageSource
 import org.springframework.context.annotation.Bean
