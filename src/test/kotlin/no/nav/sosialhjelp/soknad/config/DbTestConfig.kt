@@ -24,7 +24,7 @@ import org.springframework.transaction.support.TransactionTemplate
 import javax.sql.DataSource
 
 @Configuration
-@Import(value = [MockAltTestDbConfig::class])
+@Import(value = [TestDbConfig::class])
 @EnableTransactionManagement
 open class DbTestConfig {
 

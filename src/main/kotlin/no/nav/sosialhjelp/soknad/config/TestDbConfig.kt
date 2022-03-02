@@ -11,9 +11,9 @@ import java.sql.SQLException
 import java.util.Properties
 import javax.sql.DataSource
 
-@Profile("(mock-alt|test)")
+@Profile("test")
 @Configuration
-open class MockAltTestDbConfig {
+open class TestDbConfig {
 
     @Bean
     open fun dataSource(): DataSource {
