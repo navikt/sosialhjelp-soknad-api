@@ -3,6 +3,7 @@ package no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata;
 import no.nav.sosialhjelp.soknad.business.db.RepositoryTestSupport;
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata;
 import no.nav.sosialhjelp.soknad.config.DbTestConfig;
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository;
 import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus;
 import no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SoknadType;
 import org.junit.jupiter.api.AfterEach;
