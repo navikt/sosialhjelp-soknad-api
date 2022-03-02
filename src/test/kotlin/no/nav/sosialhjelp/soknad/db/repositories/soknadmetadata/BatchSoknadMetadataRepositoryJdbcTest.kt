@@ -5,6 +5,10 @@ import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.SoknadM
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata
 import no.nav.sosialhjelp.soknad.config.DbTestConfig
 import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus
+import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus.AVBRUTT_AUTOMATISK
+import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus.AVBRUTT_AV_BRUKER
+import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus.FERDIG
+import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus.UNDER_ARBEID
 import no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SoknadType
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
@@ -14,7 +18,6 @@ import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import java.time.LocalDateTime
-import java.util.Arrays
 import javax.inject.Inject
 
 @ExtendWith(SpringExtension::class)
@@ -40,40 +43,32 @@ internal class BatchSoknadMetadataRepositoryJdbcTest {
 
     @Test
     fun hentForBatchSkalIkkeReturnereFerdige() {
-        opprettSoknadMetadata(soknadMetadata(behandlingsId, SoknadMetadataInnsendingStatus.FERDIG, dagerGammelSoknad))
+        opprettSoknadMetadata(soknadMetadata(behandlingsId, FERDIG, dagerGammelSoknad))
         assertThat(batchSoknadMetadataRepository!!.hentForBatch(dagerGammelSoknad - 1)).isNotPresent
     }
 
     @Test
     fun hentForBatchSkalIkkeReturnereAvbruttAutomatisk() {
-        opprettSoknadMetadata(soknadMetadata(behandlingsId,
-            SoknadMetadataInnsendingStatus.AVBRUTT_AUTOMATISK,
-            dagerGammelSoknad))
+        opprettSoknadMetadata(soknadMetadata(behandlingsId, AVBRUTT_AUTOMATISK, dagerGammelSoknad))
         assertThat(batchSoknadMetadataRepository!!.hentForBatch(dagerGammelSoknad - 1)).isNotPresent
     }
 
     @Test
     fun hentForBatchSkalIkkeReturnereAvbruttAvBruker() {
-        opprettSoknadMetadata(soknadMetadata(behandlingsId,
-            SoknadMetadataInnsendingStatus.AVBRUTT_AV_BRUKER,
-            dagerGammelSoknad))
+        opprettSoknadMetadata(soknadMetadata(behandlingsId, AVBRUTT_AV_BRUKER, dagerGammelSoknad))
         assertThat(batchSoknadMetadataRepository!!.hentForBatch(dagerGammelSoknad - 1)).isNotPresent
     }
 
     @Test
     fun hentForBatchBrukerEndringstidspunkt() {
-        opprettSoknadMetadata(soknadMetadata(behandlingsId,
-            SoknadMetadataInnsendingStatus.UNDER_ARBEID,
-            dagerGammelSoknad))
+        opprettSoknadMetadata(soknadMetadata(behandlingsId, UNDER_ARBEID, dagerGammelSoknad))
         assertThat(batchSoknadMetadataRepository!!.hentForBatch(dagerGammelSoknad - 1)).isPresent
         assertThat(batchSoknadMetadataRepository.hentForBatch(dagerGammelSoknad + 1)).isNotPresent
     }
 
     @Test
     fun hentEldreEnnBrukerEndringstidspunktUavhengigAvStatus() {
-        val statuser = Arrays.asList(SoknadMetadataInnsendingStatus.UNDER_ARBEID, SoknadMetadataInnsendingStatus.FERDIG,
-            SoknadMetadataInnsendingStatus.AVBRUTT_AUTOMATISK, SoknadMetadataInnsendingStatus.AVBRUTT_AV_BRUKER)
-        for (status in statuser) {
+        for (status in listOf(UNDER_ARBEID, FERDIG, AVBRUTT_AUTOMATISK, AVBRUTT_AV_BRUKER)) {
             opprettSoknadMetadata(soknadMetadata(behandlingsId, status, dagerGammelSoknad))
             assertThat(batchSoknadMetadataRepository!!.hentEldreEnn(dagerGammelSoknad - 1)).isPresent
             assertThat(batchSoknadMetadataRepository.hentEldreEnn(dagerGammelSoknad + 1)).isNotPresent
