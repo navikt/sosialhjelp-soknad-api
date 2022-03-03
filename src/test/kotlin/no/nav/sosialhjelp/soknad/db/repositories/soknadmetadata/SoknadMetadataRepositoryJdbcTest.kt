@@ -1,8 +1,8 @@
 package no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata
 
-import no.nav.sosialhjelp.soknad.business.db.RepositoryTestSupport
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata
 import no.nav.sosialhjelp.soknad.config.DbTestConfig
+import no.nav.sosialhjelp.soknad.config.RepositoryTestSupport
 import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus
 import no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SoknadType
 import org.assertj.core.api.Assertions.assertThat
@@ -30,7 +30,7 @@ internal class SoknadMetadataRepositoryJdbcTest {
     private val support: RepositoryTestSupport? = null
     @AfterEach
     fun teardown() {
-        support!!.jdbcTemplate.update("DELETE FROM soknadmetadata")
+        support!!.getJdbcTemplate().update("DELETE FROM soknadmetadata")
     }
 
     @Test

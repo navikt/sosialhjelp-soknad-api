@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.db.repositories.sendtsoknad
 
-import no.nav.sosialhjelp.soknad.business.db.RepositoryTestSupport
 import no.nav.sosialhjelp.soknad.config.DbTestConfig
+import no.nav.sosialhjelp.soknad.config.RepositoryTestSupport
 import no.nav.sosialhjelp.soknad.domain.SendtSoknad
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.AfterEach
@@ -30,7 +30,7 @@ internal class BatchSendtSoknadRepositoryJdbcTest {
 
     @AfterEach
     fun tearDown() {
-        soknadRepositoryTestSupport!!.jdbcTemplate.update("delete from SENDT_SOKNAD")
+        soknadRepositoryTestSupport!!.getJdbcTemplate().update("delete from SENDT_SOKNAD")
     }
 
     @Test
