@@ -4,7 +4,6 @@ import no.nav.sosialhjelp.metrics.MetricsFactory
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata.VedleggMetadata
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.domain.Vedleggstatus
-import no.nav.sosialhjelp.soknad.domain.model.PersonAlder
 import no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SosialhjelpInformasjon
 import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils.isVedleggskravAnnet
 import no.nav.sosialhjelp.soknad.metrics.MetricsUtils.getProsent
@@ -13,13 +12,11 @@ import org.slf4j.LoggerFactory
 class SoknadMetricsService {
 
     fun reportSendSoknadMetrics(
-        eier: String,
         soknadUnderArbeid: SoknadUnderArbeid,
         vedleggList: List<VedleggMetadata>
     ) {
         reportSendSoknad(soknadUnderArbeid.erEttersendelse())
         countAndreportVedleggskrav(soknadUnderArbeid.erEttersendelse(), vedleggList)
-        reportAlder(eier, soknadUnderArbeid)
     }
 
     fun reportStartSoknad(isEttersendelse: Boolean) {
@@ -77,26 +74,10 @@ class SoknadMetricsService {
                 }
             }
         }
-        reportVedleggskrav(
-            isEttersendelse,
-            totaltAntall,
-            antallInnsendt,
-            antallLevertTidligere,
-            antallIkkeLevert
-        )
+        reportVedleggskrav(isEttersendelse, totaltAntall, antallInnsendt, antallLevertTidligere, antallIkkeLevert)
     }
 
     companion object {
         private val log = LoggerFactory.getLogger(SoknadMetricsService::class.java)
-        private fun reportAlder(eier: String, soknadUnderArbeid: SoknadUnderArbeid) {
-            if (!soknadUnderArbeid.erEttersendelse()) {
-                val age = PersonAlder(eier).alder
-                if (age > 0 && age < 30) {
-                    log.info("DIGISOS-1164: UNDER30 - Soknad sent av bruker med alder: {}", age)
-                } else {
-                    log.info("DIGISOS-1164: OVER30 - Soknad sent av bruker med alder: {}", age)
-                }
-            }
-        }
     }
 }

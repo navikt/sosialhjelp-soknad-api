@@ -17,8 +17,6 @@ import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
 import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.SosialhjelpPdfGenerator
 import no.nav.sosialhjelp.soknad.common.MiljoUtils
 import no.nav.sosialhjelp.soknad.common.filedetection.MimeTypes
-import no.nav.sosialhjelp.soknad.common.subjecthandler.StaticSubjectHandlerImpl
-import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.domain.OpplastetVedlegg
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
@@ -60,12 +58,10 @@ internal class DigisosApiServiceTest {
 
         mockkObject(MiljoUtils)
         every { MiljoUtils.isNonProduction() } returns true
-        SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
     }
 
     @AfterEach
     fun tearDown() {
-        SubjectHandlerUtils.resetSubjectHandlerImpl()
         unmockkObject(MiljoUtils)
     }
 
@@ -148,7 +144,7 @@ internal class DigisosApiServiceTest {
         every { henvendelseService.oppdaterMetadataVedAvslutningAvSoknad(any(), any(), any(), any()) } just runs
         every { innsendingService.hentAlleOpplastedeVedleggForSoknad(any()) } returns lagOpplastetVedlegg()
         every { soknadUnderArbeidRepository.slettSoknad(any(), any()) } just runs
-        every { soknadMetricsService.reportSendSoknadMetrics(any(), any(), any()) } just runs
+        every { soknadMetricsService.reportSendSoknadMetrics(any(), any()) } just runs
 
         digisosApiService.sendSoknad(soknadUnderArbeid, "token", "0301")
 
