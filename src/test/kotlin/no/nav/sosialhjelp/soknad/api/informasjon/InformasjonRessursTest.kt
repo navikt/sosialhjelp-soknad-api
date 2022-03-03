@@ -8,10 +8,10 @@ import io.mockk.unmockkObject
 import io.mockk.verify
 import no.nav.sosialhjelp.api.fiks.KommuneInfo
 import no.nav.sosialhjelp.soknad.api.nedetid.NedetidService
-import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.common.MiljoUtils
 import no.nav.sosialhjelp.soknad.common.subjecthandler.StaticSubjectHandlerImpl
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
 import no.nav.sosialhjelp.soknad.tekster.NavMessageSource
@@ -154,15 +154,6 @@ internal class InformasjonRessursTest {
     @Test
     fun harNyligInnsendteSoknader_tomResponse() {
         every { soknadMetadataRepository.hentInnsendteSoknaderForBrukerEtterTidspunkt(any(), any()) } returns emptyList()
-
-        val response = ressurs.harNyligInnsendteSoknader()
-
-        assertThat(response.antallNyligInnsendte).isZero
-    }
-
-    @Test
-    fun harNyligInnsendteSoknader_tomResponse_null() {
-        every { soknadMetadataRepository.hentInnsendteSoknaderForBrukerEtterTidspunkt(any(), any()) } returns null
 
         val response = ressurs.harNyligInnsendteSoknader()
 

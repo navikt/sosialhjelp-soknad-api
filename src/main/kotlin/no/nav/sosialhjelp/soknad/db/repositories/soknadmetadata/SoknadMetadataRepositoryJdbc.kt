@@ -1,0 +1,194 @@
+package no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata
+
+import no.nav.sosialhjelp.soknad.business.db.SQLUtils
+import no.nav.sosialhjelp.soknad.business.db.SQLUtils.tidTilTimestamp
+import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata
+import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata.VedleggMetadataListe
+import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus
+import no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SoknadType
+import org.springframework.jdbc.core.RowMapper
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport
+import org.springframework.stereotype.Component
+import org.springframework.transaction.annotation.Transactional
+import java.sql.ResultSet
+import java.time.LocalDateTime
+import javax.inject.Inject
+import javax.sql.DataSource
+
+@Component
+open class SoknadMetadataRepositoryJdbc : NamedParameterJdbcDaoSupport(), SoknadMetadataRepository {
+
+    private val soknadMetadataRowMapper = RowMapper { rs: ResultSet, rowNum: Int ->
+        val metadata = SoknadMetadata()
+        metadata.id = rs.getLong("id")
+        metadata.behandlingsId = rs.getString("behandlingsid")
+        metadata.tilknyttetBehandlingsId = rs.getString("tilknyttetBehandlingsId")
+        metadata.skjema = rs.getString("skjema")
+        metadata.fnr = rs.getString("fnr")
+        metadata.vedlegg = SoknadMetadata.JAXB.unmarshal(rs.getString("vedlegg"), VedleggMetadataListe::class.java)
+        metadata.orgnr = rs.getString("orgnr")
+        metadata.navEnhet = rs.getString("navenhet")
+        metadata.fiksForsendelseId = rs.getString("fiksforsendelseid")
+        metadata.type = SoknadType.valueOf(rs.getString("soknadtype"))
+        metadata.status = SoknadMetadataInnsendingStatus.valueOf(rs.getString("innsendingstatus"))
+        metadata.opprettetDato = SQLUtils.timestampTilTid(rs.getTimestamp("opprettetdato"))
+        metadata.sistEndretDato = SQLUtils.timestampTilTid(rs.getTimestamp("sistendretdato"))
+        metadata.innsendtDato = SQLUtils.timestampTilTid(rs.getTimestamp("innsendtdato"))
+        metadata.lestDittNav = rs.getBoolean("lest_ditt_nav")
+        metadata
+    }
+
+    private val antallRowMapper = RowMapper { rs: ResultSet, rowNum: Int -> rs.getInt("antall") }
+
+    @Inject
+    fun setDS(ds: DataSource) {
+        super.setDataSource(ds)
+    }
+
+    override fun hentNesteId(): Long {
+        return jdbcTemplate.queryForObject(SQLUtils.selectNextSequenceValue("METADATA_ID_SEQ"), Long::class.java)
+    }
+
+    @Transactional
+    override fun opprett(metadata: SoknadMetadata) {
+        jdbcTemplate.update(
+            "INSERT INTO soknadmetadata (id, behandlingsid, tilknyttetBehandlingsId, skjema, fnr, vedlegg, orgnr, navenhet, fiksforsendelseid, soknadtype, innsendingstatus, opprettetdato, sistendretdato, innsendtdato) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            metadata.id,
+            metadata.behandlingsId,
+            metadata.tilknyttetBehandlingsId,
+            metadata.skjema,
+            metadata.fnr,
+            SoknadMetadata.JAXB.marshal(metadata.vedlegg),
+            metadata.orgnr,
+            metadata.navEnhet,
+            metadata.fiksForsendelseId,
+            metadata.type.name,
+            metadata.status.name,
+            tidTilTimestamp(metadata.opprettetDato),
+            tidTilTimestamp(metadata.sistEndretDato),
+            tidTilTimestamp(metadata.innsendtDato)
+        )
+    }
+
+    @Transactional
+    override fun oppdater(metadata: SoknadMetadata?) {
+        jdbcTemplate.update(
+            "UPDATE soknadmetadata SET tilknyttetBehandlingsId = ?, skjema = ?, fnr = ?, vedlegg = ?, orgnr = ?, navenhet = ?, fiksforsendelseid = ?, soknadtype = ?, innsendingstatus = ?, sistendretdato = ?, innsendtdato = ? WHERE id = ?",
+            metadata?.tilknyttetBehandlingsId,
+            metadata?.skjema,
+            metadata?.fnr,
+            SoknadMetadata.JAXB.marshal(metadata?.vedlegg),
+            metadata?.orgnr,
+            metadata?.navEnhet,
+            metadata?.fiksForsendelseId,
+            metadata?.type?.name,
+            metadata?.status?.name,
+            tidTilTimestamp(metadata?.sistEndretDato),
+            tidTilTimestamp(metadata?.innsendtDato),
+            metadata?.id
+        )
+    }
+
+    override fun hent(behandlingsId: String?): SoknadMetadata? {
+        val resultat = jdbcTemplate.query(
+            "SELECT * FROM soknadmetadata WHERE behandlingsid = ?",
+            soknadMetadataRowMapper,
+            behandlingsId
+        )
+        return if (resultat.isNotEmpty()) {
+            resultat[0]
+        } else null
+    }
+
+    override fun hentBehandlingskjede(behandlingsId: String?): List<SoknadMetadata> {
+        return jdbcTemplate.query(
+            "SELECT * FROM soknadmetadata WHERE TILKNYTTETBEHANDLINGSID = ?",
+            soknadMetadataRowMapper,
+            behandlingsId
+        )
+    }
+
+    override fun hentAntallInnsendteSoknaderEtterTidspunkt(fnr: String?, tidspunkt: LocalDateTime?): Int? {
+        return try {
+            jdbcTemplate.queryForObject(
+                "SELECT count(*) as antall FROM soknadmetadata WHERE fnr = ? AND innsendingstatus = ? AND innsendtdato > ?",
+                antallRowMapper,
+                fnr,
+                SoknadMetadataInnsendingStatus.FERDIG.name,
+                tidTilTimestamp(tidspunkt)
+            )
+        } catch (e: Exception) {
+            0
+        }
+    }
+
+    override fun hentSvarUtInnsendteSoknaderForBruker(fnr: String): List<SoknadMetadata> {
+        return jdbcTemplate.query(
+            "SELECT * FROM soknadmetadata WHERE fnr = ? AND innsendingstatus = ? AND TILKNYTTETBEHANDLINGSID IS NULL ORDER BY innsendtdato DESC",
+            soknadMetadataRowMapper,
+            fnr,
+            SoknadMetadataInnsendingStatus.FERDIG.name
+        )
+    }
+
+    override fun hentAlleInnsendteSoknaderForBruker(fnr: String): List<SoknadMetadata> {
+        return jdbcTemplate.query(
+            "SELECT * FROM soknadmetadata WHERE fnr = ? AND (innsendingstatus = ? OR innsendingstatus = ?) AND TILKNYTTETBEHANDLINGSID IS NULL ORDER BY innsendtdato DESC",
+            soknadMetadataRowMapper,
+            fnr,
+            SoknadMetadataInnsendingStatus.FERDIG.name,
+            SoknadMetadataInnsendingStatus.SENDT_MED_DIGISOS_API.name
+        )
+    }
+
+    override fun hentPabegynteSoknaderForBruker(fnr: String): List<SoknadMetadata> {
+        return jdbcTemplate.query(
+            "SELECT * FROM soknadmetadata WHERE fnr = ? AND innsendingstatus = ? AND soknadtype = ? ORDER BY innsendtdato DESC",
+            soknadMetadataRowMapper,
+            fnr,
+            SoknadMetadataInnsendingStatus.UNDER_ARBEID.name,
+            SoknadType.SEND_SOKNAD_KOMMUNAL.name
+        )
+    }
+
+    override fun hentPabegynteSoknaderForBruker(fnr: String, lestDittNav: Boolean): List<SoknadMetadata> {
+        return jdbcTemplate.query(
+            "SELECT * FROM soknadmetadata WHERE fnr = ? AND lest_ditt_nav = ? AND innsendingstatus = ? AND soknadtype = ? ORDER BY innsendtdato DESC",
+            soknadMetadataRowMapper,
+            fnr,
+            lestDittNav,
+            SoknadMetadataInnsendingStatus.UNDER_ARBEID.name,
+            SoknadType.SEND_SOKNAD_KOMMUNAL.name
+        )
+    }
+
+    override fun hentInnsendteSoknaderForBrukerEtterTidspunkt(
+        fnr: String,
+        tidsgrense: LocalDateTime,
+    ): List<SoknadMetadata> {
+        return jdbcTemplate.query(
+            "SELECT * FROM soknadmetadata WHERE fnr = ? AND (innsendingstatus = ? OR innsendingstatus = ?) AND innsendtdato > ? AND TILKNYTTETBEHANDLINGSID IS NULL ORDER BY innsendtdato DESC",
+            soknadMetadataRowMapper,
+            fnr,
+            SoknadMetadataInnsendingStatus.FERDIG.name,
+            SoknadMetadataInnsendingStatus.SENDT_MED_DIGISOS_API.name,
+            tidTilTimestamp(tidsgrense)
+        )
+    }
+
+    override fun oppdaterLestDittNav(soknadMetadata: SoknadMetadata, fnr: String) {
+        sjekkOmBrukerEierSoknadUnderArbeid(soknadMetadata, fnr)
+        jdbcTemplate.update(
+            "update soknadmetadata set LEST_DITT_NAV = ? where id = ? and fnr = ?",
+            soknadMetadata.lestDittNav,
+            soknadMetadata.id,
+            fnr
+        )
+    }
+
+    private fun sjekkOmBrukerEierSoknadUnderArbeid(soknadMetadata: SoknadMetadata, fnr: String?) {
+        if (fnr == null || !fnr.equals(soknadMetadata.fnr, ignoreCase = true)) {
+            throw RuntimeException("Eier stemmer ikke med søknadens eier")
+        }
+    }
+}

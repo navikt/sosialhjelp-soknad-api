@@ -3,7 +3,7 @@ package no.nav.sosialhjelp.soknad.api.dittnav
 import no.nav.sosialhjelp.soknad.api.LenkeUtils.lenkeTilPabegyntSoknad
 import no.nav.sosialhjelp.soknad.api.TimeUtils.toUtc
 import no.nav.sosialhjelp.soknad.api.dittnav.dto.PabegyntSoknadDto
-import no.nav.sosialhjelp.soknad.business.db.repositories.soknadmetadata.SoknadMetadataRepository
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
 import org.slf4j.LoggerFactory
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -35,7 +35,7 @@ class DittNavMetadataService(
         }
     }
 
-    fun oppdaterLestDittNavForPabegyntSoknad(behandlingsId: String?, fnr: String?): Boolean {
+    fun oppdaterLestDittNavForPabegyntSoknad(behandlingsId: String?, fnr: String): Boolean {
         val soknadMetadata = soknadMetadataRepository.hent(behandlingsId)
         if (soknadMetadata == null) {
             log.warn("Fant ingen soknadMetadata med behandlingsId={}", behandlingsId)
