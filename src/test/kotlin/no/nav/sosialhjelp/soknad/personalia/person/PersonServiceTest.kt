@@ -102,9 +102,7 @@ internal class PersonServiceTest {
         )
 
         val result = personService.hentPerson("ident")
-        assertThat(result!!.ektefelle).isNotNull
-        assertThat(result.ektefelle?.fnr).isEqualTo(FDAT_IDENT)
-        assertThat(result.ektefelle!!.fodselsdato).hasToString(LocalDate.of(1922, 12, 11).toString())
+        assertThat(result!!.ektefelle).isNull()
 
         verify(exactly = 0) { hentPersonClient.hentEktefelle(any()) }
         verify(exactly = 0) { mapper.ektefelleDtoToDomain(any(), any(), any()) }

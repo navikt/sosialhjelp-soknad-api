@@ -116,7 +116,7 @@ open class SoknadService(
         oppgaveHandterer.leggTilOppgave(behandlingsId, eier)
         innsendingService.opprettSendtSoknad(soknadUnderArbeid)
 
-        soknadMetricsService.reportSendSoknadMetrics(eier, soknadUnderArbeid, vedlegg.vedleggListe)
+        soknadMetricsService.reportSendSoknadMetrics(soknadUnderArbeid, vedlegg.vedleggListe)
     }
 
     private fun validateEttersendelseHasVedlegg(soknadUnderArbeid: SoknadUnderArbeid) {
