@@ -2,8 +2,8 @@ package no.nav.sosialhjelp.soknad.innsending.svarut
 
 import no.nav.sosialhjelp.metrics.Event
 import no.nav.sosialhjelp.metrics.MetricsFactory
-import no.nav.sosialhjelp.soknad.business.batch.oppgave.Oppgave
-import no.nav.sosialhjelp.soknad.business.batch.oppgave.fiks.FiksResultat
+import no.nav.sosialhjelp.soknad.domain.FiksResultat
+import no.nav.sosialhjelp.soknad.domain.Oppgave
 import no.nav.sosialhjelp.soknad.domain.SendtSoknad
 import no.nav.sosialhjelp.soknad.innsending.InnsendingService
 import no.nav.sosialhjelp.soknad.metrics.MetricsUtils.navKontorTilInfluxNavn

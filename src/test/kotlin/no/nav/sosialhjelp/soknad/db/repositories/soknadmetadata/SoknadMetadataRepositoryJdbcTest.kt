@@ -1,10 +1,10 @@
 package no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata
 
-import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata
 import no.nav.sosialhjelp.soknad.config.DbTestConfig
 import no.nav.sosialhjelp.soknad.config.RepositoryTestSupport
+import no.nav.sosialhjelp.soknad.domain.SoknadMetadata
 import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus
-import no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SoknadType
+import no.nav.sosialhjelp.soknad.domain.SoknadMetadataType
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
@@ -58,7 +58,7 @@ internal class SoknadMetadataRepositoryJdbcTest {
         meta.id = soknadMetadataRepository!!.hentNesteId()
         meta.behandlingsId = behandlingsId
         meta.fnr = EIER
-        meta.type = SoknadType.SEND_SOKNAD_KOMMUNAL
+        meta.type = SoknadMetadataType.SEND_SOKNAD_KOMMUNAL
         meta.skjema = ""
         meta.status = status
         meta.innsendtDato = LocalDateTime.now().minusDays(dagerSiden.toLong())

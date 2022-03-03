@@ -11,8 +11,8 @@ import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.domain.OpplastetVedlegg
+import no.nav.sosialhjelp.soknad.domain.OpplastetVedleggType
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
-import no.nav.sosialhjelp.soknad.domain.VedleggType
 import no.nav.sosialhjelp.soknad.domain.Vedleggstatus
 import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils
 import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils.getSha512FromByteArray
@@ -56,7 +56,7 @@ class OpplastetVedleggService(
         val soknadId = soknadUnderArbeid.soknadId
         val opplastetVedlegg = OpplastetVedlegg()
             .withEier(eier)
-            .withVedleggType(VedleggType(vedleggstype))
+            .withVedleggType(OpplastetVedleggType(vedleggstype))
             .withData(data)
             .withSoknadId(soknadId)
             .withSha512(sha512)

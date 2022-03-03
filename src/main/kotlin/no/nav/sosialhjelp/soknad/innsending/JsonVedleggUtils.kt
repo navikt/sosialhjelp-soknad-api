@@ -2,7 +2,7 @@ package no.nav.sosialhjelp.soknad.innsending
 
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
-import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata.VedleggMetadata
+import no.nav.sosialhjelp.soknad.domain.SoknadMetadata.VedleggMetadata
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
 import org.slf4j.LoggerFactory
 import java.util.UUID

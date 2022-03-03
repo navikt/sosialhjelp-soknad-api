@@ -7,11 +7,11 @@ import io.mockk.unmockkObject
 import no.nav.sosialhjelp.soknad.api.innsyn.SoknadOversiktService.Companion.DEFAULT_TITTEL
 import no.nav.sosialhjelp.soknad.api.innsyn.SoknadOversiktService.Companion.KILDE_SOKNAD_API
 import no.nav.sosialhjelp.soknad.api.innsyn.dto.SoknadOversiktDto
-import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata
 import no.nav.sosialhjelp.soknad.common.MiljoUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
+import no.nav.sosialhjelp.soknad.domain.SoknadMetadata
 import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus
-import no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SoknadType
+import no.nav.sosialhjelp.soknad.domain.SoknadMetadataType
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
@@ -30,7 +30,7 @@ internal class SoknadOversiktServiceTest {
         soknadMetadata = SoknadMetadata()
         soknadMetadata!!.fnr = "12345"
         soknadMetadata!!.behandlingsId = "beh123"
-        soknadMetadata!!.type = SoknadType.SEND_SOKNAD_KOMMUNAL
+        soknadMetadata!!.type = SoknadMetadataType.SEND_SOKNAD_KOMMUNAL
         soknadMetadata!!.innsendtDato = LocalDateTime.of(2018, 4, 11, 13, 30, 0)
         soknadMetadata!!.sistEndretDato = LocalDateTime.of(2018, 4, 11, 13, 30, 0)
         soknadMetadata!!.status = SoknadMetadataInnsendingStatus.UNDER_ARBEID

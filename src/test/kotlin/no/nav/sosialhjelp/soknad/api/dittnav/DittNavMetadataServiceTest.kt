@@ -5,11 +5,11 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.unmockkObject
-import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata
 import no.nav.sosialhjelp.soknad.common.MiljoUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
+import no.nav.sosialhjelp.soknad.domain.SoknadMetadata
 import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus
-import no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SoknadType
+import no.nav.sosialhjelp.soknad.domain.SoknadMetadataType
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
@@ -81,7 +81,7 @@ internal class DittNavMetadataServiceTest {
         soknadMetadata.fnr = "12345"
         soknadMetadata.behandlingsId = "beh123"
         soknadMetadata.status = SoknadMetadataInnsendingStatus.UNDER_ARBEID
-        soknadMetadata.type = SoknadType.SEND_SOKNAD_KOMMUNAL
+        soknadMetadata.type = SoknadMetadataType.SEND_SOKNAD_KOMMUNAL
         soknadMetadata.opprettetDato = LocalDateTime.now().minusDays(10)
         soknadMetadata.innsendtDato = LocalDateTime.now().minusDays(2)
         soknadMetadata.sistEndretDato = LocalDateTime.now().minusDays(2)

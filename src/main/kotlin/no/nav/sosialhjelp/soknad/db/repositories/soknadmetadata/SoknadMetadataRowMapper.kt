@@ -1,9 +1,9 @@
 package no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata
 
-import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata
 import no.nav.sosialhjelp.soknad.db.SQLUtils
+import no.nav.sosialhjelp.soknad.domain.SoknadMetadata
 import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus
-import no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SoknadType
+import no.nav.sosialhjelp.soknad.domain.SoknadMetadataType
 import org.springframework.jdbc.core.RowMapper
 import java.sql.ResultSet
 
@@ -20,7 +20,7 @@ object SoknadMetadataRowMapper {
         metadata.orgnr = rs.getString("orgnr")
         metadata.navEnhet = rs.getString("navenhet")
         metadata.fiksForsendelseId = rs.getString("fiksforsendelseid")
-        metadata.type = SoknadType.valueOf(rs.getString("soknadtype"))
+        metadata.type = SoknadMetadataType.valueOf(rs.getString("soknadtype"))
         metadata.status = SoknadMetadataInnsendingStatus.valueOf(rs.getString("innsendingstatus"))
         metadata.opprettetDato = SQLUtils.timestampTilTid(rs.getTimestamp("opprettetdato"))
         metadata.sistEndretDato = SQLUtils.timestampTilTid(rs.getTimestamp("sistendretdato"))

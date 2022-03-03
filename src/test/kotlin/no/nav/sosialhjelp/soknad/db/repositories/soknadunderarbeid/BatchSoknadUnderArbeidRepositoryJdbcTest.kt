@@ -5,9 +5,9 @@ import no.nav.sosialhjelp.soknad.config.DbTestConfig
 import no.nav.sosialhjelp.soknad.config.RepositoryTestSupport
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRepository
 import no.nav.sosialhjelp.soknad.domain.OpplastetVedlegg
+import no.nav.sosialhjelp.soknad.domain.OpplastetVedleggType
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeidStatus
-import no.nav.sosialhjelp.soknad.domain.VedleggType
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
@@ -77,7 +77,7 @@ internal class BatchSoknadUnderArbeidRepositoryJdbcTest {
     private fun lagOpplastetVedlegg(soknadId: Long): OpplastetVedlegg {
         return OpplastetVedlegg()
             .withEier(EIER)
-            .withVedleggType(VedleggType("bostotte|annetboutgift"))
+            .withVedleggType(OpplastetVedleggType("bostotte|annetboutgift"))
             .withData(byteArrayOf(1, 2, 3))
             .withSoknadId(soknadId)
             .withFilnavn("dokumentasjon.pdf")

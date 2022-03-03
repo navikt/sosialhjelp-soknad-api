@@ -3,11 +3,11 @@ package no.nav.sosialhjelp.soknad.api.saksoversikt
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot
-import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata
-import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata.VedleggMetadata
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
+import no.nav.sosialhjelp.soknad.domain.SoknadMetadata
+import no.nav.sosialhjelp.soknad.domain.SoknadMetadata.VedleggMetadata
+import no.nav.sosialhjelp.soknad.domain.SoknadMetadataType
 import no.nav.sosialhjelp.soknad.domain.Vedleggstatus
-import no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SoknadType
 import no.nav.sosialhjelp.soknad.ettersending.EttersendingService
 import no.nav.sosialhjelp.soknad.ettersending.EttersendingService.Companion.ETTERSENDELSE_FRIST_DAGER
 import no.nav.sosialhjelp.soknad.tekster.NavMessageSource
@@ -48,7 +48,7 @@ internal class SaksoversiktMetadataServiceTest {
         soknadMetadata = SoknadMetadata()
         soknadMetadata!!.fnr = "12345"
         soknadMetadata!!.behandlingsId = "beh123"
-        soknadMetadata!!.type = SoknadType.SEND_SOKNAD_KOMMUNAL
+        soknadMetadata!!.type = SoknadMetadataType.SEND_SOKNAD_KOMMUNAL
         soknadMetadata!!.innsendtDato = LocalDateTime.of(2018, 4, 11, 13, 30, 0)
 
         val v = VedleggMetadata()

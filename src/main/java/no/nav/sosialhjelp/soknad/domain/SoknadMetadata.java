@@ -1,10 +1,7 @@
-package no.nav.sosialhjelp.soknad.business.domain;
+package no.nav.sosialhjelp.soknad.domain;
 
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
 import no.nav.sosialhjelp.soknad.db.repositories.JAXBHelper;
-import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus;
-import no.nav.sosialhjelp.soknad.domain.Vedleggstatus;
-import no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SoknadType;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.time.LocalDateTime;
@@ -15,7 +12,7 @@ public class SoknadMetadata {
     public Long id;
     public String behandlingsId, tilknyttetBehandlingsId, fnr, skjema, orgnr, navEnhet, fiksForsendelseId;
     public VedleggMetadataListe vedlegg = new VedleggMetadataListe();
-    public SoknadType type;
+    public SoknadMetadataType type;
     public SoknadMetadataInnsendingStatus status;
     public LocalDateTime opprettetDato, sistEndretDato, innsendtDato;
     public boolean lestDittNav;
