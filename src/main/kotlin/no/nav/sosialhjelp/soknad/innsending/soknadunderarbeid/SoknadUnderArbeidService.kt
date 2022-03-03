@@ -2,7 +2,7 @@ package no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid
 
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeid
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi
-import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
 import java.time.OffsetDateTime
 import java.time.ZoneOffset

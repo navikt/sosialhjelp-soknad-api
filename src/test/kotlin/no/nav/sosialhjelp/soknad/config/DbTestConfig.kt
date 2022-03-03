@@ -2,8 +2,6 @@ package no.nav.sosialhjelp.soknad.config
 
 import no.nav.sosialhjelp.soknad.business.db.RepositoryTestSupport
 import no.nav.sosialhjelp.soknad.business.db.TestSupport
-import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
-import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepositoryJdbc
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.BatchOpplastetVedleggRepository
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.BatchOpplastetVedleggRepositoryJdbc
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRepository
@@ -18,6 +16,8 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRe
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepositoryJdbc
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.BatchSoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.BatchSoknadUnderArbeidRepositoryJdbc
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepositoryJdbc
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Import
@@ -41,8 +41,11 @@ open class DbTestConfig {
     }
 
     @Bean
-    open fun soknadUnderArbeidRepository(): SoknadUnderArbeidRepository {
-        return SoknadUnderArbeidRepositoryJdbc()
+    open fun soknadUnderArbeidRepository(
+        transactionTemplate: TransactionTemplate,
+        opplastetVedleggRepository: OpplastetVedleggRepository
+    ): SoknadUnderArbeidRepository {
+        return SoknadUnderArbeidRepositoryJdbc(transactionTemplate, opplastetVedleggRepository)
     }
 
     @Bean

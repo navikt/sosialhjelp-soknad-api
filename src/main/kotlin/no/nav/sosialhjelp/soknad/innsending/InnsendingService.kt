@@ -1,9 +1,9 @@
 package no.nav.sosialhjelp.soknad.innsending
 
-import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRepository
 import no.nav.sosialhjelp.soknad.db.repositories.sendtsoknad.SendtSoknadRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.domain.OpplastetVedlegg
 import no.nav.sosialhjelp.soknad.domain.SendtSoknad
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
@@ -36,7 +36,7 @@ open class InnsendingService(
         })
     }
 
-    open fun finnOgSlettSoknadUnderArbeidVedSendingTilFiks(behandlingsId: String?, eier: String?) {
+    open fun finnOgSlettSoknadUnderArbeidVedSendingTilFiks(behandlingsId: String, eier: String) {
         logger.debug("Henter søknad under arbeid for behandlingsid $behandlingsId og eier $eier")
         val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknadOptional(behandlingsId, eier)
         soknadUnderArbeid.ifPresent { soknadUnderArbeidRepository.slettSoknad(it, eier) }
@@ -55,7 +55,7 @@ open class InnsendingService(
         return sendtSoknadOptional.get()
     }
 
-    open fun hentSoknadUnderArbeid(behandlingsId: String, eier: String?): SoknadUnderArbeid {
+    open fun hentSoknadUnderArbeid(behandlingsId: String, eier: String): SoknadUnderArbeid {
         val soknadUnderArbeidOptional = soknadUnderArbeidRepository.hentSoknadOptional(behandlingsId, eier)
         if (!soknadUnderArbeidOptional.isPresent) {
             throw RuntimeException("Finner ikke sendt søknad med behandlingsId $behandlingsId")
