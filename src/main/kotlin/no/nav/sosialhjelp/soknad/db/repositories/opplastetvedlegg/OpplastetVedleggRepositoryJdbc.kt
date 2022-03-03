@@ -1,11 +1,9 @@
 package no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg
 
+import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRowMapper.opplastetVedleggRowMapper
 import no.nav.sosialhjelp.soknad.domain.OpplastetVedlegg
-import no.nav.sosialhjelp.soknad.domain.VedleggType
-import org.springframework.jdbc.core.RowMapper
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport
 import org.springframework.stereotype.Component
-import java.sql.ResultSet
 import java.util.Optional
 import javax.inject.Inject
 import javax.sql.DataSource
@@ -21,7 +19,7 @@ open class OpplastetVedleggRepositoryJdbc : NamedParameterJdbcDaoSupport(), Oppl
     override fun hentVedlegg(uuid: String?, eier: String): Optional<OpplastetVedlegg> {
         return jdbcTemplate.query(
             "select * from OPPLASTET_VEDLEGG where EIER = ? and UUID = ?",
-            OpplastetVedleggRowMapper(),
+            opplastetVedleggRowMapper,
             eier,
             uuid
         ).stream().findFirst()
@@ -30,7 +28,7 @@ open class OpplastetVedleggRepositoryJdbc : NamedParameterJdbcDaoSupport(), Oppl
     override fun hentVedleggForSoknad(soknadId: Long, eier: String?): List<OpplastetVedlegg> {
         return jdbcTemplate.query(
             "select * from OPPLASTET_VEDLEGG where EIER = ? and SOKNAD_UNDER_ARBEID_ID = ?",
-            OpplastetVedleggRowMapper(),
+            opplastetVedleggRowMapper,
             eier,
             soknadId
         )
@@ -79,18 +77,5 @@ open class OpplastetVedleggRepositoryJdbc : NamedParameterJdbcDaoSupport(), Oppl
             )
         }
         return 0
-    }
-
-    inner class OpplastetVedleggRowMapper : RowMapper<OpplastetVedlegg> {
-        override fun mapRow(rs: ResultSet, rowNum: Int): OpplastetVedlegg {
-            return OpplastetVedlegg()
-                .withUuid(rs.getString("uuid"))
-                .withEier(rs.getString("eier"))
-                .withVedleggType(VedleggType(rs.getString("type")))
-                .withData(rs.getBytes("data"))
-                .withSoknadId(rs.getLong("soknad_under_arbeid_id"))
-                .withFilnavn(rs.getString("filnavn"))
-                .withSha512(rs.getString("sha512"))
-        }
     }
 }

@@ -33,7 +33,7 @@ class BatchSoknadUnderArbeidRepositoryJdbc(
     override fun hentSoknadUnderArbeidIdFromBehandlingsIdOptional(behandlingsId: String?): Optional<Long> {
         return jdbcTemplate.query(
             "select * from SOKNAD_UNDER_ARBEID where BEHANDLINGSID = ?",
-            { resultSet: ResultSet, i: Int -> resultSet.getLong("soknad_under_arbeid_id") },
+            { resultSet: ResultSet, _: Int -> resultSet.getLong("soknad_under_arbeid_id") },
             behandlingsId
         ).stream().findFirst()
     }
@@ -41,7 +41,7 @@ class BatchSoknadUnderArbeidRepositoryJdbc(
     override fun hentGamleSoknadUnderArbeidForBatch(): List<Long> {
         return jdbcTemplate.query(
             "select SOKNAD_UNDER_ARBEID_ID from SOKNAD_UNDER_ARBEID where SISTENDRETDATO < CURRENT_TIMESTAMP - (INTERVAL '14' DAY) and STATUS = ?",
-            { resultSet: ResultSet, i: Int -> resultSet.getLong("soknad_under_arbeid_id") },
+            { resultSet: ResultSet, _: Int -> resultSet.getLong("soknad_under_arbeid_id") },
             SoknadUnderArbeidStatus.UNDER_ARBEID.toString()
         )
     }
