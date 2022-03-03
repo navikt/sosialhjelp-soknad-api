@@ -36,30 +36,18 @@ class SoknadUnderArbeidRowMapper : RowMapper<SoknadUnderArbeid> {
             .withEier(rs.getString("eier"))
             .withJsonInternalSoknad(mapDataToJsonInternalSoknad(rs.getBytes("data")))
             .withStatus(status)
-            .withOpprettetDato(
-                if (rs.getTimestamp("opprettetdato") != null) {
-                    rs.getTimestamp("opprettetdato").toLocalDateTime()
-                } else {
-                    null
-                }
-            )
-            .withSistEndretDato(
-                if (rs.getTimestamp("sistendretdato") != null) {
-                    rs.getTimestamp("sistendretdato").toLocalDateTime()
-                } else {
-                    null
-                }
-            )
+            .withOpprettetDato(rs.getTimestamp("opprettetdato")?.toLocalDateTime())
+            .withSistEndretDato(rs.getTimestamp("sistendretdato")?.toLocalDateTime())
     }
 
     private fun mapDataToJsonInternalSoknad(data: ByteArray?): JsonInternalSoknad? {
-        return if (data == null) {
-            null
-        } else try {
-            mapper.readValue(data, JsonInternalSoknad::class.java)
-        } catch (e: IOException) {
-            log.error("Kunne ikke finne søknad", e)
-            throw RuntimeException(e)
+        return data?.let {
+            try {
+                mapper.readValue(data, JsonInternalSoknad::class.java)
+            } catch (e: IOException) {
+                log.error("Kunne ikke finne søknad", e)
+                throw RuntimeException(e)
+            }
         }
     }
 

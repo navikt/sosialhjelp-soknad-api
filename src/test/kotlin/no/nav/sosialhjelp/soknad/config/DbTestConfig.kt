@@ -70,8 +70,8 @@ open class DbTestConfig {
     }
 
     @Bean
-    open fun batchSendtSoknadRepository(): BatchSendtSoknadRepository {
-        return BatchSendtSoknadRepositoryJdbc()
+    open fun batchSendtSoknadRepository(transactionTemplate: TransactionTemplate): BatchSendtSoknadRepository {
+        return BatchSendtSoknadRepositoryJdbc(transactionTemplate)
     }
 
     @Bean

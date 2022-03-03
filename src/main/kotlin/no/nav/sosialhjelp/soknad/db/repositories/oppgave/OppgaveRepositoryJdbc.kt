@@ -21,25 +21,24 @@ import javax.sql.DataSource
 @Transactional
 open class OppgaveRepositoryJdbc : NamedParameterJdbcDaoSupport(), OppgaveRepository {
 
-    private val oppgaveRowMapper =
-        RowMapper { rs: ResultSet, rowNum: Int ->
-            val oppgave = Oppgave()
-            oppgave.id = rs.getLong("id")
-            oppgave.behandlingsId = rs.getString("behandlingsid")
-            oppgave.type = rs.getString("type")
-            oppgave.status = Oppgave.Status.valueOf(rs.getString("status"))
-            oppgave.steg = rs.getInt("steg")
-            oppgave.oppgaveData = Oppgave.JAXB.unmarshal(rs.getString("oppgavedata"), FiksData::class.java)
-            oppgave.oppgaveResultat = Oppgave.JAXB.unmarshal(rs.getString("oppgaveresultat"), FiksResultat::class.java)
-            oppgave.opprettet = timestampTilTid(rs.getTimestamp("opprettet"))
-            oppgave.sistKjort = timestampTilTid(rs.getTimestamp("sistkjort"))
-            oppgave.nesteForsok = timestampTilTid(rs.getTimestamp("nesteforsok"))
-            oppgave.retries = rs.getInt("retries")
-            oppgave
-        }
+    private val oppgaveRowMapper = RowMapper { rs: ResultSet, _: Int ->
+        val oppgave = Oppgave()
+        oppgave.id = rs.getLong("id")
+        oppgave.behandlingsId = rs.getString("behandlingsid")
+        oppgave.type = rs.getString("type")
+        oppgave.status = Oppgave.Status.valueOf(rs.getString("status"))
+        oppgave.steg = rs.getInt("steg")
+        oppgave.oppgaveData = Oppgave.JAXB.unmarshal(rs.getString("oppgavedata"), FiksData::class.java)
+        oppgave.oppgaveResultat = Oppgave.JAXB.unmarshal(rs.getString("oppgaveresultat"), FiksResultat::class.java)
+        oppgave.opprettet = timestampTilTid(rs.getTimestamp("opprettet"))
+        oppgave.sistKjort = timestampTilTid(rs.getTimestamp("sistkjort"))
+        oppgave.nesteForsok = timestampTilTid(rs.getTimestamp("nesteforsok"))
+        oppgave.retries = rs.getInt("retries")
+        oppgave
+    }
 
     @Inject
-    fun setDS(ds: DataSource?) {
+    fun setDS(ds: DataSource) {
         super.setDataSource(ds)
     }
 
