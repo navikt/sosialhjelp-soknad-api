@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad
 
 import no.nav.sosialhjelp.soknad.tekster.NavMessageSource
-import no.nav.sosialhjelp.soknad.web.config.ContentConfig
+import no.nav.sosialhjelp.soknad.tekster.TeksterConfig
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.mockito.InjectMocks
@@ -13,7 +13,7 @@ import org.springframework.test.context.ActiveProfiles
 class ApplicationContextTest {
 
     @InjectMocks
-    var contentConfig: ContentConfig? = null
+    var teksterConfig: TeksterConfig? = null
 
     @Test
     internal fun skalStarte() {
@@ -21,7 +21,7 @@ class ApplicationContextTest {
 
     @Test
     fun skalReturnereRettAntallBundles() {
-        val source: NavMessageSource = contentConfig!!.navMessageSource()
+        val source: NavMessageSource = teksterConfig!!.navMessageSource()
         val basenames = source.getBasenames()
         assertThat(basenames).hasSize(1)
     }
