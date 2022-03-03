@@ -8,7 +8,6 @@ import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse
 import no.nav.sosialhjelp.soknad.business.db.SQLUtils
-import no.nav.sosialhjelp.soknad.business.db.repositories.soknadunderarbeid.SoknadUnderArbeidRowMapper
 import no.nav.sosialhjelp.soknad.common.exceptions.SamtidigOppdateringException
 import no.nav.sosialhjelp.soknad.common.exceptions.SoknadLaastException
 import no.nav.sosialhjelp.soknad.common.exceptions.SoknadUnderArbeidIkkeFunnetException
@@ -36,6 +35,8 @@ open class SoknadUnderArbeidRepositoryJdbc(
 
     private val mapper: ObjectMapper = ObjectMapper().addMixIn(JsonAdresse::class.java, AdresseMixIn::class.java)
     private val writer: ObjectWriter = mapper.writerWithDefaultPrettyPrinter()
+
+    private val soknadUnderArbeidRowMapper = SoknadUnderArbeidRowMapper()
 
     @Inject
     fun setDS(ds: DataSource) {
@@ -66,7 +67,7 @@ open class SoknadUnderArbeidRepositoryJdbc(
     override fun hentSoknad(soknadId: Long, eier: String): Optional<SoknadUnderArbeid> {
         return jdbcTemplate.query(
             "select * from SOKNAD_UNDER_ARBEID where EIER = ? and SOKNAD_UNDER_ARBEID_ID = ?",
-            SoknadUnderArbeidRowMapper(),
+            soknadUnderArbeidRowMapper,
             eier,
             soknadId
         ).stream().findFirst()
@@ -75,7 +76,7 @@ open class SoknadUnderArbeidRepositoryJdbc(
     override fun hentSoknad(behandlingsId: String?, eier: String): SoknadUnderArbeid {
         val soknadUnderArbeidOptional = jdbcTemplate.query(
             "select * from SOKNAD_UNDER_ARBEID where EIER = ? and BEHANDLINGSID = ?",
-            SoknadUnderArbeidRowMapper(),
+            soknadUnderArbeidRowMapper,
             eier,
             behandlingsId
         ).stream().findFirst()
@@ -90,7 +91,7 @@ open class SoknadUnderArbeidRepositoryJdbc(
     override fun hentSoknadOptional(behandlingsId: String?, eier: String): Optional<SoknadUnderArbeid> {
         return jdbcTemplate.query(
             "select * from SOKNAD_UNDER_ARBEID where EIER = ? and BEHANDLINGSID = ?",
-            SoknadUnderArbeidRowMapper(),
+            soknadUnderArbeidRowMapper,
             eier,
             behandlingsId
         ).stream().findFirst()
@@ -102,7 +103,7 @@ open class SoknadUnderArbeidRepositoryJdbc(
     ): Optional<SoknadUnderArbeid> {
         return jdbcTemplate.query(
             "select * from SOKNAD_UNDER_ARBEID where EIER = ? and TILKNYTTETBEHANDLINGSID = ? and STATUS = ?",
-            SoknadUnderArbeidRowMapper(),
+            soknadUnderArbeidRowMapper,
             eier,
             tilknyttetBehandlingsId,
             SoknadUnderArbeidStatus.UNDER_ARBEID.toString()
@@ -160,8 +161,8 @@ open class SoknadUnderArbeidRepositoryJdbc(
         sjekkOmBrukerEierSoknadUnderArbeid(soknadUnderArbeid, eier)
         transactionTemplate.execute(object : TransactionCallbackWithoutResult() {
             override fun doInTransactionWithoutResult(transactionStatus: TransactionStatus) {
-                val soknadUnderArbeidId =
-                    soknadUnderArbeid.soknadId ?: throw RuntimeException("Kan ikke slette sendt søknad uten søknadsid")
+                val soknadUnderArbeidId = soknadUnderArbeid.soknadId
+                    ?: throw RuntimeException("Kan ikke slette sendt søknad uten søknadsid")
                 opplastetVedleggRepository.slettAlleVedleggForSoknad(soknadUnderArbeidId, eier)
                 jdbcTemplate.update(
                     "delete from SOKNAD_UNDER_ARBEID where EIER = ? and SOKNAD_UNDER_ARBEID_ID = ?",
