@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.business.domain;
 
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
-import no.nav.sosialhjelp.soknad.business.util.JAXBHelper;
+import no.nav.sosialhjelp.soknad.db.repositories.JAXBHelper;
 import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus;
 import no.nav.sosialhjelp.soknad.domain.Vedleggstatus;
 import no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SoknadType;
