@@ -99,8 +99,7 @@ internal class OpplastetVedleggServiceTest {
                         listOf(
                             JsonVedlegg()
                                 .withType(OpplastetVedleggType(TYPE).type)
-                                .withTilleggsinfo(OpplastetVedleggType(
-                                    TYPE).tilleggsinfo)
+                                .withTilleggsinfo(OpplastetVedleggType(TYPE).tilleggsinfo)
                                 .withStatus("VedleggKreves")
                         )
                     )
@@ -132,8 +131,7 @@ internal class OpplastetVedleggServiceTest {
                         listOf(
                             JsonVedlegg()
                                 .withType(OpplastetVedleggType(TYPE).type)
-                                .withTilleggsinfo(OpplastetVedleggType(
-                                    TYPE).tilleggsinfo)
+                                .withTilleggsinfo(OpplastetVedleggType(TYPE).tilleggsinfo)
                                 .withFiler(mutableListOf(JsonFiler().withFilnavn(FILNAVN2).withSha512(SHA512)))
                                 .withStatus("LastetOpp")
                         )
@@ -141,8 +139,7 @@ internal class OpplastetVedleggServiceTest {
                 )
             )
         every { opplastetVedleggRepository.hentVedlegg(any(), any()) } returns Optional.of(
-            OpplastetVedlegg().withVedleggType(OpplastetVedleggType(
-                TYPE)).withFilnavn(FILNAVN2).withSha512(SHA512)
+            OpplastetVedlegg().withVedleggType(OpplastetVedleggType(TYPE)).withFilnavn(FILNAVN2).withSha512(SHA512)
         )
 
         val soknadUnderArbeidSlot = slot<SoknadUnderArbeid>()
@@ -165,8 +162,7 @@ internal class OpplastetVedleggServiceTest {
                         listOf(
                             JsonVedlegg()
                                 .withType(OpplastetVedleggType(TYPE).type)
-                                .withTilleggsinfo(OpplastetVedleggType(
-                                    TYPE).tilleggsinfo)
+                                .withTilleggsinfo(OpplastetVedleggType(TYPE).tilleggsinfo)
                                 .withStatus("VedleggKreves")
                         )
                     )
@@ -227,8 +223,7 @@ internal class OpplastetVedleggServiceTest {
                         listOf(
                             JsonVedlegg()
                                 .withType(OpplastetVedleggType(TYPE).type)
-                                .withTilleggsinfo(OpplastetVedleggType(
-                                    TYPE).tilleggsinfo)
+                                .withTilleggsinfo(OpplastetVedleggType(TYPE).tilleggsinfo)
                                 .withStatus("VedleggKreves")
                         )
                     )
@@ -252,8 +247,7 @@ internal class OpplastetVedleggServiceTest {
                         listOf(
                             JsonVedlegg()
                                 .withType(OpplastetVedleggType(TYPE).type)
-                                .withTilleggsinfo(OpplastetVedleggType(
-                                    TYPE).tilleggsinfo)
+                                .withTilleggsinfo(OpplastetVedleggType(TYPE).tilleggsinfo)
                                 .withStatus("VedleggKreves")
                         )
                     )
@@ -281,8 +275,7 @@ internal class OpplastetVedleggServiceTest {
                         listOf(
                             JsonVedlegg()
                                 .withType(OpplastetVedleggType(TYPE).type)
-                                .withTilleggsinfo(OpplastetVedleggType(
-                                    TYPE).tilleggsinfo)
+                                .withTilleggsinfo(OpplastetVedleggType(TYPE).tilleggsinfo)
                                 .withStatus("VedleggKreves")
                         )
                     )
