@@ -5,7 +5,7 @@ import io.mockk.just
 import io.mockk.mockk
 import io.mockk.runs
 import io.mockk.verify
-import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata.VedleggMetadata
+import no.nav.sosialhjelp.soknad.domain.SoknadMetadata.VedleggMetadata
 import no.nav.sosialhjelp.soknad.domain.Vedleggstatus
 import no.nav.sosialhjelp.soknad.domain.Vedleggstatus.LastetOpp
 import no.nav.sosialhjelp.soknad.domain.Vedleggstatus.VedleggAlleredeSendt

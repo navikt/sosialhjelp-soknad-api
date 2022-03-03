@@ -2,7 +2,7 @@ package no.nav.sosialhjelp.soknad.okonomiskeopplysninger.mappers
 
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.sosialhjelp.soknad.domain.OpplastetVedlegg
-import no.nav.sosialhjelp.soknad.domain.VedleggType
+import no.nav.sosialhjelp.soknad.domain.OpplastetVedleggType
 import no.nav.sosialhjelp.soknad.domain.Vedleggstatus
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -71,16 +71,18 @@ internal class VedleggMapperTest {
         return opplastedeVedlegg
     }
 
-    private fun createOpplastetVedlegg(type: VedleggType): OpplastetVedlegg {
+    private fun createOpplastetVedlegg(type: OpplastetVedleggType): OpplastetVedlegg {
         return OpplastetVedlegg()
             .withVedleggType(type)
             .withEier(EIER)
     }
 
     companion object {
-        private val BOSTOTTE = VedleggType("bostotte|annetboutgift")
-        private val SKATTEMELDING = VedleggType("skatt|melding")
-        private val ANNET = VedleggType("annet|annet")
+        private val BOSTOTTE =
+            OpplastetVedleggType("bostotte|annetboutgift")
+        private val SKATTEMELDING =
+            OpplastetVedleggType("skatt|melding")
+        private val ANNET = OpplastetVedleggType("annet|annet")
         private const val EIER = "12345678910"
     }
 }

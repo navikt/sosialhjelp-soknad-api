@@ -1,12 +1,12 @@
 package no.nav.sosialhjelp.soknad.db.repositories.oppgave
 
-import no.nav.sosialhjelp.soknad.business.batch.oppgave.Oppgave
-import no.nav.sosialhjelp.soknad.business.batch.oppgave.fiks.FiksData
-import no.nav.sosialhjelp.soknad.business.batch.oppgave.fiks.FiksResultat
 import no.nav.sosialhjelp.soknad.db.SQLUtils
 import no.nav.sosialhjelp.soknad.db.SQLUtils.selectNextSequenceValue
 import no.nav.sosialhjelp.soknad.db.SQLUtils.tidTilTimestamp
 import no.nav.sosialhjelp.soknad.db.SQLUtils.timestampTilTid
+import no.nav.sosialhjelp.soknad.domain.FiksData
+import no.nav.sosialhjelp.soknad.domain.FiksResultat
+import no.nav.sosialhjelp.soknad.domain.Oppgave
 import org.springframework.jdbc.core.RowMapper
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport
 import org.springframework.stereotype.Component

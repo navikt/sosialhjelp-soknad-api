@@ -9,8 +9,8 @@ import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
 import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.SosialhjelpPdfGenerator
 import no.nav.sosialhjelp.soknad.common.filedetection.MimeTypes
 import no.nav.sosialhjelp.soknad.domain.OpplastetVedlegg
+import no.nav.sosialhjelp.soknad.domain.OpplastetVedleggType
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
-import no.nav.sosialhjelp.soknad.domain.VedleggType
 import no.nav.sosialhjelp.soknad.domain.Vedleggstatus
 import no.nav.sosialhjelp.soknad.innsending.InnsendingService
 import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
@@ -161,21 +161,21 @@ internal class FiksDokumentHelperTest {
                 .withFilnavn(FILNAVN)
                 .withSha512(SHA512)
                 .withData(DATA)
-                .withVedleggType(VedleggType(TYPE + "|" + TILLEGGSINFO))
+                .withVedleggType(OpplastetVedleggType(TYPE + "|" + TILLEGGSINFO))
         )
         opplastedeVedlegg.add(
             OpplastetVedlegg()
                 .withFilnavn(ANNET_FILNAVN)
                 .withSha512(ANNEN_SHA512)
                 .withData(DATA)
-                .withVedleggType(VedleggType(TYPE2 + "|" + TILLEGGSINFO2))
+                .withVedleggType(OpplastetVedleggType(TYPE2 + "|" + TILLEGGSINFO2))
         )
         opplastedeVedlegg.add(
             OpplastetVedlegg()
                 .withFilnavn(TREDJE_FILNAVN)
                 .withSha512(TREDJE_SHA512)
                 .withData(DATA)
-                .withVedleggType(VedleggType(TYPE2 + "|" + TILLEGGSINFO2))
+                .withVedleggType(OpplastetVedleggType(TYPE2 + "|" + TILLEGGSINFO2))
         )
         return opplastedeVedlegg
     }

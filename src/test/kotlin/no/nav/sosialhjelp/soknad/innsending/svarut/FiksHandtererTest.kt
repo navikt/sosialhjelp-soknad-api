@@ -6,8 +6,8 @@ import io.mockk.just
 import io.mockk.mockk
 import io.mockk.runs
 import io.mockk.verify
-import no.nav.sosialhjelp.soknad.business.batch.oppgave.Oppgave
-import no.nav.sosialhjelp.soknad.business.batch.oppgave.fiks.FiksData
+import no.nav.sosialhjelp.soknad.domain.FiksData
+import no.nav.sosialhjelp.soknad.domain.Oppgave
 import no.nav.sosialhjelp.soknad.domain.SendtSoknad
 import no.nav.sosialhjelp.soknad.innsending.InnsendingService
 import org.assertj.core.api.Assertions

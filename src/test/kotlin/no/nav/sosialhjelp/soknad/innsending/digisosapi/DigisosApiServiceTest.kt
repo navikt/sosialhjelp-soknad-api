@@ -19,8 +19,8 @@ import no.nav.sosialhjelp.soknad.common.MiljoUtils
 import no.nav.sosialhjelp.soknad.common.filedetection.MimeTypes
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.domain.OpplastetVedlegg
+import no.nav.sosialhjelp.soknad.domain.OpplastetVedleggType
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
-import no.nav.sosialhjelp.soknad.domain.VedleggType
 import no.nav.sosialhjelp.soknad.domain.Vedleggstatus
 import no.nav.sosialhjelp.soknad.innsending.HenvendelseService
 import no.nav.sosialhjelp.soknad.innsending.InnsendingService
@@ -172,7 +172,7 @@ internal class DigisosApiServiceTest {
             OpplastetVedlegg()
                 .withFilnavn("FILNAVN")
                 .withSha512("sha512")
-                .withVedleggType(VedleggType("type|tilleggsinfo"))
+                .withVedleggType(OpplastetVedleggType("type|tilleggsinfo"))
                 .withData(byteArrayOf(1, 2, 3))
         )
     }

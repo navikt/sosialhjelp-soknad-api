@@ -6,8 +6,8 @@ import io.mockk.mockk
 import io.mockk.runs
 import io.mockk.slot
 import io.mockk.verify
-import no.nav.sosialhjelp.soknad.business.batch.oppgave.Oppgave
 import no.nav.sosialhjelp.soknad.db.repositories.oppgave.OppgaveRepository
+import no.nav.sosialhjelp.soknad.domain.Oppgave
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 import java.util.Optional
