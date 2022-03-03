@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.personalia.person
 
-import no.nav.sosialhjelp.soknad.domain.model.NavFodselsnummer
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Barn
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Ektefelle
 import no.nav.sosialhjelp.soknad.personalia.person.domain.MapperHelper
@@ -10,7 +9,6 @@ import no.nav.sosialhjelp.soknad.personalia.person.dto.Gradering
 import no.nav.sosialhjelp.soknad.personalia.person.dto.PersonDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.SivilstandType
 import org.slf4j.LoggerFactory.getLogger
-import java.time.LocalDate
 
 open class PersonService(
     private val hentPersonClient: HentPersonClient,
@@ -61,7 +59,7 @@ open class PersonService(
                 }
                 if (erFDAT(ektefelleIdent)) {
                     log.info("Sivilstand.relatertVedSivilstand (ektefelleIdent) er FDAT -> kaller ikke hentPerson for ektefelle")
-                    return Ektefelle("", "", "", finnFodselsdatoFraFnr(ektefelleIdent), ektefelleIdent, false, false)
+                    return null
                 }
                 loggHvisIdentIkkeErFnr(ektefelleIdent)
                 val ektefelleDto = hentPersonClient.hentEktefelle(ektefelleIdent)
@@ -78,11 +76,6 @@ open class PersonService(
 
     private fun erFDAT(ident: String): Boolean {
         return ident.length == 11 && ident.substring(6).equals("00000", ignoreCase = true)
-    }
-
-    private fun finnFodselsdatoFraFnr(ident: String): LocalDate? {
-        val fnr = NavFodselsnummer(ident)
-        return LocalDate.parse(fnr.birthYear + "-" + fnr.month + "-" + fnr.dayInMonth)
     }
 
     private fun loggHvisIdentIkkeErFnr(ektefelleIdent: String) {
