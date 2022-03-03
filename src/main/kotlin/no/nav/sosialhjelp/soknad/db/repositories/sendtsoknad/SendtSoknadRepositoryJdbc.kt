@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.db.repositories.sendtsoknad
 
-import no.nav.sosialhjelp.soknad.business.db.SQLUtils
+import no.nav.sosialhjelp.soknad.db.SQLUtils
 import no.nav.sosialhjelp.soknad.domain.SendtSoknad
 import org.springframework.jdbc.core.RowMapper
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport

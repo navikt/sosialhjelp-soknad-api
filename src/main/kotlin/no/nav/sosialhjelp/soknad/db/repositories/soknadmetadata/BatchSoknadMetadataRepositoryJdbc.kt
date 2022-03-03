@@ -1,8 +1,8 @@
 package no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata
 
-import no.nav.sosialhjelp.soknad.business.db.SQLUtils
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata
 import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata.VedleggMetadataListe
+import no.nav.sosialhjelp.soknad.db.SQLUtils
 import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus
 import no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SoknadType
 import org.springframework.jdbc.core.RowMapper
