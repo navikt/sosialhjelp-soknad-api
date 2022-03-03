@@ -1,11 +1,11 @@
 package no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata
 
-import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata
 import no.nav.sosialhjelp.soknad.db.SQLUtils
 import no.nav.sosialhjelp.soknad.db.SQLUtils.tidTilTimestamp
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRowMapper.soknadMetadataRowMapper
+import no.nav.sosialhjelp.soknad.domain.SoknadMetadata
 import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus
-import no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SoknadType
+import no.nav.sosialhjelp.soknad.domain.SoknadMetadataType
 import org.springframework.jdbc.core.RowMapper
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport
 import org.springframework.stereotype.Component
@@ -127,7 +127,7 @@ open class SoknadMetadataRepositoryJdbc : NamedParameterJdbcDaoSupport(), Soknad
             soknadMetadataRowMapper,
             fnr,
             SoknadMetadataInnsendingStatus.UNDER_ARBEID.name,
-            SoknadType.SEND_SOKNAD_KOMMUNAL.name
+            SoknadMetadataType.SEND_SOKNAD_KOMMUNAL.name
         )
     }
 
@@ -138,7 +138,7 @@ open class SoknadMetadataRepositoryJdbc : NamedParameterJdbcDaoSupport(), Soknad
             fnr,
             lestDittNav,
             SoknadMetadataInnsendingStatus.UNDER_ARBEID.name,
-            SoknadType.SEND_SOKNAD_KOMMUNAL.name
+            SoknadMetadataType.SEND_SOKNAD_KOMMUNAL.name
         )
     }
 

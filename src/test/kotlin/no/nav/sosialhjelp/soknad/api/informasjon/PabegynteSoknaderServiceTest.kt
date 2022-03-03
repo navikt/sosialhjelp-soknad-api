@@ -2,8 +2,8 @@ package no.nav.sosialhjelp.soknad.api.informasjon
 
 import io.mockk.every
 import io.mockk.mockk
-import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
+import no.nav.sosialhjelp.soknad.domain.SoknadMetadata
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime

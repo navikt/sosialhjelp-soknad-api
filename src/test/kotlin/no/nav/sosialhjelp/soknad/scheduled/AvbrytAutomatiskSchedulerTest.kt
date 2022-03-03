@@ -6,15 +6,15 @@ import io.mockk.mockk
 import io.mockk.runs
 import io.mockk.slot
 import io.mockk.verify
-import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.BatchSoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.BatchSoknadUnderArbeidRepository
+import no.nav.sosialhjelp.soknad.domain.SoknadMetadata
 import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus
 import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus.UNDER_ARBEID
+import no.nav.sosialhjelp.soknad.domain.SoknadMetadataType
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeidStatus
-import no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SoknadType
 import no.nav.sosialhjelp.soknad.scheduled.leaderelection.LeaderElection
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
@@ -80,7 +80,7 @@ internal class AvbrytAutomatiskSchedulerTest {
         meta.id = soknadMetadataRepository.hentNesteId()
         meta.behandlingsId = behandlingsId
         meta.fnr = EIER
-        meta.type = SoknadType.SEND_SOKNAD_KOMMUNAL
+        meta.type = SoknadMetadataType.SEND_SOKNAD_KOMMUNAL
         meta.skjema = ""
         meta.status = status
         meta.innsendtDato = LocalDateTime.now().minusDays(dagerSiden.toLong())

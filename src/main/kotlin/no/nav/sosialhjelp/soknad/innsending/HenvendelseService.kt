@@ -1,17 +1,17 @@
 package no.nav.sosialhjelp.soknad.innsending
 
-import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata
-import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata.VedleggMetadataListe
 import no.nav.sosialhjelp.soknad.common.exceptions.SosialhjelpSoknadApiException
 import no.nav.sosialhjelp.soknad.common.mdc.MdcOperations
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
+import no.nav.sosialhjelp.soknad.domain.SoknadMetadata
+import no.nav.sosialhjelp.soknad.domain.SoknadMetadata.VedleggMetadataListe
 import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus
 import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus.AVBRUTT_AUTOMATISK
 import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus.AVBRUTT_AV_BRUKER
 import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus.FERDIG
 import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus.SENDT_MED_DIGISOS_API
+import no.nav.sosialhjelp.soknad.domain.SoknadMetadataType
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
-import no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SoknadType
 import org.slf4j.LoggerFactory
 import java.time.Clock
 import java.time.LocalDateTime
@@ -27,7 +27,7 @@ class HenvendelseService(
         meta.id = soknadMetadataRepository.hentNesteId()
         meta.behandlingsId = lagBehandlingsId(meta.id)
         meta.fnr = fnr
-        meta.type = SoknadType.SEND_SOKNAD_KOMMUNAL
+        meta.type = SoknadMetadataType.SEND_SOKNAD_KOMMUNAL
         meta.skjema = SKJEMANUMMER
         meta.status = SoknadMetadataInnsendingStatus.UNDER_ARBEID
         meta.opprettetDato = LocalDateTime.now(clock)
@@ -42,7 +42,7 @@ class HenvendelseService(
         ettersendelse.behandlingsId = lagBehandlingsId(ettersendelse.id)
         ettersendelse.tilknyttetBehandlingsId = ettersendesPaSoknad?.behandlingsId
         ettersendelse.fnr = ettersendesPaSoknad?.fnr
-        ettersendelse.type = SoknadType.SEND_SOKNAD_KOMMUNAL_ETTERSENDING
+        ettersendelse.type = SoknadMetadataType.SEND_SOKNAD_KOMMUNAL_ETTERSENDING
         ettersendelse.skjema = ettersendesPaSoknad?.skjema
         ettersendelse.status = SoknadMetadataInnsendingStatus.UNDER_ARBEID
         ettersendelse.opprettetDato = LocalDateTime.now(clock)
@@ -69,7 +69,7 @@ class HenvendelseService(
     ) {
         val meta = soknadMetadataRepository.hent(behandlingsId)
         meta?.vedlegg = vedlegg
-        if (meta?.type != SoknadType.SEND_SOKNAD_KOMMUNAL_ETTERSENDING) {
+        if (meta?.type != SoknadMetadataType.SEND_SOKNAD_KOMMUNAL_ETTERSENDING) {
             meta?.orgnr = soknadUnderArbeid.jsonInternalSoknad.mottaker.organisasjonsnummer
             meta?.navEnhet = soknadUnderArbeid.jsonInternalSoknad.mottaker.navEnhetsnavn
         }

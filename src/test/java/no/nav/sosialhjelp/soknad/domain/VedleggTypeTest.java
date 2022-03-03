@@ -17,17 +17,17 @@ class VedleggTypeTest {
 
     @Test
     void vedleggTypeObjekterMedSammeTypeOgTilleggsinfoErLike() {
-        VedleggType vedleggType = new VedleggType(TYPE);
-        VedleggType likVedleggType = new VedleggType(TYPE);
+        OpplastetVedleggType vedleggType = new OpplastetVedleggType(TYPE);
+        OpplastetVedleggType likVedleggType = new OpplastetVedleggType(TYPE);
 
         assertThat(vedleggType.equals(likVedleggType)).isTrue();
     }
 
     @Test
     void vedleggTypeObjekterMedSammeTypeOgTilleggsinfoHarSammeHashVerdi() {
-        List<VedleggType> vedleggTypeList = new ArrayList<>(Arrays.asList(new VedleggType(TYPE), new VedleggType(TYPE)));
+        List<OpplastetVedleggType> vedleggTypeList = new ArrayList<>(Arrays.asList(new OpplastetVedleggType(TYPE), new OpplastetVedleggType(TYPE)));
 
-        Set<VedleggType> vedleggTyper = new HashSet<>();
+        Set<OpplastetVedleggType> vedleggTyper = new HashSet<>();
         vedleggTypeList.removeIf(type -> !vedleggTyper.add(type));
 
         assertThat(vedleggTyper).hasSize(1);
@@ -36,16 +36,16 @@ class VedleggTypeTest {
 
     @Test
     void vedleggTypeObjekterMedSammeTypeOgUlikTilleggsinfoErUlike() {
-        VedleggType vedleggType = new VedleggType(TYPE);
-        VedleggType likVedleggType = new VedleggType(TYPE2);
+        OpplastetVedleggType vedleggType = new OpplastetVedleggType(TYPE);
+        OpplastetVedleggType likVedleggType = new OpplastetVedleggType(TYPE2);
 
         assertThat(vedleggType.equals(likVedleggType)).isFalse();
     }
 
     @Test
     void vedleggTypeObjekterMedUlikTypeOgSammeTilleggsinfoErUlike() {
-        VedleggType vedleggType = new VedleggType(TYPE);
-        VedleggType likVedleggType = new VedleggType(TYPE2);
+        OpplastetVedleggType vedleggType = new OpplastetVedleggType(TYPE);
+        OpplastetVedleggType likVedleggType = new OpplastetVedleggType(TYPE2);
 
         assertThat(vedleggType.equals(likVedleggType)).isFalse();
     }

@@ -1,9 +1,9 @@
 package no.nav.sosialhjelp.soknad.domain;
 
-public class VedleggType {
+public class OpplastetVedleggType {
     private String sammensattType;
 
-    public VedleggType(String sammensattType) {
+    public OpplastetVedleggType(String sammensattType) {
         this.sammensattType = sammensattType;
     }
 
@@ -21,7 +21,7 @@ public class VedleggType {
 
     @Override
     public boolean equals(Object obj) {
-        return this.sammensattType.equals(((VedleggType) obj).getSammensattType());
+        return this.sammensattType.equals(((OpplastetVedleggType) obj).getSammensattType());
     }
 
     @Override

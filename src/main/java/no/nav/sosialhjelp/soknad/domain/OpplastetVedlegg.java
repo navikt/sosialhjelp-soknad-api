@@ -5,7 +5,7 @@ import java.util.UUID;
 public class OpplastetVedlegg {
     private String uuid = UUID.randomUUID().toString();
     private String eier;
-    private VedleggType vedleggType;
+    private OpplastetVedleggType vedleggType;
     private byte[] data;
     private Long soknadId;
     private String filnavn;
@@ -29,11 +29,11 @@ public class OpplastetVedlegg {
         return this;
     }
 
-    public VedleggType getVedleggType() {
+    public OpplastetVedleggType getVedleggType() {
         return vedleggType;
     }
 
-    public OpplastetVedlegg withVedleggType(VedleggType vedleggType) {
+    public OpplastetVedlegg withVedleggType(OpplastetVedleggType vedleggType) {
         this.vedleggType = vedleggType;
         return this;
     }

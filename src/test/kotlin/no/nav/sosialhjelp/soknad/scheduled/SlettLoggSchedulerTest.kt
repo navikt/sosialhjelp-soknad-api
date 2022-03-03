@@ -5,18 +5,18 @@ import io.mockk.just
 import io.mockk.mockk
 import io.mockk.runs
 import io.mockk.verify
-import no.nav.sosialhjelp.soknad.business.batch.oppgave.Oppgave
-import no.nav.sosialhjelp.soknad.business.batch.oppgave.fiks.FiksData
-import no.nav.sosialhjelp.soknad.business.batch.oppgave.fiks.FiksResultat
-import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata
 import no.nav.sosialhjelp.soknad.db.repositories.oppgave.OppgaveRepository
 import no.nav.sosialhjelp.soknad.db.repositories.sendtsoknad.BatchSendtSoknadRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.BatchSoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
+import no.nav.sosialhjelp.soknad.domain.FiksData
+import no.nav.sosialhjelp.soknad.domain.FiksResultat
+import no.nav.sosialhjelp.soknad.domain.Oppgave
 import no.nav.sosialhjelp.soknad.domain.SendtSoknad
+import no.nav.sosialhjelp.soknad.domain.SoknadMetadata
 import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus
 import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus.UNDER_ARBEID
-import no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SoknadType
+import no.nav.sosialhjelp.soknad.domain.SoknadMetadataType
 import no.nav.sosialhjelp.soknad.scheduled.leaderelection.LeaderElection
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -121,7 +121,7 @@ internal class SlettLoggSchedulerTest {
         meta.id = soknadMetadataRepository.hentNesteId()
         meta.behandlingsId = behandlingsId
         meta.fnr = EIER
-        meta.type = SoknadType.SEND_SOKNAD_KOMMUNAL
+        meta.type = SoknadMetadataType.SEND_SOKNAD_KOMMUNAL
         meta.skjema = ""
         meta.status = status
         meta.innsendtDato = LocalDateTime.now().minusDays(dagerSiden.toLong())

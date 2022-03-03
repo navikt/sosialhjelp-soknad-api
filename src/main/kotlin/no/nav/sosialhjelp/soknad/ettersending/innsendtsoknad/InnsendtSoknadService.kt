@@ -1,10 +1,10 @@
 package no.nav.sosialhjelp.soknad.ettersending.innsendtsoknad
 
-import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata
-import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata.VedleggMetadata
+import no.nav.sosialhjelp.soknad.domain.SoknadMetadata
+import no.nav.sosialhjelp.soknad.domain.SoknadMetadata.VedleggMetadata
 import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus
+import no.nav.sosialhjelp.soknad.domain.SoknadMetadataType
 import no.nav.sosialhjelp.soknad.domain.Vedleggstatus
-import no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SoknadType
 import no.nav.sosialhjelp.soknad.ettersending.innsendtsoknad.EttersendelseUtils.soknadSendtForMindreEnn30DagerSiden
 import no.nav.sosialhjelp.soknad.innsending.HenvendelseService
 import java.time.LocalDateTime
@@ -32,7 +32,7 @@ class InnsendtSoknadService(
 
     private fun hentOriginalSoknad(behandlingsId: String): SoknadMetadata? {
         var soknad = henvendelseService.hentSoknad(behandlingsId)
-        if (soknad?.type == SoknadType.SEND_SOKNAD_KOMMUNAL_ETTERSENDING) {
+        if (soknad?.type == SoknadMetadataType.SEND_SOKNAD_KOMMUNAL_ETTERSENDING) {
             soknad = henvendelseService.hentSoknad(soknad.tilknyttetBehandlingsId)
         }
         return soknad

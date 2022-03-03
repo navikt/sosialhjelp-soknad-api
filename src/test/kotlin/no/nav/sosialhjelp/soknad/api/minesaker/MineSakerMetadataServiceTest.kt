@@ -2,9 +2,9 @@ package no.nav.sosialhjelp.soknad.api.minesaker
 
 import io.mockk.every
 import io.mockk.mockk
-import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
-import no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SoknadType
+import no.nav.sosialhjelp.soknad.domain.SoknadMetadata
+import no.nav.sosialhjelp.soknad.domain.SoknadMetadataType
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
@@ -18,7 +18,7 @@ internal class MineSakerMetadataServiceTest {
         val soknadMetadata = SoknadMetadata()
         soknadMetadata.fnr = "12345"
         soknadMetadata.behandlingsId = "beh123"
-        soknadMetadata.type = SoknadType.SEND_SOKNAD_KOMMUNAL
+        soknadMetadata.type = SoknadMetadataType.SEND_SOKNAD_KOMMUNAL
         soknadMetadata.innsendtDato = LocalDateTime.now()
         every { soknadMetadataRepository.hentAlleInnsendteSoknaderForBruker("12345") } returns listOf(soknadMetadata)
 

@@ -17,9 +17,9 @@ import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
 import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.SosialhjelpPdfGenerator
 import no.nav.sosialhjelp.soknad.common.MiljoUtils
 import no.nav.sosialhjelp.soknad.domain.OpplastetVedlegg
+import no.nav.sosialhjelp.soknad.domain.OpplastetVedleggType
 import no.nav.sosialhjelp.soknad.domain.SendtSoknad
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
-import no.nav.sosialhjelp.soknad.domain.VedleggType
 import no.nav.sosialhjelp.soknad.domain.Vedleggstatus
 import no.nav.sosialhjelp.soknad.innsending.InnsendingService
 import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
@@ -232,7 +232,7 @@ internal class FiksSenderTest {
             OpplastetVedlegg()
                 .withFilnavn(FILNAVN)
                 .withSha512("sha512")
-                .withVedleggType(VedleggType("type|tilleggsinfo"))
+                .withVedleggType(OpplastetVedleggType("type|tilleggsinfo"))
                 .withData(byteArrayOf(1, 2, 3))
         )
         return opplastedeVedlegg

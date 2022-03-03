@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.business.batch.oppgave.fiks;
+package no.nav.sosialhjelp.soknad.domain;
 
 import com.migesok.jaxb.adapter.javatime.LocalDateTimeXmlAdapter;
 

@@ -8,11 +8,11 @@ import no.nav.sbl.soknadsosialhjelp.tjeneste.saksoversikt.Part
 import no.nav.sbl.soknadsosialhjelp.tjeneste.saksoversikt.Vedlegg
 import no.nav.sosialhjelp.soknad.api.LenkeUtils.lagEttersendelseLenke
 import no.nav.sosialhjelp.soknad.api.LenkeUtils.lenkeTilPabegyntSoknad
-import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata
-import no.nav.sosialhjelp.soknad.business.domain.SoknadMetadata.VedleggMetadataListe
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
+import no.nav.sosialhjelp.soknad.domain.SoknadMetadata
+import no.nav.sosialhjelp.soknad.domain.SoknadMetadata.VedleggMetadataListe
+import no.nav.sosialhjelp.soknad.domain.SoknadMetadataType
 import no.nav.sosialhjelp.soknad.domain.Vedleggstatus
-import no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SoknadType
 import no.nav.sosialhjelp.soknad.ettersending.EttersendingService
 import no.nav.sosialhjelp.soknad.ettersending.EttersendingService.Companion.ETTERSENDELSE_FRIST_DAGER
 import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils.isVedleggskravAnnet
@@ -51,7 +51,7 @@ class SaksoversiktMetadataService(
                 .withHoveddokument(
                     Hoveddokument()
                         .withTittel(
-                            if (it.type == SoknadType.SEND_SOKNAD_KOMMUNAL) {
+                            if (it.type == SoknadMetadataType.SEND_SOKNAD_KOMMUNAL) {
                                 bundle.getProperty("saksoversikt.soknadsnavn")
                             } else {
                                 bundle.getProperty("saksoversikt.soknadsnavn.ettersending")
