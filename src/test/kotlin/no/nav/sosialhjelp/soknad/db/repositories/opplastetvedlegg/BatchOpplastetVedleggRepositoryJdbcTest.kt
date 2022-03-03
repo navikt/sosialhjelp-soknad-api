@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg
 
-import no.nav.sosialhjelp.soknad.business.db.RepositoryTestSupport
 import no.nav.sosialhjelp.soknad.config.DbTestConfig
+import no.nav.sosialhjelp.soknad.config.RepositoryTestSupport
 import no.nav.sosialhjelp.soknad.domain.OpplastetVedlegg
 import no.nav.sosialhjelp.soknad.domain.VedleggType
 import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils.getSha512FromByteArray
@@ -30,8 +30,8 @@ internal class BatchOpplastetVedleggRepositoryJdbcTest {
 
     @AfterEach
     fun tearDown() {
-        soknadRepositoryTestSupport!!.jdbcTemplate.update("delete from OPPLASTET_VEDLEGG")
-        soknadRepositoryTestSupport.jdbcTemplate.update("delete from SOKNAD_UNDER_ARBEID")
+        soknadRepositoryTestSupport!!.getJdbcTemplate().update("delete from OPPLASTET_VEDLEGG")
+        soknadRepositoryTestSupport.getJdbcTemplate().update("delete from SOKNAD_UNDER_ARBEID")
     }
 
     @Test
