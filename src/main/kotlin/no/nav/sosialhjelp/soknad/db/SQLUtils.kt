@@ -16,22 +16,6 @@ object SQLUtils {
         }
     }
 
-    fun whereLimit(limit: Int): String {
-        return if (HSQLDB == System.getProperty(DIALECT_PROPERTY)) {
-            "limit $limit"
-        } else {
-            "where rownum <= $limit"
-        }
-    }
-
-    fun toDate(antallDager: Int): String {
-        return if (HSQLDB == System.getProperty(DIALECT_PROPERTY)) {
-            "CURRENT_TIMESTAMP - $antallDager DAY"
-        } else {
-            "CURRENT_TIMESTAMP - NUMTODSINTERVAL($antallDager,'DAY') "
-        }
-    }
-
     fun selectNextSequenceValue(sequence: String): String {
         return if (HSQLDB == System.getProperty(DIALECT_PROPERTY)) {
             "call next value for $sequence"
