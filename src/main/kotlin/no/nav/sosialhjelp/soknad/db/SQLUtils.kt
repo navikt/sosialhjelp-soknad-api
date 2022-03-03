@@ -1,0 +1,58 @@
+package no.nav.sosialhjelp.soknad.db
+
+import java.sql.Timestamp
+import java.time.LocalDateTime
+
+object SQLUtils {
+
+    private const val HSQLDB = "hsqldb"
+    const val DIALECT_PROPERTY = "sqldialect"
+
+    fun limit(limit: Int): String {
+        return if (HSQLDB == System.getProperty(DIALECT_PROPERTY)) {
+            "limit $limit"
+        } else {
+            "and rownum <= $limit"
+        }
+    }
+
+    fun whereLimit(limit: Int): String {
+        return if (HSQLDB == System.getProperty(DIALECT_PROPERTY)) {
+            "limit $limit"
+        } else {
+            "where rownum <= $limit"
+        }
+    }
+
+    fun toDate(antallDager: Int): String {
+        return if (HSQLDB == System.getProperty(DIALECT_PROPERTY)) {
+            "CURRENT_TIMESTAMP - $antallDager DAY"
+        } else {
+            "CURRENT_TIMESTAMP - NUMTODSINTERVAL($antallDager,'DAY') "
+        }
+    }
+
+    fun selectNextSequenceValue(sequence: String): String {
+        return if (HSQLDB == System.getProperty(DIALECT_PROPERTY)) {
+            "call next value for $sequence"
+        } else {
+            "select $sequence.nextval from dual"
+        }
+    }
+
+    fun selectMultipleNextSequenceValues(sequence: String): String {
+        return if (HSQLDB == System.getProperty(DIALECT_PROPERTY)) {
+            "select next value for $sequence from unnest(sequence_array(1,?,1))"
+        } else {
+            "select $sequence.nextval from dual connect by level <= ?"
+        }
+    }
+
+    fun tidTilTimestamp(tid: LocalDateTime?): Timestamp? {
+        return if (tid != null) Timestamp.valueOf(tid) else null
+    }
+
+    fun timestampTilTid(timestamp: Timestamp?): LocalDateTime? {
+        return timestamp?.toLocalDateTime()
+    }
+}

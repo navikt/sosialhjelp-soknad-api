@@ -7,10 +7,10 @@ import no.nav.sbl.soknadsosialhjelp.json.AdresseMixIn
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse
-import no.nav.sosialhjelp.soknad.business.db.SQLUtils
 import no.nav.sosialhjelp.soknad.common.exceptions.SamtidigOppdateringException
 import no.nav.sosialhjelp.soknad.common.exceptions.SoknadLaastException
 import no.nav.sosialhjelp.soknad.common.exceptions.SoknadUnderArbeidIkkeFunnetException
+import no.nav.sosialhjelp.soknad.db.SQLUtils
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRepository
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeidStatus
