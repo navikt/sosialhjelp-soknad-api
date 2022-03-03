@@ -75,7 +75,7 @@ import java.util.Collections;
 
 import static no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde.BRUKER;
 import static no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde.SYSTEM;
-import static no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SosialhjelpInformasjon.BUNDLE_NAME;
+import static no.nav.sosialhjelp.soknad.tekster.BundleNameKt.BUNDLE_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 import static org.mockito.Mockito.mock;

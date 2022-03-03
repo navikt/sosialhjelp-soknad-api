@@ -9,8 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 
-import static no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SosialhjelpInformasjon.BUNDLE_NAME;
-
+import static no.nav.sosialhjelp.soknad.tekster.BundleNameKt.BUNDLE_NAME;
 
 @Configuration
 @EnableScheduling

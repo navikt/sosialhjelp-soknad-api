@@ -12,7 +12,6 @@ import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus.FERDIG
 import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus.SENDT_MED_DIGISOS_API
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SoknadType
-import no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SosialhjelpInformasjon
 import org.slf4j.LoggerFactory
 import java.time.Clock
 import java.time.LocalDateTime
@@ -29,7 +28,7 @@ class HenvendelseService(
         meta.behandlingsId = lagBehandlingsId(meta.id)
         meta.fnr = fnr
         meta.type = SoknadType.SEND_SOKNAD_KOMMUNAL
-        meta.skjema = SosialhjelpInformasjon.SKJEMANUMMER
+        meta.skjema = SKJEMANUMMER
         meta.status = SoknadMetadataInnsendingStatus.UNDER_ARBEID
         meta.opprettetDato = LocalDateTime.now(clock)
         meta.sistEndretDato = LocalDateTime.now(clock)
@@ -100,6 +99,9 @@ class HenvendelseService(
 
     companion object {
         private val logger = LoggerFactory.getLogger(HenvendelseService::class.java)
+
+        const val SKJEMANUMMER = "NAV 35-18.01"
+
         fun lagBehandlingsId(databasenokkel: Long): String {
             val applikasjonsprefix = "11"
             val base = (applikasjonsprefix + "0000000").toLong(36)

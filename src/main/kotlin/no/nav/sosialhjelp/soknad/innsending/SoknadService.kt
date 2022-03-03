@@ -36,12 +36,12 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderAr
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.domain.Vedleggstatus
-import no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SosialhjelpInformasjon
 import no.nav.sosialhjelp.soknad.ettersending.EttersendingService
 import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils.getVedleggFromInternalSoknad
 import no.nav.sosialhjelp.soknad.innsending.svarut.OppgaveHandterer
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.BostotteSystemdata
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkatteetatenSystemdata
+import no.nav.sosialhjelp.soknad.metrics.SOKNAD_TYPE
 import no.nav.sosialhjelp.soknad.metrics.SoknadMetricsService
 import org.slf4j.LoggerFactory
 import org.springframework.transaction.annotation.Transactional
@@ -188,7 +188,7 @@ open class SoknadService(
 
     private fun createDebugTimer(name: String, id: String): Timer {
         val timer = MetricsFactory.createTimer("debug.startsoknad.$name")
-        timer.addFieldToReport("soknadstype", SosialhjelpInformasjon.SOKNAD_TYPE_PREFIX)
+        timer.addFieldToReport("soknadstype", SOKNAD_TYPE)
         timer.addFieldToReport("randomid", id)
         timer.start()
         return timer
