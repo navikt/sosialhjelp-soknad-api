@@ -2,7 +2,7 @@ package no.nav.sosialhjelp.soknad.business.batch.oppgave;
 
 import no.nav.sosialhjelp.soknad.business.batch.oppgave.fiks.FiksData;
 import no.nav.sosialhjelp.soknad.business.batch.oppgave.fiks.FiksResultat;
-import no.nav.sosialhjelp.soknad.business.util.JAXBHelper;
+import no.nav.sosialhjelp.soknad.db.repositories.JAXBHelper;
 
 import java.time.LocalDateTime;
 
