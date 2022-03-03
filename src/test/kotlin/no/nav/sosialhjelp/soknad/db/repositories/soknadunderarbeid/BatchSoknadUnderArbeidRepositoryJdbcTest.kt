@@ -1,8 +1,8 @@
 package no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid
 
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
-import no.nav.sosialhjelp.soknad.business.db.RepositoryTestSupport
 import no.nav.sosialhjelp.soknad.config.DbTestConfig
+import no.nav.sosialhjelp.soknad.config.RepositoryTestSupport
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRepository
 import no.nav.sosialhjelp.soknad.domain.OpplastetVedlegg
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
@@ -37,8 +37,8 @@ internal class BatchSoknadUnderArbeidRepositoryJdbcTest {
 
     @AfterEach
     fun tearDown() {
-        soknadRepositoryTestSupport!!.jdbcTemplate.update("delete from SOKNAD_UNDER_ARBEID")
-        soknadRepositoryTestSupport.jdbcTemplate.update("delete from OPPLASTET_VEDLEGG")
+        soknadRepositoryTestSupport!!.getJdbcTemplate().update("delete from SOKNAD_UNDER_ARBEID")
+        soknadRepositoryTestSupport.getJdbcTemplate().update("delete from OPPLASTET_VEDLEGG")
     }
 
     @Test
