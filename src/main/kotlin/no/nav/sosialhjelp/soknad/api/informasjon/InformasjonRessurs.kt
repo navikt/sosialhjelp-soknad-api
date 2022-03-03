@@ -15,12 +15,12 @@ import no.nav.sosialhjelp.soknad.common.Constants
 import no.nav.sosialhjelp.soknad.common.mapper.KommuneTilNavEnhetMapper.digisoskommuner
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
-import no.nav.sosialhjelp.soknad.domain.model.kravdialoginformasjon.SosialhjelpInformasjon
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
 import no.nav.sosialhjelp.soknad.personalia.person.dto.Gradering.FORTROLIG
 import no.nav.sosialhjelp.soknad.personalia.person.dto.Gradering.STRENGT_FORTROLIG
 import no.nav.sosialhjelp.soknad.personalia.person.dto.Gradering.STRENGT_FORTROLIG_UTLAND
+import no.nav.sosialhjelp.soknad.tekster.BUNDLE_NAME
 import no.nav.sosialhjelp.soknad.tekster.NavMessageSource
 import org.apache.commons.lang3.LocaleUtils
 import org.apache.commons.lang3.StringUtils
@@ -77,10 +77,10 @@ open class InformasjonRessurs(
         if (sprak == null || sprak.trim { it <= ' ' }.isEmpty()) {
             sprak = "nb_NO"
         }
-        if (StringUtils.isNotEmpty(type) && SosialhjelpInformasjon.BUNDLE_NAME != type.lowercase(Locale.getDefault())) {
+        if (StringUtils.isNotEmpty(type) && BUNDLE_NAME != type.lowercase(Locale.getDefault())) {
             val prefiksetType = "soknad" + type.lowercase(Locale.getDefault())
             logger.warn("Type {} matcher ikke et bundlename - forsøker med prefiks {}", type, prefiksetType)
-            if (SosialhjelpInformasjon.BUNDLE_NAME == prefiksetType) {
+            if (BUNDLE_NAME == prefiksetType) {
                 type = prefiksetType
             }
         }
