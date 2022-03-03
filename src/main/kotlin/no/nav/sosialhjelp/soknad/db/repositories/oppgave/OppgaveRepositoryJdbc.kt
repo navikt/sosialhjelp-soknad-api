@@ -3,10 +3,10 @@ package no.nav.sosialhjelp.soknad.db.repositories.oppgave
 import no.nav.sosialhjelp.soknad.business.batch.oppgave.Oppgave
 import no.nav.sosialhjelp.soknad.business.batch.oppgave.fiks.FiksData
 import no.nav.sosialhjelp.soknad.business.batch.oppgave.fiks.FiksResultat
-import no.nav.sosialhjelp.soknad.business.db.SQLUtils
-import no.nav.sosialhjelp.soknad.business.db.SQLUtils.selectNextSequenceValue
-import no.nav.sosialhjelp.soknad.business.db.SQLUtils.tidTilTimestamp
-import no.nav.sosialhjelp.soknad.business.db.SQLUtils.timestampTilTid
+import no.nav.sosialhjelp.soknad.db.SQLUtils
+import no.nav.sosialhjelp.soknad.db.SQLUtils.selectNextSequenceValue
+import no.nav.sosialhjelp.soknad.db.SQLUtils.tidTilTimestamp
+import no.nav.sosialhjelp.soknad.db.SQLUtils.timestampTilTid
 import org.springframework.jdbc.core.RowMapper
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport
 import org.springframework.stereotype.Component
