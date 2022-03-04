@@ -54,7 +54,7 @@
 
         <!-- Fiks/KS -->
         <svarut-rest-klient.version>1.0.2</svarut-rest-klient.version>
-        <kryptering.version>1.1.1</kryptering.version>
+        <kryptering.version>1.1.2</kryptering.version>
         <streaming-klient.version>1.0.16</streaming-klient.version>
 
         <spring-boot.version>2.6.3</spring-boot.version>
@@ -76,7 +76,7 @@
         <logback.version>1.2.10</logback.version>
         <hsqldb.version>2.6.1</hsqldb.version>
         <joda-time.version>2.10.12</joda-time.version>
-        <slf4j.version>1.7.32</slf4j.version>
+        <slf4j.version>1.7.36</slf4j.version>
         <commons-codec.version>1.15</commons-codec.version>
         <commons-io.version>2.11.0</commons-io.version>
         <commons-lang3.version>3.12.0</commons-lang3.version>
