@@ -11,7 +11,6 @@ import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonUstrukturertAdresse;
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeid;
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeidsforhold;
 import no.nav.sbl.soknadsosialhjelp.soknad.begrunnelse.JsonBegrunnelse;
-import no.nav.sbl.soknadsosialhjelp.soknad.bosituasjon.JsonBosituasjon;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonNavn;
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonAnsvar;
@@ -47,6 +46,7 @@ import java.util.Locale;
 
 import static no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.PdfGenerator.INNRYKK_2;
 import static no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.PdfGenerator.INNRYKK_4;
+import static no.nav.sosialhjelp.soknad.pdf.BosituasjonKt.leggTilBosituasjon;
 import static no.nav.sosialhjelp.soknad.pdf.InformasjonFraForsideKt.leggTilInformasjonFraForsiden;
 import static no.nav.sosialhjelp.soknad.pdf.InntektOgFormueKt.leggTilInntektOgFormue;
 import static no.nav.sosialhjelp.soknad.pdf.JuridiskInformasjonKt.leggTilJuridiskInformasjon;
@@ -90,7 +90,7 @@ public class SosialhjelpPdfGenerator {
             leggTilBegrunnelse(pdf, data.getBegrunnelse(), utvidetSoknad);
             leggTilArbeidOgUtdanning(pdf, data.getArbeid(), data.getUtdanning(), utvidetSoknad);
             leggTilFamilie(pdf, data.getFamilie(), utvidetSoknad);
-            leggTilBosituasjon(pdf, data.getBosituasjon(), utvidetSoknad);
+            leggTilBosituasjon(pdf, pdfUtils, data.getBosituasjon(), utvidetSoknad);
             leggTilInntektOgFormue(pdf, pdfUtils, data.getOkonomi(), jsonInternalSoknad.getSoknad(), utvidetSoknad);
             leggTilUtgifterOgGjeld(pdf, pdfUtils, data.getOkonomi(), jsonInternalSoknad.getSoknad(), utvidetSoknad);
             leggTilOkonomiskeOpplysningerOgVedlegg(pdf, pdfUtils, data.getOkonomi(), jsonInternalSoknad.getVedlegg(), utvidetSoknad);
@@ -725,56 +725,6 @@ public class SosialhjelpPdfGenerator {
                 pdfUtils.skrivSvaralternativer(pdf, svaralternativer);
             }
         }
-    }
-
-    private void leggTilBosituasjon(PdfGenerator pdf, JsonBosituasjon bosituasjon, boolean utvidetSoknad) throws IOException {
-        pdf.skrivH4Bold(getTekst("bosituasjonbolk.tittel"));
-        pdf.addBlankLine();
-
-        if (bosituasjon != null) {
-            pdf.skrivTekstBold(getTekst("bosituasjon.sporsmal"));
-            JsonBosituasjon.Botype botype = bosituasjon.getBotype();
-            if (botype != null) {
-                String tekst = getTekst("bosituasjon." + botype.value());
-                if (tekst == null || tekst.isEmpty()) {
-                    pdf.skrivTekst(getTekst("bosituasjon.annet.botype." + botype.value()));
-                } else {
-                    pdf.skrivTekst(tekst);
-                }
-            } else {
-                pdfUtils.skrivIkkeUtfylt(pdf);
-            }
-            pdf.addBlankLine();
-
-            if (utvidetSoknad) {
-                List<String> svaralternativer = new ArrayList<>(5);
-                svaralternativer.add("bosituasjon.eier");
-                svaralternativer.add("bosituasjon.kommunal");
-                svaralternativer.add("bosituasjon.leier");
-                svaralternativer.add("bosituasjon.ingen");
-                svaralternativer.add("bosituasjon.annet");
-                pdfUtils.skrivSvaralternativer(pdf, svaralternativer);
-
-                pdf.skrivTekstBold(getTekst("bosituasjon.annet"));
-                List<String> andreAlternativer = new ArrayList<>();
-                andreAlternativer.add("bosituasjon.annet.botype.foreldre");
-                andreAlternativer.add("bosituasjon.annet.botype.familie");
-                andreAlternativer.add("bosituasjon.annet.botype.venner");
-                andreAlternativer.add("bosituasjon.annet.botype.institusjon");
-                andreAlternativer.add("bosituasjon.annet.botype.fengsel");
-                andreAlternativer.add("bosituasjon.annet.botype.krisesenter");
-                pdfUtils.skrivSvaralternativer(pdf, andreAlternativer);
-            }
-
-            pdf.skrivTekstBold(getTekst("bosituasjon.antallpersoner.sporsmal"));
-            Integer antallPersoner = bosituasjon.getAntallPersoner();
-            if (antallPersoner != null) {
-                pdf.skrivTekst(antallPersoner.toString());
-            } else {
-                pdfUtils.skrivIkkeUtfylt(pdf);
-            }
-        }
-        pdf.addBlankLine();
     }
 
     private String getJsonNavnTekst(JsonNavn navn) {
