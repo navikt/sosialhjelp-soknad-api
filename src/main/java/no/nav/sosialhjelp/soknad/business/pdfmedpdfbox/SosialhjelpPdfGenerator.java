@@ -8,7 +8,6 @@ import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonGateAdresse;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonMatrikkelAdresse;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonPostboksAdresse;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonUstrukturertAdresse;
-import no.nav.sbl.soknadsosialhjelp.soknad.begrunnelse.JsonBegrunnelse;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonNavn;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonKontonummer;
@@ -33,6 +32,7 @@ import java.util.List;
 import static no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.PdfGenerator.INNRYKK_2;
 import static no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.PdfGenerator.INNRYKK_4;
 import static no.nav.sosialhjelp.soknad.pdf.ArbeidOgUtdanningKt.leggTilArbeidOgUtdanning;
+import static no.nav.sosialhjelp.soknad.pdf.BegrunnelseKt.leggTilBegrunnelse;
 import static no.nav.sosialhjelp.soknad.pdf.BosituasjonKt.leggTilBosituasjon;
 import static no.nav.sosialhjelp.soknad.pdf.FamilieKt.leggTilFamilie;
 import static no.nav.sosialhjelp.soknad.pdf.InformasjonFraForsideKt.leggTilInformasjonFraForsiden;
@@ -74,7 +74,7 @@ public class SosialhjelpPdfGenerator {
             leggTilHeading(pdf, heading, navn, fnr);
 
             leggTilPersonalia(pdf, data.getPersonalia(), jsonInternalSoknad.getMidlertidigAdresse(), utvidetSoknad);
-            leggTilBegrunnelse(pdf, data.getBegrunnelse(), utvidetSoknad);
+            leggTilBegrunnelse(pdf, pdfUtils, data.getBegrunnelse(), utvidetSoknad);
             leggTilArbeidOgUtdanning(pdf, pdfUtils, data.getArbeid(), data.getUtdanning(), utvidetSoknad);
             leggTilFamilie(pdf, pdfUtils, data.getFamilie(), utvidetSoknad);
             leggTilBosituasjon(pdf, pdfUtils, data.getBosituasjon(), utvidetSoknad);
@@ -375,32 +375,6 @@ public class SosialhjelpPdfGenerator {
         }
         return adresse.toString();
     }
-
-    private void leggTilBegrunnelse(PdfGenerator pdf, JsonBegrunnelse jsonBegrunnelse, boolean utvidetSoknad) throws IOException {
-        pdf.skrivH4Bold(getTekst("begrunnelsebolk.tittel"));
-        pdf.addBlankLine();
-
-        pdf.skrivTekstBold(getTekst("begrunnelse.hva.sporsmal"));
-
-        if (utvidetSoknad) {
-            pdfUtils.skrivInfotekst(pdf, "begrunnelse.hva.infotekst.tekst");
-        }
-        if (jsonBegrunnelse.getHvaSokesOm() == null || jsonBegrunnelse.getHvaSokesOm().isEmpty()) {
-            pdfUtils.skrivIkkeUtfylt(pdf);
-        } else {
-            pdf.skrivTekst(jsonBegrunnelse.getHvaSokesOm());
-        }
-        pdf.addBlankLine();
-
-        pdf.skrivTekstBold(getTekst("begrunnelse.hvorfor.sporsmal"));
-        if (jsonBegrunnelse.getHvorforSoke() == null || jsonBegrunnelse.getHvorforSoke().isEmpty()) {
-            pdfUtils.skrivIkkeUtfylt(pdf);
-        } else {
-            pdf.skrivTekst(jsonBegrunnelse.getHvorforSoke());
-        }
-        pdf.addBlankLine();
-    }
-
 
     private String getJsonNavnTekst(JsonNavn navn) {
         String fullstendigNavn = "";
