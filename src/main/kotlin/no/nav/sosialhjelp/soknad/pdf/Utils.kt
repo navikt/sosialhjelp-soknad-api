@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.pdf
 
+import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonNavn
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse
@@ -42,5 +43,21 @@ object Utils {
         return isoTimestamp?.let {
             ZonedDateTime.parse(it).withZoneSameInstant(ZoneId.of("Europe/Oslo")).format(ofPattern(DATO_OG_TID_FORMAT))
         } ?: ""
+    }
+
+    fun getJsonNavnTekst(navn: JsonNavn?): String? {
+        var fullstendigNavn: String? = ""
+        if (navn != null) {
+            if (navn.fornavn != null) {
+                fullstendigNavn += navn.fornavn
+            }
+            if (navn.mellomnavn != null) {
+                fullstendigNavn += " " + navn.mellomnavn
+            }
+            if (navn.etternavn != null) {
+                fullstendigNavn += " " + navn.etternavn
+            }
+        }
+        return fullstendigNavn
     }
 }
