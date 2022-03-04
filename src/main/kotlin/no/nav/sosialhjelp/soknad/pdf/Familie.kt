@@ -137,8 +137,8 @@ fun leggTilFamilie(
             }
 
             // TODO: Finnes ikke i handlebarkode?
-            //pdf.skrivTekstBold(pdfUtils.getTekst("familie.barn.true.barn.sporsmal"));
-            //pdf.addBlankLine();
+            // pdf.skrivTekstBold(pdfUtils.getTekst("familie.barn.true.barn.sporsmal"));
+            // pdf.addBlankLine();
 
             val listeOverAnsvar = forsorgerplikt.ansvar
             leggTilBarn(pdf, pdfUtils, utvidetSoknad, listeOverAnsvar)
