@@ -55,7 +55,7 @@
     "IDPORTEN_CLIENTID": "id2",
     "IDPORTEN_CONFIG_URL": "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api/well-known/idporten",
     "KODEVERK_PROXY_URL": "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api/kodeverk/",
-    "KRR_PROXY_URL": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/krr/",
+    "KRR_PROXY_URL": "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api/krr/",
     "LOGINSERVICE_URL": "https://digisos.ekstern.dev.nav.no/sosialhjelp/mock-alt/login",
     "MASKINPORTEN_WELL_KNOWN_URL": "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api/well-known/maskinporten",
     "OIDC_ISSUER_SELVBETJENING_DISCOVERYURL": "https://digisos.ekstern.dev.nav.no/sosialhjelp/mock-alt-api/well-known/selvbetjening",
