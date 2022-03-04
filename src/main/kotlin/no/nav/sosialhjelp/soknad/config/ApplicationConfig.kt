@@ -36,12 +36,11 @@ import no.nav.sosialhjelp.soknad.personalia.adresse.AdresseConfig
 import no.nav.sosialhjelp.soknad.personalia.basispersonalia.BasisPersonaliaConfig
 import no.nav.sosialhjelp.soknad.personalia.familie.FamilieConfig
 import no.nav.sosialhjelp.soknad.scheduled.SchedulerConfig
-import no.nav.sosialhjelp.soknad.tekster.TextService
+import no.nav.sosialhjelp.soknad.tekster.TeksterConfig
 import no.nav.sosialhjelp.soknad.tilgangskontroll.TilgangskontrollConfig
 import no.nav.sosialhjelp.soknad.utdanning.UtdanningConfig
 import no.nav.sosialhjelp.soknad.utgifter.UtgifterConfig
 import no.nav.sosialhjelp.soknad.vedlegg.VedleggConfig
-import no.nav.sosialhjelp.soknad.web.config.ContentConfig
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.EnableAspectJAutoProxy
 import org.springframework.context.annotation.Import
@@ -50,7 +49,6 @@ import org.springframework.context.annotation.Import
 @Configuration
 @Import(
     ClientConfig::class,
-    ContentConfig::class,
     OidcTokenValidatorConfig::class,
     SelftestService::class,
     InnsendingConfig::class,
@@ -81,7 +79,6 @@ import org.springframework.context.annotation.Import
     ApplicationExceptionMapper::class,
     ThrowableMapper::class,
     ServiceUtils::class,
-    TextService::class,
     SystemdataUpdater::class,
     DbConfig::class,
     PdfGenerator::class,
@@ -92,6 +89,7 @@ import org.springframework.context.annotation.Import
     TokendingsConfig::class,
     AzureadConfig::class,
     FssProxyConfig::class,
-    OppslagApiConfig::class
+    OppslagApiConfig::class,
+    TeksterConfig::class
 )
 open class ApplicationConfig
