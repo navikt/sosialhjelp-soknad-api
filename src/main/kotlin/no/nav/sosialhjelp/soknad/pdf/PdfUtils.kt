@@ -4,7 +4,6 @@ import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.PdfGenerator
 import no.nav.sosialhjelp.soknad.tekster.NavMessageSource
 import org.apache.commons.lang3.LocaleUtils
 import org.springframework.stereotype.Component
-import java.io.IOException
 
 @Component
 class PdfUtils(private val navMessageSource: NavMessageSource) {
@@ -13,7 +12,6 @@ class PdfUtils(private val navMessageSource: NavMessageSource) {
         return navMessageSource.getBundleFor("soknadsosialhjelp", LocaleUtils.toLocale("nb_NO")).getProperty(key)
     }
 
-    @Throws(IOException::class)
     fun skrivInfotekst(pdf: PdfGenerator, vararg keys: String?) {
         pdf.skrivTekstBold(getTekst("infotekst.oppsummering.tittel"))
         for (key in keys) {
@@ -24,38 +22,32 @@ class PdfUtils(private val navMessageSource: NavMessageSource) {
         pdf.addBlankLine()
     }
 
-    @Throws(IOException::class)
     fun skrivHjelpetest(pdf: PdfGenerator, key: String?) {
         pdf.skrivTekstBold(getTekst("hjelpetekst.oppsummering.tittel"))
         pdf.skrivTekst(getTekst(key))
         pdf.addBlankLine()
     }
 
-    @Throws(IOException::class)
     fun skrivKnappTilgjengelig(pdf: PdfGenerator, key: String) {
         pdf.skrivTekstBold("Knapp tilgjengelig:")
         pdf.skrivTekst(getTekst(key))
         pdf.addBlankLine()
     }
 
-    @Throws(IOException::class)
     fun skrivIkkeUtfylt(pdf: PdfGenerator) {
         pdf.skrivTekst(getTekst("oppsummering.ikkeutfylt"))
     }
 
-    @Throws(IOException::class)
     fun skrivIkkeUtfyltMedGuard(pdf: PdfGenerator, key: String) {
         pdf.skrivTekst(getTekst(key) + ": " + getTekst("oppsummering.ikkeutfylt"))
     }
 
-    @Throws(IOException::class)
     fun skrivTekstMedGuard(pdf: PdfGenerator, tekst: String?, key: String) {
         if (tekst != null) {
             pdf.skrivTekst(getTekst(key) + ": " + tekst)
         }
     }
 
-    @Throws(IOException::class)
     fun skrivTekstMedGuardOgIkkeUtfylt(pdf: PdfGenerator, tekst: String?, key: String) {
         if (tekst != null) {
             pdf.skrivTekst(getTekst(key) + ": " + tekst)
@@ -64,7 +56,6 @@ class PdfUtils(private val navMessageSource: NavMessageSource) {
         }
     }
 
-    @Throws(IOException::class)
     fun skrivTekstMedGuardOgIkkeUtfylt(pdf: PdfGenerator, verdi: Int?, key: String) {
         if (verdi != null) {
             pdf.skrivTekst(getTekst(key) + ": " + verdi)
@@ -73,7 +64,6 @@ class PdfUtils(private val navMessageSource: NavMessageSource) {
         }
     }
 
-    @Throws(IOException::class)
     fun skrivTekstMedGuardOgIkkeUtfylt(pdf: PdfGenerator, verdi: Double?, key: String) {
         if (verdi != null) {
             pdf.skrivTekst(getTekst(key) + ": " + String.format("%.2f", verdi))
@@ -82,7 +72,6 @@ class PdfUtils(private val navMessageSource: NavMessageSource) {
         }
     }
 
-    @Throws(IOException::class)
     fun addLinks(pdf: PdfGenerator, uris: Map<String, String>) {
         pdf.skrivTekst("Lenker på siden: ")
         for ((name, uri) in uris) {
@@ -91,7 +80,6 @@ class PdfUtils(private val navMessageSource: NavMessageSource) {
         pdf.addBlankLine()
     }
 
-    @Throws(IOException::class)
     fun skrivSvaralternativer(pdf: PdfGenerator, keys: List<String>) {
         pdf.skrivTekstBold("Svaralternativer:")
         for (key in keys) {
@@ -99,7 +87,6 @@ class PdfUtils(private val navMessageSource: NavMessageSource) {
         }
     }
 
-    @Throws(IOException::class)
     fun skrivUtBarnebidragAlternativer(pdf: PdfGenerator, utvidetSoknad: Boolean) {
         if (utvidetSoknad) {
             val svaralternativer: MutableList<String> = ArrayList(4)
