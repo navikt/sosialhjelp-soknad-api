@@ -8,8 +8,6 @@ import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonGateAdresse;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonMatrikkelAdresse;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonPostboksAdresse;
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonUstrukturertAdresse;
-import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeid;
-import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeidsforhold;
 import no.nav.sbl.soknadsosialhjelp.soknad.begrunnelse.JsonBegrunnelse;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde;
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonNavn;
@@ -19,7 +17,6 @@ import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonSokernavn;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonStatsborgerskap;
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonTelefonnummer;
-import no.nav.sbl.soknadsosialhjelp.soknad.utdanning.JsonUtdanning;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler;
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg;
 import no.nav.sosialhjelp.soknad.pdf.PdfUtils;
@@ -28,15 +25,14 @@ import no.nav.sosialhjelp.soknad.tekster.NavMessageSource;
 import org.apache.commons.lang3.LocaleUtils;
 
 import java.io.IOException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import static no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.PdfGenerator.INNRYKK_2;
 import static no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.PdfGenerator.INNRYKK_4;
+import static no.nav.sosialhjelp.soknad.pdf.ArbeidOgUtdanningKt.leggTilArbeidOgUtdanning;
 import static no.nav.sosialhjelp.soknad.pdf.BosituasjonKt.leggTilBosituasjon;
 import static no.nav.sosialhjelp.soknad.pdf.FamilieKt.leggTilFamilie;
 import static no.nav.sosialhjelp.soknad.pdf.InformasjonFraForsideKt.leggTilInformasjonFraForsiden;
@@ -47,7 +43,6 @@ import static no.nav.sosialhjelp.soknad.pdf.OkonomiskeOpplysningerOgVedleggKt.le
 import static no.nav.sosialhjelp.soknad.pdf.UtgifterOgGjeldKt.leggTilUtgifterOgGjeld;
 
 public class SosialhjelpPdfGenerator {
-    private final String DATO_FORMAT = "d. MMMM yyyy";
 
     public final NavMessageSource navMessageSource;
     public final TextHelpers textHelpers;
@@ -80,7 +75,7 @@ public class SosialhjelpPdfGenerator {
 
             leggTilPersonalia(pdf, data.getPersonalia(), jsonInternalSoknad.getMidlertidigAdresse(), utvidetSoknad);
             leggTilBegrunnelse(pdf, data.getBegrunnelse(), utvidetSoknad);
-            leggTilArbeidOgUtdanning(pdf, data.getArbeid(), data.getUtdanning(), utvidetSoknad);
+            leggTilArbeidOgUtdanning(pdf, pdfUtils, data.getArbeid(), data.getUtdanning(), utvidetSoknad);
             leggTilFamilie(pdf, pdfUtils, data.getFamilie(), utvidetSoknad);
             leggTilBosituasjon(pdf, pdfUtils, data.getBosituasjon(), utvidetSoknad);
             leggTilInntektOgFormue(pdf, pdfUtils, data.getOkonomi(), jsonInternalSoknad.getSoknad(), utvidetSoknad);
@@ -406,80 +401,6 @@ public class SosialhjelpPdfGenerator {
         pdf.addBlankLine();
     }
 
-    private void leggTilArbeidOgUtdanning(PdfGenerator pdf, JsonArbeid arbeid, JsonUtdanning utdanning, boolean utvidetSoknad) throws IOException {
-        pdf.skrivH4Bold(getTekst("arbeidbolk.tittel"));
-        pdf.addBlankLine();
-
-        pdf.skrivTekstBold(getTekst("arbeidsforhold.sporsmal"));
-        pdf.addBlankLine();
-        if (utvidetSoknad) {
-            pdfUtils.skrivInfotekst(pdf, "arbeidsforhold.infotekst");
-        }
-
-        if (arbeid != null && arbeid.getForhold() != null) {
-            for (JsonArbeidsforhold forhold : arbeid.getForhold()) {
-                pdfUtils.skrivTekstMedGuard(pdf, forhold.getArbeidsgivernavn(), "arbeidsforhold.arbeidsgivernavn.label");
-                pdfUtils.skrivTekstMedGuard(pdf, formaterDato(forhold.getFom(), DATO_FORMAT), "arbeidsforhold.fom.label");
-                pdfUtils.skrivTekstMedGuard(pdf, formaterDato(forhold.getTom(), DATO_FORMAT), "arbeidsforhold.tom.label");
-
-                if (forhold.getStillingsprosent() != null) {
-                    pdf.skrivTekst(getTekst("arbeidsforhold.stillingsprosent.label") + ": " + forhold.getStillingsprosent() + "%");
-                }
-                pdf.addBlankLine();
-            }
-        } else {
-            pdf.skrivTekst(getTekst("arbeidsforhold.ingen"));
-            pdf.addBlankLine();
-        }
-        if (arbeid != null && arbeid.getKommentarTilArbeidsforhold() != null && arbeid.getKommentarTilArbeidsforhold().getVerdi() != null) {
-            pdf.skrivTekst(getTekst("opplysninger.arbeidsituasjon.kommentarer.label"));
-            pdf.addBlankLine();
-            pdf.skrivTekstBold("Kommentar til arbeidsforhold:");
-            pdf.skrivTekst(arbeid.getKommentarTilArbeidsforhold().getVerdi());
-            pdf.addBlankLine();
-        } else if (utvidetSoknad) {
-            pdf.skrivTekst(getTekst("opplysninger.arbeidsituasjon.kommentarer.label"));
-            pdf.addBlankLine();
-            pdf.skrivTekstBold("Kommentar til arbeidsforhold:");
-            pdfUtils.skrivIkkeUtfylt(pdf);
-            pdf.addBlankLine();
-        }
-
-        pdf.skrivTekstBold(getTekst("arbeid.dinsituasjon.studerer.undertittel"));
-        pdf.addBlankLine();
-        pdf.skrivTekstBold(getTekst("dinsituasjon.studerer.sporsmal"));
-        if (utdanning != null && utdanning.getErStudent() != null) {
-            pdf.skrivTekst(getTekst("dinsituasjon.studerer." + utdanning.getErStudent()));
-
-        } else {
-            pdfUtils.skrivIkkeUtfylt(pdf);
-        }
-        pdf.addBlankLine();
-
-        if (utvidetSoknad) {
-            List<String> svaralternativer = new ArrayList<>(2);
-            svaralternativer.add("dinsituasjon.studerer.true");
-            svaralternativer.add("dinsituasjon.studerer.false");
-            pdfUtils.skrivSvaralternativer(pdf, svaralternativer);
-        }
-
-        if (utdanning != null && utdanning.getErStudent() != null && utdanning.getErStudent()) {
-            pdf.skrivTekstBold(getTekst("dinsituasjon.studerer.true.grad.sporsmal"));
-            if (utdanning.getStudentgrad() != null) {
-                pdf.skrivTekst(getTekst("dinsituasjon.studerer.true.grad." + utdanning.getStudentgrad()));
-            } else {
-                pdfUtils.skrivIkkeUtfylt(pdf);
-            }
-            pdf.addBlankLine();
-
-            if (utvidetSoknad) {
-                List<String> svaralternativer = new ArrayList<>(2);
-                svaralternativer.add("dinsituasjon.jobb.true.grad.deltid");
-                svaralternativer.add("dinsituasjon.jobb.true.grad.heltid");
-                pdfUtils.skrivSvaralternativer(pdf, svaralternativer);
-            }
-        }
-    }
 
     private String getJsonNavnTekst(JsonNavn navn) {
         String fullstendigNavn = "";
@@ -495,15 +416,5 @@ public class SosialhjelpPdfGenerator {
             }
         }
         return fullstendigNavn;
-    }
-
-    private String formaterDato(String dato, String format) {
-        if (dato == null) {
-            return "";
-        }
-        Locale locale = new Locale("nb", "NO");
-        LocalDate localDate = LocalDate.parse(dato);
-
-        return localDate.format(DateTimeFormatter.ofPattern(format, locale));
     }
 }
