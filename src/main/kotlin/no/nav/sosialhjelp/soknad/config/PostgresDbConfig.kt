@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.config
 
-import no.nav.sosialhjelp.soknad.business.db.SQLUtils
+import no.nav.sosialhjelp.soknad.db.SQLUtils
 import no.nav.sosialhjelp.soknad.health.selftest.Pingable
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
