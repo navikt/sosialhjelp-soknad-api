@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.pdf
 
-import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.PdfGenerator
 import no.nav.sosialhjelp.soknad.tekster.NavMessageSource
 import org.apache.commons.lang3.LocaleUtils
 import org.springframework.stereotype.Component

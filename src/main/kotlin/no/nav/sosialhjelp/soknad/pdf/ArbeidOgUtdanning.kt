@@ -2,7 +2,6 @@ package no.nav.sosialhjelp.soknad.pdf
 
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeid
 import no.nav.sbl.soknadsosialhjelp.soknad.utdanning.JsonUtdanning
-import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.PdfGenerator
 import no.nav.sosialhjelp.soknad.pdf.Utils.DATO_FORMAT
 import no.nav.sosialhjelp.soknad.pdf.Utils.formaterDato
 
