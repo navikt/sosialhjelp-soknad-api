@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.common.rest.feil
 
-import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.PdfGenereringException
 import no.nav.sosialhjelp.soknad.client.exceptions.IkkeFunnetException
 import no.nav.sosialhjelp.soknad.client.exceptions.PdlApiException
 import no.nav.sosialhjelp.soknad.client.exceptions.SikkerhetsBegrensningException
@@ -13,6 +12,7 @@ import no.nav.sosialhjelp.soknad.common.exceptions.SendingTilKommuneUtilgjengeli
 import no.nav.sosialhjelp.soknad.common.exceptions.SoknadUnderArbeidIkkeFunnetException
 import no.nav.sosialhjelp.soknad.common.exceptions.SoknadenHarNedetidException
 import no.nav.sosialhjelp.soknad.common.exceptions.SosialhjelpSoknadApiException
+import no.nav.sosialhjelp.soknad.pdf.PdfGenereringException
 import no.nav.sosialhjelp.soknad.vedlegg.OpplastetVedleggService
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.OpplastingException
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.SamletVedleggStorrelseForStorException
