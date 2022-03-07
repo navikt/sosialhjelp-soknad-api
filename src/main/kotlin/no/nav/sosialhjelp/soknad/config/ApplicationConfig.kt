@@ -10,7 +10,6 @@ import no.nav.sosialhjelp.soknad.api.nedetid.NedetidConfig
 import no.nav.sosialhjelp.soknad.api.saksoversikt.SaksoversiktConfig
 import no.nav.sosialhjelp.soknad.begrunnelse.BegrunnelseConfig
 import no.nav.sosialhjelp.soknad.bosituasjon.BosituasjonConfig
-import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.PdfGenerator
 import no.nav.sosialhjelp.soknad.client.ClientConfig
 import no.nav.sosialhjelp.soknad.client.azure.AzureadConfig
 import no.nav.sosialhjelp.soknad.client.fssproxy.FssProxyConfig
@@ -29,6 +28,7 @@ import no.nav.sosialhjelp.soknad.innsending.InnsendingConfig
 import no.nav.sosialhjelp.soknad.inntekt.InntektConfig
 import no.nav.sosialhjelp.soknad.metrics.MetricsConfig
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.OkonomiskeOpplysningerConfig
+import no.nav.sosialhjelp.soknad.pdf.PdfGenerator
 import no.nav.sosialhjelp.soknad.pdf.PdfUtils
 import no.nav.sosialhjelp.soknad.pdf.SosialhjelpPdfGenerator
 import no.nav.sosialhjelp.soknad.pdf.TextHelpers

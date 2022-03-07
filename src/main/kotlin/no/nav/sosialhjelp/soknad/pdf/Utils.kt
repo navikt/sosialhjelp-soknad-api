@@ -4,7 +4,6 @@ import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonNavn
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse
-import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.PdfGenerator
 import java.time.LocalDate
 import java.time.ZoneId
 import java.time.ZonedDateTime
