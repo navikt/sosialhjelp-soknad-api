@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.innsending.svarut
 
-import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.SosialhjelpPdfGenerator
 import no.nav.sosialhjelp.soknad.common.rest.RestConfig
 import no.nav.sosialhjelp.soknad.common.rest.RestUtils
 import no.nav.sosialhjelp.soknad.db.repositories.oppgave.OppgaveRepository
@@ -9,6 +8,7 @@ import no.nav.sosialhjelp.soknad.innsending.InnsendingService
 import no.nav.sosialhjelp.soknad.innsending.svarut.client.SvarUtClient
 import no.nav.sosialhjelp.soknad.innsending.svarut.client.SvarUtClientImpl
 import no.nav.sosialhjelp.soknad.innsending.svarut.client.SvarUtService
+import no.nav.sosialhjelp.soknad.pdf.SosialhjelpPdfGenerator
 import org.glassfish.jersey.media.multipart.MultiPartFeature
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean

@@ -11,7 +11,6 @@ import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
-import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.SosialhjelpPdfGenerator
 import no.nav.sosialhjelp.soknad.common.filedetection.FileDetectionUtils.getMimeType
 import no.nav.sosialhjelp.soknad.common.filedetection.MimeTypes.APPLICATION_JSON
 import no.nav.sosialhjelp.soknad.common.filedetection.MimeTypes.APPLICATION_PDF
@@ -19,6 +18,7 @@ import no.nav.sosialhjelp.soknad.common.filedetection.MimeTypes.TEXT_X_MATLAB
 import no.nav.sosialhjelp.soknad.domain.OpplastetVedlegg
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.innsending.InnsendingService
+import no.nav.sosialhjelp.soknad.pdf.SosialhjelpPdfGenerator
 import org.slf4j.LoggerFactory
 import java.io.ByteArrayInputStream
 import java.io.InputStream
@@ -60,7 +60,7 @@ class FiksDokumentHelper(
     }
 
     fun lagDokumentForSaksbehandlerPdf(
-        internalSoknad: JsonInternalSoknad?,
+        internalSoknad: JsonInternalSoknad,
         map: MutableMap<String, InputStream>
     ): Dokument {
         val filnavn = "Soknad.pdf"
@@ -68,7 +68,7 @@ class FiksDokumentHelper(
         return genererDokumentFraByteArray(filnavn, APPLICATION_PDF, soknadPdf, false, map)
     }
 
-    fun lagDokumentForJuridiskPdf(internalSoknad: JsonInternalSoknad?, map: MutableMap<String, InputStream>): Dokument {
+    fun lagDokumentForJuridiskPdf(internalSoknad: JsonInternalSoknad, map: MutableMap<String, InputStream>): Dokument {
         val filnavn = "Soknad-juridisk.pdf"
         val juridiskPdf = sosialhjelpPdfGenerator.generate(internalSoknad, true)
         return genererDokumentFraByteArray(filnavn, APPLICATION_PDF, juridiskPdf, false, map)
@@ -81,7 +81,7 @@ class FiksDokumentHelper(
     }
 
     fun lagDokumentForEttersendelsePdf(
-        internalSoknad: JsonInternalSoknad?,
+        internalSoknad: JsonInternalSoknad,
         eier: String?,
         map: MutableMap<String, InputStream>
     ): Dokument {

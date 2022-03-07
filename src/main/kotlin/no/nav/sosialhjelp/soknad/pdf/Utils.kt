@@ -14,7 +14,7 @@ import java.util.Locale
 object Utils {
 
     const val DATO_FORMAT = "d. MMMM yyyy"
-    private const val DATO_OG_TID_FORMAT = "d. MMMM yyyy HH:mm"
+    const val DATO_OG_TID_FORMAT = "d. MMMM yyyy HH:mm"
     private val locale = Locale("nb", "NO")
 
     fun addLinks(pdf: PdfGenerator, uris: Map<String, String>) {
@@ -45,8 +45,8 @@ object Utils {
         } ?: ""
     }
 
-    fun getJsonNavnTekst(navn: JsonNavn?): String? {
-        var fullstendigNavn: String? = ""
+    fun getJsonNavnTekst(navn: JsonNavn?): String {
+        var fullstendigNavn = ""
         if (navn != null) {
             if (navn.fornavn != null) {
                 fullstendigNavn += navn.fornavn
