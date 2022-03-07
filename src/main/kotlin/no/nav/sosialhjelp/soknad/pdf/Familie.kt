@@ -4,7 +4,6 @@ import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonAnsvar
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonFamilie
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus
-import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.PdfGenerator
 import no.nav.sosialhjelp.soknad.pdf.Utils.DATO_FORMAT
 import no.nav.sosialhjelp.soknad.pdf.Utils.formaterDato
 import no.nav.sosialhjelp.soknad.pdf.Utils.getJsonNavnTekst

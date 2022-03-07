@@ -8,9 +8,8 @@ import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonPostboksAdresse
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonUstrukturertAdresse
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia
-import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.PdfGenerator
-import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.PdfGenerator.INNRYKK_2
-import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.PdfGenerator.INNRYKK_4
+import no.nav.sosialhjelp.soknad.pdf.PdfGenerator.Companion.INNRYKK_2
+import no.nav.sosialhjelp.soknad.pdf.PdfGenerator.Companion.INNRYKK_4
 
 fun leggTilPersonalia(
     pdf: PdfGenerator,

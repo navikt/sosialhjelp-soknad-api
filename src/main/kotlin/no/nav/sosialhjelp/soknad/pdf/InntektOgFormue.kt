@@ -5,7 +5,6 @@ import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.bostotte.JsonBostotteSak
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi
-import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.PdfGenerator
 import no.nav.sosialhjelp.soknad.pdf.Utils.DATO_FORMAT
 import no.nav.sosialhjelp.soknad.pdf.Utils.formaterDato
 import no.nav.sosialhjelp.soknad.pdf.Utils.formaterDatoOgTidspunkt
