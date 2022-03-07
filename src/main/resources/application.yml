@@ -51,7 +51,6 @@ kodeverk_proxy_url: ${KODEVERK_PROXY_URL}
 oppslag_api_baseurl: ${OPPSLAG_API_BASEURL}
 norg_proxy_url: ${NORG_PROXY_URL}
 fss_proxy_ping_url: ${FSS_PROXY_PING_URL}
-dittnav.link.url: ${DITTNAV_LINK_URL}
 soknad.bostotte.url: ${SOKNAD_BOSTOTTE_URL}
 svarut_url: ${SVARUT_URL}
 skatteetaten_api_baseurl: ${SKATTEETATEN_API_BASEURL}
