@@ -9,13 +9,13 @@ import no.ks.fiks.svarut.klient.model.NoarkMetadataFraAvleverendeSaksSystem
 import no.ks.fiks.svarut.klient.model.PostAdresse
 import no.ks.fiks.svarut.klient.model.UtskriftsKonfigurasjon
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
-import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.SosialhjelpPdfGenerator
 import no.nav.sosialhjelp.soknad.common.MiljoUtils
 import no.nav.sosialhjelp.soknad.domain.SendtSoknad
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.innsending.InnsendingService
 import no.nav.sosialhjelp.soknad.innsending.SenderUtils.createPrefixedBehandlingsId
 import no.nav.sosialhjelp.soknad.innsending.svarut.client.SvarUtService
+import no.nav.sosialhjelp.soknad.pdf.SosialhjelpPdfGenerator
 import org.slf4j.LoggerFactory
 import java.io.InputStream
 import java.sql.Date
