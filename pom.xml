@@ -25,7 +25,6 @@
             </snapshots>
         </repository>
         <repository>
-            <!-- repo.adeo.no har ikke dependency analyzer med støtte for Java 11 (maven-dependency-analyzer:1.11.1) -->
             <id>maven-central</id>
             <name>Maven central</name>
             <url>https://repo.maven.apache.org/maven2</url>
@@ -44,7 +43,7 @@
     </repositories>
 
     <properties>
-        <java.jdk.version>11</java.jdk.version>
+        <java.jdk.version>17</java.jdk.version>
         <kotlin.version>1.6.10</kotlin.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
