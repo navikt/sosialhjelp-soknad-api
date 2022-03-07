@@ -6,10 +6,7 @@ import no.nav.sosialhjelp.api.fiks.KommuneInfo
 import no.nav.sosialhjelp.metrics.aspects.Timed
 import no.nav.sosialhjelp.soknad.adressesok.AdressesokService
 import no.nav.sosialhjelp.soknad.adressesok.domain.AdresseForslag
-import no.nav.sosialhjelp.soknad.api.informasjon.dto.KommuneInfoFrontend
-import no.nav.sosialhjelp.soknad.api.informasjon.dto.Logg
-import no.nav.sosialhjelp.soknad.api.informasjon.dto.NyligInnsendteSoknaderResponse
-import no.nav.sosialhjelp.soknad.api.informasjon.dto.PabegyntSoknad
+import no.nav.sosialhjelp.soknad.api.informasjon.dto.*
 import no.nav.sosialhjelp.soknad.api.nedetid.NedetidService
 import no.nav.sosialhjelp.soknad.common.Constants
 import no.nav.sosialhjelp.soknad.common.mapper.KommuneTilNavEnhetMapper.digisoskommuner
@@ -27,14 +24,14 @@ import org.apache.commons.lang3.StringUtils
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Controller
 import java.time.LocalDateTime
-import java.util.Locale
-import java.util.Properties
+import java.util.*
 import javax.ws.rs.GET
 import javax.ws.rs.POST
 import javax.ws.rs.Path
 import javax.ws.rs.Produces
 import javax.ws.rs.QueryParam
 import javax.ws.rs.core.MediaType
+import kotlin.collections.HashMap
 
 /**
  * Klassen håndterer rest kall for å hente informasjon
@@ -145,6 +142,18 @@ open class InformasjonRessurs(
         return mergeManuelleKommunerMedDigisosKommuner(manueltPakobledeKommuner, digisosKommuner)
     }
 
+    @Unprotected
+    @GET
+    @Path("/kommunestatus")
+    open fun hentKommunestatus(): Map<String, KommunestatusFrontend> {
+        if (nedetidService.isInnenforNedetid) {
+            return emptyMap()
+        }
+        val manueltPakobledeKommuner = mapManueltPakobledeKommunerTilKommunestatusFrontend(digisoskommuner)
+        val digisosKommuner = mapDigisosKommunerTilKommunestatus(kommuneInfoService.hentAlleKommuneInfo())
+        return mergeManuelleKommunerMedDigisosKommunerKommunestatus(manueltPakobledeKommuner, digisosKommuner)
+    }
+
     @GET
     @Path("/harNyligInnsendteSoknader")
     open fun harNyligInnsendteSoknader(): NyligInnsendteSoknaderResponse {
@@ -174,6 +183,18 @@ open class InformasjonRessurs(
             .associateBy { it.kommunenummer }
     }
 
+    fun mapManueltPakobledeKommunerTilKommunestatusFrontend(manuelleKommuner: List<String>): Map<String, KommunestatusFrontend> {
+        return manuelleKommuner
+            .map {
+                KommunestatusFrontend(
+                    kommunenummer = it,
+                    kanMottaSoknader = true,
+                    kanOppdatereStatus = false
+                )
+            }
+            .associateBy { it.kommunenummer }
+    }
+
     fun mapDigisosKommuner(digisosKommuner: Map<String, KommuneInfo>?): MutableMap<String, KommuneInfoFrontend> {
         return digisosKommuner?.values
             ?.filter { it.kanMottaSoknader }
@@ -188,11 +209,42 @@ open class InformasjonRessurs(
             ?.toMutableMap() ?: mutableMapOf()
     }
 
+    fun mapDigisosKommunerTilKommunestatus(digisosKommuner: Map<String, KommuneInfo>?): MutableMap<String, KommunestatusFrontend> {
+        return digisosKommuner?.values
+            ?.filter { it.kanMottaSoknader }
+            ?.map {
+                KommunestatusFrontend(
+                    it.kommunenummer,
+                    it.kanMottaSoknader,
+                    it.kanOppdatereStatus,
+                    it.harMidlertidigDeaktivertMottak,
+                    it.harMidlertidigDeaktivertOppdateringer,
+                    it.harNksTilgang,
+                    it.behandlingsansvarlig,
+                    KontaktPersonerFrontend(it.kontaktpersoner?.fagansvarligEpost ?: Collections.emptyList(),
+                        it.kontaktpersoner?.tekniskAnsvarligEpost ?: Collections.emptyList()
+                    )
+                )
+            }
+            ?.associateBy { it.kommunenummer }
+            ?.toMutableMap() ?: mutableMapOf()
+    }
+
     fun mergeManuelleKommunerMedDigisosKommuner(
         manuelleKommuner: Map<String, KommuneInfoFrontend>,
         digisosKommuner: MutableMap<String, KommuneInfoFrontend>
     ): Map<String, KommuneInfoFrontend> {
         manuelleKommuner.forEach { (key: String, value: KommuneInfoFrontend?) ->
+            digisosKommuner.putIfAbsent(key, value)
+        }
+        return digisosKommuner
+    }
+
+    fun mergeManuelleKommunerMedDigisosKommunerKommunestatus(
+        manuelleKommuner: Map<String, KommunestatusFrontend>,
+        digisosKommuner: MutableMap<String, KommunestatusFrontend>
+    ): Map<String, KommunestatusFrontend> {
+        manuelleKommuner.forEach { (key: String, value: KommunestatusFrontend?) ->
             digisosKommuner.putIfAbsent(key, value)
         }
         return digisosKommuner
