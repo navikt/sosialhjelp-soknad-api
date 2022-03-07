@@ -2,7 +2,6 @@ package no.nav.sosialhjelp.soknad.pdf
 
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.PdfGenerator
-import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.PdfGenereringException
 import no.nav.sosialhjelp.soknad.pdf.Utils.DATO_OG_TID_FORMAT
 import no.nav.sosialhjelp.soknad.pdf.Utils.getJsonNavnTekst
 import no.nav.sosialhjelp.soknad.tekster.NavMessageSource
