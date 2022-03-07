@@ -6,7 +6,12 @@ import no.nav.sosialhjelp.api.fiks.KommuneInfo
 import no.nav.sosialhjelp.metrics.aspects.Timed
 import no.nav.sosialhjelp.soknad.adressesok.AdressesokService
 import no.nav.sosialhjelp.soknad.adressesok.domain.AdresseForslag
-import no.nav.sosialhjelp.soknad.api.informasjon.dto.*
+import no.nav.sosialhjelp.soknad.api.informasjon.dto.KommuneInfoFrontend
+import no.nav.sosialhjelp.soknad.api.informasjon.dto.KommunestatusFrontend
+import no.nav.sosialhjelp.soknad.api.informasjon.dto.KontaktPersonerFrontend
+import no.nav.sosialhjelp.soknad.api.informasjon.dto.Logg
+import no.nav.sosialhjelp.soknad.api.informasjon.dto.NyligInnsendteSoknaderResponse
+import no.nav.sosialhjelp.soknad.api.informasjon.dto.PabegyntSoknad
 import no.nav.sosialhjelp.soknad.api.nedetid.NedetidService
 import no.nav.sosialhjelp.soknad.common.Constants
 import no.nav.sosialhjelp.soknad.common.mapper.KommuneTilNavEnhetMapper.digisoskommuner
@@ -24,14 +29,15 @@ import org.apache.commons.lang3.StringUtils
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Controller
 import java.time.LocalDateTime
-import java.util.*
+import java.util.Collections
+import java.util.Locale
+import java.util.Properties
 import javax.ws.rs.GET
 import javax.ws.rs.POST
 import javax.ws.rs.Path
 import javax.ws.rs.Produces
 import javax.ws.rs.QueryParam
 import javax.ws.rs.core.MediaType
-import kotlin.collections.HashMap
 
 /**
  * Klassen håndterer rest kall for å hente informasjon
@@ -221,7 +227,8 @@ open class InformasjonRessurs(
                     it.harMidlertidigDeaktivertOppdateringer,
                     it.harNksTilgang,
                     it.behandlingsansvarlig,
-                    KontaktPersonerFrontend(it.kontaktpersoner?.fagansvarligEpost ?: Collections.emptyList(),
+                    KontaktPersonerFrontend(
+                        it.kontaktpersoner?.fagansvarligEpost ?: Collections.emptyList(),
                         it.kontaktpersoner?.tekniskAnsvarligEpost ?: Collections.emptyList()
                     )
                 )

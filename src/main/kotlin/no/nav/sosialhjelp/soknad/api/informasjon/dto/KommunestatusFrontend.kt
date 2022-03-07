@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.api.informasjon.dto
 
-import java.util.*
+import java.util.Collections
 
 data class KommunestatusFrontend(
     var kommunenummer: String,
