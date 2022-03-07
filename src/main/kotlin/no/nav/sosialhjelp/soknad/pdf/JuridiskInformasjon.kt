@@ -1,7 +1,6 @@
 package no.nav.sosialhjelp.soknad.pdf
 
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad
-import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.PdfGenerator
 import no.nav.sosialhjelp.soknad.pdf.Utils.addLinks
 
 fun leggTilJuridiskInformasjon(pdf: PdfGenerator, soknad: JsonSoknad, utvidetSoknad: Boolean) {

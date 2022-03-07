@@ -1,7 +1,6 @@
 package no.nav.sosialhjelp.soknad.pdf
 
 import no.nav.sbl.soknadsosialhjelp.soknad.begrunnelse.JsonBegrunnelse
-import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.PdfGenerator
 
 fun leggTilBegrunnelse(pdf: PdfGenerator, pdfUtils: PdfUtils, jsonBegrunnelse: JsonBegrunnelse, utvidetSoknad: Boolean) {
     pdf.skrivH4Bold(pdfUtils.getTekst("begrunnelsebolk.tittel"))
