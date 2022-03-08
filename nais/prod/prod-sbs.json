@@ -42,7 +42,7 @@
   "azureEnabled": true,
   "env": {
     "SPRING_PROFILES_ACTIVE": "log-kibana",
-    "AAREG_API_BASEURL": "https://api-gw.oera.no/aareg-services/api/",
+    "AAREG_PROXY_URL": "https://sosialhjelp-fss-proxy.prod-fss-pub.nais.io/proxy/aareg/",
     "EREG_PROXY_URL": "https://sosialhjelp-fss-proxy.prod-fss-pub.nais.io/proxy/ereg/",
     "FIKS_NOKKELFIL": "svarut_public_prod.pem",
     "FSS_PROXY_AUDIENCE": "prod-fss:teamdigisos:sosialhjelp-fss-proxy",

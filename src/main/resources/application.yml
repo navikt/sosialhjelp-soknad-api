@@ -42,7 +42,7 @@ environment.name: ${ENVIRONMENT_NAME}
 # rest
 digisos_api_baseurl: ${DIGISOS_API_BASEURL}
 ereg_proxy_url: ${EREG_PROXY_URL}
-aareg_api_baseurl: ${AAREG_API_BASEURL}
+aareg_proxy_url: ${AAREG_PROXY_URL}
 securitytokenservice_apigw_url: ${SECURITYTOKENSERVICE_APIGW_URL}
 krr_proxy_url: ${KRR_PROXY_URL}
 pdl_api_url: ${PDL_API_URL}
