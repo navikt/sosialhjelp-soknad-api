@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.sosialhjelp.soknad.client.sts.StsClient
-import no.nav.sosialhjelp.soknad.common.Constants.HEADER_NAV_APIKEY
 import no.nav.sosialhjelp.soknad.common.rest.RestUtils
 import no.nav.sosialhjelp.soknad.health.selftest.Pingable
 import no.nav.sosialhjelp.soknad.organisasjon.OrganisasjonService
@@ -15,7 +14,6 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Import
 import javax.ws.rs.client.Client
-import javax.ws.rs.client.ClientRequestFilter
 
 @Configuration
 @Import(ArbeidRessurs::class)
@@ -59,14 +57,10 @@ open class ArbeidsforholdConfig(
     private val arbeidsforholdClient: Client
         get() = RestUtils.createClient()
             .register(arbeidsforholdMapper)
-            .register(ClientRequestFilter { it.headers.putSingle(HEADER_NAV_APIKEY, System.getenv(AAREGAPI_APIKEY)) })
 
     private val arbeidsforholdMapper: ObjectMapper
         get() = jacksonObjectMapper()
             .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
             .registerModule(JavaTimeModule())
 
-    companion object {
-        private const val AAREGAPI_APIKEY = "AAREGAPI_APIKEY"
-    }
 }
