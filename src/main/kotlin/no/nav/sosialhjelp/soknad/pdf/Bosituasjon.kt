@@ -1,7 +1,6 @@
 package no.nav.sosialhjelp.soknad.pdf
 
 import no.nav.sbl.soknadsosialhjelp.soknad.bosituasjon.JsonBosituasjon
-import no.nav.sosialhjelp.soknad.business.pdfmedpdfbox.PdfGenerator
 
 fun leggTilBosituasjon(
     pdf: PdfGenerator,
