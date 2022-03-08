@@ -20,7 +20,7 @@ import javax.ws.rs.client.ClientRequestFilter
 @Configuration
 @Import(ArbeidRessurs::class)
 open class ArbeidsforholdConfig(
-    @Value("\${aareg_api_baseurl}") private val baseurl: String,
+    @Value("\${aareg_proxy_url}") private val baseurl: String,
     private val stsClient: StsClient,
     private val organisasjonService: OrganisasjonService
 ) {
