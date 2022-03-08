@@ -49,5 +49,4 @@ open class ArbeidsforholdConfig(
         get() = jacksonObjectMapper()
             .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
             .registerModule(JavaTimeModule())
-
 }
