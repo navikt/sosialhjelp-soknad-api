@@ -217,7 +217,6 @@ open class InformasjonRessurs(
 
     fun mapDigisosKommunerTilKommunestatus(digisosKommuner: Map<String, KommuneInfo>?): MutableMap<String, KommunestatusFrontend> {
         return digisosKommuner?.values
-            ?.filter { it.kanMottaSoknader }
             ?.map {
                 KommunestatusFrontend(
                     it.kommunenummer,
