@@ -47,8 +47,8 @@ class ArbeidsforholdSystemdata(
             .withFom(arbeidsforhold.fom)
             .withTom(arbeidsforhold.tom)
             .withKilde(JsonKilde.SYSTEM)
-            .withStillingsprosent(Math.toIntExact(arbeidsforhold.fastStillingsprosent!!))
-            .withStillingstype(tilJsonStillingstype(arbeidsforhold.harFastStilling!!))
+            .withStillingsprosent(arbeidsforhold.fastStillingsprosent?.let { Math.toIntExact(it) })
+            .withStillingstype(arbeidsforhold.harFastStilling?.let { tilJsonStillingstype(it) })
             .withOverstyrtAvBruker(java.lang.Boolean.FALSE)
     }
 
