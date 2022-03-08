@@ -9,7 +9,6 @@ import no.nav.sosialhjelp.soknad.client.kodeverk.KodeverkConfig
 import no.nav.sosialhjelp.soknad.client.maskinporten.MaskinportenClientConfig
 import no.nav.sosialhjelp.soknad.client.redis.NoRedisConfig
 import no.nav.sosialhjelp.soknad.client.redis.RedisConfig
-import no.nav.sosialhjelp.soknad.client.sts.StsConfig
 import no.nav.sosialhjelp.soknad.client.unleash.UnleashConfig
 import no.nav.sosialhjelp.soknad.innsending.svarut.SvarUtConfig
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.BostotteConfig
@@ -45,7 +44,6 @@ import org.springframework.context.annotation.Import
     TelefonnummerConfig::class,
     NavEnhetConfig::class,
     KodeverkConfig::class,
-    StsConfig::class,
     KontonummerConfig::class,
     NavUtbetalingerConfig::class,
     UnleashConfig::class,
