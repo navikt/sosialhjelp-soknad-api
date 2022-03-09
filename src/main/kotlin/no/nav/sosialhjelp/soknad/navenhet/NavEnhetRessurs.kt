@@ -194,7 +194,7 @@ open class NavEnhetRessurs(
         personalia: JsonPersonalia,
         valg: String?,
         valgtEnhetNr: String?
-    ): List<NavEnhetFrontend>? {
+    ): List<NavEnhetFrontend> {
         val adresseForslagList = finnAdresseService.finnAdresseFraSoknad(personalia, valg)
         /*
          * Vi fjerner nå duplikate NAV-enheter med forskjellige bydelsnumre gjennom
@@ -205,17 +205,17 @@ open class NavEnhetRessurs(
         for (adresseForslag in adresseForslagList) {
             if (adresseForslag.type == AdresseForslagType.MATRIKKELADRESSE) {
                 val navenheter = navEnhetService.getEnheterForKommunenummer(adresseForslag.kommunenummer)
-                navenheter!!
-                    .forEach {
+                navenheter
+                    ?.forEach {
                         addToNavEnhetFrontendListe(
                             navEnhetFrontendListe,
-                            adresseForslag.geografiskTilknytning!!,
+                            adresseForslag.geografiskTilknytning,
                             adresseForslag,
                             it,
                             valgtEnhetNr
                         )
                     }
-                log.info("Matrikkeladresse ble brukt. Returnerer ${navenheter.size} navenheter")
+                log.info("Matrikkeladresse ble brukt. Returnerer ${navenheter?.size} navenheter")
             } else {
                 val geografiskTilknytning = getGeografiskTilknytningFromAdresseForslag(adresseForslag)
                 val navEnhet = navEnhetService.getEnhetForGt(geografiskTilknytning)
@@ -233,7 +233,7 @@ open class NavEnhetRessurs(
 
     private fun addToNavEnhetFrontendListe(
         navEnhetFrontendListe: MutableList<NavEnhetFrontend>,
-        geografiskTilknytning: String,
+        geografiskTilknytning: String?,
         adresseForslag: AdresseForslag,
         navEnhet: NavEnhet?,
         valgtEnhetNr: String?
@@ -250,7 +250,7 @@ open class NavEnhetRessurs(
     }
 
     private fun mapFraAdresseForslagOgNavEnhetTilNavEnhetFrontend(
-        geografiskTilknytning: String,
+        geografiskTilknytning: String?,
         adresseForslag: AdresseForslag,
         navEnhet: NavEnhet?,
         valgtEnhetNr: String?
@@ -272,8 +272,7 @@ open class NavEnhetRessurs(
         val sosialOrgnr = if (digisosKommune) navEnhet.sosialOrgNr else null
         val enhetNr = if (digisosKommune) navEnhet.enhetNr else null
         val valgt = enhetNr != null && enhetNr == valgtEnhetNr
-        val kommunenavnFraAdresseforslag =
-            if (adresseForslag.kommunenavn != null) adresseForslag.kommunenavn else navEnhet.kommunenavn!!
+        val kommunenavnFraAdresseforslag = adresseForslag.kommunenavn ?: navEnhet.kommunenavn
         return NavEnhetFrontend(
             enhetsnr = enhetNr,
             enhetsnavn = navEnhet.navn,
@@ -300,12 +299,12 @@ open class NavEnhetRessurs(
         return isNyDigisosApiKommuneMedMottakAktivert || isGammelSvarUtKommune
     }
 
-    private fun getGeografiskTilknytningFromAdresseForslag(adresseForslag: AdresseForslag): String {
+    private fun getGeografiskTilknytningFromAdresseForslag(adresseForslag: AdresseForslag): String? {
         return if (BYDEL_MARKA_OSLO == adresseForslag.geografiskTilknytning) {
             bydelFordelingService.getBydelTilForMarka(adresseForslag)
         } else {
             // flere special cases her?
-            adresseForslag.geografiskTilknytning!!
+            adresseForslag.geografiskTilknytning
         }
     }
 

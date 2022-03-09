@@ -24,9 +24,9 @@ internal class HentGeografiskTilknytningDtoTest {
         val jsonString = IOUtils.toString(resourceAsStream, StandardCharsets.UTF_8)
         val response = pdlMapper.readValue<HentGeografiskTilknytningDto>(jsonString)
         assertThat(response).isNotNull
-        assertThat(response.data?.hentGeografiskTilknytning?.gtType).isEqualTo(GtType.BYDEL)
-        assertThat(response.data?.hentGeografiskTilknytning?.gtKommune).isNull()
-        assertThat(response.data?.hentGeografiskTilknytning?.gtBydel).isEqualTo("030108")
-        assertThat(response.data?.hentGeografiskTilknytning?.gtLand).isNull()
+        assertThat(response.data.hentGeografiskTilknytning?.gtType).isEqualTo(GtType.BYDEL)
+        assertThat(response.data.hentGeografiskTilknytning?.gtKommune).isNull()
+        assertThat(response.data.hentGeografiskTilknytning?.gtBydel).isEqualTo("030108")
+        assertThat(response.data.hentGeografiskTilknytning?.gtLand).isNull()
     }
 }

@@ -183,9 +183,9 @@ internal class SkatteetatenSystemdataTest {
 //        assertThat(jsonUtbetaling.netto).isNull()
         assertThat(jsonUtbetaling.utbetalingsdato).isNull()
         assertThat(jsonUtbetaling.periodeFom)
-            .isEqualTo(if (utbetaling.periodeFom == null) null else utbetaling.periodeFom.toString())
+            .isEqualTo(utbetaling.periodeFom.toString())
         assertThat(jsonUtbetaling.periodeTom)
-            .isEqualTo(if (utbetaling.periodeTom == null) null else utbetaling.periodeTom.toString())
+            .isEqualTo(utbetaling.periodeTom.toString())
         assertThat(jsonUtbetaling.skattetrekk).isEqualTo(utbetaling.skattetrekk)
 //        assertThat(jsonUtbetaling.andreTrekk).isNull()
         assertThat(jsonUtbetaling.overstyrtAvBruker).isFalse

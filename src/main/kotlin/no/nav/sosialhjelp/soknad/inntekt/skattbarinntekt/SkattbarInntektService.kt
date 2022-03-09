@@ -1,11 +1,11 @@
 package no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt
 
+import no.nav.sosialhjelp.soknad.common.exceptions.SosialhjelpSoknadApiException
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.domain.Utbetaling
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.dto.getForskuddstrekk
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.dto.grupperOgSummerEtterUtbetalingsStartDato
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.dto.mapToUtbetalinger
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 
 open class SkattbarInntektService(
     private val skatteetatenClient: SkatteetatenClient
@@ -19,14 +19,14 @@ open class SkattbarInntektService(
         return filtrerUtbetalingerSlikAtViFaarSisteMaanedFraHverArbeidsgiver(summerteUtbetalinger)
     }
 
-    private fun summerUtbetalingerPerMaanedPerOrganisasjonOgForskuddstrekkSamletUtbetaling(utbetalinger: List<Utbetaling>?, trekk: List<Utbetaling>): List<Utbetaling> {
-        val bruttoOrgPerMaaned = getUtBetalingPerMaanedPerOrg(utbetalinger?.groupBy { it.orgnummer } ?: emptyMap())
+    private fun summerUtbetalingerPerMaanedPerOrganisasjonOgForskuddstrekkSamletUtbetaling(utbetalinger: List<Utbetaling>?, trekk: List<Utbetaling>): List<Utbetaling>? {
+        val bruttoOrgPerMaaned = utbetalinger?.groupBy { it.orgnummer }?.let { getUtBetalingPerMaanedPerOrg(it) }
         val trekkOrgPerMaaned = getUtBetalingPerMaanedPerOrg(trekk.groupBy { it.orgnummer })
-        val utbetalingerBrutto: List<Utbetaling> = bruttoOrgPerMaaned.values.flatMap { it.values }
+        val utbetalingerBrutto: List<Utbetaling>? = bruttoOrgPerMaaned?.values?.flatMap { it.values }
 
         return utbetalingerBrutto
-            .filter { it.orgnummer != "995277670" } // NAV ØKONOMILINJEN
-            .onEach {
+            ?.filter { it.orgnummer != "995277670" } // NAV ØKONOMILINJEN
+            ?.onEach {
                 val localDateUtbetalingMap = trekkOrgPerMaaned[it.orgnummer]
                 if (localDateUtbetalingMap != null) {
                     val trekkUtbetaling = localDateUtbetalingMap[it.periodeFom]
@@ -47,18 +47,12 @@ open class SkattbarInntektService(
     }
 
     private fun filtrerUtbetalingerSlikAtViFaarSisteMaanedFraHverArbeidsgiver(utbetalinger: List<Utbetaling>?): List<Utbetaling>? {
-        if (utbetalinger == null) {
-            return null
-        }
         return utbetalinger
-            .groupBy { it.orgnummer }.values
-            .map {
-                val nyesteDato: LocalDate = it.maxOf { utbetaling -> utbetaling.periodeFom!! }
-                grupperOgSummerEtterUtbetalingsStartDato(it)[nyesteDato]!!
+            ?.groupBy { it.orgnummer }
+            ?.values
+            ?.map {
+                val nyesteDato: LocalDate = it.maxOf { utbetaling -> utbetaling.periodeFom }
+                grupperOgSummerEtterUtbetalingsStartDato(it)[nyesteDato] ?: throw SosialhjelpSoknadApiException("Fant ingen utbetalinger for nyeste dato")
             }
-    }
-
-    companion object {
-        private val arManedFormatter = DateTimeFormatter.ofPattern("yyyy-MM")
     }
 }
