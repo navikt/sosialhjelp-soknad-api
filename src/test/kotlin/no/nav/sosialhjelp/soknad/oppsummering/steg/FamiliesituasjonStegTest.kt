@@ -260,7 +260,7 @@ internal class FamiliesituasjonStegTest {
                             .withFamilie(
                                 JsonFamilie()
                                     .withSivilstatus(sivilstatus)
-                                    .withForsorgerplikt(forsorgerplikt)
+                                    .withForsorgerplikt(forsorgerplikt ?: JsonForsorgerplikt())
                             )
                     )
             )

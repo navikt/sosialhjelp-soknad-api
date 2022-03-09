@@ -16,7 +16,6 @@ import no.nav.sosialhjelp.soknad.oppsummering.dto.SvarType
 import no.nav.sosialhjelp.soknad.oppsummering.dto.Type
 import no.nav.sosialhjelp.soknad.oppsummering.steg.StegUtils.createSvar
 import no.nav.sosialhjelp.soknad.oppsummering.steg.StegUtils.fulltnavn
-import no.nav.sosialhjelp.soknad.oppsummering.steg.StegUtils.harBrukerRegistrerteBarn
 import no.nav.sosialhjelp.soknad.oppsummering.steg.StegUtils.harSystemRegistrerteBarn
 import no.nav.sosialhjelp.soknad.oppsummering.steg.StegUtils.isNotNullOrEmtpy
 
@@ -24,12 +23,14 @@ class FamiliesituasjonSteg {
 
     fun get(jsonInternalSoknad: JsonInternalSoknad): Steg {
         val familie = jsonInternalSoknad.soknad.data.familie
+        val sivilstatus: JsonSivilstatus? = familie.sivilstatus
+        val forsorgerplikt: JsonForsorgerplikt = familie.forsorgerplikt
         return Steg(
             stegNr = 4,
             tittel = "familiebolk.tittel",
             avsnitt = listOf(
-                sivilstatusAvsnitt(familie.sivilstatus),
-                forsorgerpliktAvsnitt(familie.forsorgerplikt)
+                sivilstatusAvsnitt(sivilstatus),
+                forsorgerpliktAvsnitt(forsorgerplikt)
             )
         )
     }
@@ -42,21 +43,21 @@ class FamiliesituasjonSteg {
     }
 
     private fun sivilstatusSporsmal(sivilstatus: JsonSivilstatus?): List<Sporsmal> {
-        val harUtfyltSivilstatusSporsmal = sivilstatus != null && sivilstatus.kilde != null
-        val harSystemEktefelle =
-            harUtfyltSivilstatusSporsmal && sivilstatus!!.kilde == JsonKilde.SYSTEM && sivilstatus.status == JsonSivilstatus.Status.GIFT
-        val harSystemEktefelleMedAdressebeskyttelse =
-            harSystemEktefelle && java.lang.Boolean.TRUE == sivilstatus!!.ektefelleHarDiskresjonskode
-        val harBrukerUtfyltSivilstatus =
-            harUtfyltSivilstatusSporsmal && !harSystemEktefelle && sivilstatus!!.kilde == JsonKilde.BRUKER
-        val harBrukerUtfyltEktefelle =
-            harBrukerUtfyltSivilstatus && sivilstatus!!.status == JsonSivilstatus.Status.GIFT && sivilstatus.ektefelle != null
-        val sporsmal = ArrayList<Sporsmal>()
-        if (!harUtfyltSivilstatusSporsmal) {
-            sporsmal.add(brukerSivilstatusSporsmal(false, null))
+        if (sivilstatus == null) {
+            return listOf(brukerSivilstatusSporsmal(false, null))
         }
+
+        val harSystemEktefelle =
+            sivilstatus.kilde == JsonKilde.SYSTEM && sivilstatus.status == JsonSivilstatus.Status.GIFT
+        val harSystemEktefelleMedAdressebeskyttelse =
+            harSystemEktefelle && java.lang.Boolean.TRUE == sivilstatus.ektefelleHarDiskresjonskode
+        val harBrukerUtfyltSivilstatus = !harSystemEktefelle && sivilstatus.kilde == JsonKilde.BRUKER
+        val harBrukerUtfyltEktefelle =
+            harBrukerUtfyltSivilstatus && sivilstatus.status == JsonSivilstatus.Status.GIFT && sivilstatus.ektefelle != null
+
+        val sporsmal = ArrayList<Sporsmal>()
         if (harBrukerUtfyltSivilstatus && !harBrukerUtfyltEktefelle) {
-            sporsmal.add(brukerSivilstatusSporsmal(true, sivilstatus!!.status))
+            sporsmal.add(brukerSivilstatusSporsmal(true, sivilstatus.status))
         }
         if (harBrukerUtfyltEktefelle) {
             sporsmal.add(brukerRegistrertEktefelle(sivilstatus))
@@ -96,9 +97,8 @@ class FamiliesituasjonSteg {
         return key
     }
 
-    private fun brukerRegistrertEktefelle(sivilstatus: JsonSivilstatus?): Sporsmal {
-        // todo: som dette eller som liste av sporsmal?
-        val ektefelle = sivilstatus!!.ektefelle
+    private fun brukerRegistrertEktefelle(sivilstatus: JsonSivilstatus): Sporsmal {
+        val ektefelle = sivilstatus.ektefelle
         val erUtfylt = isNotNullOrEmtpy(ektefelle.navn.fornavn) &&
             isNotNullOrEmtpy(ektefelle.navn.etternavn) &&
             isNotNullOrEmtpy(ektefelle.fodselsdato) &&
@@ -130,12 +130,12 @@ class FamiliesituasjonSteg {
         } else ektefelle.personIdentifikator
     }
 
-    private fun borSammenMedSvar(sivilstatus: JsonSivilstatus?): String? {
-        return if (sivilstatus!!.borSammenMed != null) borSammenKey(sivilstatus) else null
+    private fun borSammenMedSvar(sivilstatus: JsonSivilstatus): String? {
+        return if (sivilstatus.borSammenMed != null) borSammenKey(sivilstatus) else null
     }
 
-    private fun borSammenKey(sivilstatus: JsonSivilstatus?): String {
-        return if (java.lang.Boolean.TRUE == sivilstatus!!.borSammenMed) "familie.sivilstatus.gift.ektefelle.borsammen.true" else "familie.sivilstatus.gift.ektefelle.borsammen.false"
+    private fun borSammenKey(sivilstatus: JsonSivilstatus): String {
+        return if (java.lang.Boolean.TRUE == sivilstatus.borSammenMed) "familie.sivilstatus.gift.ektefelle.borsammen.true" else "familie.sivilstatus.gift.ektefelle.borsammen.false"
     }
 
     private fun systemEktefelleMedAdressebeskyttelseSporsmal(): Sporsmal {
@@ -151,8 +151,8 @@ class FamiliesituasjonSteg {
         )
     }
 
-    private fun systemEktefelleSporsmal(sivilstatus: JsonSivilstatus?): Sporsmal {
-        val ektefelle = sivilstatus!!.ektefelle
+    private fun systemEktefelleSporsmal(sivilstatus: JsonSivilstatus): Sporsmal {
+        val ektefelle = sivilstatus.ektefelle
         val labelSvarMap = LinkedHashMap<String, Svar>()
         if (ektefelle.navn != null) {
             labelSvarMap["system.familie.sivilstatus.gift.ektefelle.navn"] =
@@ -180,22 +180,21 @@ class FamiliesituasjonSteg {
         )
     }
 
-    private fun forsorgerpliktAvsnitt(forsorgerplikt: JsonForsorgerplikt?): Avsnitt {
+    private fun forsorgerpliktAvsnitt(forsorgerplikt: JsonForsorgerplikt): Avsnitt {
         return Avsnitt(
             tittel = "familierelasjon.faktum.sporsmal",
             sporsmal = forsorgerpliktSporsmal(forsorgerplikt)
         )
     }
 
-    private fun forsorgerpliktSporsmal(forsorgerplikt: JsonForsorgerplikt?): List<Sporsmal> {
+    private fun forsorgerpliktSporsmal(forsorgerplikt: JsonForsorgerplikt): List<Sporsmal> {
         val harSystemBarn = harSystemRegistrerteBarn(forsorgerplikt)
-        val harBrukerBarn = harBrukerRegistrerteBarn(forsorgerplikt)
         val sporsmal = ArrayList<Sporsmal>()
-        if (!harSystemBarn && !harBrukerBarn) {
+        if (!harSystemBarn) {
             sporsmal.add(ingenRegistrerteBarnSporsmal())
         }
         if (harSystemBarn) {
-            forsorgerplikt?.ansvar
+            forsorgerplikt.ansvar
                 ?.filter { it.barn.kilde == JsonKilde.SYSTEM }
                 ?.forEach { barn: JsonAnsvar ->
                     sporsmal.add(systemBarnSporsmal(barn))
@@ -262,15 +261,15 @@ class FamiliesituasjonSteg {
         )
     }
 
-    private fun barneBidragSporsmal(forsorgerplikt: JsonForsorgerplikt?): Sporsmal {
-        val erUtfylt = forsorgerplikt?.barnebidrag != null && forsorgerplikt.barnebidrag.verdi != null
+    private fun barneBidragSporsmal(forsorgerplikt: JsonForsorgerplikt): Sporsmal {
+        val erUtfylt = forsorgerplikt.barnebidrag != null && forsorgerplikt.barnebidrag.verdi != null
         return Sporsmal(
             tittel = "familie.barn.true.barnebidrag.sporsmal",
             erUtfylt = erUtfylt,
             felt = if (erUtfylt) listOf(
                 Felt(
                     type = Type.CHECKBOX,
-                    svar = createSvar(verdiToTekstKey(forsorgerplikt!!.barnebidrag.verdi), SvarType.LOCALE_TEKST)
+                    svar = createSvar(verdiToTekstKey(forsorgerplikt.barnebidrag.verdi), SvarType.LOCALE_TEKST)
                 )
             ) else null
         )
