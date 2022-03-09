@@ -158,7 +158,6 @@ class OkonomiskeOpplysningerOgVedleggSteg {
                     )
                 )
             }
-
     }
 
     private fun addUtbetalinger(sporsmal: ArrayList<Sporsmal>, okonomi: JsonOkonomi) {
