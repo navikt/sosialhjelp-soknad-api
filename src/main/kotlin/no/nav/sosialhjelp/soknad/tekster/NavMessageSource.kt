@@ -1,6 +1,7 @@
 package no.nav.sosialhjelp.soknad.tekster
 
 import no.nav.sosialhjelp.kotlin.utils.logger
+import no.nav.sosialhjelp.soknad.common.exceptions.SosialhjelpSoknadApiException
 import org.springframework.context.support.ReloadableResourceBundleMessageSource
 import java.util.Locale
 import java.util.Properties
@@ -22,7 +23,7 @@ open class NavMessageSource : ReloadableResourceBundleMessageSource() {
             }
             properties
         } else {
-            getMergedProperties(locale).properties
+            getMergedProperties(locale).properties ?: throw SosialhjelpSoknadApiException("Noe feilet ved henting av tekster for locale=$locale")
         }
     }
 

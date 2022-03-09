@@ -71,7 +71,6 @@ open class SoknadActions(
         val eier = SubjectHandlerUtils.getUserIdFromToken()
 
         val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
-            ?: throw IllegalStateException("SoknadUnderArbeid er null ved sending for behandlingsId $behandlingsId")
 
         updateVedleggJsonWithHendelseTypeAndHendelseReferanse(eier, soknadUnderArbeid)
 

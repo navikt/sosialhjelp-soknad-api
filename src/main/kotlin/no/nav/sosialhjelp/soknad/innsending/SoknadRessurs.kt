@@ -135,7 +135,7 @@ open class SoknadRessurs(
     @Path("/opprettSoknad")
     @Consumes(MediaType.APPLICATION_JSON)
     open fun opprettSoknad(
-        @QueryParam("ettersendTil") behandlingsId: String?,
+        @QueryParam("ettersendTil") tilknyttetBehandlingsId: String?,
         @Context response: HttpServletResponse,
         @HeaderParam(value = HttpHeaders.AUTHORIZATION) token: String?
     ): Map<String, String> {
@@ -144,21 +144,21 @@ open class SoknadRessurs(
                 "Soknaden har nedetid fram til ${nedetidService.nedetidSluttAsString}"
             )
         }
-        if (behandlingsId == null) {
+        if (tilknyttetBehandlingsId == null) {
             tilgangskontroll.verifiserAtBrukerHarTilgang()
         } else {
-            tilgangskontroll.verifiserBrukerHarTilgangTilMetadata(behandlingsId)
+            tilgangskontroll.verifiserBrukerHarTilgangTilMetadata(tilknyttetBehandlingsId)
         }
         val result: MutableMap<String, String> = HashMap()
-        val opprettetBehandlingsId: String = if (behandlingsId == null) {
+        val opprettetBehandlingsId: String = if (tilknyttetBehandlingsId == null) {
             soknadService.startSoknad(token)
         } else {
             val eier = SubjectHandlerUtils.getUserIdFromToken()
-            val soknadUnderArbeid = soknadUnderArbeidRepository.hentEttersendingMedTilknyttetBehandlingsId(behandlingsId, eier)
+            val soknadUnderArbeid = soknadUnderArbeidRepository.hentEttersendingMedTilknyttetBehandlingsId(tilknyttetBehandlingsId, eier)
             if (soknadUnderArbeid.isPresent) {
                 soknadUnderArbeid.get().behandlingsId
             } else {
-                soknadService.startEttersending(behandlingsId)
+                soknadService.startEttersending(tilknyttetBehandlingsId)
             }
         }
         result["brukerBehandlingId"] = opprettetBehandlingsId
