@@ -23,9 +23,9 @@ class TelefonnummerSystemdata(
         }
     }
 
-    fun innhentSystemverdiTelefonnummer(personIdentifikator: String?): String? {
+    fun innhentSystemverdiTelefonnummer(personIdentifikator: String): String? {
         return try {
-            norskTelefonnummer(mobiltelefonService.hent(personIdentifikator!!))
+            norskTelefonnummer(mobiltelefonService.hent(personIdentifikator))
         } catch (e: Exception) {
             log.warn("Kunne ikke hente telefonnummer fra Krr", e)
             null

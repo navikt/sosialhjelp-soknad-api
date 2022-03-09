@@ -44,7 +44,7 @@ import java.time.LocalDateTime
 import javax.servlet.ServletContext
 
 internal class SoknadActionsTest {
-    private var EIER: String? = null
+    private lateinit var EIER: String
 
     private val soknadService: SoknadService = mockk()
     private val kommuneInfoService: KommuneInfoService = mockk()

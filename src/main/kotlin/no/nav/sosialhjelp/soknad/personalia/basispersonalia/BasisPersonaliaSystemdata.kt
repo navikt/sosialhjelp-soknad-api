@@ -25,8 +25,8 @@ class BasisPersonaliaSystemdata(
         personalia.nordiskBorger = systemPersonalia.nordiskBorger
     }
 
-    private fun innhentSystemBasisPersonalia(personIdentifikator: String?): JsonPersonalia? {
-        val person = personService.hentPerson(personIdentifikator!!) ?: return null
+    private fun innhentSystemBasisPersonalia(personIdentifikator: String): JsonPersonalia? {
+        val person = personService.hentPerson(personIdentifikator) ?: return null
         return mapToJsonPersonalia(person)
     }
 
@@ -62,36 +62,23 @@ class BasisPersonaliaSystemdata(
     }
 
     private fun mapToJsonNordiskBorger(person: Person): JsonNordiskBorger? {
-        val nordiskBorger = erNordiskBorger(prioritertStatsborgerskap(person))
-            ?: return null
+        val nordiskBorger = erNordiskBorger(prioritertStatsborgerskap(person)) ?: return null
         return JsonNordiskBorger()
             .withKilde(JsonKilde.SYSTEM)
             .withVerdi(nordiskBorger)
     }
 
     private fun prioritertStatsborgerskap(person: Person): String? {
-        val list = person.statsborgerskap
-        if (list!!.isEmpty()) {
-            return null
+        val list = person.statsborgerskap ?: return null
+        return when {
+            list.contains(NOR) -> NOR
+            list.contains(SWE) -> SWE
+            list.contains(FRO) -> FRO
+            list.contains(ISL) -> ISL
+            list.contains(DNK) -> DNK
+            list.contains(FIN) -> FIN
+            else -> list[0]
         }
-        if (list.contains(NOR)) {
-            return NOR
-        }
-        if (list.contains(SWE)) {
-            return SWE
-        }
-        if (list.contains(FRO)) {
-            return FRO
-        }
-        if (list.contains(ISL)) {
-            return ISL
-        }
-        if (list.contains(DNK)) {
-            return DNK
-        }
-        return if (list.contains(FIN)) {
-            FIN
-        } else list[0]
     }
 
     companion object {

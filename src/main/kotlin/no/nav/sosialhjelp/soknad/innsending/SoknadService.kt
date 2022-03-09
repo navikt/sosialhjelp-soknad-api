@@ -204,7 +204,7 @@ open class SoknadService(
     companion object {
         private val log = LoggerFactory.getLogger(SoknadService::class.java)
 
-        fun createEmptyJsonInternalSoknad(eier: String?): JsonInternalSoknad {
+        fun createEmptyJsonInternalSoknad(eier: String): JsonInternalSoknad {
             return JsonInternalSoknad().withSoknad(
                 JsonSoknad()
                     .withData(
