@@ -44,14 +44,14 @@ class EttersendingService(
     }
 
     private fun lagreSoknadILokalDb(
-        originalSoknad: SoknadMetadata?,
+        originalSoknad: SoknadMetadata,
         nyBehandlingsId: String,
         manglendeJsonVedlegg: List<JsonVedlegg>
     ) {
         val ettersendingSoknad = SoknadUnderArbeid()
             .withBehandlingsId(nyBehandlingsId)
             .withVersjon(1L)
-            .withEier(originalSoknad!!.fnr)
+            .withEier(originalSoknad.fnr)
             .withStatus(SoknadUnderArbeidStatus.UNDER_ARBEID)
             .withTilknyttetBehandlingsId(originalSoknad.behandlingsId)
             .withJsonInternalSoknad(
@@ -81,7 +81,7 @@ class EttersendingService(
             }
     }
 
-    private fun hentOgVerifiserSoknad(behandlingsId: String?): SoknadMetadata? {
+    private fun hentOgVerifiserSoknad(behandlingsId: String?): SoknadMetadata {
         var soknad = henvendelseService.hentSoknad(behandlingsId)
             ?: throw IllegalStateException("SoknadMetadata til behandlingsid $behandlingsId finnes ikke")
 
@@ -115,8 +115,8 @@ class EttersendingService(
         )
     }
 
-    fun hentNyesteSoknadIKjede(originalSoknad: SoknadMetadata?): SoknadMetadata {
-        return henvendelseService.hentBehandlingskjede(originalSoknad!!.behandlingsId)
+    fun hentNyesteSoknadIKjede(originalSoknad: SoknadMetadata): SoknadMetadata {
+        return henvendelseService.hentBehandlingskjede(originalSoknad.behandlingsId)
             .filter { it.status == FERDIG }
             .maxByOrNull { it.innsendtDato }
             ?: originalSoknad

@@ -9,8 +9,8 @@ object Utils {
         .createObjectMapper()
         .registerKotlinModule()
 
-    fun getDigisosIdFromResponse(errorResponse: String?, behandlingsId: String?): String? {
-        if (errorResponse != null && errorResponse.contains(behandlingsId!!) && errorResponse.contains("finnes allerede")) {
+    fun getDigisosIdFromResponse(errorResponse: String, behandlingsId: String): String? {
+        if (errorResponse.contains(behandlingsId) && errorResponse.contains("finnes allerede")) {
             val p = Pattern.compile("^.*?message.*([0-9a-fA-F]{8}[-]?(?:[0-9a-fA-F]{4}[-]?){3}[0-9a-fA-F]{12}).*?$")
             val m = p.matcher(errorResponse)
             if (m.matches()) {

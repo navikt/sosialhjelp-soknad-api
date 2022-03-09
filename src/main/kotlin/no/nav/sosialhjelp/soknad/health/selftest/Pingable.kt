@@ -17,7 +17,7 @@ fun interface Pingable {
      *
      * @return En vellykket eller feilet ping-respons.
      */
-    fun ping(): Ping?
+    fun ping(): Ping
 
     data class Ping(
         val metadata: PingMetadata? = null,
