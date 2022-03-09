@@ -210,8 +210,8 @@ class PdfGenerator {
         y -= lines.size * fontSize
     }
 
-    private fun parseLines(text: String?, font: PDFont, fontSize: Float): List<String> {
-        var text = text
+    private fun parseLines(inputText: String?, font: PDFont, fontSize: Float): List<String> {
+        var text = inputText
         val lines: MutableList<String> = ArrayList()
         if (text == null) {
             return lines
@@ -259,10 +259,10 @@ class PdfGenerator {
         return lines
     }
 
-    private fun splitTextOnNewlines(text: String?): List<String> {
+    private fun splitTextOnNewlines(text: String): List<String> {
         val splitByNewlines: MutableList<String> = ArrayList()
         var stringBuilder = StringBuilder()
-        for (i in 0 until text!!.length) {
+        for (i in 0 until text.length) {
             if (characterIsLinebreak(text.codePointAt(i))) {
                 splitByNewlines.add(stringBuilder.toString())
                 stringBuilder = StringBuilder()

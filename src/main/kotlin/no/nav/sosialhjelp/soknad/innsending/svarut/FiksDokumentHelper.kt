@@ -82,7 +82,7 @@ class FiksDokumentHelper(
 
     fun lagDokumentForEttersendelsePdf(
         internalSoknad: JsonInternalSoknad,
-        eier: String?,
+        eier: String,
         map: MutableMap<String, InputStream>
     ): Dokument {
         val filnavn = "ettersendelse.pdf"

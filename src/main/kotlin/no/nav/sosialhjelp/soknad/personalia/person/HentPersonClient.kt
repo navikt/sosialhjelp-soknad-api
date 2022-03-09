@@ -76,9 +76,8 @@ class HentPersonClientImpl(
             }
             val pdlResponse = pdlMapper.readValue<HentPersonDto<PersonDto>>(response)
             pdlResponse.checkForPdlApiErrors()
-            val pdlPerson = pdlResponse.data.hentPerson
-            pdlPerson?.let { lagreTilCache(PERSON_CACHE_KEY_PREFIX, ident, it) }
-            pdlPerson
+            pdlResponse.data.hentPerson
+                ?.also { lagreTilCache(PERSON_CACHE_KEY_PREFIX, ident, it) }
         } catch (e: PdlApiException) {
             throw e
         } catch (e: Exception) {
@@ -111,9 +110,8 @@ class HentPersonClientImpl(
             }
             val pdlResponse = pdlMapper.readValue<HentPersonDto<EktefelleDto>>(response)
             pdlResponse.checkForPdlApiErrors()
-            val pdlEktefelle = pdlResponse.data.hentPerson
-            pdlEktefelle?.let { lagreTilCache(EKTEFELLE_CACHE_KEY_PREFIX, ident, it) }
-            pdlEktefelle
+            pdlResponse.data.hentPerson
+                ?.also { lagreTilCache(EKTEFELLE_CACHE_KEY_PREFIX, ident, it) }
         } catch (e: PdlApiException) {
             throw e
         } catch (e: Exception) {
@@ -146,9 +144,8 @@ class HentPersonClientImpl(
             }
             val pdlResponse = pdlMapper.readValue<HentPersonDto<BarnDto>>(response)
             pdlResponse.checkForPdlApiErrors()
-            val pdlBarn = pdlResponse.data.hentPerson
-            lagreTilCache(BARN_CACHE_KEY_PREFIX, ident, pdlBarn!!)
-            pdlBarn
+            pdlResponse.data.hentPerson
+                ?.also { lagreTilCache(BARN_CACHE_KEY_PREFIX, ident, it) }
         } catch (e: PdlApiException) {
             throw e
         } catch (e: Exception) {
@@ -185,9 +182,8 @@ class HentPersonClientImpl(
 
             val pdlResponse = pdlMapper.readValue<HentPersonDto<PersonAdressebeskyttelseDto>>(body)
             pdlResponse.checkForPdlApiErrors()
-            val pdlAdressebeskyttelse = pdlResponse.data.hentPerson
-            pdlAdressebeskyttelse?.let { lagreTilCache(ADRESSEBESKYTTELSE_CACHE_KEY_PREFIX, ident, it) }
-            pdlAdressebeskyttelse
+            pdlResponse.data.hentPerson
+                ?.also { lagreTilCache(ADRESSEBESKYTTELSE_CACHE_KEY_PREFIX, ident, it) }
         } catch (e: PdlApiException) {
             throw e
         } catch (e: Exception) {
