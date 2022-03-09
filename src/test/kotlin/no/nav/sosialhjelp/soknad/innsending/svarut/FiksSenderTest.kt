@@ -171,6 +171,7 @@ internal class FiksSenderTest {
         val fiksDokumenter = fiksSender!!.hentDokumenterFraSoknad(
             SoknadUnderArbeid()
                 .withTilknyttetBehandlingsId("123")
+                .withEier(EIER)
                 .withJsonInternalSoknad(lagInternalSoknadForEttersending()),
             filnavnInputStreamMap
         )

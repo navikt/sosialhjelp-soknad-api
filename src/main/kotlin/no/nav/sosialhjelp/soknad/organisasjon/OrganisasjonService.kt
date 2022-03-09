@@ -21,8 +21,9 @@ open class OrganisasjonService(
                     noekkelinfo.navn.navnelinje4,
                     noekkelinfo.navn.navnelinje5
                 )
-                    .filterNot { it.isNullOrEmpty() }
-                    .joinToString(separator = ", ") { it!! }
+                    .filterNotNull()
+                    .filter { it.isNotEmpty() }
+                    .joinToString(separator = ", ") { it }
             } catch (e: Exception) {
                 log.warn("Kunne ikke hente orgnr fra Ereg: $orgnr", e)
                 orgnr
