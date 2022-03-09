@@ -1,17 +1,17 @@
 package no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt
 
+import no.nav.sosialhjelp.soknad.common.exceptions.SosialhjelpSoknadApiException
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.domain.Utbetaling
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.dto.getForskuddstrekk
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.dto.grupperOgSummerEtterUtbetalingsStartDato
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.dto.mapToUtbetalinger
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 
 open class SkattbarInntektService(
     private val skatteetatenClient: SkatteetatenClient
 ) {
 
-    open fun hentUtbetalinger(fnummer: String): List<Utbetaling>? {
+    open fun hentUtbetalinger(fnummer: String): List<Utbetaling> {
         val skattbarInntekt = skatteetatenClient.hentSkattbarinntekt(fnummer)
         val utbetalinger = skattbarInntekt.mapToUtbetalinger()
         val forskuddstrekk = skattbarInntekt.getForskuddstrekk()
@@ -46,19 +46,12 @@ open class SkattbarInntektService(
         return bruttoOrgPerMaaned
     }
 
-    private fun filtrerUtbetalingerSlikAtViFaarSisteMaanedFraHverArbeidsgiver(utbetalinger: List<Utbetaling>?): List<Utbetaling>? {
-        if (utbetalinger == null) {
-            return null
-        }
+    private fun filtrerUtbetalingerSlikAtViFaarSisteMaanedFraHverArbeidsgiver(utbetalinger: List<Utbetaling>): List<Utbetaling> {
         return utbetalinger
             .groupBy { it.orgnummer }.values
             .map {
-                val nyesteDato: LocalDate = it.maxOf { utbetaling -> utbetaling.periodeFom!! }
-                grupperOgSummerEtterUtbetalingsStartDato(it)[nyesteDato]!!
+                val nyesteDato: LocalDate = it.maxOf { utbetaling -> utbetaling.periodeFom }
+                grupperOgSummerEtterUtbetalingsStartDato(it)[nyesteDato] ?: throw SosialhjelpSoknadApiException("Fant ingen utbetalinger for nyeste dato")
             }
-    }
-
-    companion object {
-        private val arManedFormatter = DateTimeFormatter.ofPattern("yyyy-MM")
     }
 }

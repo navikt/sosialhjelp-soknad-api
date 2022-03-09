@@ -22,7 +22,7 @@ sealed class BaseResponse(
 }
 
 data class HentGeografiskTilknytningDto(
-    val data: HentGeografiskTilknytning?,
+    val data: HentGeografiskTilknytning,
     override val errors: List<JsonNode>?
 ) : BaseResponse(errors)
 

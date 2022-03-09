@@ -114,7 +114,7 @@ open class SkattbarInntektRessurs(
                         val utbetalingListe: List<Utbetaling> = utbetalinger.map { u -> mapTilUtbetaling(u) }
                         val jsonOrganisasjon =
                             organisasjon.orElse(JsonOrganisasjon().withNavn("Uten organisasjonsnummer"))
-                        mapTilOrganisasjon(utbetalingListe, jsonOrganisasjon!!, utbetalinger[0])
+                        mapTilOrganisasjon(utbetalingListe, jsonOrganisasjon, utbetalinger[0])
                     }
                 SkattbarInntektOgForskuddstrekk(organisasjoner)
             }
