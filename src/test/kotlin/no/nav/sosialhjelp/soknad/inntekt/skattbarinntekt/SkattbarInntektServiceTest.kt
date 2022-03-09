@@ -22,7 +22,7 @@ internal class SkattbarInntektServiceTest {
         every { skatteetatenClient.hentSkattbarinntekt(any()) } returns skattbarInntekt
 
         val utbetalinger = skattbarInntektService.hentUtbetalinger("01234567")
-        val utbetalingPerTittel = utbetalinger.groupBy { it.tittel }
+        val utbetalingPerTittel = utbetalinger!!.groupBy { it.tittel }
         val lonn = utbetalingPerTittel["Lønnsinntekt"]!!
 
         val utbetaling = lonn[0]
@@ -43,7 +43,7 @@ internal class SkattbarInntektServiceTest {
         every { skatteetatenClient.hentSkattbarinntekt(any()) } returns skattbarInntekt
         val utbetalinger = skattbarInntektService.hentUtbetalinger("01234567")
         assertThat(utbetalinger).hasSize(2)
-        assertThat(utbetalinger.groupBy { it.orgnummer }.entries).hasSize(2)
+        assertThat(utbetalinger!!.groupBy { it.orgnummer }.entries).hasSize(2)
     }
 
     private fun readResponseFromPath(path: String): SkattbarInntekt? {

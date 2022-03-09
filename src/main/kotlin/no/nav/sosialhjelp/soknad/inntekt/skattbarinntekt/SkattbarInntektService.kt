@@ -11,7 +11,7 @@ open class SkattbarInntektService(
     private val skatteetatenClient: SkatteetatenClient
 ) {
 
-    open fun hentUtbetalinger(fnummer: String): List<Utbetaling> {
+    open fun hentUtbetalinger(fnummer: String): List<Utbetaling>? {
         val skattbarInntekt = skatteetatenClient.hentSkattbarinntekt(fnummer)
         val utbetalinger = skattbarInntekt.mapToUtbetalinger()
         val forskuddstrekk = skattbarInntekt.getForskuddstrekk()
@@ -19,14 +19,14 @@ open class SkattbarInntektService(
         return filtrerUtbetalingerSlikAtViFaarSisteMaanedFraHverArbeidsgiver(summerteUtbetalinger)
     }
 
-    private fun summerUtbetalingerPerMaanedPerOrganisasjonOgForskuddstrekkSamletUtbetaling(utbetalinger: List<Utbetaling>?, trekk: List<Utbetaling>): List<Utbetaling> {
-        val bruttoOrgPerMaaned = getUtBetalingPerMaanedPerOrg(utbetalinger?.groupBy { it.orgnummer } ?: emptyMap())
+    private fun summerUtbetalingerPerMaanedPerOrganisasjonOgForskuddstrekkSamletUtbetaling(utbetalinger: List<Utbetaling>?, trekk: List<Utbetaling>): List<Utbetaling>? {
+        val bruttoOrgPerMaaned = utbetalinger?.groupBy { it.orgnummer }?.let { getUtBetalingPerMaanedPerOrg(it) }
         val trekkOrgPerMaaned = getUtBetalingPerMaanedPerOrg(trekk.groupBy { it.orgnummer })
-        val utbetalingerBrutto: List<Utbetaling> = bruttoOrgPerMaaned.values.flatMap { it.values }
+        val utbetalingerBrutto: List<Utbetaling>? = bruttoOrgPerMaaned?.values?.flatMap { it.values }
 
         return utbetalingerBrutto
-            .filter { it.orgnummer != "995277670" } // NAV ØKONOMILINJEN
-            .onEach {
+            ?.filter { it.orgnummer != "995277670" } // NAV ØKONOMILINJEN
+            ?.onEach {
                 val localDateUtbetalingMap = trekkOrgPerMaaned[it.orgnummer]
                 if (localDateUtbetalingMap != null) {
                     val trekkUtbetaling = localDateUtbetalingMap[it.periodeFom]
@@ -46,10 +46,11 @@ open class SkattbarInntektService(
         return bruttoOrgPerMaaned
     }
 
-    private fun filtrerUtbetalingerSlikAtViFaarSisteMaanedFraHverArbeidsgiver(utbetalinger: List<Utbetaling>): List<Utbetaling> {
+    private fun filtrerUtbetalingerSlikAtViFaarSisteMaanedFraHverArbeidsgiver(utbetalinger: List<Utbetaling>?): List<Utbetaling>? {
         return utbetalinger
-            .groupBy { it.orgnummer }.values
-            .map {
+            ?.groupBy { it.orgnummer }
+            ?.values
+            ?.map {
                 val nyesteDato: LocalDate = it.maxOf { utbetaling -> utbetaling.periodeFom }
                 grupperOgSummerEtterUtbetalingsStartDato(it)[nyesteDato] ?: throw SosialhjelpSoknadApiException("Fant ingen utbetalinger for nyeste dato")
             }

@@ -68,7 +68,7 @@ internal class ArbeidsforholdSystemdataTest {
 
         every { arbeidsforholdService.hentArbeidsforhold(any()) } returns arbeidsforholdList
         every { textService.getJsonOkonomiTittel(any()) } returns "tittel"
-        every { skattbarInntektService.hentUtbetalinger(any()) } returns emptyList()
+        every { skattbarInntektService.hentUtbetalinger(any()) } returns null
 
         skatteetatenSystemdata.updateSystemdataIn(soknadUnderArbeid)
         arbeidsforholdSystemdata.updateSystemdataIn(soknadUnderArbeid)
@@ -91,7 +91,7 @@ internal class ArbeidsforholdSystemdataTest {
 
         every { arbeidsforholdService.hentArbeidsforhold(any()) } returns arbeidsforholdList
         every { textService.getJsonOkonomiTittel(any()) } returns "tittel"
-        every { skattbarInntektService.hentUtbetalinger(any()) } returns emptyList()
+        every { skattbarInntektService.hentUtbetalinger(any()) } returns null
 
         skatteetatenSystemdata.updateSystemdataIn(soknadUnderArbeid)
         arbeidsforholdSystemdata.updateSystemdataIn(soknadUnderArbeid)
