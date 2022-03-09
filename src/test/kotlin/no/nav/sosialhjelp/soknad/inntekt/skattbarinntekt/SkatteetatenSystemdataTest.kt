@@ -136,7 +136,7 @@ internal class SkatteetatenSystemdataTest {
         utbetalinger.add(JSON_OKONOMI_OPPLYSNING_UTBETALING)
 
         // Mock:
-        every { skattbarInntektService.hentUtbetalinger(any()) } returns emptyList()
+        every { skattbarInntektService.hentUtbetalinger(any()) } returns null
 
         // Kjøring:
         skatteetatenSystemdata.updateSystemdataIn(soknadUnderArbeid)
