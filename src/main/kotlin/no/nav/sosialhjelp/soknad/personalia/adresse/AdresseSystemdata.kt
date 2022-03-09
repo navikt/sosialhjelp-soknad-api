@@ -60,7 +60,7 @@ class AdresseSystemdata(
             personalia.postadresse = createDeepCopyOfJsonAdresse(folkeregistrertAdresse)
         }
         if (adresseValg == JsonAdresseValg.MIDLERTIDIG) {
-            personalia.postadresse = createDeepCopyOfJsonAdresse(midlertidigAdresse)!!.withAdresseValg(adresseValg)
+            personalia.postadresse = createDeepCopyOfJsonAdresse(midlertidigAdresse)?.withAdresseValg(adresseValg)
         }
     }
 
@@ -73,21 +73,19 @@ class AdresseSystemdata(
         val adresseValg = oppholdsadresse.adresseValg
         if (adresseValg == JsonAdresseValg.FOLKEREGISTRERT) {
             personalia.oppholdsadresse =
-                createDeepCopyOfJsonAdresse(folkeregistrertAdresse)!!.withAdresseValg(adresseValg)
+                createDeepCopyOfJsonAdresse(folkeregistrertAdresse)?.withAdresseValg(adresseValg)
         }
         if (adresseValg == JsonAdresseValg.MIDLERTIDIG) {
-            personalia.oppholdsadresse = createDeepCopyOfJsonAdresse(midlertidigAdresse)!!.withAdresseValg(adresseValg)
+            personalia.oppholdsadresse = createDeepCopyOfJsonAdresse(midlertidigAdresse)?.withAdresseValg(adresseValg)
         }
     }
 
-    fun innhentFolkeregistrertAdresse(personIdentifikator: String?): JsonAdresse? {
-        val person = personService.hentPerson(personIdentifikator!!)
-        return mapToJsonAdresse(person!!.bostedsadresse)
+    fun innhentFolkeregistrertAdresse(personIdentifikator: String): JsonAdresse? {
+        return personService.hentPerson(personIdentifikator)?.let { mapToJsonAdresse(it.bostedsadresse) }
     }
 
-    fun innhentMidlertidigAdresse(personIdentifikator: String?): JsonAdresse? {
-        val person = personService.hentPerson(personIdentifikator!!)
-        return mapToJsonAdresse(person!!.oppholdsadresse)
+    fun innhentMidlertidigAdresse(personIdentifikator: String): JsonAdresse? {
+        return personService.hentPerson(personIdentifikator)?.let { mapToJsonAdresse(it.oppholdsadresse) }
         //        return mapToJsonAdresse(person.getKontaktadresse());
     }
 
@@ -95,8 +93,7 @@ class AdresseSystemdata(
         if (bostedsadresse == null) {
             return null
         }
-        val jsonAdresse: JsonAdresse
-        jsonAdresse = if (bostedsadresse.vegadresse != null) {
+        val jsonAdresse: JsonAdresse = if (bostedsadresse.vegadresse != null) {
             tilGateAdresse(bostedsadresse.vegadresse)
         } else if (bostedsadresse.matrikkeladresse != null) {
             tilMatrikkelAdresse(bostedsadresse.matrikkeladresse)
@@ -111,8 +108,7 @@ class AdresseSystemdata(
         if (oppholdsadresse == null) {
             return null
         }
-        val jsonAdresse: JsonAdresse
-        jsonAdresse = if (oppholdsadresse.vegadresse != null) {
+        val jsonAdresse: JsonAdresse = if (oppholdsadresse.vegadresse != null) {
             tilGateAdresse(oppholdsadresse.vegadresse)
         } else {
             throw IllegalStateException("Ukjent oppholdsadresse fra PDL (skal være Vegadresse)")
@@ -134,64 +130,79 @@ class AdresseSystemdata(
         }
     }
 
-    private fun tilGateAdresse(vegadresse: Vegadresse?): JsonGateAdresse {
+    private fun tilGateAdresse(vegadresse: Vegadresse): JsonGateAdresse {
         val jsonGateAdresse = JsonGateAdresse()
         jsonGateAdresse.type = JsonAdresse.Type.GATEADRESSE
         jsonGateAdresse.landkode = "NOR" // vegadresser er kun norske
-        jsonGateAdresse.kommunenummer = vegadresse!!.kommunenummer
+        jsonGateAdresse.kommunenummer = vegadresse.kommunenummer
         jsonGateAdresse.bolignummer = vegadresse.bruksenhetsnummer
         jsonGateAdresse.gatenavn = vegadresse.adressenavn
-        jsonGateAdresse.husnummer = if (vegadresse.husnummer == null) null else vegadresse.husnummer.toString()
+        jsonGateAdresse.husnummer = vegadresse.husnummer?.toString()
         jsonGateAdresse.husbokstav = vegadresse.husbokstav
         jsonGateAdresse.postnummer = vegadresse.postnummer
         jsonGateAdresse.poststed = vegadresse.poststed
         return jsonGateAdresse
     }
 
-    private fun tilMatrikkelAdresse(matrikkeladresse: Matrikkeladresse?): JsonMatrikkelAdresse {
+    private fun tilMatrikkelAdresse(matrikkeladresse: Matrikkeladresse): JsonMatrikkelAdresse {
         val jsonMatrikkelAdresse = JsonMatrikkelAdresse()
         jsonMatrikkelAdresse.type = JsonAdresse.Type.MATRIKKELADRESSE
-        jsonMatrikkelAdresse.kommunenummer = matrikkeladresse!!.kommunenummer
+        jsonMatrikkelAdresse.kommunenummer = matrikkeladresse.kommunenummer
         jsonMatrikkelAdresse.bruksnummer = matrikkeladresse.bruksenhetsnummer
         return jsonMatrikkelAdresse
     }
 
     fun createDeepCopyOfJsonAdresse(oppholdsadresse: JsonAdresse?): JsonAdresse? {
-        return when (oppholdsadresse!!.type) {
-            JsonAdresse.Type.GATEADRESSE -> JsonGateAdresse()
-                .withKilde(oppholdsadresse.kilde)
-                .withAdresseValg(oppholdsadresse.adresseValg)
-                .withType(oppholdsadresse.type)
-                .withLandkode((oppholdsadresse as JsonGateAdresse?)!!.landkode)
-                .withKommunenummer((oppholdsadresse as JsonGateAdresse?)!!.kommunenummer)
-                .withBolignummer((oppholdsadresse as JsonGateAdresse?)!!.bolignummer)
-                .withGatenavn((oppholdsadresse as JsonGateAdresse?)!!.gatenavn)
-                .withHusnummer((oppholdsadresse as JsonGateAdresse?)!!.husnummer)
-                .withHusbokstav((oppholdsadresse as JsonGateAdresse?)!!.husbokstav)
-                .withPostnummer((oppholdsadresse as JsonGateAdresse?)!!.postnummer)
-                .withPoststed((oppholdsadresse as JsonGateAdresse?)!!.poststed)
-            JsonAdresse.Type.MATRIKKELADRESSE -> JsonMatrikkelAdresse()
-                .withKilde(oppholdsadresse.kilde)
-                .withAdresseValg(oppholdsadresse.adresseValg)
-                .withType(oppholdsadresse.type)
-                .withKommunenummer((oppholdsadresse as JsonMatrikkelAdresse?)!!.kommunenummer)
-                .withGaardsnummer((oppholdsadresse as JsonMatrikkelAdresse?)!!.gaardsnummer)
-                .withBruksnummer((oppholdsadresse as JsonMatrikkelAdresse?)!!.bruksnummer)
-                .withFestenummer((oppholdsadresse as JsonMatrikkelAdresse?)!!.festenummer)
-                .withSeksjonsnummer((oppholdsadresse as JsonMatrikkelAdresse?)!!.seksjonsnummer)
-                .withUndernummer((oppholdsadresse as JsonMatrikkelAdresse?)!!.undernummer)
-            JsonAdresse.Type.USTRUKTURERT -> JsonUstrukturertAdresse()
-                .withKilde(oppholdsadresse.kilde)
-                .withAdresseValg(oppholdsadresse.adresseValg)
-                .withType(oppholdsadresse.type)
-                .withAdresse((oppholdsadresse as JsonUstrukturertAdresse?)!!.adresse)
-            JsonAdresse.Type.POSTBOKS -> JsonPostboksAdresse()
-                .withKilde(oppholdsadresse.kilde)
-                .withAdresseValg(oppholdsadresse.adresseValg)
-                .withType(oppholdsadresse.type)
-                .withPostboks((oppholdsadresse as JsonPostboksAdresse?)!!.postboks)
-                .withPostnummer((oppholdsadresse as JsonPostboksAdresse?)!!.postnummer)
-                .withPoststed((oppholdsadresse as JsonPostboksAdresse?)!!.poststed)
+        if (oppholdsadresse == null) {
+            return null
+        }
+        return when (oppholdsadresse.type) {
+            JsonAdresse.Type.GATEADRESSE -> {
+                val gateadresse = oppholdsadresse as JsonGateAdresse
+                JsonGateAdresse()
+                    .withKilde(gateadresse.kilde)
+                    .withAdresseValg(gateadresse.adresseValg)
+                    .withType(gateadresse.type)
+                    .withLandkode(gateadresse.landkode)
+                    .withKommunenummer(gateadresse.kommunenummer)
+                    .withBolignummer(gateadresse.bolignummer)
+                    .withGatenavn(gateadresse.gatenavn)
+                    .withHusnummer(gateadresse.husnummer)
+                    .withHusbokstav(gateadresse.husbokstav)
+                    .withPostnummer(gateadresse.postnummer)
+                    .withPoststed(gateadresse.poststed)
+            }
+            JsonAdresse.Type.MATRIKKELADRESSE -> {
+                val matrikkeladresse = oppholdsadresse as JsonMatrikkelAdresse
+                JsonMatrikkelAdresse()
+                    .withKilde(matrikkeladresse.kilde)
+                    .withAdresseValg(matrikkeladresse.adresseValg)
+                    .withType(matrikkeladresse.type)
+                    .withKommunenummer(matrikkeladresse.kommunenummer)
+                    .withGaardsnummer(matrikkeladresse.gaardsnummer)
+                    .withBruksnummer(matrikkeladresse.bruksnummer)
+                    .withFestenummer(matrikkeladresse.festenummer)
+                    .withSeksjonsnummer(matrikkeladresse.seksjonsnummer)
+                    .withUndernummer(matrikkeladresse.undernummer)
+            }
+            JsonAdresse.Type.USTRUKTURERT -> {
+                val ustrukturertAdresse = oppholdsadresse as JsonUstrukturertAdresse
+                JsonUstrukturertAdresse()
+                    .withKilde(ustrukturertAdresse.kilde)
+                    .withAdresseValg(ustrukturertAdresse.adresseValg)
+                    .withType(ustrukturertAdresse.type)
+                    .withAdresse(ustrukturertAdresse.adresse)
+            }
+            JsonAdresse.Type.POSTBOKS -> {
+                val postboksadresse = oppholdsadresse as JsonPostboksAdresse
+                JsonPostboksAdresse()
+                    .withKilde(postboksadresse.kilde)
+                    .withAdresseValg(postboksadresse.adresseValg)
+                    .withType(postboksadresse.type)
+                    .withPostboks(postboksadresse.postboks)
+                    .withPostnummer(postboksadresse.postnummer)
+                    .withPoststed(postboksadresse.poststed)
+            }
             else -> null
         }
     }
