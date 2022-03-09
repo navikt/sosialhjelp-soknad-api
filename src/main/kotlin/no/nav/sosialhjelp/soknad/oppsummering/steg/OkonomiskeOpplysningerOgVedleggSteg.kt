@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.oppsummering.steg
 
-import com.nimbusds.oauth2.sdk.util.CollectionUtils
 import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.BARNEBIDRAG
 import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.FORMUE_ANNET
 import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.FORMUE_BRUKSKONTO
@@ -30,6 +29,11 @@ import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTGIFTER_STROM
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtgift
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktFormue
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktInntekt
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktUtgift
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
@@ -58,7 +62,7 @@ class OkonomiskeOpplysningerOgVedleggSteg {
     private fun okonomiOgVedleggAvsnitt(
         okonomi: JsonOkonomi,
         vedleggSpesifikasjon: JsonVedleggSpesifikasjon,
-        opplastedeVedlegg: List<OpplastetVedlegg>
+        opplastedeVedlegg: List<OpplastetVedlegg>,
     ): List<Avsnitt> {
         val inntektAvsnitt = Avsnitt(
             tittel = "inntektbolk.tittel",
@@ -84,191 +88,208 @@ class OkonomiskeOpplysningerOgVedleggSteg {
     }
 
     private fun addInntekter(sporsmal: ArrayList<Sporsmal>, okonomi: JsonOkonomi) {
-        val inntekter = okonomi.oversikt.inntekt
-        if (CollectionUtils.isNotEmpty(inntekter)) {
-            // Lønnsinntekt
-            inntekter
-                .filter { JOBB == it!!.type }
-                .forEach {
-                    sporsmal.add(
-                        integerVerdiSporsmalMedTittel(
-                            getTitleKey(it!!.type), "opplysninger.arbeid.jobb.bruttolonn.label", it.brutto
-                        )
-                    )
-                    sporsmal.add(
-                        integerVerdiSporsmalMedTittel(
-                            getTitleKey(it.type), "opplysninger.arbeid.jobb.nettolonn.label", it.netto
-                        )
-                    )
-                }
+        val inntekter: List<JsonOkonomioversiktInntekt>? = okonomi.oversikt.inntekt
 
-            // Studielån
-            inntekter
-                .filter { STUDIELAN == it!!.type }
-                .forEach {
-                    sporsmal.add(
-                        integerVerdiSporsmalMedTittel(
-                            getTitleKey(it!!.type), "opplysninger.arbeid.student.utbetaling.label", it.netto
-                        )
+        // Lønnsinntekt
+        inntekter
+            ?.filter { JOBB == it.type }
+            ?.forEach {
+                sporsmal.add(
+                    integerVerdiSporsmalMedTittel(
+                        getTitleKey(it.type), "opplysninger.arbeid.jobb.bruttolonn.label", it.brutto
                     )
-                }
+                )
+                sporsmal.add(
+                    integerVerdiSporsmalMedTittel(
+                        getTitleKey(it.type), "opplysninger.arbeid.jobb.nettolonn.label", it.netto
+                    )
+                )
+            }
 
-            // Barnebidrag
-            inntekter
-                .filter { BARNEBIDRAG == it!!.type }
-                .forEach {
-                    sporsmal.add(
-                        integerVerdiSporsmalMedTittel(
-                            "json.okonomi.opplysninger.familiesituasjon.barnebidrag.mottar",
-                            "opplysninger.familiesituasjon.barnebidrag.mottar.mottar.label",
-                            it!!.netto
-                        )
+        // Studielån
+        inntekter
+            ?.filter { STUDIELAN == it.type }
+            ?.forEach {
+                sporsmal.add(
+                    integerVerdiSporsmalMedTittel(
+                        getTitleKey(it.type), "opplysninger.arbeid.student.utbetaling.label", it.netto
                     )
-                }
+                )
+            }
 
-            // Husbanken utbetaling, kilde bruker
-            inntekter
-                .filter { UTBETALING_HUSBANKEN == it!!.type && JsonKilde.BRUKER == it.kilde }
-                .forEach {
-                    sporsmal.add(
-                        integerVerdiSporsmalMedTittel(
-                            "json.okonomi.opplysninger.inntekt.bostotte",
-                            "opplysninger.inntekt.bostotte.utbetaling.label",
-                            it!!.netto
-                        )
+        // Barnebidrag
+        inntekter
+            ?.filter { BARNEBIDRAG == it.type }
+            ?.forEach {
+                sporsmal.add(
+                    integerVerdiSporsmalMedTittel(
+                        "json.okonomi.opplysninger.familiesituasjon.barnebidrag.mottar",
+                        "opplysninger.familiesituasjon.barnebidrag.mottar.mottar.label",
+                        it.netto
                     )
-                }
-        }
+                )
+            }
+
+        // Husbanken utbetaling, kilde bruker
+        inntekter
+            ?.filter { UTBETALING_HUSBANKEN == it.type && JsonKilde.BRUKER == it.kilde }
+            ?.forEach {
+                sporsmal.add(
+                    integerVerdiSporsmalMedTittel(
+                        "json.okonomi.opplysninger.inntekt.bostotte",
+                        "opplysninger.inntekt.bostotte.utbetaling.label",
+                        it.netto
+                    )
+                )
+            }
     }
 
     private fun addFormuer(sporsmal: ArrayList<Sporsmal>, okonomi: JsonOkonomi) {
-        val formuer = okonomi.oversikt.formue
-        if (CollectionUtils.isNotEmpty(formuer)) {
-            formuer
-                .filter { formueTyper.contains(it!!.type) }
-                .forEach {
-                    sporsmal.add(
-                        integerVerdiSporsmalMedTittel(
-                            getTitleKey(it!!.type), "opplysninger.inntekt.bankinnskudd.${it.type}.saldo.label", it.belop
-                        )
+        val formuer: List<JsonOkonomioversiktFormue>? = okonomi.oversikt.formue
+
+        formuer
+            ?.filter { formueTyper.contains(it.type) }
+            ?.forEach {
+                sporsmal.add(
+                    integerVerdiSporsmalMedTittel(
+                        getTitleKey(it.type),
+                        "opplysninger.inntekt.bankinnskudd.${it.type}.saldo.label",
+                        it.belop
                     )
-                }
-        }
+                )
+            }
     }
 
     private fun addUtbetalinger(sporsmal: ArrayList<Sporsmal>, okonomi: JsonOkonomi) {
-        val utbetalinger = okonomi.opplysninger.utbetaling
-        if (CollectionUtils.isNotEmpty(utbetalinger)) {
-            val filteredUtbetalinger = utbetalinger
-                .filter { !systemdataUtbetalingTyper.contains(it!!.type) }
+        val utbetalinger: List<JsonOkonomiOpplysningUtbetaling>? = okonomi.opplysninger.utbetaling
 
-            filteredUtbetalinger
-                .filter { SLUTTOPPGJOER == it!!.type }
-                .forEach {
-                    sporsmal.add(
-                        integerVerdiSporsmalMedTittel(
-                            getTitleKey(it!!.type), "opplysninger.arbeid.avsluttet.netto.label", it.belop
-                        )
+        val filteredUtbetalinger = utbetalinger
+            ?.filter { !systemdataUtbetalingTyper.contains(it.type) }
+
+        filteredUtbetalinger
+            ?.filter { SLUTTOPPGJOER == it.type }
+            ?.forEach {
+                sporsmal.add(
+                    integerVerdiSporsmalMedTittel(
+                        getTitleKey(it.type),
+                        "opplysninger.arbeid.avsluttet.netto.label",
+                        it.belop
                     )
-                }
-            filteredUtbetalinger
-                .filter { SLUTTOPPGJOER != it!!.type }
-                .forEach {
-                    sporsmal.add(
-                        integerVerdiSporsmalMedTittel(
-                            getTitleKey(it.type), "opplysninger.inntekt.inntekter.${it.type}.sum.label", it.belop
-                        )
+                )
+            }
+        filteredUtbetalinger
+            ?.filter { SLUTTOPPGJOER != it.type }
+            ?.forEach {
+                sporsmal.add(
+                    integerVerdiSporsmalMedTittel(
+                        getTitleKey(it.type),
+                        "opplysninger.inntekt.inntekter.${it.type}.sum.label",
+                        it.belop
                     )
-                }
-        }
+                )
+            }
     }
 
     private fun utgifterSporsmal(okonomi: JsonOkonomi): List<Sporsmal> {
         val sporsmal = ArrayList<Sporsmal>()
-        val opplysningUtgifter = okonomi.opplysninger.utgift
-        if (CollectionUtils.isNotEmpty(opplysningUtgifter)) {
-            opplysningUtgifter
-                .filter { barneutgifter.contains(it.type) }
-                .forEach {
-                    sporsmal.add(
-                        integerVerdiSporsmalMedTittel(
-                            getTitleKey(it.type), "opplysninger.utgifter.barn.${it.type}.sisteregning.label", it.belop
-                        )
+        val opplysningUtgifter: List<JsonOkonomiOpplysningUtgift>? = okonomi.opplysninger.utgift
+        opplysningUtgifter
+            ?.filter { barneutgifter.contains(it.type) }
+            ?.forEach {
+                sporsmal.add(
+                    integerVerdiSporsmalMedTittel(
+                        getTitleKey(it.type),
+                        "opplysninger.utgifter.barn.${it.type}.sisteregning.label",
+                        it.belop
                     )
-                }
-            opplysningUtgifter
-                .filter { boutgifter.contains(it.type) }
-                .forEach {
-                    sporsmal.add(
-                        integerVerdiSporsmalMedTittel(
-                            getTitleKey(it.type), "opplysninger.utgifter.boutgift.${it.type}.sisteregning.label", it.belop
-                        )
+                )
+            }
+        opplysningUtgifter
+            ?.filter { boutgifter.contains(it.type) }
+            ?.forEach {
+                sporsmal.add(
+                    integerVerdiSporsmalMedTittel(
+                        getTitleKey(it.type),
+                        "opplysninger.utgifter.boutgift.${it.type}.sisteregning.label",
+                        it.belop
                     )
-                }
-            opplysningUtgifter
-                .filter { UTGIFTER_ANDRE_UTGIFTER == it!!.type }
-                .forEach {
-                    sporsmal.add(
-                        integerVerdiSporsmalMedTittel(
-                            it.tittel, "opplysninger.ekstrainfo.utgifter.utgift.label", it.belop
-                        )
+                )
+            }
+        opplysningUtgifter
+            ?.filter { UTGIFTER_ANDRE_UTGIFTER == it.type }
+            ?.forEach {
+                sporsmal.add(
+                    integerVerdiSporsmalMedTittel(
+                        it.tittel,
+                        "opplysninger.ekstrainfo.utgifter.utgift.label",
+                        it.belop
                     )
-                }
-        }
-        val oversiktUtgifter = okonomi.oversikt.utgift
-        if (CollectionUtils.isNotEmpty(oversiktUtgifter)) {
-            oversiktUtgifter
-                .filter { barneutgifter.contains(it.type) }
-                .forEach {
-                    sporsmal.add(
-                        integerVerdiSporsmalMedTittel(
-                            getTitleKey(it.type), "opplysninger.utgifter.barn.${it.type}.sistemnd.label", it.belop
-                        )
+                )
+            }
+
+        val oversiktUtgifter: List<JsonOkonomioversiktUtgift>? = okonomi.oversikt.utgift
+        oversiktUtgifter
+            ?.filter { barneutgifter.contains(it.type) }
+            ?.forEach {
+                sporsmal.add(
+                    integerVerdiSporsmalMedTittel(
+                        getTitleKey(it.type),
+                        "opplysninger.utgifter.barn.${it.type}.sistemnd.label",
+                        it.belop
                     )
-                }
-            oversiktUtgifter
-                .filter { BARNEBIDRAG == it.type }
-                .forEach {
-                    sporsmal.add(
-                        integerVerdiSporsmalMedTittel(
-                            getTitleKey(it.type), "opplysninger.familiesituasjon.barnebidrag.betaler.betaler.label", it.belop
-                        )
+                )
+            }
+        oversiktUtgifter
+            ?.filter { BARNEBIDRAG == it.type }
+            ?.forEach {
+                sporsmal.add(
+                    integerVerdiSporsmalMedTittel(
+                        getTitleKey(it.type),
+                        "opplysninger.familiesituasjon.barnebidrag.betaler.betaler.label",
+                        it.belop
                     )
-                }
-            oversiktUtgifter
-                .filter { UTGIFTER_HUSLEIE == it.type }
-                .forEach {
-                    sporsmal.add(
-                        integerVerdiSporsmalMedTittel(
-                            getTitleKey(it.type), "opplysninger.utgifter.boutgift.husleie.permnd.label", it.belop
-                        )
+                )
+            }
+        oversiktUtgifter
+            ?.filter { UTGIFTER_HUSLEIE == it.type }
+            ?.forEach {
+                sporsmal.add(
+                    integerVerdiSporsmalMedTittel(
+                        getTitleKey(it.type),
+                        "opplysninger.utgifter.boutgift.husleie.permnd.label",
+                        it.belop
                     )
-                }
-            oversiktUtgifter
-                .filter { UTGIFTER_BOLIGLAN_AVDRAG == it.type }
-                .forEach {
-                    sporsmal.add(
-                        integerVerdiSporsmalMedTittel(
-                            getTitleKey(it.type), "opplysninger.utgifter.boutgift.avdraglaan.avdrag.label", it.belop
-                        )
+                )
+            }
+        oversiktUtgifter
+            ?.filter { UTGIFTER_BOLIGLAN_AVDRAG == it.type }
+            ?.forEach {
+                sporsmal.add(
+                    integerVerdiSporsmalMedTittel(
+                        getTitleKey(it.type),
+                        "opplysninger.utgifter.boutgift.avdraglaan.avdrag.label",
+                        it.belop
                     )
-                }
-            oversiktUtgifter
-                .filter { UTGIFTER_BOLIGLAN_RENTER == it.type }
-                .forEach {
-                    sporsmal.add(
-                        integerVerdiSporsmalMedTittel(
-                            getTitleKey(it!!.type), "opplysninger.utgifter.boutgift.avdraglaan.renter.label", it.belop
-                        )
+                )
+            }
+        oversiktUtgifter
+            ?.filter { UTGIFTER_BOLIGLAN_RENTER == it.type }
+            ?.forEach {
+                sporsmal.add(
+                    integerVerdiSporsmalMedTittel(
+                        getTitleKey(it.type),
+                        "opplysninger.utgifter.boutgift.avdraglaan.renter.label",
+                        it.belop
                     )
-                }
-        }
+                )
+            }
+
         return sporsmal
     }
 
     private fun vedleggSporsmal(
         vedleggSpesifikasjon: JsonVedleggSpesifikasjon,
-        opplastedeVedlegg: List<OpplastetVedlegg>
+        opplastedeVedlegg: List<OpplastetVedlegg>,
     ): List<Sporsmal> {
         return vedleggSpesifikasjon.vedlegg
             .map {
@@ -285,7 +306,7 @@ class OkonomiskeOpplysningerOgVedleggSteg {
     }
 
     private fun vedleggFelter(vedlegg: JsonVedlegg, opplastedeVedlegg: List<OpplastetVedlegg>): List<Felt> {
-        val felt: Felt = if ("LastetOpp" == vedlegg.status && CollectionUtils.isNotEmpty(vedlegg.filer)) {
+        val felt: Felt = if ("LastetOpp" == vedlegg.status && vedlegg.filer != null && vedlegg.filer.isNotEmpty()) {
             Felt(
                 type = Type.VEDLEGG,
                 vedlegg = vedlegg.filer.map { Vedlegg(it.filnavn, getUuidFraOpplastetVedlegg(it, opplastedeVedlegg)) }
