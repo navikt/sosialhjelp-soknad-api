@@ -3,7 +3,7 @@ package no.nav.sosialhjelp.soknad.db.repositories.sendtsoknad
 import no.nav.sosialhjelp.soknad.config.DbTestConfig
 import no.nav.sosialhjelp.soknad.config.RepositoryTestSupport
 import no.nav.sosialhjelp.soknad.domain.SendtSoknad
-import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -37,7 +37,7 @@ internal class BatchSendtSoknadRepositoryJdbcTest {
     fun hentSendtSoknadHenterSendtSoknadForEierOgBehandlingsid() {
         sendtSoknadRepository!!.opprettSendtSoknad(lagSendtSoknad(EIER), EIER)
         val sendtSoknadId = batchSendtSoknadRepository!!.hentSendtSoknad(BEHANDLINGSID).get()
-        Assertions.assertThat(sendtSoknadId).isNotNull
+        assertThat(sendtSoknadId).isNotNull
     }
 
     @Test
@@ -45,8 +45,8 @@ internal class BatchSendtSoknadRepositoryJdbcTest {
         val sendtSoknad = lagSendtSoknad(EIER)
         val sendtSoknadId = sendtSoknadRepository!!.opprettSendtSoknad(sendtSoknad, EIER)
         sendtSoknad.sendtSoknadId = sendtSoknadId
-        batchSendtSoknadRepository!!.slettSendtSoknad(sendtSoknadId)
-        Assertions.assertThat(batchSendtSoknadRepository.hentSendtSoknad(BEHANDLINGSID)).isEmpty
+        sendtSoknadId?.let { batchSendtSoknadRepository!!.slettSendtSoknad(it) }
+        assertThat(batchSendtSoknadRepository!!.hentSendtSoknad(BEHANDLINGSID)).isEmpty
     }
 
     private fun lagSendtSoknad(eier: String): SendtSoknad {

@@ -17,6 +17,7 @@ import java.util.Optional
 import javax.inject.Inject
 import javax.sql.DataSource
 
+@Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 @Component
 @Transactional
 open class OppgaveRepositoryJdbc : NamedParameterJdbcDaoSupport(), OppgaveRepository {
@@ -94,9 +95,8 @@ open class OppgaveRepositoryJdbc : NamedParameterJdbcDaoSupport(), OppgaveReposi
             if (!resultat.isPresent) {
                 return Optional.empty()
             }
-            val update = "UPDATE oppgave SET status = ?, sistkjort = ? WHERE status = ? AND id = ?"
             val rowsAffected = jdbcTemplate.update(
-                update,
+                "UPDATE oppgave SET status = ?, sistkjort = ? WHERE status = ? AND id = ?",
                 Oppgave.Status.UNDER_ARBEID.name,
                 tidTilTimestamp(LocalDateTime.now()),
                 Oppgave.Status.KLAR.name,
@@ -109,9 +109,8 @@ open class OppgaveRepositoryJdbc : NamedParameterJdbcDaoSupport(), OppgaveReposi
     }
 
     override fun retryOppgaveStuckUnderArbeid(): Int {
-        val updateSql = "UPDATE oppgave SET status = ? WHERE status = ? AND sistkjort < ?"
         return jdbcTemplate.update(
-            updateSql,
+            "UPDATE oppgave SET status = ? WHERE status = ? AND sistkjort < ?",
             Oppgave.Status.KLAR.name,
             Oppgave.Status.UNDER_ARBEID.name,
             tidTilTimestamp(LocalDateTime.now().minusHours(1))

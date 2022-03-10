@@ -47,6 +47,7 @@ fun leggTilPersonalia(
             JsonAdresse.Type.MATRIKKELADRESSE -> jsonMatrikkelAdresseToString(pdfUtils, it as JsonMatrikkelAdresse)
             JsonAdresse.Type.POSTBOKS -> jsonPostboksAdresseToString(pdfUtils, it as JsonPostboksAdresse)
             JsonAdresse.Type.USTRUKTURERT -> jsonUstrukturertAdresseToString(it as JsonUstrukturertAdresse)
+            else -> null
         }
         pdf.skrivTekst(folkeregistrertAdresseTekst)
         pdf.addBlankLine()
@@ -60,6 +61,7 @@ fun leggTilPersonalia(
             JsonAdresse.Type.MATRIKKELADRESSE -> jsonMatrikkelAdresseToString(pdfUtils, it as JsonMatrikkelAdresse)
             JsonAdresse.Type.POSTBOKS -> jsonPostboksAdresseToString(pdfUtils, it as JsonPostboksAdresse)
             JsonAdresse.Type.USTRUKTURERT -> jsonUstrukturertAdresseToString(it as JsonUstrukturertAdresse)
+            else -> null
         }
         pdf.skrivTekst(oppholdsAdresseTekst)
         pdf.addBlankLine()
@@ -181,6 +183,7 @@ private fun leggTilUtvidetInfoAdresse(pdf: PdfGenerator, pdfUtils: PdfUtils, jso
             val ustrukturertAdresse = jsonAdresse as JsonUstrukturertAdresse
             pdf.skrivTekstMedInnrykk(java.lang.String.join(" ", ustrukturertAdresse.adresse), INNRYKK_2)
         }
+        else -> return
     }
 }
 

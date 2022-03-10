@@ -166,7 +166,7 @@ open class InformasjonRessurs(
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val grense = LocalDateTime.now().minusDays(FJORTEN_DAGER.toLong())
         val nyligSendteSoknader = soknadMetadataRepository.hentInnsendteSoknaderForBrukerEtterTidspunkt(eier, grense)
-        return NyligInnsendteSoknaderResponse(nyligSendteSoknader?.size ?: 0)
+        return NyligInnsendteSoknaderResponse(nyligSendteSoknader.size)
     }
 
     @GET

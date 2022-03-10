@@ -24,9 +24,7 @@ class PdfGenerator {
     private val logger = LoggerFactory.getLogger(PdfGenerator::class.java)
 
     private val document = PDDocument()
-    private val completedPages: ArrayList<PDPage>? = null
     private var currentPage = PDPage(PDRectangle.A4)
-    private val completedStreams: ArrayList<PDPageContentStream>? = null
     private var currentStream: PDPageContentStream
     private var y: Float
 
@@ -286,8 +284,6 @@ class PdfGenerator {
 
     fun addLogo() {
         val ximage = PDImageXObject.createFromByteArray(document, logo(), "logo")
-        val startX = (MEDIA_BOX.width - 99) / 2
-        val offsetTop = 40f
         currentStream.drawImage(ximage, 27f, 765f, 99f, 62f)
     }
 

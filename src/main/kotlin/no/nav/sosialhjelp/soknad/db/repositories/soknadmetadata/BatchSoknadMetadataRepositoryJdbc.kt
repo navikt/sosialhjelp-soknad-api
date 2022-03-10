@@ -11,6 +11,7 @@ import java.util.Optional
 import javax.inject.Inject
 import javax.sql.DataSource
 
+@Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 @Component
 open class BatchSoknadMetadataRepositoryJdbc : NamedParameterJdbcDaoSupport(), BatchSoknadMetadataRepository {
 

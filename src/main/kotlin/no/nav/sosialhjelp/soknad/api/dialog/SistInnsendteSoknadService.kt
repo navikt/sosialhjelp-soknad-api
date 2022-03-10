@@ -9,7 +9,7 @@ class SistInnsendteSoknadService(
 ) {
     fun hentSistInnsendteSoknad(fnr: String): SistInnsendteSoknadDto? {
         return soknadMetadataRepository.hentAlleInnsendteSoknaderForBruker(fnr)
-            ?.maxByOrNull { it.innsendtDato }
+            .maxByOrNull { it.innsendtDato }
             ?.let {
                 SistInnsendteSoknadDto(
                     it.fnr,

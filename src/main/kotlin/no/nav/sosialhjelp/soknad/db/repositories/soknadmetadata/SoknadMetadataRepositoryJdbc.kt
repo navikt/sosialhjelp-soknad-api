@@ -15,6 +15,7 @@ import java.time.LocalDateTime
 import javax.inject.Inject
 import javax.sql.DataSource
 
+@Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 @Component
 open class SoknadMetadataRepositoryJdbc : NamedParameterJdbcDaoSupport(), SoknadMetadataRepository {
 
@@ -25,7 +26,7 @@ open class SoknadMetadataRepositoryJdbc : NamedParameterJdbcDaoSupport(), Soknad
         super.setDataSource(ds)
     }
 
-    override fun hentNesteId(): Long {
+    override fun hentNesteId(): Long? {
         return jdbcTemplate.queryForObject(SQLUtils.selectNextSequenceValue("METADATA_ID_SEQ"), Long::class.java)
     }
 
