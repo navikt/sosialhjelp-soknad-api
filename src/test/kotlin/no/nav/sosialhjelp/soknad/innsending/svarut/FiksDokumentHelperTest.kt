@@ -7,8 +7,8 @@ import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
 import no.nav.sosialhjelp.soknad.common.filedetection.MimeTypes
-import no.nav.sosialhjelp.soknad.domain.OpplastetVedlegg
-import no.nav.sosialhjelp.soknad.domain.OpplastetVedleggType
+import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedlegg
+import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggType
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.domain.Vedleggstatus
 import no.nav.sosialhjelp.soknad.innsending.InnsendingService
@@ -132,7 +132,14 @@ internal class FiksDokumentHelperTest {
     @Test
     fun opprettDokumentForVedleggOppretterDokumentKorrekt() {
         val filnavnInputStreamMap = HashMap<String, InputStream>()
-        val opplastetVedlegg = OpplastetVedlegg().withFilnavn(FILNAVN).withData(DATA)
+        val opplastetVedlegg = OpplastetVedlegg(
+            eier = "eier",
+            vedleggType = OpplastetVedleggType("$TYPE|$TILLEGGSINFO"),
+            data = DATA,
+            soknadId = 123L,
+            filnavn = FILNAVN,
+            sha512 = SHA512
+        )
         val dokument = fiksDokumentHelper!!.opprettDokumentForVedlegg(opplastetVedlegg, filnavnInputStreamMap)
         assertThat(dokument.filnavn).isEqualTo(FILNAVN)
         assertThat(dokument.mimeType).isEqualTo("application/octet-stream")
@@ -157,25 +164,34 @@ internal class FiksDokumentHelperTest {
     private fun lagOpplastedeVedlegg(): List<OpplastetVedlegg> {
         val opplastedeVedlegg = mutableListOf<OpplastetVedlegg>()
         opplastedeVedlegg.add(
-            OpplastetVedlegg()
-                .withFilnavn(FILNAVN)
-                .withSha512(SHA512)
-                .withData(DATA)
-                .withVedleggType(OpplastetVedleggType(TYPE + "|" + TILLEGGSINFO))
+            OpplastetVedlegg(
+                eier = "eier",
+                vedleggType = OpplastetVedleggType("$TYPE|$TILLEGGSINFO"),
+                data = DATA,
+                soknadId = 123L,
+                filnavn = FILNAVN,
+                sha512 = SHA512
+            )
         )
         opplastedeVedlegg.add(
-            OpplastetVedlegg()
-                .withFilnavn(ANNET_FILNAVN)
-                .withSha512(ANNEN_SHA512)
-                .withData(DATA)
-                .withVedleggType(OpplastetVedleggType(TYPE2 + "|" + TILLEGGSINFO2))
+            OpplastetVedlegg(
+                eier = "eier",
+                vedleggType = OpplastetVedleggType("$TYPE2|$TILLEGGSINFO2"),
+                data = DATA,
+                soknadId = 123L,
+                filnavn = ANNET_FILNAVN,
+                sha512 = ANNEN_SHA512
+            )
         )
         opplastedeVedlegg.add(
-            OpplastetVedlegg()
-                .withFilnavn(TREDJE_FILNAVN)
-                .withSha512(TREDJE_SHA512)
-                .withData(DATA)
-                .withVedleggType(OpplastetVedleggType(TYPE2 + "|" + TILLEGGSINFO2))
+            OpplastetVedlegg(
+                eier = "eier",
+                vedleggType = OpplastetVedleggType("$TYPE2|$TILLEGGSINFO2"),
+                data = DATA,
+                soknadId = 123L,
+                filnavn = TREDJE_FILNAVN,
+                sha512 = TREDJE_SHA512
+            )
         )
         return opplastedeVedlegg
     }

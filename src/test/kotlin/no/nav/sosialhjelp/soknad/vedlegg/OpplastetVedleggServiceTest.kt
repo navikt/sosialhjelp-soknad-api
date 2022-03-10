@@ -17,10 +17,10 @@ import no.nav.sosialhjelp.soknad.common.filedetection.TikaFileType.JPEG
 import no.nav.sosialhjelp.soknad.common.filedetection.TikaFileType.PNG
 import no.nav.sosialhjelp.soknad.common.subjecthandler.StaticSubjectHandlerImpl
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
+import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedlegg
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRepository
+import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggType
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
-import no.nav.sosialhjelp.soknad.domain.OpplastetVedlegg
-import no.nav.sosialhjelp.soknad.domain.OpplastetVedleggType
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.vedlegg.OpplastetVedleggService.Companion.MAKS_SAMLET_VEDLEGG_STORRELSE
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.SamletVedleggStorrelseForStorException
@@ -93,6 +93,7 @@ internal class OpplastetVedleggServiceTest {
     @Test
     fun oppdatererVedleggStatusVedOpplastingAvVedlegg() {
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns SoknadUnderArbeid()
+            .withSoknadId(SOKNAD_ID)
             .withJsonInternalSoknad(
                 JsonInternalSoknad().withVedlegg(
                     JsonVedleggSpesifikasjon().withVedlegg(
@@ -111,20 +112,19 @@ internal class OpplastetVedleggServiceTest {
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(soknadUnderArbeidSlot), any()) } just runs
 
         val imageFile = createByteArrayFromJpeg()
-        val opplastetVedlegg =
-            opplastetVedleggService.saveVedleggAndUpdateVedleggstatus(BEHANDLINGSID, TYPE, imageFile, FILNAVN1)
+        val opplastetVedlegg = opplastetVedleggService.saveVedleggAndUpdateVedleggstatus(BEHANDLINGSID, TYPE, imageFile, FILNAVN1)
         val soknadUnderArbeid = soknadUnderArbeidSlot.captured
         val jsonVedlegg = soknadUnderArbeid.jsonInternalSoknad.vedlegg.vedlegg[0]
         assertThat(jsonVedlegg.type + "|" + jsonVedlegg.tilleggsinfo).isEqualTo(TYPE)
         assertThat(jsonVedlegg.status).isEqualTo("LastetOpp")
         assertThat(jsonVedlegg.filer).hasSize(1)
-        assertThat(opplastetVedlegg.uuid).isEqualTo("321")
         assertThat(opplastetVedlegg.filnavn.substring(0, 5)).isEqualTo(FILNAVN1.substring(0, 5))
     }
 
     @Test
     fun sletterVedleggStatusVedSlettingAvOpplastingAvVedlegg() {
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns SoknadUnderArbeid()
+            .withSoknadId(SOKNAD_ID)
             .withJsonInternalSoknad(
                 JsonInternalSoknad().withVedlegg(
                     JsonVedleggSpesifikasjon().withVedlegg(
@@ -139,7 +139,14 @@ internal class OpplastetVedleggServiceTest {
                 )
             )
         every { opplastetVedleggRepository.hentVedlegg(any(), any()) } returns Optional.of(
-            OpplastetVedlegg().withVedleggType(OpplastetVedleggType(TYPE)).withFilnavn(FILNAVN2).withSha512(SHA512)
+            OpplastetVedlegg(
+                eier = "eier",
+                vedleggType = OpplastetVedleggType(TYPE),
+                data = byteArrayOf(1, 2, 3),
+                soknadId = 123L,
+                filnavn = FILNAVN2,
+                sha512 = SHA512
+            )
         )
 
         val soknadUnderArbeidSlot = slot<SoknadUnderArbeid>()
@@ -217,6 +224,7 @@ internal class OpplastetVedleggServiceTest {
     @Test
     fun skalUtvideFilnavnHvisTikaValidererOkMenFilExtensionMangler() {
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns SoknadUnderArbeid()
+            .withSoknadId(SOKNAD_ID)
             .withJsonInternalSoknad(
                 JsonInternalSoknad().withVedlegg(
                     JsonVedleggSpesifikasjon().withVedlegg(
@@ -241,6 +249,7 @@ internal class OpplastetVedleggServiceTest {
     @Test
     fun skalUtvideFilnavnHvisTikaValidererOkMenFilnavnInneholderPunktumUtenGyldigFilExtension() {
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns SoknadUnderArbeid()
+            .withSoknadId(SOKNAD_ID)
             .withJsonInternalSoknad(
                 JsonInternalSoknad().withVedlegg(
                     JsonVedleggSpesifikasjon().withVedlegg(
@@ -269,6 +278,7 @@ internal class OpplastetVedleggServiceTest {
     @Test
     fun skalEndreFilExtensionHvisTikaValidererSomNoeAnnetEnnFilnavnetTilsier() {
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns SoknadUnderArbeid()
+            .withSoknadId(SOKNAD_ID)
             .withJsonInternalSoknad(
                 JsonInternalSoknad().withVedlegg(
                     JsonVedleggSpesifikasjon().withVedlegg(

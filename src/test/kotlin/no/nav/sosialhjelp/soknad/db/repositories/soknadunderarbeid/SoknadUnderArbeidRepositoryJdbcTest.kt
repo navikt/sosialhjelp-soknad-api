@@ -5,9 +5,9 @@ import no.nav.sosialhjelp.soknad.common.exceptions.SamtidigOppdateringException
 import no.nav.sosialhjelp.soknad.common.exceptions.SoknadLaastException
 import no.nav.sosialhjelp.soknad.config.DbTestConfig
 import no.nav.sosialhjelp.soknad.config.RepositoryTestSupport
+import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedlegg
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRepository
-import no.nav.sosialhjelp.soknad.domain.OpplastetVedlegg
-import no.nav.sosialhjelp.soknad.domain.OpplastetVedleggType
+import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggType
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeidStatus
 import org.assertj.core.api.Assertions.assertThat
@@ -139,11 +139,11 @@ internal class SoknadUnderArbeidRepositoryJdbcTest {
         val soknadUnderArbeidId = soknadUnderArbeidRepository!!.opprettSoknad(soknadUnderArbeid, EIER)
         soknadUnderArbeid.soknadId = soknadUnderArbeidId
         val opplastetVedleggUuid = opplastetVedleggRepository!!.opprettVedlegg(
-            lagOpplastetVedlegg(soknadUnderArbeidId),
+            lagOpplastetVedlegg(soknadUnderArbeidId!!),
             EIER
         )
         soknadUnderArbeidRepository.slettSoknad(soknadUnderArbeid, EIER)
-        assertThat(soknadUnderArbeidRepository.hentSoknad(soknadUnderArbeidId!!, EIER)).isEmpty
+        assertThat(soknadUnderArbeidRepository.hentSoknad(soknadUnderArbeidId, EIER)).isEmpty
         assertThat(opplastetVedleggRepository.hentVedlegg(opplastetVedleggUuid, EIER)).isEmpty
     }
 
@@ -158,14 +158,15 @@ internal class SoknadUnderArbeidRepositoryJdbcTest {
             .withSistEndretDato(SIST_ENDRET_DATO)
     }
 
-    private fun lagOpplastetVedlegg(soknadId: Long?): OpplastetVedlegg {
-        return OpplastetVedlegg()
-            .withEier(EIER)
-            .withVedleggType(OpplastetVedleggType("bostotte|annetboutgift"))
-            .withData(byteArrayOf(1, 2, 3))
-            .withSoknadId(soknadId)
-            .withFilnavn("dokumentasjon.pdf")
-            .withSha512("aaa")
+    private fun lagOpplastetVedlegg(soknadId: Long): OpplastetVedlegg {
+        return OpplastetVedlegg(
+            eier = EIER,
+            vedleggType = OpplastetVedleggType("bostotte|annetboutgift"),
+            data = byteArrayOf(1, 2, 3),
+            soknadId = soknadId,
+            filnavn = "dokumentasjon.pdf",
+            sha512 = "aaa"
+        )
     }
 
     companion object {

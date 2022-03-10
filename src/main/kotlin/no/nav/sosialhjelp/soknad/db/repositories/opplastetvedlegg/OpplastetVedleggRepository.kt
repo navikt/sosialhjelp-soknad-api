@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg
 
-import no.nav.sosialhjelp.soknad.domain.OpplastetVedlegg
 import java.util.Optional
 
 interface OpplastetVedleggRepository {

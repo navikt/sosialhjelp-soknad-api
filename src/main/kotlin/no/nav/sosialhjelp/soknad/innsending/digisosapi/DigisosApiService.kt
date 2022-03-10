@@ -12,8 +12,8 @@ import no.nav.sosialhjelp.soknad.common.MiljoUtils
 import no.nav.sosialhjelp.soknad.common.filedetection.FileDetectionUtils.getMimeType
 import no.nav.sosialhjelp.soknad.common.filedetection.MimeTypes.APPLICATION_PDF
 import no.nav.sosialhjelp.soknad.common.filedetection.MimeTypes.TEXT_X_MATLAB
+import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedlegg
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
-import no.nav.sosialhjelp.soknad.domain.OpplastetVedlegg
 import no.nav.sosialhjelp.soknad.domain.SoknadMetadata.VedleggMetadata
 import no.nav.sosialhjelp.soknad.domain.SoknadMetadata.VedleggMetadataListe
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid

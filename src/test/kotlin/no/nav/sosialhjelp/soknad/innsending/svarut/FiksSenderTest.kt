@@ -15,8 +15,8 @@ import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
 import no.nav.sosialhjelp.soknad.common.MiljoUtils
-import no.nav.sosialhjelp.soknad.domain.OpplastetVedlegg
-import no.nav.sosialhjelp.soknad.domain.OpplastetVedleggType
+import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedlegg
+import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggType
 import no.nav.sosialhjelp.soknad.domain.SendtSoknad
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.domain.Vedleggstatus
@@ -228,15 +228,16 @@ internal class FiksSenderTest {
     }
 
     private fun lagOpplastetVedlegg(): List<OpplastetVedlegg> {
-        val opplastedeVedlegg: MutableList<OpplastetVedlegg> = ArrayList()
-        opplastedeVedlegg.add(
-            OpplastetVedlegg()
-                .withFilnavn(FILNAVN)
-                .withSha512("sha512")
-                .withVedleggType(OpplastetVedleggType("type|tilleggsinfo"))
-                .withData(byteArrayOf(1, 2, 3))
+        return mutableListOf(
+            OpplastetVedlegg(
+                eier = "eier",
+                vedleggType = OpplastetVedleggType("type|tilleggsinfo"),
+                data = byteArrayOf(1, 2, 3),
+                soknadId = 123L,
+                filnavn = FILNAVN,
+                sha512 = "sha512"
+            )
         )
-        return opplastedeVedlegg
     }
 
     private fun lagSendtSoknad(): SendtSoknad {
