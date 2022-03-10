@@ -6,8 +6,6 @@ import no.nav.sosialhjelp.soknad.config.RepositoryTestSupport
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRepository
 import no.nav.sosialhjelp.soknad.domain.OpplastetVedlegg
 import no.nav.sosialhjelp.soknad.domain.OpplastetVedleggType
-import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
-import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeidStatus
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
@@ -56,22 +54,24 @@ internal class BatchSoknadUnderArbeidRepositoryJdbcTest {
     fun slettSoknadGittSoknadUnderArbeidIdSkalSletteSoknad() {
         val soknadUnderArbeid = lagSoknadUnderArbeid(BEHANDLINGSID, 15)
         val soknadUnderArbeidId = soknadUnderArbeidRepository!!.opprettSoknad(soknadUnderArbeid, EIER)
-        soknadUnderArbeid.soknadId = soknadUnderArbeidId
-        val opplastetVedleggUuid = opplastetVedleggRepository!!.opprettVedlegg(lagOpplastetVedlegg(soknadUnderArbeidId!!), EIER)
+        soknadUnderArbeid.soknadId = soknadUnderArbeidId!!
+        val opplastetVedleggUuid = opplastetVedleggRepository!!.opprettVedlegg(lagOpplastetVedlegg(soknadUnderArbeidId), EIER)
         batchSoknadUnderArbeidRepository!!.slettSoknad(soknadUnderArbeid.soknadId)
         assertThat(soknadUnderArbeidRepository.hentSoknad(soknadUnderArbeidId, EIER)).isEmpty
         assertThat(opplastetVedleggRepository.hentVedlegg(opplastetVedleggUuid, EIER)).isEmpty
     }
 
     private fun lagSoknadUnderArbeid(behandlingsId: String, antallDagerSiden: Int): SoknadUnderArbeid {
-        return SoknadUnderArbeid().withVersjon(1L)
-            .withBehandlingsId(behandlingsId)
-            .withTilknyttetBehandlingsId(TILKNYTTET_BEHANDLINGSID)
-            .withEier(EIER)
-            .withJsonInternalSoknad(JSON_INTERNAL_SOKNAD)
-            .withStatus(SoknadUnderArbeidStatus.UNDER_ARBEID)
-            .withOpprettetDato(LocalDateTime.now().minusDays(antallDagerSiden.toLong()).minusMinutes(5))
-            .withSistEndretDato(LocalDateTime.now().minusDays(antallDagerSiden.toLong()).minusMinutes(5))
+        return SoknadUnderArbeid(
+            versjon = 1L,
+            behandlingsId = behandlingsId,
+            tilknyttetBehandlingsId = TILKNYTTET_BEHANDLINGSID,
+            eier = EIER,
+            jsonInternalSoknad = JSON_INTERNAL_SOKNAD,
+            status = SoknadUnderArbeidStatus.UNDER_ARBEID,
+            opprettetDato = LocalDateTime.now().minusDays(antallDagerSiden.toLong()).minusMinutes(5),
+            sistEndretDato = LocalDateTime.now().minusDays(antallDagerSiden.toLong()).minusMinutes(5)
+        )
     }
 
     private fun lagOpplastetVedlegg(soknadId: Long): OpplastetVedlegg {

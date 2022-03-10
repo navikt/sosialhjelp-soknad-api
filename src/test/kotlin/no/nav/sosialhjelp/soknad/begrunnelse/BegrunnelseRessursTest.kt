@@ -15,8 +15,9 @@ import no.nav.sosialhjelp.soknad.common.MiljoUtils
 import no.nav.sosialhjelp.soknad.common.exceptions.AuthorizationException
 import no.nav.sosialhjelp.soknad.common.subjecthandler.StaticSubjectHandlerImpl
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
-import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import org.assertj.core.api.Assertions.assertThat
@@ -24,6 +25,7 @@ import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import java.time.LocalDateTime
 
 internal class BegrunnelseRessursTest {
 
@@ -77,7 +79,7 @@ internal class BegrunnelseRessursTest {
         begrunnelseRessurs.updateBegrunnelse(BEHANDLINGSID, begrunnelseFrontend)
 
         val soknadUnderArbeid = soknadUnderArbeidSlot.captured
-        val begrunnelse = soknadUnderArbeid.jsonInternalSoknad.soknad.data.begrunnelse
+        val begrunnelse = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.begrunnelse
         assertThat(begrunnelse.kilde).isEqualTo(JsonKildeBruker.BRUKER)
         assertThat(begrunnelse.hvaSokesOm).isEqualTo(SOKER_OM)
         assertThat(begrunnelse.hvorforSoke).isEqualTo(SOKER_FORDI)
@@ -105,8 +107,8 @@ internal class BegrunnelseRessursTest {
     }
 
     private fun createJsonInternalSoknadWithBegrunnelse(hvaSokesOm: String, hvorforSoke: String): SoknadUnderArbeid {
-        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
-        soknadUnderArbeid.jsonInternalSoknad.soknad.data.begrunnelse
+        val soknadUnderArbeid = createSoknadUnderArbeid()
+        soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.begrunnelse
             .withHvaSokesOm(hvaSokesOm)
             .withHvorforSoke(hvorforSoke)
         return soknadUnderArbeid
@@ -117,5 +119,18 @@ internal class BegrunnelseRessursTest {
         private const val EIER = "123456789101"
         private const val SOKER_FORDI = "Jeg søker fordi..."
         private const val SOKER_OM = "Jeg søker om..."
+
+        private fun createSoknadUnderArbeid(): SoknadUnderArbeid {
+            return SoknadUnderArbeid(
+                versjon = 1L,
+                behandlingsId = "behandlingsid",
+                tilknyttetBehandlingsId = null,
+                eier = EIER,
+                jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
+                status = SoknadUnderArbeidStatus.UNDER_ARBEID,
+                opprettetDato = LocalDateTime.now(),
+                sistEndretDato = LocalDateTime.now()
+            )
+        }
     }
 }

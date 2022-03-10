@@ -2,14 +2,15 @@ package no.nav.sosialhjelp.soknad.personalia.kontonummer
 
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sosialhjelp.soknad.common.systemdata.Systemdata
-import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 
 class KontonummerSystemdata(
     private val kontonummerService: KontonummerService
 ) : Systemdata {
 
     override fun updateSystemdataIn(soknadUnderArbeid: SoknadUnderArbeid) {
-        val personalia = soknadUnderArbeid.jsonInternalSoknad.soknad.data.personalia
+        val personalia = soknadUnderArbeid.jsonInternalSoknad?.soknad?.data?.personalia ?: return
+
         val kontonummer = personalia.kontonummer
         val personIdentifikator = personalia.personIdentifikator.verdi
         if (kontonummer.kilde == JsonKilde.SYSTEM) {

@@ -11,7 +11,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonForsorgerplikt
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonHarForsorgerplikt
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus
 import no.nav.sosialhjelp.soknad.common.systemdata.Systemdata
-import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Barn
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Ektefelle
@@ -22,7 +22,7 @@ class FamilieSystemdata(
 ) : Systemdata {
 
     override fun updateSystemdataIn(soknadUnderArbeid: SoknadUnderArbeid) {
-        val jsonData = soknadUnderArbeid.jsonInternalSoknad.soknad.data
+        val jsonData = soknadUnderArbeid.jsonInternalSoknad?.soknad?.data ?: return
         val personIdentifikator = jsonData.personalia.personIdentifikator.verdi
         val familie = jsonData.familie
         val systemverdiSivilstatus = innhentSystemverdiSivilstatus(personIdentifikator)

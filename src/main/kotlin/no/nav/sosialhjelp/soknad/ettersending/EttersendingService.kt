@@ -7,13 +7,13 @@ import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
 import no.nav.sosialhjelp.soknad.common.exceptions.EttersendelseSendtForSentException
 import no.nav.sosialhjelp.soknad.common.exceptions.SosialhjelpSoknadApiException
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.domain.SoknadMetadata
 import no.nav.sosialhjelp.soknad.domain.SoknadMetadata.VedleggMetadata
 import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus.FERDIG
 import no.nav.sosialhjelp.soknad.domain.SoknadMetadataType
-import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
-import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.domain.Vedleggstatus
 import no.nav.sosialhjelp.soknad.innsending.HenvendelseService
 import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils.FEATURE_UTVIDE_VEDLEGGJSON
@@ -48,23 +48,25 @@ class EttersendingService(
         nyBehandlingsId: String,
         manglendeJsonVedlegg: List<JsonVedlegg>
     ) {
-        val ettersendingSoknad = SoknadUnderArbeid()
-            .withBehandlingsId(nyBehandlingsId)
-            .withVersjon(1L)
-            .withEier(originalSoknad.fnr)
-            .withStatus(SoknadUnderArbeidStatus.UNDER_ARBEID)
-            .withTilknyttetBehandlingsId(originalSoknad.behandlingsId)
-            .withJsonInternalSoknad(
-                JsonInternalSoknad()
-                    .withVedlegg(JsonVedleggSpesifikasjon().withVedlegg(manglendeJsonVedlegg))
-                    .withMottaker(
-                        JsonSoknadsmottaker()
-                            .withOrganisasjonsnummer(originalSoknad.orgnr)
-                            .withNavEnhetsnavn(originalSoknad.navEnhet)
-                    )
-            )
-            .withOpprettetDato(LocalDateTime.now())
-            .withSistEndretDato(LocalDateTime.now())
+        val ettersendingSoknad = SoknadUnderArbeid(
+            versjon = 1L,
+            behandlingsId = nyBehandlingsId,
+            tilknyttetBehandlingsId = originalSoknad.behandlingsId,
+            eier = originalSoknad.fnr,
+            jsonInternalSoknad = JsonInternalSoknad()
+                .withVedlegg(
+                    JsonVedleggSpesifikasjon()
+                        .withVedlegg(manglendeJsonVedlegg)
+                )
+                .withMottaker(
+                    JsonSoknadsmottaker()
+                        .withOrganisasjonsnummer(originalSoknad.orgnr)
+                        .withNavEnhetsnavn(originalSoknad.navEnhet)
+                ),
+            status = SoknadUnderArbeidStatus.UNDER_ARBEID,
+            opprettetDato = LocalDateTime.now(),
+            sistEndretDato = LocalDateTime.now()
+        )
 
         soknadUnderArbeidRepository.opprettSoknad(ettersendingSoknad, originalSoknad.fnr)
     }

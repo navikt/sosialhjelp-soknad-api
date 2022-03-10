@@ -22,10 +22,11 @@ import no.nav.sosialhjelp.soknad.common.exceptions.SoknadenHarNedetidException
 import no.nav.sosialhjelp.soknad.common.subjecthandler.StaticSubjectHandlerImpl
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.domain.SoknadMetadata
 import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus
-import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiService
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
@@ -107,7 +108,7 @@ internal class SoknadActionsTest {
     @Test
     fun sendSoknadMedSendingTilFiksDisabledSkalKalleSoknadService() {
         val behandlingsId = "SendingTilFiksDisabled"
-        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
+        val soknadUnderArbeid = createSoknadUnderArbeid(EIER)
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns soknadUnderArbeid
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
         every { soknadService.sendSoknad(any()) } just runs
@@ -122,12 +123,11 @@ internal class SoknadActionsTest {
     fun sendEttersendelsePaaSvarutSoknadSkalKalleSoknadService() {
         val behandlingsId = "ettersendelsePaaSvarUtSoknad"
         val soknadBehandlingsId = "soknadSendtViaSvarUt"
-        val soknadUnderArbeid = SoknadUnderArbeid()
-            .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
-            .withTilknyttetBehandlingsId(soknadBehandlingsId)
+        val soknadUnderArbeid = createSoknadUnderArbeid(EIER)
+        soknadUnderArbeid.tilknyttetBehandlingsId = soknadBehandlingsId
         val soknadMetadata = SoknadMetadata()
         soknadMetadata.status = SoknadMetadataInnsendingStatus.UNDER_ARBEID
-        every { soknadUnderArbeidRepository.hentSoknad(behandlingsId, EIER!!) } returns soknadUnderArbeid
+        every { soknadUnderArbeidRepository.hentSoknad(behandlingsId, EIER) } returns soknadUnderArbeid
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
         every { soknadMetadataRepository.hent(soknadBehandlingsId) } returns soknadMetadata
         every { soknadService.sendSoknad(behandlingsId) } just runs
@@ -142,10 +142,9 @@ internal class SoknadActionsTest {
     fun sendEttersendelsePaaSoknadUtenMetadataSkalGiException() {
         val behandlingsId = "ettersendelsePaaSoknadUtenMetadata"
         val soknadBehandlingsId = "soknadSendtViaSvarUt"
-        val soknadUnderArbeid = SoknadUnderArbeid()
-            .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
-            .withTilknyttetBehandlingsId(soknadBehandlingsId)
-        every { soknadUnderArbeidRepository.hentSoknad(behandlingsId, EIER!!) } returns soknadUnderArbeid
+        val soknadUnderArbeid = createSoknadUnderArbeid(EIER)
+        soknadUnderArbeid.tilknyttetBehandlingsId = soknadBehandlingsId
+        every { soknadUnderArbeidRepository.hentSoknad(behandlingsId, EIER) } returns soknadUnderArbeid
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
         every { soknadMetadataRepository.hent(soknadBehandlingsId) } returns null
         every { serviceUtils.isSendingTilFiksEnabled() } returns true
@@ -158,12 +157,11 @@ internal class SoknadActionsTest {
     fun sendEttersendelsePaaDigisosApiSoknadSkalGiException() {
         val behandlingsId = "ettersendelsePaaDigisosApiSoknad"
         val soknadBehandlingsId = "soknadSendtViaSvarUt"
-        val soknadUnderArbeid = SoknadUnderArbeid()
-            .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
-            .withTilknyttetBehandlingsId(soknadBehandlingsId)
+        val soknadUnderArbeid = createSoknadUnderArbeid(EIER)
+        soknadUnderArbeid.tilknyttetBehandlingsId = soknadBehandlingsId
         val soknadMetadata = SoknadMetadata()
         soknadMetadata.status = SoknadMetadataInnsendingStatus.SENDT_MED_DIGISOS_API
-        every { soknadUnderArbeidRepository.hentSoknad(behandlingsId, EIER!!) } returns soknadUnderArbeid
+        every { soknadUnderArbeidRepository.hentSoknad(behandlingsId, EIER) } returns soknadUnderArbeid
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
         every { soknadMetadataRepository.hent(soknadBehandlingsId) } returns soknadMetadata
         every { serviceUtils.isSendingTilFiksEnabled() } returns true
@@ -175,9 +173,9 @@ internal class SoknadActionsTest {
     @Test
     fun sendSoknadMedFiksNedetidOgTomCacheSkalKasteException() {
         val behandlingsId = "fiksNedetidOgTomCache"
-        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
-        soknadUnderArbeid.jsonInternalSoknad.soknad.mottaker.kommunenummer = KOMMUNE_I_SVARUT_LISTEN
-        every { soknadUnderArbeidRepository.hentSoknad(behandlingsId, EIER!!) } returns soknadUnderArbeid
+        val soknadUnderArbeid = createSoknadUnderArbeid(EIER)
+        soknadUnderArbeid.jsonInternalSoknad!!.soknad.mottaker.kommunenummer = KOMMUNE_I_SVARUT_LISTEN
+        every { soknadUnderArbeidRepository.hentSoknad(behandlingsId, EIER) } returns soknadUnderArbeid
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
         every { kommuneInfoService.kommuneInfo(any()) } returns FIKS_NEDETID_OG_TOM_CACHE
         every { serviceUtils.isSendingTilFiksEnabled() } returns true
@@ -191,9 +189,9 @@ internal class SoknadActionsTest {
     @Test
     fun sendSoknadTilKommuneUtenKonfigurasjonSkalKalleSoknadService() {
         val behandlingsId = "kommuneUtenKonfigurasjon"
-        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
-        soknadUnderArbeid.jsonInternalSoknad.soknad.mottaker.kommunenummer = KOMMUNE_I_SVARUT_LISTEN
-        every { soknadUnderArbeidRepository.hentSoknad(behandlingsId, EIER!!) } returns soknadUnderArbeid
+        val soknadUnderArbeid = createSoknadUnderArbeid(EIER)
+        soknadUnderArbeid.jsonInternalSoknad!!.soknad.mottaker.kommunenummer = KOMMUNE_I_SVARUT_LISTEN
+        every { soknadUnderArbeidRepository.hentSoknad(behandlingsId, EIER) } returns soknadUnderArbeid
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
         every { kommuneInfoService.kommuneInfo(any()) } returns MANGLER_KONFIGURASJON
         every { soknadService.sendSoknad(any()) } just runs
@@ -207,9 +205,9 @@ internal class SoknadActionsTest {
     @Test
     fun sendSoknadTilKommuneMedSvarUtSkalKalleSoknadService() {
         val behandlingsId = "kommuneMedSvarUt"
-        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
-        soknadUnderArbeid.jsonInternalSoknad.soknad.mottaker.kommunenummer = KOMMUNE_I_SVARUT_LISTEN
-        every { soknadUnderArbeidRepository.hentSoknad(behandlingsId, EIER!!) } returns soknadUnderArbeid
+        val soknadUnderArbeid = createSoknadUnderArbeid(EIER)
+        soknadUnderArbeid.jsonInternalSoknad!!.soknad.mottaker.kommunenummer = KOMMUNE_I_SVARUT_LISTEN
+        every { soknadUnderArbeidRepository.hentSoknad(behandlingsId, EIER) } returns soknadUnderArbeid
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
         every { kommuneInfoService.kommuneInfo(any()) } returns HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT
         every { soknadService.sendSoknad(any()) } just runs
@@ -223,9 +221,9 @@ internal class SoknadActionsTest {
     @Test
     fun sendSoknadTilKommuneMedDigisosApiSkalKalleDigisosApiService() {
         val behandlingsId = "kommuneMedFDA"
-        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
-        soknadUnderArbeid.jsonInternalSoknad.soknad.mottaker.kommunenummer = "1234"
-        every { soknadUnderArbeidRepository.hentSoknad(behandlingsId, EIER!!) } returns soknadUnderArbeid
+        val soknadUnderArbeid = createSoknadUnderArbeid(EIER)
+        soknadUnderArbeid.jsonInternalSoknad!!.soknad.mottaker.kommunenummer = "1234"
+        every { soknadUnderArbeidRepository.hentSoknad(behandlingsId, EIER) } returns soknadUnderArbeid
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
         every { kommuneInfoService.kommuneInfo(any()) } returns SKAL_SENDE_SOKNADER_OG_ETTERSENDELSER_VIA_FDA
         every { digisosApiService.sendSoknad(any(), any(), any()) } returns "id"
@@ -239,9 +237,9 @@ internal class SoknadActionsTest {
     @Test
     fun sendSoknadTilKommuneMedMidlertidigFeilSkalKasteException() {
         val behandlingsId = "kommuneMedMidlertidigFeil"
-        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
-        soknadUnderArbeid.jsonInternalSoknad.soknad.mottaker.kommunenummer = "1234"
-        every { soknadUnderArbeidRepository.hentSoknad(behandlingsId, EIER!!) } returns soknadUnderArbeid
+        val soknadUnderArbeid = createSoknadUnderArbeid(EIER)
+        soknadUnderArbeid.jsonInternalSoknad!!.soknad.mottaker.kommunenummer = "1234"
+        every { soknadUnderArbeidRepository.hentSoknad(behandlingsId, EIER) } returns soknadUnderArbeid
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
         every { kommuneInfoService.kommuneInfo(any()) } returns SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD_OG_ETTERSENDELSER
         every { serviceUtils.isSendingTilFiksEnabled() } returns true
@@ -255,9 +253,9 @@ internal class SoknadActionsTest {
     @Test
     fun sendSoknadTilKommuneSomIkkeErAktivertEllerSvarUtSkalKasteException() {
         val behandlingsId = "kommueMedMottakDeaktivertOgIkkeSvarut"
-        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
-        soknadUnderArbeid.jsonInternalSoknad.soknad.mottaker.kommunenummer = "9999_kommune_uten_svarut"
-        every { soknadUnderArbeidRepository.hentSoknad(behandlingsId, EIER!!) } returns soknadUnderArbeid
+        val soknadUnderArbeid = createSoknadUnderArbeid(EIER)
+        soknadUnderArbeid.jsonInternalSoknad!!.soknad.mottaker.kommunenummer = "9999_kommune_uten_svarut"
+        every { soknadUnderArbeidRepository.hentSoknad(behandlingsId, EIER) } returns soknadUnderArbeid
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
         every { kommuneInfoService.kommuneInfo(any()) } returns HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT
         every { serviceUtils.isSendingTilFiksEnabled() } returns true
@@ -271,15 +269,15 @@ internal class SoknadActionsTest {
     @Test
     fun kommunenummerOrMockMedMockEnableSkalReturnereMock() {
         every { serviceUtils.isAlltidSendTilNavTestkommune() } returns true
-        val kommunenummer = actions.getKommunenummerOrMock(SoknadUnderArbeid())
+        val kommunenummer = actions.getKommunenummerOrMock(mockk())
         assertThat(kommunenummer).isEqualTo(TESTKOMMUNE)
     }
 
     @Test
     fun kommunenummerOrMockUtenMockSkalIkkeReturnereMock() {
         val expectedKommunenummer = "1111"
-        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
-        soknadUnderArbeid.jsonInternalSoknad.soknad.mottaker.withKommunenummer(expectedKommunenummer)
+        val soknadUnderArbeid = createSoknadUnderArbeid(EIER)
+        soknadUnderArbeid.jsonInternalSoknad!!.soknad.mottaker.withKommunenummer(expectedKommunenummer)
         val kommunenummer = actions.getKommunenummerOrMock(soknadUnderArbeid)
         assertThat(kommunenummer).isEqualTo(expectedKommunenummer)
     }
@@ -299,5 +297,18 @@ internal class SoknadActionsTest {
     companion object {
         const val TESTKOMMUNE = "3002"
         const val KOMMUNE_I_SVARUT_LISTEN = "0301"
+
+        private fun createSoknadUnderArbeid(eier: String): SoknadUnderArbeid {
+            return SoknadUnderArbeid(
+                versjon = 1L,
+                behandlingsId = "behandlingsid",
+                tilknyttetBehandlingsId = null,
+                eier = eier,
+                jsonInternalSoknad = createEmptyJsonInternalSoknad(eier),
+                status = SoknadUnderArbeidStatus.UNDER_ARBEID,
+                opprettetDato = LocalDateTime.now(),
+                sistEndretDato = LocalDateTime.now()
+            )
+        }
     }
 }

@@ -9,7 +9,6 @@ import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
 import no.nav.sosialhjelp.soknad.common.filedetection.MimeTypes
 import no.nav.sosialhjelp.soknad.domain.OpplastetVedlegg
 import no.nav.sosialhjelp.soknad.domain.OpplastetVedleggType
-import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.domain.Vedleggstatus
 import no.nav.sosialhjelp.soknad.innsending.InnsendingService
 import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
@@ -122,7 +121,7 @@ internal class FiksDokumentHelperTest {
     @Test
     fun lagDokumentListeForVedleggReturnererRiktigeVedlegg() {
         val filnavnInputStreamMap = HashMap<String, InputStream>()
-        val dokumenter = fiksDokumentHelper!!.lagDokumentListeForVedlegg(SoknadUnderArbeid(), filnavnInputStreamMap)
+        val dokumenter = fiksDokumentHelper!!.lagDokumentListeForVedlegg(mockk(), filnavnInputStreamMap)
         assertThat(dokumenter).hasSize(3)
         assertThat(dokumenter[0].filnavn).isEqualTo(FILNAVN)
         assertThat(dokumenter[1].filnavn).isEqualTo(ANNET_FILNAVN)

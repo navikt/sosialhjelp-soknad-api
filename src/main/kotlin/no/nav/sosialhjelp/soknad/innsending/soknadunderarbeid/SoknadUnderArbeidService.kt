@@ -2,8 +2,8 @@ package no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid
 
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeid
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
-import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
 
@@ -14,10 +14,10 @@ open class SoknadUnderArbeidService(
         if (soknadUnderArbeid == null) {
             throw RuntimeException("Søknad under arbeid mangler")
         }
-        if (soknadUnderArbeid.erEttersendelse()) {
+        if (soknadUnderArbeid.erEttersendelse) {
             return
         }
-        soknadUnderArbeid.jsonInternalSoknad.soknad.innsendingstidspunkt = nowWithForcedNanoseconds()
+        soknadUnderArbeid.jsonInternalSoknad?.soknad?.innsendingstidspunkt = nowWithForcedNanoseconds()
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, soknadUnderArbeid.eier)
     }
 

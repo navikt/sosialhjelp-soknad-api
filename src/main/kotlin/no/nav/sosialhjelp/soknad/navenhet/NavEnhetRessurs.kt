@@ -57,7 +57,8 @@ open class NavEnhetRessurs(
     open fun hentNavEnheter(@PathParam("behandlingsId") behandlingsId: String): List<NavEnhetFrontend>? {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
         val eier = SubjectHandlerUtils.getUserIdFromToken()
-        val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).jsonInternalSoknad.soknad
+        val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).jsonInternalSoknad?.soknad
+            ?: throw IllegalStateException("Kan ikke hente navEnheter hvis SoknadUnderArbeid.jsonInternalSoknad er null")
         val valgtEnhetNr = soknad.mottaker.enhetsnummer
         val oppholdsadresse = soknad.data.personalia.oppholdsadresse
         val adresseValg = utledAdresseValg(oppholdsadresse)
@@ -79,7 +80,8 @@ open class NavEnhetRessurs(
     open fun hentValgtNavEnhet(@PathParam("behandlingsId") behandlingsId: String): NavEnhetFrontend? {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
         val eier = SubjectHandlerUtils.getUserIdFromToken()
-        val soknadsmottaker = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).jsonInternalSoknad.soknad.mottaker
+        val soknadsmottaker = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).jsonInternalSoknad?.soknad?.mottaker
+            ?: throw IllegalStateException("Kan ikke hente valgtNavEnhet hvis SoknadUnderArbeid.jsonInternalSoknad er null")
         val kommunenummer = soknadsmottaker.kommunenummer
         return if (kommunenummer.isNullOrEmpty() || soknadsmottaker.navEnhetsnavn.isNullOrEmpty()) {
             null
@@ -103,10 +105,10 @@ open class NavEnhetRessurs(
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
-        soknad.jsonInternalSoknad.mottaker = no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker()
+        soknad.jsonInternalSoknad?.mottaker = no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker()
             .withNavEnhetsnavn(createNavEnhetsnavn(navEnhetFrontend.enhetsnavn, navEnhetFrontend.kommunenavn))
             .withOrganisasjonsnummer(navEnhetFrontend.orgnr)
-        soknad.jsonInternalSoknad.soknad.mottaker = JsonSoknadsmottaker()
+        soknad.jsonInternalSoknad?.soknad?.mottaker = JsonSoknadsmottaker()
             .withNavEnhetsnavn(createNavEnhetsnavn(navEnhetFrontend.enhetsnavn, navEnhetFrontend.kommunenavn))
             .withEnhetsnummer(navEnhetFrontend.enhetsnr)
             .withKommunenummer(navEnhetFrontend.kommuneNr)

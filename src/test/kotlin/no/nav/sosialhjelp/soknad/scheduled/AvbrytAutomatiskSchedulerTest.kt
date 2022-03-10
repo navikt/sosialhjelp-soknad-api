@@ -9,12 +9,12 @@ import io.mockk.verify
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.BatchSoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.BatchSoknadUnderArbeidRepository
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.domain.SoknadMetadata
 import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus
 import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus.UNDER_ARBEID
 import no.nav.sosialhjelp.soknad.domain.SoknadMetadataType
-import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
-import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.scheduled.leaderelection.LeaderElection
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
@@ -46,11 +46,17 @@ internal class AvbrytAutomatiskSchedulerTest {
     @Test
     fun avbrytAutomatiskOgSlettGamleSoknader() {
         val soknadMetadata = soknadMetadata(BEHANDLINGS_ID, UNDER_ARBEID, DAGER_GAMMEL_SOKNAD + 1)
-        val soknadUnderArbeid = SoknadUnderArbeid()
-            .withSoknadId(1L)
-            .withEier(EIER)
-            .withBehandlingsId(BEHANDLINGS_ID)
-            .withStatus(SoknadUnderArbeidStatus.UNDER_ARBEID)
+        val soknadUnderArbeid = SoknadUnderArbeid(
+            soknadId = 1L,
+            versjon = 1L,
+            behandlingsId = BEHANDLINGS_ID,
+            tilknyttetBehandlingsId = null,
+            eier = "11111111111",
+            jsonInternalSoknad = null,
+            status = SoknadUnderArbeidStatus.UNDER_ARBEID,
+            opprettetDato = LocalDateTime.now(),
+            sistEndretDato = LocalDateTime.now()
+        )
 
         every {
             batchSoknadMetadataRepository.hentForBatch(DAGER_GAMMEL_SOKNAD)

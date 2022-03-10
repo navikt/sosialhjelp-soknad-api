@@ -30,8 +30,8 @@ open class BosituasjonRessurs(
         tilgangskontroll.verifiserAtBrukerHarTilgang()
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).jsonInternalSoknad
-        val bosituasjon = soknad.soknad.data.bosituasjon
-        return BosituasjonFrontend(bosituasjon.botype, bosituasjon.antallPersoner)
+        val bosituasjon = soknad?.soknad?.data?.bosituasjon
+        return BosituasjonFrontend(bosituasjon?.botype, bosituasjon?.antallPersoner)
     }
 
     @PUT
@@ -42,12 +42,12 @@ open class BosituasjonRessurs(
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
-        val bosituasjon = soknad.jsonInternalSoknad.soknad.data.bosituasjon
-        bosituasjon.kilde = JsonKildeBruker.BRUKER
+        val bosituasjon = soknad.jsonInternalSoknad?.soknad?.data?.bosituasjon
+        bosituasjon?.kilde = JsonKildeBruker.BRUKER
         if (bosituasjonFrontend.botype != null) {
-            bosituasjon.botype = bosituasjonFrontend.botype
+            bosituasjon?.botype = bosituasjonFrontend.botype
         }
-        bosituasjon.antallPersoner = bosituasjonFrontend.antallPersoner
+        bosituasjon?.antallPersoner = bosituasjonFrontend.antallPersoner
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
     }
 

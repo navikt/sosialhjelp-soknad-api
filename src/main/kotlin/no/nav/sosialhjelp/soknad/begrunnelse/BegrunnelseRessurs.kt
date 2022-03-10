@@ -31,8 +31,8 @@ open class BegrunnelseRessurs(
         tilgangskontroll.verifiserAtBrukerHarTilgang()
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).jsonInternalSoknad
-        val begrunnelse = soknad.soknad.data.begrunnelse
-        return BegrunnelseFrontend(begrunnelse.hvaSokesOm, begrunnelse.hvorforSoke)
+        val begrunnelse = soknad?.soknad?.data?.begrunnelse
+        return BegrunnelseFrontend(begrunnelse?.hvaSokesOm, begrunnelse?.hvorforSoke)
     }
 
     @PUT
@@ -43,10 +43,10 @@ open class BegrunnelseRessurs(
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
-        val begrunnelse = soknad.jsonInternalSoknad.soknad.data.begrunnelse
-        begrunnelse.kilde = JsonKildeBruker.BRUKER
-        begrunnelse.hvaSokesOm = begrunnelseFrontend.hvaSokesOm
-        begrunnelse.hvorforSoke = begrunnelseFrontend.hvorforSoke
+        val begrunnelse = soknad.jsonInternalSoknad?.soknad?.data?.begrunnelse
+        begrunnelse?.kilde = JsonKildeBruker.BRUKER
+        begrunnelse?.hvaSokesOm = begrunnelseFrontend.hvaSokesOm
+        begrunnelse?.hvorforSoke = begrunnelseFrontend.hvorforSoke
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
     }
 

@@ -12,11 +12,11 @@ import no.nav.sosialhjelp.soknad.common.MiljoUtils
 import no.nav.sosialhjelp.soknad.common.filedetection.FileDetectionUtils.getMimeType
 import no.nav.sosialhjelp.soknad.common.filedetection.MimeTypes.APPLICATION_PDF
 import no.nav.sosialhjelp.soknad.common.filedetection.MimeTypes.TEXT_X_MATLAB
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.domain.OpplastetVedlegg
 import no.nav.sosialhjelp.soknad.domain.SoknadMetadata.VedleggMetadata
 import no.nav.sosialhjelp.soknad.domain.SoknadMetadata.VedleggMetadataListe
-import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.domain.Vedleggstatus
 import no.nav.sosialhjelp.soknad.innsending.HenvendelseService
 import no.nav.sosialhjelp.soknad.innsending.InnsendingService
@@ -46,23 +46,23 @@ class DigisosApiService(
         val internalSoknad = soknadUnderArbeid.jsonInternalSoknad
         if (internalSoknad == null) {
             throw RuntimeException("Kan ikke sende forsendelse til FIKS fordi søknad mangler")
-        } else if (!soknadUnderArbeid.erEttersendelse() && internalSoknad.soknad == null) {
+        } else if (!soknadUnderArbeid.erEttersendelse && internalSoknad.soknad == null) {
             throw RuntimeException("Kan ikke sende søknad fordi søknaden mangler")
-        } else if (soknadUnderArbeid.erEttersendelse() && internalSoknad.vedlegg == null) {
+        } else if (soknadUnderArbeid.erEttersendelse && internalSoknad.vedlegg == null) {
             throw RuntimeException("Kan ikke sende ettersendelse fordi vedlegg mangler")
         }
         val antallVedleggForsendelse: Int
 
         val filOpplastinger = mutableListOf<FilOpplasting>()
 
-        if (soknadUnderArbeid.erEttersendelse()) {
+        if (soknadUnderArbeid.erEttersendelse) {
             filOpplastinger.add(lagDokumentForEttersendelsePdf(internalSoknad, soknadUnderArbeid.eier))
             filOpplastinger.add(lagDokumentForBrukerkvitteringPdf())
             val dokumenterForVedlegg = lagDokumentListeForVedlegg(soknadUnderArbeid)
             antallVedleggForsendelse = dokumenterForVedlegg.size
             filOpplastinger.addAll(dokumenterForVedlegg)
         } else {
-            filOpplastinger.add(lagDokumentForSaksbehandlerPdf(soknadUnderArbeid))
+            filOpplastinger.add(lagDokumentForSaksbehandlerPdf(internalSoknad))
             filOpplastinger.add(lagDokumentForJuridiskPdf(internalSoknad))
             filOpplastinger.add(lagDokumentForBrukerkvitteringPdf())
             val dokumenterForVedlegg = lagDokumentListeForVedlegg(soknadUnderArbeid)
@@ -77,7 +77,7 @@ class DigisosApiService(
             var antallBrukerOpplastedeVedlegg = 0
             opplastedeVedleggstyper.forEach { antallBrukerOpplastedeVedlegg += it.filer.size }
             if (antallVedleggForsendelse != antallBrukerOpplastedeVedlegg) {
-                log.warn("Ulikt antall vedlegg i vedlegg.json og forsendelse til Fiks. vedlegg.json: $antallBrukerOpplastedeVedlegg, forsendelse til Fiks: $antallVedleggForsendelse. Er ettersendelse: ${soknadUnderArbeid.erEttersendelse()}")
+                log.warn("Ulikt antall vedlegg i vedlegg.json og forsendelse til Fiks. vedlegg.json: $antallBrukerOpplastedeVedlegg, forsendelse til Fiks: $antallVedleggForsendelse. Er ettersendelse: ${soknadUnderArbeid.erEttersendelse}")
             }
         } catch (e: RuntimeException) {
             log.debug("Ignored exception")
@@ -113,9 +113,9 @@ class DigisosApiService(
         return event
     }
 
-    private fun lagDokumentForSaksbehandlerPdf(soknadUnderArbeid: SoknadUnderArbeid): FilOpplasting {
+    private fun lagDokumentForSaksbehandlerPdf(jsonInternalSoknad: JsonInternalSoknad): FilOpplasting {
         val filnavn = "Soknad.pdf"
-        val soknadPdf = sosialhjelpPdfGenerator.generate(soknadUnderArbeid.jsonInternalSoknad, false)
+        val soknadPdf = sosialhjelpPdfGenerator.generate(jsonInternalSoknad, false)
         return opprettFilOpplastingFraByteArray(filnavn, APPLICATION_PDF, soknadPdf)
     }
 
@@ -169,6 +169,9 @@ class DigisosApiService(
 
     fun sendSoknad(soknadUnderArbeid: SoknadUnderArbeid, token: String?, kommunenummer: String): String {
         var behandlingsId = soknadUnderArbeid.behandlingsId
+        val jsonInternalSoknad = soknadUnderArbeid.jsonInternalSoknad
+            ?: throw IllegalStateException("Kan ikke sende søknad hvis SoknadUnderArbeid.jsonInternalSoknad er null")
+
         soknadUnderArbeidService.settInnsendingstidspunktPaSoknad(soknadUnderArbeid)
         log.info("Starter innsending av søknad med behandlingsId {}, skal sendes til DigisosApi", behandlingsId)
         val vedlegg = convertToVedleggMetadataListe(soknadUnderArbeid)
@@ -176,14 +179,14 @@ class DigisosApiService(
         val filOpplastinger = lagDokumentListe(soknadUnderArbeid)
         log.info("Laster opp {}", filOpplastinger.size)
         val soknadJson = getSoknadJson(soknadUnderArbeid)
-        val tilleggsinformasjonJson = getTilleggsinformasjonJson(soknadUnderArbeid.jsonInternalSoknad.soknad)
+        val tilleggsinformasjonJson = getTilleggsinformasjonJson(jsonInternalSoknad.soknad)
         val vedleggJson = getVedleggJson(soknadUnderArbeid)
 
         if (MiljoUtils.isNonProduction()) {
             behandlingsId = createPrefixedBehandlingsId(behandlingsId)
         }
-        val enhetsnummer = soknadUnderArbeid.jsonInternalSoknad.soknad.mottaker.enhetsnummer
-        val navEnhetsnavn = soknadUnderArbeid.jsonInternalSoknad.soknad.mottaker.navEnhetsnavn
+        val enhetsnummer = jsonInternalSoknad.soknad.mottaker.enhetsnummer
+        val navEnhetsnavn = jsonInternalSoknad.soknad.mottaker.navEnhetsnavn
         log.info("Starter kryptering av filer for $behandlingsId, skal sende til kommune $kommunenummer med enhetsnummer $enhetsnummer og navenhetsnavn $navEnhetsnavn")
         val digisosId = sendOgKrypter(
             soknadJson,
@@ -204,7 +207,7 @@ class DigisosApiService(
 
     fun getSoknadJson(soknadUnderArbeid: SoknadUnderArbeid): String {
         return try {
-            val soknadJson = objectMapper.writeValueAsString(soknadUnderArbeid.jsonInternalSoknad.soknad)
+            val soknadJson = objectMapper.writeValueAsString(soknadUnderArbeid.jsonInternalSoknad?.soknad)
             ensureValidSoknad(soknadJson)
             soknadJson
         } catch (e: JsonProcessingException) {
@@ -233,7 +236,7 @@ class DigisosApiService(
 
     fun getVedleggJson(soknadUnderArbeid: SoknadUnderArbeid): String {
         return try {
-            val vedleggJson = objectMapper.writeValueAsString(soknadUnderArbeid.jsonInternalSoknad.vedlegg)
+            val vedleggJson = objectMapper.writeValueAsString(soknadUnderArbeid.jsonInternalSoknad?.vedlegg)
             ensureValidVedlegg(vedleggJson)
             vedleggJson
         } catch (e: JsonProcessingException) {
