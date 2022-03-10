@@ -257,10 +257,10 @@ class PdfGenerator {
         return lines
     }
 
-    private fun splitTextOnNewlines(text: String?): List<String> {
+    private fun splitTextOnNewlines(text: String): List<String> {
         val splitByNewlines: MutableList<String> = ArrayList()
         var stringBuilder = StringBuilder()
-        for (i in 0 until text!!.length) {
+        for (i in 0 until text.length) {
             if (characterIsLinebreak(text.codePointAt(i))) {
                 splitByNewlines.add(stringBuilder.toString())
                 stringBuilder = StringBuilder()

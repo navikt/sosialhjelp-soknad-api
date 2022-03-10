@@ -10,6 +10,7 @@ import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.FORMUE_VERDIPAPIRER
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomioversikt
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibeskrivelserAvAnnet
 import no.nav.sosialhjelp.soknad.oppsummering.dto.Avsnitt
 import no.nav.sosialhjelp.soknad.oppsummering.dto.Felt
 import no.nav.sosialhjelp.soknad.oppsummering.dto.Sporsmal
@@ -42,7 +43,7 @@ class Bank {
             )
         )
         if (harUtfyltBankSporsmal && harValgtFormueType(oversikt, FORMUE_ANNET)) {
-            val beskrivelseAvAnnet = opplysninger.beskrivelseAvAnnet
+            val beskrivelseAvAnnet: JsonOkonomibeskrivelserAvAnnet? = opplysninger.beskrivelseAvAnnet
             val harUtfyltAnnetFelt = beskrivelseAvAnnet != null && beskrivelseAvAnnet.sparing != null && beskrivelseAvAnnet.sparing.isNotBlank()
             sporsmal.add(
                 Sporsmal(
@@ -51,7 +52,7 @@ class Bank {
                     felt = if (harUtfyltAnnetFelt) listOf(
                         Felt(
                             type = Type.TEKST,
-                            svar = createSvar(beskrivelseAvAnnet!!.sparing, SvarType.TEKST)
+                            svar = beskrivelseAvAnnet?.let { createSvar(it.sparing, SvarType.TEKST) }
                         )
                     ) else null
                 )

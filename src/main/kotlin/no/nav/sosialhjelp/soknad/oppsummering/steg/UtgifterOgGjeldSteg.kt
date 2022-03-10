@@ -25,7 +25,6 @@ import no.nav.sosialhjelp.soknad.oppsummering.dto.Steg
 import no.nav.sosialhjelp.soknad.oppsummering.dto.SvarType
 import no.nav.sosialhjelp.soknad.oppsummering.dto.Type
 import no.nav.sosialhjelp.soknad.oppsummering.steg.StegUtils.createSvar
-import no.nav.sosialhjelp.soknad.oppsummering.steg.StegUtils.harBrukerRegistrerteBarn
 import no.nav.sosialhjelp.soknad.oppsummering.steg.StegUtils.harSystemRegistrerteBarn
 
 class UtgifterOgGjeldSteg {
@@ -88,7 +87,7 @@ class UtgifterOgGjeldSteg {
     }
 
     private fun harBarn(forsorgerplikt: JsonForsorgerplikt): Boolean {
-        return harSystemRegistrerteBarn(forsorgerplikt) || harBrukerRegistrerteBarn(forsorgerplikt)
+        return harSystemRegistrerteBarn(forsorgerplikt)
     }
 
     private fun barneutgifter(okonomi: JsonOkonomi): List<Sporsmal> {

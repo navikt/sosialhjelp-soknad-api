@@ -54,13 +54,13 @@ class SosialhjelpPdfGenerator(
         }
     }
 
-    fun generateEttersendelsePdf(jsonInternalSoknad: JsonInternalSoknad, eier: String?): ByteArray {
+    fun generateEttersendelsePdf(jsonInternalSoknad: JsonInternalSoknad, eier: String): ByteArray {
         return try {
             val pdf = PdfGenerator()
 
             val tittel = getTekst("ettersending.kvittering.tittel")
             val undertittel = getTekst("skjema.tittel")
-            leggTilHeading(pdf, tittel, undertittel, eier!!)
+            leggTilHeading(pdf, tittel, undertittel, eier)
 
             val formatter = DateTimeFormatter.ofPattern(DATO_OG_TID_FORMAT)
             val formattedTime = LocalDateTime.now().format(formatter)

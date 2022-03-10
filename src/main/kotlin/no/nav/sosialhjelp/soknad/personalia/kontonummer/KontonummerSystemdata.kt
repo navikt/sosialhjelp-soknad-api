@@ -24,7 +24,7 @@ class KontonummerSystemdata(
         }
     }
 
-    fun innhentSystemverdiKontonummer(personIdentifikator: String?): String? {
-        return kontonummerService.getKontonummer(personIdentifikator!!)
+    fun innhentSystemverdiKontonummer(personIdentifikator: String): String? {
+        return kontonummerService.getKontonummer(personIdentifikator)
     }
 }

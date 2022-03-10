@@ -70,7 +70,7 @@ class AnnenFormue {
                         felt = if (harUtfyltAnnetFelt) listOf(
                             Felt(
                                 type = Type.TEKST,
-                                svar = createSvar(beskrivelseAvAnnet!!.verdi, SvarType.TEKST)
+                                svar = beskrivelseAvAnnet?.let { createSvar(it.verdi, SvarType.TEKST) }
                             )
                         ) else null
                     )

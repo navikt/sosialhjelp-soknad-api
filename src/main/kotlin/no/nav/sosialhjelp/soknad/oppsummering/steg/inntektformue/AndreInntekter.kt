@@ -60,13 +60,14 @@ class AndreInntekter {
                     Sporsmal(
                         tittel = "inntekt.inntekter.true.type.annet",
                         erUtfylt = harUtfyltAnnetFelt,
-                        felt = if (harUtfyltAnnetFelt) listOf(
-                            Felt(
-                                type = Type.TEKST,
-                                svar = createSvar(beskrivelseAvAnnet!!.utbetaling, SvarType.TEKST)
-                            )
-
-                        ) else null
+                        felt = beskrivelseAvAnnet?.let {
+                            if (harUtfyltAnnetFelt) listOf(
+                                Felt(
+                                    type = Type.TEKST,
+                                    svar = createSvar(it.utbetaling, SvarType.TEKST)
+                                )
+                            ) else null
+                        }
                     )
                 )
             }

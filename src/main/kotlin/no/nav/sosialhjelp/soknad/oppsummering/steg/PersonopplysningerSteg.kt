@@ -23,14 +23,16 @@ import java.util.Optional
 class PersonopplysningerSteg {
     fun get(jsonInternalSoknad: JsonInternalSoknad): Steg {
         val personalia = jsonInternalSoknad.soknad.data.personalia
+        val telefonnummer: JsonTelefonnummer? = personalia.telefonnummer
+        val kontonummer: JsonKontonummer? = personalia.kontonummer
         return Steg(
             stegNr = 1,
             tittel = "personaliabolk.tittel",
             avsnitt = listOf(
                 personaliaAvsnitt(personalia),
                 adresseOgNavKontorAvsnitt(personalia),
-                telefonnummerAvsnitt(personalia),
-                kontonummerAvsnitt(personalia)
+                telefonnummerAvsnitt(telefonnummer),
+                kontonummerAvsnitt(kontonummer)
             )
         )
     }
@@ -123,24 +125,23 @@ class PersonopplysningerSteg {
         return optionalBruksenhetsnummer.map { s: String -> "$s, " }.orElse("") + optionalKommunenummer.orElse("")
     }
 
-    private fun telefonnummerAvsnitt(personalia: JsonPersonalia): Avsnitt {
-        val telefonnummer = personalia.telefonnummer
+    private fun telefonnummerAvsnitt(telefonnummer: JsonTelefonnummer?): Avsnitt {
         val harUtfyltTelefonnummer =
-            telefonnummer != null && telefonnummer.verdi != null && !telefonnummer.verdi.isEmpty()
+            telefonnummer != null && telefonnummer.verdi != null && telefonnummer.verdi.isNotEmpty()
         return Avsnitt(
             tittel = "kontakt.system.telefoninfo.sporsmal",
             sporsmal = listOf(
                 Sporsmal(
                     tittel = "kontakt.system.telefoninfo.infotekst.tekst", // skal variere ut fra kilde? systemdata eller bruker
                     erUtfylt = harUtfyltTelefonnummer,
-                    felt = if (harUtfyltTelefonnummer) telefonnummerFelt(telefonnummer) else null
+                    felt = telefonnummer?.let { if (harUtfyltTelefonnummer) telefonnummerFelt(it) else null }
                 )
             )
         )
     }
 
-    private fun telefonnummerFelt(telefonnummer: JsonTelefonnummer?): List<Felt> {
-        val erSystemdata = telefonnummer!!.kilde == JsonKilde.SYSTEM
+    private fun telefonnummerFelt(telefonnummer: JsonTelefonnummer): List<Felt> {
+        val erSystemdata = telefonnummer.kilde == JsonKilde.SYSTEM
         return listOf(
             Felt(
                 type = if (erSystemdata) Type.SYSTEMDATA else Type.TEKST,
@@ -150,25 +151,24 @@ class PersonopplysningerSteg {
         )
     }
 
-    private fun kontonummerAvsnitt(personalia: JsonPersonalia): Avsnitt {
-        val kontonummer = personalia.kontonummer
+    private fun kontonummerAvsnitt(kontonummer: JsonKontonummer?): Avsnitt {
         val harValgtHarIkkeKonto = kontonummer != null && java.lang.Boolean.TRUE == kontonummer.harIkkeKonto
         val harUtfyltKontonummer =
-            kontonummer != null && (kontonummer.verdi != null && !kontonummer.verdi.isEmpty() || harValgtHarIkkeKonto)
+            kontonummer != null && (kontonummer.verdi != null && kontonummer.verdi.isNotEmpty() || harValgtHarIkkeKonto)
         return Avsnitt(
             tittel = "kontakt.system.kontonummer.sporsmal",
             sporsmal = listOf(
                 Sporsmal(
                     tittel = "kontakt.system.kontonummer.label",
                     erUtfylt = harUtfyltKontonummer,
-                    felt = if (harUtfyltKontonummer) kontonummerFelt(kontonummer) else null
+                    felt = kontonummer?.let { if (harUtfyltKontonummer) kontonummerFelt(it) else null }
                 )
             )
         )
     }
 
-    private fun kontonummerFelt(kontonummer: JsonKontonummer?): List<Felt> {
-        if (java.lang.Boolean.TRUE == kontonummer!!.harIkkeKonto) {
+    private fun kontonummerFelt(kontonummer: JsonKontonummer): List<Felt> {
+        if (java.lang.Boolean.TRUE == kontonummer.harIkkeKonto) {
             return listOf(
                 Felt(
                     type = Type.CHECKBOX,

@@ -39,7 +39,7 @@ class OpplastetVedleggService(
     private val virusScanner: VirusScanner
 ) {
     fun saveVedleggAndUpdateVedleggstatus(
-        behandlingsId: String?,
+        behandlingsId: String,
         vedleggstype: String,
         data: ByteArray,
         originalfilnavn: String
@@ -50,7 +50,7 @@ class OpplastetVedleggService(
         val sha512 = getSha512FromByteArray(data)
 
         val fileType = validerFil(data, filnavn)
-        virusScanner.scan(filnavn, data, behandlingsId!!, fileType.name)
+        virusScanner.scan(filnavn, data, behandlingsId, fileType.name)
 
         val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
         val soknadId = soknadUnderArbeid.soknadId

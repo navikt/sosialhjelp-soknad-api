@@ -86,6 +86,6 @@ open class AdresseRessurs(
         }
         return if (oppholdsadresse.type == JsonAdresse.Type.MATRIKKELADRESSE) {
             null
-        } else adresseSystemdata.createDeepCopyOfJsonAdresse(oppholdsadresse)!!.withAdresseValg(null)
+        } else adresseSystemdata.createDeepCopyOfJsonAdresse(oppholdsadresse)?.withAdresseValg(null)
     }
 }

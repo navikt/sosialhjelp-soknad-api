@@ -103,6 +103,6 @@ class MapperHelper {
     private fun erKildeUdokumentert(metadata: MetadataDto): Boolean {
         return PDL.equals(metadata.master, ignoreCase = true) &&
             sisteEndringOrNull(metadata) != null &&
-            sisteEndringOrNull(metadata)!!.kilde == BRUKER_SELV
+            sisteEndringOrNull(metadata)?.kilde == BRUKER_SELV
     }
 }
