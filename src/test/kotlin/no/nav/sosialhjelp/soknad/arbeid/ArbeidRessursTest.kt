@@ -18,8 +18,9 @@ import no.nav.sosialhjelp.soknad.common.MiljoUtils
 import no.nav.sosialhjelp.soknad.common.exceptions.AuthorizationException
 import no.nav.sosialhjelp.soknad.common.subjecthandler.StaticSubjectHandlerImpl
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
-import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import org.assertj.core.api.Assertions.assertThat
@@ -27,6 +28,7 @@ import org.assertj.core.api.Assertions.assertThatCode
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import java.time.LocalDateTime
 
 internal class ArbeidRessursTest {
 
@@ -100,7 +102,7 @@ internal class ArbeidRessursTest {
         arbeidRessurs.updateArbeid(BEHANDLINGSID, arbeidFrontend)
 
         val soknadUnderArbeid = slot.captured
-        val kommentarTilArbeidsforhold = soknadUnderArbeid.jsonInternalSoknad.soknad.data.arbeid.kommentarTilArbeidsforhold
+        val kommentarTilArbeidsforhold = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.arbeid.kommentarTilArbeidsforhold
         assertThat(kommentarTilArbeidsforhold.kilde).isEqualTo(JsonKildeBruker.BRUKER)
         assertThat(kommentarTilArbeidsforhold.verdi).isEqualTo(KOMMENTAR)
     }
@@ -116,7 +118,7 @@ internal class ArbeidRessursTest {
         arbeidRessurs.updateArbeid(BEHANDLINGSID, arbeidFrontend)
 
         val soknadUnderArbeid = slot.captured
-        val kommentarTilArbeidsforhold = soknadUnderArbeid.jsonInternalSoknad.soknad.data.arbeid.kommentarTilArbeidsforhold
+        val kommentarTilArbeidsforhold = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.arbeid.kommentarTilArbeidsforhold
         assertThat(kommentarTilArbeidsforhold.kilde).isEqualTo(JsonKildeBruker.BRUKER)
         assertThat(kommentarTilArbeidsforhold.verdi).isEqualTo(KOMMENTAR)
     }
@@ -132,7 +134,7 @@ internal class ArbeidRessursTest {
         arbeidRessurs.updateArbeid(BEHANDLINGSID, arbeidFrontend)
 
         val soknadUnderArbeid = slot.captured
-        val kommentarTilArbeidsforhold = soknadUnderArbeid.jsonInternalSoknad.soknad.data.arbeid.kommentarTilArbeidsforhold
+        val kommentarTilArbeidsforhold = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.arbeid.kommentarTilArbeidsforhold
         assertThat(kommentarTilArbeidsforhold).isNull()
     }
 
@@ -187,11 +189,19 @@ internal class ArbeidRessursTest {
         arbeidsforholdList: List<JsonArbeidsforhold>?,
         kommentar: String?
     ): SoknadUnderArbeid {
-        val soknadUnderArbeid = SoknadUnderArbeid()
-            .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
-        soknadUnderArbeid.jsonInternalSoknad.soknad.data.arbeid
-            .withForhold(arbeidsforholdList)
-            .withKommentarTilArbeidsforhold(
+        val soknadUnderArbeid = SoknadUnderArbeid(
+            versjon = 1L,
+            behandlingsId = BEHANDLINGSID,
+            tilknyttetBehandlingsId = null,
+            eier = EIER,
+            jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
+            status = SoknadUnderArbeidStatus.UNDER_ARBEID,
+            opprettetDato = LocalDateTime.now(),
+            sistEndretDato = LocalDateTime.now()
+        )
+        soknadUnderArbeid.jsonInternalSoknad?.soknad?.data?.arbeid
+            ?.withForhold(arbeidsforholdList)
+            ?.withKommentarTilArbeidsforhold(
                 if (kommentar == null) null else JsonKommentarTilArbeidsforhold()
                     .withKilde(JsonKildeBruker.BRUKER)
                     .withVerdi(kommentar)

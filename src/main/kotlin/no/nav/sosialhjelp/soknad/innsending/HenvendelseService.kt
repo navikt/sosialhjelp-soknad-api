@@ -3,6 +3,7 @@ package no.nav.sosialhjelp.soknad.innsending
 import no.nav.sosialhjelp.soknad.common.exceptions.SosialhjelpSoknadApiException
 import no.nav.sosialhjelp.soknad.common.mdc.MdcOperations
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.domain.SoknadMetadata
 import no.nav.sosialhjelp.soknad.domain.SoknadMetadata.VedleggMetadataListe
 import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus
@@ -11,7 +12,6 @@ import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus.AVBRUTT_A
 import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus.FERDIG
 import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus.SENDT_MED_DIGISOS_API
 import no.nav.sosialhjelp.soknad.domain.SoknadMetadataType
-import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
 import org.slf4j.LoggerFactory
 import java.time.Clock
 import java.time.LocalDateTime
@@ -70,8 +70,8 @@ class HenvendelseService(
         val meta = soknadMetadataRepository.hent(behandlingsId)
         meta?.vedlegg = vedlegg
         if (meta?.type != SoknadMetadataType.SEND_SOKNAD_KOMMUNAL_ETTERSENDING) {
-            meta?.orgnr = soknadUnderArbeid.jsonInternalSoknad.mottaker.organisasjonsnummer
-            meta?.navEnhet = soknadUnderArbeid.jsonInternalSoknad.mottaker.navEnhetsnavn
+            meta?.orgnr = soknadUnderArbeid.jsonInternalSoknad?.mottaker?.organisasjonsnummer
+            meta?.navEnhet = soknadUnderArbeid.jsonInternalSoknad?.mottaker?.navEnhetsnavn
         }
         meta?.sistEndretDato = LocalDateTime.now(clock)
         meta?.innsendtDato = LocalDateTime.now(clock)

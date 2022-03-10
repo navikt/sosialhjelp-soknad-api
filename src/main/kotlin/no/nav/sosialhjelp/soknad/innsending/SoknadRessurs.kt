@@ -10,8 +10,8 @@ import no.nav.sosialhjelp.soknad.common.Constants
 import no.nav.sosialhjelp.soknad.common.exceptions.SoknadenHarNedetidException
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.common.systemdata.SystemdataUpdater
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
-import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.innsending.dto.BekreftelseRessurs
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
@@ -76,10 +76,14 @@ open class SoknadRessurs(
         val notUpdatedSoknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
         val notUpdatedJsonInternalSoknad = notUpdatedSoknadUnderArbeid.jsonInternalSoknad
 
-        soknadUnderArbeidService.sortOkonomi(soknadUnderArbeid.jsonInternalSoknad.soknad.data.okonomi)
-        soknadUnderArbeidService.sortOkonomi(notUpdatedSoknadUnderArbeid.jsonInternalSoknad.soknad.data.okonomi)
-        soknadUnderArbeidService.sortArbeid(soknadUnderArbeid.jsonInternalSoknad.soknad.data.arbeid)
-        soknadUnderArbeidService.sortArbeid(notUpdatedSoknadUnderArbeid.jsonInternalSoknad.soknad.data.arbeid)
+        soknadUnderArbeid.jsonInternalSoknad?.soknad?.data
+            ?.let { soknadUnderArbeidService.sortOkonomi(it.okonomi) }
+        notUpdatedSoknadUnderArbeid.jsonInternalSoknad?.soknad?.data
+            ?.let { soknadUnderArbeidService.sortOkonomi(it.okonomi) }
+        soknadUnderArbeid.jsonInternalSoknad?.soknad?.data
+            ?.let { soknadUnderArbeidService.sortArbeid(it.arbeid) }
+        notUpdatedSoknadUnderArbeid.jsonInternalSoknad?.soknad?.data
+            ?.let { soknadUnderArbeidService.sortArbeid(it.arbeid) }
 
         return if (updatedJsonInternalSoknad == notUpdatedJsonInternalSoknad) {
             false
@@ -126,9 +130,9 @@ open class SoknadRessurs(
         soknadUnderArbeid: SoknadUnderArbeid,
         samtykke: String
     ): JsonOkonomibekreftelse? {
-        val bekreftelser = soknadUnderArbeid.jsonInternalSoknad.soknad.data.okonomi.opplysninger.bekreftelse
+        val bekreftelser = soknadUnderArbeid.jsonInternalSoknad?.soknad?.data?.okonomi?.opplysninger?.bekreftelse
         return bekreftelser
-            .firstOrNull { it.type.equals(samtykke, ignoreCase = true) }
+            ?.firstOrNull { it.type.equals(samtykke, ignoreCase = true) }
     }
 
     @POST

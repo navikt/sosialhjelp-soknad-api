@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.personalia.familie
 
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonAnsvar
@@ -22,7 +23,6 @@ import no.nav.sosialhjelp.soknad.common.mapper.OkonomiMapper.removeInntektIfPres
 import no.nav.sosialhjelp.soknad.common.mapper.OkonomiMapper.removeUtgiftIfPresentInOversikt
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
-import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.personalia.familie.PersonMapper.fulltNavn
 import no.nav.sosialhjelp.soknad.personalia.familie.PersonMapper.getPersonnummerFromFnr
 import no.nav.sosialhjelp.soknad.personalia.familie.dto.AnsvarFrontend
@@ -54,6 +54,7 @@ open class ForsorgerpliktRessurs(
         tilgangskontroll.verifiserAtBrukerHarTilgang()
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).jsonInternalSoknad
+            ?: throw IllegalStateException("Kan ikke hente søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
         val jsonForsorgerplikt = soknad.soknad.data.familie.forsorgerplikt
 
         return mapToForsorgerpliktFrontend(jsonForsorgerplikt)
@@ -67,21 +68,23 @@ open class ForsorgerpliktRessurs(
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
-        val forsorgerplikt = soknad.jsonInternalSoknad.soknad.data.familie.forsorgerplikt
+        val jsonInternalSoknad = soknad.jsonInternalSoknad
+            ?: throw IllegalStateException("Kan ikke oppdatere søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
+        val forsorgerplikt = jsonInternalSoknad.soknad.data.familie.forsorgerplikt
 
-        updateBarnebidrag(forsorgerpliktFrontend, soknad, forsorgerplikt)
-        updateAnsvarAndHarForsorgerplikt(forsorgerpliktFrontend, soknad, forsorgerplikt)
+        updateBarnebidrag(forsorgerpliktFrontend, jsonInternalSoknad, forsorgerplikt)
+        updateAnsvarAndHarForsorgerplikt(forsorgerpliktFrontend, jsonInternalSoknad, forsorgerplikt)
 
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
     }
 
     private fun updateBarnebidrag(
         forsorgerpliktFrontend: ForsorgerpliktFrontend,
-        soknad: SoknadUnderArbeid,
+        jsonInternalSoknad: JsonInternalSoknad,
         forsorgerplikt: JsonForsorgerplikt
     ) {
         val barnebidragType = "barnebidrag"
-        val oversikt = soknad.jsonInternalSoknad.soknad.data.okonomi.oversikt
+        val oversikt = jsonInternalSoknad.soknad.data.okonomi.oversikt
         val inntekter = oversikt.inntekt
         val utgifter = oversikt.utgift
         if (forsorgerpliktFrontend.barnebidrag != null) {
@@ -120,7 +123,7 @@ open class ForsorgerpliktRessurs(
 
     private fun updateAnsvarAndHarForsorgerplikt(
         forsorgerpliktFrontend: ForsorgerpliktFrontend,
-        soknad: SoknadUnderArbeid,
+        jsonInternalSoknad: JsonInternalSoknad,
         forsorgerplikt: JsonForsorgerplikt
     ) {
         val systemAnsvar: MutableList<JsonAnsvar> =
@@ -136,7 +139,7 @@ open class ForsorgerpliktRessurs(
         }
         if (forsorgerplikt.harForsorgerplikt != null && forsorgerplikt.harForsorgerplikt.kilde == JsonKilde.BRUKER) {
             forsorgerplikt.harForsorgerplikt = JsonHarForsorgerplikt().withKilde(JsonKilde.SYSTEM).withVerdi(false)
-            removeBarneutgifterFromSoknad(soknad)
+            removeBarneutgifterFromSoknad(jsonInternalSoknad)
         }
         forsorgerplikt.ansvar = if (systemAnsvar.isEmpty()) null else systemAnsvar
     }
@@ -156,8 +159,8 @@ open class ForsorgerpliktRessurs(
                 .withVerdi(ansvarFrontend.samvarsgrad)
     }
 
-    private fun removeBarneutgifterFromSoknad(soknad: SoknadUnderArbeid) {
-        val okonomi = soknad.jsonInternalSoknad.soknad.data.okonomi
+    private fun removeBarneutgifterFromSoknad(jsonInternalSoknad: JsonInternalSoknad) {
+        val okonomi = jsonInternalSoknad.soknad.data.okonomi
         val opplysningerBarneutgifter = okonomi.opplysninger.utgift
         val oversiktBarneutgifter = okonomi.oversikt.utgift
         okonomi.opplysninger.bekreftelse.removeIf { bekreftelse: JsonOkonomibekreftelse -> bekreftelse.type == "barneutgifter" }

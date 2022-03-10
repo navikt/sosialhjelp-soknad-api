@@ -14,8 +14,9 @@ import no.nav.sosialhjelp.soknad.common.MiljoUtils
 import no.nav.sosialhjelp.soknad.common.exceptions.AuthorizationException
 import no.nav.sosialhjelp.soknad.common.subjecthandler.StaticSubjectHandlerImpl
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
-import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.personalia.kontonummer.KontonummerRessurs.KontonummerFrontend
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
@@ -24,6 +25,7 @@ import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import java.time.LocalDateTime
 
 internal class KontonummerRessursTest {
 
@@ -100,7 +102,7 @@ internal class KontonummerRessursTest {
         kontonummerRessurs.updateKontonummer(BEHANDLINGSID, kontonummerFrontend)
 
         val soknadUnderArbeid = slot.captured
-        val kontonummer = soknadUnderArbeid.jsonInternalSoknad.soknad.data.personalia.kontonummer
+        val kontonummer = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia.kontonummer
         assertThat(kontonummer.kilde).isEqualTo(JsonKilde.BRUKER)
         // todo kontonummer.harIkkeKonto er null, men assertion gir NPE?
 //        assertThat(kontonummer.harIkkeKonto).isNull()
@@ -120,7 +122,7 @@ internal class KontonummerRessursTest {
         kontonummerRessurs.updateKontonummer(BEHANDLINGSID, kontonummerFrontend)
 
         val soknadUnderArbeid = slot.captured
-        val kontonummer = soknadUnderArbeid.jsonInternalSoknad.soknad.data.personalia.kontonummer
+        val kontonummer = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia.kontonummer
         assertThat(kontonummer.kilde).isEqualTo(JsonKilde.SYSTEM)
         // todo kontonummer.harIkkeKonto er null, men assertion gir NPE?
 //        assertThat(kontonummer.harIkkeKonto).isNull()
@@ -160,8 +162,8 @@ internal class KontonummerRessursTest {
     }
 
     private fun createJsonInternalSoknadWithKontonummer(kilde: JsonKilde, verdi: String?): SoknadUnderArbeid {
-        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
-        soknadUnderArbeid.jsonInternalSoknad.soknad.data.personalia.kontonummer
+        val soknadUnderArbeid = createSoknadUnderArbeid()
+        soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia.kontonummer
             .withKilde(kilde)
             .withVerdi(verdi)
         return soknadUnderArbeid
@@ -172,5 +174,18 @@ internal class KontonummerRessursTest {
         private const val EIER = "123456789101"
         private const val KONTONUMMER_BRUKER = "11122233344"
         private const val KONTONUMMER_SYSTEM = "44333222111"
+
+        private fun createSoknadUnderArbeid(): SoknadUnderArbeid {
+            return SoknadUnderArbeid(
+                versjon = 1L,
+                behandlingsId = BEHANDLINGSID,
+                tilknyttetBehandlingsId = null,
+                eier = EIER,
+                jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
+                status = SoknadUnderArbeidStatus.UNDER_ARBEID,
+                opprettetDato = LocalDateTime.now(),
+                sistEndretDato = LocalDateTime.now()
+            )
+        }
     }
 }

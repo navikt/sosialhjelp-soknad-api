@@ -6,7 +6,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysn
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetalingKomponent
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOrganisasjon
 import no.nav.sosialhjelp.soknad.common.systemdata.Systemdata
-import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.domain.Komponent
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.domain.NavUtbetaling
 import no.nav.sosialhjelp.soknad.organisasjon.OrganisasjonService
@@ -20,16 +20,18 @@ class UtbetalingerFraNavSystemdata(
 ) : Systemdata {
 
     override fun updateSystemdataIn(soknadUnderArbeid: SoknadUnderArbeid) {
-        val jsonData = soknadUnderArbeid.jsonInternalSoknad.soknad.data
+        val jsonInternalSoknad = soknadUnderArbeid.jsonInternalSoknad ?: return
+
+        val jsonData = jsonInternalSoknad.soknad.data
         val personIdentifikator = jsonData.personalia.personIdentifikator.verdi
         val okonomiOpplysningUtbetalinger = jsonData.okonomi.opplysninger.utbetaling
 
         fjernGamleUtbetalinger(okonomiOpplysningUtbetalinger)
 
-        soknadUnderArbeid.jsonInternalSoknad.soknad.driftsinformasjon.utbetalingerFraNavFeilet = false
+        jsonInternalSoknad.soknad.driftsinformasjon.utbetalingerFraNavFeilet = false
         val systemUtbetalingerNav = innhentNavSystemregistrertInntekt(personIdentifikator)
         if (systemUtbetalingerNav == null) {
-            soknadUnderArbeid.jsonInternalSoknad.soknad.driftsinformasjon.utbetalingerFraNavFeilet = true
+            jsonInternalSoknad.soknad.driftsinformasjon.utbetalingerFraNavFeilet = true
         } else {
             okonomiOpplysningUtbetalinger.addAll(systemUtbetalingerNav)
         }

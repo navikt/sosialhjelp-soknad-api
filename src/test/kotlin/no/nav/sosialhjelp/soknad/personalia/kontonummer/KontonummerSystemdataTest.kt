@@ -5,10 +5,12 @@ import io.mockk.mockk
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonKontonummer
-import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import java.time.LocalDateTime
 
 internal class KontonummerSystemdataTest {
 
@@ -17,61 +19,59 @@ internal class KontonummerSystemdataTest {
 
     @Test
     fun skalOppdatereKontonummer() {
-        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
+        val soknadUnderArbeid = createSoknadUnderArbeid()
         every { kontonummerService.getKontonummer(any()) } returns KONTONUMMER_SYSTEM
 
         kontonummerSystemdata.updateSystemdataIn(soknadUnderArbeid)
 
-        val jsonPersonalia = soknadUnderArbeid.jsonInternalSoknad.soknad.data.personalia
+        val jsonPersonalia = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia
         assertThat(jsonPersonalia.kontonummer.kilde).isEqualTo(JsonKilde.SYSTEM)
         assertThat(jsonPersonalia.kontonummer.verdi).isEqualTo(KONTONUMMER_SYSTEM)
     }
 
     @Test
     fun skalOppdatereKontonummerOgFjerneUlovligeSymboler() {
-        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
+        val soknadUnderArbeid = createSoknadUnderArbeid()
         every { kontonummerService.getKontonummer(any()) } returns KONTONUMMER_SYSTEM + " !#¤%&/()=?`-<>|§,.-* "
 
         kontonummerSystemdata.updateSystemdataIn(soknadUnderArbeid)
 
-        val jsonPersonalia = soknadUnderArbeid.jsonInternalSoknad.soknad.data.personalia
+        val jsonPersonalia = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia
         assertThat(jsonPersonalia.kontonummer.kilde).isEqualTo(JsonKilde.SYSTEM)
         assertThat(jsonPersonalia.kontonummer.verdi).isEqualTo(KONTONUMMER_SYSTEM)
     }
 
     @Test
     fun skalIkkeOppdatereKontonummerDersomKildeErBruker() {
-        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(
-            createJsonInternalSoknadWithUserDefinedKontonummer()
-        )
+        val soknadUnderArbeid = createSoknadUnderArbeid(createJsonInternalSoknadWithUserDefinedKontonummer())
 
         kontonummerSystemdata.updateSystemdataIn(soknadUnderArbeid)
 
-        val jsonPersonalia = soknadUnderArbeid.jsonInternalSoknad.soknad.data.personalia
+        val jsonPersonalia = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia
         assertThat(jsonPersonalia.kontonummer.kilde).isEqualTo(JsonKilde.BRUKER)
         assertThat(jsonPersonalia.kontonummer.verdi).isEqualTo(KONTONUMMER_BRUKER)
     }
 
     @Test
     fun skalSetteNullDersomKontonummerErTomStreng() {
-        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
+        val soknadUnderArbeid = createSoknadUnderArbeid()
         every { kontonummerService.getKontonummer(any()) } returns ""
 
         kontonummerSystemdata.updateSystemdataIn(soknadUnderArbeid)
 
-        val jsonPersonalia = soknadUnderArbeid.jsonInternalSoknad.soknad.data.personalia
+        val jsonPersonalia = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia
         assertThat(jsonPersonalia.kontonummer.kilde).isEqualTo(JsonKilde.BRUKER)
         assertThat(jsonPersonalia.kontonummer.verdi).isNull()
     }
 
     @Test
     fun skalSetteNullDersomKontonummerErNull() {
-        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
+        val soknadUnderArbeid = createSoknadUnderArbeid()
         every { kontonummerService.getKontonummer(any()) } returns null
 
         kontonummerSystemdata.updateSystemdataIn(soknadUnderArbeid)
 
-        val jsonPersonalia = soknadUnderArbeid.jsonInternalSoknad.soknad.data.personalia
+        val jsonPersonalia = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia
         assertThat(jsonPersonalia.kontonummer.kilde).isEqualTo(JsonKilde.BRUKER)
         assertThat(jsonPersonalia.kontonummer.verdi).isNull()
     }
@@ -88,5 +88,18 @@ internal class KontonummerSystemdataTest {
         private const val EIER = "12345678901"
         private const val KONTONUMMER_SYSTEM = "12345678903"
         private const val KONTONUMMER_BRUKER = "11223344556"
+
+        private fun createSoknadUnderArbeid(jsonInternalSoknad: JsonInternalSoknad = createEmptyJsonInternalSoknad(EIER)): SoknadUnderArbeid {
+            return SoknadUnderArbeid(
+                versjon = 1L,
+                behandlingsId = "BEHANDLINGSID",
+                tilknyttetBehandlingsId = null,
+                eier = EIER,
+                jsonInternalSoknad = jsonInternalSoknad,
+                status = SoknadUnderArbeidStatus.UNDER_ARBEID,
+                opprettetDato = LocalDateTime.now(),
+                sistEndretDato = LocalDateTime.now()
+            )
+        }
     }
 }

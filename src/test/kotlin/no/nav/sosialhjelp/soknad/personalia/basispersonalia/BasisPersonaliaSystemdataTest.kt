@@ -5,12 +5,14 @@ import io.mockk.mockk
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonIdentifikator
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonSokernavn
-import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Person
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import java.time.LocalDateTime
 
 internal class BasisPersonaliaSystemdataTest {
 
@@ -19,12 +21,12 @@ internal class BasisPersonaliaSystemdataTest {
 
     @Test
     fun skalIkkeOppdatereDersomPersonaliaErNull() {
-        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
+        val soknadUnderArbeid = createSoknadUnderArbeid()
         every { personService.hentPerson(any()) } returns null
 
         basisPersonaliaSystemdata.updateSystemdataIn(soknadUnderArbeid)
 
-        val jsonPersonalia = soknadUnderArbeid.jsonInternalSoknad.soknad.data.personalia
+        val jsonPersonalia = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia
         assertThat(jsonPersonalia.personIdentifikator.kilde).isEqualTo(JsonPersonIdentifikator.Kilde.SYSTEM)
         assertThat(jsonPersonalia.personIdentifikator.verdi).isEqualTo(EIER)
         assertThat(jsonPersonalia.navn.kilde).isEqualTo(JsonSokernavn.Kilde.SYSTEM)
@@ -49,12 +51,12 @@ internal class BasisPersonaliaSystemdataTest {
             null,
             null
         )
-        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
+        val soknadUnderArbeid = createSoknadUnderArbeid()
         every { personService.hentPerson(any()) } returns person
 
         basisPersonaliaSystemdata.updateSystemdataIn(soknadUnderArbeid)
 
-        val jsonPersonalia = soknadUnderArbeid.jsonInternalSoknad.soknad.data.personalia
+        val jsonPersonalia = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia
         assertThat(jsonPersonalia.personIdentifikator.kilde).isEqualTo(JsonPersonIdentifikator.Kilde.SYSTEM)
         assertThat(jsonPersonalia.personIdentifikator.verdi).isEqualTo(EIER)
         assertThat(jsonPersonalia.navn.kilde).isEqualTo(JsonSokernavn.Kilde.SYSTEM)
@@ -81,12 +83,12 @@ internal class BasisPersonaliaSystemdataTest {
             null,
             null
         )
-        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
+        val soknadUnderArbeid = createSoknadUnderArbeid()
         every { personService.hentPerson(any()) } returns person
 
         basisPersonaliaSystemdata.updateSystemdataIn(soknadUnderArbeid)
 
-        val jsonPersonalia = soknadUnderArbeid.jsonInternalSoknad.soknad.data.personalia
+        val jsonPersonalia = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia
         assertThat(jsonPersonalia.statsborgerskap.kilde).isEqualTo(JsonKilde.SYSTEM)
         assertThat(jsonPersonalia.statsborgerskap.verdi).isEqualTo(NORSK_STATSBORGERSKAP)
         assertThat(jsonPersonalia.nordiskBorger.kilde).isEqualTo(JsonKilde.SYSTEM)
@@ -102,12 +104,12 @@ internal class BasisPersonaliaSystemdataTest {
             ),
             null, null, null, null
         )
-        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
+        val soknadUnderArbeid = createSoknadUnderArbeid()
         every { personService.hentPerson(any()) } returns person
 
         basisPersonaliaSystemdata.updateSystemdataIn(soknadUnderArbeid)
 
-        val jsonPersonalia = soknadUnderArbeid.jsonInternalSoknad.soknad.data.personalia
+        val jsonPersonalia = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia
         assertThat(jsonPersonalia.statsborgerskap.kilde).isEqualTo(JsonKilde.SYSTEM)
         assertThat(jsonPersonalia.statsborgerskap.verdi).isEqualTo(NORDISK_STATSBORGERSKAP)
         assertThat(jsonPersonalia.nordiskBorger.kilde).isEqualTo(JsonKilde.SYSTEM)
@@ -123,12 +125,12 @@ internal class BasisPersonaliaSystemdataTest {
             ),
             null, null, null, null
         )
-        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
+        val soknadUnderArbeid = createSoknadUnderArbeid()
         every { personService.hentPerson(any()) } returns person
 
         basisPersonaliaSystemdata.updateSystemdataIn(soknadUnderArbeid)
 
-        val jsonPersonalia = soknadUnderArbeid.jsonInternalSoknad.soknad.data.personalia
+        val jsonPersonalia = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia
         assertThat(jsonPersonalia.personIdentifikator.kilde).isEqualTo(JsonPersonIdentifikator.Kilde.SYSTEM)
         assertThat(jsonPersonalia.personIdentifikator.verdi).isEqualTo(EIER)
         assertThat(jsonPersonalia.navn.kilde).isEqualTo(JsonSokernavn.Kilde.SYSTEM)
@@ -145,12 +147,12 @@ internal class BasisPersonaliaSystemdataTest {
     @Test
     fun skalikkeSendeMedStatsborgerskapForUkjent_TPS() {
         val person = Person(FORNAVN, MELLOMNAVN, ETTERNAVN, EIER, "ugift", listOf("???"), null, null, null, null)
-        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
+        val soknadUnderArbeid = createSoknadUnderArbeid()
         every { personService.hentPerson(any()) } returns person
 
         basisPersonaliaSystemdata.updateSystemdataIn(soknadUnderArbeid)
 
-        val jsonPersonalia = soknadUnderArbeid.jsonInternalSoknad.soknad.data.personalia
+        val jsonPersonalia = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia
         assertThat(jsonPersonalia.statsborgerskap).isNull()
         assertThat(jsonPersonalia.nordiskBorger).isNull()
     }
@@ -169,12 +171,12 @@ internal class BasisPersonaliaSystemdataTest {
             null,
             null
         )
-        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
+        val soknadUnderArbeid = createSoknadUnderArbeid()
         every { personService.hentPerson(any()) } returns person
 
         basisPersonaliaSystemdata.updateSystemdataIn(soknadUnderArbeid)
 
-        val jsonPersonalia = soknadUnderArbeid.jsonInternalSoknad.soknad.data.personalia
+        val jsonPersonalia = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia
         assertThat(jsonPersonalia.statsborgerskap).isNull()
         assertThat(jsonPersonalia.nordiskBorger).isNull()
     }
@@ -201,5 +203,18 @@ internal class BasisPersonaliaSystemdataTest {
         private const val NORSK_STATSBORGERSKAP = "NOR"
         private const val NORDISK_STATSBORGERSKAP = "FIN"
         private const val IKKE_NORDISK_STATSBORGERSKAP = "GER"
+
+        private fun createSoknadUnderArbeid(): SoknadUnderArbeid {
+            return SoknadUnderArbeid(
+                versjon = 1L,
+                behandlingsId = "BEHANDLINGSID",
+                tilknyttetBehandlingsId = null,
+                eier = EIER,
+                jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
+                status = SoknadUnderArbeidStatus.UNDER_ARBEID,
+                opprettetDato = LocalDateTime.now(),
+                sistEndretDato = LocalDateTime.now()
+            )
+        }
     }
 }

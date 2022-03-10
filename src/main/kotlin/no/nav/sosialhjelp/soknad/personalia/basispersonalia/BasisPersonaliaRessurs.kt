@@ -33,6 +33,7 @@ open class BasisPersonaliaRessurs(
         tilgangskontroll.verifiserAtBrukerHarTilgang()
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).jsonInternalSoknad
+            ?: throw IllegalStateException("Kan ikke hente søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
         return mapToBasisPersonaliaFrontend(soknad.soknad.data.personalia)
     }
 

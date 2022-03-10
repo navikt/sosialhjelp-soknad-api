@@ -35,11 +35,13 @@ open class AdresseRessurs(
         tilgangskontroll.verifiserAtBrukerHarTilgang()
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
-        val personIdentifikator = soknad.jsonInternalSoknad.soknad.data.personalia.personIdentifikator.verdi
-        val jsonOppholdsadresse = soknad.jsonInternalSoknad.soknad.data.personalia.oppholdsadresse
-        val sysFolkeregistrertAdresse = soknad.jsonInternalSoknad.soknad.data.personalia.folkeregistrertAdresse
+        val jsonInternalSoknad = soknad.jsonInternalSoknad
+            ?: throw IllegalStateException("Kan ikke hente søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
+        val personIdentifikator = jsonInternalSoknad.soknad.data.personalia.personIdentifikator.verdi
+        val jsonOppholdsadresse = jsonInternalSoknad.soknad.data.personalia.oppholdsadresse
+        val sysFolkeregistrertAdresse = jsonInternalSoknad.soknad.data.personalia.folkeregistrertAdresse
         val sysMidlertidigAdresse = adresseSystemdata.innhentMidlertidigAdresse(personIdentifikator)
-        soknad.jsonInternalSoknad.midlertidigAdresse = sysMidlertidigAdresse
+        jsonInternalSoknad.midlertidigAdresse = sysMidlertidigAdresse
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
         return AdresseMapper.mapToAdresserFrontend(
             sysFolkeregistrertAdresse,
@@ -56,7 +58,9 @@ open class AdresseRessurs(
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
-        val personalia = soknad.jsonInternalSoknad.soknad.data.personalia
+        val jsonInternalSoknad = soknad.jsonInternalSoknad
+            ?: throw IllegalStateException("Kan ikke oppdatere søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
+        val personalia = jsonInternalSoknad.soknad.data.personalia
         when (adresserFrontend.valg) {
             JsonAdresseValg.FOLKEREGISTRERT ->
                 personalia.oppholdsadresse =
@@ -74,7 +78,7 @@ open class AdresseRessurs(
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
         return navEnhetRessurs.findSoknadsmottaker(
             eier,
-            soknad.jsonInternalSoknad.soknad,
+            jsonInternalSoknad.soknad,
             adresserFrontend.valg.toString(),
             null
         )

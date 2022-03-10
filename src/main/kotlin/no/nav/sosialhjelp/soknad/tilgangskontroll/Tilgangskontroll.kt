@@ -45,10 +45,7 @@ class Tilgangskontroll(
         verifiserAtInnloggetBrukerErEierAvSoknad(eier)
     }
 
-    private fun verifiserAtInnloggetBrukerErEierAvSoknad(eier: String?) {
-        if (Objects.isNull(eier)) {
-            throw AuthorizationException("Søknaden har ingen eier")
-        }
+    private fun verifiserAtInnloggetBrukerErEierAvSoknad(eier: String) {
         val fnr = SubjectHandlerUtils.getUserIdFromToken()
         if (fnr != eier) {
             throw AuthorizationException("Fnr stemmer ikke overens med eieren til søknaden")

@@ -18,8 +18,9 @@ import no.nav.sosialhjelp.soknad.common.MiljoUtils
 import no.nav.sosialhjelp.soknad.common.filedetection.MimeTypes
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedlegg
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggType
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
-import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.domain.Vedleggstatus
 import no.nav.sosialhjelp.soknad.innsending.HenvendelseService
 import no.nav.sosialhjelp.soknad.innsending.InnsendingService
@@ -32,6 +33,7 @@ import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import java.time.LocalDateTime
 
 internal class DigisosApiServiceTest {
     private val digisosApiClient: DigisosApiClient = mockk()
@@ -67,9 +69,7 @@ internal class DigisosApiServiceTest {
 
     @Test
     fun skalLageOpplastingsListeMedDokumenterForSoknad() {
-        val soknadUnderArbeid = SoknadUnderArbeid()
-            .withJsonInternalSoknad(createEmptyJsonInternalSoknad("12345678910"))
-            .withEier("eier")
+        val soknadUnderArbeid = createSoknadUnderArbeid("12345678910")
 
         every { sosialhjelpPdfGenerator.generate(any(), any()) } returns byteArrayOf(1, 2, 3)
         every { sosialhjelpPdfGenerator.generateBrukerkvitteringPdf() } returns byteArrayOf(1, 2, 3)
@@ -94,12 +94,10 @@ internal class DigisosApiServiceTest {
         every { sosialhjelpPdfGenerator.generateEttersendelsePdf(any(), any()) } returns byteArrayOf(1, 2, 3)
         every { sosialhjelpPdfGenerator.generateBrukerkvitteringPdf() } returns byteArrayOf(1, 2, 3)
 
-        val fiksDokumenter = digisosApiService.lagDokumentListe(
-            SoknadUnderArbeid()
-                .withTilknyttetBehandlingsId("123")
-                .withJsonInternalSoknad(lagInternalSoknadForEttersending())
-                .withEier("eier")
-        )
+        val soknadUnderArbeid = createSoknadUnderArbeid("eier")
+        soknadUnderArbeid.tilknyttetBehandlingsId = "123"
+        soknadUnderArbeid.jsonInternalSoknad = lagInternalSoknadForEttersending()
+        val fiksDokumenter = digisosApiService.lagDokumentListe(soknadUnderArbeid)
         assertThat(fiksDokumenter.size).isEqualTo(3)
         assertThat(fiksDokumenter[0].metadata.filnavn).isEqualTo("ettersendelse.pdf")
         assertThat(fiksDokumenter[1].metadata.filnavn).isEqualTo("Brukerkvittering.pdf")
@@ -133,9 +131,7 @@ internal class DigisosApiServiceTest {
         every { MiljoUtils.isNonProduction() } returns true
         every { MiljoUtils.environmentName } returns "test"
 
-        val soknadUnderArbeid = SoknadUnderArbeid()
-            .withJsonInternalSoknad(createEmptyJsonInternalSoknad("12345678910"))
-            .withEier("eier")
+        val soknadUnderArbeid = createSoknadUnderArbeid("12345678910")
 
         every { sosialhjelpPdfGenerator.generate(any(), any()) } returns byteArrayOf(1, 2, 3)
         every { sosialhjelpPdfGenerator.generateBrukerkvitteringPdf() } returns byteArrayOf(1, 2, 3)
@@ -177,6 +173,19 @@ internal class DigisosApiServiceTest {
                 filnavn = "FILNAVN",
                 sha512 = "sha512"
             )
+        )
+    }
+
+    private fun createSoknadUnderArbeid(eier: String): SoknadUnderArbeid {
+        return SoknadUnderArbeid(
+            versjon = 1L,
+            behandlingsId = "behandlingsid",
+            tilknyttetBehandlingsId = null,
+            eier = eier,
+            jsonInternalSoknad = createEmptyJsonInternalSoknad(eier),
+            status = SoknadUnderArbeidStatus.UNDER_ARBEID,
+            opprettetDato = LocalDateTime.now(),
+            sistEndretDato = LocalDateTime.now()
         )
     }
 }

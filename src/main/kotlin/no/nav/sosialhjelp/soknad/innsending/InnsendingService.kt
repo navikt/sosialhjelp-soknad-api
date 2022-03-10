@@ -4,10 +4,10 @@ import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedle
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRepository
 import no.nav.sosialhjelp.soknad.db.repositories.sendtsoknad.SendtSoknadRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.domain.SendtSoknad
-import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
-import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
 import org.apache.commons.lang3.StringUtils
 import org.slf4j.LoggerFactory
@@ -24,7 +24,7 @@ open class InnsendingService(
     private val soknadMetadataRepository: SoknadMetadataRepository
 ) {
     open fun opprettSendtSoknad(soknadUnderArbeid: SoknadUnderArbeid?) {
-        check(!(soknadUnderArbeid == null || soknadUnderArbeid.soknadId == null)) { "Kan ikke sende søknad som ikke finnes eller som mangler søknadsid" }
+        check(soknadUnderArbeid != null) { "Kan ikke sende søknad som ikke finnes eller som mangler søknadsid" }
         soknadUnderArbeidService.settInnsendingstidspunktPaSoknad(soknadUnderArbeid)
         soknadUnderArbeid.status = SoknadUnderArbeidStatus.LAAST
         soknadUnderArbeidRepository.oppdaterInnsendingStatus(soknadUnderArbeid, soknadUnderArbeid.eier)
@@ -63,15 +63,14 @@ open class InnsendingService(
         return soknadUnderArbeidOptional.get()
     }
 
-    open fun hentAlleOpplastedeVedleggForSoknad(soknadUnderArbeid: SoknadUnderArbeid?): List<OpplastetVedlegg> {
-        if (soknadUnderArbeid == null) {
-            throw RuntimeException("Kan ikke hente vedlegg fordi søknad mangler")
-        }
+    open fun hentAlleOpplastedeVedleggForSoknad(soknadUnderArbeid: SoknadUnderArbeid): List<OpplastetVedlegg> {
         return opplastetVedleggRepository.hentVedleggForSoknad(soknadUnderArbeid.soknadId, soknadUnderArbeid.eier)
     }
 
     open fun finnSendtSoknadForEttersendelse(soknadUnderArbeid: SoknadUnderArbeid): SendtSoknad {
         val tilknyttetBehandlingsId = soknadUnderArbeid.tilknyttetBehandlingsId
+            ?: throw IllegalStateException("TilknyttetBehandlingsId kan ikke være null for en ettersendelse")
+
         val sendtSoknad = sendtSoknadRepository.hentSendtSoknad(tilknyttetBehandlingsId, soknadUnderArbeid.eier)
         return if (sendtSoknad.isPresent) {
             sendtSoknad.get()

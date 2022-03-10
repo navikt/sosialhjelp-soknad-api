@@ -6,7 +6,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOrganisasjon
 import no.nav.sosialhjelp.soknad.arbeid.ArbeidsforholdSystemdata
-import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService.Companion.nowWithForcedNanoseconds
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.domain.Utbetaling
 import no.nav.sosialhjelp.soknad.organisasjon.OrganisasjonService
@@ -20,7 +20,9 @@ class SkatteetatenSystemdata(
 ) {
 
     fun updateSystemdataIn(soknadUnderArbeid: SoknadUnderArbeid) {
-        val jsonData = soknadUnderArbeid.jsonInternalSoknad.soknad.data
+        val jsonInternalSoknad = soknadUnderArbeid.jsonInternalSoknad ?: return
+
+        val jsonData = jsonInternalSoknad.soknad.data
         val personIdentifikator = jsonData.personalia.personIdentifikator.verdi
         val okonomiOpplysningUtbetalinger = jsonData.okonomi.opplysninger.utbetaling
         val bekreftelser = jsonData.okonomi.opplysninger.bekreftelse
@@ -28,21 +30,21 @@ class SkatteetatenSystemdata(
         if (bekreftelser.any { it.type.equals(UTBETALING_SKATTEETATEN_SAMTYKKE, ignoreCase = true) && it.verdi }) {
             val systemUtbetalingerSkattbar = innhentSkattbarSystemregistrertInntekt(personIdentifikator)
             if (systemUtbetalingerSkattbar == null) {
-                soknadUnderArbeid.jsonInternalSoknad.soknad.driftsinformasjon.inntektFraSkatteetatenFeilet = true
+                jsonInternalSoknad.soknad.driftsinformasjon.inntektFraSkatteetatenFeilet = true
             } else {
                 bekreftelser
                     .firstOrNull { it.type.equals(UTBETALING_SKATTEETATEN_SAMTYKKE, ignoreCase = true) }
                     ?.withBekreftelsesDato(nowWithForcedNanoseconds())
                 fjernGamleUtbetalinger(okonomiOpplysningUtbetalinger)
                 okonomiOpplysningUtbetalinger.addAll(systemUtbetalingerSkattbar)
-                soknadUnderArbeid.jsonInternalSoknad.soknad.driftsinformasjon.inntektFraSkatteetatenFeilet = false
+                jsonInternalSoknad.soknad.driftsinformasjon.inntektFraSkatteetatenFeilet = false
             }
         } else { // Ikke samtykke!!!
             fjernGamleUtbetalinger(okonomiOpplysningUtbetalinger)
-            soknadUnderArbeid.jsonInternalSoknad.soknad.driftsinformasjon.inntektFraSkatteetatenFeilet = false
+            jsonInternalSoknad.soknad.driftsinformasjon.inntektFraSkatteetatenFeilet = false
         }
         // Dette kan påvirke hvilke forventinger vi har til arbeidsforhold:
-        ArbeidsforholdSystemdata.updateVedleggForventninger(soknadUnderArbeid.jsonInternalSoknad, textService)
+        ArbeidsforholdSystemdata.updateVedleggForventninger(jsonInternalSoknad, textService)
     }
 
     private fun fjernGamleUtbetalinger(okonomiOpplysningUtbetalinger: MutableList<JsonOkonomiOpplysningUtbetaling>) {

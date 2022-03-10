@@ -31,7 +31,9 @@ open class TelefonnummerRessurs(
         tilgangskontroll.verifiserAtBrukerHarTilgang()
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
-        val telefonnummer = soknadUnderArbeid.jsonInternalSoknad.soknad.data.personalia.telefonnummer
+        val jsonInternalSoknad = soknadUnderArbeid.jsonInternalSoknad
+            ?: throw IllegalStateException("Kan ikke hente søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
+        val telefonnummer = jsonInternalSoknad.soknad.data.personalia.telefonnummer
         val systemverdi: String? = if (telefonnummer != null && telefonnummer.kilde == JsonKilde.SYSTEM) {
             telefonnummer.verdi
         } else {
@@ -52,7 +54,9 @@ open class TelefonnummerRessurs(
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
-        val personalia = soknad.jsonInternalSoknad.soknad.data.personalia
+        val jsonInternalSoknad = soknad.jsonInternalSoknad
+            ?: throw IllegalStateException("Kan ikke oppdatere søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
+        val personalia = jsonInternalSoknad.soknad.data.personalia
         val jsonTelefonnummer = personalia.telefonnummer ?: personalia.withTelefonnummer(JsonTelefonnummer()).telefonnummer
         if (telefonnummerFrontend.brukerdefinert) {
             if (telefonnummerFrontend.brukerutfyltVerdi.isNullOrBlank()) {

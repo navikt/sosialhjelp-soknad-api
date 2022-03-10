@@ -12,7 +12,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysn
 import no.nav.sosialhjelp.soknad.common.mapper.OkonomiMapper.addUtbetalingIfNotPresentInOpplysninger
 import no.nav.sosialhjelp.soknad.common.mapper.OkonomiMapper.removeUtbetalingIfPresentInOpplysninger
 import no.nav.sosialhjelp.soknad.common.mapper.TitleKeyMapper.soknadTypeToTitleKey
-import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService.Companion.nowWithForcedNanoseconds
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.domain.Bostotte
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.domain.Sak
@@ -27,7 +27,7 @@ open class BostotteSystemdata(
 ) {
 
     open fun updateSystemdataIn(soknadUnderArbeid: SoknadUnderArbeid, token: String?) {
-        val soknad = soknadUnderArbeid.jsonInternalSoknad.soknad
+        val soknad = soknadUnderArbeid.jsonInternalSoknad?.soknad ?: return
         val okonomi = soknad.data.okonomi
         if (okonomi.opplysninger.bekreftelse.any { it.type.equals(BOSTOTTE_SAMTYKKE, ignoreCase = true) && it.verdi }) {
             val bostotte = innhentBostotteFraHusbanken(token)
