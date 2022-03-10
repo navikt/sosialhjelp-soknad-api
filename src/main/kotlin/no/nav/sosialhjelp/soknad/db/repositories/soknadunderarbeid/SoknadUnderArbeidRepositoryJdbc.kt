@@ -27,6 +27,7 @@ import java.util.Optional
 import javax.inject.Inject
 import javax.sql.DataSource
 
+@Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 @Component
 open class SoknadUnderArbeidRepositoryJdbc(
     private val transactionTemplate: TransactionTemplate,
@@ -173,8 +174,8 @@ open class SoknadUnderArbeidRepositoryJdbc(
         })
     }
 
-    private fun sjekkOmBrukerEierSoknadUnderArbeid(soknadUnderArbeid: SoknadUnderArbeid, eier: String?) {
-        if (eier == null || !eier.equals(soknadUnderArbeid.eier, ignoreCase = true)) {
+    private fun sjekkOmBrukerEierSoknadUnderArbeid(soknadUnderArbeid: SoknadUnderArbeid, eier: String) {
+        if (!eier.equals(soknadUnderArbeid.eier, ignoreCase = true)) {
             throw RuntimeException("Eier stemmer ikke med søknadens eier")
         }
     }

@@ -9,6 +9,7 @@ import javax.sql.DataSource
  * Repository for OpplastetVedlegg.
  * Operasjoner som kun er tiltenkt batch/schedulerte jobber.
  */
+@Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 @Component
 class BatchOpplastetVedleggRepositoryJdbc : NamedParameterJdbcDaoSupport(), BatchOpplastetVedleggRepository {
 

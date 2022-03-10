@@ -12,6 +12,7 @@ import java.util.Optional
 import javax.inject.Inject
 import javax.sql.DataSource
 
+@Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 @Component
 class SendtSoknadRepositoryJdbc : NamedParameterJdbcDaoSupport(), SendtSoknadRepository {
 
@@ -20,7 +21,7 @@ class SendtSoknadRepositoryJdbc : NamedParameterJdbcDaoSupport(), SendtSoknadRep
         super.setDataSource(ds)
     }
 
-    override fun opprettSendtSoknad(sendtSoknad: SendtSoknad, eier: String?): Long {
+    override fun opprettSendtSoknad(sendtSoknad: SendtSoknad, eier: String?): Long? {
         sjekkOmBrukerEierSendtSoknad(sendtSoknad, eier)
         val sendtSoknadId = jdbcTemplate.queryForObject(
             SQLUtils.selectNextSequenceValue("SENDT_SOKNAD_ID_SEQ"),

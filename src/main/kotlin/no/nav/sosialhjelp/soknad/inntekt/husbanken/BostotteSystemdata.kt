@@ -95,7 +95,7 @@ open class BostotteSystemdata(
             .withTittel("Statlig bostøtte")
             .withMottaker(JsonOkonomiOpplysningUtbetaling.Mottaker.fromValue(gjorForsteBokstavStor(utbetaling.mottaker.toString())))
             .withNetto(utbetaling.belop.toDouble())
-            .withUtbetalingsdato(if (utbetaling.utbetalingsdato != null) utbetaling.utbetalingsdato.toString() else null)
+            .withUtbetalingsdato(utbetaling.utbetalingsdato.toString())
             .withOverstyrtAvBruker(false)
     }
 
@@ -118,9 +118,7 @@ open class BostotteSystemdata(
             .withDato(sak.dato.toString())
         if (sak.vedtak != null) {
             bostotteSak.withBeskrivelse(sak.vedtak.beskrivelse)
-            if (sak.vedtak.type != null) {
-                bostotteSak.withVedtaksstatus(JsonBostotteSak.Vedtaksstatus.fromValue(sak.vedtak.type))
-            }
+            bostotteSak.withVedtaksstatus(JsonBostotteSak.Vedtaksstatus.fromValue(sak.vedtak.type))
         }
         return bostotteSak
     }

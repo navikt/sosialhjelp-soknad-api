@@ -8,6 +8,7 @@ import java.util.Optional
 import javax.inject.Inject
 import javax.sql.DataSource
 
+@Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 @Component
 open class OpplastetVedleggRepositoryJdbc : NamedParameterJdbcDaoSupport(), OpplastetVedleggRepository {
 
@@ -35,7 +36,7 @@ open class OpplastetVedleggRepositoryJdbc : NamedParameterJdbcDaoSupport(), Oppl
     }
 
     override fun opprettVedlegg(opplastetVedlegg: OpplastetVedlegg, eier: String): String {
-        if (eier == null || !eier.equals(opplastetVedlegg.eier, ignoreCase = true)) {
+        if (!eier.equals(opplastetVedlegg.eier, ignoreCase = true)) {
             throw RuntimeException("Eier stemmer ikke med vedleggets eier")
         }
         jdbcTemplate.update(

@@ -79,8 +79,8 @@ class SkatteetatenSystemdata(
             .withBrutto(utbetaling.brutto)
             .withSkattetrekk(utbetaling.skattetrekk)
             .withOrganisasjon(mapToJsonOrganisasjon(utbetaling.orgnummer))
-            .withPeriodeFom(if (utbetaling.periodeFom != null) utbetaling.periodeFom.toString() else null)
-            .withPeriodeTom(if (utbetaling.periodeTom != null) utbetaling.periodeTom.toString() else null)
+            .withPeriodeFom(utbetaling.periodeFom.toString())
+            .withPeriodeTom(utbetaling.periodeTom.toString())
             .withOverstyrtAvBruker(false)
     }
 
