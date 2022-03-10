@@ -77,7 +77,9 @@ class AvbrytAutomatiskScheduler(
     }
 
     private fun harGaattForLangTid(): Boolean {
-        return LocalDateTime.now().isAfter(batchStartTime!!.plusSeconds(SCHEDULE_INTERRUPT_S))
+        return batchStartTime
+            ?.let { LocalDateTime.now().isAfter(it.plusSeconds(SCHEDULE_INTERRUPT_S)) }
+            ?: true.also { logger.warn("AvbrytAutomatiskScheduler finner ikke batchStartTime - avbryter batchjobben") }
     }
 
     companion object {
