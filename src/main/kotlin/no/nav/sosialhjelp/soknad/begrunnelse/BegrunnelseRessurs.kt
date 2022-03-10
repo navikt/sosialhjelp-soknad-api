@@ -33,7 +33,7 @@ open class BegrunnelseRessurs(
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).jsonInternalSoknad
             ?: throw IllegalStateException("Kan ikke hente søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
         val begrunnelse = soknad.soknad.data.begrunnelse
-        return BegrunnelseFrontend(begrunnelse.hvaSokesOm, begrunnelse.hvorforSoke)
+        return BegrunnelseFrontend(begrunnelse?.hvaSokesOm, begrunnelse?.hvorforSoke)
     }
 
     @PUT
@@ -47,9 +47,9 @@ open class BegrunnelseRessurs(
         val jsonInternalSoknad = soknad.jsonInternalSoknad
             ?: throw IllegalStateException("Kan ikke oppdatere søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
         val begrunnelse = jsonInternalSoknad.soknad.data.begrunnelse
-        begrunnelse.kilde = JsonKildeBruker.BRUKER
-        begrunnelse.hvaSokesOm = begrunnelseFrontend.hvaSokesOm
-        begrunnelse.hvorforSoke = begrunnelseFrontend.hvorforSoke
+        begrunnelse?.kilde = JsonKildeBruker.BRUKER
+        begrunnelse?.hvaSokesOm = begrunnelseFrontend.hvaSokesOm
+        begrunnelse?.hvorforSoke = begrunnelseFrontend.hvorforSoke
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
     }
 
