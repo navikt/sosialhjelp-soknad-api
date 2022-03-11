@@ -1,3 +1,7 @@
+application:
+  name: sosialhjelp-soknad-api
+  version: version
+
 # Miljøkonfigurasjon for lokal Jetty-server.
 environment.name: local
 

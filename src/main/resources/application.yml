@@ -1,4 +1,6 @@
-application.name: sosialhjelp-soknad-api
+application:
+  name: ${NAIS_APP_NAME}
+  version: ${NAIS_APP_IMAGE}
 
 srvsoknadsosialhjelp.server.username: ${SRVSOKNADSOSIALHJELP_SERVER_USERNAME}
 srvsoknadsosialhjelp.server.password: ${SRVSOKNADSOSIALHJELP_SERVER_PASSWORD}
