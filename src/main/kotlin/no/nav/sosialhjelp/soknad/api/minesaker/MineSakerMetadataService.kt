@@ -17,12 +17,13 @@ class MineSakerMetadataService(
             .orElse(emptyList())
         log.debug("Fant {} innsendte soknader", innsendteSoknader.size)
         return innsendteSoknader.firstOrNull()
+            ?.innsendtDato
             ?.let {
                 listOf(
                     InnsendtSoknadDto(
                         TEMA_NAVN,
                         TEMA_KODE_KOM,
-                        toUtc(it.innsendtDato, ZoneId.systemDefault()).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+                        toUtc(it, ZoneId.systemDefault()).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
                     )
                 )
             } ?: emptyList()

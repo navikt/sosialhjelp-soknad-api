@@ -1,9 +1,9 @@
 package no.nav.sosialhjelp.soknad.db.repositories.oppgave
 
 import no.nav.sosialhjelp.soknad.db.SQLUtils
+import no.nav.sosialhjelp.soknad.db.SQLUtils.nullableTimestampTilTid
 import no.nav.sosialhjelp.soknad.db.SQLUtils.selectNextSequenceValue
 import no.nav.sosialhjelp.soknad.db.SQLUtils.tidTilTimestamp
-import no.nav.sosialhjelp.soknad.db.SQLUtils.timestampTilTid
 import no.nav.sosialhjelp.soknad.domain.FiksData
 import no.nav.sosialhjelp.soknad.domain.FiksResultat
 import no.nav.sosialhjelp.soknad.domain.Oppgave
@@ -31,9 +31,9 @@ open class OppgaveRepositoryJdbc : NamedParameterJdbcDaoSupport(), OppgaveReposi
         oppgave.steg = rs.getInt("steg")
         oppgave.oppgaveData = Oppgave.JAXB.unmarshal(rs.getString("oppgavedata"), FiksData::class.java)
         oppgave.oppgaveResultat = Oppgave.JAXB.unmarshal(rs.getString("oppgaveresultat"), FiksResultat::class.java)
-        oppgave.opprettet = timestampTilTid(rs.getTimestamp("opprettet"))
-        oppgave.sistKjort = timestampTilTid(rs.getTimestamp("sistkjort"))
-        oppgave.nesteForsok = timestampTilTid(rs.getTimestamp("nesteforsok"))
+        oppgave.opprettet = nullableTimestampTilTid(rs.getTimestamp("opprettet"))
+        oppgave.sistKjort = nullableTimestampTilTid(rs.getTimestamp("sistkjort"))
+        oppgave.nesteForsok = nullableTimestampTilTid(rs.getTimestamp("nesteforsok"))
         oppgave.retries = rs.getInt("retries")
         oppgave
     }

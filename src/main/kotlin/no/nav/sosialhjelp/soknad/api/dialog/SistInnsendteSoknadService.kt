@@ -9,12 +9,13 @@ class SistInnsendteSoknadService(
 ) {
     fun hentSistInnsendteSoknad(fnr: String): SistInnsendteSoknadDto? {
         return soknadMetadataRepository.hentAlleInnsendteSoknaderForBruker(fnr)
-            .maxByOrNull { it.innsendtDato }
+            .filter { it.innsendtDato != null }
+            .maxByOrNull { it.innsendtDato!! }
             ?.let {
                 SistInnsendteSoknadDto(
                     it.fnr,
-                    it.navEnhet,
-                    it.innsendtDato.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+                    it.navEnhet!!,
+                    it.innsendtDato!!.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
                 )
             }
     }

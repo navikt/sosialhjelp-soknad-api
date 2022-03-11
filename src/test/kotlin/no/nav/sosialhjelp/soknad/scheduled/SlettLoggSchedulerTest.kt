@@ -8,15 +8,15 @@ import io.mockk.verify
 import no.nav.sosialhjelp.soknad.db.repositories.oppgave.OppgaveRepository
 import no.nav.sosialhjelp.soknad.db.repositories.sendtsoknad.BatchSendtSoknadRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.BatchSoknadMetadataRepository
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadata
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataInnsendingStatus
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataInnsendingStatus.UNDER_ARBEID
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataType
 import no.nav.sosialhjelp.soknad.domain.FiksData
 import no.nav.sosialhjelp.soknad.domain.FiksResultat
 import no.nav.sosialhjelp.soknad.domain.Oppgave
 import no.nav.sosialhjelp.soknad.domain.SendtSoknad
-import no.nav.sosialhjelp.soknad.domain.SoknadMetadata
-import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus
-import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus.UNDER_ARBEID
-import no.nav.sosialhjelp.soknad.domain.SoknadMetadataType
 import no.nav.sosialhjelp.soknad.scheduled.leaderelection.LeaderElection
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -117,17 +117,17 @@ internal class SlettLoggSchedulerTest {
         status: SoknadMetadataInnsendingStatus,
         dagerSiden: Int
     ): SoknadMetadata {
-        val meta = SoknadMetadata()
-        meta.id = soknadMetadataRepository.hentNesteId()
-        meta.behandlingsId = behandlingsId
-        meta.fnr = EIER
-        meta.type = SoknadMetadataType.SEND_SOKNAD_KOMMUNAL
-        meta.skjema = ""
-        meta.status = status
-        meta.innsendtDato = LocalDateTime.now().minusDays(dagerSiden.toLong())
-        meta.opprettetDato = LocalDateTime.now().minusDays(dagerSiden.toLong())
-        meta.sistEndretDato = LocalDateTime.now().minusDays(dagerSiden.toLong())
-        return meta
+        return SoknadMetadata(
+            id = soknadMetadataRepository.hentNesteId(),
+            behandlingsId = behandlingsId,
+            fnr = EIER,
+            type = SoknadMetadataType.SEND_SOKNAD_KOMMUNAL,
+            skjema = "",
+            status = status,
+            innsendtDato = LocalDateTime.now().minusDays(dagerSiden.toLong()),
+            opprettetDato = LocalDateTime.now().minusDays(dagerSiden.toLong()),
+            sistEndretDato = LocalDateTime.now().minusDays(dagerSiden.toLong()),
+        )
     }
 
     private fun sendtSoknad(behandlingsId: String, eier: String, dagerSiden: Int): SendtSoknad {
