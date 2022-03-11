@@ -6,7 +6,7 @@ import io.prometheus.client.hotspot.DefaultExports
 import no.nav.sosialhjelp.metrics.MetricsClient
 import no.nav.sosialhjelp.metrics.MetricsConfig.resolveNaisConfig
 import no.nav.sosialhjelp.metrics.aspects.TimerAspect
-import no.nav.sosialhjelp.soknad.common.MiljoUtils.naisAppName
+import no.nav.sosialhjelp.soknad.common.MiljoUtils
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.web.servlet.ServletRegistrationBean
 import org.springframework.context.annotation.Bean
@@ -44,8 +44,7 @@ open class MetricsConfig(
 
     @Bean
     open fun metricProperties(): MetricProperties? {
-        val miljo = System.getenv("ENVIRONMENT_NAME")
-        val metricProperties = MetricProperties(host, miljo)
+        val metricProperties = MetricProperties(MiljoUtils.naisAppName, host, MiljoUtils.environmentName)
         if (metricsReportEnabled) {
             metricProperties.enableMetrics()
         }
@@ -53,11 +52,12 @@ open class MetricsConfig(
     }
 
     class MetricProperties(
+        private val applicationName: String,
         private val host: String?,
         private val miljo: String?
     ) {
         fun enableMetrics() {
-            MetricsClient.enableMetrics(resolveNaisConfig(naisAppName, miljo, host))
+            MetricsClient.enableMetrics(resolveNaisConfig(applicationName, miljo, host))
         }
     }
 }

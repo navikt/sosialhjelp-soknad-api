@@ -1,10 +1,8 @@
 package no.nav.sosialhjelp.soknad.health.selftest
 
-import no.nav.sosialhjelp.soknad.common.MiljoUtils.naisAppImage
-import no.nav.sosialhjelp.soknad.common.MiljoUtils.naisAppName
 import org.apache.commons.lang3.exception.ExceptionUtils
 import org.slf4j.LoggerFactory
-import org.springframework.context.ApplicationContext
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -12,7 +10,9 @@ import java.util.function.Function
 
 @Component
 class SelftestService(
-    private val appContext: ApplicationContext
+    @Value("\${application.name}") private val applicationName: String,
+    @Value("\${application.version}") private val applicationVersion: String,
+    private val pingables: List<Pingable>
 ) {
     private var result: List<Pingable.Ping> = mutableListOf()
 
@@ -22,8 +22,8 @@ class SelftestService(
     fun lagSelftest(): Selftest {
         doPing()
         return Selftest(
-            application = naisAppName,
-            version = naisAppImage,
+            application = applicationName,
+            version = applicationVersion,
             timestamp = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME),
             aggregateResult = aggregertStatus,
             checks = result.map { lagSelftestEndpoint(it) }
@@ -41,9 +41,6 @@ class SelftestService(
             }
         }
     }
-
-    private val pingables: Collection<Pingable>
-        get() = appContext.getBeansOfType(Pingable::class.java).values
 
     private val aggregertStatus: Int
         get() {
