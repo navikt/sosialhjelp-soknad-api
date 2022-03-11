@@ -4,9 +4,6 @@ import no.nav.sosialhjelp.soknad.db.SQLUtils
 import no.nav.sosialhjelp.soknad.db.SQLUtils.selectNextSequenceValue
 import no.nav.sosialhjelp.soknad.db.SQLUtils.tidTilTimestamp
 import no.nav.sosialhjelp.soknad.db.SQLUtils.timestampTilTid
-import no.nav.sosialhjelp.soknad.domain.FiksData
-import no.nav.sosialhjelp.soknad.domain.FiksResultat
-import no.nav.sosialhjelp.soknad.domain.Oppgave
 import org.springframework.jdbc.core.RowMapper
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport
 import org.springframework.stereotype.Component
@@ -23,19 +20,19 @@ import javax.sql.DataSource
 open class OppgaveRepositoryJdbc : NamedParameterJdbcDaoSupport(), OppgaveRepository {
 
     private val oppgaveRowMapper = RowMapper { rs: ResultSet, _: Int ->
-        val oppgave = Oppgave()
-        oppgave.id = rs.getLong("id")
-        oppgave.behandlingsId = rs.getString("behandlingsid")
-        oppgave.type = rs.getString("type")
-        oppgave.status = Oppgave.Status.valueOf(rs.getString("status"))
-        oppgave.steg = rs.getInt("steg")
-        oppgave.oppgaveData = Oppgave.JAXB.unmarshal(rs.getString("oppgavedata"), FiksData::class.java)
-        oppgave.oppgaveResultat = Oppgave.JAXB.unmarshal(rs.getString("oppgaveresultat"), FiksResultat::class.java)
-        oppgave.opprettet = timestampTilTid(rs.getTimestamp("opprettet"))
-        oppgave.sistKjort = timestampTilTid(rs.getTimestamp("sistkjort"))
-        oppgave.nesteForsok = timestampTilTid(rs.getTimestamp("nesteforsok"))
-        oppgave.retries = rs.getInt("retries")
-        oppgave
+        Oppgave(
+            id = rs.getLong("id"),
+            behandlingsId = rs.getString("behandlingsid"),
+            type = rs.getString("type"),
+            status = Status.valueOf(rs.getString("status")),
+            steg = rs.getInt("steg"),
+            oppgaveData = rs.getString("oppgavedata")?.let { JAXB.unmarshal(it, FiksData::class.java) },
+            oppgaveResultat = rs.getString("oppgaveresultat")?.let { JAXB.unmarshal(it, FiksResultat::class.java) },
+            opprettet = timestampTilTid(rs.getTimestamp("opprettet")),
+            sistKjort = timestampTilTid(rs.getTimestamp("sistkjort")),
+            nesteForsok = timestampTilTid(rs.getTimestamp("nesteforsok")),
+            retries = rs.getInt("retries")
+        )
     }
 
     @Inject
@@ -52,8 +49,8 @@ open class OppgaveRepositoryJdbc : NamedParameterJdbcDaoSupport(), OppgaveReposi
             oppgave.type,
             oppgave.status.name,
             oppgave.steg,
-            Oppgave.JAXB.marshal(oppgave.oppgaveData),
-            Oppgave.JAXB.marshal(oppgave.oppgaveResultat),
+            oppgave.oppgaveData?.let { JAXB.marshal(it) },
+            oppgave.oppgaveResultat?.let { JAXB.marshal(it) },
             tidTilTimestamp(oppgave.opprettet),
             tidTilTimestamp(oppgave.sistKjort),
             tidTilTimestamp(oppgave.nesteForsok),
@@ -66,8 +63,8 @@ open class OppgaveRepositoryJdbc : NamedParameterJdbcDaoSupport(), OppgaveReposi
             "UPDATE oppgave SET status = ?, steg = ?, oppgavedata = ?, oppgaveresultat = ?, nesteforsok = ?, retries = ? WHERE id = ?",
             oppgave.status.name,
             oppgave.steg,
-            Oppgave.JAXB.marshal(oppgave.oppgaveData),
-            Oppgave.JAXB.marshal(oppgave.oppgaveResultat),
+            oppgave.oppgaveData?.let { JAXB.marshal(it) },
+            oppgave.oppgaveResultat?.let { JAXB.marshal(it) },
             tidTilTimestamp(oppgave.nesteForsok),
             oppgave.retries,
             oppgave.id
@@ -89,7 +86,7 @@ open class OppgaveRepositoryJdbc : NamedParameterJdbcDaoSupport(), OppgaveReposi
             val resultat = jdbcTemplate.query(
                 select,
                 oppgaveRowMapper,
-                Oppgave.Status.KLAR.name,
+                Status.KLAR.name,
                 tidTilTimestamp(LocalDateTime.now())
             ).stream().findFirst()
             if (!resultat.isPresent) {
@@ -97,9 +94,9 @@ open class OppgaveRepositoryJdbc : NamedParameterJdbcDaoSupport(), OppgaveReposi
             }
             val rowsAffected = jdbcTemplate.update(
                 "UPDATE oppgave SET status = ?, sistkjort = ? WHERE status = ? AND id = ?",
-                Oppgave.Status.UNDER_ARBEID.name,
+                Status.UNDER_ARBEID.name,
                 tidTilTimestamp(LocalDateTime.now()),
-                Oppgave.Status.KLAR.name,
+                Status.KLAR.name,
                 resultat.get().id
             )
             if (rowsAffected == 1) {
@@ -111,8 +108,8 @@ open class OppgaveRepositoryJdbc : NamedParameterJdbcDaoSupport(), OppgaveReposi
     override fun retryOppgaveStuckUnderArbeid(): Int {
         return jdbcTemplate.update(
             "UPDATE oppgave SET status = ? WHERE status = ? AND sistkjort < ?",
-            Oppgave.Status.KLAR.name,
-            Oppgave.Status.UNDER_ARBEID.name,
+            Status.KLAR.name,
+            Status.UNDER_ARBEID.name,
             tidTilTimestamp(LocalDateTime.now().minusHours(1))
         )
     }
@@ -122,12 +119,12 @@ open class OppgaveRepositoryJdbc : NamedParameterJdbcDaoSupport(), OppgaveReposi
         statuser["feilede"] = jdbcTemplate.queryForObject(
             "SELECT count(*) FROM oppgave WHERE status = ?",
             Int::class.java,
-            Oppgave.Status.FEILET.name
+            Status.FEILET.name
         )
         statuser["lengearbeid"] = jdbcTemplate.queryForObject(
             "SELECT count(*) FROM oppgave WHERE status = ? AND sistkjort < ?",
             Int::class.java,
-            Oppgave.Status.UNDER_ARBEID.name,
+            Status.UNDER_ARBEID.name,
             tidTilTimestamp(LocalDateTime.now().minusMinutes(10))
         )
         return statuser

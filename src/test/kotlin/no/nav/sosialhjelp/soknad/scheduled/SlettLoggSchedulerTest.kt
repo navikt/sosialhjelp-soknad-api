@@ -5,13 +5,12 @@ import io.mockk.just
 import io.mockk.mockk
 import io.mockk.runs
 import io.mockk.verify
+import no.nav.sosialhjelp.soknad.db.repositories.oppgave.Oppgave
 import no.nav.sosialhjelp.soknad.db.repositories.oppgave.OppgaveRepository
+import no.nav.sosialhjelp.soknad.db.repositories.oppgave.Status
 import no.nav.sosialhjelp.soknad.db.repositories.sendtsoknad.BatchSendtSoknadRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.BatchSoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
-import no.nav.sosialhjelp.soknad.domain.FiksData
-import no.nav.sosialhjelp.soknad.domain.FiksResultat
-import no.nav.sosialhjelp.soknad.domain.Oppgave
 import no.nav.sosialhjelp.soknad.domain.SendtSoknad
 import no.nav.sosialhjelp.soknad.domain.SoknadMetadata
 import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus
@@ -145,18 +144,17 @@ internal class SlettLoggSchedulerTest {
     }
 
     private fun oppgave(behandlingsId: String, dagerSiden: Int): Oppgave {
-        val oppgave = Oppgave()
-        oppgave.behandlingsId = behandlingsId
-        oppgave.status = Oppgave.Status.FERDIG
-        oppgave.steg = 1
-        oppgave.id = 1L
-        oppgave.oppgaveData = FiksData()
-        oppgave.nesteForsok = null
-        oppgave.oppgaveResultat = FiksResultat()
-        oppgave.type = ""
-        oppgave.opprettet = LocalDateTime.now().minusDays(dagerSiden.toLong())
-        oppgave.sistKjort = LocalDateTime.now().minusDays(dagerSiden.toLong())
-        return oppgave
+        return Oppgave(
+            id = 1L,
+            behandlingsId = behandlingsId,
+            type = "",
+            status = Status.FERDIG,
+            steg = 1,
+            opprettet = LocalDateTime.now().minusDays(dagerSiden.toLong()),
+            sistKjort = LocalDateTime.now().minusDays(dagerSiden.toLong()),
+            nesteForsok = null,
+            retries = 0
+        )
     }
 
     companion object {
