@@ -50,11 +50,11 @@ open class ArbeidRessurs(
             ?: throw IllegalStateException("Kan ikke oppdatere søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
         val arbeid = jsonInternalSoknad.soknad.data.arbeid
         if (!StringUtils.isBlank(arbeidFrontend.kommentarTilArbeidsforhold)) {
-            arbeid?.kommentarTilArbeidsforhold = JsonKommentarTilArbeidsforhold()
+            arbeid.kommentarTilArbeidsforhold = JsonKommentarTilArbeidsforhold()
                 .withKilde(JsonKildeBruker.BRUKER)
                 .withVerdi(arbeidFrontend.kommentarTilArbeidsforhold)
         } else {
-            arbeid?.kommentarTilArbeidsforhold = null
+            arbeid.kommentarTilArbeidsforhold = null
         }
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
     }
