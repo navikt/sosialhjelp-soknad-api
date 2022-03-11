@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.db.repositories.sendtsoknad
 
-import no.nav.sosialhjelp.soknad.domain.SendtSoknad
 import java.util.Optional
 
 interface SendtSoknadRepository {

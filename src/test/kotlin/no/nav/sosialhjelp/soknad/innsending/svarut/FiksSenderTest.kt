@@ -15,11 +15,11 @@ import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
 import no.nav.sosialhjelp.soknad.common.MiljoUtils
+import no.nav.sosialhjelp.soknad.db.repositories.sendtsoknad.SendtSoknad
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.domain.OpplastetVedlegg
 import no.nav.sosialhjelp.soknad.domain.OpplastetVedleggType
-import no.nav.sosialhjelp.soknad.domain.SendtSoknad
 import no.nav.sosialhjelp.soknad.domain.Vedleggstatus
 import no.nav.sosialhjelp.soknad.innsending.InnsendingService
 import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
@@ -47,8 +47,9 @@ internal class FiksSenderTest {
         mockkObject(MiljoUtils)
         every { MiljoUtils.isNonProduction() } returns false
         every { dokumentKrypterer.krypterData(any()) } returns byteArrayOf(3, 2, 1)
-        every { innsendingService.finnSendtSoknadForEttersendelse(any()) } returns SendtSoknad()
-            .withFiksforsendelseId(FIKSFORSENDELSE_ID)
+        val sendtSoknad = lagSendtSoknad()
+        sendtSoknad.fiksforsendelseId = FIKSFORSENDELSE_ID
+        every { innsendingService.finnSendtSoknadForEttersendelse(any()) } returns sendtSoknad
         every { innsendingService.hentSoknadUnderArbeid(any(), any()) } returns mockk()
         every { sosialhjelpPdfGenerator.generate(any(), any()) } returns byteArrayOf(1, 2, 3)
         every { sosialhjelpPdfGenerator.generateEttersendelsePdf(any(), any()) } returns byteArrayOf(1, 2, 3)
@@ -121,7 +122,9 @@ internal class FiksSenderTest {
         soknadUnderArbeid.jsonInternalSoknad = lagInternalSoknadForEttersending()
         every { innsendingService.hentSoknadUnderArbeid(any(), any()) } returns soknadUnderArbeid
 
-        val sendtSoknad = lagSendtSoknad().withTilknyttetBehandlingsId("12345")
+        val sendtSoknad = lagSendtSoknad()
+        sendtSoknad.tilknyttetBehandlingsId = "12345"
+
         val filnavnInputStreamMap = HashMap<String, InputStream>()
         val forsendelse = fiksSender!!.createForsendelse(sendtSoknad, filnavnInputStreamMap)
 
@@ -131,8 +134,7 @@ internal class FiksSenderTest {
     @Test
     fun opprettForsendelseForEttersendelseUtenSvarPaForsendelseSkalFeile() {
         every { innsendingService.hentSoknadUnderArbeid(any(), any()) } returns createSoknadUnderArbeid()
-        every { innsendingService.finnSendtSoknadForEttersendelse(any()) } returns SendtSoknad()
-            .withFiksforsendelseId(null)
+        every { innsendingService.finnSendtSoknadForEttersendelse(any()) } returns lagSendtSoknad()
 
         val sendtEttersendelse = lagSendtEttersendelse()
         val filnavnInputStreamMap = HashMap<String, InputStream>()
@@ -232,16 +234,23 @@ internal class FiksSenderTest {
     }
 
     private fun lagSendtSoknad(): SendtSoknad {
-        return SendtSoknad()
-            .withBehandlingsId(BEHANDLINGSID)
-            .withOrgnummer(ORGNUMMER)
-            .withNavEnhetsnavn(NAVENHETSNAVN)
-            .withEier(EIER)
-            .withBrukerFerdigDato(LocalDateTime.now())
+        return SendtSoknad(
+            behandlingsId = BEHANDLINGSID,
+            tilknyttetBehandlingsId = null,
+            eier = EIER,
+            fiksforsendelseId = null,
+            orgnummer = ORGNUMMER,
+            navEnhetsnavn = NAVENHETSNAVN,
+            brukerOpprettetDato = LocalDateTime.now(),
+            brukerFerdigDato = LocalDateTime.now(),
+            sendtDato = null
+        )
     }
 
     private fun lagSendtEttersendelse(): SendtSoknad {
-        return lagSendtSoknad().withTilknyttetBehandlingsId("soknadId")
+        val sendtSoknad = lagSendtSoknad()
+        sendtSoknad.tilknyttetBehandlingsId = "soknadId"
+        return sendtSoknad
     }
 
     companion object {

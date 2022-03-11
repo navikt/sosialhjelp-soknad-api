@@ -2,7 +2,6 @@ package no.nav.sosialhjelp.soknad.db.repositories.sendtsoknad
 
 import no.nav.sosialhjelp.soknad.config.DbTestConfig
 import no.nav.sosialhjelp.soknad.config.RepositoryTestSupport
-import no.nav.sosialhjelp.soknad.domain.SendtSoknad
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
@@ -44,21 +43,23 @@ internal class BatchSendtSoknadRepositoryJdbcTest {
     fun slettSendtSoknadSletterSoknadFraDatabase() {
         val sendtSoknad = lagSendtSoknad(EIER)
         val sendtSoknadId = sendtSoknadRepository!!.opprettSendtSoknad(sendtSoknad, EIER)
-        sendtSoknad.sendtSoknadId = sendtSoknadId
-        sendtSoknadId?.let { batchSendtSoknadRepository!!.slettSendtSoknad(it) }
-        assertThat(batchSendtSoknadRepository!!.hentSendtSoknad(BEHANDLINGSID)).isEmpty
+        sendtSoknad.sendtSoknadId = sendtSoknadId!!
+        batchSendtSoknadRepository!!.slettSendtSoknad(sendtSoknadId)
+        assertThat(batchSendtSoknadRepository.hentSendtSoknad(BEHANDLINGSID)).isEmpty
     }
 
     private fun lagSendtSoknad(eier: String): SendtSoknad {
-        return SendtSoknad().withEier(eier)
-            .withBehandlingsId(BEHANDLINGSID)
-            .withTilknyttetBehandlingsId(TILKNYTTET_BEHANDLINGSID)
-            .withFiksforsendelseId(FIKSFORSENDELSEID)
-            .withOrgnummer(ORGNUMMER)
-            .withNavEnhetsnavn(NAVENHETSNAVN)
-            .withBrukerOpprettetDato(BRUKER_OPPRETTET_DATO)
-            .withBrukerFerdigDato(BRUKER_FERDIG_DATO)
-            .withSendtDato(SENDT_DATO)
+        return SendtSoknad(
+            behandlingsId = BEHANDLINGSID,
+            tilknyttetBehandlingsId = TILKNYTTET_BEHANDLINGSID,
+            eier = eier,
+            fiksforsendelseId = FIKSFORSENDELSEID,
+            orgnummer = ORGNUMMER,
+            navEnhetsnavn = NAVENHETSNAVN,
+            brukerOpprettetDato = BRUKER_OPPRETTET_DATO,
+            brukerFerdigDato = BRUKER_FERDIG_DATO,
+            sendtDato = SENDT_DATO
+        )
     }
 
     companion object {

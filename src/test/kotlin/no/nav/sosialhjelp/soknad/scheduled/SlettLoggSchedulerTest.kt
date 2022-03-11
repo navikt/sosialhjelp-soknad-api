@@ -7,12 +7,12 @@ import io.mockk.runs
 import io.mockk.verify
 import no.nav.sosialhjelp.soknad.db.repositories.oppgave.OppgaveRepository
 import no.nav.sosialhjelp.soknad.db.repositories.sendtsoknad.BatchSendtSoknadRepository
+import no.nav.sosialhjelp.soknad.db.repositories.sendtsoknad.SendtSoknad
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.BatchSoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.domain.FiksData
 import no.nav.sosialhjelp.soknad.domain.FiksResultat
 import no.nav.sosialhjelp.soknad.domain.Oppgave
-import no.nav.sosialhjelp.soknad.domain.SendtSoknad
 import no.nav.sosialhjelp.soknad.domain.SoknadMetadata
 import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus
 import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus.UNDER_ARBEID
@@ -131,17 +131,18 @@ internal class SlettLoggSchedulerTest {
     }
 
     private fun sendtSoknad(behandlingsId: String, eier: String, dagerSiden: Int): SendtSoknad {
-        return SendtSoknad()
-            .withBehandlingsId(behandlingsId)
-            .withNavEnhetsnavn("")
-            .withOrgnummer("")
-            .withBrukerOpprettetDato(LocalDateTime.now().minusDays(dagerSiden.toLong()))
-            .withBrukerFerdigDato(LocalDateTime.now().minusDays(dagerSiden.toLong()))
-            .withSendtDato(LocalDateTime.now().minusDays(dagerSiden.toLong()))
-            .withEier(eier)
-            .withTilknyttetBehandlingsId("")
-            .withFiksforsendelseId("")
-            .withSendtSoknadId(1L)
+        return SendtSoknad(
+            sendtSoknadId = 1L,
+            behandlingsId = behandlingsId,
+            tilknyttetBehandlingsId = "",
+            eier = eier,
+            fiksforsendelseId = "",
+            orgnummer = "",
+            navEnhetsnavn = "",
+            brukerOpprettetDato = LocalDateTime.now().minusDays(dagerSiden.toLong()),
+            brukerFerdigDato = LocalDateTime.now().minusDays(dagerSiden.toLong()),
+            sendtDato = LocalDateTime.now().minusDays(dagerSiden.toLong())
+        )
     }
 
     private fun oppgave(behandlingsId: String, dagerSiden: Int): Oppgave {

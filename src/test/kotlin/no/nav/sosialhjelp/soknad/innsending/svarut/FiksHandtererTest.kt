@@ -6,14 +6,15 @@ import io.mockk.just
 import io.mockk.mockk
 import io.mockk.runs
 import io.mockk.verify
+import no.nav.sosialhjelp.soknad.db.repositories.sendtsoknad.SendtSoknad
 import no.nav.sosialhjelp.soknad.domain.FiksData
 import no.nav.sosialhjelp.soknad.domain.Oppgave
-import no.nav.sosialhjelp.soknad.domain.SendtSoknad
 import no.nav.sosialhjelp.soknad.innsending.InnsendingService
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import java.time.LocalDateTime
 
 internal class FiksHandtererTest {
 
@@ -52,7 +53,7 @@ internal class FiksHandtererTest {
 
     @Test
     fun lagrerFeilmelding() {
-        every { innsendingService.hentSendtSoknad(BEHANDLINGSID, AVSENDER) } returns SendtSoknad()
+        every { innsendingService.hentSendtSoknad(BEHANDLINGSID, AVSENDER) } returns lagSendtSoknad()
         every { fiksSender.sendTilFiks(any()) } throws RuntimeException("feilmelding123")
         val oppgave = opprettOppgave()
         try {
@@ -106,14 +107,21 @@ internal class FiksHandtererTest {
     }
 
     private fun lagSendtSoknad(): SendtSoknad {
-        return SendtSoknad()
-            .withEier(AVSENDER)
-            .withBehandlingsId(BEHANDLINGSID)
-            .withNavEnhetsnavn(NAVENHETSNAVN)
+        return SendtSoknad(
+            behandlingsId = BEHANDLINGSID,
+            eier = AVSENDER,
+            orgnummer = "orgnr",
+            navEnhetsnavn = NAVENHETSNAVN,
+            brukerOpprettetDato = LocalDateTime.now(),
+            brukerFerdigDato = LocalDateTime.now(),
+            sendtDato = null
+        )
     }
 
     private fun lagSendtEttersendelse(): SendtSoknad {
-        return lagSendtSoknad().withTilknyttetBehandlingsId("soknadId")
+        val sendtSoknad = lagSendtSoknad()
+        sendtSoknad.tilknyttetBehandlingsId = "soknadId"
+        return sendtSoknad
     }
 
     companion object {
