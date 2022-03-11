@@ -33,8 +33,9 @@ open class ArbeidRessurs(
         tilgangskontroll.verifiserAtBrukerHarTilgang()
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).jsonInternalSoknad
-        val arbeid = soknad?.soknad?.data?.arbeid
-        val kommentarTilArbeidsforhold = soknad?.soknad?.data?.arbeid?.kommentarTilArbeidsforhold
+            ?: throw IllegalStateException("Kan ikke hente søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
+        val arbeid = soknad.soknad.data.arbeid
+        val kommentarTilArbeidsforhold = soknad.soknad.data.arbeid.kommentarTilArbeidsforhold
         val forhold = arbeid?.forhold?.map { mapToArbeidsforholdFrontend(it) }
 
         return ArbeidFrontend(forhold, kommentarTilArbeidsforhold?.verdi)
@@ -45,13 +46,15 @@ open class ArbeidRessurs(
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
-        val arbeid = soknad.jsonInternalSoknad?.soknad?.data?.arbeid
+        val jsonInternalSoknad = soknad.jsonInternalSoknad
+            ?: throw IllegalStateException("Kan ikke oppdatere søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
+        val arbeid = jsonInternalSoknad.soknad.data.arbeid
         if (!StringUtils.isBlank(arbeidFrontend.kommentarTilArbeidsforhold)) {
-            arbeid?.kommentarTilArbeidsforhold = JsonKommentarTilArbeidsforhold()
+            arbeid.kommentarTilArbeidsforhold = JsonKommentarTilArbeidsforhold()
                 .withKilde(JsonKildeBruker.BRUKER)
                 .withVerdi(arbeidFrontend.kommentarTilArbeidsforhold)
         } else {
-            arbeid?.kommentarTilArbeidsforhold = null
+            arbeid.kommentarTilArbeidsforhold = null
         }
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
     }
