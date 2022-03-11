@@ -6,7 +6,7 @@ import no.nav.sosialhjelp.metrics.MetricsFactory
 import no.nav.sosialhjelp.metrics.Timer
 import no.nav.sosialhjelp.soknad.common.Constants.HEADER_CONSUMER_ID
 import no.nav.sosialhjelp.soknad.common.Constants.NAV_CALL_ID_HEADER_NAMES
-import no.nav.sosialhjelp.soknad.common.MiljoUtils.naisAppName
+import no.nav.sosialhjelp.soknad.common.MiljoUtils
 import no.nav.sosialhjelp.soknad.common.mdc.MdcOperations
 import no.nav.sosialhjelp.soknad.common.rest.RestUtils.CSRF_COOKIE_NAVN
 import org.apache.commons.lang3.exception.ExceptionUtils
@@ -34,7 +34,7 @@ class ClientLogFilter(
             Arrays.stream(NAV_CALL_ID_HEADER_NAMES)
                 .forEach { headerName -> requestHeaders.add(headerName, callId) }
         }
-        requestHeaders.add(HEADER_CONSUMER_ID, naisAppName)
+        requestHeaders.add(HEADER_CONSUMER_ID, MiljoUtils.naisAppName)
         requestHeaders.add(CSRF_COOKIE_NAVN, CSRF_TOKEN)
         requestHeaders.add(HttpHeaders.COOKIE, Cookie(CSRF_COOKIE_NAVN, CSRF_TOKEN))
 
