@@ -6,14 +6,16 @@ import io.mockk.just
 import io.mockk.mockk
 import io.mockk.runs
 import io.mockk.verify
-import no.nav.sosialhjelp.soknad.domain.FiksData
-import no.nav.sosialhjelp.soknad.domain.Oppgave
+import no.nav.sosialhjelp.soknad.db.repositories.oppgave.FiksData
+import no.nav.sosialhjelp.soknad.db.repositories.oppgave.Oppgave
+import no.nav.sosialhjelp.soknad.db.repositories.oppgave.Status
 import no.nav.sosialhjelp.soknad.domain.SendtSoknad
 import no.nav.sosialhjelp.soknad.innsending.InnsendingService
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import java.time.LocalDateTime
 
 internal class FiksHandtererTest {
 
@@ -47,7 +49,7 @@ internal class FiksHandtererTest {
 
         fiksHandterer.eksekver(oppgave)
         verify(exactly = 1) { innsendingService.oppdaterSendtSoknadVedSendingTilFiks(any(), BEHANDLINGSID, AVSENDER) }
-        assertThat(oppgave.status).isEqualTo(Oppgave.Status.FERDIG)
+        assertThat(oppgave.status).isEqualTo(Status.FERDIG)
     }
 
     @Test
@@ -60,7 +62,7 @@ internal class FiksHandtererTest {
             Assertions.fail<Any>("exception skal bli kastet videre")
         } catch (_: Exception) {
         }
-        assertThat(oppgave.oppgaveResultat.feilmelding).isEqualTo("feilmelding123")
+        assertThat(oppgave.oppgaveResultat!!.feilmelding).isEqualTo("feilmelding123")
     }
 
     @Test
@@ -73,7 +75,7 @@ internal class FiksHandtererTest {
             fiksHandterer.eksekver(oppgave)
         } catch (ignored: IllegalStateException) {
         }
-        assertThat(oppgave.oppgaveResultat.feilmelding).isEqualTo("Ettersendelse har svarPaForsendelseId null")
+        assertThat(oppgave.oppgaveResultat!!.feilmelding).isEqualTo("Ettersendelse har svarPaForsendelseId null")
         verify(exactly = 1) { fiksSender.sendTilFiks(any()) }
         verify(exactly = 0) { innsendingService.finnOgSlettSoknadUnderArbeidVedSendingTilFiks(any(), any()) }
         verify(exactly = 0) { innsendingService.oppdaterSendtSoknadVedSendingTilFiks(any(), any(), any()) }
@@ -92,17 +94,22 @@ internal class FiksHandtererTest {
         assertThat(oppgave.steg).isEqualTo(23)
         fiksHandterer.eksekver(oppgave)
         verify(exactly = 1) { innsendingService.oppdaterSendtSoknadVedSendingTilFiks(any(), BEHANDLINGSID, AVSENDER) }
-        assertThat(oppgave.status).isEqualTo(Oppgave.Status.FERDIG)
+        assertThat(oppgave.status).isEqualTo(Status.FERDIG)
     }
 
     private fun opprettOppgave(): Oppgave {
-        val oppgave = Oppgave()
-        oppgave.behandlingsId = BEHANDLINGSID
-        val oppgaveData = FiksData()
-        oppgaveData.avsenderFodselsnummer = AVSENDER
-        oppgave.oppgaveData = oppgaveData
-        oppgave.steg = OppgaveHandtererImpl.FORSTE_STEG_NY_INNSENDING
-        return oppgave
+        return Oppgave(
+            id = 0L,
+            behandlingsId = BEHANDLINGSID,
+            type = FiksHandterer.FIKS_OPPGAVE,
+            status = Status.KLAR,
+            steg = OppgaveHandtererImpl.FORSTE_STEG_NY_INNSENDING,
+            oppgaveData = FiksData(avsenderFodselsnummer = AVSENDER),
+            opprettet = LocalDateTime.now(),
+            sistKjort = null,
+            nesteForsok = LocalDateTime.now(),
+            retries = 0
+        )
     }
 
     private fun lagSendtSoknad(): SendtSoknad {

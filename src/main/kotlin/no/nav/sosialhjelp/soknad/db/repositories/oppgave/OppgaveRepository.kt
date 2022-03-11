@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.db.repositories.oppgave
 
-import no.nav.sosialhjelp.soknad.domain.Oppgave
 import java.util.Optional
 
 interface OppgaveRepository {

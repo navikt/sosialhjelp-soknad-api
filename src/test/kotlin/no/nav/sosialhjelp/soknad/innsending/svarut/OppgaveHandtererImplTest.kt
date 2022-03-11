@@ -6,10 +6,12 @@ import io.mockk.mockk
 import io.mockk.runs
 import io.mockk.slot
 import io.mockk.verify
+import no.nav.sosialhjelp.soknad.db.repositories.oppgave.Oppgave
 import no.nav.sosialhjelp.soknad.db.repositories.oppgave.OppgaveRepository
-import no.nav.sosialhjelp.soknad.domain.Oppgave
+import no.nav.sosialhjelp.soknad.db.repositories.oppgave.Status
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
+import java.time.LocalDateTime
 import java.util.Optional
 
 internal class OppgaveHandtererImplTest {
@@ -22,8 +24,17 @@ internal class OppgaveHandtererImplTest {
 
     @Test
     fun prosessereFeilendeOppgaveSkalSetteNesteForsok() {
-        val oppgave = Oppgave()
-        oppgave.status = Oppgave.Status.UNDER_ARBEID
+        val oppgave = Oppgave(
+            id = 0L,
+            behandlingsId = "behandlingsId",
+            type = FiksHandterer.FIKS_OPPGAVE,
+            status = Status.UNDER_ARBEID,
+            steg = 21,
+            opprettet = LocalDateTime.now(),
+            sistKjort = null,
+            nesteForsok = LocalDateTime.now(),
+            retries = 0
+        )
 
         every { oppgaveRepository.hentNeste() } returns Optional.of(oppgave) andThen Optional.empty()
         every { fiksHandterer.eksekver(oppgave) } throws IllegalStateException()
@@ -32,7 +43,7 @@ internal class OppgaveHandtererImplTest {
         oppgaveHandterer.prosesserOppgaver()
 
         verify(exactly = 1) { oppgaveRepository.oppdater(oppgaveSlot.captured) }
-        Assertions.assertThat(oppgaveSlot.captured.status).isEqualTo(Oppgave.Status.KLAR)
+        Assertions.assertThat(oppgaveSlot.captured.status).isEqualTo(Status.KLAR)
         Assertions.assertThat(oppgaveSlot.captured.nesteForsok).isNotNull
     }
 }
