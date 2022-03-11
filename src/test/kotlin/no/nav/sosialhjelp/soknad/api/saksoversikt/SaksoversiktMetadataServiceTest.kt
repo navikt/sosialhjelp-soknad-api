@@ -3,11 +3,13 @@ package no.nav.sosialhjelp.soknad.api.saksoversikt
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadata
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataInnsendingStatus
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
-import no.nav.sosialhjelp.soknad.domain.SoknadMetadata
-import no.nav.sosialhjelp.soknad.domain.SoknadMetadata.VedleggMetadata
-import no.nav.sosialhjelp.soknad.domain.SoknadMetadataType
-import no.nav.sosialhjelp.soknad.domain.Vedleggstatus
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataType
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.VedleggMetadata
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.VedleggMetadataListe
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.Vedleggstatus
 import no.nav.sosialhjelp.soknad.ettersending.EttersendingService
 import no.nav.sosialhjelp.soknad.ettersending.EttersendingService.Companion.ETTERSENDELSE_FRIST_DAGER
 import no.nav.sosialhjelp.soknad.tekster.NavMessageSource
@@ -34,7 +36,7 @@ internal class SaksoversiktMetadataServiceTest {
         clock
     )
 
-    private var soknadMetadata: SoknadMetadata? = null
+    private lateinit var soknadMetadata: SoknadMetadata
 
     @BeforeEach
     fun setUp() {
@@ -45,39 +47,48 @@ internal class SaksoversiktMetadataServiceTest {
         every { clock.instant() } returns LocalDateTime.of(2018, 5, 31, 13, 33, 37).atZone(systemDefault()).toInstant()
         every { navMessageSource.getBundleFor(any(), any()) } returns props
 
-        soknadMetadata = SoknadMetadata()
-        soknadMetadata!!.fnr = "12345"
-        soknadMetadata!!.behandlingsId = "beh123"
-        soknadMetadata!!.type = SoknadMetadataType.SEND_SOKNAD_KOMMUNAL
-        soknadMetadata!!.innsendtDato = LocalDateTime.of(2018, 4, 11, 13, 30, 0)
+        soknadMetadata = SoknadMetadata(
+            id = 0L,
+            behandlingsId = "beh123",
+            fnr = "12345",
+            vedlegg = VedleggMetadataListe(),
+            type = SoknadMetadataType.SEND_SOKNAD_KOMMUNAL,
+            status = SoknadMetadataInnsendingStatus.UNDER_ARBEID,
+            opprettetDato = LocalDateTime.of(2018, 4, 11, 13, 30, 0),
+            sistEndretDato = LocalDateTime.of(2018, 4, 11, 13, 30, 0),
+            innsendtDato = LocalDateTime.of(2018, 4, 11, 13, 30, 0)
+        )
 
-        val v = VedleggMetadata()
-        v.skjema = "skjema1"
-        v.tillegg = "tillegg1"
-        v.status = Vedleggstatus.LastetOpp
-        val v2 = VedleggMetadata()
-        v2.skjema = "skjema1"
-        v2.tillegg = "tillegg1"
-        v2.status = Vedleggstatus.LastetOpp
-        val v3 = VedleggMetadata()
-        v3.skjema = "skjema2"
-        v3.tillegg = "tillegg1"
-        v3.status = Vedleggstatus.VedleggKreves
-        val v4 = VedleggMetadata()
-        v4.skjema = "annet"
-        v4.tillegg = "annet"
-        v4.status = Vedleggstatus.VedleggKreves
+        val v = VedleggMetadata(
+            skjema = "skjema1",
+            tillegg = "tillegg1",
+            status = Vedleggstatus.LastetOpp
+        )
+        val v2 = VedleggMetadata(
+            skjema = "skjema1",
+            tillegg = "tillegg1",
+            status = Vedleggstatus.LastetOpp,
+        )
+        val v3 = VedleggMetadata(
+            skjema = "skjema2",
+            tillegg = "tillegg1",
+            status = Vedleggstatus.VedleggKreves
+        )
+        val v4 = VedleggMetadata(
+            skjema = "annet",
+            tillegg = "annet",
+            status = Vedleggstatus.VedleggKreves
+        )
 
-        val vedleggListe = soknadMetadata!!.vedlegg.vedleggListe
-        vedleggListe.add(v)
-        vedleggListe.add(v2)
-        vedleggListe.add(v3)
-        vedleggListe.add(v4)
+        soknadMetadata.vedlegg?.vedleggListe?.add(v)
+        soknadMetadata.vedlegg?.vedleggListe?.add(v2)
+        soknadMetadata.vedlegg?.vedleggListe?.add(v3)
+        soknadMetadata.vedlegg?.vedleggListe?.add(v4)
     }
 
     @Test
     fun henterInnsendteForBruker() {
-        every { soknadMetadataRepository.hentAlleInnsendteSoknaderForBruker("12345") } returns listOf(soknadMetadata!!)
+        every { soknadMetadataRepository.hentAlleInnsendteSoknaderForBruker("12345") } returns listOf(soknadMetadata)
 
         val resultat = saksoversiktMetadataService.hentInnsendteSoknaderForFnr("12345")
 
@@ -94,8 +105,8 @@ internal class SaksoversiktMetadataServiceTest {
     fun hentForEttersendelse() {
         every {
             soknadMetadataRepository.hentInnsendteSoknaderForBrukerEtterTidspunkt(any(), any())
-        } returns listOf(soknadMetadata!!)
-        every { ettersendingService.hentNyesteSoknadIKjede(any()) } returns soknadMetadata!!
+        } returns listOf(soknadMetadata)
+        every { ettersendingService.hentNyesteSoknadIKjede(any()) } returns soknadMetadata
 
         val resultat = saksoversiktMetadataService.hentSoknaderBrukerKanEttersendePa("12345")
 
@@ -111,8 +122,8 @@ internal class SaksoversiktMetadataServiceTest {
         val timeSlot = slot<LocalDateTime>()
         every {
             soknadMetadataRepository.hentInnsendteSoknaderForBrukerEtterTidspunkt(any(), capture(timeSlot))
-        } returns listOf(soknadMetadata!!)
-        every { ettersendingService.hentNyesteSoknadIKjede(any()) } returns soknadMetadata!!
+        } returns listOf(soknadMetadata)
+        every { ettersendingService.hentNyesteSoknadIKjede(any()) } returns soknadMetadata
 
         saksoversiktMetadataService.hentSoknaderBrukerKanEttersendePa("12345")
 

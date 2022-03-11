@@ -2,16 +2,16 @@ package no.nav.sosialhjelp.soknad.innsending
 
 import no.nav.sosialhjelp.soknad.common.exceptions.SosialhjelpSoknadApiException
 import no.nav.sosialhjelp.soknad.common.mdc.MdcOperations
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadata
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataInnsendingStatus
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataInnsendingStatus.AVBRUTT_AUTOMATISK
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataInnsendingStatus.AVBRUTT_AV_BRUKER
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataInnsendingStatus.FERDIG
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataInnsendingStatus.SENDT_MED_DIGISOS_API
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataType
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.VedleggMetadataListe
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
-import no.nav.sosialhjelp.soknad.domain.SoknadMetadata
-import no.nav.sosialhjelp.soknad.domain.SoknadMetadata.VedleggMetadataListe
-import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus
-import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus.AVBRUTT_AUTOMATISK
-import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus.AVBRUTT_AV_BRUKER
-import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus.FERDIG
-import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus.SENDT_MED_DIGISOS_API
-import no.nav.sosialhjelp.soknad.domain.SoknadMetadataType
 import org.slf4j.LoggerFactory
 import java.time.Clock
 import java.time.LocalDateTime
@@ -21,34 +21,38 @@ class HenvendelseService(
     private val soknadMetadataRepository: SoknadMetadataRepository,
     private val clock: Clock
 ) {
-    fun startSoknad(fnr: String?): String {
+    fun startSoknad(fnr: String): String {
         logger.info("Starter søknad")
-        val meta = SoknadMetadata()
-        meta.id = soknadMetadataRepository.hentNesteId()
-        meta.behandlingsId = lagBehandlingsId(meta.id)
-        meta.fnr = fnr
-        meta.type = SoknadMetadataType.SEND_SOKNAD_KOMMUNAL
-        meta.skjema = SKJEMANUMMER
-        meta.status = SoknadMetadataInnsendingStatus.UNDER_ARBEID
-        meta.opprettetDato = LocalDateTime.now(clock)
-        meta.sistEndretDato = LocalDateTime.now(clock)
-        soknadMetadataRepository.opprett(meta)
-        return meta.behandlingsId
+        val id = soknadMetadataRepository.hentNesteId()
+        val soknadMetadata = SoknadMetadata(
+            id = id,
+            behandlingsId = lagBehandlingsId(id),
+            fnr = fnr,
+            skjema = SKJEMANUMMER,
+            type = SoknadMetadataType.SEND_SOKNAD_KOMMUNAL,
+            status = SoknadMetadataInnsendingStatus.UNDER_ARBEID,
+            opprettetDato = LocalDateTime.now(clock),
+            sistEndretDato = LocalDateTime.now(clock)
+        )
+        soknadMetadataRepository.opprett(soknadMetadata)
+        return soknadMetadata.behandlingsId
     }
 
-    fun startEttersending(ettersendesPaSoknad: SoknadMetadata?): String {
-        val ettersendelse = SoknadMetadata()
-        ettersendelse.id = soknadMetadataRepository.hentNesteId()
-        ettersendelse.behandlingsId = lagBehandlingsId(ettersendelse.id)
-        ettersendelse.tilknyttetBehandlingsId = ettersendesPaSoknad?.behandlingsId
-        ettersendelse.fnr = ettersendesPaSoknad?.fnr
-        ettersendelse.type = SoknadMetadataType.SEND_SOKNAD_KOMMUNAL_ETTERSENDING
-        ettersendelse.skjema = ettersendesPaSoknad?.skjema
-        ettersendelse.status = SoknadMetadataInnsendingStatus.UNDER_ARBEID
-        ettersendelse.opprettetDato = LocalDateTime.now(clock)
-        ettersendelse.sistEndretDato = LocalDateTime.now(clock)
-        ettersendelse.orgnr = ettersendesPaSoknad?.orgnr
-        ettersendelse.navEnhet = ettersendesPaSoknad?.navEnhet
+    fun startEttersending(ettersendesPaSoknad: SoknadMetadata): String {
+        val id = soknadMetadataRepository.hentNesteId()
+        val ettersendelse = SoknadMetadata(
+            id = id,
+            behandlingsId = lagBehandlingsId(id),
+            tilknyttetBehandlingsId = ettersendesPaSoknad.behandlingsId,
+            fnr = ettersendesPaSoknad.fnr,
+            skjema = ettersendesPaSoknad.skjema,
+            orgnr = ettersendesPaSoknad.orgnr,
+            navEnhet = ettersendesPaSoknad.navEnhet,
+            type = SoknadMetadataType.SEND_SOKNAD_KOMMUNAL_ETTERSENDING,
+            status = SoknadMetadataInnsendingStatus.UNDER_ARBEID,
+            opprettetDato = LocalDateTime.now(clock),
+            sistEndretDato = LocalDateTime.now(clock),
+        )
         soknadMetadataRepository.opprett(ettersendelse)
         return ettersendelse.behandlingsId
     }
