@@ -10,8 +10,8 @@ import no.ks.fiks.svarut.klient.model.PostAdresse
 import no.ks.fiks.svarut.klient.model.UtskriftsKonfigurasjon
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.sosialhjelp.soknad.common.MiljoUtils
+import no.nav.sosialhjelp.soknad.db.repositories.sendtsoknad.SendtSoknad
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
-import no.nav.sosialhjelp.soknad.domain.SendtSoknad
 import no.nav.sosialhjelp.soknad.innsending.InnsendingService
 import no.nav.sosialhjelp.soknad.innsending.SenderUtils.createPrefixedBehandlingsId
 import no.nav.sosialhjelp.soknad.innsending.svarut.client.SvarUtService
@@ -52,15 +52,13 @@ class FiksSender(
         return Forsendelse()
             .withMottaker(
                 Adresse()
-                    .withDigitalAdresse(
-                        Digitaladresse().withOrganisasjonsNummer(sendtSoknad.orgnummer)
-                    )
+                    .withDigitalAdresse(Digitaladresse().withOrganisasjonsNummer(sendtSoknad.orgnummer))
                     .withPostAdresse(fakeAdresse)
             )
             .withAvgivendeSystem("digisos_avsender")
             .withForsendelsesType("nav.digisos")
             .withEksternReferanse(getBehandlingsId(sendtSoknad))
-            .withTittel(if (sendtSoknad.erEttersendelse()) ETTERSENDELSE_TIL_NAV else SOKNAD_TIL_NAV)
+            .withTittel(if (sendtSoknad.erEttersendelse) ETTERSENDELSE_TIL_NAV else SOKNAD_TIL_NAV)
             .withKunDigitalLevering(false)
             .withUtskriftsKonfigurasjon(fakeUtskriftsConfig)
             .withKryptert(krypteringEnabled)
@@ -85,7 +83,7 @@ class FiksSender(
         sendtSoknad: SendtSoknad,
         soknadUnderArbeid: SoknadUnderArbeid
     ): ForsendelsesId? {
-        return if (sendtSoknad.erEttersendelse() && innsendingService.finnSendtSoknadForEttersendelse(soknadUnderArbeid).fiksforsendelseId != null) {
+        return if (sendtSoknad.erEttersendelse && innsendingService.finnSendtSoknadForEttersendelse(soknadUnderArbeid).fiksforsendelseId != null) {
             ForsendelsesId()
                 .withId(UUID.fromString(innsendingService.finnSendtSoknadForEttersendelse(soknadUnderArbeid).fiksforsendelseId))
         } else null
@@ -97,7 +95,7 @@ class FiksSender(
     ) {
         check(
             !(
-                sendtSoknad.erEttersendelse() && (
+                sendtSoknad.erEttersendelse && (
                     svarPaForsendelseId == null || svarPaForsendelseId.id == null || svarPaForsendelseId.id.toString()
                         .isEmpty()
                     )

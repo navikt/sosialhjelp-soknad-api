@@ -4,7 +4,7 @@ import no.nav.sosialhjelp.metrics.Event
 import no.nav.sosialhjelp.metrics.MetricsFactory
 import no.nav.sosialhjelp.soknad.db.repositories.oppgave.FiksResultat
 import no.nav.sosialhjelp.soknad.db.repositories.oppgave.Oppgave
-import no.nav.sosialhjelp.soknad.domain.SendtSoknad
+import no.nav.sosialhjelp.soknad.db.repositories.sendtsoknad.SendtSoknad
 import no.nav.sosialhjelp.soknad.innsending.InnsendingService
 import no.nav.sosialhjelp.soknad.metrics.MetricsUtils.navKontorTilInfluxNavn
 import org.apache.commons.lang3.StringUtils
@@ -66,7 +66,7 @@ class FiksHandterer(
 
     private fun lagForsoktSendtTilFiksEvent(sendtSoknad: SendtSoknad): Event {
         val event = MetricsFactory.createEvent("digisos.fikshandterer.sendt")
-        event.addTagToReport("ettersendelse", if (sendtSoknad.erEttersendelse()) "true" else "false")
+        event.addTagToReport("ettersendelse", if (sendtSoknad.erEttersendelse) "true" else "false")
         event.addTagToReport("mottaker", navKontorTilInfluxNavn(sendtSoknad.navEnhetsnavn))
         return event
     }

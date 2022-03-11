@@ -2,7 +2,6 @@ package no.nav.sosialhjelp.soknad.db.repositories.sendtsoknad
 
 import no.nav.sosialhjelp.soknad.db.SQLUtils
 import no.nav.sosialhjelp.soknad.db.repositories.sendtsoknad.SendtSoknadRowMapper.sendtSoknadRowMapper
-import no.nav.sosialhjelp.soknad.domain.SendtSoknad
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime
@@ -38,7 +37,7 @@ class SendtSoknadRepositoryJdbc : NamedParameterJdbcDaoSupport(), SendtSoknadRep
             sendtSoknad.navEnhetsnavn,
             Date.from(sendtSoknad.brukerOpprettetDato.atZone(ZoneId.systemDefault()).toInstant()),
             Date.from(sendtSoknad.brukerFerdigDato.atZone(ZoneId.systemDefault()).toInstant()),
-            sendtSoknad.sendtDato?.let { Date.from(sendtSoknad.sendtDato.atZone(ZoneId.systemDefault()).toInstant()) }
+            sendtSoknad.sendtDato?.let { Date.from(it.atZone(ZoneId.systemDefault()).toInstant()) }
         )
         return sendtSoknadId
     }

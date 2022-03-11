@@ -2,7 +2,6 @@ package no.nav.sosialhjelp.soknad.db.repositories.sendtsoknad
 
 import no.nav.sosialhjelp.soknad.config.DbTestConfig
 import no.nav.sosialhjelp.soknad.config.RepositoryTestSupport
-import no.nav.sosialhjelp.soknad.domain.SendtSoknad
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
@@ -90,25 +89,31 @@ internal class SendtSoknadRepositoryJdbcTest {
         behandlingsId: String = BEHANDLINGSID,
         fiksforsendelseId: String = FIKSFORSENDELSEID,
     ): SendtSoknad {
-        return SendtSoknad().withEier(eier)
-            .withBehandlingsId(behandlingsId)
-            .withTilknyttetBehandlingsId(TILKNYTTET_BEHANDLINGSID)
-            .withFiksforsendelseId(fiksforsendelseId)
-            .withOrgnummer(ORGNUMMER)
-            .withNavEnhetsnavn(NAVENHETSNAVN)
-            .withBrukerOpprettetDato(BRUKER_OPPRETTET_DATO)
-            .withBrukerFerdigDato(BRUKER_FERDIG_DATO)
-            .withSendtDato(SENDT_DATO)
+        return SendtSoknad(
+            behandlingsId = behandlingsId,
+            tilknyttetBehandlingsId = TILKNYTTET_BEHANDLINGSID,
+            eier = eier,
+            fiksforsendelseId = fiksforsendelseId,
+            orgnummer = ORGNUMMER,
+            navEnhetsnavn = NAVENHETSNAVN,
+            brukerOpprettetDato = BRUKER_OPPRETTET_DATO,
+            brukerFerdigDato = BRUKER_FERDIG_DATO,
+            sendtDato = SENDT_DATO
+        )
     }
 
     private fun lagSendtSoknadSomIkkeErSendtTilFiks(): SendtSoknad {
-        return SendtSoknad().withEier(EIER)
-            .withBehandlingsId(BEHANDLINGSID)
-            .withTilknyttetBehandlingsId(TILKNYTTET_BEHANDLINGSID)
-            .withOrgnummer(ORGNUMMER)
-            .withNavEnhetsnavn(NAVENHETSNAVN)
-            .withBrukerOpprettetDato(BRUKER_OPPRETTET_DATO)
-            .withBrukerFerdigDato(BRUKER_FERDIG_DATO)
+        return SendtSoknad(
+            behandlingsId = BEHANDLINGSID,
+            tilknyttetBehandlingsId = TILKNYTTET_BEHANDLINGSID,
+            eier = EIER,
+            fiksforsendelseId = null,
+            orgnummer = ORGNUMMER,
+            navEnhetsnavn = NAVENHETSNAVN,
+            brukerOpprettetDato = BRUKER_OPPRETTET_DATO,
+            brukerFerdigDato = BRUKER_FERDIG_DATO,
+            sendtDato = null
+        )
     }
 
     companion object {

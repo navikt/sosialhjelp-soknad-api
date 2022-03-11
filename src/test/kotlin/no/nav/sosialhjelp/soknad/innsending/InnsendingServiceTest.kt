@@ -9,12 +9,12 @@ import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRepository
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggType
+import no.nav.sosialhjelp.soknad.db.repositories.sendtsoknad.SendtSoknad
 import no.nav.sosialhjelp.soknad.db.repositories.sendtsoknad.SendtSoknadRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
-import no.nav.sosialhjelp.soknad.domain.SendtSoknad
 import no.nav.sosialhjelp.soknad.domain.SoknadMetadata
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
 import org.assertj.core.api.Assertions.assertThat
@@ -169,15 +169,17 @@ internal class InnsendingServiceTest {
 
     private fun createSendtSoknad(): Optional<SendtSoknad> {
         return Optional.of(
-            SendtSoknad().withEier(EIER)
-                .withBehandlingsId(BEHANDLINGSID)
-                .withTilknyttetBehandlingsId(TILKNYTTET_BEHANDLINGSID)
-                .withFiksforsendelseId(FIKSFORSENDELSEID)
-                .withOrgnummer(ORGNR)
-                .withNavEnhetsnavn(NAVENHETSNAVN)
-                .withBrukerOpprettetDato(OPPRETTET_DATO)
-                .withBrukerFerdigDato(SIST_ENDRET_DATO)
-                .withSendtDato(LocalDateTime.now())
+            SendtSoknad(
+                behandlingsId = BEHANDLINGSID,
+                tilknyttetBehandlingsId = TILKNYTTET_BEHANDLINGSID,
+                eier = EIER,
+                fiksforsendelseId = FIKSFORSENDELSEID,
+                orgnummer = ORGNR,
+                navEnhetsnavn = NAVENHETSNAVN,
+                brukerOpprettetDato = OPPRETTET_DATO,
+                brukerFerdigDato = SIST_ENDRET_DATO,
+                sendtDato = LocalDateTime.now()
+            )
         )
     }
 
