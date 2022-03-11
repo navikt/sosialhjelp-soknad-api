@@ -3,9 +3,6 @@ package no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata
 import no.nav.sosialhjelp.soknad.db.SQLUtils
 import no.nav.sosialhjelp.soknad.db.SQLUtils.tidTilTimestamp
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRowMapper.soknadMetadataRowMapper
-import no.nav.sosialhjelp.soknad.domain.SoknadMetadata
-import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus
-import no.nav.sosialhjelp.soknad.domain.SoknadMetadataType
 import org.springframework.jdbc.core.RowMapper
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport
 import org.springframework.stereotype.Component
@@ -26,8 +23,9 @@ open class SoknadMetadataRepositoryJdbc : NamedParameterJdbcDaoSupport(), Soknad
         super.setDataSource(ds)
     }
 
-    override fun hentNesteId(): Long? {
+    override fun hentNesteId(): Long {
         return jdbcTemplate.queryForObject(SQLUtils.selectNextSequenceValue("METADATA_ID_SEQ"), Long::class.java)
+            ?: throw RuntimeException("Noe feil skjedde vel opprettelse av id fra sekvens")
     }
 
     @Transactional
@@ -39,12 +37,12 @@ open class SoknadMetadataRepositoryJdbc : NamedParameterJdbcDaoSupport(), Soknad
             metadata.tilknyttetBehandlingsId,
             metadata.skjema,
             metadata.fnr,
-            SoknadMetadata.JAXB.marshal(metadata.vedlegg),
+            metadata.vedlegg?.let { JAXB.marshal(it) },
             metadata.orgnr,
             metadata.navEnhet,
             metadata.fiksForsendelseId,
-            metadata.type.name,
-            metadata.status.name,
+            metadata.type?.name,
+            metadata.status?.name,
             tidTilTimestamp(metadata.opprettetDato),
             tidTilTimestamp(metadata.sistEndretDato),
             tidTilTimestamp(metadata.innsendtDato)
@@ -58,7 +56,7 @@ open class SoknadMetadataRepositoryJdbc : NamedParameterJdbcDaoSupport(), Soknad
             metadata?.tilknyttetBehandlingsId,
             metadata?.skjema,
             metadata?.fnr,
-            SoknadMetadata.JAXB.marshal(metadata?.vedlegg),
+            metadata?.vedlegg?.let { JAXB.marshal(it) },
             metadata?.orgnr,
             metadata?.navEnhet,
             metadata?.fiksForsendelseId,

@@ -1,9 +1,9 @@
 package no.nav.sosialhjelp.soknad.db.repositories.oppgave
 
 import no.nav.sosialhjelp.soknad.db.SQLUtils
+import no.nav.sosialhjelp.soknad.db.SQLUtils.nullableTimestampTilTid
 import no.nav.sosialhjelp.soknad.db.SQLUtils.selectNextSequenceValue
 import no.nav.sosialhjelp.soknad.db.SQLUtils.tidTilTimestamp
-import no.nav.sosialhjelp.soknad.db.SQLUtils.timestampTilTid
 import org.springframework.jdbc.core.RowMapper
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport
 import org.springframework.stereotype.Component
@@ -28,9 +28,9 @@ open class OppgaveRepositoryJdbc : NamedParameterJdbcDaoSupport(), OppgaveReposi
             steg = rs.getInt("steg"),
             oppgaveData = rs.getString("oppgavedata")?.let { JAXB.unmarshal(it, FiksData::class.java) },
             oppgaveResultat = rs.getString("oppgaveresultat")?.let { JAXB.unmarshal(it, FiksResultat::class.java) },
-            opprettet = timestampTilTid(rs.getTimestamp("opprettet")),
-            sistKjort = timestampTilTid(rs.getTimestamp("sistkjort")),
-            nesteForsok = timestampTilTid(rs.getTimestamp("nesteforsok")),
+            opprettet = nullableTimestampTilTid(rs.getTimestamp("opprettet")),
+            sistKjort = nullableTimestampTilTid(rs.getTimestamp("sistkjort")),
+            nesteForsok = nullableTimestampTilTid(rs.getTimestamp("nesteforsok")),
             retries = rs.getInt("retries")
         )
     }

@@ -2,7 +2,6 @@ package no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata
 
 import no.nav.sosialhjelp.soknad.db.SQLUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRowMapper.soknadMetadataRowMapper
-import no.nav.sosialhjelp.soknad.domain.SoknadMetadata
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional

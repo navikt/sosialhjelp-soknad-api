@@ -5,11 +5,11 @@ import io.mockk.just
 import io.mockk.mockk
 import io.mockk.runs
 import io.mockk.verify
-import no.nav.sosialhjelp.soknad.domain.SoknadMetadata.VedleggMetadata
-import no.nav.sosialhjelp.soknad.domain.Vedleggstatus
-import no.nav.sosialhjelp.soknad.domain.Vedleggstatus.LastetOpp
-import no.nav.sosialhjelp.soknad.domain.Vedleggstatus.VedleggAlleredeSendt
-import no.nav.sosialhjelp.soknad.domain.Vedleggstatus.VedleggKreves
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.VedleggMetadata
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.Vedleggstatus
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.Vedleggstatus.LastetOpp
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.Vedleggstatus.VedleggAlleredeSendt
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.Vedleggstatus.VedleggKreves
 import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils
 import org.junit.jupiter.api.Test
 

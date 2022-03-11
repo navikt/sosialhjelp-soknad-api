@@ -2,9 +2,6 @@ package no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata
 
 import no.nav.sosialhjelp.soknad.config.DbTestConfig
 import no.nav.sosialhjelp.soknad.config.RepositoryTestSupport
-import no.nav.sosialhjelp.soknad.domain.SoknadMetadata
-import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus
-import no.nav.sosialhjelp.soknad.domain.SoknadMetadataType
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
@@ -54,18 +51,18 @@ internal class SoknadMetadataRepositoryJdbcTest {
         status: SoknadMetadataInnsendingStatus,
         dagerSiden: Int,
     ): SoknadMetadata {
-        val meta = SoknadMetadata()
-        meta.id = soknadMetadataRepository!!.hentNesteId()
-        meta.behandlingsId = behandlingsId
-        meta.fnr = EIER
-        meta.type = SoknadMetadataType.SEND_SOKNAD_KOMMUNAL
-        meta.skjema = ""
-        meta.status = status
-        meta.innsendtDato = LocalDateTime.now().minusDays(dagerSiden.toLong())
-        meta.opprettetDato = LocalDateTime.now().minusDays(dagerSiden.toLong())
-        meta.sistEndretDato = LocalDateTime.now().minusDays(dagerSiden.toLong())
-        meta.lestDittNav = false
-        return meta
+        return SoknadMetadata(
+            id = soknadMetadataRepository!!.hentNesteId(),
+            behandlingsId = behandlingsId,
+            fnr = EIER,
+            type = SoknadMetadataType.SEND_SOKNAD_KOMMUNAL,
+            skjema = "",
+            status = status,
+            innsendtDato = LocalDateTime.now().minusDays(dagerSiden.toLong()),
+            opprettetDato = LocalDateTime.now().minusDays(dagerSiden.toLong()),
+            sistEndretDato = LocalDateTime.now().minusDays(dagerSiden.toLong()),
+            lestDittNav = false,
+        )
     }
 
     companion object {

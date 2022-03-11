@@ -1,10 +1,10 @@
 package no.nav.sosialhjelp.soknad.ettersending.innsendtsoknad
 
-import no.nav.sosialhjelp.soknad.domain.SoknadMetadata
-import no.nav.sosialhjelp.soknad.domain.SoknadMetadata.VedleggMetadata
-import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus
-import no.nav.sosialhjelp.soknad.domain.SoknadMetadataType
-import no.nav.sosialhjelp.soknad.domain.Vedleggstatus
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadata
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataInnsendingStatus
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataType
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.VedleggMetadata
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.Vedleggstatus
 import no.nav.sosialhjelp.soknad.ettersending.innsendtsoknad.EttersendelseUtils.soknadSendtForMindreEnn30DagerSiden
 import no.nav.sosialhjelp.soknad.innsending.HenvendelseService
 import java.time.LocalDateTime
@@ -16,7 +16,7 @@ class InnsendtSoknadService(
     private val henvendelseService: HenvendelseService
 ) {
     private val ikkeKvittering = Predicate<VedleggMetadata> { SKJEMANUMMER_KVITTERING != it.skjema }
-    private val lastetOpp = Predicate<VedleggMetadata> { it.status.er(Vedleggstatus.LastetOpp) }
+    private val lastetOpp = Predicate<VedleggMetadata> { it.status?.er(Vedleggstatus.LastetOpp) ?: false }
     private val ikkeLastetOpp = lastetOpp.negate()
     private val datoFormatter = DateTimeFormatter.ofPattern("d. MMMM yyyy")
     private val tidFormatter = DateTimeFormatter.ofPattern("HH:mm:ss")
@@ -47,11 +47,12 @@ class InnsendtSoknadService(
     private fun konverter(metadata: SoknadMetadata): InnsendtSoknad {
         return InnsendtSoknad(
             behandlingsId = metadata.behandlingsId,
-            innsendtDato = metadata.innsendtDato.format(datoFormatter),
-            innsendtTidspunkt = metadata.innsendtDato.format(tidFormatter),
+            innsendtDato = metadata.innsendtDato?.format(datoFormatter),
+            innsendtTidspunkt = metadata.innsendtDato?.format(tidFormatter),
             soknadsalderIMinutter = soknadsalderIMinutter(metadata.innsendtDato),
-            innsendteVedlegg = tilVedlegg(metadata.vedlegg.vedleggListe, lastetOpp),
-            ikkeInnsendteVedlegg = if (soknadSendtForMindreEnn30DagerSiden(metadata.innsendtDato.toLocalDate())) tilVedlegg(metadata.vedlegg.vedleggListe, ikkeLastetOpp) else null,
+            innsendteVedlegg = metadata.vedlegg?.vedleggListe?.let { tilVedlegg(it, lastetOpp) },
+            ikkeInnsendteVedlegg = metadata.innsendtDato?.toLocalDate()
+                ?.let { if (soknadSendtForMindreEnn30DagerSiden(it)) tilVedlegg(metadata.vedlegg?.vedleggListe, ikkeLastetOpp) else null },
             navenhet = metadata.navEnhet,
             orgnummer = metadata.orgnr
         )
@@ -63,15 +64,15 @@ class InnsendtSoknadService(
     }
 
     private fun tilVedlegg(
-        vedlegg: List<VedleggMetadata>,
+        vedlegg: List<VedleggMetadata>?,
         status: Predicate<VedleggMetadata>
     ): List<Vedlegg> {
         val vedleggMedRiktigStatus = vedlegg
-            .filter { ikkeKvittering.test(it) }
-            .filter { status.test(it) }
+            ?.filter { ikkeKvittering.test(it) }
+            ?.filter { status.test(it) }
 
         val unikeVedlegg: MutableMap<String, Vedlegg> = HashMap()
-        vedleggMedRiktigStatus.forEach {
+        vedleggMedRiktigStatus?.forEach {
             val sammensattnavn = it.skjema + "|" + it.tillegg
             if (!unikeVedlegg.containsKey(sammensattnavn)) {
                 unikeVedlegg[sammensattnavn] = Vedlegg(

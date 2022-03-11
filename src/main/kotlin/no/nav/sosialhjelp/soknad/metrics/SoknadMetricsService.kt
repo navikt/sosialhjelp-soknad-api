@@ -1,9 +1,9 @@
 package no.nav.sosialhjelp.soknad.metrics
 
 import no.nav.sosialhjelp.metrics.MetricsFactory
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.VedleggMetadata
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.Vedleggstatus
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
-import no.nav.sosialhjelp.soknad.domain.SoknadMetadata.VedleggMetadata
-import no.nav.sosialhjelp.soknad.domain.Vedleggstatus
 import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils.isVedleggskravAnnet
 import no.nav.sosialhjelp.soknad.metrics.MetricsUtils.getProsent
 import org.slf4j.LoggerFactory

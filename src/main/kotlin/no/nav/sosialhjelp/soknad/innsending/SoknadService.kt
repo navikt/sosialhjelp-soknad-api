@@ -30,12 +30,12 @@ import no.nav.sosialhjelp.metrics.Timer
 import no.nav.sosialhjelp.soknad.common.exceptions.SosialhjelpSoknadApiException
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.common.systemdata.SystemdataUpdater
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.VedleggMetadata
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.VedleggMetadataListe
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.Vedleggstatus
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
-import no.nav.sosialhjelp.soknad.domain.SoknadMetadata.VedleggMetadata
-import no.nav.sosialhjelp.soknad.domain.SoknadMetadata.VedleggMetadataListe
-import no.nav.sosialhjelp.soknad.domain.Vedleggstatus
 import no.nav.sosialhjelp.soknad.ettersending.EttersendingService
 import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils.getVedleggFromInternalSoknad
 import no.nav.sosialhjelp.soknad.innsending.svarut.OppgaveHandterer
@@ -198,7 +198,7 @@ open class SoknadService(
     private fun convertToVedleggMetadataListe(soknadUnderArbeid: SoknadUnderArbeid): VedleggMetadataListe {
         val jsonVedleggs = getVedleggFromInternalSoknad(soknadUnderArbeid)
         val vedlegg = VedleggMetadataListe()
-        vedlegg.vedleggListe = jsonVedleggs.map { mapJsonVedleggToVedleggMetadata(it) }
+        vedlegg.vedleggListe = jsonVedleggs.map { mapJsonVedleggToVedleggMetadata(it) }.toMutableList()
         return vedlegg
     }
 
@@ -281,14 +281,15 @@ open class SoknadService(
         }
 
         private fun mapJsonVedleggToVedleggMetadata(jsonVedlegg: JsonVedlegg): VedleggMetadata {
-            val m = VedleggMetadata()
-            m.skjema = jsonVedlegg.type
-            m.tillegg = jsonVedlegg.tilleggsinfo
-            m.filnavn = jsonVedlegg.type
-            m.status = Vedleggstatus.valueOf(jsonVedlegg.status)
-            m.hendelseType = jsonVedlegg.hendelseType
-            m.hendelseReferanse = jsonVedlegg.hendelseReferanse
-            return m
+            return VedleggMetadata(
+                skjema = jsonVedlegg.type,
+                tillegg = jsonVedlegg.tilleggsinfo,
+                filnavn = jsonVedlegg.type,
+                status = Vedleggstatus.valueOf(jsonVedlegg.status),
+                hendelseType = jsonVedlegg.hendelseType,
+                hendelseReferanse = jsonVedlegg.hendelseReferanse,
+
+            )
         }
     }
 }
