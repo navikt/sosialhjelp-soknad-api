@@ -104,7 +104,7 @@ class OppgaveHandtererImpl(
 
     override fun leggTilOppgave(behandlingsId: String, eier: String) {
         val oppgave = Oppgave(
-            id = 1L,
+            id = 0L, // dummy id. sekvens-value settes som `id` ved oppgaveRepository.opprett(oppgave)
             behandlingsId = behandlingsId,
             type = FiksHandterer.FIKS_OPPGAVE,
             status = Status.KLAR,

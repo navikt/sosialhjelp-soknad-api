@@ -14,40 +14,41 @@ class FiksHandterer(
     private val fiksSender: FiksSender,
     private val innsendingService: InnsendingService
 ) {
-    fun eksekver(oppgaveKjede: Oppgave) {
-        val behandlingsId = oppgaveKjede.behandlingsId
-        logger.info("Kjører fikskjede for behandlingsid $behandlingsId, steg ${oppgaveKjede.steg}")
+    fun eksekver(oppgave: Oppgave) {
+        val behandlingsId = oppgave.behandlingsId
+        logger.info("Kjører fikskjede for behandlingsid $behandlingsId, steg ${oppgave.steg}")
 
-        val resultat = oppgaveKjede.oppgaveResultat
-        val eier = oppgaveKjede.oppgaveData?.avsenderFodselsnummer
+        val resultat = oppgave.oppgaveResultat
+            ?: throw IllegalStateException("Søknad med behandlingsId $behandlingsId har oppgaveResultat=null")
+        val eier = oppgave.oppgaveData?.avsenderFodselsnummer
             ?: throw IllegalStateException("Søknad med behandlingsid $behandlingsId har eier=null")
 
         check(!StringUtils.isEmpty(eier)) { "Søknad med behandlingsid $behandlingsId mangler eier" }
 
-        when (oppgaveKjede.steg) {
+        when (oppgave.steg) {
             21 -> {
                 sendTilFiks(behandlingsId, resultat, eier)
-                oppgaveKjede.nesteSteg()
+                oppgave.nesteSteg()
             }
             22 -> {
                 slettSoknadOgFiler(behandlingsId, eier)
-                oppgaveKjede.nesteSteg()
+                oppgave.nesteSteg()
             }
             else -> {
                 lagreResultat(behandlingsId, resultat, eier)
-                oppgaveKjede.ferdigstill()
+                oppgave.ferdigstill()
             }
         }
     }
 
-    private fun sendTilFiks(behandlingsId: String, resultat: FiksResultat?, eier: String) {
+    private fun sendTilFiks(behandlingsId: String, resultat: FiksResultat, eier: String) {
         val sendtSoknad = innsendingService.hentSendtSoknad(behandlingsId, eier)
         val event = lagForsoktSendtTilFiksEvent(sendtSoknad)
         try {
-            resultat?.fiksForsendelsesId = fiksSender.sendTilFiks(sendtSoknad)
-            logger.info("Søknad $behandlingsId fikk id ${resultat?.fiksForsendelsesId} i Fiks")
+            resultat.fiksForsendelsesId = fiksSender.sendTilFiks(sendtSoknad)
+            logger.info("Søknad $behandlingsId fikk id ${resultat.fiksForsendelsesId} i Fiks")
         } catch (e: Exception) {
-            resultat?.feilmelding = e.message
+            resultat.feilmelding = e.message
             event.setFailed()
             throw e
         } finally {
@@ -59,8 +60,8 @@ class FiksHandterer(
         innsendingService.finnOgSlettSoknadUnderArbeidVedSendingTilFiks(behandlingsId, eier)
     }
 
-    private fun lagreResultat(behandlingsId: String, resultat: FiksResultat?, eier: String) {
-        innsendingService.oppdaterSendtSoknadVedSendingTilFiks(resultat?.fiksForsendelsesId, behandlingsId, eier)
+    private fun lagreResultat(behandlingsId: String, resultat: FiksResultat, eier: String) {
+        innsendingService.oppdaterSendtSoknadVedSendingTilFiks(resultat.fiksForsendelsesId, behandlingsId, eier)
     }
 
     private fun lagForsoktSendtTilFiksEvent(sendtSoknad: SendtSoknad): Event {
