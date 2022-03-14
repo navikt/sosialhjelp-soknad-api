@@ -2,9 +2,9 @@ package no.nav.sosialhjelp.soknad.innsending.svarut
 
 import no.nav.sosialhjelp.metrics.MetricsFactory
 import no.nav.sosialhjelp.soknad.common.mdc.MdcOperations
+import no.nav.sosialhjelp.soknad.db.repositories.oppgave.Oppgave
 import no.nav.sosialhjelp.soknad.db.repositories.oppgave.OppgaveRepository
-import no.nav.sosialhjelp.soknad.domain.Oppgave
-import no.nav.sosialhjelp.soknad.domain.Oppgave.Status
+import no.nav.sosialhjelp.soknad.db.repositories.oppgave.Status
 import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Scheduled
 import java.time.LocalDateTime
@@ -103,15 +103,18 @@ class OppgaveHandtererImpl(
     }
 
     override fun leggTilOppgave(behandlingsId: String, eier: String) {
-        val oppgave = Oppgave()
-        oppgave.behandlingsId = behandlingsId
-        oppgave.type = FiksHandterer.FIKS_OPPGAVE
-        oppgave.status = Status.KLAR
-        oppgave.opprettet = LocalDateTime.now()
-        oppgave.nesteForsok = LocalDateTime.now()
-        oppgave.steg = FORSTE_STEG_NY_INNSENDING
-        oppgave.retries = 0
-        oppgave.oppgaveData.avsenderFodselsnummer = eier
+        val oppgave = Oppgave(
+            id = 0L, // dummy id. sekvens-value settes som `id` ved oppgaveRepository.opprett(oppgave)
+            behandlingsId = behandlingsId,
+            type = FiksHandterer.FIKS_OPPGAVE,
+            status = Status.KLAR,
+            steg = FORSTE_STEG_NY_INNSENDING,
+            opprettet = LocalDateTime.now(),
+            sistKjort = null,
+            nesteForsok = LocalDateTime.now(),
+            retries = 0
+        )
+        oppgave.oppgaveData?.avsenderFodselsnummer = eier
         oppgaveRepository.opprett(oppgave)
     }
 

@@ -2,8 +2,8 @@ package no.nav.sosialhjelp.soknad.innsending.svarut
 
 import no.nav.sosialhjelp.metrics.Event
 import no.nav.sosialhjelp.metrics.MetricsFactory
-import no.nav.sosialhjelp.soknad.domain.FiksResultat
-import no.nav.sosialhjelp.soknad.domain.Oppgave
+import no.nav.sosialhjelp.soknad.db.repositories.oppgave.FiksResultat
+import no.nav.sosialhjelp.soknad.db.repositories.oppgave.Oppgave
 import no.nav.sosialhjelp.soknad.domain.SendtSoknad
 import no.nav.sosialhjelp.soknad.innsending.InnsendingService
 import no.nav.sosialhjelp.soknad.metrics.MetricsUtils.navKontorTilInfluxNavn
@@ -14,26 +14,29 @@ class FiksHandterer(
     private val fiksSender: FiksSender,
     private val innsendingService: InnsendingService
 ) {
-    fun eksekver(oppgaveKjede: Oppgave) {
-        val behandlingsId = oppgaveKjede.behandlingsId
-        logger.info("Kjører fikskjede for behandlingsid $behandlingsId, steg ${oppgaveKjede.steg}")
+    fun eksekver(oppgave: Oppgave) {
+        val behandlingsId = oppgave.behandlingsId
+        logger.info("Kjører fikskjede for behandlingsid $behandlingsId, steg ${oppgave.steg}")
 
-        val resultat = oppgaveKjede.oppgaveResultat
-        val eier = oppgaveKjede.oppgaveData.avsenderFodselsnummer
+        val resultat = oppgave.oppgaveResultat
+            ?: throw IllegalStateException("Søknad med behandlingsId $behandlingsId har oppgaveResultat=null")
+        val eier = oppgave.oppgaveData?.avsenderFodselsnummer
+            ?: throw IllegalStateException("Søknad med behandlingsid $behandlingsId har eier=null")
+
         check(!StringUtils.isEmpty(eier)) { "Søknad med behandlingsid $behandlingsId mangler eier" }
 
-        when (oppgaveKjede.steg) {
+        when (oppgave.steg) {
             21 -> {
                 sendTilFiks(behandlingsId, resultat, eier)
-                oppgaveKjede.nesteSteg()
+                oppgave.nesteSteg()
             }
             22 -> {
                 slettSoknadOgFiler(behandlingsId, eier)
-                oppgaveKjede.nesteSteg()
+                oppgave.nesteSteg()
             }
             else -> {
                 lagreResultat(behandlingsId, resultat, eier)
-                oppgaveKjede.ferdigstill()
+                oppgave.ferdigstill()
             }
         }
     }
