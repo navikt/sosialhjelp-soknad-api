@@ -1,13 +1,12 @@
 package no.nav.sosialhjelp.soknad.okonomiskeopplysninger.mappers
 
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
-import no.nav.sosialhjelp.soknad.domain.OpplastetVedlegg
-import no.nav.sosialhjelp.soknad.domain.OpplastetVedleggType
+import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedlegg
+import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggType
 import no.nav.sosialhjelp.soknad.domain.Vedleggstatus
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
-import java.util.Arrays
 
 internal class VedleggMapperTest {
 
@@ -48,7 +47,7 @@ internal class VedleggMapperTest {
     }
 
     private fun createOriginaleVedlegg(): List<JsonVedlegg> {
-        return Arrays.asList(
+        return mutableListOf(
             JsonVedlegg()
                 .withType(BOSTOTTE.type)
                 .withTilleggsinfo(BOSTOTTE.tilleggsinfo)
@@ -65,23 +64,26 @@ internal class VedleggMapperTest {
     }
 
     private fun createOpplastetVedleggList(): List<OpplastetVedlegg> {
-        val opplastedeVedlegg: MutableList<OpplastetVedlegg> = ArrayList()
-        opplastedeVedlegg.add(createOpplastetVedlegg(BOSTOTTE))
-        opplastedeVedlegg.add(createOpplastetVedlegg(ANNET))
-        return opplastedeVedlegg
+        return mutableListOf(
+            createOpplastetVedlegg(BOSTOTTE),
+            createOpplastetVedlegg(ANNET)
+        )
     }
 
     private fun createOpplastetVedlegg(type: OpplastetVedleggType): OpplastetVedlegg {
-        return OpplastetVedlegg()
-            .withVedleggType(type)
-            .withEier(EIER)
+        return OpplastetVedlegg(
+            eier = EIER,
+            vedleggType = type,
+            data = byteArrayOf(1, 2, 3),
+            soknadId = 123L,
+            filnavn = "FILNAVN",
+            sha512 = "sha512"
+        )
     }
 
     companion object {
-        private val BOSTOTTE =
-            OpplastetVedleggType("bostotte|annetboutgift")
-        private val SKATTEMELDING =
-            OpplastetVedleggType("skatt|melding")
+        private val BOSTOTTE = OpplastetVedleggType("bostotte|annetboutgift")
+        private val SKATTEMELDING = OpplastetVedleggType("skatt|melding")
         private val ANNET = OpplastetVedleggType("annet|annet")
         private const val EIER = "12345678910"
     }

@@ -8,10 +8,10 @@ import io.mockk.verify
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRepository
+import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggType
 import no.nav.sosialhjelp.soknad.db.repositories.sendtsoknad.SendtSoknadRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
-import no.nav.sosialhjelp.soknad.domain.OpplastetVedleggType
 import no.nav.sosialhjelp.soknad.domain.SendtSoknad
 import no.nav.sosialhjelp.soknad.domain.SoknadMetadata
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
@@ -187,8 +187,7 @@ internal class InnsendingServiceTest {
         private const val SOKNAD_UNDER_ARBEID_ID = 1L
         private const val SENDT_SOKNAD_ID = 2L
         private const val EIER = "12345678910"
-        private val VEDLEGGTYPE =
-            OpplastetVedleggType("bostotte|annetboutgift")
+        private val VEDLEGGTYPE = OpplastetVedleggType("bostotte|annetboutgift")
         private const val BEHANDLINGSID = "1100001L"
         private const val TILKNYTTET_BEHANDLINGSID = "1100002K"
         private const val FIKSFORSENDELSEID = "12345"

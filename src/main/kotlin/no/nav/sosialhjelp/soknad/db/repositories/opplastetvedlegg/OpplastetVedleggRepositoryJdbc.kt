@@ -1,7 +1,6 @@
 package no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg
 
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRowMapper.opplastetVedleggRowMapper
-import no.nav.sosialhjelp.soknad.domain.OpplastetVedlegg
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport
 import org.springframework.stereotype.Component
 import java.util.Optional

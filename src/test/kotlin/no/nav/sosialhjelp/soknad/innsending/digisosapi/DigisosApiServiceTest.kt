@@ -16,9 +16,9 @@ import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
 import no.nav.sosialhjelp.soknad.common.MiljoUtils
 import no.nav.sosialhjelp.soknad.common.filedetection.MimeTypes
+import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedlegg
+import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggType
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
-import no.nav.sosialhjelp.soknad.domain.OpplastetVedlegg
-import no.nav.sosialhjelp.soknad.domain.OpplastetVedleggType
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.domain.Vedleggstatus
 import no.nav.sosialhjelp.soknad.innsending.HenvendelseService
@@ -169,11 +169,14 @@ internal class DigisosApiServiceTest {
 
     private fun lagOpplastetVedlegg(): List<OpplastetVedlegg> {
         return mutableListOf(
-            OpplastetVedlegg()
-                .withFilnavn("FILNAVN")
-                .withSha512("sha512")
-                .withVedleggType(OpplastetVedleggType("type|tilleggsinfo"))
-                .withData(byteArrayOf(1, 2, 3))
+            OpplastetVedlegg(
+                eier = "eier",
+                vedleggType = OpplastetVedleggType("type|tilleggsinfo"),
+                data = byteArrayOf(1, 2, 3),
+                soknadId = 123L,
+                filnavn = "FILNAVN",
+                sha512 = "sha512"
+            )
         )
     }
 }

@@ -3,9 +3,9 @@ package no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sosialhjelp.soknad.config.DbTestConfig
 import no.nav.sosialhjelp.soknad.config.RepositoryTestSupport
+import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedlegg
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRepository
-import no.nav.sosialhjelp.soknad.domain.OpplastetVedlegg
-import no.nav.sosialhjelp.soknad.domain.OpplastetVedleggType
+import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggType
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeidStatus
 import org.assertj.core.api.Assertions.assertThat
@@ -75,13 +75,14 @@ internal class BatchSoknadUnderArbeidRepositoryJdbcTest {
     }
 
     private fun lagOpplastetVedlegg(soknadId: Long): OpplastetVedlegg {
-        return OpplastetVedlegg()
-            .withEier(EIER)
-            .withVedleggType(OpplastetVedleggType("bostotte|annetboutgift"))
-            .withData(byteArrayOf(1, 2, 3))
-            .withSoknadId(soknadId)
-            .withFilnavn("dokumentasjon.pdf")
-            .withSha512("aaa")
+        return OpplastetVedlegg(
+            eier = EIER,
+            vedleggType = OpplastetVedleggType("bostotte|annetboutgift"),
+            data = byteArrayOf(1, 2, 3),
+            soknadId = soknadId,
+            filnavn = "dokumentasjon.pdf",
+            sha512 = "aaa"
+        )
     }
 
     companion object {

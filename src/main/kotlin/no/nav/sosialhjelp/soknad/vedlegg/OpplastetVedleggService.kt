@@ -8,10 +8,10 @@ import no.nav.sosialhjelp.soknad.common.filedetection.FileDetectionUtils.detectT
 import no.nav.sosialhjelp.soknad.common.filedetection.FileDetectionUtils.getMimeType
 import no.nav.sosialhjelp.soknad.common.filedetection.TikaFileType
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
+import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedlegg
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRepository
+import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggType
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
-import no.nav.sosialhjelp.soknad.domain.OpplastetVedlegg
-import no.nav.sosialhjelp.soknad.domain.OpplastetVedleggType
 import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.domain.Vedleggstatus
 import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils
@@ -30,6 +30,7 @@ import java.io.UnsupportedEncodingException
 import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
 import java.util.Locale
+import java.util.UUID
 import java.util.function.Predicate
 import javax.ws.rs.NotFoundException
 
@@ -54,19 +55,20 @@ class OpplastetVedleggService(
 
         val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
         val soknadId = soknadUnderArbeid.soknadId
-        val opplastetVedlegg = OpplastetVedlegg()
-            .withEier(eier)
-            .withVedleggType(OpplastetVedleggType(vedleggstype))
-            .withData(data)
-            .withSoknadId(soknadId)
-            .withSha512(sha512)
 
-        filnavn = lagFilnavn(filnavn, fileType, opplastetVedlegg.uuid)
+        val uuid = UUID.randomUUID().toString()
+        filnavn = lagFilnavn(filnavn, fileType, uuid)
 
-        opplastetVedlegg.withFilnavn(filnavn)
-
-        val uuid = opplastetVedleggRepository.opprettVedlegg(opplastetVedlegg, eier)
-        opplastetVedlegg.withUuid(uuid)
+        val opplastetVedlegg = OpplastetVedlegg(
+            uuid = uuid,
+            eier = eier,
+            vedleggType = OpplastetVedleggType(vedleggstype),
+            data = data,
+            soknadId = soknadId,
+            filnavn = filnavn,
+            sha512 = sha512
+        )
+        opplastetVedleggRepository.opprettVedlegg(opplastetVedlegg, eier)
 
         val jsonVedlegg = finnVedleggEllerKastException(vedleggstype, soknadUnderArbeid)
         if (jsonVedlegg.filer == null) {
