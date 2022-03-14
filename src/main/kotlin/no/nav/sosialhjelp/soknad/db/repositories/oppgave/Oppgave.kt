@@ -50,7 +50,8 @@ data class FiksData(
 data class DokumentInfo(
     var uuid: String?,
     var filnavn: String?,
-    var mimetype: String?
+    var mimetype: String?,
+    var ekskluderesFraPrint: Boolean = false
 )
 
 @XmlRootElement
