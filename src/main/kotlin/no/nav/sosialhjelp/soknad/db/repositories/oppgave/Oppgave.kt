@@ -48,10 +48,10 @@ data class FiksData(
 @XmlRootElement
 @XmlType(name = "fiksDokumentInfo")
 data class DokumentInfo(
-    var uuid: String?,
-    var filnavn: String?,
-    var mimetype: String?,
-    var ekskluderesFraPrint: Boolean = false
+    var uuid: String? = null,
+    var filnavn: String? = null,
+    var mimetype: String? = null,
+    var ekskluderesFraPrint: Boolean? = false
 )
 
 @XmlRootElement
