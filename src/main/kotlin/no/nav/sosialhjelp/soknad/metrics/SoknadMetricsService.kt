@@ -1,8 +1,8 @@
 package no.nav.sosialhjelp.soknad.metrics
 
 import no.nav.sosialhjelp.metrics.MetricsFactory
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.domain.SoknadMetadata.VedleggMetadata
-import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.domain.Vedleggstatus
 import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils.isVedleggskravAnnet
 import no.nav.sosialhjelp.soknad.metrics.MetricsUtils.getProsent
@@ -14,8 +14,8 @@ class SoknadMetricsService {
         soknadUnderArbeid: SoknadUnderArbeid,
         vedleggList: List<VedleggMetadata>
     ) {
-        reportSendSoknad(soknadUnderArbeid.erEttersendelse())
-        countAndreportVedleggskrav(soknadUnderArbeid.erEttersendelse(), vedleggList)
+        reportSendSoknad(soknadUnderArbeid.erEttersendelse)
+        countAndreportVedleggskrav(soknadUnderArbeid.erEttersendelse, vedleggList)
     }
 
     fun reportStartSoknad(isEttersendelse: Boolean) {

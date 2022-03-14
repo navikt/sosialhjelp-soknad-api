@@ -19,8 +19,9 @@ import no.nav.sosialhjelp.soknad.common.MiljoUtils
 import no.nav.sosialhjelp.soknad.common.exceptions.AuthorizationException
 import no.nav.sosialhjelp.soknad.common.subjecthandler.StaticSubjectHandlerImpl
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
-import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.navenhet.NavEnhetRessurs
 import no.nav.sosialhjelp.soknad.navenhet.dto.NavEnhetFrontend
@@ -35,6 +36,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import java.time.LocalDateTime
 import java.util.Arrays
 
 internal class AdresseRessursTest {
@@ -64,7 +66,7 @@ internal class AdresseRessursTest {
     fun adresserSkalReturnereAdresserRiktigKonvertert() {
         every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
         val soknadUnderArbeid = createJsonInternalSoknadWithOppholdsadresse(JsonAdresseValg.SOKNAD)
-        soknadUnderArbeid.jsonInternalSoknad.soknad.data.personalia.folkeregistrertAdresse = JSON_SYS_MATRIKKELADRESSE
+        soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia.folkeregistrertAdresse = JSON_SYS_MATRIKKELADRESSE
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns soknadUnderArbeid
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
         every { adresseSystemdata.innhentMidlertidigAdresse(any()) } returns JSON_SYS_USTRUKTURERT_ADRESSE
@@ -82,7 +84,7 @@ internal class AdresseRessursTest {
     fun adresserSkalReturnereOppholdsAdresseLikFolkeregistrertAdresse() {
         every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
         val soknadUnderArbeid = createJsonInternalSoknadWithOppholdsadresse(JsonAdresseValg.FOLKEREGISTRERT)
-        soknadUnderArbeid.jsonInternalSoknad.soknad.data.personalia.folkeregistrertAdresse = JSON_SYS_MATRIKKELADRESSE
+        soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia.folkeregistrertAdresse = JSON_SYS_MATRIKKELADRESSE
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns soknadUnderArbeid
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
         every { adresseSystemdata.innhentMidlertidigAdresse(any()) } returns JSON_SYS_USTRUKTURERT_ADRESSE
@@ -100,7 +102,7 @@ internal class AdresseRessursTest {
     fun adresserSkalReturnereOppholdsAdresseLikMidlertidigAdresse() {
         every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
         val soknadUnderArbeid = createJsonInternalSoknadWithOppholdsadresse(JsonAdresseValg.MIDLERTIDIG)
-        soknadUnderArbeid.jsonInternalSoknad.soknad.data.personalia.folkeregistrertAdresse = JSON_SYS_MATRIKKELADRESSE
+        soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia.folkeregistrertAdresse = JSON_SYS_MATRIKKELADRESSE
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns soknadUnderArbeid
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
         every { adresseSystemdata.innhentMidlertidigAdresse(any()) } returns JSON_SYS_USTRUKTURERT_ADRESSE
@@ -129,7 +131,7 @@ internal class AdresseRessursTest {
     fun putAdresseSkalSetteOppholdsAdresseLikFolkeregistrertAdresseOgReturnereTilhorendeNavenhet() {
         every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
         val soknadUnderArbeidIRepo = createJsonInternalSoknadWithOppholdsadresse(JsonAdresseValg.SOKNAD)
-        soknadUnderArbeidIRepo.jsonInternalSoknad.soknad.data.personalia.folkeregistrertAdresse = JSON_SYS_MATRIKKELADRESSE
+        soknadUnderArbeidIRepo.jsonInternalSoknad!!.soknad.data.personalia.folkeregistrertAdresse = JSON_SYS_MATRIKKELADRESSE
         every { adresseSystemdata.createDeepCopyOfJsonAdresse(any()) } answers { callOriginal() }
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns soknadUnderArbeidIRepo
         every { navEnhetRessurs.findSoknadsmottaker(any(), any(), any(), any()) } returns listOf(
@@ -143,7 +145,7 @@ internal class AdresseRessursTest {
         val navEnheter = adresseRessurs.updateAdresse(BEHANDLINGSID, adresserFrontend)
 
         val soknadUnderArbeid = soknadUnderArbeidSlot.captured
-        val oppholdsadresse = soknadUnderArbeid.jsonInternalSoknad.soknad.data.personalia.oppholdsadresse
+        val oppholdsadresse = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia.oppholdsadresse
         assertThat(oppholdsadresse.kilde).isEqualTo(JsonKilde.SYSTEM)
         assertThat(oppholdsadresse).isEqualTo(adresseSystemdata.createDeepCopyOfJsonAdresse(JSON_SYS_MATRIKKELADRESSE)!!.withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT))
         assertThat(navEnheter).hasSize(1)
@@ -171,7 +173,7 @@ internal class AdresseRessursTest {
         val navEnheter = adresseRessurs.updateAdresse(BEHANDLINGSID, adresserFrontend)
 
         val soknadUnderArbeid = soknadUnderArbeidSlot.captured
-        val oppholdsadresse = soknadUnderArbeid.jsonInternalSoknad.soknad.data.personalia.oppholdsadresse
+        val oppholdsadresse = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia.oppholdsadresse
         assertThat(oppholdsadresse.kilde).isEqualTo(JsonKilde.SYSTEM)
         assertThat(oppholdsadresse).isEqualTo(JSON_SYS_USTRUKTURERT_ADRESSE)
         assertThat(oppholdsadresse.adresseValg).isEqualTo(JsonAdresseValg.MIDLERTIDIG)
@@ -202,7 +204,7 @@ internal class AdresseRessursTest {
         val navEnheter = adresseRessurs.updateAdresse(BEHANDLINGSID, adresserFrontend)
 
         val soknadUnderArbeid = soknadUnderArbeidSlot.captured
-        val oppholdsadresse = soknadUnderArbeid.jsonInternalSoknad.soknad.data.personalia.oppholdsadresse
+        val oppholdsadresse = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia.oppholdsadresse
         assertThat(oppholdsadresse.kilde).isEqualTo(JsonKilde.BRUKER)
         assertThat((oppholdsadresse as JsonGateAdresse).gatenavn).isEqualTo("Søknadsgata")
         assertThat(oppholdsadresse.getAdresseValg()).isEqualTo(JsonAdresseValg.SOKNAD)
@@ -303,8 +305,8 @@ internal class AdresseRessursTest {
     }
 
     private fun createJsonInternalSoknadWithOppholdsadresse(valg: JsonAdresseValg?): SoknadUnderArbeid {
-        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
-        soknadUnderArbeid.jsonInternalSoknad.soknad.data.personalia
+        val soknadUnderArbeid = createSoknadUnderArbeid()
+        soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia
             .withOppholdsadresse(getSelectedAdresse(valg))
         return soknadUnderArbeid
     }
@@ -347,5 +349,18 @@ internal class AdresseRessursTest {
             .withHusnummer("1337")
             .withHusbokstav("A")
         private const val EIER = "123456789101"
+
+        private fun createSoknadUnderArbeid(): SoknadUnderArbeid {
+            return SoknadUnderArbeid(
+                versjon = 1L,
+                behandlingsId = BEHANDLINGSID,
+                tilknyttetBehandlingsId = null,
+                eier = EIER,
+                jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
+                status = SoknadUnderArbeidStatus.UNDER_ARBEID,
+                opprettetDato = LocalDateTime.now(),
+                sistEndretDato = LocalDateTime.now()
+            )
+        }
     }
 }

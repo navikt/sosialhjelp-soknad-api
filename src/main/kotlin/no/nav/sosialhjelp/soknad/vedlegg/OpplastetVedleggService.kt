@@ -11,8 +11,8 @@ import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedlegg
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRepository
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggType
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
-import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.domain.Vedleggstatus
 import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils
 import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils.getSha512FromByteArray
@@ -96,7 +96,7 @@ class OpplastetVedleggService(
                 .map { it.withStatus(Vedleggstatus.VedleggKreves.toString()) }
         )
 
-        soknadUnderArbeid.jsonInternalSoknad.vedlegg = JsonVedleggSpesifikasjon().withVedlegg(jsonVedleggs)
+        soknadUnderArbeid.jsonInternalSoknad?.vedlegg = JsonVedleggSpesifikasjon().withVedlegg(jsonVedleggs)
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier)
     }
 
@@ -108,7 +108,7 @@ class OpplastetVedleggService(
         val samletVedleggStorrelse = opplastetVedleggRepository.hentSamletVedleggStorrelse(soknadId, eier)
         val newStorrelse = samletVedleggStorrelse + data.size
         if (newStorrelse > MAKS_SAMLET_VEDLEGG_STORRELSE) {
-            val feilmeldingId = if (soknadUnderArbeid.erEttersendelse()) {
+            val feilmeldingId = if (soknadUnderArbeid.erEttersendelse) {
                 "ettersending.vedlegg.feil.samletStorrelseForStor"
             } else {
                 "vedlegg.opplasting.feil.samletStorrelseForStor"

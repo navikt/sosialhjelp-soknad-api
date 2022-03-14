@@ -15,8 +15,9 @@ import no.nav.sosialhjelp.soknad.common.MiljoUtils
 import no.nav.sosialhjelp.soknad.common.exceptions.AuthorizationException
 import no.nav.sosialhjelp.soknad.common.subjecthandler.StaticSubjectHandlerImpl
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
-import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.personalia.telefonnummer.TelefonnummerRessurs.TelefonnummerFrontend
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
@@ -25,6 +26,7 @@ import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import java.time.LocalDateTime
 
 internal class TelefonnummerRessursTest {
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
@@ -102,7 +104,7 @@ internal class TelefonnummerRessursTest {
         telefonnummerRessurs.updateTelefonnummer(BEHANDLINGSID, telefonnummerFrontend)
 
         val soknadUnderArbeid = soknadUnderArbeidSlot.captured
-        val telefonnummer = soknadUnderArbeid.jsonInternalSoknad.soknad.data.personalia.telefonnummer
+        val telefonnummer = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia.telefonnummer
         assertThat(telefonnummer.kilde).isEqualTo(JsonKilde.BRUKER)
         assertThat(telefonnummer.verdi).isEqualTo(TELEFONNUMMER_BRUKER)
     }
@@ -122,7 +124,7 @@ internal class TelefonnummerRessursTest {
         telefonnummerRessurs.updateTelefonnummer(BEHANDLINGSID, telefonnummerFrontend)
 
         val soknadUnderArbeid = soknadUnderArbeidSlot.captured
-        val telefonnummer = soknadUnderArbeid.jsonInternalSoknad.soknad.data.personalia.telefonnummer
+        val telefonnummer = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia.telefonnummer
         assertThat(telefonnummer.kilde).isEqualTo(JsonKilde.BRUKER)
         assertThat(telefonnummer.verdi).isEqualTo(TELEFONNUMMER_BRUKER)
     }
@@ -142,7 +144,7 @@ internal class TelefonnummerRessursTest {
         telefonnummerRessurs.updateTelefonnummer(BEHANDLINGSID, telefonnummerFrontend)
 
         val soknadUnderArbeid = soknadUnderArbeidSlot.captured
-        val telefonnummer = soknadUnderArbeid.jsonInternalSoknad.soknad.data.personalia.telefonnummer
+        val telefonnummer = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia.telefonnummer
         assertThat(telefonnummer.kilde).isEqualTo(JsonKilde.SYSTEM)
         assertThat(telefonnummer.verdi).isEqualTo(TELEFONNUMMER_SYSTEM)
     }
@@ -170,8 +172,8 @@ internal class TelefonnummerRessursTest {
     }
 
     private fun createJsonInternalSoknadWithTelefonnummer(kilde: JsonKilde?, verdi: String?): SoknadUnderArbeid {
-        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
-        soknadUnderArbeid.jsonInternalSoknad.soknad.data.personalia
+        val soknadUnderArbeid = createSoknadUnderArbeid()
+        soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia
             .withTelefonnummer(
                 if (verdi == null) null else JsonTelefonnummer()
                     .withKilde(kilde)
@@ -185,5 +187,18 @@ internal class TelefonnummerRessursTest {
         private const val EIER = "123456789101"
         private const val TELEFONNUMMER_BRUKER = "98765432"
         private const val TELEFONNUMMER_SYSTEM = "23456789"
+
+        private fun createSoknadUnderArbeid(): SoknadUnderArbeid {
+            return SoknadUnderArbeid(
+                versjon = 1L,
+                behandlingsId = BEHANDLINGSID,
+                tilknyttetBehandlingsId = null,
+                eier = EIER,
+                jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
+                status = SoknadUnderArbeidStatus.UNDER_ARBEID,
+                opprettetDato = LocalDateTime.now(),
+                sistEndretDato = LocalDateTime.now()
+            )
+        }
     }
 }

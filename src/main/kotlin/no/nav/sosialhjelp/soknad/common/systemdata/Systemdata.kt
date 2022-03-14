@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.common.systemdata
 
-import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import org.springframework.stereotype.Component
 
 interface Systemdata {

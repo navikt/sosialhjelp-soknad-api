@@ -17,8 +17,9 @@ import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
 import no.nav.sosialhjelp.soknad.common.MiljoUtils
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedlegg
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggType
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.domain.SendtSoknad
-import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.domain.Vedleggstatus
 import no.nav.sosialhjelp.soknad.innsending.InnsendingService
 import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
@@ -48,7 +49,7 @@ internal class FiksSenderTest {
         every { dokumentKrypterer.krypterData(any()) } returns byteArrayOf(3, 2, 1)
         every { innsendingService.finnSendtSoknadForEttersendelse(any()) } returns SendtSoknad()
             .withFiksforsendelseId(FIKSFORSENDELSE_ID)
-        every { innsendingService.hentSoknadUnderArbeid(any(), any()) } returns SoknadUnderArbeid()
+        every { innsendingService.hentSoknadUnderArbeid(any(), any()) } returns mockk()
         every { sosialhjelpPdfGenerator.generate(any(), any()) } returns byteArrayOf(1, 2, 3)
         every { sosialhjelpPdfGenerator.generateEttersendelsePdf(any(), any()) } returns byteArrayOf(1, 2, 3)
         every { sosialhjelpPdfGenerator.generateBrukerkvitteringPdf() } returns byteArrayOf(1, 2, 3)
@@ -64,8 +65,7 @@ internal class FiksSenderTest {
 
     @Test
     fun createForsendelseSetterRiktigInfoPaForsendelsenMedKryptering() {
-        every { innsendingService.hentSoknadUnderArbeid(any(), any()) } returns SoknadUnderArbeid()
-            .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
+        every { innsendingService.hentSoknadUnderArbeid(any(), any()) } returns createSoknadUnderArbeid()
 
         val sendtSoknad = lagSendtSoknad()
         val filnavnInputStreamMap = HashMap<String, InputStream>()
@@ -92,9 +92,7 @@ internal class FiksSenderTest {
         every { MiljoUtils.isNonProduction() } returns true
         every { MiljoUtils.environmentName } returns "test"
         fiksSender = FiksSender(dokumentKrypterer, innsendingService, sosialhjelpPdfGenerator, false, svarUtService)
-        every { innsendingService.hentSoknadUnderArbeid(any(), any()) } returns SoknadUnderArbeid()
-            .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
-            .withEier(EIER)
+        every { innsendingService.hentSoknadUnderArbeid(any(), any()) } returns createSoknadUnderArbeid()
 
         val sendtSoknad = lagSendtSoknad()
         val filnavnInputStreamMap = HashMap<String, InputStream>()
@@ -107,9 +105,7 @@ internal class FiksSenderTest {
 
     @Test
     fun createForsendelseSetterRiktigTittelForNySoknad() {
-        every { innsendingService.hentSoknadUnderArbeid(any(), any()) } returns SoknadUnderArbeid()
-            .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
-            .withEier(EIER)
+        every { innsendingService.hentSoknadUnderArbeid(any(), any()) } returns createSoknadUnderArbeid()
 
         val sendtSoknad = lagSendtSoknad()
         val filnavnInputStreamMap = HashMap<String, InputStream>()
@@ -120,12 +116,11 @@ internal class FiksSenderTest {
 
     @Test
     fun createForsendelseSetterRiktigTittelForEttersendelse() {
-        every { innsendingService.hentSoknadUnderArbeid(any(), any()) } returns SoknadUnderArbeid()
-            .withTilknyttetBehandlingsId("12345")
-            .withJsonInternalSoknad(lagInternalSoknadForEttersending())
-            .withEier(EIER)
+        val soknadUnderArbeid = createSoknadUnderArbeid()
+        soknadUnderArbeid.tilknyttetBehandlingsId = "12345"
+        soknadUnderArbeid.jsonInternalSoknad = lagInternalSoknadForEttersending()
+        every { innsendingService.hentSoknadUnderArbeid(any(), any()) } returns soknadUnderArbeid
 
-        // when(any(SoknadUnderArbeid.class).getJsonInternalSoknad()).thenReturn(lagInternalSoknadForEttersending());
         val sendtSoknad = lagSendtSoknad().withTilknyttetBehandlingsId("12345")
         val filnavnInputStreamMap = HashMap<String, InputStream>()
         val forsendelse = fiksSender!!.createForsendelse(sendtSoknad, filnavnInputStreamMap)
@@ -135,9 +130,7 @@ internal class FiksSenderTest {
 
     @Test
     fun opprettForsendelseForEttersendelseUtenSvarPaForsendelseSkalFeile() {
-        every { innsendingService.hentSoknadUnderArbeid(any(), any()) } returns SoknadUnderArbeid()
-            .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
-            .withEier(EIER)
+        every { innsendingService.hentSoknadUnderArbeid(any(), any()) } returns createSoknadUnderArbeid()
         every { innsendingService.finnSendtSoknadForEttersendelse(any()) } returns SendtSoknad()
             .withFiksforsendelseId(null)
 
@@ -151,10 +144,7 @@ internal class FiksSenderTest {
     @Test
     fun hentDokumenterFraSoknadReturnererFireDokumenterForSoknadUtenVedlegg() {
         val filnavnInputStreamMap = HashMap<String, InputStream>()
-        val fiksDokumenter = fiksSender!!.hentDokumenterFraSoknad(
-            SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER)),
-            filnavnInputStreamMap
-        )
+        val fiksDokumenter = fiksSender!!.hentDokumenterFraSoknad(createSoknadUnderArbeid(), filnavnInputStreamMap)
         assertThat(fiksDokumenter).hasSize(5)
         assertThat(fiksDokumenter[0].filnavn).isEqualTo("soknad.json")
         assertThat(fiksDokumenter[1].filnavn).isEqualTo("Soknad.pdf")
@@ -168,13 +158,10 @@ internal class FiksSenderTest {
         val filnavnInputStreamMap = HashMap<String, InputStream>()
         every { innsendingService.hentAlleOpplastedeVedleggForSoknad(any()) } returns lagOpplastetVedlegg()
 
-        val fiksDokumenter = fiksSender!!.hentDokumenterFraSoknad(
-            SoknadUnderArbeid()
-                .withTilknyttetBehandlingsId("123")
-                .withEier(EIER)
-                .withJsonInternalSoknad(lagInternalSoknadForEttersending()),
-            filnavnInputStreamMap
-        )
+        val soknadUnderArbeid = createSoknadUnderArbeid()
+        soknadUnderArbeid.tilknyttetBehandlingsId = "123"
+        soknadUnderArbeid.jsonInternalSoknad = lagInternalSoknadForEttersending()
+        val fiksDokumenter = fiksSender!!.hentDokumenterFraSoknad(soknadUnderArbeid, filnavnInputStreamMap)
         assertThat(fiksDokumenter).hasSize(4)
         assertThat(fiksDokumenter[0].filnavn).isEqualTo("ettersendelse.pdf")
         assertThat(fiksDokumenter[1].filnavn).isEqualTo("vedlegg.json")
@@ -185,17 +172,22 @@ internal class FiksSenderTest {
     @Test
     fun hentDokumenterFraSoknadKasterFeilHvisSoknadManglerForNySoknad() {
         val filnavnInputStreamMap = HashMap<String, InputStream>()
+        val soknadUnderArbeid = createSoknadUnderArbeid()
+        soknadUnderArbeid.jsonInternalSoknad?.soknad = null
         assertThatExceptionOfType(RuntimeException::class.java)
-            .isThrownBy { fiksSender!!.hentDokumenterFraSoknad(SoknadUnderArbeid(), filnavnInputStreamMap) }
+            .isThrownBy { fiksSender!!.hentDokumenterFraSoknad(soknadUnderArbeid, filnavnInputStreamMap) }
     }
 
     @Test
     fun hentDokumenterFraSoknadKasterFeilHvisVedleggManglerForEttersending() {
         val filnavnInputStreamMap = HashMap<String, InputStream>()
+        val soknadUnderArbeid = createSoknadUnderArbeid()
+        soknadUnderArbeid.tilknyttetBehandlingsId = "123"
+        soknadUnderArbeid.jsonInternalSoknad?.vedlegg = null
         assertThatExceptionOfType(RuntimeException::class.java)
             .isThrownBy {
                 fiksSender!!.hentDokumenterFraSoknad(
-                    SoknadUnderArbeid().withTilknyttetBehandlingsId("123"),
+                    soknadUnderArbeid,
                     filnavnInputStreamMap
                 )
             }
@@ -260,5 +252,18 @@ internal class FiksSenderTest {
         private const val NAVENHETSNAVN = "NAV Sagene"
         private const val BEHANDLINGSID = "12345"
         private const val EIER = "12345678910"
+
+        private fun createSoknadUnderArbeid(): SoknadUnderArbeid {
+            return SoknadUnderArbeid(
+                versjon = 1L,
+                behandlingsId = "behandlingsid",
+                tilknyttetBehandlingsId = null,
+                eier = EIER,
+                jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
+                status = SoknadUnderArbeidStatus.UNDER_ARBEID,
+                opprettetDato = LocalDateTime.now(),
+                sistEndretDato = LocalDateTime.now()
+            )
+        }
     }
 }

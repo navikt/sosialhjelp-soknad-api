@@ -3,7 +3,7 @@ package no.nav.sosialhjelp.soknad.scheduled
 import no.nav.sosialhjelp.metrics.MetricsFactory
 import no.nav.sosialhjelp.metrics.Timer
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.BatchSoknadUnderArbeidRepository
-import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.innsending.HenvendelseService
 import no.nav.sosialhjelp.soknad.scheduled.leaderelection.LeaderElection
 import org.slf4j.LoggerFactory
@@ -52,7 +52,7 @@ class LagringsScheduler(
     private fun hentForeldedeEttersendelserFraDatabaseOgSlett(metrikk: Timer) {
         val soknadUnderArbeidList = batchSoknadUnderArbeidRepository.hentForeldedeEttersendelser()
         for (soknadUnderArbeid in soknadUnderArbeidList) {
-            if (soknadUnderArbeid.erEttersendelse()) {
+            if (soknadUnderArbeid.erEttersendelse) {
                 avbrytOgSlettEttersendelse(soknadUnderArbeid)
 
                 // Avslutt prosessen hvis det er gått for lang tid. Tyder på at noe er nede.

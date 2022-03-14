@@ -26,8 +26,9 @@ import no.nav.sosialhjelp.soknad.common.MiljoUtils
 import no.nav.sosialhjelp.soknad.common.exceptions.AuthorizationException
 import no.nav.sosialhjelp.soknad.common.subjecthandler.StaticSubjectHandlerImpl
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
-import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.tekster.TextService
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
@@ -37,6 +38,7 @@ import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import java.time.LocalDateTime
 
 internal class BarneutgiftRessursTest {
 
@@ -65,8 +67,7 @@ internal class BarneutgiftRessursTest {
     @Test
     fun barneutgifterSkalReturnereBekreftelseLikNullOgAltFalse() {
         every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
-        every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
-            SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
+        every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns createSoknadUnderArbeid()
 
         val barneutgifterFrontend = barneutgiftRessurs.hentBarneutgifter(BEHANDLINGSID)
         assertThat(barneutgifterFrontend.harForsorgerplikt).isFalse
@@ -82,7 +83,11 @@ internal class BarneutgiftRessursTest {
     fun barneutgifterSkalReturnereHarForsorgerpliktLikFalseForPersonUtenBarn() {
         every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
-            createJsonInternalSoknadWithBarneutgifter(false, false, emptyList())
+            createJsonInternalSoknadWithBarneutgifter(
+                harForsorgerplikt = false,
+                harUtgifter = false,
+                utgiftstyper = emptyList()
+            )
 
         val barneutgifterFrontend = barneutgiftRessurs.hentBarneutgifter(BEHANDLINGSID)
         assertThat(barneutgifterFrontend.harForsorgerplikt).isFalse
@@ -125,10 +130,10 @@ internal class BarneutgiftRessursTest {
         every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
             createJsonInternalSoknadWithBarneutgifter(
-                true, true,
-                listOf(
-                    UTGIFTER_BARNEHAGE, UTGIFTER_SFO,
-                    UTGIFTER_BARN_FRITIDSAKTIVITETER, UTGIFTER_ANNET_BARN
+                harForsorgerplikt = true,
+                harUtgifter = true,
+                utgiftstyper = listOf(
+                    UTGIFTER_BARNEHAGE, UTGIFTER_SFO, UTGIFTER_BARN_FRITIDSAKTIVITETER, UTGIFTER_ANNET_BARN
                 )
             )
 
@@ -139,13 +144,10 @@ internal class BarneutgiftRessursTest {
         barneutgiftRessurs.updateBarneutgifter(BEHANDLINGSID, barneutgifterFrontend)
 
         val soknadUnderArbeid = soknadUnderArbeidSlot.captured
-        val bekreftelser = soknadUnderArbeid.jsonInternalSoknad.soknad.data
-            .okonomi.opplysninger.bekreftelse
+        val bekreftelser = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.bekreftelse
         val barneutgiftBekreftelse = bekreftelser[0]
-        val oversiktBarneutgifter = soknadUnderArbeid.jsonInternalSoknad.soknad.data
-            .okonomi.oversikt.utgift
-        val opplysningerBarneutgifter = soknadUnderArbeid.jsonInternalSoknad.soknad.data
-            .okonomi.opplysninger.utgift
+        val oversiktBarneutgifter = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.oversikt.utgift
+        val opplysningerBarneutgifter = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.utgift
         assertThat(barneutgiftBekreftelse.verdi).isFalse
         assertThat(oversiktBarneutgifter.isEmpty()).isTrue
         assertThat(opplysningerBarneutgifter.isEmpty()).isTrue
@@ -154,8 +156,7 @@ internal class BarneutgiftRessursTest {
     @Test
     fun putBarneutgifterSkalSetteNoenBekreftelser() {
         every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
-        every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
-            SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
+        every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns createSoknadUnderArbeid()
 
         val soknadUnderArbeidSlot = slot<SoknadUnderArbeid>()
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(soknadUnderArbeidSlot), any()) } just runs
@@ -172,10 +173,10 @@ internal class BarneutgiftRessursTest {
         barneutgiftRessurs.updateBarneutgifter(BEHANDLINGSID, barneutgifterFrontend)
 
         val soknadUnderArbeid = soknadUnderArbeidSlot.captured
-        val bekreftelser = soknadUnderArbeid.jsonInternalSoknad.soknad.data.okonomi.opplysninger.bekreftelse
+        val bekreftelser = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.bekreftelse
         val barneutgiftBekreftelse = bekreftelser[0]
-        val oversiktBarneutgifter = soknadUnderArbeid.jsonInternalSoknad.soknad.data.okonomi.oversikt.utgift
-        val opplysningerBarneutgifter = soknadUnderArbeid.jsonInternalSoknad.soknad.data.okonomi.opplysninger.utgift
+        val oversiktBarneutgifter = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.oversikt.utgift
+        val opplysningerBarneutgifter = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.utgift
         assertThat(barneutgiftBekreftelse.kilde).isEqualTo(JsonKilde.BRUKER)
         assertThat(barneutgiftBekreftelse.type).isEqualTo(BEKREFTELSE_BARNEUTGIFTER)
         assertThat(barneutgiftBekreftelse.verdi).isTrue
@@ -189,8 +190,7 @@ internal class BarneutgiftRessursTest {
     @Test
     fun putBarneutgifterSkalSetteAlleBekreftelser() {
         every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
-        every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
-            SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
+        every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns createSoknadUnderArbeid()
 
         val soknadUnderArbeidSlot = slot<SoknadUnderArbeid>()
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(soknadUnderArbeidSlot), any()) } just runs
@@ -207,10 +207,10 @@ internal class BarneutgiftRessursTest {
         barneutgiftRessurs.updateBarneutgifter(BEHANDLINGSID, barneutgifterFrontend)
 
         val soknadUnderArbeid = soknadUnderArbeidSlot.captured
-        val bekreftelser = soknadUnderArbeid.jsonInternalSoknad.soknad.data.okonomi.opplysninger.bekreftelse
+        val bekreftelser = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.bekreftelse
         val barneutgiftBekreftelse = bekreftelser[0]
-        val oversiktBarneutgifter = soknadUnderArbeid.jsonInternalSoknad.soknad.data.okonomi.oversikt.utgift
-        val opplysningerBarneutgifter = soknadUnderArbeid.jsonInternalSoknad.soknad.data.okonomi.opplysninger.utgift
+        val oversiktBarneutgifter = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.oversikt.utgift
+        val opplysningerBarneutgifter = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.utgift
         assertThat(barneutgiftBekreftelse.kilde).isEqualTo(JsonKilde.BRUKER)
         assertThat(barneutgiftBekreftelse.type).isEqualTo(BEKREFTELSE_BARNEUTGIFTER)
         assertThat(barneutgiftBekreftelse.verdi).isTrue
@@ -247,7 +247,7 @@ internal class BarneutgiftRessursTest {
         harUtgifter: Boolean,
         utgiftstyper: List<String>
     ): SoknadUnderArbeid {
-        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
+        val soknadUnderArbeid = createSoknadUnderArbeid()
         val oversiktUtgifter: MutableList<JsonOkonomioversiktUtgift> = ArrayList()
         val opplysningUtgifter: MutableList<JsonOkonomiOpplysningUtgift> = ArrayList()
         for (utgiftstype in utgiftstyper) {
@@ -267,21 +267,34 @@ internal class BarneutgiftRessursTest {
                 )
             }
         }
-        soknadUnderArbeid.jsonInternalSoknad.soknad.data.okonomi.opplysninger.bekreftelse = listOf(
+        soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.bekreftelse = listOf(
             JsonOkonomibekreftelse()
                 .withKilde(JsonKilde.BRUKER)
                 .withType(BEKREFTELSE_BARNEUTGIFTER)
                 .withVerdi(harUtgifter)
         )
-        soknadUnderArbeid.jsonInternalSoknad.soknad.data.okonomi.oversikt.utgift = oversiktUtgifter
-        soknadUnderArbeid.jsonInternalSoknad.soknad.data.okonomi.opplysninger.utgift = opplysningUtgifter
-        soknadUnderArbeid.jsonInternalSoknad.soknad.data.familie.forsorgerplikt = JsonForsorgerplikt()
+        soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.oversikt.utgift = oversiktUtgifter
+        soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.utgift = opplysningUtgifter
+        soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.familie.forsorgerplikt = JsonForsorgerplikt()
             .withHarForsorgerplikt(
                 JsonHarForsorgerplikt()
                     .withKilde(JsonKilde.SYSTEM)
                     .withVerdi(harForsorgerplikt)
             )
         return soknadUnderArbeid
+    }
+
+    private fun createSoknadUnderArbeid(): SoknadUnderArbeid {
+        return SoknadUnderArbeid(
+            versjon = 1L,
+            behandlingsId = BEHANDLINGSID,
+            tilknyttetBehandlingsId = null,
+            eier = EIER,
+            jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
+            status = SoknadUnderArbeidStatus.UNDER_ARBEID,
+            opprettetDato = LocalDateTime.now(),
+            sistEndretDato = LocalDateTime.now()
+        )
     }
 
     companion object {

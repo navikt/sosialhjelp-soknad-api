@@ -39,6 +39,7 @@ open class SivilstatusRessurs(
         tilgangskontroll.verifiserAtBrukerHarTilgang()
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).jsonInternalSoknad
+            ?: throw IllegalStateException("Kan ikke hente søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
         val jsonSivilstatus = soknad.soknad.data.familie.sivilstatus ?: return null
 
         return mapToSivilstatusFrontend(jsonSivilstatus)
@@ -52,9 +53,11 @@ open class SivilstatusRessurs(
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
-        val familie = soknad.jsonInternalSoknad.soknad.data.familie
+        val jsonInternalSoknad = soknad.jsonInternalSoknad
+            ?: throw IllegalStateException("Kan ikke oppdatere søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
+        val familie = jsonInternalSoknad.soknad.data.familie
         if (familie.sivilstatus == null) {
-            soknad.jsonInternalSoknad.soknad.data.familie.sivilstatus = JsonSivilstatus()
+            jsonInternalSoknad.soknad.data.familie.sivilstatus = JsonSivilstatus()
         }
         val sivilstatus = familie.sivilstatus
         sivilstatus.kilde = JsonKilde.BRUKER

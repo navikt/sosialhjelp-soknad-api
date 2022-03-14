@@ -48,7 +48,9 @@ open class BoutgiftRessurs(
     open fun hentBoutgifter(@PathParam("behandlingsId") behandlingsId: String): BoutgifterFrontend {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
         val eier = SubjectHandlerUtils.getUserIdFromToken()
-        val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).jsonInternalSoknad.soknad
+        val jsonInternalSoknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).jsonInternalSoknad
+            ?: throw IllegalStateException("Kan ikke hente søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
+        val soknad = jsonInternalSoknad.soknad
         val okonomi = soknad.data.okonomi
         if (okonomi.opplysninger.bekreftelse == null) {
             return BoutgifterFrontend(null, skalViseInfoVedBekreftelse = getSkalViseInfoVedBekreftelse(soknad, okonomi))
@@ -73,7 +75,9 @@ open class BoutgiftRessurs(
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
-        val okonomi = soknad.jsonInternalSoknad.soknad.data.okonomi
+        val jsonInternalSoknad = soknad.jsonInternalSoknad
+            ?: throw IllegalStateException("Kan ikke oppdatere søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
+        val okonomi = jsonInternalSoknad.soknad.data.okonomi
         if (okonomi.opplysninger.bekreftelse == null) {
             okonomi.opplysninger.bekreftelse = ArrayList()
         }

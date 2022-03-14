@@ -12,6 +12,7 @@ import io.mockk.unmockkObject
 import io.mockk.verify
 import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.BOSTOTTE_SAMTYKKE
 import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_SKATTEETATEN_SAMTYKKE
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sosialhjelp.soknad.api.nedetid.NedetidService
 import no.nav.sosialhjelp.soknad.common.MiljoUtils
 import no.nav.sosialhjelp.soknad.common.exceptions.AuthorizationException
@@ -19,8 +20,9 @@ import no.nav.sosialhjelp.soknad.common.mapper.OkonomiMapper
 import no.nav.sosialhjelp.soknad.common.subjecthandler.StaticSubjectHandlerImpl
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.common.systemdata.SystemdataUpdater
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
-import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.innsending.dto.BekreftelseRessurs
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
@@ -30,6 +32,7 @@ import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import java.time.LocalDateTime
 import java.util.Optional
 import javax.servlet.http.Cookie
 import javax.servlet.http.HttpServletResponse
@@ -123,11 +126,7 @@ internal class SoknadRessursTest {
         every { response.addCookie(any()) } just runs
         every {
             soknadUnderArbeidRepository.hentEttersendingMedTilknyttetBehandlingsId(BEHANDLINGSID, any())
-        } returns Optional.of(
-            SoknadUnderArbeid()
-                .withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
-                .withBehandlingsId(BEHANDLINGSID)
-        )
+        } returns Optional.of(createSoknadUnderArbeid(EIER))
 
         ressurs.opprettSoknad(BEHANDLINGSID, response, "")
 
@@ -178,8 +177,7 @@ internal class SoknadRessursTest {
     fun hentSamtykker_skalReturnereTomListeNarViIkkeHarNoenSamtykker() {
         every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
         every { soknadService.oppdaterSamtykker(any(), any(), any(), any()) } just runs
-        every { soknadUnderArbeidRepository.hentSoknad(BEHANDLINGSID, any()) } returns
-            SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
+        every { soknadUnderArbeidRepository.hentSoknad(BEHANDLINGSID, any()) } returns createSoknadUnderArbeid(EIER)
 
         val token = "token"
         val bekreftelseRessurser = ressurs.hentSamtykker(BEHANDLINGSID, token)
@@ -195,8 +193,9 @@ internal class SoknadRessursTest {
         val opplysninger = internalSoknad.soknad.data.okonomi.opplysninger
         OkonomiMapper.setBekreftelse(opplysninger, BOSTOTTE_SAMTYKKE, true, "Samtykke test tekst!")
         OkonomiMapper.setBekreftelse(opplysninger, UTBETALING_SKATTEETATEN_SAMTYKKE, true, "Samtykke test tekst!")
-        every { soknadUnderArbeidRepository.hentSoknad(BEHANDLINGSID, any()) } returns
-            SoknadUnderArbeid().withJsonInternalSoknad(internalSoknad)
+        every {
+            soknadUnderArbeidRepository.hentSoknad(BEHANDLINGSID, any())
+        } returns createSoknadUnderArbeid(EIER, internalSoknad)
 
         val token = "token"
         val bekreftelseRessurser = ressurs.hentSamtykker(BEHANDLINGSID, token)
@@ -218,8 +217,9 @@ internal class SoknadRessursTest {
         val opplysninger = internalSoknad.soknad.data.okonomi.opplysninger
         OkonomiMapper.setBekreftelse(opplysninger, BOSTOTTE_SAMTYKKE, false, "Samtykke test tekst!")
         OkonomiMapper.setBekreftelse(opplysninger, UTBETALING_SKATTEETATEN_SAMTYKKE, true, "Samtykke test tekst!")
-        every { soknadUnderArbeidRepository.hentSoknad(BEHANDLINGSID, any()) } returns
-            SoknadUnderArbeid().withJsonInternalSoknad(internalSoknad)
+        every {
+            soknadUnderArbeidRepository.hentSoknad(BEHANDLINGSID, any())
+        } returns createSoknadUnderArbeid(EIER, internalSoknad)
 
         val token = "token"
         val bekreftelseRessurser = ressurs.hentSamtykker(BEHANDLINGSID, token)
@@ -282,5 +282,18 @@ internal class SoknadRessursTest {
     companion object {
         private const val BEHANDLINGSID = "123"
         private const val EIER = "Hans og Grete"
+
+        private fun createSoknadUnderArbeid(eier: String, jsonInternalSoknad: JsonInternalSoknad = createEmptyJsonInternalSoknad(eier)): SoknadUnderArbeid {
+            return SoknadUnderArbeid(
+                versjon = 1L,
+                behandlingsId = BEHANDLINGSID,
+                tilknyttetBehandlingsId = null,
+                eier = eier,
+                jsonInternalSoknad = jsonInternalSoknad,
+                status = SoknadUnderArbeidStatus.UNDER_ARBEID,
+                opprettetDato = LocalDateTime.now(),
+                sistEndretDato = LocalDateTime.now()
+            )
+        }
     }
 }

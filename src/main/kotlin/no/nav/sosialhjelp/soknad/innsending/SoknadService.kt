@@ -30,11 +30,11 @@ import no.nav.sosialhjelp.metrics.Timer
 import no.nav.sosialhjelp.soknad.common.exceptions.SosialhjelpSoknadApiException
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.common.systemdata.SystemdataUpdater
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.domain.SoknadMetadata.VedleggMetadata
 import no.nav.sosialhjelp.soknad.domain.SoknadMetadata.VedleggMetadataListe
-import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
-import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.domain.Vedleggstatus
 import no.nav.sosialhjelp.soknad.ettersending.EttersendingService
 import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils.getVedleggFromInternalSoknad
@@ -80,14 +80,16 @@ open class SoknadService(
 
         val oprettIDbTimer = createDebugTimer("oprettIDb", mainUid)
 
-        val soknadUnderArbeid = SoknadUnderArbeid()
-            .withVersjon(1L)
-            .withEier(eier)
-            .withBehandlingsId(behandlingsId)
-            .withJsonInternalSoknad(createEmptyJsonInternalSoknad(eier))
-            .withStatus(SoknadUnderArbeidStatus.UNDER_ARBEID)
-            .withOpprettetDato(LocalDateTime.now())
-            .withSistEndretDato(LocalDateTime.now())
+        val soknadUnderArbeid = SoknadUnderArbeid(
+            versjon = 1L,
+            behandlingsId = behandlingsId,
+            tilknyttetBehandlingsId = null,
+            eier = eier,
+            jsonInternalSoknad = createEmptyJsonInternalSoknad(eier),
+            status = SoknadUnderArbeidStatus.UNDER_ARBEID,
+            opprettetDato = LocalDateTime.now(),
+            sistEndretDato = LocalDateTime.now()
+        )
 
         systemdataUpdater.update(soknadUnderArbeid)
 
@@ -120,19 +122,19 @@ open class SoknadService(
     }
 
     private fun validateEttersendelseHasVedlegg(soknadUnderArbeid: SoknadUnderArbeid) {
-        if (soknadUnderArbeid.erEttersendelse() && getVedleggFromInternalSoknad(soknadUnderArbeid).isEmpty()) {
+        if (soknadUnderArbeid.erEttersendelse && getVedleggFromInternalSoknad(soknadUnderArbeid).isEmpty()) {
             log.error("Kan ikke sende inn ettersendingen med ID ${soknadUnderArbeid.behandlingsId} uten å ha lastet opp vedlegg")
             throw SosialhjelpSoknadApiException("Kan ikke sende inn ettersendingen uten å ha lastet opp vedlegg")
         }
     }
 
     private fun logDriftsinformasjon(soknadUnderArbeid: SoknadUnderArbeid) {
-        if (!soknadUnderArbeid.erEttersendelse()) {
-            if (java.lang.Boolean.TRUE == soknadUnderArbeid.jsonInternalSoknad.soknad.driftsinformasjon.stotteFraHusbankenFeilet) {
+        if (!soknadUnderArbeid.erEttersendelse) {
+            if (java.lang.Boolean.TRUE == soknadUnderArbeid.jsonInternalSoknad?.soknad?.driftsinformasjon?.stotteFraHusbankenFeilet) {
                 val alderPaaData = finnAlderPaaDataFor(soknadUnderArbeid, BOSTOTTE_SAMTYKKE)
                 log.info("Nedlasting fra Husbanken har feilet for innsendtsoknad. {}", alderPaaData)
             }
-            if (java.lang.Boolean.TRUE == soknadUnderArbeid.jsonInternalSoknad.soknad.driftsinformasjon.inntektFraSkatteetatenFeilet) {
+            if (java.lang.Boolean.TRUE == soknadUnderArbeid.jsonInternalSoknad?.soknad?.driftsinformasjon?.inntektFraSkatteetatenFeilet) {
                 val alderPaaData = finnAlderPaaDataFor(soknadUnderArbeid, UTBETALING_SKATTEETATEN_SAMTYKKE)
                 log.info("Nedlasting fra Skatteetaten har feilet for innsendtsoknad. {}", alderPaaData)
             }
@@ -140,9 +142,8 @@ open class SoknadService(
     }
 
     private fun finnAlderPaaDataFor(soknadUnderArbeid: SoknadUnderArbeid, type: String): String {
-        val bekreftelsesDatoStreng = soknadUnderArbeid.jsonInternalSoknad.soknad.data
-            .okonomi.opplysninger.bekreftelse
-            .firstOrNull { it.type == type && it.verdi }
+        val bekreftelsesDatoStreng = soknadUnderArbeid.jsonInternalSoknad?.soknad?.data?.okonomi?.opplysninger?.bekreftelse
+            ?.firstOrNull { it.type == type && it.verdi }
             ?.bekreftelsesDato
             ?: return ""
         val bekreftelsesDato = OffsetDateTime.parse(bekreftelsesDatoStreng)
@@ -160,7 +161,7 @@ open class SoknadService(
         if (soknadUnderArbeidOptional.isPresent) {
             soknadUnderArbeidRepository.slettSoknad(soknadUnderArbeidOptional.get(), eier)
             henvendelseService.avbrytSoknad(soknadUnderArbeidOptional.get().behandlingsId, false)
-            soknadMetricsService.reportAvbruttSoknad(soknadUnderArbeidOptional.get().erEttersendelse())
+            soknadMetricsService.reportAvbruttSoknad(soknadUnderArbeidOptional.get().erEttersendelse)
         }
     }
 

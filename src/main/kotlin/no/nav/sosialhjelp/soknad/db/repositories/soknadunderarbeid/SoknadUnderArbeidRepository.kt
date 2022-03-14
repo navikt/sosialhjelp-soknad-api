@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid
 
-import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
 import java.util.Optional
 
 interface SoknadUnderArbeidRepository {
