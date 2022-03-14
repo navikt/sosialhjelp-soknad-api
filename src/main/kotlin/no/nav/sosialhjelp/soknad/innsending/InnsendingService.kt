@@ -84,14 +84,16 @@ open class InnsendingService(
 
     private fun finnSendtSoknadForEttersendelsePaGammeltFormat(tilknyttetBehandlingsId: String): SendtSoknad? {
         val originalSoknadGammeltFormat = soknadMetadataRepository.hent(tilknyttetBehandlingsId) ?: return null
+        val orgnr = originalSoknadGammeltFormat.orgnr ?: return null
+        val navEnhet = originalSoknadGammeltFormat.orgnr ?: return null
         return SendtSoknad(
             sendtSoknadId = 0L, // dummy id. SendtSoknadRepository.opprettSendtSoknad bruker next sequence value som id
             behandlingsId = "",
             tilknyttetBehandlingsId = null,
             eier = "",
             fiksforsendelseId = originalSoknadGammeltFormat.fiksForsendelseId,
-            orgnummer = originalSoknadGammeltFormat.orgnr,
-            navEnhetsnavn = originalSoknadGammeltFormat.navEnhet,
+            orgnummer = orgnr,
+            navEnhetsnavn = navEnhet,
             brukerOpprettetDato = LocalDateTime.now(),
             brukerFerdigDato = LocalDateTime.now(),
             sendtDato = LocalDateTime.now()
