@@ -85,7 +85,7 @@ open class InnsendingService(
     private fun finnSendtSoknadForEttersendelsePaGammeltFormat(tilknyttetBehandlingsId: String): SendtSoknad? {
         val originalSoknadGammeltFormat = soknadMetadataRepository.hent(tilknyttetBehandlingsId) ?: return null
         return SendtSoknad(
-            sendtSoknadId = 0L, // dummy id.
+            sendtSoknadId = 0L, // dummy id. SendtSoknadRepository.opprettSendtSoknad bruker next sequence value som id
             behandlingsId = "",
             tilknyttetBehandlingsId = null,
             eier = "",
@@ -121,7 +121,7 @@ open class InnsendingService(
             )
         }
         return SendtSoknad(
-            sendtSoknadId = 0L, // dummy id.
+            sendtSoknadId = 0L, // dummy id. SendtSoknadRepository.opprettSendtSoknad bruker next sequence value som id
             behandlingsId = soknadUnderArbeid.behandlingsId,
             tilknyttetBehandlingsId = soknadUnderArbeid.tilknyttetBehandlingsId,
             eier = soknadUnderArbeid.eier,
