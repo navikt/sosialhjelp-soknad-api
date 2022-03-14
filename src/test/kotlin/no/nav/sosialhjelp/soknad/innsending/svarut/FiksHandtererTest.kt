@@ -9,7 +9,7 @@ import io.mockk.verify
 import no.nav.sosialhjelp.soknad.db.repositories.oppgave.FiksData
 import no.nav.sosialhjelp.soknad.db.repositories.oppgave.Oppgave
 import no.nav.sosialhjelp.soknad.db.repositories.oppgave.Status
-import no.nav.sosialhjelp.soknad.domain.SendtSoknad
+import no.nav.sosialhjelp.soknad.db.repositories.sendtsoknad.SendtSoknad
 import no.nav.sosialhjelp.soknad.innsending.InnsendingService
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
@@ -54,7 +54,7 @@ internal class FiksHandtererTest {
 
     @Test
     fun lagrerFeilmelding() {
-        every { innsendingService.hentSendtSoknad(BEHANDLINGSID, AVSENDER) } returns SendtSoknad()
+        every { innsendingService.hentSendtSoknad(BEHANDLINGSID, AVSENDER) } returns lagSendtSoknad()
         every { fiksSender.sendTilFiks(any()) } throws RuntimeException("feilmelding123")
         val oppgave = opprettOppgave()
         try {
@@ -113,14 +113,21 @@ internal class FiksHandtererTest {
     }
 
     private fun lagSendtSoknad(): SendtSoknad {
-        return SendtSoknad()
-            .withEier(AVSENDER)
-            .withBehandlingsId(BEHANDLINGSID)
-            .withNavEnhetsnavn(NAVENHETSNAVN)
+        return SendtSoknad(
+            behandlingsId = BEHANDLINGSID,
+            eier = AVSENDER,
+            orgnummer = "orgnr",
+            navEnhetsnavn = NAVENHETSNAVN,
+            brukerOpprettetDato = LocalDateTime.now(),
+            brukerFerdigDato = LocalDateTime.now(),
+            sendtDato = null
+        )
     }
 
     private fun lagSendtEttersendelse(): SendtSoknad {
-        return lagSendtSoknad().withTilknyttetBehandlingsId("soknadId")
+        val sendtSoknad = lagSendtSoknad()
+        sendtSoknad.tilknyttetBehandlingsId = "soknadId"
+        return sendtSoknad
     }
 
     companion object {
