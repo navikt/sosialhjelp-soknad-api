@@ -13,7 +13,7 @@ import no.nav.sosialhjelp.soknad.common.mdc.MdcOperations.MDC_CONSUMER_ID
 import no.nav.sosialhjelp.soknad.common.mdc.MdcOperations.getFromMDC
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerImpl
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
-import no.nav.sosialhjelp.soknad.web.rest.SoknadApplication
+import no.nav.sosialhjelp.soknad.config.SoknadApplication
 import org.assertj.core.api.Assertions.assertThat
 import org.glassfish.jersey.server.ContainerRequest
 import org.glassfish.jersey.server.ExtendedUriInfo
