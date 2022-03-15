@@ -1037,8 +1037,11 @@
     </dependencies>
 
     <build>
-
         <finalName>sosialhjelp-soknad-api</finalName>
+
+        <sourceDirectory>${project.basedir}/src/main/kotlin</sourceDirectory>
+        <testSourceDirectory>${project.basedir}/src/test/kotlin</testSourceDirectory>
+
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
@@ -1047,7 +1050,7 @@
                     <include>**</include>
                 </includes>
                 <excludes>
-                    <exclude>**/*.java</exclude>
+                    <exclude>**/*.kt</exclude>
                 </excludes>
             </resource>
             <resource>
@@ -1060,12 +1063,12 @@
                 <directory>src/test/resources</directory>
             </testResource>
             <testResource>
-                <directory>src/test/java</directory>
+                <directory>src/test/kotlin</directory>
                 <includes>
                     <include>**</include>
                 </includes>
                 <excludes>
-                    <exclude>**/*.java</exclude>
+                    <exclude>**/*.kt</exclude>
                 </excludes>
             </testResource>
         </testResources>
@@ -1075,7 +1078,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.10.0</version>
+                    <version>3.10.1</version>
                     <configuration>
                         <release>${java.jdk.version}</release>
                     </configuration>
@@ -1119,11 +1122,10 @@
                     </execution>
                 </executions>
             </plugin>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
-                <version>3.2.0</version>
+                <version>3.3.0</version>
                 <executions>
                     <execution>
                         <id>analyze</id>
@@ -1143,71 +1145,12 @@
                         <goals>
                             <goal>compile</goal>
                         </goals>
-                        <configuration>
-                            <sourceDirs>
-                                <sourceDir>${project.basedir}/src/main/kotlin</sourceDir>
-                                <sourceDir>${project.basedir}/src/main/java</sourceDir>
-                            </sourceDirs>
-                        </configuration>
                     </execution>
                     <execution>
                         <id>test-compile</id>
                         <goals>
                             <goal>test-compile</goal>
                         </goals>
-                        <configuration>
-                            <sourceDirs>
-                                <sourceDir>${project.basedir}/src/test/kotlin</sourceDir>
-                                <sourceDir>${project.basedir}/src/test/java</sourceDir>
-                            </sourceDirs>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.10.0</version>
-                <executions>
-                    <execution>
-                        <id>default-compile</id>
-                        <phase>none</phase>
-                    </execution>
-                    <execution>
-                        <id>default-testCompile</id>
-                        <phase>none</phase>
-                    </execution>
-                    <execution>
-                        <id>java-compile</id>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>compile</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>java-test-compile</id>
-                        <phase>test-compile</phase>
-                        <goals>
-                            <goal>testCompile</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>build-helper-maven-plugin</artifactId>
-                <version>3.3.0</version>
-                <executions>
-                    <execution>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>add-source</goal>
-                        </goals>
-                        <configuration>
-                            <sources>
-                                <source>${project.basedir}/src/main/kotlin</source>
-                            </sources>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>
@@ -1269,15 +1212,12 @@
                 <configuration>
                     <classesDirectory>${project.build.outputDirectory}</classesDirectory>
                 </configuration>
-
             </plugin>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.0.0-M5</version>
                 <configuration>
-
                     <!-- Ekskluderer integrasjonstester som slutter på *IT. De kjøres av failsafe-plugin -->
                     <excludes>
                         <exclude>*IT</exclude>
@@ -1288,13 +1228,11 @@
                     <argLine>-Xmx1024m</argLine> <!-- Gi nok minne for å unngå terminerende JVM-er -->
 
                     <systemPropertyVariables>
-                        <java.awt.headless>true</java.awt.headless>
                         <user.language>nb</user.language>
                         <user.region>NO</user.region>
                     </systemPropertyVariables>
                 </configuration>
             </plugin>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
@@ -1313,7 +1251,6 @@
                 </executions>
             </plugin>
         </plugins>
-
     </build>
     <scm>
         <developerConnection>scm:git:git@github.com:navikt/sosialhjelp-soknad-api.git</developerConnection>
