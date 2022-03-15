@@ -21,12 +21,12 @@ import no.nav.sosialhjelp.soknad.common.exceptions.SendingTilKommuneUtilgjengeli
 import no.nav.sosialhjelp.soknad.common.exceptions.SoknadenHarNedetidException
 import no.nav.sosialhjelp.soknad.common.subjecthandler.StaticSubjectHandlerImpl
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadata
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataInnsendingStatus
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
-import no.nav.sosialhjelp.soknad.domain.SoknadMetadata
-import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus
 import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiService
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
@@ -125,8 +125,14 @@ internal class SoknadActionsTest {
         val soknadBehandlingsId = "soknadSendtViaSvarUt"
         val soknadUnderArbeid = createSoknadUnderArbeid(EIER)
         soknadUnderArbeid.tilknyttetBehandlingsId = soknadBehandlingsId
-        val soknadMetadata = SoknadMetadata()
-        soknadMetadata.status = SoknadMetadataInnsendingStatus.UNDER_ARBEID
+        val soknadMetadata = SoknadMetadata(
+            id = 0L,
+            behandlingsId = "behandlingsId",
+            fnr = EIER,
+            status = SoknadMetadataInnsendingStatus.UNDER_ARBEID,
+            opprettetDato = LocalDateTime.now(),
+            sistEndretDato = LocalDateTime.now()
+        )
         every { soknadUnderArbeidRepository.hentSoknad(behandlingsId, EIER) } returns soknadUnderArbeid
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
         every { soknadMetadataRepository.hent(soknadBehandlingsId) } returns soknadMetadata
@@ -159,8 +165,14 @@ internal class SoknadActionsTest {
         val soknadBehandlingsId = "soknadSendtViaSvarUt"
         val soknadUnderArbeid = createSoknadUnderArbeid(EIER)
         soknadUnderArbeid.tilknyttetBehandlingsId = soknadBehandlingsId
-        val soknadMetadata = SoknadMetadata()
-        soknadMetadata.status = SoknadMetadataInnsendingStatus.SENDT_MED_DIGISOS_API
+        val soknadMetadata = SoknadMetadata(
+            id = 0L,
+            behandlingsId = "behandlingsId",
+            fnr = EIER,
+            status = SoknadMetadataInnsendingStatus.SENDT_MED_DIGISOS_API,
+            opprettetDato = LocalDateTime.now(),
+            sistEndretDato = LocalDateTime.now()
+        )
         every { soknadUnderArbeidRepository.hentSoknad(behandlingsId, EIER) } returns soknadUnderArbeid
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
         every { soknadMetadataRepository.hent(soknadBehandlingsId) } returns soknadMetadata

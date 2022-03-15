@@ -2,8 +2,8 @@ package no.nav.sosialhjelp.soknad.api.dialog
 
 import io.mockk.every
 import io.mockk.mockk
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadata
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
-import no.nav.sosialhjelp.soknad.domain.SoknadMetadata
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
@@ -20,11 +20,16 @@ internal class SistInnsendteSoknadServiceTest {
     @Test
     fun skalHenteSistInnsendteSoknadForBruker() {
         val innsendtDato = LocalDateTime.now().minusDays(1)
-        val soknadMetadata = SoknadMetadata()
-        soknadMetadata.fnr = fnr
-        soknadMetadata.fiksForsendelseId = fiksForsendelseId
-        soknadMetadata.navEnhet = navEnhet
-        soknadMetadata.innsendtDato = innsendtDato
+        val soknadMetadata = SoknadMetadata(
+            id = 0L,
+            behandlingsId = "behandlingsId",
+            fnr = fnr,
+            fiksForsendelseId = fiksForsendelseId,
+            navEnhet = navEnhet,
+            opprettetDato = innsendtDato,
+            sistEndretDato = innsendtDato,
+            innsendtDato = innsendtDato
+        )
         every { soknadMetadataRepository.hentAlleInnsendteSoknaderForBruker(any()) } returns listOf(soknadMetadata)
 
         val dto = sistInnsendteSoknadService.hentSistInnsendteSoknad(fnr)
@@ -36,19 +41,29 @@ internal class SistInnsendteSoknadServiceTest {
     @Test
     fun skalHenteSistInnsendteSoknadForBruker_siste() {
         val innsendtDatoNyest = LocalDateTime.now().minusDays(1)
-        val innsendtDatoElst = LocalDateTime.now().minusDays(2)
+        val innsendtDatoEldst = LocalDateTime.now().minusDays(2)
 
-        val soknadMetadata1 = SoknadMetadata()
-        soknadMetadata1.fnr = fnr
-        soknadMetadata1.fiksForsendelseId = fiksForsendelseId
-        soknadMetadata1.navEnhet = navEnhet
-        soknadMetadata1.innsendtDato = innsendtDatoNyest
+        val soknadMetadata1 = SoknadMetadata(
+            id = 0L,
+            behandlingsId = "behandlingsId",
+            fnr = fnr,
+            fiksForsendelseId = fiksForsendelseId,
+            navEnhet = navEnhet,
+            opprettetDato = innsendtDatoNyest,
+            sistEndretDato = innsendtDatoNyest,
+            innsendtDato = innsendtDatoNyest
+        )
 
-        val soknadMetadata2 = SoknadMetadata()
-        soknadMetadata2.fnr = fnr
-        soknadMetadata2.fiksForsendelseId = "fiksId2"
-        soknadMetadata2.navEnhet = navEnhet
-        soknadMetadata2.innsendtDato = innsendtDatoElst
+        val soknadMetadata2 = SoknadMetadata(
+            id = 1L,
+            behandlingsId = "behandlingsId2",
+            fnr = fnr,
+            fiksForsendelseId = "fiksId2",
+            navEnhet = navEnhet,
+            opprettetDato = innsendtDatoEldst,
+            sistEndretDato = innsendtDatoEldst,
+            innsendtDato = innsendtDatoEldst
+        )
         every { soknadMetadataRepository.hentAlleInnsendteSoknaderForBruker(any()) } returns listOf(
             soknadMetadata1,
             soknadMetadata2

@@ -13,11 +13,11 @@ import no.nav.sosialhjelp.soknad.common.filedetection.FileDetectionUtils.getMime
 import no.nav.sosialhjelp.soknad.common.filedetection.MimeTypes.APPLICATION_PDF
 import no.nav.sosialhjelp.soknad.common.filedetection.MimeTypes.TEXT_X_MATLAB
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedlegg
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.VedleggMetadata
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.VedleggMetadataListe
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.Vedleggstatus
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
-import no.nav.sosialhjelp.soknad.domain.SoknadMetadata.VedleggMetadata
-import no.nav.sosialhjelp.soknad.domain.SoknadMetadata.VedleggMetadataListe
-import no.nav.sosialhjelp.soknad.domain.Vedleggstatus
 import no.nav.sosialhjelp.soknad.innsending.HenvendelseService
 import no.nav.sosialhjelp.soknad.innsending.InnsendingService
 import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils.getVedleggFromInternalSoknad
@@ -248,13 +248,13 @@ class DigisosApiService(
         val vedleggMetadataListe = VedleggMetadataListe()
         vedleggMetadataListe.vedleggListe = getVedleggFromInternalSoknad(soknadUnderArbeid)
             .map {
-                val vedleggMetadata = VedleggMetadata()
-                vedleggMetadata.skjema = it.type
-                vedleggMetadata.tillegg = it.tilleggsinfo
-                vedleggMetadata.filnavn = it.type
-                vedleggMetadata.status = Vedleggstatus.valueOf(it.status)
-                vedleggMetadata
-            }
+                VedleggMetadata(
+                    skjema = it.type,
+                    tillegg = it.tilleggsinfo,
+                    filnavn = it.type,
+                    status = Vedleggstatus.valueOf(it.status),
+                )
+            }.toMutableList()
         return vedleggMetadataListe
     }
 
