@@ -20,8 +20,8 @@ open class Application {
         }
 
         private fun configureApplication(builder: SpringApplicationBuilder): SpringApplicationBuilder {
-            if (!MiljoUtils.isNonProduction() && MiljoUtils.isTillatMock()) {
-                throw Error("Env variabel TILLATMOCK har blitt satt til true i prod. Stopper applikasjonen da dette er en sikkerhetsrisiko.")
+            if (!MiljoUtils.isNonProduction() && MiljoUtils.isMockAltProfil()) {
+                throw Error("Spring profile `mock-alt` har blitt satt i prod. Stopper applikasjonen da dette er en sikkerhetsrisiko.")
             }
             if (!MiljoUtils.isNonProduction() && MiljoUtils.isRunningWithInMemoryDb()) {
                 throw Error("Env variabel IN_MEMORY_DATABASE har blitt satt til true i prod. Stopper applikasjonen da dette er en sikkerhetsrisiko.")
