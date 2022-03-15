@@ -101,7 +101,7 @@ class SaksoversiktMetadataService(
             ?.map { bundle.getProperty(it) }
             ?.map { Vedlegg().withTittel(it) }
             ?.toList()
-            ?: mutableListOf()
+            ?: emptyList()
     }
 
     private fun tilInnsendteVedlegg(vedlegg: VedleggMetadataListe?, bundle: Properties): List<Vedlegg> {
@@ -113,7 +113,7 @@ class SaksoversiktMetadataService(
             ?.map { bundle.getProperty(it) }
             ?.map { Vedlegg().withTittel(it) }
             ?.toList()
-            ?: mutableListOf()
+            ?: emptyList()
     }
 
     private fun tilDate(innsendtDato: LocalDateTime): Date {
