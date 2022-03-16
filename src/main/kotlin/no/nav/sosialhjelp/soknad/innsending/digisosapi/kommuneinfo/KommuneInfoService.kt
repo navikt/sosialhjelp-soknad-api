@@ -114,7 +114,7 @@ class KommuneInfoService(
         }
     }
 
-    private fun hentKommuneInfoFraFiks(): List<KommuneInfo> {
+    fun hentKommuneInfoFraFiks(): List<KommuneInfo> {
         return if (unleash.isEnabled(BRUK_MASKINPORTEN_KOMMUNEINFO, false)) {
             try {
                 log.info("Prøver å bruker maskinporten integrasjon mot ks:fiks for å hente kommuneinfo")
