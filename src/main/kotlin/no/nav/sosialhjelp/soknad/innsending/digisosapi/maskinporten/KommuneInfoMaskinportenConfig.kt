@@ -27,6 +27,6 @@ open class KommuneInfoMaskinportenConfig(
             integrasjonsidFiks,
             integrasjonpassordFiks
         )
-        return MetricsFactory.createTimerProxy("Fiks maskinporten kommuneinfo", kommuneInfoMaskinportenClient, KommuneInfoMaskinportenClient::class.java)
+        return MetricsFactory.createTimerProxy("KommuneInfoMaskinportenClient", kommuneInfoMaskinportenClient, KommuneInfoMaskinportenClient::class.java)
     }
 }

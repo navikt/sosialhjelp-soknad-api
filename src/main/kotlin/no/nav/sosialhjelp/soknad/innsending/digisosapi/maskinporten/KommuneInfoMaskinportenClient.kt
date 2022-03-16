@@ -1,7 +1,6 @@
 package no.nav.sosialhjelp.soknad.innsending.digisosapi.maskinporten
 
 import no.nav.sosialhjelp.api.fiks.KommuneInfo
-import no.nav.sosialhjelp.kotlin.utils.logger
 import no.nav.sosialhjelp.soknad.client.maskinporten.MaskinportenClient
 import no.nav.sosialhjelp.soknad.common.Constants.BEARER
 import no.nav.sosialhjelp.soknad.common.Constants.HEADER_INTEGRASJON_ID
@@ -39,7 +38,5 @@ class KommuneInfoMaskinportenClientImpl(
 
     companion object {
         const val PATH_ALLE_KOMMUNEINFO = "/digisos/api/v1/nav/kommuner"
-
-        private val log by logger()
     }
 }
