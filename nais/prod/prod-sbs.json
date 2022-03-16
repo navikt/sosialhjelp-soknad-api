@@ -36,7 +36,6 @@
   "prometheusEnabled": true,
   "webProxyEnabled": true,
   "isGcp": false,
-  "isLabsGcp": false,
   "leaderElectionEnabled": true,
   "maskinportenEnabled": true,
   "azureEnabled": true,

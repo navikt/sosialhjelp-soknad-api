@@ -5,9 +5,6 @@ application:
 srvsoknadsosialhjelp.server.username: ${SRVSOKNADSOSIALHJELP_SERVER_USERNAME}
 srvsoknadsosialhjelp.server.password: ${SRVSOKNADSOSIALHJELP_SERVER_PASSWORD}
 
-# Brukes av MetricsClient:
-applicationName: sosialhjelp-soknad-api
-
 server:
   port: 8080
   servlet:
@@ -100,10 +97,6 @@ oidc.issuer.selvbetjening.accepted_audience: ${LOGINSERVICE_IDPORTEN_AUDIENCE}
 oidc.issuer.selvbetjening.cookie_name: selvbetjening-idtoken
 oidc.issuer.selvbetjening.proxy_url: http://webproxy-nais.nav.no:8088
 loginservice.url: ${LOGINSERVICE_URL}
-
-oidc.issuer.tokenx.discoveryurl: ${TOKEN_X_WELL_KNOWN_URL}
-oidc.issuer.tokenx.accepted_audience: ${TOKEN_X_CLIENT_ID}
-tokenx.private_jwk: ${TOKEN_X_PRIVATE_JWK}
 
 # redis
 redis_host: ${REDIS_HOST}
