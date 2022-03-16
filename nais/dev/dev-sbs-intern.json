@@ -75,7 +75,6 @@
     "NEDETID_START": "21.11.2020 14:00:00",
     "NEDETID_SLUTT": "21.11.2020 15:00:00",
     "ENVIRONMENT_NAME": "q1",
-    "TILLATMOCK": "false",
     "REDIS_HOST": "sosialhjelp-soknad-api-redis.teamdigisos.svc.nais.local",
     "UNLEASH_INSTANCE_ID": "dev-sbs-intern"
   }

@@ -125,6 +125,3 @@ feature.fiks.kryptering.enabled: true
 #Nedetid
 nedetid.start: ${NEDETID_START}
 nedetid.slutt: ${NEDETID_SLUTT}
-
-tillatmock: ${TILLATMOCK}
-start.oidc.withmock: false

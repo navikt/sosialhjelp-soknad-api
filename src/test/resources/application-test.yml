@@ -35,10 +35,6 @@ sendsoknad.batch.enabled: false
 fiks.nokkelfil: svarut_public_test.pem
 feature.fiks.kryptering.enabled: false
 
-# Mockting
-tillatmock: true
-start.oidc.withmock: false
-
 # OIDC
 oidc.issuer.selvbetjening.discoveryurl: http://localhost:${mock-oauth2-server.port}/selvbetjening/.well-known/openid-configuration
 oidc.issuer.selvbetjening.accepted_audience: someaudience

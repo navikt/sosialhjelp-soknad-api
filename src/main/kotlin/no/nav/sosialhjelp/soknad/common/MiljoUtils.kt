@@ -10,7 +10,7 @@ object MiljoUtils {
 
     private const val IS_ALLTID_SEND_TIL_NAV_TESTKOMMUNE = "IS_ALLTID_SEND_TIL_NAV_TESTKOMMUNE"
     private const val IS_ALLTID_HENT_KOMMUNEINFO_FRA_NAV_TESTKOMMUNE = "IS_ALLTID_HENT_KOMMUNEINFO_FRA_NAV_TESTKOMMUNE"
-    private const val TILLATMOCK = "TILLATMOCK"
+    private const val SPRING_PROFILES_ACTIVE = "SPRING_PROFILES_ACTIVE"
     private const val IN_MEMORY_DATABASE = "IN_MEMORY_DATABASE"
 
     private val log by logger()
@@ -44,9 +44,9 @@ object MiljoUtils {
         return value.toBoolean()
     }
 
-    fun isTillatMock(): Boolean {
-        val value = System.getenv(TILLATMOCK) ?: "false"
-        return value.toBoolean()
+    fun isMockAltProfil(): Boolean {
+        val value = System.getenv(SPRING_PROFILES_ACTIVE) ?: ""
+        return value.contains("mock-alt")
     }
 
     fun isRunningWithInMemoryDb(): Boolean {
