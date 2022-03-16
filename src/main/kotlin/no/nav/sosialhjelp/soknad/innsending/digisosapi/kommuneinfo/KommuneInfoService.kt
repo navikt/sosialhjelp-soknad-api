@@ -119,6 +119,7 @@ class KommuneInfoService(
             try {
                 log.info("Prøver å bruker maskinporten integrasjon mot ks:fiks for å hente kommuneinfo")
                 kommuneInfoMaskinportenClient.getAll()
+                    .also { log.info("Hentet kommuneinfo ved bruk av maskinporten-integrasjon mot ks:fiks") }
             } catch (e: Exception) {
                 log.warn("Noe feilet ved bruk av maskinporten mot ks:fiks for å hente kommuneinfo. Fallback til idporten-løsning", e)
                 val (token) = idPortenService.getToken()
