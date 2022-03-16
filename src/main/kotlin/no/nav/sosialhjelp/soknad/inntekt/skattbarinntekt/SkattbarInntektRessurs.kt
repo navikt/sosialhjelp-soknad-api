@@ -42,6 +42,7 @@ open class SkattbarInntektRessurs(
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val utbetalinger: List<JsonOkonomiOpplysningUtbetaling>
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).jsonInternalSoknad
+            ?: throw IllegalStateException("Kan ikke hente søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
         utbetalinger = soknad.soknad.data.okonomi.opplysninger.utbetaling
         val skatteopplysninger = utbetalinger
             .filter { it.tittel != null }
@@ -64,8 +65,10 @@ open class SkattbarInntektRessurs(
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
-        val opplysninger = soknad.jsonInternalSoknad.soknad.data.okonomi.opplysninger
-        val lagretSamtykke = hentSamtykkeBooleanFraSoknad(soknad.jsonInternalSoknad)
+        val jsonInternalSoknad = soknad.jsonInternalSoknad
+            ?: throw IllegalStateException("Kan ikke oppdatere søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
+        val opplysninger = jsonInternalSoknad.soknad.data.okonomi.opplysninger
+        val lagretSamtykke = hentSamtykkeBooleanFraSoknad(jsonInternalSoknad)
         var skalLagre = samtykke
         if (lagretSamtykke != samtykke) {
             skalLagre = true
@@ -114,7 +117,7 @@ open class SkattbarInntektRessurs(
                         val utbetalingListe: List<Utbetaling> = utbetalinger.map { u -> mapTilUtbetaling(u) }
                         val jsonOrganisasjon =
                             organisasjon.orElse(JsonOrganisasjon().withNavn("Uten organisasjonsnummer"))
-                        mapTilOrganisasjon(utbetalingListe, jsonOrganisasjon!!, utbetalinger[0])
+                        mapTilOrganisasjon(utbetalingListe, jsonOrganisasjon, utbetalinger[0])
                     }
                 SkattbarInntektOgForskuddstrekk(organisasjoner)
             }

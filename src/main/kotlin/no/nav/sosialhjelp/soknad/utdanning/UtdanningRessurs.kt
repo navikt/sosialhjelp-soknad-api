@@ -31,6 +31,7 @@ open class UtdanningRessurs(
         tilgangskontroll.verifiserAtBrukerHarTilgang()
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).jsonInternalSoknad
+            ?: throw IllegalStateException("Kan ikke hente søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
         val utdanning = soknad.soknad.data.utdanning
         return UtdanningFrontend(utdanning.erStudent, toStudentgradErHeltid(utdanning.studentgrad))
     }
@@ -43,15 +44,17 @@ open class UtdanningRessurs(
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
-        val utdanning = soknad.jsonInternalSoknad.soknad.data.utdanning
-        val inntekter = soknad.jsonInternalSoknad.soknad.data.okonomi.oversikt.inntekt
+        val jsonInternalSoknad = soknad.jsonInternalSoknad
+            ?: throw IllegalStateException("Kan ikke oppdatere søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
+        val utdanning = jsonInternalSoknad.soknad.data.utdanning
+        val inntekter = jsonInternalSoknad.soknad.data.okonomi.oversikt.inntekt
         utdanning.kilde = JsonKilde.BRUKER
         utdanning.erStudent = utdanningFrontend.erStudent
         if (utdanningFrontend.erStudent == true) {
             utdanning.studentgrad = toStudentgrad(utdanningFrontend.studengradErHeltid)
         } else {
             utdanning.studentgrad = null
-            val opplysninger = soknad.jsonInternalSoknad.soknad.data.okonomi.opplysninger
+            val opplysninger = jsonInternalSoknad.soknad.data.okonomi.opplysninger
             if (opplysninger.bekreftelse != null) {
                 opplysninger.bekreftelse.removeIf { it.type == SoknadJsonTyper.STUDIELAN }
                 inntekter.removeIf { it.type == SoknadJsonTyper.STUDIELAN }

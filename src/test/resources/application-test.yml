@@ -1,11 +1,12 @@
+application:
+  name: sosialhjelp-soknad-api
+  version: version
+
 # Miljøkonfigurasjon for lokal Jetty-server.
 environment.name: local
 
 srvsoknadsosialhjelp.server.username: srvuser
 srvsoknadsosialhjelp.server.password: pw123
-
-# Brukes av MetricsClient:
-applicationName: sosialhjelp-soknad-api
 
 spring:
   flyway:
@@ -25,27 +26,20 @@ metrics.report.enabled: false
 sensu_client_host: 127.0.0.1
 sensu_client_port: 8989
 
-  # Andre properties
+# Andre properties
 soknad.ettersending.antalldager: 42
 sendsoknad.batch.enabled: false
 fiks.nokkelfil: svarut_public_test.pem
 feature.fiks.kryptering.enabled: false
 
-  # Mockting
-tillatmock: true
-start.oidc.withmock: false
-
-  # OIDC
-oidc.issuer.selvbetjening.discoveryurl: http://metadata
-oidc.issuer.selvbetjening.accepted_audience: aud-localhost
+# OIDC
+oidc.issuer.selvbetjening.discoveryurl: http://localhost:${mock-oauth2-server.port}/selvbetjening/.well-known/openid-configuration
+oidc.issuer.selvbetjening.accepted_audience: someaudience
 oidc.issuer.selvbetjening.cookie_name: localhost-idtoken
 oidc.issuer.selvbetjening.proxy_url: dummy
 loginservice.url: http://localhost:8181/sosialhjelp/soknad-api/local/cookie
 
-oidc.issuer.tokenx.discoveryurl: http://metadata-tokenx
-oidc.issuer.tokenx.accepted_audience: aud-localhost
-
-  # idporten
+# idporten
 idporten_config_url: https://oidc-ver2.difi.no/idporten-oidc-provider/.well-known/openid-configuration
 idporten_scope: ks:fiks
 idporten_clientid: 1c3631f4-dbf2-4c12-bdc4-156cbd53c625
@@ -58,7 +52,7 @@ maskinporten_well_known_url: ${MASKINPORTEN_WELL_KNOWN_URL:https://maskinporten}
 maskinporten_client_jwk: generateRSA
 
 # tokenx
-tokendings_url: tokendings_endpoint_url
+tokendings_url: http://localhost:${mock-oauth2-server.port}/tokenx/.well-known/openid-configuration
 tokendings_client_id: localhost:teamdigisos:sosialhjelp-dialog-api
 tokendings_private_jwk: generateRSA
 fss_proxy_audience: dummyAudience

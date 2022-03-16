@@ -1,8 +1,6 @@
 package no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid
 
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.BatchOpplastetVedleggRepository
-import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
-import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeidStatus
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport
 import org.springframework.stereotype.Component
 import org.springframework.transaction.TransactionStatus
@@ -17,6 +15,7 @@ import javax.sql.DataSource
  * Repository for SoknadUnderArbeid.
  * Operasjoner som kun er tiltenkt batch/schedulerte jobber.
  */
+@Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 @Component
 class BatchSoknadUnderArbeidRepositoryJdbc(
     private val transactionTemplate: TransactionTemplate,

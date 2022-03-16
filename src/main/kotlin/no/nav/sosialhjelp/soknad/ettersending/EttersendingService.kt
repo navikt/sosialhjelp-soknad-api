@@ -7,14 +7,14 @@ import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
 import no.nav.sosialhjelp.soknad.common.exceptions.EttersendelseSendtForSentException
 import no.nav.sosialhjelp.soknad.common.exceptions.SosialhjelpSoknadApiException
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadata
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataInnsendingStatus.FERDIG
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataType
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.VedleggMetadata
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.Vedleggstatus
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
-import no.nav.sosialhjelp.soknad.domain.SoknadMetadata
-import no.nav.sosialhjelp.soknad.domain.SoknadMetadata.VedleggMetadata
-import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus.FERDIG
-import no.nav.sosialhjelp.soknad.domain.SoknadMetadataType
-import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
-import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeidStatus
-import no.nav.sosialhjelp.soknad.domain.Vedleggstatus
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.innsending.HenvendelseService
 import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils.FEATURE_UTVIDE_VEDLEGGJSON
 import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils.isVedleggskravAnnet
@@ -44,27 +44,29 @@ class EttersendingService(
     }
 
     private fun lagreSoknadILokalDb(
-        originalSoknad: SoknadMetadata?,
+        originalSoknad: SoknadMetadata,
         nyBehandlingsId: String,
         manglendeJsonVedlegg: List<JsonVedlegg>
     ) {
-        val ettersendingSoknad = SoknadUnderArbeid()
-            .withBehandlingsId(nyBehandlingsId)
-            .withVersjon(1L)
-            .withEier(originalSoknad!!.fnr)
-            .withStatus(SoknadUnderArbeidStatus.UNDER_ARBEID)
-            .withTilknyttetBehandlingsId(originalSoknad.behandlingsId)
-            .withJsonInternalSoknad(
-                JsonInternalSoknad()
-                    .withVedlegg(JsonVedleggSpesifikasjon().withVedlegg(manglendeJsonVedlegg))
-                    .withMottaker(
-                        JsonSoknadsmottaker()
-                            .withOrganisasjonsnummer(originalSoknad.orgnr)
-                            .withNavEnhetsnavn(originalSoknad.navEnhet)
-                    )
-            )
-            .withOpprettetDato(LocalDateTime.now())
-            .withSistEndretDato(LocalDateTime.now())
+        val ettersendingSoknad = SoknadUnderArbeid(
+            versjon = 1L,
+            behandlingsId = nyBehandlingsId,
+            tilknyttetBehandlingsId = originalSoknad.behandlingsId,
+            eier = originalSoknad.fnr,
+            jsonInternalSoknad = JsonInternalSoknad()
+                .withVedlegg(
+                    JsonVedleggSpesifikasjon()
+                        .withVedlegg(manglendeJsonVedlegg)
+                )
+                .withMottaker(
+                    JsonSoknadsmottaker()
+                        .withOrganisasjonsnummer(originalSoknad.orgnr)
+                        .withNavEnhetsnavn(originalSoknad.navEnhet)
+                ),
+            status = SoknadUnderArbeidStatus.UNDER_ARBEID,
+            opprettetDato = LocalDateTime.now(),
+            sistEndretDato = LocalDateTime.now()
+        )
 
         soknadUnderArbeidRepository.opprettSoknad(ettersendingSoknad, originalSoknad.fnr)
     }
@@ -81,7 +83,7 @@ class EttersendingService(
             }
     }
 
-    private fun hentOgVerifiserSoknad(behandlingsId: String?): SoknadMetadata? {
+    private fun hentOgVerifiserSoknad(behandlingsId: String?): SoknadMetadata {
         var soknad = henvendelseService.hentSoknad(behandlingsId)
             ?: throw IllegalStateException("SoknadMetadata til behandlingsid $behandlingsId finnes ikke")
 
@@ -91,7 +93,7 @@ class EttersendingService(
 
         if (soknad.status != FERDIG) {
             throw SosialhjelpSoknadApiException("Kan ikke starte ettersendelse på noe som ikke er innsendt")
-        } else if (soknad.innsendtDato.isBefore(LocalDateTime.now(clock).minusDays(ETTERSENDELSE_FRIST_DAGER.toLong()))) {
+        } else if (soknad.innsendtDato?.isBefore(LocalDateTime.now(clock).minusDays(ETTERSENDELSE_FRIST_DAGER.toLong())) == true) {
             throwDetailedExceptionForEttersendelserEtterFrist(soknad)
         }
         return soknad
@@ -108,17 +110,17 @@ class EttersendingService(
         throw EttersendelseSendtForSentException(
             "Kan ikke starte ettersendelse $dagerEtterFrist dager etter frist, " +
                 "dagens dato: ${LocalDateTime.now().format(dateTimeFormatter)}, " +
-                "soknadens dato: ${soknad.innsendtDato.format(dateTimeFormatter)}, " +
+                "soknadens dato: ${soknad.innsendtDato?.format(dateTimeFormatter)}, " +
                 "frist($ETTERSENDELSE_FRIST_DAGER dager): ${LocalDateTime.now().minusDays(ETTERSENDELSE_FRIST_DAGER.toLong()).format(dateTimeFormatter)}. " +
                 "Antall ettersendelser som er sendt på denne søknaden tidligere er: $antallEttersendelser. " +
                 "Antall nyere søknader denne brukeren har: $antallNyereSoknader",
         )
     }
 
-    fun hentNyesteSoknadIKjede(originalSoknad: SoknadMetadata?): SoknadMetadata {
-        return henvendelseService.hentBehandlingskjede(originalSoknad!!.behandlingsId)
+    fun hentNyesteSoknadIKjede(originalSoknad: SoknadMetadata): SoknadMetadata {
+        return henvendelseService.hentBehandlingskjede(originalSoknad.behandlingsId)
             .filter { it.status == FERDIG }
-            .maxByOrNull { it.innsendtDato }
+            .maxByOrNull { it.innsendtDato ?: LocalDateTime.MIN }
             ?: originalSoknad
     }
 
@@ -128,14 +130,15 @@ class EttersendingService(
     }
 
     private fun lagListeOverVedlegg(nyesteSoknad: SoknadMetadata): List<VedleggMetadata> {
-        val manglendeVedlegg = nyesteSoknad.vedlegg.vedleggListe
-            .filter { it.status == Vedleggstatus.VedleggKreves }
-            .toMutableList()
+        val manglendeVedlegg = nyesteSoknad.vedlegg?.vedleggListe
+            ?.filter { it.status == Vedleggstatus.VedleggKreves }
+            ?.toMutableList() ?: mutableListOf()
 
         if (manglendeVedlegg.none { isVedleggskravAnnet(it) }) {
-            val annetVedlegg = VedleggMetadata()
-            annetVedlegg.skjema = "annet"
-            annetVedlegg.tillegg = "annet"
+            val annetVedlegg = VedleggMetadata(
+                skjema = "annet",
+                tillegg = "annet"
+            )
             if (unleash.isEnabled(FEATURE_UTVIDE_VEDLEGGJSON, false)) {
                 annetVedlegg.hendelseType = JsonVedlegg.HendelseType.BRUKER
             }

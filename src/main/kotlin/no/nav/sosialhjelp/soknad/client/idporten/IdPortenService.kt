@@ -19,19 +19,16 @@ class IdPortenServiceImpl(
     private var cachedToken: CachedToken? = null
 
     override fun getToken(): AccessToken {
-        if (shouldRenewToken(cachedToken)) {
+        val token = cachedToken
+        if (token == null || shouldRenewToken(token)) {
             val tidspunktForHenting: LocalDateTime = LocalDateTime.now()
             return runBlocking(Dispatchers.IO) { idPortenClient.requestToken() }
                 .also { cachedToken = CachedToken(it, tidspunktForHenting) }
         }
-
-        return cachedToken!!.accessToken
+        return token.accessToken
     }
 
-    private fun shouldRenewToken(token: CachedToken?): Boolean {
-        if (token == null) {
-            return true
-        }
+    private fun shouldRenewToken(token: CachedToken): Boolean {
         return token.isExpired()
     }
 

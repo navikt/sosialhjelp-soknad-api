@@ -27,16 +27,16 @@ class BosituasjonSteg {
         )
     }
 
-    private fun bosituasjonSporsmal(bosituasjon: JsonBosituasjon?): List<Sporsmal> {
-        val harUtfyltHvorBorDu = bosituasjon != null && bosituasjon.botype != null
-        val harUtfyltHvorMangeBorSammen = bosituasjon != null && bosituasjon.antallPersoner != null
+    private fun bosituasjonSporsmal(bosituasjon: JsonBosituasjon): List<Sporsmal> {
+        val harUtfyltHvorBorDu = bosituasjon.botype != null
+        val harUtfyltHvorMangeBorSammen = bosituasjon.antallPersoner != null
         val hvordanBorDuSporsmal = Sporsmal(
             tittel = "bosituasjon.sporsmal",
             erUtfylt = harUtfyltHvorBorDu,
             felt = if (harUtfyltHvorBorDu) listOf(
                 Felt(
                     type = Type.CHECKBOX,
-                    svar = createSvar(botypeToTekstKey(bosituasjon!!.botype), SvarType.LOCALE_TEKST)
+                    svar = createSvar(botypeToTekstKey(bosituasjon.botype), SvarType.LOCALE_TEKST)
                 )
             ) else null
         )
@@ -47,7 +47,7 @@ class BosituasjonSteg {
             felt = if (harUtfyltHvorMangeBorSammen) listOf(
                 Felt(
                     type = Type.TEKST,
-                    svar = createSvar(bosituasjon!!.antallPersoner.toString(), SvarType.TEKST)
+                    svar = createSvar(bosituasjon.antallPersoner.toString(), SvarType.TEKST)
                 )
             ) else null
         )

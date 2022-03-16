@@ -9,10 +9,11 @@ import no.nav.sosialhjelp.soknad.common.ServiceUtils
 import no.nav.sosialhjelp.soknad.common.exceptions.AuthorizationException
 import no.nav.sosialhjelp.soknad.common.subjecthandler.StaticSubjectHandlerImpl
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadata
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
-import no.nav.sosialhjelp.soknad.domain.SoknadMetadata
-import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
 import no.nav.sosialhjelp.soknad.personalia.person.dto.Gradering
@@ -21,6 +22,7 @@ import org.assertj.core.api.Assertions.assertThatNoException
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import java.time.LocalDateTime
 import java.util.Optional
 
 internal class TilgangskontrollTest {
@@ -50,9 +52,17 @@ internal class TilgangskontrollTest {
     @Test
     fun skalGiTilgangForBruker() {
         val userId = SubjectHandlerUtils.getUserIdFromToken()
-        val soknadUnderArbeid = SoknadUnderArbeid()
-            .withEier(userId)
-            .withJsonInternalSoknad(createEmptyJsonInternalSoknad(userId))
+        val soknadUnderArbeid = SoknadUnderArbeid(
+            versjon = 1L,
+            behandlingsId = "behandlingsId",
+            tilknyttetBehandlingsId = null,
+            eier = userId,
+            jsonInternalSoknad = createEmptyJsonInternalSoknad(userId),
+            status = SoknadUnderArbeidStatus.UNDER_ARBEID,
+            opprettetDato = LocalDateTime.now(),
+            sistEndretDato = LocalDateTime.now()
+        )
+
         every { soknadUnderArbeidRepository.hentSoknadOptional(any(), any()) } returns Optional.of(soknadUnderArbeid)
         every { personService.hentAdressebeskyttelse(userId) } returns Gradering.UGRADERT
 
@@ -62,7 +72,17 @@ internal class TilgangskontrollTest {
 
     @Test
     fun skalFeileForAndre() {
-        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad("other_user"))
+        val soknadUnderArbeid = SoknadUnderArbeid(
+            versjon = 1L,
+            behandlingsId = "behandlingsId",
+            tilknyttetBehandlingsId = null,
+            eier = "other_user",
+            jsonInternalSoknad = createEmptyJsonInternalSoknad("other_user"),
+            status = SoknadUnderArbeidStatus.UNDER_ARBEID,
+            opprettetDato = LocalDateTime.now(),
+            sistEndretDato = LocalDateTime.now()
+        )
+
         every { soknadUnderArbeidRepository.hentSoknadOptional(any(), any()) } returns Optional.of(soknadUnderArbeid)
 
         assertThatExceptionOfType(AuthorizationException::class.java)
@@ -80,8 +100,13 @@ internal class TilgangskontrollTest {
     @Test
     fun skalGiTilgangForBrukerMetadata() {
         val userId = SubjectHandlerUtils.getUserIdFromToken()
-        val metadata = SoknadMetadata()
-        metadata.fnr = userId
+        val metadata = SoknadMetadata(
+            id = 0L,
+            behandlingsId = "123",
+            fnr = userId,
+            opprettetDato = LocalDateTime.now(),
+            sistEndretDato = LocalDateTime.now()
+        )
         every { soknadMetadataRepository.hent("123") } returns metadata
         every { personService.hentAdressebeskyttelse(userId) } returns Gradering.UGRADERT
 
@@ -91,20 +116,17 @@ internal class TilgangskontrollTest {
 
     @Test
     fun skalFeileForAndreMetadata() {
-        val metadata = SoknadMetadata()
-        metadata.fnr = "other_user"
+        val metadata = SoknadMetadata(
+            id = 0L,
+            behandlingsId = "123",
+            fnr = "other_user",
+            opprettetDato = LocalDateTime.now(),
+            sistEndretDato = LocalDateTime.now()
+        )
         every { soknadMetadataRepository.hent("123") } returns metadata
 
         assertThatExceptionOfType(AuthorizationException::class.java)
             .isThrownBy { tilgangskontroll.verifiserBrukerHarTilgangTilMetadata("123") }
-    }
-
-    @Test
-    fun skalFeileHvisEierErNull() {
-        every { soknadUnderArbeidRepository.hentSoknadOptional(any(), any()) } returns Optional.of(SoknadUnderArbeid())
-
-        assertThatExceptionOfType(AuthorizationException::class.java)
-            .isThrownBy { tilgangskontroll.verifiserBrukerHarTilgangTilSoknad("") }
     }
 
     @Test

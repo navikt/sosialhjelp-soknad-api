@@ -2,9 +2,9 @@ package no.nav.sosialhjelp.soknad.scheduled
 
 import no.nav.sosialhjelp.metrics.MetricsFactory
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.BatchSoknadMetadataRepository
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataInnsendingStatus.AVBRUTT_AUTOMATISK
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.BatchSoknadUnderArbeidRepository
-import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus.AVBRUTT_AUTOMATISK
 import no.nav.sosialhjelp.soknad.scheduled.leaderelection.LeaderElection
 import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Scheduled
@@ -77,7 +77,9 @@ class AvbrytAutomatiskScheduler(
     }
 
     private fun harGaattForLangTid(): Boolean {
-        return LocalDateTime.now().isAfter(batchStartTime!!.plusSeconds(SCHEDULE_INTERRUPT_S))
+        return batchStartTime
+            ?.let { LocalDateTime.now().isAfter(it.plusSeconds(SCHEDULE_INTERRUPT_S)) }
+            ?: true.also { logger.warn("AvbrytAutomatiskScheduler finner ikke batchStartTime - avbryter batchjobben") }
     }
 
     companion object {

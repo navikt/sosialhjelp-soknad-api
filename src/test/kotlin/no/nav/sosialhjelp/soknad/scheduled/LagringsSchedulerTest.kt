@@ -6,12 +6,13 @@ import io.mockk.mockk
 import io.mockk.runs
 import io.mockk.verify
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.BatchSoknadUnderArbeidRepository
-import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
-import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeidStatus
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.innsending.HenvendelseService
 import no.nav.sosialhjelp.soknad.scheduled.leaderelection.LeaderElection
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import java.time.LocalDateTime
 
 internal class LagringsSchedulerTest {
     private val leaderElection: LeaderElection = mockk()
@@ -36,12 +37,17 @@ internal class LagringsSchedulerTest {
         val behandlingsId = "2"
         val tilknyttetBehandlingsId = "1"
         val soknadId: Long = 2
-        val soknadUnderArbeid = SoknadUnderArbeid()
-            .withSoknadId(soknadId)
-            .withEier("11111111111")
-            .withBehandlingsId(behandlingsId)
-            .withStatus(SoknadUnderArbeidStatus.UNDER_ARBEID)
-            .withTilknyttetBehandlingsId(tilknyttetBehandlingsId)
+        val soknadUnderArbeid = SoknadUnderArbeid(
+            soknadId = soknadId,
+            versjon = 1L,
+            behandlingsId = behandlingsId,
+            tilknyttetBehandlingsId = tilknyttetBehandlingsId,
+            eier = "11111111111",
+            jsonInternalSoknad = null,
+            status = SoknadUnderArbeidStatus.UNDER_ARBEID,
+            opprettetDato = LocalDateTime.now(),
+            sistEndretDato = LocalDateTime.now()
+        )
 
         every { batchSoknadUnderArbeidRepository.hentForeldedeEttersendelser() } returns listOf(soknadUnderArbeid)
         every { henvendelseService.avbrytSoknad(any(), any()) } just runs
@@ -57,11 +63,17 @@ internal class LagringsSchedulerTest {
     fun skalIkkeAvbryteIHenvendelseOgSletteFraDatabaseDersomDetIkkeErEttersendelse() {
         val behandlingsId = "2"
         val soknadId: Long = 2
-        val soknadUnderArbeid = SoknadUnderArbeid()
-            .withSoknadId(soknadId)
-            .withEier("11111111111")
-            .withBehandlingsId(behandlingsId)
-            .withStatus(SoknadUnderArbeidStatus.UNDER_ARBEID)
+        val soknadUnderArbeid = SoknadUnderArbeid(
+            soknadId = soknadId,
+            versjon = 1L,
+            behandlingsId = behandlingsId,
+            tilknyttetBehandlingsId = null,
+            eier = "11111111111",
+            jsonInternalSoknad = null,
+            status = SoknadUnderArbeidStatus.UNDER_ARBEID,
+            opprettetDato = LocalDateTime.now(),
+            sistEndretDato = LocalDateTime.now()
+        )
 
         every { batchSoknadUnderArbeidRepository.hentForeldedeEttersendelser() } returns listOf(soknadUnderArbeid)
 

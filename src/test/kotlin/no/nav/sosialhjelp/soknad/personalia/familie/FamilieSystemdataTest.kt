@@ -23,7 +23,8 @@ import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonHarDeltBosted
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonHarForsorgerplikt
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSamvarsgrad
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus
-import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Barn
@@ -32,6 +33,7 @@ import no.nav.sosialhjelp.soknad.personalia.person.domain.Person
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 internal class FamilieSystemdataTest {
 
@@ -52,12 +54,12 @@ internal class FamilieSystemdataTest {
         every { personService.hentPerson(any()) } returns person
         every { personService.hentBarnForPerson(any()) } returns null
 
-        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
+        val soknadUnderArbeid = createSoknadUnderArbeid()
         familieSystemdata.updateSystemdataIn(soknadUnderArbeid)
 
         val internalSoknad = writer.writeValueAsString(soknadUnderArbeid.jsonInternalSoknad)
         ensureValidInternalSoknad(internalSoknad)
-        val sivilstatus = soknadUnderArbeid.jsonInternalSoknad.soknad.data.familie.sivilstatus
+        val sivilstatus = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.familie.sivilstatus
         assertThat(sivilstatus.kilde).isEqualTo(JsonKilde.SYSTEM)
         assertThat(sivilstatus.status).isEqualTo(JsonSivilstatus.Status.GIFT)
         assertThatEktefelleIsCorrectlyConverted(EKTEFELLE, sivilstatus.ektefelle)
@@ -73,12 +75,12 @@ internal class FamilieSystemdataTest {
         every { personService.hentPerson(any()) } returns person
         every { personService.hentBarnForPerson(any()) } returns null
 
-        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
+        val soknadUnderArbeid = createSoknadUnderArbeid()
         familieSystemdata.updateSystemdataIn(soknadUnderArbeid)
 
         val internalSoknad = writer.writeValueAsString(soknadUnderArbeid.jsonInternalSoknad)
         ensureValidInternalSoknad(internalSoknad)
-        val sivilstatus = soknadUnderArbeid.jsonInternalSoknad.soknad.data.familie.sivilstatus
+        val sivilstatus = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.familie.sivilstatus
         assertThat(sivilstatus).isNull()
     }
 
@@ -102,12 +104,12 @@ internal class FamilieSystemdataTest {
         every { personService.hentPerson(any()) } returns person
         every { personService.hentBarnForPerson(any()) } returns null
 
-        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
+        val soknadUnderArbeid = createSoknadUnderArbeid()
         familieSystemdata.updateSystemdataIn(soknadUnderArbeid)
 
         val internalSoknad = writer.writeValueAsString(soknadUnderArbeid.jsonInternalSoknad)
         ensureValidInternalSoknad(internalSoknad)
-        val sivilstatus = soknadUnderArbeid.jsonInternalSoknad.soknad.data.familie.sivilstatus
+        val sivilstatus = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.familie.sivilstatus
         assertThat(sivilstatus.kilde).isEqualTo(JsonKilde.SYSTEM)
         assertThat(sivilstatus.status).isEqualTo(JsonSivilstatus.Status.GIFT)
         assertThatEktefelleIsCorrectlyConverted(TOM_EKTEFELLE, sivilstatus.ektefelle)
@@ -122,12 +124,12 @@ internal class FamilieSystemdataTest {
         every { personService.hentPerson(any()) } returns null
         every { personService.hentBarnForPerson(any()) } returns listOf(BARN, BARN_2)
 
-        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
+        val soknadUnderArbeid = createSoknadUnderArbeid()
         familieSystemdata.updateSystemdataIn(soknadUnderArbeid)
 
         val internalSoknad = writer.writeValueAsString(soknadUnderArbeid.jsonInternalSoknad)
         ensureValidInternalSoknad(internalSoknad)
-        val forsorgerplikt = soknadUnderArbeid.jsonInternalSoknad.soknad.data.familie.forsorgerplikt
+        val forsorgerplikt = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.familie.forsorgerplikt
         assertThat(forsorgerplikt.harForsorgerplikt.kilde).isEqualTo(JsonKilde.SYSTEM)
         assertThat(forsorgerplikt.harForsorgerplikt.verdi).isTrue
         val ansvarList = forsorgerplikt.ansvar
@@ -144,12 +146,12 @@ internal class FamilieSystemdataTest {
         every { personService.hentPerson(any()) } returns null
         every { personService.hentBarnForPerson(any()) } returns emptyList()
 
-        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
+        val soknadUnderArbeid = createSoknadUnderArbeid()
         familieSystemdata.updateSystemdataIn(soknadUnderArbeid)
 
         val internalSoknad = writer.writeValueAsString(soknadUnderArbeid.jsonInternalSoknad)
         ensureValidInternalSoknad(internalSoknad)
-        val forsorgerplikt = soknadUnderArbeid.jsonInternalSoknad.soknad.data.familie.forsorgerplikt
+        val forsorgerplikt = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.familie.forsorgerplikt
         assertThat(forsorgerplikt.harForsorgerplikt.kilde).isEqualTo(JsonKilde.SYSTEM)
         assertThat(forsorgerplikt.harForsorgerplikt.verdi).isFalse
         val ansvarList = forsorgerplikt.ansvar
@@ -169,12 +171,12 @@ internal class FamilieSystemdataTest {
                     .withVerdi(true)
             )
             .withAnsvar(listOf(JSON_ANSVAR, JSON_ANSVAR_2, JSON_ANSVAR_3_BRUKERREGISTRERT))
-        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(jsonInternalSoknad)
+        val soknadUnderArbeid = createSoknadUnderArbeid(jsonInternalSoknad)
         familieSystemdata.updateSystemdataIn(soknadUnderArbeid)
 
         val internalSoknad = writer.writeValueAsString(soknadUnderArbeid.jsonInternalSoknad)
         ensureValidInternalSoknad(internalSoknad)
-        val forsorgerplikt = soknadUnderArbeid.jsonInternalSoknad.soknad.data.familie.forsorgerplikt
+        val forsorgerplikt = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.familie.forsorgerplikt
         assertThat(forsorgerplikt.harForsorgerplikt.kilde).isEqualTo(JsonKilde.SYSTEM)
         assertThat(forsorgerplikt.harForsorgerplikt.verdi).isTrue
         val ansvarList = forsorgerplikt.ansvar
@@ -205,12 +207,12 @@ internal class FamilieSystemdataTest {
                     .withVerdi(true)
             )
             .withAnsvar(listOf(JSON_ANSVAR_3_BRUKERREGISTRERT))
-        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(jsonInternalSoknad)
+        val soknadUnderArbeid = createSoknadUnderArbeid(jsonInternalSoknad)
         familieSystemdata.updateSystemdataIn(soknadUnderArbeid)
 
         val internalSoknad = writer.writeValueAsString(soknadUnderArbeid.jsonInternalSoknad)
         ensureValidInternalSoknad(internalSoknad)
-        val forsorgerplikt = soknadUnderArbeid.jsonInternalSoknad.soknad.data.familie.forsorgerplikt
+        val forsorgerplikt = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.familie.forsorgerplikt
         assertThat(forsorgerplikt.harForsorgerplikt.kilde).isEqualTo(JsonKilde.BRUKER)
         assertThat(forsorgerplikt.harForsorgerplikt.verdi).isTrue
         val ansvarList = forsorgerplikt.ansvar
@@ -227,13 +229,12 @@ internal class FamilieSystemdataTest {
         every { personService.hentPerson(any()) } returns null
         every { personService.hentBarnForPerson(any()) } returns listOf(BARN, BARN_2)
 
-        val soknadUnderArbeid = SoknadUnderArbeid()
-            .withJsonInternalSoknad(createJsonInternalSoknadWithBarnWithUserFilledInfoOnSystemBarn())
+        val soknadUnderArbeid = createSoknadUnderArbeid(createJsonInternalSoknadWithBarnWithUserFilledInfoOnSystemBarn())
         familieSystemdata.updateSystemdataIn(soknadUnderArbeid)
 
         val internalSoknad = writer.writeValueAsString(soknadUnderArbeid.jsonInternalSoknad)
         ensureValidInternalSoknad(internalSoknad)
-        val forsorgerplikt = soknadUnderArbeid.jsonInternalSoknad.soknad.data.familie.forsorgerplikt
+        val forsorgerplikt = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.familie.forsorgerplikt
         assertThat(forsorgerplikt.harForsorgerplikt.kilde).isEqualTo(JsonKilde.SYSTEM)
         assertThat(forsorgerplikt.harForsorgerplikt.verdi).isTrue
         assertThat(forsorgerplikt.barnebidrag.kilde).isEqualTo(JsonKildeBruker.BRUKER)
@@ -252,12 +253,12 @@ internal class FamilieSystemdataTest {
         every { personService.hentPerson(any()) } returns person
         every { personService.hentBarnForPerson(any()) } returns null
 
-        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
+        val soknadUnderArbeid = createSoknadUnderArbeid()
         familieSystemdata.updateSystemdataIn(soknadUnderArbeid)
 
         val internalSoknad = writer.writeValueAsString(soknadUnderArbeid.jsonInternalSoknad)
         ensureValidInternalSoknad(internalSoknad)
-        val sivilstatus = soknadUnderArbeid.jsonInternalSoknad.soknad.data.familie.sivilstatus
+        val sivilstatus = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.familie.sivilstatus
         assertThat(sivilstatus).isNull()
     }
 
@@ -417,5 +418,18 @@ internal class FamilieSystemdataTest {
                     .withKilde(JsonKildeBruker.BRUKER)
                     .withVerdi(SAMVARSGRAD_BARN_3)
             )
+
+        private fun createSoknadUnderArbeid(jsonInternalSoknad: JsonInternalSoknad = createEmptyJsonInternalSoknad(EIER)): SoknadUnderArbeid {
+            return SoknadUnderArbeid(
+                versjon = 1L,
+                behandlingsId = "BEHANDLINGSID",
+                tilknyttetBehandlingsId = null,
+                eier = EIER,
+                jsonInternalSoknad = jsonInternalSoknad,
+                status = SoknadUnderArbeidStatus.UNDER_ARBEID,
+                opprettetDato = LocalDateTime.now(),
+                sistEndretDato = LocalDateTime.now()
+            )
+        }
     }
 }

@@ -17,8 +17,9 @@ import no.nav.sosialhjelp.soknad.common.MiljoUtils
 import no.nav.sosialhjelp.soknad.common.exceptions.AuthorizationException
 import no.nav.sosialhjelp.soknad.common.subjecthandler.StaticSubjectHandlerImpl
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
-import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.inntekt.studielan.StudielanRessurs.StudielanFrontend
 import no.nav.sosialhjelp.soknad.tekster.TextService
@@ -28,6 +29,7 @@ import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import java.time.LocalDateTime
 
 internal class StudielanRessursTest {
 
@@ -114,9 +116,7 @@ internal class StudielanRessursTest {
     @Test
     fun putStudielanSkalSetteStudielanOgLeggeTilInntektstypen() {
         every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
-        every {
-            soknadUnderArbeidRepository.hentSoknad(any<String>(), any())
-        } returns SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
+        every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns createSoknadUnderArbeid()
         every { textService.getJsonOkonomiTittel(any()) } returns "tittel"
 
         val soknadUnderArbeidSlot = slot<SoknadUnderArbeid>()
@@ -126,9 +126,9 @@ internal class StudielanRessursTest {
         studielanRessurs.updateStudielan(BEHANDLINGSID, studielanFrontend)
 
         val soknadUnderArbeid = soknadUnderArbeidSlot.captured
-        val bekreftelser = soknadUnderArbeid.jsonInternalSoknad.soknad.data
+        val bekreftelser = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data
             .okonomi.opplysninger.bekreftelse
-        val inntekt = soknadUnderArbeid.jsonInternalSoknad.soknad.data
+        val inntekt = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data
             .okonomi.oversikt.inntekt
         assertThat(inntekt[0].type).isEqualTo(SoknadJsonTyper.STUDIELAN)
 
@@ -141,13 +141,11 @@ internal class StudielanRessursTest {
     @Test
     fun putStudielanSkalSetteHarIkkeStudielanOgSletteInntektstypen() {
         every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
-        val soknad = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
+        val soknad = createSoknadUnderArbeid()
         val inntekt = ArrayList<JsonOkonomioversiktInntekt>()
         inntekt.add(JsonOkonomioversiktInntekt().withType(SoknadJsonTyper.STUDIELAN))
-        soknad.jsonInternalSoknad.soknad.data.okonomi.oversikt.inntekt = inntekt
-        every {
-            soknadUnderArbeidRepository.hentSoknad(any<String>(), any())
-        } returns soknad
+        soknad.jsonInternalSoknad!!.soknad.data.okonomi.oversikt.inntekt = inntekt
+        every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns soknad
         every { textService.getJsonOkonomiTittel(any()) } returns "tittel"
 
         val soknadUnderArbeidSlot = slot<SoknadUnderArbeid>()
@@ -157,8 +155,8 @@ internal class StudielanRessursTest {
         studielanRessurs.updateStudielan(BEHANDLINGSID, studielanFrontend)
 
         val soknadUnderArbeid = soknadUnderArbeidSlot.captured
-        val bekreftelser = soknadUnderArbeid.jsonInternalSoknad.soknad.data.okonomi.opplysninger.bekreftelse
-        val jsonInntekt = soknadUnderArbeid.jsonInternalSoknad.soknad.data.okonomi.oversikt.inntekt
+        val bekreftelser = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.bekreftelse
+        val jsonInntekt = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.oversikt.inntekt
         assertThat(jsonInntekt).isEmpty()
 
         val studielan = bekreftelser[0]
@@ -188,8 +186,8 @@ internal class StudielanRessursTest {
         erStudent: Boolean?,
         verdi: Boolean?
     ): SoknadUnderArbeid {
-        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
-        soknadUnderArbeid.jsonInternalSoknad.soknad.data.okonomi.opplysninger.withBekreftelse(
+        val soknadUnderArbeid = createSoknadUnderArbeid()
+        soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.withBekreftelse(
             listOf(
                 JsonOkonomibekreftelse()
                     .withKilde(JsonKilde.BRUKER)
@@ -197,12 +195,25 @@ internal class StudielanRessursTest {
                     .withVerdi(verdi)
             )
         )
-        soknadUnderArbeid.jsonInternalSoknad.soknad.data.utdanning.erStudent = erStudent
+        soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.utdanning.erStudent = erStudent
         return soknadUnderArbeid
     }
 
     companion object {
         private const val BEHANDLINGSID = "123"
         private const val EIER = "123456789101"
+
+        private fun createSoknadUnderArbeid(): SoknadUnderArbeid {
+            return SoknadUnderArbeid(
+                versjon = 1L,
+                behandlingsId = BEHANDLINGSID,
+                tilknyttetBehandlingsId = null,
+                eier = EIER,
+                jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
+                status = SoknadUnderArbeidStatus.UNDER_ARBEID,
+                opprettetDato = LocalDateTime.now(),
+                sistEndretDato = LocalDateTime.now()
+            )
+        }
     }
 }

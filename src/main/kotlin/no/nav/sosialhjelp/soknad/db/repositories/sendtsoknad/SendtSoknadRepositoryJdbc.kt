@@ -2,7 +2,6 @@ package no.nav.sosialhjelp.soknad.db.repositories.sendtsoknad
 
 import no.nav.sosialhjelp.soknad.db.SQLUtils
 import no.nav.sosialhjelp.soknad.db.repositories.sendtsoknad.SendtSoknadRowMapper.sendtSoknadRowMapper
-import no.nav.sosialhjelp.soknad.domain.SendtSoknad
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime
@@ -12,6 +11,7 @@ import java.util.Optional
 import javax.inject.Inject
 import javax.sql.DataSource
 
+@Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 @Component
 class SendtSoknadRepositoryJdbc : NamedParameterJdbcDaoSupport(), SendtSoknadRepository {
 
@@ -20,7 +20,7 @@ class SendtSoknadRepositoryJdbc : NamedParameterJdbcDaoSupport(), SendtSoknadRep
         super.setDataSource(ds)
     }
 
-    override fun opprettSendtSoknad(sendtSoknad: SendtSoknad, eier: String?): Long {
+    override fun opprettSendtSoknad(sendtSoknad: SendtSoknad, eier: String?): Long? {
         sjekkOmBrukerEierSendtSoknad(sendtSoknad, eier)
         val sendtSoknadId = jdbcTemplate.queryForObject(
             SQLUtils.selectNextSequenceValue("SENDT_SOKNAD_ID_SEQ"),
@@ -37,7 +37,7 @@ class SendtSoknadRepositoryJdbc : NamedParameterJdbcDaoSupport(), SendtSoknadRep
             sendtSoknad.navEnhetsnavn,
             Date.from(sendtSoknad.brukerOpprettetDato.atZone(ZoneId.systemDefault()).toInstant()),
             Date.from(sendtSoknad.brukerFerdigDato.atZone(ZoneId.systemDefault()).toInstant()),
-            sendtSoknad.sendtDato?.let { Date.from(sendtSoknad.sendtDato.atZone(ZoneId.systemDefault()).toInstant()) }
+            sendtSoknad.sendtDato?.let { Date.from(it.atZone(ZoneId.systemDefault()).toInstant()) }
         )
         return sendtSoknadId
     }

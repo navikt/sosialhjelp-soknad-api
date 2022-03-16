@@ -56,11 +56,11 @@
         <kryptering.version>1.1.2</kryptering.version>
         <streaming-klient.version>1.0.16</streaming-klient.version>
 
-        <spring-boot.version>2.6.3</spring-boot.version>
-        <spring.version>5.3.15</spring.version>
-        <jetty.version>9.4.44.v20210927</jetty.version>
+        <spring-boot.version>2.6.4</spring-boot.version>
+        <spring.version>5.3.16</spring.version>
+        <jetty.version>9.4.45.v20220203</jetty.version>
         <jersey.version>2.35</jersey.version>
-        <token-validation.version>1.3.17</token-validation.version>
+        <token-validation.version>2.0.11</token-validation.version>
         <nimbus-jose-jwt.version>9.19</nimbus-jose-jwt.version>
         <ojdbc.version>19.13.0.0.1</ojdbc.version>
         <flyway-core.version>7.15.0</flyway-core.version>
@@ -88,8 +88,8 @@
         <jaxb-runtime.version>2.3.6</jaxb-runtime.version>
         <lettuce.version>6.1.6.RELEASE</lettuce.version>
         <unleash.version>3.3.4</unleash.version>
-        <reactor-core.version>3.4.14</reactor-core.version>
-        <reactor-netty-http.version>1.0.15</reactor-netty-http.version>
+        <reactor-core.version>3.4.15</reactor-core.version>
+        <reactor-netty-http.version>1.0.16</reactor-netty-http.version>
         <log4j.version>2.17.1</log4j.version>
 
         <kotlinx-coroutines.version>1.6.0</kotlinx-coroutines.version>
@@ -129,13 +129,14 @@
         <json.version>20211205</json.version>
         <byte-buddy.version>1.12.7</byte-buddy.version>
         <gson.version>2.8.9</gson.version>
-        <netty.version>4.1.72.Final</netty.version>
+        <netty.version>4.1.74.Final</netty.version>
         <micrometer.version>1.8.2</micrometer.version>
         <lombok.version>1.18.22</lombok.version>
         <org.osgi.core.version>6.0.0</org.osgi.core.version>
         <jboss-logging.version>3.4.2.Final</jboss-logging.version>
         <jsr305.version>3.0.2</jsr305.version>
         <snakeyaml.version>1.29</snakeyaml.version>
+        <hibernate-validator.version>6.2.2.Final</hibernate-validator.version>
     </properties>
 
     <dependencyManagement>
@@ -187,6 +188,11 @@
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-web</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-webflux</artifactId>
                 <version>${spring.version}</version>
             </dependency>
             <dependency>
@@ -272,6 +278,16 @@
             <dependency>
                 <groupId>org.eclipse.jetty</groupId>
                 <artifactId>jetty-client</artifactId>
+                <version>${jetty.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-server</artifactId>
+                <version>${jetty.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-servlet</artifactId>
                 <version>${jetty.version}</version>
             </dependency>
 
@@ -518,7 +534,17 @@
                 <artifactId>snakeyaml</artifactId>
                 <version>${snakeyaml.version}</version>
             </dependency>
-
+            <dependency>
+                <groupId>org.hibernate.validator</groupId>
+                <artifactId>hibernate-validator</artifactId>
+                <version>${hibernate-validator.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.squareup.okhttp3</groupId>
+                <artifactId>okhttp</artifactId>
+                <version>${mockwebserver.version}</version>
+                <scope>test</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -847,35 +873,11 @@
             <groupId>no.nav.security</groupId>
             <artifactId>token-validation-jaxrs</artifactId>
             <version>${token-validation.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>javax.ws.rs</groupId>
-                    <artifactId>javax.ws.rs-api</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>javax.inject</groupId>
-                    <artifactId>javax.inject</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>javax.servlet</groupId>
-                    <artifactId>javax.servlet-api</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>no.nav.security</groupId>
             <artifactId>token-validation-core</artifactId>
             <version>${token-validation.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>javax.activation</groupId>
-                    <artifactId>activation</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>javax.validation</groupId>
-                    <artifactId>validation-api</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
 
         <!-- pdfbox / pdf -->
@@ -954,21 +956,13 @@
         </dependency>
         <dependency>
             <groupId>no.nav.security</groupId>
-            <artifactId>token-validation-test-support</artifactId>
+            <artifactId>token-validation-spring-test</artifactId>
             <version>${token-validation.version}</version>
             <scope>test</scope>
             <exclusions>
                 <exclusion>
                     <groupId>org.springframework.boot</groupId>
                     <artifactId>spring-boot-starter-web</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>javax.inject</groupId>
-                    <artifactId>javax.inject</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>javax.servlet</groupId>
-                    <artifactId>javax.servlet-api</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -1022,8 +1016,11 @@
     </dependencies>
 
     <build>
-
         <finalName>sosialhjelp-soknad-api</finalName>
+
+        <sourceDirectory>${project.basedir}/src/main/kotlin</sourceDirectory>
+        <testSourceDirectory>${project.basedir}/src/test/kotlin</testSourceDirectory>
+
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
@@ -1032,7 +1029,7 @@
                     <include>**</include>
                 </includes>
                 <excludes>
-                    <exclude>**/*.java</exclude>
+                    <exclude>**/*.kt</exclude>
                 </excludes>
             </resource>
             <resource>
@@ -1045,12 +1042,12 @@
                 <directory>src/test/resources</directory>
             </testResource>
             <testResource>
-                <directory>src/test/java</directory>
+                <directory>src/test/kotlin</directory>
                 <includes>
                     <include>**</include>
                 </includes>
                 <excludes>
-                    <exclude>**/*.java</exclude>
+                    <exclude>**/*.kt</exclude>
                 </excludes>
             </testResource>
         </testResources>
@@ -1060,7 +1057,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.10.0</version>
+                    <version>3.10.1</version>
                     <configuration>
                         <release>${java.jdk.version}</release>
                     </configuration>
@@ -1104,11 +1101,10 @@
                     </execution>
                 </executions>
             </plugin>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
-                <version>3.2.0</version>
+                <version>3.3.0</version>
                 <executions>
                     <execution>
                         <id>analyze</id>
@@ -1128,71 +1124,12 @@
                         <goals>
                             <goal>compile</goal>
                         </goals>
-                        <configuration>
-                            <sourceDirs>
-                                <sourceDir>${project.basedir}/src/main/kotlin</sourceDir>
-                                <sourceDir>${project.basedir}/src/main/java</sourceDir>
-                            </sourceDirs>
-                        </configuration>
                     </execution>
                     <execution>
                         <id>test-compile</id>
                         <goals>
                             <goal>test-compile</goal>
                         </goals>
-                        <configuration>
-                            <sourceDirs>
-                                <sourceDir>${project.basedir}/src/test/kotlin</sourceDir>
-                                <sourceDir>${project.basedir}/src/test/java</sourceDir>
-                            </sourceDirs>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.10.0</version>
-                <executions>
-                    <execution>
-                        <id>default-compile</id>
-                        <phase>none</phase>
-                    </execution>
-                    <execution>
-                        <id>default-testCompile</id>
-                        <phase>none</phase>
-                    </execution>
-                    <execution>
-                        <id>java-compile</id>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>compile</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>java-test-compile</id>
-                        <phase>test-compile</phase>
-                        <goals>
-                            <goal>testCompile</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>build-helper-maven-plugin</artifactId>
-                <version>3.3.0</version>
-                <executions>
-                    <execution>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>add-source</goal>
-                        </goals>
-                        <configuration>
-                            <sources>
-                                <source>${project.basedir}/src/main/kotlin</source>
-                            </sources>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>
@@ -1254,15 +1191,12 @@
                 <configuration>
                     <classesDirectory>${project.build.outputDirectory}</classesDirectory>
                 </configuration>
-
             </plugin>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.0.0-M5</version>
                 <configuration>
-
                     <!-- Ekskluderer integrasjonstester som slutter på *IT. De kjøres av failsafe-plugin -->
                     <excludes>
                         <exclude>*IT</exclude>
@@ -1273,13 +1207,11 @@
                     <argLine>-Xmx1024m</argLine> <!-- Gi nok minne for å unngå terminerende JVM-er -->
 
                     <systemPropertyVariables>
-                        <java.awt.headless>true</java.awt.headless>
                         <user.language>nb</user.language>
                         <user.region>NO</user.region>
                     </systemPropertyVariables>
                 </configuration>
             </plugin>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
@@ -1298,7 +1230,6 @@
                 </executions>
             </plugin>
         </plugins>
-
     </build>
     <scm>
         <developerConnection>scm:git:git@github.com:navikt/sosialhjelp-soknad-api.git</developerConnection>

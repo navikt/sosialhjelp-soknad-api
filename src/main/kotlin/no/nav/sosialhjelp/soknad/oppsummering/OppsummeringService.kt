@@ -30,14 +30,15 @@ class OppsummeringService(
 
     fun hentOppsummering(fnr: String, behandlingsId: String): Oppsummering {
         val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, fnr)
+        val jsonInternalSoknad = soknadUnderArbeid.jsonInternalSoknad
+            ?: throw IllegalStateException("Kan ikke generere oppsummeringsside hvis SoknadUnderArbeid.jsonInternalSoknad er null")
 
-        if (soknadUnderArbeid.jsonInternalSoknad.vedlegg == null || soknadUnderArbeid.jsonInternalSoknad.vedlegg.vedlegg == null || soknadUnderArbeid.jsonInternalSoknad.vedlegg.vedlegg.isEmpty()) {
+        if (soknadUnderArbeid.jsonInternalSoknad?.vedlegg?.vedlegg?.isEmpty() == null) {
             log.info("Oppdaterer vedleggsforventninger for soknad $behandlingsId fra oppsummeringssiden, ettersom side 8 ble hoppet over")
             opplastetVedleggService.oppdaterVedleggsforventninger(soknadUnderArbeid, fnr)
         }
 
         val opplastedeVedlegg = opplastetVedleggRepository.hentVedleggForSoknad(soknadUnderArbeid.soknadId, fnr)
-        val jsonInternalSoknad = soknadUnderArbeid.jsonInternalSoknad
         return Oppsummering(
             listOf(
                 personopplysningerSteg.get(jsonInternalSoknad),

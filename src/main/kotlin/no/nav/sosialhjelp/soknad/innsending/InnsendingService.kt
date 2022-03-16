@@ -1,19 +1,20 @@
 package no.nav.sosialhjelp.soknad.innsending
 
+import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedlegg
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRepository
+import no.nav.sosialhjelp.soknad.db.repositories.sendtsoknad.SendtSoknad
 import no.nav.sosialhjelp.soknad.db.repositories.sendtsoknad.SendtSoknadRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
-import no.nav.sosialhjelp.soknad.domain.OpplastetVedlegg
-import no.nav.sosialhjelp.soknad.domain.SendtSoknad
-import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
-import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeidStatus
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
 import org.apache.commons.lang3.StringUtils
 import org.slf4j.LoggerFactory
 import org.springframework.transaction.TransactionStatus
 import org.springframework.transaction.support.TransactionCallbackWithoutResult
 import org.springframework.transaction.support.TransactionTemplate
+import java.time.LocalDateTime
 
 open class InnsendingService(
     private val transactionTemplate: TransactionTemplate,
@@ -24,7 +25,7 @@ open class InnsendingService(
     private val soknadMetadataRepository: SoknadMetadataRepository
 ) {
     open fun opprettSendtSoknad(soknadUnderArbeid: SoknadUnderArbeid?) {
-        check(!(soknadUnderArbeid == null || soknadUnderArbeid.soknadId == null)) { "Kan ikke sende søknad som ikke finnes eller som mangler søknadsid" }
+        check(soknadUnderArbeid != null) { "Kan ikke sende søknad som ikke finnes eller som mangler søknadsid" }
         soknadUnderArbeidService.settInnsendingstidspunktPaSoknad(soknadUnderArbeid)
         soknadUnderArbeid.status = SoknadUnderArbeidStatus.LAAST
         soknadUnderArbeidRepository.oppdaterInnsendingStatus(soknadUnderArbeid, soknadUnderArbeid.eier)
@@ -63,15 +64,14 @@ open class InnsendingService(
         return soknadUnderArbeidOptional.get()
     }
 
-    open fun hentAlleOpplastedeVedleggForSoknad(soknadUnderArbeid: SoknadUnderArbeid?): List<OpplastetVedlegg> {
-        if (soknadUnderArbeid == null) {
-            throw RuntimeException("Kan ikke hente vedlegg fordi søknad mangler")
-        }
+    open fun hentAlleOpplastedeVedleggForSoknad(soknadUnderArbeid: SoknadUnderArbeid): List<OpplastetVedlegg> {
         return opplastetVedleggRepository.hentVedleggForSoknad(soknadUnderArbeid.soknadId, soknadUnderArbeid.eier)
     }
 
     open fun finnSendtSoknadForEttersendelse(soknadUnderArbeid: SoknadUnderArbeid): SendtSoknad {
         val tilknyttetBehandlingsId = soknadUnderArbeid.tilknyttetBehandlingsId
+            ?: throw IllegalStateException("TilknyttetBehandlingsId kan ikke være null for en ettersendelse")
+
         val sendtSoknad = sendtSoknadRepository.hentSendtSoknad(tilknyttetBehandlingsId, soknadUnderArbeid.eier)
         return if (sendtSoknad.isPresent) {
             sendtSoknad.get()
@@ -84,10 +84,20 @@ open class InnsendingService(
 
     private fun finnSendtSoknadForEttersendelsePaGammeltFormat(tilknyttetBehandlingsId: String): SendtSoknad? {
         val originalSoknadGammeltFormat = soknadMetadataRepository.hent(tilknyttetBehandlingsId) ?: return null
-        return SendtSoknad()
-            .withOrgnummer(originalSoknadGammeltFormat.orgnr)
-            .withNavEnhetsnavn(originalSoknadGammeltFormat.navEnhet)
-            .withFiksforsendelseId(originalSoknadGammeltFormat.fiksForsendelseId)
+        val orgnr = originalSoknadGammeltFormat.orgnr ?: return null
+        val navEnhet = originalSoknadGammeltFormat.navEnhet ?: return null
+        return SendtSoknad(
+            sendtSoknadId = 0L, // dummy id. SendtSoknadRepository.opprettSendtSoknad bruker next sequence value som id
+            behandlingsId = "",
+            tilknyttetBehandlingsId = null,
+            eier = "",
+            fiksforsendelseId = originalSoknadGammeltFormat.fiksForsendelseId,
+            orgnummer = orgnr,
+            navEnhetsnavn = navEnhet,
+            brukerOpprettetDato = LocalDateTime.now(),
+            brukerFerdigDato = LocalDateTime.now(),
+            sendtDato = LocalDateTime.now()
+        )
     }
 
     fun mapSoknadUnderArbeidTilSendtSoknad(soknadUnderArbeid: SoknadUnderArbeid): SendtSoknad {
@@ -112,11 +122,18 @@ open class InnsendingService(
                     "soknad-kommunenummer: $soknadKommunenummer. IsEttersendelse: ${soknadUnderArbeid.tilknyttetBehandlingsId != null}"
             )
         }
-        return SendtSoknad().withBehandlingsId(soknadUnderArbeid.behandlingsId)
-            .withTilknyttetBehandlingsId(soknadUnderArbeid.tilknyttetBehandlingsId).withOrgnummer(orgnummer)
-            .withNavEnhetsnavn(navEnhetsnavn).withEier(soknadUnderArbeid.eier)
-            .withBrukerOpprettetDato(soknadUnderArbeid.opprettetDato)
-            .withBrukerFerdigDato(soknadUnderArbeid.sistEndretDato)
+        return SendtSoknad(
+            sendtSoknadId = 0L, // dummy id. SendtSoknadRepository.opprettSendtSoknad bruker next sequence value som id
+            behandlingsId = soknadUnderArbeid.behandlingsId,
+            tilknyttetBehandlingsId = soknadUnderArbeid.tilknyttetBehandlingsId,
+            eier = soknadUnderArbeid.eier,
+            fiksforsendelseId = null,
+            orgnummer = orgnummer,
+            navEnhetsnavn = navEnhetsnavn,
+            brukerOpprettetDato = soknadUnderArbeid.opprettetDato,
+            brukerFerdigDato = soknadUnderArbeid.sistEndretDato,
+            sendtDato = null
+        )
     }
 
     companion object {

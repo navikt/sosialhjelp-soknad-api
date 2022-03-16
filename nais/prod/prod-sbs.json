@@ -35,7 +35,6 @@
   "prometheusEnabled": true,
   "webProxyEnabled": true,
   "isGcp": false,
-  "isLabsGcp": false,
   "leaderElectionEnabled": true,
   "maskinportenEnabled": true,
   "azureEnabled": true,
@@ -73,7 +72,6 @@
     "NEDETID_START": "04.02.2022 22:00:00",
     "NEDETID_SLUTT": "05.02.2022 06:00:00",
     "ENVIRONMENT_NAME": "p",
-    "TILLATMOCK": "false",
     "REDIS_HOST": "sosialhjelp-soknad-api-redis.teamdigisos.svc.nais.local",
     "UNLEASH_INSTANCE_ID": "prod-sbs"
   }

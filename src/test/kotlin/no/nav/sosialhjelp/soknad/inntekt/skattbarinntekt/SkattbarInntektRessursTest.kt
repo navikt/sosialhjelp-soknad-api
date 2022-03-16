@@ -16,8 +16,9 @@ import no.nav.sosialhjelp.soknad.common.exceptions.AuthorizationException
 import no.nav.sosialhjelp.soknad.common.mapper.OkonomiMapper
 import no.nav.sosialhjelp.soknad.common.subjecthandler.StaticSubjectHandlerImpl
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
-import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.tekster.TextService
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
@@ -26,6 +27,7 @@ import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import java.time.LocalDateTime
 
 internal class SkattbarInntektRessursTest {
 
@@ -52,9 +54,7 @@ internal class SkattbarInntektRessursTest {
     @Test
     fun skattbarInntektSkalReturnereTomListe() {
         every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
-        every {
-            soknadUnderArbeidRepository.hentSoknad(any<String>(), any())
-        } returns SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
+        every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns createSoknadUnderArbeid()
 
         val skattbarInntektFrontend = skattbarInntektRessurs.hentSkattbareInntekter(BEHANDLINGSID)
         assertThat(skattbarInntektFrontend.inntektFraSkatteetaten).isEmpty()
@@ -75,10 +75,7 @@ internal class SkattbarInntektRessursTest {
     fun skattbarInntektSkalReturnereHarIkkeSkattbarInntekt() {
         every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
         every {
-            soknadUnderArbeidRepository.hentSoknad(
-                any<String>(),
-                any()
-            )
+            soknadUnderArbeidRepository.hentSoknad(any<String>(), any())
         } returns createJsonInternalSoknadWithSkattbarInntekt(false)
 
         val skattbarInntektFrontend = skattbarInntektRessurs.hentSkattbareInntekter(BEHANDLINGSID)
@@ -103,15 +100,15 @@ internal class SkattbarInntektRessursTest {
         // Sjekker kaller til skatteetatenSystemdata
         verify { skatteetatenSystemdata.updateSystemdataIn(systemdataSlot.captured) }
 
-        val okonomi = systemdataSlot.captured.jsonInternalSoknad.soknad.data.okonomi
+        val okonomi = systemdataSlot.captured.jsonInternalSoknad!!.soknad.data.okonomi
         val fangetBekreftelse = okonomi.opplysninger.bekreftelse[0]
         assertThat(fangetBekreftelse.type).isEqualTo(SoknadJsonTyper.UTBETALING_SKATTEETATEN_SAMTYKKE)
         assertThat(fangetBekreftelse.verdi).isTrue
 
         // Sjekker lagring av soknaden
         val spartSoknad = soknadUnderArbeidSlot.captured
-        assertThat(spartSoknad.jsonInternalSoknad.soknad.data.okonomi.opplysninger.bekreftelse).hasSize(1)
-        val spartBekreftelse = soknad.jsonInternalSoknad.soknad.data.okonomi.opplysninger.bekreftelse[0]
+        assertThat(spartSoknad.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.bekreftelse).hasSize(1)
+        val spartBekreftelse = soknad.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.bekreftelse[0]
         assertThat(spartBekreftelse.type).isEqualTo(SoknadJsonTyper.UTBETALING_SKATTEETATEN_SAMTYKKE)
         assertThat(spartBekreftelse.verdi).isTrue
     }
@@ -119,7 +116,7 @@ internal class SkattbarInntektRessursTest {
     @Test
     fun skattbarInntekt_skalTaBortSamtykke() {
         val soknad = createJsonInternalSoknadWithSkattbarInntekt(false)
-        val opplysninger = soknad.jsonInternalSoknad.soknad.data.okonomi.opplysninger
+        val opplysninger = soknad.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger
         OkonomiMapper.setBekreftelse(opplysninger, SoknadJsonTyper.UTBETALING_SKATTEETATEN_SAMTYKKE, true, "")
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns soknad
         every { textService.getJsonOkonomiTittel(any()) } returns "tittel"
@@ -136,14 +133,14 @@ internal class SkattbarInntektRessursTest {
         // Sjekker kaller til skattbarInntektSystemdata
         verify { skatteetatenSystemdata.updateSystemdataIn(systemdataSlot.captured) }
 
-        val okonomi = systemdataSlot.captured.jsonInternalSoknad.soknad.data.okonomi
+        val okonomi = systemdataSlot.captured.jsonInternalSoknad!!.soknad.data.okonomi
         val fangetBekreftelse = okonomi.opplysninger.bekreftelse[0]
         assertThat(fangetBekreftelse.type).isEqualTo(SoknadJsonTyper.UTBETALING_SKATTEETATEN_SAMTYKKE)
         assertThat(fangetBekreftelse.verdi).isFalse
 
         // Sjekker lagring av soknaden
         val spartSoknad = soknadUnderArbeidSlot.captured
-        val sparteOpplysninger = spartSoknad.jsonInternalSoknad.soknad.data.okonomi.opplysninger
+        val sparteOpplysninger = spartSoknad.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger
         assertThat(sparteOpplysninger.bekreftelse).hasSize(1)
         val spartBekreftelse = sparteOpplysninger.bekreftelse[0]
         assertThat(spartBekreftelse.type).isEqualTo(SoknadJsonTyper.UTBETALING_SKATTEETATEN_SAMTYKKE)
@@ -166,7 +163,7 @@ internal class SkattbarInntektRessursTest {
         verify(exactly = 0) { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) }
 
         // Sjekker soknaden
-        assertThat(soknad.jsonInternalSoknad.soknad.data.okonomi.opplysninger.bekreftelse).isEmpty()
+        assertThat(soknad.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.bekreftelse).isEmpty()
     }
 
     @Test
@@ -190,14 +187,14 @@ internal class SkattbarInntektRessursTest {
     }
 
     private fun createJsonInternalSoknadWithSkattbarInntekt(harSkattbarInntekt: Boolean): SoknadUnderArbeid {
-        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
+        val soknadUnderArbeid = createSoknadUnderArbeid()
         if (harSkattbarInntekt) {
             val utbetaling = JsonOkonomiOpplysningUtbetaling()
                 .withType(SoknadJsonTyper.UTBETALING_SKATTEETATEN)
                 .withKilde(JsonKilde.SYSTEM)
                 .withTittel("Utbetalingen!")
                 .withBelop(123456)
-            soknadUnderArbeid.jsonInternalSoknad.soknad.data.okonomi.opplysninger.utbetaling.add(utbetaling)
+            soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.utbetaling.add(utbetaling)
         }
         return soknadUnderArbeid
     }
@@ -205,5 +202,18 @@ internal class SkattbarInntektRessursTest {
     companion object {
         private const val BEHANDLINGSID = "123"
         private const val EIER = "123456789101"
+
+        private fun createSoknadUnderArbeid(): SoknadUnderArbeid {
+            return SoknadUnderArbeid(
+                versjon = 1L,
+                behandlingsId = BEHANDLINGSID,
+                tilknyttetBehandlingsId = null,
+                eier = EIER,
+                jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
+                status = SoknadUnderArbeidStatus.UNDER_ARBEID,
+                opprettetDato = LocalDateTime.now(),
+                sistEndretDato = LocalDateTime.now()
+            )
+        }
     }
 }

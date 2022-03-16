@@ -43,7 +43,7 @@ open class EttersendingRessurs(
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
         val opplastedeVedlegg = opplastetVedleggRepository.hentVedleggForSoknad(soknadUnderArbeid.soknadId, eier)
-        val originaleVedlegg = soknadUnderArbeid.jsonInternalSoknad.vedlegg.vedlegg
+        val originaleVedlegg = soknadUnderArbeid.jsonInternalSoknad?.vedlegg?.vedlegg ?: emptyList()
         val innsendingstidspunkt = innsendtSoknadService.getInnsendingstidspunkt(behandlingsId)
         return VedleggMapper.mapVedleggToSortedListOfEttersendteVedlegg(
             innsendingstidspunkt,

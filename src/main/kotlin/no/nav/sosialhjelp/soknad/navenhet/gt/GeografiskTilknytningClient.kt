@@ -55,9 +55,8 @@ class GeografiskTilknytningClient(
 
             pdlResponse.checkForPdlApiErrors()
 
-            val geografiskTilknytning = pdlResponse.data!!.hentGeografiskTilknytning
-            lagreTilCache(ident, geografiskTilknytning)
-            return geografiskTilknytning
+            return pdlResponse.data.hentGeografiskTilknytning
+                ?.also { lagreTilCache(ident, it) }
         } catch (e: PdlApiException) {
             throw e
         } catch (e: Exception) {

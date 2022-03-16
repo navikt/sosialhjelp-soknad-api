@@ -4,7 +4,8 @@ import no.nav.security.token.support.core.configuration.IssuerProperties
 import no.nav.security.token.support.core.configuration.MultiIssuerConfiguration
 import no.nav.security.token.support.core.configuration.ProxyAwareResourceRetriever
 import no.nav.security.token.support.jaxrs.servlet.JaxrsJwtTokenValidationFilter
-import no.nav.sosialhjelp.soknad.common.Constants
+import no.nav.sosialhjelp.soknad.common.Constants.SELVBETJENING
+import no.nav.sosialhjelp.soknad.common.Constants.TOKENX
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
@@ -20,8 +21,8 @@ open class OidcTokenValidatorConfig(
     @Value("\${oidc.issuer.selvbetjening.accepted_audience}") private val acceptedAudience: String,
     @Value("\${oidc.issuer.selvbetjening.discoveryurl}") private val discoveryUrl: String,
     @Value("\${oidc.issuer.selvbetjening.proxy_url}") private val proxyUrl: String,
-    @Value("\${oidc.issuer.tokenx.accepted_audience}") private val acceptedAudienceTokenx: String,
-    @Value("\${oidc.issuer.tokenx.discoveryurl}") private val discoveryUrlTokenx: String
+    @Value("\${tokendings_client_id}") private val acceptedAudienceTokenx: String,
+    @Value("\${tokendings_url}") private val discoveryUrlTokenx: String
 ) {
 
     @Bean
@@ -34,7 +35,6 @@ open class OidcTokenValidatorConfig(
         return MultiIssuerConfiguration(issuerPropertiesMap, resourceRetriever)
     }
 
-    /** Is overridden in test scope  */
     @Bean
     open fun proxyAwareResourceRetriever(): ProxyAwareResourceRetriever {
         return ProxyAwareResourceRetriever()
@@ -43,14 +43,14 @@ open class OidcTokenValidatorConfig(
     private val issuerPropertiesMap: Map<String, IssuerProperties>
         get() {
             val issuerPropertiesMap: MutableMap<String, IssuerProperties> = HashMap()
-            issuerPropertiesMap[Constants.SELVBETJENING] = selvbetjeningProperties()
-            issuerPropertiesMap[Constants.TOKENX] = tokenxProperties()
+            issuerPropertiesMap[SELVBETJENING] = selvbetjeningProperties()
+            issuerPropertiesMap[TOKENX] = tokenxProperties()
             return issuerPropertiesMap
         }
 
     private fun selvbetjeningProperties(): IssuerProperties {
         val issuerProperties = IssuerProperties(toUrl(discoveryUrl), listOf(acceptedAudience), cookieName)
-        issuerProperties.proxyUrl = proxyUrl(proxyUrl, Constants.SELVBETJENING)
+        issuerProperties.proxyUrl = proxyUrl(proxyUrl)
         return issuerProperties
     }
 
@@ -66,7 +66,7 @@ open class OidcTokenValidatorConfig(
         }
     }
 
-    private fun proxyUrl(proxyUrl: String?, issuer: String): URL? {
+    private fun proxyUrl(proxyUrl: String?, issuer: String = SELVBETJENING): URL? {
         return try {
             URL(proxyUrl)
         } catch (e: MalformedURLException) {

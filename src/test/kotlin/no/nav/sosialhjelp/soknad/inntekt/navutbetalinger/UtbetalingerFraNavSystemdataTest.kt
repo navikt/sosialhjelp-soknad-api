@@ -7,7 +7,8 @@ import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling
-import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.UtbetalingerFraNavSystemdata.Companion.tilIntegerMedAvrunding
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.domain.Komponent
@@ -17,6 +18,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 internal class UtbetalingerFraNavSystemdataTest {
 
@@ -33,13 +35,13 @@ internal class UtbetalingerFraNavSystemdataTest {
 
     @Test
     fun skalOppdatereUtbetalinger() {
-        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
+        val soknadUnderArbeid = createSoknadUnderArbeid()
         val navUtbetalinger = listOf(NAV_UTBETALING_1, NAV_UTBETALING_2)
         every { navUtbetalingerService.getUtbetalingerSiste40Dager(any()) } returns navUtbetalinger
 
         utbetalingerFraNavSystemdata.updateSystemdataIn(soknadUnderArbeid)
 
-        val jsonUtbetalinger = soknadUnderArbeid.jsonInternalSoknad.soknad.data.okonomi.opplysninger.utbetaling
+        val jsonUtbetalinger = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.utbetaling
         val utbetaling = jsonUtbetalinger[0]
         val utbetaling1 = jsonUtbetalinger[1]
         assertThat(utbetaling.kilde).isEqualTo(JsonKilde.SYSTEM)
@@ -49,13 +51,13 @@ internal class UtbetalingerFraNavSystemdataTest {
 
     @Test
     fun skalKunInkludereGyldigeOrganisasjonsnummer() {
-        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
+        val soknadUnderArbeid = createSoknadUnderArbeid()
         val navUtbetalinger = listOf(NAV_UTBETALING_1, NAV_UTBETALING_2, NAV_UTBETALING_3)
         every { navUtbetalingerService.getUtbetalingerSiste40Dager(any()) } returns navUtbetalinger
 
         utbetalingerFraNavSystemdata.updateSystemdataIn(soknadUnderArbeid)
 
-        val jsonUtbetalinger = soknadUnderArbeid.jsonInternalSoknad.soknad.data.okonomi.opplysninger.utbetaling
+        val jsonUtbetalinger = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.utbetaling
         val utbetaling = jsonUtbetalinger[0]
         val utbetaling1 = jsonUtbetalinger[1]
         val utbetaling2 = jsonUtbetalinger[2]
@@ -66,14 +68,14 @@ internal class UtbetalingerFraNavSystemdataTest {
     }
 
     @Test
-    fun skalIkksLasteNedUtbetalingerUtenSamtykke() {
-        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createJsonInternalSoknadWithUtbetalinger())
+    fun skalIkkeLasteNedUtbetalingerUtenSamtykke() {
+        val soknadUnderArbeid = createSoknadUnderArbeid(createJsonInternalSoknadWithUtbetalinger())
         val utbetalinger = listOf(NAV_UTBETALING_1)
         every { navUtbetalingerService.getUtbetalingerSiste40Dager(any()) } returns utbetalinger
 
         utbetalingerFraNavSystemdata.updateSystemdataIn(soknadUnderArbeid)
 
-        val jsonUtbetalinger = soknadUnderArbeid.jsonInternalSoknad.soknad.data.okonomi.opplysninger.utbetaling
+        val jsonUtbetalinger = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.utbetaling
         val utbetaling = jsonUtbetalinger[0]
         val utbetaling1 = jsonUtbetalinger[1]
         assertThat(utbetaling.kilde).isEqualTo(JsonKilde.BRUKER)
@@ -205,10 +207,21 @@ internal class UtbetalingerFraNavSystemdataTest {
         )
         private val NAV_UTBETALING_3 = NavUtbetaling(
             "type", NETTO_2, BRUTTO_2, SKATT_2, TREKK_2, null, UTBETALINGSDATO, PERIODE_FOM, PERIODE_TOM,
-            listOf(
-                NAV_KOMPONENT
-            ),
+            listOf(NAV_KOMPONENT),
             TITTEL_2, PERSONNR
         )
+
+        private fun createSoknadUnderArbeid(jsonInternalSoknad: JsonInternalSoknad = createEmptyJsonInternalSoknad(EIER)): SoknadUnderArbeid {
+            return SoknadUnderArbeid(
+                versjon = 1L,
+                behandlingsId = "BEHANDLINGSID",
+                tilknyttetBehandlingsId = null,
+                eier = EIER,
+                jsonInternalSoknad = jsonInternalSoknad,
+                status = SoknadUnderArbeidStatus.UNDER_ARBEID,
+                opprettetDato = LocalDateTime.now(),
+                sistEndretDato = LocalDateTime.now()
+            )
+        }
     }
 }

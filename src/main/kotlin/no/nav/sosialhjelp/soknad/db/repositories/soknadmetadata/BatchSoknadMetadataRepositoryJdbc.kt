@@ -2,7 +2,6 @@ package no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata
 
 import no.nav.sosialhjelp.soknad.db.SQLUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRowMapper.soknadMetadataRowMapper
-import no.nav.sosialhjelp.soknad.domain.SoknadMetadata
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
@@ -11,6 +10,7 @@ import java.util.Optional
 import javax.inject.Inject
 import javax.sql.DataSource
 
+@Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 @Component
 open class BatchSoknadMetadataRepositoryJdbc : NamedParameterJdbcDaoSupport(), BatchSoknadMetadataRepository {
 

@@ -76,7 +76,9 @@ class SlettLoggScheduler(
     }
 
     private fun harGaattForLangTid(): Boolean {
-        return LocalDateTime.now().isAfter(batchStartTime!!.plusSeconds(SCHEDULE_INTERRUPT_S))
+        return batchStartTime
+            ?.let { LocalDateTime.now().isAfter(it.plusSeconds(SCHEDULE_INTERRUPT_S)) }
+            ?: true.also { logger.warn("SlettLoggScheduler finner ikke batchStartTime - avbryter batchjobben") }
     }
 
     companion object {

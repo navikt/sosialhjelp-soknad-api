@@ -92,10 +92,9 @@ class SkattbarInntekt {
                 )
             )
         } else {
-            // todo: gruppere pr mnd og organisasjon? summere inntekter og skattetrekk
-            utbetalinger!!
-                .filter { UTBETALING_SKATTEETATEN == it.type }
-                .forEach {
+            utbetalinger
+                ?.filter { UTBETALING_SKATTEETATEN == it.type }
+                ?.forEach {
                     val map = LinkedHashMap<String, Svar>()
                     if (it.organisasjon == null) {
                         map["utbetalinger.utbetaling.arbeidsgivernavn.label"] =

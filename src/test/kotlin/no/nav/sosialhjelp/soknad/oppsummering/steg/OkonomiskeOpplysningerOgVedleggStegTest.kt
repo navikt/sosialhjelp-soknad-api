@@ -15,7 +15,8 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktU
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
-import no.nav.sosialhjelp.soknad.domain.OpplastetVedlegg
+import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedlegg
+import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggType
 import no.nav.sosialhjelp.soknad.oppsummering.dto.SvarType
 import no.nav.sosialhjelp.soknad.oppsummering.dto.Type
 import no.nav.sosialhjelp.soknad.oppsummering.steg.OppsummeringTestUtils.validateFeltMedSvar
@@ -133,13 +134,21 @@ internal class OkonomiskeOpplysningerOgVedleggStegTest {
     fun vedlegg() {
         val soknad = createSoknad()
         val filnavn = "fil.jpg"
-        soknad.vedlegg.vedlegg = java.util.List.of(
+        soknad.vedlegg.vedlegg = mutableListOf(
             createVedlegg("faktura", "oppvarming", "VedleggAlleredeSendt", null),
             createVedlegg("kontooversikt", "sparekonto", "VedleggKreves", null),
             createVedlegg("lonnslipp", "arbeid", "LastetOpp", listOf(JsonFiler().withFilnavn(filnavn)))
         )
         val opplastedeVedlegg = listOf(
-            OpplastetVedlegg().withFilnavn(filnavn).withUuid("uuid-goes-here")
+            OpplastetVedlegg(
+                uuid = "uuid-goes-here",
+                eier = "eier",
+                vedleggType = OpplastetVedleggType("type|tilleggsinfo"),
+                data = byteArrayOf(1, 2, 3),
+                soknadId = 123L,
+                filnavn = filnavn,
+                sha512 = "sha512"
+            )
         )
 
         val steg = okonomiskeOpplysningerOgVedleggSteg.get(soknad, opplastedeVedlegg)

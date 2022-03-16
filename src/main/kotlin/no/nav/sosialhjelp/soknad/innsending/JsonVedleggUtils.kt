@@ -2,8 +2,8 @@ package no.nav.sosialhjelp.soknad.innsending
 
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
-import no.nav.sosialhjelp.soknad.domain.SoknadMetadata.VedleggMetadata
-import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.VedleggMetadata
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import org.slf4j.LoggerFactory
 import java.util.UUID
 
@@ -14,13 +14,7 @@ object JsonVedleggUtils {
     const val ANNET = "annet"
 
     fun getVedleggFromInternalSoknad(soknadUnderArbeid: SoknadUnderArbeid): MutableList<JsonVedlegg> {
-        return if (soknadUnderArbeid.jsonInternalSoknad.vedlegg == null) {
-            mutableListOf()
-        } else if (soknadUnderArbeid.jsonInternalSoknad.vedlegg.vedlegg == null) {
-            mutableListOf()
-        } else {
-            soknadUnderArbeid.jsonInternalSoknad.vedlegg.vedlegg
-        }
+        return soknadUnderArbeid.jsonInternalSoknad?.vedlegg?.vedlegg ?: mutableListOf()
     }
 
     fun isVedleggskravAnnet(vedlegg: VedleggMetadata): Boolean {

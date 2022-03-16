@@ -10,6 +10,7 @@ import java.util.Optional
 import javax.inject.Inject
 import javax.sql.DataSource
 
+@Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 @Component
 class BatchSendtSoknadRepositoryJdbc(
     private val transactionTemplate: TransactionTemplate
@@ -31,9 +32,6 @@ class BatchSendtSoknadRepositoryJdbc(
     override fun slettSendtSoknad(sendtSoknadId: Long) {
         transactionTemplate.execute(object : TransactionCallbackWithoutResult() {
             override fun doInTransactionWithoutResult(transactionStatus: TransactionStatus) {
-                if (sendtSoknadId == null) {
-                    throw RuntimeException("Kan ikke slette sendt søknad uten søknadsid")
-                }
                 jdbcTemplate.update("delete from SENDT_SOKNAD where SENDT_SOKNAD_ID = ?", sendtSoknadId)
             }
         })

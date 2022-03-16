@@ -33,6 +33,7 @@ open class StudielanRessurs(
         tilgangskontroll.verifiserAtBrukerHarTilgang()
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).jsonInternalSoknad
+            ?: throw IllegalStateException("Kan ikke hente søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
         val opplysninger = soknad.soknad.data.okonomi.opplysninger
         val utdanning = soknad.soknad.data.utdanning
 
@@ -55,8 +56,10 @@ open class StudielanRessurs(
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
-        val opplysninger = soknad.jsonInternalSoknad.soknad.data.okonomi.opplysninger
-        val inntekter = soknad.jsonInternalSoknad.soknad.data.okonomi.oversikt.inntekt
+        val jsonInternalSoknad = soknad.jsonInternalSoknad
+            ?: throw IllegalStateException("Kan ikke oppdatere søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
+        val opplysninger = jsonInternalSoknad.soknad.data.okonomi.opplysninger
+        val inntekter = jsonInternalSoknad.soknad.data.okonomi.oversikt.inntekt
         if (opplysninger.bekreftelse == null) {
             opplysninger.bekreftelse = ArrayList()
         }

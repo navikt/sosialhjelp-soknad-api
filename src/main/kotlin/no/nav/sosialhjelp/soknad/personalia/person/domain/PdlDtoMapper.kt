@@ -239,10 +239,8 @@ open class PdlDtoMapper(
         //  Flertallet av oppholdsadressene fra Freg vil være norske, og flertallet av oppholdsadresser registrert av NAV vil være utenlandske.
         //  Fra folkeregisteret kan man også få oppholdsadresse uten en faktisk adresse, men med informasjon i oppholdAnnetSted.
         return dtos
-            .filter { it.vegadresse != null }
-            .filter { filterVegadresseNotEqualToBostedsadresse(bostedsadresseDtos, it.vegadresse!!) }
-            .firstOrNull()
-            ?.let { Oppholdsadresse(it.coAdressenavn, mapToVegadresse(it.vegadresse!!)) }
+            .firstOrNull { it.vegadresse != null && filterVegadresseNotEqualToBostedsadresse(bostedsadresseDtos, it.vegadresse) }
+            ?.let { Oppholdsadresse(it.coAdressenavn, it.vegadresse?.let { vegadresse -> mapToVegadresse(vegadresse) }) }
     }
 
     private fun mapToKontaktadresse(
@@ -253,10 +251,8 @@ open class PdlDtoMapper(
             null
         } else
             dtos
-                .filter { it.vegadresse != null }
-                .filter { filterVegadresseNotEqualToBostedsadresse(bostedsadresseDtos, it.vegadresse!!) }
-                .firstOrNull()
-                ?.let { Kontaktadresse(it.coAdressenavn, mapToVegadresse(it.vegadresse!!)) }
+                .firstOrNull { it.vegadresse != null && filterVegadresseNotEqualToBostedsadresse(bostedsadresseDtos, it.vegadresse) }
+                ?.let { Kontaktadresse(it.coAdressenavn, it.vegadresse?.let { vegadresse -> mapToVegadresse(vegadresse) }) }
     }
 
     private fun filterVegadresseNotEqualToBostedsadresse(

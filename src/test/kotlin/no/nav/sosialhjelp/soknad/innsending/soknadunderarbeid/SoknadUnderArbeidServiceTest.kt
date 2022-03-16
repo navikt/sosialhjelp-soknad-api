@@ -4,8 +4,9 @@ import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.runs
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
-import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 
@@ -22,13 +23,17 @@ internal class SoknadUnderArbeidServiceTest {
     }
 
     private fun lagSoknadUnderArbeidForEttersendelse(): SoknadUnderArbeid {
-        return SoknadUnderArbeid()
-            .withSoknadId(SOKNAD_UNDER_ARBEID_ID)
-            .withBehandlingsId(BEHANDLINGSID)
-            .withTilknyttetBehandlingsId(TILKNYTTET_BEHANDLINGSID)
-            .withEier(EIER)
-            .withOpprettetDato(OPPRETTET_DATO)
-            .withSistEndretDato(SIST_ENDRET_DATO)
+        return SoknadUnderArbeid(
+            soknadId = SOKNAD_UNDER_ARBEID_ID,
+            versjon = 1L,
+            behandlingsId = BEHANDLINGSID,
+            tilknyttetBehandlingsId = TILKNYTTET_BEHANDLINGSID,
+            eier = EIER,
+            jsonInternalSoknad = null,
+            status = SoknadUnderArbeidStatus.UNDER_ARBEID,
+            opprettetDato = OPPRETTET_DATO,
+            sistEndretDato = SIST_ENDRET_DATO
+        )
     }
 
     companion object {

@@ -5,7 +5,7 @@ import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.unmockkObject
 import no.nav.sosialhjelp.soknad.common.MiljoUtils
-import no.nav.sosialhjelp.soknad.web.rest.SoknadApplication
+import no.nav.sosialhjelp.soknad.config.SoknadApplication
 import org.assertj.core.api.Assertions.assertThat
 import org.glassfish.jersey.server.ContainerResponse
 import org.glassfish.jersey.test.util.server.ContainerRequestBuilder

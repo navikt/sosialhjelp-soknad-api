@@ -7,7 +7,8 @@ import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresseValg
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonGateAdresse
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonMatrikkelAdresse
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
-import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Bostedsadresse
@@ -17,6 +18,7 @@ import no.nav.sosialhjelp.soknad.personalia.person.domain.Person
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Vegadresse
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import java.time.LocalDateTime
 
 internal class AdresseSystemdataTest {
 
@@ -25,14 +27,14 @@ internal class AdresseSystemdataTest {
 
     @Test
     fun skalOppdatereFolkeregistrertAdresse_vegadresse_fraPdl() {
-        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
+        val soknadUnderArbeid = createSoknadUnderArbeid()
         val personWithBostedsadresseVegadresse =
             createPersonWithBostedsadresse(Bostedsadresse("", DEFAULT_VEGADRESSE, null))
         every { personService.hentPerson(any()) } returns personWithBostedsadresseVegadresse
 
         adresseSystemdata.updateSystemdataIn(soknadUnderArbeid)
 
-        val folkeregistrertAdresse = soknadUnderArbeid.jsonInternalSoknad.soknad.data.personalia.folkeregistrertAdresse
+        val folkeregistrertAdresse = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia.folkeregistrertAdresse
         val bostedsadresseVegadresse = personWithBostedsadresseVegadresse.bostedsadresse?.vegadresse
         assertThat(folkeregistrertAdresse.kilde).isEqualTo(JsonKilde.SYSTEM)
         assertThat(folkeregistrertAdresse.type).isEqualTo(JsonAdresse.Type.GATEADRESSE)
@@ -41,7 +43,7 @@ internal class AdresseSystemdataTest {
 
     @Test
     fun skalOppdatereFolkeregistrertAdresse_matrikkeladresse_fraPdl() {
-        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
+        val soknadUnderArbeid = createSoknadUnderArbeid()
         val personWithBostedsadresseMatrikkeladresse = createPersonWithBostedsadresse(
             Bostedsadresse(
                 "",
@@ -60,7 +62,7 @@ internal class AdresseSystemdataTest {
 
         adresseSystemdata.updateSystemdataIn(soknadUnderArbeid)
 
-        val folkeregistrertAdresse = soknadUnderArbeid.jsonInternalSoknad.soknad.data.personalia.folkeregistrertAdresse
+        val folkeregistrertAdresse = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia.folkeregistrertAdresse
         assertThat(folkeregistrertAdresse.kilde).isEqualTo(JsonKilde.SYSTEM)
         assertThat(folkeregistrertAdresse.type).isEqualTo(JsonAdresse.Type.MATRIKKELADRESSE)
         val matrikkeladresse = folkeregistrertAdresse as JsonMatrikkelAdresse
@@ -71,8 +73,8 @@ internal class AdresseSystemdataTest {
 
     @Test
     fun skalOppdatereOppholdsadresseOgPostAdresseMedMidlertidigAdresse_kontaktadresse_fraPdl() {
-        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
-        soknadUnderArbeid.jsonInternalSoknad.soknad.data.personalia
+        val soknadUnderArbeid = createSoknadUnderArbeid()
+        soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia
             .withOppholdsadresse(JsonAdresse().withAdresseValg(JsonAdresseValg.MIDLERTIDIG))
             .withPostadresse(JsonAdresse().withAdresseValg(JsonAdresseValg.MIDLERTIDIG))
         val personWithOppholdsadresse = createPersonWithBostedsadresseOgOppholdsadresse(
@@ -83,9 +85,9 @@ internal class AdresseSystemdataTest {
 
         adresseSystemdata.updateSystemdataIn(soknadUnderArbeid)
 
-        val folkeregistrertAdresse = soknadUnderArbeid.jsonInternalSoknad.soknad.data.personalia.folkeregistrertAdresse
-        val oppholdsadresse = soknadUnderArbeid.jsonInternalSoknad.soknad.data.personalia.oppholdsadresse
-        val postadresse = soknadUnderArbeid.jsonInternalSoknad.soknad.data.personalia.postadresse
+        val folkeregistrertAdresse = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia.folkeregistrertAdresse
+        val oppholdsadresse = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia.oppholdsadresse
+        val postadresse = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia.postadresse
         assertThat(folkeregistrertAdresse.kilde).isEqualTo(JsonKilde.SYSTEM)
         assertThat(oppholdsadresse.kilde).isEqualTo(JsonKilde.SYSTEM)
         assertThat(postadresse.kilde).isEqualTo(JsonKilde.SYSTEM)
@@ -101,8 +103,8 @@ internal class AdresseSystemdataTest {
 
     @Test
     fun skalOppdatereOppholdsadresseOgPostAdresseMedFolkeregistrertAdresse_fraPdl() {
-        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
-        soknadUnderArbeid.jsonInternalSoknad.soknad.data.personalia
+        val soknadUnderArbeid = createSoknadUnderArbeid()
+        soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia
             .withOppholdsadresse(JsonAdresse().withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT))
             .withPostadresse(JsonAdresse().withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT))
         val personWithBostedsadresseVegadresse =
@@ -111,9 +113,9 @@ internal class AdresseSystemdataTest {
 
         adresseSystemdata.updateSystemdataIn(soknadUnderArbeid)
 
-        val folkeregistrertAdresse = soknadUnderArbeid.jsonInternalSoknad.soknad.data.personalia.folkeregistrertAdresse
-        val oppholdsadresse = soknadUnderArbeid.jsonInternalSoknad.soknad.data.personalia.oppholdsadresse
-        val postadresse = soknadUnderArbeid.jsonInternalSoknad.soknad.data.personalia.postadresse
+        val folkeregistrertAdresse = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia.folkeregistrertAdresse
+        val oppholdsadresse = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia.oppholdsadresse
+        val postadresse = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia.postadresse
         assertThat(folkeregistrertAdresse.kilde).isEqualTo(JsonKilde.SYSTEM)
         assertThat(oppholdsadresse.kilde).isEqualTo(JsonKilde.SYSTEM)
         assertThat(postadresse.kilde).isEqualTo(JsonKilde.SYSTEM)
@@ -124,16 +126,16 @@ internal class AdresseSystemdataTest {
 
     @Test
     fun skalIkkeOppdatereOppholdsadresseEllerPostAdresseDersomAdresseValgErNull_fraPdl() {
-        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
-        soknadUnderArbeid.jsonInternalSoknad.soknad.data.personalia
+        val soknadUnderArbeid = createSoknadUnderArbeid()
+        soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia
             .withOppholdsadresse(JsonAdresse())
             .withPostadresse(JsonAdresse())
         val personWithBostedsadresseVegadresse =
             createPersonWithBostedsadresse(Bostedsadresse("", DEFAULT_VEGADRESSE, null))
         every { personService.hentPerson(any()) } returns personWithBostedsadresseVegadresse
         adresseSystemdata.updateSystemdataIn(soknadUnderArbeid)
-        val oppholdsadresse = soknadUnderArbeid.jsonInternalSoknad.soknad.data.personalia.oppholdsadresse
-        val postadresse = soknadUnderArbeid.jsonInternalSoknad.soknad.data.personalia.postadresse
+        val oppholdsadresse = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia.oppholdsadresse
+        val postadresse = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia.postadresse
         assertThat(postadresse.adresseValg).isNull()
         assertThat(postadresse.type).isNull()
         assertThat(oppholdsadresse.adresseValg).isNull()
@@ -190,5 +192,18 @@ internal class AdresseSystemdataTest {
         private val DEFAULT_VEGADRESSE =
             Vegadresse("gateveien", 1, "A", "", "0123", "poststed", "0301", "H0101", "123456")
         private val ANNEN_VEGADRESSE = Vegadresse("en annen sti", 32, null, null, "0456", "oslo", "0302", null, null)
+
+        private fun createSoknadUnderArbeid(): SoknadUnderArbeid {
+            return SoknadUnderArbeid(
+                versjon = 1L,
+                behandlingsId = "BEHANDLINGSID",
+                tilknyttetBehandlingsId = null,
+                eier = EIER,
+                jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
+                status = SoknadUnderArbeidStatus.UNDER_ARBEID,
+                opprettetDato = LocalDateTime.now(),
+                sistEndretDato = LocalDateTime.now()
+            )
+        }
     }
 }

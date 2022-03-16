@@ -8,10 +8,10 @@ import no.nav.sosialhjelp.soknad.api.innsyn.SoknadOversiktService.Companion.DEFA
 import no.nav.sosialhjelp.soknad.api.innsyn.SoknadOversiktService.Companion.KILDE_SOKNAD_API
 import no.nav.sosialhjelp.soknad.api.innsyn.dto.SoknadOversiktDto
 import no.nav.sosialhjelp.soknad.common.MiljoUtils
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadata
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataInnsendingStatus
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
-import no.nav.sosialhjelp.soknad.domain.SoknadMetadata
-import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus
-import no.nav.sosialhjelp.soknad.domain.SoknadMetadataType
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataType
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
@@ -23,17 +23,20 @@ internal class SoknadOversiktServiceTest {
     private val soknadMetadataRepository: SoknadMetadataRepository = mockk()
     private val service = SoknadOversiktService(soknadMetadataRepository)
 
-    private var soknadMetadata: SoknadMetadata? = null
+    private lateinit var soknadMetadata: SoknadMetadata
 
     @BeforeEach
     fun setUp() {
-        soknadMetadata = SoknadMetadata()
-        soknadMetadata!!.fnr = "12345"
-        soknadMetadata!!.behandlingsId = "beh123"
-        soknadMetadata!!.type = SoknadMetadataType.SEND_SOKNAD_KOMMUNAL
-        soknadMetadata!!.innsendtDato = LocalDateTime.of(2018, 4, 11, 13, 30, 0)
-        soknadMetadata!!.sistEndretDato = LocalDateTime.of(2018, 4, 11, 13, 30, 0)
-        soknadMetadata!!.status = SoknadMetadataInnsendingStatus.UNDER_ARBEID
+        soknadMetadata = SoknadMetadata(
+            id = 0L,
+            behandlingsId = "beh123",
+            fnr = "12345",
+            type = SoknadMetadataType.SEND_SOKNAD_KOMMUNAL,
+            status = SoknadMetadataInnsendingStatus.UNDER_ARBEID,
+            opprettetDato = LocalDateTime.of(2018, 4, 11, 13, 30, 0),
+            sistEndretDato = LocalDateTime.of(2018, 4, 11, 13, 30, 0),
+            innsendtDato = LocalDateTime.of(2018, 4, 11, 13, 30, 0)
+        )
 
         mockkObject(MiljoUtils)
         every { MiljoUtils.environmentName } returns "p"
@@ -46,17 +49,17 @@ internal class SoknadOversiktServiceTest {
 
     @Test
     fun hentAlleSoknaderForBruker() {
-        every { soknadMetadataRepository.hentSvarUtInnsendteSoknaderForBruker("12345") } returns listOf(soknadMetadata!!)
+        every { soknadMetadataRepository.hentSvarUtInnsendteSoknaderForBruker("12345") } returns listOf(soknadMetadata)
         val resultat: List<SoknadOversiktDto> = service.hentSvarUtSoknaderFor("12345")
         assertThat(resultat).hasSize(1)
 
         val soknad = resultat[0]
         assertThat(soknad.fiksDigisosId).isNull()
-        assertThat(soknad.soknadTittel).contains(DEFAULT_TITTEL).contains(soknadMetadata!!.behandlingsId)
+        assertThat(soknad.soknadTittel).contains(DEFAULT_TITTEL).contains(soknadMetadata.behandlingsId)
         assertThat(soknad.status).isEqualTo(SoknadMetadataInnsendingStatus.UNDER_ARBEID.toString())
-        assertThat(soknad.sistOppdatert).isEqualTo(Timestamp.valueOf(soknadMetadata!!.innsendtDato))
+        assertThat(soknad.sistOppdatert).isEqualTo(Timestamp.valueOf(soknadMetadata.innsendtDato))
         assertThat(soknad.antallNyeOppgaver).isNull()
         assertThat(soknad.kilde).isEqualTo(KILDE_SOKNAD_API)
-        assertThat(soknad.url).contains(soknadMetadata!!.behandlingsId)
+        assertThat(soknad.url).contains(soknadMetadata.behandlingsId)
     }
 }
