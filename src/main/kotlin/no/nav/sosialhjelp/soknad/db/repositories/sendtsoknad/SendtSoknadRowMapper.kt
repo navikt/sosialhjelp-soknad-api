@@ -1,22 +1,22 @@
 package no.nav.sosialhjelp.soknad.db.repositories.sendtsoknad
 
-import no.nav.sosialhjelp.soknad.domain.SendtSoknad
 import org.springframework.jdbc.core.RowMapper
 import java.sql.ResultSet
 
 object SendtSoknadRowMapper {
 
     val sendtSoknadRowMapper = RowMapper { rs: ResultSet, _: Int ->
-        SendtSoknad()
-            .withSendtSoknadId(rs.getLong("sendt_soknad_id"))
-            .withBehandlingsId(rs.getString("behandlingsid"))
-            .withTilknyttetBehandlingsId(rs.getString("tilknyttetbehandlingsid"))
-            .withEier(rs.getString("eier"))
-            .withFiksforsendelseId(rs.getString("fiksforsendelseid"))
-            .withOrgnummer(rs.getString("orgnr"))
-            .withNavEnhetsnavn(rs.getString("navenhetsnavn"))
-            .withBrukerOpprettetDato(rs.getTimestamp("brukeropprettetdato")?.toLocalDateTime())
-            .withBrukerFerdigDato(rs.getTimestamp("brukerferdigdato")?.toLocalDateTime())
-            .withSendtDato(rs.getTimestamp("sendtdato")?.toLocalDateTime())
+        SendtSoknad(
+            sendtSoknadId = rs.getLong("sendt_soknad_id"),
+            behandlingsId = rs.getString("behandlingsid"),
+            tilknyttetBehandlingsId = rs.getString("tilknyttetbehandlingsid"),
+            eier = rs.getString("eier"),
+            fiksforsendelseId = rs.getString("fiksforsendelseid"),
+            orgnummer = rs.getString("orgnr"),
+            navEnhetsnavn = rs.getString("navenhetsnavn"),
+            brukerOpprettetDato = rs.getTimestamp("brukeropprettetdato").toLocalDateTime(),
+            brukerFerdigDato = rs.getTimestamp("brukerferdigdato").toLocalDateTime(),
+            sendtDato = rs.getTimestamp("sendtdato")?.toLocalDateTime(),
+        )
     }
 }

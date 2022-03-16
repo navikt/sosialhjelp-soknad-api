@@ -4,7 +4,6 @@ import no.nav.sosialhjelp.kotlin.utils.logger
 
 object MiljoUtils {
 
-    private const val NAIS_APP_IMAGE = "NAIS_APP_IMAGE"
     private const val NAIS_APP_NAME = "NAIS_APP_NAME"
     private const val NAIS_CLUSTER_NAME = "NAIS_CLUSTER_NAME"
     private const val ENVIRONMENT_NAME = "ENVIRONMENT_NAME"
@@ -16,11 +15,11 @@ object MiljoUtils {
 
     private val log by logger()
 
-    val naisAppImage: String
-        get() = getenv(NAIS_APP_IMAGE, "version")
-
     val naisAppName: String
         get() = getenv(NAIS_APP_NAME, "sosialhjelp-soknad-api")
+
+    val environmentName: String
+        get() = System.getenv(ENVIRONMENT_NAME) ?: ""
 
     private fun getenv(env: String, defaultValue: String): String {
         return System.getenv(env)
@@ -34,9 +33,6 @@ object MiljoUtils {
         val clusterName = System.getenv(NAIS_CLUSTER_NAME)
         return clusterName == null || !clusterName.contains("prod")
     }
-
-    val environmentName: String
-        get() = System.getenv(ENVIRONMENT_NAME) ?: ""
 
     fun isAlltidSendTilNavTestkommune(): Boolean {
         val value = System.getenv(IS_ALLTID_SEND_TIL_NAV_TESTKOMMUNE) ?: "false"

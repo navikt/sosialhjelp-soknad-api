@@ -24,9 +24,7 @@ class PdfGenerator {
     private val logger = LoggerFactory.getLogger(PdfGenerator::class.java)
 
     private val document = PDDocument()
-    private val completedPages: ArrayList<PDPage>? = null
     private var currentPage = PDPage(PDRectangle.A4)
-    private val completedStreams: ArrayList<PDPageContentStream>? = null
     private var currentStream: PDPageContentStream
     private var y: Float
 
@@ -210,8 +208,8 @@ class PdfGenerator {
         y -= lines.size * fontSize
     }
 
-    private fun parseLines(text: String?, font: PDFont, fontSize: Float): List<String> {
-        var text = text
+    private fun parseLines(inputText: String?, font: PDFont, fontSize: Float): List<String> {
+        var text = inputText
         val lines: MutableList<String> = ArrayList()
         if (text == null) {
             return lines
@@ -259,10 +257,10 @@ class PdfGenerator {
         return lines
     }
 
-    private fun splitTextOnNewlines(text: String?): List<String> {
+    private fun splitTextOnNewlines(text: String): List<String> {
         val splitByNewlines: MutableList<String> = ArrayList()
         var stringBuilder = StringBuilder()
-        for (i in 0 until text!!.length) {
+        for (i in 0 until text.length) {
             if (characterIsLinebreak(text.codePointAt(i))) {
                 splitByNewlines.add(stringBuilder.toString())
                 stringBuilder = StringBuilder()
@@ -286,8 +284,6 @@ class PdfGenerator {
 
     fun addLogo() {
         val ximage = PDImageXObject.createFromByteArray(document, logo(), "logo")
-        val startX = (MEDIA_BOX.width - 99) / 2
-        val offsetTop = 40f
         currentStream.drawImage(ximage, 27f, 765f, 99f, 62f)
     }
 

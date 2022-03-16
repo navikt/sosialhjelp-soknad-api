@@ -8,12 +8,12 @@ import no.nav.sosialhjelp.soknad.common.filedetection.FileDetectionUtils.detectT
 import no.nav.sosialhjelp.soknad.common.filedetection.FileDetectionUtils.getMimeType
 import no.nav.sosialhjelp.soknad.common.filedetection.TikaFileType
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
+import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedlegg
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRepository
+import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggType
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.Vedleggstatus
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
-import no.nav.sosialhjelp.soknad.domain.OpplastetVedlegg
-import no.nav.sosialhjelp.soknad.domain.OpplastetVedleggType
-import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
-import no.nav.sosialhjelp.soknad.domain.Vedleggstatus
 import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils
 import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils.getSha512FromByteArray
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.OpplastingException
@@ -30,6 +30,7 @@ import java.io.UnsupportedEncodingException
 import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
 import java.util.Locale
+import java.util.UUID
 import java.util.function.Predicate
 import javax.ws.rs.NotFoundException
 
@@ -39,7 +40,7 @@ class OpplastetVedleggService(
     private val virusScanner: VirusScanner
 ) {
     fun saveVedleggAndUpdateVedleggstatus(
-        behandlingsId: String?,
+        behandlingsId: String,
         vedleggstype: String,
         data: ByteArray,
         originalfilnavn: String
@@ -50,23 +51,24 @@ class OpplastetVedleggService(
         val sha512 = getSha512FromByteArray(data)
 
         val fileType = validerFil(data, filnavn)
-        virusScanner.scan(filnavn, data, behandlingsId!!, fileType.name)
+        virusScanner.scan(filnavn, data, behandlingsId, fileType.name)
 
         val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
         val soknadId = soknadUnderArbeid.soknadId
-        val opplastetVedlegg = OpplastetVedlegg()
-            .withEier(eier)
-            .withVedleggType(OpplastetVedleggType(vedleggstype))
-            .withData(data)
-            .withSoknadId(soknadId)
-            .withSha512(sha512)
 
-        filnavn = lagFilnavn(filnavn, fileType, opplastetVedlegg.uuid)
+        val uuid = UUID.randomUUID().toString()
+        filnavn = lagFilnavn(filnavn, fileType, uuid)
 
-        opplastetVedlegg.withFilnavn(filnavn)
-
-        val uuid = opplastetVedleggRepository.opprettVedlegg(opplastetVedlegg, eier)
-        opplastetVedlegg.withUuid(uuid)
+        val opplastetVedlegg = OpplastetVedlegg(
+            uuid = uuid,
+            eier = eier,
+            vedleggType = OpplastetVedleggType(vedleggstype),
+            data = data,
+            soknadId = soknadId,
+            filnavn = filnavn,
+            sha512 = sha512
+        )
+        opplastetVedleggRepository.opprettVedlegg(opplastetVedlegg, eier)
 
         val jsonVedlegg = finnVedleggEllerKastException(vedleggstype, soknadUnderArbeid)
         if (jsonVedlegg.filer == null) {
@@ -94,7 +96,7 @@ class OpplastetVedleggService(
                 .map { it.withStatus(Vedleggstatus.VedleggKreves.toString()) }
         )
 
-        soknadUnderArbeid.jsonInternalSoknad.vedlegg = JsonVedleggSpesifikasjon().withVedlegg(jsonVedleggs)
+        soknadUnderArbeid.jsonInternalSoknad?.vedlegg = JsonVedleggSpesifikasjon().withVedlegg(jsonVedleggs)
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier)
     }
 
@@ -106,7 +108,7 @@ class OpplastetVedleggService(
         val samletVedleggStorrelse = opplastetVedleggRepository.hentSamletVedleggStorrelse(soknadId, eier)
         val newStorrelse = samletVedleggStorrelse + data.size
         if (newStorrelse > MAKS_SAMLET_VEDLEGG_STORRELSE) {
-            val feilmeldingId = if (soknadUnderArbeid.erEttersendelse()) {
+            val feilmeldingId = if (soknadUnderArbeid.erEttersendelse) {
                 "ettersending.vedlegg.feil.samletStorrelseForStor"
             } else {
                 "vedlegg.opplasting.feil.samletStorrelseForStor"

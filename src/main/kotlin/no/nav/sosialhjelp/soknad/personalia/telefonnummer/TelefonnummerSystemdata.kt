@@ -3,7 +3,7 @@ package no.nav.sosialhjelp.soknad.personalia.telefonnummer
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonTelefonnummer
 import no.nav.sosialhjelp.soknad.common.systemdata.Systemdata
-import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import org.slf4j.LoggerFactory
 
 class TelefonnummerSystemdata(
@@ -11,7 +11,9 @@ class TelefonnummerSystemdata(
 ) : Systemdata {
 
     override fun updateSystemdataIn(soknadUnderArbeid: SoknadUnderArbeid) {
-        val personalia = soknadUnderArbeid.jsonInternalSoknad.soknad.data.personalia
+        val jsonInternalSoknad = soknadUnderArbeid.jsonInternalSoknad ?: return
+
+        val personalia = jsonInternalSoknad.soknad.data.personalia
         val telefonnummer = personalia.telefonnummer
         if (telefonnummer == null || telefonnummer.kilde == JsonKilde.SYSTEM) {
             val personIdentifikator = personalia.personIdentifikator.verdi
@@ -23,9 +25,9 @@ class TelefonnummerSystemdata(
         }
     }
 
-    fun innhentSystemverdiTelefonnummer(personIdentifikator: String?): String? {
+    fun innhentSystemverdiTelefonnummer(personIdentifikator: String): String? {
         return try {
-            norskTelefonnummer(mobiltelefonService.hent(personIdentifikator!!))
+            norskTelefonnummer(mobiltelefonService.hent(personIdentifikator))
         } catch (e: Exception) {
             log.warn("Kunne ikke hente telefonnummer fra Krr", e)
             null

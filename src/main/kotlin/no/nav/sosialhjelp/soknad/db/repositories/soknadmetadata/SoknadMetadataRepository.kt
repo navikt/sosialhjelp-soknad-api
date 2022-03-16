@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata
 
-import no.nav.sosialhjelp.soknad.domain.SoknadMetadata
 import java.time.LocalDateTime
 
 interface SoknadMetadataRepository {
@@ -14,6 +13,6 @@ interface SoknadMetadataRepository {
     fun hentAlleInnsendteSoknaderForBruker(fnr: String): List<SoknadMetadata>
     fun hentPabegynteSoknaderForBruker(fnr: String): List<SoknadMetadata>
     fun hentPabegynteSoknaderForBruker(fnr: String, lestDittNav: Boolean): List<SoknadMetadata>
-    fun hentInnsendteSoknaderForBrukerEtterTidspunkt(fnr: String, after: LocalDateTime): List<SoknadMetadata>
+    fun hentInnsendteSoknaderForBrukerEtterTidspunkt(fnr: String, tidsgrense: LocalDateTime): List<SoknadMetadata>
     fun oppdaterLestDittNav(soknadMetadata: SoknadMetadata, fnr: String)
 }

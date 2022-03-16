@@ -26,7 +26,7 @@ class DittNavMetadataService(
                 toUtc(it.opprettetDato, ZoneId.systemDefault()).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME),
                 eventId(it.behandlingsId, aktiv),
                 it.behandlingsId,
-                SOKNAD_TITTEL,
+                PABEGYNT_SOKNAD_TITTEL,
                 lenkeTilPabegyntSoknad(it.behandlingsId),
                 SIKKERHETSNIVAA_3, // hvis ikke vil ikke innloggede nivå 3 brukere se noe på DittNav
                 toUtc(it.sistEndretDato, ZoneId.systemDefault()).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME),
@@ -61,7 +61,7 @@ class DittNavMetadataService(
 
     companion object {
         private val log = LoggerFactory.getLogger(DittNavMetadataService::class.java)
-        private const val SOKNAD_TITTEL = "Søknad om økonomisk sosialhjelp"
+        private const val PABEGYNT_SOKNAD_TITTEL = "Påbegynt søknad om økonomisk sosialhjelp"
         private const val SIKKERHETSNIVAA_3 = 3
         private const val SIKKERHETSNIVAA_4 = 4
     }

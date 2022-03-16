@@ -13,10 +13,10 @@ import no.nav.sosialhjelp.soknad.common.exceptions.SendingTilKommuneUtilgjengeli
 import no.nav.sosialhjelp.soknad.common.exceptions.SoknadenHarNedetidException
 import no.nav.sosialhjelp.soknad.common.mapper.KommuneTilNavEnhetMapper
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataInnsendingStatus.SENDT_MED_DIGISOS_API
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
-import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus.SENDT_MED_DIGISOS_API
-import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils.FEATURE_UTVIDE_VEDLEGGJSON
 import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils.addHendelseTypeAndHendelseReferanse
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiService
@@ -71,7 +71,6 @@ open class SoknadActions(
         val eier = SubjectHandlerUtils.getUserIdFromToken()
 
         val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
-            ?: throw IllegalStateException("SoknadUnderArbeid er null ved sending for behandlingsId $behandlingsId")
 
         updateVedleggJsonWithHendelseTypeAndHendelseReferanse(eier, soknadUnderArbeid)
 
@@ -81,7 +80,7 @@ open class SoknadActions(
             return SendTilUrlFrontend(SVARUT, behandlingsId)
         }
 
-        if (soknadUnderArbeid.erEttersendelse()) {
+        if (soknadUnderArbeid.erEttersendelse) {
             log.error("Ettersendelse $behandlingsId blir forsøkt sendt med soknad-api selv om den tiknyttede søknaden ble sendt til Fiks-Digisos-api. Dette skal ikke skje, disse skal sendes via innsyn-api.")
             throw IllegalStateException("Ettersendelse på søknad sendt via fiks-digisos-api skal sendes via innsyn-api")
         }
@@ -118,11 +117,12 @@ open class SoknadActions(
         eier: String,
         soknadUnderArbeid: SoknadUnderArbeid
     ) {
-        val jsonVedleggSpesifikasjon = soknadUnderArbeid.jsonInternalSoknad.vedlegg
+        val jsonVedleggSpesifikasjon = soknadUnderArbeid.jsonInternalSoknad?.vedlegg ?: return
+
         val isUtvideVedleggJsonFeatureActive = unleash.isEnabled(FEATURE_UTVIDE_VEDLEGGJSON, false)
         addHendelseTypeAndHendelseReferanse(
             jsonVedleggSpesifikasjon,
-            !soknadUnderArbeid.erEttersendelse(),
+            !soknadUnderArbeid.erEttersendelse,
             isUtvideVedleggJsonFeatureActive
         )
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier)
@@ -133,12 +133,13 @@ open class SoknadActions(
             log.error("Sender til Nav-testkommune (3002). Du skal aldri se denne meldingen i PROD")
             "3002"
         } else {
-            soknadUnderArbeid.jsonInternalSoknad.soknad.mottaker.kommunenummer
+            soknadUnderArbeid.jsonInternalSoknad?.soknad?.mottaker?.kommunenummer
+                ?: throw IllegalStateException("Kommunenummer ikke funnet for JsonInternalSoknad.soknad.mottaker.kommunenummer")
         }
     }
 
     private fun isEttersendelsePaSoknadSendtViaSvarUt(soknadUnderArbeid: SoknadUnderArbeid): Boolean {
-        if (!soknadUnderArbeid.erEttersendelse()) return false
+        if (!soknadUnderArbeid.erEttersendelse) return false
         val soknadensMetadata = soknadMetadataRepository.hent(soknadUnderArbeid.tilknyttetBehandlingsId)
         return soknadensMetadata != null && soknadensMetadata.status != SENDT_MED_DIGISOS_API
     }

@@ -43,6 +43,7 @@ open class BarneutgiftRessurs(
         tilgangskontroll.verifiserAtBrukerHarTilgang()
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).jsonInternalSoknad
+            ?: throw IllegalStateException("Kan ikke hente søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
 
         val harForsorgerplikt = soknad.soknad.data.familie.forsorgerplikt.harForsorgerplikt
         if (harForsorgerplikt == null || harForsorgerplikt.verdi == null || !harForsorgerplikt.verdi) {
@@ -73,7 +74,9 @@ open class BarneutgiftRessurs(
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
-        val okonomi = soknad.jsonInternalSoknad.soknad.data.okonomi
+        val jsonInternalSoknad = soknad.jsonInternalSoknad
+            ?: throw IllegalStateException("Kan ikke oppdatere søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
+        val okonomi = jsonInternalSoknad.soknad.data.okonomi
         if (okonomi.opplysninger.bekreftelse == null) {
             okonomi.opplysninger.bekreftelse = ArrayList()
         }

@@ -5,18 +5,17 @@ import io.mockk.just
 import io.mockk.mockk
 import io.mockk.runs
 import io.mockk.verify
+import no.nav.sosialhjelp.soknad.db.repositories.oppgave.Oppgave
 import no.nav.sosialhjelp.soknad.db.repositories.oppgave.OppgaveRepository
+import no.nav.sosialhjelp.soknad.db.repositories.oppgave.Status
 import no.nav.sosialhjelp.soknad.db.repositories.sendtsoknad.BatchSendtSoknadRepository
+import no.nav.sosialhjelp.soknad.db.repositories.sendtsoknad.SendtSoknad
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.BatchSoknadMetadataRepository
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadata
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataInnsendingStatus
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataInnsendingStatus.UNDER_ARBEID
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
-import no.nav.sosialhjelp.soknad.domain.FiksData
-import no.nav.sosialhjelp.soknad.domain.FiksResultat
-import no.nav.sosialhjelp.soknad.domain.Oppgave
-import no.nav.sosialhjelp.soknad.domain.SendtSoknad
-import no.nav.sosialhjelp.soknad.domain.SoknadMetadata
-import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus
-import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus.UNDER_ARBEID
-import no.nav.sosialhjelp.soknad.domain.SoknadMetadataType
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataType
 import no.nav.sosialhjelp.soknad.scheduled.leaderelection.LeaderElection
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -117,46 +116,46 @@ internal class SlettLoggSchedulerTest {
         status: SoknadMetadataInnsendingStatus,
         dagerSiden: Int
     ): SoknadMetadata {
-        val meta = SoknadMetadata()
-        meta.id = soknadMetadataRepository.hentNesteId()
-        meta.behandlingsId = behandlingsId
-        meta.fnr = EIER
-        meta.type = SoknadMetadataType.SEND_SOKNAD_KOMMUNAL
-        meta.skjema = ""
-        meta.status = status
-        meta.innsendtDato = LocalDateTime.now().minusDays(dagerSiden.toLong())
-        meta.opprettetDato = LocalDateTime.now().minusDays(dagerSiden.toLong())
-        meta.sistEndretDato = LocalDateTime.now().minusDays(dagerSiden.toLong())
-        return meta
+        return SoknadMetadata(
+            id = soknadMetadataRepository.hentNesteId(),
+            behandlingsId = behandlingsId,
+            fnr = EIER,
+            type = SoknadMetadataType.SEND_SOKNAD_KOMMUNAL,
+            skjema = "",
+            status = status,
+            innsendtDato = LocalDateTime.now().minusDays(dagerSiden.toLong()),
+            opprettetDato = LocalDateTime.now().minusDays(dagerSiden.toLong()),
+            sistEndretDato = LocalDateTime.now().minusDays(dagerSiden.toLong()),
+        )
     }
 
     private fun sendtSoknad(behandlingsId: String, eier: String, dagerSiden: Int): SendtSoknad {
-        return SendtSoknad()
-            .withBehandlingsId(behandlingsId)
-            .withNavEnhetsnavn("")
-            .withOrgnummer("")
-            .withBrukerOpprettetDato(LocalDateTime.now().minusDays(dagerSiden.toLong()))
-            .withBrukerFerdigDato(LocalDateTime.now().minusDays(dagerSiden.toLong()))
-            .withSendtDato(LocalDateTime.now().minusDays(dagerSiden.toLong()))
-            .withEier(eier)
-            .withTilknyttetBehandlingsId("")
-            .withFiksforsendelseId("")
-            .withSendtSoknadId(1L)
+        return SendtSoknad(
+            sendtSoknadId = 1L,
+            behandlingsId = behandlingsId,
+            tilknyttetBehandlingsId = "",
+            eier = eier,
+            fiksforsendelseId = "",
+            orgnummer = "",
+            navEnhetsnavn = "",
+            brukerOpprettetDato = LocalDateTime.now().minusDays(dagerSiden.toLong()),
+            brukerFerdigDato = LocalDateTime.now().minusDays(dagerSiden.toLong()),
+            sendtDato = LocalDateTime.now().minusDays(dagerSiden.toLong())
+        )
     }
 
     private fun oppgave(behandlingsId: String, dagerSiden: Int): Oppgave {
-        val oppgave = Oppgave()
-        oppgave.behandlingsId = behandlingsId
-        oppgave.status = Oppgave.Status.FERDIG
-        oppgave.steg = 1
-        oppgave.id = 1L
-        oppgave.oppgaveData = FiksData()
-        oppgave.nesteForsok = null
-        oppgave.oppgaveResultat = FiksResultat()
-        oppgave.type = ""
-        oppgave.opprettet = LocalDateTime.now().minusDays(dagerSiden.toLong())
-        oppgave.sistKjort = LocalDateTime.now().minusDays(dagerSiden.toLong())
-        return oppgave
+        return Oppgave(
+            id = 1L,
+            behandlingsId = behandlingsId,
+            type = "",
+            status = Status.FERDIG,
+            steg = 1,
+            opprettet = LocalDateTime.now().minusDays(dagerSiden.toLong()),
+            sistKjort = LocalDateTime.now().minusDays(dagerSiden.toLong()),
+            nesteForsok = null,
+            retries = 0
+        )
     }
 
     companion object {

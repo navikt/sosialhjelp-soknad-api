@@ -64,7 +64,7 @@ fun SkattbarInntekt?.getForskuddstrekk(): List<Utbetaling> {
                     val utbetaling = Utbetaling(
                         type = "skatteopplysninger",
                         brutto = 0.0,
-                        skattetrekk = ft.beloep!!.toDouble(),
+                        skattetrekk = ft.beloep?.toDouble() ?: 0.0,
                         periodeFom = fom,
                         periodeTom = tom,
                         tittel = "Forskuddstrekk",
@@ -85,7 +85,7 @@ private fun getUtbetaling(
 ): Utbetaling {
     return Utbetaling(
         type = "skatteopplysninger",
-        brutto = inntekt.beloep!!.toDouble(),
+        brutto = inntekt.beloep?.toDouble() ?: 0.0,
         skattetrekk = 0.0,
         periodeFom = fom,
         periodeTom = tom,
@@ -105,8 +105,7 @@ internal fun grupperOgSummerEtterUtbetalingsStartDato(utbetalinger: List<Utbetal
                     utbetaling.skattetrekk += utbetaling2.skattetrekk
                     utbetaling
                 }
-
-            ret[it.key!!] = it.value[0]
+            ret[it.key] = it.value[0]
         }
     return ret
 }

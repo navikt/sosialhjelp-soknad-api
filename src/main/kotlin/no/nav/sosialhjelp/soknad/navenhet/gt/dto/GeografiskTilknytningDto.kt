@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.navenhet.gt.dto
 
 data class HentGeografiskTilknytning(
-    val hentGeografiskTilknytning: GeografiskTilknytningDto
+    val hentGeografiskTilknytning: GeografiskTilknytningDto?
 )
 
 data class GeografiskTilknytningDto(

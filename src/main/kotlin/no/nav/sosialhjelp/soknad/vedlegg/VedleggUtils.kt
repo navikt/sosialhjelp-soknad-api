@@ -5,7 +5,7 @@ import org.bouncycastle.util.encoders.Hex
 
 object VedleggUtils {
 
-    fun getSha512FromByteArray(bytes: ByteArray?): String? {
+    fun getSha512FromByteArray(bytes: ByteArray?): String {
         if (bytes == null) {
             return ""
         }

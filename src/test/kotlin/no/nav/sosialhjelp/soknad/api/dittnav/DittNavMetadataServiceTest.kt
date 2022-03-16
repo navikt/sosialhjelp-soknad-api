@@ -6,10 +6,10 @@ import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.unmockkObject
 import no.nav.sosialhjelp.soknad.common.MiljoUtils
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadata
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataInnsendingStatus
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
-import no.nav.sosialhjelp.soknad.domain.SoknadMetadata
-import no.nav.sosialhjelp.soknad.domain.SoknadMetadataInnsendingStatus
-import no.nav.sosialhjelp.soknad.domain.SoknadMetadataType
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataType
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
@@ -77,15 +77,16 @@ internal class DittNavMetadataServiceTest {
     }
 
     private fun createSoknadMetadata(lestDittNav: Boolean): SoknadMetadata {
-        val soknadMetadata = SoknadMetadata()
-        soknadMetadata.fnr = "12345"
-        soknadMetadata.behandlingsId = "beh123"
-        soknadMetadata.status = SoknadMetadataInnsendingStatus.UNDER_ARBEID
-        soknadMetadata.type = SoknadMetadataType.SEND_SOKNAD_KOMMUNAL
-        soknadMetadata.opprettetDato = LocalDateTime.now().minusDays(10)
-        soknadMetadata.innsendtDato = LocalDateTime.now().minusDays(2)
-        soknadMetadata.sistEndretDato = LocalDateTime.now().minusDays(2)
-        soknadMetadata.lestDittNav = lestDittNav
-        return soknadMetadata
+        return SoknadMetadata(
+            id = 0L,
+            fnr = "12345",
+            behandlingsId = "beh123",
+            status = SoknadMetadataInnsendingStatus.UNDER_ARBEID,
+            type = SoknadMetadataType.SEND_SOKNAD_KOMMUNAL,
+            opprettetDato = LocalDateTime.now().minusDays(10),
+            innsendtDato = LocalDateTime.now().minusDays(2),
+            sistEndretDato = LocalDateTime.now().minusDays(2),
+            lestDittNav = lestDittNav
+        )
     }
 }

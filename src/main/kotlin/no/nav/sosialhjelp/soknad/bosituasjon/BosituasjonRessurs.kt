@@ -30,6 +30,7 @@ open class BosituasjonRessurs(
         tilgangskontroll.verifiserAtBrukerHarTilgang()
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).jsonInternalSoknad
+            ?: throw IllegalStateException("Kan ikke hente søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
         val bosituasjon = soknad.soknad.data.bosituasjon
         return BosituasjonFrontend(bosituasjon.botype, bosituasjon.antallPersoner)
     }
@@ -42,7 +43,9 @@ open class BosituasjonRessurs(
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
-        val bosituasjon = soknad.jsonInternalSoknad.soknad.data.bosituasjon
+        val jsonInternalSoknad = soknad.jsonInternalSoknad
+            ?: throw IllegalStateException("Kan ikke oppdatere søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
+        val bosituasjon = jsonInternalSoknad.soknad.data.bosituasjon
         bosituasjon.kilde = JsonKildeBruker.BRUKER
         if (bosituasjonFrontend.botype != null) {
             bosituasjon.botype = bosituasjonFrontend.botype

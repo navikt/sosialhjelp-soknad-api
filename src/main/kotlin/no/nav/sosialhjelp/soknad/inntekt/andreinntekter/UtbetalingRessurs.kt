@@ -41,6 +41,7 @@ open class UtbetalingRessurs(
         tilgangskontroll.verifiserAtBrukerHarTilgang()
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).jsonInternalSoknad
+            ?: throw IllegalStateException("Kan ikke hente søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
         val opplysninger = soknad.soknad.data.okonomi.opplysninger
 
         if (opplysninger.bekreftelse == null) {
@@ -65,7 +66,9 @@ open class UtbetalingRessurs(
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
-        val opplysninger = soknad.jsonInternalSoknad.soknad.data.okonomi.opplysninger
+        val jsonInternalSoknad = soknad.jsonInternalSoknad
+            ?: throw IllegalStateException("Kan ikke oppdatere utbetalinger hvis SoknadUnderArbeid.jsonInternalSoknad er null")
+        val opplysninger = jsonInternalSoknad.soknad.data.okonomi.opplysninger
         if (opplysninger.bekreftelse == null) {
             opplysninger.bekreftelse = ArrayList()
         }
@@ -82,8 +85,7 @@ open class UtbetalingRessurs(
 
     private fun setUtbetalinger(opplysninger: JsonOkonomiopplysninger, utbetalingerFrontend: UtbetalingerFrontend) {
         val utbetalinger = opplysninger.utbetaling
-        var tittel =
-            textService.getJsonOkonomiTittel(soknadTypeToTitleKey[UTBETALING_UTBYTTE])
+        var tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey[UTBETALING_UTBYTTE])
         addUtbetalingIfCheckedElseDeleteInOpplysninger(
             utbetalinger,
             UTBETALING_UTBYTTE,
@@ -97,8 +99,7 @@ open class UtbetalingRessurs(
             tittel,
             utbetalingerFrontend.salg
         )
-        tittel =
-            textService.getJsonOkonomiTittel(soknadTypeToTitleKey[UTBETALING_FORSIKRING])
+        tittel = textService.getJsonOkonomiTittel(soknadTypeToTitleKey[UTBETALING_FORSIKRING])
         addUtbetalingIfCheckedElseDeleteInOpplysninger(
             utbetalinger,
             UTBETALING_FORSIKRING,

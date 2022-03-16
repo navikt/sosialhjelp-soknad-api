@@ -2,8 +2,6 @@ package no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg
 
 import no.nav.sosialhjelp.soknad.config.DbTestConfig
 import no.nav.sosialhjelp.soknad.config.RepositoryTestSupport
-import no.nav.sosialhjelp.soknad.domain.OpplastetVedlegg
-import no.nav.sosialhjelp.soknad.domain.OpplastetVedleggType
 import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils.getSha512FromByteArray
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
@@ -94,13 +92,14 @@ internal class OpplastetVedleggRepositoryJdbcTest {
     }
 
     private fun lagOpplastetVedlegg(eier: String, type: String, soknadId: Long): OpplastetVedlegg {
-        return OpplastetVedlegg()
-            .withEier(eier)
-            .withVedleggType(OpplastetVedleggType(type))
-            .withData(DATA)
-            .withSoknadId(soknadId)
-            .withFilnavn(FILNAVN)
-            .withSha512(SHA512)
+        return OpplastetVedlegg(
+            eier = eier,
+            vedleggType = OpplastetVedleggType(type),
+            data = DATA,
+            soknadId = soknadId,
+            filnavn = FILNAVN,
+            sha512 = SHA512
+        )
     }
 
     private fun lagOpplastetVedlegg(): OpplastetVedlegg {

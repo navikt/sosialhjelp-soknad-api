@@ -17,11 +17,12 @@ import no.nav.sosialhjelp.soknad.common.filedetection.TikaFileType.JPEG
 import no.nav.sosialhjelp.soknad.common.filedetection.TikaFileType.PNG
 import no.nav.sosialhjelp.soknad.common.subjecthandler.StaticSubjectHandlerImpl
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
+import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedlegg
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRepository
+import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggType
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
-import no.nav.sosialhjelp.soknad.domain.OpplastetVedlegg
-import no.nav.sosialhjelp.soknad.domain.OpplastetVedleggType
-import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.vedlegg.OpplastetVedleggService.Companion.MAKS_SAMLET_VEDLEGG_STORRELSE
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.SamletVedleggStorrelseForStorException
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.UgyldigOpplastingTypeException
@@ -33,6 +34,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.awt.image.BufferedImage
 import java.io.ByteArrayOutputStream
+import java.time.LocalDateTime
 import java.util.Optional
 import javax.imageio.ImageIO
 import javax.imageio.stream.ImageOutputStream
@@ -92,54 +94,57 @@ internal class OpplastetVedleggServiceTest {
 
     @Test
     fun oppdatererVedleggStatusVedOpplastingAvVedlegg() {
-        every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns SoknadUnderArbeid()
-            .withJsonInternalSoknad(
-                JsonInternalSoknad().withVedlegg(
-                    JsonVedleggSpesifikasjon().withVedlegg(
-                        listOf(
-                            JsonVedlegg()
-                                .withType(OpplastetVedleggType(TYPE).type)
-                                .withTilleggsinfo(OpplastetVedleggType(TYPE).tilleggsinfo)
-                                .withStatus("VedleggKreves")
-                        )
+        every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns createSoknadUnderArbeid(
+            JsonInternalSoknad().withVedlegg(
+                JsonVedleggSpesifikasjon().withVedlegg(
+                    listOf(
+                        JsonVedlegg()
+                            .withType(OpplastetVedleggType(TYPE).type)
+                            .withTilleggsinfo(OpplastetVedleggType(TYPE).tilleggsinfo)
+                            .withStatus("VedleggKreves")
                     )
                 )
             )
+        )
         every { opplastetVedleggRepository.opprettVedlegg(any(), any()) } returns "321"
 
         val soknadUnderArbeidSlot = slot<SoknadUnderArbeid>()
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(soknadUnderArbeidSlot), any()) } just runs
 
         val imageFile = createByteArrayFromJpeg()
-        val opplastetVedlegg =
-            opplastetVedleggService.saveVedleggAndUpdateVedleggstatus(BEHANDLINGSID, TYPE, imageFile, FILNAVN1)
+        val opplastetVedlegg = opplastetVedleggService.saveVedleggAndUpdateVedleggstatus(BEHANDLINGSID, TYPE, imageFile, FILNAVN1)
         val soknadUnderArbeid = soknadUnderArbeidSlot.captured
-        val jsonVedlegg = soknadUnderArbeid.jsonInternalSoknad.vedlegg.vedlegg[0]
+        val jsonVedlegg = soknadUnderArbeid.jsonInternalSoknad!!.vedlegg.vedlegg[0]
         assertThat(jsonVedlegg.type + "|" + jsonVedlegg.tilleggsinfo).isEqualTo(TYPE)
         assertThat(jsonVedlegg.status).isEqualTo("LastetOpp")
         assertThat(jsonVedlegg.filer).hasSize(1)
-        assertThat(opplastetVedlegg.uuid).isEqualTo("321")
         assertThat(opplastetVedlegg.filnavn.substring(0, 5)).isEqualTo(FILNAVN1.substring(0, 5))
     }
 
     @Test
     fun sletterVedleggStatusVedSlettingAvOpplastingAvVedlegg() {
-        every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns SoknadUnderArbeid()
-            .withJsonInternalSoknad(
-                JsonInternalSoknad().withVedlegg(
-                    JsonVedleggSpesifikasjon().withVedlegg(
-                        listOf(
-                            JsonVedlegg()
-                                .withType(OpplastetVedleggType(TYPE).type)
-                                .withTilleggsinfo(OpplastetVedleggType(TYPE).tilleggsinfo)
-                                .withFiler(mutableListOf(JsonFiler().withFilnavn(FILNAVN2).withSha512(SHA512)))
-                                .withStatus("LastetOpp")
-                        )
+        every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns createSoknadUnderArbeid(
+            JsonInternalSoknad().withVedlegg(
+                JsonVedleggSpesifikasjon().withVedlegg(
+                    listOf(
+                        JsonVedlegg()
+                            .withType(OpplastetVedleggType(TYPE).type)
+                            .withTilleggsinfo(OpplastetVedleggType(TYPE).tilleggsinfo)
+                            .withFiler(mutableListOf(JsonFiler().withFilnavn(FILNAVN2).withSha512(SHA512)))
+                            .withStatus("LastetOpp")
                     )
                 )
             )
+        )
         every { opplastetVedleggRepository.hentVedlegg(any(), any()) } returns Optional.of(
-            OpplastetVedlegg().withVedleggType(OpplastetVedleggType(TYPE)).withFilnavn(FILNAVN2).withSha512(SHA512)
+            OpplastetVedlegg(
+                eier = "eier",
+                vedleggType = OpplastetVedleggType(TYPE),
+                data = byteArrayOf(1, 2, 3),
+                soknadId = 123L,
+                filnavn = FILNAVN2,
+                sha512 = SHA512
+            )
         )
 
         val soknadUnderArbeidSlot = slot<SoknadUnderArbeid>()
@@ -147,7 +152,7 @@ internal class OpplastetVedleggServiceTest {
 
         opplastetVedleggService.deleteVedleggAndUpdateVedleggstatus(BEHANDLINGSID, "uuid")
         val soknadUnderArbeid = soknadUnderArbeidSlot.captured
-        val jsonVedlegg = soknadUnderArbeid.jsonInternalSoknad.vedlegg.vedlegg[0]
+        val jsonVedlegg = soknadUnderArbeid.jsonInternalSoknad!!.vedlegg.vedlegg[0]
         assertThat(jsonVedlegg.type + "|" + jsonVedlegg.tilleggsinfo).isEqualTo(TYPE)
         assertThat(jsonVedlegg.status).isEqualTo("VedleggKreves")
         assertThat(jsonVedlegg.filer).isEmpty()
@@ -155,20 +160,18 @@ internal class OpplastetVedleggServiceTest {
 
     @Test
     fun feilmeldingHvisSamletVedleggStorrelseOverskriderMaksgrense() {
-        every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns SoknadUnderArbeid()
-            .withJsonInternalSoknad(
-                JsonInternalSoknad().withVedlegg(
-                    JsonVedleggSpesifikasjon().withVedlegg(
-                        listOf(
-                            JsonVedlegg()
-                                .withType(OpplastetVedleggType(TYPE).type)
-                                .withTilleggsinfo(OpplastetVedleggType(TYPE).tilleggsinfo)
-                                .withStatus("VedleggKreves")
-                        )
+        every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns createSoknadUnderArbeid(
+            JsonInternalSoknad().withVedlegg(
+                JsonVedleggSpesifikasjon().withVedlegg(
+                    listOf(
+                        JsonVedlegg()
+                            .withType(OpplastetVedleggType(TYPE).type)
+                            .withTilleggsinfo(OpplastetVedleggType(TYPE).tilleggsinfo)
+                            .withStatus("VedleggKreves")
                     )
                 )
             )
-            .withSoknadId(SOKNAD_ID)
+        )
         every {
             opplastetVedleggRepository.hentSamletVedleggStorrelse(
                 any(),
@@ -216,19 +219,18 @@ internal class OpplastetVedleggServiceTest {
 
     @Test
     fun skalUtvideFilnavnHvisTikaValidererOkMenFilExtensionMangler() {
-        every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns SoknadUnderArbeid()
-            .withJsonInternalSoknad(
-                JsonInternalSoknad().withVedlegg(
-                    JsonVedleggSpesifikasjon().withVedlegg(
-                        listOf(
-                            JsonVedlegg()
-                                .withType(OpplastetVedleggType(TYPE).type)
-                                .withTilleggsinfo(OpplastetVedleggType(TYPE).tilleggsinfo)
-                                .withStatus("VedleggKreves")
-                        )
+        every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns createSoknadUnderArbeid(
+            JsonInternalSoknad().withVedlegg(
+                JsonVedleggSpesifikasjon().withVedlegg(
+                    listOf(
+                        JsonVedlegg()
+                            .withType(OpplastetVedleggType(TYPE).type)
+                            .withTilleggsinfo(OpplastetVedleggType(TYPE).tilleggsinfo)
+                            .withStatus("VedleggKreves")
                     )
                 )
             )
+        )
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
         every { opplastetVedleggRepository.opprettVedlegg(any(), any()) } returns "321"
 
@@ -240,19 +242,18 @@ internal class OpplastetVedleggServiceTest {
 
     @Test
     fun skalUtvideFilnavnHvisTikaValidererOkMenFilnavnInneholderPunktumUtenGyldigFilExtension() {
-        every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns SoknadUnderArbeid()
-            .withJsonInternalSoknad(
-                JsonInternalSoknad().withVedlegg(
-                    JsonVedleggSpesifikasjon().withVedlegg(
-                        listOf(
-                            JsonVedlegg()
-                                .withType(OpplastetVedleggType(TYPE).type)
-                                .withTilleggsinfo(OpplastetVedleggType(TYPE).tilleggsinfo)
-                                .withStatus("VedleggKreves")
-                        )
+        every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns createSoknadUnderArbeid(
+            JsonInternalSoknad().withVedlegg(
+                JsonVedleggSpesifikasjon().withVedlegg(
+                    listOf(
+                        JsonVedlegg()
+                            .withType(OpplastetVedleggType(TYPE).type)
+                            .withTilleggsinfo(OpplastetVedleggType(TYPE).tilleggsinfo)
+                            .withStatus("VedleggKreves")
                     )
                 )
             )
+        )
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
         every { opplastetVedleggRepository.opprettVedlegg(any(), any()) } returns "321"
 
@@ -268,19 +269,18 @@ internal class OpplastetVedleggServiceTest {
 
     @Test
     fun skalEndreFilExtensionHvisTikaValidererSomNoeAnnetEnnFilnavnetTilsier() {
-        every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns SoknadUnderArbeid()
-            .withJsonInternalSoknad(
-                JsonInternalSoknad().withVedlegg(
-                    JsonVedleggSpesifikasjon().withVedlegg(
-                        listOf(
-                            JsonVedlegg()
-                                .withType(OpplastetVedleggType(TYPE).type)
-                                .withTilleggsinfo(OpplastetVedleggType(TYPE).tilleggsinfo)
-                                .withStatus("VedleggKreves")
-                        )
+        every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns createSoknadUnderArbeid(
+            JsonInternalSoknad().withVedlegg(
+                JsonVedleggSpesifikasjon().withVedlegg(
+                    listOf(
+                        JsonVedlegg()
+                            .withType(OpplastetVedleggType(TYPE).type)
+                            .withTilleggsinfo(OpplastetVedleggType(TYPE).tilleggsinfo)
+                            .withStatus("VedleggKreves")
                     )
                 )
             )
+        )
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
         every { opplastetVedleggRepository.opprettVedlegg(any(), any()) } returns "321"
 
@@ -304,6 +304,18 @@ internal class OpplastetVedleggServiceTest {
         private const val FILNAVN2 = "Homofil.png"
         private const val SHA512 = "Shakk matt"
         private const val TYPE = "hei|på deg"
-        private const val SOKNAD_ID = 1234L
+
+        private fun createSoknadUnderArbeid(jsonInternalSoknad: JsonInternalSoknad): SoknadUnderArbeid {
+            return SoknadUnderArbeid(
+                versjon = 1L,
+                behandlingsId = BEHANDLINGSID,
+                tilknyttetBehandlingsId = null,
+                eier = "EIER",
+                jsonInternalSoknad = jsonInternalSoknad,
+                status = SoknadUnderArbeidStatus.UNDER_ARBEID,
+                opprettetDato = LocalDateTime.now(),
+                sistEndretDato = LocalDateTime.now()
+            )
+        }
     }
 }

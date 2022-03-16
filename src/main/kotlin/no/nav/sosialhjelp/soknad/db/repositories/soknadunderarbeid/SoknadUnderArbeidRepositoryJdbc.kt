@@ -12,8 +12,6 @@ import no.nav.sosialhjelp.soknad.common.exceptions.SoknadLaastException
 import no.nav.sosialhjelp.soknad.common.exceptions.SoknadUnderArbeidIkkeFunnetException
 import no.nav.sosialhjelp.soknad.db.SQLUtils
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRepository
-import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
-import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeidStatus
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport
 import org.springframework.stereotype.Component
 import org.springframework.transaction.TransactionStatus
@@ -27,6 +25,7 @@ import java.util.Optional
 import javax.inject.Inject
 import javax.sql.DataSource
 
+@Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 @Component
 open class SoknadUnderArbeidRepositoryJdbc(
     private val transactionTemplate: TransactionTemplate,
@@ -56,7 +55,7 @@ open class SoknadUnderArbeidRepositoryJdbc(
             soknadUnderArbeid.behandlingsId,
             soknadUnderArbeid.tilknyttetBehandlingsId,
             soknadUnderArbeid.eier,
-            mapJsonSoknadInternalTilFil(soknadUnderArbeid.jsonInternalSoknad),
+            soknadUnderArbeid.jsonInternalSoknad?.let { mapJsonSoknadInternalTilFil(it) },
             soknadUnderArbeid.status.toString(),
             Date.from(soknadUnderArbeid.opprettetDato.atZone(ZoneId.systemDefault()).toInstant()),
             Date.from(soknadUnderArbeid.sistEndretDato.atZone(ZoneId.systemDefault()).toInstant())
@@ -116,7 +115,7 @@ open class SoknadUnderArbeidRepositoryJdbc(
         val opprinneligVersjon = soknadUnderArbeid.versjon
         val oppdatertVersjon = opprinneligVersjon + 1
         val sistEndretDato = LocalDateTime.now()
-        val data = mapJsonSoknadInternalTilFil(soknadUnderArbeid.jsonInternalSoknad)
+        val data = soknadUnderArbeid.jsonInternalSoknad?.let { mapJsonSoknadInternalTilFil(it) }
 
         val antallOppdaterteRader = jdbcTemplate.update(
             "update SOKNAD_UNDER_ARBEID set VERSJON = ?, DATA = ?, SISTENDRETDATO = ? where SOKNAD_UNDER_ARBEID_ID = ? and EIER = ? and VERSJON = ? and STATUS = ?",
@@ -133,7 +132,7 @@ open class SoknadUnderArbeidRepositoryJdbc(
                 .orElseThrow {
                     IllegalStateException("Ingen soknadUnderArbeid funnet for ${soknadUnderArbeid.behandlingsId}, med status ${soknadUnderArbeid.status}")
                 }
-            if (mapJsonSoknadInternalTilFil(soknadIDb.jsonInternalSoknad).contentEquals(data)) {
+            if (soknadIDb.jsonInternalSoknad?.let { mapJsonSoknadInternalTilFil(it).contentEquals(data) } == true) {
                 return
             }
             throw SamtidigOppdateringException("Mulig versjonskonflikt ved oppdatering av søknad under arbeid med behandlingsId ${soknadUnderArbeid.behandlingsId} fra versjon $opprinneligVersjon til versjon $oppdatertVersjon")
@@ -173,8 +172,8 @@ open class SoknadUnderArbeidRepositoryJdbc(
         })
     }
 
-    private fun sjekkOmBrukerEierSoknadUnderArbeid(soknadUnderArbeid: SoknadUnderArbeid, eier: String?) {
-        if (eier == null || !eier.equals(soknadUnderArbeid.eier, ignoreCase = true)) {
+    private fun sjekkOmBrukerEierSoknadUnderArbeid(soknadUnderArbeid: SoknadUnderArbeid, eier: String) {
+        if (!eier.equals(soknadUnderArbeid.eier, ignoreCase = true)) {
             throw RuntimeException("Eier stemmer ikke med søknadens eier")
         }
     }

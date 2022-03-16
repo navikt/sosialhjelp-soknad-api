@@ -20,7 +20,7 @@ class ArbeidOgUtdanningSteg {
 
     fun get(jsonInternalSoknad: JsonInternalSoknad): Steg {
         val arbeid = jsonInternalSoknad.soknad.data.arbeid
-        val utdanning = jsonInternalSoknad.soknad.data.utdanning
+        val utdanning: JsonUtdanning = jsonInternalSoknad.soknad.data.utdanning
         return Steg(
             stegNr = 3,
             tittel = "arbeidbolk.tittel",
@@ -38,7 +38,7 @@ class ArbeidOgUtdanningSteg {
     }
 
     private fun arbeidsforholdSporsmal(arbeid: JsonArbeid): List<Sporsmal> {
-        val harArbeidsforhold = arbeid.forhold != null && !arbeid.forhold.isEmpty()
+        val harArbeidsforhold = arbeid.forhold != null && arbeid.forhold.isNotEmpty()
         val harKommentarTilArbeidsforhold =
             arbeid.kommentarTilArbeidsforhold != null && arbeid.kommentarTilArbeidsforhold.verdi != null
         val sporsmal = ArrayList<Sporsmal>()
@@ -62,12 +62,7 @@ class ArbeidOgUtdanningSteg {
     }
 
     private fun arbeidsforholdFelter(arbeidsforholdList: List<JsonArbeidsforhold>): List<Felt> {
-        return arbeidsforholdList
-            .map { arbeidsforhold: JsonArbeidsforhold ->
-                toFelt(
-                    arbeidsforhold
-                )
-            }
+        return arbeidsforholdList.map { toFelt(it) }
     }
 
     private fun toFelt(arbeidsforhold: JsonArbeidsforhold): Felt {
@@ -102,10 +97,10 @@ class ArbeidOgUtdanningSteg {
         )
     }
 
-    private fun utdanningSporsmal(utdanning: JsonUtdanning?): List<Sporsmal> {
-        val erUtdanningUtfylt = utdanning != null && utdanning.erStudent != null
-        val erStudent = erUtdanningUtfylt && utdanning!!.erStudent == java.lang.Boolean.TRUE
-        val erStudentgradUtfylt = erStudent && utdanning!!.studentgrad != null
+    private fun utdanningSporsmal(utdanning: JsonUtdanning): List<Sporsmal> {
+        val erUtdanningUtfylt = utdanning.erStudent != null
+        val erStudent = erUtdanningUtfylt && utdanning.erStudent == java.lang.Boolean.TRUE
+        val erStudentgradUtfylt = erStudent && utdanning.studentgrad != null
         val sporsmal = ArrayList<Sporsmal>()
         sporsmal.add(
             Sporsmal(
@@ -124,7 +119,7 @@ class ArbeidOgUtdanningSteg {
                     tittel = "dinsituasjon.studerer.true.grad.sporsmal",
                     erUtfylt = erStudentgradUtfylt,
                     felt = if (erStudentgradUtfylt) booleanVerdiFelt(
-                        Studentgrad.HELTID == utdanning!!.studentgrad,
+                        Studentgrad.HELTID == utdanning.studentgrad,
                         "dinsituasjon.studerer.true.grad.heltid",
                         "dinsituasjon.studerer.true.grad.deltid"
                     ) else null

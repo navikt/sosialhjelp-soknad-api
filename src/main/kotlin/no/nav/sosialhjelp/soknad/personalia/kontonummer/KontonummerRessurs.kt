@@ -30,7 +30,9 @@ open class KontonummerRessurs(
         tilgangskontroll.verifiserAtBrukerHarTilgang()
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
-        val kontonummer = soknadUnderArbeid.jsonInternalSoknad.soknad.data.personalia.kontonummer
+        val jsonInternalSoknad = soknadUnderArbeid.jsonInternalSoknad
+            ?: throw IllegalStateException("Kan ikke hente søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
+        val kontonummer = jsonInternalSoknad.soknad.data.personalia.kontonummer
         val systemverdi: String? = if (kontonummer.kilde == JsonKilde.SYSTEM) {
             kontonummer.verdi
         } else {
@@ -52,7 +54,9 @@ open class KontonummerRessurs(
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
-        val personalia = soknad.jsonInternalSoknad.soknad.data.personalia
+        val jsonInternalSoknad = soknad.jsonInternalSoknad
+            ?: throw IllegalStateException("Kan ikke oppdatere søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
+        val personalia = jsonInternalSoknad.soknad.data.personalia
         val kontonummer = personalia.kontonummer
         if (kontonummerFrontend.brukerdefinert) {
             kontonummer.kilde = JsonKilde.BRUKER

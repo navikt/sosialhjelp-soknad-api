@@ -8,11 +8,11 @@ import no.nav.sbl.soknadsosialhjelp.tjeneste.saksoversikt.Part
 import no.nav.sbl.soknadsosialhjelp.tjeneste.saksoversikt.Vedlegg
 import no.nav.sosialhjelp.soknad.api.LenkeUtils.lagEttersendelseLenke
 import no.nav.sosialhjelp.soknad.api.LenkeUtils.lenkeTilPabegyntSoknad
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadata
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
-import no.nav.sosialhjelp.soknad.domain.SoknadMetadata
-import no.nav.sosialhjelp.soknad.domain.SoknadMetadata.VedleggMetadataListe
-import no.nav.sosialhjelp.soknad.domain.SoknadMetadataType
-import no.nav.sosialhjelp.soknad.domain.Vedleggstatus
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataType
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.VedleggMetadataListe
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.Vedleggstatus
 import no.nav.sosialhjelp.soknad.ettersending.EttersendingService
 import no.nav.sosialhjelp.soknad.ettersending.EttersendingService.Companion.ETTERSENDELSE_FRIST_DAGER
 import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils.isVedleggskravAnnet
@@ -47,7 +47,7 @@ class SaksoversiktMetadataService(
                         .withVisningsNavn(bundle.getProperty("saksoversikt.mottaker.nav"))
                 )
                 .withBehandlingsId(it.behandlingsId)
-                .withInnsendtDato(tilDate(it.innsendtDato))
+                .withInnsendtDato(it.innsendtDato?.let { dato -> tilDate(dato) })
                 .withHoveddokument(
                     Hoveddokument()
                         .withTittel(
@@ -84,7 +84,7 @@ class SaksoversiktMetadataService(
         return soknader.map {
             EttersendingsSoknad()
                 .withBehandlingsId(it.behandlingsId)
-                .withTittel(bundle.getProperty("saksoversikt.soknadsnavn") + " (" + it.innsendtDato.format(datoFormatter) + ")")
+                .withTittel(bundle.getProperty("saksoversikt.soknadsnavn") + " (" + it.innsendtDato?.format(datoFormatter) + ")")
                 .withLenke(lagEttersendelseLenke(it.behandlingsId))
                 .withVedlegg(finnManglendeVedlegg(it, bundle))
         }
@@ -92,26 +92,28 @@ class SaksoversiktMetadataService(
 
     private fun finnManglendeVedlegg(soknad: SoknadMetadata, bundle: Properties): List<Vedlegg> {
         val nyesteSoknad = ettersendingService.hentNyesteSoknadIKjede(soknad)
-        return nyesteSoknad.vedlegg.vedleggListe
-            .asSequence()
-            .filter { it.status.er(Vedleggstatus.VedleggKreves) }
-            .filter { !isVedleggskravAnnet(it) }
-            .map { "vedlegg." + it.skjema + "." + it.tillegg + ".tittel" }
-            .distinct()
-            .map { bundle.getProperty(it) }
-            .map { Vedlegg().withTittel(it) }
-            .toList()
+        return nyesteSoknad.vedlegg?.vedleggListe
+            ?.asSequence()
+            ?.filter { it.status?.er(Vedleggstatus.VedleggKreves) == true }
+            ?.filter { !isVedleggskravAnnet(it) }
+            ?.map { "vedlegg." + it.skjema + "." + it.tillegg + ".tittel" }
+            ?.distinct()
+            ?.map { bundle.getProperty(it) }
+            ?.map { Vedlegg().withTittel(it) }
+            ?.toList()
+            ?: emptyList()
     }
 
-    private fun tilInnsendteVedlegg(vedlegg: VedleggMetadataListe, bundle: Properties): List<Vedlegg> {
-        return vedlegg.vedleggListe
-            .asSequence()
-            .filter { it.status.er(Vedleggstatus.LastetOpp) }
-            .map { "vedlegg." + it.skjema + "." + it.tillegg + ".tittel" }
-            .distinct()
-            .map { bundle.getProperty(it) }
-            .map { Vedlegg().withTittel(it) }
-            .toList()
+    private fun tilInnsendteVedlegg(vedlegg: VedleggMetadataListe?, bundle: Properties): List<Vedlegg> {
+        return vedlegg?.vedleggListe
+            ?.asSequence()
+            ?.filter { it.status?.er(Vedleggstatus.LastetOpp) == true }
+            ?.map { "vedlegg." + it.skjema + "." + it.tillegg + ".tittel" }
+            ?.distinct()
+            ?.map { bundle.getProperty(it) }
+            ?.map { Vedlegg().withTittel(it) }
+            ?.toList()
+            ?: emptyList()
     }
 
     private fun tilDate(innsendtDato: LocalDateTime): Date {

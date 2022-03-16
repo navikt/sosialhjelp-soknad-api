@@ -1,21 +1,20 @@
 package no.nav.sosialhjelp.soknad.health.selftest
 
-import no.nav.sosialhjelp.soknad.common.MiljoUtils.naisAppImage
-import no.nav.sosialhjelp.soknad.common.MiljoUtils.naisAppName
 import org.apache.commons.lang3.exception.ExceptionUtils
 import org.slf4j.LoggerFactory
-import org.springframework.context.ApplicationContext
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.function.Function
-import java.util.function.Predicate
 
 @Component
 class SelftestService(
-    private val appContext: ApplicationContext
+    @Value("\${application.name}") private val applicationName: String,
+    @Value("\${application.version}") private val applicationVersion: String,
+    private val pingables: List<Pingable>
 ) {
-    private var result: List<Pingable.Ping>? = null
+    private var result: List<Pingable.Ping> = mutableListOf()
 
     @Volatile
     private var lastResultTime: Long = 0
@@ -23,11 +22,11 @@ class SelftestService(
     fun lagSelftest(): Selftest {
         doPing()
         return Selftest(
-            application = naisAppName,
-            version = naisAppImage,
+            application = applicationName,
+            version = applicationVersion,
             timestamp = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME),
             aggregateResult = aggregertStatus,
-            checks = result?.map { lagSelftestEndpoint(it) }
+            checks = result.map { lagSelftestEndpoint(it) }
         )
     }
 
@@ -43,13 +42,10 @@ class SelftestService(
         }
     }
 
-    private val pingables: Collection<Pingable>
-        get() = appContext.getBeansOfType(Pingable::class.java).values
-
     private val aggregertStatus: Int
         get() {
-            val harKritiskFeil = result!!.stream().anyMatch(KRITISK_FEIL)
-            val harFeil = result!!.stream().anyMatch(HAR_FEIL)
+            val harKritiskFeil = result.any { it.harFeil() && it.metadata?.isKritisk ?: false }
+            val harFeil = result.any { it.harFeil() }
             if (harKritiskFeil) {
                 return STATUS_ERROR
             } else if (harFeil) {
@@ -72,8 +68,6 @@ class SelftestService(
 
     companion object {
         private val log = LoggerFactory.getLogger(SelftestService::class.java)
-        private val KRITISK_FEIL = Predicate<Pingable.Ping> { it.harFeil() && it.metadata?.isKritisk ?: false }
-        private val HAR_FEIL = Predicate<Pingable.Ping> { it.harFeil() }
 
         const val STATUS_OK = 0
         const val STATUS_ERROR = 1
@@ -82,8 +76,8 @@ class SelftestService(
         private val PING = Function { pingable: Pingable ->
             val startTime = System.currentTimeMillis()
             val ping = pingable.ping()
-            ping?.responstid = (System.currentTimeMillis() - startTime)
-            if (!ping?.erVellykket()!!) {
+            ping.responstid = (System.currentTimeMillis() - startTime)
+            if (!ping.erVellykket()) {
                 log.warn("Feil ved SelfTest av ${ping.metadata?.endepunkt}", ping.feil)
             }
             ping

@@ -29,8 +29,9 @@ import no.nav.sosialhjelp.soknad.common.MiljoUtils
 import no.nav.sosialhjelp.soknad.common.exceptions.AuthorizationException
 import no.nav.sosialhjelp.soknad.common.subjecthandler.StaticSubjectHandlerImpl
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
-import no.nav.sosialhjelp.soknad.domain.SoknadUnderArbeid
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.personalia.familie.dto.AnsvarFrontend
 import no.nav.sosialhjelp.soknad.personalia.familie.dto.BarnFrontend
@@ -42,6 +43,7 @@ import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import java.time.LocalDateTime
 
 internal class ForsorgerpliktRessursTest {
 
@@ -159,7 +161,7 @@ internal class ForsorgerpliktRessursTest {
         forsorgerpliktRessurs.updateForsorgerplikt(BEHANDLINGSID, forsorgerpliktFrontend)
 
         val soknadUnderArbeid = soknadUnderArbeidSlot.captured
-        val forsorgerplikt = soknadUnderArbeid.jsonInternalSoknad.soknad.data.familie.forsorgerplikt
+        val forsorgerplikt = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.familie.forsorgerplikt
         assertThat(forsorgerplikt.barnebidrag.verdi).isEqualTo(Verdi.BETALER)
         assertThat(forsorgerplikt.harForsorgerplikt).isNull()
         assertThat(forsorgerplikt.ansvar).isNull()
@@ -174,8 +176,8 @@ internal class ForsorgerpliktRessursTest {
         inntekt.add(JsonOkonomioversiktInntekt().withType("barnebidrag"))
         val utgift: MutableList<JsonOkonomioversiktUtgift> = ArrayList()
         utgift.add(JsonOkonomioversiktUtgift().withType("barnebidrag"))
-        soknad.jsonInternalSoknad.soknad.data.okonomi.oversikt.inntekt = inntekt
-        soknad.jsonInternalSoknad.soknad.data.okonomi.oversikt.utgift = utgift
+        soknad.jsonInternalSoknad!!.soknad.data.okonomi.oversikt.inntekt = inntekt
+        soknad.jsonInternalSoknad!!.soknad.data.okonomi.oversikt.utgift = utgift
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns soknad
 
         val soknadUnderArbeidSlot = slot<SoknadUnderArbeid>()
@@ -185,9 +187,9 @@ internal class ForsorgerpliktRessursTest {
         forsorgerpliktRessurs.updateForsorgerplikt(BEHANDLINGSID, forsorgerpliktFrontend)
 
         val soknadUnderArbeid = soknadUnderArbeidSlot.captured
-        val forsorgerplikt = soknadUnderArbeid.jsonInternalSoknad.soknad.data.familie.forsorgerplikt
-        val inntekter = soknadUnderArbeid.jsonInternalSoknad.soknad.data.okonomi.oversikt.inntekt
-        val utgifter = soknadUnderArbeid.jsonInternalSoknad.soknad.data.okonomi.oversikt.utgift
+        val forsorgerplikt = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.familie.forsorgerplikt
+        val inntekter = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.oversikt.inntekt
+        val utgifter = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.oversikt.utgift
         assertThat(forsorgerplikt.barnebidrag).isNull()
         assertThat(inntekter.isEmpty()).isTrue
         assertThat(utgifter.isEmpty()).isTrue
@@ -208,7 +210,7 @@ internal class ForsorgerpliktRessursTest {
         forsorgerpliktRessurs.updateForsorgerplikt(BEHANDLINGSID, forsorgerpliktFrontend)
 
         val soknadUnderArbeid = soknadUnderArbeidSlot.captured
-        val forsorgerplikt = soknadUnderArbeid.jsonInternalSoknad.soknad.data.familie.forsorgerplikt
+        val forsorgerplikt = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.familie.forsorgerplikt
         assertThat(forsorgerplikt.barnebidrag).isNull()
         assertThat(forsorgerplikt.harForsorgerplikt.verdi).isTrue
         assertThat(forsorgerplikt.ansvar[0].harDeltBosted.verdi).isTrue
@@ -293,8 +295,8 @@ internal class ForsorgerpliktRessursTest {
         barnebidrag: Verdi?,
         ansvars: List<JsonAnsvar>?
     ): SoknadUnderArbeid {
-        val soknadUnderArbeid = SoknadUnderArbeid().withJsonInternalSoknad(createEmptyJsonInternalSoknad(EIER))
-        soknadUnderArbeid.jsonInternalSoknad.soknad.data.familie
+        val soknadUnderArbeid = createSoknadUnderArbeid()
+        soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.familie
             .withForsorgerplikt(
                 JsonForsorgerplikt()
                     .withHarForsorgerplikt(
@@ -335,5 +337,18 @@ internal class ForsorgerpliktRessursTest {
             )
             .withFodselsdato("1770-12-16")
             .withPersonIdentifikator("22222222222")
+
+        private fun createSoknadUnderArbeid(): SoknadUnderArbeid {
+            return SoknadUnderArbeid(
+                versjon = 1L,
+                behandlingsId = BEHANDLINGSID,
+                tilknyttetBehandlingsId = null,
+                eier = EIER,
+                jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
+                status = SoknadUnderArbeidStatus.UNDER_ARBEID,
+                opprettetDato = LocalDateTime.now(),
+                sistEndretDato = LocalDateTime.now()
+            )
+        }
     }
 }
