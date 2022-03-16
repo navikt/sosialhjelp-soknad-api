@@ -71,7 +71,6 @@
     "NEDETID_START": "",
     "NEDETID_SLUTT": "",
     "ENVIRONMENT_NAME": "dev-gcp",
-    "TILLATMOCK": "true",
     "IN_MEMORY_DATABASE": "true",
     "MOCK_ALT_UTBETALINGER_FRA_NAV_URL": "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api/utbetaling",
     "VIRKSOMHETSSERTIFIKAT_PATH": "/var/run/secrets",
