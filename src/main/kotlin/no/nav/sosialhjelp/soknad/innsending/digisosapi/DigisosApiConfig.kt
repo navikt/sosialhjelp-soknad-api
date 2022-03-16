@@ -10,7 +10,6 @@ import no.nav.sosialhjelp.soknad.innsending.InnsendingService
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.digisosObjectMapper
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoConfig
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
-import no.nav.sosialhjelp.soknad.innsending.digisosapi.maskinporten.KommuneInfoMaskinportenConfig
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
 import no.nav.sosialhjelp.soknad.metrics.SoknadMetricsService
 import no.nav.sosialhjelp.soknad.pdf.SosialhjelpPdfGenerator
@@ -27,8 +26,7 @@ import java.time.Duration
 
 @Configuration
 @Import(
-    KommuneInfoConfig::class,
-    KommuneInfoMaskinportenConfig::class
+    KommuneInfoConfig::class
 )
 open class DigisosApiConfig(
     @Value("\${digisos_api_baseurl}") private val digisosApiEndpoint: String,

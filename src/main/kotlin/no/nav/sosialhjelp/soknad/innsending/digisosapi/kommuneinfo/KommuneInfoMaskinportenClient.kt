@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.innsending.digisosapi.maskinporten
+package no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo
 
 import no.nav.sosialhjelp.api.fiks.KommuneInfo
 import no.nav.sosialhjelp.soknad.client.maskinporten.MaskinportenClient
