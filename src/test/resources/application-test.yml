@@ -56,7 +56,7 @@ maskinporten_well_known_url: ${MASKINPORTEN_WELL_KNOWN_URL:https://maskinporten}
 maskinporten_client_jwk: generateRSA
 
 # tokenx
-tokendings_url: tokendings_endpoint_url
+tokendings_url: http://localhost:${mock-oauth2-server.port}/tokenx/.well-known/openid-configuration
 tokendings_client_id: localhost:teamdigisos:sosialhjelp-dialog-api
 tokendings_private_jwk: generateRSA
 fss_proxy_audience: dummyAudience
