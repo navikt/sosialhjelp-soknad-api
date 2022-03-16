@@ -1,11 +1,13 @@
 package no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo
 
+import no.finn.unleash.Unleash
 import no.nav.sosialhjelp.client.kommuneinfo.FiksProperties
 import no.nav.sosialhjelp.client.kommuneinfo.KommuneInfoClient
 import no.nav.sosialhjelp.client.kommuneinfo.KommuneInfoClientImpl
 import no.nav.sosialhjelp.metrics.MetricsFactory.createTimerProxy
 import no.nav.sosialhjelp.soknad.client.idporten.IdPortenService
 import no.nav.sosialhjelp.soknad.client.redis.RedisService
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.maskinporten.KommuneInfoMaskinportenClient
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -22,10 +24,18 @@ open class KommuneInfoConfig(
     @Bean
     open fun kommuneInfoService(
         kommuneInfoClient: KommuneInfoClient,
+        kommuneInfoMaskinportenClient: KommuneInfoMaskinportenClient,
         idPortenService: IdPortenService,
-        redisService: RedisService
+        redisService: RedisService,
+        unleash: Unleash
     ): KommuneInfoService {
-        return KommuneInfoService(kommuneInfoClient, idPortenService, redisService)
+        return KommuneInfoService(
+            kommuneInfoClient,
+            kommuneInfoMaskinportenClient,
+            idPortenService,
+            redisService,
+            unleash
+        )
     }
 
     @Bean

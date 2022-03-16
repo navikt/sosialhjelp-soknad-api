@@ -6,6 +6,7 @@ import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.verify
+import no.finn.unleash.Unleash
 import no.nav.sosialhjelp.api.fiks.KommuneInfo
 import no.nav.sosialhjelp.client.kommuneinfo.KommuneInfoClient
 import no.nav.sosialhjelp.idporten.client.AccessToken
@@ -15,6 +16,7 @@ import no.nav.sosialhjelp.soknad.client.redis.KOMMUNEINFO_LAST_POLL_TIME_KEY
 import no.nav.sosialhjelp.soknad.client.redis.RedisService
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.maskinporten.KommuneInfoMaskinportenClient
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -24,10 +26,12 @@ import java.time.format.DateTimeFormatter
 internal class KommuneInfoServiceTest {
 
     private val kommuneInfoClient: KommuneInfoClient = mockk()
+    private val kommuneInfoMaskinportenClient: KommuneInfoMaskinportenClient = mockk()
     private val idPortenService: IdPortenService = mockk()
     private val redisService: RedisService = mockk()
+    private val unleash: Unleash = mockk()
 
-    private val kommuneInfoService = KommuneInfoService(kommuneInfoClient, idPortenService, redisService)
+    private val kommuneInfoService = KommuneInfoService(kommuneInfoClient, kommuneInfoMaskinportenClient, idPortenService, redisService, unleash)
 
     private val accessToken = AccessToken("tokenz", 123)
 
@@ -43,6 +47,8 @@ internal class KommuneInfoServiceTest {
         every { idPortenService.getToken() } returns accessToken
         every { redisService.setex(KOMMUNEINFO_CACHE_KEY, any(), any()) } just Runs
         every { redisService.set(KOMMUNEINFO_LAST_POLL_TIME_KEY, any()) } just Runs
+
+        every { unleash.isEnabled(any(), false) } returns false
     }
 
     @Test
