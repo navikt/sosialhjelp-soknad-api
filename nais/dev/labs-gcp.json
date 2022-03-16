@@ -27,13 +27,11 @@
   "prometheusEnabled": false,
   "webProxyEnabled": false,
   "isGcp": true,
-  "isLabsGcp": true,
   "leaderElectionEnabled": false,
   "maskinportenEnabled": false,
   "azureEnabled": false,
   "env": {
     "SPRING_PROFILES_ACTIVE": "mock-alt,log-console,no-redis",
-    "GCP": "true",
     "PORT": "8080",
     "AAREG_API_BASEURL": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/aareg/",
     "AZURE_OPENID_CONFIG_TOKEN_ENDPOINT": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/azuretoken/azuread",

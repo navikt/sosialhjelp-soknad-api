@@ -20,8 +20,8 @@ open class OidcTokenValidatorConfig(
     @Value("\${oidc.issuer.selvbetjening.accepted_audience}") private val acceptedAudience: String,
     @Value("\${oidc.issuer.selvbetjening.discoveryurl}") private val discoveryUrl: String,
     @Value("\${oidc.issuer.selvbetjening.proxy_url}") private val proxyUrl: String,
-    @Value("\${oidc.issuer.tokenx.accepted_audience}") private val acceptedAudienceTokenx: String,
-    @Value("\${oidc.issuer.tokenx.discoveryurl}") private val discoveryUrlTokenx: String
+    @Value("\${tokendings_client_id}") private val acceptedAudienceTokenx: String,
+    @Value("\${tokendings_url}") private val discoveryUrlTokenx: String
 ) {
 
     @Bean

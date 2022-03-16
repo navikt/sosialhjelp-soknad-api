@@ -46,9 +46,6 @@ oidc.issuer.selvbetjening.cookie_name: localhost-idtoken
 oidc.issuer.selvbetjening.proxy_url: dummy
 loginservice.url: http://localhost:8181/sosialhjelp/soknad-api/local/cookie
 
-oidc.issuer.tokenx.discoveryurl: http://localhost:${mock-oauth2-server.port}/tokenx/.well-known/openid-configuration
-oidc.issuer.tokenx.accepted_audience: someaudience
-
 # idporten
 idporten_config_url: https://oidc-ver2.difi.no/idporten-oidc-provider/.well-known/openid-configuration
 idporten_scope: ks:fiks

@@ -101,10 +101,6 @@ oidc.issuer.selvbetjening.cookie_name: selvbetjening-idtoken
 oidc.issuer.selvbetjening.proxy_url: http://webproxy-nais.nav.no:8088
 loginservice.url: ${LOGINSERVICE_URL}
 
-oidc.issuer.tokenx.discoveryurl: ${TOKEN_X_WELL_KNOWN_URL}
-oidc.issuer.tokenx.accepted_audience: ${TOKEN_X_CLIENT_ID}
-tokenx.private_jwk: ${TOKEN_X_PRIVATE_JWK}
-
 # redis
 redis_host: ${REDIS_HOST}
 redis_port: 6379
