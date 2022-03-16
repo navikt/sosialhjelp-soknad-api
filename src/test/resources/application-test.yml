@@ -8,9 +8,6 @@ environment.name: local
 srvsoknadsosialhjelp.server.username: srvuser
 srvsoknadsosialhjelp.server.password: pw123
 
-# Brukes av MetricsClient:
-applicationName: sosialhjelp-soknad-api
-
 spring:
   flyway:
     enabled: false

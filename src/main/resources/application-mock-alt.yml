@@ -5,9 +5,6 @@ application:
 srvsoknadsosialhjelp.server.username: ${SRVSOKNADSOSIALHJELP_SERVER_USERNAME:srvuser}
 srvsoknadsosialhjelp.server.password: ${SRVSOKNADSOSIALHJELP_SERVER_PASSWORD:pw123}
 
-# Brukes av MetricsClient:
-applicationName: sosialhjelp-soknad-api
-
 server:
   port: ${PORT:8181}
 
