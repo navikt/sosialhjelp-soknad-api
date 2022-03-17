@@ -84,10 +84,6 @@ spec:
         []
       {{/each}}
       {{/unless}}
-{{#if isGcp}}
-  filesFrom:
-    - secret: virksomhetssertifikat
-{{/if}}
   ingresses:
 {{#each ingresses}}
     - "{{this}}"

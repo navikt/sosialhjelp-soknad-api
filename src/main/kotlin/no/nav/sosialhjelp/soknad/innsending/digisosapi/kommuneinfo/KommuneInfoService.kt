@@ -1,10 +1,7 @@
 package no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo
 
 import com.fasterxml.jackson.core.JsonProcessingException
-import no.finn.unleash.Unleash
 import no.nav.sosialhjelp.api.fiks.KommuneInfo
-import no.nav.sosialhjelp.client.kommuneinfo.KommuneInfoClient
-import no.nav.sosialhjelp.soknad.client.idporten.IdPortenService
 import no.nav.sosialhjelp.soknad.client.redis.KOMMUNEINFO_CACHE_KEY
 import no.nav.sosialhjelp.soknad.client.redis.KOMMUNEINFO_CACHE_SECONDS
 import no.nav.sosialhjelp.soknad.client.redis.KOMMUNEINFO_LAST_POLL_TIME_KEY
@@ -22,11 +19,8 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME
 
 class KommuneInfoService(
-    private val kommuneInfoClient: KommuneInfoClient,
     private val kommuneInfoMaskinportenClient: KommuneInfoMaskinportenClient,
-    private val idPortenService: IdPortenService,
     private val redisService: RedisService,
-    private val unleash: Unleash
 ) {
 
     fun kanMottaSoknader(kommunenummer: String): Boolean {
@@ -114,27 +108,13 @@ class KommuneInfoService(
     }
 
     fun hentKommuneInfoFraFiks(): List<KommuneInfo> {
-        return if (unleash.isEnabled(BRUK_MASKINPORTEN_KOMMUNEINFO, false)) {
-            try {
-                log.info("Prøver å bruker maskinporten integrasjon mot ks:fiks for å hente kommuneinfo")
-                kommuneInfoMaskinportenClient.getAll()
-                    .also { log.info("Hentet kommuneinfo ved bruk av maskinporten-integrasjon mot ks:fiks") }
-            } catch (e: Exception) {
-                log.warn("Noe feilet ved bruk av maskinporten mot ks:fiks for å hente kommuneinfo. Fallback til idporten-løsning", e)
-                val (token) = idPortenService.getToken()
-                kommuneInfoClient.getAll(token)
-            }
-        } else {
-            val (token) = idPortenService.getToken()
-            kommuneInfoClient.getAll(token)
-        }
+        return kommuneInfoMaskinportenClient.getAll()
+            .also { log.info("Hentet kommuneinfo ved bruk av maskinporten-integrasjon mot ks:fiks") }
     }
 
     companion object {
         private val log = getLogger(KommuneInfoService::class.java)
         private const val MINUTES_TO_PASS_BETWEEN_POLL: Long = 10
-
-        private const val BRUK_MASKINPORTEN_KOMMUNEINFO = "sosialhjelp.soknad.bruk-maskinporten-kommuneinfo"
 
         private val DEFAULT_KOMMUNEINFO = KommuneInfo(
             kommunenummer = "",

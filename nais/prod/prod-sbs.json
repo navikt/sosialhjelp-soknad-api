@@ -13,7 +13,6 @@
   ],
   "kvPaths": {
     "/var/run/secrets/datasource": "/oracle/data/prod/creds/soknadsosialhjel_p-user",
-    "/var/run/secrets/nais.io/virksomhetssertifikat": "/secret/virksomhetssertifikat/prod/maskinporten",
     "/apigw/aaregapi": "apikey/apigw/prod/aareg.api/sosialhjelp-soknad-api",
     "/apigw/securitytokenservicetoken": "apikey/apigw/prod/security-token-service-token/sosialhjelp-soknad-api"
   },
@@ -47,9 +46,6 @@
     "FSS_PROXY_AUDIENCE": "prod-fss:teamdigisos:sosialhjelp-fss-proxy",
     "FSS_PROXY_PING_URL": "https://sosialhjelp-fss-proxy.prod-fss-pub.nais.io/ping",
     "DIGISOS_API_BASEURL": "https://api.fiks.ks.no/",
-    "IDPORTEN_TOKEN_URL": "https://oidc.difi.no/idporten-oidc-provider/token",
-    "IDPORTEN_CLIENTID": "bd520e59-6e01-4669-a7c8-f68fa2cac362",
-    "IDPORTEN_CONFIG_URL": "https://oidc.difi.no/idporten-oidc-provider/.well-known/openid-configuration",
     "KODEVERK_PROXY_URL": "https://sosialhjelp-fss-proxy.prod-fss-pub.nais.io/proxy/kodeverk/",
     "KRR_PROXY_URL": "https://sosialhjelp-fss-proxy.prod-fss-pub.nais.io/proxy/krr/",
     "LOGINSERVICE_URL": "https://loginservice.nav.no/login",

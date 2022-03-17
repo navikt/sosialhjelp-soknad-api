@@ -56,13 +56,8 @@ skatteetaten_api_baseurl: ${SKATTEETATEN_API_BASEURL}
 
 fiks.nokkelfil: ${FIKS_NOKKELFIL}
 
-# idporten
 integrasjonsid_fiks: ${INTEGRASJONSID_FIKS}
 integrasjonpassord_fiks: ${INTEGRASJONPASSORD_FIKS}
-idporten_token_url: ${IDPORTEN_TOKEN_URL}
-idporten_clientid: ${IDPORTEN_CLIENTID}
-idporten_scope: ks:fiks
-idporten_config_url: ${IDPORTEN_CONFIG_URL}
 
 # maskinporten
 maskinporten_clientid: ${MASKINPORTEN_CLIENT_ID}
@@ -87,9 +82,6 @@ pdl_api_scope: ${PDL_API_SCOPE}
 # svarut:
 fiks_svarut_username: ${FIKS_SVARUT_USERNAME}
 fiks_svarut_password: ${FIKS_SVARUT_PASSWORD}
-
-# vault
-virksomhetssertifikat_path: /var/run/secrets/nais.io/virksomhetssertifikat
 
 # OIDC
 oidc.issuer.selvbetjening.discoveryurl: ${LOGINSERVICE_IDPORTEN_DISCOVERY_URL}

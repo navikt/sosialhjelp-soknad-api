@@ -54,13 +54,8 @@ fiks.nokkelfil: ${FIKS_NOKKELFIL:svarut_public_test.pem}
 fiks_svarut_username: fiks_username
 fiks_svarut_password: fiks_pw
 
-# idporten
 integrasjonsid_fiks: id1
 integrasjonpassord_fiks: pw1
-idporten_token_url: ${IDPORTEN_TOKEN_URL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/idporten/idporten-oidc-provider/token}
-idporten_clientid: id2
-idporten_scope: ks:fiks
-idporten_config_url: ${IDPORTEN_CONFIG_URL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/well-known/idporten${mock-alt-api-wellknown-queryparam}}
 
 # maskinporten
 maskinporten_clientid: maskinporten_clientid
@@ -81,9 +76,6 @@ azure_token_endpoint: ${AZURE_OPENID_CONFIG_TOKEN_ENDPOINT:http://${mock-alt-api
 azure_client_id: ${AZURE_APP_CLIENT_ID:localhost:teamdigisos:sosialhjelp-soknad-api}
 azure_client_secret: ${AZURE_APP_CLIENT_SECRET:clientSecret}
 pdl_api_scope: ${PDL_API_SCOPE:dummyScope}
-
-# vault
-virksomhetssertifikat_path: ${VIRKSOMHETSSERTIFIKAT_PATH:/var/run/secrets/nais.io/virksomhetssertifikat}
 
 # OIDC
 oidc.issuer.selvbetjening.cookie_name: localhost-idtoken

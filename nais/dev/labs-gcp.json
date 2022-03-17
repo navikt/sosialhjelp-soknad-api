@@ -46,9 +46,6 @@
     "FIKS_NOKKELFIL": "svarut_public_test.pem",
     "FSS_PROXY_PING_URL": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/fss-proxy/ping",
     "DIGISOS_API_BASEURL": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/fiks/",
-    "IDPORTEN_TOKEN_URL": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/idporten/idporten-oidc-provider/token",
-    "IDPORTEN_CLIENTID": "id2",
-    "IDPORTEN_CONFIG_URL": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/well-known/idporten",
     "KODEVERK_PROXY_URL": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/kodeverk/",
     "KRR_PROXY_URL": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/krr/",
     "LOGINSERVICE_URL": "https://digisos.labs.nais.io/sosialhjelp/mock-alt/login",
@@ -71,7 +68,6 @@
     "ENVIRONMENT_NAME": "labs-gcp",
     "IN_MEMORY_DATABASE": "true",
     "MOCK_ALT_UTBETALINGER_FRA_NAV_URL": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/utbetaling",
-    "VIRKSOMHETSSERTIFIKAT_PATH": "/var/run/secrets",
     "SRVSOKNADSOSIALHJELP_SERVER_USERNAME": "mockUsername",
     "SRVSOKNADSOSIALHJELP_SERVER_PASSWORD": "mockPassword",
     "UNLEASH_INSTANCE_ID": "labs-gcp"
