@@ -5,9 +5,6 @@ import no.nav.sosialhjelp.soknad.arbeid.ArbeidsforholdConfig
 import no.nav.sosialhjelp.soknad.client.config.MockProxiedWebClientConfig
 import no.nav.sosialhjelp.soknad.client.config.NonProxiedWebClientConfig
 import no.nav.sosialhjelp.soknad.client.config.ProxiedWebClientConfig
-import no.nav.sosialhjelp.soknad.client.idporten.IdPortenClientConfig
-import no.nav.sosialhjelp.soknad.client.idporten.IdPortenClientConfigMockAlt
-import no.nav.sosialhjelp.soknad.client.idporten.IdPortenServiceImpl
 import no.nav.sosialhjelp.soknad.client.kodeverk.KodeverkConfig
 import no.nav.sosialhjelp.soknad.client.maskinporten.MaskinportenClientConfig
 import no.nav.sosialhjelp.soknad.client.redis.NoRedisConfig
@@ -40,9 +37,6 @@ import org.springframework.context.annotation.Import
     GeografiskTilknytningConfig::class,
     PersonConfig::class,
     AdressesokConfig::class,
-    IdPortenClientConfig::class,
-    IdPortenClientConfigMockAlt::class,
-    IdPortenServiceImpl::class,
     MaskinportenClientConfig::class,
     SkattbarInntektConfig::class,
     BostotteConfig::class,
