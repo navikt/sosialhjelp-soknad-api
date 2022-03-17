@@ -48,7 +48,7 @@ open class KommuneInfoConfig(
     @Bean
     open fun kommuneInfoMaskinportenClient(): KommuneInfoMaskinportenClient {
         val kommuneInfoMaskinportenClient = KommuneInfoMaskinportenClientImpl(
-            kommuneInfoWebClient,
+            kommuneInfoMaskinportenWebClient,
             maskinportenClient,
             integrasjonsidFiks,
             integrasjonpassordFiks
@@ -58,6 +58,9 @@ open class KommuneInfoConfig(
 
     private val kommuneInfoWebClient: WebClient
         get() = proxiedWebClientBuilder.build()
+
+    private val kommuneInfoMaskinportenWebClient: WebClient
+        get() = proxiedWebClientBuilder.baseUrl(digisosApiEndpoint).build()
 
     private fun fiksProperties(): FiksProperties {
         return FiksProperties(
