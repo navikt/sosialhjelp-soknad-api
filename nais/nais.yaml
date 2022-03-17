@@ -38,6 +38,7 @@ spec:
     scopes:
       consumes:
         - name: "skatteetaten:inntekt"
+        - name: "ks:fiks"
 {{/if}}
 {{#if vaultEnabled}}
   vault:

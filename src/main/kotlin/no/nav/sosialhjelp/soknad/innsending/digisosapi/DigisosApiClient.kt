@@ -78,8 +78,8 @@ class DigisosApiClientImpl(
         .build()
 
     override fun ping() {
-        val kommuneInfo = kommuneInfoService.hentAlleKommuneInfo()
-        check(kommuneInfo != null && kommuneInfo.isNotEmpty()) { "Fikk ikke kontakt med digisosapi" }
+        val kommuneInfo = kommuneInfoService.hentKommuneInfoFraFiks()
+        check(kommuneInfo.isNotEmpty()) { "Fikk ikke kontakt med digisosapi" }
     }
 
     override fun krypterOgLastOppFiler(
