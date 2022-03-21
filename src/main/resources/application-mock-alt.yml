@@ -5,9 +5,6 @@ application:
 srvsoknadsosialhjelp.server.username: ${SRVSOKNADSOSIALHJELP_SERVER_USERNAME:srvuser}
 srvsoknadsosialhjelp.server.password: ${SRVSOKNADSOSIALHJELP_SERVER_PASSWORD:pw123}
 
-# Brukes av MetricsClient:
-applicationName: sosialhjelp-soknad-api
-
 server:
   port: ${PORT:8181}
 
@@ -38,8 +35,7 @@ mock-alt-api-wellknown-queryparam: ${MOCK_ALT_API_WELLKNOWN_QUERYPARAM:}
 # rest
 digisos_api_baseurl: ${DIGISOS_API_BASEURL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/fiks/}
 ereg_proxy_url: ${EREG_PROXY_URL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/ereg/}
-aareg_api_baseurl: ${AAREG_API_BASEURL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/aareg/}
-securitytokenservice_apigw_url: ${SECURITYTOKENSERVICE_APIGW_URL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/appgw/}
+aareg_proxy_url: ${AAREG_PROXY_URL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/aareg/}
 krr_proxy_url: ${KRR_PROXY_URL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/krr_endpoint_url/}
 pdl_api_url: ${PDL_API_URL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/pdl_endpoint_url/}
 kodeverk_proxy_url: ${KODEVERK_PROXY_URL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/kodeverk/}
@@ -58,13 +54,8 @@ fiks.nokkelfil: ${FIKS_NOKKELFIL:svarut_public_test.pem}
 fiks_svarut_username: fiks_username
 fiks_svarut_password: fiks_pw
 
-# idporten
 integrasjonsid_fiks: id1
 integrasjonpassord_fiks: pw1
-idporten_token_url: ${IDPORTEN_TOKEN_URL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/idporten/idporten-oidc-provider/token}
-idporten_clientid: id2
-idporten_scope: ks:fiks
-idporten_config_url: ${IDPORTEN_CONFIG_URL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/well-known/idporten${mock-alt-api-wellknown-queryparam}}
 
 # maskinporten
 maskinporten_clientid: maskinporten_clientid
@@ -86,17 +77,11 @@ azure_client_id: ${AZURE_APP_CLIENT_ID:localhost:teamdigisos:sosialhjelp-soknad-
 azure_client_secret: ${AZURE_APP_CLIENT_SECRET:clientSecret}
 pdl_api_scope: ${PDL_API_SCOPE:dummyScope}
 
-# vault
-virksomhetssertifikat_path: ${VIRKSOMHETSSERTIFIKAT_PATH:/var/run/secrets/nais.io/virksomhetssertifikat}
-
 # OIDC
 oidc.issuer.selvbetjening.cookie_name: localhost-idtoken
 oidc.issuer.selvbetjening.accepted_audience: someaudience
 oidc.issuer.selvbetjening.discoveryurl: ${OIDC_ISSUER_SELVBETJENING_DISCOVERYURL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/well-known/selvbetjening${mock-alt-api-wellknown-queryparam}}
 oidc.issuer.selvbetjening.proxy_url: dummy
-
-oidc.issuer.tokenx.discoveryurl: ${OIDC_ISSUER_TOKENX_DISCOVERYURL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/well-known/tokenx${mock-alt-api-wellknown-queryparam}}
-oidc.issuer.tokenx.accepted_audience: someaudience
 
 loginservice.url: ${LOGINSERVICE_URL:http://localhost:3009/sosialhjelp/mock-alt/login}
 
@@ -120,7 +105,3 @@ feature.fiks.kryptering.enabled: true
 #Nedetid
 nedetid.start: ${NEDETID_START:}
 nedetid.slutt: ${NEDETID_SLUTT:}
-
-# Mockting
-tillatmock: true
-start.oidc.withmock: false

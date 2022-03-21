@@ -2,8 +2,8 @@ package no.nav.sosialhjelp.soknad.integrationtest
 
 import no.nav.sbl.soknadsosialhjelp.tjeneste.saksoversikt.PabegynteSoknaderRespons
 import no.nav.security.mock.oauth2.MockOAuth2Server
-import no.nav.sosialhjelp.client.utils.Constants.BEARER
 import no.nav.sosialhjelp.soknad.Application
+import no.nav.sosialhjelp.soknad.common.Constants.BEARER
 import no.nav.sosialhjelp.soknad.integrationtest.IntegrationTestUtils.issueToken
 import no.nav.sosialhjelp.soknad.integrationtest.IntegrationTestUtils.opprettSoknad
 import org.assertj.core.api.Assertions.assertThat

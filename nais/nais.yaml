@@ -38,6 +38,7 @@ spec:
     scopes:
       consumes:
         - name: "skatteetaten:inntekt"
+        - name: "ks:fiks"
 {{/if}}
 {{#if vaultEnabled}}
   vault:
@@ -83,10 +84,6 @@ spec:
         []
       {{/each}}
       {{/unless}}
-{{#if isGcp}}
-  filesFrom:
-    - secret: virksomhetssertifikat
-{{/if}}
   ingresses:
 {{#each ingresses}}
     - "{{this}}"

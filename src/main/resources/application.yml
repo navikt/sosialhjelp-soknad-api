@@ -5,9 +5,6 @@ application:
 srvsoknadsosialhjelp.server.username: ${SRVSOKNADSOSIALHJELP_SERVER_USERNAME}
 srvsoknadsosialhjelp.server.password: ${SRVSOKNADSOSIALHJELP_SERVER_PASSWORD}
 
-# Brukes av MetricsClient:
-applicationName: sosialhjelp-soknad-api
-
 server:
   port: 8080
   servlet:
@@ -44,8 +41,7 @@ environment.name: ${ENVIRONMENT_NAME}
 # rest
 digisos_api_baseurl: ${DIGISOS_API_BASEURL}
 ereg_proxy_url: ${EREG_PROXY_URL}
-aareg_api_baseurl: ${AAREG_API_BASEURL}
-securitytokenservice_apigw_url: ${SECURITYTOKENSERVICE_APIGW_URL}
+aareg_proxy_url: ${AAREG_PROXY_URL}
 krr_proxy_url: ${KRR_PROXY_URL}
 pdl_api_url: ${PDL_API_URL}
 unleash_api_url: ${UNLEASH_API_URL}
@@ -59,13 +55,8 @@ skatteetaten_api_baseurl: ${SKATTEETATEN_API_BASEURL}
 
 fiks.nokkelfil: ${FIKS_NOKKELFIL}
 
-# idporten
 integrasjonsid_fiks: ${INTEGRASJONSID_FIKS}
 integrasjonpassord_fiks: ${INTEGRASJONPASSORD_FIKS}
-idporten_token_url: ${IDPORTEN_TOKEN_URL}
-idporten_clientid: ${IDPORTEN_CLIENTID}
-idporten_scope: ks:fiks
-idporten_config_url: ${IDPORTEN_CONFIG_URL}
 
 # maskinporten
 maskinporten_clientid: ${MASKINPORTEN_CLIENT_ID}
@@ -91,19 +82,12 @@ pdl_api_scope: ${PDL_API_SCOPE}
 fiks_svarut_username: ${FIKS_SVARUT_USERNAME}
 fiks_svarut_password: ${FIKS_SVARUT_PASSWORD}
 
-# vault
-virksomhetssertifikat_path: /var/run/secrets/nais.io/virksomhetssertifikat
-
 # OIDC
 oidc.issuer.selvbetjening.discoveryurl: ${LOGINSERVICE_IDPORTEN_DISCOVERY_URL}
 oidc.issuer.selvbetjening.accepted_audience: ${LOGINSERVICE_IDPORTEN_AUDIENCE}
 oidc.issuer.selvbetjening.cookie_name: selvbetjening-idtoken
 oidc.issuer.selvbetjening.proxy_url: http://webproxy-nais.nav.no:8088
 loginservice.url: ${LOGINSERVICE_URL}
-
-oidc.issuer.tokenx.discoveryurl: ${TOKEN_X_WELL_KNOWN_URL}
-oidc.issuer.tokenx.accepted_audience: ${TOKEN_X_CLIENT_ID}
-tokenx.private_jwk: ${TOKEN_X_PRIVATE_JWK}
 
 # redis
 redis_host: ${REDIS_HOST}
@@ -125,6 +109,3 @@ feature.fiks.kryptering.enabled: true
 #Nedetid
 nedetid.start: ${NEDETID_START}
 nedetid.slutt: ${NEDETID_SLUTT}
-
-tillatmock: ${TILLATMOCK}
-start.oidc.withmock: false

@@ -13,10 +13,7 @@
     "testbruker-skatteetaten"
   ],
   "kvPaths": {
-    "/var/run/secrets/datasource": "/oracle/data/dev/creds/soknadsosialhjelp_q0-user",
-    "/var/run/secrets/nais.io/virksomhetssertifikat": "/secret/virksomhetssertifikat/preprod/shared",
-    "/apigw/aaregapi": "apikey/apigw/dev/aareg.api/sosialhjelp-soknad-api_q1",
-    "/apigw/securitytokenservicetoken": "apikey/apigw/dev/security-token-service-token/sosialhjelp-soknad-api_q1"
+    "/var/run/secrets/datasource": "/oracle/data/dev/creds/soknadsosialhjelp_q0-user"
   },
   "outboundRulesFssApplications": [
     "sosialhjelp-fss-proxy",
@@ -37,21 +34,17 @@
   "prometheusEnabled": true,
   "webProxyEnabled": true,
   "isGcp": false,
-  "isLabsGcp": false,
   "leaderElectionEnabled": true,
   "maskinportenEnabled": true,
   "azureEnabled": true,
   "env": {
-    "SPRING_PROFILES_ACTIVE": "log-kibana",
-    "AAREG_API_BASEURL": "https://api-gw-q1.oera.no/aareg-services/api/",
+    "SPRING_PROFILES_ACTIVE": "log-kibana,leader-election",
+    "AAREG_PROXY_URL": "https://sosialhjelp-fss-proxy.dev-fss-pub.nais.io/proxy/aareg/",
     "EREG_PROXY_URL": "https://sosialhjelp-fss-proxy.dev-fss-pub.nais.io/proxy/ereg/",
     "FIKS_NOKKELFIL": "svarut_public_test.pem",
     "FSS_PROXY_AUDIENCE": "dev-fss:teamdigisos:sosialhjelp-fss-proxy",
     "FSS_PROXY_PING_URL": "https://sosialhjelp-fss-proxy.dev-fss-pub.nais.io/ping",
     "DIGISOS_API_BASEURL": "https://api.fiks.test.ks.no/",
-    "IDPORTEN_TOKEN_URL": "https://oidc-ver2.difi.no/idporten-oidc-provider/token",
-    "IDPORTEN_CLIENTID": "1c3631f4-dbf2-4c12-bdc4-156cbd53c625",
-    "IDPORTEN_CONFIG_URL": "https://oidc-ver2.difi.no/idporten-oidc-provider/.well-known/openid-configuration",
     "KODEVERK_PROXY_URL": "https://sosialhjelp-fss-proxy.dev-fss-pub.nais.io/proxy/kodeverk/",
     "KRR_PROXY_URL": "https://sosialhjelp-fss-proxy.dev-fss-pub.nais.io/proxy/krr/",
     "LOGINSERVICE_URL": "https://loginservice.dev.nav.no/login",
@@ -66,7 +59,6 @@
     "SOKNADSOSIALHJELPDATASOURCE_URL": "jdbc:oracle:thin:@d32dbfl003.oera-t.local:1521/soknadsosialhjelp_q0",
     "SOKNAD_BOSTOTTE_URL": "https://api.demo.husbanken.no/bostotte/minbostotte",
     "SOKNAD_ETTERSENDING_ANTALLDAGER": "300",
-    "SECURITYTOKENSERVICE_APIGW_URL": "https://api-gw-q1.oera.no/security-token-service/rest/v1/sts/token",
     "SKATTEETATEN_API_BASEURL": "https://api-test.sits.no/api/innrapportert/inntektsmottaker/v1/digisos/",
     "SVARUT_URL": "https://test.svarut.ks.no",
     "IS_SENDING_TIL_DIGISOS_API_ENABLED": "true",
@@ -75,7 +67,6 @@
     "NEDETID_START": "",
     "NEDETID_SLUTT": "",
     "ENVIRONMENT_NAME": "q0",
-    "TILLATMOCK": "false",
     "REDIS_HOST": "sosialhjelp-soknad-api-redis.teamdigisos.svc.nais.local",
     "UNLEASH_INSTANCE_ID": "dev-sbs"
   }

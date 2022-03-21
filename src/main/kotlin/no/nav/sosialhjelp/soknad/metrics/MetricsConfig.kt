@@ -15,7 +15,8 @@ import org.springframework.context.annotation.Configuration
 @Configuration
 open class MetricsConfig(
     @Value("\${sensu_client_host}") private val host: String?,
-    @Value("\${metrics.report.enabled}") private val metricsReportEnabled: Boolean
+    @Value("\${metrics.report.enabled}") private val metricsReportEnabled: Boolean,
+    @Value("\${application.name}") private val applicationName: String
 ) {
 
     @Bean
@@ -44,7 +45,7 @@ open class MetricsConfig(
 
     @Bean
     open fun metricProperties(): MetricProperties? {
-        val metricProperties = MetricProperties(MiljoUtils.naisAppName, host, MiljoUtils.environmentName)
+        val metricProperties = MetricProperties(applicationName, host, MiljoUtils.environmentName)
         if (metricsReportEnabled) {
             metricProperties.enableMetrics()
         }

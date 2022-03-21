@@ -48,7 +48,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <tjenestespesifikasjon.version>1.2021.01.21-11.34-02f5eb27bb76</tjenestespesifikasjon.version>
-        <sosialhjelp-common.version>1.92c7849</sosialhjelp-common.version>
+        <sosialhjelp-common.version>1.3cd78d5</sosialhjelp-common.version>
         <filformat.version>1.2022.01.30-13.18-01cd95216e0b</filformat.version>
 
         <!-- Fiks/KS -->
@@ -599,16 +599,6 @@
         </dependency>
         <dependency>
             <groupId>no.nav.sosialhjelp</groupId>
-            <artifactId>sosialhjelp-common-kommuneinfo-client</artifactId>
-            <version>${sosialhjelp-common.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.sosialhjelp</groupId>
-            <artifactId>sosialhjelp-common-idporten-client</artifactId>
-            <version>${sosialhjelp-common.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.sosialhjelp</groupId>
             <artifactId>sosialhjelp-common-kotlin-utils</artifactId>
             <version>${sosialhjelp-common.version}</version>
         </dependency>
@@ -749,7 +739,6 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
-            <version>${jackson.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.jaxrs</groupId>
@@ -759,7 +748,10 @@
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jsr310</artifactId>
-            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.module</groupId>
+            <artifactId>jackson-module-kotlin</artifactId>
         </dependency>
 
         <!-- Database avhengigheter -->
