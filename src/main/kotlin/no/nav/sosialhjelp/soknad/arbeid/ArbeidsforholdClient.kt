@@ -1,19 +1,18 @@
 package no.nav.sosialhjelp.soknad.arbeid
 
+import kotlinx.coroutines.runBlocking
 import no.nav.sosialhjelp.soknad.arbeid.dto.ArbeidsforholdDto
 import no.nav.sosialhjelp.soknad.client.exceptions.TjenesteUtilgjengeligException
-import no.nav.sosialhjelp.soknad.client.sts.StsClient
+import no.nav.sosialhjelp.soknad.client.tokenx.TokendingsService
 import no.nav.sosialhjelp.soknad.common.Constants.BEARER
 import no.nav.sosialhjelp.soknad.common.Constants.HEADER_CALL_ID
-import no.nav.sosialhjelp.soknad.common.Constants.HEADER_CONSUMER_ID
-import no.nav.sosialhjelp.soknad.common.Constants.HEADER_CONSUMER_TOKEN
 import no.nav.sosialhjelp.soknad.common.Constants.HEADER_NAV_PERSONIDENT
 import no.nav.sosialhjelp.soknad.common.mdc.MdcOperations
-import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
-import org.eclipse.jetty.http.HttpHeader
+import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils.getToken
+import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils.getUserIdFromToken
 import org.slf4j.LoggerFactory.getLogger
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeFormatter.ISO_LOCAL_DATE
 import javax.ws.rs.BadRequestException
 import javax.ws.rs.ForbiddenException
 import javax.ws.rs.InternalServerErrorException
@@ -22,47 +21,27 @@ import javax.ws.rs.NotFoundException
 import javax.ws.rs.ServiceUnavailableException
 import javax.ws.rs.client.Client
 import javax.ws.rs.core.GenericType
+import javax.ws.rs.core.HttpHeaders.AUTHORIZATION
 
-interface ArbeidsforholdClient {
-    fun ping()
-    fun finnArbeidsforholdForArbeidstaker(fodselsnummer: String): List<ArbeidsforholdDto>?
-}
-
-class ArbeidsforholdClientImpl(
+class ArbeidsforholdClient(
     private val client: Client,
-    private val baseurl: String,
-    private val stsClient: StsClient
-) : ArbeidsforholdClient {
-
+    private val aaregProxyUrl: String,
+    private val fssProxyAudience: String,
+    private val tokendingsService: TokendingsService
+) {
     private val callId: String? get() = MdcOperations.getFromMDC(MdcOperations.MDC_CALL_ID)
-    private val consumerId: String? get() = SubjectHandlerUtils.getConsumerId()
-    private val userToken: String? get() = SubjectHandlerUtils.getToken()
     private val sokeperiode: Sokeperiode get() = Sokeperiode(LocalDate.now().minusMonths(3), LocalDate.now())
 
-    override fun ping() {
-        client.target(baseurl + "ping")
-            .request()
-            .header(HEADER_CALL_ID, callId)
-            .header(HEADER_CONSUMER_ID, consumerId)
-            .options().use { response ->
-                if (response.status != 200) {
-                    throw RuntimeException("Aareg.api - Feil statuskode ved ping: ${response.status}, respons: ${response.readEntity(String::class.java)}")
-                }
-            }
-    }
-
-    override fun finnArbeidsforholdForArbeidstaker(fodselsnummer: String): List<ArbeidsforholdDto>? {
+    fun finnArbeidsforholdForArbeidstaker(fodselsnummer: String): List<ArbeidsforholdDto>? {
         try {
-            return client.target(baseurl + "v1/arbeidstaker/arbeidsforhold")
+            return client.target("${aaregProxyUrl}v1/arbeidstaker/arbeidsforhold")
                 .queryParam("sporingsinformasjon", false)
                 .queryParam("regelverk", A_ORDNINGEN)
-                .queryParam("ansettelsesperiodeFom", sokeperiode.fom.format(DateTimeFormatter.ISO_LOCAL_DATE))
-                .queryParam("ansettelsesperiodeTom", sokeperiode.tom.format(DateTimeFormatter.ISO_LOCAL_DATE))
+                .queryParam("ansettelsesperiodeFom", sokeperiode.fom.format(ISO_LOCAL_DATE))
+                .queryParam("ansettelsesperiodeTom", sokeperiode.tom.format(ISO_LOCAL_DATE))
                 .request()
-                .header(HttpHeader.AUTHORIZATION.name, BEARER + userToken) // brukers token
+                .header(AUTHORIZATION, BEARER + tokenxToken)
                 .header(HEADER_CALL_ID, callId)
-                .header(HEADER_CONSUMER_ID, consumerId)
-                .header(HEADER_CONSUMER_TOKEN, BEARER + stsClient.getFssToken().access_token)
                 .header(HEADER_NAV_PERSONIDENT, fodselsnummer)
                 .get(object : GenericType<List<ArbeidsforholdDto>>() {})
         } catch (e: BadRequestException) {
@@ -89,8 +68,13 @@ class ArbeidsforholdClientImpl(
         }
     }
 
+    private val tokenxToken: String
+        get() = runBlocking {
+            tokendingsService.exchangeToken(getUserIdFromToken(), getToken(), fssProxyAudience)
+        }
+
     companion object {
-        private val log = getLogger(ArbeidsforholdClientImpl::class.java)
+        private val log = getLogger(ArbeidsforholdClient::class.java)
         private const val A_ORDNINGEN = "A_ORDNINGEN"
     }
 

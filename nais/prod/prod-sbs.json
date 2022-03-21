@@ -13,7 +13,6 @@
   ],
   "kvPaths": {
     "/var/run/secrets/datasource": "/oracle/data/prod/creds/soknadsosialhjel_p-user",
-    "/apigw/aaregapi": "apikey/apigw/prod/aareg.api/sosialhjelp-soknad-api",
     "/apigw/securitytokenservicetoken": "apikey/apigw/prod/security-token-service-token/sosialhjelp-soknad-api"
   },
   "outboundRulesFssApplications": [
@@ -40,7 +39,7 @@
   "azureEnabled": true,
   "env": {
     "SPRING_PROFILES_ACTIVE": "log-kibana,leader-election",
-    "AAREG_API_BASEURL": "https://api-gw.oera.no/aareg-services/api/",
+    "AAREG_PROXY_URL": "https://sosialhjelp-fss-proxy.prod-fss-pub.nais.io/proxy/aareg/",
     "EREG_PROXY_URL": "https://sosialhjelp-fss-proxy.prod-fss-pub.nais.io/proxy/ereg/",
     "FIKS_NOKKELFIL": "svarut_public_prod.pem",
     "FSS_PROXY_AUDIENCE": "prod-fss:teamdigisos:sosialhjelp-fss-proxy",
