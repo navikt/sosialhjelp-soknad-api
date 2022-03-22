@@ -68,7 +68,7 @@ digisos_api_baseurl: ${DIGISOS_API_BASEURL:https://api.fiks.test.ks.no/}
 ereg_proxy_url: https://fss-proxy/proxy/ereg/
 aareg_proxy_url: https://fss-proxy/proxy/aareg/
 krr_proxy_url: http://krr/
-pdl_api_url: https://api-gw-q1.oera.no/pdl-api/graphql
+pdl_api_url: https://pdl-api/graphql
 unleash_api_url: https://unleash.nais.io/api
 kodeverk_proxy_url: https://fss-proxy/proxy/kodeverk/
 oppslag_api_baseurl: https://sosialhjelp-oppslag-api/api/

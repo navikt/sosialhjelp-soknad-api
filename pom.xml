@@ -48,7 +48,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <tjenestespesifikasjon.version>1.2021.01.21-11.34-02f5eb27bb76</tjenestespesifikasjon.version>
-        <sosialhjelp-common.version>1.3cd78d5</sosialhjelp-common.version>
+        <sosialhjelp-common.version>1.231cd9b</sosialhjelp-common.version>
         <filformat.version>1.2022.01.30-13.18-01cd95216e0b</filformat.version>
 
         <!-- Fiks/KS -->
@@ -60,8 +60,8 @@
         <spring.version>5.3.16</spring.version>
         <jetty.version>9.4.45.v20220203</jetty.version>
         <jersey.version>2.35</jersey.version>
-        <token-validation.version>2.0.11</token-validation.version>
-        <nimbus-jose-jwt.version>9.19</nimbus-jose-jwt.version>
+        <token-validation.version>2.0.12</token-validation.version>
+        <nimbus-jose-jwt.version>9.21</nimbus-jose-jwt.version>
         <ojdbc.version>19.13.0.0.1</ojdbc.version>
         <flyway-core.version>7.15.0</flyway-core.version>
         <flyway-maven-plugin.version>7.15.0</flyway-maven-plugin.version>
@@ -70,7 +70,7 @@
         <jempbox.version>1.8.16</jempbox.version>
         <bouncycastle.version>1.70</bouncycastle.version>
         <httpclient.version>4.5.13</httpclient.version>
-        <guava.version>31.0.1-jre</guava.version>
+        <guava.version>31.1-jre</guava.version>
         <tika.version>2.3.0</tika.version>
         <logback.version>1.2.10</logback.version>
         <hsqldb.version>2.6.1</hsqldb.version>
@@ -112,7 +112,6 @@
         <!-- Versjoner for test dependencies -->
         <hamcrest.version>2.2</hamcrest.version>
         <junit-jupiter.version>5.8.2</junit-jupiter.version>
-        <mockito.version>4.2.0</mockito.version>
         <assertj.version>3.22.0</assertj.version>
         <mockk.version>1.12.2</mockk.version>
         <mockwebserver.version>5.0.0-alpha.2</mockwebserver.version>
@@ -122,7 +121,7 @@
         <rhino.version>1.7.14</rhino.version>
         <logstash-logback-encoder.version>7.0.1</logstash-logback-encoder.version>
         <prometheus.version>0.15.0</prometheus.version>
-        <oauth2-oidc-sdk.version>9.22</oauth2-oidc-sdk.version>
+        <oauth2-oidc-sdk.version>9.31</oauth2-oidc-sdk.version>
         <emoji-java.version>5.1.1</emoji-java.version>
         <objenesis.version>3.2</objenesis.version>
         <mimepull.version>1.9.15</mimepull.version>
@@ -130,13 +129,14 @@
         <byte-buddy.version>1.12.7</byte-buddy.version>
         <gson.version>2.8.9</gson.version>
         <netty.version>4.1.74.Final</netty.version>
-        <micrometer.version>1.8.2</micrometer.version>
+        <micrometer.version>1.8.4</micrometer.version>
         <lombok.version>1.18.22</lombok.version>
         <org.osgi.core.version>6.0.0</org.osgi.core.version>
         <jboss-logging.version>3.4.2.Final</jboss-logging.version>
         <jsr305.version>3.0.2</jsr305.version>
         <snakeyaml.version>1.29</snakeyaml.version>
         <hibernate-validator.version>6.2.2.Final</hibernate-validator.version>
+        <lang-tag.version>1.6</lang-tag.version>
     </properties>
 
     <dependencyManagement>
@@ -312,18 +312,6 @@
                 <scope>test</scope>
             </dependency>
             <dependency>
-                <groupId>org.mockito</groupId>
-                <artifactId>mockito-junit-jupiter</artifactId>
-                <version>${mockito.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.mockito</groupId>
-                <artifactId>mockito-core</artifactId>
-                <version>${mockito.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
                 <groupId>org.assertj</groupId>
                 <artifactId>assertj-core</artifactId>
                 <version>${assertj.version}</version>
@@ -381,6 +369,11 @@
                 <groupId>com.nimbusds</groupId>
                 <artifactId>oauth2-oidc-sdk</artifactId>
                 <version>${oauth2-oidc-sdk.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.nimbusds</groupId>
+                <artifactId>lang-tag</artifactId>
+                <version>${lang-tag.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.objenesis</groupId>
@@ -943,6 +936,14 @@
                 <exclusion>
                     <groupId>org.skyscreamer</groupId>
                     <artifactId>jsonassert</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.mockito</groupId>
+                    <artifactId>mockito-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.mockito</groupId>
+                    <artifactId>mockito-junit-jupiter</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
