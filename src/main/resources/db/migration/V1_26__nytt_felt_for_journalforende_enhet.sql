@@ -1,1 +1,0 @@
-alter table soknad add journalforendeEnhet varchar(255 CHAR);

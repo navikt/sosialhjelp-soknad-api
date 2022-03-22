@@ -1,1 +1,0 @@
-ALTER TABLE Soknad ADD delstegstatus VARCHAR(255 CHAR) NOT NULL;

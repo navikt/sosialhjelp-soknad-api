@@ -1,1 +1,0 @@
-alter table vedlegg add aarsak varchar(200 CHAR);

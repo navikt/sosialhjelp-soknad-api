@@ -14,8 +14,8 @@ import javax.inject.Inject
 
 @ExtendWith(SpringExtension::class)
 @ContextConfiguration(classes = [DbTestConfig::class])
-@ActiveProfiles("test")
-internal class OpplastetVedleggRepositoryJdbcTest {
+@ActiveProfiles("repositoryTest")
+internal open class OpplastetVedleggRepositoryJdbcTest {
 
     private val EIER = "12345678901"
     private val EIER2 = "22222222222"

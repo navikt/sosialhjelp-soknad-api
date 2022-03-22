@@ -1,1 +1,0 @@
-alter table soknad add batch_status varchar(255 char) default 'LEDIG' not null;

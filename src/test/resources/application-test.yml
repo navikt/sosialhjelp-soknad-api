@@ -9,13 +9,18 @@ srvsoknadsosialhjelp.server.username: srvuser
 srvsoknadsosialhjelp.server.password: pw123
 
 spring:
-  flyway:
-    enabled: false
   main:
     allow-bean-definition-overriding: true
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    url: jdbc:hsqldb:mem:sendsoknad;sql.syntax_ora=true
+    user: sa
+    password:
+    driver-class-name: org.hsqldb.jdbcDriver
   datasource:
     driver-class-name: org.hsqldb.jdbcDriver
-    url: jdbc:hsqldb:mem:sendsoknad
+    url: jdbc:hsqldb:mem:sendsoknad;sql.syntax_ora=true
     username: sa
     password:
 

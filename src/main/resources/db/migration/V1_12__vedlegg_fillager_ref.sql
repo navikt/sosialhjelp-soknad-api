@@ -1,1 +1,0 @@
-ALTER TABLE Vedlegg ADD fillagerReferanse VARCHAR(36);

@@ -1,1 +1,0 @@
-alter table vedlegg add flereTillatt char(1) default '0' check (flereTillatt in ('0','1'));

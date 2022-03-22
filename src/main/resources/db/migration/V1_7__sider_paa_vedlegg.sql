@@ -1,1 +1,0 @@
-ALTER TABLE Vedlegg ADD (antallsider NUMBER(19, 0));
