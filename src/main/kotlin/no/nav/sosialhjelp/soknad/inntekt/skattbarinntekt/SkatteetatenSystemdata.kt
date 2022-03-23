@@ -39,7 +39,7 @@ class SkatteetatenSystemdata(
                 okonomiOpplysningUtbetalinger.addAll(systemUtbetalingerSkattbar)
                 jsonInternalSoknad.soknad.driftsinformasjon.inntektFraSkatteetatenFeilet = false
             }
-        } else { // Ikke samtykke!!!
+        } else { // Ikke samtykke!
             fjernGamleUtbetalinger(okonomiOpplysningUtbetalinger)
             jsonInternalSoknad.soknad.driftsinformasjon.inntektFraSkatteetatenFeilet = false
         }

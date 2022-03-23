@@ -25,7 +25,7 @@ class KommuneInfoMaskinportenClientImpl(
         return webClient.get()
             .uri(PATH_ALLE_KOMMUNEINFO)
             .accept(MediaType.APPLICATION_JSON)
-            .header(AUTHORIZATION, BEARER + maskinportenClient.getTokenString())
+            .header(AUTHORIZATION, BEARER + maskinportenClient.getToken())
             .header(HEADER_INTEGRASJON_ID, integrasjonsidFiks)
             .header(HEADER_INTEGRASJON_PASSORD, integrasjonpassordFiks)
             .retrieve()

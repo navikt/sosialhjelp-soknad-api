@@ -45,7 +45,7 @@ class SkatteetatenClientImpl(
                         .build(sokedata.identifikator)
                 }
                 .accept(MediaType.APPLICATION_JSON)
-                .headers { it.add(HttpHeaders.AUTHORIZATION, BEARER + maskinportenClient.getTokenString()) }
+                .headers { it.add(HttpHeaders.AUTHORIZATION, BEARER + maskinportenClient.getToken()) }
                 .retrieve()
                 .bodyToMono<SkattbarInntekt>()
                 .onErrorResume(WebClientResponseException.NotFound::class.java) {
@@ -66,7 +66,7 @@ class SkatteetatenClientImpl(
 
     override fun ping() {
         webClient.options()
-            .headers { it.add(HttpHeaders.AUTHORIZATION, BEARER + maskinportenClient.getTokenString()) }
+            .headers { it.add(HttpHeaders.AUTHORIZATION, BEARER + maskinportenClient.getToken()) }
             .retrieve()
             .toBodilessEntity()
             .doOnError { log.warn("SkatteetatenApi - ping feilet") }
