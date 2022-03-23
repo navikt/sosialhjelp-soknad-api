@@ -66,11 +66,11 @@
     "IS_ALLTID_HENT_KOMMUNEINFO_FRA_NAV_TESTKOMMUNE": "false",
     "NEDETID_START": "",
     "NEDETID_SLUTT": "",
-    "ENVIRONMENT_NAME": "dev-gcp",
+    "ENVIRONMENT_NAME": "mock",
     "IN_MEMORY_DATABASE": "true",
     "MOCK_ALT_UTBETALINGER_FRA_NAV_URL": "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api/utbetaling",
     "SRVSOKNADSOSIALHJELP_SERVER_USERNAME": "mockUsername",
     "SRVSOKNADSOSIALHJELP_SERVER_PASSWORD": "mockPassword",
-    "UNLEASH_INSTANCE_ID": "dev-gcp"
+    "UNLEASH_INSTANCE_ID": "mock"
   }
 }
