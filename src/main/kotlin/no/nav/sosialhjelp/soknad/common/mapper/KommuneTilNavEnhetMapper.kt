@@ -213,7 +213,7 @@ object KommuneTilNavEnhetMapper {
         "0701" to "910940066", // Horten
         "1247" to "910230182", // Askøy
         "0312" to "910229699", // Frogner,             Oslo kommune
-        "0315" to "811213322", // Grünerløkka,         Oslo kommune - OBS: Brukes i mock!!!
+        "0315" to "811213322", // Grünerløkka,         Oslo kommune - OBS: Brukes i mock!
         "0328" to "910229702", // Grorud,              Oslo kommune
         "0327" to "910589792", // Stovner,             Oslo kommune
         "0314" to "910565338", // Sagene,              Oslo kommune

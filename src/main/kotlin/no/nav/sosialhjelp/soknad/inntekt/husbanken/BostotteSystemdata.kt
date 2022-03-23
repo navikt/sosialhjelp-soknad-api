@@ -46,7 +46,7 @@ open class BostotteSystemdata(
             } else {
                 soknad.driftsinformasjon.stotteFraHusbankenFeilet = true
             }
-        } else { // Ikke samtykke!!!
+        } else { // Ikke samtykke!
             fjernGamleHusbankenData(okonomi, true)
             soknad.driftsinformasjon.stotteFraHusbankenFeilet = false
         }
