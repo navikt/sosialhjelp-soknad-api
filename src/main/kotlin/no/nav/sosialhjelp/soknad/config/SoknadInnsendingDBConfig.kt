@@ -11,7 +11,7 @@ import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.transaction.annotation.EnableTransactionManagement
 import javax.sql.DataSource
 
-@Profile("!(mock-alt | test)")
+@Profile("!repositoryTest")
 @Configuration
 @EnableTransactionManagement
 open class SoknadInnsendingDBConfig(
