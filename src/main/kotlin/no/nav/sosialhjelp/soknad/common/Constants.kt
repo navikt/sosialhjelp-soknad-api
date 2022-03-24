@@ -6,15 +6,10 @@ object Constants {
     const val CLAIM_ACR_LEVEL_4 = "acr=Level4"
     const val TOKENX = "tokenx"
 
-    val NAV_CALL_ID_HEADER_NAMES = arrayOf("Nav-Call-Id", "Nav-CallId", "X-Correlation-Id")
-
     const val HEADER_CALL_ID = "Nav-Call-Id"
     const val HEADER_CONSUMER_ID = "Nav-Consumer-Id"
-    const val HEADER_CONSUMER_TOKEN = "Nav-Consumer-Token"
     const val HEADER_TEMA = "Tema"
-    const val HEADER_NAV_APIKEY = "x-nav-apiKey"
     const val HEADER_NAV_PERSONIDENT = "Nav-Personident"
-    const val HEADER_NAV_PERSONIDENTER = "Nav-Personidenter"
 
     const val HEADER_INTEGRASJON_ID = "IntegrasjonId"
     const val HEADER_INTEGRASJON_PASSORD = "IntegrasjonPassord"
