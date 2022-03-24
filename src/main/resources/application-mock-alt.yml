@@ -7,15 +7,14 @@ server:
 
 spring:
   flyway:
-    enabled: false
-#    baseline-on-migrate: true
-#    url: jdbc:hsqldb:mem:sendsoknad;sql.syntax_ora=true
-#    user: sa
-#    password:
-#    driver-class-name: org.hsqldb.jdbcDriver
+    locations: classpath:postgres/migration
+    driver-class-name: org.hsqldb.jdbcDriver
+    url: jdbc:hsqldb:mem:sendsoknad;sql.syntax_pgs=true
+    user: sa
+    password:
   datasource:
     driver-class-name: org.hsqldb.jdbcDriver
-    url: jdbc:hsqldb:mem:sendsoknad;sql.syntax_ora=true
+    url: jdbc:hsqldb:mem:sendsoknad;sql.syntax_pgs=true
     username: sa
     password:
 
