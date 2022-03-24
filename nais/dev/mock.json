@@ -63,7 +63,6 @@
     "NEDETID_START": "",
     "NEDETID_SLUTT": "",
     "ENVIRONMENT_NAME": "mock",
-    "IN_MEMORY_DATABASE": "true",
     "MOCK_ALT_UTBETALINGER_FRA_NAV_URL": "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api/utbetaling",
     "UNLEASH_INSTANCE_ID": "mock"
   }
