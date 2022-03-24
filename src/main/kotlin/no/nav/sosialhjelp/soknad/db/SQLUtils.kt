@@ -35,4 +35,12 @@ object SQLUtils {
     fun timestampTilTid(timestamp: Timestamp): LocalDateTime {
         return timestamp.toLocalDateTime()
     }
+
+    fun blobSizeQuery(): String {
+        return if (HSQLDB == System.getProperty(DIALECT_PROPERTY)) {
+            "OCTET_LENGTH(DATA)"
+        } else {
+            "dbms_lob.getLength(DATA)"
+        }
+    }
 }

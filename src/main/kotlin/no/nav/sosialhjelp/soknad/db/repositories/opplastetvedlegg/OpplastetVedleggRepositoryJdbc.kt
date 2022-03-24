@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg
 
+import no.nav.sosialhjelp.soknad.db.SQLUtils
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRowMapper.opplastetVedleggRowMapper
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport
 import org.springframework.stereotype.Component
@@ -69,8 +70,9 @@ open class OpplastetVedleggRepositoryJdbc : NamedParameterJdbcDaoSupport(), Oppl
                 Int::class.java, eier, soknadId
             ) > 0
         ) {
+            val blobSize = SQLUtils.blobSizeQuery()
             return jdbcTemplate.queryForObject(
-                "select sum(dbms_lob.getLength(DATA)) from OPPLASTET_VEDLEGG where EIER = ? and SOKNAD_UNDER_ARBEID_ID = ?",
+                "select sum($blobSize) from OPPLASTET_VEDLEGG where EIER = ? and SOKNAD_UNDER_ARBEID_ID = ?",
                 Int::class.java,
                 eier,
                 soknadId
