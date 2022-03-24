@@ -11,7 +11,6 @@ import javax.net.ssl.SSLContext
 import javax.ws.rs.client.Client
 
 object RestUtils {
-    const val CSRF_COOKIE_NAVN = "NAV_CSRF_PROTECTION"
     private val DEFAULT_CONFIG = RestConfig()
 
     private fun createClientConfig(restConfig: RestConfig, metricName: String): ClientConfig {

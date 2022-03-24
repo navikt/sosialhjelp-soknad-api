@@ -4,15 +4,9 @@ package no.nav.sosialhjelp.soknad.common.rest
 
 import no.nav.sosialhjelp.metrics.MetricsFactory
 import no.nav.sosialhjelp.metrics.Timer
-import no.nav.sosialhjelp.soknad.common.Constants.HEADER_CONSUMER_ID
-import no.nav.sosialhjelp.soknad.common.Constants.NAV_CALL_ID_HEADER_NAMES
-import no.nav.sosialhjelp.soknad.common.MiljoUtils
-import no.nav.sosialhjelp.soknad.common.mdc.MdcOperations
-import no.nav.sosialhjelp.soknad.common.rest.RestUtils.CSRF_COOKIE_NAVN
 import org.apache.commons.lang3.exception.ExceptionUtils
 import org.slf4j.LoggerFactory
 import java.net.URI
-import java.util.Arrays
 import java.util.Optional.ofNullable
 import java.util.concurrent.TimeUnit
 import javax.ws.rs.client.ClientRequestContext
@@ -30,13 +24,6 @@ class ClientLogFilter(
     override fun filter(clientRequestContext: ClientRequestContext) {
         log.info("${clientRequestContext.method} ${uriForLogging(clientRequestContext)}")
         val requestHeaders = clientRequestContext.headers
-        MdcOperations.getFromMDC(MdcOperations.MDC_CALL_ID)?.let { callId ->
-            Arrays.stream(NAV_CALL_ID_HEADER_NAMES)
-                .forEach { headerName -> requestHeaders.add(headerName, callId) }
-        }
-        requestHeaders.add(HEADER_CONSUMER_ID, MiljoUtils.naisAppName)
-        requestHeaders.add(CSRF_COOKIE_NAVN, CSRF_TOKEN)
-        requestHeaders.add(HttpHeaders.COOKIE, Cookie(CSRF_COOKIE_NAVN, CSRF_TOKEN))
 
         // jersey-client generates cookies in org.glassfish.jersey.message.internal.CookieProvider according to the
         // deprecated rfc2109 specification, which prefixes the cookie with its version. This may not be supported by modern servers.
@@ -124,6 +111,5 @@ class ClientLogFilter(
     companion object {
         private val log = LoggerFactory.getLogger(ClientLogFilter::class.java)
         private val name = ClientLogFilter::class.java.name
-        private const val CSRF_TOKEN = "csrf-token"
     }
 }
