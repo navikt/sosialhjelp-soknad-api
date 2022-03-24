@@ -14,7 +14,7 @@ import javax.inject.Inject
 
 @ExtendWith(SpringExtension::class)
 @ContextConfiguration(classes = [DbTestConfig::class])
-@ActiveProfiles("test")
+@ActiveProfiles("repositoryTest")
 internal class SoknadMetadataRepositoryJdbcTest {
 
     private val behandlingsId = "1100AAAAA"
