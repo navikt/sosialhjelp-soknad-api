@@ -24,14 +24,6 @@ object SQLUtils {
         }
     }
 
-    fun selectMultipleNextSequenceValues(sequence: String): String {
-        return if (HSQLDB == System.getProperty(DIALECT_PROPERTY)) {
-            "select next value for $sequence from unnest(sequence_array(1,?,1))"
-        } else {
-            "select $sequence.nextval from dual connect by level <= ?"
-        }
-    }
-
     fun tidTilTimestamp(tid: LocalDateTime?): Timestamp? {
         return if (tid != null) Timestamp.valueOf(tid) else null
     }
