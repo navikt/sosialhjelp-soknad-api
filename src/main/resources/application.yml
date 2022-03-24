@@ -2,9 +2,6 @@ application:
   name: ${NAIS_APP_NAME}
   version: ${NAIS_APP_IMAGE}
 
-srvsoknadsosialhjelp.server.username: ${SRVSOKNADSOSIALHJELP_SERVER_USERNAME}
-srvsoknadsosialhjelp.server.password: ${SRVSOKNADSOSIALHJELP_SERVER_PASSWORD}
-
 server:
   port: 8080
   servlet:

@@ -6,7 +6,6 @@
     "https://www-q1.dev.nav.no/sosialhjelp/soknad-api"
   ],
   "envsecret": [
-    "serviceuser-srvsoknadsosialhjelp-server",
     "redis-password-soknad-api",
     "fiks-integrasjon-secret",
     "fiks-svarut-credentials",
