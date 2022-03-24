@@ -28,6 +28,7 @@ jobs:
           CLUSTER: dev-sbs
           TEAM: teamdigisos
           RESOURCE: "nais/redis-config.yml,nais/redisexporter.yml"
+          VARS: /nais/dev/dev.json
 
   deploy-dev-gcp:
     name: Auto-deploy redis to dev-gcp
@@ -43,3 +44,4 @@ jobs:
           CLUSTER: dev-gcp
           TEAM: teamdigisos
           RESOURCE: "nais/redis-config.yml,nais/redisexporter.yml"
+          VARS: /nais/dev/dev.json

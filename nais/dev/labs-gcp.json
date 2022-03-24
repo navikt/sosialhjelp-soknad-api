@@ -9,8 +9,7 @@
   "unleash.nais.io"
 ],
   "outboundRulesGcpApplications": [
-    "sosialhjelp-mock-alt-api",
-    "sosialhjelp-soknad-api-redis"
+    "sosialhjelp-mock-alt-api"
   ],
   "envsecret": [],
   "minReplicas": "1",
