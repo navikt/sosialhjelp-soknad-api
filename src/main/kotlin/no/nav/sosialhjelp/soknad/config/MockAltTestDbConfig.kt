@@ -15,6 +15,10 @@ import javax.sql.DataSource
 @Configuration
 open class MockAltTestDbConfig {
 
+    init {
+        System.setProperty(SQLUtils.DIALECT_PROPERTY, "hsqldb")
+    }
+
     @Bean
     open fun dataSource(): DataSource {
         val dataSource = DriverManagerDataSource()
@@ -24,7 +28,6 @@ open class MockAltTestDbConfig {
         dataSource.url = env.getProperty("db.url")
         dataSource.username = env.getProperty("db.username")
         dataSource.password = env.getProperty("db.password")
-        System.setProperty(SQLUtils.DIALECT_PROPERTY, "hsqldb")
         createNonJpaTables(dataSource)
         return dataSource
     }
@@ -50,41 +53,6 @@ open class MockAltTestDbConfig {
             try {
                 dataSource.connection.use { conn ->
                     conn.createStatement().use { st ->
-                        st.execute("drop table HENVENDELSE if exists")
-                        st.execute(
-                            "create table HENVENDELSE (henvendelse_id bigint, behandlingsid varchar(255), behandlingskjedeId varchar(255), traad varchar(255), type varchar(255), opprettetdato timestamp, " +
-                                "lestdato timestamp, sistendretdato timestamp, tema varchar(255), aktor varchar(255), status varchar(255), behandlingsresultat varchar(2048), sensitiv integer)"
-                        )
-                        st.execute("drop table HENDELSE if exists")
-                        st.execute("create table HENDELSE (BEHANDLINGSID varchar(255), HENDELSE_TYPE varchar(255), HENDELSE_TIDSPUNKT timestamp not null, VERSJON int, SKJEMANUMMER varchar(255), SIST_HENDELSE integer not null)")
-                        st.execute("drop sequence BRUKERBEH_ID_SEQ if exists")
-                        st.execute("create sequence BRUKERBEH_ID_SEQ as integer start with 1 increment by 1")
-                        st.execute("drop table SOKNADBRUKERDATA if exists")
-                        st.execute("drop table FAKTUMEGENSKAP if exists")
-                        st.execute("drop table SOKNAD if exists")
-                        st.execute(
-                            "create table SOKNAD (soknad_id numeric not null, uuid varchar(255) not null, brukerbehandlingid varchar(255) not null, behandlingskjedeid varchar(255), navsoknadid varchar(255) not null, " +
-                                "aktorid varchar(255) not null, opprettetdato timestamp not null, status varchar(255) not null, delstegstatus varchar(255), sistlagret timestamp, journalforendeEnhet varchar(255))"
-                        )
-                        st.execute("alter table SOKNAD add batch_status varchar(255) default 'LEDIG'")
-                        st.execute("drop table VEDLEGG if exists")
-                        st.execute(
-                            "create table VEDLEGG (vedlegg_id bigint not null , soknad_id bigint not null, faktum bigint, skjemaNummer varchar(36), aarsak varchar(200), navn varchar(255) not null,innsendingsvalg varchar(255) not null , opprinneliginnsendingsvalg varchar(255), antallsider bigint, fillagerReferanse varchar(36), sha512 varchar(256), storrelse bigint not null, " +
-                                " opprettetdato timestamp , data blob, mimetype varchar(200), filnavn varchar(200))"
-                        )
-                        st.execute(
-                            "create table SOKNADBRUKERDATA (soknadbrukerdata_id bigint not null, soknad_id bigint not null, key varchar(255) not null, value varchar(2000), " +
-                                "type varchar(255), sistendret timestamp not null, PARRENT_FAKTUM bigint)"
-                        )
-                        st.execute("create table FAKTUMEGENSKAP (soknad_id bigint not null,faktum_id bigint not null, key varchar(255) not null, value varchar(2000), systemegenskap bit) ")
-                        st.execute("drop sequence SOKNAD_ID_SEQ if exists")
-                        st.execute("create sequence SOKNAD_ID_SEQ as integer start with 1 increment by 1")
-                        st.execute("drop sequence SOKNAD_BRUKER_DATA_ID_SEQ if exists")
-                        st.execute("create sequence SOKNAD_BRUKER_DATA_ID_SEQ as integer start with 1 increment by 1")
-                        st.execute("drop sequence VEDLEGG_ID_SEQ if exists")
-                        st.execute("create sequence VEDLEGG_ID_SEQ as integer start with 1 increment by 1")
-                        st.execute("drop table FILLAGER if exists")
-                        st.execute("create table FILLAGER (behandlingsid varchar(255), uuid varchar(255), eier varchar(255), data blob)")
                         st.execute("drop sequence METADATA_ID_SEQ if exists")
                         st.execute("create sequence METADATA_ID_SEQ as integer start with 1 increment by 1")
                         st.execute("drop table SOKNADMETADATA if exists")
@@ -108,13 +76,6 @@ open class MockAltTestDbConfig {
                         )
                         st.execute("drop sequence SENDT_SOKNAD_ID_SEQ if exists ")
                         st.execute("CREATE sequence SENDT_SOKNAD_ID_SEQ start WITH 1 increment BY 1")
-                        st.execute("drop table VEDLEGGSTATUS if exists ")
-                        st.execute(
-                            "CREATE TABLE VEDLEGGSTATUS(VEDLEGGSTATUS_ID bigint NOT NULL, EIER VARCHAR(255) NOT NULL, STATUS VARCHAR(255) NOT NULL, TYPE VARCHAR(255) NOT NULL," +
-                                " SENDT_SOKNAD_ID bigint NOT NULL, CONSTRAINT UNIK_IDTYPE UNIQUE (SENDT_SOKNAD_ID, TYPE), CONSTRAINT VEDLEGGSTATUS_PK PRIMARY KEY (VEDLEGGSTATUS_ID))"
-                        )
-                        st.execute("drop sequence VEDLEGGSTATUSID_SEQ if exists ")
-                        st.execute("CREATE sequence VEDLEGGSTATUSID_SEQ start WITH 1 increment BY 1")
                         st.execute("drop table SOKNAD_UNDER_ARBEID if exists")
                         st.execute(
                             "CREATE TABLE SOKNAD_UNDER_ARBEID (SOKNAD_UNDER_ARBEID_ID bigint NOT NULL, VERSJON bigint DEFAULT 1 NOT NULL, BEHANDLINGSID VARCHAR(255) NOT NULL, TILKNYTTETBEHANDLINGSID VARCHAR(255)," +
@@ -128,13 +89,6 @@ open class MockAltTestDbConfig {
                             "CREATE TABLE OPPLASTET_VEDLEGG(UUID VARCHAR(255) NOT NULL, EIER VARCHAR(255) NOT NULL, TYPE VARCHAR(255) NOT NULL, DATA blob NOT NULL, SOKNAD_UNDER_ARBEID_ID bigint NOT NULL," +
                                 " FILNAVN VARCHAR(255) NOT NULL, SHA512 VARCHAR(255) NOT NULL, CONSTRAINT UNIK_OPPLASTET_VEDLEGG_UUID UNIQUE (UUID))"
                         )
-                        st.execute("drop table FAMKTUMEGENSKAP if exists")
-                        st.execute("drop table FILLAGER if exists")
-                        st.execute("drop table HENDELSE if exists")
-                        st.execute("drop table SOKNADBRUKERDATA if exists")
-                        st.execute("drop table SOKNAD if exists")
-                        st.execute("drop table VEDLEGG if exists")
-                        st.execute("drop table VEDLEGGSTATUS if exists")
                         st.execute("alter table SOKNADMETADATA add LEST_DITT_NAV BOOLEAN default FALSE NOT NULL")
                     }
                 }
