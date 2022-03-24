@@ -6,13 +6,17 @@ application:
 environment.name: local
 
 spring:
-  flyway:
-    enabled: false
   main:
     allow-bean-definition-overriding: true
+  flyway:
+    locations: classpath:postgres/migration
+    driver-class-name: org.hsqldb.jdbcDriver
+    url: jdbc:hsqldb:mem:sendsoknad;sql.syntax_pgs=true
+    user: sa
+    password:
   datasource:
     driver-class-name: org.hsqldb.jdbcDriver
-    url: jdbc:hsqldb:mem:sendsoknad
+    url: jdbc:hsqldb:mem:sendsoknad;sql.syntax_pgs=true
     username: sa
     password:
 
