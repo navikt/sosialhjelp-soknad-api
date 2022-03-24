@@ -67,8 +67,6 @@
     "ENVIRONMENT_NAME": "labs-gcp",
     "IN_MEMORY_DATABASE": "true",
     "MOCK_ALT_UTBETALINGER_FRA_NAV_URL": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/utbetaling",
-    "SRVSOKNADSOSIALHJELP_SERVER_USERNAME": "mockUsername",
-    "SRVSOKNADSOSIALHJELP_SERVER_PASSWORD": "mockPassword",
     "UNLEASH_INSTANCE_ID": "labs-gcp"
   }
 }
