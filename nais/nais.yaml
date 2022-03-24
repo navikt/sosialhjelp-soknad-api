@@ -83,7 +83,7 @@ spec:
           namespace: clamav
       {{/unless}}
       {{/if}}
-      {{#unless isGcp}}
+      {{#unless isMock}}
       {{#each outboundRulesFssApplications}}
         - application: "{{this}}"
           cluster: {{fssCluster}}
