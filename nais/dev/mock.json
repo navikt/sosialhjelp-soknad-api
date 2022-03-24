@@ -4,16 +4,12 @@
   "ingresses": [
     "https://sosialhjelp-soknad-api-mock.dev.nav.no/sosialhjelp/soknad-api"
   ],
-  "envsecret": [
-    "redis-password-soknad-api"
-  ],
   "outboundExternalHosts": [
     "digisos.ekstern.dev.nav.no",
     "unleash.nais.io"
   ],
   "outboundRulesGcpApplications": [
-    "sosialhjelp-mock-alt-api-mock",
-    "sosialhjelp-soknad-api-redis"
+    "sosialhjelp-mock-alt-api-mock"
   ],
   "minReplicas": "1",
   "maxReplicas": "1",
