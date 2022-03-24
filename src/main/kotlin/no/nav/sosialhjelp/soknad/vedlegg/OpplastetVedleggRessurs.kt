@@ -3,7 +3,6 @@ package no.nav.sosialhjelp.soknad.vedlegg
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.metrics.aspects.Timed
 import no.nav.sosialhjelp.soknad.common.Constants
-import no.nav.sosialhjelp.soknad.common.MiljoUtils
 import no.nav.sosialhjelp.soknad.common.filedetection.FileDetectionUtils.getMimeType
 import no.nav.sosialhjelp.soknad.common.filedetection.MimeTypes
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
@@ -86,13 +85,7 @@ open class OpplastetVedleggRessurs(
         }
         val filnavn = fil.contentDisposition.fileName
         val data = getByteArray(fil)
-        if (!MiljoUtils.isRunningWithInMemoryDb()) {
-            // Oracle-spesifikk syntax i query: disabler da denne sjekken når in-memory hsqldb brukes
-            opplastetVedleggService.sjekkOmSoknadUnderArbeidTotalVedleggStorrelseOverskriderMaksgrense(
-                behandlingsId,
-                data
-            )
-        }
+        opplastetVedleggService.sjekkOmSoknadUnderArbeidTotalVedleggStorrelseOverskriderMaksgrense(behandlingsId, data)
         val opplastetVedlegg =
             opplastetVedleggService.saveVedleggAndUpdateVedleggstatus(behandlingsId, vedleggstype, data, filnavn)
         return FilFrontend(opplastetVedlegg.filnavn, opplastetVedlegg.uuid)
