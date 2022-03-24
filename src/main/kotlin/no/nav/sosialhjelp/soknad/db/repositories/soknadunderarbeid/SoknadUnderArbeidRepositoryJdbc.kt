@@ -7,13 +7,14 @@ import no.nav.sbl.soknadsosialhjelp.json.AdresseMixIn
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse
+import no.nav.sosialhjelp.kotlin.utils.logger
 import no.nav.sosialhjelp.soknad.common.exceptions.SamtidigOppdateringException
 import no.nav.sosialhjelp.soknad.common.exceptions.SoknadLaastException
 import no.nav.sosialhjelp.soknad.common.exceptions.SoknadUnderArbeidIkkeFunnetException
 import no.nav.sosialhjelp.soknad.db.SQLUtils
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRepository
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport
-import org.springframework.stereotype.Component
+import org.springframework.jdbc.core.JdbcTemplate
+import org.springframework.stereotype.Repository
 import org.springframework.transaction.TransactionStatus
 import org.springframework.transaction.support.TransactionCallbackWithoutResult
 import org.springframework.transaction.support.TransactionTemplate
@@ -22,25 +23,19 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 import java.util.Date
 import java.util.Optional
-import javax.inject.Inject
-import javax.sql.DataSource
 
 @Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
-@Component
+@Repository
 open class SoknadUnderArbeidRepositoryJdbc(
+    private val jdbcTemplate: JdbcTemplate,
     private val transactionTemplate: TransactionTemplate,
     private val opplastetVedleggRepository: OpplastetVedleggRepository,
-) : NamedParameterJdbcDaoSupport(), SoknadUnderArbeidRepository {
+) : SoknadUnderArbeidRepository {
 
     private val mapper: ObjectMapper = ObjectMapper().addMixIn(JsonAdresse::class.java, AdresseMixIn::class.java)
     private val writer: ObjectWriter = mapper.writerWithDefaultPrettyPrinter()
 
     private val soknadUnderArbeidRowMapper = SoknadUnderArbeidRowMapper()
-
-    @Inject
-    fun setDS(ds: DataSource) {
-        super.setDataSource(ds)
-    }
 
     override fun opprettSoknad(soknadUnderArbeid: SoknadUnderArbeid, eier: String): Long? {
         sjekkOmBrukerEierSoknadUnderArbeid(soknadUnderArbeid, eier)
@@ -190,8 +185,12 @@ open class SoknadUnderArbeidRepositoryJdbc(
             JsonSosialhjelpValidator.ensureValidInternalSoknad(internalSoknad)
             internalSoknad.toByteArray(StandardCharsets.UTF_8)
         } catch (e: JsonProcessingException) {
-            logger.error("Kunne ikke konvertere søknadsobjekt til tekststreng", e)
+            log.error("Kunne ikke konvertere søknadsobjekt til tekststreng", e)
             throw RuntimeException(e)
         }
+    }
+
+    companion object {
+        private val log by logger()
     }
 }

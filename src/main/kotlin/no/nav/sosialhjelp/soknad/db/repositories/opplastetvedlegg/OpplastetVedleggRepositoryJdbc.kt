@@ -2,20 +2,15 @@ package no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg
 
 import no.nav.sosialhjelp.soknad.db.SQLUtils
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRowMapper.opplastetVedleggRowMapper
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport
-import org.springframework.stereotype.Component
+import org.springframework.jdbc.core.JdbcTemplate
+import org.springframework.stereotype.Repository
 import java.util.Optional
-import javax.inject.Inject
-import javax.sql.DataSource
 
 @Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
-@Component
-open class OpplastetVedleggRepositoryJdbc : NamedParameterJdbcDaoSupport(), OpplastetVedleggRepository {
-
-    @Inject
-    fun setDS(ds: DataSource) {
-        super.setDataSource(ds)
-    }
+@Repository
+open class OpplastetVedleggRepositoryJdbc(
+    private val jdbcTemplate: JdbcTemplate
+) : OpplastetVedleggRepository {
 
     override fun hentVedlegg(uuid: String?, eier: String): Optional<OpplastetVedlegg> {
         return jdbcTemplate.query(

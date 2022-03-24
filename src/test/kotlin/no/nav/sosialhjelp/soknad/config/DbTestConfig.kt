@@ -19,6 +19,7 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderAr
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Import
+import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.transaction.annotation.EnableTransactionManagement
 import org.springframework.transaction.support.TransactionTemplate
 import javax.sql.DataSource
@@ -29,53 +30,55 @@ import javax.sql.DataSource
 open class DbTestConfig {
 
     @Bean
-    open fun soknadMetadataRepository(): SoknadMetadataRepository {
-        return SoknadMetadataRepositoryJdbc()
+    open fun jdbcTemplate(dataSource: DataSource): JdbcTemplate {
+        return JdbcTemplate(dataSource)
     }
 
     @Bean
-    open fun sendtSoknadRepository(): SendtSoknadRepository {
-        return SendtSoknadRepositoryJdbc()
+    open fun soknadMetadataRepository(jdbcTemplate: JdbcTemplate): SoknadMetadataRepository {
+        return SoknadMetadataRepositoryJdbc(jdbcTemplate)
+    }
+
+    @Bean
+    open fun sendtSoknadRepository(jdbcTemplate: JdbcTemplate): SendtSoknadRepository {
+        return SendtSoknadRepositoryJdbc(jdbcTemplate)
     }
 
     @Bean
     open fun soknadUnderArbeidRepository(
+        jdbcTemplate: JdbcTemplate,
         transactionTemplate: TransactionTemplate,
         opplastetVedleggRepository: OpplastetVedleggRepository
     ): SoknadUnderArbeidRepository {
-        return SoknadUnderArbeidRepositoryJdbc(transactionTemplate, opplastetVedleggRepository)
+        return SoknadUnderArbeidRepositoryJdbc(jdbcTemplate, transactionTemplate, opplastetVedleggRepository)
     }
 
     @Bean
-    open fun opplastetVedleggRepository(): OpplastetVedleggRepository {
-        return OpplastetVedleggRepositoryJdbc()
+    open fun opplastetVedleggRepository(jdbcTemplate: JdbcTemplate): OpplastetVedleggRepository {
+        return OpplastetVedleggRepositoryJdbc(jdbcTemplate)
     }
 
     @Bean
     open fun batchSoknadUnderArbeidRepository(
+        jdbcTemplate: JdbcTemplate,
         transactionTemplate: TransactionTemplate,
         batchOpplastetVedleggRepository: BatchOpplastetVedleggRepository
     ): BatchSoknadUnderArbeidRepository {
-        return BatchSoknadUnderArbeidRepositoryJdbc(transactionTemplate, batchOpplastetVedleggRepository)
+        return BatchSoknadUnderArbeidRepositoryJdbc(jdbcTemplate, transactionTemplate, batchOpplastetVedleggRepository)
     }
 
     @Bean
-    open fun batchOpplastetVedleggRepository(): BatchOpplastetVedleggRepository {
-        return BatchOpplastetVedleggRepositoryJdbc()
+    open fun batchOpplastetVedleggRepository(jdbcTemplate: JdbcTemplate): BatchOpplastetVedleggRepository {
+        return BatchOpplastetVedleggRepositoryJdbc(jdbcTemplate)
     }
 
     @Bean
-    open fun batchSoknadMetadataRepository(): BatchSoknadMetadataRepository {
-        return BatchSoknadMetadataRepositoryJdbc()
+    open fun batchSoknadMetadataRepository(jdbcTemplate: JdbcTemplate): BatchSoknadMetadataRepository {
+        return BatchSoknadMetadataRepositoryJdbc(jdbcTemplate)
     }
 
     @Bean
-    open fun batchSendtSoknadRepository(transactionTemplate: TransactionTemplate): BatchSendtSoknadRepository {
-        return BatchSendtSoknadRepositoryJdbc(transactionTemplate)
-    }
-
-    @Bean
-    open fun testSupport(dataSource: DataSource): RepositoryTestSupport {
-        return TestSupport(dataSource)
+    open fun batchSendtSoknadRepository(jdbcTemplate: JdbcTemplate, transactionTemplate: TransactionTemplate): BatchSendtSoknadRepository {
+        return BatchSendtSoknadRepositoryJdbc(jdbcTemplate, transactionTemplate)
     }
 }

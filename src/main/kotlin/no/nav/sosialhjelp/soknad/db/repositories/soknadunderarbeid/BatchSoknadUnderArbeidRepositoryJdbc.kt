@@ -1,33 +1,27 @@
 package no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid
 
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.BatchOpplastetVedleggRepository
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport
-import org.springframework.stereotype.Component
+import org.springframework.jdbc.core.JdbcTemplate
+import org.springframework.stereotype.Repository
 import org.springframework.transaction.TransactionStatus
 import org.springframework.transaction.support.TransactionCallbackWithoutResult
 import org.springframework.transaction.support.TransactionTemplate
 import java.sql.ResultSet
 import java.util.Optional
-import javax.inject.Inject
-import javax.sql.DataSource
 
 /**
  * Repository for SoknadUnderArbeid.
  * Operasjoner som kun er tiltenkt batch/schedulerte jobber.
  */
 @Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
-@Component
-class BatchSoknadUnderArbeidRepositoryJdbc(
+@Repository
+open class BatchSoknadUnderArbeidRepositoryJdbc(
+    private val jdbcTemplate: JdbcTemplate,
     private val transactionTemplate: TransactionTemplate,
     private val batchOpplastetVedleggRepository: BatchOpplastetVedleggRepository
-) : NamedParameterJdbcDaoSupport(), BatchSoknadUnderArbeidRepository {
+) : BatchSoknadUnderArbeidRepository {
 
     private val soknadUnderArbeidRowMapper = SoknadUnderArbeidRowMapper()
-
-    @Inject
-    fun setDS(ds: DataSource) {
-        super.setDataSource(ds)
-    }
 
     override fun hentSoknadUnderArbeidIdFromBehandlingsIdOptional(behandlingsId: String?): Optional<Long> {
         return jdbcTemplate.query(

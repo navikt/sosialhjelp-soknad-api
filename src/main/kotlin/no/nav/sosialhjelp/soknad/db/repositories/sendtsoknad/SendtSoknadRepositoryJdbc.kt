@@ -2,23 +2,18 @@ package no.nav.sosialhjelp.soknad.db.repositories.sendtsoknad
 
 import no.nav.sosialhjelp.soknad.db.SQLUtils
 import no.nav.sosialhjelp.soknad.db.repositories.sendtsoknad.SendtSoknadRowMapper.sendtSoknadRowMapper
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport
-import org.springframework.stereotype.Component
+import org.springframework.jdbc.core.JdbcTemplate
+import org.springframework.stereotype.Repository
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.util.Date
 import java.util.Optional
-import javax.inject.Inject
-import javax.sql.DataSource
 
 @Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
-@Component
-class SendtSoknadRepositoryJdbc : NamedParameterJdbcDaoSupport(), SendtSoknadRepository {
-
-    @Inject
-    fun setDS(ds: DataSource) {
-        super.setDataSource(ds)
-    }
+@Repository
+open class SendtSoknadRepositoryJdbc(
+    private val jdbcTemplate: JdbcTemplate
+) : SendtSoknadRepository {
 
     override fun opprettSendtSoknad(sendtSoknad: SendtSoknad, eier: String?): Long? {
         sjekkOmBrukerEierSendtSoknad(sendtSoknad, eier)

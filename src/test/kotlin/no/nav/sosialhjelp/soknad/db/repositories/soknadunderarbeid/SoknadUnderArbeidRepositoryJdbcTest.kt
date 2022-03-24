@@ -4,7 +4,6 @@ import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sosialhjelp.soknad.common.exceptions.SamtidigOppdateringException
 import no.nav.sosialhjelp.soknad.common.exceptions.SoknadLaastException
 import no.nav.sosialhjelp.soknad.config.DbTestConfig
-import no.nav.sosialhjelp.soknad.config.RepositoryTestSupport
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedlegg
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRepository
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggType
@@ -13,6 +12,7 @@ import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit.jupiter.SpringExtension
@@ -26,7 +26,7 @@ import javax.inject.Inject
 internal class SoknadUnderArbeidRepositoryJdbcTest {
 
     @Inject
-    private val soknadRepositoryTestSupport: RepositoryTestSupport? = null
+    private lateinit var jdbcTemplate: JdbcTemplate
 
     @Inject
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository? = null
@@ -36,8 +36,8 @@ internal class SoknadUnderArbeidRepositoryJdbcTest {
 
     @AfterEach
     fun tearDown() {
-        soknadRepositoryTestSupport!!.getJdbcTemplate().update("delete from SOKNAD_UNDER_ARBEID")
-        soknadRepositoryTestSupport.getJdbcTemplate().update("delete from OPPLASTET_VEDLEGG")
+        jdbcTemplate.update("delete from SOKNAD_UNDER_ARBEID")
+        jdbcTemplate.update("delete from OPPLASTET_VEDLEGG")
     }
 
     @Test
