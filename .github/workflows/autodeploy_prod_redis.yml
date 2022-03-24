@@ -28,7 +28,7 @@ jobs:
           CLUSTER: prod-sbs
           TEAM: teamdigisos
           RESOURCE: "nais/redis-config.yml,nais/redisexporter.yml"
-          VARS: /nais/prod/prod-sbs.json
+          VARS: nais/prod/prod-sbs.json
 
   deploy-prod-gcp:
     name: Auto-deploy redis to prod-gcp
@@ -44,4 +44,4 @@ jobs:
           CLUSTER: prod-gcp
           TEAM: teamdigisos
           RESOURCE: "nais/redis-config.yml,nais/redisexporter.yml"
-          VARS: /nais/prod/prod-gcp.json
+          VARS: nais/prod/prod-gcp.json
