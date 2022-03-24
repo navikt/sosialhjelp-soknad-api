@@ -15,7 +15,7 @@ import org.springframework.transaction.support.TransactionTemplate
 import javax.annotation.Resource
 import javax.sql.DataSource
 
-@Profile("!(mock-alt | test)")
+@Profile("!repositoryTest")
 @Configuration
 @Resource(name = "jdbc/SoknadInnsendingDS", type = DataSource::class, lookup = "jdbc/SoknadInnsendingDS")
 @EnableTransactionManagement
