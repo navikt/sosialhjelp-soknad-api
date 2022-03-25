@@ -2,22 +2,17 @@ package no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata
 
 import no.nav.sosialhjelp.soknad.db.SQLUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRowMapper.soknadMetadataRowMapper
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport
-import org.springframework.stereotype.Component
+import org.springframework.jdbc.core.JdbcTemplate
+import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
 import java.util.Optional
-import javax.inject.Inject
-import javax.sql.DataSource
 
 @Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
-@Component
-open class BatchSoknadMetadataRepositoryJdbc : NamedParameterJdbcDaoSupport(), BatchSoknadMetadataRepository {
-
-    @Inject
-    fun setDS(ds: DataSource) {
-        super.setDataSource(ds)
-    }
+@Repository
+open class BatchSoknadMetadataRepositoryJdbc(
+    private val jdbcTemplate: JdbcTemplate
+) : BatchSoknadMetadataRepository {
 
     @Transactional
     override fun hentForBatch(antallDagerGammel: Int): Optional<SoknadMetadata> {

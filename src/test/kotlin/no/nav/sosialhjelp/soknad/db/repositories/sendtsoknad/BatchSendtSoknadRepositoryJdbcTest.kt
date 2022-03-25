@@ -1,11 +1,11 @@
 package no.nav.sosialhjelp.soknad.db.repositories.sendtsoknad
 
 import no.nav.sosialhjelp.soknad.config.DbTestConfig
-import no.nav.sosialhjelp.soknad.config.RepositoryTestSupport
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit.jupiter.SpringExtension
@@ -25,11 +25,11 @@ internal class BatchSendtSoknadRepositoryJdbcTest {
     private val batchSendtSoknadRepository: BatchSendtSoknadRepository? = null
 
     @Inject
-    private val soknadRepositoryTestSupport: RepositoryTestSupport? = null
+    private lateinit var jdbcTemplate: JdbcTemplate
 
     @AfterEach
     fun tearDown() {
-        soknadRepositoryTestSupport!!.getJdbcTemplate().update("delete from SENDT_SOKNAD")
+        jdbcTemplate.update("delete from SENDT_SOKNAD")
     }
 
     @Test

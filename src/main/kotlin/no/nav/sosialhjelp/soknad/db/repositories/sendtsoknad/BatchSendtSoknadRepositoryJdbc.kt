@@ -1,25 +1,19 @@
 package no.nav.sosialhjelp.soknad.db.repositories.sendtsoknad
 
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport
-import org.springframework.stereotype.Component
+import org.springframework.jdbc.core.JdbcTemplate
+import org.springframework.stereotype.Repository
 import org.springframework.transaction.TransactionStatus
 import org.springframework.transaction.support.TransactionCallbackWithoutResult
 import org.springframework.transaction.support.TransactionTemplate
 import java.sql.ResultSet
 import java.util.Optional
-import javax.inject.Inject
-import javax.sql.DataSource
 
 @Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
-@Component
-class BatchSendtSoknadRepositoryJdbc(
+@Repository
+open class BatchSendtSoknadRepositoryJdbc(
+    private val jdbcTemplate: JdbcTemplate,
     private val transactionTemplate: TransactionTemplate
-) : NamedParameterJdbcDaoSupport(), BatchSendtSoknadRepository {
-
-    @Inject
-    fun setDS(ds: DataSource) {
-        super.setDataSource(ds)
-    }
+) : BatchSendtSoknadRepository {
 
     override fun hentSendtSoknad(behandlingsId: String): Optional<Long> {
         return jdbcTemplate.query(

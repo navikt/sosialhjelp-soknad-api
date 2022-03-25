@@ -3,25 +3,20 @@ package no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata
 import no.nav.sosialhjelp.soknad.db.SQLUtils
 import no.nav.sosialhjelp.soknad.db.SQLUtils.tidTilTimestamp
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRowMapper.soknadMetadataRowMapper
+import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.core.RowMapper
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport
-import org.springframework.stereotype.Component
+import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
 import java.sql.ResultSet
 import java.time.LocalDateTime
-import javax.inject.Inject
-import javax.sql.DataSource
 
 @Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
-@Component
-open class SoknadMetadataRepositoryJdbc : NamedParameterJdbcDaoSupport(), SoknadMetadataRepository {
+@Repository
+open class SoknadMetadataRepositoryJdbc(
+    private val jdbcTemplate: JdbcTemplate
+) : SoknadMetadataRepository {
 
     private val antallRowMapper = RowMapper { rs: ResultSet, _: Int -> rs.getInt("antall") }
-
-    @Inject
-    fun setDS(ds: DataSource) {
-        super.setDataSource(ds)
-    }
 
     override fun hentNesteId(): Long {
         return jdbcTemplate.queryForObject(SQLUtils.selectNextSequenceValue("METADATA_ID_SEQ"), Long::class.java)

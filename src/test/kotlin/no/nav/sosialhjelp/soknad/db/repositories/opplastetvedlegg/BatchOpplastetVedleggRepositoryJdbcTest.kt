@@ -1,12 +1,12 @@
 package no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg
 
 import no.nav.sosialhjelp.soknad.config.DbTestConfig
-import no.nav.sosialhjelp.soknad.config.RepositoryTestSupport
 import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils.getSha512FromByteArray
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit.jupiter.SpringExtension
@@ -24,12 +24,12 @@ internal class BatchOpplastetVedleggRepositoryJdbcTest {
     private val batchOpplastetVedleggRepository: BatchOpplastetVedleggRepository? = null
 
     @Inject
-    private val soknadRepositoryTestSupport: RepositoryTestSupport? = null
+    private lateinit var jdbcTemplate: JdbcTemplate
 
     @AfterEach
     fun tearDown() {
-        soknadRepositoryTestSupport!!.getJdbcTemplate().update("delete from OPPLASTET_VEDLEGG")
-        soknadRepositoryTestSupport.getJdbcTemplate().update("delete from SOKNAD_UNDER_ARBEID")
+        jdbcTemplate.update("delete from OPPLASTET_VEDLEGG")
+        jdbcTemplate.update("delete from SOKNAD_UNDER_ARBEID")
     }
 
     @Test

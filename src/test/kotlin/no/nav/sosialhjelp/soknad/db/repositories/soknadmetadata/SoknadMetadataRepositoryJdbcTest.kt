@@ -1,11 +1,11 @@
 package no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata
 
 import no.nav.sosialhjelp.soknad.config.DbTestConfig
-import no.nav.sosialhjelp.soknad.config.RepositoryTestSupport
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit.jupiter.SpringExtension
@@ -24,10 +24,11 @@ internal class SoknadMetadataRepositoryJdbcTest {
     private val soknadMetadataRepository: SoknadMetadataRepository? = null
 
     @Inject
-    private val support: RepositoryTestSupport? = null
+    private lateinit var jdbcTemplate: JdbcTemplate
+
     @AfterEach
     fun teardown() {
-        support!!.getJdbcTemplate().update("DELETE FROM soknadmetadata")
+        jdbcTemplate.update("DELETE FROM soknadmetadata")
     }
 
     @Test
