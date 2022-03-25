@@ -10,6 +10,17 @@
     "fiks-svarut-credentials",
     "testbruker-skatteetaten"
   ],
+  "outboundExternalHosts": [
+    "digisos.dev.nav.no",
+    "unleash.nais.io",
+    "sosialhjelp-fss-proxy.dev-fss-pub.nais.io",
+    "sosialhjelp-oppslag-api.dev-fss-pub.nais.io",
+    "pdl-api.dev-fss-pub.nais.io",
+    "api.fiks.test.ks.no",
+    "test.svarut.ks.no",
+    "api.demo.husbanken.no",
+    "api-test.sits.no"
+  ],
   "outboundRulesGcpApplications": [
     "sosialhjelp-soknad-api-redis"
   ],
