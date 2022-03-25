@@ -1,37 +1,34 @@
 package no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid
 
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
-import no.nav.sosialhjelp.soknad.config.DbTestConfig
+import no.nav.sosialhjelp.soknad.Application
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedlegg
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRepository
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggType
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
+import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.test.context.ActiveProfiles
-import org.springframework.test.context.ContextConfiguration
-import org.springframework.test.context.junit.jupiter.SpringExtension
 import java.time.LocalDateTime
 import javax.inject.Inject
 
-@ExtendWith(SpringExtension::class)
-@ContextConfiguration(classes = [DbTestConfig::class])
-@ActiveProfiles("repositoryTest")
+@ActiveProfiles(profiles = ["no-redis", "test"])
+@SpringBootTest(classes = [Application::class])
 internal class BatchSoknadUnderArbeidRepositoryJdbcTest {
 
     @Inject
     private lateinit var jdbcTemplate: JdbcTemplate
 
     @Inject
-    private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository? = null
+    private lateinit var soknadUnderArbeidRepository: SoknadUnderArbeidRepository
 
     @Inject
-    private val opplastetVedleggRepository: OpplastetVedleggRepository? = null
+    private lateinit var opplastetVedleggRepository: OpplastetVedleggRepository
 
     @Inject
-    private val batchSoknadUnderArbeidRepository: BatchSoknadUnderArbeidRepository? = null
+    private lateinit var batchSoknadUnderArbeidRepository: BatchSoknadUnderArbeidRepository
 
     @AfterEach
     fun tearDown() {
@@ -42,10 +39,10 @@ internal class BatchSoknadUnderArbeidRepositoryJdbcTest {
     @Test
     fun hentSoknaderForBatchSkalFinneGamleSoknader() {
         val skalIkkeSlettes = lagSoknadUnderArbeid(BEHANDLINGSID, 13)
-        val skalIkkeSlettesId = soknadUnderArbeidRepository!!.opprettSoknad(skalIkkeSlettes, EIER)
+        val skalIkkeSlettesId = soknadUnderArbeidRepository.opprettSoknad(skalIkkeSlettes, EIER)
         val skalSlettes = lagSoknadUnderArbeid("annen_behandlingsid", 14)
         val skalSlettesId = soknadUnderArbeidRepository.opprettSoknad(skalSlettes, EIER)
-        val soknader = batchSoknadUnderArbeidRepository!!.hentGamleSoknadUnderArbeidForBatch()
+        val soknader = batchSoknadUnderArbeidRepository.hentGamleSoknadUnderArbeidForBatch()
         assertThat(soknader).hasSize(1)
         assertThat(soknader[0]).isEqualTo(skalSlettesId).isNotEqualTo(skalIkkeSlettesId)
     }
@@ -53,10 +50,10 @@ internal class BatchSoknadUnderArbeidRepositoryJdbcTest {
     @Test
     fun slettSoknadGittSoknadUnderArbeidIdSkalSletteSoknad() {
         val soknadUnderArbeid = lagSoknadUnderArbeid(BEHANDLINGSID, 15)
-        val soknadUnderArbeidId = soknadUnderArbeidRepository!!.opprettSoknad(soknadUnderArbeid, EIER)
+        val soknadUnderArbeidId = soknadUnderArbeidRepository.opprettSoknad(soknadUnderArbeid, EIER)
         soknadUnderArbeid.soknadId = soknadUnderArbeidId!!
-        val opplastetVedleggUuid = opplastetVedleggRepository!!.opprettVedlegg(lagOpplastetVedlegg(soknadUnderArbeidId), EIER)
-        batchSoknadUnderArbeidRepository!!.slettSoknad(soknadUnderArbeid.soknadId)
+        val opplastetVedleggUuid = opplastetVedleggRepository.opprettVedlegg(lagOpplastetVedlegg(soknadUnderArbeidId), EIER)
+        batchSoknadUnderArbeidRepository.slettSoknad(soknadUnderArbeid.soknadId)
         assertThat(soknadUnderArbeidRepository.hentSoknad(soknadUnderArbeidId, EIER)).isEmpty
         assertThat(opplastetVedleggRepository.hentVedlegg(opplastetVedleggUuid, EIER)).isEmpty
     }
