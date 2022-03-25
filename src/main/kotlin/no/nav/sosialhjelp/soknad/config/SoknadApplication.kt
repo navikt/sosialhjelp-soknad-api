@@ -8,7 +8,6 @@ import no.nav.sosialhjelp.soknad.api.informasjon.InformasjonRessurs
 import no.nav.sosialhjelp.soknad.api.innsyn.SoknadOversiktRessurs
 import no.nav.sosialhjelp.soknad.api.minesaker.MineSakerMetadataRessurs
 import no.nav.sosialhjelp.soknad.api.nedetid.NedetidRessurs
-import no.nav.sosialhjelp.soknad.api.saksoversikt.SaksoversiktMetadataOidcRessurs
 import no.nav.sosialhjelp.soknad.arbeid.ArbeidRessurs
 import no.nav.sosialhjelp.soknad.begrunnelse.BegrunnelseRessurs
 import no.nav.sosialhjelp.soknad.bosituasjon.BosituasjonRessurs
@@ -97,7 +96,7 @@ open class SoknadApplication : ResourceConfig() {
         register(MineSakerMetadataRessurs::class.java)
         register(SistInnsendteSoknadRessurs::class.java)
         register(SoknadOversiktRessurs::class.java)
-        register(SaksoversiktMetadataOidcRessurs::class.java)
+
         register(JacksonJaxbJsonProvider::class.java)
         register(MultiPartFeature::class.java)
         register(JsonToTextPlainBodyWriter::class.java)

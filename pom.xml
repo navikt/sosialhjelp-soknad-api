@@ -47,7 +47,6 @@
         <kotlin.version>1.6.10</kotlin.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <tjenestespesifikasjon.version>1.2021.01.21-11.34-02f5eb27bb76</tjenestespesifikasjon.version>
         <sosialhjelp-common.version>1.231cd9b</sosialhjelp-common.version>
         <filformat.version>1.2022.01.30-13.18-01cd95216e0b</filformat.version>
 
@@ -570,13 +569,6 @@
                     <artifactId>jsr305</artifactId>
                 </exclusion>
             </exclusions>
-        </dependency>
-
-        <!-- Tjenestespesifikasjoner -->
-        <dependency>
-            <groupId>no.nav.tjenestespesifikasjoner</groupId>
-            <artifactId>soeknadsskjemasosialhjelp-v1-saksoversiktdefinisjon</artifactId>
-            <version>${tjenestespesifikasjon.version}</version>
         </dependency>
 
         <!-- Sosialhjelp-common -->
