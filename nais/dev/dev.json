@@ -44,6 +44,7 @@
   "webProxyEnabled": false,
   "isGcp": true,
   "isMock": false,
+  "isDev": true,
   "leaderElectionEnabled": true,
   "maskinportenEnabled": true,
   "azureEnabled": true,
