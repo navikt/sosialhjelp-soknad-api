@@ -1,27 +1,31 @@
 package no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg
 
-import no.nav.sosialhjelp.soknad.config.DbTestConfig
+import no.nav.sosialhjelp.soknad.Application
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils.getSha512FromByteArray
-import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
+import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.test.context.ActiveProfiles
-import org.springframework.test.context.ContextConfiguration
-import org.springframework.test.context.junit.jupiter.SpringExtension
+import java.time.LocalDateTime
 import javax.inject.Inject
 
-@ExtendWith(SpringExtension::class)
-@ContextConfiguration(classes = [DbTestConfig::class])
-@ActiveProfiles("repositoryTest")
-internal class BatchOpplastetVedleggRepositoryJdbcTest {
+@ActiveProfiles(profiles = ["no-redis", "test"])
+@SpringBootTest(classes = [Application::class])
+internal open class BatchOpplastetVedleggRepositoryJdbcTest {
 
     @Inject
-    private val opplastetVedleggRepository: OpplastetVedleggRepository? = null
+    private lateinit var soknadUnderArbeidRepository: SoknadUnderArbeidRepository
 
     @Inject
-    private val batchOpplastetVedleggRepository: BatchOpplastetVedleggRepository? = null
+    private lateinit var opplastetVedleggRepository: OpplastetVedleggRepository
+
+    @Inject
+    private lateinit var batchOpplastetVedleggRepository: BatchOpplastetVedleggRepository
 
     @Inject
     private lateinit var jdbcTemplate: JdbcTemplate
@@ -34,20 +38,24 @@ internal class BatchOpplastetVedleggRepositoryJdbcTest {
 
     @Test
     fun slettAlleVedleggForSoknadSletterAlleOpplastedeVedleggForGittSoknadId() {
-        val uuid = opprettOpplastetVedleggOgLagreIDb(lagOpplastetVedlegg(), EIER)
-        val uuidSammeSoknadOgEier = opprettOpplastetVedleggOgLagreIDb(lagOpplastetVedlegg(EIER, TYPE, SOKNADID), EIER)
+        // add soknadUnderArbeid first
+        val soknadId = soknadUnderArbeidRepository.opprettSoknad(lagSoknadUnderArbeid(BEHANDLINGSID), EIER)!!
+        val soknadId3 = soknadUnderArbeidRepository.opprettSoknad(lagSoknadUnderArbeid(BEHANDLINGSID3), EIER)!!
+
+        val uuid = opprettOpplastetVedleggOgLagreIDb(lagOpplastetVedlegg(soknadId = soknadId), EIER)
+        val uuidSammeSoknadOgEier = opprettOpplastetVedleggOgLagreIDb(lagOpplastetVedlegg(EIER, TYPE, soknadId), EIER)
         val uuidSammeEierOgAnnenSoknad =
-            opprettOpplastetVedleggOgLagreIDb(lagOpplastetVedlegg(EIER, TYPE2, SOKNADID3), EIER)
-        batchOpplastetVedleggRepository!!.slettAlleVedleggForSoknad(SOKNADID)
-        Assertions.assertThat(opplastetVedleggRepository!!.hentVedlegg(uuid, EIER)).isEmpty
-        Assertions.assertThat(opplastetVedleggRepository.hentVedlegg(uuidSammeSoknadOgEier, EIER)).isEmpty
-        Assertions.assertThat(opplastetVedleggRepository.hentVedlegg(uuidSammeEierOgAnnenSoknad, EIER)).isPresent
+            opprettOpplastetVedleggOgLagreIDb(lagOpplastetVedlegg(EIER, TYPE2, soknadId3), EIER)
+        batchOpplastetVedleggRepository.slettAlleVedleggForSoknad(soknadId)
+        assertThat(opplastetVedleggRepository.hentVedlegg(uuid, EIER)).isEmpty
+        assertThat(opplastetVedleggRepository.hentVedlegg(uuidSammeSoknadOgEier, EIER)).isEmpty
+        assertThat(opplastetVedleggRepository.hentVedlegg(uuidSammeEierOgAnnenSoknad, EIER)).isPresent
     }
 
     private fun lagOpplastetVedlegg(
         eier: String = EIER,
         type: String = TYPE,
-        soknadId: Long = SOKNADID,
+        soknadId: Long,
     ): OpplastetVedlegg {
         return OpplastetVedlegg(
             eier = eier,
@@ -59,8 +67,21 @@ internal class BatchOpplastetVedleggRepositoryJdbcTest {
         )
     }
 
+    private fun lagSoknadUnderArbeid(behandlingsId: String): SoknadUnderArbeid {
+        return SoknadUnderArbeid(
+            versjon = 1L,
+            behandlingsId = behandlingsId,
+            tilknyttetBehandlingsId = null,
+            eier = EIER,
+            jsonInternalSoknad = null,
+            status = SoknadUnderArbeidStatus.UNDER_ARBEID,
+            opprettetDato = LocalDateTime.now(),
+            sistEndretDato = LocalDateTime.now()
+        )
+    }
+
     private fun opprettOpplastetVedleggOgLagreIDb(opplastetVedlegg: OpplastetVedlegg, eier: String): String {
-        return opplastetVedleggRepository!!.opprettVedlegg(opplastetVedlegg, eier)
+        return opplastetVedleggRepository.opprettVedlegg(opplastetVedlegg, eier)
     }
 
     companion object {
@@ -69,9 +90,8 @@ internal class BatchOpplastetVedleggRepositoryJdbcTest {
         private val SHA512 = getSha512FromByteArray(DATA)
         private const val TYPE = "bostotte|annetboutgift"
         private const val TYPE2 = "dokumentasjon|aksjer"
-        private const val SOKNADID = 1L
-        private const val SOKNADID2 = 2L
-        private const val SOKNADID3 = 3L
+        private const val BEHANDLINGSID = "behandlingsid"
+        private const val BEHANDLINGSID3 = "behandlingsid3"
         private const val FILNAVN = "dokumentasjon.pdf"
     }
 }
