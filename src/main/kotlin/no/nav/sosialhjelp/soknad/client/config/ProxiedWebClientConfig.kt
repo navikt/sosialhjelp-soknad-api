@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Profile
 import org.springframework.web.reactive.function.client.WebClient
 import reactor.netty.http.client.HttpClient
 
-@Profile("!(mock-alt|test)")
+@Profile("!(dev|mock-alt|test)")
 @Configuration
 open class ProxiedWebClientConfig(
     @Value("\${HTTPS_PROXY}") private val proxyUrl: String
@@ -25,7 +25,7 @@ open class ProxiedWebClientConfig(
     open fun proxiedHttpClient(): HttpClient = proxiedHttpClient(proxyUrl)
 }
 
-@Profile("(mock-alt|test)")
+@Profile("(dev|mock-alt|test)")
 @Configuration
 open class MockProxiedWebClientConfig {
 
