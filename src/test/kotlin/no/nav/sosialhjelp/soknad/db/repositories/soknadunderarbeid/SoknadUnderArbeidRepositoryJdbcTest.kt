@@ -1,9 +1,9 @@
 package no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid
 
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
+import no.nav.sosialhjelp.soknad.Application
 import no.nav.sosialhjelp.soknad.common.exceptions.SamtidigOppdateringException
 import no.nav.sosialhjelp.soknad.common.exceptions.SoknadLaastException
-import no.nav.sosialhjelp.soknad.config.DbTestConfig
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedlegg
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRepository
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggType
@@ -11,18 +11,15 @@ import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
+import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.test.context.ActiveProfiles
-import org.springframework.test.context.ContextConfiguration
-import org.springframework.test.context.junit.jupiter.SpringExtension
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 import javax.inject.Inject
 
-@ExtendWith(SpringExtension::class)
-@ContextConfiguration(classes = [DbTestConfig::class])
-@ActiveProfiles("repositoryTest")
+@ActiveProfiles(profiles = ["no-redis", "test"])
+@SpringBootTest(classes = [Application::class])
 internal class SoknadUnderArbeidRepositoryJdbcTest {
 
     @Inject
@@ -100,9 +97,7 @@ internal class SoknadUnderArbeidRepositoryJdbcTest {
         soknadUnderArbeid.jsonInternalSoknad = soknadUnderArbeid.jsonInternalSoknad?.withAdditionalProperty("endret", true)
 
         assertThatExceptionOfType(SamtidigOppdateringException::class.java)
-            .isThrownBy {
-                soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, EIER)
-            }
+            .isThrownBy { soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, EIER) }
     }
 
     @Test
@@ -113,9 +108,7 @@ internal class SoknadUnderArbeidRepositoryJdbcTest {
         soknadUnderArbeid.soknadId = soknadUnderArbeidId!!
         soknadUnderArbeid.jsonInternalSoknad = JSON_INTERNAL_SOKNAD
         assertThatExceptionOfType(SoknadLaastException::class.java)
-            .isThrownBy {
-                soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, EIER)
-            }
+            .isThrownBy { soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, EIER) }
     }
 
     @Test

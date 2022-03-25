@@ -1,22 +1,19 @@
 package no.nav.sosialhjelp.soknad.db.repositories.sendtsoknad
 
-import no.nav.sosialhjelp.soknad.config.DbTestConfig
+import no.nav.sosialhjelp.soknad.Application
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
+import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.test.context.ActiveProfiles
-import org.springframework.test.context.ContextConfiguration
-import org.springframework.test.context.junit.jupiter.SpringExtension
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 import javax.inject.Inject
 
-@ExtendWith(SpringExtension::class)
-@ContextConfiguration(classes = [DbTestConfig::class])
-@ActiveProfiles("repositoryTest")
+@ActiveProfiles(profiles = ["no-redis", "test"])
+@SpringBootTest(classes = [Application::class])
 internal class SendtSoknadRepositoryJdbcTest {
 
     @Inject
@@ -39,17 +36,13 @@ internal class SendtSoknadRepositoryJdbcTest {
     @Test
     fun opprettSendtSoknadKasterRuntimeExceptionHvisEierErUlikSoknadseier() {
         assertThatExceptionOfType(RuntimeException::class.java)
-            .isThrownBy {
-                sendtSoknadRepository.opprettSendtSoknad(lagSendtSoknad(EIER), EIER2)
-            }
+            .isThrownBy { sendtSoknadRepository.opprettSendtSoknad(lagSendtSoknad(EIER), EIER2) }
     }
 
     @Test
     fun opprettSendtSoknadKasterRuntimeExceptionHvisEierErNull() {
         assertThatExceptionOfType(RuntimeException::class.java)
-            .isThrownBy {
-                sendtSoknadRepository.opprettSendtSoknad(lagSendtSoknad(EIER), null)
-            }
+            .isThrownBy { sendtSoknadRepository.opprettSendtSoknad(lagSendtSoknad(EIER), null) }
     }
 
     @Test
