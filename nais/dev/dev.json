@@ -48,7 +48,7 @@
   "maskinportenEnabled": true,
   "azureEnabled": true,
   "env": {
-    "SPRING_PROFILES_ACTIVE": "log-kibana,leader-election",
+    "SPRING_PROFILES_ACTIVE": "dev,log-kibana,leader-election",
     "AAREG_PROXY_URL": "https://sosialhjelp-fss-proxy.dev-fss-pub.nais.io/proxy/aareg/",
     "EREG_PROXY_URL": "https://sosialhjelp-fss-proxy.dev-fss-pub.nais.io/proxy/ereg/",
     "FIKS_NOKKELFIL": "svarut_public_test.pem",
