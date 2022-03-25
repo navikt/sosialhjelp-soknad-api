@@ -9,10 +9,14 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.BatchSoknadMetad
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepositoryJdbc
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.BatchSoknadUnderArbeidRepositoryJdbc
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepositoryJdbc
+import no.nav.sosialhjelp.soknad.health.selftest.Pingable
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Import
+import org.springframework.jdbc.core.JdbcTemplate
+import org.springframework.transaction.annotation.EnableTransactionManagement
 import java.time.Clock
+import javax.sql.DataSource
 
 @Configuration
 @Import(
@@ -24,13 +28,29 @@ import java.time.Clock
     BatchSoknadUnderArbeidRepositoryJdbc::class,
     BatchSoknadMetadataRepositoryJdbc::class,
     BatchSendtSoknadRepositoryJdbc::class,
-    OppgaveRepositoryJdbc::class,
-    SoknadInnsendingDBConfig::class
+    OppgaveRepositoryJdbc::class
 )
-open class DbConfig {
+@EnableTransactionManagement
+open class DbConfig(
+    private val dataSource: DataSource
+) {
 
     @Bean
     open fun clock(): Clock {
         return Clock.systemDefaultZone()
+    }
+
+    @Bean
+    open fun dbPing(): Pingable {
+        return Pingable {
+            val metadata = Pingable.PingMetadata("jdbc/SoknadInnsendingDS", "JDBC:Sendsøknad Database", true)
+            try {
+                val jdbcTemplate = JdbcTemplate(dataSource)
+                jdbcTemplate.queryForList("select * from dual")
+                Pingable.lyktes(metadata)
+            } catch (e: Exception) {
+                Pingable.feilet(metadata, e)
+            }
+        }
     }
 }
