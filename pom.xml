@@ -64,7 +64,7 @@
         <ojdbc.version>19.13.0.0.1</ojdbc.version>
         <flyway-core.version>7.15.0</flyway-core.version>
         <flyway-maven-plugin.version>7.15.0</flyway-maven-plugin.version>
-        <jackson.version>2.13.2</jackson.version>
+        <jackson.version>2.13.2.1</jackson.version>
         <pdfbox.version>2.0.25</pdfbox.version>
         <jempbox.version>1.8.16</jempbox.version>
         <bouncycastle.version>1.70</bouncycastle.version>
