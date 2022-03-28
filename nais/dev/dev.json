@@ -42,6 +42,7 @@
   "sosialhjelpDialogApi": "sosialhjelp-dialog-api",
   "prometheusEnabled": true,
   "webProxyEnabled": false,
+  "hasOutboundRulesGcpApplications": true,
   "isGcp": true,
   "isMock": false,
   "isDev": true,
