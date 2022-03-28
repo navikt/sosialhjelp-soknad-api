@@ -32,7 +32,7 @@
   "prometheusEnabled": true,
   "webProxyEnabled": true,
   "hasOutboundRulesGcpApplications": false,
-  "isGcp": false,
+  "hasPostgresDb": false,
   "isMock": false,
   "isDev": false,
   "leaderElectionEnabled": true,
