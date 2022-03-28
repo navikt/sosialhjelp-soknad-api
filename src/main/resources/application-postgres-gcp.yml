@@ -1,0 +1,10 @@
+spring:
+  flyway:
+    enabled: true
+    url: jdbc:postgresql://${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DATABASE}
+    user: ${POSTGRES_USERNAME}
+    password: ${POSTGRES_PASSWORD}
+  datasource:
+    url: jdbc:postgresql://${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DATABASE}
+    username: ${POSTGRES_USERNAME}
+    password: ${POSTGRES_PASSWORD}
