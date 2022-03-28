@@ -138,6 +138,7 @@
         <snakeyaml.version>1.29</snakeyaml.version>
         <hibernate-validator.version>6.2.2.Final</hibernate-validator.version>
         <lang-tag.version>1.6</lang-tag.version>
+        <checker-qual.version>3.21.3</checker-qual.version>
     </properties>
 
     <dependencyManagement>
@@ -538,6 +539,11 @@
                 <artifactId>okhttp</artifactId>
                 <version>${mockwebserver.version}</version>
                 <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.checkerframework</groupId>
+                <artifactId>checker-qual</artifactId>
+                <version>${checker-qual.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
