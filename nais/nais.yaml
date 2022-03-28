@@ -72,7 +72,7 @@ spec:
         []
       {{/each}}
       rules:
-      {{#if isGcp}}
+      {{#if hasOutboundRulesGcpApplications}}
       {{#each outboundRulesGcpApplications}}
         - application: "{{this}}"
       {{else}}
