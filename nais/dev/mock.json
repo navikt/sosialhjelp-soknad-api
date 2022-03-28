@@ -27,7 +27,6 @@
   "hasOutboundRulesGcpApplications": true,
   "hasPostgresDb": false,
   "isMock": true,
-  "isDev": false,
   "leaderElectionEnabled": false,
   "maskinportenEnabled": false,
   "azureEnabled": false,
