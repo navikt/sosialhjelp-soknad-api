@@ -4,11 +4,13 @@ import no.nav.sosialhjelp.soknad.db.SQLUtils
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile
 
-@Profile("(mock-alt|test)")
+@Profile("postgres-gcp")
 @Configuration
-open class MockAltTestDbConfig {
+open class PostgresDbConfig {
 
     init {
+        // todo: postgres?
         System.setProperty(SQLUtils.DIALECT_PROPERTY, "hsqldb")
     }
+
 }
