@@ -6,11 +6,9 @@ import no.nav.sosialhjelp.soknad.common.rest.RestUtils
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.context.annotation.Import
 import javax.ws.rs.client.Client
 
 @Configuration
-@Import(TelefonnummerRessurs::class)
 open class TelefonnummerConfig(
     @Value("\${krr_proxy_url}") private val krrProxyUrl: String,
     @Value("\${fss_proxy_audience}") private val fssProxyAudience: String,

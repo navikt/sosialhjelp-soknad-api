@@ -6,8 +6,6 @@ import no.nav.sosialhjelp.soknad.db.repositories.sendtsoknad.SendtSoknadReposito
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.ettersending.EttersendingService
-import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiConfig
-import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidConfig
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
 import no.nav.sosialhjelp.soknad.innsending.svarut.OppgaveHandterer
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.BostotteSystemdata
@@ -15,17 +13,10 @@ import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkatteetatenSystemdata
 import no.nav.sosialhjelp.soknad.metrics.SoknadMetricsService
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.context.annotation.Import
 import org.springframework.transaction.support.TransactionTemplate
 import java.time.Clock
 
 @Configuration
-@Import(
-    SoknadUnderArbeidConfig::class,
-    DigisosApiConfig::class,
-    SoknadRessurs::class,
-    SoknadActions::class
-)
 open class InnsendingConfig {
 
     @Bean

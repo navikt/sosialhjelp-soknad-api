@@ -5,7 +5,6 @@ import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.metrics.aspects.Timed
 import no.nav.sosialhjelp.soknad.common.Constants
 import org.springframework.context.annotation.Configuration
-import org.springframework.context.annotation.Import
 import org.springframework.stereotype.Controller
 import javax.ws.rs.GET
 import javax.ws.rs.Path
@@ -13,9 +12,6 @@ import javax.ws.rs.Produces
 import javax.ws.rs.core.MediaType
 
 @Configuration
-@Import(
-    FeatureToggleRessurs::class
-)
 open class FeatureToggleConfig
 
 @Controller

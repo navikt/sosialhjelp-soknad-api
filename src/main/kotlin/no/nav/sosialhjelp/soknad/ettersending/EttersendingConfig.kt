@@ -6,11 +6,9 @@ import no.nav.sosialhjelp.soknad.ettersending.innsendtsoknad.InnsendtSoknadServi
 import no.nav.sosialhjelp.soknad.innsending.HenvendelseService
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.context.annotation.Import
 import java.time.Clock
 
 @Configuration
-@Import(EttersendingRessurs::class)
 open class EttersendingConfig(
     private val henvendelseService: HenvendelseService,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,

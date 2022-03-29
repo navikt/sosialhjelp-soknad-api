@@ -1,35 +1,14 @@
 package no.nav.sosialhjelp.soknad.config
 
-import no.nav.sosialhjelp.soknad.db.repositories.oppgave.OppgaveRepositoryJdbc
-import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.BatchOpplastetVedleggRepositoryJdbc
-import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRepositoryJdbc
-import no.nav.sosialhjelp.soknad.db.repositories.sendtsoknad.BatchSendtSoknadRepositoryJdbc
-import no.nav.sosialhjelp.soknad.db.repositories.sendtsoknad.SendtSoknadRepositoryJdbc
-import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.BatchSoknadMetadataRepositoryJdbc
-import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepositoryJdbc
-import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.BatchSoknadUnderArbeidRepositoryJdbc
-import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepositoryJdbc
 import no.nav.sosialhjelp.soknad.health.selftest.Pingable
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.context.annotation.Import
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.transaction.annotation.EnableTransactionManagement
 import java.time.Clock
 import javax.sql.DataSource
 
 @Configuration
-@Import(
-    SendtSoknadRepositoryJdbc::class,
-    SoknadUnderArbeidRepositoryJdbc::class,
-    OpplastetVedleggRepositoryJdbc::class,
-    SoknadMetadataRepositoryJdbc::class,
-    BatchOpplastetVedleggRepositoryJdbc::class,
-    BatchSoknadUnderArbeidRepositoryJdbc::class,
-    BatchSoknadMetadataRepositoryJdbc::class,
-    BatchSendtSoknadRepositoryJdbc::class,
-    OppgaveRepositoryJdbc::class
-)
 @EnableTransactionManagement
 open class DbConfig(
     private val dataSource: DataSource

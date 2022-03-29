@@ -5,12 +5,8 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderAr
 import no.nav.sosialhjelp.soknad.vedlegg.virusscan.VirusScanner
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.context.annotation.Import
 
 @Configuration
-@Import(
-    OpplastetVedleggRessurs::class
-)
 open class VedleggConfig {
 
     @Bean
