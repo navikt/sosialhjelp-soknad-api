@@ -19,13 +19,13 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.web.reactive.function.client.WebClient
 
-class ClamAvVirusScannerTest {
+class VirusScannerTest {
 
     private val mockWebServer = MockWebServer()
     private val webClient = WebClient.create(mockWebServer.url("/").toString())
     private val enabled = true
 
-    private val virusScanner = ClamAvVirusScanner(webClient, enabled)
+    private val virusScanner = VirusScanner(webClient, enabled)
 
     private val filnavn = "virustest"
     private val behandlingsId = "1100001"
@@ -60,7 +60,7 @@ class ClamAvVirusScannerTest {
 
     @Test
     fun scanFile_scanningIsNotEnabled_doesNotThrowException() {
-        val virusScanner2 = ClamAvVirusScanner(webClient, false)
+        val virusScanner2 = VirusScanner(webClient, false)
         assertThatCode { virusScanner2.scan(filnavn, data, behandlingsId, "pdf") }
             .doesNotThrowAnyException()
     }

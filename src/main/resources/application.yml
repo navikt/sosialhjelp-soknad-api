@@ -49,6 +49,7 @@ fss_proxy_ping_url: ${FSS_PROXY_PING_URL}
 soknad.bostotte.url: ${SOKNAD_BOSTOTTE_URL}
 svarut_url: ${SVARUT_URL}
 skatteetaten_api_baseurl: ${SKATTEETATEN_API_BASEURL}
+clamav_url: ${CLAMAV_URL}
 
 fiks.nokkelfil: ${FIKS_NOKKELFIL}
 
@@ -95,7 +96,7 @@ soknad.ettersending.antalldager: ${SOKNAD_ETTERSENDING_ANTALLDAGER}
 
 # feature toggles
 unleash_instance_id: ${UNLEASH_INSTANCE_ID:prod-sbs}
-soknad.vedlegg.virusscan.enabled: true
+virusscan_enabled: true
 scheduler.disable: ${SCHEDULER_DISABLE}
 digisosapi.sending.enable: ${IS_SENDING_TIL_DIGISOS_API_ENABLED}
 digisosapi.sending.alltidTilTestkommune.enable: ${IS_ALLTID_SEND_TIL_NAV_TESTKOMMUNE}

@@ -74,10 +74,11 @@ norg_proxy_url: https://fss-proxy/proxy/norg
 fss_proxy_ping_url: http://fss-proxy/ping
 svarut_url: https://svaruturl
 skatteetaten_api_baseurl: https://skatteetatenurl
+clamav_url: virusscan_not_enabled
 
   # Feature-toggles
 unleash_instance_id: ${UNLEASH_INSTANCE_ID:local}
-soknad.vedlegg.virusscan.enabled: false
+virusscan_enabled: false
 scheduler.disable: false
 
 nedetid.start: 21.11.2020 14:00:00
