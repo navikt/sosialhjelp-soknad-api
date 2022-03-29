@@ -4,9 +4,11 @@ import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeid
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
+import org.springframework.stereotype.Component
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
 
+@Component
 open class SoknadUnderArbeidService(
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository
 ) {

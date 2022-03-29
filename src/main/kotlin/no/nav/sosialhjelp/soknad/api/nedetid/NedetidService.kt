@@ -1,14 +1,17 @@
 package no.nav.sosialhjelp.soknad.api.nedetid
 
 import no.nav.sosialhjelp.kotlin.utils.logger
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.stereotype.Component
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
 import java.util.Locale
 
+@Component
 class NedetidService(
-    private val nedetidStart: String?,
-    private val nedetidSlutt: String?
+    @Value("\${nedetid.start}") private val nedetidStart: String?,
+    @Value("\${nedetid.slutt}") private val nedetidSlutt: String?
 ) {
 
     private fun getNedetid(time: String?): LocalDateTime? {

@@ -7,7 +7,9 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderAr
 import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils.isVedleggskravAnnet
 import no.nav.sosialhjelp.soknad.metrics.MetricsUtils.getProsent
 import org.slf4j.LoggerFactory
+import org.springframework.stereotype.Component
 
+@Component
 class SoknadMetricsService {
 
     fun reportSendSoknadMetrics(

@@ -18,7 +18,9 @@ import no.nav.sosialhjelp.soknad.common.systemdata.Systemdata
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.tekster.TextService
 import org.slf4j.LoggerFactory
+import org.springframework.stereotype.Component
 
+@Component
 class ArbeidsforholdSystemdata(
     private val arbeidsforholdService: ArbeidsforholdService,
     private val textService: TextService

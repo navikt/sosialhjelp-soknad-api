@@ -1,12 +1,9 @@
 package no.nav.sosialhjelp.soknad.personalia.person
 
 import no.nav.sosialhjelp.soknad.client.azure.AzureadService
-import no.nav.sosialhjelp.soknad.client.kodeverk.KodeverkService
 import no.nav.sosialhjelp.soknad.client.redis.RedisService
 import no.nav.sosialhjelp.soknad.client.tokenx.TokendingsService
 import no.nav.sosialhjelp.soknad.common.rest.RestUtils
-import no.nav.sosialhjelp.soknad.personalia.person.domain.MapperHelper
-import no.nav.sosialhjelp.soknad.personalia.person.domain.PdlDtoMapper
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -20,16 +17,7 @@ open class PersonConfig(
     private val redisService: RedisService,
     private val tokendingsService: TokendingsService,
     private val azureadService: AzureadService,
-    kodeverkService: KodeverkService
 ) {
-
-    private val helper: MapperHelper = MapperHelper()
-    private val mapper = PdlDtoMapper(kodeverkService, helper)
-
-    @Bean
-    open fun personService(hentPersonClient: HentPersonClient): PersonService {
-        return PersonService(hentPersonClient, helper, mapper)
-    }
 
     @Bean
     open fun hentPersonClient(): HentPersonClient {

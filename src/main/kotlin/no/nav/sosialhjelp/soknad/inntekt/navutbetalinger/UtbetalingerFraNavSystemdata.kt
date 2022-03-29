@@ -12,8 +12,10 @@ import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.domain.NavUtbetaling
 import no.nav.sosialhjelp.soknad.organisasjon.OrganisasjonService
 import org.apache.commons.lang3.StringUtils
 import org.slf4j.LoggerFactory
+import org.springframework.stereotype.Component
 import kotlin.math.roundToInt
 
+@Component
 class UtbetalingerFraNavSystemdata(
     private val organisasjonService: OrganisasjonService,
     private val navUtbetalingerService: NavUtbetalingerService

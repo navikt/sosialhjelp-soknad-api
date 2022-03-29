@@ -9,7 +9,9 @@ import no.nav.sosialhjelp.soknad.personalia.person.dto.Gradering
 import no.nav.sosialhjelp.soknad.personalia.person.dto.PersonDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.SivilstandType
 import org.slf4j.LoggerFactory.getLogger
+import org.springframework.stereotype.Component
 
+@Component
 open class PersonService(
     private val hentPersonClient: HentPersonClient,
     private val helper: MapperHelper,

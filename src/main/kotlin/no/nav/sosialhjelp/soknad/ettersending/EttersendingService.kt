@@ -18,11 +18,13 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderAr
 import no.nav.sosialhjelp.soknad.innsending.HenvendelseService
 import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils.FEATURE_UTVIDE_VEDLEGGJSON
 import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils.isVedleggskravAnnet
+import org.springframework.stereotype.Component
 import java.time.Clock
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit.DAYS
 
+@Component
 class EttersendingService(
     private val henvendelseService: HenvendelseService,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,

@@ -10,7 +10,9 @@ import no.nav.sosialhjelp.soknad.common.systemdata.Systemdata
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Person
+import org.springframework.stereotype.Component
 
+@Component
 class BasisPersonaliaSystemdata(
     private val personService: PersonService
 ) : Systemdata {

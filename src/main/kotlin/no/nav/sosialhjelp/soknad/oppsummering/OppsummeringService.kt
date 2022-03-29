@@ -13,7 +13,9 @@ import no.nav.sosialhjelp.soknad.oppsummering.steg.PersonopplysningerSteg
 import no.nav.sosialhjelp.soknad.oppsummering.steg.UtgifterOgGjeldSteg
 import no.nav.sosialhjelp.soknad.vedlegg.OpplastetVedleggService
 import org.slf4j.LoggerFactory.getLogger
+import org.springframework.stereotype.Component
 
+@Component
 class OppsummeringService(
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val opplastetVedleggRepository: OpplastetVedleggRepository,

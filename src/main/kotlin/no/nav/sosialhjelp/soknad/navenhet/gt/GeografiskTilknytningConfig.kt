@@ -23,11 +23,6 @@ open class GeografiskTilknytningConfig(
     }
 
     @Bean
-    open fun geografiskTilknytningService(geografiskTilknytningClient: GeografiskTilknytningClient): GeografiskTilknytningService {
-        return GeografiskTilknytningService(geografiskTilknytningClient)
-    }
-
-    @Bean
     open fun pdlPing(geografiskTilknytningClient: GeografiskTilknytningClient): Pingable {
         return Pingable {
             val metadata = Pingable.PingMetadata(baseurl, "PDL", true)

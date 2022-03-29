@@ -4,7 +4,9 @@ import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.domain.NavUtbetaling
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.NavUtbetalingerDto
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.toDomain
 import org.slf4j.LoggerFactory.getLogger
+import org.springframework.stereotype.Component
 
+@Component
 open class NavUtbetalingerService(
     private val navUtbetalingerClient: NavUtbetalingerClient
 ) {

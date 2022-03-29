@@ -16,7 +16,9 @@ import no.nav.sosialhjelp.soknad.personalia.person.PersonService
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Barn
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Ektefelle
 import org.apache.commons.lang3.StringUtils.isEmpty
+import org.springframework.stereotype.Component
 
+@Component
 class FamilieSystemdata(
     private val personService: PersonService
 ) : Systemdata {

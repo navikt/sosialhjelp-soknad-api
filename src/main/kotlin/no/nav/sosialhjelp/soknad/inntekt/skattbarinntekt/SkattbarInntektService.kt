@@ -5,8 +5,10 @@ import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.domain.Utbetaling
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.dto.getForskuddstrekk
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.dto.grupperOgSummerEtterUtbetalingsStartDato
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.dto.mapToUtbetalinger
+import org.springframework.stereotype.Component
 import java.time.LocalDate
 
+@Component
 open class SkattbarInntektService(
     private val skatteetatenClient: SkatteetatenClient
 ) {

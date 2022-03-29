@@ -6,7 +6,9 @@ import no.nav.sosialhjelp.soknad.db.repositories.oppgave.Oppgave
 import no.nav.sosialhjelp.soknad.db.repositories.oppgave.OppgaveRepository
 import no.nav.sosialhjelp.soknad.db.repositories.oppgave.Status
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.scheduling.annotation.Scheduled
+import org.springframework.stereotype.Component
 import java.time.LocalDateTime
 import kotlin.math.pow
 
@@ -14,10 +16,11 @@ interface OppgaveHandterer {
     fun leggTilOppgave(behandlingsId: String, eier: String)
 }
 
+@Component
 class OppgaveHandtererImpl(
     private val fiksHandterer: FiksHandterer,
     private val oppgaveRepository: OppgaveRepository,
-    private val schedulerDisabled: Boolean
+    @Value("\${scheduler.disable}") private val schedulerDisabled: Boolean
 ) : OppgaveHandterer {
 
     @Scheduled(fixedDelay = PROSESS_RATE)

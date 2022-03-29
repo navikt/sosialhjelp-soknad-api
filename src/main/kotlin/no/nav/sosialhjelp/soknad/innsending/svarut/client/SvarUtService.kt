@@ -1,8 +1,10 @@
 package no.nav.sosialhjelp.soknad.innsending.svarut.client
 
 import no.ks.fiks.svarut.klient.model.Forsendelse
+import org.springframework.stereotype.Component
 import java.io.InputStream
 
+@Component
 open class SvarUtService(
     private val svarUtClient: SvarUtClient
 ) {

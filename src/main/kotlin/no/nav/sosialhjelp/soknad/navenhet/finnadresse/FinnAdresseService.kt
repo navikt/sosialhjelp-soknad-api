@@ -7,7 +7,9 @@ import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia
 import no.nav.sosialhjelp.soknad.adressesok.AdressesokService
 import no.nav.sosialhjelp.soknad.adressesok.domain.AdresseForslag
 import no.nav.sosialhjelp.soknad.adressesok.domain.AdresseForslagType
+import org.springframework.stereotype.Component
 
+@Component
 open class FinnAdresseService(
     private val adressesokService: AdressesokService
 ) {

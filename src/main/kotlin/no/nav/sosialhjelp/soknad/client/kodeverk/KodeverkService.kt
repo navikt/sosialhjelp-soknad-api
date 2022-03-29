@@ -7,10 +7,12 @@ import no.nav.sosialhjelp.soknad.client.redis.LANDKODER_CACHE_KEY
 import no.nav.sosialhjelp.soknad.client.redis.POSTNUMMER_CACHE_KEY
 import no.nav.sosialhjelp.soknad.client.redis.RedisService
 import org.slf4j.LoggerFactory
+import org.springframework.stereotype.Component
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
+@Component
 open class KodeverkService(
     private val kodeverkClient: KodeverkClient,
     private val redisService: RedisService

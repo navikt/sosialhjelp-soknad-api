@@ -24,6 +24,7 @@ import org.apache.pdfbox.pdmodel.PDDocument
 import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException
 import org.apache.pdfbox.text.PDFTextStripper
 import org.slf4j.LoggerFactory
+import org.springframework.stereotype.Component
 import java.io.ByteArrayInputStream
 import java.io.IOException
 import java.io.UnsupportedEncodingException
@@ -34,6 +35,7 @@ import java.util.UUID
 import java.util.function.Predicate
 import javax.ws.rs.NotFoundException
 
+@Component
 class OpplastetVedleggService(
     private val opplastetVedleggRepository: OpplastetVedleggRepository,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,

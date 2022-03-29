@@ -14,10 +14,12 @@ import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus.SKAL_SENDE_SOKNADER_OG_ETTERSENDELSER_VIA_FDA
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus.SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD_OG_ETTERSENDELSER
 import org.slf4j.LoggerFactory.getLogger
+import org.springframework.stereotype.Component
 import java.nio.charset.StandardCharsets.UTF_8
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME
 
+@Component
 class KommuneInfoService(
     private val kommuneInfoMaskinportenClient: KommuneInfoMaskinportenClient,
     private val redisService: RedisService,

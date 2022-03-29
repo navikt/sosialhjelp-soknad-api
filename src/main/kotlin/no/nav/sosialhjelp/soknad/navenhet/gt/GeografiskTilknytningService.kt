@@ -3,7 +3,9 @@ package no.nav.sosialhjelp.soknad.navenhet.gt
 import no.nav.sosialhjelp.soknad.navenhet.gt.dto.GeografiskTilknytningDto
 import no.nav.sosialhjelp.soknad.navenhet.gt.dto.GtType
 import org.slf4j.LoggerFactory.getLogger
+import org.springframework.stereotype.Component
 
+@Component
 open class GeografiskTilknytningService(
     private val geografiskTilknytningClient: GeografiskTilknytningClient
 ) {

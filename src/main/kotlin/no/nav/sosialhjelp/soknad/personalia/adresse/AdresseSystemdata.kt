@@ -17,7 +17,9 @@ import no.nav.sosialhjelp.soknad.personalia.person.domain.Kontaktadresse
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Matrikkeladresse
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Oppholdsadresse
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Vegadresse
+import org.springframework.stereotype.Component
 
+@Component
 class AdresseSystemdata(
     private val personService: PersonService
 ) : Systemdata {

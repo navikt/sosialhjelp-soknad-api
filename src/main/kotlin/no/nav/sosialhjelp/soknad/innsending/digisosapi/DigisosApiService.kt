@@ -29,8 +29,10 @@ import no.nav.sosialhjelp.soknad.metrics.MetricsUtils.navKontorTilInfluxNavn
 import no.nav.sosialhjelp.soknad.metrics.SoknadMetricsService
 import no.nav.sosialhjelp.soknad.pdf.SosialhjelpPdfGenerator
 import org.slf4j.LoggerFactory
+import org.springframework.stereotype.Component
 import java.io.ByteArrayInputStream
 
+@Component
 class DigisosApiService(
     private val digisosApiClient: DigisosApiClient,
     private val sosialhjelpPdfGenerator: SosialhjelpPdfGenerator,

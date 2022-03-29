@@ -21,16 +21,6 @@ open class TelefonnummerConfig(
         return KrrProxyClient(krrClient, krrProxyUrl, fssProxyAudience, tokendingsService, redisService)
     }
 
-    @Bean
-    open fun mobiltelefonService(krrProxyClient: KrrProxyClient): MobiltelefonService {
-        return MobiltelefonServiceImpl(krrProxyClient)
-    }
-
-    @Bean
-    open fun telefonnummerSystemdata(mobiltelefonService: MobiltelefonService): TelefonnummerSystemdata {
-        return TelefonnummerSystemdata(mobiltelefonService)
-    }
-
     private val krrClient: Client
         get() = RestUtils.createClient()
 }
