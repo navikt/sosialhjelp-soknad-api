@@ -8,6 +8,7 @@ on:
         default: 'dev-sbs-intern'
         type: choice
         options:
+          - 'dev'
           - 'mock'
           - 'dev-sbs'
           - 'dev-sbs-intern'
