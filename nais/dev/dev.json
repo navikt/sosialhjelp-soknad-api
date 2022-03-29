@@ -44,6 +44,8 @@
   "webProxyEnabled": false,
   "hasOutboundRulesGcpApplications": true,
   "hasPostgresDb": false,
+  "dbTier": "db-f1-micro",
+  "dbDiskSize": "10",
   "isMock": false,
   "leaderElectionEnabled": true,
   "maskinportenEnabled": true,
