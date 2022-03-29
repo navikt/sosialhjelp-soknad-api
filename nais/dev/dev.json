@@ -43,7 +43,7 @@
   "prometheusEnabled": true,
   "webProxyEnabled": false,
   "hasOutboundRulesGcpApplications": true,
-  "hasPostgresDb": false,
+  "hasPostgresDb": true,
   "dbTier": "db-f1-micro",
   "dbDiskSize": "10",
   "isMock": false,
