@@ -19,8 +19,7 @@
     "api.fiks.test.ks.no",
     "test.svarut.ks.no",
     "api.demo.husbanken.no",
-    "api-test.sits.no",
-    "navtestb2c.b2clogin.com"
+    "api-test.sits.no"
   ],
   "outboundRulesGcpApplications": [
     "sosialhjelp-soknad-api-redis"
