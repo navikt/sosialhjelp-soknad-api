@@ -75,6 +75,10 @@ spec:
       {{else}}
         []
       {{/each}}
+      {{#unless isMock}}
+        - application: clamav
+          namespace: clamav
+      {{/unless}}
       {{/if}}
       {{#unless isGcp}}
       {{#each outboundRulesFssApplications}}

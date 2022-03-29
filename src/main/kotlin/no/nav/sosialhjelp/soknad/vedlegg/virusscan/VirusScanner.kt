@@ -18,16 +18,12 @@ import org.springframework.web.reactive.function.client.awaitBody
 /**
  * Integrasjonen er kopiert fra https://github.com/navikt/foreldrepengesoknad-api og modifisert til eget bruk
  */
-interface VirusScanner {
-    fun scan(filnavn: String, data: ByteArray, behandlingsId: String, fileType: String)
-}
-
-class ClamAvVirusScanner(
+class VirusScanner(
     private val virusScannerWebClient: WebClient,
     private val enabled: Boolean
-) : VirusScanner {
+) {
 
-    override fun scan(filnavn: String, data: ByteArray, behandlingsId: String, fileType: String) {
+    fun scan(filnavn: String, data: ByteArray, behandlingsId: String, fileType: String) {
         if (enabled && isInfected(filnavn, data, behandlingsId, fileType)) {
             throw OpplastingException(
                 "Fant virus i fil for behandlingsId $behandlingsId",
@@ -80,6 +76,6 @@ class ClamAvVirusScanner(
     }
 
     companion object {
-        private val log = getLogger(ClamAvVirusScanner::class.java)
+        private val log = getLogger(VirusScanner::class.java)
     }
 }

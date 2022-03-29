@@ -42,6 +42,7 @@ oppslag_api_baseurl: ${OPPSLAG_API_BASEURL:http://${mock-alt-api-host}:8989/sosi
 soknad.bostotte.url: ${SOKNAD_BOSTOTTE_URL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/husbanken}
 svarut_url: ${SVARUT_URL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/svarut/}
 skatteetaten_api_baseurl: ${SKATTEETATEN_API_BASEURL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/skatteetaten/}
+clamav_url: virusscan_not_enabled
 
 # fiks
 fiks.nokkelfil: ${FIKS_NOKKELFIL:svarut_public_test.pem}
@@ -81,7 +82,7 @@ oidc.issuer.selvbetjening.proxy_url: dummy
 
 loginservice.url: ${LOGINSERVICE_URL:http://localhost:3009/sosialhjelp/mock-alt/login}
 
-soknad.vedlegg.virusscan.enabled: false
+virusscan_enabled: false
 soknad.ettersending.antalldager: 180
 
 # redis

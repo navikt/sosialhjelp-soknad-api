@@ -8,18 +8,15 @@ import org.springframework.web.reactive.function.client.WebClient
 @Configuration
 open class VirusScanConfig(
     private val nonProxiedWebClientBuilder: WebClient.Builder,
-    @Value("\${soknad.vedlegg.virusscan.enabled}") private val enabled: Boolean
+    @Value("\${virusscan_enabled}") private val enabled: Boolean,
+    @Value("\${clamav_url}") private val clamAvUrl: String
 ) {
 
     @Bean
     open fun virusScanner(): VirusScanner {
-        return ClamAvVirusScanner(virusScannerWebClient, enabled)
+        return VirusScanner(virusScannerWebClient, enabled)
     }
 
     private val virusScannerWebClient: WebClient
-        get() = nonProxiedWebClientBuilder.baseUrl(DEFAULT_CLAM_URI).build()
-
-    companion object {
-        internal const val DEFAULT_CLAM_URI = "http://clamav.nais.svc.nais.local/scan"
-    }
+        get() = nonProxiedWebClientBuilder.baseUrl(clamAvUrl).build()
 }
