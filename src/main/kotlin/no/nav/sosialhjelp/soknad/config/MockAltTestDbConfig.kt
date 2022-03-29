@@ -4,7 +4,7 @@ import no.nav.sosialhjelp.soknad.db.SQLUtils
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile
 
-@Profile("(mock-alt|test)")
+@Profile("(dev|mock-alt|test)")
 @Configuration
 open class MockAltTestDbConfig {
 
