@@ -1,6 +1,6 @@
 create table oppgave
 (
-    id              serial primary key,
+    id              numeric(19, 0) primary key,
     behandlingsid   varchar(255) not null,
     type            varchar(255),
     status          varchar(255),
@@ -18,7 +18,7 @@ create sequence oppgave_id_seq start with 1 increment by 1;
 
 create table soknad_under_arbeid
 (
-    soknad_under_arbeid_id  varchar(40)  primary key,
+    soknad_under_arbeid_id  numeric(19, 0) primary key,
     versjon                 integer      not null default 1,
     behandlingsid           varchar(255) not null unique,
     tilknyttetbehandlingsid varchar(255),
@@ -52,7 +52,7 @@ create index index_opplvedl_soknaduaid on opplastet_vedlegg (soknad_under_arbeid
 
 create table sendt_soknad
 (
-    sendt_soknad_id         serial primary key,
+    sendt_soknad_id         numeric(19, 0) primary key,
     behandlingsid           varchar(255) not null unique,
     tilknyttetbehandlingsid varchar(255),
     eier                    varchar(255) not null,
@@ -73,7 +73,7 @@ create sequence sendt_soknad_id_seq start with 1 increment by 1;
 
 create table soknadmetadata
 (
-    id                      serial primary key,
+    id                      numeric(19, 0) primary key,
     behandlingsid           varchar(255) not null,
     tilknyttetbehandlingsid varchar(255),
     skjema                  varchar(255),
@@ -94,5 +94,5 @@ create table soknadmetadata
 
 create index index_metadata_id on soknadmetadata (id);
 create index index_metadata_behid on soknadmetadata (behandlingsid);
-create index index_tilknyttet_id on soknadmetadata(tilknyttetbehandlingsid);
+create index index_tilknyttet_id on soknadmetadata (tilknyttetbehandlingsid);
 create sequence metadata_id_seq start with 1 increment by 1;
