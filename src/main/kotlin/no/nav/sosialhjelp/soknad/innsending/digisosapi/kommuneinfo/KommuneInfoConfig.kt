@@ -2,7 +2,6 @@ package no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo
 
 import no.nav.sosialhjelp.metrics.MetricsFactory.createTimerProxy
 import no.nav.sosialhjelp.soknad.client.maskinporten.MaskinportenClient
-import no.nav.sosialhjelp.soknad.client.redis.RedisService
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -16,17 +15,6 @@ open class KommuneInfoConfig(
     @Value("\${integrasjonsid_fiks}") private val integrasjonsidFiks: String,
     @Value("\${integrasjonpassord_fiks}") private val integrasjonpassordFiks: String
 ) {
-
-    @Bean
-    open fun kommuneInfoService(
-        kommuneInfoMaskinportenClient: KommuneInfoMaskinportenClient,
-        redisService: RedisService
-    ): KommuneInfoService {
-        return KommuneInfoService(
-            kommuneInfoMaskinportenClient,
-            redisService
-        )
-    }
 
     @Bean
     open fun kommuneInfoMaskinportenClient(): KommuneInfoMaskinportenClient {

@@ -4,7 +4,9 @@ import no.nav.sosialhjelp.soknad.arbeid.domain.Arbeidsforhold
 import no.nav.sosialhjelp.soknad.arbeid.dto.toDomain
 import no.nav.sosialhjelp.soknad.organisasjon.OrganisasjonService
 import org.slf4j.LoggerFactory.getLogger
+import org.springframework.stereotype.Component
 
+@Component
 open class ArbeidsforholdService(
     private val arbeidsforholdClient: ArbeidsforholdClient,
     private val organisasjonService: OrganisasjonService

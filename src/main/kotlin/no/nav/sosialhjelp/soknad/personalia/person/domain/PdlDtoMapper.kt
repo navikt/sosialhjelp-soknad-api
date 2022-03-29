@@ -18,9 +18,11 @@ import no.nav.sosialhjelp.soknad.personalia.person.dto.SivilstandDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.SivilstandType
 import no.nav.sosialhjelp.soknad.personalia.person.dto.StatsborgerskapDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.VegadresseDto
+import org.springframework.stereotype.Component
 import java.time.LocalDate
 import java.time.Period
 
+@Component
 open class PdlDtoMapper(
     private val kodeverkService: KodeverkService,
     private val helper: MapperHelper

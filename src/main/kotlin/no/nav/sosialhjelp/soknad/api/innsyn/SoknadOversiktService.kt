@@ -3,8 +3,10 @@ package no.nav.sosialhjelp.soknad.api.innsyn
 import no.nav.sosialhjelp.soknad.api.LenkeUtils.lagEttersendelseLenke
 import no.nav.sosialhjelp.soknad.api.innsyn.dto.SoknadOversiktDto
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
+import org.springframework.stereotype.Component
 import java.sql.Timestamp
 
+@Component
 class SoknadOversiktService(
     private val soknadMetadataRepository: SoknadMetadataRepository
 ) {

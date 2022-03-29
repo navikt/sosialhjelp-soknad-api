@@ -4,14 +4,17 @@ import no.nav.sosialhjelp.metrics.MetricsFactory
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.BatchSoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.scheduled.leaderelection.LeaderElection
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.scheduling.annotation.Scheduled
+import org.springframework.stereotype.Component
 import java.time.LocalDateTime
 
+@Component
 class SlettSoknadUnderArbeidScheduler(
     private val leaderElection: LeaderElection,
     private val batchSoknadUnderArbeidRepository: BatchSoknadUnderArbeidRepository,
-    private val batchEnabled: Boolean,
-    private val schedulerDisabled: Boolean
+    @Value("\${sendsoknad.batch.enabled}") private val batchEnabled: Boolean,
+    @Value("\${scheduler.disable}") private val schedulerDisabled: Boolean,
 ) {
     private var batchStartTime: LocalDateTime? = null
     private var vellykket = 0

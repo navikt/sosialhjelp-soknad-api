@@ -7,11 +7,13 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.VedleggMetadata
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.Vedleggstatus
 import no.nav.sosialhjelp.soknad.ettersending.innsendtsoknad.EttersendelseUtils.soknadSendtForMindreEnn30DagerSiden
 import no.nav.sosialhjelp.soknad.innsending.HenvendelseService
+import org.springframework.stereotype.Component
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 import java.util.function.Predicate
 
+@Component
 class InnsendtSoknadService(
     private val henvendelseService: HenvendelseService
 ) {

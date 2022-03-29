@@ -13,10 +13,12 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataTy
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.VedleggMetadataListe
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import org.slf4j.LoggerFactory
+import org.springframework.stereotype.Component
 import java.time.Clock
 import java.time.LocalDateTime
 import java.util.Locale
 
+@Component
 class HenvendelseService(
     private val soknadMetadataRepository: SoknadMetadataRepository,
     private val clock: Clock

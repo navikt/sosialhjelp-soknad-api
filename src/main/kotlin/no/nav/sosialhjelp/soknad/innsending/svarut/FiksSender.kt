@@ -17,16 +17,19 @@ import no.nav.sosialhjelp.soknad.innsending.SenderUtils.createPrefixedBehandling
 import no.nav.sosialhjelp.soknad.innsending.svarut.client.SvarUtService
 import no.nav.sosialhjelp.soknad.pdf.SosialhjelpPdfGenerator
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.stereotype.Component
 import java.io.InputStream
 import java.sql.Date
 import java.util.UUID
 import java.util.stream.Collectors
 
+@Component
 class FiksSender(
     dokumentKrypterer: DokumentKrypterer,
     private val innsendingService: InnsendingService,
     sosialhjelpPdfGenerator: SosialhjelpPdfGenerator,
-    private val krypteringEnabled: Boolean,
+    @Value("\${feature.fiks.kryptering.enabled}") private val krypteringEnabled: Boolean,
     private val svarUtService: SvarUtService
 ) {
     private val fakeUtskriftsConfig = UtskriftsKonfigurasjon()

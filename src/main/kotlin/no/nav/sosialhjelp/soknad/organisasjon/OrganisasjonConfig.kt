@@ -15,11 +15,6 @@ open class OrganisasjonConfig(
 ) {
 
     @Bean
-    open fun organisasjonService(organisasjonClient: OrganisasjonClient): OrganisasjonService {
-        return OrganisasjonService(organisasjonClient)
-    }
-
-    @Bean
     open fun organisasjonClient(): OrganisasjonClient {
         return OrganisasjonClientImpl(organisasjonClient, baseurl, fssProxyAudience, tokendingsService)
     }

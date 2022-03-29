@@ -21,11 +21,6 @@ open class KodeverkConfig(
 ) {
 
     @Bean
-    open fun kodeverkService(kodeverkClient: KodeverkClient): KodeverkService {
-        return KodeverkService(kodeverkClient, redisService)
-    }
-
-    @Bean
     open fun kodeverkClient(): KodeverkClient {
         return KodeverkClientImpl(client, baseurl, redisService, tokendingsService, fssProxyAudience)
     }

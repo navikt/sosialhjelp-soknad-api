@@ -17,18 +17,8 @@ open class KontonummerConfig(
 ) {
 
     @Bean
-    open fun kontonummerService(kontonummerClient: KontonummerClient): KontonummerService {
-        return KontonummerService(kontonummerClient)
-    }
-
-    @Bean
     open fun kontonummerClient(): KontonummerClient {
         return KontonummerClientImpl(client, baseurl, redisService, oppslagApiAudience, tokendingsService)
-    }
-
-    @Bean
-    open fun kontonummerSystemdata(kontonummerService: KontonummerService): KontonummerSystemdata {
-        return KontonummerSystemdata(kontonummerService)
     }
 
     private val client: Client

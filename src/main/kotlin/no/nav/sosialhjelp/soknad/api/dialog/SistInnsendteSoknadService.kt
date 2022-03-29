@@ -2,9 +2,11 @@ package no.nav.sosialhjelp.soknad.api.dialog
 
 import no.nav.sosialhjelp.soknad.api.dialog.dto.SistInnsendteSoknadDto
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
+import org.springframework.stereotype.Component
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
+@Component
 class SistInnsendteSoknadService(
     private val soknadMetadataRepository: SoknadMetadataRepository
 ) {

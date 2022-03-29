@@ -25,11 +25,6 @@ open class MetricsConfig(
     }
 
     @Bean
-    open fun soknadMetricsService(): SoknadMetricsService {
-        return SoknadMetricsService()
-    }
-
-    @Bean
     open fun collectorRegistry(): CollectorRegistry? {
         DefaultExports.initialize()
         return CollectorRegistry.defaultRegistry

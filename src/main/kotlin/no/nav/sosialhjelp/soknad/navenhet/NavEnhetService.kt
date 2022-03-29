@@ -13,6 +13,7 @@ import no.nav.sosialhjelp.soknad.navenhet.dto.NavEnhetDto
 import no.nav.sosialhjelp.soknad.navenhet.dto.toNavEnhet
 import org.apache.commons.io.IOUtils
 import org.slf4j.LoggerFactory.getLogger
+import org.springframework.stereotype.Component
 import java.io.IOException
 import java.nio.charset.StandardCharsets
 import java.time.LocalDateTime
@@ -23,6 +24,7 @@ interface NavEnhetService {
     fun getEnheterForKommunenummer(kommunenummer: String?): List<NavEnhet>?
 }
 
+@Component
 class NavEnhetServiceImpl(
     private val norgClient: NorgClient,
     private val redisService: RedisService

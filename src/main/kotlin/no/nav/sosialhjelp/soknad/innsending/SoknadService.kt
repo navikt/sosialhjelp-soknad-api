@@ -44,6 +44,7 @@ import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkatteetatenSystemdata
 import no.nav.sosialhjelp.soknad.metrics.SOKNAD_TYPE
 import no.nav.sosialhjelp.soknad.metrics.SoknadMetricsService
 import org.slf4j.LoggerFactory
+import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
 import java.time.OffsetDateTime
@@ -53,6 +54,7 @@ import java.time.temporal.ChronoUnit.HOURS
 import java.time.temporal.ChronoUnit.MINUTES
 import java.util.UUID
 
+@Component
 open class SoknadService(
     private val henvendelseService: HenvendelseService,
     private val oppgaveHandterer: OppgaveHandterer,

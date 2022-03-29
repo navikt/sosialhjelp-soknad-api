@@ -9,7 +9,9 @@ import no.nav.sosialhjelp.soknad.innsending.InnsendingService
 import no.nav.sosialhjelp.soknad.metrics.MetricsUtils.navKontorTilInfluxNavn
 import org.apache.commons.lang3.StringUtils
 import org.slf4j.LoggerFactory
+import org.springframework.stereotype.Component
 
+@Component
 class FiksHandterer(
     private val fiksSender: FiksSender,
     private val innsendingService: InnsendingService

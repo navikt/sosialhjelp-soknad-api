@@ -17,7 +17,9 @@ import no.nav.sosialhjelp.soknad.client.kodeverk.KodeverkService
 import no.nav.sosialhjelp.soknad.common.exceptions.SosialhjelpSoknadApiException
 import org.apache.commons.lang3.StringUtils
 import org.slf4j.LoggerFactory
+import org.springframework.stereotype.Component
 
+@Component
 open class AdressesokService(
     private val adressesokClient: AdressesokClient,
     private val kodeverkService: KodeverkService

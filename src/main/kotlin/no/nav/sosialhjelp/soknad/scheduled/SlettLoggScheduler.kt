@@ -6,16 +6,19 @@ import no.nav.sosialhjelp.soknad.db.repositories.sendtsoknad.BatchSendtSoknadRep
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.BatchSoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.scheduled.leaderelection.LeaderElection
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.scheduling.annotation.Scheduled
+import org.springframework.stereotype.Component
 import java.time.LocalDateTime
 
+@Component
 class SlettLoggScheduler(
     private val leaderElection: LeaderElection,
     private val batchSoknadMetadataRepository: BatchSoknadMetadataRepository,
     private val batchSendtSoknadRepository: BatchSendtSoknadRepository,
     private val oppgaveRepository: OppgaveRepository,
-    private val batchEnabled: Boolean,
-    private val schedulerDisabled: Boolean
+    @Value("\${sendsoknad.batch.enabled}") private val batchEnabled: Boolean,
+    @Value("\${scheduler.disable}") private val schedulerDisabled: Boolean,
 ) {
     private var batchStartTime: LocalDateTime? = null
     private var vellykket = 0

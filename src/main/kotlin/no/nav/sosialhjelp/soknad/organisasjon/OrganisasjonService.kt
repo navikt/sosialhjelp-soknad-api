@@ -1,7 +1,9 @@
 package no.nav.sosialhjelp.soknad.organisasjon
 
 import org.slf4j.LoggerFactory
+import org.springframework.stereotype.Component
 
+@Component
 open class OrganisasjonService(
     private val organisasjonClient: OrganisasjonClient
 ) {

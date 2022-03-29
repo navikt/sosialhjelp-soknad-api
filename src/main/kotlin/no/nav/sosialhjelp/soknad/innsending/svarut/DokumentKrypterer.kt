@@ -15,6 +15,8 @@ import org.bouncycastle.cms.jcajce.JceCMSContentEncryptorBuilder
 import org.bouncycastle.cms.jcajce.JceKeyTransRecipientInfoGenerator
 import org.bouncycastle.jce.provider.BouncyCastleProvider
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.stereotype.Component
 import java.io.IOException
 import java.security.Security
 import java.security.cert.CertificateEncodingException
@@ -23,8 +25,9 @@ import java.security.cert.CertificateFactory
 import java.security.cert.X509Certificate
 import javax.annotation.PostConstruct
 
+@Component
 class DokumentKrypterer(
-    private val fiksNokkelfil: String?
+    @Value("\${fiks.nokkelfil}") private val fiksNokkelfil: String?,
 ) {
     private var encryptionScheme: AlgorithmIdentifier? = null
     private var cms: ASN1ObjectIdentifier? = null

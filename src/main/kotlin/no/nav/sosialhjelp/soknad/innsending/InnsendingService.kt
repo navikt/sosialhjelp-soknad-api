@@ -11,11 +11,13 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderAr
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
 import org.apache.commons.lang3.StringUtils
 import org.slf4j.LoggerFactory
+import org.springframework.stereotype.Component
 import org.springframework.transaction.TransactionStatus
 import org.springframework.transaction.support.TransactionCallbackWithoutResult
 import org.springframework.transaction.support.TransactionTemplate
 import java.time.LocalDateTime
 
+@Component
 open class InnsendingService(
     private val transactionTemplate: TransactionTemplate,
     private val sendtSoknadRepository: SendtSoknadRepository,

@@ -6,8 +6,6 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.sosialhjelp.soknad.client.tokenx.TokendingsService
 import no.nav.sosialhjelp.soknad.common.rest.RestUtils
-import no.nav.sosialhjelp.soknad.organisasjon.OrganisasjonService
-import no.nav.sosialhjelp.soknad.tekster.TextService
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -17,26 +15,12 @@ import javax.ws.rs.client.Client
 open class ArbeidsforholdConfig(
     @Value("\${aareg_proxy_url}") private val aaregProxyUrl: String,
     @Value("\${fss_proxy_audience}") private val fssProxyAudience: String,
-    private val tokendingsService: TokendingsService,
-    private val organisasjonService: OrganisasjonService
+    private val tokendingsService: TokendingsService
 ) {
-
-    @Bean
-    open fun arbeidsforholdService(arbeidsforholdClient: ArbeidsforholdClient): ArbeidsforholdService {
-        return ArbeidsforholdService(arbeidsforholdClient, organisasjonService)
-    }
 
     @Bean
     open fun arbeidsforholdClient(): ArbeidsforholdClient {
         return ArbeidsforholdClient(arbeidsforholdClient, aaregProxyUrl, fssProxyAudience, tokendingsService)
-    }
-
-    @Bean
-    open fun arbeidsforholdSystemdata(
-        arbeidsforholdService: ArbeidsforholdService,
-        textService: TextService
-    ): ArbeidsforholdSystemdata {
-        return ArbeidsforholdSystemdata(arbeidsforholdService, textService)
     }
 
     private val arbeidsforholdClient: Client

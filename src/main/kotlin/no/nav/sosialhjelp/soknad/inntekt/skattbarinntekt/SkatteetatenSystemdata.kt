@@ -12,7 +12,9 @@ import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.domain.Utbetaling
 import no.nav.sosialhjelp.soknad.organisasjon.OrganisasjonService
 import no.nav.sosialhjelp.soknad.tekster.TextService
 import org.slf4j.LoggerFactory
+import org.springframework.stereotype.Component
 
+@Component
 class SkatteetatenSystemdata(
     private val skattbarInntektService: SkattbarInntektService,
     private val organisasjonService: OrganisasjonService,

@@ -15,7 +15,6 @@ open class RedisConfig(
     @Value("\${redis_host}") private val host: String,
     @Value("\${redis_port}") private val port: Int,
     @Value("\${redis_password}") private val password: String,
-
 ) {
 
     @Bean

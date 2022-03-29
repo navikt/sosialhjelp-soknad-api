@@ -7,8 +7,10 @@ import no.nav.sosialhjelp.soknad.personalia.person.dto.NavnDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.SivilstandDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.SivilstandType
 import org.slf4j.LoggerFactory
+import org.springframework.stereotype.Component
 import java.time.LocalDateTime
 
+@Component
 class MapperHelper {
 
     companion object {

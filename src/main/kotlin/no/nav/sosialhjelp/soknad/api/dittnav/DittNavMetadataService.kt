@@ -5,9 +5,11 @@ import no.nav.sosialhjelp.soknad.api.TimeUtils.toUtc
 import no.nav.sosialhjelp.soknad.api.dittnav.dto.PabegyntSoknadDto
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
 import org.slf4j.LoggerFactory
+import org.springframework.stereotype.Component
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
+@Component
 class DittNavMetadataService(
     private val soknadMetadataRepository: SoknadMetadataRepository
 ) {
