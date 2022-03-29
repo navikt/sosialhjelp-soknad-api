@@ -10,12 +10,10 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.context.annotation.Import
 import java.net.MalformedURLException
 import java.net.URL
 
 @Configuration
-@Import(OidcResourceFilteringFeature::class)
 open class OidcTokenValidatorConfig(
     @Value("\${oidc.issuer.selvbetjening.cookie_name}") private val cookieName: String,
     @Value("\${oidc.issuer.selvbetjening.accepted_audience}") private val acceptedAudience: String,

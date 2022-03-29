@@ -5,15 +5,11 @@ import org.slf4j.LoggerFactory.getLogger
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.context.annotation.Import
 import org.springframework.scheduling.annotation.EnableScheduling
 import org.springframework.scheduling.annotation.Scheduled
 
 @EnableScheduling
 @Configuration
-@Import(
-    TextService::class
-)
 open class TeksterConfig(
     @Value("\${scheduler.disable}") private val schedulerDisabled: Boolean
 ) {

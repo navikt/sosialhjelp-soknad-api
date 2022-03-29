@@ -6,11 +6,9 @@ import no.nav.sosialhjelp.soknad.common.rest.RestUtils
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.context.annotation.Import
 import javax.ws.rs.client.Client
 
 @Configuration
-@Import(KontonummerRessurs::class)
 open class KontonummerConfig(
     @Value("\${oppslag_api_baseurl}") private val baseurl: String,
     @Value("\${oppslag_api_audience}") private val oppslagApiAudience: String,

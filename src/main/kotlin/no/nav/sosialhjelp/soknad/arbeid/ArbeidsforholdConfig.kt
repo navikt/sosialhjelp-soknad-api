@@ -11,11 +11,9 @@ import no.nav.sosialhjelp.soknad.tekster.TextService
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.context.annotation.Import
 import javax.ws.rs.client.Client
 
 @Configuration
-@Import(ArbeidRessurs::class)
 open class ArbeidsforholdConfig(
     @Value("\${aareg_proxy_url}") private val aaregProxyUrl: String,
     @Value("\${fss_proxy_audience}") private val fssProxyAudience: String,
