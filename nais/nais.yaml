@@ -117,9 +117,8 @@ spec:
   gcp:
     sqlInstances:
       - type: POSTGRES_14
-        name: sosialhjelp-soknad-db
-        tier: db-f1-micro
-        diskSize: 30
+        tier: {{dbTier}}
+        diskSize: {{dbDiskSize}}
         databases:
           - name: sosialhjelp-soknad-db
             envVarPrefix: POSTGRES
