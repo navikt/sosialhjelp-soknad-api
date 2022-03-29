@@ -12,5 +12,4 @@ open class PostgresDbConfig {
         // todo: postgres?
         System.setProperty(SQLUtils.DIALECT_PROPERTY, "hsqldb")
     }
-
 }
