@@ -1,6 +1,7 @@
 spring:
   flyway:
     enabled: true
+    locations: classpath:postgres/migration
     url: jdbc:postgresql://${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DATABASE}
     user: ${POSTGRES_USERNAME}
     password: ${POSTGRES_PASSWORD}
