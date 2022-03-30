@@ -38,13 +38,13 @@ create sequence soknad_under_arbeid_id_seq start with 1 increment by 1;
 create table opplastet_vedlegg
 (
     id                     serial primary key,
-    uuid                   varchar(255) not null unique,
-    eier                   varchar(255) not null,
-    type                   varchar(255) not null,
-    data                   bytea        not null,
-    soknad_under_arbeid_id varchar(40)  not null,
-    filnavn                varchar(255) not null,
-    sha512                 varchar(255) not null,
+    uuid                   varchar(255)   not null unique,
+    eier                   varchar(255)   not null,
+    type                   varchar(255)   not null,
+    data                   bytea          not null,
+    soknad_under_arbeid_id numeric(19, 0) not null,
+    filnavn                varchar(255)   not null,
+    sha512                 varchar(255)   not null,
     constraint fk_soknad_under_arbeid foreign key (soknad_under_arbeid_id) references soknad_under_arbeid (soknad_under_arbeid_id)
 );
 
