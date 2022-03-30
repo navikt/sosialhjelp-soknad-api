@@ -47,25 +47,25 @@
         <kotlin.version>1.6.10</kotlin.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <sosialhjelp-common.version>1.231cd9b</sosialhjelp-common.version>
-        <filformat.version>1.2022.01.30-13.18-01cd95216e0b</filformat.version>
+        <sosialhjelp-common.version>1.b0c30e9</sosialhjelp-common.version>
+        <filformat.version>1.2022.03.28-09.33-549d4c2fcf68</filformat.version>
 
         <!-- Fiks/KS -->
         <svarut-rest-klient.version>1.0.2</svarut-rest-klient.version>
         <kryptering.version>1.1.2</kryptering.version>
         <streaming-klient.version>1.0.16</streaming-klient.version>
 
-        <spring-boot.version>2.6.4</spring-boot.version>
-        <spring.version>5.3.16</spring.version>
+        <spring-boot.version>2.6.5</spring-boot.version>
+        <spring.version>5.3.17</spring.version>
         <jetty.version>9.4.45.v20220203</jetty.version>
         <jersey.version>2.35</jersey.version>
-        <token-validation.version>2.0.12</token-validation.version>
+        <token-validation.version>2.0.14</token-validation.version>
         <nimbus-jose-jwt.version>9.21</nimbus-jose-jwt.version>
         <ojdbc.version>19.13.0.0.1</ojdbc.version>
-        <flyway-core.version>7.15.0</flyway-core.version>
-        <flyway-maven-plugin.version>7.15.0</flyway-maven-plugin.version>
+        <flyway-core.version>8.5.5</flyway-core.version>
+        <flyway-maven-plugin.version>8.5.5</flyway-maven-plugin.version>
         <jackson.version>2.13.2</jackson.version>
-        <jackson-databind.version>2.13.2.1</jackson-databind.version>
+        <jackson-databind.version>2.13.2.2</jackson-databind.version>
         <pdfbox.version>2.0.25</pdfbox.version>
         <jempbox.version>1.8.16</jempbox.version>
         <bouncycastle.version>1.70</bouncycastle.version>
@@ -121,7 +121,7 @@
         <rhino.version>1.7.14</rhino.version>
         <logstash-logback-encoder.version>7.0.1</logstash-logback-encoder.version>
         <prometheus.version>0.15.0</prometheus.version>
-        <oauth2-oidc-sdk.version>9.31</oauth2-oidc-sdk.version>
+        <oauth2-oidc-sdk.version>9.31.1</oauth2-oidc-sdk.version>
         <emoji-java.version>5.1.1</emoji-java.version>
         <objenesis.version>3.2</objenesis.version>
         <mimepull.version>1.9.15</mimepull.version>
