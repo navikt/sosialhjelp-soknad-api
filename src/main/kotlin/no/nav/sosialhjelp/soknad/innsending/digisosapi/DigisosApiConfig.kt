@@ -2,6 +2,7 @@ package no.nav.sosialhjelp.soknad.innsending.digisosapi
 
 import io.netty.channel.ChannelOption
 import no.nav.sosialhjelp.metrics.MetricsFactory
+import no.nav.sosialhjelp.soknad.client.maskinporten.MaskinportenClient
 import no.nav.sosialhjelp.soknad.common.ServiceUtils
 import no.nav.sosialhjelp.soknad.health.selftest.Pingable
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.digisosObjectMapper
@@ -21,12 +22,13 @@ open class DigisosApiConfig(
     @Value("\${digisos_api_baseurl}") private val digisosApiEndpoint: String,
     @Value("\${integrasjonsid_fiks}") private val integrasjonsidFiks: String,
     @Value("\${integrasjonpassord_fiks}") private val integrasjonpassordFiks: String,
-    private val serviceUtils: ServiceUtils
+    private val serviceUtils: ServiceUtils,
+    private val maskinportenClient: MaskinportenClient
 ) {
 
     @Bean
     open fun dokumentlagerClient(fiksWebClient: WebClient): DokumentlagerClient {
-        return DokumentlagerClientImpl(fiksWebClient, properties)
+        return DokumentlagerClientImpl(fiksWebClient, properties, maskinportenClient)
     }
 
     @Bean

@@ -1,6 +1,8 @@
 package no.nav.sosialhjelp.soknad.innsending.digisosapi
 
 import no.nav.sosialhjelp.soknad.client.exceptions.TjenesteUtilgjengeligException
+import no.nav.sosialhjelp.soknad.client.maskinporten.MaskinportenClient
+import no.nav.sosialhjelp.soknad.common.Constants.BEARER
 import no.nav.sosialhjelp.soknad.common.Constants.HEADER_INTEGRASJON_ID
 import no.nav.sosialhjelp.soknad.common.Constants.HEADER_INTEGRASJON_PASSORD
 import org.slf4j.LoggerFactory.getLogger
@@ -16,17 +18,18 @@ import java.security.cert.X509Certificate
 import javax.ws.rs.core.MediaType
 
 interface DokumentlagerClient {
-    fun getDokumentlagerPublicKeyX509Certificate(token: String?): X509Certificate
+    fun getDokumentlagerPublicKeyX509Certificate(): X509Certificate
 }
 
 class DokumentlagerClientImpl(
     private val fiksWebClient: WebClient,
-    private val properties: DigisosApiProperties
+    private val properties: DigisosApiProperties,
+    private val maskinportenClient: MaskinportenClient
 ) : DokumentlagerClient {
 
     private var cachedPublicKey: X509Certificate? = null
 
-    override fun getDokumentlagerPublicKeyX509Certificate(token: String?): X509Certificate {
+    override fun getDokumentlagerPublicKeyX509Certificate(): X509Certificate {
         cachedPublicKey?.let { return it }
 
         val publicKey = fiksWebClient.get()
@@ -34,7 +37,7 @@ class DokumentlagerClientImpl(
             .header(ACCEPT, MediaType.WILDCARD)
             .header(HEADER_INTEGRASJON_ID, properties.integrasjonsidFiks)
             .header(HEADER_INTEGRASJON_PASSORD, properties.integrasjonpassordFiks)
-            .header(AUTHORIZATION, token)
+            .header(AUTHORIZATION, BEARER + maskinportenClient.getToken())
             .retrieve()
             .bodyToMono<ByteArray>()
             .onErrorMap(WebClientResponseException::class.java) { e ->
