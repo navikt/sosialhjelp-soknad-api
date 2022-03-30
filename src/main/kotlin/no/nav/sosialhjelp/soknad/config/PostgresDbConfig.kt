@@ -9,7 +9,6 @@ import org.springframework.context.annotation.Profile
 open class PostgresDbConfig {
 
     init {
-        // todo: postgres?
-        System.setProperty(SQLUtils.DIALECT_PROPERTY, "hsqldb")
+        System.setProperty(SQLUtils.DIALECT_PROPERTY, "postgresql")
     }
 }
