@@ -94,7 +94,7 @@ class DigisosApiClientImpl(
         val krypteringFutureList = Collections.synchronizedList(ArrayList<Future<Void>>(dokumenter.size))
         val digisosId: String
         try {
-            val fiksX509Certificate = dokumentlagerClient.getDokumentlagerPublicKeyX509Certificate(token)
+            val fiksX509Certificate = dokumentlagerClient.getDokumentlagerPublicKeyX509Certificate()
             digisosId = lastOppFiler(
                 soknadJson,
                 tilleggsinformasjonJson,
