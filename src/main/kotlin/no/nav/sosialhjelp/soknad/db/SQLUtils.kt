@@ -37,7 +37,7 @@ object SQLUtils {
     }
 
     fun blobSizeQuery(): String {
-        return when(System.getProperty(DIALECT_PROPERTY)) {
+        return when (System.getProperty(DIALECT_PROPERTY)) {
             HSQLDB, POSTGRESQL -> "OCTET_LENGTH(DATA)"
             else -> "dbms_lob.getLength(DATA)"
         }
