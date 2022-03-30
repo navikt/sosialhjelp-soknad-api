@@ -10,6 +10,7 @@
     "fiks-svarut-credentials",
     "testbruker-skatteetaten"
   ],
+  "inboundRulesApplications": ["sosialhjelp-login-api-dev"],
   "outboundExternalHosts": [
     "digisos.dev.nav.no",
     "unleash.nais.io",

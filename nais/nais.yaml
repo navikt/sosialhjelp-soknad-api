@@ -63,6 +63,11 @@ spec:
           cluster: {{personbrukerGcpCluster}}
         - application: {{sosialhjelpDialogApi}}
           cluster: {{dialogGcpCluster}}
+      {{#each inboundRulesApplications}}
+        - application: "{{this}}"
+      {{else}}
+        []
+      {{/each}}
 {{/if}}
     outbound:
       external:
