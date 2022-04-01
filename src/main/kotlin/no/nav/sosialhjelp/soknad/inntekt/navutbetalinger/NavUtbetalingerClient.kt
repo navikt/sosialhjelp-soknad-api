@@ -13,10 +13,13 @@ import no.nav.sosialhjelp.soknad.common.Constants.BEARER
 import no.nav.sosialhjelp.soknad.common.Constants.HEADER_CALL_ID
 import no.nav.sosialhjelp.soknad.common.Constants.HEADER_CONSUMER_ID
 import no.nav.sosialhjelp.soknad.common.mdc.MdcOperations
+import no.nav.sosialhjelp.soknad.common.rest.RestUtils
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.NavUtbetalingerDto
 import org.eclipse.jetty.http.HttpHeader
 import org.slf4j.LoggerFactory.getLogger
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.stereotype.Component
 import javax.ws.rs.ServerErrorException
 import javax.ws.rs.client.Client
 
@@ -24,13 +27,15 @@ interface NavUtbetalingerClient {
     fun getUtbetalingerSiste40Dager(ident: String): NavUtbetalingerDto?
 }
 
+@Component
 class NavUtbetalingerClientImpl(
-    private val client: Client,
-    private val baseurl: String,
+    @Value("\${oppslag_api_baseurl}") private val baseurl: String,
+    @Value("\${oppslag_api_audience}") private val oppslagApiAudience: String,
     private val redisService: RedisService,
-    private val oppslagApiAudience: String,
     private val tokendingsService: TokendingsService
 ) : NavUtbetalingerClient {
+
+    private val client: Client = RestUtils.createClient()
 
     override fun getUtbetalingerSiste40Dager(ident: String): NavUtbetalingerDto? {
         hentFraCache(ident)?.let { return it }

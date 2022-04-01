@@ -24,12 +24,15 @@ import no.nav.sosialhjelp.soknad.client.tokenx.TokendingsService
 import no.nav.sosialhjelp.soknad.common.Constants.BEARER
 import no.nav.sosialhjelp.soknad.common.Constants.HEADER_TEMA
 import no.nav.sosialhjelp.soknad.common.Constants.TEMA_KOM
+import no.nav.sosialhjelp.soknad.common.rest.RestUtils
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils.getToken
 import no.nav.sosialhjelp.soknad.personalia.person.dto.BarnDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.EktefelleDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.PersonAdressebeskyttelseDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.PersonDto
 import org.slf4j.LoggerFactory.getLogger
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.stereotype.Component
 import javax.ws.rs.ProcessingException
 import javax.ws.rs.WebApplicationException
 import javax.ws.rs.client.Client
@@ -42,14 +45,15 @@ interface HentPersonClient {
     fun hentAdressebeskyttelse(ident: String): PersonAdressebeskyttelseDto?
 }
 
+@Component
 class HentPersonClientImpl(
-    client: Client,
-    baseurl: String,
-    private val pdlScope: String,
-    private val pdlAudience: String,
+    client: Client = RestUtils.createClient(),
+    @Value("\${pdl_api_url}") private val baseurl: String,
+    @Value("\${pdl_api_scope}") private val pdlScope: String,
+    @Value("\${pdl_api_audience}") private val pdlAudience: String,
     private val redisService: RedisService,
     private val tokendingsService: TokendingsService,
-    private val azureadService: AzureadService
+    private val azureadService: AzureadService,
 ) : PdlClient(client, baseurl), HentPersonClient {
 
     override fun hentPerson(ident: String): PersonDto? {

@@ -1,9 +1,12 @@
 package no.nav.sosialhjelp.soknad.navenhet.bydel
 
+import io.mockk.every
+import io.mockk.spyk
 import no.nav.sosialhjelp.soknad.adressesok.domain.AdresseForslag
 import no.nav.sosialhjelp.soknad.adressesok.domain.AdresseForslagType
 import no.nav.sosialhjelp.soknad.navenhet.bydel.BydelFordelingService.Companion.BYDEL_MARKA_OSLO
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 internal class BydelFordelingServiceTest {
@@ -15,7 +18,12 @@ internal class BydelFordelingServiceTest {
     private val BYDEL_VESTRE_AKER = "030107"
     private val BYDEL_NORDRE_AKER = "030108"
 
-    private val bydelFordelingService = BydelFordelingService(markaBydelFordeling())
+    private val bydelFordelingService = spyk(BydelFordelingService())
+
+    @BeforeEach
+    internal fun setUp() {
+        every { bydelFordelingService getProperty "markaBydelFordeling" } answers { markaBydelFordeling() }
+    }
 
     @Test
     fun skalReturnereBydelTil() {

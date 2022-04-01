@@ -5,27 +5,52 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import no.ks.fiks.svarut.klient.model.Forsendelse
 import no.ks.fiks.svarut.klient.model.ForsendelsesId
 import no.nav.sosialhjelp.soknad.client.exceptions.TjenesteUtilgjengeligException
+import no.nav.sosialhjelp.soknad.common.rest.RestConfig
+import no.nav.sosialhjelp.soknad.common.rest.RestUtils
 import org.glassfish.jersey.media.multipart.FormDataBodyPart
 import org.glassfish.jersey.media.multipart.MultiPart
+import org.glassfish.jersey.media.multipart.MultiPartFeature
 import org.glassfish.jersey.media.multipart.file.StreamDataBodyPart
 import org.slf4j.LoggerFactory.getLogger
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.http.HttpHeaders
+import org.springframework.stereotype.Component
 import java.io.InputStream
+import java.nio.charset.StandardCharsets
 import javax.ws.rs.ClientErrorException
 import javax.ws.rs.client.Client
+import javax.ws.rs.client.ClientRequestFilter
 import javax.ws.rs.client.Entity
 import javax.ws.rs.core.MediaType.APPLICATION_JSON_TYPE
 import javax.ws.rs.core.MediaType.APPLICATION_OCTET_STREAM_TYPE
 import javax.ws.rs.core.MediaType.MULTIPART_FORM_DATA_TYPE
+import javax.xml.bind.DatatypeConverter
 
 interface SvarUtClient {
     fun ping()
     fun sendForsendelse(forsendelse: Forsendelse?, data: Map<String, InputStream>?): ForsendelsesId
 }
 
+@Component
 class SvarUtClientImpl(
-    private val client: Client,
-    private val baseurl: String
+    @Value("\${svarut_url}") private var baseurl: String,
+    @Value("\${fiks_svarut_username}") private val svarutUsername: String?,
+    @Value("\${fiks_svarut_password}") private val svarutPassword: String?,
 ) : SvarUtClient {
+
+    private val basicAuthentication: String
+        get() {
+            if (svarutUsername == null || svarutPassword == null) {
+                throw RuntimeException("svarutUsername eller svarutPassword er ikke tilgjengelig.")
+            }
+            val token = "$svarutUsername:$svarutPassword"
+            return "Basic " + DatatypeConverter.printBase64Binary(token.toByteArray(StandardCharsets.UTF_8))
+        }
+
+    private val client: Client = RestUtils
+        .createClient(RestConfig(connectTimeout = SVARUT_TIMEOUT, readTimeout = SVARUT_TIMEOUT))
+        .register(MultiPartFeature::class.java)
+        .register(ClientRequestFilter { it.headers.putSingle(HttpHeaders.AUTHORIZATION, basicAuthentication) })
 
     override fun ping() {
         client
@@ -58,7 +83,7 @@ class SvarUtClientImpl(
                 .target("$baseurl/tjenester/api/forsendelse/v1/sendForsendelse")
                 .request(APPLICATION_JSON_TYPE)
                 .post(Entity.entity(multiPart, multiPart.mediaType), String::class.java)
-            objectMapper.readValue<ForsendelsesId>(response)
+            objectMapper.readValue(response)
         } catch (e: ClientErrorException) {
             throw e
         } catch (e: Exception) {
@@ -69,5 +94,7 @@ class SvarUtClientImpl(
     companion object {
         private val log = getLogger(SvarUtClientImpl::class.java)
         private val objectMapper = jacksonObjectMapper()
+
+        private const val SVARUT_TIMEOUT = 16 * 60 * 1000
     }
 }
