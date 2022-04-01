@@ -18,11 +18,14 @@ import no.nav.sosialhjelp.soknad.common.Constants.HEADER_CALL_ID
 import no.nav.sosialhjelp.soknad.common.Constants.HEADER_CONSUMER_ID
 import no.nav.sosialhjelp.soknad.common.mdc.MdcOperations
 import no.nav.sosialhjelp.soknad.common.mdc.MdcOperations.MDC_CALL_ID
+import no.nav.sosialhjelp.soknad.common.rest.RestUtils
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils.getToken
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils.getUserIdFromToken
 import no.nav.sosialhjelp.soknad.navenhet.dto.NavEnhetDto
 import org.slf4j.LoggerFactory.getLogger
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.stereotype.Component
 import java.nio.charset.StandardCharsets
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -36,13 +39,15 @@ interface NorgClient {
     fun hentNavEnhetForGeografiskTilknytning(geografiskTilknytning: String): NavEnhetDto?
 }
 
+@Component
 class NorgClientImpl(
-    private val client: Client,
-    private val baseurl: String,
-    private val redisService: RedisService,
+    @Value("\${norg_proxy_url}") private val baseurl: String,
+    @Value("\${fss_proxy_audience}") private val fssProxyAudience: String,
     private val tokendingsService: TokendingsService,
-    private val fssProxyAudience: String
+    private val redisService: RedisService
 ) : NorgClient {
+
+    private val client: Client = RestUtils.createClient()
 
     override fun hentNavEnhetForGeografiskTilknytning(geografiskTilknytning: String): NavEnhetDto? {
         val request: Invocation.Builder = lagRequest(baseurl + "enhet/navkontor/" + geografiskTilknytning)

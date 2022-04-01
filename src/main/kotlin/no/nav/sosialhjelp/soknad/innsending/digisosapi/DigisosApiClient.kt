@@ -59,9 +59,11 @@ interface DigisosApiClient {
 }
 
 class DigisosApiClientImpl(
+    private val digisosApiEndpoint: String,
+    private val integrasjonsidFiks: String,
+    private val integrasjonpassordFiks: String,
     private val kommuneInfoService: KommuneInfoService,
     private val dokumentlagerClient: DokumentlagerClient,
-    private val properties: DigisosApiProperties,
     private val serviceUtils: ServiceUtils
 ) : DigisosApiClient {
 
@@ -226,11 +228,11 @@ class DigisosApiClientImpl(
 
         try {
             clientBuilder().setDefaultRequestConfig(requestConfig).build().use { client ->
-                val post = HttpPost(properties.digisosApiEndpoint + "/digisos/api/v1/soknader/$kommunenummer/$behandlingsId")
+                val post = HttpPost("$digisosApiEndpoint/digisos/api/v1/soknader/$kommunenummer/$behandlingsId")
                 post.setHeader("requestid", UUID.randomUUID().toString())
                 post.setHeader(AUTHORIZATION.name, token)
-                post.setHeader(HEADER_INTEGRASJON_ID, properties.integrasjonsidFiks)
-                post.setHeader(HEADER_INTEGRASJON_PASSORD, properties.integrasjonpassordFiks)
+                post.setHeader(HEADER_INTEGRASJON_ID, integrasjonsidFiks)
+                post.setHeader(HEADER_INTEGRASJON_PASSORD, integrasjonpassordFiks)
                 post.entity = entitybuilder.build()
 
                 val startTime = System.currentTimeMillis()

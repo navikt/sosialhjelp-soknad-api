@@ -8,11 +8,14 @@ import no.nav.sosialhjelp.soknad.common.Constants.HEADER_CALL_ID
 import no.nav.sosialhjelp.soknad.common.Constants.HEADER_CONSUMER_ID
 import no.nav.sosialhjelp.soknad.common.mdc.MdcOperations
 import no.nav.sosialhjelp.soknad.common.mdc.MdcOperations.MDC_CALL_ID
+import no.nav.sosialhjelp.soknad.common.rest.RestUtils
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils.getToken
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils.getUserIdFromToken
 import no.nav.sosialhjelp.soknad.organisasjon.dto.OrganisasjonNoekkelinfoDto
 import org.slf4j.LoggerFactory.getLogger
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.stereotype.Component
 import javax.ws.rs.BadRequestException
 import javax.ws.rs.NotFoundException
 import javax.ws.rs.ServerErrorException
@@ -23,19 +26,21 @@ interface OrganisasjonClient {
     fun hentOrganisasjonNoekkelinfo(orgnr: String): OrganisasjonNoekkelinfoDto?
 }
 
+@Component
 class OrganisasjonClientImpl(
-    private val client: Client,
-    private val baseurl: String,
-    private val fssProxyAudience: String,
+    @Value("\${ereg_proxy_url}") private val baseurl: String,
+    @Value("\${fss_proxy_audience}") private val fssProxyAudience: String,
     private val tokendingsService: TokendingsService
 ) : OrganisasjonClient {
+
+    private val organisasjonClient: Client get() = RestUtils.createClient()
 
     override fun hentOrganisasjonNoekkelinfo(orgnr: String): OrganisasjonNoekkelinfoDto? {
         return try {
             val tokenXtoken = runBlocking {
                 tokendingsService.exchangeToken(getUserIdFromToken(), getToken(), fssProxyAudience)
             }
-            client.target("${baseurl}organisasjon/$orgnr")
+            organisasjonClient.target("${baseurl}organisasjon/$orgnr")
                 .request()
                 .header(HttpHeaders.AUTHORIZATION, BEARER + tokenXtoken)
                 .header(HEADER_CALL_ID, MdcOperations.getFromMDC(MDC_CALL_ID))

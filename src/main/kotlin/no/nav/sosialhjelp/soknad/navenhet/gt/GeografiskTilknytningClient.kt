@@ -17,20 +17,24 @@ import no.nav.sosialhjelp.soknad.client.tokenx.TokendingsService
 import no.nav.sosialhjelp.soknad.common.Constants.BEARER
 import no.nav.sosialhjelp.soknad.common.Constants.HEADER_TEMA
 import no.nav.sosialhjelp.soknad.common.Constants.TEMA_KOM
+import no.nav.sosialhjelp.soknad.common.rest.RestUtils
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils.getToken
 import no.nav.sosialhjelp.soknad.navenhet.gt.dto.GeografiskTilknytningDto
 import org.slf4j.LoggerFactory.getLogger
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.stereotype.Component
 import javax.ws.rs.ProcessingException
 import javax.ws.rs.WebApplicationException
 import javax.ws.rs.client.Client
 import javax.ws.rs.core.HttpHeaders.AUTHORIZATION
 
+@Component
 class GeografiskTilknytningClient(
-    client: Client,
-    baseurl: String,
-    private val pdlAudience: String,
+    @Value("\${pdl_api_url}") private val baseurl: String,
+    @Value("\${pdl_api_audience}") private val pdlAudience: String,
     private val tokendingsService: TokendingsService,
-    private val redisService: RedisService
+    private val redisService: RedisService,
+    client: Client = RestUtils.createClient(),
 ) : PdlClient(client, baseurl) {
 
     fun hentGeografiskTilknytning(ident: String): GeografiskTilknytningDto? {

@@ -4,21 +4,15 @@ import no.nav.sosialhjelp.soknad.health.selftest.Pingable
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.web.reactive.function.client.WebClient
 
 @Configuration
 open class FssProxyConfig(
     @Value("\${fss_proxy_ping_url}") private val pingurl: String,
-    private val nonProxiedWebClientBuilder: WebClient.Builder,
+    private val fssProxyPingClient: FssProxyPingClient,
 ) {
 
     @Bean
-    open fun fssProxyPingClient(): FssProxyPingClient {
-        return FssProxyPingClient(fssProxyWebClient, pingurl)
-    }
-
-    @Bean
-    open fun fssProxyPing(fssProxyPingClient: FssProxyPingClient): Pingable {
+    open fun fssProxyPing(): Pingable {
         return Pingable {
             val metadata = Pingable.PingMetadata(pingurl, "sosialhjelp-fss-proxy", false)
             try {
@@ -29,7 +23,4 @@ open class FssProxyConfig(
             }
         }
     }
-
-    private val fssProxyWebClient: WebClient
-        get() = nonProxiedWebClientBuilder.build()
 }

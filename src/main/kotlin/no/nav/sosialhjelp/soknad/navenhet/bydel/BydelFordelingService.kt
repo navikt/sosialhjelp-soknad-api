@@ -1,11 +1,32 @@
 package no.nav.sosialhjelp.soknad.navenhet.bydel
 
+import com.fasterxml.jackson.core.JsonProcessingException
+import com.fasterxml.jackson.databind.DeserializationFeature
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
 import no.nav.sosialhjelp.soknad.adressesok.domain.AdresseForslag
+import no.nav.sosialhjelp.soknad.common.exceptions.SosialhjelpSoknadApiException
 import org.apache.commons.lang3.StringUtils
+import org.springframework.core.io.ClassPathResource
+import org.springframework.stereotype.Component
+import java.io.BufferedReader
+import java.io.IOException
+import java.io.InputStreamReader
+import java.nio.charset.StandardCharsets
+import java.util.stream.Collectors
 
-open class BydelFordelingService(
+@Component
+open class BydelFordelingService {
+
     private val markaBydelFordeling: List<BydelFordeling>
-) {
+        get() {
+            val json = readBydelsfordelingFromFile()
+            return try {
+                objectMapper.readValue(json)
+            } catch (e: JsonProcessingException) {
+                throw SosialhjelpSoknadApiException("BydelFordeling marka: Failed to parse json", e)
+            }
+        }
 
     open fun getBydelTilForMarka(adresseForslag: AdresseForslag): String {
         return markaBydelFordeling
@@ -34,5 +55,19 @@ open class BydelFordelingService(
 
     companion object {
         const val BYDEL_MARKA_OSLO = "030117"
+
+        private val objectMapper = jacksonObjectMapper().enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
+
+        private fun readBydelsfordelingFromFile(): String {
+            val resource = ClassPathResource("pdl/marka-bydelsfordeling.json")
+            return try {
+                BufferedReader(InputStreamReader(resource.inputStream, StandardCharsets.UTF_8))
+                    .use {
+                        it.lines().collect(Collectors.joining("\n"))
+                    }
+            } catch (e: IOException) {
+                throw SosialhjelpSoknadApiException("BydelFordeling marka: Failed to read file", e)
+            }
+        }
     }
 }
