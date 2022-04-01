@@ -1,5 +1,9 @@
 package no.nav.sosialhjelp.soknad.arbeid
 
+import com.fasterxml.jackson.databind.DeserializationFeature
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import kotlinx.coroutines.runBlocking
 import no.nav.sosialhjelp.soknad.arbeid.dto.ArbeidsforholdDto
 import no.nav.sosialhjelp.soknad.client.exceptions.TjenesteUtilgjengeligException
@@ -8,9 +12,12 @@ import no.nav.sosialhjelp.soknad.common.Constants.BEARER
 import no.nav.sosialhjelp.soknad.common.Constants.HEADER_CALL_ID
 import no.nav.sosialhjelp.soknad.common.Constants.HEADER_NAV_PERSONIDENT
 import no.nav.sosialhjelp.soknad.common.mdc.MdcOperations
+import no.nav.sosialhjelp.soknad.common.rest.RestUtils
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils.getToken
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils.getUserIdFromToken
 import org.slf4j.LoggerFactory.getLogger
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.stereotype.Component
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter.ISO_LOCAL_DATE
 import javax.ws.rs.BadRequestException
@@ -23,18 +30,25 @@ import javax.ws.rs.client.Client
 import javax.ws.rs.core.GenericType
 import javax.ws.rs.core.HttpHeaders.AUTHORIZATION
 
+@Component
 class ArbeidsforholdClient(
-    private val client: Client,
-    private val aaregProxyUrl: String,
-    private val fssProxyAudience: String,
+    @Value("\${aareg_proxy_url}") private val aaregProxyUrl: String,
+    @Value("\${fss_proxy_audience}") private val fssProxyAudience: String,
     private val tokendingsService: TokendingsService
 ) {
+
+    private val arbeidsforholdMapper: ObjectMapper = jacksonObjectMapper()
+        .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
+        .registerModule(JavaTimeModule())
+
+    private val arbeidsforholdClient: Client = RestUtils.createClient().register(arbeidsforholdMapper)
+
     private val callId: String? get() = MdcOperations.getFromMDC(MdcOperations.MDC_CALL_ID)
     private val sokeperiode: Sokeperiode get() = Sokeperiode(LocalDate.now().minusMonths(3), LocalDate.now())
 
     fun finnArbeidsforholdForArbeidstaker(fodselsnummer: String): List<ArbeidsforholdDto>? {
         try {
-            return client.target("${aaregProxyUrl}v1/arbeidstaker/arbeidsforhold")
+            return arbeidsforholdClient.target("${aaregProxyUrl}v1/arbeidstaker/arbeidsforhold")
                 .queryParam("sporingsinformasjon", false)
                 .queryParam("regelverk", A_ORDNINGEN)
                 .queryParam("ansettelsesperiodeFom", sokeperiode.fom.format(ISO_LOCAL_DATE))

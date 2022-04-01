@@ -12,17 +12,21 @@ import no.nav.sosialhjelp.soknad.client.pdl.AdressesokDto
 import no.nav.sosialhjelp.soknad.client.pdl.PdlApiQuery.ADRESSE_SOK
 import no.nav.sosialhjelp.soknad.client.pdl.PdlClient
 import no.nav.sosialhjelp.soknad.common.Constants.BEARER
+import no.nav.sosialhjelp.soknad.common.rest.RestUtils
 import org.slf4j.LoggerFactory.getLogger
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.stereotype.Component
 import javax.ws.rs.ProcessingException
 import javax.ws.rs.WebApplicationException
 import javax.ws.rs.client.Client
 import javax.ws.rs.core.HttpHeaders.AUTHORIZATION
 
+@Component
 open class AdressesokClient(
-    client: Client,
-    baseurl: String,
+    @Value("\${pdl_api_url}") private val baseurl: String,
+    @Value("\${pdl_api_scope}") private val pdlScope: String,
     private val azureadService: AzureadService,
-    private val pdlScope: String
+    client: Client = RestUtils.createClient(),
 ) : PdlClient(client, baseurl) {
 
     open fun getAdressesokResult(variables: Map<String, Any>): AdressesokResultDto? {

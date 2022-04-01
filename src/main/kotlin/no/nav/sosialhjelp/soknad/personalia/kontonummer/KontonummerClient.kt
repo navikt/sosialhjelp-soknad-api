@@ -15,9 +15,12 @@ import no.nav.sosialhjelp.soknad.common.Constants.BEARER
 import no.nav.sosialhjelp.soknad.common.Constants.HEADER_CALL_ID
 import no.nav.sosialhjelp.soknad.common.Constants.HEADER_CONSUMER_ID
 import no.nav.sosialhjelp.soknad.common.mdc.MdcOperations
+import no.nav.sosialhjelp.soknad.common.rest.RestUtils
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.personalia.kontonummer.dto.KontonummerDto
 import org.slf4j.LoggerFactory.getLogger
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.stereotype.Component
 import javax.ws.rs.NotAuthorizedException
 import javax.ws.rs.NotFoundException
 import javax.ws.rs.ServerErrorException
@@ -28,13 +31,15 @@ interface KontonummerClient {
     fun getKontonummer(ident: String): KontonummerDto?
 }
 
+@Component
 class KontonummerClientImpl(
-    private val client: Client,
-    private val baseurl: String,
+    @Value("\${oppslag_api_baseurl}") private val baseurl: String,
+    @Value("\${oppslag_api_audience}") private val oppslagApiAudience: String,
     private val redisService: RedisService,
-    private val oppslagApiAudience: String,
     private val tokendingsService: TokendingsService
 ) : KontonummerClient {
+
+    private val client: Client = RestUtils.createClient()
 
     override fun getKontonummer(ident: String): KontonummerDto? {
         hentKontonummerFraCache(ident)?.let { return it }

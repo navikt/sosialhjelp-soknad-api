@@ -1,6 +1,10 @@
 package no.nav.sosialhjelp.soknad.client.kodeverk
 
 import com.fasterxml.jackson.core.JsonProcessingException
+import com.fasterxml.jackson.databind.DeserializationFeature
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import kotlinx.coroutines.runBlocking
 import no.nav.sosialhjelp.soknad.client.kodeverk.dto.KodeverkDto
 import no.nav.sosialhjelp.soknad.client.redis.KODEVERK_CACHE_SECONDS
@@ -15,8 +19,11 @@ import no.nav.sosialhjelp.soknad.common.Constants.BEARER
 import no.nav.sosialhjelp.soknad.common.Constants.HEADER_CALL_ID
 import no.nav.sosialhjelp.soknad.common.Constants.HEADER_CONSUMER_ID
 import no.nav.sosialhjelp.soknad.common.mdc.MdcOperations
+import no.nav.sosialhjelp.soknad.common.rest.RestUtils
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
 import org.slf4j.LoggerFactory.getLogger
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.stereotype.Component
 import java.net.URI
 import java.nio.charset.StandardCharsets
 import java.time.LocalDateTime
@@ -25,29 +32,29 @@ import javax.ws.rs.ClientErrorException
 import javax.ws.rs.client.Client
 import javax.ws.rs.core.HttpHeaders.AUTHORIZATION
 
-interface KodeverkClient {
-    fun hentPostnummer(): KodeverkDto?
-    fun hentKommuner(): KodeverkDto?
-    fun hentLandkoder(): KodeverkDto?
-}
-
-class KodeverkClientImpl(
-    private val client: Client,
-    private val baseurl: String,
+@Component
+class KodeverkClient(
+    @Value("\${kodeverk_proxy_url}") private val baseurl: String,
+    @Value("\${fss_proxy_audience}") private val fssProxyAudience: String,
     private val redisService: RedisService,
     private val tokendingsService: TokendingsService,
-    private val fssProxyAudience: String
-) : KodeverkClient {
+) {
 
-    override fun hentPostnummer(): KodeverkDto? {
+    private val kodeverkMapper: ObjectMapper = jacksonObjectMapper()
+        .registerModule(JavaTimeModule())
+        .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
+
+    private val client: Client = RestUtils.createClient().register(kodeverkMapper)
+
+    fun hentPostnummer(): KodeverkDto? {
         return hentKodeverk(POSTNUMMER, POSTNUMMER_CACHE_KEY)
     }
 
-    override fun hentKommuner(): KodeverkDto? {
+    fun hentKommuner(): KodeverkDto? {
         return hentKodeverk(KOMMUNER, KOMMUNER_CACHE_KEY)
     }
 
-    override fun hentLandkoder(): KodeverkDto? {
+    fun hentLandkoder(): KodeverkDto? {
         return hentKodeverk(LANDKODER, LANDKODER_CACHE_KEY)
     }
 
@@ -92,7 +99,7 @@ class KodeverkClientImpl(
     }
 
     companion object {
-        private val log = getLogger(KodeverkClientImpl::class.java)
+        private val log = getLogger(KodeverkClient::class.java)
 
         private const val POSTNUMMER = "Postnummer"
         private const val KOMMUNER = "Kommuner"

@@ -14,22 +14,26 @@ import no.nav.sosialhjelp.soknad.common.Constants.HEADER_CALL_ID
 import no.nav.sosialhjelp.soknad.common.Constants.HEADER_NAV_PERSONIDENT
 import no.nav.sosialhjelp.soknad.common.mdc.MdcOperations
 import no.nav.sosialhjelp.soknad.common.mdc.MdcOperations.MDC_CALL_ID
+import no.nav.sosialhjelp.soknad.common.rest.RestUtils
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils.getToken
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils.getUserIdFromToken
 import no.nav.sosialhjelp.soknad.personalia.telefonnummer.dto.DigitalKontaktinformasjon
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.stereotype.Component
 import javax.ws.rs.ForbiddenException
 import javax.ws.rs.NotAuthorizedException
 import javax.ws.rs.NotFoundException
 import javax.ws.rs.client.Client
 import javax.ws.rs.core.HttpHeaders.AUTHORIZATION
 
+@Component
 class KrrProxyClient(
-    private val client: Client,
-    private val krrUrl: String,
-    private val krrAudience: String,
+    @Value("\${krr_proxy_url}") private val krrProxyUrl: String,
+    @Value("\${fss_proxy_audience}") private val fssProxyAudience: String,
+    private val redisService: RedisService,
     private val tokendingsService: TokendingsService,
-    private val redisService: RedisService
 ) {
+    private val client: Client = RestUtils.createClient()
 
     fun getDigitalKontaktinformasjon(ident: String): DigitalKontaktinformasjon? {
         return hentFraCache(ident) ?: hentFraServer(ident)
@@ -45,7 +49,7 @@ class KrrProxyClient(
     private fun hentFraServer(ident: String): DigitalKontaktinformasjon? {
         return try {
             client
-                .target("${krrUrl}rest/v1/person")
+                .target("${krrProxyUrl}rest/v1/person")
                 .request()
                 .header(AUTHORIZATION, BEARER + tokenxToken)
                 .header(HEADER_CALL_ID, MdcOperations.getFromMDC(MDC_CALL_ID))
@@ -81,7 +85,7 @@ class KrrProxyClient(
 
     private val tokenxToken: String
         get() = runBlocking {
-            tokendingsService.exchangeToken(getUserIdFromToken(), getToken(), krrAudience)
+            tokendingsService.exchangeToken(getUserIdFromToken(), getToken(), fssProxyAudience)
         }
 
     companion object {
