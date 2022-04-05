@@ -23,7 +23,7 @@ class SlettLoggScheduler(
     private var batchStartTime: LocalDateTime? = null
     private var vellykket = 0
 
-    @Scheduled(cron = KLOKKEN_FEM_OM_NATTEN)
+    @Scheduled(cron = KLOKKEN_00_01_02_03_05_06_OM_NATTEN)
     fun slettLogger() {
         if (schedulerDisabled) {
             logger.warn("Scheduler is disabled")
@@ -86,7 +86,7 @@ class SlettLoggScheduler(
 
     companion object {
         private val logger = LoggerFactory.getLogger(SlettLoggScheduler::class.java)
-        private const val KLOKKEN_FEM_OM_NATTEN = "0 0 5 * * *"
+        private const val KLOKKEN_00_01_02_03_05_06_OM_NATTEN = "0 0 0,1,2,3,5,6 * * *"
         private const val SCHEDULE_INTERRUPT_S: Long = 60 * 30 // 30 min
         private const val DAGER_GAMMELT = 365 // Ett år
     }
