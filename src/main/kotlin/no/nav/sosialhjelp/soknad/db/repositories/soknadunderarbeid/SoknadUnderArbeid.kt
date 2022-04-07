@@ -12,7 +12,8 @@ data class SoknadUnderArbeid(
     var jsonInternalSoknad: JsonInternalSoknad?,
     var status: SoknadUnderArbeidStatus,
     var opprettetDato: LocalDateTime,
-    var sistEndretDato: LocalDateTime
+    var sistEndretDato: LocalDateTime,
+    var oldId: Long? = null
 ) {
     val erEttersendelse: Boolean get() = !tilknyttetBehandlingsId.isNullOrEmpty()
 }

@@ -3,6 +3,7 @@ package no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg
 import java.util.UUID
 
 data class OpplastetVedlegg(
+    var id: Long? = null,
     var uuid: String = UUID.randomUUID().toString(),
     var eier: String,
     var vedleggType: OpplastetVedleggType,

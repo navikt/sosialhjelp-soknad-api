@@ -18,7 +18,8 @@ data class Oppgave(
     var opprettet: LocalDateTime?,
     var sistKjort: LocalDateTime?,
     var nesteForsok: LocalDateTime?,
-    var retries: Int
+    var retries: Int,
+    var oldId: Long? = null
 ) {
     fun nesteSteg() {
         steg++

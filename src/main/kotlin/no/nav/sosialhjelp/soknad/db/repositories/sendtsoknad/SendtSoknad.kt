@@ -12,7 +12,8 @@ data class SendtSoknad(
     var navEnhetsnavn: String,
     var brukerOpprettetDato: LocalDateTime,
     var brukerFerdigDato: LocalDateTime,
-    var sendtDato: LocalDateTime? = null
+    var sendtDato: LocalDateTime? = null,
+    var oldId: Long? = null
 ) {
     val erEttersendelse: Boolean get() = !tilknyttetBehandlingsId.isNullOrEmpty()
 }
