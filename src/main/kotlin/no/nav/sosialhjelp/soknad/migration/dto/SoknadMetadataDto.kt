@@ -25,7 +25,7 @@ data class SoknadMetadataDto(
 )
 
 data class VedleggMetadataListeDto(
-    val vedleggListe: MutableList<VedleggMetadataDto>
+    val vedleggListe: List<VedleggMetadataDto>
 )
 
 data class VedleggMetadataDto(
