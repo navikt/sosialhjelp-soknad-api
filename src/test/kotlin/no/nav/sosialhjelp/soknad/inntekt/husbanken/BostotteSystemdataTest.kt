@@ -28,7 +28,6 @@ import org.junit.jupiter.api.Test
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.LocalDateTime
-import java.util.Optional
 import java.util.stream.Collectors
 
 internal class BostotteSystemdataTest {
@@ -57,7 +56,7 @@ internal class BostotteSystemdataTest {
         )
 
         // Mock:
-        every { husbankenClient.hentBostotte(any(), any(), any()) } returns Optional.of(bostotteDto)
+        every { husbankenClient.hentBostotte(any(), any(), any()) } returns bostotteDto
 
         // Kjøring:
         bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid, "")
@@ -86,7 +85,7 @@ internal class BostotteSystemdataTest {
         )
 
         // Mock:
-        every { husbankenClient.hentBostotte(any(), any(), any()) } returns Optional.of(bostotteDto)
+        every { husbankenClient.hentBostotte(any(), any(), any()) } returns bostotteDto
 
         // Kjøring:
         bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid, "")
@@ -113,7 +112,7 @@ internal class BostotteSystemdataTest {
         val bostotteDto = BostotteDto(listOf(sakDto), emptyList())
 
         // Mock:
-        every { husbankenClient.hentBostotte(any(), any(), any()) } returns Optional.of(bostotteDto)
+        every { husbankenClient.hentBostotte(any(), any(), any()) } returns bostotteDto
 
         // Kjøring:
         bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid, "")
@@ -152,7 +151,7 @@ internal class BostotteSystemdataTest {
         val bostotteDto = BostotteDto(listOf(sakDto1, sakDto2), emptyList())
 
         // Mock:
-        every { husbankenClient.hentBostotte(any(), any(), any()) } returns Optional.of(bostotteDto)
+        every { husbankenClient.hentBostotte(any(), any(), any()) } returns bostotteDto
 
         // Kjøring:
         bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid, "")
@@ -177,7 +176,7 @@ internal class BostotteSystemdataTest {
         settBostotteSamtykkePaSoknad(soknadUnderArbeid.jsonInternalSoknad!!, true)
 
         // Mock:
-        every { husbankenClient.hentBostotte(any(), any(), any()) } returns Optional.empty()
+        every { husbankenClient.hentBostotte(any(), any(), any()) } returns null
 
         // Kjøring:
         bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid, "")
@@ -200,7 +199,7 @@ internal class BostotteSystemdataTest {
         settBostotteSamtykkePaSoknad(soknadUnderArbeid.jsonInternalSoknad!!, true)
 
         // Mock:
-        every { husbankenClient.hentBostotte(any(), any(), any()) } returns Optional.empty()
+        every { husbankenClient.hentBostotte(any(), any(), any()) } returns null
 
         // Kjøring:
         bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid, "")
@@ -238,7 +237,7 @@ internal class BostotteSystemdataTest {
         val bostotteDto = BostotteDto(listOf(sakDto), emptyList())
 
         // Mock:
-        every { husbankenClient.hentBostotte(any(), any(), any()) } returns Optional.of(bostotteDto)
+        every { husbankenClient.hentBostotte(any(), any(), any()) } returns bostotteDto
 
         // Kjøring:
         bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid1, "")
@@ -276,7 +275,7 @@ internal class BostotteSystemdataTest {
         val bostotteDto = BostotteDto(listOf(sakDto1, sakDto2), emptyList())
 
         // Mock:
-        every { husbankenClient.hentBostotte(any(), any(), any()) } returns Optional.of(bostotteDto)
+        every { husbankenClient.hentBostotte(any(), any(), any()) } returns bostotteDto
 
         // Kjøring:
         bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid, "")
@@ -306,7 +305,7 @@ internal class BostotteSystemdataTest {
         val bostotteDto = BostotteDto(emptyList(), listOf(utbetalingDto1, utbetalingDto2))
 
         // Mock:
-        every { husbankenClient.hentBostotte(any(), any(), any()) } returns Optional.of(bostotteDto)
+        every { husbankenClient.hentBostotte(any(), any(), any()) } returns bostotteDto
 
         // Kjøring:
         bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid, "")
@@ -340,7 +339,7 @@ internal class BostotteSystemdataTest {
         val bostotteDto = BostotteDto(listOf(sakDto1, sakDto2), emptyList())
 
         // Mock:
-        every { husbankenClient.hentBostotte(any(), any(), any()) } returns Optional.of(bostotteDto)
+        every { husbankenClient.hentBostotte(any(), any(), any()) } returns bostotteDto
 
         // Kjøring:
         bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid, "")
@@ -355,8 +354,7 @@ internal class BostotteSystemdataTest {
         // Variabler:
         val soknadUnderArbeid = createSoknadUnderArbeid()
         settBostotteSamtykkePaSoknad(soknadUnderArbeid.jsonInternalSoknad!!, true)
-        val testDate: LocalDate
-        testDate = if (LocalDate.now().dayOfMonth >= 30) {
+        val testDate: LocalDate = if (LocalDate.now().dayOfMonth >= 30) {
             LocalDate.now().withDayOfMonth(1)
         } else {
             LocalDate.now().withDayOfMonth(1).minusMonths(1)
@@ -372,7 +370,7 @@ internal class BostotteSystemdataTest {
         val bostotteDto = BostotteDto(listOf(sakDto2), emptyList())
 
         // Mock:
-        every { husbankenClient.hentBostotte(any(), any(), any()) } returns Optional.of(bostotteDto)
+        every { husbankenClient.hentBostotte(any(), any(), any()) } returns bostotteDto
 
         // Kjøring:
         bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid, "")
@@ -412,7 +410,7 @@ internal class BostotteSystemdataTest {
         val bostotteDto = BostotteDto(emptyList(), listOf(utbetalingDto))
 
         // Mock:
-        every { husbankenClient.hentBostotte(any(), any(), any()) } returns Optional.of(bostotteDto)
+        every { husbankenClient.hentBostotte(any(), any(), any()) } returns bostotteDto
 
         // Kjøring:
         bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid1, "")

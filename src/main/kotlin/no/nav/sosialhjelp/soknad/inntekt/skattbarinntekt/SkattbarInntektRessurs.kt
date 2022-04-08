@@ -16,7 +16,6 @@ import no.nav.sosialhjelp.soknad.tekster.TextService
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import org.springframework.http.HttpHeaders
 import org.springframework.stereotype.Controller
-import java.util.Optional
 import javax.ws.rs.GET
 import javax.ws.rs.HeaderParam
 import javax.ws.rs.POST
@@ -105,18 +104,17 @@ open class SkattbarInntektRessurs(
     ): List<SkattbarInntektOgForskuddstrekk> {
 
         // Skatteetaten returnerer opplysninger månedsvis, så objekter med samme PeriodeFom gjelder for samme periode
-        val utbetalingerPerManedPerOrganisasjon: Map<Optional<String>, Map<Optional<JsonOrganisasjon>, List<JsonOkonomiOpplysningUtbetaling>>> =
+        val utbetalingerPerManedPerOrganisasjon: Map<String?, Map<JsonOrganisasjon?, List<JsonOkonomiOpplysningUtbetaling>>> =
             skatteopplysninger
-                .groupBy { Optional.ofNullable(it.periodeFom) }
-                .mapValues { it.value.groupBy { utbetaling -> Optional.ofNullable(utbetaling.organisasjon) } }
+                .groupBy { it.periodeFom }
+                .mapValues { it.value.groupBy { utbetaling -> utbetaling.organisasjon } }
 
         val skattbarInntektOgForskuddstrekkListe = utbetalingerPerManedPerOrganisasjon.values
             .map {
                 val organisasjoner = it
-                    .map { (organisasjon: Optional<JsonOrganisasjon>, utbetalinger: List<JsonOkonomiOpplysningUtbetaling>) ->
+                    .map { (organisasjon: JsonOrganisasjon?, utbetalinger: List<JsonOkonomiOpplysningUtbetaling>) ->
                         val utbetalingListe: List<Utbetaling> = utbetalinger.map { u -> mapTilUtbetaling(u) }
-                        val jsonOrganisasjon =
-                            organisasjon.orElse(JsonOrganisasjon().withNavn("Uten organisasjonsnummer"))
+                        val jsonOrganisasjon = organisasjon ?: JsonOrganisasjon().withNavn("Uten organisasjonsnummer")
                         mapTilOrganisasjon(utbetalingListe, jsonOrganisasjon, utbetalinger[0])
                     }
                 SkattbarInntektOgForskuddstrekk(organisasjoner)

@@ -7,7 +7,6 @@ import no.nav.sosialhjelp.metrics.Timer
 import org.apache.commons.lang3.exception.ExceptionUtils
 import org.slf4j.LoggerFactory
 import java.net.URI
-import java.util.Optional.ofNullable
 import java.util.concurrent.TimeUnit
 import javax.ws.rs.client.ClientRequestContext
 import javax.ws.rs.client.ClientRequestFilter
@@ -82,10 +81,7 @@ class ClientLogFilter(
                     "status",
                     status.toString(),
                     "error",
-                    ofNullable(throwable)
-                        .map { ExceptionUtils.getRootCause(it) }
-                        .map { it.javaClass.simpleName }
-                        .orElse("")
+                    throwable?.let { ExceptionUtils.getRootCause(it) }?.javaClass?.simpleName ?: ""
                 )
                 .record(System.currentTimeMillis() - data.invocationTimestamp, TimeUnit.MILLISECONDS)
         }
