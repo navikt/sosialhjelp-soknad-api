@@ -56,7 +56,7 @@ internal class SlettLoggSchedulerTest {
 
         every {
             oppgaveRepository.hentOppgave(BEHANDLINGS_ID)
-        } returns Optional.of(oppgave)
+        } returns oppgave
 
         every {
             batchSendtSoknadRepository.hentSendtSoknad(BEHANDLINGS_ID)
@@ -85,7 +85,7 @@ internal class SlettLoggSchedulerTest {
 
         every {
             oppgaveRepository.hentOppgave(BEHANDLINGS_ID)
-        } returns Optional.of(oppgave)
+        } returns oppgave
 
         every {
             batchSendtSoknadRepository.hentSendtSoknad(BEHANDLINGS_ID)

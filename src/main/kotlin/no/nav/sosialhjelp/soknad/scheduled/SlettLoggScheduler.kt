@@ -61,8 +61,8 @@ class SlettLoggScheduler(
             val sendtSoknadIdOptional = batchSendtSoknadRepository.hentSendtSoknad(behandlingsId)
             sendtSoknadIdOptional.ifPresent { batchSendtSoknadRepository.slettSendtSoknad(it) }
 
-            val oppgaveOptional = oppgaveRepository.hentOppgave(behandlingsId)
-            oppgaveOptional.ifPresent { oppgaveRepository.slettOppgave(behandlingsId) }
+            oppgaveRepository.hentOppgave(behandlingsId)
+                ?.let { oppgaveRepository.slettOppgave(behandlingsId) }
 
             batchSoknadMetadataRepository.slettSoknadMetaData(behandlingsId)
 

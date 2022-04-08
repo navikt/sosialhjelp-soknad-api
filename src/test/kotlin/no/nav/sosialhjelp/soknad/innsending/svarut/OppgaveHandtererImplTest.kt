@@ -12,7 +12,6 @@ import no.nav.sosialhjelp.soknad.db.repositories.oppgave.Status
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
-import java.util.Optional
 
 internal class OppgaveHandtererImplTest {
     private val fiksHandterer: FiksHandterer = mockk()
@@ -36,7 +35,7 @@ internal class OppgaveHandtererImplTest {
             retries = 0
         )
 
-        every { oppgaveRepository.hentNeste() } returns Optional.of(oppgave) andThen Optional.empty()
+        every { oppgaveRepository.hentNeste() } returns oppgave andThen null
         every { fiksHandterer.eksekver(oppgave) } throws IllegalStateException()
         every { oppgaveRepository.oppdater(capture(oppgaveSlot)) } just runs
 

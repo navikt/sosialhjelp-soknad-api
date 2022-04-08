@@ -10,7 +10,6 @@ import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
 import java.sql.ResultSet
 import java.time.LocalDateTime
-import java.util.Optional
 
 @Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 @Repository
@@ -66,15 +65,15 @@ open class OppgaveRepositoryJdbc(
         )
     }
 
-    override fun hentOppgave(behandlingsId: String): Optional<Oppgave> {
+    override fun hentOppgave(behandlingsId: String): Oppgave? {
         return jdbcTemplate.query(
             "SELECT * FROM oppgave WHERE behandlingsid = ?",
             oppgaveRowMapper,
             behandlingsId
-        ).stream().findFirst()
+        ).firstOrNull()
     }
 
-    override fun hentNeste(): Optional<Oppgave> {
+    override fun hentNeste(): Oppgave? {
         val select =
             "SELECT * FROM oppgave WHERE status = ? and (nesteforsok is null OR nesteforsok < ?) " + SQLUtils.limit(1)
         while (true) {
@@ -83,16 +82,14 @@ open class OppgaveRepositoryJdbc(
                 oppgaveRowMapper,
                 Status.KLAR.name,
                 tidTilTimestamp(LocalDateTime.now())
-            ).stream().findFirst()
-            if (!resultat.isPresent) {
-                return Optional.empty()
-            }
+            ).firstOrNull() ?: return null
+
             val rowsAffected = jdbcTemplate.update(
                 "UPDATE oppgave SET status = ?, sistkjort = ? WHERE status = ? AND id = ?",
                 Status.UNDER_ARBEID.name,
                 tidTilTimestamp(LocalDateTime.now()),
                 Status.KLAR.name,
-                resultat.get().id
+                resultat.id
             )
             if (rowsAffected == 1) {
                 return resultat
