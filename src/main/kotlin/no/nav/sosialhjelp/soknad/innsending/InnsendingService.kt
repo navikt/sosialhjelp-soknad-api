@@ -41,8 +41,8 @@ open class InnsendingService(
 
     open fun finnOgSlettSoknadUnderArbeidVedSendingTilFiks(behandlingsId: String, eier: String) {
         logger.debug("Henter søknad under arbeid for behandlingsid $behandlingsId og eier $eier")
-        val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknadOptional(behandlingsId, eier)
-        soknadUnderArbeid.ifPresent { soknadUnderArbeidRepository.slettSoknad(it, eier) }
+        soknadUnderArbeidRepository.hentSoknadNullable(behandlingsId, eier)
+            ?.let { soknadUnderArbeidRepository.slettSoknad(it, eier) }
     }
 
     open fun oppdaterSendtSoknadVedSendingTilFiks(fiksforsendelseId: String?, behandlingsId: String?, eier: String?) {
@@ -56,11 +56,8 @@ open class InnsendingService(
     }
 
     open fun hentSoknadUnderArbeid(behandlingsId: String, eier: String): SoknadUnderArbeid {
-        val soknadUnderArbeidOptional = soknadUnderArbeidRepository.hentSoknadOptional(behandlingsId, eier)
-        if (!soknadUnderArbeidOptional.isPresent) {
-            throw RuntimeException("Finner ikke sendt søknad med behandlingsId $behandlingsId")
-        }
-        return soknadUnderArbeidOptional.get()
+        return soknadUnderArbeidRepository.hentSoknadNullable(behandlingsId, eier)
+            ?: throw RuntimeException("Finner ikke sendt søknad med behandlingsId $behandlingsId")
     }
 
     open fun hentAlleOpplastedeVedleggForSoknad(soknadUnderArbeid: SoknadUnderArbeid): List<OpplastetVedlegg> {

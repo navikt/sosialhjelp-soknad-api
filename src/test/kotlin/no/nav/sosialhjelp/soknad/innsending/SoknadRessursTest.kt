@@ -33,7 +33,6 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
-import java.util.Optional
 import javax.servlet.http.Cookie
 import javax.servlet.http.HttpServletResponse
 
@@ -111,7 +110,7 @@ internal class SoknadRessursTest {
         every { response.addCookie(any()) } just runs
         every {
             soknadUnderArbeidRepository.hentEttersendingMedTilknyttetBehandlingsId(any(), any())
-        } returns Optional.empty()
+        } returns null
         every { soknadService.startEttersending(any()) } returns "ettersendtId"
 
         ressurs.opprettSoknad(BEHANDLINGSID, response, "")
@@ -126,7 +125,7 @@ internal class SoknadRessursTest {
         every { response.addCookie(any()) } just runs
         every {
             soknadUnderArbeidRepository.hentEttersendingMedTilknyttetBehandlingsId(BEHANDLINGSID, any())
-        } returns Optional.of(createSoknadUnderArbeid(EIER))
+        } returns createSoknadUnderArbeid(EIER)
 
         ressurs.opprettSoknad(BEHANDLINGSID, response, "")
 

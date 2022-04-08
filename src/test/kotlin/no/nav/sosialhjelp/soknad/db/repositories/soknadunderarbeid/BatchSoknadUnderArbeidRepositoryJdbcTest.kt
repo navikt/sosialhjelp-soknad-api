@@ -25,13 +25,13 @@ internal class BatchSoknadUnderArbeidRepositoryJdbcTest {
     private lateinit var jdbcTemplate: JdbcTemplate
 
     @Inject
-    private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository? = null
+    private lateinit var soknadUnderArbeidRepository: SoknadUnderArbeidRepository
 
     @Inject
-    private val opplastetVedleggRepository: OpplastetVedleggRepository? = null
+    private lateinit var opplastetVedleggRepository: OpplastetVedleggRepository
 
     @Inject
-    private val batchSoknadUnderArbeidRepository: BatchSoknadUnderArbeidRepository? = null
+    private lateinit var batchSoknadUnderArbeidRepository: BatchSoknadUnderArbeidRepository
 
     @AfterEach
     fun tearDown() {
@@ -42,10 +42,10 @@ internal class BatchSoknadUnderArbeidRepositoryJdbcTest {
     @Test
     fun hentSoknaderForBatchSkalFinneGamleSoknader() {
         val skalIkkeSlettes = lagSoknadUnderArbeid(BEHANDLINGSID, 13)
-        val skalIkkeSlettesId = soknadUnderArbeidRepository!!.opprettSoknad(skalIkkeSlettes, EIER)
+        val skalIkkeSlettesId = soknadUnderArbeidRepository.opprettSoknad(skalIkkeSlettes, EIER)
         val skalSlettes = lagSoknadUnderArbeid("annen_behandlingsid", 14)
         val skalSlettesId = soknadUnderArbeidRepository.opprettSoknad(skalSlettes, EIER)
-        val soknader = batchSoknadUnderArbeidRepository!!.hentGamleSoknadUnderArbeidForBatch()
+        val soknader = batchSoknadUnderArbeidRepository.hentGamleSoknadUnderArbeidForBatch()
         assertThat(soknader).hasSize(1)
         assertThat(soknader[0]).isEqualTo(skalSlettesId).isNotEqualTo(skalIkkeSlettesId)
     }
@@ -53,11 +53,11 @@ internal class BatchSoknadUnderArbeidRepositoryJdbcTest {
     @Test
     fun slettSoknadGittSoknadUnderArbeidIdSkalSletteSoknad() {
         val soknadUnderArbeid = lagSoknadUnderArbeid(BEHANDLINGSID, 15)
-        val soknadUnderArbeidId = soknadUnderArbeidRepository!!.opprettSoknad(soknadUnderArbeid, EIER)
+        val soknadUnderArbeidId = soknadUnderArbeidRepository.opprettSoknad(soknadUnderArbeid, EIER)
         soknadUnderArbeid.soknadId = soknadUnderArbeidId!!
-        val opplastetVedleggUuid = opplastetVedleggRepository!!.opprettVedlegg(lagOpplastetVedlegg(soknadUnderArbeidId), EIER)
-        batchSoknadUnderArbeidRepository!!.slettSoknad(soknadUnderArbeid.soknadId)
-        assertThat(soknadUnderArbeidRepository.hentSoknad(soknadUnderArbeidId, EIER)).isEmpty
+        val opplastetVedleggUuid = opplastetVedleggRepository.opprettVedlegg(lagOpplastetVedlegg(soknadUnderArbeidId), EIER)
+        batchSoknadUnderArbeidRepository.slettSoknad(soknadUnderArbeid.soknadId)
+        assertThat(soknadUnderArbeidRepository.hentSoknad(soknadUnderArbeidId, EIER)).isNull()
         assertThat(opplastetVedleggRepository.hentVedlegg(opplastetVedleggUuid, EIER)).isNull()
     }
 

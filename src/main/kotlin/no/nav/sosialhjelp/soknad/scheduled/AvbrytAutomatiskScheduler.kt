@@ -64,8 +64,8 @@ class AvbrytAutomatiskScheduler(
 
             val behandlingsId = soknadMetadata.behandlingsId
 
-            val soknadUnderArbeidOptional = batchSoknadUnderArbeidRepository.hentSoknadUnderArbeidIdFromBehandlingsIdOptional(behandlingsId)
-            soknadUnderArbeidOptional.ifPresent { batchSoknadUnderArbeidRepository.slettSoknad(it) }
+            batchSoknadUnderArbeidRepository.hentSoknadUnderArbeidIdFromBehandlingsId(behandlingsId)
+                ?.let { batchSoknadUnderArbeidRepository.slettSoknad(it) }
 
             batchSoknadMetadataRepository.leggTilbakeBatch(soknadMetadata.id)
             vellykket++

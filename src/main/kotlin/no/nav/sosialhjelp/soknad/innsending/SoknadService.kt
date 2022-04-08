@@ -64,7 +64,7 @@ open class SoknadService(
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val systemdataUpdater: SystemdataUpdater,
     private val bostotteSystemdata: BostotteSystemdata,
-    private val skatteetatenSystemdata: SkatteetatenSystemdata
+    private val skatteetatenSystemdata: SkatteetatenSystemdata,
 ) {
     @Transactional
     open fun startSoknad(token: String?): String {
@@ -144,10 +144,11 @@ open class SoknadService(
     }
 
     private fun finnAlderPaaDataFor(soknadUnderArbeid: SoknadUnderArbeid, type: String): String {
-        val bekreftelsesDatoStreng = soknadUnderArbeid.jsonInternalSoknad?.soknad?.data?.okonomi?.opplysninger?.bekreftelse
-            ?.firstOrNull { it.type == type && it.verdi }
-            ?.bekreftelsesDato
-            ?: return ""
+        val bekreftelsesDatoStreng =
+            soknadUnderArbeid.jsonInternalSoknad?.soknad?.data?.okonomi?.opplysninger?.bekreftelse
+                ?.firstOrNull { it.type == type && it.verdi }
+                ?.bekreftelsesDato
+                ?: return ""
         val bekreftelsesDato = OffsetDateTime.parse(bekreftelsesDatoStreng)
         val now = OffsetDateTime.now(ZoneOffset.UTC)
         val antallDager = bekreftelsesDato.until(now, DAYS)
@@ -159,12 +160,12 @@ open class SoknadService(
     @Transactional
     open fun avbrytSoknad(behandlingsId: String?) {
         val eier = SubjectHandlerUtils.getUserIdFromToken()
-        val soknadUnderArbeidOptional = soknadUnderArbeidRepository.hentSoknadOptional(behandlingsId, eier)
-        if (soknadUnderArbeidOptional.isPresent) {
-            soknadUnderArbeidRepository.slettSoknad(soknadUnderArbeidOptional.get(), eier)
-            henvendelseService.avbrytSoknad(soknadUnderArbeidOptional.get().behandlingsId, false)
-            soknadMetricsService.reportAvbruttSoknad(soknadUnderArbeidOptional.get().erEttersendelse)
-        }
+        soknadUnderArbeidRepository.hentSoknadNullable(behandlingsId, eier)
+            ?.let { soknadUnderArbeid ->
+                soknadUnderArbeidRepository.slettSoknad(soknadUnderArbeid, eier)
+                henvendelseService.avbrytSoknad(soknadUnderArbeid.behandlingsId, false)
+                soknadMetricsService.reportAvbruttSoknad(soknadUnderArbeid.erEttersendelse)
+            }
     }
 
     @Transactional
@@ -172,7 +173,7 @@ open class SoknadService(
         behandlingsId: String?,
         harBostotteSamtykke: Boolean,
         harSkatteetatenSamtykke: Boolean,
-        token: String?
+        token: String?,
     ) {
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
