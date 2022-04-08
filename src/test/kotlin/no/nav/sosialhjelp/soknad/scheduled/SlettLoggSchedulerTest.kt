@@ -52,7 +52,7 @@ internal class SlettLoggSchedulerTest {
 
         every {
             batchSoknadMetadataRepository.hentEldreEnn(DAGER_GAMMEL_SOKNAD)
-        } returns Optional.of(soknadMetadata) andThen Optional.empty()
+        } returns soknadMetadata andThen null
 
         every {
             oppgaveRepository.hentOppgave(BEHANDLINGS_ID)
@@ -81,7 +81,7 @@ internal class SlettLoggSchedulerTest {
 
         every {
             batchSoknadMetadataRepository.hentEldreEnn(DAGER_GAMMEL_SOKNAD)
-        } returns Optional.of(soknadMetadata) andThen Optional.empty()
+        } returns soknadMetadata andThen null
 
         every {
             oppgaveRepository.hentOppgave(BEHANDLINGS_ID)
@@ -102,7 +102,7 @@ internal class SlettLoggSchedulerTest {
 
     @Test
     fun skalIkkeSletteLoggSomErUnderEttAarGammelt() {
-        every { batchSoknadMetadataRepository.hentEldreEnn(DAGER_GAMMEL_SOKNAD) } returns Optional.empty()
+        every { batchSoknadMetadataRepository.hentEldreEnn(DAGER_GAMMEL_SOKNAD) } returns null
 
         scheduler.slettLogger()
 

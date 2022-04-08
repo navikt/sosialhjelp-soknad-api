@@ -54,10 +54,8 @@ class SlettLoggScheduler(
     }
 
     private fun slettForeldetLogg() {
-        var soknad = batchSoknadMetadataRepository.hentEldreEnn(DAGER_GAMMELT)
-        while (soknad.isPresent) {
-            val soknadMetadata = soknad.get()
-
+        var soknadMetadata = batchSoknadMetadataRepository.hentEldreEnn(DAGER_GAMMELT)
+        while (soknadMetadata != null) {
             val behandlingsId = soknadMetadata.behandlingsId
 
             val sendtSoknadIdOptional = batchSendtSoknadRepository.hentSendtSoknad(behandlingsId)
@@ -74,7 +72,7 @@ class SlettLoggScheduler(
                 logger.warn("Jobben har kjørt i mer enn $SCHEDULE_INTERRUPT_S s. Den blir derfor stoppet")
                 return
             }
-            soknad = batchSoknadMetadataRepository.hentEldreEnn(DAGER_GAMMELT)
+            soknadMetadata = batchSoknadMetadataRepository.hentEldreEnn(DAGER_GAMMELT)
         }
     }
 

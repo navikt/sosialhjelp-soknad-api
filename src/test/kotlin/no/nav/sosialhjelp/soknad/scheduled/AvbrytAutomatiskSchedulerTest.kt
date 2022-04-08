@@ -60,7 +60,7 @@ internal class AvbrytAutomatiskSchedulerTest {
 
         every {
             batchSoknadMetadataRepository.hentForBatch(DAGER_GAMMEL_SOKNAD)
-        } returns Optional.of(soknadMetadata) andThen Optional.empty()
+        } returns soknadMetadata andThen null
         every {
             batchSoknadUnderArbeidRepository.hentSoknadUnderArbeidIdFromBehandlingsIdOptional(BEHANDLINGS_ID)
         } returns Optional.of(soknadUnderArbeid.soknadId)
