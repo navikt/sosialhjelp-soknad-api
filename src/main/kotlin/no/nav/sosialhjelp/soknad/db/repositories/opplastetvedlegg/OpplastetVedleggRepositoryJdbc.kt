@@ -4,7 +4,6 @@ import no.nav.sosialhjelp.soknad.db.SQLUtils
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRowMapper.opplastetVedleggRowMapper
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Repository
-import java.util.Optional
 
 @Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 @Repository
@@ -12,13 +11,13 @@ open class OpplastetVedleggRepositoryJdbc(
     private val jdbcTemplate: JdbcTemplate
 ) : OpplastetVedleggRepository {
 
-    override fun hentVedlegg(uuid: String?, eier: String): Optional<OpplastetVedlegg> {
+    override fun hentVedlegg(uuid: String?, eier: String): OpplastetVedlegg? {
         return jdbcTemplate.query(
             "select * from OPPLASTET_VEDLEGG where EIER = ? and UUID = ?",
             opplastetVedleggRowMapper,
             eier,
             uuid
-        ).stream().findFirst()
+        ).firstOrNull()
     }
 
     override fun hentVedleggForSoknad(soknadId: Long, eier: String?): List<OpplastetVedlegg> {

@@ -137,12 +137,12 @@ internal class SoknadUnderArbeidRepositoryJdbcTest {
         val soknadUnderArbeidId = soknadUnderArbeidRepository!!.opprettSoknad(soknadUnderArbeid, EIER)
         soknadUnderArbeid.soknadId = soknadUnderArbeidId!!
         val opplastetVedleggUuid = opplastetVedleggRepository!!.opprettVedlegg(
-            lagOpplastetVedlegg(soknadUnderArbeidId!!),
+            lagOpplastetVedlegg(soknadUnderArbeidId),
             EIER
         )
         soknadUnderArbeidRepository.slettSoknad(soknadUnderArbeid, EIER)
         assertThat(soknadUnderArbeidRepository.hentSoknad(soknadUnderArbeidId, EIER)).isEmpty
-        assertThat(opplastetVedleggRepository.hentVedlegg(opplastetVedleggUuid, EIER)).isEmpty
+        assertThat(opplastetVedleggRepository.hentVedlegg(opplastetVedleggUuid, EIER)).isNull()
     }
 
     private fun lagSoknadUnderArbeid(behandlingsId: String): SoknadUnderArbeid {

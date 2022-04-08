@@ -35,7 +35,6 @@ import org.junit.jupiter.api.Test
 import java.awt.image.BufferedImage
 import java.io.ByteArrayOutputStream
 import java.time.LocalDateTime
-import java.util.Optional
 import javax.imageio.ImageIO
 import javax.imageio.stream.ImageOutputStream
 import javax.imageio.stream.MemoryCacheImageOutputStream
@@ -112,7 +111,8 @@ internal class OpplastetVedleggServiceTest {
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(soknadUnderArbeidSlot), any()) } just runs
 
         val imageFile = createByteArrayFromJpeg()
-        val opplastetVedlegg = opplastetVedleggService.saveVedleggAndUpdateVedleggstatus(BEHANDLINGSID, TYPE, imageFile, FILNAVN1)
+        val opplastetVedlegg =
+            opplastetVedleggService.saveVedleggAndUpdateVedleggstatus(BEHANDLINGSID, TYPE, imageFile, FILNAVN1)
         val soknadUnderArbeid = soknadUnderArbeidSlot.captured
         val jsonVedlegg = soknadUnderArbeid.jsonInternalSoknad!!.vedlegg.vedlegg[0]
         assertThat(jsonVedlegg.type + "|" + jsonVedlegg.tilleggsinfo).isEqualTo(TYPE)
@@ -136,15 +136,13 @@ internal class OpplastetVedleggServiceTest {
                 )
             )
         )
-        every { opplastetVedleggRepository.hentVedlegg(any(), any()) } returns Optional.of(
-            OpplastetVedlegg(
-                eier = "eier",
-                vedleggType = OpplastetVedleggType(TYPE),
-                data = byteArrayOf(1, 2, 3),
-                soknadId = 123L,
-                filnavn = FILNAVN2,
-                sha512 = SHA512
-            )
+        every { opplastetVedleggRepository.hentVedlegg(any(), any()) } returns OpplastetVedlegg(
+            eier = "eier",
+            vedleggType = OpplastetVedleggType(TYPE),
+            data = byteArrayOf(1, 2, 3),
+            soknadId = 123L,
+            filnavn = FILNAVN2,
+            sha512 = SHA512
         )
 
         val soknadUnderArbeidSlot = slot<SoknadUnderArbeid>()
