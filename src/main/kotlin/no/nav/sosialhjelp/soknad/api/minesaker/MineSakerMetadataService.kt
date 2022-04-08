@@ -7,16 +7,13 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
-import java.util.Optional
 
 @Component
 class MineSakerMetadataService(
     private val soknadMetadataRepository: SoknadMetadataRepository
 ) {
     fun hentInnsendteSoknader(fnr: String): List<InnsendtSoknadDto> {
-        val innsendteSoknader = Optional
-            .ofNullable(soknadMetadataRepository.hentAlleInnsendteSoknaderForBruker(fnr))
-            .orElse(emptyList())
+        val innsendteSoknader = soknadMetadataRepository.hentAlleInnsendteSoknaderForBruker(fnr)
         log.debug("Fant {} innsendte soknader", innsendteSoknader.size)
         return innsendteSoknader.firstOrNull()
             ?.innsendtDato

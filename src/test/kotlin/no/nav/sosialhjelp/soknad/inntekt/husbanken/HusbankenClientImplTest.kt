@@ -33,7 +33,7 @@ internal class HusbankenClientImplTest {
     }
 
     @Test
-    internal fun hentBostotte_returnererOptionalBostotte() {
+    internal fun hentBostotte_returnererBostotte() {
         val fra = LocalDate.now().minusDays(30)
         val til = LocalDate.now()
         val inputStream = ClassLoader.getSystemResourceAsStream("husbanken/husbankenSvar.json")
@@ -47,17 +47,16 @@ internal class HusbankenClientImplTest {
 
         val bostotte = husbankenClient.hentBostotte("token", fra, til)
 
-        assertThat(bostotte).isPresent
-        assertThat(bostotte.get()).isInstanceOf(BostotteDto::class.java)
+        assertThat(bostotte).isNotNull
+        assertThat(bostotte).isInstanceOf(BostotteDto::class.java)
 
-        val dto = bostotte.get()
-        assertThat(dto.saker).hasSize(3)
-        assertThat(dto.saker?.get(0)?.vedtak?.type).isEqualTo("INNVILGET")
-        assertThat(dto.utbetalinger).hasSize(2)
-        assertThat(dto.utbetalinger?.get(0)?.utbetalingsdato).isEqualTo(LocalDate.of(2019, 7, 20))
-        assertThat(dto.utbetalinger?.get(0)?.belop?.toDouble()).isEqualTo(4300.5)
-        assertThat(dto.utbetalinger?.get(1)?.utbetalingsdato).isEqualTo(LocalDate.of(2019, 8, 20))
-        assertThat(dto.utbetalinger?.get(1)?.belop?.toDouble()).isEqualTo(4300.0)
+        assertThat(bostotte?.saker).hasSize(3)
+        assertThat(bostotte?.saker?.get(0)?.vedtak?.type).isEqualTo("INNVILGET")
+        assertThat(bostotte?.utbetalinger).hasSize(2)
+        assertThat(bostotte?.utbetalinger?.get(0)?.utbetalingsdato).isEqualTo(LocalDate.of(2019, 7, 20))
+        assertThat(bostotte?.utbetalinger?.get(0)?.belop?.toDouble()).isEqualTo(4300.5)
+        assertThat(bostotte?.utbetalinger?.get(1)?.utbetalingsdato).isEqualTo(LocalDate.of(2019, 8, 20))
+        assertThat(bostotte?.utbetalinger?.get(1)?.belop?.toDouble()).isEqualTo(4300.0)
     }
 
     @Test
@@ -72,7 +71,7 @@ internal class HusbankenClientImplTest {
 
         val bostotte = husbankenClient.hentBostotte("token", fra, til)
 
-        assertThat(bostotte).isNotPresent
+        assertThat(bostotte).isNull()
     }
 
     @Test
@@ -87,7 +86,7 @@ internal class HusbankenClientImplTest {
 
         val bostotte = husbankenClient.hentBostotte("token", fra, til)
 
-        assertThat(bostotte).isNotPresent
+        assertThat(bostotte).isNull()
     }
 
     @Test

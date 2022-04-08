@@ -1,7 +1,5 @@
 package no.nav.sosialhjelp.soknad.health.selftest
 
-import java.util.Optional
-
 /*
 Kopiert inn fra no.nav.sbl.dialogarena:common-web
 Endringer gjort i no.nav.common:web gjør at vi heller benytter den fra det gamle artefaktet.
@@ -12,10 +10,10 @@ data class Selftest(
     val version: String? = null,
     val timestamp: String? = null,
     val aggregateResult: Int = 0,
-    private val checks: List<SelftestEndpoint>? = null
+    private val checks: List<SelftestEndpoint> = emptyList()
 ) {
-    fun getChecks(): List<SelftestEndpoint>? {
-        return Optional.ofNullable(checks).orElseGet { emptyList() }
+    fun getChecks(): List<SelftestEndpoint> {
+        return checks
     }
 }
 
@@ -33,6 +31,6 @@ data class SelftestEndpoint(
     }
 
     fun getResult(): Int {
-        return Optional.ofNullable(result).orElse(SelftestService.STATUS_ERROR)
+        return result ?: SelftestService.STATUS_ERROR
     }
 }
