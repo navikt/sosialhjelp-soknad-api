@@ -123,7 +123,7 @@ internal class ExtensionsKtTest {
 
     @Test
     internal fun `sendtSoknad mapper til dto`() {
-        val sendtSoknad =  SendtSoknad(
+        val sendtSoknad = SendtSoknad(
             sendtSoknadId = 1L,
             behandlingsId = "behandlingsId",
             tilknyttetBehandlingsId = "annenBehandlingsId",
