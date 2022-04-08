@@ -26,7 +26,6 @@ import org.springframework.transaction.support.TransactionCallback
 import org.springframework.transaction.support.TransactionCallbackWithoutResult
 import org.springframework.transaction.support.TransactionTemplate
 import java.time.LocalDateTime
-import java.util.Optional
 
 internal class InnsendingServiceTest {
 
@@ -99,7 +98,7 @@ internal class InnsendingServiceTest {
 
     @Test
     fun finnSendtSoknadForEttersendelseHenterInfoFraSoknadMetadataHvisSendtSoknadMangler() {
-        every { sendtSoknadRepository.hentSendtSoknad(any(), any()) } returns Optional.empty()
+        every { sendtSoknadRepository.hentSendtSoknad(any(), any()) } returns null
         every { soknadMetadataRepository.hent(any()) } returns createSoknadMetadata()
         val soknadMedMottaksinfoFraMetadata =
             innsendingService.finnSendtSoknadForEttersendelse(createSoknadUnderArbeidForEttersendelse())
@@ -109,7 +108,7 @@ internal class InnsendingServiceTest {
 
     @Test
     fun finnSendtSoknadForEttersendelseKasterFeilHvisSendtSoknadOgMetadataManglerForEttersendelse() {
-        every { sendtSoknadRepository.hentSendtSoknad(any(), any()) } returns Optional.empty()
+        every { sendtSoknadRepository.hentSendtSoknad(any(), any()) } returns null
         every { soknadMetadataRepository.hent(any()) } returns null
 
         assertThatExceptionOfType(IllegalStateException::class.java)
@@ -167,19 +166,17 @@ internal class InnsendingServiceTest {
         )
     }
 
-    private fun createSendtSoknad(): Optional<SendtSoknad> {
-        return Optional.of(
-            SendtSoknad(
-                behandlingsId = BEHANDLINGSID,
-                tilknyttetBehandlingsId = TILKNYTTET_BEHANDLINGSID,
-                eier = EIER,
-                fiksforsendelseId = FIKSFORSENDELSEID,
-                orgnummer = ORGNR,
-                navEnhetsnavn = NAVENHETSNAVN,
-                brukerOpprettetDato = OPPRETTET_DATO,
-                brukerFerdigDato = SIST_ENDRET_DATO,
-                sendtDato = LocalDateTime.now()
-            )
+    private fun createSendtSoknad(): SendtSoknad {
+        return SendtSoknad(
+            behandlingsId = BEHANDLINGSID,
+            tilknyttetBehandlingsId = TILKNYTTET_BEHANDLINGSID,
+            eier = EIER,
+            fiksforsendelseId = FIKSFORSENDELSEID,
+            orgnummer = ORGNR,
+            navEnhetsnavn = NAVENHETSNAVN,
+            brukerOpprettetDato = OPPRETTET_DATO,
+            brukerFerdigDato = SIST_ENDRET_DATO,
+            sendtDato = LocalDateTime.now()
         )
     }
 

@@ -1,7 +1,8 @@
 package no.nav.sosialhjelp.soknad.db.repositories.sendtsoknad
 
 import no.nav.sosialhjelp.soknad.config.DbTestConfig
-import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -19,7 +20,7 @@ import javax.inject.Inject
 internal class SendtSoknadRepositoryJdbcTest {
 
     @Inject
-    private val sendtSoknadRepository: SendtSoknadRepository? = null
+    private lateinit var sendtSoknadRepository: SendtSoknadRepository
 
     @Inject
     private lateinit var jdbcTemplate: JdbcTemplate
@@ -31,57 +32,49 @@ internal class SendtSoknadRepositoryJdbcTest {
 
     @Test
     fun opprettSendtSoknadOppretterSendtSoknadIDatabasen() {
-        val sendtSoknadId = sendtSoknadRepository!!.opprettSendtSoknad(lagSendtSoknad(EIER), EIER)
-        Assertions.assertThat(sendtSoknadId).isNotNull
+        val sendtSoknadId = sendtSoknadRepository.opprettSendtSoknad(lagSendtSoknad(EIER), EIER)
+        assertThat(sendtSoknadId).isNotNull
     }
 
     @Test
     fun opprettSendtSoknadKasterRuntimeExceptionHvisEierErUlikSoknadseier() {
-        Assertions.assertThatExceptionOfType(RuntimeException::class.java)
+        assertThatExceptionOfType(RuntimeException::class.java)
             .isThrownBy {
-                sendtSoknadRepository!!.opprettSendtSoknad(
-                    lagSendtSoknad(EIER),
-                    EIER2
-                )
+                sendtSoknadRepository.opprettSendtSoknad(lagSendtSoknad(EIER), EIER2)
             }
     }
 
     @Test
     fun opprettSendtSoknadKasterRuntimeExceptionHvisEierErNull() {
-        Assertions.assertThatExceptionOfType(RuntimeException::class.java)
+        assertThatExceptionOfType(RuntimeException::class.java)
             .isThrownBy {
-                sendtSoknadRepository!!.opprettSendtSoknad(
-                    lagSendtSoknad(EIER),
-                    null
-                )
+                sendtSoknadRepository.opprettSendtSoknad(lagSendtSoknad(EIER), null)
             }
     }
 
     @Test
     fun hentSendtSoknadHenterSendtSoknadForEierOgBehandlingsid() {
-        sendtSoknadRepository!!.opprettSendtSoknad(lagSendtSoknad(EIER), EIER)
-        val sendtSoknad = sendtSoknadRepository.hentSendtSoknad(BEHANDLINGSID, EIER).get()
-        Assertions.assertThat(sendtSoknad.eier).isEqualTo(EIER)
-        Assertions.assertThat(sendtSoknad.sendtSoknadId).isNotNull
-        Assertions.assertThat(sendtSoknad.behandlingsId).isEqualTo(BEHANDLINGSID)
-        Assertions.assertThat(sendtSoknad.tilknyttetBehandlingsId).isEqualTo(
-            TILKNYTTET_BEHANDLINGSID
-        )
-        Assertions.assertThat(sendtSoknad.fiksforsendelseId).isEqualTo(FIKSFORSENDELSEID)
-        Assertions.assertThat(sendtSoknad.orgnummer).isEqualTo(ORGNUMMER)
-        Assertions.assertThat(sendtSoknad.navEnhetsnavn).isEqualTo(NAVENHETSNAVN)
-        Assertions.assertThat(sendtSoknad.brukerOpprettetDato).isEqualTo(BRUKER_OPPRETTET_DATO)
-        Assertions.assertThat(sendtSoknad.brukerFerdigDato).isEqualTo(BRUKER_FERDIG_DATO)
-        Assertions.assertThat(sendtSoknad.sendtDato).isEqualTo(SENDT_DATO)
+        sendtSoknadRepository.opprettSendtSoknad(lagSendtSoknad(EIER), EIER)
+        val sendtSoknad = sendtSoknadRepository.hentSendtSoknad(BEHANDLINGSID, EIER)
+        assertThat(sendtSoknad?.eier).isEqualTo(EIER)
+        assertThat(sendtSoknad?.sendtSoknadId).isNotNull
+        assertThat(sendtSoknad?.behandlingsId).isEqualTo(BEHANDLINGSID)
+        assertThat(sendtSoknad?.tilknyttetBehandlingsId).isEqualTo(TILKNYTTET_BEHANDLINGSID)
+        assertThat(sendtSoknad?.fiksforsendelseId).isEqualTo(FIKSFORSENDELSEID)
+        assertThat(sendtSoknad?.orgnummer).isEqualTo(ORGNUMMER)
+        assertThat(sendtSoknad?.navEnhetsnavn).isEqualTo(NAVENHETSNAVN)
+        assertThat(sendtSoknad?.brukerOpprettetDato).isEqualTo(BRUKER_OPPRETTET_DATO)
+        assertThat(sendtSoknad?.brukerFerdigDato).isEqualTo(BRUKER_FERDIG_DATO)
+        assertThat(sendtSoknad?.sendtDato).isEqualTo(SENDT_DATO)
     }
 
     @Test
     fun oppdaterSendtSoknadVedSendingTilFiksOppdatererFiksIdOgSendtDato() {
-        sendtSoknadRepository!!.opprettSendtSoknad(lagSendtSoknadSomIkkeErSendtTilFiks(), EIER)
+        sendtSoknadRepository.opprettSendtSoknad(lagSendtSoknadSomIkkeErSendtTilFiks(), EIER)
         sendtSoknadRepository.oppdaterSendtSoknadVedSendingTilFiks(FIKSFORSENDELSEID, BEHANDLINGSID, EIER)
-        val oppdatertSendtSoknad = sendtSoknadRepository.hentSendtSoknad(BEHANDLINGSID, EIER).get()
-        Assertions.assertThat(oppdatertSendtSoknad.fiksforsendelseId).isEqualTo(FIKSFORSENDELSEID)
-        Assertions.assertThat(oppdatertSendtSoknad.sendtDato).isNotNull
+        val oppdatertSendtSoknad = sendtSoknadRepository.hentSendtSoknad(BEHANDLINGSID, EIER)
+        assertThat(oppdatertSendtSoknad?.fiksforsendelseId).isEqualTo(FIKSFORSENDELSEID)
+        assertThat(oppdatertSendtSoknad?.sendtDato).isNotNull
     }
 
     private fun lagSendtSoknad(

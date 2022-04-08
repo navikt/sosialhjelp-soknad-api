@@ -7,12 +7,11 @@ import org.springframework.stereotype.Repository
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.util.Date
-import java.util.Optional
 
 @Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 @Repository
 open class SendtSoknadRepositoryJdbc(
-    private val jdbcTemplate: JdbcTemplate
+    private val jdbcTemplate: JdbcTemplate,
 ) : SendtSoknadRepository {
 
     override fun opprettSendtSoknad(sendtSoknad: SendtSoknad, eier: String?): Long? {
@@ -37,16 +36,20 @@ open class SendtSoknadRepositoryJdbc(
         return sendtSoknadId
     }
 
-    override fun hentSendtSoknad(behandlingsId: String, eier: String?): Optional<SendtSoknad> {
+    override fun hentSendtSoknad(behandlingsId: String, eier: String?): SendtSoknad? {
         return jdbcTemplate.query(
             "select * from SENDT_SOKNAD where EIER = ? and BEHANDLINGSID = ?",
             sendtSoknadRowMapper,
             eier,
             behandlingsId
-        ).stream().findFirst()
+        ).firstOrNull()
     }
 
-    override fun oppdaterSendtSoknadVedSendingTilFiks(fiksforsendelseId: String?, behandlingsId: String?, eier: String?) {
+    override fun oppdaterSendtSoknadVedSendingTilFiks(
+        fiksforsendelseId: String?,
+        behandlingsId: String?,
+        eier: String?,
+    ) {
         jdbcTemplate.update(
             "update SENDT_SOKNAD set FIKSFORSENDELSEID = ?, SENDTDATO = ? where BEHANDLINGSID = ? and EIER = ?",
             fiksforsendelseId,

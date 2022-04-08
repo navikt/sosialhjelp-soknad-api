@@ -24,7 +24,7 @@ open class InnsendingService(
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val opplastetVedleggRepository: OpplastetVedleggRepository,
     private val soknadUnderArbeidService: SoknadUnderArbeidService,
-    private val soknadMetadataRepository: SoknadMetadataRepository
+    private val soknadMetadataRepository: SoknadMetadataRepository,
 ) {
     open fun opprettSendtSoknad(soknadUnderArbeid: SoknadUnderArbeid?) {
         check(soknadUnderArbeid != null) { "Kan ikke sende søknad som ikke finnes eller som mangler søknadsid" }
@@ -51,11 +51,8 @@ open class InnsendingService(
     }
 
     open fun hentSendtSoknad(behandlingsId: String, eier: String?): SendtSoknad {
-        val sendtSoknadOptional = sendtSoknadRepository.hentSendtSoknad(behandlingsId, eier)
-        if (!sendtSoknadOptional.isPresent) {
-            throw RuntimeException("Finner ikke sendt søknad med behandlingsId $behandlingsId")
-        }
-        return sendtSoknadOptional.get()
+        return sendtSoknadRepository.hentSendtSoknad(behandlingsId, eier)
+            ?: throw RuntimeException("Finner ikke sendt søknad med behandlingsId $behandlingsId")
     }
 
     open fun hentSoknadUnderArbeid(behandlingsId: String, eier: String): SoknadUnderArbeid {
@@ -74,14 +71,9 @@ open class InnsendingService(
         val tilknyttetBehandlingsId = soknadUnderArbeid.tilknyttetBehandlingsId
             ?: throw IllegalStateException("TilknyttetBehandlingsId kan ikke være null for en ettersendelse")
 
-        val sendtSoknad = sendtSoknadRepository.hentSendtSoknad(tilknyttetBehandlingsId, soknadUnderArbeid.eier)
-        return if (sendtSoknad.isPresent) {
-            sendtSoknad.get()
-        } else {
-            val konvertertGammelSoknad = finnSendtSoknadForEttersendelsePaGammeltFormat(tilknyttetBehandlingsId)
-                ?: throw IllegalStateException("Finner ikke søknaden det skal ettersendes på")
-            konvertertGammelSoknad
-        }
+        return sendtSoknadRepository.hentSendtSoknad(tilknyttetBehandlingsId, soknadUnderArbeid.eier)
+            ?: finnSendtSoknadForEttersendelsePaGammeltFormat(tilknyttetBehandlingsId)
+            ?: throw IllegalStateException("Finner ikke søknaden det skal ettersendes på")
     }
 
     private fun finnSendtSoknadForEttersendelsePaGammeltFormat(tilknyttetBehandlingsId: String): SendtSoknad? {

@@ -6,21 +6,20 @@ import org.springframework.transaction.TransactionStatus
 import org.springframework.transaction.support.TransactionCallbackWithoutResult
 import org.springframework.transaction.support.TransactionTemplate
 import java.sql.ResultSet
-import java.util.Optional
 
 @Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 @Repository
 open class BatchSendtSoknadRepositoryJdbc(
     private val jdbcTemplate: JdbcTemplate,
-    private val transactionTemplate: TransactionTemplate
+    private val transactionTemplate: TransactionTemplate,
 ) : BatchSendtSoknadRepository {
 
-    override fun hentSendtSoknad(behandlingsId: String): Optional<Long> {
+    override fun hentSendtSoknad(behandlingsId: String): Long? {
         return jdbcTemplate.query(
             "select * from SENDT_SOKNAD where BEHANDLINGSID = ?",
             { resultSet: ResultSet, _: Int -> resultSet.getLong("sendt_soknad_id") },
             behandlingsId
-        ).stream().findFirst()
+        ).firstOrNull()
     }
 
     override fun slettSendtSoknad(sendtSoknadId: Long) {
