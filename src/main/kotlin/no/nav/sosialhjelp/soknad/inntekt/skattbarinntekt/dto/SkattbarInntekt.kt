@@ -27,6 +27,7 @@ data class Inntekt(
 )
 
 data class Loennsinntekt(
+    val beskrivelse: String? = null,
     val tilleggsinformasjon: Tilleggsinformasjon? = null
 )
 
