@@ -18,7 +18,6 @@ import no.nav.sosialhjelp.soknad.oppsummering.dto.Type
 import no.nav.sosialhjelp.soknad.oppsummering.steg.StegUtils.createSvar
 import no.nav.sosialhjelp.soknad.oppsummering.steg.StegUtils.fulltnavn
 import org.slf4j.LoggerFactory
-import java.util.Optional
 
 class PersonopplysningerSteg {
     fun get(jsonInternalSoknad: JsonInternalSoknad): Steg {
@@ -106,23 +105,20 @@ class PersonopplysningerSteg {
     }
 
     private fun gateadresseString(gateAdresse: JsonGateAdresse): String {
-        // gatenavn husnummer+husbokstav, postnummer poststed
-        val optionalGateNavn = Optional.ofNullable(gateAdresse.gatenavn)
-        val optionalHusnummer = Optional.ofNullable(gateAdresse.husnummer)
-        val optionalHusbokstav = Optional.ofNullable(gateAdresse.husbokstav)
-        val optionalPostnummer = Optional.ofNullable(gateAdresse.postnummer)
-        val optionalPoststed = Optional.ofNullable(gateAdresse.poststed)
-        val gatedel =
-            optionalGateNavn.map { "$it " }.orElse("") + optionalHusnummer.orElse("") + optionalHusbokstav.orElse("")
-        val postdel = optionalPostnummer.map { "$it " }.orElse("") + optionalPoststed.orElse("")
-        return "$gatedel, $postdel"
+        val gateNavn = gateAdresse.gatenavn?.let { "$it " } ?: ""
+        val husnummer = gateAdresse.husnummer ?: ""
+        val husbokstav = gateAdresse.husbokstav ?: ""
+        val postnummer = gateAdresse.postnummer?.let { "$it " } ?: ""
+        val poststed = gateAdresse.poststed ?: ""
+
+        return "$gateNavn$husnummer$husbokstav, $postnummer$poststed"
     }
 
     private fun matrikkeladresseString(matrikkelAdresse: JsonMatrikkelAdresse): String {
         // bruksenhetsnummer, kommunenummer // mer?
-        val optionalBruksenhetsnummer = Optional.ofNullable(matrikkelAdresse.bruksnummer)
-        val optionalKommunenummer = Optional.ofNullable(matrikkelAdresse.kommunenummer)
-        return optionalBruksenhetsnummer.map { s: String -> "$s, " }.orElse("") + optionalKommunenummer.orElse("")
+        val bruksenhetsnummer = matrikkelAdresse.bruksnummer?.let { "$it, " } ?: ""
+        val kommunenummer = matrikkelAdresse.kommunenummer ?: ""
+        return bruksenhetsnummer + kommunenummer
     }
 
     private fun telefonnummerAvsnitt(telefonnummer: JsonTelefonnummer?): Avsnitt {

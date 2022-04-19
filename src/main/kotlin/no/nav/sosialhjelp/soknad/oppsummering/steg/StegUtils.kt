@@ -8,21 +8,16 @@ import no.nav.sosialhjelp.soknad.oppsummering.dto.Sporsmal
 import no.nav.sosialhjelp.soknad.oppsummering.dto.Svar
 import no.nav.sosialhjelp.soknad.oppsummering.dto.SvarType
 import no.nav.sosialhjelp.soknad.oppsummering.dto.Type
-import java.util.Optional
 import java.util.stream.Collectors
 import java.util.stream.Stream
 
 object StegUtils {
     fun fulltnavn(navn: JsonNavn): String {
-        val optionalFornavn = Optional.ofNullable(navn.fornavn)
-        val optionalMellomnavn = Optional.ofNullable(navn.mellomnavn)
-        val optionalEtternavn = Optional.ofNullable(navn.etternavn)
-        return Stream.of(optionalFornavn, optionalMellomnavn, optionalEtternavn)
-            .map { opt: Optional<String> ->
-                opt.orElse(
-                    ""
-                )
-            }
+        val fornavn: String? = navn.fornavn
+        val mellomnavn: String? = navn.mellomnavn
+        val etternavn: String? = navn.etternavn
+        return Stream.of(fornavn, mellomnavn, etternavn)
+            .map { it ?: "" }
             .filter { s: String -> s.isNotBlank() }
             .collect(Collectors.joining(" "))
     }
