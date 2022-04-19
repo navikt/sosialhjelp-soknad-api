@@ -1,5 +1,6 @@
-package no.nav.sosialhjelp.soknad.db.repositories.sendtsoknad
+package no.nav.sosialhjelp.soknad.migration.repo
 
+import no.nav.sosialhjelp.soknad.db.repositories.sendtsoknad.SendtSoknad
 import no.nav.sosialhjelp.soknad.db.repositories.sendtsoknad.SendtSoknadRowMapper.sendtSoknadRowMapper
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Repository
