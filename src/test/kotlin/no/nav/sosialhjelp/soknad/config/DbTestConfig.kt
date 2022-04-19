@@ -16,6 +16,10 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.BatchSoknadUn
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.BatchSoknadUnderArbeidRepositoryJdbc
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepositoryJdbc
+import no.nav.sosialhjelp.soknad.migration.repo.OpplastetVedleggMigrationRepository
+import no.nav.sosialhjelp.soknad.migration.repo.SendtSoknadMigrationRepository
+import no.nav.sosialhjelp.soknad.migration.repo.SoknadMetadataMigrationRepository
+import no.nav.sosialhjelp.soknad.migration.repo.SoknadUnderArbeidMigrationRepository
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Import
@@ -40,8 +44,18 @@ open class DbTestConfig {
     }
 
     @Bean
+    open fun soknadMetadataMigrationRepository(jdbcTemplate: JdbcTemplate): SoknadMetadataMigrationRepository {
+        return SoknadMetadataMigrationRepository(jdbcTemplate)
+    }
+
+    @Bean
     open fun sendtSoknadRepository(jdbcTemplate: JdbcTemplate): SendtSoknadRepository {
         return SendtSoknadRepositoryJdbc(jdbcTemplate)
+    }
+
+    @Bean
+    open fun sendtSoknadMigrationRepository(jdbcTemplate: JdbcTemplate): SendtSoknadMigrationRepository {
+        return SendtSoknadMigrationRepository(jdbcTemplate)
     }
 
     @Bean
@@ -54,8 +68,18 @@ open class DbTestConfig {
     }
 
     @Bean
+    open fun soknadUnderArbeidMigrationRepository(jdbcTemplate: JdbcTemplate): SoknadUnderArbeidMigrationRepository {
+        return SoknadUnderArbeidMigrationRepository(jdbcTemplate)
+    }
+
+    @Bean
     open fun opplastetVedleggRepository(jdbcTemplate: JdbcTemplate): OpplastetVedleggRepository {
         return OpplastetVedleggRepositoryJdbc(jdbcTemplate)
+    }
+
+    @Bean
+    open fun opplastetVedleggMigrationRepository(jdbcTemplate: JdbcTemplate): OpplastetVedleggMigrationRepository {
+        return OpplastetVedleggMigrationRepository(jdbcTemplate)
     }
 
     @Bean

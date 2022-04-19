@@ -6,31 +6,26 @@ import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
-import java.util.Optional
 
 @Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 @Repository
 open class BatchSoknadMetadataRepositoryJdbc(
-    private val jdbcTemplate: JdbcTemplate
+    private val jdbcTemplate: JdbcTemplate,
 ) : BatchSoknadMetadataRepository {
 
     @Transactional
-    override fun hentForBatch(antallDagerGammel: Int): Optional<SoknadMetadata> {
+    override fun hentForBatch(antallDagerGammel: Int): SoknadMetadata? {
         val frist = LocalDateTime.now().minusDays(antallDagerGammel.toLong())
         while (true) {
             val resultat = jdbcTemplate.query(
                 "SELECT * FROM soknadmetadata WHERE opprettetDato < ? AND batchstatus = 'LEDIG' AND innsendingstatus = 'UNDER_ARBEID' " + SQLUtils.limit(1),
                 soknadMetadataRowMapper,
                 SQLUtils.tidTilTimestamp(frist)
-            ).stream().findFirst()
-
-            if (!resultat.isPresent) {
-                return Optional.empty()
-            }
+            ).firstOrNull() ?: return null
 
             val rowsAffected = jdbcTemplate.update(
                 "UPDATE soknadmetadata set batchstatus = 'TATT' WHERE id = ? AND batchstatus = 'LEDIG'",
-                resultat.get().id
+                resultat.id
             )
             if (rowsAffected == 1) {
                 return resultat
@@ -39,22 +34,18 @@ open class BatchSoknadMetadataRepositoryJdbc(
     }
 
     @Transactional
-    override fun hentEldreEnn(antallDagerGammel: Int): Optional<SoknadMetadata> {
+    override fun hentEldreEnn(antallDagerGammel: Int): SoknadMetadata? {
         val frist = LocalDateTime.now().minusDays(antallDagerGammel.toLong())
         while (true) {
             val resultat = jdbcTemplate.query(
                 "SELECT * FROM soknadmetadata WHERE opprettetDato < ? AND batchstatus = 'LEDIG'" + SQLUtils.limit(1),
                 soknadMetadataRowMapper,
                 SQLUtils.tidTilTimestamp(frist)
-            ).stream().findFirst()
-
-            if (!resultat.isPresent) {
-                return Optional.empty()
-            }
+            ).firstOrNull() ?: return null
 
             val rowsAffected = jdbcTemplate.update(
                 "UPDATE soknadmetadata set batchstatus = 'TATT' WHERE id = ? AND batchstatus = 'LEDIG'",
-                resultat.get().id
+                resultat.id
             )
             if (rowsAffected == 1) {
                 return resultat

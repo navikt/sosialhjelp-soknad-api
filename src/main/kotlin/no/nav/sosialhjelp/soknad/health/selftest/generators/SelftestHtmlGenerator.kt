@@ -10,7 +10,6 @@ import java.text.MessageFormat
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Arrays
-import java.util.Optional
 import java.util.stream.Collectors
 
 /*
@@ -20,22 +19,21 @@ Kan mest sannsynlig oppgraderes, hvis vi får selftest til å fungere fra no.nav
 */
 object SelftestHtmlGenerator {
 
-    fun generate(selftest: Selftest?, host: String): String {
-        val selftestNullSafe = Optional.ofNullable(selftest).orElseGet { Selftest() }
-        val checks = selftestNullSafe.getChecks()
+    fun generate(selftestInput: Selftest?, host: String): String {
+        val selftest = selftestInput ?: Selftest()
+        val checks = selftest.getChecks()
         val feilendeKomponenter = checks
-            ?.filter { it.harFeil() }
-            ?.map { it.endpoint }
+            .filter { it.harFeil() }
+            .map { it.endpoint }
 
-        val tabellrader = checks
-            ?.map { lagTabellrad(it) }
+        val tabellrader = checks.map { lagTabellrad(it) }
 
         val template = SelftestHtmlGenerator::class.java.getResourceAsStream("/selftest/SelfTestPage.html")
         var html = IOUtils.toString(template, StandardCharsets.UTF_8)
-        html = html.replace("\${app-navn}", selftestNullSafe.application ?: "?")
-        html = html.replace("\${aggregertStatus}", getStatusNavnElement(selftestNullSafe.aggregateResult, "span"))
+        html = html.replace("\${app-navn}", selftest.application ?: "?")
+        html = html.replace("\${aggregertStatus}", getStatusNavnElement(selftest.aggregateResult, "span"))
         html = html.replace("\${resultater}", StringUtils.join(tabellrader, "\n"))
-        html = html.replace("\${version}", selftestNullSafe.application + "-" + selftestNullSafe.version)
+        html = html.replace("\${version}", selftest.application + "-" + selftest.version)
         html = html.replace("\${host}", "Host: $host")
         html = html.replace("\${generert-tidspunkt}", ZonedDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
         html = html.replace("\${feilende-komponenter}", StringUtils.join(feilendeKomponenter, ", "))
@@ -84,9 +82,7 @@ object SelftestHtmlGenerator {
 
     private fun tableRow(vararg tdContents: Any?): String {
         val row = Arrays.stream(tdContents)
-            .map {
-                Optional.ofNullable(it).map { obj: Any -> obj.toString() }.orElse("")
-            }
+            .map { it?.toString() ?: "" }
             .collect(Collectors.joining("</td><td>"))
         return "<tr><td>$row</td></tr>\n"
     }

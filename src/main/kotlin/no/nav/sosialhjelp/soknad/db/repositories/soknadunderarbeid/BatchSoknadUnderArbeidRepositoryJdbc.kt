@@ -7,7 +7,6 @@ import org.springframework.transaction.TransactionStatus
 import org.springframework.transaction.support.TransactionCallbackWithoutResult
 import org.springframework.transaction.support.TransactionTemplate
 import java.sql.ResultSet
-import java.util.Optional
 
 /**
  * Repository for SoknadUnderArbeid.
@@ -23,12 +22,12 @@ open class BatchSoknadUnderArbeidRepositoryJdbc(
 
     private val soknadUnderArbeidRowMapper = SoknadUnderArbeidRowMapper()
 
-    override fun hentSoknadUnderArbeidIdFromBehandlingsIdOptional(behandlingsId: String?): Optional<Long> {
+    override fun hentSoknadUnderArbeidIdFromBehandlingsId(behandlingsId: String?): Long? {
         return jdbcTemplate.query(
             "select * from SOKNAD_UNDER_ARBEID where BEHANDLINGSID = ?",
             { resultSet: ResultSet, _: Int -> resultSet.getLong("soknad_under_arbeid_id") },
             behandlingsId
-        ).stream().findFirst()
+        ).firstOrNull()
     }
 
     override fun hentGamleSoknadUnderArbeidForBatch(): List<Long> {

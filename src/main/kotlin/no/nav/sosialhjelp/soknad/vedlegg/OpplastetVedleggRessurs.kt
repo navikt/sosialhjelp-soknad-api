@@ -43,10 +43,10 @@ open class OpplastetVedleggRessurs(
     @GET
     @Path("/{vedleggId}")
     @Produces(MediaType.APPLICATION_JSON)
-    open fun getVedlegg(@PathParam("vedleggId") vedleggId: String): OpplastetVedlegg {
+    open fun getVedlegg(@PathParam("vedleggId") vedleggId: String): OpplastetVedlegg? {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
         val eier = SubjectHandlerUtils.getUserIdFromToken()
-        return opplastetVedleggRepository.hentVedlegg(vedleggId, eier).orElse(null)
+        return opplastetVedleggRepository.hentVedlegg(vedleggId, eier)
     }
 
     @GET
@@ -55,7 +55,7 @@ open class OpplastetVedleggRessurs(
     open fun getVedleggFil(@PathParam("vedleggId") vedleggId: String, @Context response: HttpServletResponse): Response {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
         val eier = SubjectHandlerUtils.getUserIdFromToken()
-        val opplastetVedlegg = opplastetVedleggRepository.hentVedlegg(vedleggId, eier).orElse(null)
+        val opplastetVedlegg = opplastetVedleggRepository.hentVedlegg(vedleggId, eier)
         if (opplastetVedlegg != null) {
             response.setHeader("Content-Disposition", "attachment; filename=\"" + opplastetVedlegg.filnavn + "\"")
         } else {

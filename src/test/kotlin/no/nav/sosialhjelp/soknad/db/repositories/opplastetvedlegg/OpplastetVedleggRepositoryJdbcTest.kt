@@ -29,7 +29,7 @@ internal class OpplastetVedleggRepositoryJdbcTest {
     private val FILNAVN = "dokumentasjon.pdf"
 
     @Inject
-    private val opplastetVedleggRepository: OpplastetVedleggRepository? = null
+    private lateinit var opplastetVedleggRepository: OpplastetVedleggRepository
 
     @Inject
     private lateinit var jdbcTemplate: JdbcTemplate
@@ -43,21 +43,21 @@ internal class OpplastetVedleggRepositoryJdbcTest {
     @Test
     fun opprettVedleggOppretterOpplastetVedleggIDatabasen() {
         val opplastetVedlegg = lagOpplastetVedlegg()
-        val uuidFraDb = opplastetVedleggRepository!!.opprettVedlegg(opplastetVedlegg, EIER)
+        val uuidFraDb = opplastetVedleggRepository.opprettVedlegg(opplastetVedlegg, EIER)
         assertThat(uuidFraDb).isEqualTo(opplastetVedlegg.uuid)
     }
 
     @Test
     fun hentVedleggHenterOpplastetVedleggSomFinnesForGittUuidOgEier() {
         val uuid = opprettOpplastetVedleggOgLagreIDb(lagOpplastetVedlegg(), EIER)
-        val opplastetVedleggFraDb = opplastetVedleggRepository!!.hentVedlegg(uuid, EIER).get()
-        assertThat(opplastetVedleggFraDb.uuid).isEqualTo(uuid)
-        assertThat(opplastetVedleggFraDb.eier).isEqualTo(EIER)
-        assertThat(opplastetVedleggFraDb.vedleggType.sammensattType).isEqualTo(TYPE)
-        assertThat(opplastetVedleggFraDb.data).isEqualTo(DATA)
-        assertThat(opplastetVedleggFraDb.soknadId).isEqualTo(SOKNADID)
-        assertThat(opplastetVedleggFraDb.filnavn).isEqualTo(FILNAVN)
-        assertThat(opplastetVedleggFraDb.sha512).isEqualTo(SHA512)
+        val opplastetVedleggFraDb = opplastetVedleggRepository.hentVedlegg(uuid, EIER)
+        assertThat(opplastetVedleggFraDb?.uuid).isEqualTo(uuid)
+        assertThat(opplastetVedleggFraDb?.eier).isEqualTo(EIER)
+        assertThat(opplastetVedleggFraDb?.vedleggType?.sammensattType).isEqualTo(TYPE)
+        assertThat(opplastetVedleggFraDb?.data).isEqualTo(DATA)
+        assertThat(opplastetVedleggFraDb?.soknadId).isEqualTo(SOKNADID)
+        assertThat(opplastetVedleggFraDb?.filnavn).isEqualTo(FILNAVN)
+        assertThat(opplastetVedleggFraDb?.sha512).isEqualTo(SHA512)
     }
 
     @Test
@@ -66,7 +66,7 @@ internal class OpplastetVedleggRepositoryJdbcTest {
         val uuidSammeSoknadOgEier = opprettOpplastetVedleggOgLagreIDb(lagOpplastetVedlegg(EIER, TYPE2, SOKNADID), EIER)
         opprettOpplastetVedleggOgLagreIDb(lagOpplastetVedlegg(EIER2, TYPE2, SOKNADID2), EIER2)
         opprettOpplastetVedleggOgLagreIDb(lagOpplastetVedlegg(EIER, TYPE, SOKNADID3), EIER)
-        val opplastedeVedlegg = opplastetVedleggRepository!!.hentVedleggForSoknad(SOKNADID, EIER)
+        val opplastedeVedlegg = opplastetVedleggRepository.hentVedleggForSoknad(SOKNADID, EIER)
         assertThat(opplastedeVedlegg).hasSize(2)
         assertThat(opplastedeVedlegg[0].uuid).isEqualTo(uuid)
         assertThat(opplastedeVedlegg[1].uuid).isEqualTo(uuidSammeSoknadOgEier)
@@ -75,8 +75,8 @@ internal class OpplastetVedleggRepositoryJdbcTest {
     @Test
     fun slettVedleggSletterOpplastetVedleggMedGittUuidOgEier() {
         val uuid = opprettOpplastetVedleggOgLagreIDb(lagOpplastetVedlegg(), EIER)
-        opplastetVedleggRepository!!.slettVedlegg(uuid, EIER)
-        assertThat(opplastetVedleggRepository.hentVedlegg(uuid, EIER)).isEmpty()
+        opplastetVedleggRepository.slettVedlegg(uuid, EIER)
+        assertThat(opplastetVedleggRepository.hentVedlegg(uuid, EIER)).isNull()
     }
 
     @Test
@@ -85,10 +85,10 @@ internal class OpplastetVedleggRepositoryJdbcTest {
         val uuidSammeSoknadOgEier = opprettOpplastetVedleggOgLagreIDb(lagOpplastetVedlegg(EIER, TYPE, SOKNADID), EIER)
         val uuidSammeEierOgAnnenSoknad =
             opprettOpplastetVedleggOgLagreIDb(lagOpplastetVedlegg(EIER, TYPE2, SOKNADID3), EIER)
-        opplastetVedleggRepository!!.slettAlleVedleggForSoknad(SOKNADID, EIER)
-        assertThat(opplastetVedleggRepository.hentVedlegg(uuid, EIER)).isEmpty()
-        assertThat(opplastetVedleggRepository.hentVedlegg(uuidSammeSoknadOgEier, EIER)).isEmpty()
-        assertThat(opplastetVedleggRepository.hentVedlegg(uuidSammeEierOgAnnenSoknad, EIER)).isPresent()
+        opplastetVedleggRepository.slettAlleVedleggForSoknad(SOKNADID, EIER)
+        assertThat(opplastetVedleggRepository.hentVedlegg(uuid, EIER)).isNull()
+        assertThat(opplastetVedleggRepository.hentVedlegg(uuidSammeSoknadOgEier, EIER)).isNull()
+        assertThat(opplastetVedleggRepository.hentVedlegg(uuidSammeEierOgAnnenSoknad, EIER)).isNotNull
     }
 
     private fun lagOpplastetVedlegg(eier: String, type: String, soknadId: Long): OpplastetVedlegg {
@@ -107,6 +107,6 @@ internal class OpplastetVedleggRepositoryJdbcTest {
     }
 
     private fun opprettOpplastetVedleggOgLagreIDb(opplastetVedlegg: OpplastetVedlegg, eier: String): String {
-        return opplastetVedleggRepository!!.opprettVedlegg(opplastetVedlegg, eier)
+        return opplastetVedleggRepository.opprettVedlegg(opplastetVedlegg, eier)
     }
 }

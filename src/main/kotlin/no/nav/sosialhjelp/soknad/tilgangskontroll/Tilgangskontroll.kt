@@ -2,7 +2,7 @@ package no.nav.sosialhjelp.soknad.tilgangskontroll
 
 import no.nav.sosialhjelp.soknad.common.ServiceUtils
 import no.nav.sosialhjelp.soknad.common.exceptions.AuthorizationException
-import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
+import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils.getUserIdFromToken
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
@@ -27,13 +27,10 @@ class Tilgangskontroll(
     }
 
     fun verifiserBrukerHarTilgangTilSoknad(behandlingsId: String?) {
-        val soknadUnderArbeidOptional = soknadUnderArbeidRepository.hentSoknadOptional(behandlingsId, SubjectHandlerUtils.getUserIdFromToken())
-        val eier = if (soknadUnderArbeidOptional.isPresent) {
-            soknadUnderArbeidOptional.get().eier
-        } else {
-            throw AuthorizationException("Bruker har ikke tilgang til søknaden.")
-        }
-        verifiserAtInnloggetBrukerErEierAvSoknad(eier)
+        val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknadNullable(behandlingsId, getUserIdFromToken())
+            ?: throw AuthorizationException("Bruker har ikke tilgang til søknaden.")
+
+        verifiserAtInnloggetBrukerErEierAvSoknad(soknadUnderArbeid.eier)
     }
 
     fun verifiserBrukerHarTilgangTilMetadata(behandlingsId: String?) {
@@ -48,7 +45,7 @@ class Tilgangskontroll(
     }
 
     private fun verifiserAtInnloggetBrukerErEierAvSoknad(eier: String) {
-        val fnr = SubjectHandlerUtils.getUserIdFromToken()
+        val fnr = getUserIdFromToken()
         if (fnr != eier) {
             throw AuthorizationException("Fnr stemmer ikke overens med eieren til søknaden")
         }
@@ -56,7 +53,7 @@ class Tilgangskontroll(
     }
 
     fun verifiserAtBrukerHarTilgang() {
-        val fnr = SubjectHandlerUtils.getUserIdFromToken()
+        val fnr = getUserIdFromToken()
         if (Objects.isNull(fnr)) {
             throw AuthorizationException("Ingen tilgang når fnr ikke er satt")
         }

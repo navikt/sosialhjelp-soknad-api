@@ -7,10 +7,9 @@ import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
 import org.springframework.web.reactive.function.client.bodyToMono
 import java.time.LocalDate
-import java.util.Optional
 
 interface HusbankenClient {
-    fun hentBostotte(token: String?, fra: LocalDate, til: LocalDate): Optional<BostotteDto>
+    fun hentBostotte(token: String?, fra: LocalDate, til: LocalDate): BostotteDto?
     fun ping()
 }
 
@@ -18,7 +17,7 @@ class HusbankenClientImpl(
     private val webClient: WebClient
 ) : HusbankenClient {
 
-    override fun hentBostotte(token: String?, fra: LocalDate, til: LocalDate): Optional<BostotteDto> {
+    override fun hentBostotte(token: String?, fra: LocalDate, til: LocalDate): BostotteDto? {
         return try {
             webClient.get()
                 .uri { it.queryParam("fra", fra).queryParam("til", til).build() }
@@ -33,9 +32,9 @@ class HusbankenClientImpl(
                         else -> log.error("Problemer med å hente bostøtte informasjon fra Husbanken!", e)
                     }
                 }
-                .blockOptional()
+                .block()
         } catch (e: Exception) {
-            return Optional.empty()
+            return null
         }
     }
 

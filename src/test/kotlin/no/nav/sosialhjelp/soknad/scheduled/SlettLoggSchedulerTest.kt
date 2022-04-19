@@ -20,7 +20,6 @@ import no.nav.sosialhjelp.soknad.scheduled.leaderelection.LeaderElection
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
-import java.util.Optional
 
 internal class SlettLoggSchedulerTest {
     private val leaderElection: LeaderElection = mockk()
@@ -52,15 +51,13 @@ internal class SlettLoggSchedulerTest {
 
         every {
             batchSoknadMetadataRepository.hentEldreEnn(DAGER_GAMMEL_SOKNAD)
-        } returns Optional.of(soknadMetadata) andThen Optional.empty()
+        } returns soknadMetadata andThen null
 
         every {
             oppgaveRepository.hentOppgave(BEHANDLINGS_ID)
-        } returns Optional.of(oppgave)
+        } returns oppgave
 
-        every {
-            batchSendtSoknadRepository.hentSendtSoknad(BEHANDLINGS_ID)
-        } returns Optional.of(sendtSoknad.sendtSoknadId)
+        every { batchSendtSoknadRepository.hentSendtSoknad(BEHANDLINGS_ID) } returns sendtSoknad.sendtSoknadId
 
         every { oppgaveRepository.slettOppgave(any()) } just runs
         every { batchSendtSoknadRepository.slettSendtSoknad(any()) } just runs
@@ -81,15 +78,13 @@ internal class SlettLoggSchedulerTest {
 
         every {
             batchSoknadMetadataRepository.hentEldreEnn(DAGER_GAMMEL_SOKNAD)
-        } returns Optional.of(soknadMetadata) andThen Optional.empty()
+        } returns soknadMetadata andThen null
 
         every {
             oppgaveRepository.hentOppgave(BEHANDLINGS_ID)
-        } returns Optional.of(oppgave)
+        } returns oppgave
 
-        every {
-            batchSendtSoknadRepository.hentSendtSoknad(BEHANDLINGS_ID)
-        } returns Optional.empty()
+        every { batchSendtSoknadRepository.hentSendtSoknad(BEHANDLINGS_ID) } returns null
 
         every { oppgaveRepository.slettOppgave(any()) } just runs
 
@@ -102,7 +97,7 @@ internal class SlettLoggSchedulerTest {
 
     @Test
     fun skalIkkeSletteLoggSomErUnderEttAarGammelt() {
-        every { batchSoknadMetadataRepository.hentEldreEnn(DAGER_GAMMEL_SOKNAD) } returns Optional.empty()
+        every { batchSoknadMetadataRepository.hentEldreEnn(DAGER_GAMMEL_SOKNAD) } returns null
 
         scheduler.slettLogger()
 
@@ -114,7 +109,7 @@ internal class SlettLoggSchedulerTest {
     private fun soknadMetadata(
         behandlingsId: String,
         status: SoknadMetadataInnsendingStatus,
-        dagerSiden: Int
+        dagerSiden: Int,
     ): SoknadMetadata {
         return SoknadMetadata(
             id = soknadMetadataRepository.hentNesteId(),

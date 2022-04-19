@@ -55,18 +55,17 @@ class AvbrytAutomatiskScheduler(
     }
 
     private fun avbrytSoknader() {
-        var soknad = batchSoknadMetadataRepository.hentForBatch(DAGER_GAMMELT)
+        var soknadMetadata = batchSoknadMetadataRepository.hentForBatch(DAGER_GAMMELT)
 
-        while (soknad.isPresent) {
-            val soknadMetadata = soknad.get()
+        while (soknadMetadata != null) {
             soknadMetadata.status = AVBRUTT_AUTOMATISK
             soknadMetadata.sistEndretDato = LocalDateTime.now()
             soknadMetadataRepository.oppdater(soknadMetadata)
 
             val behandlingsId = soknadMetadata.behandlingsId
 
-            val soknadUnderArbeidOptional = batchSoknadUnderArbeidRepository.hentSoknadUnderArbeidIdFromBehandlingsIdOptional(behandlingsId)
-            soknadUnderArbeidOptional.ifPresent { batchSoknadUnderArbeidRepository.slettSoknad(it) }
+            batchSoknadUnderArbeidRepository.hentSoknadUnderArbeidIdFromBehandlingsId(behandlingsId)
+                ?.let { batchSoknadUnderArbeidRepository.slettSoknad(it) }
 
             batchSoknadMetadataRepository.leggTilbakeBatch(soknadMetadata.id)
             vellykket++
@@ -75,7 +74,7 @@ class AvbrytAutomatiskScheduler(
                 logger.warn("Jobben har kjørt i mer enn $SCHEDULE_INTERRUPT_S s. Den blir derfor stoppet",)
                 return
             }
-            soknad = batchSoknadMetadataRepository.hentForBatch(DAGER_GAMMELT)
+            soknadMetadata = batchSoknadMetadataRepository.hentForBatch(DAGER_GAMMELT)
         }
     }
 

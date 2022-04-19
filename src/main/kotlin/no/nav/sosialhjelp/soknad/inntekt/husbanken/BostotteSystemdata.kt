@@ -76,8 +76,7 @@ open class BostotteSystemdata(
     }
 
     private fun innhentBostotteFraHusbanken(token: String?): Bostotte? {
-        val optionalDto = husbankenClient.hentBostotte(token, LocalDate.now().minusDays(60), LocalDate.now())
-        return optionalDto.map { it.toDomain() }.orElse(null)
+        return husbankenClient.hentBostotte(token, LocalDate.now().minusDays(60), LocalDate.now())?.toDomain()
     }
 
     private fun mapToJsonOkonomiOpplysningUtbetalinger(

@@ -20,7 +20,6 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
-import java.util.Optional
 
 internal class AvbrytAutomatiskSchedulerTest {
     private val leaderElection: LeaderElection = mockk()
@@ -60,10 +59,10 @@ internal class AvbrytAutomatiskSchedulerTest {
 
         every {
             batchSoknadMetadataRepository.hentForBatch(DAGER_GAMMEL_SOKNAD)
-        } returns Optional.of(soknadMetadata) andThen Optional.empty()
+        } returns soknadMetadata andThen null
         every {
-            batchSoknadUnderArbeidRepository.hentSoknadUnderArbeidIdFromBehandlingsIdOptional(BEHANDLINGS_ID)
-        } returns Optional.of(soknadUnderArbeid.soknadId)
+            batchSoknadUnderArbeidRepository.hentSoknadUnderArbeidIdFromBehandlingsId(BEHANDLINGS_ID)
+        } returns soknadUnderArbeid.soknadId
 
         val soknadMetadataSlot = slot<SoknadMetadata>()
         every { soknadMetadataRepository.oppdater(capture(soknadMetadataSlot)) } just runs

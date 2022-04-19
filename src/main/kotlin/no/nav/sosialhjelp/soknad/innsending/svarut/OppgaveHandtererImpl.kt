@@ -30,11 +30,7 @@ class OppgaveHandtererImpl(
             return
         }
         while (true) {
-            val oppgaveOptional = oppgaveRepository.hentNeste()
-            if (oppgaveOptional.isEmpty) {
-                return
-            }
-            val oppgave = oppgaveOptional.get()
+            val oppgave = oppgaveRepository.hentNeste() ?: return
             val event = MetricsFactory.createEvent("digisos.oppgaver")
             event.addTagToReport("oppgavetype", oppgave.type)
             event.addTagToReport("steg", oppgave.steg.toString() + "")

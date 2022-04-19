@@ -125,7 +125,7 @@ class OpplastetVedleggService(
 
     fun deleteVedleggAndUpdateVedleggstatus(behandlingsId: String?, vedleggId: String?) {
         val eier = SubjectHandlerUtils.getUserIdFromToken()
-        val opplastetVedlegg = opplastetVedleggRepository.hentVedlegg(vedleggId, eier).orElse(null) ?: return
+        val opplastetVedlegg = opplastetVedleggRepository.hentVedlegg(vedleggId, eier) ?: return
 
         val vedleggstype = opplastetVedlegg.vedleggType.sammensattType
 

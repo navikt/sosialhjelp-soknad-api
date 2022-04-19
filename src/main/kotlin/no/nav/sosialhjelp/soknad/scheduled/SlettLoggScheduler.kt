@@ -54,17 +54,15 @@ class SlettLoggScheduler(
     }
 
     private fun slettForeldetLogg() {
-        var soknad = batchSoknadMetadataRepository.hentEldreEnn(DAGER_GAMMELT)
-        while (soknad.isPresent) {
-            val soknadMetadata = soknad.get()
-
+        var soknadMetadata = batchSoknadMetadataRepository.hentEldreEnn(DAGER_GAMMELT)
+        while (soknadMetadata != null) {
             val behandlingsId = soknadMetadata.behandlingsId
 
-            val sendtSoknadIdOptional = batchSendtSoknadRepository.hentSendtSoknad(behandlingsId)
-            sendtSoknadIdOptional.ifPresent { batchSendtSoknadRepository.slettSendtSoknad(it) }
+            batchSendtSoknadRepository.hentSendtSoknad(behandlingsId)
+                ?.let { batchSendtSoknadRepository.slettSendtSoknad(it) }
 
-            val oppgaveOptional = oppgaveRepository.hentOppgave(behandlingsId)
-            oppgaveOptional.ifPresent { oppgaveRepository.slettOppgave(behandlingsId) }
+            oppgaveRepository.hentOppgave(behandlingsId)
+                ?.let { oppgaveRepository.slettOppgave(behandlingsId) }
 
             batchSoknadMetadataRepository.slettSoknadMetaData(behandlingsId)
 
@@ -74,7 +72,7 @@ class SlettLoggScheduler(
                 logger.warn("Jobben har kjørt i mer enn $SCHEDULE_INTERRUPT_S s. Den blir derfor stoppet")
                 return
             }
-            soknad = batchSoknadMetadataRepository.hentEldreEnn(DAGER_GAMMELT)
+            soknadMetadata = batchSoknadMetadataRepository.hentEldreEnn(DAGER_GAMMELT)
         }
     }
 
