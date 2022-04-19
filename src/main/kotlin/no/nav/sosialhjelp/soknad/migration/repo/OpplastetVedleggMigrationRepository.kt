@@ -6,7 +6,7 @@ import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Repository
 
 @Repository
-class OpplastetVedleggMigrationRepository(
+open class OpplastetVedleggMigrationRepository(
     private val jdbcTemplate: JdbcTemplate,
 ) {
     fun getOpplastetVedlegg(soknadUnderArbeidId: Long): List<OpplastetVedlegg> {

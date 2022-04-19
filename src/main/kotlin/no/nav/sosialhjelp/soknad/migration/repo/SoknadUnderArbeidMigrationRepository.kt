@@ -6,7 +6,7 @@ import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Repository
 
 @Repository
-class SoknadUnderArbeidMigrationRepository(
+open class SoknadUnderArbeidMigrationRepository(
     private val jdbcTemplate: JdbcTemplate,
 ) {
     private val soknadUnderArbeidRowMapper = SoknadUnderArbeidRowMapper()

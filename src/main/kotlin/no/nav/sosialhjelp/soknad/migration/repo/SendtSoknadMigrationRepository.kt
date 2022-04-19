@@ -6,7 +6,7 @@ import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Repository
 
 @Repository
-class SendtSoknadMigrationRepository(
+open class SendtSoknadMigrationRepository(
     private val jdbcTemplate: JdbcTemplate,
 ) {
     fun getSendtSoknad(behandlingsId: String): SendtSoknad? {
