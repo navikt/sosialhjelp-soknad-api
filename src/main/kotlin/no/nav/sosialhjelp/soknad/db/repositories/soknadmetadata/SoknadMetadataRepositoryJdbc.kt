@@ -64,14 +64,11 @@ open class SoknadMetadataRepositoryJdbc(
     }
 
     override fun hent(behandlingsId: String?): SoknadMetadata? {
-        val resultat = jdbcTemplate.query(
+        return jdbcTemplate.query(
             "SELECT * FROM soknadmetadata WHERE behandlingsid = ?",
             soknadMetadataRowMapper,
             behandlingsId
-        )
-        return if (resultat.isNotEmpty()) {
-            resultat[0]
-        } else null
+        ).firstOrNull()
     }
 
     override fun hentBehandlingskjede(behandlingsId: String?): List<SoknadMetadata> {

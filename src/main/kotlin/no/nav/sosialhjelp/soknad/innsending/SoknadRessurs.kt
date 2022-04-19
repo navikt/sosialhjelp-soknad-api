@@ -8,7 +8,7 @@ import no.nav.sosialhjelp.metrics.aspects.Timed
 import no.nav.sosialhjelp.soknad.api.nedetid.NedetidService
 import no.nav.sosialhjelp.soknad.common.Constants
 import no.nav.sosialhjelp.soknad.common.exceptions.SoknadenHarNedetidException
-import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
+import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils.getUserIdFromToken
 import no.nav.sosialhjelp.soknad.common.systemdata.SystemdataUpdater
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
@@ -68,7 +68,7 @@ open class SoknadRessurs(
         @HeaderParam(value = HttpHeaders.AUTHORIZATION) token: String?
     ): Boolean {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
-        val eier = SubjectHandlerUtils.getUserIdFromToken()
+        val eier = getUserIdFromToken()
         val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
         systemdata.update(soknadUnderArbeid)
 
@@ -115,7 +115,7 @@ open class SoknadRessurs(
         @HeaderParam(value = HttpHeaders.AUTHORIZATION) token: String?
     ): List<BekreftelseRessurs> {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
-        val eier = SubjectHandlerUtils.getUserIdFromToken()
+        val eier = getUserIdFromToken()
         val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
 
         val bekreftelser: MutableList<JsonOkonomibekreftelse> = mutableListOf()
@@ -157,13 +157,10 @@ open class SoknadRessurs(
         val opprettetBehandlingsId: String = if (tilknyttetBehandlingsId == null) {
             soknadService.startSoknad(token)
         } else {
-            val eier = SubjectHandlerUtils.getUserIdFromToken()
-            val soknadUnderArbeid = soknadUnderArbeidRepository.hentEttersendingMedTilknyttetBehandlingsId(tilknyttetBehandlingsId, eier)
-            if (soknadUnderArbeid.isPresent) {
-                soknadUnderArbeid.get().behandlingsId
-            } else {
-                soknadService.startEttersending(tilknyttetBehandlingsId)
-            }
+            val eier = getUserIdFromToken()
+            soknadUnderArbeidRepository.hentEttersendingMedTilknyttetBehandlingsId(tilknyttetBehandlingsId, eier)
+                ?.behandlingsId
+                ?: soknadService.startEttersending(tilknyttetBehandlingsId)
         }
         result["brukerBehandlingId"] = opprettetBehandlingsId
         response.addCookie(xsrfCookie(opprettetBehandlingsId))

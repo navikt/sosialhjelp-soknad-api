@@ -19,10 +19,10 @@ import javax.inject.Inject
 internal class BatchSendtSoknadRepositoryJdbcTest {
 
     @Inject
-    private val sendtSoknadRepository: SendtSoknadRepository? = null
+    private lateinit var sendtSoknadRepository: SendtSoknadRepository
 
     @Inject
-    private val batchSendtSoknadRepository: BatchSendtSoknadRepository? = null
+    private lateinit var batchSendtSoknadRepository: BatchSendtSoknadRepository
 
     @Inject
     private lateinit var jdbcTemplate: JdbcTemplate
@@ -34,18 +34,18 @@ internal class BatchSendtSoknadRepositoryJdbcTest {
 
     @Test
     fun hentSendtSoknadHenterSendtSoknadForEierOgBehandlingsid() {
-        sendtSoknadRepository!!.opprettSendtSoknad(lagSendtSoknad(EIER), EIER)
-        val sendtSoknadId = batchSendtSoknadRepository!!.hentSendtSoknad(BEHANDLINGSID).get()
+        sendtSoknadRepository.opprettSendtSoknad(lagSendtSoknad(EIER), EIER)
+        val sendtSoknadId = batchSendtSoknadRepository.hentSendtSoknad(BEHANDLINGSID)
         assertThat(sendtSoknadId).isNotNull
     }
 
     @Test
     fun slettSendtSoknadSletterSoknadFraDatabase() {
         val sendtSoknad = lagSendtSoknad(EIER)
-        val sendtSoknadId = sendtSoknadRepository!!.opprettSendtSoknad(sendtSoknad, EIER)
+        val sendtSoknadId = sendtSoknadRepository.opprettSendtSoknad(sendtSoknad, EIER)
         sendtSoknad.sendtSoknadId = sendtSoknadId!!
-        batchSendtSoknadRepository!!.slettSendtSoknad(sendtSoknadId)
-        assertThat(batchSendtSoknadRepository.hentSendtSoknad(BEHANDLINGSID)).isEmpty
+        batchSendtSoknadRepository.slettSendtSoknad(sendtSoknadId)
+        assertThat(batchSendtSoknadRepository.hentSendtSoknad(BEHANDLINGSID)).isNull()
     }
 
     private fun lagSendtSoknad(eier: String): SendtSoknad {

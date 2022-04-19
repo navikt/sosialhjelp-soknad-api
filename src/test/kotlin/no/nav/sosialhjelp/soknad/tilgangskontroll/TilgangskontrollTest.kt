@@ -23,7 +23,6 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
-import java.util.Optional
 
 internal class TilgangskontrollTest {
 
@@ -63,7 +62,7 @@ internal class TilgangskontrollTest {
             sistEndretDato = LocalDateTime.now()
         )
 
-        every { soknadUnderArbeidRepository.hentSoknadOptional(any(), any()) } returns Optional.of(soknadUnderArbeid)
+        every { soknadUnderArbeidRepository.hentSoknadNullable(any(), any()) } returns soknadUnderArbeid
         every { personService.hentAdressebeskyttelse(userId) } returns Gradering.UGRADERT
 
         assertThatNoException()
@@ -83,7 +82,7 @@ internal class TilgangskontrollTest {
             sistEndretDato = LocalDateTime.now()
         )
 
-        every { soknadUnderArbeidRepository.hentSoknadOptional(any(), any()) } returns Optional.of(soknadUnderArbeid)
+        every { soknadUnderArbeidRepository.hentSoknadNullable(any(), any()) } returns soknadUnderArbeid
 
         assertThatExceptionOfType(AuthorizationException::class.java)
             .isThrownBy { tilgangskontroll.verifiserBrukerHarTilgangTilSoknad("XXX") }
@@ -91,7 +90,7 @@ internal class TilgangskontrollTest {
 
     @Test
     fun skalFeileOmSoknadenIkkeFinnes() {
-        every { soknadUnderArbeidRepository.hentSoknadOptional(any(), any()) } returns Optional.empty()
+        every { soknadUnderArbeidRepository.hentSoknadNullable(any(), any()) } returns null
 
         assertThatExceptionOfType(AuthorizationException::class.java)
             .isThrownBy { tilgangskontroll.verifiserBrukerHarTilgangTilSoknad("123") }

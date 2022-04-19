@@ -22,7 +22,6 @@ import java.nio.charset.StandardCharsets
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.util.Date
-import java.util.Optional
 
 @Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 @Repository
@@ -58,50 +57,44 @@ open class SoknadUnderArbeidRepositoryJdbc(
         return soknadUnderArbeidId
     }
 
-    override fun hentSoknad(soknadId: Long, eier: String): Optional<SoknadUnderArbeid> {
+    override fun hentSoknad(soknadId: Long, eier: String): SoknadUnderArbeid? {
         return jdbcTemplate.query(
             "select * from SOKNAD_UNDER_ARBEID where EIER = ? and SOKNAD_UNDER_ARBEID_ID = ?",
             soknadUnderArbeidRowMapper,
             eier,
             soknadId
-        ).stream().findFirst()
+        ).firstOrNull()
     }
 
     override fun hentSoknad(behandlingsId: String?, eier: String): SoknadUnderArbeid {
-        val soknadUnderArbeidOptional = jdbcTemplate.query(
-            "select * from SOKNAD_UNDER_ARBEID where EIER = ? and BEHANDLINGSID = ?",
-            soknadUnderArbeidRowMapper,
-            eier,
-            behandlingsId
-        ).stream().findFirst()
-
-        return if (soknadUnderArbeidOptional.isPresent) {
-            soknadUnderArbeidOptional.get()
-        } else {
-            throw SoknadUnderArbeidIkkeFunnetException("Ingen SoknadUnderArbeid funnet på behandlingsId: $behandlingsId")
-        }
-    }
-
-    override fun hentSoknadOptional(behandlingsId: String?, eier: String): Optional<SoknadUnderArbeid> {
         return jdbcTemplate.query(
             "select * from SOKNAD_UNDER_ARBEID where EIER = ? and BEHANDLINGSID = ?",
             soknadUnderArbeidRowMapper,
             eier,
             behandlingsId
-        ).stream().findFirst()
+        ).firstOrNull() ?: throw SoknadUnderArbeidIkkeFunnetException("Ingen SoknadUnderArbeid funnet på behandlingsId: $behandlingsId")
+    }
+
+    override fun hentSoknadNullable(behandlingsId: String?, eier: String): SoknadUnderArbeid? {
+        return jdbcTemplate.query(
+            "select * from SOKNAD_UNDER_ARBEID where EIER = ? and BEHANDLINGSID = ?",
+            soknadUnderArbeidRowMapper,
+            eier,
+            behandlingsId
+        ).firstOrNull()
     }
 
     override fun hentEttersendingMedTilknyttetBehandlingsId(
         tilknyttetBehandlingsId: String,
         eier: String,
-    ): Optional<SoknadUnderArbeid> {
+    ): SoknadUnderArbeid? {
         return jdbcTemplate.query(
             "select * from SOKNAD_UNDER_ARBEID where EIER = ? and TILKNYTTETBEHANDLINGSID = ? and STATUS = ?",
             soknadUnderArbeidRowMapper,
             eier,
             tilknyttetBehandlingsId,
             SoknadUnderArbeidStatus.UNDER_ARBEID.toString()
-        ).stream().findFirst()
+        ).firstOrNull()
     }
 
     override fun oppdaterSoknadsdata(soknadUnderArbeid: SoknadUnderArbeid, eier: String) {
@@ -123,10 +116,9 @@ open class SoknadUnderArbeidRepositoryJdbc(
             SoknadUnderArbeidStatus.UNDER_ARBEID.toString()
         )
         if (antallOppdaterteRader == 0) {
-            val soknadIDb = hentSoknad(soknadUnderArbeid.soknadId, soknadUnderArbeid.eier)
-                .orElseThrow {
-                    IllegalStateException("Ingen soknadUnderArbeid funnet for ${soknadUnderArbeid.behandlingsId}, med status ${soknadUnderArbeid.status}")
-                }
+            val soknadIDb: SoknadUnderArbeid = hentSoknad(soknadUnderArbeid.soknadId, soknadUnderArbeid.eier)
+                ?: throw IllegalStateException("Ingen soknadUnderArbeid funnet for ${soknadUnderArbeid.behandlingsId}, med status ${soknadUnderArbeid.status}")
+
             if (soknadIDb.jsonInternalSoknad?.let { mapJsonSoknadInternalTilFil(it).contentEquals(data) } == true) {
                 return
             }

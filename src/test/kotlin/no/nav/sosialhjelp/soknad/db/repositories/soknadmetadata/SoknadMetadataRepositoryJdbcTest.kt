@@ -17,11 +17,10 @@ import javax.inject.Inject
 @ActiveProfiles("test")
 internal class SoknadMetadataRepositoryJdbcTest {
 
-    private val dagerGammelSoknad = 20
     private val behandlingsId = "1100AAAAA"
 
     @Inject
-    private val soknadMetadataRepository: SoknadMetadataRepository? = null
+    private lateinit var soknadMetadataRepository: SoknadMetadataRepository
 
     @Inject
     private lateinit var jdbcTemplate: JdbcTemplate
@@ -35,7 +34,7 @@ internal class SoknadMetadataRepositoryJdbcTest {
     fun oppdaterLestDittNav() {
         var soknadMetadata = soknadMetadata(behandlingsId, SoknadMetadataInnsendingStatus.UNDER_ARBEID, 12)
         assertThat(soknadMetadata.lestDittNav).isFalse
-        soknadMetadataRepository!!.opprett(soknadMetadata)
+        soknadMetadataRepository.opprett(soknadMetadata)
 
         soknadMetadata = soknadMetadataRepository.hent(soknadMetadata.behandlingsId)!!
         soknadMetadata.lestDittNav = true
@@ -53,7 +52,7 @@ internal class SoknadMetadataRepositoryJdbcTest {
         dagerSiden: Int,
     ): SoknadMetadata {
         return SoknadMetadata(
-            id = soknadMetadataRepository!!.hentNesteId(),
+            id = soknadMetadataRepository.hentNesteId(),
             behandlingsId = behandlingsId,
             fnr = EIER,
             type = SoknadMetadataType.SEND_SOKNAD_KOMMUNAL,

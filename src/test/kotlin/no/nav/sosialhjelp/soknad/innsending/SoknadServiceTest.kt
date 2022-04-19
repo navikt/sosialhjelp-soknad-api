@@ -34,7 +34,6 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
-import java.util.Optional
 
 internal class SoknadServiceTest {
 
@@ -162,16 +161,14 @@ internal class SoknadServiceTest {
 
     @Test
     fun skalAvbryteSoknad() {
-        every { soknadUnderArbeidRepository.hentSoknadOptional(BEHANDLINGSID, any()) } returns Optional.of(
-            SoknadUnderArbeid(
-                versjon = 1L,
-                behandlingsId = BEHANDLINGSID,
-                eier = EIER,
-                jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
-                status = SoknadUnderArbeidStatus.UNDER_ARBEID,
-                opprettetDato = LocalDateTime.now(),
-                sistEndretDato = LocalDateTime.now()
-            )
+        every { soknadUnderArbeidRepository.hentSoknadNullable(BEHANDLINGSID, any()) } returns SoknadUnderArbeid(
+            versjon = 1L,
+            behandlingsId = BEHANDLINGSID,
+            eier = EIER,
+            jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
+            status = SoknadUnderArbeidStatus.UNDER_ARBEID,
+            opprettetDato = LocalDateTime.now(),
+            sistEndretDato = LocalDateTime.now()
         )
 
         every { soknadUnderArbeidRepository.slettSoknad(any(), any()) } just runs
