@@ -117,7 +117,7 @@ internal class NavEnhetRessursTest {
         every { kommuneInfoService.kanMottaSoknader(any()) } returns true
         every { kommuneInfoService.harMidlertidigDeaktivertMottak(any()) } returns true
         every { serviceUtils.isSendingTilFiksEnabled() } returns true
-        every { serviceUtils.isAlltidHentKommuneInfoFraNavTestkommune() } returns false
+//        every { serviceUtils.isAlltidHentKommuneInfoFraNavTestkommune() } returns false
     }
 
     @AfterEach
@@ -229,6 +229,9 @@ internal class NavEnhetRessursTest {
 
     @Test
     internal fun hentNavEnheter_oppholdsadresseFolkeregistrert_skalBrukeKommunenummerFraGtOgKommunenavnFraKodeverk() {
+        every { MiljoUtils.isNonProduction() } returns false
+        every { serviceUtils.isMockAltProfil() } returns false
+
         val soknadUnderArbeid = createSoknadUnderArbeid(EIER)
         soknadUnderArbeid.jsonInternalSoknad!!.soknad.withMottaker(SOKNADSMOTTAKER).data.personalia
             .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT))
@@ -248,6 +251,9 @@ internal class NavEnhetRessursTest {
 
     @Test
     internal fun hentNavEnheter_oppholdsadresseFolkeregistrert_skalBrukeBydelsnummerFraGtOgKommunenavnFraKodeverk() {
+        every { MiljoUtils.isNonProduction() } returns false
+        every { serviceUtils.isMockAltProfil() } returns false
+
         val soknadUnderArbeid = createSoknadUnderArbeid(EIER)
         soknadUnderArbeid.jsonInternalSoknad!!.soknad.withMottaker(SOKNADSMOTTAKER).data.personalia
             .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT))

@@ -5,7 +5,6 @@ import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.metrics.aspects.Timed
 import no.nav.sosialhjelp.soknad.api.nedetid.NedetidService
 import no.nav.sosialhjelp.soknad.common.Constants
-import no.nav.sosialhjelp.soknad.common.MiljoUtils
 import no.nav.sosialhjelp.soknad.common.ServiceUtils
 import no.nav.sosialhjelp.soknad.common.exceptions.SendingTilKommuneErIkkeAktivertException
 import no.nav.sosialhjelp.soknad.common.exceptions.SendingTilKommuneErMidlertidigUtilgjengeligException
@@ -86,7 +85,9 @@ open class SoknadActions(
         }
 
         log.info("BehandlingsId {} sendes til SvarUt eller fiks-digisos-api avhengig av kommuneinfo.", behandlingsId)
-        val kommunenummer = getKommunenummerOrMock(soknadUnderArbeid)
+//        val kommunenummer = getKommunenummerOrMock(soknadUnderArbeid)
+        val kommunenummer = soknadUnderArbeid.jsonInternalSoknad?.soknad?.mottaker?.kommunenummer
+            ?: throw IllegalStateException("Kommunenummer ikke funnet for JsonInternalSoknad.soknad.mottaker.kommunenummer")
         val kommuneStatus = kommuneInfoService.kommuneInfo(kommunenummer)
         log.info("Kommune: $kommunenummer Status: $kommuneStatus")
 
@@ -128,15 +129,15 @@ open class SoknadActions(
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier)
     }
 
-    fun getKommunenummerOrMock(soknadUnderArbeid: SoknadUnderArbeid): String {
-        return if (MiljoUtils.isNonProduction() && serviceUtils.isAlltidSendTilNavTestkommune()) {
-            log.error("Sender til Nav-testkommune (3002). Du skal aldri se denne meldingen i PROD")
-            "3002"
-        } else {
-            soknadUnderArbeid.jsonInternalSoknad?.soknad?.mottaker?.kommunenummer
-                ?: throw IllegalStateException("Kommunenummer ikke funnet for JsonInternalSoknad.soknad.mottaker.kommunenummer")
-        }
-    }
+//    fun getKommunenummerOrMock(soknadUnderArbeid: SoknadUnderArbeid): String {
+//        return if (MiljoUtils.isNonProduction() && serviceUtils.isAlltidSendTilNavTestkommune()) {
+//            log.error("Sender til Nav-testkommune (3002). Du skal aldri se denne meldingen i PROD")
+//            "3002"
+//        } else {
+//            soknadUnderArbeid.jsonInternalSoknad?.soknad?.mottaker?.kommunenummer
+//                ?: throw IllegalStateException("Kommunenummer ikke funnet for JsonInternalSoknad.soknad.mottaker.kommunenummer")
+//        }
+//    }
 
     private fun isEttersendelsePaSoknadSendtViaSvarUt(soknadUnderArbeid: SoknadUnderArbeid): Boolean {
         if (!soknadUnderArbeid.erEttersendelse) return false
