@@ -94,8 +94,6 @@ redis_password: ${REDIS_PASSWORD:pw}
 unleash_instance_id: ${UNLEASH_INSTANCE_ID:labs-gcp}
 scheduler.disable: ${SCHEDULER_DISABLE:false}
 digisosapi.sending.enable: ${IS_SENDING_TIL_DIGISOS_API_ENABLED:true}
-digisosapi.sending.alltidTilTestkommune.enable: ${IS_ALLTID_SEND_TIL_NAV_TESTKOMMUNE:false}
-digisosapi.henting.alltidTestkommune.enable: ${IS_ALLTID_HENT_KOMMUNEINFO_FRA_NAV_TESTKOMMUNE:false}
 sendsoknad.batch.enabled: true
 feature.fiks.kryptering.enabled: true
 

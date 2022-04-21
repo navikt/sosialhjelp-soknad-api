@@ -276,22 +276,6 @@ internal class SoknadActionsTest {
         verify { digisosApiService wasNot called }
     }
 
-//    @Test
-//    fun kommunenummerOrMockMedMockEnableSkalReturnereMock() {
-//        every { serviceUtils.isAlltidSendTilNavTestkommune() } returns true
-//        val kommunenummer = actions.getKommunenummerOrMock(mockk())
-//        assertThat(kommunenummer).isEqualTo(TESTKOMMUNE)
-//    }
-//
-//    @Test
-//    fun kommunenummerOrMockUtenMockSkalIkkeReturnereMock() {
-//        val expectedKommunenummer = "1111"
-//        val soknadUnderArbeid = createSoknadUnderArbeid(EIER)
-//        soknadUnderArbeid.jsonInternalSoknad!!.soknad.mottaker.withKommunenummer(expectedKommunenummer)
-//        val kommunenummer = actions.getKommunenummerOrMock(soknadUnderArbeid)
-//        assertThat(kommunenummer).isEqualTo(expectedKommunenummer)
-//    }
-
     @Test
     fun sendSoknadSkalGiAuthorizationExceptionVedManglendeTilgang() {
         every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } throws AuthorizationException("Not for you my friend")

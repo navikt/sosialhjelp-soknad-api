@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.navenhet
 
+import no.finn.unleash.Unleash
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknadsmottaker
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse
@@ -13,7 +14,7 @@ import no.nav.sosialhjelp.soknad.adressesok.domain.AdresseForslag
 import no.nav.sosialhjelp.soknad.adressesok.domain.AdresseForslagType
 import no.nav.sosialhjelp.soknad.client.kodeverk.KodeverkService
 import no.nav.sosialhjelp.soknad.common.Constants
-import no.nav.sosialhjelp.soknad.common.MiljoUtils
+import no.nav.sosialhjelp.soknad.common.MiljoUtils.isNonProduction
 import no.nav.sosialhjelp.soknad.common.ServiceUtils
 import no.nav.sosialhjelp.soknad.common.mapper.KommuneTilNavEnhetMapper
 import no.nav.sosialhjelp.soknad.common.mapper.KommuneTilNavEnhetMapper.getOrganisasjonsnummer
@@ -50,7 +51,8 @@ open class NavEnhetRessurs(
     private val finnAdresseService: FinnAdresseService,
     private val geografiskTilknytningService: GeografiskTilknytningService,
     private val kodeverkService: KodeverkService,
-    private val serviceUtils: ServiceUtils
+    private val serviceUtils: ServiceUtils,
+    private val unleash: Unleash,
 ) {
 
     @GET
@@ -163,7 +165,6 @@ open class NavEnhetRessurs(
         kommunenummer: String?,
         valgtEnhetNr: String?
     ): NavEnhetFrontend? {
-//        val valgtKommunenummer: String? = kommunenummer
         if (navEnhet == null) {
             log.warn("Kunne ikke hente NAV-enhet: $geografiskTilknytning , i kommune: $kommunenummer")
             return null
@@ -172,10 +173,6 @@ open class NavEnhetRessurs(
             log.warn("Kommunenummer hadde ikke 4 tegn, var $kommunenummer")
             return null
         }
-//        if (MiljoUtils.isNonProduction() && serviceUtils.isAlltidHentKommuneInfoFraNavTestkommune()) {
-//            log.error("Sender til Nav-testkommune (3002). Du skal aldri se denne meldingen i PROD")
-//            valgtKommunenummer = "3002"
-//        }
         val isDigisosKommune = isDigisosKommune(kommunenummer)
         val sosialOrgnr = if (isDigisosKommune) navEnhet.sosialOrgNr else null
         val enhetNr = if (isDigisosKommune) navEnhet.enhetNr else null
@@ -267,10 +264,6 @@ open class NavEnhetRessurs(
             log.warn("Kommunenummer hadde ikke 4 tegn, var $kommunenummer")
             return null
         }
-//        if (MiljoUtils.isNonProduction() && serviceUtils.isAlltidHentKommuneInfoFraNavTestkommune()) {
-//            log.error("Sender til Nav-testkommune (3002). Du skal aldri se denne meldingen i PROD")
-//            kommunenummer = "3002"
-//        }
         val digisosKommune = isDigisosKommune(kommunenummer)
         val sosialOrgnr = if (digisosKommune) navEnhet.sosialOrgNr else null
         val enhetNr = if (digisosKommune) navEnhet.enhetNr else null
@@ -289,8 +282,7 @@ open class NavEnhetRessurs(
     }
 
     private fun getKommunenummer(oppholdsadresse: JsonAdresse): String? {
-        // todo med unleash?
-        if (MiljoUtils.isNonProduction() && !serviceUtils.isMockAltProfil() && isFolkeregistrertAdressevalg(oppholdsadresse)) {
+        if (isNonProduction() && unleash.isEnabled(FEATURE_SEND_TIL_NAV_TESTKOMMUNE, false) && isAdresseValgFolkeregistrert(oppholdsadresse)) {
             log.error("Sender til Nav-testkommune (3002). Du skal aldri se denne meldingen i PROD")
             return "3002"
         }
@@ -317,12 +309,13 @@ open class NavEnhetRessurs(
         }
     }
 
-    private fun isFolkeregistrertAdressevalg(adresse: JsonAdresse): Boolean {
+    private fun isAdresseValgFolkeregistrert(adresse: JsonAdresse): Boolean {
         return adresse.adresseValg == JsonAdresseValg.FOLKEREGISTRERT
     }
 
     companion object {
         private val log = LoggerFactory.getLogger(NavEnhetRessurs::class.java)
         private const val SPLITTER: String = ", "
+        private const val FEATURE_SEND_TIL_NAV_TESTKOMMUNE = "sosialhjelp.soknad.send-til-nav-testkommune"
     }
 }

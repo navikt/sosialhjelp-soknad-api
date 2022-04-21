@@ -4,8 +4,6 @@ object MiljoUtils {
 
     private const val NAIS_CLUSTER_NAME = "NAIS_CLUSTER_NAME"
     private const val ENVIRONMENT_NAME = "ENVIRONMENT_NAME"
-    private const val IS_ALLTID_SEND_TIL_NAV_TESTKOMMUNE = "IS_ALLTID_SEND_TIL_NAV_TESTKOMMUNE"
-    private const val IS_ALLTID_HENT_KOMMUNEINFO_FRA_NAV_TESTKOMMUNE = "IS_ALLTID_HENT_KOMMUNEINFO_FRA_NAV_TESTKOMMUNE"
     private const val SPRING_PROFILES_ACTIVE = "SPRING_PROFILES_ACTIVE"
 
     val environmentName: String
@@ -17,16 +15,6 @@ object MiljoUtils {
         // Prod-konfigurasjon i test vil oppdages raskt og man vil ikke klare å skape problemer for prod da man trenger secrets som ikke er tilgjengelig i testmiljøer.
         val clusterName = System.getenv(NAIS_CLUSTER_NAME)
         return clusterName == null || !clusterName.contains("prod")
-    }
-
-    fun isAlltidSendTilNavTestkommune(): Boolean {
-        val value = System.getenv(IS_ALLTID_SEND_TIL_NAV_TESTKOMMUNE) ?: "false"
-        return value.toBoolean()
-    }
-
-    fun isAlltidHentKommuneInfoFraNavTestkommune(): Boolean {
-        val value = System.getenv(IS_ALLTID_HENT_KOMMUNEINFO_FRA_NAV_TESTKOMMUNE) ?: "false"
-        return value.toBoolean()
     }
 
     fun isMockAltProfil(): Boolean {

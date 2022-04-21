@@ -23,9 +23,6 @@ open class Application {
             if (!MiljoUtils.isNonProduction() && MiljoUtils.isMockAltProfil()) {
                 throw Error("Spring profile `mock-alt` har blitt satt i prod. Stopper applikasjonen da dette er en sikkerhetsrisiko.")
             }
-            if (!MiljoUtils.isNonProduction() && (MiljoUtils.isAlltidHentKommuneInfoFraNavTestkommune() || MiljoUtils.isAlltidSendTilNavTestkommune())) {
-                throw Error("Alltid send eller hent fra NavTestkommune er satt til true i prod. Stopper applikasjonen da dette er en sikkerhetsrisiko.")
-            }
             return builder
                 .sources(Application::class.java)
         }

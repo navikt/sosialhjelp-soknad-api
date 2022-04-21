@@ -86,8 +86,6 @@ nedetid.slutt: 21.11.2020 15:00:00
 
   # Digisos-api
 digisosapi.sending.enable: true
-digisosapi.sending.alltidTilTestkommune.enable: ${IS_ALLTID_SEND_TIL_NAV_TESTKOMMUNE:false}
-digisosapi.henting.alltidTestkommune.enable: ${IS_ALLTID_HENT_KOMMUNEINFO_FRA_NAV_TESTKOMMUNE:false}
 
 integrasjonsid_fiks: ${INTEGRASJONSID_FIKS:integrasjonsid_fiks}
 integrasjonpassord_fiks: ${INTEGRASJONPASSORD_FIKS:integrasjonpassord_fiks}

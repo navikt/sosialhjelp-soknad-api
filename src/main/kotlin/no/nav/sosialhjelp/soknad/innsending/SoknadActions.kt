@@ -129,16 +129,6 @@ open class SoknadActions(
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier)
     }
 
-//    fun getKommunenummerOrMock(soknadUnderArbeid: SoknadUnderArbeid): String {
-//        return if (MiljoUtils.isNonProduction() && serviceUtils.isAlltidSendTilNavTestkommune()) {
-//            log.error("Sender til Nav-testkommune (3002). Du skal aldri se denne meldingen i PROD")
-//            "3002"
-//        } else {
-//            soknadUnderArbeid.jsonInternalSoknad?.soknad?.mottaker?.kommunenummer
-//                ?: throw IllegalStateException("Kommunenummer ikke funnet for JsonInternalSoknad.soknad.mottaker.kommunenummer")
-//        }
-//    }
-
     private fun isEttersendelsePaSoknadSendtViaSvarUt(soknadUnderArbeid: SoknadUnderArbeid): Boolean {
         if (!soknadUnderArbeid.erEttersendelse) return false
         val soknadensMetadata = soknadMetadataRepository.hent(soknadUnderArbeid.tilknyttetBehandlingsId)
