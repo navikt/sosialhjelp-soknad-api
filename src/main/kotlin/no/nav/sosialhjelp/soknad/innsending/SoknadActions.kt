@@ -85,7 +85,6 @@ open class SoknadActions(
         }
 
         log.info("BehandlingsId {} sendes til SvarUt eller fiks-digisos-api avhengig av kommuneinfo.", behandlingsId)
-//        val kommunenummer = getKommunenummerOrMock(soknadUnderArbeid)
         val kommunenummer = soknadUnderArbeid.jsonInternalSoknad?.soknad?.mottaker?.kommunenummer
             ?: throw IllegalStateException("Kommunenummer ikke funnet for JsonInternalSoknad.soknad.mottaker.kommunenummer")
         val kommuneStatus = kommuneInfoService.kommuneInfo(kommunenummer)
