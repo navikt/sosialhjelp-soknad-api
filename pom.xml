@@ -57,7 +57,7 @@
 
         <spring-boot.version>2.6.7</spring-boot.version>
         <spring.version>5.3.19</spring.version>
-        <jetty.version>9.4.45.v20220203</jetty.version>
+        <jetty.version>9.4.46.v20220331</jetty.version>
         <jersey.version>2.35</jersey.version>
         <token-validation.version>2.0.14</token-validation.version>
         <nimbus-jose-jwt.version>9.21.1</nimbus-jose-jwt.version>
