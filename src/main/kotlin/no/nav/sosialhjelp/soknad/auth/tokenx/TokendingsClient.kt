@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.client.tokenx
+package no.nav.sosialhjelp.soknad.auth.tokenx
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers

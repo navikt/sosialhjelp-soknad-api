@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt
 
-import no.nav.sosialhjelp.soknad.client.maskinporten.MaskinportenClient
+import no.nav.sosialhjelp.soknad.auth.maskinporten.MaskinportenClient
 import no.nav.sosialhjelp.soknad.common.Constants.BEARER
 import no.nav.sosialhjelp.soknad.common.LoggingUtils.maskerFnr
 import no.nav.sosialhjelp.soknad.common.MiljoUtils

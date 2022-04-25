@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.client.azure
+package no.nav.sosialhjelp.soknad.auth.azure
 
 import com.fasterxml.jackson.annotation.JsonProperty
 

@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.client.maskinporten
+package no.nav.sosialhjelp.soknad.auth.maskinporten
 
 import com.nimbusds.jose.JOSEObjectType
 import com.nimbusds.jose.JWSAlgorithm

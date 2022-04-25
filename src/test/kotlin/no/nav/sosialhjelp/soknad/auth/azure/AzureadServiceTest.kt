@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.client.azure
+package no.nav.sosialhjelp.soknad.auth.azure
 
 import io.mockk.Called
 import io.mockk.coEvery

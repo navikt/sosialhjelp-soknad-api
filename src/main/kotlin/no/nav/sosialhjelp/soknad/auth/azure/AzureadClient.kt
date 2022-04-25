@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.client.azure
+package no.nav.sosialhjelp.soknad.auth.azure
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers

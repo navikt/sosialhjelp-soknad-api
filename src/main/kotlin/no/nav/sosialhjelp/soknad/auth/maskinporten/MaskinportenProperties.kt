@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.client.maskinporten
+package no.nav.sosialhjelp.soknad.auth.maskinporten
 
 data class MaskinportenProperties(
     val clientId: String,
