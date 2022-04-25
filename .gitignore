@@ -1,6 +1,5 @@
 # /
 */.idea
-tekster/src/main/resources/.idea/
 /.idea
 *.iml
 *.log
@@ -16,11 +15,8 @@ temp
 *.settings
 *.classpath
 
-consumer/*.pdf
 test.pdf
 
 oracledb.properties
-
-web/handlebar.pdf
 
 /.gradle
