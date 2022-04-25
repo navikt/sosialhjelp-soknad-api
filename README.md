@@ -21,6 +21,10 @@ Interne henvendelser kan sendes via Slack i kanalen #team_digisos.
 ### Krav
 * JDK 17
 
+### Maven wrapper
+Prosjektet inkluderer [maven wrapper](https://maven.apache.org/wrapper/), slik at man ikke er avhengig av å installere maven lokalt.\
+Kjør `./mvnw <command>` fremfor `mvn <command>`.
+
 ### Kjøring lokalt mot mock-alt
 Start `Application.kt` med profilene `mock-alt,no-redis,log-console`.\
 Krever at sosialhjelp-mock-alt-api også kjører lokalt.
@@ -39,13 +43,13 @@ Alle endepunkt er autentisering `Azure AD B2C` cookie validert via `token-suppor
 I tillegg krever noen endepunkter et `access-token` fra `idporten`, som brukeren får via `sosialhjelp-login-api`. Dette brukes mot `FIKS` og mot `Husbanken`.
 
 ### Bruk av pakker fra Github Package Registry
-For å kunne konsumere pakker fra Github Package Registry kjøres `mvn install --settings maven-settings.xml`, med `GITHUB_TOKEN: ${{ secrets.GITHUB_ACCESS_TOKEN }}` som env.variabel som injectes til `maven-settings.xml`.
+For å kunne konsumere pakker fra Github Package Registry kjøres `./mvnw install --settings maven-settings.xml`, med `GITHUB_TOKEN: ${{ secrets.GITHUB_ACCESS_TOKEN }}` som env.variabel som injectes til `maven-settings.xml`.
 
 Mer info: https://github.com/navikt/utvikling/blob/master/Konsumere%20biblioteker%20fra%20Github%20Package%20Registry.md
 
 ### Ktlint
 Her brukes `maven-antrun-plugin` for linting av kotlin-kode - ref https://github.com/pinterest/ktlint#integration
 
-Sjekke kode - `mvn antrun:run@ktlint` (også bundet til `mvn validate`).
+Sjekke kode - `./mvnw antrun:run@ktlint` (også bundet til `/.mvnw validate`).
 
-Formattere kode - `mvn antrun:run@ktlint-format`.
+Formattere kode - `./mvnw antrun:run@ktlint-format`.

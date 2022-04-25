@@ -33,7 +33,7 @@ jobs:
       - name: Run mvn install
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_ACCESS_TOKEN }}
-        run: mvn install --settings maven-settings.xml
+        run: ./mvnw install --settings maven-settings.xml
       - name: Create docker image tags
         run: |
           echo "DOCKER_TAG=${{ env.DOCKER_IMAGE }}:${{ steps.artifact-version.outputs.version }}" >> $GITHUB_ENV
