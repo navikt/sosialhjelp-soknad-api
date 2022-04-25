@@ -110,6 +110,10 @@ open class SoknadApplication : ResourceConfig() {
         register(MdcFilter::class.java)
         register(OidcResourceFilteringFeature::class.java)
 
+        // todo: register ressurs
+        // Migration-api
+//        register(MigrationFeedRessurs::class.java)
+
         logger.info("Starter Jersey")
     }
 
