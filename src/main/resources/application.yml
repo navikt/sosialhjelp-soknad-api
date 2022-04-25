@@ -99,8 +99,6 @@ unleash_instance_id: ${UNLEASH_INSTANCE_ID:prod-sbs}
 virusscan_enabled: true
 scheduler.disable: ${SCHEDULER_DISABLE}
 digisosapi.sending.enable: ${IS_SENDING_TIL_DIGISOS_API_ENABLED}
-digisosapi.sending.alltidTilTestkommune.enable: ${IS_ALLTID_SEND_TIL_NAV_TESTKOMMUNE}
-digisosapi.henting.alltidTestkommune.enable: ${IS_ALLTID_HENT_KOMMUNEINFO_FRA_NAV_TESTKOMMUNE}
 sendsoknad.batch.enabled: true
 feature.fiks.kryptering.enabled: true
 

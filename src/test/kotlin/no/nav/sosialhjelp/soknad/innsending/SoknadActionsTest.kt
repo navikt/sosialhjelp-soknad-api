@@ -36,7 +36,6 @@ import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus.SKAL_SENDE_SOKNADER_OG_ETTERSENDELSER_VIA_FDA
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus.SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD_OG_ETTERSENDELSER
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
-import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
@@ -84,7 +83,6 @@ internal class SoknadActionsTest {
         every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
         every { unleash.isEnabled(any(), any<Boolean>()) } returns true
         every { nedetidService.isInnenforNedetid } returns false
-        every { serviceUtils.isAlltidSendTilNavTestkommune() } returns false
     }
 
     @AfterEach
@@ -279,22 +277,6 @@ internal class SoknadActionsTest {
     }
 
     @Test
-    fun kommunenummerOrMockMedMockEnableSkalReturnereMock() {
-        every { serviceUtils.isAlltidSendTilNavTestkommune() } returns true
-        val kommunenummer = actions.getKommunenummerOrMock(mockk())
-        assertThat(kommunenummer).isEqualTo(TESTKOMMUNE)
-    }
-
-    @Test
-    fun kommunenummerOrMockUtenMockSkalIkkeReturnereMock() {
-        val expectedKommunenummer = "1111"
-        val soknadUnderArbeid = createSoknadUnderArbeid(EIER)
-        soknadUnderArbeid.jsonInternalSoknad!!.soknad.mottaker.withKommunenummer(expectedKommunenummer)
-        val kommunenummer = actions.getKommunenummerOrMock(soknadUnderArbeid)
-        assertThat(kommunenummer).isEqualTo(expectedKommunenummer)
-    }
-
-    @Test
     fun sendSoknadSkalGiAuthorizationExceptionVedManglendeTilgang() {
         every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } throws AuthorizationException("Not for you my friend")
 
@@ -307,7 +289,6 @@ internal class SoknadActionsTest {
     }
 
     companion object {
-        const val TESTKOMMUNE = "3002"
         const val KOMMUNE_I_SVARUT_LISTEN = "0301"
 
         private fun createSoknadUnderArbeid(eier: String): SoknadUnderArbeid {

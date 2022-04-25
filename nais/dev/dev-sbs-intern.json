@@ -63,8 +63,6 @@
     "SKATTEETATEN_API_BASEURL": "https://api-test.sits.no/api/innrapportert/inntektsmottaker/v1/digisos/",
     "SVARUT_URL": "https://test.svarut.ks.no",
     "IS_SENDING_TIL_DIGISOS_API_ENABLED": "true",
-    "IS_ALLTID_SEND_TIL_NAV_TESTKOMMUNE": "true",
-    "IS_ALLTID_HENT_KOMMUNEINFO_FRA_NAV_TESTKOMMUNE": "true",
     "NEDETID_START": "21.11.2020 14:00:00",
     "NEDETID_SLUTT": "21.11.2020 15:00:00",
     "ENVIRONMENT_NAME": "q1",
