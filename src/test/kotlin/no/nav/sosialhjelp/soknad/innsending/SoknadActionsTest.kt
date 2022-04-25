@@ -13,7 +13,6 @@ import no.finn.unleash.Unleash
 import no.nav.sosialhjelp.soknad.api.nedetid.NedetidService
 import no.nav.sosialhjelp.soknad.api.nedetid.NedetidService.Companion.dateTimeFormatter
 import no.nav.sosialhjelp.soknad.common.MiljoUtils
-import no.nav.sosialhjelp.soknad.common.ServiceUtils
 import no.nav.sosialhjelp.soknad.common.exceptions.AuthorizationException
 import no.nav.sosialhjelp.soknad.common.exceptions.SendingTilKommuneErIkkeAktivertException
 import no.nav.sosialhjelp.soknad.common.exceptions.SendingTilKommuneErMidlertidigUtilgjengeligException
@@ -27,6 +26,8 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRe
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
+import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils.FEATURE_UTVIDE_VEDLEGGJSON
+import no.nav.sosialhjelp.soknad.innsending.SenderUtils.INNSENDING_DIGISOSAPI_ENABLED
 import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiService
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
@@ -54,7 +55,6 @@ internal class SoknadActionsTest {
     private val digisosApiService: DigisosApiService = mockk()
     private val unleash: Unleash = mockk()
     private val nedetidService: NedetidService = mockk()
-    private val serviceUtils: ServiceUtils = mockk()
 
     private val actions = SoknadActions(
         soknadService,
@@ -64,8 +64,7 @@ internal class SoknadActionsTest {
         soknadMetadataRepository,
         digisosApiService,
         unleash,
-        nedetidService,
-        serviceUtils
+        nedetidService
     )
 
     var context: ServletContext = mockk()
@@ -81,7 +80,7 @@ internal class SoknadActionsTest {
         every { context.getRealPath(any()) } returns ""
         EIER = SubjectHandlerUtils.getUserIdFromToken()
         every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
-        every { unleash.isEnabled(any(), any<Boolean>()) } returns true
+        every { unleash.isEnabled(FEATURE_UTVIDE_VEDLEGGJSON, false) } returns true
         every { nedetidService.isInnenforNedetid } returns false
     }
 
@@ -110,7 +109,7 @@ internal class SoknadActionsTest {
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns soknadUnderArbeid
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
         every { soknadService.sendSoknad(any()) } just runs
-        every { serviceUtils.isSendingTilFiksEnabled() } returns false
+        every { unleash.isEnabled(INNSENDING_DIGISOSAPI_ENABLED, true) } returns false
 
         actions.sendSoknad(behandlingsId, context, "")
 
@@ -135,7 +134,7 @@ internal class SoknadActionsTest {
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
         every { soknadMetadataRepository.hent(soknadBehandlingsId) } returns soknadMetadata
         every { soknadService.sendSoknad(behandlingsId) } just runs
-        every { serviceUtils.isSendingTilFiksEnabled() } returns true
+        every { unleash.isEnabled(INNSENDING_DIGISOSAPI_ENABLED, true) } returns true
 
         actions.sendSoknad(behandlingsId, context, "")
 
@@ -151,7 +150,7 @@ internal class SoknadActionsTest {
         every { soknadUnderArbeidRepository.hentSoknad(behandlingsId, EIER) } returns soknadUnderArbeid
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
         every { soknadMetadataRepository.hent(soknadBehandlingsId) } returns null
-        every { serviceUtils.isSendingTilFiksEnabled() } returns true
+        every { unleash.isEnabled(INNSENDING_DIGISOSAPI_ENABLED, true) } returns true
 
         assertThatExceptionOfType(IllegalStateException::class.java)
             .isThrownBy { actions.sendSoknad(behandlingsId, context, "") }
@@ -174,7 +173,7 @@ internal class SoknadActionsTest {
         every { soknadUnderArbeidRepository.hentSoknad(behandlingsId, EIER) } returns soknadUnderArbeid
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
         every { soknadMetadataRepository.hent(soknadBehandlingsId) } returns soknadMetadata
-        every { serviceUtils.isSendingTilFiksEnabled() } returns true
+        every { unleash.isEnabled(INNSENDING_DIGISOSAPI_ENABLED, true) } returns true
 
         assertThatExceptionOfType(IllegalStateException::class.java)
             .isThrownBy { actions.sendSoknad(behandlingsId, context, "") }
@@ -188,7 +187,7 @@ internal class SoknadActionsTest {
         every { soknadUnderArbeidRepository.hentSoknad(behandlingsId, EIER) } returns soknadUnderArbeid
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
         every { kommuneInfoService.kommuneInfo(any()) } returns FIKS_NEDETID_OG_TOM_CACHE
-        every { serviceUtils.isSendingTilFiksEnabled() } returns true
+        every { unleash.isEnabled(INNSENDING_DIGISOSAPI_ENABLED, true) } returns true
 
         assertThatExceptionOfType(SendingTilKommuneUtilgjengeligException::class.java)
             .isThrownBy { actions.sendSoknad(behandlingsId, context, "") }
@@ -205,7 +204,7 @@ internal class SoknadActionsTest {
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
         every { kommuneInfoService.kommuneInfo(any()) } returns MANGLER_KONFIGURASJON
         every { soknadService.sendSoknad(any()) } just runs
-        every { serviceUtils.isSendingTilFiksEnabled() } returns true
+        every { unleash.isEnabled(INNSENDING_DIGISOSAPI_ENABLED, true) } returns true
 
         actions.sendSoknad(behandlingsId, context, "")
 
@@ -221,7 +220,7 @@ internal class SoknadActionsTest {
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
         every { kommuneInfoService.kommuneInfo(any()) } returns HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT
         every { soknadService.sendSoknad(any()) } just runs
-        every { serviceUtils.isSendingTilFiksEnabled() } returns true
+        every { unleash.isEnabled(INNSENDING_DIGISOSAPI_ENABLED, true) } returns true
 
         actions.sendSoknad(behandlingsId, context, "")
 
@@ -237,7 +236,7 @@ internal class SoknadActionsTest {
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
         every { kommuneInfoService.kommuneInfo(any()) } returns SKAL_SENDE_SOKNADER_OG_ETTERSENDELSER_VIA_FDA
         every { digisosApiService.sendSoknad(any(), any(), any()) } returns "id"
-        every { serviceUtils.isSendingTilFiksEnabled() } returns true
+        every { unleash.isEnabled(INNSENDING_DIGISOSAPI_ENABLED, true) } returns true
 
         actions.sendSoknad(behandlingsId, context, "")
 
@@ -252,7 +251,7 @@ internal class SoknadActionsTest {
         every { soknadUnderArbeidRepository.hentSoknad(behandlingsId, EIER) } returns soknadUnderArbeid
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
         every { kommuneInfoService.kommuneInfo(any()) } returns SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD_OG_ETTERSENDELSER
-        every { serviceUtils.isSendingTilFiksEnabled() } returns true
+        every { unleash.isEnabled(INNSENDING_DIGISOSAPI_ENABLED, true) } returns true
 
         assertThatExceptionOfType(SendingTilKommuneErMidlertidigUtilgjengeligException::class.java)
             .isThrownBy { actions.sendSoknad(behandlingsId, context, "") }
@@ -268,7 +267,7 @@ internal class SoknadActionsTest {
         every { soknadUnderArbeidRepository.hentSoknad(behandlingsId, EIER) } returns soknadUnderArbeid
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
         every { kommuneInfoService.kommuneInfo(any()) } returns HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT
-        every { serviceUtils.isSendingTilFiksEnabled() } returns true
+        every { unleash.isEnabled(INNSENDING_DIGISOSAPI_ENABLED, true) } returns true
 
         assertThatExceptionOfType(SendingTilKommuneErIkkeAktivertException::class.java)
             .isThrownBy { actions.sendSoknad(behandlingsId, context, "") }
