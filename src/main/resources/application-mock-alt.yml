@@ -93,7 +93,6 @@ redis_password: ${REDIS_PASSWORD:pw}
 # Feature toggles
 unleash_instance_id: ${UNLEASH_INSTANCE_ID:labs-gcp}
 scheduler.disable: ${SCHEDULER_DISABLE:false}
-digisosapi.sending.enable: ${IS_SENDING_TIL_DIGISOS_API_ENABLED:true}
 sendsoknad.batch.enabled: true
 feature.fiks.kryptering.enabled: true
 

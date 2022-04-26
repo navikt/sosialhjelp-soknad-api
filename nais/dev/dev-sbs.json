@@ -62,7 +62,6 @@
     "SOKNAD_ETTERSENDING_ANTALLDAGER": "300",
     "SKATTEETATEN_API_BASEURL": "https://api-test.sits.no/api/innrapportert/inntektsmottaker/v1/digisos/",
     "SVARUT_URL": "https://test.svarut.ks.no",
-    "IS_SENDING_TIL_DIGISOS_API_ENABLED": "true",
     "NEDETID_START": "",
     "NEDETID_SLUTT": "",
     "ENVIRONMENT_NAME": "q0",
