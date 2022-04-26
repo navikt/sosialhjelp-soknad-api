@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.client.tokenx
+package no.nav.sosialhjelp.soknad.auth.tokenx
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm

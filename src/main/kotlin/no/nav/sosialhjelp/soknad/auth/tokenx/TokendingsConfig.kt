@@ -1,7 +1,7 @@
-package no.nav.sosialhjelp.soknad.client.tokenx
+package no.nav.sosialhjelp.soknad.auth.tokenx
 
+import no.nav.sosialhjelp.soknad.auth.tokenx.JwtProviderUtil.downloadWellKnown
 import no.nav.sosialhjelp.soknad.client.redis.RedisService
-import no.nav.sosialhjelp.soknad.client.tokenx.JwtProviderUtil.downloadWellKnown
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration

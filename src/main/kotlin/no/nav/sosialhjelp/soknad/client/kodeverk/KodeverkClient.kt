@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import kotlinx.coroutines.runBlocking
+import no.nav.sosialhjelp.soknad.auth.tokenx.TokendingsService
 import no.nav.sosialhjelp.soknad.client.kodeverk.dto.KodeverkDto
 import no.nav.sosialhjelp.soknad.client.redis.KODEVERK_CACHE_SECONDS
 import no.nav.sosialhjelp.soknad.client.redis.KODEVERK_LAST_POLL_TIME_KEY
@@ -14,7 +15,6 @@ import no.nav.sosialhjelp.soknad.client.redis.LANDKODER_CACHE_KEY
 import no.nav.sosialhjelp.soknad.client.redis.POSTNUMMER_CACHE_KEY
 import no.nav.sosialhjelp.soknad.client.redis.RedisService
 import no.nav.sosialhjelp.soknad.client.redis.RedisUtils.redisObjectMapper
-import no.nav.sosialhjelp.soknad.client.tokenx.TokendingsService
 import no.nav.sosialhjelp.soknad.common.Constants.BEARER
 import no.nav.sosialhjelp.soknad.common.Constants.HEADER_CALL_ID
 import no.nav.sosialhjelp.soknad.common.Constants.HEADER_CONSUMER_ID

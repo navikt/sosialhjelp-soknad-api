@@ -4,7 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.module.kotlin.readValue
 import kotlinx.coroutines.runBlocking
 import no.nav.sosialhjelp.kotlin.utils.retry
-import no.nav.sosialhjelp.soknad.client.azure.AzureadService
+import no.nav.sosialhjelp.soknad.auth.azure.AzureadService
+import no.nav.sosialhjelp.soknad.auth.tokenx.TokendingsService
 import no.nav.sosialhjelp.soknad.client.config.RetryUtils
 import no.nav.sosialhjelp.soknad.client.exceptions.PdlApiException
 import no.nav.sosialhjelp.soknad.client.exceptions.TjenesteUtilgjengeligException
@@ -20,7 +21,6 @@ import no.nav.sosialhjelp.soknad.client.redis.EKTEFELLE_CACHE_KEY_PREFIX
 import no.nav.sosialhjelp.soknad.client.redis.PDL_CACHE_SECONDS
 import no.nav.sosialhjelp.soknad.client.redis.PERSON_CACHE_KEY_PREFIX
 import no.nav.sosialhjelp.soknad.client.redis.RedisService
-import no.nav.sosialhjelp.soknad.client.tokenx.TokendingsService
 import no.nav.sosialhjelp.soknad.common.Constants.BEARER
 import no.nav.sosialhjelp.soknad.common.Constants.HEADER_TEMA
 import no.nav.sosialhjelp.soknad.common.Constants.TEMA_KOM

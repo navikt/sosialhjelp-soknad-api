@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.client.azure
+package no.nav.sosialhjelp.soknad.auth.azure
 
 import no.nav.sosialhjelp.kotlin.utils.logger
 import no.nav.sosialhjelp.soknad.client.redis.AZURE_SYSTEM_TOKEN

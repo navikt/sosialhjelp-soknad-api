@@ -1,8 +1,8 @@
 package no.nav.sosialhjelp.soknad.innsending.digisosapi
 
 import io.netty.channel.ChannelOption
+import no.nav.sosialhjelp.soknad.auth.maskinporten.MaskinportenClient
 import no.nav.sosialhjelp.soknad.client.exceptions.TjenesteUtilgjengeligException
-import no.nav.sosialhjelp.soknad.client.maskinporten.MaskinportenClient
 import no.nav.sosialhjelp.soknad.common.Constants.BEARER
 import no.nav.sosialhjelp.soknad.common.Constants.HEADER_INTEGRASJON_ID
 import no.nav.sosialhjelp.soknad.common.Constants.HEADER_INTEGRASJON_PASSORD

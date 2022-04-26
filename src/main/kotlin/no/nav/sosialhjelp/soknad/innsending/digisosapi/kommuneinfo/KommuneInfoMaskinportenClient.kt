@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo
 
 import no.nav.sosialhjelp.api.fiks.KommuneInfo
-import no.nav.sosialhjelp.soknad.client.maskinporten.MaskinportenClient
+import no.nav.sosialhjelp.soknad.auth.maskinporten.MaskinportenClient
 import no.nav.sosialhjelp.soknad.common.Constants.BEARER
 import no.nav.sosialhjelp.soknad.common.Constants.HEADER_INTEGRASJON_ID
 import no.nav.sosialhjelp.soknad.common.Constants.HEADER_INTEGRASJON_PASSORD

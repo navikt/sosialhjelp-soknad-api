@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.client.tokenx
+package no.nav.sosialhjelp.soknad.auth.tokenx
 
 import org.springframework.web.reactive.function.client.WebClient
 

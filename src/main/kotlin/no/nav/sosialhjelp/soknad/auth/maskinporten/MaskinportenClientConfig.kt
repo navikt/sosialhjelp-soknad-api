@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.client.maskinporten
+package no.nav.sosialhjelp.soknad.auth.maskinporten
 
 import no.nav.sosialhjelp.metrics.MetricsFactory
 import no.nav.sosialhjelp.soknad.client.exceptions.TjenesteUtilgjengeligException
