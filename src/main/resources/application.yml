@@ -98,7 +98,6 @@ soknad.ettersending.antalldager: ${SOKNAD_ETTERSENDING_ANTALLDAGER}
 unleash_instance_id: ${UNLEASH_INSTANCE_ID:prod-sbs}
 virusscan_enabled: true
 scheduler.disable: ${SCHEDULER_DISABLE}
-digisosapi.sending.enable: ${IS_SENDING_TIL_DIGISOS_API_ENABLED}
 sendsoknad.batch.enabled: true
 feature.fiks.kryptering.enabled: true
 

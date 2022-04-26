@@ -59,7 +59,6 @@
     "SKATTEETATEN_API_BASEURL": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/skatteetaten/",
     "SVARUT_URL": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/svarut/",
     "TOKEN_X_WELL_KNOWN_URL": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/well-known/tokenx",
-    "IS_SENDING_TIL_DIGISOS_API_ENABLED": "true",
     "NEDETID_START": "",
     "NEDETID_SLUTT": "",
     "ENVIRONMENT_NAME": "labs-gcp",

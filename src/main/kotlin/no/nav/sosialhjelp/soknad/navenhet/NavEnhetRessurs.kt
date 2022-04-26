@@ -15,11 +15,11 @@ import no.nav.sosialhjelp.soknad.adressesok.domain.AdresseForslagType
 import no.nav.sosialhjelp.soknad.client.kodeverk.KodeverkService
 import no.nav.sosialhjelp.soknad.common.Constants
 import no.nav.sosialhjelp.soknad.common.MiljoUtils.isNonProduction
-import no.nav.sosialhjelp.soknad.common.ServiceUtils
 import no.nav.sosialhjelp.soknad.common.mapper.KommuneTilNavEnhetMapper
 import no.nav.sosialhjelp.soknad.common.mapper.KommuneTilNavEnhetMapper.getOrganisasjonsnummer
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
+import no.nav.sosialhjelp.soknad.innsending.SenderUtils.INNSENDING_DIGISOSAPI_ENABLED
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
 import no.nav.sosialhjelp.soknad.navenhet.bydel.BydelFordelingService
 import no.nav.sosialhjelp.soknad.navenhet.bydel.BydelFordelingService.Companion.BYDEL_MARKA_OSLO
@@ -51,7 +51,6 @@ open class NavEnhetRessurs(
     private val finnAdresseService: FinnAdresseService,
     private val geografiskTilknytningService: GeografiskTilknytningService,
     private val kodeverkService: KodeverkService,
-    private val serviceUtils: ServiceUtils,
     private val unleash: Unleash,
 ) {
 
@@ -295,7 +294,7 @@ open class NavEnhetRessurs(
     }
 
     private fun isDigisosKommune(kommunenummer: String): Boolean {
-        val isNyDigisosApiKommuneMedMottakAktivert = kommuneInfoService.kanMottaSoknader(kommunenummer) && serviceUtils.isSendingTilFiksEnabled()
+        val isNyDigisosApiKommuneMedMottakAktivert = kommuneInfoService.kanMottaSoknader(kommunenummer) && unleash.isEnabled(INNSENDING_DIGISOSAPI_ENABLED, true)
         val isGammelSvarUtKommune = KommuneTilNavEnhetMapper.digisoskommuner.contains(kommunenummer)
         return isNyDigisosApiKommuneMedMottakAktivert || isGammelSvarUtKommune
     }
@@ -316,6 +315,6 @@ open class NavEnhetRessurs(
     companion object {
         private val log = LoggerFactory.getLogger(NavEnhetRessurs::class.java)
         private const val SPLITTER: String = ", "
-        private const val FEATURE_SEND_TIL_NAV_TESTKOMMUNE = "sosialhjelp.soknad.send-til-nav-testkommune"
+        const val FEATURE_SEND_TIL_NAV_TESTKOMMUNE = "sosialhjelp.soknad.send-til-nav-testkommune"
     }
 }

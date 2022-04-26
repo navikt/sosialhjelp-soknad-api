@@ -21,7 +21,6 @@ import no.nav.sosialhjelp.soknad.adressesok.domain.AdresseForslagType
 import no.nav.sosialhjelp.soknad.client.exceptions.PdlApiException
 import no.nav.sosialhjelp.soknad.client.kodeverk.KodeverkService
 import no.nav.sosialhjelp.soknad.common.MiljoUtils
-import no.nav.sosialhjelp.soknad.common.ServiceUtils
 import no.nav.sosialhjelp.soknad.common.exceptions.AuthorizationException
 import no.nav.sosialhjelp.soknad.common.mapper.KommuneTilNavEnhetMapper
 import no.nav.sosialhjelp.soknad.common.subjecthandler.StaticSubjectHandlerImpl
@@ -29,8 +28,10 @@ import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
+import no.nav.sosialhjelp.soknad.innsending.SenderUtils.INNSENDING_DIGISOSAPI_ENABLED
 import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
+import no.nav.sosialhjelp.soknad.navenhet.NavEnhetRessurs.Companion.FEATURE_SEND_TIL_NAV_TESTKOMMUNE
 import no.nav.sosialhjelp.soknad.navenhet.bydel.BydelFordelingService
 import no.nav.sosialhjelp.soknad.navenhet.bydel.BydelFordelingService.Companion.BYDEL_MARKA_OSLO
 import no.nav.sosialhjelp.soknad.navenhet.domain.NavEnhet
@@ -101,7 +102,6 @@ internal class NavEnhetRessursTest {
     private val bydelFordelingService: BydelFordelingService = mockk()
     private val geografiskTilknytningService: GeografiskTilknytningService = mockk()
     private val kodeverkService: KodeverkService = mockk()
-    private val serviceUtils: ServiceUtils = mockk()
     private val unleash: Unleash = mockk()
 
     private val navEnhetRessurs = NavEnhetRessurs(
@@ -113,7 +113,6 @@ internal class NavEnhetRessursTest {
         finnAdresseService = finnAdresseService,
         geografiskTilknytningService = geografiskTilknytningService,
         kodeverkService = kodeverkService,
-        serviceUtils = serviceUtils,
         unleash = unleash
     )
 
@@ -127,8 +126,8 @@ internal class NavEnhetRessursTest {
         every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
         every { kommuneInfoService.kanMottaSoknader(any()) } returns true
         every { kommuneInfoService.harMidlertidigDeaktivertMottak(any()) } returns true
-        every { serviceUtils.isSendingTilFiksEnabled() } returns true
-        every { unleash.isEnabled(any(), false) } returns false
+        every { unleash.isEnabled(FEATURE_SEND_TIL_NAV_TESTKOMMUNE, false) } returns false
+        every { unleash.isEnabled(INNSENDING_DIGISOSAPI_ENABLED, true) } returns true
     }
 
     @AfterEach

@@ -5,7 +5,6 @@ import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.metrics.aspects.Timed
 import no.nav.sosialhjelp.soknad.api.nedetid.NedetidService
 import no.nav.sosialhjelp.soknad.common.Constants
-import no.nav.sosialhjelp.soknad.common.ServiceUtils
 import no.nav.sosialhjelp.soknad.common.exceptions.SendingTilKommuneErIkkeAktivertException
 import no.nav.sosialhjelp.soknad.common.exceptions.SendingTilKommuneErMidlertidigUtilgjengeligException
 import no.nav.sosialhjelp.soknad.common.exceptions.SendingTilKommuneUtilgjengeligException
@@ -18,6 +17,7 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderAr
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils.FEATURE_UTVIDE_VEDLEGGJSON
 import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils.addHendelseTypeAndHendelseReferanse
+import no.nav.sosialhjelp.soknad.innsending.SenderUtils.INNSENDING_DIGISOSAPI_ENABLED
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiService
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus
@@ -53,7 +53,6 @@ open class SoknadActions(
     private val digisosApiService: DigisosApiService,
     private val unleash: Unleash,
     private val nedetidService: NedetidService,
-    private val serviceUtils: ServiceUtils
 ) {
     @POST
     @Path("/send")
@@ -73,7 +72,7 @@ open class SoknadActions(
 
         updateVedleggJsonWithHendelseTypeAndHendelseReferanse(eier, soknadUnderArbeid)
 
-        if (!serviceUtils.isSendingTilFiksEnabled() || isEttersendelsePaSoknadSendtViaSvarUt(soknadUnderArbeid)) {
+        if (!unleash.isEnabled(INNSENDING_DIGISOSAPI_ENABLED, true) || isEttersendelsePaSoknadSendtViaSvarUt(soknadUnderArbeid)) {
             log.info("BehandlingsId $behandlingsId sendes til SvarUt.")
             soknadService.sendSoknad(behandlingsId)
             return SendTilUrlFrontend(SVARUT, behandlingsId)
