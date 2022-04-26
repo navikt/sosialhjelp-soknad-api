@@ -11,7 +11,7 @@ import java.time.LocalDateTime
 open class SoknadMetadataMigrationRepository(
     private val jdbcTemplate: JdbcTemplate,
 ) {
-    fun getNextSoknadMetadataAfter(sistEndretTidspunkt: LocalDateTime): SoknadMetadata? {
+    open fun getNextSoknadMetadataAfter(sistEndretTidspunkt: LocalDateTime): SoknadMetadata? {
         return jdbcTemplate.query(
             "select * from soknadmetadata where sistendretdato > ? order by sistendretdato asc",
             SoknadMetadataRowMapper.soknadMetadataRowMapper,

@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository
 open class SendtSoknadMigrationRepository(
     private val jdbcTemplate: JdbcTemplate,
 ) {
-    fun getSendtSoknad(behandlingsId: String): SendtSoknad? {
+    open fun getSendtSoknad(behandlingsId: String): SendtSoknad? {
         return jdbcTemplate.query(
             "select * from sendt_soknad where behandlingsid = ?",
             sendtSoknadRowMapper,

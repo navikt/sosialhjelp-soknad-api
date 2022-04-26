@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository
 open class OpplastetVedleggMigrationRepository(
     private val jdbcTemplate: JdbcTemplate,
 ) {
-    fun getOpplastetVedlegg(soknadUnderArbeidId: Long): List<OpplastetVedlegg> {
+    open fun getOpplastetVedlegg(soknadUnderArbeidId: Long): List<OpplastetVedlegg> {
         return jdbcTemplate.query(
             "select * from opplastet_vedlegg where soknad_under_arbeid_id = ?",
             opplastetVedleggRowMapper,

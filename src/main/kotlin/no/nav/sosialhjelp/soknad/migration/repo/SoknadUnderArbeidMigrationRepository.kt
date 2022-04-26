@@ -11,7 +11,7 @@ open class SoknadUnderArbeidMigrationRepository(
 ) {
     private val soknadUnderArbeidRowMapper = SoknadUnderArbeidRowMapper()
 
-    fun getSoknadUnderArbeid(behandlingsId: String): SoknadUnderArbeid? {
+    open fun getSoknadUnderArbeid(behandlingsId: String): SoknadUnderArbeid? {
         return jdbcTemplate.query(
             "select * from soknad_under_arbeid where behandlingsid = ?",
             soknadUnderArbeidRowMapper,
