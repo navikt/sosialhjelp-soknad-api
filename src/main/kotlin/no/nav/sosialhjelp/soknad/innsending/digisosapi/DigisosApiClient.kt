@@ -155,6 +155,8 @@ class DigisosApiClientImpl(
                     throw IllegalStateException("An error occurred during encryption", e)
                 } finally {
                     try {
+                        log.debug("Closing dokumentStream InputStream")
+                        dokumentStream.close()
                         log.debug("Closing encryption OutputStream")
                         pipedOutputStream.close()
                         log.debug("Encryption OutputStream closed")
@@ -196,22 +198,18 @@ class DigisosApiClientImpl(
         behandlingsId: String,
         token: String?
     ): String {
-        val filer: MutableList<FilForOpplasting<Any>> = mutableListOf()
-
-        dokumenter.forEach { dokument: FilOpplasting ->
-            filer.add(
-                FilForOpplasting.builder<Any>()
-                    .filnavn(dokument.metadata.filnavn)
-                    .metadata(
-                        FilMetadata(
-                            filnavn = dokument.metadata.filnavn,
-                            mimetype = dokument.metadata.mimetype,
-                            storrelse = dokument.metadata.storrelse
-                        )
+        val filer: List<FilForOpplasting<Any>> = dokumenter.map { dokument ->
+            FilForOpplasting.builder<Any>()
+                .filnavn(dokument.metadata.filnavn)
+                .metadata(
+                    FilMetadata(
+                        filnavn = dokument.metadata.filnavn,
+                        mimetype = dokument.metadata.mimetype,
+                        storrelse = dokument.metadata.storrelse
                     )
-                    .data(dokument.data)
-                    .build()
-            )
+                )
+                .data(dokument.data)
+                .build()
         }
 
         val entitybuilder = MultipartEntityBuilder.create()
@@ -221,9 +219,9 @@ class DigisosApiClientImpl(
         entitybuilder.addTextBody("tilleggsinformasjonJson", tilleggsinformasjonJson, APPLICATION_JSON) // Må være første fil
         entitybuilder.addTextBody("soknadJson", soknadJson, APPLICATION_JSON)
         entitybuilder.addTextBody("vedleggJson", vedleggJson, APPLICATION_JSON)
-        filer.forEach {
-            entitybuilder.addTextBody("metadata", getJson(it))
-            entitybuilder.addBinaryBody(it.filnavn, it.data, APPLICATION_OCTET_STREAM, it.filnavn)
+        filer.forEach { fil ->
+            entitybuilder.addTextBody("metadata", getJson(fil))
+            fil.data.use { entitybuilder.addBinaryBody(fil.filnavn, it, APPLICATION_OCTET_STREAM, fil.filnavn) }
         }
 
         try {
