@@ -167,9 +167,6 @@ class DigisosApiClientImpl(
             krypteringFutureList.add(krypteringFuture)
         } catch (e: IOException) {
             throw RuntimeException(e)
-        } finally {
-            log.debug("Closing dokumentStream InputStream")
-            dokumentStream.close()
         }
         return pipedInputStream
     }
