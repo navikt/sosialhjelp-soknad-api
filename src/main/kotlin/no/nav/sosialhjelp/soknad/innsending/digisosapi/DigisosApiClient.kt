@@ -217,9 +217,9 @@ class DigisosApiClientImpl(
         entitybuilder.addTextBody("tilleggsinformasjonJson", tilleggsinformasjonJson, APPLICATION_JSON) // Må være første fil
         entitybuilder.addTextBody("soknadJson", soknadJson, APPLICATION_JSON)
         entitybuilder.addTextBody("vedleggJson", vedleggJson, APPLICATION_JSON)
-        filer.forEach { fil ->
-            entitybuilder.addTextBody("metadata", getJson(fil))
-            fil.data.use { entitybuilder.addBinaryBody(fil.filnavn, it, APPLICATION_OCTET_STREAM, fil.filnavn) }
+        filer.forEach {
+            entitybuilder.addTextBody("metadata", getJson(it))
+            entitybuilder.addBinaryBody(it.filnavn, it.data, APPLICATION_OCTET_STREAM, it.filnavn)
         }
 
         try {
