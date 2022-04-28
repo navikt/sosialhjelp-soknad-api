@@ -102,10 +102,21 @@ class DigisosApiClientImpl(
                 tilleggsinformasjonJson,
                 vedleggJson,
                 dokumenter.map { dokument: FilOpplasting ->
-                    FilOpplasting(
-                        dokument.metadata,
-                        krypter(dokument.data, krypteringFutureList, fiksX509Certificate)
-                    )
+                    FilForOpplasting.builder<Any>()
+                        .filnavn(dokument.metadata.filnavn)
+                        .metadata(
+                            FilMetadata(
+                                filnavn = dokument.metadata.filnavn,
+                                mimetype = dokument.metadata.mimetype,
+                                storrelse = dokument.metadata.storrelse
+                            )
+                        )
+                        .data(krypter(dokument.data, krypteringFutureList, fiksX509Certificate))
+                        .build()
+//                    FilOpplasting(
+//                        metadata = dokument.metadata,
+//                        data = krypter(dokument.data, krypteringFutureList, fiksX509Certificate)
+//                    )
                 },
                 kommunenr,
                 navEksternRefId,
@@ -115,9 +126,7 @@ class DigisosApiClientImpl(
         } finally {
             krypteringFutureList.stream().filter { f: Future<Void> -> !f.isDone && !f.isCancelled }
                 .forEach { future: Future<Void> ->
-                    future.cancel(
-                        true
-                    )
+                    future.cancel(true)
                 }
         }
         return digisosId
@@ -167,6 +176,9 @@ class DigisosApiClientImpl(
             krypteringFutureList.add(krypteringFuture)
         } catch (e: IOException) {
             throw RuntimeException(e)
+        } finally {
+            log.debug("Closing dokumentStream InputStream")
+            dokumentStream.close()
         }
         return pipedInputStream
     }
@@ -191,24 +203,24 @@ class DigisosApiClientImpl(
         soknadJson: String,
         tilleggsinformasjonJson: String,
         vedleggJson: String,
-        dokumenter: List<FilOpplasting>,
+        filer: List<FilForOpplasting<Any>>,
         kommunenummer: String,
         behandlingsId: String,
         token: String?
     ): String {
-        val filer: List<FilForOpplasting<Any>> = dokumenter.map { dokument ->
-            FilForOpplasting.builder<Any>()
-                .filnavn(dokument.metadata.filnavn)
-                .metadata(
-                    FilMetadata(
-                        filnavn = dokument.metadata.filnavn,
-                        mimetype = dokument.metadata.mimetype,
-                        storrelse = dokument.metadata.storrelse
-                    )
-                )
-                .data(dokument.data)
-                .build()
-        }
+//        val filer: List<FilForOpplasting<Any>> = dokumenter.map { dokument ->
+//            FilForOpplasting.builder<Any>()
+//                .filnavn(dokument.metadata.filnavn)
+//                .metadata(
+//                    FilMetadata(
+//                        filnavn = dokument.metadata.filnavn,
+//                        mimetype = dokument.metadata.mimetype,
+//                        storrelse = dokument.metadata.storrelse
+//                    )
+//                )
+//                .data(dokument.data)
+//                .build()
+//        }
 
         val entitybuilder = MultipartEntityBuilder.create()
         entitybuilder.setCharset(StandardCharsets.UTF_8)
