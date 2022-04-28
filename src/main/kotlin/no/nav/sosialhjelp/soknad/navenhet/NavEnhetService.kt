@@ -102,8 +102,9 @@ class NavEnhetServiceImpl(
 
     private fun getAllNavenheterFromPath(): NavEnheterFraLokalListe? {
         return try {
-            val resourceAsStream = this.javaClass.getResourceAsStream(NAVENHET_PATH) ?: return null
-            val json = IOUtils.toString(resourceAsStream, StandardCharsets.UTF_8)
+            val json = this.javaClass.getResourceAsStream(NAVENHET_PATH)?.use {
+                IOUtils.toString(it, StandardCharsets.UTF_8)
+            } ?: return null
             redisObjectMapper.readValue(json, NavEnheterFraLokalListe::class.java)
         } catch (e: IOException) {
             log.error("IOException ved henting av navenheter fra lokal liste", e)

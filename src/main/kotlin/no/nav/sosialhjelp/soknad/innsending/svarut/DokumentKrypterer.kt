@@ -72,8 +72,9 @@ class DokumentKrypterer(
     private fun lagFiksCertificate(): X509Certificate {
         checkNotNull(fiksNokkelfil) { "Propertien 'fiks.nokkelfil' mangler" }
         return try {
-            val publickey = this.javaClass.getResourceAsStream("/svarutpublickey/$fiksNokkelfil")
-            CertificateFactory.getInstance("X509").generateCertificate(publickey) as X509Certificate
+            this.javaClass.getResourceAsStream("/svarutpublickey/$fiksNokkelfil").use { publickey ->
+                CertificateFactory.getInstance("X509").generateCertificate(publickey) as X509Certificate
+            }
         } catch (e: CertificateException) {
             logger.error("Kunne ikke opprette certificate for Fiks: {}", fiksNokkelfil, e)
             throw RuntimeException(e)
