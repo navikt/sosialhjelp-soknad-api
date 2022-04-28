@@ -155,8 +155,6 @@ class DigisosApiClientImpl(
                     throw IllegalStateException("An error occurred during encryption", e)
                 } finally {
                     try {
-                        log.debug("Closing dokumentStream InputStream")
-                        dokumentStream.close()
                         log.debug("Closing encryption OutputStream")
                         pipedOutputStream.close()
                         log.debug("Encryption OutputStream closed")
@@ -169,6 +167,9 @@ class DigisosApiClientImpl(
             krypteringFutureList.add(krypteringFuture)
         } catch (e: IOException) {
             throw RuntimeException(e)
+        } finally {
+            log.debug("Closing dokumentStream InputStream")
+            dokumentStream.close()
         }
         return pipedInputStream
     }
