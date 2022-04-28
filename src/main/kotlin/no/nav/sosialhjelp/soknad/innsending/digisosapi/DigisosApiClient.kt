@@ -113,10 +113,6 @@ class DigisosApiClientImpl(
                         )
                         .data(krypter(dokument.data, krypteringFutureList, fiksX509Certificate))
                         .build()
-//                    FilOpplasting(
-//                        metadata = dokument.metadata,
-//                        data = krypter(dokument.data, krypteringFutureList, fiksX509Certificate)
-//                    )
                 },
                 kommunenr,
                 navEksternRefId,
@@ -208,20 +204,6 @@ class DigisosApiClientImpl(
         behandlingsId: String,
         token: String?
     ): String {
-//        val filer: List<FilForOpplasting<Any>> = dokumenter.map { dokument ->
-//            FilForOpplasting.builder<Any>()
-//                .filnavn(dokument.metadata.filnavn)
-//                .metadata(
-//                    FilMetadata(
-//                        filnavn = dokument.metadata.filnavn,
-//                        mimetype = dokument.metadata.mimetype,
-//                        storrelse = dokument.metadata.storrelse
-//                    )
-//                )
-//                .data(dokument.data)
-//                .build()
-//        }
-
         val entitybuilder = MultipartEntityBuilder.create()
         entitybuilder.setCharset(StandardCharsets.UTF_8)
         entitybuilder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE)
