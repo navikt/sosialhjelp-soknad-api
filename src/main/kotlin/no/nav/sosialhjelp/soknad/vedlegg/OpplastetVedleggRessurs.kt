@@ -102,7 +102,9 @@ open class OpplastetVedleggRessurs(
         private const val MAKS_TOTAL_FILSTORRELSE = 1024 * 1024 * 10
         private fun getByteArray(file: FormDataBodyPart): ByteArray {
             return try {
-                IOUtils.toByteArray(file.getValueAs(InputStream::class.java))
+                file.getValueAs(InputStream::class.java).use {
+                    IOUtils.toByteArray(it)
+                }
             } catch (e: IOException) {
                 throw OpplastingException("Kunne ikke lagre fil", e, "vedlegg.opplasting.feil.generell")
             }

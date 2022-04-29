@@ -145,16 +145,16 @@ class DigisosApiService(
     }
 
     private fun opprettDokumentForVedlegg(opplastetVedlegg: OpplastetVedlegg): FilOpplasting {
-        val pdf = opplastetVedlegg.data
-        val detectedMimeType = getMimeType(opplastetVedlegg.data)
+        val bytes = opplastetVedlegg.data
+        val detectedMimeType = getMimeType(bytes)
         val mimetype = if (detectedMimeType.equals(TEXT_X_MATLAB, ignoreCase = true)) APPLICATION_PDF else detectedMimeType
         return FilOpplasting(
             metadata = FilMetadata(
                 filnavn = opplastetVedlegg.filnavn,
                 mimetype = mimetype,
-                storrelse = pdf.size.toLong()
+                storrelse = bytes.size.toLong()
             ),
-            data = ByteArrayInputStream(pdf)
+            data = ByteArrayInputStream(bytes)
         )
     }
 
