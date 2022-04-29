@@ -28,15 +28,14 @@ class PdfGenerator {
     private var currentStream: PDPageContentStream
     private var y: Float
 
-    private val FONT_REGULAR: PDFont = PDType0Font.load(document, ClassPathResource(REGULAR).inputStream)
-    private val FONT_BOLD: PDFont = PDType0Font.load(document, ClassPathResource(BOLD).inputStream)
-    private val FONT_KURSIV: PDFont = PDType0Font.load(document, ClassPathResource(KURSIV).inputStream)
+    private val FONT_REGULAR: PDFont = ClassPathResource(REGULAR).inputStream.use { PDType0Font.load(document, it) } // PDType0Font.load(document, ClassPathResource(REGULAR).inputStream)
+    private val FONT_BOLD: PDFont = ClassPathResource(BOLD).inputStream.use { PDType0Font.load(document, it) } // PDType0Font.load(document, ClassPathResource(BOLD).inputStream)
+    private val FONT_KURSIV: PDFont = ClassPathResource(KURSIV).inputStream.use { PDType0Font.load(document, it) } // PDType0Font.load(document, ClassPathResource(KURSIV).inputStream)
 
     private val xmp = XMPMetadata()
     private val pdfaid = XMPSchemaPDFAId(xmp)
 
-    private val colorProfile = ClassPathResource("sRGB.icc").inputStream
-    private val oi = PDOutputIntent(document, colorProfile)
+    private val oi = ClassPathResource("sRGB.icc").inputStream.use { PDOutputIntent(document, it) }
 
     private val cat = document.documentCatalog
     private val metadata = PDMetadata(document)
@@ -74,7 +73,7 @@ class PdfGenerator {
         currentStream.close()
         document.save(baos)
         document.close()
-        return baos.toByteArray()
+        return baos.use { it.toByteArray() }
     }
 
     private fun continueOnNewPage() {
@@ -326,7 +325,7 @@ class PdfGenerator {
             try {
                 val classPathResource = ClassPathResource("/pdf/nav-logo_alphaless.jpg")
                 val inputStream = classPathResource.inputStream
-                return StreamUtils.copyToByteArray(inputStream)
+                return inputStream.use { StreamUtils.copyToByteArray(it) }
             } catch (e: IOException) {
                 // FIXME: Handle it
                 e.printStackTrace()

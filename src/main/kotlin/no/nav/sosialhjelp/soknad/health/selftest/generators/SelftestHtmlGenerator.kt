@@ -28,8 +28,9 @@ object SelftestHtmlGenerator {
 
         val tabellrader = checks.map { lagTabellrad(it) }
 
-        val template = SelftestHtmlGenerator::class.java.getResourceAsStream("/selftest/SelfTestPage.html")
-        var html = IOUtils.toString(template, StandardCharsets.UTF_8)
+        var html = SelftestHtmlGenerator::class.java.getResourceAsStream("/selftest/SelfTestPage.html").use { template ->
+            IOUtils.toString(template, StandardCharsets.UTF_8)
+        }
         html = html.replace("\${app-navn}", selftest.application ?: "?")
         html = html.replace("\${aggregertStatus}", getStatusNavnElement(selftest.aggregateResult, "span"))
         html = html.replace("\${resultater}", StringUtils.join(tabellrader, "\n"))

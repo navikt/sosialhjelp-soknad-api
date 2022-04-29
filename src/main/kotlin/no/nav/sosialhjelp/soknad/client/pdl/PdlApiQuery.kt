@@ -20,11 +20,12 @@ object PdlApiQuery {
 
     private fun readGraphQLQueryFromFile(file: String): String {
         val classPathResource = ClassPathResource(file)
-        try {
-            BufferedReader(InputStreamReader(classPathResource.inputStream, StandardCharsets.UTF_8))
-                .use { reader ->
-                    return reader.lines().collect(Collectors.joining("\n"))
+        return try {
+            classPathResource.inputStream.use { inputStream ->
+                BufferedReader(InputStreamReader(inputStream, StandardCharsets.UTF_8)).use { reader ->
+                    reader.lines().collect(Collectors.joining("\n"))
                 }
+            }
         } catch (e: IOException) {
             throw PdlApiException("Failed to read graphql-file: $file", e)
         }
