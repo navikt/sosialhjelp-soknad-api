@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.ettersending
 
-import no.finn.unleash.Unleash
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
@@ -16,7 +15,6 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderAr
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.innsending.HenvendelseService
-import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils.FEATURE_UTVIDE_VEDLEGGJSON
 import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils.isVedleggskravAnnet
 import org.springframework.stereotype.Component
 import java.time.Clock
@@ -28,7 +26,6 @@ import java.time.temporal.ChronoUnit.DAYS
 class EttersendingService(
     private val henvendelseService: HenvendelseService,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
-    private val unleash: Unleash,
     private val clock: Clock
 ) {
     fun start(behandlingsIdDetEttersendesPaa: String?): String {
@@ -119,7 +116,7 @@ class EttersendingService(
         )
     }
 
-    fun hentNyesteSoknadIKjede(originalSoknad: SoknadMetadata): SoknadMetadata {
+    private fun hentNyesteSoknadIKjede(originalSoknad: SoknadMetadata): SoknadMetadata {
         return henvendelseService.hentBehandlingskjede(originalSoknad.behandlingsId)
             .filter { it.status == FERDIG }
             .maxByOrNull { it.innsendtDato ?: LocalDateTime.MIN }
@@ -139,11 +136,9 @@ class EttersendingService(
         if (manglendeVedlegg.none { isVedleggskravAnnet(it) }) {
             val annetVedlegg = VedleggMetadata(
                 skjema = "annet",
-                tillegg = "annet"
+                tillegg = "annet",
+                hendelseType = JsonVedlegg.HendelseType.BRUKER
             )
-            if (unleash.isEnabled(FEATURE_UTVIDE_VEDLEGGJSON, false)) {
-                annetVedlegg.hendelseType = JsonVedlegg.HendelseType.BRUKER
-            }
             manglendeVedlegg.add(annetVedlegg)
         }
         return manglendeVedlegg

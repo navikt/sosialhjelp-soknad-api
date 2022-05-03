@@ -95,7 +95,11 @@ class OpplastetVedleggService(
         jsonVedleggs.addAll(
             paakrevdeVedlegg
                 .filter { isNotInList(jsonVedleggs).test(it) }
-                .map { it.withStatus(Vedleggstatus.VedleggKreves.toString()) }
+                .map {
+                    it
+                        .withStatus(Vedleggstatus.VedleggKreves.toString())
+                        .withHendelseType(JsonVedlegg.HendelseType.SOKNAD)
+                }
         )
 
         soknadUnderArbeid.jsonInternalSoknad?.vedlegg = JsonVedleggSpesifikasjon().withVedlegg(jsonVedleggs)
