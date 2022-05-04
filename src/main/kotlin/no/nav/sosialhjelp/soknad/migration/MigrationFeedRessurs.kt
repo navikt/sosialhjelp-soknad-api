@@ -1,8 +1,9 @@
 package no.nav.sosialhjelp.soknad.migration
 
 import no.finn.unleash.Unleash
-import no.nav.security.token.support.core.api.Unprotected
+import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.metrics.aspects.Timed
+import no.nav.sosialhjelp.soknad.common.Constants
 import org.springframework.stereotype.Controller
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME
@@ -16,7 +17,7 @@ import javax.ws.rs.core.Response.Status.OK
 import javax.ws.rs.core.Response.Status.SERVICE_UNAVAILABLE
 
 @Controller
-@Unprotected
+@ProtectedWithClaims(issuer = Constants.TOKENX, claimMap = [Constants.CLAIM_ACR_LEVEL_4])
 @Path("/internal/migration")
 @Produces(MediaType.APPLICATION_JSON)
 @Timed
@@ -38,6 +39,8 @@ open class MigrationFeedRessurs(
         val next = migrationService.getNext(sistEndretDato)
         return Response.status(OK).type(MediaType.APPLICATION_JSON_TYPE).entity(next).build()
     }
+
+
 
     companion object {
         private const val MIGRATION_API_ENABLED = "sosialhjelp.soknad.migration-api-enabled"
