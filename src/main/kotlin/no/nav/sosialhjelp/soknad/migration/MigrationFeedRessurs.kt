@@ -40,8 +40,6 @@ open class MigrationFeedRessurs(
         return Response.status(OK).type(MediaType.APPLICATION_JSON_TYPE).entity(next).build()
     }
 
-
-
     companion object {
         private const val MIGRATION_API_ENABLED = "sosialhjelp.soknad.migration-api-enabled"
     }
