@@ -22,12 +22,12 @@ class MigrationService(
     private val oppgaveRepository: OppgaveRepository
 ) {
 
-    fun getNext(sistEndretTidspunkt: LocalDateTime): ReplicationDto? {
-        log.info("Henter dto for migrering, neste soknadMetadata med sistEndretDato nyere enn $sistEndretTidspunkt")
+    fun getNext(sistEndretDato: LocalDateTime): ReplicationDto? {
+        log.info("Henter dto for migrering, neste soknadMetadata med sistEndretDato nyere enn $sistEndretDato")
 
-        val soknadMetadata = soknadMetadataMigrationRepository.getNextSoknadMetadataAfter(sistEndretTidspunkt)
+        val soknadMetadata = soknadMetadataMigrationRepository.getNextSoknadMetadataAfter(sistEndretDato)
         if (soknadMetadata == null) {
-            log.info("Ingen SoknadMetadata funnet med sistEndretTidspunkt nyere enn $sistEndretTidspunkt")
+            log.info("Ingen SoknadMetadata funnet med sistEndretDato nyere enn $sistEndretDato")
             return null
         }
         val behandlingsId = soknadMetadata.behandlingsId

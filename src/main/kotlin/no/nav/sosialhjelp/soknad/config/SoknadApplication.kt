@@ -30,6 +30,7 @@ import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.SystemregistrertInntekt
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkattbarInntektRessurs
 import no.nav.sosialhjelp.soknad.inntekt.studielan.StudielanRessurs
 import no.nav.sosialhjelp.soknad.inntekt.verdi.VerdiRessurs
+import no.nav.sosialhjelp.soknad.migration.MigrationFeedRessurs
 import no.nav.sosialhjelp.soknad.navenhet.NavEnhetRessurs
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.OkonomiskeOpplysningerRessurs
 import no.nav.sosialhjelp.soknad.oppsummering.OppsummeringRessurs
@@ -110,9 +111,8 @@ open class SoknadApplication : ResourceConfig() {
         register(MdcFilter::class.java)
         register(OidcResourceFilteringFeature::class.java)
 
-        // todo: register ressurs
         // Migration-api
-//        register(MigrationFeedRessurs::class.java)
+        register(MigrationFeedRessurs::class.java)
 
         logger.info("Starter Jersey")
     }
