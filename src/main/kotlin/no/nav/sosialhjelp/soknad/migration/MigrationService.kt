@@ -5,6 +5,7 @@ import no.nav.sosialhjelp.soknad.db.repositories.oppgave.OppgaveRepository
 import no.nav.sosialhjelp.soknad.migration.dto.OppgaveDto
 import no.nav.sosialhjelp.soknad.migration.dto.ReplicationDto
 import no.nav.sosialhjelp.soknad.migration.dto.SendtSoknadDto
+import no.nav.sosialhjelp.soknad.migration.dto.SjekksumDto
 import no.nav.sosialhjelp.soknad.migration.dto.SoknadUnderArbeidDto
 import no.nav.sosialhjelp.soknad.migration.repo.OpplastetVedleggMigrationRepository
 import no.nav.sosialhjelp.soknad.migration.repo.SendtSoknadMigrationRepository
@@ -37,6 +38,16 @@ class MigrationService(
             soknadUnderArbeid = getSoknadUnderArbeid(behandlingsId),
             sendtSoknad = getSendtSoknad(behandlingsId),
             oppgave = getOppgave(behandlingsId)
+        )
+    }
+
+    fun getSjekksum(): SjekksumDto {
+        return SjekksumDto(
+            soknadMetadataSum = soknadMetadataMigrationRepository.count(),
+            sendtSoknadSum = sendtSoknadMigrationRepository.count(),
+            soknadUnderArbeidSum = soknadUnderArbeidMigrationRepository.count(),
+            opplastetVedleggSum = opplastetVedleggMigrationRepository.count(),
+            oppgaveSum = oppgaveRepository.count()
         )
     }
 

@@ -16,4 +16,11 @@ open class SendtSoknadMigrationRepository(
             behandlingsId
         ).firstOrNull()
     }
+
+    fun count(): Int {
+        return jdbcTemplate.queryForObject(
+            "select count(*) from sendt_soknad",
+            Int::class.java
+        ) ?: 0
+    }
 }

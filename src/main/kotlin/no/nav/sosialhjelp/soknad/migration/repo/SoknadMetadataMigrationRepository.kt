@@ -18,4 +18,11 @@ open class SoknadMetadataMigrationRepository(
             SQLUtils.tidTilTimestamp(sistEndretDato)
         ).firstOrNull()
     }
+
+    fun count(): Int {
+        return jdbcTemplate.queryForObject(
+            "select count(*) from soknadmetadata",
+            Int::class.java
+        ) ?: 0
+    }
 }

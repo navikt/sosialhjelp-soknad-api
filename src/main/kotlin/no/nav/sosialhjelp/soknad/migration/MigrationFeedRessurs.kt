@@ -40,6 +40,20 @@ open class MigrationFeedRessurs(
         return Response.status(OK).type(MediaType.APPLICATION_JSON_TYPE).entity(next).build()
     }
 
+    /**
+     * Endepunkt som skal kunne trigges for å verifisere at antall rader i oracle-db == antall rader i postgres-db
+     */
+    @GET
+    @Path("/sjekksum")
+    fun getSjekksum(): Response {
+        if (!unleash.isEnabled(MIGRATION_API_ENABLED)) {
+            return Response.status(SERVICE_UNAVAILABLE).build()
+        }
+
+        val sjekksum = migrationService.getSjekksum()
+        return Response.ok().type(MediaType.APPLICATION_JSON_TYPE).entity(sjekksum).build()
+    }
+
     companion object {
         private const val MIGRATION_API_ENABLED = "sosialhjelp.soknad.migration-api-enabled"
     }

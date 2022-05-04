@@ -62,6 +62,19 @@ internal class SoknadMetadataMigrationRepositoryTest {
         assertThat(result).isNull()
     }
 
+    @Test
+    internal fun `count skal returnere antall`() {
+        assertThat(soknadMetadataMigrationRepository.count()).isEqualTo(0)
+
+        val soknadMetadata = createSoknadMetadata(behandlingsId = "123", dagerSiden = 2)
+        soknadMetadataRepository.opprett(soknadMetadata)
+        assertThat(soknadMetadataMigrationRepository.count()).isEqualTo(1)
+
+        val soknadMetadata2 = createSoknadMetadata(behandlingsId = "456", dagerSiden = 1)
+        soknadMetadataRepository.opprett(soknadMetadata2)
+        assertThat(soknadMetadataMigrationRepository.count()).isEqualTo(2)
+    }
+
     private fun createSoknadMetadata(behandlingsId: String, dagerSiden: Long): SoknadMetadata {
         return SoknadMetadata(
             id = soknadMetadataRepository.hentNesteId(),

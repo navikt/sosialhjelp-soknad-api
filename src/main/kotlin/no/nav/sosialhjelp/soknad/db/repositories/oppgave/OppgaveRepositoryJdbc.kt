@@ -125,4 +125,11 @@ open class OppgaveRepositoryJdbc(
     override fun slettOppgave(behandlingsId: String) {
         jdbcTemplate.update("DELETE FROM oppgave WHERE behandlingsid = ?", behandlingsId)
     }
+
+    override fun count(): Int {
+        return jdbcTemplate.queryForObject(
+            "select count(*) from oppgave",
+            Int::class.java
+        ) ?: 0
+    }
 }
