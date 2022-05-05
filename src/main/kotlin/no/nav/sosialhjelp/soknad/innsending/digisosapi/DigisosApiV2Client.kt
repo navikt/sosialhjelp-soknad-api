@@ -1,10 +1,19 @@
 package no.nav.sosialhjelp.soknad.innsending.digisosapi
 
 import no.nav.sosialhjelp.soknad.common.ServiceUtils
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilOpplasting
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
 
 interface DigisosApiV2Client {
-
+    fun krypterOgLastOppFiler(
+        soknadJson: String,
+        tilleggsinformasjonJson: String,
+        vedleggJson: String,
+        dokumenter: List<FilOpplasting>,
+        kommunenr: String,
+        navEksternRefId: String,
+        token: String?
+    ): String
 }
 
 class DigisosApiV2ClientImpl(
@@ -16,6 +25,17 @@ class DigisosApiV2ClientImpl(
     private val serviceUtils: ServiceUtils
 ) : DigisosApiV2Client {
 
-    // todo implement
-    //  send soknad til "$digisosApiEndpoint/digisos/api/v2/soknader/$kommunenummer/$behandlingsId"
+    override fun krypterOgLastOppFiler(
+        soknadJson: String,
+        tilleggsinformasjonJson: String,
+        vedleggJson: String,
+        dokumenter: List<FilOpplasting>,
+        kommunenr: String,
+        navEksternRefId: String,
+        token: String?
+    ): String {
+        // todo implement
+        //  send soknad til "$digisosApiEndpoint/digisos/api/v2/soknader/$kommunenummer/$behandlingsId"
+        return ""
+    }
 }
