@@ -43,7 +43,7 @@ import java.util.concurrent.Future
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
 
-interface DigisosApiClient {
+interface DigisosApiV1Client {
 
     fun ping()
 
@@ -58,14 +58,14 @@ interface DigisosApiClient {
     ): String
 }
 
-class DigisosApiClientImpl(
+class DigisosApiV1ClientImpl(
     private val digisosApiEndpoint: String,
     private val integrasjonsidFiks: String,
     private val integrasjonpassordFiks: String,
     private val kommuneInfoService: KommuneInfoService,
     private val dokumentlagerClient: DokumentlagerClient,
     private val serviceUtils: ServiceUtils
-) : DigisosApiClient {
+) : DigisosApiV1Client {
 
     private val executor = ExecutorCompletionService<Void>(Executors.newCachedThreadPool())
     private val kryptering: CMSStreamKryptering = CMSKrypteringImpl()

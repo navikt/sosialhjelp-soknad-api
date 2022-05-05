@@ -18,7 +18,8 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderAr
 import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils.FEATURE_UTVIDE_VEDLEGGJSON
 import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils.addHendelseTypeAndHendelseReferanse
 import no.nav.sosialhjelp.soknad.innsending.SenderUtils.INNSENDING_DIGISOSAPI_ENABLED
-import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiService
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiV1Service
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiV2Service
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus.HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT
@@ -27,6 +28,7 @@ import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus.SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD_OG_ETTERSENDELSER
 import no.nav.sosialhjelp.soknad.innsending.dto.SendTilUrlFrontend
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
+import no.nav.sosialhjelp.soknad.vedlegg.OpplastetVedleggRessurs.Companion.KS_MELLOMLAGRING_ENABLED
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpHeaders
 import org.springframework.stereotype.Controller
@@ -50,7 +52,8 @@ open class SoknadActions(
     private val tilgangskontroll: Tilgangskontroll,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val soknadMetadataRepository: SoknadMetadataRepository,
-    private val digisosApiService: DigisosApiService,
+    private val digisosApiV1Service: DigisosApiV1Service,
+    private val digisosApiV2Service: DigisosApiV2Service,
     private val unleash: Unleash,
     private val nedetidService: NedetidService,
 ) {
@@ -103,7 +106,11 @@ open class SoknadActions(
             }
             SKAL_SENDE_SOKNADER_OG_ETTERSENDELSER_VIA_FDA -> {
                 log.info("BehandlingsId $behandlingsId sendes til Fiks-digisos-api (sfa. Fiks-konfigurasjon).")
-                val digisosId = digisosApiService.sendSoknad(soknadUnderArbeid, token, kommunenummer)
+                val digisosId = if (unleash.isEnabled(KS_MELLOMLAGRING_ENABLED, false)) {
+                    digisosApiV2Service.sendSoknad(soknadUnderArbeid, token, kommunenummer)
+                } else {
+                    digisosApiV1Service.sendSoknad(soknadUnderArbeid, token, kommunenummer)
+                }
                 SendTilUrlFrontend(FIKS_DIGISOS_API, digisosId)
             }
             SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD_OG_ETTERSENDELSER -> {

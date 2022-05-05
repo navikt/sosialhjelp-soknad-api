@@ -29,7 +29,8 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderAr
 import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils.FEATURE_UTVIDE_VEDLEGGJSON
 import no.nav.sosialhjelp.soknad.innsending.SenderUtils.INNSENDING_DIGISOSAPI_ENABLED
 import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
-import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiService
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiV1Service
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiV2Service
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus.FIKS_NEDETID_OG_TOM_CACHE
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus.HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT
@@ -37,6 +38,7 @@ import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus.SKAL_SENDE_SOKNADER_OG_ETTERSENDELSER_VIA_FDA
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus.SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD_OG_ETTERSENDELSER
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
+import no.nav.sosialhjelp.soknad.vedlegg.OpplastetVedleggRessurs.Companion.KS_MELLOMLAGRING_ENABLED
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
@@ -52,7 +54,8 @@ internal class SoknadActionsTest {
     private val tilgangskontroll: Tilgangskontroll = mockk()
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
     private val soknadMetadataRepository: SoknadMetadataRepository = mockk()
-    private val digisosApiService: DigisosApiService = mockk()
+    private val digisosApiV1Service: DigisosApiV1Service = mockk()
+    private val digisosApiV2Service: DigisosApiV2Service = mockk()
     private val unleash: Unleash = mockk()
     private val nedetidService: NedetidService = mockk()
 
@@ -62,7 +65,8 @@ internal class SoknadActionsTest {
         tilgangskontroll,
         soknadUnderArbeidRepository,
         soknadMetadataRepository,
-        digisosApiService,
+        digisosApiV1Service,
+        digisosApiV2Service,
         unleash,
         nedetidService
     )
@@ -81,6 +85,7 @@ internal class SoknadActionsTest {
         EIER = SubjectHandlerUtils.getUserIdFromToken()
         every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
         every { unleash.isEnabled(FEATURE_UTVIDE_VEDLEGGJSON, false) } returns true
+        every { unleash.isEnabled(KS_MELLOMLAGRING_ENABLED, false) } returns false
         every { nedetidService.isInnenforNedetid } returns false
     }
 
@@ -99,7 +104,7 @@ internal class SoknadActionsTest {
             .isThrownBy { actions.sendSoknad("behandlingsId", context, "") }
 
         verify { soknadService wasNot called }
-        verify { digisosApiService wasNot called }
+        verify { digisosApiV1Service wasNot called }
     }
 
     @Test
@@ -228,19 +233,19 @@ internal class SoknadActionsTest {
     }
 
     @Test
-    fun sendSoknadTilKommuneMedDigisosApiSkalKalleDigisosApiService() {
+    fun sendSoknadTilKommuneMedDigisosApiSkalKalleDigisosApiV1Service() {
         val behandlingsId = "kommuneMedFDA"
         val soknadUnderArbeid = createSoknadUnderArbeid(EIER)
         soknadUnderArbeid.jsonInternalSoknad!!.soknad.mottaker.kommunenummer = "1234"
         every { soknadUnderArbeidRepository.hentSoknad(behandlingsId, EIER) } returns soknadUnderArbeid
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
         every { kommuneInfoService.kommuneInfo(any()) } returns SKAL_SENDE_SOKNADER_OG_ETTERSENDELSER_VIA_FDA
-        every { digisosApiService.sendSoknad(any(), any(), any()) } returns "id"
+        every { digisosApiV1Service.sendSoknad(any(), any(), any()) } returns "id"
         every { unleash.isEnabled(INNSENDING_DIGISOSAPI_ENABLED, true) } returns true
 
         actions.sendSoknad(behandlingsId, context, "")
 
-        verify(exactly = 1) { digisosApiService.sendSoknad(soknadUnderArbeid, any(), any()) }
+        verify(exactly = 1) { digisosApiV1Service.sendSoknad(soknadUnderArbeid, any(), any()) }
     }
 
     @Test
@@ -256,7 +261,7 @@ internal class SoknadActionsTest {
         assertThatExceptionOfType(SendingTilKommuneErMidlertidigUtilgjengeligException::class.java)
             .isThrownBy { actions.sendSoknad(behandlingsId, context, "") }
 
-        verify { digisosApiService wasNot called }
+        verify { digisosApiV1Service wasNot called }
     }
 
     @Test
@@ -272,7 +277,7 @@ internal class SoknadActionsTest {
         assertThatExceptionOfType(SendingTilKommuneErIkkeAktivertException::class.java)
             .isThrownBy { actions.sendSoknad(behandlingsId, context, "") }
 
-        verify { digisosApiService wasNot called }
+        verify { digisosApiV1Service wasNot called }
     }
 
     @Test
@@ -284,7 +289,7 @@ internal class SoknadActionsTest {
 
         verify { soknadService wasNot called }
         verify { kommuneInfoService wasNot called }
-        verify { digisosApiService wasNot called }
+        verify { digisosApiV1Service wasNot called }
     }
 
     companion object {

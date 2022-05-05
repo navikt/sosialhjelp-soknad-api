@@ -35,8 +35,8 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 
-internal class DigisosApiServiceTest {
-    private val digisosApiClient: DigisosApiClient = mockk()
+internal class DigisosApiV1ServiceTest {
+    private val digisosApiV1Client: DigisosApiV1Client = mockk()
     private val sosialhjelpPdfGenerator: SosialhjelpPdfGenerator = mockk()
     private val innsendingService: InnsendingService = mockk()
     private val henvendelseService: HenvendelseService = mockk()
@@ -44,8 +44,8 @@ internal class DigisosApiServiceTest {
     private val soknadMetricsService: SoknadMetricsService = mockk()
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
 
-    private val digisosApiService = DigisosApiService(
-        digisosApiClient,
+    private val digisosApiV1Service = DigisosApiV1Service(
+        digisosApiV1Client,
         sosialhjelpPdfGenerator,
         innsendingService,
         henvendelseService,
@@ -75,7 +75,7 @@ internal class DigisosApiServiceTest {
         every { sosialhjelpPdfGenerator.generateBrukerkvitteringPdf() } returns byteArrayOf(1, 2, 3)
         every { innsendingService.hentAlleOpplastedeVedleggForSoknad(any()) } returns lagOpplastetVedlegg()
 
-        val filOpplastings = digisosApiService.lagDokumentListe(soknadUnderArbeid)
+        val filOpplastings = digisosApiV1Service.lagDokumentListe(soknadUnderArbeid)
 
         val metadataFil1 = filOpplastings[0].metadata
         assertThat(metadataFil1.filnavn).isEqualTo("Soknad.pdf")
@@ -97,7 +97,7 @@ internal class DigisosApiServiceTest {
         val soknadUnderArbeid = createSoknadUnderArbeid("eier")
         soknadUnderArbeid.tilknyttetBehandlingsId = "123"
         soknadUnderArbeid.jsonInternalSoknad = lagInternalSoknadForEttersending()
-        val fiksDokumenter = digisosApiService.lagDokumentListe(soknadUnderArbeid)
+        val fiksDokumenter = digisosApiV1Service.lagDokumentListe(soknadUnderArbeid)
         assertThat(fiksDokumenter.size).isEqualTo(3)
         assertThat(fiksDokumenter[0].metadata.filnavn).isEqualTo("ettersendelse.pdf")
         assertThat(fiksDokumenter[1].metadata.filnavn).isEqualTo("Brukerkvittering.pdf")
@@ -107,14 +107,14 @@ internal class DigisosApiServiceTest {
     @Test
     fun tilleggsinformasjonJson() {
         val soknad = JsonSoknad().withMottaker(JsonSoknadsmottaker().withEnhetsnummer("1234"))
-        val tilleggsinformasjonJson = digisosApiService.getTilleggsinformasjonJson(soknad)
+        val tilleggsinformasjonJson = digisosApiV1Service.getTilleggsinformasjonJson(soknad)
         assertThat(tilleggsinformasjonJson).isEqualTo("{\"enhetsnummer\":\"1234\"}")
     }
 
     @Test
     fun tilleggsinformasjonJson_withNoEnhetsnummer_shouldSetEnhetsnummerToNull() {
         val soknad = JsonSoknad().withMottaker(JsonSoknadsmottaker())
-        val tilleggsinformasjonJson = digisosApiService.getTilleggsinformasjonJson(soknad)
+        val tilleggsinformasjonJson = digisosApiV1Service.getTilleggsinformasjonJson(soknad)
         assertThat(tilleggsinformasjonJson).isEqualTo("{}")
     }
 
@@ -122,7 +122,7 @@ internal class DigisosApiServiceTest {
     fun tilleggsinformasjonJson_withNoMottaker_shouldThrowException() {
         val soknad = JsonSoknad()
         assertThatExceptionOfType(IllegalStateException::class.java)
-            .isThrownBy { digisosApiService.getTilleggsinformasjonJson(soknad) }
+            .isThrownBy { digisosApiV1Service.getTilleggsinformasjonJson(soknad) }
     }
 
     @Test
@@ -135,14 +135,14 @@ internal class DigisosApiServiceTest {
 
         every { sosialhjelpPdfGenerator.generate(any(), any()) } returns byteArrayOf(1, 2, 3)
         every { sosialhjelpPdfGenerator.generateBrukerkvitteringPdf() } returns byteArrayOf(1, 2, 3)
-        every { digisosApiClient.krypterOgLastOppFiler(any(), any(), any(), any(), any(), any(), any()) } returns "digisosid"
+        every { digisosApiV1Client.krypterOgLastOppFiler(any(), any(), any(), any(), any(), any(), any()) } returns "digisosid"
         every { soknadUnderArbeidService.settInnsendingstidspunktPaSoknad(any()) } just runs
         every { henvendelseService.oppdaterMetadataVedAvslutningAvSoknad(any(), any(), any(), any()) } just runs
         every { innsendingService.hentAlleOpplastedeVedleggForSoknad(any()) } returns lagOpplastetVedlegg()
         every { soknadUnderArbeidRepository.slettSoknad(any(), any()) } just runs
         every { soknadMetricsService.reportSendSoknadMetrics(any(), any()) } just runs
 
-        digisosApiService.sendSoknad(soknadUnderArbeid, "token", "0301")
+        digisosApiV1Service.sendSoknad(soknadUnderArbeid, "token", "0301")
 
         verify(exactly = 1) { soknadUnderArbeidRepository.slettSoknad(any(), any()) }
 
