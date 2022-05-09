@@ -139,9 +139,25 @@ class DigisosApiService(
 
         return try {
             if (digisosApiV2Enabled) {
-                digisosApiV2Client.krypterOgLastOppFiler(soknadJson, tilleggsinformasjonJson, vedleggJson, filOpplastinger, kommunenr, behandlingsId, token)
+                digisosApiV2Client.krypterOgLastOppFiler(
+                    soknadJson = soknadJson,
+                    tilleggsinformasjonJson = tilleggsinformasjonJson,
+                    vedleggJson = vedleggJson,
+                    dokumenter = filOpplastinger,
+                    kommunenr = kommunenr,
+                    navEksternRefId = behandlingsId,
+                    token = token
+                )
             } else {
-                digisosApiV1Client.krypterOgLastOppFiler(soknadJson, tilleggsinformasjonJson, vedleggJson, filOpplastinger, kommunenr, behandlingsId, token)
+                digisosApiV1Client.krypterOgLastOppFiler(
+                    soknadJson = soknadJson,
+                    tilleggsinformasjonJson = tilleggsinformasjonJson,
+                    vedleggJson = vedleggJson,
+                    dokumenter = filOpplastinger,
+                    kommunenr = kommunenr,
+                    navEksternRefId = behandlingsId,
+                    token = token
+                )
             }
         } catch (e: Exception) {
             event.setFailed()
