@@ -19,8 +19,8 @@ open class DigisosApiConfig(
 ) {
 
     @Bean
-    open fun digisosApiClient(): DigisosApiClient {
-        val digisosApiClient = DigisosApiClientImpl(
+    open fun digisosApiV1Client(): DigisosApiV1Client {
+        val digisosApiV1Client = DigisosApiV1ClientImpl(
             digisosApiEndpoint,
             integrasjonsidFiks,
             integrasjonpassordFiks,
@@ -28,15 +28,28 @@ open class DigisosApiConfig(
             dokumentlagerClient,
             serviceUtils
         )
-        return MetricsFactory.createTimerProxy("DigisosApi", digisosApiClient, DigisosApiClient::class.java)
+        return MetricsFactory.createTimerProxy("DigisosApi", digisosApiV1Client, DigisosApiV1Client::class.java)
     }
 
     @Bean
-    open fun digisosApiPing(digisosApiClient: DigisosApiClient): Pingable {
+    open fun digisosApiV2Client(): DigisosApiV2Client {
+        val digisosApiV2Client = DigisosApiV2ClientImpl(
+            digisosApiEndpoint,
+            integrasjonsidFiks,
+            integrasjonpassordFiks,
+            kommuneInfoService,
+            dokumentlagerClient,
+            serviceUtils
+        )
+        return MetricsFactory.createTimerProxy("DigisosApi", digisosApiV2Client, DigisosApiV2Client::class.java)
+    }
+
+    @Bean
+    open fun digisosApiPing(digisosApiV1Client: DigisosApiV1Client): Pingable {
         return Pingable {
             val metadata = Pingable.PingMetadata(digisosApiEndpoint, "DigisosApi", true)
             try {
-                digisosApiClient.ping()
+                digisosApiV1Client.ping()
                 Pingable.lyktes(metadata)
             } catch (e: Exception) {
                 Pingable.feilet(metadata, e)

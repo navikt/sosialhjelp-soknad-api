@@ -99,7 +99,10 @@ open class OpplastetVedleggRessurs(
     }
 
     companion object {
+        const val KS_MELLOMLAGRING_ENABLED = "sosialhjelp.soknad.ks-mellomlagring-enabled"
+
         private const val MAKS_TOTAL_FILSTORRELSE = 1024 * 1024 * 10
+
         private fun getByteArray(file: FormDataBodyPart): ByteArray {
             return try {
                 file.getValueAs(InputStream::class.java).use {

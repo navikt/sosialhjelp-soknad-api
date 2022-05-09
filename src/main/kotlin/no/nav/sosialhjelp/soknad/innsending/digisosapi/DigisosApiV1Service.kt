@@ -33,8 +33,8 @@ import org.springframework.stereotype.Component
 import java.io.ByteArrayInputStream
 
 @Component
-class DigisosApiService(
-    private val digisosApiClient: DigisosApiClient,
+class DigisosApiV1Service(
+    private val digisosApiV1Client: DigisosApiV1Client,
     private val sosialhjelpPdfGenerator: SosialhjelpPdfGenerator,
     private val innsendingService: InnsendingService,
     private val henvendelseService: HenvendelseService,
@@ -100,7 +100,7 @@ class DigisosApiService(
         val event = lagForsoktSendtDigisosApiEvent(navEnhetsnavn)
 
         return try {
-            digisosApiClient.krypterOgLastOppFiler(soknadJson, tilleggsinformasjonJson, vedleggJson, filOpplastinger, kommunenr, behandlingsId, token)
+            digisosApiV1Client.krypterOgLastOppFiler(soknadJson, tilleggsinformasjonJson, vedleggJson, filOpplastinger, kommunenr, behandlingsId, token)
         } catch (e: Exception) {
             event.setFailed()
             throw e
@@ -266,6 +266,6 @@ class DigisosApiService(
     }
 
     companion object {
-        private val log = LoggerFactory.getLogger(DigisosApiService::class.java)
+        private val log = LoggerFactory.getLogger(DigisosApiV1Service::class.java)
     }
 }
