@@ -23,31 +23,21 @@ class DokumentListeService(
         val internalSoknad = soknadUnderArbeid.jsonInternalSoknad
         if (internalSoknad == null) {
             throw RuntimeException("Kan ikke sende forsendelse til FIKS fordi søknad mangler")
-        } else if (!soknadUnderArbeid.erEttersendelse && internalSoknad.soknad == null) {
+        } else if (internalSoknad.soknad == null) {
             throw RuntimeException("Kan ikke sende søknad fordi søknaden mangler")
-        } else if (soknadUnderArbeid.erEttersendelse && internalSoknad.vedlegg == null) {
-            throw RuntimeException("Kan ikke sende ettersendelse fordi vedlegg mangler")
         }
-        val antallVedleggForsendelse: Int
 
-        val filOpplastinger = mutableListOf<FilOpplasting>()
+        val dokumenterForVedlegg = lagDokumentListeForVedlegg(soknadUnderArbeid)
+        val antallVedleggForsendelse = dokumenterForVedlegg.size
 
-        if (soknadUnderArbeid.erEttersendelse) {
-            filOpplastinger.add(lagDokumentForEttersendelsePdf(internalSoknad, soknadUnderArbeid.eier))
-            filOpplastinger.add(lagDokumentForBrukerkvitteringPdf())
-            val dokumenterForVedlegg = lagDokumentListeForVedlegg(soknadUnderArbeid)
-            antallVedleggForsendelse = dokumenterForVedlegg.size
-            filOpplastinger.addAll(dokumenterForVedlegg)
-        } else {
-            filOpplastinger.add(lagDokumentForSaksbehandlerPdf(internalSoknad))
-            filOpplastinger.add(lagDokumentForJuridiskPdf(internalSoknad))
-            filOpplastinger.add(lagDokumentForBrukerkvitteringPdf())
-            val dokumenterForVedlegg = lagDokumentListeForVedlegg(soknadUnderArbeid)
-            antallVedleggForsendelse = dokumenterForVedlegg.size
-            filOpplastinger.addAll(dokumenterForVedlegg)
+        val filOpplastinger = listOf(
+            lagDokumentForSaksbehandlerPdf(internalSoknad),
+            lagDokumentForJuridiskPdf(internalSoknad),
+            lagDokumentForBrukerkvitteringPdf(),
+            *dokumenterForVedlegg.toTypedArray()
+        ).also {
+            log.info("Antall vedlegg: ${it.size}. Antall vedlegg lastet opp av bruker: $antallVedleggForsendelse")
         }
-        val antallFiksDokumenter = filOpplastinger.size
-        log.info("Antall vedlegg: $antallFiksDokumenter. Antall vedlegg lastet opp av bruker: $antallVedleggForsendelse")
 
         try {
             val opplastedeVedleggstyper = internalSoknad.vedlegg.vedlegg.filter { it.status == "LastetOpp" }
@@ -62,6 +52,27 @@ class DokumentListeService(
         return filOpplastinger
     }
 
+    fun lagDokumentListeForV2(soknadUnderArbeid: SoknadUnderArbeid): List<FilOpplasting> {
+        val internalSoknad = soknadUnderArbeid.jsonInternalSoknad
+        if (internalSoknad == null) {
+            throw RuntimeException("Kan ikke sende forsendelse til FIKS fordi søknad mangler")
+        } else if (internalSoknad.soknad == null) {
+            throw RuntimeException("Kan ikke sende søknad fordi søknaden mangler")
+        }
+
+        // todo: lag dokumentListe med metadata om mellomlagrede vedlegg
+        val dokumenterForVedlegg = emptyArray<FilOpplasting>() // lagDokumentListeForMellomlagredeVedlegg(soknadUnderArbeid.behandlingsId)
+
+        return listOf(
+            lagDokumentForSaksbehandlerPdf(internalSoknad),
+            lagDokumentForJuridiskPdf(internalSoknad),
+            lagDokumentForBrukerkvitteringPdf(),
+            // *dokumenterForVedlegg.toTypedArray()
+        ).also {
+            log.info("Antall vedlegg: ${it.size}. Antall vedlegg lastet opp av bruker: ${dokumenterForVedlegg.size}")
+        }
+    }
+
     private fun lagDokumentForSaksbehandlerPdf(jsonInternalSoknad: JsonInternalSoknad): FilOpplasting {
         val filnavn = "Soknad.pdf"
         val soknadPdf = sosialhjelpPdfGenerator.generate(jsonInternalSoknad, false)
@@ -71,12 +82,6 @@ class DokumentListeService(
     private fun lagDokumentListeForVedlegg(soknadUnderArbeid: SoknadUnderArbeid): List<FilOpplasting> {
         val opplastedeVedlegg = innsendingService.hentAlleOpplastedeVedleggForSoknad(soknadUnderArbeid)
         return opplastedeVedlegg.map { opprettDokumentForVedlegg(it) }
-    }
-
-    private fun lagDokumentForEttersendelsePdf(internalSoknad: JsonInternalSoknad, eier: String): FilOpplasting {
-        val filnavn = "ettersendelse.pdf"
-        val pdf = sosialhjelpPdfGenerator.generateEttersendelsePdf(internalSoknad, eier)
-        return opprettFilOpplastingFraByteArray(filnavn, MimeTypes.APPLICATION_PDF, pdf)
     }
 
     private fun lagDokumentForBrukerkvitteringPdf(): FilOpplasting {
