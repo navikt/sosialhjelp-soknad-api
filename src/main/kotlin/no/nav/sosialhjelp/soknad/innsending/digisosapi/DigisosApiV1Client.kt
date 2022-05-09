@@ -2,20 +2,15 @@ package no.nav.sosialhjelp.soknad.innsending.digisosapi
 
 import com.fasterxml.jackson.core.JsonProcessingException
 import no.ks.fiks.streaming.klient.FilForOpplasting
-import no.ks.kryptering.CMSKrypteringImpl
-import no.ks.kryptering.CMSStreamKryptering
 import no.nav.sosialhjelp.kotlin.utils.logger
 import no.nav.sosialhjelp.soknad.common.Constants.HEADER_INTEGRASJON_ID
 import no.nav.sosialhjelp.soknad.common.Constants.HEADER_INTEGRASJON_PASSORD
-import no.nav.sosialhjelp.soknad.common.MiljoUtils
-import no.nav.sosialhjelp.soknad.common.ServiceUtils
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.digisosObjectMapper
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.getDigisosIdFromResponse
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.stripVekkFnutter
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilMetadata
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilOpplasting
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
-import org.apache.commons.io.IOUtils
 import org.apache.http.client.config.RequestConfig
 import org.apache.http.client.methods.HttpPost
 import org.apache.http.entity.ContentType.APPLICATION_JSON
@@ -27,18 +22,11 @@ import org.apache.http.impl.client.HttpClientBuilder
 import org.apache.http.util.EntityUtils
 import org.eclipse.jetty.http.HttpHeader.AUTHORIZATION
 import java.io.IOException
-import java.io.InputStream
-import java.io.PipedInputStream
-import java.io.PipedOutputStream
 import java.nio.charset.StandardCharsets
-import java.security.Security
-import java.security.cert.X509Certificate
 import java.util.Collections
 import java.util.UUID
 import java.util.concurrent.CompletionException
 import java.util.concurrent.ExecutionException
-import java.util.concurrent.ExecutorCompletionService
-import java.util.concurrent.Executors
 import java.util.concurrent.Future
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
@@ -63,12 +51,8 @@ class DigisosApiV1ClientImpl(
     private val integrasjonsidFiks: String,
     private val integrasjonpassordFiks: String,
     private val kommuneInfoService: KommuneInfoService,
-    private val dokumentlagerClient: DokumentlagerClient,
-    private val serviceUtils: ServiceUtils
+    private val krypteringService: KrypteringService
 ) : DigisosApiV1Client {
-
-    private val executor = ExecutorCompletionService<Void>(Executors.newCachedThreadPool())
-    private val kryptering: CMSStreamKryptering = CMSKrypteringImpl()
 
     private val retryHandler = DefaultHttpRequestRetryHandler()
     private val serviceUnavailableRetryStrategy = FiksServiceUnavailableRetryStrategy()
@@ -96,7 +80,6 @@ class DigisosApiV1ClientImpl(
         val krypteringFutureList = Collections.synchronizedList(ArrayList<Future<Void>>(dokumenter.size))
         val digisosId: String
         try {
-            val fiksX509Certificate = dokumentlagerClient.getDokumentlagerPublicKeyX509Certificate()
             digisosId = lastOppFiler(
                 soknadJson,
                 tilleggsinformasjonJson,
@@ -111,7 +94,7 @@ class DigisosApiV1ClientImpl(
                                 storrelse = dokument.metadata.storrelse
                             )
                         )
-                        .data(krypter(dokument.data, krypteringFutureList, fiksX509Certificate))
+                        .data(krypteringService.krypter(dokument.data, krypteringFutureList))
                         .build()
                 },
                 kommunenr,
@@ -120,10 +103,9 @@ class DigisosApiV1ClientImpl(
             )
             waitForFutures(krypteringFutureList)
         } finally {
-            krypteringFutureList.stream().filter { f: Future<Void> -> !f.isDone && !f.isCancelled }
-                .forEach { future: Future<Void> ->
-                    future.cancel(true)
-                }
+            krypteringFutureList
+                .filter { !it.isDone && !it.isCancelled }
+                .forEach { it.cancel(true) }
         }
         return digisosId
     }
@@ -133,50 +115,6 @@ class DigisosApiV1ClientImpl(
             .setRetryHandler(retryHandler)
             .setServiceUnavailableRetryStrategy(serviceUnavailableRetryStrategy)
             .useSystemProperties()
-    }
-
-    private fun krypter(
-        dokumentStream: InputStream,
-        krypteringFutureList: MutableList<Future<Void>>,
-        fiksX509Certificate: X509Certificate
-    ): InputStream {
-        val pipedInputStream = PipedInputStream()
-        try {
-            val pipedOutputStream = PipedOutputStream(pipedInputStream)
-            val krypteringFuture = executor.submit {
-                try {
-                    if (MiljoUtils.isNonProduction() && serviceUtils.isMockAltProfil()) {
-                        IOUtils.copy(dokumentStream, pipedOutputStream)
-                    } else {
-                        kryptering.krypterData(
-                            pipedOutputStream,
-                            dokumentStream,
-                            fiksX509Certificate,
-                            Security.getProvider("BC")
-                        )
-                    }
-                } catch (e: Exception) {
-                    log.error("Encryption failed, setting exception on encrypted InputStream", e)
-                    throw IllegalStateException("An error occurred during encryption", e)
-                } finally {
-                    try {
-                        log.debug("Closing encryption OutputStream")
-                        pipedOutputStream.close()
-                        log.debug("Encryption OutputStream closed")
-                    } catch (e: IOException) {
-                        log.error("Failed closing encryption OutputStream", e)
-                    }
-                }
-                null
-            }
-            krypteringFutureList.add(krypteringFuture)
-        } catch (e: IOException) {
-            throw RuntimeException(e)
-        } finally {
-            log.debug("Closing dokumentStream InputStream")
-            dokumentStream.close()
-        }
-        return pipedInputStream
     }
 
     private fun waitForFutures(krypteringFutureList: List<Future<Void>>) {

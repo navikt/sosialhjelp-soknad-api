@@ -15,7 +15,8 @@ open class DigisosApiConfig(
     @Value("\${integrasjonpassord_fiks}") private val integrasjonpassordFiks: String,
     private val serviceUtils: ServiceUtils,
     private val dokumentlagerClient: DokumentlagerClient,
-    private val kommuneInfoService: KommuneInfoService
+    private val kommuneInfoService: KommuneInfoService,
+    private val krypteringService: KrypteringService
 ) {
 
     @Bean
@@ -25,8 +26,7 @@ open class DigisosApiConfig(
             integrasjonsidFiks,
             integrasjonpassordFiks,
             kommuneInfoService,
-            dokumentlagerClient,
-            serviceUtils
+            krypteringService
         )
         return MetricsFactory.createTimerProxy("DigisosApi", digisosApiV1Client, DigisosApiV1Client::class.java)
     }
@@ -38,8 +38,7 @@ open class DigisosApiConfig(
             integrasjonsidFiks,
             integrasjonpassordFiks,
             kommuneInfoService,
-            dokumentlagerClient,
-            serviceUtils
+            krypteringService
         )
         return MetricsFactory.createTimerProxy("DigisosApi", digisosApiV2Client, DigisosApiV2Client::class.java)
     }

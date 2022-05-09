@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.innsending.digisosapi
 
-import no.nav.sosialhjelp.soknad.common.ServiceUtils
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilOpplasting
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
 
@@ -21,8 +20,7 @@ class DigisosApiV2ClientImpl(
     private val integrasjonsidFiks: String,
     private val integrasjonpassordFiks: String,
     private val kommuneInfoService: KommuneInfoService,
-    private val dokumentlagerClient: DokumentlagerClient,
-    private val serviceUtils: ServiceUtils
+    private val krypteringService: KrypteringService
 ) : DigisosApiV2Client {
 
     override fun krypterOgLastOppFiler(
