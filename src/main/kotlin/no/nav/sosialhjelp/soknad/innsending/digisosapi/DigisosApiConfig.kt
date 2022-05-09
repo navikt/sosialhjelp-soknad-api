@@ -1,7 +1,6 @@
 package no.nav.sosialhjelp.soknad.innsending.digisosapi
 
 import no.nav.sosialhjelp.metrics.MetricsFactory
-import no.nav.sosialhjelp.soknad.common.ServiceUtils
 import no.nav.sosialhjelp.soknad.health.selftest.Pingable
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
 import org.springframework.beans.factory.annotation.Value
@@ -13,8 +12,6 @@ open class DigisosApiConfig(
     @Value("\${digisos_api_baseurl}") private val digisosApiEndpoint: String,
     @Value("\${integrasjonsid_fiks}") private val integrasjonsidFiks: String,
     @Value("\${integrasjonpassord_fiks}") private val integrasjonpassordFiks: String,
-    private val serviceUtils: ServiceUtils,
-    private val dokumentlagerClient: DokumentlagerClient,
     private val kommuneInfoService: KommuneInfoService,
     private val krypteringService: KrypteringService
 ) {
