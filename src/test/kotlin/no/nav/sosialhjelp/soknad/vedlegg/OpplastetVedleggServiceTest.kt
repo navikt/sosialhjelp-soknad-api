@@ -13,8 +13,6 @@ import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
 import no.nav.sosialhjelp.soknad.common.MiljoUtils
-import no.nav.sosialhjelp.soknad.common.filedetection.TikaFileType.JPEG
-import no.nav.sosialhjelp.soknad.common.filedetection.TikaFileType.PNG
 import no.nav.sosialhjelp.soknad.common.subjecthandler.StaticSubjectHandlerImpl
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedlegg
@@ -64,31 +62,6 @@ internal class OpplastetVedleggServiceTest {
     fun tearDown() {
         SubjectHandlerUtils.resetSubjectHandlerImpl()
         unmockkObject(MiljoUtils)
-    }
-
-    @Test
-    fun lagerFilnavn() {
-        val filnavn = opplastetVedleggService.lagFilnavn("minfil.jpg", JPEG, "5c2a1cea-ef05-4db6-9c98-1b6c9b3faa99")
-        assertThat(filnavn).isEqualTo("minfil-5c2a1cea.jpg")
-
-        val truncate = opplastetVedleggService.lagFilnavn(
-            "etkjempelangtfilnavn12345678901234567890123456789012345678901234567890.jpg",
-            JPEG,
-            "5c2a1cea-ef05-4db6-9c98-1b6c9b3faa99"
-        )
-        assertThat(truncate).isEqualTo("etkjempelangtfilnavn123456789012345678901234567890-5c2a1cea.jpg")
-
-        val medSpesialTegn = opplastetVedleggService.lagFilnavn("en.filmedææå()ogmyerartsjø.jpg", JPEG, "abc-ef05")
-        assertThat(medSpesialTegn).isEqualTo("enfilmedeeaogmyerartsjo-abc.jpg")
-
-        val utenExtension = opplastetVedleggService.lagFilnavn("minfil", PNG, "abc-ef05")
-        assertThat(utenExtension).isEqualTo("minfil-abc.png")
-
-        val forskjelligExtension = opplastetVedleggService.lagFilnavn("minfil.jpg", PNG, "abc-ef05")
-        assertThat(forskjelligExtension).isEqualTo("minfil-abc.png")
-
-        val caseInsensitiveExtension = opplastetVedleggService.lagFilnavn("minfil.JPG", JPEG, "abc-ef05")
-        assertThat(caseInsensitiveExtension).isEqualTo("minfil-abc.JPG")
     }
 
     @Test

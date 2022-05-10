@@ -100,14 +100,7 @@ class DokumentListeService(
         val bytes = opplastetVedlegg.data
         val detectedMimeType = FileDetectionUtils.getMimeType(bytes)
         val mimetype = if (detectedMimeType.equals(MimeTypes.TEXT_X_MATLAB, ignoreCase = true)) MimeTypes.APPLICATION_PDF else detectedMimeType
-        return FilOpplasting(
-            metadata = FilMetadata(
-                filnavn = opplastetVedlegg.filnavn,
-                mimetype = mimetype,
-                storrelse = bytes.size.toLong()
-            ),
-            data = ByteArrayInputStream(bytes)
-        )
+        return opprettFilOpplastingFraByteArray(opplastetVedlegg.filnavn, mimetype, bytes)
     }
 
     private fun opprettFilOpplastingFraByteArray(filnavn: String, mimetype: String, bytes: ByteArray): FilOpplasting {
