@@ -6,7 +6,6 @@ import no.nav.sosialhjelp.soknad.common.Constants
 import no.nav.sosialhjelp.soknad.common.filedetection.FileDetectionUtils.getMimeType
 import no.nav.sosialhjelp.soknad.common.filedetection.MimeTypes
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
-import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedlegg
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRepository
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import no.nav.sosialhjelp.soknad.vedlegg.dto.FilFrontend
@@ -40,14 +39,6 @@ open class OpplastetVedleggRessurs(
     private val opplastetVedleggService: OpplastetVedleggService,
     private val tilgangskontroll: Tilgangskontroll
 ) {
-    @GET
-    @Path("/{vedleggId}")
-    @Produces(MediaType.APPLICATION_JSON)
-    open fun getVedlegg(@PathParam("vedleggId") vedleggId: String): OpplastetVedlegg? {
-        tilgangskontroll.verifiserAtBrukerHarTilgang()
-        val eier = SubjectHandlerUtils.getUserIdFromToken()
-        return opplastetVedleggRepository.hentVedlegg(vedleggId, eier)
-    }
 
     @GET
     @Path("/{vedleggId}/fil")
