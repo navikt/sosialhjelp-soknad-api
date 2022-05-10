@@ -25,7 +25,6 @@ import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
 import org.apache.commons.io.IOUtils
 import org.glassfish.jersey.media.multipart.FormDataBodyPart
 import org.glassfish.jersey.media.multipart.FormDataParam
-import org.springframework.http.HttpHeaders
 import org.springframework.stereotype.Controller
 import java.io.File
 import java.io.IOException
@@ -34,7 +33,6 @@ import javax.servlet.http.HttpServletResponse
 import javax.ws.rs.Consumes
 import javax.ws.rs.DELETE
 import javax.ws.rs.GET
-import javax.ws.rs.HeaderParam
 import javax.ws.rs.POST
 import javax.ws.rs.Path
 import javax.ws.rs.PathParam
@@ -63,7 +61,6 @@ open class OpplastetVedleggRessurs(
     @Produces(MediaType.APPLICATION_JSON)
     open fun getVedleggFil(
         @PathParam("vedleggId") vedleggId: String,
-        @HeaderParam(value = HttpHeaders.AUTHORIZATION) token: String,
         @Context response: HttpServletResponse
     ): Response {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
@@ -77,7 +74,7 @@ open class OpplastetVedleggRessurs(
         }
 
         if (mellomlagringEnabled) {
-            mellomlagringService.getVedlegg(vedleggId, token)?.let {
+            mellomlagringService.getVedlegg(vedleggId, "token")?.let {
                 response.setHeader("Content-Disposition", "attachment; filename=\"" + it.filnavn + "\"")
                 val detectedMimeType = getMimeType(it.data)
                 val mimetype = if (detectedMimeType.equals(MimeTypes.TEXT_X_MATLAB, ignoreCase = true)) MimeTypes.APPLICATION_PDF else detectedMimeType
@@ -125,7 +122,6 @@ open class OpplastetVedleggRessurs(
     open fun deleteVedlegg(
         @PathParam("behandlingsId") behandlingsId: String,
         @PathParam("vedleggId") vedleggId: String,
-        @HeaderParam(value = HttpHeaders.AUTHORIZATION) token: String,
     ) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         val eier = SubjectHandlerUtils.getUserIdFromToken()
@@ -136,7 +132,7 @@ open class OpplastetVedleggRessurs(
         // forsøk sletting via KS mellomlagringstjeneste hvis feature er enablet og sletting fra DB ikke ble utført
         if (mellomlagringEnabled) {
             log.info("Sletter vedlegg $vedleggId fra KS mellomlagring")
-            mellomlagringService.deleteVedleggAndUpdateVedleggstatus(behandlingsId, vedleggId, token)
+            mellomlagringService.deleteVedleggAndUpdateVedleggstatus(behandlingsId, vedleggId, "token")
         }
     }
 
