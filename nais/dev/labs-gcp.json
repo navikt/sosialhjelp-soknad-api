@@ -20,7 +20,7 @@
   "cpuRequest": "10m",
   "vaultEnabled": false,
   "tokenXEnabled": false,
-  "personbrukerGcpCluster": "dev-gcp",
+  "min-side-cluster": "dev-gcp",
   "dialogGcpCluster": "labs-gcp",
   "sosialhjelpDialogApi": "sosialhjelp-dialog-api",
   "prometheusEnabled": false,
