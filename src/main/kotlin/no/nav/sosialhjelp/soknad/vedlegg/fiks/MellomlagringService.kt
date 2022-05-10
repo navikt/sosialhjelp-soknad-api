@@ -16,7 +16,7 @@ class MellomlagringService {
         data: ByteArray,
         originalfilnavn: String,
         token: String
-    ) : MellomlagretVedleggMetadata {
+    ): MellomlagretVedleggMetadata {
         // todo implement
         return MellomlagretVedleggMetadata(filnavn = "filnavn", filId = "uuid")
     }
