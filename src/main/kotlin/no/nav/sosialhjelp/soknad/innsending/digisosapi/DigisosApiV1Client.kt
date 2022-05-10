@@ -8,7 +8,6 @@ import no.nav.sosialhjelp.soknad.common.Constants.HEADER_INTEGRASJON_PASSORD
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.digisosObjectMapper
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.getDigisosIdFromResponse
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.stripVekkFnutter
-import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilMetadata
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilOpplasting
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
 import org.apache.http.client.config.RequestConfig
@@ -87,13 +86,7 @@ class DigisosApiV1ClientImpl(
                 dokumenter.map { dokument: FilOpplasting ->
                     FilForOpplasting.builder<Any>()
                         .filnavn(dokument.metadata.filnavn)
-                        .metadata(
-                            FilMetadata(
-                                filnavn = dokument.metadata.filnavn,
-                                mimetype = dokument.metadata.mimetype,
-                                storrelse = dokument.metadata.storrelse
-                            )
-                        )
+                        .metadata(dokument.metadata)
                         .data(krypteringService.krypter(dokument.data, krypteringFutureList))
                         .build()
                 },
