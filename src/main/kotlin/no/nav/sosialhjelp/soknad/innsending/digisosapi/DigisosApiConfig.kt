@@ -34,7 +34,6 @@ open class DigisosApiConfig(
             digisosApiEndpoint,
             integrasjonsidFiks,
             integrasjonpassordFiks,
-            kommuneInfoService,
             krypteringService
         )
         return MetricsFactory.createTimerProxy("DigisosApi", digisosApiV2Client, DigisosApiV2Client::class.java)
