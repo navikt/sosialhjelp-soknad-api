@@ -56,11 +56,8 @@ spec:
     inbound:
       rules:
         - application: mine-saker-api
-          namespace: personbruker
-          cluster: {{personbrukerGcpCluster}}
-        - application: mine-saker-api
           namespace: min-side
-          cluster: {{personbrukerGcpCluster}}
+          cluster: {{min-side-cluster}}
         - application: {{sosialhjelpDialogApi}}
           cluster: {{dialogGcpCluster}}
 {{/if}}
