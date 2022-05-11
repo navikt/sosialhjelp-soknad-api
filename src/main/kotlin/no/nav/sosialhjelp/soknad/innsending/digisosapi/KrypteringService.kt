@@ -13,9 +13,13 @@ import java.io.PipedInputStream
 import java.io.PipedOutputStream
 import java.security.Security
 import java.security.cert.X509Certificate
+import java.util.concurrent.CompletionException
+import java.util.concurrent.ExecutionException
 import java.util.concurrent.ExecutorCompletionService
 import java.util.concurrent.Executors
 import java.util.concurrent.Future
+import java.util.concurrent.TimeUnit
+import java.util.concurrent.TimeoutException
 
 @Component
 class KrypteringService(
@@ -70,5 +74,21 @@ class KrypteringService(
 
     companion object {
         private val log by logger()
+
+        fun waitForFutures(krypteringFutureList: List<Future<Void>>) {
+            for (voidFuture in krypteringFutureList) {
+                try {
+                    voidFuture[300, TimeUnit.SECONDS]
+                } catch (e: CompletionException) {
+                    throw IllegalStateException(e.cause)
+                } catch (e: ExecutionException) {
+                    throw IllegalStateException(e)
+                } catch (e: TimeoutException) {
+                    throw IllegalStateException(e)
+                } catch (e: InterruptedException) {
+                    throw IllegalStateException(e)
+                }
+            }
+        }
     }
 }

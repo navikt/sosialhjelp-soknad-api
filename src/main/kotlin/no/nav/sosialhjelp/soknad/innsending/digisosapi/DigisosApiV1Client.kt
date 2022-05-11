@@ -5,6 +5,7 @@ import no.ks.fiks.streaming.klient.FilForOpplasting
 import no.nav.sosialhjelp.kotlin.utils.logger
 import no.nav.sosialhjelp.soknad.common.Constants.HEADER_INTEGRASJON_ID
 import no.nav.sosialhjelp.soknad.common.Constants.HEADER_INTEGRASJON_PASSORD
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.KrypteringService.Companion.waitForFutures
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.digisosObjectMapper
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.getDigisosIdFromResponse
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.stripVekkFnutter
@@ -24,11 +25,7 @@ import java.io.IOException
 import java.nio.charset.StandardCharsets
 import java.util.Collections
 import java.util.UUID
-import java.util.concurrent.CompletionException
-import java.util.concurrent.ExecutionException
 import java.util.concurrent.Future
-import java.util.concurrent.TimeUnit
-import java.util.concurrent.TimeoutException
 
 interface DigisosApiV1Client {
 
@@ -110,22 +107,6 @@ class DigisosApiV1ClientImpl(
             .setRetryHandler(retryHandler)
             .setServiceUnavailableRetryStrategy(serviceUnavailableRetryStrategy)
             .useSystemProperties()
-    }
-
-    private fun waitForFutures(krypteringFutureList: List<Future<Void>>) {
-        for (voidFuture in krypteringFutureList) {
-            try {
-                voidFuture[300, TimeUnit.SECONDS]
-            } catch (e: CompletionException) {
-                throw IllegalStateException(e.cause)
-            } catch (e: ExecutionException) {
-                throw IllegalStateException(e)
-            } catch (e: TimeoutException) {
-                throw IllegalStateException(e)
-            } catch (e: InterruptedException) {
-                throw IllegalStateException(e)
-            }
-        }
     }
 
     private fun lastOppFiler(
