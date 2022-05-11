@@ -107,7 +107,7 @@ open class OpplastetVedleggRessurs(
         val eier = SubjectHandlerUtils.getUserIdFromToken()
 
         // bruk KS mellomlagringstjeneste hvis featuren er enablet og søknad skal sendes med DigisosApi
-        return if (soknadSkalSendesMedDigisosApi(behandlingsId, eier) && mellomlagringEnabled) {
+        return if (mellomlagringEnabled && soknadSkalSendesMedDigisosApi(behandlingsId, eier)) {
             val mellomlagretVedlegg = mellomlagringService.uploadVedlegg(behandlingsId, vedleggstype, data, filnavn, "token")
             FilFrontend(mellomlagretVedlegg.filnavn, mellomlagretVedlegg.filId)
         } else {
@@ -140,6 +140,9 @@ open class OpplastetVedleggRessurs(
 
     private fun soknadSkalSendesMedDigisosApi(behandlingsId: String, eier: String): Boolean {
         val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
+        if (soknadUnderArbeid.erEttersendelse) {
+            return false
+        }
         val kommunenummer = soknadUnderArbeid.jsonInternalSoknad?.soknad?.mottaker?.kommunenummer
             ?: throw IllegalStateException("Kommunenummer ikke funnet for JsonInternalSoknad.soknad.mottaker.kommunenummer")
 
