@@ -140,8 +140,11 @@ open class OpplastetVedleggRessurs(
 
     private fun soknadSkalSendesMedDigisosApi(behandlingsId: String, eier: String): Boolean {
         val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
+        if (soknadUnderArbeid.erEttersendelse) {
+            return false
+        }
         val kommunenummer = soknadUnderArbeid.jsonInternalSoknad?.soknad?.mottaker?.kommunenummer
-            ?: return false
+            ?: throw IllegalStateException("Kommunenummer ikke funnet for JsonInternalSoknad.soknad.mottaker.kommunenummer")
 
         return when (kommuneInfoService.kommuneInfo(kommunenummer)) {
             FIKS_NEDETID_OG_TOM_CACHE -> {
