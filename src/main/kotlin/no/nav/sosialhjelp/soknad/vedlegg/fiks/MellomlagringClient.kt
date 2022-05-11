@@ -128,7 +128,11 @@ class MellomlagringClient(
                 .metadata(filOpplasting.metadata)
                 .data(krypteringService.krypter(filOpplasting.data, krypteringFutureList, fiksX509Certificate))
                 .build()
+            log.info("kryptert: ${filForOpplasting.metadata}")
             waitForFutures(krypteringFutureList)
+        } catch (e: Exception) {
+            log.info("noe feil skjedde ved kryptering", e)
+            throw e
         } finally {
             krypteringFutureList
                 .filter { !it.isDone && !it.isCancelled }
