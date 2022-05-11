@@ -41,6 +41,7 @@ class KrypteringService(
                     if (MiljoUtils.isNonProduction() && serviceUtils.isMockAltProfil()) {
                         IOUtils.copy(dokumentStream, pipedOutputStream)
                     } else {
+                        log.info("kryptering nu!")
                         kryptering.krypterData(
                             pipedOutputStream,
                             dokumentStream,
@@ -62,46 +63,8 @@ class KrypteringService(
                 }
                 null
             }
+            log.info("add to krypteringFutureList")
             krypteringFutureList.add(krypteringFuture)
-        } catch (e: IOException) {
-            throw RuntimeException(e)
-        } finally {
-            log.debug("Closing dokumentStream InputStream")
-            dokumentStream.close()
-        }
-        return pipedInputStream
-    }
-
-    fun krypterSingle(
-        dokumentStream: InputStream,
-        fiksX509Certificate: X509Certificate
-    ): InputStream {
-        val pipedInputStream = PipedInputStream()
-        try {
-            val pipedOutputStream = PipedOutputStream(pipedInputStream)
-            try {
-                if (MiljoUtils.isNonProduction() && serviceUtils.isMockAltProfil()) {
-                    IOUtils.copy(dokumentStream, pipedOutputStream)
-                } else {
-                    kryptering.krypterData(
-                        pipedOutputStream,
-                        dokumentStream,
-                        fiksX509Certificate,
-                        Security.getProvider("BC")
-                    )
-                }
-            } catch (e: Exception) {
-                log.error("Encryption failed, setting exception on encrypted InputStream", e)
-                throw IllegalStateException("An error occurred during encryption", e)
-            } finally {
-                try {
-                    log.debug("Closing encryption OutputStream")
-                    pipedOutputStream.close()
-                    log.debug("Encryption OutputStream closed")
-                } catch (e: IOException) {
-                    log.error("Failed closing encryption OutputStream", e)
-                }
-            }
         } catch (e: IOException) {
             throw RuntimeException(e)
         } finally {
