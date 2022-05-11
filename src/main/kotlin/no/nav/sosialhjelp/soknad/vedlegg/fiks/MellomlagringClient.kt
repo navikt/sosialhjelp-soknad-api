@@ -82,7 +82,7 @@ class MellomlagringClient(
 
     fun postVedlegg(navEksternId: String, filOpplasting: FilOpplasting, token: String) {
         log.info("start kryptering av fil")
-        val krypteringFutureList = Collections.synchronizedList(mutableListOf<Future<Void>>())
+        val krypteringFutureList = Collections.synchronizedList(ArrayList<Future<Void>>(1))
 
         try {
             val fiksX509Certificate = dokumentlagerClient.getDokumentlagerPublicKeyX509Certificate()
