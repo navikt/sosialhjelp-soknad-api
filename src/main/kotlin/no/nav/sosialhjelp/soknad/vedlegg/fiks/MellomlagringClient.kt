@@ -120,7 +120,7 @@ class MellomlagringClient(
             log.info("Starter post kall til KS mellomlagring - $digisosApiEndpoint/digisos/api/v1/mellomlagring/$navEksternId")
             clientBuilder.build().use { client ->
                 val post = HttpPost("$digisosApiEndpoint/digisos/api/v1/mellomlagring/$navEksternId")
-    //                post.setHeader("requestid", UUID.randomUUID().toString())
+                // post.setHeader("requestid", UUID.randomUUID().toString())
                 post.setHeader(HttpHeader.AUTHORIZATION.name, token)
                 post.setHeader(HEADER_INTEGRASJON_ID, integrasjonsidFiks)
                 post.setHeader(HEADER_INTEGRASJON_PASSORD, integrasjonpassordFiks)
