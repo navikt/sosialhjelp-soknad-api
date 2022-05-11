@@ -50,6 +50,7 @@ class DigisosApiV1ClientImpl(
     private val integrasjonsidFiks: String,
     private val integrasjonpassordFiks: String,
     private val kommuneInfoService: KommuneInfoService,
+    private val dokumentlagerClient: DokumentlagerClient,
     private val krypteringService: KrypteringService
 ) : DigisosApiV1Client {
 
@@ -79,6 +80,7 @@ class DigisosApiV1ClientImpl(
         val krypteringFutureList = Collections.synchronizedList(ArrayList<Future<Void>>(dokumenter.size))
         val digisosId: String
         try {
+            val fiksX509Certificate = dokumentlagerClient.getDokumentlagerPublicKeyX509Certificate()
             digisosId = lastOppFiler(
                 soknadJson,
                 tilleggsinformasjonJson,
@@ -87,7 +89,7 @@ class DigisosApiV1ClientImpl(
                     FilForOpplasting.builder<Any>()
                         .filnavn(dokument.metadata.filnavn)
                         .metadata(dokument.metadata)
-                        .data(krypteringService.krypter(dokument.data, krypteringFutureList))
+                        .data(krypteringService.krypter(dokument.data, krypteringFutureList, fiksX509Certificate))
                         .build()
                 },
                 kommunenr,

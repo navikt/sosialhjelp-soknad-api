@@ -12,13 +12,13 @@ import java.io.InputStream
 import java.io.PipedInputStream
 import java.io.PipedOutputStream
 import java.security.Security
+import java.security.cert.X509Certificate
 import java.util.concurrent.ExecutorCompletionService
 import java.util.concurrent.Executors
 import java.util.concurrent.Future
 
 @Component
 class KrypteringService(
-    private val dokumentlagerClient: DokumentlagerClient,
     private val serviceUtils: ServiceUtils
 ) {
     private val executor = ExecutorCompletionService<Void>(Executors.newCachedThreadPool())
@@ -26,7 +26,8 @@ class KrypteringService(
 
     fun krypter(
         dokumentStream: InputStream,
-        krypteringFutureList: MutableList<Future<Void>>
+        krypteringFutureList: MutableList<Future<Void>>,
+        fiksX509Certificate: X509Certificate
     ): InputStream {
         val pipedInputStream = PipedInputStream()
         try {
@@ -66,8 +67,6 @@ class KrypteringService(
         }
         return pipedInputStream
     }
-
-    private val fiksX509Certificate get() = dokumentlagerClient.getDokumentlagerPublicKeyX509Certificate()
 
     companion object {
         private val log by logger()
