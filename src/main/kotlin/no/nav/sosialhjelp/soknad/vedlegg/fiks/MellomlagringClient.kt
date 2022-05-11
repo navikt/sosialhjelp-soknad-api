@@ -108,20 +108,13 @@ class MellomlagringClient(
         log.info("slutt kryptering av fil")
     }
 
-    private fun lastopp(
-        filForOpplasting: FilForOpplasting<Any>,
-        navEksternId: String,
-        token: String,
-    ) {
+    private fun lastopp(filForOpplasting: FilForOpplasting<Any>, navEksternId: String, token: String) {
         val entitybuilder = MultipartEntityBuilder.create()
         entitybuilder.setCharset(StandardCharsets.UTF_8)
         entitybuilder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE)
 
         entitybuilder.addTextBody("metadata", getJson(filForOpplasting))
-        entitybuilder.addBinaryBody(filForOpplasting.filnavn,
-            filForOpplasting.data,
-            ContentType.APPLICATION_OCTET_STREAM,
-            filForOpplasting.filnavn)
+        entitybuilder.addBinaryBody(filForOpplasting.filnavn, filForOpplasting.data, ContentType.APPLICATION_OCTET_STREAM, filForOpplasting.filnavn)
 
         try {
             log.info("Starter post kall til KS mellomlagring - $digisosApiEndpoint/digisos/api/v1/mellomlagring/$navEksternId")
@@ -135,9 +128,7 @@ class MellomlagringClient(
 
                 val startTime = System.currentTimeMillis()
                 val response = client.execute(post)
-                log.info("Response: ${response.statusLine.reasonPhrase}, ${
-                    digisosObjectMapper.writeValueAsString(response.entity.content.readBytes())
-                }")
+                log.info("Response: ${response.statusLine.reasonPhrase}, ${digisosObjectMapper.writeValueAsString(response.entity.content.readBytes())}")
                 val endTime = System.currentTimeMillis()
                 if (response.statusLine.statusCode >= 300) {
                     val errorResponse = EntityUtils.toString(response.entity)
