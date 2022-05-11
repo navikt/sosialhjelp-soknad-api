@@ -91,6 +91,7 @@ class MellomlagringClient(
         entitybuilder.addBinaryBody(filForOpplasting.filnavn, filForOpplasting.data, ContentType.APPLICATION_OCTET_STREAM, filForOpplasting.filnavn)
 
         try {
+            log.info("Starter post kall til KS mellomlagring - $digisosApiEndpoint/digisos/api/v1/mellomlagring/$navEksternId")
             clientBuilder.build().use { client ->
                 val post = HttpPost("$digisosApiEndpoint/digisos/api/v1/mellomlagring/$navEksternId")
 //                post.setHeader("requestid", UUID.randomUUID().toString())
@@ -101,6 +102,7 @@ class MellomlagringClient(
 
                 val startTime = System.currentTimeMillis()
                 val response = client.execute(post)
+                log.info("Response: ${response.statusLine.reasonPhrase}, ${digisosObjectMapper.writeValueAsString(response.entity.content.readBytes())}")
                 val endTime = System.currentTimeMillis()
                 if (response.statusLine.statusCode >= 300) {
                     val errorResponse = EntityUtils.toString(response.entity)
@@ -115,6 +117,7 @@ class MellomlagringClient(
     }
 
     private fun krypter(filOpplasting: FilOpplasting): FilForOpplasting<Any> {
+        log.info("start kryptering av fil")
         val krypteringFutureList = Collections.synchronizedList(ArrayList<Future<Void>>(1))
         val filForOpplasting: FilForOpplasting<Any>
         try {
@@ -131,6 +134,7 @@ class MellomlagringClient(
                 .filter { !it.isDone && !it.isCancelled }
                 .forEach { it.cancel(true) }
         }
+        log.info("slutt kryptering av fil")
         return filForOpplasting
     }
 

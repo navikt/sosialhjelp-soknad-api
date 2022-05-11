@@ -1,6 +1,7 @@
 package no.nav.sosialhjelp.soknad.vedlegg.fiks
 
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler
+import no.nav.sosialhjelp.kotlin.utils.logger
 import no.nav.sosialhjelp.soknad.common.filedetection.FileDetectionUtils
 import no.nav.sosialhjelp.soknad.common.filedetection.MimeTypes
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
@@ -71,13 +72,16 @@ class MellomlagringService(
             ),
             data = ByteArrayInputStream(data)
         )
+        log.info("filmetadata: ${filOpplasting.metadata}")
 
+        log.info("kaller mellomlagringClient.postVedlegg")
         mellomlagringClient.postVedlegg(
             navEksternId = behandlingsId,
             filOpplasting = filOpplasting,
             token = token
         )
-        return MellomlagretVedleggMetadata(filnavn = "filnavn", filId = "uuid")
+        log.info("suksessfull mellomlagring")
+        return MellomlagretVedleggMetadata(filnavn = filnavn, filId = "uuid")
     }
 
     fun deleteVedleggAndUpdateVedleggstatus(behandlingsId: String, vedleggId: String, token: String) {
@@ -94,6 +98,10 @@ class MellomlagringService(
 
         // slett mellomlagret vedlegg
         mellomlagringClient.deleteVedlegg(navEksternId = behandlingsId, digisosDokumentId = vedleggId, token = token)
+    }
+
+    companion object {
+        private val log by logger()
     }
 }
 
