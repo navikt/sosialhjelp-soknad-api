@@ -9,6 +9,7 @@ import no.nav.sosialhjelp.soknad.common.Constants.HEADER_INTEGRASJON_PASSORD
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DokumentlagerClient
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.FiksServiceUnavailableRetryStrategy
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.KrypteringService
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.KrypteringService.Companion.waitForFutures
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.digisosObjectMapper
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilOpplasting
 import org.apache.http.client.config.RequestConfig
@@ -29,6 +30,8 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import org.springframework.web.reactive.function.client.bodyToMono
 import java.io.IOException
 import java.nio.charset.StandardCharsets
+import java.util.Collections
+import java.util.concurrent.Future
 
 @Component
 class MellomlagringClient(
@@ -78,20 +81,53 @@ class MellomlagringClient(
     }
 
     fun postVedlegg(navEksternId: String, filOpplasting: FilOpplasting, token: String) {
-        val filForOpplasting = krypter(filOpplasting)
+        log.info("start kryptering av fil")
+        val krypteringFutureList = Collections.synchronizedList(mutableListOf<Future<Void>>())
 
+        try {
+            val fiksX509Certificate = dokumentlagerClient.getDokumentlagerPublicKeyX509Certificate()
+            lastopp(
+                filForOpplasting = FilForOpplasting.builder<Any>()
+                    .filnavn(filOpplasting.metadata.filnavn)
+                    .metadata(filOpplasting.metadata)
+                    .data(krypteringService.krypter(filOpplasting.data, krypteringFutureList, fiksX509Certificate))
+                    .build(),
+                navEksternId = navEksternId,
+                token = token
+            )
+            waitForFutures(krypteringFutureList)
+        } catch (e: Exception) {
+            log.info("noe feil skjedde ved kryptering", e)
+            throw e
+        } finally {
+            log.info("finally blokk")
+            krypteringFutureList
+                .filter { !it.isDone && !it.isCancelled }
+                .forEach { it.cancel(true) }
+        }
+        log.info("slutt kryptering av fil")
+    }
+
+    private fun lastopp(
+        filForOpplasting: FilForOpplasting<Any>,
+        navEksternId: String,
+        token: String,
+    ) {
         val entitybuilder = MultipartEntityBuilder.create()
         entitybuilder.setCharset(StandardCharsets.UTF_8)
         entitybuilder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE)
 
         entitybuilder.addTextBody("metadata", getJson(filForOpplasting))
-        entitybuilder.addBinaryBody(filForOpplasting.filnavn, filForOpplasting.data, ContentType.APPLICATION_OCTET_STREAM, filForOpplasting.filnavn)
+        entitybuilder.addBinaryBody(filForOpplasting.filnavn,
+            filForOpplasting.data,
+            ContentType.APPLICATION_OCTET_STREAM,
+            filForOpplasting.filnavn)
 
         try {
             log.info("Starter post kall til KS mellomlagring - $digisosApiEndpoint/digisos/api/v1/mellomlagring/$navEksternId")
             clientBuilder.build().use { client ->
                 val post = HttpPost("$digisosApiEndpoint/digisos/api/v1/mellomlagring/$navEksternId")
-//                post.setHeader("requestid", UUID.randomUUID().toString())
+    //                post.setHeader("requestid", UUID.randomUUID().toString())
                 post.setHeader(HttpHeader.AUTHORIZATION.name, token)
                 post.setHeader(HEADER_INTEGRASJON_ID, integrasjonsidFiks)
                 post.setHeader(HEADER_INTEGRASJON_PASSORD, integrasjonpassordFiks)
@@ -99,7 +135,9 @@ class MellomlagringClient(
 
                 val startTime = System.currentTimeMillis()
                 val response = client.execute(post)
-                log.info("Response: ${response.statusLine.reasonPhrase}, ${digisosObjectMapper.writeValueAsString(response.entity.content.readBytes())}")
+                log.info("Response: ${response.statusLine.reasonPhrase}, ${
+                    digisosObjectMapper.writeValueAsString(response.entity.content.readBytes())
+                }")
                 val endTime = System.currentTimeMillis()
                 if (response.statusLine.statusCode >= 300) {
                     val errorResponse = EntityUtils.toString(response.entity)
@@ -111,28 +149,6 @@ class MellomlagringClient(
         } catch (e: IOException) {
             throw IllegalStateException("Mellomlagring av vedlegg til søknad $navEksternId feilet", e)
         }
-    }
-
-    private fun krypter(filOpplasting: FilOpplasting): FilForOpplasting<Any> {
-        log.info("start kryptering av fil")
-        val filForOpplasting: FilForOpplasting<Any>
-        try {
-            val fiksX509Certificate = dokumentlagerClient.getDokumentlagerPublicKeyX509Certificate()
-
-            filForOpplasting = FilForOpplasting.builder<Any>()
-                .filnavn(filOpplasting.metadata.filnavn)
-                .metadata(filOpplasting.metadata)
-                .data(krypteringService.krypterSingle(filOpplasting.data, fiksX509Certificate))
-                .build()
-            log.info("kryptert: ${filForOpplasting.metadata}")
-        } catch (e: Exception) {
-            log.info("noe feil skjedde ved kryptering", e)
-            throw e
-        } finally {
-            log.info("finally blokk")
-        }
-        log.info("slutt kryptering av fil")
-        return filForOpplasting
     }
 
     fun deleteAllVedleggFor(navEksternId: String, token: String) {
