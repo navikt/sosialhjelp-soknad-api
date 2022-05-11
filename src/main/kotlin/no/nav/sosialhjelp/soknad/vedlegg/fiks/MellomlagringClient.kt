@@ -9,7 +9,6 @@ import no.nav.sosialhjelp.soknad.common.Constants.HEADER_INTEGRASJON_PASSORD
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DokumentlagerClient
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.FiksServiceUnavailableRetryStrategy
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.KrypteringService
-import no.nav.sosialhjelp.soknad.innsending.digisosapi.KrypteringService.Companion.waitForFutures
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.digisosObjectMapper
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilOpplasting
 import org.apache.http.client.config.RequestConfig
@@ -30,8 +29,6 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import org.springframework.web.reactive.function.client.bodyToMono
 import java.io.IOException
 import java.nio.charset.StandardCharsets
-import java.util.Collections
-import java.util.concurrent.Future
 
 @Component
 class MellomlagringClient(
@@ -118,7 +115,6 @@ class MellomlagringClient(
 
     private fun krypter(filOpplasting: FilOpplasting): FilForOpplasting<Any> {
         log.info("start kryptering av fil")
-        val krypteringFutureList = Collections.synchronizedList(ArrayList<Future<Void>>())
         val filForOpplasting: FilForOpplasting<Any>
         try {
             val fiksX509Certificate = dokumentlagerClient.getDokumentlagerPublicKeyX509Certificate()
@@ -126,18 +122,14 @@ class MellomlagringClient(
             filForOpplasting = FilForOpplasting.builder<Any>()
                 .filnavn(filOpplasting.metadata.filnavn)
                 .metadata(filOpplasting.metadata)
-                .data(krypteringService.krypter(filOpplasting.data, krypteringFutureList, fiksX509Certificate))
+                .data(krypteringService.krypterSingle(filOpplasting.data, fiksX509Certificate))
                 .build()
             log.info("kryptert: ${filForOpplasting.metadata}")
-            waitForFutures(krypteringFutureList)
         } catch (e: Exception) {
             log.info("noe feil skjedde ved kryptering", e)
             throw e
         } finally {
             log.info("finally blokk")
-            krypteringFutureList
-                .filter { !it.isDone && !it.isCancelled }
-                .forEach { it.cancel(true) }
         }
         log.info("slutt kryptering av fil")
         return filForOpplasting
