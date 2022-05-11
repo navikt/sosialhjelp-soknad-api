@@ -118,7 +118,7 @@ class MellomlagringClient(
 
     private fun krypter(filOpplasting: FilOpplasting): FilForOpplasting<Any> {
         log.info("start kryptering av fil")
-        val krypteringFutureList = Collections.synchronizedList(ArrayList<Future<Void>>(1))
+        val krypteringFutureList = Collections.synchronizedList(ArrayList<Future<Void>>())
         val filForOpplasting: FilForOpplasting<Any>
         try {
             val fiksX509Certificate = dokumentlagerClient.getDokumentlagerPublicKeyX509Certificate()
@@ -134,6 +134,7 @@ class MellomlagringClient(
             log.info("noe feil skjedde ved kryptering", e)
             throw e
         } finally {
+            log.info("finally blokk")
             krypteringFutureList
                 .filter { !it.isDone && !it.isCancelled }
                 .forEach { it.cancel(true) }
