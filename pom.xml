@@ -56,7 +56,7 @@
         <streaming-klient.version>1.0.16</streaming-klient.version>
 
         <spring-boot.version>2.6.7</spring-boot.version>
-        <spring.version>5.3.19</spring.version>
+        <spring.version>5.3.20</spring.version>
         <jetty.version>9.4.46.v20220331</jetty.version>
         <jersey.version>2.35</jersey.version>
         <token-validation.version>2.0.16</token-validation.version>
