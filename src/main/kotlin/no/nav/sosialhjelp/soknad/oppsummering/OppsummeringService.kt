@@ -51,7 +51,7 @@ class OppsummeringService(
 
         if (soknadUnderArbeid.jsonInternalSoknad?.vedlegg?.vedlegg?.isEmpty() == null) {
             log.info("Oppdaterer vedleggsforventninger for soknad $behandlingsId fra oppsummeringssiden, ettersom side 8 ble hoppet over")
-            if (unleash.isEnabled(KS_MELLOMLAGRING_ENABLED, false) && soknadSkalSendesMedDigisosApi(soknadUnderArbeid, kommuneInfoService)){
+            if (unleash.isEnabled(KS_MELLOMLAGRING_ENABLED, false) && soknadSkalSendesMedDigisosApi(soknadUnderArbeid, kommuneInfoService)) {
                 // todo: oppdater vedleggsforventninger ut fra mellomlagrede vedlegg?
             } else {
                 oppdaterVedleggsforventninger(soknadUnderArbeid, fnr)
