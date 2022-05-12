@@ -77,8 +77,8 @@ class MellomlagringService(
         mellomlagringClient.postVedlegg(navEksternId = behandlingsId, filOpplasting = filOpplasting)
         log.info("suksessfull mellomlagring")
         val mellomlagredeVedlegg = mellomlagringClient.getMellomlagredeVedlegg(navEksternId = behandlingsId)
-        val filId = mellomlagredeVedlegg.mellomlagringMetadataList?.firstOrNull { it.filnavn == filnavn }?.filId ?: "dummy"
-        log.info("Mellomlagrede vedlegg: ${mellomlagredeVedlegg.mellomlagringMetadataList}")
+        val filId = mellomlagredeVedlegg.mellomlagringDokumentInfoDTOList?.firstOrNull { it.filnavn == filnavn }?.filId ?: "dummy"
+        log.info("Mellomlagrede vedlegg: ${mellomlagredeVedlegg.mellomlagringDokumentInfoDTOList}")
         return MellomlagretVedleggMetadata(filnavn = filnavn, filId = filId)
     }
 
@@ -87,7 +87,7 @@ class MellomlagringService(
 
         // hent alle mellomlagrede vedlegg
         val mellomlagredeVedlegg = mellomlagringClient.getMellomlagredeVedlegg(navEksternId = behandlingsId)
-        mellomlagredeVedlegg.mellomlagringMetadataList
+        log.info("Mellomlagrede vedlegg: ${mellomlagredeVedlegg.mellomlagringDokumentInfoDTOList}")
 
         // oppdater vedleggstatus
         val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
