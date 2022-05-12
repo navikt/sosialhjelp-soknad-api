@@ -1,6 +1,7 @@
 package no.nav.sosialhjelp.soknad.vedlegg.fiks
 
 import com.fasterxml.jackson.core.JsonProcessingException
+import com.fasterxml.jackson.module.kotlin.readValue
 import no.ks.fiks.streaming.klient.FilForOpplasting
 import no.nav.sosialhjelp.api.fiks.exceptions.FiksException
 import no.nav.sosialhjelp.kotlin.utils.logger
@@ -70,17 +71,19 @@ class MellomlagringClient(
         .setDefaultRequestConfig(requestConfig)
 
     fun getMellomlagredeVedlegg(navEksternId: String): MellomlagringDto {
-        return webClient.get()
+        val responseString: String = webClient.get()
             .uri(MELLOMLAGRING_PATH, navEksternId)
             .accept(MediaType.APPLICATION_JSON)
             .header(HttpHeaders.AUTHORIZATION, BEARER + maskinportenClient.getToken())
             .retrieve()
-            .bodyToMono<MellomlagringDto>()
+            .bodyToMono<String>()
             .onErrorMap(WebClientResponseException::class.java) {
                 log.warn("Fiks - getMellomlagredeVedlegg feilet - ${it.responseBodyAsString}", it)
                 throw it
             }
             .block() ?: throw FiksException("MellomlagringDto er null?", null)
+        log.info("Response: $responseString")
+        return digisosObjectMapper.readValue<MellomlagringDto>(responseString)
     }
 
     fun postVedlegg(navEksternId: String, filOpplasting: FilOpplasting) {
