@@ -55,7 +55,7 @@ class FamiliesituasjonSteg {
         val harBrukerUtfyltEktefelle =
             harBrukerUtfyltSivilstatus && sivilstatus.status == JsonSivilstatus.Status.GIFT && sivilstatus.ektefelle != null
 
-        val sporsmal = ArrayList<Sporsmal>()
+        val sporsmal = mutableListOf<Sporsmal>()
         if (harBrukerUtfyltSivilstatus && !harBrukerUtfyltEktefelle) {
             sporsmal.add(brukerSivilstatusSporsmal(true, sivilstatus.status))
         }
@@ -189,7 +189,7 @@ class FamiliesituasjonSteg {
 
     private fun forsorgerpliktSporsmal(forsorgerplikt: JsonForsorgerplikt): List<Sporsmal> {
         val harSystemBarn = harSystemRegistrerteBarn(forsorgerplikt)
-        val sporsmal = ArrayList<Sporsmal>()
+        val sporsmal = mutableListOf<Sporsmal>()
         if (!harSystemBarn) {
             sporsmal.add(ingenRegistrerteBarnSporsmal())
         }

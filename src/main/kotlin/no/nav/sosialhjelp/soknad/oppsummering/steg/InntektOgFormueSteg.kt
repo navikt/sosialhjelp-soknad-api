@@ -26,7 +26,7 @@ class InntektOgFormueSteg {
         val opplysninger = okonomi.opplysninger
         val driftsinformasjon = jsonInternalSoknad.soknad.driftsinformasjon
 
-        val avsnitt = ArrayList<Avsnitt>()
+        val avsnitt = mutableListOf<Avsnitt>()
         avsnitt.add(skattbarInntektAvsnitt.getAvsnitt(okonomi, driftsinformasjon))
         avsnitt.add(navUtbetalinger.getAvsnitt(opplysninger, driftsinformasjon))
         avsnitt.add(bostotteHusbanken.getAvsnitt(opplysninger, driftsinformasjon))
