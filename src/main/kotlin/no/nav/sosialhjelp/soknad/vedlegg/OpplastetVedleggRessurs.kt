@@ -126,13 +126,10 @@ open class OpplastetVedleggRessurs(
         @PathParam("vedleggId") vedleggId: String,
     ) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
-        val eier = SubjectHandlerUtils.getUserIdFromToken()
-        opplastetVedleggRepository.hentVedlegg(vedleggId, eier)?.let {
+        if (!mellomlagringEnabled) {
             opplastetVedleggService.deleteVedleggAndUpdateVedleggstatus(behandlingsId, vedleggId)
-            return
-        }
-        // forsøk sletting via KS mellomlagringstjeneste hvis feature er enablet og sletting fra DB ikke ble utført
-        if (mellomlagringEnabled) {
+        } else {
+            // forsøk sletting via KS mellomlagringstjeneste hvis feature er enablet og sletting fra DB ikke ble utført
             log.info("Sletter vedlegg $vedleggId fra KS mellomlagring")
             mellomlagringService.deleteVedleggAndUpdateVedleggstatus(behandlingsId, vedleggId)
         }

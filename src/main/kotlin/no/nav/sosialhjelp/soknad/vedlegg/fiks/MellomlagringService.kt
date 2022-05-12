@@ -76,7 +76,10 @@ class MellomlagringService(
         log.info("kaller mellomlagringClient.postVedlegg")
         mellomlagringClient.postVedlegg(navEksternId = behandlingsId, filOpplasting = filOpplasting)
         log.info("suksessfull mellomlagring")
-        return MellomlagretVedleggMetadata(filnavn = filnavn, filId = "uuid")
+        val mellomlagredeVedlegg = mellomlagringClient.getMellomlagredeVedlegg(navEksternId = behandlingsId)
+        val filId = mellomlagredeVedlegg.mellomlagringMetadataList?.firstOrNull { it.filnavn == filnavn }?.filId ?: "dummy"
+        log.info("Mellomlagrede vedlegg: ${mellomlagredeVedlegg.mellomlagringMetadataList}")
+        return MellomlagretVedleggMetadata(filnavn = filnavn, filId = filId)
     }
 
     fun deleteVedleggAndUpdateVedleggstatus(behandlingsId: String, vedleggId: String) {
