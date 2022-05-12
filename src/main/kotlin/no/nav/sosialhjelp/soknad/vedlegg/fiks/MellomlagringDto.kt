@@ -2,7 +2,7 @@ package no.nav.sosialhjelp.soknad.vedlegg.fiks
 
 data class MellomlagringDto(
     val navEksternRefId: String,
-    val mellomlagringMetadataList: List<MellomlagringDokumentInfo>?
+    val mellomlagringDokumentInfoDTOList: List<MellomlagringDokumentInfo>?
 )
 
 data class MellomlagringDokumentInfo(
