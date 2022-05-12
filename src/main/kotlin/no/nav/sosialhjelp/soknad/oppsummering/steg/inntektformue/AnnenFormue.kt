@@ -38,7 +38,7 @@ class AnnenFormue {
     ): List<Sporsmal> {
         val harUtfyltAnnenFormueSporsmal = harBekreftelse(opplysninger, BEKREFTELSE_VERDI)
         val harSvartJaAnnenFormue = harBekreftelseTrue(opplysninger, BEKREFTELSE_VERDI)
-        val sporsmal = ArrayList<Sporsmal>()
+        val sporsmal = mutableListOf<Sporsmal>()
         sporsmal.add(
             Sporsmal(
                 tittel = "inntekt.eierandeler.sporsmal",
@@ -81,7 +81,7 @@ class AnnenFormue {
     }
 
     private fun annenFormueFelter(oversikt: JsonOkonomioversikt?): List<Felt> {
-        val felter = ArrayList<Felt>()
+        val felter = mutableListOf<Felt>()
         addFormueIfPresent(oversikt, felter, VERDI_BOLIG, "inntekt.eierandeler.true.type.bolig")
         addFormueIfPresent(oversikt, felter, VERDI_CAMPINGVOGN, "inntekt.eierandeler.true.type.campingvogn")
         addFormueIfPresent(oversikt, felter, VERDI_KJORETOY, "inntekt.eierandeler.true.type.kjoretoy")

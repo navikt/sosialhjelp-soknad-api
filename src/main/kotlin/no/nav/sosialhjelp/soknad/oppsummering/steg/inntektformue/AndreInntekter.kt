@@ -6,7 +6,6 @@ import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_FORSIKRING
 import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_SALG
 import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_UTBYTTE
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger
-import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling
 import no.nav.sosialhjelp.soknad.oppsummering.dto.Avsnitt
 import no.nav.sosialhjelp.soknad.oppsummering.dto.Felt
 import no.nav.sosialhjelp.soknad.oppsummering.dto.Sporsmal
@@ -30,7 +29,7 @@ class AndreInntekter {
         val harUtfyltAndreInntekterSporsmal = harBekreftelse(opplysninger, BEKREFTELSE_UTBETALING)
         val harSvartJaAndreInntekter = harBekreftelseTrue(opplysninger, BEKREFTELSE_UTBETALING)
         val utbetalingTyper = listOf(UTBETALING_UTBYTTE, UTBETALING_SALG, UTBETALING_FORSIKRING, UTBETALING_ANNET)
-        val sporsmal = ArrayList<Sporsmal>()
+        val sporsmal = mutableListOf<Sporsmal>()
         sporsmal.add(
             Sporsmal(
                 tittel = "inntekt.inntekter.sporsmal",
@@ -39,12 +38,7 @@ class AndreInntekter {
             )
         )
         if (harSvartJaAndreInntekter) {
-            val harSvartHvaHarDuMottattSporsmal =
-                opplysninger.utbetaling.stream().anyMatch { utbetaling: JsonOkonomiOpplysningUtbetaling ->
-                    utbetalingTyper.contains(
-                        utbetaling.type
-                    )
-                }
+            val harSvartHvaHarDuMottattSporsmal = opplysninger.utbetaling.any { utbetalingTyper.contains(it.type) }
             sporsmal.add(
                 Sporsmal(
                     tittel = "inntekt.inntekter.true.type.sporsmal",
@@ -76,7 +70,7 @@ class AndreInntekter {
     }
 
     private fun andreinntekterFelter(opplysninger: JsonOkonomiopplysninger): List<Felt> {
-        val felter = ArrayList<Felt>()
+        val felter = mutableListOf<Felt>()
         addUtbetalingIfPresent(
             opplysninger,
             felter,
@@ -106,19 +100,16 @@ class AndreInntekter {
 
     private fun addUtbetalingIfPresent(
         opplysninger: JsonOkonomiopplysninger,
-        felter: ArrayList<Felt>,
+        felter: MutableList<Felt>,
         type: String,
         key: String
     ) {
-        opplysninger.utbetaling
-            .filter { type == it.type }
-            .firstOrNull()
-            ?.let {
-                felter.add(
-                    Felt(
-                        type = Type.CHECKBOX, svar = createSvar(key, SvarType.LOCALE_TEKST)
-                    )
+        opplysninger.utbetaling.firstOrNull { type == it.type }?.let {
+            felter.add(
+                Felt(
+                    type = Type.CHECKBOX, svar = createSvar(key, SvarType.LOCALE_TEKST)
                 )
-            }
+            )
+        }
     }
 }

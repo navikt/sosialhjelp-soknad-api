@@ -80,14 +80,14 @@ class OkonomiskeOpplysningerOgVedleggSteg {
     }
 
     private fun inntekterSporsmal(okonomi: JsonOkonomi): List<Sporsmal> {
-        val sporsmal = ArrayList<Sporsmal>()
+        val sporsmal = mutableListOf<Sporsmal>()
         addInntekter(sporsmal, okonomi)
         addFormuer(sporsmal, okonomi)
         addUtbetalinger(sporsmal, okonomi)
         return sporsmal
     }
 
-    private fun addInntekter(sporsmal: ArrayList<Sporsmal>, okonomi: JsonOkonomi) {
+    private fun addInntekter(sporsmal: MutableList<Sporsmal>, okonomi: JsonOkonomi) {
         val inntekter: List<JsonOkonomioversiktInntekt>? = okonomi.oversikt.inntekt
 
         // Lønnsinntekt
@@ -144,7 +144,7 @@ class OkonomiskeOpplysningerOgVedleggSteg {
             }
     }
 
-    private fun addFormuer(sporsmal: ArrayList<Sporsmal>, okonomi: JsonOkonomi) {
+    private fun addFormuer(sporsmal: MutableList<Sporsmal>, okonomi: JsonOkonomi) {
         val formuer: List<JsonOkonomioversiktFormue>? = okonomi.oversikt.formue
 
         formuer
@@ -160,7 +160,7 @@ class OkonomiskeOpplysningerOgVedleggSteg {
             }
     }
 
-    private fun addUtbetalinger(sporsmal: ArrayList<Sporsmal>, okonomi: JsonOkonomi) {
+    private fun addUtbetalinger(sporsmal: MutableList<Sporsmal>, okonomi: JsonOkonomi) {
         val utbetalinger: List<JsonOkonomiOpplysningUtbetaling>? = okonomi.opplysninger.utbetaling
 
         val filteredUtbetalinger = utbetalinger
@@ -191,7 +191,7 @@ class OkonomiskeOpplysningerOgVedleggSteg {
     }
 
     private fun utgifterSporsmal(okonomi: JsonOkonomi): List<Sporsmal> {
-        val sporsmal = ArrayList<Sporsmal>()
+        val sporsmal = mutableListOf<Sporsmal>()
         val opplysningUtgifter: List<JsonOkonomiOpplysningUtgift>? = okonomi.opplysninger.utgift
         opplysningUtgifter
             ?.filter { barneutgifter.contains(it.type) }

@@ -34,7 +34,7 @@ class Bank {
 
     private fun bankSporsmal(oversikt: JsonOkonomioversikt?, opplysninger: JsonOkonomiopplysninger): List<Sporsmal> {
         val harUtfyltBankSporsmal = harBekreftelseTrue(opplysninger, SoknadJsonTyper.BEKREFTELSE_SPARING)
-        val sporsmal = ArrayList<Sporsmal>()
+        val sporsmal = mutableListOf<Sporsmal>()
         sporsmal.add(
             Sporsmal(
                 tittel = "inntekt.bankinnskudd.true.type.sporsmal",
@@ -62,7 +62,7 @@ class Bank {
     }
 
     private fun formueFelter(oversikt: JsonOkonomioversikt?): List<Felt> {
-        val felter = ArrayList<Felt>()
+        val felter = mutableListOf<Felt>()
         addFormueIfPresent(oversikt, felter, FORMUE_BRUKSKONTO, "inntekt.bankinnskudd.true.type.brukskonto")
         addFormueIfPresent(oversikt, felter, FORMUE_BSU, "inntekt.bankinnskudd.true.type.bsu")
         addFormueIfPresent(oversikt, felter, FORMUE_LIVSFORSIKRING, "inntekt.bankinnskudd.true.type.livsforsikringssparedel")

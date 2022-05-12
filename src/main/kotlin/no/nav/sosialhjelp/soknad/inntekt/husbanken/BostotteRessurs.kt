@@ -7,7 +7,6 @@ import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.bostotte.JsonBostotteSak
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling
-import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.metrics.aspects.Timed
 import no.nav.sosialhjelp.soknad.common.Constants
@@ -129,9 +128,9 @@ open class BostotteRessurs(
     }
 
     private fun hentSamtykkeFraSoknad(opplysninger: JsonOkonomiopplysninger): Boolean {
-        return opplysninger.bekreftelse.stream()
-            .filter { bekreftelse: JsonOkonomibekreftelse -> bekreftelse.type == BOSTOTTE_SAMTYKKE }
-            .anyMatch { obj: JsonOkonomibekreftelse -> obj.verdi }
+        return opplysninger.bekreftelse
+            .filter { it.type == BOSTOTTE_SAMTYKKE }
+            .any { it.verdi }
     }
 
     private fun hentSamtykkeDatoFraSoknad(opplysninger: JsonOkonomiopplysninger): String? {
