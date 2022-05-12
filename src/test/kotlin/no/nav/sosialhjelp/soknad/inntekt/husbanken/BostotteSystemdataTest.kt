@@ -28,7 +28,6 @@ import org.junit.jupiter.api.Test
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.LocalDateTime
-import java.util.stream.Collectors
 
 internal class BostotteSystemdataTest {
 
@@ -389,9 +388,8 @@ internal class BostotteSystemdataTest {
         // Kjøring:
         bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid, "")
         val utbetalinger = soknadUnderArbeid.jsonInternalSoknad!!.soknad
-            .data.okonomi.opplysninger.utbetaling.stream()
-            .filter { utbetaling: JsonOkonomiOpplysningUtbetaling -> utbetaling.kilde == JsonKilde.SYSTEM }
-            .collect(Collectors.toList())
+            .data.okonomi.opplysninger.utbetaling
+            .filter { it.kilde == JsonKilde.SYSTEM }
         assertThat(utbetalinger).isEmpty()
         assertThat(soknadUnderArbeid.jsonInternalSoknad!!.soknad.driftsinformasjon.stotteFraHusbankenFeilet).isFalse
     }
@@ -421,9 +419,8 @@ internal class BostotteSystemdataTest {
         settBostotteSamtykkePaSoknad(soknadUnderArbeid1.jsonInternalSoknad!!, false)
         bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid1, "")
         val utbetalinger2 = soknadUnderArbeid1.jsonInternalSoknad!!.soknad
-            .data.okonomi.opplysninger.utbetaling.stream()
-            .filter { utbetaling: JsonOkonomiOpplysningUtbetaling -> utbetaling.kilde == JsonKilde.SYSTEM }
-            .collect(Collectors.toList())
+            .data.okonomi.opplysninger.utbetaling
+            .filter { it.kilde == JsonKilde.SYSTEM }
         assertThat(utbetalinger2).isEmpty()
     }
 

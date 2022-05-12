@@ -41,7 +41,7 @@ class ArbeidOgUtdanningSteg {
         val harArbeidsforhold = arbeid.forhold != null && arbeid.forhold.isNotEmpty()
         val harKommentarTilArbeidsforhold =
             arbeid.kommentarTilArbeidsforhold != null && arbeid.kommentarTilArbeidsforhold.verdi != null
-        val sporsmal = ArrayList<Sporsmal>()
+        val sporsmal = mutableListOf<Sporsmal>()
         sporsmal.add(
             Sporsmal(
                 tittel = if (harArbeidsforhold) "arbeidsforhold.infotekst" else "arbeidsforhold.ingen",
@@ -101,7 +101,7 @@ class ArbeidOgUtdanningSteg {
         val erUtdanningUtfylt = utdanning.erStudent != null
         val erStudent = erUtdanningUtfylt && utdanning.erStudent == java.lang.Boolean.TRUE
         val erStudentgradUtfylt = erStudent && utdanning.studentgrad != null
-        val sporsmal = ArrayList<Sporsmal>()
+        val sporsmal = mutableListOf<Sporsmal>()
         sporsmal.add(
             Sporsmal(
                 tittel = "dinsituasjon.studerer.sporsmal",

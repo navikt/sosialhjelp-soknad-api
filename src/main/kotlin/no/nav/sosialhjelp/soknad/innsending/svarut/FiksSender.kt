@@ -22,7 +22,6 @@ import org.springframework.stereotype.Component
 import java.io.InputStream
 import java.sql.Date
 import java.util.UUID
-import java.util.stream.Collectors
 
 @Component
 class FiksSender(
@@ -151,9 +150,8 @@ class FiksSender(
             antallVedleggForsendelse
         )
         try {
-            val opplastedeVedleggstyper = internalSoknad.vedlegg.vedlegg.stream()
+            val opplastedeVedleggstyper = internalSoknad.vedlegg.vedlegg
                 .filter { jsonVedlegg: JsonVedlegg -> jsonVedlegg.status == "LastetOpp" }
-                .collect(Collectors.toList())
             var antallBrukerOpplastedeVedlegg = 0
             for (vedlegg in opplastedeVedleggstyper) {
                 antallBrukerOpplastedeVedlegg += vedlegg.filer.size

@@ -37,7 +37,7 @@ class BostotteHusbanken {
         val harSvartJaBostotte = harUtfyltBostotteSporsmal && harBekreftelseTrue(opplysninger, SoknadJsonTyper.BOSTOTTE)
         val harBostotteSamtykke = harSvartJaBostotte && harBekreftelseTrue(opplysninger, BOSTOTTE_SAMTYKKE)
         val fikkFeilMotHusbanken = java.lang.Boolean.TRUE == driftsinformasjon.stotteFraHusbankenFeilet
-        val sporsmal = ArrayList<Sporsmal>()
+        val sporsmal = mutableListOf<Sporsmal>()
         sporsmal.add(
             Sporsmal(
                 tittel = "inntekt.bostotte.sporsmal.sporsmal",
@@ -112,18 +112,18 @@ class BostotteHusbanken {
     private fun utbetalingerSporsmal(opplysninger: JsonOkonomiopplysninger): Sporsmal {
         val harUtbetalinger = harHusbankenUtbetalinger(opplysninger)
         val harSaker = opplysninger.bostotte.saker.isNotEmpty()
-        val felter = ArrayList<Felt>()
+        val felter: List<Felt>
         if (!harUtbetalinger && harSaker) {
-            felter.add(
+            felter = listOf(
                 Felt(
                     type = Type.TEKST,
                     svar = createSvar("inntekt.bostotte.utbetalingerIkkefunnet", SvarType.LOCALE_TEKST)
                 )
             )
         } else {
-            opplysninger.utbetaling.stream()
+            felter = opplysninger.utbetaling
                 .filter { UTBETALING_HUSBANKEN == it.type }
-                .forEach {
+                .map {
                     val map = LinkedHashMap<String, Svar>()
                     if (it.mottaker == null) {
                         log.warn("Utbetaling.mottaker er null?")
@@ -131,11 +131,9 @@ class BostotteHusbanken {
                     map["inntekt.bostotte.utbetaling.mottaker"] = createSvar(if (it.mottaker == null) "" else it.mottaker.value(), SvarType.TEKST)
                     map["inntekt.bostotte.utbetaling.utbetalingsdato"] = createSvar(it.utbetalingsdato, SvarType.DATO)
                     map["inntekt.bostotte.utbetaling.belop"] = createSvar(it.netto.toString(), SvarType.TEKST)
-                    felter.add(
-                        Felt(
-                            type = Type.SYSTEMDATA_MAP,
-                            labelSvarMap = map
-                        )
+                    Felt(
+                        type = Type.SYSTEMDATA_MAP,
+                        labelSvarMap = map
                     )
                 }
         }
@@ -149,25 +147,23 @@ class BostotteHusbanken {
     private fun sakerSporsmal(opplysninger: JsonOkonomiopplysninger): Sporsmal {
         val harUtbetalinger = harHusbankenUtbetalinger(opplysninger)
         val harSaker = opplysninger.bostotte.saker.isNotEmpty()
-        val felter = ArrayList<Felt>()
+        val felter: List<Felt>
         if (harUtbetalinger && !harSaker) {
-            felter.add(
+            felter = listOf(
                 Felt(
                     type = Type.TEKST,
                     svar = createSvar("inntekt.bostotte.sakerIkkefunnet", SvarType.LOCALE_TEKST)
                 )
             )
         } else {
-            opplysninger.bostotte.saker
-                .forEach {
+            felter = opplysninger.bostotte.saker
+                .map {
                     val map = LinkedHashMap<String, Svar>()
                     map["inntekt.bostotte.sak.dato"] = createSvar(it.dato, SvarType.DATO)
                     map["inntekt.bostotte.sak.status"] = createSvar(bostotteSakStatus(it), SvarType.TEKST)
-                    felter.add(
-                        Felt(
-                            type = Type.SYSTEMDATA_MAP,
-                            labelSvarMap = map
-                        )
+                    Felt(
+                        type = Type.SYSTEMDATA_MAP,
+                        labelSvarMap = map
                     )
                 }
         }
