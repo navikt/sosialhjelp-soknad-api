@@ -41,7 +41,6 @@ class KrypteringService(
                     if (MiljoUtils.isNonProduction() && serviceUtils.isMockAltProfil()) {
                         IOUtils.copy(dokumentStream, pipedOutputStream)
                     } else {
-                        log.info("kryptering nu!")
                         kryptering.krypterData(
                             pipedOutputStream,
                             dokumentStream,
@@ -63,7 +62,6 @@ class KrypteringService(
                 }
                 null
             }
-            log.info("add to krypteringFutureList")
             krypteringFutureList.add(krypteringFuture)
         } catch (e: IOException) {
             throw RuntimeException(e)
