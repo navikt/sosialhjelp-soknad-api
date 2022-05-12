@@ -84,7 +84,6 @@ class MellomlagringClient(
     }
 
     fun postVedlegg(navEksternId: String, filOpplasting: FilOpplasting) {
-        log.info("start kryptering av fil")
         val krypteringFutureList = Collections.synchronizedList(ArrayList<Future<Void>>(1))
 
         try {
@@ -98,16 +97,11 @@ class MellomlagringClient(
                 navEksternId = navEksternId
             )
             waitForFutures(krypteringFutureList)
-        } catch (e: Exception) {
-            log.info("noe feil skjedde ved kryptering", e)
-            throw e
         } finally {
-            log.info("finally blokk")
             krypteringFutureList
                 .filter { !it.isDone && !it.isCancelled }
                 .forEach { it.cancel(true) }
         }
-        log.info("slutt kryptering av fil")
     }
 
     private fun lastopp(filForOpplasting: FilForOpplasting<Any>, navEksternId: String) {
