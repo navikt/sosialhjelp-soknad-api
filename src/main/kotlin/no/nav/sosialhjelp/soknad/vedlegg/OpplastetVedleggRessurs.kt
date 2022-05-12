@@ -25,7 +25,6 @@ import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
 import org.apache.commons.io.IOUtils
 import org.glassfish.jersey.media.multipart.FormDataBodyPart
 import org.glassfish.jersey.media.multipart.FormDataParam
-import org.springframework.http.HttpHeaders
 import org.springframework.stereotype.Controller
 import java.io.File
 import java.io.IOException
@@ -34,7 +33,6 @@ import javax.servlet.http.HttpServletResponse
 import javax.ws.rs.Consumes
 import javax.ws.rs.DELETE
 import javax.ws.rs.GET
-import javax.ws.rs.HeaderParam
 import javax.ws.rs.POST
 import javax.ws.rs.Path
 import javax.ws.rs.PathParam
@@ -63,7 +61,6 @@ open class OpplastetVedleggRessurs(
     @Produces(MediaType.APPLICATION_JSON)
     open fun getVedleggFil(
         @PathParam("vedleggId") vedleggId: String,
-        @HeaderParam(value = HttpHeaders.AUTHORIZATION) token: String?,
         @Context response: HttpServletResponse,
     ): Response {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
@@ -76,9 +73,9 @@ open class OpplastetVedleggRessurs(
             return Response.ok(it.data).type(mimetype).build()
         }
 
-        if (mellomlagringEnabled && token != null) {
+        if (mellomlagringEnabled) {
             log.info("Forsøker å hente vedlegg $vedleggId fra mellomlagring hos KS")
-            mellomlagringService.getVedlegg(vedleggId, token)?.let {
+            mellomlagringService.getVedlegg(vedleggId)?.let {
                 response.setHeader("Content-Disposition", "attachment; filename=\"" + it.filnavn + "\"")
                 val detectedMimeType = getMimeType(it.data)
                 val mimetype = if (detectedMimeType.equals(MimeTypes.TEXT_X_MATLAB, ignoreCase = true)) MimeTypes.APPLICATION_PDF else detectedMimeType
@@ -97,7 +94,6 @@ open class OpplastetVedleggRessurs(
         @PathParam("behandlingsId") behandlingsId: String,
         @PathParam("type") vedleggstype: String,
         @FormDataParam("file") fil: FormDataBodyPart,
-        @HeaderParam(value = HttpHeaders.AUTHORIZATION) token: String?,
     ): FilFrontend {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         if (fil.getValueAs(File::class.java).length() > MAKS_TOTAL_FILSTORRELSE) {
@@ -112,9 +108,9 @@ open class OpplastetVedleggRessurs(
         val eier = SubjectHandlerUtils.getUserIdFromToken()
 
         // bruk KS mellomlagringstjeneste hvis featuren er enablet og søknad skal sendes med DigisosApi
-        return if (mellomlagringEnabled && soknadSkalSendesMedDigisosApi(behandlingsId, eier) && token != null) {
+        return if (mellomlagringEnabled && soknadSkalSendesMedDigisosApi(behandlingsId, eier)) {
             log.info("Forsøker å laste opp vedlegg til mellomlagring hos KS")
-            val mellomlagretVedlegg = mellomlagringService.uploadVedlegg(behandlingsId, vedleggstype, data, filnavn, token)
+            val mellomlagretVedlegg = mellomlagringService.uploadVedlegg(behandlingsId, vedleggstype, data, filnavn)
             FilFrontend(mellomlagretVedlegg.filnavn, mellomlagretVedlegg.filId)
         } else {
             opplastetVedleggService.sjekkOmSoknadUnderArbeidTotalVedleggStorrelseOverskriderMaksgrense(behandlingsId, data)
@@ -128,7 +124,6 @@ open class OpplastetVedleggRessurs(
     open fun deleteVedlegg(
         @PathParam("behandlingsId") behandlingsId: String,
         @PathParam("vedleggId") vedleggId: String,
-        @HeaderParam(value = HttpHeaders.AUTHORIZATION) token: String?,
     ) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         val eier = SubjectHandlerUtils.getUserIdFromToken()
@@ -137,9 +132,9 @@ open class OpplastetVedleggRessurs(
             return
         }
         // forsøk sletting via KS mellomlagringstjeneste hvis feature er enablet og sletting fra DB ikke ble utført
-        if (mellomlagringEnabled && token != null) {
+        if (mellomlagringEnabled) {
             log.info("Sletter vedlegg $vedleggId fra KS mellomlagring")
-            mellomlagringService.deleteVedleggAndUpdateVedleggstatus(behandlingsId, vedleggId, token)
+            mellomlagringService.deleteVedleggAndUpdateVedleggstatus(behandlingsId, vedleggId)
         }
     }
 

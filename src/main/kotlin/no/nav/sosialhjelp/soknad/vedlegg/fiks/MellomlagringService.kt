@@ -25,9 +25,9 @@ class MellomlagringService(
     private val virusScanner: VirusScanner
 ) {
 
-    fun getVedlegg(vedleggId: String, token: String): MellomlagretVedlegg? {
+    fun getVedlegg(vedleggId: String): MellomlagretVedlegg? {
         // todo hvordan gå fra vedleggId til behandlingsId? legge inn behandlingsId som path-param til GET-kallet?
-        val vedlegg = mellomlagringClient.getVedlegg("behandlingsId", vedleggId, token)
+        val vedlegg = mellomlagringClient.getVedlegg("behandlingsId", vedleggId)
         return null
     }
 
@@ -36,7 +36,6 @@ class MellomlagringService(
         vedleggstype: String,
         data: ByteArray,
         originalfilnavn: String,
-        token: String
     ): MellomlagretVedleggMetadata {
         var filnavn = originalfilnavn
 
@@ -75,20 +74,16 @@ class MellomlagringService(
         log.info("filmetadata: ${filOpplasting.metadata}")
 
         log.info("kaller mellomlagringClient.postVedlegg")
-        mellomlagringClient.postVedlegg(
-            navEksternId = behandlingsId,
-            filOpplasting = filOpplasting,
-            token = token
-        )
+        mellomlagringClient.postVedlegg(navEksternId = behandlingsId, filOpplasting = filOpplasting)
         log.info("suksessfull mellomlagring")
         return MellomlagretVedleggMetadata(filnavn = filnavn, filId = "uuid")
     }
 
-    fun deleteVedleggAndUpdateVedleggstatus(behandlingsId: String, vedleggId: String, token: String) {
+    fun deleteVedleggAndUpdateVedleggstatus(behandlingsId: String, vedleggId: String) {
         val eier = SubjectHandlerUtils.getUserIdFromToken()
 
         // hent alle mellomlagrede vedlegg
-        val mellomlagredeVedlegg = mellomlagringClient.getMellomlagredeVedlegg(navEksternId = behandlingsId, token = token)
+        val mellomlagredeVedlegg = mellomlagringClient.getMellomlagredeVedlegg(navEksternId = behandlingsId)
         mellomlagredeVedlegg.mellomlagringMetadataList
 
         // oppdater vedleggstatus
@@ -97,7 +92,7 @@ class MellomlagringService(
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier)
 
         // slett mellomlagret vedlegg
-        mellomlagringClient.deleteVedlegg(navEksternId = behandlingsId, digisosDokumentId = vedleggId, token = token)
+        mellomlagringClient.deleteVedlegg(navEksternId = behandlingsId, digisosDokumentId = vedleggId)
     }
 
     companion object {

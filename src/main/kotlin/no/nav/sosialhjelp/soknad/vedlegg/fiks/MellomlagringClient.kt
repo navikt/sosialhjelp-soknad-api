@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException
 import no.ks.fiks.streaming.klient.FilForOpplasting
 import no.nav.sosialhjelp.api.fiks.exceptions.FiksException
 import no.nav.sosialhjelp.kotlin.utils.logger
+import no.nav.sosialhjelp.soknad.auth.maskinporten.MaskinportenClient
+import no.nav.sosialhjelp.soknad.common.Constants.BEARER
 import no.nav.sosialhjelp.soknad.common.Constants.HEADER_INTEGRASJON_ID
 import no.nav.sosialhjelp.soknad.common.Constants.HEADER_INTEGRASJON_PASSORD
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DokumentlagerClient
@@ -40,6 +42,7 @@ class MellomlagringClient(
     @Value("\${integrasjonpassord_fiks}") private val integrasjonpassordFiks: String,
     private val dokumentlagerClient: DokumentlagerClient,
     private val krypteringService: KrypteringService,
+    private val maskinportenClient: MaskinportenClient,
     proxiedWebClientBuilder: WebClient.Builder
 ) {
     private val webClient = proxiedWebClientBuilder
@@ -66,11 +69,11 @@ class MellomlagringClient(
         .useSystemProperties()
         .setDefaultRequestConfig(requestConfig)
 
-    fun getMellomlagredeVedlegg(navEksternId: String, token: String): MellomlagringDto {
+    fun getMellomlagredeVedlegg(navEksternId: String): MellomlagringDto {
         return webClient.get()
             .uri(MELLOMLAGRING_PATH, navEksternId)
             .accept(MediaType.APPLICATION_JSON)
-            .header(HttpHeaders.AUTHORIZATION, token)
+            .header(HttpHeaders.AUTHORIZATION, BEARER + maskinportenClient.getToken())
             .retrieve()
             .bodyToMono<MellomlagringDto>()
             .onErrorMap(WebClientResponseException::class.java) {
@@ -80,7 +83,7 @@ class MellomlagringClient(
             .block() ?: throw FiksException("MellomlagringDto er null?", null)
     }
 
-    fun postVedlegg(navEksternId: String, filOpplasting: FilOpplasting, token: String) {
+    fun postVedlegg(navEksternId: String, filOpplasting: FilOpplasting) {
         log.info("start kryptering av fil")
         val krypteringFutureList = Collections.synchronizedList(ArrayList<Future<Void>>(1))
 
@@ -92,8 +95,7 @@ class MellomlagringClient(
                     .metadata(filOpplasting.metadata)
                     .data(krypteringService.krypter(filOpplasting.data, krypteringFutureList, fiksX509Certificate))
                     .build(),
-                navEksternId = navEksternId,
-                token = token
+                navEksternId = navEksternId
             )
             waitForFutures(krypteringFutureList)
         } catch (e: Exception) {
@@ -108,7 +110,7 @@ class MellomlagringClient(
         log.info("slutt kryptering av fil")
     }
 
-    private fun lastopp(filForOpplasting: FilForOpplasting<Any>, navEksternId: String, token: String) {
+    private fun lastopp(filForOpplasting: FilForOpplasting<Any>, navEksternId: String) {
         val entitybuilder = MultipartEntityBuilder.create()
         entitybuilder.setCharset(StandardCharsets.UTF_8)
         entitybuilder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE)
@@ -121,7 +123,7 @@ class MellomlagringClient(
             clientBuilder.build().use { client ->
                 val post = HttpPost("$digisosApiEndpoint/digisos/api/v1/mellomlagring/$navEksternId")
                 // post.setHeader("requestid", UUID.randomUUID().toString())
-                post.setHeader(HttpHeader.AUTHORIZATION.name, token)
+                post.setHeader(HttpHeader.AUTHORIZATION.name, BEARER + maskinportenClient.getToken())
                 post.setHeader(HEADER_INTEGRASJON_ID, integrasjonsidFiks)
                 post.setHeader(HEADER_INTEGRASJON_PASSORD, integrasjonpassordFiks)
                 post.entity = entitybuilder.build()
@@ -142,15 +144,15 @@ class MellomlagringClient(
         }
     }
 
-    fun deleteAllVedleggFor(navEksternId: String, token: String) {
+    fun deleteAllVedleggFor(navEksternId: String) {
         // slett alle mellomlagrede dokument for søknad
     }
 
-    fun getVedlegg(navEksternId: String, digisosDokumentId: String, token: String): ByteArray {
+    fun getVedlegg(navEksternId: String, digisosDokumentId: String): ByteArray {
         // last ned mellomlagret dokument
         return webClient.get()
             .uri(MELLOMLAGRING_DOKUMENT_PATH, navEksternId, digisosDokumentId)
-            .header(HttpHeaders.AUTHORIZATION, token)
+            .header(HttpHeaders.AUTHORIZATION, BEARER + maskinportenClient.getToken())
             .retrieve()
             .bodyToMono<String>()
             .block()
@@ -158,11 +160,11 @@ class MellomlagringClient(
             ?: throw FiksException("Mellomlagret vedlegg er null?", null)
     }
 
-    fun deleteVedlegg(navEksternId: String, digisosDokumentId: String, token: String) {
+    fun deleteVedlegg(navEksternId: String, digisosDokumentId: String) {
         // slett mellomlagret dokument
         webClient.delete()
             .uri(MELLOMLAGRING_DOKUMENT_PATH, navEksternId, digisosDokumentId)
-            .header(HttpHeaders.AUTHORIZATION, token)
+            .header(HttpHeaders.AUTHORIZATION, BEARER + maskinportenClient.getToken())
             .retrieve()
             .bodyToMono<String>()
             .onErrorMap(WebClientResponseException::class.java) {
