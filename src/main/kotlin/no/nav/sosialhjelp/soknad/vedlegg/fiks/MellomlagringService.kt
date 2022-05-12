@@ -1,12 +1,14 @@
 package no.nav.sosialhjelp.soknad.vedlegg.fiks
 
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler
+import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.sosialhjelp.kotlin.utils.logger
 import no.nav.sosialhjelp.soknad.common.filedetection.FileDetectionUtils
 import no.nav.sosialhjelp.soknad.common.filedetection.MimeTypes
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.Vedleggstatus
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
+import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilMetadata
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilOpplasting
 import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils.finnVedleggEllerKastException
@@ -17,6 +19,7 @@ import no.nav.sosialhjelp.soknad.vedlegg.virusscan.VirusScanner
 import org.springframework.stereotype.Component
 import java.io.ByteArrayInputStream
 import java.util.UUID
+import javax.ws.rs.NotFoundException
 
 @Component
 class MellomlagringService(
@@ -24,6 +27,16 @@ class MellomlagringService(
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val virusScanner: VirusScanner
 ) {
+
+    fun getAlleVedlegg(behandlingsId: String): List<MellomlagretVedleggMetadata> {
+        val mellomlagredeVedlegg = mellomlagringClient.getMellomlagredeVedlegg(navEksternId = behandlingsId)
+        return mellomlagredeVedlegg.mellomlagringDokumentInfoDTOList?.map {
+            MellomlagretVedleggMetadata(
+                filnavn = it.filnavn,
+                filId = it.filId
+            )
+        } ?: emptyList()
+    }
 
     fun getVedlegg(vedleggId: String): MellomlagretVedlegg? {
         // todo hvordan gå fra vedleggId til behandlingsId? legge inn behandlingsId som path-param til GET-kallet?
@@ -86,16 +99,37 @@ class MellomlagringService(
         val eier = SubjectHandlerUtils.getUserIdFromToken()
 
         // hent alle mellomlagrede vedlegg
-        val mellomlagredeVedlegg = mellomlagringClient.getMellomlagredeVedlegg(navEksternId = behandlingsId)
-        log.info("Mellomlagrede vedlegg: ${mellomlagredeVedlegg.mellomlagringDokumentInfoDTOList}")
+        val mellomlagredeVedlegg = mellomlagringClient.getMellomlagredeVedlegg(navEksternId = behandlingsId).mellomlagringDokumentInfoDTOList ?: return
 
-        // oppdater vedleggstatus
+        log.info("Mellomlagrede vedlegg: ${mellomlagredeVedlegg}")
+        val aktueltVedlegg = mellomlagredeVedlegg.firstOrNull { it.filId == vedleggId} ?: return
+
+        // oppdater soknadUnderArbeid
         val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
-        // ...
+
+        val jsonVedlegg: JsonVedlegg = JsonVedleggUtils.getVedleggFromInternalSoknad(soknadUnderArbeid)
+            .firstOrNull {
+                it.filer.any { jsonFil -> jsonFil.filnavn == aktueltVedlegg.filnavn }
+            } ?: throw NotFoundException("Dette vedlegget tilhører en utgift som har blitt tatt bort fra søknaden. Er det flere tabber oppe samtidig?")
+
+        jsonVedlegg.filer.removeIf { it.filnavn == aktueltVedlegg.filnavn }
+
+        if (jsonVedlegg.filer.isEmpty()) {
+            jsonVedlegg.status = Vedleggstatus.VedleggKreves.toString()
+        }
+
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier)
 
         // slett mellomlagret vedlegg
         mellomlagringClient.deleteVedlegg(navEksternId = behandlingsId, digisosDokumentId = vedleggId)
+    }
+
+    fun deleteVedlegg(behandlingsId: String, vedleggId: String) {
+        mellomlagringClient.deleteVedlegg(navEksternId = behandlingsId, digisosDokumentId = vedleggId)
+    }
+
+    fun deleteAllVedleggFor(behandlingsId: String) {
+        mellomlagringClient.deleteAllVedleggFor(navEksternId = behandlingsId)
     }
 
     companion object {
