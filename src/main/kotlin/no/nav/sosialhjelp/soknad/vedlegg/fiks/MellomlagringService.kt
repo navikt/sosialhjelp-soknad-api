@@ -30,7 +30,7 @@ class MellomlagringService(
 
     fun getAlleVedlegg(behandlingsId: String): List<MellomlagretVedleggMetadata> {
         val mellomlagredeVedlegg = mellomlagringClient.getMellomlagredeVedlegg(navEksternId = behandlingsId)
-        return mellomlagredeVedlegg.mellomlagringDokumentInfoDTOList?.map {
+        return mellomlagredeVedlegg?.mellomlagringDokumentInfoDTOList?.map {
             MellomlagretVedleggMetadata(
                 filnavn = it.filnavn,
                 filId = it.filId
@@ -90,8 +90,8 @@ class MellomlagringService(
         mellomlagringClient.postVedlegg(navEksternId = behandlingsId, filOpplasting = filOpplasting)
         log.info("suksessfull mellomlagring")
         val mellomlagredeVedlegg = mellomlagringClient.getMellomlagredeVedlegg(navEksternId = behandlingsId)
-        val filId = mellomlagredeVedlegg.mellomlagringDokumentInfoDTOList?.firstOrNull { it.filnavn == filnavn }?.filId ?: "dummy"
-        log.info("Mellomlagrede vedlegg: ${mellomlagredeVedlegg.mellomlagringDokumentInfoDTOList}")
+        val filId = mellomlagredeVedlegg?.mellomlagringDokumentInfoDTOList?.firstOrNull { it.filnavn == filnavn }?.filId ?: "dummy"
+        log.info("Mellomlagrede vedlegg: ${mellomlagredeVedlegg?.mellomlagringDokumentInfoDTOList}")
         return MellomlagretVedleggMetadata(filnavn = filnavn, filId = filId)
     }
 
@@ -99,7 +99,7 @@ class MellomlagringService(
         val eier = SubjectHandlerUtils.getUserIdFromToken()
 
         // hent alle mellomlagrede vedlegg
-        val mellomlagredeVedlegg = mellomlagringClient.getMellomlagredeVedlegg(navEksternId = behandlingsId).mellomlagringDokumentInfoDTOList ?: return
+        val mellomlagredeVedlegg = mellomlagringClient.getMellomlagredeVedlegg(navEksternId = behandlingsId)?.mellomlagringDokumentInfoDTOList ?: return
 
         log.info("Mellomlagrede vedlegg: $mellomlagredeVedlegg")
         val aktueltVedlegg = mellomlagredeVedlegg.firstOrNull { it.filId == vedleggId } ?: return

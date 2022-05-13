@@ -97,7 +97,12 @@ open class OkonomiskeOpplysningerRessurs(
         val jsonOkonomi = soknadUnderArbeid.jsonInternalSoknad?.soknad?.data?.okonomi ?: JsonOkonomi()
         val jsonVedleggs = JsonVedleggUtils.getVedleggFromInternalSoknad(soknadUnderArbeid)
         val paakrevdeVedlegg = VedleggsforventningMaster.finnPaakrevdeVedlegg(soknadUnderArbeid.jsonInternalSoknad)
-        val mellomlagredeVedlegg = mellomlagringService.getAlleVedlegg(behandlingsId)
+        jsonVedleggs.any { it.status == Vedleggstatus.LastetOpp.toString() }
+        val mellomlagredeVedlegg = if (jsonVedleggs.any { it.status == Vedleggstatus.LastetOpp.toString() }) {
+            mellomlagringService.getAlleVedlegg(behandlingsId)
+        } else {
+            emptyList()
+        }
 
         val slettedeVedlegg = removeIkkePaakrevdeMellomlagredeVedlegg(behandlingsId, jsonVedleggs, paakrevdeVedlegg, mellomlagredeVedlegg)
         addPaakrevdeVedlegg(jsonVedleggs, paakrevdeVedlegg)
