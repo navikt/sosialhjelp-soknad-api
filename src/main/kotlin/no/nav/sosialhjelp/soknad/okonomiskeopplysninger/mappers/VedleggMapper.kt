@@ -20,6 +20,7 @@ import no.nav.sosialhjelp.soknad.ettersending.innsendtsoknad.EttersendelseUtils.
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggFrontend
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggRadFrontend
 import no.nav.sosialhjelp.soknad.vedlegg.dto.FilFrontend
+import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagretVedleggMetadata
 import java.time.LocalDateTime
 import java.util.SortedMap
 import java.util.TreeMap
@@ -35,6 +36,23 @@ object VedleggMapper {
         opplastedeVedlegg: List<OpplastetVedlegg>
     ): VedleggFrontend {
         val filer = mapJsonFilerAndOpplastedeVedleggToFilerFrontend(vedlegg.filer, opplastedeVedlegg)
+        val vedleggType = getSammensattNavn(vedlegg)
+        val rader = getRader(jsonOkonomi, vedleggType)
+        return VedleggFrontend(
+            type = vedleggType,
+            gruppe = OkonomiskGruppeMapper.getGruppe(vedleggType),
+            rader = rader,
+            vedleggStatus = vedlegg.status,
+            filer = filer
+        )
+    }
+
+    fun mapMellomlagredeVedleggToVedleggFrontend(
+        vedlegg: JsonVedlegg,
+        jsonOkonomi: JsonOkonomi,
+        mellomlagredeVedlegg: List<MellomlagretVedleggMetadata>
+    ): VedleggFrontend {
+        val filer = mapJsonFilerAndMellomlagredVedleggToFilerFrontend(vedlegg.filer, mellomlagredeVedlegg)
         val vedleggType = getSammensattNavn(vedlegg)
         val rader = getRader(jsonOkonomi, vedleggType)
         return VedleggFrontend(
@@ -191,6 +209,19 @@ object VedleggMapper {
                 opplastedeVedlegg
                     .firstOrNull { it.filnavn == fil.filnavn }
                     ?.let { FilFrontend(fil.filnavn, it.uuid) }
+                    ?: throw IllegalStateException("Vedlegget finnes ikke")
+            }
+    }
+
+    private fun mapJsonFilerAndMellomlagredVedleggToFilerFrontend(
+        filer: List<JsonFiler>,
+        mellomlagredeVedlegg: List<MellomlagretVedleggMetadata>
+    ): List<FilFrontend> {
+        return filer
+            .map { fil: JsonFiler ->
+                mellomlagredeVedlegg
+                    .firstOrNull { it.filnavn == fil.filnavn }
+                    ?.let { FilFrontend(fil.filnavn, it.filId) }
                     ?: throw IllegalStateException("Vedlegget finnes ikke")
             }
     }

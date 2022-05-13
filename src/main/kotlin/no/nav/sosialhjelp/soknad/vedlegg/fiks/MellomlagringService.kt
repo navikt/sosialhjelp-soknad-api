@@ -101,8 +101,8 @@ class MellomlagringService(
         // hent alle mellomlagrede vedlegg
         val mellomlagredeVedlegg = mellomlagringClient.getMellomlagredeVedlegg(navEksternId = behandlingsId).mellomlagringDokumentInfoDTOList ?: return
 
-        log.info("Mellomlagrede vedlegg: ${mellomlagredeVedlegg}")
-        val aktueltVedlegg = mellomlagredeVedlegg.firstOrNull { it.filId == vedleggId} ?: return
+        log.info("Mellomlagrede vedlegg: $mellomlagredeVedlegg")
+        val aktueltVedlegg = mellomlagredeVedlegg.firstOrNull { it.filId == vedleggId } ?: return
 
         // oppdater soknadUnderArbeid
         val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
