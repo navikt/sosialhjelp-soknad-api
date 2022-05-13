@@ -127,9 +127,9 @@ class MellomlagringClient(
         entitybuilder.addBinaryBody(filForOpplasting.filnavn, filForOpplasting.data, ContentType.APPLICATION_OCTET_STREAM, filForOpplasting.filnavn)
 
         try {
-            log.info("Starter post kall til KS mellomlagring - $digisosApiEndpoint/digisos/api/v1/mellomlagring/$navEksternId")
+            log.info("Starter post kall til KS mellomlagring - ${digisosApiEndpoint}digisos/api/v1/mellomlagring/$navEksternId")
             clientBuilder.build().use { client ->
-                val post = HttpPost("$digisosApiEndpoint/digisos/api/v1/mellomlagring/$navEksternId")
+                val post = HttpPost("${digisosApiEndpoint}digisos/api/v1/mellomlagring/$navEksternId")
                 // post.setHeader("requestid", UUID.randomUUID().toString())
                 post.setHeader(HttpHeader.AUTHORIZATION.name, BEARER + maskinportenClient.getToken())
                 post.setHeader(HEADER_INTEGRASJON_ID, integrasjonsidFiks)
@@ -183,8 +183,8 @@ class MellomlagringClient(
     }
 
     companion object {
-        private const val MELLOMLAGRING_PATH = "/digisos/api/v1/mellomlagring/{navEksternRefId}"
-        private const val MELLOMLAGRING_DOKUMENT_PATH = "/digisos/api/v1/mellomlagring/{navEksternRefId}/{digisosDokumentId}"
+        private const val MELLOMLAGRING_PATH = "digisos/api/v1/mellomlagring/{navEksternRefId}"
+        private const val MELLOMLAGRING_DOKUMENT_PATH = "digisos/api/v1/mellomlagring/{navEksternRefId}/{digisosDokumentId}"
 
         private const val SENDING_TIL_FIKS_TIMEOUT = 5 * 60 * 1000 // 5 minutter
 
