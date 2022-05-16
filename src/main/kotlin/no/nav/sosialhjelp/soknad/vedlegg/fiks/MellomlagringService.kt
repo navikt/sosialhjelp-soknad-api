@@ -3,12 +3,14 @@ package no.nav.sosialhjelp.soknad.vedlegg.fiks
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.sosialhjelp.kotlin.utils.logger
+import no.nav.sosialhjelp.soknad.common.MiljoUtils
 import no.nav.sosialhjelp.soknad.common.filedetection.FileDetectionUtils
 import no.nav.sosialhjelp.soknad.common.filedetection.MimeTypes
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.Vedleggstatus
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils
+import no.nav.sosialhjelp.soknad.innsending.SenderUtils.createPrefixedBehandlingsId
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilMetadata
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilOpplasting
 import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils.finnVedleggEllerKastException
@@ -86,25 +88,28 @@ class MellomlagringService(
         )
         log.info("filmetadata: ${filOpplasting.metadata}")
 
-        log.info("kaller mellomlagringClient.postVedlegg")
-        mellomlagringClient.postVedlegg(navEksternId = behandlingsId, filOpplasting = filOpplasting)
-        log.info("suksessfull mellomlagring")
-        val mellomlagredeVedlegg = mellomlagringClient.getMellomlagredeVedlegg(navEksternId = behandlingsId)
+        val navEksternId = if (MiljoUtils.isNonProduction()) createPrefixedBehandlingsId(behandlingsId) else behandlingsId
+
+        mellomlagringClient.postVedlegg(navEksternId = navEksternId, filOpplasting = filOpplasting)
+
+        val mellomlagredeVedlegg = mellomlagringClient.getMellomlagredeVedlegg(navEksternId = navEksternId)
         val filId = mellomlagredeVedlegg?.mellomlagringMetadataList?.firstOrNull { it.filnavn == filnavn }?.filId ?: "dummy"
+
         log.info("Mellomlagrede vedlegg: ${mellomlagredeVedlegg?.mellomlagringMetadataList}")
         return MellomlagretVedleggMetadata(filnavn = filnavn, filId = filId)
     }
 
     fun deleteVedleggAndUpdateVedleggstatus(behandlingsId: String, vedleggId: String) {
-        val eier = SubjectHandlerUtils.getUserIdFromToken()
+        val navEksternId = if (MiljoUtils.isNonProduction()) createPrefixedBehandlingsId(behandlingsId) else behandlingsId
 
         // hent alle mellomlagrede vedlegg
-        val mellomlagredeVedlegg = mellomlagringClient.getMellomlagredeVedlegg(navEksternId = behandlingsId)?.mellomlagringMetadataList ?: return
+        val mellomlagredeVedlegg = mellomlagringClient.getMellomlagredeVedlegg(navEksternId = navEksternId)?.mellomlagringMetadataList ?: return
 
         log.info("Mellomlagrede vedlegg: $mellomlagredeVedlegg")
         val aktueltVedlegg = mellomlagredeVedlegg.firstOrNull { it.filId == vedleggId } ?: return
 
         // oppdater soknadUnderArbeid
+        val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
 
         val jsonVedlegg: JsonVedlegg = JsonVedleggUtils.getVedleggFromInternalSoknad(soknadUnderArbeid)
@@ -121,15 +126,17 @@ class MellomlagringService(
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier)
 
         // slett mellomlagret vedlegg
-        mellomlagringClient.deleteVedlegg(navEksternId = behandlingsId, digisosDokumentId = vedleggId)
+        mellomlagringClient.deleteVedlegg(navEksternId = navEksternId, digisosDokumentId = vedleggId)
     }
 
     fun deleteVedlegg(behandlingsId: String, vedleggId: String) {
-        mellomlagringClient.deleteVedlegg(navEksternId = behandlingsId, digisosDokumentId = vedleggId)
+        val navEksternId = if (MiljoUtils.isNonProduction()) createPrefixedBehandlingsId(behandlingsId) else behandlingsId
+        mellomlagringClient.deleteVedlegg(navEksternId = navEksternId, digisosDokumentId = vedleggId)
     }
 
     fun deleteAllVedleggFor(behandlingsId: String) {
-        mellomlagringClient.deleteAllVedleggFor(navEksternId = behandlingsId)
+        val navEksternId = if (MiljoUtils.isNonProduction()) createPrefixedBehandlingsId(behandlingsId) else behandlingsId
+        mellomlagringClient.deleteAllVedleggFor(navEksternId = navEksternId)
     }
 
     companion object {
