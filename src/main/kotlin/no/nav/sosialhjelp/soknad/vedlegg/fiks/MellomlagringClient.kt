@@ -160,7 +160,6 @@ class MellomlagringClient(
                 log.warn("Mellomlagring av vedlegg til søknad $navEksternId feilet etter ${System.currentTimeMillis() - startTime} ms med status ${it.statusCode} og response: ${it.responseBodyAsString}")
             }
             .block()
-            ?.let { digisosObjectMapper.writeValueAsBytes(it) }
             ?: throw FiksException("Mellomlagring av vedlegg til søknad $navEksternId feilet", null)
     }
 
