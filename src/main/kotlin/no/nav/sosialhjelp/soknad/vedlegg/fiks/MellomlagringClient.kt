@@ -26,9 +26,15 @@ import org.apache.http.impl.client.HttpClientBuilder
 import org.apache.http.util.EntityUtils
 import org.eclipse.jetty.http.HttpHeader
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.core.io.InputStreamResource
+import org.springframework.http.ContentDisposition
+import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Component
+import org.springframework.util.LinkedMultiValueMap
+import org.springframework.util.MultiValueMap
+import org.springframework.web.reactive.function.BodyInserters
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
 import org.springframework.web.reactive.function.client.bodyToMono
@@ -102,7 +108,7 @@ class MellomlagringClient(
 
         try {
             val fiksX509Certificate = dokumentlagerClient.getDokumentlagerPublicKeyX509Certificate()
-            lastopp(
+            lastoppWebClient(
                 filForOpplasting = FilForOpplasting.builder<Any>()
                     .filnavn(filOpplasting.metadata.filnavn)
                     .metadata(filOpplasting.metadata)
@@ -116,6 +122,54 @@ class MellomlagringClient(
                 .filter { !it.isDone && !it.isCancelled }
                 .forEach { it.cancel(true) }
         }
+    }
+
+    private fun createHttpEntityOfString(body: String, name: String): HttpEntity<Any> {
+        return createHttpEntity(body, name, null, "text/plain;charset=UTF-8")
+    }
+
+    private fun createHttpEntityOfFile(file: FilForOpplasting<Any>, name: String): HttpEntity<Any> {
+        return createHttpEntity(InputStreamResource(file.data), name, file.filnavn, "application/octet-stream")
+    }
+
+    private fun createHttpEntity(body: Any, name: String, filename: String?, contentType: String): HttpEntity<Any> {
+        val headerMap = LinkedMultiValueMap<String, String>()
+        val builder: ContentDisposition.Builder = ContentDisposition
+            .builder("form-data")
+            .name(name)
+        val contentDisposition: ContentDisposition =
+            if (filename == null) builder.build() else builder.filename(filename).build()
+
+        headerMap.add(HttpHeaders.CONTENT_DISPOSITION, contentDisposition.toString())
+        headerMap.add(HttpHeaders.CONTENT_TYPE, contentType)
+        return HttpEntity(body, headerMap)
+    }
+
+    private fun lastoppWebClient(filForOpplasting: FilForOpplasting<Any>, navEksternId: String) {
+//        val body = LinkedMultiValueMap<String, Any>()
+//        body.add("metadata", createHttpEntityOfString(getJson(filForOpplasting), "metadata"))
+//        body.add(filForOpplasting.filnavn, createHttpEntityOfFile(filForOpplasting, filForOpplasting.filnavn))
+
+        val startTime = System.currentTimeMillis()
+        webClient.post()
+            .uri(MELLOMLAGRING_PATH, navEksternId)
+            .header(HttpHeaders.AUTHORIZATION, BEARER + maskinportenClient.getToken())
+            .body(
+                BodyInserters.fromMultipartData(
+                    mapOf(
+                        "metadata" to getJson(filForOpplasting),
+                        filForOpplasting.filnavn to filForOpplasting.data
+                    ) as MultiValueMap<String, *>
+                )
+            )
+            .retrieve()
+            .bodyToMono<String>()
+            .doOnError(WebClientResponseException::class.java) {
+                log.warn("Mellomlagring av vedlegg til søknad $navEksternId feilet etter ${System.currentTimeMillis() - startTime} ms med status ${it.statusCode} og response: ${it.responseBodyAsString}")
+            }
+            .block()
+            ?.let { digisosObjectMapper.writeValueAsBytes(it) }
+            ?: throw FiksException("Mellomlagring av vedlegg til søknad $navEksternId feilet", null)
     }
 
     private fun lastopp(filForOpplasting: FilForOpplasting<Any>, navEksternId: String) {
@@ -138,13 +192,10 @@ class MellomlagringClient(
 
                 val startTime = System.currentTimeMillis()
                 val response = client.execute(post)
-                log.info("Response: ${response.statusLine.reasonPhrase}, ${digisosObjectMapper.writeValueAsString(response.entity.content.readBytes())}")
                 val endTime = System.currentTimeMillis()
                 if (response.statusLine.statusCode >= 300) {
                     val errorResponse = EntityUtils.toString(response.entity)
-                    throw IllegalStateException(
-                        "Mellomlagring av vedlegg til søknad $navEksternId feilet etter ${endTime - startTime} ms med status ${response.statusLine.reasonPhrase} og response: $errorResponse"
-                    )
+                    throw IllegalStateException("Mellomlagring av vedlegg til søknad $navEksternId feilet etter ${endTime - startTime} ms med status ${response.statusLine.reasonPhrase} og response: $errorResponse")
                 }
             }
         } catch (e: IOException) {
@@ -190,7 +241,7 @@ class MellomlagringClient(
 
         private val log by logger()
 
-        private fun getJson(objectFilForOpplasting: FilForOpplasting<Any>): String? {
+        private fun getJson(objectFilForOpplasting: FilForOpplasting<Any>): String {
             return try {
                 digisosObjectMapper.writeValueAsString(objectFilForOpplasting.metadata)
             } catch (e: JsonProcessingException) {
