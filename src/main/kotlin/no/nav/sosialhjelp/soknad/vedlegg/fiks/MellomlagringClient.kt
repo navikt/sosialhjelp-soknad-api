@@ -2,6 +2,7 @@ package no.nav.sosialhjelp.soknad.vedlegg.fiks
 
 import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.module.kotlin.readValue
+import io.netty.channel.ChannelOption
 import no.ks.fiks.streaming.klient.FilForOpplasting
 import no.nav.sosialhjelp.api.fiks.ErrorMessage
 import no.nav.sosialhjelp.api.fiks.exceptions.FiksException
@@ -11,34 +12,25 @@ import no.nav.sosialhjelp.soknad.common.Constants.BEARER
 import no.nav.sosialhjelp.soknad.common.Constants.HEADER_INTEGRASJON_ID
 import no.nav.sosialhjelp.soknad.common.Constants.HEADER_INTEGRASJON_PASSORD
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DokumentlagerClient
-import no.nav.sosialhjelp.soknad.innsending.digisosapi.FiksServiceUnavailableRetryStrategy
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.KrypteringService
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.KrypteringService.Companion.waitForFutures
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.digisosObjectMapper
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilOpplasting
-import org.apache.http.client.config.RequestConfig
-import org.apache.http.client.methods.HttpPost
-import org.apache.http.entity.ContentType
-import org.apache.http.entity.mime.HttpMultipartMode
-import org.apache.http.entity.mime.MultipartEntityBuilder
-import org.apache.http.impl.client.DefaultHttpRequestRetryHandler
-import org.apache.http.impl.client.HttpClientBuilder
-import org.apache.http.util.EntityUtils
-import org.eclipse.jetty.http.HttpHeader
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.core.io.InputStreamResource
 import org.springframework.http.ContentDisposition
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
+import org.springframework.http.client.reactive.ReactorClientHttpConnector
 import org.springframework.stereotype.Component
 import org.springframework.util.LinkedMultiValueMap
 import org.springframework.web.reactive.function.BodyInserters
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
 import org.springframework.web.reactive.function.client.bodyToMono
-import java.io.IOException
-import java.nio.charset.StandardCharsets
+import reactor.netty.http.client.HttpClient
+import java.time.Duration
 import java.util.Collections
 import java.util.concurrent.Future
 
@@ -50,31 +42,25 @@ class MellomlagringClient(
     private val dokumentlagerClient: DokumentlagerClient,
     private val krypteringService: KrypteringService,
     private val maskinportenClient: MaskinportenClient,
-    proxiedWebClientBuilder: WebClient.Builder
+    proxiedWebClientBuilder: WebClient.Builder,
+    proxiedHttpClient: HttpClient,
 ) {
+
     private val webClient = proxiedWebClientBuilder
         .baseUrl(digisosApiEndpoint)
+        .clientConnector(
+            ReactorClientHttpConnector(
+                proxiedHttpClient
+                    .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, SENDING_TIL_FIKS_TIMEOUT)
+                    .responseTimeout(Duration.ofMillis(SENDING_TIL_FIKS_TIMEOUT.toLong()))
+            )
+        )
         .codecs {
             it.defaultCodecs().maxInMemorySize(16 * 1024 * 1024)
         }
         .defaultHeader(HEADER_INTEGRASJON_ID, integrasjonsidFiks)
         .defaultHeader(HEADER_INTEGRASJON_PASSORD, integrasjonpassordFiks)
         .build()
-
-    private val retryHandler = DefaultHttpRequestRetryHandler()
-    private val serviceUnavailableRetryStrategy = FiksServiceUnavailableRetryStrategy()
-
-    private val requestConfig = RequestConfig.custom()
-        .setConnectTimeout(SENDING_TIL_FIKS_TIMEOUT)
-        .setConnectionRequestTimeout(SENDING_TIL_FIKS_TIMEOUT)
-        .setSocketTimeout(SENDING_TIL_FIKS_TIMEOUT)
-        .build()
-
-    private val clientBuilder = HttpClientBuilder.create()
-        .setRetryHandler(retryHandler)
-        .setServiceUnavailableRetryStrategy(serviceUnavailableRetryStrategy)
-        .useSystemProperties()
-        .setDefaultRequestConfig(requestConfig)
 
     fun getMellomlagredeVedlegg(navEksternId: String): MellomlagringDto? {
         val responseString: String
@@ -107,7 +93,7 @@ class MellomlagringClient(
 
         try {
             val fiksX509Certificate = dokumentlagerClient.getDokumentlagerPublicKeyX509Certificate()
-            lastoppWebClient(
+            lastOpp(
                 filForOpplasting = FilForOpplasting.builder<Any>()
                     .filnavn(filOpplasting.metadata.filnavn)
                     .metadata(filOpplasting.metadata)
@@ -121,6 +107,24 @@ class MellomlagringClient(
                 .filter { !it.isDone && !it.isCancelled }
                 .forEach { it.cancel(true) }
         }
+    }
+
+    private fun lastOpp(filForOpplasting: FilForOpplasting<Any>, navEksternId: String) {
+        val body = LinkedMultiValueMap<String, Any>()
+        body.add("metadata", createHttpEntityOfString(getJson(filForOpplasting), "metadata"))
+        body.add(filForOpplasting.filnavn, createHttpEntityOfFile(filForOpplasting, filForOpplasting.filnavn))
+
+        val startTime = System.currentTimeMillis()
+        webClient.post()
+            .uri(MELLOMLAGRING_PATH, navEksternId)
+            .header(HttpHeaders.AUTHORIZATION, BEARER + maskinportenClient.getToken())
+            .body(BodyInserters.fromMultipartData(body))
+            .retrieve()
+            .bodyToMono<String>()
+            .doOnError(WebClientResponseException::class.java) {
+                log.warn("Mellomlagring av vedlegg til søknad $navEksternId feilet etter ${System.currentTimeMillis() - startTime} ms med status ${it.statusCode} og response: ${it.responseBodyAsString}")
+            }
+            .block()
     }
 
     private fun createHttpEntityOfString(body: String, name: String): HttpEntity<Any> {
@@ -142,56 +146,6 @@ class MellomlagringClient(
         headerMap.add(HttpHeaders.CONTENT_DISPOSITION, contentDisposition.toString())
         headerMap.add(HttpHeaders.CONTENT_TYPE, contentType)
         return HttpEntity(body, headerMap)
-    }
-
-    private fun lastoppWebClient(filForOpplasting: FilForOpplasting<Any>, navEksternId: String) {
-        val body = LinkedMultiValueMap<String, Any>()
-        body.add("metadata", createHttpEntityOfString(getJson(filForOpplasting), "metadata"))
-        body.add(filForOpplasting.filnavn, createHttpEntityOfFile(filForOpplasting, filForOpplasting.filnavn))
-
-        val startTime = System.currentTimeMillis()
-        webClient.post()
-            .uri(MELLOMLAGRING_PATH, navEksternId)
-            .header(HttpHeaders.AUTHORIZATION, BEARER + maskinportenClient.getToken())
-            .body(BodyInserters.fromMultipartData(body))
-            .retrieve()
-            .bodyToMono<String>()
-            .doOnError(WebClientResponseException::class.java) {
-                log.warn("Mellomlagring av vedlegg til søknad $navEksternId feilet etter ${System.currentTimeMillis() - startTime} ms med status ${it.statusCode} og response: ${it.responseBodyAsString}")
-            }
-            .block()
-//            ?: throw FiksException("Mellomlagring av vedlegg til søknad $navEksternId feilet", null)
-    }
-
-    private fun lastopp(filForOpplasting: FilForOpplasting<Any>, navEksternId: String) {
-        val entitybuilder = MultipartEntityBuilder.create()
-        entitybuilder.setCharset(StandardCharsets.UTF_8)
-        entitybuilder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE)
-
-        entitybuilder.addTextBody("metadata", getJson(filForOpplasting))
-        entitybuilder.addBinaryBody(filForOpplasting.filnavn, filForOpplasting.data, ContentType.APPLICATION_OCTET_STREAM, filForOpplasting.filnavn)
-
-        try {
-            log.info("Starter post kall til KS mellomlagring - ${digisosApiEndpoint}digisos/api/v1/mellomlagring/$navEksternId")
-            clientBuilder.build().use { client ->
-                val post = HttpPost("${digisosApiEndpoint}digisos/api/v1/mellomlagring/$navEksternId")
-                // post.setHeader("requestid", UUID.randomUUID().toString())
-                post.setHeader(HttpHeader.AUTHORIZATION.name, BEARER + maskinportenClient.getToken())
-                post.setHeader(HEADER_INTEGRASJON_ID, integrasjonsidFiks)
-                post.setHeader(HEADER_INTEGRASJON_PASSORD, integrasjonpassordFiks)
-                post.entity = entitybuilder.build()
-
-                val startTime = System.currentTimeMillis()
-                val response = client.execute(post)
-                val endTime = System.currentTimeMillis()
-                if (response.statusLine.statusCode >= 300) {
-                    val errorResponse = EntityUtils.toString(response.entity)
-                    throw IllegalStateException("Mellomlagring av vedlegg til søknad $navEksternId feilet etter ${endTime - startTime} ms med status ${response.statusLine.reasonPhrase} og response: $errorResponse")
-                }
-            }
-        } catch (e: IOException) {
-            throw IllegalStateException("Mellomlagring av vedlegg til søknad $navEksternId feilet", e)
-        }
     }
 
     fun deleteAllVedleggFor(navEksternId: String) {
