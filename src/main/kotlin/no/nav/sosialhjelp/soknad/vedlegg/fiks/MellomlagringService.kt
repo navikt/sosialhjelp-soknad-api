@@ -5,7 +5,12 @@ import org.springframework.stereotype.Component
 @Component
 class MellomlagringService {
 
-    fun getVedlegg(vedleggId: String, token: String): MellomlagretVedlegg? {
+    fun getAllVedlegg(behandlingsId: String): List<MellomlagretVedleggMetadata> {
+        // todo implement
+        return emptyList()
+    }
+
+    fun getVedlegg(vedleggId: String): MellomlagretVedlegg? {
         // todo implement
         return null
     }
@@ -14,14 +19,21 @@ class MellomlagringService {
         behandlingsId: String,
         vedleggstype: String,
         data: ByteArray,
-        originalfilnavn: String,
-        token: String
+        originalfilnavn: String
     ): MellomlagretVedleggMetadata {
         // todo implement
         return MellomlagretVedleggMetadata(filnavn = "filnavn", filId = "uuid")
     }
 
-    fun deleteVedleggAndUpdateVedleggstatus(behandlingsId: String, vedleggId: String, token: String) {
+    fun deleteVedleggAndUpdateVedleggstatus(behandlingsId: String, vedleggId: String) {
+        // todo implement
+    }
+
+    fun deleteVedlegg(behandlingsId: String, vedleggId: String) {
+        // todo implement
+    }
+
+    fun deleteAllVedlegg(behandlingsId: String) {
         // todo implement
     }
 }
