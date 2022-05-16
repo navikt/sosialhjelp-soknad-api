@@ -160,7 +160,7 @@ class MellomlagringClient(
                 log.warn("Mellomlagring av vedlegg til søknad $navEksternId feilet etter ${System.currentTimeMillis() - startTime} ms med status ${it.statusCode} og response: ${it.responseBodyAsString}")
             }
             .block()
-            ?: throw FiksException("Mellomlagring av vedlegg til søknad $navEksternId feilet", null)
+//            ?: throw FiksException("Mellomlagring av vedlegg til søknad $navEksternId feilet", null)
     }
 
     private fun lastopp(filForOpplasting: FilForOpplasting<Any>, navEksternId: String) {
