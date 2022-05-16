@@ -33,7 +33,6 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Component
 import org.springframework.util.LinkedMultiValueMap
-import org.springframework.util.MultiValueMap
 import org.springframework.web.reactive.function.BodyInserters
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
@@ -146,22 +145,15 @@ class MellomlagringClient(
     }
 
     private fun lastoppWebClient(filForOpplasting: FilForOpplasting<Any>, navEksternId: String) {
-//        val body = LinkedMultiValueMap<String, Any>()
-//        body.add("metadata", createHttpEntityOfString(getJson(filForOpplasting), "metadata"))
-//        body.add(filForOpplasting.filnavn, createHttpEntityOfFile(filForOpplasting, filForOpplasting.filnavn))
+        val body = LinkedMultiValueMap<String, Any>()
+        body.add("metadata", createHttpEntityOfString(getJson(filForOpplasting), "metadata"))
+        body.add(filForOpplasting.filnavn, createHttpEntityOfFile(filForOpplasting, filForOpplasting.filnavn))
 
         val startTime = System.currentTimeMillis()
         webClient.post()
             .uri(MELLOMLAGRING_PATH, navEksternId)
             .header(HttpHeaders.AUTHORIZATION, BEARER + maskinportenClient.getToken())
-            .body(
-                BodyInserters.fromMultipartData(
-                    mapOf(
-                        "metadata" to getJson(filForOpplasting),
-                        filForOpplasting.filnavn to filForOpplasting.data
-                    ) as MultiValueMap<String, *>
-                )
-            )
+            .body(BodyInserters.fromMultipartData(body))
             .retrieve()
             .bodyToMono<String>()
             .doOnError(WebClientResponseException::class.java) {
