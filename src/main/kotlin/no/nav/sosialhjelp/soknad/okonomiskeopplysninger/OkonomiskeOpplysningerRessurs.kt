@@ -99,7 +99,7 @@ open class OkonomiskeOpplysningerRessurs(
         val paakrevdeVedlegg = VedleggsforventningMaster.finnPaakrevdeVedlegg(soknadUnderArbeid.jsonInternalSoknad)
         jsonVedleggs.any { it.status == Vedleggstatus.LastetOpp.toString() }
         val mellomlagredeVedlegg = if (jsonVedleggs.any { it.status == Vedleggstatus.LastetOpp.toString() }) {
-            mellomlagringService.getAlleVedlegg(behandlingsId)
+            mellomlagringService.getAllVedlegg(behandlingsId)
         } else {
             emptyList()
         }

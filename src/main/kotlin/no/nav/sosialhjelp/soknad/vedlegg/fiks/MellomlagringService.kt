@@ -30,7 +30,7 @@ class MellomlagringService(
     private val virusScanner: VirusScanner
 ) {
 
-    fun getAlleVedlegg(behandlingsId: String): List<MellomlagretVedleggMetadata> {
+    fun getAllVedlegg(behandlingsId: String): List<MellomlagretVedleggMetadata> {
         val mellomlagredeVedlegg = mellomlagringClient.getMellomlagredeVedlegg(navEksternId = behandlingsId)
         return mellomlagredeVedlegg?.mellomlagringMetadataList?.map {
             MellomlagretVedleggMetadata(
@@ -134,7 +134,7 @@ class MellomlagringService(
         mellomlagringClient.deleteVedlegg(navEksternId = navEksternId, digisosDokumentId = vedleggId)
     }
 
-    fun deleteAllVedleggFor(behandlingsId: String) {
+    fun deleteAllVedlegg(behandlingsId: String) {
         val navEksternId = if (MiljoUtils.isNonProduction()) createPrefixedBehandlingsId(behandlingsId) else behandlingsId
         mellomlagringClient.deleteAllVedleggFor(navEksternId = navEksternId)
     }

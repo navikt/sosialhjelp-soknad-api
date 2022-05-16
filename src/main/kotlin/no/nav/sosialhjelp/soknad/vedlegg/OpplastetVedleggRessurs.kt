@@ -68,7 +68,7 @@ open class OpplastetVedleggRessurs(
         val eier = SubjectHandlerUtils.getUserIdFromToken()
 
         opplastetVedleggRepository.hentVedlegg(vedleggId, eier)?.let {
-            response.setHeader("Content-Disposition", "attachment; filename=\"" + it.filnavn + "\"")
+            response.setHeader("Content-Disposition", "attachment; filename=\"${it.filnavn}\"")
             val detectedMimeType = getMimeType(it.data)
             val mimetype = if (detectedMimeType.equals(MimeTypes.TEXT_X_MATLAB, ignoreCase = true)) MimeTypes.APPLICATION_PDF else detectedMimeType
             return Response.ok(it.data).type(mimetype).build()
@@ -77,7 +77,7 @@ open class OpplastetVedleggRessurs(
         if (mellomlagringEnabled) {
             log.info("Forsøker å hente vedlegg $vedleggId fra mellomlagring hos KS")
             mellomlagringService.getVedlegg(vedleggId)?.let {
-                response.setHeader("Content-Disposition", "attachment; filename=\"" + it.filnavn + "\"")
+                response.setHeader("Content-Disposition", "attachment; filename=\"${it.filnavn}\"")
                 val detectedMimeType = getMimeType(it.data)
                 val mimetype = if (detectedMimeType.equals(MimeTypes.TEXT_X_MATLAB, ignoreCase = true)) MimeTypes.APPLICATION_PDF else detectedMimeType
                 return Response.ok(it.data).type(mimetype).build()
