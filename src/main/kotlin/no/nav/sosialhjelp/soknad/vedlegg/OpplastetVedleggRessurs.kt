@@ -66,22 +66,13 @@ open class OpplastetVedleggRessurs(
         tilgangskontroll.verifiserAtBrukerHarTilgang()
         val eier = SubjectHandlerUtils.getUserIdFromToken()
 
-        opplastetVedleggRepository.hentVedlegg(vedleggId, eier)?.let {
-            response.setHeader("Content-Disposition", "attachment; filename=\"${it.filnavn}\"")
-            val mimeType = getMimeType(it.data)
-            return Response.ok(it.data).type(mimeType).build()
-        }
-
-        if (mellomlagringEnabled) {
-            log.info("Forsøker å hente vedlegg $vedleggId fra mellomlagring hos KS")
-            mellomlagringService.getVedlegg(vedleggId)?.let {
+        return opplastetVedleggRepository.hentVedlegg(vedleggId, eier)
+            ?.let {
                 response.setHeader("Content-Disposition", "attachment; filename=\"${it.filnavn}\"")
                 val mimeType = getMimeType(it.data)
-                return Response.ok(it.data).type(mimeType).build()
+                Response.ok(it.data).type(mimeType).build()
             }
-        }
-        // hvis vedleggId ikke finnes i DB eller KS mellomlagring
-        return Response.noContent().build()
+            ?: Response.noContent().build()
     }
 
     @GET

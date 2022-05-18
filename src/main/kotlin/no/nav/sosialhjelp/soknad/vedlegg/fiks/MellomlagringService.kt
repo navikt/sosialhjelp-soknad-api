@@ -31,7 +31,8 @@ class MellomlagringService(
 ) {
 
     fun getAllVedlegg(behandlingsId: String): List<MellomlagretVedleggMetadata> {
-        val mellomlagredeVedlegg = mellomlagringClient.getMellomlagredeVedlegg(navEksternId = behandlingsId)
+        val navEksternId = if (MiljoUtils.isNonProduction()) createPrefixedBehandlingsId(behandlingsId) else behandlingsId
+        val mellomlagredeVedlegg = mellomlagringClient.getMellomlagredeVedlegg(navEksternId = navEksternId)
         return mellomlagredeVedlegg?.mellomlagringMetadataList?.map {
             MellomlagretVedleggMetadata(
                 filnavn = it.filnavn,
@@ -40,15 +41,18 @@ class MellomlagringService(
         } ?: emptyList()
     }
 
-    fun getVedlegg(vedleggId: String): MellomlagretVedlegg? {
-        // todo hvordan gå fra vedleggId til behandlingsId? legge inn behandlingsId som path-param til GET-kallet?
-        val vedlegg = mellomlagringClient.getVedlegg("behandlingsId", vedleggId)
-        return null
-    }
-
     fun getVedlegg(behandlingsId: String, vedleggId: String): MellomlagretVedlegg? {
-        // todo implement
-        return null
+        val navEksternId = if (MiljoUtils.isNonProduction()) createPrefixedBehandlingsId(behandlingsId) else behandlingsId
+        return mellomlagringClient.getMellomlagredeVedlegg(navEksternId = navEksternId)
+            ?.mellomlagringMetadataList
+            ?.firstOrNull { it.filId == vedleggId }
+            ?.filnavn
+            ?.let {
+                MellomlagretVedlegg(
+                    filnavn = it,
+                    data = mellomlagringClient.getVedlegg(navEksternId, vedleggId)
+                )
+            }
     }
 
     fun uploadVedlegg(
