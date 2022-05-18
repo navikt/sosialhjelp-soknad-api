@@ -18,6 +18,7 @@ import no.nav.sosialhjelp.soknad.oppsummering.steg.BosituasjonSteg
 import no.nav.sosialhjelp.soknad.oppsummering.steg.FamiliesituasjonSteg
 import no.nav.sosialhjelp.soknad.oppsummering.steg.InntektOgFormueSteg
 import no.nav.sosialhjelp.soknad.oppsummering.steg.OkonomiskeOpplysningerOgVedleggSteg
+import no.nav.sosialhjelp.soknad.oppsummering.steg.OkonomiskeOpplysningerOgVedleggSteg.OppsummeringVedleggInfo
 import no.nav.sosialhjelp.soknad.oppsummering.steg.PersonopplysningerSteg
 import no.nav.sosialhjelp.soknad.oppsummering.steg.UtgifterOgGjeldSteg
 import no.nav.sosialhjelp.soknad.vedlegg.OpplastetVedleggRessurs.Companion.KS_MELLOMLAGRING_ENABLED
@@ -49,16 +50,26 @@ class OppsummeringService(
         val jsonInternalSoknad = soknadUnderArbeid.jsonInternalSoknad
             ?: throw IllegalStateException("Kan ikke generere oppsummeringsside hvis SoknadUnderArbeid.jsonInternalSoknad er null")
 
+        val mellomlagringEnabled = unleash.isEnabled(KS_MELLOMLAGRING_ENABLED, false) && soknadSkalSendesMedDigisosApi(soknadUnderArbeid, kommuneInfoService)
         if (soknadUnderArbeid.jsonInternalSoknad?.vedlegg?.vedlegg?.isEmpty() == null) {
             log.info("Oppdaterer vedleggsforventninger for soknad $behandlingsId fra oppsummeringssiden, ettersom side 8 ble hoppet over")
-            if (unleash.isEnabled(KS_MELLOMLAGRING_ENABLED, false) && soknadSkalSendesMedDigisosApi(soknadUnderArbeid, kommuneInfoService)) {
+            if (mellomlagringEnabled) {
                 // todo: oppdater vedleggsforventninger ut fra mellomlagrede vedlegg?
             } else {
                 oppdaterVedleggsforventninger(soknadUnderArbeid, fnr)
             }
         }
 
-        val opplastedeVedlegg = opplastetVedleggRepository.hentVedleggForSoknad(soknadUnderArbeid.soknadId, fnr)
+        val vedleggInfo = if (mellomlagringEnabled) {
+            mellomlagringService.getAllVedlegg(behandlingsId).map {
+                OppsummeringVedleggInfo(it.filnavn, it.filId)
+            }
+        } else {
+            opplastetVedleggRepository.hentVedleggForSoknad(soknadUnderArbeid.soknadId, fnr).map {
+                OppsummeringVedleggInfo(it.filnavn, it.uuid)
+            }
+        }
+
         return Oppsummering(
             listOf(
                 personopplysningerSteg.get(jsonInternalSoknad),
@@ -68,7 +79,7 @@ class OppsummeringService(
                 bosituasjonSteg.get(jsonInternalSoknad),
                 inntektOgFormueSteg.get(jsonInternalSoknad),
                 utgifterOgGjeldSteg.get(jsonInternalSoknad),
-                okonomiskeOpplysningerOgVedleggSteg.get(jsonInternalSoknad, opplastedeVedlegg)
+                okonomiskeOpplysningerOgVedleggSteg.get(jsonInternalSoknad, vedleggInfo)
             )
         )
     }

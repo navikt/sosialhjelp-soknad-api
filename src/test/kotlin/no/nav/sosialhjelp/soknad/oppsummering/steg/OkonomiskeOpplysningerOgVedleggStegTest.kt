@@ -15,10 +15,9 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktU
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
-import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedlegg
-import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggType
 import no.nav.sosialhjelp.soknad.oppsummering.dto.SvarType
 import no.nav.sosialhjelp.soknad.oppsummering.dto.Type
+import no.nav.sosialhjelp.soknad.oppsummering.steg.OkonomiskeOpplysningerOgVedleggSteg.OppsummeringVedleggInfo
 import no.nav.sosialhjelp.soknad.oppsummering.steg.OppsummeringTestUtils.validateFeltMedSvar
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -140,14 +139,9 @@ internal class OkonomiskeOpplysningerOgVedleggStegTest {
             createVedlegg("lonnslipp", "arbeid", "LastetOpp", listOf(JsonFiler().withFilnavn(filnavn)))
         )
         val opplastedeVedlegg = listOf(
-            OpplastetVedlegg(
-                uuid = "uuid-goes-here",
-                eier = "eier",
-                vedleggType = OpplastetVedleggType("type|tilleggsinfo"),
-                data = byteArrayOf(1, 2, 3),
-                soknadId = 123L,
+            OppsummeringVedleggInfo(
                 filnavn = filnavn,
-                sha512 = "sha512"
+                id = "uuid-goes-here"
             )
         )
 

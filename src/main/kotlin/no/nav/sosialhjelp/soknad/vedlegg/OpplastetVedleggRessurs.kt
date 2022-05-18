@@ -8,7 +8,6 @@ import no.nav.sosialhjelp.soknad.common.Constants
 import no.nav.sosialhjelp.soknad.common.exceptions.SendingTilKommuneErMidlertidigUtilgjengeligException
 import no.nav.sosialhjelp.soknad.common.exceptions.SendingTilKommuneUtilgjengeligException
 import no.nav.sosialhjelp.soknad.common.filedetection.FileDetectionUtils.getMimeType
-import no.nav.sosialhjelp.soknad.common.filedetection.MimeTypes
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
@@ -69,18 +68,45 @@ open class OpplastetVedleggRessurs(
 
         opplastetVedleggRepository.hentVedlegg(vedleggId, eier)?.let {
             response.setHeader("Content-Disposition", "attachment; filename=\"${it.filnavn}\"")
-            val detectedMimeType = getMimeType(it.data)
-            val mimetype = if (detectedMimeType.equals(MimeTypes.TEXT_X_MATLAB, ignoreCase = true)) MimeTypes.APPLICATION_PDF else detectedMimeType
-            return Response.ok(it.data).type(mimetype).build()
+            val mimeType = getMimeType(it.data)
+            return Response.ok(it.data).type(mimeType).build()
         }
 
         if (mellomlagringEnabled) {
             log.info("Forsøker å hente vedlegg $vedleggId fra mellomlagring hos KS")
             mellomlagringService.getVedlegg(vedleggId)?.let {
                 response.setHeader("Content-Disposition", "attachment; filename=\"${it.filnavn}\"")
-                val detectedMimeType = getMimeType(it.data)
-                val mimetype = if (detectedMimeType.equals(MimeTypes.TEXT_X_MATLAB, ignoreCase = true)) MimeTypes.APPLICATION_PDF else detectedMimeType
-                return Response.ok(it.data).type(mimetype).build()
+                val mimeType = getMimeType(it.data)
+                return Response.ok(it.data).type(mimeType).build()
+            }
+        }
+        // hvis vedleggId ikke finnes i DB eller KS mellomlagring
+        return Response.noContent().build()
+    }
+
+    @GET
+    @Path("/{behandlingsId}/{vedleggId}/fil")
+    @Produces(MediaType.APPLICATION_JSON)
+    open fun getVedleggFil(
+        @PathParam("behandlingsId") behandlingsId: String,
+        @PathParam("vedleggId") vedleggId: String,
+        @Context response: HttpServletResponse
+    ): Response {
+        tilgangskontroll.verifiserAtBrukerHarTilgang()
+        val eier = SubjectHandlerUtils.getUserIdFromToken()
+
+        opplastetVedleggRepository.hentVedlegg(vedleggId, eier)?.let {
+            response.setHeader("Content-Disposition", "attachment; filename=\"${it.filnavn}\"")
+            val mimeType = getMimeType(it.data)
+            return Response.ok(it.data).type(mimeType).build()
+        }
+
+        if (mellomlagringEnabled) {
+            log.info("Forsøker å hente vedlegg $vedleggId fra mellomlagring hos KS")
+            mellomlagringService.getVedlegg(behandlingsId, vedleggId)?.let {
+                response.setHeader("Content-Disposition", "attachment; filename=\"${it.filnavn}\"")
+                val mimeType = getMimeType(it.data)
+                return Response.ok(it.data).type(mimeType).build()
             }
         }
         // hvis vedleggId ikke finnes i DB eller KS mellomlagring
