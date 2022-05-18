@@ -15,6 +15,11 @@ class MellomlagringService {
         return null
     }
 
+    fun getVedlegg(behandlingsId: String, vedleggId: String): MellomlagretVedlegg? {
+        // todo implement
+        return null
+    }
+
     fun uploadVedlegg(
         behandlingsId: String,
         vedleggstype: String,
