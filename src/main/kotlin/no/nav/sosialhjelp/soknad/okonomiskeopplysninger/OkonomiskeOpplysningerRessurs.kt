@@ -65,7 +65,7 @@ open class OkonomiskeOpplysningerRessurs(
         }
     }
 
-    private fun hentBasertPaaOpplastedeVedlegg(soknad: SoknadUnderArbeid, eier: String, ): VedleggFrontends {
+    private fun hentBasertPaaOpplastedeVedlegg(soknad: SoknadUnderArbeid, eier: String): VedleggFrontends {
         val jsonOkonomi = soknad.jsonInternalSoknad?.soknad?.data?.okonomi ?: JsonOkonomi()
         val jsonVedleggs = JsonVedleggUtils.getVedleggFromInternalSoknad(soknad)
         val paakrevdeVedlegg = VedleggsforventningMaster.finnPaakrevdeVedlegg(soknad.jsonInternalSoknad)
