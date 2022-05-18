@@ -21,14 +21,14 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 
-internal class SlettLoggSchedulerTest {
+internal class SlettForeldedeMetadataSchedulerTest {
     private val leaderElection: LeaderElection = mockk()
     private val batchSendtSoknadRepository: BatchSendtSoknadRepository = mockk()
     private val soknadMetadataRepository: SoknadMetadataRepository = mockk()
     private val batchSoknadMetadataRepository: BatchSoknadMetadataRepository = mockk()
     private val oppgaveRepository: OppgaveRepository = mockk()
 
-    private val scheduler = SlettLoggScheduler(
+    private val scheduler = SlettForeldedeMetadataScheduler(
         leaderElection,
         batchSoknadMetadataRepository,
         batchSendtSoknadRepository,
@@ -44,7 +44,7 @@ internal class SlettLoggSchedulerTest {
     }
 
     @Test
-    fun skalSletteForeldetLoggFraDatabase() {
+    fun skalSletteForeldedeMetadataFraDatabase() {
         val oppgave = oppgave(BEHANDLINGS_ID, DAGER_GAMMEL_SOKNAD + 1)
         val sendtSoknad = sendtSoknad(BEHANDLINGS_ID, EIER, DAGER_GAMMEL_SOKNAD + 1)
         val soknadMetadata = soknadMetadata(BEHANDLINGS_ID, UNDER_ARBEID, DAGER_GAMMEL_SOKNAD + 1)
@@ -63,7 +63,7 @@ internal class SlettLoggSchedulerTest {
         every { batchSendtSoknadRepository.slettSendtSoknad(any()) } just runs
         every { batchSoknadMetadataRepository.slettSoknadMetaData(any()) } just runs
 
-        scheduler.slettLogger()
+        scheduler.slettForeldedeMetadata()
 
         verify { oppgaveRepository.slettOppgave(BEHANDLINGS_ID) }
         verify { batchSendtSoknadRepository.slettSendtSoknad(sendtSoknad.sendtSoknadId) }
@@ -71,7 +71,7 @@ internal class SlettLoggSchedulerTest {
     }
 
     @Test
-    fun skalSletteForeldetLoggFraDatabaseSelvOmIkkeAlleTabelleneInneholderBehandlingsIdeen() {
+    fun skalSletteForeldedeMetadataFraDatabaseSelvOmIkkeAlleTabelleneInneholderBehandlingsIdeen() {
         val oppgave = oppgave(BEHANDLINGS_ID, DAGER_GAMMEL_SOKNAD + 1)
         val sendtSoknad = sendtSoknad(BEHANDLINGS_ID, EIER, DAGER_GAMMEL_SOKNAD + 1)
         val soknadMetadata = soknadMetadata(BEHANDLINGS_ID, UNDER_ARBEID, DAGER_GAMMEL_SOKNAD + 1)
@@ -88,7 +88,7 @@ internal class SlettLoggSchedulerTest {
 
         every { oppgaveRepository.slettOppgave(any()) } just runs
 
-        scheduler.slettLogger()
+        scheduler.slettForeldedeMetadata()
 
         verify(exactly = 1) { oppgaveRepository.slettOppgave(BEHANDLINGS_ID) }
         verify(exactly = 0) { batchSendtSoknadRepository.slettSendtSoknad(sendtSoknad.sendtSoknadId) }
@@ -96,10 +96,10 @@ internal class SlettLoggSchedulerTest {
     }
 
     @Test
-    fun skalIkkeSletteLoggSomErUnderEttAarGammelt() {
+    fun skalIkkeSletteMetadataSomErUnderEttAarGammelt() {
         every { batchSoknadMetadataRepository.hentEldreEnn(DAGER_GAMMEL_SOKNAD) } returns null
 
-        scheduler.slettLogger()
+        scheduler.slettForeldedeMetadata()
 
         verify(exactly = 0) { oppgaveRepository.slettOppgave(any()) }
         verify(exactly = 0) { batchSendtSoknadRepository.slettSendtSoknad(any()) }

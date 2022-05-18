@@ -1,18 +1,25 @@
 package no.nav.sosialhjelp.soknad.vedlegg.fiks
 
+import no.finn.unleash.Unleash
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.sosialhjelp.kotlin.utils.logger
 import no.nav.sosialhjelp.soknad.common.MiljoUtils
+import no.nav.sosialhjelp.soknad.common.exceptions.SendingTilKommuneErMidlertidigUtilgjengeligException
+import no.nav.sosialhjelp.soknad.common.exceptions.SendingTilKommuneUtilgjengeligException
 import no.nav.sosialhjelp.soknad.common.filedetection.FileDetectionUtils
 import no.nav.sosialhjelp.soknad.common.filedetection.MimeTypes
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.Vedleggstatus
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils
 import no.nav.sosialhjelp.soknad.innsending.SenderUtils.createPrefixedBehandlingsId
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilMetadata
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilOpplasting
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus
+import no.nav.sosialhjelp.soknad.vedlegg.OpplastetVedleggRessurs.Companion.KS_MELLOMLAGRING_ENABLED
 import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils.finnVedleggEllerKastException
 import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils.getSha512FromByteArray
 import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils.lagFilnavn
@@ -27,7 +34,9 @@ import javax.ws.rs.NotFoundException
 class MellomlagringService(
     private val mellomlagringClient: MellomlagringClient,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
-    private val virusScanner: VirusScanner
+    private val virusScanner: VirusScanner,
+    private val unleash: Unleash,
+    private val kommuneInfoService: KommuneInfoService
 ) {
 
     fun getAllVedlegg(behandlingsId: String): List<MellomlagretVedleggMetadata> {
@@ -150,6 +159,29 @@ class MellomlagringService(
 
     companion object {
         private val log by logger()
+    }
+
+    fun erMellomlagringEnabledOgSoknadSkalSendesMedDigisosApi(soknadUnderArbeid: SoknadUnderArbeid): Boolean {
+        return unleash.isEnabled(KS_MELLOMLAGRING_ENABLED, false) && soknadSkalSendesMedDigisosApi(soknadUnderArbeid)
+    }
+
+    private fun soknadSkalSendesMedDigisosApi(soknadUnderArbeid: SoknadUnderArbeid): Boolean {
+        if (soknadUnderArbeid.erEttersendelse) {
+            return false
+        }
+        val kommunenummer = soknadUnderArbeid.jsonInternalSoknad?.soknad?.mottaker?.kommunenummer
+            ?: throw IllegalStateException("Kommunenummer ikke funnet for JsonInternalSoknad.soknad.mottaker.kommunenummer")
+
+        return when (kommuneInfoService.kommuneInfo(kommunenummer)) {
+            KommuneStatus.FIKS_NEDETID_OG_TOM_CACHE -> {
+                throw SendingTilKommuneUtilgjengeligException("Mellomlagring av vedlegg er ikke tilgjengelig fordi fiks har nedetid og kommuneinfo-cache er tom.")
+            }
+            KommuneStatus.MANGLER_KONFIGURASJON, KommuneStatus.HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT -> false
+            KommuneStatus.SKAL_SENDE_SOKNADER_OG_ETTERSENDELSER_VIA_FDA -> true
+            KommuneStatus.SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD_OG_ETTERSENDELSER -> {
+                throw SendingTilKommuneErMidlertidigUtilgjengeligException("Sending til kommune $kommunenummer er midlertidig utilgjengelig.")
+            }
+        }
     }
 }
 

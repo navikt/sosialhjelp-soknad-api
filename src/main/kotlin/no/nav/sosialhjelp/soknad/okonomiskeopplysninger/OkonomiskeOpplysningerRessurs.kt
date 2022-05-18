@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.okonomiskeopplysninger
 
-import no.finn.unleash.Unleash
 import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_HUSBANKEN
 import no.nav.sbl.soknadsosialhjelp.json.VedleggsforventningMaster
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi
@@ -17,7 +16,6 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.Vedleggstatus
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils
-import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggFrontend
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.mappers.OkonomiskGruppeMapper
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.mappers.OkonomiskeOpplysningerMapper.addAllFormuerToJsonOkonomi
@@ -32,8 +30,6 @@ import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.mappers.VedleggTypeToSok
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.mappers.VedleggTypeToSoknadTypeMapper.getSoknadPath
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.mappers.VedleggTypeToSoknadTypeMapper.vedleggTypeToSoknadType
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
-import no.nav.sosialhjelp.soknad.vedlegg.OpplastetVedleggRessurs.Companion.KS_MELLOMLAGRING_ENABLED
-import no.nav.sosialhjelp.soknad.vedlegg.OpplastetVedleggRessurs.Companion.soknadSkalSendesMedDigisosApi
 import no.nav.sosialhjelp.soknad.vedlegg.dto.FilFrontend
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagretVedleggMetadata
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
@@ -55,26 +51,21 @@ open class OkonomiskeOpplysningerRessurs(
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val opplastetVedleggRepository: OpplastetVedleggRepository,
     private val mellomlagringService: MellomlagringService,
-    private val kommuneInfoService: KommuneInfoService,
-    private val unleash: Unleash
 ) {
     @GET
     open fun hentOkonomiskeOpplysninger(@PathParam("behandlingsId") behandlingsId: String): VedleggFrontends {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         val eier = SubjectHandlerUtils.getUserIdFromToken()
-        val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
+        val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
 
-        return if (unleash.isEnabled(KS_MELLOMLAGRING_ENABLED, false) && soknadSkalSendesMedDigisosApi(soknad, kommuneInfoService)) {
-            hentBasertPaaMellomlagredeVedlegg(behandlingsId, eier, soknad)
+        return if (mellomlagringService.erMellomlagringEnabledOgSoknadSkalSendesMedDigisosApi(soknadUnderArbeid)) {
+            hentBasertPaaMellomlagredeVedlegg(behandlingsId, eier, soknadUnderArbeid)
         } else {
-            hentBasertPaaOpplastedeVedlegg(soknad, eier)
+            hentBasertPaaOpplastedeVedlegg(soknadUnderArbeid, eier)
         }
     }
 
-    private fun hentBasertPaaOpplastedeVedlegg(
-        soknad: SoknadUnderArbeid,
-        eier: String,
-    ): VedleggFrontends {
+    private fun hentBasertPaaOpplastedeVedlegg(soknad: SoknadUnderArbeid, eier: String): VedleggFrontends {
         val jsonOkonomi = soknad.jsonInternalSoknad?.soknad?.data?.okonomi ?: JsonOkonomi()
         val jsonVedleggs = JsonVedleggUtils.getVedleggFromInternalSoknad(soknad)
         val paakrevdeVedlegg = VedleggsforventningMaster.finnPaakrevdeVedlegg(soknad.jsonInternalSoknad)

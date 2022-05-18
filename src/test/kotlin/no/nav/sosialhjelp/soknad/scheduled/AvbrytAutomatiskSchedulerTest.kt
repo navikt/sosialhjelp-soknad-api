@@ -15,7 +15,9 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataTy
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.BatchSoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
+import no.nav.sosialhjelp.soknad.innsending.SoknadService
 import no.nav.sosialhjelp.soknad.scheduled.leaderelection.LeaderElection
+import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -26,14 +28,16 @@ internal class AvbrytAutomatiskSchedulerTest {
     private val batchSoknadUnderArbeidRepository: BatchSoknadUnderArbeidRepository = mockk()
     private val soknadMetadataRepository: SoknadMetadataRepository = mockk()
     private val batchSoknadMetadataRepository: BatchSoknadMetadataRepository = mockk()
+    private val mellomlagringService: MellomlagringService = mockk()
 
     private val scheduler = AvbrytAutomatiskScheduler(
+        batchEnabled = true,
+        schedulerDisabled = false,
         leaderElection,
         soknadMetadataRepository,
         batchSoknadMetadataRepository,
         batchSoknadUnderArbeidRepository,
-        batchEnabled = true,
-        schedulerDisabled = false
+        mellomlagringService,
     )
 
     @BeforeEach
@@ -60,12 +64,15 @@ internal class AvbrytAutomatiskSchedulerTest {
         every {
             batchSoknadMetadataRepository.hentForBatch(DAGER_GAMMEL_SOKNAD)
         } returns soknadMetadata andThen null
+
         every {
-            batchSoknadUnderArbeidRepository.hentSoknadUnderArbeidIdFromBehandlingsId(BEHANDLINGS_ID)
-        } returns soknadUnderArbeid.soknadId
+            batchSoknadUnderArbeidRepository.hentSoknadUnderArbeid(BEHANDLINGS_ID)
+        } returns soknadUnderArbeid
 
         val soknadMetadataSlot = slot<SoknadMetadata>()
         every { soknadMetadataRepository.oppdater(capture(soknadMetadataSlot)) } just runs
+
+        every { mellomlagringService.erMellomlagringEnabledOgSoknadSkalSendesMedDigisosApi(soknadUnderArbeid) } returns false
 
         scheduler.avbrytGamleSoknader()
 
@@ -74,6 +81,47 @@ internal class AvbrytAutomatiskSchedulerTest {
         assertThat(oppdatertSoknadMetadata.status)
             .isEqualTo(SoknadMetadataInnsendingStatus.AVBRUTT_AUTOMATISK)
         verify { batchSoknadUnderArbeidRepository.slettSoknad(any()) }
+        verify(exactly = 0) { mellomlagringService.deleteAllVedlegg(any()) }
+    }
+
+    @Test
+    fun avbrytAutomatiskOgSlettGamleSoknaderMedMellomlagredeVedlegg() {
+        val soknadMetadata = soknadMetadata(BEHANDLINGS_ID, UNDER_ARBEID, DAGER_GAMMEL_SOKNAD + 1)
+        val soknadUnderArbeid = SoknadUnderArbeid(
+            soknadId = 1L,
+            versjon = 1L,
+            behandlingsId = BEHANDLINGS_ID,
+            tilknyttetBehandlingsId = null,
+            eier = "11111111111",
+            jsonInternalSoknad = SoknadService.createEmptyJsonInternalSoknad("11111111111"),
+            status = SoknadUnderArbeidStatus.UNDER_ARBEID,
+            opprettetDato = LocalDateTime.now(),
+            sistEndretDato = LocalDateTime.now()
+        )
+
+        soknadUnderArbeid.jsonInternalSoknad?.soknad?.mottaker?.kommunenummer = "1234"
+
+        every {
+            batchSoknadMetadataRepository.hentForBatch(DAGER_GAMMEL_SOKNAD)
+        } returns soknadMetadata andThen null
+        every {
+            batchSoknadUnderArbeidRepository.hentSoknadUnderArbeid(BEHANDLINGS_ID)
+        } returns soknadUnderArbeid
+
+        val soknadMetadataSlot = slot<SoknadMetadata>()
+        every { soknadMetadataRepository.oppdater(capture(soknadMetadataSlot)) } just runs
+
+        every { mellomlagringService.erMellomlagringEnabledOgSoknadSkalSendesMedDigisosApi(soknadUnderArbeid) } returns true
+        every { mellomlagringService.deleteAllVedlegg(any()) } just runs
+
+        scheduler.avbrytGamleSoknader()
+
+        verify { soknadMetadataRepository.oppdater(soknadMetadataSlot.captured) }
+        val oppdatertSoknadMetadata = soknadMetadataSlot.captured
+        assertThat(oppdatertSoknadMetadata.status)
+            .isEqualTo(SoknadMetadataInnsendingStatus.AVBRUTT_AUTOMATISK)
+        verify { batchSoknadUnderArbeidRepository.slettSoknad(any()) }
+        verify(exactly = 1) { mellomlagringService.deleteAllVedlegg(any()) }
     }
 
     private fun soknadMetadata(

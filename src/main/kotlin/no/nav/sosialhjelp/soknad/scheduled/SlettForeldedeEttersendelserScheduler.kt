@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component
 import java.time.LocalDateTime
 
 @Component
-class LagringsScheduler(
+class SlettForeldedeEttersendelserScheduler(
     private val leaderElection: LeaderElection,
     private val henvendelseService: HenvendelseService,
     private val batchSoknadUnderArbeidRepository: BatchSoknadUnderArbeidRepository,
@@ -25,7 +25,7 @@ class LagringsScheduler(
     private var feilet = 0
 
     @Scheduled(fixedRate = SCHEDULE_RATE_MS)
-    fun slettForeldedeEttersendelserFraSoknadUnderArbeidDatabase() {
+    fun slettForeldedeEttersendelser() {
         if (schedulerDisabled) {
             logger.warn("Scheduler is disabled")
             return
@@ -35,7 +35,7 @@ class LagringsScheduler(
             vellykket = 0
             feilet = 0
             if (batchEnabled) {
-                logger.info("Starter flytting av søknader til henvendelse-jobb")
+                logger.info("Starter sletting av foreldede ettersendelser fra SoknadUnderArbeid-tabell")
                 val batchTimer = MetricsFactory.createTimer("debug.lagringsjobb")
                 batchTimer.start()
 
@@ -86,11 +86,11 @@ class LagringsScheduler(
     private fun harGaattForLangTid(): Boolean {
         return batchStartTime
             ?.let { LocalDateTime.now().isAfter(it.plusSeconds(SCHEDULE_INTERRUPT_S)) }
-            ?: true.also { logger.warn("LagringsScheduler finner ikke batchStartTime - avbryter batchjobben") }
+            ?: true.also { logger.warn("SlettForeldedeEttersendelserScheduler finner ikke batchStartTime - avbryter batchjobben") }
     }
 
     companion object {
-        private val logger = LoggerFactory.getLogger(LagringsScheduler::class.java)
+        private val logger = LoggerFactory.getLogger(SlettForeldedeEttersendelserScheduler::class.java)
         private const val SCHEDULE_RATE_MS: Long = 1000 * 60 * 60 // 1 time
         private const val SCHEDULE_INTERRUPT_S: Long = 60 * 10 // 10 min
     }
