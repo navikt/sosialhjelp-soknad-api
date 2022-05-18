@@ -8,7 +8,8 @@ object FileDetectionUtils {
     private val log = LoggerFactory.getLogger(FileDetectionUtils::class.java)
 
     fun getMimeType(bytes: ByteArray?): String {
-        return Tika().detect(bytes)
+        val detected = Tika().detect(bytes)
+        return if (detected.equals(MimeTypes.TEXT_X_MATLAB, ignoreCase = true)) MimeTypes.APPLICATION_PDF else detected
     }
 
     fun detectTikaType(bytes: ByteArray?): TikaFileType {
