@@ -9,7 +9,6 @@ import no.nav.sosialhjelp.soknad.common.filedetection.FileDetectionUtils.getMime
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
-import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import no.nav.sosialhjelp.soknad.vedlegg.dto.FilFrontend
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.OpplastingException
@@ -43,7 +42,6 @@ open class OpplastetVedleggRessurs(
     private val opplastetVedleggService: OpplastetVedleggService,
     private val tilgangskontroll: Tilgangskontroll,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
-    private val kommuneInfoService: KommuneInfoService,
     private val mellomlagringService: MellomlagringService,
     private val unleash: Unleash
 ) {

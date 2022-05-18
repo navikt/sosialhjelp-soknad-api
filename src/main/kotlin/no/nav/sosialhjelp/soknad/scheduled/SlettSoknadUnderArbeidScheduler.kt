@@ -52,8 +52,8 @@ class SlettSoknadUnderArbeidScheduler(
     }
 
     private fun slett() {
-        val soknadList = batchSoknadUnderArbeidRepository.hentGamleSoknadUnderArbeidForBatch()
-        soknadList.forEach { soknadUnderArbeidId ->
+        val soknadUnderArbeidIdList = batchSoknadUnderArbeidRepository.hentGamleSoknadUnderArbeidForBatch()
+        soknadUnderArbeidIdList.forEach { soknadUnderArbeidId ->
             if (harGaattForLangTid()) {
                 logger.warn("Jobben har kjørt i mer enn $SCHEDULE_INTERRUPT_S s. Den blir derfor stoppet")
                 return
