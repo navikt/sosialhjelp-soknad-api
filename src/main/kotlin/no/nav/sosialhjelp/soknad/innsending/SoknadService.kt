@@ -43,6 +43,7 @@ import no.nav.sosialhjelp.soknad.inntekt.husbanken.BostotteSystemdata
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkatteetatenSystemdata
 import no.nav.sosialhjelp.soknad.metrics.SOKNAD_TYPE
 import no.nav.sosialhjelp.soknad.metrics.SoknadMetricsService
+import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
@@ -65,6 +66,7 @@ open class SoknadService(
     private val systemdataUpdater: SystemdataUpdater,
     private val bostotteSystemdata: BostotteSystemdata,
     private val skatteetatenSystemdata: SkatteetatenSystemdata,
+    private val mellomlagringService: MellomlagringService,
 ) {
     @Transactional
     open fun startSoknad(token: String?): String {
@@ -158,10 +160,13 @@ open class SoknadService(
     }
 
     @Transactional
-    open fun avbrytSoknad(behandlingsId: String?) {
+    open fun avbrytSoknad(behandlingsId: String) {
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         soknadUnderArbeidRepository.hentSoknadNullable(behandlingsId, eier)
             ?.let { soknadUnderArbeid ->
+                if (mellomlagringService.erMellomlagringEnabledOgSoknadSkalSendesMedDigisosApi(soknadUnderArbeid)) {
+                    mellomlagringService.deleteAllVedlegg(behandlingsId)
+                }
                 soknadUnderArbeidRepository.slettSoknad(soknadUnderArbeid, eier)
                 henvendelseService.avbrytSoknad(soknadUnderArbeid.behandlingsId, false)
                 soknadMetricsService.reportAvbruttSoknad(soknadUnderArbeid.erEttersendelse)

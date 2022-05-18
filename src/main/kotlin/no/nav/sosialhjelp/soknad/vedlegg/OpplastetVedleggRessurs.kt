@@ -5,19 +5,10 @@ import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.kotlin.utils.logger
 import no.nav.sosialhjelp.metrics.aspects.Timed
 import no.nav.sosialhjelp.soknad.common.Constants
-import no.nav.sosialhjelp.soknad.common.exceptions.SendingTilKommuneErMidlertidigUtilgjengeligException
-import no.nav.sosialhjelp.soknad.common.exceptions.SendingTilKommuneUtilgjengeligException
 import no.nav.sosialhjelp.soknad.common.filedetection.FileDetectionUtils.getMimeType
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRepository
-import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
-import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
-import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus.FIKS_NEDETID_OG_TOM_CACHE
-import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus.HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT
-import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus.MANGLER_KONFIGURASJON
-import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus.SKAL_SENDE_SOKNADER_OG_ETTERSENDELSER_VIA_FDA
-import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus.SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD_OG_ETTERSENDELSER
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import no.nav.sosialhjelp.soknad.vedlegg.dto.FilFrontend
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.OpplastingException
@@ -51,7 +42,6 @@ open class OpplastetVedleggRessurs(
     private val opplastetVedleggService: OpplastetVedleggService,
     private val tilgangskontroll: Tilgangskontroll,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
-    private val kommuneInfoService: KommuneInfoService,
     private val mellomlagringService: MellomlagringService,
     private val unleash: Unleash
 ) {
@@ -137,7 +127,7 @@ open class OpplastetVedleggRessurs(
         val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
 
         // bruk KS mellomlagringstjeneste hvis featuren er enablet og søknad skal sendes med DigisosApi
-        return if (mellomlagringEnabled && soknadSkalSendesMedDigisosApi(soknadUnderArbeid, kommuneInfoService)) {
+        return if (mellomlagringService.erMellomlagringEnabledOgSoknadSkalSendesMedDigisosApi(soknadUnderArbeid)) {
             log.info("Forsøker å laste opp vedlegg til mellomlagring hos KS")
             val mellomlagretVedlegg = mellomlagringService.uploadVedlegg(behandlingsId, vedleggstype, data, filnavn)
             FilFrontend(mellomlagretVedlegg.filnavn, mellomlagretVedlegg.filId)
@@ -180,25 +170,6 @@ open class OpplastetVedleggRessurs(
                 }
             } catch (e: IOException) {
                 throw OpplastingException("Kunne ikke lagre fil", e, "vedlegg.opplasting.feil.generell")
-            }
-        }
-
-        fun soknadSkalSendesMedDigisosApi(soknadUnderArbeid: SoknadUnderArbeid, kommuneInfoService: KommuneInfoService): Boolean {
-            if (soknadUnderArbeid.erEttersendelse) {
-                return false
-            }
-            val kommunenummer = soknadUnderArbeid.jsonInternalSoknad?.soknad?.mottaker?.kommunenummer
-                ?: throw IllegalStateException("Kommunenummer ikke funnet for JsonInternalSoknad.soknad.mottaker.kommunenummer")
-
-            return when (kommuneInfoService.kommuneInfo(kommunenummer)) {
-                FIKS_NEDETID_OG_TOM_CACHE -> {
-                    throw SendingTilKommuneUtilgjengeligException("Mellomlagring av vedlegg er ikke tilgjengelig fordi fiks har nedetid og kommuneinfo-cache er tom.")
-                }
-                MANGLER_KONFIGURASJON, HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT -> false
-                SKAL_SENDE_SOKNADER_OG_ETTERSENDELSER_VIA_FDA -> true
-                SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD_OG_ETTERSENDELSER -> {
-                    throw SendingTilKommuneErMidlertidigUtilgjengeligException("Sending til kommune $kommunenummer er midlertidig utilgjengelig.")
-                }
             }
         }
     }
