@@ -6,7 +6,6 @@ import org.springframework.stereotype.Repository
 import org.springframework.transaction.TransactionStatus
 import org.springframework.transaction.support.TransactionCallbackWithoutResult
 import org.springframework.transaction.support.TransactionTemplate
-import java.sql.ResultSet
 
 /**
  * Repository for SoknadUnderArbeid.
@@ -22,18 +21,18 @@ open class BatchSoknadUnderArbeidRepositoryJdbc(
 
     private val soknadUnderArbeidRowMapper = SoknadUnderArbeidRowMapper()
 
-    override fun hentSoknadUnderArbeidIdFromBehandlingsId(behandlingsId: String?): Long? {
+    override fun hentSoknadUnderArbeid(behandlingsId: String): SoknadUnderArbeid? {
         return jdbcTemplate.query(
             "select * from SOKNAD_UNDER_ARBEID where BEHANDLINGSID = ?",
-            { resultSet: ResultSet, _: Int -> resultSet.getLong("soknad_under_arbeid_id") },
+            soknadUnderArbeidRowMapper,
             behandlingsId
         ).firstOrNull()
     }
 
-    override fun hentGamleSoknadUnderArbeidForBatch(): List<Long> {
+    override fun hentGamleSoknadUnderArbeidForBatch(): List<SoknadUnderArbeid> {
         return jdbcTemplate.query(
             "select SOKNAD_UNDER_ARBEID_ID from SOKNAD_UNDER_ARBEID where SISTENDRETDATO < CURRENT_TIMESTAMP - (INTERVAL '14' DAY) and STATUS = ?",
-            { resultSet: ResultSet, _: Int -> resultSet.getLong("soknad_under_arbeid_id") },
+            soknadUnderArbeidRowMapper,
             SoknadUnderArbeidStatus.UNDER_ARBEID.toString()
         )
     }

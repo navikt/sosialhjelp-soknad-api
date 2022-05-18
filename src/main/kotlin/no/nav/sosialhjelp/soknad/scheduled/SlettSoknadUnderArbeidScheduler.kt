@@ -3,6 +3,7 @@ package no.nav.sosialhjelp.soknad.scheduled
 import no.nav.sosialhjelp.metrics.MetricsFactory
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.BatchSoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.scheduled.leaderelection.LeaderElection
+import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.scheduling.annotation.Scheduled
@@ -11,10 +12,11 @@ import java.time.LocalDateTime
 
 @Component
 class SlettSoknadUnderArbeidScheduler(
-    private val leaderElection: LeaderElection,
-    private val batchSoknadUnderArbeidRepository: BatchSoknadUnderArbeidRepository,
     @Value("\${sendsoknad.batch.enabled}") private val batchEnabled: Boolean,
     @Value("\${scheduler.disable}") private val schedulerDisabled: Boolean,
+    private val leaderElection: LeaderElection,
+    private val batchSoknadUnderArbeidRepository: BatchSoknadUnderArbeidRepository,
+    private val mellomlagringService: MellomlagringService,
 ) {
     private var batchStartTime: LocalDateTime? = null
     private var vellykket = 0
@@ -50,13 +52,16 @@ class SlettSoknadUnderArbeidScheduler(
     }
 
     private fun slett() {
-        val soknadIdList = batchSoknadUnderArbeidRepository.hentGamleSoknadUnderArbeidForBatch()
-        soknadIdList.forEach { soknadId: Long? ->
+        val soknadList = batchSoknadUnderArbeidRepository.hentGamleSoknadUnderArbeidForBatch()
+        soknadList.forEach { soknadUnderArbeid ->
             if (harGaattForLangTid()) {
                 logger.warn("Jobben har kjørt i mer enn $SCHEDULE_INTERRUPT_S s. Den blir derfor stoppet")
                 return
             }
-            batchSoknadUnderArbeidRepository.slettSoknad(soknadId)
+            if (mellomlagringService.erMellomlagringEnabledOgSoknadSkalSendesMedDigisosApi(soknadUnderArbeid)) {
+                mellomlagringService.deleteAllVedlegg(soknadUnderArbeid.behandlingsId)
+            }
+            batchSoknadUnderArbeidRepository.slettSoknad(soknadUnderArbeid.soknadId)
             vellykket++
         }
     }

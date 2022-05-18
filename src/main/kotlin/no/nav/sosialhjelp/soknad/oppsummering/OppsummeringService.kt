@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.oppsummering
 
-import no.finn.unleash.Unleash
 import no.nav.sbl.soknadsosialhjelp.json.VedleggsforventningMaster
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
@@ -10,7 +9,6 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.Vedleggstatus
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils
-import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
 import no.nav.sosialhjelp.soknad.oppsummering.dto.Oppsummering
 import no.nav.sosialhjelp.soknad.oppsummering.steg.ArbeidOgUtdanningSteg
 import no.nav.sosialhjelp.soknad.oppsummering.steg.BegrunnelseSteg
@@ -21,8 +19,6 @@ import no.nav.sosialhjelp.soknad.oppsummering.steg.OkonomiskeOpplysningerOgVedle
 import no.nav.sosialhjelp.soknad.oppsummering.steg.OkonomiskeOpplysningerOgVedleggSteg.OppsummeringVedleggInfo
 import no.nav.sosialhjelp.soknad.oppsummering.steg.PersonopplysningerSteg
 import no.nav.sosialhjelp.soknad.oppsummering.steg.UtgifterOgGjeldSteg
-import no.nav.sosialhjelp.soknad.vedlegg.OpplastetVedleggRessurs.Companion.KS_MELLOMLAGRING_ENABLED
-import no.nav.sosialhjelp.soknad.vedlegg.OpplastetVedleggRessurs.Companion.soknadSkalSendesMedDigisosApi
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
 import org.slf4j.LoggerFactory.getLogger
 import org.springframework.stereotype.Component
@@ -33,8 +29,6 @@ class OppsummeringService(
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val opplastetVedleggRepository: OpplastetVedleggRepository,
     private val mellomlagringService: MellomlagringService,
-    private val unleash: Unleash,
-    private val kommuneInfoService: KommuneInfoService
 ) {
     private val personopplysningerSteg = PersonopplysningerSteg()
     private val begrunnelseSteg = BegrunnelseSteg()
@@ -50,7 +44,7 @@ class OppsummeringService(
         val jsonInternalSoknad = soknadUnderArbeid.jsonInternalSoknad
             ?: throw IllegalStateException("Kan ikke generere oppsummeringsside hvis SoknadUnderArbeid.jsonInternalSoknad er null")
 
-        val mellomlagringEnabled = unleash.isEnabled(KS_MELLOMLAGRING_ENABLED, false) && soknadSkalSendesMedDigisosApi(soknadUnderArbeid, kommuneInfoService)
+        val mellomlagringEnabled = mellomlagringService.erMellomlagringEnabledOgSoknadSkalSendesMedDigisosApi(soknadUnderArbeid)
         if (soknadUnderArbeid.jsonInternalSoknad?.vedlegg?.vedlegg?.isEmpty() == null) {
             log.info("Oppdaterer vedleggsforventninger for soknad $behandlingsId fra oppsummeringssiden, ettersom side 8 ble hoppet over")
             if (mellomlagringEnabled) {
