@@ -53,15 +53,17 @@ class SlettSoknadUnderArbeidScheduler(
 
     private fun slett() {
         val soknadList = batchSoknadUnderArbeidRepository.hentGamleSoknadUnderArbeidForBatch()
-        soknadList.forEach { soknadUnderArbeid ->
+        soknadList.forEach { soknadUnderArbeidId ->
             if (harGaattForLangTid()) {
                 logger.warn("Jobben har kjørt i mer enn $SCHEDULE_INTERRUPT_S s. Den blir derfor stoppet")
                 return
             }
-            if (mellomlagringService.erMellomlagringEnabledOgSoknadSkalSendesMedDigisosApi(soknadUnderArbeid)) {
-                mellomlagringService.deleteAllVedlegg(soknadUnderArbeid.behandlingsId)
+            batchSoknadUnderArbeidRepository.hentSoknadUnderArbeid(soknadUnderArbeidId)?.let {
+                if (mellomlagringService.erMellomlagringEnabledOgSoknadSkalSendesMedDigisosApi(it)) {
+                    mellomlagringService.deleteAllVedlegg(it.behandlingsId)
+                }
             }
-            batchSoknadUnderArbeidRepository.slettSoknad(soknadUnderArbeid.soknadId)
+            batchSoknadUnderArbeidRepository.slettSoknad(soknadUnderArbeidId)
             vellykket++
         }
     }

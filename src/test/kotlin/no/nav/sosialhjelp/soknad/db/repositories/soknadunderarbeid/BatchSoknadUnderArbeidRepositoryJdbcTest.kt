@@ -35,8 +35,8 @@ internal class BatchSoknadUnderArbeidRepositoryJdbcTest {
 
     @AfterEach
     fun tearDown() {
-        jdbcTemplate.update("delete from SOKNAD_UNDER_ARBEID")
         jdbcTemplate.update("delete from OPPLASTET_VEDLEGG")
+        jdbcTemplate.update("delete from SOKNAD_UNDER_ARBEID")
     }
 
     @Test
@@ -47,7 +47,7 @@ internal class BatchSoknadUnderArbeidRepositoryJdbcTest {
         val skalSlettesId = soknadUnderArbeidRepository.opprettSoknad(skalSlettes, EIER)
         val soknader = batchSoknadUnderArbeidRepository.hentGamleSoknadUnderArbeidForBatch()
         assertThat(soknader).hasSize(1)
-        assertThat(soknader[0].soknadId).isEqualTo(skalSlettesId).isNotEqualTo(skalIkkeSlettesId)
+        assertThat(soknader[0]).isEqualTo(skalSlettesId).isNotEqualTo(skalIkkeSlettesId)
     }
 
     @Test

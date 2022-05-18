@@ -46,7 +46,6 @@ internal class SlettSoknadUnderArbeidSchedulerTest {
             opprettetDato = LocalDateTime.now(),
             sistEndretDato = LocalDateTime.now()
         )
-        soknadUnderArbeid1.jsonInternalSoknad?.soknad?.mottaker?.kommunenummer = "1234"
 
         val soknadUnderArbeid2 = SoknadUnderArbeid(
             soknadId = 2L,
@@ -59,9 +58,10 @@ internal class SlettSoknadUnderArbeidSchedulerTest {
             opprettetDato = LocalDateTime.now(),
             sistEndretDato = LocalDateTime.now()
         )
-        soknadUnderArbeid2.jsonInternalSoknad?.soknad?.mottaker?.kommunenummer = "1234"
 
-        every { batchSoknadUnderArbeidRepository.hentGamleSoknadUnderArbeidForBatch() } returns listOf(soknadUnderArbeid1, soknadUnderArbeid2)
+        every { batchSoknadUnderArbeidRepository.hentGamleSoknadUnderArbeidForBatch() } returns listOf(soknadUnderArbeid1.soknadId, soknadUnderArbeid2.soknadId)
+        every { batchSoknadUnderArbeidRepository.hentSoknadUnderArbeid(soknadUnderArbeid1.soknadId) } returns soknadUnderArbeid1
+        every { batchSoknadUnderArbeidRepository.hentSoknadUnderArbeid(soknadUnderArbeid2.soknadId) } returns soknadUnderArbeid2
         every { batchSoknadUnderArbeidRepository.slettSoknad(any()) } just runs
         every { mellomlagringService.erMellomlagringEnabledOgSoknadSkalSendesMedDigisosApi(any()) } returns true
         every { mellomlagringService.deleteAllVedlegg(any()) } just runs
