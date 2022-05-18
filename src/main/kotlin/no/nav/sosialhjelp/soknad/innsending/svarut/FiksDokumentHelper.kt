@@ -14,7 +14,6 @@ import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
 import no.nav.sosialhjelp.soknad.common.filedetection.FileDetectionUtils.getMimeType
 import no.nav.sosialhjelp.soknad.common.filedetection.MimeTypes.APPLICATION_JSON
 import no.nav.sosialhjelp.soknad.common.filedetection.MimeTypes.APPLICATION_PDF
-import no.nav.sosialhjelp.soknad.common.filedetection.MimeTypes.TEXT_X_MATLAB
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedlegg
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.innsending.InnsendingService
@@ -119,11 +118,10 @@ class FiksDokumentHelper(
         val byteArrayInputStream = krypterOgOpprettByteArrayInputStream(opplastetVedlegg.data)
         map[filnavn] = byteArrayInputStream
 
-        val detectedMimeType = getMimeType(opplastetVedlegg.data)
-        val mimetype = if (detectedMimeType.equals(TEXT_X_MATLAB, ignoreCase = true)) APPLICATION_PDF else detectedMimeType
+        val mimeType = getMimeType(opplastetVedlegg.data)
         return Dokument()
             .withFilnavn(filnavn)
-            .withMimeType(mimetype)
+            .withMimeType(mimeType)
             .withEkskluderesFraUtskrift(true)
     }
 

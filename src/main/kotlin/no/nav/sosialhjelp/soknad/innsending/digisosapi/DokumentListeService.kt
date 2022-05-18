@@ -2,7 +2,7 @@ package no.nav.sosialhjelp.soknad.innsending.digisosapi
 
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sosialhjelp.kotlin.utils.logger
-import no.nav.sosialhjelp.soknad.common.filedetection.FileDetectionUtils
+import no.nav.sosialhjelp.soknad.common.filedetection.FileDetectionUtils.getMimeType
 import no.nav.sosialhjelp.soknad.common.filedetection.MimeTypes
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedlegg
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
@@ -98,8 +98,7 @@ class DokumentListeService(
 
     private fun opprettDokumentForVedlegg(opplastetVedlegg: OpplastetVedlegg): FilOpplasting {
         val bytes = opplastetVedlegg.data
-        val detectedMimeType = FileDetectionUtils.getMimeType(bytes)
-        val mimetype = if (detectedMimeType.equals(MimeTypes.TEXT_X_MATLAB, ignoreCase = true)) MimeTypes.APPLICATION_PDF else detectedMimeType
+        val mimetype = getMimeType(bytes)
         return opprettFilOpplastingFraByteArray(opplastetVedlegg.filnavn, mimetype, bytes)
     }
 
