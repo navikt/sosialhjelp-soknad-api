@@ -14,12 +14,12 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 
-internal class LagringsSchedulerTest {
+internal class SlettForeldedeEttersendelserSchedulerTest {
     private val leaderElection: LeaderElection = mockk()
     private val henvendelseService: HenvendelseService = mockk()
     private val batchSoknadUnderArbeidRepository: BatchSoknadUnderArbeidRepository = mockk()
 
-    private val scheduler = LagringsScheduler(
+    private val scheduler = SlettForeldedeEttersendelserScheduler(
         leaderElection,
         henvendelseService,
         batchSoknadUnderArbeidRepository,
@@ -33,7 +33,7 @@ internal class LagringsSchedulerTest {
     }
 
     @Test
-    fun skalAvbryteIHenvendelseOgSletteFraDatabase() {
+    fun skalAvbryteForeldedeEttersendelserOgSletteFraDatabase() {
         val behandlingsId = "2"
         val tilknyttetBehandlingsId = "1"
         val soknadId: Long = 2
@@ -53,14 +53,14 @@ internal class LagringsSchedulerTest {
         every { henvendelseService.avbrytSoknad(any(), any()) } just runs
         every { batchSoknadUnderArbeidRepository.slettSoknad(any()) } just runs
 
-        scheduler.slettForeldedeEttersendelserFraSoknadUnderArbeidDatabase()
+        scheduler.slettForeldedeEttersendelser()
 
         verify { henvendelseService.avbrytSoknad(behandlingsId, true) }
         verify { batchSoknadUnderArbeidRepository.slettSoknad(any()) }
     }
 
     @Test
-    fun skalIkkeAvbryteIHenvendelseOgSletteFraDatabaseDersomDetIkkeErEttersendelse() {
+    fun skalIkkeAvbryteSoknadUnderArbeidOgSletteFraDatabaseDersomDetIkkeErEttersendelse() {
         val behandlingsId = "2"
         val soknadId: Long = 2
         val soknadUnderArbeid = SoknadUnderArbeid(
@@ -77,7 +77,7 @@ internal class LagringsSchedulerTest {
 
         every { batchSoknadUnderArbeidRepository.hentForeldedeEttersendelser() } returns listOf(soknadUnderArbeid)
 
-        scheduler.slettForeldedeEttersendelserFraSoknadUnderArbeidDatabase()
+        scheduler.slettForeldedeEttersendelser()
 
         verify(exactly = 0) { henvendelseService.avbrytSoknad(behandlingsId, true) }
         verify(exactly = 0) { batchSoknadUnderArbeidRepository.slettSoknad(any()) }
