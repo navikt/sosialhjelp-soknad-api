@@ -134,9 +134,8 @@ class MellomlagringClientImpl(
             .uri(MELLOMLAGRING_DOKUMENT_PATH, navEksternId, digisosDokumentId)
             .header(HttpHeaders.AUTHORIZATION, BEARER + maskinportenClient.getToken())
             .retrieve()
-            .bodyToMono<String>()
+            .bodyToMono<ByteArray>()
             .block()
-            ?.let { digisosObjectMapper.writeValueAsBytes(it) }
             ?: throw FiksException("Mellomlagret vedlegg er null?", null)
     }
 
