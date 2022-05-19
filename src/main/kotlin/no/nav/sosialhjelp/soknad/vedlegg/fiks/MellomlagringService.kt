@@ -41,13 +41,14 @@ class MellomlagringService(
 
     fun getAllVedlegg(behandlingsId: String): List<MellomlagretVedleggMetadata> {
         val navEksternId = if (MiljoUtils.isNonProduction()) createPrefixedBehandlingsId(behandlingsId) else behandlingsId
-        val mellomlagredeVedlegg = mellomlagringClient.getMellomlagredeVedlegg(navEksternId = navEksternId)
-        return mellomlagredeVedlegg?.mellomlagringMetadataList?.map {
-            MellomlagretVedleggMetadata(
-                filnavn = it.filnavn,
-                filId = it.filId
-            )
-        } ?: emptyList()
+        return mellomlagringClient.getMellomlagredeVedlegg(navEksternId = navEksternId)
+            ?.mellomlagringMetadataList
+            ?.map {
+                MellomlagretVedleggMetadata(
+                    filnavn = it.filnavn,
+                    filId = it.filId
+                )
+            } ?: emptyList()
     }
 
     fun getVedlegg(behandlingsId: String, vedleggId: String): MellomlagretVedlegg? {
