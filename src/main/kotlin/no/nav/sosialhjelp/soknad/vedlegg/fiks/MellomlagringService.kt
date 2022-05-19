@@ -60,7 +60,7 @@ class MellomlagringService(
             ?.let {
                 MellomlagretVedlegg(
                     filnavn = it,
-                    data = mellomlagringClient.getVedlegg(navEksternId, vedleggId)
+                    data = mellomlagringClient.getVedlegg(navEksternId = navEksternId, digisosDokumentId = vedleggId)
                 )
             }
     }
