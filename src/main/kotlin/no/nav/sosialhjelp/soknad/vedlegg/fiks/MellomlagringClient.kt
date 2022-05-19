@@ -83,7 +83,7 @@ class MellomlagringClient(
         } catch (badRequest: WebClientResponseException.BadRequest) {
             val errorMessage = digisosObjectMapper.readValue<ErrorMessage>(badRequest.responseBodyAsString)
             if (errorMessage.message == "Fant ingen data i basen knytter til angitt id'en") {
-                log.info("Ingen mellomlagrede vedlegg funnet")
+                log.info("Ingen mellomlagrede vedlegg funnet for $navEksternId")
                 return null
             }
             throw badRequest
@@ -128,7 +128,7 @@ class MellomlagringClient(
             .retrieve()
             .bodyToMono<String>()
             .doOnError(WebClientResponseException::class.java) {
-                log.warn("Mellomlagring av vedlegg til søknad $navEksternId feilet etter ${System.currentTimeMillis() - startTime} ms med status ${it.statusCode} og response: ${it.responseBodyAsString}")
+                log.warn("Mellomlagring av vedlegg til søknad $navEksternId feilet etter ${System.currentTimeMillis() - startTime} ms med status ${it.statusCode} og response: ${it.responseBodyAsString}", it)
             }
             .block()
     }
@@ -142,9 +142,8 @@ class MellomlagringClient(
             .header(HttpHeaders.AUTHORIZATION, BEARER + maskinportenClient.getToken())
             .retrieve()
             .bodyToMono<String>()
-            .onErrorMap(WebClientResponseException::class.java) {
-                log.warn("Fiks - delete mellomlagretVedlegg feilet - ${it.responseBodyAsString}", it)
-                throw it
+            .doOnError(WebClientResponseException::class.java) {
+                log.warn("Fiks - deleteAll mellomlagretVedlegg feilet - ${it.responseBodyAsString}", it)
             }
             .block()
     }
@@ -172,9 +171,8 @@ class MellomlagringClient(
             .header(HttpHeaders.AUTHORIZATION, BEARER + maskinportenClient.getToken())
             .retrieve()
             .bodyToMono<String>()
-            .onErrorMap(WebClientResponseException::class.java) {
+            .doOnError(WebClientResponseException::class.java) {
                 log.warn("Fiks - delete mellomlagretVedlegg feilet - ${it.responseBodyAsString}", it)
-                throw it
             }
             .block()
     }
