@@ -105,16 +105,15 @@ class MellomlagringService(
             ),
             data = ByteArrayInputStream(data)
         )
-        log.info("filmetadata: ${filOpplasting.metadata}")
 
         val navEksternId = if (MiljoUtils.isNonProduction()) createPrefixedBehandlingsId(behandlingsId) else behandlingsId
 
         mellomlagringClient.postVedlegg(navEksternId = navEksternId, filOpplasting = filOpplasting)
 
         val mellomlagredeVedlegg = mellomlagringClient.getMellomlagredeVedlegg(navEksternId = navEksternId)
-        val filId = mellomlagredeVedlegg?.mellomlagringMetadataList?.firstOrNull { it.filnavn == filnavn }?.filId ?: "dummy"
+        val filId = mellomlagredeVedlegg?.mellomlagringMetadataList?.firstOrNull { it.filnavn == filnavn }?.filId
+            ?: throw IllegalStateException("Klarte ikke finne det mellomlagrede vedlegget som akkurat ble lastet opp")
 
-        log.info("Mellomlagrede vedlegg: ${mellomlagredeVedlegg?.mellomlagringMetadataList}")
         return MellomlagretVedleggMetadata(filnavn = filnavn, filId = filId)
     }
 
@@ -124,7 +123,6 @@ class MellomlagringService(
         // hent alle mellomlagrede vedlegg
         val mellomlagredeVedlegg = mellomlagringClient.getMellomlagredeVedlegg(navEksternId = navEksternId)?.mellomlagringMetadataList ?: return
 
-        log.info("Mellomlagrede vedlegg: $mellomlagredeVedlegg")
         val aktueltVedlegg = mellomlagredeVedlegg.firstOrNull { it.filId == vedleggId } ?: return
 
         // oppdater soknadUnderArbeid
@@ -143,8 +141,6 @@ class MellomlagringService(
         }
 
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier)
-
-        // slett mellomlagret vedlegg
         mellomlagringClient.deleteVedlegg(navEksternId = navEksternId, digisosDokumentId = vedleggId)
     }
 
