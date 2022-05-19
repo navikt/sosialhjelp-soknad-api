@@ -62,6 +62,9 @@ class MellomlagringClient(
         .defaultHeader(HEADER_INTEGRASJON_PASSORD, integrasjonpassordFiks)
         .build()
 
+    /**
+     * Hent metadata om alle mellomlagret vedlegg for `navEksternId`
+     */
     fun getMellomlagredeVedlegg(navEksternId: String): MellomlagringDto? {
         val responseString: String
         try {
@@ -88,6 +91,9 @@ class MellomlagringClient(
         return digisosObjectMapper.readValue<MellomlagringDto>(responseString)
     }
 
+    /**
+     * Last opp vedlegg til mellomlagring for `navEksternId`
+     */
     fun postVedlegg(navEksternId: String, filOpplasting: FilOpplasting) {
         val krypteringFutureList = Collections.synchronizedList(ArrayList<Future<Void>>(1))
 
@@ -127,6 +133,52 @@ class MellomlagringClient(
             .block()
     }
 
+    /**
+     * Slett alle mellomlagrede vedlegg for `navEksternId`
+     */
+    fun deleteAllVedlegg(navEksternId: String) {
+        webClient.delete()
+            .uri(MELLOMLAGRING_PATH, navEksternId)
+            .header(HttpHeaders.AUTHORIZATION, BEARER + maskinportenClient.getToken())
+            .retrieve()
+            .bodyToMono<String>()
+            .onErrorMap(WebClientResponseException::class.java) {
+                log.warn("Fiks - delete mellomlagretVedlegg feilet - ${it.responseBodyAsString}", it)
+                throw it
+            }
+            .block()
+    }
+
+    /**
+     * Last ned mellomlagret vedlegg
+     */
+    fun getVedlegg(navEksternId: String, digisosDokumentId: String): ByteArray {
+        return webClient.get()
+            .uri(MELLOMLAGRING_DOKUMENT_PATH, navEksternId, digisosDokumentId)
+            .header(HttpHeaders.AUTHORIZATION, BEARER + maskinportenClient.getToken())
+            .retrieve()
+            .bodyToMono<String>()
+            .block()
+            ?.let { digisosObjectMapper.writeValueAsBytes(it) }
+            ?: throw FiksException("Mellomlagret vedlegg er null?", null)
+    }
+
+    /**
+     * Slett mellomlagret vedlegg
+     */
+    fun deleteVedlegg(navEksternId: String, digisosDokumentId: String) {
+        webClient.delete()
+            .uri(MELLOMLAGRING_DOKUMENT_PATH, navEksternId, digisosDokumentId)
+            .header(HttpHeaders.AUTHORIZATION, BEARER + maskinportenClient.getToken())
+            .retrieve()
+            .bodyToMono<String>()
+            .onErrorMap(WebClientResponseException::class.java) {
+                log.warn("Fiks - delete mellomlagretVedlegg feilet - ${it.responseBodyAsString}", it)
+                throw it
+            }
+            .block()
+    }
+
     private fun createHttpEntityOfString(body: String, name: String): HttpEntity<Any> {
         return createHttpEntity(body, name, null, "text/plain;charset=UTF-8")
     }
@@ -146,36 +198,6 @@ class MellomlagringClient(
         headerMap.add(HttpHeaders.CONTENT_DISPOSITION, contentDisposition.toString())
         headerMap.add(HttpHeaders.CONTENT_TYPE, contentType)
         return HttpEntity(body, headerMap)
-    }
-
-    fun deleteAllVedleggFor(navEksternId: String) {
-        // slett alle mellomlagrede dokument for søknad
-    }
-
-    fun getVedlegg(navEksternId: String, digisosDokumentId: String): ByteArray {
-        // last ned mellomlagret dokument
-        return webClient.get()
-            .uri(MELLOMLAGRING_DOKUMENT_PATH, navEksternId, digisosDokumentId)
-            .header(HttpHeaders.AUTHORIZATION, BEARER + maskinportenClient.getToken())
-            .retrieve()
-            .bodyToMono<String>()
-            .block()
-            ?.let { digisosObjectMapper.writeValueAsBytes(it) }
-            ?: throw FiksException("Mellomlagret vedlegg er null?", null)
-    }
-
-    fun deleteVedlegg(navEksternId: String, digisosDokumentId: String) {
-        // slett mellomlagret dokument
-        webClient.delete()
-            .uri(MELLOMLAGRING_DOKUMENT_PATH, navEksternId, digisosDokumentId)
-            .header(HttpHeaders.AUTHORIZATION, BEARER + maskinportenClient.getToken())
-            .retrieve()
-            .bodyToMono<String>()
-            .onErrorMap(WebClientResponseException::class.java) {
-                log.warn("Fiks - delete mellomlagretVedlegg feilet - ${it.responseBodyAsString}", it)
-                throw it
-            }
-            .block()
     }
 
     companion object {
