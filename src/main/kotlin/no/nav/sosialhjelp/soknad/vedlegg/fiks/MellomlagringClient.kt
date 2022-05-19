@@ -2,70 +2,49 @@ package no.nav.sosialhjelp.soknad.vedlegg.fiks
 
 import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.module.kotlin.readValue
-import io.netty.channel.ChannelOption
 import no.ks.fiks.streaming.klient.FilForOpplasting
 import no.nav.sosialhjelp.api.fiks.ErrorMessage
 import no.nav.sosialhjelp.api.fiks.exceptions.FiksException
 import no.nav.sosialhjelp.kotlin.utils.logger
 import no.nav.sosialhjelp.soknad.auth.maskinporten.MaskinportenClient
 import no.nav.sosialhjelp.soknad.common.Constants.BEARER
-import no.nav.sosialhjelp.soknad.common.Constants.HEADER_INTEGRASJON_ID
-import no.nav.sosialhjelp.soknad.common.Constants.HEADER_INTEGRASJON_PASSORD
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DokumentlagerClient
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.KrypteringService
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.KrypteringService.Companion.waitForFutures
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.digisosObjectMapper
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilOpplasting
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.core.io.InputStreamResource
 import org.springframework.http.ContentDisposition
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
-import org.springframework.http.client.reactive.ReactorClientHttpConnector
-import org.springframework.stereotype.Component
 import org.springframework.util.LinkedMultiValueMap
 import org.springframework.web.reactive.function.BodyInserters
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
 import org.springframework.web.reactive.function.client.bodyToMono
-import reactor.netty.http.client.HttpClient
-import java.time.Duration
 import java.util.Collections
 import java.util.concurrent.Future
 
-@Component
-class MellomlagringClient(
-    @Value("\${digisos_api_baseurl}") private val digisosApiEndpoint: String,
-    @Value("\${integrasjonsid_fiks}") private val integrasjonsidFiks: String,
-    @Value("\${integrasjonpassord_fiks}") private val integrasjonpassordFiks: String,
+interface MellomlagringClient {
+    fun getMellomlagredeVedlegg(navEksternId: String): MellomlagringDto?
+    fun postVedlegg(navEksternId: String, filOpplasting: FilOpplasting)
+    fun deleteAllVedlegg(navEksternId: String)
+    fun getVedlegg(navEksternId: String, digisosDokumentId: String): ByteArray
+    fun deleteVedlegg(navEksternId: String, digisosDokumentId: String)
+}
+
+class MellomlagringClientImpl(
     private val dokumentlagerClient: DokumentlagerClient,
     private val krypteringService: KrypteringService,
     private val maskinportenClient: MaskinportenClient,
-    proxiedWebClientBuilder: WebClient.Builder,
-    proxiedHttpClient: HttpClient,
-) {
-
-    private val webClient = proxiedWebClientBuilder
-        .baseUrl(digisosApiEndpoint)
-        .clientConnector(
-            ReactorClientHttpConnector(
-                proxiedHttpClient
-                    .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, SENDING_TIL_FIKS_TIMEOUT)
-                    .responseTimeout(Duration.ofMillis(SENDING_TIL_FIKS_TIMEOUT.toLong()))
-            )
-        )
-        .codecs {
-            it.defaultCodecs().maxInMemorySize(16 * 1024 * 1024)
-        }
-        .defaultHeader(HEADER_INTEGRASJON_ID, integrasjonsidFiks)
-        .defaultHeader(HEADER_INTEGRASJON_PASSORD, integrasjonpassordFiks)
-        .build()
+    private val webClient: WebClient
+) : MellomlagringClient {
 
     /**
      * Hent metadata om alle mellomlagret vedlegg for `navEksternId`
      */
-    fun getMellomlagredeVedlegg(navEksternId: String): MellomlagringDto? {
+    override fun getMellomlagredeVedlegg(navEksternId: String): MellomlagringDto? {
         val responseString: String
         try {
             responseString = webClient.get()
@@ -94,7 +73,7 @@ class MellomlagringClient(
     /**
      * Last opp vedlegg til mellomlagring for `navEksternId`
      */
-    fun postVedlegg(navEksternId: String, filOpplasting: FilOpplasting) {
+    override fun postVedlegg(navEksternId: String, filOpplasting: FilOpplasting) {
         val krypteringFutureList = Collections.synchronizedList(ArrayList<Future<Void>>(1))
 
         try {
@@ -136,7 +115,7 @@ class MellomlagringClient(
     /**
      * Slett alle mellomlagrede vedlegg for `navEksternId`
      */
-    fun deleteAllVedlegg(navEksternId: String) {
+    override fun deleteAllVedlegg(navEksternId: String) {
         webClient.delete()
             .uri(MELLOMLAGRING_PATH, navEksternId)
             .header(HttpHeaders.AUTHORIZATION, BEARER + maskinportenClient.getToken())
@@ -151,7 +130,7 @@ class MellomlagringClient(
     /**
      * Last ned mellomlagret vedlegg
      */
-    fun getVedlegg(navEksternId: String, digisosDokumentId: String): ByteArray {
+    override fun getVedlegg(navEksternId: String, digisosDokumentId: String): ByteArray {
         return webClient.get()
             .uri(MELLOMLAGRING_DOKUMENT_PATH, navEksternId, digisosDokumentId)
             .header(HttpHeaders.AUTHORIZATION, BEARER + maskinportenClient.getToken())
@@ -165,7 +144,7 @@ class MellomlagringClient(
     /**
      * Slett mellomlagret vedlegg
      */
-    fun deleteVedlegg(navEksternId: String, digisosDokumentId: String) {
+    override fun deleteVedlegg(navEksternId: String, digisosDokumentId: String) {
         webClient.delete()
             .uri(MELLOMLAGRING_DOKUMENT_PATH, navEksternId, digisosDokumentId)
             .header(HttpHeaders.AUTHORIZATION, BEARER + maskinportenClient.getToken())
@@ -201,8 +180,6 @@ class MellomlagringClient(
     companion object {
         private const val MELLOMLAGRING_PATH = "digisos/api/v1/mellomlagring/{navEksternRefId}"
         private const val MELLOMLAGRING_DOKUMENT_PATH = "digisos/api/v1/mellomlagring/{navEksternRefId}/{digisosDokumentId}"
-
-        private const val SENDING_TIL_FIKS_TIMEOUT = 5 * 60 * 1000 // 5 minutter
 
         private val log by logger()
 
