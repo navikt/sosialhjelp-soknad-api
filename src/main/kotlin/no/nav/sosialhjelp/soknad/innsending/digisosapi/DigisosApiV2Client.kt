@@ -106,9 +106,9 @@ class DigisosApiV2ClientImpl(
         token: String?
     ): String {
         val body = LinkedMultiValueMap<String, Any>()
-        body.add("tilleggsinformasjon.json", createHttpEntityOfJson(tilleggsinformasjonJson, "tilleggsinformasjon.json"))
-        body.add("soknad.json", createHttpEntityOfJson(soknadJson, "soknad.json"))
-        body.add("vedlegg.json", createHttpEntityOfJson(vedleggJson, "vedlegg.json"))
+        body.add("tilleggsinformasjonJson", createHttpEntityOfJson(tilleggsinformasjonJson, "tilleggsinformasjonJson"))
+        body.add("soknadJson", createHttpEntityOfJson(soknadJson, "soknadJson"))
+        body.add("vedleggJson", createHttpEntityOfJson(vedleggJson, "vedleggJson"))
         filer.forEach {
             body.add("metadata", createHttpEntityOfString(getJson(it), "metadata"))
             body.add(it.filnavn, createHttpEntityOfFile(it, it.filnavn))
