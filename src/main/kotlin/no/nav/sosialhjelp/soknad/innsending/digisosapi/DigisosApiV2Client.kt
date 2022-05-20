@@ -11,6 +11,7 @@ import org.springframework.http.ContentDisposition
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpHeaders.AUTHORIZATION
+import org.springframework.http.client.MultipartBodyBuilder
 import org.springframework.util.LinkedMultiValueMap
 import org.springframework.web.reactive.function.BodyInserters
 import org.springframework.web.reactive.function.client.WebClient
@@ -90,14 +91,24 @@ class DigisosApiV2ClientImpl(
         behandlingsId: String,
         token: String?
     ): String {
-        val body = LinkedMultiValueMap<String, Any>()
-        body.add("tilleggsinformasjonJson", createHttpEntityOfJson(tilleggsinformasjonJson, "tilleggsinformasjonJson"))
-        body.add("soknadJson", createHttpEntityOfJson(soknadJson, "soknadJson"))
-        body.add("vedleggJson", createHttpEntityOfJson(vedleggJson, "vedleggJson"))
+
+        val multi = MultipartBodyBuilder()
+        multi.part("tilleggsinformasjonJson", createHttpEntityOfJson(tilleggsinformasjonJson, "tilleggsinformasjonJson"))
+        multi.part("soknadJson", createHttpEntityOfJson(soknadJson, "soknadJson"))
+        multi.part("vedleggJson", createHttpEntityOfJson(vedleggJson, "vedleggJson"))
         filer.forEach {
-            body.add("metadata", createHttpEntityOfString(getJson(it), "metadata"))
-            body.add(it.filnavn, createHttpEntityOfFile(it, it.filnavn))
+            multi.part("metadata", createHttpEntityOfString(getJson(it), "metadata"))
+            multi.part(it.filnavn, createHttpEntityOfFile(it, it.filnavn))
         }
+
+//        val body = LinkedMultiValueMap<String, Any>()
+//        body.add("tilleggsinformasjonJson", createHttpEntityOfJson(tilleggsinformasjonJson, "tilleggsinformasjonJson"))
+//        body.add("soknadJson", createHttpEntityOfJson(soknadJson, "soknadJson"))
+//        body.add("vedleggJson", createHttpEntityOfJson(vedleggJson, "vedleggJson"))
+//        filer.forEach {
+//            body.add("metadata", createHttpEntityOfString(getJson(it), "metadata"))
+//            body.add(it.filnavn, createHttpEntityOfFile(it, it.filnavn))
+//        }
 
         try {
             val startTime = System.currentTimeMillis()
@@ -105,7 +116,7 @@ class DigisosApiV2ClientImpl(
                 .uri(INNSENDING_V2_PATH, kommunenummer, behandlingsId)
                 .header(AUTHORIZATION, token)
                 .header("requestid", UUID.randomUUID().toString())
-                .body(BodyInserters.fromMultipartData(body))
+                .body(BodyInserters.fromMultipartData(multi.build()))
                 .retrieve()
                 .bodyToMono<String>()
                 .doOnError(WebClientResponseException::class.java) {
