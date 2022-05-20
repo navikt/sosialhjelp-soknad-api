@@ -191,7 +191,7 @@ class DigisosApiV2ClientImpl(
     }
 
     private fun createHttpEntityOfJson(body: String, name: String): HttpEntity<Any> {
-        return createHttpEntity(body, name, null, "application/json;charset=UTF-8")
+        return createHttpEntity(body, name, name, "application/json;charset=UTF-8")
     }
 
     private fun createHttpEntityOfFile(file: FilForOpplasting<Any>, name: String): HttpEntity<Any> {
