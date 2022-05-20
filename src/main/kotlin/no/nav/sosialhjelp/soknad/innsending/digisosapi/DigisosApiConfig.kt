@@ -39,7 +39,7 @@ open class DigisosApiConfig(
             dokumentlagerClient,
             krypteringService
         )
-        return MetricsFactory.createTimerProxy("DigisosApi", digisosApiV2Client, DigisosApiV2Client::class.java)
+        return MetricsFactory.createTimerProxy("DigisosApiV2", digisosApiV2Client, DigisosApiV2Client::class.java)
     }
 
     @Bean

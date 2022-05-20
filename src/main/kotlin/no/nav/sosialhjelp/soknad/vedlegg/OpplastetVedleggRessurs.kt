@@ -51,27 +51,18 @@ open class OpplastetVedleggRessurs(
     @Produces(MediaType.APPLICATION_JSON)
     open fun getVedleggFil(
         @PathParam("vedleggId") vedleggId: String,
-        @Context response: HttpServletResponse
+        @Context response: HttpServletResponse,
     ): Response {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
         val eier = SubjectHandlerUtils.getUserIdFromToken()
 
-        opplastetVedleggRepository.hentVedlegg(vedleggId, eier)?.let {
-            response.setHeader("Content-Disposition", "attachment; filename=\"${it.filnavn}\"")
-            val mimeType = getMimeType(it.data)
-            return Response.ok(it.data).type(mimeType).build()
-        }
-
-        if (mellomlagringEnabled) {
-            log.info("Forsøker å hente vedlegg $vedleggId fra mellomlagring hos KS")
-            mellomlagringService.getVedlegg(vedleggId)?.let {
+        return opplastetVedleggRepository.hentVedlegg(vedleggId, eier)
+            ?.let {
                 response.setHeader("Content-Disposition", "attachment; filename=\"${it.filnavn}\"")
                 val mimeType = getMimeType(it.data)
-                return Response.ok(it.data).type(mimeType).build()
+                Response.ok(it.data).type(mimeType).build()
             }
-        }
-        // hvis vedleggId ikke finnes i DB eller KS mellomlagring
-        return Response.noContent().build()
+            ?: Response.noContent().build()
     }
 
     @GET
@@ -110,7 +101,7 @@ open class OpplastetVedleggRessurs(
     open fun saveVedlegg(
         @PathParam("behandlingsId") behandlingsId: String,
         @PathParam("type") vedleggstype: String,
-        @FormDataParam("file") fil: FormDataBodyPart
+        @FormDataParam("file") fil: FormDataBodyPart,
     ): FilFrontend {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         if (fil.getValueAs(File::class.java).length() > MAKS_TOTAL_FILSTORRELSE) {
