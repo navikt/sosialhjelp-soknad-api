@@ -1,20 +1,22 @@
 package no.nav.sosialhjelp.soknad.auth.tokenx
 
 import no.nav.sosialhjelp.soknad.auth.tokenx.JwtProviderUtil.downloadWellKnown
+import no.nav.sosialhjelp.soknad.client.config.unproxiedHttpClient
 import no.nav.sosialhjelp.soknad.client.redis.RedisService
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile
+import org.springframework.http.client.reactive.ReactorClientHttpConnector
 import org.springframework.web.reactive.function.client.WebClient
 
 @Configuration
 open class TokendingsConfig(
-    private val nonProxiedWebClientBuilder: WebClient.Builder,
     @Value("\${tokendings_url}") val tokendingsUrl: String,
     @Value("\${tokendings_client_id}") val tokendingsClientId: String,
     @Value("\${tokendings_private_jwk}") val tokendingsPrivateJwk: String,
-    private val redisService: RedisService
+    private val redisService: RedisService,
+    private val webClientBuilder: WebClient.Builder
 ) {
 
     @Profile("!test")
@@ -43,7 +45,12 @@ open class TokendingsConfig(
     }
 
     private val tokendingsWebClient: WebClient
-        get() = nonProxiedWebClientBuilder.build()
+        get() = webClientBuilder
+            .clientConnector(ReactorClientHttpConnector(unproxiedHttpClient()))
+            .codecs {
+                it.defaultCodecs().maxInMemorySize(16 * 1024 * 1024)
+            }
+            .build()
 
     private val wellKnown: WellKnown
         get() = downloadWellKnown(tokendingsUrl)

@@ -7,16 +7,19 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile
+import org.springframework.http.client.reactive.ReactorClientHttpConnector
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.bodyToMono
+import reactor.netty.http.client.HttpClient
 
 @Configuration
 open class MaskinportenClientConfig(
-    private val proxiedWebClientBuilder: WebClient.Builder,
     @Value("\${maskinporten_clientid}") private val clientId: String,
     @Value("\${maskinporten_scopes}") private val scopes: String,
     @Value("\${maskinporten_well_known_url}") private val wellKnownUrl: String,
-    @Value("\${maskinporten_client_jwk}") private val clientJwk: String
+    @Value("\${maskinporten_client_jwk}") private val clientJwk: String,
+    private val webClientBuilder: WebClient.Builder,
+    private val proxiedHttpClient: HttpClient
 ) {
 
     @Bean
@@ -33,7 +36,12 @@ open class MaskinportenClientConfig(
     }
 
     private val maskinPortenWebClient: WebClient
-        get() = proxiedWebClientBuilder.build()
+        get() = webClientBuilder
+            .clientConnector(ReactorClientHttpConnector(proxiedHttpClient))
+            .codecs {
+                it.defaultCodecs().maxInMemorySize(16 * 1024 * 1024)
+            }
+            .build()
 
     private val wellknown: WellKnown
         get() = maskinPortenWebClient.get()

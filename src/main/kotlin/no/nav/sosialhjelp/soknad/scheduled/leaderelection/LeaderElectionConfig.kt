@@ -7,13 +7,13 @@ import org.springframework.web.reactive.function.client.WebClient
 
 @Configuration
 open class LeaderElectionConfig(
-    private val nonProxiedWebClientBuilder: WebClient.Builder
+    private val webClientBuilder: WebClient.Builder
 ) {
 
     @Profile("leader-election")
     @Bean
     open fun leaderElection(): LeaderElection {
-        return LeaderElectionImpl(nonProxiedWebClientBuilder)
+        return LeaderElectionImpl(webClientBuilder)
     }
 
     @Profile("!leader-election")

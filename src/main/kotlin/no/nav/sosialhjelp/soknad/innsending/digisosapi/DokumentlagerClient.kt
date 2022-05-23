@@ -35,13 +35,13 @@ class DokumentlagerClientImpl(
     @Value("\${integrasjonsid_fiks}") private val integrasjonsidFiks: String,
     @Value("\${integrasjonpassord_fiks}") private val integrasjonpassordFiks: String,
     private val maskinportenClient: MaskinportenClient,
-    proxiedWebClientBuilder: WebClient.Builder,
-    proxiedHttpClient: HttpClient,
+    webClientBuilder: WebClient.Builder,
+    proxiedHttpClient: HttpClient
 ) : DokumentlagerClient {
 
     private var cachedPublicKey: X509Certificate? = null
 
-    private val fiksWebClient = proxiedWebClientBuilder
+    private val fiksWebClient = webClientBuilder
         .baseUrl(digisosApiEndpoint)
         .clientConnector(
             ReactorClientHttpConnector(
