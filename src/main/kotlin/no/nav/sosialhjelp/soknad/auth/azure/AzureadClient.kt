@@ -5,22 +5,30 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED
+import org.springframework.http.client.reactive.ReactorClientHttpConnector
 import org.springframework.stereotype.Component
 import org.springframework.util.LinkedMultiValueMap
 import org.springframework.web.reactive.function.BodyInserters
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.awaitBody
+import reactor.netty.http.client.HttpClient
 
 @Component
 class AzureadClient(
     @Value("\${azure_token_endpoint}") val azureTokenEndpoint: String,
     @Value("\${azure_client_id}") val azureClientId: String,
     @Value("\${azure_client_secret}") val azureClientSecret: String,
-    proxiedWebClientBuilder: WebClient.Builder,
+    private val webClientBuilder: WebClient.Builder,
+    private val proxiedHttpClient: HttpClient,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) {
 
-    private val azureWebClient: WebClient = proxiedWebClientBuilder.build()
+    private val azureWebClient: WebClient = webClientBuilder
+        .clientConnector(ReactorClientHttpConnector(proxiedHttpClient))
+        .codecs {
+            it.defaultCodecs().maxInMemorySize(16 * 1024 * 1024)
+        }
+        .build()
 
     suspend fun getSystemToken(scope: String): AzureadTokenResponse {
         return withContext(dispatcher) {

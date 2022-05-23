@@ -5,12 +5,15 @@ import no.nav.sosialhjelp.soknad.health.selftest.Pingable
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.client.reactive.ReactorClientHttpConnector
 import org.springframework.web.reactive.function.client.WebClient
+import reactor.netty.http.client.HttpClient
 
 @Configuration
 open class BostotteConfig(
-    private val proxiedWebClientBuilder: WebClient.Builder,
-    @Value("\${soknad.bostotte.url}") private val bostotteBaseUrl: String
+    @Value("\${soknad.bostotte.url}") private val bostotteBaseUrl: String,
+    private val webClientBuilder: WebClient.Builder,
+    private val proxiedHttpClient: HttpClient
 ) {
 
     @Bean
@@ -33,7 +36,11 @@ open class BostotteConfig(
     }
 
     private val husbankenWebClient: WebClient
-        get() = proxiedWebClientBuilder
+        get() = webClientBuilder
+            .clientConnector(ReactorClientHttpConnector(proxiedHttpClient))
+            .codecs {
+                it.defaultCodecs().maxInMemorySize(16 * 1024 * 1024)
+            }
             .baseUrl(bostotteBaseUrl)
             .build()
 }

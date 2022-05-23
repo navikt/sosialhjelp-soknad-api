@@ -10,14 +10,17 @@ import no.nav.sosialhjelp.soknad.health.selftest.Pingable
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.client.reactive.ReactorClientHttpConnector
 import org.springframework.http.codec.json.Jackson2JsonDecoder
 import org.springframework.web.reactive.function.client.WebClient
+import reactor.netty.http.client.HttpClient
 
 @Configuration
 open class SkattbarInntektConfig(
-    private val proxiedWebClientBuilder: WebClient.Builder,
     @Value("\${skatteetaten_api_baseurl}") private val baseurl: String,
-    private val maskinportenClient: MaskinportenClient
+    private val maskinportenClient: MaskinportenClient,
+    private val webClientBuilder: WebClient.Builder,
+    private val proxiedHttpClient: HttpClient
 ) {
 
     @Bean
@@ -45,9 +48,11 @@ open class SkattbarInntektConfig(
         .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
 
     private val skatteetatenWebClient: WebClient
-        get() = proxiedWebClientBuilder
+        get() = webClientBuilder
             .baseUrl(baseurl)
+            .clientConnector(ReactorClientHttpConnector(proxiedHttpClient))
             .codecs {
+                it.defaultCodecs().maxInMemorySize(16 * 1024 * 1024)
                 it.defaultCodecs().jackson2JsonDecoder(Jackson2JsonDecoder(skatteetatenMapper))
             }
             .build()

@@ -23,8 +23,8 @@ open class MellomlagringConfig(
     private val dokumentlagerClient: DokumentlagerClient,
     private val krypteringService: KrypteringService,
     private val maskinportenClient: MaskinportenClient,
-    proxiedWebClientBuilder: WebClient.Builder,
-    proxiedHttpClient: HttpClient,
+    private val webClientBuilder: WebClient.Builder,
+    proxiedHttpClient: HttpClient
 ) {
 
     @Bean
@@ -38,7 +38,7 @@ open class MellomlagringConfig(
         return MetricsFactory.createTimerProxy("MellomlagringClient", mellomlagringClient, MellomlagringClient::class.java)
     }
 
-    private val webClient = proxiedWebClientBuilder
+    private val webClient = webClientBuilder
         .baseUrl(digisosApiEndpoint)
         .clientConnector(
             ReactorClientHttpConnector(
