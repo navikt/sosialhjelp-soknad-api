@@ -24,12 +24,15 @@ import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.mappers.OkonomiskeOpplys
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.mappers.OkonomiskeOpplysningerMapper.addAllOpplysningUtgifterToJsonOkonomi
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.mappers.OkonomiskeOpplysningerMapper.addAllOversiktUtgifterToJsonOkonomi
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.mappers.OkonomiskeOpplysningerMapper.addAllUtbetalingerToJsonOkonomi
+import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.mappers.VedleggMapper.mapMellomlagredeVedleggToVedleggFrontend
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.mappers.VedleggMapper.mapToVedleggFrontend
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.mappers.VedleggTypeToSoknadTypeMapper
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.mappers.VedleggTypeToSoknadTypeMapper.getSoknadPath
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.mappers.VedleggTypeToSoknadTypeMapper.vedleggTypeToSoknadType
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import no.nav.sosialhjelp.soknad.vedlegg.dto.FilFrontend
+import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagretVedleggMetadata
+import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
 import org.springframework.stereotype.Controller
 import javax.ws.rs.GET
 import javax.ws.rs.PUT
@@ -46,13 +49,23 @@ import javax.ws.rs.core.MediaType
 open class OkonomiskeOpplysningerRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
-    private val opplastetVedleggRepository: OpplastetVedleggRepository
+    private val opplastetVedleggRepository: OpplastetVedleggRepository,
+    private val mellomlagringService: MellomlagringService,
 ) {
     @GET
     open fun hentOkonomiskeOpplysninger(@PathParam("behandlingsId") behandlingsId: String): VedleggFrontends {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         val eier = SubjectHandlerUtils.getUserIdFromToken()
-        val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
+        val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
+
+        return if (mellomlagringService.erMellomlagringEnabledOgSoknadSkalSendesMedDigisosApi(soknadUnderArbeid)) {
+            hentBasertPaaMellomlagredeVedlegg(behandlingsId, eier, soknadUnderArbeid)
+        } else {
+            hentBasertPaaOpplastedeVedlegg(soknadUnderArbeid, eier)
+        }
+    }
+
+    private fun hentBasertPaaOpplastedeVedlegg(soknad: SoknadUnderArbeid, eier: String): VedleggFrontends {
         val jsonOkonomi = soknad.jsonInternalSoknad?.soknad?.data?.okonomi ?: JsonOkonomi()
         val jsonVedleggs = JsonVedleggUtils.getVedleggFromInternalSoknad(soknad)
         val paakrevdeVedlegg = VedleggsforventningMaster.finnPaakrevdeVedlegg(soknad.jsonInternalSoknad)
@@ -66,6 +79,30 @@ open class OkonomiskeOpplysningerRessurs(
 
         return VedleggFrontends(
             okonomiskeOpplysninger = jsonVedleggs.map { mapToVedleggFrontend(it, jsonOkonomi, opplastedeVedlegg) },
+            slettedeVedlegg = slettedeVedlegg,
+            isOkonomiskeOpplysningerBekreftet = isOkonomiskeOpplysningerBekreftet(jsonOkonomi)
+        )
+    }
+
+    private fun hentBasertPaaMellomlagredeVedlegg(behandlingsId: String, eier: String, soknadUnderArbeid: SoknadUnderArbeid): VedleggFrontends {
+        val jsonOkonomi = soknadUnderArbeid.jsonInternalSoknad?.soknad?.data?.okonomi ?: JsonOkonomi()
+        val jsonVedleggs = JsonVedleggUtils.getVedleggFromInternalSoknad(soknadUnderArbeid)
+        val paakrevdeVedlegg = VedleggsforventningMaster.finnPaakrevdeVedlegg(soknadUnderArbeid.jsonInternalSoknad)
+        jsonVedleggs.any { it.status == Vedleggstatus.LastetOpp.toString() }
+        val mellomlagredeVedlegg = if (jsonVedleggs.any { it.status == Vedleggstatus.LastetOpp.toString() }) {
+            mellomlagringService.getAllVedlegg(behandlingsId)
+        } else {
+            emptyList()
+        }
+
+        val slettedeVedlegg = removeIkkePaakrevdeMellomlagredeVedlegg(behandlingsId, jsonVedleggs, paakrevdeVedlegg, mellomlagredeVedlegg)
+        addPaakrevdeVedlegg(jsonVedleggs, paakrevdeVedlegg)
+
+        soknadUnderArbeid.jsonInternalSoknad?.vedlegg = JsonVedleggSpesifikasjon().withVedlegg(jsonVedleggs)
+        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier)
+
+        return VedleggFrontends(
+            okonomiskeOpplysninger = jsonVedleggs.map { mapMellomlagredeVedleggToVedleggFrontend(it, jsonOkonomi, mellomlagredeVedlegg) },
             slettedeVedlegg = slettedeVedlegg,
             isOkonomiskeOpplysningerBekreftet = isOkonomiskeOpplysningerBekreftet(jsonOkonomi)
         )
@@ -117,6 +154,38 @@ open class OkonomiskeOpplysningerRessurs(
                 }
             }
             if (ikkePaakrevdVedlegg.filer != null && ikkePaakrevdVedlegg.filer.isNotEmpty()) {
+                val vedleggstype = ikkePaakrevdVedlegg.type + "|" + ikkePaakrevdVedlegg.tilleggsinfo
+                slettedeVedlegg.add(
+                    VedleggFrontend(
+                        type = vedleggstype,
+                        gruppe = OkonomiskGruppeMapper.getGruppe(vedleggstype),
+                        filer = ikkePaakrevdVedlegg.filer.map { FilFrontend(filNavn = it.filnavn) }
+                    )
+                )
+            }
+        }
+        return slettedeVedlegg
+    }
+
+    private fun removeIkkePaakrevdeMellomlagredeVedlegg(
+        behandlingsId: String,
+        jsonVedleggs: MutableList<JsonVedlegg>,
+        paakrevdeVedlegg: List<JsonVedlegg>,
+        mellomlagredeVedlegg: List<MellomlagretVedleggMetadata>
+    ): List<VedleggFrontend> {
+        val ikkeLengerPaakrevdeVedlegg = jsonVedleggs.filter { isNotInList(it, paakrevdeVedlegg) }.toMutableList()
+        excludeTypeAnnetAnnetFromList(ikkeLengerPaakrevdeVedlegg)
+        jsonVedleggs.removeAll(ikkeLengerPaakrevdeVedlegg)
+        val slettedeVedlegg: MutableList<VedleggFrontend> = ArrayList()
+        for (ikkePaakrevdVedlegg in ikkeLengerPaakrevdeVedlegg) {
+            for (mellomlagretVedlegg in mellomlagredeVedlegg) {
+                ikkePaakrevdVedlegg.filer.forEach {
+                    if (it.filnavn == mellomlagretVedlegg.filnavn) {
+                        mellomlagringService.deleteVedlegg(behandlingsId, mellomlagretVedlegg.filId)
+                    }
+                }
+            }
+            if (!ikkePaakrevdVedlegg.filer.isNullOrEmpty()) {
                 val vedleggstype = ikkePaakrevdVedlegg.type + "|" + ikkePaakrevdVedlegg.tilleggsinfo
                 slettedeVedlegg.add(
                     VedleggFrontend(

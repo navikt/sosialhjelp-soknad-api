@@ -33,7 +33,7 @@ class SkattbarInntekt {
         fikkFeilMotSkatteetaten: Boolean
     ): List<Sporsmal> {
         val harSkatteetatenSamtykke = harBekreftelseTrue(opplysninger, UTBETALING_SKATTEETATEN_SAMTYKKE)
-        val sporsmal = ArrayList<Sporsmal>()
+        val sporsmal = mutableListOf<Sporsmal>()
         if (!harSkatteetatenSamtykke) {
             sporsmal.add(
                 Sporsmal(
@@ -83,7 +83,7 @@ class SkattbarInntekt {
 
     private fun skattbarInntektFelter(utbetalinger: List<JsonOkonomiOpplysningUtbetaling>?): List<Felt> {
         val harSkattbareInntekter = utbetalinger != null && utbetalinger.any { UTBETALING_SKATTEETATEN == it.type }
-        val feltListe = ArrayList<Felt>()
+        val feltListe = mutableListOf<Felt>()
         if (!harSkattbareInntekter) {
             feltListe.add(
                 Felt(

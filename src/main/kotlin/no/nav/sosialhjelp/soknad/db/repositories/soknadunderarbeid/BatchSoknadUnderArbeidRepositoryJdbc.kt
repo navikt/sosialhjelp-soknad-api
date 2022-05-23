@@ -22,11 +22,19 @@ open class BatchSoknadUnderArbeidRepositoryJdbc(
 
     private val soknadUnderArbeidRowMapper = SoknadUnderArbeidRowMapper()
 
-    override fun hentSoknadUnderArbeidIdFromBehandlingsId(behandlingsId: String?): Long? {
+    override fun hentSoknadUnderArbeid(behandlingsId: String): SoknadUnderArbeid? {
         return jdbcTemplate.query(
             "select * from SOKNAD_UNDER_ARBEID where BEHANDLINGSID = ?",
-            { resultSet: ResultSet, _: Int -> resultSet.getLong("soknad_under_arbeid_id") },
+            soknadUnderArbeidRowMapper,
             behandlingsId
+        ).firstOrNull()
+    }
+
+    override fun hentSoknadUnderArbeid(soknadUnderArbeidId: Long): SoknadUnderArbeid? {
+        return jdbcTemplate.query(
+            "select * from SOKNAD_UNDER_ARBEID where SOKNAD_UNDER_ARBEID_ID = ?",
+            soknadUnderArbeidRowMapper,
+            soknadUnderArbeidId
         ).firstOrNull()
     }
 

@@ -38,7 +38,6 @@ import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
 import no.nav.sosialhjelp.soknad.common.mapper.TitleKeyMapper
-import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedlegg
 import no.nav.sosialhjelp.soknad.oppsummering.dto.Avsnitt
 import no.nav.sosialhjelp.soknad.oppsummering.dto.Felt
 import no.nav.sosialhjelp.soknad.oppsummering.dto.Sporsmal
@@ -49,20 +48,20 @@ import no.nav.sosialhjelp.soknad.oppsummering.dto.Vedlegg
 import no.nav.sosialhjelp.soknad.oppsummering.steg.StegUtils.integerVerdiSporsmalMedTittel
 
 class OkonomiskeOpplysningerOgVedleggSteg {
-    fun get(jsonInternalSoknad: JsonInternalSoknad, opplastedeVedlegg: List<OpplastetVedlegg>): Steg {
+    fun get(jsonInternalSoknad: JsonInternalSoknad, vedleggInfo: List<OppsummeringVedleggInfo>): Steg {
         val okonomi = jsonInternalSoknad.soknad.data.okonomi
         val vedlegg = jsonInternalSoknad.vedlegg
         return Steg(
             stegNr = 8,
             tittel = "opplysningerbolk.tittel",
-            avsnitt = okonomiOgVedleggAvsnitt(okonomi, vedlegg, opplastedeVedlegg)
+            avsnitt = okonomiOgVedleggAvsnitt(okonomi, vedlegg, vedleggInfo)
         )
     }
 
     private fun okonomiOgVedleggAvsnitt(
         okonomi: JsonOkonomi,
         vedleggSpesifikasjon: JsonVedleggSpesifikasjon,
-        opplastedeVedlegg: List<OpplastetVedlegg>,
+        vedleggInfo: List<OppsummeringVedleggInfo>,
     ): List<Avsnitt> {
         val inntektAvsnitt = Avsnitt(
             tittel = "inntektbolk.tittel",
@@ -74,20 +73,20 @@ class OkonomiskeOpplysningerOgVedleggSteg {
         )
         val vedleggAvsnitt = Avsnitt(
             tittel = "vedlegg.oppsummering.tittel",
-            sporsmal = vedleggSporsmal(vedleggSpesifikasjon, opplastedeVedlegg)
+            sporsmal = vedleggSporsmal(vedleggSpesifikasjon, vedleggInfo)
         )
         return listOf(inntektAvsnitt, utgifterAvsnitt, vedleggAvsnitt)
     }
 
     private fun inntekterSporsmal(okonomi: JsonOkonomi): List<Sporsmal> {
-        val sporsmal = ArrayList<Sporsmal>()
+        val sporsmal = mutableListOf<Sporsmal>()
         addInntekter(sporsmal, okonomi)
         addFormuer(sporsmal, okonomi)
         addUtbetalinger(sporsmal, okonomi)
         return sporsmal
     }
 
-    private fun addInntekter(sporsmal: ArrayList<Sporsmal>, okonomi: JsonOkonomi) {
+    private fun addInntekter(sporsmal: MutableList<Sporsmal>, okonomi: JsonOkonomi) {
         val inntekter: List<JsonOkonomioversiktInntekt>? = okonomi.oversikt.inntekt
 
         // Lønnsinntekt
@@ -144,7 +143,7 @@ class OkonomiskeOpplysningerOgVedleggSteg {
             }
     }
 
-    private fun addFormuer(sporsmal: ArrayList<Sporsmal>, okonomi: JsonOkonomi) {
+    private fun addFormuer(sporsmal: MutableList<Sporsmal>, okonomi: JsonOkonomi) {
         val formuer: List<JsonOkonomioversiktFormue>? = okonomi.oversikt.formue
 
         formuer
@@ -160,7 +159,7 @@ class OkonomiskeOpplysningerOgVedleggSteg {
             }
     }
 
-    private fun addUtbetalinger(sporsmal: ArrayList<Sporsmal>, okonomi: JsonOkonomi) {
+    private fun addUtbetalinger(sporsmal: MutableList<Sporsmal>, okonomi: JsonOkonomi) {
         val utbetalinger: List<JsonOkonomiOpplysningUtbetaling>? = okonomi.opplysninger.utbetaling
 
         val filteredUtbetalinger = utbetalinger
@@ -191,7 +190,7 @@ class OkonomiskeOpplysningerOgVedleggSteg {
     }
 
     private fun utgifterSporsmal(okonomi: JsonOkonomi): List<Sporsmal> {
-        val sporsmal = ArrayList<Sporsmal>()
+        val sporsmal = mutableListOf<Sporsmal>()
         val opplysningUtgifter: List<JsonOkonomiOpplysningUtgift>? = okonomi.opplysninger.utgift
         opplysningUtgifter
             ?.filter { barneutgifter.contains(it.type) }
@@ -289,14 +288,14 @@ class OkonomiskeOpplysningerOgVedleggSteg {
 
     private fun vedleggSporsmal(
         vedleggSpesifikasjon: JsonVedleggSpesifikasjon,
-        opplastedeVedlegg: List<OpplastetVedlegg>,
+        vedleggInfo: List<OppsummeringVedleggInfo>,
     ): List<Sporsmal> {
         return vedleggSpesifikasjon.vedlegg
             .map {
                 Sporsmal(
                     tittel = getTittelFrom(it.type, it.tilleggsinfo),
                     erUtfylt = true,
-                    felt = vedleggFelter(it, opplastedeVedlegg)
+                    felt = vedleggFelter(it, vedleggInfo)
                 )
             }
     }
@@ -305,11 +304,13 @@ class OkonomiskeOpplysningerOgVedleggSteg {
         return "vedlegg.$type.$tilleggsinfo.tittel"
     }
 
-    private fun vedleggFelter(vedlegg: JsonVedlegg, opplastedeVedlegg: List<OpplastetVedlegg>): List<Felt> {
+    private fun vedleggFelter(vedlegg: JsonVedlegg, vedleggInfo: List<OppsummeringVedleggInfo>): List<Felt> {
         val felt: Felt = if ("LastetOpp" == vedlegg.status && vedlegg.filer != null && vedlegg.filer.isNotEmpty()) {
             Felt(
                 type = Type.VEDLEGG,
-                vedlegg = vedlegg.filer.map { Vedlegg(it.filnavn, getUuidFraOpplastetVedlegg(it, opplastedeVedlegg)) }
+                vedlegg = vedlegg.filer.map {
+                    Vedlegg(it.filnavn, getIdFraVedlegg(it, vedleggInfo))
+                }
             )
         } else {
             Felt(
@@ -323,8 +324,8 @@ class OkonomiskeOpplysningerOgVedleggSteg {
         return listOf(felt)
     }
 
-    private fun getUuidFraOpplastetVedlegg(fil: JsonFiler, opplastedeVedlegg: List<OpplastetVedlegg>): String? {
-        return opplastedeVedlegg.firstOrNull { fil.filnavn == it.filnavn }?.uuid
+    private fun getIdFraVedlegg(fil: JsonFiler, vedleggInfo: List<OppsummeringVedleggInfo>): String? {
+        return vedleggInfo.firstOrNull { fil.filnavn == it.filnavn }?.id
     }
 
     private fun getTitleKey(type: String): String {
@@ -362,4 +363,9 @@ class OkonomiskeOpplysningerOgVedleggSteg {
             UTGIFTER_ANNET_BO
         )
     }
+
+    data class OppsummeringVedleggInfo(
+        val filnavn: String,
+        val id: String,
+    )
 }

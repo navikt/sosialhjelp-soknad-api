@@ -32,8 +32,8 @@ internal class BatchSoknadUnderArbeidRepositoryJdbcTest {
 
     @AfterEach
     fun tearDown() {
-        jdbcTemplate.update("delete from SOKNAD_UNDER_ARBEID")
         jdbcTemplate.update("delete from OPPLASTET_VEDLEGG")
+        jdbcTemplate.update("delete from SOKNAD_UNDER_ARBEID")
     }
 
     @Test

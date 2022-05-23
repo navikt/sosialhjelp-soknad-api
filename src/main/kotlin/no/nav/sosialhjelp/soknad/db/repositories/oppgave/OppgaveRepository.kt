@@ -8,4 +8,5 @@ interface OppgaveRepository {
     fun hentStatus(): Map<String, Int>
     fun retryOppgaveStuckUnderArbeid(): Int
     fun slettOppgave(behandlingsId: String)
+    fun count(): Int
 }

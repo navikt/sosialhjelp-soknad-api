@@ -61,10 +61,11 @@ open class BydelFordelingService {
         private fun readBydelsfordelingFromFile(): String {
             val resource = ClassPathResource("pdl/marka-bydelsfordeling.json")
             return try {
-                BufferedReader(InputStreamReader(resource.inputStream, StandardCharsets.UTF_8))
-                    .use {
+                resource.inputStream.use { inputStream ->
+                    BufferedReader(InputStreamReader(inputStream, StandardCharsets.UTF_8)).use {
                         it.lines().collect(Collectors.joining("\n"))
                     }
+                }
             } catch (e: IOException) {
                 throw SosialhjelpSoknadApiException("BydelFordeling marka: Failed to read file", e)
             }

@@ -69,6 +69,19 @@ internal class OpplastetVedleggMigrationRepositoryTest {
         assertThat(vedleggList).isEmpty()
     }
 
+    @Test
+    internal fun `count skal returnere antall`() {
+        assertThat(opplastetVedleggMigrationRepository.count()).isEqualTo(0)
+
+        val vedlegg = createVedlegg(soknadId = 1)
+        opplastetVedleggRepository.opprettVedlegg(vedlegg, EIER)
+        assertThat(opplastetVedleggMigrationRepository.count()).isEqualTo(1)
+
+        val vedlegg2 = createVedlegg(soknadId = 2)
+        opplastetVedleggRepository.opprettVedlegg(vedlegg2, EIER)
+        assertThat(opplastetVedleggMigrationRepository.count()).isEqualTo(2)
+    }
+
     companion object {
         private const val EIER = "eier"
 

@@ -54,6 +54,19 @@ internal class SoknadUnderArbeidMigrationRepositoryTest {
         assertThat(result).isNull()
     }
 
+    @Test
+    internal fun `count skal returnere antall`() {
+        assertThat(soknadUnderArbeidMigrationRepository.count()).isEqualTo(0)
+
+        val soknadUnderArbeid = createSoknadUnderArbeid(behandlingsId = "abc")
+        soknadUnderArbeidRepository.opprettSoknad(soknadUnderArbeid, EIER)
+        assertThat(soknadUnderArbeidMigrationRepository.count()).isEqualTo(1)
+
+        val soknadUnderArbeid2 = createSoknadUnderArbeid(behandlingsId = "def")
+        soknadUnderArbeidRepository.opprettSoknad(soknadUnderArbeid2, EIER)
+        assertThat(soknadUnderArbeidMigrationRepository.count()).isEqualTo(2)
+    }
+
     companion object {
         private const val EIER = "eier"
 

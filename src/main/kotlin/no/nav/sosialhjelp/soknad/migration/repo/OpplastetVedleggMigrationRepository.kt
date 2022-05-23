@@ -16,4 +16,11 @@ open class OpplastetVedleggMigrationRepository(
             soknadUnderArbeidId
         )
     }
+
+    fun count(): Int {
+        return jdbcTemplate.queryForObject(
+            "select count(*) from opplastet_vedlegg",
+            Int::class.java
+        ) ?: 0
+    }
 }

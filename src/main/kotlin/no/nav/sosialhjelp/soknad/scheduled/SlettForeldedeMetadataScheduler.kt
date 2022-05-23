@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component
 import java.time.LocalDateTime
 
 @Component
-class SlettLoggScheduler(
+class SlettForeldedeMetadataScheduler(
     private val leaderElection: LeaderElection,
     private val batchSoknadMetadataRepository: BatchSoknadMetadataRepository,
     private val batchSendtSoknadRepository: BatchSendtSoknadRepository,
@@ -24,7 +24,7 @@ class SlettLoggScheduler(
     private var vellykket = 0
 
     @Scheduled(cron = KLOKKEN_00_01_02_03_05_06_OM_NATTEN)
-    fun slettLogger() {
+    fun slettForeldedeMetadata() {
         if (schedulerDisabled) {
             logger.warn("Scheduler is disabled")
             return
@@ -33,11 +33,11 @@ class SlettLoggScheduler(
             batchStartTime = LocalDateTime.now()
             vellykket = 0
             if (batchEnabled) {
-                logger.info("Starter sletting av logger for ett år gamle søknader")
+                logger.info("Starter sletting av metadata for ett år gamle søknader")
                 val batchTimer = MetricsFactory.createTimer("sosialhjelp.debug.slettLogg")
                 batchTimer.start()
                 try {
-                    slettForeldetLogg()
+                    slett()
                 } catch (e: RuntimeException) {
                     logger.error("Batchjobb feilet for sletting av logg", e)
                     batchTimer.setFailed()
@@ -45,7 +45,7 @@ class SlettLoggScheduler(
                     batchTimer.stop()
                     batchTimer.addFieldToReport("vellykket", vellykket)
                     batchTimer.report()
-                    logger.info("Jobb fullført for sletting av logg: $vellykket vellykket")
+                    logger.info("Jobb fullført for sletting av metadata: $vellykket vellykket")
                 }
             } else {
                 logger.warn("Batch disabled. Må sette environment property sendsoknad.batch.enabled til true for å sette den på igjen")
@@ -53,7 +53,7 @@ class SlettLoggScheduler(
         }
     }
 
-    private fun slettForeldetLogg() {
+    private fun slett() {
         var soknadMetadata = batchSoknadMetadataRepository.hentEldreEnn(DAGER_GAMMELT)
         while (soknadMetadata != null) {
             val behandlingsId = soknadMetadata.behandlingsId
@@ -79,11 +79,11 @@ class SlettLoggScheduler(
     private fun harGaattForLangTid(): Boolean {
         return batchStartTime
             ?.let { LocalDateTime.now().isAfter(it.plusSeconds(SCHEDULE_INTERRUPT_S)) }
-            ?: true.also { logger.warn("SlettLoggScheduler finner ikke batchStartTime - avbryter batchjobben") }
+            ?: true.also { logger.warn("SlettForeldedeMetadataScheduler finner ikke batchStartTime - avbryter batchjobben") }
     }
 
     companion object {
-        private val logger = LoggerFactory.getLogger(SlettLoggScheduler::class.java)
+        private val logger = LoggerFactory.getLogger(SlettForeldedeMetadataScheduler::class.java)
         private const val KLOKKEN_00_01_02_03_05_06_OM_NATTEN = "0 0 0,1,2,3,5,6 * * *"
         private const val SCHEDULE_INTERRUPT_S: Long = 60 * 30 // 30 min
         private const val DAGER_GAMMELT = 365 // Ett år

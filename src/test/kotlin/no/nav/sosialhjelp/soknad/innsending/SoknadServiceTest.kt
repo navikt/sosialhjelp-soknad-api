@@ -29,6 +29,7 @@ import no.nav.sosialhjelp.soknad.innsending.svarut.OppgaveHandterer
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.BostotteSystemdata
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkatteetatenSystemdata
 import no.nav.sosialhjelp.soknad.metrics.SoknadMetricsService
+import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
@@ -46,6 +47,7 @@ internal class SoknadServiceTest {
     private val bostotteSystemdata: BostotteSystemdata = mockk()
     private val skatteetatenSystemdata: SkatteetatenSystemdata = mockk()
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
+    private val mellomlagringService: MellomlagringService = mockk()
 
     private val soknadService = SoknadService(
         henvendelseService,
@@ -56,7 +58,8 @@ internal class SoknadServiceTest {
         soknadUnderArbeidRepository,
         systemdataUpdater,
         bostotteSystemdata,
-        skatteetatenSystemdata
+        skatteetatenSystemdata,
+        mellomlagringService,
     )
 
     @BeforeEach
@@ -69,6 +72,7 @@ internal class SoknadServiceTest {
 
         every { soknadMetricsService.reportStartSoknad(any()) } just runs
         every { systemdataUpdater.update(any()) } just runs
+        every { mellomlagringService.erMellomlagringEnabledOgSoknadSkalSendesMedDigisosApi(any()) } returns false
     }
 
     @AfterEach

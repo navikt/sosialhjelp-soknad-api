@@ -6,6 +6,7 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataIn
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.BatchSoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.scheduled.leaderelection.LeaderElection
+import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.scheduling.annotation.Scheduled
@@ -14,12 +15,13 @@ import java.time.LocalDateTime
 
 @Component
 class AvbrytAutomatiskScheduler(
+    @Value("\${sendsoknad.batch.enabled}") private val batchEnabled: Boolean,
+    @Value("\${scheduler.disable}") private val schedulerDisabled: Boolean,
     private val leaderElection: LeaderElection,
     private val soknadMetadataRepository: SoknadMetadataRepository,
     private val batchSoknadMetadataRepository: BatchSoknadMetadataRepository,
     private val batchSoknadUnderArbeidRepository: BatchSoknadUnderArbeidRepository,
-    @Value("\${sendsoknad.batch.enabled}") private val batchEnabled: Boolean,
-    @Value("\${scheduler.disable}") private val schedulerDisabled: Boolean,
+    private val mellomlagringService: MellomlagringService,
 ) {
     private var batchStartTime: LocalDateTime? = null
     private var vellykket = 0
@@ -64,8 +66,12 @@ class AvbrytAutomatiskScheduler(
 
             val behandlingsId = soknadMetadata.behandlingsId
 
-            batchSoknadUnderArbeidRepository.hentSoknadUnderArbeidIdFromBehandlingsId(behandlingsId)
-                ?.let { batchSoknadUnderArbeidRepository.slettSoknad(it) }
+            batchSoknadUnderArbeidRepository.hentSoknadUnderArbeid(behandlingsId)?.let {
+                if (mellomlagringService.erMellomlagringEnabledOgSoknadSkalSendesMedDigisosApi(it)) {
+                    mellomlagringService.deleteAllVedlegg(behandlingsId)
+                }
+                batchSoknadUnderArbeidRepository.slettSoknad(it.soknadId)
+            }
 
             batchSoknadMetadataRepository.leggTilbakeBatch(soknadMetadata.id)
             vellykket++

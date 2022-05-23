@@ -33,7 +33,7 @@ class UtgifterOgGjeldSteg {
         val forsorgerplikt = jsonInternalSoknad.soknad.data.familie.forsorgerplikt
         val boutgifterSporsmal = boutgifter(okonomi)
         val barneutgifterSporsmal = barneutgifter(okonomi)
-        val alleSporsmal = ArrayList(boutgifterSporsmal)
+        val alleSporsmal = boutgifterSporsmal.toMutableList()
         if (harBarn(forsorgerplikt)) {
             alleSporsmal.addAll(barneutgifterSporsmal)
         }
@@ -53,7 +53,7 @@ class UtgifterOgGjeldSteg {
         val boutgiftBekreftelser = okonomi.opplysninger.bekreftelse.filter { BEKREFTELSE_BOUTGIFTER == it.type }
         val erBoutgifterUtfylt = boutgiftBekreftelser.isNotEmpty() && boutgiftBekreftelser[0].verdi != null
         val harBoutgifter = erBoutgifterUtfylt && boutgiftBekreftelser[0].verdi == java.lang.Boolean.TRUE
-        val sporsmalList = ArrayList<Sporsmal>()
+        val sporsmalList = mutableListOf<Sporsmal>()
         sporsmalList.add(
             Sporsmal(
                 tittel = "utgifter.boutgift.sporsmal",
@@ -68,7 +68,7 @@ class UtgifterOgGjeldSteg {
         if (erBoutgifterUtfylt && harBoutgifter) {
             val utgifter = okonomi.opplysninger.utgift
             val oversiktUtgift = okonomi.oversikt.utgift
-            val felter = ArrayList<Felt>()
+            val felter = mutableListOf<Felt>()
             addOversiktUtgiftIfPresent(felter, oversiktUtgift, UTGIFTER_HUSLEIE, "utgifter.boutgift.true.type.husleie")
             addOpplysningUtgiftIfPresent(felter, utgifter, UTGIFTER_STROM, "utgifter.boutgift.true.type.strom")
             addOpplysningUtgiftIfPresent(felter, utgifter, UTGIFTER_KOMMUNAL_AVGIFT, "utgifter.boutgift.true.type.kommunalAvgift")
@@ -94,7 +94,7 @@ class UtgifterOgGjeldSteg {
         val barneutgiftBekreftelser = okonomi.opplysninger.bekreftelse.filter { BEKREFTELSE_BARNEUTGIFTER == it.type }
         val erBarneutgifterUtfylt = barneutgiftBekreftelser.isNotEmpty() && barneutgiftBekreftelser[0].verdi != null
         val harBarneutgifter = erBarneutgifterUtfylt && barneutgiftBekreftelser[0].verdi == java.lang.Boolean.TRUE
-        val sporsmalList = ArrayList<Sporsmal>()
+        val sporsmalList = mutableListOf<Sporsmal>()
         sporsmalList.add(
             Sporsmal(
                 tittel = "utgifter.barn.sporsmal",
@@ -109,7 +109,7 @@ class UtgifterOgGjeldSteg {
         if (erBarneutgifterUtfylt && harBarneutgifter) {
             val utgifter = okonomi.opplysninger.utgift
             val oversiktUtgifter = okonomi.oversikt.utgift
-            val felter = ArrayList<Felt>()
+            val felter = mutableListOf<Felt>()
             addOpplysningUtgiftIfPresent(felter, utgifter, UTGIFTER_BARN_FRITIDSAKTIVITETER, "utgifter.barn.true.utgifter.barnFritidsaktiviteter")
             addOversiktUtgiftIfPresent(felter, oversiktUtgifter, UTGIFTER_BARNEHAGE, "utgifter.barn.true.utgifter.barnehage")
             addOversiktUtgiftIfPresent(felter, oversiktUtgifter, UTGIFTER_SFO, "utgifter.barn.true.utgifter.sfo")
@@ -126,13 +126,15 @@ class UtgifterOgGjeldSteg {
         return sporsmalList
     }
 
+    /**
+     * "strom", "kommunalAvgift", "oppvarming", "annenBoutgift", "barnFritidsaktiviteter", "barnTannregulering", “annenBarneutgift” og "annen"
+     */
     private fun addOpplysningUtgiftIfPresent(
         felter: MutableList<Felt>,
         utgifter: List<JsonOkonomiOpplysningUtgift>,
         type: String,
         key: String
     ) {
-        // "strom", "kommunalAvgift", "oppvarming", "annenBoutgift", "barnFritidsaktiviteter", "barnTannregulering", “annenBarneutgift” og "annen"
         utgifter.firstOrNull { type == it.type }
             ?.let {
                 felter.add(
@@ -144,13 +146,15 @@ class UtgifterOgGjeldSteg {
             }
     }
 
+    /**
+     * "barnebidrag", "husleie", "boliglanAvdrag", "boliglanRenter", “barnehage” og "sfo"
+     */
     private fun addOversiktUtgiftIfPresent(
         felter: MutableList<Felt>,
         utgifter: List<JsonOkonomioversiktUtgift>,
         type: String,
         key: String
     ) {
-        // "barnebidrag", "husleie", "boliglanAvdrag", "boliglanRenter", “barnehage” og "sfo"
         utgifter.firstOrNull { type == it.type }
             ?.let {
                 felter.add(

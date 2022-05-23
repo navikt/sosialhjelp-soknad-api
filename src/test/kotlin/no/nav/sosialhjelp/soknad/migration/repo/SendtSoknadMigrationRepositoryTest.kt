@@ -52,15 +52,32 @@ internal class SendtSoknadMigrationRepositoryTest {
         assertThat(result).isNull()
     }
 
+    @Test
+    internal fun `count skal returnere antall`() {
+        assertThat(sendtSoknadMigrationRepository.count()).isEqualTo(0)
+
+        val sendtSoknad = createSendtSoknad(behandlingsId = "abc", fiksForsendelseId = "1111")
+        sendtSoknadRepository.opprettSendtSoknad(sendtSoknad, EIER)
+        assertThat(sendtSoknadMigrationRepository.count()).isEqualTo(1)
+
+        val sendtSoknad2 = createSendtSoknad(behandlingsId = "def", fiksForsendelseId = "2222")
+        sendtSoknadRepository.opprettSendtSoknad(sendtSoknad2, EIER)
+        assertThat(sendtSoknadMigrationRepository.count()).isEqualTo(2)
+    }
+
     companion object {
         private const val EIER = "eier"
 
-        private fun createSendtSoknad(eier: String = EIER, behandlingsId: String): SendtSoknad {
+        private fun createSendtSoknad(
+            eier: String = EIER,
+            behandlingsId: String,
+            fiksForsendelseId: String = "fiksforsendelseId"
+        ): SendtSoknad {
             return SendtSoknad(
                 behandlingsId = behandlingsId,
                 tilknyttetBehandlingsId = null,
                 eier = eier,
-                fiksforsendelseId = "fiksforsendelseId",
+                fiksforsendelseId = fiksForsendelseId,
                 orgnummer = "ORGNUMMER",
                 navEnhetsnavn = "NAVENHETSNAVN",
                 brukerOpprettetDato = LocalDateTime.now().minusDays(2).truncatedTo(ChronoUnit.MILLIS),

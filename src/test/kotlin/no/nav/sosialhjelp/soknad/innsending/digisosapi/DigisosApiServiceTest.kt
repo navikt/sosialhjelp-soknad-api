@@ -8,26 +8,18 @@ import io.mockk.mockkObject
 import io.mockk.runs
 import io.mockk.unmockkObject
 import io.mockk.verify
-import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
+import no.finn.unleash.Unleash
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknadsmottaker
-import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler
-import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
-import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
 import no.nav.sosialhjelp.soknad.common.MiljoUtils
-import no.nav.sosialhjelp.soknad.common.filedetection.MimeTypes
-import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedlegg
-import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggType
-import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.Vedleggstatus
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.innsending.HenvendelseService
-import no.nav.sosialhjelp.soknad.innsending.InnsendingService
 import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
 import no.nav.sosialhjelp.soknad.metrics.SoknadMetricsService
-import no.nav.sosialhjelp.soknad.pdf.SosialhjelpPdfGenerator
+import no.nav.sosialhjelp.soknad.vedlegg.OpplastetVedleggRessurs.Companion.KS_MELLOMLAGRING_ENABLED
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.AfterEach
@@ -36,22 +28,24 @@ import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 
 internal class DigisosApiServiceTest {
-    private val digisosApiClient: DigisosApiClient = mockk()
-    private val sosialhjelpPdfGenerator: SosialhjelpPdfGenerator = mockk()
-    private val innsendingService: InnsendingService = mockk()
+    private val digisosApiV1Client: DigisosApiV1Client = mockk()
+    private val digisosApiV2Client: DigisosApiV2Client = mockk()
     private val henvendelseService: HenvendelseService = mockk()
     private val soknadUnderArbeidService: SoknadUnderArbeidService = mockk()
     private val soknadMetricsService: SoknadMetricsService = mockk()
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
+    private val dokumentListeService: DokumentListeService = mockk()
+    private val unleash: Unleash = mockk()
 
     private val digisosApiService = DigisosApiService(
-        digisosApiClient,
-        sosialhjelpPdfGenerator,
-        innsendingService,
+        digisosApiV1Client,
+        digisosApiV2Client,
         henvendelseService,
         soknadUnderArbeidService,
         soknadMetricsService,
-        soknadUnderArbeidRepository
+        soknadUnderArbeidRepository,
+        dokumentListeService,
+        unleash
     )
 
     @BeforeEach
@@ -60,48 +54,12 @@ internal class DigisosApiServiceTest {
 
         mockkObject(MiljoUtils)
         every { MiljoUtils.isNonProduction() } returns true
+        every { unleash.isEnabled(KS_MELLOMLAGRING_ENABLED, false) } returns false
     }
 
     @AfterEach
     fun tearDown() {
         unmockkObject(MiljoUtils)
-    }
-
-    @Test
-    fun skalLageOpplastingsListeMedDokumenterForSoknad() {
-        val soknadUnderArbeid = createSoknadUnderArbeid("12345678910")
-
-        every { sosialhjelpPdfGenerator.generate(any(), any()) } returns byteArrayOf(1, 2, 3)
-        every { sosialhjelpPdfGenerator.generateBrukerkvitteringPdf() } returns byteArrayOf(1, 2, 3)
-        every { innsendingService.hentAlleOpplastedeVedleggForSoknad(any()) } returns lagOpplastetVedlegg()
-
-        val filOpplastings = digisosApiService.lagDokumentListe(soknadUnderArbeid)
-
-        val metadataFil1 = filOpplastings[0].metadata
-        assertThat(metadataFil1.filnavn).isEqualTo("Soknad.pdf")
-        assertThat(metadataFil1.mimetype).isEqualTo(MimeTypes.APPLICATION_PDF)
-        val metadataFil3 = filOpplastings[1].metadata
-        assertThat(metadataFil3.filnavn).isEqualTo("Soknad-juridisk.pdf")
-        assertThat(metadataFil3.mimetype).isEqualTo(MimeTypes.APPLICATION_PDF)
-        val metadataFil4 = filOpplastings[2].metadata
-        assertThat(metadataFil4.filnavn).isEqualTo("Brukerkvittering.pdf")
-        assertThat(metadataFil4.mimetype).isEqualTo(MimeTypes.APPLICATION_PDF)
-    }
-
-    @Test
-    fun hentDokumenterFraSoknadReturnererTreDokumenterForEttersendingMedEtVedlegg() {
-        every { innsendingService.hentAlleOpplastedeVedleggForSoknad(any()) } returns lagOpplastetVedlegg()
-        every { sosialhjelpPdfGenerator.generateEttersendelsePdf(any(), any()) } returns byteArrayOf(1, 2, 3)
-        every { sosialhjelpPdfGenerator.generateBrukerkvitteringPdf() } returns byteArrayOf(1, 2, 3)
-
-        val soknadUnderArbeid = createSoknadUnderArbeid("eier")
-        soknadUnderArbeid.tilknyttetBehandlingsId = "123"
-        soknadUnderArbeid.jsonInternalSoknad = lagInternalSoknadForEttersending()
-        val fiksDokumenter = digisosApiService.lagDokumentListe(soknadUnderArbeid)
-        assertThat(fiksDokumenter.size).isEqualTo(3)
-        assertThat(fiksDokumenter[0].metadata.filnavn).isEqualTo("ettersendelse.pdf")
-        assertThat(fiksDokumenter[1].metadata.filnavn).isEqualTo("Brukerkvittering.pdf")
-        assertThat(fiksDokumenter[2].metadata.filnavn).isEqualTo("FILNAVN")
     }
 
     @Test
@@ -133,12 +91,10 @@ internal class DigisosApiServiceTest {
 
         val soknadUnderArbeid = createSoknadUnderArbeid("12345678910")
 
-        every { sosialhjelpPdfGenerator.generate(any(), any()) } returns byteArrayOf(1, 2, 3)
-        every { sosialhjelpPdfGenerator.generateBrukerkvitteringPdf() } returns byteArrayOf(1, 2, 3)
-        every { digisosApiClient.krypterOgLastOppFiler(any(), any(), any(), any(), any(), any(), any()) } returns "digisosid"
+        every { dokumentListeService.lagDokumentListe(any()) } returns emptyList()
+        every { digisosApiV1Client.krypterOgLastOppFiler(any(), any(), any(), any(), any(), any(), any()) } returns "digisosid"
         every { soknadUnderArbeidService.settInnsendingstidspunktPaSoknad(any()) } just runs
         every { henvendelseService.oppdaterMetadataVedAvslutningAvSoknad(any(), any(), any(), any()) } just runs
-        every { innsendingService.hentAlleOpplastedeVedleggForSoknad(any()) } returns lagOpplastetVedlegg()
         every { soknadUnderArbeidRepository.slettSoknad(any(), any()) } just runs
         every { soknadMetricsService.reportSendSoknadMetrics(any(), any()) } just runs
 
@@ -147,33 +103,6 @@ internal class DigisosApiServiceTest {
         verify(exactly = 1) { soknadUnderArbeidRepository.slettSoknad(any(), any()) }
 
         unmockkObject(MiljoUtils)
-    }
-
-    private fun lagInternalSoknadForEttersending(): JsonInternalSoknad {
-        val jsonFiler = mutableListOf<JsonFiler>()
-        jsonFiler.add(JsonFiler().withFilnavn("FILNAVN").withSha512("sha512"))
-        val jsonVedlegg = mutableListOf<JsonVedlegg>()
-        jsonVedlegg.add(
-            JsonVedlegg()
-                .withStatus(Vedleggstatus.LastetOpp.name)
-                .withType("type")
-                .withTilleggsinfo("tilleggsinfo")
-                .withFiler(jsonFiler)
-        )
-        return JsonInternalSoknad().withVedlegg(JsonVedleggSpesifikasjon().withVedlegg(jsonVedlegg))
-    }
-
-    private fun lagOpplastetVedlegg(): List<OpplastetVedlegg> {
-        return mutableListOf(
-            OpplastetVedlegg(
-                eier = "eier",
-                vedleggType = OpplastetVedleggType("type|tilleggsinfo"),
-                data = byteArrayOf(1, 2, 3),
-                soknadId = 123L,
-                filnavn = "FILNAVN",
-                sha512 = "sha512"
-            )
-        )
     }
 
     private fun createSoknadUnderArbeid(eier: String): SoknadUnderArbeid {
