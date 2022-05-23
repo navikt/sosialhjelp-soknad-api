@@ -151,7 +151,10 @@ class MellomlagringService(
 
     fun deleteAllVedlegg(behandlingsId: String) {
         val navEksternId = if (MiljoUtils.isNonProduction()) createPrefixedBehandlingsId(behandlingsId) else behandlingsId
-        mellomlagringClient.deleteAllVedlegg(navEksternId = navEksternId)
+
+        if (getAllVedlegg(behandlingsId).isNotEmpty()) {
+            mellomlagringClient.deleteAllVedlegg(navEksternId = navEksternId)
+        }
     }
 
     companion object {
