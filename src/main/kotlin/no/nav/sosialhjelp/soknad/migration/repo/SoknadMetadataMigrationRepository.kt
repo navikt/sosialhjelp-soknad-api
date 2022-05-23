@@ -19,7 +19,7 @@ open class SoknadMetadataMigrationRepository(
         ).firstOrNull()
     }
 
-    fun count(): Int {
+    open fun count(): Int {
         return jdbcTemplate.queryForObject(
             "select count(*) from soknadmetadata",
             Int::class.java

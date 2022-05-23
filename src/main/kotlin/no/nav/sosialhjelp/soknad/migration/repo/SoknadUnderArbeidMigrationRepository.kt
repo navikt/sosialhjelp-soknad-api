@@ -19,7 +19,7 @@ open class SoknadUnderArbeidMigrationRepository(
         ).firstOrNull()
     }
 
-    fun count(): Int {
+    open fun count(): Int {
         return jdbcTemplate.queryForObject(
             "select count(*) from soknad_under_arbeid",
             Int::class.java

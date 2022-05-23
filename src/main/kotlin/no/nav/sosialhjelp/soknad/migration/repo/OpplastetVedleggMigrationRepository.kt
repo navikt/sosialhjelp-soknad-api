@@ -17,7 +17,7 @@ open class OpplastetVedleggMigrationRepository(
         )
     }
 
-    fun count(): Int {
+    open fun count(): Int {
         return jdbcTemplate.queryForObject(
             "select count(*) from opplastet_vedlegg",
             Int::class.java

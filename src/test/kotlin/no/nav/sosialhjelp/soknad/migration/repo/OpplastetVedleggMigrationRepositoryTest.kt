@@ -73,11 +73,12 @@ internal class OpplastetVedleggMigrationRepositoryTest {
     internal fun `count skal returnere antall`() {
         assertThat(opplastetVedleggMigrationRepository.count()).isEqualTo(0)
 
-        val vedlegg = createVedlegg(soknadId = 1)
+        val soknadId = soknadUnderArbeidRepository.opprettSoknad(lagSoknadUnderArbeid("behandlingsId"), EIER)!!
+        val vedlegg = createVedlegg(soknadId = soknadId)
         opplastetVedleggRepository.opprettVedlegg(vedlegg, EIER)
         assertThat(opplastetVedleggMigrationRepository.count()).isEqualTo(1)
 
-        val vedlegg2 = createVedlegg(soknadId = 2)
+        val vedlegg2 = createVedlegg(soknadId = soknadId)
         opplastetVedleggRepository.opprettVedlegg(vedlegg2, EIER)
         assertThat(opplastetVedleggMigrationRepository.count()).isEqualTo(2)
     }

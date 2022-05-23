@@ -17,7 +17,7 @@ open class SendtSoknadMigrationRepository(
         ).firstOrNull()
     }
 
-    fun count(): Int {
+    open fun count(): Int {
         return jdbcTemplate.queryForObject(
             "select count(*) from sendt_soknad",
             Int::class.java
