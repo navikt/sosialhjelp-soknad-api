@@ -60,7 +60,8 @@ class MellomlagringClientImpl(
                 .block() ?: throw FiksException("MellomlagringDto er null?", null)
         } catch (badRequest: WebClientResponseException.BadRequest) {
             val errorMessage = digisosObjectMapper.readValue<ErrorMessage>(badRequest.responseBodyAsString)
-            if (errorMessage.message == "Fant ingen data i basen knytter til angitt id'en") {
+            val message = errorMessage.message
+            if (message != null && message.contains("Fant ingen data i basen knytter til angitt id'en")) {
                 log.warn("Ingen mellomlagrede vedlegg funnet for $navEksternId")
                 return null
             }
