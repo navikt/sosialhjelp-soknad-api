@@ -23,7 +23,7 @@ open class MellomlagringConfig(
     private val dokumentlagerClient: DokumentlagerClient,
     private val krypteringService: KrypteringService,
     private val maskinportenClient: MaskinportenClient,
-    private val webClientBuilder: WebClient.Builder,
+    webClientBuilder: WebClient.Builder,
     proxiedHttpClient: HttpClient
 ) {
 

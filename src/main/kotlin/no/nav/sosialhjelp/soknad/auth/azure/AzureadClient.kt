@@ -18,8 +18,8 @@ class AzureadClient(
     @Value("\${azure_token_endpoint}") val azureTokenEndpoint: String,
     @Value("\${azure_client_id}") val azureClientId: String,
     @Value("\${azure_client_secret}") val azureClientSecret: String,
-    private val webClientBuilder: WebClient.Builder,
-    private val proxiedHttpClient: HttpClient,
+    webClientBuilder: WebClient.Builder,
+    proxiedHttpClient: HttpClient,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) {
 

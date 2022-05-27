@@ -12,8 +12,8 @@ import reactor.netty.http.client.HttpClient
 @Configuration
 open class BostotteConfig(
     @Value("\${soknad.bostotte.url}") private val bostotteBaseUrl: String,
-    private val webClientBuilder: WebClient.Builder,
-    private val proxiedHttpClient: HttpClient
+    webClientBuilder: WebClient.Builder,
+    proxiedHttpClient: HttpClient
 ) {
 
     @Bean
@@ -35,8 +35,8 @@ open class BostotteConfig(
         }
     }
 
-    private val husbankenWebClient: WebClient
-        get() = webClientBuilder
+    private val husbankenWebClient: WebClient =
+        webClientBuilder
             .clientConnector(ReactorClientHttpConnector(proxiedHttpClient))
             .codecs {
                 it.defaultCodecs().maxInMemorySize(16 * 1024 * 1024)

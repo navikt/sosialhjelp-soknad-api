@@ -11,7 +11,7 @@ import org.springframework.web.reactive.function.client.WebClient
 open class VirusScanConfig(
     @Value("\${virusscan_enabled}") private val enabled: Boolean,
     @Value("\${clamav_url}") private val clamAvUrl: String,
-    private val webClientBuilder: WebClient.Builder,
+    webClientBuilder: WebClient.Builder,
 ) {
 
     @Bean
@@ -19,8 +19,8 @@ open class VirusScanConfig(
         return VirusScanner(virusScannerWebClient, enabled)
     }
 
-    private val virusScannerWebClient: WebClient
-        get() = webClientBuilder
+    private val virusScannerWebClient: WebClient =
+        webClientBuilder
             .clientConnector(ReactorClientHttpConnector(unproxiedHttpClient()))
             .codecs {
                 it.defaultCodecs().maxInMemorySize(16 * 1024 * 1024)
