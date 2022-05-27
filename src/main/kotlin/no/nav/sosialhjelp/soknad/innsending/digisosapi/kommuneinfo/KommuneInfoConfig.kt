@@ -15,8 +15,8 @@ open class KommuneInfoConfig(
     @Value("\${integrasjonsid_fiks}") private val integrasjonsidFiks: String,
     @Value("\${integrasjonpassord_fiks}") private val integrasjonpassordFiks: String,
     private val maskinportenClient: MaskinportenClient,
-    private val webClientBuilder: WebClient.Builder,
-    private val proxiedHttpClient: HttpClient,
+    webClientBuilder: WebClient.Builder,
+    proxiedHttpClient: HttpClient,
 ) {
 
     @Bean
@@ -30,8 +30,8 @@ open class KommuneInfoConfig(
         return createTimerProxy("KommuneInfoMaskinportenClient", kommuneInfoMaskinportenClient, KommuneInfoMaskinportenClient::class.java)
     }
 
-    private val kommuneInfoMaskinportenWebClient: WebClient
-        get() = webClientBuilder
+    private val kommuneInfoMaskinportenWebClient: WebClient =
+        webClientBuilder
             .baseUrl(digisosApiEndpoint)
             .clientConnector(ReactorClientHttpConnector(proxiedHttpClient))
             .codecs {

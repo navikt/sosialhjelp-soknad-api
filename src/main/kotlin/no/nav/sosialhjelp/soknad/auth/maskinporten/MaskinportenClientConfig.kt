@@ -18,8 +18,8 @@ open class MaskinportenClientConfig(
     @Value("\${maskinporten_scopes}") private val scopes: String,
     @Value("\${maskinporten_well_known_url}") private val wellKnownUrl: String,
     @Value("\${maskinporten_client_jwk}") private val clientJwk: String,
-    private val webClientBuilder: WebClient.Builder,
-    private val proxiedHttpClient: HttpClient
+    webClientBuilder: WebClient.Builder,
+    proxiedHttpClient: HttpClient,
 ) {
 
     @Bean
@@ -35,8 +35,8 @@ open class MaskinportenClientConfig(
         return MaskinportenClientImpl(maskinPortenWebClient, maskinportenProperties, WellKnown("issuer", "token_url"))
     }
 
-    private val maskinPortenWebClient: WebClient
-        get() = webClientBuilder
+    private val maskinPortenWebClient: WebClient =
+        webClientBuilder
             .clientConnector(ReactorClientHttpConnector(proxiedHttpClient))
             .codecs {
                 it.defaultCodecs().maxInMemorySize(16 * 1024 * 1024)
@@ -52,13 +52,12 @@ open class MaskinportenClientConfig(
             .doOnError { log.warn("Feil ved henting av WellKnown for Maskinporten", it) }
             .block() ?: throw TjenesteUtilgjengeligException("Feil ved henting av WellKnown for Maskinporten", null)
 
-    private val maskinportenProperties: MaskinportenProperties
-        get() = MaskinportenProperties(
-            clientId = clientId,
-            jwkPrivate = clientJwk,
-            scope = scopes,
-            wellKnownUrl = wellKnownUrl
-        )
+    private val maskinportenProperties = MaskinportenProperties(
+        clientId = clientId,
+        jwkPrivate = clientJwk,
+        scope = scopes,
+        wellKnownUrl = wellKnownUrl
+    )
 
     companion object {
         private val log = LoggerFactory.getLogger(MaskinportenClientConfig::class.java)
@@ -67,5 +66,5 @@ open class MaskinportenClientConfig(
 
 data class WellKnown(
     val issuer: String,
-    val token_endpoint: String
+    val token_endpoint: String,
 )

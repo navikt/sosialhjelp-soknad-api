@@ -16,7 +16,7 @@ open class TokendingsConfig(
     @Value("\${tokendings_client_id}") val tokendingsClientId: String,
     @Value("\${tokendings_private_jwk}") val tokendingsPrivateJwk: String,
     private val redisService: RedisService,
-    private val webClientBuilder: WebClient.Builder
+    webClientBuilder: WebClient.Builder
 ) {
 
     @Profile("!test")
@@ -44,8 +44,8 @@ open class TokendingsConfig(
         )
     }
 
-    private val tokendingsWebClient: WebClient
-        get() = webClientBuilder
+    private val tokendingsWebClient: WebClient =
+        webClientBuilder
             .clientConnector(ReactorClientHttpConnector(unproxiedHttpClient()))
             .codecs {
                 it.defaultCodecs().maxInMemorySize(16 * 1024 * 1024)

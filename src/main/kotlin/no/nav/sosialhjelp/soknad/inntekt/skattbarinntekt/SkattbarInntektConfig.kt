@@ -19,8 +19,8 @@ import reactor.netty.http.client.HttpClient
 open class SkattbarInntektConfig(
     @Value("\${skatteetaten_api_baseurl}") private val baseurl: String,
     private val maskinportenClient: MaskinportenClient,
-    private val webClientBuilder: WebClient.Builder,
-    private val proxiedHttpClient: HttpClient
+    webClientBuilder: WebClient.Builder,
+    proxiedHttpClient: HttpClient
 ) {
 
     @Bean
@@ -47,8 +47,8 @@ open class SkattbarInntektConfig(
         .registerModule(JavaTimeModule())
         .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
 
-    private val skatteetatenWebClient: WebClient
-        get() = webClientBuilder
+    private val skatteetatenWebClient: WebClient =
+        webClientBuilder
             .baseUrl(baseurl)
             .clientConnector(ReactorClientHttpConnector(proxiedHttpClient))
             .codecs {
