@@ -1,7 +1,6 @@
 package no.nav.sosialhjelp.soknad.api.informasjon
 
 import no.nav.security.token.support.core.api.ProtectedWithClaims
-import no.nav.security.token.support.core.api.RequiredIssuers
 import no.nav.security.token.support.core.api.Unprotected
 import no.nav.sosialhjelp.api.fiks.KommuneInfo
 import no.nav.sosialhjelp.metrics.aspects.Timed
@@ -94,10 +93,7 @@ open class InformasjonRessurs(
         return messageSource.getBundleFor(type, locale)
     }
 
-    @RequiredIssuers(
-        ProtectedWithClaims(issuer = SELVBETJENING, claimMap = [CLAIM_ACR_LEVEL_4]),
-        ProtectedWithClaims(issuer = LOGINAPI, claimMap = [CLAIM_ACR_LEVEL_4]),
-    )
+    @ProtectedWithClaims(issuer = LOGINAPI, claimMap = [CLAIM_ACR_LEVEL_4])
     @GET
     @Path("/utslagskriterier/sosialhjelp")
     open fun getUtslagskriterier(): Map<String, Any>? {

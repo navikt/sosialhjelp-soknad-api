@@ -4,7 +4,6 @@ import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.BOSTOTTE_SAMTYKKE
 import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_SKATTEETATEN_SAMTYKKE
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse
 import no.nav.security.token.support.core.api.ProtectedWithClaims
-import no.nav.security.token.support.core.api.RequiredIssuers
 import no.nav.sosialhjelp.metrics.aspects.Timed
 import no.nav.sosialhjelp.soknad.api.nedetid.NedetidService
 import no.nav.sosialhjelp.soknad.common.Constants.CLAIM_ACR_LEVEL_4
@@ -141,10 +140,7 @@ open class SoknadRessurs(
             ?.firstOrNull { it.type.equals(samtykke, ignoreCase = true) }
     }
 
-    @RequiredIssuers(
-        ProtectedWithClaims(issuer = SELVBETJENING, claimMap = [CLAIM_ACR_LEVEL_4]),
-        ProtectedWithClaims(issuer = LOGINAPI, claimMap = [CLAIM_ACR_LEVEL_4]),
-    )
+    @ProtectedWithClaims(issuer = LOGINAPI, claimMap = [CLAIM_ACR_LEVEL_4])
     @POST
     @Path("/opprettSoknad")
     @Consumes(MediaType.APPLICATION_JSON)
