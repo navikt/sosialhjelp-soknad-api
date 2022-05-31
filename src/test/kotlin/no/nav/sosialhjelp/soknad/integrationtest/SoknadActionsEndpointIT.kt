@@ -3,6 +3,7 @@ package no.nav.sosialhjelp.soknad.integrationtest
 import no.nav.security.mock.oauth2.MockOAuth2Server
 import no.nav.sosialhjelp.soknad.Application
 import no.nav.sosialhjelp.soknad.common.Constants.BEARER
+import no.nav.sosialhjelp.soknad.common.Constants.LOGINAPI
 import no.nav.sosialhjelp.soknad.integrationtest.IntegrationTestUtils.issueToken
 import no.nav.sosialhjelp.soknad.integrationtest.IntegrationTestUtils.opprettSoknad
 import org.junit.jupiter.api.Test
@@ -30,19 +31,19 @@ class SoknadActionsEndpointIT {
 
     @Test
     internal fun sendSoknad_skalGiForbiddenMedAnnenBruker() {
-        val behandlingsId = opprettSoknad(issueToken(mockOAuth2Server, BRUKER), webClient)
+        val behandlingsId = opprettSoknad(issueToken(mockOAuth2Server, BRUKER, LOGINAPI), webClient)
 
         webClient
             .post().uri("/soknader/$behandlingsId/actions/send")
             .accept(MediaType.APPLICATION_JSON)
-            .header(HttpHeaders.AUTHORIZATION, BEARER + issueToken(mockOAuth2Server, ANNEN_BRUKER).serialize())
+            .header(HttpHeaders.AUTHORIZATION, BEARER + issueToken(mockOAuth2Server, ANNEN_BRUKER, LOGINAPI).serialize())
             .exchange()
             .expectStatus().isForbidden
     }
 
     @Test
     internal fun sendSoknad_skalGi401UtenToken() {
-        val behandlingsId = opprettSoknad(issueToken(mockOAuth2Server, BRUKER), webClient)
+        val behandlingsId = opprettSoknad(issueToken(mockOAuth2Server, BRUKER, LOGINAPI), webClient)
 
         webClient
             .post().uri("/soknader/$behandlingsId/actions/send")

@@ -3,6 +3,7 @@ package no.nav.sosialhjelp.soknad.integrationtest
 import no.nav.security.mock.oauth2.MockOAuth2Server
 import no.nav.sosialhjelp.soknad.Application
 import no.nav.sosialhjelp.soknad.common.Constants.BEARER
+import no.nav.sosialhjelp.soknad.common.Constants.LOGINAPI
 import no.nav.sosialhjelp.soknad.common.Constants.SELVBETJENING
 import no.nav.sosialhjelp.soknad.integrationtest.IntegrationTestUtils.issueToken
 import no.nav.sosialhjelp.soknad.integrationtest.IntegrationTestUtils.opprettSoknad
@@ -30,7 +31,7 @@ class MineSakerMetadataRessursEndpointIT {
 
     @Test
     internal fun innsendte_skalGi401UtenToken() {
-        opprettSoknad(issueToken(mockOAuth2Server, BRUKER), webClient)
+        opprettSoknad(issueToken(mockOAuth2Server, BRUKER, LOGINAPI), webClient)
 
         webClient
             .get().uri("/minesaker/innsendte")
@@ -41,13 +42,13 @@ class MineSakerMetadataRessursEndpointIT {
 
     @Test
     internal fun innsendte_skalGi401MedAnnenIssuer() {
-        opprettSoknad(issueToken(mockOAuth2Server, BRUKER), webClient)
+        opprettSoknad(issueToken(mockOAuth2Server, BRUKER, LOGINAPI), webClient)
 
         // Skal kun godta tokenx som issuer
         webClient
             .get().uri("/minesaker/innsendte")
             .accept(MediaType.APPLICATION_JSON)
-            .header(HttpHeaders.AUTHORIZATION, BEARER + issueToken(mockOAuth2Server, BRUKER, issuer = SELVBETJENING).serialize())
+            .header(HttpHeaders.AUTHORIZATION, BEARER + issueToken(mockOAuth2Server, BRUKER, SELVBETJENING).serialize())
             .exchange()
             .expectStatus().isUnauthorized
     }
