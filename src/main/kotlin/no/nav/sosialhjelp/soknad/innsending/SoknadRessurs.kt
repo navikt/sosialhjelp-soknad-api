@@ -4,9 +4,12 @@ import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.BOSTOTTE_SAMTYKKE
 import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_SKATTEETATEN_SAMTYKKE
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse
 import no.nav.security.token.support.core.api.ProtectedWithClaims
+import no.nav.security.token.support.core.api.RequiredIssuers
 import no.nav.sosialhjelp.metrics.aspects.Timed
 import no.nav.sosialhjelp.soknad.api.nedetid.NedetidService
-import no.nav.sosialhjelp.soknad.common.Constants
+import no.nav.sosialhjelp.soknad.common.Constants.CLAIM_ACR_LEVEL_4
+import no.nav.sosialhjelp.soknad.common.Constants.LOGINAPI
+import no.nav.sosialhjelp.soknad.common.Constants.SELVBETJENING
 import no.nav.sosialhjelp.soknad.common.exceptions.SoknadenHarNedetidException
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils.getUserIdFromToken
 import no.nav.sosialhjelp.soknad.common.systemdata.SystemdataUpdater
@@ -35,7 +38,6 @@ import javax.ws.rs.core.Context
 import javax.ws.rs.core.MediaType
 
 @Controller
-@ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4])
 @Path("/soknader")
 @Timed
 @Produces(MediaType.APPLICATION_JSON)
@@ -48,6 +50,7 @@ open class SoknadRessurs(
     private val henvendelseService: HenvendelseService,
     private val nedetidService: NedetidService
 ) {
+    @ProtectedWithClaims(issuer = SELVBETJENING, claimMap = [CLAIM_ACR_LEVEL_4])
     @GET
     @Path("/{behandlingsId}/xsrfCookie")
     open fun hentXsrfCookie(
@@ -61,6 +64,7 @@ open class SoknadRessurs(
         return true
     }
 
+    @ProtectedWithClaims(issuer = SELVBETJENING, claimMap = [CLAIM_ACR_LEVEL_4])
     @GET
     @Path("/{behandlingsId}/erSystemdataEndret")
     open fun sjekkOmSystemdataErEndret(
@@ -93,6 +97,7 @@ open class SoknadRessurs(
         }
     }
 
+    @ProtectedWithClaims(issuer = SELVBETJENING, claimMap = [CLAIM_ACR_LEVEL_4])
     @POST
     @Path("/{behandlingsId}/oppdaterSamtykker")
     open fun oppdaterSamtykker(
@@ -108,6 +113,7 @@ open class SoknadRessurs(
         soknadService.oppdaterSamtykker(behandlingsId, harBostotteSamtykke, harSkatteetatenSamtykke, token)
     }
 
+    @ProtectedWithClaims(issuer = SELVBETJENING, claimMap = [CLAIM_ACR_LEVEL_4])
     @GET
     @Path("/{behandlingsId}/hentSamtykker")
     open fun hentSamtykker(
@@ -135,6 +141,10 @@ open class SoknadRessurs(
             ?.firstOrNull { it.type.equals(samtykke, ignoreCase = true) }
     }
 
+    @RequiredIssuers(
+        ProtectedWithClaims(issuer = SELVBETJENING, claimMap = [CLAIM_ACR_LEVEL_4]),
+        ProtectedWithClaims(issuer = LOGINAPI, claimMap = [CLAIM_ACR_LEVEL_4]),
+    )
     @POST
     @Path("/opprettSoknad")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -168,6 +178,7 @@ open class SoknadRessurs(
         return result
     }
 
+    @ProtectedWithClaims(issuer = SELVBETJENING, claimMap = [CLAIM_ACR_LEVEL_4])
     @DELETE
     @Path("/{behandlingsId}")
     open fun slettSoknad(@PathParam("behandlingsId") behandlingsId: String) {

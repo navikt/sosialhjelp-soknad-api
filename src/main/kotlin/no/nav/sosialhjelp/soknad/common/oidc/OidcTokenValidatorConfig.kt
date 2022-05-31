@@ -4,6 +4,7 @@ import no.nav.security.token.support.core.configuration.IssuerProperties
 import no.nav.security.token.support.core.configuration.MultiIssuerConfiguration
 import no.nav.security.token.support.core.configuration.ProxyAwareResourceRetriever
 import no.nav.security.token.support.jaxrs.servlet.JaxrsJwtTokenValidationFilter
+import no.nav.sosialhjelp.soknad.common.Constants.LOGINAPI
 import no.nav.sosialhjelp.soknad.common.Constants.SELVBETJENING
 import no.nav.sosialhjelp.soknad.common.Constants.TOKENX
 import org.slf4j.LoggerFactory
@@ -19,6 +20,9 @@ open class OidcTokenValidatorConfig(
     @Value("\${oidc.issuer.selvbetjening.accepted_audience}") private val acceptedAudience: String,
     @Value("\${oidc.issuer.selvbetjening.discoveryurl}") private val discoveryUrl: String,
     @Value("\${oidc.issuer.selvbetjening.proxy_url}") private val proxyUrl: String,
+    @Value("\${oidc.issuer.loginapi.discoveryurl}") private val loginApiDiscoveryUrl: String,
+    @Value("\${oidc.issuer.loginapi.proxy_url}") private val loginApiProxyUrl: String,
+    @Value("\${oidc.issuer.loginapi.validation.optional-claims}") private val loginApiOptionalClaims: List<String>,
     @Value("\${tokendings_client_id}") private val acceptedAudienceTokenx: String,
     @Value("\${tokendings_url}") private val discoveryUrlTokenx: String
 ) {
@@ -43,6 +47,7 @@ open class OidcTokenValidatorConfig(
             val issuerPropertiesMap: MutableMap<String, IssuerProperties> = HashMap()
             issuerPropertiesMap[SELVBETJENING] = selvbetjeningProperties()
             issuerPropertiesMap[TOKENX] = tokenxProperties()
+            issuerPropertiesMap[LOGINAPI] = loginApiProperties()
             return issuerPropertiesMap
         }
 
@@ -54,6 +59,12 @@ open class OidcTokenValidatorConfig(
 
     private fun tokenxProperties(): IssuerProperties {
         return IssuerProperties(toUrl(discoveryUrlTokenx), listOf(acceptedAudienceTokenx))
+    }
+
+    private fun loginApiProperties(): IssuerProperties {
+        val issuerProperties = IssuerProperties(toUrl(loginApiDiscoveryUrl), IssuerProperties.Validation(loginApiOptionalClaims))
+        issuerProperties.proxyUrl = proxyUrl(loginApiProxyUrl)
+        return issuerProperties
     }
 
     private fun toUrl(url: String?): URL {

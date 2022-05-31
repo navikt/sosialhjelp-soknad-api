@@ -1,6 +1,7 @@
 package no.nav.sosialhjelp.soknad.api.informasjon
 
 import no.nav.security.token.support.core.api.ProtectedWithClaims
+import no.nav.security.token.support.core.api.RequiredIssuers
 import no.nav.security.token.support.core.api.Unprotected
 import no.nav.sosialhjelp.api.fiks.KommuneInfo
 import no.nav.sosialhjelp.metrics.aspects.Timed
@@ -13,7 +14,9 @@ import no.nav.sosialhjelp.soknad.api.informasjon.dto.Logg
 import no.nav.sosialhjelp.soknad.api.informasjon.dto.NyligInnsendteSoknaderResponse
 import no.nav.sosialhjelp.soknad.api.informasjon.dto.PabegyntSoknad
 import no.nav.sosialhjelp.soknad.api.nedetid.NedetidService
-import no.nav.sosialhjelp.soknad.common.Constants
+import no.nav.sosialhjelp.soknad.common.Constants.CLAIM_ACR_LEVEL_4
+import no.nav.sosialhjelp.soknad.common.Constants.LOGINAPI
+import no.nav.sosialhjelp.soknad.common.Constants.SELVBETJENING
 import no.nav.sosialhjelp.soknad.common.mapper.KommuneTilNavEnhetMapper.digisoskommuner
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
@@ -43,7 +46,6 @@ import javax.ws.rs.core.MediaType
  * Klassen håndterer rest kall for å hente informasjon
  */
 @Controller
-@ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4])
 @Path("/informasjon")
 @Produces(MediaType.APPLICATION_JSON)
 @Timed
@@ -61,6 +63,7 @@ open class InformasjonRessurs(
     private val klientlogger = LoggerFactory.getLogger("klientlogger")
     private val FJORTEN_DAGER = 14
 
+    @ProtectedWithClaims(issuer = SELVBETJENING, claimMap = [CLAIM_ACR_LEVEL_4])
     @GET
     @Path("/fornavn")
     open fun hentFornavn(): Map<String?, String?>? {
@@ -91,6 +94,10 @@ open class InformasjonRessurs(
         return messageSource.getBundleFor(type, locale)
     }
 
+    @RequiredIssuers(
+        ProtectedWithClaims(issuer = SELVBETJENING, claimMap = [CLAIM_ACR_LEVEL_4]),
+        ProtectedWithClaims(issuer = LOGINAPI, claimMap = [CLAIM_ACR_LEVEL_4]),
+    )
     @GET
     @Path("/utslagskriterier/sosialhjelp")
     open fun getUtslagskriterier(): Map<String, Any>? {
@@ -108,12 +115,14 @@ open class InformasjonRessurs(
         return resultat
     }
 
+    @ProtectedWithClaims(issuer = SELVBETJENING, claimMap = [CLAIM_ACR_LEVEL_4])
     @GET
     @Path("/adressesok")
     open fun adresseSok(@QueryParam("sokestreng") sokestreng: String?): List<AdresseForslag?>? {
         return adresseSokService.sokEtterAdresser(sokestreng)
     }
 
+    @ProtectedWithClaims(issuer = SELVBETJENING, claimMap = [CLAIM_ACR_LEVEL_4])
     @POST
     @Path("/actions/logg")
     open fun loggFraKlient(logg: Logg) {
@@ -125,6 +134,7 @@ open class InformasjonRessurs(
         }
     }
 
+    @ProtectedWithClaims(issuer = SELVBETJENING, claimMap = [CLAIM_ACR_LEVEL_4])
     @GET
     @Path("/kommunelogg")
     open fun triggeKommunelogg(@QueryParam("kommunenummer") kommunenummer: String): String? {
@@ -160,6 +170,7 @@ open class InformasjonRessurs(
         return mergeManuelleKommunerMedDigisosKommunerKommunestatus(manueltPakobledeKommuner, digisosKommuner)
     }
 
+    @ProtectedWithClaims(issuer = SELVBETJENING, claimMap = [CLAIM_ACR_LEVEL_4])
     @GET
     @Path("/harNyligInnsendteSoknader")
     open fun harNyligInnsendteSoknader(): NyligInnsendteSoknaderResponse {
@@ -169,6 +180,7 @@ open class InformasjonRessurs(
         return NyligInnsendteSoknaderResponse(nyligSendteSoknader.size)
     }
 
+    @ProtectedWithClaims(issuer = SELVBETJENING, claimMap = [CLAIM_ACR_LEVEL_4])
     @GET
     @Path("/pabegynteSoknader")
     open fun hentPabegynteSoknader(): List<PabegyntSoknad> {

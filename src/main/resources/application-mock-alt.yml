@@ -80,6 +80,10 @@ oidc.issuer.selvbetjening.accepted_audience: someaudience
 oidc.issuer.selvbetjening.discoveryurl: ${OIDC_ISSUER_SELVBETJENING_DISCOVERYURL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/well-known/selvbetjening${mock-alt-api-wellknown-queryparam}}
 oidc.issuer.selvbetjening.proxy_url: dummy
 
+oidc.issuer.loginapi.discoveryurl: ${OIDC_ISSUER_LOGINAPI_DISCOVERYURL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/well-known/loginapi${mock-alt-api-wellknown-queryparam}}
+oidc.issuer.loginapi.proxy_url: dummy
+oidc.issuer.loginapi.validation.optional-claims: aud,nbf
+
 loginservice.url: ${LOGINSERVICE_URL:http://localhost:3008/sosialhjelp/mock-alt/login}
 
 virusscan_enabled: false

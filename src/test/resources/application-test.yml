@@ -34,6 +34,11 @@ oidc.issuer.selvbetjening.discoveryurl: http://localhost:${mock-oauth2-server.po
 oidc.issuer.selvbetjening.accepted_audience: someaudience
 oidc.issuer.selvbetjening.cookie_name: localhost-idtoken
 oidc.issuer.selvbetjening.proxy_url: dummy
+
+oidc.issuer.loginapi.discoveryurl: http://localhost:${mock-oauth2-server.port}/loginapi/.well-known/openid-configuration
+oidc.issuer.loginapi.proxy_url: dummy
+oidc.issuer.loginapi.validation.optional-claims: aud
+
 loginservice.url: http://localhost:8181/sosialhjelp/soknad-api/local/cookie
 
 # maskinporten

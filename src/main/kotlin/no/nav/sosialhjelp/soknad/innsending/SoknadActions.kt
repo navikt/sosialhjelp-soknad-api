@@ -2,9 +2,12 @@ package no.nav.sosialhjelp.soknad.innsending
 
 import no.finn.unleash.Unleash
 import no.nav.security.token.support.core.api.ProtectedWithClaims
+import no.nav.security.token.support.core.api.RequiredIssuers
 import no.nav.sosialhjelp.metrics.aspects.Timed
 import no.nav.sosialhjelp.soknad.api.nedetid.NedetidService
-import no.nav.sosialhjelp.soknad.common.Constants
+import no.nav.sosialhjelp.soknad.common.Constants.CLAIM_ACR_LEVEL_4
+import no.nav.sosialhjelp.soknad.common.Constants.LOGINAPI
+import no.nav.sosialhjelp.soknad.common.Constants.SELVBETJENING
 import no.nav.sosialhjelp.soknad.common.exceptions.SendingTilKommuneErIkkeAktivertException
 import no.nav.sosialhjelp.soknad.common.exceptions.SendingTilKommuneErMidlertidigUtilgjengeligException
 import no.nav.sosialhjelp.soknad.common.exceptions.SendingTilKommuneUtilgjengeligException
@@ -40,7 +43,10 @@ import javax.ws.rs.core.Context
 import javax.ws.rs.core.MediaType
 
 @Controller
-@ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4])
+@RequiredIssuers(
+    ProtectedWithClaims(issuer = SELVBETJENING, claimMap = [CLAIM_ACR_LEVEL_4]),
+    ProtectedWithClaims(issuer = LOGINAPI, claimMap = [CLAIM_ACR_LEVEL_4]),
+)
 @Path("/soknader/{behandlingsId}/actions")
 @Produces(MediaType.APPLICATION_JSON)
 @Timed(name = "SoknadActionsRessurs")
