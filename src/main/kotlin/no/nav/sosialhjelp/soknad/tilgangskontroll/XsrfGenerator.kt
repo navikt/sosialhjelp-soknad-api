@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.tilgangskontroll
 
+import no.nav.sosialhjelp.kotlin.utils.logger
 import no.nav.sosialhjelp.soknad.common.exceptions.AuthorizationException
 import no.nav.sosialhjelp.soknad.common.exceptions.SosialhjelpSoknadApiException
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
@@ -14,15 +15,16 @@ import javax.crypto.spec.SecretKeySpec
 object XsrfGenerator {
 
     private const val SECRET = "9f8c0d81-d9b3-4b70-af03-bb9375336c4f"
+    private val log by logger()
 
     @JvmOverloads
     fun generateXsrfToken(
         behandlingsId: String?,
         date: String = ZonedDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")),
-        token: String? = SubjectHandlerUtils.getToken()
+        id: String? = SubjectHandlerUtils.getUserIdFromToken()
     ): String {
         return try {
-            val signKey = token + behandlingsId + date
+            val signKey = id + behandlingsId + date
             val hmac = Mac.getInstance("HmacSHA256")
             val secretKey = SecretKeySpec(SECRET.toByteArray(), "HmacSHA256")
             hmac.init(secretKey)
@@ -35,9 +37,12 @@ object XsrfGenerator {
     }
 
     fun sjekkXsrfToken(givenToken: String?, behandlingsId: String?, isMockProfil: Boolean) {
-        val token = generateXsrfToken(behandlingsId)
-        val valid = token == givenToken || generateXsrfToken(behandlingsId, ZonedDateTime.now().minusDays(1).format(DateTimeFormatter.ofPattern("yyyyMMdd"))) == givenToken
-        if (!valid && !isMockProfil) {
+        val xsrfTokenFraFnr = generateXsrfToken(behandlingsId)
+        val xsrfTokenFraToken = generateXsrfToken(behandlingsId, id = SubjectHandlerUtils.getToken())
+        val validFraFnr = xsrfTokenFraFnr == givenToken || generateXsrfToken(behandlingsId, ZonedDateTime.now().minusDays(1).format(DateTimeFormatter.ofPattern("yyyyMMdd"))) == givenToken
+        val validFraToken = xsrfTokenFraToken == givenToken || generateXsrfToken(behandlingsId, ZonedDateTime.now().minusDays(1).format(DateTimeFormatter.ofPattern("yyyyMMdd")), SubjectHandlerUtils.getToken()) == givenToken
+        log.info("xsrf - validFraFnr=$validFraFnr, validFraToken=$validFraToken")
+        if (!(validFraFnr || validFraToken) && !isMockProfil) {
             throw AuthorizationException("Feil token")
         }
     }
