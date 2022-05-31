@@ -16,6 +16,7 @@
         </appender>
 
         <logger name="no.nav.sosialhjelp.soknad" level="INFO"/>
+        <logger name="no.nav.security.token.support" level="debug"/>
         <logger name="klientlogger" level="debug"/>
         <logger name="org.springframework" level="warn"/>
         <logger name="org.apache.pdfbox" level="error"/>
