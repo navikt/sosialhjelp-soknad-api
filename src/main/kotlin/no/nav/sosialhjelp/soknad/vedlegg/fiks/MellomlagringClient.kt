@@ -22,6 +22,7 @@ import org.springframework.util.LinkedMultiValueMap
 import org.springframework.web.reactive.function.BodyInserters
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
+import org.springframework.web.reactive.function.client.WebClientResponseException.BadRequest
 import org.springframework.web.reactive.function.client.bodyToMono
 import java.util.Collections
 import java.util.concurrent.Future
@@ -53,19 +54,18 @@ class MellomlagringClientImpl(
                 .header(HttpHeaders.AUTHORIZATION, BEARER + maskinportenClient.getToken())
                 .retrieve()
                 .bodyToMono<String>()
-                .onErrorMap(WebClientResponseException::class.java) {
-                    log.warn("Fiks - getMellomlagredeVedlegg feilet - ${it.responseBodyAsString}", it)
-                    throw it
-                }
                 .block() ?: throw FiksException("MellomlagringDto er null?", null)
-        } catch (badRequest: WebClientResponseException.BadRequest) {
-            val errorMessage = digisosObjectMapper.readValue<ErrorMessage>(badRequest.responseBodyAsString)
-            val message = errorMessage.message
-            if (message != null && message.contains("Fant ingen data i basen knytter til angitt id'en")) {
-                log.warn("Ingen mellomlagrede vedlegg funnet for $navEksternId")
-                return null
+        } catch (e: WebClientResponseException) {
+            if (e is BadRequest) {
+                val errorMessage = digisosObjectMapper.readValue<ErrorMessage>(e.responseBodyAsString)
+                val message = errorMessage.message
+                if (message != null && message.contains("Fant ingen data i basen knytter til angitt id'en")) {
+                    log.warn("Ingen mellomlagrede vedlegg funnet for $navEksternId")
+                    return null
+                }
             }
-            throw badRequest
+            log.warn("Fiks - getMellomlagredeVedlegg feilet - ${e.responseBodyAsString}", e)
+            throw e
         }
         return digisosObjectMapper.readValue<MellomlagringDto>(responseString)
     }
