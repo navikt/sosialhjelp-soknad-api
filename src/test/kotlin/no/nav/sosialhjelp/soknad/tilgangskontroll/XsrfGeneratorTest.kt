@@ -33,19 +33,12 @@ internal class XsrfGeneratorTest {
 
     @Test
     fun skalGenerereBasertPaaInput() {
-        val xsrfTokenFraFnr = generateXsrfToken("1L")
-        val xsrfTokenYesterdayFraFnr = generateXsrfToken("1L", ZonedDateTime.now().minusDays(1).format(DateTimeFormatter.ofPattern("yyyyMMdd")))
-        sjekkXsrfToken(xsrfTokenFraFnr, "1L", false)
-        sjekkXsrfToken(xsrfTokenYesterdayFraFnr, "1L", false)
-        sjekkAtMetodeKasterException(xsrfTokenFraFnr, 2L)
-        sjekkAtMetodeKasterException(xsrfTokenFraFnr, 1L)
-
-        val xsrfTokenFraToken = generateXsrfToken("1L", id = SubjectHandlerUtils.getToken())
-        val xsrfTokenYesterdayFraToken = generateXsrfToken("1L", ZonedDateTime.now().minusDays(1).format(DateTimeFormatter.ofPattern("yyyyMMdd")), SubjectHandlerUtils.getToken())
-        sjekkXsrfToken(xsrfTokenFraToken, "1L", false)
-        sjekkXsrfToken(xsrfTokenYesterdayFraToken, "1L", false)
-        sjekkAtMetodeKasterException(xsrfTokenFraToken, 2L)
-        sjekkAtMetodeKasterException(xsrfTokenFraToken, 1L)
+        val xsrfToken = generateXsrfToken("1L")
+        val xsrfTokenYesterday = generateXsrfToken("1L", ZonedDateTime.now().minusDays(1).format(DateTimeFormatter.ofPattern("yyyyMMdd")))
+        sjekkXsrfToken(xsrfToken, "1L", false)
+        sjekkXsrfToken(xsrfTokenYesterday, "1L", false)
+        sjekkAtMetodeKasterException(xsrfToken, 2L)
+        sjekkAtMetodeKasterException(xsrfToken, 1L)
     }
 
     private fun sjekkAtMetodeKasterException(token: String, soknadId: Long) {
