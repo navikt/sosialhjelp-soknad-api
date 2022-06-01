@@ -37,13 +37,7 @@ class SkatteetatenClientImpl(
 
         return try {
             webClient.get()
-                .uri { uriBuilder ->
-                    uriBuilder
-                        .path("{personidentifikator}/inntekter")
-                        .queryParam("fraOgMed", sokedata.fom.format(formatter))
-                        .queryParam("tilOgMed", sokedata.tom.format(formatter))
-                        .build(sokedata.identifikator)
-                }
+                .uri("{personidentifikator}/inntekter?fraOgMed={fom}&tilOgMed={tom}", sokedata.identifikator, sokedata.fom.format(formatter), sokedata.tom.format(formatter))
                 .accept(MediaType.APPLICATION_JSON)
                 .headers { it.add(HttpHeaders.AUTHORIZATION, BEARER + maskinportenClient.getToken()) }
                 .retrieve()
