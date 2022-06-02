@@ -145,6 +145,8 @@ open class InformasjonRessurs(
         }
         val manueltPakobledeKommuner = mapManueltPakobledeKommuner(digisoskommuner)
         val digisosKommuner = mapDigisosKommuner(kommuneInfoService.hentAlleKommuneInfo())
+        val kunManueltPakobledeKommuner = manueltPakobledeKommuner.keys.filter { !digisosKommuner.containsKey(it) }
+        logger.info("/kommuneinfo - Kommuner som kun er manuelt påkoblet via PROD_DIGISOS_KOMMUNER: $kunManueltPakobledeKommuner")
         return mergeManuelleKommunerMedDigisosKommuner(manueltPakobledeKommuner, digisosKommuner)
     }
 
@@ -157,6 +159,8 @@ open class InformasjonRessurs(
         }
         val manueltPakobledeKommuner = mapManueltPakobledeKommunerTilKommunestatusFrontend(digisoskommuner)
         val digisosKommuner = mapDigisosKommunerTilKommunestatus(kommuneInfoService.hentAlleKommuneInfo())
+        val kunManueltPakobledeKommuner = manueltPakobledeKommuner.keys.filter { !digisosKommuner.containsKey(it) }
+        logger.info("/kommunestatus - Kommuner som kun er manuelt påkoblet via PROD_DIGISOS_KOMMUNER: $kunManueltPakobledeKommuner")
         return mergeManuelleKommunerMedDigisosKommunerKommunestatus(manueltPakobledeKommuner, digisosKommuner)
     }
 
