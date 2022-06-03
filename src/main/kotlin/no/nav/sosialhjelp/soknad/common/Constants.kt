@@ -5,7 +5,6 @@ object Constants {
     const val CLAIM_ACR_LEVEL_3 = "acr=Level3"
     const val CLAIM_ACR_LEVEL_4 = "acr=Level4"
     const val TOKENX = "tokenx"
-    const val LOGINAPI = "loginapi"
 
     const val HEADER_CALL_ID = "Nav-Call-Id"
     const val HEADER_CONSUMER_ID = "Nav-Consumer-Id"

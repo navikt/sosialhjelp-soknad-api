@@ -7,7 +7,6 @@ import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.metrics.aspects.Timed
 import no.nav.sosialhjelp.soknad.api.nedetid.NedetidService
 import no.nav.sosialhjelp.soknad.common.Constants.CLAIM_ACR_LEVEL_4
-import no.nav.sosialhjelp.soknad.common.Constants.LOGINAPI
 import no.nav.sosialhjelp.soknad.common.Constants.SELVBETJENING
 import no.nav.sosialhjelp.soknad.common.exceptions.SoknadenHarNedetidException
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils.getUserIdFromToken
@@ -140,7 +139,7 @@ open class SoknadRessurs(
             ?.firstOrNull { it.type.equals(samtykke, ignoreCase = true) }
     }
 
-    @ProtectedWithClaims(issuer = LOGINAPI, claimMap = [CLAIM_ACR_LEVEL_4])
+    @ProtectedWithClaims(issuer = SELVBETJENING, claimMap = [CLAIM_ACR_LEVEL_4])
     @POST
     @Path("/opprettSoknad")
     @Consumes(MediaType.APPLICATION_JSON)

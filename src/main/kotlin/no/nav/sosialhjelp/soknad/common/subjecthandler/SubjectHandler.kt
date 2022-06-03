@@ -3,7 +3,6 @@ package no.nav.sosialhjelp.soknad.common.subjecthandler
 import no.nav.security.token.support.core.context.TokenValidationContext
 import no.nav.security.token.support.jaxrs.JaxrsTokenValidationContextHolder
 import no.nav.sosialhjelp.kotlin.utils.logger
-import no.nav.sosialhjelp.soknad.common.Constants.LOGINAPI
 import no.nav.sosialhjelp.soknad.common.Constants.SELVBETJENING
 import no.nav.sosialhjelp.soknad.common.Constants.TOKENX
 import org.springframework.stereotype.Component
@@ -27,7 +26,6 @@ class SubjectHandlerImpl : SubjectHandler {
     override fun getUserIdFromToken(): String {
         return when {
             tokenValidationContext.hasTokenFor(TOKENX) -> getUserIdFromTokenWithIssuer(TOKENX)
-            tokenValidationContext.hasTokenFor(LOGINAPI) -> getUserIdFromTokenWithIssuer(LOGINAPI)
             else -> getUserIdFromTokenWithIssuer(SELVBETJENING)
         }
     }
@@ -40,7 +38,6 @@ class SubjectHandlerImpl : SubjectHandler {
 
     override fun getToken(): String {
         return when {
-            tokenValidationContext.hasTokenFor(LOGINAPI) -> tokenValidationContext.getJwtToken(LOGINAPI).tokenAsString
             else -> tokenValidationContext.getJwtToken(SELVBETJENING).tokenAsString
         }
     }

@@ -82,13 +82,8 @@ fiks_svarut_password: ${FIKS_SVARUT_PASSWORD}
 
 # OIDC
 oidc.issuer.selvbetjening.discoveryurl: ${LOGINSERVICE_IDPORTEN_DISCOVERY_URL}
-oidc.issuer.selvbetjening.accepted_audience: ${LOGINSERVICE_IDPORTEN_AUDIENCE}
-oidc.issuer.selvbetjening.cookie_name: selvbetjening-idtoken
 oidc.issuer.selvbetjening.proxy_url: http://webproxy-nais.nav.no:8088
-
-oidc.issuer.loginapi.discoveryurl: ${LOGINSERVICE_IDPORTEN_DISCOVERY_URL}
-oidc.issuer.loginapi.proxy_url: http://webproxy-nais.nav.no:8088
-oidc.issuer.loginapi.validation.optional-claims: aud,nbf
+oidc.issuer.selvbetjening.validation.optional-claims: aud,nbf
 
 loginservice.url: ${LOGINSERVICE_URL}
 

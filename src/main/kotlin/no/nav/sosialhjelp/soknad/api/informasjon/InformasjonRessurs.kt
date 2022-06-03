@@ -14,7 +14,6 @@ import no.nav.sosialhjelp.soknad.api.informasjon.dto.NyligInnsendteSoknaderRespo
 import no.nav.sosialhjelp.soknad.api.informasjon.dto.PabegyntSoknad
 import no.nav.sosialhjelp.soknad.api.nedetid.NedetidService
 import no.nav.sosialhjelp.soknad.common.Constants.CLAIM_ACR_LEVEL_4
-import no.nav.sosialhjelp.soknad.common.Constants.LOGINAPI
 import no.nav.sosialhjelp.soknad.common.Constants.SELVBETJENING
 import no.nav.sosialhjelp.soknad.common.mapper.KommuneTilNavEnhetMapper.digisoskommuner
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
@@ -93,7 +92,7 @@ open class InformasjonRessurs(
         return messageSource.getBundleFor(type, locale)
     }
 
-    @ProtectedWithClaims(issuer = LOGINAPI, claimMap = [CLAIM_ACR_LEVEL_4])
+    @ProtectedWithClaims(issuer = SELVBETJENING, claimMap = [CLAIM_ACR_LEVEL_4])
     @GET
     @Path("/utslagskriterier/sosialhjelp")
     open fun getUtslagskriterier(): Map<String, Any>? {
