@@ -29,6 +29,13 @@ spring:
     username: ${SOKNADSOSIALHJELPDATASOURCE_USERNAME}
     password: ${SOKNADSOSIALHJELPDATASOURCE_PASSWORD}
 
+management:
+  endpoints:
+    web:
+      base-path: "/internal"
+      exposure:
+        include: metrics, prometheus
+
 metrics.report.enabled: true
 sensu_client_host: sensu.nais
 sensu_client_port: 3030

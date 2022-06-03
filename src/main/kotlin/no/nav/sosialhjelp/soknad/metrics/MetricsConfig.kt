@@ -1,14 +1,10 @@
 package no.nav.sosialhjelp.soknad.metrics
 
-import io.prometheus.client.CollectorRegistry
-import io.prometheus.client.exporter.MetricsServlet
-import io.prometheus.client.hotspot.DefaultExports
 import no.nav.sosialhjelp.metrics.MetricsClient
 import no.nav.sosialhjelp.metrics.MetricsConfig.resolveNaisConfig
 import no.nav.sosialhjelp.metrics.aspects.TimerAspect
 import no.nav.sosialhjelp.soknad.common.MiljoUtils
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.boot.web.servlet.ServletRegistrationBean
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
@@ -22,20 +18,6 @@ open class MetricsConfig(
     @Bean
     open fun timerAspect(): TimerAspect? {
         return TimerAspect()
-    }
-
-    @Bean
-    open fun collectorRegistry(): CollectorRegistry? {
-        DefaultExports.initialize()
-        return CollectorRegistry.defaultRegistry
-    }
-
-    @Bean
-    open fun metricsServlet(): ServletRegistrationBean<*> {
-        val metricsServlet = ServletRegistrationBean<MetricsServlet>()
-        metricsServlet.servlet = MetricsServlet()
-        metricsServlet.urlMappings = listOf("/internal/metrics/*")
-        return metricsServlet
     }
 
     @Bean
