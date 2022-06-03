@@ -44,6 +44,7 @@ import javax.ws.rs.core.MediaType
  * Klassen håndterer rest kall for å hente informasjon
  */
 @Controller
+@ProtectedWithClaims(issuer = SELVBETJENING, claimMap = [CLAIM_ACR_LEVEL_4])
 @Path("/informasjon")
 @Produces(MediaType.APPLICATION_JSON)
 @Timed
@@ -61,7 +62,6 @@ open class InformasjonRessurs(
     private val klientlogger = LoggerFactory.getLogger("klientlogger")
     private val FJORTEN_DAGER = 14
 
-    @ProtectedWithClaims(issuer = SELVBETJENING, claimMap = [CLAIM_ACR_LEVEL_4])
     @GET
     @Path("/fornavn")
     open fun hentFornavn(): Map<String?, String?>? {
@@ -92,7 +92,6 @@ open class InformasjonRessurs(
         return messageSource.getBundleFor(type, locale)
     }
 
-    @ProtectedWithClaims(issuer = SELVBETJENING, claimMap = [CLAIM_ACR_LEVEL_4])
     @GET
     @Path("/utslagskriterier/sosialhjelp")
     open fun getUtslagskriterier(): Map<String, Any>? {
@@ -110,14 +109,12 @@ open class InformasjonRessurs(
         return resultat
     }
 
-    @ProtectedWithClaims(issuer = SELVBETJENING, claimMap = [CLAIM_ACR_LEVEL_4])
     @GET
     @Path("/adressesok")
     open fun adresseSok(@QueryParam("sokestreng") sokestreng: String?): List<AdresseForslag?>? {
         return adresseSokService.sokEtterAdresser(sokestreng)
     }
 
-    @ProtectedWithClaims(issuer = SELVBETJENING, claimMap = [CLAIM_ACR_LEVEL_4])
     @POST
     @Path("/actions/logg")
     open fun loggFraKlient(logg: Logg) {
@@ -129,7 +126,6 @@ open class InformasjonRessurs(
         }
     }
 
-    @ProtectedWithClaims(issuer = SELVBETJENING, claimMap = [CLAIM_ACR_LEVEL_4])
     @GET
     @Path("/kommunelogg")
     open fun triggeKommunelogg(@QueryParam("kommunenummer") kommunenummer: String): String? {
@@ -169,7 +165,6 @@ open class InformasjonRessurs(
         return mergeManuelleKommunerMedDigisosKommunerKommunestatus(manueltPakobledeKommuner, digisosKommuner)
     }
 
-    @ProtectedWithClaims(issuer = SELVBETJENING, claimMap = [CLAIM_ACR_LEVEL_4])
     @GET
     @Path("/harNyligInnsendteSoknader")
     open fun harNyligInnsendteSoknader(): NyligInnsendteSoknaderResponse {
@@ -179,7 +174,6 @@ open class InformasjonRessurs(
         return NyligInnsendteSoknaderResponse(nyligSendteSoknader.size)
     }
 
-    @ProtectedWithClaims(issuer = SELVBETJENING, claimMap = [CLAIM_ACR_LEVEL_4])
     @GET
     @Path("/pabegynteSoknader")
     open fun hentPabegynteSoknader(): List<PabegyntSoknad> {
