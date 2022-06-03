@@ -20,7 +20,7 @@ class HusbankenClientImpl(
     override fun hentBostotte(token: String?, fra: LocalDate, til: LocalDate): BostotteDto? {
         return try {
             webClient.get()
-                .uri(QUERYPARAMS, fra, til)
+                .uri(QUERY_PARAMS, fra, til)
                 .headers { headers -> token?.let { headers.add(HttpHeaders.AUTHORIZATION, it) } }
                 .retrieve()
                 .bodyToMono<BostotteDto>()
@@ -48,6 +48,6 @@ class HusbankenClientImpl(
 
     companion object {
         private val log = getLogger(HusbankenClientImpl::class.java)
-        private const val QUERYPARAMS = "?fra={fra}&til={til}"
+        private const val QUERY_PARAMS = "?fra={fra}&til={til}"
     }
 }
