@@ -49,7 +49,6 @@ class KodeverkClient(
         .registerModule(JavaTimeModule())
         .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
 
-
     private val webClient = webClientBuilder
 //        .baseUrl(kodeverkProxyUrl)
         .clientConnector(ReactorClientHttpConnector(unproxiedHttpClient()))
