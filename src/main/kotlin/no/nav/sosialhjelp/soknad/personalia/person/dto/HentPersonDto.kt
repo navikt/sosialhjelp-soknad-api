@@ -64,7 +64,7 @@ data class FolkeregisterMetadataDto(
 )
 
 data class ForelderBarnRelasjonDto(
-    val relatertPersonsIdent: String,
+    val relatertPersonsIdent: String?,
     val relatertPersonsRolle: String,
     val minRolleForPerson: String,
 )

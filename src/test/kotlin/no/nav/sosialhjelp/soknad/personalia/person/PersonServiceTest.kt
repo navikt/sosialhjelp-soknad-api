@@ -142,6 +142,18 @@ internal class PersonServiceTest {
     }
 
     @Test
+    internal fun skalIkkeHenteBarnHvisIdentErNull() {
+        every { hentPersonClient.hentPerson(any()) } returns mockPersonDto
+        every { mockPersonDto.forelderBarnRelasjon } returns listOf(ForelderBarnRelasjonDto(null, "BARN", "MOR"))
+
+        val result = personService.hentBarnForPerson("ident")
+        assertThat(result).isNull()
+
+        verify(exactly = 0) { hentPersonClient.hentBarn(any()) }
+        verify(exactly = 0) { mapper.barnDtoToDomain(any(), any(), any()) }
+    }
+
+    @Test
     internal fun skalIkkeHenteBarnHvisIdentErFDAT() {
         every { hentPersonClient.hentPerson(any()) } returns mockPersonDto
         every { mockPersonDto.forelderBarnRelasjon } returns listOf(ForelderBarnRelasjonDto(FDAT_IDENT, "BARN", "MOR"))
