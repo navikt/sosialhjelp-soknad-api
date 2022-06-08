@@ -23,6 +23,10 @@ abstract class PdlClient(
 ) {
     private val callId: String? get() = MdcOperations.getFromMDC(MdcOperations.MDC_CALL_ID)
 
+    protected val pdlMapper: ObjectMapper = jacksonObjectMapper()
+        .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
+        .registerModule(JavaTimeModule())
+
     private val pdlWebClient: WebClient = webClientBuilder
         .clientConnector(ReactorClientHttpConnector(unproxiedHttpClient()))
         .codecs {
@@ -47,10 +51,6 @@ abstract class PdlClient(
         get() = pdlWebClient.post()
             .uri(baseurl)
             .accept(MediaType.APPLICATION_JSON)
-
-    protected val pdlMapper: ObjectMapper = jacksonObjectMapper()
-        .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
-        .registerModule(JavaTimeModule())
 
     protected inline fun <reified T>parse(response: String): T {
         return try {
