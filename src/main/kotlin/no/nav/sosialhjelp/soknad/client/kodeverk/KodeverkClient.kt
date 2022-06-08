@@ -50,7 +50,6 @@ class KodeverkClient(
         .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
 
     private val webClient = webClientBuilder
-//        .baseUrl(kodeverkProxyUrl)
         .clientConnector(ReactorClientHttpConnector(unproxiedHttpClient()))
         .codecs {
             it.defaultCodecs().maxInMemorySize(16 * 1024 * 1024)
@@ -73,7 +72,7 @@ class KodeverkClient(
     private fun hentKodeverk(kodeverksnavn: String, key: String): KodeverkDto? {
         return try {
             webClient.get()
-                .uri("$kodeverkProxyUrl$kodeverksnavn")
+                .uri(kodeverkProxyUrl + kodeverksnavn)
                 .header(AUTHORIZATION, BEARER + tokenXtoken)
                 .header(HEADER_CALL_ID, MdcOperations.getFromMDC(MdcOperations.MDC_CALL_ID))
                 .header(HEADER_CONSUMER_ID, getConsumerId())
