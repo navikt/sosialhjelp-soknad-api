@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.client.pdl
 
+import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
@@ -53,6 +54,9 @@ abstract class PdlClient(
         return try {
             pdlMapper.readValue(response)
         } catch (e: MissingKotlinParameterException) {
+            e.clearLocation()
+            throw e
+        } catch (e: JsonProcessingException) {
             e.clearLocation()
             throw e
         }
