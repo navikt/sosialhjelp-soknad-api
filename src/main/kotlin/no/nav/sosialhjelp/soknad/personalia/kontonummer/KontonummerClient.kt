@@ -7,6 +7,7 @@ import no.nav.sosialhjelp.soknad.auth.tokenx.TokendingsService
 import no.nav.sosialhjelp.soknad.client.config.RetryUtils.DEFAULT_EXPONENTIAL_BACKOFF_MULTIPLIER
 import no.nav.sosialhjelp.soknad.client.config.RetryUtils.DEFAULT_INITIAL_WAIT_INTERVAL_MILLIS
 import no.nav.sosialhjelp.soknad.client.config.RetryUtils.DEFAULT_MAX_ATTEMPTS
+import no.nav.sosialhjelp.soknad.client.config.unproxiedHttpClient
 import no.nav.sosialhjelp.soknad.client.redis.CACHE_30_MINUTES_IN_SECONDS
 import no.nav.sosialhjelp.soknad.client.redis.KONTONUMMER_CACHE_KEY_PREFIX
 import no.nav.sosialhjelp.soknad.client.redis.RedisService
@@ -14,18 +15,25 @@ import no.nav.sosialhjelp.soknad.client.redis.RedisUtils.redisObjectMapper
 import no.nav.sosialhjelp.soknad.common.Constants.BEARER
 import no.nav.sosialhjelp.soknad.common.Constants.HEADER_CALL_ID
 import no.nav.sosialhjelp.soknad.common.Constants.HEADER_CONSUMER_ID
-import no.nav.sosialhjelp.soknad.common.mdc.MdcOperations
-import no.nav.sosialhjelp.soknad.common.rest.RestUtils
-import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
+import no.nav.sosialhjelp.soknad.common.mdc.MdcOperations.MDC_CALL_ID
+import no.nav.sosialhjelp.soknad.common.mdc.MdcOperations.getFromMDC
+import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils.getConsumerId
+import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils.getToken
+import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils.getUserIdFromToken
 import no.nav.sosialhjelp.soknad.personalia.kontonummer.dto.KontonummerDto
 import org.slf4j.LoggerFactory.getLogger
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.http.HttpHeaders.AUTHORIZATION
+import org.springframework.http.client.reactive.ReactorClientHttpConnector
 import org.springframework.stereotype.Component
-import javax.ws.rs.NotAuthorizedException
-import javax.ws.rs.NotFoundException
-import javax.ws.rs.ServerErrorException
-import javax.ws.rs.client.Client
-import javax.ws.rs.core.HttpHeaders.AUTHORIZATION
+import org.springframework.web.reactive.function.client.WebClient
+import org.springframework.web.reactive.function.client.WebClientResponseException.BadGateway
+import org.springframework.web.reactive.function.client.WebClientResponseException.GatewayTimeout
+import org.springframework.web.reactive.function.client.WebClientResponseException.InternalServerError
+import org.springframework.web.reactive.function.client.WebClientResponseException.NotFound
+import org.springframework.web.reactive.function.client.WebClientResponseException.ServiceUnavailable
+import org.springframework.web.reactive.function.client.WebClientResponseException.Unauthorized
+import org.springframework.web.reactive.function.client.awaitBody
 
 interface KontonummerClient {
     fun getKontonummer(ident: String): KontonummerDto?
@@ -33,13 +41,23 @@ interface KontonummerClient {
 
 @Component
 class KontonummerClientImpl(
-    @Value("\${oppslag_api_baseurl}") private val baseurl: String,
+    @Value("\${oppslag_api_baseurl}") private val oppslagApiUrl: String,
     @Value("\${oppslag_api_audience}") private val oppslagApiAudience: String,
     private val redisService: RedisService,
-    private val tokendingsService: TokendingsService
+    private val tokendingsService: TokendingsService,
+    webClientBuilder: WebClient.Builder
 ) : KontonummerClient {
 
-    private val client: Client = RestUtils.createClient()
+    private val webClient = webClientBuilder
+        .clientConnector(ReactorClientHttpConnector(unproxiedHttpClient()))
+        .codecs {
+            it.defaultCodecs().maxInMemorySize(16 * 1024 * 1024)
+        }
+        .build()
+
+    private val tokenXtoken: String get() = runBlocking {
+        tokendingsService.exchangeToken(getUserIdFromToken(), getToken(), oppslagApiAudience)
+    }
 
     override fun getKontonummer(ident: String): KontonummerDto? {
         hentKontonummerFraCache(ident)?.let { return it }
@@ -50,25 +68,23 @@ class KontonummerClientImpl(
                     attempts = DEFAULT_MAX_ATTEMPTS,
                     initialDelay = DEFAULT_INITIAL_WAIT_INTERVAL_MILLIS,
                     factor = DEFAULT_EXPONENTIAL_BACKOFF_MULTIPLIER,
-                    retryableExceptions = arrayOf(ServerErrorException::class)
+                    retryableExceptions = arrayOf(ServiceUnavailable::class, InternalServerError::class, BadGateway::class, GatewayTimeout::class)
                 ) {
-                    val tokenXToken = tokendingsService.exchangeToken(
-                        SubjectHandlerUtils.getUserIdFromToken(), SubjectHandlerUtils.getToken(), oppslagApiAudience
-                    )
-                    client.target(baseurl + "kontonummer")
-                        .request()
-                        .header(AUTHORIZATION, BEARER + tokenXToken)
-                        .header(HEADER_CALL_ID, MdcOperations.getFromMDC(MdcOperations.MDC_CALL_ID))
-                        .header(HEADER_CONSUMER_ID, SubjectHandlerUtils.getConsumerId())
-                        .get(KontonummerDto::class.java)
+                    webClient.get()
+                        .uri(oppslagApiUrl + "kontonummer")
+                        .header(AUTHORIZATION, BEARER + tokenXtoken)
+                        .header(HEADER_CALL_ID, getFromMDC(MDC_CALL_ID))
+                        .header(HEADER_CONSUMER_ID, getConsumerId())
+                        .retrieve()
+                        .awaitBody()
                 }
             }
             lagreKontonummerTilCache(ident, response)
             response
-        } catch (e: NotAuthorizedException) {
+        } catch (e: Unauthorized) {
             log.warn("Kontonummer - 401 Unauthorized - {}", e.message)
             null
-        } catch (e: NotFoundException) {
+        } catch (e: NotFound) {
             log.warn("Kontonummer - 404 Not Found - {}", e.message)
             null
         } catch (e: Exception) {
