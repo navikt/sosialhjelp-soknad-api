@@ -10,22 +10,22 @@ import no.nav.sosialhjelp.soknad.client.exceptions.TjenesteUtilgjengeligExceptio
 import no.nav.sosialhjelp.soknad.client.pdl.HentGeografiskTilknytningDto
 import no.nav.sosialhjelp.soknad.client.pdl.PdlApiQuery.HENT_GEOGRAFISK_TILKNYTNING
 import no.nav.sosialhjelp.soknad.client.pdl.PdlClient
+import no.nav.sosialhjelp.soknad.client.pdl.PdlRequest
 import no.nav.sosialhjelp.soknad.client.redis.GEOGRAFISK_TILKNYTNING_CACHE_KEY_PREFIX
 import no.nav.sosialhjelp.soknad.client.redis.PDL_CACHE_SECONDS
 import no.nav.sosialhjelp.soknad.client.redis.RedisService
 import no.nav.sosialhjelp.soknad.common.Constants.BEARER
 import no.nav.sosialhjelp.soknad.common.Constants.HEADER_TEMA
 import no.nav.sosialhjelp.soknad.common.Constants.TEMA_KOM
-import no.nav.sosialhjelp.soknad.common.rest.RestUtils
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils.getToken
 import no.nav.sosialhjelp.soknad.navenhet.gt.dto.GeografiskTilknytningDto
 import org.slf4j.LoggerFactory.getLogger
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.http.HttpHeaders.AUTHORIZATION
 import org.springframework.stereotype.Component
-import javax.ws.rs.ProcessingException
-import javax.ws.rs.WebApplicationException
-import javax.ws.rs.client.Client
-import javax.ws.rs.core.HttpHeaders.AUTHORIZATION
+import org.springframework.web.reactive.function.client.WebClient
+import org.springframework.web.reactive.function.client.WebClientResponseException
+import org.springframework.web.reactive.function.client.awaitBody
 
 @Component
 class GeografiskTilknytningClient(
@@ -33,24 +33,26 @@ class GeografiskTilknytningClient(
     @Value("\${pdl_api_audience}") private val pdlAudience: String,
     private val tokendingsService: TokendingsService,
     private val redisService: RedisService,
-    client: Client = RestUtils.createClient(),
-) : PdlClient(client, baseurl) {
+    webClientBuilder: WebClient.Builder,
+) : PdlClient(webClientBuilder, baseurl) {
 
     fun hentGeografiskTilknytning(ident: String): GeografiskTilknytningDto? {
         hentFraCache(ident)?.let { return it }
 
         try {
-            val response = runBlocking {
+            val response: String = runBlocking {
                 retry(
                     attempts = RetryUtils.DEFAULT_MAX_ATTEMPTS,
                     initialDelay = RetryUtils.DEFAULT_INITIAL_WAIT_INTERVAL_MILLIS,
                     factor = RetryUtils.DEFAULT_EXPONENTIAL_BACKOFF_MULTIPLIER,
-                    retryableExceptions = arrayOf(WebApplicationException::class, ProcessingException::class)
+                    retryableExceptions = arrayOf(WebClientResponseException::class)
                 ) {
                     baseRequest
                         .header(HEADER_TEMA, TEMA_KOM)
                         .header(AUTHORIZATION, BEARER + tokendingsService.exchangeToken(ident, getToken(), pdlAudience))
-                        .post(requestEntity(HENT_GEOGRAFISK_TILKNYTNING, variables(ident)), String::class.java)
+                        .bodyValue(PdlRequest(HENT_GEOGRAFISK_TILKNYTNING, variables(ident)))
+                        .retrieve()
+                        .awaitBody()
                 }
             }
 
