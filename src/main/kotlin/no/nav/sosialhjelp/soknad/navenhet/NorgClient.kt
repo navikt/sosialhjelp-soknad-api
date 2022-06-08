@@ -66,7 +66,7 @@ class NorgClientImpl(
 
     override fun hentNavEnhetForGeografiskTilknytning(geografiskTilknytning: String): NavEnhetDto? {
         return try {
-            val response = runBlocking {
+            val navEnhetDto = runBlocking {
                 retry(
                     attempts = DEFAULT_MAX_ATTEMPTS,
                     initialDelay = DEFAULT_INITIAL_WAIT_INTERVAL_MILLIS,
@@ -82,8 +82,8 @@ class NorgClientImpl(
                         .awaitBody<NavEnhetDto>()
                 }
             }
-            lagreTilCache(geografiskTilknytning, response)
-            response
+            lagreTilCache(geografiskTilknytning, navEnhetDto)
+            navEnhetDto
         } catch (e: NotFound) {
             log.warn("Fant ikke norgenhet for gt $geografiskTilknytning")
             null
