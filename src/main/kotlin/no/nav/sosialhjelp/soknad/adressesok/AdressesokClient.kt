@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.adressesok
 
-import com.fasterxml.jackson.module.kotlin.readValue
 import kotlinx.coroutines.runBlocking
 import no.nav.sosialhjelp.kotlin.utils.retry
 import no.nav.sosialhjelp.soknad.adressesok.dto.AdressesokResultDto
@@ -43,7 +42,7 @@ open class AdressesokClient(
                         .post(requestEntity(ADRESSE_SOK, variables), String::class.java)
                 }
             }
-            val pdlResponse = pdlMapper.readValue<AdressesokDto>(response)
+            val pdlResponse = parse<AdressesokDto>(response)
             pdlResponse.checkForPdlApiErrors()
             pdlResponse.data?.sokAdresse
         } catch (e: PdlApiException) {

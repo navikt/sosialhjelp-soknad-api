@@ -1,7 +1,6 @@
 package no.nav.sosialhjelp.soknad.personalia.person
 
 import com.fasterxml.jackson.core.JsonProcessingException
-import com.fasterxml.jackson.module.kotlin.readValue
 import kotlinx.coroutines.runBlocking
 import no.nav.sosialhjelp.kotlin.utils.retry
 import no.nav.sosialhjelp.soknad.auth.azure.AzureadService
@@ -78,7 +77,7 @@ class HentPersonClientImpl(
                         .post(requestEntity(HENT_PERSON, variables(ident)), String::class.java)
                 }
             }
-            val pdlResponse = pdlMapper.readValue<HentPersonDto<PersonDto>>(response)
+            val pdlResponse = parse<HentPersonDto<PersonDto>>(response)
             pdlResponse.checkForPdlApiErrors()
             pdlResponse.data.hentPerson
                 ?.also { lagreTilCache(PERSON_CACHE_KEY_PREFIX, ident, it) }
@@ -112,7 +111,7 @@ class HentPersonClientImpl(
                         .post(requestEntity(HENT_EKTEFELLE, variables(ident)), String::class.java)
                 }
             }
-            val pdlResponse = pdlMapper.readValue<HentPersonDto<EktefelleDto>>(response)
+            val pdlResponse = parse<HentPersonDto<EktefelleDto>>(response)
             pdlResponse.checkForPdlApiErrors()
             pdlResponse.data.hentPerson
                 ?.also { lagreTilCache(EKTEFELLE_CACHE_KEY_PREFIX, ident, it) }
@@ -146,7 +145,7 @@ class HentPersonClientImpl(
                         .post(requestEntity(HENT_BARN, variables(ident)), String::class.java)
                 }
             }
-            val pdlResponse = pdlMapper.readValue<HentPersonDto<BarnDto>>(response)
+            val pdlResponse = parse<HentPersonDto<BarnDto>>(response)
             pdlResponse.checkForPdlApiErrors()
             pdlResponse.data.hentPerson
                 ?.also { lagreTilCache(BARN_CACHE_KEY_PREFIX, ident, it) }
@@ -184,7 +183,7 @@ class HentPersonClientImpl(
                 }
             }
 
-            val pdlResponse = pdlMapper.readValue<HentPersonDto<PersonAdressebeskyttelseDto>>(body)
+            val pdlResponse = parse<HentPersonDto<PersonAdressebeskyttelseDto>>(body)
             pdlResponse.checkForPdlApiErrors()
             pdlResponse.data.hentPerson
                 ?.also { lagreTilCache(ADRESSEBESKYTTELSE_CACHE_KEY_PREFIX, ident, it) }

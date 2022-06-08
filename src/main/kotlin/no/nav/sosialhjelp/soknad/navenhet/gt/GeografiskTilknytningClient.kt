@@ -1,7 +1,6 @@
 package no.nav.sosialhjelp.soknad.navenhet.gt
 
 import com.fasterxml.jackson.core.JsonProcessingException
-import com.fasterxml.jackson.module.kotlin.readValue
 import kotlinx.coroutines.runBlocking
 import no.nav.sosialhjelp.kotlin.utils.retry
 import no.nav.sosialhjelp.soknad.auth.tokenx.TokendingsService
@@ -55,10 +54,8 @@ class GeografiskTilknytningClient(
                 }
             }
 
-            val pdlResponse = pdlMapper.readValue<HentGeografiskTilknytningDto>(response)
-
+            val pdlResponse = parse<HentGeografiskTilknytningDto>(response)
             pdlResponse.checkForPdlApiErrors()
-
             return pdlResponse.data.hentGeografiskTilknytning
                 ?.also { lagreTilCache(ident, it) }
         } catch (e: PdlApiException) {

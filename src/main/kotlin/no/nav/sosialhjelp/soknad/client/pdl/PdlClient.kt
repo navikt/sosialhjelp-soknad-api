@@ -3,7 +3,9 @@ package no.nav.sosialhjelp.soknad.client.pdl
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.fasterxml.jackson.module.kotlin.MissingKotlinParameterException
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
 import no.nav.sosialhjelp.soknad.common.Constants.HEADER_CALL_ID
 import no.nav.sosialhjelp.soknad.common.mdc.MdcOperations
 import javax.ws.rs.client.Client
@@ -46,4 +48,13 @@ abstract class PdlClient(
     protected val pdlMapper: ObjectMapper = jacksonObjectMapper()
         .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
         .registerModule(JavaTimeModule())
+
+    protected inline fun <reified T>parse(response: String): T {
+        return try {
+            pdlMapper.readValue(response)
+        } catch (e: MissingKotlinParameterException) {
+            e.clearLocation()
+            throw e
+        }
+    }
 }
