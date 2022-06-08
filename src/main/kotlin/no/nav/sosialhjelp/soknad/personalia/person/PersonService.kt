@@ -35,7 +35,7 @@ open class PersonService(
         return personDto.forelderBarnRelasjon
             .filter { it.relatertPersonsRolle.equals(BARN, ignoreCase = true) }
             .map {
-                if (it.relatertPersonsIdent.isEmpty()) {
+                if (it.relatertPersonsIdent.isNullOrEmpty()) {
                     log.info("ForelderBarnRelasjon.relatertPersonsIdent (barnIdent) er null -> kaller ikke hentPerson for barn")
                     return null
                 }
