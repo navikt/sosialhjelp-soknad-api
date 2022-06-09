@@ -130,6 +130,8 @@ class DigisosApiV1ClientImpl(
             entitybuilder.addBinaryBody(it.filnavn, it.data, APPLICATION_OCTET_STREAM, it.filnavn)
         }
 
+        log.info("Multipart data: ${EntityUtils.toString(entitybuilder.build())}")
+
         try {
             clientBuilder().setDefaultRequestConfig(requestConfig).build().use { client ->
                 val post = HttpPost("$digisosApiEndpoint/digisos/api/v1/soknader/$kommunenummer/$behandlingsId")
@@ -138,8 +140,6 @@ class DigisosApiV1ClientImpl(
                 post.setHeader(HEADER_INTEGRASJON_ID, integrasjonsidFiks)
                 post.setHeader(HEADER_INTEGRASJON_PASSORD, integrasjonpassordFiks)
                 post.entity = entitybuilder.build()
-
-                log.info("Multipart data: ${EntityUtils.toString(post.entity)}")
 
                 val startTime = System.currentTimeMillis()
                 val response = client.execute(post)
