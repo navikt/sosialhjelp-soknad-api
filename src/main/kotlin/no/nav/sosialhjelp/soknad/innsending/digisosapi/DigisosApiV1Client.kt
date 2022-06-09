@@ -139,6 +139,8 @@ class DigisosApiV1ClientImpl(
                 post.setHeader(HEADER_INTEGRASJON_PASSORD, integrasjonpassordFiks)
                 post.entity = entitybuilder.build()
 
+                log.info("Multipart data: ${post.entity}")
+
                 val startTime = System.currentTimeMillis()
                 val response = client.execute(post)
                 val endTime = System.currentTimeMillis()

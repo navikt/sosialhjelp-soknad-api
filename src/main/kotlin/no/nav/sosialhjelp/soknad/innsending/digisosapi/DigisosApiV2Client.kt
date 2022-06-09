@@ -18,7 +18,6 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpHeaders.AUTHORIZATION
 import org.springframework.http.MediaType.APPLICATION_JSON_VALUE
 import org.springframework.http.MediaType.APPLICATION_OCTET_STREAM_VALUE
-import org.springframework.http.MediaType.TEXT_PLAIN_VALUE
 import org.springframework.http.client.reactive.ReactorClientHttpConnector
 import org.springframework.http.codec.json.Jackson2JsonDecoder
 import org.springframework.http.codec.json.Jackson2JsonEncoder
@@ -146,9 +145,11 @@ class DigisosApiV2ClientImpl(
         body.add("vedleggJson", createHttpEntity(vedleggJson, "vedleggJson", null, APPLICATION_JSON_VALUE))
 
         filer.forEach {
-            body.add("metadata", createHttpEntity(getJson(it), "metadata", null, TEXT_PLAIN_VALUE))
+            body.add("metadata", createHttpEntity(getJson(it), "metadata", null, APPLICATION_JSON_VALUE))
             body.add(it.filnavn, createHttpEntity(InputStreamResource(it.data), it.filnavn, it.filnavn, APPLICATION_OCTET_STREAM_VALUE))
         }
+
+        log.info("Multipart data: $body")
 
         val startTime = System.currentTimeMillis()
         try {
