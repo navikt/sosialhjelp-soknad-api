@@ -11,7 +11,6 @@ import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.getDigisosIdFromRes
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.stripVekkFnutter
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilOpplasting
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
-import org.apache.http.HttpEntity
 import org.apache.http.client.config.RequestConfig
 import org.apache.http.client.methods.HttpPost
 import org.apache.http.entity.ContentType.APPLICATION_JSON
@@ -138,11 +137,9 @@ class DigisosApiV1ClientImpl(
                 post.setHeader(AUTHORIZATION.name, token)
                 post.setHeader(HEADER_INTEGRASJON_ID, integrasjonsidFiks)
                 post.setHeader(HEADER_INTEGRASJON_PASSORD, integrasjonpassordFiks)
+                post.entity = entitybuilder.build()
 
-                val entity: HttpEntity = entitybuilder.build()
-                post.entity = entity
-
-                log.info("Multipart data: ${EntityUtils.toString(entity)}")
+                log.info("Multipart data: ${EntityUtils.toString(post.entity)}")
 
                 val startTime = System.currentTimeMillis()
                 val response = client.execute(post)
