@@ -11,18 +11,19 @@ import no.nav.sosialhjelp.soknad.innsending.digisosapi.KrypteringService.Compani
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.digisosObjectMapper
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilMetadata
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilOpplasting
-import org.springframework.core.io.InputStreamResource
 import org.springframework.http.ContentDisposition
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpHeaders.AUTHORIZATION
-import org.springframework.http.MediaType.APPLICATION_JSON_VALUE
-import org.springframework.http.MediaType.APPLICATION_OCTET_STREAM_VALUE
+import org.springframework.http.MediaType
+import org.springframework.http.MediaType.APPLICATION_JSON
+import org.springframework.http.MediaType.APPLICATION_OCTET_STREAM
+import org.springframework.http.MediaType.TEXT_PLAIN
+import org.springframework.http.client.MultipartBodyBuilder
 import org.springframework.http.client.reactive.ReactorClientHttpConnector
 import org.springframework.http.codec.json.Jackson2JsonDecoder
 import org.springframework.http.codec.json.Jackson2JsonEncoder
 import org.springframework.util.LinkedMultiValueMap
-import org.springframework.web.reactive.function.BodyInserters
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
 import org.springframework.web.reactive.function.client.bodyToMono
@@ -139,15 +140,25 @@ class DigisosApiV2ClientImpl(
         behandlingsId: String,
         token: String?
     ): String {
-        val body = LinkedMultiValueMap<String, Any>()
-        body.add("tilleggsinformasjonJson", createHttpEntity(tilleggsinformasjonJson, "tilleggsinformasjonJson", null, APPLICATION_JSON_VALUE))
-        body.add("soknadJson", createHttpEntity(soknadJson, "soknadJson", null, APPLICATION_JSON_VALUE))
-        body.add("vedleggJson", createHttpEntity(vedleggJson, "vedleggJson", null, APPLICATION_JSON_VALUE))
+//        val body = LinkedMultiValueMap<String, Any>()
+//        body.add("tilleggsinformasjonJson", createHttpEntity(tilleggsinformasjonJson, "tilleggsinformasjonJson", null, APPLICATION_JSON_VALUE))
+//        body.add("soknadJson", createHttpEntity(soknadJson, "soknadJson", null, APPLICATION_JSON_VALUE))
+//        body.add("vedleggJson", createHttpEntity(vedleggJson, "vedleggJson", null, APPLICATION_JSON_VALUE))
+//
+//        filer.forEach {
+//            body.add("metadata", createHttpEntity(getJson(it), "metadata", null, APPLICATION_JSON_VALUE))
+//            body.add(it.filnavn, createHttpEntity(InputStreamResource(it.data), it.filnavn, it.filnavn, APPLICATION_OCTET_STREAM_VALUE))
+//        }
 
+        val builder = MultipartBodyBuilder()
+        builder.part("tilleggsinformasjonJson", tilleggsinformasjonJson, APPLICATION_JSON)
+        builder.part("soknadJson", soknadJson, APPLICATION_JSON)
+        builder.part("vedleggJson", vedleggJson, APPLICATION_JSON)
         filer.forEach {
-            body.add("metadata", createHttpEntity(getJson(it), "metadata", null, APPLICATION_JSON_VALUE))
-            body.add(it.filnavn, createHttpEntity(InputStreamResource(it.data), it.filnavn, it.filnavn, APPLICATION_OCTET_STREAM_VALUE))
+            builder.part("metadata", getJson(it), TEXT_PLAIN)
+            builder.part(it.filnavn, it.data, APPLICATION_OCTET_STREAM).filename(it.filnavn)
         }
+        val body = builder.build()
 
         log.info("Multipart data: $body")
 
@@ -157,7 +168,8 @@ class DigisosApiV2ClientImpl(
                 .uri("$digisosApiEndpoint/digisos/api/v2/soknader/{kommunenummer}/{behandlingsId}", kommunenummer, behandlingsId)
                 .header("requestid", UUID.randomUUID().toString())
                 .header(AUTHORIZATION, token)
-                .body(BodyInserters.fromMultipartData(body))
+                .contentType(MediaType.MULTIPART_FORM_DATA)
+                .bodyValue(body)
                 .retrieve()
                 .bodyToMono<String>()
                 .block() ?: throw SosialhjelpSoknadApiException("Opplasting av $behandlingsId til fiks-digisos-api returnerte null -> kaster feil da vi forventer digisosId eller feilmelding")
