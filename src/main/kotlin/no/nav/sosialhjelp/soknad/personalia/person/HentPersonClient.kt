@@ -14,6 +14,7 @@ import no.nav.sosialhjelp.soknad.client.pdl.PdlApiQuery.HENT_BARN
 import no.nav.sosialhjelp.soknad.client.pdl.PdlApiQuery.HENT_EKTEFELLE
 import no.nav.sosialhjelp.soknad.client.pdl.PdlApiQuery.HENT_PERSON
 import no.nav.sosialhjelp.soknad.client.pdl.PdlClient
+import no.nav.sosialhjelp.soknad.client.pdl.PdlRequest
 import no.nav.sosialhjelp.soknad.client.redis.ADRESSEBESKYTTELSE_CACHE_KEY_PREFIX
 import no.nav.sosialhjelp.soknad.client.redis.BARN_CACHE_KEY_PREFIX
 import no.nav.sosialhjelp.soknad.client.redis.EKTEFELLE_CACHE_KEY_PREFIX
@@ -23,7 +24,6 @@ import no.nav.sosialhjelp.soknad.client.redis.RedisService
 import no.nav.sosialhjelp.soknad.common.Constants.BEARER
 import no.nav.sosialhjelp.soknad.common.Constants.HEADER_TEMA
 import no.nav.sosialhjelp.soknad.common.Constants.TEMA_KOM
-import no.nav.sosialhjelp.soknad.common.rest.RestUtils
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils.getToken
 import no.nav.sosialhjelp.soknad.personalia.person.dto.BarnDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.EktefelleDto
@@ -31,11 +31,11 @@ import no.nav.sosialhjelp.soknad.personalia.person.dto.PersonAdressebeskyttelseD
 import no.nav.sosialhjelp.soknad.personalia.person.dto.PersonDto
 import org.slf4j.LoggerFactory.getLogger
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.http.HttpHeaders.AUTHORIZATION
 import org.springframework.stereotype.Component
-import javax.ws.rs.ProcessingException
-import javax.ws.rs.WebApplicationException
-import javax.ws.rs.client.Client
-import javax.ws.rs.core.HttpHeaders.AUTHORIZATION
+import org.springframework.web.reactive.function.client.WebClient
+import org.springframework.web.reactive.function.client.WebClientResponseException
+import org.springframework.web.reactive.function.client.awaitBody
 
 interface HentPersonClient {
     fun hentPerson(ident: String): PersonDto?
@@ -46,14 +46,14 @@ interface HentPersonClient {
 
 @Component
 class HentPersonClientImpl(
-    client: Client = RestUtils.createClient(),
     @Value("\${pdl_api_url}") private val baseurl: String,
     @Value("\${pdl_api_scope}") private val pdlScope: String,
     @Value("\${pdl_api_audience}") private val pdlAudience: String,
     private val redisService: RedisService,
     private val tokendingsService: TokendingsService,
     private val azureadService: AzureadService,
-) : PdlClient(client, baseurl), HentPersonClient {
+    webClientBuilder: WebClient.Builder
+) : PdlClient(webClientBuilder, baseurl), HentPersonClient {
 
     override fun hentPerson(ident: String): PersonDto? {
         return hentPersonFraCache(ident) ?: hentPersonFraPdl(ident)
@@ -70,11 +70,13 @@ class HentPersonClientImpl(
                     attempts = RetryUtils.DEFAULT_MAX_ATTEMPTS,
                     initialDelay = RetryUtils.DEFAULT_INITIAL_WAIT_INTERVAL_MILLIS,
                     factor = RetryUtils.DEFAULT_EXPONENTIAL_BACKOFF_MULTIPLIER,
-                    retryableExceptions = arrayOf(WebApplicationException::class, ProcessingException::class)
+                    retryableExceptions = arrayOf(WebClientResponseException::class)
                 ) {
                     hentPersonRequest
                         .header(AUTHORIZATION, BEARER + tokenXtoken(ident))
-                        .post(requestEntity(HENT_PERSON, variables(ident)), String::class.java)
+                        .bodyValue(PdlRequest(HENT_PERSON, variables(ident)))
+                        .retrieve()
+                        .awaitBody()
                 }
             }
             val pdlResponse = parse<HentPersonDto<PersonDto>>(response)
@@ -104,11 +106,13 @@ class HentPersonClientImpl(
                     attempts = RetryUtils.DEFAULT_MAX_ATTEMPTS,
                     initialDelay = RetryUtils.DEFAULT_INITIAL_WAIT_INTERVAL_MILLIS,
                     factor = RetryUtils.DEFAULT_EXPONENTIAL_BACKOFF_MULTIPLIER,
-                    retryableExceptions = arrayOf(WebApplicationException::class, ProcessingException::class)
+                    retryableExceptions = arrayOf(WebClientResponseException::class)
                 ) {
                     hentPersonRequest
                         .header(AUTHORIZATION, BEARER + azureadService.getSystemToken(pdlScope))
-                        .post(requestEntity(HENT_EKTEFELLE, variables(ident)), String::class.java)
+                        .bodyValue(PdlRequest(HENT_EKTEFELLE, variables(ident)))
+                        .retrieve()
+                        .awaitBody()
                 }
             }
             val pdlResponse = parse<HentPersonDto<EktefelleDto>>(response)
@@ -138,11 +142,13 @@ class HentPersonClientImpl(
                     attempts = RetryUtils.DEFAULT_MAX_ATTEMPTS,
                     initialDelay = RetryUtils.DEFAULT_INITIAL_WAIT_INTERVAL_MILLIS,
                     factor = RetryUtils.DEFAULT_EXPONENTIAL_BACKOFF_MULTIPLIER,
-                    retryableExceptions = arrayOf(WebApplicationException::class, ProcessingException::class)
+                    retryableExceptions = arrayOf(WebClientResponseException::class)
                 ) {
                     hentPersonRequest
                         .header(AUTHORIZATION, BEARER + azureadService.getSystemToken(pdlScope))
-                        .post(requestEntity(HENT_BARN, variables(ident)), String::class.java)
+                        .bodyValue(PdlRequest(HENT_BARN, variables(ident)))
+                        .retrieve()
+                        .awaitBody()
                 }
             }
             val pdlResponse = parse<HentPersonDto<BarnDto>>(response)
@@ -170,16 +176,18 @@ class HentPersonClientImpl(
 
     private fun hentAdressebeskyttelseFraPdl(ident: String): PersonAdressebeskyttelseDto? {
         return try {
-            val body = runBlocking {
+            val body: String = runBlocking {
                 retry(
                     attempts = RetryUtils.DEFAULT_MAX_ATTEMPTS,
                     initialDelay = RetryUtils.DEFAULT_INITIAL_WAIT_INTERVAL_MILLIS,
                     factor = RetryUtils.DEFAULT_EXPONENTIAL_BACKOFF_MULTIPLIER,
-                    retryableExceptions = arrayOf(WebApplicationException::class, ProcessingException::class)
+                    retryableExceptions = arrayOf(WebClientResponseException::class)
                 ) {
                     hentPersonRequest
                         .header(AUTHORIZATION, BEARER + tokenXtoken(ident))
-                        .post(requestEntity(HENT_ADRESSEBESKYTTELSE, variables(ident)), String::class.java)
+                        .bodyValue(PdlRequest(HENT_ADRESSEBESKYTTELSE, variables(ident)))
+                        .retrieve()
+                        .awaitBody()
                 }
             }
 
