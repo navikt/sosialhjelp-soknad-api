@@ -132,7 +132,7 @@ class DigisosApiV1ClientImpl(
             entitybuilder.addTextBody("metadata", getJson(it))
             log.info("metadata: ${StringBody(getJson(it), TEXT_PLAIN)}")
             entitybuilder.addBinaryBody(it.filnavn, it.data, APPLICATION_OCTET_STREAM, it.filnavn)
-            log.info("metadata: ${InputStreamBody(it.data, APPLICATION_OCTET_STREAM, it.filnavn)}")
+            log.info("fil: ${InputStreamBody(it.data, APPLICATION_OCTET_STREAM, it.filnavn)}")
         }
 
         try {
