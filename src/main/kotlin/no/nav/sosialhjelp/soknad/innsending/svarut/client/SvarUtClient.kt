@@ -30,7 +30,7 @@ import javax.xml.bind.DatatypeConverter
 
 interface SvarUtClient {
     fun ping()
-    fun sendForsendelse(forsendelse: Forsendelse?, data: Map<String, InputStream>?): ForsendelsesId
+    fun sendForsendelse(forsendelse: Forsendelse, data: Map<String, InputStream>): ForsendelsesId?
 }
 
 @Component
@@ -67,11 +67,6 @@ class SvarUtClientImpl(
         .defaultHeader(AUTHORIZATION, basicAuthentication)
         .build()
 
-//    private val client: Client = RestUtils
-//        .createClient(RestConfig(connectTimeout = SVARUT_TIMEOUT, readTimeout = SVARUT_TIMEOUT))
-//        .register(MultiPartFeature::class.java)
-//        .register(ClientRequestFilter { it.headers.putSingle(AUTHORIZATION, basicAuthentication) })
-
     override fun ping() {
         svarUtWebClient.get()
             .uri("$baseurl/tjenester/api/forsendelse/v1/forsendelseTyper")
@@ -83,14 +78,14 @@ class SvarUtClientImpl(
             .block()
     }
 
-    override fun sendForsendelse(forsendelse: Forsendelse?, data: Map<String, InputStream>?): ForsendelsesId {
+    override fun sendForsendelse(forsendelse: Forsendelse, data: Map<String, InputStream>): ForsendelsesId? {
         requireNotNull(forsendelse) { "Forsendelse kan ikke være null" }
         requireNotNull(data) { "Data kan ikke være null" }
         return try {
             val body = LinkedMultiValueMap<String, Any>()
-            body.add("forsendelse", createHttpEntityOfString(objectMapper.writeValueAsString(forsendelse), "forsendelse"))
+            body.add("forsendelse",createHttpEntity(objectMapper.writeValueAsString(forsendelse), "forsendelse", null, MediaType.APPLICATION_JSON_VALUE))
             forsendelse.dokumenter.forEach {
-                body.add("filer", createHttpEntityOfFile(data[it.filnavn], "filer", it.filnavn))
+                body.add("filer", createHttpEntity(InputStreamResource(data[it.filnavn]), "filer", it.filnavn, MediaType.APPLICATION_OCTET_STREAM_VALUE))
             }
 
             svarUtWebClient.post()
@@ -100,38 +95,12 @@ class SvarUtClientImpl(
                 .retrieve()
                 .bodyToMono<ForsendelsesId>()
                 .block()
-
-//            val multiPart = MultiPart()
-//            multiPart.mediaType = MULTIPART_FORM_DATA_TYPE
-//            multiPart.bodyPart(
-//                FormDataBodyPart("forsendelse", objectMapper.writeValueAsString(forsendelse), APPLICATION_JSON_TYPE)
-//            )
-//            forsendelse.dokumenter
-//                .forEach {
-//                    multiPart.bodyPart(
-//                        StreamDataBodyPart("filer", data[it.filnavn], it.filnavn, APPLICATION_OCTET_STREAM_TYPE)
-//                    )
-//                }
-//            multiPart.close()
-//            val response = client
-//                .target("$baseurl/tjenester/api/forsendelse/v1/sendForsendelse")
-//                .request(APPLICATION_JSON_TYPE)
-//                .post(Entity.entity(multiPart, multiPart.mediaType), String::class.java)
-//            objectMapper.readValue(response)
         } catch (e: WebClientResponseException) {
             log.warn("Noe feilet ved kall til SvarUt (rest) - ${e.statusCode} ${e.responseBodyAsString}", e)
             throw e
         } catch (e: Exception) {
             throw TjenesteUtilgjengeligException("Noe feilet ved kall til SvarUt (rest)", e)
         }
-    }
-
-    private fun createHttpEntityOfString(body: String, name: String): HttpEntity<Any> {
-        return createHttpEntity(body, name, null, MediaType.APPLICATION_JSON_VALUE)
-    }
-
-    private fun createHttpEntityOfFile(inputStream: InputStream?, name: String, filnavn: String): HttpEntity<Any> {
-        return createHttpEntity(InputStreamResource(inputStream), name, filnavn, MediaType.APPLICATION_OCTET_STREAM_VALUE)
     }
 
     private fun createHttpEntity(body: Any, name: String, filename: String?, contentType: String): HttpEntity<Any> {

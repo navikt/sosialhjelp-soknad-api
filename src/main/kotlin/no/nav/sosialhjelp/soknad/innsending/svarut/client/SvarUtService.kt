@@ -9,8 +9,8 @@ open class SvarUtService(
     private val svarUtClient: SvarUtClient
 ) {
 
-    open fun send(forsendelse: Forsendelse?, filnavnInputStreamMap: Map<String, InputStream>?): String? {
+    open fun send(forsendelse: Forsendelse, filnavnInputStreamMap: Map<String, InputStream>): String? {
         val forsendelseId = svarUtClient.sendForsendelse(forsendelse, filnavnInputStreamMap)
-        return forsendelseId.id.toString()
+        return forsendelseId?.id.toString()
     }
 }
