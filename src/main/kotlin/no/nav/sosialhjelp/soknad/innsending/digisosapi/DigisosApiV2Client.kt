@@ -141,8 +141,8 @@ class DigisosApiV2ClientImpl(
     ): String {
         val body = LinkedMultiValueMap<String, Any>()
         body.add("tilleggsinformasjonJson", createHttpEntity(tilleggsinformasjonJson, "tilleggsinformasjonJson", null, APPLICATION_JSON_VALUE))
-        body.add("soknadJson", createHttpEntity(tilleggsinformasjonJson, "soknadJson", null, APPLICATION_JSON_VALUE))
-        body.add("vedleggJson", createHttpEntity(tilleggsinformasjonJson, "vedleggJson", null, APPLICATION_JSON_VALUE))
+        body.add("soknadJson", createHttpEntity(soknadJson, "soknadJson", null, APPLICATION_JSON_VALUE))
+        body.add("vedleggJson", createHttpEntity(vedleggJson, "vedleggJson", null, APPLICATION_JSON_VALUE))
         filer.forEach {
             body.add("metadata", createHttpEntity(getJson(it), "metadata", null, APPLICATION_JSON_VALUE))
             body.add(it.filnavn, createHttpEntity(InputStreamResource(it.data), it.filnavn, it.filnavn, APPLICATION_OCTET_STREAM_VALUE))
@@ -173,7 +173,6 @@ class DigisosApiV2ClientImpl(
         } catch (e: IOException) {
             throw IllegalStateException("Opplasting av $behandlingsId til fiks-digisos-api feilet", e)
         }
-
 
 //        val entitybuilder = MultipartEntityBuilder.create()
 //        entitybuilder.setCharset(StandardCharsets.UTF_8)
