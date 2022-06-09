@@ -156,7 +156,7 @@ class DigisosApiV2ClientImpl(
         builder.part("vedleggJson", vedleggJson, APPLICATION_JSON)
         filer.forEach {
             builder.part("metadata", getJson(it), TEXT_PLAIN)
-            builder.part(it.filnavn, it.data, APPLICATION_OCTET_STREAM).filename(it.filnavn)
+            builder.part(it.filnavn, it.data, APPLICATION_OCTET_STREAM)
         }
         val body = builder.build()
 
