@@ -6,6 +6,8 @@ import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoSe
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.web.reactive.function.client.WebClient
+import reactor.netty.http.client.HttpClient
 
 @Configuration
 open class DigisosApiConfig(
@@ -14,7 +16,9 @@ open class DigisosApiConfig(
     @Value("\${integrasjonpassord_fiks}") private val integrasjonpassordFiks: String,
     private val kommuneInfoService: KommuneInfoService,
     private val dokumentlagerClient: DokumentlagerClient,
-    private val krypteringService: KrypteringService
+    private val krypteringService: KrypteringService,
+    private val webClientBuilder: WebClient.Builder,
+    private val proxiedHttpClient: HttpClient
 ) {
 
     @Bean
@@ -37,7 +41,9 @@ open class DigisosApiConfig(
             integrasjonsidFiks,
             integrasjonpassordFiks,
             dokumentlagerClient,
-            krypteringService
+            krypteringService,
+            webClientBuilder,
+            proxiedHttpClient
         )
         return MetricsFactory.createTimerProxy("DigisosApiV2", digisosApiV2Client, DigisosApiV2Client::class.java)
     }
