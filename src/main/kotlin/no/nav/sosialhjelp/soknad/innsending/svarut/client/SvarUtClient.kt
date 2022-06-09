@@ -83,7 +83,7 @@ class SvarUtClientImpl(
         requireNotNull(data) { "Data kan ikke være null" }
         return try {
             val body = LinkedMultiValueMap<String, Any>()
-            body.add("forsendelse",createHttpEntity(objectMapper.writeValueAsString(forsendelse), "forsendelse", null, MediaType.APPLICATION_JSON_VALUE))
+            body.add("forsendelse", createHttpEntity(objectMapper.writeValueAsString(forsendelse), "forsendelse", null, MediaType.APPLICATION_JSON_VALUE))
             forsendelse.dokumenter.forEach {
                 body.add("filer", createHttpEntity(InputStreamResource(data[it.filnavn]), "filer", it.filnavn, MediaType.APPLICATION_OCTET_STREAM_VALUE))
             }
