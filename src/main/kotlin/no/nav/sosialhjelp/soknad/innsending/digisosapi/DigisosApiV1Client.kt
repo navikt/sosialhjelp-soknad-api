@@ -15,8 +15,11 @@ import org.apache.http.client.config.RequestConfig
 import org.apache.http.client.methods.HttpPost
 import org.apache.http.entity.ContentType.APPLICATION_JSON
 import org.apache.http.entity.ContentType.APPLICATION_OCTET_STREAM
+import org.apache.http.entity.ContentType.TEXT_PLAIN
 import org.apache.http.entity.mime.HttpMultipartMode
 import org.apache.http.entity.mime.MultipartEntityBuilder
+import org.apache.http.entity.mime.content.InputStreamBody
+import org.apache.http.entity.mime.content.StringBody
 import org.apache.http.impl.client.DefaultHttpRequestRetryHandler
 import org.apache.http.impl.client.HttpClientBuilder
 import org.apache.http.util.EntityUtils
@@ -127,10 +130,10 @@ class DigisosApiV1ClientImpl(
         entitybuilder.addTextBody("vedleggJson", vedleggJson, APPLICATION_JSON)
         filer.forEach {
             entitybuilder.addTextBody("metadata", getJson(it))
+            log.info("metadata: ${StringBody(getJson(it), TEXT_PLAIN)}")
             entitybuilder.addBinaryBody(it.filnavn, it.data, APPLICATION_OCTET_STREAM, it.filnavn)
+            log.info("metadata: ${InputStreamBody(it.data, APPLICATION_OCTET_STREAM, it.filnavn)}")
         }
-
-        log.info("Multipart data: ${EntityUtils.toString(entitybuilder.build())}")
 
         try {
             clientBuilder().setDefaultRequestConfig(requestConfig).build().use { client ->
