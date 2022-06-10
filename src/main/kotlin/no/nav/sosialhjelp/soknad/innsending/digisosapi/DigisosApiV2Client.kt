@@ -11,6 +11,7 @@ import no.nav.sosialhjelp.soknad.innsending.digisosapi.KrypteringService.Compani
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.digisosObjectMapper
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilMetadata
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilOpplasting
+import org.springframework.core.io.InputStreamResource
 import org.springframework.http.ContentDisposition
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
@@ -156,7 +157,7 @@ class DigisosApiV2ClientImpl(
         builder.part("vedleggJson", vedleggJson, APPLICATION_JSON)
         filer.forEach {
             builder.part("metadata", getJson(it), TEXT_PLAIN)
-            builder.part(it.filnavn, it.data, APPLICATION_OCTET_STREAM)
+            builder.part(it.filnavn, InputStreamResource(it.data), APPLICATION_OCTET_STREAM)
         }
         val body = builder.build()
 
