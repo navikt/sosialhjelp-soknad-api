@@ -2,11 +2,13 @@ package no.nav.sosialhjelp.soknad.innsending.digisosapi
 
 import com.fasterxml.jackson.core.JsonProcessingException
 import io.netty.channel.ChannelOption
+import kotlinx.coroutines.runBlocking
 import no.ks.fiks.streaming.klient.FilForOpplasting
 import no.nav.sosialhjelp.kotlin.utils.logger
+import no.nav.sosialhjelp.kotlin.utils.retry
+import no.nav.sosialhjelp.soknad.client.config.RetryUtils
 import no.nav.sosialhjelp.soknad.common.Constants.HEADER_INTEGRASJON_ID
 import no.nav.sosialhjelp.soknad.common.Constants.HEADER_INTEGRASJON_PASSORD
-import no.nav.sosialhjelp.soknad.common.exceptions.SosialhjelpSoknadApiException
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.KrypteringService.Companion.waitForFutures
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.createHttpEntity
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.digisosObjectMapper
@@ -27,7 +29,10 @@ import org.springframework.util.LinkedMultiValueMap
 import org.springframework.web.reactive.function.BodyInserters
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
-import org.springframework.web.reactive.function.client.bodyToMono
+import org.springframework.web.reactive.function.client.WebClientResponseException.BadGateway
+import org.springframework.web.reactive.function.client.WebClientResponseException.InternalServerError
+import org.springframework.web.reactive.function.client.WebClientResponseException.ServiceUnavailable
+import org.springframework.web.reactive.function.client.awaitBody
 import reactor.netty.http.client.HttpClient
 import java.io.IOException
 import java.time.Duration
@@ -141,15 +146,23 @@ class DigisosApiV1ClientImpl(
 
         val startTime = System.currentTimeMillis()
         try {
-            val response = fiksWebClient.post()
-                .uri("$digisosApiEndpoint/digisos/api/v1/soknader/{kommunenummer}/{behandlingsId}", kommunenummer, behandlingsId)
-                .header("requestid", UUID.randomUUID().toString())
-                .header(HttpHeaders.AUTHORIZATION, token)
-                .contentType(MediaType.MULTIPART_FORM_DATA)
-                .body(BodyInserters.fromMultipartData(body))
-                .retrieve()
-                .bodyToMono<String>()
-                .block() ?: throw SosialhjelpSoknadApiException("Opplasting av $behandlingsId til fiks-digisos-api returnerte null -> kaster feil da vi forventer digisosId eller feilmelding")
+            val response = runBlocking {
+                retry(
+                    attempts = RetryUtils.DEFAULT_MAX_ATTEMPTS,
+                    initialDelay = RetryUtils.DEFAULT_INITIAL_WAIT_INTERVAL_MILLIS,
+                    factor = RetryUtils.DEFAULT_EXPONENTIAL_BACKOFF_MULTIPLIER,
+                    retryableExceptions = arrayOf(InternalServerError::class, ServiceUnavailable::class, BadGateway::class)
+                ) {
+                    fiksWebClient.post()
+                        .uri("$digisosApiEndpoint/digisos/api/v1/soknader/{kommunenummer}/{behandlingsId}", kommunenummer, behandlingsId)
+                        .header("requestid", UUID.randomUUID().toString())
+                        .header(HttpHeaders.AUTHORIZATION, token)
+                        .contentType(MediaType.MULTIPART_FORM_DATA)
+                        .body(BodyInserters.fromMultipartData(body))
+                        .retrieve()
+                        .awaitBody<String>()
+                }
+            }
 
             val digisosId = stripVekkFnutter(response)
             log.info("Sendte inn søknad $behandlingsId til kommune $kommunenummer og fikk digisosid: $digisosId")
