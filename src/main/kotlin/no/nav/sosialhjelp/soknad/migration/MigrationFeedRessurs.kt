@@ -2,7 +2,6 @@ package no.nav.sosialhjelp.soknad.migration
 
 import no.finn.unleash.Unleash
 import no.nav.security.token.support.core.api.ProtectedWithClaims
-import no.nav.sosialhjelp.metrics.aspects.Timed
 import no.nav.sosialhjelp.soknad.common.Constants
 import org.springframework.stereotype.Controller
 import java.time.LocalDateTime
@@ -20,7 +19,6 @@ import javax.ws.rs.core.Response.Status.SERVICE_UNAVAILABLE
 @ProtectedWithClaims(issuer = Constants.TOKENX, claimMap = [Constants.CLAIM_ACR_LEVEL_4])
 @Path("/internal/migration")
 @Produces(MediaType.APPLICATION_JSON)
-@Timed
 open class MigrationFeedRessurs(
     private val migrationService: MigrationService,
     private val unleash: Unleash,

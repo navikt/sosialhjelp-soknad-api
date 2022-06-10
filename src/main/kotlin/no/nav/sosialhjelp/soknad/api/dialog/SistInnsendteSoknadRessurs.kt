@@ -1,7 +1,6 @@
 package no.nav.sosialhjelp.soknad.api.dialog
 
 import no.nav.security.token.support.core.api.ProtectedWithClaims
-import no.nav.sosialhjelp.metrics.aspects.Timed
 import no.nav.sosialhjelp.soknad.api.dialog.dto.SistInnsendteSoknadDto
 import no.nav.sosialhjelp.soknad.common.Constants.CLAIM_ACR_LEVEL_4
 import no.nav.sosialhjelp.soknad.common.Constants.TOKENX
@@ -16,7 +15,6 @@ import javax.ws.rs.core.MediaType
 @ProtectedWithClaims(issuer = TOKENX, claimMap = [CLAIM_ACR_LEVEL_4])
 @Path("/dialog")
 @Produces(MediaType.APPLICATION_JSON)
-@Timed
 open class SistInnsendteSoknadRessurs(
     private val sistInnsendteSoknadService: SistInnsendteSoknadService
 ) {

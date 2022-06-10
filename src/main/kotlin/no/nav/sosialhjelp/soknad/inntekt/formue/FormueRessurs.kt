@@ -12,7 +12,6 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomioversikt
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibeskrivelserAvAnnet
 import no.nav.security.token.support.core.api.ProtectedWithClaims
-import no.nav.sosialhjelp.metrics.aspects.Timed
 import no.nav.sosialhjelp.soknad.common.Constants
 import no.nav.sosialhjelp.soknad.common.mapper.OkonomiMapper.addFormueIfCheckedElseDeleteInOversikt
 import no.nav.sosialhjelp.soknad.common.mapper.OkonomiMapper.setBekreftelse
@@ -32,7 +31,6 @@ import javax.ws.rs.core.MediaType
 @Controller
 @ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4])
 @Path("/soknader/{behandlingsId}/inntekt/formue")
-@Timed
 @Produces(MediaType.APPLICATION_JSON)
 open class FormueRessurs(
     private val tilgangskontroll: Tilgangskontroll,
