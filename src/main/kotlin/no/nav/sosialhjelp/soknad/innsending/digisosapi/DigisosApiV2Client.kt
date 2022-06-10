@@ -17,14 +17,13 @@ import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpHeaders.AUTHORIZATION
 import org.springframework.http.MediaType
-import org.springframework.http.MediaType.APPLICATION_JSON
-import org.springframework.http.MediaType.APPLICATION_OCTET_STREAM
-import org.springframework.http.MediaType.TEXT_PLAIN
-import org.springframework.http.client.MultipartBodyBuilder
+import org.springframework.http.MediaType.APPLICATION_JSON_VALUE
+import org.springframework.http.MediaType.APPLICATION_OCTET_STREAM_VALUE
 import org.springframework.http.client.reactive.ReactorClientHttpConnector
 import org.springframework.http.codec.json.Jackson2JsonDecoder
 import org.springframework.http.codec.json.Jackson2JsonEncoder
 import org.springframework.util.LinkedMultiValueMap
+import org.springframework.web.reactive.function.BodyInserters
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
 import org.springframework.web.reactive.function.client.bodyToMono
@@ -56,21 +55,6 @@ class DigisosApiV2ClientImpl(
     webClientBuilder: WebClient.Builder,
     proxiedHttpClient: HttpClient
 ) : DigisosApiV2Client {
-
-//    private val retryHandler = DefaultHttpRequestRetryHandler()
-//    private val serviceUnavailableRetryStrategy = FiksServiceUnavailableRetryStrategy()
-
-//    private val requestConfig = RequestConfig.custom()
-//        .setConnectTimeout(SENDING_TIL_FIKS_TIMEOUT)
-//        .setConnectionRequestTimeout(SENDING_TIL_FIKS_TIMEOUT)
-//        .setSocketTimeout(SENDING_TIL_FIKS_TIMEOUT)
-//        .build()
-
-//    private val clientBuilder = HttpClientBuilder.create()
-//        .setRetryHandler(retryHandler)
-//        .setServiceUnavailableRetryStrategy(serviceUnavailableRetryStrategy)
-//        .setDefaultRequestConfig(requestConfig)
-//        .useSystemProperties()
 
     private val fiksWebClient = webClientBuilder
         .clientConnector(
@@ -141,25 +125,25 @@ class DigisosApiV2ClientImpl(
         behandlingsId: String,
         token: String?
     ): String {
-//        val body = LinkedMultiValueMap<String, Any>()
-//        body.add("tilleggsinformasjonJson", createHttpEntity(tilleggsinformasjonJson, "tilleggsinformasjonJson", null, APPLICATION_JSON_VALUE))
-//        body.add("soknadJson", createHttpEntity(soknadJson, "soknadJson", null, APPLICATION_JSON_VALUE))
-//        body.add("vedleggJson", createHttpEntity(vedleggJson, "vedleggJson", null, APPLICATION_JSON_VALUE))
-//
-//        filer.forEach {
-//            body.add("metadata", createHttpEntity(getJson(it), "metadata", null, APPLICATION_JSON_VALUE))
-//            body.add(it.filnavn, createHttpEntity(InputStreamResource(it.data), it.filnavn, it.filnavn, APPLICATION_OCTET_STREAM_VALUE))
-//        }
+        val body = LinkedMultiValueMap<String, Any>()
+        body.add("tilleggsinformasjonJson", createHttpEntity(tilleggsinformasjonJson, "tilleggsinformasjonJson", null, APPLICATION_JSON_VALUE))
+        body.add("soknadJson", createHttpEntity(soknadJson, "soknadJson", null, APPLICATION_JSON_VALUE))
+        body.add("vedleggJson", createHttpEntity(vedleggJson, "vedleggJson", null, APPLICATION_JSON_VALUE))
 
-        val builder = MultipartBodyBuilder()
-        builder.part("tilleggsinformasjonJson", tilleggsinformasjonJson, APPLICATION_JSON)
-        builder.part("soknadJson", soknadJson, APPLICATION_JSON)
-        builder.part("vedleggJson", vedleggJson, APPLICATION_JSON)
         filer.forEach {
-            builder.part("metadata", getJson(it), TEXT_PLAIN)
-            builder.part(it.filnavn, InputStreamResource(it.data), APPLICATION_OCTET_STREAM)
+            body.add("metadata", createHttpEntity(getJson(it), "metadata", null, APPLICATION_JSON_VALUE))
+            body.add(it.filnavn, createHttpEntity(InputStreamResource(it.data), it.filnavn, it.filnavn, APPLICATION_OCTET_STREAM_VALUE))
         }
-        val body = builder.build()
+
+//        val builder = MultipartBodyBuilder()
+//        builder.part("tilleggsinformasjonJson", tilleggsinformasjonJson, APPLICATION_JSON)
+//        builder.part("soknadJson", soknadJson, APPLICATION_JSON)
+//        builder.part("vedleggJson", vedleggJson, APPLICATION_JSON)
+//        filer.forEach {
+//            builder.part("metadata", getJson(it), TEXT_PLAIN)
+//            builder.part(it.filnavn, InputStreamResource(it.data), APPLICATION_OCTET_STREAM)
+//        }
+//        val body = builder.build()
 
         log.info("Multipart data: $body")
 
@@ -170,7 +154,7 @@ class DigisosApiV2ClientImpl(
                 .header("requestid", UUID.randomUUID().toString())
                 .header(AUTHORIZATION, token)
                 .contentType(MediaType.MULTIPART_FORM_DATA)
-                .bodyValue(body)
+                .body(BodyInserters.fromMultipartData(body))
                 .retrieve()
                 .bodyToMono<String>()
                 .block() ?: throw SosialhjelpSoknadApiException("Opplasting av $behandlingsId til fiks-digisos-api returnerte null -> kaster feil da vi forventer digisosId eller feilmelding")
@@ -189,51 +173,6 @@ class DigisosApiV2ClientImpl(
         } catch (e: IOException) {
             throw IllegalStateException("Opplasting av $behandlingsId til fiks-digisos-api feilet", e)
         }
-
-//        val entitybuilder = MultipartEntityBuilder.create()
-//        entitybuilder.setCharset(StandardCharsets.UTF_8)
-//        entitybuilder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE)
-//
-//        entitybuilder.addTextBody("tilleggsinformasjonJson", tilleggsinformasjonJson, ContentType.APPLICATION_JSON) // Må være første fil
-//        entitybuilder.addTextBody("soknadJson", soknadJson, ContentType.APPLICATION_JSON)
-//        entitybuilder.addTextBody("vedleggJson", vedleggJson, ContentType.APPLICATION_JSON)
-//
-//        // hvordan blir dette med mellomlagrede vedlegg? `filer` inneholder kun genererte pdf'er?
-//        filer.forEach {
-//            entitybuilder.addTextBody("metadata", getJson(it))
-//            entitybuilder.addBinaryBody(it.filnavn, it.data, ContentType.APPLICATION_OCTET_STREAM, it.filnavn)
-//        }
-//
-//        try {
-//            clientBuilder.build().use { client ->
-//                val post = HttpPost("$digisosApiEndpoint/digisos/api/v2/soknader/$kommunenummer/$behandlingsId")
-//                post.setHeader("requestid", UUID.randomUUID().toString())
-//                post.setHeader(HttpHeader.AUTHORIZATION.name, token)
-//                post.setHeader(HEADER_INTEGRASJON_ID, integrasjonsidFiks)
-//                post.setHeader(HEADER_INTEGRASJON_PASSORD, integrasjonpassordFiks)
-//                post.entity = entitybuilder.build()
-//
-//                val startTime = System.currentTimeMillis()
-//                val response = client.execute(post)
-//                val endTime = System.currentTimeMillis()
-//                if (response.statusLine.statusCode >= 300) {
-//                    val errorResponse = EntityUtils.toString(response.entity)
-//                    val fiksDigisosId = Utils.getDigisosIdFromResponse(errorResponse, behandlingsId)
-//                    if (fiksDigisosId != null) {
-//                        log.warn("Søknad $behandlingsId er allerede sendt til fiks-digisos-api med id $fiksDigisosId. Returner digisos-id som normalt så brukeren blir rutet til innsyn. ErrorResponse var: $errorResponse")
-//                        return fiksDigisosId
-//                    }
-//                    throw IllegalStateException(
-//                        "Opplasting av $behandlingsId til fiks-digisos-api feilet etter ${endTime - startTime} ms med status ${response.statusLine.reasonPhrase} og response: $errorResponse"
-//                    )
-//                }
-//                val digisosId = Utils.stripVekkFnutter(EntityUtils.toString(response.entity))
-//                log.info("Sendte inn søknad $behandlingsId til kommune $kommunenummer og fikk digisosid: $digisosId")
-//                return digisosId
-//            }
-//        } catch (e: IOException) {
-//            throw IllegalStateException("Opplasting av $behandlingsId til fiks-digisos-api feilet", e)
-//        }
     }
 
     private fun getJson(objectFilForOpplasting: FilForOpplasting<Any>): String {
