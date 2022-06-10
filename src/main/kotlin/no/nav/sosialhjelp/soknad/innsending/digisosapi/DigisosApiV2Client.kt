@@ -8,13 +8,11 @@ import no.nav.sosialhjelp.soknad.common.Constants.HEADER_INTEGRASJON_ID
 import no.nav.sosialhjelp.soknad.common.Constants.HEADER_INTEGRASJON_PASSORD
 import no.nav.sosialhjelp.soknad.common.exceptions.SosialhjelpSoknadApiException
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.KrypteringService.Companion.waitForFutures
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.createHttpEntity
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.digisosObjectMapper
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilMetadata
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilOpplasting
 import org.springframework.core.io.InputStreamResource
-import org.springframework.http.ContentDisposition
-import org.springframework.http.HttpEntity
-import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpHeaders.AUTHORIZATION
 import org.springframework.http.MediaType
 import org.springframework.http.MediaType.APPLICATION_JSON_VALUE
@@ -136,16 +134,6 @@ class DigisosApiV2ClientImpl(
             body.add("dokument$index", createHttpEntity(InputStreamResource(fil.data), "dokument$index", fil.filnavn, APPLICATION_OCTET_STREAM_VALUE))
         }
 
-//        val builder = MultipartBodyBuilder()
-//        builder.part("tilleggsinformasjonJson", tilleggsinformasjonJson, APPLICATION_JSON)
-//        builder.part("soknadJson", soknadJson, APPLICATION_JSON)
-//        builder.part("vedleggJson", vedleggJson, APPLICATION_JSON)
-//        filer.forEach {
-//            builder.part("metadata", getJson(it), TEXT_PLAIN)
-//            builder.part(it.filnavn, InputStreamResource(it.data), APPLICATION_OCTET_STREAM)
-//        }
-//        val body = builder.build()
-
         log.info("Multipart data: $body")
 
         val startTime = System.currentTimeMillis()
@@ -182,19 +170,6 @@ class DigisosApiV2ClientImpl(
         } catch (e: JsonProcessingException) {
             throw IllegalStateException(e)
         }
-    }
-
-    private fun createHttpEntity(body: Any, name: String, filename: String?, contentType: String): HttpEntity<Any> {
-        val headerMap = LinkedMultiValueMap<String, String>()
-        val builder: ContentDisposition.Builder = ContentDisposition
-            .builder("form-data")
-            .name(name)
-        val contentDisposition: ContentDisposition =
-            if (filename == null) builder.build() else builder.filename(filename).build()
-
-        headerMap.add(HttpHeaders.CONTENT_DISPOSITION, contentDisposition.toString())
-        headerMap.add(HttpHeaders.CONTENT_TYPE, contentType)
-        return HttpEntity(body, headerMap)
     }
 
     companion object {

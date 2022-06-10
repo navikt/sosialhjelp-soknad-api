@@ -29,7 +29,9 @@ open class DigisosApiConfig(
             integrasjonpassordFiks,
             kommuneInfoService,
             dokumentlagerClient,
-            krypteringService
+            krypteringService,
+            webClientBuilder,
+            proxiedHttpClient
         )
         return MetricsFactory.createTimerProxy("DigisosApi", digisosApiV1Client, DigisosApiV1Client::class.java)
     }
