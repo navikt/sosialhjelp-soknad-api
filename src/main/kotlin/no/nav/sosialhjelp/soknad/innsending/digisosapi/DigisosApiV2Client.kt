@@ -131,9 +131,9 @@ class DigisosApiV2ClientImpl(
         body.add("soknadJson", createHttpEntity(soknadJson, "soknadJson", null, APPLICATION_JSON_VALUE))
         body.add("vedleggJson", createHttpEntity(vedleggJson, "vedleggJson", null, APPLICATION_JSON_VALUE))
 
-        filer.forEach {
-            body.add("metadata", createHttpEntity(getJson(it), "metadata", null, TEXT_PLAIN_VALUE))
-            body.add(it.filnavn, createHttpEntity(InputStreamResource(it.data), it.filnavn, it.filnavn, APPLICATION_OCTET_STREAM_VALUE))
+        filer.forEachIndexed { index, fil ->
+            body.add("metadata$index", createHttpEntity(getJson(fil), "metadata$index", null, TEXT_PLAIN_VALUE))
+            body.add("dokument$index", createHttpEntity(InputStreamResource(fil.data), "dokument$index", fil.filnavn, APPLICATION_OCTET_STREAM_VALUE))
         }
 
 //        val builder = MultipartBodyBuilder()
