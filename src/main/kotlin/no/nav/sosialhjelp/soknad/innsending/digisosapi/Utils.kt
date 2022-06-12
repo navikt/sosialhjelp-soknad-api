@@ -2,6 +2,10 @@ package no.nav.sosialhjelp.soknad.innsending.digisosapi
 
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper
+import org.springframework.http.ContentDisposition
+import org.springframework.http.HttpEntity
+import org.springframework.http.HttpHeaders
+import org.springframework.util.LinkedMultiValueMap
 import java.util.regex.Pattern
 
 object Utils {
@@ -22,5 +26,18 @@ object Utils {
 
     fun stripVekkFnutter(tekstMedFnutt: String): String {
         return tekstMedFnutt.replace("\"", "")
+    }
+
+    fun createHttpEntity(body: Any, name: String, filename: String?, contentType: String): HttpEntity<Any> {
+        val headerMap = LinkedMultiValueMap<String, String>()
+        val builder: ContentDisposition.Builder = ContentDisposition
+            .builder("form-data")
+            .name(name)
+        val contentDisposition: ContentDisposition =
+            if (filename == null) builder.build() else builder.filename(filename).build()
+
+        headerMap.add(HttpHeaders.CONTENT_DISPOSITION, contentDisposition.toString())
+        headerMap.add(HttpHeaders.CONTENT_TYPE, contentType)
+        return HttpEntity(body, headerMap)
     }
 }
