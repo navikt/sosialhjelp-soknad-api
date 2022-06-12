@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo
 
-import no.nav.sosialhjelp.metrics.MetricsFactory.createTimerProxy
 import no.nav.sosialhjelp.soknad.auth.maskinporten.MaskinportenClient
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
@@ -21,13 +20,12 @@ open class KommuneInfoConfig(
 
     @Bean
     open fun kommuneInfoMaskinportenClient(): KommuneInfoMaskinportenClient {
-        val kommuneInfoMaskinportenClient = KommuneInfoMaskinportenClientImpl(
+        return KommuneInfoMaskinportenClientImpl(
             kommuneInfoMaskinportenWebClient,
             maskinportenClient,
             integrasjonsidFiks,
             integrasjonpassordFiks
         )
-        return createTimerProxy("KommuneInfoMaskinportenClient", kommuneInfoMaskinportenClient, KommuneInfoMaskinportenClient::class.java)
     }
 
     private val kommuneInfoMaskinportenWebClient: WebClient =
