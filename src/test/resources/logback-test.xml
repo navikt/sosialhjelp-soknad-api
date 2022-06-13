@@ -8,7 +8,6 @@
 
     <logger name="org.springframework" level="warn" />
     <logger name="no.nav.sosialhjelp" level="debug" />
-    <logger name="org.apache.http.impl.client" level="info" />
     <logger name="no.nav.security.token" level="debug" />
 
     <root level="info">

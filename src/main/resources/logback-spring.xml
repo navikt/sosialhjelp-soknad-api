@@ -19,8 +19,6 @@
         <logger name="klientlogger" level="debug"/>
         <logger name="org.springframework" level="warn"/>
         <logger name="org.apache.pdfbox" level="error"/>
-        <logger name="org.apache.http.impl.client" level="info"/>
-        <logger name="org.apache.http.client.protocol.ResponseProcessCookies" level="ERROR"/>
 
         <root level="INFO">
             <appender-ref ref="stdout_json"/>
@@ -42,8 +40,6 @@
         <logger name="org.apache.pdfbox" level="error"/>
         <logger name="no.nav.security.token.support" level="info"/>
         <logger name="klientlogger" level="debug"/>
-        <logger name="org.apache.http.impl.client" level="info"/>
-        <logger name="org.apache.http.client.protocol.ResponseProcessCookies" level="ERROR"/>
 
         <root level="INFO">
             <appender-ref ref="console"/>
