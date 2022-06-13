@@ -6,7 +6,6 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
 import no.nav.security.token.support.core.api.ProtectedWithClaims
-import no.nav.sosialhjelp.metrics.aspects.Timed
 import no.nav.sosialhjelp.soknad.common.Constants
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.common.utils.JsonOkonomiUtils.isOkonomiskeOpplysningerBekreftet
@@ -44,7 +43,6 @@ import javax.ws.rs.core.MediaType
 @Controller
 @ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4])
 @Path("/soknader/{behandlingsId}/okonomiskeOpplysninger")
-@Timed
 @Produces(MediaType.APPLICATION_JSON)
 open class OkonomiskeOpplysningerRessurs(
     private val tilgangskontroll: Tilgangskontroll,

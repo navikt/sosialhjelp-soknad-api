@@ -3,7 +3,6 @@ package no.nav.sosialhjelp.soknad.api.informasjon
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.security.token.support.core.api.Unprotected
 import no.nav.sosialhjelp.api.fiks.KommuneInfo
-import no.nav.sosialhjelp.metrics.aspects.Timed
 import no.nav.sosialhjelp.soknad.adressesok.AdressesokService
 import no.nav.sosialhjelp.soknad.adressesok.domain.AdresseForslag
 import no.nav.sosialhjelp.soknad.api.informasjon.dto.KommuneInfoFrontend
@@ -46,7 +45,6 @@ import javax.ws.rs.core.MediaType
 @ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4])
 @Path("/informasjon")
 @Produces(MediaType.APPLICATION_JSON)
-@Timed
 open class InformasjonRessurs(
     private val messageSource: NavMessageSource,
     private val adresseSokService: AdressesokService,

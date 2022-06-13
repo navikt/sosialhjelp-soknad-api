@@ -1,7 +1,6 @@
 package no.nav.sosialhjelp.soknad.oppsummering
 
 import no.nav.security.token.support.core.api.ProtectedWithClaims
-import no.nav.sosialhjelp.metrics.aspects.Timed
 import no.nav.sosialhjelp.soknad.common.Constants
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.oppsummering.dto.Oppsummering
@@ -16,7 +15,6 @@ import javax.ws.rs.core.MediaType
 @Controller
 @ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4])
 @Path("/soknader/{behandlingsId}/oppsummering")
-@Timed
 @Produces(MediaType.APPLICATION_JSON)
 open class OppsummeringRessurs(
     private val oppsummeringService: OppsummeringService,

@@ -1,7 +1,6 @@
 package no.nav.sosialhjelp.soknad.api.dittnav
 
 import no.nav.security.token.support.core.api.ProtectedWithClaims
-import no.nav.sosialhjelp.metrics.aspects.Timed
 import no.nav.sosialhjelp.soknad.api.dittnav.dto.MarkerPabegyntSoknadSomLestDto
 import no.nav.sosialhjelp.soknad.api.dittnav.dto.PabegyntSoknadDto
 import no.nav.sosialhjelp.soknad.common.Constants.CLAIM_ACR_LEVEL_3
@@ -20,7 +19,6 @@ import javax.ws.rs.core.MediaType
 @Controller
 @ProtectedWithClaims(issuer = SELVBETJENING, combineWithOr = true, claimMap = [CLAIM_ACR_LEVEL_3, CLAIM_ACR_LEVEL_4])
 @Path("/dittnav")
-@Timed
 @Produces(MediaType.APPLICATION_JSON)
 open class DittNavMetadataRessurs(
     private val dittNavMetadataService: DittNavMetadataService

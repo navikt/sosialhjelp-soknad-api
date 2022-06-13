@@ -5,7 +5,6 @@ import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeidsforhold.Stillingsty
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonKommentarTilArbeidsforhold
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker
 import no.nav.security.token.support.core.api.ProtectedWithClaims
-import no.nav.sosialhjelp.metrics.aspects.Timed
 import no.nav.sosialhjelp.soknad.common.Constants
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
@@ -22,7 +21,6 @@ import javax.ws.rs.core.MediaType
 @Controller
 @ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4])
 @Path("/soknader/{behandlingsId}/arbeid")
-@Timed
 @Produces(MediaType.APPLICATION_JSON)
 open class ArbeidRessurs(
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
