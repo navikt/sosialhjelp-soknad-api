@@ -1,7 +1,6 @@
 package no.nav.sosialhjelp.soknad.api.innsyn
 
 import no.nav.security.token.support.core.api.ProtectedWithClaims
-import no.nav.sosialhjelp.metrics.aspects.Timed
 import no.nav.sosialhjelp.soknad.api.innsyn.dto.SoknadOversiktDto
 import no.nav.sosialhjelp.soknad.common.Constants
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
@@ -16,7 +15,6 @@ import javax.ws.rs.core.MediaType
 @Controller
 @ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4])
 @Path("/soknadoversikt")
-@Timed
 @Produces(MediaType.APPLICATION_JSON)
 open class SoknadOversiktRessurs(
     private val service: SoknadOversiktService,
