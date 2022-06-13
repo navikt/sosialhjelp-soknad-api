@@ -1,14 +1,11 @@
 package no.nav.sosialhjelp.soknad.innsending.digisosapi
 
 import com.fasterxml.jackson.core.JsonProcessingException
-import io.netty.channel.ChannelOption
 import kotlinx.coroutines.runBlocking
 import no.ks.fiks.streaming.klient.FilForOpplasting
 import no.nav.sosialhjelp.kotlin.utils.logger
 import no.nav.sosialhjelp.kotlin.utils.retry
 import no.nav.sosialhjelp.soknad.client.config.RetryUtils
-import no.nav.sosialhjelp.soknad.common.Constants.HEADER_INTEGRASJON_ID
-import no.nav.sosialhjelp.soknad.common.Constants.HEADER_INTEGRASJON_PASSORD
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.KrypteringService.Companion.waitForFutures
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.createHttpEntity
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.digisosObjectMapper
@@ -20,9 +17,6 @@ import org.springframework.http.MediaType
 import org.springframework.http.MediaType.APPLICATION_JSON_VALUE
 import org.springframework.http.MediaType.APPLICATION_OCTET_STREAM_VALUE
 import org.springframework.http.MediaType.TEXT_PLAIN_VALUE
-import org.springframework.http.client.reactive.ReactorClientHttpConnector
-import org.springframework.http.codec.json.Jackson2JsonDecoder
-import org.springframework.http.codec.json.Jackson2JsonEncoder
 import org.springframework.util.LinkedMultiValueMap
 import org.springframework.web.reactive.function.BodyInserters
 import org.springframework.web.reactive.function.client.WebClient
@@ -31,9 +25,7 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import org.springframework.web.reactive.function.client.WebClientResponseException.InternalServerError
 import org.springframework.web.reactive.function.client.WebClientResponseException.ServiceUnavailable
 import org.springframework.web.reactive.function.client.awaitBody
-import reactor.netty.http.client.HttpClient
 import java.io.IOException
-import java.time.Duration
 import java.util.Collections
 import java.util.UUID
 import java.util.concurrent.Future
@@ -52,30 +44,10 @@ interface DigisosApiV2Client {
 
 class DigisosApiV2ClientImpl(
     private val digisosApiEndpoint: String,
-    integrasjonsidFiks: String,
-    integrasjonpassordFiks: String,
     private val dokumentlagerClient: DokumentlagerClient,
     private val krypteringService: KrypteringService,
-    webClientBuilder: WebClient.Builder,
-    proxiedHttpClient: HttpClient
+    private val fiksWebClient: WebClient
 ) : DigisosApiV2Client {
-
-    private val fiksWebClient = webClientBuilder
-        .clientConnector(
-            ReactorClientHttpConnector(
-                proxiedHttpClient
-                    .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, SENDING_TIL_FIKS_TIMEOUT)
-                    .responseTimeout(Duration.ofMillis(SENDING_TIL_FIKS_TIMEOUT.toLong()))
-            )
-        )
-        .codecs {
-            it.defaultCodecs().maxInMemorySize(150 * 1024 * 1024)
-            it.defaultCodecs().jackson2JsonEncoder(Jackson2JsonEncoder(digisosObjectMapper))
-            it.defaultCodecs().jackson2JsonDecoder(Jackson2JsonDecoder(digisosObjectMapper))
-        }
-        .defaultHeader(HEADER_INTEGRASJON_ID, integrasjonsidFiks)
-        .defaultHeader(HEADER_INTEGRASJON_PASSORD, integrasjonpassordFiks)
-        .build()
 
     override fun krypterOgLastOppFiler(
         soknadJson: String,
@@ -185,7 +157,5 @@ class DigisosApiV2ClientImpl(
 
     companion object {
         private val log by logger()
-
-        private const val SENDING_TIL_FIKS_TIMEOUT = 5 * 60 * 1000 // 5 minutter
     }
 }

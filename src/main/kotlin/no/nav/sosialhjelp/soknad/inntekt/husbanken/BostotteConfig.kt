@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.inntekt.husbanken
 
-import no.nav.sosialhjelp.metrics.MetricsFactory
 import no.nav.sosialhjelp.soknad.health.selftest.Pingable
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
@@ -18,8 +17,7 @@ open class BostotteConfig(
 
     @Bean
     open fun husbankenClient(): HusbankenClient {
-        val husbankenClient = HusbankenClientImpl(husbankenWebClient)
-        return MetricsFactory.createTimerProxy("HusbankenApi", husbankenClient, HusbankenClient::class.java)
+        return HusbankenClientImpl(husbankenWebClient)
     }
 
     @Bean

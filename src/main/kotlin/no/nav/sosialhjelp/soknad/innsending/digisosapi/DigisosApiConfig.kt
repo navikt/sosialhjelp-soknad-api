@@ -1,13 +1,18 @@
 package no.nav.sosialhjelp.soknad.innsending.digisosapi
 
-import no.nav.sosialhjelp.metrics.MetricsFactory
+import io.netty.channel.ChannelOption
+import no.nav.sosialhjelp.soknad.common.Constants
 import no.nav.sosialhjelp.soknad.health.selftest.Pingable
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.client.reactive.ReactorClientHttpConnector
+import org.springframework.http.codec.json.Jackson2JsonDecoder
+import org.springframework.http.codec.json.Jackson2JsonEncoder
 import org.springframework.web.reactive.function.client.WebClient
 import reactor.netty.http.client.HttpClient
+import java.time.Duration
 
 @Configuration
 open class DigisosApiConfig(
@@ -17,37 +22,46 @@ open class DigisosApiConfig(
     private val kommuneInfoService: KommuneInfoService,
     private val dokumentlagerClient: DokumentlagerClient,
     private val krypteringService: KrypteringService,
-    private val webClientBuilder: WebClient.Builder,
-    private val proxiedHttpClient: HttpClient
+    webClientBuilder: WebClient.Builder,
+    proxiedHttpClient: HttpClient
 ) {
+
+    private val fiksWebClient = webClientBuilder
+        .clientConnector(
+            ReactorClientHttpConnector(
+                proxiedHttpClient
+                    .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, SENDING_TIL_FIKS_TIMEOUT)
+                    .responseTimeout(Duration.ofMillis(SENDING_TIL_FIKS_TIMEOUT.toLong()))
+            )
+        )
+        .codecs {
+            it.defaultCodecs().maxInMemorySize(150 * 1024 * 1024)
+            it.defaultCodecs().jackson2JsonEncoder(Jackson2JsonEncoder(Utils.digisosObjectMapper))
+            it.defaultCodecs().jackson2JsonDecoder(Jackson2JsonDecoder(Utils.digisosObjectMapper))
+        }
+        .defaultHeader(Constants.HEADER_INTEGRASJON_ID, integrasjonsidFiks)
+        .defaultHeader(Constants.HEADER_INTEGRASJON_PASSORD, integrasjonpassordFiks)
+        .build()
 
     @Bean
     open fun digisosApiV1Client(): DigisosApiV1Client {
-        val digisosApiV1Client = DigisosApiV1ClientImpl(
+        return DigisosApiV1ClientImpl(
             digisosApiEndpoint,
-            integrasjonsidFiks,
-            integrasjonpassordFiks,
             kommuneInfoService,
             dokumentlagerClient,
             krypteringService,
-            webClientBuilder,
-            proxiedHttpClient
+            fiksWebClient
         )
-        return MetricsFactory.createTimerProxy("DigisosApi", digisosApiV1Client, DigisosApiV1Client::class.java)
     }
 
     @Bean
     open fun digisosApiV2Client(): DigisosApiV2Client {
-        val digisosApiV2Client = DigisosApiV2ClientImpl(
+        return DigisosApiV2ClientImpl(
             digisosApiEndpoint,
-            integrasjonsidFiks,
-            integrasjonpassordFiks,
             dokumentlagerClient,
             krypteringService,
-            webClientBuilder,
-            proxiedHttpClient
+            fiksWebClient
         )
-        return MetricsFactory.createTimerProxy("DigisosApiV2", digisosApiV2Client, DigisosApiV2Client::class.java)
     }
 
     @Bean
@@ -61,5 +75,9 @@ open class DigisosApiConfig(
                 Pingable.feilet(metadata, e)
             }
         }
+    }
+
+    companion object {
+        private const val SENDING_TIL_FIKS_TIMEOUT = 5 * 60 * 1000 // 5 minutter
     }
 }

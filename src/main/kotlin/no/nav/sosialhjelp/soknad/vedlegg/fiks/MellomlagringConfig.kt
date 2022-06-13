@@ -1,7 +1,6 @@
 package no.nav.sosialhjelp.soknad.vedlegg.fiks
 
 import io.netty.channel.ChannelOption
-import no.nav.sosialhjelp.metrics.MetricsFactory
 import no.nav.sosialhjelp.soknad.auth.maskinporten.MaskinportenClient
 import no.nav.sosialhjelp.soknad.common.Constants.HEADER_INTEGRASJON_ID
 import no.nav.sosialhjelp.soknad.common.Constants.HEADER_INTEGRASJON_PASSORD
@@ -29,13 +28,12 @@ open class MellomlagringConfig(
 
     @Bean
     open fun mellomlagringClient(): MellomlagringClient {
-        val mellomlagringClient = MellomlagringClientImpl(
+        return MellomlagringClientImpl(
             dokumentlagerClient,
             krypteringService,
             maskinportenClient,
             webClient
         )
-        return MetricsFactory.createTimerProxy("MellomlagringClient", mellomlagringClient, MellomlagringClient::class.java)
     }
 
     private val webClient = webClientBuilder

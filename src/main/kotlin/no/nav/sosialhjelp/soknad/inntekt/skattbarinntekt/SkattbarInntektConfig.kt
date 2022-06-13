@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
-import no.nav.sosialhjelp.metrics.MetricsFactory.createTimerProxy
 import no.nav.sosialhjelp.soknad.auth.maskinporten.MaskinportenClient
 import no.nav.sosialhjelp.soknad.health.selftest.Pingable
 import org.springframework.beans.factory.annotation.Value
@@ -25,8 +24,7 @@ open class SkattbarInntektConfig(
 
     @Bean
     open fun skatteetatenClient(): SkatteetatenClient {
-        val skatteetatenClient = SkatteetatenClientImpl(skatteetatenWebClient, maskinportenClient)
-        return createTimerProxy("SkatteetatenApi", skatteetatenClient, SkatteetatenClient::class.java)
+        return SkatteetatenClientImpl(skatteetatenWebClient, maskinportenClient)
     }
 
     @Bean

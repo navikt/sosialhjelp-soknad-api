@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.auth.maskinporten
 
-import no.nav.sosialhjelp.metrics.MetricsFactory
 import no.nav.sosialhjelp.soknad.client.exceptions.TjenesteUtilgjengeligException
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
@@ -25,8 +24,7 @@ open class MaskinportenClientConfig(
     @Bean
     @Profile("!test")
     open fun maskinportenClient(): MaskinportenClient {
-        val maskinportenClient = MaskinportenClientImpl(maskinPortenWebClient, maskinportenProperties, wellknown)
-        return MetricsFactory.createTimerProxy("MaskinportenClient", maskinportenClient, MaskinportenClient::class.java)
+        return MaskinportenClientImpl(maskinPortenWebClient, maskinportenProperties, wellknown)
     }
 
     @Bean
