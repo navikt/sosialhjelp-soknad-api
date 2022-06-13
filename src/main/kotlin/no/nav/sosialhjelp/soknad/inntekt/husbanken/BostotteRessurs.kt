@@ -8,7 +8,6 @@ import no.nav.sbl.soknadsosialhjelp.soknad.bostotte.JsonBostotteSak
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling
 import no.nav.security.token.support.core.api.ProtectedWithClaims
-import no.nav.sosialhjelp.metrics.aspects.Timed
 import no.nav.sosialhjelp.soknad.common.Constants
 import no.nav.sosialhjelp.soknad.common.mapper.OkonomiMapper
 import no.nav.sosialhjelp.soknad.common.mapper.TitleKeyMapper
@@ -30,7 +29,6 @@ import javax.ws.rs.core.MediaType
 @Controller
 @ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4])
 @Path("/soknader/{behandlingsId}/inntekt/bostotte")
-@Timed
 @Produces(MediaType.APPLICATION_JSON)
 open class BostotteRessurs(
     private val tilgangskontroll: Tilgangskontroll,

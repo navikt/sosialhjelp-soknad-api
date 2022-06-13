@@ -4,7 +4,6 @@ import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonEktefelle
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSivilstatus
 import no.nav.security.token.support.core.api.ProtectedWithClaims
-import no.nav.sosialhjelp.metrics.aspects.Timed
 import no.nav.sosialhjelp.soknad.common.Constants
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
@@ -28,7 +27,6 @@ import javax.ws.rs.core.MediaType
 @Controller
 @ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4])
 @Path("/soknader/{behandlingsId}/familie/sivilstatus")
-@Timed
 @Produces(MediaType.APPLICATION_JSON)
 open class SivilstatusRessurs(
     private val tilgangskontroll: Tilgangskontroll,

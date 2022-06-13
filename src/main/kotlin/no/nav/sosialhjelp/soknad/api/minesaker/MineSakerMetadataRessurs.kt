@@ -2,7 +2,6 @@ package no.nav.sosialhjelp.soknad.api.minesaker
 
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.security.token.support.core.api.Unprotected
-import no.nav.sosialhjelp.metrics.aspects.Timed
 import no.nav.sosialhjelp.soknad.api.minesaker.dto.InnsendtSoknadDto
 import no.nav.sosialhjelp.soknad.common.Constants.CLAIM_ACR_LEVEL_3
 import no.nav.sosialhjelp.soknad.common.Constants.CLAIM_ACR_LEVEL_4
@@ -18,7 +17,6 @@ import javax.ws.rs.core.MediaType
 @Controller
 @ProtectedWithClaims(issuer = TOKENX, combineWithOr = true, claimMap = [CLAIM_ACR_LEVEL_3, CLAIM_ACR_LEVEL_4])
 @Path("/minesaker")
-@Timed
 @Produces(MediaType.APPLICATION_JSON)
 open class MineSakerMetadataRessurs(
     private val mineSakerMetadataService: MineSakerMetadataService
