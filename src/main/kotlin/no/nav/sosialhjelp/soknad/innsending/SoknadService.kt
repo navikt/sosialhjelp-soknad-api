@@ -25,8 +25,6 @@ import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonSokernavn
 import no.nav.sbl.soknadsosialhjelp.soknad.utdanning.JsonUtdanning
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
-import no.nav.sosialhjelp.metrics.MetricsFactory
-import no.nav.sosialhjelp.metrics.Timer
 import no.nav.sosialhjelp.soknad.common.exceptions.SosialhjelpSoknadApiException
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.common.systemdata.SystemdataUpdater
@@ -41,7 +39,6 @@ import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils.getVedleggFromInter
 import no.nav.sosialhjelp.soknad.innsending.svarut.OppgaveHandterer
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.BostotteSystemdata
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkatteetatenSystemdata
-import no.nav.sosialhjelp.soknad.metrics.SOKNAD_TYPE
 import no.nav.sosialhjelp.soknad.metrics.SoknadMetricsService
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
 import org.slf4j.LoggerFactory
@@ -53,7 +50,6 @@ import java.time.ZoneOffset
 import java.time.temporal.ChronoUnit.DAYS
 import java.time.temporal.ChronoUnit.HOURS
 import java.time.temporal.ChronoUnit.MINUTES
-import java.util.UUID
 
 @Component
 open class SoknadService(
@@ -70,19 +66,10 @@ open class SoknadService(
 ) {
     @Transactional
     open fun startSoknad(token: String?): String {
-        val mainUid = UUID.randomUUID().toString()
-
-        val startTimer = createDebugTimer("startTimer", mainUid)
-
         val eier = SubjectHandlerUtils.getUserIdFromToken()
-        val henvendelseTimer = createDebugTimer("startHenvendelse", mainUid)
         val behandlingsId = henvendelseService.startSoknad(eier)
-        henvendelseTimer.stop()
-        henvendelseTimer.report()
 
         soknadMetricsService.reportStartSoknad(false)
-
-        val oprettIDbTimer = createDebugTimer("oprettIDb", mainUid)
 
         val soknadUnderArbeid = SoknadUnderArbeid(
             versjon = 1L,
@@ -96,13 +83,7 @@ open class SoknadService(
         )
 
         systemdataUpdater.update(soknadUnderArbeid)
-
         soknadUnderArbeidRepository.opprettSoknad(soknadUnderArbeid, eier)
-
-        oprettIDbTimer.stop()
-        oprettIDbTimer.report()
-        startTimer.stop()
-        startTimer.report()
 
         return behandlingsId
     }
@@ -193,14 +174,6 @@ open class SoknadService(
 
     open fun startEttersending(behandlingsIdSoknad: String?): String {
         return ettersendingService.start(behandlingsIdSoknad)
-    }
-
-    private fun createDebugTimer(name: String, id: String): Timer {
-        val timer = MetricsFactory.createTimer("debug.startsoknad.$name")
-        timer.addFieldToReport("soknadstype", SOKNAD_TYPE)
-        timer.addFieldToReport("randomid", id)
-        timer.start()
-        return timer
     }
 
     private fun convertToVedleggMetadataListe(soknadUnderArbeid: SoknadUnderArbeid): VedleggMetadataListe {
