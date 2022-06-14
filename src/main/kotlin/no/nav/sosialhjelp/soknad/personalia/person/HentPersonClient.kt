@@ -2,10 +2,8 @@ package no.nav.sosialhjelp.soknad.personalia.person
 
 import com.fasterxml.jackson.core.JsonProcessingException
 import kotlinx.coroutines.runBlocking
-import no.nav.sosialhjelp.kotlin.utils.retry
 import no.nav.sosialhjelp.soknad.auth.azure.AzureadService
 import no.nav.sosialhjelp.soknad.auth.tokenx.TokendingsService
-import no.nav.sosialhjelp.soknad.client.config.RetryUtils
 import no.nav.sosialhjelp.soknad.client.exceptions.PdlApiException
 import no.nav.sosialhjelp.soknad.client.exceptions.TjenesteUtilgjengeligException
 import no.nav.sosialhjelp.soknad.client.pdl.HentPersonDto
@@ -34,8 +32,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders.AUTHORIZATION
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
-import org.springframework.web.reactive.function.client.WebClientResponseException
-import org.springframework.web.reactive.function.client.awaitBody
+import org.springframework.web.reactive.function.client.bodyToMono
 
 interface HentPersonClient {
     fun hentPerson(ident: String): PersonDto?
@@ -65,20 +62,13 @@ class HentPersonClientImpl(
 
     private fun hentPersonFraPdl(ident: String): PersonDto? {
         return try {
-            val response: String = runBlocking {
-                retry(
-                    attempts = RetryUtils.DEFAULT_MAX_ATTEMPTS,
-                    initialDelay = RetryUtils.DEFAULT_INITIAL_WAIT_INTERVAL_MILLIS,
-                    factor = RetryUtils.DEFAULT_EXPONENTIAL_BACKOFF_MULTIPLIER,
-                    retryableExceptions = arrayOf(WebClientResponseException::class)
-                ) {
-                    hentPersonRequest
-                        .header(AUTHORIZATION, BEARER + tokenXtoken(ident))
-                        .bodyValue(PdlRequest(HENT_PERSON, variables(ident)))
-                        .retrieve()
-                        .awaitBody()
-                }
-            }
+            val response = hentPersonRequest
+                .header(AUTHORIZATION, BEARER + tokenXtoken(ident))
+                .bodyValue(PdlRequest(HENT_PERSON, variables(ident)))
+                .retrieve()
+                .bodyToMono<String>()
+                .retryWhen(pdlRetry)
+                .block() ?: throw PdlApiException("Noe feilet mot PDL - hentPerson - response null?")
             val pdlResponse = parse<HentPersonDto<PersonDto>>(response)
             pdlResponse.checkForPdlApiErrors()
             pdlResponse.data.hentPerson
@@ -101,20 +91,13 @@ class HentPersonClientImpl(
 
     private fun hentEktefelleFraPdl(ident: String): EktefelleDto? {
         return try {
-            val response: String = runBlocking {
-                retry(
-                    attempts = RetryUtils.DEFAULT_MAX_ATTEMPTS,
-                    initialDelay = RetryUtils.DEFAULT_INITIAL_WAIT_INTERVAL_MILLIS,
-                    factor = RetryUtils.DEFAULT_EXPONENTIAL_BACKOFF_MULTIPLIER,
-                    retryableExceptions = arrayOf(WebClientResponseException::class)
-                ) {
-                    hentPersonRequest
-                        .header(AUTHORIZATION, BEARER + azureadService.getSystemToken(pdlScope))
-                        .bodyValue(PdlRequest(HENT_EKTEFELLE, variables(ident)))
-                        .retrieve()
-                        .awaitBody()
-                }
-            }
+            val response = hentPersonRequest
+                .header(AUTHORIZATION, BEARER + azureAdToken())
+                .bodyValue(PdlRequest(HENT_EKTEFELLE, variables(ident)))
+                .retrieve()
+                .bodyToMono<String>()
+                .retryWhen(pdlRetry)
+                .block() ?: throw PdlApiException("Noe feilet mot PDL - hentEktefelle - response null?")
             val pdlResponse = parse<HentPersonDto<EktefelleDto>>(response)
             pdlResponse.checkForPdlApiErrors()
             pdlResponse.data.hentPerson
@@ -137,20 +120,13 @@ class HentPersonClientImpl(
 
     private fun hentBarnFraPdl(ident: String): BarnDto? {
         return try {
-            val response: String = runBlocking {
-                retry(
-                    attempts = RetryUtils.DEFAULT_MAX_ATTEMPTS,
-                    initialDelay = RetryUtils.DEFAULT_INITIAL_WAIT_INTERVAL_MILLIS,
-                    factor = RetryUtils.DEFAULT_EXPONENTIAL_BACKOFF_MULTIPLIER,
-                    retryableExceptions = arrayOf(WebClientResponseException::class)
-                ) {
-                    hentPersonRequest
-                        .header(AUTHORIZATION, BEARER + azureadService.getSystemToken(pdlScope))
-                        .bodyValue(PdlRequest(HENT_BARN, variables(ident)))
-                        .retrieve()
-                        .awaitBody()
-                }
-            }
+            val response: String = hentPersonRequest
+                .header(AUTHORIZATION, BEARER + azureAdToken())
+                .bodyValue(PdlRequest(HENT_BARN, variables(ident)))
+                .retrieve()
+                .bodyToMono<String>()
+                .retryWhen(pdlRetry)
+                .block() ?: throw PdlApiException("Noe feilet mot PDL - hentBarn - response null?")
             val pdlResponse = parse<HentPersonDto<BarnDto>>(response)
             pdlResponse.checkForPdlApiErrors()
             pdlResponse.data.hentPerson
@@ -176,21 +152,13 @@ class HentPersonClientImpl(
 
     private fun hentAdressebeskyttelseFraPdl(ident: String): PersonAdressebeskyttelseDto? {
         return try {
-            val body: String = runBlocking {
-                retry(
-                    attempts = RetryUtils.DEFAULT_MAX_ATTEMPTS,
-                    initialDelay = RetryUtils.DEFAULT_INITIAL_WAIT_INTERVAL_MILLIS,
-                    factor = RetryUtils.DEFAULT_EXPONENTIAL_BACKOFF_MULTIPLIER,
-                    retryableExceptions = arrayOf(WebClientResponseException::class)
-                ) {
-                    hentPersonRequest
-                        .header(AUTHORIZATION, BEARER + tokenXtoken(ident))
-                        .bodyValue(PdlRequest(HENT_ADRESSEBESKYTTELSE, variables(ident)))
-                        .retrieve()
-                        .awaitBody()
-                }
-            }
-
+            val body: String = hentPersonRequest
+                .header(AUTHORIZATION, BEARER + tokenXtoken(ident))
+                .bodyValue(PdlRequest(HENT_ADRESSEBESKYTTELSE, variables(ident)))
+                .retrieve()
+                .bodyToMono<String>()
+                .retryWhen(pdlRetry)
+                .block() ?: throw PdlApiException("Noe feilet mot PDL - hentAdressebeskyttelse - response null?")
             val pdlResponse = parse<HentPersonDto<PersonAdressebeskyttelseDto>>(body)
             pdlResponse.checkForPdlApiErrors()
             pdlResponse.data.hentPerson
@@ -203,7 +171,13 @@ class HentPersonClientImpl(
         }
     }
 
-    private suspend fun tokenXtoken(ident: String) = tokendingsService.exchangeToken(ident, getToken(), pdlAudience)
+    private fun tokenXtoken(ident: String) = runBlocking {
+        tokendingsService.exchangeToken(ident, getToken(), pdlAudience)
+    }
+
+    private fun azureAdToken() = runBlocking {
+        azureadService.getSystemToken(pdlScope)
+    }
 
     private fun variables(ident: String): Map<String, Any> {
         return mapOf("historikk" to false, "ident" to ident)
