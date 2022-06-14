@@ -10,8 +10,12 @@ fun unproxiedHttpClient(): HttpClient = HttpClient
     .resolver(DefaultAddressResolverGroup.INSTANCE)
 
 fun unproxiedWebClientBuilder(webClientBuilder: WebClient.Builder, baseUrl: String): WebClient.Builder {
-    return webClientBuilder
+    return unproxiedWebClientBuilder(webClientBuilder)
         .baseUrl(baseUrl)
+}
+
+fun unproxiedWebClientBuilder(webClientBuilder: WebClient.Builder): WebClient.Builder {
+    return webClientBuilder
         .clientConnector(ReactorClientHttpConnector(unproxiedHttpClient()))
         .codecs {
             it.defaultCodecs().maxInMemorySize(16 * 1024 * 1024)
