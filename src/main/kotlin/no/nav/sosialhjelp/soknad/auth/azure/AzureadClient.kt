@@ -3,9 +3,9 @@ package no.nav.sosialhjelp.soknad.auth.azure
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import no.nav.sosialhjelp.soknad.client.config.proxiedWebClientBuilder
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED
-import org.springframework.http.client.reactive.ReactorClientHttpConnector
 import org.springframework.stereotype.Component
 import org.springframework.util.LinkedMultiValueMap
 import org.springframework.web.reactive.function.BodyInserters
@@ -23,12 +23,7 @@ class AzureadClient(
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) {
 
-    private val azureWebClient: WebClient = webClientBuilder
-        .clientConnector(ReactorClientHttpConnector(proxiedHttpClient))
-        .codecs {
-            it.defaultCodecs().maxInMemorySize(16 * 1024 * 1024)
-        }
-        .build()
+    private val azureWebClient: WebClient = proxiedWebClientBuilder(webClientBuilder, proxiedHttpClient).build()
 
     suspend fun getSystemToken(scope: String): AzureadTokenResponse {
         return withContext(dispatcher) {

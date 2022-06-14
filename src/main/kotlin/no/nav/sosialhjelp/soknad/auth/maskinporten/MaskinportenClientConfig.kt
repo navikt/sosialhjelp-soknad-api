@@ -1,12 +1,12 @@
 package no.nav.sosialhjelp.soknad.auth.maskinporten
 
+import no.nav.sosialhjelp.soknad.client.config.proxiedWebClientBuilder
 import no.nav.sosialhjelp.soknad.client.exceptions.TjenesteUtilgjengeligException
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile
-import org.springframework.http.client.reactive.ReactorClientHttpConnector
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.bodyToMono
 import reactor.netty.http.client.HttpClient
@@ -33,13 +33,7 @@ open class MaskinportenClientConfig(
         return MaskinportenClientImpl(maskinPortenWebClient, maskinportenProperties, WellKnown("issuer", "token_url"))
     }
 
-    private val maskinPortenWebClient: WebClient =
-        webClientBuilder
-            .clientConnector(ReactorClientHttpConnector(proxiedHttpClient))
-            .codecs {
-                it.defaultCodecs().maxInMemorySize(16 * 1024 * 1024)
-            }
-            .build()
+    private val maskinPortenWebClient: WebClient = proxiedWebClientBuilder(webClientBuilder, proxiedHttpClient).build()
 
     private val wellknown: WellKnown
         get() = maskinPortenWebClient.get()

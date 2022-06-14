@@ -7,7 +7,7 @@ import no.nav.sosialhjelp.soknad.auth.tokenx.TokendingsService
 import no.nav.sosialhjelp.soknad.client.config.RetryUtils.DEFAULT_EXPONENTIAL_BACKOFF_MULTIPLIER
 import no.nav.sosialhjelp.soknad.client.config.RetryUtils.DEFAULT_INITIAL_WAIT_INTERVAL_MILLIS
 import no.nav.sosialhjelp.soknad.client.config.RetryUtils.DEFAULT_MAX_ATTEMPTS
-import no.nav.sosialhjelp.soknad.client.config.unproxiedHttpClient
+import no.nav.sosialhjelp.soknad.client.config.unproxiedWebClientBuilder
 import no.nav.sosialhjelp.soknad.client.redis.CACHE_30_MINUTES_IN_SECONDS
 import no.nav.sosialhjelp.soknad.client.redis.KONTONUMMER_CACHE_KEY_PREFIX
 import no.nav.sosialhjelp.soknad.client.redis.RedisService
@@ -24,7 +24,6 @@ import no.nav.sosialhjelp.soknad.personalia.kontonummer.dto.KontonummerDto
 import org.slf4j.LoggerFactory.getLogger
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders.AUTHORIZATION
-import org.springframework.http.client.reactive.ReactorClientHttpConnector
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException.BadGateway
@@ -48,12 +47,7 @@ class KontonummerClientImpl(
     webClientBuilder: WebClient.Builder
 ) : KontonummerClient {
 
-    private val webClient = webClientBuilder
-        .clientConnector(ReactorClientHttpConnector(unproxiedHttpClient()))
-        .codecs {
-            it.defaultCodecs().maxInMemorySize(16 * 1024 * 1024)
-        }
-        .build()
+    private val webClient = unproxiedWebClientBuilder(webClientBuilder).build()
 
     private val tokenXtoken: String get() = runBlocking {
         tokendingsService.exchangeToken(getUserIdFromToken(), getToken(), oppslagApiAudience)

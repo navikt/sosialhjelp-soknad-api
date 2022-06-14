@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException
 import kotlinx.coroutines.runBlocking
 import no.nav.sosialhjelp.kotlin.utils.logger
 import no.nav.sosialhjelp.soknad.auth.tokenx.TokendingsService
-import no.nav.sosialhjelp.soknad.client.config.unproxiedHttpClient
+import no.nav.sosialhjelp.soknad.client.config.unproxiedWebClientBuilder
 import no.nav.sosialhjelp.soknad.client.exceptions.TjenesteUtilgjengeligException
 import no.nav.sosialhjelp.soknad.client.redis.CACHE_30_MINUTES_IN_SECONDS
 import no.nav.sosialhjelp.soknad.client.redis.KRR_CACHE_KEY_PREFIX
@@ -20,7 +20,6 @@ import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils.getUs
 import no.nav.sosialhjelp.soknad.personalia.telefonnummer.dto.DigitalKontaktinformasjon
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders.AUTHORIZATION
-import org.springframework.http.client.reactive.ReactorClientHttpConnector
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException.Forbidden
@@ -36,12 +35,7 @@ class KrrProxyClient(
     private val tokendingsService: TokendingsService,
     webClientBuilder: WebClient.Builder,
 ) {
-    private val webClient = webClientBuilder
-        .clientConnector(ReactorClientHttpConnector(unproxiedHttpClient()))
-        .codecs {
-            it.defaultCodecs().maxInMemorySize(16 * 1024 * 1024)
-        }
-        .build()
+    private val webClient = unproxiedWebClientBuilder(webClientBuilder).build()
 
     fun getDigitalKontaktinformasjon(ident: String): DigitalKontaktinformasjon? {
         return hentFraCache(ident) ?: hentFraServer(ident)
