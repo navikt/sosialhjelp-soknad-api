@@ -108,7 +108,7 @@ class DigisosApiV2ClientImpl(
 
         filer.forEachIndexed { index, fil ->
             body.add("metadata$index", createHttpEntity(getJson(fil), "metadata$index", null, TEXT_PLAIN_VALUE))
-            body.add("dokument$index", createHttpEntity(InputStreamResource(fil.data), "dokument$index", fil.filnavn, APPLICATION_OCTET_STREAM_VALUE))
+            body.add(fil.filnavn, createHttpEntity(InputStreamResource(fil.data), fil.filnavn, fil.filnavn, APPLICATION_OCTET_STREAM_VALUE))
         }
 
         val startTime = System.currentTimeMillis()
