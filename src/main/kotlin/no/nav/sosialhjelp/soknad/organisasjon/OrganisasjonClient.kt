@@ -33,7 +33,7 @@ class OrganisasjonClientImpl(
     webClientBuilder: WebClient.Builder,
 ) : OrganisasjonClient {
 
-    private val webClient = unproxiedWebClientBuilder(webClientBuilder, eregProxyUrl).build()
+    private val webClient = unproxiedWebClientBuilder(webClientBuilder).baseUrl(eregProxyUrl).build()
 
     private val tokenXtoken: String get() = runBlocking {
         tokendingsService.exchangeToken(getUserIdFromToken(), getToken(), fssProxyAudience)

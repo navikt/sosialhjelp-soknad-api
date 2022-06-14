@@ -1,10 +1,10 @@
 package no.nav.sosialhjelp.soknad.inntekt.husbanken
 
+import no.nav.sosialhjelp.soknad.client.config.proxiedWebClientBuilder
 import no.nav.sosialhjelp.soknad.health.selftest.Pingable
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.http.client.reactive.ReactorClientHttpConnector
 import org.springframework.web.reactive.function.client.WebClient
 import reactor.netty.http.client.HttpClient
 
@@ -33,12 +33,7 @@ open class BostotteConfig(
         }
     }
 
-    private val husbankenWebClient: WebClient =
-        webClientBuilder
-            .clientConnector(ReactorClientHttpConnector(proxiedHttpClient))
-            .codecs {
-                it.defaultCodecs().maxInMemorySize(16 * 1024 * 1024)
-            }
+    private val husbankenWebClient: WebClient = proxiedWebClientBuilder(webClientBuilder, proxiedHttpClient)
             .baseUrl(bostotteBaseUrl)
             .build()
 }

@@ -18,5 +18,5 @@ open class VirusScanConfig(
         return VirusScanner(virusScannerWebClient, enabled)
     }
 
-    private val virusScannerWebClient: WebClient = unproxiedWebClientBuilder(webClientBuilder, clamAvUrl).build()
+    private val virusScannerWebClient: WebClient = unproxiedWebClientBuilder(webClientBuilder).baseUrl(clamAvUrl).build()
 }

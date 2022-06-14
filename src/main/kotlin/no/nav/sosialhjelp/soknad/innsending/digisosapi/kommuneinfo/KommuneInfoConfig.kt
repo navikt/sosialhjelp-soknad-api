@@ -1,10 +1,10 @@
 package no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo
 
 import no.nav.sosialhjelp.soknad.auth.maskinporten.MaskinportenClient
+import no.nav.sosialhjelp.soknad.client.config.proxiedWebClientBuilder
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.http.client.reactive.ReactorClientHttpConnector
 import org.springframework.web.reactive.function.client.WebClient
 import reactor.netty.http.client.HttpClient
 
@@ -28,12 +28,7 @@ open class KommuneInfoConfig(
         )
     }
 
-    private val kommuneInfoMaskinportenWebClient: WebClient =
-        webClientBuilder
+    private val kommuneInfoMaskinportenWebClient: WebClient = proxiedWebClientBuilder(webClientBuilder, proxiedHttpClient)
             .baseUrl(digisosApiEndpoint)
-            .clientConnector(ReactorClientHttpConnector(proxiedHttpClient))
-            .codecs {
-                it.defaultCodecs().maxInMemorySize(16 * 1024 * 1024)
-            }
             .build()
 }

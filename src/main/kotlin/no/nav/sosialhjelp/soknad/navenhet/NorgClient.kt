@@ -7,7 +7,7 @@ import no.nav.sosialhjelp.soknad.auth.tokenx.TokendingsService
 import no.nav.sosialhjelp.soknad.client.config.RetryUtils.DEFAULT_EXPONENTIAL_BACKOFF_MULTIPLIER
 import no.nav.sosialhjelp.soknad.client.config.RetryUtils.DEFAULT_INITIAL_WAIT_INTERVAL_MILLIS
 import no.nav.sosialhjelp.soknad.client.config.RetryUtils.DEFAULT_MAX_ATTEMPTS
-import no.nav.sosialhjelp.soknad.client.config.unproxiedHttpClient
+import no.nav.sosialhjelp.soknad.client.config.unproxiedWebClientBuilder
 import no.nav.sosialhjelp.soknad.client.exceptions.TjenesteUtilgjengeligException
 import no.nav.sosialhjelp.soknad.client.redis.CACHE_24_HOURS_IN_SECONDS
 import no.nav.sosialhjelp.soknad.client.redis.GT_CACHE_KEY_PREFIX
@@ -26,7 +26,6 @@ import no.nav.sosialhjelp.soknad.navenhet.dto.NavEnhetDto
 import org.slf4j.LoggerFactory.getLogger
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders.AUTHORIZATION
-import org.springframework.http.client.reactive.ReactorClientHttpConnector
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
@@ -53,12 +52,7 @@ class NorgClientImpl(
     webClientBuilder: WebClient.Builder
 ) : NorgClient {
 
-    private val webClient = webClientBuilder
-        .clientConnector(ReactorClientHttpConnector(unproxiedHttpClient()))
-        .codecs {
-            it.defaultCodecs().maxInMemorySize(16 * 1024 * 1024)
-        }
-        .build()
+    private val webClient = unproxiedWebClientBuilder(webClientBuilder).build()
 
     private val tokenXtoken: String get() = runBlocking {
         tokendingsService.exchangeToken(getUserIdFromToken(), getToken(), fssProxyAudience)

@@ -16,7 +16,7 @@ class LeaderElectionImpl(
 ) : LeaderElection {
 
     private val electorPath: String? = System.getenv(ELECTOR_PATH)
-    private val webClient: WebClient = unproxiedWebClientBuilder(webClientBuilder, "http://$electorPath").build()
+    private val webClient: WebClient = unproxiedWebClientBuilder(webClientBuilder).baseUrl("http://$electorPath").build()
 
     private var hostname: String = getLocalHost().hostName
     private var leader: String? = null
