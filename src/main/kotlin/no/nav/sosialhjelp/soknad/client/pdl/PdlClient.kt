@@ -18,6 +18,7 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import org.springframework.web.reactive.function.client.bodyToMono
 import reactor.core.publisher.Mono
 import reactor.util.retry.Retry
+import reactor.util.retry.RetryBackoffSpec
 import java.time.Duration
 
 abstract class PdlClient(
@@ -38,7 +39,7 @@ abstract class PdlClient(
         }
         .build()
 
-    protected val pdlRetry = Retry.backoff(5, Duration.ofMillis(100L)).filter { it is WebClientResponseException }
+    protected val pdlRetry: RetryBackoffSpec = Retry.backoff(5, Duration.ofMillis(100L)).filter { it is WebClientResponseException }
 
     open fun ping() {
         pdlWebClient.options()
