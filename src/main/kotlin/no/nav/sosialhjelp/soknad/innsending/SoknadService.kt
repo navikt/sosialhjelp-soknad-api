@@ -39,6 +39,8 @@ import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils.getVedleggFromInter
 import no.nav.sosialhjelp.soknad.innsending.svarut.OppgaveHandterer
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.BostotteSystemdata
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkatteetatenSystemdata
+import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
+import no.nav.sosialhjelp.soknad.metrics.SOKNAD_TYPE
 import no.nav.sosialhjelp.soknad.metrics.SoknadMetricsService
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
 import org.slf4j.LoggerFactory
@@ -63,6 +65,7 @@ open class SoknadService(
     private val bostotteSystemdata: BostotteSystemdata,
     private val skatteetatenSystemdata: SkatteetatenSystemdata,
     private val mellomlagringService: MellomlagringService,
+    private val prometheusMetricsService: PrometheusMetricsService
 ) {
     @Transactional
     open fun startSoknad(token: String?): String {
@@ -70,6 +73,7 @@ open class SoknadService(
         val behandlingsId = henvendelseService.startSoknad(eier)
 
         soknadMetricsService.reportStartSoknad(false)
+        prometheusMetricsService.reportStartSoknad(false)
 
         val soknadUnderArbeid = SoknadUnderArbeid(
             versjon = 1L,
@@ -151,6 +155,7 @@ open class SoknadService(
                 soknadUnderArbeidRepository.slettSoknad(soknadUnderArbeid, eier)
                 henvendelseService.avbrytSoknad(soknadUnderArbeid.behandlingsId, false)
                 soknadMetricsService.reportAvbruttSoknad(soknadUnderArbeid.erEttersendelse)
+                prometheusMetricsService.reportAvbruttSoknad(soknadUnderArbeid.erEttersendelse)
             }
     }
 
