@@ -1,9 +1,8 @@
 package no.nav.sosialhjelp.soknad.client.fssproxy
 
 import no.nav.sosialhjelp.kotlin.utils.logger
-import no.nav.sosialhjelp.soknad.client.config.unproxiedHttpClient
+import no.nav.sosialhjelp.soknad.client.config.unproxiedWebClientBuilder
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.http.client.reactive.ReactorClientHttpConnector
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.bodyToMono
@@ -14,12 +13,7 @@ class FssProxyPingClient(
     webClientBuilder: WebClient.Builder,
 ) {
 
-    private val fssProxyWebClient: WebClient = webClientBuilder
-        .clientConnector(ReactorClientHttpConnector(unproxiedHttpClient()))
-        .codecs {
-            it.defaultCodecs().maxInMemorySize(16 * 1024 * 1024)
-        }
-        .build()
+    private val fssProxyWebClient: WebClient = unproxiedWebClientBuilder(webClientBuilder).build()
 
     fun ping() {
         fssProxyWebClient.options()

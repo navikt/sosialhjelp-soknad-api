@@ -21,7 +21,7 @@ import java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME
 
 @Component
 class KommuneInfoService(
-    private val kommuneInfoMaskinportenClient: KommuneInfoMaskinportenClient,
+    private val kommuneInfoClient: KommuneInfoClient,
     private val redisService: RedisService,
 ) {
 
@@ -110,7 +110,7 @@ class KommuneInfoService(
     }
 
     fun hentKommuneInfoFraFiks(): List<KommuneInfo> {
-        return kommuneInfoMaskinportenClient.getAll()
+        return kommuneInfoClient.getAll()
             .also { log.info("Hentet kommuneinfo ved bruk av maskinporten-integrasjon mot ks:fiks") }
     }
 

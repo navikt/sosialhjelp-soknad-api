@@ -7,7 +7,7 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import kotlinx.coroutines.runBlocking
 import no.nav.sosialhjelp.soknad.arbeid.dto.ArbeidsforholdDto
 import no.nav.sosialhjelp.soknad.auth.tokenx.TokendingsService
-import no.nav.sosialhjelp.soknad.client.config.unproxiedHttpClient
+import no.nav.sosialhjelp.soknad.client.config.unproxiedWebClientBuilder
 import no.nav.sosialhjelp.soknad.client.exceptions.TjenesteUtilgjengeligException
 import no.nav.sosialhjelp.soknad.common.Constants.BEARER
 import no.nav.sosialhjelp.soknad.common.Constants.HEADER_CALL_ID
@@ -18,7 +18,6 @@ import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils.getUs
 import org.slf4j.LoggerFactory.getLogger
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders.AUTHORIZATION
-import org.springframework.http.client.reactive.ReactorClientHttpConnector
 import org.springframework.http.codec.json.Jackson2JsonDecoder
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
@@ -50,11 +49,9 @@ class ArbeidsforholdClient(
         tokendingsService.exchangeToken(getUserIdFromToken(), getToken(), fssProxyAudience)
     }
 
-    private val webClient = webClientBuilder
+    private val webClient = unproxiedWebClientBuilder(webClientBuilder)
         .baseUrl(aaregProxyUrl)
-        .clientConnector(ReactorClientHttpConnector(unproxiedHttpClient()))
         .codecs {
-            it.defaultCodecs().maxInMemorySize(16 * 1024 * 1024)
             it.defaultCodecs().jackson2JsonDecoder(Jackson2JsonDecoder(arbeidsforholdMapper))
         }
         .build()

@@ -7,11 +7,10 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.MissingKotlinParameterException
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
-import no.nav.sosialhjelp.soknad.client.config.unproxiedHttpClient
+import no.nav.sosialhjelp.soknad.client.config.unproxiedWebClientBuilder
 import no.nav.sosialhjelp.soknad.common.Constants.HEADER_CALL_ID
 import no.nav.sosialhjelp.soknad.common.mdc.MdcOperations
 import org.springframework.http.MediaType
-import org.springframework.http.client.reactive.ReactorClientHttpConnector
 import org.springframework.http.codec.json.Jackson2JsonDecoder
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.bodyToMono
@@ -27,10 +26,8 @@ abstract class PdlClient(
         .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
         .registerModule(JavaTimeModule())
 
-    private val pdlWebClient: WebClient = webClientBuilder
-        .clientConnector(ReactorClientHttpConnector(unproxiedHttpClient()))
+    private val pdlWebClient: WebClient = unproxiedWebClientBuilder(webClientBuilder)
         .codecs {
-            it.defaultCodecs().maxInMemorySize(16 * 1024 * 1024)
             it.defaultCodecs().jackson2JsonDecoder(Jackson2JsonDecoder(pdlMapper))
         }
         .build()

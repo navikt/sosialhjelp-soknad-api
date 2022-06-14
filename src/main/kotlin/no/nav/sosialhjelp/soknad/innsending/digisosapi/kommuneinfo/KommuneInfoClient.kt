@@ -10,16 +10,16 @@ import org.springframework.http.HttpHeaders.AUTHORIZATION
 import org.springframework.http.MediaType
 import org.springframework.web.reactive.function.client.WebClient
 
-interface KommuneInfoMaskinportenClient {
+interface KommuneInfoClient {
     fun getAll(): List<KommuneInfo>
 }
 
-class KommuneInfoMaskinportenClientImpl(
+class KommuneInfoClientImpl(
     private val webClient: WebClient,
     private val maskinportenClient: MaskinportenClient,
     private val integrasjonsidFiks: String,
     private val integrasjonpassordFiks: String
-) : KommuneInfoMaskinportenClient {
+) : KommuneInfoClient {
 
     override fun getAll(): List<KommuneInfo> {
         return webClient.get()
