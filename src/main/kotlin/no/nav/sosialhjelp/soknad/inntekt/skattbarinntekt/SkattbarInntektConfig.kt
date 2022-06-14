@@ -46,9 +46,9 @@ open class SkattbarInntektConfig(
         .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
 
     private val skatteetatenWebClient: WebClient = proxiedWebClientBuilder(webClientBuilder, proxiedHttpClient)
-            .baseUrl(baseurl)
-            .codecs {
-                it.defaultCodecs().jackson2JsonDecoder(Jackson2JsonDecoder(skatteetatenMapper))
-            }
-            .build()
+        .baseUrl(baseurl)
+        .codecs {
+            it.defaultCodecs().jackson2JsonDecoder(Jackson2JsonDecoder(skatteetatenMapper))
+        }
+        .build()
 }

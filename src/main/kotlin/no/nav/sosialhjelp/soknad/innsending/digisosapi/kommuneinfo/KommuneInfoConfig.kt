@@ -19,16 +19,16 @@ open class KommuneInfoConfig(
 ) {
 
     @Bean
-    open fun kommuneInfoMaskinportenClient(): KommuneInfoMaskinportenClient {
-        return KommuneInfoMaskinportenClientImpl(
-            kommuneInfoMaskinportenWebClient,
+    open fun kommuneInfoClient(): KommuneInfoClient {
+        return KommuneInfoClientImpl(
+            kommuneInfoWebClient,
             maskinportenClient,
             integrasjonsidFiks,
             integrasjonpassordFiks
         )
     }
 
-    private val kommuneInfoMaskinportenWebClient: WebClient = proxiedWebClientBuilder(webClientBuilder, proxiedHttpClient)
-            .baseUrl(digisosApiEndpoint)
-            .build()
+    private val kommuneInfoWebClient: WebClient = proxiedWebClientBuilder(webClientBuilder, proxiedHttpClient)
+        .baseUrl(digisosApiEndpoint)
+        .build()
 }

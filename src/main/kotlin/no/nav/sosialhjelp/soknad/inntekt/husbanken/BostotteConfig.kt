@@ -34,6 +34,6 @@ open class BostotteConfig(
     }
 
     private val husbankenWebClient: WebClient = proxiedWebClientBuilder(webClientBuilder, proxiedHttpClient)
-            .baseUrl(bostotteBaseUrl)
-            .build()
+        .baseUrl(bostotteBaseUrl)
+        .build()
 }
