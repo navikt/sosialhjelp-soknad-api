@@ -28,6 +28,7 @@ import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJ
 import no.nav.sosialhjelp.soknad.innsending.svarut.OppgaveHandterer
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.BostotteSystemdata
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkatteetatenSystemdata
+import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
 import no.nav.sosialhjelp.soknad.metrics.SoknadMetricsService
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
 import org.assertj.core.api.Assertions.assertThat
@@ -48,6 +49,7 @@ internal class SoknadServiceTest {
     private val skatteetatenSystemdata: SkatteetatenSystemdata = mockk()
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
     private val mellomlagringService: MellomlagringService = mockk()
+    private val prometheusMetricsService: PrometheusMetricsService = mockk(relaxed = true)
 
     private val soknadService = SoknadService(
         henvendelseService,
@@ -60,6 +62,7 @@ internal class SoknadServiceTest {
         bostotteSystemdata,
         skatteetatenSystemdata,
         mellomlagringService,
+        prometheusMetricsService
     )
 
     @BeforeEach
