@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.scheduled
 
-import no.nav.sosialhjelp.metrics.MetricsFactory
 import no.nav.sosialhjelp.soknad.db.repositories.oppgave.OppgaveRepository
 import no.nav.sosialhjelp.soknad.db.repositories.sendtsoknad.BatchSendtSoknadRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.BatchSoknadMetadataRepository
@@ -34,17 +33,11 @@ class SlettForeldedeMetadataScheduler(
             vellykket = 0
             if (batchEnabled) {
                 logger.info("Starter sletting av metadata for ett år gamle søknader")
-                val batchTimer = MetricsFactory.createTimer("sosialhjelp.debug.slettLogg")
-                batchTimer.start()
                 try {
                     slett()
                 } catch (e: RuntimeException) {
                     logger.error("Batchjobb feilet for sletting av logg", e)
-                    batchTimer.setFailed()
                 } finally {
-                    batchTimer.stop()
-                    batchTimer.addFieldToReport("vellykket", vellykket)
-                    batchTimer.report()
                     logger.info("Jobb fullført for sletting av metadata: $vellykket vellykket")
                 }
             } else {

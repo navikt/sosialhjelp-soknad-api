@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.scheduled
 
-import no.nav.sosialhjelp.metrics.MetricsFactory
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.BatchSoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataInnsendingStatus.AVBRUTT_AUTOMATISK
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
@@ -37,17 +36,12 @@ class AvbrytAutomatiskScheduler(
             vellykket = 0
             if (batchEnabled) {
                 logger.info("Starter avbryting av gamle søknader")
-                val batchTimer = MetricsFactory.createTimer("sosialhjelp.debug.avbryt")
-                batchTimer.start()
+
                 try {
                     avbrytSoknader()
                 } catch (e: RuntimeException) {
                     logger.error("Batchjobb feilet", e)
-                    batchTimer.setFailed()
                 } finally {
-                    batchTimer.stop()
-                    batchTimer.addFieldToReport("vellykket", vellykket)
-                    batchTimer.report()
                     logger.info("Jobb fullført: $vellykket vellykket")
                 }
             } else {

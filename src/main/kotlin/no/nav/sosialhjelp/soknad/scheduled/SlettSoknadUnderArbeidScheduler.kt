@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.scheduled
 
-import no.nav.sosialhjelp.metrics.MetricsFactory
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.BatchSoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.scheduled.leaderelection.LeaderElection
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
@@ -32,17 +31,11 @@ class SlettSoknadUnderArbeidScheduler(
             vellykket = 0
             if (batchEnabled) {
                 logger.info("Starter sletting av soknadUnderArbeid som er eldre enn 14 dager")
-                val batchTimer = MetricsFactory.createTimer("sosialhjelp.debug.slettSoknadUnderArbeid")
-                batchTimer.start()
                 try {
                     slett()
                 } catch (e: RuntimeException) {
                     logger.error("Batchjobb feilet", e)
-                    batchTimer.setFailed()
                 } finally {
-                    batchTimer.stop()
-                    batchTimer.addFieldToReport("vellykket", vellykket)
-                    batchTimer.report()
                     logger.info("Jobb fullført: $vellykket vellykket")
                 }
             } else {
