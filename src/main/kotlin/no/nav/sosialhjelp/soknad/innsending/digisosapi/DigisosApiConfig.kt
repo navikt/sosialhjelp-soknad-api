@@ -4,6 +4,7 @@ import io.netty.channel.ChannelOption
 import no.nav.sosialhjelp.soknad.common.Constants
 import no.nav.sosialhjelp.soknad.health.selftest.Pingable
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
+import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringClient
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -22,6 +23,7 @@ open class DigisosApiConfig(
     private val kommuneInfoService: KommuneInfoService,
     private val dokumentlagerClient: DokumentlagerClient,
     private val krypteringService: KrypteringService,
+    private val mellomlagringClient: MellomlagringClient,
     webClientBuilder: WebClient.Builder,
     proxiedHttpClient: HttpClient
 ) {
@@ -60,7 +62,8 @@ open class DigisosApiConfig(
             digisosApiEndpoint,
             dokumentlagerClient,
             krypteringService,
-            fiksWebClient
+            fiksWebClient,
+            mellomlagringClient
         )
     }
 
