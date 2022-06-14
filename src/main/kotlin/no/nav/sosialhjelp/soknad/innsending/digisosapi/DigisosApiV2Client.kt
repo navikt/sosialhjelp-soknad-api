@@ -9,8 +9,8 @@ import no.nav.sosialhjelp.soknad.client.config.RetryUtils
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.KrypteringService.Companion.waitForFutures
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.createHttpEntity
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.digisosObjectMapper
-import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilMetadata
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilOpplasting
+import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringClient
 import org.springframework.core.io.InputStreamResource
 import org.springframework.http.HttpHeaders.AUTHORIZATION
 import org.springframework.http.MediaType
@@ -46,7 +46,8 @@ class DigisosApiV2ClientImpl(
     private val digisosApiEndpoint: String,
     private val dokumentlagerClient: DokumentlagerClient,
     private val krypteringService: KrypteringService,
-    private val fiksWebClient: WebClient
+    private val fiksWebClient: WebClient,
+    private val mellomlagringClient: MellomlagringClient
 ) : DigisosApiV2Client {
 
     override fun krypterOgLastOppFiler(
@@ -58,30 +59,22 @@ class DigisosApiV2ClientImpl(
         navEksternRefId: String,
         token: String?
     ): String {
-        val krypteringFutureList = Collections.synchronizedList(ArrayList<Future<Void>>(dokumenter.size))
+        mellomlagreJuridiskOgBrukerkvittering(dokumenter, navEksternRefId)
+        val soknadPdf = dokumenter.first { it.metadata.filnavn == "Soknad.pdf" }
+
+        val krypteringFutureList = Collections.synchronizedList(ArrayList<Future<Void>>(1))
         val digisosId: String
         try {
-            val fiksX509Certificate = dokumentlagerClient.getDokumentlagerPublicKeyX509Certificate()
+            val filForOpplasting = toFilForOpplasting(soknadPdf, krypteringFutureList)
+
             digisosId = lastOppFiler(
-                soknadJson,
-                tilleggsinformasjonJson,
-                vedleggJson,
-                dokumenter.map { dokument: FilOpplasting ->
-                    FilForOpplasting.builder<Any>()
-                        .filnavn(dokument.metadata.filnavn)
-                        .metadata(
-                            FilMetadata(
-                                filnavn = dokument.metadata.filnavn,
-                                mimetype = dokument.metadata.mimetype,
-                                storrelse = dokument.metadata.storrelse
-                            )
-                        )
-                        .data(krypteringService.krypter(dokument.data, krypteringFutureList, fiksX509Certificate))
-                        .build()
-                },
-                kommunenr,
-                navEksternRefId,
-                token
+                soknadJson = soknadJson,
+                tilleggsinformasjonJson = tilleggsinformasjonJson,
+                vedleggJson = vedleggJson,
+                soknadPdf = filForOpplasting,
+                kommunenummer = kommunenr,
+                behandlingsId = navEksternRefId,
+                token = token
             )
             waitForFutures(krypteringFutureList)
         } finally {
@@ -92,11 +85,29 @@ class DigisosApiV2ClientImpl(
         return digisosId
     }
 
+    private fun toFilForOpplasting(
+        soknadPdf: FilOpplasting,
+        krypteringFutureList: MutableList<Future<Void>>
+    ): FilForOpplasting<Any> {
+        val fiksX509Certificate = dokumentlagerClient.getDokumentlagerPublicKeyX509Certificate()
+        return FilForOpplasting.builder<Any>()
+            .filnavn(soknadPdf.metadata.filnavn)
+            .metadata(soknadPdf.metadata)
+            .data(krypteringService.krypter(soknadPdf.data, krypteringFutureList, fiksX509Certificate))
+            .build()
+    }
+
+    private fun mellomlagreJuridiskOgBrukerkvittering(dokumenter: List<FilOpplasting>, navEksternRefId: String) {
+        dokumenter
+            .filter { it.metadata.filnavn == "Soknad-juridisk.pdf" || it.metadata.filnavn == "Brukerkvittering.pdf" }
+            .forEach { mellomlagringClient.postVedlegg(navEksternRefId, it) }
+    }
+
     private fun lastOppFiler(
         soknadJson: String,
         tilleggsinformasjonJson: String,
         vedleggJson: String,
-        filer: List<FilForOpplasting<Any>>,
+        soknadPdf: FilForOpplasting<Any>,
         kommunenummer: String,
         behandlingsId: String,
         token: String?
@@ -105,11 +116,8 @@ class DigisosApiV2ClientImpl(
         body.add("tilleggsinformasjonJson", createHttpEntity(tilleggsinformasjonJson, "tilleggsinformasjonJson", null, APPLICATION_JSON_VALUE))
         body.add("soknadJson", createHttpEntity(soknadJson, "soknadJson", null, APPLICATION_JSON_VALUE))
         body.add("vedleggJson", createHttpEntity(vedleggJson, "vedleggJson", null, APPLICATION_JSON_VALUE))
-
-        filer.forEachIndexed { index, fil ->
-            body.add("metadata$index", createHttpEntity(getJson(fil), "metadata$index", null, TEXT_PLAIN_VALUE))
-            body.add(fil.filnavn, createHttpEntity(InputStreamResource(fil.data), fil.filnavn, fil.filnavn, APPLICATION_OCTET_STREAM_VALUE))
-        }
+        body.add("metadata", createHttpEntity(getJson(soknadPdf), "metadata", null, TEXT_PLAIN_VALUE))
+        body.add(soknadPdf.filnavn, createHttpEntity(InputStreamResource(soknadPdf.data), soknadPdf.filnavn, soknadPdf.filnavn, APPLICATION_OCTET_STREAM_VALUE))
 
         val startTime = System.currentTimeMillis()
         try {

@@ -60,16 +60,12 @@ class DokumentListeService(
             throw RuntimeException("Kan ikke sende søknad fordi søknaden mangler")
         }
 
-        // todo: lag dokumentListe med metadata om mellomlagrede vedlegg
-        val dokumenterForVedlegg = emptyArray<FilOpplasting>() // lagDokumentListeForMellomlagredeVedlegg(soknadUnderArbeid.behandlingsId)
-
         return listOf(
             lagDokumentForSaksbehandlerPdf(internalSoknad),
             lagDokumentForJuridiskPdf(internalSoknad),
             lagDokumentForBrukerkvitteringPdf(),
-            // *dokumenterForVedlegg.toTypedArray()
         ).also {
-            log.info("Antall vedlegg: ${it.size}. Antall vedlegg lastet opp av bruker: ${dokumenterForVedlegg.size}")
+            log.info("Antall vedlegg: ${it.size}")
         }
     }
 
