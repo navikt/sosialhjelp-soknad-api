@@ -2,11 +2,8 @@ package no.nav.sosialhjelp.soknad.navenhet
 
 import com.fasterxml.jackson.core.JsonProcessingException
 import kotlinx.coroutines.runBlocking
-import no.nav.sosialhjelp.kotlin.utils.retry
 import no.nav.sosialhjelp.soknad.auth.tokenx.TokendingsService
-import no.nav.sosialhjelp.soknad.client.config.RetryUtils.DEFAULT_EXPONENTIAL_BACKOFF_MULTIPLIER
-import no.nav.sosialhjelp.soknad.client.config.RetryUtils.DEFAULT_INITIAL_WAIT_INTERVAL_MILLIS
-import no.nav.sosialhjelp.soknad.client.config.RetryUtils.DEFAULT_MAX_ATTEMPTS
+import no.nav.sosialhjelp.soknad.client.config.RetryUtils
 import no.nav.sosialhjelp.soknad.client.config.unproxiedWebClientBuilder
 import no.nav.sosialhjelp.soknad.client.exceptions.TjenesteUtilgjengeligException
 import no.nav.sosialhjelp.soknad.client.redis.CACHE_24_HOURS_IN_SECONDS
@@ -29,12 +26,8 @@ import org.springframework.http.HttpHeaders.AUTHORIZATION
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
-import org.springframework.web.reactive.function.client.WebClientResponseException.BadGateway
-import org.springframework.web.reactive.function.client.WebClientResponseException.GatewayTimeout
-import org.springframework.web.reactive.function.client.WebClientResponseException.InternalServerError
 import org.springframework.web.reactive.function.client.WebClientResponseException.NotFound
-import org.springframework.web.reactive.function.client.WebClientResponseException.ServiceUnavailable
-import org.springframework.web.reactive.function.client.awaitBody
+import org.springframework.web.reactive.function.client.bodyToMono
 import java.nio.charset.StandardCharsets
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -60,24 +53,16 @@ class NorgClientImpl(
 
     override fun hentNavEnhetForGeografiskTilknytning(geografiskTilknytning: String): NavEnhetDto? {
         return try {
-            val navEnhetDto = runBlocking {
-                retry(
-                    attempts = DEFAULT_MAX_ATTEMPTS,
-                    initialDelay = DEFAULT_INITIAL_WAIT_INTERVAL_MILLIS,
-                    factor = DEFAULT_EXPONENTIAL_BACKOFF_MULTIPLIER,
-                    retryableExceptions = arrayOf(ServiceUnavailable::class, InternalServerError::class, BadGateway::class, GatewayTimeout::class)
-                ) {
-                    webClient.get()
-                        .uri("${baseurl}enhet/navkontor/{geografiskTilknytning}", geografiskTilknytning)
-                        .header(HEADER_CALL_ID, MdcOperations.getFromMDC(MDC_CALL_ID))
-                        .header(HEADER_CONSUMER_ID, SubjectHandlerUtils.getConsumerId())
-                        .header(AUTHORIZATION, BEARER + tokenXtoken)
-                        .retrieve()
-                        .awaitBody<NavEnhetDto>()
-                }
-            }
-            lagreTilCache(geografiskTilknytning, navEnhetDto)
-            navEnhetDto
+            webClient.get()
+                .uri("${baseurl}enhet/navkontor/{geografiskTilknytning}", geografiskTilknytning)
+                .header(HEADER_CALL_ID, MdcOperations.getFromMDC(MDC_CALL_ID))
+                .header(HEADER_CONSUMER_ID, SubjectHandlerUtils.getConsumerId())
+                .header(AUTHORIZATION, BEARER + tokenXtoken)
+                .retrieve()
+                .bodyToMono<NavEnhetDto>()
+                .retryWhen(RetryUtils.DEFAULT_RETRY_SERVER_ERRORS)
+                .block()
+                ?.also { lagreTilCache(geografiskTilknytning, it) }
         } catch (e: NotFound) {
             log.warn("Fant ikke norgenhet for gt $geografiskTilknytning")
             null

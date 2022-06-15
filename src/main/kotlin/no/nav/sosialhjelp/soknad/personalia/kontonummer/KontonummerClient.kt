@@ -2,11 +2,8 @@ package no.nav.sosialhjelp.soknad.personalia.kontonummer
 
 import com.fasterxml.jackson.core.JsonProcessingException
 import kotlinx.coroutines.runBlocking
-import no.nav.sosialhjelp.kotlin.utils.retry
 import no.nav.sosialhjelp.soknad.auth.tokenx.TokendingsService
-import no.nav.sosialhjelp.soknad.client.config.RetryUtils.DEFAULT_EXPONENTIAL_BACKOFF_MULTIPLIER
-import no.nav.sosialhjelp.soknad.client.config.RetryUtils.DEFAULT_INITIAL_WAIT_INTERVAL_MILLIS
-import no.nav.sosialhjelp.soknad.client.config.RetryUtils.DEFAULT_MAX_ATTEMPTS
+import no.nav.sosialhjelp.soknad.client.config.RetryUtils
 import no.nav.sosialhjelp.soknad.client.config.unproxiedWebClientBuilder
 import no.nav.sosialhjelp.soknad.client.redis.CACHE_30_MINUTES_IN_SECONDS
 import no.nav.sosialhjelp.soknad.client.redis.KONTONUMMER_CACHE_KEY_PREFIX
@@ -26,13 +23,9 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders.AUTHORIZATION
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
-import org.springframework.web.reactive.function.client.WebClientResponseException.BadGateway
-import org.springframework.web.reactive.function.client.WebClientResponseException.GatewayTimeout
-import org.springframework.web.reactive.function.client.WebClientResponseException.InternalServerError
 import org.springframework.web.reactive.function.client.WebClientResponseException.NotFound
-import org.springframework.web.reactive.function.client.WebClientResponseException.ServiceUnavailable
 import org.springframework.web.reactive.function.client.WebClientResponseException.Unauthorized
-import org.springframework.web.reactive.function.client.awaitBody
+import org.springframework.web.reactive.function.client.bodyToMono
 
 interface KontonummerClient {
     fun getKontonummer(ident: String): KontonummerDto?
@@ -44,37 +37,30 @@ class KontonummerClientImpl(
     @Value("\${oppslag_api_audience}") private val oppslagApiAudience: String,
     private val redisService: RedisService,
     private val tokendingsService: TokendingsService,
-    webClientBuilder: WebClient.Builder
+    webClientBuilder: WebClient.Builder,
 ) : KontonummerClient {
 
     private val webClient = unproxiedWebClientBuilder(webClientBuilder).build()
 
-    private val tokenXtoken: String get() = runBlocking {
-        tokendingsService.exchangeToken(getUserIdFromToken(), getToken(), oppslagApiAudience)
-    }
+    private val tokenXtoken: String
+        get() = runBlocking {
+            tokendingsService.exchangeToken(getUserIdFromToken(), getToken(), oppslagApiAudience)
+        }
 
     override fun getKontonummer(ident: String): KontonummerDto? {
         hentKontonummerFraCache(ident)?.let { return it }
 
         return try {
-            val response: KontonummerDto = runBlocking {
-                retry(
-                    attempts = DEFAULT_MAX_ATTEMPTS,
-                    initialDelay = DEFAULT_INITIAL_WAIT_INTERVAL_MILLIS,
-                    factor = DEFAULT_EXPONENTIAL_BACKOFF_MULTIPLIER,
-                    retryableExceptions = arrayOf(ServiceUnavailable::class, InternalServerError::class, BadGateway::class, GatewayTimeout::class)
-                ) {
-                    webClient.get()
-                        .uri(oppslagApiUrl + "kontonummer")
-                        .header(AUTHORIZATION, BEARER + tokenXtoken)
-                        .header(HEADER_CALL_ID, getFromMDC(MDC_CALL_ID))
-                        .header(HEADER_CONSUMER_ID, getConsumerId())
-                        .retrieve()
-                        .awaitBody()
-                }
-            }
-            lagreKontonummerTilCache(ident, response)
-            response
+            webClient.get()
+                .uri(oppslagApiUrl + "kontonummer")
+                .header(AUTHORIZATION, BEARER + tokenXtoken)
+                .header(HEADER_CALL_ID, getFromMDC(MDC_CALL_ID))
+                .header(HEADER_CONSUMER_ID, getConsumerId())
+                .retrieve()
+                .bodyToMono<KontonummerDto>()
+                .retryWhen(RetryUtils.DEFAULT_RETRY_SERVER_ERRORS)
+                .block()
+                ?.also { lagreKontonummerTilCache(ident, it) }
         } catch (e: Unauthorized) {
             log.warn("Kontonummer - 401 Unauthorized - {}", e.message)
             null

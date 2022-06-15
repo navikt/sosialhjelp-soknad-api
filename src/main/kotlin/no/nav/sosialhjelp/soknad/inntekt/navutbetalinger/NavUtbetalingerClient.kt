@@ -2,7 +2,6 @@ package no.nav.sosialhjelp.soknad.inntekt.navutbetalinger
 
 import com.fasterxml.jackson.core.JsonProcessingException
 import kotlinx.coroutines.runBlocking
-import no.nav.sosialhjelp.kotlin.utils.retry
 import no.nav.sosialhjelp.soknad.auth.tokenx.TokendingsService
 import no.nav.sosialhjelp.soknad.client.config.RetryUtils
 import no.nav.sosialhjelp.soknad.client.config.unproxiedWebClientBuilder
@@ -24,11 +23,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
-import org.springframework.web.reactive.function.client.WebClientResponseException.BadGateway
-import org.springframework.web.reactive.function.client.WebClientResponseException.GatewayTimeout
-import org.springframework.web.reactive.function.client.WebClientResponseException.InternalServerError
-import org.springframework.web.reactive.function.client.WebClientResponseException.ServiceUnavailable
-import org.springframework.web.reactive.function.client.awaitBody
+import org.springframework.web.reactive.function.client.bodyToMono
 
 interface NavUtbetalingerClient {
     fun getUtbetalingerSiste40Dager(ident: String): NavUtbetalingerDto?
@@ -53,24 +48,16 @@ class NavUtbetalingerClientImpl(
         hentFraCache(ident)?.let { return it }
 
         return try {
-            val response: NavUtbetalingerDto = runBlocking {
-                retry(
-                    attempts = RetryUtils.DEFAULT_MAX_ATTEMPTS,
-                    initialDelay = RetryUtils.DEFAULT_INITIAL_WAIT_INTERVAL_MILLIS,
-                    factor = RetryUtils.DEFAULT_EXPONENTIAL_BACKOFF_MULTIPLIER,
-                    retryableExceptions = arrayOf(ServiceUnavailable::class, InternalServerError::class, BadGateway::class, GatewayTimeout::class)
-                ) {
-                    webClient.get()
-                        .uri(oppslagApiUrl + "utbetalinger")
-                        .header(HttpHeaders.AUTHORIZATION, BEARER + tokenXtoken)
-                        .header(HEADER_CALL_ID, getFromMDC(MDC_CALL_ID))
-                        .header(HEADER_CONSUMER_ID, getConsumerId())
-                        .retrieve()
-                        .awaitBody()
-                }
-            }
-            lagreTilCache(ident, response)
-            response
+            webClient.get()
+                .uri(oppslagApiUrl + "utbetalinger")
+                .header(HttpHeaders.AUTHORIZATION, BEARER + tokenXtoken)
+                .header(HEADER_CALL_ID, getFromMDC(MDC_CALL_ID))
+                .header(HEADER_CONSUMER_ID, getConsumerId())
+                .retrieve()
+                .bodyToMono<NavUtbetalingerDto>()
+                .retryWhen(RetryUtils.DEFAULT_RETRY_SERVER_ERRORS)
+                .block()
+                ?.also { lagreTilCache(ident, it) }
         } catch (e: Exception) {
             log.error("Utbetalinger - Noe uventet feilet", e)
             return null
