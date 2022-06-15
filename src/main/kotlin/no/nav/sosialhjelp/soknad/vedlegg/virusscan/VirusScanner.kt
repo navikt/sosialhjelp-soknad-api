@@ -1,19 +1,14 @@
 package no.nav.sosialhjelp.soknad.vedlegg.virusscan
 
-import kotlinx.coroutines.runBlocking
-import no.nav.sosialhjelp.kotlin.utils.retry
-import no.nav.sosialhjelp.soknad.client.config.RetryUtils.DEFAULT_EXPONENTIAL_BACKOFF_MULTIPLIER
-import no.nav.sosialhjelp.soknad.client.config.RetryUtils.DEFAULT_INITIAL_WAIT_INTERVAL_MILLIS
-import no.nav.sosialhjelp.soknad.client.config.RetryUtils.DEFAULT_MAX_ATTEMPTS
+import no.nav.sosialhjelp.soknad.client.config.RetryUtils
 import no.nav.sosialhjelp.soknad.common.MiljoUtils
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.OpplastingException
 import no.nav.sosialhjelp.soknad.vedlegg.virusscan.dto.Result
 import no.nav.sosialhjelp.soknad.vedlegg.virusscan.dto.ScanResult
 import org.slf4j.LoggerFactory.getLogger
-import org.springframework.web.client.HttpServerErrorException
 import org.springframework.web.reactive.function.BodyInserters
 import org.springframework.web.reactive.function.client.WebClient
-import org.springframework.web.reactive.function.client.awaitBody
+import org.springframework.web.reactive.function.client.bodyToMono
 
 /**
  * Integrasjonen er kopiert fra https://github.com/navikt/foreldrepengesoknad-api og modifisert til eget bruk
@@ -42,20 +37,12 @@ class VirusScanner(
             }
             log.info("Scanner ${data.size} bytes for fileType $fileType (fra Tika)")
 
-            val scanResults = runBlocking {
-                retry(
-                    attempts = DEFAULT_MAX_ATTEMPTS,
-                    initialDelay = DEFAULT_INITIAL_WAIT_INTERVAL_MILLIS,
-                    factor = DEFAULT_EXPONENTIAL_BACKOFF_MULTIPLIER,
-                    retryableExceptions = arrayOf(HttpServerErrorException::class)
-                ) {
-                    virusScannerWebClient
-                        .put()
-                        .body(BodyInserters.fromValue(data))
-                        .retrieve()
-                        .awaitBody<Array<ScanResult>>()
-                }
-            }
+            val scanResults = virusScannerWebClient.put()
+                .body(BodyInserters.fromValue(data))
+                .retrieve()
+                .bodyToMono<Array<ScanResult>>()
+                .retryWhen(RetryUtils.DEFAULT_RETRY_SERVER_ERRORS)
+                .block()
 
             if (scanResults.size != 1) {
                 log.warn("Uventet respons med lengde ${scanResults.size}, forventet lengde er 1")
