@@ -1,10 +1,8 @@
 package no.nav.sosialhjelp.soknad.adressesok
 
 import kotlinx.coroutines.runBlocking
-import no.nav.sosialhjelp.kotlin.utils.retry
 import no.nav.sosialhjelp.soknad.adressesok.dto.AdressesokResultDto
 import no.nav.sosialhjelp.soknad.auth.azure.AzureadService
-import no.nav.sosialhjelp.soknad.client.config.RetryUtils
 import no.nav.sosialhjelp.soknad.client.exceptions.PdlApiException
 import no.nav.sosialhjelp.soknad.client.exceptions.TjenesteUtilgjengeligException
 import no.nav.sosialhjelp.soknad.client.pdl.AdressesokDto
@@ -17,8 +15,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders.AUTHORIZATION
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
-import org.springframework.web.reactive.function.client.WebClientResponseException
-import org.springframework.web.reactive.function.client.awaitBody
+import org.springframework.web.reactive.function.client.bodyToMono
 
 @Component
 open class AdressesokClient(
@@ -30,20 +27,13 @@ open class AdressesokClient(
 
     open fun getAdressesokResult(variables: Map<String, Any>): AdressesokResultDto? {
         return try {
-            val response = runBlocking {
-                retry(
-                    attempts = RetryUtils.DEFAULT_MAX_ATTEMPTS,
-                    initialDelay = RetryUtils.DEFAULT_INITIAL_WAIT_INTERVAL_MILLIS,
-                    factor = RetryUtils.DEFAULT_EXPONENTIAL_BACKOFF_MULTIPLIER,
-                    retryableExceptions = arrayOf(WebClientResponseException::class)
-                ) {
-                    baseRequest
-                        .header(AUTHORIZATION, BEARER + azureadService.getSystemToken(pdlScope))
-                        .bodyValue(PdlRequest(ADRESSE_SOK, variables))
-                        .retrieve()
-                        .awaitBody<String>()
-                }
-            }
+            val response = baseRequest
+                .header(AUTHORIZATION, BEARER + azureAdToken())
+                .bodyValue(PdlRequest(ADRESSE_SOK, variables))
+                .retrieve()
+                .bodyToMono<String>()
+                .retryWhen(pdlRetry)
+                .block() ?: throw PdlApiException("Noe feilet mot PDL - sokAdresse - response null?")
             val pdlResponse = parse<AdressesokDto>(response)
             pdlResponse.checkForPdlApiErrors()
             pdlResponse.data?.sokAdresse
@@ -55,6 +45,8 @@ open class AdressesokClient(
             throw TjenesteUtilgjengeligException("Noe uventet feilet ved kall til PDL", e)
         }
     }
+
+    private fun azureAdToken() = runBlocking { azureadService.getSystemToken(pdlScope) }
 
     companion object {
         private val log = getLogger(AdressesokClient::class.java)
