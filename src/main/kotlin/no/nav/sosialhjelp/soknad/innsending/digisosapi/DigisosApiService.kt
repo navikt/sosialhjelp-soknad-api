@@ -20,6 +20,8 @@ import no.nav.sosialhjelp.soknad.innsending.SenderUtils.createPrefixedBehandling
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilOpplasting
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
 import no.nav.sosialhjelp.soknad.metrics.MetricsUtils.navKontorTilInfluxNavn
+import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
+import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService.Companion.DIGISOS_API
 import no.nav.sosialhjelp.soknad.metrics.SoknadMetricsService
 import no.nav.sosialhjelp.soknad.vedlegg.OpplastetVedleggRessurs.Companion.KS_MELLOMLAGRING_ENABLED
 import org.slf4j.LoggerFactory
@@ -35,6 +37,7 @@ class DigisosApiService(
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val dokumentListeService: DokumentListeService,
     private val unleash: Unleash,
+    private val prometheusMetricsService: PrometheusMetricsService
 ) {
     private val objectMapper = JsonSosialhjelpObjectMapper.createObjectMapper()
 
@@ -83,6 +86,7 @@ class DigisosApiService(
         slettSoknadUnderArbeidEtterSendingTilFiks(soknadUnderArbeid)
 
         soknadMetricsService.reportSendSoknadMetrics(soknadUnderArbeid, vedlegg.vedleggListe)
+        prometheusMetricsService.reportSendtSoknad(soknadUnderArbeid.erEttersendelse, DIGISOS_API, navKontorTilInfluxNavn(navEnhetsnavn))
         return digisosId
     }
 
@@ -122,6 +126,7 @@ class DigisosApiService(
         slettSoknadUnderArbeidEtterSendingTilFiks(soknadUnderArbeid)
 
         soknadMetricsService.reportSendSoknadMetrics(soknadUnderArbeid, vedlegg.vedleggListe)
+        prometheusMetricsService.reportSendtSoknad(soknadUnderArbeid.erEttersendelse, DIGISOS_API, navKontorTilInfluxNavn(navEnhetsnavn))
         return digisosId
     }
 
@@ -161,6 +166,7 @@ class DigisosApiService(
             }
         } catch (e: Exception) {
             event.setFailed()
+            prometheusMetricsService.reportFeiletSendingSoknad(false, DIGISOS_API)
             throw e
         } finally {
             event.report()

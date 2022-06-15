@@ -11,6 +11,7 @@ import no.nav.sosialhjelp.soknad.db.repositories.oppgave.Oppgave
 import no.nav.sosialhjelp.soknad.db.repositories.oppgave.Status
 import no.nav.sosialhjelp.soknad.db.repositories.sendtsoknad.SendtSoknad
 import no.nav.sosialhjelp.soknad.innsending.InnsendingService
+import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
@@ -21,7 +22,8 @@ internal class FiksHandtererTest {
 
     private val fiksSender: FiksSender = mockk()
     private val innsendingService: InnsendingService = mockk()
-    private val fiksHandterer = FiksHandterer(fiksSender, innsendingService)
+    private val prometheusMetricsService: PrometheusMetricsService = mockk(relaxed = true)
+    private val fiksHandterer = FiksHandterer(fiksSender, innsendingService, prometheusMetricsService)
 
     @BeforeEach
     internal fun setUp() {

@@ -18,6 +18,7 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderAr
 import no.nav.sosialhjelp.soknad.innsending.HenvendelseService
 import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
+import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
 import no.nav.sosialhjelp.soknad.metrics.SoknadMetricsService
 import no.nav.sosialhjelp.soknad.vedlegg.OpplastetVedleggRessurs.Companion.KS_MELLOMLAGRING_ENABLED
 import org.assertj.core.api.Assertions.assertThat
@@ -36,6 +37,7 @@ internal class DigisosApiServiceTest {
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
     private val dokumentListeService: DokumentListeService = mockk()
     private val unleash: Unleash = mockk()
+    private val prometheusMetricsService: PrometheusMetricsService = mockk(relaxed = true)
 
     private val digisosApiService = DigisosApiService(
         digisosApiV1Client,
@@ -45,7 +47,8 @@ internal class DigisosApiServiceTest {
         soknadMetricsService,
         soknadUnderArbeidRepository,
         dokumentListeService,
-        unleash
+        unleash,
+        prometheusMetricsService
     )
 
     @BeforeEach
