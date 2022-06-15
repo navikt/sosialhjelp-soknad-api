@@ -13,8 +13,12 @@ import no.nav.sosialhjelp.soknad.common.mdc.MdcOperations
 import org.springframework.http.MediaType
 import org.springframework.http.codec.json.Jackson2JsonDecoder
 import org.springframework.web.reactive.function.client.WebClient
+import org.springframework.web.reactive.function.client.WebClientResponseException
 import org.springframework.web.reactive.function.client.bodyToMono
 import reactor.core.publisher.Mono
+import reactor.util.retry.Retry
+import reactor.util.retry.RetryBackoffSpec
+import java.time.Duration
 
 abstract class PdlClient(
     webClientBuilder: WebClient.Builder,
@@ -31,6 +35,8 @@ abstract class PdlClient(
             it.defaultCodecs().jackson2JsonDecoder(Jackson2JsonDecoder(pdlMapper))
         }
         .build()
+
+    protected val pdlRetry: RetryBackoffSpec = Retry.backoff(5, Duration.ofMillis(100L)).filter { it is WebClientResponseException }
 
     open fun ping() {
         pdlWebClient.options()

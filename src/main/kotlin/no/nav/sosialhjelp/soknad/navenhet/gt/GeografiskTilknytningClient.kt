@@ -2,9 +2,7 @@ package no.nav.sosialhjelp.soknad.navenhet.gt
 
 import com.fasterxml.jackson.core.JsonProcessingException
 import kotlinx.coroutines.runBlocking
-import no.nav.sosialhjelp.kotlin.utils.retry
 import no.nav.sosialhjelp.soknad.auth.tokenx.TokendingsService
-import no.nav.sosialhjelp.soknad.client.config.RetryUtils
 import no.nav.sosialhjelp.soknad.client.exceptions.PdlApiException
 import no.nav.sosialhjelp.soknad.client.exceptions.TjenesteUtilgjengeligException
 import no.nav.sosialhjelp.soknad.client.pdl.HentGeografiskTilknytningDto
@@ -24,8 +22,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders.AUTHORIZATION
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
-import org.springframework.web.reactive.function.client.WebClientResponseException
-import org.springframework.web.reactive.function.client.awaitBody
+import org.springframework.web.reactive.function.client.bodyToMono
 
 @Component
 class GeografiskTilknytningClient(
@@ -40,21 +37,15 @@ class GeografiskTilknytningClient(
         hentFraCache(ident)?.let { return it }
 
         try {
-            val response: String = runBlocking {
-                retry(
-                    attempts = RetryUtils.DEFAULT_MAX_ATTEMPTS,
-                    initialDelay = RetryUtils.DEFAULT_INITIAL_WAIT_INTERVAL_MILLIS,
-                    factor = RetryUtils.DEFAULT_EXPONENTIAL_BACKOFF_MULTIPLIER,
-                    retryableExceptions = arrayOf(WebClientResponseException::class)
-                ) {
-                    baseRequest
-                        .header(HEADER_TEMA, TEMA_KOM)
-                        .header(AUTHORIZATION, BEARER + tokendingsService.exchangeToken(ident, getToken(), pdlAudience))
-                        .bodyValue(PdlRequest(HENT_GEOGRAFISK_TILKNYTNING, variables(ident)))
-                        .retrieve()
-                        .awaitBody()
-                }
-            }
+            val response: String =
+                baseRequest
+                    .header(HEADER_TEMA, TEMA_KOM)
+                    .header(AUTHORIZATION, BEARER + tokenXtoken(ident))
+                    .bodyValue(PdlRequest(HENT_GEOGRAFISK_TILKNYTNING, variables(ident)))
+                    .retrieve()
+                    .bodyToMono<String>()
+                    .retryWhen(pdlRetry)
+                    .block() ?: throw PdlApiException("Noe feilet mot PDL - hentGeografiskTilknytning - response null?")
 
             val pdlResponse = parse<HentGeografiskTilknytningDto>(response)
             pdlResponse.checkForPdlApiErrors()
@@ -66,6 +57,10 @@ class GeografiskTilknytningClient(
             log.error("Kall til PDL feilet (hentGeografiskTilknytning)")
             throw TjenesteUtilgjengeligException("Noe uventet feilet ved kall til PDL", e)
         }
+    }
+
+    private fun tokenXtoken(ident: String) = runBlocking {
+        tokendingsService.exchangeToken(ident, getToken(), pdlAudience)
     }
 
     private fun hentFraCache(ident: String): GeografiskTilknytningDto? {
