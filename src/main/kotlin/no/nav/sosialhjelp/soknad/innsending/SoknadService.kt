@@ -40,7 +40,6 @@ import no.nav.sosialhjelp.soknad.innsending.svarut.OppgaveHandterer
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.BostotteSystemdata
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkatteetatenSystemdata
 import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
-import no.nav.sosialhjelp.soknad.metrics.SOKNAD_TYPE
 import no.nav.sosialhjelp.soknad.metrics.SoknadMetricsService
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
 import org.slf4j.LoggerFactory
