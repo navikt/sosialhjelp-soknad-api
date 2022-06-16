@@ -24,7 +24,7 @@ class PrometheusMetricsService(
         .register(meterRegistry)
 
     private val oppgaverStuckUnderArbeidGauge = Gauge.builder("oppgaver_stuck_underarbeid_gauge", oppgaverStuckUnderArbeid) { it.toDouble() }
-        .description("Antall av oppgaver med status FEILET i db")
+        .description("Antall av oppgaver stuck med status UNDER_ARBEID i db")
         .register(meterRegistry)
 
     fun reportStartSoknad(isEttersendelse: Boolean) {
