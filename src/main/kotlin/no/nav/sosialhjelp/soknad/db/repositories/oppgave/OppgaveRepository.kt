@@ -5,7 +5,8 @@ interface OppgaveRepository {
     fun hentNeste(): Oppgave?
     fun hentOppgave(behandlingsId: String): Oppgave?
     fun oppdater(oppgave: Oppgave)
-    fun hentStatus(): Map<String, Int>
+    fun hentAntallFeilede(): Int
+    fun hentAntallStuckUnderArbeid(): Int
     fun retryOppgaveStuckUnderArbeid(): Int
     fun slettOppgave(behandlingsId: String)
     fun count(): Int

@@ -5,6 +5,7 @@ import no.nav.sosialhjelp.soknad.common.mdc.MdcOperations
 import no.nav.sosialhjelp.soknad.db.repositories.oppgave.Oppgave
 import no.nav.sosialhjelp.soknad.db.repositories.oppgave.OppgaveRepository
 import no.nav.sosialhjelp.soknad.db.repositories.oppgave.Status
+import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.scheduling.annotation.Scheduled
@@ -20,7 +21,8 @@ interface OppgaveHandterer {
 class OppgaveHandtererImpl(
     private val fiksHandterer: FiksHandterer,
     private val oppgaveRepository: OppgaveRepository,
-    @Value("\${scheduler.disable}") private val schedulerDisabled: Boolean
+    @Value("\${scheduler.disable}") private val schedulerDisabled: Boolean,
+    private val prometheusMetricsService: PrometheusMetricsService
 ) : OppgaveHandterer {
 
     @Scheduled(fixedDelay = PROSESS_RATE)
@@ -69,13 +71,22 @@ class OppgaveHandtererImpl(
             logger.info("Scheduler is disabled")
             return
         }
-        val statuser = oppgaveRepository.hentStatus()
-        statuser.forEach { (key, value) ->
-            logger.info("Databasestatus for oppgaver: $key er $value")
-            val event = MetricsFactory.createEvent("status.oppgave.$key")
-            event.addFieldToReport("antall", value)
-            event.report()
-        }
+        prometheusMetricsService.resetOppgaverFeiletOgStuckUnderArbeid()
+
+        val antallFeilede = oppgaveRepository.hentAntallFeilede()
+        report("feilede", antallFeilede)
+        prometheusMetricsService.reportOppgaverFeilet(antallFeilede)
+
+        val antallStuckUnderArbeid = oppgaveRepository.hentAntallStuckUnderArbeid()
+        report("lengearbeid", antallStuckUnderArbeid)
+        prometheusMetricsService.reportOppgaverStuckUnderArbeid(antallStuckUnderArbeid)
+    }
+
+    private fun report(key: String, antall: Int) {
+        logger.info("Databasestatus for oppgaver: $key er $antall")
+        val event = MetricsFactory.createEvent("status.oppgave.$key")
+        event.addFieldToReport("antall", antall)
+        event.report()
     }
 
     private fun oppgaveFeilet(oppgave: Oppgave) {

@@ -106,20 +106,21 @@ open class OppgaveRepositoryJdbc(
         )
     }
 
-    override fun hentStatus(): Map<String, Int> {
-        val statuser: MutableMap<String, Int> = HashMap()
-        statuser["feilede"] = jdbcTemplate.queryForObject(
+    override fun hentAntallFeilede(): Int {
+        return jdbcTemplate.queryForObject(
             "SELECT count(*) FROM oppgave WHERE status = ?",
             Int::class.java,
             Status.FEILET.name
         )
-        statuser["lengearbeid"] = jdbcTemplate.queryForObject(
+    }
+
+    override fun hentAntallStuckUnderArbeid(): Int {
+        return jdbcTemplate.queryForObject(
             "SELECT count(*) FROM oppgave WHERE status = ? AND sistkjort < ?",
             Int::class.java,
             Status.UNDER_ARBEID.name,
             tidTilTimestamp(LocalDateTime.now().minusMinutes(10))
         )
-        return statuser
     }
 
     override fun slettOppgave(behandlingsId: String) {
