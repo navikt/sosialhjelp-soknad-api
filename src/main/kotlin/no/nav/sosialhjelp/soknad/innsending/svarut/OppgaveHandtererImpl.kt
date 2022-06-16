@@ -31,21 +31,13 @@ class OppgaveHandtererImpl(
         }
         while (true) {
             val oppgave = oppgaveRepository.hentNeste() ?: return
-            val event = MetricsFactory.createEvent("digisos.oppgaver")
-            event.addTagToReport("oppgavetype", oppgave.type)
-            event.addTagToReport("steg", oppgave.steg.toString() + "")
-            event.addFieldToReport("behandlingsid", oppgave.behandlingsId)
-
             MdcOperations.putToMDC(MdcOperations.MDC_BEHANDLINGS_ID, oppgave.behandlingsId)
-
             try {
                 fiksHandterer.eksekver(oppgave)
             } catch (e: Exception) {
                 logger.error("Oppgave feilet, id: ${oppgave.id}, beh: ${oppgave.behandlingsId}", e)
                 oppgaveFeilet(oppgave)
-                event.setFailed()
             }
-            event.report()
 
             if (oppgave.status == Status.UNDER_ARBEID) {
                 oppgave.status = Status.KLAR
