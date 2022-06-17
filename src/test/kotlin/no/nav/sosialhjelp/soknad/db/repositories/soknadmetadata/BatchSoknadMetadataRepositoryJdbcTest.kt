@@ -66,10 +66,22 @@ internal class BatchSoknadMetadataRepositoryJdbcTest {
     fun hentEldreEnnBrukerEndringstidspunktUavhengigAvStatus() {
         for (status in listOf(UNDER_ARBEID, FERDIG, AVBRUTT_AUTOMATISK, AVBRUTT_AV_BRUKER)) {
             opprettSoknadMetadata(soknadMetadata(behandlingsId, status, dagerGammelSoknad))
-            assertThat(batchSoknadMetadataRepository.hentEldreEnn(dagerGammelSoknad - 1)).isNotNull
-            assertThat(batchSoknadMetadataRepository.hentEldreEnn(dagerGammelSoknad + 1)).isNull()
-            batchSoknadMetadataRepository.slettSoknadMetaData(behandlingsId)
+            assertThat(batchSoknadMetadataRepository.hentEldreEnn(dagerGammelSoknad - 1)).isNotEmpty
+            assertThat(batchSoknadMetadataRepository.hentEldreEnn(dagerGammelSoknad + 1)).isEmpty()
+            batchSoknadMetadataRepository.slettSoknadMetaDataer(listOf(behandlingsId))
         }
+    }
+
+    @Test
+    internal fun `hentEldreEnn skal hente 20 siste`() {
+        (20 downTo 0).forEach {
+            opprettSoknadMetadata(soknadMetadata(behandlingsId + it, FERDIG, dagerGammelSoknad + it))
+        }
+
+        val bolk = batchSoknadMetadataRepository.hentEldreEnn(dagerGammelSoknad)
+        assertThat(bolk).hasSize(20)
+        assertThat(bolk[0].behandlingsId).isEqualTo(behandlingsId + 20)
+        assertThat(bolk[19].behandlingsId).isEqualTo(behandlingsId + 1)
     }
 
     private fun opprettSoknadMetadata(soknadMetadata: SoknadMetadata) {

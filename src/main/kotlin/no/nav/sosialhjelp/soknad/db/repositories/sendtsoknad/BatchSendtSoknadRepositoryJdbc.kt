@@ -14,18 +14,23 @@ open class BatchSendtSoknadRepositoryJdbc(
     private val transactionTemplate: TransactionTemplate,
 ) : BatchSendtSoknadRepository {
 
-    override fun hentSendtSoknad(behandlingsId: String): Long? {
+    override fun hentSendtSoknadIdList(behandlingsIdList: List<String>): List<Long> {
+//        val inSql = behandlingsIdList.joinToString(separator = ",") { "?" }
         return jdbcTemplate.query(
-            "select * from SENDT_SOKNAD where BEHANDLINGSID = ?",
+            "select * from SENDT_SOKNAD where BEHANDLINGSID IN (?)",
             { resultSet: ResultSet, _: Int -> resultSet.getLong("sendt_soknad_id") },
-            behandlingsId
-        ).firstOrNull()
+            behandlingsIdList.joinToString { it }
+        )
     }
 
-    override fun slettSendtSoknad(sendtSoknadId: Long) {
+    override fun slettSendtSoknader(sendtSoknadIdList: List<Long>) {
         transactionTemplate.execute(object : TransactionCallbackWithoutResult() {
             override fun doInTransactionWithoutResult(transactionStatus: TransactionStatus) {
-                jdbcTemplate.update("delete from SENDT_SOKNAD where SENDT_SOKNAD_ID = ?", sendtSoknadId)
+//                val inSql = sendtSoknadIdList.joinToString(separator = ",") { "?" }
+                jdbcTemplate.update(
+                    "delete from SENDT_SOKNAD where SENDT_SOKNAD_ID IN (?)",
+                    sendtSoknadIdList.joinToString { it.toString() }
+                )
             }
         })
     }

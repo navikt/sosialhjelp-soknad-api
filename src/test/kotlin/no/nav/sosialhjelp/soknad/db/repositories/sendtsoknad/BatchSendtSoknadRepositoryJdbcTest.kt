@@ -35,8 +35,8 @@ internal class BatchSendtSoknadRepositoryJdbcTest {
     @Test
     fun hentSendtSoknadHenterSendtSoknadForEierOgBehandlingsid() {
         sendtSoknadRepository.opprettSendtSoknad(lagSendtSoknad(EIER), EIER)
-        val sendtSoknadId = batchSendtSoknadRepository.hentSendtSoknad(BEHANDLINGSID)
-        assertThat(sendtSoknadId).isNotNull
+        val sendtSoknadIdList = batchSendtSoknadRepository.hentSendtSoknadIdList(listOf(BEHANDLINGSID))
+        assertThat(sendtSoknadIdList).isNotEmpty
     }
 
     @Test
@@ -44,8 +44,8 @@ internal class BatchSendtSoknadRepositoryJdbcTest {
         val sendtSoknad = lagSendtSoknad(EIER)
         val sendtSoknadId = sendtSoknadRepository.opprettSendtSoknad(sendtSoknad, EIER)
         sendtSoknad.sendtSoknadId = sendtSoknadId!!
-        batchSendtSoknadRepository.slettSendtSoknad(sendtSoknadId)
-        assertThat(batchSendtSoknadRepository.hentSendtSoknad(BEHANDLINGSID)).isNull()
+        batchSendtSoknadRepository.slettSendtSoknader(listOf(sendtSoknadId))
+        assertThat(batchSendtSoknadRepository.hentSendtSoknadIdList(listOf(BEHANDLINGSID))).isEmpty()
     }
 
     private fun lagSendtSoknad(eier: String): SendtSoknad {

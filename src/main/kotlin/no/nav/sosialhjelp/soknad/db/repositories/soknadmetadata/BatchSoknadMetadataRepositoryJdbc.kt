@@ -34,20 +34,23 @@ open class BatchSoknadMetadataRepositoryJdbc(
     }
 
     @Transactional
-    override fun hentEldreEnn(antallDagerGammel: Int): SoknadMetadata? {
+    override fun hentEldreEnn(antallDagerGammel: Int): List<SoknadMetadata> {
         val frist = LocalDateTime.now().minusDays(antallDagerGammel.toLong())
         while (true) {
             val resultat = jdbcTemplate.query(
-                "SELECT * FROM soknadmetadata WHERE opprettetDato < ? AND batchstatus = 'LEDIG'" + SQLUtils.limit(1),
+                "SELECT * FROM soknadmetadata WHERE opprettetDato < ? AND batchstatus = 'LEDIG'" + SQLUtils.limit(20),
                 soknadMetadataRowMapper,
                 SQLUtils.tidTilTimestamp(frist)
-            ).firstOrNull() ?: return null
-
-            val rowsAffected = jdbcTemplate.update(
-                "UPDATE soknadmetadata set batchstatus = 'TATT' WHERE id = ? AND batchstatus = 'LEDIG'",
-                resultat.id
             )
-            if (rowsAffected == 1) {
+
+            val rowsAffected = resultat.sumOf {
+                jdbcTemplate.update(
+                    "UPDATE soknadmetadata set batchstatus = 'TATT' WHERE id = ? AND batchstatus = 'LEDIG'",
+                    it.id
+                )
+            }
+
+            if (rowsAffected == resultat.size) {
                 return resultat
             }
         }
@@ -59,7 +62,11 @@ open class BatchSoknadMetadataRepositoryJdbc(
     }
 
     @Transactional
-    override fun slettSoknadMetaData(behandlingsId: String) {
-        jdbcTemplate.update("DELETE FROM soknadmetadata WHERE behandlingsid = ?", behandlingsId)
+    override fun slettSoknadMetaDataer(behandlingsIdList: List<String>) {
+//        val inSql = behandlingsIdList.joinToString(separator = ",") { "?" }
+        jdbcTemplate.update(
+            "DELETE FROM soknadmetadata WHERE behandlingsid IN (?)",
+            behandlingsIdList.joinToString { it }
+        )
     }
 }

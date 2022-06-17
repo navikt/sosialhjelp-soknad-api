@@ -73,6 +73,14 @@ open class OppgaveRepositoryJdbc(
         ).firstOrNull()
     }
 
+    override fun hentOppgaveIdList(behandlingsIdList: List<String>): List<Long> {
+        return jdbcTemplate.query(
+            "SELECT * FROM oppgave WHERE behandlingsid IN (?)",
+            { resultSet: ResultSet, _: Int -> resultSet.getLong("id") },
+            behandlingsIdList.joinToString { it }
+        )
+    }
+
     override fun hentNeste(): Oppgave? {
         val select =
             "SELECT * FROM oppgave WHERE status = ? and (nesteforsok is null OR nesteforsok < ?) " + SQLUtils.limit(1)
@@ -123,8 +131,12 @@ open class OppgaveRepositoryJdbc(
         )
     }
 
-    override fun slettOppgave(behandlingsId: String) {
-        jdbcTemplate.update("DELETE FROM oppgave WHERE behandlingsid = ?", behandlingsId)
+    override fun slettOppgaver(oppgaveIdList: List<Long>) {
+//        val inSql = oppgaveIdList.joinToString(separator = ",") { "?" }
+        jdbcTemplate.update(
+            "DELETE FROM oppgave WHERE id IN (?)",
+            oppgaveIdList.joinToString { it.toString() }
+        )
     }
 
     override fun count(): Int {
