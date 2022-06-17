@@ -12,7 +12,8 @@ import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.getDigisosIdFromRes
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.stripVekkFnutter
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilOpplasting
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
-import org.springframework.core.io.InputStreamResource
+import org.apache.commons.io.IOUtils
+import org.springframework.core.io.ByteArrayResource
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.http.MediaType.APPLICATION_JSON_VALUE
@@ -109,7 +110,7 @@ class DigisosApiV1ClientImpl(
 
         filer.forEachIndexed { index, fil ->
             body.add("metadata$index", createHttpEntity(getJson(fil), "metadata$index", null, TEXT_PLAIN_VALUE))
-            body.add(fil.filnavn, createHttpEntity(InputStreamResource(fil.data), fil.filnavn, fil.filnavn, APPLICATION_OCTET_STREAM_VALUE))
+            body.add(fil.filnavn, createHttpEntity(ByteArrayResource(IOUtils.toByteArray(fil.data)), fil.filnavn, fil.filnavn, APPLICATION_OCTET_STREAM_VALUE))
         }
 
         val startTime = System.currentTimeMillis()
