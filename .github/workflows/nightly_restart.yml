@@ -37,13 +37,13 @@ jobs:
           REF: ${{ github.sha }}
           PRINT_PAYLOAD: true
           IMAGE: ${{ env.DOCKER_TAG }}
-      - name: Restart dev-sbs
-        uses: nais/deploy/actions/deploy@v1
-        env:
-          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
-          RESOURCE: nais/nais.yaml
-          CLUSTER: dev-sbs
-          VARS: nais/dev/dev-sbs.json
-          REF: ${{ github.sha }}
-          PRINT_PAYLOAD: true
-          IMAGE: ${{ env.DOCKER_TAG }}
+#      - name: Restart dev-sbs
+#        uses: nais/deploy/actions/deploy@v1
+#        env:
+#          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
+#          RESOURCE: nais/nais.yaml
+#          CLUSTER: dev-sbs
+#          VARS: nais/dev/dev-sbs.json
+#          REF: ${{ github.sha }}
+#          PRINT_PAYLOAD: true
+#          IMAGE: ${{ env.DOCKER_TAG }}
