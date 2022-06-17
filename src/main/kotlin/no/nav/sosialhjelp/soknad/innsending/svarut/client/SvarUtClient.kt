@@ -5,12 +5,11 @@ import io.netty.channel.ChannelOption
 import no.ks.fiks.svarut.klient.model.Forsendelse
 import no.ks.fiks.svarut.klient.model.ForsendelsesId
 import no.nav.sosialhjelp.soknad.client.exceptions.TjenesteUtilgjengeligException
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.createHttpEntity
+import org.apache.commons.io.IOUtils
 import org.slf4j.LoggerFactory.getLogger
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.core.io.InputStreamResource
-import org.springframework.http.ContentDisposition
-import org.springframework.http.HttpEntity
-import org.springframework.http.HttpHeaders
+import org.springframework.core.io.ByteArrayResource
 import org.springframework.http.HttpHeaders.AUTHORIZATION
 import org.springframework.http.MediaType
 import org.springframework.http.client.reactive.ReactorClientHttpConnector
@@ -85,7 +84,7 @@ class SvarUtClientImpl(
             val body = LinkedMultiValueMap<String, Any>()
             body.add("forsendelse", createHttpEntity(objectMapper.writeValueAsString(forsendelse), "forsendelse", null, MediaType.APPLICATION_JSON_VALUE))
             forsendelse.dokumenter.forEach {
-                body.add("filer", createHttpEntity(InputStreamResource(data[it.filnavn]), "filer", it.filnavn, MediaType.APPLICATION_OCTET_STREAM_VALUE))
+                body.add("filer", createHttpEntity(ByteArrayResource(IOUtils.toByteArray(data[it.filnavn])), "filer", it.filnavn, MediaType.APPLICATION_OCTET_STREAM_VALUE))
             }
 
             svarUtWebClient.post()
@@ -101,19 +100,6 @@ class SvarUtClientImpl(
         } catch (e: Exception) {
             throw TjenesteUtilgjengeligException("Noe feilet ved kall til SvarUt (rest)", e)
         }
-    }
-
-    private fun createHttpEntity(body: Any, name: String, filename: String?, contentType: String): HttpEntity<Any> {
-        val headerMap = LinkedMultiValueMap<String, String>()
-        val builder: ContentDisposition.Builder = ContentDisposition
-            .builder("form-data")
-            .name(name)
-        val contentDisposition: ContentDisposition =
-            if (filename == null) builder.build() else builder.filename(filename).build()
-
-        headerMap.add(HttpHeaders.CONTENT_DISPOSITION, contentDisposition.toString())
-        headerMap.add(HttpHeaders.CONTENT_TYPE, contentType)
-        return HttpEntity(body, headerMap)
     }
 
     companion object {
