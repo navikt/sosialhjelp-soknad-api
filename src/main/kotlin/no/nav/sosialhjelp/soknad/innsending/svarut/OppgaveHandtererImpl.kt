@@ -6,6 +6,7 @@ import no.nav.sosialhjelp.soknad.db.repositories.oppgave.Oppgave
 import no.nav.sosialhjelp.soknad.db.repositories.oppgave.OppgaveRepository
 import no.nav.sosialhjelp.soknad.db.repositories.oppgave.Status
 import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
+import no.nav.sosialhjelp.soknad.scheduled.leaderelection.LeaderElection
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.scheduling.annotation.Scheduled
@@ -22,7 +23,8 @@ class OppgaveHandtererImpl(
     private val fiksHandterer: FiksHandterer,
     private val oppgaveRepository: OppgaveRepository,
     @Value("\${scheduler.disable}") private val schedulerDisabled: Boolean,
-    private val prometheusMetricsService: PrometheusMetricsService
+    private val prometheusMetricsService: PrometheusMetricsService,
+    private val leaderElection: LeaderElection
 ) : OppgaveHandterer {
 
     @Scheduled(fixedDelay = PROSESS_RATE)
@@ -31,21 +33,23 @@ class OppgaveHandtererImpl(
             logger.info("Scheduler is disabled")
             return
         }
-        while (true) {
-            val oppgave = oppgaveRepository.hentNeste() ?: return
-            MdcOperations.putToMDC(MdcOperations.MDC_BEHANDLINGS_ID, oppgave.behandlingsId)
-            try {
-                fiksHandterer.eksekver(oppgave)
-            } catch (e: Exception) {
-                logger.error("Oppgave feilet, id: ${oppgave.id}, beh: ${oppgave.behandlingsId}", e)
-                oppgaveFeilet(oppgave)
-            }
+        if (leaderElection.isLeader()) {
+            while (true) {
+                val oppgave = oppgaveRepository.hentNeste() ?: return
+                MdcOperations.putToMDC(MdcOperations.MDC_BEHANDLINGS_ID, oppgave.behandlingsId)
+                try {
+                    fiksHandterer.eksekver(oppgave)
+                } catch (e: Exception) {
+                    logger.error("Oppgave feilet, id: ${oppgave.id}, beh: ${oppgave.behandlingsId}", e)
+                    oppgaveFeilet(oppgave)
+                }
 
-            if (oppgave.status == Status.UNDER_ARBEID) {
-                oppgave.status = Status.KLAR
+                if (oppgave.status == Status.UNDER_ARBEID) {
+                    oppgave.status = Status.KLAR
+                }
+                oppgaveRepository.oppdater(oppgave)
+                MdcOperations.remove(MdcOperations.MDC_BEHANDLINGS_ID)
             }
-            oppgaveRepository.oppdater(oppgave)
-            MdcOperations.remove(MdcOperations.MDC_BEHANDLINGS_ID)
         }
     }
 
@@ -55,13 +59,15 @@ class OppgaveHandtererImpl(
             logger.info("Scheduler is disabled")
             return
         }
-        try {
-            val antall = oppgaveRepository.retryOppgaveStuckUnderArbeid()
-            if (antall > 0) {
-                logger.info("Har satt $antall oppgaver tilbake til KLAR etter at de lå for lenge som UNDER_ARBEID.")
+        if (leaderElection.isLeader()) {
+            try {
+                val antall = oppgaveRepository.retryOppgaveStuckUnderArbeid()
+                if (antall > 0) {
+                    logger.info("Har satt $antall oppgaver tilbake til KLAR etter at de lå for lenge som UNDER_ARBEID.")
+                }
+            } catch (e: Exception) {
+                logger.error("Uventet feil ved oppdatering av oppgaver som er stuck i UNDER_ARBEID")
             }
-        } catch (e: Exception) {
-            logger.error("Uventet feil ved oppdatering av oppgaver som er stuck i UNDER_ARBEID")
         }
     }
 
@@ -71,15 +77,17 @@ class OppgaveHandtererImpl(
             logger.info("Scheduler is disabled")
             return
         }
-        prometheusMetricsService.resetOppgaverFeiletOgStuckUnderArbeid()
+        if (leaderElection.isLeader()) {
+            prometheusMetricsService.resetOppgaverFeiletOgStuckUnderArbeid()
 
-        val antallFeilede = oppgaveRepository.hentAntallFeilede()
-        report("feilede", antallFeilede)
-        prometheusMetricsService.reportOppgaverFeilet(antallFeilede)
+            val antallFeilede = oppgaveRepository.hentAntallFeilede()
+            report("feilede", antallFeilede)
+            prometheusMetricsService.reportOppgaverFeilet(antallFeilede)
 
-        val antallStuckUnderArbeid = oppgaveRepository.hentAntallStuckUnderArbeid()
-        report("lengearbeid", antallStuckUnderArbeid)
-        prometheusMetricsService.reportOppgaverStuckUnderArbeid(antallStuckUnderArbeid)
+            val antallStuckUnderArbeid = oppgaveRepository.hentAntallStuckUnderArbeid()
+            report("lengearbeid", antallStuckUnderArbeid)
+            prometheusMetricsService.reportOppgaverStuckUnderArbeid(antallStuckUnderArbeid)
+        }
     }
 
     private fun report(key: String, antall: Int) {
