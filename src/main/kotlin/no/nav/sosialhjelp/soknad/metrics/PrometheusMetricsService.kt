@@ -12,9 +12,16 @@ class PrometheusMetricsService(
 ) {
 
     private val startSoknadCounter = Counter.builder("start_soknad_counter")
+
     private val avbruttSoknadCounter = Counter.builder("avbrutt_soknad_counter")
-    private val sendtSoknadCounter = Counter.builder("sendt_soknad_counter")
-    private val feiletSendingSoknadCounter = Counter.builder("feilet_sending_soknad_counter")
+
+    private val soknadMottakerCounter = Counter.builder("soknad_mottaker_counter")
+
+    private val sendtSoknadSvarUtCounter = Counter.builder("sendt_soknad_svarut_counter")
+    private val sendtSoknadDigisosApiCounter = Counter.builder("sendt_soknad_digisosapi_counter")
+
+    private val feiletSendingMedSvarUtCounter = Counter.builder("feilet_sending_svarut_counter")
+    private val feiletSendingMedDigisosApiCounter = Counter.builder("feilet_sending_digisosapi_counter")
 
     private val oppgaverFeilet = AtomicInteger(0)
     private val oppgaverStuckUnderArbeid = AtomicInteger(0)
@@ -34,19 +41,36 @@ class PrometheusMetricsService(
             .increment()
     }
 
-    fun reportSendtSoknad(isEttersendelse: Boolean, type: String, navEnhet: String) {
-        sendtSoknadCounter
+    fun reportSoknadMottaker(isEttersendelse: Boolean, navEnhet: String) {
+        soknadMottakerCounter
             .tag(TAG_ETTERSENDELSE, isEttersendelse.toString())
-            .tag(TAG_TYPE_API, type)
             .tag(TAG_MOTTAKER, navEnhet)
             .register(meterRegistry)
             .increment()
     }
 
-    fun reportFeiletSendingSoknad(isEttersendelse: Boolean, type: String) {
-        feiletSendingSoknadCounter
+    fun reportSendtMedSvarUt(isEttersendelse: Boolean) {
+        sendtSoknadSvarUtCounter
             .tag(TAG_ETTERSENDELSE, isEttersendelse.toString())
-            .tag(TAG_TYPE_API, type)
+            .register(meterRegistry)
+            .increment()
+    }
+
+    fun reportSendtMedDigisosApi() {
+        sendtSoknadDigisosApiCounter
+            .register(meterRegistry)
+            .increment()
+    }
+
+    fun reportFeiletMedSvarUt(isEttersendelse: Boolean) {
+        feiletSendingMedSvarUtCounter
+            .tag(TAG_ETTERSENDELSE, isEttersendelse.toString())
+            .register(meterRegistry)
+            .increment()
+    }
+
+    fun reportFeiletMedDigisosApi() {
+        feiletSendingMedDigisosApiCounter
             .register(meterRegistry)
             .increment()
     }
@@ -72,11 +96,7 @@ class PrometheusMetricsService(
     }
 
     companion object {
-        const val SVARUT = "svarut"
-        const val DIGISOS_API = "digisos_api"
-
         const val TAG_ETTERSENDELSE = "ettersendelse"
-        const val TAG_TYPE_API = "type"
         const val TAG_MOTTAKER = "mottaker"
     }
 }
