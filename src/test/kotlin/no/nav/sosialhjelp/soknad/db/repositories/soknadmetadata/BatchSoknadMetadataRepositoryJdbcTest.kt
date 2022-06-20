@@ -85,8 +85,9 @@ internal class BatchSoknadMetadataRepositoryJdbcTest {
 
         val bolk = batchSoknadMetadataRepository.hentEldreEnn(dagerGammelSoknad)
         assertThat(bolk).hasSize(20)
-        assertThat(bolk[0].behandlingsId).isEqualTo(behandlingsId + 0)
-        assertThat(bolk[19].behandlingsId).isEqualTo(behandlingsId + 19)
+        bolk.forEachIndexed { i, soknadMetadata ->
+            assertThat(soknadMetadata.behandlingsId).isEqualTo(behandlingsId + i)
+        }
     }
 
     private fun opprettSoknadMetadata(soknadMetadata: SoknadMetadata) {
