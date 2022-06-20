@@ -3,14 +3,18 @@ package no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata
 import no.nav.sosialhjelp.soknad.db.SQLUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRowMapper.soknadMetadataRowMapper
 import org.springframework.jdbc.core.JdbcTemplate
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
+
 
 @Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 @Repository
 open class BatchSoknadMetadataRepositoryJdbc(
     private val jdbcTemplate: JdbcTemplate,
+    private val namedParameterJdbcTemplate: NamedParameterJdbcTemplate,
 ) : BatchSoknadMetadataRepository {
 
     @Transactional
@@ -63,10 +67,7 @@ open class BatchSoknadMetadataRepositoryJdbc(
 
     @Transactional
     override fun slettSoknadMetaDataer(behandlingsIdList: List<String>) {
-//        val inSql = behandlingsIdList.joinToString(separator = ",") { "?" }
-        jdbcTemplate.update(
-            "DELETE FROM soknadmetadata WHERE behandlingsid IN (?)",
-            behandlingsIdList.joinToString { it }
-        )
+        val parameters = MapSqlParameterSource("ids", behandlingsIdList)
+        namedParameterJdbcTemplate.update("DELETE FROM soknadmetadata WHERE behandlingsid IN (:ids)", parameters)
     }
 }
