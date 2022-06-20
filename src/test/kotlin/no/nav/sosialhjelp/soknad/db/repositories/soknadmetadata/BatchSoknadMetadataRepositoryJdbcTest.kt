@@ -79,7 +79,7 @@ internal class BatchSoknadMetadataRepositoryJdbcTest {
         opprettSoknadMetadata(soknadMetadata(behandlingsId + "B", FERDIG, dagerGammelSoknad - 1))
 
         // oppretter over 20 SoknadMetadata som er eldre enn `antallDagerGammelt`
-        (0 .. 22).forEach {
+        (0..22).forEach {
             opprettSoknadMetadata(soknadMetadata(behandlingsId + it, FERDIG, dagerGammelSoknad + it))
         }
 
