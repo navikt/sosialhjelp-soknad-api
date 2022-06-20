@@ -74,14 +74,19 @@ internal class BatchSoknadMetadataRepositoryJdbcTest {
 
     @Test
     internal fun `hentEldreEnn skal hente 20 siste`() {
-        (20 downTo 0).forEach {
+        // oppretter noen SoknadMetadata som er nyere enn `antallDagerGammelt`
+        opprettSoknadMetadata(soknadMetadata(behandlingsId + "A", FERDIG, dagerGammelSoknad - 2))
+        opprettSoknadMetadata(soknadMetadata(behandlingsId + "B", FERDIG, dagerGammelSoknad - 1))
+
+        // oppretter over 20 SoknadMetadata som er eldre enn `antallDagerGammelt`
+        (0 .. 22).forEach {
             opprettSoknadMetadata(soknadMetadata(behandlingsId + it, FERDIG, dagerGammelSoknad + it))
         }
 
         val bolk = batchSoknadMetadataRepository.hentEldreEnn(dagerGammelSoknad)
         assertThat(bolk).hasSize(20)
-        assertThat(bolk[0].behandlingsId).isEqualTo(behandlingsId + 20)
-        assertThat(bolk[19].behandlingsId).isEqualTo(behandlingsId + 1)
+        assertThat(bolk[0].behandlingsId).isEqualTo(behandlingsId + 0)
+        assertThat(bolk[19].behandlingsId).isEqualTo(behandlingsId + 19)
     }
 
     private fun opprettSoknadMetadata(soknadMetadata: SoknadMetadata) {
