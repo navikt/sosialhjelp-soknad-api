@@ -21,7 +21,6 @@ import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilOpplasting
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
 import no.nav.sosialhjelp.soknad.metrics.MetricsUtils.navKontorTilInfluxNavn
 import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
-import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService.Companion.DIGISOS_API
 import no.nav.sosialhjelp.soknad.metrics.SoknadMetricsService
 import no.nav.sosialhjelp.soknad.vedlegg.OpplastetVedleggRessurs.Companion.KS_MELLOMLAGRING_ENABLED
 import org.slf4j.LoggerFactory
@@ -86,7 +85,8 @@ class DigisosApiService(
         slettSoknadUnderArbeidEtterSendingTilFiks(soknadUnderArbeid)
 
         soknadMetricsService.reportSendSoknadMetrics(soknadUnderArbeid, vedlegg.vedleggListe)
-        prometheusMetricsService.reportSendtSoknad(soknadUnderArbeid.erEttersendelse, DIGISOS_API, navKontorTilInfluxNavn(navEnhetsnavn))
+        prometheusMetricsService.reportSendtMedDigisosApi()
+        prometheusMetricsService.reportSoknadMottaker(soknadUnderArbeid.erEttersendelse, navKontorTilInfluxNavn(navEnhetsnavn))
         return digisosId
     }
 
@@ -126,7 +126,8 @@ class DigisosApiService(
         slettSoknadUnderArbeidEtterSendingTilFiks(soknadUnderArbeid)
 
         soknadMetricsService.reportSendSoknadMetrics(soknadUnderArbeid, vedlegg.vedleggListe)
-        prometheusMetricsService.reportSendtSoknad(soknadUnderArbeid.erEttersendelse, DIGISOS_API, navKontorTilInfluxNavn(navEnhetsnavn))
+        prometheusMetricsService.reportSendtMedDigisosApi()
+        prometheusMetricsService.reportSoknadMottaker(soknadUnderArbeid.erEttersendelse, navKontorTilInfluxNavn(navEnhetsnavn))
         return digisosId
     }
 
@@ -166,7 +167,7 @@ class DigisosApiService(
             }
         } catch (e: Exception) {
             event.setFailed()
-            prometheusMetricsService.reportFeiletSendingSoknad(false, DIGISOS_API)
+            prometheusMetricsService.reportFeiletMedDigisosApi()
             throw e
         } finally {
             event.report()
