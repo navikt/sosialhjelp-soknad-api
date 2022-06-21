@@ -24,7 +24,6 @@ sensu_client_host: 127.0.0.1
 sensu_client_port: 8989
 
 # Andre properties
-soknad.ettersending.antalldager: 42
 sendsoknad.batch.enabled: false
 fiks.nokkelfil: svarut_public_test.pem
 feature.fiks.kryptering.enabled: false

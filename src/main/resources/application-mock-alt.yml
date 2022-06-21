@@ -83,7 +83,6 @@ oidc.issuer.selvbetjening.proxy_url: dummy
 loginservice.url: ${LOGINSERVICE_URL:http://localhost:3008/sosialhjelp/mock-alt/login}
 
 virusscan_enabled: false
-soknad.ettersending.antalldager: 180
 
 # redis
 redis_host: ${REDIS_HOST:localhost}
