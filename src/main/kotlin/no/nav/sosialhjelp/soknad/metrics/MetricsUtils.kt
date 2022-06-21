@@ -1,5 +1,7 @@
 package no.nav.sosialhjelp.soknad.metrics
 
+import kotlin.math.roundToInt
+
 object MetricsUtils {
     fun navKontorTilInfluxNavn(mottaker: String?): String {
         return mottaker?.replace("NAV", "")?.replace(",", "") ?: ""
@@ -8,6 +10,6 @@ object MetricsUtils {
     fun getProsent(partial: Int, total: Int): Int {
         if (total == 0) return 0
         val prosent = partial.toDouble() / total * 100 // Cast til double for å få desimaler i delingen
-        return Math.round(prosent).toInt()
+        return prosent.roundToInt()
     }
 }

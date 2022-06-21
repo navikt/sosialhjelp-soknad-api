@@ -134,8 +134,7 @@ open class BostotteRessurs(
     private fun hentSamtykkeDatoFraSoknad(opplysninger: JsonOkonomiopplysninger): String? {
         return opplysninger.bekreftelse
             .filter { it.type == BOSTOTTE_SAMTYKKE }
-            .filter { it.verdi }
-            .firstOrNull()
+            .firstOrNull { it.verdi }
             ?.bekreftelsesDato
     }
 

@@ -158,7 +158,7 @@ class PdfGenerator {
         currentStream.closeAndStroke()
     }
 
-    fun addParagraph(text: String?, font: PDFont, fontSize: Float, margin: Int) {
+    private fun addParagraph(text: String?, font: PDFont, fontSize: Float, margin: Int) {
         val lines = parseLines(text, font, fontSize)
         currentStream.setFont(font, fontSize)
         currentStream.beginText()
@@ -183,7 +183,7 @@ class PdfGenerator {
         currentStream.endText()
     }
 
-    fun addCenteredParagraph(heading: String?, font: PDFont, fontSize: Float, leadingPercentage: Float) {
+    private fun addCenteredParagraph(heading: String?, font: PDFont, fontSize: Float, leadingPercentage: Float) {
         val lines = parseLines(heading, font, fontSize)
         currentStream.beginText()
         currentStream.setFont(font, fontSize)
@@ -281,7 +281,7 @@ class PdfGenerator {
         return codePoint == 0x000A || codePoint == 0x000D
     }
 
-    fun addLogo() {
+    private fun addLogo() {
         val ximage = PDImageXObject.createFromByteArray(document, logo(), "logo")
         currentStream.drawImage(ximage, 27f, 765f, 99f, 62f)
     }

@@ -20,7 +20,7 @@ internal class HusbankenClientImplTest {
     private val mockWebServer = MockWebServer()
     private val webClient = WebClient.create(mockWebServer.url("/").toString())
 
-    val husbankenClient = HusbankenClientImpl(webClient)
+    private val husbankenClient = HusbankenClientImpl(webClient)
 
     @BeforeEach
     internal fun setUp() {

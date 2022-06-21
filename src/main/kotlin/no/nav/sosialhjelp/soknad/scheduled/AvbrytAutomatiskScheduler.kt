@@ -71,7 +71,7 @@ class AvbrytAutomatiskScheduler(
             vellykket++
 
             if (harGaattForLangTid()) {
-                logger.warn("Jobben har kjørt i mer enn $SCHEDULE_INTERRUPT_S s. Den blir derfor stoppet",)
+                logger.warn("Jobben har kjørt i mer enn $SCHEDULE_INTERRUPT_S s. Den blir derfor stoppet")
                 return
             }
             soknadMetadata = batchSoknadMetadataRepository.hentForBatch(DAGER_GAMMELT)

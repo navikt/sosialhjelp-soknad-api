@@ -83,7 +83,7 @@ class AdresseSystemdata(
         }
     }
 
-    fun innhentFolkeregistrertAdresse(personIdentifikator: String): JsonAdresse? {
+    private fun innhentFolkeregistrertAdresse(personIdentifikator: String): JsonAdresse? {
         return personService.hentPerson(personIdentifikator)?.let { mapToJsonAdresse(it.bostedsadresse) }
     }
 
@@ -116,7 +116,7 @@ class AdresseSystemdata(
         } else {
             throw IllegalStateException("Ukjent oppholdsadresse fra PDL (skal være Vegadresse)")
         }
-        jsonAdresse.setKilde(JsonKilde.SYSTEM)
+        jsonAdresse.kilde = JsonKilde.SYSTEM
         return jsonAdresse
     }
 

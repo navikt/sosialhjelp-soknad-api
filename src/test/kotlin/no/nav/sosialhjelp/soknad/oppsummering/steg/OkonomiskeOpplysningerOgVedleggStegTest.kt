@@ -43,7 +43,7 @@ internal class OkonomiskeOpplysningerOgVedleggStegTest {
     @Test
     fun inntekter() {
         val soknad = createSoknad()
-        soknad.soknad.data.okonomi.oversikt.inntekt = java.util.List.of(
+        soknad.soknad.data.okonomi.oversikt.inntekt = listOf(
             createInntekt(SoknadJsonTyper.JOBB, 42).withBrutto(142),
             createInntekt(SoknadJsonTyper.STUDIELAN, 111),
             createInntekt(SoknadJsonTyper.BARNEBIDRAG, null)
@@ -62,7 +62,7 @@ internal class OkonomiskeOpplysningerOgVedleggStegTest {
     @Test
     fun formuer() {
         val soknad = createSoknad()
-        soknad.soknad.data.okonomi.oversikt.formue = java.util.List.of(
+        soknad.soknad.data.okonomi.oversikt.formue = listOf(
             createFormue(SoknadJsonTyper.FORMUE_VERDIPAPIRER, 42),
             createFormue(SoknadJsonTyper.FORMUE_BSU, 111),
             createFormue(SoknadJsonTyper.FORMUE_LIVSFORSIKRING, null)
@@ -80,7 +80,7 @@ internal class OkonomiskeOpplysningerOgVedleggStegTest {
     @Test
     fun utbetalinger() {
         val soknad = createSoknad()
-        soknad.soknad.data.okonomi.opplysninger.utbetaling = java.util.List.of(
+        soknad.soknad.data.okonomi.opplysninger.utbetaling = listOf(
             createUtbetaling(SoknadJsonTyper.UTBETALING_NAVYTELSE, 42), // skal filtreres vekk
             createUtbetaling(SoknadJsonTyper.SLUTTOPPGJOER, 111),
             createUtbetaling(SoknadJsonTyper.UTBETALING_FORSIKRING, null),
@@ -217,7 +217,7 @@ internal class OkonomiskeOpplysningerOgVedleggStegTest {
             .withFiler(filer)
     }
 
-    fun createSoknad(): JsonInternalSoknad {
+    private fun createSoknad(): JsonInternalSoknad {
         return JsonInternalSoknad()
             .withSoknad(
                 JsonSoknad()

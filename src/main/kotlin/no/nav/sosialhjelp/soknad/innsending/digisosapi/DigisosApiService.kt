@@ -50,7 +50,7 @@ class DigisosApiService(
         }
     }
 
-    fun sendSoknadMedDigisosApiV1(soknadUnderArbeid: SoknadUnderArbeid, token: String?, kommunenummer: String): String {
+    private fun sendSoknadMedDigisosApiV1(soknadUnderArbeid: SoknadUnderArbeid, token: String?, kommunenummer: String): String {
         var behandlingsId = soknadUnderArbeid.behandlingsId
         val jsonInternalSoknad = soknadUnderArbeid.jsonInternalSoknad
             ?: throw IllegalStateException("Kan ikke sende søknad hvis SoknadUnderArbeid.jsonInternalSoknad er null")
@@ -90,7 +90,7 @@ class DigisosApiService(
         return digisosId
     }
 
-    fun sendSoknadMedDigisosApiV2(soknadUnderArbeid: SoknadUnderArbeid, token: String?, kommunenummer: String): String {
+    private fun sendSoknadMedDigisosApiV2(soknadUnderArbeid: SoknadUnderArbeid, token: String?, kommunenummer: String): String {
         var behandlingsId = soknadUnderArbeid.behandlingsId
         val jsonInternalSoknad = soknadUnderArbeid.jsonInternalSoknad
             ?: throw IllegalStateException("Kan ikke sende søknad hvis SoknadUnderArbeid.jsonInternalSoknad er null")
@@ -180,7 +180,7 @@ class DigisosApiService(
         return event
     }
 
-    fun getSoknadJson(soknadUnderArbeid: SoknadUnderArbeid): String {
+    private fun getSoknadJson(soknadUnderArbeid: SoknadUnderArbeid): String {
         return try {
             val soknadJson = objectMapper.writeValueAsString(soknadUnderArbeid.jsonInternalSoknad?.soknad)
             ensureValidSoknad(soknadJson)
@@ -209,7 +209,7 @@ class DigisosApiService(
         }
     }
 
-    fun getVedleggJson(soknadUnderArbeid: SoknadUnderArbeid): String {
+    private fun getVedleggJson(soknadUnderArbeid: SoknadUnderArbeid): String {
         return try {
             val vedleggJson = objectMapper.writeValueAsString(soknadUnderArbeid.jsonInternalSoknad?.vedlegg)
             ensureValidVedlegg(vedleggJson)
