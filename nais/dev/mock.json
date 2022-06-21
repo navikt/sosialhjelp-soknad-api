@@ -54,7 +54,6 @@
     "NORG_PROXY_URL": "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api/norg_endpoint_url/",
     "SCHEDULER_DISABLE": "false",
     "SOKNAD_BOSTOTTE_URL": "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api/husbanken",
-    "SOKNAD_ETTERSENDING_ANTALLDAGER": "180",
     "SKATTEETATEN_API_BASEURL": "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api/skatteetaten/",
     "SVARUT_URL": "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api/svarut/",
     "TOKEN_X_WELL_KNOWN_URL": "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api/well-known/tokenx",
