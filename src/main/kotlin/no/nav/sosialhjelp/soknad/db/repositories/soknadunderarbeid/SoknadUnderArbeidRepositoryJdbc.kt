@@ -148,7 +148,6 @@ open class SoknadUnderArbeidRepositoryJdbc(
         transactionTemplate.execute(object : TransactionCallbackWithoutResult() {
             override fun doInTransactionWithoutResult(transactionStatus: TransactionStatus) {
                 val soknadUnderArbeidId = soknadUnderArbeid.soknadId
-                    ?: throw RuntimeException("Kan ikke slette sendt søknad uten søknadsid")
                 opplastetVedleggRepository.slettAlleVedleggForSoknad(soknadUnderArbeidId, eier)
                 jdbcTemplate.update(
                     "delete from SOKNAD_UNDER_ARBEID where EIER = ? and SOKNAD_UNDER_ARBEID_ID = ?",

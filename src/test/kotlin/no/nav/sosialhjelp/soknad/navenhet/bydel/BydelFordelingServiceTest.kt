@@ -11,12 +11,14 @@ import org.junit.jupiter.api.Test
 
 internal class BydelFordelingServiceTest {
 
-    private val TESTVEIEN = "testveien"
-    private val TESTGATEN = "testgaten"
+    companion object {
+        private const val TESTVEIEN = "testveien"
+        private const val TESTGATEN = "testgaten"
 
-    private val BYDEL_GRORUD = "030110"
-    private val BYDEL_VESTRE_AKER = "030107"
-    private val BYDEL_NORDRE_AKER = "030108"
+        private const val BYDEL_GRORUD = "030110"
+        private const val BYDEL_VESTRE_AKER = "030107"
+        private const val BYDEL_NORDRE_AKER = "030108"
+    }
 
     private val bydelFordelingService = spyk(BydelFordelingService())
 

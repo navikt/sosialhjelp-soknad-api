@@ -28,9 +28,9 @@ class PdfGenerator {
     private var currentStream: PDPageContentStream
     private var y: Float
 
-    private val FONT_REGULAR: PDFont = ClassPathResource(REGULAR).inputStream.use { PDType0Font.load(document, it) } // PDType0Font.load(document, ClassPathResource(REGULAR).inputStream)
-    private val FONT_BOLD: PDFont = ClassPathResource(BOLD).inputStream.use { PDType0Font.load(document, it) } // PDType0Font.load(document, ClassPathResource(BOLD).inputStream)
-    private val FONT_KURSIV: PDFont = ClassPathResource(KURSIV).inputStream.use { PDType0Font.load(document, it) } // PDType0Font.load(document, ClassPathResource(KURSIV).inputStream)
+    private val fontRegular: PDFont = ClassPathResource(REGULAR).inputStream.use { PDType0Font.load(document, it) } // PDType0Font.load(document, ClassPathResource(REGULAR).inputStream)
+    private val fontBold: PDFont = ClassPathResource(BOLD).inputStream.use { PDType0Font.load(document, it) } // PDType0Font.load(document, ClassPathResource(BOLD).inputStream)
+    private val fontKursiv: PDFont = ClassPathResource(KURSIV).inputStream.use { PDType0Font.load(document, it) } // PDType0Font.load(document, ClassPathResource(KURSIV).inputStream)
 
     private val xmp = XMPMetadata()
     private val pdfaid = XMPSchemaPDFAId(xmp)
@@ -96,59 +96,59 @@ class PdfGenerator {
     }
 
     fun skrivTekst(text: String?) {
-        addParagraph(text, FONT_REGULAR, FONT_PLAIN_SIZE.toFloat(), MARGIN)
+        addParagraph(text, fontRegular, FONT_PLAIN_SIZE.toFloat(), MARGIN)
     }
 
     fun skrivTekstKursiv(text: String?) {
-        addParagraph(text, FONT_KURSIV, FONT_PLAIN_SIZE.toFloat(), MARGIN)
+        addParagraph(text, fontKursiv, FONT_PLAIN_SIZE.toFloat(), MARGIN)
     }
 
     fun skrivTekstMedInnrykk(text: String?, innrykk: Int) {
-        addParagraph(text, FONT_REGULAR, FONT_PLAIN_SIZE.toFloat(), innrykk)
+        addParagraph(text, fontRegular, FONT_PLAIN_SIZE.toFloat(), innrykk)
     }
 
     fun skrivTekstBold(tekst: String?) {
-        addParagraph(tekst, FONT_BOLD, FONT_PLAIN_SIZE.toFloat(), MARGIN)
+        addParagraph(tekst, fontBold, FONT_PLAIN_SIZE.toFloat(), MARGIN)
     }
 
     fun skrivH1(tekst: String?) {
-        addParagraph(tekst, FONT_REGULAR, FONT_H1_SIZE.toFloat(), MARGIN)
+        addParagraph(tekst, fontRegular, FONT_H1_SIZE.toFloat(), MARGIN)
     }
 
     fun skrivH1Bold(tekst: String?) {
-        addParagraph(tekst, FONT_BOLD, FONT_H1_SIZE.toFloat(), MARGIN)
+        addParagraph(tekst, fontBold, FONT_H1_SIZE.toFloat(), MARGIN)
     }
 
     fun skrivH2(tekst: String?) {
-        addParagraph(tekst, FONT_REGULAR, FONT_H2_SIZE.toFloat(), MARGIN)
+        addParagraph(tekst, fontRegular, FONT_H2_SIZE.toFloat(), MARGIN)
     }
 
     fun skrivH2Bold(tekst: String?) {
-        addParagraph(tekst, FONT_BOLD, FONT_H2_SIZE.toFloat(), MARGIN)
+        addParagraph(tekst, fontBold, FONT_H2_SIZE.toFloat(), MARGIN)
     }
 
     fun skrivH3(tekst: String?) {
-        addParagraph(tekst, FONT_REGULAR, FONT_H3_SIZE.toFloat(), MARGIN)
+        addParagraph(tekst, fontRegular, FONT_H3_SIZE.toFloat(), MARGIN)
     }
 
     fun skrivH3Bold(tekst: String?) {
-        addParagraph(tekst, FONT_BOLD, FONT_H3_SIZE.toFloat(), MARGIN)
+        addParagraph(tekst, fontBold, FONT_H3_SIZE.toFloat(), MARGIN)
     }
 
     fun skrivH4(tekst: String?) {
-        addParagraph(tekst, FONT_REGULAR, FONT_H4_SIZE.toFloat(), MARGIN)
+        addParagraph(tekst, fontRegular, FONT_H4_SIZE.toFloat(), MARGIN)
     }
 
     fun skrivH4Bold(tekst: String?) {
-        addParagraph(tekst, FONT_BOLD, FONT_H4_SIZE.toFloat(), MARGIN)
+        addParagraph(tekst, fontBold, FONT_H4_SIZE.toFloat(), MARGIN)
     }
 
     fun addCenteredH1Bold(heading: String?) {
-        addCenteredParagraph(heading, FONT_BOLD, FONT_H1_SIZE.toFloat(), LEADING_PERCENTAGE)
+        addCenteredParagraph(heading, fontBold, FONT_H1_SIZE.toFloat(), LEADING_PERCENTAGE)
     }
 
     fun addCenteredH4Bold(heading: String?) {
-        addCenteredParagraph(heading, FONT_BOLD, FONT_H4_SIZE.toFloat(), LEADING_PERCENTAGE)
+        addCenteredParagraph(heading, fontBold, FONT_H4_SIZE.toFloat(), LEADING_PERCENTAGE)
     }
 
     fun addDividerLine() {
@@ -158,7 +158,7 @@ class PdfGenerator {
         currentStream.closeAndStroke()
     }
 
-    fun addParagraph(text: String?, font: PDFont, fontSize: Float, margin: Int) {
+    private fun addParagraph(text: String?, font: PDFont, fontSize: Float, margin: Int) {
         val lines = parseLines(text, font, fontSize)
         currentStream.setFont(font, fontSize)
         currentStream.beginText()
@@ -183,7 +183,7 @@ class PdfGenerator {
         currentStream.endText()
     }
 
-    fun addCenteredParagraph(heading: String?, font: PDFont, fontSize: Float, leadingPercentage: Float) {
+    private fun addCenteredParagraph(heading: String?, font: PDFont, fontSize: Float, leadingPercentage: Float) {
         val lines = parseLines(heading, font, fontSize)
         currentStream.beginText()
         currentStream.setFont(font, fontSize)
@@ -281,7 +281,7 @@ class PdfGenerator {
         return codePoint == 0x000A || codePoint == 0x000D
     }
 
-    fun addLogo() {
+    private fun addLogo() {
         val ximage = PDImageXObject.createFromByteArray(document, logo(), "logo")
         currentStream.drawImage(ximage, 27f, 765f, 99f, 62f)
     }
@@ -303,8 +303,8 @@ class PdfGenerator {
         const val FONT_H3_SIZE = 16
         const val FONT_H4_SIZE = 14
 
-        val MEDIA_BOX = PDPage(PDRectangle.A4).mediaBox
-        val WIDTH_OF_CONTENT_COLUMN = PDPage(PDRectangle.A4).mediaBox.width - MARGIN * 2
+        val MEDIA_BOX: PDRectangle = PDPage(PDRectangle.A4).mediaBox
+        val WIDTH_OF_CONTENT_COLUMN: Float = PDPage(PDRectangle.A4).mediaBox.width - MARGIN * 2
 
         private const val DEFAULT_USER_SPACE_UNIT_DPI = 72
         private const val MM_TO_UNITS = 1 / (10 * 2.54f) * DEFAULT_USER_SPACE_UNIT_DPI

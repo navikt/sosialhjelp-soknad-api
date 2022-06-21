@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test
 
 internal class SenderUtilsTest {
 
-    var originalBehandlingsId = "behandlingsId"
+    private var originalBehandlingsId = "behandlingsId"
 
     @Test
     fun createPrefixedBehandlingsId_shouldBePrefixedWithEnvironmentName() {

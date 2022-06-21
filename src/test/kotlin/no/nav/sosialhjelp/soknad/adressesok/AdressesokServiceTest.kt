@@ -12,9 +12,12 @@ import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.Test
 
 internal class AdressesokServiceTest {
-    private val BYDELSNUMMER = "030101"
-    private val KOMMUNENUMMER = "0301"
-    private val KOMMUNENAVN = "OSLO"
+
+    companion object {
+        private const val BYDELSNUMMER = "030101"
+        private const val KOMMUNENUMMER = "0301"
+        private const val KOMMUNENAVN = "OSLO"
+    }
 
     private val folkeregistretAdresse = JsonGateAdresse()
         .withGatenavn("Testveien")
@@ -59,9 +62,9 @@ internal class AdressesokServiceTest {
     @Test
     fun skalKasteFeil_AdresseSokGirFlereHits() {
         val adressesokResult = createAdressesokResultDto(
-            java.util.List.of(
-                AdressesokHitDto(vegadresseMedBydelsnummer()!!, 0.5f),
-                AdressesokHitDto(vegadresseUtenBydelsnummer()!!, 0.7f)
+            listOf(
+                AdressesokHitDto(vegadresseMedBydelsnummer(), 0.5f),
+                AdressesokHitDto(vegadresseUtenBydelsnummer(), 0.7f)
             )
         )
         every { adressesokClient.getAdressesokResult(any()) } returns adressesokResult
@@ -72,8 +75,8 @@ internal class AdressesokServiceTest {
     @Test
     fun skalReturnereAdresseForslagMedGeografiskTilknytningLikBydelsnummer() {
         val adressesokResult = createAdressesokResultDto(
-            java.util.List.of(
-                AdressesokHitDto(vegadresseMedBydelsnummer()!!, 0.5f)
+            listOf(
+                AdressesokHitDto(vegadresseMedBydelsnummer(), 0.5f)
             )
         )
         every { adressesokClient.getAdressesokResult(any()) } returns adressesokResult
@@ -84,8 +87,8 @@ internal class AdressesokServiceTest {
     @Test
     fun skalReturnereAdresseForslagMedGeografiskTilknytningLikKommunenummer() {
         val adressesokResult = createAdressesokResultDto(
-            java.util.List.of(
-                AdressesokHitDto(vegadresseUtenBydelsnummer()!!, 0.5f)
+            listOf(
+                AdressesokHitDto(vegadresseUtenBydelsnummer(), 0.5f)
             )
         )
         every { adressesokClient.getAdressesokResult(any()) } returns adressesokResult
@@ -96,9 +99,9 @@ internal class AdressesokServiceTest {
     @Test
     fun skalKasteFeil_flereHitsMedUlikeKommunenavn() {
         val adressesokResult = createAdressesokResultDto(
-            java.util.List.of(
-                AdressesokHitDto(vegadresse("kommune1", "0101", null)!!, 0.5f),
-                AdressesokHitDto(vegadresse("kommune2", "0101", null)!!, 0.5f)
+            listOf(
+                AdressesokHitDto(vegadresse("kommune1", "0101", null), 0.5f),
+                AdressesokHitDto(vegadresse("kommune2", "0101", null), 0.5f)
             )
         )
         every { adressesokClient.getAdressesokResult(any()) } returns adressesokResult
@@ -109,9 +112,9 @@ internal class AdressesokServiceTest {
     @Test
     fun skalKasteFeil_flereHitsMedUlikeKommunenummer() {
         val adressesokResult = createAdressesokResultDto(
-            java.util.List.of(
-                AdressesokHitDto(vegadresse("kommune", "1111", null)!!, 0.5f),
-                AdressesokHitDto(vegadresse("kommune", "2222", null)!!, 0.5f)
+            listOf(
+                AdressesokHitDto(vegadresse("kommune", "1111", null), 0.5f),
+                AdressesokHitDto(vegadresse("kommune", "2222", null), 0.5f)
             )
         )
         every { adressesokClient.getAdressesokResult(any()) } returns adressesokResult
@@ -122,9 +125,9 @@ internal class AdressesokServiceTest {
     @Test
     fun skalKasteFeil_flereHitsMedUlikeBydelsnummer() {
         val adressesokResult = createAdressesokResultDto(
-            java.util.List.of(
-                AdressesokHitDto(vegadresse("kommune", "1111", "030101")!!, 0.5f),
-                AdressesokHitDto(vegadresse("kommune", "1111", "030102")!!, 0.5f)
+            listOf(
+                AdressesokHitDto(vegadresse("kommune", "1111", "030101"), 0.5f),
+                AdressesokHitDto(vegadresse("kommune", "1111", "030102"), 0.5f)
             )
         )
         every { adressesokClient.getAdressesokResult(any()) } returns adressesokResult
@@ -135,9 +138,9 @@ internal class AdressesokServiceTest {
     @Test
     fun skalReturnereAdresseForslagVedFlereHitsHvisDeHarSammeKommunenummerKommunenavnOgBydelsnummer() {
         val adressesokResult = createAdressesokResultDto(
-            java.util.List.of(
-                AdressesokHitDto(vegadresse("Oslo", "1111", "030101")!!, 0.5f),
-                AdressesokHitDto(vegadresse("Oslo", "1111", "030101")!!, 0.5f)
+            listOf(
+                AdressesokHitDto(vegadresse("Oslo", "1111", "030101"), 0.5f),
+                AdressesokHitDto(vegadresse("Oslo", "1111", "030101"), 0.5f)
             )
         )
         every { adressesokClient.getAdressesokResult(any()) } returns adressesokResult
@@ -147,7 +150,7 @@ internal class AdressesokServiceTest {
         assertThat(adresseForslag.geografiskTilknytning).isEqualTo("030101")
     }
 
-    private fun vegadresseMedBydelsnummer(): VegadresseDto? {
+    private fun vegadresseMedBydelsnummer(): VegadresseDto {
         return vegadresse(
             KOMMUNENAVN,
             KOMMUNENUMMER,
@@ -155,11 +158,11 @@ internal class AdressesokServiceTest {
         )
     }
 
-    private fun vegadresseUtenBydelsnummer(): VegadresseDto? {
+    private fun vegadresseUtenBydelsnummer(): VegadresseDto {
         return vegadresse(KOMMUNENAVN, KOMMUNENUMMER, null)
     }
 
-    private fun vegadresse(kommunenavn: String, kommunenummer: String, bydelsnummer: String?): VegadresseDto? {
+    private fun vegadresse(kommunenavn: String, kommunenummer: String, bydelsnummer: String?): VegadresseDto {
         return VegadresseDto(
             "matrikkelId",
             1,

@@ -17,7 +17,7 @@ internal class SkattbarInntektServiceTest {
     private val skattbarInntektService = SkattbarInntektService(skatteetatenClient)
 
     @Test
-    internal fun `hentSkattbarInntekt`() {
+    internal fun `hent SkattbarInntekt`() {
         val skattbarInntekt = readResponseFromPath("/skatt/InntektOgSkatt.json")
         every { skatteetatenClient.hentSkattbarinntekt(any()) } returns skattbarInntekt
 

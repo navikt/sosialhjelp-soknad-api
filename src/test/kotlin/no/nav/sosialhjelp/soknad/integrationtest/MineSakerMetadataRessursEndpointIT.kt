@@ -20,7 +20,9 @@ import org.springframework.test.web.reactive.server.WebTestClient
 @ActiveProfiles(profiles = ["no-redis", "test"])
 class MineSakerMetadataRessursEndpointIT {
 
-    val BRUKER = "11111111111"
+    companion object {
+        private const val BRUKER = "11111111111"
+    }
 
     @Autowired
     private lateinit var mockOAuth2Server: MockOAuth2Server

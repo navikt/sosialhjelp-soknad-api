@@ -241,9 +241,9 @@ internal class FamilieSystemdataTest {
         assertThat(forsorgerplikt.barnebidrag.verdi).isEqualTo(Verdi.BEGGE)
         val ansvarList = forsorgerplikt.ansvar
         val ansvar = ansvarList[0]
-        val ansvar_2 = ansvarList[1]
+        val ansvar2 = ansvarList[1]
         assertThat(ansvar.barn.kilde).isEqualTo(JsonKilde.SYSTEM)
-        assertThat(ansvar_2.barn.kilde).isEqualTo(JsonKilde.SYSTEM)
+        assertThat(ansvar2.barn.kilde).isEqualTo(JsonKilde.SYSTEM)
         assertThatAnsvarIsCorrectlyConverted(BARN, JSON_ANSVAR)
         assertThatAnsvarIsCorrectlyConverted(BARN_2, JSON_ANSVAR_2)
     }

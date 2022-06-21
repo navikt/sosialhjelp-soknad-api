@@ -92,8 +92,7 @@ open class SkattbarInntektRessurs(
     private fun hentSamtykkeDatoFraSoknad(soknad: JsonInternalSoknad): String? {
         return soknad.soknad.data.okonomi.opplysninger.bekreftelse
             .filter { it.type == UTBETALING_SKATTEETATEN_SAMTYKKE }
-            .filter { it.verdi }
-            .firstOrNull()
+            .firstOrNull { it.verdi }
             ?.bekreftelsesDato
     }
 

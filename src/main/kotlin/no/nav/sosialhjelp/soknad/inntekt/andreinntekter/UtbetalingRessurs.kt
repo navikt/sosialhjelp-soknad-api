@@ -133,7 +133,7 @@ open class UtbetalingRessurs(
     }
 
     private fun getBekreftelse(opplysninger: JsonOkonomiopplysninger): Boolean? {
-        return opplysninger.bekreftelse.firstOrNull() { it.type == BEKREFTELSE_UTBETALING }?.verdi
+        return opplysninger.bekreftelse.firstOrNull { it.type == BEKREFTELSE_UTBETALING }?.verdi
     }
 
     data class UtbetalingerFrontend(

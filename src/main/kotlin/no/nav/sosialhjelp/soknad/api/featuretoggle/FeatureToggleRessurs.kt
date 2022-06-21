@@ -20,6 +20,7 @@ open class FeatureToggleRessurs(
     @GET
     open fun featureToggles(): Map<String, Boolean> {
         val featureToggles: MutableMap<String, Boolean> = HashMap()
+        // add toggles for frontend
         return featureToggles
     }
 }

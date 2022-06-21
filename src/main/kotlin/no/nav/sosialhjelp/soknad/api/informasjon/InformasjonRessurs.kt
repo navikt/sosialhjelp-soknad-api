@@ -55,9 +55,11 @@ open class InformasjonRessurs(
     private val nedetidService: NedetidService
 ) {
 
-    private val logger = LoggerFactory.getLogger(InformasjonRessurs::class.java)
-    private val klientlogger = LoggerFactory.getLogger("klientlogger")
-    private val FJORTEN_DAGER = 14
+    companion object {
+        private val logger = LoggerFactory.getLogger(InformasjonRessurs::class.java)
+        private val klientlogger = LoggerFactory.getLogger("klientlogger")
+        private const val FJORTEN_DAGER = 14
+    }
 
     @GET
     @Path("/fornavn")
@@ -191,7 +193,7 @@ open class InformasjonRessurs(
             .associateBy { it.kommunenummer }
     }
 
-    fun mapManueltPakobledeKommunerTilKommunestatusFrontend(manuelleKommuner: List<String>): Map<String, KommunestatusFrontend> {
+    private fun mapManueltPakobledeKommunerTilKommunestatusFrontend(manuelleKommuner: List<String>): Map<String, KommunestatusFrontend> {
         return manuelleKommuner
             .map {
                 KommunestatusFrontend(
@@ -217,7 +219,7 @@ open class InformasjonRessurs(
             ?.toMutableMap() ?: mutableMapOf()
     }
 
-    fun mapDigisosKommunerTilKommunestatus(digisosKommuner: Map<String, KommuneInfo>?): MutableMap<String, KommunestatusFrontend> {
+    private fun mapDigisosKommunerTilKommunestatus(digisosKommuner: Map<String, KommuneInfo>?): MutableMap<String, KommunestatusFrontend> {
         return digisosKommuner?.values
             ?.map {
                 KommunestatusFrontend(
@@ -248,7 +250,7 @@ open class InformasjonRessurs(
         return digisosKommuner
     }
 
-    fun mergeManuelleKommunerMedDigisosKommunerKommunestatus(
+    private fun mergeManuelleKommunerMedDigisosKommunerKommunestatus(
         manuelleKommuner: Map<String, KommunestatusFrontend>,
         digisosKommuner: MutableMap<String, KommunestatusFrontend>
     ): Map<String, KommunestatusFrontend> {

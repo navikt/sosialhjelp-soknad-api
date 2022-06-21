@@ -16,7 +16,7 @@ interface TokendingsClient {
 
 class TokendingsClientImpl(
     private val tokendingsWebClient: WebClient,
-    val wellKnown: WellKnown,
+    private val wellKnown: WellKnown,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : TokendingsClient {
 

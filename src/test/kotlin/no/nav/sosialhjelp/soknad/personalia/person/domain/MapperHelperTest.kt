@@ -12,11 +12,13 @@ import java.time.LocalDateTime
 
 internal class MapperHelperTest {
 
-    private val NOV_30_KVELD = LocalDateTime.of(2020, 11, 30, 19, 0)
-    private val DEC_1_MORGEN = LocalDateTime.of(2020, 12, 1, 7, 0)
-    private val DEC_1_MIDDAG = LocalDateTime.of(2020, 12, 1, 12, 0)
-    private val DEC_1_KVELD = LocalDateTime.of(2020, 12, 1, 19, 0)
-    private val DEC_2_MORGEN = LocalDateTime.of(2020, 12, 2, 7, 0)
+    companion object {
+        private val NOV_30_KVELD = LocalDateTime.of(2020, 11, 30, 19, 0)
+        private val DEC_1_MORGEN = LocalDateTime.of(2020, 12, 1, 7, 0)
+        private val DEC_1_MIDDAG = LocalDateTime.of(2020, 12, 1, 12, 0)
+        private val DEC_1_KVELD = LocalDateTime.of(2020, 12, 1, 19, 0)
+        private val DEC_2_MORGEN = LocalDateTime.of(2020, 12, 2, 7, 0)
+    }
 
     private val helper = MapperHelper()
 
@@ -217,9 +219,9 @@ internal class MapperHelperTest {
             DEC_1_MIDDAG,
             DEC_1_MIDDAG
         )
-        val sivilstandFraPdl_1 = createSivilstand(SivilstandType.GIFT, "PDL", "NAV", DEC_1_MORGEN)
-        val sivilstandFraPdl_2 = createSivilstand(SivilstandType.UOPPGITT, "PDL", "NAV", DEC_1_MIDDAG)
-        val list = listOf(sivilstandFraFreg, sivilstandFraPdl_1, sivilstandFraPdl_2)
+        val sivilstandfrapdl1 = createSivilstand(SivilstandType.GIFT, "PDL", "NAV", DEC_1_MORGEN)
+        val sivilstandfrapdl2 = createSivilstand(SivilstandType.UOPPGITT, "PDL", "NAV", DEC_1_MIDDAG)
+        val list = listOf(sivilstandFraFreg, sivilstandfrapdl1, sivilstandfrapdl2)
         val result = helper.utledGjeldendeSivilstand(list)
         assertThat(result).isNull()
     }

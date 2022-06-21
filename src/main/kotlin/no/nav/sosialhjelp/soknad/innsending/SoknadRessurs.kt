@@ -184,7 +184,7 @@ open class SoknadRessurs(
         }
 
         private fun xsrfCookieMedBehandlingsid(behandlingId: String): Cookie {
-            val xsrfCookie = Cookie(XSRF_TOKEN + "-" + behandlingId, XsrfGenerator.generateXsrfToken(behandlingId))
+            val xsrfCookie = Cookie("$XSRF_TOKEN-$behandlingId", XsrfGenerator.generateXsrfToken(behandlingId))
             xsrfCookie.path = "/"
             xsrfCookie.secure = true
             return xsrfCookie

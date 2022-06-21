@@ -18,7 +18,7 @@ object InntektFormueUtils {
     }
 
     fun getBekreftelse(opplysninger: JsonOkonomiopplysninger, type: String): JsonOkonomibekreftelse? {
-        return opplysninger.bekreftelse.firstOrNull() { type == it.type }
+        return opplysninger.bekreftelse.firstOrNull { type == it.type }
     }
 
     fun harValgtFormueType(oversikt: JsonOkonomioversikt?, type: String): Boolean {

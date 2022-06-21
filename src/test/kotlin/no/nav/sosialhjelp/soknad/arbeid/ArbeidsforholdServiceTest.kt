@@ -68,7 +68,7 @@ internal class ArbeidsforholdServiceTest {
     }
 
     @Test
-    internal fun ansettelsesperiodeTomKanVæreNull() {
+    internal fun ansettelsesperiodeTomErNull() {
         every { arbeidsforholdClient.finnArbeidsforholdForArbeidstaker(fnr) } returns listOf(createArbeidsforhold(true, fom, null))
         every { organisasjonService.hentOrgNavn(any()) } returns orgNavn
 
