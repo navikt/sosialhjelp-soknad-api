@@ -4,7 +4,7 @@ open class SosialhjelpSoknadApiException : RuntimeException {
     var id: String? = null
         private set
 
-    constructor(melding: String?) : super(melding) {}
+    constructor(melding: String?) : super(melding)
 
     @JvmOverloads
     constructor(message: String?, cause: Throwable?, id: String? = null) : super(message, cause) {

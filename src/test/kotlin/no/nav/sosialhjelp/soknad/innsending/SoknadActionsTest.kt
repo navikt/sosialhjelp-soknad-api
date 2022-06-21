@@ -45,7 +45,6 @@ import java.time.LocalDateTime
 import javax.servlet.ServletContext
 
 internal class SoknadActionsTest {
-    private lateinit var EIER: String
 
     private val soknadService: SoknadService = mockk()
     private val kommuneInfoService: KommuneInfoService = mockk()
@@ -288,6 +287,8 @@ internal class SoknadActionsTest {
     }
 
     companion object {
+        private lateinit var EIER: String
+
         const val KOMMUNE_I_SVARUT_LISTEN = "0301"
 
         private fun createSoknadUnderArbeid(eier: String): SoknadUnderArbeid {

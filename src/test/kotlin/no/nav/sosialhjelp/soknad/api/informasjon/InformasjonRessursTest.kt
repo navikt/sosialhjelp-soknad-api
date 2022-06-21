@@ -40,7 +40,7 @@ internal class InformasjonRessursTest {
         nedetidService
     )
 
-    var norskBokmaal = Locale("nb", "NO")
+    private var norskBokmaal = Locale("nb", "NO")
 
     @BeforeEach
     fun setUp() {

@@ -427,7 +427,7 @@ fun leggTilInntektOgFormue(
     }
 }
 
-private fun finnSaksStatus(sak: JsonBostotteSak): String? {
+private fun finnSaksStatus(sak: JsonBostotteSak): String {
     val status = sak.status ?: return ""
     return if (status.equals("VEDTATT", ignoreCase = true)) {
         if (sak.vedtaksstatus != null && sak.vedtaksstatus == JsonBostotteSak.Vedtaksstatus.INNVILGET) {

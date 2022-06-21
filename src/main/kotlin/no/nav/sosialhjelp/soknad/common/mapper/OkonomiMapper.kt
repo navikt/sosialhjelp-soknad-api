@@ -28,12 +28,12 @@ object OkonomiMapper {
         }
     }
 
-    fun addFormueIfNotPresentInOversikt(
+    private fun addFormueIfNotPresentInOversikt(
         formuer: MutableList<JsonOkonomioversiktFormue>,
         type: String,
         tittel: String?
     ) {
-        val jsonFormue = formuer.firstOrNull() { it.type == type }
+        val jsonFormue = formuer.firstOrNull { it.type == type }
         if (jsonFormue == null) {
             formuer.add(
                 JsonOkonomioversiktFormue()
@@ -113,7 +113,7 @@ object OkonomiMapper {
         }
     }
 
-    fun removeFormueIfPresentInOversikt(formuer: MutableList<JsonOkonomioversiktFormue>, type: String) {
+    private fun removeFormueIfPresentInOversikt(formuer: MutableList<JsonOkonomioversiktFormue>, type: String) {
         formuer.removeIf { it.type == type }
     }
 

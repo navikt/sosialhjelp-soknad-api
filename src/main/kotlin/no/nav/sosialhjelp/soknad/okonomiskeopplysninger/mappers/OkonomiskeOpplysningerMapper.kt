@@ -59,7 +59,7 @@ object OkonomiskeOpplysningerMapper {
         soknadType: String?
     ) {
         jsonOkonomi.oversikt.formue
-            .firstOrNull() { it.type == soknadType }
+            .firstOrNull { it.type == soknadType }
             ?.let { formue ->
                 val formuer = jsonOkonomi.oversikt.formue
                     .filter { it.type != soknadType }

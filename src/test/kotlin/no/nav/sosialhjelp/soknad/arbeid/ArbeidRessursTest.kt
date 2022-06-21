@@ -58,10 +58,10 @@ internal class ArbeidRessursTest {
         val arbeidsforholdFrontends = arbeidFrontend.arbeidsforhold
         assertThat(arbeidsforholdFrontends).hasSize(2)
 
-        val arbeidsforhold_1 = arbeidsforholdFrontends!![0]
-        val arbeidsforhold_2 = arbeidsforholdFrontends[1]
-        assertThatArbeidsforholdIsCorrectlyConverted(arbeidsforhold_1, ARBEIDSFORHOLD_1)
-        assertThatArbeidsforholdIsCorrectlyConverted(arbeidsforhold_2, ARBEIDSFORHOLD_2)
+        val arbeidsforhold1 = arbeidsforholdFrontends!![0]
+        val arbeidsforhold2 = arbeidsforholdFrontends[1]
+        assertThatArbeidsforholdIsCorrectlyConverted(arbeidsforhold1, ARBEIDSFORHOLD_1)
+        assertThatArbeidsforholdIsCorrectlyConverted(arbeidsforhold2, ARBEIDSFORHOLD_2)
     }
 
     @Test

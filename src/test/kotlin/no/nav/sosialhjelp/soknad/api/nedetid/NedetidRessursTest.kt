@@ -7,7 +7,7 @@ import java.time.LocalDateTime
 
 internal class NedetidRessursTest {
 
-    var nedetidRessurs: NedetidRessurs = NedetidRessurs(NedetidService(null, null))
+    private var nedetidRessurs: NedetidRessurs = NedetidRessurs(NedetidService(null, null))
 
     // Utenfor planlagt nedetid eller nedetid:
     @Test

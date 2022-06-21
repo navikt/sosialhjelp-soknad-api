@@ -17,16 +17,18 @@ import javax.inject.Inject
 @ActiveProfiles("test")
 internal class OpplastetVedleggRepositoryJdbcTest {
 
-    private val EIER = "12345678901"
-    private val EIER2 = "22222222222"
-    private val DATA = byteArrayOf(1, 2, 3, 4)
-    private val SHA512 = getSha512FromByteArray(DATA)
-    private val TYPE = "bostotte|annetboutgift"
-    private val TYPE2 = "dokumentasjon|aksjer"
-    private val SOKNADID = 1L
-    private val SOKNADID2 = 2L
-    private val SOKNADID3 = 3L
-    private val FILNAVN = "dokumentasjon.pdf"
+    companion object {
+        private const val EIER = "12345678901"
+        private const val EIER2 = "22222222222"
+        private val DATA = byteArrayOf(1, 2, 3, 4)
+        private val SHA512 = getSha512FromByteArray(DATA)
+        private const val TYPE = "bostotte|annetboutgift"
+        private const val TYPE2 = "dokumentasjon|aksjer"
+        private const val SOKNADID = 1L
+        private const val SOKNADID2 = 2L
+        private const val SOKNADID3 = 3L
+        private const val FILNAVN = "dokumentasjon.pdf"
+    }
 
     @Inject
     private lateinit var opplastetVedleggRepository: OpplastetVedleggRepository

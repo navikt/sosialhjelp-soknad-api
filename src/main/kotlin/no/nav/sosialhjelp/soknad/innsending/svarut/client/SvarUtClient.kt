@@ -78,8 +78,6 @@ class SvarUtClientImpl(
     }
 
     override fun sendForsendelse(forsendelse: Forsendelse, data: Map<String, InputStream>): ForsendelsesId? {
-        requireNotNull(forsendelse) { "Forsendelse kan ikke være null" }
-        requireNotNull(data) { "Data kan ikke være null" }
         return try {
             val body = LinkedMultiValueMap<String, Any>()
             body.add("forsendelse", createHttpEntity(objectMapper.writeValueAsString(forsendelse), "forsendelse", null, MediaType.APPLICATION_JSON_VALUE))

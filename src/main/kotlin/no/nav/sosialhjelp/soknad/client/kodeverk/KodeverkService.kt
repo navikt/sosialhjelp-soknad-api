@@ -101,12 +101,11 @@ open class KodeverkService(
     }
 
     private fun formaterLand(land: String?): String? {
-        if (land == null) {
-            return land
+        return land?.let {
+            val formaterMedSpace = setUpperCaseBeforeRegex(land.lowercase(Locale.getDefault()), " ")
+            val formaterMedDash = setUpperCaseBeforeRegex(formaterMedSpace, "-")
+            setUpperCaseBeforeRegex(formaterMedDash, "/")
         }
-        val formaterMedSpace = setUpperCaseBeforeRegex(land.lowercase(Locale.getDefault()), " ")
-        val formaterMedDash = setUpperCaseBeforeRegex(formaterMedSpace, "-")
-        return setUpperCaseBeforeRegex(formaterMedDash, "/")
     }
 
     private fun setUpperCaseBeforeRegex(s: String, regex: String): String {

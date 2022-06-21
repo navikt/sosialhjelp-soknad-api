@@ -51,8 +51,12 @@ class SubjectHandlerImpl : SubjectHandler {
 }
 
 class StaticSubjectHandlerImpl : SubjectHandler {
-    private val DEFAULT_USER = "11111111111"
-    private val DEFAULT_TOKEN = "token"
+
+    companion object {
+        private const val DEFAULT_USER = "11111111111"
+        private const val DEFAULT_TOKEN = "token"
+    }
+
     private var user = DEFAULT_USER
     private var token = DEFAULT_TOKEN
 

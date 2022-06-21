@@ -31,8 +31,7 @@ open class BydelFordelingService {
     open fun getBydelTilForMarka(adresseForslag: AdresseForslag): String {
         return markaBydelFordeling
             .filter { it.veiadresse.trim().equals(adresseForslag.adresse?.trim(), true) }
-            .filter { isInHusnummerFordeling(it.husnummerfordeling, adresseForslag.husnummer) }
-            .firstOrNull()
+            .firstOrNull { isInHusnummerFordeling(it.husnummerfordeling, adresseForslag.husnummer) }
             ?.bydelTil ?: adresseForslag.geografiskTilknytning ?: ""
     }
 

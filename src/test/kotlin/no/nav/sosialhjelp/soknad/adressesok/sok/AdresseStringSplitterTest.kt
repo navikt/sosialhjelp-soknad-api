@@ -12,7 +12,7 @@ internal class AdresseStringSplitterTest {
 
     @Test
     fun tomStrengGirBlanktSvar() {
-        assertThat(toSokedata(null, "")!!.adresse).isBlank()
+        assertThat(toSokedata(null, "")!!.adresse).isBlank
     }
 
     @Test

@@ -15,7 +15,7 @@ internal class MobiltelefonServiceTest {
     private val mobiltelefonnummer = "12345678"
 
     @Test
-    internal fun `skalHenteMobiltelefonnummer`() {
+    internal fun `skal hente mobiltelefonnummer`() {
         every { krrProxyClient.getDigitalKontaktinformasjon(any()) } returns DigitalKontaktinformasjon(ident, true, true, false, mobiltelefonnummer)
 
         val response = mobiltelefonService.hent(ident)

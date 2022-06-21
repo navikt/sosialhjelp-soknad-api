@@ -34,11 +34,11 @@ object Utils {
             ?.filter { it.type == type } ?: emptyList()
     }
 
-    fun formaterDato(dato: String?, format: String): String? {
+    fun formaterDato(dato: String?, format: String): String {
         return dato?.let { LocalDate.parse(it).format(ofPattern(format, locale)) } ?: ""
     }
 
-    fun formaterDatoOgTidspunkt(isoTimestamp: String?): String? {
+    fun formaterDatoOgTidspunkt(isoTimestamp: String?): String {
         return isoTimestamp?.let {
             ZonedDateTime.parse(it).withZoneSameInstant(ZoneId.of("Europe/Oslo")).format(ofPattern(DATO_OG_TID_FORMAT))
         } ?: ""

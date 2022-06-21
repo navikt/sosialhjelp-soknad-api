@@ -87,8 +87,7 @@ object AdresseMapper {
     }
 
     fun mapToJsonAdresse(adresseFrontend: AdresseFrontend): JsonAdresse {
-        val adresse: JsonAdresse
-        adresse = when (adresseFrontend.type) {
+        val adresse: JsonAdresse = when (adresseFrontend.type) {
             JsonAdresse.Type.GATEADRESSE -> {
                 val gateadresse = adresseFrontend.gateadresse
                 JsonGateAdresse()

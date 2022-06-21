@@ -11,9 +11,9 @@ import java.time.format.DateTimeFormatter
 
 @Component
 class SosialhjelpPdfGenerator(
-    val navMessageSource: NavMessageSource,
-    val textHelpers: TextHelpers,
-    val pdfUtils: PdfUtils,
+    private val navMessageSource: NavMessageSource,
+    private val textHelpers: TextHelpers,
+    private val pdfUtils: PdfUtils,
 ) {
     fun generate(jsonInternalSoknad: JsonInternalSoknad, utvidetSoknad: Boolean): ByteArray {
         return try {

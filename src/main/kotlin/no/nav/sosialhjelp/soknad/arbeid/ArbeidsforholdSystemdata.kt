@@ -33,7 +33,7 @@ class ArbeidsforholdSystemdata(
         updateVedleggForventninger(internalSoknad, textService)
     }
 
-    fun innhentSystemArbeidsforhold(personIdentifikator: String): List<JsonArbeidsforhold>? {
+    private fun innhentSystemArbeidsforhold(personIdentifikator: String): List<JsonArbeidsforhold>? {
         val arbeidsforholds: List<Arbeidsforhold>? = try {
             arbeidsforholdService.hentArbeidsforhold(personIdentifikator)
         } catch (e: Exception) {

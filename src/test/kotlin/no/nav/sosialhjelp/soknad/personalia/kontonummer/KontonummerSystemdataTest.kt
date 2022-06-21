@@ -32,7 +32,7 @@ internal class KontonummerSystemdataTest {
     @Test
     fun skalOppdatereKontonummerOgFjerneUlovligeSymboler() {
         val soknadUnderArbeid = createSoknadUnderArbeid()
-        every { kontonummerService.getKontonummer(any()) } returns KONTONUMMER_SYSTEM + " !#¤%&/()=?`-<>|§,.-* "
+        every { kontonummerService.getKontonummer(any()) } returns "$KONTONUMMER_SYSTEM !#¤%&/()=?`-<>|§,.-* "
 
         kontonummerSystemdata.updateSystemdataIn(soknadUnderArbeid)
 

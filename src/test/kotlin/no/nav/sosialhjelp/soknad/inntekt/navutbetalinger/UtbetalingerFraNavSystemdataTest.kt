@@ -144,7 +144,7 @@ internal class UtbetalingerFraNavSystemdataTest {
         assertThat(jsonUtbetaling.skattetrekk).isEqualTo(navUtbetaling.skattetrekk)
         assertThat(jsonUtbetaling.andreTrekk).isEqualTo(navUtbetaling.andreTrekk)
         assertThat(jsonUtbetaling.overstyrtAvBruker).isFalse
-        if (!navUtbetaling.komponenter.isEmpty()) {
+        if (navUtbetaling.komponenter.isNotEmpty()) {
             for (i in navUtbetaling.komponenter.indices) {
                 val (type1, belop, satsType, satsBelop, satsAntall) = navUtbetaling.komponenter[i]
                 val jsonKomponent = jsonUtbetaling.komponenter[i]
