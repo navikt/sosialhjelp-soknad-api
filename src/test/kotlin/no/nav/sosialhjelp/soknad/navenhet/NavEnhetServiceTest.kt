@@ -21,10 +21,12 @@ import javax.ws.rs.ServiceUnavailableException
 
 internal class NavEnhetServiceTest {
 
-    private val GT = "0101"
-    private val ENHETSNUMMER = "0701"
-    private val ORGNUMMER_PROD = "974605171"
-    private val ORGNUMMER_TEST = "910940066"
+    companion object {
+        private const val GT = "0101"
+        private const val ENHETSNUMMER = "0701"
+        private const val ORGNUMMER_PROD = "974605171"
+        private const val ORGNUMMER_TEST = "910940066"
+    }
 
     private val norgClient: NorgClient = mockk()
     private val redisService: RedisService = mockk()

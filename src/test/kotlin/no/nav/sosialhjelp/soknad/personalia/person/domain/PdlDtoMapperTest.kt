@@ -34,24 +34,26 @@ import java.time.LocalDateTime
 
 internal class PdlDtoMapperTest {
 
-    private val IDENT = "ident"
-    private val FORNAVN = "fornavn"
-    private val MELLOMNAVN = "mellomnavn"
-    private val ETTERNAVN = "etternavn"
+    companion object {
+        private const val IDENT = "ident"
+        private const val FORNAVN = "fornavn"
+        private const val MELLOMNAVN = "mellomnavn"
+        private const val ETTERNAVN = "etternavn"
 
-    private val BARNIDENT = "barnIdent"
-    private val BARN_ROLLE = "BARN"
-    private val MOR_ROLLE = "MOR"
+        private const val BARNIDENT = "barnIdent"
+        private const val BARN_ROLLE = "BARN"
+        private const val MOR_ROLLE = "MOR"
 
-    private val FOEDSELSDATO_BARN = LocalDate.now().withMonth(1).withDayOfMonth(1).minusYears(2)
-    private val FOEDSELSDATO_BARN_MYNDIG = LocalDate.now().withMonth(1).withDayOfMonth(1).minusYears(19)
+        private val FOEDSELSDATO_BARN = LocalDate.now().withMonth(1).withDayOfMonth(1).minusYears(2)
+        private val FOEDSELSDATO_BARN_MYNDIG = LocalDate.now().withMonth(1).withDayOfMonth(1).minusYears(19)
 
-    private val EKTEFELLEIDENT = "ektefelleIdent"
+        private const val EKTEFELLEIDENT = "ektefelleIdent"
 
-    private val LAND = "NOR"
+        private const val LAND = "NOR"
 
-    private val METADATA = MetadataDto("FREG", listOf(EndringDto("FREG", LocalDateTime.now().minusDays(15), "type")))
-    private val FOLKEREGISTERMETADATA = FolkeregisterMetadataDto(LocalDateTime.now().minusMonths(1), null)
+        private val METADATA = MetadataDto("FREG", listOf(EndringDto("FREG", LocalDateTime.now().minusDays(15), "type")))
+        private val FOLKEREGISTERMETADATA = FolkeregisterMetadataDto(LocalDateTime.now().minusMonths(1), null)
+    }
 
     private val kodeverkService: KodeverkService = mockk()
     private val helper = MapperHelper()
@@ -1231,26 +1233,26 @@ internal class PdlDtoMapperTest {
             ),
             listOf(StatsborgerskapDto(LAND))
         )
-        val pdlBarn_dagenFoerBarnBlirMyndig = createBarnMedFoedselsdato(dagenFoerBarnBlirMyndig)
-        val pdlBarn_dagenBarnBlirMyndig = createBarnMedFoedselsdato(dagenBarnBlirMyndig)
-        val pdlBarn_dagenEtterBarnBlirMyndig = createBarnMedFoedselsdato(dagenEtterBarnBlirMyndig)
+        val pdlBarnDagenFoerBarnBlirMyndig = createBarnMedFoedselsdato(dagenFoerBarnBlirMyndig)
+        val pdlBarnDagenBarnBlirMyndig = createBarnMedFoedselsdato(dagenBarnBlirMyndig)
+        val pdlBarnDagenEtterBarnBlirMyndig = createBarnMedFoedselsdato(dagenEtterBarnBlirMyndig)
         assertThat<Barn>(
             mapper.barnDtoToDomain(
-                pdlBarn_dagenFoerBarnBlirMyndig,
+                pdlBarnDagenFoerBarnBlirMyndig,
                 BARNIDENT,
                 pdlPerson
             )
         ).isNotNull
         assertThat<Barn>(
             mapper.barnDtoToDomain(
-                pdlBarn_dagenBarnBlirMyndig,
+                pdlBarnDagenBarnBlirMyndig,
                 BARNIDENT,
                 pdlPerson
             )
         ).isNull()
         assertThat<Barn>(
             mapper.barnDtoToDomain(
-                pdlBarn_dagenEtterBarnBlirMyndig,
+                pdlBarnDagenEtterBarnBlirMyndig,
                 BARNIDENT,
                 pdlPerson
             )

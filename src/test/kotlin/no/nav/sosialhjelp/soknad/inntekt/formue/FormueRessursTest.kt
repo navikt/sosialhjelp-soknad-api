@@ -33,8 +33,10 @@ import java.time.LocalDateTime
 
 internal class FormueRessursTest {
 
-    private val BEHANDLINGSID = "123"
-    private val EIER = "123456789101"
+    companion object {
+        private const val BEHANDLINGSID = "123"
+        private const val EIER = "123456789101"
+    }
 
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
     private val tilgangskontroll: Tilgangskontroll = mockk()

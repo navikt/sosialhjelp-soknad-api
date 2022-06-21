@@ -18,19 +18,21 @@ import java.time.LocalDateTime
 
 internal class FinnAdresseServiceTest {
 
-    private val EIER = "123456789101"
-    private val KOMMUNENUMMER = "0300"
-    private val GEOGRAFISK_TILKNYTNING = "0101"
-    private val BYDEL = "0102"
-    private val GATEADRESSE = "gateadresse"
-    private val BOLIGNUMMER = "H0101"
-    private val GATENAVN = "Sandakerveien"
-    private val KOMMUNENAVN1 = "Kommune 1"
-    private val LANDKODE = "NOR"
-    private val POSTNUMMER = "0000"
-    private val POSTSTED = "Oslo"
-    private val HUSNUMMER = "53"
-    private val HUSBOKSTAV = "B"
+    companion object {
+        private const val EIER = "123456789101"
+        private const val KOMMUNENUMMER = "0300"
+        private const val GEOGRAFISK_TILKNYTNING = "0101"
+        private const val BYDEL = "0102"
+        private const val GATEADRESSE = "gateadresse"
+        private const val BOLIGNUMMER = "H0101"
+        private const val GATENAVN = "Sandakerveien"
+        private const val KOMMUNENAVN1 = "Kommune 1"
+        private const val LANDKODE = "NOR"
+        private const val POSTNUMMER = "0000"
+        private const val POSTSTED = "Oslo"
+        private const val HUSNUMMER = "53"
+        private const val HUSBOKSTAV = "B"
+    }
 
     private val adressesokService = mockk<AdressesokService>()
 

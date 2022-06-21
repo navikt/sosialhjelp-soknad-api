@@ -13,7 +13,7 @@ object RedisUtils {
 
     private val log = LoggerFactory.getLogger(RedisUtils::class.java)
 
-    val redisObjectMapper = JsonSosialhjelpObjectMapper.createObjectMapper()
+    val redisObjectMapper: ObjectMapper = JsonSosialhjelpObjectMapper.createObjectMapper()
         .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
         .registerKotlinModule()
         .registerModule(JavaTimeModule())

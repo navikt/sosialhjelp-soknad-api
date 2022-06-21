@@ -19,8 +19,10 @@ import org.springframework.test.web.reactive.server.WebTestClient
 @ActiveProfiles(profiles = ["no-redis", "test"])
 class SoknadRessursEndpointIT {
 
-    private val BRUKER = "11111111111"
-    private val ANNEN_BRUKER = "22222222222"
+    companion object {
+        private const val BRUKER = "11111111111"
+        private const val ANNEN_BRUKER = "22222222222"
+    }
 
     @Autowired
     private lateinit var mockOAuth2Server: MockOAuth2Server

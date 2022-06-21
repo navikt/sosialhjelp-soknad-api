@@ -12,9 +12,12 @@ import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.Test
 
 internal class AdressesokServiceTest {
-    private val BYDELSNUMMER = "030101"
-    private val KOMMUNENUMMER = "0301"
-    private val KOMMUNENAVN = "OSLO"
+
+    companion object {
+        private const val BYDELSNUMMER = "030101"
+        private const val KOMMUNENUMMER = "0301"
+        private const val KOMMUNENAVN = "OSLO"
+    }
 
     private val folkeregistretAdresse = JsonGateAdresse()
         .withGatenavn("Testveien")

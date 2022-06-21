@@ -55,9 +55,11 @@ open class InformasjonRessurs(
     private val nedetidService: NedetidService
 ) {
 
-    private val logger = LoggerFactory.getLogger(InformasjonRessurs::class.java)
-    private val klientlogger = LoggerFactory.getLogger("klientlogger")
-    private val FJORTEN_DAGER = 14
+    companion object {
+        private val logger = LoggerFactory.getLogger(InformasjonRessurs::class.java)
+        private val klientlogger = LoggerFactory.getLogger("klientlogger")
+        private const val FJORTEN_DAGER = 14
+    }
 
     @GET
     @Path("/fornavn")

@@ -23,9 +23,11 @@ internal class KommuneInfoServiceTest {
 
     private val kommuneInfoService = KommuneInfoService(kommuneInfoClient, redisService)
 
-    private val KOMMUNENR = "1234"
-    private val KOMMUNENR_UTEN_KONFIG = "1111"
-    private val KOMMUNENR_MED_KONFIG = "2222"
+    companion object {
+        private const val KOMMUNENR = "1234"
+        private const val KOMMUNENR_UTEN_KONFIG = "1111"
+        private const val KOMMUNENR_MED_KONFIG = "2222"
+    }
 
     @BeforeEach
     internal fun setUp() {
