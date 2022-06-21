@@ -6,6 +6,8 @@ import no.nav.sosialhjelp.soknad.db.SQLUtils.selectNextSequenceValue
 import no.nav.sosialhjelp.soknad.db.SQLUtils.tidTilTimestamp
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.core.RowMapper
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
 import java.sql.ResultSet
@@ -15,7 +17,8 @@ import java.time.LocalDateTime
 @Repository
 @Transactional
 open class OppgaveRepositoryJdbc(
-    private val jdbcTemplate: JdbcTemplate
+    private val jdbcTemplate: JdbcTemplate,
+    private val namedParameterJdbcTemplate: NamedParameterJdbcTemplate
 ) : OppgaveRepository {
 
     private val oppgaveRowMapper = RowMapper { rs: ResultSet, _: Int ->
@@ -73,6 +76,15 @@ open class OppgaveRepositoryJdbc(
         ).firstOrNull()
     }
 
+    override fun hentOppgaveIdList(behandlingsIdList: List<String>): List<Long> {
+        val parameters = MapSqlParameterSource("ids", behandlingsIdList)
+        return namedParameterJdbcTemplate.query(
+            "SELECT * FROM oppgave WHERE behandlingsid IN (:ids)",
+            parameters,
+            { resultSet: ResultSet, _: Int -> resultSet.getLong("id") }
+        )
+    }
+
     override fun hentNeste(): Oppgave? {
         val select =
             "SELECT * FROM oppgave WHERE status = ? and (nesteforsok is null OR nesteforsok < ?) " + SQLUtils.limit(1)
@@ -123,8 +135,9 @@ open class OppgaveRepositoryJdbc(
         )
     }
 
-    override fun slettOppgave(behandlingsId: String) {
-        jdbcTemplate.update("DELETE FROM oppgave WHERE behandlingsid = ?", behandlingsId)
+    override fun slettOppgaver(oppgaveIdList: List<Long>) {
+        val parameters = MapSqlParameterSource("ids", oppgaveIdList)
+        namedParameterJdbcTemplate.update("DELETE FROM oppgave WHERE id IN (:ids)", parameters)
     }
 
     override fun count(): Int {

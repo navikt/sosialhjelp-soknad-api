@@ -24,6 +24,7 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Import
 import org.springframework.jdbc.core.JdbcTemplate
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.transaction.annotation.EnableTransactionManagement
 import org.springframework.transaction.support.TransactionTemplate
 import javax.sql.DataSource
@@ -36,6 +37,11 @@ open class DbTestConfig {
     @Bean
     open fun jdbcTemplate(dataSource: DataSource): JdbcTemplate {
         return JdbcTemplate(dataSource)
+    }
+
+    @Bean
+    open fun namedParameterJdbcTemplate(dataSource: DataSource): NamedParameterJdbcTemplate {
+        return NamedParameterJdbcTemplate(dataSource)
     }
 
     @Bean
@@ -97,12 +103,12 @@ open class DbTestConfig {
     }
 
     @Bean
-    open fun batchSoknadMetadataRepository(jdbcTemplate: JdbcTemplate): BatchSoknadMetadataRepository {
-        return BatchSoknadMetadataRepositoryJdbc(jdbcTemplate)
+    open fun batchSoknadMetadataRepository(jdbcTemplate: JdbcTemplate, namedParameterJdbcTemplate: NamedParameterJdbcTemplate): BatchSoknadMetadataRepository {
+        return BatchSoknadMetadataRepositoryJdbc(jdbcTemplate, namedParameterJdbcTemplate)
     }
 
     @Bean
-    open fun batchSendtSoknadRepository(jdbcTemplate: JdbcTemplate, transactionTemplate: TransactionTemplate): BatchSendtSoknadRepository {
-        return BatchSendtSoknadRepositoryJdbc(jdbcTemplate, transactionTemplate)
+    open fun batchSendtSoknadRepository(namedParameterJdbcTemplate: NamedParameterJdbcTemplate, transactionTemplate: TransactionTemplate): BatchSendtSoknadRepository {
+        return BatchSendtSoknadRepositoryJdbc(namedParameterJdbcTemplate, transactionTemplate)
     }
 }

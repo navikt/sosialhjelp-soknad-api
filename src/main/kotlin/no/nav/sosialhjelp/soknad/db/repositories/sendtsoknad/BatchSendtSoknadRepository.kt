@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.db.repositories.sendtsoknad
 
 interface BatchSendtSoknadRepository {
-    fun hentSendtSoknad(behandlingsId: String): Long?
-    fun slettSendtSoknad(sendtSoknadId: Long)
+    fun hentSendtSoknadIdList(behandlingsIdList: List<String>): List<Long>
+    fun slettSendtSoknader(sendtSoknadIdList: List<Long>)
 }
