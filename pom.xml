@@ -59,17 +59,17 @@
         <spring.version>5.3.21</spring.version>
         <jetty.version>9.4.46.v20220331</jetty.version>
         <jersey.version>2.35</jersey.version>
-        <token-validation.version>2.0.20</token-validation.version>
-        <nimbus-jose-jwt.version>9.22</nimbus-jose-jwt.version>
+        <token-validation.version>2.1.0</token-validation.version>
+        <nimbus-jose-jwt.version>9.23</nimbus-jose-jwt.version>
         <ojdbc.version>19.15.0.0</ojdbc.version>
-        <flyway-core.version>8.5.11</flyway-core.version>
-        <flyway-maven-plugin.version>8.5.11</flyway-maven-plugin.version>
+        <flyway-core.version>8.5.13</flyway-core.version>
+        <flyway-maven-plugin.version>8.5.13</flyway-maven-plugin.version>
         <jackson.version>2.13.3</jackson.version>
         <pdfbox.version>2.0.26</pdfbox.version>
         <jempbox.version>1.8.16</jempbox.version>
         <bouncycastle.version>1.70</bouncycastle.version>
         <guava.version>31.1-jre</guava.version>
-        <tika.version>2.4.0</tika.version>
+        <tika.version>2.4.1</tika.version>
         <logback.version>1.2.11</logback.version>
         <hsqldb.version>2.6.1</hsqldb.version>
         <joda-time.version>2.10.14</joda-time.version>
@@ -84,11 +84,11 @@
         <jaxb-runtime.version>2.3.6</jaxb-runtime.version>
         <lettuce.version>6.1.8.RELEASE</lettuce.version>
         <unleash.version>3.3.4</unleash.version>
-        <reactor-core.version>3.4.18</reactor-core.version>
-        <reactor-netty-http.version>1.0.19</reactor-netty-http.version>
+        <reactor-core.version>3.4.19</reactor-core.version>
+        <reactor-netty-http.version>1.0.20</reactor-netty-http.version>
         <log4j.version>2.17.2</log4j.version>
 
-        <kotlinx-coroutines.version>1.6.2</kotlinx-coroutines.version>
+        <kotlinx-coroutines.version>1.6.3</kotlinx-coroutines.version>
 
         <flyway.placeholders.driver>oracle.jdbc.OracleDriver</flyway.placeholders.driver>
         <flyway.placeholders.encoding>ISO-8859-1</flyway.placeholders.encoding>
@@ -108,7 +108,7 @@
         <!-- Versjoner for test dependencies -->
         <hamcrest.version>2.2</hamcrest.version>
         <junit-jupiter.version>5.8.2</junit-jupiter.version>
-        <assertj.version>3.22.0</assertj.version>
+        <assertj.version>3.23.1</assertj.version>
         <mockk.version>1.12.4</mockk.version>
         <mockwebserver.version>5.0.0-alpha.2</mockwebserver.version>
 
@@ -117,7 +117,7 @@
         <rhino.version>1.7.14</rhino.version>
         <logstash-logback-encoder.version>7.2</logstash-logback-encoder.version>
         <prometheus.version>0.16.0</prometheus.version>
-        <oauth2-oidc-sdk.version>9.35</oauth2-oidc-sdk.version>
+        <oauth2-oidc-sdk.version>9.37.2</oauth2-oidc-sdk.version>
         <emoji-java.version>5.1.1</emoji-java.version>
         <objenesis.version>3.2</objenesis.version>
         <mimepull.version>1.10.0</mimepull.version>
@@ -135,7 +135,7 @@
         <jboss-logging.version>3.5.0.Final</jboss-logging.version>
         <jboss-logging-annotations.version>2.2.1.Final</jboss-logging-annotations.version>
         <jboss-logging-processor.version>2.2.1.Final</jboss-logging-processor.version>
-        <mock-oauth2-server.version>0.4.8</mock-oauth2-server.version>
+        <mock-oauth2-server.version>0.5.1</mock-oauth2-server.version>
     </properties>
 
     <dependencyManagement>
@@ -1189,7 +1189,7 @@
                     <dependency>
                         <groupId>com.pinterest</groupId>
                         <artifactId>ktlint</artifactId>
-                        <version>0.45.2</version>
+                        <version>0.46.0</version>
                     </dependency>
                     <!-- additional 3rd party ruleset(s) can be specified here -->
                 </dependencies>
