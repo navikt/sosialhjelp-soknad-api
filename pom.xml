@@ -625,6 +625,11 @@
             <artifactId>sosialhjelp-common-kotlin-utils</artifactId>
             <version>${sosialhjelp-common.version}</version>
         </dependency>
+        <dependency>
+            <groupId>no.nav.sosialhjelp</groupId>
+            <artifactId>sosialhjelp-common-selftest</artifactId>
+            <version>${sosialhjelp-common.version}</version>
+        </dependency>
 
         <!--springboot-->
         <dependency>

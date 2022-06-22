@@ -6,7 +6,6 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import no.nav.sosialhjelp.soknad.auth.maskinporten.MaskinportenClient
 import no.nav.sosialhjelp.soknad.client.config.proxiedWebClientBuilder
-import no.nav.sosialhjelp.soknad.health.selftest.Pingable
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -25,19 +24,6 @@ open class SkattbarInntektConfig(
     @Bean
     open fun skatteetatenClient(): SkatteetatenClient {
         return SkatteetatenClientImpl(skatteetatenWebClient, maskinportenClient)
-    }
-
-    @Bean
-    open fun skatteetatenPing(skatteetatenClient: SkatteetatenClient): Pingable {
-        return Pingable {
-            val metadata = Pingable.PingMetadata(baseurl, "SkatteetatenApi", false)
-            try {
-                skatteetatenClient.ping()
-                Pingable.lyktes(metadata)
-            } catch (e: Exception) {
-                Pingable.feilet(metadata, e)
-            }
-        }
     }
 
     private val skatteetatenMapper = jacksonObjectMapper()
