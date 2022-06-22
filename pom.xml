@@ -59,7 +59,7 @@
         <spring.version>5.3.21</spring.version>
         <jetty.version>9.4.46.v20220331</jetty.version>
         <jersey.version>2.35</jersey.version>
-        <token-validation.version>2.0.20</token-validation.version>
+        <token-validation.version>2.0.21</token-validation.version>
         <nimbus-jose-jwt.version>9.22</nimbus-jose-jwt.version>
         <ojdbc.version>19.15.0.0</ojdbc.version>
         <flyway-core.version>8.5.11</flyway-core.version>
