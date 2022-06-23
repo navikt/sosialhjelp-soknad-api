@@ -8,6 +8,9 @@ import io.mockk.runs
 import io.mockk.slot
 import io.mockk.unmockkObject
 import io.mockk.verify
+import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper
+import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidationException
+import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeidsforhold
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeidsforhold.Stillingstype
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonKommentarTilArbeidsforhold
@@ -25,6 +28,8 @@ import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJ
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatCode
+import org.assertj.core.api.Assertions.assertThatExceptionOfType
+import org.assertj.core.api.Assertions.assertThatNoException
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -92,7 +97,7 @@ internal class ArbeidRessursTest {
     }
 
     @Test
-    fun putArbeidSkalLageNyJsonKommentarTilArbeidsforholdDersomDenVarNull() {
+    fun `putArbeid skal lage ny JsonKommentarTilArbeidsforhold dersom den var null`() {
         every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns createJsonInternalSoknadWithArbeid(null, null)
         val slot = slot<SoknadUnderArbeid>()
@@ -102,9 +107,50 @@ internal class ArbeidRessursTest {
         arbeidRessurs.updateArbeid(BEHANDLINGSID, arbeidFrontend)
 
         val soknadUnderArbeid = slot.captured
-        val kommentarTilArbeidsforhold = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.arbeid.kommentarTilArbeidsforhold
+        val internalSoknad = soknadUnderArbeid.jsonInternalSoknad
+        val kommentarTilArbeidsforhold = internalSoknad!!.soknad.data.arbeid.kommentarTilArbeidsforhold
         assertThat(kommentarTilArbeidsforhold.kilde).isEqualTo(JsonKildeBruker.BRUKER)
         assertThat(kommentarTilArbeidsforhold.verdi).isEqualTo(KOMMENTAR)
+
+        val mapper = JsonSosialhjelpObjectMapper.createObjectMapper()
+        assertThatNoException().isThrownBy {
+            JsonSosialhjelpValidator.ensureValidInternalSoknad(mapper.writeValueAsString(internalSoknad))
+        }
+    }
+
+    @Test
+    fun `putArbeid med KommentarTilArbeidsfohrold lager json som ikke validerer hvis forhold-liste har blitt satt lik null`() {
+        val soknadUnderArbeid = SoknadUnderArbeid(
+            versjon = 1L,
+            behandlingsId = BEHANDLINGSID,
+            tilknyttetBehandlingsId = null,
+            eier = EIER,
+            jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
+            status = SoknadUnderArbeidStatus.UNDER_ARBEID,
+            opprettetDato = LocalDateTime.now(),
+            sistEndretDato = LocalDateTime.now()
+        )
+        // skal ikke være mulig:
+        soknadUnderArbeid.jsonInternalSoknad?.soknad?.data?.arbeid?.forhold = null
+
+        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
+        every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns soknadUnderArbeid
+        val slot = slot<SoknadUnderArbeid>()
+        every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(slot), any()) } just runs
+
+        val arbeidFrontend = ArbeidFrontend(null, KOMMENTAR)
+        arbeidRessurs.updateArbeid(BEHANDLINGSID, arbeidFrontend)
+
+        val captured = slot.captured
+        val internalSoknad = captured.jsonInternalSoknad
+        val kommentarTilArbeidsforhold = internalSoknad!!.soknad.data.arbeid.kommentarTilArbeidsforhold
+        assertThat(kommentarTilArbeidsforhold.kilde).isEqualTo(JsonKildeBruker.BRUKER)
+        assertThat(kommentarTilArbeidsforhold.verdi).isEqualTo(KOMMENTAR)
+
+        val mapper = JsonSosialhjelpObjectMapper.createObjectMapper()
+        assertThatExceptionOfType(JsonSosialhjelpValidationException::class.java).isThrownBy {
+            JsonSosialhjelpValidator.ensureValidInternalSoknad(mapper.writeValueAsString(internalSoknad))
+        }
     }
 
     @Test
@@ -206,6 +252,21 @@ internal class ArbeidRessursTest {
                     .withKilde(JsonKildeBruker.BRUKER)
                     .withVerdi(kommentar)
             )
+        return soknadUnderArbeid
+    }
+
+    private fun createJsonInternalSoknadWithForholdLikNull(): SoknadUnderArbeid {
+        val soknadUnderArbeid = SoknadUnderArbeid(
+            versjon = 1L,
+            behandlingsId = BEHANDLINGSID,
+            tilknyttetBehandlingsId = null,
+            eier = EIER,
+            jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
+            status = SoknadUnderArbeidStatus.UNDER_ARBEID,
+            opprettetDato = LocalDateTime.now(),
+            sistEndretDato = LocalDateTime.now()
+        )
+        soknadUnderArbeid.jsonInternalSoknad?.soknad?.data?.arbeid?.forhold = null
         return soknadUnderArbeid
     }
 
