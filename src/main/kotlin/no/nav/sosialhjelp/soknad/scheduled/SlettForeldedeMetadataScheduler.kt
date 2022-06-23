@@ -81,7 +81,7 @@ class SlettForeldedeMetadataScheduler(
     companion object {
         private val logger = LoggerFactory.getLogger(SlettForeldedeMetadataScheduler::class.java)
         private const val KLOKKEN_05_OM_NATTEN = "0 0 5 * * *"
-        private const val SCHEDULE_INTERRUPT_S: Long = 60 * 30 // 30 min
+        private const val SCHEDULE_INTERRUPT_S: Long = 60 * 10 // 10 min
         private const val DAGER_GAMMELT = 365 // Ett år
     }
 }
