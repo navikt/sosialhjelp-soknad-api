@@ -5,7 +5,6 @@ object MiljoUtils {
     private const val NAIS_CLUSTER_NAME = "NAIS_CLUSTER_NAME"
     private const val ENVIRONMENT_NAME = "ENVIRONMENT_NAME"
     private const val SPRING_PROFILES_ACTIVE = "SPRING_PROFILES_ACTIVE"
-    private const val NAIS_APP_IMAGE = "NAIS_APP_IMAGE"
 
     val environmentName: String
         get() = System.getenv(ENVIRONMENT_NAME) ?: ""
@@ -21,9 +20,5 @@ object MiljoUtils {
     fun isMockAltProfil(): Boolean {
         val value = System.getenv(SPRING_PROFILES_ACTIVE) ?: ""
         return value.contains("mock-alt")
-    }
-
-    fun getAppImage(): String {
-        return System.getenv(NAIS_APP_IMAGE) ?: "version"
     }
 }
