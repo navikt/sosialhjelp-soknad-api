@@ -2,7 +2,6 @@ package no.nav.sosialhjelp.soknad.innsending.digisosapi
 
 import io.netty.channel.ChannelOption
 import no.nav.sosialhjelp.soknad.common.Constants
-import no.nav.sosialhjelp.soknad.health.selftest.Pingable
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
@@ -62,19 +61,6 @@ open class DigisosApiConfig(
             krypteringService,
             fiksWebClient
         )
-    }
-
-    @Bean
-    open fun digisosApiPing(digisosApiV1Client: DigisosApiV1Client): Pingable {
-        return Pingable {
-            val metadata = Pingable.PingMetadata(digisosApiEndpoint, "DigisosApi", true)
-            try {
-                digisosApiV1Client.ping()
-                Pingable.lyktes(metadata)
-            } catch (e: Exception) {
-                Pingable.feilet(metadata, e)
-            }
-        }
     }
 
     companion object {
