@@ -75,7 +75,7 @@ internal class ArbeidRessursTest {
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns createJsonInternalSoknadWithArbeid(null, null)
 
         val arbeidFrontend = arbeidRessurs.hentArbeid(BEHANDLINGSID)
-        assertThat(arbeidFrontend.arbeidsforhold).isNull()
+        assertThat(arbeidFrontend.arbeidsforhold).isEmpty()
     }
 
     @Test
@@ -245,28 +245,13 @@ internal class ArbeidRessursTest {
             opprettetDato = LocalDateTime.now(),
             sistEndretDato = LocalDateTime.now()
         )
-        soknadUnderArbeid.jsonInternalSoknad?.soknad?.data?.arbeid
-            ?.withForhold(arbeidsforholdList)
-            ?.withKommentarTilArbeidsforhold(
-                if (kommentar == null) null else JsonKommentarTilArbeidsforhold()
+        arbeidsforholdList?.let { soknadUnderArbeid.jsonInternalSoknad?.soknad?.data?.arbeid?.forhold = it }
+        kommentar?.let {
+            soknadUnderArbeid.jsonInternalSoknad?.soknad?.data?.arbeid?.kommentarTilArbeidsforhold =
+                JsonKommentarTilArbeidsforhold()
                     .withKilde(JsonKildeBruker.BRUKER)
                     .withVerdi(kommentar)
-            )
-        return soknadUnderArbeid
-    }
-
-    private fun createJsonInternalSoknadWithForholdLikNull(): SoknadUnderArbeid {
-        val soknadUnderArbeid = SoknadUnderArbeid(
-            versjon = 1L,
-            behandlingsId = BEHANDLINGSID,
-            tilknyttetBehandlingsId = null,
-            eier = EIER,
-            jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
-            status = SoknadUnderArbeidStatus.UNDER_ARBEID,
-            opprettetDato = LocalDateTime.now(),
-            sistEndretDato = LocalDateTime.now()
-        )
-        soknadUnderArbeid.jsonInternalSoknad?.soknad?.data?.arbeid?.forhold = null
+        }
         return soknadUnderArbeid
     }
 
