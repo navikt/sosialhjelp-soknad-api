@@ -29,7 +29,7 @@ class ArbeidsforholdSystemdata(
     override fun updateSystemdataIn(soknadUnderArbeid: SoknadUnderArbeid) {
         val eier = soknadUnderArbeid.eier
         val internalSoknad = soknadUnderArbeid.jsonInternalSoknad ?: return
-        internalSoknad.soknad.data.arbeid.forhold = innhentSystemArbeidsforhold(eier)
+        internalSoknad.soknad.data.arbeid.forhold = innhentSystemArbeidsforhold(eier) ?: emptyList()
         updateVedleggForventninger(internalSoknad, textService)
     }
 
@@ -56,6 +56,7 @@ class ArbeidsforholdSystemdata(
 
     companion object {
         private val LOG = LoggerFactory.getLogger(ArbeidsforholdSystemdata::class.java)
+
         fun updateVedleggForventninger(internalSoknad: JsonInternalSoknad, textService: TextService) {
             val utbetalinger = internalSoknad.soknad.data.okonomi.opplysninger.utbetaling
             val inntekter = internalSoknad.soknad.data.okonomi.oversikt.inntekt
