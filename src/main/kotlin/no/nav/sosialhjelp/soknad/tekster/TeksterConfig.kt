@@ -17,7 +17,7 @@ open class TeksterConfig(
     @Bean
     open fun navMessageSource(): NavMessageSource {
         val messageSource = NavMessageSource()
-        val bundle = getBundle(BUNDLE_NAME)
+        val bundle = getBundle(SOKNADSOSIALHJELP)
         val fellesBundle = getBundle("sendsoknad")
         messageSource.setBasenames(fellesBundle, bundle)
         messageSource.setDefaultEncoding("UTF-8")
@@ -42,6 +42,7 @@ open class TeksterConfig(
 
     companion object {
         private const val FEM_MINUTTER = 1000 * 60 * 5L
+        private const val SOKNADSOSIALHJELP = "soknadsosialhjelp"
 
         private val log = getLogger(TeksterConfig::class.java)
     }
