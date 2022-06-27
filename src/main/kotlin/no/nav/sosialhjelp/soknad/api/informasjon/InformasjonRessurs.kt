@@ -21,7 +21,6 @@ import no.nav.sosialhjelp.soknad.personalia.person.PersonService
 import no.nav.sosialhjelp.soknad.personalia.person.dto.Gradering.FORTROLIG
 import no.nav.sosialhjelp.soknad.personalia.person.dto.Gradering.STRENGT_FORTROLIG
 import no.nav.sosialhjelp.soknad.personalia.person.dto.Gradering.STRENGT_FORTROLIG_UTLAND
-import no.nav.sosialhjelp.soknad.tekster.BUNDLE_NAME
 import no.nav.sosialhjelp.soknad.tekster.NavMessageSource
 import org.apache.commons.lang3.LocaleUtils
 import org.apache.commons.lang3.StringUtils
@@ -59,6 +58,7 @@ open class InformasjonRessurs(
         private val logger = LoggerFactory.getLogger(InformasjonRessurs::class.java)
         private val klientlogger = LoggerFactory.getLogger("klientlogger")
         private const val FJORTEN_DAGER = 14
+        private const val SOKNADSOSIALHJELP = "soknadsosialhjelp"
     }
 
     @GET
@@ -80,10 +80,10 @@ open class InformasjonRessurs(
         if (sprak == null || sprak.trim { it <= ' ' }.isEmpty()) {
             sprak = "nb_NO"
         }
-        if (StringUtils.isNotEmpty(type) && BUNDLE_NAME != type.lowercase(Locale.getDefault())) {
+        if (StringUtils.isNotEmpty(type) && SOKNADSOSIALHJELP != type.lowercase(Locale.getDefault())) {
             val prefiksetType = "soknad" + type.lowercase(Locale.getDefault())
             logger.warn("Type {} matcher ikke et bundlename - forsøker med prefiks {}", type, prefiksetType)
-            if (BUNDLE_NAME == prefiksetType) {
+            if (SOKNADSOSIALHJELP == prefiksetType) {
                 type = prefiksetType
             }
         }
