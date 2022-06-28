@@ -57,21 +57,6 @@ class SoknadMetricsService {
         event.addFieldToReport("prosent.levertTidligere", getProsent(antallLevertTidligere, totaltAntall))
         event.addFieldToReport("prosent.ikkeLevert", getProsent(antallIkkeLevert, totaltAntall))
         event.report()
-
-        log.info(
-            """
-                Vedleggskrav statistikk
-                ettersendelse=$isEttersendelse,
-                sendetype=$sendtype,
-                totaltAntall=$totaltAntall,
-                antallInnsendt=$antallInnsendt,
-                antallLevertTidligere=$antallLevertTidligere,
-                antallIkkeLevert=$antallIkkeLevert,
-                prosentInnsendt=${getProsent(antallInnsendt, totaltAntall)},
-                prosentLevertTidligere=${getProsent(antallLevertTidligere, totaltAntall)},
-                prosentIkkeLevert=${getProsent(antallIkkeLevert, totaltAntall)}
-            """.trimIndent()
-        )
     }
 
     fun countAndreportVedleggskrav(isEttersendelse: Boolean, vedleggList: List<VedleggMetadata>) {
@@ -91,6 +76,22 @@ class SoknadMetricsService {
             }
         }
         reportVedleggskrav(isEttersendelse, totaltAntall, antallInnsendt, antallLevertTidligere, antallIkkeLevert)
+
+        val sendtype = if (isEttersendelse) "ettersendelse" else "soknad"
+        log.info(
+            """
+                Vedleggskrav statistikk
+                ettersendelse=$isEttersendelse
+                sendetype=$sendtype
+                totaltAntall=$totaltAntall
+                antallInnsendt=$antallInnsendt
+                antallLevertTidligere=$antallLevertTidligere
+                antallIkkeLevert=$antallIkkeLevert
+                prosentInnsendt=${getProsent(antallInnsendt, totaltAntall)}
+                prosentLevertTidligere=${getProsent(antallLevertTidligere, totaltAntall)}
+                prosentIkkeLevert=${getProsent(antallIkkeLevert, totaltAntall)}
+            """.trimIndent()
+        )
     }
 
     companion object {
