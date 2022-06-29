@@ -59,7 +59,7 @@
         <spring.version>5.3.21</spring.version>
         <jetty.version>9.4.48.v20220622</jetty.version>
         <jersey.version>2.35</jersey.version>
-        <token-validation.version>2.0.21</token-validation.version>
+        <token-validation.version>2.1.0</token-validation.version>
         <nimbus-jose-jwt.version>9.22</nimbus-jose-jwt.version>
         <ojdbc.version>19.15.0.0</ojdbc.version>
         <flyway-core.version>8.5.12</flyway-core.version>
@@ -117,7 +117,7 @@
         <rhino.version>1.7.14</rhino.version>
         <logstash-logback-encoder.version>7.2</logstash-logback-encoder.version>
         <prometheus.version>0.16.0</prometheus.version>
-        <oauth2-oidc-sdk.version>9.35</oauth2-oidc-sdk.version>
+        <oauth2-oidc-sdk.version>9.37.2</oauth2-oidc-sdk.version>
         <emoji-java.version>5.1.1</emoji-java.version>
         <objenesis.version>3.2</objenesis.version>
         <mimepull.version>1.10.0</mimepull.version>
