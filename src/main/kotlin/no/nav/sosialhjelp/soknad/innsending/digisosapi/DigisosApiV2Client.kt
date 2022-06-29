@@ -1,14 +1,13 @@
 package no.nav.sosialhjelp.soknad.innsending.digisosapi
 
 import com.fasterxml.jackson.core.JsonProcessingException
-import no.ks.fiks.streaming.klient.FilForOpplasting
 import no.nav.sosialhjelp.api.fiks.exceptions.FiksException
 import no.nav.sosialhjelp.kotlin.utils.logger
 import no.nav.sosialhjelp.soknad.client.config.RetryUtils
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.KrypteringService.Companion.waitForFutures
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.createHttpEntity
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.digisosObjectMapper
-import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilMetadata
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilForOpplasting
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilOpplasting
 import org.apache.commons.io.IOUtils
 import org.springframework.core.io.ByteArrayResource
@@ -64,17 +63,11 @@ class DigisosApiV2ClientImpl(
                 tilleggsinformasjonJson,
                 vedleggJson,
                 dokumenter.map { dokument: FilOpplasting ->
-                    FilForOpplasting.builder<Any>()
-                        .filnavn(dokument.metadata.filnavn)
-                        .metadata(
-                            FilMetadata(
-                                filnavn = dokument.metadata.filnavn,
-                                mimetype = dokument.metadata.mimetype,
-                                storrelse = dokument.metadata.storrelse
-                            )
-                        )
-                        .data(krypteringService.krypter(dokument.data, krypteringFutureList, fiksX509Certificate))
-                        .build()
+                    FilForOpplasting(
+                        filnavn = dokument.metadata.filnavn,
+                        metadata = dokument.metadata,
+                        data = krypteringService.krypter(dokument.data, krypteringFutureList, fiksX509Certificate)
+                    )
                 },
                 kommunenr,
                 navEksternRefId,
