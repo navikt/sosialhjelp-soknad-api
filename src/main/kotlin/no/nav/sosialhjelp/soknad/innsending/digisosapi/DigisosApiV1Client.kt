@@ -1,7 +1,6 @@
 package no.nav.sosialhjelp.soknad.innsending.digisosapi
 
 import com.fasterxml.jackson.core.JsonProcessingException
-import no.ks.fiks.streaming.klient.FilForOpplasting
 import no.nav.sosialhjelp.api.fiks.exceptions.FiksException
 import no.nav.sosialhjelp.kotlin.utils.logger
 import no.nav.sosialhjelp.soknad.client.config.RetryUtils
@@ -10,6 +9,7 @@ import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.createHttpEntity
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.digisosObjectMapper
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.getDigisosIdFromResponse
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.stripVekkFnutter
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilForOpplasting
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilOpplasting
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
 import org.apache.commons.io.IOUtils
@@ -75,11 +75,11 @@ class DigisosApiV1ClientImpl(
                 tilleggsinformasjonJson,
                 vedleggJson,
                 dokumenter.map { dokument: FilOpplasting ->
-                    FilForOpplasting.builder<Any>()
-                        .filnavn(dokument.metadata.filnavn)
-                        .metadata(dokument.metadata)
-                        .data(krypteringService.krypter(dokument.data, krypteringFutureList, fiksX509Certificate))
-                        .build()
+                    FilForOpplasting(
+                        filnavn = dokument.metadata.filnavn,
+                        metadata = dokument.metadata,
+                        data = krypteringService.krypter(dokument.data, krypteringFutureList, fiksX509Certificate)
+                    )
                 },
                 kommunenr,
                 navEksternRefId,
