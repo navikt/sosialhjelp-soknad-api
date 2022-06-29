@@ -2,7 +2,6 @@ package no.nav.sosialhjelp.soknad.vedlegg.fiks
 
 import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.module.kotlin.readValue
-import no.ks.fiks.streaming.klient.FilForOpplasting
 import no.nav.sosialhjelp.api.fiks.ErrorMessage
 import no.nav.sosialhjelp.api.fiks.exceptions.FiksException
 import no.nav.sosialhjelp.kotlin.utils.logger
@@ -13,6 +12,7 @@ import no.nav.sosialhjelp.soknad.innsending.digisosapi.KrypteringService
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.KrypteringService.Companion.waitForFutures
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.createHttpEntity
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.digisosObjectMapper
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilForOpplasting
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilOpplasting
 import org.apache.commons.io.IOUtils
 import org.springframework.core.io.ByteArrayResource
@@ -80,11 +80,11 @@ class MellomlagringClientImpl(
         try {
             val fiksX509Certificate = dokumentlagerClient.getDokumentlagerPublicKeyX509Certificate()
             lastOpp(
-                filForOpplasting = FilForOpplasting.builder<Any>()
-                    .filnavn(filOpplasting.metadata.filnavn)
-                    .metadata(filOpplasting.metadata)
-                    .data(krypteringService.krypter(filOpplasting.data, krypteringFutureList, fiksX509Certificate))
-                    .build(),
+                filForOpplasting = FilForOpplasting(
+                    filnavn = filOpplasting.metadata.filnavn,
+                    metadata = filOpplasting.metadata,
+                    data = krypteringService.krypter(filOpplasting.data, krypteringFutureList, fiksX509Certificate)
+                ),
                 navEksternId = navEksternId
             )
             waitForFutures(krypteringFutureList)
