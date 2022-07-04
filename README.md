@@ -53,3 +53,8 @@ Her brukes `maven-antrun-plugin` for linting av kotlin-kode - ref https://github
 Sjekke kode - `./mvnw antrun:run@ktlint` (også bundet til `/.mvnw validate`).
 
 Formattere kode - `./mvnw antrun:run@ktlint-format`.
+
+## Hvordan komme i gang
+Selv om soknaden er litt anderledes og bruker maven så er det noe nyttig informasjon her:
+### [Felles dokumentasjon for våre backend apper](https://github.com/navikt/digisos/blob/main/oppsett-devmiljo.md#backend-gradle)
+
