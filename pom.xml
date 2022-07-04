@@ -47,7 +47,7 @@
         <kotlin.version>1.7.0</kotlin.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <sosialhjelp-common.version>1.0454405</sosialhjelp-common.version>
+        <sosialhjelp-common.version>1.20220629.1332-dfb4541</sosialhjelp-common.version>
         <filformat.version>1.2022.04.29-13.11-459bee049a7a</filformat.version>
 
         <!-- Fiks/KS -->
