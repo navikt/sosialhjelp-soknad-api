@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.metrics
 
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.sosialhjelp.metrics.MetricsFactory
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.VedleggMetadata
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.Vedleggstatus
@@ -77,24 +78,33 @@ class SoknadMetricsService {
         }
         reportVedleggskrav(isEttersendelse, totaltAntall, antallInnsendt, antallLevertTidligere, antallIkkeLevert)
 
-        val sendtype = if (isEttersendelse) "ettersendelse" else "soknad"
-        log.info(
-            """
-                Vedleggskrav statistikk
-                ettersendelse=$isEttersendelse
-                sendetype=$sendtype
-                totaltAntall=$totaltAntall
-                antallInnsendt=$antallInnsendt
-                antallLevertTidligere=$antallLevertTidligere
-                antallIkkeLevert=$antallIkkeLevert
-                prosentInnsendt=${getProsent(antallInnsendt, totaltAntall)}
-                prosentLevertTidligere=${getProsent(antallLevertTidligere, totaltAntall)}
-                prosentIkkeLevert=${getProsent(antallIkkeLevert, totaltAntall)}
-            """.trimIndent()
+        val vedleggStatistikk = VedleggStatistikk(
+            sendetype = if (isEttersendelse) "ettersendelse" else "soknad",
+            totaltAntall = totaltAntall,
+            antallInnsendt = antallInnsendt,
+            antallLevertTidligere = antallLevertTidligere,
+            antallIkkeLevert = antallIkkeLevert,
+            prosentInnsendt = getProsent(antallInnsendt, totaltAntall),
+            prosentLevertTidligere = getProsent(antallLevertTidligere, totaltAntall),
+            prosentIkkeLevert = getProsent(antallIkkeLevert, totaltAntall)
         )
+        log.info("Vedleggskrav statistikk: ${mapper.writeValueAsString(vedleggStatistikk)}")
     }
 
     companion object {
         private val log = LoggerFactory.getLogger(SoknadMetricsService::class.java)
+
+        private val mapper = jacksonObjectMapper()
+
+        data class VedleggStatistikk(
+            val sendetype: String,
+            val totaltAntall: Int,
+            val antallInnsendt: Int,
+            val antallLevertTidligere: Int,
+            val antallIkkeLevert: Int,
+            val prosentInnsendt: Int,
+            val prosentLevertTidligere: Int,
+            val prosentIkkeLevert: Int
+        )
     }
 }
