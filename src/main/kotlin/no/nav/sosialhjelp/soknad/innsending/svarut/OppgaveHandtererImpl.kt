@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.innsending.svarut
 
-import no.nav.sosialhjelp.metrics.MetricsFactory
 import no.nav.sosialhjelp.soknad.common.mdc.MdcOperations
 import no.nav.sosialhjelp.soknad.db.repositories.oppgave.Oppgave
 import no.nav.sosialhjelp.soknad.db.repositories.oppgave.OppgaveRepository
@@ -81,20 +80,13 @@ class OppgaveHandtererImpl(
             prometheusMetricsService.resetOppgaverFeiletOgStuckUnderArbeid()
 
             val antallFeilede = oppgaveRepository.hentAntallFeilede()
-            report("feilede", antallFeilede)
+            logger.info("Databasestatus for oppgaver: feilede er $antallFeilede")
             prometheusMetricsService.reportOppgaverFeilet(antallFeilede)
 
             val antallStuckUnderArbeid = oppgaveRepository.hentAntallStuckUnderArbeid()
-            report("lengearbeid", antallStuckUnderArbeid)
+            logger.info("Databasestatus for oppgaver: lengearbeid er $antallStuckUnderArbeid")
             prometheusMetricsService.reportOppgaverStuckUnderArbeid(antallStuckUnderArbeid)
         }
-    }
-
-    private fun report(key: String, antall: Int) {
-        logger.info("Databasestatus for oppgaver: $key er $antall")
-        val event = MetricsFactory.createEvent("status.oppgave.$key")
-        event.addFieldToReport("antall", antall)
-        event.report()
     }
 
     private fun oppgaveFeilet(oppgave: Oppgave) {
