@@ -266,7 +266,7 @@ class PdfGenerator {
             } else if (characterIsLegal(text.codePointAt(i))) {
                 stringBuilder.append(text[i])
             } else {
-                logger.info("Prøver å skrive ulovlig tegn til pdf. UTF-8 codepoint: {}", text.codePointAt(i))
+                logger.info("Prøver å skrive ulovlig tegn til pdf. UTF-8 codepoint: ${text.codePointAt(i)}")
             }
         }
         splitByNewlines.add(stringBuilder.toString())

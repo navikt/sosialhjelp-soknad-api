@@ -48,7 +48,7 @@ class SkatteetatenClientImpl(
                 }
                 .doOnError { e ->
                     when (e) {
-                        is WebClientResponseException -> log.warn("Klarer ikke hente skatteopplysninger {} status {} ", maskerFnr(e.responseBodyAsString), e.statusCode)
+                        is WebClientResponseException -> log.warn("Klarer ikke hente skatteopplysninger ${maskerFnr(e.responseBodyAsString)} status ${e.statusCode}")
                         else -> log.warn("Klarer ikke hente skatteopplysninger - Exception-type: ${e::class.java}")
                     }
                 }

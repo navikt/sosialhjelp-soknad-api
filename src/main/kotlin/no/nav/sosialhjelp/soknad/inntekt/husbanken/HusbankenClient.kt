@@ -28,7 +28,7 @@ class HusbankenClientImpl(
                 .doOnError(WebClientResponseException::class.java) { e ->
                     when {
                         e.statusCode.is4xxClientError -> log.error("Problemer med å koble opp mot Husbanken!", e)
-                        e.statusCode.is5xxServerError -> log.error("Problemer med å hente bostøtte fra Husbanken! Ekstern error: {}", e.message, e)
+                        e.statusCode.is5xxServerError -> log.error("Problemer med å hente bostøtte fra Husbanken! Ekstern error: ${e.message}", e)
                         else -> log.error("Problemer med å hente bostøtte informasjon fra Husbanken!", e)
                     }
                 }

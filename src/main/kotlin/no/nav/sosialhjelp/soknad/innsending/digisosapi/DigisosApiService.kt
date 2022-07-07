@@ -54,7 +54,7 @@ class DigisosApiService(
             ?: throw IllegalStateException("Kan ikke sende søknad hvis SoknadUnderArbeid.jsonInternalSoknad er null")
 
         soknadUnderArbeidService.settInnsendingstidspunktPaSoknad(soknadUnderArbeid)
-        log.info("Starter innsending av søknad med behandlingsId {}, skal sendes til DigisosApi v1", behandlingsId)
+        log.info("Starter innsending av søknad med behandlingsId $behandlingsId, skal sendes til DigisosApi v1")
         val vedlegg = convertToVedleggMetadataListe(soknadUnderArbeid)
         henvendelseService.oppdaterMetadataVedAvslutningAvSoknad(behandlingsId, vedlegg, soknadUnderArbeid, true)
         val filOpplastinger = dokumentListeService.lagDokumentListe(soknadUnderArbeid)
@@ -93,7 +93,7 @@ class DigisosApiService(
             ?: throw IllegalStateException("Kan ikke sende søknad hvis SoknadUnderArbeid.jsonInternalSoknad er null")
 
         soknadUnderArbeidService.settInnsendingstidspunktPaSoknad(soknadUnderArbeid)
-        log.info("Starter innsending av søknad med behandlingsId {}, skal sendes til DigisosApi v2", behandlingsId)
+        log.info("Starter innsending av søknad med behandlingsId $behandlingsId, skal sendes til DigisosApi v2")
         val vedlegg = convertToVedleggMetadataListe(soknadUnderArbeid)
         henvendelseService.oppdaterMetadataVedAvslutningAvSoknad(behandlingsId, vedlegg, soknadUnderArbeid, true)
         val filOpplastinger = dokumentListeService.lagDokumentListeForV2(soknadUnderArbeid)
@@ -218,7 +218,7 @@ class DigisosApiService(
     }
 
     private fun slettSoknadUnderArbeidEtterSendingTilFiks(soknadUnderArbeid: SoknadUnderArbeid) {
-        log.info("Sletter SoknadUnderArbeid, behandlingsid {}", soknadUnderArbeid.behandlingsId)
+        log.info("Sletter SoknadUnderArbeid, behandlingsid ${soknadUnderArbeid.behandlingsId}")
         soknadUnderArbeidRepository.slettSoknad(soknadUnderArbeid, soknadUnderArbeid.eier)
     }
 

@@ -60,10 +60,7 @@ class UtbetalingerFraNavSystemdata(
         if (orgnummer.matches(Regex("\\d{11}"))) {
             log.info("Utbetalingens opplysningspliktigId er et personnummer. Dette blir ikke inkludert i soknad.json")
         } else {
-            log.error(
-                "Utbetalingens opplysningspliktigId er verken et organisasjonsnummer eller personnummer: {}. Kontakt skatteetaten.",
-                orgnummer
-            )
+            log.error("Utbetalingens opplysningspliktigId er verken et organisasjonsnummer eller personnummer: $orgnummer. Kontakt skatteetaten.")
         }
         return null
     }

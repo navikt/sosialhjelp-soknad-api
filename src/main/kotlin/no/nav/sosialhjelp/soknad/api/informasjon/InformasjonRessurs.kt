@@ -82,7 +82,7 @@ open class InformasjonRessurs(
         }
         if (StringUtils.isNotEmpty(type) && SOKNADSOSIALHJELP != type.lowercase(Locale.getDefault())) {
             val prefiksetType = "soknad" + type.lowercase(Locale.getDefault())
-            logger.warn("Type {} matcher ikke et bundlename - forsøker med prefiks {}", type, prefiksetType)
+            logger.warn("Type $type matcher ikke et bundlename - forsøker med prefiks $prefiksetType")
             if (SOKNADSOSIALHJELP == prefiksetType) {
                 type = prefiksetType
             }
@@ -128,11 +128,7 @@ open class InformasjonRessurs(
     @GET
     @Path("/kommunelogg")
     open fun triggeKommunelogg(@QueryParam("kommunenummer") kommunenummer: String): String? {
-        logger.info(
-            "Kommuneinfo trigget for {}: {}",
-            kommunenummer,
-            kommuneInfoService.kommuneInfo(kommunenummer)
-        )
+        logger.info("Kommuneinfo trigget for $kommunenummer: ${kommuneInfoService.kommuneInfo(kommunenummer)}")
         return "$kommunenummer er logget. Sjekk kibana"
     }
 

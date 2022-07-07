@@ -13,7 +13,7 @@ import no.nav.sosialhjelp.soknad.common.exceptions.SoknadUnderArbeidIkkeFunnetEx
 import no.nav.sosialhjelp.soknad.common.exceptions.SoknadenHarNedetidException
 import no.nav.sosialhjelp.soknad.common.exceptions.SosialhjelpSoknadApiException
 import no.nav.sosialhjelp.soknad.pdf.PdfGenereringException
-import no.nav.sosialhjelp.soknad.vedlegg.OpplastetVedleggService
+import no.nav.sosialhjelp.soknad.vedlegg.OpplastetVedleggService.Companion.MAKS_SAMLET_VEDLEGG_STORRELSE_I_MB
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.OpplastingException
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.SamletVedleggStorrelseForStorException
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.UgyldigOpplastingTypeException
@@ -41,11 +41,7 @@ class ApplicationExceptionMapper : ExceptionMapper<SosialhjelpSoknadApiException
             }
             is SamletVedleggStorrelseForStorException -> {
                 response = Response.status(Response.Status.REQUEST_ENTITY_TOO_LARGE)
-                logger.warn(
-                    "Feilet opplasting. Valgt fil for opplasting gjør at grensen for samlet vedleggstørrelse på {}MB overskrides.",
-                    OpplastetVedleggService.MAKS_SAMLET_VEDLEGG_STORRELSE_I_MB,
-                    e
-                )
+                logger.warn("Feilet opplasting. Valgt fil for opplasting gjør at grensen for samlet vedleggstørrelse på ${MAKS_SAMLET_VEDLEGG_STORRELSE_I_MB}MB overskrides.", e)
             }
             is AuthorizationException -> {
                 response = Response.status(Response.Status.FORBIDDEN)
@@ -59,7 +55,7 @@ class ApplicationExceptionMapper : ExceptionMapper<SosialhjelpSoknadApiException
             }
             is EttersendelseSendtForSentException -> {
                 response = Response.serverError().header(Feilmelding.NO_BIGIP_5XX_REDIRECT, true)
-                logger.info("REST-kall feilet: {}", e.message, e)
+                logger.info("REST-kall feilet: ${e.message}", e)
             }
             is TjenesteUtilgjengeligException -> {
                 response = Response.serverError().header(Feilmelding.NO_BIGIP_5XX_REDIRECT, true)
