@@ -6,7 +6,7 @@ import no.nav.sosialhjelp.soknad.adressesok.domain.AdresseForslagType
 import no.nav.sosialhjelp.soknad.common.mapper.KommuneTilNavEnhetMapper
 
 data class AdressesokDataDto(
-    val sokAdresse: AdressesokResultDto
+    val sokAdresse: AdressesokResultDto?
 )
 
 data class AdressesokResultDto(
