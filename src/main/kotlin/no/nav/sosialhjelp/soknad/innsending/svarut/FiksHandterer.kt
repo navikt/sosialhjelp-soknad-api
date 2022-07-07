@@ -1,10 +1,7 @@
 package no.nav.sosialhjelp.soknad.innsending.svarut
 
-import no.nav.sosialhjelp.metrics.Event
-import no.nav.sosialhjelp.metrics.MetricsFactory
 import no.nav.sosialhjelp.soknad.db.repositories.oppgave.FiksResultat
 import no.nav.sosialhjelp.soknad.db.repositories.oppgave.Oppgave
-import no.nav.sosialhjelp.soknad.db.repositories.sendtsoknad.SendtSoknad
 import no.nav.sosialhjelp.soknad.innsending.InnsendingService
 import no.nav.sosialhjelp.soknad.metrics.MetricsUtils.navKontorTilInfluxNavn
 import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
@@ -47,7 +44,6 @@ class FiksHandterer(
 
     private fun sendTilFiks(behandlingsId: String, resultat: FiksResultat, eier: String) {
         val sendtSoknad = innsendingService.hentSendtSoknad(behandlingsId, eier)
-        val event = lagForsoktSendtTilFiksEvent(sendtSoknad)
         try {
             resultat.fiksForsendelsesId = fiksSender.sendTilFiks(sendtSoknad)
             prometheusMetricsService.reportSendtMedSvarUt(sendtSoknad.erEttersendelse)
@@ -55,11 +51,8 @@ class FiksHandterer(
             logger.info("Søknad $behandlingsId fikk id ${resultat.fiksForsendelsesId} i Fiks")
         } catch (e: Exception) {
             resultat.feilmelding = e.message
-            event.setFailed()
             prometheusMetricsService.reportFeiletMedSvarUt(sendtSoknad.erEttersendelse)
             throw e
-        } finally {
-            event.report()
         }
     }
 
@@ -69,13 +62,6 @@ class FiksHandterer(
 
     private fun lagreResultat(behandlingsId: String, resultat: FiksResultat, eier: String) {
         innsendingService.oppdaterSendtSoknadVedSendingTilFiks(resultat.fiksForsendelsesId, behandlingsId, eier)
-    }
-
-    private fun lagForsoktSendtTilFiksEvent(sendtSoknad: SendtSoknad): Event {
-        val event = MetricsFactory.createEvent("digisos.fikshandterer.sendt")
-        event.addTagToReport("ettersendelse", if (sendtSoknad.erEttersendelse) "true" else "false")
-        event.addTagToReport("mottaker", navKontorTilInfluxNavn(sendtSoknad.navEnhetsnavn))
-        return event
     }
 
     companion object {
