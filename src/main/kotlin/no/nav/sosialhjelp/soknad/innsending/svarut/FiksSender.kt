@@ -144,11 +144,7 @@ class FiksSender(
             fiksDokumenter.addAll(dokumenterForVedlegg)
         }
         val antallFiksDokumenter = fiksDokumenter.size
-        log.info(
-            "Antall vedlegg: {}. Antall vedlegg lastet opp av bruker: {}",
-            antallFiksDokumenter,
-            antallVedleggForsendelse
-        )
+        log.info("Antall vedlegg: $antallFiksDokumenter. Antall vedlegg lastet opp av bruker: $antallVedleggForsendelse")
         try {
             val opplastedeVedleggstyper = internalSoknad.vedlegg.vedlegg
                 .filter { jsonVedlegg: JsonVedlegg -> jsonVedlegg.status == "LastetOpp" }
@@ -157,12 +153,7 @@ class FiksSender(
                 antallBrukerOpplastedeVedlegg += vedlegg.filer.size
             }
             if (antallVedleggForsendelse != antallBrukerOpplastedeVedlegg) {
-                log.warn(
-                    "Ulikt antall vedlegg i vedlegg.json og forsendelse til Fiks. vedlegg.json: {}, forsendelse til Fiks: {}. Er ettersendelse: {}",
-                    antallBrukerOpplastedeVedlegg,
-                    antallVedleggForsendelse,
-                    soknadUnderArbeid.erEttersendelse
-                )
+                log.warn("Ulikt antall vedlegg i vedlegg.json og forsendelse til Fiks. vedlegg.json: $antallBrukerOpplastedeVedlegg, forsendelse til Fiks: $antallVedleggForsendelse. Er ettersendelse: ${soknadUnderArbeid.erEttersendelse}")
             }
         } catch (e: RuntimeException) {
             log.debug("Ignored exception")

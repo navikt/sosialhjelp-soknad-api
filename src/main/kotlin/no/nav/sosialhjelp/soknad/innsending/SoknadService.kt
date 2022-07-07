@@ -96,7 +96,7 @@ open class SoknadService(
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
 
-        log.info("Starter innsending av søknad med behandlingsId {}", behandlingsId)
+        log.info("Starter innsending av søknad med behandlingsId $behandlingsId")
         logDriftsinformasjon(soknadUnderArbeid)
 
         validateEttersendelseHasVedlegg(soknadUnderArbeid)
@@ -120,11 +120,11 @@ open class SoknadService(
         if (!soknadUnderArbeid.erEttersendelse) {
             if (java.lang.Boolean.TRUE == soknadUnderArbeid.jsonInternalSoknad?.soknad?.driftsinformasjon?.stotteFraHusbankenFeilet) {
                 val alderPaaData = finnAlderPaaDataFor(soknadUnderArbeid, BOSTOTTE_SAMTYKKE)
-                log.info("Nedlasting fra Husbanken har feilet for innsendtsoknad. {}", alderPaaData)
+                log.info("Nedlasting fra Husbanken har feilet for innsendtsoknad. $alderPaaData")
             }
             if (java.lang.Boolean.TRUE == soknadUnderArbeid.jsonInternalSoknad?.soknad?.driftsinformasjon?.inntektFraSkatteetatenFeilet) {
                 val alderPaaData = finnAlderPaaDataFor(soknadUnderArbeid, UTBETALING_SKATTEETATEN_SAMTYKKE)
-                log.info("Nedlasting fra Skatteetaten har feilet for innsendtsoknad. {}", alderPaaData)
+                log.info("Nedlasting fra Skatteetaten har feilet for innsendtsoknad. $alderPaaData")
             }
         }
     }

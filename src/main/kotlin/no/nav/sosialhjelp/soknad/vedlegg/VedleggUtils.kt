@@ -47,7 +47,7 @@ object VedleggUtils {
         try {
             filnavn = URLDecoder.decode(filnavn, StandardCharsets.UTF_8.toString())
         } catch (e: UnsupportedEncodingException) {
-            log.warn("Klarte ikke å URIdecode fil med navn {}", filnavn, e)
+            log.warn("Klarte ikke å URIdecode fil med navn $filnavn", e)
         }
 
         filnavn = filnavn
