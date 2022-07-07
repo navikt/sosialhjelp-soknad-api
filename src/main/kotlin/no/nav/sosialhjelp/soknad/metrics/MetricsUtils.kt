@@ -3,7 +3,7 @@ package no.nav.sosialhjelp.soknad.metrics
 import kotlin.math.roundToInt
 
 object MetricsUtils {
-    fun navKontorTilInfluxNavn(mottaker: String?): String {
+    fun navKontorTilMetricNavn(mottaker: String?): String {
         return mottaker?.replace("NAV", "")?.replace(",", "") ?: ""
     }
 

@@ -40,7 +40,7 @@ import no.nav.sosialhjelp.soknad.innsending.svarut.OppgaveHandterer
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.BostotteSystemdata
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkatteetatenSystemdata
 import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
-import no.nav.sosialhjelp.soknad.metrics.SoknadMetricsService
+import no.nav.sosialhjelp.soknad.metrics.VedleggskravStatistikkUtil.genererOgLoggVedleggskravStatistikk
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
@@ -56,7 +56,6 @@ import java.time.temporal.ChronoUnit.MINUTES
 open class SoknadService(
     private val henvendelseService: HenvendelseService,
     private val oppgaveHandterer: OppgaveHandterer,
-    private val soknadMetricsService: SoknadMetricsService,
     private val innsendingService: InnsendingService,
     private val ettersendingService: EttersendingService,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
@@ -71,7 +70,6 @@ open class SoknadService(
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val behandlingsId = henvendelseService.startSoknad(eier)
 
-        soknadMetricsService.reportStartSoknad(false)
         prometheusMetricsService.reportStartSoknad(false)
 
         val soknadUnderArbeid = SoknadUnderArbeid(
@@ -106,7 +104,7 @@ open class SoknadService(
         oppgaveHandterer.leggTilOppgave(behandlingsId, eier)
         innsendingService.opprettSendtSoknad(soknadUnderArbeid)
 
-        soknadMetricsService.reportSendSoknadMetrics(soknadUnderArbeid, vedlegg.vedleggListe)
+        genererOgLoggVedleggskravStatistikk(soknadUnderArbeid, vedlegg.vedleggListe)
     }
 
     private fun validateEttersendelseHasVedlegg(soknadUnderArbeid: SoknadUnderArbeid) {
@@ -153,7 +151,6 @@ open class SoknadService(
                 }
                 soknadUnderArbeidRepository.slettSoknad(soknadUnderArbeid, eier)
                 henvendelseService.avbrytSoknad(soknadUnderArbeid.behandlingsId, false)
-                soknadMetricsService.reportAvbruttSoknad(soknadUnderArbeid.erEttersendelse)
                 prometheusMetricsService.reportAvbruttSoknad(soknadUnderArbeid.erEttersendelse)
             }
     }

@@ -19,10 +19,6 @@ spring:
     username: sa
     password:
 
-metrics.report.enabled: false
-sensu_client_host: 127.0.0.1
-sensu_client_port: 8989
-
 environment.name: ${ENVIRONMENT_NAME:local}
 
 mock-alt-api-host: ${MOCK_ALT_API_HOST:127.0.0.1}

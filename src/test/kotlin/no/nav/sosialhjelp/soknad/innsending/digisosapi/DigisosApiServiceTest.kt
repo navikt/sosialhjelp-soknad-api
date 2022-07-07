@@ -19,7 +19,6 @@ import no.nav.sosialhjelp.soknad.innsending.HenvendelseService
 import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
 import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
-import no.nav.sosialhjelp.soknad.metrics.SoknadMetricsService
 import no.nav.sosialhjelp.soknad.vedlegg.OpplastetVedleggRessurs.Companion.KS_MELLOMLAGRING_ENABLED
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
@@ -33,7 +32,6 @@ internal class DigisosApiServiceTest {
     private val digisosApiV2Client: DigisosApiV2Client = mockk()
     private val henvendelseService: HenvendelseService = mockk()
     private val soknadUnderArbeidService: SoknadUnderArbeidService = mockk()
-    private val soknadMetricsService: SoknadMetricsService = mockk()
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
     private val dokumentListeService: DokumentListeService = mockk()
     private val unleash: Unleash = mockk()
@@ -44,7 +42,6 @@ internal class DigisosApiServiceTest {
         digisosApiV2Client,
         henvendelseService,
         soknadUnderArbeidService,
-        soknadMetricsService,
         soknadUnderArbeidRepository,
         dokumentListeService,
         unleash,
@@ -99,7 +96,6 @@ internal class DigisosApiServiceTest {
         every { soknadUnderArbeidService.settInnsendingstidspunktPaSoknad(any()) } just runs
         every { henvendelseService.oppdaterMetadataVedAvslutningAvSoknad(any(), any(), any(), any()) } just runs
         every { soknadUnderArbeidRepository.slettSoknad(any(), any()) } just runs
-        every { soknadMetricsService.reportSendSoknadMetrics(any(), any()) } just runs
 
         digisosApiService.sendSoknad(soknadUnderArbeid, "token", "0301")
 
