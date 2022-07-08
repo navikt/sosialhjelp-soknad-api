@@ -3,7 +3,7 @@ package no.nav.sosialhjelp.soknad.innsending.svarut
 import no.nav.sosialhjelp.soknad.db.repositories.oppgave.FiksResultat
 import no.nav.sosialhjelp.soknad.db.repositories.oppgave.Oppgave
 import no.nav.sosialhjelp.soknad.innsending.InnsendingService
-import no.nav.sosialhjelp.soknad.metrics.MetricsUtils.navKontorTilInfluxNavn
+import no.nav.sosialhjelp.soknad.metrics.MetricsUtils.navKontorTilMetricNavn
 import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
 import org.apache.commons.lang3.StringUtils
 import org.slf4j.LoggerFactory
@@ -47,7 +47,7 @@ class FiksHandterer(
         try {
             resultat.fiksForsendelsesId = fiksSender.sendTilFiks(sendtSoknad)
             prometheusMetricsService.reportSendtMedSvarUt(sendtSoknad.erEttersendelse)
-            prometheusMetricsService.reportSoknadMottaker(sendtSoknad.erEttersendelse, navKontorTilInfluxNavn(sendtSoknad.navEnhetsnavn))
+            prometheusMetricsService.reportSoknadMottaker(sendtSoknad.erEttersendelse, navKontorTilMetricNavn(sendtSoknad.navEnhetsnavn))
             logger.info("Søknad $behandlingsId fikk id ${resultat.fiksForsendelsesId} i Fiks")
         } catch (e: Exception) {
             resultat.feilmelding = e.message

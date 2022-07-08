@@ -36,10 +36,6 @@ management:
       exposure:
         include: metrics, prometheus
 
-metrics.report.enabled: true
-sensu_client_host: sensu.nais
-sensu_client_port: 3030
-
 environment.name: ${ENVIRONMENT_NAME}
 
 # rest

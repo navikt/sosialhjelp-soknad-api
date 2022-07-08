@@ -17,9 +17,9 @@ import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils.getVedleggFromInter
 import no.nav.sosialhjelp.soknad.innsending.SenderUtils.createPrefixedBehandlingsId
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilOpplasting
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
-import no.nav.sosialhjelp.soknad.metrics.MetricsUtils.navKontorTilInfluxNavn
+import no.nav.sosialhjelp.soknad.metrics.MetricsUtils.navKontorTilMetricNavn
 import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
-import no.nav.sosialhjelp.soknad.metrics.SoknadMetricsService
+import no.nav.sosialhjelp.soknad.metrics.VedleggskravStatistikkUtil.genererOgLoggVedleggskravStatistikk
 import no.nav.sosialhjelp.soknad.vedlegg.OpplastetVedleggRessurs.Companion.KS_MELLOMLAGRING_ENABLED
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
@@ -30,7 +30,6 @@ class DigisosApiService(
     private val digisosApiV2Client: DigisosApiV2Client,
     private val henvendelseService: HenvendelseService,
     private val soknadUnderArbeidService: SoknadUnderArbeidService,
-    private val soknadMetricsService: SoknadMetricsService,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val dokumentListeService: DokumentListeService,
     private val unleash: Unleash,
@@ -81,9 +80,9 @@ class DigisosApiService(
 
         slettSoknadUnderArbeidEtterSendingTilFiks(soknadUnderArbeid)
 
-        soknadMetricsService.reportSendSoknadMetrics(soknadUnderArbeid, vedlegg.vedleggListe)
+        genererOgLoggVedleggskravStatistikk(soknadUnderArbeid, vedlegg.vedleggListe)
         prometheusMetricsService.reportSendtMedDigisosApi()
-        prometheusMetricsService.reportSoknadMottaker(soknadUnderArbeid.erEttersendelse, navKontorTilInfluxNavn(navEnhetsnavn))
+        prometheusMetricsService.reportSoknadMottaker(soknadUnderArbeid.erEttersendelse, navKontorTilMetricNavn(navEnhetsnavn))
         return digisosId
     }
 
@@ -121,9 +120,9 @@ class DigisosApiService(
 
         slettSoknadUnderArbeidEtterSendingTilFiks(soknadUnderArbeid)
 
-        soknadMetricsService.reportSendSoknadMetrics(soknadUnderArbeid, vedlegg.vedleggListe)
+        genererOgLoggVedleggskravStatistikk(soknadUnderArbeid, vedlegg.vedleggListe)
         prometheusMetricsService.reportSendtMedDigisosApi()
-        prometheusMetricsService.reportSoknadMottaker(soknadUnderArbeid.erEttersendelse, navKontorTilInfluxNavn(navEnhetsnavn))
+        prometheusMetricsService.reportSoknadMottaker(soknadUnderArbeid.erEttersendelse, navKontorTilMetricNavn(navEnhetsnavn))
         return digisosId
     }
 
