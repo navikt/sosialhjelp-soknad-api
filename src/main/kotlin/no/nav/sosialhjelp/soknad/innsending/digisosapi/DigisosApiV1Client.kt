@@ -26,7 +26,6 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import org.springframework.web.reactive.function.client.bodyToMono
 import java.io.IOException
 import java.util.Collections
-import java.util.UUID
 import java.util.concurrent.Future
 
 interface DigisosApiV1Client {
@@ -117,7 +116,6 @@ class DigisosApiV1ClientImpl(
         try {
             val response = fiksWebClient.post()
                 .uri("$digisosApiEndpoint/digisos/api/v1/soknader/{kommunenummer}/{behandlingsId}", kommunenummer, behandlingsId)
-                .header("requestid", UUID.randomUUID().toString())
                 .header(HttpHeaders.AUTHORIZATION, token)
                 .contentType(MediaType.MULTIPART_FORM_DATA)
                 .body(BodyInserters.fromMultipartData(body))
