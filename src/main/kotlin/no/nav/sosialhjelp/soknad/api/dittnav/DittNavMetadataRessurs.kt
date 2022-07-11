@@ -43,7 +43,7 @@ open class DittNavMetadataRessurs(
         val fnr = SubjectHandlerUtils.getUserIdFromToken()
         val behandlingsId = dto.grupperingsId
         val somLest = dittNavMetadataService.oppdaterLestDittNavForPabegyntSoknad(behandlingsId, fnr)
-        log.info("Pabegynt søknad med behandlingsId={} har fått lestDittNav={}", behandlingsId, somLest)
+        log.info("Pabegynt søknad med behandlingsId=$behandlingsId har fått lestDittNav=$somLest")
         return somLest
     }
 

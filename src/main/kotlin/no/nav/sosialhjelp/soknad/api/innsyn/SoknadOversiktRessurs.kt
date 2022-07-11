@@ -27,7 +27,7 @@ open class SoknadOversiktRessurs(
         val fnr = SubjectHandlerUtils.getUserIdFromToken()
         logger.debug("Henter alle søknader")
         val soknader: List<SoknadOversiktDto> = service.hentSvarUtSoknaderFor(fnr)
-        logger.debug("Hentet {} søknader for bruker", soknader.size)
+        logger.debug("Hentet ${soknader.size} søknader for bruker")
         return soknader
     }
 

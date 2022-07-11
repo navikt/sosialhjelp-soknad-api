@@ -6,8 +6,6 @@ import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator.ensureValidSoknad
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator.ensureValidVedlegg
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad
-import no.nav.sosialhjelp.metrics.Event
-import no.nav.sosialhjelp.metrics.MetricsFactory
 import no.nav.sosialhjelp.soknad.common.MiljoUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.VedleggMetadata
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.VedleggMetadataListe
@@ -19,9 +17,9 @@ import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils.getVedleggFromInter
 import no.nav.sosialhjelp.soknad.innsending.SenderUtils.createPrefixedBehandlingsId
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilOpplasting
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
-import no.nav.sosialhjelp.soknad.metrics.MetricsUtils.navKontorTilInfluxNavn
+import no.nav.sosialhjelp.soknad.metrics.MetricsUtils.navKontorTilMetricNavn
 import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
-import no.nav.sosialhjelp.soknad.metrics.SoknadMetricsService
+import no.nav.sosialhjelp.soknad.metrics.VedleggskravStatistikkUtil.genererOgLoggVedleggskravStatistikk
 import no.nav.sosialhjelp.soknad.vedlegg.OpplastetVedleggRessurs.Companion.KS_MELLOMLAGRING_ENABLED
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
@@ -32,7 +30,6 @@ class DigisosApiService(
     private val digisosApiV2Client: DigisosApiV2Client,
     private val henvendelseService: HenvendelseService,
     private val soknadUnderArbeidService: SoknadUnderArbeidService,
-    private val soknadMetricsService: SoknadMetricsService,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val dokumentListeService: DokumentListeService,
     private val unleash: Unleash,
@@ -56,11 +53,11 @@ class DigisosApiService(
             ?: throw IllegalStateException("Kan ikke sende søknad hvis SoknadUnderArbeid.jsonInternalSoknad er null")
 
         soknadUnderArbeidService.settInnsendingstidspunktPaSoknad(soknadUnderArbeid)
-        log.info("Starter innsending av søknad med behandlingsId {}, skal sendes til DigisosApi v1", behandlingsId)
+        log.info("Starter innsending av søknad med behandlingsId $behandlingsId, skal sendes til DigisosApi v1")
         val vedlegg = convertToVedleggMetadataListe(soknadUnderArbeid)
         henvendelseService.oppdaterMetadataVedAvslutningAvSoknad(behandlingsId, vedlegg, soknadUnderArbeid, true)
         val filOpplastinger = dokumentListeService.lagDokumentListe(soknadUnderArbeid)
-        log.info("Laster opp {}", filOpplastinger.size)
+        log.info("Laster opp ${filOpplastinger.size}")
         val soknadJson = getSoknadJson(soknadUnderArbeid)
         val tilleggsinformasjonJson = getTilleggsinformasjonJson(jsonInternalSoknad.soknad)
         val vedleggJson = getVedleggJson(soknadUnderArbeid)
@@ -72,21 +69,20 @@ class DigisosApiService(
         val navEnhetsnavn = jsonInternalSoknad.soknad.mottaker.navEnhetsnavn
         log.info("Starter kryptering av filer for $behandlingsId, skal sende til kommune $kommunenummer med enhetsnummer $enhetsnummer og navenhetsnavn $navEnhetsnavn")
         val digisosId = sendOgKrypter(
-            soknadJson,
-            tilleggsinformasjonJson,
-            vedleggJson,
-            filOpplastinger,
-            kommunenummer,
-            navEnhetsnavn,
-            behandlingsId,
-            token
+            soknadJson = soknadJson,
+            tilleggsinformasjonJson = tilleggsinformasjonJson,
+            vedleggJson = vedleggJson,
+            filOpplastinger = filOpplastinger,
+            kommunenr = kommunenummer,
+            behandlingsId = behandlingsId,
+            token = token
         )
 
         slettSoknadUnderArbeidEtterSendingTilFiks(soknadUnderArbeid)
 
-        soknadMetricsService.reportSendSoknadMetrics(soknadUnderArbeid, vedlegg.vedleggListe)
+        genererOgLoggVedleggskravStatistikk(soknadUnderArbeid, vedlegg.vedleggListe)
         prometheusMetricsService.reportSendtMedDigisosApi()
-        prometheusMetricsService.reportSoknadMottaker(soknadUnderArbeid.erEttersendelse, navKontorTilInfluxNavn(navEnhetsnavn))
+        prometheusMetricsService.reportSoknadMottaker(soknadUnderArbeid.erEttersendelse, navKontorTilMetricNavn(navEnhetsnavn))
         return digisosId
     }
 
@@ -96,11 +92,11 @@ class DigisosApiService(
             ?: throw IllegalStateException("Kan ikke sende søknad hvis SoknadUnderArbeid.jsonInternalSoknad er null")
 
         soknadUnderArbeidService.settInnsendingstidspunktPaSoknad(soknadUnderArbeid)
-        log.info("Starter innsending av søknad med behandlingsId {}, skal sendes til DigisosApi v2", behandlingsId)
+        log.info("Starter innsending av søknad med behandlingsId $behandlingsId, skal sendes til DigisosApi v2")
         val vedlegg = convertToVedleggMetadataListe(soknadUnderArbeid)
         henvendelseService.oppdaterMetadataVedAvslutningAvSoknad(behandlingsId, vedlegg, soknadUnderArbeid, true)
         val filOpplastinger = dokumentListeService.lagDokumentListeForV2(soknadUnderArbeid)
-        log.info("Laster opp {}", filOpplastinger.size)
+        log.info("Laster opp ${filOpplastinger.size}")
         val soknadJson = getSoknadJson(soknadUnderArbeid)
         val tilleggsinformasjonJson = getTilleggsinformasjonJson(jsonInternalSoknad.soknad)
         val vedleggJson = getVedleggJson(soknadUnderArbeid)
@@ -113,21 +109,20 @@ class DigisosApiService(
 
         log.info("Starter kryptering av filer for $behandlingsId, skal sende til kommune $kommunenummer med enhetsnummer $enhetsnummer og navenhetsnavn $navEnhetsnavn")
         val digisosId = sendOgKrypter(
-            soknadJson,
-            tilleggsinformasjonJson,
-            vedleggJson,
-            filOpplastinger,
-            kommunenummer,
-            navEnhetsnavn,
-            behandlingsId,
-            token
+            soknadJson = soknadJson,
+            tilleggsinformasjonJson = tilleggsinformasjonJson,
+            vedleggJson = vedleggJson,
+            filOpplastinger = filOpplastinger,
+            kommunenr = kommunenummer,
+            behandlingsId = behandlingsId,
+            token = token
         )
 
         slettSoknadUnderArbeidEtterSendingTilFiks(soknadUnderArbeid)
 
-        soknadMetricsService.reportSendSoknadMetrics(soknadUnderArbeid, vedlegg.vedleggListe)
+        genererOgLoggVedleggskravStatistikk(soknadUnderArbeid, vedlegg.vedleggListe)
         prometheusMetricsService.reportSendtMedDigisosApi()
-        prometheusMetricsService.reportSoknadMottaker(soknadUnderArbeid.erEttersendelse, navKontorTilInfluxNavn(navEnhetsnavn))
+        prometheusMetricsService.reportSoknadMottaker(soknadUnderArbeid.erEttersendelse, navKontorTilMetricNavn(navEnhetsnavn))
         return digisosId
     }
 
@@ -137,12 +132,9 @@ class DigisosApiService(
         vedleggJson: String,
         filOpplastinger: List<FilOpplasting>,
         kommunenr: String,
-        navEnhetsnavn: String,
         behandlingsId: String,
         token: String?
     ): String {
-        val event = lagForsoktSendtDigisosApiEvent(navEnhetsnavn)
-
         return try {
             if (digisosApiV2Enabled) {
                 digisosApiV2Client.krypterOgLastOppFiler(
@@ -166,18 +158,9 @@ class DigisosApiService(
                 )
             }
         } catch (e: Exception) {
-            event.setFailed()
             prometheusMetricsService.reportFeiletMedDigisosApi()
             throw e
-        } finally {
-            event.report()
         }
-    }
-
-    private fun lagForsoktSendtDigisosApiEvent(navEnhetsnavn: String): Event {
-        val event = MetricsFactory.createEvent("fiks.digisosapi.sendt")
-        event.addTagToReport("mottaker", navKontorTilInfluxNavn(navEnhetsnavn))
-        return event
     }
 
     private fun getSoknadJson(soknadUnderArbeid: SoknadUnderArbeid): String {
@@ -234,7 +217,7 @@ class DigisosApiService(
     }
 
     private fun slettSoknadUnderArbeidEtterSendingTilFiks(soknadUnderArbeid: SoknadUnderArbeid) {
-        log.info("Sletter SoknadUnderArbeid, behandlingsid {}", soknadUnderArbeid.behandlingsId)
+        log.info("Sletter SoknadUnderArbeid, behandlingsid ${soknadUnderArbeid.behandlingsId}")
         soknadUnderArbeidRepository.slettSoknad(soknadUnderArbeid, soknadUnderArbeid.eier)
     }
 

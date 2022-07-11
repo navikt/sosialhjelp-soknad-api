@@ -30,9 +30,8 @@ class MapperHelper {
         val sorted = sivilstander.sortedWith(compareBy(nullsLast(reverseOrder())) { getEndringstidspunktOrNull(it) })
 
         if (sorted.size > 1) {
-            log.info(
-                "Flere gjeldende sivilstander funnet i PDL: [{}]", sorted.joinToString(separator = ",") { it.type.toString() }
-            )
+            val sivilstandTyper = sorted.joinToString(separator = ",") { it.type.toString() }
+            log.info("Flere gjeldende sivilstander funnet i PDL: [$sivilstandTyper]")
         }
         val sistEndredeSivilstand = sorted[0]
         if (flereSivilstanderRegistrertSamtidig(sistEndredeSivilstand, sorted) ||
@@ -69,7 +68,7 @@ class MapperHelper {
             return null
         }
         if (erKildeUdokumentert(sistEndredeNavn.metadata)) {
-            log.info("PDL navn er udokumentert (kilde = {})", sisteEndringOrNull(sistEndredeNavn.metadata)?.kilde)
+            log.info("PDL navn er udokumentert (kilde = ${sisteEndringOrNull(sistEndredeNavn.metadata)?.kilde})")
         }
         return sistEndredeNavn
     }

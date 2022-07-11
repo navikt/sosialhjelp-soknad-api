@@ -60,10 +60,10 @@ class KrrProxyClient(
                 .block()
                 ?.also { lagreTilCache(ident, it) }
         } catch (e: Unauthorized) {
-            log.warn("Krr - 401 Unauthorized - {}", e.message)
+            log.warn("Krr - 401 Unauthorized - ${e.message}")
             null
         } catch (e: Forbidden) {
-            log.warn("Krr - 403 Forbidden - {}", e.message)
+            log.warn("Krr - 403 Forbidden - ${e.message}")
             null
         } catch (e: NotFound) {
             log.info("Krr - 404 Not Found")

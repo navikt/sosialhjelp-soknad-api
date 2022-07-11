@@ -54,15 +54,15 @@
         <svarut-rest-klient.version>1.0.2</svarut-rest-klient.version>
         <kryptering.version>1.1.2</kryptering.version>
 
-        <spring-boot.version>2.7.0</spring-boot.version>
+        <spring-boot.version>2.7.1</spring-boot.version>
         <spring.version>5.3.21</spring.version>
-        <jetty.version>9.4.46.v20220331</jetty.version>
         <jersey.version>2.36</jersey.version>
+        <jetty.version>9.4.48.v20220622</jetty.version>
         <token-validation.version>2.1.0</token-validation.version>
         <nimbus-jose-jwt.version>9.22</nimbus-jose-jwt.version>
         <ojdbc.version>19.15.0.0.1</ojdbc.version>
-        <flyway-core.version>8.5.12</flyway-core.version>
-        <flyway-maven-plugin.version>8.5.12</flyway-maven-plugin.version>
+        <flyway-core.version>8.5.13</flyway-core.version>
+        <flyway-maven-plugin.version>8.5.13</flyway-maven-plugin.version>
         <jackson.version>2.13.3</jackson.version>
         <pdfbox.version>2.0.26</pdfbox.version>
         <jempbox.version>1.8.16</jempbox.version>
@@ -79,12 +79,11 @@
         <commons-text.version>1.9</commons-text.version>
         <json-smart.version>2.4.8</json-smart.version>
         <jaxb-java-time-adapters.version>1.1.3</jaxb-java-time-adapters.version>
-        <aspectjweaver.version>1.9.9.1</aspectjweaver.version>
         <jaxb-runtime.version>2.3.6</jaxb-runtime.version>
         <lettuce.version>6.1.8.RELEASE</lettuce.version>
         <unleash.version>3.3.4</unleash.version>
         <reactor-core.version>3.4.18</reactor-core.version>
-        <reactor-netty-http.version>1.0.19</reactor-netty-http.version>
+        <reactor-netty-http.version>1.0.20</reactor-netty-http.version>
         <log4j.version>2.17.2</log4j.version>
 
         <kotlinx-coroutines.version>1.6.2</kotlinx-coroutines.version>
@@ -459,12 +458,6 @@
                 <version>${json.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.aspectj</groupId>
-                <artifactId>aspectjweaver</artifactId>
-                <version>${aspectjweaver.version}</version>
-                <scope>runtime</scope>
-            </dependency>
-            <dependency>
                 <groupId>net.bytebuddy</groupId>
                 <artifactId>byte-buddy</artifactId>
                 <version>${byte-buddy.version}</version>
@@ -502,11 +495,6 @@
             <dependency>
                 <groupId>io.micrometer</groupId>
                 <artifactId>micrometer-core</artifactId>
-                <version>${micrometer.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.micrometer</groupId>
-                <artifactId>micrometer-registry-prometheus</artifactId>
                 <version>${micrometer.version}</version>
             </dependency>
             <dependency>
@@ -621,11 +609,6 @@
         <dependency>
             <groupId>no.nav.sosialhjelp</groupId>
             <artifactId>sosialhjelp-common-api</artifactId>
-            <version>${sosialhjelp-common.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.sosialhjelp</groupId>
-            <artifactId>sosialhjelp-common-metrics</artifactId>
             <version>${sosialhjelp-common.version}</version>
         </dependency>
         <dependency>
@@ -894,6 +877,11 @@
                     <artifactId>javax.servlet-api</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-registry-prometheus</artifactId>
+            <version>${micrometer.version}</version>
         </dependency>
 
         <!-- Token-validation / security -->

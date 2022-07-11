@@ -62,10 +62,10 @@ class KontonummerClientImpl(
                 .block()
                 ?.also { lagreKontonummerTilCache(ident, it) }
         } catch (e: Unauthorized) {
-            log.warn("Kontonummer - 401 Unauthorized - {}", e.message)
+            log.warn("Kontonummer - 401 Unauthorized - ${e.message}")
             null
         } catch (e: NotFound) {
-            log.warn("Kontonummer - 404 Not Found - {}", e.message)
+            log.warn("Kontonummer - 404 Not Found - ${e.message}")
             null
         } catch (e: Exception) {
             log.error("Kontonummer - Noe uventet feilet", e)

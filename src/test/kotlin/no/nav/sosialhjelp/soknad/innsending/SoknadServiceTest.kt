@@ -29,7 +29,6 @@ import no.nav.sosialhjelp.soknad.innsending.svarut.OppgaveHandterer
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.BostotteSystemdata
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkatteetatenSystemdata
 import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
-import no.nav.sosialhjelp.soknad.metrics.SoknadMetricsService
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
@@ -42,7 +41,6 @@ internal class SoknadServiceTest {
     private val henvendelseService: HenvendelseService = mockk()
     private val oppgaveHandterer: OppgaveHandterer = mockk()
     private val systemdataUpdater: SystemdataUpdater = mockk()
-    private val soknadMetricsService: SoknadMetricsService = mockk()
     private val innsendingService: InnsendingService = mockk()
     private val ettersendingService: EttersendingService = mockk()
     private val bostotteSystemdata: BostotteSystemdata = mockk()
@@ -54,7 +52,6 @@ internal class SoknadServiceTest {
     private val soknadService = SoknadService(
         henvendelseService,
         oppgaveHandterer,
-        soknadMetricsService,
         innsendingService,
         ettersendingService,
         soknadUnderArbeidRepository,
@@ -73,7 +70,6 @@ internal class SoknadServiceTest {
         every { MiljoUtils.isNonProduction() } returns true
         SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
 
-        every { soknadMetricsService.reportStartSoknad(any()) } just runs
         every { systemdataUpdater.update(any()) } just runs
         every { mellomlagringService.erMellomlagringEnabledOgSoknadSkalSendesMedDigisosApi(any()) } returns false
     }
@@ -96,8 +92,7 @@ internal class SoknadServiceTest {
         val bruker = SubjectHandlerUtils.getUserIdFromToken()
         verify { henvendelseService.startSoknad(bruker) }
 
-        val bekreftelser =
-            soknadUnderArbeidSlot.captured.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.bekreftelse
+        val bekreftelser = soknadUnderArbeidSlot.captured.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.bekreftelse
         assertThat(bekreftelser.any { harBekreftelseFor(it, UTBETALING_SKATTEETATEN_SAMTYKKE) }).isFalse
         assertThat(bekreftelser.any { harBekreftelseFor(it, BOSTOTTE_SAMTYKKE) }).isFalse
     }
@@ -147,7 +142,6 @@ internal class SoknadServiceTest {
 
         every { oppgaveHandterer.leggTilOppgave(any(), any()) } just runs
         every { innsendingService.opprettSendtSoknad(any()) } just runs
-        every { soknadMetricsService.reportSendSoknadMetrics(any(), any()) } just runs
 
         soknadService.sendSoknad(behandlingsId)
 
@@ -180,13 +174,11 @@ internal class SoknadServiceTest {
 
         every { soknadUnderArbeidRepository.slettSoknad(any(), any()) } just runs
         every { henvendelseService.avbrytSoknad(any(), any()) } just runs
-        every { soknadMetricsService.reportAvbruttSoknad(any()) } just runs
 
         soknadService.avbrytSoknad(BEHANDLINGSID)
 
         verify { henvendelseService.avbrytSoknad(BEHANDLINGSID, false) }
         verify { soknadUnderArbeidRepository.slettSoknad(any(), any()) }
-        verify { soknadMetricsService.reportAvbruttSoknad(false) }
     }
 
     companion object {

@@ -189,7 +189,7 @@ class HentPersonClientImpl(
         try {
             redisService.setex(prefix + ident, pdlMapper.writeValueAsBytes(pdlResponse), PDL_CACHE_SECONDS)
         } catch (e: JsonProcessingException) {
-            log.error("Noe feilet ved serialisering av response fra Pdl - {}", pdlResponse.javaClass.name, e)
+            log.error("Noe feilet ved serialisering av response fra Pdl - ${pdlResponse.javaClass.name}", e)
         }
     }
 

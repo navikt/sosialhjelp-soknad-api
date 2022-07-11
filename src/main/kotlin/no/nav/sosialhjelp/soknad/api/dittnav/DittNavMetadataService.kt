@@ -40,7 +40,7 @@ class DittNavMetadataService(
     fun oppdaterLestDittNavForPabegyntSoknad(behandlingsId: String?, fnr: String): Boolean {
         val soknadMetadata = soknadMetadataRepository.hent(behandlingsId)
         if (soknadMetadata == null) {
-            log.warn("Fant ingen soknadMetadata med behandlingsId={}", behandlingsId)
+            log.warn("Fant ingen soknadMetadata med behandlingsId=$behandlingsId")
             return false
         }
         soknadMetadata.lestDittNav = true
@@ -48,11 +48,7 @@ class DittNavMetadataService(
             soknadMetadataRepository.oppdaterLestDittNav(soknadMetadata, fnr)
             true
         } catch (e: Exception) {
-            log.warn(
-                "Noe feilet ved oppdatering av lestDittNav for soknadMetadata med behandlingsId={}",
-                behandlingsId,
-                e
-            )
+            log.warn("Noe feilet ved oppdatering av lestDittNav for soknadMetadata med behandlingsId=$behandlingsId", e)
             false
         }
     }
