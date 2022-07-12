@@ -44,7 +44,7 @@
 
     <properties>
         <java.jdk.version>17</java.jdk.version>
-        <kotlin.version>1.7.0</kotlin.version>
+        <kotlin.version>1.7.10</kotlin.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <sosialhjelp-common.version>1.20220629.1332-dfb4541</sosialhjelp-common.version>
@@ -86,9 +86,9 @@
         <reactor-netty-http.version>1.0.20</reactor-netty-http.version>
         <log4j.version>2.17.2</log4j.version>
 
-        <kotlinx-coroutines.version>1.6.2</kotlinx-coroutines.version>
+        <kotlinx-coroutines.version>1.6.3</kotlinx-coroutines.version>
 
-        <flyway.placeholders.driver>oracle.jdbc.OracleDriver</flyway.placeholders.driver>
+        <flyway.placeholdesrs.driver>oracle.jdbc.OracleDriver</flyway.placeholdesrs.driver>
         <flyway.placeholders.encoding>ISO-8859-1</flyway.placeholders.encoding>
         <flyway.placeholders.url>placeholder</flyway.placeholders.url>
 
