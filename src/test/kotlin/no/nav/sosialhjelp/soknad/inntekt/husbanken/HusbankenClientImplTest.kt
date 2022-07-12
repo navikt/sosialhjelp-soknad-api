@@ -1,13 +1,12 @@
 package no.nav.sosialhjelp.soknad.inntekt.husbanken
 
-import mockwebserver3.MockResponse
-import mockwebserver3.MockWebServer
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.dto.BostotteDto
+import okhttp3.mockwebserver.MockResponse
+import okhttp3.mockwebserver.MockWebServer
 import org.apache.commons.io.IOUtils
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatNoException
 import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
@@ -21,11 +20,6 @@ internal class HusbankenClientImplTest {
     private val webClient = WebClient.create(mockWebServer.url("/").toString())
 
     private val husbankenClient = HusbankenClientImpl(webClient)
-
-    @BeforeEach
-    internal fun setUp() {
-        mockWebServer.start()
-    }
 
     @AfterEach
     internal fun tearDown() {
