@@ -44,6 +44,10 @@ class VirusScanner(
                 .retryWhen(RetryUtils.DEFAULT_RETRY_SERVER_ERRORS)
                 .block()
 
+            if (scanResults == null) {
+                log.warn("Uventet respons for behandlingsId=$behandlingsId, scanResults=null")
+                return false
+            }
             if (scanResults.size != 1) {
                 log.warn("Uventet respons med lengde ${scanResults.size}, forventet lengde er 1")
                 return false
