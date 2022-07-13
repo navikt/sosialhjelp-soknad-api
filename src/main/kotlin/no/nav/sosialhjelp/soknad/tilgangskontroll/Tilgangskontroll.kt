@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.tilgangskontroll
 
-import no.nav.sosialhjelp.soknad.common.ServiceUtils
+import no.nav.sosialhjelp.soknad.common.MiljoUtils
 import no.nav.sosialhjelp.soknad.common.exceptions.AuthorizationException
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils.getUserIdFromToken
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
@@ -18,11 +18,10 @@ class Tilgangskontroll(
     private val soknadMetadataRepository: SoknadMetadataRepository,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val personService: PersonService,
-    private val serviceUtils: ServiceUtils
 ) {
     fun verifiserAtBrukerKanEndreSoknad(behandlingsId: String?) {
         val request = (RequestContextHolder.currentRequestAttributes() as ServletRequestAttributes).request
-        XsrfGenerator.sjekkXsrfToken(request.getHeader("X-XSRF-TOKEN"), behandlingsId, serviceUtils.isMockAltProfil())
+        XsrfGenerator.sjekkXsrfToken(request.getHeader("X-XSRF-TOKEN"), behandlingsId, MiljoUtils.isMockAltProfil())
         verifiserBrukerHarTilgangTilSoknad(behandlingsId)
     }
 
