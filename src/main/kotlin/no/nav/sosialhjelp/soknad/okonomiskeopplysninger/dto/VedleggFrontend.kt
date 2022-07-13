@@ -7,7 +7,7 @@ data class VedleggFrontend(
     var gruppe: String?,
     var rader: List<VedleggRadFrontend>? = null,
     var vedleggStatus: String? = null,
-    var filer: List<FilFrontend>?,
+    var filer: List<FilFrontend>?
 )
 
 data class VedleggRadFrontend(

@@ -28,7 +28,7 @@ import java.util.Date
 open class SoknadUnderArbeidRepositoryJdbc(
     private val jdbcTemplate: JdbcTemplate,
     private val transactionTemplate: TransactionTemplate,
-    private val opplastetVedleggRepository: OpplastetVedleggRepository,
+    private val opplastetVedleggRepository: OpplastetVedleggRepository
 ) : SoknadUnderArbeidRepository {
 
     private val mapper: ObjectMapper = ObjectMapper().addMixIn(JsonAdresse::class.java, AdresseMixIn::class.java)
@@ -86,7 +86,7 @@ open class SoknadUnderArbeidRepositoryJdbc(
 
     override fun hentEttersendingMedTilknyttetBehandlingsId(
         tilknyttetBehandlingsId: String,
-        eier: String,
+        eier: String
     ): SoknadUnderArbeid? {
         return jdbcTemplate.query(
             "select * from SOKNAD_UNDER_ARBEID where EIER = ? and TILKNYTTETBEHANDLINGSID = ? and STATUS = ?",

@@ -13,7 +13,7 @@ import java.time.format.DateTimeFormatter
 class SosialhjelpPdfGenerator(
     private val navMessageSource: NavMessageSource,
     private val textHelpers: TextHelpers,
-    private val pdfUtils: PdfUtils,
+    private val pdfUtils: PdfUtils
 ) {
     fun generate(jsonInternalSoknad: JsonInternalSoknad, utvidetSoknad: Boolean): ByteArray {
         return try {

@@ -16,7 +16,7 @@ object SendtSoknadRowMapper {
             navEnhetsnavn = rs.getString("navenhetsnavn"),
             brukerOpprettetDato = rs.getTimestamp("brukeropprettetdato").toLocalDateTime(),
             brukerFerdigDato = rs.getTimestamp("brukerferdigdato").toLocalDateTime(),
-            sendtDato = rs.getTimestamp("sendtdato")?.toLocalDateTime(),
+            sendtDato = rs.getTimestamp("sendtdato")?.toLocalDateTime()
         )
     }
 }

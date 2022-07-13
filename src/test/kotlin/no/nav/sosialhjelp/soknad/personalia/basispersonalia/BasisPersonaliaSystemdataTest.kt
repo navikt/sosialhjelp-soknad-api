@@ -100,7 +100,8 @@ internal class BasisPersonaliaSystemdataTest {
         val person = Person(
             FORNAVN, MELLOMNAVN, ETTERNAVN, EIER, "ugift",
             listOf(
-                IKKE_NORDISK_STATSBORGERSKAP, NORDISK_STATSBORGERSKAP
+                IKKE_NORDISK_STATSBORGERSKAP,
+                NORDISK_STATSBORGERSKAP
             ),
             null, null, null, null
         )

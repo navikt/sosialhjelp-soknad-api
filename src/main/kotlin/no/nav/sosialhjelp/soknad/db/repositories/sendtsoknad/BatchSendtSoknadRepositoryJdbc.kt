@@ -12,7 +12,7 @@ import java.sql.ResultSet
 @Repository
 open class BatchSendtSoknadRepositoryJdbc(
     private val namedParameterJdbcTemplate: NamedParameterJdbcTemplate,
-    private val transactionTemplate: TransactionTemplate,
+    private val transactionTemplate: TransactionTemplate
 ) : BatchSendtSoknadRepository {
 
     override fun hentSendtSoknadIdList(behandlingsIdList: List<String>): List<Long> {

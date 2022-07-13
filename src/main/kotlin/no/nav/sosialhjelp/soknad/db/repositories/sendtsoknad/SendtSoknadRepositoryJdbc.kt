@@ -11,7 +11,7 @@ import java.util.Date
 @Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 @Repository
 open class SendtSoknadRepositoryJdbc(
-    private val jdbcTemplate: JdbcTemplate,
+    private val jdbcTemplate: JdbcTemplate
 ) : SendtSoknadRepository {
 
     override fun opprettSendtSoknad(sendtSoknad: SendtSoknad, eier: String?): Long? {
@@ -48,7 +48,7 @@ open class SendtSoknadRepositoryJdbc(
     override fun oppdaterSendtSoknadVedSendingTilFiks(
         fiksforsendelseId: String?,
         behandlingsId: String?,
-        eier: String?,
+        eier: String?
     ) {
         jdbcTemplate.update(
             "update SENDT_SOKNAD set FIKSFORSENDELSEID = ?, SENDTDATO = ? where BEHANDLINGSID = ? and EIER = ?",

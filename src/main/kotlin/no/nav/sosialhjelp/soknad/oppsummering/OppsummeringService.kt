@@ -28,7 +28,7 @@ import java.util.function.Predicate
 class OppsummeringService(
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val opplastetVedleggRepository: OpplastetVedleggRepository,
-    private val mellomlagringService: MellomlagringService,
+    private val mellomlagringService: MellomlagringService
 ) {
     private val personopplysningerSteg = PersonopplysningerSteg()
     private val begrunnelseSteg = BegrunnelseSteg()

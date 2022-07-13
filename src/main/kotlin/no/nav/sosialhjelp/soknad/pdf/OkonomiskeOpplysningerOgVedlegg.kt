@@ -13,7 +13,7 @@ fun leggTilOkonomiskeOpplysningerOgVedlegg(
     pdfUtils: PdfUtils,
     okonomi: JsonOkonomi,
     vedleggSpesifikasjon: JsonVedleggSpesifikasjon?,
-    utvidetSoknad: Boolean,
+    utvidetSoknad: Boolean
 ) {
     val utgifterBarnAlternativer: MutableList<String> = ArrayList(5)
     utgifterBarnAlternativer.add("barnFritidsaktiviteter")

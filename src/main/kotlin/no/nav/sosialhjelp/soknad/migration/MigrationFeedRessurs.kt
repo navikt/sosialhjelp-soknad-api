@@ -21,13 +21,13 @@ import javax.ws.rs.core.Response.Status.SERVICE_UNAVAILABLE
 @Produces(MediaType.APPLICATION_JSON)
 open class MigrationFeedRessurs(
     private val migrationService: MigrationService,
-    private val unleash: Unleash,
+    private val unleash: Unleash
 ) {
 
     @GET
     @Path("/feed")
     fun getNextSoknadForMigration(
-        @QueryParam("sistEndretDato") sistEndretDatoString: String?,
+        @QueryParam("sistEndretDato") sistEndretDatoString: String?
     ): Response {
         if (!unleash.isEnabled(MIGRATION_API_ENABLED)) {
             return Response.status(SERVICE_UNAVAILABLE).build()

@@ -10,10 +10,10 @@ data class KommunestatusFrontend(
     var harMidlertidigDeaktivertOppdateringer: Boolean = false,
     var harNksTilgang: Boolean = false,
     var behandlingsansvarlig: String? = null,
-    var kontaktPersoner: KontaktPersonerFrontend? = null,
+    var kontaktPersoner: KontaktPersonerFrontend? = null
 )
 
 data class KontaktPersonerFrontend(
     val fagansvarligEpost: Collection<String> = Collections.emptyList(),
-    var tekniskAnsvarligEpost: Collection<String> = Collections.emptyList(),
+    var tekniskAnsvarligEpost: Collection<String> = Collections.emptyList()
 )

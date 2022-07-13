@@ -37,7 +37,7 @@ class KontonummerClientImpl(
     @Value("\${oppslag_api_audience}") private val oppslagApiAudience: String,
     private val redisService: RedisService,
     private val tokendingsService: TokendingsService,
-    webClientBuilder: WebClient.Builder,
+    webClientBuilder: WebClient.Builder
 ) : KontonummerClient {
 
     private val webClient = unproxiedWebClientBuilder(webClientBuilder).build()

@@ -20,5 +20,5 @@ data class BarnFrontend(
     val navn: NavnFrontend?,
     val fodselsdato: String?,
     val personnummer: String?,
-    val fodselsnummer: String?,
+    val fodselsnummer: String?
 )

@@ -69,7 +69,7 @@ class MellomlagringService(
         behandlingsId: String,
         vedleggstype: String,
         data: ByteArray,
-        originalfilnavn: String,
+        originalfilnavn: String
     ): MellomlagretVedleggMetadata {
         var filnavn = originalfilnavn
 

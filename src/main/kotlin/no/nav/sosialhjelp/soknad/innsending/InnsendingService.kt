@@ -24,7 +24,7 @@ open class InnsendingService(
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val opplastetVedleggRepository: OpplastetVedleggRepository,
     private val soknadUnderArbeidService: SoknadUnderArbeidService,
-    private val soknadMetadataRepository: SoknadMetadataRepository,
+    private val soknadMetadataRepository: SoknadMetadataRepository
 ) {
     open fun opprettSendtSoknad(soknadUnderArbeid: SoknadUnderArbeid?) {
         check(soknadUnderArbeid != null) { "Kan ikke sende søknad som ikke finnes eller som mangler søknadsid" }

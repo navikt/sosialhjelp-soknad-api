@@ -30,7 +30,7 @@ class OrganisasjonClientImpl(
     @Value("\${ereg_proxy_url}") private val eregProxyUrl: String,
     @Value("\${fss_proxy_audience}") private val fssProxyAudience: String,
     private val tokendingsService: TokendingsService,
-    webClientBuilder: WebClient.Builder,
+    webClientBuilder: WebClient.Builder
 ) : OrganisasjonClient {
 
     private val webClient = unproxiedWebClientBuilder(webClientBuilder).baseUrl(eregProxyUrl).build()

@@ -199,7 +199,7 @@ private fun leggTilDeltBosted(
     pdfUtils: PdfUtils,
     ansvar: JsonAnsvar,
     erFolkeregistrertSammenVerdi: Boolean,
-    utvidetSoknad: Boolean,
+    utvidetSoknad: Boolean
 ) {
     // Har barnet delt bosted
     if (erFolkeregistrertSammenVerdi) {

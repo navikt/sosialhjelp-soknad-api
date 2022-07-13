@@ -112,7 +112,7 @@ class EttersendingService(
                 "soknadens dato: ${soknad.innsendtDato?.format(dateTimeFormatter)}, " +
                 "frist($ETTERSENDELSE_FRIST_DAGER dager): ${LocalDateTime.now().minusDays(ETTERSENDELSE_FRIST_DAGER.toLong()).format(dateTimeFormatter)}. " +
                 "Antall ettersendelser som er sendt på denne søknaden tidligere er: $antallEttersendelser. " +
-                "Antall nyere søknader denne brukeren har: $antallNyereSoknader",
+                "Antall nyere søknader denne brukeren har: $antallNyereSoknader"
         )
     }
 

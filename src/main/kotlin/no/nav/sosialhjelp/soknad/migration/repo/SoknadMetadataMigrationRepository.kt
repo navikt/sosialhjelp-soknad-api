@@ -9,7 +9,7 @@ import java.time.LocalDateTime
 
 @Repository
 open class SoknadMetadataMigrationRepository(
-    private val jdbcTemplate: JdbcTemplate,
+    private val jdbcTemplate: JdbcTemplate
 ) {
     fun getNextSoknadMetadataAfter(sistEndretDato: LocalDateTime): SoknadMetadata? {
         return jdbcTemplate.query(

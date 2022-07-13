@@ -72,6 +72,6 @@ open class KontonummerRessurs(
         val brukerdefinert: Boolean = false,
         val systemverdi: String? = null,
         val brukerutfyltVerdi: String? = null,
-        val harIkkeKonto: Boolean? = null,
+        val harIkkeKonto: Boolean? = null
     )
 }

@@ -114,7 +114,7 @@ internal class VedleggskravStatistikkUtilTest {
         expectedTotaltAntall: Int,
         expectedAntallInnsendt: Int,
         expectedAntallLevertTidligere: Int,
-        expectedAntallIkkeLevert: Int,
+        expectedAntallIkkeLevert: Int
     ) {
         assertThat(vedleggskravStatistikk.sendetype).isEqualTo("soknad")
         assertThat(vedleggskravStatistikk.totaltAntall).isEqualTo(expectedTotaltAntall)

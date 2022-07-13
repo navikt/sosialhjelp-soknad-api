@@ -25,7 +25,7 @@ class SoknadUnderArbeidRowMapper : RowMapper<SoknadUnderArbeid> {
             jsonInternalSoknad = mapDataToJsonInternalSoknad(rs.getBytes("data")),
             status = SoknadUnderArbeidStatus.valueOf(rs.getString("status")),
             opprettetDato = rs.getTimestamp("opprettetdato").toLocalDateTime(),
-            sistEndretDato = rs.getTimestamp("sistendretdato").toLocalDateTime(),
+            sistEndretDato = rs.getTimestamp("sistendretdato").toLocalDateTime()
         )
     }
 

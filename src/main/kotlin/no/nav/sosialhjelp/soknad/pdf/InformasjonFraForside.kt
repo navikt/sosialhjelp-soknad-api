@@ -7,7 +7,7 @@ fun leggTilInformasjonFraForsiden(
     pdf: PdfGenerator,
     pdfUtils: PdfUtils,
     personalia: JsonPersonalia,
-    utvidetSoknad: Boolean,
+    utvidetSoknad: Boolean
 ) {
     if (utvidetSoknad) {
         pdf.skrivH4Bold(pdfUtils.getTekst("informasjon.tittel"))

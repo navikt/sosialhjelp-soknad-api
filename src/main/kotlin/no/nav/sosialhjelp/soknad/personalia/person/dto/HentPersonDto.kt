@@ -66,7 +66,7 @@ data class FolkeregisterMetadataDto(
 data class ForelderBarnRelasjonDto(
     val relatertPersonsIdent: String?,
     val relatertPersonsRolle: String,
-    val minRolleForPerson: String,
+    val minRolleForPerson: String
 )
 
 data class NavnDto(
@@ -74,7 +74,7 @@ data class NavnDto(
     val mellomnavn: String?,
     val etternavn: String,
     val metadata: MetadataDto,
-    val folkeregistermetadata: FolkeregisterMetadataDto?,
+    val folkeregistermetadata: FolkeregisterMetadataDto?
 )
 
 data class SivilstandDto(
@@ -132,7 +132,7 @@ data class VegadresseDto(
     val postnummer: String,
     val kommunenummer: String?,
     val bruksenhetsnummer: String?,
-    val bydelsnummer: String?,
+    val bydelsnummer: String?
 )
 
 data class MatrikkeladresseDto(
@@ -140,7 +140,7 @@ data class MatrikkeladresseDto(
     val postnummer: String,
     val tilleggsnavn: String?,
     val kommunenummer: String,
-    val bruksenhetsnummer: String?,
+    val bruksenhetsnummer: String?
 )
 
 data class UkjentBostedDto(

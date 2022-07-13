@@ -48,7 +48,7 @@ open class OkonomiskeOpplysningerRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val opplastetVedleggRepository: OpplastetVedleggRepository,
-    private val mellomlagringService: MellomlagringService,
+    private val mellomlagringService: MellomlagringService
 ) {
     @GET
     open fun hentOkonomiskeOpplysninger(@PathParam("behandlingsId") behandlingsId: String): VedleggFrontends {

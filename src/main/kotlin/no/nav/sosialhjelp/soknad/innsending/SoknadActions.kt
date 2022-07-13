@@ -50,7 +50,7 @@ open class SoknadActions(
     private val soknadMetadataRepository: SoknadMetadataRepository,
     private val digisosApiService: DigisosApiService,
     private val unleash: Unleash,
-    private val nedetidService: NedetidService,
+    private val nedetidService: NedetidService
 ) {
     @POST
     @Path("/send")

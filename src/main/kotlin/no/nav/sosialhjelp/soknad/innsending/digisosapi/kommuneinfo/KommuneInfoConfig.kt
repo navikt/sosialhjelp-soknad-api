@@ -15,7 +15,7 @@ open class KommuneInfoConfig(
     @Value("\${integrasjonpassord_fiks}") private val integrasjonpassordFiks: String,
     private val maskinportenClient: MaskinportenClient,
     webClientBuilder: WebClient.Builder,
-    proxiedHttpClient: HttpClient,
+    proxiedHttpClient: HttpClient
 ) {
 
     @Bean
