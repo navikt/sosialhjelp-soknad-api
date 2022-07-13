@@ -251,10 +251,11 @@ open class PdlDtoMapper(
     ): Kontaktadresse? {
         return if (dtos == null || dtos.isEmpty()) {
             null
-        } else
+        } else {
             dtos
                 .firstOrNull { it.vegadresse != null && filterVegadresseNotEqualToBostedsadresse(bostedsadresseDtos, it.vegadresse) }
                 ?.let { Kontaktadresse(it.coAdressenavn, it.vegadresse?.let { vegadresse -> mapToVegadresse(vegadresse) }) }
+        }
     }
 
     private fun filterVegadresseNotEqualToBostedsadresse(

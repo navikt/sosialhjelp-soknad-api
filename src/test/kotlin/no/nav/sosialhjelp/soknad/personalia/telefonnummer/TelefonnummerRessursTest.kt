@@ -99,7 +99,8 @@ internal class TelefonnummerRessursTest {
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(soknadUnderArbeidSlot), any()) } just runs
 
         val telefonnummerFrontend = TelefonnummerFrontend(
-            brukerdefinert = true, brukerutfyltVerdi = TELEFONNUMMER_BRUKER
+            brukerdefinert = true,
+            brukerutfyltVerdi = TELEFONNUMMER_BRUKER
         )
         telefonnummerRessurs.updateTelefonnummer(BEHANDLINGSID, telefonnummerFrontend)
 
@@ -119,7 +120,8 @@ internal class TelefonnummerRessursTest {
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(soknadUnderArbeidSlot), any()) } just runs
 
         val telefonnummerFrontend = TelefonnummerFrontend(
-            brukerdefinert = true, brukerutfyltVerdi = TELEFONNUMMER_BRUKER
+            brukerdefinert = true,
+            brukerutfyltVerdi = TELEFONNUMMER_BRUKER
         )
         telefonnummerRessurs.updateTelefonnummer(BEHANDLINGSID, telefonnummerFrontend)
 
