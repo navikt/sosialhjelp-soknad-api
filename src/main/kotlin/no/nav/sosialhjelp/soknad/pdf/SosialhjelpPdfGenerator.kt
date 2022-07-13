@@ -1,6 +1,17 @@
 package no.nav.sosialhjelp.soknad.pdf
 
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
+import no.nav.sosialhjelp.soknad.pdf.ArbeidOgUtdanning.leggTilArbeidOgUtdanning
+import no.nav.sosialhjelp.soknad.pdf.Begrunnelse.leggTilBegrunnelse
+import no.nav.sosialhjelp.soknad.pdf.Bosituasjon.leggTilBosituasjon
+import no.nav.sosialhjelp.soknad.pdf.Familie.leggTilFamilie
+import no.nav.sosialhjelp.soknad.pdf.InformasjonFraForside.leggTilInformasjonFraForsiden
+import no.nav.sosialhjelp.soknad.pdf.InntektOgFormue.leggTilInntektOgFormue
+import no.nav.sosialhjelp.soknad.pdf.JuridiskInformasjon.leggTilJuridiskInformasjon
+import no.nav.sosialhjelp.soknad.pdf.Metainformasjon.leggTilMetainformasjon
+import no.nav.sosialhjelp.soknad.pdf.OkonomiskeOpplysningerOgVedlegg.leggTilOkonomiskeOpplysningerOgVedlegg
+import no.nav.sosialhjelp.soknad.pdf.Personalia.leggTilPersonalia
+import no.nav.sosialhjelp.soknad.pdf.UtgifterOgGjeld.leggTilUtgifterOgGjeld
 import no.nav.sosialhjelp.soknad.pdf.Utils.DATO_OG_TID_FORMAT
 import no.nav.sosialhjelp.soknad.pdf.Utils.getJsonNavnTekst
 import no.nav.sosialhjelp.soknad.tekster.NavMessageSource
