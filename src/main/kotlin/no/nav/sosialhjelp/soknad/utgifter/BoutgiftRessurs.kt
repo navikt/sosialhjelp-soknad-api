@@ -193,6 +193,6 @@ open class BoutgiftRessurs(
         val oppvarming: Boolean = false,
         val boliglan: Boolean = false,
         val annet: Boolean = false,
-        val skalViseInfoVedBekreftelse: Boolean = false
+        val skalViseInfoVedBekreftelse: Boolean = false,
     )
 }

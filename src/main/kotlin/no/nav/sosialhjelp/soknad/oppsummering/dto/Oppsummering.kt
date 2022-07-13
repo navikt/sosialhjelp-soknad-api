@@ -18,7 +18,7 @@ data class Avsnitt(
 data class Sporsmal(
     val tittel: String?,
     val felt: List<Felt>?,
-    val erUtfylt: Boolean
+    val erUtfylt: Boolean,
 ) {
     fun containsFeltWithSvar(svar: String): Boolean {
         return felt != null && felt.any { svar == it.svar?.value }
@@ -30,7 +30,7 @@ data class Felt(
     val svar: Svar? = null,
     val labelSvarMap: Map<String, Svar>? = null,
     val type: Type,
-    val vedlegg: List<Vedlegg>? = null
+    val vedlegg: List<Vedlegg>? = null,
 )
 
 data class Svar(

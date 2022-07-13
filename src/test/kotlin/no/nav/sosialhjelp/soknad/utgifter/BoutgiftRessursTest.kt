@@ -132,9 +132,7 @@ internal class BoutgiftRessursTest {
             listOf(JsonOkonomiOpplysningUtbetaling().withType(SoknadJsonTyper.UTBETALING_HUSBANKEN))
         setBekreftelse(
             soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger,
-            BOSTOTTE_SAMTYKKE,
-            true,
-            "Test samtykke!"
+            BOSTOTTE_SAMTYKKE, true, "Test samtykke!"
         )
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns soknadUnderArbeid
 
@@ -149,9 +147,7 @@ internal class BoutgiftRessursTest {
         soknadUnderArbeid.jsonInternalSoknad!!.soknad.driftsinformasjon.stotteFraHusbankenFeilet = true
         setBekreftelse(
             soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger,
-            BOSTOTTE_SAMTYKKE,
-            true,
-            "Test samtykke!"
+            BOSTOTTE_SAMTYKKE, true, "Test samtykke!"
         )
         soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.bekreftelse =
             listOf(JsonOkonomibekreftelse().withKilde(JsonKilde.BRUKER).withType(BOSTOTTE).withVerdi(false))

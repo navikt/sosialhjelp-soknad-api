@@ -26,7 +26,7 @@ data class GateadresseFrontend(
     val poststed: String? = null,
     val gatenavn: String? = null,
     val husnummer: String? = null,
-    val husbokstav: String? = null
+    val husbokstav: String? = null,
 )
 
 data class MatrikkeladresseFrontend(
@@ -35,7 +35,7 @@ data class MatrikkeladresseFrontend(
     val bruksnummer: String? = null,
     val festenummer: String? = null,
     val seksjonsnummer: String? = null,
-    val undernummer: String? = null
+    val undernummer: String? = null,
 )
 
 data class UstrukturertAdresseFrontend(

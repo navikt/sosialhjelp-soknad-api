@@ -26,7 +26,7 @@ data class ArbeidsavtaleDto(
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonSubTypes(
     JsonSubTypes.Type(value = OrganisasjonDto::class, name = "Organisasjon"),
-    JsonSubTypes.Type(value = PersonDto::class, name = "Person")
+    JsonSubTypes.Type(value = PersonDto::class, name = "Person"),
 )
 sealed class OpplysningspliktigArbeidsgiverDto()
 

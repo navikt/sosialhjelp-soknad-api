@@ -9,7 +9,7 @@ interface MobiltelefonService {
 
 @Component
 class MobiltelefonServiceImpl(
-    private val krrProxyClient: KrrProxyClient
+    private val krrProxyClient: KrrProxyClient,
 ) : MobiltelefonService {
 
     override fun hent(ident: String): String? {

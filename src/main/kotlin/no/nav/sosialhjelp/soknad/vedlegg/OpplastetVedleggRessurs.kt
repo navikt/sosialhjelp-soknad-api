@@ -49,7 +49,7 @@ open class OpplastetVedleggRessurs(
     @Produces(MediaType.APPLICATION_JSON)
     open fun getVedleggFil(
         @PathParam("vedleggId") vedleggId: String,
-        @Context response: HttpServletResponse
+        @Context response: HttpServletResponse,
     ): Response {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
         val eier = SubjectHandlerUtils.getUserIdFromToken()
@@ -99,7 +99,7 @@ open class OpplastetVedleggRessurs(
     open fun saveVedlegg(
         @PathParam("behandlingsId") behandlingsId: String,
         @PathParam("type") vedleggstype: String,
-        @FormDataParam("file") fil: FormDataBodyPart
+        @FormDataParam("file") fil: FormDataBodyPart,
     ): FilFrontend {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         if (fil.getValueAs(File::class.java).length() > MAKS_TOTAL_FILSTORRELSE) {
@@ -131,7 +131,7 @@ open class OpplastetVedleggRessurs(
     @Path("/{behandlingsId}/{vedleggId}")
     open fun deleteVedlegg(
         @PathParam("behandlingsId") behandlingsId: String,
-        @PathParam("vedleggId") vedleggId: String
+        @PathParam("vedleggId") vedleggId: String,
     ) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         if (!mellomlagringEnabled) {

@@ -80,7 +80,7 @@ internal class SendtSoknadRepositoryJdbcTest {
     private fun lagSendtSoknad(
         eier: String,
         behandlingsId: String = BEHANDLINGSID,
-        fiksforsendelseId: String = FIKSFORSENDELSEID
+        fiksforsendelseId: String = FIKSFORSENDELSEID,
     ): SendtSoknad {
         return SendtSoknad(
             behandlingsId = behandlingsId,

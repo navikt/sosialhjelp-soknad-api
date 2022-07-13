@@ -12,7 +12,7 @@ import org.springframework.web.reactive.function.client.bodyToMono
 @Component
 class OppslagApiCheck(
     @Value("\${oppslag_api_baseurl}") private val oppslagApiUrl: String,
-    webClientBuilder: WebClient.Builder
+    webClientBuilder: WebClient.Builder,
 ) : DependencyCheck {
     private val pingurl = "${oppslagApiUrl}ping"
 

@@ -47,7 +47,7 @@ internal class BatchOpplastetVedleggRepositoryJdbcTest {
     private fun lagOpplastetVedlegg(
         eier: String = EIER,
         type: String = TYPE,
-        soknadId: Long = SOKNADID
+        soknadId: Long = SOKNADID,
     ): OpplastetVedlegg {
         return OpplastetVedlegg(
             eier = eier,

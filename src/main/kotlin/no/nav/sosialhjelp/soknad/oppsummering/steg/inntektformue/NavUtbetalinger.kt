@@ -46,7 +46,7 @@ class NavUtbetalinger {
                     felt = null
                 )
             )
-        } else { // 1 eller flere utbetalinger
+        } else // 1 eller flere utbetalinger
             opplysninger.utbetaling
                 .filter { UTBETALING_NAVYTELSE == it.type }
                 .map {
@@ -66,6 +66,5 @@ class NavUtbetalinger {
                         )
                     )
                 }
-        }
     }
 }

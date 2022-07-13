@@ -10,7 +10,7 @@ data class Logg(
     val lineNumber: String?,
     val columnNumber: String?,
     val url: String?,
-    val userAgent: String?
+    val userAgent: String?,
 ) {
     fun melding(): String {
         var useragentWithoutSpaceAndComma = ""

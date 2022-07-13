@@ -13,7 +13,7 @@ import java.time.LocalDateTime
 @Repository
 open class BatchSoknadMetadataRepositoryJdbc(
     private val jdbcTemplate: JdbcTemplate,
-    private val namedParameterJdbcTemplate: NamedParameterJdbcTemplate
+    private val namedParameterJdbcTemplate: NamedParameterJdbcTemplate,
 ) : BatchSoknadMetadataRepository {
 
     @Transactional

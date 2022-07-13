@@ -12,7 +12,7 @@ interface LeaderElection {
 }
 
 class LeaderElectionImpl(
-    webClientBuilder: WebClient.Builder
+    webClientBuilder: WebClient.Builder,
 ) : LeaderElection {
 
     private val electorPath: String? = System.getenv(ELECTOR_PATH)

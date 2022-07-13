@@ -133,10 +133,7 @@ internal class BarneutgiftRessursTest {
                 harForsorgerplikt = true,
                 harUtgifter = true,
                 utgiftstyper = listOf(
-                    UTGIFTER_BARNEHAGE,
-                    UTGIFTER_SFO,
-                    UTGIFTER_BARN_FRITIDSAKTIVITETER,
-                    UTGIFTER_ANNET_BARN
+                    UTGIFTER_BARNEHAGE, UTGIFTER_SFO, UTGIFTER_BARN_FRITIDSAKTIVITETER, UTGIFTER_ANNET_BARN
                 )
             )
 

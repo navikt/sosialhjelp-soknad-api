@@ -12,7 +12,7 @@ import org.springframework.web.reactive.function.client.bodyToMono
 @Component
 class SosialhjelpFssProxyCheck(
     @Value("\${fss_proxy_ping_url}") private val fssProxyPingUrl: String,
-    webClientBuilder: WebClient.Builder
+    webClientBuilder: WebClient.Builder,
 ) : DependencyCheck {
 
     override val type = DependencyType.REST

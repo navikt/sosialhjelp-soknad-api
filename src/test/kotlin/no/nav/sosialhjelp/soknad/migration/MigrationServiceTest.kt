@@ -107,12 +107,7 @@ internal class MigrationServiceTest {
 
     private fun createOpplastetVedlegg(soknadId: Long): OpplastetVedlegg {
         return OpplastetVedlegg(
-            eier = "fnr",
-            vedleggType = OpplastetVedleggType("annet|annet"),
-            data = "hello".toByteArray(),
-            soknadId = soknadId,
-            filnavn = "filnavn",
-            sha512 = "sha"
+            eier = "fnr", vedleggType = OpplastetVedleggType("annet|annet"), data = "hello".toByteArray(), soknadId = soknadId, filnavn = "filnavn", sha512 = "sha"
         )
     }
 

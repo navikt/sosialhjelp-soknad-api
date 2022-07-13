@@ -37,7 +37,7 @@ internal class AvbrytAutomatiskSchedulerTest {
         soknadMetadataRepository,
         batchSoknadMetadataRepository,
         batchSoknadUnderArbeidRepository,
-        mellomlagringService
+        mellomlagringService,
     )
 
     @BeforeEach

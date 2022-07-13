@@ -20,7 +20,7 @@ class AvbrytAutomatiskScheduler(
     private val soknadMetadataRepository: SoknadMetadataRepository,
     private val batchSoknadMetadataRepository: BatchSoknadMetadataRepository,
     private val batchSoknadUnderArbeidRepository: BatchSoknadUnderArbeidRepository,
-    private val mellomlagringService: MellomlagringService
+    private val mellomlagringService: MellomlagringService,
 ) {
     private var batchStartTime: LocalDateTime? = null
     private var vellykket = 0

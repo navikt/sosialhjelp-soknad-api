@@ -49,7 +49,7 @@ open class NavEnhetRessurs(
     private val finnAdresseService: FinnAdresseService,
     private val geografiskTilknytningService: GeografiskTilknytningService,
     private val kodeverkService: KodeverkService,
-    private val unleash: Unleash
+    private val unleash: Unleash,
 ) {
 
     @GET

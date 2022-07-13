@@ -19,7 +19,7 @@ object Personalia {
         textHelpers: TextHelpers,
         jsonPersonalia: JsonPersonalia,
         midlertidigAdresse: JsonAdresse?,
-        utvidetSoknad: Boolean
+        utvidetSoknad: Boolean,
     ) {
         pdf.skrivH4Bold(pdfUtils.getTekst("kontakt.tittel"))
         pdf.addBlankLine()

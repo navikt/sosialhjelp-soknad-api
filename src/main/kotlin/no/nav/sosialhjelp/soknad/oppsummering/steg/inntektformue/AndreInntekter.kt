@@ -107,8 +107,7 @@ class AndreInntekter {
         opplysninger.utbetaling.firstOrNull { type == it.type }?.let {
             felter.add(
                 Felt(
-                    type = Type.CHECKBOX,
-                    svar = createSvar(key, SvarType.LOCALE_TEKST)
+                    type = Type.CHECKBOX, svar = createSvar(key, SvarType.LOCALE_TEKST)
                 )
             )
         }

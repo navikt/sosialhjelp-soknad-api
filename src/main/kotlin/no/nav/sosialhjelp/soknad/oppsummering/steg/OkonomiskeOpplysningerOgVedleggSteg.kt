@@ -61,7 +61,7 @@ class OkonomiskeOpplysningerOgVedleggSteg {
     private fun okonomiOgVedleggAvsnitt(
         okonomi: JsonOkonomi,
         vedleggSpesifikasjon: JsonVedleggSpesifikasjon,
-        vedleggInfo: List<OppsummeringVedleggInfo>
+        vedleggInfo: List<OppsummeringVedleggInfo>,
     ): List<Avsnitt> {
         val inntektAvsnitt = Avsnitt(
             tittel = "inntektbolk.tittel",
@@ -95,16 +95,12 @@ class OkonomiskeOpplysningerOgVedleggSteg {
             ?.forEach {
                 sporsmal.add(
                     integerVerdiSporsmalMedTittel(
-                        getTitleKey(it.type),
-                        "opplysninger.arbeid.jobb.bruttolonn.label",
-                        it.brutto
+                        getTitleKey(it.type), "opplysninger.arbeid.jobb.bruttolonn.label", it.brutto
                     )
                 )
                 sporsmal.add(
                     integerVerdiSporsmalMedTittel(
-                        getTitleKey(it.type),
-                        "opplysninger.arbeid.jobb.nettolonn.label",
-                        it.netto
+                        getTitleKey(it.type), "opplysninger.arbeid.jobb.nettolonn.label", it.netto
                     )
                 )
             }
@@ -115,9 +111,7 @@ class OkonomiskeOpplysningerOgVedleggSteg {
             ?.forEach {
                 sporsmal.add(
                     integerVerdiSporsmalMedTittel(
-                        getTitleKey(it.type),
-                        "opplysninger.arbeid.student.utbetaling.label",
-                        it.netto
+                        getTitleKey(it.type), "opplysninger.arbeid.student.utbetaling.label", it.netto
                     )
                 )
             }
@@ -294,7 +288,7 @@ class OkonomiskeOpplysningerOgVedleggSteg {
 
     private fun vedleggSporsmal(
         vedleggSpesifikasjon: JsonVedleggSpesifikasjon,
-        vedleggInfo: List<OppsummeringVedleggInfo>
+        vedleggInfo: List<OppsummeringVedleggInfo>,
     ): List<Sporsmal> {
         return vedleggSpesifikasjon.vedlegg
             .map {
@@ -372,6 +366,6 @@ class OkonomiskeOpplysningerOgVedleggSteg {
 
     data class OppsummeringVedleggInfo(
         val filnavn: String,
-        val id: String
+        val id: String,
     )
 }

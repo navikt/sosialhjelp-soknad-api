@@ -36,7 +36,7 @@ class ArbeidsforholdClient(
     @Value("\${aareg_proxy_url}") private val aaregProxyUrl: String,
     @Value("\${fss_proxy_audience}") private val fssProxyAudience: String,
     private val tokendingsService: TokendingsService,
-    webClientBuilder: WebClient.Builder
+    webClientBuilder: WebClient.Builder,
 ) {
 
     private val arbeidsforholdMapper: ObjectMapper = jacksonObjectMapper()

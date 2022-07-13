@@ -16,7 +16,7 @@ import java.io.ByteArrayInputStream
 @Component
 class DokumentListeService(
     private val innsendingService: InnsendingService,
-    private val sosialhjelpPdfGenerator: SosialhjelpPdfGenerator
+    private val sosialhjelpPdfGenerator: SosialhjelpPdfGenerator,
 ) {
 
     fun lagDokumentListe(soknadUnderArbeid: SoknadUnderArbeid): List<FilOpplasting> {
@@ -66,7 +66,7 @@ class DokumentListeService(
         return listOf(
             lagDokumentForSaksbehandlerPdf(internalSoknad),
             lagDokumentForJuridiskPdf(internalSoknad),
-            lagDokumentForBrukerkvitteringPdf()
+            lagDokumentForBrukerkvitteringPdf(),
             // *dokumenterForVedlegg.toTypedArray()
         ).also {
             log.info("Antall vedlegg: ${it.size}. Antall vedlegg lastet opp av bruker: ${dokumenterForVedlegg.size}")

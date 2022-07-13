@@ -5,5 +5,5 @@ data class SjekksumDto(
     val sendtSoknadSum: Int,
     val soknadUnderArbeidSum: Int,
     val opplastetVedleggSum: Int,
-    val oppgaveSum: Int
+    val oppgaveSum: Int,
 )

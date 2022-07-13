@@ -17,7 +17,7 @@ import java.util.Objects
 class Tilgangskontroll(
     private val soknadMetadataRepository: SoknadMetadataRepository,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
-    private val personService: PersonService
+    private val personService: PersonService,
 ) {
     fun verifiserAtBrukerKanEndreSoknad(behandlingsId: String?) {
         val request = (RequestContextHolder.currentRequestAttributes() as ServletRequestAttributes).request

@@ -8,5 +8,5 @@ data class NedetidFrontend(
     val nedetidStartText: String? = null,
     val nedetidSluttText: String? = null,
     val nedetidStartTextEn: String? = null,
-    val nedetidSluttTextEn: String? = null
+    val nedetidSluttTextEn: String? = null,
 )

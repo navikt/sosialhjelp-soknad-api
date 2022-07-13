@@ -22,7 +22,7 @@ import java.time.Duration
 
 abstract class PdlClient(
     webClientBuilder: WebClient.Builder,
-    private val baseurl: String
+    private val baseurl: String,
 ) {
     private val callId: String? get() = MdcOperations.getFromMDC(MdcOperations.MDC_CALL_ID)
 

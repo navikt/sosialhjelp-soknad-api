@@ -17,7 +17,7 @@ object InntektOgFormue {
         pdfUtils: PdfUtils,
         okonomi: JsonOkonomi?,
         soknad: JsonSoknad,
-        utvidetSoknad: Boolean
+        utvidetSoknad: Boolean,
     ) {
         pdf.skrivH4Bold(pdfUtils.getTekst("inntektbolk.tittel"))
         pdf.addBlankLine()

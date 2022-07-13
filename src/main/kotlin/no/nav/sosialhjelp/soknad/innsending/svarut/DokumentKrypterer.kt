@@ -27,7 +27,7 @@ import javax.annotation.PostConstruct
 
 @Component
 class DokumentKrypterer(
-    @Value("\${fiks.nokkelfil}") private val fiksNokkelfil: String?
+    @Value("\${fiks.nokkelfil}") private val fiksNokkelfil: String?,
 ) {
     private var encryptionScheme: AlgorithmIdentifier? = null
     private var cms: ASN1ObjectIdentifier? = null

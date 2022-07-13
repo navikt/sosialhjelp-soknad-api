@@ -53,7 +53,7 @@ class HenvendelseService(
             type = SoknadMetadataType.SEND_SOKNAD_KOMMUNAL_ETTERSENDING,
             status = SoknadMetadataInnsendingStatus.UNDER_ARBEID,
             opprettetDato = LocalDateTime.now(clock),
-            sistEndretDato = LocalDateTime.now(clock)
+            sistEndretDato = LocalDateTime.now(clock),
         )
         soknadMetadataRepository.opprett(ettersendelse)
         return ettersendelse.behandlingsId

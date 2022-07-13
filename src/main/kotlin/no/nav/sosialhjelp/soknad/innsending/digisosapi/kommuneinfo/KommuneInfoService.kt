@@ -22,7 +22,7 @@ import java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME
 @Component
 class KommuneInfoService(
     private val kommuneInfoClient: KommuneInfoClient,
-    private val redisService: RedisService
+    private val redisService: RedisService,
 ) {
 
     fun kanMottaSoknader(kommunenummer: String): Boolean {

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository
 
 @Repository
 open class SendtSoknadMigrationRepository(
-    private val jdbcTemplate: JdbcTemplate
+    private val jdbcTemplate: JdbcTemplate,
 ) {
     fun getSendtSoknad(behandlingsId: String): SendtSoknad? {
         return jdbcTemplate.query(

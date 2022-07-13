@@ -11,5 +11,5 @@ data class SoknadOversiktDto(
     val sistOppdatert: Date? = null,
     val antallNyeOppgaver: Int? = null,
     val kilde: String? = null,
-    val url: String? = null
+    val url: String? = null,
 )

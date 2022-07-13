@@ -61,9 +61,7 @@ open class OpplastetVedleggRepositoryJdbc(
     override fun hentSamletVedleggStorrelse(soknadId: Long, eier: String): Int {
         if (jdbcTemplate.queryForObject(
                 "select count(*) from OPPLASTET_VEDLEGG where EIER = ? and SOKNAD_UNDER_ARBEID_ID = ?",
-                Int::class.java,
-                eier,
-                soknadId
+                Int::class.java, eier, soknadId
             ) > 0
         ) {
             val blobSize = SQLUtils.blobSizeQuery()

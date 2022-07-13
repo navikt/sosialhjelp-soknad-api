@@ -71,12 +71,7 @@ internal class SivilstatusRessursTest {
         every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
             createJsonInternalSoknadWithSivilstatus(
-                true,
-                JsonSivilstatus.Status.GIFT,
-                null,
-                null,
-                null,
-                null
+                true, JsonSivilstatus.Status.GIFT, null, null, null, null
             )
 
         val sivilstatusFrontend = sivilstatusRessurs.hentSivilstatus(BEHANDLINGSID)
@@ -92,12 +87,7 @@ internal class SivilstatusRessursTest {
         every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
             createJsonInternalSoknadWithSivilstatus(
-                true,
-                JsonSivilstatus.Status.GIFT,
-                JSON_EKTEFELLE,
-                null,
-                null,
-                true
+                true, JsonSivilstatus.Status.GIFT, JSON_EKTEFELLE, null, null, true
             )
 
         val sivilstatusFrontend = sivilstatusRessurs.hentSivilstatus(BEHANDLINGSID)
@@ -114,12 +104,7 @@ internal class SivilstatusRessursTest {
         every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
             createJsonInternalSoknadWithSivilstatus(
-                false,
-                JsonSivilstatus.Status.GIFT,
-                JSON_EKTEFELLE,
-                false,
-                true,
-                null
+                false, JsonSivilstatus.Status.GIFT, JSON_EKTEFELLE, false, true, null
             )
 
         val sivilstatusFrontend = sivilstatusRessurs.hentSivilstatus(BEHANDLINGSID)
@@ -136,12 +121,7 @@ internal class SivilstatusRessursTest {
         every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
             createJsonInternalSoknadWithSivilstatus(
-                false,
-                JsonSivilstatus.Status.GIFT,
-                JSON_EKTEFELLE,
-                true,
-                null,
-                null
+                false, JsonSivilstatus.Status.GIFT, JSON_EKTEFELLE, true, null, null
             )
 
         val sivilstatusFrontend = sivilstatusRessurs.hentSivilstatus(BEHANDLINGSID)
@@ -176,12 +156,7 @@ internal class SivilstatusRessursTest {
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(soknadUnderArbeidSlot), any()) } just runs
 
         val sivilstatusFrontend = SivilstatusFrontend(
-            false,
-            JsonSivilstatus.Status.GIFT,
-            EKTEFELLE_FRONTEND,
-            null,
-            null,
-            null
+            false, JsonSivilstatus.Status.GIFT, EKTEFELLE_FRONTEND, null, null, null
         )
         sivilstatusRessurs.updateSivilstatus(BEHANDLINGSID, sivilstatusFrontend)
 
@@ -207,12 +182,7 @@ internal class SivilstatusRessursTest {
         every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } throws AuthorizationException("Not for you my friend")
 
         val sivilstatusFrontend = SivilstatusFrontend(
-            false,
-            JsonSivilstatus.Status.GIFT,
-            EKTEFELLE_FRONTEND,
-            null,
-            null,
-            null
+            false, JsonSivilstatus.Status.GIFT, EKTEFELLE_FRONTEND, null, null, null
         )
 
         assertThatExceptionOfType(AuthorizationException::class.java)

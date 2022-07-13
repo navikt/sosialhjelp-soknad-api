@@ -33,7 +33,7 @@ class KrrProxyClient(
     @Value("\${fss_proxy_audience}") private val fssProxyAudience: String,
     private val redisService: RedisService,
     private val tokendingsService: TokendingsService,
-    webClientBuilder: WebClient.Builder
+    webClientBuilder: WebClient.Builder,
 ) {
     private val webClient = unproxiedWebClientBuilder(webClientBuilder).build()
 

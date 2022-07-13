@@ -87,9 +87,7 @@ internal class UtbetalingRessursTest {
         every {
             soknadUnderArbeidRepository.hentSoknad(any<String>(), any())
         } returns createJsonInternalSoknadWithUtbetalinger(
-            true,
-            listOf(UTBETALING_UTBYTTE, UTBETALING_SALG, UTBETALING_FORSIKRING, UTBETALING_ANNET),
-            null
+            true, listOf(UTBETALING_UTBYTTE, UTBETALING_SALG, UTBETALING_FORSIKRING, UTBETALING_ANNET), null
         )
 
         val utbetalingerFrontend = utbetalingRessurs.hentUtbetalinger(BEHANDLINGSID)
@@ -121,9 +119,7 @@ internal class UtbetalingRessursTest {
         every {
             soknadUnderArbeidRepository.hentSoknad(any<String>(), any())
         } returns createJsonInternalSoknadWithUtbetalinger(
-            true,
-            listOf(UTBETALING_UTBYTTE, UTBETALING_SALG, UTBETALING_FORSIKRING, UTBETALING_ANNET),
-            "Lottogevinst"
+            true, listOf(UTBETALING_UTBYTTE, UTBETALING_SALG, UTBETALING_FORSIKRING, UTBETALING_ANNET), "Lottogevinst"
         )
 
         val slot = slot<SoknadUnderArbeid>()
@@ -146,9 +142,7 @@ internal class UtbetalingRessursTest {
         every {
             soknadUnderArbeidRepository.hentSoknad(any<String>(), any())
         } returns createJsonInternalSoknadWithUtbetalinger(
-            true,
-            listOf(UTBETALING_UTBYTTE, UTBETALING_SALG, UTBETALING_FORSIKRING, UTBETALING_ANNET),
-            "Lottogevinst"
+            true, listOf(UTBETALING_UTBYTTE, UTBETALING_SALG, UTBETALING_FORSIKRING, UTBETALING_ANNET), "Lottogevinst"
         )
 
         val slot = slot<SoknadUnderArbeid>()
