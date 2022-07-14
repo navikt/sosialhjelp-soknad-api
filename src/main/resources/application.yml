@@ -38,6 +38,8 @@ management:
 
 environment.name: ${ENVIRONMENT_NAME}
 
+https_proxy: ${HTTPS_PROXY}
+
 # rest
 digisos_api_baseurl: ${DIGISOS_API_BASEURL}
 ereg_proxy_url: ${EREG_PROXY_URL}

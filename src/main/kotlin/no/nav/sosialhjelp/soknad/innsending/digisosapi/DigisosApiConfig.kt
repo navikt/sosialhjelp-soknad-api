@@ -3,6 +3,7 @@ package no.nav.sosialhjelp.soknad.innsending.digisosapi
 import io.netty.channel.ChannelOption
 import io.netty.handler.timeout.ReadTimeoutHandler
 import io.netty.handler.timeout.WriteTimeoutHandler
+import no.nav.sosialhjelp.soknad.client.config.ProxiedHttpClient.proxiedHttpClient
 import no.nav.sosialhjelp.soknad.common.Constants
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
 import org.springframework.beans.factory.annotation.Value
@@ -20,26 +21,24 @@ open class DigisosApiConfig(
     @Value("\${digisos_api_baseurl}") private val digisosApiEndpoint: String,
     @Value("\${integrasjonsid_fiks}") private val integrasjonsidFiks: String,
     @Value("\${integrasjonpassord_fiks}") private val integrasjonpassordFiks: String,
+    @Value("\${https_proxy}") private val proxyUrl: String?,
     private val kommuneInfoService: KommuneInfoService,
     private val dokumentlagerClient: DokumentlagerClient,
     private val krypteringService: KrypteringService,
     webClientBuilder: WebClient.Builder,
-    proxiedHttpClient: HttpClient
 ) {
 
+    private val fiksHttpClient: HttpClient = proxiedHttpClient(proxyUrl)
+        .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, SENDING_TIL_FIKS_TIMEOUT)
+        .doOnConnected {
+            it
+                .addHandlerLast(ReadTimeoutHandler(SENDING_TIL_FIKS_TIMEOUT / 1000))
+                .addHandlerLast(WriteTimeoutHandler(SENDING_TIL_FIKS_TIMEOUT / 1000))
+        }
+        .responseTimeout(Duration.ofMillis(SENDING_TIL_FIKS_TIMEOUT.toLong()))
+
     private val fiksWebClient = webClientBuilder
-        .clientConnector(
-            ReactorClientHttpConnector(
-                proxiedHttpClient
-                    .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, SENDING_TIL_FIKS_TIMEOUT)
-                    .doOnConnected {
-                        it
-                            .addHandlerLast(ReadTimeoutHandler(SENDING_TIL_FIKS_TIMEOUT / 1000))
-                            .addHandlerLast(WriteTimeoutHandler(SENDING_TIL_FIKS_TIMEOUT / 1000))
-                    }
-                    .responseTimeout(Duration.ofMillis(SENDING_TIL_FIKS_TIMEOUT.toLong()))
-            )
-        )
+        .clientConnector(ReactorClientHttpConnector(fiksHttpClient))
         .codecs {
             it.defaultCodecs().maxInMemorySize(150 * 1024 * 1024)
             it.defaultCodecs().jackson2JsonEncoder(Jackson2JsonEncoder(Utils.digisosObjectMapper))

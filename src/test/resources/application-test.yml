@@ -5,6 +5,8 @@ application:
 # Miljøkonfigurasjon for lokal Jetty-server.
 environment.name: local
 
+https_proxy:
+
 spring:
   flyway:
     enabled: false
