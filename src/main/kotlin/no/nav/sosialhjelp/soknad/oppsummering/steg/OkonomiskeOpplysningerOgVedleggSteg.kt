@@ -95,12 +95,16 @@ class OkonomiskeOpplysningerOgVedleggSteg {
             ?.forEach {
                 sporsmal.add(
                     integerVerdiSporsmalMedTittel(
-                        getTitleKey(it.type), "opplysninger.arbeid.jobb.bruttolonn.label", it.brutto
+                        getTitleKey(it.type),
+                        "opplysninger.arbeid.jobb.bruttolonn.label",
+                        it.brutto
                     )
                 )
                 sporsmal.add(
                     integerVerdiSporsmalMedTittel(
-                        getTitleKey(it.type), "opplysninger.arbeid.jobb.nettolonn.label", it.netto
+                        getTitleKey(it.type),
+                        "opplysninger.arbeid.jobb.nettolonn.label",
+                        it.netto
                     )
                 )
             }
@@ -111,7 +115,9 @@ class OkonomiskeOpplysningerOgVedleggSteg {
             ?.forEach {
                 sporsmal.add(
                     integerVerdiSporsmalMedTittel(
-                        getTitleKey(it.type), "opplysninger.arbeid.student.utbetaling.label", it.netto
+                        getTitleKey(it.type),
+                        "opplysninger.arbeid.student.utbetaling.label",
+                        it.netto
                     )
                 )
             }

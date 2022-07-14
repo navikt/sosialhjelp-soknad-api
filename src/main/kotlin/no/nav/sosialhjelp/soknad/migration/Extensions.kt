@@ -21,128 +21,131 @@ import no.nav.sosialhjelp.soknad.migration.dto.SoknadUnderArbeidDto
 import no.nav.sosialhjelp.soknad.migration.dto.VedleggMetadataDto
 import no.nav.sosialhjelp.soknad.migration.dto.VedleggMetadataListeDto
 
-fun SoknadMetadata.toDto(): SoknadMetadataDto {
-    return SoknadMetadataDto(
-        id = id,
-        behandlingsId = behandlingsId,
-        tilknyttetBehandlingsId = tilknyttetBehandlingsId,
-        fnr = fnr,
-        skjema = skjema,
-        orgnr = orgnr,
-        navEnhet = navEnhet,
-        fiksForsendelseId = fiksForsendelseId,
-        vedlegg = vedlegg?.toDto(),
-        type = type,
-        status = status,
-        opprettetDato = opprettetDato,
-        sistEndretDato = sistEndretDato,
-        innsendtDato = innsendtDato,
-        lestDittNav = lestDittNav
-    )
-}
+object Extensions {
 
-fun VedleggMetadataListe.toDto(): VedleggMetadataListeDto {
-    return VedleggMetadataListeDto(
-        vedleggListe = vedleggListe.map { it.toDto() }
-    )
-}
+    fun SoknadMetadata.toDto(): SoknadMetadataDto {
+        return SoknadMetadataDto(
+            id = id,
+            behandlingsId = behandlingsId,
+            tilknyttetBehandlingsId = tilknyttetBehandlingsId,
+            fnr = fnr,
+            skjema = skjema,
+            orgnr = orgnr,
+            navEnhet = navEnhet,
+            fiksForsendelseId = fiksForsendelseId,
+            vedlegg = vedlegg?.toDto(),
+            type = type,
+            status = status,
+            opprettetDato = opprettetDato,
+            sistEndretDato = sistEndretDato,
+            innsendtDato = innsendtDato,
+            lestDittNav = lestDittNav
+        )
+    }
 
-fun VedleggMetadata.toDto(): VedleggMetadataDto {
-    return VedleggMetadataDto(
-        filUuid = filUuid,
-        filnavn = filnavn,
-        mimeType = mimeType,
-        filStorrelse = filStorrelse,
-        status = status,
-        skjema = skjema,
-        tillegg = tillegg,
-        hendelseType = hendelseType,
-        hendelseReferanse = hendelseReferanse
-    )
-}
+    fun VedleggMetadataListe.toDto(): VedleggMetadataListeDto {
+        return VedleggMetadataListeDto(
+            vedleggListe = vedleggListe.map { it.toDto() }
+        )
+    }
 
-fun Oppgave.toDto(): OppgaveDto {
-    return OppgaveDto(
-        id = id,
-        behandlingsId = behandlingsId,
-        type = type,
-        status = status,
-        steg = steg,
-        oppgaveData = oppgaveData?.toDto(),
-        oppgaveResultat = oppgaveResultat?.toDto(),
-        opprettet = opprettet,
-        sistKjort = sistKjort,
-        nesteForsok = nesteForsok,
-        retries = retries
-    )
-}
+    fun VedleggMetadata.toDto(): VedleggMetadataDto {
+        return VedleggMetadataDto(
+            filUuid = filUuid,
+            filnavn = filnavn,
+            mimeType = mimeType,
+            filStorrelse = filStorrelse,
+            status = status,
+            skjema = skjema,
+            tillegg = tillegg,
+            hendelseType = hendelseType,
+            hendelseReferanse = hendelseReferanse
+        )
+    }
 
-fun FiksData.toDto(): FiksDataDto {
-    return FiksDataDto(
-        behandlingsId = behandlingsId,
-        avsenderFodselsnummer = avsenderFodselsnummer,
-        mottakerOrgNr = mottakerOrgNr,
-        mottakerNavn = mottakerNavn,
-        dokumentInfoer = dokumentInfoer?.map { it.toDto() },
-        innsendtDato = innsendtDato,
-        ettersendelsePa = ettersendelsePa
-    )
-}
+    fun Oppgave.toDto(): OppgaveDto {
+        return OppgaveDto(
+            id = id,
+            behandlingsId = behandlingsId,
+            type = type,
+            status = status,
+            steg = steg,
+            oppgaveData = oppgaveData?.toDto(),
+            oppgaveResultat = oppgaveResultat?.toDto(),
+            opprettet = opprettet,
+            sistKjort = sistKjort,
+            nesteForsok = nesteForsok,
+            retries = retries
+        )
+    }
 
-fun DokumentInfo.toDto(): DokumentInfoDto {
-    return DokumentInfoDto(
-        uuid = uuid,
-        filnavn = filnavn,
-        mimetype = mimetype,
-        ekskluderesFraPrint = ekskluderesFraPrint
-    )
-}
+    fun FiksData.toDto(): FiksDataDto {
+        return FiksDataDto(
+            behandlingsId = behandlingsId,
+            avsenderFodselsnummer = avsenderFodselsnummer,
+            mottakerOrgNr = mottakerOrgNr,
+            mottakerNavn = mottakerNavn,
+            dokumentInfoer = dokumentInfoer?.map { it.toDto() },
+            innsendtDato = innsendtDato,
+            ettersendelsePa = ettersendelsePa
+        )
+    }
 
-fun FiksResultat.toDto(): FiksResultatDto {
-    return FiksResultatDto(
-        fiksForsendelsesId = fiksForsendelsesId,
-        feilmelding = feilmelding
-    )
-}
+    fun DokumentInfo.toDto(): DokumentInfoDto {
+        return DokumentInfoDto(
+            uuid = uuid,
+            filnavn = filnavn,
+            mimetype = mimetype,
+            ekskluderesFraPrint = ekskluderesFraPrint
+        )
+    }
 
-fun SoknadUnderArbeid.toDto(vedlegg: List<OpplastetVedlegg>): SoknadUnderArbeidDto {
-    return SoknadUnderArbeidDto(
-        soknadId = soknadId,
-        versjon = versjon,
-        behandlingsId = behandlingsId,
-        tilknyttetBehandlingsId = tilknyttetBehandlingsId,
-        eier = eier,
-        jsonInternalSoknad = jsonInternalSoknad,
-        status = status,
-        opprettetDato = opprettetDato,
-        sistEndretDato = sistEndretDato,
-        opplastetVedleggList = vedlegg.map { it.toDto() }
-    )
-}
+    fun FiksResultat.toDto(): FiksResultatDto {
+        return FiksResultatDto(
+            fiksForsendelsesId = fiksForsendelsesId,
+            feilmelding = feilmelding
+        )
+    }
 
-fun OpplastetVedlegg.toDto(): OpplastetVedleggDto {
-    return OpplastetVedleggDto(
-        uuid = uuid,
-        eier = eier,
-        vedleggType = vedleggType,
-        data = data,
-        soknadId = soknadId,
-        filnavn = filnavn,
-        sha512 = sha512
-    )
-}
+    fun SoknadUnderArbeid.toDto(vedlegg: List<OpplastetVedlegg>): SoknadUnderArbeidDto {
+        return SoknadUnderArbeidDto(
+            soknadId = soknadId,
+            versjon = versjon,
+            behandlingsId = behandlingsId,
+            tilknyttetBehandlingsId = tilknyttetBehandlingsId,
+            eier = eier,
+            jsonInternalSoknad = jsonInternalSoknad,
+            status = status,
+            opprettetDato = opprettetDato,
+            sistEndretDato = sistEndretDato,
+            opplastetVedleggList = vedlegg.map { it.toDto() }
+        )
+    }
 
-fun SendtSoknad.toDto(): SendtSoknadDto {
-    return SendtSoknadDto(
-        sendtSoknadId = sendtSoknadId,
-        behandlingsId = behandlingsId,
-        tilknyttetBehandlingsId = tilknyttetBehandlingsId,
-        eier = eier,
-        fiksforsendelseId = fiksforsendelseId,
-        orgnummer = orgnummer,
-        navEnhetsnavn = navEnhetsnavn,
-        brukerOpprettetDato = brukerOpprettetDato,
-        brukerFerdigDato = brukerFerdigDato,
-        sendtDato = sendtDato
-    )
+    fun OpplastetVedlegg.toDto(): OpplastetVedleggDto {
+        return OpplastetVedleggDto(
+            uuid = uuid,
+            eier = eier,
+            vedleggType = vedleggType,
+            data = data,
+            soknadId = soknadId,
+            filnavn = filnavn,
+            sha512 = sha512
+        )
+    }
+
+    fun SendtSoknad.toDto(): SendtSoknadDto {
+        return SendtSoknadDto(
+            sendtSoknadId = sendtSoknadId,
+            behandlingsId = behandlingsId,
+            tilknyttetBehandlingsId = tilknyttetBehandlingsId,
+            eier = eier,
+            fiksforsendelseId = fiksforsendelseId,
+            orgnummer = orgnummer,
+            navEnhetsnavn = navEnhetsnavn,
+            brukerOpprettetDato = brukerOpprettetDato,
+            brukerFerdigDato = brukerFerdigDato,
+            sendtDato = sendtDato
+        )
+    }
 }

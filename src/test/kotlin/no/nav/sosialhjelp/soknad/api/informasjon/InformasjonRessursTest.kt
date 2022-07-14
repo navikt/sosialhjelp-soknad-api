@@ -163,7 +163,8 @@ internal class InformasjonRessursTest {
     @Test
     fun harNyligInnsendteSoknader_flereSoknaderResponse() {
         every { soknadMetadataRepository.hentInnsendteSoknaderForBrukerEtterTidspunkt(any(), any()) } returns listOf(
-            mockk(), mockk()
+            mockk(),
+            mockk()
         )
 
         val response = ressurs.harNyligInnsendteSoknader()

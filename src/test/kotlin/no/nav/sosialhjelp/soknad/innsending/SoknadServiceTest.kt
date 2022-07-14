@@ -136,7 +136,10 @@ internal class SoknadServiceTest {
         val vedleggSlot = slot<VedleggMetadataListe>()
         every {
             henvendelseService.oppdaterMetadataVedAvslutningAvSoknad(
-                behandlingsId, capture(vedleggSlot), capture(soknadUnderArbeidSlot), false
+                behandlingsId,
+                capture(vedleggSlot),
+                capture(soknadUnderArbeidSlot),
+                false
             )
         } just runs
 

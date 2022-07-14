@@ -99,7 +99,6 @@ open class SkattbarInntektRessurs(
     private fun organiserSkattOgForskuddstrekkEtterMaanedOgOrganisasjon(
         skatteopplysninger: List<JsonOkonomiOpplysningUtbetaling>
     ): List<SkattbarInntektOgForskuddstrekk> {
-
         // Skatteetaten returnerer opplysninger månedsvis, så objekter med samme PeriodeFom gjelder for samme periode
         val utbetalingerPerManedPerOrganisasjon: Map<String?, Map<JsonOrganisasjon?, List<JsonOkonomiOpplysningUtbetaling>>> =
             skatteopplysninger
