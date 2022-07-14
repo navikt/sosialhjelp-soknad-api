@@ -1,3 +1,5 @@
+https_proxy:
+
 spring:
   flyway:
     enabled: false
