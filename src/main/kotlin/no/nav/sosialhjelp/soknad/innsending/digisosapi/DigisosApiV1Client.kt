@@ -112,6 +112,7 @@ class DigisosApiV1ClientImpl(
             body.add(fil.filnavn, createHttpEntity(ByteArrayResource(IOUtils.toByteArray(fil.data)), fil.filnavn, fil.filnavn, APPLICATION_OCTET_STREAM_VALUE))
         }
 
+        log.info("Send søknad Fiks - POST /digisos/api/v1/soknader/$kommunenummer/$behandlingsId")
         val startTime = System.currentTimeMillis()
         try {
             val response = fiksWebClient.post()
