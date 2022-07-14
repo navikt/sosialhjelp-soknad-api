@@ -1,6 +1,8 @@
 package no.nav.sosialhjelp.soknad.innsending.digisosapi
 
 import io.netty.channel.ChannelOption
+import io.netty.handler.timeout.ReadTimeoutHandler
+import io.netty.handler.timeout.WriteTimeoutHandler
 import no.nav.sosialhjelp.soknad.common.Constants
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
 import org.springframework.beans.factory.annotation.Value
@@ -30,6 +32,10 @@ open class DigisosApiConfig(
             ReactorClientHttpConnector(
                 proxiedHttpClient
                     .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, SENDING_TIL_FIKS_TIMEOUT)
+                    .doOnConnected { conn -> conn
+                        .addHandlerLast(ReadTimeoutHandler(SENDING_TIL_FIKS_TIMEOUT / 1000))
+                        .addHandlerLast(WriteTimeoutHandler(SENDING_TIL_FIKS_TIMEOUT / 1000))
+                    }
                     .responseTimeout(Duration.ofMillis(SENDING_TIL_FIKS_TIMEOUT.toLong()))
             )
         )
