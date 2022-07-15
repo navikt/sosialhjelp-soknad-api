@@ -30,7 +30,7 @@ ereg_proxy_url: ${EREG_PROXY_URL:http://${mock-alt-api-host}:8989/sosialhjelp/mo
 aareg_proxy_url: ${AAREG_PROXY_URL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/aareg/}
 krr_proxy_url: ${KRR_PROXY_URL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/krr_endpoint_url/}
 pdl_api_url: ${PDL_API_URL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/pdl_endpoint_url/}
-kodeverk_proxy_url: ${KODEVERK_PROXY_URL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/kodeverk/}
+kodeverk_url: ${KODEVERK_URL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/kodeverk}
 unleash_api_url: ${UNLEASH_API_URL:https://unleash.nais.io/api}
 norg_url: ${NORG_URL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/norg_endpoint_url}
 fss_proxy_ping_url: ${FSS_PROXY_PING_URL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/fss-proxy/ping}

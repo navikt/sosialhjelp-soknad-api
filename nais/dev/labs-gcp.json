@@ -46,7 +46,7 @@
     "FIKS_NOKKELFIL": "svarut_public_test.pem",
     "FSS_PROXY_PING_URL": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/fss-proxy/ping",
     "DIGISOS_API_BASEURL": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/fiks/",
-    "KODEVERK_PROXY_URL": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/kodeverk/",
+    "KODEVERK_URL": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/kodeverk",
     "KRR_PROXY_URL": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/krr/",
     "LOGINSERVICE_URL": "https://digisos.labs.nais.io/sosialhjelp/mock-alt/login",
     "MASKINPORTEN_WELL_KNOWN_URL": "http://sosialhjelp-mock-alt-api/sosialhjelp/mock-alt-api/well-known/maskinporten",
