@@ -42,7 +42,7 @@ class NorgClientImpl(
     override fun hentNavEnhetForGeografiskTilknytning(geografiskTilknytning: String): NavEnhetDto? {
         return try {
             webClient.get()
-                .uri("${baseurl}/enhet/navkontor/{geografiskTilknytning}", geografiskTilknytning)
+                .uri("$baseurl/enhet/navkontor/{geografiskTilknytning}", geografiskTilknytning)
                 .header(HEADER_CALL_ID, MdcOperations.getFromMDC(MDC_CALL_ID))
                 .header(HEADER_CONSUMER_ID, SubjectHandlerUtils.getConsumerId())
                 .retrieve()
