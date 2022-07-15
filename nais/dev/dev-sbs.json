@@ -49,7 +49,7 @@
     "KODEVERK_PROXY_URL": "https://sosialhjelp-fss-proxy.dev-fss-pub.nais.io/proxy/kodeverk/",
     "KRR_PROXY_URL": "https://sosialhjelp-fss-proxy.dev-fss-pub.nais.io/proxy/krr/",
     "LOGINSERVICE_URL": "https://loginservice.dev.nav.no/login",
-    "NORG_PROXY_URL": "https://sosialhjelp-fss-proxy.dev-fss-pub.nais.io/proxy/norg/",
+    "NORG_URL": "https://norg2.dev-fss-pub.nais.io/norg2/api/v1",
     "OPPSLAG_API_AUDIENCE": "dev-fss:teamdigisos:sosialhjelp-oppslag-api",
     "OPPSLAG_API_BASEURL": "https://sosialhjelp-oppslag-api.dev-fss-pub.nais.io/api/",
     "PDL_API_URL": "https://pdl-api.dev-fss-pub.nais.io/graphql",

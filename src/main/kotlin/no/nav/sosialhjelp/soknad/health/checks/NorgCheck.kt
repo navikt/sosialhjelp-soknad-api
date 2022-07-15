@@ -10,25 +10,25 @@ import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.bodyToMono
 
 @Component
-class SosialhjelpFssProxyCheck(
-    @Value("\${fss_proxy_ping_url}") private val fssProxyPingUrl: String,
+class NorgCheck(
+    @Value("\${norg_url}") private val norgUrl: String,
     webClientBuilder: WebClient.Builder,
 ) : DependencyCheck {
 
     override val type = DependencyType.REST
-    override val name = "sosialhjelp-fss-proxy (proxy for Aareg, Ereg, Krr og Kodeverk)"
-    override val address = fssProxyPingUrl
+    override val name = "Norg"
+    override val address = norgUrl
     override val importance = Importance.WARNING
 
-    private val fssProxyWebClient: WebClient = unproxiedWebClientBuilder(webClientBuilder).build()
+    private val norgWebClient: WebClient = unproxiedWebClientBuilder(webClientBuilder).build()
 
     override fun doCheck() {
-        fssProxyWebClient.options()
-            .uri(fssProxyPingUrl)
+        norgWebClient.get()
+            .uri("$norgUrl/kodeverk/EnhetstyperNorg")
             .retrieve()
             .bodyToMono<String>()
             .onErrorMap {
-                throw RuntimeException("Ping mot sosialhjelp-fss-proxy feiler: ${it.message}", it)
+                throw RuntimeException("Ping mot Norg feiler: ${it.message}", it)
             }
             .block()
     }

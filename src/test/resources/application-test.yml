@@ -62,7 +62,7 @@ unleash_api_url: https://unleash.nais.io/api
 kodeverk_proxy_url: https://fss-proxy/proxy/kodeverk/
 oppslag_api_baseurl: https://sosialhjelp-oppslag-api/api/
 soknad.bostotte.url: http://bostotte.url
-norg_proxy_url: https://fss-proxy/proxy/norg
+norg_url: https://norg.url/enhet
 fss_proxy_ping_url: http://fss-proxy/ping
 svarut_url: https://svaruturl
 skatteetaten_api_baseurl: https://skatteetatenurl
