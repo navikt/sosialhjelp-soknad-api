@@ -122,7 +122,11 @@ class DigisosApiV1ClientImpl(
                 .body(BodyInserters.fromMultipartData(body))
                 .retrieve()
                 .bodyToMono<String>()
-                .retryWhen(RetryUtils.DEFAULT_RETRY_SERVER_ERRORS)
+                .retryWhen(
+                    RetryUtils.DEFAULT_RETRY_SERVER_ERRORS.doAfterRetry {
+                        log.info("Retry nummer ${it.totalRetries()}")
+                    }
+                )
                 .block() ?: throw FiksException("Fiks - noe uventet feilet ved innsending av søknad. Response er null?", null)
 
             val digisosId = stripVekkFnutter(response)
