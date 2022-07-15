@@ -32,7 +32,7 @@ interface NorgClient {
 
 @Component
 class NorgClientImpl(
-    @Value("\${norg_url}") private val baseurl: String,
+    @Value("\${norg_url}") private val norgUrl: String,
     private val redisService: RedisService,
     webClientBuilder: WebClient.Builder
 ) : NorgClient {
@@ -42,7 +42,7 @@ class NorgClientImpl(
     override fun hentNavEnhetForGeografiskTilknytning(geografiskTilknytning: String): NavEnhetDto? {
         return try {
             webClient.get()
-                .uri("$baseurl/enhet/navkontor/{geografiskTilknytning}", geografiskTilknytning)
+                .uri("$norgUrl/enhet/navkontor/{geografiskTilknytning}", geografiskTilknytning)
                 .header(HEADER_CALL_ID, MdcOperations.getFromMDC(MDC_CALL_ID))
                 .header(HEADER_CONSUMER_ID, SubjectHandlerUtils.getConsumerId())
                 .retrieve()
