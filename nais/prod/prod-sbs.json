@@ -45,7 +45,7 @@
     "FSS_PROXY_AUDIENCE": "prod-fss:teamdigisos:sosialhjelp-fss-proxy",
     "FSS_PROXY_PING_URL": "https://sosialhjelp-fss-proxy.prod-fss-pub.nais.io/ping",
     "DIGISOS_API_BASEURL": "https://api.fiks.ks.no/",
-    "KODEVERK_URL": "https://kodeverk.prod-fss-pub.nais.io/api/v1",
+    "KODEVERK_URL": "https://kodeverk.prod-fss-pub.nais.io/api/v1/kodeverk",
     "KRR_PROXY_URL": "https://sosialhjelp-fss-proxy.prod-fss-pub.nais.io/proxy/krr/",
     "LOGINSERVICE_URL": "https://loginservice.nav.no/login",
     "NORG_URL": "https://norg2.prod-fss-pub.nais.io/norg2/api/v1",

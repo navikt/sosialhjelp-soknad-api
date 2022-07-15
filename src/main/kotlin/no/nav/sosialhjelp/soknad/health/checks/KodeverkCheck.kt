@@ -4,9 +4,9 @@ import no.nav.sosialhjelp.selftest.DependencyCheck
 import no.nav.sosialhjelp.selftest.DependencyType
 import no.nav.sosialhjelp.selftest.Importance
 import no.nav.sosialhjelp.soknad.client.config.unproxiedWebClientBuilder
-import no.nav.sosialhjelp.soknad.common.Constants
-import no.nav.sosialhjelp.soknad.common.mdc.MdcOperations.MDC_CALL_ID
-import no.nav.sosialhjelp.soknad.common.mdc.MdcOperations.getFromMDC
+import no.nav.sosialhjelp.soknad.common.Constants.HEADER_CALL_ID
+import no.nav.sosialhjelp.soknad.common.Constants.HEADER_CONSUMER_ID
+import no.nav.sosialhjelp.soknad.common.mdc.MdcOperations.generateCallId
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils.getConsumerId
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
@@ -29,8 +29,8 @@ class KodeverkCheck(
     override fun doCheck() {
         kodeverkWebClient.get()
             .uri(kodeverkUrl)
-            .header(Constants.HEADER_CALL_ID, getFromMDC(MDC_CALL_ID))
-            .header(Constants.HEADER_CONSUMER_ID, getConsumerId())
+            .header(HEADER_CALL_ID, generateCallId())
+            .header(HEADER_CONSUMER_ID, getConsumerId())
             .retrieve()
             .bodyToMono<String>()
             .onErrorMap {
