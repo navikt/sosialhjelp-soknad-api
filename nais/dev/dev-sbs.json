@@ -41,7 +41,7 @@
     "SPRING_PROFILES_ACTIVE": "log-kibana",
     "AAREG_PROXY_URL": "https://sosialhjelp-fss-proxy.dev-fss-pub.nais.io/proxy/aareg/",
     "CLAMAV_URL": "http://clamav.nais.svc.nais.local/scan",
-    "EREG_PROXY_URL": "https://sosialhjelp-fss-proxy.dev-fss-pub.nais.io/proxy/ereg/",
+    "EREG_URL": "https://ereg-services.dev-fss-pub.nais.io",
     "FIKS_NOKKELFIL": "svarut_public_test.pem",
     "FSS_PROXY_AUDIENCE": "dev-fss:teamdigisos:sosialhjelp-fss-proxy",
     "FSS_PROXY_PING_URL": "https://sosialhjelp-fss-proxy.dev-fss-pub.nais.io/ping",

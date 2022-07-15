@@ -54,7 +54,7 @@ fiks_svarut_password: pwpwpwpw
 
 # rest
 digisos_api_baseurl: ${DIGISOS_API_BASEURL:https://api.fiks.test.ks.no/}
-ereg_proxy_url: https://fss-proxy/proxy/ereg/
+ereg_url: https://ereg/
 aareg_proxy_url: https://fss-proxy/proxy/aareg/
 krr_proxy_url: http://krr/
 pdl_api_url: https://pdl-api/graphql

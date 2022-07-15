@@ -16,7 +16,7 @@ class SosialhjelpFssProxyCheck(
 ) : DependencyCheck {
 
     override val type = DependencyType.REST
-    override val name = "sosialhjelp-fss-proxy (proxy for Aareg, Ereg, Krr og Kodeverk)"
+    override val name = "sosialhjelp-fss-proxy (proxy for Aareg, Krr og Kodeverk)"
     override val address = fssProxyPingUrl
     override val importance = Importance.WARNING
 
