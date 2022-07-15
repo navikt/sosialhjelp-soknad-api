@@ -47,7 +47,7 @@ pdl_api_url: ${PDL_API_URL}
 unleash_api_url: ${UNLEASH_API_URL}
 kodeverk_proxy_url: ${KODEVERK_PROXY_URL}
 oppslag_api_baseurl: ${OPPSLAG_API_BASEURL}
-norg_proxy_url: ${NORG_PROXY_URL}
+norg_url: ${NORG_URL}
 fss_proxy_ping_url: ${FSS_PROXY_PING_URL}
 soknad.bostotte.url: ${SOKNAD_BOSTOTTE_URL}
 svarut_url: ${SVARUT_URL}
