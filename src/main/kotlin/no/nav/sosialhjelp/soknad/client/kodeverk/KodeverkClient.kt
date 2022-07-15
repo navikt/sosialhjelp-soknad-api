@@ -5,8 +5,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import kotlinx.coroutines.runBlocking
-import no.nav.sosialhjelp.soknad.auth.tokenx.TokendingsService
 import no.nav.sosialhjelp.soknad.client.config.unproxiedWebClientBuilder
 import no.nav.sosialhjelp.soknad.client.kodeverk.dto.KodeverkDto
 import no.nav.sosialhjelp.soknad.client.redis.KODEVERK_CACHE_SECONDS
@@ -16,16 +14,12 @@ import no.nav.sosialhjelp.soknad.client.redis.LANDKODER_CACHE_KEY
 import no.nav.sosialhjelp.soknad.client.redis.POSTNUMMER_CACHE_KEY
 import no.nav.sosialhjelp.soknad.client.redis.RedisService
 import no.nav.sosialhjelp.soknad.client.redis.RedisUtils.redisObjectMapper
-import no.nav.sosialhjelp.soknad.common.Constants.BEARER
 import no.nav.sosialhjelp.soknad.common.Constants.HEADER_CALL_ID
 import no.nav.sosialhjelp.soknad.common.Constants.HEADER_CONSUMER_ID
 import no.nav.sosialhjelp.soknad.common.mdc.MdcOperations
 import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils.getConsumerId
-import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils.getToken
-import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils.getUserIdFromToken
 import org.slf4j.LoggerFactory.getLogger
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.http.HttpHeaders.AUTHORIZATION
 import org.springframework.http.codec.json.Jackson2JsonDecoder
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
@@ -37,10 +31,8 @@ import java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME
 
 @Component
 class KodeverkClient(
-    @Value("\${kodeverk_proxy_url}") private val kodeverkProxyUrl: String,
-    @Value("\${fss_proxy_audience}") private val fssProxyAudience: String,
+    @Value("\${kodeverk_url}") private val kodeverkUrl: String,
     private val redisService: RedisService,
-    private val tokendingsService: TokendingsService,
     webClientBuilder: WebClient.Builder,
 ) {
 
@@ -69,8 +61,12 @@ class KodeverkClient(
     private fun hentKodeverk(kodeverksnavn: String, key: String): KodeverkDto? {
         return try {
             webClient.get()
-                .uri(kodeverkProxyUrl + kodeverksnavn)
-                .header(AUTHORIZATION, BEARER + tokenXtoken)
+                .uri(
+                    "$kodeverkUrl/{kodeverksnavn}/koder/betydninger?ekskluderUgyldige={ekskluderUgyldige}&spraak={spraak}",
+                    kodeverksnavn,
+                    true,
+                    SPRAAK_NB
+                )
                 .header(HEADER_CALL_ID, MdcOperations.getFromMDC(MdcOperations.MDC_CALL_ID))
                 .header(HEADER_CONSUMER_ID, getConsumerId())
                 .retrieve()
@@ -84,10 +80,6 @@ class KodeverkClient(
             log.error("Kodeverk - noe uventet feilet", e)
             null
         }
-    }
-
-    private val tokenXtoken: String get() = runBlocking {
-        tokendingsService.exchangeToken(getUserIdFromToken(), getToken(), fssProxyAudience)
     }
 
     private fun oppdaterCache(key: String, kodeverk: KodeverkDto) {
@@ -104,6 +96,8 @@ class KodeverkClient(
 
     companion object {
         private val log = getLogger(KodeverkClient::class.java)
+
+        private const val SPRAAK_NB = "nb"
 
         private const val POSTNUMMER = "Postnummer"
         private const val KOMMUNER = "Kommuner"

@@ -59,7 +59,7 @@ aareg_proxy_url: https://fss-proxy/proxy/aareg/
 krr_proxy_url: http://krr/
 pdl_api_url: https://pdl-api/graphql
 unleash_api_url: https://unleash.nais.io/api
-kodeverk_proxy_url: https://fss-proxy/proxy/kodeverk/
+kodeverk_url: https://kodeverk/
 oppslag_api_baseurl: https://sosialhjelp-oppslag-api/api/
 soknad.bostotte.url: http://bostotte.url
 norg_url: https://norg.url/enhet

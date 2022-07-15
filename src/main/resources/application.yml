@@ -45,7 +45,7 @@ aareg_proxy_url: ${AAREG_PROXY_URL}
 krr_proxy_url: ${KRR_PROXY_URL}
 pdl_api_url: ${PDL_API_URL}
 unleash_api_url: ${UNLEASH_API_URL}
-kodeverk_proxy_url: ${KODEVERK_PROXY_URL}
+kodeverk_url: ${KODEVERK_URL}
 oppslag_api_baseurl: ${OPPSLAG_API_BASEURL}
 norg_url: ${NORG_URL}
 fss_proxy_ping_url: ${FSS_PROXY_PING_URL}
