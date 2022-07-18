@@ -47,7 +47,7 @@
         <kotlin.version>1.7.10</kotlin.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <sosialhjelp-common.version>1.20220629.1332-dfb4541</sosialhjelp-common.version>
+        <sosialhjelp-common.version>1.20220718.1347-2b1045d</sosialhjelp-common.version>
         <filformat.version>1.2022.04.29-13.11-459bee049a7a</filformat.version>
 
         <!-- Fiks/KS -->
@@ -58,7 +58,7 @@
         <spring.version>5.3.22</spring.version>
         <jersey.version>2.36</jersey.version>
         <jetty.version>9.4.48.v20220622</jetty.version>
-        <kotlinx-coroutines.version>1.6.3</kotlinx-coroutines.version>
+        <kotlinx-coroutines.version>1.6.4</kotlinx-coroutines.version>
         <token-validation.version>2.1.1</token-validation.version>
         <nimbus-jose-jwt.version>9.23</nimbus-jose-jwt.version>
         <ojdbc.version>19.15.0.0.1</ojdbc.version>
@@ -115,7 +115,7 @@
         <rhino.version>1.7.14</rhino.version>
         <logstash-logback-encoder.version>7.2</logstash-logback-encoder.version>
         <prometheus.version>0.16.0</prometheus.version>
-        <oauth2-oidc-sdk.version>9.38</oauth2-oidc-sdk.version>
+        <oauth2-oidc-sdk.version>9.38.1</oauth2-oidc-sdk.version>
         <emoji-java.version>5.1.1</emoji-java.version>
         <objenesis.version>3.2</objenesis.version>
         <mimepull.version>1.10.0</mimepull.version>
