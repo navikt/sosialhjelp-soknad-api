@@ -34,7 +34,7 @@ management:
     web:
       base-path: "/internal"
       exposure:
-        include: metrics, prometheus
+        include: metrics, prometheus, heapdump
 
 environment.name: ${ENVIRONMENT_NAME}
 
