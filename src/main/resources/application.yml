@@ -1,7 +1,3 @@
-application:
-  name: ${NAIS_APP_NAME}
-  version: ${NAIS_APP_IMAGE}
-
 server:
   port: 8080
   servlet:
@@ -35,8 +31,6 @@ management:
       base-path: "/internal"
       exposure:
         include: metrics, prometheus
-
-environment.name: ${ENVIRONMENT_NAME}
 
 # rest
 digisos_api_baseurl: ${DIGISOS_API_BASEURL}
