@@ -1,9 +1,9 @@
 package no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt
 
+import no.nav.sosialhjelp.soknad.app.Constants.BEARER
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.maskerFnr
+import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.auth.maskinporten.MaskinportenClient
-import no.nav.sosialhjelp.soknad.common.Constants.BEARER
-import no.nav.sosialhjelp.soknad.common.LoggingUtils.maskerFnr
-import no.nav.sosialhjelp.soknad.common.MiljoUtils
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.dto.SkattbarInntekt
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.dto.Sokedata
 import org.slf4j.LoggerFactory.getLogger

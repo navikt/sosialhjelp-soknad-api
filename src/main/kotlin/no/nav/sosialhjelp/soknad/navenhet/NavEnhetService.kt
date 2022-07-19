@@ -1,16 +1,16 @@
 package no.nav.sosialhjelp.soknad.navenhet
 
-import no.nav.sosialhjelp.soknad.client.exceptions.TjenesteUtilgjengeligException
-import no.nav.sosialhjelp.soknad.client.redis.GT_CACHE_KEY_PREFIX
-import no.nav.sosialhjelp.soknad.client.redis.GT_LAST_POLL_TIME_PREFIX
-import no.nav.sosialhjelp.soknad.client.redis.RedisService
-import no.nav.sosialhjelp.soknad.client.redis.RedisUtils.redisObjectMapper
+import no.nav.sosialhjelp.soknad.app.exceptions.TjenesteUtilgjengeligException
 import no.nav.sosialhjelp.soknad.navenhet.domain.NavEnhet
 import no.nav.sosialhjelp.soknad.navenhet.domain.NavEnhetFraLokalListe
 import no.nav.sosialhjelp.soknad.navenhet.domain.NavEnheterFraLokalListe
 import no.nav.sosialhjelp.soknad.navenhet.domain.toNavEnhet
 import no.nav.sosialhjelp.soknad.navenhet.dto.NavEnhetDto
 import no.nav.sosialhjelp.soknad.navenhet.dto.toNavEnhet
+import no.nav.sosialhjelp.soknad.redis.GT_CACHE_KEY_PREFIX
+import no.nav.sosialhjelp.soknad.redis.GT_LAST_POLL_TIME_PREFIX
+import no.nav.sosialhjelp.soknad.redis.RedisService
+import no.nav.sosialhjelp.soknad.redis.RedisUtils.redisObjectMapper
 import org.apache.commons.io.IOUtils
 import org.slf4j.LoggerFactory.getLogger
 import org.springframework.stereotype.Component

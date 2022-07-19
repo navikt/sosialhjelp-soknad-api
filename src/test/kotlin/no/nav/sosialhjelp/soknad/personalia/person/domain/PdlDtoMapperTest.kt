@@ -2,7 +2,7 @@ package no.nav.sosialhjelp.soknad.personalia.person.domain
 
 import io.mockk.every
 import io.mockk.mockk
-import no.nav.sosialhjelp.soknad.client.kodeverk.KodeverkService
+import no.nav.sosialhjelp.soknad.kodeverk.KodeverkService
 import no.nav.sosialhjelp.soknad.personalia.person.domain.PdlDtoMapper.Companion.DOED
 import no.nav.sosialhjelp.soknad.personalia.person.dto.AdressebeskyttelseDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.BarnDto

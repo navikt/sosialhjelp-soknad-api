@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.scheduled.leaderelection
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import no.nav.sosialhjelp.soknad.client.config.unproxiedWebClientBuilder
+import no.nav.sosialhjelp.soknad.app.client.config.unproxiedWebClientBuilder
 import org.slf4j.LoggerFactory.getLogger
 import org.springframework.web.reactive.function.client.WebClient
 import java.net.InetAddress.getLocalHost

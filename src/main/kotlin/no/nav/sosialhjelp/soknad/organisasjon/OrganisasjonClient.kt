@@ -1,12 +1,12 @@
 package no.nav.sosialhjelp.soknad.organisasjon
 
-import no.nav.sosialhjelp.soknad.client.config.unproxiedWebClientBuilder
-import no.nav.sosialhjelp.soknad.client.exceptions.TjenesteUtilgjengeligException
-import no.nav.sosialhjelp.soknad.common.Constants.HEADER_CALL_ID
-import no.nav.sosialhjelp.soknad.common.Constants.HEADER_CONSUMER_ID
-import no.nav.sosialhjelp.soknad.common.mdc.MdcOperations.MDC_CALL_ID
-import no.nav.sosialhjelp.soknad.common.mdc.MdcOperations.getFromMDC
-import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils.getConsumerId
+import no.nav.sosialhjelp.soknad.app.Constants.HEADER_CALL_ID
+import no.nav.sosialhjelp.soknad.app.Constants.HEADER_CONSUMER_ID
+import no.nav.sosialhjelp.soknad.app.client.config.unproxiedWebClientBuilder
+import no.nav.sosialhjelp.soknad.app.exceptions.TjenesteUtilgjengeligException
+import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.MDC_CALL_ID
+import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.getFromMDC
+import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getConsumerId
 import no.nav.sosialhjelp.soknad.organisasjon.dto.OrganisasjonNoekkelinfoDto
 import org.slf4j.LoggerFactory.getLogger
 import org.springframework.beans.factory.annotation.Value

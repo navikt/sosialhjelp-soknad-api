@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.vedlegg
 
-import no.nav.sosialhjelp.soknad.common.filedetection.TikaFileType
 import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils.lagFilnavn
+import no.nav.sosialhjelp.soknad.vedlegg.filedetection.TikaFileType
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 

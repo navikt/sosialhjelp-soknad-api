@@ -1,9 +1,9 @@
 package no.nav.sosialhjelp.soknad.auth.azure
 
 import no.nav.sosialhjelp.kotlin.utils.logger
-import no.nav.sosialhjelp.soknad.client.redis.AZURE_SYSTEM_TOKEN
-import no.nav.sosialhjelp.soknad.client.redis.CACHE_30_SECONDS
-import no.nav.sosialhjelp.soknad.client.redis.RedisService
+import no.nav.sosialhjelp.soknad.redis.AZURE_SYSTEM_TOKEN
+import no.nav.sosialhjelp.soknad.redis.CACHE_30_SECONDS
+import no.nav.sosialhjelp.soknad.redis.RedisService
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClientResponseException
 

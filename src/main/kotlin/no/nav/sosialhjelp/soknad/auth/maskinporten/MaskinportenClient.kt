@@ -1,8 +1,8 @@
 package no.nav.sosialhjelp.soknad.auth.maskinporten
 
 import com.nimbusds.jwt.SignedJWT
+import no.nav.sosialhjelp.soknad.app.exceptions.SosialhjelpSoknadApiException
 import no.nav.sosialhjelp.soknad.auth.maskinporten.dto.MaskinportenResponse
-import no.nav.sosialhjelp.soknad.common.exceptions.SosialhjelpSoknadApiException
 import org.slf4j.LoggerFactory
 import org.springframework.http.MediaType
 import org.springframework.util.LinkedMultiValueMap

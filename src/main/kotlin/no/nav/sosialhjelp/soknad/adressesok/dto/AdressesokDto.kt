@@ -3,7 +3,7 @@ package no.nav.sosialhjelp.soknad.adressesok.dto
 import no.nav.sosialhjelp.soknad.adressesok.AdressesokUtils.formatterKommunenavn
 import no.nav.sosialhjelp.soknad.adressesok.domain.AdresseForslag
 import no.nav.sosialhjelp.soknad.adressesok.domain.AdresseForslagType
-import no.nav.sosialhjelp.soknad.common.mapper.KommuneTilNavEnhetMapper
+import no.nav.sosialhjelp.soknad.app.mapper.KommuneTilNavEnhetMapper
 
 data class AdressesokDataDto(
     val sokAdresse: AdressesokResultDto?

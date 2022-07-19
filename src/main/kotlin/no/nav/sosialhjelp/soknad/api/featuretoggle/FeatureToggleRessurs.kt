@@ -2,7 +2,7 @@ package no.nav.sosialhjelp.soknad.api.featuretoggle
 
 import no.finn.unleash.Unleash
 import no.nav.security.token.support.core.api.ProtectedWithClaims
-import no.nav.sosialhjelp.soknad.common.Constants
+import no.nav.sosialhjelp.soknad.app.Constants
 import org.springframework.stereotype.Controller
 import javax.ws.rs.GET
 import javax.ws.rs.Path

@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.auth.maskinporten
 
-import no.nav.sosialhjelp.soknad.client.config.proxiedWebClientBuilder
-import no.nav.sosialhjelp.soknad.client.exceptions.TjenesteUtilgjengeligException
+import no.nav.sosialhjelp.soknad.app.client.config.proxiedWebClientBuilder
+import no.nav.sosialhjelp.soknad.app.exceptions.TjenesteUtilgjengeligException
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean

@@ -3,7 +3,7 @@ package no.nav.sosialhjelp.soknad.innsending.digisosapi
 import no.ks.kryptering.CMSKrypteringImpl
 import no.ks.kryptering.CMSStreamKryptering
 import no.nav.sosialhjelp.kotlin.utils.logger
-import no.nav.sosialhjelp.soknad.common.MiljoUtils
+import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import org.apache.commons.io.IOUtils
 import org.springframework.stereotype.Component
 import java.io.IOException

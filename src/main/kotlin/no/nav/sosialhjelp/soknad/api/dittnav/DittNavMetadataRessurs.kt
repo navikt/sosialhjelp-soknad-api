@@ -3,10 +3,10 @@ package no.nav.sosialhjelp.soknad.api.dittnav
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.soknad.api.dittnav.dto.MarkerPabegyntSoknadSomLestDto
 import no.nav.sosialhjelp.soknad.api.dittnav.dto.PabegyntSoknadDto
-import no.nav.sosialhjelp.soknad.common.Constants.CLAIM_ACR_LEVEL_3
-import no.nav.sosialhjelp.soknad.common.Constants.CLAIM_ACR_LEVEL_4
-import no.nav.sosialhjelp.soknad.common.Constants.SELVBETJENING
-import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
+import no.nav.sosialhjelp.soknad.app.Constants.CLAIM_ACR_LEVEL_3
+import no.nav.sosialhjelp.soknad.app.Constants.CLAIM_ACR_LEVEL_4
+import no.nav.sosialhjelp.soknad.app.Constants.SELVBETJENING
+import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.RequestBody
