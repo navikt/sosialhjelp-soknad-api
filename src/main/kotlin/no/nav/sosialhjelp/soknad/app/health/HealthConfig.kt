@@ -3,7 +3,7 @@ package no.nav.sosialhjelp.soknad.app.health
 import io.micrometer.core.instrument.MeterRegistry
 import no.nav.sosialhjelp.selftest.DependencyCheck
 import no.nav.sosialhjelp.selftest.SelftestService
-import no.nav.sosialhjelp.soknad.common.MiljoUtils
+import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
