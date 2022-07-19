@@ -7,11 +7,6 @@
                 <throwableConverter class="net.logstash.logback.stacktrace.ShortenedThrowableConverter">
                     <maxDepthPerThrowable>20</maxDepthPerThrowable>
                 </throwableConverter>
-                <customFields>
-                    {
-                    "environment": "${ENVIRONMENT_NAME:-local}"
-                    }
-                </customFields>
             </encoder>
         </appender>
 

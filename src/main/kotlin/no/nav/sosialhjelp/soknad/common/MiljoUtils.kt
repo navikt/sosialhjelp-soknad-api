@@ -3,11 +3,15 @@ package no.nav.sosialhjelp.soknad.common
 object MiljoUtils {
 
     private const val NAIS_CLUSTER_NAME = "NAIS_CLUSTER_NAME"
+    private const val NAIS_APP_IMAGE = "NAIS_APP_IMAGE"
     private const val ENVIRONMENT_NAME = "ENVIRONMENT_NAME"
     private const val SPRING_PROFILES_ACTIVE = "SPRING_PROFILES_ACTIVE"
 
     val environmentName: String
         get() = System.getenv(ENVIRONMENT_NAME) ?: ""
+
+    val appImageVersion: String
+        get() = System.getenv(NAIS_APP_IMAGE) ?: "version"
 
     fun isNonProduction(): Boolean {
         // Bruk isNonProduction() -sjekk fremfor å sjekke om miljø configurert som prod. På denne måten er default-configurasjon vår alltid prodlik.

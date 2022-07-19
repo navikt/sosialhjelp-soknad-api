@@ -1,7 +1,3 @@
-application:
-  name: ${NAIS_APP_NAME:sosialhjelp-soknad-api}
-  version: ${NAIS_APP_IMAGE:version}
-
 server:
   port: ${PORT:8181}
 
@@ -18,8 +14,6 @@ spring:
     url: jdbc:hsqldb:mem:sendsoknad;sql.syntax_ora=true
     username: sa
     password:
-
-environment.name: ${ENVIRONMENT_NAME:local}
 
 mock-alt-api-host: ${MOCK_ALT_API_HOST:127.0.0.1}
 mock-alt-api-wellknown-queryparam: ${MOCK_ALT_API_WELLKNOWN_QUERYPARAM:}
