@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.migration.repo
 
-import no.nav.sosialhjelp.soknad.config.DbTestConfig
+import no.nav.sosialhjelp.soknad.db.DbTestConfig
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus

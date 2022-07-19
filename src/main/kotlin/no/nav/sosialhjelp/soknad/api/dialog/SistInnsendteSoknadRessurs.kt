@@ -2,9 +2,9 @@ package no.nav.sosialhjelp.soknad.api.dialog
 
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.soknad.api.dialog.dto.SistInnsendteSoknadDto
-import no.nav.sosialhjelp.soknad.common.Constants.CLAIM_ACR_LEVEL_4
-import no.nav.sosialhjelp.soknad.common.Constants.TOKENX
-import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
+import no.nav.sosialhjelp.soknad.app.Constants.CLAIM_ACR_LEVEL_4
+import no.nav.sosialhjelp.soknad.app.Constants.TOKENX
+import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import org.springframework.stereotype.Controller
 import javax.ws.rs.GET
 import javax.ws.rs.Path

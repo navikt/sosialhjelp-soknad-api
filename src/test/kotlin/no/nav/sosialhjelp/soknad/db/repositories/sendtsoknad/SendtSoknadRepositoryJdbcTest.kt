@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.db.repositories.sendtsoknad
 
-import no.nav.sosialhjelp.soknad.config.DbTestConfig
+import no.nav.sosialhjelp.soknad.db.DbTestConfig
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.AfterEach

@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata
 
-import no.nav.sosialhjelp.soknad.config.DbTestConfig
+import no.nav.sosialhjelp.soknad.db.DbTestConfig
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataInnsendingStatus.AVBRUTT_AUTOMATISK
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataInnsendingStatus.AVBRUTT_AV_BRUKER
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataInnsendingStatus.FERDIG

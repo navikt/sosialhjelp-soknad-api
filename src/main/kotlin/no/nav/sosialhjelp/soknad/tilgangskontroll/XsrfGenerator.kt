@@ -1,8 +1,8 @@
 package no.nav.sosialhjelp.soknad.tilgangskontroll
 
-import no.nav.sosialhjelp.soknad.common.exceptions.AuthorizationException
-import no.nav.sosialhjelp.soknad.common.exceptions.SosialhjelpSoknadApiException
-import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
+import no.nav.sosialhjelp.soknad.app.exceptions.AuthorizationException
+import no.nav.sosialhjelp.soknad.app.exceptions.SosialhjelpSoknadApiException
+import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import org.apache.commons.codec.binary.Base64
 import java.security.InvalidKeyException
 import java.security.NoSuchAlgorithmException

@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.innsending.svarut
 
-import no.nav.sosialhjelp.soknad.common.mdc.MdcOperations
+import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations
 import no.nav.sosialhjelp.soknad.db.repositories.oppgave.Oppgave
 import no.nav.sosialhjelp.soknad.db.repositories.oppgave.OppgaveRepository
 import no.nav.sosialhjelp.soknad.db.repositories.oppgave.Status

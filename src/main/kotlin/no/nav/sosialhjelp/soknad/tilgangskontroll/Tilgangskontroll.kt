@@ -1,8 +1,8 @@
 package no.nav.sosialhjelp.soknad.tilgangskontroll
 
-import no.nav.sosialhjelp.soknad.common.MiljoUtils
-import no.nav.sosialhjelp.soknad.common.exceptions.AuthorizationException
-import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils.getUserIdFromToken
+import no.nav.sosialhjelp.soknad.app.MiljoUtils
+import no.nav.sosialhjelp.soknad.app.exceptions.AuthorizationException
+import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService

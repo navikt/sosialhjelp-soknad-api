@@ -9,7 +9,7 @@ import no.ks.fiks.svarut.klient.model.NoarkMetadataFraAvleverendeSaksSystem
 import no.ks.fiks.svarut.klient.model.PostAdresse
 import no.ks.fiks.svarut.klient.model.UtskriftsKonfigurasjon
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
-import no.nav.sosialhjelp.soknad.common.MiljoUtils
+import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.db.repositories.sendtsoknad.SendtSoknad
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.innsending.InnsendingService

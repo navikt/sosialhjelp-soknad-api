@@ -6,7 +6,7 @@ import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator.ensureValidSoknad
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator.ensureValidVedlegg
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad
-import no.nav.sosialhjelp.soknad.common.MiljoUtils
+import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.VedleggMetadata
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.VedleggMetadataListe
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.Vedleggstatus

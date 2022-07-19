@@ -25,9 +25,9 @@ import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonSokernavn
 import no.nav.sbl.soknadsosialhjelp.soknad.utdanning.JsonUtdanning
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
-import no.nav.sosialhjelp.soknad.common.exceptions.SosialhjelpSoknadApiException
-import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
-import no.nav.sosialhjelp.soknad.common.systemdata.SystemdataUpdater
+import no.nav.sosialhjelp.soknad.app.exceptions.SosialhjelpSoknadApiException
+import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
+import no.nav.sosialhjelp.soknad.app.systemdata.SystemdataUpdater
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.VedleggMetadata
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.VedleggMetadataListe
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.Vedleggstatus

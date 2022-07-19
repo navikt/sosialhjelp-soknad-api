@@ -2,14 +2,14 @@ package no.nav.sosialhjelp.soknad.adressesok
 
 import kotlinx.coroutines.runBlocking
 import no.nav.sosialhjelp.soknad.adressesok.dto.AdressesokResultDto
+import no.nav.sosialhjelp.soknad.app.Constants.BEARER
+import no.nav.sosialhjelp.soknad.app.client.pdl.AdressesokDto
+import no.nav.sosialhjelp.soknad.app.client.pdl.PdlApiQuery.ADRESSE_SOK
+import no.nav.sosialhjelp.soknad.app.client.pdl.PdlClient
+import no.nav.sosialhjelp.soknad.app.client.pdl.PdlRequest
+import no.nav.sosialhjelp.soknad.app.exceptions.PdlApiException
+import no.nav.sosialhjelp.soknad.app.exceptions.TjenesteUtilgjengeligException
 import no.nav.sosialhjelp.soknad.auth.azure.AzureadService
-import no.nav.sosialhjelp.soknad.client.exceptions.PdlApiException
-import no.nav.sosialhjelp.soknad.client.exceptions.TjenesteUtilgjengeligException
-import no.nav.sosialhjelp.soknad.client.pdl.AdressesokDto
-import no.nav.sosialhjelp.soknad.client.pdl.PdlApiQuery.ADRESSE_SOK
-import no.nav.sosialhjelp.soknad.client.pdl.PdlClient
-import no.nav.sosialhjelp.soknad.client.pdl.PdlRequest
-import no.nav.sosialhjelp.soknad.common.Constants.BEARER
 import org.slf4j.LoggerFactory.getLogger
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders.AUTHORIZATION

@@ -6,7 +6,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
-import no.nav.sosialhjelp.soknad.client.pdl.HentPersonDto
+import no.nav.sosialhjelp.soknad.app.client.pdl.HentPersonDto
 import no.nav.sosialhjelp.soknad.personalia.person.HentPersonClient
 import no.nav.sosialhjelp.soknad.personalia.person.dto.BarnDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.EktefelleDto

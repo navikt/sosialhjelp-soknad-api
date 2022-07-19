@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.vedlegg.virusscan
 
-import no.nav.sosialhjelp.soknad.client.config.RetryUtils
-import no.nav.sosialhjelp.soknad.common.MiljoUtils
+import no.nav.sosialhjelp.soknad.app.MiljoUtils
+import no.nav.sosialhjelp.soknad.app.client.config.RetryUtils
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.OpplastingException
 import no.nav.sosialhjelp.soknad.vedlegg.virusscan.dto.Result
 import no.nav.sosialhjelp.soknad.vedlegg.virusscan.dto.ScanResult

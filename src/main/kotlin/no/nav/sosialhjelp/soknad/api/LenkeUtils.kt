@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.api
 
-import no.nav.sosialhjelp.soknad.common.MiljoUtils
+import no.nav.sosialhjelp.soknad.app.MiljoUtils
 
 object LenkeUtils {
     fun lenkeTilPabegyntSoknad(behandlingsId: String): String {

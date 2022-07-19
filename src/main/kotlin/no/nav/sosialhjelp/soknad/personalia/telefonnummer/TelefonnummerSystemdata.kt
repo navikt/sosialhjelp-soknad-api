@@ -2,7 +2,7 @@ package no.nav.sosialhjelp.soknad.personalia.telefonnummer
 
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonTelefonnummer
-import no.nav.sosialhjelp.soknad.common.systemdata.Systemdata
+import no.nav.sosialhjelp.soknad.app.systemdata.Systemdata
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component

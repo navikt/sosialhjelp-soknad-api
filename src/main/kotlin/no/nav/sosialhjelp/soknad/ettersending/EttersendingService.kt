@@ -4,8 +4,8 @@ import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
-import no.nav.sosialhjelp.soknad.common.exceptions.EttersendelseSendtForSentException
-import no.nav.sosialhjelp.soknad.common.exceptions.SosialhjelpSoknadApiException
+import no.nav.sosialhjelp.soknad.app.exceptions.EttersendelseSendtForSentException
+import no.nav.sosialhjelp.soknad.app.exceptions.SosialhjelpSoknadApiException
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadata
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataInnsendingStatus.FERDIG
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataType

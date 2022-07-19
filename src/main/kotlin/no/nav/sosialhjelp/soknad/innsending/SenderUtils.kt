@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.innsending
 
-import no.nav.sosialhjelp.soknad.common.MiljoUtils
+import no.nav.sosialhjelp.soknad.app.MiljoUtils
 
 object SenderUtils {
     fun createPrefixedBehandlingsId(behandlingsId: String?): String {

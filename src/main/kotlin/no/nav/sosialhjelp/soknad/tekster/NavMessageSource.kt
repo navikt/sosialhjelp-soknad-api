@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.tekster
 
 import no.nav.sosialhjelp.kotlin.utils.logger
-import no.nav.sosialhjelp.soknad.common.exceptions.SosialhjelpSoknadApiException
+import no.nav.sosialhjelp.soknad.app.exceptions.SosialhjelpSoknadApiException
 import org.springframework.context.support.ReloadableResourceBundleMessageSource
 import java.util.Locale
 import java.util.Properties

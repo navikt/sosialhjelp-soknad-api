@@ -6,7 +6,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonGateAdresse
 import no.nav.sosialhjelp.soknad.adressesok.dto.AdressesokHitDto
 import no.nav.sosialhjelp.soknad.adressesok.dto.AdressesokResultDto
 import no.nav.sosialhjelp.soknad.adressesok.dto.VegadresseDto
-import no.nav.sosialhjelp.soknad.client.kodeverk.KodeverkService
+import no.nav.sosialhjelp.soknad.kodeverk.KodeverkService
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.Test

@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.pdf
 
-import no.nav.sosialhjelp.soknad.client.kodeverk.KodeverkService
+import no.nav.sosialhjelp.soknad.kodeverk.KodeverkService
 import no.nav.sosialhjelp.soknad.personalia.basispersonalia.BasisPersonaliaSystemdata
 import org.springframework.stereotype.Component
 

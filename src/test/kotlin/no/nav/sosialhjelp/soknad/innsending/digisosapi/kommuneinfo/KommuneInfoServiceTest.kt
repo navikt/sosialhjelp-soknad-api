@@ -7,9 +7,9 @@ import io.mockk.just
 import io.mockk.mockk
 import io.mockk.verify
 import no.nav.sosialhjelp.api.fiks.KommuneInfo
-import no.nav.sosialhjelp.soknad.client.redis.KOMMUNEINFO_CACHE_KEY
-import no.nav.sosialhjelp.soknad.client.redis.KOMMUNEINFO_LAST_POLL_TIME_KEY
-import no.nav.sosialhjelp.soknad.client.redis.RedisService
+import no.nav.sosialhjelp.soknad.redis.KOMMUNEINFO_CACHE_KEY
+import no.nav.sosialhjelp.soknad.redis.KOMMUNEINFO_LAST_POLL_TIME_KEY
+import no.nav.sosialhjelp.soknad.redis.RedisService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test

@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.inntekt.husbanken
 
-import no.nav.sosialhjelp.soknad.client.config.proxiedWebClientBuilder
+import no.nav.sosialhjelp.soknad.app.client.config.proxiedWebClientBuilder
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration

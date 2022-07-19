@@ -3,7 +3,7 @@ package no.nav.sosialhjelp.soknad.auth.azure
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import no.nav.sosialhjelp.soknad.client.config.proxiedWebClientBuilder
+import no.nav.sosialhjelp.soknad.app.client.config.proxiedWebClientBuilder
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED
 import org.springframework.stereotype.Component

@@ -3,7 +3,7 @@ package no.nav.sosialhjelp.soknad.innsending.digisosapi
 import io.netty.channel.ChannelOption
 import io.netty.handler.timeout.ReadTimeoutHandler
 import io.netty.handler.timeout.WriteTimeoutHandler
-import no.nav.sosialhjelp.soknad.common.Constants
+import no.nav.sosialhjelp.soknad.app.Constants
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
