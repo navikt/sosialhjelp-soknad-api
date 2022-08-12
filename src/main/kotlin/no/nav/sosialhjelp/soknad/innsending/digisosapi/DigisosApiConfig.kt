@@ -3,7 +3,6 @@ package no.nav.sosialhjelp.soknad.innsending.digisosapi
 import io.netty.channel.ChannelOption
 import io.netty.handler.timeout.ReadTimeoutHandler
 import io.netty.handler.timeout.WriteTimeoutHandler
-import no.nav.sosialhjelp.soknad.client.config.ProxiedHttpClient.proxiedHttpClient
 import no.nav.sosialhjelp.soknad.app.Constants
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
 import org.springframework.beans.factory.annotation.Value
@@ -21,14 +20,14 @@ open class DigisosApiConfig(
     @Value("\${digisos_api_baseurl}") private val digisosApiEndpoint: String,
     @Value("\${integrasjonsid_fiks}") private val integrasjonsidFiks: String,
     @Value("\${integrasjonpassord_fiks}") private val integrasjonpassordFiks: String,
-    @Value("\${https_proxy}") private val proxyUrl: String?,
     private val kommuneInfoService: KommuneInfoService,
     private val dokumentlagerClient: DokumentlagerClient,
     private val krypteringService: KrypteringService,
     webClientBuilder: WebClient.Builder,
+    proxiedHttpClient: HttpClient,
 ) {
 
-    private val fiksHttpClient: HttpClient = proxiedHttpClient(proxyUrl)
+    private val fiksHttpClient: HttpClient = proxiedHttpClient
         .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, SENDING_TIL_FIKS_TIMEOUT)
         .doOnConnected {
             it
