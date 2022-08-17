@@ -32,6 +32,11 @@ management:
       exposure:
         include: metrics, prometheus
 
+logging:
+  level:
+    reactor:
+      netty: debug
+
 # rest
 digisos_api_baseurl: ${DIGISOS_API_BASEURL}
 ereg_url: ${EREG_URL}
