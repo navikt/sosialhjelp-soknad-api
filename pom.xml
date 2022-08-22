@@ -54,7 +54,7 @@
         <svarut-rest-klient.version>1.0.2</svarut-rest-klient.version>
         <kryptering.version>1.1.2</kryptering.version>
 
-        <spring-boot.version>2.7.0</spring-boot.version>
+        <spring-boot.version>2.7.3</spring-boot.version>
         <spring.version>5.3.22</spring.version>
         <jersey.version>2.36</jersey.version>
         <jetty.version>9.4.48.v20220622</jetty.version>
