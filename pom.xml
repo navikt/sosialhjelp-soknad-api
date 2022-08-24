@@ -51,7 +51,7 @@
         <filformat.version>1.2022.07.19-14.28-614820e5640b</filformat.version>
 
         <!-- Fiks/KS -->
-        <svarut-rest-klient.version>1.0.2</svarut-rest-klient.version>
+        <svarut-rest-klient.version>1.0.7</svarut-rest-klient.version>
         <kryptering.version>1.1.2</kryptering.version>
 
         <spring-boot.version>2.7.3</spring-boot.version>
