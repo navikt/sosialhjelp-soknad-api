@@ -27,16 +27,6 @@ jobs:
           REF: ${{ github.sha }}
           PRINT_PAYLOAD: true
           IMAGE: ${{ env.DOCKER_TAG }}
-      - name: Restart labs-gcp
-        uses: nais/deploy/actions/deploy@v1
-        env:
-          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
-          RESOURCE: nais/nais.yaml
-          CLUSTER: labs-gcp
-          VARS: nais/dev/labs-gcp.json
-          REF: ${{ github.sha }}
-          PRINT_PAYLOAD: true
-          IMAGE: ${{ env.DOCKER_TAG }}
 #      - name: Restart dev-sbs
 #        uses: nais/deploy/actions/deploy@v1
 #        env:
