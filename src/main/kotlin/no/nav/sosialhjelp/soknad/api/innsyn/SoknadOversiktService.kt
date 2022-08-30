@@ -16,9 +16,7 @@ class SoknadOversiktService(
             SoknadOversiktDto(
                 fiksDigisosId = null,
                 soknadTittel = "$DEFAULT_TITTEL (${it.behandlingsId})",
-                status = it.status.toString(),
                 sistOppdatert = Timestamp.valueOf(it.sistEndretDato),
-                antallNyeOppgaver = null,
                 kilde = KILDE_SOKNAD_API,
                 url = lagEttersendelseLenke(it.behandlingsId)
             )
