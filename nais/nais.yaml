@@ -60,6 +60,8 @@ spec:
           cluster: {{min-side-cluster}}
         - application: {{sosialhjelpDialogApi}}
           cluster: {{dialogGcpCluster}}
+        - application: {{sosialhjelp-innsyn-api}}
+          cluster: {{sosialhjelp-innsyn-api-cluster}}
 {{/if}}
     outbound:
       external:
