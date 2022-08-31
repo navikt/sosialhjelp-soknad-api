@@ -1,8 +1,8 @@
-package no.nav.sosialhjelp.soknad.api.dittnav
+package no.nav.sosialhjelp.soknad.api.minside
 
 import no.nav.security.token.support.core.api.ProtectedWithClaims
-import no.nav.sosialhjelp.soknad.api.dittnav.dto.MarkerPabegyntSoknadSomLestDto
-import no.nav.sosialhjelp.soknad.api.dittnav.dto.PabegyntSoknadDto
+import no.nav.sosialhjelp.soknad.api.minside.dto.MarkerPabegyntSoknadSomLestDto
+import no.nav.sosialhjelp.soknad.api.minside.dto.PabegyntSoknadDto
 import no.nav.sosialhjelp.soknad.app.Constants.CLAIM_ACR_LEVEL_3
 import no.nav.sosialhjelp.soknad.app.Constants.CLAIM_ACR_LEVEL_4
 import no.nav.sosialhjelp.soknad.app.Constants.SELVBETJENING
@@ -20,34 +20,34 @@ import javax.ws.rs.core.MediaType
 @ProtectedWithClaims(issuer = SELVBETJENING, combineWithOr = true, claimMap = [CLAIM_ACR_LEVEL_3, CLAIM_ACR_LEVEL_4])
 @Path("/dittnav")
 @Produces(MediaType.APPLICATION_JSON)
-open class DittNavMetadataRessurs(
-    private val dittNavMetadataService: DittNavMetadataService
+open class MinSideMetadataRessurs(
+    private val minSideMetadataService: MinSideMetadataService
 ) {
     @GET
     @Path("/pabegynte/aktive")
     open fun hentPabegynteSoknaderForBruker(): List<PabegyntSoknadDto> {
         val fnr = SubjectHandlerUtils.getUserIdFromToken()
-        return dittNavMetadataService.hentAktivePabegynteSoknader(fnr)
+        return minSideMetadataService.hentAktivePabegynteSoknader(fnr)
     }
 
     @GET
     @Path("/pabegynte/inaktive")
-    open fun hentPabegynteSoknaderForBrukerLestDittNav(): List<PabegyntSoknadDto> {
+    open fun hentPabegynteSoknaderForBrukerSomErLest(): List<PabegyntSoknadDto> {
         val fnr = SubjectHandlerUtils.getUserIdFromToken()
-        return dittNavMetadataService.hentInaktivePabegynteSoknader(fnr)
+        return minSideMetadataService.hentInaktivePabegynteSoknader(fnr)
     }
 
     @POST
     @Path("/pabegynte/lest")
-    open fun oppdaterLestDittNavForPabegyntSoknad(@RequestBody dto: MarkerPabegyntSoknadSomLestDto): Boolean {
+    open fun settLestForPabegyntSoknad(@RequestBody dto: MarkerPabegyntSoknadSomLestDto): Boolean {
         val fnr = SubjectHandlerUtils.getUserIdFromToken()
         val behandlingsId = dto.grupperingsId
-        val somLest = dittNavMetadataService.oppdaterLestDittNavForPabegyntSoknad(behandlingsId, fnr)
-        log.info("Pabegynt søknad med behandlingsId=$behandlingsId har fått lestDittNav=$somLest")
+        val somLest = minSideMetadataService.oppdaterLestStatusForPabegyntSoknad(behandlingsId, fnr)
+        log.info("Pabegynt søknad med behandlingsId=$behandlingsId har fått status lest=$somLest")
         return somLest
     }
 
     companion object {
-        private val log = LoggerFactory.getLogger(DittNavMetadataRessurs::class.java)
+        private val log = LoggerFactory.getLogger(MinSideMetadataRessurs::class.java)
     }
 }
