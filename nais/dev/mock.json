@@ -26,6 +26,8 @@
   "leaderElectionEnabled": false,
   "maskinportenEnabled": false,
   "azureEnabled": false,
+  "sosialhjelp-innsyn-api": "sosialhjelp-innsyn-api-dev",
+  "sosialhjelp-innsyn-api-cluster": "dev-gcp",
   "env": {
     "SPRING_PROFILES_ACTIVE": "mock-alt,log-console,no-redis",
     "PORT": "8080",

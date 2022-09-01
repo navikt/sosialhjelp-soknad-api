@@ -52,17 +52,17 @@ spec:
   tokenx:
     enabled: {{tokenXEnabled}}
   accessPolicy:
-{{#if tokenXEnabled}}
     inbound:
       rules:
+{{#if tokenXEnabled}}
         - application: mine-saker-api
           namespace: min-side
           cluster: {{min-side-cluster}}
         - application: {{sosialhjelpDialogApi}}
           cluster: {{dialogGcpCluster}}
+{{/if}}
         - application: {{sosialhjelp-innsyn-api}}
           cluster: {{sosialhjelp-innsyn-api-cluster}}
-{{/if}}
     outbound:
       external:
       {{#each outboundExternalHosts}}
