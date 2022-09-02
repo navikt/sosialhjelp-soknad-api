@@ -122,12 +122,12 @@ open class SoknadMetadataRepositoryJdbc(
         )
     }
 
-    override fun hentPabegynteSoknaderForBruker(fnr: String, lestDittNav: Boolean): List<SoknadMetadata> {
+    override fun hentPabegynteSoknaderForBruker(fnr: String, lest: Boolean): List<SoknadMetadata> {
         return jdbcTemplate.query(
             "SELECT * FROM soknadmetadata WHERE fnr = ? AND lest_ditt_nav = ? AND innsendingstatus = ? AND soknadtype = ? ORDER BY innsendtdato DESC",
             soknadMetadataRowMapper,
             fnr,
-            lestDittNav,
+            lest,
             SoknadMetadataInnsendingStatus.UNDER_ARBEID.name,
             SoknadMetadataType.SEND_SOKNAD_KOMMUNAL.name
         )
@@ -147,11 +147,11 @@ open class SoknadMetadataRepositoryJdbc(
         )
     }
 
-    override fun oppdaterLestDittNav(soknadMetadata: SoknadMetadata, fnr: String) {
+    override fun oppdaterLest(soknadMetadata: SoknadMetadata, fnr: String) {
         sjekkOmBrukerEierSoknadUnderArbeid(soknadMetadata, fnr)
         jdbcTemplate.update(
             "update soknadmetadata set LEST_DITT_NAV = ? where id = ? and fnr = ?",
-            soknadMetadata.lestDittNav,
+            soknadMetadata.lest,
             soknadMetadata.id,
             fnr
         )

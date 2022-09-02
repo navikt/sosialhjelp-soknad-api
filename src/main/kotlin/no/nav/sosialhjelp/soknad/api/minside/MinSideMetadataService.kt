@@ -1,8 +1,8 @@
-package no.nav.sosialhjelp.soknad.api.dittnav
+package no.nav.sosialhjelp.soknad.api.minside
 
 import no.nav.sosialhjelp.soknad.api.LenkeUtils.lenkeTilPabegyntSoknad
 import no.nav.sosialhjelp.soknad.api.TimeUtils.toUtc
-import no.nav.sosialhjelp.soknad.api.dittnav.dto.PabegyntSoknadDto
+import no.nav.sosialhjelp.soknad.api.minside.dto.PabegyntSoknadDto
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
@@ -10,7 +10,7 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
 @Component
-class DittNavMetadataService(
+class MinSideMetadataService(
     private val soknadMetadataRepository: SoknadMetadataRepository
 ) {
     fun hentAktivePabegynteSoknader(fnr: String): List<PabegyntSoknadDto> {
@@ -30,25 +30,25 @@ class DittNavMetadataService(
                 it.behandlingsId,
                 PABEGYNT_SOKNAD_TITTEL,
                 lenkeTilPabegyntSoknad(it.behandlingsId),
-                SIKKERHETSNIVAA_3, // hvis ikke vil ikke innloggede nivå 3 brukere se noe på DittNav
+                SIKKERHETSNIVAA_3, // hvis ikke vil ikke innloggede nivå 3 brukere se noe på Min side
                 toUtc(it.sistEndretDato, ZoneId.systemDefault()).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME),
                 aktiv
             )
         }
     }
 
-    fun oppdaterLestDittNavForPabegyntSoknad(behandlingsId: String?, fnr: String): Boolean {
+    fun oppdaterLestStatusForPabegyntSoknad(behandlingsId: String?, fnr: String): Boolean {
         val soknadMetadata = soknadMetadataRepository.hent(behandlingsId)
         if (soknadMetadata == null) {
             log.warn("Fant ingen soknadMetadata med behandlingsId=$behandlingsId")
             return false
         }
-        soknadMetadata.lestDittNav = true
+        soknadMetadata.lest = true
         return try {
-            soknadMetadataRepository.oppdaterLestDittNav(soknadMetadata, fnr)
+            soknadMetadataRepository.oppdaterLest(soknadMetadata, fnr)
             true
         } catch (e: Exception) {
-            log.warn("Noe feilet ved oppdatering av lestDittNav for soknadMetadata med behandlingsId=$behandlingsId", e)
+            log.warn("Noe feilet ved oppdatering av 'soknadMetadata.lest=true' for soknadMetadata med behandlingsId=$behandlingsId", e)
             false
         }
     }
@@ -58,7 +58,7 @@ class DittNavMetadataService(
     }
 
     companion object {
-        private val log = LoggerFactory.getLogger(DittNavMetadataService::class.java)
+        private val log = LoggerFactory.getLogger(MinSideMetadataService::class.java)
         private const val PABEGYNT_SOKNAD_TITTEL = "Påbegynt søknad om økonomisk sosialhjelp"
         private const val SIKKERHETSNIVAA_3 = 3
         private const val SIKKERHETSNIVAA_4 = 4
