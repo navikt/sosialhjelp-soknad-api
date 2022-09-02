@@ -1,7 +1,7 @@
-package no.nav.sosialhjelp.soknad.api.dittnav.dto
+package no.nav.sosialhjelp.soknad.api.minside.dto
 
 /**
- * Response-objekt for endepunkt som skal hente informasjon om påbegynte søknader for DittNAV.
+ * Response-objekt for endepunkt som skal hente informasjon om påbegynte søknader for Min Side.
  * https://navikt.github.io/brukernotifikasjon-docs/eventtyper/beskjed/felter/
  */
 class PabegyntSoknadDto(

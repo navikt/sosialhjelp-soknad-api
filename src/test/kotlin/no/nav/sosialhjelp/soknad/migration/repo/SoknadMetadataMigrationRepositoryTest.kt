@@ -86,7 +86,7 @@ internal class SoknadMetadataMigrationRepositoryTest {
             innsendtDato = LocalDateTime.now().minusDays(dagerSiden),
             opprettetDato = LocalDateTime.now().minusDays(dagerSiden),
             sistEndretDato = LocalDateTime.now().minusDays(dagerSiden),
-            lestDittNav = false,
+            lest = false,
         )
     }
 

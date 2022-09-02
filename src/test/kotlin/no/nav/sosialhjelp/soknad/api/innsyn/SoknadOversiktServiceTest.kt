@@ -56,9 +56,7 @@ internal class SoknadOversiktServiceTest {
         val soknad = resultat[0]
         assertThat(soknad.fiksDigisosId).isNull()
         assertThat(soknad.soknadTittel).contains(DEFAULT_TITTEL).contains(soknadMetadata.behandlingsId)
-        assertThat(soknad.status).isEqualTo(SoknadMetadataInnsendingStatus.UNDER_ARBEID.toString())
         assertThat(soknad.sistOppdatert).isEqualTo(Timestamp.valueOf(soknadMetadata.innsendtDato))
-        assertThat(soknad.antallNyeOppgaver).isNull()
         assertThat(soknad.kilde).isEqualTo(KILDE_SOKNAD_API)
         assertThat(soknad.url).contains(soknadMetadata.behandlingsId)
     }

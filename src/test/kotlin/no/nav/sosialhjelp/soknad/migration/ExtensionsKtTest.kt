@@ -55,7 +55,7 @@ internal class ExtensionsKtTest {
             opprettetDato = LocalDateTime.now(),
             sistEndretDato = LocalDateTime.now(),
             innsendtDato = null,
-            lestDittNav = false
+            lest = false
         )
 
         val dto = soknadMetadata.toDto()
@@ -75,7 +75,7 @@ internal class ExtensionsKtTest {
         assertThat(dto.status).isEqualTo(soknadMetadata.status)
         assertThat(dto.opprettetDato).isEqualTo(soknadMetadata.opprettetDato)
         assertThat(dto.innsendtDato).isEqualTo(soknadMetadata.innsendtDato)
-        assertThat(dto.lestDittNav).isEqualTo(soknadMetadata.lestDittNav)
+        assertThat(dto.lest).isEqualTo(soknadMetadata.lest)
     }
 
     @Test

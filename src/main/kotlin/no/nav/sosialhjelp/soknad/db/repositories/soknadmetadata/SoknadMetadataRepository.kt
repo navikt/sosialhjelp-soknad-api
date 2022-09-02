@@ -12,7 +12,7 @@ interface SoknadMetadataRepository {
     fun hentSvarUtInnsendteSoknaderForBruker(fnr: String): List<SoknadMetadata>
     fun hentAlleInnsendteSoknaderForBruker(fnr: String): List<SoknadMetadata>
     fun hentPabegynteSoknaderForBruker(fnr: String): List<SoknadMetadata>
-    fun hentPabegynteSoknaderForBruker(fnr: String, lestDittNav: Boolean): List<SoknadMetadata>
+    fun hentPabegynteSoknaderForBruker(fnr: String, lest: Boolean): List<SoknadMetadata>
     fun hentInnsendteSoknaderForBrukerEtterTidspunkt(fnr: String, tidsgrense: LocalDateTime): List<SoknadMetadata>
-    fun oppdaterLestDittNav(soknadMetadata: SoknadMetadata, fnr: String)
+    fun oppdaterLest(soknadMetadata: SoknadMetadata, fnr: String)
 }

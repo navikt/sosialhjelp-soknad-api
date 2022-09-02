@@ -37,7 +37,10 @@ class SubjectHandlerImpl : SubjectHandler {
     }
 
     override fun getToken(): String {
-        return tokenValidationContext.getJwtToken(SELVBETJENING).tokenAsString
+        return when {
+            tokenValidationContext.hasTokenFor(TOKENX) -> tokenValidationContext.getJwtToken(TOKENX).tokenAsString
+            else -> tokenValidationContext.getJwtToken(SELVBETJENING).tokenAsString
+        }
     }
 
     override fun getConsumerId(): String {

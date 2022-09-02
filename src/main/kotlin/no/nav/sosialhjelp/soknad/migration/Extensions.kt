@@ -39,7 +39,7 @@ object Extensions {
             opprettetDato = opprettetDato,
             sistEndretDato = sistEndretDato,
             innsendtDato = innsendtDato,
-            lestDittNav = lestDittNav
+            lest = lest
         )
     }
 
