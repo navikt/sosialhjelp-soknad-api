@@ -19,6 +19,8 @@
   "cpuRequest": "10m",
   "vaultEnabled": false,
   "tokenXEnabled": false,
+  "sosialhjelp-innsyn-api": "sosialhjelp-innsyn-api-mock",
+  "sosialhjelp-innsyn-api-cluster": "dev-gcp",
   "prometheusEnabled": false,
   "webProxyEnabled": false,
   "isGcp": true,
@@ -26,8 +28,6 @@
   "leaderElectionEnabled": false,
   "maskinportenEnabled": false,
   "azureEnabled": false,
-  "sosialhjelp-innsyn-api": "sosialhjelp-innsyn-api-dev",
-  "sosialhjelp-innsyn-api-cluster": "dev-gcp",
   "env": {
     "SPRING_PROFILES_ACTIVE": "mock-alt,log-console,no-redis",
     "PORT": "8080",
