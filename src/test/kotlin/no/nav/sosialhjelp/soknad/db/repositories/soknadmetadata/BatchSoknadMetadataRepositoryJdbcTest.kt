@@ -111,7 +111,7 @@ internal class BatchSoknadMetadataRepositoryJdbcTest {
             innsendtDato = LocalDateTime.now().minusDays(dagerSiden.toLong()),
             opprettetDato = LocalDateTime.now().minusDays(dagerSiden.toLong()),
             sistEndretDato = LocalDateTime.now().minusDays(dagerSiden.toLong()),
-            lestDittNav = false,
+            lest = false,
         )
     }
 
