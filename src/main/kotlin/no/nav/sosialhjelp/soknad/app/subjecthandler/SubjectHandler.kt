@@ -2,9 +2,9 @@ package no.nav.sosialhjelp.soknad.app.subjecthandler
 
 import no.nav.security.token.support.core.context.TokenValidationContext
 import no.nav.security.token.support.jaxrs.JaxrsTokenValidationContextHolder
-import no.nav.sosialhjelp.kotlin.utils.logger
 import no.nav.sosialhjelp.soknad.app.Constants.SELVBETJENING
 import no.nav.sosialhjelp.soknad.app.Constants.TOKENX
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import org.springframework.stereotype.Component
 
 interface SubjectHandler {

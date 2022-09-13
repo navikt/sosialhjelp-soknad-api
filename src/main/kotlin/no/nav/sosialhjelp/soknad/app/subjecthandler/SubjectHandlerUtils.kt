@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.app.subjecthandler
 
-import no.nav.sosialhjelp.kotlin.utils.logger
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
 
 object SubjectHandlerUtils {

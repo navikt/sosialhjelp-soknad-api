@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.api.nedetid
 
-import no.nav.sosialhjelp.kotlin.utils.logger
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime
