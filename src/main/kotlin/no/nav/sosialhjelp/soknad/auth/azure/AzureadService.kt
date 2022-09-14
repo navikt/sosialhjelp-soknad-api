@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.auth.azure
 
-import no.nav.sosialhjelp.kotlin.utils.logger
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.redis.AZURE_SYSTEM_TOKEN
 import no.nav.sosialhjelp.soknad.redis.CACHE_30_SECONDS
 import no.nav.sosialhjelp.soknad.redis.RedisService
