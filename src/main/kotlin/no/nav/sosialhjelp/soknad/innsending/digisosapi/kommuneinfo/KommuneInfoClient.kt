@@ -5,10 +5,10 @@ import no.nav.sosialhjelp.soknad.app.Constants.BEARER
 import no.nav.sosialhjelp.soknad.app.Constants.HEADER_INTEGRASJON_ID
 import no.nav.sosialhjelp.soknad.app.Constants.HEADER_INTEGRASJON_PASSORD
 import no.nav.sosialhjelp.soknad.auth.maskinporten.MaskinportenClient
-import org.springframework.core.ParameterizedTypeReference
 import org.springframework.http.HttpHeaders.AUTHORIZATION
 import org.springframework.http.MediaType
 import org.springframework.web.reactive.function.client.WebClient
+import org.springframework.web.reactive.function.client.bodyToMono
 
 interface KommuneInfoClient {
     fun getAll(): List<KommuneInfo>
@@ -29,12 +29,10 @@ class KommuneInfoClientImpl(
             .header(HEADER_INTEGRASJON_ID, integrasjonsidFiks)
             .header(HEADER_INTEGRASJON_PASSORD, integrasjonpassordFiks)
             .retrieve()
-            .bodyToMono(typeRef<List<KommuneInfo>>())
+            .bodyToMono<List<KommuneInfo>>()
             .block()
             ?: emptyList()
     }
-
-    private inline fun <reified T : Any> typeRef(): ParameterizedTypeReference<T> = object : ParameterizedTypeReference<T>() {}
 
     companion object {
         const val PATH_ALLE_KOMMUNEINFO = "/digisos/api/v1/nav/kommuner"
