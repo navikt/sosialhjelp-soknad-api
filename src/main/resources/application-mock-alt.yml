@@ -80,7 +80,7 @@ redis_port: 6379
 redis_password: ${REDIS_PASSWORD:pw}
 
 # Feature toggles
-unleash_instance_id: ${UNLEASH_INSTANCE_ID:labs-gcp}
+unleash_instance_id: ${UNLEASH_INSTANCE_ID:mock}
 scheduler.disable: ${SCHEDULER_DISABLE:false}
 sendsoknad.batch.enabled: true
 feature.fiks.kryptering.enabled: true

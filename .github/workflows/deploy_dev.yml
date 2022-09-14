@@ -10,7 +10,6 @@ on:
         options:
           - 'mock'
           - 'dev-sbs'
-          - 'labs-gcp'
 
 jobs:
   deploy:
@@ -31,8 +30,6 @@ jobs:
         run: |
           if [[ ${{ github.event.inputs.config-file-name }} = 'dev-sbs' ]]; then
             echo "CLUSTER_NAME=dev-sbs" >> $GITHUB_ENV
-          elif [[ ${{ github.event.inputs.config-file-name }} = 'labs-gcp' ]]; then
-            echo "CLUSTER_NAME=labs-gcp" >> $GITHUB_ENV
           else
             echo "CLUSTER_NAME=dev-gcp" >> $GITHUB_ENV
           fi
