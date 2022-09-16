@@ -83,7 +83,7 @@ redis_password: ${REDIS_PASSWORD:pw}
 unleash_instance_id: ${UNLEASH_INSTANCE_ID:mock}
 scheduler.disable: ${SCHEDULER_DISABLE:false}
 sendsoknad.batch.enabled: true
-feature.fiks.kryptering.enabled: true
+feature.fiks.kryptering.enabled: false
 
 #Nedetid
 nedetid.start: ${NEDETID_START:}
