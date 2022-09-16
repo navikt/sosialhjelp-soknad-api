@@ -100,7 +100,7 @@
         <jakarta.servlet-api.version>4.0.4</jakarta.servlet-api.version>
         <jakarta.validation-api.version>2.0.2</jakarta.validation-api.version>
         <jakarta.ws.version>2.1.6</jakarta.ws.version>
-        <jakarta.xml.version>2.3.3</jakarta.xml.version>
+        <jakarta.xml.version>4.0.0</jakarta.xml.version>
 
         <!-- Versjoner for test dependencies -->
         <hamcrest.version>2.2</hamcrest.version>
