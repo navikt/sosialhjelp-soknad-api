@@ -1,7 +1,6 @@
 package no.nav.sosialhjelp.soknad.api.innsyn
 
 import no.nav.security.token.support.core.api.ProtectedWithClaims
-import no.nav.security.token.support.core.api.RequiredIssuers
 import no.nav.sosialhjelp.soknad.api.innsyn.dto.SoknadOversiktDto
 import no.nav.sosialhjelp.soknad.app.Constants
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
@@ -14,10 +13,7 @@ import javax.ws.rs.Produces
 import javax.ws.rs.core.MediaType
 
 @Controller
-@RequiredIssuers(
-    ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4]),
-    ProtectedWithClaims(issuer = Constants.TOKENX, claimMap = [Constants.CLAIM_ACR_LEVEL_4]),
-)
+@ProtectedWithClaims(issuer = Constants.TOKENX, claimMap = [Constants.CLAIM_ACR_LEVEL_4])
 @Path("/soknadoversikt")
 @Produces(MediaType.APPLICATION_JSON)
 open class SoknadOversiktRessurs(
