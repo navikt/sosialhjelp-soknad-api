@@ -5,7 +5,7 @@ on:
       config-file-name:
         description: 'Config-fil som skal deployes'
         required: true
-        default: 'dev-sbs'
+        default: 'dev-fss'
         type: choice
         options:
           - 'mock'
