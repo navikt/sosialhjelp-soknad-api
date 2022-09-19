@@ -31,7 +31,6 @@
   "dialogGcpCluster": "dev-gcp",
   "sosialhjelpDialogApi": "sosialhjelp-dialog-api-dev",
   "sosialhjelp-innsyn-api": "sosialhjelp-innsyn-api",
-  "sosialhjelp-innsyn-api-cluster": "dev-sbs",
   "prometheusEnabled": true,
   "webProxyEnabled": true,
   "isGcp": false,
