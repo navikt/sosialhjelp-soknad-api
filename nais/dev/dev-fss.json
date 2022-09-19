@@ -64,6 +64,6 @@
     "NEDETID_SLUTT": "",
     "ENVIRONMENT_NAME": "q0",
     "REDIS_HOST": "sosialhjelp-soknad-api-redis.teamdigisos.svc.nais.local",
-    "UNLEASH_INSTANCE_ID": "dev-sbs"
+    "UNLEASH_INSTANCE_ID": "dev-fss"
   }
 }
