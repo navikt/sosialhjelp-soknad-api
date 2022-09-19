@@ -8,10 +8,11 @@
     "redis-password-soknad-api",
     "fiks-integrasjon-secret",
     "fiks-svarut-credentials",
-    "testbruker-skatteetaten",
-    "db-url-soknad-api",
-    "db-credentials-soknad-api"
+    "testbruker-skatteetaten"
   ],
+  "kvPaths": {
+    "/var/run/secrets/datasource": "/oracle/data/dev/creds/soknadsosialhjelp_q0-user"
+  },
   "outboundRulesFssApplications": [
     "sosialhjelp-fss-proxy",
     "sosialhjelp-oppslag-api"
@@ -23,7 +24,7 @@
   "memoryRequest": "512Mi",
   "cpuLimit": "500m",
   "cpuRequest": "10m",
-  "vaultEnabled": false,
+  "vaultEnabled": true,
   "tokenXEnabled": true,
   "min-side-cluster": "dev-gcp",
   "dialogGcpCluster": "dev-gcp",
