@@ -10,7 +10,10 @@
     "fiks-svarut-credentials",
     "testbruker-skatteetaten"
   ],
-  "inboundRulesApplications": ["sosialhjelp-login-api-dev"],
+  "inboundRulesApplications": [
+    "sosialhjelp-login-api-dev",
+    "sosialhjelp-innsyn-api-dev"
+  ],
   "outboundExternalHosts": [
     "digisos.dev.nav.no",
     "unleash.nais.io",
@@ -40,7 +43,9 @@
   "tokenXEnabled": true,
   "personbrukerGcpCluster": "dev-gcp",
   "dialogGcpCluster": "dev-gcp",
-  "sosialhjelpDialogApi": "sosialhjelp-dialog-api",
+  "sosialhjelpDialogApi": "sosialhjelp-dialog-api-dev",
+  "sosialhjelp-innsyn-api": "sosialhjelp-innsyn-api-dev",
+  "sosialhjelp-innsyn-api-cluster": "dev-gcp",
   "prometheusEnabled": true,
   "webProxyEnabled": false,
   "hasOutboundRulesGcpApplications": true,
