@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.scheduled
 
-import no.nav.sosialhjelp.metrics.MetricsFactory
 import no.nav.sosialhjelp.soknad.db.repositories.oppgave.OppgaveRepository
 import no.nav.sosialhjelp.soknad.db.repositories.sendtsoknad.BatchSendtSoknadRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.BatchSoknadMetadataRepository
@@ -22,8 +21,9 @@ class SlettForeldedeMetadataScheduler(
 ) {
     private var batchStartTime: LocalDateTime? = null
     private var vellykket = 0
+    private var iterasjoner = 0
 
-    @Scheduled(cron = KLOKKEN_00_01_02_03_05_06_OM_NATTEN)
+    @Scheduled(cron = KLOKKEN_05_OM_NATTEN)
     fun slettForeldedeMetadata() {
         if (schedulerDisabled) {
             logger.warn("Scheduler is disabled")
@@ -32,20 +32,15 @@ class SlettForeldedeMetadataScheduler(
         if (leaderElection.isLeader()) {
             batchStartTime = LocalDateTime.now()
             vellykket = 0
+            iterasjoner = 0
             if (batchEnabled) {
                 logger.info("Starter sletting av metadata for ett år gamle søknader")
-                val batchTimer = MetricsFactory.createTimer("sosialhjelp.debug.slettLogg")
-                batchTimer.start()
                 try {
                     slett()
                 } catch (e: RuntimeException) {
                     logger.error("Batchjobb feilet for sletting av logg", e)
-                    batchTimer.setFailed()
                 } finally {
-                    batchTimer.stop()
-                    batchTimer.addFieldToReport("vellykket", vellykket)
-                    batchTimer.report()
-                    logger.info("Jobb fullført for sletting av metadata: $vellykket vellykket")
+                    logger.info("Jobb fullført for sletting av metadata: $vellykket vellykket. Iterasjoner = $iterasjoner")
                 }
             } else {
                 logger.warn("Batch disabled. Må sette environment property sendsoknad.batch.enabled til true for å sette den på igjen")
@@ -54,25 +49,26 @@ class SlettForeldedeMetadataScheduler(
     }
 
     private fun slett() {
-        var soknadMetadata = batchSoknadMetadataRepository.hentEldreEnn(DAGER_GAMMELT)
-        while (soknadMetadata != null) {
-            val behandlingsId = soknadMetadata.behandlingsId
+        var soknadMetadataList = batchSoknadMetadataRepository.hentEldreEnn(DAGER_GAMMELT)
+        while (soknadMetadataList.isNotEmpty()) {
+            val behandlingsIdList = soknadMetadataList.map { it.behandlingsId }
 
-            batchSendtSoknadRepository.hentSendtSoknad(behandlingsId)
-                ?.let { batchSendtSoknadRepository.slettSendtSoknad(it) }
+            val sendtSoknadIdList = batchSendtSoknadRepository.hentSendtSoknadIdList(behandlingsIdList)
+            if (sendtSoknadIdList.isNotEmpty()) batchSendtSoknadRepository.slettSendtSoknader(sendtSoknadIdList)
 
-            oppgaveRepository.hentOppgave(behandlingsId)
-                ?.let { oppgaveRepository.slettOppgave(behandlingsId) }
+            val oppgaver = oppgaveRepository.hentOppgaveIdList(behandlingsIdList)
+            if (oppgaver.isNotEmpty()) oppgaveRepository.slettOppgaver(oppgaver)
 
-            batchSoknadMetadataRepository.slettSoknadMetaData(behandlingsId)
+            batchSoknadMetadataRepository.slettSoknadMetaDataer(behandlingsIdList)
 
-            vellykket++
+            vellykket += soknadMetadataList.size
+            iterasjoner++
 
             if (harGaattForLangTid()) {
                 logger.warn("Jobben har kjørt i mer enn $SCHEDULE_INTERRUPT_S s. Den blir derfor stoppet")
                 return
             }
-            soknadMetadata = batchSoknadMetadataRepository.hentEldreEnn(DAGER_GAMMELT)
+            soknadMetadataList = batchSoknadMetadataRepository.hentEldreEnn(DAGER_GAMMELT)
         }
     }
 
@@ -84,8 +80,8 @@ class SlettForeldedeMetadataScheduler(
 
     companion object {
         private val logger = LoggerFactory.getLogger(SlettForeldedeMetadataScheduler::class.java)
-        private const val KLOKKEN_00_01_02_03_05_06_OM_NATTEN = "0 0 0,1,2,3,5,6 * * *"
-        private const val SCHEDULE_INTERRUPT_S: Long = 60 * 30 // 30 min
+        private const val KLOKKEN_05_OM_NATTEN = "0 0 5 * * *"
+        private const val SCHEDULE_INTERRUPT_S: Long = 60 * 10 // 10 min
         private const val DAGER_GAMMELT = 365 // Ett år
     }
 }

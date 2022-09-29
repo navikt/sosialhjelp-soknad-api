@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.pdf
 
-import no.nav.sosialhjelp.soknad.client.kodeverk.KodeverkService
+import no.nav.sosialhjelp.soknad.kodeverk.KodeverkService
 import no.nav.sosialhjelp.soknad.personalia.basispersonalia.BasisPersonaliaSystemdata
 import org.springframework.stereotype.Component
 
@@ -14,7 +14,8 @@ class TextHelpers(
                 "YYY",
                 ignoreCase = true
             ) || landForkortelse.equals(
-                    BasisPersonaliaSystemdata.PDL_UKJENT_STATSBORGERSKAP, ignoreCase = true
+                    BasisPersonaliaSystemdata.PDL_UKJENT_STATSBORGERSKAP,
+                    ignoreCase = true
                 )
         ) {
             return "Vi har ikke opplysninger om ditt statsborgerskap"

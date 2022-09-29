@@ -10,8 +10,8 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysn
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktFormue
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktInntekt
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktUtgift
-import no.nav.sosialhjelp.soknad.common.mapper.OkonomiMapper.addUtgiftIfNotPresentInOpplysninger
-import no.nav.sosialhjelp.soknad.common.mapper.OkonomiMapper.removeUtgiftIfPresentInOpplysninger
+import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.addUtgiftIfNotPresentInOpplysninger
+import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.removeUtgiftIfPresentInOpplysninger
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggFrontend
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggRadFrontend
 import org.apache.commons.lang3.StringUtils.isEmpty
@@ -59,7 +59,7 @@ object OkonomiskeOpplysningerMapper {
         soknadType: String?
     ) {
         jsonOkonomi.oversikt.formue
-            .firstOrNull() { it.type == soknadType }
+            .firstOrNull { it.type == soknadType }
             ?.let { formue ->
                 val formuer = jsonOkonomi.oversikt.formue
                     .filter { it.type != soknadType }

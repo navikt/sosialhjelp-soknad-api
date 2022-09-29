@@ -2,7 +2,7 @@ package no.nav.sosialhjelp.soknad.integrationtest
 
 import no.nav.security.mock.oauth2.MockOAuth2Server
 import no.nav.sosialhjelp.soknad.Application
-import no.nav.sosialhjelp.soknad.common.Constants.BEARER
+import no.nav.sosialhjelp.soknad.app.Constants.BEARER
 import no.nav.sosialhjelp.soknad.integrationtest.IntegrationTestUtils.issueToken
 import no.nav.sosialhjelp.soknad.integrationtest.IntegrationTestUtils.opprettSoknad
 import org.junit.jupiter.api.Test
@@ -19,8 +19,10 @@ import org.springframework.test.web.reactive.server.WebTestClient
 @ActiveProfiles(profiles = ["no-redis", "test"])
 class SoknadActionsEndpointIT {
 
-    private val BRUKER = "11111111111"
-    private val ANNEN_BRUKER = "22222222222"
+    companion object {
+        private const val BRUKER = "11111111111"
+        private const val ANNEN_BRUKER = "22222222222"
+    }
 
     @Autowired
     private lateinit var mockOAuth2Server: MockOAuth2Server

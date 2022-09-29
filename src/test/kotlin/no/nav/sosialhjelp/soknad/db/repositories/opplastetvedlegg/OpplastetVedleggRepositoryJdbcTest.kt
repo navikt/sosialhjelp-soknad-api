@@ -18,16 +18,18 @@ import javax.inject.Inject
 @SpringBootTest(classes = [Application::class])
 internal class OpplastetVedleggRepositoryJdbcTest {
 
-    private val EIER = "12345678901"
-    private val EIER2 = "22222222222"
-    private val BEHANDLINGSID = "behandlingsid"
-    private val BEHANDLINGSID2 = "behandlingsid2"
-    private val BEHANDLINGSID3 = "behandlingsid3"
-    private val DATA = byteArrayOf(1, 2, 3, 4)
-    private val SHA512 = getSha512FromByteArray(DATA)
-    private val TYPE = "bostotte|annetboutgift"
-    private val TYPE2 = "dokumentasjon|aksjer"
-    private val FILNAVN = "dokumentasjon.pdf"
+    companion object {
+        private const val EIER = "12345678901"
+        private const val EIER2 = "22222222222"
+        private const val BEHANDLINGSID = "behandlingsid"
+        private const val BEHANDLINGSID2 = "behandlingsid2"
+        private const val BEHANDLINGSID3 = "behandlingsid3"
+        private val DATA = byteArrayOf(1, 2, 3, 4)
+        private val SHA512 = getSha512FromByteArray(DATA)
+        private const val TYPE = "bostotte|annetboutgift"
+        private const val TYPE2 = "dokumentasjon|aksjer"
+        private const val FILNAVN = "dokumentasjon.pdf"
+    }
 
     @Inject
     private lateinit var soknadUnderArbeidRepository: SoknadUnderArbeidRepository

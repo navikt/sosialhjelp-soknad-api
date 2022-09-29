@@ -15,10 +15,10 @@ import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonGateAdresse
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonMatrikkelAdresse
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonUstrukturertAdresse
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
-import no.nav.sosialhjelp.soknad.common.MiljoUtils
-import no.nav.sosialhjelp.soknad.common.exceptions.AuthorizationException
-import no.nav.sosialhjelp.soknad.common.subjecthandler.StaticSubjectHandlerImpl
-import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
+import no.nav.sosialhjelp.soknad.app.MiljoUtils
+import no.nav.sosialhjelp.soknad.app.exceptions.AuthorizationException
+import no.nav.sosialhjelp.soknad.app.subjecthandler.StaticSubjectHandlerImpl
+import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
@@ -37,7 +37,6 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
-import java.util.Arrays
 
 internal class AdresseRessursTest {
 
@@ -335,7 +334,7 @@ internal class AdresseRessursTest {
             .withUndernummer("36")
         private val JSON_SYS_USTRUKTURERT_ADRESSE: JsonAdresse = JsonUstrukturertAdresse()
             .withKilde(JsonKilde.SYSTEM)
-            .withType(JsonAdresse.Type.USTRUKTURERT).withAdresse(Arrays.asList("Trenger", "Strukturgata", "3"))
+            .withType(JsonAdresse.Type.USTRUKTURERT).withAdresse(listOf("Trenger", "Strukturgata", "3"))
         private val JSON_BRUKER_GATE_ADRESSE: JsonAdresse = JsonGateAdresse()
             .withKilde(JsonKilde.BRUKER)
             .withType(JsonAdresse.Type.GATEADRESSE)

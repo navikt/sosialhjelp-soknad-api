@@ -27,9 +27,11 @@ import java.time.LocalDateTime
 
 internal class PersonServiceTest {
 
-    private val BARN_IDENT = "11111111111"
-    private val EKTEFELLE_IDENT = "22222222222"
-    private val FDAT_IDENT = "11122200000"
+    companion object {
+        private const val BARN_IDENT = "11111111111"
+        private const val EKTEFELLE_IDENT = "22222222222"
+        private const val FDAT_IDENT = "11122200000"
+    }
 
     private val person = Person("fornavn", "mellomnavn", "etternavn", "fnr", "ugift", emptyList(), null, null, null, null)
     private val ektefelle = Ektefelle("fornavn", null, "etternavn", LocalDate.now(), "fnr2", true, false)
@@ -139,6 +141,18 @@ internal class PersonServiceTest {
 
         val result = personService.hentBarnForPerson("ident")
         assertThat(result).isEmpty()
+    }
+
+    @Test
+    internal fun skalIkkeHenteBarnHvisIdentErNull() {
+        every { hentPersonClient.hentPerson(any()) } returns mockPersonDto
+        every { mockPersonDto.forelderBarnRelasjon } returns listOf(ForelderBarnRelasjonDto(null, "BARN", "MOR"))
+
+        val result = personService.hentBarnForPerson("ident")
+        assertThat(result).isNull()
+
+        verify(exactly = 0) { hentPersonClient.hentBarn(any()) }
+        verify(exactly = 0) { mapper.barnDtoToDomain(any(), any(), any()) }
     }
 
     @Test

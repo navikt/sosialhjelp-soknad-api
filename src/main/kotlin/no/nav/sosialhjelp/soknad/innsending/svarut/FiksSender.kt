@@ -9,7 +9,7 @@ import no.ks.fiks.svarut.klient.model.NoarkMetadataFraAvleverendeSaksSystem
 import no.ks.fiks.svarut.klient.model.PostAdresse
 import no.ks.fiks.svarut.klient.model.UtskriftsKonfigurasjon
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
-import no.nav.sosialhjelp.soknad.common.MiljoUtils
+import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.db.repositories.sendtsoknad.SendtSoknad
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.innsending.InnsendingService
@@ -73,7 +73,7 @@ class FiksSender(
             )
     }
 
-    private fun getBehandlingsId(sendtSoknad: SendtSoknad): String? {
+    private fun getBehandlingsId(sendtSoknad: SendtSoknad): String {
         return if (MiljoUtils.isNonProduction()) {
             createPrefixedBehandlingsId(sendtSoknad.behandlingsId)
         } else {
@@ -144,11 +144,7 @@ class FiksSender(
             fiksDokumenter.addAll(dokumenterForVedlegg)
         }
         val antallFiksDokumenter = fiksDokumenter.size
-        log.info(
-            "Antall vedlegg: {}. Antall vedlegg lastet opp av bruker: {}",
-            antallFiksDokumenter,
-            antallVedleggForsendelse
-        )
+        log.info("Antall vedlegg: $antallFiksDokumenter. Antall vedlegg lastet opp av bruker: $antallVedleggForsendelse")
         try {
             val opplastedeVedleggstyper = internalSoknad.vedlegg.vedlegg
                 .filter { jsonVedlegg: JsonVedlegg -> jsonVedlegg.status == "LastetOpp" }
@@ -157,12 +153,7 @@ class FiksSender(
                 antallBrukerOpplastedeVedlegg += vedlegg.filer.size
             }
             if (antallVedleggForsendelse != antallBrukerOpplastedeVedlegg) {
-                log.warn(
-                    "Ulikt antall vedlegg i vedlegg.json og forsendelse til Fiks. vedlegg.json: {}, forsendelse til Fiks: {}. Er ettersendelse: {}",
-                    antallBrukerOpplastedeVedlegg,
-                    antallVedleggForsendelse,
-                    soknadUnderArbeid.erEttersendelse
-                )
+                log.warn("Ulikt antall vedlegg i vedlegg.json og forsendelse til Fiks. vedlegg.json: $antallBrukerOpplastedeVedlegg, forsendelse til Fiks: $antallVedleggForsendelse. Er ettersendelse: ${soknadUnderArbeid.erEttersendelse}")
             }
         } catch (e: RuntimeException) {
             log.debug("Ignored exception")

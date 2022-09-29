@@ -14,7 +14,7 @@ class MineSakerMetadataService(
 ) {
     fun hentInnsendteSoknader(fnr: String): List<InnsendtSoknadDto> {
         val innsendteSoknader = soknadMetadataRepository.hentAlleInnsendteSoknaderForBruker(fnr)
-        log.debug("Fant {} innsendte soknader", innsendteSoknader.size)
+        log.debug("Fant ${innsendteSoknader.size} innsendte soknader")
         return innsendteSoknader.firstOrNull()
             ?.innsendtDato
             ?.let {

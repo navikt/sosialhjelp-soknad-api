@@ -1,9 +1,9 @@
 package no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt
 
+import no.nav.sosialhjelp.soknad.app.Constants.BEARER
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.maskerFnr
+import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.auth.maskinporten.MaskinportenClient
-import no.nav.sosialhjelp.soknad.common.Constants.BEARER
-import no.nav.sosialhjelp.soknad.common.LoggingUtils.maskerFnr
-import no.nav.sosialhjelp.soknad.common.MiljoUtils
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.dto.SkattbarInntekt
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.dto.Sokedata
 import org.slf4j.LoggerFactory.getLogger
@@ -37,13 +37,7 @@ class SkatteetatenClientImpl(
 
         return try {
             webClient.get()
-                .uri { uriBuilder ->
-                    uriBuilder
-                        .path("{personidentifikator}/inntekter")
-                        .queryParam("fraOgMed", sokedata.fom.format(formatter))
-                        .queryParam("tilOgMed", sokedata.tom.format(formatter))
-                        .build(sokedata.identifikator)
-                }
+                .uri("{personidentifikator}/inntekter?fraOgMed={fom}&tilOgMed={tom}", sokedata.identifikator, sokedata.fom.format(formatter), sokedata.tom.format(formatter))
                 .accept(MediaType.APPLICATION_JSON)
                 .headers { it.add(HttpHeaders.AUTHORIZATION, BEARER + maskinportenClient.getToken()) }
                 .retrieve()
@@ -54,7 +48,7 @@ class SkatteetatenClientImpl(
                 }
                 .doOnError { e ->
                     when (e) {
-                        is WebClientResponseException -> log.warn("Klarer ikke hente skatteopplysninger {} status {} ", maskerFnr(e.responseBodyAsString), e.statusCode)
+                        is WebClientResponseException -> log.warn("Klarer ikke hente skatteopplysninger ${maskerFnr(e.responseBodyAsString)} status ${e.statusCode}")
                         else -> log.warn("Klarer ikke hente skatteopplysninger - Exception-type: ${e::class.java}")
                     }
                 }

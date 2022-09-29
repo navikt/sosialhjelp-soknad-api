@@ -9,7 +9,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonPostboksAdresse
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonUstrukturertAdresse
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia
-import no.nav.sosialhjelp.soknad.common.systemdata.Systemdata
+import no.nav.sosialhjelp.soknad.app.systemdata.Systemdata
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Bostedsadresse
@@ -83,7 +83,7 @@ class AdresseSystemdata(
         }
     }
 
-    fun innhentFolkeregistrertAdresse(personIdentifikator: String): JsonAdresse? {
+    private fun innhentFolkeregistrertAdresse(personIdentifikator: String): JsonAdresse? {
         return personService.hentPerson(personIdentifikator)?.let { mapToJsonAdresse(it.bostedsadresse) }
     }
 
@@ -116,7 +116,7 @@ class AdresseSystemdata(
         } else {
             throw IllegalStateException("Ukjent oppholdsadresse fra PDL (skal være Vegadresse)")
         }
-        jsonAdresse.setKilde(JsonKilde.SYSTEM)
+        jsonAdresse.kilde = JsonKilde.SYSTEM
         return jsonAdresse
     }
 

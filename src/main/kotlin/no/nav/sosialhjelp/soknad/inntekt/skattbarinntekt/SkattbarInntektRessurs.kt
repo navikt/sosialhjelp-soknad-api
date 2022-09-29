@@ -6,11 +6,10 @@ import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOrganisasjon
 import no.nav.security.token.support.core.api.ProtectedWithClaims
-import no.nav.sosialhjelp.metrics.aspects.Timed
-import no.nav.sosialhjelp.soknad.common.Constants
-import no.nav.sosialhjelp.soknad.common.mapper.OkonomiMapper.removeBekreftelserIfPresent
-import no.nav.sosialhjelp.soknad.common.mapper.OkonomiMapper.setBekreftelse
-import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
+import no.nav.sosialhjelp.soknad.app.Constants
+import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.removeBekreftelserIfPresent
+import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.setBekreftelse
+import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.tekster.TextService
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
@@ -27,7 +26,6 @@ import javax.ws.rs.core.MediaType
 @Controller
 @ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4])
 @Path("/soknader/{behandlingsId}/inntekt/skattbarinntektogforskuddstrekk")
-@Timed
 @Produces(MediaType.APPLICATION_JSON)
 open class SkattbarInntektRessurs(
     private val tilgangskontroll: Tilgangskontroll,
@@ -94,15 +92,13 @@ open class SkattbarInntektRessurs(
     private fun hentSamtykkeDatoFraSoknad(soknad: JsonInternalSoknad): String? {
         return soknad.soknad.data.okonomi.opplysninger.bekreftelse
             .filter { it.type == UTBETALING_SKATTEETATEN_SAMTYKKE }
-            .filter { it.verdi }
-            .firstOrNull()
+            .firstOrNull { it.verdi }
             ?.bekreftelsesDato
     }
 
     private fun organiserSkattOgForskuddstrekkEtterMaanedOgOrganisasjon(
         skatteopplysninger: List<JsonOkonomiOpplysningUtbetaling>
     ): List<SkattbarInntektOgForskuddstrekk> {
-
         // Skatteetaten returnerer opplysninger månedsvis, så objekter med samme PeriodeFom gjelder for samme periode
         val utbetalingerPerManedPerOrganisasjon: Map<String?, Map<JsonOrganisasjon?, List<JsonOkonomiOpplysningUtbetaling>>> =
             skatteopplysninger

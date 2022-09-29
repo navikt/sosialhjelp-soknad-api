@@ -1,10 +1,9 @@
 package no.nav.sosialhjelp.soknad.vedlegg.fiks
 
 import io.netty.channel.ChannelOption
-import no.nav.sosialhjelp.metrics.MetricsFactory
+import no.nav.sosialhjelp.soknad.app.Constants.HEADER_INTEGRASJON_ID
+import no.nav.sosialhjelp.soknad.app.Constants.HEADER_INTEGRASJON_PASSORD
 import no.nav.sosialhjelp.soknad.auth.maskinporten.MaskinportenClient
-import no.nav.sosialhjelp.soknad.common.Constants.HEADER_INTEGRASJON_ID
-import no.nav.sosialhjelp.soknad.common.Constants.HEADER_INTEGRASJON_PASSORD
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DokumentlagerClient
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.KrypteringService
 import org.springframework.beans.factory.annotation.Value
@@ -23,22 +22,21 @@ open class MellomlagringConfig(
     private val dokumentlagerClient: DokumentlagerClient,
     private val krypteringService: KrypteringService,
     private val maskinportenClient: MaskinportenClient,
-    proxiedWebClientBuilder: WebClient.Builder,
-    proxiedHttpClient: HttpClient,
+    webClientBuilder: WebClient.Builder,
+    proxiedHttpClient: HttpClient
 ) {
 
     @Bean
     open fun mellomlagringClient(): MellomlagringClient {
-        val mellomlagringClient = MellomlagringClientImpl(
+        return MellomlagringClientImpl(
             dokumentlagerClient,
             krypteringService,
             maskinportenClient,
             webClient
         )
-        return MetricsFactory.createTimerProxy("MellomlagringClient", mellomlagringClient, MellomlagringClient::class.java)
     }
 
-    private val webClient = proxiedWebClientBuilder
+    private val webClient = webClientBuilder
         .baseUrl(digisosApiEndpoint)
         .clientConnector(
             ReactorClientHttpConnector(

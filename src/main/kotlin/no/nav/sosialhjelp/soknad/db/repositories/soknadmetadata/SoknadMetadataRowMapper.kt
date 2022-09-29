@@ -22,7 +22,7 @@ object SoknadMetadataRowMapper {
             opprettetDato = SQLUtils.timestampTilTid(rs.getTimestamp("opprettetdato")),
             sistEndretDato = SQLUtils.timestampTilTid(rs.getTimestamp("sistendretdato")),
             innsendtDato = SQLUtils.nullableTimestampTilTid(rs.getTimestamp("innsendtdato")),
-            lestDittNav = rs.getBoolean("lest_ditt_nav"),
+            lest = rs.getBoolean("lest_ditt_nav"),
         )
     }
 }

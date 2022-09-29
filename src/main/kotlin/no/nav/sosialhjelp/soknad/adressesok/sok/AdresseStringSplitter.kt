@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.adressesok.sok
 
-import no.nav.sosialhjelp.soknad.client.kodeverk.KodeverkService
+import no.nav.sosialhjelp.soknad.kodeverk.KodeverkService
 import java.util.regex.Pattern
 
 object AdresseStringSplitter {

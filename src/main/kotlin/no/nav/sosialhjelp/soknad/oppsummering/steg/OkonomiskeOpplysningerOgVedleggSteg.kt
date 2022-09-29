@@ -37,7 +37,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktU
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
-import no.nav.sosialhjelp.soknad.common.mapper.TitleKeyMapper
+import no.nav.sosialhjelp.soknad.app.mapper.TitleKeyMapper
 import no.nav.sosialhjelp.soknad.oppsummering.dto.Avsnitt
 import no.nav.sosialhjelp.soknad.oppsummering.dto.Felt
 import no.nav.sosialhjelp.soknad.oppsummering.dto.Sporsmal
@@ -95,12 +95,16 @@ class OkonomiskeOpplysningerOgVedleggSteg {
             ?.forEach {
                 sporsmal.add(
                     integerVerdiSporsmalMedTittel(
-                        getTitleKey(it.type), "opplysninger.arbeid.jobb.bruttolonn.label", it.brutto
+                        getTitleKey(it.type),
+                        "opplysninger.arbeid.jobb.bruttolonn.label",
+                        it.brutto
                     )
                 )
                 sporsmal.add(
                     integerVerdiSporsmalMedTittel(
-                        getTitleKey(it.type), "opplysninger.arbeid.jobb.nettolonn.label", it.netto
+                        getTitleKey(it.type),
+                        "opplysninger.arbeid.jobb.nettolonn.label",
+                        it.netto
                     )
                 )
             }
@@ -111,7 +115,9 @@ class OkonomiskeOpplysningerOgVedleggSteg {
             ?.forEach {
                 sporsmal.add(
                     integerVerdiSporsmalMedTittel(
-                        getTitleKey(it.type), "opplysninger.arbeid.student.utbetaling.label", it.netto
+                        getTitleKey(it.type),
+                        "opplysninger.arbeid.student.utbetaling.label",
+                        it.netto
                     )
                 )
             }

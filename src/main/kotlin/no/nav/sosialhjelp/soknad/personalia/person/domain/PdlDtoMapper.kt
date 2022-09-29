@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.personalia.person.domain
 
-import no.nav.sosialhjelp.soknad.client.kodeverk.KodeverkService
+import no.nav.sosialhjelp.soknad.kodeverk.KodeverkService
 import no.nav.sosialhjelp.soknad.personalia.person.dto.AdressebeskyttelseDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.BarnDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.BostedsadresseDto
@@ -251,10 +251,11 @@ open class PdlDtoMapper(
     ): Kontaktadresse? {
         return if (dtos == null || dtos.isEmpty()) {
             null
-        } else
+        } else {
             dtos
                 .firstOrNull { it.vegadresse != null && filterVegadresseNotEqualToBostedsadresse(bostedsadresseDtos, it.vegadresse) }
                 ?.let { Kontaktadresse(it.coAdressenavn, it.vegadresse?.let { vegadresse -> mapToVegadresse(vegadresse) }) }
+        }
     }
 
     private fun filterVegadresseNotEqualToBostedsadresse(

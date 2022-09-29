@@ -3,14 +3,14 @@ package no.nav.sosialhjelp.soknad.innsending
 import io.mockk.every
 import io.mockk.mockkObject
 import io.mockk.unmockkObject
-import no.nav.sosialhjelp.soknad.common.MiljoUtils
+import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.innsending.SenderUtils.createPrefixedBehandlingsId
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 internal class SenderUtilsTest {
 
-    var originalBehandlingsId = "behandlingsId"
+    private var originalBehandlingsId = "behandlingsId"
 
     @Test
     fun createPrefixedBehandlingsId_shouldBePrefixedWithEnvironmentName() {

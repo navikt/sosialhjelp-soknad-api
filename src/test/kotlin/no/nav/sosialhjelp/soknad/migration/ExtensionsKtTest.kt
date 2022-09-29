@@ -17,6 +17,7 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.Vedleggstatus
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
+import no.nav.sosialhjelp.soknad.migration.Extensions.toDto
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
@@ -54,7 +55,7 @@ internal class ExtensionsKtTest {
             opprettetDato = LocalDateTime.now(),
             sistEndretDato = LocalDateTime.now(),
             innsendtDato = null,
-            lestDittNav = false
+            lest = false
         )
 
         val dto = soknadMetadata.toDto()
@@ -74,7 +75,7 @@ internal class ExtensionsKtTest {
         assertThat(dto.status).isEqualTo(soknadMetadata.status)
         assertThat(dto.opprettetDato).isEqualTo(soknadMetadata.opprettetDato)
         assertThat(dto.innsendtDato).isEqualTo(soknadMetadata.innsendtDato)
-        assertThat(dto.lestDittNav).isEqualTo(soknadMetadata.lestDittNav)
+        assertThat(dto.lest).isEqualTo(soknadMetadata.lest)
     }
 
     @Test

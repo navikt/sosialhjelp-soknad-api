@@ -2,17 +2,17 @@ package no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo
 
 import com.fasterxml.jackson.core.JsonProcessingException
 import no.nav.sosialhjelp.api.fiks.KommuneInfo
-import no.nav.sosialhjelp.soknad.client.redis.KOMMUNEINFO_CACHE_KEY
-import no.nav.sosialhjelp.soknad.client.redis.KOMMUNEINFO_CACHE_SECONDS
-import no.nav.sosialhjelp.soknad.client.redis.KOMMUNEINFO_LAST_POLL_TIME_KEY
-import no.nav.sosialhjelp.soknad.client.redis.RedisService
-import no.nav.sosialhjelp.soknad.client.redis.RedisUtils.redisObjectMapper
-import no.nav.sosialhjelp.soknad.common.mapper.KommuneTilNavEnhetMapper
+import no.nav.sosialhjelp.soknad.app.mapper.KommuneTilNavEnhetMapper
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus.FIKS_NEDETID_OG_TOM_CACHE
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus.HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus.MANGLER_KONFIGURASJON
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus.SKAL_SENDE_SOKNADER_OG_ETTERSENDELSER_VIA_FDA
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus.SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD_OG_ETTERSENDELSER
+import no.nav.sosialhjelp.soknad.redis.KOMMUNEINFO_CACHE_KEY
+import no.nav.sosialhjelp.soknad.redis.KOMMUNEINFO_CACHE_SECONDS
+import no.nav.sosialhjelp.soknad.redis.KOMMUNEINFO_LAST_POLL_TIME_KEY
+import no.nav.sosialhjelp.soknad.redis.RedisService
+import no.nav.sosialhjelp.soknad.redis.RedisUtils.redisObjectMapper
 import org.slf4j.LoggerFactory.getLogger
 import org.springframework.stereotype.Component
 import java.nio.charset.StandardCharsets.UTF_8
@@ -21,7 +21,7 @@ import java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME
 
 @Component
 class KommuneInfoService(
-    private val kommuneInfoMaskinportenClient: KommuneInfoMaskinportenClient,
+    private val kommuneInfoClient: KommuneInfoClient,
     private val redisService: RedisService,
 ) {
 
@@ -110,7 +110,7 @@ class KommuneInfoService(
     }
 
     fun hentKommuneInfoFraFiks(): List<KommuneInfo> {
-        return kommuneInfoMaskinportenClient.getAll()
+        return kommuneInfoClient.getAll()
             .also { log.info("Hentet kommuneinfo ved bruk av maskinporten-integrasjon mot ks:fiks") }
     }
 

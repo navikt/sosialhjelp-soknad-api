@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.vedlegg.exceptions
 
-import no.nav.sosialhjelp.soknad.common.exceptions.SosialhjelpSoknadApiException
+import no.nav.sosialhjelp.soknad.app.exceptions.SosialhjelpSoknadApiException
 
 class OpplastingException(message: String?, cause: Throwable?, id: String?) :
     SosialhjelpSoknadApiException(message, cause, id)

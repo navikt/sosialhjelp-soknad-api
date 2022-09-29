@@ -99,7 +99,7 @@ internal class ArbeidsforholdSystemdataTest {
     }
 
     @Test
-    fun skalFjerneArbeidsforholdOgFjerneUtbetalingOgInntekt() {
+    fun `hvis arbeidsforholdService returnerer null saa skal forventede vedlegg for utbetaling og inntekt fjernes`() {
         val soknadUnderArbeid = createSoknadUnderArbeid()
         soknadUnderArbeid.jsonInternalSoknad = createSoknadUnderArbeidWithArbeidsforholdAndSluttOppgjorAndLonnslipp()
 
@@ -110,7 +110,7 @@ internal class ArbeidsforholdSystemdataTest {
         val jsonArbeidsforholdList = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.arbeid.forhold
         val utbetalinger = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.utbetaling
         val inntekter = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.okonomi.oversikt.inntekt
-        assertThat(jsonArbeidsforholdList).isNull()
+        assertThat(jsonArbeidsforholdList).isEmpty()
         assertThat(utbetalinger).isEmpty()
         assertThat(inntekter).isEmpty()
     }

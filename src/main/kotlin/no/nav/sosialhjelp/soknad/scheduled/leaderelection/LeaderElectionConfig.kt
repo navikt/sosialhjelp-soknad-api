@@ -6,14 +6,12 @@ import org.springframework.context.annotation.Profile
 import org.springframework.web.reactive.function.client.WebClient
 
 @Configuration
-open class LeaderElectionConfig(
-    private val nonProxiedWebClientBuilder: WebClient.Builder
-) {
+open class LeaderElectionConfig {
 
     @Profile("leader-election")
     @Bean
-    open fun leaderElection(): LeaderElection {
-        return LeaderElectionImpl(nonProxiedWebClientBuilder)
+    open fun leaderElection(webClientBuilder: WebClient.Builder): LeaderElection {
+        return LeaderElectionImpl(webClientBuilder)
     }
 
     @Profile("!leader-election")

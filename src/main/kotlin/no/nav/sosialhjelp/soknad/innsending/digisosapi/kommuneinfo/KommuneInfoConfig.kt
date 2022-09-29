@@ -1,32 +1,34 @@
 package no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo
 
-import no.nav.sosialhjelp.metrics.MetricsFactory.createTimerProxy
+import no.nav.sosialhjelp.soknad.app.client.config.proxiedWebClientBuilder
 import no.nav.sosialhjelp.soknad.auth.maskinporten.MaskinportenClient
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.web.reactive.function.client.WebClient
+import reactor.netty.http.client.HttpClient
 
 @Configuration
 open class KommuneInfoConfig(
-    private val proxiedWebClientBuilder: WebClient.Builder,
-    private val maskinportenClient: MaskinportenClient,
     @Value("\${digisos_api_baseurl}") private val digisosApiEndpoint: String,
     @Value("\${integrasjonsid_fiks}") private val integrasjonsidFiks: String,
-    @Value("\${integrasjonpassord_fiks}") private val integrasjonpassordFiks: String
+    @Value("\${integrasjonpassord_fiks}") private val integrasjonpassordFiks: String,
+    private val maskinportenClient: MaskinportenClient,
+    webClientBuilder: WebClient.Builder,
+    proxiedHttpClient: HttpClient,
 ) {
 
     @Bean
-    open fun kommuneInfoMaskinportenClient(): KommuneInfoMaskinportenClient {
-        val kommuneInfoMaskinportenClient = KommuneInfoMaskinportenClientImpl(
-            kommuneInfoMaskinportenWebClient,
+    open fun kommuneInfoClient(): KommuneInfoClient {
+        return KommuneInfoClientImpl(
+            kommuneInfoWebClient,
             maskinportenClient,
             integrasjonsidFiks,
             integrasjonpassordFiks
         )
-        return createTimerProxy("KommuneInfoMaskinportenClient", kommuneInfoMaskinportenClient, KommuneInfoMaskinportenClient::class.java)
     }
 
-    private val kommuneInfoMaskinportenWebClient: WebClient
-        get() = proxiedWebClientBuilder.baseUrl(digisosApiEndpoint).build()
+    private val kommuneInfoWebClient: WebClient = proxiedWebClientBuilder(webClientBuilder, proxiedHttpClient)
+        .baseUrl(digisosApiEndpoint)
+        .build()
 }

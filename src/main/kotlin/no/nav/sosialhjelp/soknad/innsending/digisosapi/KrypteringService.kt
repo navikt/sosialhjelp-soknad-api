@@ -2,9 +2,8 @@ package no.nav.sosialhjelp.soknad.innsending.digisosapi
 
 import no.ks.kryptering.CMSKrypteringImpl
 import no.ks.kryptering.CMSStreamKryptering
-import no.nav.sosialhjelp.kotlin.utils.logger
-import no.nav.sosialhjelp.soknad.common.MiljoUtils
-import no.nav.sosialhjelp.soknad.common.ServiceUtils
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
+import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import org.apache.commons.io.IOUtils
 import org.springframework.stereotype.Component
 import java.io.IOException
@@ -22,9 +21,7 @@ import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
 
 @Component
-class KrypteringService(
-    private val serviceUtils: ServiceUtils
-) {
+class KrypteringService {
     private val executor = ExecutorCompletionService<Void>(Executors.newCachedThreadPool())
     private val kryptering: CMSStreamKryptering = CMSKrypteringImpl()
 
@@ -38,7 +35,7 @@ class KrypteringService(
             val pipedOutputStream = PipedOutputStream(pipedInputStream)
             val krypteringFuture = executor.submit {
                 try {
-                    if (MiljoUtils.isNonProduction() && serviceUtils.isMockAltProfil()) {
+                    if (MiljoUtils.isNonProduction() && MiljoUtils.isMockAltProfil()) {
                         IOUtils.copy(dokumentStream, pipedOutputStream)
                     } else {
                         kryptering.krypterData(

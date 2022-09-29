@@ -3,7 +3,6 @@ package no.nav.sosialhjelp.soknad.api.informasjon
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.security.token.support.core.api.Unprotected
 import no.nav.sosialhjelp.api.fiks.KommuneInfo
-import no.nav.sosialhjelp.metrics.aspects.Timed
 import no.nav.sosialhjelp.soknad.adressesok.AdressesokService
 import no.nav.sosialhjelp.soknad.adressesok.domain.AdresseForslag
 import no.nav.sosialhjelp.soknad.api.informasjon.dto.KommuneInfoFrontend
@@ -13,16 +12,15 @@ import no.nav.sosialhjelp.soknad.api.informasjon.dto.Logg
 import no.nav.sosialhjelp.soknad.api.informasjon.dto.NyligInnsendteSoknaderResponse
 import no.nav.sosialhjelp.soknad.api.informasjon.dto.PabegyntSoknad
 import no.nav.sosialhjelp.soknad.api.nedetid.NedetidService
-import no.nav.sosialhjelp.soknad.common.Constants
-import no.nav.sosialhjelp.soknad.common.mapper.KommuneTilNavEnhetMapper.digisoskommuner
-import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
+import no.nav.sosialhjelp.soknad.app.Constants
+import no.nav.sosialhjelp.soknad.app.mapper.KommuneTilNavEnhetMapper.digisoskommuner
+import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
 import no.nav.sosialhjelp.soknad.personalia.person.dto.Gradering.FORTROLIG
 import no.nav.sosialhjelp.soknad.personalia.person.dto.Gradering.STRENGT_FORTROLIG
 import no.nav.sosialhjelp.soknad.personalia.person.dto.Gradering.STRENGT_FORTROLIG_UTLAND
-import no.nav.sosialhjelp.soknad.tekster.BUNDLE_NAME
 import no.nav.sosialhjelp.soknad.tekster.NavMessageSource
 import org.apache.commons.lang3.LocaleUtils
 import org.apache.commons.lang3.StringUtils
@@ -46,7 +44,6 @@ import javax.ws.rs.core.MediaType
 @ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4])
 @Path("/informasjon")
 @Produces(MediaType.APPLICATION_JSON)
-@Timed
 open class InformasjonRessurs(
     private val messageSource: NavMessageSource,
     private val adresseSokService: AdressesokService,
@@ -57,9 +54,12 @@ open class InformasjonRessurs(
     private val nedetidService: NedetidService
 ) {
 
-    private val logger = LoggerFactory.getLogger(InformasjonRessurs::class.java)
-    private val klientlogger = LoggerFactory.getLogger("klientlogger")
-    private val FJORTEN_DAGER = 14
+    companion object {
+        private val logger = LoggerFactory.getLogger(InformasjonRessurs::class.java)
+        private val klientlogger = LoggerFactory.getLogger("klientlogger")
+        private const val FJORTEN_DAGER = 14
+        private const val SOKNADSOSIALHJELP = "soknadsosialhjelp"
+    }
 
     @GET
     @Path("/fornavn")
@@ -80,10 +80,10 @@ open class InformasjonRessurs(
         if (sprak == null || sprak.trim { it <= ' ' }.isEmpty()) {
             sprak = "nb_NO"
         }
-        if (StringUtils.isNotEmpty(type) && BUNDLE_NAME != type.lowercase(Locale.getDefault())) {
+        if (StringUtils.isNotEmpty(type) && SOKNADSOSIALHJELP != type.lowercase(Locale.getDefault())) {
             val prefiksetType = "soknad" + type.lowercase(Locale.getDefault())
-            logger.warn("Type {} matcher ikke et bundlename - forsøker med prefiks {}", type, prefiksetType)
-            if (BUNDLE_NAME == prefiksetType) {
+            logger.warn("Type $type matcher ikke et bundlename - forsøker med prefiks $prefiksetType")
+            if (SOKNADSOSIALHJELP == prefiksetType) {
                 type = prefiksetType
             }
         }
@@ -128,11 +128,7 @@ open class InformasjonRessurs(
     @GET
     @Path("/kommunelogg")
     open fun triggeKommunelogg(@QueryParam("kommunenummer") kommunenummer: String): String? {
-        logger.info(
-            "Kommuneinfo trigget for {}: {}",
-            kommunenummer,
-            kommuneInfoService.kommuneInfo(kommunenummer)
-        )
+        logger.info("Kommuneinfo trigget for $kommunenummer: ${kommuneInfoService.kommuneInfo(kommunenummer)}")
         return "$kommunenummer er logget. Sjekk kibana"
     }
 
@@ -145,6 +141,8 @@ open class InformasjonRessurs(
         }
         val manueltPakobledeKommuner = mapManueltPakobledeKommuner(digisoskommuner)
         val digisosKommuner = mapDigisosKommuner(kommuneInfoService.hentAlleKommuneInfo())
+        val kunManueltPakobledeKommuner = manueltPakobledeKommuner.keys.filter { !digisosKommuner.containsKey(it) }
+        logger.info("/kommuneinfo - Kommuner som kun er manuelt påkoblet via PROD_DIGISOS_KOMMUNER: $kunManueltPakobledeKommuner")
         return mergeManuelleKommunerMedDigisosKommuner(manueltPakobledeKommuner, digisosKommuner)
     }
 
@@ -157,6 +155,8 @@ open class InformasjonRessurs(
         }
         val manueltPakobledeKommuner = mapManueltPakobledeKommunerTilKommunestatusFrontend(digisoskommuner)
         val digisosKommuner = mapDigisosKommunerTilKommunestatus(kommuneInfoService.hentAlleKommuneInfo())
+        val kunManueltPakobledeKommuner = manueltPakobledeKommuner.keys.filter { !digisosKommuner.containsKey(it) }
+        logger.info("/kommunestatus - Kommuner som kun er manuelt påkoblet via PROD_DIGISOS_KOMMUNER: $kunManueltPakobledeKommuner")
         return mergeManuelleKommunerMedDigisosKommunerKommunestatus(manueltPakobledeKommuner, digisosKommuner)
     }
 
@@ -189,7 +189,7 @@ open class InformasjonRessurs(
             .associateBy { it.kommunenummer }
     }
 
-    fun mapManueltPakobledeKommunerTilKommunestatusFrontend(manuelleKommuner: List<String>): Map<String, KommunestatusFrontend> {
+    private fun mapManueltPakobledeKommunerTilKommunestatusFrontend(manuelleKommuner: List<String>): Map<String, KommunestatusFrontend> {
         return manuelleKommuner
             .map {
                 KommunestatusFrontend(
@@ -215,7 +215,7 @@ open class InformasjonRessurs(
             ?.toMutableMap() ?: mutableMapOf()
     }
 
-    fun mapDigisosKommunerTilKommunestatus(digisosKommuner: Map<String, KommuneInfo>?): MutableMap<String, KommunestatusFrontend> {
+    private fun mapDigisosKommunerTilKommunestatus(digisosKommuner: Map<String, KommuneInfo>?): MutableMap<String, KommunestatusFrontend> {
         return digisosKommuner?.values
             ?.map {
                 KommunestatusFrontend(
@@ -246,7 +246,7 @@ open class InformasjonRessurs(
         return digisosKommuner
     }
 
-    fun mergeManuelleKommunerMedDigisosKommunerKommunestatus(
+    private fun mergeManuelleKommunerMedDigisosKommunerKommunestatus(
         manuelleKommuner: Map<String, KommunestatusFrontend>,
         digisosKommuner: MutableMap<String, KommunestatusFrontend>
     ): Map<String, KommunestatusFrontend> {

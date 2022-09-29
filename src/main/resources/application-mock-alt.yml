@@ -1,7 +1,3 @@
-application:
-  name: ${NAIS_APP_NAME:sosialhjelp-soknad-api}
-  version: ${NAIS_APP_IMAGE:version}
-
 server:
   port: ${PORT:8181}
 
@@ -19,24 +15,18 @@ spring:
     username: sa
     password:
 
-metrics.report.enabled: false
-sensu_client_host: 127.0.0.1
-sensu_client_port: 8989
-
-environment.name: ${ENVIRONMENT_NAME:local}
-
 mock-alt-api-host: ${MOCK_ALT_API_HOST:127.0.0.1}
 mock-alt-api-wellknown-queryparam: ${MOCK_ALT_API_WELLKNOWN_QUERYPARAM:}
 
 # rest
 digisos_api_baseurl: ${DIGISOS_API_BASEURL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/fiks/}
-ereg_proxy_url: ${EREG_PROXY_URL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/ereg/}
+ereg_url: ${EREG_URL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/ereg}
 aareg_proxy_url: ${AAREG_PROXY_URL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/aareg/}
-krr_proxy_url: ${KRR_PROXY_URL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/krr_endpoint_url/}
+krr_proxy_url: ${KRR_PROXY_URL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/krr/}
 pdl_api_url: ${PDL_API_URL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/pdl_endpoint_url/}
-kodeverk_proxy_url: ${KODEVERK_PROXY_URL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/kodeverk/}
+kodeverk_url: ${KODEVERK_URL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/kodeverk}
 unleash_api_url: ${UNLEASH_API_URL:https://unleash.nais.io/api}
-norg_proxy_url: ${NORG_PROXY_URL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/norg_endpoint_url/}
+norg_url: ${NORG_URL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/norg_endpoint_url}
 fss_proxy_ping_url: ${FSS_PROXY_PING_URL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/fss-proxy/ping}
 oppslag_api_baseurl: ${OPPSLAG_API_BASEURL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/oppslag-api/}
 soknad.bostotte.url: ${SOKNAD_BOSTOTTE_URL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/husbanken}
@@ -83,7 +73,6 @@ oidc.issuer.selvbetjening.proxy_url: dummy
 loginservice.url: ${LOGINSERVICE_URL:http://localhost:3008/sosialhjelp/mock-alt/login}
 
 virusscan_enabled: false
-soknad.ettersending.antalldager: 180
 
 # redis
 redis_host: ${REDIS_HOST:localhost}
@@ -91,10 +80,10 @@ redis_port: 6379
 redis_password: ${REDIS_PASSWORD:pw}
 
 # Feature toggles
-unleash_instance_id: ${UNLEASH_INSTANCE_ID:labs-gcp}
+unleash_instance_id: ${UNLEASH_INSTANCE_ID:mock}
 scheduler.disable: ${SCHEDULER_DISABLE:false}
 sendsoknad.batch.enabled: true
-feature.fiks.kryptering.enabled: true
+feature.fiks.kryptering.enabled: false
 
 #Nedetid
 nedetid.start: ${NEDETID_START:}

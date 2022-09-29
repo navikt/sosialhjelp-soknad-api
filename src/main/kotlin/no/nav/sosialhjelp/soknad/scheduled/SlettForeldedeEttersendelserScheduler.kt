@@ -1,7 +1,5 @@
 package no.nav.sosialhjelp.soknad.scheduled
 
-import no.nav.sosialhjelp.metrics.MetricsFactory
-import no.nav.sosialhjelp.metrics.Timer
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.BatchSoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.innsending.HenvendelseService
@@ -36,15 +34,9 @@ class SlettForeldedeEttersendelserScheduler(
             feilet = 0
             if (batchEnabled) {
                 logger.info("Starter sletting av foreldede ettersendelser fra SoknadUnderArbeid-tabell")
-                val batchTimer = MetricsFactory.createTimer("debug.lagringsjobb")
-                batchTimer.start()
 
-                hentForeldedeEttersendelserFraDatabaseOgSlett(batchTimer)
+                hentForeldedeEttersendelserFraDatabaseOgSlett()
 
-                batchTimer.stop()
-                batchTimer.addFieldToReport("vellykket", vellykket)
-                batchTimer.addFieldToReport("feilet", feilet)
-                batchTimer.report()
                 logger.info("Jobb fullført: $vellykket vellykket, $feilet feilet")
             } else {
                 logger.warn("Batch disabled. Må sette environment property sendsoknad.batch.enabled til true for å sette den på igjen")
@@ -52,7 +44,7 @@ class SlettForeldedeEttersendelserScheduler(
         }
     }
 
-    private fun hentForeldedeEttersendelserFraDatabaseOgSlett(metrikk: Timer) {
+    private fun hentForeldedeEttersendelserFraDatabaseOgSlett() {
         val soknadUnderArbeidList = batchSoknadUnderArbeidRepository.hentForeldedeEttersendelser()
         for (soknadUnderArbeid in soknadUnderArbeidList) {
             if (soknadUnderArbeid.erEttersendelse) {
@@ -61,7 +53,6 @@ class SlettForeldedeEttersendelserScheduler(
                 // Avslutt prosessen hvis det er gått for lang tid. Tyder på at noe er nede.
                 if (harGaattForLangTid()) {
                     logger.warn("Jobben har kjørt i mer enn $SCHEDULE_INTERRUPT_S s. Den blir derfor stoppet")
-                    metrikk.addFieldToReport("avbruttPgaTid", true)
                     return
                 }
             } else {

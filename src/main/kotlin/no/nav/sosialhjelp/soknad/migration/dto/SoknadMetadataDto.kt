@@ -21,7 +21,7 @@ data class SoknadMetadataDto(
     val opprettetDato: LocalDateTime,
     val sistEndretDato: LocalDateTime,
     val innsendtDato: LocalDateTime?,
-    val lestDittNav: Boolean
+    val lest: Boolean
 )
 
 data class VedleggMetadataListeDto(

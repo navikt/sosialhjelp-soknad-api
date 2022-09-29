@@ -1,8 +1,8 @@
 package no.nav.sosialhjelp.soknad.tilgangskontroll
 
-import no.nav.sosialhjelp.soknad.common.exceptions.AuthorizationException
-import no.nav.sosialhjelp.soknad.common.exceptions.SosialhjelpSoknadApiException
-import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
+import no.nav.sosialhjelp.soknad.app.exceptions.AuthorizationException
+import no.nav.sosialhjelp.soknad.app.exceptions.SosialhjelpSoknadApiException
+import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import org.apache.commons.codec.binary.Base64
 import java.security.InvalidKeyException
 import java.security.NoSuchAlgorithmException
@@ -19,10 +19,10 @@ object XsrfGenerator {
     fun generateXsrfToken(
         behandlingsId: String?,
         date: String = ZonedDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")),
-        token: String? = SubjectHandlerUtils.getToken()
+        id: String? = SubjectHandlerUtils.getUserIdFromToken()
     ): String {
         return try {
-            val signKey = token + behandlingsId + date
+            val signKey = id + behandlingsId + date
             val hmac = Mac.getInstance("HmacSHA256")
             val secretKey = SecretKeySpec(SECRET.toByteArray(), "HmacSHA256")
             hmac.init(secretKey)
@@ -35,8 +35,8 @@ object XsrfGenerator {
     }
 
     fun sjekkXsrfToken(givenToken: String?, behandlingsId: String?, isMockProfil: Boolean) {
-        val token = generateXsrfToken(behandlingsId)
-        val valid = token == givenToken || generateXsrfToken(behandlingsId, ZonedDateTime.now().minusDays(1).format(DateTimeFormatter.ofPattern("yyyyMMdd"))) == givenToken
+        val xsrfToken = generateXsrfToken(behandlingsId)
+        val valid = xsrfToken == givenToken || generateXsrfToken(behandlingsId, ZonedDateTime.now().minusDays(1).format(DateTimeFormatter.ofPattern("yyyyMMdd"))) == givenToken
         if (!valid && !isMockProfil) {
             throw AuthorizationException("Feil token")
         }

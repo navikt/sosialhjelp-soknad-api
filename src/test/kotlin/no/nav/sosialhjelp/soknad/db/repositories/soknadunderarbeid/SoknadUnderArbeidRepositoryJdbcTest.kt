@@ -2,8 +2,8 @@ package no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid
 
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sosialhjelp.soknad.Application
-import no.nav.sosialhjelp.soknad.common.exceptions.SamtidigOppdateringException
-import no.nav.sosialhjelp.soknad.common.exceptions.SoknadLaastException
+import no.nav.sosialhjelp.soknad.app.exceptions.SamtidigOppdateringException
+import no.nav.sosialhjelp.soknad.app.exceptions.SoknadLaastException
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedlegg
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRepository
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggType

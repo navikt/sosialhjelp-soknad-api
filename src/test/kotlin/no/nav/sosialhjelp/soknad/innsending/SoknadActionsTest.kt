@@ -12,14 +12,14 @@ import io.mockk.verify
 import no.finn.unleash.Unleash
 import no.nav.sosialhjelp.soknad.api.nedetid.NedetidService
 import no.nav.sosialhjelp.soknad.api.nedetid.NedetidService.Companion.dateTimeFormatter
-import no.nav.sosialhjelp.soknad.common.MiljoUtils
-import no.nav.sosialhjelp.soknad.common.exceptions.AuthorizationException
-import no.nav.sosialhjelp.soknad.common.exceptions.SendingTilKommuneErIkkeAktivertException
-import no.nav.sosialhjelp.soknad.common.exceptions.SendingTilKommuneErMidlertidigUtilgjengeligException
-import no.nav.sosialhjelp.soknad.common.exceptions.SendingTilKommuneUtilgjengeligException
-import no.nav.sosialhjelp.soknad.common.exceptions.SoknadenHarNedetidException
-import no.nav.sosialhjelp.soknad.common.subjecthandler.StaticSubjectHandlerImpl
-import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
+import no.nav.sosialhjelp.soknad.app.MiljoUtils
+import no.nav.sosialhjelp.soknad.app.exceptions.AuthorizationException
+import no.nav.sosialhjelp.soknad.app.exceptions.SendingTilKommuneErIkkeAktivertException
+import no.nav.sosialhjelp.soknad.app.exceptions.SendingTilKommuneErMidlertidigUtilgjengeligException
+import no.nav.sosialhjelp.soknad.app.exceptions.SendingTilKommuneUtilgjengeligException
+import no.nav.sosialhjelp.soknad.app.exceptions.SoknadenHarNedetidException
+import no.nav.sosialhjelp.soknad.app.subjecthandler.StaticSubjectHandlerImpl
+import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadata
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataInnsendingStatus
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
@@ -45,7 +45,6 @@ import java.time.LocalDateTime
 import javax.servlet.ServletContext
 
 internal class SoknadActionsTest {
-    private lateinit var EIER: String
 
     private val soknadService: SoknadService = mockk()
     private val kommuneInfoService: KommuneInfoService = mockk()
@@ -288,6 +287,8 @@ internal class SoknadActionsTest {
     }
 
     companion object {
+        private lateinit var EIER: String
+
         const val KOMMUNE_I_SVARUT_LISTEN = "0301"
 
         private fun createSoknadUnderArbeid(eier: String): SoknadUnderArbeid {

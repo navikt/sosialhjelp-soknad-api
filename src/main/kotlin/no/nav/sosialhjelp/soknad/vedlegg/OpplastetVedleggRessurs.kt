@@ -2,17 +2,16 @@ package no.nav.sosialhjelp.soknad.vedlegg
 
 import no.finn.unleash.Unleash
 import no.nav.security.token.support.core.api.ProtectedWithClaims
-import no.nav.sosialhjelp.kotlin.utils.logger
-import no.nav.sosialhjelp.metrics.aspects.Timed
-import no.nav.sosialhjelp.soknad.common.Constants
-import no.nav.sosialhjelp.soknad.common.filedetection.FileDetectionUtils.getMimeType
-import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
+import no.nav.sosialhjelp.soknad.app.Constants
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
+import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import no.nav.sosialhjelp.soknad.vedlegg.dto.FilFrontend
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.OpplastingException
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
+import no.nav.sosialhjelp.soknad.vedlegg.filedetection.FileDetectionUtils.getMimeType
 import org.apache.commons.io.IOUtils
 import org.glassfish.jersey.media.multipart.FormDataBodyPart
 import org.glassfish.jersey.media.multipart.FormDataParam
@@ -36,7 +35,6 @@ import javax.ws.rs.core.Response
 @ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4])
 @Path("/opplastetVedlegg")
 @Produces(MediaType.APPLICATION_JSON)
-@Timed
 open class OpplastetVedleggRessurs(
     private val opplastetVedleggRepository: OpplastetVedleggRepository,
     private val opplastetVedleggService: OpplastetVedleggService,

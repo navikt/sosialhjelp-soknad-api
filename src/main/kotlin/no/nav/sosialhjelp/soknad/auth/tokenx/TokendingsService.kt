@@ -5,10 +5,10 @@ import com.auth0.jwt.algorithms.Algorithm
 import com.nimbusds.jose.jwk.KeyUse
 import com.nimbusds.jose.jwk.RSAKey
 import com.nimbusds.jose.jwk.gen.RSAKeyGenerator
-import no.nav.sosialhjelp.kotlin.utils.logger
-import no.nav.sosialhjelp.soknad.client.redis.RedisService
-import no.nav.sosialhjelp.soknad.client.redis.TOKENDINGS_CACHE_KEY_PREFIX
-import no.nav.sosialhjelp.soknad.common.MiljoUtils.isNonProduction
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
+import no.nav.sosialhjelp.soknad.app.MiljoUtils.isNonProduction
+import no.nav.sosialhjelp.soknad.redis.RedisService
+import no.nav.sosialhjelp.soknad.redis.TOKENDINGS_CACHE_KEY_PREFIX
 import org.springframework.web.reactive.function.client.WebClientResponseException
 import java.time.Instant
 import java.util.Date

@@ -11,10 +11,10 @@ import io.mockk.unmockkObject
 import io.mockk.verify
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonTelefonnummer
-import no.nav.sosialhjelp.soknad.common.MiljoUtils
-import no.nav.sosialhjelp.soknad.common.exceptions.AuthorizationException
-import no.nav.sosialhjelp.soknad.common.subjecthandler.StaticSubjectHandlerImpl
-import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
+import no.nav.sosialhjelp.soknad.app.MiljoUtils
+import no.nav.sosialhjelp.soknad.app.exceptions.AuthorizationException
+import no.nav.sosialhjelp.soknad.app.subjecthandler.StaticSubjectHandlerImpl
+import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
@@ -99,7 +99,8 @@ internal class TelefonnummerRessursTest {
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(soknadUnderArbeidSlot), any()) } just runs
 
         val telefonnummerFrontend = TelefonnummerFrontend(
-            brukerdefinert = true, brukerutfyltVerdi = TELEFONNUMMER_BRUKER
+            brukerdefinert = true,
+            brukerutfyltVerdi = TELEFONNUMMER_BRUKER
         )
         telefonnummerRessurs.updateTelefonnummer(BEHANDLINGSID, telefonnummerFrontend)
 
@@ -119,7 +120,8 @@ internal class TelefonnummerRessursTest {
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(soknadUnderArbeidSlot), any()) } just runs
 
         val telefonnummerFrontend = TelefonnummerFrontend(
-            brukerdefinert = true, brukerutfyltVerdi = TELEFONNUMMER_BRUKER
+            brukerdefinert = true,
+            brukerutfyltVerdi = TELEFONNUMMER_BRUKER
         )
         telefonnummerRessurs.updateTelefonnummer(BEHANDLINGSID, telefonnummerFrontend)
 

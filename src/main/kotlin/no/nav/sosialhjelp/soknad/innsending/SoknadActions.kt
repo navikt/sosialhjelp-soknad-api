@@ -2,15 +2,14 @@ package no.nav.sosialhjelp.soknad.innsending
 
 import no.finn.unleash.Unleash
 import no.nav.security.token.support.core.api.ProtectedWithClaims
-import no.nav.sosialhjelp.metrics.aspects.Timed
 import no.nav.sosialhjelp.soknad.api.nedetid.NedetidService
-import no.nav.sosialhjelp.soknad.common.Constants
-import no.nav.sosialhjelp.soknad.common.exceptions.SendingTilKommuneErIkkeAktivertException
-import no.nav.sosialhjelp.soknad.common.exceptions.SendingTilKommuneErMidlertidigUtilgjengeligException
-import no.nav.sosialhjelp.soknad.common.exceptions.SendingTilKommuneUtilgjengeligException
-import no.nav.sosialhjelp.soknad.common.exceptions.SoknadenHarNedetidException
-import no.nav.sosialhjelp.soknad.common.mapper.KommuneTilNavEnhetMapper
-import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
+import no.nav.sosialhjelp.soknad.app.Constants
+import no.nav.sosialhjelp.soknad.app.exceptions.SendingTilKommuneErIkkeAktivertException
+import no.nav.sosialhjelp.soknad.app.exceptions.SendingTilKommuneErMidlertidigUtilgjengeligException
+import no.nav.sosialhjelp.soknad.app.exceptions.SendingTilKommuneUtilgjengeligException
+import no.nav.sosialhjelp.soknad.app.exceptions.SoknadenHarNedetidException
+import no.nav.sosialhjelp.soknad.app.mapper.KommuneTilNavEnhetMapper
+import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataInnsendingStatus.SENDT_MED_DIGISOS_API
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
@@ -43,7 +42,6 @@ import javax.ws.rs.core.MediaType
 @ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4])
 @Path("/soknader/{behandlingsId}/actions")
 @Produces(MediaType.APPLICATION_JSON)
-@Timed(name = "SoknadActionsRessurs")
 open class SoknadActions(
     private val soknadService: SoknadService,
     private val kommuneInfoService: KommuneInfoService,
@@ -83,7 +81,7 @@ open class SoknadActions(
             throw IllegalStateException("Ettersendelse på søknad sendt via fiks-digisos-api skal sendes via innsyn-api")
         }
 
-        log.info("BehandlingsId {} sendes til SvarUt eller fiks-digisos-api avhengig av kommuneinfo.", behandlingsId)
+        log.info("BehandlingsId $behandlingsId sendes til SvarUt eller fiks-digisos-api avhengig av kommuneinfo.")
         val kommunenummer = soknadUnderArbeid.jsonInternalSoknad?.soknad?.mottaker?.kommunenummer
             ?: throw IllegalStateException("Kommunenummer ikke funnet for JsonInternalSoknad.soknad.mottaker.kommunenummer")
         val kommuneStatus = kommuneInfoService.kommuneInfo(kommunenummer)

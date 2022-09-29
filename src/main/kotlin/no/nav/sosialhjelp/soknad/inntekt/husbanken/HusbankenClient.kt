@@ -20,7 +20,7 @@ class HusbankenClientImpl(
     override fun hentBostotte(token: String?, fra: LocalDate, til: LocalDate): BostotteDto? {
         return try {
             webClient.get()
-                .uri { it.queryParam("fra", fra).queryParam("til", til).build() }
+                .uri(QUERY_PARAMS, fra, til)
                 .headers { headers -> token?.let { headers.add(HttpHeaders.AUTHORIZATION, it) } }
                 .retrieve()
                 .bodyToMono<BostotteDto>()
@@ -28,7 +28,7 @@ class HusbankenClientImpl(
                 .doOnError(WebClientResponseException::class.java) { e ->
                     when {
                         e.statusCode.is4xxClientError -> log.error("Problemer med å koble opp mot Husbanken!", e)
-                        e.statusCode.is5xxServerError -> log.error("Problemer med å hente bostøtte fra Husbanken! Ekstern error: {}", e.message, e)
+                        e.statusCode.is5xxServerError -> log.error("Problemer med å hente bostøtte fra Husbanken! Ekstern error: ${e.message}", e)
                         else -> log.error("Problemer med å hente bostøtte informasjon fra Husbanken!", e)
                     }
                 }
@@ -48,5 +48,6 @@ class HusbankenClientImpl(
 
     companion object {
         private val log = getLogger(HusbankenClientImpl::class.java)
+        private const val QUERY_PARAMS = "?fra={fra}&til={til}"
     }
 }

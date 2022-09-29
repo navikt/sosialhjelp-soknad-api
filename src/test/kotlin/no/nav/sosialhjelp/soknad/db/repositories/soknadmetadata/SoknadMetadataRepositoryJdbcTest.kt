@@ -28,19 +28,19 @@ internal class SoknadMetadataRepositoryJdbcTest {
     }
 
     @Test
-    fun oppdaterLestDittNav() {
+    fun oppdaterLest() {
         var soknadMetadata = soknadMetadata(behandlingsId, SoknadMetadataInnsendingStatus.UNDER_ARBEID, 12)
-        assertThat(soknadMetadata.lestDittNav).isFalse
+        assertThat(soknadMetadata.lest).isFalse
         soknadMetadataRepository.opprett(soknadMetadata)
 
         soknadMetadata = soknadMetadataRepository.hent(soknadMetadata.behandlingsId)!!
-        soknadMetadata.lestDittNav = true
+        soknadMetadata.lest = true
 
-        soknadMetadataRepository.oppdaterLestDittNav(soknadMetadata, EIER)
+        soknadMetadataRepository.oppdaterLest(soknadMetadata, EIER)
 
         val soknadMetadataFraDb = soknadMetadataRepository.hent(behandlingsId)
         assertThat(soknadMetadataFraDb).isNotNull
-        assertThat(soknadMetadataFraDb?.lestDittNav).isTrue
+        assertThat(soknadMetadataFraDb?.lest).isTrue
     }
 
     private fun soknadMetadata(
@@ -58,7 +58,7 @@ internal class SoknadMetadataRepositoryJdbcTest {
             innsendtDato = LocalDateTime.now().minusDays(dagerSiden.toLong()),
             opprettetDato = LocalDateTime.now().minusDays(dagerSiden.toLong()),
             sistEndretDato = LocalDateTime.now().minusDays(dagerSiden.toLong()),
-            lestDittNav = false,
+            lest = false,
         )
     }
 

@@ -7,7 +7,7 @@ import io.mockk.unmockkObject
 import no.nav.sosialhjelp.soknad.api.innsyn.SoknadOversiktService.Companion.DEFAULT_TITTEL
 import no.nav.sosialhjelp.soknad.api.innsyn.SoknadOversiktService.Companion.KILDE_SOKNAD_API
 import no.nav.sosialhjelp.soknad.api.innsyn.dto.SoknadOversiktDto
-import no.nav.sosialhjelp.soknad.common.MiljoUtils
+import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadata
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataInnsendingStatus
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
@@ -56,9 +56,7 @@ internal class SoknadOversiktServiceTest {
         val soknad = resultat[0]
         assertThat(soknad.fiksDigisosId).isNull()
         assertThat(soknad.soknadTittel).contains(DEFAULT_TITTEL).contains(soknadMetadata.behandlingsId)
-        assertThat(soknad.status).isEqualTo(SoknadMetadataInnsendingStatus.UNDER_ARBEID.toString())
         assertThat(soknad.sistOppdatert).isEqualTo(Timestamp.valueOf(soknadMetadata.innsendtDato))
-        assertThat(soknad.antallNyeOppgaver).isNull()
         assertThat(soknad.kilde).isEqualTo(KILDE_SOKNAD_API)
         assertThat(soknad.url).contains(soknadMetadata.behandlingsId)
     }

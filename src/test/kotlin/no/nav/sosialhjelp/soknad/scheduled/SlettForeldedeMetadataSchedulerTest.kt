@@ -51,23 +51,21 @@ internal class SlettForeldedeMetadataSchedulerTest {
 
         every {
             batchSoknadMetadataRepository.hentEldreEnn(DAGER_GAMMEL_SOKNAD)
-        } returns soknadMetadata andThen null
+        } returns listOf(soknadMetadata) andThen emptyList()
 
-        every {
-            oppgaveRepository.hentOppgave(BEHANDLINGS_ID)
-        } returns oppgave
+        every { oppgaveRepository.hentOppgaveIdList(listOf(BEHANDLINGS_ID)) } returns listOf(oppgave.id)
 
-        every { batchSendtSoknadRepository.hentSendtSoknad(BEHANDLINGS_ID) } returns sendtSoknad.sendtSoknadId
+        every { batchSendtSoknadRepository.hentSendtSoknadIdList(listOf(BEHANDLINGS_ID)) } returns listOf(sendtSoknad.sendtSoknadId)
 
-        every { oppgaveRepository.slettOppgave(any()) } just runs
-        every { batchSendtSoknadRepository.slettSendtSoknad(any()) } just runs
-        every { batchSoknadMetadataRepository.slettSoknadMetaData(any()) } just runs
+        every { oppgaveRepository.slettOppgaver(any()) } just runs
+        every { batchSendtSoknadRepository.slettSendtSoknader(any()) } just runs
+        every { batchSoknadMetadataRepository.slettSoknadMetaDataer(any()) } just runs
 
         scheduler.slettForeldedeMetadata()
 
-        verify { oppgaveRepository.slettOppgave(BEHANDLINGS_ID) }
-        verify { batchSendtSoknadRepository.slettSendtSoknad(sendtSoknad.sendtSoknadId) }
-        verify { batchSoknadMetadataRepository.slettSoknadMetaData(BEHANDLINGS_ID) }
+        verify { oppgaveRepository.slettOppgaver(listOf(oppgave.id)) }
+        verify { batchSendtSoknadRepository.slettSendtSoknader(listOf(sendtSoknad.sendtSoknadId)) }
+        verify { batchSoknadMetadataRepository.slettSoknadMetaDataer(listOf(BEHANDLINGS_ID)) }
     }
 
     @Test
@@ -78,32 +76,30 @@ internal class SlettForeldedeMetadataSchedulerTest {
 
         every {
             batchSoknadMetadataRepository.hentEldreEnn(DAGER_GAMMEL_SOKNAD)
-        } returns soknadMetadata andThen null
+        } returns listOf(soknadMetadata) andThen emptyList()
 
-        every {
-            oppgaveRepository.hentOppgave(BEHANDLINGS_ID)
-        } returns oppgave
+        every { oppgaveRepository.hentOppgaveIdList(listOf(BEHANDLINGS_ID)) } returns listOf(oppgave.id)
 
-        every { batchSendtSoknadRepository.hentSendtSoknad(BEHANDLINGS_ID) } returns null
+        every { batchSendtSoknadRepository.hentSendtSoknadIdList(listOf(BEHANDLINGS_ID)) } returns emptyList()
 
-        every { oppgaveRepository.slettOppgave(any()) } just runs
+        every { oppgaveRepository.slettOppgaver(any()) } just runs
 
         scheduler.slettForeldedeMetadata()
 
-        verify(exactly = 1) { oppgaveRepository.slettOppgave(BEHANDLINGS_ID) }
-        verify(exactly = 0) { batchSendtSoknadRepository.slettSendtSoknad(sendtSoknad.sendtSoknadId) }
-        verify(exactly = 1) { batchSoknadMetadataRepository.slettSoknadMetaData(BEHANDLINGS_ID) }
+        verify(exactly = 1) { oppgaveRepository.slettOppgaver(listOf(oppgave.id)) }
+        verify(exactly = 0) { batchSendtSoknadRepository.slettSendtSoknader(listOf(sendtSoknad.sendtSoknadId)) }
+        verify(exactly = 1) { batchSoknadMetadataRepository.slettSoknadMetaDataer(listOf(BEHANDLINGS_ID)) }
     }
 
     @Test
     fun skalIkkeSletteMetadataSomErUnderEttAarGammelt() {
-        every { batchSoknadMetadataRepository.hentEldreEnn(DAGER_GAMMEL_SOKNAD) } returns null
+        every { batchSoknadMetadataRepository.hentEldreEnn(DAGER_GAMMEL_SOKNAD) } returns emptyList()
 
         scheduler.slettForeldedeMetadata()
 
-        verify(exactly = 0) { oppgaveRepository.slettOppgave(any()) }
-        verify(exactly = 0) { batchSendtSoknadRepository.slettSendtSoknad(any()) }
-        verify(exactly = 0) { batchSoknadMetadataRepository.slettSoknadMetaData(any()) }
+        verify(exactly = 0) { oppgaveRepository.slettOppgaver(any()) }
+        verify(exactly = 0) { batchSendtSoknadRepository.slettSendtSoknader(any()) }
+        verify(exactly = 0) { batchSoknadMetadataRepository.slettSoknadMetaDataer(any()) }
     }
 
     private fun soknadMetadata(

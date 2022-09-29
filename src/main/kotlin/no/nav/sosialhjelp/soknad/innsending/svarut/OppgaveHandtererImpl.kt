@@ -1,10 +1,11 @@
 package no.nav.sosialhjelp.soknad.innsending.svarut
 
-import no.nav.sosialhjelp.metrics.MetricsFactory
-import no.nav.sosialhjelp.soknad.common.mdc.MdcOperations
+import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations
 import no.nav.sosialhjelp.soknad.db.repositories.oppgave.Oppgave
 import no.nav.sosialhjelp.soknad.db.repositories.oppgave.OppgaveRepository
 import no.nav.sosialhjelp.soknad.db.repositories.oppgave.Status
+import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
+import no.nav.sosialhjelp.soknad.scheduled.leaderelection.LeaderElection
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.scheduling.annotation.Scheduled
@@ -20,7 +21,9 @@ interface OppgaveHandterer {
 class OppgaveHandtererImpl(
     private val fiksHandterer: FiksHandterer,
     private val oppgaveRepository: OppgaveRepository,
-    @Value("\${scheduler.disable}") private val schedulerDisabled: Boolean
+    @Value("\${scheduler.disable}") private val schedulerDisabled: Boolean,
+    private val prometheusMetricsService: PrometheusMetricsService,
+    private val leaderElection: LeaderElection
 ) : OppgaveHandterer {
 
     @Scheduled(fixedDelay = PROSESS_RATE)
@@ -29,29 +32,23 @@ class OppgaveHandtererImpl(
             logger.info("Scheduler is disabled")
             return
         }
-        while (true) {
-            val oppgave = oppgaveRepository.hentNeste() ?: return
-            val event = MetricsFactory.createEvent("digisos.oppgaver")
-            event.addTagToReport("oppgavetype", oppgave.type)
-            event.addTagToReport("steg", oppgave.steg.toString() + "")
-            event.addFieldToReport("behandlingsid", oppgave.behandlingsId)
+        if (leaderElection.isLeader()) {
+            while (true) {
+                val oppgave = oppgaveRepository.hentNeste() ?: return
+                MdcOperations.putToMDC(MdcOperations.MDC_BEHANDLINGS_ID, oppgave.behandlingsId)
+                try {
+                    fiksHandterer.eksekver(oppgave)
+                } catch (e: Exception) {
+                    logger.error("Oppgave feilet, id: ${oppgave.id}, beh: ${oppgave.behandlingsId}", e)
+                    oppgaveFeilet(oppgave)
+                }
 
-            MdcOperations.putToMDC(MdcOperations.MDC_BEHANDLINGS_ID, oppgave.behandlingsId)
-
-            try {
-                fiksHandterer.eksekver(oppgave)
-            } catch (e: Exception) {
-                logger.error("Oppgave feilet, id: ${oppgave.id}, beh: ${oppgave.behandlingsId}", e)
-                oppgaveFeilet(oppgave)
-                event.setFailed()
+                if (oppgave.status == Status.UNDER_ARBEID) {
+                    oppgave.status = Status.KLAR
+                }
+                oppgaveRepository.oppdater(oppgave)
+                MdcOperations.remove(MdcOperations.MDC_BEHANDLINGS_ID)
             }
-            event.report()
-
-            if (oppgave.status == Status.UNDER_ARBEID) {
-                oppgave.status = Status.KLAR
-            }
-            oppgaveRepository.oppdater(oppgave)
-            MdcOperations.remove(MdcOperations.MDC_BEHANDLINGS_ID)
         }
     }
 
@@ -61,13 +58,15 @@ class OppgaveHandtererImpl(
             logger.info("Scheduler is disabled")
             return
         }
-        try {
-            val antall = oppgaveRepository.retryOppgaveStuckUnderArbeid()
-            if (antall > 0) {
-                logger.info("Har satt $antall oppgaver tilbake til KLAR etter at de lå for lenge som UNDER_ARBEID.")
+        if (leaderElection.isLeader()) {
+            try {
+                val antall = oppgaveRepository.retryOppgaveStuckUnderArbeid()
+                if (antall > 0) {
+                    logger.info("Har satt $antall oppgaver tilbake til KLAR etter at de lå for lenge som UNDER_ARBEID.")
+                }
+            } catch (e: Exception) {
+                logger.error("Uventet feil ved oppdatering av oppgaver som er stuck i UNDER_ARBEID")
             }
-        } catch (e: Exception) {
-            logger.error("Uventet feil ved oppdatering av oppgaver som er stuck i UNDER_ARBEID")
         }
     }
 
@@ -77,12 +76,16 @@ class OppgaveHandtererImpl(
             logger.info("Scheduler is disabled")
             return
         }
-        val statuser = oppgaveRepository.hentStatus()
-        statuser.forEach { (key, value) ->
-            logger.info("Databasestatus for oppgaver: $key er $value")
-            val event = MetricsFactory.createEvent("status.oppgave.$key")
-            event.addFieldToReport("antall", value)
-            event.report()
+        if (leaderElection.isLeader()) {
+            prometheusMetricsService.resetOppgaverFeiletOgStuckUnderArbeid()
+
+            val antallFeilede = oppgaveRepository.hentAntallFeilede()
+            logger.info("Databasestatus for oppgaver: feilede er $antallFeilede")
+            prometheusMetricsService.reportOppgaverFeilet(antallFeilede)
+
+            val antallStuckUnderArbeid = oppgaveRepository.hentAntallStuckUnderArbeid()
+            logger.info("Databasestatus for oppgaver: lengearbeid er $antallStuckUnderArbeid")
+            prometheusMetricsService.reportOppgaverStuckUnderArbeid(antallStuckUnderArbeid)
         }
     }
 

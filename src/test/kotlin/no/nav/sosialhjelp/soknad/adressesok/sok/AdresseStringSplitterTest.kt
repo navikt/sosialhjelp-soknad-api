@@ -4,7 +4,7 @@ import io.mockk.every
 import io.mockk.mockk
 import no.nav.sosialhjelp.soknad.adressesok.sok.AdresseStringSplitter.postnummerMatch
 import no.nav.sosialhjelp.soknad.adressesok.sok.AdresseStringSplitter.toSokedata
-import no.nav.sosialhjelp.soknad.client.kodeverk.KodeverkService
+import no.nav.sosialhjelp.soknad.kodeverk.KodeverkService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -12,7 +12,7 @@ internal class AdresseStringSplitterTest {
 
     @Test
     fun tomStrengGirBlanktSvar() {
-        assertThat(toSokedata(null, "")!!.adresse).isBlank()
+        assertThat(toSokedata(null, "")!!.adresse).isBlank
     }
 
     @Test

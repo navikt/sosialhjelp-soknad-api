@@ -3,13 +3,11 @@ package no.nav.sosialhjelp.soknad.vedlegg.fiks
 import no.finn.unleash.Unleash
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
-import no.nav.sosialhjelp.kotlin.utils.logger
-import no.nav.sosialhjelp.soknad.common.MiljoUtils
-import no.nav.sosialhjelp.soknad.common.exceptions.SendingTilKommuneErMidlertidigUtilgjengeligException
-import no.nav.sosialhjelp.soknad.common.exceptions.SendingTilKommuneUtilgjengeligException
-import no.nav.sosialhjelp.soknad.common.filedetection.FileDetectionUtils
-import no.nav.sosialhjelp.soknad.common.filedetection.MimeTypes
-import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
+import no.nav.sosialhjelp.soknad.app.MiljoUtils
+import no.nav.sosialhjelp.soknad.app.exceptions.SendingTilKommuneErMidlertidigUtilgjengeligException
+import no.nav.sosialhjelp.soknad.app.exceptions.SendingTilKommuneUtilgjengeligException
+import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.Vedleggstatus
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
@@ -24,6 +22,8 @@ import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils.finnVedleggEllerKastExcept
 import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils.getSha512FromByteArray
 import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils.lagFilnavn
 import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils.validerFil
+import no.nav.sosialhjelp.soknad.vedlegg.filedetection.FileDetectionUtils
+import no.nav.sosialhjelp.soknad.vedlegg.filedetection.MimeTypes
 import no.nav.sosialhjelp.soknad.vedlegg.virusscan.VirusScanner
 import org.springframework.stereotype.Component
 import java.io.ByteArrayInputStream
@@ -150,8 +150,10 @@ class MellomlagringService(
     }
 
     fun deleteAllVedlegg(behandlingsId: String) {
-        val navEksternId = if (MiljoUtils.isNonProduction()) createPrefixedBehandlingsId(behandlingsId) else behandlingsId
-        mellomlagringClient.deleteAllVedlegg(navEksternId = navEksternId)
+        if (getAllVedlegg(behandlingsId).isNotEmpty()) {
+            val navEksternId = if (MiljoUtils.isNonProduction()) createPrefixedBehandlingsId(behandlingsId) else behandlingsId
+            mellomlagringClient.deleteAllVedlegg(navEksternId = navEksternId)
+        }
     }
 
     companion object {

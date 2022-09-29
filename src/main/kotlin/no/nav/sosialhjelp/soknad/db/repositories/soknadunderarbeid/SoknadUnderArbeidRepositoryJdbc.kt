@@ -7,10 +7,10 @@ import no.nav.sbl.soknadsosialhjelp.json.AdresseMixIn
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse
-import no.nav.sosialhjelp.kotlin.utils.logger
-import no.nav.sosialhjelp.soknad.common.exceptions.SamtidigOppdateringException
-import no.nav.sosialhjelp.soknad.common.exceptions.SoknadLaastException
-import no.nav.sosialhjelp.soknad.common.exceptions.SoknadUnderArbeidIkkeFunnetException
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
+import no.nav.sosialhjelp.soknad.app.exceptions.SamtidigOppdateringException
+import no.nav.sosialhjelp.soknad.app.exceptions.SoknadLaastException
+import no.nav.sosialhjelp.soknad.app.exceptions.SoknadUnderArbeidIkkeFunnetException
 import no.nav.sosialhjelp.soknad.db.SQLUtils
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRepository
 import org.springframework.jdbc.core.JdbcTemplate
@@ -148,7 +148,6 @@ open class SoknadUnderArbeidRepositoryJdbc(
         transactionTemplate.execute(object : TransactionCallbackWithoutResult() {
             override fun doInTransactionWithoutResult(transactionStatus: TransactionStatus) {
                 val soknadUnderArbeidId = soknadUnderArbeid.soknadId
-                    ?: throw RuntimeException("Kan ikke slette sendt søknad uten søknadsid")
                 opplastetVedleggRepository.slettAlleVedleggForSoknad(soknadUnderArbeidId, eier)
                 jdbcTemplate.update(
                     "delete from SOKNAD_UNDER_ARBEID where EIER = ? and SOKNAD_UNDER_ARBEID_ID = ?",

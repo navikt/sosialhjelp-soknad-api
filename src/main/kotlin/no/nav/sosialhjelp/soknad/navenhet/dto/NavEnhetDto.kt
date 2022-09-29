@@ -1,6 +1,6 @@
 package no.nav.sosialhjelp.soknad.navenhet.dto
 
-import no.nav.sosialhjelp.soknad.common.mapper.KommuneTilNavEnhetMapper.getOrganisasjonsnummer
+import no.nav.sosialhjelp.soknad.app.mapper.KommuneTilNavEnhetMapper.getOrganisasjonsnummer
 import no.nav.sosialhjelp.soknad.navenhet.domain.NavEnhet
 
 data class NavEnhetDto(

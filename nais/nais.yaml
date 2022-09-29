@@ -22,7 +22,7 @@ spec:
     timeout: 1
   prometheus:
     enabled: {{prometheusEnabled}}
-    path: /sosialhjelp/soknad-api/internal/metrics
+    path: /sosialhjelp/soknad-api/internal/prometheus
   replicas:
     min: {{minReplicas}}
     max: {{maxReplicas}}
@@ -52,9 +52,9 @@ spec:
   tokenx:
     enabled: {{tokenXEnabled}}
   accessPolicy:
-{{#if tokenXEnabled}}
     inbound:
       rules:
+{{#if tokenXEnabled}}
         - application: mine-saker-api
           namespace: min-side
           cluster: {{min-side-cluster}}
@@ -66,6 +66,8 @@ spec:
         []
       {{/each}}
 {{/if}}
+        - application: {{sosialhjelp-innsyn-api}}
+          cluster: {{sosialhjelp-innsyn-api-cluster}}
     outbound:
       external:
       {{#each outboundExternalHosts}}

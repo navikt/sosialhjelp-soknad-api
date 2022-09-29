@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import no.nav.sosialhjelp.soknad.adressesok.domain.AdresseForslag
-import no.nav.sosialhjelp.soknad.common.exceptions.SosialhjelpSoknadApiException
+import no.nav.sosialhjelp.soknad.app.exceptions.SosialhjelpSoknadApiException
 import org.apache.commons.lang3.StringUtils
 import org.springframework.core.io.ClassPathResource
 import org.springframework.stereotype.Component
@@ -31,8 +31,7 @@ open class BydelFordelingService {
     open fun getBydelTilForMarka(adresseForslag: AdresseForslag): String {
         return markaBydelFordeling
             .filter { it.veiadresse.trim().equals(adresseForslag.adresse?.trim(), true) }
-            .filter { isInHusnummerFordeling(it.husnummerfordeling, adresseForslag.husnummer) }
-            .firstOrNull()
+            .firstOrNull { isInHusnummerFordeling(it.husnummerfordeling, adresseForslag.husnummer) }
             ?.bydelTil ?: adresseForslag.geografiskTilknytning ?: ""
     }
 

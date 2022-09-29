@@ -52,8 +52,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.utdanning.JsonUtdanning
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
-import no.nav.sosialhjelp.soknad.client.kodeverk.KodeverkService
-import no.nav.sosialhjelp.soknad.tekster.BUNDLE_NAME
+import no.nav.sosialhjelp.soknad.kodeverk.KodeverkService
 import no.nav.sosialhjelp.soknad.tekster.NavMessageSource
 import no.nav.sosialhjelp.soknad.tekster.NavMessageSource.Bundle
 import org.apache.commons.io.FileUtils
@@ -78,7 +77,7 @@ internal class SosialhjelpPdfGeneratorTest {
     @BeforeEach
     fun setUp() {
         val navMessageSource = NavMessageSource()
-        val bundle = Bundle(BUNDLE_NAME, "classpath:/$BUNDLE_NAME")
+        val bundle = Bundle("soknadsosialhjelp", "classpath:/soknadsosialhjelp")
         val fellesBundle = Bundle("sendsoknad", "classpath:/sendsoknad")
         navMessageSource.setBasenames(fellesBundle, bundle)
         navMessageSource.setDefaultEncoding("UTF-8")

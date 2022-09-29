@@ -1,34 +1,35 @@
 package no.nav.sosialhjelp.soknad.innsending.svarut.client
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.fasterxml.jackson.module.kotlin.readValue
+import io.netty.channel.ChannelOption
 import no.ks.fiks.svarut.klient.model.Forsendelse
 import no.ks.fiks.svarut.klient.model.ForsendelsesId
-import no.nav.sosialhjelp.soknad.client.exceptions.TjenesteUtilgjengeligException
-import no.nav.sosialhjelp.soknad.common.rest.RestConfig
-import no.nav.sosialhjelp.soknad.common.rest.RestUtils
-import org.glassfish.jersey.media.multipart.FormDataBodyPart
-import org.glassfish.jersey.media.multipart.MultiPart
-import org.glassfish.jersey.media.multipart.MultiPartFeature
-import org.glassfish.jersey.media.multipart.file.StreamDataBodyPart
+import no.nav.sosialhjelp.soknad.app.exceptions.TjenesteUtilgjengeligException
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.createHttpEntity
+import org.apache.commons.io.IOUtils
 import org.slf4j.LoggerFactory.getLogger
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.http.HttpHeaders
+import org.springframework.core.io.ByteArrayResource
+import org.springframework.http.HttpHeaders.AUTHORIZATION
+import org.springframework.http.MediaType
+import org.springframework.http.client.reactive.ReactorClientHttpConnector
+import org.springframework.http.codec.json.Jackson2JsonDecoder
+import org.springframework.http.codec.json.Jackson2JsonEncoder
 import org.springframework.stereotype.Component
+import org.springframework.util.LinkedMultiValueMap
+import org.springframework.web.reactive.function.BodyInserters
+import org.springframework.web.reactive.function.client.WebClient
+import org.springframework.web.reactive.function.client.WebClientResponseException
+import org.springframework.web.reactive.function.client.bodyToMono
+import reactor.netty.http.client.HttpClient
 import java.io.InputStream
 import java.nio.charset.StandardCharsets
-import javax.ws.rs.ClientErrorException
-import javax.ws.rs.client.Client
-import javax.ws.rs.client.ClientRequestFilter
-import javax.ws.rs.client.Entity
-import javax.ws.rs.core.MediaType.APPLICATION_JSON_TYPE
-import javax.ws.rs.core.MediaType.APPLICATION_OCTET_STREAM_TYPE
-import javax.ws.rs.core.MediaType.MULTIPART_FORM_DATA_TYPE
+import java.time.Duration
 import javax.xml.bind.DatatypeConverter
 
 interface SvarUtClient {
     fun ping()
-    fun sendForsendelse(forsendelse: Forsendelse?, data: Map<String, InputStream>?): ForsendelsesId
+    fun sendForsendelse(forsendelse: Forsendelse, data: Map<String, InputStream>): ForsendelsesId?
 }
 
 @Component
@@ -36,6 +37,8 @@ class SvarUtClientImpl(
     @Value("\${svarut_url}") private var baseurl: String,
     @Value("\${fiks_svarut_username}") private val svarutUsername: String?,
     @Value("\${fiks_svarut_password}") private val svarutPassword: String?,
+    webClientBuilder: WebClient.Builder,
+    proxiedHttpClient: HttpClient
 ) : SvarUtClient {
 
     private val basicAuthentication: String
@@ -47,44 +50,50 @@ class SvarUtClientImpl(
             return "Basic " + DatatypeConverter.printBase64Binary(token.toByteArray(StandardCharsets.UTF_8))
         }
 
-    private val client: Client = RestUtils
-        .createClient(RestConfig(connectTimeout = SVARUT_TIMEOUT, readTimeout = SVARUT_TIMEOUT))
-        .register(MultiPartFeature::class.java)
-        .register(ClientRequestFilter { it.headers.putSingle(HttpHeaders.AUTHORIZATION, basicAuthentication) })
+    private val svarUtWebClient = webClientBuilder
+        .clientConnector(
+            ReactorClientHttpConnector(
+                proxiedHttpClient
+                    .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, SVARUT_TIMEOUT)
+                    .responseTimeout(Duration.ofMillis(SVARUT_TIMEOUT.toLong()))
+            )
+        )
+        .codecs {
+            it.defaultCodecs().maxInMemorySize(150 * 1024 * 1024)
+            it.defaultCodecs().jackson2JsonDecoder(Jackson2JsonDecoder(objectMapper))
+            it.defaultCodecs().jackson2JsonEncoder(Jackson2JsonEncoder(objectMapper))
+        }
+        .defaultHeader(AUTHORIZATION, basicAuthentication)
+        .build()
 
     override fun ping() {
-        client
-            .target("$baseurl/tjenester/api/forsendelse/v1/forsendelseTyper")
-            .request()
-            .get().use { response ->
-                if (response.status != 200) {
-                    log.warn("Ping feilet mot SvarUt. ${response.statusInfo}")
-                }
+        svarUtWebClient.get()
+            .uri("$baseurl/tjenester/api/forsendelse/v1/forsendelseTyper")
+            .retrieve()
+            .bodyToMono<String>()
+            .doOnError(WebClientResponseException::class.java) {
+                log.warn("Ping feilet mot SvarUt. ${it.statusCode}", it)
             }
+            .block()
     }
 
-    override fun sendForsendelse(forsendelse: Forsendelse?, data: Map<String, InputStream>?): ForsendelsesId {
-        requireNotNull(forsendelse) { "Forsendelse kan ikke være null" }
-        requireNotNull(data) { "Data kan ikke være null" }
+    override fun sendForsendelse(forsendelse: Forsendelse, data: Map<String, InputStream>): ForsendelsesId? {
         return try {
-            val multiPart = MultiPart()
-            multiPart.mediaType = MULTIPART_FORM_DATA_TYPE
-            multiPart.bodyPart(
-                FormDataBodyPart("forsendelse", objectMapper.writeValueAsString(forsendelse), APPLICATION_JSON_TYPE)
-            )
-            forsendelse.dokumenter
-                .forEach {
-                    multiPart.bodyPart(
-                        StreamDataBodyPart("filer", data[it.filnavn], it.filnavn, APPLICATION_OCTET_STREAM_TYPE)
-                    )
-                }
-            multiPart.close()
-            val response = client
-                .target("$baseurl/tjenester/api/forsendelse/v1/sendForsendelse")
-                .request(APPLICATION_JSON_TYPE)
-                .post(Entity.entity(multiPart, multiPart.mediaType), String::class.java)
-            objectMapper.readValue(response)
-        } catch (e: ClientErrorException) {
+            val body = LinkedMultiValueMap<String, Any>()
+            body.add("forsendelse", createHttpEntity(objectMapper.writeValueAsString(forsendelse), "forsendelse", null, MediaType.APPLICATION_JSON_VALUE))
+            forsendelse.dokumenter.forEach {
+                body.add("filer", createHttpEntity(ByteArrayResource(IOUtils.toByteArray(data[it.filnavn])), "filer", it.filnavn, MediaType.APPLICATION_OCTET_STREAM_VALUE))
+            }
+
+            svarUtWebClient.post()
+                .uri("$baseurl/tjenester/api/forsendelse/v1/sendForsendelse")
+                .contentType(MediaType.MULTIPART_FORM_DATA)
+                .body(BodyInserters.fromMultipartData(body))
+                .retrieve()
+                .bodyToMono<ForsendelsesId>()
+                .block()
+        } catch (e: WebClientResponseException) {
+            log.warn("Noe feilet ved kall til SvarUt (rest) - ${e.statusCode} ${e.responseBodyAsString}", e)
             throw e
         } catch (e: Exception) {
             throw TjenesteUtilgjengeligException("Noe feilet ved kall til SvarUt (rest)", e)

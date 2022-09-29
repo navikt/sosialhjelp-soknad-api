@@ -1,11 +1,8 @@
-application:
-  name: ${NAIS_APP_NAME}
-  version: ${NAIS_APP_IMAGE}
-
 server:
   port: 8080
   servlet:
     context-path: '/sosialhjelp/soknad-api'
+  shutdown: graceful
 
 spring:
   main:
@@ -29,22 +26,23 @@ spring:
     username: ${SOKNADSOSIALHJELPDATASOURCE_USERNAME}
     password: ${SOKNADSOSIALHJELPDATASOURCE_PASSWORD}
 
-metrics.report.enabled: true
-sensu_client_host: sensu.nais
-sensu_client_port: 3030
-
-environment.name: ${ENVIRONMENT_NAME}
+management:
+  endpoints:
+    web:
+      base-path: "/internal"
+      exposure:
+        include: metrics, prometheus
 
 # rest
 digisos_api_baseurl: ${DIGISOS_API_BASEURL}
-ereg_proxy_url: ${EREG_PROXY_URL}
+ereg_url: ${EREG_URL}
 aareg_proxy_url: ${AAREG_PROXY_URL}
 krr_proxy_url: ${KRR_PROXY_URL}
 pdl_api_url: ${PDL_API_URL}
 unleash_api_url: ${UNLEASH_API_URL}
-kodeverk_proxy_url: ${KODEVERK_PROXY_URL}
+kodeverk_url: ${KODEVERK_URL}
 oppslag_api_baseurl: ${OPPSLAG_API_BASEURL}
-norg_proxy_url: ${NORG_PROXY_URL}
+norg_url: ${NORG_URL}
 fss_proxy_ping_url: ${FSS_PROXY_PING_URL}
 soknad.bostotte.url: ${SOKNAD_BOSTOTTE_URL}
 svarut_url: ${SVARUT_URL}
@@ -91,8 +89,6 @@ loginservice.url: ${LOGINSERVICE_URL}
 redis_host: ${REDIS_HOST}
 redis_port: 6379
 redis_password: ${REDIS_PASSWORD}
-
-soknad.ettersending.antalldager: ${SOKNAD_ETTERSENDING_ANTALLDAGER}
 
 # feature toggles
 unleash_instance_id: ${UNLEASH_INSTANCE_ID:prod-sbs}

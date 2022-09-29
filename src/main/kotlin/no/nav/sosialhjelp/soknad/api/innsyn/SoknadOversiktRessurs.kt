@@ -1,10 +1,10 @@
 package no.nav.sosialhjelp.soknad.api.innsyn
 
 import no.nav.security.token.support.core.api.ProtectedWithClaims
-import no.nav.sosialhjelp.metrics.aspects.Timed
+import no.nav.security.token.support.core.api.RequiredIssuers
 import no.nav.sosialhjelp.soknad.api.innsyn.dto.SoknadOversiktDto
-import no.nav.sosialhjelp.soknad.common.Constants
-import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
+import no.nav.sosialhjelp.soknad.app.Constants
+import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Controller
@@ -14,9 +14,11 @@ import javax.ws.rs.Produces
 import javax.ws.rs.core.MediaType
 
 @Controller
-@ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4])
+@RequiredIssuers(
+    ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4]),
+    ProtectedWithClaims(issuer = Constants.TOKENX, claimMap = [Constants.CLAIM_ACR_LEVEL_4]),
+)
 @Path("/soknadoversikt")
-@Timed
 @Produces(MediaType.APPLICATION_JSON)
 open class SoknadOversiktRessurs(
     private val service: SoknadOversiktService,
@@ -29,7 +31,7 @@ open class SoknadOversiktRessurs(
         val fnr = SubjectHandlerUtils.getUserIdFromToken()
         logger.debug("Henter alle søknader")
         val soknader: List<SoknadOversiktDto> = service.hentSvarUtSoknaderFor(fnr)
-        logger.debug("Hentet {} søknader for bruker", soknader.size)
+        logger.debug("Hentet ${soknader.size} søknader for bruker")
         return soknader
     }
 

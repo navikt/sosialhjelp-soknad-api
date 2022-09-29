@@ -6,10 +6,10 @@ import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.unmockkObject
 import io.mockk.verify
-import no.nav.sosialhjelp.soknad.client.exceptions.TjenesteUtilgjengeligException
-import no.nav.sosialhjelp.soknad.client.redis.RedisService
-import no.nav.sosialhjelp.soknad.common.MiljoUtils
+import no.nav.sosialhjelp.soknad.app.MiljoUtils
+import no.nav.sosialhjelp.soknad.app.exceptions.TjenesteUtilgjengeligException
 import no.nav.sosialhjelp.soknad.navenhet.dto.NavEnhetDto
+import no.nav.sosialhjelp.soknad.redis.RedisService
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.AfterEach
@@ -21,10 +21,12 @@ import javax.ws.rs.ServiceUnavailableException
 
 internal class NavEnhetServiceTest {
 
-    private val GT = "0101"
-    private val ENHETSNUMMER = "0701"
-    private val ORGNUMMER_PROD = "974605171"
-    private val ORGNUMMER_TEST = "910940066"
+    companion object {
+        private const val GT = "0101"
+        private const val ENHETSNUMMER = "0701"
+        private const val ORGNUMMER_PROD = "974605171"
+        private const val ORGNUMMER_TEST = "910940066"
+    }
 
     private val norgClient: NorgClient = mockk()
     private val redisService: RedisService = mockk()
@@ -176,94 +178,6 @@ internal class NavEnhetServiceTest {
             assertThat(enheterForKommunenummer).hasSize(1)
         }
     }
-
-//    @Disabled
-//    @Test
-//    fun getAllNavenheterFromPath() {
-//        val allNavenheterFromPath = navEnhetService.getAllNavEnheterFromPath()
-//        var navenhetnavnUlikKommunenavn: MutableList<NavenhetFraLokalListe> = ArrayList()
-//        val kommunenavnMedSpesifisertSted: MutableList<NavenhetFraLokalListe> = ArrayList()
-//        val samiskeKommunenavn: MutableList<NavenhetFraLokalListe> = ArrayList()
-//        val kommuneMap: MutableMap<String, MutableList<NavenhetFraLokalListe>> = HashMap()
-//        val enhetsnavnMap: MutableMap<String, MutableList<NavenhetFraLokalListe>> = HashMap()
-//        for (navenhet in allNavenheterFromPath.navEnheter) {
-//            assertThat(navenhet.kommunenavn).isNotNull
-//            assertThat(navenhet.kommunenavn).isNotBlank
-//            if (!navenhet.enhetsnavn.contains(navenhet.kommunenavn) &&
-//                navenhet.kommunenavn != "Oslo" &&
-//                navenhet.kommunenavn != "Bergen" &&
-//                navenhet.kommunenavn != "Stavanger" &&
-//                navenhet.kommunenavn != "Trondheim"
-//            ) {
-//                if (navenhet.kommunenavn.contains(" - ") || navenhet.kommunenavn.contains(" – ")) {
-//                    samiskeKommunenavn.add(navenhet)
-//                } else if (navenhet.kommunenavn.contains(" i ")) {
-//                    kommunenavnMedSpesifisertSted.add(navenhet)
-//                } else {
-//                    navenhetnavnUlikKommunenavn.add(navenhet)
-//                }
-//                var navenheterForEnhetsnavn = enhetsnavnMap[navenhet.enhetsnavn]
-//                if (navenheterForEnhetsnavn == null) navenheterForEnhetsnavn = ArrayList()
-//                navenheterForEnhetsnavn.add(navenhet)
-//                enhetsnavnMap[navenhet.enhetsnavn] = navenheterForEnhetsnavn
-//            }
-//            var navenheterForKommune = kommuneMap[navenhet.kommunenavn]
-//            if (navenheterForKommune == null) navenheterForKommune = ArrayList()
-//            navenheterForKommune.add(navenhet)
-//            kommuneMap[navenhet.kommunenavn] = navenheterForKommune
-//        }
-//        val kommunerMedFlereNavenheter = kommuneMap.entries
-//            .stream()
-//            .filter { (_, value): Map.Entry<String, List<NavenhetFraLokalListe>> -> value.size > 1 }
-//            .collect(
-//                Collectors.toMap<Map.Entry<String, List<NavenhetFraLokalListe>>, String, List<NavenhetFraLokalListe>>(
-//                    Function<Map.Entry<String, List<NavenhetFraLokalListe>>, String> { (key, value) -> java.util.Map.Entry.key },
-//                    Function<Map.Entry<String, List<NavenhetFraLokalListe>>, List<NavenhetFraLokalListe>> { (key, value) -> java.util.Map.Entry.value })
-//            )
-//        val enheterForFlerekommuner = enhetsnavnMap.entries
-//            .stream()
-//            .filter { (_, value): Map.Entry<String, List<NavenhetFraLokalListe>> -> value.size > 1 }
-//            .collect(
-//                Collectors.toMap<Map.Entry<String, List<NavenhetFraLokalListe>>, String, List<NavenhetFraLokalListe>?>(
-//                    Function<Map.Entry<String, List<NavenhetFraLokalListe>>, String> { (key, value) -> java.util.Map.Entry.key },
-//                    Function<Map.Entry<String, List<NavenhetFraLokalListe>>, List<NavenhetFraLokalListe>?> { (key, value) -> java.util.Map.Entry.value })
-//            )
-//        val navenheterOverFlereKommuner =
-//            StringBuilder().append("\n~~~~~ Navenheter som strekker seg over flere kommuner: ~~~~~\n")
-//        for ((navenhetNavn, navenheter): Map.Entry<String, List<NavenhetFraLokalListe>?> in enheterForFlerekommuner) {
-//            navenheterOverFlereKommuner.append("\n").append(navenhetNavn).append(":\n")
-//            navenheter.forEach(Consumer { navenhet: NavenhetFraLokalListe ->
-//                navenheterOverFlereKommuner.append(
-//                    "* "
-//                ).append(navenhet.kommunenavn).append("\n")
-//            })
-//        }
-//        println(navenheterOverFlereKommuner)
-//        val samiskeKommuner = StringBuilder().append("\n~~~~~ Samiske kommuner: ~~~~~\n")
-//        samiskeKommunenavn.forEach(Consumer { samiskKommune: NavenhetFraLokalListe ->
-//            samiskeKommuner.append(samiskKommune.enhetsnavn).append(", ")
-//            samiskeKommuner.append(samiskKommune.kommunenavn).append(" kommune").append("\n")
-//        })
-//        println(samiskeKommuner)
-//        val spesifisertStedskommuner =
-//            StringBuilder().append("\n~~~~~ Enhetsnavn ulik kommunenavn, der kommunen spesifiserer sted med i : ~~~~~\n")
-//        kommunenavnMedSpesifisertSted.forEach(Consumer { kommune: NavenhetFraLokalListe ->
-//            spesifisertStedskommuner.append(kommune.enhetsnavn).append(", ")
-//            spesifisertStedskommuner.append(kommune.kommunenavn).append(" kommune").append("\n")
-//        })
-//        println(spesifisertStedskommuner)
-//        navenhetnavnUlikKommunenavn = navenhetnavnUlikKommunenavn.stream().filter { navenhet: NavenhetFraLokalListe ->
-//            enheterForFlerekommuner[navenhet.enhetsnavn] == null
-//        }.collect(Collectors.toList()) // filtrere vekk navenheter som strekker seg over flere kommuner
-//        val kommunerNavnUlikNavenhetsnavn = StringBuilder().append("\n~~~~~ Enhetsnavn ulik kommunenavn: ~~~~~\n")
-//        navenhetnavnUlikKommunenavn.forEach(Consumer { kommune: NavenhetFraLokalListe ->
-//            kommunerNavnUlikNavenhetsnavn.append(kommune.enhetsnavn).append(", ")
-//            kommunerNavnUlikNavenhetsnavn.append(kommune.kommunenavn).append(" kommune").append("\n")
-//        })
-//        println(kommunerNavnUlikNavenhetsnavn)
-//        assertThat(allNavenheterFromPath.navenheter.size)
-//            .isEqualTo(356 + 17 - 1 + 8 - 1 + 9 - 1 + 4 - 1) //Totalt antall kommuner + ekstra navkontorer i Oslo, Bergen, Stavanger og Trondheim
-//    }
 
     @Test
     fun skalHenteNavEnhetForGtFraConsumer() {

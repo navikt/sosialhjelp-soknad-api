@@ -3,6 +3,8 @@ package no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata
 import no.nav.sosialhjelp.soknad.db.SQLUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRowMapper.soknadMetadataRowMapper
 import org.springframework.jdbc.core.JdbcTemplate
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
@@ -11,6 +13,7 @@ import java.time.LocalDateTime
 @Repository
 open class BatchSoknadMetadataRepositoryJdbc(
     private val jdbcTemplate: JdbcTemplate,
+    private val namedParameterJdbcTemplate: NamedParameterJdbcTemplate,
 ) : BatchSoknadMetadataRepository {
 
     @Transactional
@@ -34,20 +37,23 @@ open class BatchSoknadMetadataRepositoryJdbc(
     }
 
     @Transactional
-    override fun hentEldreEnn(antallDagerGammel: Int): SoknadMetadata? {
+    override fun hentEldreEnn(antallDagerGammel: Int): List<SoknadMetadata> {
         val frist = LocalDateTime.now().minusDays(antallDagerGammel.toLong())
         while (true) {
             val resultat = jdbcTemplate.query(
-                "SELECT * FROM soknadmetadata WHERE opprettetDato < ? AND batchstatus = 'LEDIG'" + SQLUtils.limit(1),
+                "SELECT * FROM soknadmetadata WHERE opprettetDato < ? AND batchstatus = 'LEDIG'" + SQLUtils.limit(20),
                 soknadMetadataRowMapper,
                 SQLUtils.tidTilTimestamp(frist)
-            ).firstOrNull() ?: return null
-
-            val rowsAffected = jdbcTemplate.update(
-                "UPDATE soknadmetadata set batchstatus = 'TATT' WHERE id = ? AND batchstatus = 'LEDIG'",
-                resultat.id
             )
-            if (rowsAffected == 1) {
+
+            val rowsAffected = resultat.sumOf {
+                jdbcTemplate.update(
+                    "UPDATE soknadmetadata set batchstatus = 'TATT' WHERE id = ? AND batchstatus = 'LEDIG'",
+                    it.id
+                )
+            }
+
+            if (rowsAffected == resultat.size) {
                 return resultat
             }
         }
@@ -59,7 +65,8 @@ open class BatchSoknadMetadataRepositoryJdbc(
     }
 
     @Transactional
-    override fun slettSoknadMetaData(behandlingsId: String) {
-        jdbcTemplate.update("DELETE FROM soknadmetadata WHERE behandlingsid = ?", behandlingsId)
+    override fun slettSoknadMetaDataer(behandlingsIdList: List<String>) {
+        val parameters = MapSqlParameterSource("ids", behandlingsIdList)
+        namedParameterJdbcTemplate.update("DELETE FROM soknadmetadata WHERE behandlingsid IN (:ids)", parameters)
     }
 }

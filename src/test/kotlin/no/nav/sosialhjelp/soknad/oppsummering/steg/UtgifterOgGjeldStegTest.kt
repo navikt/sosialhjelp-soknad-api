@@ -119,12 +119,12 @@ internal class UtgifterOgGjeldStegTest {
                 .withType(SoknadJsonTyper.BEKREFTELSE_BARNEUTGIFTER)
                 .withVerdi(Boolean.TRUE)
         )
-        val opplysningUtgifter = java.util.List.of(
+        val opplysningUtgifter = listOf(
             JsonOkonomiOpplysningUtgift().withType(SoknadJsonTyper.UTGIFTER_BARN_FRITIDSAKTIVITETER),
             JsonOkonomiOpplysningUtgift().withType(SoknadJsonTyper.UTGIFTER_BARN_TANNREGULERING),
             JsonOkonomiOpplysningUtgift().withType(SoknadJsonTyper.UTGIFTER_ANNET_BARN)
         )
-        val oversiktUtgifter = java.util.List.of(
+        val oversiktUtgifter = listOf(
             JsonOkonomioversiktUtgift().withType(SoknadJsonTyper.UTGIFTER_BARNEHAGE),
             JsonOkonomioversiktUtgift().withType(SoknadJsonTyper.UTGIFTER_SFO)
         )

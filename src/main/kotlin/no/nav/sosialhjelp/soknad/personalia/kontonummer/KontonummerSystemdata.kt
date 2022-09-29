@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.personalia.kontonummer
 
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
-import no.nav.sosialhjelp.soknad.common.systemdata.Systemdata
+import no.nav.sosialhjelp.soknad.app.systemdata.Systemdata
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import org.springframework.stereotype.Component
 

@@ -1,10 +1,3 @@
-application:
-  name: sosialhjelp-soknad-api
-  version: version
-
-# Miljøkonfigurasjon for lokal Jetty-server.
-environment.name: local
-
 spring:
   main:
     allow-bean-definition-overriding: true
@@ -21,15 +14,7 @@ spring:
     username: sa
     password:
 
-  # Metrics
-  # nc -l -k 3030 (evt. ncat)
-  # i terminal for å se output fra metrics
-metrics.report.enabled: false
-sensu_client_host: 127.0.0.1
-sensu_client_port: 8989
-
 # Andre properties
-soknad.ettersending.antalldager: 42
 sendsoknad.batch.enabled: false
 fiks.nokkelfil: svarut_public_test.pem
 feature.fiks.kryptering.enabled: false
@@ -67,15 +52,15 @@ fiks_svarut_password: pwpwpwpw
 
 # rest
 digisos_api_baseurl: ${DIGISOS_API_BASEURL:https://api.fiks.test.ks.no/}
-ereg_proxy_url: https://fss-proxy/proxy/ereg/
+ereg_url: https://ereg/
 aareg_proxy_url: https://fss-proxy/proxy/aareg/
 krr_proxy_url: http://krr/
 pdl_api_url: https://pdl-api/graphql
 unleash_api_url: https://unleash.nais.io/api
-kodeverk_proxy_url: https://fss-proxy/proxy/kodeverk/
+kodeverk_url: https://kodeverk/
 oppslag_api_baseurl: https://sosialhjelp-oppslag-api/api/
 soknad.bostotte.url: http://bostotte.url
-norg_proxy_url: https://fss-proxy/proxy/norg
+norg_url: https://norg.url/enhet
 fss_proxy_ping_url: http://fss-proxy/ping
 svarut_url: https://svaruturl
 skatteetaten_api_baseurl: https://skatteetatenurl

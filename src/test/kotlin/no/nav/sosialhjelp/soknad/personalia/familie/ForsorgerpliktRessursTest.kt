@@ -25,10 +25,10 @@ import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonHarForsorgerplikt
 import no.nav.sbl.soknadsosialhjelp.soknad.familie.JsonSamvarsgrad
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktInntekt
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktUtgift
-import no.nav.sosialhjelp.soknad.common.MiljoUtils
-import no.nav.sosialhjelp.soknad.common.exceptions.AuthorizationException
-import no.nav.sosialhjelp.soknad.common.subjecthandler.StaticSubjectHandlerImpl
-import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
+import no.nav.sosialhjelp.soknad.app.MiljoUtils
+import no.nav.sosialhjelp.soknad.app.exceptions.AuthorizationException
+import no.nav.sosialhjelp.soknad.app.subjecthandler.StaticSubjectHandlerImpl
+import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
@@ -121,17 +121,17 @@ internal class ForsorgerpliktRessursTest {
     @Test
     fun forsorgerpliktSkalReturnereToBarn() {
         val jsonAnsvar = JsonAnsvar().withBarn(JSON_BARN)
-        val jsonAnsvar_2 = JsonAnsvar().withBarn(JSON_BARN_2)
+        val jsonansvar2 = JsonAnsvar().withBarn(JSON_BARN_2)
         every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
-            createJsonInternalSoknadWithForsorgerplikt(true, null, listOf(jsonAnsvar, jsonAnsvar_2))
+            createJsonInternalSoknadWithForsorgerplikt(true, null, listOf(jsonAnsvar, jsonansvar2))
 
         val forsorgerpliktFrontend = forsorgerpliktRessurs.hentForsorgerplikt(BEHANDLINGSID)
         assertThat(forsorgerpliktFrontend.harForsorgerplikt).isTrue
         assertThat(forsorgerpliktFrontend.barnebidrag).isNull()
         assertThat(forsorgerpliktFrontend.ansvar).hasSize(2)
         assertThatAnsvarIsCorrectlyConverted(forsorgerpliktFrontend.ansvar!![0], jsonAnsvar)
-        assertThatAnsvarIsCorrectlyConverted(forsorgerpliktFrontend.ansvar!![1], jsonAnsvar_2)
+        assertThatAnsvarIsCorrectlyConverted(forsorgerpliktFrontend.ansvar!![1], jsonansvar2)
     }
 
     @Test
@@ -199,9 +199,9 @@ internal class ForsorgerpliktRessursTest {
     fun putForsorgerpliktSkalSetteHarDeltBostedOgSamvarsgradPaaToBarn() {
         every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
         val jsonAnsvar = JsonAnsvar().withBarn(JSON_BARN)
-        val jsonAnsvar_2 = JsonAnsvar().withBarn(JSON_BARN_2)
+        val jsonansvar2 = JsonAnsvar().withBarn(JSON_BARN_2)
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
-            createJsonInternalSoknadWithForsorgerplikt(true, null, listOf(jsonAnsvar, jsonAnsvar_2))
+            createJsonInternalSoknadWithForsorgerplikt(true, null, listOf(jsonAnsvar, jsonansvar2))
 
         val soknadUnderArbeidSlot = slot<SoknadUnderArbeid>()
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(soknadUnderArbeidSlot), any()) } just runs

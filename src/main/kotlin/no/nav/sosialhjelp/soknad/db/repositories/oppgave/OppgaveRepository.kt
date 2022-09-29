@@ -4,9 +4,11 @@ interface OppgaveRepository {
     fun opprett(oppgave: Oppgave)
     fun hentNeste(): Oppgave?
     fun hentOppgave(behandlingsId: String): Oppgave?
+    fun hentOppgaveIdList(behandlingsIdList: List<String>): List<Long>
     fun oppdater(oppgave: Oppgave)
-    fun hentStatus(): Map<String, Int>
+    fun hentAntallFeilede(): Int
+    fun hentAntallStuckUnderArbeid(): Int
     fun retryOppgaveStuckUnderArbeid(): Int
-    fun slettOppgave(behandlingsId: String)
+    fun slettOppgaver(oppgaveIdList: List<Long>)
     fun count(): Int
 }

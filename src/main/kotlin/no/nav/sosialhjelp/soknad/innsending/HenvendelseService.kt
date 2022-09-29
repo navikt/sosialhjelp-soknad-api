@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.innsending
 
-import no.nav.sosialhjelp.soknad.common.exceptions.SosialhjelpSoknadApiException
-import no.nav.sosialhjelp.soknad.common.mdc.MdcOperations
+import no.nav.sosialhjelp.soknad.app.exceptions.SosialhjelpSoknadApiException
+import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadata
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataInnsendingStatus
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataInnsendingStatus.AVBRUTT_AUTOMATISK

@@ -11,14 +11,14 @@ import io.mockk.verify
 import no.finn.unleash.Unleash
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknadsmottaker
-import no.nav.sosialhjelp.soknad.common.MiljoUtils
+import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.innsending.HenvendelseService
 import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
-import no.nav.sosialhjelp.soknad.metrics.SoknadMetricsService
+import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
 import no.nav.sosialhjelp.soknad.vedlegg.OpplastetVedleggRessurs.Companion.KS_MELLOMLAGRING_ENABLED
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
@@ -32,20 +32,20 @@ internal class DigisosApiServiceTest {
     private val digisosApiV2Client: DigisosApiV2Client = mockk()
     private val henvendelseService: HenvendelseService = mockk()
     private val soknadUnderArbeidService: SoknadUnderArbeidService = mockk()
-    private val soknadMetricsService: SoknadMetricsService = mockk()
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
     private val dokumentListeService: DokumentListeService = mockk()
     private val unleash: Unleash = mockk()
+    private val prometheusMetricsService: PrometheusMetricsService = mockk(relaxed = true)
 
     private val digisosApiService = DigisosApiService(
         digisosApiV1Client,
         digisosApiV2Client,
         henvendelseService,
         soknadUnderArbeidService,
-        soknadMetricsService,
         soknadUnderArbeidRepository,
         dokumentListeService,
-        unleash
+        unleash,
+        prometheusMetricsService
     )
 
     @BeforeEach
@@ -96,7 +96,6 @@ internal class DigisosApiServiceTest {
         every { soknadUnderArbeidService.settInnsendingstidspunktPaSoknad(any()) } just runs
         every { henvendelseService.oppdaterMetadataVedAvslutningAvSoknad(any(), any(), any(), any()) } just runs
         every { soknadUnderArbeidRepository.slettSoknad(any(), any()) } just runs
-        every { soknadMetricsService.reportSendSoknadMetrics(any(), any()) } just runs
 
         digisosApiService.sendSoknad(soknadUnderArbeid, "token", "0301")
 

@@ -25,11 +25,9 @@ import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonSokernavn
 import no.nav.sbl.soknadsosialhjelp.soknad.utdanning.JsonUtdanning
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
-import no.nav.sosialhjelp.metrics.MetricsFactory
-import no.nav.sosialhjelp.metrics.Timer
-import no.nav.sosialhjelp.soknad.common.exceptions.SosialhjelpSoknadApiException
-import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
-import no.nav.sosialhjelp.soknad.common.systemdata.SystemdataUpdater
+import no.nav.sosialhjelp.soknad.app.exceptions.SosialhjelpSoknadApiException
+import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
+import no.nav.sosialhjelp.soknad.app.systemdata.SystemdataUpdater
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.VedleggMetadata
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.VedleggMetadataListe
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.Vedleggstatus
@@ -41,8 +39,8 @@ import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils.getVedleggFromInter
 import no.nav.sosialhjelp.soknad.innsending.svarut.OppgaveHandterer
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.BostotteSystemdata
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.SkatteetatenSystemdata
-import no.nav.sosialhjelp.soknad.metrics.SOKNAD_TYPE
-import no.nav.sosialhjelp.soknad.metrics.SoknadMetricsService
+import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
+import no.nav.sosialhjelp.soknad.metrics.VedleggskravStatistikkUtil.genererOgLoggVedleggskravStatistikk
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
@@ -53,13 +51,11 @@ import java.time.ZoneOffset
 import java.time.temporal.ChronoUnit.DAYS
 import java.time.temporal.ChronoUnit.HOURS
 import java.time.temporal.ChronoUnit.MINUTES
-import java.util.UUID
 
 @Component
 open class SoknadService(
     private val henvendelseService: HenvendelseService,
     private val oppgaveHandterer: OppgaveHandterer,
-    private val soknadMetricsService: SoknadMetricsService,
     private val innsendingService: InnsendingService,
     private val ettersendingService: EttersendingService,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
@@ -67,22 +63,14 @@ open class SoknadService(
     private val bostotteSystemdata: BostotteSystemdata,
     private val skatteetatenSystemdata: SkatteetatenSystemdata,
     private val mellomlagringService: MellomlagringService,
+    private val prometheusMetricsService: PrometheusMetricsService
 ) {
     @Transactional
     open fun startSoknad(token: String?): String {
-        val mainUid = UUID.randomUUID().toString()
-
-        val startTimer = createDebugTimer("startTimer", mainUid)
-
         val eier = SubjectHandlerUtils.getUserIdFromToken()
-        val henvendelseTimer = createDebugTimer("startHenvendelse", mainUid)
         val behandlingsId = henvendelseService.startSoknad(eier)
-        henvendelseTimer.stop()
-        henvendelseTimer.report()
 
-        soknadMetricsService.reportStartSoknad(false)
-
-        val oprettIDbTimer = createDebugTimer("oprettIDb", mainUid)
+        prometheusMetricsService.reportStartSoknad(false)
 
         val soknadUnderArbeid = SoknadUnderArbeid(
             versjon = 1L,
@@ -96,13 +84,7 @@ open class SoknadService(
         )
 
         systemdataUpdater.update(soknadUnderArbeid)
-
         soknadUnderArbeidRepository.opprettSoknad(soknadUnderArbeid, eier)
-
-        oprettIDbTimer.stop()
-        oprettIDbTimer.report()
-        startTimer.stop()
-        startTimer.report()
 
         return behandlingsId
     }
@@ -112,7 +94,7 @@ open class SoknadService(
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
 
-        log.info("Starter innsending av søknad med behandlingsId {}", behandlingsId)
+        log.info("Starter innsending av søknad med behandlingsId $behandlingsId")
         logDriftsinformasjon(soknadUnderArbeid)
 
         validateEttersendelseHasVedlegg(soknadUnderArbeid)
@@ -122,7 +104,7 @@ open class SoknadService(
         oppgaveHandterer.leggTilOppgave(behandlingsId, eier)
         innsendingService.opprettSendtSoknad(soknadUnderArbeid)
 
-        soknadMetricsService.reportSendSoknadMetrics(soknadUnderArbeid, vedlegg.vedleggListe)
+        genererOgLoggVedleggskravStatistikk(soknadUnderArbeid, vedlegg.vedleggListe)
     }
 
     private fun validateEttersendelseHasVedlegg(soknadUnderArbeid: SoknadUnderArbeid) {
@@ -136,11 +118,11 @@ open class SoknadService(
         if (!soknadUnderArbeid.erEttersendelse) {
             if (java.lang.Boolean.TRUE == soknadUnderArbeid.jsonInternalSoknad?.soknad?.driftsinformasjon?.stotteFraHusbankenFeilet) {
                 val alderPaaData = finnAlderPaaDataFor(soknadUnderArbeid, BOSTOTTE_SAMTYKKE)
-                log.info("Nedlasting fra Husbanken har feilet for innsendtsoknad. {}", alderPaaData)
+                log.info("Nedlasting fra Husbanken har feilet for innsendtsoknad. $alderPaaData")
             }
             if (java.lang.Boolean.TRUE == soknadUnderArbeid.jsonInternalSoknad?.soknad?.driftsinformasjon?.inntektFraSkatteetatenFeilet) {
                 val alderPaaData = finnAlderPaaDataFor(soknadUnderArbeid, UTBETALING_SKATTEETATEN_SAMTYKKE)
-                log.info("Nedlasting fra Skatteetaten har feilet for innsendtsoknad. {}", alderPaaData)
+                log.info("Nedlasting fra Skatteetaten har feilet for innsendtsoknad. $alderPaaData")
             }
         }
     }
@@ -169,7 +151,7 @@ open class SoknadService(
                 }
                 soknadUnderArbeidRepository.slettSoknad(soknadUnderArbeid, eier)
                 henvendelseService.avbrytSoknad(soknadUnderArbeid.behandlingsId, false)
-                soknadMetricsService.reportAvbruttSoknad(soknadUnderArbeid.erEttersendelse)
+                prometheusMetricsService.reportAvbruttSoknad(soknadUnderArbeid.erEttersendelse)
             }
     }
 
@@ -193,14 +175,6 @@ open class SoknadService(
 
     open fun startEttersending(behandlingsIdSoknad: String?): String {
         return ettersendingService.start(behandlingsIdSoknad)
-    }
-
-    private fun createDebugTimer(name: String, id: String): Timer {
-        val timer = MetricsFactory.createTimer("debug.startsoknad.$name")
-        timer.addFieldToReport("soknadstype", SOKNAD_TYPE)
-        timer.addFieldToReport("randomid", id)
-        timer.start()
-        return timer
     }
 
     private fun convertToVedleggMetadataListe(soknadUnderArbeid: SoknadUnderArbeid): VedleggMetadataListe {

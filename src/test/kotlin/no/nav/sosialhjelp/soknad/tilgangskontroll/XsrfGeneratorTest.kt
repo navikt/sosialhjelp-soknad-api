@@ -3,10 +3,10 @@ package no.nav.sosialhjelp.soknad.tilgangskontroll
 import io.mockk.every
 import io.mockk.mockkObject
 import io.mockk.unmockkObject
-import no.nav.sosialhjelp.soknad.common.MiljoUtils
-import no.nav.sosialhjelp.soknad.common.exceptions.AuthorizationException
-import no.nav.sosialhjelp.soknad.common.subjecthandler.StaticSubjectHandlerImpl
-import no.nav.sosialhjelp.soknad.common.subjecthandler.SubjectHandlerUtils
+import no.nav.sosialhjelp.soknad.app.MiljoUtils
+import no.nav.sosialhjelp.soknad.app.exceptions.AuthorizationException
+import no.nav.sosialhjelp.soknad.app.subjecthandler.StaticSubjectHandlerImpl
+import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.tilgangskontroll.XsrfGenerator.generateXsrfToken
 import no.nav.sosialhjelp.soknad.tilgangskontroll.XsrfGenerator.sjekkXsrfToken
 import org.assertj.core.api.Assertions
@@ -33,12 +33,12 @@ internal class XsrfGeneratorTest {
 
     @Test
     fun skalGenerereBasertPaaInput() {
-        val token = generateXsrfToken("1L")
-        val tokenYesterday = generateXsrfToken("1L", ZonedDateTime.now().minusDays(1).format(DateTimeFormatter.ofPattern("yyyyMMdd")))
-        sjekkXsrfToken(token, "1L", false)
-        sjekkXsrfToken(tokenYesterday, "1L", false)
-        sjekkAtMetodeKasterException(token, 2L)
-        sjekkAtMetodeKasterException(token, 1L)
+        val xsrfToken = generateXsrfToken("1L")
+        val xsrfTokenYesterday = generateXsrfToken("1L", ZonedDateTime.now().minusDays(1).format(DateTimeFormatter.ofPattern("yyyyMMdd")))
+        sjekkXsrfToken(xsrfToken, "1L", false)
+        sjekkXsrfToken(xsrfTokenYesterday, "1L", false)
+        sjekkAtMetodeKasterException(xsrfToken, 2L)
+        sjekkAtMetodeKasterException(xsrfToken, 1L)
     }
 
     private fun sjekkAtMetodeKasterException(token: String, soknadId: Long) {

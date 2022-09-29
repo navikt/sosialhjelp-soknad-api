@@ -8,13 +8,13 @@ import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeidsforhold
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeidsforhold.Stillingstype
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
+import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.addInntektIfNotPresentInOversikt
+import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.addUtbetalingIfNotPresentInOpplysninger
+import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.removeInntektIfPresentInOversikt
+import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.removeUtbetalingIfPresentInOpplysninger
+import no.nav.sosialhjelp.soknad.app.mapper.TitleKeyMapper.soknadTypeToTitleKey
+import no.nav.sosialhjelp.soknad.app.systemdata.Systemdata
 import no.nav.sosialhjelp.soknad.arbeid.domain.Arbeidsforhold
-import no.nav.sosialhjelp.soknad.common.mapper.OkonomiMapper.addInntektIfNotPresentInOversikt
-import no.nav.sosialhjelp.soknad.common.mapper.OkonomiMapper.addUtbetalingIfNotPresentInOpplysninger
-import no.nav.sosialhjelp.soknad.common.mapper.OkonomiMapper.removeInntektIfPresentInOversikt
-import no.nav.sosialhjelp.soknad.common.mapper.OkonomiMapper.removeUtbetalingIfPresentInOpplysninger
-import no.nav.sosialhjelp.soknad.common.mapper.TitleKeyMapper.soknadTypeToTitleKey
-import no.nav.sosialhjelp.soknad.common.systemdata.Systemdata
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.tekster.TextService
 import org.slf4j.LoggerFactory
@@ -29,11 +29,11 @@ class ArbeidsforholdSystemdata(
     override fun updateSystemdataIn(soknadUnderArbeid: SoknadUnderArbeid) {
         val eier = soknadUnderArbeid.eier
         val internalSoknad = soknadUnderArbeid.jsonInternalSoknad ?: return
-        internalSoknad.soknad.data.arbeid.forhold = innhentSystemArbeidsforhold(eier)
+        internalSoknad.soknad.data.arbeid.forhold = innhentSystemArbeidsforhold(eier) ?: emptyList()
         updateVedleggForventninger(internalSoknad, textService)
     }
 
-    fun innhentSystemArbeidsforhold(personIdentifikator: String): List<JsonArbeidsforhold>? {
+    private fun innhentSystemArbeidsforhold(personIdentifikator: String): List<JsonArbeidsforhold>? {
         val arbeidsforholds: List<Arbeidsforhold>? = try {
             arbeidsforholdService.hentArbeidsforhold(personIdentifikator)
         } catch (e: Exception) {
@@ -56,6 +56,7 @@ class ArbeidsforholdSystemdata(
 
     companion object {
         private val LOG = LoggerFactory.getLogger(ArbeidsforholdSystemdata::class.java)
+
         fun updateVedleggForventninger(internalSoknad: JsonInternalSoknad, textService: TextService) {
             val utbetalinger = internalSoknad.soknad.data.okonomi.opplysninger.utbetaling
             val inntekter = internalSoknad.soknad.data.okonomi.oversikt.inntekt

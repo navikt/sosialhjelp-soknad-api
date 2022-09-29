@@ -3,13 +3,13 @@ package no.nav.sosialhjelp.soknad.vedlegg.virusscan
 import io.mockk.every
 import io.mockk.mockkObject
 import io.mockk.unmockkObject
-import mockwebserver3.MockResponse
-import mockwebserver3.MockWebServer
-import no.nav.sosialhjelp.soknad.client.redis.RedisUtils.redisObjectMapper
-import no.nav.sosialhjelp.soknad.common.MiljoUtils
+import no.nav.sosialhjelp.soknad.app.MiljoUtils
+import no.nav.sosialhjelp.soknad.redis.RedisUtils.redisObjectMapper
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.OpplastingException
 import no.nav.sosialhjelp.soknad.vedlegg.virusscan.dto.Result
 import no.nav.sosialhjelp.soknad.vedlegg.virusscan.dto.ScanResult
+import okhttp3.mockwebserver.MockResponse
+import okhttp3.mockwebserver.MockWebServer
 import org.assertj.core.api.Assertions.assertThatCode
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.AfterEach
@@ -33,8 +33,6 @@ class VirusScannerTest {
 
     @BeforeEach
     fun setUp() {
-        mockWebServer.start()
-
         mockkObject(MiljoUtils)
         every { MiljoUtils.isNonProduction() } returns false
     }

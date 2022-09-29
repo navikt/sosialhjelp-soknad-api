@@ -2,19 +2,20 @@ package no.nav.sosialhjelp.soknad.vedlegg.fiks
 
 import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.module.kotlin.readValue
-import no.ks.fiks.streaming.klient.FilForOpplasting
 import no.nav.sosialhjelp.api.fiks.ErrorMessage
 import no.nav.sosialhjelp.api.fiks.exceptions.FiksException
-import no.nav.sosialhjelp.kotlin.utils.logger
+import no.nav.sosialhjelp.soknad.app.Constants.BEARER
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.auth.maskinporten.MaskinportenClient
-import no.nav.sosialhjelp.soknad.common.Constants.BEARER
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DokumentlagerClient
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.KrypteringService
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.KrypteringService.Companion.waitForFutures
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.createHttpEntity
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.digisosObjectMapper
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilForOpplasting
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilOpplasting
-import org.springframework.core.io.InputStreamResource
-import org.springframework.http.ContentDisposition
+import org.apache.commons.io.IOUtils
+import org.springframework.core.io.ByteArrayResource
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
@@ -22,6 +23,7 @@ import org.springframework.util.LinkedMultiValueMap
 import org.springframework.web.reactive.function.BodyInserters
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
+import org.springframework.web.reactive.function.client.WebClientResponseException.BadRequest
 import org.springframework.web.reactive.function.client.bodyToMono
 import java.util.Collections
 import java.util.concurrent.Future
@@ -53,18 +55,18 @@ class MellomlagringClientImpl(
                 .header(HttpHeaders.AUTHORIZATION, BEARER + maskinportenClient.getToken())
                 .retrieve()
                 .bodyToMono<String>()
-                .onErrorMap(WebClientResponseException::class.java) {
-                    log.warn("Fiks - getMellomlagredeVedlegg feilet - ${it.responseBodyAsString}", it)
-                    throw it
-                }
                 .block() ?: throw FiksException("MellomlagringDto er null?", null)
-        } catch (badRequest: WebClientResponseException.BadRequest) {
-            val errorMessage = digisosObjectMapper.readValue<ErrorMessage>(badRequest.responseBodyAsString)
-            if (errorMessage.message == "Fant ingen data i basen knytter til angitt id'en") {
-                log.warn("Ingen mellomlagrede vedlegg funnet for $navEksternId")
-                return null
+        } catch (e: WebClientResponseException) {
+            if (e is BadRequest) {
+                val errorMessage = digisosObjectMapper.readValue<ErrorMessage>(e.responseBodyAsString)
+                val message = errorMessage.message
+                if (message != null && message.contains("Fant ingen data i basen knytter til angitt id'en")) {
+                    log.warn("Ingen mellomlagrede vedlegg funnet for $navEksternId")
+                    return null
+                }
             }
-            throw badRequest
+            log.warn("Fiks - getMellomlagredeVedlegg feilet - ${e.responseBodyAsString}", e)
+            throw e
         }
         return digisosObjectMapper.readValue<MellomlagringDto>(responseString)
     }
@@ -78,11 +80,11 @@ class MellomlagringClientImpl(
         try {
             val fiksX509Certificate = dokumentlagerClient.getDokumentlagerPublicKeyX509Certificate()
             lastOpp(
-                filForOpplasting = FilForOpplasting.builder<Any>()
-                    .filnavn(filOpplasting.metadata.filnavn)
-                    .metadata(filOpplasting.metadata)
-                    .data(krypteringService.krypter(filOpplasting.data, krypteringFutureList, fiksX509Certificate))
-                    .build(),
+                filForOpplasting = FilForOpplasting(
+                    filnavn = filOpplasting.metadata.filnavn,
+                    metadata = filOpplasting.metadata,
+                    data = krypteringService.krypter(filOpplasting.data, krypteringFutureList, fiksX509Certificate)
+                ),
                 navEksternId = navEksternId
             )
             waitForFutures(krypteringFutureList)
@@ -159,20 +161,7 @@ class MellomlagringClientImpl(
     }
 
     private fun createHttpEntityOfFile(file: FilForOpplasting<Any>, name: String): HttpEntity<Any> {
-        return createHttpEntity(InputStreamResource(file.data), name, file.filnavn, "application/octet-stream")
-    }
-
-    private fun createHttpEntity(body: Any, name: String, filename: String?, contentType: String): HttpEntity<Any> {
-        val headerMap = LinkedMultiValueMap<String, String>()
-        val builder: ContentDisposition.Builder = ContentDisposition
-            .builder("form-data")
-            .name(name)
-        val contentDisposition: ContentDisposition =
-            if (filename == null) builder.build() else builder.filename(filename).build()
-
-        headerMap.add(HttpHeaders.CONTENT_DISPOSITION, contentDisposition.toString())
-        headerMap.add(HttpHeaders.CONTENT_TYPE, contentType)
-        return HttpEntity(body, headerMap)
+        return createHttpEntity(ByteArrayResource(IOUtils.toByteArray(file.data)), name, file.filnavn, "application/octet-stream")
     }
 
     companion object {

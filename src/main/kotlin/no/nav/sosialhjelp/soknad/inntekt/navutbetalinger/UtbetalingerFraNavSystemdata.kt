@@ -5,13 +5,13 @@ import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetalingKomponent
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOrganisasjon
-import no.nav.sosialhjelp.soknad.common.systemdata.Systemdata
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
+import no.nav.sosialhjelp.soknad.app.systemdata.Systemdata
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.domain.Komponent
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.domain.NavUtbetaling
 import no.nav.sosialhjelp.soknad.organisasjon.OrganisasjonService
 import org.apache.commons.lang3.StringUtils
-import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import kotlin.math.roundToInt
 
@@ -60,10 +60,7 @@ class UtbetalingerFraNavSystemdata(
         if (orgnummer.matches(Regex("\\d{11}"))) {
             log.info("Utbetalingens opplysningspliktigId er et personnummer. Dette blir ikke inkludert i soknad.json")
         } else {
-            log.error(
-                "Utbetalingens opplysningspliktigId er verken et organisasjonsnummer eller personnummer: {}. Kontakt skatteetaten.",
-                orgnummer
-            )
+            log.error("Utbetalingens opplysningspliktigId er verken et organisasjonsnummer eller personnummer: $orgnummer. Kontakt skatteetaten.")
         }
         return null
     }
@@ -98,7 +95,7 @@ class UtbetalingerFraNavSystemdata(
     }
 
     companion object {
-        val log = LoggerFactory.getLogger(UtbetalingerFraNavSystemdata::class.java)
+        private val log by logger()
         fun tilIntegerMedAvrunding(s: String): Int? {
             val d = tilDouble(s) ?: return null
             return d.roundToInt()

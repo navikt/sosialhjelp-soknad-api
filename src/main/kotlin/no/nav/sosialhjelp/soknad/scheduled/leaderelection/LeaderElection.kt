@@ -1,6 +1,7 @@
 package no.nav.sosialhjelp.soknad.scheduled.leaderelection
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import no.nav.sosialhjelp.soknad.app.client.config.unproxiedWebClientBuilder
 import org.slf4j.LoggerFactory.getLogger
 import org.springframework.web.reactive.function.client.WebClient
 import java.net.InetAddress.getLocalHost
@@ -11,11 +12,11 @@ interface LeaderElection {
 }
 
 class LeaderElectionImpl(
-    nonProxiedWebClientBuilder: WebClient.Builder,
+    webClientBuilder: WebClient.Builder,
 ) : LeaderElection {
 
     private val electorPath: String? = System.getenv(ELECTOR_PATH)
-    private val webClient: WebClient = nonProxiedWebClientBuilder.baseUrl("http://$electorPath").build()
+    private val webClient: WebClient = unproxiedWebClientBuilder(webClientBuilder).baseUrl("http://$electorPath").build()
 
     private var hostname: String = getLocalHost().hostName
     private var leader: String? = null
