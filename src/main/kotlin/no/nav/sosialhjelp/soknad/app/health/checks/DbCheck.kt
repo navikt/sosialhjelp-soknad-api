@@ -4,9 +4,8 @@ import no.nav.sosialhjelp.selftest.DependencyCheck
 import no.nav.sosialhjelp.selftest.DependencyType
 import no.nav.sosialhjelp.selftest.Importance
 import org.springframework.jdbc.core.JdbcTemplate
-import org.springframework.stereotype.Component
 
-@Component
+// @Component
 class DbCheck(
     private val jdbcTemplate: JdbcTemplate
 ) : DependencyCheck {
