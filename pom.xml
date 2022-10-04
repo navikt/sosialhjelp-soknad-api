@@ -125,7 +125,7 @@
         <micrometer.version>1.9.4</micrometer.version>
         <lombok.version>1.18.24</lombok.version>
         <org.osgi.core.version>6.0.0</org.osgi.core.version>
-        <snakeyaml.version>1.30</snakeyaml.version>
+        <snakeyaml.version>1.32</snakeyaml.version>
         <hibernate-validator.version>6.2.3.Final</hibernate-validator.version>
         <lang-tag.version>1.7</lang-tag.version>
         <jboss-logging.version>3.5.0.Final</jboss-logging.version>
