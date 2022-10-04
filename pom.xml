@@ -54,8 +54,8 @@
         <svarut-rest-klient.version>1.1.0</svarut-rest-klient.version>
         <kryptering.version>1.2.0</kryptering.version>
 
-        <spring-boot.version>2.7.3</spring-boot.version>
-        <spring.version>5.3.22</spring.version>
+        <spring-boot.version>2.7.4</spring-boot.version>
+        <spring.version>5.3.23</spring.version>
         <jersey.version>2.37</jersey.version>
         <jetty.version>9.4.48.v20220622</jetty.version>
         <kotlinx-coroutines.version>1.6.4</kotlinx-coroutines.version>
@@ -83,10 +83,10 @@
         <jaxb-runtime.version>2.3.6</jaxb-runtime.version>
         <lettuce.version>6.2.0.RELEASE</lettuce.version>
         <unleash.version>3.3.4</unleash.version>
-        <reactor-core.version>3.4.22</reactor-core.version>
-        <reactor-netty-http.version>1.0.22</reactor-netty-http.version>
+        <reactor-core.version>3.4.23</reactor-core.version>
+        <reactor-netty-http.version>1.0.23</reactor-netty-http.version>
         <reactive-streams.version>1.0.4</reactive-streams.version>
-        <netty.version>4.1.79.Final</netty.version>
+        <netty.version>4.1.81.Final</netty.version>
         <log4j.version>2.18.0</log4j.version>
         <java-jwt.version>4.0.0</java-jwt.version>
 
@@ -120,9 +120,9 @@
         <objenesis.version>3.2</objenesis.version>
         <mimepull.version>1.10.0</mimepull.version>
         <json.version>20220320</json.version>
-        <byte-buddy.version>1.12.13</byte-buddy.version>
+        <byte-buddy.version>1.12.17</byte-buddy.version>
         <gson.version>2.9.0</gson.version>
-        <micrometer.version>1.9.3</micrometer.version>
+        <micrometer.version>1.9.4</micrometer.version>
         <lombok.version>1.18.24</lombok.version>
         <org.osgi.core.version>6.0.0</org.osgi.core.version>
         <snakeyaml.version>1.30</snakeyaml.version>
