@@ -34,6 +34,7 @@ class HusbankenClientImpl(
                 }
                 .block()
         } catch (e: Exception) {
+            log.warn("hentBostotte fra Husbanken kastet feil", e)
             return null
         }
     }
