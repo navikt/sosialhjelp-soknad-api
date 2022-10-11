@@ -58,8 +58,6 @@ spec:
         - application: mine-saker-api
           namespace: min-side
           cluster: {{min-side-cluster}}
-        - application: {{sosialhjelpDialogApi}}
-          cluster: {{dialogGcpCluster}}
 {{/if}}
         - application: {{sosialhjelp-innsyn-api}}
           cluster: {{sosialhjelp-innsyn-api-cluster}}

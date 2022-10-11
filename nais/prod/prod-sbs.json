@@ -27,8 +27,6 @@
   "vaultEnabled": true,
   "tokenXEnabled": true,
   "min-side-cluster": "prod-gcp",
-  "dialogGcpCluster": "prod-gcp",
-  "sosialhjelpDialogApi": "sosialhjelp-dialog-api",
   "sosialhjelp-innsyn-api": "sosialhjelp-innsyn-api",
   "sosialhjelp-innsyn-api-cluster": "prod-sbs",
   "prometheusEnabled": true,
