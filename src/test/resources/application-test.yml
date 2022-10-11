@@ -29,7 +29,7 @@ maskinporten_client_jwk: generateRSA
 
 # tokenx
 tokendings_url: http://localhost:${mock-oauth2-server.port}/tokenx/.well-known/openid-configuration
-tokendings_client_id: localhost:teamdigisos:sosialhjelp-dialog-api
+tokendings_client_id: localhost:teamdigisos:sosialhjelp-soknad-api
 tokendings_private_jwk: generateRSA
 fss_proxy_audience: dummyAudience
 oppslag_api_audience: dummyAudience
