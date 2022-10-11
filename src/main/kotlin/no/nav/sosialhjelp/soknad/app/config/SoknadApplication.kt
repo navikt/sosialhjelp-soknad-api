@@ -1,7 +1,6 @@
 package no.nav.sosialhjelp.soknad.app.config
 
 import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider
-import no.nav.sosialhjelp.soknad.api.dialog.SistInnsendteSoknadRessurs
 import no.nav.sosialhjelp.soknad.api.featuretoggle.FeatureToggleRessurs
 import no.nav.sosialhjelp.soknad.api.informasjon.InformasjonRessurs
 import no.nav.sosialhjelp.soknad.api.innsyn.SoknadOversiktRessurs
@@ -95,9 +94,7 @@ open class SoknadApplication : ResourceConfig() {
         // eksterne
         register(MinSideMetadataRessurs::class.java)
         register(MineSakerMetadataRessurs::class.java)
-        register(SistInnsendteSoknadRessurs::class.java)
         register(SoknadOversiktRessurs::class.java)
-
         register(JacksonJaxbJsonProvider::class.java)
         register(MultiPartFeature::class.java)
         register(JsonToTextPlainBodyWriter::class.java)
