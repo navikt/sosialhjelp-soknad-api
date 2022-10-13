@@ -2,7 +2,7 @@
   "applicationName": "sosialhjelp-soknad-api",
   "namespace": "teamdigisos",
   "ingresses": [
-    "https://sosialhjelp-soknad-api.dev-fss-pub.nais.io/sosialhjelp/soknad-api"
+    "https://sosialhjelp-soknad-api.dev-fss-pub.nais.io/sosialhjelp/api/soknad"
   ],
   "envsecret": [
     "redis-password-soknad-api",
