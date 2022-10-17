@@ -65,6 +65,7 @@
         <flyway-core.version>9.3.0</flyway-core.version>
         <flyway-maven-plugin.version>9.3.0</flyway-maven-plugin.version>
         <jackson.version>2.13.4</jackson.version>
+        <jackson-databind.version>2.13.4.2</jackson-databind.version>
         <pdfbox.version>2.0.26</pdfbox.version>
         <jempbox.version>1.8.17</jempbox.version>
         <bouncycastle.version>1.70</bouncycastle.version>
@@ -290,7 +291,7 @@
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>
-                <version>${jackson.version}</version>
+                <version>${jackson-databind.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.module</groupId>
