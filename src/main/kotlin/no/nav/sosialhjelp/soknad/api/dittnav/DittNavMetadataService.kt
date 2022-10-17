@@ -1,8 +1,8 @@
-package no.nav.sosialhjelp.soknad.api.minside
+package no.nav.sosialhjelp.soknad.api.dittnav
 
 import no.nav.sosialhjelp.soknad.api.LenkeUtils.lenkeTilPabegyntSoknad
 import no.nav.sosialhjelp.soknad.api.TimeUtils.toUtc
-import no.nav.sosialhjelp.soknad.api.minside.dto.PabegyntSoknadDto
+import no.nav.sosialhjelp.soknad.api.dittnav.dto.PabegyntSoknadDto
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
@@ -10,7 +10,7 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
 @Component
-class MinSideMetadataService(
+class DittNavMetadataService(
     private val soknadMetadataRepository: SoknadMetadataRepository
 ) {
     fun hentAktivePabegynteSoknader(fnr: String): List<PabegyntSoknadDto> {
@@ -58,7 +58,7 @@ class MinSideMetadataService(
     }
 
     companion object {
-        private val log = LoggerFactory.getLogger(MinSideMetadataService::class.java)
+        private val log = LoggerFactory.getLogger(DittNavMetadataService::class.java)
         private const val PABEGYNT_SOKNAD_TITTEL = "Påbegynt søknad om økonomisk sosialhjelp"
         private const val SIKKERHETSNIVAA_3 = 3
         private const val SIKKERHETSNIVAA_4 = 4

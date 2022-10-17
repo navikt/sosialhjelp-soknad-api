@@ -1,11 +1,11 @@
 package no.nav.sosialhjelp.soknad.app.config
 
 import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider
+import no.nav.sosialhjelp.soknad.api.dittnav.DittNavMetadataRessurs
 import no.nav.sosialhjelp.soknad.api.featuretoggle.FeatureToggleRessurs
 import no.nav.sosialhjelp.soknad.api.informasjon.InformasjonRessurs
 import no.nav.sosialhjelp.soknad.api.innsyn.SoknadOversiktRessurs
 import no.nav.sosialhjelp.soknad.api.minesaker.MineSakerMetadataRessurs
-import no.nav.sosialhjelp.soknad.api.minside.MinSideMetadataRessurs
 import no.nav.sosialhjelp.soknad.api.nedetid.NedetidRessurs
 import no.nav.sosialhjelp.soknad.app.filter.CORSFilter
 import no.nav.sosialhjelp.soknad.app.filter.HeaderFilter
@@ -92,7 +92,7 @@ open class SoknadApplication : ResourceConfig() {
         register(EttersendingRessurs::class.java)
 
         // eksterne
-        register(MinSideMetadataRessurs::class.java)
+        register(DittNavMetadataRessurs::class.java)
         register(MineSakerMetadataRessurs::class.java)
         register(SoknadOversiktRessurs::class.java)
         register(JacksonJaxbJsonProvider::class.java)

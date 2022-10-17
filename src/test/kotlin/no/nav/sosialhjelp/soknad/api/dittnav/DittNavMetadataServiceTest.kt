@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.api.minside
+package no.nav.sosialhjelp.soknad.api.dittnav
 
 import io.mockk.clearAllMocks
 import io.mockk.every
@@ -16,10 +16,10 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 
-internal class MinSideMetadataServiceTest {
+internal class DittNavMetadataServiceTest {
 
     private val soknadMetadataRepository: SoknadMetadataRepository = mockk()
-    private val minSideMetadataService = MinSideMetadataService(soknadMetadataRepository)
+    private val dittNavMetadataService = DittNavMetadataService(soknadMetadataRepository)
 
     @BeforeEach
     internal fun setUp() {
@@ -39,7 +39,7 @@ internal class MinSideMetadataServiceTest {
         val soknadMetadata = createSoknadMetadata(false)
         every { soknadMetadataRepository.hentPabegynteSoknaderForBruker("12345", false) } returns listOf(soknadMetadata)
 
-        val dtos = minSideMetadataService.hentAktivePabegynteSoknader("12345")
+        val dtos = dittNavMetadataService.hentAktivePabegynteSoknader("12345")
         assertThat(dtos).hasSize(1)
         assertThat(dtos[0].eventId).isEqualTo(soknadMetadata.behandlingsId + "_aktiv")
         assertThat(dtos[0].grupperingsId).isEqualTo(soknadMetadata.behandlingsId)
@@ -51,7 +51,7 @@ internal class MinSideMetadataServiceTest {
         val soknadMetadata = createSoknadMetadata(true)
         every { soknadMetadataRepository.hentPabegynteSoknaderForBruker("12345", true) } returns listOf(soknadMetadata)
 
-        val dtos = minSideMetadataService.hentInaktivePabegynteSoknader("12345")
+        val dtos = dittNavMetadataService.hentInaktivePabegynteSoknader("12345")
         assertThat(dtos).hasSize(1)
         assertThat(dtos[0].eventId).isEqualTo(soknadMetadata.behandlingsId + "_inaktiv")
         assertThat(dtos[0].grupperingsId).isEqualTo(soknadMetadata.behandlingsId)
@@ -62,7 +62,7 @@ internal class MinSideMetadataServiceTest {
     fun markerPabegyntSoknadSomLest_skalGiFalse_hvisRepositoryReturnererNull() {
         every { soknadMetadataRepository.hent(any()) } returns null
 
-        val markert = minSideMetadataService.oppdaterLestStatusForPabegyntSoknad("behandlingsId", "12345")
+        val markert = dittNavMetadataService.oppdaterLestStatusForPabegyntSoknad("behandlingsId", "12345")
         assertThat(markert).isFalse
     }
 
@@ -72,11 +72,11 @@ internal class MinSideMetadataServiceTest {
         every { soknadMetadataRepository.hent(any()) } returns soknadMetadata
         every { soknadMetadataRepository.oppdaterLest(any(), any()) } throws RuntimeException("Noe feilet")
 
-        val markert = minSideMetadataService.oppdaterLestStatusForPabegyntSoknad("behandlingsId", "12345")
+        val markert = dittNavMetadataService.oppdaterLestStatusForPabegyntSoknad("behandlingsId", "12345")
         assertThat(markert).isFalse
     }
 
-    private fun createSoknadMetadata(lestMinSide: Boolean): SoknadMetadata {
+    private fun createSoknadMetadata(lest: Boolean): SoknadMetadata {
         return SoknadMetadata(
             id = 0L,
             fnr = "12345",
@@ -86,7 +86,7 @@ internal class MinSideMetadataServiceTest {
             opprettetDato = LocalDateTime.now().minusDays(10),
             innsendtDato = LocalDateTime.now().minusDays(2),
             sistEndretDato = LocalDateTime.now().minusDays(2),
-            lest = lestMinSide
+            lest = lest
         )
     }
 }
