@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.api.minside.dto
+package no.nav.sosialhjelp.soknad.api.dittnav.dto
 
 /**
  * Response-objekt for endepunkt som skal hente informasjon om påbegynte søknader for Min Side.
