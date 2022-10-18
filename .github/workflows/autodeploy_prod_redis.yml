@@ -1,6 +1,6 @@
 name: Auto-deploy redis prod-sbs
 on:
-  push: # Deploys automatically to prod-sbs and prod-gcp if there is a change in any redis files.
+  push: # Deploys automatically to prod-sbs, prod-fss and prod-gcp if there is a change in any redis files.
     paths:
       - "nais/redis-config.yml"
       - "nais/redisexporter.yml"
@@ -29,6 +29,22 @@ jobs:
           TEAM: teamdigisos
           RESOURCE: "nais/redis-config.yml,nais/redisexporter.yml"
           VARS: nais/prod/prod-sbs.json
+
+  deploy-prod-fss:
+    name: Auto-deploy redis to prod-fss
+    runs-on: ubuntu-latest
+    steps:
+      - name: Hente kode
+        uses: actions/checkout@v3
+      - name: Deploy
+        uses: nais/deploy/actions/deploy@v1
+        env:
+          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CLUSTER: prod-fss
+          TEAM: teamdigisos
+          RESOURCE: "nais/redis-config.yml,nais/redisexporter.yml"
+          VARS: nais/prod/prod-fss.json
 
   deploy-prod-gcp:
     name: Auto-deploy redis to prod-gcp
