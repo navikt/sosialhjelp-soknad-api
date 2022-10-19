@@ -48,7 +48,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <sosialhjelp-common.version>1.20220718.1347-2b1045d</sosialhjelp-common.version>
-        <filformat.version>1.2022.07.19-14.28-614820e5640b</filformat.version>
+        <filformat.version>1.2022.09.26-13.07-ef6694702f97</filformat.version>
 
         <!-- Fiks/KS -->
         <svarut-rest-klient.version>1.1.0</svarut-rest-klient.version>
