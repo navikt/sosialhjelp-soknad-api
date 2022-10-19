@@ -1,12 +1,10 @@
 package no.nav.sosialhjelp.soknad.api.dittnav
 
 import no.nav.security.token.support.core.api.ProtectedWithClaims
-import no.nav.security.token.support.core.api.RequiredIssuers
 import no.nav.sosialhjelp.soknad.api.dittnav.dto.MarkerPabegyntSoknadSomLestDto
 import no.nav.sosialhjelp.soknad.api.dittnav.dto.PabegyntSoknadDto
 import no.nav.sosialhjelp.soknad.app.Constants.CLAIM_ACR_LEVEL_3
 import no.nav.sosialhjelp.soknad.app.Constants.CLAIM_ACR_LEVEL_4
-import no.nav.sosialhjelp.soknad.app.Constants.SELVBETJENING
 import no.nav.sosialhjelp.soknad.app.Constants.TOKENX
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import org.slf4j.LoggerFactory
@@ -19,10 +17,7 @@ import javax.ws.rs.Produces
 import javax.ws.rs.core.MediaType
 
 @Controller
-@RequiredIssuers(
-    ProtectedWithClaims(issuer = SELVBETJENING, combineWithOr = true, claimMap = [CLAIM_ACR_LEVEL_3, CLAIM_ACR_LEVEL_4]),
-    ProtectedWithClaims(issuer = TOKENX, combineWithOr = true, claimMap = [CLAIM_ACR_LEVEL_3, CLAIM_ACR_LEVEL_4]),
-)
+@ProtectedWithClaims(issuer = TOKENX, combineWithOr = true, claimMap = [CLAIM_ACR_LEVEL_3, CLAIM_ACR_LEVEL_4])
 @Path("/dittnav")
 @Produces(MediaType.APPLICATION_JSON)
 open class DittNavMetadataRessurs(
