@@ -76,3 +76,4 @@ integrasjonpassord_fiks: ${INTEGRASJONPASSORD_FIKS:integrasjonpassord_fiks}
 redis_host: localhost
 redis_port: 6379
 redis_password: foobar
+

@@ -1,3 +1,4 @@
+
 package no.nav.sosialhjelp.soknad.inntekt.navutbetalinger
 
 import com.fasterxml.jackson.core.JsonProcessingException
@@ -13,7 +14,7 @@ import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getConsu
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getToken
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken
 import no.nav.sosialhjelp.soknad.auth.tokenx.TokendingsService
-import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.NavUtbetalingerDto
+import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.UtbetalDataDto
 import no.nav.sosialhjelp.soknad.redis.CACHE_30_MINUTES_IN_SECONDS
 import no.nav.sosialhjelp.soknad.redis.NAVUTBETALINGER_CACHE_KEY_PREFIX
 import no.nav.sosialhjelp.soknad.redis.RedisService
@@ -26,7 +27,7 @@ import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.bodyToMono
 
 interface NavUtbetalingerClient {
-    fun getUtbetalingerSiste40Dager(ident: String): NavUtbetalingerDto?
+    fun getUtbetalingerSiste40Dager(ident: String): UtbetalDataDto?
 }
 
 @Component
@@ -44,7 +45,7 @@ class NavUtbetalingerClientImpl(
         tokendingsService.exchangeToken(getUserIdFromToken(), getToken(), oppslagApiAudience)
     }
 
-    override fun getUtbetalingerSiste40Dager(ident: String): NavUtbetalingerDto? {
+    override fun getUtbetalingerSiste40Dager(ident: String): UtbetalDataDto? {
         hentFraCache(ident)?.let { return it }
 
         return try {
@@ -54,7 +55,7 @@ class NavUtbetalingerClientImpl(
                 .header(HEADER_CALL_ID, getFromMDC(MDC_CALL_ID))
                 .header(HEADER_CONSUMER_ID, getConsumerId())
                 .retrieve()
-                .bodyToMono<NavUtbetalingerDto>()
+                .bodyToMono<UtbetalDataDto>()
                 .retryWhen(RetryUtils.DEFAULT_RETRY_SERVER_ERRORS)
                 .block()
                 ?.also { lagreTilCache(ident, it) }
@@ -64,18 +65,18 @@ class NavUtbetalingerClientImpl(
         }
     }
 
-    private fun hentFraCache(ident: String): NavUtbetalingerDto? {
+    private fun hentFraCache(ident: String): UtbetalDataDto? {
         return redisService.get(
             NAVUTBETALINGER_CACHE_KEY_PREFIX + ident,
-            NavUtbetalingerDto::class.java
-        ) as? NavUtbetalingerDto
+            UtbetalDataDto::class.java
+        ) as? UtbetalDataDto
     }
 
-    private fun lagreTilCache(ident: String, navUtbetalingerDto: NavUtbetalingerDto) {
+    private fun lagreTilCache(ident: String, utbetalDataDto: UtbetalDataDto) {
         try {
             redisService.setex(
                 NAVUTBETALINGER_CACHE_KEY_PREFIX + ident,
-                redisObjectMapper.writeValueAsBytes(navUtbetalingerDto),
+                redisObjectMapper.writeValueAsBytes(utbetalDataDto),
                 CACHE_30_MINUTES_IN_SECONDS
             )
         } catch (e: JsonProcessingException) {
