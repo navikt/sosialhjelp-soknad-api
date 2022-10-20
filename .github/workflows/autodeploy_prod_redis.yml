@@ -1,6 +1,6 @@
-name: Auto-deploy redis prod-sbs
+name: Auto-deploy redis prod
 on:
-  push: # Deploys automatically to prod-sbs and prod-gcp if there is a change in any redis files.
+  push: # Deploys automatically to prod-sbs, prod-fss and prod-gcp if there is a change in any redis files.
     paths:
       - "nais/redis-config.yml"
       - "nais/redisexporter.yml"

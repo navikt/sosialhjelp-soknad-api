@@ -1,4 +1,4 @@
-name: Deploy til prod-sbs
+name: Deploy til prod
 on:
   workflow_run:
     workflows: ["Build image"]    # Venter på at bygg av image er ferdig
