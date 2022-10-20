@@ -44,7 +44,7 @@
 
     <properties>
         <java.jdk.version>17</java.jdk.version>
-        <kotlin.version>1.7.10</kotlin.version>
+        <kotlin.version>1.7.20</kotlin.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <sosialhjelp-common.version>1.20220718.1347-2b1045d</sosialhjelp-common.version>
@@ -52,15 +52,15 @@
 
         <!-- Fiks/KS -->
         <svarut-rest-klient.version>1.1.0</svarut-rest-klient.version>
-        <kryptering.version>1.2.1</kryptering.version>
+        <kryptering.version>1.3.0</kryptering.version>
 
         <spring-boot.version>2.7.4</spring-boot.version>
         <spring.version>5.3.23</spring.version>
         <jersey.version>2.37</jersey.version>
-        <jetty.version>9.4.48.v20220622</jetty.version>
+        <jetty.version>9.4.49.v20220914</jetty.version>
         <kotlinx-coroutines.version>1.6.4</kotlinx-coroutines.version>
         <token-validation.version>2.1.6</token-validation.version>
-        <nimbus-jose-jwt.version>9.23</nimbus-jose-jwt.version>
+        <nimbus-jose-jwt.version>9.25.6</nimbus-jose-jwt.version>
         <ojdbc.version>19.16.0.0</ojdbc.version>
         <flyway-core.version>9.3.1</flyway-core.version>
         <flyway-maven-plugin.version>9.3.1</flyway-maven-plugin.version>
@@ -73,7 +73,7 @@
         <tika.version>2.4.1</tika.version>
         <logback.version>1.2.11</logback.version>
         <hsqldb.version>2.7.0</hsqldb.version>
-        <joda-time.version>2.10.14</joda-time.version>
+        <joda-time.version>2.12.0</joda-time.version>
         <slf4j.version>1.7.36</slf4j.version>
         <commons-codec.version>1.15</commons-codec.version>
         <commons-io.version>2.11.0</commons-io.version>
@@ -88,8 +88,8 @@
         <reactor-netty-http.version>1.0.23</reactor-netty-http.version>
         <reactive-streams.version>1.0.4</reactive-streams.version>
         <netty.version>4.1.81.Final</netty.version>
-        <log4j.version>2.18.0</log4j.version>
-        <java-jwt.version>4.0.0</java-jwt.version>
+        <log4j.version>2.19.0</log4j.version>
+        <java-jwt.version>4.1.0</java-jwt.version>
 
         <flyway.placeholders.driver>oracle.jdbc.OracleDriver</flyway.placeholders.driver>
         <flyway.placeholders.encoding>ISO-8859-1</flyway.placeholders.encoding>
@@ -105,34 +105,34 @@
 
         <!-- Versjoner for test dependencies -->
         <hamcrest.version>2.2</hamcrest.version>
-        <junit-jupiter.version>5.8.2</junit-jupiter.version>
+        <junit-jupiter.version>5.9.1</junit-jupiter.version>
         <assertj.version>3.23.1</assertj.version>
         <mockk.version>1.12.4</mockk.version>
         <okhttp3.version>4.10.0</okhttp3.version>
         <junit.version>4.13.2</junit.version>
 
         <!-- Versjoner identifisert av maven-enforcer-plugin -->
-        <asm.version>9.3</asm.version>
+        <asm.version>9.4</asm.version>
         <rhino.version>1.7.14</rhino.version>
         <logstash-logback-encoder.version>7.2</logstash-logback-encoder.version>
         <prometheus.version>0.16.0</prometheus.version>
-        <oauth2-oidc-sdk.version>9.38.1</oauth2-oidc-sdk.version>
+        <oauth2-oidc-sdk.version>9.43.1</oauth2-oidc-sdk.version>
         <emoji-java.version>5.1.1</emoji-java.version>
-        <objenesis.version>3.2</objenesis.version>
+        <objenesis.version>3.3</objenesis.version>
         <mimepull.version>1.10.0</mimepull.version>
-        <json.version>20220320</json.version>
-        <byte-buddy.version>1.12.17</byte-buddy.version>
-        <gson.version>2.9.0</gson.version>
-        <micrometer.version>1.9.4</micrometer.version>
+        <json.version>20220924</json.version>
+        <byte-buddy.version>1.12.18</byte-buddy.version>
+        <gson.version>2.9.1</gson.version>
+        <micrometer.version>1.9.5</micrometer.version>
         <lombok.version>1.18.24</lombok.version>
         <org.osgi.core.version>6.0.0</org.osgi.core.version>
-        <snakeyaml.version>1.32</snakeyaml.version>
+        <snakeyaml.version>1.33</snakeyaml.version>
         <hibernate-validator.version>6.2.3.Final</hibernate-validator.version>
         <lang-tag.version>1.7</lang-tag.version>
         <jboss-logging.version>3.5.0.Final</jboss-logging.version>
         <jboss-logging-annotations.version>2.2.1.Final</jboss-logging-annotations.version>
         <jboss-logging-processor.version>2.2.1.Final</jboss-logging-processor.version>
-        <mock-oauth2-server.version>0.5.1</mock-oauth2-server.version>
+        <mock-oauth2-server.version>0.5.3</mock-oauth2-server.version>
         <osgi.annotation.version>8.1.0</osgi.annotation.version>
         <org.osgi.util.function.version>1.2.0</org.osgi.util.function.version>
     </properties>
