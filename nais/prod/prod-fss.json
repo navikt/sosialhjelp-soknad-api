@@ -55,7 +55,7 @@
     "PDL_API_SCOPE": "prod-fss.pdl.pdl-api",
     "UNLEASH_API_URL": "https://unleash.nais.io/api",
     "SCHEDULER_DISABLE": "false",
-    "SOKNADSOSIALHJELPDATASOURCE_URL": "jdbc:oracle:thin:@a30dbfl005.oera.no:1521/soknadsosialhjelp",
+    "SOKNADSOSIALHJELPDATASOURCE_URL": "jdbc:oracle:thin:@a01dbfl050.adeo.no:1521/soknadsosialhjelp",
     "SOKNAD_BOSTOTTE_URL": "https://api.husbanken.no/bostotte/minbostotte",
     "SKATTEETATEN_API_BASEURL": "https://api.skatteetaten.no/api/innrapportert/inntektsmottaker/v1/digisos/",
     "SVARUT_URL": "https://svarut.ks.no",
