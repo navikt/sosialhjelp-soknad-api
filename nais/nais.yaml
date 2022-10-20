@@ -57,9 +57,10 @@ spec:
 {{#if tokenXEnabled}}
         - application: mine-saker-api
           namespace: min-side
-          cluster: {{min-side-cluster}}
-        - application: {{sosialhjelpDialogApi}}
-          cluster: {{dialogGcpCluster}}
+          cluster: {{gcp-cluster}}
+        - application: dittnav-api
+          namespace: min-side
+          cluster: {{gcp-cluster}}
 {{/if}}
         - application: {{sosialhjelp-innsyn-api}}
           cluster: {{sosialhjelp-innsyn-api-cluster}}

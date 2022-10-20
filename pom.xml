@@ -48,25 +48,26 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <sosialhjelp-common.version>1.20220718.1347-2b1045d</sosialhjelp-common.version>
-        <filformat.version>1.2022.07.19-14.28-614820e5640b</filformat.version>
+        <filformat.version>1.2022.10.19-11.58-7c3f700edacb</filformat.version>
 
         <!-- Fiks/KS -->
         <svarut-rest-klient.version>1.1.0</svarut-rest-klient.version>
-        <kryptering.version>1.2.0</kryptering.version>
+        <kryptering.version>1.2.1</kryptering.version>
 
-        <spring-boot.version>2.7.3</spring-boot.version>
-        <spring.version>5.3.22</spring.version>
+        <spring-boot.version>2.7.4</spring-boot.version>
+        <spring.version>5.3.23</spring.version>
         <jersey.version>2.37</jersey.version>
         <jetty.version>9.4.48.v20220622</jetty.version>
         <kotlinx-coroutines.version>1.6.4</kotlinx-coroutines.version>
         <token-validation.version>2.1.6</token-validation.version>
         <nimbus-jose-jwt.version>9.23</nimbus-jose-jwt.version>
         <ojdbc.version>19.16.0.0</ojdbc.version>
-        <flyway-core.version>9.3.0</flyway-core.version>
-        <flyway-maven-plugin.version>9.3.0</flyway-maven-plugin.version>
+        <flyway-core.version>9.3.1</flyway-core.version>
+        <flyway-maven-plugin.version>9.3.1</flyway-maven-plugin.version>
         <jackson.version>2.13.4</jackson.version>
-        <pdfbox.version>2.0.26</pdfbox.version>
-        <jempbox.version>1.8.16</jempbox.version>
+        <jackson-databind.version>2.13.4.2</jackson-databind.version>
+        <pdfbox.version>2.0.27</pdfbox.version>
+        <jempbox.version>1.8.17</jempbox.version>
         <bouncycastle.version>1.70</bouncycastle.version>
         <guava.version>31.1-jre</guava.version>
         <tika.version>2.4.1</tika.version>
@@ -77,16 +78,16 @@
         <commons-codec.version>1.15</commons-codec.version>
         <commons-io.version>2.11.0</commons-io.version>
         <commons-lang3.version>3.12.0</commons-lang3.version>
-        <commons-text.version>1.9</commons-text.version>
+        <commons-text.version>1.10.0</commons-text.version>
         <json-smart.version>2.4.8</json-smart.version>
         <jaxb-java-time-adapters.version>1.1.3</jaxb-java-time-adapters.version>
         <jaxb-runtime.version>2.3.6</jaxb-runtime.version>
         <lettuce.version>6.2.0.RELEASE</lettuce.version>
         <unleash.version>3.3.4</unleash.version>
-        <reactor-core.version>3.4.22</reactor-core.version>
-        <reactor-netty-http.version>1.0.22</reactor-netty-http.version>
+        <reactor-core.version>3.4.23</reactor-core.version>
+        <reactor-netty-http.version>1.0.23</reactor-netty-http.version>
         <reactive-streams.version>1.0.4</reactive-streams.version>
-        <netty.version>4.1.79.Final</netty.version>
+        <netty.version>4.1.81.Final</netty.version>
         <log4j.version>2.18.0</log4j.version>
         <java-jwt.version>4.0.0</java-jwt.version>
 
@@ -120,12 +121,12 @@
         <objenesis.version>3.2</objenesis.version>
         <mimepull.version>1.10.0</mimepull.version>
         <json.version>20220320</json.version>
-        <byte-buddy.version>1.12.13</byte-buddy.version>
+        <byte-buddy.version>1.12.17</byte-buddy.version>
         <gson.version>2.9.0</gson.version>
-        <micrometer.version>1.9.3</micrometer.version>
+        <micrometer.version>1.9.4</micrometer.version>
         <lombok.version>1.18.24</lombok.version>
         <org.osgi.core.version>6.0.0</org.osgi.core.version>
-        <snakeyaml.version>1.30</snakeyaml.version>
+        <snakeyaml.version>1.32</snakeyaml.version>
         <hibernate-validator.version>6.2.3.Final</hibernate-validator.version>
         <lang-tag.version>1.7</lang-tag.version>
         <jboss-logging.version>3.5.0.Final</jboss-logging.version>
@@ -290,7 +291,7 @@
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>
-                <version>${jackson.version}</version>
+                <version>${jackson-databind.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.module</groupId>

@@ -39,7 +39,7 @@ class SkatteetatenClientImpl(
             webClient.get()
                 .uri("{personidentifikator}/inntekter?fraOgMed={fom}&tilOgMed={tom}", sokedata.identifikator, sokedata.fom.format(formatter), sokedata.tom.format(formatter))
                 .accept(MediaType.APPLICATION_JSON)
-                .headers { it.add(HttpHeaders.AUTHORIZATION, BEARER + maskinportenClient.getToken()) }
+                .header(HttpHeaders.AUTHORIZATION, BEARER + maskinportenClient.getToken())
                 .retrieve()
                 .bodyToMono<SkattbarInntekt>()
                 .onErrorResume(WebClientResponseException.NotFound::class.java) {
@@ -60,7 +60,7 @@ class SkatteetatenClientImpl(
 
     override fun ping() {
         webClient.options()
-            .headers { it.add(HttpHeaders.AUTHORIZATION, BEARER + maskinportenClient.getToken()) }
+            .header(HttpHeaders.AUTHORIZATION, BEARER + maskinportenClient.getToken())
             .retrieve()
             .toBodilessEntity()
             .doOnError { log.warn("SkatteetatenApi - ping feilet") }
