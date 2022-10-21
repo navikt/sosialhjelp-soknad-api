@@ -85,7 +85,7 @@
         <lettuce.version>6.2.0.RELEASE</lettuce.version>
         <unleash.version>3.3.4</unleash.version>
         <reactor-core.version>3.4.23</reactor-core.version>
-        <reactor-netty-http.version>1.0.23</reactor-netty-http.version>
+        <reactor-netty-http.version>1.0.24</reactor-netty-http.version>
         <reactive-streams.version>1.0.4</reactive-streams.version>
         <netty.version>4.1.81.Final</netty.version>
         <log4j.version>2.19.0</log4j.version>
