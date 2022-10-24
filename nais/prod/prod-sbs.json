@@ -60,8 +60,8 @@
     "SOKNAD_BOSTOTTE_URL": "https://api.husbanken.no/bostotte/minbostotte",
     "SKATTEETATEN_API_BASEURL": "https://api.skatteetaten.no/api/innrapportert/inntektsmottaker/v1/digisos/",
     "SVARUT_URL": "https://svarut.ks.no",
-    "NEDETID_START": "24.10.2022 09:00:00",
-    "NEDETID_SLUTT": "24.10.2022 10:00:00",
+    "NEDETID_START": "25.10.2022 09:00:00",
+    "NEDETID_SLUTT": "25.10.2022 10:00:00",
     "ENVIRONMENT_NAME": "p",
     "REDIS_HOST": "sosialhjelp-soknad-api-redis.teamdigisos.svc.nais.local",
     "UNLEASH_INSTANCE_ID": "prod-sbs"
