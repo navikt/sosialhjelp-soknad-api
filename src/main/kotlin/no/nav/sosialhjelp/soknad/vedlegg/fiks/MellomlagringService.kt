@@ -161,8 +161,8 @@ class MellomlagringService(
 
     fun erMellomlagringEnabledOgSoknadSkalSendesMedDigisosApi(soknadUnderArbeid: SoknadUnderArbeid): Boolean {
         return unleash.isEnabled(KS_MELLOMLAGRING_ENABLED, false) &&
-                soknadSkalSendesMedDigisosApi(soknadUnderArbeid) &&
-                soknadOpprettetEtterAktiveringAvMellomlagring(soknadUnderArbeid)
+            soknadSkalSendesMedDigisosApi(soknadUnderArbeid) &&
+            soknadOpprettetEtterAktiveringAvMellomlagring(soknadUnderArbeid)
     }
 
     private fun soknadSkalSendesMedDigisosApi(soknadUnderArbeid: SoknadUnderArbeid): Boolean {
