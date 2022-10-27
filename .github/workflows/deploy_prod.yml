@@ -9,8 +9,8 @@ on:
     types: [deploy_prod_tag]
 
 jobs:
-  deploy:
-    name: Deploy to prod-sbs
+  deploy-fss:
+    name: Deploy to prod-fss
     if: ${{ github.event_name == 'repository_dispatch' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     env:
@@ -23,13 +23,13 @@ jobs:
       - name: Create docker image tags
         run: |
           echo "DOCKER_TAG=${{ env.DOCKER_IMAGE }}:${{ steps.artifact-version.outputs.version }}" >> $GITHUB_ENV
-      - name: deploy til prod-sbs
+      - name: deploy til prod-fss
         uses: nais/deploy/actions/deploy@v1
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           RESOURCE: nais/nais.yaml
-          CLUSTER: prod-sbs
-          VARS: nais/prod/prod-sbs.json
+          CLUSTER: prod-fss
+          VARS: nais/prod/prod-fss.json
           REF: ${{ github.sha }}
           PRINT_PAYLOAD: true
           IMAGE: ${{ env.DOCKER_TAG }}
