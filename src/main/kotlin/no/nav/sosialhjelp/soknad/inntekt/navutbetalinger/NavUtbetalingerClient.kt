@@ -32,7 +32,7 @@ interface NavUtbetalingerClient {
 
 @Component
 class NavUtbetalingerClientImpl(
-    @Value("\${oppslag_api_baseurl}") private val oppslagApiUrl: String,
+    @Value("\${utbetaldata_api_baseurl}") private val oppslagApiUrl: String,
     @Value("\${oppslag_api_audience}") private val oppslagApiAudience: String,
     private val redisService: RedisService,
     private val tokendingsService: TokendingsService,
@@ -50,7 +50,7 @@ class NavUtbetalingerClientImpl(
 
         return try {
             webClient.get()
-                .uri(oppslagApiUrl + "utbetalinger")
+                .uri(oppslagApiUrl + "/utbetaldata/api/v2/hent-utbetalingsinformasjon/ekstern")
                 .header(HttpHeaders.AUTHORIZATION, BEARER + tokenXtoken)
                 .header(HEADER_CALL_ID, getFromMDC(MDC_CALL_ID))
                 .header(HEADER_CONSUMER_ID, getConsumerId())

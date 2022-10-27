@@ -29,6 +29,7 @@ unleash_api_url: ${UNLEASH_API_URL:https://unleash.nais.io/api}
 norg_url: ${NORG_URL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/norg_endpoint_url}
 fss_proxy_ping_url: ${FSS_PROXY_PING_URL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/fss-proxy/ping}
 oppslag_api_baseurl: ${OPPSLAG_API_BASEURL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/oppslag-api/}
+utbetaldata_api_baseurl: ${UTBETALDATA_API_BASEURL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/oppslag-api/}
 soknad.bostotte.url: ${SOKNAD_BOSTOTTE_URL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/husbanken}
 svarut_url: ${SVARUT_URL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/svarut/}
 skatteetaten_api_baseurl: ${SKATTEETATEN_API_BASEURL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/skatteetaten/}

@@ -50,6 +50,7 @@
     "LOGINSERVICE_URL": "https://loginservice.dev.nav.no/login",
     "NORG_URL": "https://norg2.dev.intern.nav.no/norg2/api/v1",
     "OPPSLAG_API_AUDIENCE": "dev-fss:teamdigisos:sosialhjelp-oppslag-api",
+    "UTBETALDATA_API_BASEURL": "https://sokos-utbetaldata.dev.intern.nav.no",
     "OPPSLAG_API_BASEURL": "https://sosialhjelp-oppslag-api.dev.intern.nav.no/api/",
     "PDL_API_URL": "https://pdl-api.dev.intern.nav.no/graphql",
     "PDL_API_AUDIENCE": "dev-fss:pdl:pdl-api",

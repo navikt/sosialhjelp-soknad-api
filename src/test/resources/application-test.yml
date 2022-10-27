@@ -53,6 +53,7 @@ krr_proxy_url: http://krr/
 pdl_api_url: https://pdl-api/graphql
 unleash_api_url: https://unleash.nais.io/api
 kodeverk_url: https://kodeverk/
+utbetaldata_api_baseurl: https://sokos-utbetaldata.dev.intern.nav.no
 oppslag_api_baseurl: https://sosialhjelp-oppslag-api/api/
 soknad.bostotte.url: http://bostotte.url
 norg_url: https://norg.url/enhet
