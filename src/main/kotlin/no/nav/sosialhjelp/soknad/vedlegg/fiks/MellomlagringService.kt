@@ -3,7 +3,6 @@ package no.nav.sosialhjelp.soknad.vedlegg.fiks
 import no.finn.unleash.Unleash
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
-import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.app.exceptions.SendingTilKommuneErMidlertidigUtilgjengeligException
 import no.nav.sosialhjelp.soknad.app.exceptions.SendingTilKommuneUtilgjengeligException
@@ -25,8 +24,11 @@ import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils.validerFil
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.FileDetectionUtils
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.MimeTypes
 import no.nav.sosialhjelp.soknad.vedlegg.virusscan.VirusScanner
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import java.io.ByteArrayInputStream
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.UUID
 import javax.ws.rs.NotFoundException
 
@@ -36,7 +38,8 @@ class MellomlagringService(
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val virusScanner: VirusScanner,
     private val unleash: Unleash,
-    private val kommuneInfoService: KommuneInfoService
+    private val kommuneInfoService: KommuneInfoService,
+    @Value("\${mellomlagring_start}") private val mellomlagringStartString: String
 ) {
 
     fun getAllVedlegg(behandlingsId: String): List<MellomlagretVedleggMetadata> {
@@ -156,12 +159,10 @@ class MellomlagringService(
         }
     }
 
-    companion object {
-        private val log by logger()
-    }
-
     fun erMellomlagringEnabledOgSoknadSkalSendesMedDigisosApi(soknadUnderArbeid: SoknadUnderArbeid): Boolean {
-        return unleash.isEnabled(KS_MELLOMLAGRING_ENABLED, false) && soknadSkalSendesMedDigisosApi(soknadUnderArbeid)
+        return unleash.isEnabled(KS_MELLOMLAGRING_ENABLED, false) &&
+                soknadSkalSendesMedDigisosApi(soknadUnderArbeid) &&
+                soknadOpprettetEtterAktiveringAvMellomlagring(soknadUnderArbeid)
     }
 
     private fun soknadSkalSendesMedDigisosApi(soknadUnderArbeid: SoknadUnderArbeid): Boolean {
@@ -181,6 +182,17 @@ class MellomlagringService(
                 throw SendingTilKommuneErMidlertidigUtilgjengeligException("Sending til kommune $kommunenummer er midlertidig utilgjengelig.")
             }
         }
+    }
+
+    private fun soknadOpprettetEtterAktiveringAvMellomlagring(soknadUnderArbeid: SoknadUnderArbeid): Boolean {
+        if (mellomlagringStartString.isEmpty()) return false
+        val mellomlagringStart = LocalDateTime.parse(mellomlagringStartString, dateTimeFormatter)
+        return soknadUnderArbeid.opprettetDato.isEqual(mellomlagringStart) || soknadUnderArbeid.opprettetDato.isAfter(mellomlagringStart)
+    }
+
+    companion object {
+        private const val format = "dd.MM.yyyy HH:mm:ss"
+        private val dateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern(format)
     }
 }
 

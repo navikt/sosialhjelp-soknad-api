@@ -88,3 +88,6 @@ feature.fiks.kryptering.enabled: false
 #Nedetid
 nedetid.start: ${NEDETID_START:}
 nedetid.slutt: ${NEDETID_SLUTT:}
+
+#mellomlagring
+mellomlagring_start: ${MELLOMLAGRING_START:}

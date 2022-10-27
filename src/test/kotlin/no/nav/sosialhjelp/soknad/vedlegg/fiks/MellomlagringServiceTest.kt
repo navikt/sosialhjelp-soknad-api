@@ -20,6 +20,8 @@ import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 internal class MellomlagringServiceTest {
 
@@ -28,13 +30,16 @@ internal class MellomlagringServiceTest {
     private val virusScanner: VirusScanner = mockk()
     private val unleash: Unleash = mockk()
     private val kommuneInfoService: KommuneInfoService = mockk()
+    private val mellomlagringStartString = "31.10.2022 12:00:00"
+    private val mellomlagringStart = LocalDateTime.parse(mellomlagringStartString, DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss"))
 
     private val mellomlagringService = MellomlagringService(
         mellomlagringClient,
         soknadUnderArbeidRepository,
         virusScanner,
         unleash,
-        kommuneInfoService
+        kommuneInfoService,
+        mellomlagringStartString
     )
 
     @BeforeEach
@@ -85,7 +90,18 @@ internal class MellomlagringServiceTest {
         every { kommuneInfoService.kommuneInfo("1234") } returns KommuneStatus.HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT
         assertThat(mellomlagringService.erMellomlagringEnabledOgSoknadSkalSendesMedDigisosApi(soknadUnderArbeid)).isFalse
 
-        // true - soknad skal sendes med digisosApi
+        // false - soknad opprettet før mellomlagring ble aktivert
+        every { kommuneInfoService.kommuneInfo("1234") } returns KommuneStatus.SKAL_SENDE_SOKNADER_OG_ETTERSENDELSER_VIA_FDA
+        every { soknadUnderArbeid.opprettetDato } returns mellomlagringStart.minusSeconds(1)
+        assertThat(mellomlagringService.erMellomlagringEnabledOgSoknadSkalSendesMedDigisosApi(soknadUnderArbeid)).isFalse
+
+        // true - soknad skal sendes med digisosApi - soknad opprettet samtidig med aktivering
+        every { soknadUnderArbeid.opprettetDato } returns mellomlagringStart
+        every { kommuneInfoService.kommuneInfo("1234") } returns KommuneStatus.SKAL_SENDE_SOKNADER_OG_ETTERSENDELSER_VIA_FDA
+        assertThat(mellomlagringService.erMellomlagringEnabledOgSoknadSkalSendesMedDigisosApi(soknadUnderArbeid)).isTrue
+
+        // true - soknad skal sendes med digisosApi - soknad opprettet etter aktivering
+        every { soknadUnderArbeid.opprettetDato } returns mellomlagringStart.plusSeconds(1)
         every { kommuneInfoService.kommuneInfo("1234") } returns KommuneStatus.SKAL_SENDE_SOKNADER_OG_ETTERSENDELSER_VIA_FDA
         assertThat(mellomlagringService.erMellomlagringEnabledOgSoknadSkalSendesMedDigisosApi(soknadUnderArbeid)).isTrue
     }
