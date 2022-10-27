@@ -1,4 +1,3 @@
-
 package no.nav.sosialhjelp.soknad.inntekt.navutbetalinger
 
 import com.fasterxml.jackson.core.JsonProcessingException
@@ -14,6 +13,8 @@ import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getConsu
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getToken
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken
 import no.nav.sosialhjelp.soknad.auth.tokenx.TokendingsService
+import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.NavUtbetalingerRequest
+import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.Periode
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.UtbetalDataDto
 import no.nav.sosialhjelp.soknad.redis.CACHE_30_MINUTES_IN_SECONDS
 import no.nav.sosialhjelp.soknad.redis.NAVUTBETALINGER_CACHE_KEY_PREFIX
@@ -25,6 +26,8 @@ import org.springframework.http.HttpHeaders
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.bodyToMono
+import reactor.core.publisher.Mono
+import java.time.LocalDate
 
 interface NavUtbetalingerClient {
     fun getUtbetalingerSiste40Dager(ident: String): UtbetalDataDto?
@@ -33,7 +36,7 @@ interface NavUtbetalingerClient {
 @Component
 class NavUtbetalingerClientImpl(
     @Value("\${utbetaldata_api_baseurl}") private val oppslagApiUrl: String,
-    @Value("\${oppslag_api_audience}") private val oppslagApiAudience: String,
+    @Value("\${soknad_api_audience}") private val oppslagApiAudience: String,
     private val redisService: RedisService,
     private val tokendingsService: TokendingsService,
     webClientBuilder: WebClient.Builder
@@ -41,20 +44,25 @@ class NavUtbetalingerClientImpl(
 
     private val webClient = unproxiedWebClientBuilder(webClientBuilder).build()
 
-    private val tokenXtoken: String get() = runBlocking {
-        tokendingsService.exchangeToken(getUserIdFromToken(), getToken(), oppslagApiAudience)
-    }
+    private val tokenXtoken: String
+        get() = runBlocking {
+            tokendingsService.exchangeToken(getUserIdFromToken(), getToken(), oppslagApiAudience)
+        }
 
     override fun getUtbetalingerSiste40Dager(ident: String): UtbetalDataDto? {
         hentFraCache(ident)?.let { return it }
         log.info("Henter utbetalingsdata fra: $oppslagApiUrl og audience $oppslagApiAudience")
 
+        val periode = Periode(LocalDate.now().minusDays(40), LocalDate.now())
+        val request = NavUtbetalingerRequest(ident, RETTIGHETSHAVER, periode, UTBETALINGSPERIODE)
+
         return try {
-            webClient.get()
+            webClient.post()
                 .uri(oppslagApiUrl + "/utbetaldata/api/v2/hent-utbetalingsinformasjon/ekstern")
                 .header(HttpHeaders.AUTHORIZATION, BEARER + tokenXtoken)
                 .header(HEADER_CALL_ID, getFromMDC(MDC_CALL_ID))
                 .header(HEADER_CONSUMER_ID, getConsumerId())
+                .body(Mono.just(request), NavUtbetalingerRequest::class.java)
                 .retrieve()
                 .bodyToMono<UtbetalDataDto>()
                 .retryWhen(RetryUtils.DEFAULT_RETRY_SERVER_ERRORS)
@@ -87,5 +95,7 @@ class NavUtbetalingerClientImpl(
 
     companion object {
         private val log = getLogger(NavUtbetalingerClientImpl::class.java)
+        private const val UTBETALINGSPERIODE = "Utbetlingsperiode"
+        private const val RETTIGHETSHAVER = "Rettighetshaver"
     }
 }

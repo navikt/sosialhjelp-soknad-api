@@ -67,6 +67,7 @@ tokendings_client_id: ${TOKEN_X_CLIENT_ID}
 tokendings_private_jwk: ${TOKEN_X_PRIVATE_JWK}
 fss_proxy_audience: ${FSS_PROXY_AUDIENCE}
 oppslag_api_audience: ${OPPSLAG_API_AUDIENCE}
+soknad_api_audience: ${SOKNAD_API_AUDIENCE}
 pdl_api_audience: ${PDL_API_AUDIENCE}
 
 # azuread

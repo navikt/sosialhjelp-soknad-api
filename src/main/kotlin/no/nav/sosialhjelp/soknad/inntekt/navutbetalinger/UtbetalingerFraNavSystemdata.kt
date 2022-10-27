@@ -32,6 +32,8 @@ class UtbetalingerFraNavSystemdata(
 
         jsonInternalSoknad.soknad.driftsinformasjon.utbetalingerFraNavFeilet = false
         val systemUtbetalingerNav = innhentNavSystemregistrertInntekt(personIdentifikator)
+//        TODO: fjerne
+        log.info("Hentet utbetalinger fra nav: $systemUtbetalingerNav")
         if (systemUtbetalingerNav == null) {
             jsonInternalSoknad.soknad.driftsinformasjon.utbetalingerFraNavFeilet = true
         } else {
@@ -47,6 +49,8 @@ class UtbetalingerFraNavSystemdata(
 
     private fun innhentNavSystemregistrertInntekt(personIdentifikator: String): List<JsonOkonomiOpplysningUtbetaling>? {
         val utbetalinger = navUtbetalingerService.getUtbetalingerSiste40Dager(personIdentifikator) ?: return null
+//        TODO: fjern
+        log.info("utbetaliner siste 40 dager: $utbetalinger")
         return utbetalinger.map { mapToJsonOkonomiOpplysningUtbetaling(it) }
     }
 
