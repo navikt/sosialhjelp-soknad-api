@@ -47,6 +47,7 @@ class NavUtbetalingerClientImpl(
 
     override fun getUtbetalingerSiste40Dager(ident: String): UtbetalDataDto? {
         hentFraCache(ident)?.let { return it }
+        log.info("Henter utbetalingsdata fra: $oppslagApiUrl og audience $oppslagApiAudience")
 
         return try {
             webClient.get()
