@@ -56,6 +56,8 @@ class NavUtbetalingerClientImpl(
         val periode = Periode(LocalDate.now().minusDays(40), LocalDate.now())
         val request = NavUtbetalingerRequest(ident, RETTIGHETSHAVER, periode, UTBETALINGSPERIODE)
 
+//        TODO fjernes
+        log.info("Kaller utbetaldata med body: ${Mono.just(request)}")
         return try {
             webClient.post()
                 .uri(oppslagApiUrl + "/utbetaldata/api/v2/hent-utbetalingsinformasjon/ekstern")
