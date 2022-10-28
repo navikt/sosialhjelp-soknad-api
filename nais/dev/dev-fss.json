@@ -29,7 +29,6 @@
   "tokenXEnabled": true,
   "gcp-cluster": "dev-gcp",
   "sosialhjelp-innsyn-api": "sosialhjelp-innsyn-api",
-  "sosialhjelp-innsyn-api-cluster": "dev-fss",
   "prometheusEnabled": true,
   "webProxyEnabled": true,
   "isGcp": false,

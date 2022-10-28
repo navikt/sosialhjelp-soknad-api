@@ -63,7 +63,6 @@ spec:
           cluster: {{gcp-cluster}}
 {{/if}}
         - application: {{sosialhjelp-innsyn-api}}
-          cluster: {{sosialhjelp-innsyn-api-cluster}}
     outbound:
       external:
       {{#each outboundExternalHosts}}
