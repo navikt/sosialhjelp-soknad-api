@@ -65,7 +65,6 @@ class NavUtbetalingerClientImpl(
                 .header(HttpHeaders.AUTHORIZATION, BEARER + tokenXtoken)
                 .header(HEADER_CALL_ID, getFromMDC(MDC_CALL_ID))
                 .header(HEADER_CONSUMER_ID, getConsumerId())
-                .contentType(MediaType.APPLICATION_JSON)
                 .body(Mono.just(request), NavUtbetalingerRequest::class.java)
                 .retrieve()
                 .bodyToMono<UtbetalDataDto>()
