@@ -99,7 +99,7 @@ class NavUtbetalingerClientImpl(
 
     companion object {
         private val log = getLogger(NavUtbetalingerClientImpl::class.java)
-        private const val UTBETALINGSPERIODE = "Utbetlingsperiode"
-        private const val RETTIGHETSHAVER = "Rettighetshaver"
+        private const val UTBETALINGSPERIODE = "UTBETALINGSPERIODE"
+        private const val RETTIGHETSHAVER = "RETTIGHETSHAVER"
     }
 }
