@@ -2,8 +2,8 @@
   "applicationName": "sosialhjelp-soknad-api",
   "namespace": "teamdigisos",
   "ingresses": [
-    "https://sosialhjelp-soknad-api.nais.oera.no/",
-    "https://www.nav.no/sosialhjelp/soknad-api"
+    "https://sosialhjelp-soknad-api.prod-fss-pub.nais.io/sosialhjelp/soknad-api",
+    "https://sosialhjelp-soknad-api.intern.nav.no/sosialhjelp/soknad-api"
   ],
   "envsecret": [
     "redis-password-soknad-api",
@@ -26,11 +26,9 @@
   "cpuRequest": "100m",
   "vaultEnabled": true,
   "tokenXEnabled": true,
-  "min-side-cluster": "prod-gcp",
-  "dialogGcpCluster": "prod-gcp",
-  "sosialhjelpDialogApi": "sosialhjelp-dialog-api",
+  "gcp-cluster": "prod-gcp",
   "sosialhjelp-innsyn-api": "sosialhjelp-innsyn-api",
-  "sosialhjelp-innsyn-api-cluster": "prod-sbs",
+  "sosialhjelp-innsyn-api-cluster": "prod-fss",
   "prometheusEnabled": true,
   "webProxyEnabled": true,
   "isGcp": false,
@@ -40,25 +38,25 @@
   "azureEnabled": true,
   "env": {
     "SPRING_PROFILES_ACTIVE": "log-kibana,leader-election",
-    "AAREG_PROXY_URL": "https://sosialhjelp-fss-proxy.prod-fss-pub.nais.io/proxy/aareg/",
+    "AAREG_PROXY_URL": "https://sosialhjelp-fss-proxy.intern.nav.no/proxy/aareg/",
     "CLAMAV_URL": "http://clamav.nais.svc.nais.local/scan",
-    "EREG_URL": "https://ereg-services.prod-fss-pub.nais.io",
+    "EREG_URL": "https://ereg-services.intern.nav.no",
     "FIKS_NOKKELFIL": "svarut_public_prod.pem",
     "FSS_PROXY_AUDIENCE": "prod-fss:teamdigisos:sosialhjelp-fss-proxy",
-    "FSS_PROXY_PING_URL": "https://sosialhjelp-fss-proxy.prod-fss-pub.nais.io/ping",
+    "FSS_PROXY_PING_URL": "https://sosialhjelp-fss-proxy.intern.nav.no/ping",
     "DIGISOS_API_BASEURL": "https://api.fiks.ks.no/",
-    "KODEVERK_URL": "https://kodeverk.prod-fss-pub.nais.io/api/v1/kodeverk",
-    "KRR_PROXY_URL": "https://sosialhjelp-fss-proxy.prod-fss-pub.nais.io/proxy/krr/",
+    "KODEVERK_URL": "https://kodeverk.intern.nav.no/api/v1/kodeverk",
+    "KRR_PROXY_URL": "https://sosialhjelp-fss-proxy.intern.nav.no/proxy/krr/",
     "LOGINSERVICE_URL": "https://loginservice.nav.no/login",
-    "NORG_URL": "https://norg2.prod-fss-pub.nais.io/norg2/api/v1",
+    "NORG_URL": "https://norg2.intern.nav.no/norg2/api/v1",
     "OPPSLAG_API_AUDIENCE": "prod-fss:teamdigisos:sosialhjelp-oppslag-api",
-    "OPPSLAG_API_BASEURL": "https://sosialhjelp-oppslag-api.prod-fss-pub.nais.io/api/",
-    "PDL_API_URL": "https://pdl-api.prod-fss-pub.nais.io/graphql",
+    "OPPSLAG_API_BASEURL": "https://sosialhjelp-oppslag-api.intern.nav.no/api/",
+    "PDL_API_URL": "https://pdl-api.intern.nav.no/graphql",
     "PDL_API_AUDIENCE": "prod-fss:pdl:pdl-api",
     "PDL_API_SCOPE": "prod-fss.pdl.pdl-api",
     "UNLEASH_API_URL": "https://unleash.nais.io/api",
     "SCHEDULER_DISABLE": "false",
-    "SOKNADSOSIALHJELPDATASOURCE_URL": "jdbc:oracle:thin:@a30dbfl005.oera.no:1521/soknadsosialhjelp",
+    "SOKNADSOSIALHJELPDATASOURCE_URL": "jdbc:oracle:thin:@a01dbfl050.adeo.no:1521/soknadsosialhjelp",
     "SOKNAD_BOSTOTTE_URL": "https://api.husbanken.no/bostotte/minbostotte",
     "SKATTEETATEN_API_BASEURL": "https://api.skatteetaten.no/api/innrapportert/inntektsmottaker/v1/digisos/",
     "SVARUT_URL": "https://svarut.ks.no",
@@ -66,6 +64,6 @@
     "NEDETID_SLUTT": "05.02.2022 06:00:00",
     "ENVIRONMENT_NAME": "p",
     "REDIS_HOST": "sosialhjelp-soknad-api-redis.teamdigisos.svc.nais.local",
-    "UNLEASH_INSTANCE_ID": "prod-sbs"
+    "UNLEASH_INSTANCE_ID": "prod-fss"
   }
 }

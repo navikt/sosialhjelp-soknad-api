@@ -9,6 +9,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeSystem
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.addUtbetalingIfNotPresentInOpplysninger
 import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.removeUtbetalingIfPresentInOpplysninger
 import no.nav.sosialhjelp.soknad.app.mapper.TitleKeyMapper.soknadTypeToTitleKey
@@ -76,7 +77,14 @@ open class BostotteSystemdata(
     }
 
     private fun innhentBostotteFraHusbanken(token: String?): Bostotte? {
-        return husbankenClient.hentBostotte(token, LocalDate.now().minusDays(60), LocalDate.now())?.toDomain()
+        val bostotteDto = husbankenClient.hentBostotte(token, LocalDate.now().minusDays(60), LocalDate.now())
+        if (bostotteDto?.saker.isNullOrEmpty()) {
+            log.info("BostotteDto.saker er null eller tom")
+        }
+        if (bostotteDto?.utbetalinger.isNullOrEmpty()) {
+            log.info("BostotteDto.utbetalinger er null eller tom")
+        }
+        return bostotteDto?.toDomain()
     }
 
     private fun mapToJsonOkonomiOpplysningUtbetalinger(
@@ -122,5 +130,9 @@ open class BostotteSystemdata(
             bostotteSak.withVedtaksstatus(JsonBostotteSak.Vedtaksstatus.fromValue(sak.vedtak.type))
         }
         return bostotteSak
+    }
+
+    companion object {
+        private val log by logger()
     }
 }

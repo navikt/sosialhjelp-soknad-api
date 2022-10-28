@@ -8,14 +8,14 @@ internal class ByInstanceIdStrategyTest {
     @Test
     fun shouldReturnFalse_instanceIdNotInMap() {
         val byInstanceIdStrategy = ByInstanceIdStrategy("local")
-        val parameters = mutableMapOf("instance.id" to "dev-sbs,dev-gcp")
+        val parameters = mutableMapOf("instance.id" to "dev,mock")
         assertThat(byInstanceIdStrategy.isEnabled(parameters)).isFalse
     }
 
     @Test
     fun shoudReturnTrue_instanceIdInMap() {
-        val byInstanceIdStrategy = ByInstanceIdStrategy("dev-sbs")
-        val parameters = mutableMapOf("instance.id" to "dev-sbs,dev-gcp")
+        val byInstanceIdStrategy = ByInstanceIdStrategy("dev")
+        val parameters = mutableMapOf("instance.id" to "dev,mock")
         assertThat(byInstanceIdStrategy.isEnabled(parameters)).isTrue
     }
 }
