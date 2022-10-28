@@ -83,7 +83,7 @@ open class AdressesokService(
         variables[PAGING] = Paging(1, 30, listOf(SortBy(FieldName.VEGADRESSE_HUSNUMMER.value, Direction.ASC)))
         requireNotNull(sokedata) { "kan ikke soke uten sokedata" }
         variables[CRITERIA] = toCriteriaListForFritekstSok(sokedata)
-        return variables
+        return variables.also { log.info("variables for fritekst-sok: $variables") }
     }
 
     private fun toCriteriaListForFritekstSok(sokedata: Sokedata): List<Criteria> {

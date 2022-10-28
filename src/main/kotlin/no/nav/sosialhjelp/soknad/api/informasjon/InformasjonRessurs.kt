@@ -111,6 +111,7 @@ open class InformasjonRessurs(
     @GET
     @Path("/adressesok")
     open fun adresseSok(@QueryParam("sokestreng") sokestreng: String?): List<AdresseForslag?>? {
+        logger.info("adressesok - sokestreng=$sokestreng")
         return adresseSokService.sokEtterAdresser(sokestreng)
     }
 
