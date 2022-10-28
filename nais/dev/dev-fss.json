@@ -52,7 +52,7 @@
     "NORG_URL": "https://norg2.dev.intern.nav.no/norg2/api/v1",
     "OPPSLAG_API_AUDIENCE": "dev-fss:teamdigisos:sosialhjelp-oppslag-api",
     "OPPSLAG_API_BASEURL": "https://sosialhjelp-oppslag-api.dev.intern.nav.no/api/",
-    "SOKNAD_API_AUDIENCE": "dev-fss:teamdigisos:sosialhjelp-soknad-api",
+    "SOKNAD_API_AUDIENCE": "dev-fss:okonomi:sokos-utbetaldata",
     "UTBETALDATA_API_BASEURL": "https://sokos-utbetaldata.dev.intern.nav.no",
     "PDL_API_URL": "https://pdl-api.dev.intern.nav.no/graphql",
     "PDL_API_AUDIENCE": "dev-fss:pdl:pdl-api",
