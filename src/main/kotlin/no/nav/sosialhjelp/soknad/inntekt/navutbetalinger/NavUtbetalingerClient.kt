@@ -1,6 +1,7 @@
 package no.nav.sosialhjelp.soknad.inntekt.navutbetalinger
 
 import com.fasterxml.jackson.core.JsonProcessingException
+import jdk.internal.net.http.common.Log.logRequest
 import kotlinx.coroutines.runBlocking
 import no.nav.sosialhjelp.soknad.app.Constants.BEARER
 import no.nav.sosialhjelp.soknad.app.Constants.HEADER_CALL_ID
@@ -24,6 +25,7 @@ import org.slf4j.LoggerFactory.getLogger
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders
 import org.springframework.stereotype.Component
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.bodyToMono
 import reactor.core.publisher.Mono
@@ -42,7 +44,7 @@ class NavUtbetalingerClientImpl(
     webClientBuilder: WebClient.Builder
 ) : NavUtbetalingerClient {
 
-    private val webClient = unproxiedWebClientBuilder(webClientBuilder).build()
+    private val webClient = unproxiedWebClientBuilder(webClientBuilder).filters { it.add(logRequest()) }.build()
 
     private val tokenXtoken: String
         get() = runBlocking {
@@ -92,6 +94,17 @@ class NavUtbetalingerClientImpl(
             )
         } catch (e: JsonProcessingException) {
             log.warn("Noe feilet ved lagring av NavUtbetalingerDto til redis", e)
+        }
+    }
+
+    private fun logRequest(): ExchangeFilterFunction {
+        return ExchangeFilterFunction.ofRequestProcessor { clientRequest ->
+            val sb = StringBuilder("Request: ")
+            // append clientRequest method and url
+            sb.append("method: ${clientRequest.method()} ")
+            sb.append("url: ${clientRequest.url()} ")
+            log.debug(sb.toString())
+            Mono.just(clientRequest)
         }
     }
 
