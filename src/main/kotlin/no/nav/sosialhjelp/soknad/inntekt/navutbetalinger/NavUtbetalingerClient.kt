@@ -23,6 +23,7 @@ import no.nav.sosialhjelp.soknad.redis.RedisUtils.redisObjectMapper
 import org.slf4j.LoggerFactory.getLogger
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders
+import org.springframework.http.MediaType
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.bodyToMono
@@ -64,6 +65,7 @@ class NavUtbetalingerClientImpl(
                 .header(HttpHeaders.AUTHORIZATION, BEARER + tokenXtoken)
                 .header(HEADER_CALL_ID, getFromMDC(MDC_CALL_ID))
                 .header(HEADER_CONSUMER_ID, getConsumerId())
+                .contentType(MediaType.APPLICATION_JSON)
                 .body(Mono.just(request), NavUtbetalingerRequest::class.java)
                 .retrieve()
                 .bodyToMono<UtbetalDataDto>()
