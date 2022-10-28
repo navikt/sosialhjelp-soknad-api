@@ -1,7 +1,6 @@
 package no.nav.sosialhjelp.soknad.inntekt.navutbetalinger
 
 import com.fasterxml.jackson.core.JsonProcessingException
-import jdk.internal.net.http.common.Log.logRequest
 import kotlinx.coroutines.runBlocking
 import no.nav.sosialhjelp.soknad.app.Constants.BEARER
 import no.nav.sosialhjelp.soknad.app.Constants.HEADER_CALL_ID
