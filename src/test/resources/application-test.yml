@@ -33,7 +33,7 @@ tokendings_client_id: localhost:teamdigisos:sosialhjelp-soknad-api
 tokendings_private_jwk: generateRSA
 fss_proxy_audience: dummyAudience
 oppslag_api_audience: dummyAudience
-soknad_api_audience: dummyAudience
+utbetaldata_audience: dummyAudience
 pdl_api_audience: dummyAudience
 
 # azuread

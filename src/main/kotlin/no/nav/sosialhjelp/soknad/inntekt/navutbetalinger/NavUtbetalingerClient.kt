@@ -38,7 +38,7 @@ interface NavUtbetalingerClient {
 @Component
 class NavUtbetalingerClientImpl(
     @Value("\${utbetaldata_api_baseurl}") private val oppslagApiUrl: String,
-    @Value("\${soknad_api_audience}") private val oppslagApiAudience: String,
+    @Value("\${utbetaldata_audience}") private val utbetalDataAudience: String,
     private val redisService: RedisService,
     private val tokendingsService: TokendingsService,
     webClientBuilder: WebClient.Builder
@@ -48,12 +48,12 @@ class NavUtbetalingerClientImpl(
 
     private val tokenXtoken: String
         get() = runBlocking {
-            tokendingsService.exchangeToken(getUserIdFromToken(), getToken(), oppslagApiAudience)
+            tokendingsService.exchangeToken(getUserIdFromToken(), getToken(), utbetalDataAudience)
         }
 
     override fun getUtbetalingerSiste40Dager(ident: String): UtbetalDataDto? {
         hentFraCache(ident)?.let { return it }
-        log.info("Henter utbetalingsdata fra: $oppslagApiUrl og audience $oppslagApiAudience")
+        log.info("Henter utbetalingsdata fra: $oppslagApiUrl og audience $utbetalDataAudience")
 
         val periode = Periode(LocalDate.now().minusDays(40), LocalDate.now())
         val request = NavUtbetalingerRequest(ident, RETTIGHETSHAVER, periode, UTBETALINGSPERIODE)
