@@ -72,7 +72,7 @@ class NavUtbetalingerClientImpl(
                 .retryWhen(RetryUtils.DEFAULT_RETRY_SERVER_ERRORS)
                 .block()
 
-            log.info("Response fra Utbetaldatatjeneste:  ${response.toString()}")
+            log.info("Response fra Utbetaldatatjeneste:  $response")
             val utbetalDataDto = UtbetalDataDto(response, false)
             lagreTilCache(ident, utbetalDataDto)
             return utbetalDataDto
