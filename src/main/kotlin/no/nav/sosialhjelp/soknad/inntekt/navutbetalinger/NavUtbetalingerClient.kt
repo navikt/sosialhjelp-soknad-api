@@ -16,6 +16,7 @@ import no.nav.sosialhjelp.soknad.auth.tokenx.TokendingsService
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.NavUtbetalingerRequest
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.Periode
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.UtbetalDataDto
+import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.Utbetaling
 import no.nav.sosialhjelp.soknad.redis.CACHE_30_MINUTES_IN_SECONDS
 import no.nav.sosialhjelp.soknad.redis.NAVUTBETALINGER_CACHE_KEY_PREFIX
 import no.nav.sosialhjelp.soknad.redis.RedisService
@@ -59,18 +60,22 @@ class NavUtbetalingerClientImpl(
 
 //        TODO fjernes
         log.info("Kaller utbetaldata med body: ${Mono.just(request).block()}")
-        return try {
-            webClient.post()
+        try {
+            val response = webClient.post()
                 .uri(oppslagApiUrl + "/utbetaldata/api/v2/hent-utbetalingsinformasjon/ekstern")
                 .header(HttpHeaders.AUTHORIZATION, BEARER + tokenXtoken)
                 .header(HEADER_CALL_ID, getFromMDC(MDC_CALL_ID))
                 .header(HEADER_CONSUMER_ID, getConsumerId())
                 .body(Mono.just(request), NavUtbetalingerRequest::class.java)
                 .retrieve()
-                .bodyToMono<UtbetalDataDto>()
+                .bodyToMono<List<Utbetaling>>()
                 .retryWhen(RetryUtils.DEFAULT_RETRY_SERVER_ERRORS)
                 .block()
-                ?.also { lagreTilCache(ident, it) }
+
+            log.info("Response fra Utbetaldatatjeneste:  ${response.toString()}")
+            val utbetalDataDto = UtbetalDataDto(response, false)
+            lagreTilCache(ident, utbetalDataDto)
+            return utbetalDataDto
         } catch (e: Exception) {
             log.error("Utbetalinger - Noe uventet feilet", e)
             return null
