@@ -40,8 +40,10 @@ interface NavUtbetalingerClient {
 
 @Component
 class NavUtbetalingerClientImpl(
-    @Value("\${utbetaldata_api_baseurl}") private val oppslagApiUrl: String,
+    @Value("\${utbetaldata_api_baseurl}") private val utbetalDataUrl: String,
     @Value("\${utbetaldata_audience}") private val utbetalDataAudience: String,
+    @Value("\${oppslag_api_baseurl}") private val oppslagApiUrl: String,
+    @Value("\${oppslag_api_audience}") private val oppslagApiAudience: String,
     private val redisService: RedisService,
     private val tokendingsService: TokendingsService,
     webClientBuilder: WebClient.Builder
@@ -49,14 +51,15 @@ class NavUtbetalingerClientImpl(
 
     private val webClient = unproxiedWebClientBuilder(webClientBuilder).filters { it.add(logRequest()) }.build()
 
-    private val tokenXtoken: String
-        get() = runBlocking {
+    private lateinit var tokenXtoken: String
+
+    override fun getUtbetalingerSiste40Dager(ident: String): UtbetalDataDto? {
+        tokenXtoken = runBlocking {
             tokendingsService.exchangeToken(getUserIdFromToken(), getToken(), utbetalDataAudience)
         }
 
-    override fun getUtbetalingerSiste40Dager(ident: String): UtbetalDataDto? {
         hentFraCache(ident)?.let { return it }
-        log.info("Henter utbetalingsdata fra: $oppslagApiUrl og audience $utbetalDataAudience")
+        log.info("Henter utbetalingsdata fra: $utbetalDataUrl og audience $utbetalDataAudience")
 
         val periode = Periode(LocalDate.now().minusDays(40), LocalDate.now())
         val request = NavUtbetalingerRequest(ident, RETTIGHETSHAVER, periode, UTBETALINGSPERIODE)
@@ -65,7 +68,7 @@ class NavUtbetalingerClientImpl(
         log.info("Kaller utbetaldata med body: ${Mono.just(request).block()}")
         try {
             val response = webClient.post()
-                .uri(oppslagApiUrl + "/utbetaldata/api/v2/hent-utbetalingsinformasjon/ekstern")
+                .uri(utbetalDataUrl + "/utbetaldata/api/v2/hent-utbetalingsinformasjon/ekstern")
                 .header(HttpHeaders.AUTHORIZATION, BEARER + tokenXtoken)
                 .header(HEADER_CALL_ID, getFromMDC(MDC_CALL_ID))
                 .header(HEADER_CONSUMER_ID, getConsumerId())
@@ -86,6 +89,9 @@ class NavUtbetalingerClientImpl(
     }
 
     override fun getUtbetalingerSiste40DagerLegacy(ident: String): NavUtbetalingerDto? {
+        tokenXtoken = runBlocking {
+            tokendingsService.exchangeToken(getUserIdFromToken(), getToken(), oppslagApiAudience)
+        }
         hentFraCacheLegacy(ident)?.let { return it }
 
         return try {
