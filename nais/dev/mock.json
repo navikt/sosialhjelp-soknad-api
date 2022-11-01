@@ -20,7 +20,6 @@
   "vaultEnabled": false,
   "tokenXEnabled": false,
   "sosialhjelp-innsyn-api": "sosialhjelp-innsyn-api-mock",
-  "sosialhjelp-innsyn-api-cluster": "dev-gcp",
   "prometheusEnabled": false,
   "webProxyEnabled": false,
   "isGcp": true,
