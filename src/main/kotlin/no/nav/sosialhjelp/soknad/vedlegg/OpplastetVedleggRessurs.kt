@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.vedlegg
 
-import no.finn.unleash.Unleash
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.soknad.app.Constants
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
@@ -40,8 +39,7 @@ open class OpplastetVedleggRessurs(
     private val opplastetVedleggService: OpplastetVedleggService,
     private val tilgangskontroll: Tilgangskontroll,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
-    private val mellomlagringService: MellomlagringService,
-    private val unleash: Unleash
+    private val mellomlagringService: MellomlagringService
 ) {
 
     @GET
@@ -73,6 +71,7 @@ open class OpplastetVedleggRessurs(
     ): Response {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
         val eier = SubjectHandlerUtils.getUserIdFromToken()
+        val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
 
         opplastetVedleggRepository.hentVedlegg(vedleggId, eier)?.let {
             response.setHeader("Content-Disposition", "attachment; filename=\"${it.filnavn}\"")
@@ -80,7 +79,7 @@ open class OpplastetVedleggRessurs(
             return Response.ok(it.data).type(mimeType).build()
         }
 
-        if (mellomlagringEnabled) {
+        if (mellomlagringService.erMellomlagringEnabledOgSoknadSkalSendesMedDigisosApi(soknadUnderArbeid)) {
             log.info("Forsøker å hente vedlegg $vedleggId fra mellomlagring hos KS")
             mellomlagringService.getVedlegg(behandlingsId, vedleggId)?.let {
                 response.setHeader("Content-Disposition", "attachment; filename=\"${it.filnavn}\"")
@@ -134,7 +133,9 @@ open class OpplastetVedleggRessurs(
         @PathParam("vedleggId") vedleggId: String,
     ) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
-        if (!mellomlagringEnabled) {
+        val eier = SubjectHandlerUtils.getUserIdFromToken()
+        val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
+        if (!mellomlagringService.erMellomlagringEnabledOgSoknadSkalSendesMedDigisosApi(soknadUnderArbeid)) {
             opplastetVedleggService.deleteVedleggAndUpdateVedleggstatus(behandlingsId, vedleggId)
         } else {
             // forsøk sletting via KS mellomlagringstjeneste hvis feature er enablet og sletting fra DB ikke ble utført
@@ -143,11 +144,7 @@ open class OpplastetVedleggRessurs(
         }
     }
 
-    private val mellomlagringEnabled get() = unleash.isEnabled(KS_MELLOMLAGRING_ENABLED, false)
-
     companion object {
-        const val KS_MELLOMLAGRING_ENABLED = "sosialhjelp.soknad.ks-mellomlagring-enabled"
-
         private const val MAKS_TOTAL_FILSTORRELSE = 1024 * 1024 * 10
 
         private val log by logger()
