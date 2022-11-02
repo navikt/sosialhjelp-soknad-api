@@ -13,7 +13,6 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderAr
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus
-import no.nav.sosialhjelp.soknad.vedlegg.OpplastetVedleggRessurs.Companion.KS_MELLOMLAGRING_ENABLED
 import no.nav.sosialhjelp.soknad.vedlegg.virusscan.VirusScanner
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
@@ -56,11 +55,11 @@ internal class MellomlagringServiceTest {
     @Test
     internal fun `erMellomlagringEnabledOgSoknadSkalSendesMedDigisosApi - alle scenarier`() {
         // false - toggle er disabled
-        every { unleash.isEnabled(KS_MELLOMLAGRING_ENABLED, false) } returns false
+        every { unleash.isEnabled(any(), false) } returns false
         assertThat(mellomlagringService.erMellomlagringEnabledOgSoknadSkalSendesMedDigisosApi(mockk())).isFalse
 
         // false - soknadUnderArbeid er ettersendelse
-        every { unleash.isEnabled(KS_MELLOMLAGRING_ENABLED, false) } returns true
+        every { unleash.isEnabled(any(), false) } returns true
         val soknadUnderArbeid: SoknadUnderArbeid = mockk()
         every { soknadUnderArbeid.erEttersendelse } returns true
         assertThat(mellomlagringService.erMellomlagringEnabledOgSoknadSkalSendesMedDigisosApi(soknadUnderArbeid)).isFalse

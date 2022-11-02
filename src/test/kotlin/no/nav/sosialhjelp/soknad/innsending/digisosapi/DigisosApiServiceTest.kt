@@ -8,7 +8,6 @@ import io.mockk.mockkObject
 import io.mockk.runs
 import io.mockk.unmockkObject
 import io.mockk.verify
-import no.finn.unleash.Unleash
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknadsmottaker
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
@@ -19,7 +18,7 @@ import no.nav.sosialhjelp.soknad.innsending.HenvendelseService
 import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
 import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
-import no.nav.sosialhjelp.soknad.vedlegg.OpplastetVedleggRessurs.Companion.KS_MELLOMLAGRING_ENABLED
+import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.AfterEach
@@ -34,8 +33,8 @@ internal class DigisosApiServiceTest {
     private val soknadUnderArbeidService: SoknadUnderArbeidService = mockk()
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
     private val dokumentListeService: DokumentListeService = mockk()
-    private val unleash: Unleash = mockk()
     private val prometheusMetricsService: PrometheusMetricsService = mockk(relaxed = true)
+    private val mellomlagringService: MellomlagringService = mockk()
 
     private val digisosApiService = DigisosApiService(
         digisosApiV1Client,
@@ -44,8 +43,8 @@ internal class DigisosApiServiceTest {
         soknadUnderArbeidService,
         soknadUnderArbeidRepository,
         dokumentListeService,
-        unleash,
-        prometheusMetricsService
+        prometheusMetricsService,
+        mellomlagringService
     )
 
     @BeforeEach
@@ -54,7 +53,7 @@ internal class DigisosApiServiceTest {
 
         mockkObject(MiljoUtils)
         every { MiljoUtils.isNonProduction() } returns true
-        every { unleash.isEnabled(KS_MELLOMLAGRING_ENABLED, false) } returns false
+        every { mellomlagringService.erMellomlagringEnabledOgSoknadSkalSendesMedDigisosApi(any()) } returns false
     }
 
     @AfterEach
