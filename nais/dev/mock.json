@@ -60,6 +60,6 @@
     "ENVIRONMENT_NAME": "mock",
     "MOCK_ALT_UTBETALINGER_FRA_NAV_URL": "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api/utbetaling",
     "UNLEASH_INSTANCE_ID": "mock",
-    "MELLOMLAGRING_START": "27.10.2022 15:30:00"
+    "MELLOMLAGRING_START": "02.11.2022 09:00:00"
   }
 }
