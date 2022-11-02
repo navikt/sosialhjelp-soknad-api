@@ -65,6 +65,6 @@
     "ENVIRONMENT_NAME": "q0",
     "REDIS_HOST": "sosialhjelp-soknad-api-redis.teamdigisos.svc.nais.local",
     "UNLEASH_INSTANCE_ID": "dev-fss",
-    "MELLOMLAGRING_START": "02.11.2022 10:00:00"
+    "MELLOMLAGRING_START": "02.11.2022 10:30:00"
   }
 }
