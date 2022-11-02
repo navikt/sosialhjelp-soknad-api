@@ -146,8 +146,12 @@ open class SoknadService(
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         soknadUnderArbeidRepository.hentSoknadNullable(behandlingsId, eier)
             ?.let { soknadUnderArbeid ->
-                if (mellomlagringService.erMellomlagringEnabledOgSoknadSkalSendesMedDigisosApi(soknadUnderArbeid)) {
-                    mellomlagringService.deleteAllVedlegg(behandlingsId)
+                try {
+                    if (mellomlagringService.erMellomlagringEnabledOgSoknadSkalSendesMedDigisosApi(soknadUnderArbeid)) {
+                        mellomlagringService.deleteAllVedlegg(behandlingsId)
+                    }
+                } catch (e: IllegalStateException) {
+                    log.warn("Klarte ikke avgjøre om 'erMellomlagringEnabledOgSoknadSkalSendesMedDigisosApi' - antageligvis fordi noen adresse er satt.")
                 }
                 soknadUnderArbeidRepository.slettSoknad(soknadUnderArbeid, eier)
                 henvendelseService.avbrytSoknad(soknadUnderArbeid.behandlingsId, false)
