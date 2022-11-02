@@ -47,14 +47,14 @@
         <kotlin.version>1.7.20</kotlin.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <sosialhjelp-common.version>1.20220718.1347-2b1045d</sosialhjelp-common.version>
-        <filformat.version>1.2022.10.19-11.58-7c3f700edacb</filformat.version>
+        <sosialhjelp-common.version>1.20221019.1049-614783b</sosialhjelp-common.version>
+        <filformat.version>1.2022.10.27-16.03-cc2d0243b6ec</filformat.version>
 
         <!-- Fiks/KS -->
         <svarut-rest-klient.version>1.1.0</svarut-rest-klient.version>
         <kryptering.version>1.3.0</kryptering.version>
 
-        <spring-boot.version>2.7.4</spring-boot.version>
+        <spring-boot.version>2.7.5</spring-boot.version>
         <spring.version>5.3.23</spring.version>
         <jersey.version>2.37</jersey.version>
         <jetty.version>9.4.49.v20220914</jetty.version>
@@ -62,8 +62,8 @@
         <token-validation.version>2.1.6</token-validation.version>
         <nimbus-jose-jwt.version>9.25.6</nimbus-jose-jwt.version>
         <ojdbc.version>19.16.0.0</ojdbc.version>
-        <flyway-core.version>9.4.0</flyway-core.version>
-        <flyway-maven-plugin.version>9.4.0</flyway-maven-plugin.version>
+        <flyway-core.version>9.6.0</flyway-core.version>
+        <flyway-maven-plugin.version>9.6.0</flyway-maven-plugin.version>
         <jackson.version>2.13.4</jackson.version>
         <jackson-databind.version>2.13.4.2</jackson-databind.version>
         <pdfbox.version>2.0.27</pdfbox.version>
@@ -82,7 +82,7 @@
         <json-smart.version>2.4.8</json-smart.version>
         <jaxb-java-time-adapters.version>1.1.3</jaxb-java-time-adapters.version>
         <jaxb-runtime.version>2.3.6</jaxb-runtime.version>
-        <lettuce.version>6.2.0.RELEASE</lettuce.version>
+        <lettuce.version>6.2.1.RELEASE</lettuce.version>
         <unleash.version>3.3.4</unleash.version>
         <reactor-core.version>3.4.24</reactor-core.version>
         <reactor-netty-http.version>1.0.24</reactor-netty-http.version>

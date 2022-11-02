@@ -20,7 +20,6 @@
   "vaultEnabled": false,
   "tokenXEnabled": false,
   "sosialhjelp-innsyn-api": "sosialhjelp-innsyn-api-mock",
-  "sosialhjelp-innsyn-api-cluster": "dev-gcp",
   "prometheusEnabled": false,
   "webProxyEnabled": false,
   "isGcp": true,
@@ -60,6 +59,7 @@
     "NEDETID_SLUTT": "",
     "ENVIRONMENT_NAME": "mock",
     "MOCK_ALT_UTBETALINGER_FRA_NAV_URL": "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api/utbetaling",
-    "UNLEASH_INSTANCE_ID": "mock"
+    "UNLEASH_INSTANCE_ID": "mock",
+    "MELLOMLAGRING_START": "02.11.2022 09:35:00"
   }
 }

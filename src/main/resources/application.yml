@@ -91,7 +91,7 @@ redis_port: 6379
 redis_password: ${REDIS_PASSWORD}
 
 # feature toggles
-unleash_instance_id: ${UNLEASH_INSTANCE_ID:prod-sbs}
+unleash_instance_id: ${UNLEASH_INSTANCE_ID:prod-fss}
 virusscan_enabled: true
 scheduler.disable: ${SCHEDULER_DISABLE}
 sendsoknad.batch.enabled: true
@@ -100,3 +100,6 @@ feature.fiks.kryptering.enabled: true
 #Nedetid
 nedetid.start: ${NEDETID_START}
 nedetid.slutt: ${NEDETID_SLUTT}
+
+#mellomlagring
+mellomlagring_start: ${MELLOMLAGRING_START}

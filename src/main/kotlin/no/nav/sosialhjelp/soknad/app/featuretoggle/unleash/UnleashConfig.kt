@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration
 @Configuration
 open class UnleashConfig(
     @Value("\${unleash_api_url}") private val baseurl: String,
-    @Value("\${unleash_instance_id:prod-sbs}") private val instanceId: String
+    @Value("\${unleash_instance_id:prod-fss}") private val instanceId: String
 ) {
 
     @Bean
