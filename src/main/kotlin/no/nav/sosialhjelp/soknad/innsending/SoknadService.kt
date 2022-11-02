@@ -151,7 +151,7 @@ open class SoknadService(
                         mellomlagringService.deleteAllVedlegg(behandlingsId)
                     }
                 } catch (e: IllegalStateException) {
-                    log.warn("Klarte ikke avgjøre om 'erMellomlagringEnabledOgSoknadSkalSendesMedDigisosApi' - antageligvis fordi noen adresse er satt.")
+                    log.warn("Klarte ikke avgjøre 'erMellomlagringEnabledOgSoknadSkalSendesMedDigisosApi' - antageligvis fordi ingen adresse er satt enda.")
                 }
                 soknadUnderArbeidRepository.slettSoknad(soknadUnderArbeid, eier)
                 henvendelseService.avbrytSoknad(soknadUnderArbeid.behandlingsId, false)
