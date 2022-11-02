@@ -70,7 +70,7 @@
         <jempbox.version>1.8.17</jempbox.version>
         <bouncycastle.version>1.70</bouncycastle.version>
         <guava.version>31.1-jre</guava.version>
-        <tika.version>2.4.1</tika.version>
+        <tika.version>2.5.0</tika.version>
         <logback.version>1.2.11</logback.version>
         <hsqldb.version>2.7.1</hsqldb.version>
         <joda-time.version>2.12.0</joda-time.version>
