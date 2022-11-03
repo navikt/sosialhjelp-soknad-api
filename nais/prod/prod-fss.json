@@ -28,7 +28,6 @@
   "tokenXEnabled": true,
   "gcp-cluster": "prod-gcp",
   "sosialhjelp-innsyn-api": "sosialhjelp-innsyn-api",
-  "sosialhjelp-innsyn-api-cluster": "prod-fss",
   "prometheusEnabled": true,
   "webProxyEnabled": true,
   "isGcp": false,
@@ -64,6 +63,7 @@
     "NEDETID_SLUTT": "05.02.2022 06:00:00",
     "ENVIRONMENT_NAME": "p",
     "REDIS_HOST": "sosialhjelp-soknad-api-redis.teamdigisos.svc.nais.local",
-    "UNLEASH_INSTANCE_ID": "prod-fss"
+    "UNLEASH_INSTANCE_ID": "prod-fss",
+    "MELLOMLAGRING_START": "02.11.2022 14:00:00"
   }
 }

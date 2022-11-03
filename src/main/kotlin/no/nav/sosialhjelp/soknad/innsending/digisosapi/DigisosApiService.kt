@@ -1,7 +1,6 @@
 package no.nav.sosialhjelp.soknad.innsending.digisosapi
 
 import com.fasterxml.jackson.core.JsonProcessingException
-import no.finn.unleash.Unleash
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator.ensureValidSoknad
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator.ensureValidVedlegg
@@ -20,7 +19,7 @@ import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidS
 import no.nav.sosialhjelp.soknad.metrics.MetricsUtils.navKontorTilMetricNavn
 import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
 import no.nav.sosialhjelp.soknad.metrics.VedleggskravStatistikkUtil.genererOgLoggVedleggskravStatistikk
-import no.nav.sosialhjelp.soknad.vedlegg.OpplastetVedleggRessurs.Companion.KS_MELLOMLAGRING_ENABLED
+import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 
@@ -32,15 +31,13 @@ class DigisosApiService(
     private val soknadUnderArbeidService: SoknadUnderArbeidService,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val dokumentListeService: DokumentListeService,
-    private val unleash: Unleash,
-    private val prometheusMetricsService: PrometheusMetricsService
+    private val prometheusMetricsService: PrometheusMetricsService,
+    private val mellomlagringService: MellomlagringService
 ) {
     private val objectMapper = JsonSosialhjelpObjectMapper.createObjectMapper()
 
-    private val digisosApiV2Enabled get() = unleash.isEnabled(KS_MELLOMLAGRING_ENABLED, false)
-
     fun sendSoknad(soknadUnderArbeid: SoknadUnderArbeid, token: String?, kommunenummer: String): String {
-        return if (digisosApiV2Enabled) {
+        return if (mellomlagringService.erMellomlagringEnabledOgSoknadSkalSendesMedDigisosApi(soknadUnderArbeid)) {
             sendSoknadMedDigisosApiV2(soknadUnderArbeid, token, kommunenummer)
         } else {
             sendSoknadMedDigisosApiV1(soknadUnderArbeid, token, kommunenummer)
@@ -69,6 +66,7 @@ class DigisosApiService(
         val navEnhetsnavn = jsonInternalSoknad.soknad.mottaker.navEnhetsnavn
         log.info("Starter kryptering av filer for $behandlingsId, skal sende til kommune $kommunenummer med enhetsnummer $enhetsnummer og navenhetsnavn $navEnhetsnavn")
         val digisosId = sendOgKrypter(
+            sendMedDigisosApiV2 = false,
             soknadJson = soknadJson,
             tilleggsinformasjonJson = tilleggsinformasjonJson,
             vedleggJson = vedleggJson,
@@ -109,6 +107,7 @@ class DigisosApiService(
 
         log.info("Starter kryptering av filer for $behandlingsId, skal sende til kommune $kommunenummer med enhetsnummer $enhetsnummer og navenhetsnavn $navEnhetsnavn")
         val digisosId = sendOgKrypter(
+            sendMedDigisosApiV2 = true,
             soknadJson = soknadJson,
             tilleggsinformasjonJson = tilleggsinformasjonJson,
             vedleggJson = vedleggJson,
@@ -127,6 +126,7 @@ class DigisosApiService(
     }
 
     private fun sendOgKrypter(
+        sendMedDigisosApiV2: Boolean,
         soknadJson: String,
         tilleggsinformasjonJson: String,
         vedleggJson: String,
@@ -136,7 +136,7 @@ class DigisosApiService(
         token: String?
     ): String {
         return try {
-            if (digisosApiV2Enabled) {
+            if (sendMedDigisosApiV2) {
                 digisosApiV2Client.krypterOgLastOppFiler(
                     soknadJson = soknadJson,
                     tilleggsinformasjonJson = tilleggsinformasjonJson,
