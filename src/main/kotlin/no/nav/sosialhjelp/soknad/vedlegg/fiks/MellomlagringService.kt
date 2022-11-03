@@ -4,7 +4,7 @@ import no.finn.unleash.Unleash
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
-import no.nav.sosialhjelp.soknad.app.MiljoUtils
+import no.nav.sosialhjelp.soknad.app.MiljoUtils.isNonProduction
 import no.nav.sosialhjelp.soknad.app.exceptions.SendingTilKommuneErMidlertidigUtilgjengeligException
 import no.nav.sosialhjelp.soknad.app.exceptions.SendingTilKommuneUtilgjengeligException
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
@@ -22,7 +22,8 @@ import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils.getSha512FromByteArray
 import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils.lagFilnavn
 import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils.validerFil
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.FileDetectionUtils
-import no.nav.sosialhjelp.soknad.vedlegg.filedetection.MimeTypes
+import no.nav.sosialhjelp.soknad.vedlegg.filedetection.MimeTypes.APPLICATION_PDF
+import no.nav.sosialhjelp.soknad.vedlegg.filedetection.MimeTypes.TEXT_X_MATLAB
 import no.nav.sosialhjelp.soknad.vedlegg.virusscan.VirusScanner
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
@@ -43,7 +44,7 @@ class MellomlagringService(
 ) {
 
     fun getAllVedlegg(behandlingsId: String): List<MellomlagretVedleggMetadata> {
-        val navEksternId = if (MiljoUtils.isNonProduction()) createPrefixedBehandlingsId(behandlingsId) else behandlingsId
+        val navEksternId = if (isNonProduction()) createPrefixedBehandlingsId(behandlingsId) else behandlingsId
         return mellomlagringClient.getMellomlagredeVedlegg(navEksternId = navEksternId)
             ?.mellomlagringMetadataList
             ?.map {
@@ -55,7 +56,7 @@ class MellomlagringService(
     }
 
     fun getVedlegg(behandlingsId: String, vedleggId: String): MellomlagretVedlegg? {
-        val navEksternId = if (MiljoUtils.isNonProduction()) createPrefixedBehandlingsId(behandlingsId) else behandlingsId
+        val navEksternId = if (isNonProduction()) createPrefixedBehandlingsId(behandlingsId) else behandlingsId
         return mellomlagringClient.getMellomlagredeVedlegg(navEksternId = navEksternId)
             ?.mellomlagringMetadataList
             ?.firstOrNull { it.filId == vedleggId }
@@ -98,7 +99,7 @@ class MellomlagringService(
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier)
 
         val detectedMimeType = FileDetectionUtils.getMimeType(data)
-        val mimetype = if (detectedMimeType.equals(MimeTypes.TEXT_X_MATLAB, ignoreCase = true)) MimeTypes.APPLICATION_PDF else detectedMimeType
+        val mimetype = if (detectedMimeType.equals(TEXT_X_MATLAB, ignoreCase = true)) APPLICATION_PDF else detectedMimeType
 
         val filOpplasting = FilOpplasting(
             metadata = FilMetadata(
@@ -109,7 +110,7 @@ class MellomlagringService(
             data = ByteArrayInputStream(data)
         )
 
-        val navEksternId = if (MiljoUtils.isNonProduction()) createPrefixedBehandlingsId(behandlingsId) else behandlingsId
+        val navEksternId = if (isNonProduction()) createPrefixedBehandlingsId(behandlingsId) else behandlingsId
 
         mellomlagringClient.postVedlegg(navEksternId = navEksternId, filOpplasting = filOpplasting)
 
@@ -121,7 +122,7 @@ class MellomlagringService(
     }
 
     fun deleteVedleggAndUpdateVedleggstatus(behandlingsId: String, vedleggId: String) {
-        val navEksternId = if (MiljoUtils.isNonProduction()) createPrefixedBehandlingsId(behandlingsId) else behandlingsId
+        val navEksternId = if (isNonProduction()) createPrefixedBehandlingsId(behandlingsId) else behandlingsId
 
         // hent alle mellomlagrede vedlegg
         val mellomlagredeVedlegg = mellomlagringClient.getMellomlagredeVedlegg(navEksternId = navEksternId)?.mellomlagringMetadataList ?: return
@@ -148,13 +149,13 @@ class MellomlagringService(
     }
 
     fun deleteVedlegg(behandlingsId: String, vedleggId: String) {
-        val navEksternId = if (MiljoUtils.isNonProduction()) createPrefixedBehandlingsId(behandlingsId) else behandlingsId
+        val navEksternId = if (isNonProduction()) createPrefixedBehandlingsId(behandlingsId) else behandlingsId
         mellomlagringClient.deleteVedlegg(navEksternId = navEksternId, digisosDokumentId = vedleggId)
     }
 
     fun deleteAllVedlegg(behandlingsId: String) {
         if (getAllVedlegg(behandlingsId).isNotEmpty()) {
-            val navEksternId = if (MiljoUtils.isNonProduction()) createPrefixedBehandlingsId(behandlingsId) else behandlingsId
+            val navEksternId = if (isNonProduction()) createPrefixedBehandlingsId(behandlingsId) else behandlingsId
             mellomlagringClient.deleteAllVedlegg(navEksternId = navEksternId)
         }
     }
@@ -162,6 +163,18 @@ class MellomlagringService(
     fun erMellomlagringEnabledOgSoknadSkalSendesMedDigisosApi(soknadUnderArbeid: SoknadUnderArbeid): Boolean {
         return unleash.isEnabled(KS_MELLOMLAGRING_ENABLED, false) &&
             soknadSkalSendesMedDigisosApi(soknadUnderArbeid) &&
+            soknadOpprettetEtterAktiveringAvMellomlagring(soknadUnderArbeid)
+    }
+
+    fun kanSoknadHaMellomlagredeVedleggForSletting(soknadUnderArbeid: SoknadUnderArbeid): Boolean {
+        val kanSoknadSendesMedDigisosApi = try {
+            soknadSkalSendesMedDigisosApi(soknadUnderArbeid)
+        } catch (e: Exception) {
+            false
+        }
+
+        return unleash.isEnabled(KS_MELLOMLAGRING_ENABLED, false) &&
+            kanSoknadSendesMedDigisosApi &&
             soknadOpprettetEtterAktiveringAvMellomlagring(soknadUnderArbeid)
     }
 

@@ -146,7 +146,7 @@ open class SoknadService(
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         soknadUnderArbeidRepository.hentSoknadNullable(behandlingsId, eier)
             ?.let { soknadUnderArbeid ->
-                if (mellomlagringService.erMellomlagringEnabledOgSoknadSkalSendesMedDigisosApi(soknadUnderArbeid)) {
+                if (mellomlagringService.kanSoknadHaMellomlagredeVedleggForSletting(soknadUnderArbeid)) {
                     mellomlagringService.deleteAllVedlegg(behandlingsId)
                 }
                 soknadUnderArbeidRepository.slettSoknad(soknadUnderArbeid, eier)
