@@ -83,6 +83,8 @@ class NavUtbetalingerClientImpl(
     }
 
     override fun getUtbetalingerSiste40DagerLegacy(ident: String): NavUtbetalingerDto? {
+
+        log.info("Henter utbetalingsdata legacy fra: $oppslagApiUrl og audience $oppslagApiAudience")
         hentFraCacheLegacy(ident)?.let { return it }
 
         return try {
