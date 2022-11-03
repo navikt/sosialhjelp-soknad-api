@@ -51,13 +51,7 @@ class NavUtbetalingerClientImpl(
 
     private val webClient = unproxiedWebClientBuilder(webClientBuilder).filters { it.add(logRequest()) }.build()
 
-    private lateinit var tokenXtoken: String
-
     override fun getUtbetalingerSiste40Dager(ident: String): UtbetalDataDto? {
-        tokenXtoken = runBlocking {
-            tokendingsService.exchangeToken(getUserIdFromToken(), getToken(), utbetalDataAudience)
-        }
-
         hentFraCache(ident)?.let { return it }
         log.info("Henter utbetalingsdata fra: $utbetalDataUrl og audience $utbetalDataAudience")
 
@@ -69,7 +63,7 @@ class NavUtbetalingerClientImpl(
         try {
             val response = webClient.post()
                 .uri(utbetalDataUrl + "/utbetaldata/api/v2/hent-utbetalingsinformasjon/ekstern")
-                .header(HttpHeaders.AUTHORIZATION, BEARER + tokenXtoken)
+                .header(HttpHeaders.AUTHORIZATION, BEARER + tokenXtoken(utbetalDataAudience))
                 .header(HEADER_CALL_ID, getFromMDC(MDC_CALL_ID))
                 .header(HEADER_CONSUMER_ID, getConsumerId())
                 .body(Mono.just(request), NavUtbetalingerRequest::class.java)
@@ -89,15 +83,12 @@ class NavUtbetalingerClientImpl(
     }
 
     override fun getUtbetalingerSiste40DagerLegacy(ident: String): NavUtbetalingerDto? {
-        tokenXtoken = runBlocking {
-            tokendingsService.exchangeToken(getUserIdFromToken(), getToken(), oppslagApiAudience)
-        }
         hentFraCacheLegacy(ident)?.let { return it }
 
         return try {
             webClient.get()
                 .uri(oppslagApiUrl + "utbetalinger")
-                .header(HttpHeaders.AUTHORIZATION, BEARER + tokenXtoken)
+                .header(HttpHeaders.AUTHORIZATION, BEARER + tokenXtoken(oppslagApiAudience))
                 .header(HEADER_CALL_ID, getFromMDC(MDC_CALL_ID))
                 .header(HEADER_CONSUMER_ID, getConsumerId())
                 .retrieve()
@@ -118,6 +109,12 @@ class NavUtbetalingerClientImpl(
         ) as? UtbetalDataDto
     }
 
+    private fun tokenXtoken(audience: String): String {
+        return runBlocking {
+            tokendingsService.exchangeToken(getUserIdFromToken(), getToken(), audience)
+        }
+    }
+
     private fun lagreTilCache(ident: String, utbetalDataDto: UtbetalDataDto) {
         try {
             redisService.setex(
@@ -129,6 +126,7 @@ class NavUtbetalingerClientImpl(
             log.warn("Noe feilet ved lagring av UtbetalDataDto til redis", e)
         }
     }
+
     private fun hentFraCacheLegacy(ident: String): NavUtbetalingerDto? {
         return redisService.get(
             NAVUTBETALINGER_LEGACY_CACHE_KEY_PREFIX + ident,
