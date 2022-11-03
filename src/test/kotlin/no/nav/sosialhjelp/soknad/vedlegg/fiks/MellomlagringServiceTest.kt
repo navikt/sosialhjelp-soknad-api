@@ -64,11 +64,10 @@ internal class MellomlagringServiceTest {
         every { soknadUnderArbeid.erEttersendelse } returns true
         assertThat(mellomlagringService.erMellomlagringEnabledOgSoknadSkalSendesMedDigisosApi(soknadUnderArbeid)).isFalse
 
-        // kast feil - mottakers kommunenummer er null
+        // false - mottaker.kommunenummer er null, dvs at bruker ikke har valgt noen adresse enda
         every { soknadUnderArbeid.erEttersendelse } returns false
         every { soknadUnderArbeid.jsonInternalSoknad?.soknad?.mottaker?.kommunenummer } returns null
-        assertThatExceptionOfType(IllegalStateException::class.java)
-            .isThrownBy { mellomlagringService.erMellomlagringEnabledOgSoknadSkalSendesMedDigisosApi(soknadUnderArbeid) }
+        assertThat(mellomlagringService.erMellomlagringEnabledOgSoknadSkalSendesMedDigisosApi(soknadUnderArbeid)).isFalse
 
         // kast feil - nedetid for kommune
         every { soknadUnderArbeid.jsonInternalSoknad?.soknad?.mottaker?.kommunenummer } returns "1234"

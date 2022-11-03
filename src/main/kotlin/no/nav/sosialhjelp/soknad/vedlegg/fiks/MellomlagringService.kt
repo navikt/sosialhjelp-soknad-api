@@ -3,6 +3,7 @@ package no.nav.sosialhjelp.soknad.vedlegg.fiks
 import no.finn.unleash.Unleash
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.app.exceptions.SendingTilKommuneErMidlertidigUtilgjengeligException
 import no.nav.sosialhjelp.soknad.app.exceptions.SendingTilKommuneUtilgjengeligException
@@ -168,8 +169,9 @@ class MellomlagringService(
         if (soknadUnderArbeid.erEttersendelse) {
             return false
         }
+
         val kommunenummer = soknadUnderArbeid.jsonInternalSoknad?.soknad?.mottaker?.kommunenummer
-            ?: throw IllegalStateException("Kommunenummer ikke funnet for JsonInternalSoknad.soknad.mottaker.kommunenummer")
+            ?: return false.also { log.info("Mottaker.kommunenummer ikke satt -> soknadSkalSendesMedDigisosApi returnerer false") }
 
         return when (kommuneInfoService.kommuneInfo(kommunenummer)) {
             KommuneStatus.FIKS_NEDETID_OG_TOM_CACHE -> {
@@ -190,6 +192,7 @@ class MellomlagringService(
     }
 
     companion object {
+        private val log by logger()
         private const val format = "dd.MM.yyyy HH:mm:ss"
         private val dateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern(format)
 
