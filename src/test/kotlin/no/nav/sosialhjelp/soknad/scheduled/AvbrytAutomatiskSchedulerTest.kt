@@ -72,7 +72,7 @@ internal class AvbrytAutomatiskSchedulerTest {
         val soknadMetadataSlot = slot<SoknadMetadata>()
         every { soknadMetadataRepository.oppdater(capture(soknadMetadataSlot)) } just runs
 
-        every { mellomlagringService.erMellomlagringEnabledOgSoknadSkalSendesMedDigisosApi(soknadUnderArbeid) } returns false
+        every { mellomlagringService.kanSoknadHaMellomlagredeVedleggForSletting(soknadUnderArbeid) } returns false
 
         scheduler.avbrytGamleSoknader()
 
@@ -111,7 +111,7 @@ internal class AvbrytAutomatiskSchedulerTest {
         val soknadMetadataSlot = slot<SoknadMetadata>()
         every { soknadMetadataRepository.oppdater(capture(soknadMetadataSlot)) } just runs
 
-        every { mellomlagringService.erMellomlagringEnabledOgSoknadSkalSendesMedDigisosApi(soknadUnderArbeid) } returns true
+        every { mellomlagringService.kanSoknadHaMellomlagredeVedleggForSletting(soknadUnderArbeid) } returns true
         every { mellomlagringService.deleteAllVedlegg(any()) } just runs
 
         scheduler.avbrytGamleSoknader()

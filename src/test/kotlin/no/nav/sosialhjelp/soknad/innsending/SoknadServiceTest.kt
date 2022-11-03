@@ -71,7 +71,7 @@ internal class SoknadServiceTest {
         SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
 
         every { systemdataUpdater.update(any()) } just runs
-        every { mellomlagringService.erMellomlagringEnabledOgSoknadSkalSendesMedDigisosApi(any()) } returns false
+        every { mellomlagringService.kanSoknadHaMellomlagredeVedleggForSletting(any()) } returns false
     }
 
     @AfterEach
