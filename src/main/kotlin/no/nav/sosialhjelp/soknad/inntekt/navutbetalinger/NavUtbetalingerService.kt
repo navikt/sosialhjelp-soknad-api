@@ -23,6 +23,7 @@ open class NavUtbetalingerService(
         val utbetalinger: List<NavUtbetaling>
 
         if (unleash.isEnabled(BRUK_UTBETALDATATJENESTE_ENABLED, true)) {
+            log.info("Bruk av ny utbetaldatatjeneste er enablet og denne benyttes")
             val utbetalDataDto: UtbetalDataDto? = navUtbetalingerClient.getUtbetalingerSiste40Dager(ident)
             if (utbetalDataDto == null || utbetalDataDto.feilet || utbetalDataDto.utbetalinger == null) {
                 return null
@@ -30,6 +31,7 @@ open class NavUtbetalingerService(
 
             utbetalinger = mapToNavutbetalinger(utbetalDataDto)
         } else {
+            log.info("Bruk av ny utbetaldatatjeneste er ikke enablet og gammel utbetalingstjeneste benyttes")
             val navUtbetalingerDto: NavUtbetalingerDto? = navUtbetalingerClient.getUtbetalingerSiste40DagerLegacy(ident)
             if (navUtbetalingerDto == null || navUtbetalingerDto.feilet || navUtbetalingerDto.utbetalinger == null) {
                 return null
