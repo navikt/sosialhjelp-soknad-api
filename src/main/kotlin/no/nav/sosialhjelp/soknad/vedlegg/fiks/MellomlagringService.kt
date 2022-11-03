@@ -77,26 +77,11 @@ class MellomlagringService(
     ): MellomlagretVedleggMetadata {
         var filnavn = originalfilnavn
 
-        val eier = SubjectHandlerUtils.getUserIdFromToken()
-        val sha512 = getSha512FromByteArray(data)
-
         val fileType = validerFil(data, filnavn)
         virusScanner.scan(filnavn, data, behandlingsId, fileType.name)
 
-        val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
-
         val uuid = UUID.randomUUID().toString()
         filnavn = lagFilnavn(filnavn, fileType, uuid)
-
-        val jsonVedlegg = finnVedleggEllerKastException(vedleggstype, soknadUnderArbeid)
-        if (jsonVedlegg.filer == null) {
-            jsonVedlegg.filer = ArrayList()
-        }
-        jsonVedlegg.withStatus(Vedleggstatus.LastetOpp.toString()).filer.add(
-            JsonFiler().withFilnavn(filnavn).withSha512(sha512)
-        )
-
-        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier)
 
         val detectedMimeType = FileDetectionUtils.getMimeType(data)
         val mimetype = if (detectedMimeType.equals(TEXT_X_MATLAB, ignoreCase = true)) APPLICATION_PDF else detectedMimeType
@@ -118,7 +103,32 @@ class MellomlagringService(
         val filId = mellomlagredeVedlegg?.mellomlagringMetadataList?.firstOrNull { it.filnavn == filnavn }?.filId
             ?: throw IllegalStateException("Klarte ikke finne det mellomlagrede vedlegget som akkurat ble lastet opp")
 
+        // oppdater SoknadUnderArbeid etter suksessfull opplasting
+        oppdaterSoknadUnderArbeid(data, behandlingsId, vedleggstype, filnavn)
+
         return MellomlagretVedleggMetadata(filnavn = filnavn, filId = filId)
+    }
+
+    private fun oppdaterSoknadUnderArbeid(
+        data: ByteArray,
+        behandlingsId: String,
+        vedleggstype: String,
+        filnavn: String,
+    ) {
+        val eier = SubjectHandlerUtils.getUserIdFromToken()
+        val sha512 = getSha512FromByteArray(data)
+
+        val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
+
+        val jsonVedlegg = finnVedleggEllerKastException(vedleggstype, soknadUnderArbeid)
+        if (jsonVedlegg.filer == null) {
+            jsonVedlegg.filer = ArrayList()
+        }
+        jsonVedlegg.withStatus(Vedleggstatus.LastetOpp.toString()).filer.add(
+            JsonFiler().withFilnavn(filnavn).withSha512(sha512)
+        )
+
+        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier)
     }
 
     fun deleteVedleggAndUpdateVedleggstatus(behandlingsId: String, vedleggId: String) {
