@@ -137,19 +137,19 @@ internal class NavUtbetalingerServiceTest {
         every { unleash.isEnabled(NavUtbetalingerService.BRUK_UTBETALDATATJENESTE_ENABLED, true) } returns true
         every { navUtbetalingerClient.getUtbetalingerSiste40Dager(any()) } returns UtbetalDataDto(null, true)
 
-        val navUtbetalingerService = navUtbetalingerService.getUtbetalingerSiste40Dager("ident")
+        navUtbetalingerService.getUtbetalingerSiste40Dager("ident")
 
         verify(exactly = 1) { navUtbetalingerClient.getUtbetalingerSiste40Dager(any()) }
         verify(exactly = 0) { navUtbetalingerClient.getUtbetalingerSiste40DagerLegacy(any()) }
     }
 
-    //    TODO: Fjerne denne og kode som brukes i service når endelig flyttet over til ny utbetaldatatjeneste
+    //    TODO: Fjerne denne og kode som brukes i service når featur toggle skrus av  og vi har flyttet over til ny utbetaldatatjeneste
     @Test
     internal fun skalKalleLegacyUtbetalingTjenesteNaarFeatureToggleErAv() {
         every { unleash.isEnabled(NavUtbetalingerService.BRUK_UTBETALDATATJENESTE_ENABLED, true) } returns false
         every { navUtbetalingerClient.getUtbetalingerSiste40DagerLegacy(any()) } returns NavUtbetalingerDto(null, true)
 
-        val navUtbetalingerService = navUtbetalingerService.getUtbetalingerSiste40Dager("ident")
+        navUtbetalingerService.getUtbetalingerSiste40Dager("ident")
 
         verify(exactly = 1) { navUtbetalingerClient.getUtbetalingerSiste40DagerLegacy(any()) }
         verify(exactly = 0) { navUtbetalingerClient.getUtbetalingerSiste40Dager(any()) }

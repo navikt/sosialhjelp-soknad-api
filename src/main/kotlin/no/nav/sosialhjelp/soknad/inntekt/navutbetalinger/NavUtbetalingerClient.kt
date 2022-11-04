@@ -53,13 +53,11 @@ class NavUtbetalingerClientImpl(
 
     override fun getUtbetalingerSiste40Dager(ident: String): UtbetalDataDto? {
         hentFraCache(ident)?.let { return it }
-        log.info("Henter utbetalingsdata fra: $utbetalDataUrl og audience $utbetalDataAudience")
+        log.info("Henter utbetalingsdata fra: $utbetalDataUrl med audience $utbetalDataAudience")
 
         val periode = Periode(LocalDate.now().minusDays(40), LocalDate.now())
         val request = NavUtbetalingerRequest(ident, RETTIGHETSHAVER, periode, UTBETALINGSPERIODE)
 
-//        TODO fjernes
-        log.info("Kaller utbetaldata med body: ${Mono.just(request).block()}")
         try {
             val response = webClient.post()
                 .uri(utbetalDataUrl + "/utbetaldata/api/v2/hent-utbetalingsinformasjon/ekstern")
@@ -72,7 +70,7 @@ class NavUtbetalingerClientImpl(
                 .retryWhen(RetryUtils.DEFAULT_RETRY_SERVER_ERRORS)
                 .block()
 
-            log.info("Response fra Utbetaldatatjeneste:  $response")
+            log.info("Hentet ${response.size} utbetalinger fra utbetaldata tjeneste")
             val utbetalDataDto = UtbetalDataDto(response, false)
             lagreTilCache(ident, utbetalDataDto)
             return utbetalDataDto
@@ -83,7 +81,7 @@ class NavUtbetalingerClientImpl(
     }
 
     override fun getUtbetalingerSiste40DagerLegacy(ident: String): NavUtbetalingerDto? {
-        log.info("Henter utbetalingsdata legacy fra: $oppslagApiUrl og audience $oppslagApiAudience")
+        log.info("Henter utbetalingsdata legacy fra: $oppslagApiUrl med audience $oppslagApiAudience")
         hentFraCacheLegacy(ident)?.let { return it }
 
         return try {
