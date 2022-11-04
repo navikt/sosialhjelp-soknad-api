@@ -134,20 +134,6 @@ open class InformasjonRessurs(
 
     @Unprotected
     @GET
-    @Path("/kommuneinfo")
-    open fun hentKommuneinfo(): Map<String, KommuneInfoFrontend> {
-        if (nedetidService.isInnenforNedetid) {
-            return emptyMap()
-        }
-        val manueltPakobledeKommuner = mapManueltPakobledeKommuner(digisoskommuner)
-        val digisosKommuner = mapDigisosKommuner(kommuneInfoService.hentAlleKommuneInfo())
-        val kunManueltPakobledeKommuner = manueltPakobledeKommuner.keys.filter { !digisosKommuner.containsKey(it) }
-        logger.info("/kommuneinfo - Kommuner som kun er manuelt påkoblet via PROD_DIGISOS_KOMMUNER: $kunManueltPakobledeKommuner")
-        return mergeManuelleKommunerMedDigisosKommuner(manueltPakobledeKommuner, digisosKommuner)
-    }
-
-    @Unprotected
-    @GET
     @Path("/kommunestatus")
     open fun hentKommunestatus(): Map<String, KommunestatusFrontend> {
         if (nedetidService.isInnenforNedetid) {
