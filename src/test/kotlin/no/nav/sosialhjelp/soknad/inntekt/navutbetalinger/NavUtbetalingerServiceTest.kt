@@ -15,11 +15,9 @@ import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.NavUtbetalingDto
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.NavUtbetalingerDto
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.UtbetalDataDto
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.Utbetaling
-import org.apache.commons.io.IOUtils
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import java.nio.charset.StandardCharsets
 import java.time.LocalDate
 
 internal class NavUtbetalingerServiceTest {
@@ -40,12 +38,12 @@ internal class NavUtbetalingerServiceTest {
 
     @Test
     internal fun clientReturnererUtbetalinger() {
-        val utbetaling = getUtbetalingFromJsonFile("inntekt/navutbetalinger/sokos-utbetaltdata-ekstern-response.json")
-        utbetaling.utbetalingsdato = LocalDate.now().minusDays(2)
+//        val utbetaling = getUtbetalingFromJsonFile("inntekt/navutbetalinger/sokos-utbetaltdata-ekstern-response.json")
+//        utbetaling.utbetalingsdato = LocalDate.now().minusDays(2)
 
         every { unleash.isEnabled(NavUtbetalingerService.BRUK_UTBETALDATATJENESTE_ENABLED, true) } returns true
         every { navUtbetalingerClient.getUtbetalingerSiste40Dager(any()) } returns UtbetalDataDto(
-            listOf(utbetaling),
+            listOf(lagUtbetalingResponse()),
             false
         )
 
@@ -74,13 +72,9 @@ internal class NavUtbetalingerServiceTest {
 
     @Test
     internal fun clientReturnererUtbetalingerUtenKomponenter() {
-        val utbetaling =
-            getUtbetalingFromJsonFile("inntekt/navutbetalinger/sokos-utbetaltdata-ekstern-response-uten-komponenter.json")
-        utbetaling.utbetalingsdato = LocalDate.now().minusDays(2)
-
         every { unleash.isEnabled(NavUtbetalingerService.BRUK_UTBETALDATATJENESTE_ENABLED, true) } returns true
         every { navUtbetalingerClient.getUtbetalingerSiste40Dager(any()) } returns UtbetalDataDto(
-            listOf(utbetaling),
+            listOf(lagUtbetalingUtenKomponenterResponse()),
             false
         )
 
@@ -202,11 +196,138 @@ internal class NavUtbetalingerServiceTest {
         assertThat(navUtbetaling.orgnummer).isEqualTo("orgnr")
     }
 
-    private fun getUtbetalingFromJsonFile(file: String): Utbetaling {
-        val resourceAsStream =
-            ClassLoader.getSystemResourceAsStream(file)
-        assertThat(resourceAsStream).isNotNull
-        val jsonString = IOUtils.toString(resourceAsStream, StandardCharsets.UTF_8)
-        return mapper.readValue<Utbetaling>(jsonString)
+    private fun lagUtbetalingResponse(): Utbetaling {
+        val utbetaltDato = LocalDate.now().minusDays(2)
+
+        val utbetalingJsonString = """
+            {
+              "posteringsdato": "2022-10-17",
+              "utbetaltTil": {
+                "aktoertype": "PERSON",
+                "ident": "string",
+                "navn": "string"
+              },
+              "utbetalingNettobeloep": 999.5,
+              "utbetalingsmelding": "string",
+              "utbetalingsdato": "$utbetaltDato",
+              "forfallsdato": "2022-10-17",
+              "utbetaltTilKonto": {
+                "kontonummer": "string",
+                "kontotype": "string"
+              },
+              "utbetalingsmetode": "string",
+              "utbetalingsstatus": "string",
+              "ytelseListe": [
+                {
+                  "ytelsestype": "string",
+                  "ytelsesperiode": {
+                    "fom": "2022-10-17",
+                    "tom": "2022-10-17"
+                  },
+                  "ytelseskomponentListe": [
+                    {
+                      "ytelseskomponenttype": "string",
+                      "satsbeloep": 999,
+                      "satstype": "string",
+                      "satsantall": 2.5,
+                      "ytelseskomponentbeloep": 42
+                    }
+                  ],
+                  "ytelseskomponentersum": 111.22,
+                  "trekkListe": [
+                    {
+                      "trekktype": "string",
+                      "trekkbeloep": 100,
+                      "kreditor": "string"
+                    }
+                  ],
+                  "trekksum": 1000,
+                  "skattListe": [
+                    {
+                      "skattebeloep": 99.9
+                    }
+                  ],
+                  "skattsum": 1000.5,
+                  "ytelseNettobeloep": 1999,
+                  "bilagsnummer": "string",
+                  "rettighetshaver": {
+                    "aktoertype": "PERSON",
+                    "ident": "string",
+                    "navn": "string"
+                  },
+                  "refundertForOrg": {
+                    "aktoertype": "PERSON",
+                    "ident": "string",
+                    "navn": "string"
+                  }
+                }
+              ]
+            }  
+        """
+
+        return mapper.readValue<Utbetaling>(utbetalingJsonString)
+    }
+
+    private fun lagUtbetalingUtenKomponenterResponse(): Utbetaling {
+        val utbetaltDato = LocalDate.now().minusDays(2)
+
+        val utbetalingJsonString = """
+            {
+              "posteringsdato": "2022-10-17",
+              "utbetaltTil": {
+                "aktoertype": "PERSON",
+                "ident": "string",
+                "navn": "string"
+              },
+              "utbetalingNettobeloep": 999.5,
+              "utbetalingsmelding": "string",
+              "utbetalingsdato": "$utbetaltDato",
+              "forfallsdato": "2022-10-17",
+              "utbetaltTilKonto": {
+                "kontonummer": "string",
+                "kontotype": "string"
+              },
+              "utbetalingsmetode": "string",
+              "utbetalingsstatus": "string",
+              "ytelseListe": [
+                {
+                  "ytelsestype": "string",
+                  "ytelsesperiode": {
+                    "fom": "2022-10-17",
+                    "tom": "2022-10-17"
+                  },
+                  "ytelseskomponentersum": 111.22,
+                  "trekkListe": [
+                    {
+                      "trekktype": "string",
+                      "trekkbeloep": 100,
+                      "kreditor": "string"
+                    }
+                  ],
+                  "trekksum": 1000,
+                  "skattListe": [
+                    {
+                      "skattebeloep": 99.9
+                    }
+                  ],
+                  "skattsum": 1000.5,
+                  "ytelseNettobeloep": 1999,
+                  "bilagsnummer": "string",
+                  "rettighetshaver": {
+                    "aktoertype": "PERSON",
+                    "ident": "string",
+                    "navn": "string"
+                  },
+                  "refundertForOrg": {
+                    "aktoertype": "PERSON",
+                    "ident": "string",
+                    "navn": "string"
+                  }
+                }
+              ]
+            }  
+        """
+
+        return mapper.readValue<Utbetaling>(utbetalingJsonString)
     }
 }

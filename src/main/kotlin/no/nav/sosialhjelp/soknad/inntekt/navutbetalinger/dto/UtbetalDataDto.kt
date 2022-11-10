@@ -12,7 +12,7 @@ data class Utbetaling(
     val posteringsdato: LocalDate?,
     val utbetaltTil: Aktoer?,
     val utbetalingNettobeloep: BigDecimal?,
-    var utbetalingsdato: LocalDate?,
+    val utbetalingsdato: LocalDate?,
     val forfallsdato: LocalDate?,
     val utbetalingsmelding: String?,
     val utbetaltTilKonto: Bankkonto?,
