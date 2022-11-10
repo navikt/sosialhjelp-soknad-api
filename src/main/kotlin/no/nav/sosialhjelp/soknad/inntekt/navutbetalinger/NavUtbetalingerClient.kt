@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory.getLogger
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders
 import org.springframework.stereotype.Component
+import org.springframework.web.reactive.function.BodyInserters
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.bodyToMono
@@ -64,13 +65,13 @@ class NavUtbetalingerClientImpl(
                 .header(HttpHeaders.AUTHORIZATION, BEARER + tokenXtoken(utbetalDataAudience))
                 .header(HEADER_CALL_ID, getFromMDC(MDC_CALL_ID))
                 .header(HEADER_CONSUMER_ID, getConsumerId())
-                .body(Mono.just(request), NavUtbetalingerRequest::class.java)
+                .body(BodyInserters.fromValue(request))
                 .retrieve()
                 .bodyToMono<List<Utbetaling>>()
                 .retryWhen(RetryUtils.DEFAULT_RETRY_SERVER_ERRORS)
                 .block()
 
-            log.info("Hentet ${response.size} utbetalinger fra utbetaldata tjeneste")
+            log.info("Hentet ${response?.size} utbetalinger fra utbetaldata tjeneste")
             val utbetalDataDto = UtbetalDataDto(response, false)
             lagreTilCache(ident, utbetalDataDto)
             return utbetalDataDto
