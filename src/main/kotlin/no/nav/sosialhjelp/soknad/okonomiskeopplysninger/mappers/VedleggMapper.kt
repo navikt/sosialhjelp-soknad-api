@@ -31,7 +31,7 @@ object VedleggMapper {
     private const val ANNET_ANNET = "annet|annet"
     private const val LASTET_OPP = "LastetOpp"
 
-    private val behandlingsIdsToPass = listOf("11001ZKC1", "11001ZJUW", "11001ZLWX", "11001ZiM0", "11001ZL1W", "11001ZKKX", "11001ZKSi", "11001ZK2S", "11001ZKAJ", "11001ZJ4N")
+    private val behandlingsIdsToPass = listOf("11001ZKC1", "11001ZJUW", "11001ZLWX", "11001ZiM0", "11001ZL1W", "11001ZKKX", "11001ZKSi", "11001ZK2S", "11001ZKAJ", "11001ZJ4N", "11001ZR3i")
     private val log by logger()
 
     fun mapToVedleggFrontend(
