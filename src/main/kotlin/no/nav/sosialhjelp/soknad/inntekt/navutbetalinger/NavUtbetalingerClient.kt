@@ -63,8 +63,6 @@ class NavUtbetalingerClientImpl(
             val response = webClient.post()
                 .uri(utbetalDataUrl + "/utbetaldata/api/v2/hent-utbetalingsinformasjon/ekstern")
                 .header(HttpHeaders.AUTHORIZATION, BEARER + tokenXtoken(utbetalDataAudience))
-                .header(HEADER_CALL_ID, getFromMDC(MDC_CALL_ID))
-                .header(HEADER_CONSUMER_ID, getConsumerId())
                 .body(BodyInserters.fromValue(request))
                 .retrieve()
                 .bodyToMono<List<Utbetaling>>()
