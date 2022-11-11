@@ -38,9 +38,6 @@ internal class NavUtbetalingerServiceTest {
 
     @Test
     internal fun clientReturnererUtbetalinger() {
-//        val utbetaling = getUtbetalingFromJsonFile("inntekt/navutbetalinger/sokos-utbetaltdata-ekstern-response.json")
-//        utbetaling.utbetalingsdato = LocalDate.now().minusDays(2)
-
         every { unleash.isEnabled(NavUtbetalingerService.BRUK_UTBETALDATATJENESTE_ENABLED, true) } returns true
         every { navUtbetalingerClient.getUtbetalingerSiste40Dager(any()) } returns UtbetalDataDto(
             listOf(lagUtbetalingResponse()),
