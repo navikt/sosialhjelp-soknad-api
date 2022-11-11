@@ -27,7 +27,7 @@ object InformasjonFraForside {
             pdf.skrivTekst(pdfUtils.getTekst("informasjon.svarpasoknad.tekst"))
             pdf.addBlankLine()
             pdf.skrivTekstBold(pdfUtils.getTekst("informasjon.nodsituasjon.undertittel"))
-            pdf.skrivTekst(pdfUtils.getTekst("informasjon.nodsituasjon.tekst"))
+            pdf.skrivTekst("Du er i en nødsituasjon hvis du ikke har penger til det aller mest nødvendige som mat og hygieneartikler, eller du ikke har et sted å sove og oppholde deg det neste døgnet. Hvis du trenger rask hjelp bør du ta kontakt med ditt NAV-kontor eller være tilgjengelig på telefon etter at du har sendt inn søknaden. Ofte vil noen fra NAV-kontoret kontakte deg for å kunne vurdere situasjonen din.") // informasjon.nodsituasjon.tekst
             pdf.addBlankLine()
             pdf.skrivTekstBold(pdfUtils.getTekst("informasjon.tekster.personopplysninger.innhenting.tittel"))
             pdf.skrivTekst(pdfUtils.getTekst("informasjon.tekster.personopplysninger.innhenting.tekst"))
@@ -46,6 +46,7 @@ object InformasjonFraForside {
 
             val urisOnPage: MutableMap<String, String> = HashMap()
             urisOnPage["opplysninger du kan bli bedt om å levere"] = "https://www.nav.no/okonomisk-sosialhjelp#soknad"
+            urisOnPage["ditt NAV-kontor"] = "https://www.nav.no/sok-nav-kontor"
             addLinks(pdf, urisOnPage)
         }
     }
