@@ -20,9 +20,9 @@ import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.UtbetalDataDto
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.Utbetaling
 import no.nav.sosialhjelp.soknad.redis.CACHE_30_MINUTES_IN_SECONDS
 import no.nav.sosialhjelp.soknad.redis.NAVUTBETALINGER_CACHE_KEY_PREFIX
-import no.nav.sosialhjelp.soknad.redis.NAVUTBETALINGER_LEGACY_CACHE_KEY_PREFIX
 import no.nav.sosialhjelp.soknad.redis.RedisService
 import no.nav.sosialhjelp.soknad.redis.RedisUtils.redisObjectMapper
+import no.nav.sosialhjelp.soknad.redis.UTBETALDATA_CACHE_KEY_PREFIX
 import org.slf4j.LoggerFactory.getLogger
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders
@@ -100,23 +100,23 @@ class NavUtbetalingerClientImpl(
         }
     }
 
-    private fun hentFraCache(ident: String): UtbetalDataDto? {
-        return redisService.get(
-            NAVUTBETALINGER_CACHE_KEY_PREFIX + ident,
-            UtbetalDataDto::class.java
-        ) as? UtbetalDataDto
-    }
-
     private fun tokenXtoken(audience: String): String {
         return runBlocking {
             tokendingsService.exchangeToken(getUserIdFromToken(), getToken(), audience)
         }
     }
 
+    private fun hentFraCache(ident: String): UtbetalDataDto? {
+        return redisService.get(
+            UTBETALDATA_CACHE_KEY_PREFIX + ident,
+            UtbetalDataDto::class.java
+        ) as? UtbetalDataDto
+    }
+
     private fun lagreTilCache(ident: String, utbetalDataDto: UtbetalDataDto) {
         try {
             redisService.setex(
-                NAVUTBETALINGER_CACHE_KEY_PREFIX + ident,
+                UTBETALDATA_CACHE_KEY_PREFIX + ident,
                 redisObjectMapper.writeValueAsBytes(utbetalDataDto),
                 CACHE_30_MINUTES_IN_SECONDS
             )
@@ -127,7 +127,7 @@ class NavUtbetalingerClientImpl(
 
     private fun hentFraCacheLegacy(ident: String): NavUtbetalingerDto? {
         return redisService.get(
-            NAVUTBETALINGER_LEGACY_CACHE_KEY_PREFIX + ident,
+            NAVUTBETALINGER_CACHE_KEY_PREFIX + ident,
             NavUtbetalingerDto::class.java
         ) as? NavUtbetalingerDto
     }
@@ -135,7 +135,7 @@ class NavUtbetalingerClientImpl(
     private fun lagreTilCacheLegacy(ident: String, navUtbetalingerDto: NavUtbetalingerDto) {
         try {
             redisService.setex(
-                NAVUTBETALINGER_LEGACY_CACHE_KEY_PREFIX + ident,
+                NAVUTBETALINGER_CACHE_KEY_PREFIX + ident,
                 redisObjectMapper.writeValueAsBytes(navUtbetalingerDto),
                 CACHE_30_MINUTES_IN_SECONDS
             )
@@ -147,10 +147,9 @@ class NavUtbetalingerClientImpl(
     private fun logRequest(): ExchangeFilterFunction {
         return ExchangeFilterFunction.ofRequestProcessor { clientRequest ->
             val sb = StringBuilder("Request: ")
-            // append clientRequest method and url
             sb.append("method: ${clientRequest.method()} ")
             sb.append("url: ${clientRequest.url()} ")
-            log.debug(sb.toString())
+            log.info(sb.toString())
             Mono.just(clientRequest)
         }
     }
