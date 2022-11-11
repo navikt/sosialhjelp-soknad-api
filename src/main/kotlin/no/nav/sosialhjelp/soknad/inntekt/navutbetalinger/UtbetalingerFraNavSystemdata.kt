@@ -48,8 +48,6 @@ class UtbetalingerFraNavSystemdata(
 
     private fun innhentNavSystemregistrertInntekt(personIdentifikator: String): List<JsonOkonomiOpplysningUtbetaling>? {
         val utbetalinger = navUtbetalingerService.getUtbetalingerSiste40Dager(personIdentifikator) ?: return null
-//        TODO: fjern
-        log.info("utbetaliner siste 40 dager: $utbetalinger")
         return utbetalinger.map { mapToJsonOkonomiOpplysningUtbetaling(it) }
     }
 
