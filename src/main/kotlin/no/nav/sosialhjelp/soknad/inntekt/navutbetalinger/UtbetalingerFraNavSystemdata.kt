@@ -32,6 +32,7 @@ class UtbetalingerFraNavSystemdata(
 
         jsonInternalSoknad.soknad.driftsinformasjon.utbetalingerFraNavFeilet = false
         val systemUtbetalingerNav = innhentNavSystemregistrertInntekt(personIdentifikator)
+        log.info("${systemUtbetalingerNav?.size} utbetalinger fra Nav og legges til i økonomiopplysninger")
         if (systemUtbetalingerNav == null) {
             jsonInternalSoknad.soknad.driftsinformasjon.utbetalingerFraNavFeilet = true
         } else {

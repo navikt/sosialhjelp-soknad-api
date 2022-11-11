@@ -35,6 +35,8 @@
     "AZURE_APP_CLIENT_ID": "someaudience",
     "AZURE_APP_CLIENT_SECRET": "secret",
     "OPPSLAG_API_BASEURL": "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api/oppslag-api/",
+    "UTBETALDATA_AUDIENCE": "dummyAudience",
+    "UTBETALDATA_API_BASEURL": "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api",
     "PDL_API_URL": "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api/pdl_endpoint_url/",
     "PDL_API_AUDIENCE": "dummyAudience",
     "PDL_API_SCOPE": "dummyScope",
