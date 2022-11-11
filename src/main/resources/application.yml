@@ -41,6 +41,7 @@ krr_proxy_url: ${KRR_PROXY_URL}
 pdl_api_url: ${PDL_API_URL}
 unleash_api_url: ${UNLEASH_API_URL}
 kodeverk_url: ${KODEVERK_URL}
+utbetaldata_api_baseurl: ${UTBETALDATA_API_BASEURL}
 oppslag_api_baseurl: ${OPPSLAG_API_BASEURL}
 norg_url: ${NORG_URL}
 fss_proxy_ping_url: ${FSS_PROXY_PING_URL}
@@ -66,6 +67,7 @@ tokendings_client_id: ${TOKEN_X_CLIENT_ID}
 tokendings_private_jwk: ${TOKEN_X_PRIVATE_JWK}
 fss_proxy_audience: ${FSS_PROXY_AUDIENCE}
 oppslag_api_audience: ${OPPSLAG_API_AUDIENCE}
+utbetaldata_audience: ${UTBETALDATA_AUDIENCE}
 pdl_api_audience: ${PDL_API_AUDIENCE}
 
 # azuread

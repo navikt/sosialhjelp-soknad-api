@@ -1,23 +1,45 @@
 package no.nav.sosialhjelp.soknad.inntekt.navutbetalinger
 
+import no.finn.unleash.Unleash
+import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.domain.Komponent
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.domain.NavUtbetaling
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.NavUtbetalingerDto
+import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.UtbetalDataDto
+import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.Utbetaling
+import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.Ytelse
+import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.Ytelseskomponent
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.toDomain
 import org.slf4j.LoggerFactory.getLogger
 import org.springframework.stereotype.Component
+import java.time.LocalDate
 
 @Component
 open class NavUtbetalingerService(
-    private val navUtbetalingerClient: NavUtbetalingerClient
+    private val navUtbetalingerClient: NavUtbetalingerClient,
+    private val unleash: Unleash
 ) {
 
     open fun getUtbetalingerSiste40Dager(ident: String): List<NavUtbetaling>? {
-        val responseDto: NavUtbetalingerDto? = navUtbetalingerClient.getUtbetalingerSiste40Dager(ident)
-        if (responseDto == null || responseDto.feilet || responseDto.utbetalinger == null) {
-            return null
+        val utbetalinger: List<NavUtbetaling>
+
+        if (unleash.isEnabled(BRUK_UTBETALDATATJENESTE_ENABLED, true)) {
+            log.info("Bruk av ny utbetaldatatjeneste er enablet og denne benyttes")
+            val utbetalDataDto: UtbetalDataDto? = navUtbetalingerClient.getUtbetalingerSiste40Dager(ident)
+            if (utbetalDataDto == null || utbetalDataDto.feilet || utbetalDataDto.utbetalinger == null) {
+                return null
+            }
+
+            utbetalinger = mapToNavutbetalinger(utbetalDataDto)
+        } else {
+            log.info("Bruk av ny utbetaldatatjeneste er ikke enablet og gammel utbetalingstjeneste benyttes")
+            val navUtbetalingerDto: NavUtbetalingerDto? = navUtbetalingerClient.getUtbetalingerSiste40DagerLegacy(ident)
+            if (navUtbetalingerDto == null || navUtbetalingerDto.feilet || navUtbetalingerDto.utbetalinger == null) {
+                return null
+            }
+
+            utbetalinger = navUtbetalingerDto.utbetalinger.map { it.toDomain }
         }
 
-        val utbetalinger = responseDto.utbetalinger.map { it.toDomain }
         log.info("Antall navytelser utbetaling ${utbetalinger.size}. ${komponenterLogg(utbetalinger)}")
         return utbetalinger
     }
@@ -26,10 +48,83 @@ open class NavUtbetalingerService(
         if (utbetalinger.isEmpty()) {
             return ""
         }
-        return utbetalinger.joinToString(prefix = "Antall komponenter: ", separator = ", ") { "Utbetaling${utbetalinger.indexOf(it)} - ${it.komponenter.size}" }
+        return utbetalinger.joinToString(
+            prefix = "Antall komponenter: ",
+            separator = ", "
+        ) { "Utbetaling${utbetalinger.indexOf(it)} - ${it.komponenter.size}" }
     }
 
     companion object {
         private val log = getLogger(NavUtbetalingerService::class.java)
+        private const val NAVYTELSE = "navytelse"
+        private const val ORGNR_NAV = "889640782"
+        const val BRUK_UTBETALDATATJENESTE_ENABLED = "sosialhjelp.soknad.bruk_sokos_utbetaldata_tjeneste"
+
+        private fun mapToNavutbetalinger(utbetalDataDto: UtbetalDataDto?): List<NavUtbetaling> {
+            if (utbetalDataDto?.utbetalinger == null) {
+                return emptyList()
+            }
+
+            return utbetalDataDto.utbetalinger
+                .filter { it.utbetalingsdato != null }
+                .filter { utbetaltSiste40Dager(it.utbetalingsdato) }
+                .flatMap { utbetaling ->
+                    utbetaling.ytelseListe
+                        .filter { utbetaltTilBruker(it, utbetaling) }
+                        .map {
+                            NavUtbetaling(
+                                type = NAVYTELSE,
+                                netto = it.ytelseNettobeloep.toDouble(),
+                                brutto = it.ytelseskomponentersum.toDouble(),
+                                skattetrekk = it.skattsum.toDouble(),
+                                andreTrekk = it.trekksum.toDouble(),
+                                bilagsnummer = it.bilagsnummer,
+                                utbetalingsdato = utbetaling.utbetalingsdato,
+                                periodeFom = it.ytelsesperiode.fom,
+                                periodeTom = it.ytelsesperiode.tom,
+                                komponenter = mapToKomponenter(it.ytelseskomponentListe),
+                                tittel = it.ytelsestype ?: "",
+                                orgnummer = ORGNR_NAV
+                            )
+                        }
+                }
+        }
+
+        private fun utbetaltSiste40Dager(utbetalingsdato: LocalDate?): Boolean {
+            return if (utbetalingsdato != null) !utbetalingsdato.isBefore(LocalDate.now().minusDays(40)) else false
+        }
+
+        private fun utbetaltTilBruker(ytelse: Ytelse, utbetaling: Utbetaling): Boolean {
+            val utbetaltTil = utbetaling.utbetaltTil?.navn
+            val rettighetshaver = ytelse.rettighetshaver
+
+            if (utbetaltTil.isNullOrEmpty()) {
+                return false
+            }
+
+            val navn = rettighetshaver.navn
+            if (navn.isNullOrEmpty()) {
+                return false
+            }
+
+            return utbetaltTil.trim().equals(navn.trim(), ignoreCase = true)
+        }
+
+        private fun mapToKomponenter(ytelseskomponentList: List<Ytelseskomponent>?): List<Komponent> {
+            if (ytelseskomponentList == null) {
+                return emptyList()
+            }
+            log.info("Antall navytelser komponent {}", ytelseskomponentList.size)
+            return ytelseskomponentList
+                .map {
+                    Komponent(
+                        type = it.ytelseskomponenttype,
+                        belop = it.ytelseskomponentbeloep?.toDouble(),
+                        satsType = it.satstype,
+                        satsBelop = it.satsbeloep?.toDouble(),
+                        satsAntall = it.satsantall,
+                    )
+                }
+        }
     }
 }
