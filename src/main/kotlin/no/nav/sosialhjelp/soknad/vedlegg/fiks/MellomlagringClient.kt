@@ -138,6 +138,12 @@ class MellomlagringClientImpl(
             .header(HttpHeaders.AUTHORIZATION, BEARER + maskinportenClient.getToken())
             .retrieve()
             .bodyToMono<ByteArray>()
+            .doOnError(WebClientResponseException::class.java){
+                log.warn("Fiks - getVedlegg mellomlagretVedlegg feilet - ${it.responseBodyAsString}", it)
+            }
+            .doOnSuccess {
+                log.info("Lastet ned vedlegg $digisosDokumentId for soknad $navEksternId fra Fiks mellomlager")
+            }
             .block()
             ?: throw FiksException("Mellomlagret vedlegg er null?", null)
     }
