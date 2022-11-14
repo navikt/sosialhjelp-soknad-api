@@ -138,7 +138,7 @@ class MellomlagringClientImpl(
             .header(HttpHeaders.AUTHORIZATION, BEARER + maskinportenClient.getToken())
             .retrieve()
             .bodyToMono<ByteArray>()
-            .doOnError(WebClientResponseException::class.java){
+            .doOnError(WebClientResponseException::class.java) {
                 log.warn("Fiks - getVedlegg mellomlagretVedlegg feilet - ${it.responseBodyAsString}", it)
             }
             .doOnSuccess {
