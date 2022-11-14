@@ -81,10 +81,12 @@ open class OpplastetVedleggRessurs(
 
         if (mellomlagringService.erMellomlagringEnabledOgSoknadSkalSendesMedDigisosApi(soknadUnderArbeid)) {
             log.info("Forsøker å hente vedlegg $vedleggId fra mellomlagring hos KS")
-            mellomlagringService.getVedlegg(behandlingsId, vedleggId)?.let {
-                response.setHeader("Content-Disposition", "attachment; filename=\"${it.filnavn}\"")
-                val mimeType = getMimeType(it.data)
-                return Response.ok(it.data).type(mimeType).build()
+            val vedlegg = mellomlagringService.getVedlegg(behandlingsId, vedleggId)
+            if (vedlegg != null){
+                response.setHeader("Content-Disposition", "attachment; filename=\"${vedlegg.filnavn}\"")
+                val mimeType = getMimeType(vedlegg.data)
+                log.info("hentet fil fra mellomlager $vedleggId. mimetype: $mimeType")
+                return Response.ok(vedlegg.data).type(mimeType).build()
             }
         }
         // hvis vedleggId ikke finnes i DB eller KS mellomlagring

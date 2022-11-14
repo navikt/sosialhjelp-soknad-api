@@ -9,6 +9,7 @@ object FileDetectionUtils {
 
     fun getMimeType(bytes: ByteArray?): String {
         val detected = Tika().detect(bytes)
+        log.info("Detected: $detected")
         return if (detected.equals(MimeTypes.TEXT_X_MATLAB, ignoreCase = true)) MimeTypes.APPLICATION_PDF else detected
     }
 
