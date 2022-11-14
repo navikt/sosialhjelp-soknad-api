@@ -1,6 +1,8 @@
 package no.nav.sosialhjelp.soknad.vedlegg.fiks
 
 import io.netty.channel.ChannelOption
+import io.netty.handler.timeout.ReadTimeoutHandler
+import io.netty.handler.timeout.WriteTimeoutHandler
 import no.nav.sosialhjelp.soknad.app.Constants.HEADER_INTEGRASJON_ID
 import no.nav.sosialhjelp.soknad.app.Constants.HEADER_INTEGRASJON_PASSORD
 import no.nav.sosialhjelp.soknad.auth.maskinporten.MaskinportenClient
@@ -12,7 +14,6 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.http.client.reactive.ReactorClientHttpConnector
 import org.springframework.web.reactive.function.client.WebClient
 import reactor.netty.http.client.HttpClient
-import java.time.Duration
 
 @Configuration
 open class MellomlagringConfig(
@@ -41,8 +42,12 @@ open class MellomlagringConfig(
         .clientConnector(
             ReactorClientHttpConnector(
                 proxiedHttpClient
-                    .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, SENDING_TIL_FIKS_TIMEOUT)
-                    .responseTimeout(Duration.ofMillis(SENDING_TIL_FIKS_TIMEOUT.toLong()))
+                    .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, SENDING_TIL_FIKS_TIMEOUT_MILLIS)
+                    .doOnConnected {
+                        it
+                            .addHandlerLast(ReadTimeoutHandler(SENDING_TIL_FIKS_TIMEOUT_SECONDS))
+                            .addHandlerLast(WriteTimeoutHandler(SENDING_TIL_FIKS_TIMEOUT_SECONDS))
+                    }
             )
         )
         .codecs {
@@ -53,6 +58,8 @@ open class MellomlagringConfig(
         .build()
 
     companion object {
-        private const val SENDING_TIL_FIKS_TIMEOUT = 5 * 60 * 1000 // 5 minutter
+
+        private const val SENDING_TIL_FIKS_TIMEOUT_SECONDS = 5 * 60 // 5 minutter
+        private const val SENDING_TIL_FIKS_TIMEOUT_MILLIS = SENDING_TIL_FIKS_TIMEOUT_SECONDS * 1000 // 5 minutter
     }
 }
