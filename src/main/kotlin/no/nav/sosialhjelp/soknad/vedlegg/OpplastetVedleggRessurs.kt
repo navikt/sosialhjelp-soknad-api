@@ -86,7 +86,9 @@ open class OpplastetVedleggRessurs(
                 response.setHeader("Content-Disposition", "attachment; filename=\"${vedlegg.filnavn}\"")
                 val mimeType = getMimeType(vedlegg.data)
                 log.info("hentet fil fra mellomlager $vedleggId. mimetype: $mimeType")
-                return Response.ok(vedlegg.data).type(mimeType).build()
+                val response = Response.ok(vedlegg.data).type(mimeType).build()
+                log.info("Response: $response")
+                return response
             }
         }
         // hvis vedleggId ikke finnes i DB eller KS mellomlagring
