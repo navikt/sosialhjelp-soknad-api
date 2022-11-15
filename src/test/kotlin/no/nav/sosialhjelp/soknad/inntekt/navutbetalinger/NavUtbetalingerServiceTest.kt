@@ -169,6 +169,11 @@ internal class NavUtbetalingerServiceTest {
             listOf(utbetaling),
             false
         )
+//        Må være med pga skyggeproduksjon ny tjeneste
+        every { navUtbetalingerClient.getUtbetalingerSiste40Dager(any()) } returns UtbetalDataDto(
+            listOf(lagUtbetalingResponse()),
+            false
+        )
 
         val navUtbetalinger = navUtbetalingerService.getUtbetalingerSiste40Dager("ident")
 
