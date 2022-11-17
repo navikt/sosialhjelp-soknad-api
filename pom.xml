@@ -89,7 +89,7 @@
         <reactive-streams.version>1.0.4</reactive-streams.version>
         <netty.version>4.1.82.Final</netty.version>
         <log4j.version>2.19.0</log4j.version>
-        <java-jwt.version>4.2.0</java-jwt.version>
+        <java-jwt.version>4.2.1</java-jwt.version>
 
         <flyway.placeholders.driver>oracle.jdbc.OracleDriver</flyway.placeholders.driver>
         <flyway.placeholders.encoding>ISO-8859-1</flyway.placeholders.encoding>
