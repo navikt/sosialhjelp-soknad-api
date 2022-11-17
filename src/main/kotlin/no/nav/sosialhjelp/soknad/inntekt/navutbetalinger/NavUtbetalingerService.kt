@@ -55,8 +55,8 @@ open class NavUtbetalingerService(
             log.info("Klarte ikke hente noe data fra ny utbetaltjeneste - skyggeproduksjon")
         } else {
             val utbetalingerSkygge = mapToNavutbetalinger(utbetalDataDto)
-            val utbetaling = utbetalinger.first()
-            val utbetalingSkygge = utbetalingerSkygge.first()
+            val utbetaling = utbetalinger.sortedBy { it.utbetalingsdato }.first()
+            val utbetalingSkygge = utbetalingerSkygge.sortedBy { it.utbetalingsdato}.first()
             if (utbetaling.utbetalingsdato == utbetalingSkygge.utbetalingsdato &&
                 utbetaling.tittel == utbetalingSkygge.tittel &&
                 utbetaling.netto == utbetalingSkygge.netto
