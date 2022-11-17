@@ -30,6 +30,7 @@ norg_url: ${NORG_URL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/n
 fss_proxy_ping_url: ${FSS_PROXY_PING_URL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/fss-proxy/ping}
 oppslag_api_baseurl: ${OPPSLAG_API_BASEURL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/oppslag-api/}
 utbetaldata_api_baseurl: ${UTBETALDATA_API_BASEURL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api}
+kontoregister_api_baseurl: ${KONTOREGISTER_API_BASEURL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api}
 soknad.bostotte.url: ${SOKNAD_BOSTOTTE_URL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/husbanken}
 svarut_url: ${SVARUT_URL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/svarut/}
 skatteetaten_api_baseurl: ${SKATTEETATEN_API_BASEURL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/skatteetaten/}
@@ -57,6 +58,7 @@ tokendings_client_id: ${TOKEN_X_CLIENT_ID:dummyAudience}
 tokendings_private_jwk: ${TOKEN_X_PRIVATE_JWK:generateRSA}
 fss_proxy_audience: ${FSS_PROXY_AUDIENCE:dummyAudience}
 oppslag_api_audience: ${OPPSLAG_API_AUDIENCE:dummyAudience}
+kontoregister_api_audience: ${KONTOREGISTER_API_AUDIENCE:dummyAudience}
 pdl_api_audience: ${PDL_API_AUDIENCE:dummyAudience}
 utbetaldata_audience: ${UTBETALDATA_AUDIENCE:dummyAudience}
 

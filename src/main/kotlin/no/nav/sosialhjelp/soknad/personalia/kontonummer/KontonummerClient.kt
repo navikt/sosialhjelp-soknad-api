@@ -13,9 +13,11 @@ import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getConsu
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getToken
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken
 import no.nav.sosialhjelp.soknad.auth.tokenx.TokendingsService
+import no.nav.sosialhjelp.soknad.personalia.kontonummer.dto.KontoDto
 import no.nav.sosialhjelp.soknad.personalia.kontonummer.dto.KontonummerDto
 import no.nav.sosialhjelp.soknad.redis.CACHE_30_MINUTES_IN_SECONDS
 import no.nav.sosialhjelp.soknad.redis.KONTONUMMER_CACHE_KEY_PREFIX
+import no.nav.sosialhjelp.soknad.redis.KONTOREGISTER_KONTONUMMER_CACHE_KEY_PREFIX
 import no.nav.sosialhjelp.soknad.redis.RedisService
 import no.nav.sosialhjelp.soknad.redis.RedisUtils.redisObjectMapper
 import org.slf4j.LoggerFactory.getLogger
@@ -28,13 +30,16 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import org.springframework.web.reactive.function.client.bodyToMono
 
 interface KontonummerClient {
-    fun getKontonummer(ident: String): KontonummerDto?
+    fun getKontonummer(ident: String): KontoDto?
+    fun getKontonummerLegacy(ident: String): KontonummerDto?
 }
 
 @Component
 class KontonummerClientImpl(
     @Value("\${oppslag_api_baseurl}") private val oppslagApiUrl: String,
     @Value("\${oppslag_api_audience}") private val oppslagApiAudience: String,
+    @Value("\${kontoregister_api_baseurl}") private val kontoregisterUrl: String,
+    @Value("\${kontoregister_api_audience}") private val kontoregisterAudience: String,
     private val redisService: RedisService,
     private val tokendingsService: TokendingsService,
     webClientBuilder: WebClient.Builder,
@@ -47,8 +52,33 @@ class KontonummerClientImpl(
             tokendingsService.exchangeToken(getUserIdFromToken(), getToken(), oppslagApiAudience)
         }
 
-    override fun getKontonummer(ident: String): KontonummerDto? {
+    override fun getKontonummer(ident: String): KontoDto? {
         hentKontonummerFraCache(ident)?.let { return it }
+
+        return try {
+            webClient.get()
+                .uri(kontoregisterUrl + "/api/borger/v1/hent-aktiv-konto")
+                .header(AUTHORIZATION, BEARER + tokenXtoken)
+                .header(HEADER_CALL_ID, getFromMDC(MDC_CALL_ID))
+                .retrieve()
+                .bodyToMono<KontoDto>()
+                .retryWhen(RetryUtils.DEFAULT_RETRY_SERVER_ERRORS)
+                .block()
+                ?.also { lagreKontonummerTilCache(ident, it) }
+        } catch (e: Unauthorized) {
+            log.warn("Kontoregister konto  - 401 Unauthorized - ${e.message}")
+            null
+        } catch (e: NotFound) {
+            log.warn("Kontoregister konto  - 404 Not Found - ${e.message}")
+            null
+        } catch (e: Exception) {
+            log.error("Kontoregister konto  - Noe uventet feilet", e)
+            null
+        }
+    }
+
+    override fun getKontonummerLegacy(ident: String): KontonummerDto? {
+        hentKontonummerFraCacheLegacy(ident)?.let { return it }
 
         return try {
             webClient.get()
@@ -60,7 +90,7 @@ class KontonummerClientImpl(
                 .bodyToMono<KontonummerDto>()
                 .retryWhen(RetryUtils.DEFAULT_RETRY_SERVER_ERRORS)
                 .block()
-                ?.also { lagreKontonummerTilCache(ident, it) }
+                ?.also { lagreKontonummerTilCacheLegacy(ident, it) }
         } catch (e: Unauthorized) {
             log.warn("Kontonummer - 401 Unauthorized - ${e.message}")
             null
@@ -73,11 +103,27 @@ class KontonummerClientImpl(
         }
     }
 
-    private fun hentKontonummerFraCache(ident: String): KontonummerDto? {
+    private fun hentKontonummerFraCache(ident: String): KontoDto? {
+        return redisService.get(KONTOREGISTER_KONTONUMMER_CACHE_KEY_PREFIX + ident, KontoDto::class.java) as? KontoDto
+    }
+
+    private fun lagreKontonummerTilCache(ident: String, kontoDto: KontoDto) {
+        try {
+            redisService.setex(
+                KONTOREGISTER_KONTONUMMER_CACHE_KEY_PREFIX + ident,
+                redisObjectMapper.writeValueAsBytes(kontoDto),
+                CACHE_30_MINUTES_IN_SECONDS
+            )
+        } catch (e: JsonProcessingException) {
+            log.warn("Noe feilet ved lagring av kontoDto til redis", e)
+        }
+    }
+
+    private fun hentKontonummerFraCacheLegacy(ident: String): KontonummerDto? {
         return redisService.get(KONTONUMMER_CACHE_KEY_PREFIX + ident, KontonummerDto::class.java) as? KontonummerDto
     }
 
-    private fun lagreKontonummerTilCache(ident: String, kontonummerDto: KontonummerDto) {
+    private fun lagreKontonummerTilCacheLegacy(ident: String, kontonummerDto: KontonummerDto) {
         try {
             redisService.setex(
                 KONTONUMMER_CACHE_KEY_PREFIX + ident,

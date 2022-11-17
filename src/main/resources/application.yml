@@ -43,6 +43,7 @@ unleash_api_url: ${UNLEASH_API_URL}
 kodeverk_url: ${KODEVERK_URL}
 utbetaldata_api_baseurl: ${UTBETALDATA_API_BASEURL}
 oppslag_api_baseurl: ${OPPSLAG_API_BASEURL}
+kontoregister_api_baseurl: ${KONTOREGISTER_API_BASEURL}
 norg_url: ${NORG_URL}
 fss_proxy_ping_url: ${FSS_PROXY_PING_URL}
 soknad.bostotte.url: ${SOKNAD_BOSTOTTE_URL}
@@ -68,6 +69,7 @@ tokendings_private_jwk: ${TOKEN_X_PRIVATE_JWK}
 fss_proxy_audience: ${FSS_PROXY_AUDIENCE}
 oppslag_api_audience: ${OPPSLAG_API_AUDIENCE}
 utbetaldata_audience: ${UTBETALDATA_AUDIENCE}
+kontoregister_api_audience: ${KONTOREGISTER_API_AUDIENCE}
 pdl_api_audience: ${PDL_API_AUDIENCE}
 
 # azuread
