@@ -56,7 +56,7 @@ open class NavUtbetalingerService(
         } else {
             val utbetalingerSkygge = mapToNavutbetalinger(utbetalDataDto)
             val utbetaling = utbetalinger.sortedBy { it.utbetalingsdato }.first()
-            val utbetalingSkygge = utbetalingerSkygge.sortedBy { it.utbetalingsdato}.first()
+            val utbetalingSkygge = utbetalingerSkygge.sortedBy { it.utbetalingsdato }.first()
             if (utbetaling.utbetalingsdato == utbetalingSkygge.utbetalingsdato &&
                 utbetaling.tittel == utbetalingSkygge.tittel &&
                 utbetaling.netto == utbetalingSkygge.netto
