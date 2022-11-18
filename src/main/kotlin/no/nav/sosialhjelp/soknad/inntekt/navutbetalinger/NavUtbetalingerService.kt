@@ -51,17 +51,30 @@ open class NavUtbetalingerService(
         log.info("Gjør kall til ny utbetal tjeneste - skyggeproduksjon")
 
         val utbetalDataDto: UtbetalDataDto? = navUtbetalingerClient.getUtbetalingerSiste40Dager(ident)
+        var utbetalingOgUtbetalDataErLike = false
+
         if (utbetalDataDto == null || utbetalDataDto.feilet || utbetalDataDto.utbetalinger == null) {
             log.info("Klarte ikke hente noe data fra ny utbetaltjeneste - skyggeproduksjon")
         } else {
-            val utbetalingerSkygge = mapToNavutbetalinger(utbetalDataDto)
+            val utbetalingerSkygge = mapToNavutbetalinger(utbetalDataDto).sortedBy { it.utbetalingsdato }
+            val utbetalingerSortert = utbetalinger.sortedBy { it.utbetalingsdato }
 
-            val utbetaling = utbetalinger.sortedBy { it.utbetalingsdato }.first()
-            val utbetalingSkygge = utbetalingerSkygge.sortedBy { it.utbetalingsdato }.first()
-            if (utbetaling.utbetalingsdato == utbetalingSkygge.utbetalingsdato &&
-                utbetaling.tittel == utbetalingSkygge.tittel &&
-                utbetaling.netto == utbetalingSkygge.netto
-            ) {
+            if (utbetalingerSkygge.isEmpty() && utbetalingerSortert.isEmpty()) {
+                utbetalingOgUtbetalDataErLike = true
+            }
+
+            utbetalingerSkygge?.forEachIndexed { index, utbetalingSkygge ->
+                val utbetaling = utbetalingerSortert.get(index)
+
+                if (utbetaling.utbetalingsdato == utbetalingSkygge.utbetalingsdato &&
+                    utbetaling.tittel == utbetalingSkygge.tittel &&
+                    utbetaling.netto == utbetalingSkygge.netto
+                ) {
+                    utbetalingOgUtbetalDataErLike = true
+                }
+            }
+
+            if (utbetalingOgUtbetalDataErLike) {
                 log.info("Utbetaldata Skyggeproduksjon - Nav utbetalingsdata som vi bruker er like fra gammel Utbetalingv1 tjeneste og ny UtbetalData tjeneste")
             } else {
                 log.info(
