@@ -38,7 +38,7 @@
   "env": {
     "SPRING_PROFILES_ACTIVE": "log-kibana,leader-election",
     "AAREG_PROXY_URL": "https://sosialhjelp-fss-proxy.intern.nav.no/proxy/aareg/",
-    "CLAMAV_URL": "http://clamav.nais.svc.nais.local/scan",
+    "CLAMAV_URL": "http://clamav.nais-system.svc.nais.local/scan",
     "EREG_URL": "https://ereg-services.intern.nav.no",
     "FIKS_NOKKELFIL": "svarut_public_prod.pem",
     "FSS_PROXY_AUDIENCE": "prod-fss:teamdigisos:sosialhjelp-fss-proxy",
