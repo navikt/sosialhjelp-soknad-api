@@ -105,7 +105,7 @@ open class NavUtbetalingerService(
                         .map {
                             NavUtbetaling(
                                 type = NAVYTELSE,
-                                netto = it.ytelseNettobeloep.toDouble(),
+                                netto = utbetaling.utbetalingNettobeloep?.toDouble() ?: 0.00,
                                 brutto = it.ytelseskomponentersum.toDouble(),
                                 skattetrekk = it.skattsum.toDouble(),
                                 andreTrekk = it.trekksum.toDouble(),
