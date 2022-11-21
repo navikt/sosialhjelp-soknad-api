@@ -111,7 +111,7 @@ open class NavUtbetalingerService(
 
             return utbetalDataDto.utbetalinger
                 .filter { it.utbetalingsdato != null }
-                .filter { utbetaltSiste40Dager(it.utbetalingsdato) }
+                .filter { utbetaltSiste40Dager(it.posteringsdato) }
                 .flatMap { utbetaling ->
                     utbetaling.ytelseListe
                         .filter { utbetaltTilBruker(it, utbetaling) }
