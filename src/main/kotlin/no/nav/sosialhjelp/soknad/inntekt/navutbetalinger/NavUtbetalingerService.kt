@@ -67,14 +67,15 @@ open class NavUtbetalingerService(
                 utbetalingOgUtbetalDataErLike = true
             }
 
-            utbetalingerSkygge?.forEachIndexed { index, utbetalingSkygge ->
-                val utbetaling = utbetalingerSortert.get(index)
-
-                if (utbetaling.utbetalingsdato == utbetalingSkygge.utbetalingsdato &&
-                    utbetaling.tittel == utbetalingSkygge.tittel &&
-                    utbetaling.netto == utbetalingSkygge.netto
-                ) {
-                    utbetalingOgUtbetalDataErLike = true
+            if (utbetalingerSortert.isNotEmpty() && utbetalinger.size == utbetalingerSkygge.size) {
+                utbetalingerSkygge.forEachIndexed { index, utbetalingSkygge ->
+                    val utbetaling = utbetalingerSortert.get(index)
+                    if (utbetaling.utbetalingsdato == utbetalingSkygge.utbetalingsdato &&
+                        utbetaling.tittel == utbetalingSkygge.tittel &&
+                        utbetaling.netto == utbetalingSkygge.netto
+                    ) {
+                        utbetalingOgUtbetalDataErLike = true
+                    }
                 }
             }
 
