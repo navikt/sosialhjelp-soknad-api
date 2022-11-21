@@ -28,12 +28,8 @@ open class NavUtbetalingerService(
             if (utbetalDataDto == null || utbetalDataDto.feilet || utbetalDataDto.utbetalinger == null) {
                 return null
             }
-            // TODO fjerne
-            log.info("Utbetaling før mapping: $utbetalDataDto")
 
             utbetalinger = mapToNavutbetalinger(utbetalDataDto)
-            // TODO fjerne
-            log.info("utbetaling etter mapping: $utbetalinger")
         } else {
             log.info("Bruk av ny utbetaldatatjeneste er ikke enablet og gammel utbetalingstjeneste benyttes")
             val navUtbetalingerDto: NavUtbetalingerDto? = navUtbetalingerClient.getUtbetalingerSiste40DagerLegacy(ident)
