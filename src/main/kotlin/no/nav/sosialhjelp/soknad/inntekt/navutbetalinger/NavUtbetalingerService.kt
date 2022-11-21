@@ -123,7 +123,7 @@ open class NavUtbetalingerService(
                                 skattetrekk = it.skattsum.toDouble(),
                                 andreTrekk = it.trekksum.toDouble(),
                                 bilagsnummer = it.bilagsnummer,
-                                utbetalingsdato = utbetaling.utbetalingsdato,
+                                utbetalingsdato = utbetaling.posteringsdato,
                                 periodeFom = it.ytelsesperiode.fom,
                                 periodeTom = it.ytelsesperiode.tom,
                                 komponenter = mapToKomponenter(it.ytelseskomponentListe),
