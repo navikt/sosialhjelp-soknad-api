@@ -47,8 +47,8 @@
         <kotlin.version>1.7.20</kotlin.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <sosialhjelp-common.version>1.20221019.1049-614783b</sosialhjelp-common.version>
-        <filformat.version>1.2022.10.27-16.03-cc2d0243b6ec</filformat.version>
+        <sosialhjelp-common.version>1.20221108.1040-97f1b80</sosialhjelp-common.version>
+        <filformat.version>1.2022.11.11-08.08-6af9f821a746</filformat.version>
 
         <!-- Fiks/KS -->
         <svarut-rest-klient.version>1.1.0</svarut-rest-klient.version>
@@ -62,18 +62,18 @@
         <token-validation.version>2.1.6</token-validation.version>
         <nimbus-jose-jwt.version>9.25.6</nimbus-jose-jwt.version>
         <ojdbc.version>19.16.0.0</ojdbc.version>
-        <flyway-core.version>9.6.0</flyway-core.version>
-        <flyway-maven-plugin.version>9.6.0</flyway-maven-plugin.version>
-        <jackson.version>2.13.4</jackson.version>
-        <jackson-databind.version>2.13.4.2</jackson-databind.version>
+        <flyway-core.version>9.8.1</flyway-core.version>
+        <flyway-maven-plugin.version>9.8.1</flyway-maven-plugin.version>
+        <jackson.version>2.14.0</jackson.version>
+        <jackson-databind.version>2.14.0</jackson-databind.version>
         <pdfbox.version>2.0.27</pdfbox.version>
         <jempbox.version>1.8.17</jempbox.version>
         <bouncycastle.version>1.70</bouncycastle.version>
         <guava.version>31.1-jre</guava.version>
-        <tika.version>2.5.0</tika.version>
+        <tika.version>2.6.0</tika.version>
         <logback.version>1.2.11</logback.version>
         <hsqldb.version>2.7.1</hsqldb.version>
-        <joda-time.version>2.12.0</joda-time.version>
+        <joda-time.version>2.12.1</joda-time.version>
         <slf4j.version>1.7.36</slf4j.version>
         <commons-codec.version>1.15</commons-codec.version>
         <commons-io.version>2.11.0</commons-io.version>
@@ -89,7 +89,7 @@
         <reactive-streams.version>1.0.4</reactive-streams.version>
         <netty.version>4.1.82.Final</netty.version>
         <log4j.version>2.19.0</log4j.version>
-        <java-jwt.version>4.2.0</java-jwt.version>
+        <java-jwt.version>4.2.1</java-jwt.version>
 
         <flyway.placeholders.driver>oracle.jdbc.OracleDriver</flyway.placeholders.driver>
         <flyway.placeholders.encoding>ISO-8859-1</flyway.placeholders.encoding>
