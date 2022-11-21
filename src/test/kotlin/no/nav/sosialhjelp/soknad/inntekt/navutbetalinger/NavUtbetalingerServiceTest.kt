@@ -203,7 +203,7 @@ internal class NavUtbetalingerServiceTest {
 
         val utbetalingJsonString = """
             {
-              "posteringsdato": "2022-10-17",
+              "posteringsdato": "$utbetaltDato",
               "utbetaltTil": {
                 "aktoertype": "PERSON",
                 "ident": "string",
@@ -275,7 +275,7 @@ internal class NavUtbetalingerServiceTest {
 
         val utbetalingJsonString = """
             {
-              "posteringsdato": "2022-10-17",
+              "posteringsdato": "$utbetaltDato",
               "utbetaltTil": {
                 "aktoertype": "PERSON",
                 "ident": "string",
