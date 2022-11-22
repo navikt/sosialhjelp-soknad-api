@@ -59,7 +59,7 @@
         <jersey.version>2.37</jersey.version>
         <jetty.version>9.4.49.v20220914</jetty.version>
         <kotlinx-coroutines.version>1.6.4</kotlinx-coroutines.version>
-        <token-validation.version>2.1.6</token-validation.version>
+        <token-validation.version>2.1.7</token-validation.version>
         <nimbus-jose-jwt.version>9.25.6</nimbus-jose-jwt.version>
         <ojdbc.version>19.16.0.0</ojdbc.version>
         <flyway-core.version>9.8.1</flyway-core.version>
@@ -85,9 +85,9 @@
         <lettuce.version>6.2.1.RELEASE</lettuce.version>
         <unleash.version>3.3.4</unleash.version>
         <reactor-core.version>3.4.24</reactor-core.version>
-        <reactor-netty-http.version>1.0.24</reactor-netty-http.version>
+        <reactor-netty-http.version>1.1.0</reactor-netty-http.version>
         <reactive-streams.version>1.0.4</reactive-streams.version>
-        <netty.version>4.1.82.Final</netty.version>
+        <netty.version>4.1.84.Final</netty.version>
         <log4j.version>2.19.0</log4j.version>
         <java-jwt.version>4.2.1</java-jwt.version>
 
@@ -116,7 +116,7 @@
         <rhino.version>1.7.14</rhino.version>
         <logstash-logback-encoder.version>7.2</logstash-logback-encoder.version>
         <prometheus.version>0.16.0</prometheus.version>
-        <oauth2-oidc-sdk.version>9.43.1</oauth2-oidc-sdk.version>
+        <oauth2-oidc-sdk.version>10.0</oauth2-oidc-sdk.version>
         <emoji-java.version>5.1.1</emoji-java.version>
         <objenesis.version>3.3</objenesis.version>
         <mimepull.version>1.10.0</mimepull.version>
@@ -132,7 +132,7 @@
         <jboss-logging.version>3.5.0.Final</jboss-logging.version>
         <jboss-logging-annotations.version>2.2.1.Final</jboss-logging-annotations.version>
         <jboss-logging-processor.version>2.2.1.Final</jboss-logging-processor.version>
-        <mock-oauth2-server.version>0.5.3</mock-oauth2-server.version>
+        <mock-oauth2-server.version>0.5.6</mock-oauth2-server.version>
         <osgi.annotation.version>8.1.0</osgi.annotation.version>
         <org.osgi.util.function.version>1.2.0</org.osgi.util.function.version>
     </properties>
