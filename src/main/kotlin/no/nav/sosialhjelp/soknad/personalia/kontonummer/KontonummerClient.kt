@@ -42,15 +42,10 @@ class KontonummerClientImpl(
     @Value("\${kontoregister_api_audience}") private val kontoregisterAudience: String,
     private val redisService: RedisService,
     private val tokendingsService: TokendingsService,
-    webClientBuilder: WebClient.Builder,
+    webClientBuilder: WebClient.Builder
 ) : KontonummerClient {
 
     private val webClient = unproxiedWebClientBuilder(webClientBuilder).build()
-
-    private val tokenXtoken: String
-        get() = runBlocking {
-            tokendingsService.exchangeToken(getUserIdFromToken(), getToken(), oppslagApiAudience)
-        }
 
     override fun getKontonummer(ident: String): KontoDto? {
         hentKontonummerFraCache(ident)?.let { return it }
@@ -58,7 +53,7 @@ class KontonummerClientImpl(
         return try {
             webClient.get()
                 .uri(kontoregisterUrl + "/api/borger/v1/hent-aktiv-konto")
-                .header(AUTHORIZATION, BEARER + tokenXtoken)
+                .header(AUTHORIZATION, BEARER + tokenXtoken(kontoregisterAudience))
                 .header(HEADER_CALL_ID, getFromMDC(MDC_CALL_ID))
                 .retrieve()
                 .bodyToMono<KontoDto>()
@@ -83,7 +78,7 @@ class KontonummerClientImpl(
         return try {
             webClient.get()
                 .uri(oppslagApiUrl + "kontonummer")
-                .header(AUTHORIZATION, BEARER + tokenXtoken)
+                .header(AUTHORIZATION, BEARER + tokenXtoken(oppslagApiAudience))
                 .header(HEADER_CALL_ID, getFromMDC(MDC_CALL_ID))
                 .header(HEADER_CONSUMER_ID, getConsumerId())
                 .retrieve()
@@ -100,6 +95,12 @@ class KontonummerClientImpl(
         } catch (e: Exception) {
             log.error("Kontonummer - Noe uventet feilet", e)
             null
+        }
+    }
+
+    private fun tokenXtoken(audience: String): String {
+        return runBlocking {
+            tokendingsService.exchangeToken(getUserIdFromToken(), getToken(), audience)
         }
     }
 
