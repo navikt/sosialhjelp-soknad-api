@@ -41,7 +41,7 @@ class HusbankenClientImpl(
 
     override fun ping() {
         webClient.get()
-            .uri { it.path("/ping").build() }
+            .uri("/ping")
             .retrieve()
             .bodyToMono<String>()
             .block()
