@@ -144,7 +144,7 @@ internal class SoknadServiceTest {
         } just runs
 
         every { oppgaveHandterer.leggTilOppgave(any(), any()) } just runs
-        every { innsendingService.opprettSendtSoknad(any()) } just runs
+        every { innsendingService.oppdaterSoknadUnderArbeid(any()) } just runs
 
         soknadService.sendSoknad(behandlingsId)
 

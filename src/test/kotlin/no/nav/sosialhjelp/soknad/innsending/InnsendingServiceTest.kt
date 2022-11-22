@@ -9,8 +9,6 @@ import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRepository
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggType
-import no.nav.sosialhjelp.soknad.db.repositories.sendtsoknad.SendtSoknad
-import no.nav.sosialhjelp.soknad.db.repositories.sendtsoknad.SendtSoknadRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadata
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
@@ -21,24 +19,20 @@ import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.springframework.transaction.support.SimpleTransactionStatus
-import org.springframework.transaction.support.TransactionCallback
-import org.springframework.transaction.support.TransactionCallbackWithoutResult
-import org.springframework.transaction.support.TransactionTemplate
 import java.time.LocalDateTime
 
 internal class InnsendingServiceTest {
 
-    private val transactionTemplate: TransactionTemplate = mockk()
-    private val sendtSoknadRepository: SendtSoknadRepository = mockk()
+//    private val transactionTemplate: TransactionTemplate = mockk()
+//    private val sendtSoknadRepository: SendtSoknadRepository = mockk()
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
     private val opplastetVedleggRepository: OpplastetVedleggRepository = mockk()
     private val soknadUnderArbeidService: SoknadUnderArbeidService = mockk()
     private val soknadMetadataRepository: SoknadMetadataRepository = mockk()
 
     private val innsendingService = InnsendingService(
-        transactionTemplate,
-        sendtSoknadRepository,
+//        transactionTemplate,
+//        sendtSoknadRepository,
         soknadUnderArbeidRepository,
         opplastetVedleggRepository,
         soknadUnderArbeidService,
@@ -47,13 +41,14 @@ internal class InnsendingServiceTest {
 
     @BeforeEach
     fun setUp() {
-        every { transactionTemplate.execute(any<TransactionCallback<Any>>()) } answers {
-            val args = it.invocation.args
-            val arg = args[0] as TransactionCallbackWithoutResult
-            arg.doInTransaction(SimpleTransactionStatus())
-        }
-        every { sendtSoknadRepository.opprettSendtSoknad(any(), any()) } returns SENDT_SOKNAD_ID
-        every { sendtSoknadRepository.hentSendtSoknad(any(), any()) } returns createSendtSoknad()
+//        every { transactionTemplate.execute(any<TransactionCallback<Any>>()) } answers {
+//            val args = it.invocation.args
+//            val arg = args[0] as TransactionCallbackWithoutResult
+//            arg.doInTransaction(SimpleTransactionStatus())
+//        }
+//        every { sendtSoknadRepository.opprettSendtSoknad(any(), any()) } returns SENDT_SOKNAD_ID
+//        every { sendtSoknadRepository.hentSendtSoknad(any(), any()) } returns createSendtSoknad()
+        every { soknadMetadataRepository.hent(any()) } returns createSoknadMetadata()
     }
 
     @Test
@@ -61,59 +56,60 @@ internal class InnsendingServiceTest {
         every { soknadUnderArbeidService.settInnsendingstidspunktPaSoknad(any()) } just runs
         every { soknadUnderArbeidRepository.oppdaterInnsendingStatus(any(), any()) } just runs
 
-        innsendingService.opprettSendtSoknad(createSoknadUnderArbeid())
+        innsendingService.oppdaterSoknadUnderArbeid(createSoknadUnderArbeid())
         verify(exactly = 1) { soknadUnderArbeidRepository.oppdaterInnsendingStatus(any(), any()) }
-        verify(exactly = 1) { sendtSoknadRepository.opprettSendtSoknad(any(), any()) }
+//        verify(exactly = 1) { soknadMetadataRepository.oppdater(any()) }
     }
 
-    @Test
-    fun mapSoknadUnderArbeidTilSendtSoknadMapperInfoRiktig() {
-        val sendtSoknad = innsendingService.mapSoknadUnderArbeidTilSendtSoknad(createSoknadUnderArbeid())
-        assertThat(sendtSoknad.behandlingsId).isEqualTo(BEHANDLINGSID)
-        assertThat(sendtSoknad.tilknyttetBehandlingsId).isNull()
-        assertThat(sendtSoknad.eier).isEqualTo(EIER)
-        assertThat(sendtSoknad.orgnummer).isEqualTo(ORGNR)
-        assertThat(sendtSoknad.navEnhetsnavn).isEqualTo(NAVENHETSNAVN)
-        assertThat(sendtSoknad.brukerOpprettetDato).isEqualTo(OPPRETTET_DATO)
-        assertThat(sendtSoknad.brukerFerdigDato).isEqualTo(SIST_ENDRET_DATO)
-        assertThat(sendtSoknad.sendtDato).isNull()
-        assertThat(sendtSoknad.fiksforsendelseId).isNull()
-    }
-
-    @Test
-    fun mapSoknadUnderArbeidTilSendtSoknadKasterFeilHvisIkkeEttersendingOgMottakerinfoMangler() {
-        val soknadUnderArbeid = createSoknadUnderArbeidUtenTilknyttetBehandlingsid()
-        soknadUnderArbeid.jsonInternalSoknad = JsonInternalSoknad().withMottaker(null)
-        assertThatExceptionOfType(IllegalStateException::class.java)
-            .isThrownBy { innsendingService.mapSoknadUnderArbeidTilSendtSoknad(soknadUnderArbeid) }
-    }
+//    @Test
+//    fun mapSoknadUnderArbeidTilSendtSoknadMapperInfoRiktig() {
+//        val sendtSoknad = innsendingService.mapSoknadUnderArbeidTilSendtSoknad(createSoknadUnderArbeid())
+//        assertThat(sendtSoknad.behandlingsId).isEqualTo(BEHANDLINGSID)
+//        assertThat(sendtSoknad.tilknyttetBehandlingsId).isNull()
+//        assertThat(sendtSoknad.eier).isEqualTo(EIER)
+//        assertThat(sendtSoknad.orgnummer).isEqualTo(ORGNR)
+//        assertThat(sendtSoknad.navEnhetsnavn).isEqualTo(NAVENHETSNAVN)
+//        assertThat(sendtSoknad.brukerOpprettetDato).isEqualTo(OPPRETTET_DATO)
+//        assertThat(sendtSoknad.brukerFerdigDato).isEqualTo(SIST_ENDRET_DATO)
+//        assertThat(sendtSoknad.sendtDato).isNull()
+//        assertThat(sendtSoknad.fiksforsendelseId).isNull()
+//    }
+//
+//    @Test
+//    fun mapSoknadUnderArbeidTilSendtSoknadKasterFeilHvisIkkeEttersendingOgMottakerinfoMangler() {
+//        val soknadUnderArbeid = createSoknadUnderArbeidUtenTilknyttetBehandlingsid()
+//        soknadUnderArbeid.jsonInternalSoknad = JsonInternalSoknad().withMottaker(null)
+//        assertThatExceptionOfType(IllegalStateException::class.java)
+//            .isThrownBy { innsendingService.mapSoknadUnderArbeidTilSendtSoknad(soknadUnderArbeid) }
+//    }
 
     @Test
     fun finnSendtSoknadForEttersendelseHenterMottakerinfoFraSendtSoknadVedEttersendelse() {
-        val sendtSoknad = innsendingService.finnSendtSoknadForEttersendelse(createSoknadUnderArbeidForEttersendelse())
-        assertThat(sendtSoknad.orgnummer).isEqualTo(ORGNR)
-        assertThat(sendtSoknad.navEnhetsnavn).isEqualTo(NAVENHETSNAVN)
-        assertThat(sendtSoknad.tilknyttetBehandlingsId).isEqualTo(TILKNYTTET_BEHANDLINGSID)
+        val fiksForsendelseId = innsendingService.finnFiksForsendelseIdForEttersendelse(createSoknadUnderArbeidForEttersendelse())
+//        assertThat(sendtSoknad.orgnummer).isEqualTo(ORGNR)
+//        assertThat(sendtSoknad.navEnhetsnavn).isEqualTo(NAVENHETSNAVN)
+//        assertThat(sendtSoknad.tilknyttetBehandlingsId).isEqualTo(TILKNYTTET_BEHANDLINGSID)
+        assertThat(fiksForsendelseId).isEqualTo(FIKSFORSENDELSEID)
     }
 
-    @Test
-    fun finnSendtSoknadForEttersendelseHenterInfoFraSoknadMetadataHvisSendtSoknadMangler() {
-        every { sendtSoknadRepository.hentSendtSoknad(any(), any()) } returns null
-        every { soknadMetadataRepository.hent(any()) } returns createSoknadMetadata()
-        val soknadMedMottaksinfoFraMetadata =
-            innsendingService.finnSendtSoknadForEttersendelse(createSoknadUnderArbeidForEttersendelse())
-        assertThat(soknadMedMottaksinfoFraMetadata.orgnummer).isEqualTo(ORGNR_METADATA)
-        assertThat(soknadMedMottaksinfoFraMetadata.navEnhetsnavn).isEqualTo(NAVENHETSNAVN_METADATA)
-    }
+//    @Test
+//    fun finnSendtSoknadForEttersendelseHenterInfoFraSoknadMetadataHvisSendtSoknadMangler() {
+//        every { sendtSoknadRepository.hentSendtSoknad(any(), any()) } returns null
+//        every { soknadMetadataRepository.hent(any()) } returns createSoknadMetadata()
+//        val soknadMedMottaksinfoFraMetadata =
+//            innsendingService.finnFiksForsendelseIdForEttersendelse(createSoknadUnderArbeidForEttersendelse())
+//        assertThat(soknadMedMottaksinfoFraMetadata.orgnummer).isEqualTo(ORGNR_METADATA)
+//        assertThat(soknadMedMottaksinfoFraMetadata.navEnhetsnavn).isEqualTo(NAVENHETSNAVN_METADATA)
+//    }
 
     @Test
     fun finnSendtSoknadForEttersendelseKasterFeilHvisSendtSoknadOgMetadataManglerForEttersendelse() {
-        every { sendtSoknadRepository.hentSendtSoknad(any(), any()) } returns null
+//        every { sendtSoknadRepository.hentSendtSoknad(any(), any()) } returns null
         every { soknadMetadataRepository.hent(any()) } returns null
 
         assertThatExceptionOfType(IllegalStateException::class.java)
             .isThrownBy {
-                innsendingService.finnSendtSoknadForEttersendelse(createSoknadUnderArbeidForEttersendelse())
+                innsendingService.finnFiksForsendelseIdForEttersendelse(createSoknadUnderArbeidForEttersendelse())
             }
     }
 
@@ -166,19 +162,19 @@ internal class InnsendingServiceTest {
         )
     }
 
-    private fun createSendtSoknad(): SendtSoknad {
-        return SendtSoknad(
-            behandlingsId = BEHANDLINGSID,
-            tilknyttetBehandlingsId = TILKNYTTET_BEHANDLINGSID,
-            eier = EIER,
-            fiksforsendelseId = FIKSFORSENDELSEID,
-            orgnummer = ORGNR,
-            navEnhetsnavn = NAVENHETSNAVN,
-            brukerOpprettetDato = OPPRETTET_DATO,
-            brukerFerdigDato = SIST_ENDRET_DATO,
-            sendtDato = LocalDateTime.now()
-        )
-    }
+//    private fun createSendtSoknad(): SendtSoknad {
+//        return SendtSoknad(
+//            behandlingsId = BEHANDLINGSID,
+//            tilknyttetBehandlingsId = TILKNYTTET_BEHANDLINGSID,
+//            eier = EIER,
+//            fiksforsendelseId = FIKSFORSENDELSEID,
+//            orgnummer = ORGNR,
+//            navEnhetsnavn = NAVENHETSNAVN,
+//            brukerOpprettetDato = OPPRETTET_DATO,
+//            brukerFerdigDato = SIST_ENDRET_DATO,
+//            sendtDato = LocalDateTime.now()
+//        )
+//    }
 
     private fun createSoknadMetadata(): SoknadMetadata {
         return SoknadMetadata(
@@ -187,8 +183,9 @@ internal class InnsendingServiceTest {
             fnr = EIER,
             orgnr = ORGNR_METADATA,
             navEnhet = NAVENHETSNAVN_METADATA,
+            fiksForsendelseId = FIKSFORSENDELSEID,
             opprettetDato = LocalDateTime.now(),
-            sistEndretDato = LocalDateTime.now()
+            sistEndretDato = SIST_ENDRET_DATO
         )
     }
 

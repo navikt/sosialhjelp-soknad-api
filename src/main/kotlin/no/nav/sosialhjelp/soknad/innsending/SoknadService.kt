@@ -102,7 +102,7 @@ open class SoknadService(
 
         henvendelseService.oppdaterMetadataVedAvslutningAvSoknad(behandlingsId, vedlegg, soknadUnderArbeid, false)
         oppgaveHandterer.leggTilOppgave(behandlingsId, eier)
-        innsendingService.opprettSendtSoknad(soknadUnderArbeid)
+        innsendingService.oppdaterSoknadUnderArbeid(soknadUnderArbeid)
 
         genererOgLoggVedleggskravStatistikk(soknadUnderArbeid, vedlegg.vedleggListe)
     }
