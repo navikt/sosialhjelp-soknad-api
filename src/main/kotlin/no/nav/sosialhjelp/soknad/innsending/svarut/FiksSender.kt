@@ -139,10 +139,9 @@ class FiksSender(
         soknadMetadata: SoknadMetadata,
         soknadUnderArbeid: SoknadUnderArbeid
     ): ForsendelsesId? {
-        val fiksForsendelseIdForEttersendelse = innsendingService.finnFiksForsendelseIdForEttersendelse(soknadUnderArbeid)
-        return if (soknadMetadata.erEttersendelse && fiksForsendelseIdForEttersendelse != null) {
+        return if (soknadMetadata.erEttersendelse && innsendingService.finnFiksForsendelseIdForEttersendelse(soknadUnderArbeid) != null) {
             ForsendelsesId()
-                .withId(UUID.fromString(fiksForsendelseIdForEttersendelse))
+                .withId(UUID.fromString(innsendingService.finnFiksForsendelseIdForEttersendelse(soknadUnderArbeid)))
         } else null
     }
 
