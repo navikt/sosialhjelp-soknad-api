@@ -29,7 +29,6 @@ internal class InnsendingServiceTest {
     private val soknadUnderArbeidService: SoknadUnderArbeidService = mockk()
     private val soknadMetadataRepository: SoknadMetadataRepository = mockk()
 
-
     private val innsendingService = InnsendingService(
         soknadUnderArbeidRepository,
         opplastetVedleggRepository,
