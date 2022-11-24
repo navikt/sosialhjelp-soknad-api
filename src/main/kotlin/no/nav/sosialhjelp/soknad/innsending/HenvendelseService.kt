@@ -73,17 +73,17 @@ class HenvendelseService(
         soknadUnderArbeid: SoknadUnderArbeid,
         brukerDigisosApi: Boolean
     ) {
-        val meta = soknadMetadataRepository.hent(behandlingsId)
-        meta?.vedlegg = vedlegg
-        if (meta?.type != SoknadMetadataType.SEND_SOKNAD_KOMMUNAL_ETTERSENDING) {
-            meta?.orgnr = soknadUnderArbeid.jsonInternalSoknad?.mottaker?.organisasjonsnummer
-            meta?.navEnhet = soknadUnderArbeid.jsonInternalSoknad?.mottaker?.navEnhetsnavn
+        val soknadMetadata = soknadMetadataRepository.hent(behandlingsId)
+        soknadMetadata?.vedlegg = vedlegg
+        if (soknadMetadata?.type != SoknadMetadataType.SEND_SOKNAD_KOMMUNAL_ETTERSENDING) {
+            soknadMetadata?.orgnr = soknadUnderArbeid.jsonInternalSoknad?.mottaker?.organisasjonsnummer
+            soknadMetadata?.navEnhet = soknadUnderArbeid.jsonInternalSoknad?.mottaker?.navEnhetsnavn
         }
-        meta?.sistEndretDato = LocalDateTime.now(clock)
-        meta?.innsendtDato = LocalDateTime.now(clock)
-        meta?.status = if (brukerDigisosApi) SENDT_MED_DIGISOS_API else FERDIG
-        soknadMetadataRepository.oppdater(meta)
-        logger.info("Søknad avsluttet $behandlingsId ${meta?.skjema}, ${vedlegg.vedleggListe.size}")
+        soknadMetadata?.sistEndretDato = LocalDateTime.now(clock)
+        soknadMetadata?.innsendtDato = LocalDateTime.now(clock)
+        soknadMetadata?.status = if (brukerDigisosApi) SENDT_MED_DIGISOS_API else FERDIG
+        soknadMetadataRepository.oppdater(soknadMetadata)
+        logger.info("Søknad avsluttet $behandlingsId ${soknadMetadata?.skjema}, ${vedlegg.vedleggListe.size}")
     }
 
     fun hentSoknad(behandlingsId: String?): SoknadMetadata? {

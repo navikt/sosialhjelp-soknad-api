@@ -234,20 +234,6 @@ internal class FiksSenderTest {
         )
     }
 
-//    private fun lagSendtSoknad(): SendtSoknad {
-//        return SendtSoknad(
-//            behandlingsId = BEHANDLINGSID,
-//            tilknyttetBehandlingsId = null,
-//            eier = EIER,
-//            fiksforsendelseId = null,
-//            orgnummer = ORGNUMMER,
-//            navEnhetsnavn = NAVENHETSNAVN,
-//            brukerOpprettetDato = LocalDateTime.now(),
-//            brukerFerdigDato = LocalDateTime.now(),
-//            sendtDato = null
-//        )
-//    }
-
     private fun lagSoknadMetadata(): SoknadMetadata {
         return SoknadMetadata(
             id = 1L,
@@ -262,12 +248,6 @@ internal class FiksSenderTest {
             innsendtDato = null
         )
     }
-
-//    private fun lagSendtEttersendelse(): SendtSoknad {
-//        val sendtSoknad = lagSendtSoknad()
-//        sendtSoknad.tilknyttetBehandlingsId = "soknadId"
-//        return sendtSoknad
-//    }
 
     private fun lagSoknadMetadataEttersendelse(): SoknadMetadata {
         val soknadMetadata = lagSoknadMetadata()
