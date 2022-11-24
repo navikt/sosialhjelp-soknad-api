@@ -44,12 +44,12 @@ open class InnsendingService(
 
     open fun hentSoknadMetadata(behandlingsId: String, eier: String?): SoknadMetadata {
         return soknadMetadataRepository.hent(behandlingsId)
-            ?: throw RuntimeException("Finner ikke sendt søknad med behandlingsId $behandlingsId")
+            ?: throw RuntimeException("Finner ikke soknadMetadata med behandlingsId $behandlingsId")
     }
 
     open fun hentSoknadUnderArbeid(behandlingsId: String, eier: String): SoknadUnderArbeid {
         return soknadUnderArbeidRepository.hentSoknadNullable(behandlingsId, eier)
-            ?: throw RuntimeException("Finner ikke sendt søknad med behandlingsId $behandlingsId")
+            ?: throw RuntimeException("Finner ikke soknadUnderArbeid med behandlingsId $behandlingsId")
     }
 
     open fun hentAlleOpplastedeVedleggForSoknad(soknadUnderArbeid: SoknadUnderArbeid): List<OpplastetVedlegg> {
