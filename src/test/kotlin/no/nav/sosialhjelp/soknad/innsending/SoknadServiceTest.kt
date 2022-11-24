@@ -135,11 +135,10 @@ internal class SoknadServiceTest {
         val soknadUnderArbeidSlot = slot<SoknadUnderArbeid>()
         val vedleggSlot = slot<VedleggMetadataListe>()
         every {
-            henvendelseService.oppdaterMetadataVedAvslutningAvSoknad(
+            henvendelseService.oppdaterMetadataVedAvslutningAvSvarUtSoknad(
                 behandlingsId,
                 capture(vedleggSlot),
-                capture(soknadUnderArbeidSlot),
-                false
+                capture(soknadUnderArbeidSlot)
             )
         } just runs
 

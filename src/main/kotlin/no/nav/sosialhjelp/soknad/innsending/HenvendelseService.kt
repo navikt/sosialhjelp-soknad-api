@@ -67,11 +67,27 @@ class HenvendelseService(
         return soknadMetadataRepository.hentAntallInnsendteSoknaderEtterTidspunkt(fnr, tidspunkt) ?: 0
     }
 
-    fun oppdaterMetadataVedAvslutningAvSoknad(
+    fun oppdaterMetadataVedAvslutningAvDigisosApiSoknad(
+        behandlingsId: String?,
+        vedlegg: VedleggMetadataListe,
+        soknadUnderArbeid: SoknadUnderArbeid
+    ) {
+        val soknadMetadata = soknadMetadataRepository.hent(behandlingsId)
+        soknadMetadata?.vedlegg = vedlegg
+        soknadMetadata?.orgnr = soknadUnderArbeid.jsonInternalSoknad?.mottaker?.organisasjonsnummer
+        soknadMetadata?.navEnhet = soknadUnderArbeid.jsonInternalSoknad?.mottaker?.navEnhetsnavn
+        soknadMetadata?.sistEndretDato = LocalDateTime.now(clock)
+        soknadMetadata?.innsendtDato = LocalDateTime.now(clock)
+        soknadMetadata?.status = SENDT_MED_DIGISOS_API
+        soknadMetadataRepository.oppdater(soknadMetadata)
+        logger.info("Søknad avsluttet $behandlingsId ${soknadMetadata?.skjema}, ${vedlegg.vedleggListe.size}")
+    }
+
+    // setter ikke soknadMetadata.innsendtDato - i motsetning til oppdaterMetadataVedAvslutningAvSoknad over
+    fun oppdaterMetadataVedAvslutningAvSvarUtSoknad(
         behandlingsId: String?,
         vedlegg: VedleggMetadataListe,
         soknadUnderArbeid: SoknadUnderArbeid,
-        brukerDigisosApi: Boolean
     ) {
         val soknadMetadata = soknadMetadataRepository.hent(behandlingsId)
         soknadMetadata?.vedlegg = vedlegg
@@ -80,8 +96,7 @@ class HenvendelseService(
             soknadMetadata?.navEnhet = soknadUnderArbeid.jsonInternalSoknad?.mottaker?.navEnhetsnavn
         }
         soknadMetadata?.sistEndretDato = LocalDateTime.now(clock)
-        soknadMetadata?.innsendtDato = LocalDateTime.now(clock)
-        soknadMetadata?.status = if (brukerDigisosApi) SENDT_MED_DIGISOS_API else FERDIG
+        soknadMetadata?.status = FERDIG
         soknadMetadataRepository.oppdater(soknadMetadata)
         logger.info("Søknad avsluttet $behandlingsId ${soknadMetadata?.skjema}, ${vedlegg.vedleggListe.size}")
     }

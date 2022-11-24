@@ -19,6 +19,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import java.time.Clock
 import java.time.LocalDateTime
 
 internal class InnsendingServiceTest {
@@ -28,11 +29,13 @@ internal class InnsendingServiceTest {
     private val soknadUnderArbeidService: SoknadUnderArbeidService = mockk()
     private val soknadMetadataRepository: SoknadMetadataRepository = mockk()
 
+
     private val innsendingService = InnsendingService(
         soknadUnderArbeidRepository,
         opplastetVedleggRepository,
         soknadUnderArbeidService,
-        soknadMetadataRepository
+        soknadMetadataRepository,
+        Clock.systemDefaultZone()
     )
 
     @BeforeEach

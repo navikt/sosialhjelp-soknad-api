@@ -100,7 +100,7 @@ open class SoknadService(
         validateEttersendelseHasVedlegg(soknadUnderArbeid)
         val vedlegg = convertToVedleggMetadataListe(soknadUnderArbeid)
 
-        henvendelseService.oppdaterMetadataVedAvslutningAvSoknad(behandlingsId, vedlegg, soknadUnderArbeid, false)
+        henvendelseService.oppdaterMetadataVedAvslutningAvSvarUtSoknad(behandlingsId, vedlegg, soknadUnderArbeid)
         oppgaveHandterer.leggTilOppgave(behandlingsId, eier)
         innsendingService.oppdaterSoknadUnderArbeid(soknadUnderArbeid)
 
