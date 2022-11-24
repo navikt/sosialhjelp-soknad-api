@@ -10,8 +10,6 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderAr
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
-import java.time.Clock
-import java.time.LocalDateTime
 
 @Component
 open class InnsendingService(
@@ -19,7 +17,6 @@ open class InnsendingService(
     private val opplastetVedleggRepository: OpplastetVedleggRepository,
     private val soknadUnderArbeidService: SoknadUnderArbeidService,
     private val soknadMetadataRepository: SoknadMetadataRepository,
-    private val clock: Clock
 ) {
     open fun oppdaterSoknadUnderArbeid(soknadUnderArbeid: SoknadUnderArbeid?) {
         check(soknadUnderArbeid != null) { "Kan ikke sende søknad som ikke finnes eller som mangler søknadsid" }
@@ -38,7 +35,6 @@ open class InnsendingService(
         logger.debug("Oppdaterer soknadmetadata for behandlingsid $behandlingsId og eier $eier")
         val soknadMetadata = soknadMetadataRepository.hent(behandlingsId)
         soknadMetadata?.fiksForsendelseId = fiksforsendelseId
-        soknadMetadata?.innsendtDato = LocalDateTime.now(clock)
         soknadMetadataRepository.oppdater(soknadMetadata)
     }
 

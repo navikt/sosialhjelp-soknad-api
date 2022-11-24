@@ -93,7 +93,7 @@ internal class DigisosApiServiceTest {
         every { dokumentListeService.lagDokumentListe(any()) } returns emptyList()
         every { digisosApiV1Client.krypterOgLastOppFiler(any(), any(), any(), any(), any(), any(), any()) } returns "digisosid"
         every { soknadUnderArbeidService.settInnsendingstidspunktPaSoknad(any()) } just runs
-        every { henvendelseService.oppdaterMetadataVedAvslutningAvDigisosApiSoknad(any(), any(), any()) } just runs
+        every { henvendelseService.oppdaterMetadataVedAvslutningAvSoknad(any(), any(), any(), any()) } just runs
         every { soknadUnderArbeidRepository.slettSoknad(any(), any()) } just runs
 
         digisosApiService.sendSoknad(soknadUnderArbeid, "token", "0301")
