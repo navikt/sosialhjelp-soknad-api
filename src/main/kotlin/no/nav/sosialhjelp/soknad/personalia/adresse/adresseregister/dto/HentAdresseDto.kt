@@ -5,7 +5,7 @@ data class HentAdresseDataDto(
 )
 
 data class AdresseDto(
-    val matrikkelAdresse: MatrikkeladresseDto?
+    val matrikkeladresse: MatrikkeladresseDto?
 )
 
 data class MatrikkeladresseDto(
