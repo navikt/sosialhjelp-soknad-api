@@ -1,0 +1,14 @@
+query($matrikkelId: ID!){
+    hentAdresse(matrikkelId: $matrikkelId) {
+        matrikkeladresse {
+            undernummer
+            matrikkelnummer {
+                kommunenummer
+                gaardsnummer
+                bruksnummer
+                festenummer
+                seksjonsnummer
+            }
+        }
+    }
+}
