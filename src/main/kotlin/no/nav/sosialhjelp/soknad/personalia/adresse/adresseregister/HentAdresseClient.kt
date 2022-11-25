@@ -36,7 +36,7 @@ class HentAdresseClient(
                 .block() ?: throw PdlApiException("Noe feilet mot PDL - hentAdresse - response null?")
             val pdlResponse = parse<HentAdresseDto>(response)
             pdlResponse.checkForPdlApiErrors()
-            pdlResponse.data?.hentAdresse?.matrikkelAdresse.also {
+            pdlResponse.data?.hentAdresse?.matrikkeladresse.also {
                 it
                     ?.run { log.info("hentAdresse - hentet matrikkelAdresse fra PDL") }
                     ?: log.info("hentAdresse - matrikkeladresse er null")
