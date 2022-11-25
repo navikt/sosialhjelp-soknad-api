@@ -10,6 +10,8 @@ import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
+import no.nav.sosialhjelp.soknad.personalia.adresse.adresseregister.HentAdresseService
+import no.nav.sosialhjelp.soknad.personalia.adresse.adresseregister.domain.KartverketMatrikkelAdresse
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Bostedsadresse
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Matrikkeladresse
@@ -23,7 +25,8 @@ import java.time.LocalDateTime
 internal class AdresseSystemdataTest {
 
     private val personService: PersonService = mockk()
-    private val adresseSystemdata = AdresseSystemdata(personService)
+    private val hentAdresseService: HentAdresseService = mockk()
+    private val adresseSystemdata = AdresseSystemdata(personService, hentAdresseService)
 
     @Test
     fun skalOppdatereFolkeregistrertAdresse_vegadresse_fraPdl() {
@@ -42,7 +45,7 @@ internal class AdresseSystemdataTest {
     }
 
     @Test
-    fun skalOppdatereFolkeregistrertAdresse_matrikkeladresse_fraPdl() {
+    fun `skal oppdatere folkeregistrert matrikkeladresse - uten utfyllende matrikkeladresse`() {
         val soknadUnderArbeid = createSoknadUnderArbeid()
         val personWithBostedsadresseMatrikkeladresse = createPersonWithBostedsadresse(
             Bostedsadresse(
@@ -59,6 +62,7 @@ internal class AdresseSystemdataTest {
             )
         )
         every { personService.hentPerson(any()) } returns personWithBostedsadresseMatrikkeladresse
+        every { hentAdresseService.hentKartverketMatrikkelAdresse(any()) } returns null
 
         adresseSystemdata.updateSystemdataIn(soknadUnderArbeid)
 
@@ -67,8 +71,56 @@ internal class AdresseSystemdataTest {
         assertThat(folkeregistrertAdresse.type).isEqualTo(JsonAdresse.Type.MATRIKKELADRESSE)
         val matrikkeladresse = folkeregistrertAdresse as JsonMatrikkelAdresse
         val bostedsadresse = personWithBostedsadresseMatrikkeladresse.bostedsadresse?.matrikkeladresse
-        assertThat(matrikkeladresse.bruksnummer).isEqualTo(bostedsadresse?.bruksenhetsnummer)
         assertThat(matrikkeladresse.kommunenummer).isEqualTo(bostedsadresse?.kommunenummer)
+        assertThat(matrikkeladresse.gaardsnummer).isNull()
+        assertThat(matrikkeladresse.bruksnummer).isEqualTo(bostedsadresse?.bruksenhetsnummer)
+        assertThat(matrikkeladresse.festenummer).isNull()
+        assertThat(matrikkeladresse.seksjonsnummer).isNull()
+        assertThat(matrikkeladresse.undernummer).isNull()
+    }
+
+    @Test
+    fun `skal oppdatere folkeregistrert matrikkeladresse - med utfyllende matrikkeladresse`() {
+        val soknadUnderArbeid = createSoknadUnderArbeid()
+        val personWithBostedsadresseMatrikkeladresse = createPersonWithBostedsadresse(
+            Bostedsadresse(
+                "",
+                null,
+                Matrikkeladresse(
+                    "matrikkelId",
+                    "postnummer",
+                    "poststed",
+                    "tilleggsnavn",
+                    "kommunenummer",
+                    "bruksenhetsnummer"
+                )
+            )
+        )
+
+        val kartverketMatrikkelAdresse = KartverketMatrikkelAdresse(
+            kommunenummer = "0301",
+            gaardsnummer = "gaardsnummer",
+            bruksnummer = "H0101",
+            festenummer = "F4",
+            seksjonsunmmer = null,
+            undernummer = "under1"
+        )
+
+        every { personService.hentPerson(any()) } returns personWithBostedsadresseMatrikkeladresse
+        every { hentAdresseService.hentKartverketMatrikkelAdresse(any()) } returns kartverketMatrikkelAdresse
+
+        adresseSystemdata.updateSystemdataIn(soknadUnderArbeid)
+
+        val folkeregistrertAdresse = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia.folkeregistrertAdresse
+        assertThat(folkeregistrertAdresse.kilde).isEqualTo(JsonKilde.SYSTEM)
+        assertThat(folkeregistrertAdresse.type).isEqualTo(JsonAdresse.Type.MATRIKKELADRESSE)
+        val matrikkeladresse = folkeregistrertAdresse as JsonMatrikkelAdresse
+        assertThat(matrikkeladresse.kommunenummer).isEqualTo(kartverketMatrikkelAdresse.kommunenummer)
+        assertThat(matrikkeladresse.gaardsnummer).isEqualTo(kartverketMatrikkelAdresse.gaardsnummer)
+        assertThat(matrikkeladresse.bruksnummer).isEqualTo(kartverketMatrikkelAdresse.bruksnummer)
+        assertThat(matrikkeladresse.festenummer).isEqualTo(kartverketMatrikkelAdresse.festenummer)
+        assertThat(matrikkeladresse.seksjonsnummer).isEqualTo(kartverketMatrikkelAdresse.seksjonsunmmer)
+        assertThat(matrikkeladresse.undernummer).isEqualTo(kartverketMatrikkelAdresse.undernummer)
     }
 
     @Test
