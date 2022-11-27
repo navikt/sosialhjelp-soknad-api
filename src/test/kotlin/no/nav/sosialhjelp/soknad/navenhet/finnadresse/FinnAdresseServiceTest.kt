@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.navenhet.finnadresse
 
+import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse
@@ -9,10 +10,18 @@ import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonMatrikkelAdresse
 import no.nav.sosialhjelp.soknad.adressesok.AdressesokService
 import no.nav.sosialhjelp.soknad.adressesok.domain.AdresseForslag
 import no.nav.sosialhjelp.soknad.adressesok.domain.AdresseForslagType
+import no.nav.sosialhjelp.soknad.app.subjecthandler.StaticSubjectHandlerImpl
+import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
+import no.nav.sosialhjelp.soknad.personalia.adresse.adresseregister.HentAdresseService
+import no.nav.sosialhjelp.soknad.personalia.adresse.adresseregister.domain.KartverketMatrikkelAdresse
+import no.nav.sosialhjelp.soknad.personalia.person.PersonService
+import no.nav.sosialhjelp.soknad.personalia.person.domain.Person
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 
@@ -34,23 +43,34 @@ internal class FinnAdresseServiceTest {
         private const val HUSBOKSTAV = "B"
     }
 
-    private val adressesokService = mockk<AdressesokService>()
+    private val adressesokService: AdressesokService = mockk()
+    private val personService: PersonService = mockk()
+    private val hentAdresseService: HentAdresseService = mockk()
 
-    private val finnAdresseService = FinnAdresseService(adressesokService)
+    private val finnAdresseService = FinnAdresseService(adressesokService, personService, hentAdresseService)
+
+    @BeforeEach
+    internal fun setUp() {
+        clearAllMocks()
+        SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
+    }
+
+    @AfterEach
+    internal fun tearDown() {
+        SubjectHandlerUtils.resetSubjectHandlerImpl()
+    }
 
     @Test
     fun finnAdresseFraSoknadGirRiktigAdresseForFolkeregistrertGateadresse() {
-        every { adressesokService.getAdresseForslag(any()) } returns lagAdresseForslag(KOMMUNENUMMER, KOMMUNENAVN1)
+        every { adressesokService.getAdresseForslag(any()) } returns lagAdresseForslag()
         val soknadUnderArbeid = createSoknadUnderArbeid()
         val personalia = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia
         personalia.folkeregistrertAdresse = createGateadresse()
-        val adresseForslagene = finnAdresseService.finnAdresseFraSoknad(personalia, JsonAdresseValg.FOLKEREGISTRERT.toString())
-        assertThat(adresseForslagene).hasSize(1)
-        val adresseForslag = adresseForslagene[0]
-        assertThat(adresseForslag.geografiskTilknytning).isEqualTo(GEOGRAFISK_TILKNYTNING)
-        assertThat(adresseForslag.kommunenummer).isEqualTo(KOMMUNENUMMER)
-        assertThat(adresseForslag.kommunenavn).isEqualTo(KOMMUNENAVN1)
-        assertThat(adresseForslag.type.value).isEqualTo(GATEADRESSE)
+        val adresseForslag = finnAdresseService.finnAdresseFraSoknad(personalia, JsonAdresseValg.FOLKEREGISTRERT.toString())
+        assertThat(adresseForslag?.geografiskTilknytning).isEqualTo(GEOGRAFISK_TILKNYTNING)
+        assertThat(adresseForslag?.kommunenummer).isEqualTo(KOMMUNENUMMER)
+        assertThat(adresseForslag?.kommunenavn).isEqualTo(KOMMUNENAVN1)
+        assertThat(adresseForslag?.type?.value).isEqualTo(GATEADRESSE)
     }
 
     @Test
@@ -58,21 +78,50 @@ internal class FinnAdresseServiceTest {
         val soknadUnderArbeid = createSoknadUnderArbeid()
         val personalia = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia
         personalia.folkeregistrertAdresse = createMatrikkeladresse()
-        val adresseForslagene = finnAdresseService.finnAdresseFraSoknad(personalia, JsonAdresseValg.FOLKEREGISTRERT.toString())
-        assertThat(adresseForslagene).hasSize(1)
-        val adresseForslag = adresseForslagene[0]
-        assertThat(adresseForslag.kommunenummer).isEqualTo(KOMMUNENUMMER)
-        assertThat(adresseForslag.type).isEqualTo(AdresseForslagType.MATRIKKELADRESSE)
-        // Får kun kommunenummer som adresseforslag. Ut fra denne finner man navenhet i den lokale lista
+
+        val mockPerson: Person = mockk()
+        every { personService.hentPerson(any()) } returns mockPerson
+        every { mockPerson.bostedsadresse?.matrikkeladresse?.matrikkelId } returns "matrikkelId"
+
+        val matrikkelAdresse = KartverketMatrikkelAdresse(
+            kommunenummer = KOMMUNENUMMER,
+            gaardsnummer = "11",
+            bruksnummer = "001",
+            festenummer = "42",
+            seksjonsunmmer = "asd123",
+            undernummer = null,
+            bydelsnummer = "030107"
+        )
+        every { hentAdresseService.hentKartverketMatrikkelAdresse(any()) } returns matrikkelAdresse
+
+        val adresseForslag = finnAdresseService.finnAdresseFraSoknad(personalia, JsonAdresseValg.FOLKEREGISTRERT.toString())
+        assertThat(adresseForslag?.kommunenummer).isEqualTo(KOMMUNENUMMER)
+        assertThat(adresseForslag?.type).isEqualTo(AdresseForslagType.MATRIKKELADRESSE)
     }
 
     @Test
-    fun finnAdresseFraSoknadReturnererTomListeHvisAdresseValgMangler() {
+    fun `finnAdresseFraSoknad returnerer null hvis hentAdresse ikke finner matrikkeladresse`() {
+        val soknadUnderArbeid = createSoknadUnderArbeid()
+        val personalia = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia
+        personalia.folkeregistrertAdresse = createMatrikkeladresse()
+
+        val mockPerson: Person = mockk()
+        every { personService.hentPerson(any()) } returns mockPerson
+        every { mockPerson.bostedsadresse?.matrikkeladresse?.matrikkelId } returns "matrikkelId"
+
+        every { hentAdresseService.hentKartverketMatrikkelAdresse(any()) } returns null
+
+        val adresseForslag = finnAdresseService.finnAdresseFraSoknad(personalia, JsonAdresseValg.FOLKEREGISTRERT.toString())
+        assertThat(adresseForslag).isNull()
+    }
+
+    @Test
+    fun finnAdresseFraSoknadReturnererNullHvisAdresseValgMangler() {
         val soknadUnderArbeid = createSoknadUnderArbeid()
         val personalia = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia
         personalia.oppholdsadresse = createGateadresse()
-        val adresseForslagene = finnAdresseService.finnAdresseFraSoknad(personalia, null)
-        assertThat(adresseForslagene).isEmpty()
+        val adresseForslag = finnAdresseService.finnAdresseFraSoknad(personalia, null)
+        assertThat(adresseForslag).isNull()
     }
 
     private fun createMatrikkeladresse(): JsonAdresse? {
@@ -94,11 +143,7 @@ internal class FinnAdresseServiceTest {
             .withBolignummer(BOLIGNUMMER)
     }
 
-    private fun lagAdresseForslag(kommunenummer: String, kommunenavn: String): AdresseForslag {
-        return lagAdresseForslag(kommunenummer, kommunenavn, "Gateveien")
-    }
-
-    private fun lagAdresseForslag(kommunenummer: String, kommunenavn: String, adresse: String): AdresseForslag {
+    private fun lagAdresseForslag(kommunenummer: String = KOMMUNENUMMER, kommunenavn: String = KOMMUNENAVN1, adresse: String = "Gateveien"): AdresseForslag {
         return AdresseForslag(adresse, null, null, kommunenummer, kommunenavn, "0030", "Mocka", GEOGRAFISK_TILKNYTNING, null, BYDEL, AdresseForslagType.GATEADRESSE)
     }
 
