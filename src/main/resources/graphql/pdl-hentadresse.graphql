@@ -9,6 +9,9 @@ query($matrikkelId: ID!){
                 festenummer
                 seksjonsnummer
             }
+            bydel {
+                bydelsnummer
+            }
         }
     }
 }

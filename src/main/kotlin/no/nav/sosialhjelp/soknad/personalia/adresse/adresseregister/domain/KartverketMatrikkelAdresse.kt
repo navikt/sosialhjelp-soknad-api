@@ -6,5 +6,6 @@ data class KartverketMatrikkelAdresse(
     val bruksnummer: String?,
     val festenummer: String?,
     val seksjonsunmmer: String?,
-    val undernummer: String?
+    val undernummer: String?,
+    val bydelsnummer: String?
 )

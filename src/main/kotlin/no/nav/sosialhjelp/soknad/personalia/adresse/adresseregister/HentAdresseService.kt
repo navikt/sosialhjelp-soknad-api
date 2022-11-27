@@ -16,7 +16,8 @@ class HentAdresseService(
                     bruksnummer = it.matrikkelnummer?.bruksnummer,
                     festenummer = it.matrikkelnummer?.festenummer,
                     seksjonsunmmer = it.matrikkelnummer?.seksjonsnummer,
-                    undernummer = it.undernummer
+                    undernummer = it.undernummer,
+                    bydelsnummer = it.bydel?.bydelsnummer
                 )
             }
     }

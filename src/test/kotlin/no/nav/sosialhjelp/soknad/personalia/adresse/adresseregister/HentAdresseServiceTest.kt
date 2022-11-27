@@ -2,6 +2,7 @@ package no.nav.sosialhjelp.soknad.personalia.adresse.adresseregister
 
 import io.mockk.every
 import io.mockk.mockk
+import no.nav.sosialhjelp.soknad.personalia.adresse.adresseregister.dto.Bydel
 import no.nav.sosialhjelp.soknad.personalia.adresse.adresseregister.dto.MatrikkelNummer
 import no.nav.sosialhjelp.soknad.personalia.adresse.adresseregister.dto.MatrikkeladresseDto
 import org.assertj.core.api.Assertions.assertThat
@@ -35,6 +36,9 @@ internal class HentAdresseServiceTest {
                 bruksnummer = "H0101",
                 festenummer = "F4",
                 seksjonsnummer = "seksjonsnummer"
+            ),
+            bydel = Bydel(
+                bydelsnummer = "030107"
             )
         )
     }

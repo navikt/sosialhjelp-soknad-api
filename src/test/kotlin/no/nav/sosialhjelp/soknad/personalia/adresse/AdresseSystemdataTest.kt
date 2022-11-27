@@ -103,7 +103,8 @@ internal class AdresseSystemdataTest {
             bruksnummer = "H0101",
             festenummer = "F4",
             seksjonsunmmer = null,
-            undernummer = "under1"
+            undernummer = "under1",
+            bydelsnummer = "030107"
         )
 
         every { personService.hentPerson(any()) } returns personWithBostedsadresseMatrikkeladresse
