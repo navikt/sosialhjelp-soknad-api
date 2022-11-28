@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.navenhet.finnadresse
 
-import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse
@@ -10,18 +9,12 @@ import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonMatrikkelAdresse
 import no.nav.sosialhjelp.soknad.adressesok.AdressesokService
 import no.nav.sosialhjelp.soknad.adressesok.domain.AdresseForslag
 import no.nav.sosialhjelp.soknad.adressesok.domain.AdresseForslagType
-import no.nav.sosialhjelp.soknad.app.subjecthandler.StaticSubjectHandlerImpl
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.personalia.adresse.adresseregister.HentAdresseService
 import no.nav.sosialhjelp.soknad.personalia.adresse.adresseregister.domain.KartverketMatrikkelAdresse
-import no.nav.sosialhjelp.soknad.personalia.person.PersonService
-import no.nav.sosialhjelp.soknad.personalia.person.domain.Person
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 
@@ -44,21 +37,9 @@ internal class FinnAdresseServiceTest {
     }
 
     private val adressesokService: AdressesokService = mockk()
-    private val personService: PersonService = mockk()
     private val hentAdresseService: HentAdresseService = mockk()
 
-    private val finnAdresseService = FinnAdresseService(adressesokService, personService, hentAdresseService)
-
-    @BeforeEach
-    internal fun setUp() {
-        clearAllMocks()
-        SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
-    }
-
-    @AfterEach
-    internal fun tearDown() {
-        SubjectHandlerUtils.resetSubjectHandlerImpl()
-    }
+    private val finnAdresseService = FinnAdresseService(adressesokService, hentAdresseService)
 
     @Test
     fun finnAdresseFraSoknadGirRiktigAdresseForFolkeregistrertGateadresse() {
@@ -79,10 +60,6 @@ internal class FinnAdresseServiceTest {
         val personalia = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia
         personalia.folkeregistrertAdresse = createMatrikkeladresse()
 
-        val mockPerson: Person = mockk()
-        every { personService.hentPerson(any()) } returns mockPerson
-        every { mockPerson.bostedsadresse?.matrikkeladresse?.matrikkelId } returns "matrikkelId"
-
         val matrikkelAdresse = KartverketMatrikkelAdresse(
             kommunenummer = KOMMUNENUMMER,
             gaardsnummer = "11",
@@ -92,7 +69,7 @@ internal class FinnAdresseServiceTest {
             undernummer = null,
             bydelsnummer = "030107"
         )
-        every { hentAdresseService.hentKartverketMatrikkelAdresse(any()) } returns matrikkelAdresse
+        every { hentAdresseService.hentKartverketMatrikkelAdresseForInnloggetBruker() } returns matrikkelAdresse
 
         val adresseForslag = finnAdresseService.finnAdresseFraSoknad(personalia, JsonAdresseValg.FOLKEREGISTRERT.toString())
         assertThat(adresseForslag?.kommunenummer).isEqualTo(KOMMUNENUMMER)
@@ -105,11 +82,7 @@ internal class FinnAdresseServiceTest {
         val personalia = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia
         personalia.folkeregistrertAdresse = createMatrikkeladresse()
 
-        val mockPerson: Person = mockk()
-        every { personService.hentPerson(any()) } returns mockPerson
-        every { mockPerson.bostedsadresse?.matrikkeladresse?.matrikkelId } returns "matrikkelId"
-
-        every { hentAdresseService.hentKartverketMatrikkelAdresse(any()) } returns null
+        every { hentAdresseService.hentKartverketMatrikkelAdresseForInnloggetBruker() } returns null
 
         val adresseForslag = finnAdresseService.finnAdresseFraSoknad(personalia, JsonAdresseValg.FOLKEREGISTRERT.toString())
         assertThat(adresseForslag).isNull()
