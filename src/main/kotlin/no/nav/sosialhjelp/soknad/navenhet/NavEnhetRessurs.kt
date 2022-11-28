@@ -138,7 +138,7 @@ open class NavEnhetRessurs(
             try {
                 finnNavEnhetFraGT(eier, personalia, valgtEnhetNr)
             } catch (e: Exception) {
-                log.warn("Noe feilet ved utleding av Nav-kontor ut fra GT hentet fra PDL -> fallback til adressesøk-løsning", e)
+                log.warn("Noe feilet henting av NavEnhet fra GT -> fallback til adressesøk for vegadresse / hentAdresse for matrikkeladresse", e)
                 finnNavEnhetFraAdresse(personalia, valg, valgtEnhetNr)
             }
         } else finnNavEnhetFraAdresse(personalia, valg, valgtEnhetNr)
