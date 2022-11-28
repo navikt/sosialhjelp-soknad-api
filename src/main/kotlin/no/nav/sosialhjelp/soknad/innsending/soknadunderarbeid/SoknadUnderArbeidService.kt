@@ -2,15 +2,21 @@ package no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid
 
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeid
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
+import no.nav.sosialhjelp.soknad.app.exceptions.SendingTilKommuneErMidlertidigUtilgjengeligException
+import no.nav.sosialhjelp.soknad.app.exceptions.SendingTilKommuneUtilgjengeligException
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus
 import org.springframework.stereotype.Component
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
 
 @Component
 open class SoknadUnderArbeidService(
-    private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository
+    private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
+    private val kommuneInfoService: KommuneInfoService
 ) {
     open fun settInnsendingstidspunktPaSoknad(soknadUnderArbeid: SoknadUnderArbeid?) {
         if (soknadUnderArbeid == null) {
@@ -38,6 +44,26 @@ open class SoknadUnderArbeidService(
         okonomi.oversikt.formue.sortBy { it.type }
     }
 
+    fun skalSoknadSendesMedDigisosApi(soknadUnderArbeid: SoknadUnderArbeid): Boolean {
+        if (soknadUnderArbeid.erEttersendelse) {
+            return false
+        }
+
+        val kommunenummer = soknadUnderArbeid.jsonInternalSoknad?.soknad?.mottaker?.kommunenummer
+            ?: return false.also { log.info("Mottaker.kommunenummer ikke satt -> skalSoknadSendesMedDigisosApi returnerer false") }
+
+        return when (kommuneInfoService.kommuneInfo(kommunenummer)) {
+            KommuneStatus.FIKS_NEDETID_OG_TOM_CACHE -> {
+                throw SendingTilKommuneUtilgjengeligException("Mellomlagring av vedlegg er ikke tilgjengelig fordi fiks har nedetid og kommuneinfo-cache er tom.")
+            }
+            KommuneStatus.MANGLER_KONFIGURASJON, KommuneStatus.HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT -> false
+            KommuneStatus.SKAL_SENDE_SOKNADER_OG_ETTERSENDELSER_VIA_FDA -> true
+            KommuneStatus.SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD_OG_ETTERSENDELSER -> {
+                throw SendingTilKommuneErMidlertidigUtilgjengeligException("Sending til kommune $kommunenummer er midlertidig utilgjengelig.")
+            }
+        }
+    }
+
     companion object {
         fun nowWithForcedNanoseconds(): String {
             val now = OffsetDateTime.now(ZoneOffset.UTC)
@@ -45,5 +71,7 @@ open class SoknadUnderArbeidService(
                 now.plusNanos(1000000).toString()
             } else now.toString()
         }
+
+        private val log by logger()
     }
 }

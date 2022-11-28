@@ -4,7 +4,6 @@ import io.netty.channel.ChannelOption
 import io.netty.handler.timeout.ReadTimeoutHandler
 import io.netty.handler.timeout.WriteTimeoutHandler
 import no.nav.sosialhjelp.soknad.app.Constants
-import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -20,7 +19,6 @@ open class DigisosApiConfig(
     @Value("\${digisos_api_baseurl}") private val digisosApiEndpoint: String,
     @Value("\${integrasjonsid_fiks}") private val integrasjonsidFiks: String,
     @Value("\${integrasjonpassord_fiks}") private val integrasjonpassordFiks: String,
-    private val kommuneInfoService: KommuneInfoService,
     private val dokumentlagerClient: DokumentlagerClient,
     private val krypteringService: KrypteringService,
     webClientBuilder: WebClient.Builder,
@@ -48,17 +46,6 @@ open class DigisosApiConfig(
         .defaultHeader(Constants.HEADER_INTEGRASJON_ID, integrasjonsidFiks)
         .defaultHeader(Constants.HEADER_INTEGRASJON_PASSORD, integrasjonpassordFiks)
         .build()
-
-    @Bean
-    open fun digisosApiV1Client(): DigisosApiV1Client {
-        return DigisosApiV1ClientImpl(
-            digisosApiEndpoint,
-            kommuneInfoService,
-            dokumentlagerClient,
-            krypteringService,
-            fiksWebClient
-        )
-    }
 
     @Bean
     open fun digisosApiV2Client(): DigisosApiV2Client {

@@ -18,7 +18,6 @@ import no.nav.sosialhjelp.soknad.innsending.HenvendelseService
 import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
 import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
-import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.AfterEach
@@ -27,24 +26,20 @@ import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 
 internal class DigisosApiServiceTest {
-    private val digisosApiV1Client: DigisosApiV1Client = mockk()
     private val digisosApiV2Client: DigisosApiV2Client = mockk()
     private val henvendelseService: HenvendelseService = mockk()
     private val soknadUnderArbeidService: SoknadUnderArbeidService = mockk()
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
     private val dokumentListeService: DokumentListeService = mockk()
     private val prometheusMetricsService: PrometheusMetricsService = mockk(relaxed = true)
-    private val mellomlagringService: MellomlagringService = mockk()
 
     private val digisosApiService = DigisosApiService(
-        digisosApiV1Client,
         digisosApiV2Client,
         henvendelseService,
         soknadUnderArbeidService,
         soknadUnderArbeidRepository,
         dokumentListeService,
-        prometheusMetricsService,
-        mellomlagringService
+        prometheusMetricsService
     )
 
     @BeforeEach
@@ -53,7 +48,6 @@ internal class DigisosApiServiceTest {
 
         mockkObject(MiljoUtils)
         every { MiljoUtils.isNonProduction() } returns true
-        every { mellomlagringService.erMellomlagringEnabledOgSoknadSkalSendesMedDigisosApi(any()) } returns false
     }
 
     @AfterEach
@@ -90,8 +84,8 @@ internal class DigisosApiServiceTest {
 
         val soknadUnderArbeid = createSoknadUnderArbeid("12345678910")
 
-        every { dokumentListeService.lagDokumentListe(any()) } returns emptyList()
-        every { digisosApiV1Client.krypterOgLastOppFiler(any(), any(), any(), any(), any(), any(), any()) } returns "digisosid"
+        every { dokumentListeService.lagDokumentListeForV2(any()) } returns emptyList()
+        every { digisosApiV2Client.krypterOgLastOppFiler(any(), any(), any(), any(), any(), any(), any()) } returns "digisosid"
         every { soknadUnderArbeidService.settInnsendingstidspunktPaSoknad(any()) } just runs
         every { henvendelseService.oppdaterMetadataVedAvslutningAvSoknad(any(), any(), any(), any()) } just runs
         every { soknadUnderArbeidRepository.slettSoknad(any(), any()) } just runs
