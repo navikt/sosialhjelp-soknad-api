@@ -65,16 +65,6 @@ open class NavEnhetRessurs(
         return navEnhetFrontend?.let { listOf(it) } ?: emptyList()
     }
 
-    private fun utledAdresseValg(oppholdsadresse: JsonAdresse?): String? {
-        return if (oppholdsadresse == null) {
-            null
-        } else if (oppholdsadresse.adresseValg == null) {
-            null
-        } else {
-            oppholdsadresse.adresseValg.toString()
-        }
-    }
-
     @GET
     @Path("/navEnhet")
     open fun hentValgtNavEnhet(@PathParam("behandlingsId") behandlingsId: String): NavEnhetFrontend? {
@@ -113,6 +103,16 @@ open class NavEnhetRessurs(
             .withEnhetsnummer(navEnhetFrontend.enhetsnr)
             .withKommunenummer(navEnhetFrontend.kommuneNr)
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
+    }
+
+    private fun utledAdresseValg(oppholdsadresse: JsonAdresse?): String? {
+        return if (oppholdsadresse == null) {
+            null
+        } else if (oppholdsadresse.adresseValg == null) {
+            null
+        } else {
+            oppholdsadresse.adresseValg.toString()
+        }
     }
 
     private fun createNavEnhetsnavn(enhetsnavn: String, kommunenavn: String?): String {
