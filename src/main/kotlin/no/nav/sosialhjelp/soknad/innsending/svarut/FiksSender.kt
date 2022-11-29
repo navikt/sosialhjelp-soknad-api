@@ -95,14 +95,7 @@ class FiksSender(
         soknadMetadata: SoknadMetadata,
         svarPaForsendelseId: ForsendelsesId?
     ) {
-        check(
-            !(
-                soknadMetadata.erEttersendelse && (
-                    svarPaForsendelseId == null || svarPaForsendelseId.id == null || svarPaForsendelseId.id.toString()
-                        .isEmpty()
-                    )
-                )
-        ) {
+        check(!(soknadMetadata.erEttersendelse && svarPaForsendelseId?.id?.toString().isNullOrEmpty())) {
             "Ettersendelse med behandlingsId " + soknadMetadata.behandlingsId +
                 " er knyttet til en søknad med behandlingsId " + soknadMetadata.tilknyttetBehandlingsId +
                 " som ikke har mottat fiksForsendelseId. Innsending til SvarUt vil feile nå og bli forsøkt på nytt senere."

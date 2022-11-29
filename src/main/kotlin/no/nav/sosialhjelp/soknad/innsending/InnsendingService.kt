@@ -57,7 +57,6 @@ open class InnsendingService(
             ?: throw IllegalStateException("TilknyttetBehandlingsId kan ikke være null for en ettersendelse")
 
         return soknadMetadataRepository.hent(tilknyttetBehandlingsId)?.fiksForsendelseId
-            ?: throw IllegalStateException("Finner ikke søknaden det skal ettersendes på")
     }
 
     companion object {

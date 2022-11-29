@@ -40,7 +40,7 @@ internal class FiksSenderTest {
     private val sosialhjelpPdfGenerator: SosialhjelpPdfGenerator = mockk()
     private val svarUtService: SvarUtService = mockk()
 
-    private var fiksSender: FiksSender? = null
+    private val fiksSender = FiksSender(dokumentKrypterer, innsendingService, sosialhjelpPdfGenerator, true, svarUtService)
 
     @BeforeEach
     fun setUp() {
@@ -55,8 +55,6 @@ internal class FiksSenderTest {
         every { sosialhjelpPdfGenerator.generateEttersendelsePdf(any(), any()) } returns byteArrayOf(1, 2, 3)
         every { sosialhjelpPdfGenerator.generateBrukerkvitteringPdf() } returns byteArrayOf(1, 2, 3)
         every { innsendingService.hentAlleOpplastedeVedleggForSoknad(any()) } returns emptyList()
-
-        fiksSender = FiksSender(dokumentKrypterer, innsendingService, sosialhjelpPdfGenerator, true, svarUtService)
     }
 
     @AfterEach
@@ -70,7 +68,7 @@ internal class FiksSenderTest {
 
         val soknadMetadata = lagSoknadMetadata()
         val filnavnInputStreamMap = HashMap<String, InputStream>()
-        val forsendelse = fiksSender!!.createForsendelse(soknadMetadata, filnavnInputStreamMap)
+        val forsendelse = fiksSender.createForsendelse(soknadMetadata, filnavnInputStreamMap)
 
         val adresse = forsendelse.mottaker.digitalAdresse
         assertThat(adresse.organisasjonsNummer).isEqualTo(ORGNUMMER)
@@ -92,12 +90,12 @@ internal class FiksSenderTest {
     fun opprettForsendelseSetterRiktigInfoPaForsendelsenUtenKryptering() {
         every { MiljoUtils.isNonProduction() } returns true
         every { MiljoUtils.environmentName } returns "test"
-        fiksSender = FiksSender(dokumentKrypterer, innsendingService, sosialhjelpPdfGenerator, false, svarUtService)
+        val fiksSenderUtenKryptering = FiksSender(dokumentKrypterer, innsendingService, sosialhjelpPdfGenerator, false, svarUtService)
         every { innsendingService.hentSoknadUnderArbeid(any(), any()) } returns createSoknadUnderArbeid()
 
         val soknadMetadata = lagSoknadMetadata()
         val filnavnInputStreamMap = HashMap<String, InputStream>()
-        val forsendelse = fiksSender!!.createForsendelse(soknadMetadata, filnavnInputStreamMap)
+        val forsendelse = fiksSenderUtenKryptering.createForsendelse(soknadMetadata, filnavnInputStreamMap)
 
         assertThat(forsendelse.isKryptert).isFalse
         assertThat(forsendelse.isKrevNiva4Innlogging).isFalse
@@ -110,7 +108,7 @@ internal class FiksSenderTest {
 
         val soknadMetadata = lagSoknadMetadata()
         val filnavnInputStreamMap = HashMap<String, InputStream>()
-        val forsendelse = fiksSender!!.createForsendelse(soknadMetadata, filnavnInputStreamMap)
+        val forsendelse = fiksSender.createForsendelse(soknadMetadata, filnavnInputStreamMap)
 
         assertThat(forsendelse.tittel).isEqualTo(FiksSender.SOKNAD_TIL_NAV)
     }
@@ -126,7 +124,7 @@ internal class FiksSenderTest {
         soknadMetadata.tilknyttetBehandlingsId = "12345"
 
         val filnavnInputStreamMap = HashMap<String, InputStream>()
-        val forsendelse = fiksSender!!.createForsendelse(soknadMetadata, filnavnInputStreamMap)
+        val forsendelse = fiksSender.createForsendelse(soknadMetadata, filnavnInputStreamMap)
 
         assertThat(forsendelse.tittel).isEqualTo(FiksSender.ETTERSENDELSE_TIL_NAV)
     }
@@ -140,13 +138,13 @@ internal class FiksSenderTest {
         val filnavnInputStreamMap = HashMap<String, InputStream>()
 
         assertThatExceptionOfType(IllegalStateException::class.java)
-            .isThrownBy { fiksSender!!.createForsendelse(soknadMetadataEttersendelse, filnavnInputStreamMap) }
+            .isThrownBy { fiksSender.createForsendelse(soknadMetadataEttersendelse, filnavnInputStreamMap) }
     }
 
     @Test
     fun hentDokumenterFraSoknadReturnererFireDokumenterForSoknadUtenVedlegg() {
         val filnavnInputStreamMap = HashMap<String, InputStream>()
-        val fiksDokumenter = fiksSender!!.hentDokumenterFraSoknad(createSoknadUnderArbeid(), filnavnInputStreamMap)
+        val fiksDokumenter = fiksSender.hentDokumenterFraSoknad(createSoknadUnderArbeid(), filnavnInputStreamMap)
         assertThat(fiksDokumenter).hasSize(5)
         assertThat(fiksDokumenter[0].filnavn).isEqualTo("soknad.json")
         assertThat(fiksDokumenter[1].filnavn).isEqualTo("Soknad.pdf")
@@ -163,7 +161,7 @@ internal class FiksSenderTest {
         val soknadUnderArbeid = createSoknadUnderArbeid()
         soknadUnderArbeid.tilknyttetBehandlingsId = "123"
         soknadUnderArbeid.jsonInternalSoknad = lagInternalSoknadForEttersending()
-        val fiksDokumenter = fiksSender!!.hentDokumenterFraSoknad(soknadUnderArbeid, filnavnInputStreamMap)
+        val fiksDokumenter = fiksSender.hentDokumenterFraSoknad(soknadUnderArbeid, filnavnInputStreamMap)
         assertThat(fiksDokumenter).hasSize(4)
         assertThat(fiksDokumenter[0].filnavn).isEqualTo("ettersendelse.pdf")
         assertThat(fiksDokumenter[1].filnavn).isEqualTo("vedlegg.json")
@@ -177,7 +175,7 @@ internal class FiksSenderTest {
         val soknadUnderArbeid = createSoknadUnderArbeid()
         soknadUnderArbeid.jsonInternalSoknad?.soknad = null
         assertThatExceptionOfType(RuntimeException::class.java)
-            .isThrownBy { fiksSender!!.hentDokumenterFraSoknad(soknadUnderArbeid, filnavnInputStreamMap) }
+            .isThrownBy { fiksSender.hentDokumenterFraSoknad(soknadUnderArbeid, filnavnInputStreamMap) }
     }
 
     @Test
@@ -187,12 +185,7 @@ internal class FiksSenderTest {
         soknadUnderArbeid.tilknyttetBehandlingsId = "123"
         soknadUnderArbeid.jsonInternalSoknad?.vedlegg = null
         assertThatExceptionOfType(RuntimeException::class.java)
-            .isThrownBy {
-                fiksSender!!.hentDokumenterFraSoknad(
-                    soknadUnderArbeid,
-                    filnavnInputStreamMap
-                )
-            }
+            .isThrownBy { fiksSender.hentDokumenterFraSoknad(soknadUnderArbeid, filnavnInputStreamMap) }
     }
 
     private fun lagInternalSoknadForEttersending(): JsonInternalSoknad {

@@ -16,7 +16,6 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderAr
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
 import org.assertj.core.api.Assertions.assertThat
-import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
@@ -50,19 +49,28 @@ internal class InnsendingServiceTest {
     }
 
     @Test
-    fun `finn FiksForsendelseId fra SoknadMetadata for Ettersendelse`() {
+    fun `finnFiksForsendelseIdForEttersendelse fra SoknadMetadata`() {
         val fiksForsendelseId = innsendingService.finnFiksForsendelseIdForEttersendelse(createSoknadUnderArbeidForEttersendelse())
         assertThat(fiksForsendelseId).isEqualTo(FIKSFORSENDELSEID)
     }
 
     @Test
-    fun `kaster feil hvis SoknadMetadata mangler for ettersendelse`() {
+    fun `finnFiksForsendelseIdForEttersendelse returnerer null hvis fiksForsendelseId ikke finnes for SoknadMetadata`() {
         every { soknadMetadataRepository.hent(any()) } returns null
 
-        assertThatExceptionOfType(IllegalStateException::class.java)
-            .isThrownBy {
-                innsendingService.finnFiksForsendelseIdForEttersendelse(createSoknadUnderArbeidForEttersendelse())
-            }
+        val fiksForsendelseId = innsendingService.finnFiksForsendelseIdForEttersendelse(createSoknadUnderArbeidForEttersendelse())
+        assertThat(fiksForsendelseId).isNull()
+    }
+
+    @Test
+    internal fun `skal oppdatere soknadmetadata ved innsending`() {
+        val soknadMetadata = createSoknadMetadata()
+        every { soknadMetadataRepository.hent(any()) } returns soknadMetadata
+        every { soknadMetadataRepository.oppdater(any()) } just runs
+
+        innsendingService.oppdaterSoknadMetadataVedSendingTilFiks(FIKSFORSENDELSEID, BEHANDLINGSID, EIER)
+
+        verify(exactly = 1) { soknadMetadataRepository.oppdater(any()) }
     }
 
     private fun createSoknadUnderArbeid(): SoknadUnderArbeid {
