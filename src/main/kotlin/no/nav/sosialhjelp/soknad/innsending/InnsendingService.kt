@@ -68,13 +68,12 @@ open class InnsendingService(
         return opplastetVedleggRepository.hentVedleggForSoknad(soknadUnderArbeid.soknadId, soknadUnderArbeid.eier)
     }
 
-    open fun finnFiksForsendelseIdForEttersendelse(soknadUnderArbeid: SoknadUnderArbeid): String {
+    open fun finnFiksForsendelseIdForEttersendelse(soknadUnderArbeid: SoknadUnderArbeid): String? {
         val tilknyttetBehandlingsId = soknadUnderArbeid.tilknyttetBehandlingsId
             ?: throw IllegalStateException("TilknyttetBehandlingsId kan ikke være null for en ettersendelse")
 
         return sendtSoknadRepository.hentSendtSoknad(tilknyttetBehandlingsId, soknadUnderArbeid.eier)?.fiksforsendelseId
             ?: soknadMetadataRepository.hent(tilknyttetBehandlingsId)?.fiksForsendelseId
-            ?: throw IllegalStateException("Finner ikke søknaden det skal ettersendes på")
     }
 
     fun mapSoknadUnderArbeidTilSendtSoknad(soknadUnderArbeid: SoknadUnderArbeid): SendtSoknad {

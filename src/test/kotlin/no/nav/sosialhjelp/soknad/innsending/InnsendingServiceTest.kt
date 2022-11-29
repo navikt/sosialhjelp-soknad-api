@@ -106,14 +106,12 @@ internal class InnsendingServiceTest {
     }
 
     @Test
-    fun finnSendtSoknadForEttersendelseKasterFeilHvisSendtSoknadOgMetadataManglerForEttersendelse() {
+    fun `finnFiksForsendelseIdForEttersendelse returnerer null hvis fiksForsendelseId ikke finnes for SendtSoknad eller SoknadMetadata`() {
         every { sendtSoknadRepository.hentSendtSoknad(any(), any()) } returns null
         every { soknadMetadataRepository.hent(any()) } returns null
 
-        assertThatExceptionOfType(IllegalStateException::class.java)
-            .isThrownBy {
-                innsendingService.finnFiksForsendelseIdForEttersendelse(createSoknadUnderArbeidForEttersendelse())
-            }
+        val fiksForsendelseId = innsendingService.finnFiksForsendelseIdForEttersendelse(createSoknadUnderArbeidForEttersendelse())
+        assertThat(fiksForsendelseId).isNull()
     }
 
     @Test
