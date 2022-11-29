@@ -15,7 +15,6 @@ import org.springframework.stereotype.Component
 import org.springframework.transaction.TransactionStatus
 import org.springframework.transaction.support.TransactionCallbackWithoutResult
 import org.springframework.transaction.support.TransactionTemplate
-import java.time.LocalDateTime
 
 @Component
 open class InnsendingService(
@@ -45,9 +44,14 @@ open class InnsendingService(
             ?.let { soknadUnderArbeidRepository.slettSoknad(it, eier) }
     }
 
-    open fun oppdaterSendtSoknadVedSendingTilFiks(fiksforsendelseId: String?, behandlingsId: String?, eier: String?) {
+    open fun oppdaterTabellerVedSendingTilFiks(fiksforsendelseId: String?, behandlingsId: String?, eier: String?) {
         logger.debug("Oppdaterer sendt søknad for behandlingsid $behandlingsId og eier $eier")
         sendtSoknadRepository.oppdaterSendtSoknadVedSendingTilFiks(fiksforsendelseId, behandlingsId, eier)
+
+        logger.debug("Oppdaterer soknadmetadata for behandlingsid $behandlingsId")
+        val soknadMetadata = soknadMetadataRepository.hent(behandlingsId)
+        soknadMetadata?.fiksForsendelseId = fiksforsendelseId
+        soknadMetadataRepository.oppdater(soknadMetadata)
     }
 
     open fun hentSendtSoknad(behandlingsId: String, eier: String?): SendtSoknad {
@@ -64,31 +68,13 @@ open class InnsendingService(
         return opplastetVedleggRepository.hentVedleggForSoknad(soknadUnderArbeid.soknadId, soknadUnderArbeid.eier)
     }
 
-    open fun finnSendtSoknadForEttersendelse(soknadUnderArbeid: SoknadUnderArbeid): SendtSoknad {
+    open fun finnFiksForsendelseIdForEttersendelse(soknadUnderArbeid: SoknadUnderArbeid): String {
         val tilknyttetBehandlingsId = soknadUnderArbeid.tilknyttetBehandlingsId
             ?: throw IllegalStateException("TilknyttetBehandlingsId kan ikke være null for en ettersendelse")
 
-        return sendtSoknadRepository.hentSendtSoknad(tilknyttetBehandlingsId, soknadUnderArbeid.eier)
-            ?: finnSendtSoknadForEttersendelsePaGammeltFormat(tilknyttetBehandlingsId)
+        return sendtSoknadRepository.hentSendtSoknad(tilknyttetBehandlingsId, soknadUnderArbeid.eier)?.fiksforsendelseId
+            ?: soknadMetadataRepository.hent(tilknyttetBehandlingsId)?.fiksForsendelseId
             ?: throw IllegalStateException("Finner ikke søknaden det skal ettersendes på")
-    }
-
-    private fun finnSendtSoknadForEttersendelsePaGammeltFormat(tilknyttetBehandlingsId: String): SendtSoknad? {
-        val originalSoknadGammeltFormat = soknadMetadataRepository.hent(tilknyttetBehandlingsId) ?: return null
-        val orgnr = originalSoknadGammeltFormat.orgnr ?: return null
-        val navEnhet = originalSoknadGammeltFormat.navEnhet ?: return null
-        return SendtSoknad(
-            sendtSoknadId = 0L, // dummy id. SendtSoknadRepository.opprettSendtSoknad bruker next sequence value som id
-            behandlingsId = "",
-            tilknyttetBehandlingsId = null,
-            eier = "",
-            fiksforsendelseId = originalSoknadGammeltFormat.fiksForsendelseId,
-            orgnummer = orgnr,
-            navEnhetsnavn = navEnhet,
-            brukerOpprettetDato = LocalDateTime.now(),
-            brukerFerdigDato = LocalDateTime.now(),
-            sendtDato = LocalDateTime.now()
-        )
     }
 
     fun mapSoknadUnderArbeidTilSendtSoknad(soknadUnderArbeid: SoknadUnderArbeid): SendtSoknad {

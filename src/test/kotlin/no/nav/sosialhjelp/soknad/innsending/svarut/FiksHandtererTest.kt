@@ -29,7 +29,7 @@ internal class FiksHandtererTest {
     internal fun setUp() {
         clearAllMocks()
         every { innsendingService.finnOgSlettSoknadUnderArbeidVedSendingTilFiks(any(), any()) } just runs
-        every { innsendingService.oppdaterSendtSoknadVedSendingTilFiks(any(), any(), any()) } just runs
+        every { innsendingService.oppdaterTabellerVedSendingTilFiks(any(), any(), any()) } just runs
     }
 
     @Test
@@ -41,16 +41,16 @@ internal class FiksHandtererTest {
         fiksHandterer.eksekver(oppgave)
         verify(exactly = 1) { fiksSender.sendTilFiks(any()) }
         verify(exactly = 0) { innsendingService.finnOgSlettSoknadUnderArbeidVedSendingTilFiks(any(), any()) }
-        verify(exactly = 0) { innsendingService.oppdaterSendtSoknadVedSendingTilFiks(any(), any(), any()) }
+        verify(exactly = 0) { innsendingService.oppdaterTabellerVedSendingTilFiks(any(), any(), any()) }
         assertThat(oppgave.steg).isEqualTo(22)
 
         fiksHandterer.eksekver(oppgave)
         verify(exactly = 1) { innsendingService.finnOgSlettSoknadUnderArbeidVedSendingTilFiks(BEHANDLINGSID, AVSENDER) }
-        verify(exactly = 0) { innsendingService.oppdaterSendtSoknadVedSendingTilFiks(any(), any(), any()) }
+        verify(exactly = 0) { innsendingService.oppdaterTabellerVedSendingTilFiks(any(), any(), any()) }
         assertThat(oppgave.steg).isEqualTo(23)
 
         fiksHandterer.eksekver(oppgave)
-        verify(exactly = 1) { innsendingService.oppdaterSendtSoknadVedSendingTilFiks(any(), BEHANDLINGSID, AVSENDER) }
+        verify(exactly = 1) { innsendingService.oppdaterTabellerVedSendingTilFiks(any(), BEHANDLINGSID, AVSENDER) }
         assertThat(oppgave.status).isEqualTo(Status.FERDIG)
     }
 
@@ -80,22 +80,22 @@ internal class FiksHandtererTest {
         assertThat(oppgave.oppgaveResultat!!.feilmelding).isEqualTo("Ettersendelse har svarPaForsendelseId null")
         verify(exactly = 1) { fiksSender.sendTilFiks(any()) }
         verify(exactly = 0) { innsendingService.finnOgSlettSoknadUnderArbeidVedSendingTilFiks(any(), any()) }
-        verify(exactly = 0) { innsendingService.oppdaterSendtSoknadVedSendingTilFiks(any(), any(), any()) }
+        verify(exactly = 0) { innsendingService.oppdaterTabellerVedSendingTilFiks(any(), any(), any()) }
         assertThat(oppgave.steg).isEqualTo(21)
 
         fiksHandterer.eksekver(oppgave)
         verify(exactly = 2) { fiksSender.sendTilFiks(any()) }
         verify(exactly = 0) { innsendingService.finnOgSlettSoknadUnderArbeidVedSendingTilFiks(any(), any()) }
-        verify(exactly = 0) { innsendingService.oppdaterSendtSoknadVedSendingTilFiks(any(), any(), any()) }
+        verify(exactly = 0) { innsendingService.oppdaterTabellerVedSendingTilFiks(any(), any(), any()) }
 
         assertThat(oppgave.steg).isEqualTo(22)
         fiksHandterer.eksekver(oppgave)
         verify(exactly = 1) { innsendingService.finnOgSlettSoknadUnderArbeidVedSendingTilFiks(BEHANDLINGSID, AVSENDER) }
-        verify(exactly = 0) { innsendingService.oppdaterSendtSoknadVedSendingTilFiks(any(), any(), any()) }
+        verify(exactly = 0) { innsendingService.oppdaterTabellerVedSendingTilFiks(any(), any(), any()) }
 
         assertThat(oppgave.steg).isEqualTo(23)
         fiksHandterer.eksekver(oppgave)
-        verify(exactly = 1) { innsendingService.oppdaterSendtSoknadVedSendingTilFiks(any(), BEHANDLINGSID, AVSENDER) }
+        verify(exactly = 1) { innsendingService.oppdaterTabellerVedSendingTilFiks(any(), BEHANDLINGSID, AVSENDER) }
         assertThat(oppgave.status).isEqualTo(Status.FERDIG)
     }
 

@@ -85,9 +85,9 @@ class FiksSender(
         sendtSoknad: SendtSoknad,
         soknadUnderArbeid: SoknadUnderArbeid
     ): ForsendelsesId? {
-        return if (sendtSoknad.erEttersendelse && innsendingService.finnSendtSoknadForEttersendelse(soknadUnderArbeid).fiksforsendelseId != null) {
+        return if (sendtSoknad.erEttersendelse && innsendingService.finnFiksForsendelseIdForEttersendelse(soknadUnderArbeid) != null) {
             ForsendelsesId()
-                .withId(UUID.fromString(innsendingService.finnSendtSoknadForEttersendelse(soknadUnderArbeid).fiksforsendelseId))
+                .withId(UUID.fromString(innsendingService.finnFiksForsendelseIdForEttersendelse(soknadUnderArbeid)))
         } else null
     }
 

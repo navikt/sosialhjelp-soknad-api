@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.innsending
 
+import io.mockk.called
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
@@ -89,21 +90,19 @@ internal class InnsendingServiceTest {
     }
 
     @Test
-    fun finnSendtSoknadForEttersendelseHenterMottakerinfoFraSendtSoknadVedEttersendelse() {
-        val sendtSoknad = innsendingService.finnSendtSoknadForEttersendelse(createSoknadUnderArbeidForEttersendelse())
-        assertThat(sendtSoknad.orgnummer).isEqualTo(ORGNR)
-        assertThat(sendtSoknad.navEnhetsnavn).isEqualTo(NAVENHETSNAVN)
-        assertThat(sendtSoknad.tilknyttetBehandlingsId).isEqualTo(TILKNYTTET_BEHANDLINGSID)
+    fun `finnFiksForsendelseIdForEttersendelse fra SendtSoknad`() {
+        val fiksForsendelseId = innsendingService.finnFiksForsendelseIdForEttersendelse(createSoknadUnderArbeidForEttersendelse())
+        assertThat(fiksForsendelseId).isEqualTo(FIKSFORSENDELSEID)
+        verify { soknadMetadataRepository wasNot called }
     }
 
     @Test
-    fun finnSendtSoknadForEttersendelseHenterInfoFraSoknadMetadataHvisSendtSoknadMangler() {
+    fun `finnFiksForsendelseIdForEttersendelse fra SoknadMetadata hvis SendtSoknad mangler`() {
         every { sendtSoknadRepository.hentSendtSoknad(any(), any()) } returns null
         every { soknadMetadataRepository.hent(any()) } returns createSoknadMetadata()
-        val soknadMedMottaksinfoFraMetadata =
-            innsendingService.finnSendtSoknadForEttersendelse(createSoknadUnderArbeidForEttersendelse())
-        assertThat(soknadMedMottaksinfoFraMetadata.orgnummer).isEqualTo(ORGNR_METADATA)
-        assertThat(soknadMedMottaksinfoFraMetadata.navEnhetsnavn).isEqualTo(NAVENHETSNAVN_METADATA)
+        val fiksForsendelseId =
+            innsendingService.finnFiksForsendelseIdForEttersendelse(createSoknadUnderArbeidForEttersendelse())
+        assertThat(fiksForsendelseId).isEqualTo(FIKSFORSENDELSEID)
     }
 
     @Test
@@ -113,8 +112,22 @@ internal class InnsendingServiceTest {
 
         assertThatExceptionOfType(IllegalStateException::class.java)
             .isThrownBy {
-                innsendingService.finnSendtSoknadForEttersendelse(createSoknadUnderArbeidForEttersendelse())
+                innsendingService.finnFiksForsendelseIdForEttersendelse(createSoknadUnderArbeidForEttersendelse())
             }
+    }
+
+    @Test
+    internal fun `skal oppdatere sendt_soknad og soknadmetadata ved innsending`() {
+        every { sendtSoknadRepository.oppdaterSendtSoknadVedSendingTilFiks(any(), any(), any()) } just runs
+
+        val soknadMetadata = createSoknadMetadata()
+        every { soknadMetadataRepository.hent(any()) } returns soknadMetadata
+        every { soknadMetadataRepository.oppdater(any()) } just runs
+
+        innsendingService.oppdaterTabellerVedSendingTilFiks(FIKSFORSENDELSEID, BEHANDLINGSID, EIER)
+
+        verify(exactly = 1) { sendtSoknadRepository.oppdaterSendtSoknadVedSendingTilFiks(any(), any(), any()) }
+        verify(exactly = 1) { soknadMetadataRepository.oppdater(any()) }
     }
 
     private fun createSoknadUnderArbeid(): SoknadUnderArbeid {
@@ -187,6 +200,7 @@ internal class InnsendingServiceTest {
             fnr = EIER,
             orgnr = ORGNR_METADATA,
             navEnhet = NAVENHETSNAVN_METADATA,
+            fiksForsendelseId = FIKSFORSENDELSEID,
             opprettetDato = LocalDateTime.now(),
             sistEndretDato = LocalDateTime.now()
         )
