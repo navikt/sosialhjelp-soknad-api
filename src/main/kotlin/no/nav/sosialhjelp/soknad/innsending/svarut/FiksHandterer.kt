@@ -61,7 +61,7 @@ class FiksHandterer(
     }
 
     private fun lagreResultat(behandlingsId: String, resultat: FiksResultat, eier: String) {
-        innsendingService.oppdaterSendtSoknadVedSendingTilFiks(resultat.fiksForsendelsesId, behandlingsId, eier)
+        innsendingService.oppdaterTabellerVedSendingTilFiks(resultat.fiksForsendelsesId, behandlingsId, eier)
     }
 
     companion object {
