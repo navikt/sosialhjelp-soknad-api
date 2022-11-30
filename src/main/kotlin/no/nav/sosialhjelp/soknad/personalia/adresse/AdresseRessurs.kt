@@ -74,12 +74,13 @@ open class AdresseRessurs(
         personalia.oppholdsadresse.adresseValg = adresserFrontend.valg
         personalia.postadresse = midlertidigLosningForPostadresse(personalia.oppholdsadresse)
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
-        return navEnhetRessurs.findSoknadsmottaker(
+        val navEnhetFrontend = navEnhetRessurs.findSoknadsmottaker(
             eier,
             jsonInternalSoknad.soknad,
             adresserFrontend.valg.toString(),
             null
         )
+        return navEnhetFrontend?.let { listOf(it) } ?: emptyList()
     }
 
     private fun midlertidigLosningForPostadresse(oppholdsadresse: JsonAdresse?): JsonAdresse? {
