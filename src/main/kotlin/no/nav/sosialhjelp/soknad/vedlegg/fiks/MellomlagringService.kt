@@ -57,8 +57,11 @@ class MellomlagringService(
 
     fun getVedlegg(behandlingsId: String, vedleggId: String): MellomlagretVedlegg? {
         val navEksternId = if (isNonProduction()) createPrefixedBehandlingsId(behandlingsId) else behandlingsId
-        return mellomlagringClient.getMellomlagredeVedlegg(navEksternId = navEksternId)
-            ?.mellomlagringMetadataList
+        val mellomlagredeVedlegg = mellomlagringClient.getMellomlagredeVedlegg(navEksternId = navEksternId)?.mellomlagringMetadataList
+        if (mellomlagredeVedlegg == null) {
+            log.warn("Ingen mellomlagrede vedlegg funnet ved forsøkt henting av vedleggId $vedleggId")
+        }
+        return mellomlagredeVedlegg
             ?.firstOrNull { it.filId == vedleggId }
             ?.filnavn
             ?.let {
