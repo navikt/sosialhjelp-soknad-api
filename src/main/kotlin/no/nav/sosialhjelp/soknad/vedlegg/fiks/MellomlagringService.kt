@@ -58,7 +58,7 @@ class MellomlagringService(
     fun getVedlegg(behandlingsId: String, vedleggId: String): MellomlagretVedlegg? {
         val navEksternId = if (isNonProduction()) createPrefixedBehandlingsId(behandlingsId) else behandlingsId
         val mellomlagredeVedlegg = mellomlagringClient.getMellomlagredeVedlegg(navEksternId = navEksternId)?.mellomlagringMetadataList
-        if (mellomlagredeVedlegg == null) {
+        if (mellomlagredeVedlegg.isNullOrEmpty()) {
             log.warn("Ingen mellomlagrede vedlegg funnet ved forsøkt henting av vedleggId $vedleggId")
         }
         return mellomlagredeVedlegg
@@ -140,7 +140,7 @@ class MellomlagringService(
 
         // hent alle mellomlagrede vedlegg
         val mellomlagredeVedlegg = mellomlagringClient.getMellomlagredeVedlegg(navEksternId = navEksternId)?.mellomlagringMetadataList
-        if (mellomlagredeVedlegg == null) {
+        if (mellomlagredeVedlegg.isNullOrEmpty()) {
             log.warn("Ingen mellomlagrede vedlegg funnet ved forsøkt sletting av vedleggId $vedleggId")
             return
         }
@@ -172,8 +172,11 @@ class MellomlagringService(
     }
 
     fun deleteAllVedlegg(behandlingsId: String) {
-        if (getAllVedlegg(behandlingsId).isNotEmpty()) {
-            val navEksternId = if (isNonProduction()) createPrefixedBehandlingsId(behandlingsId) else behandlingsId
+        val navEksternId = if (isNonProduction()) createPrefixedBehandlingsId(behandlingsId) else behandlingsId
+        val mellomlagredeVedlegg = mellomlagringClient.getMellomlagredeVedlegg(navEksternId = navEksternId)?.mellomlagringMetadataList
+        if (mellomlagredeVedlegg.isNullOrEmpty()) {
+            log.warn("Ingen mellomlagrede vedlegg funnet ved forsøkt sletting av alle vedlegg for behandlingsId $behandlingsId")
+        } else {
             mellomlagringClient.deleteAllVedlegg(navEksternId = navEksternId)
         }
     }
