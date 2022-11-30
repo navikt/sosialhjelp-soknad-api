@@ -99,8 +99,9 @@ class MellomlagringService(
 
         mellomlagringClient.postVedlegg(navEksternId = navEksternId, filOpplasting = filOpplasting)
 
-        val mellomlagredeVedlegg = mellomlagringClient.getMellomlagredeVedlegg(navEksternId = navEksternId)
-        val filId = mellomlagredeVedlegg?.mellomlagringMetadataList?.firstOrNull { it.filnavn == filnavn }?.filId
+        val mellomlagredeVedlegg = mellomlagringClient.getMellomlagredeVedlegg(navEksternId = navEksternId)?.mellomlagringMetadataList
+
+        val filId = mellomlagredeVedlegg?.firstOrNull { it.filnavn == filnavn }?.filId
             ?: throw IllegalStateException("Klarte ikke finne det mellomlagrede vedlegget som akkurat ble lastet opp")
 
         // oppdater SoknadUnderArbeid etter suksessfull opplasting
@@ -135,7 +136,11 @@ class MellomlagringService(
         val navEksternId = if (isNonProduction()) createPrefixedBehandlingsId(behandlingsId) else behandlingsId
 
         // hent alle mellomlagrede vedlegg
-        val mellomlagredeVedlegg = mellomlagringClient.getMellomlagredeVedlegg(navEksternId = navEksternId)?.mellomlagringMetadataList ?: return
+        val mellomlagredeVedlegg = mellomlagringClient.getMellomlagredeVedlegg(navEksternId = navEksternId)?.mellomlagringMetadataList
+        if (mellomlagredeVedlegg == null) {
+            log.warn("Ingen mellomlagrede vedlegg funnet ved forsøkt sletting av vedleggId $vedleggId")
+            return
+        }
 
         val aktueltVedlegg = mellomlagredeVedlegg.firstOrNull { it.filId == vedleggId } ?: return
 
