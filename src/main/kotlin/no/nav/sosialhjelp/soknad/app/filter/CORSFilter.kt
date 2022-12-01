@@ -15,7 +15,7 @@ class CORSFilter : ContainerResponseFilter {
             responseContext.headers.add("Access-Control-Allow-Origin", origin)
             responseContext.headers.add(
                 "Access-Control-Allow-Headers",
-                "Origin, Content-Type, Accept, X-XSRF-TOKEN, Nav-Call-Id, Authorization, sentry-trace"
+                "Origin, Content-Type, Accept, X-XSRF-TOKEN, Nav-Call-Id, Authorization, sentry-trace, baggage"
             )
             responseContext.headers.add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
             responseContext.headers.add("Access-Control-Allow-Credentials", "true")
