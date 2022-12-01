@@ -241,7 +241,6 @@ open class PdlDtoMapper(
         //  Man kan ha en oppholdsadresse med Freg som master og en med PDL som master.
         //  Flertallet av oppholdsadressene fra Freg vil være norske, og flertallet av oppholdsadresser registrert av NAV vil være utenlandske.
         //  Fra folkeregisteret kan man også få oppholdsadresse uten en faktisk adresse, men med informasjon i oppholdAnnetSted.
-        log.info("Fant ${dtos.size} oppholdsadresse(r) i PDL")
         return dtos
             .firstOrNull { it.vegadresse != null && filterVegadresseNotEqualToBostedsadresse(bostedsadresseDtos, it.vegadresse) }
             ?.let { Oppholdsadresse(it.coAdressenavn, it.vegadresse?.let { vegadresse -> mapToVegadresse(vegadresse) }) }
