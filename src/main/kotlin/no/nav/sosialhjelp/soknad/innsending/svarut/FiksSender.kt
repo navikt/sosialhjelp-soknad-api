@@ -85,9 +85,9 @@ class FiksSender(
         sendtSoknad: SendtSoknad,
         soknadUnderArbeid: SoknadUnderArbeid
     ): ForsendelsesId? {
-        return if (sendtSoknad.erEttersendelse && innsendingService.finnSendtSoknadForEttersendelse(soknadUnderArbeid).fiksforsendelseId != null) {
+        return if (sendtSoknad.erEttersendelse && innsendingService.finnFiksForsendelseIdForEttersendelse(soknadUnderArbeid) != null) {
             ForsendelsesId()
-                .withId(UUID.fromString(innsendingService.finnSendtSoknadForEttersendelse(soknadUnderArbeid).fiksforsendelseId))
+                .withId(UUID.fromString(innsendingService.finnFiksForsendelseIdForEttersendelse(soknadUnderArbeid)))
         } else null
     }
 
@@ -95,14 +95,7 @@ class FiksSender(
         sendtSoknad: SendtSoknad,
         svarPaForsendelseId: ForsendelsesId?
     ) {
-        check(
-            !(
-                sendtSoknad.erEttersendelse && (
-                    svarPaForsendelseId == null || svarPaForsendelseId.id == null || svarPaForsendelseId.id.toString()
-                        .isEmpty()
-                    )
-                )
-        ) {
+        check(!(sendtSoknad.erEttersendelse && svarPaForsendelseId?.id?.toString().isNullOrEmpty())) {
             "Ettersendelse med behandlingsId " + sendtSoknad.behandlingsId +
                 " er knyttet til en søknad med behandlingsId " + sendtSoknad.tilknyttetBehandlingsId +
                 " som ikke har mottat fiksForsendelseId. Innsending til SvarUt vil feile nå og bli forsøkt på nytt senere."

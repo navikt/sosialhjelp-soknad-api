@@ -119,7 +119,7 @@ object KommuneTilNavEnhetMapper {
         "1514" to "978607063", // Sande
         "0105" to "974560593", // Sarpsborg
         "1221" to "991459634", // Stord
-        "0827" to "973802003", // Hjartdal
+        "0827" to "930261017", // Hjartdal
         "0807" to "984001797", // Notodden
         "0632" to "964963282", // Rollag, Flesberg, Nore og Uvdal
         "0604" to "974572486", // Kongsberg
