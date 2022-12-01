@@ -42,7 +42,7 @@ class DigisosApiService(
         log.info("Starter innsending av søknad med behandlingsId $behandlingsId, skal sendes til DigisosApi v2")
         val vedlegg = convertToVedleggMetadataListe(soknadUnderArbeid)
         henvendelseService.oppdaterMetadataVedAvslutningAvSoknad(behandlingsId, vedlegg, soknadUnderArbeid, true)
-        val filOpplastinger = dokumentListeService.lagDokumentListeForV2(soknadUnderArbeid)
+        val filOpplastinger = dokumentListeService.lagDokumentListe(soknadUnderArbeid)
         log.info("Laster opp ${filOpplastinger.size}")
         val soknadJson = getSoknadJson(soknadUnderArbeid)
         val tilleggsinformasjonJson = getTilleggsinformasjonJson(jsonInternalSoknad.soknad)

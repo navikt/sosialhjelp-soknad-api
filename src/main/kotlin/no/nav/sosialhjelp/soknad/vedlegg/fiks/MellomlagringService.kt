@@ -35,7 +35,7 @@ class MellomlagringService(
 ) {
 
     fun getAllVedlegg(behandlingsId: String): List<MellomlagretVedleggMetadata> {
-        val navEksternId = if (isNonProduction()) createPrefixedBehandlingsId(behandlingsId) else behandlingsId
+        val navEksternId = getNavEksternId(behandlingsId)
         return mellomlagringClient.getMellomlagredeVedlegg(navEksternId = navEksternId)
             ?.mellomlagringMetadataList
             ?.map {
@@ -47,7 +47,7 @@ class MellomlagringService(
     }
 
     fun getVedlegg(behandlingsId: String, vedleggId: String): MellomlagretVedlegg? {
-        val navEksternId = if (isNonProduction()) createPrefixedBehandlingsId(behandlingsId) else behandlingsId
+        val navEksternId = getNavEksternId(behandlingsId)
         val mellomlagredeVedlegg = mellomlagringClient.getMellomlagredeVedlegg(navEksternId = navEksternId)?.mellomlagringMetadataList
         if (mellomlagredeVedlegg.isNullOrEmpty()) {
             log.warn("Ingen mellomlagrede vedlegg funnet ved forsøkt henting av vedleggId $vedleggId")
@@ -89,7 +89,7 @@ class MellomlagringService(
             data = ByteArrayInputStream(data)
         )
 
-        val navEksternId = if (isNonProduction()) createPrefixedBehandlingsId(behandlingsId) else behandlingsId
+        val navEksternId = getNavEksternId(behandlingsId)
 
         mellomlagringClient.postVedlegg(navEksternId = navEksternId, filOpplasting = filOpplasting)
 
@@ -127,7 +127,7 @@ class MellomlagringService(
     }
 
     fun deleteVedleggAndUpdateVedleggstatus(behandlingsId: String, vedleggId: String) {
-        val navEksternId = if (isNonProduction()) createPrefixedBehandlingsId(behandlingsId) else behandlingsId
+        val navEksternId = getNavEksternId(behandlingsId)
 
         // hent alle mellomlagrede vedlegg
         val mellomlagredeVedlegg = mellomlagringClient.getMellomlagredeVedlegg(navEksternId = navEksternId)?.mellomlagringMetadataList
@@ -158,12 +158,12 @@ class MellomlagringService(
     }
 
     fun deleteVedlegg(behandlingsId: String, vedleggId: String) {
-        val navEksternId = if (isNonProduction()) createPrefixedBehandlingsId(behandlingsId) else behandlingsId
+        val navEksternId = getNavEksternId(behandlingsId)
         mellomlagringClient.deleteVedlegg(navEksternId = navEksternId, digisosDokumentId = vedleggId)
     }
 
     fun deleteAllVedlegg(behandlingsId: String) {
-        val navEksternId = if (isNonProduction()) createPrefixedBehandlingsId(behandlingsId) else behandlingsId
+        val navEksternId = getNavEksternId(behandlingsId)
         val mellomlagredeVedlegg = mellomlagringClient.getMellomlagredeVedlegg(navEksternId = navEksternId)?.mellomlagringMetadataList
         if (mellomlagredeVedlegg.isNullOrEmpty()) {
             log.warn("Ingen mellomlagrede vedlegg funnet ved forsøkt sletting av alle vedlegg for behandlingsId $behandlingsId")
@@ -171,6 +171,9 @@ class MellomlagringService(
             mellomlagringClient.deleteAllVedlegg(navEksternId = navEksternId)
         }
     }
+
+    private fun getNavEksternId(behandlingsId: String) =
+        if (isNonProduction()) createPrefixedBehandlingsId(behandlingsId) else behandlingsId
 
     fun kanSoknadHaMellomlagredeVedleggForSletting(soknadUnderArbeid: SoknadUnderArbeid): Boolean {
         val kanSoknadSendesMedDigisosApi = try {
