@@ -86,7 +86,6 @@ internal class NavEnhetRessursTest {
             .withKommunenummer(KOMMUNENR_2)
 
         private val SOKNADSMOTTAKER_FORSLAG = AdresseForslag(null, null, null, KOMMUNENR, KOMMUNENAVN, null, null, ENHETSNAVN, null, null, AdresseForslagType.GATEADRESSE)
-        private val SOKNADSMOTTAKER_FORSLAG_2 = AdresseForslag(null, null, null, KOMMUNENR_2, KOMMUNENAVN_2, null, null, ENHETSNAVN_2, null, null, AdresseForslagType.GATEADRESSE)
         private val SOKNADSMOTTAKER_FORSLAG_BYDEL_MARKA = AdresseForslag(null, null, null, KOMMUNENR_2, KOMMUNENAVN_2, null, null, BYDEL_MARKA_OSLO, null, null, AdresseForslagType.GATEADRESSE)
 
         private val NAV_ENHET = NavEnhet(ENHETSNR, ENHETSNAVN, null, ORGNR)
@@ -143,17 +142,15 @@ internal class NavEnhetRessursTest {
             .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(JsonAdresseValg.SOKNAD))
 
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns soknadUnderArbeid
-        every { finnAdresseService.finnAdresseFraSoknad(any(), "soknad") } returns listOf(SOKNADSMOTTAKER_FORSLAG, SOKNADSMOTTAKER_FORSLAG_2)
+        every { finnAdresseService.finnAdresseFraSoknad(any(), "soknad") } returns SOKNADSMOTTAKER_FORSLAG
         every { navEnhetService.getEnhetForGt(ENHETSNAVN) } returns NAV_ENHET
-        every { navEnhetService.getEnhetForGt(ENHETSNAVN_2) } returns NAV_ENHET_2
         every { kommuneInfoService.getBehandlingskommune(KOMMUNENR, KOMMUNENAVN) } returns KOMMUNENAVN
-        every { kommuneInfoService.getBehandlingskommune(KOMMUNENR_2, KOMMUNENAVN_2) } returns KOMMUNENAVN_2
+        every { kodeverkService.getKommunenavn(KOMMUNENR) } returns KOMMUNENAVN
 
         val response = navEnhetRessurs.hentNavEnheter(BEHANDLINGSID)
 
-        assertThatEnheterAreCorrectlyConverted(response!!, listOf(SOKNADSMOTTAKER, SOKNADSMOTTAKER_2))
+        assertThatEnheterAreCorrectlyConverted(response!!, listOf(SOKNADSMOTTAKER))
         assertThat(response[0].valgt).isTrue
-        assertThat(response[1].valgt).isFalse
     }
 
     @Test
@@ -164,10 +161,11 @@ internal class NavEnhetRessursTest {
             .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(JsonAdresseValg.SOKNAD))
 
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns soknadUnderArbeid
-        every { finnAdresseService.finnAdresseFraSoknad(any(), "soknad") } returns listOf(SOKNADSMOTTAKER_FORSLAG_BYDEL_MARKA)
+        every { finnAdresseService.finnAdresseFraSoknad(any(), "soknad") } returns SOKNADSMOTTAKER_FORSLAG_BYDEL_MARKA
         every { bydelFordelingService.getBydelTilForMarka(SOKNADSMOTTAKER_FORSLAG_BYDEL_MARKA) } returns annenBydel
         every { navEnhetService.getEnhetForGt(annenBydel) } returns NAV_ENHET_2
         every { kommuneInfoService.getBehandlingskommune(KOMMUNENR_2, KOMMUNENAVN_2) } returns KOMMUNENAVN_2
+        every { kodeverkService.getKommunenavn(KOMMUNENR_2) } returns KOMMUNENAVN_2
 
         val response = navEnhetRessurs.hentNavEnheter(BEHANDLINGSID)
         assertThatEnheterAreCorrectlyConverted(response!!, listOf(SOKNADSMOTTAKER_2))
@@ -194,7 +192,7 @@ internal class NavEnhetRessursTest {
             .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(null))
 
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns soknadUnderArbeid
-        every { finnAdresseService.finnAdresseFraSoknad(any(), null) } returns emptyList()
+        every { finnAdresseService.finnAdresseFraSoknad(any(), null) } returns null
 
         val response = navEnhetRessurs.hentNavEnheter(BEHANDLINGSID)
         assertThat(response).isEmpty()
@@ -287,17 +285,16 @@ internal class NavEnhetRessursTest {
 
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns soknadUnderArbeid
         every { geografiskTilknytningService.hentGeografiskTilknytning(any()) } throws PdlApiException("pdl feil")
-        every { finnAdresseService.finnAdresseFraSoknad(any(), "folkeregistrert") } returns listOf(SOKNADSMOTTAKER_FORSLAG)
+        every { finnAdresseService.finnAdresseFraSoknad(any(), "folkeregistrert") } returns SOKNADSMOTTAKER_FORSLAG
         every { navEnhetService.getEnhetForGt(SOKNADSMOTTAKER_FORSLAG.geografiskTilknytning) } returns NAV_ENHET
         every { kommuneInfoService.getBehandlingskommune(KOMMUNENR, KOMMUNENAVN) } returns KOMMUNENAVN
+        every { kodeverkService.getKommunenavn(KOMMUNENR) } returns KOMMUNENAVN
 
         val response = navEnhetRessurs.hentNavEnheter(BEHANDLINGSID)
 
         assertThat(response!!).hasSize(1)
         assertThat(response[0].kommuneNr).isEqualTo(KOMMUNENR)
         assertThat(response[0].kommunenavn).isEqualTo(KOMMUNENAVN)
-
-        verify { kodeverkService wasNot Called }
     }
 
     @Test

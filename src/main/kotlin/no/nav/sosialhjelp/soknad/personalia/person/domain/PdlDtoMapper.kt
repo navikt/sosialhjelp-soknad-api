@@ -143,9 +143,7 @@ open class PdlDtoMapper(
     }
 
     private fun hasAdressebeskyttelse(adressebeskyttelse: List<AdressebeskyttelseDto>?): Boolean {
-        return adressebeskyttelse != null &&
-            adressebeskyttelse.isNotEmpty() &&
-            !adressebeskyttelse.all { Gradering.UGRADERT == it.gradering }
+        return !adressebeskyttelse.isNullOrEmpty() && !adressebeskyttelse.all { Gradering.UGRADERT == it.gradering }
     }
 
     private fun isFolkeregistrertSammen(
@@ -171,7 +169,7 @@ open class PdlDtoMapper(
     }
 
     private fun findBostedsadresse(bostedsadresse: List<BostedsadresseDto>?): BostedsadresseDto? {
-        return if (bostedsadresse == null || bostedsadresse.isEmpty()) {
+        return if (bostedsadresse.isNullOrEmpty()) {
             null
         } else bostedsadresse
             .firstOrNull { it.ukjentBosted == null && (it.vegadresse != null || it.matrikkeladresse != null) }
@@ -232,7 +230,7 @@ open class PdlDtoMapper(
         dtos: List<OppholdsadresseDto>?,
         bostedsadresseDtos: List<BostedsadresseDto>?
     ): Oppholdsadresse? {
-        if (dtos == null || dtos.isEmpty()) {
+        if (dtos.isNullOrEmpty()) {
             return null
         }
         // vi er kun interessert i norske oppholdsadresser med en faktisk adresse.
@@ -249,7 +247,7 @@ open class PdlDtoMapper(
         dtos: List<KontaktadresseDto>?,
         bostedsadresseDtos: List<BostedsadresseDto>?
     ): Kontaktadresse? {
-        return if (dtos == null || dtos.isEmpty()) {
+        return if (dtos.isNullOrEmpty()) {
             null
         } else {
             dtos
@@ -262,6 +260,9 @@ open class PdlDtoMapper(
         bostedsadresseDtos: List<BostedsadresseDto>?,
         dtoVegadresse: VegadresseDto
     ): Boolean {
+        if (bostedsadresseDtos.isNullOrEmpty()) {
+            return true
+        }
         val bostedsadresseDto: BostedsadresseDto? = findBostedsadresse(bostedsadresseDtos)
         if (bostedsadresseDto?.vegadresse != null) {
             if (dtoVegadresse.kommunenummer != null) {

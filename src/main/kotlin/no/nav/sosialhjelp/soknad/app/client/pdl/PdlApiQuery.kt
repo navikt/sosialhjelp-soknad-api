@@ -16,6 +16,7 @@ object PdlApiQuery {
     val HENT_ADRESSEBESKYTTELSE = readGraphQLQueryFromFile("graphql/pdl-person-adressebeskyttelse-query.graphql")
     val ADRESSE_SOK = readGraphQLQueryFromFile("graphql/pdl-adressesok.graphql")
     val HENT_GEOGRAFISK_TILKNYTNING = readGraphQLQueryFromFile("graphql/pdl-geografisktilknytning-query.graphql")
+    val HENT_ADRESSE = readGraphQLQueryFromFile("graphql/pdl-hentadresse.graphql")
     // flere queries?
 
     private fun readGraphQLQueryFromFile(file: String): String {
