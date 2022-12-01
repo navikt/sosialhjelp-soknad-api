@@ -264,6 +264,9 @@ open class PdlDtoMapper(
         bostedsadresseDtos: List<BostedsadresseDto>?,
         dtoVegadresse: VegadresseDto
     ): Boolean {
+        if (bostedsadresseDtos.isNullOrEmpty()) {
+            return true
+        }
         val bostedsadresseDto: BostedsadresseDto? = findBostedsadresse(bostedsadresseDtos)
         if (bostedsadresseDto?.vegadresse != null) {
             if (dtoVegadresse.kommunenummer != null) {

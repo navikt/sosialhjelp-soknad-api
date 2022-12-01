@@ -332,12 +332,10 @@ internal class PdlDtoMapperTest {
         val person = mapper.personDtoToDomain(pdlPerson, IDENT)
         assertThat(person).isNotNull
         assertThat(person!!.bostedsadresse!!.coAdressenavn).isNull()
-        assertThat(person.bostedsadresse!!.vegadresse!!.adressenavn)
-            .isEqualTo(vegadresse.adressenavn?.uppercase())
+        assertThat(person.bostedsadresse!!.vegadresse!!.adressenavn).isEqualTo(vegadresse.adressenavn?.uppercase())
         assertThat(person.bostedsadresse!!.matrikkeladresse).isNull()
         assertThat(person.oppholdsadresse!!.coAdressenavn).isNull()
-        assertThat(person.oppholdsadresse!!.vegadresse!!.adressenavn)
-            .isEqualTo(annenVegadresse.adressenavn?.uppercase())
+        assertThat(person.oppholdsadresse!!.vegadresse!!.adressenavn).isEqualTo(annenVegadresse.adressenavn?.uppercase())
     }
 
     @Test
@@ -380,12 +378,10 @@ internal class PdlDtoMapperTest {
         val person = mapper.personDtoToDomain(pdlPerson, IDENT)
         assertThat(person).isNotNull
         assertThat(person!!.bostedsadresse!!.coAdressenavn).isNull()
-        assertThat(person.bostedsadresse!!.vegadresse!!.adressenavn)
-            .isEqualTo(vegadresse.adressenavn?.uppercase())
+        assertThat(person.bostedsadresse!!.vegadresse!!.adressenavn).isEqualTo(vegadresse.adressenavn?.uppercase())
         assertThat(person.bostedsadresse!!.matrikkeladresse).isNull()
         assertThat(person.kontaktadresse!!.coAdressenavn).isNull()
-        assertThat(person.kontaktadresse!!.vegadresse!!.adressenavn)
-            .isEqualTo(annenVegadresse.adressenavn?.uppercase())
+        assertThat(person.kontaktadresse!!.vegadresse!!.adressenavn).isEqualTo(annenVegadresse.adressenavn?.uppercase())
     }
 
     @Test
@@ -426,10 +422,51 @@ internal class PdlDtoMapperTest {
         val person = mapper.personDtoToDomain(pdlPerson, IDENT)
         assertThat(person).isNotNull
         assertThat(person!!.bostedsadresse!!.coAdressenavn).isNull()
-        assertThat(person.bostedsadresse!!.vegadresse!!.adressenavn)
-            .isEqualTo(vegadresse.adressenavn?.uppercase())
+        assertThat(person.bostedsadresse!!.vegadresse!!.adressenavn).isEqualTo(vegadresse.adressenavn?.uppercase())
         assertThat(person.bostedsadresse!!.matrikkeladresse).isNull()
         assertThat(person.kontaktadresse).isNull()
+    }
+
+    @Test
+    fun personMedOppholdsadresseUtenBostedsadresse() {
+        val vegadresse = defaultVegadresse()
+        val pdlPerson = PersonDto(
+            null, // ingen bostedsadresse
+            listOf(
+                OppholdsadresseDto(null, null, vegadresse, null, null)
+            ),
+            null, // ingen kontaktadresse
+            listOf(
+                ForelderBarnRelasjonDto(
+                    BARNIDENT,
+                    BARN_ROLLE,
+                    MOR_ROLLE
+                )
+            ),
+            listOf(
+                NavnDto(
+                    FORNAVN,
+                    MELLOMNAVN,
+                    ETTERNAVN,
+                    METADATA,
+                    FOLKEREGISTERMETADATA
+                )
+            ),
+            listOf(
+                SivilstandDto(
+                    SivilstandType.GIFT,
+                    EKTEFELLEIDENT,
+                    METADATA,
+                    FOLKEREGISTERMETADATA
+                )
+            ),
+            listOf(StatsborgerskapDto(LAND))
+        )
+        val person = mapper.personDtoToDomain(pdlPerson, IDENT)
+        assertThat(person).isNotNull
+        assertThat(person!!.bostedsadresse).isNull()
+        assertThat(person.oppholdsadresse).isNotNull
+        assertThat(person.oppholdsadresse!!.vegadresse!!.adressenavn).isEqualTo(vegadresse.adressenavn?.uppercase())
     }
 
     @Test
@@ -1234,29 +1271,16 @@ internal class PdlDtoMapperTest {
             listOf(StatsborgerskapDto(LAND))
         )
         val pdlBarnDagenFoerBarnBlirMyndig = createBarnMedFoedselsdato(dagenFoerBarnBlirMyndig)
+        val barnDagenFoerMyndig = mapper.barnDtoToDomain(pdlBarnDagenFoerBarnBlirMyndig, BARNIDENT, pdlPerson)
+        assertThat(barnDagenFoerMyndig).isNotNull
+
         val pdlBarnDagenBarnBlirMyndig = createBarnMedFoedselsdato(dagenBarnBlirMyndig)
+        val barnDagenBarnBlirMyndig = mapper.barnDtoToDomain(pdlBarnDagenBarnBlirMyndig, BARNIDENT, pdlPerson)
+        assertThat(barnDagenBarnBlirMyndig).isNull()
+
         val pdlBarnDagenEtterBarnBlirMyndig = createBarnMedFoedselsdato(dagenEtterBarnBlirMyndig)
-        assertThat<Barn>(
-            mapper.barnDtoToDomain(
-                pdlBarnDagenFoerBarnBlirMyndig,
-                BARNIDENT,
-                pdlPerson
-            )
-        ).isNotNull
-        assertThat<Barn>(
-            mapper.barnDtoToDomain(
-                pdlBarnDagenBarnBlirMyndig,
-                BARNIDENT,
-                pdlPerson
-            )
-        ).isNull()
-        assertThat<Barn>(
-            mapper.barnDtoToDomain(
-                pdlBarnDagenEtterBarnBlirMyndig,
-                BARNIDENT,
-                pdlPerson
-            )
-        ).isNull()
+        val barnDagenEtterMyndig = mapper.barnDtoToDomain(pdlBarnDagenEtterBarnBlirMyndig, BARNIDENT, pdlPerson)
+        assertThat(barnDagenEtterMyndig).isNull()
     }
 
     @Test
