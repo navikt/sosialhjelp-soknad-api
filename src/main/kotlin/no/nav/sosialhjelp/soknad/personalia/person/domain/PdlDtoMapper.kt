@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.personalia.person.domain
 
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.kodeverk.KodeverkService
 import no.nav.sosialhjelp.soknad.personalia.person.dto.AdressebeskyttelseDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.BarnDto
@@ -29,6 +30,8 @@ open class PdlDtoMapper(
 ) {
 
     companion object {
+        private val log by logger()
+
         const val NOR = "NOR"
         const val DOED = "DOED"
 
@@ -238,6 +241,7 @@ open class PdlDtoMapper(
         //  Man kan ha en oppholdsadresse med Freg som master og en med PDL som master.
         //  Flertallet av oppholdsadressene fra Freg vil være norske, og flertallet av oppholdsadresser registrert av NAV vil være utenlandske.
         //  Fra folkeregisteret kan man også få oppholdsadresse uten en faktisk adresse, men med informasjon i oppholdAnnetSted.
+        log.info("Fant ${dtos.size} oppholdsadresse(r) i PDL")
         return dtos
             .firstOrNull { it.vegadresse != null && filterVegadresseNotEqualToBostedsadresse(bostedsadresseDtos, it.vegadresse) }
             ?.let { Oppholdsadresse(it.coAdressenavn, it.vegadresse?.let { vegadresse -> mapToVegadresse(vegadresse) }) }
