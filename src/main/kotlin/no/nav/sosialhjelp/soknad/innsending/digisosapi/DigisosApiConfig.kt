@@ -49,7 +49,7 @@ open class DigisosApiConfig(
 
     @Bean
     open fun digisosApiV2Client(): DigisosApiV2Client {
-        return DigisosApiV2ClientImpl(
+        return DigisosApiV2Client(
             digisosApiEndpoint,
             dokumentlagerClient,
             krypteringService,
