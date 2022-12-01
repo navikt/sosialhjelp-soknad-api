@@ -2,6 +2,7 @@ package no.nav.sosialhjelp.soknad.vedlegg.fiks
 
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.MiljoUtils.isNonProduction
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.Vedleggstatus
@@ -179,6 +180,10 @@ class MellomlagringService(
         }
 
         return kanSoknadSendesMedDigisosApi
+    }
+
+    companion object {
+        private val log by logger()
     }
 }
 
