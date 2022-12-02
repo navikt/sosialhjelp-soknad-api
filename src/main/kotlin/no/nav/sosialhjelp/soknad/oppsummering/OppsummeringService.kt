@@ -9,6 +9,7 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.Vedleggstatus
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils
+import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
 import no.nav.sosialhjelp.soknad.oppsummering.dto.Oppsummering
 import no.nav.sosialhjelp.soknad.oppsummering.steg.ArbeidOgUtdanningSteg
 import no.nav.sosialhjelp.soknad.oppsummering.steg.BegrunnelseSteg
@@ -29,6 +30,7 @@ class OppsummeringService(
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val opplastetVedleggRepository: OpplastetVedleggRepository,
     private val mellomlagringService: MellomlagringService,
+    private val soknadUnderArbeidService: SoknadUnderArbeidService,
 ) {
     private val personopplysningerSteg = PersonopplysningerSteg()
     private val begrunnelseSteg = BegrunnelseSteg()
@@ -44,17 +46,17 @@ class OppsummeringService(
         val jsonInternalSoknad = soknadUnderArbeid.jsonInternalSoknad
             ?: throw IllegalStateException("Kan ikke generere oppsummeringsside hvis SoknadUnderArbeid.jsonInternalSoknad er null")
 
-        val mellomlagringEnabled = mellomlagringService.erMellomlagringEnabledOgSoknadSkalSendesMedDigisosApi(soknadUnderArbeid)
+        val skalSendesMedDigisosApi = soknadUnderArbeidService.skalSoknadSendesMedDigisosApi(soknadUnderArbeid)
         if (soknadUnderArbeid.jsonInternalSoknad?.vedlegg?.vedlegg?.isEmpty() == null) {
             log.info("Oppdaterer vedleggsforventninger for soknad $behandlingsId fra oppsummeringssiden, ettersom side 8 ble hoppet over")
-            if (mellomlagringEnabled) {
+            if (skalSendesMedDigisosApi) {
                 // todo: oppdater vedleggsforventninger ut fra mellomlagrede vedlegg?
             } else {
                 oppdaterVedleggsforventninger(soknadUnderArbeid, fnr)
             }
         }
 
-        val vedleggInfo = if (mellomlagringEnabled) {
+        val vedleggInfo = if (skalSendesMedDigisosApi) {
             mellomlagringService.getAllVedlegg(behandlingsId).map {
                 OppsummeringVedleggInfo(it.filnavn, it.filId)
             }

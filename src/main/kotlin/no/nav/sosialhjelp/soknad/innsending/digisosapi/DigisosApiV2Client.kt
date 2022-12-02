@@ -25,26 +25,14 @@ import java.io.IOException
 import java.util.Collections
 import java.util.concurrent.Future
 
-interface DigisosApiV2Client {
-    fun krypterOgLastOppFiler(
-        soknadJson: String,
-        tilleggsinformasjonJson: String,
-        vedleggJson: String,
-        dokumenter: List<FilOpplasting>,
-        kommunenr: String,
-        navEksternRefId: String,
-        token: String?
-    ): String
-}
-
-class DigisosApiV2ClientImpl(
+class DigisosApiV2Client(
     private val digisosApiEndpoint: String,
     private val dokumentlagerClient: DokumentlagerClient,
     private val krypteringService: KrypteringService,
     private val fiksWebClient: WebClient
-) : DigisosApiV2Client {
+) {
 
-    override fun krypterOgLastOppFiler(
+    fun krypterOgLastOppFiler(
         soknadJson: String,
         tilleggsinformasjonJson: String,
         vedleggJson: String,
