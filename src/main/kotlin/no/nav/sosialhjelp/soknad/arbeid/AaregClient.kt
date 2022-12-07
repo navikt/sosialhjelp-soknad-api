@@ -55,7 +55,7 @@ class AaregClient(
     fun finnArbeidsforholdForArbeidstaker(fodselsnummer: String): List<ArbeidsforholdDto>? {
         try {
             return webClient.get()
-                .uri("v1/arbeidstaker/arbeidsforhold$queryParamsPart", false, A_ORDNINGEN, sokeperiode.fom, sokeperiode.tom)
+                .uri("/v1/arbeidstaker/arbeidsforhold$queryParamsPart", false, A_ORDNINGEN, sokeperiode.fom, sokeperiode.tom)
                 .header(HttpHeaders.AUTHORIZATION, Constants.BEARER + tokenxToken)
                 .header(Constants.HEADER_CALL_ID, getFromMDC(MDC_CALL_ID))
                 .header(Constants.HEADER_NAV_PERSONIDENT, fodselsnummer)
