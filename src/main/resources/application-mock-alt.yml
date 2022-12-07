@@ -22,7 +22,6 @@ mock-alt-api-wellknown-queryparam: ${MOCK_ALT_API_WELLKNOWN_QUERYPARAM:}
 digisos_api_baseurl: ${DIGISOS_API_BASEURL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/fiks/}
 ereg_url: ${EREG_URL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/ereg}
 aareg_proxy_url: ${AAREG_PROXY_URL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/aareg/}
-krr_proxy_url: ${KRR_PROXY_URL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/krr/}
 krr_url: ${KRR_URL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/krr/}
 pdl_api_url: ${PDL_API_URL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/pdl_endpoint_url}
 kodeverk_url: ${KODEVERK_URL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/kodeverk}

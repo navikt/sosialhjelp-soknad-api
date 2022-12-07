@@ -45,7 +45,6 @@
     "FSS_PROXY_PING_URL": "https://sosialhjelp-fss-proxy.intern.nav.no/ping",
     "DIGISOS_API_BASEURL": "https://api.fiks.ks.no/",
     "KODEVERK_URL": "https://kodeverk.intern.nav.no/api/v1/kodeverk",
-    "KRR_PROXY_URL": "https://sosialhjelp-fss-proxy.intern.nav.no/proxy/krr/",
     "KRR_AUDIENCE": "prod-gcp:team-rocket:digdir-krr-proxy",
     "KRR_SCOPE": "prod-gcp.team-rocket.digdir-krr-proxy",
     "KRR_URL": "https://digdir-krr-proxy.intern.nav.no",
