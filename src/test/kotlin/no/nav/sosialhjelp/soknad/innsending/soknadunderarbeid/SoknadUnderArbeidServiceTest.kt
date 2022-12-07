@@ -43,21 +43,21 @@ internal class SoknadUnderArbeidServiceTest {
 
         // kast feil - nedetid for kommune
         every { soknadUnderArbeid.jsonInternalSoknad?.soknad?.mottaker?.kommunenummer } returns "1234"
-        every { kommuneInfoService.kommuneInfo("1234") } returns KommuneStatus.FIKS_NEDETID_OG_TOM_CACHE
+        every { kommuneInfoService.getKommuneStatus("1234") } returns KommuneStatus.FIKS_NEDETID_OG_TOM_CACHE
         assertThatExceptionOfType(SendingTilKommuneUtilgjengeligException::class.java)
             .isThrownBy { soknadUnderArbeidService.skalSoknadSendesMedDigisosApi(soknadUnderArbeid) }
 
         // kast feil - midlertidig nedetid for kommune
-        every { kommuneInfoService.kommuneInfo("1234") } returns KommuneStatus.SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD_OG_ETTERSENDELSER
+        every { kommuneInfoService.getKommuneStatus("1234") } returns KommuneStatus.SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD_OG_ETTERSENDELSER
         assertThatExceptionOfType(SendingTilKommuneErMidlertidigUtilgjengeligException::class.java)
             .isThrownBy { soknadUnderArbeidService.skalSoknadSendesMedDigisosApi(soknadUnderArbeid) }
 
         // false - kommune mangler konfigurasjon hos Fiks
-        every { kommuneInfoService.kommuneInfo("1234") } returns KommuneStatus.MANGLER_KONFIGURASJON
+        every { kommuneInfoService.getKommuneStatus("1234") } returns KommuneStatus.MANGLER_KONFIGURASJON
         assertThat(soknadUnderArbeidService.skalSoknadSendesMedDigisosApi(soknadUnderArbeid)).isFalse
 
         // false - kommune bruker SvarUt
-        every { kommuneInfoService.kommuneInfo("1234") } returns KommuneStatus.HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT
+        every { kommuneInfoService.getKommuneStatus("1234") } returns KommuneStatus.HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT
         assertThat(soknadUnderArbeidService.skalSoknadSendesMedDigisosApi(soknadUnderArbeid)).isFalse
     }
 
