@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component
 @Component
 class KrrService(
     private val krrClient: KrrClient,
-    private val krrProxyClient: KrrProxyClient,
     private val redisService: RedisService,
     private val unleash: Unleash
 ) {
@@ -30,10 +29,7 @@ class KrrService(
     }
 
     private fun hentFraServer(ident: String): DigitalKontaktinformasjon? {
-        if (unleash.isEnabled(KRR_DIREKTE_UTEN_FSS_PROXY, false)) {
-            return krrClient.getDigitalKontaktinformasjon(ident)?.also { lagreTilCache(ident, it) }
-        }
-        return krrProxyClient.getDigitalKontaktinformasjon(ident)?.also { lagreTilCache(ident, it) }
+        return krrClient.getDigitalKontaktinformasjon(ident)?.also { lagreTilCache(ident, it) }
     }
 
     private fun lagreTilCache(ident: String, digitalKontaktinformasjon: DigitalKontaktinformasjon) {
