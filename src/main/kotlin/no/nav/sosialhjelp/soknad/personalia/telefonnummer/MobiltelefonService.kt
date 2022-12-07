@@ -9,11 +9,11 @@ interface MobiltelefonService {
 
 @Component
 class MobiltelefonServiceImpl(
-    private val krrProxyClient: KrrProxyClient,
+    private val krrService: KrrService,
 ) : MobiltelefonService {
 
     override fun hent(ident: String): String? {
-        val digitalKontaktinformasjon = krrProxyClient.getDigitalKontaktinformasjon(ident)
+        val digitalKontaktinformasjon = krrService.getDigitalKontaktinformasjon(ident)
         if (digitalKontaktinformasjon == null) {
             log.warn("Krr - response er null")
             return null

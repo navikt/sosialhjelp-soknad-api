@@ -35,12 +35,14 @@ fss_proxy_audience: dummyAudience
 oppslag_api_audience: dummyAudience
 utbetaldata_audience: dummyAudience
 pdl_api_audience: dummyAudience
+krr_audience: dummyAudience
 
 # azuread
 azure_token_endpoint: azure_token_endpoint
 azure_client_id: localhost:teamdigisos:sosialhjelp-soknad-api
 azure_client_secret: clientSecret
 pdl_api_scope: dummyScope
+krr_scope: dummyScope
 
 # svarut:
 fiks_svarut_username: username
@@ -51,6 +53,7 @@ digisos_api_baseurl: ${DIGISOS_API_BASEURL:https://api.fiks.test.ks.no/}
 ereg_url: https://ereg/
 aareg_proxy_url: https://fss-proxy/proxy/aareg/
 krr_proxy_url: http://krr/
+krr_url: http://krr/
 pdl_api_url: https://pdl-api/graphql
 unleash_api_url: https://unleash.nais.io/api
 kodeverk_url: https://kodeverk/
