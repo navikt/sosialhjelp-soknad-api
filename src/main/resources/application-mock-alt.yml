@@ -23,6 +23,7 @@ digisos_api_baseurl: ${DIGISOS_API_BASEURL:http://${mock-alt-api-host}:8989/sosi
 ereg_url: ${EREG_URL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/ereg}
 aareg_proxy_url: ${AAREG_PROXY_URL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/aareg/}
 krr_proxy_url: ${KRR_PROXY_URL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/krr/}
+krr_url: ${KRR_URL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/krr/}
 pdl_api_url: ${PDL_API_URL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/pdl_endpoint_url}
 kodeverk_url: ${KODEVERK_URL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/kodeverk}
 unleash_api_url: ${UNLEASH_API_URL:https://unleash.nais.io/api}
@@ -59,6 +60,7 @@ fss_proxy_audience: ${FSS_PROXY_AUDIENCE:dummyAudience}
 oppslag_api_audience: ${OPPSLAG_API_AUDIENCE:dummyAudience}
 pdl_api_audience: ${PDL_API_AUDIENCE:dummyAudience}
 utbetaldata_audience: ${UTBETALDATA_AUDIENCE:dummyAudience}
+krr_audience: ${KRR_AUDIENCE:dummyAudience}
 
 # azuread
 azure_token_endpoint: ${AZURE_OPENID_CONFIG_TOKEN_ENDPOINT:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/azuretoken/azuread}
