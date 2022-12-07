@@ -48,6 +48,7 @@
     "KODEVERK_URL": "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api/kodeverk",
     "KRR_PROXY_URL": "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api/krr/",
     "KRR_AUDIENCE": "dummyAudience",
+    "KRR_SCOPE": "dummyScope",
     "KRR_URL": "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api/krr/",
     "LOGINSERVICE_URL": "https://digisos.ekstern.dev.nav.no/sosialhjelp/mock-alt/login",
     "MASKINPORTEN_WELL_KNOWN_URL": "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api/well-known/maskinporten",

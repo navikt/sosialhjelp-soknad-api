@@ -67,6 +67,7 @@ azure_token_endpoint: ${AZURE_OPENID_CONFIG_TOKEN_ENDPOINT:http://${mock-alt-api
 azure_client_id: ${AZURE_APP_CLIENT_ID:localhost:teamdigisos:sosialhjelp-soknad-api}
 azure_client_secret: ${AZURE_APP_CLIENT_SECRET:clientSecret}
 pdl_api_scope: ${PDL_API_SCOPE:dummyScope}
+krr_scope: ${KRR_SCOPE:dummyScope}
 
 # OIDC
 oidc.issuer.selvbetjening.cookie_name: localhost-idtoken

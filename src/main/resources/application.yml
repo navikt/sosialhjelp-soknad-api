@@ -78,6 +78,7 @@ azure_token_endpoint: ${AZURE_OPENID_CONFIG_TOKEN_ENDPOINT}
 azure_client_id: ${AZURE_APP_CLIENT_ID}
 azure_client_secret: ${AZURE_APP_CLIENT_SECRET}
 pdl_api_scope: ${PDL_API_SCOPE}
+krr_scope: ${KRR_SCOPE}
 
 # svarut:
 fiks_svarut_username: ${FIKS_SVARUT_USERNAME}

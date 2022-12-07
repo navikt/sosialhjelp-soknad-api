@@ -42,6 +42,7 @@ azure_token_endpoint: azure_token_endpoint
 azure_client_id: localhost:teamdigisos:sosialhjelp-soknad-api
 azure_client_secret: clientSecret
 pdl_api_scope: dummyScope
+krr_scope: dummyScope
 
 # svarut:
 fiks_svarut_username: username
