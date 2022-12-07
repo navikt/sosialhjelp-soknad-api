@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.personalia.telefonnummer
 
-import com.fasterxml.jackson.core.JsonProcessingException
 import kotlinx.coroutines.runBlocking
 import no.nav.sosialhjelp.soknad.app.Constants.BEARER
 import no.nav.sosialhjelp.soknad.app.Constants.HEADER_CALL_ID
@@ -14,10 +13,6 @@ import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getToken
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken
 import no.nav.sosialhjelp.soknad.auth.tokenx.TokendingsService
 import no.nav.sosialhjelp.soknad.personalia.telefonnummer.dto.DigitalKontaktinformasjon
-import no.nav.sosialhjelp.soknad.redis.CACHE_30_MINUTES_IN_SECONDS
-import no.nav.sosialhjelp.soknad.redis.KRR_CACHE_KEY_PREFIX
-import no.nav.sosialhjelp.soknad.redis.RedisService
-import no.nav.sosialhjelp.soknad.redis.RedisUtils.redisObjectMapper
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders.AUTHORIZATION
 import org.springframework.stereotype.Component
@@ -31,24 +26,12 @@ import org.springframework.web.reactive.function.client.bodyToMono
 class KrrProxyClient(
     @Value("\${krr_proxy_url}") private val krrProxyUrl: String,
     @Value("\${fss_proxy_audience}") private val fssProxyAudience: String,
-    private val redisService: RedisService,
     private val tokendingsService: TokendingsService,
     webClientBuilder: WebClient.Builder,
 ) {
     private val webClient = unproxiedWebClientBuilder(webClientBuilder).build()
 
     fun getDigitalKontaktinformasjon(ident: String): DigitalKontaktinformasjon? {
-        return hentFraCache(ident) ?: hentFraServer(ident)
-    }
-
-    private fun hentFraCache(ident: String): DigitalKontaktinformasjon? {
-        return redisService.get(
-            KRR_CACHE_KEY_PREFIX + ident,
-            DigitalKontaktinformasjon::class.java
-        ) as? DigitalKontaktinformasjon
-    }
-
-    private fun hentFraServer(ident: String): DigitalKontaktinformasjon? {
         return try {
             webClient.get()
                 .uri("${krrProxyUrl}rest/v1/person")
@@ -58,7 +41,6 @@ class KrrProxyClient(
                 .retrieve()
                 .bodyToMono<DigitalKontaktinformasjon>()
                 .block()
-                ?.also { lagreTilCache(ident, it) }
         } catch (e: Unauthorized) {
             log.warn("Krr - 401 Unauthorized - ${e.message}")
             null
@@ -71,18 +53,6 @@ class KrrProxyClient(
         } catch (e: Exception) {
             log.error("Krr - Noe uventet feilet", e)
             throw TjenesteUtilgjengeligException("Krr", e)
-        }
-    }
-
-    private fun lagreTilCache(ident: String, digitalKontaktinformasjon: DigitalKontaktinformasjon) {
-        try {
-            redisService.setex(
-                KRR_CACHE_KEY_PREFIX + ident,
-                redisObjectMapper.writeValueAsBytes(digitalKontaktinformasjon),
-                CACHE_30_MINUTES_IN_SECONDS
-            )
-        } catch (e: JsonProcessingException) {
-            log.warn("Noe feilet ved lagring av krr-informasjon til redis", e)
         }
     }
 
