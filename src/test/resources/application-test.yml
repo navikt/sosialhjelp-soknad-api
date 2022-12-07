@@ -36,6 +36,7 @@ oppslag_api_audience: dummyAudience
 utbetaldata_audience: dummyAudience
 pdl_api_audience: dummyAudience
 krr_audience: dummyAudience
+aareg_audience: dummyAudience
 
 # azuread
 azure_token_endpoint: azure_token_endpoint
@@ -51,6 +52,7 @@ fiks_svarut_password: pwpwpwpw
 # rest
 digisos_api_baseurl: ${DIGISOS_API_BASEURL:https://api.fiks.test.ks.no/}
 ereg_url: https://ereg/
+aareg_url: https://aareg/
 aareg_proxy_url: https://fss-proxy/proxy/aareg/
 krr_url: http://krr/
 pdl_api_url: https://pdl-api/graphql
