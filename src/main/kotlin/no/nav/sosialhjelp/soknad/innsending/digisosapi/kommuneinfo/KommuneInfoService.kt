@@ -40,7 +40,7 @@ class KommuneInfoService(
     fun hentAlleKommuneInfo(): Map<String, KommuneInfo>? {
         if (skalBrukeCache()) {
             val cachedMap = redisService.getKommuneInfos()
-            if (cachedMap != null && cachedMap.isNotEmpty()) {
+            if (!cachedMap.isNullOrEmpty()) {
                 return cachedMap
             }
             log.info("hentAlleKommuneInfo - cache er tom.")
@@ -52,7 +52,7 @@ class KommuneInfoService(
 
         if (kommuneInfoMap.isEmpty()) {
             val cachedMap = redisService.getKommuneInfos()
-            if (cachedMap != null && cachedMap.isNotEmpty()) {
+            if (!cachedMap.isNullOrEmpty()) {
                 log.info("hentAlleKommuneInfo - feiler mot Fiks. Bruker cache mens Fiks er nede.")
                 return cachedMap
             }
@@ -76,10 +76,23 @@ class KommuneInfoService(
 
     // Det holder å sjekke om kommunen har en konfigurasjon hos fiks, har de det vil vi alltid kunne sende
     fun kommuneInfo(kommunenummer: String): KommuneStatus {
-        val kommuneInfoMap = hentAlleKommuneInfo() ?: return FIKS_NEDETID_OG_TOM_CACHE
-        val kommuneInfo = kommuneInfoMap.getOrDefault(kommunenummer, null)
+        val kommuneInfoMap = hentAlleKommuneInfo()
+        val kommuneInfo = kommuneInfoMap?.getOrDefault(kommunenummer, null)
         log.info("Kommuneinfo for $kommunenummer: $kommuneInfo")
         return when {
+            kommuneInfoMap == null -> FIKS_NEDETID_OG_TOM_CACHE
+            kommuneInfo == null -> MANGLER_KONFIGURASJON
+            !kommuneInfo.kanMottaSoknader -> HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT
+            kommuneInfo.harMidlertidigDeaktivertMottak -> SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD_OG_ETTERSENDELSER
+            else -> SKAL_SENDE_SOKNADER_OG_ETTERSENDELSER_VIA_FDA
+        }
+    }
+
+    fun getKommuneStatus(kommunenummer: String): KommuneStatus {
+        val kommuneInfoMap = hentAlleKommuneInfo()
+        val kommuneInfo = kommuneInfoMap?.getOrDefault(kommunenummer, null)
+        return when {
+            kommuneInfoMap == null -> FIKS_NEDETID_OG_TOM_CACHE
             kommuneInfo == null -> MANGLER_KONFIGURASJON
             !kommuneInfo.kanMottaSoknader -> HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT
             kommuneInfo.harMidlertidigDeaktivertMottak -> SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD_OG_ETTERSENDELSER
