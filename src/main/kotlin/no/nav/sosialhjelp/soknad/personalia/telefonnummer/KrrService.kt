@@ -46,7 +46,5 @@ class KrrService(
 
     companion object {
         private val log by logger()
-
-        private const val KRR_DIREKTE_UTEN_FSS_PROXY = "sosialhjelp.soknad.krr_direkte_uten_fss-proxy"
     }
 }
