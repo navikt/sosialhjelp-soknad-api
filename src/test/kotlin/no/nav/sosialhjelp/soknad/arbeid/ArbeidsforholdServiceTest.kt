@@ -2,6 +2,7 @@ package no.nav.sosialhjelp.soknad.arbeid
 
 import io.mockk.every
 import io.mockk.mockk
+import no.finn.unleash.Unleash
 import no.nav.sosialhjelp.soknad.arbeid.domain.Arbeidsforhold
 import no.nav.sosialhjelp.soknad.arbeid.dto.AnsettelsesperiodeDto
 import no.nav.sosialhjelp.soknad.arbeid.dto.ArbeidsavtaleDto
@@ -11,15 +12,17 @@ import no.nav.sosialhjelp.soknad.arbeid.dto.PeriodeDto
 import no.nav.sosialhjelp.soknad.arbeid.dto.PersonDto
 import no.nav.sosialhjelp.soknad.organisasjon.OrganisasjonService
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 internal class ArbeidsforholdServiceTest {
 
-    private val arbeidsforholdClient: ArbeidsforholdClient = mockk()
+    private val aaregClient: AaregClient = mockk()
     private val organisasjonService: OrganisasjonService = mockk()
-    private val arbeidsforholdService = ArbeidsforholdService(arbeidsforholdClient, organisasjonService)
+    private val unleash: Unleash = mockk()
+    private val arbeidsforholdService = ArbeidsforholdService(aaregClient, organisasjonService)
 
     private val fnr = "11111111111"
     private val orgnr = "orgnr"
@@ -27,9 +30,14 @@ internal class ArbeidsforholdServiceTest {
     private val fom = LocalDate.now().minusMonths(1)
     private val tom = LocalDate.now()
 
+    @BeforeEach
+    fun setUp() {
+        every { unleash.isEnabled(any(), false) } returns false
+    }
+
     @Test
     internal fun skalMappeDtoTilArbeidsforhold() {
-        every { arbeidsforholdClient.finnArbeidsforholdForArbeidstaker(fnr) } returns listOf(createArbeidsforhold(true, fom, tom))
+        every { aaregClient.finnArbeidsforholdForArbeidstaker(fnr) } returns listOf(createArbeidsforhold(true, fom, tom))
         every { organisasjonService.hentOrgNavn(any()) } returns orgNavn
 
         val arbeidsforholdList: List<Arbeidsforhold>? = arbeidsforholdService.hentArbeidsforhold(fnr)
@@ -46,7 +54,7 @@ internal class ArbeidsforholdServiceTest {
 
     @Test
     internal fun skalSetteArbeidsgivernavnTilOrgnrHvisArbeidsgiverErOrganisasjon() {
-        every { arbeidsforholdClient.finnArbeidsforholdForArbeidstaker(fnr) } returns listOf(createArbeidsforhold(false, fom, tom))
+        every { aaregClient.finnArbeidsforholdForArbeidstaker(fnr) } returns listOf(createArbeidsforhold(false, fom, tom))
 
         val arbeidsforholdList = arbeidsforholdService.hentArbeidsforhold(fnr)
         val arbeidsforhold = arbeidsforholdList!![0]
@@ -57,7 +65,7 @@ internal class ArbeidsforholdServiceTest {
 
     @Test
     internal fun skalAddereStillingsprosentFraArbeidsavtaler() {
-        every { arbeidsforholdClient.finnArbeidsforholdForArbeidstaker(fnr) } returns listOf(createArbeidsforholdMedFlereArbeidsavtaler(12.3, 45.6))
+        every { aaregClient.finnArbeidsforholdForArbeidstaker(fnr) } returns listOf(createArbeidsforholdMedFlereArbeidsavtaler(12.3, 45.6))
         every { organisasjonService.hentOrgNavn(any()) } returns orgNavn
 
         val arbeidsforholdList = arbeidsforholdService.hentArbeidsforhold(fnr)
@@ -69,7 +77,7 @@ internal class ArbeidsforholdServiceTest {
 
     @Test
     internal fun ansettelsesperiodeTomErNull() {
-        every { arbeidsforholdClient.finnArbeidsforholdForArbeidstaker(fnr) } returns listOf(createArbeidsforhold(true, fom, null))
+        every { aaregClient.finnArbeidsforholdForArbeidstaker(fnr) } returns listOf(createArbeidsforhold(true, fom, null))
         every { organisasjonService.hentOrgNavn(any()) } returns orgNavn
 
         val arbeidsforholdList = arbeidsforholdService.hentArbeidsforhold(fnr)
