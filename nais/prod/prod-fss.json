@@ -14,7 +14,6 @@
     "/var/run/secrets/datasource": "/oracle/data/prod/creds/soknadsosialhjel_p-user"
   },
   "outboundRulesFssApplications": [
-    "sosialhjelp-fss-proxy",
     "sosialhjelp-oppslag-api"
   ],
   "fssCluster": "prod-fss",
