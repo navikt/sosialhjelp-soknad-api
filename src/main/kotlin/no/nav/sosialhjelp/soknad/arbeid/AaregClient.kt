@@ -5,7 +5,9 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import kotlinx.coroutines.runBlocking
-import no.nav.sosialhjelp.soknad.app.Constants
+import no.nav.sosialhjelp.soknad.app.Constants.BEARER
+import no.nav.sosialhjelp.soknad.app.Constants.HEADER_CALL_ID
+import no.nav.sosialhjelp.soknad.app.Constants.HEADER_NAV_PERSONIDENT
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.client.config.unproxiedWebClientBuilder
 import no.nav.sosialhjelp.soknad.app.exceptions.TjenesteUtilgjengeligException
@@ -16,7 +18,7 @@ import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserI
 import no.nav.sosialhjelp.soknad.arbeid.dto.ArbeidsforholdDto
 import no.nav.sosialhjelp.soknad.auth.tokenx.TokendingsService
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpHeaders.AUTHORIZATION
 import org.springframework.http.codec.json.Jackson2JsonDecoder
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
@@ -56,9 +58,9 @@ class AaregClient(
         try {
             return webClient.get()
                 .uri("/v1/arbeidstaker/arbeidsforhold$queryParamsPart", false, A_ORDNINGEN, sokeperiode.fom, sokeperiode.tom)
-                .header(HttpHeaders.AUTHORIZATION, Constants.BEARER + tokenxToken)
-                .header(Constants.HEADER_CALL_ID, getFromMDC(MDC_CALL_ID))
-                .header(Constants.HEADER_NAV_PERSONIDENT, fodselsnummer)
+                .header(AUTHORIZATION, BEARER + tokenxToken)
+                .header(HEADER_CALL_ID, getFromMDC(MDC_CALL_ID))
+                .header(HEADER_NAV_PERSONIDENT, fodselsnummer)
                 .retrieve()
                 .bodyToMono<List<ArbeidsforholdDto>>()
                 .block()
@@ -84,6 +86,15 @@ class AaregClient(
             log.error("Aareg.api - Noe uventet feilet", e)
             throw TjenesteUtilgjengeligException("AAREG", e)
         }
+    }
+
+    fun ping() {
+        webClient.options()
+            .uri("/ping")
+            .header(HEADER_CALL_ID, getFromMDC(MDC_CALL_ID))
+            .retrieve()
+            .bodyToMono<Any>()
+            .block()
     }
 
     companion object {
