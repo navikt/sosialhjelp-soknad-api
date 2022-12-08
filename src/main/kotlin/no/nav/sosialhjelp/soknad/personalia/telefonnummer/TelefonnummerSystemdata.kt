@@ -2,9 +2,9 @@ package no.nav.sosialhjelp.soknad.personalia.telefonnummer
 
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonTelefonnummer
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.systemdata.Systemdata
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
-import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 
 @Component
@@ -49,6 +49,6 @@ class TelefonnummerSystemdata(
     }
 
     companion object {
-        private val log = LoggerFactory.getLogger(TelefonnummerSystemdata::class.java)
+        private val log by logger()
     }
 }
