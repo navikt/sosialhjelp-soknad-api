@@ -2,6 +2,7 @@ package no.nav.sosialhjelp.soknad.arbeid
 
 import io.mockk.every
 import io.mockk.mockk
+import no.finn.unleash.Unleash
 import no.nav.sosialhjelp.soknad.arbeid.domain.Arbeidsforhold
 import no.nav.sosialhjelp.soknad.arbeid.dto.AnsettelsesperiodeDto
 import no.nav.sosialhjelp.soknad.arbeid.dto.ArbeidsavtaleDto
@@ -11,21 +12,29 @@ import no.nav.sosialhjelp.soknad.arbeid.dto.PeriodeDto
 import no.nav.sosialhjelp.soknad.arbeid.dto.PersonDto
 import no.nav.sosialhjelp.soknad.organisasjon.OrganisasjonService
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 internal class ArbeidsforholdServiceTest {
 
+    private val aaregClient: AaregClient = mockk()
     private val arbeidsforholdClient: ArbeidsforholdClient = mockk()
     private val organisasjonService: OrganisasjonService = mockk()
-    private val arbeidsforholdService = ArbeidsforholdService(arbeidsforholdClient, organisasjonService)
+    private val unleash: Unleash = mockk()
+    private val arbeidsforholdService = ArbeidsforholdService(aaregClient, arbeidsforholdClient, organisasjonService, unleash)
 
     private val fnr = "11111111111"
     private val orgnr = "orgnr"
     private val orgNavn = "Testbedriften A/S"
     private val fom = LocalDate.now().minusMonths(1)
     private val tom = LocalDate.now()
+
+    @BeforeEach
+    fun setUp() {
+        every { unleash.isEnabled(any(), false) } returns false
+    }
 
     @Test
     internal fun skalMappeDtoTilArbeidsforhold() {
