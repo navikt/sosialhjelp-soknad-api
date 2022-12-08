@@ -31,7 +31,6 @@ maskinporten_client_jwk: generateRSA
 tokendings_url: http://localhost:${mock-oauth2-server.port}/tokenx/.well-known/openid-configuration
 tokendings_client_id: localhost:teamdigisos:sosialhjelp-soknad-api
 tokendings_private_jwk: generateRSA
-fss_proxy_audience: dummyAudience
 oppslag_api_audience: dummyAudience
 utbetaldata_audience: dummyAudience
 pdl_api_audience: dummyAudience
@@ -53,7 +52,6 @@ fiks_svarut_password: pwpwpwpw
 digisos_api_baseurl: ${DIGISOS_API_BASEURL:https://api.fiks.test.ks.no/}
 ereg_url: https://ereg/
 aareg_url: https://aareg/
-aareg_proxy_url: https://fss-proxy/proxy/aareg/
 krr_url: http://krr/
 pdl_api_url: https://pdl-api/graphql
 unleash_api_url: https://unleash.nais.io/api
@@ -62,7 +60,6 @@ utbetaldata_api_baseurl: https://sokos-utbetaldata.dev.intern.nav.no
 oppslag_api_baseurl: https://sosialhjelp-oppslag-api/api/
 soknad.bostotte.url: http://bostotte.url
 norg_url: https://norg.url/enhet
-fss_proxy_ping_url: http://fss-proxy/ping
 svarut_url: https://svaruturl
 skatteetaten_api_baseurl: https://skatteetatenurl
 clamav_url: virusscan_not_enabled

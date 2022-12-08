@@ -15,7 +15,6 @@
     "/var/run/secrets/datasource": "/oracle/data/dev/creds/soknadsosialhjelp_q0-user"
   },
   "outboundRulesFssApplications": [
-    "sosialhjelp-fss-proxy",
     "sosialhjelp-oppslag-api"
   ],
   "fssCluster": "dev-fss",
@@ -40,12 +39,9 @@
     "SPRING_PROFILES_ACTIVE": "log-kibana",
     "AAREG_AUDIENCE": "dev-fss:arbeidsforhold:aareg-services-nais-q1",
     "AAREG_URL": "https://aareg-services-q1.dev.intern.nav.no/api",
-    "AAREG_PROXY_URL": "https://sosialhjelp-fss-proxy.dev.intern.nav.no/proxy/aareg/",
     "CLAMAV_URL": "http://clamav.nais-system.svc.nais.local/scan",
     "EREG_URL": "https://ereg-services.dev.intern.nav.no",
     "FIKS_NOKKELFIL": "svarut_public_test.pem",
-    "FSS_PROXY_AUDIENCE": "dev-fss:teamdigisos:sosialhjelp-fss-proxy",
-    "FSS_PROXY_PING_URL": "https://sosialhjelp-fss-proxy.dev.intern.nav.no/ping",
     "DIGISOS_API_BASEURL": "https://api.fiks.test.ks.no/",
     "KODEVERK_URL": "https://kodeverk.dev.intern.nav.no/api/v1/kodeverk",
     "KRR_AUDIENCE": "dev-gcp:team-rocket:digdir-krr-proxy",
