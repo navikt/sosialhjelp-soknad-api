@@ -37,7 +37,7 @@ management:
 # rest
 digisos_api_baseurl: ${DIGISOS_API_BASEURL}
 ereg_url: ${EREG_URL}
-aareg_proxy_url: ${AAREG_PROXY_URL}
+aareg_url: ${AAREG_URL}
 krr_url: ${KRR_URL}
 pdl_api_url: ${PDL_API_URL}
 unleash_api_url: ${UNLEASH_API_URL}
@@ -45,7 +45,6 @@ kodeverk_url: ${KODEVERK_URL}
 utbetaldata_api_baseurl: ${UTBETALDATA_API_BASEURL}
 oppslag_api_baseurl: ${OPPSLAG_API_BASEURL}
 norg_url: ${NORG_URL}
-fss_proxy_ping_url: ${FSS_PROXY_PING_URL}
 soknad.bostotte.url: ${SOKNAD_BOSTOTTE_URL}
 svarut_url: ${SVARUT_URL}
 skatteetaten_api_baseurl: ${SKATTEETATEN_API_BASEURL}
@@ -66,11 +65,11 @@ maskinporten_client_jwk: ${MASKINPORTEN_CLIENT_JWK}
 tokendings_url: ${TOKEN_X_WELL_KNOWN_URL}
 tokendings_client_id: ${TOKEN_X_CLIENT_ID}
 tokendings_private_jwk: ${TOKEN_X_PRIVATE_JWK}
-fss_proxy_audience: ${FSS_PROXY_AUDIENCE}
 oppslag_api_audience: ${OPPSLAG_API_AUDIENCE}
 utbetaldata_audience: ${UTBETALDATA_AUDIENCE}
 pdl_api_audience: ${PDL_API_AUDIENCE}
 krr_audience: ${KRR_AUDIENCE}
+aareg_audience: ${AAREG_AUDIENCE}
 
 # azuread
 azure_token_endpoint: ${AZURE_OPENID_CONFIG_TOKEN_ENDPOINT}
