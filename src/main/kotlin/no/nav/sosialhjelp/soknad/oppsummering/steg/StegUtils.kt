@@ -22,10 +22,6 @@ object StegUtils {
             .collect(Collectors.joining(" "))
     }
 
-    fun isNotNullOrEmtpy(s: String?): Boolean {
-        return s != null && s.isNotEmpty()
-    }
-
     fun integerVerdiSporsmalMedTittel(tittel: String?, key: String?, verdi: Int?): Sporsmal {
         return Sporsmal(
             tittel = tittel,

@@ -23,7 +23,7 @@ class MapperHelper {
     }
 
     fun utledGjeldendeSivilstand(sivilstander: List<SivilstandDto>?): SivilstandDto? {
-        if (sivilstander == null || sivilstander.isEmpty()) {
+        if (sivilstander.isNullOrEmpty()) {
             return null
         }
         // sorter sivilstander på synkende endringstidspunkt
@@ -50,7 +50,7 @@ class MapperHelper {
     }
 
     fun utledGjeldendeNavn(navn: List<NavnDto>?): NavnDto? {
-        if (navn == null || navn.isEmpty()) {
+        if (navn.isNullOrEmpty()) {
             return null
         }
         val sorted = navn.sortedWith(compareBy(nullsLast(reverseOrder())) { getEndringstidspunktOrNull(it) })

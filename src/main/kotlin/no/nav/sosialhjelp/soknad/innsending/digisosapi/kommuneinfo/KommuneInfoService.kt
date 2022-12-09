@@ -106,7 +106,7 @@ class KommuneInfoService(
 
     private fun oppdaterCache(kommuneInfoList: List<KommuneInfo>?) {
         try {
-            if (kommuneInfoList != null && kommuneInfoList.isNotEmpty()) {
+            if (!kommuneInfoList.isNullOrEmpty()) {
                 redisService.setex(
                     KOMMUNEINFO_CACHE_KEY,
                     redisObjectMapper.writeValueAsBytes(kommuneInfoList),
@@ -122,7 +122,7 @@ class KommuneInfoService(
         }
     }
 
-    fun hentKommuneInfoFraFiks(): List<KommuneInfo> {
+    private fun hentKommuneInfoFraFiks(): List<KommuneInfo> {
         return kommuneInfoClient.getAll()
             .also { log.info("Hentet kommuneinfo ved bruk av maskinporten-integrasjon mot ks:fiks") }
     }

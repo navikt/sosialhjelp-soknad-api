@@ -14,7 +14,6 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderAr
 import no.nav.sosialhjelp.soknad.innsending.HenvendelseService
 import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils.getVedleggFromInternalSoknad
 import no.nav.sosialhjelp.soknad.innsending.SenderUtils.createPrefixedBehandlingsId
-import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilOpplasting
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
 import no.nav.sosialhjelp.soknad.metrics.MetricsUtils.navKontorTilMetricNavn
 import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
@@ -42,8 +41,7 @@ class DigisosApiService(
         log.info("Starter innsending av søknad med behandlingsId $behandlingsId, skal sendes til DigisosApi v2")
         val vedlegg = convertToVedleggMetadataListe(soknadUnderArbeid)
         henvendelseService.oppdaterMetadataVedAvslutningAvSoknad(behandlingsId, vedlegg, soknadUnderArbeid, true)
-        val filOpplastinger = dokumentListeService.lagDokumentListe(soknadUnderArbeid)
-        log.info("Laster opp ${filOpplastinger.size}")
+        val filOpplastinger = dokumentListeService.getFilOpplastingList(soknadUnderArbeid)
         val soknadJson = getSoknadJson(soknadUnderArbeid)
         val tilleggsinformasjonJson = getTilleggsinformasjonJson(jsonInternalSoknad.soknad)
         val vedleggJson = getVedleggJson(soknadUnderArbeid)
@@ -55,40 +53,13 @@ class DigisosApiService(
         val navEnhetsnavn = jsonInternalSoknad.soknad.mottaker.navEnhetsnavn
 
         log.info("Starter kryptering av filer for $behandlingsId, skal sende til kommune $kommunenummer med enhetsnummer $enhetsnummer og navenhetsnavn $navEnhetsnavn")
-        val digisosId = sendOgKrypter(
-            soknadJson = soknadJson,
-            tilleggsinformasjonJson = tilleggsinformasjonJson,
-            vedleggJson = vedleggJson,
-            filOpplastinger = filOpplastinger,
-            kommunenr = kommunenummer,
-            behandlingsId = behandlingsId,
-            token = token
-        )
-
-        slettSoknadUnderArbeidEtterSendingTilFiks(soknadUnderArbeid)
-
-        genererOgLoggVedleggskravStatistikk(soknadUnderArbeid, vedlegg.vedleggListe)
-        prometheusMetricsService.reportSendtMedDigisosApi()
-        prometheusMetricsService.reportSoknadMottaker(soknadUnderArbeid.erEttersendelse, navKontorTilMetricNavn(navEnhetsnavn))
-        return digisosId
-    }
-
-    private fun sendOgKrypter(
-        soknadJson: String,
-        tilleggsinformasjonJson: String,
-        vedleggJson: String,
-        filOpplastinger: List<FilOpplasting>,
-        kommunenr: String,
-        behandlingsId: String,
-        token: String?
-    ): String {
-        return try {
+        val digisosId = try {
             digisosApiV2Client.krypterOgLastOppFiler(
                 soknadJson = soknadJson,
                 tilleggsinformasjonJson = tilleggsinformasjonJson,
                 vedleggJson = vedleggJson,
                 dokumenter = filOpplastinger,
-                kommunenr = kommunenr,
+                kommunenr = kommunenummer,
                 navEksternRefId = behandlingsId,
                 token = token
             )
@@ -96,6 +67,13 @@ class DigisosApiService(
             prometheusMetricsService.reportFeiletMedDigisosApi()
             throw e
         }
+
+        slettSoknadUnderArbeidEtterSendingTilFiks(soknadUnderArbeid)
+
+        genererOgLoggVedleggskravStatistikk(soknadUnderArbeid, vedlegg.vedleggListe)
+        prometheusMetricsService.reportSendtMedDigisosApi()
+        prometheusMetricsService.reportSoknadMottaker(soknadUnderArbeid.erEttersendelse, navKontorTilMetricNavn(navEnhetsnavn))
+        return digisosId
     }
 
     private fun getSoknadJson(soknadUnderArbeid: SoknadUnderArbeid): String {

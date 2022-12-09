@@ -41,7 +41,7 @@ class FamilieSystemdata(
             forsorgerplikt.harForsorgerplikt = systemverdiForsorgerplikt.harForsorgerplikt
 
             val ansvarList = forsorgerplikt.ansvar?.toMutableList()
-            if (ansvarList != null && ansvarList.isNotEmpty()) {
+            if (!ansvarList.isNullOrEmpty()) {
                 ansvarList.removeIf { it.barn.kilde == JsonKilde.SYSTEM && isNotInList(it, systemverdiForsorgerplikt.ansvar) }
                 ansvarList.addAll(
                     systemverdiForsorgerplikt.ansvar.filter { isNotInList(it, forsorgerplikt.ansvar) }
@@ -87,7 +87,7 @@ class FamilieSystemdata(
     private fun innhentSystemverdiForsorgerplikt(personIdentifikator: String): JsonForsorgerplikt {
         val jsonForsorgerplikt = JsonForsorgerplikt().withHarForsorgerplikt(JsonHarForsorgerplikt())
         val barn = personService.hentBarnForPerson(personIdentifikator)
-        if (barn == null || barn.isEmpty()) {
+        if (barn.isNullOrEmpty()) {
             jsonForsorgerplikt.harForsorgerplikt
                 .withKilde(JsonKilde.SYSTEM)
                 .withVerdi(false)

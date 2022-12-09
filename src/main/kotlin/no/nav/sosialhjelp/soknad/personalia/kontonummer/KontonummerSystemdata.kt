@@ -17,7 +17,7 @@ class KontonummerSystemdata(
         val personIdentifikator = personalia.personIdentifikator.verdi
         if (kontonummer.kilde == JsonKilde.SYSTEM) {
             val systemverdi = innhentSystemverdiKontonummer(personIdentifikator)
-            if (systemverdi == null || systemverdi.isEmpty()) {
+            if (systemverdi.isNullOrEmpty()) {
                 kontonummer.kilde = JsonKilde.BRUKER
                 kontonummer.verdi = null
             } else {
