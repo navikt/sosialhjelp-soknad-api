@@ -15,7 +15,6 @@ import no.nav.sosialhjelp.soknad.innsending.dto.BekreftelseRessurs
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import no.nav.sosialhjelp.soknad.tilgangskontroll.XsrfGenerator
-import org.slf4j.LoggerFactory
 import org.springframework.http.HttpHeaders
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.RequestBody
@@ -175,7 +174,7 @@ open class SoknadRessurs(
 
     companion object {
         const val XSRF_TOKEN = "XSRF-TOKEN-SOKNAD-API"
-        private val log = LoggerFactory.getLogger(SoknadRessurs::class.java)
+
         private fun xsrfCookie(behandlingId: String): Cookie {
             val xsrfCookie = Cookie(XSRF_TOKEN, XsrfGenerator.generateXsrfToken(behandlingId))
             xsrfCookie.path = "/"

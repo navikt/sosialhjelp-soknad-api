@@ -17,7 +17,7 @@ class DokumentListeService(
     private val mellomlagringService: MellomlagringService
 ) {
 
-    fun lagDokumentListe(soknadUnderArbeid: SoknadUnderArbeid): List<FilOpplasting> {
+    fun getFilOpplastingList(soknadUnderArbeid: SoknadUnderArbeid): List<FilOpplasting> {
         val internalSoknad = soknadUnderArbeid.jsonInternalSoknad
         if (internalSoknad == null) {
             throw RuntimeException("Kan ikke sende forsendelse til FIKS fordi søknad mangler")
@@ -39,26 +39,26 @@ class DokumentListeService(
     private fun lagDokumentForSaksbehandlerPdf(jsonInternalSoknad: JsonInternalSoknad): FilOpplasting {
         val filnavn = "Soknad.pdf"
         val soknadPdf = sosialhjelpPdfGenerator.generate(jsonInternalSoknad, false)
-        return opprettFilOpplastingFraByteArray(filnavn, MimeTypes.APPLICATION_PDF, soknadPdf)
+        return opprettFilOpplastingFraByteArray(filnavn, soknadPdf)
     }
 
     private fun lagDokumentForBrukerkvitteringPdf(): FilOpplasting {
         val filnavn = "Brukerkvittering.pdf"
         val pdf = sosialhjelpPdfGenerator.generateBrukerkvitteringPdf()
-        return opprettFilOpplastingFraByteArray(filnavn, MimeTypes.APPLICATION_PDF, pdf)
+        return opprettFilOpplastingFraByteArray(filnavn, pdf)
     }
 
     private fun lagDokumentForJuridiskPdf(internalSoknad: JsonInternalSoknad): FilOpplasting {
         val filnavn = "Soknad-juridisk.pdf"
         val pdf = sosialhjelpPdfGenerator.generate(internalSoknad, true)
-        return opprettFilOpplastingFraByteArray(filnavn, MimeTypes.APPLICATION_PDF, pdf)
+        return opprettFilOpplastingFraByteArray(filnavn, pdf)
     }
 
-    private fun opprettFilOpplastingFraByteArray(filnavn: String, mimetype: String, bytes: ByteArray): FilOpplasting {
+    private fun opprettFilOpplastingFraByteArray(filnavn: String, bytes: ByteArray): FilOpplasting {
         return FilOpplasting(
             metadata = FilMetadata(
                 filnavn = filnavn,
-                mimetype = mimetype,
+                mimetype = MimeTypes.APPLICATION_PDF,
                 storrelse = bytes.size.toLong()
             ),
             data = ByteArrayInputStream(bytes)

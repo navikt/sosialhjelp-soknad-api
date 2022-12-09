@@ -84,7 +84,7 @@ internal class DigisosApiServiceTest {
 
         val soknadUnderArbeid = createSoknadUnderArbeid("12345678910")
 
-        every { dokumentListeService.lagDokumentListe(any()) } returns emptyList()
+        every { dokumentListeService.getFilOpplastingList(any()) } returns emptyList()
         every { digisosApiV2Client.krypterOgLastOppFiler(any(), any(), any(), any(), any(), any(), any()) } returns "digisosid"
         every { soknadUnderArbeidService.settInnsendingstidspunktPaSoknad(any()) } just runs
         every { henvendelseService.oppdaterMetadataVedAvslutningAvSoknad(any(), any(), any(), any()) } just runs

@@ -28,7 +28,7 @@ internal class DokumentListeServiceTest {
 
         every { mellomlagringService.getAllVedlegg(any()).size } returns 1
 
-        val filOpplastings = dokumentListeService.lagDokumentListe(soknadUnderArbeid)
+        val filOpplastings = dokumentListeService.getFilOpplastingList(soknadUnderArbeid)
 
         val metadataFil1 = filOpplastings[0].metadata
         assertThat(metadataFil1.filnavn).isEqualTo("Soknad.pdf")
