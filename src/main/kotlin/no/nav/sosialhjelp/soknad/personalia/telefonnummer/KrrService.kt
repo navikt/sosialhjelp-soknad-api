@@ -1,7 +1,6 @@
 package no.nav.sosialhjelp.soknad.personalia.telefonnummer
 
 import com.fasterxml.jackson.core.JsonProcessingException
-import no.finn.unleash.Unleash
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.personalia.telefonnummer.dto.DigitalKontaktinformasjon
 import no.nav.sosialhjelp.soknad.redis.CACHE_30_MINUTES_IN_SECONDS
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Component
 class KrrService(
     private val krrClient: KrrClient,
     private val redisService: RedisService,
-    private val unleash: Unleash
 ) {
 
     fun getDigitalKontaktinformasjon(ident: String): DigitalKontaktinformasjon? {
@@ -46,7 +44,5 @@ class KrrService(
 
     companion object {
         private val log by logger()
-
-        private const val KRR_DIREKTE_UTEN_FSS_PROXY = "sosialhjelp.soknad.krr_direkte_uten_fss-proxy"
     }
 }
