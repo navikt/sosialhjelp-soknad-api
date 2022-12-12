@@ -4,7 +4,6 @@ import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper
 import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_SKATTEETATEN_SAMTYKKE
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling
-import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOrganisasjon
 import no.nav.sosialhjelp.soknad.arbeid.ArbeidsforholdSystemdata
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService.Companion.nowWithForcedNanoseconds
@@ -60,21 +59,6 @@ class SkatteetatenSystemdata(
         return utbetalinger.map { mapToJsonOkonomiOpplysningUtbetaling(it) }
     }
 
-    private fun mapToJsonOrganisasjon(orgnummer: String?): JsonOrganisasjon? {
-        if (orgnummer == null) return null
-        if (orgnummer.matches(Regex("\\d{9}"))) {
-            return JsonOrganisasjon()
-                .withNavn(organisasjonService.hentOrgNavn(orgnummer))
-                .withOrganisasjonsnummer(orgnummer)
-        }
-        if (orgnummer.matches(Regex("\\d{11}"))) {
-            log.info("Utbetalingens opplysningspliktigId er et personnummer. Dette blir ikke inkludert i soknad.json")
-        } else {
-            log.error("Utbetalingens opplysningspliktigId er verken et organisasjonsnummer eller personnummer: $orgnummer. Kontakt skatteetaten.")
-        }
-        return null
-    }
-
     private fun mapToJsonOkonomiOpplysningUtbetaling(utbetaling: Utbetaling): JsonOkonomiOpplysningUtbetaling {
         return JsonOkonomiOpplysningUtbetaling()
             .withKilde(JsonKilde.SYSTEM)
@@ -82,7 +66,7 @@ class SkatteetatenSystemdata(
             .withTittel(utbetaling.tittel)
             .withBrutto(utbetaling.brutto)
             .withSkattetrekk(utbetaling.skattetrekk)
-            .withOrganisasjon(mapToJsonOrganisasjon(utbetaling.orgnummer))
+            .withOrganisasjon(organisasjonService.mapToJsonOrganisasjon(utbetaling.orgnummer))
             .withPeriodeFom(utbetaling.periodeFom.toString())
             .withPeriodeTom(utbetaling.periodeTom.toString())
             .withOverstyrtAvBruker(false)
