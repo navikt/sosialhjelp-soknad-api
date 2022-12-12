@@ -61,6 +61,5 @@ class DittNavMetadataService(
         private val log = LoggerFactory.getLogger(DittNavMetadataService::class.java)
         private const val PABEGYNT_SOKNAD_TITTEL = "Påbegynt søknad om økonomisk sosialhjelp"
         private const val SIKKERHETSNIVAA_3 = 3
-        private const val SIKKERHETSNIVAA_4 = 4
     }
 }

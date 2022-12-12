@@ -15,7 +15,6 @@ import no.nav.sosialhjelp.soknad.personalia.adresse.adresseregister.HentAdresseS
 import no.nav.sosialhjelp.soknad.personalia.adresse.adresseregister.domain.KartverketMatrikkelAdresse
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Bostedsadresse
-import no.nav.sosialhjelp.soknad.personalia.person.domain.Kontaktadresse
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Matrikkeladresse
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Oppholdsadresse
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Vegadresse
@@ -129,19 +128,6 @@ class AdresseSystemdata(
         }
         jsonAdresse.kilde = JsonKilde.SYSTEM
         return jsonAdresse
-    }
-
-    private fun mapToJsonAdresse(kontaktadresse: Kontaktadresse?): JsonAdresse? {
-        if (kontaktadresse == null) {
-            return null
-        }
-        return if (kontaktadresse.vegadresse != null) {
-            val jsonAdresse = tilGateAdresse(kontaktadresse.vegadresse)
-            jsonAdresse.kilde = JsonKilde.SYSTEM
-            jsonAdresse
-        } else {
-            throw IllegalStateException("Ukjent kontaktadresse fra PDL (skal være Vegadresse)")
-        }
     }
 
     private fun tilGateAdresse(vegadresse: Vegadresse): JsonGateAdresse {

@@ -10,7 +10,6 @@ import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidS
 import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.domain.Utbetaling
 import no.nav.sosialhjelp.soknad.organisasjon.OrganisasjonService
 import no.nav.sosialhjelp.soknad.tekster.TextService
-import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 
 @Component
@@ -70,9 +69,5 @@ class SkatteetatenSystemdata(
             .withPeriodeFom(utbetaling.periodeFom.toString())
             .withPeriodeTom(utbetaling.periodeTom.toString())
             .withOverstyrtAvBruker(false)
-    }
-
-    companion object {
-        private val log = LoggerFactory.getLogger(SkatteetatenSystemdata::class.java)
     }
 }
