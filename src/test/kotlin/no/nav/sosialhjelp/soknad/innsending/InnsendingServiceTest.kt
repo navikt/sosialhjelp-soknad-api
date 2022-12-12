@@ -89,25 +89,25 @@ internal class InnsendingServiceTest {
     }
 
     @Test
-    fun `finnFiksForsendelseIdForEttersendelse fra SendtSoknad`() {
+    fun `finnFiksForsendelseIdForEttersendelse fra SoknadMetadata`() {
+        every { soknadMetadataRepository.hent(any()) } returns createSoknadMetadata()
         val fiksForsendelseId = innsendingService.finnFiksForsendelseIdForEttersendelse(createSoknadUnderArbeidForEttersendelse())
         assertThat(fiksForsendelseId).isEqualTo(FIKSFORSENDELSEID)
-        verify { soknadMetadataRepository wasNot called }
+        verify { sendtSoknadRepository wasNot called }
     }
 
     @Test
-    fun `finnFiksForsendelseIdForEttersendelse fra SoknadMetadata hvis SendtSoknad mangler`() {
-        every { sendtSoknadRepository.hentSendtSoknad(any(), any()) } returns null
-        every { soknadMetadataRepository.hent(any()) } returns createSoknadMetadata()
-        val fiksForsendelseId =
-            innsendingService.finnFiksForsendelseIdForEttersendelse(createSoknadUnderArbeidForEttersendelse())
+    fun `finnFiksForsendelseIdForEttersendelse fra SendtSoknad hvis SoknadMetadata ikke har fiksForsendelseId`() {
+        every { soknadMetadataRepository.hent(any()) } returns null
+        every { sendtSoknadRepository.hentSendtSoknad(any(), any()) } returns createSendtSoknad()
+        val fiksForsendelseId = innsendingService.finnFiksForsendelseIdForEttersendelse(createSoknadUnderArbeidForEttersendelse())
         assertThat(fiksForsendelseId).isEqualTo(FIKSFORSENDELSEID)
     }
 
     @Test
     fun `finnFiksForsendelseIdForEttersendelse returnerer null hvis fiksForsendelseId ikke finnes for SendtSoknad eller SoknadMetadata`() {
-        every { sendtSoknadRepository.hentSendtSoknad(any(), any()) } returns null
         every { soknadMetadataRepository.hent(any()) } returns null
+        every { sendtSoknadRepository.hentSendtSoknad(any(), any()) } returns null
 
         val fiksForsendelseId = innsendingService.finnFiksForsendelseIdForEttersendelse(createSoknadUnderArbeidForEttersendelse())
         assertThat(fiksForsendelseId).isNull()
