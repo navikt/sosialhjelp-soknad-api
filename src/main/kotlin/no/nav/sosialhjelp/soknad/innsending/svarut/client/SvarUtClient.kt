@@ -4,10 +4,10 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.netty.channel.ChannelOption
 import no.ks.fiks.svarut.klient.model.Forsendelse
 import no.ks.fiks.svarut.klient.model.ForsendelsesId
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.exceptions.TjenesteUtilgjengeligException
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.createHttpEntity
 import org.apache.commons.io.IOUtils
-import org.slf4j.LoggerFactory.getLogger
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.core.io.ByteArrayResource
 import org.springframework.http.HttpHeaders.AUTHORIZATION
@@ -27,19 +27,14 @@ import java.nio.charset.StandardCharsets
 import java.time.Duration
 import javax.xml.bind.DatatypeConverter
 
-interface SvarUtClient {
-    fun ping()
-    fun sendForsendelse(forsendelse: Forsendelse, data: Map<String, InputStream>): ForsendelsesId?
-}
-
 @Component
-class SvarUtClientImpl(
+class SvarUtClient(
     @Value("\${svarut_url}") private var baseurl: String,
     @Value("\${fiks_svarut_username}") private val svarutUsername: String?,
     @Value("\${fiks_svarut_password}") private val svarutPassword: String?,
     webClientBuilder: WebClient.Builder,
     proxiedHttpClient: HttpClient
-) : SvarUtClient {
+) {
 
     private val basicAuthentication: String
         get() {
@@ -66,7 +61,7 @@ class SvarUtClientImpl(
         .defaultHeader(AUTHORIZATION, basicAuthentication)
         .build()
 
-    override fun ping() {
+    fun ping() {
         svarUtWebClient.get()
             .uri("$baseurl/tjenester/api/forsendelse/v1/forsendelseTyper")
             .retrieve()
@@ -77,7 +72,7 @@ class SvarUtClientImpl(
             .block()
     }
 
-    override fun sendForsendelse(forsendelse: Forsendelse, data: Map<String, InputStream>): ForsendelsesId? {
+    fun sendForsendelse(forsendelse: Forsendelse, data: Map<String, InputStream>): ForsendelsesId? {
         return try {
             val body = LinkedMultiValueMap<String, Any>()
             body.add("forsendelse", createHttpEntity(objectMapper.writeValueAsString(forsendelse), "forsendelse", null, MediaType.APPLICATION_JSON_VALUE))
@@ -101,7 +96,7 @@ class SvarUtClientImpl(
     }
 
     companion object {
-        private val log = getLogger(SvarUtClientImpl::class.java)
+        private val log by logger()
         private val objectMapper = jacksonObjectMapper()
 
         private const val SVARUT_TIMEOUT = 16 * 60 * 1000

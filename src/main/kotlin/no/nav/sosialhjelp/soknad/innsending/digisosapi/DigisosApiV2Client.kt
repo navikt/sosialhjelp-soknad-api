@@ -1,7 +1,11 @@
 package no.nav.sosialhjelp.soknad.innsending.digisosapi
 
 import com.fasterxml.jackson.core.JsonProcessingException
+import io.netty.channel.ChannelOption
+import io.netty.handler.timeout.ReadTimeoutHandler
+import io.netty.handler.timeout.WriteTimeoutHandler
 import no.nav.sosialhjelp.api.fiks.exceptions.FiksException
+import no.nav.sosialhjelp.soknad.app.Constants
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.client.config.RetryUtils
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.KrypteringService.Companion.waitForFutures
@@ -10,27 +14,65 @@ import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.digisosObjectMapper
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilForOpplasting
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilOpplasting
 import org.apache.commons.io.IOUtils
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.core.io.ByteArrayResource
 import org.springframework.http.HttpHeaders.AUTHORIZATION
 import org.springframework.http.MediaType
 import org.springframework.http.MediaType.APPLICATION_JSON_VALUE
 import org.springframework.http.MediaType.APPLICATION_OCTET_STREAM_VALUE
 import org.springframework.http.MediaType.TEXT_PLAIN_VALUE
+import org.springframework.http.client.reactive.ReactorClientHttpConnector
+import org.springframework.http.codec.json.Jackson2JsonDecoder
+import org.springframework.http.codec.json.Jackson2JsonEncoder
+import org.springframework.stereotype.Component
 import org.springframework.util.LinkedMultiValueMap
 import org.springframework.web.reactive.function.BodyInserters
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
 import org.springframework.web.reactive.function.client.bodyToMono
+import reactor.netty.http.client.HttpClient
 import java.io.IOException
+import java.time.Duration
 import java.util.Collections
 import java.util.concurrent.Future
 
+@Component
 class DigisosApiV2Client(
-    private val digisosApiEndpoint: String,
+    @Value("\${digisos_api_baseurl}") private val digisosApiEndpoint: String,
+    @Value("\${integrasjonsid_fiks}") private val integrasjonsidFiks: String,
+    @Value("\${integrasjonpassord_fiks}") private val integrasjonpassordFiks: String,
     private val dokumentlagerClient: DokumentlagerClient,
     private val krypteringService: KrypteringService,
-    private val fiksWebClient: WebClient
+    webClientBuilder: WebClient.Builder,
+    proxiedHttpClient: HttpClient
 ) {
+
+    private val fiksWebClient = webClientBuilder
+        .clientConnector(
+            ReactorClientHttpConnector(
+                proxiedHttpClient
+                    .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, SENDING_TIL_FIKS_TIMEOUT)
+                    .doOnConnected {
+                        it
+                            .addHandlerLast(ReadTimeoutHandler(SENDING_TIL_FIKS_TIMEOUT / 1000))
+                            .addHandlerLast(WriteTimeoutHandler(SENDING_TIL_FIKS_TIMEOUT / 1000))
+                    }
+                    .responseTimeout(Duration.ofMillis(SENDING_TIL_FIKS_TIMEOUT.toLong()))
+            )
+        )
+        .codecs {
+            it.defaultCodecs().maxInMemorySize(150 * 1024 * 1024)
+            it.defaultCodecs().jackson2JsonEncoder(Jackson2JsonEncoder(digisosObjectMapper))
+            it.defaultCodecs().jackson2JsonDecoder(Jackson2JsonDecoder(digisosObjectMapper))
+        }
+        .defaultHeader(Constants.HEADER_INTEGRASJON_ID, integrasjonsidFiks)
+        .defaultHeader(Constants.HEADER_INTEGRASJON_PASSORD, integrasjonpassordFiks)
+        .build()
+
+    companion object {
+        private val log by logger()
+        private const val SENDING_TIL_FIKS_TIMEOUT = 5 * 60 * 1000 // 5 minutter
+    }
 
     fun krypterOgLastOppFiler(
         soknadJson: String,
@@ -122,9 +164,5 @@ class DigisosApiV2Client(
         } catch (e: JsonProcessingException) {
             throw IllegalStateException(e)
         }
-    }
-
-    companion object {
-        private val log by logger()
     }
 }

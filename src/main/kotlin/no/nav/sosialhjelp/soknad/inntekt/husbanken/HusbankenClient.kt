@@ -1,25 +1,31 @@
 package no.nav.sosialhjelp.soknad.inntekt.husbanken
 
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
+import no.nav.sosialhjelp.soknad.app.client.config.proxiedWebClientBuilder
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.dto.BostotteDto
-import org.slf4j.LoggerFactory.getLogger
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders
+import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
 import org.springframework.web.reactive.function.client.bodyToMono
+import reactor.netty.http.client.HttpClient
 import java.time.LocalDate
 
-interface HusbankenClient {
-    fun hentBostotte(token: String?, fra: LocalDate, til: LocalDate): BostotteDto?
-    fun ping()
-}
+@Component
+class HusbankenClient(
+    @Value("\${soknad.bostotte.url}") private val bostotteBaseUrl: String,
+    webClientBuilder: WebClient.Builder,
+    proxiedHttpClient: HttpClient
+) {
 
-class HusbankenClientImpl(
-    private val webClient: WebClient
-) : HusbankenClient {
+    private val husbankenWebClient: WebClient = proxiedWebClientBuilder(webClientBuilder, proxiedHttpClient)
+        .baseUrl(bostotteBaseUrl)
+        .build()
 
-    override fun hentBostotte(token: String?, fra: LocalDate, til: LocalDate): BostotteDto? {
+    fun hentBostotte(token: String?, fra: LocalDate, til: LocalDate): BostotteDto? {
         return try {
-            webClient.get()
+            husbankenWebClient.get()
                 .uri(QUERY_PARAMS, fra, til)
                 .headers { headers -> token?.let { headers.add(HttpHeaders.AUTHORIZATION, it) } }
                 .retrieve()
@@ -39,8 +45,8 @@ class HusbankenClientImpl(
         }
     }
 
-    override fun ping() {
-        webClient.get()
+    fun ping() {
+        husbankenWebClient.get()
             .uri("/ping")
             .retrieve()
             .bodyToMono<String>()
@@ -48,7 +54,7 @@ class HusbankenClientImpl(
     }
 
     companion object {
-        private val log = getLogger(HusbankenClientImpl::class.java)
+        private val log by logger()
         private const val QUERY_PARAMS = "?fra={fra}&til={til}"
     }
 }

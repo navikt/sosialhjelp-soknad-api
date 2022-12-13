@@ -3,6 +3,7 @@ package no.nav.sosialhjelp.soknad.navenhet
 import com.fasterxml.jackson.core.JsonProcessingException
 import no.nav.sosialhjelp.soknad.app.Constants.HEADER_CALL_ID
 import no.nav.sosialhjelp.soknad.app.Constants.HEADER_CONSUMER_ID
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.client.config.RetryUtils
 import no.nav.sosialhjelp.soknad.app.client.config.unproxiedWebClientBuilder
 import no.nav.sosialhjelp.soknad.app.exceptions.TjenesteUtilgjengeligException
@@ -15,7 +16,6 @@ import no.nav.sosialhjelp.soknad.redis.GT_CACHE_KEY_PREFIX
 import no.nav.sosialhjelp.soknad.redis.GT_LAST_POLL_TIME_PREFIX
 import no.nav.sosialhjelp.soknad.redis.RedisService
 import no.nav.sosialhjelp.soknad.redis.RedisUtils.redisObjectMapper
-import org.slf4j.LoggerFactory.getLogger
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
@@ -26,20 +26,16 @@ import java.nio.charset.StandardCharsets
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-interface NorgClient {
-    fun hentNavEnhetForGeografiskTilknytning(geografiskTilknytning: String): NavEnhetDto?
-}
-
 @Component
-class NorgClientImpl(
+class NorgClient(
     @Value("\${norg_url}") private val norgUrl: String,
     private val redisService: RedisService,
     webClientBuilder: WebClient.Builder
-) : NorgClient {
+) {
 
     private val webClient = unproxiedWebClientBuilder(webClientBuilder).build()
 
-    override fun hentNavEnhetForGeografiskTilknytning(geografiskTilknytning: String): NavEnhetDto? {
+    fun hentNavEnhetForGeografiskTilknytning(geografiskTilknytning: String): NavEnhetDto? {
         return try {
             webClient.get()
                 .uri("$norgUrl/enhet/navkontor/{geografiskTilknytning}", geografiskTilknytning)
@@ -79,6 +75,6 @@ class NorgClientImpl(
     }
 
     companion object {
-        private val log = getLogger(NorgClientImpl::class.java)
+        private val log by logger()
     }
 }
