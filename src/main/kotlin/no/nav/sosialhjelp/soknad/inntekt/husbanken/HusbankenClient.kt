@@ -1,31 +1,20 @@
 package no.nav.sosialhjelp.soknad.inntekt.husbanken
 
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
-import no.nav.sosialhjelp.soknad.app.client.config.proxiedWebClientBuilder
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.dto.BostotteDto
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders
-import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
 import org.springframework.web.reactive.function.client.bodyToMono
-import reactor.netty.http.client.HttpClient
 import java.time.LocalDate
 
-@Component
 class HusbankenClient(
-    @Value("\${soknad.bostotte.url}") private val bostotteBaseUrl: String,
-    webClientBuilder: WebClient.Builder,
-    proxiedHttpClient: HttpClient
+    private val webClient: WebClient
 ) {
-
-    private val husbankenWebClient: WebClient = proxiedWebClientBuilder(webClientBuilder, proxiedHttpClient)
-        .baseUrl(bostotteBaseUrl)
-        .build()
 
     fun hentBostotte(token: String?, fra: LocalDate, til: LocalDate): BostotteDto? {
         return try {
-            husbankenWebClient.get()
+            webClient.get()
                 .uri(QUERY_PARAMS, fra, til)
                 .headers { headers -> token?.let { headers.add(HttpHeaders.AUTHORIZATION, it) } }
                 .retrieve()
@@ -46,7 +35,7 @@ class HusbankenClient(
     }
 
     fun ping() {
-        husbankenWebClient.get()
+        webClient.get()
             .uri("/ping")
             .retrieve()
             .bodyToMono<String>()
