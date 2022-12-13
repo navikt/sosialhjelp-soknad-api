@@ -39,13 +39,13 @@ open class InnsendingService(
     }
 
     open fun finnOgSlettSoknadUnderArbeidVedSendingTilFiks(behandlingsId: String, eier: String) {
-        log.debug("Henter søknad under arbeid for behandlingsid $behandlingsId og eier $eier")
+        log.debug("Henter søknad under arbeid for behandlingsid $behandlingsId")
         soknadUnderArbeidRepository.hentSoknadNullable(behandlingsId, eier)
             ?.let { soknadUnderArbeidRepository.slettSoknad(it, eier) }
     }
 
     open fun oppdaterTabellerVedSendingTilFiks(fiksforsendelseId: String?, behandlingsId: String?, eier: String?) {
-        log.debug("Oppdaterer sendt søknad for behandlingsid $behandlingsId og eier $eier")
+        log.debug("Oppdaterer sendt søknad for behandlingsid $behandlingsId")
         sendtSoknadRepository.oppdaterSendtSoknadVedSendingTilFiks(fiksforsendelseId, behandlingsId, eier)
 
         log.debug("Oppdaterer soknadmetadata for behandlingsid $behandlingsId")
