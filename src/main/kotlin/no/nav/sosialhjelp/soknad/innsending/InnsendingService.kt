@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.innsending
 
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedlegg
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRepository
 import no.nav.sosialhjelp.soknad.db.repositories.sendtsoknad.SendtSoknad
@@ -10,7 +11,6 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderAr
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
 import org.apache.commons.lang3.StringUtils
-import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import org.springframework.transaction.TransactionStatus
 import org.springframework.transaction.support.TransactionCallbackWithoutResult
@@ -39,16 +39,16 @@ open class InnsendingService(
     }
 
     open fun finnOgSlettSoknadUnderArbeidVedSendingTilFiks(behandlingsId: String, eier: String) {
-        logger.debug("Henter søknad under arbeid for behandlingsid $behandlingsId og eier $eier")
+        log.debug("Henter søknad under arbeid for behandlingsid $behandlingsId")
         soknadUnderArbeidRepository.hentSoknadNullable(behandlingsId, eier)
             ?.let { soknadUnderArbeidRepository.slettSoknad(it, eier) }
     }
 
     open fun oppdaterTabellerVedSendingTilFiks(fiksforsendelseId: String?, behandlingsId: String?, eier: String?) {
-        logger.debug("Oppdaterer sendt søknad for behandlingsid $behandlingsId og eier $eier")
+        log.debug("Oppdaterer sendt søknad for behandlingsid $behandlingsId")
         sendtSoknadRepository.oppdaterSendtSoknadVedSendingTilFiks(fiksforsendelseId, behandlingsId, eier)
 
-        logger.debug("Oppdaterer soknadmetadata for behandlingsid $behandlingsId")
+        log.debug("Oppdaterer soknadmetadata for behandlingsid $behandlingsId")
         val soknadMetadata = soknadMetadataRepository.hent(behandlingsId)
         soknadMetadata?.fiksForsendelseId = fiksforsendelseId
         soknadMetadataRepository.oppdater(soknadMetadata)
@@ -72,8 +72,11 @@ open class InnsendingService(
         val tilknyttetBehandlingsId = soknadUnderArbeid.tilknyttetBehandlingsId
             ?: throw IllegalStateException("TilknyttetBehandlingsId kan ikke være null for en ettersendelse")
 
-        return sendtSoknadRepository.hentSendtSoknad(tilknyttetBehandlingsId, soknadUnderArbeid.eier)?.fiksforsendelseId
-            ?: soknadMetadataRepository.hent(tilknyttetBehandlingsId)?.fiksForsendelseId
+        return soknadMetadataRepository.hent(tilknyttetBehandlingsId)?.fiksForsendelseId.also {
+            log.info("Ettersending - hentet fiksForsendelseId fra soknadMetadata")
+        } ?: sendtSoknadRepository.hentSendtSoknad(tilknyttetBehandlingsId, soknadUnderArbeid.eier)?.fiksforsendelseId.also {
+            log.info("Ettersending - hentet fiksForsendelseId fra sendt_soknad")
+        }
     }
 
     fun mapSoknadUnderArbeidTilSendtSoknad(soknadUnderArbeid: SoknadUnderArbeid): SendtSoknad {
@@ -113,6 +116,6 @@ open class InnsendingService(
     }
 
     companion object {
-        private val logger = LoggerFactory.getLogger(InnsendingService::class.java)
+        private val log by logger()
     }
 }
