@@ -14,12 +14,12 @@ import org.springframework.web.reactive.function.client.WebClient
 import java.nio.charset.StandardCharsets
 import java.time.LocalDate
 
-internal class HusbankenClientImplTest {
+internal class HusbankenClientTest {
 
     private val mockWebServer = MockWebServer()
     private val webClient = WebClient.create(mockWebServer.url("/").toString())
 
-    private val husbankenClient = HusbankenClientImpl(webClient)
+    private val husbankenClient = HusbankenClient(webClient)
 
     @AfterEach
     internal fun tearDown() {
