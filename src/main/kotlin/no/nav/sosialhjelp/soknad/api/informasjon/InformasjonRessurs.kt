@@ -25,25 +25,23 @@ import no.nav.sosialhjelp.soknad.tekster.NavMessageSource
 import org.apache.commons.lang3.LocaleUtils
 import org.apache.commons.lang3.StringUtils
 import org.slf4j.LoggerFactory
-import org.springframework.stereotype.Controller
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.RestController
 import java.time.LocalDateTime
 import java.util.Collections
 import java.util.Locale
 import java.util.Properties
-import javax.ws.rs.GET
-import javax.ws.rs.POST
-import javax.ws.rs.Path
-import javax.ws.rs.Produces
-import javax.ws.rs.QueryParam
-import javax.ws.rs.core.MediaType
 
 /**
  * Klassen håndterer rest kall for å hente informasjon
  */
-@Controller
+@RestController
 @ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4])
-@Path("/informasjon")
-@Produces(MediaType.APPLICATION_JSON)
+@RequestMapping("/informasjon")
 open class InformasjonRessurs(
     private val messageSource: NavMessageSource,
     private val adresseSokService: AdressesokService,
@@ -61,8 +59,7 @@ open class InformasjonRessurs(
         private const val SOKNADSOSIALHJELP = "soknadsosialhjelp"
     }
 
-    @GET
-    @Path("/fornavn")
+    @GetMapping("/fornavn")
     open fun hentFornavn(): Map<String?, String?>? {
         val fnr = SubjectHandlerUtils.getUserIdFromToken()
         val (fornavn1) = personService.hentPerson(fnr) ?: return HashMap()
@@ -72,9 +69,11 @@ open class InformasjonRessurs(
     }
 
     @Unprotected
-    @GET
-    @Path("/tekster")
-    open fun hentTekster(@QueryParam("type") queryType: String, @QueryParam("sprak") querySprak: String?): Properties? {
+    @GetMapping("/tekster")
+    open fun hentTekster(
+        @RequestParam("type") queryType: String,
+        @RequestParam("sprak") querySprak: String?
+    ): Properties? {
         var type = queryType
         var sprak = querySprak
         if (sprak == null || sprak.trim { it <= ' ' }.isEmpty()) {
@@ -91,8 +90,7 @@ open class InformasjonRessurs(
         return messageSource.getBundleFor(type, locale)
     }
 
-    @GET
-    @Path("/utslagskriterier/sosialhjelp")
+    @GetMapping("/utslagskriterier/sosialhjelp", produces = ["application/json;charset=UTF-8"])
     open fun getUtslagskriterier(): Map<String, Any>? {
         val uid = SubjectHandlerUtils.getUserIdFromToken()
         val adressebeskyttelse = personService.hentAdressebeskyttelse(uid)
@@ -108,15 +106,17 @@ open class InformasjonRessurs(
         return resultat
     }
 
-    @GET
-    @Path("/adressesok")
-    open fun adresseSok(@QueryParam("sokestreng") sokestreng: String?): List<AdresseForslag?>? {
+    @GetMapping("/adressesok")
+    open fun adresseSok(
+        @RequestParam("sokestreng") sokestreng: String?
+    ): List<AdresseForslag?>? {
         return adresseSokService.sokEtterAdresser(sokestreng)
     }
 
-    @POST
-    @Path("/actions/logg")
-    open fun loggFraKlient(logg: Logg) {
+    @PostMapping("/actions/logg")
+    open fun loggFraKlient(
+        @RequestBody logg: Logg
+    ) {
         when (logg.level) {
             "INFO" -> klientlogger.info(logg.melding())
             "WARN" -> klientlogger.warn(logg.melding())
@@ -125,16 +125,16 @@ open class InformasjonRessurs(
         }
     }
 
-    @GET
-    @Path("/kommunelogg")
-    open fun triggeKommunelogg(@QueryParam("kommunenummer") kommunenummer: String): String? {
+    @GetMapping("/kommunelogg")
+    open fun triggeKommunelogg(
+        @RequestParam("kommunenummer") kommunenummer: String
+    ): String? {
         logger.info("Kommuneinfo trigget for $kommunenummer: ${kommuneInfoService.kommuneInfo(kommunenummer)}")
         return "$kommunenummer er logget. Sjekk kibana"
     }
 
     @Unprotected
-    @GET
-    @Path("/kommunestatus")
+    @GetMapping("/kommunestatus")
     open fun hentKommunestatus(): Map<String, KommunestatusFrontend> {
         if (nedetidService.isInnenforNedetid) {
             return emptyMap()
@@ -146,8 +146,7 @@ open class InformasjonRessurs(
         return mergeManuelleKommunerMedDigisosKommunerKommunestatus(manueltPakobledeKommuner, digisosKommuner)
     }
 
-    @GET
-    @Path("/harNyligInnsendteSoknader")
+    @GetMapping("/harNyligInnsendteSoknader")
     open fun harNyligInnsendteSoknader(): NyligInnsendteSoknaderResponse {
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val grense = LocalDateTime.now().minusDays(FJORTEN_DAGER.toLong())
@@ -155,8 +154,7 @@ open class InformasjonRessurs(
         return NyligInnsendteSoknaderResponse(nyligSendteSoknader.size)
     }
 
-    @GET
-    @Path("/pabegynteSoknader")
+    @GetMapping("/pabegynteSoknader")
     open fun hentPabegynteSoknader(): List<PabegyntSoknad> {
         val fnr = SubjectHandlerUtils.getUserIdFromToken()
         logger.debug("Henter pabegynte soknader for bruker")

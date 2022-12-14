@@ -10,33 +10,29 @@ import no.nav.sosialhjelp.soknad.ettersending.innsendtsoknad.BehandlingsKjede
 import no.nav.sosialhjelp.soknad.ettersending.innsendtsoknad.InnsendtSoknadService
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.mappers.VedleggMapper
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
-import org.springframework.stereotype.Controller
-import javax.ws.rs.GET
-import javax.ws.rs.Path
-import javax.ws.rs.PathParam
-import javax.ws.rs.Produces
-import javax.ws.rs.core.MediaType
+import org.springframework.http.MediaType
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
 
-@Controller
+@RestController
 @ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4])
-@Path("/ettersendelse")
-@Produces(MediaType.APPLICATION_JSON)
+@RequestMapping("/ettersendelse", produces = [MediaType.APPLICATION_JSON_VALUE])
 open class EttersendingRessurs(
     private val innsendtSoknadService: InnsendtSoknadService,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val opplastetVedleggRepository: OpplastetVedleggRepository,
     private val tilgangskontroll: Tilgangskontroll
 ) {
-    @GET
-    @Path("/innsendte/{behandlingsId}")
-    open fun hentBehandlingskjede(@PathParam("behandlingsId") behandlingsId: String): BehandlingsKjede {
+    @GetMapping("/innsendte/{behandlingsId}")
+    open fun hentBehandlingskjede(@PathVariable("behandlingsId") behandlingsId: String): BehandlingsKjede {
         tilgangskontroll.verifiserBrukerHarTilgangTilMetadata(behandlingsId)
         return innsendtSoknadService.hentBehandlingskjede(behandlingsId)
     }
 
-    @GET
-    @Path("/ettersendteVedlegg/{behandlingsId}")
-    open fun hentVedlegg(@PathParam("behandlingsId") behandlingsId: String): List<EttersendtVedlegg> {
+    @GetMapping("/ettersendteVedlegg/{behandlingsId}")
+    open fun hentVedlegg(@PathVariable("behandlingsId") behandlingsId: String): List<EttersendtVedlegg> {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)

@@ -8,38 +8,35 @@ import no.nav.sosialhjelp.soknad.app.Constants.CLAIM_ACR_LEVEL_4
 import no.nav.sosialhjelp.soknad.app.Constants.TOKENX
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import org.slf4j.LoggerFactory
-import org.springframework.stereotype.Controller
+import org.springframework.http.MediaType
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
-import javax.ws.rs.GET
-import javax.ws.rs.POST
-import javax.ws.rs.Path
-import javax.ws.rs.Produces
-import javax.ws.rs.core.MediaType
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
 
-@Controller
+@RestController
 @ProtectedWithClaims(issuer = TOKENX, combineWithOr = true, claimMap = [CLAIM_ACR_LEVEL_3, CLAIM_ACR_LEVEL_4])
-@Path("/dittnav")
-@Produces(MediaType.APPLICATION_JSON)
+@RequestMapping("/dittnav", produces = [MediaType.APPLICATION_JSON_VALUE])
 open class DittNavMetadataRessurs(
     private val dittNavMetadataService: DittNavMetadataService
 ) {
-    @GET
-    @Path("/pabegynte/aktive")
+    @GetMapping("/pabegynte/aktive")
     open fun hentPabegynteSoknaderForBruker(): List<PabegyntSoknadDto> {
         val fnr = SubjectHandlerUtils.getUserIdFromToken()
         return dittNavMetadataService.hentAktivePabegynteSoknader(fnr)
     }
 
-    @GET
-    @Path("/pabegynte/inaktive")
+    @GetMapping("/pabegynte/inaktive")
     open fun hentPabegynteSoknaderForBrukerSomErLest(): List<PabegyntSoknadDto> {
         val fnr = SubjectHandlerUtils.getUserIdFromToken()
         return dittNavMetadataService.hentInaktivePabegynteSoknader(fnr)
     }
 
-    @POST
-    @Path("/pabegynte/lest")
-    open fun settLestForPabegyntSoknad(@RequestBody dto: MarkerPabegyntSoknadSomLestDto): Boolean {
+    @PostMapping("/pabegynte/lest")
+    open fun settLestForPabegyntSoknad(
+        @RequestBody dto: MarkerPabegyntSoknadSomLestDto
+    ): Boolean {
         val fnr = SubjectHandlerUtils.getUserIdFromToken()
         val behandlingsId = dto.grupperingsId
         val somLest = dittNavMetadataService.oppdaterLestStatusForPabegyntSoknad(behandlingsId, fnr)

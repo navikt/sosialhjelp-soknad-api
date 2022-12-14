@@ -8,16 +8,14 @@ import no.nav.sosialhjelp.soknad.app.Constants.CLAIM_ACR_LEVEL_4
 import no.nav.sosialhjelp.soknad.app.Constants.TOKENX
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import org.slf4j.LoggerFactory
-import org.springframework.stereotype.Controller
-import javax.ws.rs.GET
-import javax.ws.rs.Path
-import javax.ws.rs.Produces
-import javax.ws.rs.core.MediaType
+import org.springframework.http.MediaType
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
 
-@Controller
+@RestController
 @ProtectedWithClaims(issuer = TOKENX, combineWithOr = true, claimMap = [CLAIM_ACR_LEVEL_3, CLAIM_ACR_LEVEL_4])
-@Path("/minesaker")
-@Produces(MediaType.APPLICATION_JSON)
+@RequestMapping("/minesaker", produces = [MediaType.APPLICATION_JSON_VALUE])
 open class MineSakerMetadataRessurs(
     private val mineSakerMetadataService: MineSakerMetadataService
 ) {
@@ -25,16 +23,14 @@ open class MineSakerMetadataRessurs(
      * Henter informasjon om innsendte søknader via SoknadMetadataRepository.
      * På sikt vil vi hente denne informasjonen fra Fiks (endepunkt vil da høre mer hjemme i innsyn-api)
      */
-    @GET
-    @Path("/innsendte")
+    @GetMapping("/innsendte")
     open fun hentInnsendteSoknaderForBruker(): List<InnsendtSoknadDto> {
         val fnr = SubjectHandlerUtils.getUserIdFromToken()
         return mineSakerMetadataService.hentInnsendteSoknader(fnr)
     }
 
-    @GET
     @Unprotected
-    @Path("/ping")
+    @GetMapping("/ping")
     open fun ping(): String {
         log.debug("Ping for MineSaker")
         return "pong"
