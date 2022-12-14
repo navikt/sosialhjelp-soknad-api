@@ -11,9 +11,9 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.VedleggMetadataL
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.Vedleggstatus
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
-import no.nav.sosialhjelp.soknad.innsending.HenvendelseService
 import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils.getVedleggFromInternalSoknad
 import no.nav.sosialhjelp.soknad.innsending.SenderUtils.createPrefixedBehandlingsId
+import no.nav.sosialhjelp.soknad.innsending.SoknadService
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
 import no.nav.sosialhjelp.soknad.metrics.MetricsUtils.navKontorTilMetricNavn
 import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
@@ -24,7 +24,7 @@ import org.springframework.stereotype.Component
 @Component
 class DigisosApiService(
     private val digisosApiV2Client: DigisosApiV2Client,
-    private val henvendelseService: HenvendelseService,
+    private val soknadService: SoknadService,
     private val soknadUnderArbeidService: SoknadUnderArbeidService,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val dokumentListeService: DokumentListeService,
@@ -40,7 +40,7 @@ class DigisosApiService(
         soknadUnderArbeidService.settInnsendingstidspunktPaSoknad(soknadUnderArbeid)
         log.info("Starter innsending av søknad med behandlingsId $behandlingsId, skal sendes til DigisosApi v2")
         val vedlegg = convertToVedleggMetadataListe(soknadUnderArbeid)
-        henvendelseService.oppdaterMetadataVedAvslutningAvSoknad(behandlingsId, vedlegg, soknadUnderArbeid, true)
+        soknadService.oppdaterMetadataVedAvslutningAvSoknad(behandlingsId, vedlegg, soknadUnderArbeid, true)
         val filOpplastinger = dokumentListeService.getFilOpplastingList(soknadUnderArbeid)
         val soknadJson = getSoknadJson(soknadUnderArbeid)
         val tilleggsinformasjonJson = getTilleggsinformasjonJson(jsonInternalSoknad.soknad)

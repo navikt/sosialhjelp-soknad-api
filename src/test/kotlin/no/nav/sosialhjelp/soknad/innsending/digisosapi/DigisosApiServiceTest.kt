@@ -14,7 +14,7 @@ import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
-import no.nav.sosialhjelp.soknad.innsending.HenvendelseService
+import no.nav.sosialhjelp.soknad.innsending.SoknadService
 import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
 import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
@@ -27,7 +27,7 @@ import java.time.LocalDateTime
 
 internal class DigisosApiServiceTest {
     private val digisosApiV2Client: DigisosApiV2Client = mockk()
-    private val henvendelseService: HenvendelseService = mockk()
+    private val soknadService: SoknadService = mockk()
     private val soknadUnderArbeidService: SoknadUnderArbeidService = mockk()
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
     private val dokumentListeService: DokumentListeService = mockk()
@@ -35,7 +35,7 @@ internal class DigisosApiServiceTest {
 
     private val digisosApiService = DigisosApiService(
         digisosApiV2Client,
-        henvendelseService,
+        soknadService,
         soknadUnderArbeidService,
         soknadUnderArbeidRepository,
         dokumentListeService,
@@ -87,7 +87,7 @@ internal class DigisosApiServiceTest {
         every { dokumentListeService.getFilOpplastingList(any()) } returns emptyList()
         every { digisosApiV2Client.krypterOgLastOppFiler(any(), any(), any(), any(), any(), any(), any()) } returns "digisosid"
         every { soknadUnderArbeidService.settInnsendingstidspunktPaSoknad(any()) } just runs
-        every { henvendelseService.oppdaterMetadataVedAvslutningAvSoknad(any(), any(), any(), any()) } just runs
+        every { soknadService.oppdaterMetadataVedAvslutningAvSoknad(any(), any(), any(), any()) } just runs
         every { soknadUnderArbeidRepository.slettSoknad(any(), any()) } just runs
 
         digisosApiService.sendSoknad(soknadUnderArbeid, "token", "0301")

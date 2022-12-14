@@ -11,6 +11,7 @@ import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserI
 import no.nav.sosialhjelp.soknad.app.systemdata.SystemdataUpdater
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
+import no.nav.sosialhjelp.soknad.ettersending.EttersendingService
 import no.nav.sosialhjelp.soknad.innsending.dto.BekreftelseRessurs
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
@@ -38,11 +39,11 @@ import javax.ws.rs.core.MediaType
 @Produces(MediaType.APPLICATION_JSON)
 open class SoknadRessurs(
     private val soknadService: SoknadService,
+    private val ettersendingService: EttersendingService,
     private val soknadUnderArbeidService: SoknadUnderArbeidService,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val systemdata: SystemdataUpdater,
     private val tilgangskontroll: Tilgangskontroll,
-    private val henvendelseService: HenvendelseService,
     private val nedetidService: NedetidService
 ) {
     @GET
@@ -54,7 +55,7 @@ open class SoknadRessurs(
         tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(behandlingsId)
         response.addCookie(xsrfCookie(behandlingsId))
         response.addCookie(xsrfCookieMedBehandlingsid(behandlingsId))
-        henvendelseService.oppdaterSistEndretDatoPaaMetadata(behandlingsId)
+        soknadService.oppdaterSistEndretDatoPaaMetadata(behandlingsId)
         return true
     }
 
@@ -157,7 +158,7 @@ open class SoknadRessurs(
             val eier = getUserIdFromToken()
             soknadUnderArbeidRepository.hentEttersendingMedTilknyttetBehandlingsId(tilknyttetBehandlingsId, eier)
                 ?.behandlingsId
-                ?: soknadService.startEttersending(tilknyttetBehandlingsId)
+                ?: ettersendingService.startEttersendelse(tilknyttetBehandlingsId)
         }
         result["brukerBehandlingId"] = opprettetBehandlingsId
         response.addCookie(xsrfCookie(opprettetBehandlingsId))
