@@ -25,6 +25,7 @@ import no.nav.sosialhjelp.soknad.tekster.NavMessageSource
 import org.apache.commons.lang3.LocaleUtils
 import org.apache.commons.lang3.StringUtils
 import org.slf4j.LoggerFactory
+import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -60,10 +61,10 @@ open class InformasjonRessurs(
     }
 
     @GetMapping("/fornavn")
-    open fun hentFornavn(): Map<String?, String?>? {
+    open fun hentFornavn(): Map<String, String> {
         val fnr = SubjectHandlerUtils.getUserIdFromToken()
-        val (fornavn1) = personService.hentPerson(fnr) ?: return HashMap()
-        val fornavnMap: MutableMap<String?, String?> = HashMap()
+        val (fornavn1) = personService.hentPerson(fnr) ?: return emptyMap()
+        val fornavnMap = mutableMapOf<String, String>()
         fornavnMap["fornavn"] = fornavn1
         return fornavnMap
     }
@@ -73,7 +74,7 @@ open class InformasjonRessurs(
     open fun hentTekster(
         @RequestParam("type") queryType: String,
         @RequestParam("sprak") querySprak: String?
-    ): Properties? {
+    ): Properties {
         var type = queryType
         var sprak = querySprak
         if (sprak == null || sprak.trim { it <= ' ' }.isEmpty()) {
@@ -90,11 +91,11 @@ open class InformasjonRessurs(
         return messageSource.getBundleFor(type, locale)
     }
 
-    @GetMapping("/utslagskriterier/sosialhjelp", produces = ["application/json;charset=UTF-8"])
-    open fun getUtslagskriterier(): Map<String, Any>? {
+    @GetMapping("/utslagskriterier/sosialhjelp", produces = [MediaType.APPLICATION_JSON_VALUE])
+    open fun getUtslagskriterier(): Map<String, Any> {
         val uid = SubjectHandlerUtils.getUserIdFromToken()
         val adressebeskyttelse = personService.hentAdressebeskyttelse(uid)
-        val resultat: MutableMap<String, Any> = java.util.HashMap()
+        val resultat = mutableMapOf<String, Any>()
         var harTilgang = true
         var sperrekode = ""
         if (FORTROLIG == adressebeskyttelse || STRENGT_FORTROLIG == adressebeskyttelse || STRENGT_FORTROLIG_UTLAND == adressebeskyttelse) {
@@ -109,7 +110,7 @@ open class InformasjonRessurs(
     @GetMapping("/adressesok")
     open fun adresseSok(
         @RequestParam("sokestreng") sokestreng: String?
-    ): List<AdresseForslag?>? {
+    ): List<AdresseForslag> {
         return adresseSokService.sokEtterAdresser(sokestreng)
     }
 
