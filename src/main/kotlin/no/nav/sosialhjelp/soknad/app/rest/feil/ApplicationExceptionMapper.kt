@@ -3,6 +3,7 @@ package no.nav.sosialhjelp.soknad.app.rest.feil
 import no.nav.sosialhjelp.soknad.app.exceptions.AuthorizationException
 import no.nav.sosialhjelp.soknad.app.exceptions.EttersendelseSendtForSentException
 import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
+import no.nav.sosialhjelp.soknad.app.exceptions.MottakAvSoknadAlleredePaabegyntHosFiksException
 import no.nav.sosialhjelp.soknad.app.exceptions.PdlApiException
 import no.nav.sosialhjelp.soknad.app.exceptions.SendingTilKommuneErIkkeAktivertException
 import no.nav.sosialhjelp.soknad.app.exceptions.SendingTilKommuneErMidlertidigUtilgjengeligException
@@ -41,7 +42,10 @@ class ApplicationExceptionMapper : ExceptionMapper<SosialhjelpSoknadApiException
             }
             is SamletVedleggStorrelseForStorException -> {
                 response = Response.status(Response.Status.REQUEST_ENTITY_TOO_LARGE)
-                logger.warn("Feilet opplasting. Valgt fil for opplasting gjør at grensen for samlet vedleggstørrelse på ${MAKS_SAMLET_VEDLEGG_STORRELSE_I_MB}MB overskrides.", e)
+                logger.warn(
+                    "Feilet opplasting. Valgt fil for opplasting gjør at grensen for samlet vedleggstørrelse på ${MAKS_SAMLET_VEDLEGG_STORRELSE_I_MB}MB overskrides.",
+                    e
+                )
             }
             is AuthorizationException -> {
                 response = Response.status(Response.Status.FORBIDDEN)
@@ -107,6 +111,15 @@ class ApplicationExceptionMapper : ExceptionMapper<SosialhjelpSoknadApiException
             is PdlApiException -> {
                 response = Response.serverError().header(Feilmelding.NO_BIGIP_5XX_REDIRECT, true)
                 logger.error("Kall til PDL feilet", e)
+            }
+            is MottakAvSoknadAlleredePaabegyntHosFiksException -> {
+                logger.warn(e.message, e)
+                return Response.status(Response.Status.BAD_REQUEST).type(MediaType.APPLICATION_JSON).entity(
+                    Feilmelding(
+                        "soknad_allerede_pabegynt",
+                        "Mottak av søknad er allerede påbegynt. Søknad har blitt sendt flere ganger"
+                    )
+                ).build()
             }
             else -> {
                 response = Response.serverError().header(Feilmelding.NO_BIGIP_5XX_REDIRECT, true)

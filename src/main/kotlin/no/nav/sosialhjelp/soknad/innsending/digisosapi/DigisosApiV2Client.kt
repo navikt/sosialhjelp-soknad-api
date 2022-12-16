@@ -8,6 +8,7 @@ import no.nav.sosialhjelp.api.fiks.exceptions.FiksException
 import no.nav.sosialhjelp.soknad.app.Constants
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.client.config.RetryUtils
+import no.nav.sosialhjelp.soknad.app.exceptions.MottakAvSoknadAlleredePaabegyntHosFiksException
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.KrypteringService.Companion.waitForFutures
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.createHttpEntity
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.digisosObjectMapper
@@ -122,26 +123,44 @@ class DigisosApiV2Client(
         token: String?
     ): String {
         val body = LinkedMultiValueMap<String, Any>()
-        body.add("tilleggsinformasjonJson", createHttpEntity(tilleggsinformasjonJson, "tilleggsinformasjonJson", null, APPLICATION_JSON_VALUE))
+        body.add(
+            "tilleggsinformasjonJson",
+            createHttpEntity(tilleggsinformasjonJson, "tilleggsinformasjonJson", null, APPLICATION_JSON_VALUE)
+        )
         body.add("soknadJson", createHttpEntity(soknadJson, "soknadJson", null, APPLICATION_JSON_VALUE))
         body.add("vedleggJson", createHttpEntity(vedleggJson, "vedleggJson", null, APPLICATION_JSON_VALUE))
 
         filer.forEachIndexed { index, fil ->
             body.add("metadata$index", createHttpEntity(getJson(fil), "metadata$index", null, TEXT_PLAIN_VALUE))
-            body.add(fil.filnavn, createHttpEntity(ByteArrayResource(IOUtils.toByteArray(fil.data)), fil.filnavn, fil.filnavn, APPLICATION_OCTET_STREAM_VALUE))
+            body.add(
+                fil.filnavn,
+                createHttpEntity(
+                    ByteArrayResource(IOUtils.toByteArray(fil.data)),
+                    fil.filnavn,
+                    fil.filnavn,
+                    APPLICATION_OCTET_STREAM_VALUE
+                )
+            )
         }
 
         val startTime = System.currentTimeMillis()
         try {
             val response = fiksWebClient.post()
-                .uri("$digisosApiEndpoint/digisos/api/v2/soknader/{kommunenummer}/{behandlingsId}", kommunenummer, behandlingsId)
+                .uri(
+                    "$digisosApiEndpoint/digisos/api/v2/soknader/{kommunenummer}/{behandlingsId}",
+                    kommunenummer,
+                    behandlingsId
+                )
                 .header(AUTHORIZATION, token)
                 .contentType(MediaType.MULTIPART_FORM_DATA)
                 .body(BodyInserters.fromMultipartData(body))
                 .retrieve()
                 .bodyToMono<String>()
                 .retryWhen(RetryUtils.DEFAULT_RETRY_SERVER_ERRORS)
-                .block() ?: throw FiksException("Fiks - noe uventet feilet ved innsending av søknad. Response er null?", null)
+                .block() ?: throw FiksException(
+                "Fiks - noe uventet feilet ved innsending av søknad. Response er null?",
+                null
+            )
 
             val digisosId = Utils.stripVekkFnutter(response)
             log.info("Sendte inn søknad $behandlingsId til kommune $kommunenummer og fikk digisosid: $digisosId")
@@ -154,8 +173,10 @@ class DigisosApiV2Client(
                 return fiksDigisosId
             }
             if (e.statusCode == BAD_REQUEST && errorResponse.contains("er allerede pÃ¥begynt")) {
-                log.warn("400 Bad request mottatt fra Fiks fordi samme digisosid: $fiksDigisosId, er sendt til fiks flere ganger og innen FIKS har fått prossesert opplasting.")
-                return "hva kan vi returnere her?"
+                throw MottakAvSoknadAlleredePaabegyntHosFiksException(
+                    "400 Bad request mottatt fra Fiks fordi samme digisosid: $fiksDigisosId, er sendt til fiks flere ganger og innen FIKS har fått prossesert opplasting.",
+                    e
+                )
             }
             throw IllegalStateException("Opplasting av $behandlingsId til fiks-digisos-api feilet etter ${System.currentTimeMillis() - startTime} ms med status ${e.statusCode} og response: $errorResponse")
         } catch (e: IOException) {
