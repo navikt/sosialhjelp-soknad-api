@@ -17,6 +17,7 @@ import org.apache.commons.io.IOUtils
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.core.io.ByteArrayResource
 import org.springframework.http.HttpHeaders.AUTHORIZATION
+import org.springframework.http.HttpStatus.BAD_REQUEST
 import org.springframework.http.MediaType
 import org.springframework.http.MediaType.APPLICATION_JSON_VALUE
 import org.springframework.http.MediaType.APPLICATION_OCTET_STREAM_VALUE
@@ -33,7 +34,7 @@ import org.springframework.web.reactive.function.client.bodyToMono
 import reactor.netty.http.client.HttpClient
 import java.io.IOException
 import java.time.Duration
-import java.util.Collections
+import java.util.*
 import java.util.concurrent.Future
 
 @Component
@@ -151,6 +152,10 @@ class DigisosApiV2Client(
             if (fiksDigisosId != null) {
                 log.warn("Søknad $behandlingsId er allerede sendt til fiks-digisos-api med id $fiksDigisosId. Returner digisos-id som normalt så brukeren blir rutet til innsyn. ErrorResponse var: $errorResponse")
                 return fiksDigisosId
+            }
+            if (e.statusCode == BAD_REQUEST && errorResponse.contains("er allerede pÃ¥begynt")) {
+                log.warn("400 Bad request mottatt fra Fiks fordi samme digisosid: $fiksDigisosId, er sendt til fiks flere ganger og innen FIKS har fått prossesert opplasting.")
+                return "hva kan vi returnere her?"
             }
             throw IllegalStateException("Opplasting av $behandlingsId til fiks-digisos-api feilet etter ${System.currentTimeMillis() - startTime} ms med status ${e.statusCode} og response: $errorResponse")
         } catch (e: IOException) {
