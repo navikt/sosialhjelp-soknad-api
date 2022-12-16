@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.app.subjecthandler
 
 import no.nav.security.token.support.core.context.TokenValidationContext
-import no.nav.security.token.support.jaxrs.JaxrsTokenValidationContextHolder
+import no.nav.security.token.support.core.context.TokenValidationContextHolder
 import no.nav.sosialhjelp.soknad.app.Constants.SELVBETJENING
 import no.nav.sosialhjelp.soknad.app.Constants.TOKENX
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
@@ -14,11 +14,13 @@ interface SubjectHandler {
 }
 
 @Component
-class SubjectHandlerImpl : SubjectHandler {
+class SubjectHandlerImpl(
+    private val tokenValidationContextHolder: TokenValidationContextHolder
+) : SubjectHandler {
 
     private val tokenValidationContext: TokenValidationContext
         get() {
-            return JaxrsTokenValidationContextHolder.getHolder().tokenValidationContext
+            return tokenValidationContextHolder.tokenValidationContext
                 ?: throw RuntimeException("Could not find TokenValidationContext. Possibly no token in request.")
                     .also { log.error("Could not find TokenValidationContext. Possibly no token in request and request was not captured by token-validation filters.") }
         }

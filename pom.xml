@@ -951,12 +951,7 @@
         <!-- Token-validation / security -->
         <dependency>
             <groupId>no.nav.security</groupId>
-            <artifactId>token-validation-jaxrs</artifactId>
-            <version>${token-validation.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.security</groupId>
-            <artifactId>token-validation-core</artifactId>
+            <artifactId>token-validation-spring</artifactId>
             <version>${token-validation.version}</version>
         </dependency>
 
@@ -1051,7 +1046,7 @@
             <exclusions>
                 <exclusion>
                     <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-starter-web</artifactId>
+                    <artifactId>spring-boot-starter-tomcat</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
