@@ -127,7 +127,7 @@ open class SoknadService(
 
         val vedlegg = convertToVedleggMetadataListe(soknadUnderArbeid)
 
-        oppdaterMetadataVedAvslutningAvSoknad(behandlingsId, vedlegg, soknadUnderArbeid, false)
+        oppdaterMetadataVedAvslutningAvSoknad(behandlingsId, vedlegg, soknadUnderArbeid)
         oppgaveHandterer.leggTilOppgave(behandlingsId, eier)
         innsendingService.opprettSendtSoknad(soknadUnderArbeid)
 
@@ -206,11 +206,10 @@ open class SoknadService(
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier)
     }
 
-    fun oppdaterMetadataVedAvslutningAvSoknad(
+    private fun oppdaterMetadataVedAvslutningAvSoknad(
         behandlingsId: String?,
         vedlegg: VedleggMetadataListe,
-        soknadUnderArbeid: SoknadUnderArbeid,
-        brukerDigisosApi: Boolean
+        soknadUnderArbeid: SoknadUnderArbeid
     ) {
         val soknadMetadata = soknadMetadataRepository.hent(behandlingsId)
         soknadMetadata?.vedlegg = vedlegg
@@ -220,7 +219,7 @@ open class SoknadService(
         }
         soknadMetadata?.sistEndretDato = LocalDateTime.now(clock)
         soknadMetadata?.innsendtDato = LocalDateTime.now(clock)
-        soknadMetadata?.status = if (brukerDigisosApi) SoknadMetadataInnsendingStatus.SENDT_MED_DIGISOS_API else SoknadMetadataInnsendingStatus.FERDIG
+        soknadMetadata?.status = SoknadMetadataInnsendingStatus.FERDIG
         soknadMetadataRepository.oppdater(soknadMetadata)
         log.info("Søknad avsluttet $behandlingsId ${soknadMetadata?.skjema}, ${vedlegg.vedleggListe.size}")
     }
