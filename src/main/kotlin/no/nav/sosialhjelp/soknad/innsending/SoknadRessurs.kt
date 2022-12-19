@@ -124,7 +124,7 @@ open class SoknadRessurs(
             ?.firstOrNull { it.type.equals(samtykke, ignoreCase = true) }
     }
 
-    @PostMapping("/opprettSoknad", consumes = [MediaType.APPLICATION_JSON_VALUE])
+    @PostMapping("/opprettSoknad")
     open fun opprettSoknad(
         @RequestParam("ettersendTil") tilknyttetBehandlingsId: String?,
         response: HttpServletResponse,
