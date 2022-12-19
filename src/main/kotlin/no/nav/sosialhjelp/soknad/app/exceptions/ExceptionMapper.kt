@@ -143,7 +143,7 @@ class ExceptionMapper(
                     .header(Feilmelding.NO_BIGIP_5XX_REDIRECT, "true")
             }
         }
-        return response.contentType(MediaType.TEXT_PLAIN).body(Feilmelding(e.id, e.message))
+        return response.contentType(MediaType.APPLICATION_JSON).body(Feilmelding(e.id, e.message))
     }
 
     @ExceptionHandler(Throwable::class)
