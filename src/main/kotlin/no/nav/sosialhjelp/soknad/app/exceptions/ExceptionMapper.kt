@@ -1,5 +1,9 @@
 package no.nav.sosialhjelp.soknad.app.exceptions
 
+import no.nav.security.token.support.core.exceptions.IssuerConfigurationException
+import no.nav.security.token.support.core.exceptions.JwtTokenMissingException
+import no.nav.security.token.support.core.exceptions.MetaDataNotAvailableException
+import no.nav.security.token.support.spring.validation.interceptor.JwtTokenUnauthorizedException
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.pdf.PdfGenereringException
 import no.nav.sosialhjelp.soknad.vedlegg.OpplastetVedleggService.Companion.MAKS_SAMLET_VEDLEGG_STORRELSE_I_MB
@@ -13,6 +17,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.client.HttpStatusCodeException
+import org.springframework.web.context.request.WebRequest
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler
 import java.net.URI
 
@@ -145,16 +150,21 @@ class ExceptionMapper(
     fun handleThrowable(e: Throwable): ResponseEntity<*> {
         return when (e) {
             is HttpStatusCodeException -> {
-                if (e.statusCode == HttpStatus.UNAUTHORIZED) {
-                    log.debug(e.message, e)
-                    return createUnauthorizedWithLoginLocationResponse("Autentiseringsfeil")
-                } else if (e.statusCode == HttpStatus.FORBIDDEN) {
-                    log.debug(e.message, e)
-                    return createUnauthorizedWithLoginLocationResponse("Autoriseringsfeil")
-                } else if (e.statusCode == HttpStatus.NOT_FOUND) {
-                    log.warn(e.message, e)
-                } else {
-                    log.error(e.message, e)
+                when (e.statusCode) {
+                    HttpStatus.UNAUTHORIZED -> {
+                        log.debug(e.message, e)
+                        return createUnauthorizedWithLoginLocationResponse("Autentiseringsfeil")
+                    }
+                    HttpStatus.FORBIDDEN -> {
+                        log.debug(e.message, e)
+                        return createUnauthorizedWithLoginLocationResponse("Autoriseringsfeil")
+                    }
+                    HttpStatus.NOT_FOUND -> {
+                        log.warn(e.message, e)
+                    }
+                    else -> {
+                        log.error(e.message, e)
+                    }
                 }
                 ResponseEntity
                     .status(e.statusCode)
@@ -174,9 +184,37 @@ class ExceptionMapper(
                     .internalServerError()
                     .header(Feilmelding.NO_BIGIP_5XX_REDIRECT, "true")
                     .contentType(MediaType.APPLICATION_JSON)
-                    .body(Feilmelding("unexpected_error", "Noe uventet feilet"))
+                    .body(Feilmelding(UNEXPECTED_ERROR, "Noe uventet feilet"))
             }
         }
+    }
+
+    @ExceptionHandler(value = [JwtTokenUnauthorizedException::class, JwtTokenMissingException::class])
+    fun handleJwtTokenExceptions(
+        e: RuntimeException,
+        request: WebRequest
+    ): ResponseEntity<*> {
+        if (e.message?.contains("Server misconfigured") == true) {
+            log.error(e.message)
+            return ResponseEntity
+                .internalServerError()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(Feilmelding(UNEXPECTED_ERROR, "Noe uventet feilet"))
+        }
+        log.info("Bruker er ikke autentisert (enda). Sender 401 med loginurl. Feilmelding: ${e.message}")
+        return createUnauthorizedWithLoginLocationResponse("Autentiserings")
+    }
+
+    @ExceptionHandler(value = [MetaDataNotAvailableException::class, IssuerConfigurationException::class])
+    fun handleTokenValidationConfigurationExceptions(
+        e: RuntimeException,
+        request: WebRequest
+    ): ResponseEntity<Feilmelding> {
+        log.error("Klarer ikke hente metadata fra discoveryurl eller problemer ved konfigurering av issuer. Feilmelding: ${e.message}")
+        return ResponseEntity
+            .internalServerError()
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(Feilmelding(UNEXPECTED_ERROR, "Noe uventet feilet"))
     }
 
     private fun createUnauthorizedWithLoginLocationResponse(message: String): ResponseEntity<UnauthorizedMelding> {
@@ -192,5 +230,6 @@ class ExceptionMapper(
         private val log by logger()
 
         private const val WEB_APPLICATION_ERROR = "web_application_error"
+        private const val UNEXPECTED_ERROR = "unexpected_error"
     }
 }
