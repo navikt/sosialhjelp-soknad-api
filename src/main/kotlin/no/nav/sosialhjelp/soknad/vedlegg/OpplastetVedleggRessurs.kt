@@ -13,28 +13,23 @@ import no.nav.sosialhjelp.soknad.vedlegg.exceptions.OpplastingException
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.FileDetectionUtils.getMimeType
 import org.apache.commons.io.IOUtils
-import org.glassfish.jersey.media.multipart.FormDataBodyPart
-import org.glassfish.jersey.media.multipart.FormDataParam
-import org.springframework.stereotype.Controller
-import java.io.File
+import org.springframework.http.HttpHeaders
+import org.springframework.http.MediaType
+import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.DeleteMapping
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.multipart.MultipartFile
 import java.io.IOException
-import java.io.InputStream
 import javax.servlet.http.HttpServletResponse
-import javax.ws.rs.Consumes
-import javax.ws.rs.DELETE
-import javax.ws.rs.GET
-import javax.ws.rs.POST
-import javax.ws.rs.Path
-import javax.ws.rs.PathParam
-import javax.ws.rs.Produces
-import javax.ws.rs.core.Context
-import javax.ws.rs.core.MediaType
-import javax.ws.rs.core.Response
 
-@Controller
+@RestController
 @ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4])
-@Path("/opplastetVedlegg")
-@Produces(MediaType.APPLICATION_JSON)
+@RequestMapping("/opplastetVedlegg", produces = [MediaType.APPLICATION_JSON_VALUE])
 open class OpplastetVedleggRessurs(
     private val opplastetVedleggRepository: OpplastetVedleggRepository,
     private val opplastetVedleggService: OpplastetVedleggService,
@@ -44,74 +39,69 @@ open class OpplastetVedleggRessurs(
     private val soknadUnderArbeidService: SoknadUnderArbeidService
 ) {
 
-    @GET
-    @Path("/{vedleggId}/fil")
-    @Produces(MediaType.APPLICATION_JSON)
+    @GetMapping("/{vedleggId}/fil")
     open fun getVedleggFil(
-        @PathParam("vedleggId") vedleggId: String,
-        @Context response: HttpServletResponse,
-    ): Response {
+        @PathVariable("vedleggId") vedleggId: String,
+        response: HttpServletResponse,
+    ): ResponseEntity<ByteArray> {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
         val eier = SubjectHandlerUtils.getUserIdFromToken()
 
         return opplastetVedleggRepository.hentVedlegg(vedleggId, eier)
             ?.let {
-                response.setHeader("Content-Disposition", "attachment; filename=\"${it.filnavn}\"")
+                response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"${it.filnavn}\"")
                 val mimeType = getMimeType(it.data)
-                Response.ok(it.data).type(mimeType).build()
+                ResponseEntity.ok().contentType(MediaType.parseMediaType(mimeType)).body(it.data)
             }
-            ?: Response.noContent().build()
+            ?: ResponseEntity.noContent().build()
     }
 
-    @GET
-    @Path("/{behandlingsId}/{vedleggId}/fil")
-    @Produces(MediaType.APPLICATION_JSON)
+    @GetMapping("/{behandlingsId}/{vedleggId}/fil")
     open fun getVedleggFil(
-        @PathParam("behandlingsId") behandlingsId: String,
-        @PathParam("vedleggId") vedleggId: String,
-        @Context response: HttpServletResponse
-    ): Response {
+        @PathVariable("behandlingsId") behandlingsId: String,
+        @PathVariable("vedleggId") vedleggId: String,
+        response: HttpServletResponse
+    ): ResponseEntity<ByteArray> {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
 
         opplastetVedleggRepository.hentVedlegg(vedleggId, eier)?.let {
-            response.setHeader("Content-Disposition", "attachment; filename=\"${it.filnavn}\"")
+            response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"${it.filnavn}\"")
             val mimeType = getMimeType(it.data)
-            return Response.ok(it.data).type(mimeType).build()
+            return ResponseEntity.ok().contentType(MediaType.parseMediaType(mimeType)).body(it.data)
         }
 
         val skalBrukeMellomlagring = soknadUnderArbeidService.skalSoknadSendesMedDigisosApi(soknadUnderArbeid)
         if (skalBrukeMellomlagring) {
             log.info("Forsøker å hente vedlegg $vedleggId fra mellomlagring hos KS")
             mellomlagringService.getVedlegg(behandlingsId, vedleggId)?.let {
-                response.setHeader("Content-Disposition", "attachment; filename=\"${it.filnavn}\"")
+                response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"${it.filnavn}\"")
                 val mimeType = getMimeType(it.data)
-                return Response.ok(it.data).type(mimeType).build()
+                return ResponseEntity.ok().contentType(MediaType.parseMediaType(mimeType)).body(it.data)
             }
         }
         // hvis vedleggId ikke finnes i DB eller KS mellomlagring
-        return Response.noContent().build()
+        return ResponseEntity.noContent().build()
     }
 
-    @POST
-    @Path("/{behandlingsId}/{type}")
-    @Consumes(MediaType.MULTIPART_FORM_DATA)
-    @Produces(MediaType.APPLICATION_JSON)
+    @PostMapping("/{behandlingsId}/{type}", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
     open fun saveVedlegg(
-        @PathParam("behandlingsId") behandlingsId: String,
-        @PathParam("type") vedleggstype: String,
-        @FormDataParam("file") fil: FormDataBodyPart,
+        @PathVariable("behandlingsId") behandlingsId: String,
+        @PathVariable("type") vedleggstype: String,
+        @RequestParam("file") fil: MultipartFile,
     ): FilFrontend {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
-        if (fil.getValueAs(File::class.java).length() > MAKS_TOTAL_FILSTORRELSE) {
+//        if (fil.getValueAs(File::class.java).length() > MAKS_TOTAL_FILSTORRELSE) {
+        if (fil.size > MAKS_TOTAL_FILSTORRELSE) {
             throw OpplastingException(
                 "Kunne ikke lagre fil fordi total filstørrelse er for stor",
                 null,
                 "vedlegg.opplasting.feil.forStor"
             )
         }
-        val filnavn = fil.contentDisposition.fileName
+//        val filnavn = fil.contentDisposition.fileName
+        val filnavn = fil.originalFilename
         val data = getByteArray(fil)
         val eier = SubjectHandlerUtils.getUserIdFromToken()
 
@@ -128,11 +118,10 @@ open class OpplastetVedleggRessurs(
         }
     }
 
-    @DELETE
-    @Path("/{behandlingsId}/{vedleggId}")
+    @DeleteMapping("/{behandlingsId}/{vedleggId}")
     open fun deleteVedlegg(
-        @PathParam("behandlingsId") behandlingsId: String,
-        @PathParam("vedleggId") vedleggId: String,
+        @PathVariable("behandlingsId") behandlingsId: String,
+        @PathVariable("vedleggId") vedleggId: String,
     ) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         val eier = SubjectHandlerUtils.getUserIdFromToken()
@@ -151,11 +140,14 @@ open class OpplastetVedleggRessurs(
 
         private val log by logger()
 
-        private fun getByteArray(file: FormDataBodyPart): ByteArray {
+        private fun getByteArray(file: MultipartFile): ByteArray {
             return try {
-                file.getValueAs(InputStream::class.java).use {
+                file.inputStream.use {
                     IOUtils.toByteArray(it)
                 }
+//                file.getValueAs(InputStream::class.java).use {
+//                    IOUtils.toByteArray(it)
+//                }
             } catch (e: IOException) {
                 throw OpplastingException("Kunne ikke lagre fil", e, "vedlegg.opplasting.feil.generell")
             }
