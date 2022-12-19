@@ -42,7 +42,6 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
-import javax.servlet.ServletContext
 
 internal class SoknadActionsTest {
 
@@ -66,7 +65,7 @@ internal class SoknadActionsTest {
         nedetidService
     )
 
-    var context: ServletContext = mockk()
+    private val token = "token"
 
     @BeforeEach
     fun setUp() {
@@ -76,7 +75,6 @@ internal class SoknadActionsTest {
         every { MiljoUtils.isNonProduction() } returns true
         SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
 
-        every { context.getRealPath(any()) } returns ""
         EIER = SubjectHandlerUtils.getUserIdFromToken()
         every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
         every { unleash.isEnabled(FEATURE_UTVIDE_VEDLEGGJSON, false) } returns true
@@ -95,7 +93,7 @@ internal class SoknadActionsTest {
         every { nedetidService.nedetidSluttAsString } returns LocalDateTime.now().plusDays(2).format(dateTimeFormatter)
 
         assertThatExceptionOfType(SoknadenHarNedetidException::class.java)
-            .isThrownBy { actions.sendSoknad("behandlingsId", context, "") }
+            .isThrownBy { actions.sendSoknad("behandlingsId", token) }
 
         verify { soknadService wasNot called }
         verify { digisosApiService wasNot called }
@@ -110,7 +108,7 @@ internal class SoknadActionsTest {
         every { soknadService.sendSoknad(any()) } just runs
         every { unleash.isEnabled(INNSENDING_DIGISOSAPI_ENABLED, true) } returns false
 
-        actions.sendSoknad(behandlingsId, context, "")
+        actions.sendSoknad(behandlingsId, token)
 
         verify(exactly = 1) { soknadService.sendSoknad(behandlingsId) }
     }
@@ -135,7 +133,7 @@ internal class SoknadActionsTest {
         every { soknadService.sendSoknad(behandlingsId) } just runs
         every { unleash.isEnabled(INNSENDING_DIGISOSAPI_ENABLED, true) } returns true
 
-        actions.sendSoknad(behandlingsId, context, "")
+        actions.sendSoknad(behandlingsId, token)
 
         verify(exactly = 1) { soknadService.sendSoknad(behandlingsId) }
     }
@@ -152,7 +150,7 @@ internal class SoknadActionsTest {
         every { unleash.isEnabled(INNSENDING_DIGISOSAPI_ENABLED, true) } returns true
 
         assertThatExceptionOfType(IllegalStateException::class.java)
-            .isThrownBy { actions.sendSoknad(behandlingsId, context, "") }
+            .isThrownBy { actions.sendSoknad(behandlingsId, token) }
     }
 
     @Test
@@ -175,7 +173,7 @@ internal class SoknadActionsTest {
         every { unleash.isEnabled(INNSENDING_DIGISOSAPI_ENABLED, true) } returns true
 
         assertThatExceptionOfType(IllegalStateException::class.java)
-            .isThrownBy { actions.sendSoknad(behandlingsId, context, "") }
+            .isThrownBy { actions.sendSoknad(behandlingsId, token) }
     }
 
     @Test
@@ -189,7 +187,7 @@ internal class SoknadActionsTest {
         every { unleash.isEnabled(INNSENDING_DIGISOSAPI_ENABLED, true) } returns true
 
         assertThatExceptionOfType(SendingTilKommuneUtilgjengeligException::class.java)
-            .isThrownBy { actions.sendSoknad(behandlingsId, context, "") }
+            .isThrownBy { actions.sendSoknad(behandlingsId, token) }
 
         verify { soknadService wasNot called }
     }
@@ -205,7 +203,7 @@ internal class SoknadActionsTest {
         every { soknadService.sendSoknad(any()) } just runs
         every { unleash.isEnabled(INNSENDING_DIGISOSAPI_ENABLED, true) } returns true
 
-        actions.sendSoknad(behandlingsId, context, "")
+        actions.sendSoknad(behandlingsId, token)
 
         verify(exactly = 1) { soknadService.sendSoknad(behandlingsId) }
     }
@@ -221,7 +219,7 @@ internal class SoknadActionsTest {
         every { soknadService.sendSoknad(any()) } just runs
         every { unleash.isEnabled(INNSENDING_DIGISOSAPI_ENABLED, true) } returns true
 
-        actions.sendSoknad(behandlingsId, context, "")
+        actions.sendSoknad(behandlingsId, token)
 
         verify(exactly = 1) { soknadService.sendSoknad(behandlingsId) }
     }
@@ -237,7 +235,7 @@ internal class SoknadActionsTest {
         every { digisosApiService.sendSoknad(any(), any(), any()) } returns "id"
         every { unleash.isEnabled(INNSENDING_DIGISOSAPI_ENABLED, true) } returns true
 
-        actions.sendSoknad(behandlingsId, context, "")
+        actions.sendSoknad(behandlingsId, token)
 
         verify(exactly = 1) { digisosApiService.sendSoknad(soknadUnderArbeid, any(), any()) }
     }
@@ -253,7 +251,7 @@ internal class SoknadActionsTest {
         every { unleash.isEnabled(INNSENDING_DIGISOSAPI_ENABLED, true) } returns true
 
         assertThatExceptionOfType(SendingTilKommuneErMidlertidigUtilgjengeligException::class.java)
-            .isThrownBy { actions.sendSoknad(behandlingsId, context, "") }
+            .isThrownBy { actions.sendSoknad(behandlingsId, token) }
 
         verify { digisosApiService wasNot called }
     }
@@ -269,7 +267,7 @@ internal class SoknadActionsTest {
         every { unleash.isEnabled(INNSENDING_DIGISOSAPI_ENABLED, true) } returns true
 
         assertThatExceptionOfType(SendingTilKommuneErIkkeAktivertException::class.java)
-            .isThrownBy { actions.sendSoknad(behandlingsId, context, "") }
+            .isThrownBy { actions.sendSoknad(behandlingsId, token) }
 
         verify { digisosApiService wasNot called }
     }
@@ -279,7 +277,7 @@ internal class SoknadActionsTest {
         every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } throws AuthorizationException("Not for you my friend")
 
         assertThatExceptionOfType(AuthorizationException::class.java)
-            .isThrownBy { actions.sendSoknad("behandlingsId", mockk(), "token") }
+            .isThrownBy { actions.sendSoknad("behandlingsId", token) }
 
         verify { soknadService wasNot called }
         verify { kommuneInfoService wasNot called }
@@ -289,7 +287,7 @@ internal class SoknadActionsTest {
     companion object {
         private lateinit var EIER: String
 
-        const val KOMMUNE_I_SVARUT_LISTEN = "0301"
+        private const val KOMMUNE_I_SVARUT_LISTEN = "0301"
 
         private fun createSoknadUnderArbeid(eier: String): SoknadUnderArbeid {
             return SoknadUnderArbeid(
