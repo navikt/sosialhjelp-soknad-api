@@ -1,27 +1,27 @@
-//package no.nav.sosialhjelp.soknad.app.oidc
+// package no.nav.sosialhjelp.soknad.app.oidc
 //
-//import no.nav.security.token.support.core.configuration.IssuerProperties
-//import no.nav.security.token.support.core.configuration.MultiIssuerConfiguration
-//import no.nav.security.token.support.core.configuration.ProxyAwareResourceRetriever
-//import no.nav.security.token.support.jaxrs.servlet.JaxrsJwtTokenValidationFilter
-//import no.nav.sosialhjelp.soknad.app.Constants.SELVBETJENING
-//import no.nav.sosialhjelp.soknad.app.Constants.TOKENX
-//import org.slf4j.LoggerFactory
-//import org.springframework.beans.factory.annotation.Value
-//import org.springframework.context.annotation.Bean
-//import org.springframework.context.annotation.Configuration
-//import java.net.MalformedURLException
-//import java.net.URL
+// import no.nav.security.token.support.core.configuration.IssuerProperties
+// import no.nav.security.token.support.core.configuration.MultiIssuerConfiguration
+// import no.nav.security.token.support.core.configuration.ProxyAwareResourceRetriever
+// import no.nav.security.token.support.jaxrs.servlet.JaxrsJwtTokenValidationFilter
+// import no.nav.sosialhjelp.soknad.app.Constants.SELVBETJENING
+// import no.nav.sosialhjelp.soknad.app.Constants.TOKENX
+// import org.slf4j.LoggerFactory
+// import org.springframework.beans.factory.annotation.Value
+// import org.springframework.context.annotation.Bean
+// import org.springframework.context.annotation.Configuration
+// import java.net.MalformedURLException
+// import java.net.URL
 //
-//@Configuration
-//open class OidcTokenValidatorConfig(
+// @Configuration
+// open class OidcTokenValidatorConfig(
 //    @Value("\${oidc.issuer.selvbetjening.cookie_name}") private val cookieName: String,
 //    @Value("\${oidc.issuer.selvbetjening.accepted_audience}") private val acceptedAudience: String,
 //    @Value("\${oidc.issuer.selvbetjening.discoveryurl}") private val discoveryUrl: String,
 //    @Value("\${oidc.issuer.selvbetjening.proxy_url}") private val proxyUrl: String,
 //    @Value("\${tokendings_client_id}") private val acceptedAudienceTokenx: String,
 //    @Value("\${tokendings_url}") private val discoveryUrlTokenx: String
-//) {
+// ) {
 //
 //    @Bean
 //    open fun jaxrsJwtTokenValidationFilter(multiIssuerConfiguration: MultiIssuerConfiguration?): JaxrsJwtTokenValidationFilter {
@@ -76,4 +76,4 @@
 //    companion object {
 //        private val log = LoggerFactory.getLogger(OidcTokenValidatorConfig::class.java)
 //    }
-//}
+// }

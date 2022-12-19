@@ -1,18 +1,18 @@
-//package no.nav.sosialhjelp.soknad.app.feil
+// package no.nav.sosialhjelp.soknad.app.feil
 //
-//import no.nav.sosialhjelp.soknad.app.exceptions.AuthorizationException
-//import no.nav.sosialhjelp.soknad.app.exceptions.EttersendelseSendtForSentException
-//import no.nav.sosialhjelp.soknad.app.exceptions.SikkerhetsBegrensningException
-//import no.nav.sosialhjelp.soknad.app.exceptions.SosialhjelpSoknadApiException
-//import no.nav.sosialhjelp.soknad.app.exceptions.TjenesteUtilgjengeligException
-//import no.nav.sosialhjelp.soknad.app.rest.feil.ApplicationExceptionMapper
-//import no.nav.sosialhjelp.soknad.app.exceptions.Feilmelding.Companion.NO_BIGIP_5XX_REDIRECT
-//import no.nav.sosialhjelp.soknad.vedlegg.exceptions.OpplastingException
-//import no.nav.sosialhjelp.soknad.vedlegg.exceptions.UgyldigOpplastingTypeException
-//import org.assertj.core.api.Assertions.assertThat
-//import org.junit.jupiter.api.Test
+// import no.nav.sosialhjelp.soknad.app.exceptions.AuthorizationException
+// import no.nav.sosialhjelp.soknad.app.exceptions.EttersendelseSendtForSentException
+// import no.nav.sosialhjelp.soknad.app.exceptions.SikkerhetsBegrensningException
+// import no.nav.sosialhjelp.soknad.app.exceptions.SosialhjelpSoknadApiException
+// import no.nav.sosialhjelp.soknad.app.exceptions.TjenesteUtilgjengeligException
+// import no.nav.sosialhjelp.soknad.app.rest.feil.ApplicationExceptionMapper
+// import no.nav.sosialhjelp.soknad.app.exceptions.Feilmelding.Companion.NO_BIGIP_5XX_REDIRECT
+// import no.nav.sosialhjelp.soknad.vedlegg.exceptions.OpplastingException
+// import no.nav.sosialhjelp.soknad.vedlegg.exceptions.UgyldigOpplastingTypeException
+// import org.assertj.core.api.Assertions.assertThat
+// import org.junit.jupiter.api.Test
 //
-//internal class ApplicationExceptionMapperTest {
+// internal class ApplicationExceptionMapperTest {
 //
 //    val mapper = ApplicationExceptionMapper()
 //
@@ -61,4 +61,4 @@
 //        assertThat(response.status).isEqualTo(500)
 //        assertThat(response.getHeaderString(NO_BIGIP_5XX_REDIRECT)).isEqualTo("true")
 //    }
-//}
+// }

@@ -1,22 +1,22 @@
-//package no.nav.sosialhjelp.soknad.app.rest.feil
+// package no.nav.sosialhjelp.soknad.app.rest.feil
 //
-//import no.nav.sosialhjelp.soknad.app.exceptions.SamtidigOppdateringException
-//import org.slf4j.LoggerFactory
-//import org.springframework.beans.factory.annotation.Value
-//import org.springframework.stereotype.Component
-//import java.net.URI
-//import javax.ws.rs.NotFoundException
-//import javax.ws.rs.WebApplicationException
-//import javax.ws.rs.core.MediaType
-//import javax.ws.rs.core.Response
-//import javax.ws.rs.ext.ExceptionMapper
-//import javax.ws.rs.ext.Provider
+// import no.nav.sosialhjelp.soknad.app.exceptions.SamtidigOppdateringException
+// import org.slf4j.LoggerFactory
+// import org.springframework.beans.factory.annotation.Value
+// import org.springframework.stereotype.Component
+// import java.net.URI
+// import javax.ws.rs.NotFoundException
+// import javax.ws.rs.WebApplicationException
+// import javax.ws.rs.core.MediaType
+// import javax.ws.rs.core.Response
+// import javax.ws.rs.ext.ExceptionMapper
+// import javax.ws.rs.ext.Provider
 //
-//@Provider
-//@Component
-//class ThrowableMapper(
+// @Provider
+// @Component
+// class ThrowableMapper(
 //    @Value("\${loginservice.url}") private val loginserviceUrl: String
-//) : ExceptionMapper<Throwable> {
+// ) : ExceptionMapper<Throwable> {
 //
 //    override fun toResponse(e: Throwable): Response {
 //        return when (e) {
@@ -69,4 +69,4 @@
 //        private val logger = LoggerFactory.getLogger(ThrowableMapper::class.java)
 //        private const val WEB_APPLICATION_ERROR = "web_application_error"
 //    }
-//}
+// }

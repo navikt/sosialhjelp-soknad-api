@@ -1,32 +1,32 @@
-//package no.nav.sosialhjelp.soknad.app.rest.feil
+// package no.nav.sosialhjelp.soknad.app.rest.feil
 //
-//import no.nav.sosialhjelp.soknad.app.exceptions.AuthorizationException
-//import no.nav.sosialhjelp.soknad.app.exceptions.EttersendelseSendtForSentException
-//import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
-//import no.nav.sosialhjelp.soknad.app.exceptions.PdlApiException
-//import no.nav.sosialhjelp.soknad.app.exceptions.SendingTilKommuneErIkkeAktivertException
-//import no.nav.sosialhjelp.soknad.app.exceptions.SendingTilKommuneErMidlertidigUtilgjengeligException
-//import no.nav.sosialhjelp.soknad.app.exceptions.SendingTilKommuneUtilgjengeligException
-//import no.nav.sosialhjelp.soknad.app.exceptions.SikkerhetsBegrensningException
-//import no.nav.sosialhjelp.soknad.app.exceptions.SoknadUnderArbeidIkkeFunnetException
-//import no.nav.sosialhjelp.soknad.app.exceptions.SoknadenHarNedetidException
-//import no.nav.sosialhjelp.soknad.app.exceptions.SosialhjelpSoknadApiException
-//import no.nav.sosialhjelp.soknad.app.exceptions.TjenesteUtilgjengeligException
-//import no.nav.sosialhjelp.soknad.pdf.PdfGenereringException
-//import no.nav.sosialhjelp.soknad.vedlegg.OpplastetVedleggService.Companion.MAKS_SAMLET_VEDLEGG_STORRELSE_I_MB
-//import no.nav.sosialhjelp.soknad.vedlegg.exceptions.OpplastingException
-//import no.nav.sosialhjelp.soknad.vedlegg.exceptions.SamletVedleggStorrelseForStorException
-//import no.nav.sosialhjelp.soknad.vedlegg.exceptions.UgyldigOpplastingTypeException
-//import org.slf4j.LoggerFactory
-//import org.springframework.stereotype.Component
-//import javax.ws.rs.core.MediaType
-//import javax.ws.rs.core.Response
-//import javax.ws.rs.core.Response.ResponseBuilder
-//import javax.ws.rs.ext.ExceptionMapper
+// import no.nav.sosialhjelp.soknad.app.exceptions.AuthorizationException
+// import no.nav.sosialhjelp.soknad.app.exceptions.EttersendelseSendtForSentException
+// import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
+// import no.nav.sosialhjelp.soknad.app.exceptions.PdlApiException
+// import no.nav.sosialhjelp.soknad.app.exceptions.SendingTilKommuneErIkkeAktivertException
+// import no.nav.sosialhjelp.soknad.app.exceptions.SendingTilKommuneErMidlertidigUtilgjengeligException
+// import no.nav.sosialhjelp.soknad.app.exceptions.SendingTilKommuneUtilgjengeligException
+// import no.nav.sosialhjelp.soknad.app.exceptions.SikkerhetsBegrensningException
+// import no.nav.sosialhjelp.soknad.app.exceptions.SoknadUnderArbeidIkkeFunnetException
+// import no.nav.sosialhjelp.soknad.app.exceptions.SoknadenHarNedetidException
+// import no.nav.sosialhjelp.soknad.app.exceptions.SosialhjelpSoknadApiException
+// import no.nav.sosialhjelp.soknad.app.exceptions.TjenesteUtilgjengeligException
+// import no.nav.sosialhjelp.soknad.pdf.PdfGenereringException
+// import no.nav.sosialhjelp.soknad.vedlegg.OpplastetVedleggService.Companion.MAKS_SAMLET_VEDLEGG_STORRELSE_I_MB
+// import no.nav.sosialhjelp.soknad.vedlegg.exceptions.OpplastingException
+// import no.nav.sosialhjelp.soknad.vedlegg.exceptions.SamletVedleggStorrelseForStorException
+// import no.nav.sosialhjelp.soknad.vedlegg.exceptions.UgyldigOpplastingTypeException
+// import org.slf4j.LoggerFactory
+// import org.springframework.stereotype.Component
+// import javax.ws.rs.core.MediaType
+// import javax.ws.rs.core.Response
+// import javax.ws.rs.core.Response.ResponseBuilder
+// import javax.ws.rs.ext.ExceptionMapper
 //
-////@Provider
-//@Component
-//class ApplicationExceptionMapper : ExceptionMapper<SosialhjelpSoknadApiException> {
+// // @Provider
+// @Component
+// class ApplicationExceptionMapper : ExceptionMapper<SosialhjelpSoknadApiException> {
 //    override fun toResponse(e: SosialhjelpSoknadApiException): Response {
 //        val response: ResponseBuilder
 //        when (e) {
@@ -120,4 +120,4 @@
 //    companion object {
 //        private val logger = LoggerFactory.getLogger(ApplicationExceptionMapper::class.java)
 //    }
-//}
+// }
