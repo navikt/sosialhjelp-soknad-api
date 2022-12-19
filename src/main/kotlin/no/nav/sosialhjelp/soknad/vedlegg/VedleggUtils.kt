@@ -13,13 +13,14 @@ import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException
 import org.apache.pdfbox.text.PDFTextStripper
 import org.bouncycastle.jcajce.provider.digest.SHA512
 import org.bouncycastle.util.encoders.Hex
+import org.springframework.http.HttpStatus
+import org.springframework.web.client.HttpClientErrorException
 import java.io.ByteArrayInputStream
 import java.io.IOException
 import java.io.UnsupportedEncodingException
 import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
 import java.util.Locale
-import javax.ws.rs.NotFoundException
 
 object VedleggUtils {
 
@@ -169,6 +170,9 @@ object VedleggUtils {
     fun finnVedleggEllerKastException(vedleggstype: String, soknadUnderArbeid: SoknadUnderArbeid): JsonVedlegg {
         return JsonVedleggUtils.getVedleggFromInternalSoknad(soknadUnderArbeid)
             .firstOrNull { vedleggstype == it.type + "|" + it.tilleggsinfo }
-            ?: throw NotFoundException("Dette vedlegget tilhører $vedleggstype utgift som har blitt tatt bort fra søknaden. Er det flere tabber oppe samtidig?")
+            ?: throw HttpClientErrorException(
+                HttpStatus.NOT_FOUND,
+                "Dette vedlegget tilhører $vedleggstype utgift som har blitt tatt bort fra søknaden. Er det flere tabber oppe samtidig?"
+            )
     }
 }
