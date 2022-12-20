@@ -79,7 +79,7 @@ loginservice.url: ${LOGINSERVICE_URL}
 no.nav.security.jwt.issuer:
   selvbetjening:
     discoveryurl: ${LOGINSERVICE_IDPORTEN_DISCOVERY_URL}
-    cookie_name: selvbetjening-idtoken
+#    cookie_name: selvbetjening-idtoken
     validation:
       optional-claims: aud,nbf
     proxyurl: http://webproxy-nais.nav.no:8088
