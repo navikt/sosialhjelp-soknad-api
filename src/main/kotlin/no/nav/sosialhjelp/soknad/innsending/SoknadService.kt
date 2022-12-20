@@ -161,7 +161,7 @@ open class SoknadService(
         return " Dataene er $antallDager dager, $antallTimer timer og $antallMinutter minutter gamle."
     }
 
-    fun oppdaterSistEndretDatoPaaMetadata(behandlingsId: String?) {
+    open fun oppdaterSistEndretDatoPaaMetadata(behandlingsId: String?) {
         val hentet = soknadMetadataRepository.hent(behandlingsId)
         hentet?.sistEndretDato = LocalDateTime.now(clock)
         soknadMetadataRepository.oppdater(hentet)
@@ -181,7 +181,7 @@ open class SoknadService(
             }
     }
 
-    fun settSoknadMetadataAvbrutt(behandlingsId: String?, avbruttAutomatisk: Boolean) {
+    open fun settSoknadMetadataAvbrutt(behandlingsId: String?, avbruttAutomatisk: Boolean) {
         val metadata = soknadMetadataRepository.hent(behandlingsId)
         metadata?.status = if (avbruttAutomatisk) SoknadMetadataInnsendingStatus.AVBRUTT_AUTOMATISK else SoknadMetadataInnsendingStatus.AVBRUTT_AV_BRUKER
         metadata?.sistEndretDato = LocalDateTime.now(clock)
