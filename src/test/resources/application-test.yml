@@ -18,12 +18,12 @@ loginservice.url: http://localhost:8181/sosialhjelp/soknad-api/local/cookie
 
 no.nav.security.jwt.issuer:
   selvbetjening:
-    discoveryurl: http://127.0.0.1:${mock-oauth2-server.port}/selvbetjening/.well-known/openid-configuration
+    discoveryurl: http://localhost:${mock-oauth2-server.port}/selvbetjening/.well-known/openid-configuration
     accepted_audience: someaudience
     cookie_name: localhost-idtoken
     proxyurl:
   tokenx:
-    discoveryurl: http://127.0.0.1:${mock-oauth2-server.port}/tokenx/.well-known/openid-configuration
+    discoveryurl: http://localhost:${mock-oauth2-server.port}/tokenx/.well-known/openid-configuration
     accepted_audience: localhost:teamdigisos:sosialhjelp-soknad-api
 
 # maskinporten
@@ -33,7 +33,7 @@ maskinporten_well_known_url: ${MASKINPORTEN_WELL_KNOWN_URL:https://maskinporten}
 maskinporten_client_jwk: generateRSA
 
 # tokenx
-tokendings_url: http://127.0.0.1:${mock-oauth2-server.port}/tokenx/.well-known/openid-configuration
+tokendings_url: http://localhost:${mock-oauth2-server.port}/tokenx/.well-known/openid-configuration
 tokendings_client_id: localhost:teamdigisos:sosialhjelp-soknad-api
 tokendings_private_jwk: generateRSA
 oppslag_api_audience: dummyAudience
