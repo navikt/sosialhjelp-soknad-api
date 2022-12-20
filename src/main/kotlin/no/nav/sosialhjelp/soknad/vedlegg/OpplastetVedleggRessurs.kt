@@ -92,7 +92,6 @@ open class OpplastetVedleggRessurs(
         @RequestParam("file") fil: MultipartFile,
     ): FilFrontend {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
-//        if (fil.getValueAs(File::class.java).length() > MAKS_TOTAL_FILSTORRELSE) {
         if (fil.size > MAKS_TOTAL_FILSTORRELSE) {
             throw OpplastingException(
                 "Kunne ikke lagre fil fordi total filstørrelse er for stor",
@@ -100,8 +99,7 @@ open class OpplastetVedleggRessurs(
                 "vedlegg.opplasting.feil.forStor"
             )
         }
-//        val filnavn = fil.contentDisposition.fileName
-        val filnavn = fil.originalFilename
+        val filnavn = fil.originalFilename ?: throw IllegalStateException("A file must have a name")
         val data = getByteArray(fil)
         val eier = SubjectHandlerUtils.getUserIdFromToken()
 
@@ -145,9 +143,6 @@ open class OpplastetVedleggRessurs(
                 file.inputStream.use {
                     IOUtils.toByteArray(it)
                 }
-//                file.getValueAs(InputStream::class.java).use {
-//                    IOUtils.toByteArray(it)
-//                }
             } catch (e: IOException) {
                 throw OpplastingException("Kunne ikke lagre fil", e, "vedlegg.opplasting.feil.generell")
             }

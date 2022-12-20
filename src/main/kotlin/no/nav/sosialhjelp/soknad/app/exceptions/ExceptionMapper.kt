@@ -17,7 +17,6 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.client.HttpStatusCodeException
-import org.springframework.web.context.request.WebRequest
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler
 import java.net.URI
 
@@ -190,10 +189,7 @@ class ExceptionMapper(
     }
 
     @ExceptionHandler(value = [JwtTokenUnauthorizedException::class, JwtTokenMissingException::class])
-    fun handleJwtTokenExceptions(
-        e: RuntimeException,
-        request: WebRequest
-    ): ResponseEntity<*> {
+    fun handleJwtTokenExceptions(e: RuntimeException): ResponseEntity<*> {
         if (e.message?.contains("Server misconfigured") == true) {
             log.error(e.message)
             return ResponseEntity
@@ -206,10 +202,7 @@ class ExceptionMapper(
     }
 
     @ExceptionHandler(value = [MetaDataNotAvailableException::class, IssuerConfigurationException::class])
-    fun handleTokenValidationConfigurationExceptions(
-        e: RuntimeException,
-        request: WebRequest
-    ): ResponseEntity<Feilmelding> {
+    fun handleTokenValidationConfigurationExceptions(e: RuntimeException): ResponseEntity<Feilmelding> {
         log.error("Klarer ikke hente metadata fra discoveryurl eller problemer ved konfigurering av issuer. Feilmelding: ${e.message}")
         return ResponseEntity
             .internalServerError()
