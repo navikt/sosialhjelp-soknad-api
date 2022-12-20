@@ -23,6 +23,7 @@ import no.nav.sosialhjelp.soknad.app.systemdata.SystemdataUpdater
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
+import no.nav.sosialhjelp.soknad.ettersending.EttersendingService
 import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.innsending.dto.BekreftelseRessurs
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
@@ -39,14 +40,22 @@ import javax.servlet.http.HttpServletResponse
 internal class SoknadRessursTest {
 
     private val soknadService: SoknadService = mockk()
+    private val ettersendingService: EttersendingService = mockk()
     private val soknadUnderArbeidService: SoknadUnderArbeidService = mockk()
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
     private val systemdata: SystemdataUpdater = mockk()
     private val tilgangskontroll: Tilgangskontroll = mockk()
-    private val henvendelseService: HenvendelseService = mockk()
     private val nedetidService: NedetidService = mockk()
 
-    private val ressurs = SoknadRessurs(soknadService, soknadUnderArbeidService, soknadUnderArbeidRepository, systemdata, tilgangskontroll, henvendelseService, nedetidService)
+    private val ressurs = SoknadRessurs(
+        soknadService,
+        ettersendingService,
+        soknadUnderArbeidService,
+        soknadUnderArbeidRepository,
+        systemdata,
+        tilgangskontroll,
+        nedetidService
+    )
 
     @BeforeEach
     fun setUp() {
@@ -56,7 +65,7 @@ internal class SoknadRessursTest {
         every { MiljoUtils.isNonProduction() } returns true
         SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
 
-        every { henvendelseService.oppdaterSistEndretDatoPaaMetadata(any()) } just runs
+        every { soknadService.oppdaterSistEndretDatoPaaMetadata(any()) } just runs
         every { nedetidService.isInnenforNedetid } returns false
     }
 
@@ -111,11 +120,11 @@ internal class SoknadRessursTest {
         every {
             soknadUnderArbeidRepository.hentEttersendingMedTilknyttetBehandlingsId(any(), any())
         } returns null
-        every { soknadService.startEttersending(any()) } returns "ettersendtId"
+        every { ettersendingService.startEttersendelse(any()) } returns "ettersendtId"
 
         ressurs.opprettSoknad(BEHANDLINGSID, response, "")
 
-        verify(exactly = 1) { soknadService.startEttersending(BEHANDLINGSID) }
+        verify(exactly = 1) { ettersendingService.startEttersendelse(BEHANDLINGSID) }
     }
 
     @Test
@@ -129,7 +138,7 @@ internal class SoknadRessursTest {
 
         ressurs.opprettSoknad(BEHANDLINGSID, response, "")
 
-        verify(exactly = 0) { soknadService.startEttersending(BEHANDLINGSID) }
+        verify(exactly = 0) { ettersendingService.startEttersendelse(BEHANDLINGSID) }
     }
 
     @Test
@@ -235,7 +244,7 @@ internal class SoknadRessursTest {
         assertThatExceptionOfType(AuthorizationException::class.java)
             .isThrownBy { ressurs.hentXsrfCookie(BEHANDLINGSID, mockk()) }
 
-        verify { henvendelseService wasNot called }
+        verify { soknadService wasNot called }
     }
 
     @Test
@@ -282,7 +291,10 @@ internal class SoknadRessursTest {
         private const val BEHANDLINGSID = "123"
         private const val EIER = "Hans og Grete"
 
-        private fun createSoknadUnderArbeid(eier: String, jsonInternalSoknad: JsonInternalSoknad = createEmptyJsonInternalSoknad(eier)): SoknadUnderArbeid {
+        private fun createSoknadUnderArbeid(
+            eier: String,
+            jsonInternalSoknad: JsonInternalSoknad = createEmptyJsonInternalSoknad(eier),
+        ): SoknadUnderArbeid {
             return SoknadUnderArbeid(
                 versjon = 1L,
                 behandlingsId = BEHANDLINGSID,

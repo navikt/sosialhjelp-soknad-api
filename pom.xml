@@ -63,8 +63,8 @@
         <ojdbc.version>19.16.0.0</ojdbc.version>
         <flyway-core.version>9.8.2</flyway-core.version>
         <flyway-maven-plugin.version>9.8.2</flyway-maven-plugin.version>
-        <jackson.version>2.14.0</jackson.version>
-        <jackson-databind.version>2.14.0</jackson-databind.version>
+        <jackson.version>2.14.1</jackson.version>
+        <jackson-databind.version>2.14.1</jackson-databind.version>
         <pdfbox.version>2.0.27</pdfbox.version>
         <jempbox.version>1.8.17</jempbox.version>
         <bouncycastle.version>1.70</bouncycastle.version>
@@ -84,9 +84,9 @@
         <lettuce.version>6.2.1.RELEASE</lettuce.version>
         <unleash.version>3.3.4</unleash.version>
         <reactor-core.version>3.4.24</reactor-core.version>
-        <reactor-netty-http.version>1.1.0</reactor-netty-http.version>
+        <reactor-netty-http.version>1.1.1</reactor-netty-http.version>
         <reactive-streams.version>1.0.4</reactive-streams.version>
-        <netty.version>4.1.84.Final</netty.version>
+        <netty.version>4.1.86.Final</netty.version>
         <log4j.version>2.19.0</log4j.version>
         <java-jwt.version>4.2.1</java-jwt.version>
 
