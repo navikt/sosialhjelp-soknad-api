@@ -59,7 +59,7 @@
         <jersey.version>2.37</jersey.version>
         <jetty.version>9.4.49.v20220914</jetty.version>
         <kotlinx-coroutines.version>1.6.4</kotlinx-coroutines.version>
-        <token-validation.version>2.1.8</token-validation.version>
+        <token-validation.version>2.1.9</token-validation.version>
         <nimbus-jose-jwt.version>9.25.6</nimbus-jose-jwt.version>
         <ojdbc.version>19.16.0.0</ojdbc.version>
         <flyway-core.version>9.8.2</flyway-core.version>
