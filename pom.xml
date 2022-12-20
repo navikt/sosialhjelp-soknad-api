@@ -123,7 +123,7 @@
         <json.version>20220924</json.version>
         <byte-buddy.version>1.12.18</byte-buddy.version>
         <gson.version>2.9.1</gson.version>
-        <micrometer.version>1.10.1</micrometer.version>
+        <micrometer.version>1.10.2</micrometer.version>
         <lombok.version>1.18.24</lombok.version>
         <org.osgi.core.version>6.0.0</org.osgi.core.version>
         <snakeyaml.version>1.33</snakeyaml.version>
