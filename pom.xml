@@ -60,9 +60,9 @@
         <kotlinx-coroutines.version>1.6.4</kotlinx-coroutines.version>
         <token-validation.version>2.1.9</token-validation.version>
         <nimbus-jose-jwt.version>9.25.6</nimbus-jose-jwt.version>
-        <ojdbc.version>19.16.0.0</ojdbc.version>
-        <flyway-core.version>9.8.3</flyway-core.version>
-        <flyway-maven-plugin.version>9.8.3</flyway-maven-plugin.version>
+        <ojdbc.version>19.17.0.0</ojdbc.version>
+        <flyway-core.version>9.9.0</flyway-core.version>
+        <flyway-maven-plugin.version>9.9.0</flyway-maven-plugin.version>
         <jackson.version>2.14.1</jackson.version>
         <jackson-databind.version>2.14.1</jackson-databind.version>
         <pdfbox.version>2.0.27</pdfbox.version>
@@ -72,7 +72,7 @@
         <tika.version>2.6.0</tika.version>
         <logback.version>1.2.11</logback.version>
         <hsqldb.version>2.7.1</hsqldb.version>
-        <joda-time.version>2.12.1</joda-time.version>
+        <joda-time.version>2.12.2</joda-time.version>
         <slf4j.version>1.7.36</slf4j.version>
         <commons-codec.version>1.15</commons-codec.version>
         <commons-io.version>2.11.0</commons-io.version>
@@ -81,9 +81,9 @@
         <json-smart.version>2.4.8</json-smart.version>
         <jaxb-java-time-adapters.version>1.1.3</jaxb-java-time-adapters.version>
         <jaxb-runtime.version>2.3.7</jaxb-runtime.version>
-        <lettuce.version>6.2.1.RELEASE</lettuce.version>
+        <lettuce.version>6.2.2.RELEASE</lettuce.version>
         <unleash.version>3.3.4</unleash.version>
-        <reactor-core.version>3.4.24</reactor-core.version>
+        <reactor-core.version>3.5.1</reactor-core.version>
         <reactor-netty-http.version>1.1.1</reactor-netty-http.version>
         <reactive-streams.version>1.0.4</reactive-streams.version>
         <netty.version>4.1.86.Final</netty.version>
@@ -105,7 +105,7 @@
         <hamcrest.version>2.2</hamcrest.version>
         <junit-jupiter.version>5.9.1</junit-jupiter.version>
         <assertj.version>3.23.1</assertj.version>
-        <mockk.version>1.12.4</mockk.version>
+        <mockk.version>1.13.3</mockk.version>
         <okhttp3.version>4.10.0</okhttp3.version>
         <junit.version>4.13.2</junit.version>
 
@@ -114,13 +114,13 @@
         <rhino.version>1.7.14</rhino.version>
         <logstash-logback-encoder.version>7.2</logstash-logback-encoder.version>
         <prometheus.version>0.16.0</prometheus.version>
-        <oauth2-oidc-sdk.version>10.0</oauth2-oidc-sdk.version>
+        <oauth2-oidc-sdk.version>10.4</oauth2-oidc-sdk.version>
         <emoji-java.version>5.1.1</emoji-java.version>
         <objenesis.version>3.3</objenesis.version>
         <mimepull.version>1.10.0</mimepull.version>
         <json.version>20220924</json.version>
-        <byte-buddy.version>1.12.18</byte-buddy.version>
-        <gson.version>2.9.1</gson.version>
+        <byte-buddy.version>1.12.20</byte-buddy.version>
+        <gson.version>2.10</gson.version>
         <micrometer.version>1.10.2</micrometer.version>
         <lombok.version>1.18.24</lombok.version>
         <org.osgi.core.version>6.0.0</org.osgi.core.version>
@@ -130,7 +130,7 @@
         <jboss-logging.version>3.5.0.Final</jboss-logging.version>
         <jboss-logging-annotations.version>2.2.1.Final</jboss-logging-annotations.version>
         <jboss-logging-processor.version>2.2.1.Final</jboss-logging-processor.version>
-        <mock-oauth2-server.version>0.5.6</mock-oauth2-server.version>
+        <mock-oauth2-server.version>0.5.7</mock-oauth2-server.version>
         <osgi.annotation.version>8.1.0</osgi.annotation.version>
         <org.osgi.util.function.version>1.2.0</org.osgi.util.function.version>
     </properties>
@@ -1021,6 +1021,12 @@
         <dependency>
             <groupId>io.mockk</groupId>
             <artifactId>mockk</artifactId>
+            <version>${mockk.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.mockk</groupId>
+            <artifactId>mockk-jvm</artifactId>
             <version>${mockk.version}</version>
             <scope>test</scope>
         </dependency>
