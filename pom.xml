@@ -62,8 +62,8 @@
         <token-validation.version>2.1.8</token-validation.version>
         <nimbus-jose-jwt.version>9.25.6</nimbus-jose-jwt.version>
         <ojdbc.version>19.16.0.0</ojdbc.version>
-        <flyway-core.version>9.8.2</flyway-core.version>
-        <flyway-maven-plugin.version>9.8.2</flyway-maven-plugin.version>
+        <flyway-core.version>9.8.3</flyway-core.version>
+        <flyway-maven-plugin.version>9.8.3</flyway-maven-plugin.version>
         <jackson.version>2.14.1</jackson.version>
         <jackson-databind.version>2.14.1</jackson-databind.version>
         <pdfbox.version>2.0.27</pdfbox.version>
@@ -123,7 +123,7 @@
         <json.version>20220924</json.version>
         <byte-buddy.version>1.12.18</byte-buddy.version>
         <gson.version>2.9.1</gson.version>
-        <micrometer.version>1.10.1</micrometer.version>
+        <micrometer.version>1.10.2</micrometer.version>
         <lombok.version>1.18.24</lombok.version>
         <org.osgi.core.version>6.0.0</org.osgi.core.version>
         <snakeyaml.version>1.33</snakeyaml.version>
