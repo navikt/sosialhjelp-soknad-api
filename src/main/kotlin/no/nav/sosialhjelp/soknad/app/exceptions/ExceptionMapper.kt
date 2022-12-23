@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.client.HttpStatusCodeException
+import org.springframework.web.multipart.MaxUploadSizeExceededException
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler
 import java.net.URI
 
@@ -208,6 +209,20 @@ class ExceptionMapper(
             .internalServerError()
             .contentType(MediaType.APPLICATION_JSON)
             .body(Feilmelding(UNEXPECTED_ERROR, "Noe uventet feilet"))
+    }
+
+    @ExceptionHandler(value = [MaxUploadSizeExceededException::class])
+    fun handleMaxUploadSizeExceededException(e: MaxUploadSizeExceededException): ResponseEntity<Feilmelding> {
+        log.warn("Feilet opplasting", e)
+        return ResponseEntity
+            .status(HttpStatus.PAYLOAD_TOO_LARGE)
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(
+                Feilmelding(
+                    id = "vedlegg.opplasting.feil.forStor",
+                    message = "Kunne ikke lagre fil fordi total filstørrelse er for stor"
+                )
+            )
     }
 
     private fun createUnauthorizedWithLoginLocationResponse(message: String): ResponseEntity<UnauthorizedMelding> {
