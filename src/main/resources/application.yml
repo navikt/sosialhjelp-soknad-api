@@ -18,6 +18,9 @@ spring:
     url: ${SOKNADSOSIALHJELPDATASOURCE_URL}
     username: ${SOKNADSOSIALHJELPDATASOURCE_USERNAME}
     password: ${SOKNADSOSIALHJELPDATASOURCE_PASSWORD}
+  servlet:
+    multipart:
+      max-file-size: 10MB
 
 management:
   endpoints:
