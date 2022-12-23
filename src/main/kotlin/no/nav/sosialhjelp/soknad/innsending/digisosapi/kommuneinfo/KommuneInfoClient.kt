@@ -40,6 +40,17 @@ class KommuneInfoClient(
             ?: emptyList()
     }
 
+    fun ping() {
+        kommuneInfoWebClient.options()
+            .uri(PATH_ALLE_KOMMUNEINFO)
+            .header(AUTHORIZATION, BEARER + maskinportenClient.getToken())
+            .header(HEADER_INTEGRASJON_ID, integrasjonsidFiks)
+            .header(HEADER_INTEGRASJON_PASSORD, integrasjonpassordFiks)
+            .retrieve()
+            .bodyToMono<String>()
+            .block()
+    }
+
     companion object {
         const val PATH_ALLE_KOMMUNEINFO = "/digisos/api/v1/nav/kommuner"
     }
