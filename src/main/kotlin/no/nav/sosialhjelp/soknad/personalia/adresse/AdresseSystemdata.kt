@@ -11,9 +11,10 @@ import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia
 import no.nav.sosialhjelp.soknad.app.systemdata.Systemdata
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
+import no.nav.sosialhjelp.soknad.personalia.adresse.adresseregister.HentAdresseService
+import no.nav.sosialhjelp.soknad.personalia.adresse.adresseregister.domain.KartverketMatrikkelAdresse
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Bostedsadresse
-import no.nav.sosialhjelp.soknad.personalia.person.domain.Kontaktadresse
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Matrikkeladresse
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Oppholdsadresse
 import no.nav.sosialhjelp.soknad.personalia.person.domain.Vegadresse
@@ -21,7 +22,8 @@ import org.springframework.stereotype.Component
 
 @Component
 class AdresseSystemdata(
-    private val personService: PersonService
+    private val personService: PersonService,
+    private val hentAdresseService: HentAdresseService
 ) : Systemdata {
 
     override fun updateSystemdataIn(soknadUnderArbeid: SoknadUnderArbeid) {
@@ -92,6 +94,10 @@ class AdresseSystemdata(
         //        return mapToJsonAdresse(person.getKontaktadresse());
     }
 
+    private fun hentMatrikkelAdresseFraKartverket(matrikkelId: String): KartverketMatrikkelAdresse? {
+        return hentAdresseService.hentKartverketMatrikkelAdresse(matrikkelId)
+    }
+
     private fun mapToJsonAdresse(bostedsadresse: Bostedsadresse?): JsonAdresse? {
         if (bostedsadresse == null) {
             return null
@@ -99,7 +105,11 @@ class AdresseSystemdata(
         val jsonAdresse: JsonAdresse = if (bostedsadresse.vegadresse != null) {
             tilGateAdresse(bostedsadresse.vegadresse)
         } else if (bostedsadresse.matrikkeladresse != null) {
-            tilMatrikkelAdresse(bostedsadresse.matrikkeladresse)
+            val matrikkelId: String? = bostedsadresse.matrikkeladresse.matrikkelId
+            matrikkelId
+                ?.let { hentMatrikkelAdresseFraKartverket(it) }
+                ?.let { mapToJsonMatrikkelAdresse(it) }
+                ?: tilMatrikkelAdresse(bostedsadresse.matrikkeladresse)
         } else {
             throw IllegalStateException("Ukjent bostedsadresse fra PDL (skal være Vegadresse eller Matrikkeladresse")
         }
@@ -118,19 +128,6 @@ class AdresseSystemdata(
         }
         jsonAdresse.kilde = JsonKilde.SYSTEM
         return jsonAdresse
-    }
-
-    private fun mapToJsonAdresse(kontaktadresse: Kontaktadresse?): JsonAdresse? {
-        if (kontaktadresse == null) {
-            return null
-        }
-        return if (kontaktadresse.vegadresse != null) {
-            val jsonAdresse = tilGateAdresse(kontaktadresse.vegadresse)
-            jsonAdresse.kilde = JsonKilde.SYSTEM
-            jsonAdresse
-        } else {
-            throw IllegalStateException("Ukjent kontaktadresse fra PDL (skal være Vegadresse)")
-        }
     }
 
     private fun tilGateAdresse(vegadresse: Vegadresse): JsonGateAdresse {
@@ -152,6 +149,18 @@ class AdresseSystemdata(
         jsonMatrikkelAdresse.type = JsonAdresse.Type.MATRIKKELADRESSE
         jsonMatrikkelAdresse.kommunenummer = matrikkeladresse.kommunenummer
         jsonMatrikkelAdresse.bruksnummer = matrikkeladresse.bruksenhetsnummer
+        return jsonMatrikkelAdresse
+    }
+
+    private fun mapToJsonMatrikkelAdresse(kartverketMatrikkelAdresse: KartverketMatrikkelAdresse): JsonMatrikkelAdresse {
+        val jsonMatrikkelAdresse = JsonMatrikkelAdresse()
+        jsonMatrikkelAdresse.type = JsonAdresse.Type.MATRIKKELADRESSE
+        jsonMatrikkelAdresse.kommunenummer = kartverketMatrikkelAdresse.kommunenummer
+        jsonMatrikkelAdresse.gaardsnummer = kartverketMatrikkelAdresse.gaardsnummer
+        jsonMatrikkelAdresse.bruksnummer = kartverketMatrikkelAdresse.bruksnummer
+        jsonMatrikkelAdresse.festenummer = kartverketMatrikkelAdresse.festenummer
+        jsonMatrikkelAdresse.seksjonsnummer = kartverketMatrikkelAdresse.seksjonsunmmer
+        jsonMatrikkelAdresse.undernummer = kartverketMatrikkelAdresse.undernummer
         return jsonMatrikkelAdresse
     }
 

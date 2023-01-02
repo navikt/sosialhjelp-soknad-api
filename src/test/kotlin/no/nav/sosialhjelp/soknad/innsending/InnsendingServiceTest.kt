@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.innsending
 
+import io.mockk.called
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
@@ -8,7 +9,6 @@ import io.mockk.verify
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRepository
-import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggType
 import no.nav.sosialhjelp.soknad.db.repositories.sendtsoknad.SendtSoknad
 import no.nav.sosialhjelp.soknad.db.repositories.sendtsoknad.SendtSoknadRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadata
@@ -89,32 +89,42 @@ internal class InnsendingServiceTest {
     }
 
     @Test
-    fun finnSendtSoknadForEttersendelseHenterMottakerinfoFraSendtSoknadVedEttersendelse() {
-        val sendtSoknad = innsendingService.finnSendtSoknadForEttersendelse(createSoknadUnderArbeidForEttersendelse())
-        assertThat(sendtSoknad.orgnummer).isEqualTo(ORGNR)
-        assertThat(sendtSoknad.navEnhetsnavn).isEqualTo(NAVENHETSNAVN)
-        assertThat(sendtSoknad.tilknyttetBehandlingsId).isEqualTo(TILKNYTTET_BEHANDLINGSID)
-    }
-
-    @Test
-    fun finnSendtSoknadForEttersendelseHenterInfoFraSoknadMetadataHvisSendtSoknadMangler() {
-        every { sendtSoknadRepository.hentSendtSoknad(any(), any()) } returns null
+    fun `finnFiksForsendelseIdForEttersendelse fra SoknadMetadata`() {
         every { soknadMetadataRepository.hent(any()) } returns createSoknadMetadata()
-        val soknadMedMottaksinfoFraMetadata =
-            innsendingService.finnSendtSoknadForEttersendelse(createSoknadUnderArbeidForEttersendelse())
-        assertThat(soknadMedMottaksinfoFraMetadata.orgnummer).isEqualTo(ORGNR_METADATA)
-        assertThat(soknadMedMottaksinfoFraMetadata.navEnhetsnavn).isEqualTo(NAVENHETSNAVN_METADATA)
+        val fiksForsendelseId = innsendingService.finnFiksForsendelseIdForEttersendelse(createSoknadUnderArbeidForEttersendelse())
+        assertThat(fiksForsendelseId).isEqualTo(FIKSFORSENDELSEID)
+        verify { sendtSoknadRepository wasNot called }
     }
 
     @Test
-    fun finnSendtSoknadForEttersendelseKasterFeilHvisSendtSoknadOgMetadataManglerForEttersendelse() {
-        every { sendtSoknadRepository.hentSendtSoknad(any(), any()) } returns null
+    fun `finnFiksForsendelseIdForEttersendelse fra SendtSoknad hvis SoknadMetadata ikke har fiksForsendelseId`() {
         every { soknadMetadataRepository.hent(any()) } returns null
+        every { sendtSoknadRepository.hentSendtSoknad(any(), any()) } returns createSendtSoknad()
+        val fiksForsendelseId = innsendingService.finnFiksForsendelseIdForEttersendelse(createSoknadUnderArbeidForEttersendelse())
+        assertThat(fiksForsendelseId).isEqualTo(FIKSFORSENDELSEID)
+    }
 
-        assertThatExceptionOfType(IllegalStateException::class.java)
-            .isThrownBy {
-                innsendingService.finnSendtSoknadForEttersendelse(createSoknadUnderArbeidForEttersendelse())
-            }
+    @Test
+    fun `finnFiksForsendelseIdForEttersendelse returnerer null hvis fiksForsendelseId ikke finnes for SendtSoknad eller SoknadMetadata`() {
+        every { soknadMetadataRepository.hent(any()) } returns null
+        every { sendtSoknadRepository.hentSendtSoknad(any(), any()) } returns null
+
+        val fiksForsendelseId = innsendingService.finnFiksForsendelseIdForEttersendelse(createSoknadUnderArbeidForEttersendelse())
+        assertThat(fiksForsendelseId).isNull()
+    }
+
+    @Test
+    internal fun `skal oppdatere sendt_soknad og soknadmetadata ved innsending`() {
+        every { sendtSoknadRepository.oppdaterSendtSoknadVedSendingTilFiks(any(), any(), any()) } just runs
+
+        val soknadMetadata = createSoknadMetadata()
+        every { soknadMetadataRepository.hent(any()) } returns soknadMetadata
+        every { soknadMetadataRepository.oppdater(any()) } just runs
+
+        innsendingService.oppdaterTabellerVedSendingTilFiks(FIKSFORSENDELSEID, BEHANDLINGSID, EIER)
+
+        verify(exactly = 1) { sendtSoknadRepository.oppdaterSendtSoknadVedSendingTilFiks(any(), any(), any()) }
+        verify(exactly = 1) { soknadMetadataRepository.oppdater(any()) }
     }
 
     private fun createSoknadUnderArbeid(): SoknadUnderArbeid {
@@ -187,6 +197,7 @@ internal class InnsendingServiceTest {
             fnr = EIER,
             orgnr = ORGNR_METADATA,
             navEnhet = NAVENHETSNAVN_METADATA,
+            fiksForsendelseId = FIKSFORSENDELSEID,
             opprettetDato = LocalDateTime.now(),
             sistEndretDato = LocalDateTime.now()
         )
@@ -196,7 +207,6 @@ internal class InnsendingServiceTest {
         private const val SOKNAD_UNDER_ARBEID_ID = 1L
         private const val SENDT_SOKNAD_ID = 2L
         private const val EIER = "12345678910"
-        private val VEDLEGGTYPE = OpplastetVedleggType("bostotte|annetboutgift")
         private const val BEHANDLINGSID = "1100001L"
         private const val TILKNYTTET_BEHANDLINGSID = "1100002K"
         private const val FIKSFORSENDELSEID = "12345"

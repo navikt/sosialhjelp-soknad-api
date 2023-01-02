@@ -21,13 +21,12 @@ mock-alt-api-wellknown-queryparam: ${MOCK_ALT_API_WELLKNOWN_QUERYPARAM:}
 # rest
 digisos_api_baseurl: ${DIGISOS_API_BASEURL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/fiks/}
 ereg_url: ${EREG_URL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/ereg}
-aareg_proxy_url: ${AAREG_PROXY_URL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/aareg/}
-krr_proxy_url: ${KRR_PROXY_URL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/krr/}
-pdl_api_url: ${PDL_API_URL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/pdl_endpoint_url/}
+aareg_url: ${AAREG_URL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/aareg/}
+krr_url: ${KRR_URL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/krr/}
+pdl_api_url: ${PDL_API_URL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/pdl_endpoint_url}
 kodeverk_url: ${KODEVERK_URL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/kodeverk}
 unleash_api_url: ${UNLEASH_API_URL:https://unleash.nais.io/api}
 norg_url: ${NORG_URL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/norg_endpoint_url}
-fss_proxy_ping_url: ${FSS_PROXY_PING_URL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/fss-proxy/ping}
 oppslag_api_baseurl: ${OPPSLAG_API_BASEURL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/oppslag-api/}
 utbetaldata_api_baseurl: ${UTBETALDATA_API_BASEURL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api}
 kontoregister_api_baseurl: ${KONTOREGISTER_API_BASEURL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api}
@@ -56,17 +55,19 @@ maskinporten_client_jwk: generateRSA
 tokendings_url: ${TOKEN_X_WELL_KNOWN_URL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/well-known/tokenx${mock-alt-api-wellknown-queryparam}}
 tokendings_client_id: ${TOKEN_X_CLIENT_ID:dummyAudience}
 tokendings_private_jwk: ${TOKEN_X_PRIVATE_JWK:generateRSA}
-fss_proxy_audience: ${FSS_PROXY_AUDIENCE:dummyAudience}
 oppslag_api_audience: ${OPPSLAG_API_AUDIENCE:dummyAudience}
 kontoregister_api_audience: ${KONTOREGISTER_API_AUDIENCE:dummyAudience}
 pdl_api_audience: ${PDL_API_AUDIENCE:dummyAudience}
 utbetaldata_audience: ${UTBETALDATA_AUDIENCE:dummyAudience}
+krr_audience: ${KRR_AUDIENCE:dummyAudience}
+aareg_audience: ${AAREG_AUDIENCE:dummyAudience}
 
 # azuread
 azure_token_endpoint: ${AZURE_OPENID_CONFIG_TOKEN_ENDPOINT:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/azuretoken/azuread}
 azure_client_id: ${AZURE_APP_CLIENT_ID:localhost:teamdigisos:sosialhjelp-soknad-api}
 azure_client_secret: ${AZURE_APP_CLIENT_SECRET:clientSecret}
 pdl_api_scope: ${PDL_API_SCOPE:dummyScope}
+krr_scope: ${KRR_SCOPE:dummyScope}
 
 # OIDC
 oidc.issuer.selvbetjening.cookie_name: localhost-idtoken
@@ -92,6 +93,3 @@ feature.fiks.kryptering.enabled: false
 #Nedetid
 nedetid.start: ${NEDETID_START:}
 nedetid.slutt: ${NEDETID_SLUTT:}
-
-#mellomlagring
-mellomlagring_start: ${MELLOMLAGRING_START:}

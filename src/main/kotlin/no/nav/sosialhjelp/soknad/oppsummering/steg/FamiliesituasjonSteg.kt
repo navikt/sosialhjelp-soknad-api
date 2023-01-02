@@ -17,7 +17,6 @@ import no.nav.sosialhjelp.soknad.oppsummering.dto.Type
 import no.nav.sosialhjelp.soknad.oppsummering.steg.StegUtils.createSvar
 import no.nav.sosialhjelp.soknad.oppsummering.steg.StegUtils.fulltnavn
 import no.nav.sosialhjelp.soknad.oppsummering.steg.StegUtils.harSystemRegistrerteBarn
-import no.nav.sosialhjelp.soknad.oppsummering.steg.StegUtils.isNotNullOrEmtpy
 
 class FamiliesituasjonSteg {
 
@@ -99,10 +98,11 @@ class FamiliesituasjonSteg {
 
     private fun brukerRegistrertEktefelle(sivilstatus: JsonSivilstatus): Sporsmal {
         val ektefelle = sivilstatus.ektefelle
-        val erUtfylt = isNotNullOrEmtpy(ektefelle.navn.fornavn) &&
-            isNotNullOrEmtpy(ektefelle.navn.etternavn) &&
-            isNotNullOrEmtpy(ektefelle.fodselsdato) &&
-            isNotNullOrEmtpy(ektefelle.personIdentifikator) && sivilstatus.borSammenMed != null
+        val erUtfylt = !ektefelle.navn.fornavn.isNullOrEmpty() &&
+            !ektefelle.navn.etternavn.isNullOrEmpty() &&
+            !ektefelle.fodselsdato.isNullOrEmpty() &&
+            !ektefelle.personIdentifikator.isNullOrEmpty() &&
+            sivilstatus.borSammenMed != null
         val map = LinkedHashMap<String, Svar>()
         map["familie.sivilstatus.gift.ektefelle.navn.label"] =
             createSvar(fulltnavn(ektefelle.navn), SvarType.TEKST)

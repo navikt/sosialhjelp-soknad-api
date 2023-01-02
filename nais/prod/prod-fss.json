@@ -14,7 +14,6 @@
     "/var/run/secrets/datasource": "/oracle/data/prod/creds/soknadsosialhjel_p-user"
   },
   "outboundRulesFssApplications": [
-    "sosialhjelp-fss-proxy",
     "sosialhjelp-oppslag-api"
   ],
   "fssCluster": "prod-fss",
@@ -37,15 +36,16 @@
   "azureEnabled": true,
   "env": {
     "SPRING_PROFILES_ACTIVE": "log-kibana,leader-election",
-    "AAREG_PROXY_URL": "https://sosialhjelp-fss-proxy.intern.nav.no/proxy/aareg/",
+    "AAREG_AUDIENCE": "prod-fss:arbeidsforhold:aareg-services-nais",
+    "AAREG_URL": "https://aareg-services.intern.nav.no/api",
     "CLAMAV_URL": "http://clamav.nais-system.svc.nais.local/scan",
     "EREG_URL": "https://ereg-services.intern.nav.no",
     "FIKS_NOKKELFIL": "svarut_public_prod.pem",
-    "FSS_PROXY_AUDIENCE": "prod-fss:teamdigisos:sosialhjelp-fss-proxy",
-    "FSS_PROXY_PING_URL": "https://sosialhjelp-fss-proxy.intern.nav.no/ping",
     "DIGISOS_API_BASEURL": "https://api.fiks.ks.no/",
     "KODEVERK_URL": "https://kodeverk.intern.nav.no/api/v1/kodeverk",
-    "KRR_PROXY_URL": "https://sosialhjelp-fss-proxy.intern.nav.no/proxy/krr/",
+    "KRR_AUDIENCE": "prod-gcp:team-rocket:digdir-krr-proxy",
+    "KRR_SCOPE": "prod-gcp.team-rocket.digdir-krr-proxy",
+    "KRR_URL": "https://digdir-krr-proxy.intern.nav.no",
     "LOGINSERVICE_URL": "https://loginservice.nav.no/login",
     "NORG_URL": "https://norg2.intern.nav.no/norg2/api/v1",
     "OPPSLAG_API_AUDIENCE": "prod-fss:teamdigisos:sosialhjelp-oppslag-api",
@@ -65,7 +65,6 @@
     "NEDETID_SLUTT": "05.02.2022 06:00:00",
     "ENVIRONMENT_NAME": "p",
     "REDIS_HOST": "sosialhjelp-soknad-api-redis.teamdigisos.svc.nais.local",
-    "UNLEASH_INSTANCE_ID": "prod-fss",
-    "MELLOMLAGRING_START": "02.11.2022 14:00:00"
+    "UNLEASH_INSTANCE_ID": "prod-fss"
   }
 }

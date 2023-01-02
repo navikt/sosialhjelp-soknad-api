@@ -2,11 +2,11 @@ package no.nav.sosialhjelp.soknad.ettersending.innsendtsoknad
 
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadata
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataInnsendingStatus
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataType
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.VedleggMetadata
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.Vedleggstatus
 import no.nav.sosialhjelp.soknad.ettersending.innsendtsoknad.EttersendelseUtils.soknadSendtForMindreEnn30DagerSiden
-import no.nav.sosialhjelp.soknad.innsending.HenvendelseService
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -15,7 +15,7 @@ import java.util.function.Predicate
 
 @Component
 class InnsendtSoknadService(
-    private val henvendelseService: HenvendelseService
+    private val soknadMetadataRepository: SoknadMetadataRepository
 ) {
     private val ikkeKvittering = Predicate<VedleggMetadata> { SKJEMANUMMER_KVITTERING != it.skjema }
     private val lastetOpp = Predicate<VedleggMetadata> { it.status?.er(Vedleggstatus.LastetOpp) ?: false }
@@ -33,15 +33,15 @@ class InnsendtSoknadService(
     }
 
     private fun hentOriginalSoknad(behandlingsId: String): SoknadMetadata? {
-        var soknad = henvendelseService.hentSoknad(behandlingsId)
+        var soknad = soknadMetadataRepository.hent(behandlingsId)
         if (soknad?.type == SoknadMetadataType.SEND_SOKNAD_KOMMUNAL_ETTERSENDING) {
-            soknad = henvendelseService.hentSoknad(soknad.tilknyttetBehandlingsId)
+            soknad = soknadMetadataRepository.hent(soknad.tilknyttetBehandlingsId)
         }
         return soknad
     }
 
     private fun hentEttersendelser(behandlingsId: String): List<SoknadMetadata> {
-        return henvendelseService.hentBehandlingskjede(behandlingsId)
+        return soknadMetadataRepository.hentBehandlingskjede(behandlingsId)
             .filter { it.status == SoknadMetadataInnsendingStatus.FERDIG }
             .sortedWith(Comparator.comparing { it.innsendtDato })
     }

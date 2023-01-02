@@ -31,17 +31,19 @@ maskinporten_client_jwk: generateRSA
 tokendings_url: http://localhost:${mock-oauth2-server.port}/tokenx/.well-known/openid-configuration
 tokendings_client_id: localhost:teamdigisos:sosialhjelp-soknad-api
 tokendings_private_jwk: generateRSA
-fss_proxy_audience: dummyAudience
 oppslag_api_audience: dummyAudience
 utbetaldata_audience: dummyAudience
 kontoregister_api_audience: dummyAudience
 pdl_api_audience: dummyAudience
+krr_audience: dummyAudience
+aareg_audience: dummyAudience
 
 # azuread
 azure_token_endpoint: azure_token_endpoint
 azure_client_id: localhost:teamdigisos:sosialhjelp-soknad-api
 azure_client_secret: clientSecret
 pdl_api_scope: dummyScope
+krr_scope: dummyScope
 
 # svarut:
 fiks_svarut_username: username
@@ -50,8 +52,8 @@ fiks_svarut_password: pwpwpwpw
 # rest
 digisos_api_baseurl: ${DIGISOS_API_BASEURL:https://api.fiks.test.ks.no/}
 ereg_url: https://ereg/
-aareg_proxy_url: https://fss-proxy/proxy/aareg/
-krr_proxy_url: http://krr/
+aareg_url: https://aareg/
+krr_url: http://krr/
 pdl_api_url: https://pdl-api/graphql
 unleash_api_url: https://unleash.nais.io/api
 kodeverk_url: https://kodeverk/
@@ -60,7 +62,6 @@ oppslag_api_baseurl: https://sosialhjelp-oppslag-api/api/
 kontoregister_api_baseurl: https://sokos-kontoregister-person.dev.intern.nav.no
 soknad.bostotte.url: http://bostotte.url
 norg_url: https://norg.url/enhet
-fss_proxy_ping_url: http://fss-proxy/ping
 svarut_url: https://svaruturl
 skatteetaten_api_baseurl: https://skatteetatenurl
 clamav_url: virusscan_not_enabled
@@ -72,8 +73,6 @@ scheduler.disable: false
 
 nedetid.start: 21.11.2020 14:00:00
 nedetid.slutt: 21.11.2020 15:00:00
-
-mellomlagring_start: 31.10.2022 12:00:00
 
 integrasjonsid_fiks: ${INTEGRASJONSID_FIKS:integrasjonsid_fiks}
 integrasjonpassord_fiks: ${INTEGRASJONPASSORD_FIKS:integrasjonpassord_fiks}

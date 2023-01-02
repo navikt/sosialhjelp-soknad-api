@@ -262,7 +262,7 @@ internal class NavUtbetalingerServiceTest {
             }  
         """
 
-        return mapper.readValue<Utbetaling>(utbetalingJsonString)
+        return mapper.readValue(utbetalingJsonString)
     }
 
     private fun lagUtbetalingUtenKomponenterResponse(): Utbetaling {
@@ -325,6 +325,6 @@ internal class NavUtbetalingerServiceTest {
             }  
         """
 
-        return mapper.readValue<Utbetaling>(utbetalingJsonString)
+        return mapper.readValue(utbetalingJsonString)
     }
 }

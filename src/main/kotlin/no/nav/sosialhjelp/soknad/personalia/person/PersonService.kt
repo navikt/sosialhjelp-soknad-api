@@ -55,7 +55,7 @@ open class PersonService(
             val sivilstand = helper.utledGjeldendeSivilstand(personDto.sivilstand)
             if (sivilstand != null && (SivilstandType.GIFT === sivilstand.type || SivilstandType.REGISTRERT_PARTNER === sivilstand.type)) {
                 val ektefelleIdent = sivilstand.relatertVedSivilstand
-                if (ektefelleIdent == null || ektefelleIdent.isEmpty()) {
+                if (ektefelleIdent.isNullOrEmpty()) {
                     log.info("Sivilstand.relatertVedSivilstand (ektefelleIdent) er null -> kaller ikke hentPerson for ektefelle")
                     return null
                 }

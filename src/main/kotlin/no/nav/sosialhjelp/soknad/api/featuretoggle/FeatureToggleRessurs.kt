@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.api.featuretoggle
 
-import no.finn.unleash.Unleash
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.soknad.app.Constants
 import org.springframework.stereotype.Controller
@@ -13,9 +12,7 @@ import javax.ws.rs.core.MediaType
 @ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4])
 @Path("/feature-toggle")
 @Produces(MediaType.APPLICATION_JSON)
-open class FeatureToggleRessurs(
-    private val unleash: Unleash
-) {
+open class FeatureToggleRessurs {
 
     @GET
     open fun featureToggles(): Map<String, Boolean> {
