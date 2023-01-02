@@ -16,7 +16,7 @@ open class BostotteConfig(
 
     @Bean
     open fun husbankenClient(): HusbankenClient {
-        return HusbankenClientImpl(husbankenWebClient)
+        return HusbankenClient(husbankenWebClient)
     }
 
     private val husbankenWebClient: WebClient = proxiedWebClientBuilder(webClientBuilder, proxiedHttpClient)

@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.innsending
 
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedlegg
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRepository
 import no.nav.sosialhjelp.soknad.db.repositories.sendtsoknad.SendtSoknad
@@ -10,12 +11,10 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderAr
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
 import org.apache.commons.lang3.StringUtils
-import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import org.springframework.transaction.TransactionStatus
 import org.springframework.transaction.support.TransactionCallbackWithoutResult
 import org.springframework.transaction.support.TransactionTemplate
-import java.time.LocalDateTime
 
 @Component
 open class InnsendingService(
@@ -40,14 +39,19 @@ open class InnsendingService(
     }
 
     open fun finnOgSlettSoknadUnderArbeidVedSendingTilFiks(behandlingsId: String, eier: String) {
-        logger.debug("Henter søknad under arbeid for behandlingsid $behandlingsId og eier $eier")
+        log.debug("Henter søknad under arbeid for behandlingsid $behandlingsId")
         soknadUnderArbeidRepository.hentSoknadNullable(behandlingsId, eier)
             ?.let { soknadUnderArbeidRepository.slettSoknad(it, eier) }
     }
 
-    open fun oppdaterSendtSoknadVedSendingTilFiks(fiksforsendelseId: String?, behandlingsId: String?, eier: String?) {
-        logger.debug("Oppdaterer sendt søknad for behandlingsid $behandlingsId og eier $eier")
+    open fun oppdaterTabellerVedSendingTilFiks(fiksforsendelseId: String?, behandlingsId: String?, eier: String?) {
+        log.debug("Oppdaterer sendt søknad for behandlingsid $behandlingsId")
         sendtSoknadRepository.oppdaterSendtSoknadVedSendingTilFiks(fiksforsendelseId, behandlingsId, eier)
+
+        log.debug("Oppdaterer soknadmetadata for behandlingsid $behandlingsId")
+        val soknadMetadata = soknadMetadataRepository.hent(behandlingsId)
+        soknadMetadata?.fiksForsendelseId = fiksforsendelseId
+        soknadMetadataRepository.oppdater(soknadMetadata)
     }
 
     open fun hentSendtSoknad(behandlingsId: String, eier: String?): SendtSoknad {
@@ -64,31 +68,15 @@ open class InnsendingService(
         return opplastetVedleggRepository.hentVedleggForSoknad(soknadUnderArbeid.soknadId, soknadUnderArbeid.eier)
     }
 
-    open fun finnSendtSoknadForEttersendelse(soknadUnderArbeid: SoknadUnderArbeid): SendtSoknad {
+    open fun finnFiksForsendelseIdForEttersendelse(soknadUnderArbeid: SoknadUnderArbeid): String? {
         val tilknyttetBehandlingsId = soknadUnderArbeid.tilknyttetBehandlingsId
             ?: throw IllegalStateException("TilknyttetBehandlingsId kan ikke være null for en ettersendelse")
 
-        return sendtSoknadRepository.hentSendtSoknad(tilknyttetBehandlingsId, soknadUnderArbeid.eier)
-            ?: finnSendtSoknadForEttersendelsePaGammeltFormat(tilknyttetBehandlingsId)
-            ?: throw IllegalStateException("Finner ikke søknaden det skal ettersendes på")
-    }
-
-    private fun finnSendtSoknadForEttersendelsePaGammeltFormat(tilknyttetBehandlingsId: String): SendtSoknad? {
-        val originalSoknadGammeltFormat = soknadMetadataRepository.hent(tilknyttetBehandlingsId) ?: return null
-        val orgnr = originalSoknadGammeltFormat.orgnr ?: return null
-        val navEnhet = originalSoknadGammeltFormat.navEnhet ?: return null
-        return SendtSoknad(
-            sendtSoknadId = 0L, // dummy id. SendtSoknadRepository.opprettSendtSoknad bruker next sequence value som id
-            behandlingsId = "",
-            tilknyttetBehandlingsId = null,
-            eier = "",
-            fiksforsendelseId = originalSoknadGammeltFormat.fiksForsendelseId,
-            orgnummer = orgnr,
-            navEnhetsnavn = navEnhet,
-            brukerOpprettetDato = LocalDateTime.now(),
-            brukerFerdigDato = LocalDateTime.now(),
-            sendtDato = LocalDateTime.now()
-        )
+        return soknadMetadataRepository.hent(tilknyttetBehandlingsId)?.fiksForsendelseId.also {
+            log.info("Ettersending - hentet fiksForsendelseId fra soknadMetadata")
+        } ?: sendtSoknadRepository.hentSendtSoknad(tilknyttetBehandlingsId, soknadUnderArbeid.eier)?.fiksforsendelseId.also {
+            log.info("Ettersending - hentet fiksForsendelseId fra sendt_soknad")
+        }
     }
 
     fun mapSoknadUnderArbeidTilSendtSoknad(soknadUnderArbeid: SoknadUnderArbeid): SendtSoknad {
@@ -128,6 +116,6 @@ open class InnsendingService(
     }
 
     companion object {
-        private val logger = LoggerFactory.getLogger(InnsendingService::class.java)
+        private val log by logger()
     }
 }

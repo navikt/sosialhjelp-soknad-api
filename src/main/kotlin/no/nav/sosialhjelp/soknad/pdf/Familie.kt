@@ -157,7 +157,7 @@ object Familie {
                 pdfUtils.skrivUtBarnebidragAlternativer(pdf, utvidetSoknad)
             } else {
                 if (utvidetSoknad) {
-                    pdf.skrivH3(pdfUtils.getTekst("familierelasjon.ingen_registrerte_barn_tittel"))
+                    pdf.skrivTekst(pdfUtils.getTekst("familierelasjon.ingen_registrerte_barn_tittel"))
                 }
                 pdf.skrivTekst(pdfUtils.getTekst("familierelasjon.ingen_registrerte_barn_tekst"))
             }

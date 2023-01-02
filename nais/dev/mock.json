@@ -30,23 +30,25 @@
   "env": {
     "SPRING_PROFILES_ACTIVE": "mock-alt,log-console,no-redis",
     "PORT": "8080",
-    "AAREG_PROXY_URL": "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api/aareg/",
+    "AAREG_AUDIENCE": "dummyAudience",
+    "AAREG_URL": "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api/aareg",
     "AZURE_OPENID_CONFIG_TOKEN_ENDPOINT": "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api/azuretoken/azuread",
     "AZURE_APP_CLIENT_ID": "someaudience",
     "AZURE_APP_CLIENT_SECRET": "secret",
     "OPPSLAG_API_BASEURL": "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api/oppslag-api/",
     "UTBETALDATA_AUDIENCE": "dummyAudience",
     "UTBETALDATA_API_BASEURL": "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api",
-    "PDL_API_URL": "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api/pdl_endpoint_url/",
+    "PDL_API_URL": "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api/pdl_endpoint_url",
     "PDL_API_AUDIENCE": "dummyAudience",
     "PDL_API_SCOPE": "dummyScope",
     "UNLEASH_API_URL": "https://unleash.nais.io/api",
     "EREG_URL": "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api/ereg",
     "FIKS_NOKKELFIL": "svarut_public_test.pem",
-    "FSS_PROXY_PING_URL": "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api/fss-proxy/ping",
     "DIGISOS_API_BASEURL": "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api/fiks/",
     "KODEVERK_URL": "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api/kodeverk",
-    "KRR_PROXY_URL": "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api/krr/",
+    "KRR_AUDIENCE": "dummyAudience",
+    "KRR_SCOPE": "dummyScope",
+    "KRR_URL": "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api/krr/",
     "LOGINSERVICE_URL": "https://digisos.ekstern.dev.nav.no/sosialhjelp/mock-alt/login",
     "MASKINPORTEN_WELL_KNOWN_URL": "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api/well-known/maskinporten",
     "OIDC_ISSUER_SELVBETJENING_DISCOVERYURL": "https://digisos.ekstern.dev.nav.no/sosialhjelp/mock-alt-api/well-known/selvbetjening",
@@ -61,7 +63,6 @@
     "NEDETID_SLUTT": "",
     "ENVIRONMENT_NAME": "mock",
     "MOCK_ALT_UTBETALINGER_FRA_NAV_URL": "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api/utbetaling",
-    "UNLEASH_INSTANCE_ID": "mock",
-    "MELLOMLAGRING_START": "02.11.2022 09:35:00"
+    "UNLEASH_INSTANCE_ID": "mock"
   }
 }

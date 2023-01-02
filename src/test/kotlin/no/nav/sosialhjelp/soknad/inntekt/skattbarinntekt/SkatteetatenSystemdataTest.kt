@@ -9,6 +9,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOrganisasjon
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
@@ -28,7 +29,13 @@ internal class SkatteetatenSystemdataTest {
     @BeforeEach
     internal fun setUp() {
         clearAllMocks()
-        every { organisasjonService.hentOrgNavn(any()) } returns "orgnavn"
+        every {
+            organisasjonService.mapToJsonOrganisasjon(ORGANISASJONSNR)
+        } returns JsonOrganisasjon().withOrganisasjonsnummer(ORGANISASJONSNR)
+        every {
+            organisasjonService.mapToJsonOrganisasjon(ORGANISASJONSNR_ANNEN)
+        } returns JsonOrganisasjon().withOrganisasjonsnummer(ORGANISASJONSNR_ANNEN)
+        every { organisasjonService.mapToJsonOrganisasjon(PERSONNR) } returns null
     }
 
     @Test

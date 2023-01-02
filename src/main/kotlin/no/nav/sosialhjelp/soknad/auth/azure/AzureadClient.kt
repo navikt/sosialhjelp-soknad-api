@@ -19,10 +19,9 @@ class AzureadClient(
     @Value("\${azure_client_id}") val azureClientId: String,
     @Value("\${azure_client_secret}") val azureClientSecret: String,
     webClientBuilder: WebClient.Builder,
-    proxiedHttpClient: HttpClient,
-    private val dispatcher: CoroutineDispatcher = Dispatchers.IO
+    proxiedHttpClient: HttpClient
 ) {
-
+    private val dispatcher: CoroutineDispatcher = Dispatchers.IO
     private val azureWebClient: WebClient = proxiedWebClientBuilder(webClientBuilder, proxiedHttpClient).build()
 
     suspend fun getSystemToken(scope: String): AzureadTokenResponse {

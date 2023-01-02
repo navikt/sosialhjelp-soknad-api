@@ -4,7 +4,6 @@ import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetalingKomponent
-import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOrganisasjon
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.systemdata.Systemdata
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
@@ -51,21 +50,6 @@ class UtbetalingerFraNavSystemdata(
         return utbetalinger.map { mapToJsonOkonomiOpplysningUtbetaling(it) }
     }
 
-    fun mapToJsonOrganisasjon(orgnummer: String?): JsonOrganisasjon? {
-        if (orgnummer == null) return null
-        if (orgnummer.matches(Regex("\\d{9}"))) {
-            return JsonOrganisasjon()
-                .withNavn(organisasjonService.hentOrgNavn(orgnummer))
-                .withOrganisasjonsnummer(orgnummer)
-        }
-        if (orgnummer.matches(Regex("\\d{11}"))) {
-            log.info("Utbetalingens opplysningspliktigId er et personnummer. Dette blir ikke inkludert i soknad.json")
-        } else {
-            log.error("Utbetalingens opplysningspliktigId er verken et organisasjonsnummer eller personnummer: $orgnummer. Kontakt skatteetaten.")
-        }
-        return null
-    }
-
     private fun mapToJsonOkonomiOpplysningUtbetaling(navUtbetaling: NavUtbetaling): JsonOkonomiOpplysningUtbetaling {
         return JsonOkonomiOpplysningUtbetaling()
             .withKilde(JsonKilde.SYSTEM)
@@ -75,7 +59,7 @@ class UtbetalingerFraNavSystemdata(
             .withNetto(navUtbetaling.netto)
             .withBrutto(navUtbetaling.brutto)
             .withSkattetrekk(navUtbetaling.skattetrekk)
-            .withOrganisasjon(mapToJsonOrganisasjon(navUtbetaling.orgnummer))
+            .withOrganisasjon(organisasjonService.mapToJsonOrganisasjon(navUtbetaling.orgnummer))
             .withAndreTrekk(navUtbetaling.andreTrekk)
             .withPeriodeFom(if (navUtbetaling.periodeFom != null) navUtbetaling.periodeFom.toString() else null)
             .withPeriodeTom(if (navUtbetaling.periodeTom != null) navUtbetaling.periodeTom.toString() else null)

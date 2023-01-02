@@ -7,6 +7,7 @@ import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysningUtbetaling
+import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOrganisasjon
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
@@ -30,7 +31,13 @@ internal class UtbetalingerFraNavSystemdataTest {
     @BeforeEach
     internal fun setUp() {
         clearAllMocks()
-        every { organisasjonService.hentOrgNavn(any()) } returns "orgnavn"
+        every {
+            organisasjonService.mapToJsonOrganisasjon(ORGANISASJONSNR)
+        } returns JsonOrganisasjon().withOrganisasjonsnummer(ORGANISASJONSNR)
+        every {
+            organisasjonService.mapToJsonOrganisasjon("orgnr")
+        } returns null
+        every { organisasjonService.mapToJsonOrganisasjon(PERSONNR) } returns null
     }
 
     @Test
@@ -82,42 +89,6 @@ internal class UtbetalingerFraNavSystemdataTest {
         assertThat(utbetaling).isEqualTo(JSON_OKONOMI_OPPLYSNING_UTBETALING)
         assertThat(utbetaling1.kilde).isEqualTo(JsonKilde.SYSTEM)
         assertThatUtbetalingIsCorrectlyConverted(NAV_UTBETALING_1, utbetaling1, SoknadJsonTyper.UTBETALING_NAVYTELSE)
-    }
-
-    @Test
-    fun skalReturnereOrganisasjonOmGyldigOrganisasjonsnummer() {
-        val organisasjonsnummer = "089640782"
-        val result = utbetalingerFraNavSystemdata.mapToJsonOrganisasjon(organisasjonsnummer)
-        assertThat(result).isNotNull
-        assertThat(result!!.organisasjonsnummer).isEqualTo(organisasjonsnummer)
-    }
-
-    @Test
-    fun skalReturnereNullOmOrganisasjonsnummerInneholderTekst() {
-        val organisasjonsnummer = "o89640782"
-        val result = utbetalingerFraNavSystemdata.mapToJsonOrganisasjon(organisasjonsnummer)
-        assertThat(result).isNull()
-    }
-
-    @Test
-    fun skalReturnereNullOmForKortOrganisasjonsnummer() {
-        val nummer = "12345678"
-        val result = utbetalingerFraNavSystemdata.mapToJsonOrganisasjon(nummer)
-        assertThat(result).isNull()
-    }
-
-    @Test
-    fun skalReturnereNullOmForLangtOrganisasjonsnummer() {
-        val nummer = "1234567890"
-        val result = utbetalingerFraNavSystemdata.mapToJsonOrganisasjon(nummer)
-        assertThat(result).isNull()
-    }
-
-    @Test
-    fun skalReturnereOrganisasjonUtenNummerVedPersonnummer() {
-        val personnummer = "01010011111"
-        val result = utbetalingerFraNavSystemdata.mapToJsonOrganisasjon(personnummer)
-        assertThat(result).isNull()
     }
 
     private fun createJsonInternalSoknadWithUtbetalinger(): JsonInternalSoknad {

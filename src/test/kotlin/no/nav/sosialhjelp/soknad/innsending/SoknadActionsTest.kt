@@ -227,7 +227,7 @@ internal class SoknadActionsTest {
     }
 
     @Test
-    fun sendSoknadTilKommuneMedDigisosApiSkalKalleDigisosApiV1Service() {
+    fun sendSoknadTilKommuneMedDigisosApiSkalKalleDigisosApiService() {
         val behandlingsId = "kommuneMedFDA"
         val soknadUnderArbeid = createSoknadUnderArbeid(EIER)
         soknadUnderArbeid.jsonInternalSoknad!!.soknad.mottaker.kommunenummer = "1234"

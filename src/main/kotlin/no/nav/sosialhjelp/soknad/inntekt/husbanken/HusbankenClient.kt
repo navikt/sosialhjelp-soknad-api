@@ -1,23 +1,18 @@
 package no.nav.sosialhjelp.soknad.inntekt.husbanken
 
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.dto.BostotteDto
-import org.slf4j.LoggerFactory.getLogger
 import org.springframework.http.HttpHeaders
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
 import org.springframework.web.reactive.function.client.bodyToMono
 import java.time.LocalDate
 
-interface HusbankenClient {
-    fun hentBostotte(token: String?, fra: LocalDate, til: LocalDate): BostotteDto?
-    fun ping()
-}
-
-class HusbankenClientImpl(
+class HusbankenClient(
     private val webClient: WebClient
-) : HusbankenClient {
+) {
 
-    override fun hentBostotte(token: String?, fra: LocalDate, til: LocalDate): BostotteDto? {
+    fun hentBostotte(token: String?, fra: LocalDate, til: LocalDate): BostotteDto? {
         return try {
             webClient.get()
                 .uri(QUERY_PARAMS, fra, til)
@@ -39,16 +34,16 @@ class HusbankenClientImpl(
         }
     }
 
-    override fun ping() {
+    fun ping() {
         webClient.get()
-            .uri { it.path("/ping").build() }
+            .uri("/ping")
             .retrieve()
             .bodyToMono<String>()
             .block()
     }
 
     companion object {
-        private val log = getLogger(HusbankenClientImpl::class.java)
+        private val log by logger()
         private const val QUERY_PARAMS = "?fra={fra}&til={til}"
     }
 }
