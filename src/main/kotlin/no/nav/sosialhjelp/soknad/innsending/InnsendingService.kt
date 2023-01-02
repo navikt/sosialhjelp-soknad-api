@@ -9,7 +9,6 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderAr
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
-import org.apache.commons.lang3.StringUtils
 import org.springframework.stereotype.Component
 
 @Component
@@ -33,7 +32,7 @@ open class InnsendingService(
     }
 
     open fun oppdaterSoknadMetadataVedSendingTilFiks(fiksforsendelseId: String?, behandlingsId: String?, eier: String?) {
-        logger.debug("Oppdaterer soknadmetadata for behandlingsid $behandlingsId og eier $eier")
+        log.debug("Oppdaterer soknadmetadata for behandlingsid $behandlingsId og eier $eier")
         val soknadMetadata = soknadMetadataRepository.hent(behandlingsId)
         soknadMetadata?.fiksForsendelseId = fiksforsendelseId
         soknadMetadataRepository.oppdater(soknadMetadata)
