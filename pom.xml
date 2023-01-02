@@ -61,8 +61,8 @@
         <token-validation.version>2.1.9</token-validation.version>
         <nimbus-jose-jwt.version>9.25.6</nimbus-jose-jwt.version>
         <ojdbc.version>19.17.0.0</ojdbc.version>
-        <flyway-core.version>9.9.0</flyway-core.version>
-        <flyway-maven-plugin.version>9.9.0</flyway-maven-plugin.version>
+        <flyway-core.version>9.10.0</flyway-core.version>
+        <flyway-maven-plugin.version>9.10.0</flyway-maven-plugin.version>
         <jackson.version>2.14.1</jackson.version>
         <jackson-databind.version>2.14.1</jackson-databind.version>
         <pdfbox.version>2.0.27</pdfbox.version>
