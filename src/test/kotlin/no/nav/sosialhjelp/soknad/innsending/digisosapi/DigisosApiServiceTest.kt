@@ -11,40 +11,38 @@ import io.mockk.verify
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknadsmottaker
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadata
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
-import no.nav.sosialhjelp.soknad.innsending.HenvendelseService
 import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
 import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
-import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import java.time.Clock
 import java.time.LocalDateTime
 
 internal class DigisosApiServiceTest {
-    private val digisosApiV1Client: DigisosApiV1Client = mockk()
     private val digisosApiV2Client: DigisosApiV2Client = mockk()
-    private val henvendelseService: HenvendelseService = mockk()
     private val soknadUnderArbeidService: SoknadUnderArbeidService = mockk()
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
+    private val soknadMetadataRepository: SoknadMetadataRepository = mockk()
     private val dokumentListeService: DokumentListeService = mockk()
     private val prometheusMetricsService: PrometheusMetricsService = mockk(relaxed = true)
-    private val mellomlagringService: MellomlagringService = mockk()
 
     private val digisosApiService = DigisosApiService(
-        digisosApiV1Client,
         digisosApiV2Client,
-        henvendelseService,
         soknadUnderArbeidService,
         soknadUnderArbeidRepository,
+        soknadMetadataRepository,
         dokumentListeService,
         prometheusMetricsService,
-        mellomlagringService
+        Clock.systemDefaultZone()
     )
 
     @BeforeEach
@@ -53,7 +51,6 @@ internal class DigisosApiServiceTest {
 
         mockkObject(MiljoUtils)
         every { MiljoUtils.isNonProduction() } returns true
-        every { mellomlagringService.erMellomlagringEnabledOgSoknadSkalSendesMedDigisosApi(any()) } returns false
     }
 
     @AfterEach
@@ -90,10 +87,11 @@ internal class DigisosApiServiceTest {
 
         val soknadUnderArbeid = createSoknadUnderArbeid("12345678910")
 
-        every { dokumentListeService.lagDokumentListe(any()) } returns emptyList()
-        every { digisosApiV1Client.krypterOgLastOppFiler(any(), any(), any(), any(), any(), any(), any()) } returns "digisosid"
+        every { dokumentListeService.getFilOpplastingList(any()) } returns emptyList()
+        every { digisosApiV2Client.krypterOgLastOppFiler(any(), any(), any(), any(), any(), any(), any()) } returns "digisosid"
         every { soknadUnderArbeidService.settInnsendingstidspunktPaSoknad(any()) } just runs
-        every { henvendelseService.oppdaterMetadataVedAvslutningAvSoknad(any(), any(), any(), any()) } just runs
+        every { soknadMetadataRepository.hent(any()) } returns createSoknadMetadata()
+        every { soknadMetadataRepository.oppdater(any()) } just runs
         every { soknadUnderArbeidRepository.slettSoknad(any(), any()) } just runs
 
         digisosApiService.sendSoknad(soknadUnderArbeid, "token", "0301")
@@ -111,6 +109,16 @@ internal class DigisosApiServiceTest {
             eier = eier,
             jsonInternalSoknad = createEmptyJsonInternalSoknad(eier),
             status = SoknadUnderArbeidStatus.UNDER_ARBEID,
+            opprettetDato = LocalDateTime.now(),
+            sistEndretDato = LocalDateTime.now()
+        )
+    }
+
+    private fun createSoknadMetadata(): SoknadMetadata {
+        return SoknadMetadata(
+            id = 1L,
+            behandlingsId = "behandlingsid",
+            fnr = "12345678910",
             opprettetDato = LocalDateTime.now(),
             sistEndretDato = LocalDateTime.now()
         )

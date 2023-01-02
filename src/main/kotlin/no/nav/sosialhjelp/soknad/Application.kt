@@ -7,10 +7,6 @@ import org.springframework.boot.builder.SpringApplicationBuilder
 @SpringBootApplication
 open class Application {
 
-    fun configure(builder: SpringApplicationBuilder): SpringApplicationBuilder {
-        return configureApplication(builder)
-    }
-
     companion object {
         @JvmStatic
         fun main(args: Array<String>) {

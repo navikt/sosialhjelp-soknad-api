@@ -116,7 +116,7 @@ internal class InnsendingServiceTest {
             orgnr = ORGNR_METADATA,
             navEnhet = NAVENHETSNAVN_METADATA,
             fiksForsendelseId = FIKSFORSENDELSEID,
-            opprettetDato = LocalDateTime.now(),
+            opprettetDato = OPPRETTET_DATO,
             sistEndretDato = SIST_ENDRET_DATO
         )
     }
@@ -125,7 +125,6 @@ internal class InnsendingServiceTest {
         private const val SOKNAD_UNDER_ARBEID_ID = 1L
         private const val SENDT_SOKNAD_ID = 2L
         private const val EIER = "12345678910"
-        private val VEDLEGGTYPE = OpplastetVedleggType("bostotte|annetboutgift")
         private const val BEHANDLINGSID = "1100001L"
         private const val TILKNYTTET_BEHANDLINGSID = "1100002K"
         private const val FIKSFORSENDELSEID = "12345"

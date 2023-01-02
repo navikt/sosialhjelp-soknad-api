@@ -19,9 +19,8 @@ open class BatchSendtSoknadRepositoryJdbc(
         val parameters = MapSqlParameterSource("ids", behandlingsIdList)
         return namedParameterJdbcTemplate.query(
             "select * from SENDT_SOKNAD where BEHANDLINGSID IN (:ids)",
-            parameters,
-            { resultSet: ResultSet, _: Int -> resultSet.getLong("sendt_soknad_id") }
-        )
+            parameters
+        ) { resultSet: ResultSet, _: Int -> resultSet.getLong("sendt_soknad_id") }
     }
 
     override fun slettSendtSoknader(sendtSoknadIdList: List<Long>) {

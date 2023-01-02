@@ -8,13 +8,12 @@ import org.springframework.stereotype.Component
 
 @Component
 open class ArbeidsforholdService(
-    private val arbeidsforholdClient: ArbeidsforholdClient,
+    private val aaregClient: AaregClient,
     private val organisasjonService: OrganisasjonService
 ) {
 
     open fun hentArbeidsforhold(fnr: String): List<Arbeidsforhold>? {
-        val arbeidsforholdList = arbeidsforholdClient.finnArbeidsforholdForArbeidstaker(fnr)
-        return arbeidsforholdList
+        return aaregClient.finnArbeidsforholdForArbeidstaker(fnr)
             ?.map { it.toDomain(organisasjonService) }
             .also { log.info("Hentet ${it?.size ?: 0} arbeidsforhold fra aareg") }
     }

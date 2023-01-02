@@ -49,7 +49,7 @@ internal class NavUtbetalingerServiceTest {
         assertThat(navUtbetalinger).hasSize(1)
         val navUtbetaling = navUtbetalinger!![0]
         assertThat(navUtbetaling.type).isEqualTo("navytelse")
-        assertThat(navUtbetaling.netto).isEqualTo(1999.0)
+        assertThat(navUtbetaling.netto).isEqualTo(999.5)
         assertThat(navUtbetaling.brutto).isEqualTo(111.22)
         assertThat(navUtbetaling.skattetrekk).isEqualTo(1000.5)
         assertThat(navUtbetaling.andreTrekk).isEqualTo(1000.0)
@@ -80,7 +80,7 @@ internal class NavUtbetalingerServiceTest {
         assertThat(navUtbetalinger).hasSize(1)
         val navUtbetaling = navUtbetalinger!![0]
         assertThat(navUtbetaling.type).isEqualTo("navytelse")
-        assertThat(navUtbetaling.netto).isEqualTo(1999.0)
+        assertThat(navUtbetaling.netto).isEqualTo(999.5)
         assertThat(navUtbetaling.brutto).isEqualTo(111.22)
         assertThat(navUtbetaling.skattetrekk).isEqualTo(1000.5)
         assertThat(navUtbetaling.andreTrekk).isEqualTo(1000.0)
@@ -169,6 +169,11 @@ internal class NavUtbetalingerServiceTest {
             listOf(utbetaling),
             false
         )
+//        Må være med pga skyggeproduksjon ny tjeneste
+        every { navUtbetalingerClient.getUtbetalingerSiste40Dager(any()) } returns UtbetalDataDto(
+            listOf(lagUtbetalingResponse()),
+            false
+        )
 
         val navUtbetalinger = navUtbetalingerService.getUtbetalingerSiste40Dager("ident")
 
@@ -198,7 +203,7 @@ internal class NavUtbetalingerServiceTest {
 
         val utbetalingJsonString = """
             {
-              "posteringsdato": "2022-10-17",
+              "posteringsdato": "$utbetaltDato",
               "utbetaltTil": {
                 "aktoertype": "PERSON",
                 "ident": "string",
@@ -262,7 +267,7 @@ internal class NavUtbetalingerServiceTest {
             }  
         """
 
-        return mapper.readValue<Utbetaling>(utbetalingJsonString)
+        return mapper.readValue(utbetalingJsonString)
     }
 
     private fun lagUtbetalingUtenKomponenterResponse(): Utbetaling {
@@ -270,7 +275,7 @@ internal class NavUtbetalingerServiceTest {
 
         val utbetalingJsonString = """
             {
-              "posteringsdato": "2022-10-17",
+              "posteringsdato": "$utbetaltDato",
               "utbetaltTil": {
                 "aktoertype": "PERSON",
                 "ident": "string",
@@ -325,6 +330,6 @@ internal class NavUtbetalingerServiceTest {
             }  
         """
 
-        return mapper.readValue<Utbetaling>(utbetalingJsonString)
+        return mapper.readValue(utbetalingJsonString)
     }
 }

@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.innsending
 
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedlegg
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadata
@@ -8,7 +9,7 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderAr
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
-import org.slf4j.LoggerFactory
+import org.apache.commons.lang3.StringUtils
 import org.springframework.stereotype.Component
 
 @Component
@@ -26,7 +27,7 @@ open class InnsendingService(
     }
 
     open fun finnOgSlettSoknadUnderArbeidVedSendingTilFiks(behandlingsId: String, eier: String) {
-        logger.debug("Henter søknad under arbeid for behandlingsid $behandlingsId og eier $eier")
+        log.debug("Henter søknad under arbeid for behandlingsid $behandlingsId")
         soknadUnderArbeidRepository.hentSoknadNullable(behandlingsId, eier)
             ?.let { soknadUnderArbeidRepository.slettSoknad(it, eier) }
     }
@@ -60,6 +61,6 @@ open class InnsendingService(
     }
 
     companion object {
-        private val logger = LoggerFactory.getLogger(InnsendingService::class.java)
+        private val log by logger()
     }
 }

@@ -6,6 +6,7 @@ import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
+import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import no.nav.sosialhjelp.soknad.vedlegg.dto.FilFrontend
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.OpplastingException
@@ -39,7 +40,8 @@ open class OpplastetVedleggRessurs(
     private val opplastetVedleggService: OpplastetVedleggService,
     private val tilgangskontroll: Tilgangskontroll,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
-    private val mellomlagringService: MellomlagringService
+    private val mellomlagringService: MellomlagringService,
+    private val soknadUnderArbeidService: SoknadUnderArbeidService
 ) {
 
     @GET
@@ -79,7 +81,8 @@ open class OpplastetVedleggRessurs(
             return Response.ok(it.data).type(mimeType).build()
         }
 
-        if (mellomlagringService.erMellomlagringEnabledOgSoknadSkalSendesMedDigisosApi(soknadUnderArbeid)) {
+        val skalBrukeMellomlagring = soknadUnderArbeidService.skalSoknadSendesMedDigisosApi(soknadUnderArbeid)
+        if (skalBrukeMellomlagring) {
             log.info("Forsøker å hente vedlegg $vedleggId fra mellomlagring hos KS")
             mellomlagringService.getVedlegg(behandlingsId, vedleggId)?.let {
                 response.setHeader("Content-Disposition", "attachment; filename=\"${it.filnavn}\"")
@@ -114,9 +117,8 @@ open class OpplastetVedleggRessurs(
 
         val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
 
-        // bruk KS mellomlagringstjeneste hvis featuren er enablet og søknad skal sendes med DigisosApi
-        return if (mellomlagringService.erMellomlagringEnabledOgSoknadSkalSendesMedDigisosApi(soknadUnderArbeid)) {
-            log.info("Forsøker å laste opp vedlegg til mellomlagring hos KS")
+        val skalBrukeMellomlagring = soknadUnderArbeidService.skalSoknadSendesMedDigisosApi(soknadUnderArbeid)
+        return if (skalBrukeMellomlagring) {
             val mellomlagretVedlegg = mellomlagringService.uploadVedlegg(behandlingsId, vedleggstype, data, filnavn)
             FilFrontend(mellomlagretVedlegg.filnavn, mellomlagretVedlegg.filId)
         } else {
@@ -135,12 +137,12 @@ open class OpplastetVedleggRessurs(
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
-        if (!mellomlagringService.erMellomlagringEnabledOgSoknadSkalSendesMedDigisosApi(soknadUnderArbeid)) {
-            opplastetVedleggService.deleteVedleggAndUpdateVedleggstatus(behandlingsId, vedleggId)
-        } else {
-            // forsøk sletting via KS mellomlagringstjeneste hvis feature er enablet og sletting fra DB ikke ble utført
+        val skalBrukeMellomlagring = soknadUnderArbeidService.skalSoknadSendesMedDigisosApi(soknadUnderArbeid)
+        if (skalBrukeMellomlagring) {
             log.info("Sletter vedlegg $vedleggId fra KS mellomlagring")
             mellomlagringService.deleteVedleggAndUpdateVedleggstatus(behandlingsId, vedleggId)
+        } else {
+            opplastetVedleggService.deleteVedleggAndUpdateVedleggstatus(behandlingsId, vedleggId)
         }
     }
 

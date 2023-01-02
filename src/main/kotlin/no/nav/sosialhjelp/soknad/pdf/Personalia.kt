@@ -44,27 +44,14 @@ object Personalia {
 
         jsonPersonalia.folkeregistrertAdresse?.let {
             pdf.skrivTekst(pdfUtils.getTekst("kontakt.system.oppholdsadresse.folkeregistrertAdresse"))
-            val folkeregistrertAdresseTekst = when (it.type) {
-                JsonAdresse.Type.GATEADRESSE -> jsonGateAdresseToString(it as JsonGateAdresse)
-                JsonAdresse.Type.MATRIKKELADRESSE -> jsonMatrikkelAdresseToString(pdfUtils, it as JsonMatrikkelAdresse)
-                JsonAdresse.Type.POSTBOKS -> jsonPostboksAdresseToString(pdfUtils, it as JsonPostboksAdresse)
-                JsonAdresse.Type.USTRUKTURERT -> jsonUstrukturertAdresseToString(it as JsonUstrukturertAdresse)
-                else -> null
-            }
+            val folkeregistrertAdresseTekst = adresseTilTekst(it, pdfUtils)
             pdf.skrivTekst(folkeregistrertAdresseTekst)
             pdf.addBlankLine()
         }
 
         jsonPersonalia.oppholdsadresse?.let {
             pdf.skrivTekst(pdfUtils.getTekst("soknadsmottaker.infotekst.tekst"))
-
-            val oppholdsAdresseTekst = when (it.type) {
-                JsonAdresse.Type.GATEADRESSE -> jsonGateAdresseToString(it as JsonGateAdresse)
-                JsonAdresse.Type.MATRIKKELADRESSE -> jsonMatrikkelAdresseToString(pdfUtils, it as JsonMatrikkelAdresse)
-                JsonAdresse.Type.POSTBOKS -> jsonPostboksAdresseToString(pdfUtils, it as JsonPostboksAdresse)
-                JsonAdresse.Type.USTRUKTURERT -> jsonUstrukturertAdresseToString(it as JsonUstrukturertAdresse)
-                else -> null
-            }
+            val oppholdsAdresseTekst = adresseTilTekst(it, pdfUtils)
             pdf.skrivTekst(oppholdsAdresseTekst)
             pdf.addBlankLine()
         }
@@ -164,6 +151,17 @@ object Personalia {
             }
         }
         pdf.addBlankLine()
+    }
+
+    private fun adresseTilTekst(
+        it: JsonAdresse,
+        pdfUtils: PdfUtils,
+    ) = when (it.type) {
+        JsonAdresse.Type.GATEADRESSE -> jsonGateAdresseToString(it as JsonGateAdresse)
+        JsonAdresse.Type.MATRIKKELADRESSE -> jsonMatrikkelAdresseToString(pdfUtils, it as JsonMatrikkelAdresse)
+        JsonAdresse.Type.POSTBOKS -> jsonPostboksAdresseToString(pdfUtils, it as JsonPostboksAdresse)
+        JsonAdresse.Type.USTRUKTURERT -> jsonUstrukturertAdresseToString(it as JsonUstrukturertAdresse)
+        else -> null
     }
 
     private fun leggTilUtvidetInfoAdresse(pdf: PdfGenerator, pdfUtils: PdfUtils, jsonAdresse: JsonAdresse) {

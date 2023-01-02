@@ -2,32 +2,28 @@ package no.nav.sosialhjelp.soknad.organisasjon
 
 import no.nav.sosialhjelp.soknad.app.Constants.HEADER_CALL_ID
 import no.nav.sosialhjelp.soknad.app.Constants.HEADER_CONSUMER_ID
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.client.config.unproxiedWebClientBuilder
 import no.nav.sosialhjelp.soknad.app.exceptions.TjenesteUtilgjengeligException
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.MDC_CALL_ID
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.getFromMDC
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getConsumerId
 import no.nav.sosialhjelp.soknad.organisasjon.dto.OrganisasjonNoekkelinfoDto
-import org.slf4j.LoggerFactory.getLogger
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
 import org.springframework.web.reactive.function.client.bodyToMono
 
-interface OrganisasjonClient {
-    fun hentOrganisasjonNoekkelinfo(orgnr: String): OrganisasjonNoekkelinfoDto?
-}
-
 @Component
-class OrganisasjonClientImpl(
+class OrganisasjonClient(
     @Value("\${ereg_url}") private val eregUrl: String,
     webClientBuilder: WebClient.Builder,
-) : OrganisasjonClient {
+) {
 
     private val webClient = unproxiedWebClientBuilder(webClientBuilder).build()
 
-    override fun hentOrganisasjonNoekkelinfo(orgnr: String): OrganisasjonNoekkelinfoDto? {
+    fun hentOrganisasjonNoekkelinfo(orgnr: String): OrganisasjonNoekkelinfoDto? {
         return try {
             webClient.get()
                 .uri("$eregUrl/v1/organisasjon/{orgnr}/noekkelinfo", orgnr)
@@ -55,6 +51,6 @@ class OrganisasjonClientImpl(
     }
 
     companion object {
-        private val log = getLogger(OrganisasjonClientImpl::class.java)
+        private val log by logger()
     }
 }

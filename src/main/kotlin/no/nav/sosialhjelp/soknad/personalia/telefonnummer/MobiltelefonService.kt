@@ -1,19 +1,15 @@
 package no.nav.sosialhjelp.soknad.personalia.telefonnummer
 
-import org.slf4j.LoggerFactory.getLogger
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import org.springframework.stereotype.Component
 
-interface MobiltelefonService {
-    fun hent(ident: String): String?
-}
-
 @Component
-class MobiltelefonServiceImpl(
-    private val krrProxyClient: KrrProxyClient,
-) : MobiltelefonService {
+class MobiltelefonService(
+    private val krrService: KrrService,
+) {
 
-    override fun hent(ident: String): String? {
-        val digitalKontaktinformasjon = krrProxyClient.getDigitalKontaktinformasjon(ident)
+    fun hent(ident: String): String? {
+        val digitalKontaktinformasjon = krrService.getDigitalKontaktinformasjon(ident)
         if (digitalKontaktinformasjon == null) {
             log.warn("Krr - response er null")
             return null
@@ -26,6 +22,6 @@ class MobiltelefonServiceImpl(
     }
 
     companion object {
-        private val log = getLogger(MobiltelefonServiceImpl::class.java)
+        private val log by logger()
     }
 }

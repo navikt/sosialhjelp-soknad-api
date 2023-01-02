@@ -14,7 +14,7 @@ class PdfUtils(private val navMessageSource: NavMessageSource) {
     fun skrivInfotekst(pdf: PdfGenerator, vararg keys: String?) {
         pdf.skrivTekstBold(getTekst("infotekst.oppsummering.tittel"))
         for (key in keys) {
-            if (key != null && key.isNotEmpty()) {
+            if (!key.isNullOrEmpty()) {
                 pdf.skrivTekst(getTekst(key))
             }
         }

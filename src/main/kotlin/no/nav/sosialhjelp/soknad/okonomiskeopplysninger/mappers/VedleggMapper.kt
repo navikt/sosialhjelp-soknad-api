@@ -57,7 +57,7 @@ object VedleggMapper {
         mellomlagredeVedlegg: List<MellomlagretVedleggMetadata>,
         behandlingsId: String
     ): VedleggFrontend {
-        val filer = mapJsonFilerAndMellomlagredVedleggToFilerFrontend(vedlegg.filer, mellomlagredeVedlegg, behandlingsId)
+        val filer = mapJsonFilerAndMellomlagredVedleggToFilerFrontend(vedlegg, mellomlagredeVedlegg, behandlingsId)
         val vedleggType = getSammensattNavn(vedlegg)
         val rader = getRader(jsonOkonomi, vedleggType)
         return VedleggFrontend(
@@ -219,10 +219,11 @@ object VedleggMapper {
     }
 
     private fun mapJsonFilerAndMellomlagredVedleggToFilerFrontend(
-        filer: List<JsonFiler>,
+        jsonVedlegg: JsonVedlegg,
         mellomlagredeVedlegg: List<MellomlagretVedleggMetadata>,
         behandlingsId: String
     ): List<FilFrontend> {
+        val filer = jsonVedlegg.filer
         if (behandlingsId in behandlingsIdsToPass) {
             log.info("Slipper gjennom behandlingsId $behandlingsId")
             return filer
@@ -237,7 +238,7 @@ object VedleggMapper {
                 mellomlagredeVedlegg
                     .firstOrNull { it.filnavn == fil.filnavn }
                     ?.let { FilFrontend(fil.filnavn, it.filId) }
-                    ?: throw IllegalStateException("Vedlegget finnes ikke")
+                    ?: throw IllegalStateException("Vedlegget finnes ikke. vedlegg type=${jsonVedlegg.type} tilleggsinfo=${jsonVedlegg.tilleggsinfo} status=${jsonVedlegg.status}")
             }
     }
 

@@ -65,7 +65,7 @@ object VedleggUtils {
         }
 
         filnavn += "-" + uuid.split("-").toTypedArray()[0]
-        filnavn += if (fileExtension != null && fileExtension.isNotEmpty() && erTikaOgFileExtensionEnige(fileExtension, fileType)) {
+        filnavn += if (!fileExtension.isNullOrEmpty() && erTikaOgFileExtensionEnige(fileExtension, fileType)) {
             fileExtension
         } else {
             log.info("Opplastet vedlegg mangler fil extension -> setter fil extension lik validert filtype = ${fileType.extension}")

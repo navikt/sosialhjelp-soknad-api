@@ -18,12 +18,12 @@ import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.app.subjecthandler.StaticSubjectHandlerImpl
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.app.systemdata.SystemdataUpdater
-import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.VedleggMetadataListe
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadata
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.Vedleggstatus
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
-import no.nav.sosialhjelp.soknad.ettersending.EttersendingService
 import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.innsending.svarut.OppgaveHandterer
 import no.nav.sosialhjelp.soknad.inntekt.husbanken.BostotteSystemdata
@@ -34,15 +34,15 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import java.time.Clock
 import java.time.LocalDateTime
 
 internal class SoknadServiceTest {
 
-    private val henvendelseService: HenvendelseService = mockk()
     private val oppgaveHandterer: OppgaveHandterer = mockk()
     private val systemdataUpdater: SystemdataUpdater = mockk()
     private val innsendingService: InnsendingService = mockk()
-    private val ettersendingService: EttersendingService = mockk()
+    private val soknadMetadataRepository: SoknadMetadataRepository = mockk()
     private val bostotteSystemdata: BostotteSystemdata = mockk()
     private val skatteetatenSystemdata: SkatteetatenSystemdata = mockk()
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
@@ -50,16 +50,16 @@ internal class SoknadServiceTest {
     private val prometheusMetricsService: PrometheusMetricsService = mockk(relaxed = true)
 
     private val soknadService = SoknadService(
-        henvendelseService,
         oppgaveHandterer,
         innsendingService,
-        ettersendingService,
+        soknadMetadataRepository,
         soknadUnderArbeidRepository,
         systemdataUpdater,
         bostotteSystemdata,
         skatteetatenSystemdata,
         mellomlagringService,
-        prometheusMetricsService
+        prometheusMetricsService,
+        Clock.systemDefaultZone()
     )
 
     @BeforeEach
@@ -82,15 +82,15 @@ internal class SoknadServiceTest {
 
     @Test
     fun skalStarteSoknad() {
-        every { henvendelseService.startSoknad(any()) } returns "123"
+        val soknadMetadata: SoknadMetadata = mockk()
+        every { soknadMetadataRepository.hentNesteId() } returns 999_999L
+        every { soknadMetadataRepository.opprett(any()) } just runs
+        every { soknadMetadata.behandlingsId } returns "123"
 
         val soknadUnderArbeidSlot = slot<SoknadUnderArbeid>()
         every { soknadUnderArbeidRepository.opprettSoknad(capture(soknadUnderArbeidSlot), any()) } returns 123L
 
         soknadService.startSoknad("")
-
-        val bruker = SubjectHandlerUtils.getUserIdFromToken()
-        verify { henvendelseService.startSoknad(bruker) }
 
         val bekreftelser = soknadUnderArbeidSlot.captured.jsonInternalSoknad!!.soknad.data.okonomi.opplysninger.bekreftelse
         assertThat(bekreftelser.any { harBekreftelseFor(it, UTBETALING_SKATTEETATEN_SAMTYKKE) }).isFalse
@@ -132,16 +132,9 @@ internal class SoknadServiceTest {
         soknadUnderArbeid.jsonInternalSoknad!!.vedlegg = JsonVedleggSpesifikasjon().withVedlegg(jsonVedlegg)
         every { soknadUnderArbeidRepository.hentSoknad(behandlingsId, any()) } returns soknadUnderArbeid
 
-        val soknadUnderArbeidSlot = slot<SoknadUnderArbeid>()
-        val vedleggSlot = slot<VedleggMetadataListe>()
-        every {
-            henvendelseService.oppdaterMetadataVedAvslutningAvSoknad(
-                behandlingsId,
-                capture(vedleggSlot),
-                capture(soknadUnderArbeidSlot),
-                false
-            )
-        } just runs
+        val soknadMetadata = createSoknadMetadata()
+        every { soknadMetadataRepository.hent(any()) } returns soknadMetadata
+        every { soknadMetadataRepository.oppdater(any()) } just runs
 
         every { oppgaveHandterer.leggTilOppgave(any(), any()) } just runs
         every { innsendingService.oppdaterSoknadUnderArbeid(any()) } just runs
@@ -150,17 +143,14 @@ internal class SoknadServiceTest {
 
         verify { oppgaveHandterer.leggTilOppgave(behandlingsId, any()) }
 
-        val capturedSoknadUnderArbeid = soknadUnderArbeidSlot.captured
-        assertThat(capturedSoknadUnderArbeid).isEqualTo(soknadUnderArbeid)
-
-        val capturedVedlegg = vedleggSlot.captured
-        assertThat(capturedVedlegg.vedleggListe).hasSize(2)
-        assertThat(capturedVedlegg.vedleggListe[0].filnavn).isEqualTo(testType)
-        assertThat(capturedVedlegg.vedleggListe[0].skjema).isEqualTo(testType)
-        assertThat(capturedVedlegg.vedleggListe[0].tillegg).isEqualTo(testTilleggsinfo)
-        assertThat(capturedVedlegg.vedleggListe[1].filnavn).isEqualTo(testType2)
-        assertThat(capturedVedlegg.vedleggListe[1].skjema).isEqualTo(testType2)
-        assertThat(capturedVedlegg.vedleggListe[1].tillegg).isEqualTo(testTilleggsinfo2)
+        val vedlegg = soknadMetadata.vedlegg
+        assertThat(vedlegg?.vedleggListe).hasSize(2)
+        assertThat(vedlegg?.vedleggListe?.get(0)?.filnavn).isEqualTo(testType)
+        assertThat(vedlegg?.vedleggListe?.get(0)?.skjema).isEqualTo(testType)
+        assertThat(vedlegg?.vedleggListe?.get(0)?.tillegg).isEqualTo(testTilleggsinfo)
+        assertThat(vedlegg?.vedleggListe?.get(1)?.filnavn).isEqualTo(testType2)
+        assertThat(vedlegg?.vedleggListe?.get(1)?.skjema).isEqualTo(testType2)
+        assertThat(vedlegg?.vedleggListe?.get(1)?.tillegg).isEqualTo(testTilleggsinfo2)
     }
 
     @Test
@@ -176,12 +166,22 @@ internal class SoknadServiceTest {
         )
 
         every { soknadUnderArbeidRepository.slettSoknad(any(), any()) } just runs
-        every { henvendelseService.avbrytSoknad(any(), any()) } just runs
+        every { soknadMetadataRepository.hent(any()) } returns createSoknadMetadata()
+        every { soknadMetadataRepository.oppdater(any()) } just runs
 
         soknadService.avbrytSoknad(BEHANDLINGSID)
 
-        verify { henvendelseService.avbrytSoknad(BEHANDLINGSID, false) }
         verify { soknadUnderArbeidRepository.slettSoknad(any(), any()) }
+    }
+
+    private fun createSoknadMetadata(): SoknadMetadata {
+        return SoknadMetadata(
+            id = 0L,
+            behandlingsId = BEHANDLINGSID,
+            fnr = EIER,
+            opprettetDato = LocalDateTime.now(),
+            sistEndretDato = LocalDateTime.now()
+        )
     }
 
     companion object {
