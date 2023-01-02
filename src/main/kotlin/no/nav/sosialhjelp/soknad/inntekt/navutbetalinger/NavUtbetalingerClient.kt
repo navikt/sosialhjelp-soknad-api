@@ -70,6 +70,7 @@ class NavUtbetalingerClientImpl(
                 .block()
 
             log.info("Hentet ${response?.size} utbetalinger fra utbetaldata tjeneste")
+            log.info("Utbetlinger fra utbetaldata ${response?.toString()}")
             val utbetalDataDto = UtbetalDataDto(response, false)
             lagreTilCache(ident, utbetalDataDto)
             return utbetalDataDto
