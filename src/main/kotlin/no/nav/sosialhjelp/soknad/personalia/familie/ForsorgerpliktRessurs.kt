@@ -30,25 +30,26 @@ import no.nav.sosialhjelp.soknad.personalia.familie.dto.ForsorgerpliktFrontend
 import no.nav.sosialhjelp.soknad.personalia.familie.dto.NavnFrontend
 import no.nav.sosialhjelp.soknad.tekster.TextService
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
-import org.springframework.stereotype.Controller
-import javax.ws.rs.GET
-import javax.ws.rs.PUT
-import javax.ws.rs.Path
-import javax.ws.rs.PathParam
-import javax.ws.rs.Produces
-import javax.ws.rs.core.MediaType
+import org.springframework.http.MediaType
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PutMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
 
-@Controller
+@RestController
 @ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4])
-@Path("/soknader/{behandlingsId}/familie/forsorgerplikt")
-@Produces(MediaType.APPLICATION_JSON)
+@RequestMapping("/soknader/{behandlingsId}/familie/forsorgerplikt", produces = [MediaType.APPLICATION_JSON_VALUE])
 open class ForsorgerpliktRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val textService: TextService,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository
 ) {
-    @GET
-    open fun hentForsorgerplikt(@PathParam("behandlingsId") behandlingsId: String): ForsorgerpliktFrontend {
+    @GetMapping
+    open fun hentForsorgerplikt(
+        @PathVariable("behandlingsId") behandlingsId: String
+    ): ForsorgerpliktFrontend {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).jsonInternalSoknad
@@ -58,10 +59,10 @@ open class ForsorgerpliktRessurs(
         return mapToForsorgerpliktFrontend(jsonForsorgerplikt)
     }
 
-    @PUT
+    @PutMapping
     open fun updateForsorgerplikt(
-        @PathParam("behandlingsId") behandlingsId: String,
-        forsorgerpliktFrontend: ForsorgerpliktFrontend
+        @PathVariable("behandlingsId") behandlingsId: String,
+        @RequestBody forsorgerpliktFrontend: ForsorgerpliktFrontend
     ) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         val eier = SubjectHandlerUtils.getUserIdFromToken()
