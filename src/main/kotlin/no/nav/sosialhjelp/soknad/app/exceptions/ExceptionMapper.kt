@@ -49,7 +49,7 @@ class ExceptionMapper(
                     .body(Feilmelding(e.id, "Ikke tilgang til ressurs"))
             }
             is IkkeFunnetException -> {
-                log.warn("Fant ikke ressurs", e)
+                log.warn(e.message, e)
                 ResponseEntity.status(HttpStatus.NOT_FOUND)
             }
             is EttersendelseSendtForSentException -> {
