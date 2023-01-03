@@ -10,6 +10,7 @@ import no.nav.sosialhjelp.soknad.auth.maskinporten.MaskinportenClient
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders.ACCEPT
 import org.springframework.http.HttpHeaders.AUTHORIZATION
+import org.springframework.http.MediaType
 import org.springframework.http.client.reactive.ReactorClientHttpConnector
 import org.springframework.http.codec.json.Jackson2JsonDecoder
 import org.springframework.http.codec.json.Jackson2JsonEncoder
@@ -23,7 +24,6 @@ import java.security.cert.CertificateException
 import java.security.cert.CertificateFactory
 import java.security.cert.X509Certificate
 import java.time.Duration
-import javax.ws.rs.core.MediaType
 
 @Component
 class DokumentlagerClient(
@@ -58,7 +58,7 @@ class DokumentlagerClient(
 
         val publicKey = fiksWebClient.get()
             .uri("/digisos/api/v1/dokumentlager-public-key")
-            .header(ACCEPT, MediaType.WILDCARD)
+            .header(ACCEPT, MediaType.ALL_VALUE)
             .header(HEADER_INTEGRASJON_ID, integrasjonsidFiks)
             .header(HEADER_INTEGRASJON_PASSORD, integrasjonpassordFiks)
             .header(AUTHORIZATION, BEARER + maskinportenClient.getToken())

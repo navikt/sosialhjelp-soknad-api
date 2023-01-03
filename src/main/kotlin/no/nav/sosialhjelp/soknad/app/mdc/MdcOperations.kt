@@ -31,6 +31,12 @@ object MdcOperations {
         MDC.remove(key)
     }
 
+    fun clearMDC() {
+        MDC.remove(MDC_CALL_ID)
+        MDC.remove(MDC_BEHANDLINGS_ID)
+        MDC.remove(MDC_CONSUMER_ID)
+    }
+
     private val randomNumber: Int
         get() = random.nextInt(Int.MAX_VALUE)
     private val systemTime: Long

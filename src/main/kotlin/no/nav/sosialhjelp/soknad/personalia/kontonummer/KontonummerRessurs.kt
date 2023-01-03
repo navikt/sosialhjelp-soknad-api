@@ -6,25 +6,26 @@ import no.nav.sosialhjelp.soknad.app.Constants
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
-import org.springframework.stereotype.Controller
-import javax.ws.rs.GET
-import javax.ws.rs.PUT
-import javax.ws.rs.Path
-import javax.ws.rs.PathParam
-import javax.ws.rs.Produces
-import javax.ws.rs.core.MediaType
+import org.springframework.http.MediaType
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PutMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
 
-@Controller
+@RestController
 @ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4])
-@Path("/soknader/{behandlingsId}/personalia/kontonummer")
-@Produces(MediaType.APPLICATION_JSON)
+@RequestMapping("/soknader/{behandlingsId}/personalia/kontonummer", produces = [MediaType.APPLICATION_JSON_VALUE])
 open class KontonummerRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val kontonummerSystemdata: KontonummerSystemdata
 ) {
-    @GET
-    open fun hentKontonummer(@PathParam("behandlingsId") behandlingsId: String): KontonummerFrontend {
+    @GetMapping
+    open fun hentKontonummer(
+        @PathVariable("behandlingsId") behandlingsId: String
+    ): KontonummerFrontend {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
@@ -44,10 +45,10 @@ open class KontonummerRessurs(
         )
     }
 
-    @PUT
+    @PutMapping
     open fun updateKontonummer(
-        @PathParam("behandlingsId") behandlingsId: String,
-        kontonummerFrontend: KontonummerFrontend
+        @PathVariable("behandlingsId") behandlingsId: String,
+        @RequestBody kontonummerFrontend: KontonummerFrontend
     ) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         val eier = SubjectHandlerUtils.getUserIdFromToken()

@@ -17,7 +17,6 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import javax.ws.rs.ServiceUnavailableException
 
 internal class NavEnhetServiceTest {
 
@@ -116,7 +115,7 @@ internal class NavEnhetServiceTest {
         every { MiljoUtils.isNonProduction() } returns false
         every { redisService.getString(any()) } returns LocalDateTime.now().minusMinutes(60).minusSeconds(1).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
         every { redisService.get(any(), any()) } returns navEnhetDto
-        every { norgClient.hentNavEnhetForGeografiskTilknytning(GT) } throws TjenesteUtilgjengeligException("norg feiler", ServiceUnavailableException())
+        every { norgClient.hentNavEnhetForGeografiskTilknytning(GT) } throws TjenesteUtilgjengeligException("norg feiler", RuntimeException())
         val navEnhet = navEnhetService.getEnhetForGt(GT)
         assertThat(navEnhet!!.sosialOrgNr).isEqualTo(ORGNUMMER_PROD)
         verify(exactly = 1) { norgClient.hentNavEnhetForGeografiskTilknytning(GT) }
@@ -128,7 +127,7 @@ internal class NavEnhetServiceTest {
     fun skalKasteFeilHvisConsumerFeilerOgCacheErExpired() {
         every { redisService.getString(any()) } returns LocalDateTime.now().minusMinutes(60).minusSeconds(1).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
         every { redisService.get(any(), any()) } returns null
-        every { norgClient.hentNavEnhetForGeografiskTilknytning(GT) } throws TjenesteUtilgjengeligException("norg feiler", ServiceUnavailableException())
+        every { norgClient.hentNavEnhetForGeografiskTilknytning(GT) } throws TjenesteUtilgjengeligException("norg feiler", RuntimeException())
 
         assertThatExceptionOfType(TjenesteUtilgjengeligException::class.java)
             .isThrownBy { navEnhetService.getEnhetForGt(GT) }

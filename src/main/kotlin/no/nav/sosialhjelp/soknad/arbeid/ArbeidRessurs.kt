@@ -10,24 +10,25 @@ import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import org.apache.commons.lang3.StringUtils
-import org.springframework.stereotype.Controller
-import javax.ws.rs.GET
-import javax.ws.rs.PUT
-import javax.ws.rs.Path
-import javax.ws.rs.PathParam
-import javax.ws.rs.Produces
-import javax.ws.rs.core.MediaType
+import org.springframework.http.MediaType
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PutMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
 
-@Controller
+@RestController
 @ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4])
-@Path("/soknader/{behandlingsId}/arbeid")
-@Produces(MediaType.APPLICATION_JSON)
+@RequestMapping("/soknader/{behandlingsId}/arbeid", produces = [MediaType.APPLICATION_JSON_VALUE])
 open class ArbeidRessurs(
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val tilgangskontroll: Tilgangskontroll
 ) {
-    @GET
-    open fun hentArbeid(@PathParam("behandlingsId") behandlingsId: String): ArbeidFrontend {
+    @GetMapping
+    open fun hentArbeid(
+        @PathVariable("behandlingsId") behandlingsId: String
+    ): ArbeidFrontend {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).jsonInternalSoknad
@@ -39,8 +40,11 @@ open class ArbeidRessurs(
         return ArbeidFrontend(forhold, kommentarTilArbeidsforhold?.verdi)
     }
 
-    @PUT
-    open fun updateArbeid(@PathParam("behandlingsId") behandlingsId: String, arbeidFrontend: ArbeidFrontend) {
+    @PutMapping
+    open fun updateArbeid(
+        @PathVariable("behandlingsId") behandlingsId: String,
+        @RequestBody arbeidFrontend: ArbeidFrontend
+    ) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)

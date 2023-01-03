@@ -9,25 +9,26 @@ import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.tekster.TextService
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
-import org.springframework.stereotype.Controller
-import javax.ws.rs.GET
-import javax.ws.rs.PUT
-import javax.ws.rs.Path
-import javax.ws.rs.PathParam
-import javax.ws.rs.Produces
-import javax.ws.rs.core.MediaType
+import org.springframework.http.MediaType
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PutMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
 
-@Controller
+@RestController
 @ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4])
-@Path("/soknader/{behandlingsId}/inntekt/studielan")
-@Produces(MediaType.APPLICATION_JSON)
+@RequestMapping("/soknader/{behandlingsId}/inntekt/studielan", produces = [MediaType.APPLICATION_JSON_VALUE])
 open class StudielanRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val textService: TextService
 ) {
-    @GET
-    open fun hentStudielanBekreftelse(@PathParam("behandlingsId") behandlingsId: String): StudielanFrontend {
+    @GetMapping
+    open fun hentStudielanBekreftelse(
+        @PathVariable("behandlingsId") behandlingsId: String
+    ): StudielanFrontend {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).jsonInternalSoknad
@@ -49,8 +50,11 @@ open class StudielanRessurs(
         return StudielanFrontend(true, bekreftelse)
     }
 
-    @PUT
-    open fun updateStudielan(@PathParam("behandlingsId") behandlingsId: String, studielanFrontend: StudielanFrontend) {
+    @PutMapping
+    open fun updateStudielan(
+        @PathVariable("behandlingsId") behandlingsId: String,
+        @RequestBody studielanFrontend: StudielanFrontend
+    ) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)

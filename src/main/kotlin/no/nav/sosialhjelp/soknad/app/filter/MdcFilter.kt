@@ -5,21 +5,66 @@ import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.MDC_BEHANDLINGS_ID
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.MDC_CALL_ID
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.MDC_CONSUMER_ID
+import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.clearMDC
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.putToMDC
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
-import javax.ws.rs.container.ContainerRequestContext
-import javax.ws.rs.container.ContainerRequestFilter
-import javax.ws.rs.ext.Provider
+import org.springframework.stereotype.Component
+import org.springframework.web.filter.OncePerRequestFilter
+import javax.servlet.FilterChain
+import javax.servlet.http.HttpServletRequest
+import javax.servlet.http.HttpServletResponse
 
-@Provider
-class MdcFilter : ContainerRequestFilter {
-    override fun filter(requestContext: ContainerRequestContext) {
-        val callId = requestContext.getHeaderString(HEADER_CALL_ID) ?: MdcOperations.generateCallId()
+@Component
+class MdcFilter : OncePerRequestFilter() {
+
+    override fun doFilterInternal(
+        request: HttpServletRequest,
+        response: HttpServletResponse,
+        filterChain: FilterChain,
+    ) {
+        val callId = request.getHeader(HEADER_CALL_ID) ?: MdcOperations.generateCallId()
         val consumerId = SubjectHandlerUtils.getConsumerId()
-        val behandlingsId = requestContext.uriInfo.pathParameters.getFirst("behandlingsId")
+        val behandlingsId = getBehandlingsId(request)
 
         putToMDC(MDC_CALL_ID, callId)
         putToMDC(MDC_CONSUMER_ID, consumerId)
-        putToMDC(MDC_BEHANDLINGS_ID, behandlingsId)
+        behandlingsId?.let { putToMDC(MDC_BEHANDLINGS_ID, it) }
+
+        try {
+            filterChain.doFilter(request, response)
+        } finally {
+            clearMDC()
+        }
+    }
+
+    private fun getBehandlingsId(request: HttpServletRequest): String? {
+        if (request.requestURI.matches(Regex("^${SOKNAD_API_BASEURL}soknader/(.*)"))) {
+            return request.requestURI.substringAfter("${SOKNAD_API_BASEURL}soknader/").substringBefore("/")
+        }
+        if (request.requestURI.matches(Regex("^${SOKNAD_API_BASEURL}innsendte/(.*)"))) {
+            return request.requestURI.substringAfter("${SOKNAD_API_BASEURL}innsendte/")
+        }
+        if (request.requestURI.matches(Regex("^${SOKNAD_API_BASEURL}ettersendteVedlegg/(.*)"))) {
+            return request.requestURI.substringAfter("${SOKNAD_API_BASEURL}ettersendteVedlegg/")
+        }
+        /*
+        Skal matche disse:
+        /opplastetVedlegg/{behandlingsId}/{vedleggId}/fil GET
+        /opplastetVedlegg/{behandlingsId}/{type} POST
+        /opplastetVedlegg/{behandlingsId}/{vedleggId} DELETE
+        men ikke:
+        /opplastetVedlegg/{vedleggId}/fil GET
+         */
+        if (request.method != "GET" && request.requestURI.matches(Regex("^${SOKNAD_API_BASEURL}opplastetVedlegg/(.*)"))) {
+            return request.requestURI.substringAfter("${SOKNAD_API_BASEURL}opplastetVedlegg/").substringBefore("/")
+        }
+        if (request.method == "GET" && request.requestURI.matches(Regex("^${SOKNAD_API_BASEURL}opplastetVedlegg/(.*)/(.*)/fil"))) {
+            return request.requestURI.substringAfter("${SOKNAD_API_BASEURL}opplastetVedlegg/").substringBefore("/")
+        }
+        return null
+    }
+
+    companion object {
+        private const val SOKNAD_API_BASEURL = "/sosialhjelp/soknad-api/"
     }
 }

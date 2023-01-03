@@ -28,20 +28,16 @@ import no.nav.sosialhjelp.soknad.innsending.dto.SendTilUrlFrontend
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpHeaders
-import org.springframework.stereotype.Controller
-import javax.servlet.ServletContext
-import javax.ws.rs.HeaderParam
-import javax.ws.rs.POST
-import javax.ws.rs.Path
-import javax.ws.rs.PathParam
-import javax.ws.rs.Produces
-import javax.ws.rs.core.Context
-import javax.ws.rs.core.MediaType
+import org.springframework.http.MediaType
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestHeader
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
 
-@Controller
+@RestController
 @ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4])
-@Path("/soknader/{behandlingsId}/actions")
-@Produces(MediaType.APPLICATION_JSON)
+@RequestMapping("/soknader/{behandlingsId}/actions", produces = [MediaType.APPLICATION_JSON_VALUE])
 open class SoknadActions(
     private val soknadService: SoknadService,
     private val kommuneInfoService: KommuneInfoService,
@@ -52,12 +48,10 @@ open class SoknadActions(
     private val unleash: Unleash,
     private val nedetidService: NedetidService,
 ) {
-    @POST
-    @Path("/send")
+    @PostMapping("/send")
     open fun sendSoknad(
-        @PathParam("behandlingsId") behandlingsId: String,
-        @Context servletContext: ServletContext?,
-        @HeaderParam(value = HttpHeaders.AUTHORIZATION) token: String?
+        @PathVariable("behandlingsId") behandlingsId: String,
+        @RequestHeader(value = HttpHeaders.AUTHORIZATION) token: String?
     ): SendTilUrlFrontend {
         if (nedetidService.isInnenforNedetid) {
             throw SoknadenHarNedetidException("Soknaden har nedetid fram til ${nedetidService.nedetidSluttAsString}")

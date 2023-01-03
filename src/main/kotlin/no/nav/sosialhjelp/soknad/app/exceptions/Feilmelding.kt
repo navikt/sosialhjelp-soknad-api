@@ -1,4 +1,4 @@
-package no.nav.sosialhjelp.soknad.app.rest.feil
+package no.nav.sosialhjelp.soknad.app.exceptions
 
 data class Feilmelding(
     val id: String?,

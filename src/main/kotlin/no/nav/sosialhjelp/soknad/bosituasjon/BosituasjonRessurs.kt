@@ -7,24 +7,23 @@ import no.nav.sosialhjelp.soknad.app.Constants
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
-import org.springframework.stereotype.Controller
-import javax.ws.rs.GET
-import javax.ws.rs.PUT
-import javax.ws.rs.Path
-import javax.ws.rs.PathParam
-import javax.ws.rs.Produces
-import javax.ws.rs.core.MediaType
+import org.springframework.http.MediaType
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PutMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
 
-@Controller
+@RestController
 @ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4])
-@Path("/soknader/{behandlingsId}/bosituasjon")
-@Produces(MediaType.APPLICATION_JSON)
+@RequestMapping("/soknader/{behandlingsId}/bosituasjon", produces = [MediaType.APPLICATION_JSON_VALUE])
 open class BosituasjonRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository
 ) {
-    @GET
-    open fun hentBosituasjon(@PathParam("behandlingsId") behandlingsId: String?): BosituasjonFrontend {
+    @GetMapping
+    open fun hentBosituasjon(@PathVariable("behandlingsId") behandlingsId: String?): BosituasjonFrontend {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).jsonInternalSoknad
@@ -33,10 +32,10 @@ open class BosituasjonRessurs(
         return BosituasjonFrontend(bosituasjon.botype, bosituasjon.antallPersoner)
     }
 
-    @PUT
+    @PutMapping
     open fun updateBosituasjon(
-        @PathParam("behandlingsId") behandlingsId: String?,
-        bosituasjonFrontend: BosituasjonFrontend
+        @PathVariable("behandlingsId") behandlingsId: String?,
+        @RequestBody bosituasjonFrontend: BosituasjonFrontend
     ) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         val eier = SubjectHandlerUtils.getUserIdFromToken()

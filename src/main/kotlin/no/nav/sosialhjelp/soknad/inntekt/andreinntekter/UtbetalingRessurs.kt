@@ -17,25 +17,24 @@ import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.tekster.TextService
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
-import org.springframework.stereotype.Controller
-import javax.ws.rs.GET
-import javax.ws.rs.PUT
-import javax.ws.rs.Path
-import javax.ws.rs.PathParam
-import javax.ws.rs.Produces
-import javax.ws.rs.core.MediaType
+import org.springframework.http.MediaType
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PutMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
 
-@Controller
+@RestController
 @ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4])
-@Path("/soknader/{behandlingsId}/inntekt/utbetalinger")
-@Produces(MediaType.APPLICATION_JSON)
+@RequestMapping("/soknader/{behandlingsId}/inntekt/utbetalinger", produces = [MediaType.APPLICATION_JSON_VALUE])
 open class UtbetalingRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val textService: TextService
 ) {
-    @GET
-    open fun hentUtbetalinger(@PathParam("behandlingsId") behandlingsId: String): UtbetalingerFrontend {
+    @GetMapping
+    open fun hentUtbetalinger(@PathVariable("behandlingsId") behandlingsId: String): UtbetalingerFrontend {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).jsonInternalSoknad
@@ -56,10 +55,10 @@ open class UtbetalingRessurs(
         )
     }
 
-    @PUT
+    @PutMapping
     open fun updateUtbetalinger(
-        @PathParam("behandlingsId") behandlingsId: String,
-        utbetalingerFrontend: UtbetalingerFrontend
+        @PathVariable("behandlingsId") behandlingsId: String,
+        @RequestBody utbetalingerFrontend: UtbetalingerFrontend
     ) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         val eier = SubjectHandlerUtils.getUserIdFromToken()

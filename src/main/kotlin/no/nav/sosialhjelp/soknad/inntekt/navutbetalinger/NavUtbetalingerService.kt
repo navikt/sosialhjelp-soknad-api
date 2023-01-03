@@ -63,14 +63,26 @@ open class NavUtbetalingerService(
                 utbetalingOgUtbetalDataErLike = true
             }
 
+            val utbetalingStringBuilder = StringBuilder()
+            val utbetalingSkyggeStringBuilder = StringBuilder()
             if (utbetalingerSortert.isNotEmpty() && utbetalinger.size == utbetalingerSkygge.size) {
                 utbetalingerSkygge.forEachIndexed { index, utbetalingSkygge ->
                     val utbetaling = utbetalingerSortert.get(index)
                     if (utbetaling.utbetalingsdato == utbetalingSkygge.utbetalingsdato &&
-                        utbetaling.tittel == utbetalingSkygge.tittel &&
+                        utbetaling.tittel.trim() == utbetalingSkygge.tittel.trim() &&
                         utbetaling.netto == utbetalingSkygge.netto
                     ) {
                         utbetalingOgUtbetalDataErLike = true
+                    } else {
+                        utbetalingStringBuilder.append("Utbetaling nr: ").append(index + 1)
+                            .append(" Utbetalingsdato: ").append(utbetaling.utbetalingsdato)
+                            .append(" Tittel: ").append(utbetaling.tittel)
+                            .append(" Netto: ").appendLine(utbetaling.netto)
+
+                        utbetalingSkyggeStringBuilder.append("Utbetaling nr: ").append(index + 1)
+                            .append(" Utbetalingsdato: ").append(utbetalingSkygge.utbetalingsdato)
+                            .append(" Tittel: ").append(utbetalingSkygge.tittel)
+                            .append(" Netto: ").appendLine(utbetalingSkygge.netto)
                     }
                 }
             }
@@ -81,8 +93,8 @@ open class NavUtbetalingerService(
                 log.info(
                     """UtbetalData skyggeproduksjon - Data hentet fra UtbetalingV1 og UtbetalData tjeneste er forskjellige.
                          UtbetalingV1 returnerte ${utbetalinger.size} utbetalinger og UtbetalData returnerte ${utbetalingerSkygge.size} utbetalinger.
-                            Utbetalinger fra Utbetalingv1: $utbetalinger
-                            Utbetalinger fra Utbetaldata: $utbetalingerSkygge
+                            Utbetalinger fra Utbetalingv1: $utbetalingStringBuilder
+                            Utbetalinger fra Utbetaldata: $utbetalingSkyggeStringBuilder
                     """.trimIndent()
                 )
             }

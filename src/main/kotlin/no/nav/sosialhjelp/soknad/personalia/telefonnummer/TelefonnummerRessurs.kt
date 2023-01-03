@@ -7,25 +7,26 @@ import no.nav.sosialhjelp.soknad.app.Constants
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
-import org.springframework.stereotype.Controller
-import javax.ws.rs.GET
-import javax.ws.rs.PUT
-import javax.ws.rs.Path
-import javax.ws.rs.PathParam
-import javax.ws.rs.Produces
-import javax.ws.rs.core.MediaType
+import org.springframework.http.MediaType
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PutMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
 
-@Controller
+@RestController
 @ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4])
-@Path("/soknader/{behandlingsId}/personalia/telefonnummer")
-@Produces(MediaType.APPLICATION_JSON)
+@RequestMapping("/soknader/{behandlingsId}/personalia/telefonnummer", produces = [MediaType.APPLICATION_JSON_VALUE])
 open class TelefonnummerRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val telefonnummerSystemdata: TelefonnummerSystemdata,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository
 ) {
-    @GET
-    open fun hentTelefonnummer(@PathParam("behandlingsId") behandlingsId: String?): TelefonnummerFrontend {
+    @GetMapping
+    open fun hentTelefonnummer(
+        @PathVariable("behandlingsId") behandlingsId: String?
+    ): TelefonnummerFrontend {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
@@ -44,10 +45,10 @@ open class TelefonnummerRessurs(
         )
     }
 
-    @PUT
+    @PutMapping
     open fun updateTelefonnummer(
-        @PathParam("behandlingsId") behandlingsId: String?,
-        telefonnummerFrontend: TelefonnummerFrontend
+        @PathVariable("behandlingsId") behandlingsId: String?,
+        @RequestBody telefonnummerFrontend: TelefonnummerFrontend
     ) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         val eier = SubjectHandlerUtils.getUserIdFromToken()

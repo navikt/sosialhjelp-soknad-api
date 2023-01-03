@@ -4,6 +4,7 @@ import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.MiljoUtils.isNonProduction
+import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.Vedleggstatus
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
@@ -24,7 +25,6 @@ import no.nav.sosialhjelp.soknad.vedlegg.virusscan.VirusScanner
 import org.springframework.stereotype.Component
 import java.io.ByteArrayInputStream
 import java.util.UUID
-import javax.ws.rs.NotFoundException
 
 @Component
 class MellomlagringService(
@@ -145,7 +145,8 @@ class MellomlagringService(
         val jsonVedlegg: JsonVedlegg = JsonVedleggUtils.getVedleggFromInternalSoknad(soknadUnderArbeid)
             .firstOrNull {
                 it.filer.any { jsonFil -> jsonFil.filnavn == aktueltVedlegg.filnavn }
-            } ?: throw NotFoundException("Dette vedlegget tilhører en utgift som har blitt tatt bort fra søknaden. Er det flere tabber oppe samtidig?")
+            }
+            ?: throw IkkeFunnetException("Dette vedlegget tilhører en utgift som har blitt tatt bort fra søknaden. Er det flere tabber oppe samtidig?")
 
         jsonVedlegg.filer.removeIf { it.filnavn == aktueltVedlegg.filnavn }
 
