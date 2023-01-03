@@ -123,8 +123,8 @@ open class NavUtbetalingerService(
             }
 
             return utbetalDataDto.utbetalinger
-                .filter { it.posteringsdato != null }
-                .filter { utbetaltSiste40Dager(it.posteringsdato) }
+                .filter { it.utbetalingsdato != null }
+                .filter { utbetaltSiste40Dager(it.utbetalingsdato) }
                 .flatMap { utbetaling ->
                     utbetaling.ytelseListe
                         .filter { utbetaltTilBruker(it, utbetaling) }
@@ -136,7 +136,7 @@ open class NavUtbetalingerService(
                                 skattetrekk = it.skattsum.toDouble(),
                                 andreTrekk = it.trekksum.toDouble(),
                                 bilagsnummer = it.bilagsnummer,
-                                utbetalingsdato = utbetaling.posteringsdato,
+                                utbetalingsdato = utbetaling.utbetalingsdato,
                                 periodeFom = it.ytelsesperiode.fom,
                                 periodeTom = it.ytelsesperiode.tom,
                                 komponenter = mapToKomponenter(it.ytelseskomponentListe),
