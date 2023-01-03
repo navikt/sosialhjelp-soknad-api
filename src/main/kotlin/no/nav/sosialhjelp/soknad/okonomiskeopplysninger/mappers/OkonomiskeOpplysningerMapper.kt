@@ -16,8 +16,6 @@ import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.removeUtgiftIfPresentI
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggFrontend
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggRadFrontend
 import org.apache.commons.lang3.StringUtils.isEmpty
-import org.springframework.http.HttpStatus
-import org.springframework.web.client.HttpClientErrorException
 
 object OkonomiskeOpplysningerMapper {
 
@@ -69,10 +67,7 @@ object OkonomiskeOpplysningerMapper {
                 formuer.addAll(mapToFormueList(vedleggFrontend.rader, formue))
                 jsonOkonomi.oversikt.formue = formuer
             }
-            ?: throw HttpClientErrorException(
-                HttpStatus.NOT_FOUND,
-                "Dette vedlegget tilhører $soknadType utgift som har blitt tatt bort fra søknaden. Har du flere tabber oppe samtidig?"
-            )
+            ?: throw IkkeFunnetException("Dette vedlegget tilhører $soknadType utgift som har blitt tatt bort fra søknaden. Har du flere tabber oppe samtidig?")
     }
 
     fun addAllOversiktUtgifterToJsonOkonomi(

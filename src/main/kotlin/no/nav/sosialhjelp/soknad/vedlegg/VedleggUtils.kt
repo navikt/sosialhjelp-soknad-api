@@ -2,6 +2,7 @@ package no.nav.sosialhjelp.soknad.vedlegg
 
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
+import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.OpplastingException
@@ -13,8 +14,6 @@ import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException
 import org.apache.pdfbox.text.PDFTextStripper
 import org.bouncycastle.jcajce.provider.digest.SHA512
 import org.bouncycastle.util.encoders.Hex
-import org.springframework.http.HttpStatus
-import org.springframework.web.client.HttpClientErrorException
 import java.io.ByteArrayInputStream
 import java.io.IOException
 import java.io.UnsupportedEncodingException
@@ -170,9 +169,6 @@ object VedleggUtils {
     fun finnVedleggEllerKastException(vedleggstype: String, soknadUnderArbeid: SoknadUnderArbeid): JsonVedlegg {
         return JsonVedleggUtils.getVedleggFromInternalSoknad(soknadUnderArbeid)
             .firstOrNull { vedleggstype == it.type + "|" + it.tilleggsinfo }
-            ?: throw HttpClientErrorException(
-                HttpStatus.NOT_FOUND,
-                "Dette vedlegget tilhører $vedleggstype utgift som har blitt tatt bort fra søknaden. Er det flere tabber oppe samtidig?"
-            )
+            ?: throw IkkeFunnetException("Dette vedlegget tilhører $vedleggstype utgift som har blitt tatt bort fra søknaden. Er det flere tabber oppe samtidig?")
     }
 }
