@@ -167,7 +167,7 @@ class MellomlagringService(
         val navEksternId = getNavEksternId(behandlingsId)
         val mellomlagredeVedlegg = mellomlagringClient.getMellomlagredeVedlegg(navEksternId = navEksternId)?.mellomlagringMetadataList
         if (mellomlagredeVedlegg.isNullOrEmpty()) {
-            log.warn("Ingen mellomlagrede vedlegg funnet ved forsøkt sletting av alle vedlegg for behandlingsId $behandlingsId")
+            log.info("Ingen mellomlagrede vedlegg funnet ved forsøkt sletting av alle vedlegg for behandlingsId $behandlingsId")
         } else {
             mellomlagringClient.deleteAllVedlegg(navEksternId = navEksternId)
         }
