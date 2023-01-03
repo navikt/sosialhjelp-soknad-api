@@ -40,7 +40,6 @@ class SoknadRessursEndpointIT {
             .post()
             .uri("/soknader/opprettSoknad?ettersendTil=$behandlingsId")
             .accept(MediaType.APPLICATION_JSON)
-//            .contentType(MediaType.APPLICATION_JSON)
             .header(HttpHeaders.AUTHORIZATION, BEARER + issueToken(mockOAuth2Server, ANNEN_BRUKER).serialize())
             .exchange()
             .expectStatus().isForbidden

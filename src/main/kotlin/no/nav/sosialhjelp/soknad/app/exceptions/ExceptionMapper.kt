@@ -199,7 +199,7 @@ class ExceptionMapper(
                 .body(Feilmelding(UNEXPECTED_ERROR, "Noe uventet feilet"))
         }
         log.info("Bruker er ikke autentisert (enda). Sender 401 med loginurl. Feilmelding: ${e.message}")
-        return createUnauthorizedWithLoginLocationResponse("Autentiserings")
+        return createUnauthorizedWithLoginLocationResponse("Autentiseringsfeil")
     }
 
     @ExceptionHandler(value = [MetaDataNotAvailableException::class, IssuerConfigurationException::class])
