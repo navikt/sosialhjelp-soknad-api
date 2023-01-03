@@ -69,7 +69,7 @@ open class NavUtbetalingerService(
                 utbetalingerSkygge.forEachIndexed { index, utbetalingSkygge ->
                     val utbetaling = utbetalingerSortert.get(index)
                     if (utbetaling.utbetalingsdato == utbetalingSkygge.utbetalingsdato &&
-                        utbetaling.tittel == utbetalingSkygge.tittel &&
+                        utbetaling.tittel.trim() == utbetalingSkygge.tittel.trim() &&
                         utbetaling.netto == utbetalingSkygge.netto
                     ) {
                         utbetalingOgUtbetalDataErLike = true
