@@ -99,7 +99,7 @@ open class OpplastetVedleggRessurs(
                 "vedlegg.opplasting.feil.forStor"
             )
         }
-        val filnavn = fil.originalFilename ?: throw IllegalStateException("A file must have a name")
+        val filnavn = fil.originalFilename ?: throw IllegalStateException("Opplastet fil mangler filnavn?")
         val data = getByteArray(fil)
         val eier = SubjectHandlerUtils.getUserIdFromToken()
 
