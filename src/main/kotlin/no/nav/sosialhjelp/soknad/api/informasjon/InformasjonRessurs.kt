@@ -5,7 +5,6 @@ import no.nav.security.token.support.core.api.Unprotected
 import no.nav.sosialhjelp.api.fiks.KommuneInfo
 import no.nav.sosialhjelp.soknad.adressesok.AdressesokService
 import no.nav.sosialhjelp.soknad.adressesok.domain.AdresseForslag
-import no.nav.sosialhjelp.soknad.api.informasjon.dto.KommuneInfoFrontend
 import no.nav.sosialhjelp.soknad.api.informasjon.dto.KommunestatusFrontend
 import no.nav.sosialhjelp.soknad.api.informasjon.dto.KontaktPersonerFrontend
 import no.nav.sosialhjelp.soknad.api.informasjon.dto.Logg
@@ -162,19 +161,7 @@ open class InformasjonRessurs(
         return pabegynteSoknaderService.hentPabegynteSoknaderForBruker(fnr)
     }
 
-    fun mapManueltPakobledeKommuner(manuelleKommuner: List<String>): Map<String, KommuneInfoFrontend> {
-        return manuelleKommuner
-            .map {
-                KommuneInfoFrontend(
-                    kommunenummer = it,
-                    kanMottaSoknader = true,
-                    kanOppdatereStatus = false
-                )
-            }
-            .associateBy { it.kommunenummer }
-    }
-
-    private fun mapManueltPakobledeKommunerTilKommunestatusFrontend(manuelleKommuner: List<String>): Map<String, KommunestatusFrontend> {
+    fun mapManueltPakobledeKommunerTilKommunestatusFrontend(manuelleKommuner: List<String>): Map<String, KommunestatusFrontend> {
         return manuelleKommuner
             .map {
                 KommunestatusFrontend(
@@ -186,21 +173,7 @@ open class InformasjonRessurs(
             .associateBy { it.kommunenummer }
     }
 
-    fun mapDigisosKommuner(digisosKommuner: Map<String, KommuneInfo>?): MutableMap<String, KommuneInfoFrontend> {
-        return digisosKommuner?.values
-            ?.filter { it.kanMottaSoknader }
-            ?.map {
-                KommuneInfoFrontend(
-                    it.kommunenummer,
-                    it.kanMottaSoknader && !it.harMidlertidigDeaktivertMottak,
-                    it.kanOppdatereStatus
-                )
-            }
-            ?.associateBy { it.kommunenummer }
-            ?.toMutableMap() ?: mutableMapOf()
-    }
-
-    private fun mapDigisosKommunerTilKommunestatus(digisosKommuner: Map<String, KommuneInfo>?): MutableMap<String, KommunestatusFrontend> {
+    fun mapDigisosKommunerTilKommunestatus(digisosKommuner: Map<String, KommuneInfo>?): MutableMap<String, KommunestatusFrontend> {
         return digisosKommuner?.values
             ?.map {
                 KommunestatusFrontend(
@@ -221,17 +194,7 @@ open class InformasjonRessurs(
             ?.toMutableMap() ?: mutableMapOf()
     }
 
-    fun mergeManuelleKommunerMedDigisosKommuner(
-        manuelleKommuner: Map<String, KommuneInfoFrontend>,
-        digisosKommuner: MutableMap<String, KommuneInfoFrontend>
-    ): Map<String, KommuneInfoFrontend> {
-        manuelleKommuner.forEach { (key: String, value: KommuneInfoFrontend?) ->
-            digisosKommuner.putIfAbsent(key, value)
-        }
-        return digisosKommuner
-    }
-
-    private fun mergeManuelleKommunerMedDigisosKommunerKommunestatus(
+    fun mergeManuelleKommunerMedDigisosKommunerKommunestatus(
         manuelleKommuner: Map<String, KommunestatusFrontend>,
         digisosKommuner: MutableMap<String, KommunestatusFrontend>
     ): Map<String, KommunestatusFrontend> {
