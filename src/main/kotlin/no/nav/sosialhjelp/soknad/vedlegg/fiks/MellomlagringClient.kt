@@ -106,7 +106,9 @@ class MellomlagringClientImpl(
             .body(BodyInserters.fromMultipartData(body))
             .retrieve()
             .bodyToMono<String>()
-            .doOnSuccess { log.info("Mellomlagring av vedlegg til søknad $navEksternId utført.") }
+            .doOnSuccess {
+                log.info("Mellomlagring av vedlegg til søknad $navEksternId utført.")
+            }
             .doOnError(WebClientResponseException::class.java) {
                 log.warn("Mellomlagring av vedlegg til søknad $navEksternId feilet etter ${System.currentTimeMillis() - startTime} ms med status ${it.statusCode} og response: ${it.responseBodyAsString}", it)
             }
@@ -150,6 +152,9 @@ class MellomlagringClientImpl(
             .header(HttpHeaders.AUTHORIZATION, BEARER + maskinportenClient.getToken())
             .retrieve()
             .bodyToMono<String>()
+            .doOnSuccess {
+                log.info("Fiks - delete mellomlagretVedlegg OK. vedleggId=$digisosDokumentId, behandlingsId=$navEksternId")
+            }
             .doOnError(WebClientResponseException::class.java) {
                 log.warn("Fiks - delete mellomlagretVedlegg feilet - ${it.responseBodyAsString}", it)
             }

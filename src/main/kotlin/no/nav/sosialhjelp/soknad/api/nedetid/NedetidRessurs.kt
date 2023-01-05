@@ -2,21 +2,19 @@ package no.nav.sosialhjelp.soknad.api.nedetid
 
 import no.nav.security.token.support.core.api.Unprotected
 import no.nav.sosialhjelp.soknad.api.nedetid.dto.NedetidFrontend
-import org.springframework.stereotype.Controller
-import javax.ws.rs.GET
-import javax.ws.rs.Path
-import javax.ws.rs.Produces
-import javax.ws.rs.core.MediaType
+import org.springframework.http.MediaType
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
 
-@Controller
+@RestController
 @Unprotected
-@Path("/nedetid")
-@Produces(MediaType.APPLICATION_JSON)
+@RequestMapping("/nedetid", produces = [MediaType.APPLICATION_JSON_VALUE])
 open class NedetidRessurs(
     private val nedetidService: NedetidService
 ) {
 
-    @GET
+    @GetMapping
     open fun hentNedetidInformasjon(): NedetidFrontend {
         return NedetidFrontend(
             isNedetid = nedetidService.isInnenforNedetid,

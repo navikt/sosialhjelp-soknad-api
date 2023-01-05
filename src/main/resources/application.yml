@@ -1,5 +1,4 @@
 server:
-
   port: 8080
   servlet:
     context-path: '/sosialhjelp/soknad-api'
@@ -8,13 +7,6 @@ server:
 spring:
   main:
     banner-mode: off
-  jersey:
-    application-path: '/'
-#    type: filter
-#    servlet:
-#      load-on-startup: 1
-#    filter:
-#      order: -10000
   flyway:
     enabled: true
     url: ${SOKNADSOSIALHJELPDATASOURCE_URL}
@@ -26,6 +18,9 @@ spring:
     url: ${SOKNADSOSIALHJELPDATASOURCE_URL}
     username: ${SOKNADSOSIALHJELPDATASOURCE_USERNAME}
     password: ${SOKNADSOSIALHJELPDATASOURCE_PASSWORD}
+  servlet:
+    multipart:
+      max-file-size: 10MB
 
 management:
   endpoints:
@@ -84,12 +79,17 @@ krr_scope: ${KRR_SCOPE}
 fiks_svarut_username: ${FIKS_SVARUT_USERNAME}
 fiks_svarut_password: ${FIKS_SVARUT_PASSWORD}
 
-# OIDC
-oidc.issuer.selvbetjening.discoveryurl: ${LOGINSERVICE_IDPORTEN_DISCOVERY_URL}
-oidc.issuer.selvbetjening.accepted_audience: ${LOGINSERVICE_IDPORTEN_AUDIENCE}
-oidc.issuer.selvbetjening.cookie_name: selvbetjening-idtoken
-oidc.issuer.selvbetjening.proxy_url: http://webproxy-nais.nav.no:8088
 loginservice.url: ${LOGINSERVICE_URL}
+
+no.nav.security.jwt.issuer:
+  selvbetjening:
+    discoveryurl: ${LOGINSERVICE_IDPORTEN_DISCOVERY_URL}
+    validation:
+      optional-claims: aud,nbf
+    proxyurl: http://webproxy-nais.nav.no:8088
+  tokenx:
+    discoveryurl: ${TOKEN_X_WELL_KNOWN_URL}
+    accepted_audience: ${TOKEN_X_CLIENT_ID}
 
 # redis
 redis_host: ${REDIS_HOST}

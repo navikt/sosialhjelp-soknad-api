@@ -94,11 +94,12 @@ internal class InformasjonRessursTest {
     @Test
     fun skalReturnereMappetListeOverManueltPakobledeKommuner() {
         val manuelleKommuner = listOf("1234")
-        val mappedeKommuner = ressurs.mapManueltPakobledeKommuner(manuelleKommuner)
+        val mappedeKommuneStatuser = ressurs.mapManueltPakobledeKommunerTilKommunestatusFrontend(manuelleKommuner)
 
-        assertThat(mappedeKommuner["1234"]).isNotNull
-        assertThat(mappedeKommuner["1234"]!!.kanMottaSoknader).isTrue
-        assertThat(mappedeKommuner["1234"]!!.kanOppdatereStatus).isFalse
+        val kommune1234 = mappedeKommuneStatuser["1234"]
+        assertThat(kommune1234).isNotNull
+        assertThat(kommune1234!!.kanMottaSoknader).isTrue
+        assertThat(kommune1234!!.kanOppdatereStatus).isFalse
     }
 
     @Test
@@ -125,35 +126,46 @@ internal class InformasjonRessursTest {
             behandlingsansvarlig = null
         )
 
-        val mappedeKommuner = ressurs.mapDigisosKommuner(digisosKommuner)
+        val mappedeKommuneStatuser = ressurs.mapDigisosKommunerTilKommunestatus(digisosKommuner)
 
-        assertThat(mappedeKommuner["1234"]).isNotNull
-        assertThat(mappedeKommuner["1234"]!!.kanMottaSoknader).isTrue
-        assertThat(mappedeKommuner["1234"]!!.kanOppdatereStatus).isTrue
-        assertThat(mappedeKommuner["5678"]).isNotNull
-        assertThat(mappedeKommuner["5678"]!!.kanMottaSoknader).isFalse
-        assertThat(mappedeKommuner["5678"]!!.kanOppdatereStatus).isTrue
+        val kommune1234 = mappedeKommuneStatuser["1234"]
+        assertThat(kommune1234).isNotNull
+        assertThat(kommune1234?.kanMottaSoknader).isTrue
+        assertThat(kommune1234?.kanOppdatereStatus).isTrue
+        assertThat(kommune1234?.harMidlertidigDeaktivertMottak).isFalse
+        assertThat(kommune1234?.harMidlertidigDeaktivertOppdateringer).isFalse
+        assertThat(kommune1234?.harNksTilgang).isFalse
+
+        val kommune5678 = mappedeKommuneStatuser["5678"]
+        assertThat(kommune5678).isNotNull
+        assertThat(kommune5678?.kanMottaSoknader).isTrue
+        assertThat(kommune5678?.kanOppdatereStatus).isTrue
+        assertThat(kommune5678?.harMidlertidigDeaktivertMottak).isTrue
+        assertThat(kommune5678?.harMidlertidigDeaktivertOppdateringer).isFalse
+        assertThat(kommune5678?.harNksTilgang).isFalse
     }
 
     @Test
     fun duplikatIDigisosKommuneSkalOverskriveManuellKommune() {
         val manuelleKommuner = listOf("1234")
-        val manueltMappedeKommuner = ressurs.mapManueltPakobledeKommuner(manuelleKommuner)
+        val manueltMappedeKommuner = ressurs.mapManueltPakobledeKommunerTilKommunestatusFrontend(manuelleKommuner)
 
         assertThat(manueltMappedeKommuner["1234"]!!.kanOppdatereStatus).isFalse // Manuelle kommuner får ikke innsyn
 
         val digisosKommuner: MutableMap<String, KommuneInfo> = HashMap()
         digisosKommuner["1234"] = KommuneInfo("1234", true, true, false, false, null, false, null)
 
-        val mappedeDigisosKommuner = ressurs.mapDigisosKommuner(digisosKommuner)
-        val margedKommuner = ressurs.mergeManuelleKommunerMedDigisosKommuner(manueltMappedeKommuner, mappedeDigisosKommuner)
-        assertThat(margedKommuner).hasSize(1)
-        assertThat(margedKommuner["1234"]!!.kanOppdatereStatus).isTrue
+        val mappedeKommuneStatuser = ressurs.mapDigisosKommunerTilKommunestatus(digisosKommuner)
+        val mergedKommuneStatuser = ressurs.mergeManuelleKommunerMedDigisosKommunerKommunestatus(manueltMappedeKommuner, mappedeKommuneStatuser)
+        assertThat(mergedKommuneStatuser).hasSize(1)
+        assertThat(mergedKommuneStatuser["1234"]?.kanOppdatereStatus).isTrue
     }
 
     @Test
     fun harNyligInnsendteSoknader_tomResponse() {
-        every { soknadMetadataRepository.hentInnsendteSoknaderForBrukerEtterTidspunkt(any(), any()) } returns emptyList()
+        every {
+            soknadMetadataRepository.hentInnsendteSoknaderForBrukerEtterTidspunkt(any(), any())
+        } returns emptyList()
 
         val response = ressurs.harNyligInnsendteSoknader()
 
@@ -162,10 +174,9 @@ internal class InformasjonRessursTest {
 
     @Test
     fun harNyligInnsendteSoknader_flereSoknaderResponse() {
-        every { soknadMetadataRepository.hentInnsendteSoknaderForBrukerEtterTidspunkt(any(), any()) } returns listOf(
-            mockk(),
-            mockk()
-        )
+        every {
+            soknadMetadataRepository.hentInnsendteSoknaderForBrukerEtterTidspunkt(any(), any())
+        } returns listOf(mockk(), mockk())
 
         val response = ressurs.harNyligInnsendteSoknader()
 

@@ -14,7 +14,7 @@ Interne henvendelser kan sendes via Slack i kanalen #team_digisos.
 * Java/Kotlin
 * JDK 17
 * Maven
-* Spring Boot + Jersey
+* Spring Boot
 * Oracle DB
 * Redis (cache)
 

@@ -14,27 +14,26 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderAr
 import no.nav.sosialhjelp.soknad.tekster.TextService
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import org.springframework.http.HttpHeaders
-import org.springframework.stereotype.Controller
-import javax.ws.rs.GET
-import javax.ws.rs.HeaderParam
-import javax.ws.rs.POST
-import javax.ws.rs.Path
-import javax.ws.rs.PathParam
-import javax.ws.rs.Produces
-import javax.ws.rs.core.MediaType
+import org.springframework.http.MediaType
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestHeader
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
 
-@Controller
+@RestController
 @ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4])
-@Path("/soknader/{behandlingsId}/inntekt/skattbarinntektogforskuddstrekk")
-@Produces(MediaType.APPLICATION_JSON)
+@RequestMapping("/soknader/{behandlingsId}/inntekt/skattbarinntektogforskuddstrekk", produces = [MediaType.APPLICATION_JSON_VALUE])
 open class SkattbarInntektRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val skatteetatenSystemdata: SkatteetatenSystemdata,
     private val textService: TextService
 ) {
-    @GET
-    open fun hentSkattbareInntekter(@PathParam("behandlingsId") behandlingsId: String): SkattbarInntektFrontend {
+    @GetMapping
+    open fun hentSkattbareInntekter(@PathVariable("behandlingsId") behandlingsId: String): SkattbarInntektFrontend {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val utbetalinger: List<JsonOkonomiOpplysningUtbetaling>
@@ -52,12 +51,11 @@ open class SkattbarInntektRessurs(
         )
     }
 
-    @POST
-    @Path(value = "/samtykke")
+    @PostMapping("/samtykke")
     open fun updateSamtykke(
-        @PathParam("behandlingsId") behandlingsId: String,
-        samtykke: Boolean,
-        @HeaderParam(value = HttpHeaders.AUTHORIZATION) token: String?
+        @PathVariable("behandlingsId") behandlingsId: String,
+        @RequestBody samtykke: Boolean,
+        @RequestHeader(value = HttpHeaders.AUTHORIZATION) token: String?
     ) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         val eier = SubjectHandlerUtils.getUserIdFromToken()
