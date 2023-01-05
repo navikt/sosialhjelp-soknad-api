@@ -95,6 +95,8 @@ open class NavUtbetalingerService(
                          UtbetalingV1 returnerte ${utbetalinger.size} utbetalinger og UtbetalData returnerte ${utbetalingerSkygge.size} utbetalinger.
                             Utbetalinger fra Utbetalingv1: $utbetalingStringBuilder
                             Utbetalinger fra Utbetaldata: $utbetalingSkyggeStringBuilder
+                            Hele respons fra Utbetalingv1: $utbetalinger
+                            Hele respons fra UtbetalData: $utbetalingerSkygge
                     """.trimIndent()
                 )
             }
