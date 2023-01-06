@@ -15,7 +15,6 @@ import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserI
 import no.nav.sosialhjelp.soknad.auth.tokenx.TokendingsService
 import no.nav.sosialhjelp.soknad.personalia.kontonummer.dto.KontoDto
 import no.nav.sosialhjelp.soknad.personalia.kontonummer.dto.KontonummerDto
-import no.nav.sosialhjelp.soknad.personalia.kontonummer.dto.KontoregisterRequestDto
 import no.nav.sosialhjelp.soknad.redis.CACHE_30_MINUTES_IN_SECONDS
 import no.nav.sosialhjelp.soknad.redis.KONTONUMMER_CACHE_KEY_PREFIX
 import no.nav.sosialhjelp.soknad.redis.KONTOREGISTER_KONTONUMMER_CACHE_KEY_PREFIX
@@ -25,7 +24,6 @@ import org.slf4j.LoggerFactory.getLogger
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders.AUTHORIZATION
 import org.springframework.stereotype.Component
-import org.springframework.web.reactive.function.BodyInserters
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException.NotFound
 import org.springframework.web.reactive.function.client.WebClientResponseException.Unauthorized
@@ -53,11 +51,10 @@ class KontonummerClientImpl(
         hentKontonummerFraCache(ident)?.let { return it }
 
         return try {
-            webClient.post()
+            webClient.get()
                 .uri(kontoregisterUrl + "/api/borger/v1/hent-aktiv-konto")
                 .header(AUTHORIZATION, BEARER + tokenXtoken(kontoregisterAudience))
                 .header(HEADER_CALL_ID, getFromMDC(MDC_CALL_ID))
-                .body(BodyInserters.fromValue(KontoregisterRequestDto(ident)))
                 .retrieve()
                 .bodyToMono<KontoDto>()
                 .retryWhen(RetryUtils.DEFAULT_RETRY_SERVER_ERRORS)
