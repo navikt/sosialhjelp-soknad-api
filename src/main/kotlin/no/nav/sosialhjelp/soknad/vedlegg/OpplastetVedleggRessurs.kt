@@ -92,13 +92,6 @@ open class OpplastetVedleggRessurs(
         @RequestParam("file") fil: MultipartFile,
     ): FilFrontend {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
-        if (fil.size > MAKS_TOTAL_FILSTORRELSE) {
-            throw OpplastingException(
-                "Kunne ikke lagre fil fordi total filstørrelse er for stor",
-                null,
-                "vedlegg.opplasting.feil.forStor"
-            )
-        }
         val filnavn = fil.originalFilename ?: throw IllegalStateException("Opplastet fil mangler filnavn?")
         val data = getByteArray(fil)
         val eier = SubjectHandlerUtils.getUserIdFromToken()
@@ -134,8 +127,6 @@ open class OpplastetVedleggRessurs(
     }
 
     companion object {
-        private const val MAKS_TOTAL_FILSTORRELSE = 1024 * 1024 * 10
-
         private val log by logger()
 
         private fun getByteArray(file: MultipartFile): ByteArray {
