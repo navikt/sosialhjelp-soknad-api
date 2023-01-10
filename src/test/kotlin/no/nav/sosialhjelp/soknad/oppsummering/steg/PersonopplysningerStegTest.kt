@@ -55,7 +55,8 @@ internal class PersonopplysningerStegTest {
     @Test
     fun personalia_navnMedMellomnavn_utenStatsborgerskap() {
         val soknad = createSoknad(navnMedMellomnavn, kontonummerSystemdata, telefonnummerSystemdata, folkeregGateadresse)
-        soknad.soknad.data.personalia.statsborgerskap.verdi = null
+        soknad.soknad.data.personalia.statsborgerskap = null
+        soknad.soknad.data.personalia.nordiskBorger = null
 
         val res = steg.get(soknad)
 
