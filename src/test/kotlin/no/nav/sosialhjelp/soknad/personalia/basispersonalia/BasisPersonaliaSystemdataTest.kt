@@ -144,22 +144,8 @@ internal class BasisPersonaliaSystemdataTest {
         assertThat(jsonPersonalia.nordiskBorger.verdi).isFalse
     }
 
-    // Denne skal fjernes når TPS har oppdatert til å bruke ukjent som XXX istedenfor ???
     @Test
-    fun skalikkeSendeMedStatsborgerskapForUkjent_TPS() {
-        val person = Person(FORNAVN, MELLOMNAVN, ETTERNAVN, EIER, "ugift", listOf("???"), null, null, null, null)
-        val soknadUnderArbeid = createSoknadUnderArbeid()
-        every { personService.hentPerson(any()) } returns person
-
-        basisPersonaliaSystemdata.updateSystemdataIn(soknadUnderArbeid)
-
-        val jsonPersonalia = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia
-        assertThat(jsonPersonalia.statsborgerskap).isNull()
-        assertThat(jsonPersonalia.nordiskBorger).isNull()
-    }
-
-    @Test
-    fun skalikkeSendeMedStatsborgerskapForUkjent_PDL() {
+    fun skalikkeSendeMedStatsborgerskapForUkjent() {
         val person = Person(
             FORNAVN,
             MELLOMNAVN,

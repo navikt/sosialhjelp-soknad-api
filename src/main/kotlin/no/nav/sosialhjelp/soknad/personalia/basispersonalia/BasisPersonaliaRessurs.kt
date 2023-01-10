@@ -40,8 +40,8 @@ open class BasisPersonaliaRessurs(
         return BasisPersonaliaFrontend(
             navn = NavnFrontend(navn.fornavn, navn.mellomnavn, navn.etternavn),
             fodselsnummer = jsonPersonalia.personIdentifikator.verdi,
-            statsborgerskap = if (jsonPersonalia.statsborgerskap == null) null else kodeverkService.getLand(jsonPersonalia.statsborgerskap.verdi),
-            nordiskBorger = if (jsonPersonalia.nordiskBorger != null) jsonPersonalia.nordiskBorger.verdi else null
+            statsborgerskap = jsonPersonalia.statsborgerskap?.verdi?.let { kodeverkService.getLand(it) },
+            nordiskBorger = jsonPersonalia.nordiskBorger?.verdi
         )
     }
 }
