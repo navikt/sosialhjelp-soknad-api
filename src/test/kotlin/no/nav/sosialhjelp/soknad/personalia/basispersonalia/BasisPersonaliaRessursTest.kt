@@ -10,7 +10,6 @@ import io.mockk.runs
 import io.mockk.unmockkObject
 import io.mockk.verify
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
-import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonNordiskBorger
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonIdentifikator
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonSokernavn
@@ -61,11 +60,7 @@ internal class BasisPersonaliaRessursTest {
     fun basisPersonaliaSkalReturnereSystemBasisPersonalia() {
         every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
-            createJsonInternalSoknadWithBasisPersonalia(
-                withStatsborgerskap = true,
-                withNordiskBorger = true,
-                erNordisk = true
-            )
+            createJsonInternalSoknadWithBasisPersonalia(withStatsborgerskap = true)
         every { kodeverkService.getLand("NOR") } returns "Norge"
 
         val basisPersonaliaFrontend = basisPersonaliaRessurs.hentBasisPersonalia(BEHANDLINGSID)
@@ -73,17 +68,13 @@ internal class BasisPersonaliaRessursTest {
     }
 
     @Test
-    fun basisPersonaliaSkalReturnereBasisPersonaliaUtenStatsborgerskapOgNordiskBorger() {
+    fun basisPersonaliaSkalReturnereBasisPersonaliaUtenStatsborgerskap() {
         every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
-            createJsonInternalSoknadWithBasisPersonalia(
-                withStatsborgerskap = false,
-                withNordiskBorger = false,
-                erNordisk = true
-            )
+            createJsonInternalSoknadWithBasisPersonalia(withStatsborgerskap = false)
 
         val basisPersonaliaFrontend = basisPersonaliaRessurs.hentBasisPersonalia(BEHANDLINGSID)
-        assertThatPersonaliaIsCorrectlyConverted(basisPersonaliaFrontend, JSON_PERSONALIA_UTEN_STAT_OG_NORDISK)
+        assertThatPersonaliaIsCorrectlyConverted(basisPersonaliaFrontend, JSON_PERSONALIA_UTEN_STAT)
     }
 
     @Test
@@ -107,13 +98,10 @@ internal class BasisPersonaliaRessursTest {
         assertThat(personaliaFrontend.navn?.fulltNavn).isEqualTo(FULLT_NAVN)
         assertThat(personaliaFrontend.statsborgerskap)
             .isEqualTo(if (jsonPersonalia.statsborgerskap == null) null else if (jsonPersonalia.statsborgerskap.verdi == "NOR") "Norge" else jsonPersonalia.statsborgerskap.verdi)
-        assertThat(personaliaFrontend.nordiskBorger).isEqualTo(if (jsonPersonalia.nordiskBorger != null) jsonPersonalia.nordiskBorger.verdi else null)
     }
 
     private fun createJsonInternalSoknadWithBasisPersonalia(
-        withStatsborgerskap: Boolean,
-        withNordiskBorger: Boolean,
-        erNordisk: Boolean
+        withStatsborgerskap: Boolean
     ): SoknadUnderArbeid {
         val soknadUnderArbeid = createSoknadUnderArbeid()
         soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia
@@ -127,12 +115,7 @@ internal class BasisPersonaliaRessursTest {
             .withStatsborgerskap(
                 if (!withStatsborgerskap) null else JsonStatsborgerskap()
                     .withKilde(JsonKilde.SYSTEM)
-                    .withVerdi(if (erNordisk) NORDISK_STATSBORGERSKAP else IKKE_NORDISK_STATSBORGERSKAP)
-            )
-            .withNordiskBorger(
-                if (!withNordiskBorger) null else JsonNordiskBorger()
-                    .withKilde(JsonKilde.SYSTEM)
-                    .withVerdi(erNordisk)
+                    .withVerdi(NORSK_STATSBORGERSKAP)
             )
         return soknadUnderArbeid
     }
@@ -144,8 +127,7 @@ internal class BasisPersonaliaRessursTest {
         private const val MELLOMNAVN = "Elessar"
         private const val ETTERNAVN = "Telcontar"
         private const val FULLT_NAVN = "Aragorn Elessar Telcontar"
-        private const val NORDISK_STATSBORGERSKAP = "NOR"
-        private const val IKKE_NORDISK_STATSBORGERSKAP = "GER"
+        private const val NORSK_STATSBORGERSKAP = "NOR"
         private val JSON_PERSONALIA = JsonPersonalia()
             .withPersonIdentifikator(
                 JsonPersonIdentifikator()
@@ -164,12 +146,7 @@ internal class BasisPersonaliaRessursTest {
                     .withKilde(JsonKilde.SYSTEM)
                     .withVerdi("NOR")
             )
-            .withNordiskBorger(
-                JsonNordiskBorger()
-                    .withKilde(JsonKilde.SYSTEM)
-                    .withVerdi(true)
-            )
-        private val JSON_PERSONALIA_UTEN_STAT_OG_NORDISK = JsonPersonalia()
+        private val JSON_PERSONALIA_UTEN_STAT = JsonPersonalia()
             .withPersonIdentifikator(
                 JsonPersonIdentifikator()
                     .withKilde(JsonPersonIdentifikator.Kilde.SYSTEM)
