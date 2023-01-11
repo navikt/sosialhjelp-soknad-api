@@ -4,6 +4,5 @@ data class ReplicationDto(
     val behandlingsId: String,
     val soknadMetadata: SoknadMetadataDto,
     val soknadUnderArbeid: SoknadUnderArbeidDto?,
-    val sendtSoknad: SendtSoknadDto?,
     val oppgave: OppgaveDto?
 )

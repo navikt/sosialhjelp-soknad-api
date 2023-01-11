@@ -5,10 +5,6 @@ import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.BatchOpplastet
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.BatchOpplastetVedleggRepositoryJdbc
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRepository
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRepositoryJdbc
-import no.nav.sosialhjelp.soknad.db.repositories.sendtsoknad.BatchSendtSoknadRepository
-import no.nav.sosialhjelp.soknad.db.repositories.sendtsoknad.BatchSendtSoknadRepositoryJdbc
-import no.nav.sosialhjelp.soknad.db.repositories.sendtsoknad.SendtSoknadRepository
-import no.nav.sosialhjelp.soknad.db.repositories.sendtsoknad.SendtSoknadRepositoryJdbc
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.BatchSoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.BatchSoknadMetadataRepositoryJdbc
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
@@ -18,7 +14,6 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.BatchSoknadUn
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepositoryJdbc
 import no.nav.sosialhjelp.soknad.migration.repo.OpplastetVedleggMigrationRepository
-import no.nav.sosialhjelp.soknad.migration.repo.SendtSoknadMigrationRepository
 import no.nav.sosialhjelp.soknad.migration.repo.SoknadMetadataMigrationRepository
 import no.nav.sosialhjelp.soknad.migration.repo.SoknadUnderArbeidMigrationRepository
 import org.springframework.context.annotation.Bean
@@ -53,16 +48,6 @@ open class DbTestConfig {
     @Bean
     open fun soknadMetadataMigrationRepository(jdbcTemplate: JdbcTemplate): SoknadMetadataMigrationRepository {
         return SoknadMetadataMigrationRepository(jdbcTemplate)
-    }
-
-    @Bean
-    open fun sendtSoknadRepository(jdbcTemplate: JdbcTemplate): SendtSoknadRepository {
-        return SendtSoknadRepositoryJdbc(jdbcTemplate)
-    }
-
-    @Bean
-    open fun sendtSoknadMigrationRepository(jdbcTemplate: JdbcTemplate): SendtSoknadMigrationRepository {
-        return SendtSoknadMigrationRepository(jdbcTemplate)
     }
 
     @Bean
@@ -106,10 +91,5 @@ open class DbTestConfig {
     @Bean
     open fun batchSoknadMetadataRepository(jdbcTemplate: JdbcTemplate, namedParameterJdbcTemplate: NamedParameterJdbcTemplate): BatchSoknadMetadataRepository {
         return BatchSoknadMetadataRepositoryJdbc(jdbcTemplate, namedParameterJdbcTemplate)
-    }
-
-    @Bean
-    open fun batchSendtSoknadRepository(namedParameterJdbcTemplate: NamedParameterJdbcTemplate, transactionTemplate: TransactionTemplate): BatchSendtSoknadRepository {
-        return BatchSendtSoknadRepositoryJdbc(namedParameterJdbcTemplate, transactionTemplate)
     }
 }
