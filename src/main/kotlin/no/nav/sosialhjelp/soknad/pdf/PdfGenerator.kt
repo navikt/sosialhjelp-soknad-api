@@ -1,6 +1,7 @@
 package no.nav.sosialhjelp.soknad.pdf
 
 import com.vdurmont.emoji.EmojiParser
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import org.apache.jempbox.xmp.XMPMetadata
 import org.apache.jempbox.xmp.pdfa.XMPSchemaPDFAId
 import org.apache.pdfbox.pdmodel.PDDocument
@@ -12,7 +13,6 @@ import org.apache.pdfbox.pdmodel.font.PDFont
 import org.apache.pdfbox.pdmodel.font.PDType0Font
 import org.apache.pdfbox.pdmodel.graphics.color.PDOutputIntent
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject
-import org.slf4j.LoggerFactory
 import org.springframework.core.io.ClassPathResource
 import org.springframework.stereotype.Component
 import org.springframework.util.StreamUtils
@@ -21,7 +21,7 @@ import java.io.IOException
 
 @Component
 class PdfGenerator {
-    private val logger = LoggerFactory.getLogger(PdfGenerator::class.java)
+    private val log by logger()
 
     private val document = PDDocument()
     private var currentPage = PDPage(PDRectangle.A4)
@@ -266,7 +266,7 @@ class PdfGenerator {
             } else if (characterIsLegal(text.codePointAt(i))) {
                 stringBuilder.append(text[i])
             } else {
-                logger.info("Prøver å skrive ulovlig tegn til pdf. UTF-8 codepoint: ${text.codePointAt(i)}")
+                log.info("Prøver å skrive ulovlig tegn til pdf. UTF-8 codepoint: ${text.codePointAt(i)}")
             }
         }
         splitByNewlines.add(stringBuilder.toString())

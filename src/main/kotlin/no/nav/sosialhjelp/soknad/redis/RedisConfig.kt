@@ -2,7 +2,7 @@ package no.nav.sosialhjelp.soknad.redis
 
 import io.lettuce.core.RedisClient
 import io.lettuce.core.RedisURI
-import org.slf4j.LoggerFactory
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -40,7 +40,7 @@ open class RedisConfig(
     }
 
     companion object {
-        private val log = LoggerFactory.getLogger(RedisConfig::class.java)
+        private val log by logger()
         private const val TIMEOUT_SECONDS: Long = 1
     }
 }
@@ -56,6 +56,6 @@ open class NoRedisConfig {
     }
 
     companion object {
-        private val log = LoggerFactory.getLogger(NoRedisConfig::class.java)
+        private val log by logger()
     }
 }

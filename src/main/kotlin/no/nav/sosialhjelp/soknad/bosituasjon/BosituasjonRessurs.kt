@@ -23,7 +23,9 @@ open class BosituasjonRessurs(
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository
 ) {
     @GetMapping
-    open fun hentBosituasjon(@PathVariable("behandlingsId") behandlingsId: String?): BosituasjonFrontend {
+    open fun hentBosituasjon(
+        @PathVariable("behandlingsId") behandlingsId: String?
+    ): BosituasjonFrontend {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).jsonInternalSoknad

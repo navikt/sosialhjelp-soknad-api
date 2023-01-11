@@ -1,9 +1,9 @@
 package no.nav.sosialhjelp.soknad.scheduled
 
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.BatchSoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.scheduled.leaderelection.LeaderElection
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
-import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
@@ -23,23 +23,23 @@ class SlettSoknadUnderArbeidScheduler(
     @Scheduled(cron = KLOKKEN_HALV_FEM_OM_NATTEN)
     fun slettGamleSoknadUnderArbeid() {
         if (schedulerDisabled) {
-            logger.warn("Scheduler is disabled")
+            log.warn("Scheduler is disabled")
             return
         }
         if (leaderElection.isLeader()) {
             batchStartTime = LocalDateTime.now()
             vellykket = 0
             if (batchEnabled) {
-                logger.info("Starter sletting av soknadUnderArbeid som er eldre enn 14 dager")
+                log.info("Starter sletting av soknadUnderArbeid som er eldre enn 14 dager")
                 try {
                     slett()
                 } catch (e: RuntimeException) {
-                    logger.error("Batchjobb feilet", e)
+                    log.error("Batchjobb feilet", e)
                 } finally {
-                    logger.info("Jobb fullført: $vellykket vellykket")
+                    log.info("Jobb fullført: $vellykket vellykket")
                 }
             } else {
-                logger.warn("Batch disabled. Må sette environment property sendsoknad.batch.enabled til true for å sette den på igjen")
+                log.warn("Batch disabled. Må sette environment property sendsoknad.batch.enabled til true for å sette den på igjen")
             }
         }
     }
@@ -48,7 +48,7 @@ class SlettSoknadUnderArbeidScheduler(
         val soknadUnderArbeidIdList = batchSoknadUnderArbeidRepository.hentGamleSoknadUnderArbeidForBatch()
         soknadUnderArbeidIdList.forEach { soknadUnderArbeidId ->
             if (harGaattForLangTid()) {
-                logger.warn("Jobben har kjørt i mer enn $SCHEDULE_INTERRUPT_S s. Den blir derfor stoppet")
+                log.warn("Jobben har kjørt i mer enn $SCHEDULE_INTERRUPT_S s. Den blir derfor stoppet")
                 return
             }
             batchSoknadUnderArbeidRepository.hentSoknadUnderArbeid(soknadUnderArbeidId)?.let {
@@ -64,11 +64,11 @@ class SlettSoknadUnderArbeidScheduler(
     private fun harGaattForLangTid(): Boolean {
         return batchStartTime
             ?.let { LocalDateTime.now().isAfter(it.plusSeconds(SCHEDULE_INTERRUPT_S)) }
-            ?: true.also { logger.warn("SlettSoknadUnderArbeidsScheduler finner ikke batchStartTime - avbryter batchjobben") }
+            ?: true.also { log.warn("SlettSoknadUnderArbeidsScheduler finner ikke batchStartTime - avbryter batchjobben") }
     }
 
     companion object {
-        private val logger = LoggerFactory.getLogger(SlettSoknadUnderArbeidScheduler::class.java)
+        private val log by logger()
         private const val KLOKKEN_HALV_FEM_OM_NATTEN = "0 30 4 * * *"
         private const val SCHEDULE_INTERRUPT_S: Long = 60 * 10
     }

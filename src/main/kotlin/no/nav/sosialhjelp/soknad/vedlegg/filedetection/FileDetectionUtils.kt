@@ -1,11 +1,11 @@
 package no.nav.sosialhjelp.soknad.vedlegg.filedetection
 
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import org.apache.tika.Tika
-import org.slf4j.LoggerFactory
 
 object FileDetectionUtils {
 
-    private val log = LoggerFactory.getLogger(FileDetectionUtils::class.java)
+    private val log by logger()
 
     fun getMimeType(bytes: ByteArray?): String {
         val detected = Tika().detect(bytes)

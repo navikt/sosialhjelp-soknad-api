@@ -1,9 +1,9 @@
 package no.nav.sosialhjelp.soknad.redis
 
 import no.nav.sosialhjelp.api.fiks.KommuneInfo
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.maskerFnr
 import no.nav.sosialhjelp.soknad.redis.RedisUtils.redisObjectMapper
-import org.slf4j.LoggerFactory.getLogger
 import java.io.IOException
 import java.nio.charset.StandardCharsets
 
@@ -63,7 +63,7 @@ class RedisServiceImpl(
     }
 
     companion object {
-        private val log = getLogger(RedisServiceImpl::class.java)
+        private val log by logger()
     }
 }
 

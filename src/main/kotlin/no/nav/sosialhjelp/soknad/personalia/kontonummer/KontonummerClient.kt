@@ -5,6 +5,7 @@ import kotlinx.coroutines.runBlocking
 import no.nav.sosialhjelp.soknad.app.Constants.BEARER
 import no.nav.sosialhjelp.soknad.app.Constants.HEADER_CALL_ID
 import no.nav.sosialhjelp.soknad.app.Constants.HEADER_CONSUMER_ID
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.client.config.RetryUtils
 import no.nav.sosialhjelp.soknad.app.client.config.unproxiedWebClientBuilder
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.MDC_CALL_ID
@@ -18,7 +19,6 @@ import no.nav.sosialhjelp.soknad.redis.CACHE_30_MINUTES_IN_SECONDS
 import no.nav.sosialhjelp.soknad.redis.KONTONUMMER_CACHE_KEY_PREFIX
 import no.nav.sosialhjelp.soknad.redis.RedisService
 import no.nav.sosialhjelp.soknad.redis.RedisUtils.redisObjectMapper
-import org.slf4j.LoggerFactory.getLogger
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders.AUTHORIZATION
 import org.springframework.stereotype.Component
@@ -90,6 +90,6 @@ class KontonummerClientImpl(
     }
 
     companion object {
-        private val log = getLogger(KontonummerClientImpl::class.java)
+        private val log by logger()
     }
 }

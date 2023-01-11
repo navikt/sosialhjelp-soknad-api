@@ -7,6 +7,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.JsonDriftsinformasjon
 import no.nav.sbl.soknadsosialhjelp.soknad.bostotte.JsonBostotteSak
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.oppsummering.dto.Avsnitt
 import no.nav.sosialhjelp.soknad.oppsummering.dto.Felt
 import no.nav.sosialhjelp.soknad.oppsummering.dto.Sporsmal
@@ -18,7 +19,6 @@ import no.nav.sosialhjelp.soknad.oppsummering.steg.StegUtils.createSvar
 import no.nav.sosialhjelp.soknad.oppsummering.steg.inntektformue.InntektFormueUtils.getBekreftelse
 import no.nav.sosialhjelp.soknad.oppsummering.steg.inntektformue.InntektFormueUtils.harBekreftelse
 import no.nav.sosialhjelp.soknad.oppsummering.steg.inntektformue.InntektFormueUtils.harBekreftelseTrue
-import org.slf4j.LoggerFactory
 
 class BostotteHusbanken {
 
@@ -187,6 +187,6 @@ class BostotteHusbanken {
     }
 
     companion object {
-        private val log = LoggerFactory.getLogger(BostotteHusbanken::class.java)
+        private val log by logger()
     }
 }

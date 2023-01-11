@@ -5,6 +5,7 @@ import kotlinx.coroutines.runBlocking
 import no.nav.sosialhjelp.soknad.app.Constants.BEARER
 import no.nav.sosialhjelp.soknad.app.Constants.HEADER_CALL_ID
 import no.nav.sosialhjelp.soknad.app.Constants.HEADER_CONSUMER_ID
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.client.config.RetryUtils
 import no.nav.sosialhjelp.soknad.app.client.config.unproxiedWebClientBuilder
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.MDC_CALL_ID
@@ -23,7 +24,6 @@ import no.nav.sosialhjelp.soknad.redis.NAVUTBETALINGER_CACHE_KEY_PREFIX
 import no.nav.sosialhjelp.soknad.redis.RedisService
 import no.nav.sosialhjelp.soknad.redis.RedisUtils.redisObjectMapper
 import no.nav.sosialhjelp.soknad.redis.UTBETALDATA_CACHE_KEY_PREFIX
-import org.slf4j.LoggerFactory.getLogger
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders
 import org.springframework.stereotype.Component
@@ -155,7 +155,7 @@ class NavUtbetalingerClientImpl(
     }
 
     companion object {
-        private val log = getLogger(NavUtbetalingerClientImpl::class.java)
+        private val log by logger()
         private const val UTBETALINGSPERIODE = "UTBETALINGSPERIODE"
         private const val RETTIGHETSHAVER = "RETTIGHETSHAVER"
     }

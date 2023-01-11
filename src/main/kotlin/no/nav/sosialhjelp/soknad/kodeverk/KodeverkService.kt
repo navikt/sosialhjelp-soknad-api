@@ -1,12 +1,12 @@
 package no.nav.sosialhjelp.soknad.kodeverk
 
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.kodeverk.dto.KodeverkDto
 import no.nav.sosialhjelp.soknad.redis.KODEVERK_LAST_POLL_TIME_KEY
 import no.nav.sosialhjelp.soknad.redis.KOMMUNER_CACHE_KEY
 import no.nav.sosialhjelp.soknad.redis.LANDKODER_CACHE_KEY
 import no.nav.sosialhjelp.soknad.redis.POSTNUMMER_CACHE_KEY
 import no.nav.sosialhjelp.soknad.redis.RedisService
-import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -126,7 +126,7 @@ open class KodeverkService(
     }
 
     companion object {
-        private val log = LoggerFactory.getLogger(KodeverkService::class.java)
+        private val log by logger()
         private const val MINUTES_TO_PASS_BETWEEN_POLL: Long = 60
 
         const val SPRAAKKODE_NB = "nb"

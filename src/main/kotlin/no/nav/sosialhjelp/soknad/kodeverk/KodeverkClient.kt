@@ -7,6 +7,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.sosialhjelp.soknad.app.Constants.HEADER_CALL_ID
 import no.nav.sosialhjelp.soknad.app.Constants.HEADER_CONSUMER_ID
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.client.config.unproxiedWebClientBuilder
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getConsumerId
@@ -18,7 +19,6 @@ import no.nav.sosialhjelp.soknad.redis.LANDKODER_CACHE_KEY
 import no.nav.sosialhjelp.soknad.redis.POSTNUMMER_CACHE_KEY
 import no.nav.sosialhjelp.soknad.redis.RedisService
 import no.nav.sosialhjelp.soknad.redis.RedisUtils.redisObjectMapper
-import org.slf4j.LoggerFactory.getLogger
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.codec.json.Jackson2JsonDecoder
 import org.springframework.stereotype.Component
@@ -95,7 +95,7 @@ class KodeverkClient(
     }
 
     companion object {
-        private val log = getLogger(KodeverkClient::class.java)
+        private val log by logger()
 
         private const val SPRAAK_NB = "nb"
 
