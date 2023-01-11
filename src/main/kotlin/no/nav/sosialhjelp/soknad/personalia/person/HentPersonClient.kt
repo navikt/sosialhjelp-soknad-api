@@ -5,7 +5,6 @@ import kotlinx.coroutines.runBlocking
 import no.nav.sosialhjelp.soknad.app.Constants.BEARER
 import no.nav.sosialhjelp.soknad.app.Constants.HEADER_TEMA
 import no.nav.sosialhjelp.soknad.app.Constants.TEMA_KOM
-import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.client.pdl.HentPersonDto
 import no.nav.sosialhjelp.soknad.app.client.pdl.PdlApiQuery.HENT_ADRESSEBESKYTTELSE
 import no.nav.sosialhjelp.soknad.app.client.pdl.PdlApiQuery.HENT_BARN
@@ -28,6 +27,7 @@ import no.nav.sosialhjelp.soknad.redis.EKTEFELLE_CACHE_KEY_PREFIX
 import no.nav.sosialhjelp.soknad.redis.PDL_CACHE_SECONDS
 import no.nav.sosialhjelp.soknad.redis.PERSON_CACHE_KEY_PREFIX
 import no.nav.sosialhjelp.soknad.redis.RedisService
+import org.slf4j.LoggerFactory.getLogger
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders.AUTHORIZATION
 import org.springframework.stereotype.Component
@@ -194,6 +194,6 @@ class HentPersonClientImpl(
     }
 
     companion object {
-        private val log by logger()
+        private val log = getLogger(HentPersonClient::class.java)
     }
 }

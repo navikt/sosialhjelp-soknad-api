@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.tilgangskontroll
 
-import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.app.exceptions.AuthorizationException
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken
@@ -8,6 +7,7 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRe
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
 import no.nav.sosialhjelp.soknad.personalia.person.dto.Gradering
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import org.springframework.web.context.request.RequestContextHolder
 import org.springframework.web.context.request.ServletRequestAttributes
@@ -38,7 +38,7 @@ class Tilgangskontroll(
             val metadata = soknadMetadataRepository.hent(behandlingsId)
             metadata?.fnr?.let { eier = it }
         } catch (e: Exception) {
-            log.warn("Kunne ikke avgjøre hvem som eier søknad med behandlingsId $behandlingsId -> Ikke tilgang.", e)
+            logger.warn("Kunne ikke avgjøre hvem som eier søknad med behandlingsId $behandlingsId -> Ikke tilgang.", e)
         }
         verifiserAtInnloggetBrukerErEierAvSoknad(eier)
     }
@@ -67,6 +67,6 @@ class Tilgangskontroll(
     }
 
     companion object {
-        private val log by logger()
+        private val logger = LoggerFactory.getLogger(Tilgangskontroll::class.java)
     }
 }

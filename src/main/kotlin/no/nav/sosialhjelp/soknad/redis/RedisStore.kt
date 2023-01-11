@@ -6,7 +6,7 @@ import io.lettuce.core.api.sync.RedisCommands
 import io.lettuce.core.codec.ByteArrayCodec
 import io.lettuce.core.codec.RedisCodec
 import io.lettuce.core.codec.StringCodec
-import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
+import org.slf4j.LoggerFactory
 
 open class RedisStore(
     redisClient: RedisClient
@@ -46,6 +46,6 @@ open class RedisStore(
     }
 
     companion object {
-        private val log by logger()
+        private val log = LoggerFactory.getLogger(RedisStore::class.java)
     }
 }

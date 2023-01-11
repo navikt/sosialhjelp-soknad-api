@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.innsending.svarut
 
-import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import org.bouncycastle.asn1.ASN1ObjectIdentifier
 import org.bouncycastle.asn1.DERNull
 import org.bouncycastle.asn1.DEROctetString
@@ -15,6 +14,7 @@ import org.bouncycastle.cms.CMSProcessableByteArray
 import org.bouncycastle.cms.jcajce.JceCMSContentEncryptorBuilder
 import org.bouncycastle.cms.jcajce.JceKeyTransRecipientInfoGenerator
 import org.bouncycastle.jce.provider.BouncyCastleProvider
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import java.io.IOException
@@ -50,13 +50,13 @@ class DokumentKrypterer(
             val cmsData = enveloped.generate(CMSProcessableByteArray(data), encryptor)
             cmsData.encoded
         } catch (e: CertificateEncodingException) {
-            log.error("Noe feilet under kryptering", e)
+            logger.error("Noe feilet under kryptering", e)
             throw RuntimeException(e)
         } catch (e: IOException) {
-            log.error("Noe feilet under kryptering", e)
+            logger.error("Noe feilet under kryptering", e)
             throw RuntimeException(e)
         } catch (e: CMSException) {
-            log.error("Kunne ikke kryptere. Om den klager på 'illegal key size' er det fordi java cryptography extension mangler", e)
+            logger.error("Kunne ikke kryptere. Om den klager på 'illegal key size' er det fordi java cryptography extension mangler", e)
             throw RuntimeException(e)
         }
     }
@@ -76,12 +76,12 @@ class DokumentKrypterer(
                 CertificateFactory.getInstance("X509").generateCertificate(publickey) as X509Certificate
             }
         } catch (e: CertificateException) {
-            log.error("Kunne ikke opprette certificate for Fiks: $fiksNokkelfil", e)
+            logger.error("Kunne ikke opprette certificate for Fiks: $fiksNokkelfil", e)
             throw RuntimeException(e)
         }
     }
 
     companion object {
-        private val log by logger()
+        private val logger = LoggerFactory.getLogger(DokumentKrypterer::class.java)
     }
 }

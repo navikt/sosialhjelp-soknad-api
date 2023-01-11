@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.tekster
 
-import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.tekster.NavMessageSource.Bundle
+import org.slf4j.LoggerFactory.getLogger
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -44,6 +44,6 @@ open class TeksterConfig(
         private const val FEM_MINUTTER = 1000 * 60 * 5L
         private const val SOKNADSOSIALHJELP = "soknadsosialhjelp"
 
-        private val log by logger()
+        private val log = getLogger(TeksterConfig::class.java)
     }
 }

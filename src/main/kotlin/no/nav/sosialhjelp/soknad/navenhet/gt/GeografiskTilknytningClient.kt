@@ -5,7 +5,6 @@ import kotlinx.coroutines.runBlocking
 import no.nav.sosialhjelp.soknad.app.Constants.BEARER
 import no.nav.sosialhjelp.soknad.app.Constants.HEADER_TEMA
 import no.nav.sosialhjelp.soknad.app.Constants.TEMA_KOM
-import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.client.pdl.HentGeografiskTilknytningDto
 import no.nav.sosialhjelp.soknad.app.client.pdl.PdlApiQuery.HENT_GEOGRAFISK_TILKNYTNING
 import no.nav.sosialhjelp.soknad.app.client.pdl.PdlClient
@@ -18,6 +17,7 @@ import no.nav.sosialhjelp.soknad.navenhet.gt.dto.GeografiskTilknytningDto
 import no.nav.sosialhjelp.soknad.redis.GEOGRAFISK_TILKNYTNING_CACHE_KEY_PREFIX
 import no.nav.sosialhjelp.soknad.redis.PDL_CACHE_SECONDS
 import no.nav.sosialhjelp.soknad.redis.RedisService
+import org.slf4j.LoggerFactory.getLogger
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders.AUTHORIZATION
 import org.springframework.stereotype.Component
@@ -88,6 +88,6 @@ class GeografiskTilknytningClient(
     }
 
     companion object {
-        private val log by logger()
+        private val log = getLogger(GeografiskTilknytningClient::class.java)
     }
 }

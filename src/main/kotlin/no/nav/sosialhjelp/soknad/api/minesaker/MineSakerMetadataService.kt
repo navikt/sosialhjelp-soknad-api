@@ -2,8 +2,8 @@ package no.nav.sosialhjelp.soknad.api.minesaker
 
 import no.nav.sosialhjelp.soknad.api.TimeUtils.toUtc
 import no.nav.sosialhjelp.soknad.api.minesaker.dto.InnsendtSoknadDto
-import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -29,7 +29,7 @@ class MineSakerMetadataService(
     }
 
     companion object {
-        private val log by logger()
+        private val log = LoggerFactory.getLogger(MineSakerMetadataRessurs::class.java)
         private const val TEMA_NAVN = "Økonomisk sosialhjelp"
         private const val TEMA_KODE_KOM = "KOM"
     }

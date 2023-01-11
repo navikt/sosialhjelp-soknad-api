@@ -1,12 +1,12 @@
 package no.nav.sosialhjelp.soknad.personalia.person.domain
 
-import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.personalia.person.dto.EndringDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.FolkeregisterMetadataDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.MetadataDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.NavnDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.SivilstandDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.SivilstandType
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime
 
@@ -14,7 +14,7 @@ import java.time.LocalDateTime
 class MapperHelper {
 
     companion object {
-        private val log by logger()
+        private val log = LoggerFactory.getLogger(MapperHelper::class.java)
 
         private const val FREG = "FREG"
         private const val PDL = "PDL"

@@ -13,10 +13,10 @@ import no.nav.sosialhjelp.soknad.adressesok.sok.Paging
 import no.nav.sosialhjelp.soknad.adressesok.sok.SearchRule
 import no.nav.sosialhjelp.soknad.adressesok.sok.Sokedata
 import no.nav.sosialhjelp.soknad.adressesok.sok.SortBy
-import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.exceptions.SosialhjelpSoknadApiException
 import no.nav.sosialhjelp.soknad.kodeverk.KodeverkService
 import org.apache.commons.lang3.StringUtils
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 
 @Component
@@ -148,6 +148,6 @@ open class AdressesokService(
         private const val CRITERIA = "criteria"
         private const val WILDCARD_SUFFIX = "*"
 
-        private val log by logger()
+        private val log = LoggerFactory.getLogger(AdressesokService::class.java)
     }
 }

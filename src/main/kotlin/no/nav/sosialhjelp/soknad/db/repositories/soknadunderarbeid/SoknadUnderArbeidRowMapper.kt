@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectWriter
 import no.nav.sbl.soknadsosialhjelp.json.AdresseMixIn
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse
-import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
+import org.slf4j.LoggerFactory
 import org.springframework.jdbc.core.RowMapper
 import java.io.IOException
 import java.sql.ResultSet
@@ -41,6 +41,6 @@ class SoknadUnderArbeidRowMapper : RowMapper<SoknadUnderArbeid> {
     }
 
     companion object {
-        private val log by logger()
+        private val log = LoggerFactory.getLogger(SoknadUnderArbeidRowMapper::class.java)
     }
 }

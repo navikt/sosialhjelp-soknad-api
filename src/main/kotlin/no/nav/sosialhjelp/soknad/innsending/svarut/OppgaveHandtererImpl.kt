@@ -1,12 +1,12 @@
 package no.nav.sosialhjelp.soknad.innsending.svarut
 
-import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations
 import no.nav.sosialhjelp.soknad.db.repositories.oppgave.Oppgave
 import no.nav.sosialhjelp.soknad.db.repositories.oppgave.OppgaveRepository
 import no.nav.sosialhjelp.soknad.db.repositories.oppgave.Status
 import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
 import no.nav.sosialhjelp.soknad.scheduled.leaderelection.LeaderElection
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
@@ -29,7 +29,7 @@ class OppgaveHandtererImpl(
     @Scheduled(fixedDelay = PROSESS_RATE)
     fun prosesserOppgaver() {
         if (schedulerDisabled) {
-            log.info("Scheduler is disabled")
+            logger.info("Scheduler is disabled")
             return
         }
         if (leaderElection.isLeader()) {
@@ -39,7 +39,7 @@ class OppgaveHandtererImpl(
                 try {
                     fiksHandterer.eksekver(oppgave)
                 } catch (e: Exception) {
-                    log.error("Oppgave feilet, id: ${oppgave.id}, beh: ${oppgave.behandlingsId}", e)
+                    logger.error("Oppgave feilet, id: ${oppgave.id}, beh: ${oppgave.behandlingsId}", e)
                     oppgaveFeilet(oppgave)
                 }
 
@@ -55,17 +55,17 @@ class OppgaveHandtererImpl(
     @Scheduled(fixedDelay = RETRY_STUCK_RATE)
     fun retryStuckUnderArbeid() {
         if (schedulerDisabled) {
-            log.info("Scheduler is disabled")
+            logger.info("Scheduler is disabled")
             return
         }
         if (leaderElection.isLeader()) {
             try {
                 val antall = oppgaveRepository.retryOppgaveStuckUnderArbeid()
                 if (antall > 0) {
-                    log.info("Har satt $antall oppgaver tilbake til KLAR etter at de lå for lenge som UNDER_ARBEID.")
+                    logger.info("Har satt $antall oppgaver tilbake til KLAR etter at de lå for lenge som UNDER_ARBEID.")
                 }
             } catch (e: Exception) {
-                log.error("Uventet feil ved oppdatering av oppgaver som er stuck i UNDER_ARBEID")
+                logger.error("Uventet feil ved oppdatering av oppgaver som er stuck i UNDER_ARBEID")
             }
         }
     }
@@ -73,18 +73,18 @@ class OppgaveHandtererImpl(
     @Scheduled(fixedRate = RAPPORTER_RATE)
     fun rapporterFeilede() {
         if (schedulerDisabled) {
-            log.info("Scheduler is disabled")
+            logger.info("Scheduler is disabled")
             return
         }
         if (leaderElection.isLeader()) {
             prometheusMetricsService.resetOppgaverFeiletOgStuckUnderArbeid()
 
             val antallFeilede = oppgaveRepository.hentAntallFeilede()
-            log.info("Databasestatus for oppgaver: feilede er $antallFeilede")
+            logger.info("Databasestatus for oppgaver: feilede er $antallFeilede")
             prometheusMetricsService.reportOppgaverFeilet(antallFeilede)
 
             val antallStuckUnderArbeid = oppgaveRepository.hentAntallStuckUnderArbeid()
-            log.info("Databasestatus for oppgaver: lengearbeid er $antallStuckUnderArbeid")
+            logger.info("Databasestatus for oppgaver: lengearbeid er $antallStuckUnderArbeid")
             prometheusMetricsService.reportOppgaverStuckUnderArbeid(antallStuckUnderArbeid)
         }
     }
@@ -122,7 +122,7 @@ class OppgaveHandtererImpl(
 
     companion object {
         const val FORSTE_STEG_NY_INNSENDING = 21
-        private val log by logger()
+        private val logger = LoggerFactory.getLogger(OppgaveHandtererImpl::class.java)
         private const val FEIL_THRESHOLD = 20
         private const val PROSESS_RATE: Long = 10 * 1000 // 10 sek etter forrige
         private const val RAPPORTER_RATE: Long = 15 * 60 * 1000 // hvert kvarter

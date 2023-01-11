@@ -1,9 +1,9 @@
 package no.nav.sosialhjelp.soknad.auth.maskinporten
 
 import com.nimbusds.jwt.SignedJWT
-import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.exceptions.SosialhjelpSoknadApiException
 import no.nav.sosialhjelp.soknad.auth.maskinporten.dto.MaskinportenResponse
+import org.slf4j.LoggerFactory
 import org.springframework.http.MediaType
 import org.springframework.util.LinkedMultiValueMap
 import org.springframework.util.MultiValueMap
@@ -58,7 +58,7 @@ class MaskinportenClientImpl(
         }
 
     companion object {
-        private val log by logger()
+        private val log = LoggerFactory.getLogger(MaskinportenClientImpl::class.java)
 
         private const val GRANT_TYPE = "urn:ietf:params:oauth:grant-type:jwt-bearer"
         private const val TJUE_SEKUNDER: Long = 20

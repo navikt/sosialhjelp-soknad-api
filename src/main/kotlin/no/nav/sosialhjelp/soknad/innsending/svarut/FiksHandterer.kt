@@ -1,12 +1,12 @@
 package no.nav.sosialhjelp.soknad.innsending.svarut
 
-import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.db.repositories.oppgave.FiksResultat
 import no.nav.sosialhjelp.soknad.db.repositories.oppgave.Oppgave
 import no.nav.sosialhjelp.soknad.innsending.InnsendingService
 import no.nav.sosialhjelp.soknad.metrics.MetricsUtils.navKontorTilMetricNavn
 import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
 import org.apache.commons.lang3.StringUtils
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 
 @Component
@@ -17,7 +17,7 @@ class FiksHandterer(
 ) {
     fun eksekver(oppgave: Oppgave) {
         val behandlingsId = oppgave.behandlingsId
-        log.info("Kjører fikskjede for behandlingsid $behandlingsId, steg ${oppgave.steg}")
+        logger.info("Kjører fikskjede for behandlingsid $behandlingsId, steg ${oppgave.steg}")
 
         val resultat = oppgave.oppgaveResultat
             ?: throw IllegalStateException("Søknad med behandlingsId $behandlingsId har oppgaveResultat=null")
@@ -48,7 +48,7 @@ class FiksHandterer(
             resultat.fiksForsendelsesId = fiksSender.sendTilFiks(sendtSoknad)
             prometheusMetricsService.reportSendtMedSvarUt(sendtSoknad.erEttersendelse)
             prometheusMetricsService.reportSoknadMottaker(sendtSoknad.erEttersendelse, navKontorTilMetricNavn(sendtSoknad.navEnhetsnavn))
-            log.info("Søknad $behandlingsId fikk id ${resultat.fiksForsendelsesId} i Fiks")
+            logger.info("Søknad $behandlingsId fikk id ${resultat.fiksForsendelsesId} i Fiks")
         } catch (e: Exception) {
             resultat.feilmelding = e.message
             prometheusMetricsService.reportFeiletMedSvarUt(sendtSoknad.erEttersendelse)
@@ -66,6 +66,6 @@ class FiksHandterer(
 
     companion object {
         const val FIKS_OPPGAVE = "FiksOppgave"
-        private val log by logger()
+        private val logger = LoggerFactory.getLogger(FiksHandterer::class.java)
     }
 }

@@ -12,7 +12,6 @@ import no.nav.sosialhjelp.soknad.api.informasjon.dto.NyligInnsendteSoknaderRespo
 import no.nav.sosialhjelp.soknad.api.informasjon.dto.PabegyntSoknad
 import no.nav.sosialhjelp.soknad.api.nedetid.NedetidService
 import no.nav.sosialhjelp.soknad.app.Constants
-import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.mapper.KommuneTilNavEnhetMapper.digisoskommuner
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
@@ -54,7 +53,7 @@ open class InformasjonRessurs(
 ) {
 
     companion object {
-        private val log by logger()
+        private val logger = LoggerFactory.getLogger(InformasjonRessurs::class.java)
         private val klientlogger = LoggerFactory.getLogger("klientlogger")
         private const val FJORTEN_DAGER = 14
         private const val SOKNADSOSIALHJELP = "soknadsosialhjelp"
@@ -82,7 +81,7 @@ open class InformasjonRessurs(
         }
         if (StringUtils.isNotEmpty(type) && SOKNADSOSIALHJELP != type.lowercase(Locale.getDefault())) {
             val prefiksetType = "soknad" + type.lowercase(Locale.getDefault())
-            log.warn("Type $type matcher ikke et bundlename - forsøker med prefiks $prefiksetType")
+            logger.warn("Type $type matcher ikke et bundlename - forsøker med prefiks $prefiksetType")
             if (SOKNADSOSIALHJELP == prefiksetType) {
                 type = prefiksetType
             }
@@ -130,7 +129,7 @@ open class InformasjonRessurs(
     open fun triggeKommunelogg(
         @RequestParam("kommunenummer") kommunenummer: String
     ): String? {
-        log.info("Kommuneinfo trigget for $kommunenummer: ${kommuneInfoService.kommuneInfo(kommunenummer)}")
+        logger.info("Kommuneinfo trigget for $kommunenummer: ${kommuneInfoService.kommuneInfo(kommunenummer)}")
         return "$kommunenummer er logget. Sjekk kibana"
     }
 
@@ -143,7 +142,7 @@ open class InformasjonRessurs(
         val manueltPakobledeKommuner = mapManueltPakobledeKommunerTilKommunestatusFrontend(digisoskommuner)
         val digisosKommuner = mapDigisosKommunerTilKommunestatus(kommuneInfoService.hentAlleKommuneInfo())
         val kunManueltPakobledeKommuner = manueltPakobledeKommuner.keys.filter { !digisosKommuner.containsKey(it) }
-        log.info("/kommunestatus - Kommuner som kun er manuelt påkoblet via PROD_DIGISOS_KOMMUNER: $kunManueltPakobledeKommuner")
+        logger.info("/kommunestatus - Kommuner som kun er manuelt påkoblet via PROD_DIGISOS_KOMMUNER: $kunManueltPakobledeKommuner")
         return mergeManuelleKommunerMedDigisosKommunerKommunestatus(manueltPakobledeKommuner, digisosKommuner)
     }
 
@@ -158,7 +157,7 @@ open class InformasjonRessurs(
     @GetMapping("/pabegynteSoknader")
     open fun hentPabegynteSoknader(): List<PabegyntSoknad> {
         val fnr = SubjectHandlerUtils.getUserIdFromToken()
-        log.debug("Henter pabegynte soknader for bruker")
+        logger.debug("Henter pabegynte soknader for bruker")
         return pabegynteSoknaderService.hentPabegynteSoknaderForBruker(fnr)
     }
 

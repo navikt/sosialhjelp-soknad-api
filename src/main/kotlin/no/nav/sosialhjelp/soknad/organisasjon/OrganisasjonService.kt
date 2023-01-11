@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.organisasjon
 
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOrganisasjon
-import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 
 @Component
@@ -51,6 +51,6 @@ open class OrganisasjonService(
     }
 
     companion object {
-        private val log by logger()
+        private val log = LoggerFactory.getLogger(OrganisasjonService::class.java)
     }
 }

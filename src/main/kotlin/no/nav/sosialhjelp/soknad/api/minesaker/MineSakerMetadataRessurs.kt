@@ -6,8 +6,8 @@ import no.nav.sosialhjelp.soknad.api.minesaker.dto.InnsendtSoknadDto
 import no.nav.sosialhjelp.soknad.app.Constants.CLAIM_ACR_LEVEL_3
 import no.nav.sosialhjelp.soknad.app.Constants.CLAIM_ACR_LEVEL_4
 import no.nav.sosialhjelp.soknad.app.Constants.TOKENX
-import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
+import org.slf4j.LoggerFactory
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
@@ -37,6 +37,6 @@ open class MineSakerMetadataRessurs(
     }
 
     companion object {
-        private val log by logger()
+        private val log = LoggerFactory.getLogger(MineSakerMetadataRessurs::class.java)
     }
 }

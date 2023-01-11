@@ -1,9 +1,9 @@
 package no.nav.sosialhjelp.soknad.arbeid
 
-import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.arbeid.domain.Arbeidsforhold
 import no.nav.sosialhjelp.soknad.arbeid.dto.toDomain
 import no.nav.sosialhjelp.soknad.organisasjon.OrganisasjonService
+import org.slf4j.LoggerFactory.getLogger
 import org.springframework.stereotype.Component
 
 @Component
@@ -19,6 +19,6 @@ open class ArbeidsforholdService(
     }
 
     companion object {
-        private val log by logger()
+        private val log = getLogger(ArbeidsforholdService::class.java)
     }
 }
