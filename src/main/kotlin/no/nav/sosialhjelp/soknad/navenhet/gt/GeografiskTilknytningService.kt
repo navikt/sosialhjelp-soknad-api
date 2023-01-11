@@ -1,8 +1,8 @@
 package no.nav.sosialhjelp.soknad.navenhet.gt
 
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.navenhet.gt.dto.GeografiskTilknytningDto
 import no.nav.sosialhjelp.soknad.navenhet.gt.dto.GtType
-import org.slf4j.LoggerFactory.getLogger
 import org.springframework.stereotype.Component
 
 @Component
@@ -26,6 +26,6 @@ open class GeografiskTilknytningService(
     }
 
     companion object {
-        private val log = getLogger(GeografiskTilknytningService::class.java)
+        private val log by logger()
     }
 }

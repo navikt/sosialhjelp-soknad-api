@@ -1,8 +1,8 @@
 package no.nav.sosialhjelp.soknad.auth.maskinporten
 
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.client.config.proxiedWebClientBuilder
 import no.nav.sosialhjelp.soknad.app.exceptions.TjenesteUtilgjengeligException
-import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -52,7 +52,7 @@ open class MaskinportenClientConfig(
     )
 
     companion object {
-        private val log = LoggerFactory.getLogger(MaskinportenClientConfig::class.java)
+        private val log by logger()
     }
 }
 

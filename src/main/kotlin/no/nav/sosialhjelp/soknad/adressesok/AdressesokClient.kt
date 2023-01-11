@@ -3,6 +3,7 @@ package no.nav.sosialhjelp.soknad.adressesok
 import kotlinx.coroutines.runBlocking
 import no.nav.sosialhjelp.soknad.adressesok.dto.AdressesokResultDto
 import no.nav.sosialhjelp.soknad.app.Constants.BEARER
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.client.pdl.AdressesokDto
 import no.nav.sosialhjelp.soknad.app.client.pdl.PdlApiQuery.ADRESSE_SOK
 import no.nav.sosialhjelp.soknad.app.client.pdl.PdlClient
@@ -10,7 +11,6 @@ import no.nav.sosialhjelp.soknad.app.client.pdl.PdlRequest
 import no.nav.sosialhjelp.soknad.app.exceptions.PdlApiException
 import no.nav.sosialhjelp.soknad.app.exceptions.TjenesteUtilgjengeligException
 import no.nav.sosialhjelp.soknad.auth.azure.AzureadService
-import org.slf4j.LoggerFactory.getLogger
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders.AUTHORIZATION
 import org.springframework.stereotype.Component
@@ -49,6 +49,6 @@ open class AdressesokClient(
     private fun azureAdToken() = runBlocking { azureadService.getSystemToken(pdlScope) }
 
     companion object {
-        private val log = getLogger(AdressesokClient::class.java)
+        private val log by logger()
     }
 }

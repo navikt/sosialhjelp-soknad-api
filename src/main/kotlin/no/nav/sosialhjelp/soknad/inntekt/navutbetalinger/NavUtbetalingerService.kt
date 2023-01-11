@@ -1,6 +1,7 @@
 package no.nav.sosialhjelp.soknad.inntekt.navutbetalinger
 
 import no.finn.unleash.Unleash
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.domain.Komponent
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.domain.NavUtbetaling
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.NavUtbetalingerDto
@@ -9,7 +10,6 @@ import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.Utbetaling
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.Ytelse
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.Ytelseskomponent
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.toDomain
-import org.slf4j.LoggerFactory.getLogger
 import org.springframework.stereotype.Component
 import java.time.LocalDate
 
@@ -114,7 +114,7 @@ open class NavUtbetalingerService(
     }
 
     companion object {
-        private val log = getLogger(NavUtbetalingerService::class.java)
+        private val log by logger()
         private const val NAVYTELSE = "navytelse"
         private const val ORGNR_NAV = "889640782"
         const val BRUK_UTBETALDATATJENESTE_ENABLED = "sosialhjelp.soknad.bruk_sokos_utbetaldata_tjeneste"

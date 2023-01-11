@@ -11,6 +11,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedlegg
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.innsending.InnsendingService
@@ -18,7 +19,6 @@ import no.nav.sosialhjelp.soknad.pdf.SosialhjelpPdfGenerator
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.FileDetectionUtils.getMimeType
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.MimeTypes.APPLICATION_JSON
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.MimeTypes.APPLICATION_PDF
-import org.slf4j.LoggerFactory
 import java.io.ByteArrayInputStream
 import java.io.InputStream
 import java.nio.charset.StandardCharsets
@@ -139,7 +139,7 @@ class FiksDokumentHelper(
             ensureValidSoknad(soknad)
             soknad.toByteArray(StandardCharsets.UTF_8)
         } catch (e: JsonProcessingException) {
-            logger.error("Kunne ikke konvertere soknad.json til tekststreng", e)
+            log.error("Kunne ikke konvertere soknad.json til tekststreng", e)
             throw RuntimeException(e)
         }
     }
@@ -150,12 +150,12 @@ class FiksDokumentHelper(
             ensureValidVedlegg(jsonVedlegg)
             jsonVedlegg.toByteArray(StandardCharsets.UTF_8)
         } catch (e: JsonProcessingException) {
-            logger.error("Kunne ikke konvertere vedlegg.json til tekststreng", e)
+            log.error("Kunne ikke konvertere vedlegg.json til tekststreng", e)
             throw RuntimeException(e)
         }
     }
 
     companion object {
-        private val logger = LoggerFactory.getLogger(FiksDokumentHelper::class.java)
+        private val log by logger()
     }
 }

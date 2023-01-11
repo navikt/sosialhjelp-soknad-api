@@ -1,10 +1,10 @@
 package no.nav.sosialhjelp.soknad.scheduled
 
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.BatchSoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.innsending.SoknadService
 import no.nav.sosialhjelp.soknad.scheduled.leaderelection.LeaderElection
-import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
@@ -25,7 +25,7 @@ class SlettForeldedeEttersendelserScheduler(
     @Scheduled(fixedRate = SCHEDULE_RATE_MS)
     fun slettForeldedeEttersendelser() {
         if (schedulerDisabled) {
-            logger.warn("Scheduler is disabled")
+            log.warn("Scheduler is disabled")
             return
         }
         if (leaderElection.isLeader()) {
@@ -33,13 +33,13 @@ class SlettForeldedeEttersendelserScheduler(
             vellykket = 0
             feilet = 0
             if (batchEnabled) {
-                logger.info("Starter sletting av foreldede ettersendelser fra SoknadUnderArbeid-tabell")
+                log.info("Starter sletting av foreldede ettersendelser fra SoknadUnderArbeid-tabell")
 
                 hentForeldedeEttersendelserFraDatabaseOgSlett()
 
-                logger.info("Jobb fullført: $vellykket vellykket, $feilet feilet")
+                log.info("Jobb fullført: $vellykket vellykket, $feilet feilet")
             } else {
-                logger.warn("Batch disabled. Må sette environment property sendsoknad.batch.enabled til true for å sette den på igjen")
+                log.warn("Batch disabled. Må sette environment property sendsoknad.batch.enabled til true for å sette den på igjen")
             }
         }
     }
@@ -52,11 +52,11 @@ class SlettForeldedeEttersendelserScheduler(
 
                 // Avslutt prosessen hvis det er gått for lang tid. Tyder på at noe er nede.
                 if (harGaattForLangTid()) {
-                    logger.warn("Jobben har kjørt i mer enn $SCHEDULE_INTERRUPT_S s. Den blir derfor stoppet")
+                    log.warn("Jobben har kjørt i mer enn $SCHEDULE_INTERRUPT_S s. Den blir derfor stoppet")
                     return
                 }
             } else {
-                logger.warn("hentForeldedeEttersendelser har returnet soknadUnderArbeid som ikke er ettersendelse")
+                log.warn("hentForeldedeEttersendelser har returnet soknadUnderArbeid som ikke er ettersendelse")
             }
         }
     }
@@ -69,7 +69,7 @@ class SlettForeldedeEttersendelserScheduler(
             vellykket++
         } catch (e: Exception) {
             feilet++
-            logger.error("Avbryt feilet for ettersending ${soknadUnderArbeid.soknadId}.", e)
+            log.error("Avbryt feilet for ettersending ${soknadUnderArbeid.soknadId}.", e)
             Thread.sleep(1000) // Så loggen ikke blir fylt opp
         }
     }
@@ -77,11 +77,11 @@ class SlettForeldedeEttersendelserScheduler(
     private fun harGaattForLangTid(): Boolean {
         return batchStartTime
             ?.let { LocalDateTime.now().isAfter(it.plusSeconds(SCHEDULE_INTERRUPT_S)) }
-            ?: true.also { logger.warn("SlettForeldedeEttersendelserScheduler finner ikke batchStartTime - avbryter batchjobben") }
+            ?: true.also { log.warn("SlettForeldedeEttersendelserScheduler finner ikke batchStartTime - avbryter batchjobben") }
     }
 
     companion object {
-        private val logger = LoggerFactory.getLogger(SlettForeldedeEttersendelserScheduler::class.java)
+        private val log by logger()
         private const val SCHEDULE_RATE_MS: Long = 1000 * 60 * 60 // 1 time
         private const val SCHEDULE_INTERRUPT_S: Long = 60 * 10 // 10 min
     }

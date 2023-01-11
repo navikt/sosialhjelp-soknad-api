@@ -9,6 +9,7 @@ import no.ks.fiks.svarut.klient.model.NoarkMetadataFraAvleverendeSaksSystem
 import no.ks.fiks.svarut.klient.model.PostAdresse
 import no.ks.fiks.svarut.klient.model.UtskriftsKonfigurasjon
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.db.repositories.sendtsoknad.SendtSoknad
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
@@ -16,7 +17,6 @@ import no.nav.sosialhjelp.soknad.innsending.InnsendingService
 import no.nav.sosialhjelp.soknad.innsending.SenderUtils.createPrefixedBehandlingsId
 import no.nav.sosialhjelp.soknad.innsending.svarut.client.SvarUtService
 import no.nav.sosialhjelp.soknad.pdf.SosialhjelpPdfGenerator
-import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import java.io.InputStream
@@ -157,6 +157,6 @@ class FiksSender(
     companion object {
         const val SOKNAD_TIL_NAV = "Søknad til NAV"
         const val ETTERSENDELSE_TIL_NAV = "Ettersendelse til NAV"
-        private val log = LoggerFactory.getLogger(FiksSender::class.java)
+        private val log by logger()
     }
 }

@@ -2,13 +2,13 @@ package no.nav.sosialhjelp.soknad.innsending
 
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.VedleggMetadata
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
-import org.slf4j.LoggerFactory
 import java.util.UUID
 
 object JsonVedleggUtils {
-    private val log = LoggerFactory.getLogger(JsonVedleggUtils::class.java)
+    private val log by logger()
 
     const val FEATURE_UTVIDE_VEDLEGGJSON = "sosialhjelp.soknad.utvide-vedlegg-json"
     const val ANNET = "annet"

@@ -7,12 +7,12 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper
 import no.nav.sosialhjelp.api.fiks.KommuneInfo
-import org.slf4j.LoggerFactory
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import java.io.IOException
 
 object RedisUtils {
 
-    private val log = LoggerFactory.getLogger(RedisUtils::class.java)
+    private val log by logger()
 
     val redisObjectMapper: ObjectMapper = JsonSosialhjelpObjectMapper.createObjectMapper()
         .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
