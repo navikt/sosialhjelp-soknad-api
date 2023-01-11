@@ -38,6 +38,7 @@ internal class KontonummerServiceTest {
     internal fun legacyClientReturnererKontonummer() {
         every { unleash.isEnabled(KontonummerService.BRUK_KONTOREGISTER_ENABLED, true) } returns false
         every { kontonummerClient.getKontonummerLegacy(any()) } returns KontonummerDto("1234")
+        every { kontonummerClient.getKontonummer(any()) } returns KontoDto("1337", null) // grunnet skyggeproduksjon
 
         val kontonummer = kontonummerService.getKontonummer("ident")
 
@@ -48,6 +49,7 @@ internal class KontonummerServiceTest {
     internal fun legacyClientReturnererKontonummerNull() {
         every { unleash.isEnabled(KontonummerService.BRUK_KONTOREGISTER_ENABLED, true) } returns false
         every { kontonummerClient.getKontonummerLegacy(any()) } returns KontonummerDto(null)
+        every { kontonummerClient.getKontonummer(any()) } returns null // grunnet skyggeproduksjon
 
         val kontonummer = kontonummerService.getKontonummer("ident")
 
