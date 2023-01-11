@@ -23,7 +23,6 @@ const val PDL_CACHE_SECONDS = 30 * 60L // 30 minutter
 const val KRR_CACHE_KEY_PREFIX = "krr-"
 const val KONTONUMMER_CACHE_KEY_PREFIX = "kontonummer-"
 const val UTBETALDATA_CACHE_KEY_PREFIX = "utbetaldata-"
-const val NAVUTBETALINGER_CACHE_KEY_PREFIX = "navutbetalinger-"
 
 const val TOKENDINGS_CACHE_KEY_PREFIX = "tokendings-"
 const val AZURE_SYSTEM_TOKEN = "azure-"
