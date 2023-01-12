@@ -31,7 +31,7 @@ management:
 
 springdoc:
   api-docs:
-    enabled: ${SWAGGER_ENABLED}
+    enabled: ${SWAGGER_ENABLED:false}
 
 # rest
 digisos_api_baseurl: ${DIGISOS_API_BASEURL}
