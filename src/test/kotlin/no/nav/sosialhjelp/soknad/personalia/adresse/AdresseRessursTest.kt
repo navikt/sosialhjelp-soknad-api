@@ -25,7 +25,12 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderAr
 import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.navenhet.NavEnhetRessurs
 import no.nav.sosialhjelp.soknad.navenhet.dto.NavEnhetFrontend
-import no.nav.sosialhjelp.soknad.personalia.adresse.dto.*
+import no.nav.sosialhjelp.soknad.personalia.adresse.dto.AdresseFrontend
+import no.nav.sosialhjelp.soknad.personalia.adresse.dto.AdresserFrontend
+import no.nav.sosialhjelp.soknad.personalia.adresse.dto.AdresserFrontendInput
+import no.nav.sosialhjelp.soknad.personalia.adresse.dto.GateadresseFrontend
+import no.nav.sosialhjelp.soknad.personalia.adresse.dto.MatrikkeladresseFrontend
+import no.nav.sosialhjelp.soknad.personalia.adresse.dto.UstrukturertAdresseFrontend
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
