@@ -41,7 +41,7 @@ open class AdresseRessurs(
         val jsonOppholdsadresse = jsonInternalSoknad.soknad.data.personalia.oppholdsadresse
         val sysFolkeregistrertAdresse = jsonInternalSoknad.soknad.data.personalia.folkeregistrertAdresse
         val sysMidlertidigAdresse = adresseSystemdata.innhentMidlertidigAdresse(personIdentifikator)
-        val navEnhet = navEnhetRessurs.hentValgtNavEnhet(behandlingsId)
+        val navEnhet = try { navEnhetRessurs.hentValgtNavEnhet(behandlingsId) } catch (e: Exception) { null }
         jsonInternalSoknad.midlertidigAdresse = sysMidlertidigAdresse
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
         return AdresseMapper.mapToAdresserFrontend(
