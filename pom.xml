@@ -15,7 +15,7 @@
     <repositories>
         <repository>
             <id>maven-snapshots</id>
-            <url>http://oss.sonatype.org/content/repositories/snapshots</url>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
             <layout>default</layout>
             <releases>
                 <enabled>false</enabled>
@@ -54,6 +54,7 @@
         <svarut-rest-klient.version>1.2.0</svarut-rest-klient.version>
         <kryptering.version>1.3.0</kryptering.version>
 
+        <springdoc.version>1.6.13</springdoc.version>
         <spring-boot.version>2.7.6</spring-boot.version>
         <spring.version>5.3.24</spring.version>
         <jetty.version>9.4.49.v20220914</jetty.version>
@@ -791,6 +792,16 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-jdbc</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-ui</artifactId>
+            <version>${springdoc.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-kotlin</artifactId>
+            <version>${springdoc.version}</version>
         </dependency>
 
         <!-- Reactor netty -->

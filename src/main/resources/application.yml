@@ -29,6 +29,10 @@ management:
       exposure:
         include: metrics, prometheus
 
+springdoc:
+  api-docs:
+    enabled: ${SWAGGER_ENABLED:false}
+
 # rest
 digisos_api_baseurl: ${DIGISOS_API_BASEURL}
 ereg_url: ${EREG_URL}
