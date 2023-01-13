@@ -2,12 +2,20 @@ package no.nav.sosialhjelp.soknad.personalia.adresse.dto
 
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresseValg
+import no.nav.sosialhjelp.soknad.navenhet.dto.NavEnhetFrontend
 
+data class AdresserFrontendInput(
+    val valg: JsonAdresseValg?,
+    val folkeregistrert: AdresseFrontend? = null,
+    val midlertidig: AdresseFrontend? = null,
+    val soknad: AdresseFrontend? = null,
+)
 data class AdresserFrontend(
     val valg: JsonAdresseValg?,
     val folkeregistrert: AdresseFrontend? = null,
     val midlertidig: AdresseFrontend? = null,
-    val soknad: AdresseFrontend? = null
+    val soknad: AdresseFrontend? = null,
+    val navEnhet: NavEnhetFrontend? = null
 )
 
 data class AdresseFrontend(

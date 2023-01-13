@@ -27,6 +27,7 @@ import no.nav.sosialhjelp.soknad.navenhet.NavEnhetRessurs
 import no.nav.sosialhjelp.soknad.navenhet.dto.NavEnhetFrontend
 import no.nav.sosialhjelp.soknad.personalia.adresse.dto.AdresseFrontend
 import no.nav.sosialhjelp.soknad.personalia.adresse.dto.AdresserFrontend
+import no.nav.sosialhjelp.soknad.personalia.adresse.dto.AdresserFrontendInput
 import no.nav.sosialhjelp.soknad.personalia.adresse.dto.GateadresseFrontend
 import no.nav.sosialhjelp.soknad.personalia.adresse.dto.MatrikkeladresseFrontend
 import no.nav.sosialhjelp.soknad.personalia.adresse.dto.UstrukturertAdresseFrontend
@@ -140,7 +141,7 @@ internal class AdresseRessursTest {
         val soknadUnderArbeidSlot = slot<SoknadUnderArbeid>()
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(soknadUnderArbeidSlot), any()) } just runs
 
-        val adresserFrontend = AdresserFrontend(valg = JsonAdresseValg.FOLKEREGISTRERT)
+        val adresserFrontend = AdresserFrontendInput(valg = JsonAdresseValg.FOLKEREGISTRERT)
         val navEnheter = adresseRessurs.updateAdresse(BEHANDLINGSID, adresserFrontend)
 
         val soknadUnderArbeid = soknadUnderArbeidSlot.captured
@@ -166,7 +167,7 @@ internal class AdresseRessursTest {
         val soknadUnderArbeidSlot = slot<SoknadUnderArbeid>()
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(soknadUnderArbeidSlot), any()) } just runs
 
-        val adresserFrontend = AdresserFrontend(
+        val adresserFrontend = AdresserFrontendInput(
             valg = JsonAdresseValg.MIDLERTIDIG,
             soknad = AdresseFrontend()
         )
@@ -194,14 +195,14 @@ internal class AdresseRessursTest {
         val soknadUnderArbeidSlot = slot<SoknadUnderArbeid>()
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(soknadUnderArbeidSlot), any()) } just runs
 
-        val adresserFrontend = AdresserFrontend(
+        val adresserFrontendInput = AdresserFrontendInput(
             valg = JsonAdresseValg.SOKNAD,
             soknad = AdresseFrontend(
                 type = JsonAdresse.Type.GATEADRESSE,
                 gateadresse = GateadresseFrontend(gatenavn = "Søknadsgata")
             )
         )
-        val navEnheter = adresseRessurs.updateAdresse(BEHANDLINGSID, adresserFrontend)
+        val navEnheter = adresseRessurs.updateAdresse(BEHANDLINGSID, adresserFrontendInput)
 
         val soknadUnderArbeid = soknadUnderArbeidSlot.captured
         val oppholdsadresse = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia.oppholdsadresse
@@ -225,9 +226,9 @@ internal class AdresseRessursTest {
     @Test
     fun putAdresserSkalKasteAuthorizationExceptionVedManglendeTilgang() {
         every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } throws AuthorizationException("Not for you my friend")
-        val adresserFrontend = AdresserFrontend(valg = JsonAdresseValg.FOLKEREGISTRERT, null, null, null)
+        val adresserFrontendInput = AdresserFrontendInput(valg = JsonAdresseValg.FOLKEREGISTRERT, null, null, null)
         Assertions.assertThatExceptionOfType(AuthorizationException::class.java)
-            .isThrownBy { adresseRessurs.updateAdresse(BEHANDLINGSID, adresserFrontend) }
+            .isThrownBy { adresseRessurs.updateAdresse(BEHANDLINGSID, adresserFrontendInput) }
         verify { soknadUnderArbeidRepository wasNot called }
     }
 

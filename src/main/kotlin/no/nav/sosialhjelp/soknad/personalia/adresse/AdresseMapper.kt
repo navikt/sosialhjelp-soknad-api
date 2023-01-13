@@ -5,6 +5,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonGateAdresse
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonMatrikkelAdresse
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonUstrukturertAdresse
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
+import no.nav.sosialhjelp.soknad.navenhet.dto.NavEnhetFrontend
 import no.nav.sosialhjelp.soknad.personalia.adresse.dto.AdresseFrontend
 import no.nav.sosialhjelp.soknad.personalia.adresse.dto.AdresserFrontend
 import no.nav.sosialhjelp.soknad.personalia.adresse.dto.GateadresseFrontend
@@ -17,13 +18,15 @@ object AdresseMapper {
     fun mapToAdresserFrontend(
         sysFolkeregistrert: JsonAdresse?,
         sysMidlertidig: JsonAdresse?,
-        jsonOpphold: JsonAdresse?
+        jsonOpphold: JsonAdresse?,
+        navEnhet: NavEnhetFrontend?
     ): AdresserFrontend {
         return AdresserFrontend(
             valg = jsonOpphold?.adresseValg,
             folkeregistrert = mapToAdresseFrontend(sysFolkeregistrert),
             midlertidig = mapToAdresseFrontend(sysMidlertidig),
-            soknad = mapToAdresseFrontend(jsonOpphold)
+            soknad = mapToAdresseFrontend(jsonOpphold),
+            navEnhet = navEnhet
         )
     }
 
