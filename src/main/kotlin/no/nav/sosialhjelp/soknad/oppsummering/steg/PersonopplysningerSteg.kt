@@ -57,7 +57,7 @@ class PersonopplysningerSteg {
                         Felt(
                             type = Type.SYSTEMDATA,
                             label = "kontakt.system.personalia.statsborgerskap",
-                            svar = personalia.statsborgerskap?.let { createSvar(it.verdi, SvarType.TEKST) }
+                            svar = createSvar(personalia.statsborgerskap?.verdi, SvarType.TEKST)
                         )
                     )
                 )
