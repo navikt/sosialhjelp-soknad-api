@@ -69,7 +69,7 @@ class FiksSender(
             .withDokumenter(hentDokumenterFraSoknad(soknadUnderArbeid, map))
             .withMetadataFraAvleverendeSystem(
                 NoarkMetadataFraAvleverendeSaksSystem()
-                    .withDokumentetsDato(Date.valueOf(soknadMetadata.sistEndretDato.toLocalDate())) // evt innsendtDato?
+                    .withDokumentetsDato(Date.valueOf(soknadMetadata.sistEndretDato.toLocalDate()))
             )
     }
 
