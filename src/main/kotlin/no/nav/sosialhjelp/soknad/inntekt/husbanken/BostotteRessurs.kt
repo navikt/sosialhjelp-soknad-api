@@ -16,28 +16,27 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderAr
 import no.nav.sosialhjelp.soknad.tekster.TextService
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import org.springframework.http.HttpHeaders
-import org.springframework.stereotype.Controller
-import javax.ws.rs.GET
-import javax.ws.rs.HeaderParam
-import javax.ws.rs.POST
-import javax.ws.rs.PUT
-import javax.ws.rs.Path
-import javax.ws.rs.PathParam
-import javax.ws.rs.Produces
-import javax.ws.rs.core.MediaType
+import org.springframework.http.MediaType
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestHeader
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
 
-@Controller
+@RestController
 @ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4])
-@Path("/soknader/{behandlingsId}/inntekt/bostotte")
-@Produces(MediaType.APPLICATION_JSON)
+@RequestMapping("/soknader/{behandlingsId}/inntekt/bostotte", produces = [MediaType.APPLICATION_JSON_VALUE])
 open class BostotteRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val bostotteSystemdata: BostotteSystemdata,
     private val textService: TextService
 ) {
-    @GET
-    open fun hentBostotte(@PathParam("behandlingsId") behandlingsId: String): BostotteFrontend {
+    @GetMapping
+    open fun hentBostotte(@PathVariable("behandlingsId") behandlingsId: String): BostotteFrontend {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).jsonInternalSoknad
@@ -54,11 +53,11 @@ open class BostotteRessurs(
         )
     }
 
-    @PUT
+    @PutMapping
     open fun updateBostotte(
-        @PathParam("behandlingsId") behandlingsId: String,
-        bostotteFrontend: BostotteFrontend,
-        @HeaderParam(value = HttpHeaders.AUTHORIZATION) token: String?
+        @PathVariable("behandlingsId") behandlingsId: String,
+        @RequestBody bostotteFrontend: BostotteFrontend,
+        @RequestHeader(value = HttpHeaders.AUTHORIZATION) token: String?
     ) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         val eier = SubjectHandlerUtils.getUserIdFromToken()
@@ -94,12 +93,11 @@ open class BostotteRessurs(
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
     }
 
-    @POST
-    @Path(value = "/samtykke")
+    @PostMapping("/samtykke")
     open fun updateSamtykke(
-        @PathParam("behandlingsId") behandlingsId: String,
-        samtykke: Boolean,
-        @HeaderParam(value = HttpHeaders.AUTHORIZATION) token: String?
+        @PathVariable("behandlingsId") behandlingsId: String,
+        @RequestBody samtykke: Boolean,
+        @RequestHeader(value = HttpHeaders.AUTHORIZATION) token: String?
     ) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         val eier = SubjectHandlerUtils.getUserIdFromToken()

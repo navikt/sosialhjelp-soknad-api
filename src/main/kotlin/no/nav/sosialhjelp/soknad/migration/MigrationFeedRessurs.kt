@@ -3,53 +3,50 @@ package no.nav.sosialhjelp.soknad.migration
 import no.finn.unleash.Unleash
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.soknad.app.Constants
-import org.springframework.stereotype.Controller
+import no.nav.sosialhjelp.soknad.migration.dto.ReplicationDto
+import no.nav.sosialhjelp.soknad.migration.dto.SjekksumDto
+import org.springframework.http.HttpStatus
+import org.springframework.http.MediaType
+import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.RestController
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME
-import javax.ws.rs.GET
-import javax.ws.rs.Path
-import javax.ws.rs.Produces
-import javax.ws.rs.QueryParam
-import javax.ws.rs.core.MediaType
-import javax.ws.rs.core.Response
-import javax.ws.rs.core.Response.Status.OK
-import javax.ws.rs.core.Response.Status.SERVICE_UNAVAILABLE
 
-@Controller
+@RestController
 @ProtectedWithClaims(issuer = Constants.TOKENX, claimMap = [Constants.CLAIM_ACR_LEVEL_4])
-@Path("/internal/migration")
-@Produces(MediaType.APPLICATION_JSON)
+@RequestMapping("/internal/migration", produces = [MediaType.APPLICATION_JSON_VALUE])
 open class MigrationFeedRessurs(
     private val migrationService: MigrationService,
     private val unleash: Unleash,
 ) {
 
-    @GET
-    @Path("/feed")
+    @GetMapping("/feed")
     fun getNextSoknadForMigration(
-        @QueryParam("sistEndretDato") sistEndretDatoString: String?,
-    ): Response {
+        @RequestParam("sistEndretDato") sistEndretDatoString: String?,
+    ): ResponseEntity<ReplicationDto> {
         if (!unleash.isEnabled(MIGRATION_API_ENABLED)) {
-            return Response.status(SERVICE_UNAVAILABLE).build()
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).build()
         }
 
         val sistEndretDato = sistEndretDatoString?.let { LocalDateTime.parse(it, ISO_LOCAL_DATE_TIME) } ?: LocalDateTime.MIN
         val next = migrationService.getNext(sistEndretDato)
-        return Response.status(OK).type(MediaType.APPLICATION_JSON_TYPE).entity(next).build()
+        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(next)
     }
 
     /**
      * Endepunkt som skal kunne trigges for å verifisere at antall rader i oracle-db == antall rader i postgres-db
      */
-    @GET
-    @Path("/sjekksum")
-    fun getSjekksum(): Response {
+    @GetMapping("/sjekksum")
+    fun getSjekksum(): ResponseEntity<SjekksumDto> {
         if (!unleash.isEnabled(MIGRATION_API_ENABLED)) {
-            return Response.status(SERVICE_UNAVAILABLE).build()
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).build()
         }
 
         val sjekksum = migrationService.getSjekksum()
-        return Response.ok().type(MediaType.APPLICATION_JSON_TYPE).entity(sjekksum).build()
+        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(sjekksum)
     }
 
     companion object {

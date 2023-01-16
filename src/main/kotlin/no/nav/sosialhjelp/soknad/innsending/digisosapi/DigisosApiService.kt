@@ -6,12 +6,13 @@ import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator.ensureValidSok
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator.ensureValidVedlegg
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataInnsendingStatus
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.VedleggMetadata
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.VedleggMetadataListe
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.Vedleggstatus
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
-import no.nav.sosialhjelp.soknad.innsending.HenvendelseService
 import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils.getVedleggFromInternalSoknad
 import no.nav.sosialhjelp.soknad.innsending.SenderUtils.createPrefixedBehandlingsId
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
@@ -20,15 +21,18 @@ import no.nav.sosialhjelp.soknad.metrics.PrometheusMetricsService
 import no.nav.sosialhjelp.soknad.metrics.VedleggskravStatistikkUtil.genererOgLoggVedleggskravStatistikk
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
+import java.time.Clock
+import java.time.LocalDateTime
 
 @Component
 class DigisosApiService(
     private val digisosApiV2Client: DigisosApiV2Client,
-    private val henvendelseService: HenvendelseService,
     private val soknadUnderArbeidService: SoknadUnderArbeidService,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
+    private val soknadMetadataRepository: SoknadMetadataRepository,
     private val dokumentListeService: DokumentListeService,
     private val prometheusMetricsService: PrometheusMetricsService,
+    private val clock: Clock
 ) {
     private val objectMapper = JsonSosialhjelpObjectMapper.createObjectMapper()
 
@@ -40,7 +44,7 @@ class DigisosApiService(
         soknadUnderArbeidService.settInnsendingstidspunktPaSoknad(soknadUnderArbeid)
         log.info("Starter innsending av søknad med behandlingsId $behandlingsId, skal sendes til DigisosApi v2")
         val vedlegg = convertToVedleggMetadataListe(soknadUnderArbeid)
-        henvendelseService.oppdaterMetadataVedAvslutningAvSoknad(behandlingsId, vedlegg, soknadUnderArbeid, true)
+        oppdaterMetadataVedAvslutningAvSoknad(behandlingsId, vedlegg, soknadUnderArbeid)
         val filOpplastinger = dokumentListeService.getFilOpplastingList(soknadUnderArbeid)
         val soknadJson = getSoknadJson(soknadUnderArbeid)
         val tilleggsinformasjonJson = getTilleggsinformasjonJson(jsonInternalSoknad.soknad)
@@ -74,6 +78,22 @@ class DigisosApiService(
         prometheusMetricsService.reportSendtMedDigisosApi()
         prometheusMetricsService.reportSoknadMottaker(soknadUnderArbeid.erEttersendelse, navKontorTilMetricNavn(navEnhetsnavn))
         return digisosId
+    }
+
+    private fun oppdaterMetadataVedAvslutningAvSoknad(
+        behandlingsId: String?,
+        vedlegg: VedleggMetadataListe,
+        soknadUnderArbeid: SoknadUnderArbeid
+    ) {
+        val soknadMetadata = soknadMetadataRepository.hent(behandlingsId)
+        soknadMetadata?.vedlegg = vedlegg
+        soknadMetadata?.orgnr = soknadUnderArbeid.jsonInternalSoknad?.mottaker?.organisasjonsnummer
+        soknadMetadata?.navEnhet = soknadUnderArbeid.jsonInternalSoknad?.mottaker?.navEnhetsnavn
+        soknadMetadata?.sistEndretDato = LocalDateTime.now(clock)
+        soknadMetadata?.innsendtDato = LocalDateTime.now(clock)
+        soknadMetadata?.status = SoknadMetadataInnsendingStatus.SENDT_MED_DIGISOS_API
+        soknadMetadataRepository.oppdater(soknadMetadata)
+        log.info("Søknad avsluttet $behandlingsId ${soknadMetadata?.skjema}, ${vedlegg.vedleggListe.size}")
     }
 
     private fun getSoknadJson(soknadUnderArbeid: SoknadUnderArbeid): String {

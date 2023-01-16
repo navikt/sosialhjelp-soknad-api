@@ -1,25 +1,33 @@
 package no.nav.sosialhjelp.soknad.app.filter
 
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
-import javax.ws.rs.container.ContainerRequestContext
-import javax.ws.rs.container.ContainerResponseContext
-import javax.ws.rs.container.ContainerResponseFilter
-import javax.ws.rs.ext.Provider
+import org.springframework.stereotype.Component
+import javax.servlet.Filter
+import javax.servlet.FilterChain
+import javax.servlet.FilterConfig
+import javax.servlet.ServletRequest
+import javax.servlet.ServletResponse
+import javax.servlet.http.HttpServletRequest
+import javax.servlet.http.HttpServletResponse
 
-@Provider
-class CORSFilter : ContainerResponseFilter {
+@Component
+class CORSFilter : Filter {
 
-    override fun filter(requestContext: ContainerRequestContext, responseContext: ContainerResponseContext) {
-        val origin = requestContext.getHeaderString("Origin") ?: "*"
+    override fun init(filterConfig: FilterConfig?) {
+        super.init(filterConfig)
+    }
+
+    override fun doFilter(request: ServletRequest, response: ServletResponse, chain: FilterChain) {
+        val httpResponse = response as HttpServletResponse
+        val origin = if (request is HttpServletRequest) (request.getHeader("Origin")) else null
+
         if (MiljoUtils.isNonProduction() || ALLOWED_ORIGINS.contains(origin)) {
-            responseContext.headers.add("Access-Control-Allow-Origin", origin)
-            responseContext.headers.add(
-                "Access-Control-Allow-Headers",
-                "Origin, Content-Type, Accept, X-XSRF-TOKEN, Nav-Call-Id, Authorization, sentry-trace, baggage"
-            )
-            responseContext.headers.add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
-            responseContext.headers.add("Access-Control-Allow-Credentials", "true")
+            httpResponse.setHeader("Access-Control-Allow-Origin", origin)
+            httpResponse.setHeader("Access-Control-Allow-Headers", "Origin, Content-Type, Accept, X-XSRF-TOKEN, Nav-Call-Id, Authorization, sentry-trace, baggage")
+            httpResponse.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+            httpResponse.setHeader("Access-Control-Allow-Credentials", "true")
         }
+        chain.doFilter(request, httpResponse)
     }
 
     companion object {

@@ -10,12 +10,12 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomiOpplysn
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktFormue
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktInntekt
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktUtgift
+import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
 import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.addUtgiftIfNotPresentInOpplysninger
 import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.removeUtgiftIfPresentInOpplysninger
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggFrontend
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggRadFrontend
 import org.apache.commons.lang3.StringUtils.isEmpty
-import javax.ws.rs.NotFoundException
 
 object OkonomiskeOpplysningerMapper {
 
@@ -33,7 +33,7 @@ object OkonomiskeOpplysningerMapper {
                 inntekter.addAll(mapToInntektList(vedleggFrontend.rader, inntekt))
                 jsonOkonomi.oversikt.inntekt = inntekter
             }
-            ?: throw NotFoundException("Disse opplysningene tilhører $soknadType utgift som har blitt tatt bort fra søknaden. Er det flere tabber oppe samtidig?")
+            ?: throw IkkeFunnetException("Disse opplysningene tilhører $soknadType utgift som har blitt tatt bort fra søknaden. Er det flere tabber oppe samtidig?")
     }
 
     fun addAllInntekterToJsonOkonomiUtbetalinger(
@@ -50,7 +50,7 @@ object OkonomiskeOpplysningerMapper {
                 inntekter.addAll(mapToUtbetalingList(vedleggFrontend.rader, inntekt, false))
                 jsonOkonomi.opplysninger.utbetaling = inntekter
             }
-            ?: throw NotFoundException("Disse opplysningene tilhører $soknadType utgift som har blitt tatt bort fra søknaden. Er det flere tabber oppe samtidig?")
+            ?: throw IkkeFunnetException("Disse opplysningene tilhører $soknadType utgift som har blitt tatt bort fra søknaden. Er det flere tabber oppe samtidig?")
     }
 
     fun addAllFormuerToJsonOkonomi(
@@ -67,7 +67,7 @@ object OkonomiskeOpplysningerMapper {
                 formuer.addAll(mapToFormueList(vedleggFrontend.rader, formue))
                 jsonOkonomi.oversikt.formue = formuer
             }
-            ?: throw NotFoundException("Dette vedlegget tilhører $soknadType utgift som har blitt tatt bort fra søknaden. Har du flere tabber oppe samtidig?")
+            ?: throw IkkeFunnetException("Dette vedlegget tilhører $soknadType utgift som har blitt tatt bort fra søknaden. Har du flere tabber oppe samtidig?")
     }
 
     fun addAllOversiktUtgifterToJsonOkonomi(
@@ -90,7 +90,7 @@ object OkonomiskeOpplysningerMapper {
                 // ----------------------------------------------------------------------------------------
                 jsonOkonomi.oversikt.utgift = utgifter
             }
-            ?: throw NotFoundException("Dette vedlegget tilhører $soknadType utgift som har blitt tatt bort fra søknaden. Har du flere tabber oppe samtidig?")
+            ?: throw IkkeFunnetException("Dette vedlegget tilhører $soknadType utgift som har blitt tatt bort fra søknaden. Har du flere tabber oppe samtidig?")
     }
 
     fun addAllOpplysningUtgifterToJsonOkonomi(
@@ -122,7 +122,7 @@ object OkonomiskeOpplysningerMapper {
                 utgifter.addAll(mapToOppysningUtgiftList(vedleggFrontend.rader, utgift))
                 jsonOkonomi.opplysninger.utgift = utgifter
             }
-            ?: throw NotFoundException("Dette vedlegget tilhører $soknadType utgift som har blitt tatt bort fra søknaden. Har du flere tabber oppe samtidig?")
+            ?: throw IkkeFunnetException("Dette vedlegget tilhører $soknadType utgift som har blitt tatt bort fra søknaden. Har du flere tabber oppe samtidig?")
     }
 
     private fun checkIfTypeAnnetAnnetShouldBeRemoved(vedleggFrontend: VedleggFrontend): Boolean {
@@ -145,7 +145,7 @@ object OkonomiskeOpplysningerMapper {
                 utbetalinger.addAll(mapToUtbetalingList(vedleggFrontend.rader, eksisterendeUtbetaling, true))
                 jsonOkonomi.opplysninger.utbetaling = utbetalinger
             }
-            ?: throw NotFoundException("Dette vedlegget tilhører $soknadType utgift som har blitt tatt bort fra søknaden. Har du flere tabber oppe samtidig?")
+            ?: throw IkkeFunnetException("Dette vedlegget tilhører $soknadType utgift som har blitt tatt bort fra søknaden. Har du flere tabber oppe samtidig?")
     }
 
     private fun addBoliglanRenterToUtgifter(
@@ -160,7 +160,7 @@ object OkonomiskeOpplysningerMapper {
                 utgifter.removeAll(utgifter.filter { it.type == soknadType })
                 utgifter.addAll(mapToOversiktUtgiftList(vedleggFrontend.rader, renter))
             }
-            ?: throw NotFoundException("Dette vedlegget tilhører $soknadType utgift som har blitt tatt bort fra søknaden. Har du flere tabber oppe samtidig?")
+            ?: throw IkkeFunnetException("Dette vedlegget tilhører $soknadType utgift som har blitt tatt bort fra søknaden. Har du flere tabber oppe samtidig?")
     }
 
     private fun mapToInntektList(

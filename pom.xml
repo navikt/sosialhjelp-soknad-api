@@ -15,7 +15,7 @@
     <repositories>
         <repository>
             <id>maven-snapshots</id>
-            <url>http://oss.sonatype.org/content/repositories/snapshots</url>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
             <layout>default</layout>
             <releases>
                 <enabled>false</enabled>
@@ -48,24 +48,24 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <sosialhjelp-common.version>1.20221108.1040-97f1b80</sosialhjelp-common.version>
-        <filformat.version>1.2022.12.02-08.47-423f51003cee</filformat.version>
+        <filformat.version>1.2022.12.22-12.23-e5a89d40cc3c</filformat.version>
 
         <!-- Fiks/KS -->
-        <svarut-rest-klient.version>1.1.0</svarut-rest-klient.version>
+        <svarut-rest-klient.version>1.2.0</svarut-rest-klient.version>
         <kryptering.version>1.3.0</kryptering.version>
 
-        <spring-boot.version>2.7.5</spring-boot.version>
+        <springdoc.version>1.6.13</springdoc.version>
+        <spring-boot.version>2.7.7</spring-boot.version>
         <spring.version>5.3.24</spring.version>
-        <jersey.version>2.37</jersey.version>
         <jetty.version>9.4.49.v20220914</jetty.version>
         <kotlinx-coroutines.version>1.6.4</kotlinx-coroutines.version>
-        <token-validation.version>2.1.8</token-validation.version>
+        <token-validation.version>2.1.9</token-validation.version>
         <nimbus-jose-jwt.version>9.25.6</nimbus-jose-jwt.version>
-        <ojdbc.version>19.16.0.0</ojdbc.version>
-        <flyway-core.version>9.8.2</flyway-core.version>
-        <flyway-maven-plugin.version>9.8.2</flyway-maven-plugin.version>
-        <jackson.version>2.14.0</jackson.version>
-        <jackson-databind.version>2.14.0</jackson-databind.version>
+        <ojdbc.version>19.17.0.0</ojdbc.version>
+        <flyway-core.version>9.10.2</flyway-core.version>
+        <flyway-maven-plugin.version>9.10.2</flyway-maven-plugin.version>
+        <jackson.version>2.14.1</jackson.version>
+        <jackson-databind.version>2.14.1</jackson-databind.version>
         <pdfbox.version>2.0.27</pdfbox.version>
         <jempbox.version>1.8.17</jempbox.version>
         <bouncycastle.version>1.70</bouncycastle.version>
@@ -73,7 +73,7 @@
         <tika.version>2.6.0</tika.version>
         <logback.version>1.2.11</logback.version>
         <hsqldb.version>2.7.1</hsqldb.version>
-        <joda-time.version>2.12.1</joda-time.version>
+        <joda-time.version>2.12.2</joda-time.version>
         <slf4j.version>1.7.36</slf4j.version>
         <commons-codec.version>1.15</commons-codec.version>
         <commons-io.version>2.11.0</commons-io.version>
@@ -82,12 +82,12 @@
         <json-smart.version>2.4.8</json-smart.version>
         <jaxb-java-time-adapters.version>1.1.3</jaxb-java-time-adapters.version>
         <jaxb-runtime.version>2.3.7</jaxb-runtime.version>
-        <lettuce.version>6.2.1.RELEASE</lettuce.version>
+        <lettuce.version>6.2.2.RELEASE</lettuce.version>
         <unleash.version>3.3.4</unleash.version>
-        <reactor-core.version>3.4.24</reactor-core.version>
-        <reactor-netty-http.version>1.1.0</reactor-netty-http.version>
+        <reactor-core.version>3.5.1</reactor-core.version>
+        <reactor-netty-http.version>1.1.1</reactor-netty-http.version>
         <reactive-streams.version>1.0.4</reactive-streams.version>
-        <netty.version>4.1.84.Final</netty.version>
+        <netty.version>4.1.86.Final</netty.version>
         <log4j.version>2.19.0</log4j.version>
         <java-jwt.version>4.2.1</java-jwt.version>
 
@@ -100,14 +100,13 @@
         <jakarta.inject-api.version>1.0.5</jakarta.inject-api.version>
         <jakarta.servlet-api.version>4.0.4</jakarta.servlet-api.version>
         <jakarta.validation-api.version>2.0.2</jakarta.validation-api.version>
-        <jakarta.ws.version>2.1.6</jakarta.ws.version>
         <jakarta.xml.version>2.3.3</jakarta.xml.version>
 
         <!-- Versjoner for test dependencies -->
         <hamcrest.version>2.2</hamcrest.version>
         <junit-jupiter.version>5.9.1</junit-jupiter.version>
         <assertj.version>3.23.1</assertj.version>
-        <mockk.version>1.12.4</mockk.version>
+        <mockk.version>1.13.3</mockk.version>
         <okhttp3.version>4.10.0</okhttp3.version>
         <junit.version>4.13.2</junit.version>
 
@@ -116,14 +115,14 @@
         <rhino.version>1.7.14</rhino.version>
         <logstash-logback-encoder.version>7.2</logstash-logback-encoder.version>
         <prometheus.version>0.16.0</prometheus.version>
-        <oauth2-oidc-sdk.version>10.0</oauth2-oidc-sdk.version>
+        <oauth2-oidc-sdk.version>10.4</oauth2-oidc-sdk.version>
         <emoji-java.version>5.1.1</emoji-java.version>
         <objenesis.version>3.3</objenesis.version>
         <mimepull.version>1.10.0</mimepull.version>
         <json.version>20220924</json.version>
-        <byte-buddy.version>1.12.18</byte-buddy.version>
-        <gson.version>2.9.1</gson.version>
-        <micrometer.version>1.10.1</micrometer.version>
+        <byte-buddy.version>1.12.20</byte-buddy.version>
+        <gson.version>2.10</gson.version>
+        <micrometer.version>1.10.2</micrometer.version>
         <lombok.version>1.18.24</lombok.version>
         <org.osgi.core.version>6.0.0</org.osgi.core.version>
         <snakeyaml.version>1.33</snakeyaml.version>
@@ -132,9 +131,11 @@
         <jboss-logging.version>3.5.0.Final</jboss-logging.version>
         <jboss-logging-annotations.version>2.2.1.Final</jboss-logging-annotations.version>
         <jboss-logging-processor.version>2.2.1.Final</jboss-logging-processor.version>
-        <mock-oauth2-server.version>0.5.6</mock-oauth2-server.version>
+        <mock-oauth2-server.version>0.5.7</mock-oauth2-server.version>
         <osgi.annotation.version>8.1.0</osgi.annotation.version>
         <org.osgi.util.function.version>1.2.0</org.osgi.util.function.version>
+        <error_prone_annotations.version>2.15.0</error_prone_annotations.version>
+        <checker-qual.version>3.25.0</checker-qual.version>
     </properties>
 
     <dependencyManagement>
@@ -226,28 +227,6 @@
                 <version>${spring.version}</version>
             </dependency>
 
-            <!-- Jersey -->
-            <dependency>
-                <groupId>org.glassfish.jersey.core</groupId>
-                <artifactId>jersey-server</artifactId>
-                <version>${jersey.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.glassfish.jersey.containers</groupId>
-                <artifactId>jersey-container-servlet-core</artifactId>
-                <version>${jersey.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.glassfish.jersey.core</groupId>
-                <artifactId>jersey-common</artifactId>
-                <version>${jersey.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.glassfish.jersey.core</groupId>
-                <artifactId>jersey-client</artifactId>
-                <version>${jersey.version}</version>
-            </dependency>
-
             <!-- Prometheus -->
             <dependency>
                 <groupId>io.prometheus</groupId>
@@ -319,6 +298,11 @@
                 <groupId>org.reactivestreams</groupId>
                 <artifactId>reactive-streams</artifactId>
                 <version>${reactive-streams.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.projectreactor.netty</groupId>
+                <artifactId>reactor-netty-http</artifactId>
+                <version>${reactor-netty-http.version}</version>
             </dependency>
 
             <!-- Jetty -->
@@ -638,6 +622,16 @@
                 <version>${hibernate-validator.version}</version>
             </dependency>
             <dependency>
+                <groupId>com.google.errorprone</groupId>
+                <artifactId>error_prone_annotations</artifactId>
+                <version>${error_prone_annotations.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.checkerframework</groupId>
+                <artifactId>checker-qual</artifactId>
+                <version>${checker-qual.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>com.squareup.okhttp3</groupId>
                 <artifactId>okhttp</artifactId>
                 <version>${okhttp3.version}</version>
@@ -733,14 +727,8 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-jersey</artifactId>
+            <artifactId>spring-boot-starter-webflux</artifactId>
             <version>${spring-boot.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-starter-tomcat</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -751,6 +739,12 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
             <version>${spring-boot.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>javax.annotation</groupId>
+                    <artifactId>javax.annotation-api</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -799,19 +793,21 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-jdbc</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-ui</artifactId>
+            <version>${springdoc.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-kotlin</artifactId>
+            <version>${springdoc.version}</version>
+        </dependency>
 
         <!-- Reactor netty -->
         <dependency>
             <groupId>io.projectreactor.netty</groupId>
             <artifactId>reactor-netty-http</artifactId>
-            <version>${reactor-netty-http.version}</version>
-        </dependency>
-
-        <!-- Jersey avhengigheter -->
-        <dependency>
-            <groupId>org.glassfish.jersey.media</groupId>
-            <artifactId>jersey-media-multipart</artifactId>
-            <version>${jersey.version}</version>
         </dependency>
 
         <!-- jakarta-avhengigheter -->
@@ -842,11 +838,6 @@
             <version>${jakarta.validation-api.version}</version>
             <scope>runtime</scope>
         </dependency>
-        <dependency>
-            <groupId>jakarta.ws.rs</groupId>
-            <artifactId>jakarta.ws.rs-api</artifactId>
-            <version>${jakarta.ws.version}</version>
-        </dependency>
 
         <!-- Jackson avhengigheter -->
         <dependency>
@@ -860,11 +851,6 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.jaxrs</groupId>
-            <artifactId>jackson-jaxrs-json-provider</artifactId>
-            <version>${jackson.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
@@ -886,6 +872,12 @@
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-core</artifactId>
             <version>${flyway-core.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>javax.annotation</groupId>
+                    <artifactId>javax.annotation-api</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.hsqldb</groupId>
@@ -951,12 +943,7 @@
         <!-- Token-validation / security -->
         <dependency>
             <groupId>no.nav.security</groupId>
-            <artifactId>token-validation-jaxrs</artifactId>
-            <version>${token-validation.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.security</groupId>
-            <artifactId>token-validation-core</artifactId>
+            <artifactId>token-validation-spring</artifactId>
             <version>${token-validation.version}</version>
         </dependency>
 
@@ -1067,14 +1054,14 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.glassfish.jersey.test-framework</groupId>
-            <artifactId>jersey-test-framework-util</artifactId>
-            <version>${jersey.version}</version>
+            <groupId>io.mockk</groupId>
+            <artifactId>mockk</artifactId>
+            <version>${mockk.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>io.mockk</groupId>
-            <artifactId>mockk</artifactId>
+            <artifactId>mockk-jvm</artifactId>
             <version>${mockk.version}</version>
             <scope>test</scope>
         </dependency>

@@ -7,15 +7,17 @@ import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
 import no.nav.sosialhjelp.soknad.app.exceptions.EttersendelseSendtForSentException
 import no.nav.sosialhjelp.soknad.app.exceptions.SosialhjelpSoknadApiException
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadata
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataInnsendingStatus
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataInnsendingStatus.FERDIG
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataType
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.VedleggMetadata
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.Vedleggstatus
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
-import no.nav.sosialhjelp.soknad.innsending.HenvendelseService
 import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils.isVedleggskravAnnet
+import no.nav.sosialhjelp.soknad.innsending.SenderUtils.lagBehandlingsId
 import org.springframework.stereotype.Component
 import java.time.Clock
 import java.time.LocalDateTime
@@ -24,15 +26,15 @@ import java.time.temporal.ChronoUnit.DAYS
 
 @Component
 class EttersendingService(
-    private val henvendelseService: HenvendelseService,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
+    private val soknadMetadataRepository: SoknadMetadataRepository,
     private val clock: Clock
 ) {
-    fun start(behandlingsIdDetEttersendesPaa: String?): String {
+    fun startEttersendelse(behandlingsIdDetEttersendesPaa: String?): String {
         val originalSoknad = hentOgVerifiserSoknad(behandlingsIdDetEttersendesPaa)
         val nyesteSoknad = hentNyesteSoknadIKjede(originalSoknad)
 
-        val nyBehandlingsId = henvendelseService.startEttersending(originalSoknad)
+        val nyBehandlingsId = opprettSoknadMetadataEttersendelse(originalSoknad)
 
         val manglendeVedlegg = lagListeOverVedlegg(nyesteSoknad)
         val manglendeJsonVedlegg = convertVedleggMetadataToJsonVedlegg(manglendeVedlegg)
@@ -40,6 +42,25 @@ class EttersendingService(
         lagreSoknadILokalDb(originalSoknad, nyBehandlingsId, manglendeJsonVedlegg)
 
         return nyBehandlingsId
+    }
+
+    private fun opprettSoknadMetadataEttersendelse(ettersendesPaSoknad: SoknadMetadata): String {
+        val id = soknadMetadataRepository.hentNesteId()
+        val ettersendelse = SoknadMetadata(
+            id = id,
+            behandlingsId = lagBehandlingsId(id),
+            tilknyttetBehandlingsId = ettersendesPaSoknad.behandlingsId,
+            fnr = ettersendesPaSoknad.fnr,
+            skjema = ettersendesPaSoknad.skjema,
+            orgnr = ettersendesPaSoknad.orgnr,
+            navEnhet = ettersendesPaSoknad.navEnhet,
+            type = SoknadMetadataType.SEND_SOKNAD_KOMMUNAL_ETTERSENDING,
+            status = SoknadMetadataInnsendingStatus.UNDER_ARBEID,
+            opprettetDato = LocalDateTime.now(clock),
+            sistEndretDato = LocalDateTime.now(clock),
+        )
+        soknadMetadataRepository.opprett(ettersendelse)
+        return ettersendelse.behandlingsId
     }
 
     private fun lagreSoknadILokalDb(
@@ -83,11 +104,11 @@ class EttersendingService(
     }
 
     private fun hentOgVerifiserSoknad(behandlingsId: String?): SoknadMetadata {
-        var soknad = henvendelseService.hentSoknad(behandlingsId)
+        var soknad = soknadMetadataRepository.hent(behandlingsId)
             ?: throw IllegalStateException("SoknadMetadata til behandlingsid $behandlingsId finnes ikke")
 
         if (soknad.type == SoknadMetadataType.SEND_SOKNAD_KOMMUNAL_ETTERSENDING) {
-            henvendelseService.hentSoknad(soknad.tilknyttetBehandlingsId)?.let { soknad = it }
+            soknadMetadataRepository.hent(soknad.tilknyttetBehandlingsId)?.let { soknad = it }
         }
 
         if (soknad.status != FERDIG) {
@@ -106,7 +127,7 @@ class EttersendingService(
         val frist = soknad.innsendtDato?.plusDays(ETTERSENDELSE_FRIST_DAGER.toLong())
         val dateTimeFormatter = DateTimeFormatter.ofPattern("d. MMMM yyyy HH:mm:ss")
         val antallEttersendelser = hentAntallEttersendelserSendtPaSoknad(soknad.behandlingsId)
-        val antallNyereSoknader = henvendelseService.hentAntallInnsendteSoknaderEtterTidspunkt(soknad.fnr, soknad.innsendtDato).toLong()
+        val antallNyereSoknader = hentAntallInnsendteSoknaderEtterTidspunkt(soknad.fnr, soknad.innsendtDato).toLong()
         throw EttersendelseSendtForSentException(
             "Kan ikke starte ettersendelse $dagerEtterFrist dager etter frist, " +
                 "dagens dato: ${LocalDateTime.now().format(dateTimeFormatter)}, " +
@@ -118,14 +139,14 @@ class EttersendingService(
     }
 
     private fun hentNyesteSoknadIKjede(originalSoknad: SoknadMetadata): SoknadMetadata {
-        return henvendelseService.hentBehandlingskjede(originalSoknad.behandlingsId)
+        return soknadMetadataRepository.hentBehandlingskjede(originalSoknad.behandlingsId)
             .filter { it.status == FERDIG }
             .maxByOrNull { it.innsendtDato ?: LocalDateTime.MIN }
             ?: originalSoknad
     }
 
     private fun hentAntallEttersendelserSendtPaSoknad(behandlingsId: String?): Long {
-        return henvendelseService.hentBehandlingskjede(behandlingsId)
+        return soknadMetadataRepository.hentBehandlingskjede(behandlingsId)
             .count { it.status == FERDIG }.toLong()
     }
 
@@ -145,7 +166,11 @@ class EttersendingService(
         return manglendeVedlegg
     }
 
+    private fun hentAntallInnsendteSoknaderEtterTidspunkt(fnr: String?, tidspunkt: LocalDateTime?): Int {
+        return soknadMetadataRepository.hentAntallInnsendteSoknaderEtterTidspunkt(fnr, tidspunkt) ?: 0
+    }
+
     companion object {
-        const val ETTERSENDELSE_FRIST_DAGER = 300
+        private const val ETTERSENDELSE_FRIST_DAGER = 300
     }
 }

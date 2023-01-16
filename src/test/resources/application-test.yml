@@ -14,12 +14,17 @@ sendsoknad.batch.enabled: false
 fiks.nokkelfil: svarut_public_test.pem
 feature.fiks.kryptering.enabled: false
 
-# OIDC
-oidc.issuer.selvbetjening.discoveryurl: http://localhost:${mock-oauth2-server.port}/selvbetjening/.well-known/openid-configuration
-oidc.issuer.selvbetjening.accepted_audience: someaudience
-oidc.issuer.selvbetjening.cookie_name: localhost-idtoken
-oidc.issuer.selvbetjening.proxy_url: dummy
 loginservice.url: http://localhost:8181/sosialhjelp/soknad-api/local/cookie
+
+no.nav.security.jwt.issuer:
+  selvbetjening:
+    discoveryurl: http://localhost:${mock-oauth2-server.port}/selvbetjening/.well-known/openid-configuration
+    accepted_audience: someaudience
+    cookie_name: localhost-idtoken
+    proxyurl:
+  tokenx:
+    discoveryurl: http://localhost:${mock-oauth2-server.port}/tokenx/.well-known/openid-configuration
+    accepted_audience: localhost:teamdigisos:sosialhjelp-soknad-api
 
 # maskinporten
 maskinporten_clientid: clientid

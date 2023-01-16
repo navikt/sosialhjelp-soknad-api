@@ -19,6 +19,6 @@ class DigisosApiCheck(
     override val importance = Importance.CRITICAL
 
     override fun doCheck() {
-        kommuneInfoClient.getAll()
+        kommuneInfoClient.ping()
     }
 }

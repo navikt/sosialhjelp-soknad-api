@@ -2,6 +2,7 @@ package no.nav.sosialhjelp.soknad.vedlegg
 
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
+import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.OpplastingException
@@ -18,8 +19,7 @@ import java.io.IOException
 import java.io.UnsupportedEncodingException
 import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
-import java.util.Locale
-import javax.ws.rs.NotFoundException
+import java.util.*
 
 object VedleggUtils {
 
@@ -169,6 +169,6 @@ object VedleggUtils {
     fun finnVedleggEllerKastException(vedleggstype: String, soknadUnderArbeid: SoknadUnderArbeid): JsonVedlegg {
         return JsonVedleggUtils.getVedleggFromInternalSoknad(soknadUnderArbeid)
             .firstOrNull { vedleggstype == it.type + "|" + it.tilleggsinfo }
-            ?: throw NotFoundException("Dette vedlegget tilhører $vedleggstype utgift som har blitt tatt bort fra søknaden. Er det flere tabber oppe samtidig?")
+            ?: throw IkkeFunnetException("Dette vedlegget tilhører $vedleggstype utgift som har blitt tatt bort fra søknaden. Er det flere tabber oppe samtidig?")
     }
 }

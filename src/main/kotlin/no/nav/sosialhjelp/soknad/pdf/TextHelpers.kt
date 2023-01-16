@@ -1,7 +1,8 @@
 package no.nav.sosialhjelp.soknad.pdf
 
 import no.nav.sosialhjelp.soknad.kodeverk.KodeverkService
-import no.nav.sosialhjelp.soknad.personalia.basispersonalia.BasisPersonaliaSystemdata
+import no.nav.sosialhjelp.soknad.personalia.basispersonalia.BasisPersonaliaSystemdata.Companion.PDL_STATSLOS
+import no.nav.sosialhjelp.soknad.personalia.basispersonalia.BasisPersonaliaSystemdata.Companion.PDL_UKJENT_STATSBORGERSKAP
 import org.springframework.stereotype.Component
 
 @Component
@@ -10,20 +11,9 @@ class TextHelpers(
 ) {
 
     fun fulltNavnForLand(landForkortelse: String?): String? {
-        if (landForkortelse == null || landForkortelse == "???" || landForkortelse.equals(
-                "YYY",
-                ignoreCase = true
-            ) || landForkortelse.equals(
-                    BasisPersonaliaSystemdata.PDL_UKJENT_STATSBORGERSKAP,
-                    ignoreCase = true
-                )
-        ) {
+        if (landForkortelse == null || landForkortelse.equals(PDL_UKJENT_STATSBORGERSKAP, ignoreCase = true)) {
             return "Vi har ikke opplysninger om ditt statsborgerskap"
-        } else if (landForkortelse.equals(
-                BasisPersonaliaSystemdata.PDL_STATSLOS,
-                ignoreCase = true
-            ) || landForkortelse.equals("XXA", ignoreCase = true)
-        ) {
+        } else if (landForkortelse.equals(PDL_STATSLOS, ignoreCase = true)) {
             return "Statsløs"
         }
         return kodeverkService.getLand(landForkortelse)

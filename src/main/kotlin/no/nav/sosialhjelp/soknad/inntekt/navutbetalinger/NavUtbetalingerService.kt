@@ -1,46 +1,32 @@
 package no.nav.sosialhjelp.soknad.inntekt.navutbetalinger
 
-import no.finn.unleash.Unleash
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.domain.Komponent
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.domain.NavUtbetaling
-import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.NavUtbetalingerDto
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.UtbetalDataDto
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.Utbetaling
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.Ytelse
 import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.Ytelseskomponent
-import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.toDomain
-import org.slf4j.LoggerFactory.getLogger
 import org.springframework.stereotype.Component
 import java.time.LocalDate
 
 @Component
 open class NavUtbetalingerService(
-    private val navUtbetalingerClient: NavUtbetalingerClient,
-    private val unleash: Unleash
+    private val navUtbetalingerClient: NavUtbetalingerClient
 ) {
 
     open fun getUtbetalingerSiste40Dager(ident: String): List<NavUtbetaling>? {
         val utbetalinger: List<NavUtbetaling>
 
-        if (unleash.isEnabled(BRUK_UTBETALDATATJENESTE_ENABLED, true)) {
-            log.info("Bruk av ny utbetaldatatjeneste er enablet og denne benyttes")
-            val utbetalDataDto: UtbetalDataDto? = navUtbetalingerClient.getUtbetalingerSiste40Dager(ident)
-            if (utbetalDataDto == null || utbetalDataDto.feilet || utbetalDataDto.utbetalinger == null) {
-                return null
-            }
-
-            utbetalinger = mapToNavutbetalinger(utbetalDataDto)
-        } else {
-            log.info("Bruk av ny utbetaldatatjeneste er ikke enablet og gammel utbetalingstjeneste benyttes")
-            val navUtbetalingerDto: NavUtbetalingerDto? = navUtbetalingerClient.getUtbetalingerSiste40DagerLegacy(ident)
-            if (navUtbetalingerDto == null || navUtbetalingerDto.feilet || navUtbetalingerDto.utbetalinger == null) {
-                return null
-            }
-
-            utbetalinger = navUtbetalingerDto.utbetalinger.map { it.toDomain }
+        val utbetalDataDto: UtbetalDataDto? = navUtbetalingerClient.getUtbetalingerSiste40Dager(ident)
+        if (utbetalDataDto == null || utbetalDataDto.feilet || utbetalDataDto.utbetalinger == null) {
+            return null
         }
 
-        log.info("Antall navytelser utbetaling ${utbetalinger.size}. ${komponenterLogg(utbetalinger)}")
+        utbetalinger = mapToNavutbetalinger(utbetalDataDto)
+
+        log.info("Antall navytelser utbetaling: ${utbetalinger.size}. ${komponenterLogg(utbetalinger)}")
+
         return utbetalinger
     }
 
@@ -55,10 +41,9 @@ open class NavUtbetalingerService(
     }
 
     companion object {
-        private val log = getLogger(NavUtbetalingerService::class.java)
+        private val log by logger()
         private const val NAVYTELSE = "navytelse"
         private const val ORGNR_NAV = "889640782"
-        const val BRUK_UTBETALDATATJENESTE_ENABLED = "sosialhjelp.soknad.bruk_sokos_utbetaldata_tjeneste"
 
         private fun mapToNavutbetalinger(utbetalDataDto: UtbetalDataDto?): List<NavUtbetaling> {
             if (utbetalDataDto?.utbetalinger == null) {
@@ -122,7 +107,7 @@ open class NavUtbetalingerService(
                         belop = it.ytelseskomponentbeloep?.toDouble(),
                         satsType = it.satstype,
                         satsBelop = it.satsbeloep?.toDouble(),
-                        satsAntall = it.satsantall,
+                        satsAntall = it.satsantall
                     )
                 }
         }

@@ -27,18 +27,17 @@ import no.nav.sosialhjelp.soknad.navenhet.finnadresse.FinnAdresseService
 import no.nav.sosialhjelp.soknad.navenhet.gt.GeografiskTilknytningService
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import org.slf4j.LoggerFactory
-import org.springframework.stereotype.Controller
-import javax.ws.rs.GET
-import javax.ws.rs.PUT
-import javax.ws.rs.Path
-import javax.ws.rs.PathParam
-import javax.ws.rs.Produces
-import javax.ws.rs.core.MediaType
+import org.springframework.http.MediaType
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PutMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
 
-@Controller
+@RestController
 @ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4])
-@Path("/soknader/{behandlingsId}/personalia")
-@Produces(MediaType.APPLICATION_JSON)
+@RequestMapping("/soknader/{behandlingsId}/personalia", produces = [MediaType.APPLICATION_JSON_VALUE])
 open class NavEnhetRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
@@ -51,9 +50,10 @@ open class NavEnhetRessurs(
     private val unleash: Unleash,
 ) {
 
-    @GET
-    @Path("/navEnheter")
-    open fun hentNavEnheter(@PathParam("behandlingsId") behandlingsId: String): List<NavEnhetFrontend>? {
+    @GetMapping("/navEnheter")
+    open fun hentNavEnheter(
+        @PathVariable("behandlingsId") behandlingsId: String
+    ): List<NavEnhetFrontend>? {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).jsonInternalSoknad?.soknad
@@ -65,9 +65,10 @@ open class NavEnhetRessurs(
         return navEnhetFrontend?.let { listOf(it) } ?: emptyList()
     }
 
-    @GET
-    @Path("/navEnhet")
-    open fun hentValgtNavEnhet(@PathParam("behandlingsId") behandlingsId: String): NavEnhetFrontend? {
+    @GetMapping("/navEnhet")
+    open fun hentValgtNavEnhet(
+        @PathVariable("behandlingsId") behandlingsId: String
+    ): NavEnhetFrontend? {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknadsmottaker = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).jsonInternalSoknad?.soknad?.mottaker
@@ -89,9 +90,11 @@ open class NavEnhetRessurs(
         }
     }
 
-    @PUT
-    @Path("/navEnheter")
-    open fun updateNavEnhet(@PathParam("behandlingsId") behandlingsId: String, navEnhetFrontend: NavEnhetFrontend) {
+    @PutMapping("/navEnheter")
+    open fun updateNavEnhet(
+        @PathVariable("behandlingsId") behandlingsId: String,
+        @RequestBody navEnhetFrontend: NavEnhetFrontend
+    ) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
