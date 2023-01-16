@@ -32,7 +32,7 @@ open class InnsendingService(
     }
 
     open fun oppdaterSoknadMetadataVedSendingTilFiks(fiksforsendelseId: String?, behandlingsId: String?, eier: String?) {
-        log.debug("Oppdaterer soknadmetadata for behandlingsid $behandlingsId og eier $eier")
+        log.debug("Oppdaterer soknadmetadata for behandlingsid $behandlingsId")
         val soknadMetadata = soknadMetadataRepository.hent(behandlingsId)
         soknadMetadata?.fiksForsendelseId = fiksforsendelseId
         soknadMetadataRepository.oppdater(soknadMetadata)
