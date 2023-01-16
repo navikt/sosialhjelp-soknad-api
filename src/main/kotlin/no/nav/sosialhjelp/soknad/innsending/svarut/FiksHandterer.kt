@@ -43,15 +43,15 @@ class FiksHandterer(
     }
 
     private fun sendTilFiks(behandlingsId: String, resultat: FiksResultat, eier: String) {
-        val sendtSoknad = innsendingService.hentSendtSoknad(behandlingsId, eier)
+        val soknadMetadata = innsendingService.hentSoknadMetadata(behandlingsId, eier)
         try {
-            resultat.fiksForsendelsesId = fiksSender.sendTilFiks(sendtSoknad)
-            prometheusMetricsService.reportSendtMedSvarUt(sendtSoknad.erEttersendelse)
-            prometheusMetricsService.reportSoknadMottaker(sendtSoknad.erEttersendelse, navKontorTilMetricNavn(sendtSoknad.navEnhetsnavn))
+            resultat.fiksForsendelsesId = fiksSender.sendTilFiks(soknadMetadata)
+            prometheusMetricsService.reportSendtMedSvarUt(soknadMetadata.erEttersendelse)
+            prometheusMetricsService.reportSoknadMottaker(soknadMetadata.erEttersendelse, navKontorTilMetricNavn(soknadMetadata.navEnhet))
             logger.info("Søknad $behandlingsId fikk id ${resultat.fiksForsendelsesId} i Fiks")
         } catch (e: Exception) {
             resultat.feilmelding = e.message
-            prometheusMetricsService.reportFeiletMedSvarUt(sendtSoknad.erEttersendelse)
+            prometheusMetricsService.reportFeiletMedSvarUt(soknadMetadata.erEttersendelse)
             throw e
         }
     }
@@ -61,7 +61,7 @@ class FiksHandterer(
     }
 
     private fun lagreResultat(behandlingsId: String, resultat: FiksResultat, eier: String) {
-        innsendingService.oppdaterTabellerVedSendingTilFiks(resultat.fiksForsendelsesId, behandlingsId, eier)
+        innsendingService.oppdaterSoknadMetadataVedSendingTilFiks(resultat.fiksForsendelsesId, behandlingsId, eier)
     }
 
     companion object {
