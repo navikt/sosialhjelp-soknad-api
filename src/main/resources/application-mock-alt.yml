@@ -83,6 +83,10 @@ loginservice.url: ${LOGINSERVICE_URL:http://localhost:3008/sosialhjelp/mock-alt/
 
 virusscan_enabled: false
 
+springdoc:
+  api-docs:
+    enabled: ${SWAGGER_ENABLED:true}
+
 # redis
 redis_host: ${REDIS_HOST:localhost}
 redis_port: 6379
