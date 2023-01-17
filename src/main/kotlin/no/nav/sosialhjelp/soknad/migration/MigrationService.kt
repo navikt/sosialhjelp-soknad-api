@@ -5,11 +5,9 @@ import no.nav.sosialhjelp.soknad.db.repositories.oppgave.OppgaveRepository
 import no.nav.sosialhjelp.soknad.migration.Extensions.toDto
 import no.nav.sosialhjelp.soknad.migration.dto.OppgaveDto
 import no.nav.sosialhjelp.soknad.migration.dto.ReplicationDto
-import no.nav.sosialhjelp.soknad.migration.dto.SendtSoknadDto
 import no.nav.sosialhjelp.soknad.migration.dto.SjekksumDto
 import no.nav.sosialhjelp.soknad.migration.dto.SoknadUnderArbeidDto
 import no.nav.sosialhjelp.soknad.migration.repo.OpplastetVedleggMigrationRepository
-import no.nav.sosialhjelp.soknad.migration.repo.SendtSoknadMigrationRepository
 import no.nav.sosialhjelp.soknad.migration.repo.SoknadMetadataMigrationRepository
 import no.nav.sosialhjelp.soknad.migration.repo.SoknadUnderArbeidMigrationRepository
 import org.springframework.stereotype.Component
@@ -20,7 +18,6 @@ class MigrationService(
     private val soknadMetadataMigrationRepository: SoknadMetadataMigrationRepository,
     private val soknadUnderArbeidMigrationRepository: SoknadUnderArbeidMigrationRepository,
     private val opplastetVedleggMigrationRepository: OpplastetVedleggMigrationRepository,
-    private val sendtSoknadMigrationRepository: SendtSoknadMigrationRepository,
     private val oppgaveRepository: OppgaveRepository
 ) {
 
@@ -37,7 +34,6 @@ class MigrationService(
             behandlingsId = behandlingsId,
             soknadMetadata = soknadMetadata.toDto(),
             soknadUnderArbeid = getSoknadUnderArbeid(behandlingsId),
-            sendtSoknad = getSendtSoknad(behandlingsId),
             oppgave = getOppgave(behandlingsId)
         )
     }
@@ -45,7 +41,6 @@ class MigrationService(
     fun getSjekksum(): SjekksumDto {
         return SjekksumDto(
             soknadMetadataSum = soknadMetadataMigrationRepository.count(),
-            sendtSoknadSum = sendtSoknadMigrationRepository.count(),
             soknadUnderArbeidSum = soknadUnderArbeidMigrationRepository.count(),
             opplastetVedleggSum = opplastetVedleggMigrationRepository.count(),
             oppgaveSum = oppgaveRepository.count()
@@ -58,10 +53,6 @@ class MigrationService(
                 val vedlegg = opplastetVedleggMigrationRepository.getOpplastetVedlegg(it.soknadId)
                 it.toDto(vedlegg)
             }
-    }
-
-    private fun getSendtSoknad(behandlingsId: String): SendtSoknadDto? {
-        return sendtSoknadMigrationRepository.getSendtSoknad(behandlingsId)?.toDto()
     }
 
     private fun getOppgave(behandlingsId: String): OppgaveDto? {

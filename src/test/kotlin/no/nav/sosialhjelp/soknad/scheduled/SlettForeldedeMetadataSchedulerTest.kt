@@ -8,8 +8,6 @@ import io.mockk.verify
 import no.nav.sosialhjelp.soknad.db.repositories.oppgave.Oppgave
 import no.nav.sosialhjelp.soknad.db.repositories.oppgave.OppgaveRepository
 import no.nav.sosialhjelp.soknad.db.repositories.oppgave.Status
-import no.nav.sosialhjelp.soknad.db.repositories.sendtsoknad.BatchSendtSoknadRepository
-import no.nav.sosialhjelp.soknad.db.repositories.sendtsoknad.SendtSoknad
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.BatchSoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadata
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataInnsendingStatus
@@ -23,7 +21,6 @@ import java.time.LocalDateTime
 
 internal class SlettForeldedeMetadataSchedulerTest {
     private val leaderElection: LeaderElection = mockk()
-    private val batchSendtSoknadRepository: BatchSendtSoknadRepository = mockk()
     private val soknadMetadataRepository: SoknadMetadataRepository = mockk()
     private val batchSoknadMetadataRepository: BatchSoknadMetadataRepository = mockk()
     private val oppgaveRepository: OppgaveRepository = mockk()
@@ -31,7 +28,6 @@ internal class SlettForeldedeMetadataSchedulerTest {
     private val scheduler = SlettForeldedeMetadataScheduler(
         leaderElection,
         batchSoknadMetadataRepository,
-        batchSendtSoknadRepository,
         oppgaveRepository,
         batchEnabled = true,
         schedulerDisabled = false
@@ -46,7 +42,6 @@ internal class SlettForeldedeMetadataSchedulerTest {
     @Test
     fun skalSletteForeldedeMetadataFraDatabase() {
         val oppgave = oppgave(BEHANDLINGS_ID, DAGER_GAMMEL_SOKNAD + 1)
-        val sendtSoknad = sendtSoknad(BEHANDLINGS_ID, EIER, DAGER_GAMMEL_SOKNAD + 1)
         val soknadMetadata = soknadMetadata(BEHANDLINGS_ID, UNDER_ARBEID, DAGER_GAMMEL_SOKNAD + 1)
 
         every {
@@ -55,23 +50,18 @@ internal class SlettForeldedeMetadataSchedulerTest {
 
         every { oppgaveRepository.hentOppgaveIdList(listOf(BEHANDLINGS_ID)) } returns listOf(oppgave.id)
 
-        every { batchSendtSoknadRepository.hentSendtSoknadIdList(listOf(BEHANDLINGS_ID)) } returns listOf(sendtSoknad.sendtSoknadId)
-
         every { oppgaveRepository.slettOppgaver(any()) } just runs
-        every { batchSendtSoknadRepository.slettSendtSoknader(any()) } just runs
         every { batchSoknadMetadataRepository.slettSoknadMetaDataer(any()) } just runs
 
         scheduler.slettForeldedeMetadata()
 
         verify { oppgaveRepository.slettOppgaver(listOf(oppgave.id)) }
-        verify { batchSendtSoknadRepository.slettSendtSoknader(listOf(sendtSoknad.sendtSoknadId)) }
         verify { batchSoknadMetadataRepository.slettSoknadMetaDataer(listOf(BEHANDLINGS_ID)) }
     }
 
     @Test
     fun skalSletteForeldedeMetadataFraDatabaseSelvOmIkkeAlleTabelleneInneholderBehandlingsIdeen() {
         val oppgave = oppgave(BEHANDLINGS_ID, DAGER_GAMMEL_SOKNAD + 1)
-        val sendtSoknad = sendtSoknad(BEHANDLINGS_ID, EIER, DAGER_GAMMEL_SOKNAD + 1)
         val soknadMetadata = soknadMetadata(BEHANDLINGS_ID, UNDER_ARBEID, DAGER_GAMMEL_SOKNAD + 1)
 
         every {
@@ -80,14 +70,11 @@ internal class SlettForeldedeMetadataSchedulerTest {
 
         every { oppgaveRepository.hentOppgaveIdList(listOf(BEHANDLINGS_ID)) } returns listOf(oppgave.id)
 
-        every { batchSendtSoknadRepository.hentSendtSoknadIdList(listOf(BEHANDLINGS_ID)) } returns emptyList()
-
         every { oppgaveRepository.slettOppgaver(any()) } just runs
 
         scheduler.slettForeldedeMetadata()
 
         verify(exactly = 1) { oppgaveRepository.slettOppgaver(listOf(oppgave.id)) }
-        verify(exactly = 0) { batchSendtSoknadRepository.slettSendtSoknader(listOf(sendtSoknad.sendtSoknadId)) }
         verify(exactly = 1) { batchSoknadMetadataRepository.slettSoknadMetaDataer(listOf(BEHANDLINGS_ID)) }
     }
 
@@ -98,7 +85,6 @@ internal class SlettForeldedeMetadataSchedulerTest {
         scheduler.slettForeldedeMetadata()
 
         verify(exactly = 0) { oppgaveRepository.slettOppgaver(any()) }
-        verify(exactly = 0) { batchSendtSoknadRepository.slettSendtSoknader(any()) }
         verify(exactly = 0) { batchSoknadMetadataRepository.slettSoknadMetaDataer(any()) }
     }
 
@@ -117,21 +103,6 @@ internal class SlettForeldedeMetadataSchedulerTest {
             innsendtDato = LocalDateTime.now().minusDays(dagerSiden.toLong()),
             opprettetDato = LocalDateTime.now().minusDays(dagerSiden.toLong()),
             sistEndretDato = LocalDateTime.now().minusDays(dagerSiden.toLong()),
-        )
-    }
-
-    private fun sendtSoknad(behandlingsId: String, eier: String, dagerSiden: Int): SendtSoknad {
-        return SendtSoknad(
-            sendtSoknadId = 1L,
-            behandlingsId = behandlingsId,
-            tilknyttetBehandlingsId = "",
-            eier = eier,
-            fiksforsendelseId = "",
-            orgnummer = "",
-            navEnhetsnavn = "",
-            brukerOpprettetDato = LocalDateTime.now().minusDays(dagerSiden.toLong()),
-            brukerFerdigDato = LocalDateTime.now().minusDays(dagerSiden.toLong()),
-            sendtDato = LocalDateTime.now().minusDays(dagerSiden.toLong())
         )
     }
 
