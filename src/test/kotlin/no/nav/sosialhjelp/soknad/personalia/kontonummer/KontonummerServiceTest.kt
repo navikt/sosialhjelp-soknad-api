@@ -5,6 +5,7 @@ import io.mockk.mockk
 import no.finn.unleash.Unleash
 import no.nav.sosialhjelp.soknad.personalia.kontonummer.dto.KontoDto
 import no.nav.sosialhjelp.soknad.personalia.kontonummer.dto.KontonummerDto
+import no.nav.sosialhjelp.soknad.personalia.kontonummer.dto.UtenlandskKontoInfo
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -28,6 +29,19 @@ internal class KontonummerServiceTest {
     internal fun clientReturnererNull() {
         every { unleash.isEnabled(KontonummerService.BRUK_KONTOREGISTER_ENABLED, true) } returns true
         every { kontonummerClient.getKontonummer(any()) } returns null
+
+        val kontonummer = kontonummerService.getKontonummer("ident")
+
+        assertThat(kontonummer).isNull()
+    }
+
+    @Test
+    internal fun kontonummerSkalIkkeSettesNaarKlientReturnererUtenlandskontoNr() {
+        every { unleash.isEnabled(KontonummerService.BRUK_KONTOREGISTER_ENABLED, true) } returns true
+        every { kontonummerClient.getKontonummer(any()) } returns KontoDto(
+            "1337",
+            UtenlandskKontoInfo(null, null, bankLandkode = "SWE", valutakode = "SEK", null, null, null, null)
+        )
 
         val kontonummer = kontonummerService.getKontonummer("ident")
 

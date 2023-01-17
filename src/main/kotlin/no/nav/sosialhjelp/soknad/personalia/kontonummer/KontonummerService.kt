@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.personalia.kontonummer
 
 import no.finn.unleash.Unleash
-import org.slf4j.LoggerFactory
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import org.springframework.stereotype.Component
 
 @Component
@@ -14,13 +14,17 @@ open class KontonummerService(
         val kontonummer: String?
         if (unleash.isEnabled(BRUK_KONTOREGISTER_ENABLED, true)) {
             log.info("Feature toggle for bruk av kontoregister er enablet og kontonummer hentes fra kontoregister")
-            kontonummer = kontonummerClient.getKontonummer(ident)?.kontonummer
+            val konto = kontonummerClient.getKontonummer(ident)
+            kontonummer = if (konto?.utenlandsKontoInfo != null) {
+                null
+            } else {
+                konto?.kontonummer
+            }
         } else {
             log.info("Feature toggle for bruk av kontoregister er disablet og kontonummer hentes fra PersonV3 tjeneste via oppslag-api")
             kontonummer = kontonummerClient.getKontonummerLegacy(ident)?.kontonummer
             sammenlignmedSkyggeproduksjon(kontonummer, ident)
         }
-
         return kontonummer
     }
 
@@ -38,7 +42,7 @@ open class KontonummerService(
     }
 
     companion object {
-        private val log = LoggerFactory.getLogger(KontonummerService::class.java)
+        private val log by logger()
         const val BRUK_KONTOREGISTER_ENABLED = "sosialhjelp.soknad.bruk_sokos_kontoregister"
     }
 }
