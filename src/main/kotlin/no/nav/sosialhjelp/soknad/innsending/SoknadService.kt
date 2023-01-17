@@ -129,7 +129,7 @@ open class SoknadService(
 
         oppdaterMetadataVedAvslutningAvSoknad(behandlingsId, vedlegg, soknadUnderArbeid)
         oppgaveHandterer.leggTilOppgave(behandlingsId, eier)
-        innsendingService.opprettSendtSoknad(soknadUnderArbeid)
+        innsendingService.oppdaterSoknadUnderArbeid(soknadUnderArbeid)
 
         genererOgLoggVedleggskravStatistikk(soknadUnderArbeid, vedlegg.vedleggListe)
     }
