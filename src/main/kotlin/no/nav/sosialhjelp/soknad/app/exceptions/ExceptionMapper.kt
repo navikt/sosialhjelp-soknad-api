@@ -123,12 +123,12 @@ class ExceptionMapper(
             is SoknadUnderArbeidIkkeFunnetException -> {
                 log.warn(e.message, e)
                 return ResponseEntity
-                    .status(HttpStatus.SERVICE_UNAVAILABLE)
+                    .status(HttpStatus.NOT_FOUND)
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(
                         Feilmelding(
-                            id = "unexpected_error",
-                            message = "Noe uventet feilet."
+                            id = "soknad_not_found",
+                            message = "Ingen søknad med denne behandlingsId funnet"
                         )
                     )
             }
