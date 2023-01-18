@@ -43,6 +43,7 @@ unleash_api_url: ${UNLEASH_API_URL}
 kodeverk_url: ${KODEVERK_URL}
 utbetaldata_api_baseurl: ${UTBETALDATA_API_BASEURL}
 oppslag_api_baseurl: ${OPPSLAG_API_BASEURL}
+kontoregister_api_baseurl: ${KONTOREGISTER_API_BASEURL}
 norg_url: ${NORG_URL}
 soknad.bostotte.url: ${SOKNAD_BOSTOTTE_URL}
 svarut_url: ${SVARUT_URL}
@@ -66,6 +67,7 @@ tokendings_client_id: ${TOKEN_X_CLIENT_ID}
 tokendings_private_jwk: ${TOKEN_X_PRIVATE_JWK}
 oppslag_api_audience: ${OPPSLAG_API_AUDIENCE}
 utbetaldata_audience: ${UTBETALDATA_AUDIENCE}
+kontoregister_api_audience: ${KONTOREGISTER_API_AUDIENCE}
 pdl_api_audience: ${PDL_API_AUDIENCE}
 krr_audience: ${KRR_AUDIENCE}
 aareg_audience: ${AAREG_AUDIENCE}

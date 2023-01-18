@@ -53,6 +53,8 @@
     "OPPSLAG_API_BASEURL": "https://sosialhjelp-oppslag-api.dev.intern.nav.no/api/",
     "UTBETALDATA_AUDIENCE": "dev-fss:okonomi:sokos-utbetaldata",
     "UTBETALDATA_API_BASEURL": "https://sokos-utbetaldata.dev.intern.nav.no",
+    "KONTOREGISTER_API_AUDIENCE": "dev-gcp:okonomi:sokos-kontoregister-person",
+    "KONTOREGISTER_API_BASEURL": "https://sokos-kontoregister-person.dev.intern.nav.no/",
     "PDL_API_URL": "https://pdl-api.dev.intern.nav.no/graphql",
     "PDL_API_AUDIENCE": "dev-fss:pdl:pdl-api",
     "PDL_API_SCOPE": "dev-fss.pdl.pdl-api",
