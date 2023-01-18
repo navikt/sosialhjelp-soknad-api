@@ -17,7 +17,7 @@ import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedlegg
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggType
-import no.nav.sosialhjelp.soknad.db.repositories.sendtsoknad.SendtSoknad
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadata
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.Vedleggstatus
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
@@ -47,8 +47,8 @@ internal class FiksSenderTest {
         mockkObject(MiljoUtils)
         every { MiljoUtils.isNonProduction() } returns false
         every { dokumentKrypterer.krypterData(any()) } returns byteArrayOf(3, 2, 1)
-        val sendtSoknad = lagSendtSoknad()
-        sendtSoknad.fiksforsendelseId = FIKSFORSENDELSE_ID
+        val soknadMetadata = lagSoknadMetadata()
+        soknadMetadata.fiksForsendelseId = FIKSFORSENDELSE_ID
         every { innsendingService.finnFiksForsendelseIdForEttersendelse(any()) } returns FIKSFORSENDELSE_ID
         every { innsendingService.hentSoknadUnderArbeid(any(), any()) } returns mockk()
         every { sosialhjelpPdfGenerator.generate(any(), any()) } returns byteArrayOf(1, 2, 3)
@@ -66,9 +66,9 @@ internal class FiksSenderTest {
     fun createForsendelseSetterRiktigInfoPaForsendelsenMedKryptering() {
         every { innsendingService.hentSoknadUnderArbeid(any(), any()) } returns createSoknadUnderArbeid()
 
-        val sendtSoknad = lagSendtSoknad()
+        val soknadMetadata = lagSoknadMetadata()
         val filnavnInputStreamMap = HashMap<String, InputStream>()
-        val forsendelse = fiksSender.createForsendelse(sendtSoknad, filnavnInputStreamMap)
+        val forsendelse = fiksSender.createForsendelse(soknadMetadata, filnavnInputStreamMap)
 
         val adresse = forsendelse.mottaker.digitalAdresse
         assertThat(adresse.organisasjonsNummer).isEqualTo(ORGNUMMER)
@@ -93,9 +93,9 @@ internal class FiksSenderTest {
         val fiksSenderUtenKryptering = FiksSender(dokumentKrypterer, innsendingService, sosialhjelpPdfGenerator, false, svarUtService)
         every { innsendingService.hentSoknadUnderArbeid(any(), any()) } returns createSoknadUnderArbeid()
 
-        val sendtSoknad = lagSendtSoknad()
+        val soknadMetadata = lagSoknadMetadata()
         val filnavnInputStreamMap = HashMap<String, InputStream>()
-        val forsendelse = fiksSenderUtenKryptering.createForsendelse(sendtSoknad, filnavnInputStreamMap)
+        val forsendelse = fiksSenderUtenKryptering.createForsendelse(soknadMetadata, filnavnInputStreamMap)
 
         assertThat(forsendelse.isKryptert).isFalse
         assertThat(forsendelse.isKrevNiva4Innlogging).isFalse
@@ -106,9 +106,9 @@ internal class FiksSenderTest {
     fun createForsendelseSetterRiktigTittelForNySoknad() {
         every { innsendingService.hentSoknadUnderArbeid(any(), any()) } returns createSoknadUnderArbeid()
 
-        val sendtSoknad = lagSendtSoknad()
+        val soknadMetadata = lagSoknadMetadata()
         val filnavnInputStreamMap = HashMap<String, InputStream>()
-        val forsendelse = fiksSender.createForsendelse(sendtSoknad, filnavnInputStreamMap)
+        val forsendelse = fiksSender.createForsendelse(soknadMetadata, filnavnInputStreamMap)
 
         assertThat(forsendelse.tittel).isEqualTo(FiksSender.SOKNAD_TIL_NAV)
     }
@@ -120,11 +120,11 @@ internal class FiksSenderTest {
         soknadUnderArbeid.jsonInternalSoknad = lagInternalSoknadForEttersending()
         every { innsendingService.hentSoknadUnderArbeid(any(), any()) } returns soknadUnderArbeid
 
-        val sendtSoknad = lagSendtSoknad()
-        sendtSoknad.tilknyttetBehandlingsId = "12345"
+        val soknadMetadata = lagSoknadMetadata()
+        soknadMetadata.tilknyttetBehandlingsId = "12345"
 
         val filnavnInputStreamMap = HashMap<String, InputStream>()
-        val forsendelse = fiksSender.createForsendelse(sendtSoknad, filnavnInputStreamMap)
+        val forsendelse = fiksSender.createForsendelse(soknadMetadata, filnavnInputStreamMap)
 
         assertThat(forsendelse.tittel).isEqualTo(FiksSender.ETTERSENDELSE_TIL_NAV)
     }
@@ -132,13 +132,13 @@ internal class FiksSenderTest {
     @Test
     fun opprettForsendelseForEttersendelseUtenSvarPaForsendelseSkalFeile() {
         every { innsendingService.hentSoknadUnderArbeid(any(), any()) } returns createSoknadUnderArbeid()
-        every { innsendingService.finnFiksForsendelseIdForEttersendelse(any()) } throws IllegalStateException("Finner ikke søknaden det skal ettersendes på")
+        every { innsendingService.finnFiksForsendelseIdForEttersendelse(any()) } returns null
 
-        val sendtEttersendelse = lagSendtEttersendelse()
+        val soknadMetadataEttersendelse = lagSoknadMetadataEttersendelse()
         val filnavnInputStreamMap = HashMap<String, InputStream>()
 
         assertThatExceptionOfType(IllegalStateException::class.java)
-            .isThrownBy { fiksSender.createForsendelse(sendtEttersendelse, filnavnInputStreamMap) }
+            .isThrownBy { fiksSender.createForsendelse(soknadMetadataEttersendelse, filnavnInputStreamMap) }
     }
 
     @Test
@@ -227,24 +227,25 @@ internal class FiksSenderTest {
         )
     }
 
-    private fun lagSendtSoknad(): SendtSoknad {
-        return SendtSoknad(
+    private fun lagSoknadMetadata(): SoknadMetadata {
+        return SoknadMetadata(
+            id = 1L,
             behandlingsId = BEHANDLINGSID,
             tilknyttetBehandlingsId = null,
-            eier = EIER,
-            fiksforsendelseId = null,
-            orgnummer = ORGNUMMER,
-            navEnhetsnavn = NAVENHETSNAVN,
-            brukerOpprettetDato = LocalDateTime.now(),
-            brukerFerdigDato = LocalDateTime.now(),
-            sendtDato = null
+            fnr = EIER,
+            fiksForsendelseId = null,
+            orgnr = ORGNUMMER,
+            navEnhet = NAVENHETSNAVN,
+            opprettetDato = LocalDateTime.now(),
+            sistEndretDato = LocalDateTime.now(),
+            innsendtDato = null
         )
     }
 
-    private fun lagSendtEttersendelse(): SendtSoknad {
-        val sendtSoknad = lagSendtSoknad()
-        sendtSoknad.tilknyttetBehandlingsId = "soknadId"
-        return sendtSoknad
+    private fun lagSoknadMetadataEttersendelse(): SoknadMetadata {
+        val soknadMetadata = lagSoknadMetadata()
+        soknadMetadata.tilknyttetBehandlingsId = "soknadId"
+        return soknadMetadata
     }
 
     companion object {

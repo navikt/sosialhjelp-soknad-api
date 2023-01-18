@@ -9,6 +9,7 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderAr
 import no.nav.sosialhjelp.soknad.navenhet.NavEnhetRessurs
 import no.nav.sosialhjelp.soknad.navenhet.dto.NavEnhetFrontend
 import no.nav.sosialhjelp.soknad.personalia.adresse.dto.AdresserFrontend
+import no.nav.sosialhjelp.soknad.personalia.adresse.dto.AdresserFrontendInput
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
@@ -40,19 +41,30 @@ open class AdresseRessurs(
         val jsonOppholdsadresse = jsonInternalSoknad.soknad.data.personalia.oppholdsadresse
         val sysFolkeregistrertAdresse = jsonInternalSoknad.soknad.data.personalia.folkeregistrertAdresse
         val sysMidlertidigAdresse = adresseSystemdata.innhentMidlertidigAdresse(personIdentifikator)
+        val navEnhet = try {
+            navEnhetRessurs.findSoknadsmottaker(
+                eier,
+                jsonInternalSoknad.soknad,
+                jsonInternalSoknad.soknad.data.personalia.oppholdsadresse.adresseValg.toString(),
+                null
+            )
+        } catch (e: Exception) {
+            null
+        }
         jsonInternalSoknad.midlertidigAdresse = sysMidlertidigAdresse
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
         return AdresseMapper.mapToAdresserFrontend(
             sysFolkeregistrertAdresse,
             sysMidlertidigAdresse,
-            jsonOppholdsadresse
+            jsonOppholdsadresse,
+            navEnhet
         )
     }
 
     @PutMapping
     open fun updateAdresse(
         @PathVariable("behandlingsId") behandlingsId: String,
-        @RequestBody adresserFrontend: AdresserFrontend
+        @RequestBody adresserFrontend: AdresserFrontendInput
     ): List<NavEnhetFrontend>? {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         val eier = SubjectHandlerUtils.getUserIdFromToken()
@@ -64,12 +76,15 @@ open class AdresseRessurs(
             JsonAdresseValg.FOLKEREGISTRERT ->
                 personalia.oppholdsadresse =
                     adresseSystemdata.createDeepCopyOfJsonAdresse(personalia.folkeregistrertAdresse)
+
             JsonAdresseValg.MIDLERTIDIG ->
                 personalia.oppholdsadresse =
                     adresseSystemdata.innhentMidlertidigAdresse(eier)
+
             JsonAdresseValg.SOKNAD ->
                 personalia.oppholdsadresse =
                     adresserFrontend.soknad?.let { AdresseMapper.mapToJsonAdresse(it) }
+
             else -> throw IllegalStateException("Adressevalg kan ikke være noe annet enn Folkeregistrert, Midlertidig eller Soknad")
         }
         personalia.oppholdsadresse.adresseValg = adresserFrontend.valg
