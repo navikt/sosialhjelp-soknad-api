@@ -1,9 +1,7 @@
 package no.nav.sosialhjelp.soknad.personalia.basispersonalia.dto
 
-import io.swagger.v3.oas.annotations.media.Schema
 import org.apache.commons.lang3.StringUtils.isEmpty
 
-@Schema(nullable = true)
 data class BasisPersonaliaFrontend(
     var navn: NavnFrontend? = null,
     var fodselsnummer: String? = null,
