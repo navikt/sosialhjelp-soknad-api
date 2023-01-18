@@ -2,7 +2,7 @@ package no.nav.sosialhjelp.soknad.personalia.kontonummer.dto
 
 data class KontoDto(
     val kontonummer: String,
-    val utenlandsKontoInfo: UtenlandskKontoInfo?
+    val utenlandskKontoInfo: UtenlandskKontoInfo?
 )
 
 data class UtenlandskKontoInfo(
