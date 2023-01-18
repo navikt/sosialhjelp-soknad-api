@@ -46,6 +46,8 @@
     "FIKS_NOKKELFIL": "svarut_public_test.pem",
     "DIGISOS_API_BASEURL": "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api/fiks/",
     "KODEVERK_URL": "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api/kodeverk",
+    "KONTOREGISTER_API_BASEURL": "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api",
+    "KONTOREGISTER_API_AUDIENCE": "dummyAudience",
     "KRR_AUDIENCE": "dummyAudience",
     "KRR_SCOPE": "dummyScope",
     "KRR_URL": "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api/krr/",
@@ -62,7 +64,6 @@
     "NEDETID_START": "",
     "NEDETID_SLUTT": "",
     "ENVIRONMENT_NAME": "mock",
-    "MOCK_ALT_UTBETALINGER_FRA_NAV_URL": "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api/utbetaling",
     "UNLEASH_INSTANCE_ID": "mock"
   }
 }
