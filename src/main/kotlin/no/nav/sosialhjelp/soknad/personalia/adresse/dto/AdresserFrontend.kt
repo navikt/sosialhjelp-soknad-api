@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.personalia.adresse.dto
 
+import io.swagger.v3.oas.annotations.media.Schema
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresseValg
 import no.nav.sosialhjelp.soknad.navenhet.dto.NavEnhetFrontend
@@ -10,6 +11,7 @@ data class AdresserFrontendInput(
     val midlertidig: AdresseFrontend? = null,
     val soknad: AdresseFrontend? = null,
 )
+
 data class AdresserFrontend(
     val valg: JsonAdresseValg?,
     val folkeregistrert: AdresseFrontend? = null,
@@ -18,6 +20,7 @@ data class AdresserFrontend(
     val navEnhet: NavEnhetFrontend? = null
 )
 
+@Schema(nullable = true)
 data class AdresseFrontend(
     var type: JsonAdresse.Type? = null,
     var gateadresse: GateadresseFrontend? = null,
