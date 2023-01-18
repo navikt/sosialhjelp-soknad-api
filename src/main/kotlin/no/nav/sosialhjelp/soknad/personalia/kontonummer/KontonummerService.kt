@@ -15,12 +15,10 @@ open class KontonummerService(
         if (unleash.isEnabled(BRUK_KONTOREGISTER_ENABLED, true)) {
             log.info("Feature toggle for bruk av kontoregister er enablet og kontonummer hentes fra kontoregister")
             val konto = kontonummerClient.getKontonummer(ident)
-            log.info("Konto hentet fra kontoregister: $konto")
             kontonummer = if (konto?.utenlandskKontoInfo != null) {
-                log.info("Kontonummer fra konotregister er utenlandskonto og kontonummer settes ikke")
+                log.info("Kontonummer fra kontoregister er utenlandskonto og kontonummer settes ikke")
                 null
             } else {
-                log.info("Hentet kontonummer fra kontoregister: ${konto?.kontonummer}")
                 konto?.kontonummer
             }
         } else {
