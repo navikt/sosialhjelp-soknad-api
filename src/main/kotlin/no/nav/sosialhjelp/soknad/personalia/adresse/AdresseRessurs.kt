@@ -41,7 +41,16 @@ open class AdresseRessurs(
         val jsonOppholdsadresse = jsonInternalSoknad.soknad.data.personalia.oppholdsadresse
         val sysFolkeregistrertAdresse = jsonInternalSoknad.soknad.data.personalia.folkeregistrertAdresse
         val sysMidlertidigAdresse = adresseSystemdata.innhentMidlertidigAdresse(personIdentifikator)
-        val navEnhet = try { navEnhetRessurs.hentValgtNavEnhet(behandlingsId) } catch (e: Exception) { null }
+        val navEnhet = try {
+            navEnhetRessurs.findSoknadsmottaker(
+                eier,
+                jsonInternalSoknad.soknad,
+                jsonInternalSoknad.soknad.data.personalia.oppholdsadresse.adresseValg.toString(),
+                null
+            )
+        } catch (e: Exception) {
+            null
+        }
         jsonInternalSoknad.midlertidigAdresse = sysMidlertidigAdresse
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
         return AdresseMapper.mapToAdresserFrontend(
@@ -67,12 +76,15 @@ open class AdresseRessurs(
             JsonAdresseValg.FOLKEREGISTRERT ->
                 personalia.oppholdsadresse =
                     adresseSystemdata.createDeepCopyOfJsonAdresse(personalia.folkeregistrertAdresse)
+
             JsonAdresseValg.MIDLERTIDIG ->
                 personalia.oppholdsadresse =
                     adresseSystemdata.innhentMidlertidigAdresse(eier)
+
             JsonAdresseValg.SOKNAD ->
                 personalia.oppholdsadresse =
                     adresserFrontend.soknad?.let { AdresseMapper.mapToJsonAdresse(it) }
+
             else -> throw IllegalStateException("Adressevalg kan ikke være noe annet enn Folkeregistrert, Midlertidig eller Soknad")
         }
         personalia.oppholdsadresse.adresseValg = adresserFrontend.valg

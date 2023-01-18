@@ -9,12 +9,10 @@ import no.nav.sosialhjelp.soknad.db.repositories.oppgave.OppgaveRepository
 import no.nav.sosialhjelp.soknad.db.repositories.oppgave.Status
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedlegg
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggType
-import no.nav.sosialhjelp.soknad.db.repositories.sendtsoknad.SendtSoknad
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadata
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.migration.repo.OpplastetVedleggMigrationRepository
-import no.nav.sosialhjelp.soknad.migration.repo.SendtSoknadMigrationRepository
 import no.nav.sosialhjelp.soknad.migration.repo.SoknadMetadataMigrationRepository
 import no.nav.sosialhjelp.soknad.migration.repo.SoknadUnderArbeidMigrationRepository
 import org.assertj.core.api.Assertions.assertThat
@@ -26,14 +24,12 @@ internal class MigrationServiceTest {
     private val soknadMetadataMigrationRepository: SoknadMetadataMigrationRepository = mockk()
     private val soknadUnderArbeidMigrationRepository: SoknadUnderArbeidMigrationRepository = mockk()
     private val opplastetVedleggMigrationRepository: OpplastetVedleggMigrationRepository = mockk()
-    private val sendtSoknadMigrationRepository: SendtSoknadMigrationRepository = mockk()
     private val oppgaveRepository: OppgaveRepository = mockk()
 
     private val migrationService = MigrationService(
         soknadMetadataMigrationRepository,
         soknadUnderArbeidMigrationRepository,
         opplastetVedleggMigrationRepository,
-        sendtSoknadMigrationRepository,
         oppgaveRepository
     )
 
@@ -57,9 +53,6 @@ internal class MigrationServiceTest {
             opplastetVedleggMigrationRepository.getOpplastetVedlegg(soknadUnderArbeid.soknadId)
         } returns listOf(createOpplastetVedlegg(soknadUnderArbeid.soknadId))
 
-        val sendtSoknad = createSendtSoknad("123")
-        every { sendtSoknadMigrationRepository.getSendtSoknad(any()) } returns sendtSoknad
-
         val oppgave = createOppgave("123")
         every { oppgaveRepository.hentOppgave(any()) } returns oppgave
 
@@ -70,7 +63,6 @@ internal class MigrationServiceTest {
         assertThat(next?.soknadMetadata?.behandlingsId).isEqualTo("123")
         assertThat(next?.soknadUnderArbeid).isNotNull
         assertThat(next?.soknadUnderArbeid?.opplastetVedleggList).hasSize(1)
-        assertThat(next?.sendtSoknad).isNotNull
         assertThat(next?.oppgave).isNotNull
     }
 
@@ -79,7 +71,6 @@ internal class MigrationServiceTest {
         val soknadMetadata = createSoknadMetadata("123")
         every { soknadMetadataMigrationRepository.getNextSoknadMetadataAfter(any()) } returns soknadMetadata
         every { soknadUnderArbeidMigrationRepository.getSoknadUnderArbeid(any()) } returns null
-        every { sendtSoknadMigrationRepository.getSendtSoknad(any()) } returns null
         every { oppgaveRepository.hentOppgave(any()) } returns null
 
         val next = migrationService.getNext(LocalDateTime.MIN)
@@ -87,7 +78,6 @@ internal class MigrationServiceTest {
         assertThat(next?.behandlingsId).isEqualTo("123")
         assertThat(next?.soknadMetadata?.behandlingsId).isEqualTo("123")
         assertThat(next?.soknadUnderArbeid).isNull()
-        assertThat(next?.sendtSoknad).isNull()
         assertThat(next?.oppgave).isNull()
 
         verify { opplastetVedleggMigrationRepository wasNot called }
@@ -113,12 +103,6 @@ internal class MigrationServiceTest {
             soknadId = soknadId,
             filnavn = "filnavn",
             sha512 = "sha"
-        )
-    }
-
-    private fun createSendtSoknad(behandlingsId: String): SendtSoknad {
-        return SendtSoknad(
-            1L, behandlingsId, null, "fnr", null, "orgnr", "navEnhet", LocalDateTime.now(), LocalDateTime.now(), null
         )
     }
 

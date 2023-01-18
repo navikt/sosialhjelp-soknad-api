@@ -5,7 +5,6 @@ import no.nav.sosialhjelp.soknad.db.repositories.oppgave.FiksData
 import no.nav.sosialhjelp.soknad.db.repositories.oppgave.FiksResultat
 import no.nav.sosialhjelp.soknad.db.repositories.oppgave.Oppgave
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedlegg
-import no.nav.sosialhjelp.soknad.db.repositories.sendtsoknad.SendtSoknad
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadata
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.VedleggMetadata
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.VedleggMetadataListe
@@ -15,7 +14,6 @@ import no.nav.sosialhjelp.soknad.migration.dto.FiksDataDto
 import no.nav.sosialhjelp.soknad.migration.dto.FiksResultatDto
 import no.nav.sosialhjelp.soknad.migration.dto.OppgaveDto
 import no.nav.sosialhjelp.soknad.migration.dto.OpplastetVedleggDto
-import no.nav.sosialhjelp.soknad.migration.dto.SendtSoknadDto
 import no.nav.sosialhjelp.soknad.migration.dto.SoknadMetadataDto
 import no.nav.sosialhjelp.soknad.migration.dto.SoknadUnderArbeidDto
 import no.nav.sosialhjelp.soknad.migration.dto.VedleggMetadataDto
@@ -131,21 +129,6 @@ object Extensions {
             soknadId = soknadId,
             filnavn = filnavn,
             sha512 = sha512
-        )
-    }
-
-    fun SendtSoknad.toDto(): SendtSoknadDto {
-        return SendtSoknadDto(
-            sendtSoknadId = sendtSoknadId,
-            behandlingsId = behandlingsId,
-            tilknyttetBehandlingsId = tilknyttetBehandlingsId,
-            eier = eier,
-            fiksforsendelseId = fiksforsendelseId,
-            orgnummer = orgnummer,
-            navEnhetsnavn = navEnhetsnavn,
-            brukerOpprettetDato = brukerOpprettetDato,
-            brukerFerdigDato = brukerFerdigDato,
-            sendtDato = sendtDato
         )
     }
 }
