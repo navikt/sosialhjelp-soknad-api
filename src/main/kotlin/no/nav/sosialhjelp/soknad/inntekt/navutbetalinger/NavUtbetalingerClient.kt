@@ -21,10 +21,8 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.BodyInserters
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.bodyToMono
-import reactor.core.publisher.Mono
 import java.time.LocalDate
 
 interface NavUtbetalingerClient {
@@ -40,7 +38,7 @@ class NavUtbetalingerClientImpl(
     webClientBuilder: WebClient.Builder
 ) : NavUtbetalingerClient {
 
-    private val webClient = unproxiedWebClientBuilder(webClientBuilder).filters { it.add(logRequest()) }.build()
+    private val webClient = unproxiedWebClientBuilder(webClientBuilder).build()
 
     override fun getUtbetalingerSiste40Dager(ident: String): UtbetalDataDto? {
         hentFraCache(ident)?.let { return it }
@@ -51,7 +49,7 @@ class NavUtbetalingerClientImpl(
 
         try {
             val response = webClient.post()
-                .uri(utbetalDataUrl + "/utbetaldata/api/v2/hent-utbetalingsinformasjon/ekstern")
+                .uri("$utbetalDataUrl/utbetaldata/api/v2/hent-utbetalingsinformasjon/ekstern")
                 .header(HttpHeaders.AUTHORIZATION, BEARER + tokenXtoken(utbetalDataAudience))
                 .body(BodyInserters.fromValue(request))
                 .retrieve()
@@ -91,16 +89,6 @@ class NavUtbetalingerClientImpl(
             )
         } catch (e: JsonProcessingException) {
             log.warn("Noe feilet ved lagring av UtbetalDataDto til redis", e)
-        }
-    }
-
-    private fun logRequest(): ExchangeFilterFunction {
-        return ExchangeFilterFunction.ofRequestProcessor { clientRequest ->
-            val sb = StringBuilder("Request: ")
-            sb.append("method: ${clientRequest.method()} ")
-            sb.append("url: ${clientRequest.url()} ")
-            log.info(sb.toString())
-            Mono.just(clientRequest)
         }
     }
 
