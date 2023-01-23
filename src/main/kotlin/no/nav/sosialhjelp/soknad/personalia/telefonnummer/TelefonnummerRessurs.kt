@@ -73,11 +73,10 @@ open class TelefonnummerRessurs(
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
     }
 
+    data class TelefonnummerFrontend(
+        val brukerdefinert: Boolean = false,
+        val systemverdi: String? = null,
+        @Schema(nullable = true)
+        val brukerutfyltVerdi: String? = null
+    )
 }
-
-data class TelefonnummerFrontend(
-    val brukerdefinert: Boolean = false,
-    val systemverdi: String? = null,
-    @Schema(nullable = true)
-    val brukerutfyltVerdi: String? = null
-)
