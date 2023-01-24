@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.personalia.telefonnummer
 
+import io.swagger.v3.oas.annotations.media.Schema
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonTelefonnummer
 import no.nav.security.token.support.core.api.ProtectedWithClaims
@@ -56,7 +57,8 @@ open class TelefonnummerRessurs(
         val jsonInternalSoknad = soknad.jsonInternalSoknad
             ?: throw IllegalStateException("Kan ikke oppdatere søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
         val personalia = jsonInternalSoknad.soknad.data.personalia
-        val jsonTelefonnummer = personalia.telefonnummer ?: personalia.withTelefonnummer(JsonTelefonnummer()).telefonnummer
+        val jsonTelefonnummer =
+            personalia.telefonnummer ?: personalia.withTelefonnummer(JsonTelefonnummer()).telefonnummer
         if (telefonnummerFrontend.brukerdefinert) {
             if (telefonnummerFrontend.brukerutfyltVerdi.isNullOrBlank()) {
                 personalia.telefonnummer = null
@@ -74,6 +76,7 @@ open class TelefonnummerRessurs(
     data class TelefonnummerFrontend(
         val brukerdefinert: Boolean = false,
         val systemverdi: String? = null,
+        @Schema(nullable = true)
         val brukerutfyltVerdi: String? = null
     )
 }
