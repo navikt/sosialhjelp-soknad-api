@@ -2,18 +2,23 @@ package no.nav.sosialhjelp.soknad.personalia.kontonummer
 
 import io.mockk.every
 import io.mockk.mockk
+import no.finn.unleash.Unleash
+import no.nav.sosialhjelp.soknad.personalia.kontonummer.dto.KontoDto
 import no.nav.sosialhjelp.soknad.personalia.kontonummer.dto.KontonummerDto
+import no.nav.sosialhjelp.soknad.personalia.kontonummer.dto.UtenlandskKontoInfo
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 internal class KontonummerServiceTest {
 
     private val kontonummerClient: KontonummerClient = mockk()
-    private val kontonummerService = KontonummerService(kontonummerClient)
+    private val unleash: Unleash = mockk()
+    private val kontonummerService = KontonummerService(kontonummerClient, unleash)
 
     @Test
     internal fun clientReturnererKontonummer() {
-        every { kontonummerClient.getKontonummer(any()) } returns KontonummerDto("1337")
+        every { unleash.isEnabled(KontonummerService.BRUK_KONTOREGISTER_ENABLED, true) } returns true
+        every { kontonummerClient.getKontonummer(any()) } returns KontoDto("1337", null)
 
         val kontonummer = kontonummerService.getKontonummer("ident")
 
@@ -21,8 +26,9 @@ internal class KontonummerServiceTest {
     }
 
     @Test
-    internal fun clientReturnererKontonummerNull() {
-        every { kontonummerClient.getKontonummer(any()) } returns KontonummerDto(null)
+    internal fun clientReturnererNull() {
+        every { unleash.isEnabled(KontonummerService.BRUK_KONTOREGISTER_ENABLED, true) } returns true
+        every { kontonummerClient.getKontonummer(any()) } returns null
 
         val kontonummer = kontonummerService.getKontonummer("ident")
 
@@ -30,8 +36,34 @@ internal class KontonummerServiceTest {
     }
 
     @Test
-    internal fun clientReturnererNull() {
-        every { kontonummerClient.getKontonummer(any()) } returns null
+    internal fun kontonummerSkalIkkeSettesNaarKlientReturnererUtenlandskontoNr() {
+        every { unleash.isEnabled(KontonummerService.BRUK_KONTOREGISTER_ENABLED, true) } returns true
+        every { kontonummerClient.getKontonummer(any()) } returns KontoDto(
+            "1337",
+            UtenlandskKontoInfo(null, null, bankLandkode = "SWE", valutakode = "SEK", null, null, null, null)
+        )
+
+        val kontonummer = kontonummerService.getKontonummer("ident")
+
+        assertThat(kontonummer).isNull()
+    }
+
+    @Test
+    internal fun legacyClientReturnererKontonummer() {
+        every { unleash.isEnabled(KontonummerService.BRUK_KONTOREGISTER_ENABLED, true) } returns false
+        every { kontonummerClient.getKontonummerLegacy(any()) } returns KontonummerDto("1234")
+        every { kontonummerClient.getKontonummer(any()) } returns KontoDto("1337", null) // grunnet skyggeproduksjon
+
+        val kontonummer = kontonummerService.getKontonummer("ident")
+
+        assertThat(kontonummer).isEqualTo("1234")
+    }
+
+    @Test
+    internal fun legacyClientReturnererKontonummerNull() {
+        every { unleash.isEnabled(KontonummerService.BRUK_KONTOREGISTER_ENABLED, true) } returns false
+        every { kontonummerClient.getKontonummerLegacy(any()) } returns KontonummerDto(null)
+        every { kontonummerClient.getKontonummer(any()) } returns null // grunnet skyggeproduksjon
 
         val kontonummer = kontonummerService.getKontonummer("ident")
 
