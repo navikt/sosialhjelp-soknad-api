@@ -61,6 +61,9 @@ spec:
         - application: dittnav-api
           namespace: min-side
           cluster: {{gcp-cluster}}
+        - application: sosialhjelp-adminpanel
+          namespace: teamdigisos
+          cluster: {{gcp-cluster}}
 {{/if}}
         - application: {{sosialhjelp-innsyn-api}}
     outbound:

@@ -133,8 +133,8 @@ open class InformasjonRessurs(
         return "$kommunenummer er logget. Sjekk kibana"
     }
 
-    @Unprotected
     @GetMapping("/kommunestatus")
+    @ProtectedWithClaims(issuer = Constants.AZUREAD)
     open fun hentKommunestatus(): Map<String, KommunestatusFrontend> {
         if (nedetidService.isInnenforNedetid) {
             return emptyMap()
