@@ -86,6 +86,9 @@ fiks_svarut_password: ${FIKS_SVARUT_PASSWORD}
 loginservice.url: ${LOGINSERVICE_URL}
 
 no.nav.security.jwt.issuer:
+  azuread:
+    discoveryurl: ${AZURE_APP_WELL_KNOWN_URL}
+    accepted_audience: ${AZURE_APP_CLIENT_ID}
   selvbetjening:
     discoveryurl: ${LOGINSERVICE_IDPORTEN_DISCOVERY_URL}
     validation:
