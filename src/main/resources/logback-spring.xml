@@ -14,6 +14,7 @@
         <logger name="klientlogger" level="debug"/>
         <logger name="org.springframework" level="warn"/>
         <logger name="org.apache.pdfbox" level="error"/>
+        <logger name="no.nav.security.token.support" level="DEBUG"/>
 
         <root level="INFO">
             <appender-ref ref="stdout_json"/>
