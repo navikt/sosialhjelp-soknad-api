@@ -1,0 +1,124 @@
+apiVersion: "nais.io/v1alpha1"
+kind: "Application"
+metadata:
+  name: sosialhjelp-soknad-api-mock
+  namespace: teamdigisos
+  labels:
+    team: teamdigisos
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: "150M"
+spec:
+  image: {{image}}
+  port: 8080
+  liveness:
+    path: /sosialhjelp/soknad-api/internal/isAlive
+    initialDelay: 60
+    timeout: 1
+    periodSeconds: 10
+    failureThreshold: 10
+  readiness:
+    path: /sosialhjelp/soknad-api/internal/isAlive
+    initialDelay: 60
+    timeout: 1
+  prometheus:
+    enabled: false
+  replicas:
+    min: 1
+    max: 1
+  webproxy: false
+  accessPolicy:
+    inbound:
+      rules:
+        - application: sosialhjelp-innsyn-api-mock
+    outbound:
+      external:
+        - host: "digisos.ekstern.dev.nav.no",
+        - host: "unleash.nais.io"
+      rules:
+       - application: sosialhjelp-mock-alt-api-mock
+  ingresses:
+    - "https://sosialhjelp-soknad-api-mock.dev.nav.no/sosialhjelp/soknad-api"
+  resources:
+    limits:
+      cpu: 500m
+      memory: 2Gi
+    requests:
+      cpu: 10m
+      memory: 512Mi
+  envFrom:
+    - configmap: loginservice-idporten
+  env:
+    - name: SPRING_PROFILES_ACTIVE
+      value: "mock-alt,log-console,no-redis"
+    - name: PORT
+      value: "8080"
+    - name: AAREG_AUDIENCE
+      value: "dummyAudience"
+    - name: AAREG_URL
+      value: "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api/aareg"
+    - name: AZURE_OPENID_CONFIG_TOKEN_ENDPOINT
+      value: "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api/azuretoken/azuread"
+    - name: AZURE_APP_CLIENT_ID
+      value: "someaudience"
+    - name: AZURE_APP_CLIENT_SECRET
+      value: "secret"
+    - name: OPPSLAG_API_BASEURL
+      value: "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api/oppslag-api/"
+    - name: UTBETALDATA_AUDIENCE
+      value: "dummyAudience"
+    - name: UTBETALDATA_API_BASEURL
+      value: "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api"
+    - name: PDL_API_URL
+      value: "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api/pdl_endpoint_url"
+    - name: PDL_API_AUDIENCE
+      value: "dummyAudience"
+    - name: PDL_API_SCOPE
+      value: "dummyScope"
+    - name: UNLEASH_API_URL
+      value: "https://unleash.nais.io/api"
+    - name: EREG_URL
+      value: "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api/ereg"
+    - name: FIKS_NOKKELFIL
+      value: "svarut_public_test.pem"
+    - name: DIGISOS_API_BASEURL
+      value: "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api/fiks/"
+    - name: KODEVERK_URL
+      value: "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api/kodeverk"
+    - name: KONTOREGISTER_API_BASEURL
+      value: "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api"
+    - name: KONTOREGISTER_API_AUDIENCE
+      value: "dummyAudience"
+    - name: KRR_AUDIENCE
+      value: "dummyAudience"
+    - name: KRR_SCOPE
+      value: "dummyScope"
+    - name: KRR_URL
+      value: "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api/krr/"
+    - name: LOGINSERVICE_URL
+      value: "https://digisos.ekstern.dev.nav.no/sosialhjelp/mock-alt/login"
+    - name: MASKINPORTEN_WELL_KNOWN_URL
+      value: "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api/well-known/maskinporten"
+    - name: OIDC_ISSUER_SELVBETJENING_DISCOVERYURL
+      value: "https://digisos.ekstern.dev.nav.no/sosialhjelp/mock-alt-api/well-known/selvbetjening"
+    - name: OIDC_ISSUER_TOKENX_DISCOVERYURL
+      value: "https://digisos.ekstern.dev.nav.no/sosialhjelp/mock-alt-api/well-known/tokenx"
+    - name: NORG_URL
+      value: "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api/norg_endpoint_url"
+    - name: SCHEDULER_DISABLE
+      value: "false"
+    - name: SOKNAD_BOSTOTTE_URL
+      value: "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api/husbanken"
+    - name: SKATTEETATEN_API_BASEURL
+      value: "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api/skatteetaten/"
+    - name: SVARUT_URL
+      value: "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api/svarut/"
+    - name: TOKEN_X_WELL_KNOWN_URL
+      value: "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api/well-known/tokenx"
+    - name: NEDETID_START
+      value: ""
+    - name: NEDETID_SLUTT
+      value: ""
+    - name: ENVIRONMENT_NAME
+      value: "mock"
+    - name: UNLEASH_INSTANCE_ID
+      value: "mock"
