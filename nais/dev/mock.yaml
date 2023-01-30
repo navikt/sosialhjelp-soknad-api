@@ -32,7 +32,7 @@ spec:
         - application: sosialhjelp-innsyn-api-mock
     outbound:
       external:
-        - host: "digisos.ekstern.dev.nav.no",
+        - host: "digisos.ekstern.dev.nav.no"
         - host: "unleash.nais.io"
       rules:
        - application: sosialhjelp-mock-alt-api-mock
