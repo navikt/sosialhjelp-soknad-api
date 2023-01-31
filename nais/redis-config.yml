@@ -25,7 +25,6 @@ spec:
     inbound:
       rules:
         - application: sosialhjelp-soknad-api
-        - application: sosialhjelp-soknad-api-dev
         - application: sosialhjelp-soknad-api-redisexporter
   service:
     port: 6379
