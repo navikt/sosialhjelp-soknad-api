@@ -1,0 +1,141 @@
+apiVersion: "nais.io/v1alpha1"
+kind: "Application"
+metadata:
+  name: sosialhjelp-soknad-api
+  namespace: teamdigisos
+  labels:
+    team: teamdigisos
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: "150M"
+spec:
+  image: {{image}}
+  port: 8080
+  liveness:
+    path: /sosialhjelp/soknad-api/internal/isAlive
+    initialDelay: 60
+    timeout: 1
+    periodSeconds: 10
+    failureThreshold: 10
+  readiness:
+    path: /sosialhjelp/soknad-api/internal/isAlive
+    initialDelay: 60
+    timeout: 1
+  prometheus:
+    enabled: true
+    path: /sosialhjelp/soknad-api/internal/prometheus
+  replicas:
+    min: 2
+    max: 4
+  webproxy: true
+  azure:
+    application:
+      enabled: true
+  maskinporten:
+    enabled: true
+    scopes:
+      consumes:
+        - name: "skatteetaten:inntekt"
+        - name: "ks:fiks"
+  vault:
+    enabled: true
+    paths:
+     - mountPath: /var/run/secrets/datasource
+       kvPath: /oracle/data/prod/creds/soknadsosialhjel_p-user
+  tokenx:
+    enabled: true
+  accessPolicy:
+    inbound:
+      rules:
+        - application: mine-saker-api
+          namespace: min-side
+          cluster: prod-gcp
+        - application: dittnav-api
+          namespace: min-side
+          cluster: prod-gcp
+        - application: sosialhjelp-innsyn-api
+    outbound:
+      rules:
+        - application: sosialhjelp-oppslag-api
+  ingresses:
+    - "https://sosialhjelp-soknad-api.prod-fss-pub.nais.io/sosialhjelp/soknad-api"
+    - "https://sosialhjelp-soknad-api.intern.nav.no/sosialhjelp/soknad-api"
+  leaderElection: true
+  resources:
+    limits:
+      cpu: 1000m
+      memory: 4Gi
+    requests:
+      cpu: 100m
+      memory: 1250Mi
+  envFrom:
+    - configmap: loginservice-idporten
+    - secret: redis-password-soknad-api
+    - secret: fiks-integrasjon-secret
+    - secret: fiks-svarut-credentials
+  env:
+    - name: SPRING_PROFILES_ACTIVE
+      value: "log-kibana,leader-election"
+    - name: AAREG_AUDIENCE
+      value: "prod-fss:arbeidsforhold:aareg-services-nais"
+    - name: AAREG_URL
+      value: "https://aareg-services.intern.nav.no/api"
+    - name: CLAMAV_URL
+      value: "http://clamav.nais-system.svc.nais.local/scan"
+    - name: EREG_URL
+      value: "https://ereg-services.intern.nav.no"
+    - name: FIKS_NOKKELFIL
+      value: "svarut_public_prod.pem"
+    - name: DIGISOS_API_BASEURL
+      value: "https://api.fiks.ks.no/"
+    - name: KODEVERK_URL
+      value: "https://kodeverk.intern.nav.no/api/v1/kodeverk"
+    - name: KRR_AUDIENCE
+      value: "prod-gcp:team-rocket:digdir-krr-proxy"
+    - name: KRR_SCOPE
+      value: "prod-gcp.team-rocket.digdir-krr-proxy"
+    - name: KRR_URL
+      value: "https://digdir-krr-proxy.intern.nav.no"
+    - name: LOGINSERVICE_URL
+      value: "https://loginservice.nav.no/login"
+    - name: NORG_URL
+      value: "https://norg2.intern.nav.no/norg2/api/v1"
+    - name: OPPSLAG_API_AUDIENCE
+      value: "prod-fss:teamdigisos:sosialhjelp-oppslag-api"
+    - name: OPPSLAG_API_BASEURL
+      value: "https://sosialhjelp-oppslag-api.intern.nav.no/api/"
+    - name: UTBETALDATA_AUDIENCE
+      value: "prod-fss:okonomi:sokos-utbetaldata"
+    - name: UTBETALDATA_API_BASEURL
+      value: "https://sokos-utbetaldata.intern.nav.no"
+    - name: KONTOREGISTER_API_AUDIENCE
+      value: "prod-gcp:okonomi:sokos-kontoregister-person"
+    - name: KONTOREGISTER_API_BASEURL
+      value: "https://sokos-kontoregister-person.intern.nav.no/"
+    - name: PDL_API_URL
+      value: "https://pdl-api.intern.nav.no/graphql"
+    - name: PDL_API_AUDIENCE
+      value: "prod-fss:pdl:pdl-api"
+    - name: PDL_API_SCOPE
+      value: "prod-fss.pdl.pdl-api"
+    - name: UNLEASH_API_URL
+      value: "https://unleash.nais.io/api"
+    - name: SCHEDULER_DISABLE
+      value: "false"
+    - name: SOKNADSOSIALHJELPDATASOURCE_URL
+      value: "jdbc:oracle:thin:@a01dbfl050.adeo.no:1521/soknadsosialhjelp"
+    - name: SOKNAD_BOSTOTTE_URL
+      value: "https://api.husbanken.no/bostotte/minbostotte"
+    - name: SKATTEETATEN_API_BASEURL
+      value: "https://api.skatteetaten.no/api/innrapportert/inntektsmottaker/v1/digisos/"
+    - name: SVARUT_URL
+      value: "https://svarut.ks.no"
+    - name: NEDETID_START
+      value: "04.02.2022 22:00:00"
+    - name: NEDETID_SLUTT
+      value: "05.02.2022 06:00:00"
+    - name: ENVIRONMENT_NAME
+      value: "p"
+    - name: REDIS_HOST
+      value: "sosialhjelp-soknad-api-redis.teamdigisos.svc.nais.local"
+    - name: UNLEASH_INSTANCE_ID
+      value: "prod-fss"

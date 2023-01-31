@@ -24,7 +24,8 @@ spec:
   accessPolicy: # for GCP
     inbound:
       rules:
-        - application: {{applicationName}}
+        - application: sosialhjelp-soknad-api
+        - application: sosialhjelp-soknad-api-dev
         - application: sosialhjelp-soknad-api-redisexporter
   service:
     port: 6379
