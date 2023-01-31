@@ -53,6 +53,11 @@ spec:
           namespace: min-side
           cluster: dev-gcp
         - application: sosialhjelp-innsyn-api
+          namespace: teamdigisos
+          cluster: dev-fss
+        - application: sosialhjelp-adminpanel
+          namespace: teamdigisos
+          cluster: dev-gcp
     outbound:
       rules:
         - application: sosialhjelp-oppslag-api
