@@ -37,8 +37,8 @@
   "azureEnabled": true,
   "env": {
     "SPRING_PROFILES_ACTIVE": "log-kibana",
-    "AAREG_AUDIENCE": "dev-fss:arbeidsforhold:aareg-services-nais-q1",
-    "AAREG_URL": "https://aareg-services-q1.dev.intern.nav.no/api",
+    "AAREG_AUDIENCE": "dev-fss:arbeidsforhold:aareg-services-nais",
+    "AAREG_URL": "https://aareg-services.dev.intern.nav.no/api",
     "CLAMAV_URL": "http://clamav.nais-system.svc.nais.local/scan",
     "EREG_URL": "https://ereg-services.dev.intern.nav.no",
     "FIKS_NOKKELFIL": "svarut_public_test.pem",
