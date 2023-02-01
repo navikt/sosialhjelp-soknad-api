@@ -82,9 +82,9 @@ spec:
     - name: SPRING_PROFILES_ACTIVE
       value: "log-kibana"
     - name: AAREG_AUDIENCE
-      value: "dev-fss:arbeidsforhold:aareg-services-nais-q1"
+      value: "dev-fss:arbeidsforhold:aareg-services-nais"
     - name: AAREG_URL
-      value: "https://aareg-services-q1.dev.intern.nav.no/api"
+      value: "https://aareg-services.dev.intern.nav.no/api"
     - name: CLAMAV_URL
       value: "http://clamav.nais-system.svc.nais.local/scan"
     - name: EREG_URL
