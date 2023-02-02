@@ -64,8 +64,6 @@ spec:
       value: "someaudience"
     - name: AZURE_APP_CLIENT_SECRET
       value: "secret"
-    - name: OPPSLAG_API_BASEURL
-      value: "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api/oppslag-api/"
     - name: UTBETALDATA_AUDIENCE
       value: "dummyAudience"
     - name: UTBETALDATA_API_BASEURL

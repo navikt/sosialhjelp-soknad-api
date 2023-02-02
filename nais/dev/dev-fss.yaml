@@ -58,9 +58,6 @@ spec:
         - application: sosialhjelp-adminpanel
           namespace: teamdigisos
           cluster: dev-gcp
-    outbound:
-      rules:
-        - application: sosialhjelp-oppslag-api
   ingresses:
     - "https://sosialhjelp-soknad-api.dev-fss-pub.nais.io/sosialhjelp/soknad-api"
     - "https://sosialhjelp-soknad-api.dev.intern.nav.no/sosialhjelp/soknad-api"
@@ -105,10 +102,6 @@ spec:
       value: "https://loginservice.dev.nav.no/login"
     - name: NORG_URL
       value: "https://norg2.dev.intern.nav.no/norg2/api/v1"
-    - name: OPPSLAG_API_AUDIENCE
-      value: "dev-fss:teamdigisos:sosialhjelp-oppslag-api"
-    - name: OPPSLAG_API_BASEURL
-      value: "https://sosialhjelp-oppslag-api.dev.intern.nav.no/api/"
     - name: UTBETALDATA_AUDIENCE
       value: "dev-fss:okonomi:sokos-utbetaldata"
     - name: UTBETALDATA_API_BASEURL
