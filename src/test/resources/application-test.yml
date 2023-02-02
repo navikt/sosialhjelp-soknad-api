@@ -39,7 +39,6 @@ maskinporten_client_jwk: generateRSA
 tokendings_url: http://localhost:${mock-oauth2-server.port}/tokenx/.well-known/openid-configuration
 tokendings_client_id: localhost:teamdigisos:sosialhjelp-soknad-api
 tokendings_private_jwk: generateRSA
-oppslag_api_audience: dummyAudience
 utbetaldata_audience: dummyAudience
 kontoregister_api_audience: dummyAudience
 pdl_api_audience: dummyAudience
@@ -66,7 +65,6 @@ pdl_api_url: https://pdl-api/graphql
 unleash_api_url: https://unleash.nais.io/api
 kodeverk_url: https://kodeverk/
 utbetaldata_api_baseurl: https://sokos-utbetaldata.dev.intern.nav.no
-oppslag_api_baseurl: https://sosialhjelp-oppslag-api/api/
 kontoregister_api_baseurl: https://sokos-kontoregister-person.dev.intern.nav.no
 soknad.bostotte.url: http://bostotte.url
 norg_url: https://norg.url/enhet
