@@ -53,21 +53,21 @@ maskinporten_client_jwk: generateRSA
 
 # tokenx
 tokendings_url: ${TOKEN_X_WELL_KNOWN_URL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/well-known/tokenx${mock-alt-api-wellknown-queryparam}}
-tokendings_client_id: ${TOKEN_X_CLIENT_ID:dummyAudience}
-tokendings_private_jwk: ${TOKEN_X_PRIVATE_JWK:generateRSA}
-oppslag_api_audience: ${OPPSLAG_API_AUDIENCE:dummyAudience}
-kontoregister_api_audience: ${KONTOREGISTER_API_AUDIENCE:dummyAudience}
-pdl_api_audience: ${PDL_API_AUDIENCE:dummyAudience}
-utbetaldata_audience: ${UTBETALDATA_AUDIENCE:dummyAudience}
-krr_audience: ${KRR_AUDIENCE:dummyAudience}
-aareg_audience: ${AAREG_AUDIENCE:dummyAudience}
+tokendings_client_id: dummyAudience
+tokendings_private_jwk: generateRSA
+oppslag_api_audience: dummyAudience
+kontoregister_api_audience: dummyAudience
+pdl_api_audience: dummyAudience
+utbetaldata_audience: dummyAudience
+krr_audience: dummyAudience
+aareg_audience: dummyAudience
 
 # azuread
 azure_token_endpoint: ${AZURE_OPENID_CONFIG_TOKEN_ENDPOINT:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/azuretoken/azuread}
-azure_client_id: ${AZURE_APP_CLIENT_ID:localhost:teamdigisos:sosialhjelp-soknad-api}
-azure_client_secret: ${AZURE_APP_CLIENT_SECRET:clientSecret}
-pdl_api_scope: ${PDL_API_SCOPE:dummyScope}
-krr_scope: ${KRR_SCOPE:dummyScope}
+azure_client_id: localhost:teamdigisos:sosialhjelp-soknad-api
+azure_client_secret: clientSecret
+pdl_api_scope: dummyScope
+krr_scope: dummyScope
 
 no.nav.security.jwt.issuer:
   azuread:
@@ -80,7 +80,7 @@ no.nav.security.jwt.issuer:
     proxyurl:
   tokenx:
     discoveryurl: ${TOKEN_X_WELL_KNOWN_URL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/well-known/tokenx${mock-alt-api-wellknown-queryparam}}
-    accepted_audience: ${TOKEN_X_CLIENT_ID:dummyAudience}
+    accepted_audience: dummyAudience
 
 loginservice.url: ${LOGINSERVICE_URL:http://localhost:3008/sosialhjelp/mock-alt/login}
 
@@ -96,8 +96,8 @@ redis_port: 6379
 redis_password: ${REDIS_PASSWORD:pw}
 
 # Feature toggles
-unleash_instance_id: ${UNLEASH_INSTANCE_ID:mock}
-scheduler.disable: ${SCHEDULER_DISABLE:false}
+unleash_instance_id: mock
+scheduler.disable: false
 sendsoknad.batch.enabled: true
 feature.fiks.kryptering.enabled: false
 
