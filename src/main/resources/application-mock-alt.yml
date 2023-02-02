@@ -4,11 +4,11 @@ server:
 spring:
   flyway:
     enabled: false
-#    baseline-on-migrate: true
-#    url: jdbc:hsqldb:mem:sendsoknad;sql.syntax_ora=true
-#    user: sa
-#    password:
-#    driver-class-name: org.hsqldb.jdbcDriver
+  #    baseline-on-migrate: true
+  #    url: jdbc:hsqldb:mem:sendsoknad;sql.syntax_ora=true
+  #    user: sa
+  #    password:
+  #    driver-class-name: org.hsqldb.jdbcDriver
   datasource:
     driver-class-name: org.hsqldb.jdbcDriver
     url: jdbc:hsqldb:mem:sendsoknad;sql.syntax_ora=true
@@ -71,7 +71,7 @@ krr_scope: ${KRR_SCOPE:dummyScope}
 
 no.nav.security.jwt.issuer:
   azuread:
-    discoveryurl: ${AZURE_APP_WELL_KNOWN_URL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/well-known/azuread{mock-alt-api-wellknown-queryparam}}
+    discoveryurl: ${AZURE_APP_WELL_KNOWN_URL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/well-known/azuread${mock-alt-api-wellknown-queryparam}}
     accepted_audience: someaudience
   selvbetjening:
     discoveryurl: ${OIDC_ISSUER_SELVBETJENING_DISCOVERYURL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/well-known/selvbetjening${mock-alt-api-wellknown-queryparam}}
