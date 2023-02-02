@@ -1,0 +1,8 @@
+apiVersion: "nais.io/v1alpha1"
+kind: "Application"
+metadata:
+  name: sosialhjelp-soknad-api
+  namespace: teamdigisos
+  labels:
+    team: teamdigisos
+# To be continued for prod-gcp
