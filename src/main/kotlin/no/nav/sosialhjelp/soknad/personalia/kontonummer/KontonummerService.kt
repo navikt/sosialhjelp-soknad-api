@@ -9,7 +9,7 @@ open class KontonummerService(
 ) {
 
     open fun getKontonummer(ident: String): String? {
-        log.info("Feature toggle for bruk av kontoregister er enablet og kontonummer hentes fra kontoregister")
+        log.info("Henter kontonummmer fra kontoregister")
         val konto = kontonummerClient.getKontonummer(ident)
         return if (konto?.utenlandskKontoInfo != null) {
             log.info("Kontonummer fra kontoregister er utenlandskonto og kontonummer settes ikke")
