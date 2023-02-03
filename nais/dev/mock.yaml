@@ -89,7 +89,7 @@ spec:
     - name: SKATTEETATEN_API_BASEURL
       value: "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api/skatteetaten/"
     - name: SVARUT_URL
-      value: "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api/svarut/"
+      value: "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api/svarut"
     - name: TOKEN_X_WELL_KNOWN_URL
       value: "http://sosialhjelp-mock-alt-api-mock/sosialhjelp/mock-alt-api/well-known/tokenx"
     - name: NEDETID_START
