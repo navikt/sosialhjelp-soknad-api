@@ -50,27 +50,6 @@ create table opplastet_vedlegg
 
 create index index_opplvedl_soknaduaid on opplastet_vedlegg (soknad_under_arbeid_id);
 
-create table sendt_soknad
-(
-    sendt_soknad_id         numeric(19, 0) primary key,
-    behandlingsid           varchar(255) not null unique,
-    tilknyttetbehandlingsid varchar(255),
-    eier                    varchar(255) not null,
-    fiksforsendelseid       varchar(255),
-    brukeropprettetdato     timestamp    not null,
-    brukerferdigdato        timestamp    not null,
-    sendtdato               timestamp,
-    orgnr                   varchar(255) not null,
-    navenhetsnavn           varchar(255) not null
-);
-
-create index index_sendtsoknad_tilknbehid on sendt_soknad (tilknyttetbehandlingsid);
-create index index_sendtsoknad_eier on sendt_soknad (eier);
-create index index_sendtsoknad_oppr on sendt_soknad (brukeropprettetdato);
-create index index_sendtsoknad_ferdig on sendt_soknad (brukerferdigdato);
-create index index_sendtsoknad_sendt on sendt_soknad (sendtdato);
-create sequence sendt_soknad_id_seq start with 1 increment by 1;
-
 create table soknadmetadata
 (
     id                      numeric(19, 0) primary key,
