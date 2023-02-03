@@ -1,31 +1,24 @@
 package no.nav.sosialhjelp.soknad.api.innsyn
 
 import no.nav.security.token.support.core.api.ProtectedWithClaims
-import no.nav.security.token.support.core.api.RequiredIssuers
 import no.nav.sosialhjelp.soknad.api.innsyn.dto.SoknadOversiktDto
 import no.nav.sosialhjelp.soknad.app.Constants
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import org.slf4j.LoggerFactory
-import org.springframework.stereotype.Controller
-import javax.ws.rs.GET
-import javax.ws.rs.Path
-import javax.ws.rs.Produces
-import javax.ws.rs.core.MediaType
+import org.springframework.http.MediaType
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
 
-@Controller
-@RequiredIssuers(
-    ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4]),
-    ProtectedWithClaims(issuer = Constants.TOKENX, claimMap = [Constants.CLAIM_ACR_LEVEL_4]),
-)
-@Path("/soknadoversikt")
-@Produces(MediaType.APPLICATION_JSON)
+@RestController
+@ProtectedWithClaims(issuer = Constants.TOKENX, claimMap = [Constants.CLAIM_ACR_LEVEL_4])
+@RequestMapping("/soknadoversikt", produces = [MediaType.APPLICATION_JSON_VALUE])
 open class SoknadOversiktRessurs(
     private val service: SoknadOversiktService,
     private val tilgangskontroll: Tilgangskontroll
 ) {
-    @GET
-    @Path("/soknader")
+    @GetMapping("/soknader")
     open fun hentInnsendteSoknaderForBruker(): List<SoknadOversiktDto> {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
         val fnr = SubjectHandlerUtils.getUserIdFromToken()

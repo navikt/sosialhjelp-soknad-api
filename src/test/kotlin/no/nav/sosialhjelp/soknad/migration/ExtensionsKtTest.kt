@@ -8,7 +8,6 @@ import no.nav.sosialhjelp.soknad.db.repositories.oppgave.Oppgave
 import no.nav.sosialhjelp.soknad.db.repositories.oppgave.Status
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedlegg
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggType
-import no.nav.sosialhjelp.soknad.db.repositories.sendtsoknad.SendtSoknad
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadata
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataInnsendingStatus
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.VedleggMetadata
@@ -120,35 +119,6 @@ internal class ExtensionsKtTest {
         assertThat(opplastetVedleggDto.soknadId).isEqualTo(opplastetVedlegg.soknadId)
         assertThat(opplastetVedleggDto.filnavn).isEqualTo(opplastetVedlegg.filnavn)
         assertThat(opplastetVedleggDto.sha512).isEqualTo(opplastetVedlegg.sha512)
-    }
-
-    @Test
-    internal fun `sendtSoknad mapper til dto`() {
-        val sendtSoknad = SendtSoknad(
-            sendtSoknadId = 1L,
-            behandlingsId = "behandlingsId",
-            tilknyttetBehandlingsId = "annenBehandlingsId",
-            eier = "fnr",
-            fiksforsendelseId = "fiksId",
-            orgnummer = "orgnr",
-            navEnhetsnavn = "navEnhet",
-            brukerOpprettetDato = LocalDateTime.now(),
-            brukerFerdigDato = LocalDateTime.now(),
-            sendtDato = null
-        )
-
-        val dto = sendtSoknad.toDto()
-
-        assertThat(dto.sendtSoknadId).isEqualTo(sendtSoknad.sendtSoknadId)
-        assertThat(dto.behandlingsId).isEqualTo(sendtSoknad.behandlingsId)
-        assertThat(dto.tilknyttetBehandlingsId).isEqualTo(sendtSoknad.tilknyttetBehandlingsId)
-        assertThat(dto.eier).isEqualTo(sendtSoknad.eier)
-        assertThat(dto.fiksforsendelseId).isEqualTo(sendtSoknad.fiksforsendelseId)
-        assertThat(dto.orgnummer).isEqualTo(sendtSoknad.orgnummer)
-        assertThat(dto.navEnhetsnavn).isEqualTo(sendtSoknad.navEnhetsnavn)
-        assertThat(dto.brukerOpprettetDato).isEqualTo(sendtSoknad.brukerOpprettetDato)
-        assertThat(dto.brukerFerdigDato).isEqualTo(sendtSoknad.brukerFerdigDato)
-        assertThat(dto.sendtDato).isEqualTo(sendtSoknad.sendtDato)
     }
 
     @Test

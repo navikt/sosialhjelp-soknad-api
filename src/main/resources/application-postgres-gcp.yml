@@ -12,7 +12,4 @@ spring:
     password: ${POSTGRES_PASSWORD}
     driver-class-name: org.postgresql.Driver
 
-oidc.issuer.selvbetjening.proxy_url: noproxy
-
-# TODO: bør enables igjen når man har et alternativ til sensu/influxdb
-metrics.report.enabled: false
+no.nav.security.jwt.issuer.selvbetjening.proxyurl: noproxy

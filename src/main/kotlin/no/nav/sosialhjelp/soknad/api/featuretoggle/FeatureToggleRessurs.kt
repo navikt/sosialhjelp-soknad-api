@@ -1,23 +1,18 @@
 package no.nav.sosialhjelp.soknad.api.featuretoggle
 
-import no.finn.unleash.Unleash
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.soknad.app.Constants
-import org.springframework.stereotype.Controller
-import javax.ws.rs.GET
-import javax.ws.rs.Path
-import javax.ws.rs.Produces
-import javax.ws.rs.core.MediaType
+import org.springframework.http.MediaType
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
 
-@Controller
+@RestController
 @ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4])
-@Path("/feature-toggle")
-@Produces(MediaType.APPLICATION_JSON)
-open class FeatureToggleRessurs(
-    private val unleash: Unleash
-) {
+@RequestMapping("/feature-toggle", produces = [MediaType.APPLICATION_JSON_VALUE])
+open class FeatureToggleRessurs {
 
-    @GET
+    @GetMapping
     open fun featureToggles(): Map<String, Boolean> {
         val featureToggles: MutableMap<String, Boolean> = HashMap()
         // add toggles for frontend

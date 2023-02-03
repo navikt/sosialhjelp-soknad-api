@@ -21,7 +21,9 @@ data class SoknadMetadata(
     var sistEndretDato: LocalDateTime,
     var innsendtDato: LocalDateTime? = null,
     var lest: Boolean = false
-)
+) {
+    val erEttersendelse: Boolean get() = !tilknyttetBehandlingsId.isNullOrEmpty()
+}
 
 @XmlRootElement
 data class VedleggMetadataListe(

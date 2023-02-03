@@ -80,9 +80,8 @@ open class OppgaveRepositoryJdbc(
         val parameters = MapSqlParameterSource("ids", behandlingsIdList)
         return namedParameterJdbcTemplate.query(
             "SELECT * FROM oppgave WHERE behandlingsid IN (:ids)",
-            parameters,
-            { resultSet: ResultSet, _: Int -> resultSet.getLong("id") }
-        )
+            parameters
+        ) { resultSet: ResultSet, _: Int -> resultSet.getLong("id") }
     }
 
     override fun hentNeste(): Oppgave? {

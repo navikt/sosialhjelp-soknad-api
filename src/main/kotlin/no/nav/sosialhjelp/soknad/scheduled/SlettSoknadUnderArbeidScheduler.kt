@@ -52,7 +52,7 @@ class SlettSoknadUnderArbeidScheduler(
                 return
             }
             batchSoknadUnderArbeidRepository.hentSoknadUnderArbeid(soknadUnderArbeidId)?.let {
-                if (mellomlagringService.erMellomlagringEnabledOgSoknadSkalSendesMedDigisosApi(it)) {
+                if (mellomlagringService.kanSoknadHaMellomlagredeVedleggForSletting(it)) {
                     mellomlagringService.deleteAllVedlegg(it.behandlingsId)
                 }
             }

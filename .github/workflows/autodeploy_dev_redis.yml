@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Hente kode
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Deploy
         uses: nais/deploy/actions/deploy@v1
         env:
@@ -25,14 +25,13 @@ jobs:
           CLUSTER: dev-fss
           TEAM: teamdigisos
           RESOURCE: "nais/redis-config.yml,nais/redisexporter.yml"
-          VARS: nais/dev/dev.json
 
   deploy-dev-gcp:
     name: Auto-deploy redis to dev-gcp
     runs-on: ubuntu-latest
     steps:
       - name: Hente kode
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Deploy
         uses: nais/deploy/actions/deploy@v1
         env:
@@ -41,4 +40,3 @@ jobs:
           CLUSTER: dev-gcp
           TEAM: teamdigisos
           RESOURCE: "nais/redis-config.yml,nais/redisexporter.yml"
-          VARS: nais/dev/dev.json

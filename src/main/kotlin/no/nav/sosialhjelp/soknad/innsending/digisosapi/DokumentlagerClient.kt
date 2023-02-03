@@ -4,12 +4,13 @@ import io.netty.channel.ChannelOption
 import no.nav.sosialhjelp.soknad.app.Constants.BEARER
 import no.nav.sosialhjelp.soknad.app.Constants.HEADER_INTEGRASJON_ID
 import no.nav.sosialhjelp.soknad.app.Constants.HEADER_INTEGRASJON_PASSORD
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.exceptions.TjenesteUtilgjengeligException
 import no.nav.sosialhjelp.soknad.auth.maskinporten.MaskinportenClient
-import org.slf4j.LoggerFactory.getLogger
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders.ACCEPT
 import org.springframework.http.HttpHeaders.AUTHORIZATION
+import org.springframework.http.MediaType
 import org.springframework.http.client.reactive.ReactorClientHttpConnector
 import org.springframework.http.codec.json.Jackson2JsonDecoder
 import org.springframework.http.codec.json.Jackson2JsonEncoder
@@ -23,21 +24,16 @@ import java.security.cert.CertificateException
 import java.security.cert.CertificateFactory
 import java.security.cert.X509Certificate
 import java.time.Duration
-import javax.ws.rs.core.MediaType
-
-interface DokumentlagerClient {
-    fun getDokumentlagerPublicKeyX509Certificate(): X509Certificate
-}
 
 @Component
-class DokumentlagerClientImpl(
+class DokumentlagerClient(
     @Value("\${digisos_api_baseurl}") private val digisosApiEndpoint: String,
     @Value("\${integrasjonsid_fiks}") private val integrasjonsidFiks: String,
     @Value("\${integrasjonpassord_fiks}") private val integrasjonpassordFiks: String,
     private val maskinportenClient: MaskinportenClient,
     webClientBuilder: WebClient.Builder,
     proxiedHttpClient: HttpClient
-) : DokumentlagerClient {
+) {
 
     private var cachedPublicKey: X509Certificate? = null
 
@@ -57,12 +53,12 @@ class DokumentlagerClientImpl(
         }
         .build()
 
-    override fun getDokumentlagerPublicKeyX509Certificate(): X509Certificate {
+    fun getDokumentlagerPublicKeyX509Certificate(): X509Certificate {
         cachedPublicKey?.let { return it }
 
         val publicKey = fiksWebClient.get()
             .uri("/digisos/api/v1/dokumentlager-public-key")
-            .header(ACCEPT, MediaType.WILDCARD)
+            .header(ACCEPT, MediaType.ALL_VALUE)
             .header(HEADER_INTEGRASJON_ID, integrasjonsidFiks)
             .header(HEADER_INTEGRASJON_PASSORD, integrasjonpassordFiks)
             .header(AUTHORIZATION, BEARER + maskinportenClient.getToken())
@@ -86,7 +82,7 @@ class DokumentlagerClientImpl(
     }
 
     companion object {
-        private val log = getLogger(DokumentlagerClientImpl::class.java)
+        private val log by logger()
 
         private const val SENDING_TIL_FIKS_TIMEOUT = 5 * 60 * 1000 // 5 minutter
     }

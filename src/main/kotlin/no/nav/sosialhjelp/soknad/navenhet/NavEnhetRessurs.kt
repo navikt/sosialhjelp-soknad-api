@@ -10,7 +10,6 @@ import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonMatrikkelAdresse
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.soknad.adressesok.domain.AdresseForslag
-import no.nav.sosialhjelp.soknad.adressesok.domain.AdresseForslagType
 import no.nav.sosialhjelp.soknad.app.Constants
 import no.nav.sosialhjelp.soknad.app.MiljoUtils.isNonProduction
 import no.nav.sosialhjelp.soknad.app.mapper.KommuneTilNavEnhetMapper
@@ -28,18 +27,17 @@ import no.nav.sosialhjelp.soknad.navenhet.finnadresse.FinnAdresseService
 import no.nav.sosialhjelp.soknad.navenhet.gt.GeografiskTilknytningService
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import org.slf4j.LoggerFactory
-import org.springframework.stereotype.Controller
-import javax.ws.rs.GET
-import javax.ws.rs.PUT
-import javax.ws.rs.Path
-import javax.ws.rs.PathParam
-import javax.ws.rs.Produces
-import javax.ws.rs.core.MediaType
+import org.springframework.http.MediaType
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PutMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
 
-@Controller
+@RestController
 @ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4])
-@Path("/soknader/{behandlingsId}/personalia")
-@Produces(MediaType.APPLICATION_JSON)
+@RequestMapping("/soknader/{behandlingsId}/personalia", produces = [MediaType.APPLICATION_JSON_VALUE])
 open class NavEnhetRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
@@ -52,9 +50,10 @@ open class NavEnhetRessurs(
     private val unleash: Unleash,
 ) {
 
-    @GET
-    @Path("/navEnheter")
-    open fun hentNavEnheter(@PathParam("behandlingsId") behandlingsId: String): List<NavEnhetFrontend>? {
+    @GetMapping("/navEnheter")
+    open fun hentNavEnheter(
+        @PathVariable("behandlingsId") behandlingsId: String
+    ): List<NavEnhetFrontend>? {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).jsonInternalSoknad?.soknad
@@ -62,22 +61,14 @@ open class NavEnhetRessurs(
         val valgtEnhetNr = soknad.mottaker.enhetsnummer
         val oppholdsadresse = soknad.data.personalia.oppholdsadresse
         val adresseValg = utledAdresseValg(oppholdsadresse)
-        return findSoknadsmottaker(eier, soknad, adresseValg, valgtEnhetNr)
+        val navEnhetFrontend = findSoknadsmottaker(eier, soknad, adresseValg, valgtEnhetNr)
+        return navEnhetFrontend?.let { listOf(it) } ?: emptyList()
     }
 
-    private fun utledAdresseValg(oppholdsadresse: JsonAdresse?): String? {
-        return if (oppholdsadresse == null) {
-            null
-        } else if (oppholdsadresse.adresseValg == null) {
-            null
-        } else {
-            oppholdsadresse.adresseValg.toString()
-        }
-    }
-
-    @GET
-    @Path("/navEnhet")
-    open fun hentValgtNavEnhet(@PathParam("behandlingsId") behandlingsId: String): NavEnhetFrontend? {
+    @GetMapping("/navEnhet")
+    open fun hentValgtNavEnhet(
+        @PathVariable("behandlingsId") behandlingsId: String
+    ): NavEnhetFrontend? {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknadsmottaker = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).jsonInternalSoknad?.soknad?.mottaker
@@ -99,9 +90,11 @@ open class NavEnhetRessurs(
         }
     }
 
-    @PUT
-    @Path("/navEnheter")
-    open fun updateNavEnhet(@PathParam("behandlingsId") behandlingsId: String, navEnhetFrontend: NavEnhetFrontend) {
+    @PutMapping("/navEnheter")
+    open fun updateNavEnhet(
+        @PathVariable("behandlingsId") behandlingsId: String,
+        @RequestBody navEnhetFrontend: NavEnhetFrontend
+    ) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
@@ -113,6 +106,16 @@ open class NavEnhetRessurs(
             .withEnhetsnummer(navEnhetFrontend.enhetsnr)
             .withKommunenummer(navEnhetFrontend.kommuneNr)
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
+    }
+
+    private fun utledAdresseValg(oppholdsadresse: JsonAdresse?): String? {
+        return if (oppholdsadresse == null) {
+            null
+        } else if (oppholdsadresse.adresseValg == null) {
+            null
+        } else {
+            oppholdsadresse.adresseValg.toString()
+        }
     }
 
     private fun createNavEnhetsnavn(enhetsnavn: String, kommunenavn: String?): String {
@@ -132,13 +135,13 @@ open class NavEnhetRessurs(
         soknad: JsonSoknad,
         valg: String?,
         valgtEnhetNr: String?
-    ): List<NavEnhetFrontend>? {
+    ): NavEnhetFrontend? {
         val personalia = soknad.data.personalia
         return if ("folkeregistrert" == valg) {
             try {
                 finnNavEnhetFraGT(eier, personalia, valgtEnhetNr)
             } catch (e: Exception) {
-                log.warn("Noe feilet ved utleding av Nav-kontor ut fra GT hentet fra PDL -> fallback til adressesøk-løsning", e)
+                log.warn("Noe feilet henting av NavEnhet fra GT -> fallback til adressesøk for vegadresse / hentAdresse for matrikkeladresse", e)
                 finnNavEnhetFraAdresse(personalia, valg, valgtEnhetNr)
             }
         } else finnNavEnhetFraAdresse(personalia, valg, valgtEnhetNr)
@@ -148,12 +151,22 @@ open class NavEnhetRessurs(
         ident: String,
         personalia: JsonPersonalia,
         valgtEnhetNr: String?
-    ): List<NavEnhetFrontend> {
-        val kommunenummer = getKommunenummer(personalia.oppholdsadresse) ?: return emptyList()
+    ): NavEnhetFrontend? {
+        val kommunenummer = getKommunenummer(personalia.oppholdsadresse) ?: return null
         val geografiskTilknytning = geografiskTilknytningService.hentGeografiskTilknytning(ident)
         val navEnhet = navEnhetService.getEnhetForGt(geografiskTilknytning)
-        val navEnhetFrontend = mapToNavEnhetFrontend(navEnhet, geografiskTilknytning, kommunenummer, valgtEnhetNr)
-        return navEnhetFrontend?.let { listOf(it) } ?: emptyList()
+        return mapToNavEnhetFrontend(navEnhet, geografiskTilknytning, kommunenummer, valgtEnhetNr)
+    }
+
+    private fun finnNavEnhetFraAdresse(
+        personalia: JsonPersonalia,
+        valg: String?,
+        valgtEnhetNr: String?
+    ): NavEnhetFrontend? {
+        val adresseForslag = finnAdresseService.finnAdresseFraSoknad(personalia, valg) ?: return null
+        val geografiskTilknytning = getGeografiskTilknytningFromAdresseForslag(adresseForslag)
+        val navEnhet = navEnhetService.getEnhetForGt(geografiskTilknytning)
+        return mapToNavEnhetFrontend(navEnhet, geografiskTilknytning, adresseForslag.kommunenummer, valgtEnhetNr)
     }
 
     private fun mapToNavEnhetFrontend(
@@ -183,97 +196,6 @@ open class NavEnhetRessurs(
             valgt = valgt,
             kommuneNr = kommunenummer,
             isMottakDeaktivert = !isDigisosKommune,
-            isMottakMidlertidigDeaktivert = kommuneInfoService.harMidlertidigDeaktivertMottak(kommunenummer)
-        )
-    }
-
-    private fun finnNavEnhetFraAdresse(
-        personalia: JsonPersonalia,
-        valg: String?,
-        valgtEnhetNr: String?
-    ): List<NavEnhetFrontend> {
-        val adresseForslagList = finnAdresseService.finnAdresseFraSoknad(personalia, valg)
-        /*
-         * Vi fjerner nå duplikate NAV-enheter med forskjellige bydelsnumre gjennom
-         * bruk av distinct. Hvis det er viktig med riktig bydelsnummer bør dette kallet
-         * fjernes og brukeren må besvare hvilken bydel han/hun oppholder seg i.
-         */
-        val navEnhetFrontendListe: MutableList<NavEnhetFrontend> = mutableListOf()
-        for (adresseForslag in adresseForslagList) {
-            if (adresseForslag.type == AdresseForslagType.MATRIKKELADRESSE) {
-                val navenheter = navEnhetService.getEnheterForKommunenummer(adresseForslag.kommunenummer)
-                navenheter
-                    ?.forEach {
-                        addToNavEnhetFrontendListe(
-                            navEnhetFrontendListe,
-                            adresseForslag.geografiskTilknytning,
-                            adresseForslag,
-                            it,
-                            valgtEnhetNr
-                        )
-                    }
-                log.info("Matrikkeladresse ble brukt. Returnerer ${navenheter?.size} navenheter")
-            } else {
-                val geografiskTilknytning = getGeografiskTilknytningFromAdresseForslag(adresseForslag)
-                val navEnhet = navEnhetService.getEnhetForGt(geografiskTilknytning)
-                addToNavEnhetFrontendListe(
-                    navEnhetFrontendListe,
-                    geografiskTilknytning,
-                    adresseForslag,
-                    navEnhet,
-                    valgtEnhetNr
-                )
-            }
-        }
-        return navEnhetFrontendListe.distinct()
-    }
-
-    private fun addToNavEnhetFrontendListe(
-        navEnhetFrontendListe: MutableList<NavEnhetFrontend>,
-        geografiskTilknytning: String?,
-        adresseForslag: AdresseForslag,
-        navEnhet: NavEnhet?,
-        valgtEnhetNr: String?
-    ) {
-        val navEnhetFrontend = mapFraAdresseForslagOgNavEnhetTilNavEnhetFrontend(
-            geografiskTilknytning,
-            adresseForslag,
-            navEnhet,
-            valgtEnhetNr
-        )
-        if (navEnhetFrontend != null) {
-            navEnhetFrontendListe.add(navEnhetFrontend)
-        }
-    }
-
-    private fun mapFraAdresseForslagOgNavEnhetTilNavEnhetFrontend(
-        geografiskTilknytning: String?,
-        adresseForslag: AdresseForslag,
-        navEnhet: NavEnhet?,
-        valgtEnhetNr: String?
-    ): NavEnhetFrontend? {
-        if (navEnhet == null) {
-            log.warn("Kunne ikke hente NAV-enhet: $geografiskTilknytning , i kommune: ${adresseForslag.kommunenavn} (${adresseForslag.kommunenummer})")
-            return null
-        }
-        val kommunenummer = adresseForslag.kommunenummer
-        if (kommunenummer == null || kommunenummer.length != 4) {
-            log.warn("Kommunenummer hadde ikke 4 tegn, var $kommunenummer")
-            return null
-        }
-        val digisosKommune = isDigisosKommune(kommunenummer)
-        val sosialOrgnr = if (digisosKommune) navEnhet.sosialOrgNr else null
-        val enhetNr = if (digisosKommune) navEnhet.enhetNr else null
-        val valgt = enhetNr != null && enhetNr == valgtEnhetNr
-        val kommunenavnFraAdresseforslag = adresseForslag.kommunenavn ?: navEnhet.kommunenavn
-        return NavEnhetFrontend(
-            enhetsnr = enhetNr,
-            enhetsnavn = navEnhet.navn,
-            kommuneNr = kommunenummer,
-            kommunenavn = kommuneInfoService.getBehandlingskommune(kommunenummer, kommunenavnFraAdresseforslag),
-            orgnr = sosialOrgnr,
-            valgt = valgt,
-            isMottakDeaktivert = !digisosKommune,
             isMottakMidlertidigDeaktivert = kommuneInfoService.harMidlertidigDeaktivertMottak(kommunenummer)
         )
     }

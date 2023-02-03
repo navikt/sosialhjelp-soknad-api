@@ -3,36 +3,36 @@ package no.nav.sosialhjelp.soknad.inntekt.navutbetalinger
 import com.fasterxml.jackson.core.JsonProcessingException
 import kotlinx.coroutines.runBlocking
 import no.nav.sosialhjelp.soknad.app.Constants.BEARER
-import no.nav.sosialhjelp.soknad.app.Constants.HEADER_CALL_ID
-import no.nav.sosialhjelp.soknad.app.Constants.HEADER_CONSUMER_ID
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.client.config.RetryUtils
 import no.nav.sosialhjelp.soknad.app.client.config.unproxiedWebClientBuilder
-import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.MDC_CALL_ID
-import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.getFromMDC
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getConsumerId
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getToken
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken
 import no.nav.sosialhjelp.soknad.auth.tokenx.TokendingsService
-import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.NavUtbetalingerDto
+import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.NavUtbetalingerRequest
+import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.Periode
+import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.UtbetalDataDto
+import no.nav.sosialhjelp.soknad.inntekt.navutbetalinger.dto.Utbetaling
 import no.nav.sosialhjelp.soknad.redis.CACHE_30_MINUTES_IN_SECONDS
-import no.nav.sosialhjelp.soknad.redis.NAVUTBETALINGER_CACHE_KEY_PREFIX
 import no.nav.sosialhjelp.soknad.redis.RedisService
 import no.nav.sosialhjelp.soknad.redis.RedisUtils.redisObjectMapper
-import org.slf4j.LoggerFactory.getLogger
+import no.nav.sosialhjelp.soknad.redis.UTBETALDATA_CACHE_KEY_PREFIX
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders
 import org.springframework.stereotype.Component
+import org.springframework.web.reactive.function.BodyInserters
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.bodyToMono
+import java.time.LocalDate
 
 interface NavUtbetalingerClient {
-    fun getUtbetalingerSiste40Dager(ident: String): NavUtbetalingerDto?
+    fun getUtbetalingerSiste40Dager(ident: String): UtbetalDataDto?
 }
 
 @Component
 class NavUtbetalingerClientImpl(
-    @Value("\${oppslag_api_baseurl}") private val oppslagApiUrl: String,
-    @Value("\${oppslag_api_audience}") private val oppslagApiAudience: String,
+    @Value("\${utbetaldata_api_baseurl}") private val utbetalDataUrl: String,
+    @Value("\${utbetaldata_audience}") private val utbetalDataAudience: String,
     private val redisService: RedisService,
     private val tokendingsService: TokendingsService,
     webClientBuilder: WebClient.Builder
@@ -40,50 +40,61 @@ class NavUtbetalingerClientImpl(
 
     private val webClient = unproxiedWebClientBuilder(webClientBuilder).build()
 
-    private val tokenXtoken: String get() = runBlocking {
-        tokendingsService.exchangeToken(getUserIdFromToken(), getToken(), oppslagApiAudience)
-    }
-
-    override fun getUtbetalingerSiste40Dager(ident: String): NavUtbetalingerDto? {
+    override fun getUtbetalingerSiste40Dager(ident: String): UtbetalDataDto? {
         hentFraCache(ident)?.let { return it }
+        log.info("Henter utbetalingsdata fra: $utbetalDataUrl ")
 
-        return try {
-            webClient.get()
-                .uri(oppslagApiUrl + "utbetalinger")
-                .header(HttpHeaders.AUTHORIZATION, BEARER + tokenXtoken)
-                .header(HEADER_CALL_ID, getFromMDC(MDC_CALL_ID))
-                .header(HEADER_CONSUMER_ID, getConsumerId())
+        val periode = Periode(LocalDate.now().minusDays(40), LocalDate.now())
+        val request = NavUtbetalingerRequest(ident, RETTIGHETSHAVER, periode, UTBETALINGSPERIODE)
+
+        try {
+            val response = webClient.post()
+                .uri("$utbetalDataUrl/utbetaldata/api/v2/hent-utbetalingsinformasjon/ekstern")
+                .header(HttpHeaders.AUTHORIZATION, BEARER + tokenXtoken(utbetalDataAudience))
+                .body(BodyInserters.fromValue(request))
                 .retrieve()
-                .bodyToMono<NavUtbetalingerDto>()
+                .bodyToMono<List<Utbetaling>>()
                 .retryWhen(RetryUtils.DEFAULT_RETRY_SERVER_ERRORS)
                 .block()
-                ?.also { lagreTilCache(ident, it) }
+
+            log.info("Hentet ${response?.size} utbetalinger fra utbetaldata tjeneste")
+            val utbetalDataDto = UtbetalDataDto(response, false)
+            lagreTilCache(ident, utbetalDataDto)
+            return utbetalDataDto
         } catch (e: Exception) {
             log.error("Utbetalinger - Noe uventet feilet", e)
             return null
         }
     }
 
-    private fun hentFraCache(ident: String): NavUtbetalingerDto? {
-        return redisService.get(
-            NAVUTBETALINGER_CACHE_KEY_PREFIX + ident,
-            NavUtbetalingerDto::class.java
-        ) as? NavUtbetalingerDto
+    private fun tokenXtoken(audience: String): String {
+        return runBlocking {
+            tokendingsService.exchangeToken(getUserIdFromToken(), getToken(), audience)
+        }
     }
 
-    private fun lagreTilCache(ident: String, navUtbetalingerDto: NavUtbetalingerDto) {
+    private fun hentFraCache(ident: String): UtbetalDataDto? {
+        return redisService.get(
+            UTBETALDATA_CACHE_KEY_PREFIX + ident,
+            UtbetalDataDto::class.java
+        ) as? UtbetalDataDto
+    }
+
+    private fun lagreTilCache(ident: String, utbetalDataDto: UtbetalDataDto) {
         try {
             redisService.setex(
-                NAVUTBETALINGER_CACHE_KEY_PREFIX + ident,
-                redisObjectMapper.writeValueAsBytes(navUtbetalingerDto),
+                UTBETALDATA_CACHE_KEY_PREFIX + ident,
+                redisObjectMapper.writeValueAsBytes(utbetalDataDto),
                 CACHE_30_MINUTES_IN_SECONDS
             )
         } catch (e: JsonProcessingException) {
-            log.warn("Noe feilet ved lagring av NavUtbetalingerDto til redis", e)
+            log.warn("Noe feilet ved lagring av UtbetalDataDto til redis", e)
         }
     }
 
     companion object {
-        private val log = getLogger(NavUtbetalingerClientImpl::class.java)
+        private val log by logger()
+        private const val UTBETALINGSPERIODE = "UTBETALINGSPERIODE"
+        private const val RETTIGHETSHAVER = "RETTIGHETSHAVER"
     }
 }

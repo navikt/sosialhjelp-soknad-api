@@ -1,12 +1,10 @@
 package no.nav.sosialhjelp.soknad.vedlegg.fiks
 
-import no.finn.unleash.Unleash
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
-import no.nav.sosialhjelp.soknad.app.MiljoUtils
-import no.nav.sosialhjelp.soknad.app.exceptions.SendingTilKommuneErMidlertidigUtilgjengeligException
-import no.nav.sosialhjelp.soknad.app.exceptions.SendingTilKommuneUtilgjengeligException
+import no.nav.sosialhjelp.soknad.app.MiljoUtils.isNonProduction
+import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.Vedleggstatus
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
@@ -15,32 +13,29 @@ import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils
 import no.nav.sosialhjelp.soknad.innsending.SenderUtils.createPrefixedBehandlingsId
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilMetadata
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilOpplasting
-import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
-import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus
-import no.nav.sosialhjelp.soknad.vedlegg.OpplastetVedleggRessurs.Companion.KS_MELLOMLAGRING_ENABLED
+import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
 import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils.finnVedleggEllerKastException
 import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils.getSha512FromByteArray
 import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils.lagFilnavn
 import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils.validerFil
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.FileDetectionUtils
-import no.nav.sosialhjelp.soknad.vedlegg.filedetection.MimeTypes
+import no.nav.sosialhjelp.soknad.vedlegg.filedetection.MimeTypes.APPLICATION_PDF
+import no.nav.sosialhjelp.soknad.vedlegg.filedetection.MimeTypes.TEXT_X_MATLAB
 import no.nav.sosialhjelp.soknad.vedlegg.virusscan.VirusScanner
 import org.springframework.stereotype.Component
 import java.io.ByteArrayInputStream
 import java.util.UUID
-import javax.ws.rs.NotFoundException
 
 @Component
 class MellomlagringService(
     private val mellomlagringClient: MellomlagringClient,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val virusScanner: VirusScanner,
-    private val unleash: Unleash,
-    private val kommuneInfoService: KommuneInfoService
+    private val soknadUnderArbeidService: SoknadUnderArbeidService
 ) {
 
     fun getAllVedlegg(behandlingsId: String): List<MellomlagretVedleggMetadata> {
-        val navEksternId = if (MiljoUtils.isNonProduction()) createPrefixedBehandlingsId(behandlingsId) else behandlingsId
+        val navEksternId = getNavEksternId(behandlingsId)
         return mellomlagringClient.getMellomlagredeVedlegg(navEksternId = navEksternId)
             ?.mellomlagringMetadataList
             ?.map {
@@ -52,9 +47,12 @@ class MellomlagringService(
     }
 
     fun getVedlegg(behandlingsId: String, vedleggId: String): MellomlagretVedlegg? {
-        val navEksternId = if (MiljoUtils.isNonProduction()) createPrefixedBehandlingsId(behandlingsId) else behandlingsId
-        return mellomlagringClient.getMellomlagredeVedlegg(navEksternId = navEksternId)
-            ?.mellomlagringMetadataList
+        val navEksternId = getNavEksternId(behandlingsId)
+        val mellomlagredeVedlegg = mellomlagringClient.getMellomlagredeVedlegg(navEksternId = navEksternId)?.mellomlagringMetadataList
+        if (mellomlagredeVedlegg.isNullOrEmpty()) {
+            log.warn("Ingen mellomlagrede vedlegg funnet ved forsøkt henting av vedleggId $vedleggId")
+        }
+        return mellomlagredeVedlegg
             ?.firstOrNull { it.filId == vedleggId }
             ?.filnavn
             ?.let {
@@ -73,29 +71,14 @@ class MellomlagringService(
     ): MellomlagretVedleggMetadata {
         var filnavn = originalfilnavn
 
-        val eier = SubjectHandlerUtils.getUserIdFromToken()
-        val sha512 = getSha512FromByteArray(data)
-
         val fileType = validerFil(data, filnavn)
         virusScanner.scan(filnavn, data, behandlingsId, fileType.name)
-
-        val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
 
         val uuid = UUID.randomUUID().toString()
         filnavn = lagFilnavn(filnavn, fileType, uuid)
 
-        val jsonVedlegg = finnVedleggEllerKastException(vedleggstype, soknadUnderArbeid)
-        if (jsonVedlegg.filer == null) {
-            jsonVedlegg.filer = ArrayList()
-        }
-        jsonVedlegg.withStatus(Vedleggstatus.LastetOpp.toString()).filer.add(
-            JsonFiler().withFilnavn(filnavn).withSha512(sha512)
-        )
-
-        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier)
-
         val detectedMimeType = FileDetectionUtils.getMimeType(data)
-        val mimetype = if (detectedMimeType.equals(MimeTypes.TEXT_X_MATLAB, ignoreCase = true)) MimeTypes.APPLICATION_PDF else detectedMimeType
+        val mimetype = if (detectedMimeType.equals(TEXT_X_MATLAB, ignoreCase = true)) APPLICATION_PDF else detectedMimeType
 
         val filOpplasting = FilOpplasting(
             metadata = FilMetadata(
@@ -106,22 +89,52 @@ class MellomlagringService(
             data = ByteArrayInputStream(data)
         )
 
-        val navEksternId = if (MiljoUtils.isNonProduction()) createPrefixedBehandlingsId(behandlingsId) else behandlingsId
+        val navEksternId = getNavEksternId(behandlingsId)
 
         mellomlagringClient.postVedlegg(navEksternId = navEksternId, filOpplasting = filOpplasting)
 
-        val mellomlagredeVedlegg = mellomlagringClient.getMellomlagredeVedlegg(navEksternId = navEksternId)
-        val filId = mellomlagredeVedlegg?.mellomlagringMetadataList?.firstOrNull { it.filnavn == filnavn }?.filId
+        val mellomlagredeVedlegg = mellomlagringClient.getMellomlagredeVedlegg(navEksternId = navEksternId)?.mellomlagringMetadataList
+
+        val filId = mellomlagredeVedlegg?.firstOrNull { it.filnavn == filnavn }?.filId
             ?: throw IllegalStateException("Klarte ikke finne det mellomlagrede vedlegget som akkurat ble lastet opp")
+
+        // oppdater SoknadUnderArbeid etter suksessfull opplasting
+        oppdaterSoknadUnderArbeid(data, behandlingsId, vedleggstype, filnavn)
 
         return MellomlagretVedleggMetadata(filnavn = filnavn, filId = filId)
     }
 
+    private fun oppdaterSoknadUnderArbeid(
+        data: ByteArray,
+        behandlingsId: String,
+        vedleggstype: String,
+        filnavn: String,
+    ) {
+        val eier = SubjectHandlerUtils.getUserIdFromToken()
+        val sha512 = getSha512FromByteArray(data)
+
+        val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
+
+        val jsonVedlegg = finnVedleggEllerKastException(vedleggstype, soknadUnderArbeid)
+        if (jsonVedlegg.filer == null) {
+            jsonVedlegg.filer = ArrayList()
+        }
+        jsonVedlegg.withStatus(Vedleggstatus.LastetOpp.toString()).filer.add(
+            JsonFiler().withFilnavn(filnavn).withSha512(sha512)
+        )
+
+        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier)
+    }
+
     fun deleteVedleggAndUpdateVedleggstatus(behandlingsId: String, vedleggId: String) {
-        val navEksternId = if (MiljoUtils.isNonProduction()) createPrefixedBehandlingsId(behandlingsId) else behandlingsId
+        val navEksternId = getNavEksternId(behandlingsId)
 
         // hent alle mellomlagrede vedlegg
-        val mellomlagredeVedlegg = mellomlagringClient.getMellomlagredeVedlegg(navEksternId = navEksternId)?.mellomlagringMetadataList ?: return
+        val mellomlagredeVedlegg = mellomlagringClient.getMellomlagredeVedlegg(navEksternId = navEksternId)?.mellomlagringMetadataList
+        if (mellomlagredeVedlegg.isNullOrEmpty()) {
+            log.warn("Ingen mellomlagrede vedlegg funnet ved forsøkt sletting av vedleggId $vedleggId")
+            return
+        }
 
         val aktueltVedlegg = mellomlagredeVedlegg.firstOrNull { it.filId == vedleggId } ?: return
 
@@ -132,7 +145,8 @@ class MellomlagringService(
         val jsonVedlegg: JsonVedlegg = JsonVedleggUtils.getVedleggFromInternalSoknad(soknadUnderArbeid)
             .firstOrNull {
                 it.filer.any { jsonFil -> jsonFil.filnavn == aktueltVedlegg.filnavn }
-            } ?: throw NotFoundException("Dette vedlegget tilhører en utgift som har blitt tatt bort fra søknaden. Er det flere tabber oppe samtidig?")
+            }
+            ?: throw IkkeFunnetException("Dette vedlegget tilhører en utgift som har blitt tatt bort fra søknaden. Er det flere tabber oppe samtidig?")
 
         jsonVedlegg.filer.removeIf { it.filnavn == aktueltVedlegg.filnavn }
 
@@ -145,42 +159,35 @@ class MellomlagringService(
     }
 
     fun deleteVedlegg(behandlingsId: String, vedleggId: String) {
-        val navEksternId = if (MiljoUtils.isNonProduction()) createPrefixedBehandlingsId(behandlingsId) else behandlingsId
+        val navEksternId = getNavEksternId(behandlingsId)
         mellomlagringClient.deleteVedlegg(navEksternId = navEksternId, digisosDokumentId = vedleggId)
     }
 
     fun deleteAllVedlegg(behandlingsId: String) {
-        if (getAllVedlegg(behandlingsId).isNotEmpty()) {
-            val navEksternId = if (MiljoUtils.isNonProduction()) createPrefixedBehandlingsId(behandlingsId) else behandlingsId
+        val navEksternId = getNavEksternId(behandlingsId)
+        val mellomlagredeVedlegg = mellomlagringClient.getMellomlagredeVedlegg(navEksternId = navEksternId)?.mellomlagringMetadataList
+        if (mellomlagredeVedlegg.isNullOrEmpty()) {
+            log.info("Ingen mellomlagrede vedlegg funnet ved forsøkt sletting av alle vedlegg for behandlingsId $behandlingsId")
+        } else {
             mellomlagringClient.deleteAllVedlegg(navEksternId = navEksternId)
         }
     }
 
+    private fun getNavEksternId(behandlingsId: String) =
+        if (isNonProduction()) createPrefixedBehandlingsId(behandlingsId) else behandlingsId
+
+    fun kanSoknadHaMellomlagredeVedleggForSletting(soknadUnderArbeid: SoknadUnderArbeid): Boolean {
+        val kanSoknadSendesMedDigisosApi = try {
+            soknadUnderArbeidService.skalSoknadSendesMedDigisosApi(soknadUnderArbeid)
+        } catch (e: Exception) {
+            false
+        }
+
+        return kanSoknadSendesMedDigisosApi
+    }
+
     companion object {
         private val log by logger()
-    }
-
-    fun erMellomlagringEnabledOgSoknadSkalSendesMedDigisosApi(soknadUnderArbeid: SoknadUnderArbeid): Boolean {
-        return unleash.isEnabled(KS_MELLOMLAGRING_ENABLED, false) && soknadSkalSendesMedDigisosApi(soknadUnderArbeid)
-    }
-
-    private fun soknadSkalSendesMedDigisosApi(soknadUnderArbeid: SoknadUnderArbeid): Boolean {
-        if (soknadUnderArbeid.erEttersendelse) {
-            return false
-        }
-        val kommunenummer = soknadUnderArbeid.jsonInternalSoknad?.soknad?.mottaker?.kommunenummer
-            ?: throw IllegalStateException("Kommunenummer ikke funnet for JsonInternalSoknad.soknad.mottaker.kommunenummer")
-
-        return when (kommuneInfoService.kommuneInfo(kommunenummer)) {
-            KommuneStatus.FIKS_NEDETID_OG_TOM_CACHE -> {
-                throw SendingTilKommuneUtilgjengeligException("Mellomlagring av vedlegg er ikke tilgjengelig fordi fiks har nedetid og kommuneinfo-cache er tom.")
-            }
-            KommuneStatus.MANGLER_KONFIGURASJON, KommuneStatus.HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT -> false
-            KommuneStatus.SKAL_SENDE_SOKNADER_OG_ETTERSENDELSER_VIA_FDA -> true
-            KommuneStatus.SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD_OG_ETTERSENDELSER -> {
-                throw SendingTilKommuneErMidlertidigUtilgjengeligException("Sending til kommune $kommunenummer er midlertidig utilgjengelig.")
-            }
-        }
     }
 }
 

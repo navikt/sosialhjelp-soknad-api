@@ -1,5 +1,5 @@
 [![Build image](https://github.com/navikt/sosialhjelp-soknad-api/actions/workflows/build.yml/badge.svg?branch=master)](https://github.com/navikt/sosialhjelp-soknad-api/actions/workflows/build.yml)
-[![Deploy til prod-sbs](https://github.com/navikt/sosialhjelp-soknad-api/actions/workflows/deploy_prod.yml/badge.svg)](https://github.com/navikt/sosialhjelp-soknad-api/actions/workflows/deploy_prod.yml)
+[![Deploy til prod](https://github.com/navikt/sosialhjelp-soknad-api/actions/workflows/deploy_prod.yml/badge.svg)](https://github.com/navikt/sosialhjelp-soknad-api/actions/workflows/deploy_prod.yml)
 
 # Sosialhjelp-soknad-api
 Backend-applikasjon for søknad om økonomisk sosialhjelp.
@@ -14,7 +14,7 @@ Interne henvendelser kan sendes via Slack i kanalen #team_digisos.
 * Java/Kotlin
 * JDK 17
 * Maven
-* Spring Boot + Jersey
+* Spring Boot
 * Oracle DB
 * Redis (cache)
 

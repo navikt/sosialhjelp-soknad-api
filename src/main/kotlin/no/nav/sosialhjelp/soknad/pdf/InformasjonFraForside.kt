@@ -17,14 +17,17 @@ object InformasjonFraForside {
             pdf.skrivTekst(pdfUtils.getTekst("informasjon.hilsen.tittel"))
             pdf.addBlankLine()
             pdf.skrivTekstBold(pdfUtils.getTekst("informasjon.start.undertittel"))
-            pdf.skrivTekst("Før du søker bør du undersøke andre muligheter til å forsørge deg selv. Les mer om andre muligheter.")
+            pdf.skrivTekst(pdfUtils.getTekst("informasjon.start.tekst_del1"))
             pdf.addBlankLine()
-            pdf.skrivTekst("Du må i utgangspunktet ha lovlig opphold og fast bopel i Norge for å ha rett til økonomisk sosialhjelp. Hvis du oppholder deg i utlandet, har du ikke rett til økonomisk sosialhjelp.")
+            pdf.skrivTekst(pdfUtils.getTekst("informasjon.start.tekst_del2"))
             pdf.addBlankLine()
-            pdf.skrivTekst("Søknaden skal bare brukes til å søke om økonomisk sosialhjelp. Skal du søke om andre sosiale tjenester, som for eksempel kvalifiseringsprogram, må du ta kontakt med NAV-kontoret ditt")
+            pdf.skrivTekst("Se eksempler på hvilke opplysninger du kan bli bedt om å levere.") // informasjon.start.tekst_del3
+            pdf.addBlankLine()
+            pdf.skrivTekstBold(pdfUtils.getTekst("informasjon.svarpasoknad.undertittel"))
+            pdf.skrivTekst(pdfUtils.getTekst("informasjon.svarpasoknad.tekst"))
             pdf.addBlankLine()
             pdf.skrivTekstBold(pdfUtils.getTekst("informasjon.nodsituasjon.undertittel"))
-            pdf.skrivTekst("Hvis du ikke har penger til det aller mest nødvendige, som mat, bør du kontakte NAV-kontoret ditt før du sender inn søknaden eller så snart som mulig etter du har søkt. NAV skal også hjelpe deg med å finne et midlertidig botilbud hvis du ikke har et sted å sove eller oppholde deg det nærmeste døgnet.")
+            pdf.skrivTekst("Du er i en nødsituasjon hvis du ikke har penger til det aller mest nødvendige som mat og hygieneartikler, eller du ikke har et sted å sove og oppholde deg det neste døgnet. Hvis du trenger rask hjelp bør du ta kontakt med ditt NAV-kontor eller være tilgjengelig på telefon etter at du har sendt inn søknaden. Ofte vil noen fra NAV-kontoret kontakte deg for å kunne vurdere situasjonen din.") // informasjon.nodsituasjon.tekst
             pdf.addBlankLine()
             pdf.skrivTekstBold(pdfUtils.getTekst("informasjon.tekster.personopplysninger.innhenting.tittel"))
             pdf.skrivTekst(pdfUtils.getTekst("informasjon.tekster.personopplysninger.innhenting.tekst"))
@@ -42,9 +45,8 @@ object InformasjonFraForside {
             pdf.addBlankLine()
 
             val urisOnPage: MutableMap<String, String> = HashMap()
-            urisOnPage["Les mer om andre muligheter"] = "https://www.nav.no/sosialhjelp/"
-            urisOnPage["NAV-kontoret ditt"] = "https://www.nav.no/person/personopplysninger/nb/#ditt-nav-kontor"
-            urisOnPage["kontakte NAV-kontoret"] = "https://www.nav.no/person/personopplysninger/#ditt-nav-kontor"
+            urisOnPage["opplysninger du kan bli bedt om å levere"] = "https://www.nav.no/okonomisk-sosialhjelp#soknad"
+            urisOnPage["ditt NAV-kontor"] = "https://www.nav.no/sok-nav-kontor"
             addLinks(pdf, urisOnPage)
         }
     }

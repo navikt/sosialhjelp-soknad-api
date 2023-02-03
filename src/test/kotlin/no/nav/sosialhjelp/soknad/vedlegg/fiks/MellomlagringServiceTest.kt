@@ -5,18 +5,11 @@ import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.unmockkObject
 import io.mockk.verify
-import no.finn.unleash.Unleash
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
-import no.nav.sosialhjelp.soknad.app.exceptions.SendingTilKommuneErMidlertidigUtilgjengeligException
-import no.nav.sosialhjelp.soknad.app.exceptions.SendingTilKommuneUtilgjengeligException
-import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
-import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
-import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus
-import no.nav.sosialhjelp.soknad.vedlegg.OpplastetVedleggRessurs.Companion.KS_MELLOMLAGRING_ENABLED
+import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
 import no.nav.sosialhjelp.soknad.vedlegg.virusscan.VirusScanner
 import org.assertj.core.api.Assertions.assertThat
-import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -26,15 +19,13 @@ internal class MellomlagringServiceTest {
     private val mellomlagringClient: MellomlagringClient = mockk()
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
     private val virusScanner: VirusScanner = mockk()
-    private val unleash: Unleash = mockk()
-    private val kommuneInfoService: KommuneInfoService = mockk()
+    private val soknadUnderArbeidService: SoknadUnderArbeidService = mockk()
 
     private val mellomlagringService = MellomlagringService(
         mellomlagringClient,
         soknadUnderArbeidRepository,
         virusScanner,
-        unleash,
-        kommuneInfoService
+        soknadUnderArbeidService
     )
 
     @BeforeEach
@@ -46,48 +37,6 @@ internal class MellomlagringServiceTest {
     @AfterEach
     internal fun tearDown() {
         unmockkObject(MiljoUtils)
-    }
-
-    @Test
-    internal fun `erMellomlagringEnabledOgSoknadSkalSendesMedDigisosApi - alle scenarier`() {
-        // false - toggle er disabled
-        every { unleash.isEnabled(KS_MELLOMLAGRING_ENABLED, false) } returns false
-        assertThat(mellomlagringService.erMellomlagringEnabledOgSoknadSkalSendesMedDigisosApi(mockk())).isFalse
-
-        // false - soknadUnderArbeid er ettersendelse
-        every { unleash.isEnabled(KS_MELLOMLAGRING_ENABLED, false) } returns true
-        val soknadUnderArbeid: SoknadUnderArbeid = mockk()
-        every { soknadUnderArbeid.erEttersendelse } returns true
-        assertThat(mellomlagringService.erMellomlagringEnabledOgSoknadSkalSendesMedDigisosApi(soknadUnderArbeid)).isFalse
-
-        // kast feil - mottakers kommunenummer er null
-        every { soknadUnderArbeid.erEttersendelse } returns false
-        every { soknadUnderArbeid.jsonInternalSoknad?.soknad?.mottaker?.kommunenummer } returns null
-        assertThatExceptionOfType(IllegalStateException::class.java)
-            .isThrownBy { mellomlagringService.erMellomlagringEnabledOgSoknadSkalSendesMedDigisosApi(soknadUnderArbeid) }
-
-        // kast feil - nedetid for kommune
-        every { soknadUnderArbeid.jsonInternalSoknad?.soknad?.mottaker?.kommunenummer } returns "1234"
-        every { kommuneInfoService.kommuneInfo("1234") } returns KommuneStatus.FIKS_NEDETID_OG_TOM_CACHE
-        assertThatExceptionOfType(SendingTilKommuneUtilgjengeligException::class.java)
-            .isThrownBy { mellomlagringService.erMellomlagringEnabledOgSoknadSkalSendesMedDigisosApi(soknadUnderArbeid) }
-
-        // kast feil - midlertidig nedetid for kommune
-        every { kommuneInfoService.kommuneInfo("1234") } returns KommuneStatus.SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD_OG_ETTERSENDELSER
-        assertThatExceptionOfType(SendingTilKommuneErMidlertidigUtilgjengeligException::class.java)
-            .isThrownBy { mellomlagringService.erMellomlagringEnabledOgSoknadSkalSendesMedDigisosApi(soknadUnderArbeid) }
-
-        // false - kommune mangler konfigurasjon hos Fiks
-        every { kommuneInfoService.kommuneInfo("1234") } returns KommuneStatus.MANGLER_KONFIGURASJON
-        assertThat(mellomlagringService.erMellomlagringEnabledOgSoknadSkalSendesMedDigisosApi(soknadUnderArbeid)).isFalse
-
-        // false - kommune bruker SvarUt
-        every { kommuneInfoService.kommuneInfo("1234") } returns KommuneStatus.HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT
-        assertThat(mellomlagringService.erMellomlagringEnabledOgSoknadSkalSendesMedDigisosApi(soknadUnderArbeid)).isFalse
-
-        // true - soknad skal sendes med digisosApi
-        every { kommuneInfoService.kommuneInfo("1234") } returns KommuneStatus.SKAL_SENDE_SOKNADER_OG_ETTERSENDELSER_VIA_FDA
-        assertThat(mellomlagringService.erMellomlagringEnabledOgSoknadSkalSendesMedDigisosApi(soknadUnderArbeid)).isTrue
     }
 
     @Test

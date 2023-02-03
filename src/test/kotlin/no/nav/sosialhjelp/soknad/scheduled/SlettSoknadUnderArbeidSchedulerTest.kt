@@ -63,7 +63,7 @@ internal class SlettSoknadUnderArbeidSchedulerTest {
         every { batchSoknadUnderArbeidRepository.hentSoknadUnderArbeid(soknadUnderArbeid1.soknadId) } returns soknadUnderArbeid1
         every { batchSoknadUnderArbeidRepository.hentSoknadUnderArbeid(soknadUnderArbeid2.soknadId) } returns soknadUnderArbeid2
         every { batchSoknadUnderArbeidRepository.slettSoknad(any()) } just runs
-        every { mellomlagringService.erMellomlagringEnabledOgSoknadSkalSendesMedDigisosApi(any()) } returns true
+        every { mellomlagringService.kanSoknadHaMellomlagredeVedleggForSletting(any()) } returns true
         every { mellomlagringService.deleteAllVedlegg(any()) } just runs
 
         scheduler.slettGamleSoknadUnderArbeid()

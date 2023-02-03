@@ -25,23 +25,20 @@ import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus.SKAL_SENDE_SOKNADER_OG_ETTERSENDELSER_VIA_FDA
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus.SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD_OG_ETTERSENDELSER
 import no.nav.sosialhjelp.soknad.innsending.dto.SendTilUrlFrontend
+import no.nav.sosialhjelp.soknad.innsending.dto.SoknadMottakerFrontend
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpHeaders
-import org.springframework.stereotype.Controller
-import javax.servlet.ServletContext
-import javax.ws.rs.HeaderParam
-import javax.ws.rs.POST
-import javax.ws.rs.Path
-import javax.ws.rs.PathParam
-import javax.ws.rs.Produces
-import javax.ws.rs.core.Context
-import javax.ws.rs.core.MediaType
+import org.springframework.http.MediaType
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestHeader
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
 
-@Controller
+@RestController
 @ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4])
-@Path("/soknader/{behandlingsId}/actions")
-@Produces(MediaType.APPLICATION_JSON)
+@RequestMapping("/soknader/{behandlingsId}/actions", produces = [MediaType.APPLICATION_JSON_VALUE])
 open class SoknadActions(
     private val soknadService: SoknadService,
     private val kommuneInfoService: KommuneInfoService,
@@ -52,12 +49,10 @@ open class SoknadActions(
     private val unleash: Unleash,
     private val nedetidService: NedetidService,
 ) {
-    @POST
-    @Path("/send")
+    @PostMapping("/send")
     open fun sendSoknad(
-        @PathParam("behandlingsId") behandlingsId: String,
-        @Context servletContext: ServletContext?,
-        @HeaderParam(value = HttpHeaders.AUTHORIZATION) token: String?
+        @PathVariable("behandlingsId") behandlingsId: String,
+        @RequestHeader(value = HttpHeaders.AUTHORIZATION) token: String?
     ): SendTilUrlFrontend {
         if (nedetidService.isInnenforNedetid) {
             throw SoknadenHarNedetidException("Soknaden har nedetid fram til ${nedetidService.nedetidSluttAsString}")
@@ -70,10 +65,13 @@ open class SoknadActions(
 
         updateVedleggJsonWithHendelseTypeAndHendelseReferanse(eier, soknadUnderArbeid)
 
-        if (!unleash.isEnabled(INNSENDING_DIGISOSAPI_ENABLED, true) || isEttersendelsePaSoknadSendtViaSvarUt(soknadUnderArbeid)) {
+        if (!unleash.isEnabled(INNSENDING_DIGISOSAPI_ENABLED, true) || isEttersendelsePaSoknadSendtViaSvarUt(
+                soknadUnderArbeid
+            )
+        ) {
             log.info("BehandlingsId $behandlingsId sendes til SvarUt.")
             soknadService.sendSoknad(behandlingsId)
-            return SendTilUrlFrontend(SVARUT, behandlingsId)
+            return SendTilUrlFrontend(SoknadMottakerFrontend.SVARUT, behandlingsId)
         }
 
         if (soknadUnderArbeid.erEttersendelse) {
@@ -91,19 +89,22 @@ open class SoknadActions(
             KommuneStatus.FIKS_NEDETID_OG_TOM_CACHE -> {
                 throw SendingTilKommuneUtilgjengeligException("Sending til kommune $kommunenummer er ikke tilgjengelig fordi fiks har nedetid og kommuneinfo-cache er tom.")
             }
+
             MANGLER_KONFIGURASJON, HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT -> {
                 if (!KommuneTilNavEnhetMapper.digisoskommuner.contains(kommunenummer)) {
                     throw SendingTilKommuneErIkkeAktivertException("Sending til kommune $kommunenummer er ikke aktivert og kommunen er ikke i listen over svarUt-kommuner")
                 }
                 log.info("BehandlingsId $behandlingsId sendes til SvarUt (sfa. Fiks-konfigurasjon).")
                 soknadService.sendSoknad(behandlingsId)
-                SendTilUrlFrontend(SVARUT, behandlingsId)
+                SendTilUrlFrontend(SoknadMottakerFrontend.SVARUT, behandlingsId)
             }
+
             SKAL_SENDE_SOKNADER_OG_ETTERSENDELSER_VIA_FDA -> {
                 log.info("BehandlingsId $behandlingsId sendes til Fiks-digisos-api (sfa. Fiks-konfigurasjon).")
                 val digisosId = digisosApiService.sendSoknad(soknadUnderArbeid, token, kommunenummer)
-                SendTilUrlFrontend(FIKS_DIGISOS_API, digisosId)
+                SendTilUrlFrontend(SoknadMottakerFrontend.FIKS_DIGISOS_API, digisosId)
             }
+
             SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD_OG_ETTERSENDELSER -> {
                 throw SendingTilKommuneErMidlertidigUtilgjengeligException("Sending til kommune $kommunenummer er midlertidig utilgjengelig.")
             }
@@ -133,7 +134,5 @@ open class SoknadActions(
 
     companion object {
         private val log = LoggerFactory.getLogger(SoknadActions::class.java)
-        private const val SVARUT = "SVARUT"
-        private const val FIKS_DIGISOS_API = "FIKS_DIGISOS_API"
     }
 }

@@ -1,16 +1,22 @@
 package no.nav.sosialhjelp.soknad.app.filter
 
-import javax.ws.rs.container.ContainerRequestContext
-import javax.ws.rs.container.ContainerResponseContext
-import javax.ws.rs.container.ContainerResponseFilter
-import javax.ws.rs.ext.Provider
+import org.springframework.stereotype.Component
+import org.springframework.web.filter.OncePerRequestFilter
+import javax.servlet.FilterChain
+import javax.servlet.http.HttpServletRequest
+import javax.servlet.http.HttpServletResponse
 
-@Provider
-class HeaderFilter : ContainerResponseFilter {
+@Component
+class HeaderFilter : OncePerRequestFilter() {
 
-    override fun filter(requestContext: ContainerRequestContext, responseContext: ContainerResponseContext) {
-        responseContext.headers.add("X-Content-Type-Options", "nosniff")
-        responseContext.headers.add("X-XSS-Protection", "1; mode=block")
-        responseContext.headers.add("Cache-Control", "private, max-age=0, no-cache, no-store")
+    override fun doFilterInternal(
+        request: HttpServletRequest,
+        response: HttpServletResponse,
+        filterChain: FilterChain,
+    ) {
+        response.setHeader("X-Content-Type-Options", "nosniff")
+        response.setHeader("X-XSS-Protection", "1; mode=block")
+        response.setHeader("Cache-Control", "private, max-age=0, no-cache, no-store")
+        filterChain.doFilter(request, response)
     }
 }

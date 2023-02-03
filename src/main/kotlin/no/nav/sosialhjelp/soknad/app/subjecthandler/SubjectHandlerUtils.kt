@@ -1,12 +1,13 @@
 package no.nav.sosialhjelp.soknad.app.subjecthandler
 
+import no.nav.security.token.support.spring.SpringTokenValidationContextHolder
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
 
 object SubjectHandlerUtils {
 
     private val log by logger()
-    private var subjectHandlerService: SubjectHandler = SubjectHandlerImpl()
+    private var subjectHandlerService: SubjectHandler = SubjectHandlerImpl(SpringTokenValidationContextHolder())
 
     fun getUserIdFromToken(): String {
         return subjectHandlerService.getUserIdFromToken()
@@ -30,6 +31,6 @@ object SubjectHandlerUtils {
     }
 
     fun resetSubjectHandlerImpl() {
-        subjectHandlerService = SubjectHandlerImpl()
+        subjectHandlerService = SubjectHandlerImpl(SpringTokenValidationContextHolder())
     }
 }

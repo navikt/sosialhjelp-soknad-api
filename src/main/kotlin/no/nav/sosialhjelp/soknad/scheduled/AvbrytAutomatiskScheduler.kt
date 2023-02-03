@@ -61,7 +61,7 @@ class AvbrytAutomatiskScheduler(
             val behandlingsId = soknadMetadata.behandlingsId
 
             batchSoknadUnderArbeidRepository.hentSoknadUnderArbeid(behandlingsId)?.let {
-                if (mellomlagringService.erMellomlagringEnabledOgSoknadSkalSendesMedDigisosApi(it)) {
+                if (mellomlagringService.kanSoknadHaMellomlagredeVedleggForSletting(it)) {
                     mellomlagringService.deleteAllVedlegg(behandlingsId)
                 }
                 batchSoknadUnderArbeidRepository.slettSoknad(it.soknadId)

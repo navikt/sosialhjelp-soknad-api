@@ -10,7 +10,7 @@ jobs:
     env:
       DOCKER_IMAGE: ghcr.io/${{ github.repository }}/sosialhjelp-soknad-api
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Create artifact version
         id: artifact-version
         uses: navikt/sosialhjelp-ci/actions/create-artifact-version@master
@@ -21,9 +21,8 @@ jobs:
         uses: nais/deploy/actions/deploy@v1
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
-          RESOURCE: nais/nais.yaml
+          RESOURCE: nais/dev/mock.yaml
           CLUSTER: dev-gcp
-          VARS: nais/dev/mock.json
           REF: ${{ github.sha }}
           PRINT_PAYLOAD: true
           IMAGE: ${{ env.DOCKER_TAG }}
@@ -31,9 +30,8 @@ jobs:
         uses: nais/deploy/actions/deploy@v1
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
-          RESOURCE: nais/nais.yaml
+          RESOURCE: nais/dev/dev-fss.yaml
           CLUSTER: dev-fss
-          VARS: nais/dev/dev-fss.json
           REF: ${{ github.sha }}
           PRINT_PAYLOAD: true
           IMAGE: ${{ env.DOCKER_TAG }}

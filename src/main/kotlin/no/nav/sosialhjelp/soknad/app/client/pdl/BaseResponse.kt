@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode
 import no.nav.sosialhjelp.soknad.adressesok.dto.AdressesokDataDto
 import no.nav.sosialhjelp.soknad.app.exceptions.PdlApiException
 import no.nav.sosialhjelp.soknad.navenhet.gt.dto.HentGeografiskTilknytning
+import no.nav.sosialhjelp.soknad.personalia.adresse.adresseregister.dto.HentAdresseDataDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.HentPersonDataDto
 
 sealed class BaseResponse(
@@ -33,5 +34,10 @@ data class AdressesokDto(
 
 data class HentPersonDto<T>(
     val data: HentPersonDataDto<T>,
+    override val errors: List<JsonNode>?
+) : BaseResponse(errors)
+
+data class HentAdresseDto(
+    val data: HentAdresseDataDto?,
     override val errors: List<JsonNode>?
 ) : BaseResponse(errors)

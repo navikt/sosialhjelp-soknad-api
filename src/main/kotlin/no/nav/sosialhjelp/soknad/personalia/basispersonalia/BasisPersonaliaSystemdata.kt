@@ -57,7 +57,7 @@ class BasisPersonaliaSystemdata(
 
     private fun mapToJsonStatsborgerskap(person: Person): JsonStatsborgerskap? {
         val statsborgerskap = prioritertStatsborgerskap(person)
-        return if (statsborgerskap == null || statsborgerskap == "???" || statsborgerskap == PDL_UKJENT_STATSBORGERSKAP || statsborgerskap == PDL_STATSLOS) {
+        return if (statsborgerskap == null || statsborgerskap == PDL_UKJENT_STATSBORGERSKAP || statsborgerskap == PDL_STATSLOS) {
             null
         } else JsonStatsborgerskap()
             .withKilde(JsonKilde.SYSTEM)
@@ -96,7 +96,7 @@ class BasisPersonaliaSystemdata(
         const val PDL_STATSLOS = "XXX"
 
         fun erNordiskBorger(statsborgerskap: String?): Boolean? {
-            return if (statsborgerskap == null || statsborgerskap == "???" || statsborgerskap == PDL_UKJENT_STATSBORGERSKAP || statsborgerskap == PDL_STATSLOS) {
+            return if (statsborgerskap == null || statsborgerskap == PDL_UKJENT_STATSBORGERSKAP || statsborgerskap == PDL_STATSLOS) {
                 null
             } else when (statsborgerskap) {
                 NOR, SWE, FRO, ISL, DNK, FIN -> true

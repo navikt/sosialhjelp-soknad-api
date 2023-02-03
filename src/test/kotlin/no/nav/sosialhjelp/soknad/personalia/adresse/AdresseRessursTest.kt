@@ -27,6 +27,7 @@ import no.nav.sosialhjelp.soknad.navenhet.NavEnhetRessurs
 import no.nav.sosialhjelp.soknad.navenhet.dto.NavEnhetFrontend
 import no.nav.sosialhjelp.soknad.personalia.adresse.dto.AdresseFrontend
 import no.nav.sosialhjelp.soknad.personalia.adresse.dto.AdresserFrontend
+import no.nav.sosialhjelp.soknad.personalia.adresse.dto.AdresserFrontendInput
 import no.nav.sosialhjelp.soknad.personalia.adresse.dto.GateadresseFrontend
 import no.nav.sosialhjelp.soknad.personalia.adresse.dto.MatrikkeladresseFrontend
 import no.nav.sosialhjelp.soknad.personalia.adresse.dto.UstrukturertAdresseFrontend
@@ -133,14 +134,14 @@ internal class AdresseRessursTest {
         soknadUnderArbeidIRepo.jsonInternalSoknad!!.soknad.data.personalia.folkeregistrertAdresse = JSON_SYS_MATRIKKELADRESSE
         every { adresseSystemdata.createDeepCopyOfJsonAdresse(any()) } answers { callOriginal() }
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns soknadUnderArbeidIRepo
-        every { navEnhetRessurs.findSoknadsmottaker(any(), any(), any(), any()) } returns listOf(
-            NavEnhetFrontend("1", "1111", "Folkeregistrert NavEnhet", "4321", null, null, null, null, null)
-        )
+        every {
+            navEnhetRessurs.findSoknadsmottaker(any(), any(), any(), any())
+        } returns NavEnhetFrontend("1", "1111", "Folkeregistrert NavEnhet", "4321", null, null, null, null, null)
 
         val soknadUnderArbeidSlot = slot<SoknadUnderArbeid>()
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(soknadUnderArbeidSlot), any()) } just runs
 
-        val adresserFrontend = AdresserFrontend(valg = JsonAdresseValg.FOLKEREGISTRERT)
+        val adresserFrontend = AdresserFrontendInput(valg = JsonAdresseValg.FOLKEREGISTRERT)
         val navEnheter = adresseRessurs.updateAdresse(BEHANDLINGSID, adresserFrontend)
 
         val soknadUnderArbeid = soknadUnderArbeidSlot.captured
@@ -156,16 +157,17 @@ internal class AdresseRessursTest {
         every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
         every { adresseSystemdata.innhentMidlertidigAdresse(any()) } returns JSON_SYS_USTRUKTURERT_ADRESSE
         every { adresseSystemdata.createDeepCopyOfJsonAdresse(any()) } answers { callOriginal() }
-        every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
-            createJsonInternalSoknadWithOppholdsadresse(JsonAdresseValg.SOKNAD)
-        every { navEnhetRessurs.findSoknadsmottaker(any(), any(), any(), any()) } returns listOf(
-            NavEnhetFrontend("2", "2222", "Midlertidig NavEnhet", "kommune", "4321", null, null, null, null)
-        )
+        every {
+            soknadUnderArbeidRepository.hentSoknad(any<String>(), any())
+        } returns createJsonInternalSoknadWithOppholdsadresse(JsonAdresseValg.SOKNAD)
+        every {
+            navEnhetRessurs.findSoknadsmottaker(any(), any(), any(), any())
+        } returns NavEnhetFrontend("2", "2222", "Midlertidig NavEnhet", "kommune", "4321", null, null, null, null)
 
         val soknadUnderArbeidSlot = slot<SoknadUnderArbeid>()
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(soknadUnderArbeidSlot), any()) } just runs
 
-        val adresserFrontend = AdresserFrontend(
+        val adresserFrontend = AdresserFrontendInput(
             valg = JsonAdresseValg.MIDLERTIDIG,
             soknad = AdresseFrontend()
         )
@@ -186,21 +188,21 @@ internal class AdresseRessursTest {
         every { adresseSystemdata.createDeepCopyOfJsonAdresse(any()) } answers { callOriginal() }
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
             createJsonInternalSoknadWithOppholdsadresse(JsonAdresseValg.FOLKEREGISTRERT)
-        every { navEnhetRessurs.findSoknadsmottaker(any(), any(), any(), any()) } returns listOf(
-            NavEnhetFrontend("3", "333", "Soknad NavEnhet", "4321", null, null, null, null, null)
-        )
+        every {
+            navEnhetRessurs.findSoknadsmottaker(any(), any(), any(), any())
+        } returns NavEnhetFrontend("3", "333", "Soknad NavEnhet", "4321", null, null, null, null, null)
 
         val soknadUnderArbeidSlot = slot<SoknadUnderArbeid>()
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(soknadUnderArbeidSlot), any()) } just runs
 
-        val adresserFrontend = AdresserFrontend(
+        val adresserFrontendInput = AdresserFrontendInput(
             valg = JsonAdresseValg.SOKNAD,
             soknad = AdresseFrontend(
                 type = JsonAdresse.Type.GATEADRESSE,
                 gateadresse = GateadresseFrontend(gatenavn = "Søknadsgata")
             )
         )
-        val navEnheter = adresseRessurs.updateAdresse(BEHANDLINGSID, adresserFrontend)
+        val navEnheter = adresseRessurs.updateAdresse(BEHANDLINGSID, adresserFrontendInput)
 
         val soknadUnderArbeid = soknadUnderArbeidSlot.captured
         val oppholdsadresse = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia.oppholdsadresse
@@ -224,9 +226,9 @@ internal class AdresseRessursTest {
     @Test
     fun putAdresserSkalKasteAuthorizationExceptionVedManglendeTilgang() {
         every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } throws AuthorizationException("Not for you my friend")
-        val adresserFrontend = AdresserFrontend(valg = JsonAdresseValg.FOLKEREGISTRERT, null, null, null)
+        val adresserFrontendInput = AdresserFrontendInput(valg = JsonAdresseValg.FOLKEREGISTRERT, null, null, null)
         Assertions.assertThatExceptionOfType(AuthorizationException::class.java)
-            .isThrownBy { adresseRessurs.updateAdresse(BEHANDLINGSID, adresserFrontend) }
+            .isThrownBy { adresseRessurs.updateAdresse(BEHANDLINGSID, adresserFrontendInput) }
         verify { soknadUnderArbeidRepository wasNot called }
     }
 
