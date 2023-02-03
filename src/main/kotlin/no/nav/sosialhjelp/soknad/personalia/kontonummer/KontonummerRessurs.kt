@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.personalia.kontonummer
 
+import io.swagger.v3.oas.annotations.media.Schema
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.soknad.app.Constants
@@ -71,7 +72,9 @@ open class KontonummerRessurs(
 
     data class KontonummerFrontend(
         val brukerdefinert: Boolean = false,
+        @Schema(readOnly = true)
         val systemverdi: String? = null,
+        @Schema(nullable = true)
         val brukerutfyltVerdi: String? = null,
         val harIkkeKonto: Boolean? = null,
     )
