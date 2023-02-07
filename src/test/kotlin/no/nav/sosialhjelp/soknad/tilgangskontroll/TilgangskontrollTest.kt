@@ -6,9 +6,11 @@ import io.mockk.mockkObject
 import io.mockk.unmockkObject
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.app.exceptions.AuthorizationException
+import no.nav.sosialhjelp.soknad.app.exceptions.SoknadAlleredeSendtException
 import no.nav.sosialhjelp.soknad.app.subjecthandler.StaticSubjectHandlerImpl
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadata
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataInnsendingStatus
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
@@ -59,6 +61,7 @@ internal class TilgangskontrollTest {
             sistEndretDato = LocalDateTime.now()
         )
 
+        every { soknadMetadataRepository.hent(any())?.status } returns SoknadMetadataInnsendingStatus.UNDER_ARBEID
         every { soknadUnderArbeidRepository.hentSoknadNullable(any(), any()) } returns soknadUnderArbeid
         every { personService.hentAdressebeskyttelse(userId) } returns Gradering.UGRADERT
 
@@ -79,6 +82,7 @@ internal class TilgangskontrollTest {
             sistEndretDato = LocalDateTime.now()
         )
 
+        every { soknadMetadataRepository.hent(any())?.status } returns SoknadMetadataInnsendingStatus.UNDER_ARBEID
         every { soknadUnderArbeidRepository.hentSoknadNullable(any(), any()) } returns soknadUnderArbeid
 
         assertThatExceptionOfType(AuthorizationException::class.java)
@@ -87,9 +91,21 @@ internal class TilgangskontrollTest {
 
     @Test
     fun skalFeileOmSoknadenIkkeFinnes() {
+        every { soknadMetadataRepository.hent(any())?.status } returns SoknadMetadataInnsendingStatus.UNDER_ARBEID
         every { soknadUnderArbeidRepository.hentSoknadNullable(any(), any()) } returns null
 
         assertThatExceptionOfType(AuthorizationException::class.java)
+            .isThrownBy { tilgangskontroll.verifiserBrukerHarTilgangTilSoknad("123") }
+    }
+
+    @Test
+    fun `skal kaste SoknadAlleredeSendtException hvis soknad allerede er innsendt`() {
+        every { soknadMetadataRepository.hent(any())?.status } returns SoknadMetadataInnsendingStatus.FERDIG
+        assertThatExceptionOfType(SoknadAlleredeSendtException::class.java)
+            .isThrownBy { tilgangskontroll.verifiserBrukerHarTilgangTilSoknad("123") }
+
+        every { soknadMetadataRepository.hent(any())?.status } returns SoknadMetadataInnsendingStatus.SENDT_MED_DIGISOS_API
+        assertThatExceptionOfType(SoknadAlleredeSendtException::class.java)
             .isThrownBy { tilgangskontroll.verifiserBrukerHarTilgangTilSoknad("123") }
     }
 
