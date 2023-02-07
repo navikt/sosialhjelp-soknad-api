@@ -2,7 +2,10 @@ package no.nav.sosialhjelp.soknad.tilgangskontroll
 
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.app.exceptions.AuthorizationException
+import no.nav.sosialhjelp.soknad.app.exceptions.SoknadAlleredeSendtException
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataInnsendingStatus.FERDIG
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataInnsendingStatus.SENDT_MED_DIGISOS_API
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
@@ -26,10 +29,15 @@ class Tilgangskontroll(
     }
 
     fun verifiserBrukerHarTilgangTilSoknad(behandlingsId: String?) {
-        val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknadNullable(behandlingsId, getUserIdFromToken())
+        val metadata = soknadMetadataRepository.hent(behandlingsId)
+        if (FERDIG == metadata?.status || SENDT_MED_DIGISOS_API == metadata?.status) {
+            throw SoknadAlleredeSendtException("Søknad $behandlingsId har allerede blitt sendt inn.")
+        }
+
+        val soknadEier = soknadUnderArbeidRepository.hentSoknadNullable(behandlingsId, getUserIdFromToken())?.eier
             ?: throw AuthorizationException("Bruker har ikke tilgang til søknaden.")
 
-        verifiserAtInnloggetBrukerErEierAvSoknad(soknadUnderArbeid.eier)
+        verifiserAtInnloggetBrukerErEierAvSoknad(soknadEier)
     }
 
     fun verifiserBrukerHarTilgangTilMetadata(behandlingsId: String?) {
