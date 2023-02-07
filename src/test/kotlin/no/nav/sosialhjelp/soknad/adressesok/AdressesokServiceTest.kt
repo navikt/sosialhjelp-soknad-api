@@ -38,12 +38,6 @@ internal class AdressesokServiceTest {
     }
 
     @Test
-    fun skalKasteFeil_SokedataErNull() {
-        assertThatExceptionOfType(IllegalArgumentException::class.java)
-            .isThrownBy { adressesokService.getAdresseForslag(null) }
-    }
-
-    @Test
     fun skalKasteFeil_AdresseSokResultHitsErNull() {
         val adressesokResult = createAdressesokResultDto(null)
         every { adressesokClient.getAdressesokResult(any()) } returns adressesokResult
@@ -148,6 +142,40 @@ internal class AdressesokServiceTest {
         assertThat(adresseForslag.kommunenavn).isEqualTo("Oslo")
         assertThat(adresseForslag.kommunenummer).isEqualTo("1111")
         assertThat(adresseForslag.geografiskTilknytning).isEqualTo("030101")
+    }
+
+    @Test
+    fun `sokEtterAdresser skal returnere tom liste ved for kort sokestreng`() {
+        assertThat(adressesokService.sokEtterAdresser("")).isEmpty()
+        assertThat(adressesokService.sokEtterAdresser(" ")).isEmpty()
+        assertThat(adressesokService.sokEtterAdresser("a")).isEmpty()
+        assertThat(adressesokService.sokEtterAdresser("a 2")).isEmpty()
+    }
+
+    @Test
+    fun `sokEtterAdresser skal returnere tom liste ved ingen treff i PDL`() {
+        every { adressesokClient.getAdressesokResult(any()) } returns AdressesokResultDto(hits = null, pageNumber = 0, totalPages = 0, totalHits = 0)
+        assertThat(adressesokService.sokEtterAdresser("Oslogaten 2")).isEmpty()
+    }
+
+    @Test
+    fun `sokEtterAdresser skal returnere funn fra PDL`() {
+        every { adressesokClient.getAdressesokResult(any()) } returns AdressesokResultDto(
+            hits = listOf(
+                AdressesokHitDto(
+                    vegadresse = vegadresseUtenBydelsnummer(),
+                    score = 1.0f
+                )
+            ),
+            pageNumber = 1,
+            totalPages = 1,
+            totalHits = 1
+        )
+
+        val result = adressesokService.sokEtterAdresser("oslogaten 42, 1337 Leet")
+
+        assertThat(result).hasSize(1)
+        assertThat(result.first().kommunenummer).isEqualTo(KOMMUNENUMMER)
     }
 
     private fun vegadresseMedBydelsnummer(): VegadresseDto {
