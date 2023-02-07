@@ -48,7 +48,7 @@ internal class TilgangskontrollTest {
     }
 
     @Test
-    fun skalGiTilgangForBruker() {
+    fun `verifiserBrukerHarTilgangTilSoknad skal gi tilgang`() {
         val userId = SubjectHandlerUtils.getUserIdFromToken()
         val soknadUnderArbeid = SoknadUnderArbeid(
             versjon = 1L,
@@ -70,7 +70,7 @@ internal class TilgangskontrollTest {
     }
 
     @Test
-    fun skalFeileForAndre() {
+    fun `verifiserBrukerHarTilgangTilSoknad skal feile hvis SoknadUnderArbeid tilhorer andre enn innlogget bruker`() {
         val soknadUnderArbeid = SoknadUnderArbeid(
             versjon = 1L,
             behandlingsId = "behandlingsId",
@@ -90,7 +90,7 @@ internal class TilgangskontrollTest {
     }
 
     @Test
-    fun skalFeileOmSoknadenIkkeFinnes() {
+    fun `verifiserBrukerHarTilgangTilSoknad skal feile hvis soknad ikke er innsendt men soknadUnderArbeid ikke finnes`() {
         every { soknadMetadataRepository.hent(any())?.status } returns SoknadMetadataInnsendingStatus.UNDER_ARBEID
         every { soknadUnderArbeidRepository.hentSoknadNullable(any(), any()) } returns null
 
@@ -110,7 +110,7 @@ internal class TilgangskontrollTest {
     }
 
     @Test
-    fun skalGiTilgangForBrukerMetadata() {
+    fun `bruker har tilgang til soknadens metadata hvis bruker ikke har adressebeskyttelse`() {
         val userId = SubjectHandlerUtils.getUserIdFromToken()
         val metadata = SoknadMetadata(
             id = 0L,
@@ -127,7 +127,7 @@ internal class TilgangskontrollTest {
     }
 
     @Test
-    fun skalFeileForAndreMetadata() {
+    fun `verifiserBrukerHarTilgangTilMetadata skal feile hvis metadata tilhorer andre enn innlogget bruker`() {
         val metadata = SoknadMetadata(
             id = 0L,
             behandlingsId = "123",
@@ -142,7 +142,7 @@ internal class TilgangskontrollTest {
     }
 
     @Test
-    fun skalFeileHvisBrukerHarAdressebeskyttelseStrengtFortrolig() {
+    fun `verifiserAtBrukerHarTilgang skal feile hvis bruker har adressebeskyttelse StrengtFortrolig`() {
         val userId = SubjectHandlerUtils.getUserIdFromToken()
         every { personService.hentAdressebeskyttelse(userId) } returns Gradering.STRENGT_FORTROLIG
         assertThatExceptionOfType(AuthorizationException::class.java)
@@ -150,7 +150,7 @@ internal class TilgangskontrollTest {
     }
 
     @Test
-    fun skalFeileHvisBrukerHarAdressebeskyttelseFortrolig() {
+    fun `verifiserAtBrukerHarTilgang skal feile hvis bruker har adressbeskyttelse Fortrolig`() {
         val userId = SubjectHandlerUtils.getUserIdFromToken()
         every { personService.hentAdressebeskyttelse(userId) } returns Gradering.FORTROLIG
         assertThatExceptionOfType(AuthorizationException::class.java)
