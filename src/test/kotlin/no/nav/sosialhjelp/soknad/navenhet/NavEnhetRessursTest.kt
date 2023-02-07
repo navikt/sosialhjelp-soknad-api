@@ -122,7 +122,7 @@ internal class NavEnhetRessursTest {
         mockkObject(MiljoUtils)
         every { MiljoUtils.isNonProduction() } returns true
         SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } just runs
+        every { tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(any()) } just runs
         every { kommuneInfoService.kanMottaSoknader(any()) } returns true
         every { kommuneInfoService.harMidlertidigDeaktivertMottak(any()) } returns true
         every { unleash.isEnabled(FEATURE_SEND_TIL_NAV_TESTKOMMUNE, false) } returns false
@@ -136,7 +136,7 @@ internal class NavEnhetRessursTest {
     }
 
     @Test
-    internal fun hentNavEnheter_oppholdsadresseFraAdressesok_skalReturnereEnheterRiktigKonvertert() {
+    internal fun `hentNavEnheter - oppholdsadresse fra adressesok - skal returnere NavEnheter riktig konvertert`() {
         val soknadUnderArbeid = createSoknadUnderArbeid(EIER)
         soknadUnderArbeid.jsonInternalSoknad!!.soknad.withMottaker(SOKNADSMOTTAKER).data.personalia
             .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(JsonAdresseValg.SOKNAD))
@@ -149,12 +149,13 @@ internal class NavEnhetRessursTest {
 
         val response = navEnhetRessurs.hentNavEnheter(BEHANDLINGSID)
 
-        assertThatEnheterAreCorrectlyConverted(response!!, listOf(SOKNADSMOTTAKER))
+        assertThat(response).hasSize(1)
+        assertThatEnhetIsCorrectlyConverted(response!!.first(), SOKNADSMOTTAKER)
         assertThat(response[0].valgt).isTrue
     }
 
     @Test
-    internal fun hentNavEnheter_oppholdsadresseFraAdressesok_skalReturnereEnheterRiktigKonvertertVedBydelMarka() {
+    internal fun `hentNavEnheter - oppholdsadresse fra adressesok - skal returnere NavEnheter riktig konvertert ved bydel Marka`() {
         val annenBydel = "030112"
         val soknadUnderArbeid = createSoknadUnderArbeid(EIER)
         soknadUnderArbeid.jsonInternalSoknad!!.soknad.withMottaker(SOKNADSMOTTAKER_2).data.personalia
@@ -168,12 +169,14 @@ internal class NavEnhetRessursTest {
         every { kodeverkService.getKommunenavn(KOMMUNENR_2) } returns KOMMUNENAVN_2
 
         val response = navEnhetRessurs.hentNavEnheter(BEHANDLINGSID)
-        assertThatEnheterAreCorrectlyConverted(response!!, listOf(SOKNADSMOTTAKER_2))
+
+        assertThat(response).hasSize(1)
+        assertThatEnhetIsCorrectlyConverted(response!!.first(), SOKNADSMOTTAKER_2)
         assertThat(response[0].valgt).isTrue
     }
 
     @Test
-    internal fun hentValgtNavEnhet_skalReturnereEnhetRiktigKonvertert() {
+    internal fun `hentValgtNavEnhet skal returnere NavEnhet riktig konvertert`() {
         val soknadUnderArbeid = createSoknadUnderArbeid(EIER)
         soknadUnderArbeid.jsonInternalSoknad!!.soknad.withMottaker(SOKNADSMOTTAKER).data.personalia
             .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT))
@@ -186,7 +189,7 @@ internal class NavEnhetRessursTest {
     }
 
     @Test
-    internal fun hentNavEnheter_oppholdsadresseIkkeValgt_skalReturnereTomListe() {
+    internal fun `hentNavEnheter skal returnere tom liste hvis oppholdsadresse ikke er valgt`() {
         val soknadUnderArbeid = createSoknadUnderArbeid(EIER)
         soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia
             .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(null))
@@ -199,7 +202,7 @@ internal class NavEnhetRessursTest {
     }
 
     @Test
-    internal fun hentValgtNavEnhet_oppholdsadresseIkkeValgt_skalReturnereNull() {
+    internal fun `hentValgtNavEnhet skal returnere null hvis oppholdsadresse ikke er valgt`() {
         val soknadUnderArbeid = createSoknadUnderArbeid(EIER)
         soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia
             .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(null))
@@ -211,7 +214,7 @@ internal class NavEnhetRessursTest {
     }
 
     @Test
-    internal fun updateNavEnhet_skalSetteNavEnhet() {
+    internal fun `updateNavEnhet skal sette NavEnhet`() {
         val soknadUnderArbeid = createSoknadUnderArbeid(EIER)
         soknadUnderArbeid.jsonInternalSoknad!!.soknad.withMottaker(SOKNADSMOTTAKER).data.personalia
             .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT))
@@ -236,7 +239,7 @@ internal class NavEnhetRessursTest {
     }
 
     @Test
-    internal fun hentNavEnheter_oppholdsadresseFolkeregistrert_skalBrukeKommunenummerFraGtOgKommunenavnFraKodeverk() {
+    internal fun `hentNavEnheter - oppholdsadresse er folkeregistrert - skal bruke kommunenummer fra GT og kommunenavn fra kodeverk`() {
         every { MiljoUtils.isNonProduction() } returns false
 
         val soknadUnderArbeid = createSoknadUnderArbeid(EIER)
@@ -257,7 +260,7 @@ internal class NavEnhetRessursTest {
     }
 
     @Test
-    internal fun hentNavEnheter_oppholdsadresseFolkeregistrert_skalBrukeBydelsnummerFraGtOgKommunenavnFraKodeverk() {
+    internal fun `hentNavEnheter - oppholdsadresse er folkeregistrert - skal bruke bydelsnummer fra GT og kommunenavn fra kodeverk`() {
         every { MiljoUtils.isNonProduction() } returns false
 
         val soknadUnderArbeid = createSoknadUnderArbeid(EIER)
@@ -278,7 +281,7 @@ internal class NavEnhetRessursTest {
     }
 
     @Test
-    internal fun hentNavEnheter_oppholdsadresseFolkeregistrert_skalBrukeAdressesokSomFallback() {
+    internal fun `hentNavEnheter - skal bruke adressesok som fallback hvis hentGeografiskTilknytning feiler`() {
         val soknadUnderArbeid = createSoknadUnderArbeid(EIER)
         soknadUnderArbeid.jsonInternalSoknad!!.soknad.withMottaker(SOKNADSMOTTAKER).data.personalia
             .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT))
@@ -298,8 +301,8 @@ internal class NavEnhetRessursTest {
     }
 
     @Test
-    internal fun hentNavEnheter_skalKasteAuthorizationExceptionVedManglendeTilgang() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } throws AuthorizationException("Not for you my friend")
+    internal fun `hentNavEnheter skal kaste AuthorizationException ved manglende tilgang`() {
+        every { tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(any()) } throws AuthorizationException("Not for you my friend")
 
         assertThatExceptionOfType(AuthorizationException::class.java)
             .isThrownBy { navEnhetRessurs.hentNavEnheter(BEHANDLINGSID) }
@@ -308,8 +311,8 @@ internal class NavEnhetRessursTest {
     }
 
     @Test
-    internal fun hentValgtNavEnhet_skalKasteAuthorizationExceptionVedManglendeTilgang() {
-        every { tilgangskontroll.verifiserAtBrukerHarTilgang() } throws AuthorizationException("Not for you my friend")
+    internal fun `hentValgtNavEnhet skal kaste AuthorizationException ved manglende tilgang`() {
+        every { tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(any()) } throws AuthorizationException("Not for you my friend")
 
         assertThatExceptionOfType(AuthorizationException::class.java)
             .isThrownBy { navEnhetRessurs.hentValgtNavEnhet(BEHANDLINGSID) }
@@ -318,7 +321,7 @@ internal class NavEnhetRessursTest {
     }
 
     @Test
-    internal fun updateNavEnhet_skalKasteAuthorizationExceptionVedManglendeTilgang() {
+    internal fun `updateNavEnhet skal kaste AuthorizationException ved manglende tilgang`() {
         every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } throws AuthorizationException("Not for you my friend")
 
         val navEnhetFrontend = mockk<NavEnhetFrontend>()
@@ -327,12 +330,6 @@ internal class NavEnhetRessursTest {
             .isThrownBy { navEnhetRessurs.updateNavEnhet(BEHANDLINGSID, navEnhetFrontend) }
 
         verify { soknadUnderArbeidRepository wasNot Called }
-    }
-
-    private fun assertThatEnheterAreCorrectlyConverted(navEnhetFrontends: List<NavEnhetFrontend>, jsonSoknadsmottakers: List<JsonSoknadsmottaker>) {
-        navEnhetFrontends.indices.forEach { i ->
-            assertThatEnhetIsCorrectlyConverted(navEnhetFrontends[i], jsonSoknadsmottakers[i])
-        }
     }
 
     private fun assertThatEnhetIsCorrectlyConverted(navEnhetFrontend: NavEnhetFrontend?, soknadsmottaker: JsonSoknadsmottaker) {
