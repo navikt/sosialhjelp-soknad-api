@@ -98,8 +98,8 @@ internal class InformasjonRessursTest {
 
         val kommune1234 = mappedeKommuneStatuser["1234"]
         assertThat(kommune1234).isNotNull
-        assertThat(kommune1234!!.kanMottaSoknader).isTrue
-        assertThat(kommune1234!!.kanOppdatereStatus).isFalse
+        assertThat(kommune1234?.kanMottaSoknader).isTrue
+        assertThat(kommune1234?.kanOppdatereStatus).isFalse
     }
 
     @Test
@@ -153,7 +153,16 @@ internal class InformasjonRessursTest {
         assertThat(manueltMappedeKommuner["1234"]!!.kanOppdatereStatus).isFalse // Manuelle kommuner får ikke innsyn
 
         val digisosKommuner: MutableMap<String, KommuneInfo> = HashMap()
-        digisosKommuner["1234"] = KommuneInfo("1234", true, true, false, false, null, false, null)
+        digisosKommuner["1234"] = KommuneInfo(
+            kommunenummer = "1234",
+            kanMottaSoknader = true,
+            kanOppdatereStatus = true,
+            harMidlertidigDeaktivertMottak = false,
+            harMidlertidigDeaktivertOppdateringer = false,
+            kontaktpersoner = null,
+            harNksTilgang = false,
+            behandlingsansvarlig = null
+        )
 
         val mappedeKommuneStatuser = ressurs.mapDigisosKommunerTilKommunestatus(digisosKommuner)
         val mergedKommuneStatuser = ressurs.mergeManuelleKommunerMedDigisosKommunerKommunestatus(manueltMappedeKommuner, mappedeKommuneStatuser)
