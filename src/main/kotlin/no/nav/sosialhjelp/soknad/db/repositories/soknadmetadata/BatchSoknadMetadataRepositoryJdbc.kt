@@ -11,7 +11,7 @@ import java.time.LocalDateTime
 
 @Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 @Repository
-open class BatchSoknadMetadataRepositoryJdbc(
+class BatchSoknadMetadataRepositoryJdbc(
     private val jdbcTemplate: JdbcTemplate,
     private val namedParameterJdbcTemplate: NamedParameterJdbcTemplate,
 ) : BatchSoknadMetadataRepository {

@@ -15,7 +15,7 @@ internal class NavMessageSourceTest {
         mockedCmsValues["classpath:sendsoknad_en_GB"] = "felles.key=engelsk felles fra minne"
     }
 
-    private var messageSource: NavMessageSource? = null
+    private lateinit var messageSource: NavMessageSource
     private val diskFilesExist = true
 
     @BeforeEach
@@ -37,30 +37,30 @@ internal class NavMessageSourceTest {
                 return PropertiesHolder(mockedProperties, 0)
             }
         }
-        (messageSource as NavMessageSource).setBasenames(Bundle("sendsoknad", "classpath:sendsoknad"))
+        messageSource.setBasenames(Bundle("sendsoknad", "classpath:sendsoknad"))
     }
 
     @Test
     fun skalHenteSoknadensEgneTeksterOgFellesTeksterNorsk() {
-        val properties = messageSource!!.getBundleFor("sendsoknad", Locale("nb", "NO"))
+        val properties = messageSource.getBundleFor("sendsoknad", Locale("nb", "NO"))
         Assertions.assertThat(properties.getProperty("felles.key")).isEqualTo("norsk felles fra minne")
     }
 
     @Test
     fun skalHenteSoknadensEgneTeksterOgFellesTeksterEngelsk() {
-        val properties = messageSource!!.getBundleFor("sendsoknad", Locale("en", "GB"))
+        val properties = messageSource.getBundleFor("sendsoknad", Locale("en", "GB"))
         Assertions.assertThat(properties.getProperty("felles.key")).isEqualTo("engelsk felles fra minne")
     }
 
     @Test
     fun skalIkkeHenteAndreSoknadersTekster() {
-        val properties = messageSource!!.getBundleFor("sendsoknad", Locale("nb", "NO"))
+        val properties = messageSource.getBundleFor("sendsoknad", Locale("nb", "NO"))
         Assertions.assertThat(properties).doesNotContainKey("annen.key")
     }
 
     @Test
     fun skalHenteAlleTeksterHvisTypeMangler() {
-        val properties = messageSource!!.getBundleFor(null, Locale("nb", "NO"))
+        val properties = messageSource.getBundleFor(null, Locale("nb", "NO"))
         Assertions.assertThat(properties.getProperty("felles.key")).isEqualTo("norsk felles fra minne")
     }
 }

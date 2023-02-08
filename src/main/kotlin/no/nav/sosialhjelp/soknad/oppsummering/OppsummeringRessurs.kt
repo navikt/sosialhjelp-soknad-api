@@ -14,12 +14,12 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4])
 @RequestMapping("/soknader/{behandlingsId}/oppsummering", produces = [MediaType.APPLICATION_JSON_VALUE])
-open class OppsummeringRessurs(
+class OppsummeringRessurs(
     private val oppsummeringService: OppsummeringService,
     private val tilgangskontroll: Tilgangskontroll
 ) {
     @GetMapping
-    open fun getOppsummering(
+    fun getOppsummering(
         @PathVariable("behandlingsId") behandlingsId: String
     ): Oppsummering {
         tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(behandlingsId)

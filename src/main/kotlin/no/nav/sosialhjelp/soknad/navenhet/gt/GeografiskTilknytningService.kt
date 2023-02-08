@@ -6,10 +6,10 @@ import org.slf4j.LoggerFactory.getLogger
 import org.springframework.stereotype.Component
 
 @Component
-open class GeografiskTilknytningService(
+class GeografiskTilknytningService(
     private val geografiskTilknytningClient: GeografiskTilknytningClient
 ) {
-    open fun hentGeografiskTilknytning(ident: String): String? {
+    fun hentGeografiskTilknytning(ident: String): String? {
         val geografiskTilknytningDto = geografiskTilknytningClient.hentGeografiskTilknytning(ident)
         return bydelsnummerEllerKommunenummer(geografiskTilknytningDto)
     }

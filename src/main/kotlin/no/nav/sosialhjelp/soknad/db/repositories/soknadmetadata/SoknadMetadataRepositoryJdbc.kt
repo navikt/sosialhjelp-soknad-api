@@ -12,7 +12,7 @@ import java.time.LocalDateTime
 
 @Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 @Repository
-open class SoknadMetadataRepositoryJdbc(
+class SoknadMetadataRepositoryJdbc(
     private val jdbcTemplate: JdbcTemplate
 ) : SoknadMetadataRepository {
 

@@ -16,7 +16,7 @@ import java.nio.charset.StandardCharsets
 import java.util.stream.Collectors
 
 @Component
-open class BydelFordelingService {
+class BydelFordelingService {
 
     private val markaBydelFordeling: List<BydelFordeling>
         get() {
@@ -28,7 +28,7 @@ open class BydelFordelingService {
             }
         }
 
-    open fun getBydelTilForMarka(adresseForslag: AdresseForslag): String {
+    fun getBydelTilForMarka(adresseForslag: AdresseForslag): String {
         return markaBydelFordeling
             .filter { it.veiadresse.trim().equals(adresseForslag.adresse?.trim(), true) }
             .firstOrNull { isInHusnummerFordeling(it.husnummerfordeling, adresseForslag.husnummer) }

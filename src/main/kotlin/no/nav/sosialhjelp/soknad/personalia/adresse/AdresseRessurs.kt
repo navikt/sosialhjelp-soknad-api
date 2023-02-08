@@ -22,14 +22,14 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4])
 @RequestMapping("/soknader/{behandlingsId}/personalia/adresser", produces = [MediaType.APPLICATION_JSON_VALUE])
-open class AdresseRessurs(
+class AdresseRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val adresseSystemdata: AdresseSystemdata,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val navEnhetRessurs: NavEnhetRessurs
 ) {
     @GetMapping
-    open fun hentAdresser(
+    fun hentAdresser(
         @PathVariable("behandlingsId") behandlingsId: String
     ): AdresserFrontend {
         tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(behandlingsId)
@@ -62,7 +62,7 @@ open class AdresseRessurs(
     }
 
     @PutMapping
-    open fun updateAdresse(
+    fun updateAdresse(
         @PathVariable("behandlingsId") behandlingsId: String,
         @RequestBody adresserFrontend: AdresserFrontendInput
     ): List<NavEnhetFrontend>? {

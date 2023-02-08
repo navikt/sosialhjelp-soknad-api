@@ -20,18 +20,18 @@ import org.apache.commons.lang3.StringUtils
 import org.springframework.stereotype.Component
 
 @Component
-open class AdressesokService(
+class AdressesokService(
     private val adressesokClient: AdressesokClient,
     private val kodeverkService: KodeverkService
 ) {
 
-    open fun getAdresseForslag(adresse: JsonGateAdresse): AdresseForslag {
+    fun getAdresseForslag(adresse: JsonGateAdresse): AdresseForslag {
         val adresseSokResult = adressesokClient.getAdressesokResult(toVariables(adresse))
         val vegadresse = resolveVegadresse(adresseSokResult?.hits ?: emptyList())
         return vegadresse.toAdresseForslag()
     }
 
-    open fun sokEtterAdresser(sokeString: String?): List<AdresseForslag> {
+    fun sokEtterAdresser(sokeString: String?): List<AdresseForslag> {
         if (isAddressTooShortOrNull(sokeString)) {
             return emptyList()
         }

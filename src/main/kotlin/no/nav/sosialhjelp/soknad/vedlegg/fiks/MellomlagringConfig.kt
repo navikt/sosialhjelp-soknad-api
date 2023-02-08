@@ -15,7 +15,7 @@ import reactor.netty.http.client.HttpClient
 import java.time.Duration
 
 @Configuration
-open class MellomlagringConfig(
+class MellomlagringConfig(
     @Value("\${digisos_api_baseurl}") private val digisosApiEndpoint: String,
     @Value("\${integrasjonsid_fiks}") private val integrasjonsidFiks: String,
     @Value("\${integrasjonpassord_fiks}") private val integrasjonpassordFiks: String,
@@ -27,7 +27,7 @@ open class MellomlagringConfig(
 ) {
 
     @Bean
-    open fun mellomlagringClient(): MellomlagringClient {
+    fun mellomlagringClient(): MellomlagringClient {
         return MellomlagringClientImpl(
             dokumentlagerClient,
             krypteringService,

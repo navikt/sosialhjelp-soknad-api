@@ -10,12 +10,12 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @Unprotected
 @RequestMapping("/nedetid", produces = [MediaType.APPLICATION_JSON_VALUE])
-open class NedetidRessurs(
+class NedetidRessurs(
     private val nedetidService: NedetidService
 ) {
 
     @GetMapping
-    open fun hentNedetidInformasjon(): NedetidFrontend {
+    fun hentNedetidInformasjon(): NedetidFrontend {
         return NedetidFrontend(
             isNedetid = nedetidService.isInnenforNedetid,
             isPlanlagtNedetid = nedetidService.isInnenforPlanlagtNedetid,

@@ -30,7 +30,7 @@ import javax.servlet.http.HttpServletResponse
 @RestController
 @ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4])
 @RequestMapping("/opplastetVedlegg", produces = [MediaType.APPLICATION_JSON_VALUE])
-open class OpplastetVedleggRessurs(
+class OpplastetVedleggRessurs(
     private val opplastetVedleggRepository: OpplastetVedleggRepository,
     private val opplastetVedleggService: OpplastetVedleggService,
     private val tilgangskontroll: Tilgangskontroll,
@@ -40,7 +40,7 @@ open class OpplastetVedleggRessurs(
 ) {
 
     @GetMapping("/{vedleggId}/fil")
-    open fun getVedleggFil(
+    fun getVedleggFil(
         @PathVariable("vedleggId") vedleggId: String,
         response: HttpServletResponse,
     ): ResponseEntity<ByteArray> {
@@ -57,7 +57,7 @@ open class OpplastetVedleggRessurs(
     }
 
     @GetMapping("/{behandlingsId}/{vedleggId}/fil")
-    open fun getVedleggFil(
+    fun getVedleggFil(
         @PathVariable("behandlingsId") behandlingsId: String,
         @PathVariable("vedleggId") vedleggId: String,
         response: HttpServletResponse
@@ -86,7 +86,7 @@ open class OpplastetVedleggRessurs(
     }
 
     @PostMapping("/{behandlingsId}/{type}", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
-    open fun saveVedlegg(
+    fun saveVedlegg(
         @PathVariable("behandlingsId") behandlingsId: String,
         @PathVariable("type") vedleggstype: String,
         @RequestParam("file") fil: MultipartFile,
@@ -110,7 +110,7 @@ open class OpplastetVedleggRessurs(
     }
 
     @DeleteMapping("/{behandlingsId}/{vedleggId}")
-    open fun deleteVedlegg(
+    fun deleteVedlegg(
         @PathVariable("behandlingsId") behandlingsId: String,
         @PathVariable("vedleggId") vedleggId: String,
     ) {
