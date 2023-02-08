@@ -32,7 +32,7 @@ open class AdresseRessurs(
     open fun hentAdresser(
         @PathVariable("behandlingsId") behandlingsId: String
     ): AdresserFrontend {
-        tilgangskontroll.verifiserAtBrukerHarTilgang()
+        tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(behandlingsId)
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
         val jsonInternalSoknad = soknad.jsonInternalSoknad

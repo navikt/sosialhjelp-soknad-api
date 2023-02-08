@@ -48,6 +48,13 @@ class ExceptionMapper(
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(Feilmelding(e.id, "Ikke tilgang til ressurs"))
             }
+            is SoknadAlleredeSendtException -> {
+                log.warn("Søknad har allerede blitt sendt inn, kan ikke navigere til siden.", e)
+                return ResponseEntity
+                    .status(HttpStatus.GONE)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(Feilmelding(e.id, "Søknad har blitt sendt inn."))
+            }
             is IkkeFunnetException -> {
                 log.warn(e.message, e)
                 ResponseEntity.status(HttpStatus.NOT_FOUND)

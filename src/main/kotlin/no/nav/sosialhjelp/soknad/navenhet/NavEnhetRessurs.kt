@@ -54,7 +54,7 @@ open class NavEnhetRessurs(
     open fun hentNavEnheter(
         @PathVariable("behandlingsId") behandlingsId: String
     ): List<NavEnhetFrontend>? {
-        tilgangskontroll.verifiserAtBrukerHarTilgang()
+        tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(behandlingsId)
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).jsonInternalSoknad?.soknad
             ?: throw IllegalStateException("Kan ikke hente navEnheter hvis SoknadUnderArbeid.jsonInternalSoknad er null")
@@ -69,7 +69,7 @@ open class NavEnhetRessurs(
     open fun hentValgtNavEnhet(
         @PathVariable("behandlingsId") behandlingsId: String
     ): NavEnhetFrontend? {
-        tilgangskontroll.verifiserAtBrukerHarTilgang()
+        tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(behandlingsId)
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknadsmottaker = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).jsonInternalSoknad?.soknad?.mottaker
             ?: throw IllegalStateException("Kan ikke hente valgtNavEnhet hvis SoknadUnderArbeid.jsonInternalSoknad er null")
