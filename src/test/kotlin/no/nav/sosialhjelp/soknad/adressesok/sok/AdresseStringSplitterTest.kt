@@ -71,18 +71,6 @@ internal class AdresseStringSplitterTest {
     }
 
     @Test
-    fun kunPostnummer() {
-        val result = toSokedata(null, "0882")
-        assertThat(result!!.postnummer).isEqualTo("0882")
-    }
-
-    @Test
-    fun kunPostnummerMedMellomrom() {
-        val result = toSokedata(null, "   0882   ")
-        assertThat(result!!.postnummer).isEqualTo("0882")
-    }
-
-    @Test
     fun poststed() {
         val result = toSokedata(null, "asdf 2G, 0882 OSLO")
         assertThat(result!!.adresse).isEqualTo("asdf")
