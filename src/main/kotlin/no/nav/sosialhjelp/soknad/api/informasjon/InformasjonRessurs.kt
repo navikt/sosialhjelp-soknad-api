@@ -55,7 +55,7 @@ open class InformasjonRessurs(
     companion object {
         private val logger = LoggerFactory.getLogger(InformasjonRessurs::class.java)
         private val klientlogger = LoggerFactory.getLogger("klientlogger")
-        private const val FJORTEN_DAGER = 14
+        private const val FJORTEN_DAGER: Long = 14
         private const val SOKNADSOSIALHJELP = "soknadsosialhjelp"
     }
 
@@ -125,14 +125,6 @@ open class InformasjonRessurs(
         }
     }
 
-    @GetMapping("/kommunelogg")
-    open fun triggeKommunelogg(
-        @RequestParam("kommunenummer") kommunenummer: String
-    ): String? {
-        logger.info("Kommuneinfo trigget for $kommunenummer: ${kommuneInfoService.kommuneInfo(kommunenummer)}")
-        return "$kommunenummer er logget. Sjekk kibana"
-    }
-
     @GetMapping("/kommunestatus")
     @ProtectedWithClaims(issuer = Constants.AZUREAD)
     open fun hentKommunestatus(): Map<String, KommunestatusFrontend> {
@@ -149,7 +141,7 @@ open class InformasjonRessurs(
     @GetMapping("/harNyligInnsendteSoknader")
     open fun harNyligInnsendteSoknader(): NyligInnsendteSoknaderResponse {
         val eier = SubjectHandlerUtils.getUserIdFromToken()
-        val grense = LocalDateTime.now().minusDays(FJORTEN_DAGER.toLong())
+        val grense = LocalDateTime.now().minusDays(FJORTEN_DAGER)
         val nyligSendteSoknader = soknadMetadataRepository.hentInnsendteSoknaderForBrukerEtterTidspunkt(eier, grense)
         return NyligInnsendteSoknaderResponse(nyligSendteSoknader.size)
     }
