@@ -6,9 +6,11 @@ import io.mockk.mockkObject
 import io.mockk.unmockkObject
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.app.exceptions.AuthorizationException
+import no.nav.sosialhjelp.soknad.app.exceptions.SoknadAlleredeSendtException
 import no.nav.sosialhjelp.soknad.app.subjecthandler.StaticSubjectHandlerImpl
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadata
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataInnsendingStatus
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
@@ -46,7 +48,7 @@ internal class TilgangskontrollTest {
     }
 
     @Test
-    fun skalGiTilgangForBruker() {
+    fun `verifiserBrukerHarTilgangTilSoknad skal gi tilgang`() {
         val userId = SubjectHandlerUtils.getUserIdFromToken()
         val soknadUnderArbeid = SoknadUnderArbeid(
             versjon = 1L,
@@ -59,6 +61,7 @@ internal class TilgangskontrollTest {
             sistEndretDato = LocalDateTime.now()
         )
 
+        every { soknadMetadataRepository.hent(any())?.status } returns SoknadMetadataInnsendingStatus.UNDER_ARBEID
         every { soknadUnderArbeidRepository.hentSoknadNullable(any(), any()) } returns soknadUnderArbeid
         every { personService.hentAdressebeskyttelse(userId) } returns Gradering.UGRADERT
 
@@ -67,7 +70,7 @@ internal class TilgangskontrollTest {
     }
 
     @Test
-    fun skalFeileForAndre() {
+    fun `verifiserBrukerHarTilgangTilSoknad skal feile hvis SoknadUnderArbeid tilhorer andre enn innlogget bruker`() {
         val soknadUnderArbeid = SoknadUnderArbeid(
             versjon = 1L,
             behandlingsId = "behandlingsId",
@@ -79,6 +82,7 @@ internal class TilgangskontrollTest {
             sistEndretDato = LocalDateTime.now()
         )
 
+        every { soknadMetadataRepository.hent(any())?.status } returns SoknadMetadataInnsendingStatus.UNDER_ARBEID
         every { soknadUnderArbeidRepository.hentSoknadNullable(any(), any()) } returns soknadUnderArbeid
 
         assertThatExceptionOfType(AuthorizationException::class.java)
@@ -86,7 +90,8 @@ internal class TilgangskontrollTest {
     }
 
     @Test
-    fun skalFeileOmSoknadenIkkeFinnes() {
+    fun `verifiserBrukerHarTilgangTilSoknad skal feile hvis soknad ikke er innsendt men soknadUnderArbeid ikke finnes`() {
+        every { soknadMetadataRepository.hent(any())?.status } returns SoknadMetadataInnsendingStatus.UNDER_ARBEID
         every { soknadUnderArbeidRepository.hentSoknadNullable(any(), any()) } returns null
 
         assertThatExceptionOfType(AuthorizationException::class.java)
@@ -94,7 +99,18 @@ internal class TilgangskontrollTest {
     }
 
     @Test
-    fun skalGiTilgangForBrukerMetadata() {
+    fun `skal kaste SoknadAlleredeSendtException hvis soknad allerede er innsendt`() {
+        every { soknadMetadataRepository.hent(any())?.status } returns SoknadMetadataInnsendingStatus.FERDIG
+        assertThatExceptionOfType(SoknadAlleredeSendtException::class.java)
+            .isThrownBy { tilgangskontroll.verifiserBrukerHarTilgangTilSoknad("123") }
+
+        every { soknadMetadataRepository.hent(any())?.status } returns SoknadMetadataInnsendingStatus.SENDT_MED_DIGISOS_API
+        assertThatExceptionOfType(SoknadAlleredeSendtException::class.java)
+            .isThrownBy { tilgangskontroll.verifiserBrukerHarTilgangTilSoknad("123") }
+    }
+
+    @Test
+    fun `bruker har tilgang til soknadens metadata hvis bruker ikke har adressebeskyttelse`() {
         val userId = SubjectHandlerUtils.getUserIdFromToken()
         val metadata = SoknadMetadata(
             id = 0L,
@@ -111,7 +127,7 @@ internal class TilgangskontrollTest {
     }
 
     @Test
-    fun skalFeileForAndreMetadata() {
+    fun `verifiserBrukerHarTilgangTilMetadata skal feile hvis metadata tilhorer andre enn innlogget bruker`() {
         val metadata = SoknadMetadata(
             id = 0L,
             behandlingsId = "123",
@@ -126,7 +142,7 @@ internal class TilgangskontrollTest {
     }
 
     @Test
-    fun skalFeileHvisBrukerHarAdressebeskyttelseStrengtFortrolig() {
+    fun `verifiserAtBrukerHarTilgang skal feile hvis bruker har adressebeskyttelse StrengtFortrolig`() {
         val userId = SubjectHandlerUtils.getUserIdFromToken()
         every { personService.hentAdressebeskyttelse(userId) } returns Gradering.STRENGT_FORTROLIG
         assertThatExceptionOfType(AuthorizationException::class.java)
@@ -134,7 +150,7 @@ internal class TilgangskontrollTest {
     }
 
     @Test
-    fun skalFeileHvisBrukerHarAdressebeskyttelseFortrolig() {
+    fun `verifiserAtBrukerHarTilgang skal feile hvis bruker har adressbeskyttelse Fortrolig`() {
         val userId = SubjectHandlerUtils.getUserIdFromToken()
         every { personService.hentAdressebeskyttelse(userId) } returns Gradering.FORTROLIG
         assertThatExceptionOfType(AuthorizationException::class.java)
