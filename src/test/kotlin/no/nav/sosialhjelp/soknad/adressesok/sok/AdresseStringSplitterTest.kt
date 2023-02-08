@@ -2,7 +2,6 @@ package no.nav.sosialhjelp.soknad.adressesok.sok
 
 import io.mockk.every
 import io.mockk.mockk
-import no.nav.sosialhjelp.soknad.adressesok.sok.AdresseStringSplitter.postnummerMatch
 import no.nav.sosialhjelp.soknad.adressesok.sok.AdresseStringSplitter.toSokedata
 import no.nav.sosialhjelp.soknad.kodeverk.KodeverkService
 import org.assertj.core.api.Assertions.assertThat
@@ -69,18 +68,6 @@ internal class AdresseStringSplitterTest {
         assertThat(result.husnummer).isEqualTo("2")
         assertThat(result.husbokstav).isEqualTo("G")
         assertThat(result.postnummer).isEqualTo("0882")
-    }
-
-    @Test
-    fun kunPostnummer() {
-        val result = toSokedata(null, "0882")
-        assertThat(result!!.postnummer).isEqualTo("0882")
-    }
-
-    @Test
-    fun kunPostnummerMedMellomrom() {
-        val result = toSokedata(null, "   0882   ")
-        assertThat(result!!.postnummer).isEqualTo("0882")
     }
 
     @Test
@@ -163,26 +150,6 @@ internal class AdresseStringSplitterTest {
         assertThat(result.postnummer).isEqualTo("0756")
         assertThat(result.poststed).isEqualTo("OSLO")
         assertThat(result.kommunenummer).isNull()
-    }
-
-    @Test
-    fun postnummerMatchTest() {
-        var sokedata = postnummerMatch("0001")
-        assertThat(sokedata?.postnummer).isEqualTo("0001")
-        sokedata = postnummerMatch("0001 ")
-        assertThat(sokedata?.postnummer).isEqualTo("0001")
-        sokedata = postnummerMatch(" 0001")
-        assertThat(sokedata?.postnummer).isEqualTo("0001")
-        sokedata = postnummerMatch("Haugeveien, 0001 klavestaad")
-        assertThat(sokedata).isNull()
-        sokedata = postnummerMatch("Sannergata 2")
-        assertThat(sokedata).isNull()
-        sokedata = postnummerMatch("Sannergata0001")
-        assertThat(sokedata).isNull()
-        sokedata = postnummerMatch("0001Klavestad")
-        assertThat(sokedata).isNull()
-        sokedata = postnummerMatch("0001 Klavestad")
-        assertThat(sokedata).isNull()
     }
 
     @Test
