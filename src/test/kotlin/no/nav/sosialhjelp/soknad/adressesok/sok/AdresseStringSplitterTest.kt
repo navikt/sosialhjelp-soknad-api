@@ -163,4 +163,19 @@ internal class AdresseStringSplitterTest {
         assertThat(result.poststed).isEqualTo("OSLO")
         assertThat(result.kommunenummer).isNull()
     }
+
+    @Test
+    fun `postnummer fra 1 til 4 tegn`() {
+        var result = toSokedata(null, "asdf 2G, 0")
+        assertThat(result!!.postnummer).isEqualTo("0")
+
+        result = toSokedata(null, "asdf 2G, 03")
+        assertThat(result!!.postnummer).isEqualTo("03")
+
+        result = toSokedata(null, "asdf 2G, 030")
+        assertThat(result!!.postnummer).isEqualTo("030")
+
+        result = toSokedata(null, "asdf 2G, 0301")
+        assertThat(result!!.postnummer).isEqualTo("0301")
+    }
 }
