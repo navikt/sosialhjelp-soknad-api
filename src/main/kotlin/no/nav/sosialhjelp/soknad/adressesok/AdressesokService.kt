@@ -13,10 +13,10 @@ import no.nav.sosialhjelp.soknad.adressesok.sok.Paging
 import no.nav.sosialhjelp.soknad.adressesok.sok.SearchRule
 import no.nav.sosialhjelp.soknad.adressesok.sok.Sokedata
 import no.nav.sosialhjelp.soknad.adressesok.sok.SortBy
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.exceptions.SosialhjelpSoknadApiException
 import no.nav.sosialhjelp.soknad.kodeverk.KodeverkService
 import org.apache.commons.lang3.StringUtils
-import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 
 @Component
@@ -25,7 +25,7 @@ open class AdressesokService(
     private val kodeverkService: KodeverkService
 ) {
 
-    open fun getAdresseForslag(adresse: JsonGateAdresse?): AdresseForslag {
+    open fun getAdresseForslag(adresse: JsonGateAdresse): AdresseForslag {
         val adresseSokResult = adressesokClient.getAdressesokResult(toVariables(adresse))
         val vegadresse = resolveVegadresse(adresseSokResult?.hits ?: emptyList())
         return vegadresse.toAdresseForslag()
@@ -49,17 +49,15 @@ open class AdressesokService(
         return adressesokResult?.hits?.map { it.vegadresse } ?: emptyList()
     }
 
-    private fun toVariables(adresse: JsonGateAdresse?): Map<String, Any> {
+    private fun toVariables(adresse: JsonGateAdresse): Map<String, Any> {
         val variables = HashMap<String, Any>()
         variables[PAGING] = Paging(1, 30, emptyList())
-
-        requireNotNull(adresse) { "kan ikke soke uten adresse" }
         variables[CRITERIA] = toCriteriaList(adresse)
         return variables
     }
 
     private fun toCriteriaList(adresse: JsonGateAdresse): List<Criteria> {
-        val criteriaList = ArrayList<Criteria>()
+        val criteriaList = mutableListOf<Criteria>()
         if (StringUtils.isNotEmpty(adresse.gatenavn)) {
             criteriaList.add(criteria(FieldName.VEGADRESSE_ADRESSENAVN, SearchRule.CONTAINS, adresse.gatenavn))
         }
@@ -78,16 +76,15 @@ open class AdressesokService(
         return criteriaList
     }
 
-    private fun toVariablesForFritekstSok(sokedata: Sokedata?): Map<String, Any> {
-        val variables = java.util.HashMap<String, Any>()
+    private fun toVariablesForFritekstSok(sokedata: Sokedata): Map<String, Any> {
+        val variables = HashMap<String, Any>()
         variables[PAGING] = Paging(1, 30, listOf(SortBy(FieldName.VEGADRESSE_HUSNUMMER.value, Direction.ASC)))
-        requireNotNull(sokedata) { "kan ikke soke uten sokedata" }
         variables[CRITERIA] = toCriteriaListForFritekstSok(sokedata)
         return variables
     }
 
     private fun toCriteriaListForFritekstSok(sokedata: Sokedata): List<Criteria> {
-        val criteriaList = java.util.ArrayList<Criteria>()
+        val criteriaList = mutableListOf<Criteria>()
         if (sokedata.adresse != null) {
             if (sokedata.adresse.length < 3) {
                 criteriaList.add(criteria(FieldName.VEGADRESSE_ADRESSENAVN, SearchRule.EQUALS, sokedata.adresse))
@@ -102,7 +99,7 @@ open class AdressesokService(
             criteriaList.add(criteria(FieldName.VEGADRESSE_HUSBOKSTAV, SearchRule.EQUALS, sokedata.husbokstav))
         }
         if (sokedata.postnummer != null) {
-            criteriaList.add(criteria(FieldName.VEGADRESSE_POSTNUMMER, SearchRule.EQUALS, sokedata.postnummer))
+            criteriaList.add(criteria(FieldName.VEGADRESSE_POSTNUMMER, SearchRule.WILDCARD, sokedata.postnummer))
         }
         if (sokedata.poststed != null) {
             criteriaList.add(criteria(FieldName.VEGADRESSE_POSTSTED, SearchRule.WILDCARD, sokedata.poststed))
@@ -114,8 +111,10 @@ open class AdressesokService(
     }
 
     private fun criteria(fieldName: FieldName, searchRule: SearchRule, value: String): Criteria {
-        val newValue = if (SearchRule.WILDCARD == searchRule) value + WILDCARD_SUFFIX else value
-        return Criteria(fieldName, searchRule, newValue)
+        return when (searchRule) {
+            SearchRule.WILDCARD -> Criteria(fieldName, SearchRule.WILDCARD, value + WILDCARD_SUFFIX)
+            else -> Criteria(fieldName, searchRule, value)
+        }
     }
 
     private fun resolveVegadresse(hits: List<AdressesokHitDto>): VegadresseDto {
@@ -148,6 +147,6 @@ open class AdressesokService(
         private const val CRITERIA = "criteria"
         private const val WILDCARD_SUFFIX = "*"
 
-        private val log = LoggerFactory.getLogger(AdressesokService::class.java)
+        private val log by logger()
     }
 }

@@ -184,4 +184,19 @@ internal class AdresseStringSplitterTest {
         sokedata = postnummerMatch("0001 Klavestad")
         assertThat(sokedata).isNull()
     }
+
+    @Test
+    fun `postnummer fra 1 til 4 tegn`() {
+        var result = toSokedata(null, "asdf 2G, 0")
+        assertThat(result!!.postnummer).isEqualTo("0")
+
+        result = toSokedata(null, "asdf 2G, 03")
+        assertThat(result!!.postnummer).isEqualTo("03")
+
+        result = toSokedata(null, "asdf 2G, 030")
+        assertThat(result!!.postnummer).isEqualTo("030")
+
+        result = toSokedata(null, "asdf 2G, 0301")
+        assertThat(result!!.postnummer).isEqualTo("0301")
+    }
 }

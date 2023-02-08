@@ -16,7 +16,7 @@ object AdresseStringSplitter {
     }
 
     private fun fullstendigGateadresseMatch(kodeverkService: KodeverkService?, adresse: String?): Sokedata? {
-        val p = Pattern.compile("^([^0-9,]*) *([0-9]*)?([^,])? *,? *([0-9][0-9][0-9][0-9])? *[0-9]* *([^0-9]*[^ ])? *$")
+        val p = Pattern.compile("^([^0-9,]*) *([0-9]*)?([^,])? *,? *([0-9]{1,4})? *[0-9]* *([^0-9]*[^ ])? *$")
         val m = p.matcher(adresse)
         if (m.matches()) {
             val postnummer = m.group(4)
