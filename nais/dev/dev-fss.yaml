@@ -129,9 +129,9 @@ spec:
     - name: SVARUT_URL
       value: "https://test.svarut.ks.no"
     - name: NEDETID_START
-      value: ""
+      value: "09.02.2023 12:00:00"
     - name: NEDETID_SLUTT
-      value: ""
+      value: "09.02.2023 14:00:00"
     - name: ENVIRONMENT_NAME
       value: "q0"
     - name: REDIS_HOST
