@@ -13,14 +13,14 @@ import javax.sql.DataSource
 
 @Profile("(mock-alt|test)")
 @Configuration
-open class MockAltTestDbConfig {
+class MockAltTestDbConfig {
 
     init {
         System.setProperty(SQLUtils.DIALECT_PROPERTY, "hsqldb")
     }
 
     @Bean
-    open fun dataSource(): DataSource {
+    fun dataSource(): DataSource {
         val dataSource = DriverManagerDataSource()
         // dataSource.setSuppressClose(true);
         val env = dbProperties("hsqldb.properties")
@@ -33,12 +33,12 @@ open class MockAltTestDbConfig {
     }
 
     @Bean
-    open fun transactionManager(dataSource: DataSource): DataSourceTransactionManager {
+    fun transactionManager(dataSource: DataSource): DataSourceTransactionManager {
         return DataSourceTransactionManager(dataSource)
     }
 
     @Bean
-    open fun transactionTemplate(transactionManager: DataSourceTransactionManager): TransactionTemplate? {
+    fun transactionTemplate(transactionManager: DataSourceTransactionManager): TransactionTemplate? {
         return TransactionTemplate(transactionManager)
     }
 

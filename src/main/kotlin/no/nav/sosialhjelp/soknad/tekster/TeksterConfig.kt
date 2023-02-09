@@ -10,12 +10,12 @@ import org.springframework.scheduling.annotation.Scheduled
 
 @EnableScheduling
 @Configuration
-open class TeksterConfig(
+class TeksterConfig(
     @Value("\${scheduler.disable}") private val schedulerDisabled: Boolean
 ) {
 
     @Bean
-    open fun navMessageSource(): NavMessageSource {
+    fun navMessageSource(): NavMessageSource {
         val messageSource = NavMessageSource()
         val bundle = getBundle(SOKNADSOSIALHJELP)
         val fellesBundle = getBundle("sendsoknad")

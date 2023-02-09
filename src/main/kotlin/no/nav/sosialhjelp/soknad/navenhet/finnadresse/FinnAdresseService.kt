@@ -10,12 +10,12 @@ import no.nav.sosialhjelp.soknad.personalia.adresse.adresseregister.HentAdresseS
 import org.springframework.stereotype.Component
 
 @Component
-open class FinnAdresseService(
+class FinnAdresseService(
     private val adressesokService: AdressesokService,
     private val hentAdresseService: HentAdresseService
 ) {
 
-    open fun finnAdresseFraSoknad(personalia: JsonPersonalia, valg: String?): AdresseForslag? {
+    fun finnAdresseFraSoknad(personalia: JsonPersonalia, valg: String?): AdresseForslag? {
         val adresse = getValgtAdresse(personalia, valg)
         return adresseForslagFraPDL(adresse)
     }

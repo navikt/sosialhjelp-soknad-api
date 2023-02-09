@@ -25,7 +25,7 @@ import java.util.Date
 
 @Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 @Repository
-open class SoknadUnderArbeidRepositoryJdbc(
+class SoknadUnderArbeidRepositoryJdbc(
     private val jdbcTemplate: JdbcTemplate,
     private val transactionTemplate: TransactionTemplate,
     private val opplastetVedleggRepository: OpplastetVedleggRepository,

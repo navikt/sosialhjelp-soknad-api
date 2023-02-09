@@ -23,7 +23,7 @@ import java.time.LocalDate
 import java.time.Period
 
 @Component
-open class PdlDtoMapper(
+class PdlDtoMapper(
     private val kodeverkService: KodeverkService,
     private val helper: MapperHelper
 ) {
@@ -47,7 +47,7 @@ open class PdlDtoMapper(
             )
     }
 
-    open fun personDtoToDomain(personDto: PersonDto?, ident: String): Person? {
+    fun personDtoToDomain(personDto: PersonDto?, ident: String): Person? {
         return if (personDto == null) {
             null
         } else Person(
@@ -64,7 +64,7 @@ open class PdlDtoMapper(
         )
     }
 
-    open fun barnDtoToDomain(barnDto: BarnDto?, barnIdent: String, personDto: PersonDto): Barn? {
+    fun barnDtoToDomain(barnDto: BarnDto?, barnIdent: String, personDto: PersonDto): Barn? {
         if (barnDto == null || hasAdressebeskyttelse(barnDto.adressebeskyttelse) || isMyndig(barnDto.foedsel) || isDoed(barnDto.folkeregisterpersonstatus)) {
             return null
         }
@@ -78,7 +78,7 @@ open class PdlDtoMapper(
         )
     }
 
-    open fun ektefelleDtoToDomain(ektefelleDto: EktefelleDto?, ektefelleIdent: String, personDto: PersonDto): Ektefelle? {
+    fun ektefelleDtoToDomain(ektefelleDto: EktefelleDto?, ektefelleIdent: String, personDto: PersonDto): Ektefelle? {
         if (ektefelleDto == null) {
             return null
         }
@@ -95,7 +95,7 @@ open class PdlDtoMapper(
         )
     }
 
-    open fun personAdressebeskyttelseDtoToGradering(personAdressebeskyttelseDto: PersonAdressebeskyttelseDto?): Gradering? {
+    fun personAdressebeskyttelseDtoToGradering(personAdressebeskyttelseDto: PersonAdressebeskyttelseDto?): Gradering? {
         return if (personAdressebeskyttelseDto?.adressebeskyttelse == null) {
             null
         } else personAdressebeskyttelseDto.adressebeskyttelse.firstOrNull()?.gradering

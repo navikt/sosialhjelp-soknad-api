@@ -19,20 +19,20 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4])
 @RequestMapping("/ettersendelse", produces = [MediaType.APPLICATION_JSON_VALUE])
-open class EttersendingRessurs(
+class EttersendingRessurs(
     private val innsendtSoknadService: InnsendtSoknadService,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val opplastetVedleggRepository: OpplastetVedleggRepository,
     private val tilgangskontroll: Tilgangskontroll
 ) {
     @GetMapping("/innsendte/{behandlingsId}")
-    open fun hentBehandlingskjede(@PathVariable("behandlingsId") behandlingsId: String): BehandlingsKjede {
+    fun hentBehandlingskjede(@PathVariable("behandlingsId") behandlingsId: String): BehandlingsKjede {
         tilgangskontroll.verifiserBrukerHarTilgangTilMetadata(behandlingsId)
         return innsendtSoknadService.hentBehandlingskjede(behandlingsId)
     }
 
     @GetMapping("/ettersendteVedlegg/{behandlingsId}")
-    open fun hentVedlegg(@PathVariable("behandlingsId") behandlingsId: String): List<EttersendtVedlegg> {
+    fun hentVedlegg(@PathVariable("behandlingsId") behandlingsId: String): List<EttersendtVedlegg> {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)

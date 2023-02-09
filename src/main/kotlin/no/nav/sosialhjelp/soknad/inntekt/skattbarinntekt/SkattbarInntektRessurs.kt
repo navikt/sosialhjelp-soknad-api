@@ -26,14 +26,14 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4])
 @RequestMapping("/soknader/{behandlingsId}/inntekt/skattbarinntektogforskuddstrekk", produces = [MediaType.APPLICATION_JSON_VALUE])
-open class SkattbarInntektRessurs(
+class SkattbarInntektRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val skatteetatenSystemdata: SkatteetatenSystemdata,
     private val textService: TextService
 ) {
     @GetMapping
-    open fun hentSkattbareInntekter(@PathVariable("behandlingsId") behandlingsId: String): SkattbarInntektFrontend {
+    fun hentSkattbareInntekter(@PathVariable("behandlingsId") behandlingsId: String): SkattbarInntektFrontend {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val utbetalinger: List<JsonOkonomiOpplysningUtbetaling>
@@ -52,7 +52,7 @@ open class SkattbarInntektRessurs(
     }
 
     @PostMapping("/samtykke")
-    open fun updateSamtykke(
+    fun updateSamtykke(
         @PathVariable("behandlingsId") behandlingsId: String,
         @RequestBody samtykke: Boolean,
         @RequestHeader(value = HttpHeaders.AUTHORIZATION) token: String?

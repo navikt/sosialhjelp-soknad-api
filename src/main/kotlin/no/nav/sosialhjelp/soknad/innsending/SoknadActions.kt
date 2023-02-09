@@ -39,7 +39,7 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4])
 @RequestMapping("/soknader/{behandlingsId}/actions", produces = [MediaType.APPLICATION_JSON_VALUE])
-open class SoknadActions(
+class SoknadActions(
     private val soknadService: SoknadService,
     private val kommuneInfoService: KommuneInfoService,
     private val tilgangskontroll: Tilgangskontroll,
@@ -50,7 +50,7 @@ open class SoknadActions(
     private val nedetidService: NedetidService,
 ) {
     @PostMapping("/send")
-    open fun sendSoknad(
+    fun sendSoknad(
         @PathVariable("behandlingsId") behandlingsId: String,
         @RequestHeader(value = HttpHeaders.AUTHORIZATION) token: String?
     ): SendTilUrlFrontend {

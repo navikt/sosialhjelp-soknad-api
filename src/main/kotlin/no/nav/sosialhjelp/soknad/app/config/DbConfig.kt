@@ -7,10 +7,10 @@ import java.time.Clock
 
 @Configuration
 @EnableTransactionManagement
-open class DbConfig {
+class DbConfig {
 
     @Bean
-    open fun clock(): Clock {
+    fun clock(): Clock {
         return Clock.systemDefaultZone()
     }
 }

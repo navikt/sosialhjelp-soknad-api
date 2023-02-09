@@ -9,11 +9,11 @@ import org.springframework.stereotype.Component
 import java.time.LocalDate
 
 @Component
-open class SkattbarInntektService(
+class SkattbarInntektService(
     private val skatteetatenClient: SkatteetatenClient
 ) {
 
-    open fun hentUtbetalinger(fnummer: String): List<Utbetaling>? {
+    fun hentUtbetalinger(fnummer: String): List<Utbetaling>? {
         val skattbarInntekt = skatteetatenClient.hentSkattbarinntekt(fnummer)
         val utbetalinger = skattbarInntekt.mapToUtbetalinger()
         val forskuddstrekk = skattbarInntekt.getForskuddstrekk()

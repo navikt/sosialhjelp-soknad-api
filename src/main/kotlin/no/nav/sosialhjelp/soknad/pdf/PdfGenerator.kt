@@ -25,8 +25,8 @@ class PdfGenerator {
 
     private val document = PDDocument()
     private var currentPage = PDPage(PDRectangle.A4)
-    private var currentStream: PDPageContentStream
-    private var y: Float
+    private var currentStream: PDPageContentStream = PDPageContentStream(document, currentPage)
+    private var y = calculateStartY()
 
     private val fontRegular: PDFont = ClassPathResource(REGULAR).inputStream.use { PDType0Font.load(document, it) } // PDType0Font.load(document, ClassPathResource(REGULAR).inputStream)
     private val fontBold: PDFont = ClassPathResource(BOLD).inputStream.use { PDType0Font.load(document, it) } // PDType0Font.load(document, ClassPathResource(BOLD).inputStream)
@@ -41,8 +41,6 @@ class PdfGenerator {
     private val metadata = PDMetadata(document)
 
     init {
-        currentStream = PDPageContentStream(document, currentPage)
-        y = calculateStartY()
         addLogo()
     }
 

@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4])
 @RequestMapping("/feature-toggle", produces = [MediaType.APPLICATION_JSON_VALUE])
-open class FeatureToggleRessurs {
+class FeatureToggleRessurs {
 
     @GetMapping
-    open fun featureToggles(): Map<String, Boolean> {
+    fun featureToggles(): Map<String, Boolean> {
         val featureToggles: MutableMap<String, Boolean> = HashMap()
         // add toggles for frontend
         return featureToggles
