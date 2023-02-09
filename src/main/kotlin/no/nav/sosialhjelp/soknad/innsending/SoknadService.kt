@@ -59,7 +59,7 @@ import java.time.temporal.ChronoUnit.HOURS
 import java.time.temporal.ChronoUnit.MINUTES
 
 @Component
-open class SoknadService(
+class SoknadService(
     private val oppgaveHandterer: OppgaveHandterer,
     private val innsendingService: InnsendingService,
     private val soknadMetadataRepository: SoknadMetadataRepository,
@@ -72,7 +72,7 @@ open class SoknadService(
     private val clock: Clock
 ) {
     @Transactional
-    open fun startSoknad(token: String?): String {
+    fun startSoknad(token: String?): String {
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val behandlingsId = opprettSoknadMetadata(eier)
 
@@ -113,7 +113,7 @@ open class SoknadService(
     }
 
     @Transactional
-    open fun sendSoknad(behandlingsId: String) {
+    fun sendSoknad(behandlingsId: String) {
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
 
@@ -161,14 +161,14 @@ open class SoknadService(
         return " Dataene er $antallDager dager, $antallTimer timer og $antallMinutter minutter gamle."
     }
 
-    open fun oppdaterSistEndretDatoPaaMetadata(behandlingsId: String?) {
+    fun oppdaterSistEndretDatoPaaMetadata(behandlingsId: String?) {
         val hentet = soknadMetadataRepository.hent(behandlingsId)
         hentet?.sistEndretDato = LocalDateTime.now(clock)
         soknadMetadataRepository.oppdater(hentet)
     }
 
     @Transactional
-    open fun avbrytSoknad(behandlingsId: String) {
+    fun avbrytSoknad(behandlingsId: String) {
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         soknadUnderArbeidRepository.hentSoknadNullable(behandlingsId, eier)
             ?.let { soknadUnderArbeid ->
@@ -181,7 +181,7 @@ open class SoknadService(
             }
     }
 
-    open fun settSoknadMetadataAvbrutt(behandlingsId: String?, avbruttAutomatisk: Boolean) {
+    fun settSoknadMetadataAvbrutt(behandlingsId: String?, avbruttAutomatisk: Boolean) {
         val metadata = soknadMetadataRepository.hent(behandlingsId)
         metadata?.status = if (avbruttAutomatisk) SoknadMetadataInnsendingStatus.AVBRUTT_AUTOMATISK else SoknadMetadataInnsendingStatus.AVBRUTT_AV_BRUKER
         metadata?.sistEndretDato = LocalDateTime.now(clock)
@@ -189,7 +189,7 @@ open class SoknadService(
     }
 
     @Transactional
-    open fun oppdaterSamtykker(
+    fun oppdaterSamtykker(
         behandlingsId: String?,
         harBostotteSamtykke: Boolean,
         harSkatteetatenSamtykke: Boolean,

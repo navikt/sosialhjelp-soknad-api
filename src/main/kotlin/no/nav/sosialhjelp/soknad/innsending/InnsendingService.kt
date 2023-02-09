@@ -12,47 +12,47 @@ import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidS
 import org.springframework.stereotype.Component
 
 @Component
-open class InnsendingService(
+class InnsendingService(
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val opplastetVedleggRepository: OpplastetVedleggRepository,
     private val soknadUnderArbeidService: SoknadUnderArbeidService,
     private val soknadMetadataRepository: SoknadMetadataRepository,
 ) {
-    open fun oppdaterSoknadUnderArbeid(soknadUnderArbeid: SoknadUnderArbeid?) {
+    fun oppdaterSoknadUnderArbeid(soknadUnderArbeid: SoknadUnderArbeid?) {
         check(soknadUnderArbeid != null) { "Kan ikke sende søknad som ikke finnes eller som mangler søknadsid" }
         soknadUnderArbeidService.settInnsendingstidspunktPaSoknad(soknadUnderArbeid)
         soknadUnderArbeid.status = SoknadUnderArbeidStatus.LAAST
         soknadUnderArbeidRepository.oppdaterInnsendingStatus(soknadUnderArbeid, soknadUnderArbeid.eier)
     }
 
-    open fun finnOgSlettSoknadUnderArbeidVedSendingTilFiks(behandlingsId: String, eier: String) {
+    fun finnOgSlettSoknadUnderArbeidVedSendingTilFiks(behandlingsId: String, eier: String) {
         log.debug("Henter søknad under arbeid for behandlingsid $behandlingsId")
         soknadUnderArbeidRepository.hentSoknadNullable(behandlingsId, eier)
             ?.let { soknadUnderArbeidRepository.slettSoknad(it, eier) }
     }
 
-    open fun oppdaterSoknadMetadataVedSendingTilFiks(fiksforsendelseId: String?, behandlingsId: String?, eier: String?) {
+    fun oppdaterSoknadMetadataVedSendingTilFiks(fiksforsendelseId: String?, behandlingsId: String?, eier: String?) {
         log.debug("Oppdaterer soknadmetadata for behandlingsid $behandlingsId")
         val soknadMetadata = soknadMetadataRepository.hent(behandlingsId)
         soknadMetadata?.fiksForsendelseId = fiksforsendelseId
         soknadMetadataRepository.oppdater(soknadMetadata)
     }
 
-    open fun hentSoknadMetadata(behandlingsId: String, eier: String?): SoknadMetadata {
+    fun hentSoknadMetadata(behandlingsId: String, eier: String?): SoknadMetadata {
         return soknadMetadataRepository.hent(behandlingsId)
             ?: throw RuntimeException("Finner ikke soknadMetadata med behandlingsId $behandlingsId")
     }
 
-    open fun hentSoknadUnderArbeid(behandlingsId: String, eier: String): SoknadUnderArbeid {
+    fun hentSoknadUnderArbeid(behandlingsId: String, eier: String): SoknadUnderArbeid {
         return soknadUnderArbeidRepository.hentSoknadNullable(behandlingsId, eier)
             ?: throw RuntimeException("Finner ikke soknadUnderArbeid med behandlingsId $behandlingsId")
     }
 
-    open fun hentAlleOpplastedeVedleggForSoknad(soknadUnderArbeid: SoknadUnderArbeid): List<OpplastetVedlegg> {
+    fun hentAlleOpplastedeVedleggForSoknad(soknadUnderArbeid: SoknadUnderArbeid): List<OpplastetVedlegg> {
         return opplastetVedleggRepository.hentVedleggForSoknad(soknadUnderArbeid.soknadId, soknadUnderArbeid.eier)
     }
 
-    open fun finnFiksForsendelseIdForEttersendelse(soknadUnderArbeid: SoknadUnderArbeid): String? {
+    fun finnFiksForsendelseIdForEttersendelse(soknadUnderArbeid: SoknadUnderArbeid): String? {
         val tilknyttetBehandlingsId = soknadUnderArbeid.tilknyttetBehandlingsId
             ?: throw IllegalStateException("TilknyttetBehandlingsId kan ikke være null for en ettersendelse")
 

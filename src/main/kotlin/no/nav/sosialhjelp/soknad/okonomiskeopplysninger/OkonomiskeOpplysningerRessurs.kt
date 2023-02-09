@@ -43,7 +43,7 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4])
 @RequestMapping("/soknader/{behandlingsId}/okonomiskeOpplysninger")
-open class OkonomiskeOpplysningerRessurs(
+class OkonomiskeOpplysningerRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val opplastetVedleggRepository: OpplastetVedleggRepository,
@@ -51,7 +51,7 @@ open class OkonomiskeOpplysningerRessurs(
     private val soknadUnderArbeidService: SoknadUnderArbeidService
 ) {
     @GetMapping
-    open fun hentOkonomiskeOpplysninger(
+    fun hentOkonomiskeOpplysninger(
         @PathVariable("behandlingsId") behandlingsId: String
     ): VedleggFrontends {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
@@ -109,7 +109,7 @@ open class OkonomiskeOpplysningerRessurs(
     }
 
     @PutMapping
-    open fun updateOkonomiskOpplysning(
+    fun updateOkonomiskOpplysning(
         @PathVariable("behandlingsId") behandlingsId: String,
         @RequestBody vedleggFrontend: VedleggFrontend
     ) {

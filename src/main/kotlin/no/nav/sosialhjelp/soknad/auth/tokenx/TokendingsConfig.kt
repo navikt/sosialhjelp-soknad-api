@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Profile
 import org.springframework.web.reactive.function.client.WebClient
 
 @Configuration
-open class TokendingsConfig(
+class TokendingsConfig(
     @Value("\${tokendings_url}") val tokendingsUrl: String,
     @Value("\${tokendings_client_id}") val tokendingsClientId: String,
     @Value("\${tokendings_private_jwk}") val tokendingsPrivateJwk: String,
@@ -20,13 +20,13 @@ open class TokendingsConfig(
 
     @Profile("!test")
     @Bean
-    open fun tokendingsClient(): TokendingsClient {
+    fun tokendingsClient(): TokendingsClient {
         return TokendingsClientImpl(tokendingsWebClient, wellKnown)
     }
 
     @Profile("test")
     @Bean
-    open fun tokendingsClientTest(): TokendingsClient {
+    fun tokendingsClientTest(): TokendingsClient {
         return TokendingsClientImpl(
             tokendingsWebClient,
             WellKnown("iss-localhost", "authorizationEndpoint", "tokenEndpoint", tokendingsUrl)
@@ -34,7 +34,7 @@ open class TokendingsConfig(
     }
 
     @Bean
-    open fun tokendingsService(tokendingsClient: TokendingsClient): TokendingsService {
+    fun tokendingsService(tokendingsClient: TokendingsClient): TokendingsService {
         return TokendingsService(
             tokendingsClient,
             tokendingsClientId,

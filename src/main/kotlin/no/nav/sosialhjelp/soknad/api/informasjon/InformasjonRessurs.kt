@@ -42,7 +42,7 @@ import java.util.Properties
 @RestController
 @ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4])
 @RequestMapping("/informasjon")
-open class InformasjonRessurs(
+class InformasjonRessurs(
     private val messageSource: NavMessageSource,
     private val adresseSokService: AdressesokService,
     private val kommuneInfoService: KommuneInfoService,
@@ -60,7 +60,7 @@ open class InformasjonRessurs(
     }
 
     @GetMapping("/fornavn")
-    open fun hentFornavn(): Map<String, String> {
+    fun hentFornavn(): Map<String, String> {
         val fnr = SubjectHandlerUtils.getUserIdFromToken()
         val (fornavn1) = personService.hentPerson(fnr) ?: return emptyMap()
         val fornavnMap = mutableMapOf<String, String>()
@@ -70,7 +70,7 @@ open class InformasjonRessurs(
 
     @Unprotected
     @GetMapping("/tekster")
-    open fun hentTekster(
+    fun hentTekster(
         @RequestParam("type") queryType: String,
         @RequestParam("sprak") querySprak: String?
     ): Properties {
@@ -91,7 +91,7 @@ open class InformasjonRessurs(
     }
 
     @GetMapping("/utslagskriterier/sosialhjelp", produces = [MediaType.APPLICATION_JSON_VALUE])
-    open fun getUtslagskriterier(): Map<String, Any> {
+    fun getUtslagskriterier(): Map<String, Any> {
         val uid = SubjectHandlerUtils.getUserIdFromToken()
         val adressebeskyttelse = personService.hentAdressebeskyttelse(uid)
         val resultat = mutableMapOf<String, Any>()
@@ -107,14 +107,14 @@ open class InformasjonRessurs(
     }
 
     @GetMapping("/adressesok")
-    open fun adresseSok(
+    fun adresseSok(
         @RequestParam("sokestreng") sokestreng: String?
     ): List<AdresseForslag> {
         return adresseSokService.sokEtterAdresser(sokestreng)
     }
 
     @PostMapping("/actions/logg")
-    open fun loggFraKlient(
+    fun loggFraKlient(
         @RequestBody logg: Logg
     ) {
         when (logg.level) {
@@ -127,7 +127,7 @@ open class InformasjonRessurs(
 
     @GetMapping("/kommunestatus")
     @ProtectedWithClaims(issuer = Constants.AZUREAD)
-    open fun hentKommunestatus(): Map<String, KommunestatusFrontend> {
+    fun hentKommunestatus(): Map<String, KommunestatusFrontend> {
         if (nedetidService.isInnenforNedetid) {
             return emptyMap()
         }
@@ -139,7 +139,7 @@ open class InformasjonRessurs(
     }
 
     @GetMapping("/harNyligInnsendteSoknader")
-    open fun harNyligInnsendteSoknader(): NyligInnsendteSoknaderResponse {
+    fun harNyligInnsendteSoknader(): NyligInnsendteSoknaderResponse {
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val grense = LocalDateTime.now().minusDays(FJORTEN_DAGER)
         val nyligSendteSoknader = soknadMetadataRepository.hentInnsendteSoknaderForBrukerEtterTidspunkt(eier, grense)
@@ -147,7 +147,7 @@ open class InformasjonRessurs(
     }
 
     @GetMapping("/pabegynteSoknader")
-    open fun hentPabegynteSoknader(): List<PabegyntSoknad> {
+    fun hentPabegynteSoknader(): List<PabegyntSoknad> {
         val fnr = SubjectHandlerUtils.getUserIdFromToken()
         logger.debug("Henter pabegynte soknader for bruker")
         return pabegynteSoknaderService.hentPabegynteSoknaderForBruker(fnr)

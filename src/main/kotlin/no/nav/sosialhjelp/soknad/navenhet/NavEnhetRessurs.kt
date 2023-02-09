@@ -38,7 +38,7 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4])
 @RequestMapping("/soknader/{behandlingsId}/personalia", produces = [MediaType.APPLICATION_JSON_VALUE])
-open class NavEnhetRessurs(
+class NavEnhetRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val navEnhetService: NavEnhetService,
@@ -51,7 +51,7 @@ open class NavEnhetRessurs(
 ) {
 
     @GetMapping("/navEnheter")
-    open fun hentNavEnheter(
+    fun hentNavEnheter(
         @PathVariable("behandlingsId") behandlingsId: String
     ): List<NavEnhetFrontend>? {
         tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(behandlingsId)
@@ -66,7 +66,7 @@ open class NavEnhetRessurs(
     }
 
     @GetMapping("/navEnhet")
-    open fun hentValgtNavEnhet(
+    fun hentValgtNavEnhet(
         @PathVariable("behandlingsId") behandlingsId: String
     ): NavEnhetFrontend? {
         tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(behandlingsId)
@@ -91,7 +91,7 @@ open class NavEnhetRessurs(
     }
 
     @PutMapping("/navEnheter")
-    open fun updateNavEnhet(
+    fun updateNavEnhet(
         @PathVariable("behandlingsId") behandlingsId: String,
         @RequestBody navEnhetFrontend: NavEnhetFrontend
     ) {
@@ -130,7 +130,7 @@ open class NavEnhetRessurs(
         return navEnhetsnavn.split(SPLITTER)[1]
     }
 
-    open fun findSoknadsmottaker(
+    fun findSoknadsmottaker(
         eier: String,
         soknad: JsonSoknad,
         valg: String?,

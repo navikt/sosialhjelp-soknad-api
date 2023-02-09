@@ -11,14 +11,14 @@ import java.time.Duration
 
 @Configuration
 @Profile("!no-redis")
-open class RedisConfig(
+class RedisConfig(
     @Value("\${redis_host}") private val host: String,
     @Value("\${redis_port}") private val port: Int,
     @Value("\${redis_password}") private val password: String,
 ) {
 
     @Bean
-    open fun redisClient(): RedisClient {
+    fun redisClient(): RedisClient {
         val redisURI = RedisURI.builder()
             .withHost(host)
             .withPort(port)
@@ -29,12 +29,12 @@ open class RedisConfig(
     }
 
     @Bean
-    open fun redisStore(redisClient: RedisClient): RedisStore {
+    fun redisStore(redisClient: RedisClient): RedisStore {
         return RedisStore(redisClient)
     }
 
     @Bean
-    open fun redisService(redisStore: RedisStore): RedisService {
+    fun redisService(redisStore: RedisStore): RedisService {
         log.info("Starter RedisService")
         return RedisServiceImpl(redisStore)
     }
@@ -47,10 +47,10 @@ open class RedisConfig(
 
 @Configuration
 @Profile("no-redis")
-open class NoRedisConfig {
+class NoRedisConfig {
 
     @Bean
-    open fun redisService(): RedisService {
+    fun redisService(): RedisService {
         log.error("Starter NoRedisService. Skal ikke skje i prod.")
         return NoRedisService()
     }

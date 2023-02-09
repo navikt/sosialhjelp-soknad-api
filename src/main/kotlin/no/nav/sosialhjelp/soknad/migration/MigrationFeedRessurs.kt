@@ -18,7 +18,7 @@ import java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME
 @RestController
 @ProtectedWithClaims(issuer = Constants.TOKENX, claimMap = [Constants.CLAIM_ACR_LEVEL_4])
 @RequestMapping("/internal/migration", produces = [MediaType.APPLICATION_JSON_VALUE])
-open class MigrationFeedRessurs(
+class MigrationFeedRessurs(
     private val migrationService: MigrationService,
     private val unleash: Unleash,
 ) {

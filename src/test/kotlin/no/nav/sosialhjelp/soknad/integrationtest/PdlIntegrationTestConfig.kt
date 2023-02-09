@@ -20,14 +20,14 @@ import org.springframework.context.annotation.Primary
 import java.nio.charset.StandardCharsets
 
 @Configuration
-open class PdlIntegrationTestConfig {
+class PdlIntegrationTestConfig {
 
     /**
      * overskriver pdlHentPersonConsumer for itester
      */
     @Primary
     @Bean
-    open fun hentPersonClient(): HentPersonClient {
+    fun hentPersonClient(): HentPersonClient {
         return HentPersonClientMock()
     }
 }
