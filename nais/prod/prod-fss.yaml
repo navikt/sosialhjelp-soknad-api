@@ -130,7 +130,7 @@ spec:
     - name: NEDETID_START
       value: "09.02.2023 12:00:00"
     - name: NEDETID_SLUTT
-      value: "09.02.2023 16:00:00"
+      value: "09.02.2023 14:00:00"
     - name: ENVIRONMENT_NAME
       value: "p"
     - name: REDIS_HOST
