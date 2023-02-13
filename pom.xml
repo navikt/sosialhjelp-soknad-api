@@ -55,7 +55,7 @@
         <kryptering.version>1.3.1</kryptering.version>
 
         <springdoc.version>1.6.14</springdoc.version>
-        <spring-boot.version>2.7.7</spring-boot.version>
+        <spring-boot.version>2.7.8</spring-boot.version>
         <spring.version>5.3.25</spring.version>
         <jetty.version>9.4.49.v20220914</jetty.version>
         <kotlinx-coroutines.version>1.6.4</kotlinx-coroutines.version>
