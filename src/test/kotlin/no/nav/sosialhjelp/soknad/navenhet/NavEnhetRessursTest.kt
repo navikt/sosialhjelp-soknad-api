@@ -1,6 +1,7 @@
 package no.nav.sosialhjelp.soknad.navenhet
 
 import io.mockk.Called
+import io.mockk.called
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.just
@@ -10,34 +11,21 @@ import io.mockk.runs
 import io.mockk.slot
 import io.mockk.unmockkObject
 import io.mockk.verify
-import no.finn.unleash.Unleash
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknadsmottaker
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresseValg
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonGateAdresse
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
-import no.nav.sosialhjelp.soknad.adressesok.domain.AdresseForslag
-import no.nav.sosialhjelp.soknad.adressesok.domain.AdresseForslagType
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import no.nav.sosialhjelp.soknad.app.exceptions.AuthorizationException
-import no.nav.sosialhjelp.soknad.app.exceptions.PdlApiException
 import no.nav.sosialhjelp.soknad.app.mapper.KommuneTilNavEnhetMapper
 import no.nav.sosialhjelp.soknad.app.subjecthandler.StaticSubjectHandlerImpl
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
-import no.nav.sosialhjelp.soknad.innsending.SenderUtils.INNSENDING_DIGISOSAPI_ENABLED
 import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
-import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
-import no.nav.sosialhjelp.soknad.kodeverk.KodeverkService
-import no.nav.sosialhjelp.soknad.navenhet.NavEnhetRessurs.Companion.FEATURE_SEND_TIL_NAV_TESTKOMMUNE
-import no.nav.sosialhjelp.soknad.navenhet.bydel.BydelFordelingService
-import no.nav.sosialhjelp.soknad.navenhet.bydel.BydelFordelingService.Companion.BYDEL_MARKA_OSLO
-import no.nav.sosialhjelp.soknad.navenhet.domain.NavEnhet
 import no.nav.sosialhjelp.soknad.navenhet.dto.NavEnhetFrontend
-import no.nav.sosialhjelp.soknad.navenhet.finnadresse.FinnAdresseService
-import no.nav.sosialhjelp.soknad.navenhet.gt.GeografiskTilknytningService
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
@@ -51,7 +39,6 @@ internal class NavEnhetRessursTest {
     companion object {
         private const val BEHANDLINGSID = "123"
         private const val OPPHOLDSADRESSE_KOMMUNENR = "0123"
-        private const val OPPHOLDSADRESSE_BYDELSNR = "012301"
         private val OPPHOLDSADRESSE: JsonAdresse = JsonGateAdresse()
             .withKilde(JsonKilde.BRUKER)
             .withType(JsonAdresse.Type.GATEADRESSE)
@@ -70,49 +57,34 @@ internal class NavEnhetRessursTest {
         private val KOMMUNENR = KommuneTilNavEnhetMapper.digisoskommuner[0]
         private const val ENHETSNR = "1234"
         private const val ORGNR = "123456789"
-        private const val ENHETSNAVN_2 = "NAV Van"
-        private const val KOMMUNENAVN_2 = "Enummok kommune"
-        private val KOMMUNENR_2 = KommuneTilNavEnhetMapper.digisoskommuner[1]
-        private const val ENHETSNR_2 = "5678"
-        private const val ORGNR_2 = "987654321"
+
         private val SOKNADSMOTTAKER = JsonSoknadsmottaker()
             .withNavEnhetsnavn("$ENHETSNAVN, $KOMMUNENAVN")
             .withEnhetsnummer(ENHETSNR)
             .withKommunenummer(KOMMUNENR)
-
-        private val SOKNADSMOTTAKER_2 = JsonSoknadsmottaker()
-            .withNavEnhetsnavn("$ENHETSNAVN_2, $KOMMUNENAVN_2")
-            .withEnhetsnummer(ENHETSNR_2)
-            .withKommunenummer(KOMMUNENR_2)
-
-        private val SOKNADSMOTTAKER_FORSLAG = AdresseForslag(null, null, null, KOMMUNENR, KOMMUNENAVN, null, null, ENHETSNAVN, null, null, AdresseForslagType.GATEADRESSE)
-        private val SOKNADSMOTTAKER_FORSLAG_BYDEL_MARKA = AdresseForslag(null, null, null, KOMMUNENR_2, KOMMUNENAVN_2, null, null, BYDEL_MARKA_OSLO, null, null, AdresseForslagType.GATEADRESSE)
-
-        private val NAV_ENHET = NavEnhet(ENHETSNR, ENHETSNAVN, null, ORGNR)
-        private val NAV_ENHET_2 = NavEnhet(ENHETSNR_2, ENHETSNAVN_2, null, ORGNR_2)
         private const val EIER = "123456789101"
     }
 
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
     private val tilgangskontroll: Tilgangskontroll = mockk()
-    private val finnAdresseService: FinnAdresseService = mockk()
     private val navEnhetService: NavEnhetService = mockk()
-    private val kommuneInfoService: KommuneInfoService = mockk()
-    private val bydelFordelingService: BydelFordelingService = mockk()
-    private val geografiskTilknytningService: GeografiskTilknytningService = mockk()
-    private val kodeverkService: KodeverkService = mockk()
-    private val unleash: Unleash = mockk()
 
     private val navEnhetRessurs = NavEnhetRessurs(
         tilgangskontroll = tilgangskontroll,
         soknadUnderArbeidRepository = soknadUnderArbeidRepository,
-        navEnhetService = navEnhetService,
-        kommuneInfoService = kommuneInfoService,
-        bydelFordelingService = bydelFordelingService,
-        finnAdresseService = finnAdresseService,
-        geografiskTilknytningService = geografiskTilknytningService,
-        kodeverkService = kodeverkService,
-        unleash = unleash
+        navEnhetService = navEnhetService
+    )
+
+    private val navEnhetFrontend = NavEnhetFrontend(
+        orgnr = ORGNR,
+        enhetsnr = ENHETSNR,
+        enhetsnavn = ENHETSNAVN,
+        kommunenavn = KOMMUNENAVN,
+        kommuneNr = KOMMUNENR,
+        behandlingsansvarlig = null,
+        valgt = true,
+        isMottakMidlertidigDeaktivert = false,
+        isMottakDeaktivert = false
     )
 
     @BeforeEach
@@ -123,10 +95,7 @@ internal class NavEnhetRessursTest {
         every { MiljoUtils.isNonProduction() } returns true
         SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
         every { tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(any()) } just runs
-        every { kommuneInfoService.kanMottaSoknader(any()) } returns true
-        every { kommuneInfoService.harMidlertidigDeaktivertMottak(any()) } returns true
-        every { unleash.isEnabled(FEATURE_SEND_TIL_NAV_TESTKOMMUNE, false) } returns false
-        every { unleash.isEnabled(INNSENDING_DIGISOSAPI_ENABLED, true) } returns true
+
     }
 
     @AfterEach
@@ -136,168 +105,133 @@ internal class NavEnhetRessursTest {
     }
 
     @Test
-    internal fun `hentNavEnheter - oppholdsadresse fra adressesok - skal returnere NavEnheter riktig konvertert`() {
-        val soknadUnderArbeid = createSoknadUnderArbeid(EIER)
+    internal fun `getNavEnheter - skal returnere NavEnhetFrontend-liste`() {
+        val soknadUnderArbeid = createSoknadUnderArbeid()
         soknadUnderArbeid.jsonInternalSoknad!!.soknad.withMottaker(SOKNADSMOTTAKER).data.personalia
             .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(JsonAdresseValg.SOKNAD))
 
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns soknadUnderArbeid
-        every { finnAdresseService.finnAdresseFraSoknad(any(), "soknad") } returns SOKNADSMOTTAKER_FORSLAG
-        every { navEnhetService.getEnhetForGt(ENHETSNAVN) } returns NAV_ENHET
-        every { kommuneInfoService.getBehandlingskommune(KOMMUNENR, KOMMUNENAVN) } returns KOMMUNENAVN
-        every { kodeverkService.getKommunenavn(KOMMUNENR) } returns KOMMUNENAVN
+        every { navEnhetService.getNavEnhet(any(), any(), any()) } returns navEnhetFrontend
 
-        val response = navEnhetRessurs.hentNavEnheter(BEHANDLINGSID)
+        val response = navEnhetRessurs.getNavEnheter(BEHANDLINGSID)
 
         assertThat(response).hasSize(1)
-        assertThatEnhetIsCorrectlyConverted(response!!.first(), SOKNADSMOTTAKER)
         assertThat(response[0].valgt).isTrue
     }
 
     @Test
-    internal fun `hentNavEnheter - oppholdsadresse fra adressesok - skal returnere NavEnheter riktig konvertert ved bydel Marka`() {
-        val annenBydel = "030112"
-        val soknadUnderArbeid = createSoknadUnderArbeid(EIER)
-        soknadUnderArbeid.jsonInternalSoknad!!.soknad.withMottaker(SOKNADSMOTTAKER_2).data.personalia
+    fun `getNavEnheter - skal returnere tom liste`() {
+        val soknadUnderArbeid = createSoknadUnderArbeid()
+        soknadUnderArbeid.jsonInternalSoknad!!.soknad.withMottaker(SOKNADSMOTTAKER).data.personalia
             .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(JsonAdresseValg.SOKNAD))
 
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns soknadUnderArbeid
-        every { finnAdresseService.finnAdresseFraSoknad(any(), "soknad") } returns SOKNADSMOTTAKER_FORSLAG_BYDEL_MARKA
-        every { bydelFordelingService.getBydelTilForMarka(SOKNADSMOTTAKER_FORSLAG_BYDEL_MARKA) } returns annenBydel
-        every { navEnhetService.getEnhetForGt(annenBydel) } returns NAV_ENHET_2
-        every { kommuneInfoService.getBehandlingskommune(KOMMUNENR_2, KOMMUNENAVN_2) } returns KOMMUNENAVN_2
-        every { kodeverkService.getKommunenavn(KOMMUNENR_2) } returns KOMMUNENAVN_2
+        every { navEnhetService.getNavEnhet(any(), any(), any()) } returns null
 
-        val response = navEnhetRessurs.hentNavEnheter(BEHANDLINGSID)
+        val response = navEnhetRessurs.getNavEnheter(BEHANDLINGSID)
 
-        assertThat(response).hasSize(1)
-        assertThatEnhetIsCorrectlyConverted(response!!.first(), SOKNADSMOTTAKER_2)
-        assertThat(response[0].valgt).isTrue
-    }
-
-    @Test
-    internal fun `hentValgtNavEnhet skal returnere NavEnhet riktig konvertert`() {
-        val soknadUnderArbeid = createSoknadUnderArbeid(EIER)
-        soknadUnderArbeid.jsonInternalSoknad!!.soknad.withMottaker(SOKNADSMOTTAKER).data.personalia
-            .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT))
-
-        every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns soknadUnderArbeid
-
-        val response = navEnhetRessurs.hentValgtNavEnhet(BEHANDLINGSID)
-        assertThatEnhetIsCorrectlyConverted(response, SOKNADSMOTTAKER)
-        assertThat(response?.valgt).isTrue
-    }
-
-    @Test
-    internal fun `hentNavEnheter skal returnere tom liste hvis oppholdsadresse ikke er valgt`() {
-        val soknadUnderArbeid = createSoknadUnderArbeid(EIER)
-        soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia
-            .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(null))
-
-        every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns soknadUnderArbeid
-        every { finnAdresseService.finnAdresseFraSoknad(any(), null) } returns null
-
-        val response = navEnhetRessurs.hentNavEnheter(BEHANDLINGSID)
         assertThat(response).isEmpty()
     }
 
     @Test
-    internal fun `hentValgtNavEnhet skal returnere null hvis oppholdsadresse ikke er valgt`() {
-        val soknadUnderArbeid = createSoknadUnderArbeid(EIER)
-        soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia
-            .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(null))
-
+    fun `getNavEnheter - skal kaste feil`() {
+        val soknadUnderArbeid: SoknadUnderArbeid = mockk()
+        every { soknadUnderArbeid.jsonInternalSoknad?.soknad } returns null
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns soknadUnderArbeid
 
-        val response = navEnhetRessurs.hentValgtNavEnhet(BEHANDLINGSID)
-        assertThat(response).isNull()
+        assertThatExceptionOfType(IllegalStateException::class.java)
+            .isThrownBy { navEnhetRessurs.getNavEnheter(BEHANDLINGSID) }
+
+        verify { navEnhetService wasNot called }
     }
 
     @Test
-    internal fun `updateNavEnhet skal sette NavEnhet`() {
-        val soknadUnderArbeid = createSoknadUnderArbeid(EIER)
+    fun `getValgtNavEnhet - skal hente NavEnhetFrontend`() {
+        val soknadUnderArbeid = createSoknadUnderArbeid()
         soknadUnderArbeid.jsonInternalSoknad!!.soknad.withMottaker(SOKNADSMOTTAKER).data.personalia
-            .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT))
+            .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(JsonAdresseValg.SOKNAD))
 
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns soknadUnderArbeid
+        every { navEnhetService.getValgtNavEnhet(SOKNADSMOTTAKER) } returns navEnhetFrontend
+
+        val response = navEnhetRessurs.getValgtNavEnhet(BEHANDLINGSID)
+
+        assertThat(response).isNotNull
+        assertThat(response?.valgt).isTrue
+    }
+
+    @Test
+    fun `getValgtNavEnhet - null hvis kommunenummer er null`() {
+        val soknadUnderArbeid = createSoknadUnderArbeid()
+        soknadUnderArbeid.jsonInternalSoknad!!.soknad
+            .withMottaker(
+                JsonSoknadsmottaker()
+                    .withNavEnhetsnavn(ENHETSNAVN)
+                    .withEnhetsnummer(ENHETSNR)
+                    .withKommunenummer(null)
+            )
+            .data.personalia.withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(JsonAdresseValg.SOKNAD))
+
+        every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns soknadUnderArbeid
+
+        assertThat(navEnhetRessurs.getValgtNavEnhet(BEHANDLINGSID)).isNull()
+    }
+
+    @Test
+    fun `getValgtNavEnhet - null hvis navEnhetsnavn er null`() {
+        val soknadUnderArbeid = createSoknadUnderArbeid()
+        soknadUnderArbeid.jsonInternalSoknad!!.soknad
+            .withMottaker(
+                JsonSoknadsmottaker()
+                    .withNavEnhetsnavn(null)
+                    .withEnhetsnummer(ENHETSNR)
+                    .withKommunenummer(KOMMUNENR)
+            )
+            .data.personalia.withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(JsonAdresseValg.SOKNAD))
+
+        every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns soknadUnderArbeid
+
+        assertThat(navEnhetRessurs.getValgtNavEnhet(BEHANDLINGSID)).isNull()
+    }
+
+    @Test
+    fun `getValgtNavEnhet - skal kaste feil`() {
+        val soknadUnderArbeid: SoknadUnderArbeid = mockk()
+        every { soknadUnderArbeid.jsonInternalSoknad?.soknad?.mottaker } returns null
+        every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns soknadUnderArbeid
+
+        assertThatExceptionOfType(IllegalStateException::class.java)
+            .isThrownBy { navEnhetRessurs.getValgtNavEnhet(BEHANDLINGSID) }
+
+        verify { navEnhetService wasNot called }
+    }
+
+    @Test
+    fun `putNavEnhet - skal oppdatere JsonSoknadsmottaker`() {
+        val soknadUnderArbeid = createSoknadUnderArbeid()
+
         every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
+        every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns soknadUnderArbeid
 
         val slot = slot<SoknadUnderArbeid>()
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(slot), any()) } just runs
 
-        val navEnhetFrontend = NavEnhetFrontend(
-            enhetsnavn = ENHETSNAVN_2,
-            enhetsnr = ENHETSNR_2,
-            kommunenavn = KOMMUNENAVN_2,
-            orgnr = ORGNR_2
-        )
+        navEnhetRessurs.putNavEnhet(BEHANDLINGSID, navEnhetFrontend)
 
-        navEnhetRessurs.updateNavEnhet(BEHANDLINGSID, navEnhetFrontend)
+        val oppdatertSoknadUnderArbeid = slot.captured
 
-        val jsonSoknadsmottaker = slot.captured.jsonInternalSoknad!!.soknad.mottaker
-        assertThatEnhetIsCorrectlyConverted(navEnhetFrontend, jsonSoknadsmottaker)
-    }
+        val mottaker = oppdatertSoknadUnderArbeid.jsonInternalSoknad?.mottaker
+        assertThat(mottaker).isNotNull
+        assertThat(mottaker?.navEnhetsnavn).contains(navEnhetFrontend.enhetsnavn, navEnhetFrontend.kommunenavn)
+        assertThat(mottaker?.organisasjonsnummer).isEqualTo(navEnhetFrontend.orgnr)
 
-    @Test
-    internal fun `hentNavEnheter - oppholdsadresse er folkeregistrert - skal bruke kommunenummer fra GT og kommunenavn fra kodeverk`() {
-        every { MiljoUtils.isNonProduction() } returns false
-
-        val soknadUnderArbeid = createSoknadUnderArbeid(EIER)
-        soknadUnderArbeid.jsonInternalSoknad!!.soknad.withMottaker(SOKNADSMOTTAKER).data.personalia
-            .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT))
-
-        every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns soknadUnderArbeid
-        every { geografiskTilknytningService.hentGeografiskTilknytning(any()) } returns OPPHOLDSADRESSE_KOMMUNENR
-        every { navEnhetService.getEnhetForGt(OPPHOLDSADRESSE_KOMMUNENR) } returns NAV_ENHET
-        every { kodeverkService.getKommunenavn(OPPHOLDSADRESSE_KOMMUNENR) } returns KOMMUNENAVN
-        every { kommuneInfoService.getBehandlingskommune(OPPHOLDSADRESSE_KOMMUNENR, KOMMUNENAVN) } returns KOMMUNENAVN
-
-        val response = navEnhetRessurs.hentNavEnheter(BEHANDLINGSID)
-
-        assertThat(response!!).hasSize(1)
-        assertThat(response[0].kommuneNr).isEqualTo(OPPHOLDSADRESSE_KOMMUNENR)
-        assertThat(response[0].kommunenavn).isEqualTo(KOMMUNENAVN)
-    }
-
-    @Test
-    internal fun `hentNavEnheter - oppholdsadresse er folkeregistrert - skal bruke bydelsnummer fra GT og kommunenavn fra kodeverk`() {
-        every { MiljoUtils.isNonProduction() } returns false
-
-        val soknadUnderArbeid = createSoknadUnderArbeid(EIER)
-        soknadUnderArbeid.jsonInternalSoknad!!.soknad.withMottaker(SOKNADSMOTTAKER).data.personalia
-            .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT))
-
-        every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns soknadUnderArbeid
-        every { geografiskTilknytningService.hentGeografiskTilknytning(any()) } returns OPPHOLDSADRESSE_BYDELSNR
-        every { navEnhetService.getEnhetForGt(OPPHOLDSADRESSE_BYDELSNR) } returns NAV_ENHET
-        every { kodeverkService.getKommunenavn(OPPHOLDSADRESSE_KOMMUNENR) } returns KOMMUNENAVN
-        every { kommuneInfoService.getBehandlingskommune(OPPHOLDSADRESSE_KOMMUNENR, KOMMUNENAVN) } returns KOMMUNENAVN
-
-        val response = navEnhetRessurs.hentNavEnheter(BEHANDLINGSID)
-
-        assertThat(response!!).hasSize(1)
-        assertThat(response[0].kommuneNr).isEqualTo(OPPHOLDSADRESSE_KOMMUNENR)
-        assertThat(response[0].kommunenavn).isEqualTo(KOMMUNENAVN)
-    }
-
-    @Test
-    internal fun `hentNavEnheter - skal bruke adressesok som fallback hvis hentGeografiskTilknytning feiler`() {
-        val soknadUnderArbeid = createSoknadUnderArbeid(EIER)
-        soknadUnderArbeid.jsonInternalSoknad!!.soknad.withMottaker(SOKNADSMOTTAKER).data.personalia
-            .withOppholdsadresse(OPPHOLDSADRESSE.withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT))
-
-        every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns soknadUnderArbeid
-        every { geografiskTilknytningService.hentGeografiskTilknytning(any()) } throws PdlApiException("pdl feil")
-        every { finnAdresseService.finnAdresseFraSoknad(any(), "folkeregistrert") } returns SOKNADSMOTTAKER_FORSLAG
-        every { navEnhetService.getEnhetForGt(SOKNADSMOTTAKER_FORSLAG.geografiskTilknytning) } returns NAV_ENHET
-        every { kommuneInfoService.getBehandlingskommune(KOMMUNENR, KOMMUNENAVN) } returns KOMMUNENAVN
-        every { kodeverkService.getKommunenavn(KOMMUNENR) } returns KOMMUNENAVN
-
-        val response = navEnhetRessurs.hentNavEnheter(BEHANDLINGSID)
-
-        assertThat(response!!).hasSize(1)
-        assertThat(response[0].kommuneNr).isEqualTo(KOMMUNENR)
-        assertThat(response[0].kommunenavn).isEqualTo(KOMMUNENAVN)
+        val soknadsmottaker = oppdatertSoknadUnderArbeid.jsonInternalSoknad!!.soknad.mottaker
+        val kombinertnavn = soknadsmottaker.navEnhetsnavn
+        val enhetsnavn = kombinertnavn.substring(0, kombinertnavn.indexOf(','))
+        val kommunenavn = kombinertnavn.substring(kombinertnavn.indexOf(',') + 2)
+        assertThat(navEnhetFrontend.enhetsnavn).isEqualTo(enhetsnavn)
+        assertThat(navEnhetFrontend.kommunenavn).isEqualTo(kommunenavn)
+        assertThat(navEnhetFrontend.enhetsnr).isEqualTo(soknadsmottaker.enhetsnummer)
     }
 
     @Test
@@ -305,7 +239,7 @@ internal class NavEnhetRessursTest {
         every { tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(any()) } throws AuthorizationException("Not for you my friend")
 
         assertThatExceptionOfType(AuthorizationException::class.java)
-            .isThrownBy { navEnhetRessurs.hentNavEnheter(BEHANDLINGSID) }
+            .isThrownBy { navEnhetRessurs.getNavEnheter(BEHANDLINGSID) }
 
         verify { soknadUnderArbeidRepository wasNot Called }
     }
@@ -315,7 +249,7 @@ internal class NavEnhetRessursTest {
         every { tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(any()) } throws AuthorizationException("Not for you my friend")
 
         assertThatExceptionOfType(AuthorizationException::class.java)
-            .isThrownBy { navEnhetRessurs.hentValgtNavEnhet(BEHANDLINGSID) }
+            .isThrownBy { navEnhetRessurs.getValgtNavEnhet(BEHANDLINGSID) }
 
         verify { soknadUnderArbeidRepository wasNot Called }
     }
@@ -327,31 +261,18 @@ internal class NavEnhetRessursTest {
         val navEnhetFrontend = mockk<NavEnhetFrontend>()
 
         assertThatExceptionOfType(AuthorizationException::class.java)
-            .isThrownBy { navEnhetRessurs.updateNavEnhet(BEHANDLINGSID, navEnhetFrontend) }
+            .isThrownBy { navEnhetRessurs.putNavEnhet(BEHANDLINGSID, navEnhetFrontend) }
 
         verify { soknadUnderArbeidRepository wasNot Called }
     }
 
-    private fun assertThatEnhetIsCorrectlyConverted(navEnhetFrontend: NavEnhetFrontend?, soknadsmottaker: JsonSoknadsmottaker) {
-        if (navEnhetFrontend == null) {
-            assertThat(soknadsmottaker).isNull()
-            return
-        }
-        val kombinertnavn = soknadsmottaker.navEnhetsnavn
-        val enhetsnavn = kombinertnavn.substring(0, kombinertnavn.indexOf(','))
-        val kommunenavn = kombinertnavn.substring(kombinertnavn.indexOf(',') + 2)
-        assertThat(navEnhetFrontend.enhetsnavn).isEqualTo(enhetsnavn)
-        assertThat(navEnhetFrontend.kommunenavn).isEqualTo(kommunenavn)
-        assertThat(navEnhetFrontend.enhetsnr).isEqualTo(soknadsmottaker.enhetsnummer)
-    }
-
-    private fun createSoknadUnderArbeid(eier: String): SoknadUnderArbeid {
+    private fun createSoknadUnderArbeid(): SoknadUnderArbeid {
         return SoknadUnderArbeid(
             versjon = 1L,
             behandlingsId = BEHANDLINGSID,
             tilknyttetBehandlingsId = null,
-            eier = eier,
-            jsonInternalSoknad = createEmptyJsonInternalSoknad(eier),
+            eier = EIER,
+            jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
             status = SoknadUnderArbeidStatus.UNDER_ARBEID,
             opprettetDato = LocalDateTime.now(),
             sistEndretDato = LocalDateTime.now()

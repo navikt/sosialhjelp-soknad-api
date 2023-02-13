@@ -6,7 +6,7 @@ import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.soknad.app.Constants
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
-import no.nav.sosialhjelp.soknad.navenhet.NavEnhetRessurs
+import no.nav.sosialhjelp.soknad.navenhet.NavEnhetService
 import no.nav.sosialhjelp.soknad.navenhet.dto.NavEnhetFrontend
 import no.nav.sosialhjelp.soknad.personalia.adresse.dto.AdresserFrontend
 import no.nav.sosialhjelp.soknad.personalia.adresse.dto.AdresserFrontendInput
@@ -26,7 +26,7 @@ class AdresseRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val adresseSystemdata: AdresseSystemdata,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
-    private val navEnhetRessurs: NavEnhetRessurs
+    private val navEnhetService: NavEnhetService
 ) {
     @GetMapping
     fun hentAdresser(
@@ -42,15 +42,15 @@ class AdresseRessurs(
         val sysFolkeregistrertAdresse = jsonInternalSoknad.soknad.data.personalia.folkeregistrertAdresse
         val sysMidlertidigAdresse = adresseSystemdata.innhentMidlertidigAdresse(personIdentifikator)
         val navEnhet = try {
-            navEnhetRessurs.findSoknadsmottaker(
+            navEnhetService.getNavEnhet(
                 eier,
                 jsonInternalSoknad.soknad,
-                jsonInternalSoknad.soknad.data.personalia.oppholdsadresse.adresseValg.toString(),
-                null
+                jsonInternalSoknad.soknad.data.personalia.oppholdsadresse.adresseValg
             )
         } catch (e: Exception) {
             null
         }
+
         jsonInternalSoknad.midlertidigAdresse = sysMidlertidigAdresse
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
         return AdresseMapper.mapToAdresserFrontend(
@@ -85,17 +85,23 @@ class AdresseRessurs(
                 personalia.oppholdsadresse =
                     adresserFrontend.soknad?.let { AdresseMapper.mapToJsonAdresse(it) }
 
-            else -> throw IllegalStateException("Adressevalg kan ikke være noe annet enn Folkeregistrert, Midlertidig eller Soknad")
+//            else -> throw IllegalStateException("Adressevalg kan ikke være noe annet enn Folkeregistrert, Midlertidig eller Soknad")
+            null -> personalia.oppholdsadresse = null // mer ?
         }
         personalia.oppholdsadresse.adresseValg = adresserFrontend.valg
         personalia.postadresse = midlertidigLosningForPostadresse(personalia.oppholdsadresse)
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
-        val navEnhetFrontend = navEnhetRessurs.findSoknadsmottaker(
+        val navEnhetFrontend = navEnhetService.getNavEnhet(
             eier,
             jsonInternalSoknad.soknad,
-            adresserFrontend.valg.toString(),
-            null
+            adresserFrontend.valg
         )
+//        navEnhetRessurs.findSoknadsmottaker(
+//            eier,
+//            jsonInternalSoknad.soknad,
+//            adresserFrontend.valg.toString(),
+//            null
+//        )
         return navEnhetFrontend?.let { listOf(it) } ?: emptyList()
     }
 
