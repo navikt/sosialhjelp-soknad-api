@@ -1,3 +1,5 @@
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 object Versions {
@@ -201,6 +203,30 @@ tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "17"
 }
 
+tasks.withType<Test> {
+    useJUnitPlatform()
+    testLogging {
+        events = setOf(TestLogEvent.SKIPPED, TestLogEvent.FAILED)
+        exceptionFormat = TestExceptionFormat.FULL
+        showCauses = true
+        showExceptions = true
+        showStackTraces = true
+    }
+}
+
 tasks.getByName<org.springframework.boot.gradle.tasks.bundling.BootJar>("bootJar") {
     this.archiveFileName.set("app.jar")
+}
+
+fun String.isNonStable(): Boolean {
+    val stableKeyword = listOf("RELEASE", "FINAL", "GA").any { toUpperCase().contains(it) }
+    val regex = "^[0-9,.v-]+(-r)?$".toRegex()
+    val isStable = stableKeyword || regex.matches(this)
+    return isStable.not()
+}
+
+tasks.withType<com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask> {
+    rejectVersionIf {
+        candidate.version.isNonStable() && !currentVersion.isNonStable()
+    }
 }
