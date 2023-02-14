@@ -95,7 +95,6 @@ internal class NavEnhetRessursTest {
         every { MiljoUtils.isNonProduction() } returns true
         SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
         every { tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(any()) } just runs
-
     }
 
     @AfterEach
