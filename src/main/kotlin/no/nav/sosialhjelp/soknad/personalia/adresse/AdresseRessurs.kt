@@ -50,7 +50,6 @@ class AdresseRessurs(
         } catch (e: Exception) {
             null
         }
-
         jsonInternalSoknad.midlertidigAdresse = sysMidlertidigAdresse
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
         return AdresseMapper.mapToAdresserFrontend(
@@ -85,8 +84,7 @@ class AdresseRessurs(
                 personalia.oppholdsadresse =
                     adresserFrontend.soknad?.let { AdresseMapper.mapToJsonAdresse(it) }
 
-//            else -> throw IllegalStateException("Adressevalg kan ikke være noe annet enn Folkeregistrert, Midlertidig eller Soknad")
-            null -> personalia.oppholdsadresse = null // mer ?
+            else -> throw IllegalStateException("Adressevalg kan ikke være noe annet enn Folkeregistrert, Midlertidig eller Soknad")
         }
         personalia.oppholdsadresse.adresseValg = adresserFrontend.valg
         personalia.postadresse = midlertidigLosningForPostadresse(personalia.oppholdsadresse)
@@ -96,12 +94,6 @@ class AdresseRessurs(
             jsonInternalSoknad.soknad,
             adresserFrontend.valg
         )
-//        navEnhetRessurs.findSoknadsmottaker(
-//            eier,
-//            jsonInternalSoknad.soknad,
-//            adresserFrontend.valg.toString(),
-//            null
-//        )
         return navEnhetFrontend?.let { listOf(it) } ?: emptyList()
     }
 
