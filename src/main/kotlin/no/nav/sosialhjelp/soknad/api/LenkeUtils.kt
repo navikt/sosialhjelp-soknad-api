@@ -4,7 +4,7 @@ import no.nav.sosialhjelp.soknad.app.MiljoUtils
 
 object LenkeUtils {
     fun lenkeTilPabegyntSoknad(behandlingsId: String): String {
-        return "$lagContextLenke/skjema/$behandlingsId/0"
+        return "$lagContextLenke/skjema/$behandlingsId/1"
     }
 
     fun lagEttersendelseLenke(behandlingsId: String): String {
