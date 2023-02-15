@@ -30,9 +30,7 @@ spec:
   azure:
     application:
       enabled: true
-      claims:
-        groups:
-          - id: "07cd724b-e096-4792-bb20-3ad93b9f90e3" # sosialhjelp-adminpanel
+      allowAllUsers: true
   maskinporten:
     enabled: true
     scopes:
