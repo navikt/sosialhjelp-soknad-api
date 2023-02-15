@@ -21,3 +21,4 @@ oracledb.properties
 
 /.gradle
 /build
+/out
