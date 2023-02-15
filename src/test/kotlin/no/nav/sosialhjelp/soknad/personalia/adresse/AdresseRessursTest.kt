@@ -23,7 +23,7 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderAr
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
-import no.nav.sosialhjelp.soknad.navenhet.NavEnhetRessurs
+import no.nav.sosialhjelp.soknad.navenhet.NavEnhetService
 import no.nav.sosialhjelp.soknad.navenhet.dto.NavEnhetFrontend
 import no.nav.sosialhjelp.soknad.personalia.adresse.dto.AdresseFrontend
 import no.nav.sosialhjelp.soknad.personalia.adresse.dto.AdresserFrontend
@@ -44,10 +44,14 @@ internal class AdresseRessursTest {
     private val tilgangskontroll: Tilgangskontroll = mockk()
     private val adresseSystemdata: AdresseSystemdata = mockk()
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
-    private val navEnhetRessurs: NavEnhetRessurs = mockk()
+    private val navEnhetService: NavEnhetService = mockk()
 
-    private val adresseRessurs =
-        AdresseRessurs(tilgangskontroll, adresseSystemdata, soknadUnderArbeidRepository, navEnhetRessurs)
+    private val adresseRessurs = AdresseRessurs(
+        tilgangskontroll,
+        adresseSystemdata,
+        soknadUnderArbeidRepository,
+        navEnhetService
+    )
 
     @BeforeEach
     fun setUp() {
@@ -135,7 +139,7 @@ internal class AdresseRessursTest {
         every { adresseSystemdata.createDeepCopyOfJsonAdresse(any()) } answers { callOriginal() }
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns soknadUnderArbeidIRepo
         every {
-            navEnhetRessurs.findSoknadsmottaker(any(), any(), any(), any())
+            navEnhetService.getNavEnhet(any(), any(), any())
         } returns NavEnhetFrontend("1", "1111", "Folkeregistrert NavEnhet", "4321", null, null, null, null, null)
 
         val soknadUnderArbeidSlot = slot<SoknadUnderArbeid>()
@@ -161,7 +165,7 @@ internal class AdresseRessursTest {
             soknadUnderArbeidRepository.hentSoknad(any<String>(), any())
         } returns createJsonInternalSoknadWithOppholdsadresse(JsonAdresseValg.SOKNAD)
         every {
-            navEnhetRessurs.findSoknadsmottaker(any(), any(), any(), any())
+            navEnhetService.getNavEnhet(any(), any(), any())
         } returns NavEnhetFrontend("2", "2222", "Midlertidig NavEnhet", "kommune", "4321", null, null, null, null)
 
         val soknadUnderArbeidSlot = slot<SoknadUnderArbeid>()
@@ -189,7 +193,7 @@ internal class AdresseRessursTest {
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns
             createJsonInternalSoknadWithOppholdsadresse(JsonAdresseValg.FOLKEREGISTRERT)
         every {
-            navEnhetRessurs.findSoknadsmottaker(any(), any(), any(), any())
+            navEnhetService.getNavEnhet(any(), any(), any())
         } returns NavEnhetFrontend("3", "333", "Soknad NavEnhet", "4321", null, null, null, null, null)
 
         val soknadUnderArbeidSlot = slot<SoknadUnderArbeid>()
