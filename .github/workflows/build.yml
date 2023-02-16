@@ -35,7 +35,7 @@ jobs:
       - name: Run lint
         run: ./gradlew ktlintCheck
       - name: compile and run tests
-        run: ./gradlew build
+        run: ./gradlew build --info
       - name: Login to GitHub Docker Registry
         uses: docker/login-action@v2
         with:
