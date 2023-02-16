@@ -1,6 +1,7 @@
 package no.nav.sosialhjelp.soknad.navenhet.finnadresse
 
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse
+import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresseValg
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonGateAdresse
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia
 import no.nav.sosialhjelp.soknad.adressesok.AdressesokService
@@ -15,15 +16,15 @@ class FinnAdresseService(
     private val hentAdresseService: HentAdresseService
 ) {
 
-    fun finnAdresseFraSoknad(personalia: JsonPersonalia, valg: String?): AdresseForslag? {
+    fun finnAdresseFraSoknad(personalia: JsonPersonalia, valg: JsonAdresseValg?): AdresseForslag? {
         val adresse = getValgtAdresse(personalia, valg)
         return adresseForslagFraPDL(adresse)
     }
 
-    private fun getValgtAdresse(personalia: JsonPersonalia, valg: String?): JsonAdresse? {
+    private fun getValgtAdresse(personalia: JsonPersonalia, valg: JsonAdresseValg?): JsonAdresse? {
         return when (valg) {
-            "folkeregistrert" -> personalia.folkeregistrertAdresse
-            "midlertidig", "soknad" -> personalia.oppholdsadresse
+            JsonAdresseValg.FOLKEREGISTRERT -> personalia.folkeregistrertAdresse
+            JsonAdresseValg.MIDLERTIDIG, JsonAdresseValg.SOKNAD -> personalia.oppholdsadresse
             else -> null
         }
     }
