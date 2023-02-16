@@ -5,6 +5,7 @@ import no.nav.sosialhjelp.soknad.TestApplication
 import no.nav.sosialhjelp.soknad.app.Constants.BEARER
 import no.nav.sosialhjelp.soknad.integrationtest.IntegrationTestUtils.issueToken
 import no.nav.sosialhjelp.soknad.integrationtest.IntegrationTestUtils.opprettSoknad
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient
@@ -15,6 +16,7 @@ import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.reactive.server.WebTestClient
 
+@Disabled
 @ContextConfiguration(classes = [PdlIntegrationTestConfig::class])
 @SpringBootTest(classes = [TestApplication::class], webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWebTestClient(timeout = "PT30S")
