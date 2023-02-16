@@ -7,7 +7,6 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRe
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataType
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.jdbc.core.JdbcTemplate
@@ -53,7 +52,6 @@ internal class SoknadMetadataMigrationRepositoryTest {
         assertThat(result?.behandlingsId).isEqualTo("123")
     }
 
-    @Disabled
     @Test
     internal fun `skal returnere null`() {
         val soknadMetadata = createSoknadMetadata(behandlingsId = "123", dagerSiden = 2)
