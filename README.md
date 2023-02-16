@@ -30,7 +30,7 @@ Start `Application.kt` med profilene `mock-alt,no-redis,log-console`.\
 Krever at sosialhjelp-mock-alt-api også kjører lokalt.
 
 ### Tekster
-Tekstfiler finnes her: `src/main/resources-filtered`.
+Tekstfiler finnes her: `src/main/resources`.
 
 ### Samarbeid med frontend (fjerning av faktummodellen)
 Backenden kommer til å lagre hele søknaden som en json-fil (internalsoknad), og ved endringer som blir sendt fra frontend underveis i utfyllingen vil hele filen lagres. Vi må regne med at det kan skje at man får konflikt ved oppdatering av søknadsdataene mens bruker fyller ut søknaden. Ved en konflikt vil backenden sende exception'et SamtidigOppdateringException til frontenden. Frontenden må da forsøke å oppdatere på nytt (det er naturlig at frontenden gjør dette siden det er den som har full oversikt over hva som er fylt ut i søknaden, og siden det er den som vil endre data). 
