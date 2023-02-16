@@ -206,7 +206,7 @@ tasks.withType<KotlinCompile> {
 tasks.withType<Test> {
     useJUnitPlatform()
     testLogging {
-        events = setOf(TestLogEvent.SKIPPED, TestLogEvent.FAILED)
+        events = setOf(TestLogEvent.SKIPPED, TestLogEvent.FAILED, TestLogEvent.PASSED)
         exceptionFormat = TestExceptionFormat.FULL
         showCauses = true
         showExceptions = true
