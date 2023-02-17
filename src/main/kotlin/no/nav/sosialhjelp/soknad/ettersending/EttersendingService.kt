@@ -171,6 +171,6 @@ class EttersendingService(
     }
 
     companion object {
-        private const val ETTERSENDELSE_FRIST_DAGER = 300
+        private const val ETTERSENDELSE_FRIST_DAGER = 90
     }
 }
