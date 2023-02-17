@@ -13,7 +13,7 @@ Interne henvendelser kan sendes via Slack i kanalen #team_digisos.
 ## Teknologi:
 * Java/Kotlin
 * JDK 17
-* Maven
+* Gradle
 * Spring Boot
 * Oracle DB
 * Redis (cache)
