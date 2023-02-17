@@ -208,12 +208,19 @@ dependencies {
         implementation("org.slf4j:slf4j-api") {
             version { strictly(Versions.slf4j) }
         }
+        implementation("ch.qos.logback:logback-classic") {
+            version { strictly(Versions.logback) }
+        }
+        implementation("ch.qos.logback:logback-core") {
+            version { strictly(Versions.logback) }
+        }
         implementation("com.google.code.gson:gson:${Versions.gson}")
         implementation("joda-time:joda-time:${Versions.jodatime}")
         implementation("ned.minidev:json-smart:${Versions.jsonsmart}")
         implementation("com.nimbusds:oauth2-oidc-sdk:${Versions.nimbusOauth2}")
         implementation("org.json:json:${Versions.json}")
         implementation("net.bytebuddy:byte-buddy:${Versions.byteBuddy}")
+        implementation("net.bytebuddy:byte-buddy-agent:${Versions.byteBuddy}")
         implementation("org.jboss.logging:jboss-logging:${Versions.jbossLogging}")
         implementation("com.google.errorprone:error_prone_annotations:${Versions.errorProneAnnotations}")
         implementation("org.checkerframework:checker-qual:${Versions.checkerQual}")
@@ -235,7 +242,7 @@ tasks.withType<KotlinCompile> {
 tasks.withType<Test> {
     useJUnitPlatform()
     testLogging {
-        events = setOf(TestLogEvent.SKIPPED, TestLogEvent.FAILED, TestLogEvent.PASSED)
+        events = setOf(TestLogEvent.SKIPPED, TestLogEvent.FAILED)
         exceptionFormat = TestExceptionFormat.FULL
         showCauses = true
         showExceptions = true
