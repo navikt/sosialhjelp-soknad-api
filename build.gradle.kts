@@ -21,7 +21,6 @@ object Versions {
     const val jackson = "2.14.1"
     const val logback = "1.2.11"
     const val logstash = "7.2"
-    const val log4j = "2.19.0"
     const val pdfbox = "2.0.27"
     const val jempbox = "1.8.17"
     const val emojiJava = "5.1.1"
@@ -38,10 +37,14 @@ object Versions {
     const val commonsCodec = "1.15"
     const val jaxbJavaTimeAdapter = "1.1.3"
     const val jaxbRuntime = "2.3.7"
-    const val slf4j = "1.7.36"
     const val ktlint = "0.45.2"
     const val junitJupiter = "5.9.1"
     const val mockk = "1.13.3"
+
+    // constraints
+    const val slf4j = "1.7.36"
+    const val log4j = "2.19.0"
+    const val gson = "2.10"
 }
 
 plugins {
@@ -81,13 +84,15 @@ repositories {
 configurations {
     implementation {
         exclude(group = "org.springframework.boot", module = "spring-boot-starter-tomcat")
+        exclude(group = "com.google.code.findbugs", module = "jsr305")
     }
     testImplementation {
+        exclude(group = "org.springframework.boot", module = "spring-boot-starter-web")
         exclude(group = "org.springframework.boot", module = "spring-boot-starter-tomcat")
-        exclude(group = "org.hamcrest", module = "hamcrest-library")
-        exclude(group = "org.hamcrest", module = "hamcrest-core")
+        exclude(group = "org.hamcrest")
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
-        exclude(group = "org.mockito", module = "mockito-core")
+        exclude(group = "org.mockito")
+        exclude(group = "org.skyscreamer", module = "jsonassert")
     }
 }
 
@@ -192,6 +197,7 @@ dependencies {
         implementation("org.slf4j:slf4j-api") {
             version { strictly(Versions.slf4j) }
         }
+        implementation("com.google.code.gson:gson:${Versions.gson}")
     }
 }
 
