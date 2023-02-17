@@ -2,20 +2,14 @@ package no.nav.sosialhjelp.soknad.api.informasjon
 
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.security.token.support.core.api.Unprotected
-import no.nav.sosialhjelp.api.fiks.KommuneInfo
 import no.nav.sosialhjelp.soknad.adressesok.AdressesokService
 import no.nav.sosialhjelp.soknad.adressesok.domain.AdresseForslag
-import no.nav.sosialhjelp.soknad.api.informasjon.dto.KommunestatusFrontend
-import no.nav.sosialhjelp.soknad.api.informasjon.dto.KontaktPersonerFrontend
 import no.nav.sosialhjelp.soknad.api.informasjon.dto.Logg
 import no.nav.sosialhjelp.soknad.api.informasjon.dto.NyligInnsendteSoknaderResponse
 import no.nav.sosialhjelp.soknad.api.informasjon.dto.PabegyntSoknad
-import no.nav.sosialhjelp.soknad.api.nedetid.NedetidService
 import no.nav.sosialhjelp.soknad.app.Constants
-import no.nav.sosialhjelp.soknad.app.mapper.KommuneTilNavEnhetMapper.digisoskommuner
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
-import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
 import no.nav.sosialhjelp.soknad.personalia.person.dto.Gradering.FORTROLIG
 import no.nav.sosialhjelp.soknad.personalia.person.dto.Gradering.STRENGT_FORTROLIG
@@ -32,7 +26,6 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import java.time.LocalDateTime
-import java.util.Collections
 import java.util.Locale
 import java.util.Properties
 
@@ -45,11 +38,9 @@ import java.util.Properties
 class InformasjonRessurs(
     private val messageSource: NavMessageSource,
     private val adresseSokService: AdressesokService,
-    private val kommuneInfoService: KommuneInfoService,
     private val personService: PersonService,
     private val soknadMetadataRepository: SoknadMetadataRepository,
     private val pabegynteSoknaderService: PabegynteSoknaderService,
-    private val nedetidService: NedetidService
 ) {
 
     companion object {
@@ -125,19 +116,6 @@ class InformasjonRessurs(
         }
     }
 
-    @GetMapping("/kommunestatus")
-    @ProtectedWithClaims(issuer = Constants.AZUREAD)
-    fun hentKommunestatus(): Map<String, KommunestatusFrontend> {
-        if (nedetidService.isInnenforNedetid) {
-            return emptyMap()
-        }
-        val manueltPakobledeKommuner = mapManueltPakobledeKommunerTilKommunestatusFrontend(digisoskommuner)
-        val digisosKommuner = mapDigisosKommunerTilKommunestatus(kommuneInfoService.hentAlleKommuneInfo())
-        val kunManueltPakobledeKommuner = manueltPakobledeKommuner.keys.filter { !digisosKommuner.containsKey(it) }
-        logger.info("/kommunestatus - Kommuner som kun er manuelt påkoblet via PROD_DIGISOS_KOMMUNER: $kunManueltPakobledeKommuner")
-        return mergeManuelleKommunerMedDigisosKommunerKommunestatus(manueltPakobledeKommuner, digisosKommuner)
-    }
-
     @GetMapping("/harNyligInnsendteSoknader")
     fun harNyligInnsendteSoknader(): NyligInnsendteSoknaderResponse {
         val eier = SubjectHandlerUtils.getUserIdFromToken()
@@ -151,48 +129,5 @@ class InformasjonRessurs(
         val fnr = SubjectHandlerUtils.getUserIdFromToken()
         logger.debug("Henter pabegynte soknader for bruker")
         return pabegynteSoknaderService.hentPabegynteSoknaderForBruker(fnr)
-    }
-
-    fun mapManueltPakobledeKommunerTilKommunestatusFrontend(manuelleKommuner: List<String>): Map<String, KommunestatusFrontend> {
-        return manuelleKommuner
-            .map {
-                KommunestatusFrontend(
-                    kommunenummer = it,
-                    kanMottaSoknader = true,
-                    kanOppdatereStatus = false
-                )
-            }
-            .associateBy { it.kommunenummer }
-    }
-
-    fun mapDigisosKommunerTilKommunestatus(digisosKommuner: Map<String, KommuneInfo>?): MutableMap<String, KommunestatusFrontend> {
-        return digisosKommuner?.values
-            ?.map {
-                KommunestatusFrontend(
-                    it.kommunenummer,
-                    it.kanMottaSoknader,
-                    it.kanOppdatereStatus,
-                    it.harMidlertidigDeaktivertMottak,
-                    it.harMidlertidigDeaktivertOppdateringer,
-                    it.harNksTilgang,
-                    it.behandlingsansvarlig,
-                    KontaktPersonerFrontend(
-                        it.kontaktpersoner?.fagansvarligEpost ?: Collections.emptyList(),
-                        it.kontaktpersoner?.tekniskAnsvarligEpost ?: Collections.emptyList()
-                    )
-                )
-            }
-            ?.associateBy { it.kommunenummer }
-            ?.toMutableMap() ?: mutableMapOf()
-    }
-
-    fun mergeManuelleKommunerMedDigisosKommunerKommunestatus(
-        manuelleKommuner: Map<String, KommunestatusFrontend>,
-        digisosKommuner: MutableMap<String, KommunestatusFrontend>
-    ): Map<String, KommunestatusFrontend> {
-        manuelleKommuner.forEach { (key: String, value: KommunestatusFrontend?) ->
-            digisosKommuner.putIfAbsent(key, value)
-        }
-        return digisosKommuner
     }
 }
