@@ -1,7 +1,6 @@
 package no.nav.sosialhjelp.soknad.api.informasjon
 
 import no.nav.security.token.support.core.api.ProtectedWithClaims
-import no.nav.security.token.support.core.api.Unprotected
 import no.nav.sosialhjelp.api.fiks.KommuneInfo
 import no.nav.sosialhjelp.soknad.adressesok.AdressesokService
 import no.nav.sosialhjelp.soknad.adressesok.domain.AdresseForslag
@@ -12,6 +11,7 @@ import no.nav.sosialhjelp.soknad.api.informasjon.dto.NyligInnsendteSoknaderRespo
 import no.nav.sosialhjelp.soknad.api.informasjon.dto.PabegyntSoknad
 import no.nav.sosialhjelp.soknad.api.nedetid.NedetidService
 import no.nav.sosialhjelp.soknad.app.Constants
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.mapper.KommuneTilNavEnhetMapper.digisoskommuner
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
@@ -20,9 +20,6 @@ import no.nav.sosialhjelp.soknad.personalia.person.PersonService
 import no.nav.sosialhjelp.soknad.personalia.person.dto.Gradering.FORTROLIG
 import no.nav.sosialhjelp.soknad.personalia.person.dto.Gradering.STRENGT_FORTROLIG
 import no.nav.sosialhjelp.soknad.personalia.person.dto.Gradering.STRENGT_FORTROLIG_UTLAND
-import no.nav.sosialhjelp.soknad.tekster.NavMessageSource
-import org.apache.commons.lang3.LocaleUtils
-import org.apache.commons.lang3.StringUtils
 import org.slf4j.LoggerFactory
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
@@ -33,8 +30,6 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import java.time.LocalDateTime
 import java.util.Collections
-import java.util.Locale
-import java.util.Properties
 
 /**
  * Klassen håndterer rest kall for å hente informasjon
@@ -43,7 +38,6 @@ import java.util.Properties
 @ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4])
 @RequestMapping("/informasjon")
 class InformasjonRessurs(
-    private val messageSource: NavMessageSource,
     private val adresseSokService: AdressesokService,
     private val kommuneInfoService: KommuneInfoService,
     private val personService: PersonService,
@@ -53,10 +47,9 @@ class InformasjonRessurs(
 ) {
 
     companion object {
-        private val logger = LoggerFactory.getLogger(InformasjonRessurs::class.java)
+        private val log by logger()
         private val klientlogger = LoggerFactory.getLogger("klientlogger")
         private const val FJORTEN_DAGER: Long = 14
-        private const val SOKNADSOSIALHJELP = "soknadsosialhjelp"
     }
 
     @GetMapping("/fornavn")
@@ -66,28 +59,6 @@ class InformasjonRessurs(
         val fornavnMap = mutableMapOf<String, String>()
         fornavnMap["fornavn"] = fornavn1
         return fornavnMap
-    }
-
-    @Unprotected
-    @GetMapping("/tekster")
-    fun hentTekster(
-        @RequestParam("type") queryType: String,
-        @RequestParam("sprak") querySprak: String?
-    ): Properties {
-        var type = queryType
-        var sprak = querySprak
-        if (sprak == null || sprak.trim { it <= ' ' }.isEmpty()) {
-            sprak = "nb_NO"
-        }
-        if (StringUtils.isNotEmpty(type) && SOKNADSOSIALHJELP != type.lowercase(Locale.getDefault())) {
-            val prefiksetType = "soknad" + type.lowercase(Locale.getDefault())
-            logger.warn("Type $type matcher ikke et bundlename - forsøker med prefiks $prefiksetType")
-            if (SOKNADSOSIALHJELP == prefiksetType) {
-                type = prefiksetType
-            }
-        }
-        val locale = LocaleUtils.toLocale(sprak)
-        return messageSource.getBundleFor(type, locale)
     }
 
     @GetMapping("/utslagskriterier/sosialhjelp", produces = [MediaType.APPLICATION_JSON_VALUE])
@@ -134,7 +105,7 @@ class InformasjonRessurs(
         val manueltPakobledeKommuner = mapManueltPakobledeKommunerTilKommunestatusFrontend(digisoskommuner)
         val digisosKommuner = mapDigisosKommunerTilKommunestatus(kommuneInfoService.hentAlleKommuneInfo())
         val kunManueltPakobledeKommuner = manueltPakobledeKommuner.keys.filter { !digisosKommuner.containsKey(it) }
-        logger.info("/kommunestatus - Kommuner som kun er manuelt påkoblet via PROD_DIGISOS_KOMMUNER: $kunManueltPakobledeKommuner")
+        log.info("/kommunestatus - Kommuner som kun er manuelt påkoblet via PROD_DIGISOS_KOMMUNER: $kunManueltPakobledeKommuner")
         return mergeManuelleKommunerMedDigisosKommunerKommunestatus(manueltPakobledeKommuner, digisosKommuner)
     }
 
@@ -149,7 +120,7 @@ class InformasjonRessurs(
     @GetMapping("/pabegynteSoknader")
     fun hentPabegynteSoknader(): List<PabegyntSoknad> {
         val fnr = SubjectHandlerUtils.getUserIdFromToken()
-        logger.debug("Henter pabegynte soknader for bruker")
+        log.debug("Henter pabegynte soknader for bruker")
         return pabegynteSoknaderService.hentPabegynteSoknaderForBruker(fnr)
     }
 
