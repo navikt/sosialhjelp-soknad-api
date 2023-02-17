@@ -68,9 +68,6 @@ pdl_api_scope: dummyScope
 krr_scope: dummyScope
 
 no.nav.security.jwt.issuer:
-  azuread:
-    discoveryurl: ${AZURE_APP_WELL_KNOWN_URL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/well-known/azuread${mock-alt-api-wellknown-queryparam}}
-    accepted_audience: someaudience
   selvbetjening:
     discoveryurl: ${OIDC_ISSUER_SELVBETJENING_DISCOVERYURL:http://${mock-alt-api-host}:8989/sosialhjelp/mock-alt-api/well-known/selvbetjening${mock-alt-api-wellknown-queryparam}}
     accepted_audience: someaudience
