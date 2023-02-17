@@ -76,6 +76,10 @@ ktlint {
     this.version.set(Versions.ktlint)
 }
 
+flyway {
+    encoding = "ISO-8859-1"
+}
+
 val githubUser: String by project
 val githubPassword: String by project
 
