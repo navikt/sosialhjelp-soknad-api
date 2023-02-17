@@ -45,6 +45,17 @@ object Versions {
     const val slf4j = "1.7.36"
     const val log4j = "2.19.0"
     const val gson = "2.10"
+    const val jodatime = "2.12.2"
+    const val jsonsmart = "2.4.8"
+    const val nimbusOauth2 = "10.4"
+    const val json = "20220924"
+    const val byteBuddy = "1.12.20"
+    const val jbossLogging = "3.5.0.Final"
+    const val errorProneAnnotations = "2.15.0"
+    const val checkerQual = "3.25.0"
+    const val assertj = "3.23.1"
+    const val junit = "4.13.2"
+    const val mockOauth2Server = "0.5.7"
 }
 
 plugins {
@@ -198,6 +209,18 @@ dependencies {
             version { strictly(Versions.slf4j) }
         }
         implementation("com.google.code.gson:gson:${Versions.gson}")
+        implementation("joda-time:joda-time:${Versions.jodatime}")
+        implementation("ned.minidev:json-smart:${Versions.jsonsmart}")
+        implementation("com.nimbusds:oauth2-oidc-sdk:${Versions.nimbusOauth2}")
+        implementation("org.json:json:${Versions.json}")
+        implementation("net.bytebuddy:byte-buddy:${Versions.byteBuddy}")
+        implementation("org.jboss.logging:jboss-logging:${Versions.jbossLogging}")
+        implementation("com.google.errorprone:error_prone_annotations:${Versions.errorProneAnnotations}")
+        implementation("org.checkerframework:checker-qual:${Versions.checkerQual}")
+
+        testImplementation("org.assertj:assertj-core:${Versions.assertj}")
+        testImplementation("junit:junit:${Versions.junit}")
+        testImplementation("no.nav.security:mock-oauth2-server:${Versions.mockOauth2Server}")
     }
 }
 
