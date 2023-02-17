@@ -1089,10 +1089,6 @@
                     <exclude>**/*.kt</exclude>
                 </excludes>
             </resource>
-            <resource>
-                <directory>src/main/resources-filtered</directory>
-                <filtering>true</filtering>
-            </resource>
         </resources>
         <testResources>
             <testResource>
