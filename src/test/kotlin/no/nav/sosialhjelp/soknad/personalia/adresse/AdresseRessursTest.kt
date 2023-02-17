@@ -148,12 +148,27 @@ internal class AdresseRessursTest {
         val adresserFrontend = AdresserFrontendInput(valg = JsonAdresseValg.FOLKEREGISTRERT)
         val navEnheter = adresseRessurs.updateAdresse(BEHANDLINGSID, adresserFrontend)
 
+        assertThat(navEnheter).hasSize(1)
+        assertThat(navEnheter!![0].enhetsnavn).isEqualTo("Folkeregistrert NavEnhet")
+
         val soknadUnderArbeid = soknadUnderArbeidSlot.captured
         val oppholdsadresse = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia.oppholdsadresse
         assertThat(oppholdsadresse.kilde).isEqualTo(JsonKilde.SYSTEM)
         assertThat(oppholdsadresse).isEqualTo(adresseSystemdata.createDeepCopyOfJsonAdresse(JSON_SYS_MATRIKKELADRESSE)!!.withAdresseValg(JsonAdresseValg.FOLKEREGISTRERT))
-        assertThat(navEnheter).hasSize(1)
-        assertThat(navEnheter!![0].enhetsnavn).isEqualTo("Folkeregistrert NavEnhet")
+
+        val navEnhetFrontend = navEnheter.first()
+        val mottaker = soknadUnderArbeid.jsonInternalSoknad?.mottaker
+        assertThat(mottaker).isNotNull
+        assertThat(mottaker?.navEnhetsnavn).contains(navEnhetFrontend.enhetsnavn, navEnhetFrontend.kommunenavn)
+        assertThat(mottaker?.organisasjonsnummer).isEqualTo(navEnhetFrontend.orgnr)
+
+        val soknadsmottaker = soknadUnderArbeid.jsonInternalSoknad!!.soknad.mottaker
+        val kombinertnavn = soknadsmottaker.navEnhetsnavn
+        val enhetsnavn = kombinertnavn.substring(0, kombinertnavn.indexOf(','))
+        val kommunenavn = kombinertnavn.substring(kombinertnavn.indexOf(',') + 2)
+        assertThat(navEnhetFrontend.enhetsnavn).isEqualTo(enhetsnavn)
+        assertThat(navEnhetFrontend.kommunenavn).isEqualTo(kommunenavn)
+        assertThat(navEnhetFrontend.enhetsnr).isEqualTo(soknadsmottaker.enhetsnummer)
     }
 
     @Test
