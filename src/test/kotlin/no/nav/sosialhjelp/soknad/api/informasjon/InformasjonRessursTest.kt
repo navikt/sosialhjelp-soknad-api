@@ -5,7 +5,6 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.unmockkObject
-import io.mockk.verify
 import no.nav.sosialhjelp.api.fiks.KommuneInfo
 import no.nav.sosialhjelp.soknad.api.nedetid.NedetidService
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
@@ -14,33 +13,26 @@ import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
 import no.nav.sosialhjelp.soknad.personalia.person.PersonService
-import no.nav.sosialhjelp.soknad.tekster.NavMessageSource
 import org.assertj.core.api.Assertions.assertThat
-import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import java.util.Locale
 
 internal class InformasjonRessursTest {
 
-    private val messageSource: NavMessageSource = mockk()
     private val kommuneInfoService: KommuneInfoService = mockk()
     private val personService: PersonService = mockk()
     private val soknadMetadataRepository: SoknadMetadataRepository = mockk()
     private val nedetidService: NedetidService = mockk()
 
     private val ressurs = InformasjonRessurs(
-        messageSource,
-        mockk(),
-        kommuneInfoService,
-        personService,
-        soknadMetadataRepository,
-        mockk(),
-        nedetidService
+        adresseSokService = mockk(),
+        kommuneInfoService = kommuneInfoService,
+        personService = personService,
+        soknadMetadataRepository = soknadMetadataRepository,
+        pabegynteSoknaderService = mockk(),
+        nedetidService = nedetidService
     )
-
-    private var norskBokmaal = Locale("nb", "NO")
 
     @BeforeEach
     fun setUp() {
@@ -55,40 +47,6 @@ internal class InformasjonRessursTest {
     fun tearDown() {
         SubjectHandlerUtils.resetSubjectHandlerImpl()
         unmockkObject(MiljoUtils)
-    }
-
-    @Test
-    fun spraakDefaulterTilNorskBokmaalHvisIkkeSatt() {
-        every { messageSource.getBundleFor(any(), any()) } returns mockk()
-
-        ressurs.hentTekster(SOKNADSTYPE, null)
-        ressurs.hentTekster(SOKNADSTYPE, " ")
-
-        verify(exactly = 2) { messageSource.getBundleFor(SOKNADSTYPE, norskBokmaal) }
-    }
-
-    @Test
-    fun skalHenteTeksterForSoknadsosialhjelpViaBundle() {
-        every { messageSource.getBundleFor(any(), any()) } returns mockk()
-
-        ressurs.hentTekster("soknadsosialhjelp", null)
-
-        verify { messageSource.getBundleFor("soknadsosialhjelp", norskBokmaal) }
-    }
-
-    @Test
-    fun skalHenteTeksterForAlleBundlesUtenType() {
-        every { messageSource.getBundleFor(any(), any()) } returns mockk()
-
-        ressurs.hentTekster("", null)
-
-        verify { messageSource.getBundleFor("", norskBokmaal) }
-    }
-
-    @Test
-    fun kastExceptionHvisIkkeSpraakErPaaRiktigFormat() {
-        assertThatExceptionOfType(IllegalArgumentException::class.java)
-            .isThrownBy { ressurs.hentTekster(SOKNADSTYPE, "NORSK") }
     }
 
     @Test
@@ -190,9 +148,5 @@ internal class InformasjonRessursTest {
         val response = ressurs.harNyligInnsendteSoknader()
 
         assertThat(response.antallNyligInnsendte).isEqualTo(2)
-    }
-
-    companion object {
-        const val SOKNADSTYPE = "type"
     }
 }

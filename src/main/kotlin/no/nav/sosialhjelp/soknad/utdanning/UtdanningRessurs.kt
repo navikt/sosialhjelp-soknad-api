@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.utdanning
 
+import io.swagger.v3.oas.annotations.media.Schema
 import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.utdanning.JsonUtdanning.Studentgrad
@@ -64,7 +65,9 @@ class UtdanningRessurs(
     }
 
     data class UtdanningFrontend(
+        @Schema(nullable = true)
         var erStudent: Boolean?,
+        @Schema(nullable = true)
         var studengradErHeltid: Boolean?
     )
 
