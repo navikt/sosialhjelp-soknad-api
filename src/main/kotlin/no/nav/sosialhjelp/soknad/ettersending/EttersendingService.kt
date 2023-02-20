@@ -6,6 +6,7 @@ import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
 import no.nav.sosialhjelp.soknad.app.exceptions.EttersendelseSendtForSentException
 import no.nav.sosialhjelp.soknad.app.exceptions.SosialhjelpSoknadApiException
+import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadata
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataInnsendingStatus
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataInnsendingStatus.FERDIG
@@ -35,6 +36,7 @@ class EttersendingService(
         val nyesteSoknad = hentNyesteSoknadIKjede(originalSoknad)
 
         val nyBehandlingsId = opprettSoknadMetadataEttersendelse(originalSoknad)
+        MdcOperations.putToMDC(MdcOperations.MDC_BEHANDLINGS_ID, nyBehandlingsId)
 
         val manglendeVedlegg = lagListeOverVedlegg(nyesteSoknad)
         val manglendeJsonVedlegg = convertVedleggMetadataToJsonVedlegg(manglendeVedlegg)

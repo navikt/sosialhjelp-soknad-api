@@ -9,6 +9,7 @@ import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.getFromMDC
 import no.nav.sosialhjelp.soknad.app.subjecthandler.StaticSubjectHandlerImpl
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -82,6 +83,19 @@ internal class MdcFilterTest {
         mdcFilter.doFilter(request, response, filterChain)
 
         assertThat(filterChain.capturedMDCValue(MDC_BEHANDLINGS_ID)).isEqualTo(MOCK_BEHANDLINGS_ID)
+    }
+
+    @Test
+    fun `should not add behandlingsid for opprettSoknad`() {
+        val request = MockHttpServletRequest()
+        request.requestURI = "/sosialhjelp/soknad-api/soknader/opprettSoknad"
+
+        val response = MockHttpServletResponse()
+
+        mdcFilter.doFilter(request, response, filterChain)
+
+        assertThatExceptionOfType(NoSuchElementException::class.java)
+            .isThrownBy {filterChain.capturedMDCValue(MDC_BEHANDLINGS_ID) }
     }
 
     @Test
