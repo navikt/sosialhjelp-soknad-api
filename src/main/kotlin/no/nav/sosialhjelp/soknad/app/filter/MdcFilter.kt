@@ -38,14 +38,15 @@ class MdcFilter : OncePerRequestFilter() {
     }
 
     private fun getBehandlingsId(request: HttpServletRequest): String? {
-        if (request.requestURI.matches(Regex("^${SOKNAD_API_BASEURL}soknader/(.*)"))) {
-            return request.requestURI.substringAfter("${SOKNAD_API_BASEURL}soknader/").substringBefore("/")
+        val requestURI = request.requestURI
+        if (requestURI.matches(Regex("^${SOKNAD_API_BASEURL}soknader/(.*)")) && !requestURI.matches(Regex("^${SOKNAD_API_BASEURL}soknader/opprettSoknad(.*)"))) {
+            return requestURI.substringAfter("${SOKNAD_API_BASEURL}soknader/").substringBefore("/")
         }
-        if (request.requestURI.matches(Regex("^${SOKNAD_API_BASEURL}innsendte/(.*)"))) {
-            return request.requestURI.substringAfter("${SOKNAD_API_BASEURL}innsendte/")
+        if (requestURI.matches(Regex("^${SOKNAD_API_BASEURL}innsendte/(.*)"))) {
+            return requestURI.substringAfter("${SOKNAD_API_BASEURL}innsendte/")
         }
-        if (request.requestURI.matches(Regex("^${SOKNAD_API_BASEURL}ettersendteVedlegg/(.*)"))) {
-            return request.requestURI.substringAfter("${SOKNAD_API_BASEURL}ettersendteVedlegg/")
+        if (requestURI.matches(Regex("^${SOKNAD_API_BASEURL}ettersendteVedlegg/(.*)"))) {
+            return requestURI.substringAfter("${SOKNAD_API_BASEURL}ettersendteVedlegg/")
         }
         /*
         Skal matche disse:
@@ -55,11 +56,11 @@ class MdcFilter : OncePerRequestFilter() {
         men ikke:
         /opplastetVedlegg/{vedleggId}/fil GET
          */
-        if (request.method != "GET" && request.requestURI.matches(Regex("^${SOKNAD_API_BASEURL}opplastetVedlegg/(.*)"))) {
-            return request.requestURI.substringAfter("${SOKNAD_API_BASEURL}opplastetVedlegg/").substringBefore("/")
+        if (request.method != "GET" && requestURI.matches(Regex("^${SOKNAD_API_BASEURL}opplastetVedlegg/(.*)"))) {
+            return requestURI.substringAfter("${SOKNAD_API_BASEURL}opplastetVedlegg/").substringBefore("/")
         }
-        if (request.method == "GET" && request.requestURI.matches(Regex("^${SOKNAD_API_BASEURL}opplastetVedlegg/(.*)/(.*)/fil"))) {
-            return request.requestURI.substringAfter("${SOKNAD_API_BASEURL}opplastetVedlegg/").substringBefore("/")
+        if (request.method == "GET" && requestURI.matches(Regex("^${SOKNAD_API_BASEURL}opplastetVedlegg/(.*)/(.*)/fil"))) {
+            return requestURI.substringAfter("${SOKNAD_API_BASEURL}opplastetVedlegg/").substringBefore("/")
         }
         return null
     }
