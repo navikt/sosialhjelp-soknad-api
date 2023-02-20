@@ -1,0 +1,26 @@
+name: Daily snyk job
+
+on:
+  push:
+    tags:
+      - snyk/*
+  schedule:
+    - cron: '30 5 * * *'
+
+jobs:
+  snyk:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get repository-name
+        run: echo "REPOSITORY_NAME=$(echo '${{ github.repository }}' | awk -F '/' '{print $2}')" >> $GITHUB_ENV
+        shell: bash
+      - uses: actions/checkout@v3
+      - name: Run Snyk to check for vulnerabilities
+        uses: snyk/actions/gradle-jdk17@master
+        with:
+          command: monitor
+          args: --org=teamdigisos --project-name=${{ env.REPOSITORY_NAME }} --remote-repo-url=${{ env.REPOSITORY_NAME }}
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+          ORG_GRADLE_PROJECT_githubUser: x-access-token
+          ORG_GRADLE_PROJECT_githubPassword: ${{ secrets.GITHUB_TOKEN }}

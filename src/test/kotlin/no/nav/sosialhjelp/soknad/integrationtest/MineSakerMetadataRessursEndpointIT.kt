@@ -6,15 +6,18 @@ import no.nav.sosialhjelp.soknad.app.Constants.BEARER
 import no.nav.sosialhjelp.soknad.app.Constants.SELVBETJENING
 import no.nav.sosialhjelp.soknad.integrationtest.IntegrationTestUtils.issueToken
 import no.nav.sosialhjelp.soknad.integrationtest.IntegrationTestUtils.opprettSoknad
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
+import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.reactive.server.WebTestClient
+import javax.inject.Inject
 
 @ContextConfiguration(classes = [PdlIntegrationTestConfig::class])
 @SpringBootTest(classes = [TestApplication::class], webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -31,6 +34,15 @@ class MineSakerMetadataRessursEndpointIT {
 
     @Autowired
     private lateinit var webClient: WebTestClient
+
+    @Inject
+    private lateinit var jdbcTemplate: JdbcTemplate
+
+    @AfterEach
+    fun tearDown() {
+        jdbcTemplate.update("delete from soknad_under_arbeid")
+        jdbcTemplate.update("delete from soknadmetadata")
+    }
 
     @Test
     internal fun innsendte_skalGi401UtenToken() {
