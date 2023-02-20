@@ -26,6 +26,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.utdanning.JsonUtdanning
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
 import no.nav.sosialhjelp.soknad.app.exceptions.SosialhjelpSoknadApiException
+import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.app.systemdata.SystemdataUpdater
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadata
@@ -75,6 +76,7 @@ class SoknadService(
     fun startSoknad(token: String?): String {
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val behandlingsId = opprettSoknadMetadata(eier)
+        MdcOperations.putToMDC(MdcOperations.MDC_BEHANDLINGS_ID, behandlingsId)
 
         prometheusMetricsService.reportStartSoknad(false)
 
