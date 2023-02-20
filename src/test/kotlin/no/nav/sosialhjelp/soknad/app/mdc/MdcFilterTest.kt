@@ -95,7 +95,7 @@ internal class MdcFilterTest {
         mdcFilter.doFilter(request, response, filterChain)
 
         assertThatExceptionOfType(NoSuchElementException::class.java)
-            .isThrownBy {filterChain.capturedMDCValue(MDC_BEHANDLINGS_ID) }
+            .isThrownBy { filterChain.capturedMDCValue(MDC_BEHANDLINGS_ID) }
     }
 
     @Test
