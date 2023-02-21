@@ -1,12 +1,15 @@
 package no.nav.sosialhjelp.soknad.personalia.adresse
 
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknadsmottaker
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresseValg
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.soknad.app.Constants
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.navenhet.NavEnhetService
+import no.nav.sosialhjelp.soknad.navenhet.NavEnhetUtils
 import no.nav.sosialhjelp.soknad.navenhet.dto.NavEnhetFrontend
 import no.nav.sosialhjelp.soknad.personalia.adresse.dto.AdresserFrontend
 import no.nav.sosialhjelp.soknad.personalia.adresse.dto.AdresserFrontendInput
@@ -28,6 +31,26 @@ class AdresseRessurs(
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val navEnhetService: NavEnhetService
 ) {
+
+    private val pabegynteSoknaderOpprettetUnderKsNedetid = listOf(
+        "1100239YX",
+        "110023A4o",
+        "1100239QT",
+        "1100239ZS",
+        "110023A33",
+        "1100239SD",
+        "110023A24",
+        "110023A3i",
+        "1100239ZW",
+        "1100239XU",
+        "1100239YN",
+        "110023A4S",
+        "1100239PL",
+        "1100239RG",
+        "110023A01",
+        "110023A55",
+    )
+
     @GetMapping
     fun hentAdresser(
         @PathVariable("behandlingsId") behandlingsId: String
@@ -52,6 +75,27 @@ class AdresseRessurs(
         }
         jsonInternalSoknad.midlertidigAdresse = sysMidlertidigAdresse
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
+
+        // Forsøker å sette mottaker i soknad.json for de påbegynte søknadene i listen med behandlingsId'er over.
+        // Noe feilet under KS' nedetid 09.02.23 slik at mottaker aldri ble satt i soknad.json.
+        // Uten mottaker, vil vi ikke kunne sende disse søknadene til KS, og dersom bruker skulle forsøke å fortsette på disse påbegynte søknadene vil innsendingen feile.
+        if (
+            behandlingsId in pabegynteSoknaderOpprettetUnderKsNedetid &&
+            navEnhet != null &&
+            soknad.jsonInternalSoknad?.mottaker == null &&
+            soknad.jsonInternalSoknad?.soknad?.mottaker == null
+        ) {
+            log.info("Forsøker å sette mottaker i soknad.json for søknad med behandlingsid=$behandlingsId.")
+            soknad.jsonInternalSoknad?.mottaker = no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker()
+                .withNavEnhetsnavn(NavEnhetUtils.createNavEnhetsnavn(navEnhet.enhetsnavn, navEnhet.kommunenavn))
+                .withOrganisasjonsnummer(navEnhet.orgnr)
+            soknad.jsonInternalSoknad?.soknad?.mottaker = JsonSoknadsmottaker()
+                .withNavEnhetsnavn(NavEnhetUtils.createNavEnhetsnavn(navEnhet.enhetsnavn, navEnhet.kommunenavn))
+                .withEnhetsnummer(navEnhet.enhetsnr)
+                .withKommunenummer(navEnhet.kommuneNr)
+            soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
+        }
+
         return AdresseMapper.mapToAdresserFrontend(
             sysFolkeregistrertAdresse,
             sysMidlertidigAdresse,
@@ -104,5 +148,9 @@ class AdresseRessurs(
         return if (oppholdsadresse.type == JsonAdresse.Type.MATRIKKELADRESSE) {
             null
         } else adresseSystemdata.createDeepCopyOfJsonAdresse(oppholdsadresse)?.withAdresseValg(null)
+    }
+
+    companion object {
+        private val log by logger()
     }
 }
