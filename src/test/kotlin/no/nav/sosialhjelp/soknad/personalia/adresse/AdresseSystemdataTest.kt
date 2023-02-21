@@ -125,7 +125,7 @@ internal class AdresseSystemdataTest {
     }
 
     @Test
-    fun skalOppdatereOppholdsadresseOgPostAdresseMedMidlertidigAdresse_kontaktadresse_fraPdl() {
+    fun skalOppdatereOppholdsadresseOgPostAdresseMedMidlertidigAdresse_oppholdsadresse_fraPdl() {
         val soknadUnderArbeid = createSoknadUnderArbeid()
         soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia
             .withOppholdsadresse(JsonAdresse().withAdresseValg(JsonAdresseValg.MIDLERTIDIG))
@@ -209,16 +209,15 @@ internal class AdresseSystemdataTest {
 
     private fun createPersonWithBostedsadresse(bostedsadresse: Bostedsadresse): Person {
         return Person(
-            "fornavn",
-            "mellomnavn",
-            "etternavn",
-            EIER,
-            "ugift",
-            emptyList(),
-            null,
-            bostedsadresse,
-            null,
-            null
+            fornavn = "fornavn",
+            mellomnavn = "mellomnavn",
+            etternavn = "etternavn",
+            fnr = EIER,
+            sivilstatus = "ugift",
+            statsborgerskap = emptyList(),
+            ektefelle = null,
+            bostedsadresse = bostedsadresse,
+            oppholdsadresse = null,
         )
     }
 
@@ -227,24 +226,42 @@ internal class AdresseSystemdataTest {
         oppholdsadresse: Oppholdsadresse
     ): Person {
         return Person(
-            "fornavn",
-            "mellomnavn",
-            "etternavn",
-            EIER,
-            "ugift",
-            emptyList(),
-            null,
-            bostedsadresse,
-            oppholdsadresse,
-            null
+            fornavn = "fornavn",
+            mellomnavn = "mellomnavn",
+            etternavn = "etternavn",
+            fnr = EIER,
+            sivilstatus = "ugift",
+            statsborgerskap = emptyList(),
+            ektefelle = null,
+            bostedsadresse = bostedsadresse,
+            oppholdsadresse = oppholdsadresse,
         )
     }
 
     companion object {
         private const val EIER = "12345678901"
-        private val DEFAULT_VEGADRESSE =
-            Vegadresse("gateveien", 1, "A", "", "0123", "poststed", "0301", "H0101", "123456")
-        private val ANNEN_VEGADRESSE = Vegadresse("en annen sti", 32, null, null, "0456", "oslo", "0302", null, null)
+        private val DEFAULT_VEGADRESSE = Vegadresse(
+            adressenavn = "gateveien",
+            husnummer = 1,
+            husbokstav = "A",
+            tilleggsnavn = "",
+            postnummer = "0123",
+            poststed = "poststed",
+            kommunenummer = "0301",
+            bruksenhetsnummer = "H0101",
+            bydelsnummer = "123456"
+        )
+        private val ANNEN_VEGADRESSE = Vegadresse(
+            adressenavn = "en annen sti",
+            husnummer = 32,
+            husbokstav = null,
+            tilleggsnavn = null,
+            postnummer = "0456",
+            poststed = "oslo",
+            kommunenummer = "0302",
+            bruksenhetsnummer = null,
+            bydelsnummer = null
+        )
 
         private fun createSoknadUnderArbeid(): SoknadUnderArbeid {
             return SoknadUnderArbeid(

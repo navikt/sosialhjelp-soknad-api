@@ -40,16 +40,15 @@ internal class BasisPersonaliaSystemdataTest {
     @Test
     fun skalOppdatereNordiskPersonalia() {
         val person = Person(
-            FORNAVN,
-            MELLOMNAVN,
-            ETTERNAVN,
-            EIER,
-            "ugift",
-            listOf(NORSK_STATSBORGERSKAP),
-            null,
-            null,
-            null,
-            null
+            fornavn = FORNAVN,
+            mellomnavn = MELLOMNAVN,
+            etternavn = ETTERNAVN,
+            fnr = EIER,
+            sivilstatus = "ugift",
+            statsborgerskap = listOf(NORSK_STATSBORGERSKAP),
+            ektefelle = null,
+            bostedsadresse = null,
+            oppholdsadresse = null,
         )
         val soknadUnderArbeid = createSoknadUnderArbeid()
         every { personService.hentPerson(any()) } returns person
@@ -72,16 +71,15 @@ internal class BasisPersonaliaSystemdataTest {
     @Test
     fun skalPrioritereNorskOverNordiskStatsborgerskap() {
         val person = Person(
-            FORNAVN,
-            MELLOMNAVN,
-            ETTERNAVN,
-            EIER,
-            "ugift",
-            listOf(NORDISK_STATSBORGERSKAP, NORSK_STATSBORGERSKAP),
-            null,
-            null,
-            null,
-            null
+            fornavn = FORNAVN,
+            mellomnavn = MELLOMNAVN,
+            etternavn = ETTERNAVN,
+            fnr = EIER,
+            sivilstatus = "ugift",
+            statsborgerskap = listOf(NORDISK_STATSBORGERSKAP, NORSK_STATSBORGERSKAP),
+            ektefelle = null,
+            bostedsadresse = null,
+            oppholdsadresse = null,
         )
         val soknadUnderArbeid = createSoknadUnderArbeid()
         every { personService.hentPerson(any()) } returns person
@@ -98,12 +96,18 @@ internal class BasisPersonaliaSystemdataTest {
     @Test
     fun skalPrioritereNordiskStatsborgerskap() {
         val person = Person(
-            FORNAVN, MELLOMNAVN, ETTERNAVN, EIER, "ugift",
-            listOf(
+            fornavn = FORNAVN,
+            mellomnavn = MELLOMNAVN,
+            etternavn = ETTERNAVN,
+            fnr = EIER,
+            sivilstatus = "ugift",
+            statsborgerskap = listOf(
                 IKKE_NORDISK_STATSBORGERSKAP,
                 NORDISK_STATSBORGERSKAP
             ),
-            null, null, null, null
+            ektefelle = null,
+            bostedsadresse = null,
+            oppholdsadresse = null,
         )
         val soknadUnderArbeid = createSoknadUnderArbeid()
         every { personService.hentPerson(any()) } returns person
@@ -120,11 +124,17 @@ internal class BasisPersonaliaSystemdataTest {
     @Test
     fun skalOppdatereIkkeNordiskPersonalia() {
         val person = Person(
-            FORNAVN, MELLOMNAVN, ETTERNAVN, EIER, "ugift",
-            listOf(
+            fornavn = FORNAVN,
+            mellomnavn = MELLOMNAVN,
+            etternavn = ETTERNAVN,
+            fnr = EIER,
+            sivilstatus = "ugift",
+            statsborgerskap = listOf(
                 IKKE_NORDISK_STATSBORGERSKAP
             ),
-            null, null, null, null
+            ektefelle = null,
+            bostedsadresse = null,
+            oppholdsadresse = null,
         )
         val soknadUnderArbeid = createSoknadUnderArbeid()
         every { personService.hentPerson(any()) } returns person
@@ -147,16 +157,15 @@ internal class BasisPersonaliaSystemdataTest {
     @Test
     fun skalikkeSendeMedStatsborgerskapForUkjent() {
         val person = Person(
-            FORNAVN,
-            MELLOMNAVN,
-            ETTERNAVN,
-            EIER,
-            "ugift",
-            listOf(BasisPersonaliaSystemdata.PDL_UKJENT_STATSBORGERSKAP),
-            null,
-            null,
-            null,
-            null
+            fornavn = FORNAVN,
+            mellomnavn = MELLOMNAVN,
+            etternavn = ETTERNAVN,
+            fnr = EIER,
+            sivilstatus = "ugift",
+            statsborgerskap = listOf(BasisPersonaliaSystemdata.PDL_UKJENT_STATSBORGERSKAP),
+            ektefelle = null,
+            bostedsadresse = null,
+            oppholdsadresse = null,
         )
         val soknadUnderArbeid = createSoknadUnderArbeid()
         every { personService.hentPerson(any()) } returns person

@@ -14,7 +14,6 @@ import no.nav.sosialhjelp.soknad.personalia.person.dto.FolkeregisterMetadataDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.FolkeregisterpersonstatusDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.ForelderBarnRelasjonDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.Gradering
-import no.nav.sosialhjelp.soknad.personalia.person.dto.KontaktadresseDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.MatrikkeladresseDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.MetadataDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.NavnDto
@@ -95,15 +94,6 @@ internal class PdlDtoMapperTest {
                 )
             ),
             listOf(
-                KontaktadresseDto(
-                    "Innland",
-                    null,
-                    VegadresseDto("222", "kontaktveien", 1, "A", null, "2222", "3333", null, null),
-                    null,
-                    null
-                )
-            ),
-            listOf(
                 ForelderBarnRelasjonDto(
                     BARNIDENT,
                     BARN_ROLLE,
@@ -145,8 +135,6 @@ internal class PdlDtoMapperTest {
         assertThat(person.bostedsadresse!!.matrikkeladresse).isNull()
         assertThat(person.oppholdsadresse!!.coAdressenavn).isEqualTo("Test McTest")
         assertThat(person.oppholdsadresse!!.vegadresse!!.adressenavn).isEqualTo("midlertidig".uppercase())
-        assertThat(person.kontaktadresse!!.coAdressenavn).isNull()
-        assertThat(person.kontaktadresse!!.vegadresse!!.adressenavn).isEqualTo("kontaktveien".uppercase())
     }
 
     @Test
@@ -167,7 +155,6 @@ internal class PdlDtoMapperTest {
                 )
             ),
             null, // ingen oppholdsadresse
-            null, // ingen kontaktadresse
             listOf(
                 ForelderBarnRelasjonDto(
                     BARNIDENT,
@@ -206,7 +193,6 @@ internal class PdlDtoMapperTest {
         val pdlPerson = PersonDto(
             listOf(BostedsadresseDto(null, null, null, UkjentBostedDto("Oslo"))),
             null, // ingen oppholdsadresse
-            null, // ingen kontaktadresse
             listOf(
                 ForelderBarnRelasjonDto(
                     BARNIDENT,
@@ -260,7 +246,6 @@ internal class PdlDtoMapperTest {
                 )
             ),
             listOf(OppholdsadresseDto("oppholdAnnetSted", null, null, null, null)),
-            null, // ingen kontaktadresse
             listOf(
                 ForelderBarnRelasjonDto(
                     BARNIDENT,
@@ -302,7 +287,6 @@ internal class PdlDtoMapperTest {
                 OppholdsadresseDto(null, null, vegadresse, null, null),
                 OppholdsadresseDto(null, null, annenVegadresse, null, null)
             ),
-            null, // ingen kontaktadresse
             listOf(
                 ForelderBarnRelasjonDto(
                     BARNIDENT,
@@ -339,95 +323,6 @@ internal class PdlDtoMapperTest {
     }
 
     @Test
-    fun personMedKontaktadresseLikBostedsadresseSkalFiltreresVekk() {
-        val vegadresse = defaultVegadresse()
-        val annenVegadresse = annenVegadresse()
-        val pdlPerson = PersonDto(
-            listOf(BostedsadresseDto(null, vegadresse, null, null)),
-            null, // ingen oppholdsadresse
-            listOf(
-                KontaktadresseDto("Innland", null, vegadresse, null, null),
-                KontaktadresseDto("Innland", null, annenVegadresse, null, null)
-            ),
-            listOf(
-                ForelderBarnRelasjonDto(
-                    BARNIDENT,
-                    BARN_ROLLE,
-                    MOR_ROLLE
-                )
-            ),
-            listOf(
-                NavnDto(
-                    FORNAVN,
-                    MELLOMNAVN,
-                    ETTERNAVN,
-                    METADATA,
-                    FOLKEREGISTERMETADATA
-                )
-            ),
-            listOf(
-                SivilstandDto(
-                    SivilstandType.GIFT,
-                    EKTEFELLEIDENT,
-                    METADATA,
-                    FOLKEREGISTERMETADATA
-                )
-            ),
-            listOf(StatsborgerskapDto(LAND))
-        )
-        val person = mapper.personDtoToDomain(pdlPerson, IDENT)
-        assertThat(person).isNotNull
-        assertThat(person!!.bostedsadresse!!.coAdressenavn).isNull()
-        assertThat(person.bostedsadresse!!.vegadresse!!.adressenavn).isEqualTo(vegadresse.adressenavn?.uppercase())
-        assertThat(person.bostedsadresse!!.matrikkeladresse).isNull()
-        assertThat(person.kontaktadresse!!.coAdressenavn).isNull()
-        assertThat(person.kontaktadresse!!.vegadresse!!.adressenavn).isEqualTo(annenVegadresse.adressenavn?.uppercase())
-    }
-
-    @Test
-    fun personMedKontaktadresseUtenKommunenummerLikBostedsadresseSkalFiltreresVekk() {
-        val vegadresse = VegadresseDto("matrikkelId", "gateveien", 1, "A", null, "1234", "1212", null, null)
-        val vegadresseUtenKommunenummer =
-            VegadresseDto("matrikkelId", "gateveien", 1, "A", null, "1234", null, null, null)
-        val pdlPerson = PersonDto(
-            listOf(BostedsadresseDto(null, vegadresse, null, null)),
-            null, // ingen oppholdsadresse
-            listOf(KontaktadresseDto("Innland", null, vegadresseUtenKommunenummer, null, null)),
-            listOf(
-                ForelderBarnRelasjonDto(
-                    BARNIDENT,
-                    BARN_ROLLE,
-                    MOR_ROLLE
-                )
-            ),
-            listOf(
-                NavnDto(
-                    FORNAVN,
-                    MELLOMNAVN,
-                    ETTERNAVN,
-                    METADATA,
-                    FOLKEREGISTERMETADATA
-                )
-            ),
-            listOf(
-                SivilstandDto(
-                    SivilstandType.GIFT,
-                    EKTEFELLEIDENT,
-                    METADATA,
-                    FOLKEREGISTERMETADATA
-                )
-            ),
-            listOf(StatsborgerskapDto(LAND))
-        )
-        val person = mapper.personDtoToDomain(pdlPerson, IDENT)
-        assertThat(person).isNotNull
-        assertThat(person!!.bostedsadresse!!.coAdressenavn).isNull()
-        assertThat(person.bostedsadresse!!.vegadresse!!.adressenavn).isEqualTo(vegadresse.adressenavn?.uppercase())
-        assertThat(person.bostedsadresse!!.matrikkeladresse).isNull()
-        assertThat(person.kontaktadresse).isNull()
-    }
-
-    @Test
     fun personMedOppholdsadresseUtenBostedsadresse() {
         val vegadresse = defaultVegadresse()
         val pdlPerson = PersonDto(
@@ -435,7 +330,6 @@ internal class PdlDtoMapperTest {
             listOf(
                 OppholdsadresseDto(null, null, vegadresse, null, null)
             ),
-            null, // ingen kontaktadresse
             listOf(
                 ForelderBarnRelasjonDto(
                     BARNIDENT,
@@ -474,7 +368,6 @@ internal class PdlDtoMapperTest {
         val pdlPerson = PersonDto(
             listOf(BostedsadresseDto(null, defaultVegadresse(), null, null)),
             null, // Ingen oppholdsadresse
-            null, // ingen kontaktadresse
             listOf(
                 ForelderBarnRelasjonDto(
                     BARNIDENT,
@@ -548,7 +441,6 @@ internal class PdlDtoMapperTest {
                 )
             ),
             null, // Ingen oppholdsadresse
-            null, // ingen kontaktadresse
             listOf(
                 ForelderBarnRelasjonDto(
                     BARNIDENT,
@@ -623,7 +515,6 @@ internal class PdlDtoMapperTest {
                 )
             ),
             null, // Ingen oppholdsadresse
-            null, // ingen kontaktadresse
             listOf(
                 ForelderBarnRelasjonDto(
                     BARNIDENT,
@@ -681,7 +572,6 @@ internal class PdlDtoMapperTest {
         val pdlPerson = PersonDto(
             listOf(BostedsadresseDto(null, defaultVegadresse(), null, null)),
             null, // Ingen oppholdsadresse
-            null, // ingen kontaktadresse
             listOf(
                 ForelderBarnRelasjonDto(
                     BARNIDENT,
@@ -738,7 +628,6 @@ internal class PdlDtoMapperTest {
         val pdlPerson = PersonDto(
             listOf(BostedsadresseDto(null, defaultVegadresse(), null, null)),
             null, // Ingen oppholdsadresse
-            null, // ingen kontaktadresse
             listOf(
                 ForelderBarnRelasjonDto(
                     BARNIDENT,
@@ -774,7 +663,6 @@ internal class PdlDtoMapperTest {
         val pdlPerson = PersonDto(
             null, // Ingen bostedsadresse
             null, // Ingen oppholdsadresse
-            null, // ingen kontaktadresse
             listOf(
                 ForelderBarnRelasjonDto(
                     BARNIDENT,
@@ -824,7 +712,6 @@ internal class PdlDtoMapperTest {
         val pdlPerson = PersonDto(
             emptyList(),
             null, // Ingen oppholdsadresse
-            null, // ingen kontaktadresse
             listOf(
                 ForelderBarnRelasjonDto(
                     BARNIDENT,
@@ -873,7 +760,6 @@ internal class PdlDtoMapperTest {
                 )
             ),
             null, // Ingen oppholdsadresse
-            null, // ingen kontaktadresse
             listOf(
                 ForelderBarnRelasjonDto(
                     BARNIDENT,
@@ -922,7 +808,6 @@ internal class PdlDtoMapperTest {
         val pdlPerson = PersonDto(
             listOf(BostedsadresseDto(null, defaultVegadresse(), null, null)),
             null, // Ingen oppholdsadresse
-            null, // ingen kontaktadresse
             listOf(
                 ForelderBarnRelasjonDto(
                     BARNIDENT,
@@ -985,7 +870,6 @@ internal class PdlDtoMapperTest {
         val pdlPerson = PersonDto(
             listOf(BostedsadresseDto(null, defaultVegadresse(), null, null)),
             null, // Ingen oppholdsadresse
-            null, // ingen kontaktadresse
             listOf(
                 ForelderBarnRelasjonDto(
                     BARNIDENT,
@@ -1036,7 +920,6 @@ internal class PdlDtoMapperTest {
         val pdlPerson = PersonDto(
             listOf(BostedsadresseDto(null, defaultVegadresse(), null, null)),
             null, // Ingen oppholdsadresse
-            null, // ingen kontaktadresse
             listOf(
                 ForelderBarnRelasjonDto(
                     BARNIDENT,
@@ -1087,7 +970,6 @@ internal class PdlDtoMapperTest {
         val pdlPerson = PersonDto(
             listOf(BostedsadresseDto(null, defaultVegadresse(), null, null)),
             null, // Ingen oppholdsadresse
-            null, // ingen kontaktadresse
             listOf(
                 ForelderBarnRelasjonDto(
                     BARNIDENT,
@@ -1138,7 +1020,6 @@ internal class PdlDtoMapperTest {
         val pdlPerson = PersonDto(
             null, // Ingen bostedsadresse
             null, // Ingen oppholdsadresse
-            null, // ingen kontaktadresse
             listOf(
                 ForelderBarnRelasjonDto(
                     BARNIDENT,
@@ -1189,7 +1070,6 @@ internal class PdlDtoMapperTest {
         val pdlPerson = PersonDto(
             emptyList(),
             null, // Ingen oppholdsadresse
-            null, // ingen kontaktadresse
             listOf(
                 ForelderBarnRelasjonDto(
                     BARNIDENT,
@@ -1243,7 +1123,6 @@ internal class PdlDtoMapperTest {
         val pdlPerson = PersonDto(
             emptyList(),
             null, // Ingen oppholdsadresse
-            null, // ingen kontaktadresse
             listOf(
                 ForelderBarnRelasjonDto(
                     BARNIDENT,

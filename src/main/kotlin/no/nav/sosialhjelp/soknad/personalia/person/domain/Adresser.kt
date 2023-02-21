@@ -6,11 +6,6 @@ data class Bostedsadresse(
     val matrikkeladresse: Matrikkeladresse?
 )
 
-data class Kontaktadresse(
-    val coAdressenavn: String?,
-    val vegadresse: Vegadresse?
-)
-
 /**
  * Fra PDL-doc: https://pdldocs-navno.msappproxy.net/ekstern/index.html#opplysningstyper-adresser-oppholdsAdresse
  * Matrikkeladresse benyttes ytterst sjelden, og aldri når PDL er master. Ingen gyldig oppholdsadresser med matrikkeladresse funnet pr 26.juni.2020
