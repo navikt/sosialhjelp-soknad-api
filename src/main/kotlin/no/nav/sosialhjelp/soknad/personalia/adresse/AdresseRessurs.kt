@@ -83,7 +83,8 @@ class AdresseRessurs(
             behandlingsId in pabegynteSoknaderOpprettetUnderKsNedetid &&
             navEnhet != null &&
             soknad.jsonInternalSoknad?.mottaker == null &&
-            soknad.jsonInternalSoknad?.soknad?.mottaker == null
+            soknad.jsonInternalSoknad?.soknad?.mottaker?.navEnhetsnavn?.isBlank() == true &&
+            soknad.jsonInternalSoknad?.soknad?.mottaker?.enhetsnummer?.isBlank() == true
         ) {
             log.info("Forsøker å sette mottaker i soknad.json for søknad med behandlingsid=$behandlingsId.")
             soknad.jsonInternalSoknad?.mottaker = no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker()
