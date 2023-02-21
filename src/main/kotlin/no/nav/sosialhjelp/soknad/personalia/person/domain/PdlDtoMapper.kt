@@ -8,7 +8,6 @@ import no.nav.sosialhjelp.soknad.personalia.person.dto.EktefelleDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.FoedselDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.FolkeregisterpersonstatusDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.Gradering
-import no.nav.sosialhjelp.soknad.personalia.person.dto.KontaktadresseDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.MatrikkeladresseDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.NavnDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.OppholdsadresseDto
@@ -60,7 +59,6 @@ class PdlDtoMapper(
             null,
             mapToBostedsadresse(personDto.bostedsadresse),
             mapToOppholdssadresse(personDto.oppholdsadresse, personDto.bostedsadresse),
-            mapToKontaktadresse(personDto.kontaktadresse, personDto.bostedsadresse)
         )
     }
 
@@ -241,19 +239,6 @@ class PdlDtoMapper(
         return dtos
             .firstOrNull { it.vegadresse != null && filterVegadresseNotEqualToBostedsadresse(bostedsadresseDtos, it.vegadresse) }
             ?.let { Oppholdsadresse(it.coAdressenavn, it.vegadresse?.let { vegadresse -> mapToVegadresse(vegadresse) }) }
-    }
-
-    private fun mapToKontaktadresse(
-        dtos: List<KontaktadresseDto>?,
-        bostedsadresseDtos: List<BostedsadresseDto>?
-    ): Kontaktadresse? {
-        return if (dtos.isNullOrEmpty()) {
-            null
-        } else {
-            dtos
-                .firstOrNull { it.vegadresse != null && filterVegadresseNotEqualToBostedsadresse(bostedsadresseDtos, it.vegadresse) }
-                ?.let { Kontaktadresse(it.coAdressenavn, it.vegadresse?.let { vegadresse -> mapToVegadresse(vegadresse) }) }
-        }
     }
 
     private fun filterVegadresseNotEqualToBostedsadresse(

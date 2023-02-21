@@ -33,9 +33,34 @@ internal class PersonServiceTest {
         private const val FDAT_IDENT = "11122200000"
     }
 
-    private val person = Person("fornavn", "mellomnavn", "etternavn", "fnr", "ugift", emptyList(), null, null, null, null)
-    private val ektefelle = Ektefelle("fornavn", null, "etternavn", LocalDate.now(), "fnr2", true, false)
-    private val barn = Barn("fornavn", null, "etternavn", "barnident", null, true)
+    private val person = Person(
+        fornavn = "fornavn",
+        mellomnavn = "mellomnavn",
+        etternavn = "etternavn",
+        fnr = "fnr",
+        sivilstatus = "ugift",
+        statsborgerskap = emptyList(),
+        ektefelle = null,
+        bostedsadresse = null,
+        oppholdsadresse = null
+    )
+    private val ektefelle = Ektefelle(
+        fornavn = "fornavn",
+        mellomnavn = null,
+        etternavn = "etternavn",
+        fodselsdato = LocalDate.now(),
+        fnr = "fnr2",
+        folkeregistrertSammen = true,
+        ikkeTilgangTilEktefelle = false
+    )
+    private val barn = Barn(
+        fornavn = "fornavn",
+        mellomnavn = null,
+        etternavn = "etternavn",
+        fnr = "barnident",
+        fodselsdato = null,
+        folkeregistrertSammen = true
+    )
 
     private val hentPersonClient: HentPersonClient = mockk()
     private val mapper: PdlDtoMapper = mockk()
