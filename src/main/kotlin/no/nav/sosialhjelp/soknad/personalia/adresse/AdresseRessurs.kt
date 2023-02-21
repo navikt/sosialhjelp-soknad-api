@@ -88,7 +88,8 @@ class AdresseRessurs(
             soknad.jsonInternalSoknad?.soknad?.mottaker?.enhetsnummer?.isBlank() == true
         ) {
             log.info("Forsøker å sette mottaker i soknad.json for søknad med behandlingsid=$behandlingsId.")
-            setMottaker(soknad, navEnhet, eier)
+            setNavEnhetAsMottaker(soknad, navEnhet, eier)
+            soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
         }
 
         return AdresseMapper.mapToAdresserFrontend(
@@ -132,23 +133,26 @@ class AdresseRessurs(
             eier,
             jsonInternalSoknad.soknad,
             adresserFrontend.valg
-        )?.also { setMottaker(soknad, it, eier) }
+        )?.also {
+            setNavEnhetAsMottaker(soknad, it, eier)
+            soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
+        }
         return navEnhetFrontend?.let { listOf(it) } ?: emptyList()
     }
 
-    private fun setMottaker(
+    fun setNavEnhetAsMottaker(
         soknad: SoknadUnderArbeid,
         navEnhetFrontend: NavEnhetFrontend,
-        eier: String,
+        eier: String
     ) {
         soknad.jsonInternalSoknad?.mottaker = no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker()
             .withNavEnhetsnavn(createNavEnhetsnavn(navEnhetFrontend.enhetsnavn, navEnhetFrontend.kommunenavn))
             .withOrganisasjonsnummer(navEnhetFrontend.orgnr)
+
         soknad.jsonInternalSoknad?.soknad?.mottaker = JsonSoknadsmottaker()
             .withNavEnhetsnavn(createNavEnhetsnavn(navEnhetFrontend.enhetsnavn, navEnhetFrontend.kommunenavn))
             .withEnhetsnummer(navEnhetFrontend.enhetsnr)
             .withKommunenummer(navEnhetFrontend.kommuneNr)
-        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
     }
 
     private fun midlertidigLosningForPostadresse(oppholdsadresse: JsonAdresse?): JsonAdresse? {
