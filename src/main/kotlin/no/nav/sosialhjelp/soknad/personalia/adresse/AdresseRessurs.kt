@@ -95,23 +95,26 @@ class AdresseRessurs(
             eier,
             jsonInternalSoknad.soknad,
             adresserFrontend.valg
-        )?.also { setMottaker(soknad, it, eier) }
+        )?.also {
+            setNavEnhetAsMottaker(soknad, it, eier)
+            soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
+        }
         return navEnhetFrontend?.let { listOf(it) } ?: emptyList()
     }
 
-    private fun setMottaker(
+    fun setNavEnhetAsMottaker(
         soknad: SoknadUnderArbeid,
-        it: NavEnhetFrontend,
-        eier: String,
+        navEnhetFrontend: NavEnhetFrontend,
+        eier: String
     ) {
         soknad.jsonInternalSoknad?.mottaker = no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker()
-            .withNavEnhetsnavn(createNavEnhetsnavn(it.enhetsnavn, it.kommunenavn))
-            .withOrganisasjonsnummer(it.orgnr)
+            .withNavEnhetsnavn(createNavEnhetsnavn(navEnhetFrontend.enhetsnavn, navEnhetFrontend.kommunenavn))
+            .withOrganisasjonsnummer(navEnhetFrontend.orgnr)
+
         soknad.jsonInternalSoknad?.soknad?.mottaker = no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknadsmottaker()
-            .withNavEnhetsnavn(createNavEnhetsnavn(it.enhetsnavn, it.kommunenavn))
-            .withEnhetsnummer(it.enhetsnr)
-            .withKommunenummer(it.kommuneNr)
-        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
+            .withNavEnhetsnavn(createNavEnhetsnavn(navEnhetFrontend.enhetsnavn, navEnhetFrontend.kommunenavn))
+            .withEnhetsnummer(navEnhetFrontend.enhetsnr)
+            .withKommunenummer(navEnhetFrontend.kommuneNr)
     }
 
     private fun midlertidigLosningForPostadresse(oppholdsadresse: JsonAdresse?): JsonAdresse? {

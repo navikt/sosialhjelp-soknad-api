@@ -8,7 +8,6 @@ import io.mockk.just
 import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.runs
-import io.mockk.slot
 import io.mockk.unmockkObject
 import io.mockk.verify
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknadsmottaker
@@ -26,6 +25,7 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderAr
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.navenhet.dto.NavEnhetFrontend
+import no.nav.sosialhjelp.soknad.personalia.adresse.AdresseRessurs
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
@@ -68,11 +68,13 @@ internal class NavEnhetRessursTest {
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
     private val tilgangskontroll: Tilgangskontroll = mockk()
     private val navEnhetService: NavEnhetService = mockk()
+    private val adresseRessurs: AdresseRessurs = mockk()
 
     private val navEnhetRessurs = NavEnhetRessurs(
         tilgangskontroll = tilgangskontroll,
         soknadUnderArbeidRepository = soknadUnderArbeidRepository,
-        navEnhetService = navEnhetService
+        navEnhetService = navEnhetService,
+        adresseRessurs = adresseRessurs
     )
 
     private val navEnhetFrontend = NavEnhetFrontend(
@@ -206,31 +208,17 @@ internal class NavEnhetRessursTest {
     }
 
     @Test
-    fun `putNavEnhet - skal oppdatere JsonSoknadsmottaker`() {
+    fun `putNavEnhet - skal kalle adresseRessurs for oppdatering av mottaker`() {
         val soknadUnderArbeid = createSoknadUnderArbeid()
 
         every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns soknadUnderArbeid
-
-        val slot = slot<SoknadUnderArbeid>()
-        every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(slot), any()) } just runs
+        every { adresseRessurs.setNavEnhetAsMottaker(any(), any(), any()) } just runs
+        every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
 
         navEnhetRessurs.putNavEnhet(BEHANDLINGSID, navEnhetFrontend)
 
-        val oppdatertSoknadUnderArbeid = slot.captured
-
-        val mottaker = oppdatertSoknadUnderArbeid.jsonInternalSoknad?.mottaker
-        assertThat(mottaker).isNotNull
-        assertThat(mottaker?.navEnhetsnavn).contains(navEnhetFrontend.enhetsnavn, navEnhetFrontend.kommunenavn)
-        assertThat(mottaker?.organisasjonsnummer).isEqualTo(navEnhetFrontend.orgnr)
-
-        val soknadsmottaker = oppdatertSoknadUnderArbeid.jsonInternalSoknad!!.soknad.mottaker
-        val kombinertnavn = soknadsmottaker.navEnhetsnavn
-        val enhetsnavn = kombinertnavn.substring(0, kombinertnavn.indexOf(','))
-        val kommunenavn = kombinertnavn.substring(kombinertnavn.indexOf(',') + 2)
-        assertThat(navEnhetFrontend.enhetsnavn).isEqualTo(enhetsnavn)
-        assertThat(navEnhetFrontend.kommunenavn).isEqualTo(kommunenavn)
-        assertThat(navEnhetFrontend.enhetsnr).isEqualTo(soknadsmottaker.enhetsnummer)
+        verify(exactly = 1) { adresseRessurs.setNavEnhetAsMottaker(any(), any(), any()) }
     }
 
     @Test
