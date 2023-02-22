@@ -82,6 +82,7 @@ internal class AdresseRessursTest {
             JSON_SYS_USTRUKTURERT_ADRESSE,
             JSON_BRUKER_GATE_ADRESSE
         )
+        verify(exactly = 1) { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) }
     }
 
     @Test
@@ -100,6 +101,7 @@ internal class AdresseRessursTest {
             JSON_SYS_USTRUKTURERT_ADRESSE,
             JSON_SYS_MATRIKKELADRESSE
         )
+        verify(exactly = 1) { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) }
     }
 
     @Test
@@ -118,6 +120,7 @@ internal class AdresseRessursTest {
             JSON_SYS_USTRUKTURERT_ADRESSE,
             JSON_SYS_USTRUKTURERT_ADRESSE
         )
+        verify(exactly = 1) { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) }
     }
 
     @Test
@@ -234,6 +237,59 @@ internal class AdresseRessursTest {
         Assertions.assertThatExceptionOfType(AuthorizationException::class.java)
             .isThrownBy { adresseRessurs.updateAdresse(BEHANDLINGSID, adresserFrontendInput) }
         verify { soknadUnderArbeidRepository wasNot called }
+    }
+
+    @Test
+    fun `skal sette mottaker for utvalgte behandlingsider`() {
+        val behandlingsIdInList = "1100239YX"
+
+        val soknadUnderArbeidSlot = slot<SoknadUnderArbeid>()
+
+        every { tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(any()) } just runs
+        val soknadUnderArbeid = createJsonInternalSoknadWithOppholdsadresse(JsonAdresseValg.SOKNAD).copy(behandlingsId = behandlingsIdInList)
+        soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia.folkeregistrertAdresse = JSON_SYS_MATRIKKELADRESSE
+        every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns soknadUnderArbeid
+        every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(soknadUnderArbeidSlot), any()) } just runs
+        every { adresseSystemdata.innhentMidlertidigAdresse(any()) } returns JSON_SYS_USTRUKTURERT_ADRESSE
+
+        val navEnhet = NavEnhetFrontend(
+            orgnr = "1",
+            enhetsnr = "1111",
+            enhetsnavn = "Folkeregistrert NavEnhet",
+            kommunenavn = "4321",
+            kommuneNr = null,
+            behandlingsansvarlig = null,
+            valgt = null,
+            isMottakMidlertidigDeaktivert = null,
+            isMottakDeaktivert = null
+        )
+        every {
+            navEnhetService.getNavEnhet(any(), any(), any())
+        } returns navEnhet
+
+        val adresserFrontend = adresseRessurs.hentAdresser(behandlingsIdInList)
+        assertThatAdresserAreCorrectlyConverted(
+            adresserFrontend,
+            JSON_SYS_MATRIKKELADRESSE,
+            JSON_SYS_USTRUKTURERT_ADRESSE,
+            JSON_BRUKER_GATE_ADRESSE
+        )
+
+        val capturedSoknadUnderArbeid = soknadUnderArbeidSlot.captured
+        val mottaker = capturedSoknadUnderArbeid.jsonInternalSoknad?.mottaker
+        assertThat(mottaker).isNotNull
+        assertThat(mottaker?.navEnhetsnavn).contains(navEnhet.enhetsnavn, navEnhet.kommunenavn)
+        assertThat(mottaker?.organisasjonsnummer).isEqualTo(navEnhet.orgnr)
+
+        val soknadsmottaker = capturedSoknadUnderArbeid.jsonInternalSoknad!!.soknad.mottaker
+        val kombinertnavn = soknadsmottaker.navEnhetsnavn
+        val enhetsnavn = kombinertnavn.substring(0, kombinertnavn.indexOf(','))
+        val kommunenavn = kombinertnavn.substring(kombinertnavn.indexOf(',') + 2)
+        assertThat(navEnhet.enhetsnavn).isEqualTo(enhetsnavn)
+        assertThat(navEnhet.kommunenavn).isEqualTo(kommunenavn)
+        assertThat(navEnhet.enhetsnr).isEqualTo(soknadsmottaker.enhetsnummer)
+
+        verify(exactly = 2) { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) }
     }
 
     private fun assertThatAdresserAreCorrectlyConverted(
