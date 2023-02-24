@@ -52,6 +52,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import java.time.Clock
+import java.time.Duration
 import java.time.LocalDateTime
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
@@ -222,6 +223,11 @@ class SoknadService(
         soknadMetadata?.sistEndretDato = LocalDateTime.now(clock)
         soknadMetadata?.innsendtDato = LocalDateTime.now(clock)
         soknadMetadata?.status = SoknadMetadataInnsendingStatus.FERDIG
+
+        soknadMetadata?.let {
+            val tidBrukt = Duration.between(it.opprettetDato, it.innsendtDato)
+            prometheusMetricsService.reportInnsendingTid(tidBrukt.seconds)
+        }
         soknadMetadataRepository.oppdater(soknadMetadata)
         log.info("Søknad avsluttet $behandlingsId ${soknadMetadata?.skjema}, ${vedlegg.vedleggListe.size}")
     }
