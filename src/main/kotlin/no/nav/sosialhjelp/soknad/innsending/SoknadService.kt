@@ -224,6 +224,10 @@ class SoknadService(
         soknadMetadata?.innsendtDato = LocalDateTime.now(clock)
         soknadMetadata?.status = SoknadMetadataInnsendingStatus.FERDIG
 
+        if (soknadMetadata == null) {
+            log.info("Soknadmetadata er null?")
+        }
+
         soknadMetadata?.let {
             val tidBrukt = Duration.between(it.opprettetDato, it.innsendtDato)
             prometheusMetricsService.reportInnsendingTid(tidBrukt.seconds)
