@@ -77,7 +77,11 @@ class DigisosApiService(
 
         prometheusMetricsService.reportSendtMedDigisosApi()
         prometheusMetricsService.reportSoknadMottaker(soknadUnderArbeid.erEttersendelse, navKontorTilMetricNavn(navEnhetsnavn))
-        soknadMetadataRepository.hent(behandlingsId)?.let {
+        val soknadMetadata = soknadMetadataRepository.hent(behandlingsId)
+        if (soknadMetadata == null) {
+            log.info("soknadmetadata er null?")
+        }
+        soknadMetadata?.let {
             val tidBrukt = Duration.between(it.opprettetDato, it.innsendtDato)
             log.info("Måler tid brukt fra ${it.opprettetDato} til ${it.innsendtDato}")
             prometheusMetricsService.reportInnsendingTid(tidBrukt.seconds)
