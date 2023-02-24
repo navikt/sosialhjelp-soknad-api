@@ -77,15 +77,15 @@ class DigisosApiService(
 
         prometheusMetricsService.reportSendtMedDigisosApi()
         prometheusMetricsService.reportSoknadMottaker(soknadUnderArbeid.erEttersendelse, navKontorTilMetricNavn(navEnhetsnavn))
-        val soknadMetadata = soknadMetadataRepository.hent(behandlingsId)
-        if (soknadMetadata == null) {
-            log.info("soknadmetadata er null?")
-        }
-        soknadMetadata?.let {
-            val tidBrukt = Duration.between(it.opprettetDato, it.innsendtDato)
-            log.info("Måler tid brukt fra ${it.opprettetDato} til ${it.innsendtDato}")
-            prometheusMetricsService.reportInnsendingTid(tidBrukt.seconds)
-        }
+//        val soknadMetadata = soknadMetadataRepository.hent(behandlingsId)
+//        if (soknadMetadata == null) {
+//            log.info("soknadmetadata er null?")
+//        }
+//        soknadMetadata?.let {
+//            val tidBrukt = Duration.between(it.opprettetDato, it.innsendtDato)
+//            log.info("Måler tid brukt fra ${it.opprettetDato} til ${it.innsendtDato}")
+//            prometheusMetricsService.reportInnsendingTid(tidBrukt.seconds)
+//        }
 
         slettSoknadUnderArbeidEtterSendingTilFiks(soknadUnderArbeid)
         return digisosId
@@ -103,6 +103,16 @@ class DigisosApiService(
         soknadMetadata?.sistEndretDato = LocalDateTime.now(clock)
         soknadMetadata?.innsendtDato = LocalDateTime.now(clock)
         soknadMetadata?.status = SoknadMetadataInnsendingStatus.SENDT_MED_DIGISOS_API
+
+        if (soknadMetadata == null) {
+            log.info("soknadmetadata er null?")
+        }
+        soknadMetadata?.let {
+            val tidBrukt = Duration.between(it.opprettetDato, it.innsendtDato)
+            log.info("Måler tid brukt fra ${it.opprettetDato} til ${it.innsendtDato}")
+            prometheusMetricsService.reportInnsendingTid(tidBrukt.seconds)
+        }
+
         soknadMetadataRepository.oppdater(soknadMetadata)
         log.info("Søknad avsluttet $behandlingsId ${soknadMetadata?.skjema}, ${vedlegg.vedleggListe.size}")
     }
