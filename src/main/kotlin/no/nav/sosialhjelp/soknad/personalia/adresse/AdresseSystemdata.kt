@@ -86,12 +86,11 @@ class AdresseSystemdata(
     }
 
     private fun innhentFolkeregistrertAdresse(personIdentifikator: String): JsonAdresse? {
-        return personService.hentPerson(personIdentifikator)?.let { mapToJsonAdresse(it.bostedsadresse) }
+        return personService.hentPerson(personIdentifikator)?.bostedsadresse.let { mapToJsonAdresse(it) }
     }
 
     fun innhentMidlertidigAdresse(personIdentifikator: String): JsonAdresse? {
-        return personService.hentPerson(personIdentifikator)?.let { mapToJsonAdresse(it.oppholdsadresse) }
-        //        return mapToJsonAdresse(person.getKontaktadresse());
+        return personService.hentPerson(personIdentifikator)?.oppholdsadresse.let { mapToJsonAdresse(it) }
     }
 
     private fun hentMatrikkelAdresseFraKartverket(matrikkelId: String): KartverketMatrikkelAdresse? {

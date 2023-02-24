@@ -307,7 +307,17 @@ internal class FamilieSystemdataTest {
     }
 
     private fun createPerson(sivilstatus: String, ektefelle: Ektefelle?): Person {
-        return Person("fornavn", "mellomnavn", "etternavn", EIER, sivilstatus, emptyList(), ektefelle, null, null, null)
+        return Person(
+            fornavn = "fornavn",
+            mellomnavn = "mellomnavn",
+            etternavn = "etternavn",
+            fnr = EIER,
+            sivilstatus = sivilstatus,
+            statsborgerskap = emptyList(),
+            ektefelle = ektefelle,
+            bostedsadresse = null,
+            oppholdsadresse = null
+        )
     }
 
     companion object {

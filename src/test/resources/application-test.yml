@@ -17,9 +17,6 @@ feature.fiks.kryptering.enabled: false
 loginservice.url: http://localhost:8181/sosialhjelp/soknad-api/local/cookie
 
 no.nav.security.jwt.issuer:
-  azuread:
-    discoveryurl: http://localhost:${mock-oauth2-server.port}/azuread/.well-known/openid-configuration
-    accepted_audience: someaudience
   selvbetjening:
     discoveryurl: http://localhost:${mock-oauth2-server.port}/selvbetjening/.well-known/openid-configuration
     accepted_audience: someaudience

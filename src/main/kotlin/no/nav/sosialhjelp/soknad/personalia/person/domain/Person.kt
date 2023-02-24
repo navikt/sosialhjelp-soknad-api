@@ -10,5 +10,4 @@ data class Person(
     var ektefelle: Ektefelle?,
     val bostedsadresse: Bostedsadresse?,
     val oppholdsadresse: Oppholdsadresse?,
-    val kontaktadresse: Kontaktadresse?
 )
