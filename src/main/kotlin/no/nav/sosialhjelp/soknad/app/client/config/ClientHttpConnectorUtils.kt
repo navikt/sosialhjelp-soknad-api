@@ -4,7 +4,6 @@ import io.netty.resolver.DefaultAddressResolverGroup
 import org.slf4j.MDC
 import org.springframework.http.client.reactive.ReactorClientHttpConnector
 import org.springframework.web.reactive.function.client.ClientRequest
-import org.springframework.web.reactive.function.client.ClientResponse
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction
 import org.springframework.web.reactive.function.client.ExchangeFunction
 import org.springframework.web.reactive.function.client.WebClient
@@ -33,11 +32,10 @@ fun proxiedWebClientBuilder(webClientBuilder: WebClient.Builder, proxiedHttpClie
 }
 
 val mdcExchangeFilter = ExchangeFilterFunction { request: ClientRequest, next: ExchangeFunction ->
-    // here runs on main(request's) thread
+    // Kopierer MDC-context inn til reactor threads
     val map: Map<String, String>? = MDC.getCopyOfContextMap()
     next.exchange(request)
-        .doOnNext { _: ClientResponse? -> //   <======= HERE
-            // here runs on reactor's thread
+        .doOnNext {
             if (map != null) {
                 MDC.setContextMap(map)
             }
