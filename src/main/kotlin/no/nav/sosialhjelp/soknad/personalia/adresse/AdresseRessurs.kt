@@ -7,9 +7,10 @@ import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.soknad.app.Constants
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.navenhet.NavEnhetService
-import no.nav.sosialhjelp.soknad.navenhet.NavEnhetUtils
+import no.nav.sosialhjelp.soknad.navenhet.NavEnhetUtils.createNavEnhetsnavn
 import no.nav.sosialhjelp.soknad.navenhet.dto.NavEnhetFrontend
 import no.nav.sosialhjelp.soknad.personalia.adresse.dto.AdresserFrontend
 import no.nav.sosialhjelp.soknad.personalia.adresse.dto.AdresserFrontendInput
@@ -87,13 +88,7 @@ class AdresseRessurs(
             soknad.jsonInternalSoknad?.soknad?.mottaker?.enhetsnummer?.isBlank() == true
         ) {
             log.info("Forsøker å sette mottaker i soknad.json for søknad med behandlingsid=$behandlingsId.")
-            soknad.jsonInternalSoknad?.mottaker = no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker()
-                .withNavEnhetsnavn(NavEnhetUtils.createNavEnhetsnavn(navEnhet.enhetsnavn, navEnhet.kommunenavn))
-                .withOrganisasjonsnummer(navEnhet.orgnr)
-            soknad.jsonInternalSoknad?.soknad?.mottaker = JsonSoknadsmottaker()
-                .withNavEnhetsnavn(NavEnhetUtils.createNavEnhetsnavn(navEnhet.enhetsnavn, navEnhet.kommunenavn))
-                .withEnhetsnummer(navEnhet.enhetsnr)
-                .withKommunenummer(navEnhet.kommuneNr)
+            setNavEnhetAsMottaker(soknad, navEnhet, eier)
             soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
         }
 
@@ -138,8 +133,26 @@ class AdresseRessurs(
             eier,
             jsonInternalSoknad.soknad,
             adresserFrontend.valg
-        )
+        )?.also {
+            setNavEnhetAsMottaker(soknad, it, eier)
+            soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
+        }
         return navEnhetFrontend?.let { listOf(it) } ?: emptyList()
+    }
+
+    fun setNavEnhetAsMottaker(
+        soknad: SoknadUnderArbeid,
+        navEnhetFrontend: NavEnhetFrontend,
+        eier: String
+    ) {
+        soknad.jsonInternalSoknad?.mottaker = no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker()
+            .withNavEnhetsnavn(createNavEnhetsnavn(navEnhetFrontend.enhetsnavn, navEnhetFrontend.kommunenavn))
+            .withOrganisasjonsnummer(navEnhetFrontend.orgnr)
+
+        soknad.jsonInternalSoknad?.soknad?.mottaker = JsonSoknadsmottaker()
+            .withNavEnhetsnavn(createNavEnhetsnavn(navEnhetFrontend.enhetsnavn, navEnhetFrontend.kommunenavn))
+            .withEnhetsnummer(navEnhetFrontend.enhetsnr)
+            .withKommunenummer(navEnhetFrontend.kommuneNr)
     }
 
     private fun midlertidigLosningForPostadresse(oppholdsadresse: JsonAdresse?): JsonAdresse? {

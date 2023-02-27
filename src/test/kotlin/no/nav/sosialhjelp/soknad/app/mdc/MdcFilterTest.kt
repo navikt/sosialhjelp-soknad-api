@@ -5,6 +5,7 @@ import no.nav.sosialhjelp.soknad.app.filter.MdcFilter
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.MDC_BEHANDLINGS_ID
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.MDC_CALL_ID
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.MDC_CONSUMER_ID
+import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.MDC_PATH
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.getFromMDC
 import no.nav.sosialhjelp.soknad.app.subjecthandler.StaticSubjectHandlerImpl
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
@@ -71,6 +72,18 @@ internal class MdcFilterTest {
         mdcFilter.doFilter(request, response, filterChain)
 
         assertThat(filterChain.capturedMDCValue(MDC_CONSUMER_ID)).isEqualTo("StaticConsumerId")
+    }
+
+    @Test
+    fun `should add path`() {
+        val request = MockHttpServletRequest()
+        request.requestURI = "requestUri"
+
+        val response = MockHttpServletResponse()
+
+        mdcFilter.doFilter(request, response, filterChain)
+
+        assertThat(filterChain.capturedMDCValue(MDC_PATH)).isEqualTo("requestUri")
     }
 
     @Test

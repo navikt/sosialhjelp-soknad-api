@@ -1,13 +1,12 @@
 package no.nav.sosialhjelp.soknad.navenhet
 
-import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknadsmottaker
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresseValg
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.soknad.app.Constants
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
-import no.nav.sosialhjelp.soknad.navenhet.NavEnhetUtils.createNavEnhetsnavn
 import no.nav.sosialhjelp.soknad.navenhet.dto.NavEnhetFrontend
+import no.nav.sosialhjelp.soknad.personalia.adresse.AdresseRessurs
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
@@ -23,7 +22,8 @@ import org.springframework.web.bind.annotation.RestController
 class NavEnhetRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
-    private val navEnhetService: NavEnhetService
+    private val navEnhetService: NavEnhetService,
+    private val adresseRessurs: AdresseRessurs
 ) {
 
     @GetMapping("/navEnheter")
@@ -65,13 +65,7 @@ class NavEnhetRessurs(
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
-        soknad.jsonInternalSoknad?.mottaker = no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker()
-            .withNavEnhetsnavn(createNavEnhetsnavn(navEnhetFrontend.enhetsnavn, navEnhetFrontend.kommunenavn))
-            .withOrganisasjonsnummer(navEnhetFrontend.orgnr)
-        soknad.jsonInternalSoknad?.soknad?.mottaker = JsonSoknadsmottaker()
-            .withNavEnhetsnavn(createNavEnhetsnavn(navEnhetFrontend.enhetsnavn, navEnhetFrontend.kommunenavn))
-            .withEnhetsnummer(navEnhetFrontend.enhetsnr)
-            .withKommunenummer(navEnhetFrontend.kommuneNr)
+        adresseRessurs.setNavEnhetAsMottaker(soknad, navEnhetFrontend, eier)
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
     }
 }
