@@ -5,6 +5,7 @@ import io.netty.channel.ChannelOption
 import no.ks.fiks.svarut.klient.model.Forsendelse
 import no.ks.fiks.svarut.klient.model.ForsendelsesId
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
+import no.nav.sosialhjelp.soknad.app.client.config.mdcExchangeFilter
 import no.nav.sosialhjelp.soknad.app.exceptions.TjenesteUtilgjengeligException
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.createHttpEntity
 import org.apache.commons.io.IOUtils
@@ -59,6 +60,7 @@ class SvarUtClient(
             it.defaultCodecs().jackson2JsonEncoder(Jackson2JsonEncoder(objectMapper))
         }
         .defaultHeader(AUTHORIZATION, basicAuthentication)
+        .filter(mdcExchangeFilter)
         .build()
 
     fun ping() {

@@ -8,6 +8,7 @@ import no.nav.sosialhjelp.api.fiks.exceptions.FiksException
 import no.nav.sosialhjelp.soknad.app.Constants
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.client.config.RetryUtils
+import no.nav.sosialhjelp.soknad.app.client.config.mdcExchangeFilter
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.KrypteringService.Companion.waitForFutures
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.createHttpEntity
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.digisosObjectMapper
@@ -67,6 +68,7 @@ class DigisosApiV2Client(
         }
         .defaultHeader(Constants.HEADER_INTEGRASJON_ID, integrasjonsidFiks)
         .defaultHeader(Constants.HEADER_INTEGRASJON_PASSORD, integrasjonpassordFiks)
+        .filter(mdcExchangeFilter)
         .build()
 
     companion object {

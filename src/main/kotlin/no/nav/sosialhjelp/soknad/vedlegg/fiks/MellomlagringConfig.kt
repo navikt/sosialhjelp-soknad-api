@@ -3,6 +3,7 @@ package no.nav.sosialhjelp.soknad.vedlegg.fiks
 import io.netty.channel.ChannelOption
 import no.nav.sosialhjelp.soknad.app.Constants.HEADER_INTEGRASJON_ID
 import no.nav.sosialhjelp.soknad.app.Constants.HEADER_INTEGRASJON_PASSORD
+import no.nav.sosialhjelp.soknad.app.client.config.mdcExchangeFilter
 import no.nav.sosialhjelp.soknad.auth.maskinporten.MaskinportenClient
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DokumentlagerClient
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.KrypteringService
@@ -50,6 +51,7 @@ class MellomlagringConfig(
         }
         .defaultHeader(HEADER_INTEGRASJON_ID, integrasjonsidFiks)
         .defaultHeader(HEADER_INTEGRASJON_PASSORD, integrasjonpassordFiks)
+        .filter(mdcExchangeFilter)
         .build()
 
     companion object {
