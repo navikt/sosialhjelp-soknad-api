@@ -1,12 +1,9 @@
 package no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid
 
 import com.fasterxml.jackson.core.JsonProcessingException
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.ObjectWriter
-import no.nav.sbl.soknadsosialhjelp.json.AdresseMixIn
+import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
-import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.exceptions.SamtidigOppdateringException
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadLaastException
@@ -31,8 +28,7 @@ class SoknadUnderArbeidRepositoryJdbc(
     private val opplastetVedleggRepository: OpplastetVedleggRepository,
 ) : SoknadUnderArbeidRepository {
 
-    private val mapper: ObjectMapper = ObjectMapper().addMixIn(JsonAdresse::class.java, AdresseMixIn::class.java)
-    private val writer: ObjectWriter = mapper.writerWithDefaultPrettyPrinter()
+    private val mapper = JsonSosialhjelpObjectMapper.createObjectMapper()
 
     private val soknadUnderArbeidRowMapper = SoknadUnderArbeidRowMapper()
 
@@ -172,7 +168,7 @@ class SoknadUnderArbeidRepositoryJdbc(
 
     private fun mapJsonSoknadInternalTilFil(jsonInternalSoknad: JsonInternalSoknad): ByteArray {
         return try {
-            val internalSoknad = writer.writeValueAsString(jsonInternalSoknad)
+            val internalSoknad = mapper.writeValueAsString(jsonInternalSoknad)
             JsonSosialhjelpValidator.ensureValidInternalSoknad(internalSoknad)
             internalSoknad.toByteArray(StandardCharsets.UTF_8)
         } catch (e: JsonProcessingException) {
