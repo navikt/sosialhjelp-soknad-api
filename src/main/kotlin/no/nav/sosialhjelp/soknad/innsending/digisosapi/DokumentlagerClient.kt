@@ -5,6 +5,7 @@ import no.nav.sosialhjelp.soknad.app.Constants.BEARER
 import no.nav.sosialhjelp.soknad.app.Constants.HEADER_INTEGRASJON_ID
 import no.nav.sosialhjelp.soknad.app.Constants.HEADER_INTEGRASJON_PASSORD
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
+import no.nav.sosialhjelp.soknad.app.client.config.mdcExchangeFilter
 import no.nav.sosialhjelp.soknad.app.exceptions.TjenesteUtilgjengeligException
 import no.nav.sosialhjelp.soknad.auth.maskinporten.MaskinportenClient
 import org.springframework.beans.factory.annotation.Value
@@ -51,6 +52,7 @@ class DokumentlagerClient(
             it.defaultCodecs().jackson2JsonDecoder(Jackson2JsonDecoder(Utils.digisosObjectMapper))
             it.defaultCodecs().jackson2JsonEncoder(Jackson2JsonEncoder(Utils.digisosObjectMapper))
         }
+        .filter(mdcExchangeFilter)
         .build()
 
     fun getDokumentlagerPublicKeyX509Certificate(): X509Certificate {
