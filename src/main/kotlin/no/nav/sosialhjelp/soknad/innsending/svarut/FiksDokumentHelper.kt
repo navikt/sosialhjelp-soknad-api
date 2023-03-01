@@ -1,15 +1,12 @@
 package no.nav.sosialhjelp.soknad.innsending.svarut
 
 import com.fasterxml.jackson.core.JsonProcessingException
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.ObjectWriter
 import no.ks.fiks.svarut.klient.model.Dokument
-import no.nav.sbl.soknadsosialhjelp.json.AdresseMixIn
+import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator.ensureValidSoknad
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator.ensureValidVedlegg
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad
-import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedlegg
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
@@ -29,8 +26,8 @@ class FiksDokumentHelper(
     private val innsendingService: InnsendingService,
     private val sosialhjelpPdfGenerator: SosialhjelpPdfGenerator
 ) {
-    private val mapper: ObjectMapper = ObjectMapper().addMixIn(JsonAdresse::class.java, AdresseMixIn::class.java)
-    private val writer: ObjectWriter = mapper.writerWithDefaultPrettyPrinter()
+    private val mapper = JsonSosialhjelpObjectMapper.createObjectMapper()
+    private val writer = mapper.writerWithDefaultPrettyPrinter()
 
     fun lagDokumentForSoknadJson(internalSoknad: JsonInternalSoknad, map: MutableMap<String, InputStream>): Dokument {
         val filnavn = "soknad.json"

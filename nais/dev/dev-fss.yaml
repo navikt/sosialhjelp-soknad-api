@@ -135,3 +135,5 @@ spec:
       value: "sosialhjelp-soknad-api-redis.teamdigisos.svc.nais.local"
     - name: UNLEASH_INSTANCE_ID
       value: "dev-fss"
+    - name: MASKINPORTEN_WELL_KNOWN_URL
+      value: "https://ver2.maskinporten.no/.well-known/oauth-authorization-server"
