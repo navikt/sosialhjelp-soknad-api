@@ -29,6 +29,7 @@ class SoknadUnderArbeidRepositoryJdbc(
 ) : SoknadUnderArbeidRepository {
 
     private val mapper = JsonSosialhjelpObjectMapper.createObjectMapper()
+    private val writer = mapper.writerWithDefaultPrettyPrinter()
 
     private val soknadUnderArbeidRowMapper = SoknadUnderArbeidRowMapper()
 
@@ -168,7 +169,7 @@ class SoknadUnderArbeidRepositoryJdbc(
 
     private fun mapJsonSoknadInternalTilFil(jsonInternalSoknad: JsonInternalSoknad): ByteArray {
         return try {
-            val internalSoknad = mapper.writeValueAsString(jsonInternalSoknad)
+            val internalSoknad = writer.writeValueAsString(jsonInternalSoknad)
             JsonSosialhjelpValidator.ensureValidInternalSoknad(internalSoknad)
             internalSoknad.toByteArray(StandardCharsets.UTF_8)
         } catch (e: JsonProcessingException) {

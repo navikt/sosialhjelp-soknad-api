@@ -27,6 +27,7 @@ class FiksDokumentHelper(
     private val sosialhjelpPdfGenerator: SosialhjelpPdfGenerator
 ) {
     private val mapper = JsonSosialhjelpObjectMapper.createObjectMapper()
+    private val writer = mapper.writerWithDefaultPrettyPrinter()
 
     fun lagDokumentForSoknadJson(internalSoknad: JsonInternalSoknad, map: MutableMap<String, InputStream>): Dokument {
         val filnavn = "soknad.json"
@@ -131,7 +132,7 @@ class FiksDokumentHelper(
 
     private fun mapJsonSoknadTilFil(jsonSoknad: JsonSoknad): ByteArray {
         return try {
-            val soknad = mapper.writeValueAsString(jsonSoknad)
+            val soknad = writer.writeValueAsString(jsonSoknad)
             ensureValidSoknad(soknad)
             soknad.toByteArray(StandardCharsets.UTF_8)
         } catch (e: JsonProcessingException) {
@@ -142,7 +143,7 @@ class FiksDokumentHelper(
 
     private fun mapJsonVedleggTilFil(jsonVedleggSpesifikasjon: JsonVedleggSpesifikasjon): ByteArray {
         return try {
-            val jsonVedlegg = mapper.writeValueAsString(jsonVedleggSpesifikasjon)
+            val jsonVedlegg = writer.writeValueAsString(jsonVedleggSpesifikasjon)
             ensureValidVedlegg(jsonVedlegg)
             jsonVedlegg.toByteArray(StandardCharsets.UTF_8)
         } catch (e: JsonProcessingException) {
