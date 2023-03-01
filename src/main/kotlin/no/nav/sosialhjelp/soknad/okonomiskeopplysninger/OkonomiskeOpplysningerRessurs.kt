@@ -102,7 +102,7 @@ class OkonomiskeOpplysningerRessurs(
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier)
 
         return VedleggFrontends(
-            okonomiskeOpplysninger = jsonVedleggs.map { mapMellomlagredeVedleggToVedleggFrontend(it, jsonOkonomi, mellomlagredeVedlegg, behandlingsId) },
+            okonomiskeOpplysninger = jsonVedleggs.map { mapMellomlagredeVedleggToVedleggFrontend(it, jsonOkonomi, mellomlagredeVedlegg) },
             slettedeVedlegg = slettedeVedlegg,
             isOkonomiskeOpplysningerBekreftet = isOkonomiskeOpplysningerBekreftet(jsonOkonomi)
         )
