@@ -1,13 +1,10 @@
 package no.nav.sosialhjelp.soknad.personalia.familie
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.ObjectWriter
 import io.mockk.every
 import io.mockk.mockk
-import no.nav.sbl.soknadsosialhjelp.json.AdresseMixIn
+import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator.ensureValidInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
-import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeSystem
@@ -37,13 +34,7 @@ import java.time.LocalDateTime
 
 internal class FamilieSystemdataTest {
 
-    private val writer: ObjectWriter
-
-    init {
-        val mapper = ObjectMapper()
-        mapper.addMixIn(JsonAdresse::class.java, AdresseMixIn::class.java)
-        writer = mapper.writerWithDefaultPrettyPrinter()
-    }
+    private val mapper = JsonSosialhjelpObjectMapper.createObjectMapper()
 
     private val personService: PersonService = mockk()
     private val familieSystemdata = FamilieSystemdata(personService)
@@ -57,7 +48,7 @@ internal class FamilieSystemdataTest {
         val soknadUnderArbeid = createSoknadUnderArbeid()
         familieSystemdata.updateSystemdataIn(soknadUnderArbeid)
 
-        val internalSoknad = writer.writeValueAsString(soknadUnderArbeid.jsonInternalSoknad)
+        val internalSoknad = mapper.writeValueAsString(soknadUnderArbeid.jsonInternalSoknad)
         ensureValidInternalSoknad(internalSoknad)
         val sivilstatus = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.familie.sivilstatus
         assertThat(sivilstatus.kilde).isEqualTo(JsonKilde.SYSTEM)
@@ -78,7 +69,7 @@ internal class FamilieSystemdataTest {
         val soknadUnderArbeid = createSoknadUnderArbeid()
         familieSystemdata.updateSystemdataIn(soknadUnderArbeid)
 
-        val internalSoknad = writer.writeValueAsString(soknadUnderArbeid.jsonInternalSoknad)
+        val internalSoknad = mapper.writeValueAsString(soknadUnderArbeid.jsonInternalSoknad)
         ensureValidInternalSoknad(internalSoknad)
         val sivilstatus = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.familie.sivilstatus
         assertThat(sivilstatus).isNull()
@@ -107,7 +98,7 @@ internal class FamilieSystemdataTest {
         val soknadUnderArbeid = createSoknadUnderArbeid()
         familieSystemdata.updateSystemdataIn(soknadUnderArbeid)
 
-        val internalSoknad = writer.writeValueAsString(soknadUnderArbeid.jsonInternalSoknad)
+        val internalSoknad = mapper.writeValueAsString(soknadUnderArbeid.jsonInternalSoknad)
         ensureValidInternalSoknad(internalSoknad)
         val sivilstatus = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.familie.sivilstatus
         assertThat(sivilstatus.kilde).isEqualTo(JsonKilde.SYSTEM)
@@ -127,7 +118,7 @@ internal class FamilieSystemdataTest {
         val soknadUnderArbeid = createSoknadUnderArbeid()
         familieSystemdata.updateSystemdataIn(soknadUnderArbeid)
 
-        val internalSoknad = writer.writeValueAsString(soknadUnderArbeid.jsonInternalSoknad)
+        val internalSoknad = mapper.writeValueAsString(soknadUnderArbeid.jsonInternalSoknad)
         ensureValidInternalSoknad(internalSoknad)
         val forsorgerplikt = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.familie.forsorgerplikt
         assertThat(forsorgerplikt.harForsorgerplikt.kilde).isEqualTo(JsonKilde.SYSTEM)
@@ -149,7 +140,7 @@ internal class FamilieSystemdataTest {
         val soknadUnderArbeid = createSoknadUnderArbeid()
         familieSystemdata.updateSystemdataIn(soknadUnderArbeid)
 
-        val internalSoknad = writer.writeValueAsString(soknadUnderArbeid.jsonInternalSoknad)
+        val internalSoknad = mapper.writeValueAsString(soknadUnderArbeid.jsonInternalSoknad)
         ensureValidInternalSoknad(internalSoknad)
         val forsorgerplikt = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.familie.forsorgerplikt
         assertThat(forsorgerplikt.harForsorgerplikt.kilde).isEqualTo(JsonKilde.SYSTEM)
@@ -174,7 +165,7 @@ internal class FamilieSystemdataTest {
         val soknadUnderArbeid = createSoknadUnderArbeid(jsonInternalSoknad)
         familieSystemdata.updateSystemdataIn(soknadUnderArbeid)
 
-        val internalSoknad = writer.writeValueAsString(soknadUnderArbeid.jsonInternalSoknad)
+        val internalSoknad = mapper.writeValueAsString(soknadUnderArbeid.jsonInternalSoknad)
         ensureValidInternalSoknad(internalSoknad)
         val forsorgerplikt = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.familie.forsorgerplikt
         assertThat(forsorgerplikt.harForsorgerplikt.kilde).isEqualTo(JsonKilde.SYSTEM)
@@ -210,7 +201,7 @@ internal class FamilieSystemdataTest {
         val soknadUnderArbeid = createSoknadUnderArbeid(jsonInternalSoknad)
         familieSystemdata.updateSystemdataIn(soknadUnderArbeid)
 
-        val internalSoknad = writer.writeValueAsString(soknadUnderArbeid.jsonInternalSoknad)
+        val internalSoknad = mapper.writeValueAsString(soknadUnderArbeid.jsonInternalSoknad)
         ensureValidInternalSoknad(internalSoknad)
         val forsorgerplikt = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.familie.forsorgerplikt
         assertThat(forsorgerplikt.harForsorgerplikt.kilde).isEqualTo(JsonKilde.BRUKER)
@@ -232,7 +223,7 @@ internal class FamilieSystemdataTest {
         val soknadUnderArbeid = createSoknadUnderArbeid(createJsonInternalSoknadWithBarnWithUserFilledInfoOnSystemBarn())
         familieSystemdata.updateSystemdataIn(soknadUnderArbeid)
 
-        val internalSoknad = writer.writeValueAsString(soknadUnderArbeid.jsonInternalSoknad)
+        val internalSoknad = mapper.writeValueAsString(soknadUnderArbeid.jsonInternalSoknad)
         ensureValidInternalSoknad(internalSoknad)
         val forsorgerplikt = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.familie.forsorgerplikt
         assertThat(forsorgerplikt.harForsorgerplikt.kilde).isEqualTo(JsonKilde.SYSTEM)
@@ -256,7 +247,7 @@ internal class FamilieSystemdataTest {
         val soknadUnderArbeid = createSoknadUnderArbeid()
         familieSystemdata.updateSystemdataIn(soknadUnderArbeid)
 
-        val internalSoknad = writer.writeValueAsString(soknadUnderArbeid.jsonInternalSoknad)
+        val internalSoknad = mapper.writeValueAsString(soknadUnderArbeid.jsonInternalSoknad)
         ensureValidInternalSoknad(internalSoknad)
         val sivilstatus = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.familie.sivilstatus
         assertThat(sivilstatus).isNull()
