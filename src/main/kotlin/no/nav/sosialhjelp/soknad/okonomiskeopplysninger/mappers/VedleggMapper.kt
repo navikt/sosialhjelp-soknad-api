@@ -14,7 +14,6 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktI
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktUtgift
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
-import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedlegg
 import no.nav.sosialhjelp.soknad.ettersending.dto.EttersendtVedlegg
 import no.nav.sosialhjelp.soknad.ettersending.innsendtsoknad.EttersendelseUtils.soknadSendtForMindreEnn30DagerSiden
@@ -30,9 +29,6 @@ object VedleggMapper {
 
     private const val ANNET_ANNET = "annet|annet"
     private const val LASTET_OPP = "LastetOpp"
-
-    private val behandlingsIdsToPass = listOf("11001ZKC1", "11001ZJUW", "11001ZLWX", "11001ZiM0", "11001ZL1W", "11001ZKKX", "11001ZKSi", "11001ZK2S", "11001ZKAJ", "11001ZJ4N", "11001ZR3i")
-    private val log by logger()
 
     fun mapToVedleggFrontend(
         vedlegg: JsonVedlegg,
@@ -55,9 +51,8 @@ object VedleggMapper {
         vedlegg: JsonVedlegg,
         jsonOkonomi: JsonOkonomi,
         mellomlagredeVedlegg: List<MellomlagretVedleggMetadata>,
-        behandlingsId: String
     ): VedleggFrontend {
-        val filer = mapJsonFilerAndMellomlagredVedleggToFilerFrontend(vedlegg, mellomlagredeVedlegg, behandlingsId)
+        val filer = mapJsonFilerAndMellomlagredVedleggToFilerFrontend(vedlegg, mellomlagredeVedlegg)
         val vedleggType = getSammensattNavn(vedlegg)
         val rader = getRader(jsonOkonomi, vedleggType)
         return VedleggFrontend(
@@ -221,19 +216,8 @@ object VedleggMapper {
     private fun mapJsonFilerAndMellomlagredVedleggToFilerFrontend(
         jsonVedlegg: JsonVedlegg,
         mellomlagredeVedlegg: List<MellomlagretVedleggMetadata>,
-        behandlingsId: String
     ): List<FilFrontend> {
-        val filer = jsonVedlegg.filer
-        if (behandlingsId in behandlingsIdsToPass) {
-            log.info("Slipper gjennom behandlingsId $behandlingsId")
-            return filer
-                .mapNotNull { fil ->
-                    mellomlagredeVedlegg
-                        .firstOrNull { it.filnavn == fil.filnavn }
-                        ?.let { FilFrontend(fil.filnavn, it.filId) }
-                }
-        }
-        return filer
+        return jsonVedlegg.filer
             .map { fil: JsonFiler ->
                 mellomlagredeVedlegg
                     .firstOrNull { it.filnavn == fil.filnavn }
