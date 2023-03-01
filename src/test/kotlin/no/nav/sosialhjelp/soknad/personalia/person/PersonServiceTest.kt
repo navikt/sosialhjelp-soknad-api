@@ -59,6 +59,7 @@ internal class PersonServiceTest {
         etternavn = "etternavn",
         fnr = "barnident",
         fodselsdato = null,
+        harDeltBosted = false,
         folkeregistrertSammen = true
     )
 

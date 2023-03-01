@@ -7,6 +7,7 @@ import no.nav.sosialhjelp.soknad.personalia.person.domain.PdlDtoMapper.Companion
 import no.nav.sosialhjelp.soknad.personalia.person.dto.AdressebeskyttelseDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.BarnDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.BostedsadresseDto
+import no.nav.sosialhjelp.soknad.personalia.person.dto.DeltBostedDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.EktefelleDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.EndringDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.FoedselDto
@@ -806,16 +807,16 @@ internal class PdlDtoMapperTest {
     @Test
     fun fulltUtfyltBarn() {
         val pdlPerson = PersonDto(
-            listOf(BostedsadresseDto(null, defaultVegadresse(), null, null)),
-            null, // Ingen oppholdsadresse
-            listOf(
+            bostedsadresse = listOf(BostedsadresseDto(null, defaultVegadresse(), null, null)),
+            oppholdsadresse = null, // Ingen oppholdsadresse
+            forelderBarnRelasjon = listOf(
                 ForelderBarnRelasjonDto(
                     BARNIDENT,
                     BARN_ROLLE,
                     MOR_ROLLE
                 )
             ),
-            listOf(
+            navn = listOf(
                 NavnDto(
                     FORNAVN,
                     MELLOMNAVN,
@@ -824,7 +825,7 @@ internal class PdlDtoMapperTest {
                     FOLKEREGISTERMETADATA
                 )
             ),
-            listOf(
+            sivilstand = listOf(
                 SivilstandDto(
                     SivilstandType.GIFT,
                     EKTEFELLEIDENT,
@@ -832,14 +833,15 @@ internal class PdlDtoMapperTest {
                     FOLKEREGISTERMETADATA
                 )
             ),
-            listOf(StatsborgerskapDto(LAND))
+            statsborgerskap = listOf(StatsborgerskapDto(LAND))
         )
         val pdlBarn = BarnDto(
-            listOf(AdressebeskyttelseDto(Gradering.UGRADERT)),
-            listOf(BostedsadresseDto(null, defaultVegadresse(), null, null)),
-            listOf(FolkeregisterpersonstatusDto("ikke-doed")),
-            listOf(FoedselDto(FOEDSELSDATO_BARN)),
-            listOf(
+            adressebeskyttelse = listOf(AdressebeskyttelseDto(Gradering.UGRADERT)),
+            bostedsadresse = listOf(BostedsadresseDto(null, defaultVegadresse(), null, null)),
+            deltBosted = listOf(DeltBostedDto(LocalDate.now(), null, null, annenVegadresse(), null, null)),
+            folkeregisterpersonstatus = listOf(FolkeregisterpersonstatusDto("ikke-doed")),
+            foedsel = listOf(FoedselDto(FOEDSELSDATO_BARN)),
+            navn = listOf(
                 NavnDto(
                     FORNAVN,
                     null,
@@ -868,16 +870,16 @@ internal class PdlDtoMapperTest {
     @Test
     fun barnMedAdressebeskyttelse() {
         val pdlPerson = PersonDto(
-            listOf(BostedsadresseDto(null, defaultVegadresse(), null, null)),
-            null, // Ingen oppholdsadresse
-            listOf(
+            bostedsadresse = listOf(BostedsadresseDto(null, defaultVegadresse(), null, null)),
+            oppholdsadresse = null, // Ingen oppholdsadresse
+            forelderBarnRelasjon = listOf(
                 ForelderBarnRelasjonDto(
                     BARNIDENT,
                     BARN_ROLLE,
                     MOR_ROLLE
                 )
             ),
-            listOf(
+            navn = listOf(
                 NavnDto(
                     FORNAVN,
                     MELLOMNAVN,
@@ -886,7 +888,7 @@ internal class PdlDtoMapperTest {
                     FOLKEREGISTERMETADATA
                 )
             ),
-            listOf(
+            sivilstand = listOf(
                 SivilstandDto(
                     SivilstandType.GIFT,
                     EKTEFELLEIDENT,
@@ -894,14 +896,15 @@ internal class PdlDtoMapperTest {
                     FOLKEREGISTERMETADATA
                 )
             ),
-            listOf(StatsborgerskapDto(LAND))
+            statsborgerskap = listOf(StatsborgerskapDto(LAND))
         )
         val pdlBarn = BarnDto(
-            listOf(AdressebeskyttelseDto(Gradering.FORTROLIG)),
-            listOf(BostedsadresseDto(null, null, null, null)),
-            listOf(FolkeregisterpersonstatusDto("ikke-doed")),
-            listOf(FoedselDto(FOEDSELSDATO_BARN)),
-            listOf(
+            adressebeskyttelse = listOf(AdressebeskyttelseDto(Gradering.FORTROLIG)),
+            bostedsadresse = listOf(BostedsadresseDto(null, null, null, null)),
+            deltBosted = null,
+            folkeregisterpersonstatus = listOf(FolkeregisterpersonstatusDto("ikke-doed")),
+            foedsel = listOf(FoedselDto(FOEDSELSDATO_BARN)),
+            navn = listOf(
                 NavnDto(
                     FORNAVN,
                     null,
@@ -918,16 +921,16 @@ internal class PdlDtoMapperTest {
     @Test
     fun barnDoed() {
         val pdlPerson = PersonDto(
-            listOf(BostedsadresseDto(null, defaultVegadresse(), null, null)),
-            null, // Ingen oppholdsadresse
-            listOf(
+            bostedsadresse = listOf(BostedsadresseDto(null, defaultVegadresse(), null, null)),
+            oppholdsadresse = null, // Ingen oppholdsadresse
+            forelderBarnRelasjon = listOf(
                 ForelderBarnRelasjonDto(
                     BARNIDENT,
                     BARN_ROLLE,
                     MOR_ROLLE
                 )
             ),
-            listOf(
+            navn = listOf(
                 NavnDto(
                     FORNAVN,
                     MELLOMNAVN,
@@ -936,7 +939,7 @@ internal class PdlDtoMapperTest {
                     FOLKEREGISTERMETADATA
                 )
             ),
-            listOf(
+            sivilstand = listOf(
                 SivilstandDto(
                     SivilstandType.GIFT,
                     EKTEFELLEIDENT,
@@ -944,14 +947,15 @@ internal class PdlDtoMapperTest {
                     FOLKEREGISTERMETADATA
                 )
             ),
-            listOf(StatsborgerskapDto(LAND))
+            statsborgerskap = listOf(StatsborgerskapDto(LAND))
         )
         val pdlBarn = BarnDto(
-            listOf(AdressebeskyttelseDto(Gradering.UGRADERT)),
-            listOf(BostedsadresseDto(null, defaultVegadresse(), null, null)),
-            listOf(FolkeregisterpersonstatusDto(DOED)),
-            listOf(FoedselDto(FOEDSELSDATO_BARN)),
-            listOf(
+            adressebeskyttelse = listOf(AdressebeskyttelseDto(Gradering.UGRADERT)),
+            bostedsadresse = listOf(BostedsadresseDto(null, defaultVegadresse(), null, null)),
+            deltBosted = null,
+            folkeregisterpersonstatus = listOf(FolkeregisterpersonstatusDto(DOED)),
+            foedsel = listOf(FoedselDto(FOEDSELSDATO_BARN)),
+            navn = listOf(
                 NavnDto(
                     FORNAVN,
                     null,
@@ -968,16 +972,16 @@ internal class PdlDtoMapperTest {
     @Test
     fun barnMyndig() {
         val pdlPerson = PersonDto(
-            listOf(BostedsadresseDto(null, defaultVegadresse(), null, null)),
-            null, // Ingen oppholdsadresse
-            listOf(
+            bostedsadresse = listOf(BostedsadresseDto(null, defaultVegadresse(), null, null)),
+            oppholdsadresse = null, // Ingen oppholdsadresse
+            forelderBarnRelasjon = listOf(
                 ForelderBarnRelasjonDto(
                     BARNIDENT,
                     BARN_ROLLE,
                     MOR_ROLLE
                 )
             ),
-            listOf(
+            navn = listOf(
                 NavnDto(
                     FORNAVN,
                     MELLOMNAVN,
@@ -986,7 +990,7 @@ internal class PdlDtoMapperTest {
                     FOLKEREGISTERMETADATA
                 )
             ),
-            listOf(
+            sivilstand = listOf(
                 SivilstandDto(
                     SivilstandType.GIFT,
                     EKTEFELLEIDENT,
@@ -994,14 +998,15 @@ internal class PdlDtoMapperTest {
                     FOLKEREGISTERMETADATA
                 )
             ),
-            listOf(StatsborgerskapDto(LAND))
+            statsborgerskap = listOf(StatsborgerskapDto(LAND))
         )
         val pdlBarn = BarnDto(
-            listOf(AdressebeskyttelseDto(Gradering.UGRADERT)),
-            listOf(BostedsadresseDto(null, defaultVegadresse(), null, null)),
-            listOf(FolkeregisterpersonstatusDto("ikke-doed")),
-            listOf(FoedselDto(FOEDSELSDATO_BARN_MYNDIG)),
-            listOf(
+            adressebeskyttelse = listOf(AdressebeskyttelseDto(Gradering.UGRADERT)),
+            bostedsadresse = listOf(BostedsadresseDto(null, defaultVegadresse(), null, null)),
+            deltBosted = null,
+            folkeregisterpersonstatus = listOf(FolkeregisterpersonstatusDto("ikke-doed")),
+            foedsel = listOf(FoedselDto(FOEDSELSDATO_BARN_MYNDIG)),
+            navn = listOf(
                 NavnDto(
                     FORNAVN,
                     null,
@@ -1018,16 +1023,16 @@ internal class PdlDtoMapperTest {
     @Test
     fun barnOgPersonNullAdresse() {
         val pdlPerson = PersonDto(
-            null, // Ingen bostedsadresse
-            null, // Ingen oppholdsadresse
-            listOf(
+            bostedsadresse = null, // Ingen bostedsadresse
+            oppholdsadresse = null, // Ingen oppholdsadresse
+            forelderBarnRelasjon = listOf(
                 ForelderBarnRelasjonDto(
                     BARNIDENT,
                     BARN_ROLLE,
                     MOR_ROLLE
                 )
             ),
-            listOf(
+            navn = listOf(
                 NavnDto(
                     FORNAVN,
                     MELLOMNAVN,
@@ -1036,7 +1041,7 @@ internal class PdlDtoMapperTest {
                     FOLKEREGISTERMETADATA
                 )
             ),
-            listOf(
+            sivilstand = listOf(
                 SivilstandDto(
                     SivilstandType.GIFT,
                     EKTEFELLEIDENT,
@@ -1044,14 +1049,15 @@ internal class PdlDtoMapperTest {
                     FOLKEREGISTERMETADATA
                 )
             ),
-            listOf(StatsborgerskapDto(LAND))
+            statsborgerskap = listOf(StatsborgerskapDto(LAND))
         )
         val pdlBarn = BarnDto(
-            listOf(AdressebeskyttelseDto(Gradering.UGRADERT)),
-            null,
-            listOf(FolkeregisterpersonstatusDto("ikke-doed")),
-            listOf(FoedselDto(FOEDSELSDATO_BARN)),
-            listOf(
+            adressebeskyttelse = listOf(AdressebeskyttelseDto(Gradering.UGRADERT)),
+            bostedsadresse = null,
+            deltBosted = null,
+            folkeregisterpersonstatus = listOf(FolkeregisterpersonstatusDto("ikke-doed")),
+            foedsel = listOf(FoedselDto(FOEDSELSDATO_BARN)),
+            navn = listOf(
                 NavnDto(
                     FORNAVN,
                     null,
@@ -1068,16 +1074,16 @@ internal class PdlDtoMapperTest {
     @Test
     fun barnOgPersonTomAdresseliste() {
         val pdlPerson = PersonDto(
-            emptyList(),
-            null, // Ingen oppholdsadresse
-            listOf(
+            bostedsadresse = emptyList(),
+            oppholdsadresse = null, // Ingen oppholdsadresse
+            forelderBarnRelasjon = listOf(
                 ForelderBarnRelasjonDto(
                     BARNIDENT,
                     BARN_ROLLE,
                     MOR_ROLLE
                 )
             ),
-            listOf(
+            navn = listOf(
                 NavnDto(
                     FORNAVN,
                     MELLOMNAVN,
@@ -1086,7 +1092,7 @@ internal class PdlDtoMapperTest {
                     FOLKEREGISTERMETADATA
                 )
             ),
-            listOf(
+            sivilstand = listOf(
                 SivilstandDto(
                     SivilstandType.GIFT,
                     EKTEFELLEIDENT,
@@ -1094,14 +1100,15 @@ internal class PdlDtoMapperTest {
                     FOLKEREGISTERMETADATA
                 )
             ),
-            listOf(StatsborgerskapDto(LAND))
+            statsborgerskap = listOf(StatsborgerskapDto(LAND))
         )
         val pdlBarn = BarnDto(
-            listOf(AdressebeskyttelseDto(Gradering.UGRADERT)),
-            emptyList(),
-            listOf(FolkeregisterpersonstatusDto("ikke-doed")),
-            listOf(FoedselDto(FOEDSELSDATO_BARN)),
-            listOf(
+            adressebeskyttelse = listOf(AdressebeskyttelseDto(Gradering.UGRADERT)),
+            bostedsadresse = emptyList(),
+            deltBosted = null,
+            folkeregisterpersonstatus = listOf(FolkeregisterpersonstatusDto("ikke-doed")),
+            foedsel = listOf(FoedselDto(FOEDSELSDATO_BARN)),
+            navn = listOf(
                 NavnDto(
                     FORNAVN,
                     null,
@@ -1121,16 +1128,16 @@ internal class PdlDtoMapperTest {
         val dagenBarnBlirMyndig = LocalDate.now().minusYears(18)
         val dagenEtterBarnBlirMyndig = LocalDate.now().minusYears(18).minusDays(1)
         val pdlPerson = PersonDto(
-            emptyList(),
-            null, // Ingen oppholdsadresse
-            listOf(
+            bostedsadresse = emptyList(),
+            oppholdsadresse = null, // Ingen oppholdsadresse
+            forelderBarnRelasjon = listOf(
                 ForelderBarnRelasjonDto(
                     BARNIDENT,
                     BARN_ROLLE,
                     MOR_ROLLE
                 )
             ),
-            listOf(
+            navn = listOf(
                 NavnDto(
                     FORNAVN,
                     MELLOMNAVN,
@@ -1139,7 +1146,7 @@ internal class PdlDtoMapperTest {
                     FOLKEREGISTERMETADATA
                 )
             ),
-            listOf(
+            sivilstand = listOf(
                 SivilstandDto(
                     SivilstandType.GIFT,
                     EKTEFELLEIDENT,
@@ -1147,7 +1154,7 @@ internal class PdlDtoMapperTest {
                     FOLKEREGISTERMETADATA
                 )
             ),
-            listOf(StatsborgerskapDto(LAND))
+            statsborgerskap = listOf(StatsborgerskapDto(LAND))
         )
         val pdlBarnDagenFoerBarnBlirMyndig = createBarnMedFoedselsdato(dagenFoerBarnBlirMyndig)
         val barnDagenFoerMyndig = mapper.barnDtoToDomain(pdlBarnDagenFoerBarnBlirMyndig, BARNIDENT, pdlPerson)
@@ -1165,7 +1172,7 @@ internal class PdlDtoMapperTest {
     @Test
     fun adressebeskyttelseStrengtFortrolig() {
         val pdlAdressebeskyttelse = PersonAdressebeskyttelseDto(
-            listOf(AdressebeskyttelseDto(Gradering.STRENGT_FORTROLIG))
+            adressebeskyttelse = listOf(AdressebeskyttelseDto(Gradering.STRENGT_FORTROLIG))
         )
         val gradering = mapper.personAdressebeskyttelseDtoToGradering(pdlAdressebeskyttelse)
         assertThat(gradering).isNotNull
@@ -1175,7 +1182,7 @@ internal class PdlDtoMapperTest {
     @Test
     fun adressebeskyttelseStrengtUgradert() {
         val pdlAdressebeskyttelse = PersonAdressebeskyttelseDto(
-            listOf(AdressebeskyttelseDto(Gradering.UGRADERT))
+            adressebeskyttelse = listOf(AdressebeskyttelseDto(Gradering.UGRADERT))
         )
         val gradering = mapper.personAdressebeskyttelseDtoToGradering(pdlAdressebeskyttelse)
         assertThat(gradering).isNotNull
@@ -1185,27 +1192,48 @@ internal class PdlDtoMapperTest {
     @Test
     fun adressebeskyttelseNull() {
         val pdlAdressebeskyttelse = PersonAdressebeskyttelseDto(
-            listOf(AdressebeskyttelseDto(null))
+            adressebeskyttelse = listOf(AdressebeskyttelseDto(null))
         )
         val gradering = mapper.personAdressebeskyttelseDtoToGradering(pdlAdressebeskyttelse)
         assertThat(gradering).isNull()
     }
 
     private fun defaultVegadresse(): VegadresseDto {
-        return VegadresseDto("matrikkelId", "gateveien", 1, "A", "tilleggsnavn", "1234", "1212", "U123123", "123456")
+        return VegadresseDto(
+            matrikkelId = "matrikkelId",
+            adressenavn = "gateveien",
+            husnummer = 1,
+            husbokstav = "A",
+            tilleggsnavn = "tilleggsnavn",
+            postnummer = "1234",
+            kommunenummer = "1212",
+            bruksenhetsnummer = "U123123",
+            bydelsnummer = "123456"
+        )
     }
 
     private fun annenVegadresse(): VegadresseDto {
-        return VegadresseDto("matrikkelId2", "stien", 2, "B", null, "1234", "1212", null, null)
+        return VegadresseDto(
+            matrikkelId = "matrikkelId2",
+            adressenavn = "stien",
+            husnummer = 2,
+            husbokstav = "B",
+            tilleggsnavn = null,
+            postnummer = "1234",
+            kommunenummer = "1212",
+            bruksenhetsnummer = null,
+            bydelsnummer = null
+        )
     }
 
     private fun createBarnMedFoedselsdato(foedselsdato: LocalDate): BarnDto {
         return BarnDto(
-            listOf(AdressebeskyttelseDto(Gradering.UGRADERT)),
-            emptyList(),
-            listOf(FolkeregisterpersonstatusDto("ikke-doed")),
-            listOf(FoedselDto(foedselsdato)),
-            listOf(
+            adressebeskyttelse = listOf(AdressebeskyttelseDto(Gradering.UGRADERT)),
+            bostedsadresse = emptyList(),
+            deltBosted = null,
+            folkeregisterpersonstatus = listOf(FolkeregisterpersonstatusDto("ikke-doed")),
+            foedsel = listOf(FoedselDto(foedselsdato)),
+            navn = listOf(
                 NavnDto(
                     FORNAVN,
                     null,

@@ -345,20 +345,22 @@ internal class FamilieSystemdataTest {
         private val FODSELSDATO_BARN_3 = LocalDate.parse("2003-02-05")
         private const val SAMVARSGRAD_BARN_3 = 30
         private val BARN = Barn(
-            FORNAVN_BARN,
-            MELLOMNAVN_BARN,
-            ETTERNAVN_BARN,
-            FNR_BARN,
-            FODSELSDATO_BARN,
-            ER_FOLKEREGISTRERT_SAMMEN_BARN
+            fornavn = FORNAVN_BARN,
+            mellomnavn = MELLOMNAVN_BARN,
+            etternavn = ETTERNAVN_BARN,
+            fnr = FNR_BARN,
+            fodselsdato = FODSELSDATO_BARN,
+            harDeltBosted = false,
+            folkeregistrertSammen = ER_FOLKEREGISTRERT_SAMMEN_BARN
         )
         private val BARN_2 = Barn(
-            FORNAVN_BARN_2,
-            MELLOMNAVN_BARN_2,
-            ETTERNAVN_BARN_2,
-            FNR_BARN_2,
-            FODSELSDATO_BARN_2,
-            ER_FOLKEREGISTRERT_SAMMEN_BARN_2
+            fornavn = FORNAVN_BARN_2,
+            mellomnavn = MELLOMNAVN_BARN_2,
+            etternavn = ETTERNAVN_BARN_2,
+            fnr = FNR_BARN_2,
+            fodselsdato = FODSELSDATO_BARN_2,
+            harDeltBosted = false,
+            folkeregistrertSammen = ER_FOLKEREGISTRERT_SAMMEN_BARN_2
         )
         private val JSON_ANSVAR = JsonAnsvar()
             .withBarn(

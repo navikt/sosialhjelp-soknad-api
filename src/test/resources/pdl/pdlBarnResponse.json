@@ -24,6 +24,26 @@
           "ukjentBosted": null
         }
       ],
+      "deltBosted": [
+        {
+          "startDatoForKontrakt": "2019-02-28",
+          "sluttDatoForKontrakt":  null,
+          "coAdressenavn": null,
+          "vegadresse": {
+            "matrikkelId": null,
+            "adressenavn": "GATEVEIEN",
+            "husnummer": "1",
+            "husbokstav": null,
+            "tilleggsnavn": null,
+            "postnummer": "0690",
+            "kommunenummer": "0301",
+            "bruksenhetsnummer": null,
+            "bydelsnummer": "030101"
+          },
+          "matrikkeladresse": null,
+          "ukjentBosted": null
+        }
+      ],
       "folkeregisterpersonstatus": [
         {
           "status": "bosatt"

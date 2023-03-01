@@ -50,15 +50,15 @@ class PdlDtoMapper(
         return if (personDto == null) {
             null
         } else Person(
-            findFornavn(personDto.navn),
-            findMellomnavn(personDto.navn),
-            findEtternavn(personDto.navn),
-            ident,
-            findSivilstatus(personDto.sivilstand),
-            findStatsborgerskap(personDto.statsborgerskap),
-            null,
-            mapToBostedsadresse(personDto.bostedsadresse),
-            mapToOppholdssadresse(personDto.oppholdsadresse, personDto.bostedsadresse),
+            fornavn = findFornavn(personDto.navn),
+            mellomnavn = findMellomnavn(personDto.navn),
+            etternavn = findEtternavn(personDto.navn),
+            fnr = ident,
+            sivilstatus = findSivilstatus(personDto.sivilstand),
+            statsborgerskap = findStatsborgerskap(personDto.statsborgerskap),
+            ektefelle = null,
+            bostedsadresse = mapToBostedsadresse(personDto.bostedsadresse),
+            oppholdsadresse = mapToOppholdssadresse(personDto.oppholdsadresse, personDto.bostedsadresse),
         )
     }
 
@@ -67,12 +67,13 @@ class PdlDtoMapper(
             return null
         }
         return Barn(
-            findFornavn(barnDto.navn),
-            findMellomnavn(barnDto.navn),
-            findEtternavn(barnDto.navn),
-            barnIdent,
-            findFodselsdato(barnDto.foedsel),
-            isFolkeregistrertSammen(personDto.bostedsadresse, barnDto.bostedsadresse)
+            fornavn = findFornavn(barnDto.navn),
+            mellomnavn = findMellomnavn(barnDto.navn),
+            etternavn = findEtternavn(barnDto.navn),
+            fnr = barnIdent,
+            fodselsdato = findFodselsdato(barnDto.foedsel),
+            harDeltBosted = false, // todo: utled fra barnDto.deltBosted
+            folkeregistrertSammen = isFolkeregistrertSammen(personDto.bostedsadresse, barnDto.bostedsadresse)
         )
     }
 
@@ -83,13 +84,13 @@ class PdlDtoMapper(
         return if (hasAdressebeskyttelse(ektefelleDto.adressebeskyttelse)) {
             Ektefelle(true)
         } else Ektefelle(
-            findFornavn(ektefelleDto.navn),
-            findMellomnavn(ektefelleDto.navn),
-            findEtternavn(ektefelleDto.navn),
-            findFodselsdato(ektefelleDto.foedsel),
-            ektefelleIdent,
-            isFolkeregistrertSammen(personDto.bostedsadresse, ektefelleDto.bostedsadresse),
-            false
+            fornavn = findFornavn(ektefelleDto.navn),
+            mellomnavn = findMellomnavn(ektefelleDto.navn),
+            etternavn = findEtternavn(ektefelleDto.navn),
+            fodselsdato = findFodselsdato(ektefelleDto.foedsel),
+            fnr = ektefelleIdent,
+            folkeregistrertSammen = isFolkeregistrertSammen(personDto.bostedsadresse, ektefelleDto.bostedsadresse),
+            ikkeTilgangTilEktefelle = false
         )
     }
 

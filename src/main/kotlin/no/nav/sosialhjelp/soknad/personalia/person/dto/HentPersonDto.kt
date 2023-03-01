@@ -30,6 +30,7 @@ data class EktefelleDto(
 data class BarnDto(
     val adressebeskyttelse: List<AdressebeskyttelseDto>?,
     val bostedsadresse: List<BostedsadresseDto>?,
+    val deltBosted: List<DeltBostedDto>?,
     val folkeregisterpersonstatus: List<FolkeregisterpersonstatusDto>?,
     val foedsel: List<FoedselDto>?,
     val navn: List<NavnDto>?
@@ -136,4 +137,13 @@ data class MatrikkeladresseDto(
 
 data class UkjentBostedDto(
     val bostedskommune: String?
+)
+
+data class DeltBostedDto(
+    val startDatoForKontrakt: LocalDate?,
+    val sluttDatoForKontrakt: LocalDate?,
+    val coAdressenavn: String?,
+    val vegadresse: VegadresseDto?,
+    val matrikkeladresse: MatrikkeladresseDto?,
+    val ukjentBosted: UkjentBostedDto?
 )

@@ -41,6 +41,32 @@ query($ident: ID!, $historikk: Boolean!) {
                 bostedskommune
             }
         }
+        deltBosted(historikk: $historikk) {
+            startdatoForKontrakt
+            sluttdatoForKontrakt
+            coAdressenavn
+            vegadresse {
+                matrikkelId
+                adressenavn
+                husnummer
+                husbokstav
+                tilleggsnavn
+                postnummer
+                kommunenummer
+                bruksenhetsnummer
+                bydelsnummer
+            }
+            matrikkeladresse {
+                matrikkelId
+                postnummer
+                tilleggsnavn
+                kommunenummer
+                bruksenhetsnummer
+            }
+            ukjentBosted {
+                bostedskommune
+            }
+        }
         folkeregisterpersonstatus(historikk: $historikk) {
             status
         }
