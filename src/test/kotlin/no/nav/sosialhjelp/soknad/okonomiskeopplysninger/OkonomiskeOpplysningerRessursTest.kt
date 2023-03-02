@@ -152,4 +152,42 @@ class OkonomiskeOpplysningerRessursTest {
         assertThatExceptionOfType(IllegalStateException::class.java)
             .isThrownBy { okonomiskeOpplysningerRessurs.hentOkonomiskeOpplysninger(behandlingsId) }
     }
+
+    @Test
+    fun `hentOkonomiskeOpplysninger JsonVedlegg med VedleggKreves og filer - kaster IllegalStateException`() {
+        val soknadMedVedlegg = soknadUnderArbeid.copy(
+            jsonInternalSoknad = createEmptyJsonInternalSoknad("eier")
+                .withVedlegg(
+                    JsonVedleggSpesifikasjon()
+                        .withVedlegg(
+                            mutableListOf(
+                                JsonVedlegg()
+                                    .withType("skattemelding")
+                                    .withTilleggsinfo("skattemelding")
+                                    .withStatus(Vedleggstatus.VedleggKreves.toString())
+                                    .withFiler(
+                                        mutableListOf(
+                                            JsonFiler()
+                                                .withFilnavn("hubbabubba.jpg")
+                                                .withSha512("sha512")
+                                        )
+                                    )
+                            )
+                        )
+                )
+        )
+
+        every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId) } just runs
+        every { soknadUnderArbeidRepository.hentSoknad(behandlingsId, any()) } returns soknadMedVedlegg
+        every { soknadUnderArbeidService.skalSoknadSendesMedDigisosApi(any()) } returns true
+
+        every { mellomlagringService.getAllVedlegg(behandlingsId) } returns listOf(
+            MellomlagretVedleggMetadata(filnavn = "asdasd.jpg", filId = "id123")
+        )
+
+        every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
+
+        assertThatExceptionOfType(IllegalStateException::class.java)
+            .isThrownBy { okonomiskeOpplysningerRessurs.hentOkonomiskeOpplysninger(behandlingsId) }
+    }
 }

@@ -14,7 +14,9 @@ import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktI
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.oversikt.JsonOkonomioversiktUtgift
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedlegg
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.Vedleggstatus
 import no.nav.sosialhjelp.soknad.ettersending.dto.EttersendtVedlegg
 import no.nav.sosialhjelp.soknad.ettersending.innsendtsoknad.EttersendelseUtils.soknadSendtForMindreEnn30DagerSiden
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggFrontend
@@ -29,6 +31,8 @@ object VedleggMapper {
 
     private const val ANNET_ANNET = "annet|annet"
     private const val LASTET_OPP = "LastetOpp"
+
+    private val log by logger()
 
     fun mapToVedleggFrontend(
         vedlegg: JsonVedlegg,
@@ -219,6 +223,9 @@ object VedleggMapper {
     ): List<FilFrontend> {
         return jsonVedlegg.filer
             .map { fil: JsonFiler ->
+                if (jsonVedlegg.status != Vedleggstatus.LastetOpp.toString()) {
+                    log.info("JsonVedlegg med status=${jsonVedlegg.status} (!= LastetOpp) - men har filer? Burde undersøkes")
+                }
                 mellomlagredeVedlegg
                     .firstOrNull { it.filnavn == fil.filnavn }
                     ?.let { FilFrontend(fil.filnavn, it.filId) }
