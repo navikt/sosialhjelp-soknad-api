@@ -29,6 +29,9 @@ class PrometheusMetricsService(
     private val oppgaverStuckUnderArbeid = AtomicInteger(0)
 
     private val soknadInnsendingTidTimer = Timer.builder("soknad_innsending_tid")
+        .publishPercentiles(0.5, 0.8, 0.95)
+        .publishPercentileHistogram()
+        .register(meterRegistry)
 
     init {
         Gauge.builder("oppgaver_feilet_gauge", oppgaverFeilet) { it.toDouble() }
@@ -41,9 +44,7 @@ class PrometheusMetricsService(
     }
 
     fun reportInnsendingTid(antallSekunder: Long) {
-        soknadInnsendingTidTimer
-            .register(meterRegistry)
-            .record(antallSekunder, TimeUnit.SECONDS)
+        soknadInnsendingTidTimer.record(antallSekunder, TimeUnit.SECONDS)
     }
 
     fun reportStartSoknad(isEttersendelse: Boolean) {
