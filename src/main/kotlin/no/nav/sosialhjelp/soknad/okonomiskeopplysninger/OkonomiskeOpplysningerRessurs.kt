@@ -7,6 +7,7 @@ import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.soknad.app.Constants
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedlegg
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRepository
@@ -93,6 +94,14 @@ class OkonomiskeOpplysningerRessurs(
             mellomlagringService.getAllVedlegg(behandlingsId)
         } else {
             emptyList()
+        }
+
+        val opplastedeVedleggFraJson = jsonVedleggs.filter { it.status == Vedleggstatus.LastetOpp.toString() }.flatMap { it.filer }
+        if (opplastedeVedleggFraJson.isNotEmpty() &&
+            mellomlagredeVedlegg.isNotEmpty() &&
+            opplastedeVedleggFraJson.size != mellomlagredeVedlegg.size
+        ) {
+            log.info("Ulikt antall vedlegg i vedlegg.json (${opplastedeVedleggFraJson.size}) og mellomlagret hos KS (${mellomlagredeVedlegg.size}) for søknad $behandlingsId")
         }
 
         val slettedeVedlegg = removeIkkePaakrevdeMellomlagredeVedlegg(behandlingsId, jsonVedleggs, paakrevdeVedlegg, mellomlagredeVedlegg)
@@ -230,4 +239,8 @@ class OkonomiskeOpplysningerRessurs(
         var slettedeVedlegg: List<VedleggFrontend>?,
         var isOkonomiskeOpplysningerBekreftet: Boolean
     )
+
+    companion object {
+        private val log by logger()
+    }
 }
