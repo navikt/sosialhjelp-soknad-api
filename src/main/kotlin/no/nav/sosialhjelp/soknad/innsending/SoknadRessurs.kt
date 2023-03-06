@@ -157,9 +157,13 @@ class SoknadRessurs(
     }
 
     @DeleteMapping("/{behandlingsId}")
-    fun slettSoknad(@PathVariable("behandlingsId") behandlingsId: String) {
+    fun slettSoknad(
+        @PathVariable("behandlingsId") behandlingsId: String,
+        @RequestHeader(value = HttpHeaders.REFERER) referer: String?
+    ) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
-        soknadService.avbrytSoknad(behandlingsId)
+        val steg: String = referer?.substringAfterLast(delimiter = "/", missingDelimiterValue = "ukjent") ?: "ukjent"
+        soknadService.avbrytSoknad(behandlingsId, steg)
     }
 
     companion object {
