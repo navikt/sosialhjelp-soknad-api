@@ -165,7 +165,7 @@ class OkonomiskeOpplysningerRessurs(
                 }
             }
             if (ikkePaakrevdVedlegg.filer != null && ikkePaakrevdVedlegg.filer.isNotEmpty()) {
-                val vedleggstype = VedleggType.valueOf(ikkePaakrevdVedlegg.type, ikkePaakrevdVedlegg.tilleggsinfo)
+                val vedleggstype = VedleggType[ikkePaakrevdVedlegg.type + "|" + ikkePaakrevdVedlegg.tilleggsinfo]
                 slettedeVedlegg.add(
                     VedleggFrontend(
                         type = vedleggstype,
@@ -197,7 +197,7 @@ class OkonomiskeOpplysningerRessurs(
                 }
             }
             if (!ikkePaakrevdVedlegg.filer.isNullOrEmpty()) {
-                val vedleggstype = VedleggType.valueOf(ikkePaakrevdVedlegg.type, ikkePaakrevdVedlegg.tilleggsinfo)
+                val vedleggstype = VedleggType[ikkePaakrevdVedlegg.type + "|" + ikkePaakrevdVedlegg.tilleggsinfo]
                 slettedeVedlegg.add(
                     VedleggFrontend(
                         type = vedleggstype,

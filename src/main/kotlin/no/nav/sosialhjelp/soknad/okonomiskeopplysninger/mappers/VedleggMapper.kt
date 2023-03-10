@@ -273,8 +273,7 @@ object VedleggMapper {
     }
 
     private fun getVedleggType(vedlegg: JsonVedlegg): VedleggType {
-        return VedleggType.valueOf(vedlegg.type, vedlegg.tilleggsinfo)
-//        return vedlegg.type + "|" + vedlegg.tilleggsinfo
+        return VedleggType[vedlegg.type + "|" + vedlegg.tilleggsinfo]
     }
 
     private fun sortAlphabeticallyAndPutTypeAnnetLast(): Comparator<String> {

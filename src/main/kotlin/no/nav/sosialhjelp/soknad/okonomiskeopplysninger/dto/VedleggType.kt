@@ -48,9 +48,9 @@ enum class VedleggType(
     }
 
     companion object {
-        fun valueOf(type: String, tilleggsinfo: String): VedleggType {
-            return values().find { it.stringName == "$type|$tilleggsinfo" }
-                ?: throw IllegalArgumentException("Fant ikke VedleggType lik $type|$tilleggsinfo")
-        }
+        private val map = VedleggType.values().associateBy(VedleggType::stringName)
+
+        operator fun get(stringName: String): VedleggType = map[stringName]
+            ?: throw IllegalArgumentException("Fant ikke VedleggType lik $stringName")
     }
 }
