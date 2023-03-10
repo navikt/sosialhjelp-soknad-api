@@ -18,6 +18,7 @@ import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.JsonOkonomiUtils.isOkonomiskeOpplysningerBekreftet
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggFrontend
+import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggType
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.mappers.OkonomiskGruppeMapper
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.mappers.OkonomiskeOpplysningerMapper.addAllFormuerToJsonOkonomi
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.mappers.OkonomiskeOpplysningerMapper.addAllInntekterToJsonOkonomi
@@ -128,8 +129,9 @@ class OkonomiskeOpplysningerRessurs(
         val jsonOkonomi = soknad.jsonInternalSoknad?.soknad?.data?.okonomi ?: return
 
         if (VedleggTypeToSoknadTypeMapper.isInSoknadJson(vedleggFrontend.type)) {
-            val soknadType = vedleggTypeToSoknadType[vedleggFrontend.type]
-            when (getSoknadPath(vedleggFrontend.type)) {
+            val vedleggTypeStringName = vedleggFrontend.type.toString()
+            val soknadType = vedleggTypeToSoknadType[vedleggTypeStringName]
+            when (getSoknadPath(vedleggTypeStringName)) {
                 "utbetaling" -> if (soknadType.equals(UTBETALING_HUSBANKEN, ignoreCase = true)) {
                     addAllInntekterToJsonOkonomiUtbetalinger(vedleggFrontend, jsonOkonomi, UTBETALING_HUSBANKEN)
                 } else {
@@ -163,7 +165,7 @@ class OkonomiskeOpplysningerRessurs(
                 }
             }
             if (ikkePaakrevdVedlegg.filer != null && ikkePaakrevdVedlegg.filer.isNotEmpty()) {
-                val vedleggstype = ikkePaakrevdVedlegg.type + "|" + ikkePaakrevdVedlegg.tilleggsinfo
+                val vedleggstype = VedleggType.valueOf(ikkePaakrevdVedlegg.type, ikkePaakrevdVedlegg.tilleggsinfo)
                 slettedeVedlegg.add(
                     VedleggFrontend(
                         type = vedleggstype,
@@ -195,7 +197,7 @@ class OkonomiskeOpplysningerRessurs(
                 }
             }
             if (!ikkePaakrevdVedlegg.filer.isNullOrEmpty()) {
-                val vedleggstype = ikkePaakrevdVedlegg.type + "|" + ikkePaakrevdVedlegg.tilleggsinfo
+                val vedleggstype = VedleggType.valueOf(ikkePaakrevdVedlegg.type, ikkePaakrevdVedlegg.tilleggsinfo)
                 slettedeVedlegg.add(
                     VedleggFrontend(
                         type = vedleggstype,
@@ -230,8 +232,9 @@ class OkonomiskeOpplysningerRessurs(
 
     private fun setVedleggStatus(vedleggFrontend: VedleggFrontend, soknad: SoknadUnderArbeid) {
         val jsonVedleggs = JsonVedleggUtils.getVedleggFromInternalSoknad(soknad)
-        jsonVedleggs.firstOrNull { vedleggFrontend.type == it.type + "|" + it.tilleggsinfo }
-            ?.status = vedleggFrontend.vedleggStatus ?: throw IllegalStateException("Vedlegget finnes ikke")
+        jsonVedleggs
+            .firstOrNull { vedleggFrontend.type.toString() == it.type + "|" + it.tilleggsinfo }
+            ?.status = vedleggFrontend.vedleggStatus?.name ?: throw IllegalStateException("Vedlegget finnes ikke")
     }
 
     data class VedleggFrontends(

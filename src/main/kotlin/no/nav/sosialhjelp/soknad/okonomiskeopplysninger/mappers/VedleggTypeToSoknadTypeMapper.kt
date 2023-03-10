@@ -1,6 +1,7 @@
 package no.nav.sosialhjelp.soknad.okonomiskeopplysninger.mappers
 
 import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper
+import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggType
 
 object VedleggTypeToSoknadTypeMapper {
     val vedleggTypeToSoknadType: MutableMap<String, String> = HashMap()
@@ -56,6 +57,13 @@ object VedleggTypeToSoknadTypeMapper {
     fun isInSoknadJson(vedleggType: String?): Boolean {
         return when (vedleggType) {
             "oppholdstillatel|oppholdstillatel", "samvarsavtale|barn", "husleiekontrakt|husleiekontrakt", "husleiekontrakt|kommunal", "skattemelding|skattemelding" -> false
+            else -> true
+        }
+    }
+
+    fun isInSoknadJson(vedleggType: VedleggType?): Boolean {
+        return when (vedleggType) {
+            VedleggType.OppholdstillatelOppholdstillatel, VedleggType.SamvarsavtaleBarn, VedleggType.HusleiekontraktHusleiekontrakt, VedleggType.HusleiekontraktKommunal, VedleggType.SkattemeldingSkattemelding -> false
             else -> true
         }
     }
