@@ -28,6 +28,7 @@ abstract class PdlClient(
 
     protected val pdlMapper: ObjectMapper = jacksonObjectMapper()
         .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
+        .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
         .registerModule(JavaTimeModule())
 
     private val pdlWebClient: WebClient = unproxiedWebClientBuilder(webClientBuilder)
