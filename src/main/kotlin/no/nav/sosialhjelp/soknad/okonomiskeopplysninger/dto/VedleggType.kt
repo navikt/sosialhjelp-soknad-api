@@ -1,7 +1,9 @@
 package no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto
 
+import com.fasterxml.jackson.annotation.JsonValue
+
 enum class VedleggType(
-    private val stringName: String
+    @JsonValue val stringName: String
 ) {
     AnnetAnnet("annet|annet"),
     BarnebidragBetaler("barnebidrag|betaler"),
