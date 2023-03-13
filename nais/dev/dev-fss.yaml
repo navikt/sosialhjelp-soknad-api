@@ -137,3 +137,5 @@ spec:
       value: "dev-fss"
     - name: MASKINPORTEN_WELL_KNOWN_URL
       value: "https://ver2.maskinporten.no/.well-known/oauth-authorization-server"
+    - name: SWAGGER_ENABLED
+      value: "true"
