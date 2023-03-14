@@ -71,6 +71,13 @@ internal class PersonServiceTest {
     private val mockEktefelleDto = mockk<EktefelleDto>()
     private val mockBarnDto = mockk<BarnDto>()
 
+    private val defaultMetadataDto = MetadataDto(
+        master = "PDL",
+        endringer = listOf(
+            EndringDto(kilde = "PDL", registrert = LocalDateTime.now(), type = "type")
+        )
+    )
+
     @BeforeEach
     internal fun setUp() {
         clearAllMocks()
@@ -82,10 +89,10 @@ internal class PersonServiceTest {
         every { mapper.personDtoToDomain(any(), any()) } returns person
         every { mockPersonDto.sivilstand } returns listOf(
             SivilstandDto(
-                SivilstandType.GIFT,
-                EKTEFELLE_IDENT,
-                MetadataDto("PDL", listOf(EndringDto("PDL", LocalDateTime.now(), "type"))),
-                null
+                type = SivilstandType.GIFT,
+                relatertVedSivilstand = EKTEFELLE_IDENT,
+                metadata = defaultMetadataDto,
+                folkeregistermetadata = null
             )
         )
         every { hentPersonClient.hentEktefelle(any()) } returns mockEktefelleDto
@@ -101,10 +108,10 @@ internal class PersonServiceTest {
         every { mapper.personDtoToDomain(any(), any()) } returns person
         every { mockPersonDto.sivilstand } returns listOf(
             SivilstandDto(
-                SivilstandType.GIFT,
-                null,
-                MetadataDto("PDL", listOf(EndringDto("PDL", LocalDateTime.now(), "type"))),
-                null
+                type = SivilstandType.GIFT,
+                relatertVedSivilstand = null,
+                metadata = defaultMetadataDto,
+                folkeregistermetadata = null
             )
         )
 
@@ -121,10 +128,10 @@ internal class PersonServiceTest {
         every { mapper.personDtoToDomain(any(), any()) } returns person
         every { mockPersonDto.sivilstand } returns listOf(
             SivilstandDto(
-                SivilstandType.GIFT,
-                FDAT_IDENT,
-                MetadataDto("PDL", listOf(EndringDto("PDL", LocalDateTime.now(), "type"))),
-                null
+                type = SivilstandType.GIFT,
+                relatertVedSivilstand = FDAT_IDENT,
+                metadata = defaultMetadataDto,
+                folkeregistermetadata = null
             )
         )
 

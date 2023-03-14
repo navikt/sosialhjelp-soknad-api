@@ -19,9 +19,20 @@ internal class BasisPersonaliaSystemdataTest {
     private val personService: PersonService = mockk()
     private val basisPersonaliaSystemdata = BasisPersonaliaSystemdata(personService)
 
+    private val defaultSoknadUnderArbeid = SoknadUnderArbeid(
+        versjon = 1L,
+        behandlingsId = "BEHANDLINGSID",
+        tilknyttetBehandlingsId = null,
+        eier = EIER,
+        jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
+        status = SoknadUnderArbeidStatus.UNDER_ARBEID,
+        opprettetDato = LocalDateTime.now(),
+        sistEndretDato = LocalDateTime.now()
+    )
+
     @Test
     fun skalIkkeOppdatereDersomPersonaliaErNull() {
-        val soknadUnderArbeid = createSoknadUnderArbeid()
+        val soknadUnderArbeid = defaultSoknadUnderArbeid
         every { personService.hentPerson(any()) } returns null
 
         basisPersonaliaSystemdata.updateSystemdataIn(soknadUnderArbeid)
@@ -50,7 +61,7 @@ internal class BasisPersonaliaSystemdataTest {
             bostedsadresse = null,
             oppholdsadresse = null,
         )
-        val soknadUnderArbeid = createSoknadUnderArbeid()
+        val soknadUnderArbeid = defaultSoknadUnderArbeid
         every { personService.hentPerson(any()) } returns person
 
         basisPersonaliaSystemdata.updateSystemdataIn(soknadUnderArbeid)
@@ -81,7 +92,7 @@ internal class BasisPersonaliaSystemdataTest {
             bostedsadresse = null,
             oppholdsadresse = null,
         )
-        val soknadUnderArbeid = createSoknadUnderArbeid()
+        val soknadUnderArbeid = defaultSoknadUnderArbeid
         every { personService.hentPerson(any()) } returns person
 
         basisPersonaliaSystemdata.updateSystemdataIn(soknadUnderArbeid)
@@ -109,7 +120,7 @@ internal class BasisPersonaliaSystemdataTest {
             bostedsadresse = null,
             oppholdsadresse = null,
         )
-        val soknadUnderArbeid = createSoknadUnderArbeid()
+        val soknadUnderArbeid = defaultSoknadUnderArbeid
         every { personService.hentPerson(any()) } returns person
 
         basisPersonaliaSystemdata.updateSystemdataIn(soknadUnderArbeid)
@@ -136,7 +147,7 @@ internal class BasisPersonaliaSystemdataTest {
             bostedsadresse = null,
             oppholdsadresse = null,
         )
-        val soknadUnderArbeid = createSoknadUnderArbeid()
+        val soknadUnderArbeid = defaultSoknadUnderArbeid
         every { personService.hentPerson(any()) } returns person
 
         basisPersonaliaSystemdata.updateSystemdataIn(soknadUnderArbeid)
@@ -167,7 +178,7 @@ internal class BasisPersonaliaSystemdataTest {
             bostedsadresse = null,
             oppholdsadresse = null,
         )
-        val soknadUnderArbeid = createSoknadUnderArbeid()
+        val soknadUnderArbeid = defaultSoknadUnderArbeid
         every { personService.hentPerson(any()) } returns person
 
         basisPersonaliaSystemdata.updateSystemdataIn(soknadUnderArbeid)
@@ -199,18 +210,5 @@ internal class BasisPersonaliaSystemdataTest {
         private const val NORSK_STATSBORGERSKAP = "NOR"
         private const val NORDISK_STATSBORGERSKAP = "FIN"
         private const val IKKE_NORDISK_STATSBORGERSKAP = "GER"
-
-        private fun createSoknadUnderArbeid(): SoknadUnderArbeid {
-            return SoknadUnderArbeid(
-                versjon = 1L,
-                behandlingsId = "BEHANDLINGSID",
-                tilknyttetBehandlingsId = null,
-                eier = EIER,
-                jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
-                status = SoknadUnderArbeidStatus.UNDER_ARBEID,
-                opprettetDato = LocalDateTime.now(),
-                sistEndretDato = LocalDateTime.now()
-            )
-        }
     }
 }
