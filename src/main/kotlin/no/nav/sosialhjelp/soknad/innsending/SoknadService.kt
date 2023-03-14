@@ -171,7 +171,7 @@ class SoknadService(
     }
 
     @Transactional
-    fun avbrytSoknad(behandlingsId: String) {
+    fun avbrytSoknad(behandlingsId: String, steg: String) {
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         soknadUnderArbeidRepository.hentSoknadNullable(behandlingsId, eier)
             ?.let { soknadUnderArbeid ->
@@ -180,7 +180,7 @@ class SoknadService(
                 }
                 soknadUnderArbeidRepository.slettSoknad(soknadUnderArbeid, eier)
                 settSoknadMetadataAvbrutt(soknadUnderArbeid.behandlingsId, false)
-                prometheusMetricsService.reportAvbruttSoknad(soknadUnderArbeid.erEttersendelse)
+                prometheusMetricsService.reportAvbruttSoknad(soknadUnderArbeid.erEttersendelse, steg)
             }
     }
 
