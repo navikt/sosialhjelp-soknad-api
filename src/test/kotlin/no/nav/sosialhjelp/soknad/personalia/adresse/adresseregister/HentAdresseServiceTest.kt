@@ -23,6 +23,20 @@ internal class HentAdresseServiceTest {
     private val personService: PersonService = mockk()
     private val hentAdresseService = HentAdresseService(hentAdresseClient, personService)
 
+    private val defaultMatrikkelAdresse = MatrikkeladresseDto(
+        undernummer = "01234",
+        matrikkelnummer = MatrikkelNummer(
+            kommunenummer = "0301",
+            gaardsnummer = "000123",
+            bruksnummer = "H0101",
+            festenummer = "F4",
+            seksjonsnummer = "seksjonsnummer"
+        ),
+        bydel = Bydel(
+            bydelsnummer = "030107"
+        )
+    )
+
     @BeforeEach
     internal fun setUp() {
         clearAllMocks()
@@ -42,7 +56,7 @@ internal class HentAdresseServiceTest {
 
     @Test
     internal fun `henter adresse fra pdl`() {
-        every { hentAdresseClient.hentMatrikkelAdresse(any()) } returns createMatrikkeladresseDto()
+        every { hentAdresseClient.hentMatrikkelAdresse(any()) } returns defaultMatrikkelAdresse
         val dto = hentAdresseService.hentKartverketMatrikkelAdresse("matrikkelId")
         assertThat(dto).isNotNull
         assertThat(dto?.kommunenummer).isEqualTo("0301")
@@ -53,7 +67,7 @@ internal class HentAdresseServiceTest {
         val mockPerson: Person = mockk()
         every { personService.hentPerson(any()) } returns mockPerson
         every { mockPerson.bostedsadresse?.matrikkeladresse?.matrikkelId } returns "matrikkelId"
-        every { hentAdresseClient.hentMatrikkelAdresse(any()) } returns createMatrikkeladresseDto()
+        every { hentAdresseClient.hentMatrikkelAdresse(any()) } returns defaultMatrikkelAdresse
         val dto = hentAdresseService.hentKartverketMatrikkelAdresseForInnloggetBruker()
         assertThat(dto).isNotNull
         assertThat(dto?.kommunenummer).isEqualTo("0301")
@@ -72,21 +86,5 @@ internal class HentAdresseServiceTest {
         assertThatExceptionOfType(PdlApiException::class.java).isThrownBy {
             hentAdresseService.hentKartverketMatrikkelAdresseForInnloggetBruker()
         }
-    }
-
-    private fun createMatrikkeladresseDto(): MatrikkeladresseDto {
-        return MatrikkeladresseDto(
-            undernummer = "01234",
-            matrikkelnummer = MatrikkelNummer(
-                kommunenummer = "0301",
-                gaardsnummer = "000123",
-                bruksnummer = "H0101",
-                festenummer = "F4",
-                seksjonsnummer = "seksjonsnummer"
-            ),
-            bydel = Bydel(
-                bydelsnummer = "030107"
-            )
-        )
     }
 }

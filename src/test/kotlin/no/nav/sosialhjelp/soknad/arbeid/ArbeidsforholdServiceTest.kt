@@ -30,6 +30,14 @@ internal class ArbeidsforholdServiceTest {
     private val fom = LocalDate.now().minusMonths(1)
     private val tom = LocalDate.now()
 
+    private val arbeidsgiverOrganisasjon = OrganisasjonDto(organisasjonsnummer = orgnr, type = "Organisasjon")
+    private val arbeidsgiverPerson = PersonDto(
+        offentligIdent = "arbeidsgiver_fnr",
+        aktoerId = "aktoerid",
+        type = "Person"
+    )
+    private val arbeidstaker = PersonDto(offentligIdent = "arbeidstaker_fnr", aktoerId = "aktoerid", type = "Person")
+
     @BeforeEach
     fun setUp() {
         every { unleash.isEnabled(any(), false) } returns false
@@ -114,13 +122,4 @@ internal class ArbeidsforholdServiceTest {
             arbeidstaker
         )
     }
-
-    private val arbeidsgiverOrganisasjon: OrganisasjonDto
-        get() = OrganisasjonDto(orgnr, "Organisasjon")
-
-    private val arbeidsgiverPerson: PersonDto
-        get() = PersonDto("arbeidsgiver_fnr", "aktoerid", "Person")
-
-    private val arbeidstaker: PersonDto
-        get() = PersonDto("arbeidstaker_fnr", "aktoerid", "Person")
 }

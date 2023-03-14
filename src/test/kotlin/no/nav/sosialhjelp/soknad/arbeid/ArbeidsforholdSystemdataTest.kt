@@ -161,10 +161,22 @@ internal class ArbeidsforholdSystemdataTest {
         private const val EIER = "12345678901"
         private val tom_lonnslipp = LocalDateTime.now().plusDays(40).format(DateTimeFormatter.ISO_DATE)
         private val tom_sluttoppgjor = LocalDateTime.now().plusDays(10).format(DateTimeFormatter.ISO_DATE)
-        private val ARBEIDSFORHOLD_LONNSLIPP =
-            Arbeidsforhold(null, "Good Corp.", "1337-01-01", tom_lonnslipp, 50L, true)
-        private val ARBEIDSFORHOLD_SLUTTOPPGJOR =
-            Arbeidsforhold(null, "Evil Corp.", "1337-02-02", tom_sluttoppgjor, 30L, false)
+        private val ARBEIDSFORHOLD_LONNSLIPP = Arbeidsforhold(
+            orgnr = null,
+            arbeidsgivernavn = "Good Corp.",
+            fom = "1337-01-01",
+            tom = tom_lonnslipp,
+            fastStillingsprosent = 50L,
+            harFastStilling = true
+        )
+        private val ARBEIDSFORHOLD_SLUTTOPPGJOR = Arbeidsforhold(
+            orgnr = null,
+            arbeidsgivernavn = "Evil Corp.",
+            fom = "1337-02-02",
+            tom = tom_sluttoppgjor,
+            fastStillingsprosent = 30L,
+            harFastStilling = false
+        )
 
         private fun createSoknadUnderArbeid(): SoknadUnderArbeid {
             return SoknadUnderArbeid(
