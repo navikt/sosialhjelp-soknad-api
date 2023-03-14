@@ -14,7 +14,7 @@ object OkonomiskGruppeMapper {
             VedleggType.SkattemeldingSkattemelding -> return VedleggGruppe.GenerelleVedlegg
             VedleggType.OppholdstillatelOppholdstillatel -> return VedleggGruppe.Statsborgerskap
             else -> {
-                val soknadPath = VedleggTypeToSoknadTypeMapper.getSoknadPath(vedleggType.toString())
+                val soknadPath = VedleggTypeToSoknadTypeMapper.getSoknadPath(vedleggType)
                 if (soknadPath == "utbetaling" || soknadPath == "formue" || soknadPath == "inntekt") {
                     return VedleggGruppe.Inntekt
                 }

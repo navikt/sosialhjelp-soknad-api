@@ -72,9 +72,8 @@ object VedleggMapper {
 
     private fun getRader(jsonOkonomi: JsonOkonomi, vedleggType: VedleggType): List<VedleggRadFrontend> {
         if (!VedleggTypeToSoknadTypeMapper.isInSoknadJson(vedleggType)) return emptyList()
-        val vedleggTypeStringName = vedleggType.toString()
-        val soknadType = VedleggTypeToSoknadTypeMapper.vedleggTypeToSoknadType[vedleggTypeStringName]
-        val soknadPath = VedleggTypeToSoknadTypeMapper.getSoknadPath(vedleggTypeStringName)
+        val soknadType = VedleggTypeToSoknadTypeMapper.vedleggTypeToSoknadType[vedleggType.toString()]
+        val soknadPath = VedleggTypeToSoknadTypeMapper.getSoknadPath(vedleggType)
 
         // Spesialtilfelle for avdrag og renter
         if (soknadType == UTGIFTER_BOLIGLAN_AVDRAG) {

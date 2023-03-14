@@ -129,9 +129,8 @@ class OkonomiskeOpplysningerRessurs(
         val jsonOkonomi = soknad.jsonInternalSoknad?.soknad?.data?.okonomi ?: return
 
         if (VedleggTypeToSoknadTypeMapper.isInSoknadJson(vedleggFrontend.type)) {
-            val vedleggTypeStringName = vedleggFrontend.type.toString()
-            val soknadType = vedleggTypeToSoknadType[vedleggTypeStringName]
-            when (getSoknadPath(vedleggTypeStringName)) {
+            val soknadType = vedleggTypeToSoknadType[vedleggFrontend.type.toString()]
+            when (getSoknadPath(vedleggFrontend.type)) {
                 "utbetaling" -> if (soknadType.equals(UTBETALING_HUSBANKEN, ignoreCase = true)) {
                     addAllInntekterToJsonOkonomiUtbetalinger(vedleggFrontend, jsonOkonomi, UTBETALING_HUSBANKEN)
                 } else {
