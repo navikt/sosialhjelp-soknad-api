@@ -107,7 +107,16 @@ internal class BegrunnelseRessursTest {
     }
 
     private fun createJsonInternalSoknadWithBegrunnelse(hvaSokesOm: String, hvorforSoke: String): SoknadUnderArbeid {
-        val soknadUnderArbeid = createSoknadUnderArbeid()
+        val soknadUnderArbeid = SoknadUnderArbeid(
+            versjon = 1L,
+            behandlingsId = "behandlingsid",
+            tilknyttetBehandlingsId = null,
+            eier = EIER,
+            jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
+            status = SoknadUnderArbeidStatus.UNDER_ARBEID,
+            opprettetDato = LocalDateTime.now(),
+            sistEndretDato = LocalDateTime.now()
+        )
         soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.begrunnelse
             .withHvaSokesOm(hvaSokesOm)
             .withHvorforSoke(hvorforSoke)
@@ -119,18 +128,5 @@ internal class BegrunnelseRessursTest {
         private const val EIER = "123456789101"
         private const val SOKER_FORDI = "Jeg søker fordi..."
         private const val SOKER_OM = "Jeg søker om..."
-
-        private fun createSoknadUnderArbeid(): SoknadUnderArbeid {
-            return SoknadUnderArbeid(
-                versjon = 1L,
-                behandlingsId = "behandlingsid",
-                tilknyttetBehandlingsId = null,
-                eier = EIER,
-                jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
-                status = SoknadUnderArbeidStatus.UNDER_ARBEID,
-                opprettetDato = LocalDateTime.now(),
-                sistEndretDato = LocalDateTime.now()
-            )
-        }
     }
 }
