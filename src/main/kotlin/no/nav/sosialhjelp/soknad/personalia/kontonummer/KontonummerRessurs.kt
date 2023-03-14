@@ -41,7 +41,7 @@ class KontonummerRessurs(
         return KontonummerFrontend(
             brukerdefinert = kontonummer.kilde == JsonKilde.BRUKER,
             systemverdi = systemverdi,
-            brukerutfyltVerdi = if (kontonummer.kilde == JsonKilde.BRUKER) kontonummer.verdi else null,
+            brukerutfyltVerdi = kontonummer?.takeIf { it.kilde == JsonKilde.BRUKER }?.verdi,
             harIkkeKonto = kontonummer.harIkkeKonto
         )
     }

@@ -61,9 +61,9 @@ class UtbetalingerFraNavSystemdata(
             .withSkattetrekk(navUtbetaling.skattetrekk)
             .withOrganisasjon(organisasjonService.mapToJsonOrganisasjon(navUtbetaling.orgnummer))
             .withAndreTrekk(navUtbetaling.andreTrekk)
-            .withPeriodeFom(if (navUtbetaling.periodeFom != null) navUtbetaling.periodeFom.toString() else null)
-            .withPeriodeTom(if (navUtbetaling.periodeTom != null) navUtbetaling.periodeTom.toString() else null)
-            .withUtbetalingsdato(if (navUtbetaling.utbetalingsdato == null) null else navUtbetaling.utbetalingsdato.toString())
+            .withPeriodeFom(navUtbetaling.periodeFom?.toString())
+            .withPeriodeTom(navUtbetaling.periodeTom?.toString())
+            .withUtbetalingsdato(navUtbetaling.utbetalingsdato?.toString())
             .withKomponenter(tilUtbetalingskomponentListe(navUtbetaling.komponenter))
             .withOverstyrtAvBruker(false)
     }

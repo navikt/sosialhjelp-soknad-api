@@ -20,10 +20,7 @@ class TelefonnummerSystemdata(
         if (telefonnummer == null || telefonnummer.kilde == JsonKilde.SYSTEM) {
             val personIdentifikator = personalia.personIdentifikator.verdi
             val systemverdi = innhentSystemverdiTelefonnummer(personIdentifikator)
-            personalia.telefonnummer =
-                if (systemverdi == null) null else if (telefonnummer != null) telefonnummer.withVerdi(systemverdi) else JsonTelefonnummer()
-                    .withKilde(JsonKilde.SYSTEM)
-                    .withVerdi(systemverdi)
+            personalia.telefonnummer = getTelefonnummer(systemverdi, telefonnummer)
         }
     }
 
@@ -43,12 +40,18 @@ class TelefonnummerSystemdata(
         if (mobiltelefonnummer.length == 8) {
             return "+47$mobiltelefonnummer"
         }
-        return if (mobiltelefonnummer.startsWith("+47") && mobiltelefonnummer.length == 11) {
-            mobiltelefonnummer
-        } else null
+        return mobiltelefonnummer.takeIf { it.startsWith("+47") && it.length == 11 }
     }
 
     companion object {
         private val log by logger()
+
+        private fun getTelefonnummer(systemverdi: String?, telefonnummer: JsonTelefonnummer?): JsonTelefonnummer? {
+            return when {
+                systemverdi == null -> null
+                telefonnummer != null -> telefonnummer.withVerdi(systemverdi)
+                else -> JsonTelefonnummer().withKilde(JsonKilde.SYSTEM).withVerdi(systemverdi)
+            }
+        }
     }
 }
