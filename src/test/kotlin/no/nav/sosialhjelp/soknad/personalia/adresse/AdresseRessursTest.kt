@@ -381,7 +381,16 @@ internal class AdresseRessursTest {
     }
 
     private fun createJsonInternalSoknadWithOppholdsadresse(valg: JsonAdresseValg?): SoknadUnderArbeid {
-        val soknadUnderArbeid = createSoknadUnderArbeid()
+        val soknadUnderArbeid = SoknadUnderArbeid(
+            versjon = 1L,
+            behandlingsId = BEHANDLINGSID,
+            tilknyttetBehandlingsId = null,
+            eier = EIER,
+            jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
+            status = SoknadUnderArbeidStatus.UNDER_ARBEID,
+            opprettetDato = LocalDateTime.now(),
+            sistEndretDato = LocalDateTime.now()
+        )
         soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia
             .withOppholdsadresse(getSelectedAdresse(valg))
         return soknadUnderArbeid
@@ -425,18 +434,5 @@ internal class AdresseRessursTest {
             .withHusnummer("1337")
             .withHusbokstav("A")
         private const val EIER = "123456789101"
-
-        private fun createSoknadUnderArbeid(): SoknadUnderArbeid {
-            return SoknadUnderArbeid(
-                versjon = 1L,
-                behandlingsId = BEHANDLINGSID,
-                tilknyttetBehandlingsId = null,
-                eier = EIER,
-                jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
-                status = SoknadUnderArbeidStatus.UNDER_ARBEID,
-                opprettetDato = LocalDateTime.now(),
-                sistEndretDato = LocalDateTime.now()
-            )
-        }
     }
 }

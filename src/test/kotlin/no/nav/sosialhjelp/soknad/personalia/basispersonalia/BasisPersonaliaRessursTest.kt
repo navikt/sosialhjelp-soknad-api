@@ -115,7 +115,17 @@ internal class BasisPersonaliaRessursTest {
         withNordiskBorger: Boolean,
         erNordisk: Boolean
     ): SoknadUnderArbeid {
-        val soknadUnderArbeid = createSoknadUnderArbeid()
+        val soknadUnderArbeid = SoknadUnderArbeid(
+            versjon = 1L,
+            behandlingsId = BEHANDLINGSID,
+            tilknyttetBehandlingsId = null,
+            eier = EIER,
+            jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
+            status = SoknadUnderArbeidStatus.UNDER_ARBEID,
+            opprettetDato = LocalDateTime.now(),
+            sistEndretDato = LocalDateTime.now()
+        )
+
         soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia
             .withNavn(
                 JsonSokernavn()
@@ -182,18 +192,5 @@ internal class BasisPersonaliaRessursTest {
                     .withMellomnavn(MELLOMNAVN)
                     .withEtternavn(ETTERNAVN)
             )
-
-        private fun createSoknadUnderArbeid(): SoknadUnderArbeid {
-            return SoknadUnderArbeid(
-                versjon = 1L,
-                behandlingsId = BEHANDLINGSID,
-                tilknyttetBehandlingsId = null,
-                eier = EIER,
-                jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
-                status = SoknadUnderArbeidStatus.UNDER_ARBEID,
-                opprettetDato = LocalDateTime.now(),
-                sistEndretDato = LocalDateTime.now()
-            )
-        }
     }
 }
