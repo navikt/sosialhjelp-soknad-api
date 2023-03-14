@@ -256,13 +256,15 @@ internal class SivilstatusRessursTest {
         val soknadUnderArbeid = createSoknadUnderArbeid()
         soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.familie
             .withSivilstatus(
-                if (brukerutfylt == null) null else JsonSivilstatus()
-                    .withKilde(if (brukerutfylt) JsonKilde.BRUKER else JsonKilde.SYSTEM)
-                    .withStatus(status)
-                    .withEktefelle(ektefelle)
-                    .withEktefelleHarDiskresjonskode(harDiskresjonskode)
-                    .withFolkeregistrertMedEktefelle(folkeregistrertMed)
-                    .withBorSammenMed(borSammen)
+                brukerutfylt?.let {
+                    JsonSivilstatus()
+                        .withKilde(if (brukerutfylt) JsonKilde.BRUKER else JsonKilde.SYSTEM)
+                        .withStatus(status)
+                        .withEktefelle(ektefelle)
+                        .withEktefelleHarDiskresjonskode(harDiskresjonskode)
+                        .withFolkeregistrertMedEktefelle(folkeregistrertMed)
+                        .withBorSammenMed(borSammen)
+                }
             )
         return soknadUnderArbeid
     }
