@@ -106,8 +106,8 @@ internal class BasisPersonaliaRessursTest {
         assertThat(personaliaFrontend.navn?.etternavn).isEqualTo(jsonPersonalia.navn.etternavn)
         assertThat(personaliaFrontend.navn?.fulltNavn).isEqualTo(FULLT_NAVN)
         assertThat(personaliaFrontend.statsborgerskap)
-            .isEqualTo(if (jsonPersonalia.statsborgerskap == null) null else if (jsonPersonalia.statsborgerskap.verdi == "NOR") "Norge" else jsonPersonalia.statsborgerskap.verdi)
-        assertThat(personaliaFrontend.nordiskBorger).isEqualTo(if (jsonPersonalia.nordiskBorger != null) jsonPersonalia.nordiskBorger.verdi else null)
+            .isEqualTo(if (jsonPersonalia.statsborgerskap?.verdi == "NOR") "Norge" else jsonPersonalia.statsborgerskap?.verdi)
+        assertThat(personaliaFrontend.nordiskBorger).isEqualTo(jsonPersonalia.nordiskBorger?.verdi)
     }
 
     private fun createJsonInternalSoknadWithBasisPersonalia(

@@ -345,7 +345,7 @@ internal class MapperHelperTest {
             type,
             null,
             MetadataDto(master, endringer),
-            if (ajourholdtidspunkt != null) FolkeregisterMetadataDto(ajourholdtidspunkt, null) else null
+            ajourholdtidspunkt?.let { FolkeregisterMetadataDto(it, null) }
         )
     }
 
@@ -384,7 +384,7 @@ internal class MapperHelperTest {
             "mellomnavn",
             "etternavn",
             MetadataDto(master, endringer),
-            if (ajourholdtidspunkt != null) FolkeregisterMetadataDto(ajourholdtidspunkt, null) else null
+            ajourholdtidspunkt?.let { FolkeregisterMetadataDto(it, null) }
         )
     }
 }

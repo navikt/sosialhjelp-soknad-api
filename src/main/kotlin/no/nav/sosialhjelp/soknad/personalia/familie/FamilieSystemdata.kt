@@ -111,7 +111,7 @@ class FamilieSystemdata(
                             .withMellomnavn(barn.mellomnavn)
                             .withEtternavn(barn.etternavn)
                     )
-                    .withFodselsdato(if (barn.fodselsdato != null) barn.fodselsdato.toString() else null)
+                    .withFodselsdato(barn.fodselsdato?.toString())
                     .withPersonIdentifikator(barn.fnr)
                     .withHarDiskresjonskode(false)
             )
@@ -133,7 +133,7 @@ class FamilieSystemdata(
                 )
             } else JsonEktefelle()
                 .withNavn(mapToJsonNavn(ektefelle))
-                .withFodselsdato(if (ektefelle.fodselsdato != null) ektefelle.fodselsdato.toString() else null)
+                .withFodselsdato(ektefelle.fodselsdato?.toString())
                 .withPersonIdentifikator(ektefelle.fnr)
         }
 

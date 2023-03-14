@@ -48,11 +48,11 @@ data class PeriodeDto(
 
 fun ArbeidsforholdDto.toDomain(organisasjonService: OrganisasjonService): Arbeidsforhold {
     return Arbeidsforhold(
-        orgnr = if (this.arbeidsgiver is OrganisasjonDto) this.arbeidsgiver.organisasjonsnummer else null,
-        arbeidsgivernavn = if (this.arbeidsgiver is OrganisasjonDto) organisasjonService.hentOrgNavn(this.arbeidsgiver.organisasjonsnummer) else "Privatperson",
-        fom = this.ansettelsesperiode?.periode?.fom?.format(DateTimeFormatter.ISO_LOCAL_DATE),
-        tom = this.ansettelsesperiode?.periode?.tom?.format(DateTimeFormatter.ISO_LOCAL_DATE),
-        fastStillingsprosent = this.arbeidsavtaler?.sumOf { it.stillingsprosent }?.toLong(),
-        harFastStilling = this.arbeidsavtaler?.isNotEmpty()
+        orgnr = (arbeidsgiver as? OrganisasjonDto)?.organisasjonsnummer,
+        arbeidsgivernavn = if (arbeidsgiver is OrganisasjonDto) organisasjonService.hentOrgNavn(arbeidsgiver.organisasjonsnummer) else "Privatperson",
+        fom = ansettelsesperiode?.periode?.fom?.format(DateTimeFormatter.ISO_LOCAL_DATE),
+        tom = ansettelsesperiode?.periode?.tom?.format(DateTimeFormatter.ISO_LOCAL_DATE),
+        fastStillingsprosent = arbeidsavtaler?.sumOf { it.stillingsprosent }?.toLong(),
+        harFastStilling = arbeidsavtaler?.isNotEmpty()
     )
 }
