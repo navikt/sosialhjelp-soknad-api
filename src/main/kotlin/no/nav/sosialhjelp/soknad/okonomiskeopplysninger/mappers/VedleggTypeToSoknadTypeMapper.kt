@@ -54,13 +54,6 @@ object VedleggTypeToSoknadTypeMapper {
         }
     }
 
-    fun isInSoknadJson(vedleggType: String?): Boolean {
-        return when (vedleggType) {
-            "oppholdstillatel|oppholdstillatel", "samvarsavtale|barn", "husleiekontrakt|husleiekontrakt", "husleiekontrakt|kommunal", "skattemelding|skattemelding" -> false
-            else -> true
-        }
-    }
-
     fun isInSoknadJson(vedleggType: VedleggType?): Boolean {
         return when (vedleggType) {
             VedleggType.OppholdstillatelOppholdstillatel, VedleggType.SamvarsavtaleBarn, VedleggType.HusleiekontraktHusleiekontrakt, VedleggType.HusleiekontraktKommunal, VedleggType.SkattemeldingSkattemelding -> false
