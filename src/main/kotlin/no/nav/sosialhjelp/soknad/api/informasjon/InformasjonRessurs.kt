@@ -53,19 +53,21 @@ class InformasjonRessurs(
     }
 
     @GetMapping("/utslagskriterier/sosialhjelp", produces = [MediaType.APPLICATION_JSON_VALUE])
-    fun getUtslagskriterier(): Map<String, Any> {
+    fun getUtslagskriterier(): Utslagskriterier {
         val uid = SubjectHandlerUtils.getUserIdFromToken()
         val adressebeskyttelse = personService.hentAdressebeskyttelse(uid)
-        val resultat = mutableMapOf<String, Any>()
-        var harTilgang = true
-        var sperrekode = ""
-        if (FORTROLIG == adressebeskyttelse || STRENGT_FORTROLIG == adressebeskyttelse || STRENGT_FORTROLIG_UTLAND == adressebeskyttelse) {
-            harTilgang = false
-            sperrekode = "bruker"
-        }
-        resultat["harTilgang"] = harTilgang
-        resultat["sperrekode"] = sperrekode
-        return resultat
+
+        val (harTilgang, sperrekode) =
+            if (FORTROLIG == adressebeskyttelse || STRENGT_FORTROLIG == adressebeskyttelse || STRENGT_FORTROLIG_UTLAND == adressebeskyttelse) {
+                Pair(false, Sperrekode.bruker)
+            } else {
+                Pair(true, null)
+            }
+
+        return Utslagskriterier(
+            harTilgang,
+            sperrekode
+        )
     }
 
     @GetMapping("/adressesok")
@@ -101,4 +103,13 @@ class InformasjonRessurs(
         log.debug("Henter pabegynte soknader for bruker")
         return pabegynteSoknaderService.hentPabegynteSoknaderForBruker(fnr)
     }
+
+    enum class Sperrekode {
+        bruker
+    }
+
+    data class Utslagskriterier(
+        val harTilgang: Boolean,
+        val sperrekode: Sperrekode?,
+    )
 }
