@@ -44,6 +44,14 @@ class ExceptionMapperTest {
     }
 
     @Test
+    fun `skal gi 410 Gone ved SoknadAlleredeSendtException`() {
+        val responseEntity = exceptionMapper.handleSoknadApiException(
+            SoknadAlleredeSendtException(message = "soknad allerede innsendt")
+        )
+        assertThat(responseEntity.statusCode).isEqualTo(HttpStatus.GONE)
+    }
+
+    @Test
     fun `skal gi 500 med header for Ingen BigIpRedirect for andre kjente unntak`() {
         val responseEntity = exceptionMapper.handleSoknadApiException(
             SosialhjelpSoknadApiException(melding = "feil")

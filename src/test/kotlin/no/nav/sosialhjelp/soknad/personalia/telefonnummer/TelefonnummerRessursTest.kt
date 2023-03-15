@@ -177,9 +177,11 @@ internal class TelefonnummerRessursTest {
         val soknadUnderArbeid = createSoknadUnderArbeid()
         soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia
             .withTelefonnummer(
-                if (verdi == null) null else JsonTelefonnummer()
-                    .withKilde(kilde)
-                    .withVerdi(verdi)
+                verdi?.let {
+                    JsonTelefonnummer()
+                        .withKilde(kilde)
+                        .withVerdi(it)
+                }
             )
         return soknadUnderArbeid
     }

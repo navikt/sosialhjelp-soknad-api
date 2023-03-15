@@ -18,13 +18,13 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4])
 @RequestMapping("/soknader/{behandlingsId}/personalia/kontonummer", produces = [MediaType.APPLICATION_JSON_VALUE])
-open class KontonummerRessurs(
+class KontonummerRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val kontonummerSystemdata: KontonummerSystemdata
 ) {
     @GetMapping
-    open fun hentKontonummer(
+    fun hentKontonummer(
         @PathVariable("behandlingsId") behandlingsId: String
     ): KontonummerFrontend {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
@@ -41,13 +41,13 @@ open class KontonummerRessurs(
         return KontonummerFrontend(
             brukerdefinert = kontonummer.kilde == JsonKilde.BRUKER,
             systemverdi = systemverdi,
-            brukerutfyltVerdi = if (kontonummer.kilde == JsonKilde.BRUKER) kontonummer.verdi else null,
+            brukerutfyltVerdi = kontonummer?.takeIf { it.kilde == JsonKilde.BRUKER }?.verdi,
             harIkkeKonto = kontonummer.harIkkeKonto
         )
     }
 
     @PutMapping
-    open fun updateKontonummer(
+    fun updateKontonummer(
         @PathVariable("behandlingsId") behandlingsId: String,
         @RequestBody kontonummerFrontend: KontonummerFrontend
     ) {

@@ -1,78 +1,153 @@
 package no.nav.sosialhjelp.soknad.navenhet
 
+import no.finn.unleash.Unleash
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknadsmottaker
+import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse
+import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresseValg
+import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonGateAdresse
+import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonMatrikkelAdresse
+import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia
+import no.nav.sosialhjelp.soknad.adressesok.domain.AdresseForslag
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
-import no.nav.sosialhjelp.soknad.app.exceptions.TjenesteUtilgjengeligException
+import no.nav.sosialhjelp.soknad.app.MiljoUtils
+import no.nav.sosialhjelp.soknad.app.mapper.KommuneTilNavEnhetMapper
+import no.nav.sosialhjelp.soknad.innsending.SenderUtils
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
+import no.nav.sosialhjelp.soknad.kodeverk.KodeverkService
+import no.nav.sosialhjelp.soknad.navenhet.NavEnhetUtils.getEnhetsnavnFromNavEnhetsnavn
+import no.nav.sosialhjelp.soknad.navenhet.NavEnhetUtils.getKommunenavnFromNavEnhetsnavn
+import no.nav.sosialhjelp.soknad.navenhet.bydel.BydelFordelingService
 import no.nav.sosialhjelp.soknad.navenhet.domain.NavEnhet
-import no.nav.sosialhjelp.soknad.navenhet.dto.NavEnhetDto
-import no.nav.sosialhjelp.soknad.navenhet.dto.toNavEnhet
-import no.nav.sosialhjelp.soknad.redis.GT_CACHE_KEY_PREFIX
-import no.nav.sosialhjelp.soknad.redis.GT_LAST_POLL_TIME_PREFIX
-import no.nav.sosialhjelp.soknad.redis.RedisService
+import no.nav.sosialhjelp.soknad.navenhet.dto.NavEnhetFrontend
+import no.nav.sosialhjelp.soknad.navenhet.finnadresse.FinnAdresseService
+import no.nav.sosialhjelp.soknad.navenhet.gt.GeografiskTilknytningService
 import org.springframework.stereotype.Component
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 @Component
 class NavEnhetService(
-    private val norgClient: NorgClient,
-    private val redisService: RedisService
+    private val norgService: NorgService,
+    private val kommuneInfoService: KommuneInfoService,
+    private val bydelFordelingService: BydelFordelingService,
+    private val finnAdresseService: FinnAdresseService,
+    private val geografiskTilknytningService: GeografiskTilknytningService,
+    private val kodeverkService: KodeverkService,
+    private val unleash: Unleash
 ) {
 
-    fun getEnhetForGt(gt: String?): NavEnhet? {
-        if (gt == null || !gt.matches(Regex("^[0-9]+$"))) {
-            throw IllegalArgumentException("GT ikke på gyldig format: $gt")
-        }
+    fun getNavEnhet(
+        eier: String,
+        soknad: JsonSoknad,
+        valg: JsonAdresseValg?,
+    ): NavEnhetFrontend? {
+        val personalia = soknad.data.personalia
+        return if (JsonAdresseValg.FOLKEREGISTRERT == valg) {
+            try {
+                finnNavEnhetFraGT(eier, personalia)
+            } catch (e: Exception) {
+                log.warn("Noe feilet henting av NavEnhet fra GT -> fallback til adressesøk for vegadresse / hentAdresse for matrikkeladresse", e)
+                finnNavEnhetFraAdresse(personalia, valg)
+            }
+        } else finnNavEnhetFraAdresse(personalia, valg)
+    }
 
-        val navEnhetDto = hentFraCacheEllerConsumer(gt)
-        if (navEnhetDto == null) {
-            log.warn("Kunne ikke finne NorgEnhet for gt: $gt")
+    fun getValgtNavEnhet(soknadsmottaker: JsonSoknadsmottaker): NavEnhetFrontend {
+        val kommunenummer = soknadsmottaker.kommunenummer
+        return NavEnhetFrontend(
+            enhetsnr = soknadsmottaker.enhetsnummer,
+            enhetsnavn = getEnhetsnavnFromNavEnhetsnavn(soknadsmottaker.navEnhetsnavn),
+            kommunenavn = getKommunenavnFromNavEnhetsnavn(soknadsmottaker.navEnhetsnavn),
+            kommuneNr = kommunenummer,
+            isMottakDeaktivert = !isDigisosKommune(kommunenummer),
+            isMottakMidlertidigDeaktivert = kommuneInfoService.harMidlertidigDeaktivertMottak(kommunenummer),
+            orgnr = KommuneTilNavEnhetMapper.getOrganisasjonsnummer(soknadsmottaker.enhetsnummer), // Brukes ikke etter at kommunene er på Fiks konfigurasjon og burde ikke bli brukt av frontend.
+            valgt = true
+        )
+    }
+
+    private fun finnNavEnhetFraGT(
+        ident: String,
+        personalia: JsonPersonalia
+    ): NavEnhetFrontend? {
+        val kommunenummer = getKommunenummer(personalia.oppholdsadresse) ?: return null
+        val geografiskTilknytning = geografiskTilknytningService.hentGeografiskTilknytning(ident)
+        val navEnhet = norgService.getEnhetForGt(geografiskTilknytning)
+        return mapToNavEnhetFrontend(navEnhet, geografiskTilknytning, kommunenummer)
+    }
+
+    private fun finnNavEnhetFraAdresse(
+        personalia: JsonPersonalia,
+        valg: JsonAdresseValg?,
+    ): NavEnhetFrontend? {
+        val adresseForslag = finnAdresseService.finnAdresseFraSoknad(personalia, valg) ?: return null
+        val geografiskTilknytning = getGeografiskTilknytningFromAdresseForslag(adresseForslag)
+        val navEnhet = norgService.getEnhetForGt(geografiskTilknytning)
+        return mapToNavEnhetFrontend(navEnhet, geografiskTilknytning, adresseForslag.kommunenummer)
+    }
+
+    private fun mapToNavEnhetFrontend(
+        navEnhet: NavEnhet?,
+        geografiskTilknytning: String?,
+        kommunenummer: String?
+    ): NavEnhetFrontend? {
+        if (navEnhet == null) {
+            log.warn("Kunne ikke hente NAV-enhet: $geografiskTilknytning , i kommune: $kommunenummer")
             return null
         }
-        return navEnhetDto.toNavEnhet(gt)
-    }
-
-    private fun hentFraCacheEllerConsumer(gt: String): NavEnhetDto? {
-        if (skalBrukeCache(gt)) {
-            val cached = hentFraCache(gt)
-            if (cached != null) {
-                return cached
-            }
+        if (kommunenummer == null || kommunenummer.length != 4) {
+            log.warn("Kommunenummer hadde ikke 4 tegn, var $kommunenummer")
+            return null
         }
-        return hentFraConsumerMedCacheSomFallback(gt)
+        val isDigisosKommune = isDigisosKommune(kommunenummer)
+        val sosialOrgnr = navEnhet.sosialOrgNr.takeIf { isDigisosKommune }
+        val enhetNr = navEnhet.enhetNr.takeIf { isDigisosKommune }
+        val kommunenavn = kodeverkService.getKommunenavn(kommunenummer)
+        return NavEnhetFrontend(
+            enhetsnr = enhetNr,
+            enhetsnavn = navEnhet.navn,
+            kommunenavn = kommuneInfoService.getBehandlingskommune(kommunenummer, kommunenavn),
+            orgnr = sosialOrgnr,
+            valgt = enhetNr != null,
+            kommuneNr = kommunenummer,
+            isMottakDeaktivert = !isDigisosKommune,
+            isMottakMidlertidigDeaktivert = kommuneInfoService.harMidlertidigDeaktivertMottak(kommunenummer)
+        )
     }
 
-    private fun skalBrukeCache(gt: String): Boolean {
-        val timeString = redisService.getString(GT_LAST_POLL_TIME_PREFIX + gt) ?: return false
-        val lastPollTime = LocalDateTime.parse(timeString, DateTimeFormatter.ISO_LOCAL_DATE_TIME)
-        return lastPollTime.plusMinutes(MINUTES_TO_PASS_BETWEEN_POLL).isAfter(LocalDateTime.now())
-    }
-
-    private fun hentFraCache(gt: String): NavEnhetDto? {
-        return redisService.get(GT_CACHE_KEY_PREFIX + gt, NavEnhetDto::class.java) as? NavEnhetDto
-    }
-
-    private fun hentFraConsumerMedCacheSomFallback(gt: String): NavEnhetDto? {
-        try {
-            val navEnhetDto = norgClient.hentNavEnhetForGeografiskTilknytning(gt)
-            if (navEnhetDto != null) {
-                return navEnhetDto
-            }
-        } catch (e: TjenesteUtilgjengeligException) {
-            // Norg feiler -> prøv å hent tidligere cached verdi
-            val cached = hentFraCache(gt)
-            if (cached != null) {
-                log.info("Norg-client feilet, men bruker tidligere cachet response fra Norg")
-                return cached
-            }
-            log.warn("Norg-client feilet og cache for gt=$gt er tom")
-            throw e
+    private fun getKommunenummer(oppholdsadresse: JsonAdresse): String? {
+        if (
+            MiljoUtils.isNonProduction() &&
+            unleash.isEnabled(FEATURE_SEND_TIL_NAV_TESTKOMMUNE, false) &&
+            oppholdsadresse.adresseValg == JsonAdresseValg.FOLKEREGISTRERT
+        ) {
+            log.error("Sender til Nav-testkommune (3002). Du skal aldri se denne meldingen i PROD")
+            return "3002"
         }
-        return null
+
+        return when (oppholdsadresse) {
+            is JsonMatrikkelAdresse -> oppholdsadresse.kommunenummer
+            is JsonGateAdresse -> oppholdsadresse.kommunenummer
+            else -> null
+        }
+    }
+
+    private fun isDigisosKommune(kommunenummer: String): Boolean {
+        val isNyDigisosApiKommuneMedMottakAktivert = kommuneInfoService.kanMottaSoknader(kommunenummer) && unleash.isEnabled(SenderUtils.INNSENDING_DIGISOSAPI_ENABLED, true)
+        val isGammelSvarUtKommune = KommuneTilNavEnhetMapper.digisoskommuner.contains(kommunenummer)
+        return isNyDigisosApiKommuneMedMottakAktivert || isGammelSvarUtKommune
+    }
+
+    private fun getGeografiskTilknytningFromAdresseForslag(adresseForslag: AdresseForslag): String? {
+        return if (BydelFordelingService.BYDEL_MARKA_OSLO == adresseForslag.geografiskTilknytning) {
+            bydelFordelingService.getBydelTilForMarka(adresseForslag)
+        } else {
+            // flere special cases her?
+            adresseForslag.geografiskTilknytning
+        }
     }
 
     companion object {
         private val log by logger()
-
-        private const val MINUTES_TO_PASS_BETWEEN_POLL: Long = 60
+        const val FEATURE_SEND_TIL_NAV_TESTKOMMUNE = "sosialhjelp.soknad.send-til-nav-testkommune"
     }
 }

@@ -18,14 +18,14 @@ import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.bodyToMono
 
 @Component
-open class AdressesokClient(
+class AdressesokClient(
     @Value("\${pdl_api_url}") private val baseurl: String,
     @Value("\${pdl_api_scope}") private val pdlScope: String,
     private val azureadService: AzureadService,
     webClientBuilder: WebClient.Builder
 ) : PdlClient(webClientBuilder, baseurl) {
 
-    open fun getAdressesokResult(variables: Map<String, Any>): AdressesokResultDto? {
+    fun getAdressesokResult(variables: Map<String, Any>): AdressesokResultDto? {
         return try {
             val response = baseRequest
                 .header(AUTHORIZATION, BEARER + azureAdToken())

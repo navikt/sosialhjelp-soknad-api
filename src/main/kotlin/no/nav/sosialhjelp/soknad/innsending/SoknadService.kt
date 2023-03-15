@@ -26,6 +26,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.utdanning.JsonUtdanning
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
 import no.nav.sosialhjelp.soknad.app.exceptions.SosialhjelpSoknadApiException
+import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.app.systemdata.SystemdataUpdater
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadata
@@ -51,6 +52,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import java.time.Clock
+import java.time.Duration
 import java.time.LocalDateTime
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
@@ -59,7 +61,7 @@ import java.time.temporal.ChronoUnit.HOURS
 import java.time.temporal.ChronoUnit.MINUTES
 
 @Component
-open class SoknadService(
+class SoknadService(
     private val oppgaveHandterer: OppgaveHandterer,
     private val innsendingService: InnsendingService,
     private val soknadMetadataRepository: SoknadMetadataRepository,
@@ -72,9 +74,10 @@ open class SoknadService(
     private val clock: Clock
 ) {
     @Transactional
-    open fun startSoknad(token: String?): String {
+    fun startSoknad(token: String?): String {
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val behandlingsId = opprettSoknadMetadata(eier)
+        MdcOperations.putToMDC(MdcOperations.MDC_BEHANDLINGS_ID, behandlingsId)
 
         prometheusMetricsService.reportStartSoknad(false)
 
@@ -113,7 +116,7 @@ open class SoknadService(
     }
 
     @Transactional
-    open fun sendSoknad(behandlingsId: String) {
+    fun sendSoknad(behandlingsId: String) {
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
 
@@ -161,14 +164,14 @@ open class SoknadService(
         return " Dataene er $antallDager dager, $antallTimer timer og $antallMinutter minutter gamle."
     }
 
-    open fun oppdaterSistEndretDatoPaaMetadata(behandlingsId: String?) {
+    fun oppdaterSistEndretDatoPaaMetadata(behandlingsId: String?) {
         val hentet = soknadMetadataRepository.hent(behandlingsId)
         hentet?.sistEndretDato = LocalDateTime.now(clock)
         soknadMetadataRepository.oppdater(hentet)
     }
 
     @Transactional
-    open fun avbrytSoknad(behandlingsId: String) {
+    fun avbrytSoknad(behandlingsId: String, steg: String) {
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         soknadUnderArbeidRepository.hentSoknadNullable(behandlingsId, eier)
             ?.let { soknadUnderArbeid ->
@@ -177,11 +180,11 @@ open class SoknadService(
                 }
                 soknadUnderArbeidRepository.slettSoknad(soknadUnderArbeid, eier)
                 settSoknadMetadataAvbrutt(soknadUnderArbeid.behandlingsId, false)
-                prometheusMetricsService.reportAvbruttSoknad(soknadUnderArbeid.erEttersendelse)
+                prometheusMetricsService.reportAvbruttSoknad(soknadUnderArbeid.erEttersendelse, steg)
             }
     }
 
-    open fun settSoknadMetadataAvbrutt(behandlingsId: String?, avbruttAutomatisk: Boolean) {
+    fun settSoknadMetadataAvbrutt(behandlingsId: String?, avbruttAutomatisk: Boolean) {
         val metadata = soknadMetadataRepository.hent(behandlingsId)
         metadata?.status = if (avbruttAutomatisk) SoknadMetadataInnsendingStatus.AVBRUTT_AUTOMATISK else SoknadMetadataInnsendingStatus.AVBRUTT_AV_BRUKER
         metadata?.sistEndretDato = LocalDateTime.now(clock)
@@ -189,7 +192,7 @@ open class SoknadService(
     }
 
     @Transactional
-    open fun oppdaterSamtykker(
+    fun oppdaterSamtykker(
         behandlingsId: String?,
         harBostotteSamtykke: Boolean,
         harSkatteetatenSamtykke: Boolean,
@@ -220,6 +223,11 @@ open class SoknadService(
         soknadMetadata?.sistEndretDato = LocalDateTime.now(clock)
         soknadMetadata?.innsendtDato = LocalDateTime.now(clock)
         soknadMetadata?.status = SoknadMetadataInnsendingStatus.FERDIG
+
+        soknadMetadata?.let {
+            val tidBrukt = Duration.between(it.opprettetDato, it.innsendtDato)
+            prometheusMetricsService.reportInnsendingTid(tidBrukt.seconds)
+        }
         soknadMetadataRepository.oppdater(soknadMetadata)
         log.info("Søknad avsluttet $behandlingsId ${soknadMetadata?.skjema}, ${vedlegg.vedleggListe.size}")
     }

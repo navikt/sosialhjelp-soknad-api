@@ -25,7 +25,7 @@ object SQLUtils {
     }
 
     fun tidTilTimestamp(tid: LocalDateTime?): Timestamp? {
-        return if (tid != null) Timestamp.valueOf(tid) else null
+        return tid?.let { Timestamp.valueOf(it) }
     }
 
     fun nullableTimestampTilTid(timestamp: Timestamp?): LocalDateTime? {

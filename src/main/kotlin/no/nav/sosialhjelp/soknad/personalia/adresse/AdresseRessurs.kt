@@ -1,12 +1,15 @@
 package no.nav.sosialhjelp.soknad.personalia.adresse
 
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknadsmottaker
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresseValg
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.soknad.app.Constants
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
-import no.nav.sosialhjelp.soknad.navenhet.NavEnhetRessurs
+import no.nav.sosialhjelp.soknad.navenhet.NavEnhetService
+import no.nav.sosialhjelp.soknad.navenhet.NavEnhetUtils.createNavEnhetsnavn
 import no.nav.sosialhjelp.soknad.navenhet.dto.NavEnhetFrontend
 import no.nav.sosialhjelp.soknad.personalia.adresse.dto.AdresserFrontend
 import no.nav.sosialhjelp.soknad.personalia.adresse.dto.AdresserFrontendInput
@@ -22,17 +25,18 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4])
 @RequestMapping("/soknader/{behandlingsId}/personalia/adresser", produces = [MediaType.APPLICATION_JSON_VALUE])
-open class AdresseRessurs(
+class AdresseRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val adresseSystemdata: AdresseSystemdata,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
-    private val navEnhetRessurs: NavEnhetRessurs
+    private val navEnhetService: NavEnhetService
 ) {
+
     @GetMapping
-    open fun hentAdresser(
+    fun hentAdresser(
         @PathVariable("behandlingsId") behandlingsId: String
     ): AdresserFrontend {
-        tilgangskontroll.verifiserAtBrukerHarTilgang()
+        tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(behandlingsId)
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
         val jsonInternalSoknad = soknad.jsonInternalSoknad
@@ -42,17 +46,17 @@ open class AdresseRessurs(
         val sysFolkeregistrertAdresse = jsonInternalSoknad.soknad.data.personalia.folkeregistrertAdresse
         val sysMidlertidigAdresse = adresseSystemdata.innhentMidlertidigAdresse(personIdentifikator)
         val navEnhet = try {
-            navEnhetRessurs.findSoknadsmottaker(
+            navEnhetService.getNavEnhet(
                 eier,
                 jsonInternalSoknad.soknad,
-                jsonInternalSoknad.soknad.data.personalia.oppholdsadresse.adresseValg.toString(),
-                null
+                jsonInternalSoknad.soknad.data.personalia.oppholdsadresse.adresseValg
             )
         } catch (e: Exception) {
             null
         }
         jsonInternalSoknad.midlertidigAdresse = sysMidlertidigAdresse
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
+
         return AdresseMapper.mapToAdresserFrontend(
             sysFolkeregistrertAdresse,
             sysMidlertidigAdresse,
@@ -62,7 +66,7 @@ open class AdresseRessurs(
     }
 
     @PutMapping
-    open fun updateAdresse(
+    fun updateAdresse(
         @PathVariable("behandlingsId") behandlingsId: String,
         @RequestBody adresserFrontend: AdresserFrontendInput
     ): List<NavEnhetFrontend>? {
@@ -90,13 +94,30 @@ open class AdresseRessurs(
         personalia.oppholdsadresse.adresseValg = adresserFrontend.valg
         personalia.postadresse = midlertidigLosningForPostadresse(personalia.oppholdsadresse)
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
-        val navEnhetFrontend = navEnhetRessurs.findSoknadsmottaker(
+        val navEnhetFrontend = navEnhetService.getNavEnhet(
             eier,
             jsonInternalSoknad.soknad,
-            adresserFrontend.valg.toString(),
-            null
-        )
+            adresserFrontend.valg
+        )?.also {
+            setNavEnhetAsMottaker(soknad, it, eier)
+            soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
+        }
         return navEnhetFrontend?.let { listOf(it) } ?: emptyList()
+    }
+
+    fun setNavEnhetAsMottaker(
+        soknad: SoknadUnderArbeid,
+        navEnhetFrontend: NavEnhetFrontend,
+        eier: String
+    ) {
+        soknad.jsonInternalSoknad?.mottaker = no.nav.sbl.soknadsosialhjelp.soknad.internal.JsonSoknadsmottaker()
+            .withNavEnhetsnavn(createNavEnhetsnavn(navEnhetFrontend.enhetsnavn, navEnhetFrontend.kommunenavn))
+            .withOrganisasjonsnummer(navEnhetFrontend.orgnr)
+
+        soknad.jsonInternalSoknad?.soknad?.mottaker = JsonSoknadsmottaker()
+            .withNavEnhetsnavn(createNavEnhetsnavn(navEnhetFrontend.enhetsnavn, navEnhetFrontend.kommunenavn))
+            .withEnhetsnummer(navEnhetFrontend.enhetsnr)
+            .withKommunenummer(navEnhetFrontend.kommuneNr)
     }
 
     private fun midlertidigLosningForPostadresse(oppholdsadresse: JsonAdresse?): JsonAdresse? {

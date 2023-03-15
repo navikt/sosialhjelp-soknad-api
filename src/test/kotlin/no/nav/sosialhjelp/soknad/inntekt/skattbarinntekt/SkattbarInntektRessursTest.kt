@@ -35,8 +35,12 @@ internal class SkattbarInntektRessursTest {
     private val tilgangskontroll: Tilgangskontroll = mockk()
     private val skatteetatenSystemdata: SkatteetatenSystemdata = mockk()
     private val textService: TextService = mockk()
-    private val skattbarInntektRessurs =
-        SkattbarInntektRessurs(tilgangskontroll, soknadUnderArbeidRepository, skatteetatenSystemdata, textService)
+    private val skattbarInntektRessurs = SkattbarInntektRessurs(
+        tilgangskontroll,
+        soknadUnderArbeidRepository,
+        skatteetatenSystemdata,
+        textService
+    )
 
     @BeforeEach
     fun setUp() {

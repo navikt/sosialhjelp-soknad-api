@@ -4,11 +4,11 @@ import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import org.springframework.stereotype.Component
 
 @Component
-open class KontonummerService(
+class KontonummerService(
     private val kontonummerClient: KontonummerClient
 ) {
 
-    open fun getKontonummer(ident: String): String? {
+    fun getKontonummer(ident: String): String? {
         log.info("Henter kontonummmer fra kontoregister")
         val konto = kontonummerClient.getKontonummer(ident)
         return if (konto?.utenlandskKontoInfo != null) {

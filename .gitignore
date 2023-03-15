@@ -20,3 +20,5 @@ test.pdf
 oracledb.properties
 
 /.gradle
+/build
+/out

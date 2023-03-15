@@ -8,7 +8,7 @@ import io.lettuce.core.codec.RedisCodec
 import io.lettuce.core.codec.StringCodec
 import org.slf4j.LoggerFactory
 
-open class RedisStore(
+class RedisStore(
     redisClient: RedisClient
 ) {
     private val commands: RedisCommands<String, ByteArray>
@@ -18,7 +18,7 @@ open class RedisStore(
         commands = connection.sync()
     }
 
-    open fun get(key: String?): ByteArray? {
+    fun get(key: String?): ByteArray? {
         return try {
             commands.get(key)
         } catch (e: RedisCommandTimeoutException) {
@@ -27,7 +27,7 @@ open class RedisStore(
         }
     }
 
-    open fun setex(key: String?, value: ByteArray?, timeToLiveSeconds: Long): String? {
+    fun setex(key: String?, value: ByteArray?, timeToLiveSeconds: Long): String? {
         return try {
             commands.setex(key, timeToLiveSeconds, value)
         } catch (e: RedisCommandTimeoutException) {
@@ -36,7 +36,7 @@ open class RedisStore(
         }
     }
 
-    open fun set(key: String?, value: ByteArray?): String? {
+    fun set(key: String?, value: ByteArray?): String? {
         return try {
             commands.set(key, value)
         } catch (e: RedisCommandTimeoutException) {

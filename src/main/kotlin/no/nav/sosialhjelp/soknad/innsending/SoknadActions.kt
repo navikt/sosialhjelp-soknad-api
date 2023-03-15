@@ -39,7 +39,7 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4])
 @RequestMapping("/soknader/{behandlingsId}/actions", produces = [MediaType.APPLICATION_JSON_VALUE])
-open class SoknadActions(
+class SoknadActions(
     private val soknadService: SoknadService,
     private val kommuneInfoService: KommuneInfoService,
     private val tilgangskontroll: Tilgangskontroll,
@@ -50,7 +50,7 @@ open class SoknadActions(
     private val nedetidService: NedetidService,
 ) {
     @PostMapping("/send")
-    open fun sendSoknad(
+    fun sendSoknad(
         @PathVariable("behandlingsId") behandlingsId: String,
         @RequestHeader(value = HttpHeaders.AUTHORIZATION) token: String?
     ): SendTilUrlFrontend {
@@ -82,7 +82,7 @@ open class SoknadActions(
         log.info("BehandlingsId $behandlingsId sendes til SvarUt eller fiks-digisos-api avhengig av kommuneinfo.")
         val kommunenummer = soknadUnderArbeid.jsonInternalSoknad?.soknad?.mottaker?.kommunenummer
             ?: throw IllegalStateException("Kommunenummer ikke funnet for JsonInternalSoknad.soknad.mottaker.kommunenummer")
-        val kommuneStatus = kommuneInfoService.kommuneInfo(kommunenummer)
+        val kommuneStatus = kommuneInfoService.getKommuneStatus(kommunenummer = kommunenummer, withLogging = true)
         log.info("Kommune: $kommunenummer Status: $kommuneStatus")
 
         return when (kommuneStatus) {

@@ -34,7 +34,7 @@ internal class BatchSoknadMetadataRepositoryJdbcTest {
 
     @AfterEach
     fun teardown() {
-        jdbcTemplate.update("DELETE FROM soknadmetadata WHERE behandlingsid = ?", behandlingsId)
+        jdbcTemplate.update("DELETE FROM soknadmetadata")
     }
 
     @Test

@@ -53,10 +53,7 @@ spec:
           namespace: min-side
           cluster: dev-gcp
         - application: sosialhjelp-innsyn-api
-          namespace: teamdigisos
-          cluster: dev-fss
-        - application: sosialhjelp-adminpanel
-          namespace: teamdigisos
+        - application: sosialhjelp-innsyn-api-dev
           cluster: dev-gcp
   ingresses:
     - "https://sosialhjelp-soknad-api.dev-fss-pub.nais.io/sosialhjelp/soknad-api"
@@ -129,12 +126,16 @@ spec:
     - name: SVARUT_URL
       value: "https://test.svarut.ks.no"
     - name: NEDETID_START
-      value: ""
+      value: "09.02.2023 12:00:00"
     - name: NEDETID_SLUTT
-      value: ""
+      value: "09.02.2023 14:00:00"
     - name: ENVIRONMENT_NAME
       value: "q0"
     - name: REDIS_HOST
       value: "sosialhjelp-soknad-api-redis.teamdigisos.svc.nais.local"
     - name: UNLEASH_INSTANCE_ID
       value: "dev-fss"
+    - name: MASKINPORTEN_WELL_KNOWN_URL
+      value: "https://ver2.maskinporten.no/.well-known/oauth-authorization-server"
+    - name: SWAGGER_ENABLED
+      value: "true"

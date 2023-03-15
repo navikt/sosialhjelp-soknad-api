@@ -28,6 +28,7 @@ abstract class PdlClient(
 
     protected val pdlMapper: ObjectMapper = jacksonObjectMapper()
         .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
+        .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
         .registerModule(JavaTimeModule())
 
     private val pdlWebClient: WebClient = unproxiedWebClientBuilder(webClientBuilder)
@@ -38,7 +39,7 @@ abstract class PdlClient(
 
     protected val pdlRetry: RetryBackoffSpec = Retry.backoff(5, Duration.ofMillis(100L)).filter { it is WebClientResponseException }
 
-    open fun ping() {
+    fun ping() {
         pdlWebClient.options()
             .uri(baseurl)
             .header(HEADER_CALL_ID, callId)

@@ -1,12 +1,9 @@
 package no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid
 
 import com.fasterxml.jackson.core.JsonProcessingException
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.ObjectWriter
-import no.nav.sbl.soknadsosialhjelp.json.AdresseMixIn
+import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper
 import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpValidator
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
-import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.exceptions.SamtidigOppdateringException
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadLaastException
@@ -25,14 +22,14 @@ import java.util.Date
 
 @Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 @Repository
-open class SoknadUnderArbeidRepositoryJdbc(
+class SoknadUnderArbeidRepositoryJdbc(
     private val jdbcTemplate: JdbcTemplate,
     private val transactionTemplate: TransactionTemplate,
     private val opplastetVedleggRepository: OpplastetVedleggRepository,
 ) : SoknadUnderArbeidRepository {
 
-    private val mapper: ObjectMapper = ObjectMapper().addMixIn(JsonAdresse::class.java, AdresseMixIn::class.java)
-    private val writer: ObjectWriter = mapper.writerWithDefaultPrettyPrinter()
+    private val mapper = JsonSosialhjelpObjectMapper.createObjectMapper()
+    private val writer = mapper.writerWithDefaultPrettyPrinter()
 
     private val soknadUnderArbeidRowMapper = SoknadUnderArbeidRowMapper()
 

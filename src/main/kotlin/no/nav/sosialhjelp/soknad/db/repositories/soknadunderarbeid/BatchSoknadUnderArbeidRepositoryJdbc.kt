@@ -14,7 +14,7 @@ import java.sql.ResultSet
  */
 @Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 @Repository
-open class BatchSoknadUnderArbeidRepositoryJdbc(
+class BatchSoknadUnderArbeidRepositoryJdbc(
     private val jdbcTemplate: JdbcTemplate,
     private val transactionTemplate: TransactionTemplate,
     private val batchOpplastetVedleggRepository: BatchOpplastetVedleggRepository

@@ -5,11 +5,11 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 
 @Component
-open class OrganisasjonService(
+class OrganisasjonService(
     private val organisasjonClient: OrganisasjonClient
 ) {
 
-    open fun hentOrgNavn(orgnr: String?): String {
+    fun hentOrgNavn(orgnr: String?): String {
         return if (orgnr != null) {
             try {
                 val noekkelinfo = organisasjonClient.hentOrganisasjonNoekkelinfo(orgnr)

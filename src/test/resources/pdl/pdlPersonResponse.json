@@ -50,37 +50,6 @@
           }
         }
       ],
-      "kontaktadresse": [
-        {
-          "type": "Innland",
-          "coAdressenavn": null,
-          "vegadresse": {
-            "matrikkelId": null,
-            "adressenavn": "ANNEN VEI",
-            "husnummer": "3",
-            "husbokstav": null,
-            "tilleggsnavn": null,
-            "postnummer": "1062",
-            "kommunenummer": "0301",
-            "bruksenhetsnummer": null,
-            "bydelsnummer": null
-          },
-          "metadata": {
-            "master": "Freg",
-            "endringer": [
-              {
-                "kilde": "Dolly",
-                "registrert": "2020-10-20T12:06",
-                "type": "OPPRETT"
-              }
-            ]
-          },
-          "folkeregistermetadata": {
-            "ajourholdstidspunkt": "2020-10-20T12:06",
-            "kilde": "Dolly"
-          }
-        }
-      ],
       "forelderBarnRelasjon": [
         {
           "relatertPersonsIdent": "33333333333",

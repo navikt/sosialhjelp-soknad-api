@@ -22,6 +22,7 @@ import no.nav.sosialhjelp.soknad.metrics.VedleggskravStatistikkUtil.genererOgLog
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import java.time.Clock
+import java.time.Duration
 import java.time.LocalDateTime
 
 @Component
@@ -72,11 +73,12 @@ class DigisosApiService(
             throw e
         }
 
-        slettSoknadUnderArbeidEtterSendingTilFiks(soknadUnderArbeid)
-
         genererOgLoggVedleggskravStatistikk(soknadUnderArbeid, vedlegg.vedleggListe)
+
         prometheusMetricsService.reportSendtMedDigisosApi()
         prometheusMetricsService.reportSoknadMottaker(soknadUnderArbeid.erEttersendelse, navKontorTilMetricNavn(navEnhetsnavn))
+
+        slettSoknadUnderArbeidEtterSendingTilFiks(soknadUnderArbeid)
         return digisosId
     }
 
@@ -92,6 +94,12 @@ class DigisosApiService(
         soknadMetadata?.sistEndretDato = LocalDateTime.now(clock)
         soknadMetadata?.innsendtDato = LocalDateTime.now(clock)
         soknadMetadata?.status = SoknadMetadataInnsendingStatus.SENDT_MED_DIGISOS_API
+
+        soknadMetadata?.let {
+            val tidBrukt = Duration.between(it.opprettetDato, it.innsendtDato)
+            prometheusMetricsService.reportInnsendingTid(tidBrukt.seconds)
+        }
+
         soknadMetadataRepository.oppdater(soknadMetadata)
         log.info("Søknad avsluttet $behandlingsId ${soknadMetadata?.skjema}, ${vedlegg.vedleggListe.size}")
     }

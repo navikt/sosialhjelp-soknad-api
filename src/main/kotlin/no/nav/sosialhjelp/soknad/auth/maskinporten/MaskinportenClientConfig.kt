@@ -12,7 +12,7 @@ import org.springframework.web.reactive.function.client.bodyToMono
 import reactor.netty.http.client.HttpClient
 
 @Configuration
-open class MaskinportenClientConfig(
+class MaskinportenClientConfig(
     @Value("\${maskinporten_clientid}") private val clientId: String,
     @Value("\${maskinporten_scopes}") private val scopes: String,
     @Value("\${maskinporten_well_known_url}") private val wellKnownUrl: String,
@@ -23,13 +23,13 @@ open class MaskinportenClientConfig(
 
     @Bean
     @Profile("!test")
-    open fun maskinportenClient(): MaskinportenClient {
+    fun maskinportenClient(): MaskinportenClient {
         return MaskinportenClientImpl(maskinPortenWebClient, maskinportenProperties, wellknown)
     }
 
     @Bean
     @Profile("test")
-    open fun maskinportenClientTest(): MaskinportenClient {
+    fun maskinportenClientTest(): MaskinportenClient {
         return MaskinportenClientImpl(maskinPortenWebClient, maskinportenProperties, WellKnown("issuer", "token_url"))
     }
 

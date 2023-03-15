@@ -6,4 +6,4 @@ import org.springframework.context.annotation.Import
 
 @Import(MockOAuth2ServerAutoConfiguration::class)
 @Configuration
-open class TestApplicationConfig
+class TestApplicationConfig

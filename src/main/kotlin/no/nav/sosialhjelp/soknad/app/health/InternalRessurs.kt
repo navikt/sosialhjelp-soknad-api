@@ -11,17 +11,17 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @Unprotected
 @RequestMapping("/internal")
-open class InternalRessurs(
+class InternalRessurs(
     private val selftestService: SelftestService
 ) {
 
     @GetMapping("/isAlive", produces = [MediaType.TEXT_PLAIN_VALUE])
-    open fun isAlive(): String {
+    fun isAlive(): String {
         return "{status : \"ok\", message: \"Appen fungerer\"}"
     }
 
     @GetMapping("/selftest", produces = [MediaType.APPLICATION_JSON_VALUE])
-    open fun getSelftest(): SelftestResult {
+    fun getSelftest(): SelftestResult {
         return selftestService.getSelftest()
     }
 }

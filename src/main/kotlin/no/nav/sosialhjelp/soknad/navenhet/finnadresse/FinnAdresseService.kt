@@ -1,6 +1,7 @@
 package no.nav.sosialhjelp.soknad.navenhet.finnadresse
 
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse
+import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresseValg
 import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonGateAdresse
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonPersonalia
 import no.nav.sosialhjelp.soknad.adressesok.AdressesokService
@@ -10,20 +11,20 @@ import no.nav.sosialhjelp.soknad.personalia.adresse.adresseregister.HentAdresseS
 import org.springframework.stereotype.Component
 
 @Component
-open class FinnAdresseService(
+class FinnAdresseService(
     private val adressesokService: AdressesokService,
     private val hentAdresseService: HentAdresseService
 ) {
 
-    open fun finnAdresseFraSoknad(personalia: JsonPersonalia, valg: String?): AdresseForslag? {
+    fun finnAdresseFraSoknad(personalia: JsonPersonalia, valg: JsonAdresseValg?): AdresseForslag? {
         val adresse = getValgtAdresse(personalia, valg)
         return adresseForslagFraPDL(adresse)
     }
 
-    private fun getValgtAdresse(personalia: JsonPersonalia, valg: String?): JsonAdresse? {
+    private fun getValgtAdresse(personalia: JsonPersonalia, valg: JsonAdresseValg?): JsonAdresse? {
         return when (valg) {
-            "folkeregistrert" -> personalia.folkeregistrertAdresse
-            "midlertidig", "soknad" -> personalia.oppholdsadresse
+            JsonAdresseValg.FOLKEREGISTRERT -> personalia.folkeregistrertAdresse
+            JsonAdresseValg.MIDLERTIDIG, JsonAdresseValg.SOKNAD -> personalia.oppholdsadresse
             else -> null
         }
     }

@@ -8,14 +8,14 @@ import org.springframework.web.reactive.function.client.WebClient
 import reactor.netty.http.client.HttpClient
 
 @Configuration
-open class BostotteConfig(
+class BostotteConfig(
     @Value("\${soknad.bostotte.url}") private val bostotteBaseUrl: String,
     webClientBuilder: WebClient.Builder,
     proxiedHttpClient: HttpClient
 ) {
 
     @Bean
-    open fun husbankenClient(): HusbankenClient {
+    fun husbankenClient(): HusbankenClient {
         return HusbankenClient(husbankenWebClient)
     }
 

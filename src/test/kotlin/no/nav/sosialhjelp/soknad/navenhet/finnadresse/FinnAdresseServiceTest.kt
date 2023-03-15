@@ -47,7 +47,7 @@ internal class FinnAdresseServiceTest {
         val soknadUnderArbeid = createSoknadUnderArbeid()
         val personalia = soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia
         personalia.folkeregistrertAdresse = createGateadresse()
-        val adresseForslag = finnAdresseService.finnAdresseFraSoknad(personalia, JsonAdresseValg.FOLKEREGISTRERT.toString())
+        val adresseForslag = finnAdresseService.finnAdresseFraSoknad(personalia, JsonAdresseValg.FOLKEREGISTRERT)
         assertThat(adresseForslag?.geografiskTilknytning).isEqualTo(GEOGRAFISK_TILKNYTNING)
         assertThat(adresseForslag?.kommunenummer).isEqualTo(KOMMUNENUMMER)
         assertThat(adresseForslag?.kommunenavn).isEqualTo(KOMMUNENAVN1)
@@ -71,7 +71,7 @@ internal class FinnAdresseServiceTest {
         )
         every { hentAdresseService.hentKartverketMatrikkelAdresseForInnloggetBruker() } returns matrikkelAdresse
 
-        val adresseForslag = finnAdresseService.finnAdresseFraSoknad(personalia, JsonAdresseValg.FOLKEREGISTRERT.toString())
+        val adresseForslag = finnAdresseService.finnAdresseFraSoknad(personalia, JsonAdresseValg.FOLKEREGISTRERT)
         assertThat(adresseForslag?.kommunenummer).isEqualTo(KOMMUNENUMMER)
         assertThat(adresseForslag?.type).isEqualTo(AdresseForslagType.MATRIKKELADRESSE)
     }
@@ -84,7 +84,7 @@ internal class FinnAdresseServiceTest {
 
         every { hentAdresseService.hentKartverketMatrikkelAdresseForInnloggetBruker() } returns null
 
-        val adresseForslag = finnAdresseService.finnAdresseFraSoknad(personalia, JsonAdresseValg.FOLKEREGISTRERT.toString())
+        val adresseForslag = finnAdresseService.finnAdresseFraSoknad(personalia, JsonAdresseValg.FOLKEREGISTRERT)
         assertThat(adresseForslag).isNull()
     }
 

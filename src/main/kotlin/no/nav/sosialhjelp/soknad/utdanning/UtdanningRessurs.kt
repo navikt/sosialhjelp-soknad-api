@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.utdanning
 
+import io.swagger.v3.oas.annotations.media.Schema
 import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.utdanning.JsonUtdanning.Studentgrad
@@ -19,13 +20,13 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4])
 @RequestMapping("/soknader/{behandlingsId}/utdanning", produces = [APPLICATION_JSON_VALUE])
-open class UtdanningRessurs(
+class UtdanningRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository
 ) {
 
     @GetMapping
-    open fun hentUtdanning(
+    fun hentUtdanning(
         @PathVariable("behandlingsId") behandlingsId: String
     ): UtdanningFrontend {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
@@ -37,7 +38,7 @@ open class UtdanningRessurs(
     }
 
     @PutMapping
-    open fun updateUtdanning(
+    fun updateUtdanning(
         @PathVariable("behandlingsId") behandlingsId: String,
         @RequestBody utdanningFrontend: UtdanningFrontend
     ) {
@@ -64,7 +65,9 @@ open class UtdanningRessurs(
     }
 
     data class UtdanningFrontend(
+        @Schema(nullable = true)
         var erStudent: Boolean?,
+        @Schema(nullable = true)
         var studengradErHeltid: Boolean?
     )
 

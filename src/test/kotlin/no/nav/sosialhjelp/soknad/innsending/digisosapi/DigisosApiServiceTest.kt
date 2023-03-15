@@ -45,6 +45,8 @@ internal class DigisosApiServiceTest {
         Clock.systemDefaultZone()
     )
 
+    private val eier = "12345678910"
+
     @BeforeEach
     fun setUpBefore() {
         clearAllMocks()
@@ -85,24 +87,7 @@ internal class DigisosApiServiceTest {
         every { MiljoUtils.isNonProduction() } returns true
         every { MiljoUtils.environmentName } returns "test"
 
-        val soknadUnderArbeid = createSoknadUnderArbeid("12345678910")
-
-        every { dokumentListeService.getFilOpplastingList(any()) } returns emptyList()
-        every { digisosApiV2Client.krypterOgLastOppFiler(any(), any(), any(), any(), any(), any(), any()) } returns "digisosid"
-        every { soknadUnderArbeidService.settInnsendingstidspunktPaSoknad(any()) } just runs
-        every { soknadMetadataRepository.hent(any()) } returns createSoknadMetadata()
-        every { soknadMetadataRepository.oppdater(any()) } just runs
-        every { soknadUnderArbeidRepository.slettSoknad(any(), any()) } just runs
-
-        digisosApiService.sendSoknad(soknadUnderArbeid, "token", "0301")
-
-        verify(exactly = 1) { soknadUnderArbeidRepository.slettSoknad(any(), any()) }
-
-        unmockkObject(MiljoUtils)
-    }
-
-    private fun createSoknadUnderArbeid(eier: String): SoknadUnderArbeid {
-        return SoknadUnderArbeid(
+        val soknadUnderArbeid = SoknadUnderArbeid(
             versjon = 1L,
             behandlingsId = "behandlingsid",
             tilknyttetBehandlingsId = null,
@@ -112,15 +97,26 @@ internal class DigisosApiServiceTest {
             opprettetDato = LocalDateTime.now(),
             sistEndretDato = LocalDateTime.now()
         )
-    }
 
-    private fun createSoknadMetadata(): SoknadMetadata {
-        return SoknadMetadata(
+        val soknadMetadata = SoknadMetadata(
             id = 1L,
             behandlingsId = "behandlingsid",
             fnr = "12345678910",
             opprettetDato = LocalDateTime.now(),
             sistEndretDato = LocalDateTime.now()
         )
+
+        every { dokumentListeService.getFilOpplastingList(any()) } returns emptyList()
+        every { digisosApiV2Client.krypterOgLastOppFiler(any(), any(), any(), any(), any(), any(), any()) } returns "digisosid"
+        every { soknadUnderArbeidService.settInnsendingstidspunktPaSoknad(any()) } just runs
+        every { soknadMetadataRepository.hent(any()) } returns soknadMetadata
+        every { soknadMetadataRepository.oppdater(any()) } just runs
+        every { soknadUnderArbeidRepository.slettSoknad(any(), any()) } just runs
+
+        digisosApiService.sendSoknad(soknadUnderArbeid, "token", "0301")
+
+        verify(exactly = 1) { soknadUnderArbeidRepository.slettSoknad(any(), any()) }
+
+        unmockkObject(MiljoUtils)
     }
 }
