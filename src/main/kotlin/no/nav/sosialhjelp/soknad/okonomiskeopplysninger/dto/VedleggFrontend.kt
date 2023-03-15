@@ -1,20 +1,27 @@
 package no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto
 
+import io.swagger.v3.oas.annotations.media.Schema
 import no.nav.sosialhjelp.soknad.vedlegg.dto.FilFrontend
 
 data class VedleggFrontend(
-    var type: String?,
-    var gruppe: String?,
-    var rader: List<VedleggRadFrontend>? = null,
-    var vedleggStatus: String? = null,
-    var filer: List<FilFrontend>?,
+    val type: VedleggType,
+    val gruppe: VedleggGruppe,
+    val rader: List<VedleggRadFrontend>? = null,
+    @Schema(readOnly = true)
+    val vedleggStatus: VedleggStatus? = null,
+    @Schema(readOnly = true)
+    val filer: List<FilFrontend>?,
 )
 
 data class VedleggRadFrontend(
-    var beskrivelse: String? = null,
-    var belop: Int? = null,
-    var brutto: Int? = null,
-    var netto: Int? = null,
-    var avdrag: Int? = null,
+    val beskrivelse: String? = null,
+    val belop: Int? = null,
+    val brutto: Int? = null,
+    val netto: Int? = null,
+    val avdrag: Int? = null,
     var renter: Int? = null
 )
+
+enum class VedleggStatus {
+    LastetOpp, VedleggKreves, VedleggAlleredeSendt;
+}

@@ -15,6 +15,7 @@ import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.addUtgiftIfNotPresentI
 import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.removeUtgiftIfPresentInOpplysninger
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggFrontend
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggRadFrontend
+import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggType
 import org.apache.commons.lang3.StringUtils.isEmpty
 
 object OkonomiskeOpplysningerMapper {
@@ -101,7 +102,7 @@ object OkonomiskeOpplysningerMapper {
         var eksisterendeOpplysningUtgift = jsonOkonomi.opplysninger.utgift
             .firstOrNull { it.type == soknadType }
 
-        if (vedleggFrontend.type == "annet|annet") {
+        if (vedleggFrontend.type == VedleggType.AnnetAnnet) {
             eksisterendeOpplysningUtgift = JsonOkonomiOpplysningUtgift()
                 .withType(SoknadJsonTyper.UTGIFTER_ANDRE_UTGIFTER)
                 .withTittel("Annen (brukerangitt): ")
@@ -126,9 +127,9 @@ object OkonomiskeOpplysningerMapper {
     }
 
     private fun checkIfTypeAnnetAnnetShouldBeRemoved(vedleggFrontend: VedleggFrontend): Boolean {
-        return vedleggFrontend.rader?.size == 1 && vedleggFrontend.rader?.get(0)?.belop == null && isEmpty(
-            vedleggFrontend.rader?.get(0)?.beskrivelse
-        )
+        return vedleggFrontend.rader?.size == 1 &&
+            vedleggFrontend.rader[0].belop == null &&
+            isEmpty(vedleggFrontend.rader[0].beskrivelse)
     }
 
     fun addAllUtbetalingerToJsonOkonomi(
