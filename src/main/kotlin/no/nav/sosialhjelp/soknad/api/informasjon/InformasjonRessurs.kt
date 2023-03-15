@@ -109,7 +109,7 @@ class InformasjonRessurs(
     }
 
     data class Utslagskriterier(
-        var harTilgang: Boolean,
-        var sperrekode: Sperrekode?,
+        val harTilgang: Boolean,
+        val sperrekode: Sperrekode?,
     )
 }
