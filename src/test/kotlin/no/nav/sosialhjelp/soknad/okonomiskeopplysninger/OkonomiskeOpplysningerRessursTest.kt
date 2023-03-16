@@ -16,6 +16,8 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderAr
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
+import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggStatus
+import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggType
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagretVedleggMetadata
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
@@ -101,12 +103,18 @@ class OkonomiskeOpplysningerRessursTest {
         val response = okonomiskeOpplysningerRessurs.hentOkonomiskeOpplysninger(behandlingsId)
 
         assertThat(response.okonomiskeOpplysninger).hasSize(3)
-        assertThat(response.okonomiskeOpplysninger!![0].type).isEqualTo("skattemelding|skattemelding")
+        assertThat(response.okonomiskeOpplysninger!![0].type).isEqualTo(VedleggType.SkattemeldingSkattemelding)
+        assertThat(response.okonomiskeOpplysninger!![0].vedleggStatus).isEqualTo(VedleggStatus.LastetOpp)
         assertThat(response.okonomiskeOpplysninger!![0].filer).hasSize(1)
-        assertThat(response.okonomiskeOpplysninger!![1].type).isEqualTo("oppholdstillatel|oppholdstillatel")
+
+        assertThat(response.okonomiskeOpplysninger!![1].type).isEqualTo(VedleggType.OppholdstillatelOppholdstillatel)
+        assertThat(response.okonomiskeOpplysninger!![1].vedleggStatus).isEqualTo(VedleggStatus.VedleggKreves)
         assertThat(response.okonomiskeOpplysninger!![1].filer).hasSize(0)
-        assertThat(response.okonomiskeOpplysninger!![2].type).isEqualTo("annet|annet")
+
+        assertThat(response.okonomiskeOpplysninger!![2].type).isEqualTo(VedleggType.AnnetAnnet)
+        assertThat(response.okonomiskeOpplysninger!![2].vedleggStatus).isEqualTo(VedleggStatus.VedleggKreves)
         assertThat(response.okonomiskeOpplysninger!![2].filer).hasSize(0)
+
         assertThat(response.slettedeVedlegg).isEmpty()
         assertThat(response.isOkonomiskeOpplysningerBekreftet).isFalse
     }

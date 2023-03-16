@@ -23,21 +23,19 @@ internal class SoknadOversiktServiceTest {
     private val soknadMetadataRepository: SoknadMetadataRepository = mockk()
     private val service = SoknadOversiktService(soknadMetadataRepository)
 
-    private lateinit var soknadMetadata: SoknadMetadata
+    private val soknadMetadata = SoknadMetadata(
+        id = 0L,
+        behandlingsId = "beh123",
+        fnr = "12345",
+        type = SoknadMetadataType.SEND_SOKNAD_KOMMUNAL,
+        status = SoknadMetadataInnsendingStatus.UNDER_ARBEID,
+        opprettetDato = LocalDateTime.of(2018, 4, 11, 13, 30, 0),
+        sistEndretDato = LocalDateTime.of(2018, 4, 11, 13, 30, 0),
+        innsendtDato = LocalDateTime.of(2018, 4, 11, 13, 30, 0)
+    )
 
     @BeforeEach
     fun setUp() {
-        soknadMetadata = SoknadMetadata(
-            id = 0L,
-            behandlingsId = "beh123",
-            fnr = "12345",
-            type = SoknadMetadataType.SEND_SOKNAD_KOMMUNAL,
-            status = SoknadMetadataInnsendingStatus.UNDER_ARBEID,
-            opprettetDato = LocalDateTime.of(2018, 4, 11, 13, 30, 0),
-            sistEndretDato = LocalDateTime.of(2018, 4, 11, 13, 30, 0),
-            innsendtDato = LocalDateTime.of(2018, 4, 11, 13, 30, 0)
-        )
-
         mockkObject(MiljoUtils)
         every { MiljoUtils.environmentName } returns "p"
     }

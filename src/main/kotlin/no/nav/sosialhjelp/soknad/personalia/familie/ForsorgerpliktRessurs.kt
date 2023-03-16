@@ -144,18 +144,21 @@ class ForsorgerpliktRessurs(
     }
 
     private fun setBorSammenDeltBostedAndSamvarsgrad(ansvarFrontend: AnsvarFrontend?, ansvar: JsonAnsvar) {
-        ansvar.borSammenMed =
-            if (ansvarFrontend?.borSammenMed == null) null else JsonBorSammenMed()
+        ansvar.borSammenMed = ansvarFrontend?.borSammenMed?.let {
+            JsonBorSammenMed()
                 .withKilde(JsonKildeBruker.BRUKER)
-                .withVerdi(ansvarFrontend.borSammenMed)
-        ansvar.harDeltBosted =
-            if (ansvarFrontend?.harDeltBosted == null) null else JsonHarDeltBosted()
+                .withVerdi(it)
+        }
+        ansvar.harDeltBosted = ansvarFrontend?.harDeltBosted?.let {
+            JsonHarDeltBosted()
                 .withKilde(JsonKildeBruker.BRUKER)
-                .withVerdi(ansvarFrontend.harDeltBosted)
-        ansvar.samvarsgrad =
-            if (ansvarFrontend?.samvarsgrad == null) null else JsonSamvarsgrad()
+                .withVerdi(it)
+        }
+        ansvar.samvarsgrad = ansvarFrontend?.samvarsgrad?.let {
+            JsonSamvarsgrad()
                 .withKilde(JsonKildeBruker.BRUKER)
-                .withVerdi(ansvarFrontend.samvarsgrad)
+                .withVerdi(it)
+        }
     }
 
     private fun removeBarneutgifterFromSoknad(jsonInternalSoknad: JsonInternalSoknad) {
@@ -171,14 +174,13 @@ class ForsorgerpliktRessurs(
     }
 
     private fun mapToForsorgerpliktFrontend(jsonForsorgerplikt: JsonForsorgerplikt): ForsorgerpliktFrontend {
-        val ansvar: List<AnsvarFrontend?>? =
-            if (jsonForsorgerplikt.ansvar == null) null else jsonForsorgerplikt.ansvar
-                .filter { it.barn.kilde == JsonKilde.SYSTEM }
-                .map { mapToAnsvarFrontend(it) }
+        val ansvar: List<AnsvarFrontend?>? = jsonForsorgerplikt.ansvar
+            ?.filter { it.barn.kilde == JsonKilde.SYSTEM }
+            ?.map { mapToAnsvarFrontend(it) }
 
         return ForsorgerpliktFrontend(
-            harForsorgerplikt = if (jsonForsorgerplikt.harForsorgerplikt == null) null else jsonForsorgerplikt.harForsorgerplikt.verdi,
-            barnebidrag = if (jsonForsorgerplikt.barnebidrag == null) null else jsonForsorgerplikt.barnebidrag.verdi,
+            harForsorgerplikt = jsonForsorgerplikt.harForsorgerplikt?.verdi,
+            barnebidrag = jsonForsorgerplikt.barnebidrag?.verdi,
             ansvar = ansvar
         )
     }
@@ -188,10 +190,10 @@ class ForsorgerpliktRessurs(
             null
         } else AnsvarFrontend(
             barn = mapToBarnFrontend(jsonAnsvar.barn),
-            borSammenMed = if (jsonAnsvar.borSammenMed == null) null else jsonAnsvar.borSammenMed.verdi,
-            erFolkeregistrertSammen = if (jsonAnsvar.erFolkeregistrertSammen == null) null else jsonAnsvar.erFolkeregistrertSammen.verdi,
-            harDeltBosted = if (jsonAnsvar.harDeltBosted == null) null else jsonAnsvar.harDeltBosted.verdi,
-            samvarsgrad = if (jsonAnsvar.samvarsgrad == null) null else jsonAnsvar.samvarsgrad.verdi
+            borSammenMed = jsonAnsvar.borSammenMed?.verdi,
+            erFolkeregistrertSammen = jsonAnsvar.erFolkeregistrertSammen?.verdi,
+            harDeltBosted = jsonAnsvar.harDeltBosted?.verdi,
+            samvarsgrad = jsonAnsvar.samvarsgrad?.verdi
         )
     }
 

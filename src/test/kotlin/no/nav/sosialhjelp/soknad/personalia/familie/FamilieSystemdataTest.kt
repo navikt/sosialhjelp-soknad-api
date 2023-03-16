@@ -272,8 +272,7 @@ internal class FamilieSystemdataTest {
 
     private fun assertThatAnsvarIsCorrectlyConverted(barn: Barn, jsonAnsvar: JsonAnsvar) {
         val jsonBarn = jsonAnsvar.barn
-        assertThat(barn.folkeregistrertSammen)
-            .isEqualTo(if (jsonAnsvar.erFolkeregistrertSammen == null) null else jsonAnsvar.erFolkeregistrertSammen.verdi)
+        assertThat(barn.folkeregistrertSammen).isEqualTo(jsonAnsvar.erFolkeregistrertSammen?.verdi)
         assertThat(barn.fnr).isEqualTo(jsonBarn.personIdentifikator)
         if (barn.fodselsdato != null) {
             assertThat(barn.fodselsdato).hasToString(jsonBarn.fodselsdato)

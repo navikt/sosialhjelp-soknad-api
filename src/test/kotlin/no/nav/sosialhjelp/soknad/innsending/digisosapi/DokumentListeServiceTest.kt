@@ -19,9 +19,20 @@ internal class DokumentListeServiceTest {
 
     private val dokumentListeService = DokumentListeService(sosialhjelpPdfGenerator, mellomlagringService)
 
+    private val eier = "12345678910"
+
     @Test
-    fun `skal lage opplastingsListe med dokumenter for soknad - digisosApi v2`() {
-        val soknadUnderArbeid = createSoknadUnderArbeid("12345678910")
+    fun `skal lage opplastingsListe med dokumenter for soknad`() {
+        val soknadUnderArbeid = SoknadUnderArbeid(
+            versjon = 1L,
+            behandlingsId = "behandlingsid",
+            tilknyttetBehandlingsId = null,
+            eier = eier,
+            jsonInternalSoknad = SoknadService.createEmptyJsonInternalSoknad(eier),
+            status = SoknadUnderArbeidStatus.UNDER_ARBEID,
+            opprettetDato = LocalDateTime.now(),
+            sistEndretDato = LocalDateTime.now()
+        )
 
         every { sosialhjelpPdfGenerator.generate(any(), any()) } returns byteArrayOf(1, 2, 3)
         every { sosialhjelpPdfGenerator.generateBrukerkvitteringPdf() } returns byteArrayOf(1, 2, 3)
@@ -39,18 +50,5 @@ internal class DokumentListeServiceTest {
         val metadataFil3 = filOpplastings[2].metadata
         assertThat(metadataFil3.filnavn).isEqualTo("Brukerkvittering.pdf")
         assertThat(metadataFil3.mimetype).isEqualTo(MimeTypes.APPLICATION_PDF)
-    }
-
-    private fun createSoknadUnderArbeid(eier: String): SoknadUnderArbeid {
-        return SoknadUnderArbeid(
-            versjon = 1L,
-            behandlingsId = "behandlingsid",
-            tilknyttetBehandlingsId = null,
-            eier = eier,
-            jsonInternalSoknad = SoknadService.createEmptyJsonInternalSoknad(eier),
-            status = SoknadUnderArbeidStatus.UNDER_ARBEID,
-            opprettetDato = LocalDateTime.now(),
-            sistEndretDato = LocalDateTime.now()
-        )
     }
 }

@@ -82,8 +82,8 @@ internal class VedleggMapperTest {
     }
 
     companion object {
-        private val BOSTOTTE = OpplastetVedleggType("bostotte|annetboutgift")
-        private val SKATTEMELDING = OpplastetVedleggType("skatt|melding")
+        private val BOSTOTTE = OpplastetVedleggType("husbanken|vedtak")
+        private val SKATTEMELDING = OpplastetVedleggType("skattemelding|skattemelding")
         private val ANNET = OpplastetVedleggType("annet|annet")
         private const val EIER = "12345678910"
     }

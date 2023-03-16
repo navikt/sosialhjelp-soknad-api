@@ -88,9 +88,10 @@ class PrometheusMetricsService(
             .increment()
     }
 
-    fun reportAvbruttSoknad(isEttersendelse: Boolean) {
+    fun reportAvbruttSoknad(isEttersendelse: Boolean, steg: String) {
         avbruttSoknadCounter
             .tag(TAG_ETTERSENDELSE, isEttersendelse.toString())
+            .tag(TAG_STEG, steg)
             .register(meterRegistry)
             .increment()
     }
@@ -111,5 +112,6 @@ class PrometheusMetricsService(
     companion object {
         const val TAG_ETTERSENDELSE = "ettersendelse"
         const val TAG_MOTTAKER = "mottaker"
+        const val TAG_STEG = "steg"
     }
 }

@@ -2,7 +2,6 @@ package no.nav.sosialhjelp.soknad.pdf
 
 import io.mockk.mockk
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonData
-import no.nav.sbl.soknadsosialhjelp.soknad.JsonDriftsinformasjon
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknad
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonSoknadsmottaker
@@ -15,7 +14,6 @@ import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonArbeidsforhold.Stillingsty
 import no.nav.sbl.soknadsosialhjelp.soknad.arbeid.JsonKommentarTilArbeidsforhold
 import no.nav.sbl.soknadsosialhjelp.soknad.begrunnelse.JsonBegrunnelse
 import no.nav.sbl.soknadsosialhjelp.soknad.bosituasjon.JsonBosituasjon
-import no.nav.sbl.soknadsosialhjelp.soknad.bostotte.JsonBostotte
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeBruker
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKildeSystem
@@ -52,6 +50,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.utdanning.JsonUtdanning
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
+import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.kodeverk.KodeverkService
 import no.nav.sosialhjelp.soknad.tekster.NavMessageSource
 import no.nav.sosialhjelp.soknad.tekster.NavMessageSource.Bundle
@@ -851,85 +850,6 @@ internal class SosialhjelpPdfGeneratorTest {
             fail<Any>("Exception when checking validity of pdf/a. ", e)
         } finally {
             file.deleteOnExit()
-        }
-    }
-
-    companion object {
-        private fun createEmptyJsonInternalSoknad(eier: String): JsonInternalSoknad {
-            return JsonInternalSoknad()
-                .withSoknad(
-                    JsonSoknad()
-                        .withData(
-                            JsonData()
-                                .withPersonalia(
-                                    JsonPersonalia()
-                                        .withPersonIdentifikator(
-                                            JsonPersonIdentifikator()
-                                                .withKilde(JsonPersonIdentifikator.Kilde.SYSTEM)
-                                                .withVerdi(eier)
-                                        )
-                                        .withNavn(
-                                            JsonSokernavn()
-                                                .withKilde(JsonSokernavn.Kilde.SYSTEM)
-                                                .withFornavn("")
-                                                .withMellomnavn("")
-                                                .withEtternavn("")
-                                        )
-                                        .withKontonummer(
-                                            JsonKontonummer()
-                                                .withKilde(JsonKilde.SYSTEM)
-                                        )
-                                )
-                                .withArbeid(JsonArbeid())
-                                .withUtdanning(
-                                    JsonUtdanning()
-                                        .withKilde(JsonKilde.BRUKER)
-                                )
-                                .withFamilie(
-                                    JsonFamilie()
-                                        .withForsorgerplikt(JsonForsorgerplikt())
-                                )
-                                .withBegrunnelse(
-                                    JsonBegrunnelse()
-                                        .withKilde(JsonKildeBruker.BRUKER)
-                                        .withHvorforSoke("")
-                                        .withHvaSokesOm("")
-                                )
-                                .withBosituasjon(
-                                    JsonBosituasjon()
-                                        .withKilde(JsonKildeBruker.BRUKER)
-                                )
-                                .withOkonomi(
-                                    JsonOkonomi()
-                                        .withOpplysninger(
-                                            JsonOkonomiopplysninger()
-                                                .withUtbetaling(ArrayList())
-                                                .withUtgift(ArrayList())
-                                                .withBostotte(JsonBostotte())
-                                                .withBekreftelse(ArrayList())
-                                        )
-                                        .withOversikt(
-                                            JsonOkonomioversikt()
-                                                .withInntekt(ArrayList())
-                                                .withUtgift(ArrayList())
-                                                .withFormue(ArrayList())
-                                        )
-                                )
-                        )
-                        .withMottaker(
-                            JsonSoknadsmottaker()
-                                .withNavEnhetsnavn("")
-                                .withEnhetsnummer("")
-                        )
-                        .withDriftsinformasjon(
-                            JsonDriftsinformasjon()
-                                .withUtbetalingerFraNavFeilet(false)
-                                .withInntektFraSkatteetatenFeilet(false)
-                                .withStotteFraHusbankenFeilet(false)
-                        )
-                        .withKompatibilitet(ArrayList())
-                )
-                .withVedlegg(JsonVedleggSpesifikasjon())
         }
     }
 }

@@ -42,7 +42,7 @@ class TelefonnummerRessurs(
         return TelefonnummerFrontend(
             brukerdefinert = telefonnummer == null || telefonnummer.kilde == JsonKilde.BRUKER,
             systemverdi = systemverdi,
-            brukerutfyltVerdi = if (telefonnummer != null && telefonnummer.kilde == JsonKilde.BRUKER) telefonnummer.verdi else null
+            brukerutfyltVerdi = telefonnummer?.takeIf { it.kilde == JsonKilde.BRUKER }?.verdi
         )
     }
 

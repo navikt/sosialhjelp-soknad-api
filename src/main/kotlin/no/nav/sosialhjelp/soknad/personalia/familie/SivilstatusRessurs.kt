@@ -99,7 +99,7 @@ class SivilstatusRessurs(
         return SivilstatusFrontend(
             kildeErSystem = mapToSystemBoolean(jsonSivilstatus.kilde),
             sivilstatus = jsonSivilstatus.status,
-            ektefelle = if (jsonSivilstatus.ektefelle == null) null else addEktefelleFrontend(jsonSivilstatus.ektefelle),
+            ektefelle = jsonSivilstatus.ektefelle?.let { addEktefelleFrontend(it) },
             harDiskresjonskode = jsonSivilstatus.ektefelleHarDiskresjonskode,
             borSammenMed = jsonSivilstatus.borSammenMed,
             erFolkeregistrertSammen = jsonSivilstatus.folkeregistrertMedEktefelle

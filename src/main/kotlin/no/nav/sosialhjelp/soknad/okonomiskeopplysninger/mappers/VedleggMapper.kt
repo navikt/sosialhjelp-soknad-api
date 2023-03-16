@@ -21,6 +21,8 @@ import no.nav.sosialhjelp.soknad.ettersending.dto.EttersendtVedlegg
 import no.nav.sosialhjelp.soknad.ettersending.innsendtsoknad.EttersendelseUtils.soknadSendtForMindreEnn30DagerSiden
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggFrontend
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggRadFrontend
+import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggStatus
+import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggType
 import no.nav.sosialhjelp.soknad.vedlegg.dto.FilFrontend
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagretVedleggMetadata
 import java.time.LocalDateTime
@@ -40,13 +42,13 @@ object VedleggMapper {
         opplastedeVedlegg: List<OpplastetVedlegg>
     ): VedleggFrontend {
         val filer = mapJsonFilerAndOpplastedeVedleggToFilerFrontend(vedlegg.filer, opplastedeVedlegg)
-        val vedleggType = getSammensattNavn(vedlegg)
+        val vedleggType = getVedleggType(vedlegg)
         val rader = getRader(jsonOkonomi, vedleggType)
         return VedleggFrontend(
             type = vedleggType,
             gruppe = OkonomiskGruppeMapper.getGruppe(vedleggType),
             rader = rader,
-            vedleggStatus = vedlegg.status,
+            vedleggStatus = VedleggStatus.valueOf(vedlegg.status),
             filer = filer
         )
     }
@@ -57,20 +59,20 @@ object VedleggMapper {
         mellomlagredeVedlegg: List<MellomlagretVedleggMetadata>,
     ): VedleggFrontend {
         val filer = mapJsonFilerAndMellomlagredVedleggToFilerFrontend(vedlegg, mellomlagredeVedlegg)
-        val vedleggType = getSammensattNavn(vedlegg)
+        val vedleggType = getVedleggType(vedlegg)
         val rader = getRader(jsonOkonomi, vedleggType)
         return VedleggFrontend(
             type = vedleggType,
             gruppe = OkonomiskGruppeMapper.getGruppe(vedleggType),
             rader = rader,
-            vedleggStatus = vedlegg.status,
+            vedleggStatus = VedleggStatus.valueOf(vedlegg.status),
             filer = filer
         )
     }
 
-    private fun getRader(jsonOkonomi: JsonOkonomi, vedleggType: String): List<VedleggRadFrontend> {
+    private fun getRader(jsonOkonomi: JsonOkonomi, vedleggType: VedleggType): List<VedleggRadFrontend> {
         if (!VedleggTypeToSoknadTypeMapper.isInSoknadJson(vedleggType)) return emptyList()
-        val soknadType = VedleggTypeToSoknadTypeMapper.vedleggTypeToSoknadType[vedleggType]
+        val soknadType = VedleggTypeToSoknadTypeMapper.vedleggTypeToSoknadType[vedleggType.toString()]
         val soknadPath = VedleggTypeToSoknadTypeMapper.getSoknadPath(vedleggType)
 
         // Spesialtilfelle for avdrag og renter
@@ -244,7 +246,7 @@ object VedleggMapper {
         originaleVedlegg
             .filter { filterGittInnsendingstidspunkt(innsendingstidspunkt, it) }
             .forEach { vedlegg: JsonVedlegg ->
-                val sammensattNavn = getSammensattNavn(vedlegg)
+                val sammensattNavn = getVedleggType(vedlegg).toString()
                 if (!ettersendteVedlegg.containsKey(sammensattNavn)) {
                     val filerFrontend = if (vedlegg.status == LASTET_OPP) {
                         mapJsonFilerAndOpplastedeVedleggToFilerFrontend(vedlegg.filer, opplastedeVedlegg)
@@ -265,12 +267,12 @@ object VedleggMapper {
         return if (innsendingstidspunkt != null && soknadSendtForMindreEnn30DagerSiden(innsendingstidspunkt.toLocalDate())) {
             true
         } else {
-            vedlegg.status == LASTET_OPP || getSammensattNavn(vedlegg) == ANNET_ANNET
+            vedlegg.status == LASTET_OPP || getVedleggType(vedlegg) == VedleggType.AnnetAnnet
         }
     }
 
-    private fun getSammensattNavn(vedlegg: JsonVedlegg): String {
-        return vedlegg.type + "|" + vedlegg.tilleggsinfo
+    private fun getVedleggType(vedlegg: JsonVedlegg): VedleggType {
+        return VedleggType[vedlegg.type + "|" + vedlegg.tilleggsinfo]
     }
 
     private fun sortAlphabeticallyAndPutTypeAnnetLast(): Comparator<String> {

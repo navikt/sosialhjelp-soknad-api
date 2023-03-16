@@ -99,8 +99,8 @@ class NavEnhetService(
             return null
         }
         val isDigisosKommune = isDigisosKommune(kommunenummer)
-        val sosialOrgnr = if (isDigisosKommune) navEnhet.sosialOrgNr else null
-        val enhetNr = if (isDigisosKommune) navEnhet.enhetNr else null
+        val sosialOrgnr = navEnhet.sosialOrgNr.takeIf { isDigisosKommune }
+        val enhetNr = navEnhet.enhetNr.takeIf { isDigisosKommune }
         val kommunenavn = kodeverkService.getKommunenavn(kommunenummer)
         return NavEnhetFrontend(
             enhetsnr = enhetNr,

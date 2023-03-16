@@ -53,8 +53,8 @@ spec:
           namespace: min-side
           cluster: dev-gcp
         - application: sosialhjelp-innsyn-api
-          namespace: teamdigisos
-          cluster: dev-fss
+        - application: sosialhjelp-innsyn-api-dev
+          cluster: dev-gcp
   ingresses:
     - "https://sosialhjelp-soknad-api.dev-fss-pub.nais.io/sosialhjelp/soknad-api"
     - "https://sosialhjelp-soknad-api.dev.intern.nav.no/sosialhjelp/soknad-api"
@@ -137,3 +137,5 @@ spec:
       value: "dev-fss"
     - name: MASKINPORTEN_WELL_KNOWN_URL
       value: "https://ver2.maskinporten.no/.well-known/oauth-authorization-server"
+    - name: SWAGGER_ENABLED
+      value: "true"
