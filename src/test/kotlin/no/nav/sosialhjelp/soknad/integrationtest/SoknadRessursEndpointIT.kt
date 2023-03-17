@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.integrationtest
 
+import jakarta.inject.Inject
 import no.nav.security.mock.oauth2.MockOAuth2Server
 import no.nav.sosialhjelp.soknad.TestApplication
 import no.nav.sosialhjelp.soknad.app.Constants.BEARER
@@ -16,7 +17,6 @@ import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.reactive.server.WebTestClient
-import javax.inject.Inject
 
 @ContextConfiguration(classes = [PdlIntegrationTestConfig::class])
 @SpringBootTest(classes = [TestApplication::class], webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)

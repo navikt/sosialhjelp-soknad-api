@@ -1,11 +1,11 @@
 package no.nav.sosialhjelp.soknad.db.repositories.oppgave
 
-import com.migesok.jaxb.adapter.javatime.LocalDateTimeXmlAdapter
+import jakarta.xml.bind.annotation.XmlRootElement
+import jakarta.xml.bind.annotation.XmlType
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter
 import no.nav.sosialhjelp.soknad.db.repositories.JAXBHelper
+import no.nav.sosialhjelp.soknad.db.repositories.LocalDateTimeXmlAdapter
 import java.time.LocalDateTime
-import javax.xml.bind.annotation.XmlRootElement
-import javax.xml.bind.annotation.XmlType
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter
 
 data class Oppgave(
     var id: Long,

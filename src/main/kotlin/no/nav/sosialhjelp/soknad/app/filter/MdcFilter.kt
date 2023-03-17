@@ -1,5 +1,8 @@
 package no.nav.sosialhjelp.soknad.app.filter
 
+import jakarta.servlet.FilterChain
+import jakarta.servlet.http.HttpServletRequest
+import jakarta.servlet.http.HttpServletResponse
 import no.nav.sosialhjelp.soknad.app.Constants.HEADER_CALL_ID
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations
 import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.MDC_BEHANDLINGS_ID
@@ -11,9 +14,6 @@ import no.nav.sosialhjelp.soknad.app.mdc.MdcOperations.putToMDC
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
-import javax.servlet.FilterChain
-import javax.servlet.http.HttpServletRequest
-import javax.servlet.http.HttpServletResponse
 
 @Component
 class MdcFilter : OncePerRequestFilter() {

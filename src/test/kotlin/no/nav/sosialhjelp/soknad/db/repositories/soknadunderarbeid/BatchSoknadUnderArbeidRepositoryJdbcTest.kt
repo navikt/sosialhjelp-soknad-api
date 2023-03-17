@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid
 
+import jakarta.inject.Inject
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sosialhjelp.soknad.db.DbTestConfig
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedlegg
@@ -14,7 +15,6 @@ import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import java.time.LocalDateTime
-import javax.inject.Inject
 
 @ExtendWith(SpringExtension::class)
 @ContextConfiguration(classes = [DbTestConfig::class])

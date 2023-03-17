@@ -1,10 +1,10 @@
 package no.nav.sosialhjelp.soknad.db.repositories
 
+import jakarta.xml.bind.JAXBContext
+import jakarta.xml.bind.JAXBException
+import jakarta.xml.bind.Marshaller
 import java.io.StringReader
 import java.io.StringWriter
-import javax.xml.bind.JAXBContext
-import javax.xml.bind.JAXBException
-import javax.xml.bind.Marshaller
 import javax.xml.transform.stream.StreamResult
 import javax.xml.transform.stream.StreamSource
 

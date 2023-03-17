@@ -10,6 +10,8 @@ import io.mockk.runs
 import io.mockk.slot
 import io.mockk.unmockkObject
 import io.mockk.verify
+import jakarta.servlet.http.Cookie
+import jakarta.servlet.http.HttpServletResponse
 import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.BOSTOTTE_SAMTYKKE
 import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_SKATTEETATEN_SAMTYKKE
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
@@ -34,8 +36,6 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
-import javax.servlet.http.Cookie
-import javax.servlet.http.HttpServletResponse
 
 internal class SoknadRessursTest {
 
