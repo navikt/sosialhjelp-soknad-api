@@ -1,9 +1,9 @@
 package no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata
 
+import jakarta.xml.bind.annotation.XmlRootElement
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.sosialhjelp.soknad.db.repositories.JAXBHelper
 import java.time.LocalDateTime
-import javax.xml.bind.annotation.XmlRootElement
 
 data class SoknadMetadata(
     var id: Long,

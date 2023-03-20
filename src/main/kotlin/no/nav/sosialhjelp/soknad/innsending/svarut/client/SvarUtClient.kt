@@ -2,6 +2,7 @@ package no.nav.sosialhjelp.soknad.innsending.svarut.client
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.netty.channel.ChannelOption
+import jakarta.xml.bind.DatatypeConverter
 import no.ks.fiks.svarut.klient.model.Forsendelse
 import no.ks.fiks.svarut.klient.model.ForsendelsesId
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
@@ -26,7 +27,6 @@ import reactor.netty.http.client.HttpClient
 import java.io.InputStream
 import java.nio.charset.StandardCharsets
 import java.time.Duration
-import javax.xml.bind.DatatypeConverter
 
 @Component
 class SvarUtClient(
