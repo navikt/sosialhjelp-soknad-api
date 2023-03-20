@@ -4,6 +4,7 @@ import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.soknad.adressesok.AdressesokService
 import no.nav.sosialhjelp.soknad.adressesok.domain.AdresseForslag
 import no.nav.sosialhjelp.soknad.api.informasjon.dto.Logg
+import no.nav.sosialhjelp.soknad.api.informasjon.dto.LoggLevel
 import no.nav.sosialhjelp.soknad.api.informasjon.dto.NyligInnsendteSoknaderResponse
 import no.nav.sosialhjelp.soknad.api.informasjon.dto.PabegyntSoknad
 import no.nav.sosialhjelp.soknad.app.Constants
@@ -82,10 +83,9 @@ class InformasjonRessurs(
         @RequestBody logg: Logg
     ) {
         when (logg.level) {
-            "INFO" -> klientlogger.info(logg.melding())
-            "WARN" -> klientlogger.warn(logg.melding())
-            "ERROR" -> klientlogger.error(logg.melding())
-            else -> klientlogger.debug(logg.melding())
+            LoggLevel.INFO -> klientlogger.info(logg.melding())
+            LoggLevel.WARN -> klientlogger.warn(logg.melding())
+            LoggLevel.ERROR -> klientlogger.error(logg.melding())
         }
     }
 
