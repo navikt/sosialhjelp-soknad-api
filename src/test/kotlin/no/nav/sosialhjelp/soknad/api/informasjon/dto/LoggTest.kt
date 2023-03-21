@@ -8,7 +8,7 @@ internal class LoggTest {
     fun testMeldingOutput() {
         val feilmelding = "Cannot read blabla of undefined"
         val logg = Logg(
-            level = null,
+            level = LoggLevel.ERROR,
             message = feilmelding,
             jsFileUrl = "minFil.js",
             lineNumber = "100",
