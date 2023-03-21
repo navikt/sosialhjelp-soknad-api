@@ -29,14 +29,14 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4])
 @RequestMapping("/soknader/{behandlingsId}/inntekt/bostotte", produces = [MediaType.APPLICATION_JSON_VALUE])
-open class BostotteRessurs(
+class BostotteRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val bostotteSystemdata: BostotteSystemdata,
     private val textService: TextService
 ) {
     @GetMapping
-    open fun hentBostotte(@PathVariable("behandlingsId") behandlingsId: String): BostotteFrontend {
+    fun hentBostotte(@PathVariable("behandlingsId") behandlingsId: String): BostotteFrontend {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).jsonInternalSoknad
@@ -54,7 +54,7 @@ open class BostotteRessurs(
     }
 
     @PutMapping
-    open fun updateBostotte(
+    fun updateBostotte(
         @PathVariable("behandlingsId") behandlingsId: String,
         @RequestBody bostotteFrontend: BostotteFrontend,
         @RequestHeader(value = HttpHeaders.AUTHORIZATION) token: String?
@@ -94,7 +94,7 @@ open class BostotteRessurs(
     }
 
     @PostMapping("/samtykke")
-    open fun updateSamtykke(
+    fun updateSamtykke(
         @PathVariable("behandlingsId") behandlingsId: String,
         @RequestBody samtykke: Boolean,
         @RequestHeader(value = HttpHeaders.AUTHORIZATION) token: String?

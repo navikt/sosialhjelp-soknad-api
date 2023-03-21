@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.personalia.telefonnummer
 
+import io.swagger.v3.oas.annotations.media.Schema
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.sbl.soknadsosialhjelp.soknad.personalia.JsonTelefonnummer
 import no.nav.security.token.support.core.api.ProtectedWithClaims
@@ -18,13 +19,13 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4])
 @RequestMapping("/soknader/{behandlingsId}/personalia/telefonnummer", produces = [MediaType.APPLICATION_JSON_VALUE])
-open class TelefonnummerRessurs(
+class TelefonnummerRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val telefonnummerSystemdata: TelefonnummerSystemdata,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository
 ) {
     @GetMapping
-    open fun hentTelefonnummer(
+    fun hentTelefonnummer(
         @PathVariable("behandlingsId") behandlingsId: String?
     ): TelefonnummerFrontend {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
@@ -41,12 +42,12 @@ open class TelefonnummerRessurs(
         return TelefonnummerFrontend(
             brukerdefinert = telefonnummer == null || telefonnummer.kilde == JsonKilde.BRUKER,
             systemverdi = systemverdi,
-            brukerutfyltVerdi = if (telefonnummer != null && telefonnummer.kilde == JsonKilde.BRUKER) telefonnummer.verdi else null
+            brukerutfyltVerdi = telefonnummer?.takeIf { it.kilde == JsonKilde.BRUKER }?.verdi
         )
     }
 
     @PutMapping
-    open fun updateTelefonnummer(
+    fun updateTelefonnummer(
         @PathVariable("behandlingsId") behandlingsId: String?,
         @RequestBody telefonnummerFrontend: TelefonnummerFrontend
     ) {
@@ -56,7 +57,8 @@ open class TelefonnummerRessurs(
         val jsonInternalSoknad = soknad.jsonInternalSoknad
             ?: throw IllegalStateException("Kan ikke oppdatere søknaddata hvis SoknadUnderArbeid.jsonInternalSoknad er null")
         val personalia = jsonInternalSoknad.soknad.data.personalia
-        val jsonTelefonnummer = personalia.telefonnummer ?: personalia.withTelefonnummer(JsonTelefonnummer()).telefonnummer
+        val jsonTelefonnummer =
+            personalia.telefonnummer ?: personalia.withTelefonnummer(JsonTelefonnummer()).telefonnummer
         if (telefonnummerFrontend.brukerdefinert) {
             if (telefonnummerFrontend.brukerutfyltVerdi.isNullOrBlank()) {
                 personalia.telefonnummer = null
@@ -74,6 +76,7 @@ open class TelefonnummerRessurs(
     data class TelefonnummerFrontend(
         val brukerdefinert: Boolean = false,
         val systemverdi: String? = null,
+        @Schema(nullable = true)
         val brukerutfyltVerdi: String? = null
     )
 }

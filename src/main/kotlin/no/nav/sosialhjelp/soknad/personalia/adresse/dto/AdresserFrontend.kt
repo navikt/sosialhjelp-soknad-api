@@ -22,10 +22,10 @@ data class AdresserFrontend(
 
 @Schema(nullable = true)
 data class AdresseFrontend(
-    var type: JsonAdresse.Type? = null,
-    var gateadresse: GateadresseFrontend? = null,
-    var matrikkeladresse: MatrikkeladresseFrontend? = null,
-    var ustrukturert: UstrukturertAdresseFrontend? = null
+    val type: JsonAdresse.Type? = null,
+    val gateadresse: GateadresseFrontend? = null,
+    val matrikkeladresse: MatrikkeladresseFrontend? = null,
+    val ustrukturert: UstrukturertAdresseFrontend? = null
 )
 
 data class GateadresseFrontend(

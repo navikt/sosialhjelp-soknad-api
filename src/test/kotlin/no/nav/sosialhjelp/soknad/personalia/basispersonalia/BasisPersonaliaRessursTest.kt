@@ -97,13 +97,23 @@ internal class BasisPersonaliaRessursTest {
         assertThat(personaliaFrontend.navn?.etternavn).isEqualTo(jsonPersonalia.navn.etternavn)
         assertThat(personaliaFrontend.navn?.fulltNavn).isEqualTo(FULLT_NAVN)
         assertThat(personaliaFrontend.statsborgerskap)
-            .isEqualTo(if (jsonPersonalia.statsborgerskap == null) null else if (jsonPersonalia.statsborgerskap.verdi == "NOR") "Norge" else jsonPersonalia.statsborgerskap.verdi)
+            .isEqualTo(if (jsonPersonalia.statsborgerskap?.verdi == "NOR") "Norge" else jsonPersonalia.statsborgerskap?.verdi)
     }
 
     private fun createJsonInternalSoknadWithBasisPersonalia(
         withStatsborgerskap: Boolean
     ): SoknadUnderArbeid {
-        val soknadUnderArbeid = createSoknadUnderArbeid()
+        val soknadUnderArbeid = SoknadUnderArbeid(
+            versjon = 1L,
+            behandlingsId = BEHANDLINGSID,
+            tilknyttetBehandlingsId = null,
+            eier = EIER,
+            jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
+            status = SoknadUnderArbeidStatus.UNDER_ARBEID,
+            opprettetDato = LocalDateTime.now(),
+            sistEndretDato = LocalDateTime.now()
+        )
+
         soknadUnderArbeid.jsonInternalSoknad!!.soknad.data.personalia
             .withNavn(
                 JsonSokernavn()
@@ -159,18 +169,5 @@ internal class BasisPersonaliaRessursTest {
                     .withMellomnavn(MELLOMNAVN)
                     .withEtternavn(ETTERNAVN)
             )
-
-        private fun createSoknadUnderArbeid(): SoknadUnderArbeid {
-            return SoknadUnderArbeid(
-                versjon = 1L,
-                behandlingsId = BEHANDLINGSID,
-                tilknyttetBehandlingsId = null,
-                eier = EIER,
-                jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
-                status = SoknadUnderArbeidStatus.UNDER_ARBEID,
-                opprettetDato = LocalDateTime.now(),
-                sistEndretDato = LocalDateTime.now()
-            )
-        }
     }
 }

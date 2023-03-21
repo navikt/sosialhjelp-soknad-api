@@ -26,15 +26,17 @@ class KommuneInfoService(
 ) {
 
     fun kanMottaSoknader(kommunenummer: String): Boolean {
-        return hentAlleKommuneInfo()
-            ?.getOrDefault(kommunenummer, DEFAULT_KOMMUNEINFO)?.kanMottaSoknader
-            ?: return false
+        return hentFraCacheEllerServer(kommunenummer)?.kanMottaSoknader ?: false
     }
 
     fun harMidlertidigDeaktivertMottak(kommunenummer: String): Boolean {
-        return hentAlleKommuneInfo()
-            ?.getOrDefault(kommunenummer, DEFAULT_KOMMUNEINFO)?.harMidlertidigDeaktivertMottak
-            ?: return false
+        return hentFraCacheEllerServer(kommunenummer)?.harMidlertidigDeaktivertMottak ?: false
+    }
+
+    fun getBehandlingskommune(kommunenummer: String, kommunenavnFraAdresseforslag: String?): String? {
+        return hentFraCacheEllerServer(kommunenummer)?.behandlingsansvarlig
+            ?.let { if (it.endsWith(" kommune")) it.replace(" kommune", "") else it }
+            ?: KommuneTilNavEnhetMapper.IKS_KOMMUNER.getOrDefault(kommunenummer, kommunenavnFraAdresseforslag)
     }
 
     fun hentAlleKommuneInfo(): Map<String, KommuneInfo>? {
@@ -62,23 +64,23 @@ class KommuneInfoService(
         return kommuneInfoMap
     }
 
+    private fun hentFraCacheEllerServer(kommunenummer: String): KommuneInfo? {
+        return hentAlleKommuneInfo()?.get(kommunenummer)
+    }
+
     private fun skalBrukeCache(): Boolean {
         return redisService.getString(KOMMUNEINFO_LAST_POLL_TIME_KEY)
             ?.let { LocalDateTime.parse(it, ISO_LOCAL_DATE_TIME).plusMinutes(MINUTES_TO_PASS_BETWEEN_POLL).isAfter(LocalDateTime.now()) }
             ?: false
     }
 
-    fun getBehandlingskommune(kommunenr: String, kommunenavnFraAdresseforslag: String?): String? {
-        return behandlingsansvarlig(kommunenr)
-            ?.let { if (it.endsWith(" kommune")) it.replace(" kommune", "") else it }
-            ?: KommuneTilNavEnhetMapper.IKS_KOMMUNER.getOrDefault(kommunenr, kommunenavnFraAdresseforslag)
-    }
-
     // Det holder å sjekke om kommunen har en konfigurasjon hos fiks, har de det vil vi alltid kunne sende
-    fun kommuneInfo(kommunenummer: String): KommuneStatus {
+    fun getKommuneStatus(kommunenummer: String, withLogging: Boolean = false): KommuneStatus {
         val kommuneInfoMap = hentAlleKommuneInfo()
-        val kommuneInfo = kommuneInfoMap?.getOrDefault(kommunenummer, null)
-        log.info("Kommuneinfo for $kommunenummer: $kommuneInfo")
+        val kommuneInfo = hentFraCacheEllerServer(kommunenummer)
+        if (withLogging) {
+            log.info("Kommuneinfo for $kommunenummer: $kommuneInfo")
+        }
         return when {
             kommuneInfoMap == null -> FIKS_NEDETID_OG_TOM_CACHE
             kommuneInfo == null -> MANGLER_KONFIGURASJON
@@ -86,22 +88,6 @@ class KommuneInfoService(
             kommuneInfo.harMidlertidigDeaktivertMottak -> SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD_OG_ETTERSENDELSER
             else -> SKAL_SENDE_SOKNADER_OG_ETTERSENDELSER_VIA_FDA
         }
-    }
-
-    fun getKommuneStatus(kommunenummer: String): KommuneStatus {
-        val kommuneInfoMap = hentAlleKommuneInfo()
-        val kommuneInfo = kommuneInfoMap?.getOrDefault(kommunenummer, null)
-        return when {
-            kommuneInfoMap == null -> FIKS_NEDETID_OG_TOM_CACHE
-            kommuneInfo == null -> MANGLER_KONFIGURASJON
-            !kommuneInfo.kanMottaSoknader -> HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT
-            kommuneInfo.harMidlertidigDeaktivertMottak -> SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD_OG_ETTERSENDELSER
-            else -> SKAL_SENDE_SOKNADER_OG_ETTERSENDELSER_VIA_FDA
-        }
-    }
-
-    private fun behandlingsansvarlig(kommunenummer: String): String? {
-        return hentAlleKommuneInfo()?.getOrDefault(kommunenummer, DEFAULT_KOMMUNEINFO)?.behandlingsansvarlig
     }
 
     private fun oppdaterCache(kommuneInfoList: List<KommuneInfo>?) {

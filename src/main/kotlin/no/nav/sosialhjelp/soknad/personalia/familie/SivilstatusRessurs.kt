@@ -27,12 +27,12 @@ import java.text.SimpleDateFormat
 @RestController
 @ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4])
 @RequestMapping("/soknader/{behandlingsId}/familie/sivilstatus", produces = [MediaType.APPLICATION_JSON_VALUE])
-open class SivilstatusRessurs(
+class SivilstatusRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository
 ) {
     @GetMapping
-    open fun hentSivilstatus(
+    fun hentSivilstatus(
         @PathVariable("behandlingsId") behandlingsId: String
     ): SivilstatusFrontend? {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
@@ -45,7 +45,7 @@ open class SivilstatusRessurs(
     }
 
     @PutMapping
-    open fun updateSivilstatus(
+    fun updateSivilstatus(
         @PathVariable("behandlingsId") behandlingsId: String,
         @RequestBody sivilstatusFrontend: SivilstatusFrontend
     ) {
@@ -99,7 +99,7 @@ open class SivilstatusRessurs(
         return SivilstatusFrontend(
             kildeErSystem = mapToSystemBoolean(jsonSivilstatus.kilde),
             sivilstatus = jsonSivilstatus.status,
-            ektefelle = if (jsonSivilstatus.ektefelle == null) null else addEktefelleFrontend(jsonSivilstatus.ektefelle),
+            ektefelle = jsonSivilstatus.ektefelle?.let { addEktefelleFrontend(it) },
             harDiskresjonskode = jsonSivilstatus.ektefelleHarDiskresjonskode,
             borSammenMed = jsonSivilstatus.borSammenMed,
             erFolkeregistrertSammen = jsonSivilstatus.folkeregistrertMedEktefelle

@@ -11,11 +11,11 @@ import org.springframework.stereotype.Component
 import java.time.LocalDate
 
 @Component
-open class NavUtbetalingerService(
+class NavUtbetalingerService(
     private val navUtbetalingerClient: NavUtbetalingerClient
 ) {
 
-    open fun getUtbetalingerSiste40Dager(ident: String): List<NavUtbetaling>? {
+    fun getUtbetalingerSiste40Dager(ident: String): List<NavUtbetaling>? {
         val utbetalinger: List<NavUtbetaling>
 
         val utbetalDataDto: UtbetalDataDto? = navUtbetalingerClient.getUtbetalingerSiste40Dager(ident)

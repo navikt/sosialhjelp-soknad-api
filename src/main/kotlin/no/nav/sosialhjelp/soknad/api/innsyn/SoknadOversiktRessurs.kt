@@ -14,12 +14,12 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @ProtectedWithClaims(issuer = Constants.TOKENX, claimMap = [Constants.CLAIM_ACR_LEVEL_4])
 @RequestMapping("/soknadoversikt", produces = [MediaType.APPLICATION_JSON_VALUE])
-open class SoknadOversiktRessurs(
+class SoknadOversiktRessurs(
     private val service: SoknadOversiktService,
     private val tilgangskontroll: Tilgangskontroll
 ) {
     @GetMapping("/soknader")
-    open fun hentInnsendteSoknaderForBruker(): List<SoknadOversiktDto> {
+    fun hentInnsendteSoknaderForBruker(): List<SoknadOversiktDto> {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
         val fnr = SubjectHandlerUtils.getUserIdFromToken()
         logger.debug("Henter alle søknader")

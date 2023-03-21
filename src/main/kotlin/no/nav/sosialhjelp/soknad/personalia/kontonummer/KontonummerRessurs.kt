@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.personalia.kontonummer
 
+import io.swagger.v3.oas.annotations.media.Schema
 import no.nav.sbl.soknadsosialhjelp.soknad.common.JsonKilde
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.soknad.app.Constants
@@ -17,13 +18,13 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4])
 @RequestMapping("/soknader/{behandlingsId}/personalia/kontonummer", produces = [MediaType.APPLICATION_JSON_VALUE])
-open class KontonummerRessurs(
+class KontonummerRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val kontonummerSystemdata: KontonummerSystemdata
 ) {
     @GetMapping
-    open fun hentKontonummer(
+    fun hentKontonummer(
         @PathVariable("behandlingsId") behandlingsId: String
     ): KontonummerFrontend {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
@@ -40,13 +41,13 @@ open class KontonummerRessurs(
         return KontonummerFrontend(
             brukerdefinert = kontonummer.kilde == JsonKilde.BRUKER,
             systemverdi = systemverdi,
-            brukerutfyltVerdi = if (kontonummer.kilde == JsonKilde.BRUKER) kontonummer.verdi else null,
+            brukerutfyltVerdi = kontonummer?.takeIf { it.kilde == JsonKilde.BRUKER }?.verdi,
             harIkkeKonto = kontonummer.harIkkeKonto
         )
     }
 
     @PutMapping
-    open fun updateKontonummer(
+    fun updateKontonummer(
         @PathVariable("behandlingsId") behandlingsId: String,
         @RequestBody kontonummerFrontend: KontonummerFrontend
     ) {
@@ -71,7 +72,9 @@ open class KontonummerRessurs(
 
     data class KontonummerFrontend(
         val brukerdefinert: Boolean = false,
+        @Schema(readOnly = true)
         val systemverdi: String? = null,
+        @Schema(nullable = true)
         val brukerutfyltVerdi: String? = null,
         val harIkkeKonto: Boolean? = null,
     )

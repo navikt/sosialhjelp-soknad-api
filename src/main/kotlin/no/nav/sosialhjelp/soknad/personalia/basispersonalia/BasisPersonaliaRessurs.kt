@@ -19,13 +19,13 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4])
 @RequestMapping("/soknader/{behandlingsId}/personalia/basisPersonalia", produces = [MediaType.APPLICATION_JSON_VALUE])
-open class BasisPersonaliaRessurs(
+class BasisPersonaliaRessurs(
     private val kodeverkService: KodeverkService,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val tilgangskontroll: Tilgangskontroll
 ) {
     @GetMapping
-    open fun hentBasisPersonalia(
+    fun hentBasisPersonalia(
         @PathVariable("behandlingsId") behandlingsId: String?
     ): BasisPersonaliaFrontend {
         tilgangskontroll.verifiserAtBrukerHarTilgang()

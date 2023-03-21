@@ -8,13 +8,13 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
 @Configuration
-open class HealthConfig(
+class HealthConfig(
     private val dependencyChecks: List<DependencyCheck>,
     private val meterRegistry: MeterRegistry
 ) {
 
     @Bean
-    open fun selftestService(): SelftestService {
+    fun selftestService(): SelftestService {
         return SelftestService(
             appName = "sosialhjelp-soknad-api",
             version = MiljoUtils.appImageVersion,

@@ -28,30 +28,30 @@ import javax.sql.DataSource
 @Configuration
 @Import(value = [MockAltTestDbConfig::class])
 @EnableTransactionManagement
-open class DbTestConfig {
+class DbTestConfig {
 
     @Bean
-    open fun jdbcTemplate(dataSource: DataSource): JdbcTemplate {
+    fun jdbcTemplate(dataSource: DataSource): JdbcTemplate {
         return JdbcTemplate(dataSource)
     }
 
     @Bean
-    open fun namedParameterJdbcTemplate(dataSource: DataSource): NamedParameterJdbcTemplate {
+    fun namedParameterJdbcTemplate(dataSource: DataSource): NamedParameterJdbcTemplate {
         return NamedParameterJdbcTemplate(dataSource)
     }
 
     @Bean
-    open fun soknadMetadataRepository(jdbcTemplate: JdbcTemplate): SoknadMetadataRepository {
+    fun soknadMetadataRepository(jdbcTemplate: JdbcTemplate): SoknadMetadataRepository {
         return SoknadMetadataRepositoryJdbc(jdbcTemplate)
     }
 
     @Bean
-    open fun soknadMetadataMigrationRepository(jdbcTemplate: JdbcTemplate): SoknadMetadataMigrationRepository {
+    fun soknadMetadataMigrationRepository(jdbcTemplate: JdbcTemplate): SoknadMetadataMigrationRepository {
         return SoknadMetadataMigrationRepository(jdbcTemplate)
     }
 
     @Bean
-    open fun soknadUnderArbeidRepository(
+    fun soknadUnderArbeidRepository(
         jdbcTemplate: JdbcTemplate,
         transactionTemplate: TransactionTemplate,
         opplastetVedleggRepository: OpplastetVedleggRepository
@@ -60,22 +60,22 @@ open class DbTestConfig {
     }
 
     @Bean
-    open fun soknadUnderArbeidMigrationRepository(jdbcTemplate: JdbcTemplate): SoknadUnderArbeidMigrationRepository {
+    fun soknadUnderArbeidMigrationRepository(jdbcTemplate: JdbcTemplate): SoknadUnderArbeidMigrationRepository {
         return SoknadUnderArbeidMigrationRepository(jdbcTemplate)
     }
 
     @Bean
-    open fun opplastetVedleggRepository(jdbcTemplate: JdbcTemplate): OpplastetVedleggRepository {
+    fun opplastetVedleggRepository(jdbcTemplate: JdbcTemplate): OpplastetVedleggRepository {
         return OpplastetVedleggRepositoryJdbc(jdbcTemplate)
     }
 
     @Bean
-    open fun opplastetVedleggMigrationRepository(jdbcTemplate: JdbcTemplate): OpplastetVedleggMigrationRepository {
+    fun opplastetVedleggMigrationRepository(jdbcTemplate: JdbcTemplate): OpplastetVedleggMigrationRepository {
         return OpplastetVedleggMigrationRepository(jdbcTemplate)
     }
 
     @Bean
-    open fun batchSoknadUnderArbeidRepository(
+    fun batchSoknadUnderArbeidRepository(
         jdbcTemplate: JdbcTemplate,
         transactionTemplate: TransactionTemplate,
         batchOpplastetVedleggRepository: BatchOpplastetVedleggRepository
@@ -84,12 +84,12 @@ open class DbTestConfig {
     }
 
     @Bean
-    open fun batchOpplastetVedleggRepository(jdbcTemplate: JdbcTemplate): BatchOpplastetVedleggRepository {
+    fun batchOpplastetVedleggRepository(jdbcTemplate: JdbcTemplate): BatchOpplastetVedleggRepository {
         return BatchOpplastetVedleggRepositoryJdbc(jdbcTemplate)
     }
 
     @Bean
-    open fun batchSoknadMetadataRepository(jdbcTemplate: JdbcTemplate, namedParameterJdbcTemplate: NamedParameterJdbcTemplate): BatchSoknadMetadataRepository {
+    fun batchSoknadMetadataRepository(jdbcTemplate: JdbcTemplate, namedParameterJdbcTemplate: NamedParameterJdbcTemplate): BatchSoknadMetadataRepository {
         return BatchSoknadMetadataRepositoryJdbc(jdbcTemplate, namedParameterJdbcTemplate)
     }
 }

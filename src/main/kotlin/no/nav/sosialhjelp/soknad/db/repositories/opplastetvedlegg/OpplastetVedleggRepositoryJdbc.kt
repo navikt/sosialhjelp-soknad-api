@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository
 
 @Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 @Repository
-open class OpplastetVedleggRepositoryJdbc(
+class OpplastetVedleggRepositoryJdbc(
     private val jdbcTemplate: JdbcTemplate
 ) : OpplastetVedleggRepository {
 

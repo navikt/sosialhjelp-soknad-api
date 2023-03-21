@@ -8,7 +8,6 @@ import no.nav.sosialhjelp.soknad.personalia.person.dto.EktefelleDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.FoedselDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.FolkeregisterpersonstatusDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.Gradering
-import no.nav.sosialhjelp.soknad.personalia.person.dto.KontaktadresseDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.MatrikkeladresseDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.NavnDto
 import no.nav.sosialhjelp.soknad.personalia.person.dto.OppholdsadresseDto
@@ -23,7 +22,7 @@ import java.time.LocalDate
 import java.time.Period
 
 @Component
-open class PdlDtoMapper(
+class PdlDtoMapper(
     private val kodeverkService: KodeverkService,
     private val helper: MapperHelper
 ) {
@@ -47,7 +46,7 @@ open class PdlDtoMapper(
             )
     }
 
-    open fun personDtoToDomain(personDto: PersonDto?, ident: String): Person? {
+    fun personDtoToDomain(personDto: PersonDto?, ident: String): Person? {
         return if (personDto == null) {
             null
         } else Person(
@@ -60,11 +59,10 @@ open class PdlDtoMapper(
             null,
             mapToBostedsadresse(personDto.bostedsadresse),
             mapToOppholdssadresse(personDto.oppholdsadresse, personDto.bostedsadresse),
-            mapToKontaktadresse(personDto.kontaktadresse, personDto.bostedsadresse)
         )
     }
 
-    open fun barnDtoToDomain(barnDto: BarnDto?, barnIdent: String, personDto: PersonDto): Barn? {
+    fun barnDtoToDomain(barnDto: BarnDto?, barnIdent: String, personDto: PersonDto): Barn? {
         if (barnDto == null || hasAdressebeskyttelse(barnDto.adressebeskyttelse) || isMyndig(barnDto.foedsel) || isDoed(barnDto.folkeregisterpersonstatus)) {
             return null
         }
@@ -78,7 +76,7 @@ open class PdlDtoMapper(
         )
     }
 
-    open fun ektefelleDtoToDomain(ektefelleDto: EktefelleDto?, ektefelleIdent: String, personDto: PersonDto): Ektefelle? {
+    fun ektefelleDtoToDomain(ektefelleDto: EktefelleDto?, ektefelleIdent: String, personDto: PersonDto): Ektefelle? {
         if (ektefelleDto == null) {
             return null
         }
@@ -95,7 +93,7 @@ open class PdlDtoMapper(
         )
     }
 
-    open fun personAdressebeskyttelseDtoToGradering(personAdressebeskyttelseDto: PersonAdressebeskyttelseDto?): Gradering? {
+    fun personAdressebeskyttelseDtoToGradering(personAdressebeskyttelseDto: PersonAdressebeskyttelseDto?): Gradering? {
         return if (personAdressebeskyttelseDto?.adressebeskyttelse == null) {
             null
         } else personAdressebeskyttelseDto.adressebeskyttelse.firstOrNull()?.gradering
@@ -241,19 +239,6 @@ open class PdlDtoMapper(
         return dtos
             .firstOrNull { it.vegadresse != null && filterVegadresseNotEqualToBostedsadresse(bostedsadresseDtos, it.vegadresse) }
             ?.let { Oppholdsadresse(it.coAdressenavn, it.vegadresse?.let { vegadresse -> mapToVegadresse(vegadresse) }) }
-    }
-
-    private fun mapToKontaktadresse(
-        dtos: List<KontaktadresseDto>?,
-        bostedsadresseDtos: List<BostedsadresseDto>?
-    ): Kontaktadresse? {
-        return if (dtos.isNullOrEmpty()) {
-            null
-        } else {
-            dtos
-                .firstOrNull { it.vegadresse != null && filterVegadresseNotEqualToBostedsadresse(bostedsadresseDtos, it.vegadresse) }
-                ?.let { Kontaktadresse(it.coAdressenavn, it.vegadresse?.let { vegadresse -> mapToVegadresse(vegadresse) }) }
-        }
     }
 
     private fun filterVegadresseNotEqualToBostedsadresse(

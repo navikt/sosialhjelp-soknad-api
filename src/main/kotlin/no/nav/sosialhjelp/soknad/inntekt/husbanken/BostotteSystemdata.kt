@@ -24,12 +24,12 @@ import org.springframework.stereotype.Component
 import java.time.LocalDate
 
 @Component
-open class BostotteSystemdata(
+class BostotteSystemdata(
     private val husbankenClient: HusbankenClient,
     private val textService: TextService
 ) {
 
-    open fun updateSystemdataIn(soknadUnderArbeid: SoknadUnderArbeid, token: String?) {
+    fun updateSystemdataIn(soknadUnderArbeid: SoknadUnderArbeid, token: String?) {
         val soknad = soknadUnderArbeid.jsonInternalSoknad?.soknad ?: return
         val okonomi = soknad.data.okonomi
         if (okonomi.opplysninger.bekreftelse.any { it.type.equals(BOSTOTTE_SAMTYKKE, ignoreCase = true) && it.verdi }) {

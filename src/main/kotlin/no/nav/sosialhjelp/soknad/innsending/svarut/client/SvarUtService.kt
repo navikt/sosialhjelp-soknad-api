@@ -5,11 +5,11 @@ import org.springframework.stereotype.Component
 import java.io.InputStream
 
 @Component
-open class SvarUtService(
+class SvarUtService(
     private val svarUtClient: SvarUtClient
 ) {
 
-    open fun send(forsendelse: Forsendelse, filnavnInputStreamMap: Map<String, InputStream>): String? {
+    fun send(forsendelse: Forsendelse, filnavnInputStreamMap: Map<String, InputStream>): String? {
         val forsendelseId = svarUtClient.sendForsendelse(forsendelse, filnavnInputStreamMap)
         return forsendelseId?.id.toString()
     }

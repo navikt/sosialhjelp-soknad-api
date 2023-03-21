@@ -12,13 +12,13 @@ import org.slf4j.LoggerFactory.getLogger
 import org.springframework.stereotype.Component
 
 @Component
-open class PersonService(
+class PersonService(
     private val hentPersonClient: HentPersonClient,
     private val helper: MapperHelper,
     private val mapper: PdlDtoMapper
 ) {
 
-    open fun hentPerson(ident: String): Person? {
+    fun hentPerson(ident: String): Person? {
         val personDto = hentPersonClient.hentPerson(ident) ?: return null
         val person = mapper.personDtoToDomain(personDto, ident)
         if (person != null) {
@@ -27,7 +27,7 @@ open class PersonService(
         return person
     }
 
-    open fun hentBarnForPerson(ident: String): List<Barn>? {
+    fun hentBarnForPerson(ident: String): List<Barn>? {
         val personDto = hentPersonClient.hentPerson(ident)
         if (personDto?.forelderBarnRelasjon == null) {
             return null
@@ -71,7 +71,7 @@ open class PersonService(
         return null
     }
 
-    open fun hentAdressebeskyttelse(ident: String): Gradering? {
+    fun hentAdressebeskyttelse(ident: String): Gradering? {
         val personAdressebeskyttelseDto = hentPersonClient.hentAdressebeskyttelse(ident)
         return mapper.personAdressebeskyttelseDtoToGradering(personAdressebeskyttelseDto)
     }

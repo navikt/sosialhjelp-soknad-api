@@ -31,13 +31,13 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4])
 @RequestMapping("/soknader/{behandlingsId}/inntekt/formue", produces = [MediaType.APPLICATION_JSON_VALUE])
-open class FormueRessurs(
+class FormueRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val textService: TextService
 ) {
     @GetMapping
-    open fun hentFormue(@PathVariable("behandlingsId") behandlingsId: String): FormueFrontend {
+    fun hentFormue(@PathVariable("behandlingsId") behandlingsId: String): FormueFrontend {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).jsonInternalSoknad
@@ -60,7 +60,7 @@ open class FormueRessurs(
     }
 
     @PutMapping
-    open fun updateFormue(
+    fun updateFormue(
         @PathVariable("behandlingsId") behandlingsId: String,
         @RequestBody formueFrontend: FormueFrontend
     ) {

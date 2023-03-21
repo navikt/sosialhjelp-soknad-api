@@ -2,8 +2,8 @@ name: Deploy til dev
 on:
   workflow_dispatch:
     inputs:
-      config-file-name:
-        description: 'Config-fil som skal deployes'
+      config:
+        description: 'Hvilken config skal deployes?'
         required: true
         default: 'dev-fss'
         type: choice
@@ -13,7 +13,7 @@ on:
 
 jobs:
   deploy:
-    name: Deploy to dev
+    name: Deploy to dev - ${{ github.event.inputs.config }}
     runs-on: ubuntu-latest
     env:
       DOCKER_IMAGE: ghcr.io/${{ github.repository }}/${{ github.event.repository.name }}
@@ -25,22 +25,20 @@ jobs:
       - name: Sett env variabler
         run: |
           echo "DOCKER_TAG=${{ env.DOCKER_IMAGE }}:${{ steps.artifact-version.outputs.version }}" >> $GITHUB_ENV
-          echo "CONFIG_FILE=${{ github.event.inputs.config-file-name }}" >> $GITHUB_ENV
-      - name: Sett cluster basert på config-file
+      - name: Utled cluster fra valgt config
         run: |
-          if [[ ${{ github.event.inputs.config-file-name }} = 'dev-fss' ]]; then
+          if [[ ${{ github.event.inputs.config }} = 'dev-fss' ]]; then
             echo "CLUSTER_NAME=dev-fss" >> $GITHUB_ENV          
           else
             echo "CLUSTER_NAME=dev-gcp" >> $GITHUB_ENV
           fi
           echo "Deployer til ${{ env.CLUSTER_NAME }}"
-      - name: Deploy til dev - ${{ github.event.inputs.config-file-name }}
+      - name: Deploy til dev - ${{ github.event.inputs.config }}
         uses: nais/deploy/actions/deploy@v1
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
-          RESOURCE: nais/nais.yaml
+          RESOURCE: nais/dev/${{ github.event.inputs.config }}.yaml
           CLUSTER: ${{ env.CLUSTER_NAME }}
-          VARS: nais/dev/${{ env.CONFIG_FILE }}.json
           REF: ${{ github.sha }}
           PRINT_PAYLOAD: true
           IMAGE: ${{ env.DOCKER_TAG }}

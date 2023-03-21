@@ -21,9 +21,8 @@ jobs:
         uses: nais/deploy/actions/deploy@v1
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
-          RESOURCE: nais/nais.yaml
+          RESOURCE: nais/dev/mock.yaml
           CLUSTER: dev-gcp
-          VARS: nais/dev/mock.json
           REF: ${{ github.sha }}
           PRINT_PAYLOAD: true
           IMAGE: ${{ env.DOCKER_TAG }}
@@ -31,9 +30,8 @@ jobs:
         uses: nais/deploy/actions/deploy@v1
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
-          RESOURCE: nais/nais.yaml
+          RESOURCE: nais/dev/dev-fss.yaml
           CLUSTER: dev-fss
-          VARS: nais/dev/dev-fss.json
           REF: ${{ github.sha }}
           PRINT_PAYLOAD: true
           IMAGE: ${{ env.DOCKER_TAG }}

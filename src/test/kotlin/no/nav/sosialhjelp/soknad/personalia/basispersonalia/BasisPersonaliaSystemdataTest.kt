@@ -19,9 +19,20 @@ internal class BasisPersonaliaSystemdataTest {
     private val personService: PersonService = mockk()
     private val basisPersonaliaSystemdata = BasisPersonaliaSystemdata(personService)
 
+    private val defaultSoknadUnderArbeid = SoknadUnderArbeid(
+        versjon = 1L,
+        behandlingsId = "BEHANDLINGSID",
+        tilknyttetBehandlingsId = null,
+        eier = EIER,
+        jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
+        status = SoknadUnderArbeidStatus.UNDER_ARBEID,
+        opprettetDato = LocalDateTime.now(),
+        sistEndretDato = LocalDateTime.now()
+    )
+
     @Test
     fun skalIkkeOppdatereDersomPersonaliaErNull() {
-        val soknadUnderArbeid = createSoknadUnderArbeid()
+        val soknadUnderArbeid = defaultSoknadUnderArbeid
         every { personService.hentPerson(any()) } returns null
 
         basisPersonaliaSystemdata.updateSystemdataIn(soknadUnderArbeid)
@@ -40,18 +51,17 @@ internal class BasisPersonaliaSystemdataTest {
     @Test
     fun skalOppdatereNordiskPersonalia() {
         val person = Person(
-            FORNAVN,
-            MELLOMNAVN,
-            ETTERNAVN,
-            EIER,
-            "ugift",
-            listOf(NORSK_STATSBORGERSKAP),
-            null,
-            null,
-            null,
-            null
+            fornavn = FORNAVN,
+            mellomnavn = MELLOMNAVN,
+            etternavn = ETTERNAVN,
+            fnr = EIER,
+            sivilstatus = "ugift",
+            statsborgerskap = listOf(NORSK_STATSBORGERSKAP),
+            ektefelle = null,
+            bostedsadresse = null,
+            oppholdsadresse = null,
         )
-        val soknadUnderArbeid = createSoknadUnderArbeid()
+        val soknadUnderArbeid = defaultSoknadUnderArbeid
         every { personService.hentPerson(any()) } returns person
 
         basisPersonaliaSystemdata.updateSystemdataIn(soknadUnderArbeid)
@@ -72,18 +82,17 @@ internal class BasisPersonaliaSystemdataTest {
     @Test
     fun skalPrioritereNorskOverNordiskStatsborgerskap() {
         val person = Person(
-            FORNAVN,
-            MELLOMNAVN,
-            ETTERNAVN,
-            EIER,
-            "ugift",
-            listOf(NORDISK_STATSBORGERSKAP, NORSK_STATSBORGERSKAP),
-            null,
-            null,
-            null,
-            null
+            fornavn = FORNAVN,
+            mellomnavn = MELLOMNAVN,
+            etternavn = ETTERNAVN,
+            fnr = EIER,
+            sivilstatus = "ugift",
+            statsborgerskap = listOf(NORDISK_STATSBORGERSKAP, NORSK_STATSBORGERSKAP),
+            ektefelle = null,
+            bostedsadresse = null,
+            oppholdsadresse = null,
         )
-        val soknadUnderArbeid = createSoknadUnderArbeid()
+        val soknadUnderArbeid = defaultSoknadUnderArbeid
         every { personService.hentPerson(any()) } returns person
 
         basisPersonaliaSystemdata.updateSystemdataIn(soknadUnderArbeid)
@@ -98,14 +107,20 @@ internal class BasisPersonaliaSystemdataTest {
     @Test
     fun skalPrioritereNordiskStatsborgerskap() {
         val person = Person(
-            FORNAVN, MELLOMNAVN, ETTERNAVN, EIER, "ugift",
-            listOf(
+            fornavn = FORNAVN,
+            mellomnavn = MELLOMNAVN,
+            etternavn = ETTERNAVN,
+            fnr = EIER,
+            sivilstatus = "ugift",
+            statsborgerskap = listOf(
                 IKKE_NORDISK_STATSBORGERSKAP,
                 NORDISK_STATSBORGERSKAP
             ),
-            null, null, null, null
+            ektefelle = null,
+            bostedsadresse = null,
+            oppholdsadresse = null,
         )
-        val soknadUnderArbeid = createSoknadUnderArbeid()
+        val soknadUnderArbeid = defaultSoknadUnderArbeid
         every { personService.hentPerson(any()) } returns person
 
         basisPersonaliaSystemdata.updateSystemdataIn(soknadUnderArbeid)
@@ -120,13 +135,19 @@ internal class BasisPersonaliaSystemdataTest {
     @Test
     fun skalOppdatereIkkeNordiskPersonalia() {
         val person = Person(
-            FORNAVN, MELLOMNAVN, ETTERNAVN, EIER, "ugift",
-            listOf(
+            fornavn = FORNAVN,
+            mellomnavn = MELLOMNAVN,
+            etternavn = ETTERNAVN,
+            fnr = EIER,
+            sivilstatus = "ugift",
+            statsborgerskap = listOf(
                 IKKE_NORDISK_STATSBORGERSKAP
             ),
-            null, null, null, null
+            ektefelle = null,
+            bostedsadresse = null,
+            oppholdsadresse = null,
         )
-        val soknadUnderArbeid = createSoknadUnderArbeid()
+        val soknadUnderArbeid = defaultSoknadUnderArbeid
         every { personService.hentPerson(any()) } returns person
 
         basisPersonaliaSystemdata.updateSystemdataIn(soknadUnderArbeid)
@@ -147,18 +168,17 @@ internal class BasisPersonaliaSystemdataTest {
     @Test
     fun skalikkeSendeMedStatsborgerskapForUkjent() {
         val person = Person(
-            FORNAVN,
-            MELLOMNAVN,
-            ETTERNAVN,
-            EIER,
-            "ugift",
-            listOf(BasisPersonaliaSystemdata.PDL_UKJENT_STATSBORGERSKAP),
-            null,
-            null,
-            null,
-            null
+            fornavn = FORNAVN,
+            mellomnavn = MELLOMNAVN,
+            etternavn = ETTERNAVN,
+            fnr = EIER,
+            sivilstatus = "ugift",
+            statsborgerskap = listOf(BasisPersonaliaSystemdata.PDL_UKJENT_STATSBORGERSKAP),
+            ektefelle = null,
+            bostedsadresse = null,
+            oppholdsadresse = null,
         )
-        val soknadUnderArbeid = createSoknadUnderArbeid()
+        val soknadUnderArbeid = defaultSoknadUnderArbeid
         every { personService.hentPerson(any()) } returns person
 
         basisPersonaliaSystemdata.updateSystemdataIn(soknadUnderArbeid)
@@ -190,18 +210,5 @@ internal class BasisPersonaliaSystemdataTest {
         private const val NORSK_STATSBORGERSKAP = "NOR"
         private const val NORDISK_STATSBORGERSKAP = "FIN"
         private const val IKKE_NORDISK_STATSBORGERSKAP = "GER"
-
-        private fun createSoknadUnderArbeid(): SoknadUnderArbeid {
-            return SoknadUnderArbeid(
-                versjon = 1L,
-                behandlingsId = "BEHANDLINGSID",
-                tilknyttetBehandlingsId = null,
-                eier = EIER,
-                jsonInternalSoknad = createEmptyJsonInternalSoknad(EIER),
-                status = SoknadUnderArbeidStatus.UNDER_ARBEID,
-                opprettetDato = LocalDateTime.now(),
-                sistEndretDato = LocalDateTime.now()
-            )
-        }
     }
 }

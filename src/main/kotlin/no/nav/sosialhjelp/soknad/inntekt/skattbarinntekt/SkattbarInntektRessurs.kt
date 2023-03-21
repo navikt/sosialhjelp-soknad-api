@@ -11,6 +11,10 @@ import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.removeBekreftelserIfPr
 import no.nav.sosialhjelp.soknad.app.mapper.OkonomiMapper.setBekreftelse
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
+import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.dto.Organisasjon
+import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.dto.SkattbarInntektFrontend
+import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.dto.SkattbarInntektOgForskuddstrekk
+import no.nav.sosialhjelp.soknad.inntekt.skattbarinntekt.dto.Utbetaling
 import no.nav.sosialhjelp.soknad.tekster.TextService
 import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import org.springframework.http.HttpHeaders
@@ -26,14 +30,14 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4])
 @RequestMapping("/soknader/{behandlingsId}/inntekt/skattbarinntektogforskuddstrekk", produces = [MediaType.APPLICATION_JSON_VALUE])
-open class SkattbarInntektRessurs(
+class SkattbarInntektRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val skatteetatenSystemdata: SkatteetatenSystemdata,
     private val textService: TextService
 ) {
     @GetMapping
-    open fun hentSkattbareInntekter(@PathVariable("behandlingsId") behandlingsId: String): SkattbarInntektFrontend {
+    fun hentSkattbareInntekter(@PathVariable("behandlingsId") behandlingsId: String): SkattbarInntektFrontend {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val utbetalinger: List<JsonOkonomiOpplysningUtbetaling>
@@ -44,15 +48,15 @@ open class SkattbarInntektRessurs(
             .filter { it.tittel != null }
             .filter { it.type != null && it.type == UTBETALING_SKATTEETATEN }
         return SkattbarInntektFrontend(
-            organiserSkattOgForskuddstrekkEtterMaanedOgOrganisasjon(skatteopplysninger),
-            soknad.soknad.driftsinformasjon.inntektFraSkatteetatenFeilet,
-            hentSamtykkeBooleanFraSoknad(soknad),
-            hentSamtykkeDatoFraSoknad(soknad)
+            inntektFraSkatteetaten = organiserSkattOgForskuddstrekkEtterMaanedOgOrganisasjon(skatteopplysninger),
+            inntektFraSkatteetatenFeilet = soknad.soknad.driftsinformasjon.inntektFraSkatteetatenFeilet,
+            samtykke = hentSamtykkeBooleanFraSoknad(soknad),
+            samtykkeTidspunkt = hentSamtykkeDatoFraSoknad(soknad)
         )
     }
 
     @PostMapping("/samtykke")
-    open fun updateSamtykke(
+    fun updateSamtykke(
         @PathVariable("behandlingsId") behandlingsId: String,
         @RequestBody samtykke: Boolean,
         @RequestHeader(value = HttpHeaders.AUTHORIZATION) token: String?
@@ -139,29 +143,4 @@ open class SkattbarInntektRessurs(
             utbetaling.periodeTom
         )
     }
-
-    data class SkattbarInntektOgForskuddstrekk(
-        val organisasjoner: List<Organisasjon>?
-    )
-
-    data class Organisasjon(
-        val utbetalinger: List<Utbetaling>?,
-        val organisasjonsnavn: String?,
-        val orgnr: String?,
-        val fom: String?,
-        val tom: String?
-    )
-
-    data class Utbetaling(
-        val brutto: Double?,
-        val forskuddstrekk: Double?,
-        val tittel: String?
-    )
-
-    data class SkattbarInntektFrontend(
-        val inntektFraSkatteetaten: List<SkattbarInntektOgForskuddstrekk>?,
-        val inntektFraSkatteetatenFeilet: Boolean?,
-        val samtykke: Boolean?,
-        val samtykkeTidspunkt: String?
-    )
 }

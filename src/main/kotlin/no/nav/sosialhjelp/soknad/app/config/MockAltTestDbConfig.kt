@@ -13,14 +13,14 @@ import javax.sql.DataSource
 
 @Profile("(mock-alt|test)")
 @Configuration
-open class MockAltTestDbConfig {
+class MockAltTestDbConfig {
 
     init {
         System.setProperty(SQLUtils.DIALECT_PROPERTY, "hsqldb")
     }
 
     @Bean
-    open fun dataSource(): DataSource {
+    fun dataSource(): DataSource {
         val dataSource = DriverManagerDataSource()
         // dataSource.setSuppressClose(true);
         val env = dbProperties("hsqldb.properties")
@@ -33,12 +33,12 @@ open class MockAltTestDbConfig {
     }
 
     @Bean
-    open fun transactionManager(dataSource: DataSource): DataSourceTransactionManager {
+    fun transactionManager(dataSource: DataSource): DataSourceTransactionManager {
         return DataSourceTransactionManager(dataSource)
     }
 
     @Bean
-    open fun transactionTemplate(transactionManager: DataSourceTransactionManager): TransactionTemplate? {
+    fun transactionTemplate(transactionManager: DataSourceTransactionManager): TransactionTemplate? {
         return TransactionTemplate(transactionManager)
     }
 
@@ -68,14 +68,6 @@ open class MockAltTestDbConfig {
                             "create table OPPGAVE (id numeric not null, behandlingsid varchar(255), type varchar(255), status varchar(255), steg numeric, oppgavedata clob, " +
                                 "oppgaveresultat clob, opprettet timestamp, sistkjort timestamp, nesteforsok timestamp, retries numeric)"
                         )
-                        st.execute("drop table SENDT_SOKNAD if exists")
-                        st.execute(
-                            "CREATE TABLE SENDT_SOKNAD (SENDT_SOKNAD_ID bigint NOT NULL, BEHANDLINGSID varchar(255) NOT NULL, TILKNYTTETBEHANDLINGSID varchar(255), EIER varchar(255) NOT NULL," +
-                                " FIKSFORSENDELSEID varchar(255), ORGNR VARCHAR(255) NOT NULL, NAVENHETSNAVN VARCHAR(255) NOT NULL, BRUKEROPPRETTETDATO TIMESTAMP(3) DEFAULT SYSDATE NOT NULL, BRUKERFERDIGDATO TIMESTAMP(3) DEFAULT SYSDATE NOT NULL, SENDTDATO TIMESTAMP(3) DEFAULT SYSDATE," +
-                                " CONSTRAINT UNIK_SS_BEHANDLINGSID UNIQUE (BEHANDLINGSID), CONSTRAINT UNIK_SS_FIKSFORSENDELSEID UNIQUE (FIKSFORSENDELSEID), CONSTRAINT SENDT_SOKNAD_PK PRIMARY KEY (SENDT_SOKNAD_ID))"
-                        )
-                        st.execute("drop sequence SENDT_SOKNAD_ID_SEQ if exists ")
-                        st.execute("CREATE sequence SENDT_SOKNAD_ID_SEQ start WITH 1 increment BY 1")
                         st.execute("drop table SOKNAD_UNDER_ARBEID if exists")
                         st.execute(
                             "CREATE TABLE SOKNAD_UNDER_ARBEID (SOKNAD_UNDER_ARBEID_ID bigint NOT NULL, VERSJON bigint DEFAULT 1 NOT NULL, BEHANDLINGSID VARCHAR(255) NOT NULL, TILKNYTTETBEHANDLINGSID VARCHAR(255)," +

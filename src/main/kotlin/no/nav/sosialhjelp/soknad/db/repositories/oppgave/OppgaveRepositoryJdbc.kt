@@ -16,7 +16,7 @@ import java.time.LocalDateTime
 @Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 @Repository
 @Transactional
-open class OppgaveRepositoryJdbc(
+class OppgaveRepositoryJdbc(
     private val jdbcTemplate: JdbcTemplate,
     private val namedParameterJdbcTemplate: NamedParameterJdbcTemplate
 ) : OppgaveRepository {

@@ -13,12 +13,6 @@ import org.junit.jupiter.api.Test
 
 internal class AdressesokServiceTest {
 
-    companion object {
-        private const val BYDELSNUMMER = "030101"
-        private const val KOMMUNENUMMER = "0301"
-        private const val KOMMUNENAVN = "OSLO"
-    }
-
     private val folkeregistretAdresse = JsonGateAdresse()
         .withGatenavn("Testveien")
         .withHusnummer("1")
@@ -30,6 +24,25 @@ internal class AdressesokServiceTest {
 
     private val adressesokService = AdressesokService(adressesokClient, kodeverkService)
 
+    private val resultDto = AdressesokResultDto(
+        hits = emptyList(),
+        pageNumber = 1,
+        totalPages = 1,
+        totalHits = 0
+    )
+
+    private val defaultVegadresse = VegadresseDto(
+        matrikkelId = "matrikkelId",
+        husnummer = 1,
+        husbokstav = "B",
+        adressenavn = "Testveien",
+        kommunenavn = "Oslo",
+        kommunenummer = "0301",
+        postnummer = "0123",
+        poststed = "Oslo",
+        bydelsnummer = null
+    )
+
     @Test
     fun skalKasteFeil_AdresseSokResultErNull() {
         every { adressesokClient.getAdressesokResult(any()) } returns null
@@ -38,14 +51,8 @@ internal class AdressesokServiceTest {
     }
 
     @Test
-    fun skalKasteFeil_SokedataErNull() {
-        assertThatExceptionOfType(IllegalArgumentException::class.java)
-            .isThrownBy { adressesokService.getAdresseForslag(null) }
-    }
-
-    @Test
     fun skalKasteFeil_AdresseSokResultHitsErNull() {
-        val adressesokResult = createAdressesokResultDto(null)
+        val adressesokResult = resultDto.copy(hits = null)
         every { adressesokClient.getAdressesokResult(any()) } returns adressesokResult
         assertThatExceptionOfType(RuntimeException::class.java)
             .isThrownBy { adressesokService.getAdresseForslag(folkeregistretAdresse) }
@@ -53,7 +60,7 @@ internal class AdressesokServiceTest {
 
     @Test
     fun skalKasteFeil_AdresseSokGirTomListe() {
-        val adressesokResult = createAdressesokResultDto(emptyList())
+        val adressesokResult = resultDto.copy(hits = emptyList())
         every { adressesokClient.getAdressesokResult(any()) } returns adressesokResult
         assertThatExceptionOfType(RuntimeException::class.java)
             .isThrownBy { adressesokService.getAdresseForslag(folkeregistretAdresse) }
@@ -61,10 +68,10 @@ internal class AdressesokServiceTest {
 
     @Test
     fun skalKasteFeil_AdresseSokGirFlereHits() {
-        val adressesokResult = createAdressesokResultDto(
-            listOf(
-                AdressesokHitDto(vegadresseMedBydelsnummer(), 0.5f),
-                AdressesokHitDto(vegadresseUtenBydelsnummer(), 0.7f)
+        val adressesokResult = resultDto.copy(
+            hits = listOf(
+                AdressesokHitDto(defaultVegadresse.copy(bydelsnummer = "030101"), 0.5f),
+                AdressesokHitDto(defaultVegadresse, 0.7f)
             )
         )
         every { adressesokClient.getAdressesokResult(any()) } returns adressesokResult
@@ -74,34 +81,34 @@ internal class AdressesokServiceTest {
 
     @Test
     fun skalReturnereAdresseForslagMedGeografiskTilknytningLikBydelsnummer() {
-        val adressesokResult = createAdressesokResultDto(
-            listOf(
-                AdressesokHitDto(vegadresseMedBydelsnummer(), 0.5f)
+        val adressesokResult = resultDto.copy(
+            hits = listOf(
+                AdressesokHitDto(defaultVegadresse.copy(bydelsnummer = "030101"), 0.5f)
             )
         )
         every { adressesokClient.getAdressesokResult(any()) } returns adressesokResult
         val adresseForslag = adressesokService.getAdresseForslag(folkeregistretAdresse)
-        assertThat(adresseForslag.geografiskTilknytning).isEqualTo(BYDELSNUMMER)
+        assertThat(adresseForslag.geografiskTilknytning).isEqualTo("030101")
     }
 
     @Test
     fun skalReturnereAdresseForslagMedGeografiskTilknytningLikKommunenummer() {
-        val adressesokResult = createAdressesokResultDto(
-            listOf(
-                AdressesokHitDto(vegadresseUtenBydelsnummer(), 0.5f)
+        val adressesokResult = resultDto.copy(
+            hits = listOf(
+                AdressesokHitDto(defaultVegadresse, 0.5f)
             )
         )
         every { adressesokClient.getAdressesokResult(any()) } returns adressesokResult
         val adresseForslag = adressesokService.getAdresseForslag(folkeregistretAdresse)
-        assertThat(adresseForslag.geografiskTilknytning).isEqualTo(KOMMUNENUMMER)
+        assertThat(adresseForslag.geografiskTilknytning).isEqualTo("0301")
     }
 
     @Test
     fun skalKasteFeil_flereHitsMedUlikeKommunenavn() {
-        val adressesokResult = createAdressesokResultDto(
-            listOf(
-                AdressesokHitDto(vegadresse("kommune1", "0101", null), 0.5f),
-                AdressesokHitDto(vegadresse("kommune2", "0101", null), 0.5f)
+        val adressesokResult = resultDto.copy(
+            hits = listOf(
+                AdressesokHitDto(defaultVegadresse.copy(kommunenavn = "kommune1"), 0.5f),
+                AdressesokHitDto(defaultVegadresse.copy(kommunenavn = "kommune2"), 0.5f)
             )
         )
         every { adressesokClient.getAdressesokResult(any()) } returns adressesokResult
@@ -111,10 +118,10 @@ internal class AdressesokServiceTest {
 
     @Test
     fun skalKasteFeil_flereHitsMedUlikeKommunenummer() {
-        val adressesokResult = createAdressesokResultDto(
-            listOf(
-                AdressesokHitDto(vegadresse("kommune", "1111", null), 0.5f),
-                AdressesokHitDto(vegadresse("kommune", "2222", null), 0.5f)
+        val adressesokResult = resultDto.copy(
+            hits = listOf(
+                AdressesokHitDto(defaultVegadresse.copy(kommunenummer = "1111"), 0.5f),
+                AdressesokHitDto(defaultVegadresse.copy(kommunenummer = "2222"), 0.5f)
             )
         )
         every { adressesokClient.getAdressesokResult(any()) } returns adressesokResult
@@ -124,10 +131,10 @@ internal class AdressesokServiceTest {
 
     @Test
     fun skalKasteFeil_flereHitsMedUlikeBydelsnummer() {
-        val adressesokResult = createAdressesokResultDto(
-            listOf(
-                AdressesokHitDto(vegadresse("kommune", "1111", "030101"), 0.5f),
-                AdressesokHitDto(vegadresse("kommune", "1111", "030102"), 0.5f)
+        val adressesokResult = resultDto.copy(
+            hits = listOf(
+                AdressesokHitDto(defaultVegadresse.copy(bydelsnummer = "030101"), 0.5f),
+                AdressesokHitDto(defaultVegadresse.copy(bydelsnummer = "030102"), 0.5f)
             )
         )
         every { adressesokClient.getAdressesokResult(any()) } returns adressesokResult
@@ -137,46 +144,50 @@ internal class AdressesokServiceTest {
 
     @Test
     fun skalReturnereAdresseForslagVedFlereHitsHvisDeHarSammeKommunenummerKommunenavnOgBydelsnummer() {
-        val adressesokResult = createAdressesokResultDto(
-            listOf(
-                AdressesokHitDto(vegadresse("Oslo", "1111", "030101"), 0.5f),
-                AdressesokHitDto(vegadresse("Oslo", "1111", "030101"), 0.5f)
+        val adressesokResult = resultDto.copy(
+            hits = listOf(
+                AdressesokHitDto(defaultVegadresse.copy(bydelsnummer = "030101"), 0.5f),
+                AdressesokHitDto(defaultVegadresse.copy(bydelsnummer = "030101"), 0.5f)
             )
         )
         every { adressesokClient.getAdressesokResult(any()) } returns adressesokResult
         val adresseForslag = adressesokService.getAdresseForslag(folkeregistretAdresse)
         assertThat(adresseForslag.kommunenavn).isEqualTo("Oslo")
-        assertThat(adresseForslag.kommunenummer).isEqualTo("1111")
+        assertThat(adresseForslag.kommunenummer).isEqualTo("0301")
         assertThat(adresseForslag.geografiskTilknytning).isEqualTo("030101")
     }
 
-    private fun vegadresseMedBydelsnummer(): VegadresseDto {
-        return vegadresse(
-            KOMMUNENAVN,
-            KOMMUNENUMMER,
-            BYDELSNUMMER
+    @Test
+    fun `sokEtterAdresser skal returnere tom liste ved for kort sokestreng`() {
+        assertThat(adressesokService.sokEtterAdresser("")).isEmpty()
+        assertThat(adressesokService.sokEtterAdresser(" ")).isEmpty()
+        assertThat(adressesokService.sokEtterAdresser("a")).isEmpty()
+        assertThat(adressesokService.sokEtterAdresser("a 2")).isEmpty()
+    }
+
+    @Test
+    fun `sokEtterAdresser skal returnere tom liste ved ingen treff i PDL`() {
+        every { adressesokClient.getAdressesokResult(any()) } returns resultDto.copy(hits = null)
+        assertThat(adressesokService.sokEtterAdresser("Oslogaten 2")).isEmpty()
+    }
+
+    @Test
+    fun `sokEtterAdresser skal returnere funn fra PDL`() {
+        every { adressesokClient.getAdressesokResult(any()) } returns resultDto.copy(
+            hits = listOf(
+                AdressesokHitDto(
+                    vegadresse = defaultVegadresse,
+                    score = 1.0f
+                )
+            ),
+            pageNumber = 1,
+            totalPages = 1,
+            totalHits = 1
         )
-    }
 
-    private fun vegadresseUtenBydelsnummer(): VegadresseDto {
-        return vegadresse(KOMMUNENAVN, KOMMUNENUMMER, null)
-    }
+        val result = adressesokService.sokEtterAdresser("oslogaten 42, 1337 Leet")
 
-    private fun vegadresse(kommunenavn: String, kommunenummer: String, bydelsnummer: String?): VegadresseDto {
-        return VegadresseDto(
-            "matrikkelId",
-            1,
-            "B",
-            "Testveien",
-            kommunenavn,
-            kommunenummer,
-            "0123",
-            "Oslo",
-            bydelsnummer
-        )
-    }
-
-    private fun createAdressesokResultDto(hits: List<AdressesokHitDto>?): AdressesokResultDto {
-        return AdressesokResultDto(hits, 1, 1, hits?.size ?: 0)
+        assertThat(result).hasSize(1)
+        assertThat(result.first().kommunenummer).isEqualTo("0301")
     }
 }

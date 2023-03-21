@@ -3,7 +3,9 @@ package no.nav.sosialhjelp.soknad.metrics
 import io.micrometer.core.instrument.Counter
 import io.micrometer.core.instrument.Gauge
 import io.micrometer.core.instrument.MeterRegistry
+import io.micrometer.core.instrument.Timer
 import org.springframework.stereotype.Component
+import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
 
 @Component
@@ -26,13 +28,23 @@ class PrometheusMetricsService(
     private val oppgaverFeilet = AtomicInteger(0)
     private val oppgaverStuckUnderArbeid = AtomicInteger(0)
 
-    private val oppgaverFeiletGauge = Gauge.builder("oppgaver_feilet_gauge", oppgaverFeilet) { it.toDouble() }
-        .description("Antall av oppgaver med status FEILET i db")
-        .register(meterRegistry)
+    private val soknadInnsendingTidTimer = Timer.builder("soknad_innsending_tid")
 
-    private val oppgaverStuckUnderArbeidGauge = Gauge.builder("oppgaver_stuck_underarbeid_gauge", oppgaverStuckUnderArbeid) { it.toDouble() }
-        .description("Antall av oppgaver stuck med status UNDER_ARBEID i db")
-        .register(meterRegistry)
+    init {
+        Gauge.builder("oppgaver_feilet_gauge", oppgaverFeilet) { it.toDouble() }
+            .description("Antall av oppgaver med status FEILET i db")
+            .register(meterRegistry)
+
+        Gauge.builder("oppgaver_stuck_underarbeid_gauge", oppgaverStuckUnderArbeid) { it.toDouble() }
+            .description("Antall av oppgaver stuck med status UNDER_ARBEID i db")
+            .register(meterRegistry)
+    }
+
+    fun reportInnsendingTid(antallSekunder: Long) {
+        soknadInnsendingTidTimer
+            .register(meterRegistry)
+            .record(antallSekunder, TimeUnit.SECONDS)
+    }
 
     fun reportStartSoknad(isEttersendelse: Boolean) {
         startSoknadCounter
@@ -75,9 +87,10 @@ class PrometheusMetricsService(
             .increment()
     }
 
-    fun reportAvbruttSoknad(isEttersendelse: Boolean) {
+    fun reportAvbruttSoknad(isEttersendelse: Boolean, steg: String) {
         avbruttSoknadCounter
             .tag(TAG_ETTERSENDELSE, isEttersendelse.toString())
+            .tag(TAG_STEG, steg)
             .register(meterRegistry)
             .increment()
     }
@@ -98,5 +111,6 @@ class PrometheusMetricsService(
     companion object {
         const val TAG_ETTERSENDELSE = "ettersendelse"
         const val TAG_MOTTAKER = "mottaker"
+        const val TAG_STEG = "steg"
     }
 }

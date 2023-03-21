@@ -13,27 +13,27 @@ import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 @Component
-open class KodeverkService(
+class KodeverkService(
     private val kodeverkClient: KodeverkClient,
     private val redisService: RedisService
 ) {
 
-    open fun getKommunenavn(kommunenummer: String): String? {
+    fun getKommunenavn(kommunenummer: String): String? {
         val kommuneKodeverk = hentKodeverkFraCacheEllerConsumer(KOMMUNER_CACHE_KEY)
         return finnFoersteTermForKodeverdi(kommuneKodeverk, kommunenummer)
     }
 
-    open fun gjettKommunenummer(kommunenavn: String): String? {
+    fun gjettKommunenummer(kommunenavn: String): String? {
         val kommuneKodeverk = hentKodeverkFraCacheEllerConsumer(KOMMUNER_CACHE_KEY)
         return finnKodeverdiForFoersteTerm(kommuneKodeverk, kommunenavn)
     }
 
-    open fun getPoststed(postnummer: String): String? {
+    fun getPoststed(postnummer: String): String? {
         val postnummerKodeverk = hentKodeverkFraCacheEllerConsumer(POSTNUMMER_CACHE_KEY)
         return finnFoersteTermForKodeverdi(postnummerKodeverk, postnummer)
     }
 
-    open fun getLand(landkode: String): String? {
+    fun getLand(landkode: String): String? {
         val landkoderKodeverk = hentKodeverkFraCacheEllerConsumer(LANDKODER_CACHE_KEY)
         val land = finnFoersteTermForKodeverdi(landkoderKodeverk, landkode)
         return formaterLand(land)
