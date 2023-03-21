@@ -5,20 +5,20 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 object Versions {
     const val springBoot = "3.0.4" // Husk å oppdatere plugin også
     const val coroutines = "1.6.4"
-    const val filformat = "1.2022.12.22-12.23-e5a89d40cc3c"
-    const val sosialhjelpCommon = "1.20221108.1040-97f1b80"
+    const val filformat = "1.2023.02.09-08.34-aad9baa612d3"
+    const val sosialhjelpCommon = "1.20230209.0920-45d9782"
     const val fiksSvarUt = "1.2.0"
     const val fiksKryptering = "1.3.1"
     const val springdoc = "2.0.2"
-    const val flyway = "9.12.0" // Husk å oppdatere plugin også
-    const val ojdbc10 = "19.17.0.0"
+    const val flyway = "9.16.0" // Husk å oppdatere plugin også
+    const val ojdbc10 = "19.18.0.0"
     const val hsqldb = "2.7.1"
-    const val lettuce = "6.2.2.RELEASE"
-    const val tokenValidation = "3.0.4"
-    const val javaJwt = "4.2.2"
+    const val lettuce = "6.2.3.RELEASE"
+    const val tokenValidation = "3.0.8"
+    const val javaJwt = "4.3.0"
     const val prometheus = "0.16.0"
-    const val micrometer = "1.10.3"
-    const val jackson = "2.14.1"
+    const val micrometer = "1.10.5"
+    const val jackson = "2.14.2"
     const val logback = "1.4.5"
     const val logstash = "7.3"
     const val pdfbox = "2.0.27"
@@ -31,14 +31,14 @@ object Versions {
     const val jakartaXmlBind = "4.0.0"
     const val jakartaValidation = "3.0.2"
     const val unleashClient = "3.3.4"
-    const val tika = "2.6.0"
-    const val reactorNettyHttp = "1.1.2"
+    const val tika = "2.7.0"
+    const val reactorNettyHttp = "1.1.5"
     const val commonsText = "1.10.0"
     const val commonsCodec = "1.15"
     const val jaxbRuntime = "4.0.2"
     const val ktlint = "0.45.2"
-    const val junitJupiter = "5.9.1"
-    const val mockk = "1.13.3"
+    const val junitJupiter = "5.9.2"
+    const val mockk = "1.13.4"
 
     // constraints
     const val slf4j = "2.0.6"
@@ -61,9 +61,9 @@ plugins {
     kotlin("jvm") version "1.8.10"
     kotlin("plugin.spring") version "1.8.10"
     id("org.springframework.boot") version "3.0.4"
-    id("org.flywaydb.flyway") version "9.12.0"
-    id("com.github.ben-manes.versions") version "0.45.0" // ./gradlew dependencyUpdates
-    id("org.jlleitschuh.gradle.ktlint") version "11.0.0"
+    id("org.flywaydb.flyway") version "9.16.0"
+    id("com.github.ben-manes.versions") version "0.46.0" // ./gradlew dependencyUpdates
+    id("org.jlleitschuh.gradle.ktlint") version "11.3.1"
 }
 
 java {
