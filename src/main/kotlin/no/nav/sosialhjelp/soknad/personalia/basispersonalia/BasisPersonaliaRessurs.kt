@@ -40,8 +40,7 @@ class BasisPersonaliaRessurs(
         return BasisPersonaliaFrontend(
             navn = NavnFrontend(navn.fornavn, navn.mellomnavn, navn.etternavn),
             fodselsnummer = jsonPersonalia.personIdentifikator.verdi,
-            statsborgerskap = jsonPersonalia.statsborgerskap?.verdi?.let { kodeverkService.getLand(it) },
-            nordiskBorger = jsonPersonalia.nordiskBorger?.verdi
+            statsborgerskap = jsonPersonalia.statsborgerskap?.verdi?.let { kodeverkService.getLand(it) }
         )
     }
 }
