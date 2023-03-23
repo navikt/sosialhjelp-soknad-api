@@ -3,6 +3,7 @@ server:
   servlet:
     context-path: '/sosialhjelp/soknad-api'
   shutdown: graceful
+  max-http-request-header-size: 16KB
 
 spring:
   main:
