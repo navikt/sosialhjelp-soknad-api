@@ -24,6 +24,4 @@ object SenderUtils {
     }
 
     const val SKJEMANUMMER = "NAV 35-18.01"
-
-    const val INNSENDING_DIGISOSAPI_ENABLED = "sosialhjelp.soknad.innsending-digisosapi-enabled"
 }

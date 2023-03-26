@@ -17,7 +17,6 @@ import no.nav.sosialhjelp.soknad.app.exceptions.PdlApiException
 import no.nav.sosialhjelp.soknad.app.mapper.KommuneTilNavEnhetMapper
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
-import no.nav.sosialhjelp.soknad.innsending.SenderUtils.INNSENDING_DIGISOSAPI_ENABLED
 import no.nav.sosialhjelp.soknad.innsending.SoknadService
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
 import no.nav.sosialhjelp.soknad.kodeverk.KodeverkService
@@ -61,7 +60,6 @@ class NavEnhetServiceTest {
         every { kommuneInfoService.kanMottaSoknader(any()) } returns true
         every { kommuneInfoService.harMidlertidigDeaktivertMottak(any()) } returns true
         every { unleash.isEnabled(FEATURE_SEND_TIL_NAV_TESTKOMMUNE, false) } returns false
-        every { unleash.isEnabled(INNSENDING_DIGISOSAPI_ENABLED, true) } returns true
     }
 
     @AfterEach
