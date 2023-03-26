@@ -14,7 +14,6 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataIn
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
-import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils.FEATURE_UTVIDE_VEDLEGGJSON
 import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils.addHendelseTypeAndHendelseReferanse
 import no.nav.sosialhjelp.soknad.innsending.SenderUtils.INNSENDING_DIGISOSAPI_ENABLED
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiService
@@ -117,11 +116,9 @@ class SoknadActions(
     ) {
         val jsonVedleggSpesifikasjon = soknadUnderArbeid.jsonInternalSoknad?.vedlegg ?: return
 
-        val isUtvideVedleggJsonFeatureActive = unleash.isEnabled(FEATURE_UTVIDE_VEDLEGGJSON, false)
         addHendelseTypeAndHendelseReferanse(
-            jsonVedleggSpesifikasjon,
-            !soknadUnderArbeid.erEttersendelse,
-            isUtvideVedleggJsonFeatureActive
+            jsonVedleggSpesifikasjon = jsonVedleggSpesifikasjon,
+            isSoknad = !soknadUnderArbeid.erEttersendelse
         )
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier)
     }

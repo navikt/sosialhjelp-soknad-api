@@ -26,7 +26,6 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRe
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
-import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils.FEATURE_UTVIDE_VEDLEGGJSON
 import no.nav.sosialhjelp.soknad.innsending.SenderUtils.INNSENDING_DIGISOSAPI_ENABLED
 import no.nav.sosialhjelp.soknad.innsending.SoknadService.Companion.createEmptyJsonInternalSoknad
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiService
@@ -77,7 +76,6 @@ internal class SoknadActionsTest {
 
         EIER = SubjectHandlerUtils.getUserIdFromToken()
         every { tilgangskontroll.verifiserAtBrukerKanEndreSoknad(any()) } just runs
-        every { unleash.isEnabled(FEATURE_UTVIDE_VEDLEGGJSON, false) } returns true
         every { nedetidService.isInnenforNedetid } returns false
     }
 
