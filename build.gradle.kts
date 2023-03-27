@@ -12,6 +12,7 @@ object Versions {
     const val springdoc = "2.0.2"
     const val flyway = "9.16.1" // Husk å oppdatere plugin også
     const val ojdbc10 = "19.18.0.0"
+    const val postgres = "42.3.3"
     const val hsqldb = "2.7.1"
     const val lettuce = "6.2.3.RELEASE"
     const val tokenValidation = "3.0.8"
@@ -144,6 +145,7 @@ dependencies {
     // flyway / db
     implementation("org.flywaydb:flyway-core:${Versions.flyway}")
     runtimeOnly("com.oracle.database.jdbc:ojdbc10:${Versions.ojdbc10}")
+    runtimeOnly("org.postgresql:postgresql:${Versions.postgres}")
     runtimeOnly("org.hsqldb:hsqldb:${Versions.hsqldb}")
 
     // redis
