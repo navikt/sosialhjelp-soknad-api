@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata
 
 import jakarta.inject.Inject
-import no.nav.sosialhjelp.soknad.Application
+import no.nav.sosialhjelp.soknad.TestApplication
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
@@ -11,7 +11,7 @@ import org.springframework.test.context.ActiveProfiles
 import java.time.LocalDateTime
 
 @ActiveProfiles(profiles = ["no-redis", "test"])
-@SpringBootTest(classes = [Application::class])
+@SpringBootTest(classes = [TestApplication::class], webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 internal class SoknadMetadataRepositoryJdbcTest {
 
     private val behandlingsId = "1100AAAAA"

@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.migration.repo
 
 import jakarta.inject.Inject
-import no.nav.sosialhjelp.soknad.Application
+import no.nav.sosialhjelp.soknad.TestApplication
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedlegg
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRepository
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggType
@@ -17,7 +17,7 @@ import org.springframework.test.context.ActiveProfiles
 import java.time.LocalDateTime
 
 @ActiveProfiles(profiles = ["no-redis", "test"])
-@SpringBootTest(classes = [Application::class])
+@SpringBootTest(classes = [TestApplication::class], webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 internal class OpplastetVedleggMigrationRepositoryTest {
 
     @Inject

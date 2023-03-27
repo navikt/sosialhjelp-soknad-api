@@ -2,7 +2,7 @@ package no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid
 
 import jakarta.inject.Inject
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
-import no.nav.sosialhjelp.soknad.Application
+import no.nav.sosialhjelp.soknad.TestApplication
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedlegg
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRepository
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggType
@@ -15,7 +15,7 @@ import org.springframework.test.context.ActiveProfiles
 import java.time.LocalDateTime
 
 @ActiveProfiles(profiles = ["no-redis", "test"])
-@SpringBootTest(classes = [Application::class])
+@SpringBootTest(classes = [TestApplication::class], webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 internal class BatchSoknadUnderArbeidRepositoryJdbcTest {
 
     @Inject
@@ -40,7 +40,7 @@ internal class BatchSoknadUnderArbeidRepositoryJdbcTest {
     fun hentSoknaderForBatchSkalFinneGamleSoknader() {
         val skalIkkeSlettes = lagSoknadUnderArbeid(BEHANDLINGSID, 13)
         val skalIkkeSlettesId = soknadUnderArbeidRepository.opprettSoknad(skalIkkeSlettes, EIER)
-        val skalSlettes = lagSoknadUnderArbeid("annen_behandlingsid", 14)
+        val skalSlettes = lagSoknadUnderArbeid("annen_behandlingsid", 15)
         val skalSlettesId = soknadUnderArbeidRepository.opprettSoknad(skalSlettes, EIER)
         val soknader = batchSoknadUnderArbeidRepository.hentGamleSoknadUnderArbeidForBatch()
         assertThat(soknader).hasSize(1)

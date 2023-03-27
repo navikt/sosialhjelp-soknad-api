@@ -2,7 +2,7 @@ package no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid
 
 import jakarta.inject.Inject
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
-import no.nav.sosialhjelp.soknad.Application
+import no.nav.sosialhjelp.soknad.TestApplication
 import no.nav.sosialhjelp.soknad.app.exceptions.SamtidigOppdateringException
 import no.nav.sosialhjelp.soknad.app.exceptions.SoknadLaastException
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedlegg
@@ -19,7 +19,7 @@ import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 
 @ActiveProfiles(profiles = ["no-redis", "test"])
-@SpringBootTest(classes = [Application::class])
+@SpringBootTest(classes = [TestApplication::class], webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 internal class SoknadUnderArbeidRepositoryJdbcTest {
 
     @Inject

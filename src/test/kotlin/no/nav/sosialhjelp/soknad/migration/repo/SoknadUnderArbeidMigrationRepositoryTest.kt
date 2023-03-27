@@ -1,7 +1,7 @@
 package no.nav.sosialhjelp.soknad.migration.repo
 
 import jakarta.inject.Inject
-import no.nav.sosialhjelp.soknad.Application
+import no.nav.sosialhjelp.soknad.TestApplication
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
@@ -16,7 +16,7 @@ import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 
 @ActiveProfiles(profiles = ["no-redis", "test"])
-@SpringBootTest(classes = [Application::class])
+@SpringBootTest(classes = [TestApplication::class], webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 internal class SoknadUnderArbeidMigrationRepositoryTest {
 
     @Inject
