@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata
 
+import jakarta.inject.Inject
 import no.nav.sosialhjelp.soknad.Application
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
@@ -8,7 +9,6 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.test.context.ActiveProfiles
 import java.time.LocalDateTime
-import javax.inject.Inject
 
 @ActiveProfiles(profiles = ["no-redis", "test"])
 @SpringBootTest(classes = [Application::class])

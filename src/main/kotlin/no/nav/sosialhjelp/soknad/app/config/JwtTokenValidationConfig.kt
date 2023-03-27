@@ -5,4 +5,4 @@ import org.springframework.context.annotation.Configuration
 
 @Configuration
 @EnableJwtTokenValidation(ignore = ["org.springframework", "org.springdoc"])
-open class JwtTokenValidationConfig
+class JwtTokenValidationConfig

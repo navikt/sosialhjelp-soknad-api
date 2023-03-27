@@ -9,14 +9,13 @@ object AdresseStringSplitter {
         return if (isAddressTooShortOrNull(adresse)) {
             Sokedata(adresse = adresse)
         } else firstNonNull(
-            postnummerMatch(adresse),
             fullstendigGateadresseMatch(kodeverkService, adresse),
             Sokedata(adresse = adresse)
         )
     }
 
     private fun fullstendigGateadresseMatch(kodeverkService: KodeverkService?, adresse: String?): Sokedata? {
-        val p = Pattern.compile("^([^0-9,]*) *([0-9]*)?([^,])? *,? *([0-9][0-9][0-9][0-9])? *[0-9]* *([^0-9]*[^ ])? *$")
+        val p = Pattern.compile("^([^0-9,]*) *([0-9]*)?([^,])? *,? *([0-9]{1,4})? *[0-9]* *([^0-9]*[^ ])? *$")
         val m = p.matcher(adresse)
         if (m.matches()) {
             val postnummer = m.group(4)
@@ -32,14 +31,6 @@ object AdresseStringSplitter {
     private fun getKommunenummer(kodeverkService: KodeverkService?, kommunenavn: String?): String? {
         return if (kommunenavn != null && kommunenavn.trim { it <= ' ' }.isNotEmpty() && kodeverkService != null) {
             kodeverkService.gjettKommunenummer(kommunenavn)
-        } else null
-    }
-
-    fun postnummerMatch(adresse: String?): Sokedata? {
-        val p = Pattern.compile("^ *([0-9][0-9][0-9][0-9]) *$")
-        val m = p.matcher(adresse)
-        return if (m.matches()) {
-            Sokedata(postnummer = m.group(1))
         } else null
     }
 

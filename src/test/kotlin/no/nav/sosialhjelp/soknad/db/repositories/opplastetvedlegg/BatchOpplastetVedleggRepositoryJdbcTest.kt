@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg
 
+import jakarta.inject.Inject
 import no.nav.sosialhjelp.soknad.Application
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
@@ -12,11 +13,10 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.test.context.ActiveProfiles
 import java.time.LocalDateTime
-import javax.inject.Inject
 
 @ActiveProfiles(profiles = ["no-redis", "test"])
 @SpringBootTest(classes = [Application::class])
-internal open class BatchOpplastetVedleggRepositoryJdbcTest {
+internal class BatchOpplastetVedleggRepositoryJdbcTest {
 
     @Inject
     private lateinit var soknadUnderArbeidRepository: SoknadUnderArbeidRepository

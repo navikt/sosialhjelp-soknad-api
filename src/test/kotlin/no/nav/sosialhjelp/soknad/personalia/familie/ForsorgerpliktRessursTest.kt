@@ -275,14 +275,10 @@ internal class ForsorgerpliktRessursTest {
     ) {
         val barnFrontend = ansvarFrontend?.barn
         val jsonBarn = jsonAnsvar.barn
-        assertThat(ansvarFrontend?.borSammenMed)
-            .isEqualTo(if (jsonAnsvar.borSammenMed == null) null else jsonAnsvar.borSammenMed.verdi)
-        assertThat(ansvarFrontend?.harDeltBosted)
-            .isEqualTo(if (jsonAnsvar.harDeltBosted == null) null else jsonAnsvar.harDeltBosted.verdi)
-        assertThat(ansvarFrontend?.samvarsgrad)
-            .isEqualTo(if (jsonAnsvar.samvarsgrad == null) null else jsonAnsvar.samvarsgrad.verdi)
-        assertThat(ansvarFrontend?.erFolkeregistrertSammen)
-            .isEqualTo(if (jsonAnsvar.erFolkeregistrertSammen == null) null else jsonAnsvar.erFolkeregistrertSammen.verdi)
+        assertThat(ansvarFrontend?.borSammenMed).isEqualTo(jsonAnsvar.borSammenMed?.verdi)
+        assertThat(ansvarFrontend?.harDeltBosted).isEqualTo(jsonAnsvar.harDeltBosted?.verdi)
+        assertThat(ansvarFrontend?.samvarsgrad).isEqualTo(jsonAnsvar.samvarsgrad?.verdi)
+        assertThat(ansvarFrontend?.erFolkeregistrertSammen).isEqualTo(jsonAnsvar.erFolkeregistrertSammen?.verdi)
         assertThat(barnFrontend?.fodselsnummer).isEqualTo(jsonBarn.personIdentifikator)
         assertThat(barnFrontend?.fodselsdato).isEqualTo(jsonBarn.fodselsdato)
         assertThat(barnFrontend?.navn?.fornavn).isEqualTo(jsonBarn.navn.fornavn)
@@ -300,14 +296,18 @@ internal class ForsorgerpliktRessursTest {
             .withForsorgerplikt(
                 JsonForsorgerplikt()
                     .withHarForsorgerplikt(
-                        if (harForsorgerplikt == null) null else JsonHarForsorgerplikt()
-                            .withKilde(JsonKilde.SYSTEM)
-                            .withVerdi(harForsorgerplikt)
+                        harForsorgerplikt?.let {
+                            JsonHarForsorgerplikt()
+                                .withKilde(JsonKilde.SYSTEM)
+                                .withVerdi(it)
+                        }
                     )
                     .withBarnebidrag(
-                        if (barnebidrag == null) null else JsonBarnebidrag()
-                            .withKilde(JsonKildeBruker.BRUKER)
-                            .withVerdi(barnebidrag)
+                        barnebidrag?.let {
+                            JsonBarnebidrag()
+                                .withKilde(JsonKildeBruker.BRUKER)
+                                .withVerdi(it)
+                        }
                     )
                     .withAnsvar(ansvars)
             )

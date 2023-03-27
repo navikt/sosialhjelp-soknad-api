@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @ProtectedWithClaims(issuer = TOKENX, combineWithOr = true, claimMap = [CLAIM_ACR_LEVEL_3, CLAIM_ACR_LEVEL_4])
 @RequestMapping("/minesaker", produces = [MediaType.APPLICATION_JSON_VALUE])
-open class MineSakerMetadataRessurs(
+class MineSakerMetadataRessurs(
     private val mineSakerMetadataService: MineSakerMetadataService
 ) {
     /**
@@ -24,14 +24,14 @@ open class MineSakerMetadataRessurs(
      * På sikt vil vi hente denne informasjonen fra Fiks (endepunkt vil da høre mer hjemme i innsyn-api)
      */
     @GetMapping("/innsendte")
-    open fun hentInnsendteSoknaderForBruker(): List<InnsendtSoknadDto> {
+    fun hentInnsendteSoknaderForBruker(): List<InnsendtSoknadDto> {
         val fnr = SubjectHandlerUtils.getUserIdFromToken()
         return mineSakerMetadataService.hentInnsendteSoknader(fnr)
     }
 
     @Unprotected
     @GetMapping("/ping")
-    open fun ping(): String {
+    fun ping(): String {
         log.debug("Ping for MineSaker")
         return "pong"
     }

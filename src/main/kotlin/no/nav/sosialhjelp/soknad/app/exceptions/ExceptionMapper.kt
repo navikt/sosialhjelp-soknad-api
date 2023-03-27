@@ -16,6 +16,7 @@ import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
+import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.client.HttpStatusCodeException
 import org.springframework.web.multipart.MaxUploadSizeExceededException
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler
@@ -47,6 +48,13 @@ class ExceptionMapper(
                     .status(HttpStatus.FORBIDDEN)
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(Feilmelding(e.id, "Ikke tilgang til ressurs"))
+            }
+            is SoknadAlleredeSendtException -> {
+                log.warn("Søknad har allerede blitt sendt inn, kan ikke navigere til siden.", e)
+                return ResponseEntity
+                    .status(HttpStatus.GONE)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(Feilmelding(e.id, "Søknad har blitt sendt inn."))
             }
             is IkkeFunnetException -> {
                 log.warn(e.message, e)
@@ -190,14 +198,8 @@ class ExceptionMapper(
     }
 
     @ExceptionHandler(value = [JwtTokenUnauthorizedException::class, JwtTokenMissingException::class])
-    fun handleJwtTokenExceptions(e: RuntimeException): ResponseEntity<*> {
-        if (e.message?.contains("Server misconfigured") == true) {
-            log.error(e.message)
-            return ResponseEntity
-                .internalServerError()
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(Feilmelding(UNEXPECTED_ERROR, "Noe uventet feilet"))
-        }
+    @ResponseStatus(value = HttpStatus.UNAUTHORIZED)
+    fun handleJwtTokenExceptions(e: RuntimeException): ResponseEntity<UnauthorizedMelding> {
         log.info("Bruker er ikke autentisert (enda). Sender 401 med loginurl. Feilmelding: ${e.message}")
         return createUnauthorizedWithLoginLocationResponse("Autentiseringsfeil")
     }

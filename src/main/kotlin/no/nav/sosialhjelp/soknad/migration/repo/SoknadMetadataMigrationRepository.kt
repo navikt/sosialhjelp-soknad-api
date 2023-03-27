@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository
 import java.time.LocalDateTime
 
 @Repository
-open class SoknadMetadataMigrationRepository(
+class SoknadMetadataMigrationRepository(
     private val jdbcTemplate: JdbcTemplate,
 ) {
     open fun getNextSoknadMetadataAfter(sistEndretDato: LocalDateTime): SoknadMetadata? {

@@ -5,8 +5,7 @@ import org.apache.commons.lang3.StringUtils.isEmpty
 data class BasisPersonaliaFrontend(
     var navn: NavnFrontend? = null,
     var fodselsnummer: String? = null,
-    var statsborgerskap: String? = null,
-    var nordiskBorger: Boolean? = null
+    var statsborgerskap: String? = null
 )
 
 data class NavnFrontend(

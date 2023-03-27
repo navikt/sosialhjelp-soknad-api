@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata
 
+import jakarta.inject.Inject
 import no.nav.sosialhjelp.soknad.Application
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataInnsendingStatus.AVBRUTT_AUTOMATISK
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataInnsendingStatus.AVBRUTT_AV_BRUKER
@@ -12,7 +13,6 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.test.context.ActiveProfiles
 import java.time.LocalDateTime
-import javax.inject.Inject
 
 @ActiveProfiles(profiles = ["no-redis", "test"])
 @SpringBootTest(classes = [Application::class])
@@ -31,7 +31,7 @@ internal class BatchSoknadMetadataRepositoryJdbcTest {
 
     @AfterEach
     fun teardown() {
-        jdbcTemplate.update("DELETE FROM soknadmetadata WHERE behandlingsid = ?", behandlingsId)
+        jdbcTemplate.update("DELETE FROM soknadmetadata")
     }
 
     @Test

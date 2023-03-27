@@ -14,7 +14,6 @@ data class PersonAdressebeskyttelseDto(
 data class PersonDto(
     val bostedsadresse: List<BostedsadresseDto>?,
     val oppholdsadresse: List<OppholdsadresseDto>?,
-    val kontaktadresse: List<KontaktadresseDto>?,
     val forelderBarnRelasjon: List<ForelderBarnRelasjonDto>?,
     val navn: List<NavnDto>?,
     val sivilstand: List<SivilstandDto>?,
@@ -109,14 +108,6 @@ data class BostedsadresseDto(
 
 data class OppholdsadresseDto(
     val oppholdAnnetSted: String?,
-    val coAdressenavn: String?,
-    val vegadresse: VegadresseDto?,
-    val metadata: MetadataDto?,
-    val folkeregistermetadata: FolkeregisterMetadataDto?
-)
-
-data class KontaktadresseDto(
-    val type: String?,
     val coAdressenavn: String?,
     val vegadresse: VegadresseDto?,
     val metadata: MetadataDto?,

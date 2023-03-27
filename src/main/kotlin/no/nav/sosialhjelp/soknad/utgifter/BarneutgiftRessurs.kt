@@ -30,13 +30,13 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4])
 @RequestMapping("/soknader/{behandlingsId}/utgifter/barneutgifter", produces = [MediaType.APPLICATION_JSON_VALUE])
-open class BarneutgiftRessurs(
+class BarneutgiftRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val textService: TextService
 ) {
     @GetMapping
-    open fun hentBarneutgifter(
+    fun hentBarneutgifter(
         @PathVariable("behandlingsId") behandlingsId: String
     ): BarneutgifterFrontend {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
@@ -66,7 +66,7 @@ open class BarneutgiftRessurs(
     }
 
     @PutMapping
-    open fun updateBarneutgifter(
+    fun updateBarneutgifter(
         @PathVariable("behandlingsId") behandlingsId: String,
         @RequestBody barneutgifterFrontend: BarneutgifterFrontend
     ) {

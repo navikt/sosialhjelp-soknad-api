@@ -7,14 +7,14 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.web.reactive.function.client.WebClient
 
 @Configuration
-open class VirusScanConfig(
+class VirusScanConfig(
     @Value("\${virusscan_enabled}") private val enabled: Boolean,
     @Value("\${clamav_url}") private val clamAvUrl: String,
     webClientBuilder: WebClient.Builder,
 ) {
 
     @Bean
-    open fun virusScanner(): VirusScanner {
+    fun virusScanner(): VirusScanner {
         return VirusScanner(virusScannerWebClient, enabled)
     }
 

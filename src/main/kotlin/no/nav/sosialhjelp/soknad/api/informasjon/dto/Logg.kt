@@ -2,9 +2,15 @@ package no.nav.sosialhjelp.soknad.api.informasjon.dto
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
+enum class LoggLevel {
+    ERROR,
+    WARN,
+    INFO
+}
+
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class Logg(
-    val level: String?,
+    val level: LoggLevel,
     val message: String?,
     val jsFileUrl: String?,
     val lineNumber: String?,

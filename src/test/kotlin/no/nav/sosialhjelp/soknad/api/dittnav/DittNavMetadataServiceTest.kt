@@ -21,6 +21,18 @@ internal class DittNavMetadataServiceTest {
     private val soknadMetadataRepository: SoknadMetadataRepository = mockk()
     private val dittNavMetadataService = DittNavMetadataService(soknadMetadataRepository)
 
+    private val soknadMetadata = SoknadMetadata(
+        id = 0L,
+        fnr = "12345",
+        behandlingsId = "beh123",
+        status = SoknadMetadataInnsendingStatus.UNDER_ARBEID,
+        type = SoknadMetadataType.SEND_SOKNAD_KOMMUNAL,
+        opprettetDato = LocalDateTime.now().minusDays(10),
+        innsendtDato = LocalDateTime.now().minusDays(2),
+        sistEndretDato = LocalDateTime.now().minusDays(2),
+        lest = false
+    )
+
     @BeforeEach
     internal fun setUp() {
         clearAllMocks()
@@ -36,7 +48,6 @@ internal class DittNavMetadataServiceTest {
 
     @Test
     fun skalHenteAktivePabegynteSoknaderForBruker() {
-        val soknadMetadata = createSoknadMetadata(false)
         every { soknadMetadataRepository.hentPabegynteSoknaderForBruker("12345", false) } returns listOf(soknadMetadata)
 
         val dtos = dittNavMetadataService.hentAktivePabegynteSoknader("12345")
@@ -48,8 +59,7 @@ internal class DittNavMetadataServiceTest {
 
     @Test
     fun skalHenteInaktivePabegynteSoknaderForBruker() {
-        val soknadMetadata = createSoknadMetadata(true)
-        every { soknadMetadataRepository.hentPabegynteSoknaderForBruker("12345", true) } returns listOf(soknadMetadata)
+        every { soknadMetadataRepository.hentPabegynteSoknaderForBruker("12345", true) } returns listOf(soknadMetadata.copy(lest = true))
 
         val dtos = dittNavMetadataService.hentInaktivePabegynteSoknader("12345")
         assertThat(dtos).hasSize(1)
@@ -68,25 +78,10 @@ internal class DittNavMetadataServiceTest {
 
     @Test
     fun markerPabegyntSoknadSomLest_skalGiFalse_hvisNoeFeiler() {
-        val soknadMetadata = createSoknadMetadata(false)
         every { soknadMetadataRepository.hent(any()) } returns soknadMetadata
         every { soknadMetadataRepository.oppdaterLest(any(), any()) } throws RuntimeException("Noe feilet")
 
         val markert = dittNavMetadataService.oppdaterLestStatusForPabegyntSoknad("behandlingsId", "12345")
         assertThat(markert).isFalse
-    }
-
-    private fun createSoknadMetadata(lest: Boolean): SoknadMetadata {
-        return SoknadMetadata(
-            id = 0L,
-            fnr = "12345",
-            behandlingsId = "beh123",
-            status = SoknadMetadataInnsendingStatus.UNDER_ARBEID,
-            type = SoknadMetadataType.SEND_SOKNAD_KOMMUNAL,
-            opprettetDato = LocalDateTime.now().minusDays(10),
-            innsendtDato = LocalDateTime.now().minusDays(2),
-            sistEndretDato = LocalDateTime.now().minusDays(2),
-            lest = lest
-        )
     }
 }

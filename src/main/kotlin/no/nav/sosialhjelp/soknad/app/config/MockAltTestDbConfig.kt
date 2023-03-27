@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Profile
 
 @Profile("(mock-alt|test)")
 @Configuration
-open class MockAltTestDbConfig {
+class MockAltTestDbConfig {
 
     init {
         System.setProperty(SQLUtils.DIALECT_PROPERTY, "hsqldb")

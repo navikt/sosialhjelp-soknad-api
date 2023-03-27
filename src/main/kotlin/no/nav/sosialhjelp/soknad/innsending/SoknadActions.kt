@@ -1,6 +1,5 @@
 package no.nav.sosialhjelp.soknad.innsending
 
-import no.finn.unleash.Unleash
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.soknad.api.nedetid.NedetidService
 import no.nav.sosialhjelp.soknad.app.Constants
@@ -14,9 +13,7 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataIn
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.SoknadMetadataRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
-import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils.FEATURE_UTVIDE_VEDLEGGJSON
 import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils.addHendelseTypeAndHendelseReferanse
-import no.nav.sosialhjelp.soknad.innsending.SenderUtils.INNSENDING_DIGISOSAPI_ENABLED
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.DigisosApiService
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneStatus
@@ -39,18 +36,17 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4])
 @RequestMapping("/soknader/{behandlingsId}/actions", produces = [MediaType.APPLICATION_JSON_VALUE])
-open class SoknadActions(
+class SoknadActions(
     private val soknadService: SoknadService,
     private val kommuneInfoService: KommuneInfoService,
     private val tilgangskontroll: Tilgangskontroll,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val soknadMetadataRepository: SoknadMetadataRepository,
     private val digisosApiService: DigisosApiService,
-    private val unleash: Unleash,
     private val nedetidService: NedetidService,
 ) {
     @PostMapping("/send")
-    open fun sendSoknad(
+    fun sendSoknad(
         @PathVariable("behandlingsId") behandlingsId: String,
         @RequestHeader(value = HttpHeaders.AUTHORIZATION) token: String?
     ): SendTilUrlFrontend {
@@ -65,10 +61,7 @@ open class SoknadActions(
 
         updateVedleggJsonWithHendelseTypeAndHendelseReferanse(eier, soknadUnderArbeid)
 
-        if (!unleash.isEnabled(INNSENDING_DIGISOSAPI_ENABLED, true) || isEttersendelsePaSoknadSendtViaSvarUt(
-                soknadUnderArbeid
-            )
-        ) {
+        if (isEttersendelsePaSoknadSendtViaSvarUt(soknadUnderArbeid)) {
             log.info("BehandlingsId $behandlingsId sendes til SvarUt.")
             soknadService.sendSoknad(behandlingsId)
             return SendTilUrlFrontend(SoknadMottakerFrontend.SVARUT, behandlingsId)
@@ -82,7 +75,7 @@ open class SoknadActions(
         log.info("BehandlingsId $behandlingsId sendes til SvarUt eller fiks-digisos-api avhengig av kommuneinfo.")
         val kommunenummer = soknadUnderArbeid.jsonInternalSoknad?.soknad?.mottaker?.kommunenummer
             ?: throw IllegalStateException("Kommunenummer ikke funnet for JsonInternalSoknad.soknad.mottaker.kommunenummer")
-        val kommuneStatus = kommuneInfoService.kommuneInfo(kommunenummer)
+        val kommuneStatus = kommuneInfoService.getKommuneStatus(kommunenummer = kommunenummer, withLogging = true)
         log.info("Kommune: $kommunenummer Status: $kommuneStatus")
 
         return when (kommuneStatus) {
@@ -117,11 +110,9 @@ open class SoknadActions(
     ) {
         val jsonVedleggSpesifikasjon = soknadUnderArbeid.jsonInternalSoknad?.vedlegg ?: return
 
-        val isUtvideVedleggJsonFeatureActive = unleash.isEnabled(FEATURE_UTVIDE_VEDLEGGJSON, false)
         addHendelseTypeAndHendelseReferanse(
-            jsonVedleggSpesifikasjon,
-            !soknadUnderArbeid.erEttersendelse,
-            isUtvideVedleggJsonFeatureActive
+            jsonVedleggSpesifikasjon = jsonVedleggSpesifikasjon,
+            isSoknad = !soknadUnderArbeid.erEttersendelse
         )
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier)
     }

@@ -1,10 +1,7 @@
 package no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.ObjectWriter
-import no.nav.sbl.soknadsosialhjelp.json.AdresseMixIn
+import no.nav.sbl.soknadsosialhjelp.json.JsonSosialhjelpObjectMapper
 import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
-import no.nav.sbl.soknadsosialhjelp.soknad.adresse.JsonAdresse
 import org.slf4j.LoggerFactory
 import org.springframework.jdbc.core.RowMapper
 import java.io.IOException
@@ -12,8 +9,7 @@ import java.sql.ResultSet
 
 class SoknadUnderArbeidRowMapper : RowMapper<SoknadUnderArbeid> {
 
-    private val mapper: ObjectMapper = ObjectMapper().addMixIn(JsonAdresse::class.java, AdresseMixIn::class.java)
-    private val writer: ObjectWriter = mapper.writerWithDefaultPrettyPrinter()
+    private val mapper = JsonSosialhjelpObjectMapper.createObjectMapper()
 
     override fun mapRow(rs: ResultSet, rowNum: Int): SoknadUnderArbeid {
         return SoknadUnderArbeid(

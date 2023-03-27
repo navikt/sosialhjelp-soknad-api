@@ -1,15 +1,9 @@
 package no.nav.sosialhjelp.soknad.okonomiskeopplysninger.mappers
 
-import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomi
-import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomiopplysninger
-import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.JsonOkonomioversikt
-import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedlegg
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggType
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.Vedleggstatus
-import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.mappers.VedleggMapper.mapMellomlagredeVedleggToVedleggFrontend
-import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagretVedleggMetadata
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
@@ -52,49 +46,6 @@ internal class VedleggMapperTest {
         assertThat(result[1].vedleggStatus).isEqualTo(Vedleggstatus.VedleggKreves.toString())
     }
 
-    @Test
-    internal fun `hotfix - mellomlagret vedlegg feilet men vedleggjson ble oppdatert`() {
-        // behandlingsId i listen behandlingsIdsToPass i VedleggMapper
-        val behandlingsId = "11001ZKC1"
-        val bostotteVedlegg = JsonVedlegg()
-            .withType("faktura")
-            .withTilleggsinfo("husleie")
-            .withStatus(Vedleggstatus.LastetOpp.toString())
-            .withFiler(
-                mutableListOf(
-                    JsonFiler()
-                        .withFilnavn("hubbabubba.jpg")
-                        .withSha512("sha512"),
-                    JsonFiler()
-                        .withFilnavn("juicyfruit.pdf")
-                        .withSha512("shasha512512")
-                )
-            )
-        val mellomlagredeVedlegg = listOf(
-            MellomlagretVedleggMetadata(filnavn = "hubbabubba.jpg", filId = "id123")
-        )
-
-        val jsonOkonomi = JsonOkonomi()
-            .withOversikt(
-                JsonOkonomioversikt()
-                    .withUtgift(
-                        mutableListOf()
-                    )
-            )
-            .withOpplysninger(
-                JsonOkonomiopplysninger()
-                    .withUtgift(
-                        mutableListOf()
-                    )
-            )
-
-        val vedleggFrontend = mapMellomlagredeVedleggToVedleggFrontend(bostotteVedlegg, jsonOkonomi, mellomlagredeVedlegg, behandlingsId)
-        assertThat(vedleggFrontend).isNotNull
-        assertThat(vedleggFrontend.filer).hasSize(1)
-        assertThat(vedleggFrontend.filer!![0].filNavn).isEqualTo("hubbabubba.jpg")
-        assertThat(vedleggFrontend.filer!![0].uuid).isEqualTo("id123")
-    }
-
     private fun createOriginaleVedlegg(): List<JsonVedlegg> {
         return mutableListOf(
             JsonVedlegg()
@@ -131,8 +82,8 @@ internal class VedleggMapperTest {
     }
 
     companion object {
-        private val BOSTOTTE = OpplastetVedleggType("bostotte|annetboutgift")
-        private val SKATTEMELDING = OpplastetVedleggType("skatt|melding")
+        private val BOSTOTTE = OpplastetVedleggType("husbanken|vedtak")
+        private val SKATTEMELDING = OpplastetVedleggType("skattemelding|skattemelding")
         private val ANNET = OpplastetVedleggType("annet|annet")
         private const val EIER = "12345678910"
     }

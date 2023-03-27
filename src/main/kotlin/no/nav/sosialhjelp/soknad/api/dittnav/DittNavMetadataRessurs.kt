@@ -18,23 +18,23 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @ProtectedWithClaims(issuer = TOKENX, combineWithOr = true, claimMap = [CLAIM_ACR_LEVEL_3, CLAIM_ACR_LEVEL_4])
 @RequestMapping("/dittnav", produces = [MediaType.APPLICATION_JSON_VALUE])
-open class DittNavMetadataRessurs(
+class DittNavMetadataRessurs(
     private val dittNavMetadataService: DittNavMetadataService
 ) {
     @GetMapping("/pabegynte/aktive")
-    open fun hentPabegynteSoknaderForBruker(): List<PabegyntSoknadDto> {
+    fun hentPabegynteSoknaderForBruker(): List<PabegyntSoknadDto> {
         val fnr = SubjectHandlerUtils.getUserIdFromToken()
         return dittNavMetadataService.hentAktivePabegynteSoknader(fnr)
     }
 
     @GetMapping("/pabegynte/inaktive")
-    open fun hentPabegynteSoknaderForBrukerSomErLest(): List<PabegyntSoknadDto> {
+    fun hentPabegynteSoknaderForBrukerSomErLest(): List<PabegyntSoknadDto> {
         val fnr = SubjectHandlerUtils.getUserIdFromToken()
         return dittNavMetadataService.hentInaktivePabegynteSoknader(fnr)
     }
 
     @PostMapping("/pabegynte/lest")
-    open fun settLestForPabegyntSoknad(
+    fun settLestForPabegyntSoknad(
         @RequestBody dto: MarkerPabegyntSoknadSomLestDto
     ): Boolean {
         val fnr = SubjectHandlerUtils.getUserIdFromToken()

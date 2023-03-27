@@ -16,12 +16,12 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4])
 @RequestMapping("/soknader/{behandlingsId}/inntekt/systemdata", produces = [MediaType.APPLICATION_JSON_VALUE])
-open class SystemregistrertInntektRessurs(
+class SystemregistrertInntektRessurs(
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val tilgangskontroll: Tilgangskontroll
 ) {
     @GetMapping
-    open fun hentSystemregistrerteInntekter(@PathVariable("behandlingsId") behandlingsId: String): SysteminntekterFrontend {
+    fun hentSystemregistrerteInntekter(@PathVariable("behandlingsId") behandlingsId: String): SysteminntekterFrontend {
         tilgangskontroll.verifiserAtBrukerHarTilgang()
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier).jsonInternalSoknad

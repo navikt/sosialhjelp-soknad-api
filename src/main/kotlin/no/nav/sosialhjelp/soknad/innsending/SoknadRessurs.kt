@@ -1,5 +1,7 @@
 package no.nav.sosialhjelp.soknad.innsending
 
+import jakarta.servlet.http.Cookie
+import jakarta.servlet.http.HttpServletResponse
 import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.BOSTOTTE_SAMTYKKE
 import no.nav.sbl.soknadsosialhjelp.json.SoknadJsonTyper.UTBETALING_SKATTEETATEN_SAMTYKKE
 import no.nav.sbl.soknadsosialhjelp.soknad.okonomi.opplysning.JsonOkonomibekreftelse
@@ -27,13 +29,11 @@ import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
-import javax.servlet.http.Cookie
-import javax.servlet.http.HttpServletResponse
 
 @RestController
 @ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4])
 @RequestMapping("/soknader", produces = [MediaType.APPLICATION_JSON_VALUE])
-open class SoknadRessurs(
+class SoknadRessurs(
     private val soknadService: SoknadService,
     private val ettersendingService: EttersendingService,
     private val soknadUnderArbeidService: SoknadUnderArbeidService,
@@ -43,7 +43,7 @@ open class SoknadRessurs(
     private val nedetidService: NedetidService
 ) {
     @GetMapping("/{behandlingsId}/xsrfCookie")
-    open fun hentXsrfCookie(
+    fun hentXsrfCookie(
         @PathVariable("behandlingsId") behandlingsId: String,
         response: HttpServletResponse
     ): Boolean {
@@ -55,7 +55,7 @@ open class SoknadRessurs(
     }
 
     @GetMapping("/{behandlingsId}/erSystemdataEndret")
-    open fun sjekkOmSystemdataErEndret(
+    fun sjekkOmSystemdataErEndret(
         @PathVariable("behandlingsId") behandlingsId: String,
         @RequestHeader(value = HttpHeaders.AUTHORIZATION) token: String?
     ): Boolean {
@@ -86,7 +86,7 @@ open class SoknadRessurs(
     }
 
     @PostMapping("/{behandlingsId}/oppdaterSamtykker")
-    open fun oppdaterSamtykker(
+    fun oppdaterSamtykker(
         @PathVariable("behandlingsId") behandlingsId: String,
         @RequestBody samtykker: List<BekreftelseRessurs>,
         @RequestHeader(value = HttpHeaders.AUTHORIZATION) token: String?
@@ -100,7 +100,7 @@ open class SoknadRessurs(
     }
 
     @GetMapping("/{behandlingsId}/hentSamtykker")
-    open fun hentSamtykker(
+    fun hentSamtykker(
         @PathVariable("behandlingsId") behandlingsId: String,
         @RequestHeader(value = HttpHeaders.AUTHORIZATION) token: String?
     ): List<BekreftelseRessurs> {
@@ -126,7 +126,7 @@ open class SoknadRessurs(
     }
 
     @PostMapping("/opprettSoknad")
-    open fun opprettSoknad(
+    fun opprettSoknad(
         @RequestParam("ettersendTil") tilknyttetBehandlingsId: String?,
         response: HttpServletResponse,
         @RequestHeader(value = HttpHeaders.AUTHORIZATION) token: String?
@@ -157,9 +157,13 @@ open class SoknadRessurs(
     }
 
     @DeleteMapping("/{behandlingsId}")
-    open fun slettSoknad(@PathVariable("behandlingsId") behandlingsId: String) {
+    fun slettSoknad(
+        @PathVariable("behandlingsId") behandlingsId: String,
+        @RequestHeader(value = HttpHeaders.REFERER) referer: String?
+    ) {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
-        soknadService.avbrytSoknad(behandlingsId)
+        val steg: String = referer?.substringAfterLast(delimiter = "/", missingDelimiterValue = "ukjent") ?: "ukjent"
+        soknadService.avbrytSoknad(behandlingsId, steg)
     }
 
     companion object {

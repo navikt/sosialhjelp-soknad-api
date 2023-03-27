@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.innsending.svarut
 
+import jakarta.annotation.PostConstruct
 import org.bouncycastle.asn1.ASN1ObjectIdentifier
 import org.bouncycastle.asn1.DERNull
 import org.bouncycastle.asn1.DEROctetString
@@ -23,7 +24,6 @@ import java.security.cert.CertificateEncodingException
 import java.security.cert.CertificateException
 import java.security.cert.CertificateFactory
 import java.security.cert.X509Certificate
-import javax.annotation.PostConstruct
 
 @Component
 class DokumentKrypterer(

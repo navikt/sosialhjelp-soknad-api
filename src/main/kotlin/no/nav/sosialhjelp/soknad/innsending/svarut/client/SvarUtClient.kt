@@ -2,9 +2,11 @@ package no.nav.sosialhjelp.soknad.innsending.svarut.client
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.netty.channel.ChannelOption
+import jakarta.xml.bind.DatatypeConverter
 import no.ks.fiks.svarut.klient.model.Forsendelse
 import no.ks.fiks.svarut.klient.model.ForsendelsesId
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
+import no.nav.sosialhjelp.soknad.app.client.config.mdcExchangeFilter
 import no.nav.sosialhjelp.soknad.app.exceptions.TjenesteUtilgjengeligException
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.Utils.createHttpEntity
 import org.apache.commons.io.IOUtils
@@ -25,7 +27,6 @@ import reactor.netty.http.client.HttpClient
 import java.io.InputStream
 import java.nio.charset.StandardCharsets
 import java.time.Duration
-import javax.xml.bind.DatatypeConverter
 
 @Component
 class SvarUtClient(
@@ -59,6 +60,7 @@ class SvarUtClient(
             it.defaultCodecs().jackson2JsonEncoder(Jackson2JsonEncoder(objectMapper))
         }
         .defaultHeader(AUTHORIZATION, basicAuthentication)
+        .filter(mdcExchangeFilter)
         .build()
 
     fun ping() {

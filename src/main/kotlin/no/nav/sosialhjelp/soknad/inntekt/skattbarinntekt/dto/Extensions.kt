@@ -15,7 +15,7 @@ fun SkattbarInntekt?.mapToUtbetalinger(): List<Utbetaling>? {
     val dagmammaIEgenBolig: MutableList<Utbetaling> = mutableListOf()
     val lottOgPartInnenFiske: MutableList<Utbetaling> = mutableListOf()
 
-    this.oppgaveInntektsmottaker
+    oppgaveInntektsmottaker
         .forEach { oppgaveInntektsmottaker ->
             val kalenderManed = YearMonth.parse(oppgaveInntektsmottaker.kalendermaaned, arManedFormatter)
             val fom = kalenderManed.atDay(1)
@@ -44,7 +44,7 @@ fun SkattbarInntekt?.mapToUtbetalinger(): List<Utbetaling>? {
     aggregertUtbetaling.addAll(utbetalingerPensjon)
     aggregertUtbetaling.addAll(dagmammaIEgenBolig)
     aggregertUtbetaling.addAll(lottOgPartInnenFiske)
-    aggregertUtbetaling.addAll(this.getForskuddstrekk())
+    aggregertUtbetaling.addAll(getForskuddstrekk())
 
     return aggregertUtbetaling
 }
@@ -54,7 +54,7 @@ fun SkattbarInntekt?.getForskuddstrekk(): List<Utbetaling> {
         return emptyList()
     }
     val forskuddstrekk: MutableList<Utbetaling> = mutableListOf()
-    this.oppgaveInntektsmottaker
+    oppgaveInntektsmottaker
         .forEach {
             val kalenderManed = YearMonth.parse(it.kalendermaaned, arManedFormatter)
             val fom = kalenderManed.atDay(1)

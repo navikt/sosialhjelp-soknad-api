@@ -7,6 +7,7 @@ import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.sosialhjelp.soknad.app.Constants
+import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedlegg
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRepository
@@ -17,6 +18,7 @@ import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.JsonOkonomiUtils.isOkonomiskeOpplysningerBekreftet
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggFrontend
+import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggType
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.mappers.OkonomiskGruppeMapper
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.mappers.OkonomiskeOpplysningerMapper.addAllFormuerToJsonOkonomi
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.mappers.OkonomiskeOpplysningerMapper.addAllInntekterToJsonOkonomi
@@ -43,7 +45,7 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @ProtectedWithClaims(issuer = Constants.SELVBETJENING, claimMap = [Constants.CLAIM_ACR_LEVEL_4])
 @RequestMapping("/soknader/{behandlingsId}/okonomiskeOpplysninger")
-open class OkonomiskeOpplysningerRessurs(
+class OkonomiskeOpplysningerRessurs(
     private val tilgangskontroll: Tilgangskontroll,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
     private val opplastetVedleggRepository: OpplastetVedleggRepository,
@@ -51,7 +53,7 @@ open class OkonomiskeOpplysningerRessurs(
     private val soknadUnderArbeidService: SoknadUnderArbeidService
 ) {
     @GetMapping
-    open fun hentOkonomiskeOpplysninger(
+    fun hentOkonomiskeOpplysninger(
         @PathVariable("behandlingsId") behandlingsId: String
     ): VedleggFrontends {
         tilgangskontroll.verifiserAtBrukerKanEndreSoknad(behandlingsId)
@@ -95,6 +97,14 @@ open class OkonomiskeOpplysningerRessurs(
             emptyList()
         }
 
+        val opplastedeVedleggFraJson = jsonVedleggs.filter { it.status == Vedleggstatus.LastetOpp.toString() }.flatMap { it.filer }
+        if (opplastedeVedleggFraJson.isNotEmpty() &&
+            mellomlagredeVedlegg.isNotEmpty() &&
+            opplastedeVedleggFraJson.size != mellomlagredeVedlegg.size
+        ) {
+            log.info("Ulikt antall vedlegg i vedlegg.json (${opplastedeVedleggFraJson.size}) og mellomlagret hos KS (${mellomlagredeVedlegg.size}) for søknad $behandlingsId")
+        }
+
         val slettedeVedlegg = removeIkkePaakrevdeMellomlagredeVedlegg(behandlingsId, jsonVedleggs, paakrevdeVedlegg, mellomlagredeVedlegg)
         addPaakrevdeVedlegg(jsonVedleggs, paakrevdeVedlegg)
 
@@ -102,14 +112,14 @@ open class OkonomiskeOpplysningerRessurs(
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier)
 
         return VedleggFrontends(
-            okonomiskeOpplysninger = jsonVedleggs.map { mapMellomlagredeVedleggToVedleggFrontend(it, jsonOkonomi, mellomlagredeVedlegg, behandlingsId) },
+            okonomiskeOpplysninger = jsonVedleggs.map { mapMellomlagredeVedleggToVedleggFrontend(it, jsonOkonomi, mellomlagredeVedlegg) },
             slettedeVedlegg = slettedeVedlegg,
             isOkonomiskeOpplysningerBekreftet = isOkonomiskeOpplysningerBekreftet(jsonOkonomi)
         )
     }
 
     @PutMapping
-    open fun updateOkonomiskOpplysning(
+    fun updateOkonomiskOpplysning(
         @PathVariable("behandlingsId") behandlingsId: String,
         @RequestBody vedleggFrontend: VedleggFrontend
     ) {
@@ -119,7 +129,7 @@ open class OkonomiskeOpplysningerRessurs(
         val jsonOkonomi = soknad.jsonInternalSoknad?.soknad?.data?.okonomi ?: return
 
         if (VedleggTypeToSoknadTypeMapper.isInSoknadJson(vedleggFrontend.type)) {
-            val soknadType = vedleggTypeToSoknadType[vedleggFrontend.type]
+            val soknadType = vedleggTypeToSoknadType[vedleggFrontend.type.toString()]
             when (getSoknadPath(vedleggFrontend.type)) {
                 "utbetaling" -> if (soknadType.equals(UTBETALING_HUSBANKEN, ignoreCase = true)) {
                     addAllInntekterToJsonOkonomiUtbetalinger(vedleggFrontend, jsonOkonomi, UTBETALING_HUSBANKEN)
@@ -154,7 +164,7 @@ open class OkonomiskeOpplysningerRessurs(
                 }
             }
             if (ikkePaakrevdVedlegg.filer != null && ikkePaakrevdVedlegg.filer.isNotEmpty()) {
-                val vedleggstype = ikkePaakrevdVedlegg.type + "|" + ikkePaakrevdVedlegg.tilleggsinfo
+                val vedleggstype = VedleggType[ikkePaakrevdVedlegg.type + "|" + ikkePaakrevdVedlegg.tilleggsinfo]
                 slettedeVedlegg.add(
                     VedleggFrontend(
                         type = vedleggstype,
@@ -186,7 +196,7 @@ open class OkonomiskeOpplysningerRessurs(
                 }
             }
             if (!ikkePaakrevdVedlegg.filer.isNullOrEmpty()) {
-                val vedleggstype = ikkePaakrevdVedlegg.type + "|" + ikkePaakrevdVedlegg.tilleggsinfo
+                val vedleggstype = VedleggType[ikkePaakrevdVedlegg.type + "|" + ikkePaakrevdVedlegg.tilleggsinfo]
                 slettedeVedlegg.add(
                     VedleggFrontend(
                         type = vedleggstype,
@@ -221,8 +231,9 @@ open class OkonomiskeOpplysningerRessurs(
 
     private fun setVedleggStatus(vedleggFrontend: VedleggFrontend, soknad: SoknadUnderArbeid) {
         val jsonVedleggs = JsonVedleggUtils.getVedleggFromInternalSoknad(soknad)
-        jsonVedleggs.firstOrNull { vedleggFrontend.type == it.type + "|" + it.tilleggsinfo }
-            ?.status = vedleggFrontend.vedleggStatus ?: throw IllegalStateException("Vedlegget finnes ikke")
+        jsonVedleggs
+            .firstOrNull { vedleggFrontend.type.toString() == it.type + "|" + it.tilleggsinfo }
+            ?.status = vedleggFrontend.vedleggStatus?.name ?: throw IllegalStateException("Vedlegget finnes ikke")
     }
 
     data class VedleggFrontends(
@@ -230,4 +241,8 @@ open class OkonomiskeOpplysningerRessurs(
         var slettedeVedlegg: List<VedleggFrontend>?,
         var isOkonomiskeOpplysningerBekreftet: Boolean
     )
+
+    companion object {
+        private val log by logger()
+    }
 }

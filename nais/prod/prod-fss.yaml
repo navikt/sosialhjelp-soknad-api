@@ -55,9 +55,6 @@ spec:
         - application: sosialhjelp-innsyn-api
           namespace: teamdigisos
           cluster: prod-fss
-        - application: sosialhjelp-adminpanel
-          namespace: teamdigisos
-          cluster: prod-gcp
   ingresses:
     - "https://sosialhjelp-soknad-api.prod-fss-pub.nais.io/sosialhjelp/soknad-api"
     - "https://sosialhjelp-soknad-api.intern.nav.no/sosialhjelp/soknad-api"
@@ -128,9 +125,9 @@ spec:
     - name: SVARUT_URL
       value: "https://svarut.ks.no"
     - name: NEDETID_START
-      value: "04.02.2022 22:00:00"
+      value: "09.02.2023 12:00:00"
     - name: NEDETID_SLUTT
-      value: "05.02.2022 06:00:00"
+      value: "09.02.2023 14:00:00"
     - name: ENVIRONMENT_NAME
       value: "p"
     - name: REDIS_HOST

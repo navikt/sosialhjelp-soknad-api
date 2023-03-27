@@ -8,8 +8,8 @@ interface Systemdata {
 }
 
 @Component
-open class SystemdataUpdater(private val systemdatas: List<Systemdata>) {
-    open fun update(soknadUnderArbeid: SoknadUnderArbeid) {
+class SystemdataUpdater(private val systemdatas: List<Systemdata>) {
+    fun update(soknadUnderArbeid: SoknadUnderArbeid) {
         systemdatas.forEach {
             it.updateSystemdataIn(soknadUnderArbeid)
         }

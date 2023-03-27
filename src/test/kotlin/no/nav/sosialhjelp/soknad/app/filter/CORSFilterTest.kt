@@ -1,15 +1,16 @@
 package no.nav.sosialhjelp.soknad.app.filter
 
 import io.mockk.every
+import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.unmockkObject
+import jakarta.servlet.http.HttpServletRequest
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.mock.web.MockFilterChain
-import org.springframework.mock.web.MockHttpServletRequest
 import org.springframework.mock.web.MockHttpServletResponse
 
 internal class CORSFilterTest {
@@ -34,9 +35,9 @@ internal class CORSFilterTest {
 
         val unknownOrigin = "https://www.unknown.no"
 
-        val request = MockHttpServletRequest()
-        request.requestURI = "requestUri"
-        request.addHeader("Origin", unknownOrigin)
+        val request: HttpServletRequest = mockk()
+        every { request.requestURI } returns "requestUri"
+        every { request.getHeader("Origin") } returns unknownOrigin
 
         val response = MockHttpServletResponse()
 
@@ -50,9 +51,9 @@ internal class CORSFilterTest {
         every { MiljoUtils.isNonProduction() } returns true
         val trustedOrigin = "https://www.nav.no"
 
-        val request = MockHttpServletRequest()
-        request.requestURI = "requestUri"
-        request.addHeader("Origin", trustedOrigin)
+        val request: HttpServletRequest = mockk()
+        every { request.requestURI } returns "requestUri"
+        every { request.getHeader("Origin") } returns trustedOrigin
 
         val response = MockHttpServletResponse()
 
@@ -68,9 +69,9 @@ internal class CORSFilterTest {
         every { MiljoUtils.isNonProduction() } returns true
         val unknownOrigin = "https://www.unknown.no"
 
-        val request = MockHttpServletRequest()
-        request.requestURI = "requestUri"
-        request.addHeader("Origin", unknownOrigin)
+        val request: HttpServletRequest = mockk()
+        every { request.requestURI } returns "requestUri"
+        every { request.getHeader("Origin") } returns unknownOrigin
 
         val response = MockHttpServletResponse()
 

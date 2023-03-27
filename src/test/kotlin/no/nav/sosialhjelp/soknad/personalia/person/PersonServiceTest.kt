@@ -33,9 +33,34 @@ internal class PersonServiceTest {
         private const val FDAT_IDENT = "11122200000"
     }
 
-    private val person = Person("fornavn", "mellomnavn", "etternavn", "fnr", "ugift", emptyList(), null, null, null, null)
-    private val ektefelle = Ektefelle("fornavn", null, "etternavn", LocalDate.now(), "fnr2", true, false)
-    private val barn = Barn("fornavn", null, "etternavn", "barnident", null, true)
+    private val person = Person(
+        fornavn = "fornavn",
+        mellomnavn = "mellomnavn",
+        etternavn = "etternavn",
+        fnr = "fnr",
+        sivilstatus = "ugift",
+        statsborgerskap = emptyList(),
+        ektefelle = null,
+        bostedsadresse = null,
+        oppholdsadresse = null
+    )
+    private val ektefelle = Ektefelle(
+        fornavn = "fornavn",
+        mellomnavn = null,
+        etternavn = "etternavn",
+        fodselsdato = LocalDate.now(),
+        fnr = "fnr2",
+        folkeregistrertSammen = true,
+        ikkeTilgangTilEktefelle = false
+    )
+    private val barn = Barn(
+        fornavn = "fornavn",
+        mellomnavn = null,
+        etternavn = "etternavn",
+        fnr = "barnident",
+        fodselsdato = null,
+        folkeregistrertSammen = true
+    )
 
     private val hentPersonClient: HentPersonClient = mockk()
     private val mapper: PdlDtoMapper = mockk()
@@ -45,6 +70,13 @@ internal class PersonServiceTest {
     private val mockPersonDto = mockk<PersonDto>()
     private val mockEktefelleDto = mockk<EktefelleDto>()
     private val mockBarnDto = mockk<BarnDto>()
+
+    private val defaultMetadataDto = MetadataDto(
+        master = "PDL",
+        endringer = listOf(
+            EndringDto(kilde = "PDL", registrert = LocalDateTime.now(), type = "type")
+        )
+    )
 
     @BeforeEach
     internal fun setUp() {
@@ -57,10 +89,10 @@ internal class PersonServiceTest {
         every { mapper.personDtoToDomain(any(), any()) } returns person
         every { mockPersonDto.sivilstand } returns listOf(
             SivilstandDto(
-                SivilstandType.GIFT,
-                EKTEFELLE_IDENT,
-                MetadataDto("PDL", listOf(EndringDto("PDL", LocalDateTime.now(), "type"))),
-                null
+                type = SivilstandType.GIFT,
+                relatertVedSivilstand = EKTEFELLE_IDENT,
+                metadata = defaultMetadataDto,
+                folkeregistermetadata = null
             )
         )
         every { hentPersonClient.hentEktefelle(any()) } returns mockEktefelleDto
@@ -76,10 +108,10 @@ internal class PersonServiceTest {
         every { mapper.personDtoToDomain(any(), any()) } returns person
         every { mockPersonDto.sivilstand } returns listOf(
             SivilstandDto(
-                SivilstandType.GIFT,
-                null,
-                MetadataDto("PDL", listOf(EndringDto("PDL", LocalDateTime.now(), "type"))),
-                null
+                type = SivilstandType.GIFT,
+                relatertVedSivilstand = null,
+                metadata = defaultMetadataDto,
+                folkeregistermetadata = null
             )
         )
 
@@ -96,10 +128,10 @@ internal class PersonServiceTest {
         every { mapper.personDtoToDomain(any(), any()) } returns person
         every { mockPersonDto.sivilstand } returns listOf(
             SivilstandDto(
-                SivilstandType.GIFT,
-                FDAT_IDENT,
-                MetadataDto("PDL", listOf(EndringDto("PDL", LocalDateTime.now(), "type"))),
-                null
+                type = SivilstandType.GIFT,
+                relatertVedSivilstand = FDAT_IDENT,
+                metadata = defaultMetadataDto,
+                folkeregistermetadata = null
             )
         )
 
