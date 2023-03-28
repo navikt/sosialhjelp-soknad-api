@@ -102,12 +102,24 @@ class VirusScannerTest {
     }
 
     @Test
-    fun scanFile_resultatIsNotOK_isInfected() {
+    fun scanFile_resultatIsFound_isInfected() {
         mockWebServer.enqueue(
             MockResponse()
                 .setResponseCode(200)
                 .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .setBody(redisObjectMapper.writeValueAsString(arrayOf(ScanResult("test", Result.FOUND))))
+        )
+        assertThatExceptionOfType(OpplastingException::class.java)
+            .isThrownBy { virusScanner.scan(filnavn, data, behandlingsId, "pdf") }
+    }
+
+    @Test
+    fun scanFile_resultatIsError_isInfected() {
+        mockWebServer.enqueue(
+            MockResponse()
+                .setResponseCode(200)
+                .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .setBody(redisObjectMapper.writeValueAsString(arrayOf(ScanResult("test", Result.ERROR))))
         )
         assertThatExceptionOfType(OpplastingException::class.java)
             .isThrownBy { virusScanner.scan(filnavn, data, behandlingsId, "pdf") }
