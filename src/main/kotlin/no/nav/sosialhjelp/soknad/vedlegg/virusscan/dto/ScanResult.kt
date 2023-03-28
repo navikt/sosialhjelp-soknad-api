@@ -10,5 +10,5 @@ data class ScanResult(
 )
 
 enum class Result {
-    FOUND, OK
+    FOUND, OK, ERROR
 }
