@@ -60,9 +60,6 @@ spec:
     - "https://sosialhjelp-soknad-api.dev.intern.nav.no/sosialhjelp/soknad-api"
   leaderElection: true
   resources:
-    limits:
-      cpu: 500m
-      memory: 2Gi
     requests:
       cpu: 10m
       memory: 512Mi

@@ -39,9 +39,6 @@ spec:
   ingresses:
     - "https://sosialhjelp-soknad-api-mock.dev.nav.no/sosialhjelp/soknad-api"
   resources:
-    limits:
-      cpu: 500m
-      memory: 2Gi
     requests:
       cpu: 10m
       memory: 512Mi

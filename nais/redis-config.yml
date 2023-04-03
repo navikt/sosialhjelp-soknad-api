@@ -15,9 +15,6 @@ spec:
     min: 1
     max: 1 # More replicas doesn't sync
   resources: # you need to monitor the resource usage yourself
-    limits:
-      cpu: 100m
-      memory: 128Mi
     requests:
       cpu: 3m
       memory: 128Mi
