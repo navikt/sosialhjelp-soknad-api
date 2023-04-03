@@ -1,5 +1,6 @@
 package no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid
 
+import no.nav.sosialhjelp.soknad.db.SQLUtils
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.BatchOpplastetVedleggRepository
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Repository
@@ -7,6 +8,7 @@ import org.springframework.transaction.TransactionStatus
 import org.springframework.transaction.support.TransactionCallbackWithoutResult
 import org.springframework.transaction.support.TransactionTemplate
 import java.sql.ResultSet
+import java.time.LocalDateTime
 
 /**
  * Repository for SoknadUnderArbeid.
@@ -39,9 +41,11 @@ class BatchSoknadUnderArbeidRepositoryJdbc(
     }
 
     override fun hentGamleSoknadUnderArbeidForBatch(): List<Long> {
+        val datoMinusFjortenDager = LocalDateTime.now().minusDays(14)
         return jdbcTemplate.query(
-            "select SOKNAD_UNDER_ARBEID_ID from SOKNAD_UNDER_ARBEID where SISTENDRETDATO < CURRENT_TIMESTAMP - (INTERVAL '14' DAY) and STATUS = ?",
+            "select SOKNAD_UNDER_ARBEID_ID from SOKNAD_UNDER_ARBEID where SISTENDRETDATO < ? and STATUS = ?",
             { resultSet: ResultSet, _: Int -> resultSet.getLong("soknad_under_arbeid_id") },
+            SQLUtils.tidTilTimestamp(datoMinusFjortenDager),
             SoknadUnderArbeidStatus.UNDER_ARBEID.toString()
         )
     }
