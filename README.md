@@ -40,5 +40,5 @@ I tillegg krever noen endepunkter et `access-token` fra `idporten`, som brukeren
 
 
 ## Hvordan komme i gang
-Se [Felles dokumentasjon for våre backend apper](https://github.com/navikt/digisos/blob/main/oppsett-devmiljo.md#backend-gradle) for generell dokumentasjon av våre backend-apper.
+Se [Felles dokumentasjon for våre backend apper](https://github.com/navikt/digisos/blob/main/digisosdokumentasjon/docs/utviklerdokumentasjon/kom%20igang%20med%20utvikling.md#backend-gradle) for generell dokumentasjon av våre backend-apper.
 
