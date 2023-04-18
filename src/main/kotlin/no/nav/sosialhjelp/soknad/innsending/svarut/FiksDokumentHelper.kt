@@ -12,7 +12,7 @@ import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedle
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.innsending.InnsendingService
 import no.nav.sosialhjelp.soknad.pdf.SosialhjelpPdfGenerator
-import no.nav.sosialhjelp.soknad.vedlegg.filedetection.FileDetectionUtils.getMimeType
+import no.nav.sosialhjelp.soknad.vedlegg.filedetection.FileDetectionUtils.detectMimeType
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.MimeTypes.APPLICATION_JSON
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.MimeTypes.APPLICATION_PDF
 import org.slf4j.LoggerFactory
@@ -115,7 +115,7 @@ class FiksDokumentHelper(
         val byteArrayInputStream = krypterOgOpprettByteArrayInputStream(opplastetVedlegg.data)
         map[filnavn] = byteArrayInputStream
 
-        val mimeType = getMimeType(opplastetVedlegg.data)
+        val mimeType = detectMimeType(opplastetVedlegg.data)
         return Dokument()
             .withFilnavn(filnavn)
             .withMimeType(mimeType)
