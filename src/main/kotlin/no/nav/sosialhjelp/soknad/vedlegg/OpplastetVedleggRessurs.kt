@@ -12,7 +12,7 @@ import no.nav.sosialhjelp.soknad.tilgangskontroll.Tilgangskontroll
 import no.nav.sosialhjelp.soknad.vedlegg.dto.FilFrontend
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.OpplastingException
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
-import no.nav.sosialhjelp.soknad.vedlegg.filedetection.FileDetectionUtils.getMimeType
+import no.nav.sosialhjelp.soknad.vedlegg.filedetection.FileDetectionUtils.detectMimeType
 import org.apache.commons.io.IOUtils
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
@@ -50,7 +50,7 @@ class OpplastetVedleggRessurs(
         return opplastetVedleggRepository.hentVedlegg(vedleggId, eier)
             ?.let {
                 response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"${it.filnavn}\"")
-                val mimeType = getMimeType(it.data)
+                val mimeType = detectMimeType(it.data)
                 ResponseEntity.ok().contentType(MediaType.parseMediaType(mimeType)).body(it.data)
             }
             ?: ResponseEntity.noContent().build()
@@ -68,7 +68,7 @@ class OpplastetVedleggRessurs(
 
         opplastetVedleggRepository.hentVedlegg(vedleggId, eier)?.let {
             response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"${it.filnavn}\"")
-            val mimeType = getMimeType(it.data)
+            val mimeType = detectMimeType(it.data)
             return ResponseEntity.ok().contentType(MediaType.parseMediaType(mimeType)).body(it.data)
         }
 
@@ -77,7 +77,7 @@ class OpplastetVedleggRessurs(
             log.info("Forsøker å hente vedlegg $vedleggId fra mellomlagring hos KS")
             mellomlagringService.getVedlegg(behandlingsId, vedleggId)?.let {
                 response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"${it.filnavn}\"")
-                val mimeType = getMimeType(it.data)
+                val mimeType = detectMimeType(it.data)
                 return ResponseEntity.ok().contentType(MediaType.parseMediaType(mimeType)).body(it.data)
             }
         }

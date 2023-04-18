@@ -76,10 +76,10 @@ object VedleggUtils {
     }
 
     fun validerFil(data: ByteArray, filnavn: String): TikaFileType {
-        val fileType = FileDetectionUtils.detectTikaType(data)
+        val mimeType = FileDetectionUtils.detectMimeType(data)
+        val fileType = FileDetectionUtils.mapToTikaType(mimeType)
 
         if (fileType == TikaFileType.UNKNOWN) {
-            val mimeType = FileDetectionUtils.getMimeType(data)
             val filType = findFileExtension(filnavn)
             throw UgyldigOpplastingTypeException(
                 "Ugyldig filtype for opplasting. Mimetype var $mimeType, filtype var $filType",

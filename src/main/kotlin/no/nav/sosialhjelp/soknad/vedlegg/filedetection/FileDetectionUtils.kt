@@ -7,25 +7,19 @@ object FileDetectionUtils {
 
     private val log = LoggerFactory.getLogger(FileDetectionUtils::class.java)
 
-    fun getMimeType(bytes: ByteArray?): String {
-        val detected = Tika().detect(bytes)
-        return if (detected.equals(MimeTypes.TEXT_X_MATLAB, ignoreCase = true)) MimeTypes.APPLICATION_PDF else detected
+    fun detectMimeType(bytes: ByteArray?): String {
+        val mimeType = Tika().detect(bytes).lowercase()
+        return if (mimeType == MimeTypes.TEXT_X_MATLAB) MimeTypes.APPLICATION_PDF else mimeType
     }
 
-    fun detectTikaType(bytes: ByteArray?): TikaFileType {
-        val type = Tika().detect(bytes)
-        if (type.equals(MimeTypes.APPLICATION_PDF, ignoreCase = true)) {
-            return TikaFileType.PDF
-        }
-        if (type.equals(MimeTypes.TEXT_X_MATLAB, ignoreCase = true)) {
+    fun mapToTikaType(mimeType: String): TikaFileType = when (mimeType) {
+        MimeTypes.APPLICATION_PDF -> TikaFileType.PDF
+        MimeTypes.TEXT_X_MATLAB -> {
             log.info("Tika detekterte mimeType text/x-matlab. Vi antar at dette egentlig er en PDF, men som ikke har korrekte magic bytes (%PDF).")
-            return TikaFileType.PDF
+            TikaFileType.PDF
         }
-        if (type.equals(MimeTypes.IMAGE_PNG, ignoreCase = true)) {
-            return TikaFileType.PNG
-        }
-        return if (type.equals(MimeTypes.IMAGE_JPEG, ignoreCase = true)) {
-            TikaFileType.JPEG
-        } else TikaFileType.UNKNOWN
+        MimeTypes.IMAGE_PNG -> TikaFileType.PNG
+        MimeTypes.IMAGE_JPEG -> TikaFileType.JPEG
+        else -> TikaFileType.UNKNOWN
     }
 }
