@@ -55,6 +55,9 @@ spec:
         - application: sosialhjelp-innsyn-api
         - application: sosialhjelp-innsyn-api-dev
           cluster: dev-gcp
+        - application: tms-utkast
+          namespace: min-side
+          cluster: dev-gcp
   ingresses:
     - "https://sosialhjelp-soknad-api.dev-fss-pub.nais.io/sosialhjelp/soknad-api"
     - "https://sosialhjelp-soknad-api.dev.intern.nav.no/sosialhjelp/soknad-api"
