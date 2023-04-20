@@ -37,7 +37,6 @@ spec:
       rules:
         - application: sosialhjelp-mock-alt-api-mock
   ingresses:
-    - "https://sosialhjelp-soknad-api-mock.dev.nav.no/sosialhjelp/soknad-api"
     - "https://digisos.ekstern.dev.nav.no/sosialhjelp/soknad-api"
   resources:
     limits:
