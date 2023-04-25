@@ -77,7 +77,7 @@ class MellomlagringService(
         val uuid = UUID.randomUUID().toString()
         filnavn = lagFilnavn(filnavn, fileType, uuid)
 
-        val detectedMimeType = FileDetectionUtils.getMimeType(data)
+        val detectedMimeType = FileDetectionUtils.detectMimeType(data)
         val mimetype = if (detectedMimeType.equals(TEXT_X_MATLAB, ignoreCase = true)) APPLICATION_PDF else detectedMimeType
 
         val filOpplasting = FilOpplasting(
