@@ -60,8 +60,7 @@ class OkonomiskeOpplysningerRessurs(
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
 
-        val skalBrukeMellomlagring = soknadUnderArbeidService.skalSoknadSendesMedDigisosApi(soknadUnderArbeid)
-        return if (skalBrukeMellomlagring) {
+        return if (soknadUnderArbeidService.skalSoknadSendesMedDigisosApi(soknadUnderArbeid)) {
             hentBasertPaaMellomlagredeVedlegg(behandlingsId, eier, soknadUnderArbeid)
         } else {
             hentBasertPaaOpplastedeVedlegg(soknadUnderArbeid, eier)

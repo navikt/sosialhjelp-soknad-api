@@ -134,7 +134,8 @@ dependencies {
     // sosialhjelp-common
     implementation("no.nav.sosialhjelp:sosialhjelp-common-api:${Versions.sosialhjelpCommon}")
     implementation("no.nav.sosialhjelp:sosialhjelp-common-selftest:${Versions.sosialhjelpCommon}")
-    implementation("no.nav.sosialhjelp:sosialhjelp-common-kotlin-utils:0.3")
+    // TODO Må endres til riktig versjon når dette er publisert på Github
+    implementation("no.nav.sosialhjelp:sosialhjelp-common-kotlin-utils:0.4")
 
     // KS / Fiks
     implementation("no.ks.fiks.svarut:svarut-rest-klient:${Versions.fiksSvarUt}")

@@ -13,13 +13,13 @@ object FilKonvertering {
             ?: VedleggWrapper(sourceData, filnavn)
     }
 
-    private fun byttExtension(filnavn: String): String = with (filnavn) {
+    private fun byttExtension(filnavn: String): String = with(filnavn) {
         val oldExtension = substring(lastIndexOf("."))
         replace(oldExtension, ".pdf")
     }
 }
 
-data class VedleggWrapper (
+data class VedleggWrapper(
     val data: ByteArray,
     val filnavn: String,
 ) {
