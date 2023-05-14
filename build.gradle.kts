@@ -85,6 +85,7 @@ val githubUser: String by project
 val githubPassword: String by project
 
 repositories {
+    mavenLocal()
     mavenCentral()
     maven("https://plugins.gradle.org/m2/")
     maven("https://repo.spring.io/plugins-release/")
@@ -95,6 +96,7 @@ repositories {
             password = githubPassword
         }
     }
+    maven("https://files.idrsolutions.com/dl/maven/")
 }
 
 configurations {
@@ -132,6 +134,7 @@ dependencies {
     // sosialhjelp-common
     implementation("no.nav.sosialhjelp:sosialhjelp-common-api:${Versions.sosialhjelpCommon}")
     implementation("no.nav.sosialhjelp:sosialhjelp-common-selftest:${Versions.sosialhjelpCommon}")
+    implementation("no.nav.sosialhjelp:sosialhjelp-common-kotlin-utils:0.3")
 
     // KS / Fiks
     implementation("no.ks.fiks.svarut:svarut-rest-klient:${Versions.fiksSvarUt}")
@@ -180,6 +183,8 @@ dependencies {
 
     // Tika
     implementation("org.apache.tika:tika-core:${Versions.tika}")
+    implementation("org.apache.tika:tika-parsers-standard-package:2.7.0")
+    implementation("com.idrsolutions:jdeli-trial:2023.04")
 
     // netty
     implementation("io.projectreactor.netty:reactor-netty-http:${Versions.reactorNettyHttp}")

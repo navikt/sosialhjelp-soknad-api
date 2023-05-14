@@ -18,13 +18,13 @@ import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils.finnVedleggEllerKastExcept
 import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils.getSha512FromByteArray
 import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils.lagFilnavn
 import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils.validerFil
-import no.nav.sosialhjelp.soknad.vedlegg.filedetection.FileDetectionUtils
-import no.nav.sosialhjelp.soknad.vedlegg.filedetection.MimeTypes.APPLICATION_PDF
-import no.nav.sosialhjelp.soknad.vedlegg.filedetection.MimeTypes.TEXT_X_MATLAB
+import no.nav.sosialhjelp.soknad.vedlegg.filedetection.FileDetectionUtils.detectMimeType
+import no.nav.sosialhjelp.soknad.vedlegg.konvertering.FilKonvertering
+import no.nav.sosialhjelp.soknad.vedlegg.konvertering.VedleggWrapper
 import no.nav.sosialhjelp.soknad.vedlegg.virusscan.VirusScanner
 import org.springframework.stereotype.Component
 import java.io.ByteArrayInputStream
-import java.util.UUID
+import java.util.*
 
 @Component
 class MellomlagringService(
@@ -66,42 +66,43 @@ class MellomlagringService(
     fun uploadVedlegg(
         behandlingsId: String,
         vedleggstype: String,
-        data: ByteArray,
+        sourceData: ByteArray,
         originalfilnavn: String,
     ): MellomlagretVedleggMetadata {
-        var filnavn = originalfilnavn
 
-        val fileType = validerFil(data, filnavn)
-        virusScanner.scan(filnavn, data, behandlingsId, fileType.name)
+        val vedleggWrapper = FilKonvertering.konverterHvisStottet(sourceData, originalfilnavn)
+        val filOpplasting = opprettFilOpplasting(vedleggWrapper, behandlingsId)
 
-        val uuid = UUID.randomUUID().toString()
-        filnavn = lagFilnavn(filnavn, fileType, uuid)
+        return filOpplasting.run {
+            val navEksternId = getNavEksternId(behandlingsId)
+            mellomlagringClient.postVedlegg(navEksternId = navEksternId, filOpplasting = this)
 
-        val detectedMimeType = FileDetectionUtils.detectMimeType(data)
-        val mimetype = if (detectedMimeType.equals(TEXT_X_MATLAB, ignoreCase = true)) APPLICATION_PDF else detectedMimeType
+            val mellomlagredeVedlegg = mellomlagringClient.getMellomlagredeVedlegg(navEksternId = navEksternId)?.mellomlagringMetadataList
+            val filId = mellomlagredeVedlegg?.firstOrNull { it.filnavn == metadata.filnavn }?.filId
+                ?: throw IllegalStateException("Klarte ikke finne det mellomlagrede vedlegget som akkurat ble lastet opp")
 
-        val filOpplasting = FilOpplasting(
-            metadata = FilMetadata(
-                filnavn = filnavn,
-                mimetype = mimetype,
-                storrelse = data.size.toLong()
-            ),
-            data = ByteArrayInputStream(data)
-        )
+            // oppdater SoknadUnderArbeid etter suksessfull opplasting
+            oppdaterSoknadUnderArbeid(vedleggWrapper.data, behandlingsId, vedleggstype, metadata.filnavn)
 
-        val navEksternId = getNavEksternId(behandlingsId)
+            MellomlagretVedleggMetadata(filnavn = metadata.filnavn, filId = filId)
+        }
+    }
 
-        mellomlagringClient.postVedlegg(navEksternId = navEksternId, filOpplasting = filOpplasting)
+    private fun opprettFilOpplasting(vedleggWrapper: VedleggWrapper, behandlingsId: String): FilOpplasting {
+        return with(vedleggWrapper) {
 
-        val mellomlagredeVedlegg = mellomlagringClient.getMellomlagredeVedlegg(navEksternId = navEksternId)?.mellomlagringMetadataList
+            val fileType = validerFil(data, filnavn)
+            virusScanner.scan(filnavn, data, behandlingsId, fileType.name)
 
-        val filId = mellomlagredeVedlegg?.firstOrNull { it.filnavn == filnavn }?.filId
-            ?: throw IllegalStateException("Klarte ikke finne det mellomlagrede vedlegget som akkurat ble lastet opp")
-
-        // oppdater SoknadUnderArbeid etter suksessfull opplasting
-        oppdaterSoknadUnderArbeid(data, behandlingsId, vedleggstype, filnavn)
-
-        return MellomlagretVedleggMetadata(filnavn = filnavn, filId = filId)
+            FilOpplasting(
+                metadata = FilMetadata(
+                    filnavn = lagFilnavn(filnavn, fileType, UUID.randomUUID().toString()),
+                    mimetype = detectMimeType(data),
+                    storrelse = data.size.toLong()
+                ),
+                data = ByteArrayInputStream(data)
+            )
+        }
     }
 
     private fun oppdaterSoknadUnderArbeid(
