@@ -68,24 +68,25 @@ class MellomlagringService(
         vedleggstype: String,
         sourceData: ByteArray,
         originalfilnavn: String,
-    ): MellomlagretVedleggMetadata {
+    ): Pair<String, MellomlagretVedleggMetadata> {
 
         val vedleggWrapper = FilKonvertering.konverterHvisStottet(sourceData, originalfilnavn)
         val filOpplasting = opprettFilOpplasting(vedleggWrapper, behandlingsId)
 
-        return filOpplasting.run {
-            val navEksternId = getNavEksternId(behandlingsId)
-            mellomlagringClient.postVedlegg(navEksternId = navEksternId, filOpplasting = this)
+        val navEksternId = getNavEksternId(behandlingsId)
+        mellomlagringClient.postVedlegg(navEksternId = navEksternId, filOpplasting = filOpplasting)
 
-            val mellomlagredeVedlegg = mellomlagringClient.getMellomlagredeVedlegg(navEksternId = navEksternId)?.mellomlagringMetadataList
-            val filId = mellomlagredeVedlegg?.firstOrNull { it.filnavn == metadata.filnavn }?.filId
-                ?: throw IllegalStateException("Klarte ikke finne det mellomlagrede vedlegget som akkurat ble lastet opp")
+        val mellomlagredeVedlegg = mellomlagringClient.getMellomlagredeVedlegg(navEksternId = navEksternId)?.mellomlagringMetadataList
+        val filId = mellomlagredeVedlegg?.firstOrNull { it.filnavn == filOpplasting.metadata.filnavn }?.filId
+            ?: throw IllegalStateException("Klarte ikke finne det mellomlagrede vedlegget som akkurat ble lastet opp")
 
-            // oppdater SoknadUnderArbeid etter suksessfull opplasting
-            oppdaterSoknadUnderArbeid(vedleggWrapper.data, behandlingsId, vedleggstype, metadata.filnavn)
-
-            MellomlagretVedleggMetadata(filnavn = metadata.filnavn, filId = filId)
-        }
+        return Pair(
+            getSha512FromByteArray(vedleggWrapper.data),
+            MellomlagretVedleggMetadata(
+                filnavn = filOpplasting.metadata.filnavn,
+                filId = filId
+            )
+        )
     }
 
     private fun opprettFilOpplasting(vedleggWrapper: VedleggWrapper, behandlingsId: String): FilOpplasting {
@@ -96,7 +97,7 @@ class MellomlagringService(
 
             FilOpplasting(
                 metadata = FilMetadata(
-                    filnavn = lagFilnavn(filnavn, fileType, UUID.randomUUID().toString()),
+                    filnavn = lagFilnavn(filnavn, fileType, UUID.nameUUIDFromBytes(data).toString()),
                     mimetype = detectMimeType(data),
                     storrelse = data.size.toLong()
                 ),
@@ -105,15 +106,14 @@ class MellomlagringService(
         }
     }
 
-    private fun oppdaterSoknadUnderArbeid(
-        data: ByteArray,
+    fun oppdaterSoknadUnderArbeid(
+        sha512: String?,
         behandlingsId: String,
         vedleggstype: String,
         filnavn: String,
     ) {
+        if (sha512 == null) throw IllegalStateException()
         val eier = SubjectHandlerUtils.getUserIdFromToken()
-        val sha512 = getSha512FromByteArray(data)
-
         val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
 
         val jsonVedlegg = finnVedleggEllerKastException(vedleggstype, soknadUnderArbeid)
@@ -123,7 +123,6 @@ class MellomlagringService(
         jsonVedlegg.withStatus(Vedleggstatus.LastetOpp.toString()).filer.add(
             JsonFiler().withFilnavn(filnavn).withSha512(sha512)
         )
-
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier)
     }
 
@@ -183,7 +182,6 @@ class MellomlagringService(
         } catch (e: Exception) {
             false
         }
-
         return kanSoknadSendesMedDigisosApi
     }
 
@@ -194,7 +192,8 @@ class MellomlagringService(
 
 data class MellomlagretVedleggMetadata(
     val filnavn: String,
-    val filId: String
+    val filId: String,
+    val sha512: String? = null
 )
 
 data class MellomlagretVedlegg(

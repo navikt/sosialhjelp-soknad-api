@@ -6,6 +6,7 @@ import no.nav.sosialhjelp.soknad.util.ExampleFileRepository.EXCEL_FILE_OLD
 import no.nav.sosialhjelp.soknad.util.ExampleFileRepository.WORD_FILE
 import no.nav.sosialhjelp.soknad.util.ExampleFileRepository.WORD_FILE_OLD
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.FileDetectionUtils.detectMimeType
+import no.nav.sosialhjelp.soknad.vedlegg.filedetection.MimeTypes.APPLICATION_PDF
 import no.nav.sosialhjelp.soknad.vedlegg.konvertering.StottetFiltype.CSV
 import no.nav.sosialhjelp.soknad.vedlegg.konvertering.StottetFiltype.EXCEL
 import no.nav.sosialhjelp.soknad.vedlegg.konvertering.StottetFiltype.FiltypeUtil.finnFiltype
@@ -16,41 +17,40 @@ import org.junit.jupiter.api.Test
 class KonverteringTest {
     @Test
     fun `Test konverter excel-fil (xlsx) stottes`() {
-        val fil = EXCEL_FILE
-        val filtype = finnFiltype(detectMimeType(fil.readBytes()), fil.name)
-        assertThat(filtype).isEqualTo(EXCEL)
+        val stottetFiltype = finnFiltype(detectMimeType(EXCEL_FILE.readBytes()), EXCEL_FILE.name)
+        assertThat(stottetFiltype).isEqualTo(EXCEL)
 
-        val konvertertFil = filtype!!.getFiltypeConverter().konverterTilPdf(fil.readBytes())
-        val detectMimeType = detectMimeType(konvertertFil)
-
-        assertThat(detectMimeType).isEqualTo("application/pdf")
+        val konvertertFilBytes = stottetFiltype!!.getFiltypeConverter().konverterTilPdf(EXCEL_FILE.readBytes())
+        assertThat(detectMimeType(konvertertFilBytes)).isEqualTo(APPLICATION_PDF)
     }
 
     @Test
     fun `Test excel-fil (xls) stottes ikke`() {
-        val fil = EXCEL_FILE_OLD
-        val filtype = finnFiltype(detectMimeType(fil.readBytes()), fil.name)
-        assertThat(filtype).isNull()
+        val stottetFiltype = finnFiltype(detectMimeType(EXCEL_FILE_OLD.readBytes()), EXCEL_FILE_OLD.name)
+        assertThat(stottetFiltype).isNull()
     }
 
     @Test
     fun `Test word-fil (docx) stottes`() {
-        val fil = WORD_FILE
-        val filtype = finnFiltype(detectMimeType(fil.readBytes()), fil.name)
-        assertThat(filtype).isEqualTo(WORD)
+        val stottetFiltype = finnFiltype(detectMimeType(WORD_FILE.readBytes()), WORD_FILE.name)
+        assertThat(stottetFiltype).isEqualTo(WORD)
+
+        val konvertertFilBytes = stottetFiltype!!.getFiltypeConverter().konverterTilPdf(WORD_FILE.readBytes())
+        assertThat(detectMimeType(konvertertFilBytes)).isEqualTo(APPLICATION_PDF)
     }
 
     @Test
     fun `Test word-fil (doc) stottes ikke`() {
-        val fil = WORD_FILE_OLD
-        val filtype = finnFiltype(detectMimeType(fil.readBytes()), fil.name)
-        assertThat(filtype).isNull()
+        val stottetFiltype = finnFiltype(detectMimeType(WORD_FILE_OLD.readBytes()), WORD_FILE_OLD.name)
+        assertThat(stottetFiltype).isNull()
     }
 
     @Test
     fun `Test csv-fil (csv) stottes`() {
-        val fil = CSV_FILE
-        val filtype = finnFiltype(detectMimeType(fil.readBytes()), fil.name)
-        assertThat(filtype).isEqualTo(CSV)
+        val stottetFiltype = finnFiltype(detectMimeType(CSV_FILE.readBytes()), CSV_FILE.name)
+        assertThat(stottetFiltype).isEqualTo(CSV)
+
+        val konvertertPdfBytes = stottetFiltype!!.getFiltypeConverter().konverterTilPdf(CSV_FILE.readBytes())
+        assertThat(detectMimeType(konvertertPdfBytes)).isEqualTo(APPLICATION_PDF)
     }
 }
