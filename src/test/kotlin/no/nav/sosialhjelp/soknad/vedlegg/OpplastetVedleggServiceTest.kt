@@ -21,12 +21,20 @@ import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedle
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
+import no.nav.sosialhjelp.soknad.util.ExampleFileRepository.CSV_FILE
+import no.nav.sosialhjelp.soknad.util.ExampleFileRepository.EXCEL_FILE
+import no.nav.sosialhjelp.soknad.util.ExampleFileRepository.EXCEL_FILE_OLD
+import no.nav.sosialhjelp.soknad.util.ExampleFileRepository.TEXT_FILE
+import no.nav.sosialhjelp.soknad.util.ExampleFileRepository.WORD_FILE
+import no.nav.sosialhjelp.soknad.util.ExampleFileRepository.WORD_FILE_OLD
 import no.nav.sosialhjelp.soknad.vedlegg.OpplastetVedleggService.Companion.MAKS_SAMLET_VEDLEGG_STORRELSE
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.SamletVedleggStorrelseForStorException
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.UgyldigOpplastingTypeException
+import no.nav.sosialhjelp.soknad.vedlegg.filedetection.FileDetectionUtils.detectMimeType
 import no.nav.sosialhjelp.soknad.vedlegg.virusscan.VirusScanner
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
+import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -85,7 +93,8 @@ internal class OpplastetVedleggServiceTest {
 
         val imageFile = createByteArrayFromJpeg()
         val opplastetVedlegg =
-            opplastetVedleggService.saveVedleggAndUpdateVedleggstatus(BEHANDLINGSID, TYPE, imageFile, FILNAVN1)
+            opplastetVedleggService.lastOppVedlegg(BEHANDLINGSID, TYPE, imageFile, FILNAVN1)
+        opplastetVedleggService.oppdaterVedleggStatus(opplastetVedlegg, BEHANDLINGSID, TYPE)
         val soknadUnderArbeid = soknadUnderArbeidSlot.captured
         val jsonVedlegg = soknadUnderArbeid.jsonInternalSoknad!!.vedlegg.vedlegg[0]
         assertThat(jsonVedlegg.type + "|" + jsonVedlegg.tilleggsinfo).isEqualTo(TYPE)
@@ -164,22 +173,22 @@ internal class OpplastetVedleggServiceTest {
         assertThatExceptionOfType(UgyldigOpplastingTypeException::class.java)
             .isThrownBy {
                 opplastetVedleggService
-                    .saveVedleggAndUpdateVedleggstatus(BEHANDLINGSID, TYPE, imageFile, "filnavn.jfif")
+                    .lastOppVedlegg(BEHANDLINGSID, TYPE, imageFile, "filnavn.jfif")
             }
         assertThatExceptionOfType(UgyldigOpplastingTypeException::class.java)
             .isThrownBy {
                 opplastetVedleggService
-                    .saveVedleggAndUpdateVedleggstatus(BEHANDLINGSID, TYPE, imageFile, "filnavn.pjpeg")
+                    .lastOppVedlegg(BEHANDLINGSID, TYPE, imageFile, "filnavn.pjpeg")
             }
         assertThatExceptionOfType(UgyldigOpplastingTypeException::class.java)
             .isThrownBy {
                 opplastetVedleggService
-                    .saveVedleggAndUpdateVedleggstatus(BEHANDLINGSID, TYPE, imageFile, "filnavn.pjp")
+                    .lastOppVedlegg(BEHANDLINGSID, TYPE, imageFile, "filnavn.pjp")
             }
         assertThatExceptionOfType(UgyldigOpplastingTypeException::class.java)
             .isThrownBy {
                 opplastetVedleggService
-                    .saveVedleggAndUpdateVedleggstatus(
+                    .lastOppVedlegg(
                         BEHANDLINGSID,
                         TYPE,
                         "ikkeBildeEllerPdf".toByteArray(),
@@ -190,46 +199,20 @@ internal class OpplastetVedleggServiceTest {
 
     @Test
     fun skalUtvideFilnavnHvisTikaValidererOkMenFilExtensionMangler() {
-        every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns createSoknadUnderArbeid(
-            JsonInternalSoknad().withVedlegg(
-                JsonVedleggSpesifikasjon().withVedlegg(
-                    listOf(
-                        JsonVedlegg()
-                            .withType(OpplastetVedleggType(TYPE).type)
-                            .withTilleggsinfo(OpplastetVedleggType(TYPE).tilleggsinfo)
-                            .withStatus("VedleggKreves")
-                    )
-                )
-            )
-        )
-        every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
-        every { opplastetVedleggRepository.opprettVedlegg(any(), any()) } returns "321"
+        doCommonMocking()
 
         val imageFile = createByteArrayFromJpeg()
         val opplastetVedlegg = opplastetVedleggService
-            .saveVedleggAndUpdateVedleggstatus(BEHANDLINGSID, TYPE, imageFile, "filnavnUtenFiltype")
+            .lastOppVedlegg(BEHANDLINGSID, TYPE, imageFile, "filnavnUtenFiltype")
         assertThat(opplastetVedlegg.filnavn).startsWith("filnavnUtenFiltype").endsWith(".jpg")
     }
 
     @Test
     fun skalUtvideFilnavnHvisTikaValidererOkMenFilnavnInneholderPunktumUtenGyldigFilExtension() {
-        every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns createSoknadUnderArbeid(
-            JsonInternalSoknad().withVedlegg(
-                JsonVedleggSpesifikasjon().withVedlegg(
-                    listOf(
-                        JsonVedlegg()
-                            .withType(OpplastetVedleggType(TYPE).type)
-                            .withTilleggsinfo(OpplastetVedleggType(TYPE).tilleggsinfo)
-                            .withStatus("VedleggKreves")
-                    )
-                )
-            )
-        )
-        every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
-        every { opplastetVedleggRepository.opprettVedlegg(any(), any()) } returns "321"
+        doCommonMocking()
 
         val imageFile = createByteArrayFromJpeg()
-        val opplastetVedlegg = opplastetVedleggService.saveVedleggAndUpdateVedleggstatus(
+        val opplastetVedlegg = opplastetVedleggService.lastOppVedlegg(
             BEHANDLINGSID,
             TYPE,
             imageFile,
@@ -240,6 +223,90 @@ internal class OpplastetVedleggServiceTest {
 
     @Test
     fun skalEndreFilExtensionHvisTikaValidererSomNoeAnnetEnnFilnavnetTilsier() {
+        doCommonMocking()
+
+        val imageFile = createByteArrayFromJpeg()
+        val opplastetVedlegg =
+            opplastetVedleggService.lastOppVedlegg(BEHANDLINGSID, TYPE, imageFile, "filnavn.pdf")
+        assertThat(opplastetVedlegg.filnavn).startsWith("filnavn").endsWith(".jpg")
+    }
+
+    @Test
+    fun `Skal kunne laste opp excel-filformat`() {
+        doCommonMocking()
+
+        val filename = EXCEL_FILE.let { it.name.substring(0, it.name.indexOf(".")) }
+        val opplastetVedlegg = opplastetVedleggService.lastOppVedlegg(
+            BEHANDLINGSID,
+            TYPE,
+            EXCEL_FILE.readBytes(),
+            EXCEL_FILE.name
+        )
+        assertThat(opplastetVedlegg.filnavn).startsWith(filename).endsWith(".pdf")
+    }
+
+    @Test
+    fun `Skal kunne laste opp word-filformat`() {
+        doCommonMocking()
+
+        val filename = WORD_FILE.let { it.name.substring(0, it.name.indexOf(".")) }
+        val opplastetVedlegg = opplastetVedleggService.lastOppVedlegg(
+            BEHANDLINGSID,
+            TYPE,
+            WORD_FILE.readBytes(),
+            WORD_FILE.name
+        )
+        assertThat(opplastetVedlegg.filnavn).startsWith(filename).endsWith(".pdf")
+    }
+
+    @Test
+    fun `Skal kunne laste opp csv-filformat`() {
+        doCommonMocking()
+
+        val filename = CSV_FILE.let { it.name.substring(0, it.name.indexOf(".")) }
+        val opplastetVedlegg = opplastetVedleggService.lastOppVedlegg(
+            BEHANDLINGSID,
+            TYPE,
+            CSV_FILE.readBytes(),
+            CSV_FILE.name
+        )
+        assertThat(opplastetVedlegg.filnavn).startsWith(filename).endsWith(".pdf")
+    }
+
+    @Test
+    fun `Skal ikke kunne laste opp gammelt Excel-format`() {
+        assertThatThrownBy {
+            opplastetVedleggService
+                .lastOppVedlegg(BEHANDLINGSID, TYPE, EXCEL_FILE_OLD.readBytes(), EXCEL_FILE_OLD.name)
+        }
+            .isInstanceOf(UgyldigOpplastingTypeException::class.java)
+            .hasMessageContaining("Ugyldig filtype for opplasting")
+            .hasMessageContaining(detectMimeType(EXCEL_FILE_OLD.readBytes()))
+    }
+
+    @Test
+    fun `Skal ikke kunne laste opp gammelt Word-format`() {
+        assertThatThrownBy {
+            opplastetVedleggService
+                .lastOppVedlegg(BEHANDLINGSID, TYPE, WORD_FILE_OLD.readBytes(), WORD_FILE_OLD.name)
+        }
+            .isInstanceOf(UgyldigOpplastingTypeException::class.java)
+            .hasMessageContaining("Ugyldig filtype for opplasting")
+            .hasMessageContaining(detectMimeType(WORD_FILE_OLD.readBytes()))
+    }
+
+    @Test
+    fun `Vanlig tekst-fil konverteres ikke`() {
+        assertThatThrownBy {
+            opplastetVedleggService
+                .lastOppVedlegg(BEHANDLINGSID, TYPE, TEXT_FILE.readBytes(), TEXT_FILE.name)
+        }
+            .isInstanceOf(UgyldigOpplastingTypeException::class.java)
+            .hasMessageContaining("Ugyldig filtype for opplasting")
+            .hasMessageContaining(detectMimeType(TEXT_FILE.readBytes()))
+    }
+
+    private fun doCommonMocking() {
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns createSoknadUnderArbeid(
             JsonInternalSoknad().withVedlegg(
                 JsonVedleggSpesifikasjon().withVedlegg(
@@ -254,11 +321,6 @@ internal class OpplastetVedleggServiceTest {
         )
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
         every { opplastetVedleggRepository.opprettVedlegg(any(), any()) } returns "321"
-
-        val imageFile = createByteArrayFromJpeg()
-        val opplastetVedlegg =
-            opplastetVedleggService.saveVedleggAndUpdateVedleggstatus(BEHANDLINGSID, TYPE, imageFile, "filnavn.pdf")
-        assertThat(opplastetVedlegg.filnavn).startsWith("filnavn").endsWith(".jpg")
     }
 
     private fun createByteArrayFromJpeg(): ByteArray {
