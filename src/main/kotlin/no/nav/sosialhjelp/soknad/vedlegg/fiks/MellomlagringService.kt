@@ -5,8 +5,8 @@ import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.MiljoUtils.isNonProduction
 import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
-import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.Vedleggstatus
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.Vedleggstatus.LastetOpp
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.Vedleggstatus.VedleggKreves
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils
@@ -24,7 +24,8 @@ import no.nav.sosialhjelp.soknad.vedlegg.konvertering.VedleggWrapper
 import no.nav.sosialhjelp.soknad.vedlegg.virusscan.VirusScanner
 import org.springframework.stereotype.Component
 import java.io.ByteArrayInputStream
-import java.util.*
+import java.util.UUID.nameUUIDFromBytes as uuidFromBytes
+import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken as eier
 
 @Component
 class MellomlagringService(
@@ -97,7 +98,7 @@ class MellomlagringService(
 
             FilOpplasting(
                 metadata = FilMetadata(
-                    filnavn = lagFilnavn(filnavn, fileType, UUID.nameUUIDFromBytes(data).toString()),
+                    filnavn = lagFilnavn(filnavn, fileType, uuidFromBytes(data)),
                     mimetype = detectMimeType(data),
                     storrelse = data.size.toLong()
                 ),
@@ -107,23 +108,26 @@ class MellomlagringService(
     }
 
     fun oppdaterSoknadUnderArbeid(
-        sha512: String?,
+        sha512: String,
         behandlingsId: String,
         vedleggstype: String,
         filnavn: String,
     ) {
-        if (sha512 == null) throw IllegalStateException()
-        val eier = SubjectHandlerUtils.getUserIdFromToken()
-        val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
+        val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier())
 
         val jsonVedlegg = finnVedleggEllerKastException(vedleggstype, soknadUnderArbeid)
+
         if (jsonVedlegg.filer == null) {
             jsonVedlegg.filer = ArrayList()
         }
-        jsonVedlegg.withStatus(Vedleggstatus.LastetOpp.toString()).filer.add(
-            JsonFiler().withFilnavn(filnavn).withSha512(sha512)
-        )
-        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier)
+        jsonVedlegg
+            .withStatus(LastetOpp.name)
+            .filer.add(
+                JsonFiler()
+                    .withFilnavn(filnavn)
+                    .withSha512(sha512)
+            )
+        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier())
     }
 
     fun deleteVedleggAndUpdateVedleggstatus(behandlingsId: String, vedleggId: String) {
@@ -139,7 +143,7 @@ class MellomlagringService(
         val aktueltVedlegg = mellomlagredeVedlegg.firstOrNull { it.filId == vedleggId } ?: return
 
         // oppdater soknadUnderArbeid
-        val eier = SubjectHandlerUtils.getUserIdFromToken()
+        val eier = eier()
         val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
 
         val jsonVedlegg: JsonVedlegg = JsonVedleggUtils.getVedleggFromInternalSoknad(soknadUnderArbeid)
@@ -151,7 +155,7 @@ class MellomlagringService(
         jsonVedlegg.filer.removeIf { it.filnavn == aktueltVedlegg.filnavn }
 
         if (jsonVedlegg.filer.isEmpty()) {
-            jsonVedlegg.status = Vedleggstatus.VedleggKreves.toString()
+            jsonVedlegg.status = VedleggKreves.toString()
         }
 
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier)
