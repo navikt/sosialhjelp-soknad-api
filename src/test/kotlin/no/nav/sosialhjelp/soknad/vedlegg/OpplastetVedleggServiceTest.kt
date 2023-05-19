@@ -24,10 +24,12 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderAr
 import no.nav.sosialhjelp.soknad.util.ExampleFileRepository.CSV_FILE
 import no.nav.sosialhjelp.soknad.util.ExampleFileRepository.EXCEL_FILE
 import no.nav.sosialhjelp.soknad.util.ExampleFileRepository.EXCEL_FILE_OLD
+import no.nav.sosialhjelp.soknad.util.ExampleFileRepository.PDF_FILE
 import no.nav.sosialhjelp.soknad.util.ExampleFileRepository.TEXT_FILE
 import no.nav.sosialhjelp.soknad.util.ExampleFileRepository.WORD_FILE
 import no.nav.sosialhjelp.soknad.util.ExampleFileRepository.WORD_FILE_OLD
 import no.nav.sosialhjelp.soknad.vedlegg.OpplastetVedleggService.Companion.MAKS_SAMLET_VEDLEGG_STORRELSE
+import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils.getSha512FromByteArray
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.SamletVedleggStorrelseForStorException
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.UgyldigOpplastingTypeException
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.FileDetectionUtils.detectMimeType
@@ -41,6 +43,7 @@ import org.junit.jupiter.api.Test
 import java.awt.image.BufferedImage
 import java.io.ByteArrayOutputStream
 import java.time.LocalDateTime
+import java.util.UUID
 import javax.imageio.ImageIO
 import javax.imageio.stream.ImageOutputStream
 import javax.imageio.stream.MemoryCacheImageOutputStream
@@ -304,6 +307,48 @@ internal class OpplastetVedleggServiceTest {
             .isInstanceOf(UgyldigOpplastingTypeException::class.java)
             .hasMessageContaining("Ugyldig filtype for opplasting")
             .hasMessageContaining(detectMimeType(TEXT_FILE.readBytes()))
+    }
+
+    @Test
+    fun `Oppdater vedleggstatus`() {
+        val opplastetVedlegg = OpplastetVedlegg(
+            eier = SubjectHandlerUtils.getUserIdFromToken(),
+            vedleggType = OpplastetVedleggType(TYPE),
+            data = PDF_FILE.readBytes(),
+            soknadId = 1L,
+            filnavn = PDF_FILE.name
+        )
+        every { opplastetVedleggRepository.opprettVedlegg(opplastetVedlegg, any()) } returns UUID.nameUUIDFromBytes(
+            PDF_FILE.readBytes()
+        ).toString()
+
+        val initSoknadUnderArbeid = createSoknadUnderArbeid(
+            JsonInternalSoknad().withVedlegg(
+                JsonVedleggSpesifikasjon().withVedlegg(
+                    listOf(
+                        JsonVedlegg()
+                            .withType(OpplastetVedleggType(TYPE).type)
+                            .withTilleggsinfo(OpplastetVedleggType(TYPE).tilleggsinfo)
+                            .withStatus("VedleggKreves")
+                    )
+                )
+            )
+        )
+        every { soknadUnderArbeidRepository.hentSoknad(BEHANDLINGSID, any()) } returns initSoknadUnderArbeid
+        val slot = slot<SoknadUnderArbeid>()
+        every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(slot), any()) } just runs
+
+        opplastetVedleggService.oppdaterVedleggStatus(
+            opplastetVedlegg,
+            BEHANDLINGSID,
+            "hei|på deg"
+        )
+
+        val soknadUnderArbeid = slot.captured
+        val fil = soknadUnderArbeid.jsonInternalSoknad!!.vedlegg!!.vedlegg[0].filer[0]
+
+        assertThat(fil.sha512).isEqualTo(getSha512FromByteArray(PDF_FILE.readBytes()))
+        assertThat(fil.filnavn.contains(PDF_FILE.name.split(".")[0]))
     }
 
     private fun doCommonMocking() {

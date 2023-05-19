@@ -7,7 +7,6 @@ import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedle
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.Vedleggstatus
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils.finnVedleggEllerKastException
-import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils.getSha512FromByteArray
 import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils.lagFilnavn
 import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils.validerFil
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.SamletVedleggStorrelseForStorException
@@ -15,6 +14,7 @@ import no.nav.sosialhjelp.soknad.vedlegg.konvertering.FilKonvertering
 import no.nav.sosialhjelp.soknad.vedlegg.virusscan.VirusScanner
 import org.springframework.stereotype.Component
 import java.util.*
+import java.util.UUID.nameUUIDFromBytes as uuidFromBytes
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken as eier
 
 @Component
@@ -37,17 +37,12 @@ class OpplastetVedleggService(
 
         val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier())
 
-        val uuid = UUID.randomUUID().toString()
-        val behandletFilnavn = lagFilnavn(vedleggWrapper.filnavn, fileType, uuid)
-
         return OpplastetVedlegg(
-            uuid = uuid,
             eier = eier(),
             vedleggType = OpplastetVedleggType(vedleggstype),
             data = sourceData,
             soknadId = soknadUnderArbeid.soknadId,
-            filnavn = behandletFilnavn,
-            sha512 = getSha512FromByteArray(vedleggWrapper.data)
+            filnavn = lagFilnavn(vedleggWrapper.filnavn, fileType, uuidFromBytes(vedleggWrapper.data)),
         )
     }
 
@@ -65,7 +60,6 @@ class OpplastetVedleggService(
                     .withFilnavn(opplastetVedlegg.filnavn)
                     .withSha512(opplastetVedlegg.sha512)
             )
-
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier())
     }
 
