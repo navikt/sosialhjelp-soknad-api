@@ -60,7 +60,7 @@ object Versions {
 }
 
 plugins {
-    kotlin("jvm") version "1.8.10"
+    kotlin("jvm") version "1.8.21"
     kotlin("plugin.spring") version "1.8.10"
     id("org.springframework.boot") version "3.0.5"
     id("org.flywaydb.flyway") version "9.16.1"
