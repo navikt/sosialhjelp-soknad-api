@@ -63,7 +63,7 @@ plugins {
     kotlin("jvm") version "1.8.10"
     kotlin("plugin.spring") version "1.8.10"
     id("org.springframework.boot") version "3.0.5"
-    id("org.flywaydb.flyway") version "9.16.1"
+    id("org.flywaydb.flyway") version "9.18.0"
     id("com.github.ben-manes.versions") version "0.46.0" // ./gradlew dependencyUpdates
     id("org.jlleitschuh.gradle.ktlint") version "11.3.1"
 }
