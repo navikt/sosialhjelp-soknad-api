@@ -61,7 +61,7 @@ object Versions {
 
 plugins {
     kotlin("jvm") version "1.8.10"
-    kotlin("plugin.spring") version "1.8.10"
+    kotlin("plugin.spring") version "1.8.21"
     id("org.springframework.boot") version "3.0.5"
     id("org.flywaydb.flyway") version "9.16.1"
     id("com.github.ben-manes.versions") version "0.46.0" // ./gradlew dependencyUpdates
