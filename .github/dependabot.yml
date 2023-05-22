@@ -1,0 +1,45 @@
+version: 2
+# Kan settes opp til å sjekke interne pakker fra GHPR
+#registries:
+#  maven-github:
+#    type: maven-repository
+#    url: https://maven.pkg.github.com/navikt/*
+#    username: x-access-token
+#    password: "${{secrets.NAV_READ_PACKAGES}}"
+updates:
+#  - package-ecosystem: "Maven Github"
+#    directory: "/"
+#    labels:
+#    registries: "*"
+#    schedule:
+#      interval: daily
+
+  - package-ecosystem: gradle
+    directory: "/"
+    labels:
+    registries: "*"
+    schedule:
+      interval: daily
+    commit-message:
+      prefix: "gradle"
+
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: daily
+    commit-message:
+      prefix: "github-actions"
+
+  - package-ecosystem: docker
+    directory: "/"
+    schedule:
+      interval: daily
+    commit-message:
+      prefix: "[docker]"
+
+  - package-ecosystem: maven
+    directory: "/"
+    schedule:
+      interval: "daily"
+    commit-message:
+      prefix: "maven"
