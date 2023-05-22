@@ -87,7 +87,11 @@ class OkonomiskeOpplysningerRessurs(
         )
     }
 
-    private fun hentBasertPaaMellomlagredeVedlegg(behandlingsId: String, eier: String, soknadUnderArbeid: SoknadUnderArbeid): VedleggFrontends {
+    private fun hentBasertPaaMellomlagredeVedlegg(
+        behandlingsId: String,
+        eier: String,
+        soknadUnderArbeid: SoknadUnderArbeid
+    ): VedleggFrontends {
         val jsonOkonomi = soknadUnderArbeid.jsonInternalSoknad?.soknad?.data?.okonomi ?: JsonOkonomi()
         val jsonVedleggs = JsonVedleggUtils.getVedleggFromInternalSoknad(soknadUnderArbeid)
         val paakrevdeVedlegg = VedleggsforventningMaster.finnPaakrevdeVedlegg(soknadUnderArbeid.jsonInternalSoknad)
@@ -97,7 +101,8 @@ class OkonomiskeOpplysningerRessurs(
             emptyList()
         }
 
-        val opplastedeVedleggFraJson = jsonVedleggs.filter { it.status == Vedleggstatus.LastetOpp.toString() }.flatMap { it.filer }
+        val opplastedeVedleggFraJson =
+            jsonVedleggs.filter { it.status == Vedleggstatus.LastetOpp.toString() }.flatMap { it.filer }
         if (opplastedeVedleggFraJson.isNotEmpty() &&
             mellomlagredeVedlegg.isNotEmpty() &&
             opplastedeVedleggFraJson.size != mellomlagredeVedlegg.size
@@ -105,14 +110,21 @@ class OkonomiskeOpplysningerRessurs(
             log.info("Ulikt antall vedlegg i vedlegg.json (${opplastedeVedleggFraJson.size}) og mellomlagret hos KS (${mellomlagredeVedlegg.size}) for søknad $behandlingsId")
         }
 
-        val slettedeVedlegg = removeIkkePaakrevdeMellomlagredeVedlegg(behandlingsId, jsonVedleggs, paakrevdeVedlegg, mellomlagredeVedlegg)
+        val slettedeVedlegg =
+            removeIkkePaakrevdeMellomlagredeVedlegg(behandlingsId, jsonVedleggs, paakrevdeVedlegg, mellomlagredeVedlegg)
         addPaakrevdeVedlegg(jsonVedleggs, paakrevdeVedlegg)
 
         soknadUnderArbeid.jsonInternalSoknad?.vedlegg = JsonVedleggSpesifikasjon().withVedlegg(jsonVedleggs)
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier)
 
         return VedleggFrontends(
-            okonomiskeOpplysninger = jsonVedleggs.map { mapMellomlagredeVedleggToVedleggFrontend(it, jsonOkonomi, mellomlagredeVedlegg) },
+            okonomiskeOpplysninger = jsonVedleggs.map {
+                mapMellomlagredeVedleggToVedleggFrontend(
+                    it,
+                    jsonOkonomi,
+                    mellomlagredeVedlegg
+                )
+            },
             slettedeVedlegg = slettedeVedlegg,
             isOkonomiskeOpplysningerBekreftet = isOkonomiskeOpplysningerBekreftet(jsonOkonomi)
         )
@@ -136,6 +148,7 @@ class OkonomiskeOpplysningerRessurs(
                 } else {
                     addAllUtbetalingerToJsonOkonomi(vedleggFrontend, jsonOkonomi, soknadType)
                 }
+
                 "opplysningerUtgift" -> addAllOpplysningUtgifterToJsonOkonomi(vedleggFrontend, jsonOkonomi, soknadType)
                 "oversiktUtgift" -> addAllOversiktUtgifterToJsonOkonomi(vedleggFrontend, jsonOkonomi, soknadType)
                 "formue" -> addAllFormuerToJsonOkonomi(vedleggFrontend, jsonOkonomi, soknadType)
@@ -237,8 +250,8 @@ class OkonomiskeOpplysningerRessurs(
     }
 
     data class VedleggFrontends(
-        var okonomiskeOpplysninger: List<VedleggFrontend>?,
-        var slettedeVedlegg: List<VedleggFrontend>?,
+        var okonomiskeOpplysninger: List<VedleggFrontend> = emptyList(),
+        var slettedeVedlegg: List<VedleggFrontend> = emptyList(),
         var isOkonomiskeOpplysningerBekreftet: Boolean
     )
 
