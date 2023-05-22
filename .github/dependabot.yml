@@ -39,10 +39,3 @@ updates:
       interval: daily
     commit-message:
       prefix: "[docker]"
-
-  - package-ecosystem: "maven"
-    directory: "/"
-    schedule:
-      interval: "daily"
-    commit-message:
-      prefix: "maven"
