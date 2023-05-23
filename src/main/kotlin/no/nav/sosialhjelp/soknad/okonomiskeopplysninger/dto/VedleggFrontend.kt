@@ -11,7 +11,7 @@ data class VedleggFrontend(
     @Schema(readOnly = true)
     val vedleggStatus: VedleggStatus = VedleggStatus.Ukjent,
     @Schema(readOnly = true)
-    val filer: List<FilFrontend>?,
+    val filer: List<FilFrontend> = emptyList(),
 )
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
