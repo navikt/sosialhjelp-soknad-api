@@ -2,15 +2,31 @@ name: PR
 on: [pull_request]
 
 jobs:
-  snyk:
+  code_analysis:
     runs-on: ubuntu-latest
+    env:
+      ORG_GRADLE_PROJECT_githubUser: x-access-token
+      ORG_GRADLE_PROJECT_githubPassword: ${{ secrets.GITHUB_TOKEN }}
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [ 'java' ]
+
     steps:
       - uses: actions/checkout@v3
-#      - name: Run Snyk to check for vulnerabilities
-#        uses: snyk/actions/gradle-jdk17@master
-#        with:
-#          args: --org=teamdigisos --project-name=${{ github.event.repository.name }} --remote-repo-url=${{ github.event.repository.name }}
-#        env:
-#          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-#          ORG_GRADLE_PROJECT_githubUser: x-access-token
-#          ORG_GRADLE_PROJECT_githubPassword: ${{ secrets.GITHUB_TOKEN }}
+      - name: CodeQL
+        uses: github/codeql-action/init@v2
+        with:
+          language: ${{ matrix.language }}
+      - name: compile and run tests
+        run: ./gradlew assemble
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v2
+        with:
+          category: "/language:${{matrix.language}}"
