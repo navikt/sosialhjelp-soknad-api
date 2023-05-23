@@ -1,0 +1,15 @@
+name: build
+on: workflow_dispatch
+
+jobs:
+  build:
+    name: Dependency Submission
+    runs-on: ubuntu-latest
+    permissions: # The Dependency Submission API requires write permission
+      contents: write
+    steps:
+      - name: 'Checkout Repository'
+        uses: actions/checkout@v3
+
+      - name: Run snapshot action
+        uses: mikepenz/gradle-dependency-submission@{latest}
