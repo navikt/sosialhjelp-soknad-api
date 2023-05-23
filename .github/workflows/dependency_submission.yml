@@ -1,5 +1,8 @@
-name: Gradle Dependency Submission
-on: workflow_dispatch
+name: Dependency Submission
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 5 * * 1-5'
 
 jobs:
   build:
