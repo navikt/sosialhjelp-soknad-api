@@ -23,9 +23,15 @@ jobs:
         uses: github/codeql-action/init@v2
         with:
           language: ${{ matrix.language }}
-      - name: compile and run tests
-        run: ./gradlew assemble
-
+#      - uses: actions/setup-java@v3
+#        with:
+#          distribution: 'temurin'
+#          java-version: '17'
+#          cache: 'gradle'
+#      - name: compile and run tests
+#        run: ./gradlew assemble
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v2
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2
         with:
