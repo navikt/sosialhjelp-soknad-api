@@ -5,6 +5,9 @@ jobs:
   build:
     name: Dependency Submission
     runs-on: ubuntu-latest
+    env:
+      ORG_GRADLE_PROJECT_githubUser: x-access-token
+      ORG_GRADLE_PROJECT_githubPassword: ${{ secrets.GITHUB_TOKEN }}
     permissions: # The Dependency Submission API requires write permission
       contents: write
     steps:
