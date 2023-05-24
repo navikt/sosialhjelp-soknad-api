@@ -235,7 +235,7 @@ internal class OpplastetVedleggServiceTest {
     }
 
     @Test
-    fun `Skal kunne laste opp excel-filformat`() {
+    fun `Opplasting av Excel-fil kaster ikke exception`() {
         doCommonMocking()
 
         val filename = EXCEL_FILE.let { it.name.substring(0, it.name.indexOf(".")) }
@@ -249,7 +249,7 @@ internal class OpplastetVedleggServiceTest {
     }
 
     @Test
-    fun `Skal kunne laste opp word-filformat`() {
+    fun `Opplasting av Word-fil kaster ikke exception`() {
         doCommonMocking()
 
         val filename = WORD_FILE.let { it.name.substring(0, it.name.indexOf(".")) }
@@ -263,7 +263,7 @@ internal class OpplastetVedleggServiceTest {
     }
 
     @Test
-    fun `Skal kunne laste opp csv-filformat`() {
+    fun `Opplasting av CSV-fil kaster ikke exception`() {
         doCommonMocking()
 
         val filename = CSV_FILE.let { it.name.substring(0, it.name.indexOf(".")) }
@@ -310,7 +310,7 @@ internal class OpplastetVedleggServiceTest {
     }
 
     @Test
-    fun `Oppdater vedleggstatus`() {
+    fun `Skal oppdatere JsonInternalSoknad med vedleggsinformasjon`() {
         val opplastetVedlegg = OpplastetVedlegg(
             eier = SubjectHandlerUtils.getUserIdFromToken(),
             vedleggType = OpplastetVedleggType(TYPE),
