@@ -143,7 +143,7 @@ internal class MellomlagringServiceTest {
     }
 
     @Test
-    fun `Test upload pdf-vedlegg`() {
+    fun `Sjekker at logikk ved opplasting av pdf har forventet data`() {
         val bytes = PDF_FILE.readBytes()
 
         val behandlingsId = "123"
@@ -175,7 +175,7 @@ internal class MellomlagringServiceTest {
     }
 
     @Test
-    fun `Test upload Excel-fil`() {
+    fun `Konvertert excel til pdf har forventede metadata`() {
         val behandlingsId = "123"
         val eksternId = createPrefixedBehandlingsId(behandlingsId)
 
@@ -217,7 +217,7 @@ internal class MellomlagringServiceTest {
     }
 
     @Test
-    fun `Test oppdater soknad under arbeid`() {
+    fun `Test skal oppdatere JsonInternalSoknad med vedleggsinfo`() {
         val behandlingsId = "123"
 
         every { soknadUnderArbeidRepository.hentSoknad(behandlingsId, any()) } returns createSoknadUnderArbeid(
