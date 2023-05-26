@@ -47,7 +47,7 @@ object Versions {
     const val jodatime = "2.12.2"
     const val jsonsmart = "2.4.10"
     const val nimbusOauth2 = "10.7"
-    const val json = "20220924"
+    const val json = "20230227"
     const val byteBuddy = "1.12.20"
     const val jbossLogging = "3.5.0.Final"
     const val errorProneAnnotations = "2.15.0"
@@ -232,7 +232,9 @@ dependencies {
             because("https://security.snyk.io/vuln/SNYK-JAVA-NETMINIDEV-3369748")
         }
         implementation("com.nimbusds:oauth2-oidc-sdk:${Versions.nimbusOauth2}")
-        implementation("org.json:json:${Versions.json}")
+        implementation("org.json:json:${Versions.json}") {
+            because("https://github.com/advisories/GHSA-3vqj-43w4-2q58")
+        }
         implementation("net.bytebuddy:byte-buddy:${Versions.byteBuddy}")
         implementation("net.bytebuddy:byte-buddy-agent:${Versions.byteBuddy}")
         implementation("org.jboss.logging:jboss-logging:${Versions.jbossLogging}")
