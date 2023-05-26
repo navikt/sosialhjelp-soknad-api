@@ -3,8 +3,8 @@ package no.nav.sosialhjelp.soknad.app.client.pdl
 import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.exc.MismatchedInputException
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.fasterxml.jackson.module.kotlin.MissingKotlinParameterException
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import no.nav.sosialhjelp.soknad.app.Constants.HEADER_CALL_ID
@@ -59,7 +59,7 @@ abstract class PdlClient(
     protected inline fun <reified T>parse(response: String): T {
         return try {
             pdlMapper.readValue(response)
-        } catch (e: MissingKotlinParameterException) {
+        } catch (e: MismatchedInputException) {
             e.clearLocation()
             throw e
         } catch (e: JsonProcessingException) {
