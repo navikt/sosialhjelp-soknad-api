@@ -9,12 +9,12 @@ object Versions {
     const val sosialhjelpCommon = "1.20230209.0920-45d9782"
     const val fiksSvarUt = "1.2.0"
     const val fiksKryptering = "1.3.1"
-    const val springdoc = "2.0.2"
+    const val springdoc = "2.1.0"
     const val flyway = "9.16.1" // Husk å oppdatere plugin også
     const val ojdbc10 = "19.18.0.0"
     const val hsqldb = "2.7.1"
     const val lettuce = "6.2.3.RELEASE"
-    const val tokenValidation = "3.0.8"
+    const val tokenValidation = "3.1.0"
     const val javaJwt = "4.3.0"
     const val prometheus = "0.16.0"
     const val micrometer = "1.10.5"
@@ -56,7 +56,7 @@ object Versions {
     const val junit = "4.13.2"
     const val mockOauth2Server = "0.5.8"
     const val snakeyaml = "2.0"
-    const val springWebMvc = "6.0.7"
+    const val springWebMvc = "6.0.9"
 }
 
 plugins {
@@ -243,7 +243,7 @@ dependencies {
             because("https://security.snyk.io/vuln/SNYK-JAVA-ORGYAML-3152153")
         }
         implementation("org.springframework:spring-webmvc:${Versions.springWebMvc}") {
-            because("https://security.snyk.io/vuln/SNYK-JAVA-ORGSPRINGFRAMEWORK-3369852")
+            because("https://github.com/advisories/GHSA-wxqc-pxw9-g2p8")
         }
 
         testImplementation("org.assertj:assertj-core:${Versions.assertj}")
