@@ -27,10 +27,16 @@ jobs:
         run: ./gradlew ktlintCheck
       - name: Compile and run tests
         run: ./gradlew build
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: application
+          path: /build/libs/app.jar
 
   handle_image:
     name: Build, push, tag and release image
     if: github.actor != 'dependabot[bot]'
+    needs: build
     uses: navikt/sosialhjelp-workflows/.github/workflows/build_image.yml@main
     with:
       image_name: ghcr.io/${{ github.repository }}/${{ github.event.repository.name }}
