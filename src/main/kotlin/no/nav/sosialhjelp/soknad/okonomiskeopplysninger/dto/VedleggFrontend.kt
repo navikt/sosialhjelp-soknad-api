@@ -1,6 +1,7 @@
 package no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto
 
-import com.fasterxml.jackson.annotation.JsonInclude
+// Når vedlegg-redux er ferdig, sett inn:
+// import com.fasterxml.jackson.annotation.JsonInclude
 import io.swagger.v3.oas.annotations.media.Schema
 import no.nav.sosialhjelp.soknad.vedlegg.dto.FilFrontend
 
@@ -14,7 +15,8 @@ data class VedleggFrontend(
     val filer: List<FilFrontend> = emptyList(),
 )
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
+// Når vedlegg-redux er ferdig, sett inn:
+// @JsonInclude(JsonInclude.Include.NON_NULL)
 data class VedleggRadFrontend(
     @Schema(nullable = true)
     val beskrivelse: String? = null,
