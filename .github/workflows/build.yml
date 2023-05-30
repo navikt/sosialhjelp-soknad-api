@@ -31,12 +31,12 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: application
-          path: /build/libs/app.jar
+          path: ///home/runner/work/sosialhjelp-soknad-api/sosialhjelp-soknad-api/build/libs/app.jar
 
-  handle_image:
-    name: Build, push, tag and release image
-    if: github.actor != 'dependabot[bot]'
-    needs: build
-    uses: navikt/sosialhjelp-workflows/.github/workflows/build_image.yml@main
-    with:
-      image_name: ghcr.io/${{ github.repository }}/${{ github.event.repository.name }}
+#  handle_image:
+#    name: Build, push, tag and release image
+#    if: github.actor != 'dependabot[bot]'
+#    needs: build
+#    uses: navikt/sosialhjelp-workflows/.github/workflows/build_image.yml@main
+#    with:
+#      image_name: ghcr.io/${{ github.repository }}/${{ github.event.repository.name }}
