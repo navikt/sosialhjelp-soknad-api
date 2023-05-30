@@ -13,7 +13,7 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     env:
-      DOCKER_IMAGE: ghcr.io/${{ github.repository }}/${{ github.event.repository.name }}
+#      DOCKER_IMAGE: ghcr.io/${{ github.repository }}/${{ github.event.repository.name }}
       ORG_GRADLE_PROJECT_githubUser: x-access-token
       ORG_GRADLE_PROJECT_githubPassword: ${{ secrets.GITHUB_TOKEN }}
     steps:
@@ -25,13 +25,12 @@ jobs:
           cache: 'gradle'
       - name: Run lint
         run: ./gradlew ktlintCheck
-      - name: compile and run tests
+      - name: Compile and run tests
         run: ./gradlew build
-      - name: Create artifact version
-        id: artifact-version
-        uses: navikt/sosialhjelp-ci/actions/create-artifact-version@master
 
   handle_image:
     name: Build, push, tag and release image
     if: github.actor != 'dependabot[bot]'
     uses: navikt/sosialhjelp-workflows/.github/workflows/build_image.yml@main
+    with:
+      image_name: ghcr.io/${{ github.repository }}/${{ github.event.repository.name }}
