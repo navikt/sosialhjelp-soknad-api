@@ -13,4 +13,4 @@ jobs:
 
   dependency_submission:
     name: Dependency Submission Gradle
-    uses: navikt/sosialhjelp-workflows/.github/workflows/dependency_submission.yml@main
+    uses: navikt/sosialhjelp-workflows/.github/workflows/dep_sub_gradle.yml@main
