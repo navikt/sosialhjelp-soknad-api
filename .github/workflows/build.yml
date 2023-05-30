@@ -12,8 +12,6 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
-    outputs:
-      artifact-version: ${{ steps.artifact-version.outputs.version }}
     env:
       DOCKER_IMAGE: ghcr.io/${{ github.repository }}/${{ github.event.repository.name }}
       ORG_GRADLE_PROJECT_githubUser: x-access-token
@@ -35,9 +33,5 @@ jobs:
 
   handle_image:
     name: Build, push, tag and release image
-    needs: build
-    env:
-      artifact-version: ${{ needs.build.outputs.artifact-version }}
+    if: github.actor != 'dependabot[bot]'
     uses: navikt/sosialhjelp-workflows/.github/workflows/build_image.yml@main
-    with:
-      artifact-version: ${{ env.artifact-version }}
