@@ -43,5 +43,5 @@ jobs:
     needs: build
     uses: navikt/sosialhjelp-workflows/.github/workflows/build_image.yml@main
     with:
-      image_name: ghcr.io/${{ github.repository }}/${{ github.event.repository.name }}
       artifact_name: ${{ env.ARTIFACT_NAME }}
+      image_name: ghcr.io/${{ github.repository }}/${{ github.event.repository.name }}
