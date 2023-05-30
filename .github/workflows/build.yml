@@ -1,4 +1,6 @@
 name: Build image
+env:
+  ARTIFACT_NAME: app.jar
 on:
   push:
     branches:
@@ -30,13 +32,16 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
-          name: application
+          name: ${{ env.ARTIFACT_NAME }}
           path: ///home/runner/work/sosialhjelp-soknad-api/sosialhjelp-soknad-api/build/libs/app.jar
+          if-no-files-found: error
+          retention-days: 1
 
-#  handle_image:
-#    name: Build, push, tag and release image
-#    if: github.actor != 'dependabot[bot]'
-#    needs: build
-#    uses: navikt/sosialhjelp-workflows/.github/workflows/build_image.yml@main
-#    with:
-#      image_name: ghcr.io/${{ github.repository }}/${{ github.event.repository.name }}
+  handle_image:
+    name: Build, push, tag and release image
+    if: github.actor != 'dependabot[bot]'
+    needs: build
+    uses: navikt/sosialhjelp-workflows/.github/workflows/build_image.yml@main
+    with:
+      image_name: ghcr.io/${{ github.repository }}/${{ github.event.repository.name }}
+      artifact_name: ${{ env.ARTIFACT_NAME }}
