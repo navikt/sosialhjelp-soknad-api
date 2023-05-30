@@ -31,13 +31,13 @@ jobs:
         run: ./gradlew ktlintCheck
       - name: Compile and run tests
         run: ./gradlew build
-#      - name: Upload artifact
-#        uses: actions/upload-artifact@v3
-#        with:
-#          name: ${{ env.ARTIFACT_NAME }}
-#          path: ///home/runner/work/sosialhjelp-soknad-api/sosialhjelp-soknad-api/build/libs/app.jar
-#          if-no-files-found: error
-#          retention-days: 1
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ env.ARTIFACT_NAME }}
+          path: ///home/runner/work/sosialhjelp-soknad-api/sosialhjelp-soknad-api/build/libs/app.jar
+          if-no-files-found: error
+          retention-days: 1
 
   handle_image:
     name: Build, push, tag and release image
