@@ -23,7 +23,6 @@ import no.nav.sosialhjelp.soknad.oppsummering.dto.Type
 import no.nav.sosialhjelp.soknad.oppsummering.steg.OppsummeringTestUtils.validateFeltMedSvar
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import java.lang.Boolean
 
 internal class UtgifterOgGjeldStegTest {
 
@@ -46,7 +45,7 @@ internal class UtgifterOgGjeldStegTest {
         val bekreftelser = listOf(
             JsonOkonomibekreftelse()
                 .withType(SoknadJsonTyper.BEKREFTELSE_BOUTGIFTER)
-                .withVerdi(Boolean.FALSE)
+                .withVerdi(false)
         )
         val soknad = createSoknad(bekreftelser, null, null)
 
@@ -63,7 +62,7 @@ internal class UtgifterOgGjeldStegTest {
         val bekreftelser = listOf(
             JsonOkonomibekreftelse()
                 .withType(SoknadJsonTyper.BEKREFTELSE_BOUTGIFTER)
-                .withVerdi(Boolean.TRUE)
+                .withVerdi(true)
         )
         val opplysningUtgifter = listOf(
             JsonOkonomiOpplysningUtgift().withType(SoknadJsonTyper.UTGIFTER_STROM),
@@ -100,7 +99,7 @@ internal class UtgifterOgGjeldStegTest {
         val bekreftelser = listOf(
             JsonOkonomibekreftelse()
                 .withType(SoknadJsonTyper.BEKREFTELSE_BARNEUTGIFTER)
-                .withVerdi(Boolean.FALSE)
+                .withVerdi(false)
         )
         val soknad = createSoknad(bekreftelser, null, null)
 
@@ -117,7 +116,7 @@ internal class UtgifterOgGjeldStegTest {
         val bekreftelser = listOf(
             JsonOkonomibekreftelse()
                 .withType(SoknadJsonTyper.BEKREFTELSE_BARNEUTGIFTER)
-                .withVerdi(Boolean.TRUE)
+                .withVerdi(true)
         )
         val opplysningUtgifter = listOf(
             JsonOkonomiOpplysningUtgift().withType(SoknadJsonTyper.UTGIFTER_BARN_FRITIDSAKTIVITETER),
@@ -184,7 +183,7 @@ internal class UtgifterOgGjeldStegTest {
             .withHarForsorgerplikt(
                 JsonHarForsorgerplikt()
                     .withKilde(JsonKilde.SYSTEM)
-                    .withVerdi(Boolean.TRUE)
+                    .withVerdi(true)
             )
             .withAnsvar(
                 listOf(
@@ -196,7 +195,7 @@ internal class UtgifterOgGjeldStegTest {
                                 .withFodselsdato("2020-02-02")
                                 .withPersonIdentifikator("11111111111")
                         )
-                        .withErFolkeregistrertSammen(JsonErFolkeregistrertSammen().withVerdi(Boolean.TRUE))
+                        .withErFolkeregistrertSammen(JsonErFolkeregistrertSammen().withVerdi(true))
                         .withHarDeltBosted(null)
                 )
             )
