@@ -9,14 +9,16 @@ object AdresseStringSplitter {
         return if (isAddressTooShortOrNull(adresse)) {
             Sokedata(adresse = adresse)
         } else firstNonNull(
-            fullstendigGateadresseMatch(kodeverkService, adresse),
+            fullstendigGateadresseMatch(kodeverkService, adresse!!),
             Sokedata(adresse = adresse)
         )
     }
 
-    private fun fullstendigGateadresseMatch(kodeverkService: KodeverkService?, adresse: String?): Sokedata? {
+    private fun fullstendigGateadresseMatch(kodeverkService: KodeverkService?, adresse: String): Sokedata? {
+        // Why Trim: This  that depends on a  may run slow on strings with many repetitions of ' '.
+        // https://owasp.org/www-community/attacks/Regular_expression_Denial_of_Service_-_ReDoS
         val p = Pattern.compile("^([^0-9,]*) *([0-9]*)?([^,])? *,? *([0-9]{1,4})? *[0-9]* *([^0-9]*[^ ])? *$")
-        val m = p.matcher(adresse)
+        val m = p.matcher(adresse.trim())
         if (m.matches()) {
             val postnummer = m.group(4)
             val kommunenavn = if (postnummer == null) m.group(5) else null
