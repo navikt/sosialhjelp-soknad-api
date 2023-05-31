@@ -41,7 +41,7 @@ jobs:
     name: Build, push, tag and release image
     if: github.actor != 'dependabot[bot]'
     needs: build
-    uses: navikt/sosialhjelp-workflows/.github/workflows/build_image.yml@main
+    uses: navikt/sosialhjelp-workflows/.github/workflows/build_image_java.yml@main
     with:
       image_name: ghcr.io/${{ github.repository }}/${{ github.event.repository.name }}
       artifact_name: ${{ needs.build.outputs.artifact_name }}
