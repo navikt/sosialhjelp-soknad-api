@@ -20,21 +20,7 @@ updates:
 #      interval: daily
 
   - package-ecosystem: "gradle"
-    directory: "sosialhjelp-common-api/"
-    schedule:
-      interval: daily
-    commit-message:
-      prefix: "gradle"
-      
-  - package-ecosystem: "gradle"
-    directory: "sosialhjelp-common-kotlin-utils"
-    schedule:
-      interval: daily
-    commit-message:
-      prefix: "gradle"
-      
-  - package-ecosystem: "gradle"
-    directory: "sosialhjelp-common-selftest/"
+    directory: "/"
     schedule:
       interval: daily
     commit-message:
