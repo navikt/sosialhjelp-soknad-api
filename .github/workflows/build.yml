@@ -38,6 +38,6 @@ jobs:
     name: Build, push, tag and release docker image
     if: github.actor != 'dependabot[bot]'
     needs: build # må vente på upload av jar-fil (artifact) før denne kjører
-    uses: navikt/sosialhjelp-workflows/.github/workflows/build_image_java.yml@main
+    uses: navikt/sosialhjelp-ci/.github/workflows/build_image_java.yml@master
     with:
       image_name: ghcr.io/${{ github.repository }}/${{ github.event.repository.name }}
