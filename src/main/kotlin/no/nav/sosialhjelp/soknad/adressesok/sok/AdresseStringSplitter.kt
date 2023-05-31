@@ -5,6 +5,8 @@ import java.util.regex.Pattern
 
 object AdresseStringSplitter {
 
+    fun testFun() = "hei"
+
     fun toSokedata(kodeverkService: KodeverkService?, adresse: String?): Sokedata? {
         return if (isAddressTooShortOrNull(adresse)) {
             Sokedata(adresse = adresse)
