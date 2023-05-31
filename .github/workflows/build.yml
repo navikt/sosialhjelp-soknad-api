@@ -1,4 +1,4 @@
-name: Build image
+name: Build and push docker image
 on:
   push:
     branches:
@@ -10,7 +10,7 @@ on:
 # FIXME: Legg til docker layer caching, f.eks. https://github.com/marketplace/actions/build-docker-images-using-cache
 jobs:
   build:
-    name: Build
+    name: Build with gradle
     runs-on: ubuntu-latest
     env:
       ORG_GRADLE_PROJECT_githubUser: x-access-token
@@ -35,7 +35,7 @@ jobs:
           retention-days: 1
 
   image:
-    name: Build, push, tag and release image
+    name: Build, push, tag and release docker image
     if: github.actor != 'dependabot[bot]'
     needs: build # må vente på upload av jar-fil (artifact) før denne kjører
     uses: navikt/sosialhjelp-workflows/.github/workflows/build_image_java.yml@main
