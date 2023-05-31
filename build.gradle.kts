@@ -3,18 +3,18 @@ import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 object Versions {
-    const val springBoot = "3.0.5" // Husk å oppdatere plugin også
+    const val springBoot = "3.1.0" // Husk å oppdatere plugin også
     const val coroutines = "1.6.4"
     const val filformat = "1.2023.03.24-10.07-daf891c8a58d"
     const val sosialhjelpCommon = "1.20230209.0920-45d9782"
     const val fiksSvarUt = "1.2.0"
     const val fiksKryptering = "1.3.1"
-    const val springdoc = "2.0.2"
+    const val springdoc = "2.1.0"
     const val flyway = "9.16.1" // Husk å oppdatere plugin også
     const val ojdbc10 = "19.18.0.0"
     const val hsqldb = "2.7.1"
     const val lettuce = "6.2.3.RELEASE"
-    const val tokenValidation = "3.0.8"
+    const val tokenValidation = "3.1.0"
     const val javaJwt = "4.3.0"
     const val prometheus = "0.16.0"
     const val micrometer = "1.10.5"
@@ -47,7 +47,7 @@ object Versions {
     const val jodatime = "2.12.2"
     const val jsonsmart = "2.4.10"
     const val nimbusOauth2 = "10.7"
-    const val json = "20220924"
+    const val json = "20230227"
     const val byteBuddy = "1.12.20"
     const val jbossLogging = "3.5.0.Final"
     const val errorProneAnnotations = "2.15.0"
@@ -56,16 +56,16 @@ object Versions {
     const val junit = "4.13.2"
     const val mockOauth2Server = "0.5.8"
     const val snakeyaml = "2.0"
-    const val springWebMvc = "6.0.7"
+    const val springWebMvc = "6.0.9"
 }
 
 plugins {
-    kotlin("jvm") version "1.8.10"
-    kotlin("plugin.spring") version "1.8.10"
-    id("org.springframework.boot") version "3.0.5"
-    id("org.flywaydb.flyway") version "9.16.1"
+    kotlin("jvm") version "1.8.21"
+    kotlin("plugin.spring") version "1.8.21"
+    id("org.springframework.boot") version "3.1.0"
+    id("org.flywaydb.flyway") version "9.19.1"
     id("com.github.ben-manes.versions") version "0.46.0" // ./gradlew dependencyUpdates
-    id("org.jlleitschuh.gradle.ktlint") version "11.3.1"
+    id("org.jlleitschuh.gradle.ktlint") version "11.3.2"
 }
 
 java {
@@ -232,7 +232,9 @@ dependencies {
             because("https://security.snyk.io/vuln/SNYK-JAVA-NETMINIDEV-3369748")
         }
         implementation("com.nimbusds:oauth2-oidc-sdk:${Versions.nimbusOauth2}")
-        implementation("org.json:json:${Versions.json}")
+        implementation("org.json:json:${Versions.json}") {
+            because("https://github.com/advisories/GHSA-3vqj-43w4-2q58")
+        }
         implementation("net.bytebuddy:byte-buddy:${Versions.byteBuddy}")
         implementation("net.bytebuddy:byte-buddy-agent:${Versions.byteBuddy}")
         implementation("org.jboss.logging:jboss-logging:${Versions.jbossLogging}")
@@ -243,7 +245,7 @@ dependencies {
             because("https://security.snyk.io/vuln/SNYK-JAVA-ORGYAML-3152153")
         }
         implementation("org.springframework:spring-webmvc:${Versions.springWebMvc}") {
-            because("https://security.snyk.io/vuln/SNYK-JAVA-ORGSPRINGFRAMEWORK-3369852")
+            because("https://github.com/advisories/GHSA-wxqc-pxw9-g2p8")
         }
 
         testImplementation("org.assertj:assertj-core:${Versions.assertj}")

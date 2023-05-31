@@ -1,0 +1,16 @@
+name: Code analysis and dependency submission
+
+on:
+  pull_request:
+  workflow_dispatch:
+  schedule: ## Kjører kl. 05:00 mandag -> fredag
+    - cron: '0 5 * * 1-5'
+
+jobs:
+  analyze_code:
+    name: Analyze Code
+    uses: navikt/sosialhjelp-ci/.github/workflows/codeql_java.yml@master
+
+  dependency_submission:
+    name: Dependency Submission Gradle
+    uses: navikt/sosialhjelp-ci/.github/workflows/dependency_submission_gradle.yml@master
