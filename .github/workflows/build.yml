@@ -10,10 +10,9 @@ on:
 # FIXME: Legg til docker layer caching, f.eks. https://github.com/marketplace/actions/build-docker-images-using-cache
 jobs:
   build:
-    name: Build and push docker image
+    name: Build
     runs-on: ubuntu-latest
     env:
-      DOCKER_IMAGE: ghcr.io/${{ github.repository }}/${{ github.event.repository.name }}
       ORG_GRADLE_PROJECT_githubUser: x-access-token
       ORG_GRADLE_PROJECT_githubPassword: ${{ secrets.GITHUB_TOKEN }}
     steps:
@@ -25,33 +24,20 @@ jobs:
           cache: 'gradle'
       - name: Run lint
         run: ./gradlew ktlintCheck
-      - name: compile and run tests
+      - name: Compile and run tests
         run: ./gradlew build
-      - name: Login to GitHub Docker Registry
-        uses: docker/login-action@v2
+      - name: Upload jar (artifact)
+        uses: actions/upload-artifact@v3
         with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Create artifact version
-        id: artifact-version
-        uses: navikt/sosialhjelp-ci/actions/create-artifact-version@master
-      - name: Create docker image tags
-        run: |
-          echo "DOCKER_TAG=${{ env.DOCKER_IMAGE }}:${{ steps.artifact-version.outputs.version }}" >> $GITHUB_ENV
-      - name: Add latest tag
-        if: github.ref == 'refs/heads/master'
-        run: |
-          echo "DOCKER_TAG=${{ env.DOCKER_TAG }} -t ${{ env.DOCKER_IMAGE }}:latest" >> $GITHUB_ENV
-      - name: Build docker image
-        run: docker build -t ${{ env.DOCKER_TAG }} .
-      - name: Push docker image
-        run: |
-          docker push --all-tags ${{ env.DOCKER_IMAGE }}
-      - name: Create tag and release
-        uses: ncipollo/release-action@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag: ${{ steps.artifact-version.outputs.version }}
-          commit: ${{ github.sha }}
+          name: app.jar
+          path: ///home/runner/work/sosialhjelp-soknad-api/sosialhjelp-soknad-api/build/libs/app.jar
+          if-no-files-found: error
+          retention-days: 1
+
+  image:
+    name: Build, push, tag and release image
+    if: github.actor != 'dependabot[bot]'
+    needs: build # må vente på upload av jar-fil (artifact) før denne kjører
+    uses: navikt/sosialhjelp-workflows/.github/workflows/build_image_java.yml@main
+    with:
+      image_name: ghcr.io/${{ github.repository }}/${{ github.event.repository.name }}
