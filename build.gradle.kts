@@ -185,7 +185,6 @@ dependencies {
     // Tika
     implementation("org.apache.tika:tika-core:${Versions.tika}")
     implementation("org.apache.tika:tika-parsers-standard-package:2.7.0")
-    implementation("com.idrsolutions:jdeli-trial:2023.04")
 
     // netty
     implementation("io.projectreactor.netty:reactor-netty-http:${Versions.reactorNettyHttp}")
