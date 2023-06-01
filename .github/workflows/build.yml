@@ -30,7 +30,7 @@ jobs:
       - name: Build, tag, push and release Docker Image
         uses: navikt/sosialhjelp-ci/actions/build-image@composite_action
         with:
-          image:-name: ghcr.io/${{ github.repository }}/${{ github.event.repository.name }}
+          image-name: ghcr.io/${{ github.repository }}/${{ github.event.repository.name }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
 #      - name: Upload jar (artifact)
