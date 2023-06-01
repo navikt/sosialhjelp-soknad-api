@@ -21,11 +21,19 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '17'
-          cache: 'gradle'
+#          cache: 'gradle'
       - name: Run lint
         run: ./gradlew ktlintCheck
-      - name: Compile and run tests
-        run: ./gradlew build
+
+      - name: Setup and build gradle
+        uses: gradle/gradle-build-action@v2
+        env:
+          CI: true
+        with:
+          arguments: build
+
+#      - name: Compile and run tests
+#        run: ./gradlew build
       - name: Upload jar (artifact)
         uses: actions/upload-artifact@v3
         with:
