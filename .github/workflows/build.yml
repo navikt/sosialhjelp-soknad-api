@@ -41,3 +41,4 @@ jobs:
     uses: navikt/sosialhjelp-ci/.github/workflows/build_image_java.yml@master
     with:
       image_name: ghcr.io/${{ github.repository }}/${{ github.event.repository.name }}
+    secrets: inherit
