@@ -134,7 +134,6 @@ dependencies {
     // sosialhjelp-common
     implementation("no.nav.sosialhjelp:sosialhjelp-common-api:${Versions.sosialhjelpCommon}")
     implementation("no.nav.sosialhjelp:sosialhjelp-common-selftest:${Versions.sosialhjelpCommon}")
-    // TODO Må endres til riktig versjon når dette er publisert på Github
     implementation("no.nav.sosialhjelp:sosialhjelp-common-kotlin-utils:${Versions.sosialhjelpCommon}")
 
     // KS / Fiks
@@ -185,7 +184,6 @@ dependencies {
     // Tika
     implementation("org.apache.tika:tika-core:${Versions.tika}")
     implementation("org.apache.tika:tika-parsers-standard-package:2.7.0")
-    implementation("com.idrsolutions:jdeli-trial:2023.04")
 
     // netty
     implementation("io.projectreactor.netty:reactor-netty-http:${Versions.reactorNettyHttp}")
