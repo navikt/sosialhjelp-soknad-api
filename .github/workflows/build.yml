@@ -26,18 +26,25 @@ jobs:
         run: ./gradlew ktlintCheck
       - name: Compile and run tests
         run: ./gradlew build
-      - name: Upload jar (artifact)
-        uses: actions/upload-artifact@v3
-        with:
-          name: app.jar
-          path: ///home/runner/work/sosialhjelp-soknad-api/sosialhjelp-soknad-api/build/libs/app.jar
-          if-no-files-found: error
-          retention-days: 1
 
-  image:
-    name: Build, push, tag and release docker image
-    if: github.actor != 'dependabot[bot]'
-    needs: build # må vente på upload av jar-fil (artifact) før denne kjører
-    uses: navikt/sosialhjelp-ci/.github/workflows/build_image_java.yml@master
-    with:
-      image_name: ghcr.io/${{ github.repository }}/${{ github.event.repository.name }}
+      - name: Build, tag, push and release Docker Image
+        uses: navikt/sosialhjelp-ci/actions/build-image-java@composite_action
+        with:
+          image:-name: ghcr.io/${{ github.repository }}/${{ github.event.repository.name }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+#      - name: Upload jar (artifact)
+#        uses: actions/upload-artifact@v3
+#        with:
+#          name: app.jar
+#          path: ///home/runner/work/sosialhjelp-soknad-api/sosialhjelp-soknad-api/build/libs/app.jar
+#          if-no-files-found: error
+#          retention-days: 1
+
+#  image:
+#    name: Build, push, tag and release docker image
+#    if: github.actor != 'dependabot[bot]'
+#    needs: build # må vente på upload av jar-fil (artifact) før denne kjører
+#    uses: navikt/sosialhjelp-ci/.github/workflows/build_image_java.yml@master
+#    with:
+#      image_name: ghcr.io/${{ github.repository }}/${{ github.event.repository.name }}
