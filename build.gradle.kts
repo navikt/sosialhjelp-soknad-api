@@ -6,7 +6,7 @@ object Versions {
     const val springBoot = "3.1.0" // Husk å oppdatere plugin også
     const val coroutines = "1.6.4"
     const val filformat = "1.2023.03.24-10.07-daf891c8a58d"
-    const val sosialhjelpCommon = "1.20230209.0920-45d9782"
+    const val sosialhjelpCommon = "1.20230601.1329-e4c1b8d"
     const val fiksSvarUt = "1.2.0"
     const val fiksKryptering = "1.3.1"
     const val springdoc = "2.1.0"
@@ -135,7 +135,7 @@ dependencies {
     implementation("no.nav.sosialhjelp:sosialhjelp-common-api:${Versions.sosialhjelpCommon}")
     implementation("no.nav.sosialhjelp:sosialhjelp-common-selftest:${Versions.sosialhjelpCommon}")
     // TODO Må endres til riktig versjon når dette er publisert på Github
-    implementation("no.nav.sosialhjelp:sosialhjelp-common-kotlin-utils:0.4")
+    implementation("no.nav.sosialhjelp:sosialhjelp-common-kotlin-utils:${Versions.sosialhjelpCommon}")
 
     // KS / Fiks
     implementation("no.ks.fiks.svarut:svarut-rest-klient:${Versions.fiksSvarUt}")
