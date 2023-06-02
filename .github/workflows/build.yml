@@ -20,19 +20,14 @@ jobs:
     env:
       ORG_GRADLE_PROJECT_githubUser: x-access-token
       ORG_GRADLE_PROJECT_githubPassword: ${{ secrets.GITHUB_TOKEN }}
-      github-token: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Build kotlin, and run tests/lint
         uses: navikt/sosialhjelp-ci/.github/actions/build-kotlin@modularize_steps
 
-      - name: Create and release tag
-        uses: navikt/sosialhjelp-ci/.github/actions/create-and-release-tag@modularize_steps
-        with:
-          image-name: ${{ env.IMAGE-NAME }}
-#          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: navikt/sosialhjelp-ci/.github/actions/create-and-release-tag@modularize_steps
 
       - name: Build and push Docker Image
         uses: navikt/sosialhjelp-ci/.github/actions/build-and-push-docker-image@modularize_steps
         with:
           image-name: ${{ env.IMAGE-NAME }}
-#          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
