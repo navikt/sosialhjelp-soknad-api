@@ -24,10 +24,12 @@ jobs:
       - name: Build kotlin, and run tests/lint
         uses: navikt/sosialhjelp-ci/.github/actions/build-kotlin@modularize_steps
 
-      - uses: navikt/sosialhjelp-ci/.github/actions/create-and-release-tag@modularize_steps
+      - id: artifact-version
+        uses: navikt/sosialhjelp-ci/.github/actions/create-and-release-tag@modularize_steps
 
       - name: Build and push Docker Image
         uses: navikt/sosialhjelp-ci/.github/actions/build-and-push-docker-image@modularize_steps
         with:
           image-name: ${{ env.IMAGE-NAME }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          artifact-version: ${{ steps.artifact-version.outputs.artifact-version }}
