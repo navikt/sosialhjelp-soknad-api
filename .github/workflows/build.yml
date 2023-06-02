@@ -23,16 +23,16 @@ jobs:
       ORG_GRADLE_PROJECT_githubPassword: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Build kotlin, and run tests/lint
-        uses: ${{ env.ACTIONS-URL }}/build-kotlin@modularize_steps
+        uses: '${{ env.ACTIONS-URL }}/build-kotlin@modularize_steps'
 
       - name: Create and release tag
-        uses: ${{ env.ACTIONS-URL }}/create-and-release-tag@modularize_steps
+        uses: '${{ env.ACTIONS-URL }}/create-and-release-tag@modularize_steps'
         with:
           image-name: $IMAGE-NAME
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push Docker Image
-        uses: ${{ env.ACTIONS-URL }}/build-and-push-docker-image@modularize_steps
+        uses: '${{ env.ACTIONS-URL }}/build-and-push-docker-image@modularize_steps'
         with:
           image-name: $IMAGE-NAME
           github-token: ${{ secrets.GITHUB_TOKEN }}
