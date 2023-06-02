@@ -9,13 +9,13 @@ on:
   schedule: ## Kjører kl. 05:00 mandag -> fredag
     - cron: '0 5 * * 1-5'
 
-permissions:
-  actions: read
-  security-events: write
-
 jobs:
   analyze_code:
     name: Analyze Code
+    permissions:
+      actions: read
+      security-events: write
+      contents: read
     uses: navikt/sosialhjelp-ci/.github/workflows/codeql_java.yml@master
 
   dependency_submission:
