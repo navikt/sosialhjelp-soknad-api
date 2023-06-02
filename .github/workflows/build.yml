@@ -8,7 +8,6 @@ on:
   workflow_dispatch:
 
 env:
-  ACTIONS-URL: navikt/sosialhjelp-ci/.github/actions
   IMAGE-NAME: ghcr.io/${{ github.repository }}/${{ github.event.repository.name }}
 # FIXME: Legg til docker layer caching, f.eks. https://github.com/marketplace/actions/build-docker-images-using-cache
 jobs:
@@ -23,16 +22,16 @@ jobs:
       ORG_GRADLE_PROJECT_githubPassword: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Build kotlin, and run tests/lint
-        uses: '${{ env.ACTIONS-URL }}/build-kotlin@modularize_steps'
+        uses: navikt/sosialhjelp-ci/.github/actions/build-kotlin@modularize_steps
 
       - name: Create and release tag
-        uses: '${{ env.ACTIONS-URL }}/create-and-release-tag@modularize_steps'
+        uses: navikt/sosialhjelp-ci/.github/actions/create-and-release-tag@modularize_steps
         with:
           image-name: $IMAGE-NAME
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push Docker Image
-        uses: '${{ env.ACTIONS-URL }}/build-and-push-docker-image@modularize_steps'
+        uses: navikt/sosialhjelp-ci/.github/actions/build-and-push-docker-image@modularize_steps
         with:
           image-name: $IMAGE-NAME
           github-token: ${{ secrets.GITHUB_TOKEN }}
