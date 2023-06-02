@@ -20,14 +20,14 @@ jobs:
       ORG_GRADLE_PROJECT_githubPassword: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Build kotlin, and run tests/lint
-        uses: navikt/sosialhjelp-ci/.github/actions/build-kotlin@modularize_steps
+        uses: navikt/sosialhjelp-ci/.github/actions/build-kotlin@master
 
       - name: Create and release tag
         id: artifact-version
-        uses: navikt/sosialhjelp-ci/.github/actions/create-and-release-tag@modularize_steps
+        uses: navikt/sosialhjelp-ci/.github/actions/create-and-release-tag@master
 
       - name: Build and push Docker Image
-        uses: navikt/sosialhjelp-ci/.github/actions/build-and-push-docker-image@modularize_steps
+        uses: navikt/sosialhjelp-ci/.github/actions/build-and-push-docker-image@master
         with:
           image-name: ghcr.io/${{ github.repository }}/${{ github.event.repository.name }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
