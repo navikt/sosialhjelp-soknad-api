@@ -7,8 +7,6 @@ on:
       - '**' # Don't build any tags
   workflow_dispatch:
 
-env:
-  IMAGE-NAME: ghcr.io/${{ github.repository }}/${{ github.event.repository.name }}
 # FIXME: Legg til docker layer caching, f.eks. https://github.com/marketplace/actions/build-docker-images-using-cache
 jobs:
   build:
@@ -24,12 +22,13 @@ jobs:
       - name: Build kotlin, and run tests/lint
         uses: navikt/sosialhjelp-ci/.github/actions/build-kotlin@modularize_steps
 
-      - id: artifact-version
+      - name: Create and release tag
+        id: artifact-version
         uses: navikt/sosialhjelp-ci/.github/actions/create-and-release-tag@modularize_steps
 
       - name: Build and push Docker Image
         uses: navikt/sosialhjelp-ci/.github/actions/build-and-push-docker-image@modularize_steps
         with:
-          image-name: ${{ env.IMAGE-NAME }}
+          image-name: ghcr.io/${{ github.repository }}/${{ github.event.repository.name }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
           artifact-version: ${{ steps.artifact-version.outputs.artifact-version }}
