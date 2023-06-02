@@ -12,6 +12,8 @@ jobs:
   build:
     name: Build with gradle
     runs-on: ubuntu-latest
+    permissions:
+      packages: write
     env:
       ORG_GRADLE_PROJECT_githubUser: x-access-token
       ORG_GRADLE_PROJECT_githubPassword: ${{ secrets.GITHUB_TOKEN }}
@@ -28,7 +30,7 @@ jobs:
         run: ./gradlew build
 
       - name: Build, tag, push and release Docker Image
-        uses: navikt/sosialhjelp-ci/actions/build-image@composite_action
+        uses: navikt/sosialhjelp-ci/actions/build-image@master
         with:
           image-name: ghcr.io/${{ github.repository }}/${{ github.event.repository.name }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
