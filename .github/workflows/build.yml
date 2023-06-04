@@ -24,7 +24,7 @@ jobs:
 
       - name: Create and release tag
         id: artifact-version
-        uses: navikt/sosialhjelp-ci/.github/actions/create-and-release-tag@master
+        uses: navikt/sosialhjelp-ci/.github/actions/create-and-release-tag@try_revert
 
       - name: Build and push Docker Image
         uses: navikt/sosialhjelp-ci/.github/actions/build-and-push-docker-image@master
