@@ -22,6 +22,5 @@ jobs:
     name: Dependency Submission Gradle
     permissions:
       contents: write
-
     if: github.ref == 'refs/heads/master'
     uses: navikt/sosialhjelp-ci/.github/workflows/dependency_submission_gradle.yml@master
