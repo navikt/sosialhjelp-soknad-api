@@ -2,14 +2,10 @@ FROM ghcr.io/navikt/baseimages/temurin:19
 
 USER root
 
-RUN useradd -ms /bin/bash digisos
+#RUN useradd -ms /bin/bash digisos
+#RUN chown -R digisos:digisos /init-scripts
 
-RUN mkdir /application
-RUN chown -R digisos:digisos /application
-WORKDIR /application
-RUN chown -R digisos:digisos /init-scripts
-
-USER digisos
+#USER digisos
 
 COPY /build/libs/app.jar app.jar
 COPY /nais/scripts /init-scripts
