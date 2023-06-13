@@ -1,6 +1,11 @@
 server:
   port: ${PORT:8181}
 
+logging:
+  level:
+    root: ERROR
+    org.docx4j.fonts.fop.fonts: TRACE
+
 spring:
   flyway:
     enabled: false
