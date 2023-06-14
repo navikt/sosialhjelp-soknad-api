@@ -26,10 +26,6 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.multipart.MultipartFile
 import java.io.IOException
-import java.nio.file.Files
-import java.nio.file.attribute.BasicFileAttributes
-import java.util.jar.Attributes
-import kotlin.io.path.Path
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken as eier
 
 @RestController
