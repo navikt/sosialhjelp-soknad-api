@@ -5,7 +5,6 @@ USER root
 RUN useradd -ms /bin/bash digisos
 RUN mkdir /home/digisos/.docx4j
 RUN chown -R digisos:digisos /init-scripts
-RUN chown -R digisos:digisos /home/digisos
 
 USER digisos
 
