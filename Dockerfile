@@ -2,7 +2,7 @@ FROM ghcr.io/navikt/baseimages/temurin:19
 
 USER root
 
-RUN useradd -ms /bin/bash digisos
+RUN useradd -u 1001 -ms /bin/bash digisos
 RUN chown -R digisos:digisos /init-scripts
 
 USER digisos
