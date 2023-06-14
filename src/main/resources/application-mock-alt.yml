@@ -4,7 +4,7 @@ server:
 logging:
   level:
     root: ERROR
-    org.docx4j.fonts.fop.fonts: TRACE
+    org.docx4j.fonts.fop.fonts.FontCache: TRACE
 
 spring:
   flyway:

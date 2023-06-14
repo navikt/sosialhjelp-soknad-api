@@ -13,6 +13,7 @@ import no.nav.sosialhjelp.soknad.vedlegg.exceptions.OpplastingException
 import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringService
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.FileDetectionUtils.detectMimeType
 import org.apache.commons.io.IOUtils
+import org.docx4j.fonts.fop.fonts.FontCache
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -25,6 +26,10 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.multipart.MultipartFile
 import java.io.IOException
+import java.nio.file.Files
+import java.nio.file.attribute.BasicFileAttributes
+import java.util.jar.Attributes
+import kotlin.io.path.Path
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken as eier
 
 @RestController
@@ -99,6 +104,9 @@ class OpplastetVedleggRessurs(
         val skalMellomlagres = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier()).let {
             soknadUnderArbeidService.skalSoknadSendesMedDigisosApi(it)
         }
+
+        val defaultFontCachePath = FontCache.getDefaultCacheFile(true).path
+        log.info("DefaultFontCache: $defaultFontCachePath")
 
         return if (skalMellomlagres) {
             val (sha512, vedleggMetadata) = mellomlagringService.uploadVedlegg(behandlingsId, vedleggstype, data, filnavn)
