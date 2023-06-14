@@ -3,7 +3,6 @@ FROM ghcr.io/navikt/baseimages/temurin:19
 USER root
 
 RUN useradd -ms /bin/bash digisos
-RUN mkdir /home/digisos/.docx4j
 RUN chown -R digisos:digisos /init-scripts
 
 USER digisos

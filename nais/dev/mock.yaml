@@ -95,3 +95,7 @@ spec:
       value: ""
     - name: ENVIRONMENT_NAME
       value: "mock"
+  filesFrom:
+    - emptyDir:
+        medium: Memory
+      mountPath: /app/.docx4j
