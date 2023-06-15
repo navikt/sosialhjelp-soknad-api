@@ -1,15 +1,16 @@
 package no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg
 
+import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils
 import java.util.UUID
 
 data class OpplastetVedlegg(
-    var uuid: String = UUID.randomUUID().toString(),
     var eier: String,
     var vedleggType: OpplastetVedleggType,
     var data: ByteArray,
+    var uuid: String = UUID.nameUUIDFromBytes(data).toString(),
     var soknadId: Long,
     var filnavn: String,
-    var sha512: String
+    var sha512: String = VedleggUtils.getSha512FromByteArray(data)
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

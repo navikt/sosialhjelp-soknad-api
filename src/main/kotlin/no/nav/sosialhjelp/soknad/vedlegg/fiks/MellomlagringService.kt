@@ -5,8 +5,8 @@ import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.MiljoUtils.isNonProduction
 import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
-import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
-import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.Vedleggstatus
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.Vedleggstatus.LastetOpp
+import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.Vedleggstatus.VedleggKreves
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils
@@ -18,13 +18,14 @@ import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils.finnVedleggEllerKastExcept
 import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils.getSha512FromByteArray
 import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils.lagFilnavn
 import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils.validerFil
-import no.nav.sosialhjelp.soknad.vedlegg.filedetection.FileDetectionUtils
-import no.nav.sosialhjelp.soknad.vedlegg.filedetection.MimeTypes.APPLICATION_PDF
-import no.nav.sosialhjelp.soknad.vedlegg.filedetection.MimeTypes.TEXT_X_MATLAB
+import no.nav.sosialhjelp.soknad.vedlegg.filedetection.FileDetectionUtils.detectMimeType
+import no.nav.sosialhjelp.soknad.vedlegg.konvertering.FilKonvertering
+import no.nav.sosialhjelp.soknad.vedlegg.konvertering.VedleggWrapper
 import no.nav.sosialhjelp.soknad.vedlegg.virusscan.VirusScanner
 import org.springframework.stereotype.Component
 import java.io.ByteArrayInputStream
-import java.util.UUID
+import java.util.UUID.nameUUIDFromBytes as uuidFromBytes
+import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken as eier
 
 @Component
 class MellomlagringService(
@@ -66,64 +67,67 @@ class MellomlagringService(
     fun uploadVedlegg(
         behandlingsId: String,
         vedleggstype: String,
-        data: ByteArray,
+        sourceData: ByteArray,
         originalfilnavn: String,
-    ): MellomlagretVedleggMetadata {
-        var filnavn = originalfilnavn
+    ): Pair<String, MellomlagretVedleggMetadata> {
 
-        val fileType = validerFil(data, filnavn)
-        virusScanner.scan(filnavn, data, behandlingsId, fileType.name)
-
-        val uuid = UUID.randomUUID().toString()
-        filnavn = lagFilnavn(filnavn, fileType, uuid)
-
-        val detectedMimeType = FileDetectionUtils.detectMimeType(data)
-        val mimetype = if (detectedMimeType.equals(TEXT_X_MATLAB, ignoreCase = true)) APPLICATION_PDF else detectedMimeType
-
-        val filOpplasting = FilOpplasting(
-            metadata = FilMetadata(
-                filnavn = filnavn,
-                mimetype = mimetype,
-                storrelse = data.size.toLong()
-            ),
-            data = ByteArrayInputStream(data)
-        )
+        val vedleggWrapper = FilKonvertering.konverterHvisStottet(sourceData, originalfilnavn)
+        val filOpplasting = opprettFilOpplasting(vedleggWrapper, behandlingsId)
 
         val navEksternId = getNavEksternId(behandlingsId)
-
         mellomlagringClient.postVedlegg(navEksternId = navEksternId, filOpplasting = filOpplasting)
 
         val mellomlagredeVedlegg = mellomlagringClient.getMellomlagredeVedlegg(navEksternId = navEksternId)?.mellomlagringMetadataList
-
-        val filId = mellomlagredeVedlegg?.firstOrNull { it.filnavn == filnavn }?.filId
+        val filId = mellomlagredeVedlegg?.firstOrNull { it.filnavn == filOpplasting.metadata.filnavn }?.filId
             ?: throw IllegalStateException("Klarte ikke finne det mellomlagrede vedlegget som akkurat ble lastet opp")
 
-        // oppdater SoknadUnderArbeid etter suksessfull opplasting
-        oppdaterSoknadUnderArbeid(data, behandlingsId, vedleggstype, filnavn)
-
-        return MellomlagretVedleggMetadata(filnavn = filnavn, filId = filId)
+        return Pair(
+            getSha512FromByteArray(vedleggWrapper.data),
+            MellomlagretVedleggMetadata(
+                filnavn = filOpplasting.metadata.filnavn,
+                filId = filId
+            )
+        )
     }
 
-    private fun oppdaterSoknadUnderArbeid(
-        data: ByteArray,
+    private fun opprettFilOpplasting(vedleggWrapper: VedleggWrapper, behandlingsId: String): FilOpplasting {
+        return with(vedleggWrapper) {
+
+            val fileType = validerFil(data, filnavn)
+            virusScanner.scan(filnavn, data, behandlingsId, fileType.name)
+
+            FilOpplasting(
+                metadata = FilMetadata(
+                    filnavn = lagFilnavn(filnavn, fileType, uuidFromBytes(data)),
+                    mimetype = detectMimeType(data),
+                    storrelse = data.size.toLong()
+                ),
+                data = ByteArrayInputStream(data)
+            )
+        }
+    }
+
+    fun oppdaterSoknadUnderArbeid(
+        sha512: String,
         behandlingsId: String,
         vedleggstype: String,
         filnavn: String,
     ) {
-        val eier = SubjectHandlerUtils.getUserIdFromToken()
-        val sha512 = getSha512FromByteArray(data)
-
-        val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
+        val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier())
 
         val jsonVedlegg = finnVedleggEllerKastException(vedleggstype, soknadUnderArbeid)
+
         if (jsonVedlegg.filer == null) {
             jsonVedlegg.filer = ArrayList()
         }
-        jsonVedlegg.withStatus(Vedleggstatus.LastetOpp.toString()).filer.add(
-            JsonFiler().withFilnavn(filnavn).withSha512(sha512)
-        )
-
-        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier)
+        jsonVedlegg
+            .withStatus(LastetOpp.name)
+            .filer.add(
+                JsonFiler()
+                    .withFilnavn(filnavn)
+                    .withSha512(sha512)
+            )
+        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier())
     }
 
     fun deleteVedleggAndUpdateVedleggstatus(behandlingsId: String, vedleggId: String) {
@@ -139,7 +143,7 @@ class MellomlagringService(
         val aktueltVedlegg = mellomlagredeVedlegg.firstOrNull { it.filId == vedleggId } ?: return
 
         // oppdater soknadUnderArbeid
-        val eier = SubjectHandlerUtils.getUserIdFromToken()
+        val eier = eier()
         val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
 
         val jsonVedlegg: JsonVedlegg = JsonVedleggUtils.getVedleggFromInternalSoknad(soknadUnderArbeid)
@@ -151,7 +155,7 @@ class MellomlagringService(
         jsonVedlegg.filer.removeIf { it.filnavn == aktueltVedlegg.filnavn }
 
         if (jsonVedlegg.filer.isEmpty()) {
-            jsonVedlegg.status = Vedleggstatus.VedleggKreves.toString()
+            jsonVedlegg.status = VedleggKreves.toString()
         }
 
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier)
@@ -182,7 +186,6 @@ class MellomlagringService(
         } catch (e: Exception) {
             false
         }
-
         return kanSoknadSendesMedDigisosApi
     }
 
@@ -193,7 +196,8 @@ class MellomlagringService(
 
 data class MellomlagretVedleggMetadata(
     val filnavn: String,
-    val filId: String
+    val filId: String,
+    val sha512: String? = null
 )
 
 data class MellomlagretVedlegg(
