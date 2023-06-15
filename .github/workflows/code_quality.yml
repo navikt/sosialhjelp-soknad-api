@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - master
-  pull_request:
   workflow_dispatch:
   schedule: ## Kjører kl. 05:00 mandag -> fredag
     - cron: '0 5 * * 1-5'
