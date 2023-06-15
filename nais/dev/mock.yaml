@@ -7,8 +7,8 @@ metadata:
     team: teamdigisos
   annotations:
     nginx.ingress.kubernetes.io/proxy-body-size: "150M"
-    nais.io/read-only-file-system: "false"
-    nais.io/run-as-user: "1001"
+#    nais.io/read-only-file-system: "false"
+#    nais.io/run-as-user: "1001"
 spec:
   image: {{image}}
   port: 8080
