@@ -183,7 +183,7 @@ dependencies {
 
     // Tika
     implementation("org.apache.tika:tika-core:${Versions.tika}")
-    implementation("org.apache.tika:tika-parsers-standard-package:2.7.0")
+    implementation("org.apache.tika:tika-parsers-standard-package:2.8.0")
 
     // netty
     implementation("io.projectreactor.netty:reactor-netty-http:${Versions.reactorNettyHttp}")
