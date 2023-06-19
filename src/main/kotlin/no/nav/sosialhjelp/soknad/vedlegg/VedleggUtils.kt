@@ -19,7 +19,7 @@ import java.io.IOException
 import java.io.UnsupportedEncodingException
 import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
-import java.util.Locale
+import java.util.*
 
 object VedleggUtils {
 
@@ -34,7 +34,7 @@ object VedleggUtils {
         return Hex.toHexString(sha512.digest())
     }
 
-    fun lagFilnavn(opplastetNavn: String, fileType: TikaFileType, uuid: String): String {
+    fun lagFilnavn(opplastetNavn: String, fileType: TikaFileType, uuid: UUID): String {
         var filnavn = opplastetNavn
         val fileExtension = findFileExtension(opplastetNavn)
 
@@ -64,7 +64,7 @@ object VedleggUtils {
             filnavn = filnavn.substring(0, 50)
         }
 
-        filnavn += "-" + uuid.split("-").toTypedArray()[0]
+        filnavn += "-" + uuid.toString().split("-").toTypedArray()[0]
         filnavn += if (!fileExtension.isNullOrEmpty() && erTikaOgFileExtensionEnige(fileExtension, fileType)) {
             fileExtension
         } else {
@@ -94,6 +94,12 @@ object VedleggUtils {
             sjekkOmPdfErGyldig(data)
         }
         return fileType
+    }
+
+    fun finnVedleggEllerKastException(vedleggstype: String, soknadUnderArbeid: SoknadUnderArbeid): JsonVedlegg {
+        return JsonVedleggUtils.getVedleggFromInternalSoknad(soknadUnderArbeid)
+            .firstOrNull { vedleggstype == it.type + "|" + it.tilleggsinfo }
+            ?: throw IkkeFunnetException("Dette vedlegget tilhører $vedleggstype utgift som har blitt tatt bort fra søknaden. Er det flere tabber oppe samtidig?")
     }
 
     private fun findFileExtension(filnavn: String): String? {
@@ -164,11 +170,5 @@ object VedleggUtils {
         return if (TikaFileType.PDF == fileType) {
             ".pdf".equals(fileExtension, ignoreCase = true)
         } else false
-    }
-
-    fun finnVedleggEllerKastException(vedleggstype: String, soknadUnderArbeid: SoknadUnderArbeid): JsonVedlegg {
-        return JsonVedleggUtils.getVedleggFromInternalSoknad(soknadUnderArbeid)
-            .firstOrNull { vedleggstype == it.type + "|" + it.tilleggsinfo }
-            ?: throw IkkeFunnetException("Dette vedlegget tilhører $vedleggstype utgift som har blitt tatt bort fra søknaden. Er det flere tabber oppe samtidig?")
     }
 }
