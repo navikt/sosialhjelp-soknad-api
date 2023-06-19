@@ -5,6 +5,7 @@ import no.nav.sosialhjelp.soknad.db.DbTestConfig
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedlegg
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRepository
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggType
+import org.apache.commons.lang3.RandomUtils
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
@@ -79,7 +80,7 @@ internal class OpplastetVedleggMigrationRepositoryTest {
             return OpplastetVedlegg(
                 eier = eier,
                 vedleggType = OpplastetVedleggType("bostotte|annetboutgift"),
-                data = byteArrayOf(1, 2, 3, 4),
+                data = RandomUtils.nextBytes(4),
                 soknadId = soknadId,
                 filnavn = "filnavn",
                 sha512 = "sha"
