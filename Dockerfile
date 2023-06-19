@@ -1,4 +1,4 @@
-FROM ghcr.io/navikt/baseimages/temurin:19
+FROM ghcr.io/navikt/baseimages/temurin:20
 
 COPY /build/libs/app.jar app.jar
 COPY /nais/scripts /init-scripts
