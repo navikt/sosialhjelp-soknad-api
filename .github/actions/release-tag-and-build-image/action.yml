@@ -1,12 +1,6 @@
 name: "Create tag and release image"
 description: "Create and release tag, create and release docker image"
 
-inputs:
-  build-image:
-    required: false
-    description: "Tag prefix"
-    default: "true"
-
 outputs:
   artifact-version:
     description: Created artifact version
@@ -20,7 +14,6 @@ runs:
       uses: navikt/sosialhjelp-ci/actions/create-and-release-tag@master
 
     - name: Build and push docker image
-      if: inputs.build-image == "true"
       uses: navikt/sosialhjelp-ci/actions/build-and-push-docker-image@master
       with:
         image-name: ghcr.io/${{ github.repository }}/${{ github.event.repository.name }}
