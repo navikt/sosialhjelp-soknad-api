@@ -3,6 +3,7 @@ package no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg
 import jakarta.inject.Inject
 import no.nav.sosialhjelp.soknad.db.DbTestConfig
 import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils.getSha512FromByteArray
+import org.apache.commons.lang3.RandomUtils
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
@@ -11,6 +12,7 @@ import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit.jupiter.SpringExtension
+import java.util.UUID
 
 @ExtendWith(SpringExtension::class)
 @ContextConfiguration(classes = [DbTestConfig::class])
@@ -20,8 +22,6 @@ internal class OpplastetVedleggRepositoryJdbcTest {
     companion object {
         private const val EIER = "12345678901"
         private const val EIER2 = "22222222222"
-        private val DATA = byteArrayOf(1, 2, 3, 4)
-        private val SHA512 = getSha512FromByteArray(DATA)
         private const val TYPE = "bostotte|annetboutgift"
         private const val TYPE2 = "dokumentasjon|aksjer"
         private const val SOKNADID = 1L
@@ -51,15 +51,20 @@ internal class OpplastetVedleggRepositoryJdbcTest {
 
     @Test
     fun hentVedleggHenterOpplastetVedleggSomFinnesForGittUuidOgEier() {
-        val uuid = opprettOpplastetVedleggOgLagreIDb(lagOpplastetVedlegg(), EIER)
-        val opplastetVedleggFraDb = opplastetVedleggRepository.hentVedlegg(uuid, EIER)
-        assertThat(opplastetVedleggFraDb?.uuid).isEqualTo(uuid)
-        assertThat(opplastetVedleggFraDb?.eier).isEqualTo(EIER)
-        assertThat(opplastetVedleggFraDb?.vedleggType?.sammensattType).isEqualTo(TYPE)
-        assertThat(opplastetVedleggFraDb?.data).isEqualTo(DATA)
-        assertThat(opplastetVedleggFraDb?.soknadId).isEqualTo(SOKNADID)
-        assertThat(opplastetVedleggFraDb?.filnavn).isEqualTo(FILNAVN)
-        assertThat(opplastetVedleggFraDb?.sha512).isEqualTo(SHA512)
+        val opplastetVedlegg = lagOpplastetVedlegg()
+        opprettOpplastetVedleggOgLagreIDb(opplastetVedlegg, EIER)
+
+        val opplastetVedleggFraDb = opplastetVedleggRepository.hentVedlegg(opplastetVedlegg.uuid, EIER)
+        opplastetVedleggFraDb?.let {
+            assertThat(it.uuid).isEqualTo(opplastetVedlegg.uuid)
+            assertThat(it.eier).isEqualTo(EIER)
+            assertThat(it.vedleggType.sammensattType).isEqualTo(TYPE)
+            assertThat(it.data).isEqualTo(opplastetVedlegg.data)
+            assertThat(it.soknadId).isEqualTo(SOKNADID)
+            assertThat(it.filnavn).isEqualTo(FILNAVN)
+            assertThat(it.sha512).isEqualTo(opplastetVedlegg.sha512)
+        }
+            ?: throw IllegalStateException("Opplastet vedlegg er null")
     }
 
     @Test
@@ -84,7 +89,9 @@ internal class OpplastetVedleggRepositoryJdbcTest {
     @Test
     fun slettAlleVedleggForSoknadSletterAlleOpplastedeVedleggForGittSoknadIdOgEier() {
         val uuid = opprettOpplastetVedleggOgLagreIDb(lagOpplastetVedlegg(), EIER)
-        val uuidSammeSoknadOgEier = opprettOpplastetVedleggOgLagreIDb(lagOpplastetVedlegg(EIER, TYPE, SOKNADID), EIER)
+        val uuidSammeSoknadOgEier = opprettOpplastetVedleggOgLagreIDb(
+            lagOpplastetVedlegg(EIER, TYPE, SOKNADID), EIER
+        )
         val uuidSammeEierOgAnnenSoknad =
             opprettOpplastetVedleggOgLagreIDb(lagOpplastetVedlegg(EIER, TYPE2, SOKNADID3), EIER)
         opplastetVedleggRepository.slettAlleVedleggForSoknad(SOKNADID, EIER)
@@ -94,13 +101,15 @@ internal class OpplastetVedleggRepositoryJdbcTest {
     }
 
     private fun lagOpplastetVedlegg(eier: String, type: String, soknadId: Long): OpplastetVedlegg {
+        val data = RandomUtils.nextBytes(10)
         return OpplastetVedlegg(
             eier = eier,
             vedleggType = OpplastetVedleggType(type),
-            data = DATA,
+            data = data,
+            uuid = UUID.nameUUIDFromBytes(data).toString(),
             soknadId = soknadId,
             filnavn = FILNAVN,
-            sha512 = SHA512
+            sha512 = getSha512FromByteArray(data)
         )
     }
 

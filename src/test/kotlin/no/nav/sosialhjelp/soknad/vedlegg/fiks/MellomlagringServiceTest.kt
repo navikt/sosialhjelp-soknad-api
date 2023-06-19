@@ -1,18 +1,47 @@
 package no.nav.sosialhjelp.soknad.vedlegg.fiks
 
+import io.mockk.clearAllMocks
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
 import io.mockk.mockkObject
+import io.mockk.runs
+import io.mockk.slot
 import io.mockk.unmockkObject
 import io.mockk.verify
+import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
+import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
+import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
+import no.nav.sosialhjelp.kotlin.utils.pdf.filkonvertering.excel.ExcelToPdfConverter
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
+import no.nav.sosialhjelp.soknad.app.subjecthandler.StaticSubjectHandlerImpl
+import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
+import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggType
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
+import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
+import no.nav.sosialhjelp.soknad.innsending.SenderUtils.createPrefixedBehandlingsId
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilOpplasting
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
+import no.nav.sosialhjelp.soknad.util.ExampleFileRepository.EXCEL_FILE
+import no.nav.sosialhjelp.soknad.util.ExampleFileRepository.EXCEL_FILE_OLD
+import no.nav.sosialhjelp.soknad.util.ExampleFileRepository.PDF_FILE
+import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils.getSha512FromByteArray
+import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils.lagFilnavn
+import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils.validerFil
+import no.nav.sosialhjelp.soknad.vedlegg.exceptions.UgyldigOpplastingTypeException
+import no.nav.sosialhjelp.soknad.vedlegg.filedetection.FileDetectionUtils.detectMimeType
+import no.nav.sosialhjelp.soknad.vedlegg.filedetection.FileDetectionUtils.mapToTikaType
+import no.nav.sosialhjelp.soknad.vedlegg.filedetection.MimeTypes
 import no.nav.sosialhjelp.soknad.vedlegg.virusscan.VirusScanner
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import java.io.File
+import java.time.LocalDateTime
+import java.util.UUID.nameUUIDFromBytes as uuidFromBytes
 
 internal class MellomlagringServiceTest {
 
@@ -20,6 +49,10 @@ internal class MellomlagringServiceTest {
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
     private val virusScanner: VirusScanner = mockk()
     private val soknadUnderArbeidService: SoknadUnderArbeidService = mockk()
+
+//    private val mellomlagringService = spyk(
+//        MellomlagringService(mellomlagringClient, soknadUnderArbeidRepository, virusScanner, soknadUnderArbeidService)
+//    )
 
     private val mellomlagringService = MellomlagringService(
         mellomlagringClient,
@@ -30,8 +63,15 @@ internal class MellomlagringServiceTest {
 
     @BeforeEach
     internal fun setUp() {
+        clearAllMocks()
+
         mockkObject(MiljoUtils)
         every { MiljoUtils.environmentName } returns "test"
+        every { MiljoUtils.isNonProduction() } returns true
+
+        SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
+
+        every { virusScanner.scan(any(), any(), any(), any()) } just runs
     }
 
     @AfterEach
@@ -100,5 +140,139 @@ internal class MellomlagringServiceTest {
         val mellomlagretVedlegg = mellomlagringService.getVedlegg("behandlingsId", "vedleggId")
         assertThat(mellomlagretVedlegg?.data).hasSize("hello-world".length)
         assertThat(mellomlagretVedlegg?.filnavn).isEqualTo("filnavn")
+    }
+
+    @Test
+    fun `Sjekker at logikk ved opplasting av pdf har forventet data`() {
+        val bytes = PDF_FILE.readBytes()
+
+        val behandlingsId = "123"
+
+        val mellomlagringDokumentInfos = opprettDokumentInfoList(PDF_FILE)
+        val eksternId = createPrefixedBehandlingsId(behandlingsId)
+
+        val slot = slot<FilOpplasting>()
+
+        every { mellomlagringClient.postVedlegg(eksternId, capture(slot)) } just runs
+        every { mellomlagringClient.getMellomlagredeVedlegg(eksternId) } returns MellomlagringDto(eksternId, mellomlagringDokumentInfos)
+
+        val (sha512, vedleggMetadata) = mellomlagringService
+            .uploadVedlegg(behandlingsId, "hei|på deg", bytes, PDF_FILE.name)
+
+        assertThat(sha512).isEqualTo(getSha512FromByteArray(bytes))
+
+        val filnavn = lagFilnavn(
+            PDF_FILE.name,
+            mapToTikaType(detectMimeType(bytes)),
+            uuidFromBytes(bytes)
+        )
+        assertThat(vedleggMetadata.filnavn).isEqualTo(filnavn)
+
+        val filOpplasting = slot.captured
+        filOpplasting.metadata.let {
+            assertThat(it.storrelse).isEqualTo(PDF_FILE.readBytes().size.toLong())
+        }
+    }
+
+    @Test
+    fun `Konvertert excel til pdf har forventede metadata`() {
+        val behandlingsId = "123"
+        val eksternId = createPrefixedBehandlingsId(behandlingsId)
+
+        val slot = slot<FilOpplasting>()
+        every { mellomlagringClient.postVedlegg(eksternId, capture(slot)) } just runs
+        every { mellomlagringClient.getMellomlagredeVedlegg(eksternId) } returns MellomlagringDto(eksternId, emptyList())
+
+        // kan ikke gjenskape UUID, og dermed filnavn, fra konvertert fil
+        assertThatThrownBy { mellomlagringService.uploadVedlegg(behandlingsId, "hei|på deg", EXCEL_FILE.readBytes(), EXCEL_FILE.name) }
+            .isInstanceOf(IllegalStateException::class.java)
+            .hasMessageContaining("Klarte ikke finne det mellomlagrede vedlegget som akkurat ble lastet opp")
+
+        val konvSize = ExcelToPdfConverter.konverterTilPdf(EXCEL_FILE.readBytes()).size
+        val filOpplasting = slot.captured
+
+        filOpplasting.metadata.let {
+            assertThat(it.filnavn).contains(EXCEL_FILE.name.split(".")[0])
+            assertThat(it.filnavn).contains(".pdf")
+            assertThat(it.mimetype).isEqualTo(MimeTypes.APPLICATION_PDF)
+            assertThat(it.storrelse).isEqualTo(konvSize.toLong())
+        }
+    }
+
+    @Test
+    fun `Test uploade fil som ikke stottes`() {
+
+        val behandlingsId = "123"
+        val eksternId = createPrefixedBehandlingsId(behandlingsId)
+
+        val slot = slot<FilOpplasting>()
+        every { mellomlagringClient.postVedlegg(eksternId, capture(slot)) } just runs
+        every { mellomlagringClient.getMellomlagredeVedlegg(eksternId) } returns MellomlagringDto(eksternId, emptyList())
+
+        assertThatThrownBy {
+            mellomlagringService.uploadVedlegg(behandlingsId, "hei|på deg", EXCEL_FILE_OLD.readBytes(), EXCEL_FILE.name)
+        }
+            .isInstanceOf(UgyldigOpplastingTypeException::class.java)
+            .hasMessageContaining("Ugyldig filtype for opplasting")
+    }
+
+    @Test
+    fun `Test skal oppdatere JsonInternalSoknad med vedleggsinfo`() {
+        val behandlingsId = "123"
+
+        every { soknadUnderArbeidRepository.hentSoknad(behandlingsId, any()) } returns createSoknadUnderArbeid(
+            behandlingsId,
+            JsonInternalSoknad().withVedlegg(
+                JsonVedleggSpesifikasjon().withVedlegg(
+                    listOf(
+                        JsonVedlegg()
+                            .withType(OpplastetVedleggType("hei|på deg").type)
+                            .withTilleggsinfo(OpplastetVedleggType("hei|på deg").tilleggsinfo)
+                            .withStatus("VedleggKreves")
+                    )
+                )
+            )
+        )
+        val slot = slot<SoknadUnderArbeid>()
+        every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(slot), any()) } just runs
+
+        mellomlagringService.oppdaterSoknadUnderArbeid(
+            getSha512FromByteArray(PDF_FILE.readBytes()),
+            behandlingsId,
+            "hei|på deg",
+            PDF_FILE.name
+        )
+
+        val soknadUnderArbeid = slot.captured
+        val vedlegg = soknadUnderArbeid.jsonInternalSoknad!!.vedlegg!!.vedlegg[0]
+        val fil = vedlegg.filer[0]
+
+        assertThat(fil.sha512).isEqualTo(getSha512FromByteArray(PDF_FILE.readBytes()))
+        assertThat(fil.filnavn).contains(PDF_FILE.name.split(".")[0])
+    }
+
+    private fun opprettDokumentInfoList(fil: File): List<MellomlagringDokumentInfo> {
+        val bytes = fil.readBytes()
+        return listOf(
+            MellomlagringDokumentInfo(
+                lagFilnavn(fil.name, validerFil(bytes, fil.name), uuidFromBytes(bytes)),
+                uuidFromBytes(bytes).toString(),
+                bytes.size.toLong(),
+                detectMimeType(bytes)
+            )
+        )
+    }
+
+    private fun createSoknadUnderArbeid(behandligsId: String, jsonInternalSoknad: JsonInternalSoknad): SoknadUnderArbeid {
+        return SoknadUnderArbeid(
+            versjon = 1L,
+            behandlingsId = behandligsId,
+            tilknyttetBehandlingsId = null,
+            eier = "EIER",
+            jsonInternalSoknad = jsonInternalSoknad,
+            status = SoknadUnderArbeidStatus.UNDER_ARBEID,
+            opprettetDato = LocalDateTime.now(),
+            sistEndretDato = LocalDateTime.now()
+        )
     }
 }
