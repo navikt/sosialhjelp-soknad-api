@@ -24,7 +24,7 @@ jobs:
       - uses: actions/checkout@v3
 
       - run: echo "COMMIT_HASH=$(git log -n 1 --pretty=format:'%h')" >> $GITHUB_ENV # mindre kryptisk
-      - run: echo "ARTIFACT_TAG=${{ github.ref_name }}:${{ env.COMMIT_HASH }}" >> $GITHUB_ENV
+      - run: echo "ARTIFACT_TAG=${{ github.ref_name }}_${{ env.COMMIT_HASH }}" >> $GITHUB_ENV
 
       - name: Create tag and release
         uses: ncipollo/release-action@v1
