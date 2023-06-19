@@ -1,6 +1,10 @@
 name: "Create tag and release image"
 description: "Create and release tag, create and release docker image"
 
+inputs:
+  github-token:
+    required: true
+    description: "Github TOKEN for this workflow"
 outputs:
   artifact-version:
     description: Created artifact version
@@ -17,5 +21,5 @@ runs:
       uses: navikt/sosialhjelp-ci/actions/build-and-push-docker-image@master
       with:
         image-name: ghcr.io/${{ github.repository }}/${{ github.event.repository.name }}
-        github-token: ${{ secrets.GITHUB_TOKEN }}
+        github-token: ${{ inputs.github-token }}
         artifact-version: ${{ steps.artifact-version.outputs.artifact-version }}

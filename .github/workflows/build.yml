@@ -25,3 +25,5 @@ jobs:
       - name: Create tag and build image
         if: github.ref == 'refs/heads/master'
         uses: navikt/sosialhjelp-soknad-api/.github/actions/release-tag-and-build-image@only_create_image_on_master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
