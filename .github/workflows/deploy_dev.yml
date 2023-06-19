@@ -33,6 +33,14 @@ jobs:
           commit: ${{ github.sha }}
           allowUpdates: true
 
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'gradle'
+
+      - run: ./gradlew assemble
+
       - name: Build and push docker image
         uses: navikt/sosialhjelp-ci/actions/build-and-push-docker-image@master
         with:
