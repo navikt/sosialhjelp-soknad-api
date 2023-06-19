@@ -22,13 +22,6 @@ jobs:
       - name: Build kotlin, and run tests/lint
         uses: navikt/sosialhjelp-ci/actions/build-kotlin@master
 
-      - name: Create and release tag
-        id: artifact-version
-        uses: navikt/sosialhjelp-ci/actions/create-and-release-tag@master
-
-      - name: Build and push Docker Image
-        uses: navikt/sosialhjelp-ci/actions/build-and-push-docker-image@master
-        with:
-          image-name: ghcr.io/${{ github.repository }}/${{ github.event.repository.name }}
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          artifact-version: ${{ steps.artifact-version.outputs.artifact-version }}
+      - name: Create tag and build image
+        if: github.ref == 'refs/heads/master'
+        uses: navikt/sosialhjelp-soknad-api/.github/actions/release-tag-and-build-image@only_create_image_on_master
