@@ -21,7 +21,7 @@ jobs:
       ORG_GRADLE_PROJECT_githubPassword: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Github Actor
-        run: echo "${{ github.actor }}
+        run: echo ${{ github.actor }}
 
       - name: Build kotlin, and run tests/lint
         uses: navikt/sosialhjelp-ci/actions/build-kotlin@master
