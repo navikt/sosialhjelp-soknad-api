@@ -1,10 +1,11 @@
-name: Build and push docker image
+name: Build kotlin and docker image
 on:
   push:
     branches:
       - '**' # Build all branches
     tags-ignore:
       - '**' # Don't build any tags
+  pull_request:
   workflow_dispatch:
 
 # FIXME: Legg til docker layer caching, f.eks. https://github.com/marketplace/actions/build-docker-images-using-cache

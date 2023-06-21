@@ -1,7 +1,7 @@
 name: Deploy til prod
 on:
   workflow_run:
-    workflows: ["Build and push docker image"]    # Venter på at bygg av image er ferdig
+    workflows: ["Build kotlin and docker image"]    # Venter på at bygg av image er ferdig
     branches: [master]
     types:
       - completed
