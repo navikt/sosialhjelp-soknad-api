@@ -5,7 +5,6 @@ on:
       - '**' # Build all branches
     tags-ignore:
       - '**' # Don't build any tags
-  pull_request:
   workflow_dispatch:
 
 # FIXME: Legg til docker layer caching, f.eks. https://github.com/marketplace/actions/build-docker-images-using-cache
@@ -33,3 +32,16 @@ jobs:
           image-name: ghcr.io/${{ github.repository }}/${{ github.event.repository.name }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
           artifact-version: ${{ steps.artifact-version.outputs.artifact-version }}
+
+      - name: Send custom JSON data to Slack workflow
+        id: slack
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          # This data can be any valid JSON from a previous step in the GitHub Action
+          payload: |
+            {
+              "link": "${{ github.server_url }}/${{ github.repository }}",
+              "repo": "${{ github.ref }}"
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
