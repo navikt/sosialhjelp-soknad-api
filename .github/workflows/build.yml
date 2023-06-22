@@ -33,15 +33,5 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           artifact-version: ${{ steps.artifact-version.outputs.artifact-version }}
 
-      - name: Send custom JSON data to Slack workflow
-        id: slack
-        uses: slackapi/slack-github-action@v1.24.0
-        with:
-          # This data can be any valid JSON from a previous step in the GitHub Action
-          payload: |
-            {
-              "link": "${{ github.server_url }}/${{ github.repository }}",
-              "repo": "${{ github.ref }}"
-            }
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+      - name: Notify channel if Dependabot PR
+        uses: navikt/sosialhjelp-ci/actions/post-to-slack-action
