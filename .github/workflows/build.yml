@@ -37,5 +37,5 @@ jobs:
         uses: navikt/sosialhjelp-ci/actions/repo_dispatch-post-to-slack@master
         with:
           repo: ${{ github.repository }}
-          github-token: ${{ secrets.READER_TOKEN }}
+          token: ${{ secrets.AMUNDSOR_TOKEN }}
           
