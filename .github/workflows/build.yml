@@ -15,7 +15,6 @@ jobs:
     permissions:
       packages: write
       contents: write
-      repository-projects: write
     env:
       ORG_GRADLE_PROJECT_githubUser: x-access-token
       ORG_GRADLE_PROJECT_githubPassword: ${{ secrets.GITHUB_TOKEN }}
@@ -38,5 +37,5 @@ jobs:
         uses: navikt/sosialhjelp-ci/actions/repo_dispatch-post-to-slack@master
         with:
           repo: ${{ github.repository }}
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.READER_TOKEN }}
           
