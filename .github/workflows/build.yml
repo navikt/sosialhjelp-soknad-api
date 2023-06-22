@@ -37,4 +37,4 @@ jobs:
           artifact-version: ${{ steps.artifact-version.outputs.artifact-version }}
 
       - name: Notify channel if Dependabot PR
-        uses: navikt/sosialhjelp-ci/actions/post-to-slack-action
+        uses: navikt/sosialhjelp-ci/actions/post-to-slack-action@master
