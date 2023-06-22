@@ -38,3 +38,5 @@ jobs:
 
       - name: Notify channel if Dependabot PR
         uses: navikt/sosialhjelp-ci/actions/post-to-slack-action@master
+        with:
+          slack-workflow-webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
