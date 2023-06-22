@@ -33,7 +33,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           artifact-version: ${{ steps.artifact-version.outputs.artifact-version }}
 
-      - name: Dispatch call to Remote Repo Workflow to post in Slack
+      - name: Dispatch call to Remote Workflow to post in Slack
         uses: navikt/sosialhjelp-ci/actions/repo_dispatch-post-to-slack@master
         with:
           repo: ${{ github.repository }}
