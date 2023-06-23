@@ -7,5 +7,5 @@ jobs:
   event-info:
     runs-on: ubuntu-latest
     steps:
-      - name: Sjekk github.event
+      - name: Sjekk github.event.action
         run: echo "${{ github.event.action }}"
