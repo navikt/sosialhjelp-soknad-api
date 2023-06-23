@@ -1,4 +1,4 @@
-name: Code analysis and dependency submission
+name: Code Analysis and Dependency Submission
 
 on:
   push:
