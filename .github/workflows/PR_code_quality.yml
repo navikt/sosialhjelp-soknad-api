@@ -23,3 +23,12 @@ jobs:
       contents: write
     if: github.ref == 'refs/heads/master'
     uses: navikt/sosialhjelp-ci/.github/workflows/dependency_submission_gradle.yml@master
+
+  notify-slack:
+    if: github.actor == 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Post to Slack if Dependabot
+        uses: navikt/sosialhjelp-ci/actions/post-to-slack-action@master
+        with:
+          slack-workflow-webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}

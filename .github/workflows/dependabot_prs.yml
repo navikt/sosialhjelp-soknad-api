@@ -4,11 +4,7 @@ on:
   pull_request:
 
 jobs:
-  notify-slack:
-    if: github.actor == 'dependabot[bot]'
+  event-info:
     runs-on: ubuntu-latest
     steps:
-      - name: Post notification to Slack Workflow
-        uses: navikt/sosialhjelp-ci/actions/post-to-slack-action@master
-        with:
-          slack-workflow-webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
+      - run: echo "${{ github.event }}

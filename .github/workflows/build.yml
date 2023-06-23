@@ -32,4 +32,3 @@ jobs:
           image-name: ghcr.io/${{ github.repository }}/${{ github.event.repository.name }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
           artifact-version: ${{ steps.artifact-version.outputs.artifact-version }}
-          
