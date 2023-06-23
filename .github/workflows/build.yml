@@ -32,10 +32,4 @@ jobs:
           image-name: ghcr.io/${{ github.repository }}/${{ github.event.repository.name }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
           artifact-version: ${{ steps.artifact-version.outputs.artifact-version }}
-
-      - name: Repo Dispatch Remote Workflow to post in Slack
-        uses: navikt/sosialhjelp-ci/actions/repo_dispatch-post-to-slack@master
-        with:
-          repo: ${{ github.repository }}
-          token: ${{ secrets.READER_TOKEN }}
           
