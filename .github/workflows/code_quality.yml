@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - master
-  pull_request:
-  workflow_dispatch:
   schedule: ## Kjører kl. 05:00 mandag -> fredag (schedule kjører bare for Default branch)
     - cron: '0 5 * * 1-5'
 
@@ -23,13 +21,3 @@ jobs:
     permissions:
       contents: write
     uses: navikt/sosialhjelp-ci/.github/workflows/dependency_submission_gradle.yml@master
-
-  notify-slack:
-    name: Notify Slack Workflow if Dependabot opened a PR
-    if: github.actor == 'amundsor' && github.event.action == 'opened'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Post to Slack if Dependabot
-        uses: navikt/sosialhjelp-ci/actions/post-to-slack-action@master
-        with:
-          slack-workflow-webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
