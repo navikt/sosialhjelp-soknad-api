@@ -25,6 +25,7 @@ jobs:
     uses: navikt/sosialhjelp-ci/.github/workflows/dependency_submission_gradle.yml@master
 
   notify-slack:
+    name: Notify Slack Workflow if Dependabot opened a PR
     if: github.actor == 'amundsor' && github.event.action == 'opened'
     runs-on: ubuntu-latest
     steps:
