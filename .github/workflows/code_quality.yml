@@ -1,7 +1,9 @@
 name: Code analysis and dependency submission
 
 on:
-  pull_request:
+  push:
+    branches:
+      - master
   workflow_dispatch:
   schedule: ## Kjører kl. 05:00 mandag -> fredag
     - cron: '0 5 * * 1-5'
@@ -9,8 +11,15 @@ on:
 jobs:
   analyze_code:
     name: Analyze Code
+    permissions:
+      actions: read
+      security-events: write
+      contents: read
     uses: navikt/sosialhjelp-ci/.github/workflows/codeql_java.yml@master
 
   dependency_submission:
     name: Dependency Submission Gradle
+    permissions:
+      contents: write
+    if: github.ref == 'refs/heads/master'
     uses: navikt/sosialhjelp-ci/.github/workflows/dependency_submission_gradle.yml@master

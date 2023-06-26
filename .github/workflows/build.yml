@@ -1,10 +1,11 @@
-name: Build and push docker image
+name: Build kotlin and docker image
 on:
   push:
     branches:
       - '**' # Build all branches
     tags-ignore:
       - '**' # Don't build any tags
+  pull_request:
   workflow_dispatch:
 
 # FIXME: Legg til docker layer caching, f.eks. https://github.com/marketplace/actions/build-docker-images-using-cache
@@ -12,32 +13,23 @@ jobs:
   build:
     name: Build with gradle
     runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: write
     env:
       ORG_GRADLE_PROJECT_githubUser: x-access-token
       ORG_GRADLE_PROJECT_githubPassword: ${{ secrets.GITHUB_TOKEN }}
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-java@v3
-        with:
-          distribution: 'temurin'
-          java-version: '17'
-          cache: 'gradle'
-      - name: Run lint
-        run: ./gradlew ktlintCheck
-      - name: Compile and run tests
-        run: ./gradlew build
-      - name: Upload jar (artifact)
-        uses: actions/upload-artifact@v3
-        with:
-          name: app.jar
-          path: ///home/runner/work/sosialhjelp-soknad-api/sosialhjelp-soknad-api/build/libs/app.jar
-          if-no-files-found: error
-          retention-days: 1
+      - name: Build kotlin, and run tests/lint
+        uses: navikt/sosialhjelp-ci/actions/build-kotlin@master
 
-  image:
-    name: Build, push, tag and release docker image
-    if: github.actor != 'dependabot[bot]'
-    needs: build # må vente på upload av jar-fil (artifact) før denne kjører
-    uses: navikt/sosialhjelp-ci/.github/workflows/build_image_java.yml@master
-    with:
-      image_name: ghcr.io/${{ github.repository }}/${{ github.event.repository.name }}
+      - name: Create and release tag
+        id: artifact-version
+        uses: navikt/sosialhjelp-ci/actions/create-and-release-tag@master
+
+      - name: Build and push Docker Image
+        uses: navikt/sosialhjelp-ci/actions/build-and-push-docker-image@master
+        with:
+          image-name: ghcr.io/${{ github.repository }}/${{ github.event.repository.name }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          artifact-version: ${{ steps.artifact-version.outputs.artifact-version }}

@@ -10,6 +10,9 @@ on:
     tags-ignore:
       - "**" # Don't build any tags
 
+permissions:
+  contents: read
+
 env:
   CI: true
 
