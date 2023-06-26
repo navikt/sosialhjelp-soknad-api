@@ -1,11 +1,10 @@
-name: Code analysis and dependency submission
+name: Code Analysis and Dependency Submission
 
 on:
   push:
     branches:
       - master
-  workflow_dispatch:
-  schedule: ## Kjører kl. 05:00 mandag -> fredag
+  schedule: ## Kjører kl. 05:00 mandag -> fredag (schedule kjører bare for Default branch)
     - cron: '0 5 * * 1-5'
 
 jobs:
@@ -21,5 +20,4 @@ jobs:
     name: Dependency Submission Gradle
     permissions:
       contents: write
-    if: github.ref == 'refs/heads/master'
     uses: navikt/sosialhjelp-ci/.github/workflows/dependency_submission_gradle.yml@master

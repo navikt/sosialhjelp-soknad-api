@@ -5,7 +5,6 @@ on:
       - '**' # Build all branches
     tags-ignore:
       - '**' # Don't build any tags
-  pull_request:
   workflow_dispatch:
 
 # FIXME: Legg til docker layer caching, f.eks. https://github.com/marketplace/actions/build-docker-images-using-cache
