@@ -57,6 +57,7 @@ object Versions {
     const val mockOauth2Server = "0.5.8"
     const val snakeyaml = "2.0"
     const val springWebMvc = "6.0.9"
+    const val nettyHandler = "4.1.94.Final"
 }
 
 plugins {
@@ -246,6 +247,9 @@ dependencies {
         }
         implementation("org.springframework:spring-webmvc:${Versions.springWebMvc}") {
             because("https://github.com/advisories/GHSA-wxqc-pxw9-g2p8")
+        }
+        implementation("io.netty:netty-handler:${Versions.nettyHandler}") {
+            because("https://github.com/advisories/GHSA-6mjq-h674-j845")
         }
 
         testImplementation("org.assertj:assertj-core:${Versions.assertj}")
