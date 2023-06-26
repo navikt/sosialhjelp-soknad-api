@@ -96,7 +96,6 @@ repositories {
             password = githubPassword
         }
     }
-    maven("https://files.idrsolutions.com/dl/maven/")
 }
 
 configurations {
