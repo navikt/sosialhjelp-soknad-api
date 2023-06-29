@@ -3,9 +3,12 @@ package no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
+import io.mockk.mockkObject
 import io.mockk.runs
 import no.nav.sosialhjelp.soknad.app.exceptions.SendingTilKommuneErMidlertidigUtilgjengeligException
 import no.nav.sosialhjelp.soknad.app.exceptions.SendingTilKommuneUtilgjengeligException
+import no.nav.sosialhjelp.soknad.app.subjecthandler.StaticSubjectHandlerImpl
+import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
@@ -31,34 +34,39 @@ internal class SoknadUnderArbeidServiceTest {
 
     @Test
     internal fun `skalSoknadSendesMedDigisosApi - alle scenarier`() {
+
+        SubjectHandlerUtils.setNewSubjectHandlerImpl(StaticSubjectHandlerImpl())
+
         // false - soknadUnderArbeid er ettersendelse
         val soknadUnderArbeid: SoknadUnderArbeid = mockk()
+        every { soknadUnderArbeidRepository.hentSoknad(BEHANDLINGSID, any()) } returns soknadUnderArbeid
+
         every { soknadUnderArbeid.erEttersendelse } returns true
-        assertThat(soknadUnderArbeidService.skalSoknadSendesMedDigisosApi(soknadUnderArbeid)).isFalse
+        assertThat(soknadUnderArbeidService.skalSoknadSendesMedDigisosApi(BEHANDLINGSID)).isFalse
 
         // false - mottaker.kommunenummer er null, dvs at bruker ikke har valgt noen adresse enda
         every { soknadUnderArbeid.erEttersendelse } returns false
         every { soknadUnderArbeid.jsonInternalSoknad?.soknad?.mottaker?.kommunenummer } returns null
-        assertThat(soknadUnderArbeidService.skalSoknadSendesMedDigisosApi(soknadUnderArbeid)).isFalse
+        assertThat(soknadUnderArbeidService.skalSoknadSendesMedDigisosApi(BEHANDLINGSID)).isFalse
 
         // kast feil - nedetid for kommune
         every { soknadUnderArbeid.jsonInternalSoknad?.soknad?.mottaker?.kommunenummer } returns "1234"
         every { kommuneInfoService.getKommuneStatus("1234") } returns KommuneStatus.FIKS_NEDETID_OG_TOM_CACHE
         assertThatExceptionOfType(SendingTilKommuneUtilgjengeligException::class.java)
-            .isThrownBy { soknadUnderArbeidService.skalSoknadSendesMedDigisosApi(soknadUnderArbeid) }
+            .isThrownBy { soknadUnderArbeidService.skalSoknadSendesMedDigisosApi(BEHANDLINGSID) }
 
         // kast feil - midlertidig nedetid for kommune
         every { kommuneInfoService.getKommuneStatus("1234") } returns KommuneStatus.SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD_OG_ETTERSENDELSER
         assertThatExceptionOfType(SendingTilKommuneErMidlertidigUtilgjengeligException::class.java)
-            .isThrownBy { soknadUnderArbeidService.skalSoknadSendesMedDigisosApi(soknadUnderArbeid) }
+            .isThrownBy { soknadUnderArbeidService.skalSoknadSendesMedDigisosApi(BEHANDLINGSID) }
 
         // false - kommune mangler konfigurasjon hos Fiks
         every { kommuneInfoService.getKommuneStatus("1234") } returns KommuneStatus.MANGLER_KONFIGURASJON
-        assertThat(soknadUnderArbeidService.skalSoknadSendesMedDigisosApi(soknadUnderArbeid)).isFalse
+        assertThat(soknadUnderArbeidService.skalSoknadSendesMedDigisosApi(BEHANDLINGSID)).isFalse
 
         // false - kommune bruker SvarUt
         every { kommuneInfoService.getKommuneStatus("1234") } returns KommuneStatus.HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT
-        assertThat(soknadUnderArbeidService.skalSoknadSendesMedDigisosApi(soknadUnderArbeid)).isFalse
+        assertThat(soknadUnderArbeidService.skalSoknadSendesMedDigisosApi(BEHANDLINGSID)).isFalse
     }
 
     private fun lagSoknadUnderArbeidForEttersendelse(): SoknadUnderArbeid {

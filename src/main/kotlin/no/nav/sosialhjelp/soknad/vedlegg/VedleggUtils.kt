@@ -9,11 +9,14 @@ import no.nav.sosialhjelp.soknad.vedlegg.exceptions.OpplastingException
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.UgyldigOpplastingTypeException
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.FileDetectionUtils
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.TikaFileType
+import no.nav.sosialhjelp.soknad.vedlegg.konvertering.FilKonvertering
+import org.apache.commons.io.IOUtils
 import org.apache.pdfbox.pdmodel.PDDocument
 import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException
 import org.apache.pdfbox.text.PDFTextStripper
 import org.bouncycastle.jcajce.provider.digest.SHA512
 import org.bouncycastle.util.encoders.Hex
+import org.springframework.web.multipart.MultipartFile
 import java.io.ByteArrayInputStream
 import java.io.IOException
 import java.io.UnsupportedEncodingException
@@ -24,6 +27,18 @@ import java.util.*
 object VedleggUtils {
 
     private val log by logger()
+
+    fun behandleFilOgReturnerFildata(orginaltFilnavn: String, orginalData: ByteArray): Pair<String, ByteArray> {
+
+        val uuidFromBytes = UUID.nameUUIDFromBytes(orginalData)
+
+        val (filnavn, data) = FilKonvertering.konverterHvisStottet(orginalData, orginaltFilnavn)
+        val fileType = validerFil(data, filnavn)
+
+        val filnavnMedUuid = lagFilnavn(filnavn, fileType, uuidFromBytes)
+
+        return Pair(filnavnMedUuid, data)
+    }
 
     fun getSha512FromByteArray(bytes: ByteArray?): String {
         if (bytes == null) {
@@ -170,5 +185,15 @@ object VedleggUtils {
         return if (TikaFileType.PDF == fileType) {
             ".pdf".equals(fileExtension, ignoreCase = true)
         } else false
+    }
+
+    fun getByteArray(file: MultipartFile): ByteArray {
+        return try {
+            file.inputStream.use {
+                IOUtils.toByteArray(it)
+            }
+        } catch (e: IOException) {
+            throw OpplastingException("Kunne ikke lagre fil", e, "vedlegg.opplasting.feil.generell")
+        }
     }
 }

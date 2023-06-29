@@ -3,39 +3,22 @@ package no.nav.sosialhjelp.soknad.vedlegg.konvertering
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.FileDetectionUtils.detectMimeType
 
 object FilKonvertering {
-    fun konverterHvisStottet(sourceData: ByteArray, filnavn: String): VedleggWrapper {
-        val stottetFiltypeHvisFinnes = StottetFiltype.finnFiltype(detectMimeType(sourceData), filnavn)
+    fun konverterHvisStottet(sourceData: ByteArray, orginaltFilnavn: String): Pair<String, ByteArray> {
+        val stottetFiltypeHvisFinnes = StottetFiltype.finnFiltype(detectMimeType(sourceData), orginaltFilnavn)
 
         return stottetFiltypeHvisFinnes?.let {
             val konvertertData = it.getFiltypeConverter().konverterTilPdf(sourceData)
-            VedleggWrapper(konvertertData, byttExtension(filnavn))
+            Pair(byttExtension(orginaltFilnavn), konvertertData)
         }
-            ?: VedleggWrapper(sourceData, filnavn)
+            ?: Pair(orginaltFilnavn, sourceData)
     }
 
-    private fun byttExtension(filnavn: String): String = with(filnavn) {
-        val oldExtension = substring(lastIndexOf("."))
-        replace(oldExtension, ".pdf")
-    }
-}
+    private fun byttExtension(filnavn: String): String {
+        val indexOfExt = filnavn.lastIndexOf(".")
 
-data class VedleggWrapper(
-    val data: ByteArray,
-    val filnavn: String,
-) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as VedleggWrapper
-
-        if (!data.contentEquals(other.data)) return false
-        return filnavn == other.filnavn
-    }
-
-    override fun hashCode(): Int {
-        var result = data.contentHashCode()
-        result = 31 * result + filnavn.hashCode()
-        return result
+        return if (indexOfExt < 0) { "$filnavn.pdf" } else {
+            val extension = filnavn.substring(indexOfExt)
+            filnavn.replace(extension, ".pdf")
+        }
     }
 }
