@@ -24,8 +24,6 @@ import no.nav.sosialhjelp.soknad.vedlegg.fiks.MellomlagringDokumentInfo
 import org.springframework.stereotype.Component
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
-import java.util.*
-import kotlin.collections.ArrayList
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken as eier
 
 @Component
