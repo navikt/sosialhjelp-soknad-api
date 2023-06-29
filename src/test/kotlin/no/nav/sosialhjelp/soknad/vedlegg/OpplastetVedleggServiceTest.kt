@@ -13,6 +13,7 @@ import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
+import no.nav.sosialhjelp.soknad.app.exceptions.DuplikatFilException
 import no.nav.sosialhjelp.soknad.app.subjecthandler.StaticSubjectHandlerImpl
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedlegg
@@ -21,6 +22,8 @@ import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedle
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
+import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
+import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
 import no.nav.sosialhjelp.soknad.util.ExampleFileRepository.CSV_FILE
 import no.nav.sosialhjelp.soknad.util.ExampleFileRepository.EXCEL_FILE
 import no.nav.sosialhjelp.soknad.util.ExampleFileRepository.EXCEL_FILE_OLD
@@ -43,7 +46,7 @@ import org.junit.jupiter.api.Test
 import java.awt.image.BufferedImage
 import java.io.ByteArrayOutputStream
 import java.time.LocalDateTime
-import java.util.UUID
+import java.util.*
 import javax.imageio.ImageIO
 import javax.imageio.stream.ImageOutputStream
 import javax.imageio.stream.MemoryCacheImageOutputStream
@@ -53,9 +56,13 @@ internal class OpplastetVedleggServiceTest {
     private val opplastetVedleggRepository: OpplastetVedleggRepository = mockk()
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository = mockk()
     private val virusScanner: VirusScanner = mockk()
+    private val kommuneInfoService: KommuneInfoService = mockk()
+
+    private val soknadUnderArbeidService =
+        SoknadUnderArbeidService(soknadUnderArbeidRepository, kommuneInfoService)
 
     private val opplastetVedleggService =
-        OpplastetVedleggService(opplastetVedleggRepository, soknadUnderArbeidRepository, virusScanner)
+        OpplastetVedleggService(opplastetVedleggRepository, soknadUnderArbeidRepository, soknadUnderArbeidService, virusScanner)
 
     @BeforeEach
     fun setUp() {
@@ -82,8 +89,8 @@ internal class OpplastetVedleggServiceTest {
                 JsonVedleggSpesifikasjon().withVedlegg(
                     listOf(
                         JsonVedlegg()
-                            .withType(OpplastetVedleggType(TYPE).type)
-                            .withTilleggsinfo(OpplastetVedleggType(TYPE).tilleggsinfo)
+                            .withType(OpplastetVedleggType(VEDLEGGSTYPE).type)
+                            .withTilleggsinfo(OpplastetVedleggType(VEDLEGGSTYPE).tilleggsinfo)
                             .withStatus("VedleggKreves")
                     )
                 )
@@ -96,11 +103,11 @@ internal class OpplastetVedleggServiceTest {
 
         val imageFile = createByteArrayFromJpeg()
         val opplastetVedlegg =
-            opplastetVedleggService.lastOppVedlegg(BEHANDLINGSID, TYPE, imageFile, FILNAVN1)
-        opplastetVedleggService.oppdaterVedleggStatus(opplastetVedlegg, BEHANDLINGSID, TYPE)
+            opplastetVedleggService.lastOppVedlegg(BEHANDLINGSID, VEDLEGGSTYPE, imageFile, FILNAVN1)
+
         val soknadUnderArbeid = soknadUnderArbeidSlot.captured
         val jsonVedlegg = soknadUnderArbeid.jsonInternalSoknad!!.vedlegg.vedlegg[0]
-        assertThat(jsonVedlegg.type + "|" + jsonVedlegg.tilleggsinfo).isEqualTo(TYPE)
+        assertThat(jsonVedlegg.type + "|" + jsonVedlegg.tilleggsinfo).isEqualTo(VEDLEGGSTYPE)
         assertThat(jsonVedlegg.status).isEqualTo("LastetOpp")
         assertThat(jsonVedlegg.filer).hasSize(1)
         assertThat(opplastetVedlegg.filnavn.substring(0, 5)).isEqualTo(FILNAVN1.substring(0, 5))
@@ -113,8 +120,8 @@ internal class OpplastetVedleggServiceTest {
                 JsonVedleggSpesifikasjon().withVedlegg(
                     listOf(
                         JsonVedlegg()
-                            .withType(OpplastetVedleggType(TYPE).type)
-                            .withTilleggsinfo(OpplastetVedleggType(TYPE).tilleggsinfo)
+                            .withType(OpplastetVedleggType(VEDLEGGSTYPE).type)
+                            .withTilleggsinfo(OpplastetVedleggType(VEDLEGGSTYPE).tilleggsinfo)
                             .withFiler(mutableListOf(JsonFiler().withFilnavn(FILNAVN2).withSha512(SHA512)))
                             .withStatus("LastetOpp")
                     )
@@ -123,7 +130,7 @@ internal class OpplastetVedleggServiceTest {
         )
         every { opplastetVedleggRepository.hentVedlegg(any(), any()) } returns OpplastetVedlegg(
             eier = "eier",
-            vedleggType = OpplastetVedleggType(TYPE),
+            vedleggType = OpplastetVedleggType(VEDLEGGSTYPE),
             data = byteArrayOf(1, 2, 3),
             soknadId = 123L,
             filnavn = FILNAVN2,
@@ -136,7 +143,7 @@ internal class OpplastetVedleggServiceTest {
         opplastetVedleggService.deleteVedleggAndUpdateVedleggstatus(BEHANDLINGSID, "uuid")
         val soknadUnderArbeid = soknadUnderArbeidSlot.captured
         val jsonVedlegg = soknadUnderArbeid.jsonInternalSoknad!!.vedlegg.vedlegg[0]
-        assertThat(jsonVedlegg.type + "|" + jsonVedlegg.tilleggsinfo).isEqualTo(TYPE)
+        assertThat(jsonVedlegg.type + "|" + jsonVedlegg.tilleggsinfo).isEqualTo(VEDLEGGSTYPE)
         assertThat(jsonVedlegg.status).isEqualTo("VedleggKreves")
         assertThat(jsonVedlegg.filer).isEmpty()
     }
@@ -148,8 +155,8 @@ internal class OpplastetVedleggServiceTest {
                 JsonVedleggSpesifikasjon().withVedlegg(
                     listOf(
                         JsonVedlegg()
-                            .withType(OpplastetVedleggType(TYPE).type)
-                            .withTilleggsinfo(OpplastetVedleggType(TYPE).tilleggsinfo)
+                            .withType(OpplastetVedleggType(VEDLEGGSTYPE).type)
+                            .withTilleggsinfo(OpplastetVedleggType(VEDLEGGSTYPE).tilleggsinfo)
                             .withStatus("VedleggKreves")
                     )
                 )
@@ -176,24 +183,24 @@ internal class OpplastetVedleggServiceTest {
         assertThatExceptionOfType(UgyldigOpplastingTypeException::class.java)
             .isThrownBy {
                 opplastetVedleggService
-                    .lastOppVedlegg(BEHANDLINGSID, TYPE, imageFile, "filnavn.jfif")
+                    .lastOppVedlegg(BEHANDLINGSID, VEDLEGGSTYPE, imageFile, "filnavn.jfif")
             }
         assertThatExceptionOfType(UgyldigOpplastingTypeException::class.java)
             .isThrownBy {
                 opplastetVedleggService
-                    .lastOppVedlegg(BEHANDLINGSID, TYPE, imageFile, "filnavn.pjpeg")
+                    .lastOppVedlegg(BEHANDLINGSID, VEDLEGGSTYPE, imageFile, "filnavn.pjpeg")
             }
         assertThatExceptionOfType(UgyldigOpplastingTypeException::class.java)
             .isThrownBy {
                 opplastetVedleggService
-                    .lastOppVedlegg(BEHANDLINGSID, TYPE, imageFile, "filnavn.pjp")
+                    .lastOppVedlegg(BEHANDLINGSID, VEDLEGGSTYPE, imageFile, "filnavn.pjp")
             }
         assertThatExceptionOfType(UgyldigOpplastingTypeException::class.java)
             .isThrownBy {
                 opplastetVedleggService
                     .lastOppVedlegg(
                         BEHANDLINGSID,
-                        TYPE,
+                        VEDLEGGSTYPE,
                         "ikkeBildeEllerPdf".toByteArray(),
                         "filnavnUtenFiltype"
                     )
@@ -206,7 +213,7 @@ internal class OpplastetVedleggServiceTest {
 
         val imageFile = createByteArrayFromJpeg()
         val opplastetVedlegg = opplastetVedleggService
-            .lastOppVedlegg(BEHANDLINGSID, TYPE, imageFile, "filnavnUtenFiltype")
+            .lastOppVedlegg(BEHANDLINGSID, VEDLEGGSTYPE, imageFile, "filnavnUtenFiltype")
         assertThat(opplastetVedlegg.filnavn).startsWith("filnavnUtenFiltype").endsWith(".jpg")
     }
 
@@ -217,7 +224,7 @@ internal class OpplastetVedleggServiceTest {
         val imageFile = createByteArrayFromJpeg()
         val opplastetVedlegg = opplastetVedleggService.lastOppVedlegg(
             BEHANDLINGSID,
-            TYPE,
+            VEDLEGGSTYPE,
             imageFile,
             "filnavnMed.punktum"
         )
@@ -230,7 +237,7 @@ internal class OpplastetVedleggServiceTest {
 
         val imageFile = createByteArrayFromJpeg()
         val opplastetVedlegg =
-            opplastetVedleggService.lastOppVedlegg(BEHANDLINGSID, TYPE, imageFile, "filnavn.pdf")
+            opplastetVedleggService.lastOppVedlegg(BEHANDLINGSID, VEDLEGGSTYPE, imageFile, "filnavn.pdf")
         assertThat(opplastetVedlegg.filnavn).startsWith("filnavn").endsWith(".jpg")
     }
 
@@ -241,7 +248,7 @@ internal class OpplastetVedleggServiceTest {
         val filename = EXCEL_FILE.let { it.name.substring(0, it.name.indexOf(".")) }
         val opplastetVedlegg = opplastetVedleggService.lastOppVedlegg(
             BEHANDLINGSID,
-            TYPE,
+            VEDLEGGSTYPE,
             EXCEL_FILE.readBytes(),
             EXCEL_FILE.name
         )
@@ -255,7 +262,7 @@ internal class OpplastetVedleggServiceTest {
         val filename = WORD_FILE.let { it.name.substring(0, it.name.indexOf(".")) }
         val opplastetVedlegg = opplastetVedleggService.lastOppVedlegg(
             BEHANDLINGSID,
-            TYPE,
+            VEDLEGGSTYPE,
             WORD_FILE.readBytes(),
             WORD_FILE.name
         )
@@ -269,7 +276,7 @@ internal class OpplastetVedleggServiceTest {
         val filename = CSV_FILE.let { it.name.substring(0, it.name.indexOf(".")) }
         val opplastetVedlegg = opplastetVedleggService.lastOppVedlegg(
             BEHANDLINGSID,
-            TYPE,
+            VEDLEGGSTYPE,
             CSV_FILE.readBytes(),
             CSV_FILE.name
         )
@@ -280,7 +287,7 @@ internal class OpplastetVedleggServiceTest {
     fun `Skal ikke kunne laste opp gammelt Excel-format`() {
         assertThatThrownBy {
             opplastetVedleggService
-                .lastOppVedlegg(BEHANDLINGSID, TYPE, EXCEL_FILE_OLD.readBytes(), EXCEL_FILE_OLD.name)
+                .lastOppVedlegg(BEHANDLINGSID, VEDLEGGSTYPE, EXCEL_FILE_OLD.readBytes(), EXCEL_FILE_OLD.name)
         }
             .isInstanceOf(UgyldigOpplastingTypeException::class.java)
             .hasMessageContaining("Ugyldig filtype for opplasting")
@@ -291,7 +298,7 @@ internal class OpplastetVedleggServiceTest {
     fun `Skal ikke kunne laste opp gammelt Word-format`() {
         assertThatThrownBy {
             opplastetVedleggService
-                .lastOppVedlegg(BEHANDLINGSID, TYPE, WORD_FILE_OLD.readBytes(), WORD_FILE_OLD.name)
+                .lastOppVedlegg(BEHANDLINGSID, VEDLEGGSTYPE, WORD_FILE_OLD.readBytes(), WORD_FILE_OLD.name)
         }
             .isInstanceOf(UgyldigOpplastingTypeException::class.java)
             .hasMessageContaining("Ugyldig filtype for opplasting")
@@ -302,7 +309,7 @@ internal class OpplastetVedleggServiceTest {
     fun `Vanlig tekst-fil konverteres ikke`() {
         assertThatThrownBy {
             opplastetVedleggService
-                .lastOppVedlegg(BEHANDLINGSID, TYPE, TEXT_FILE.readBytes(), TEXT_FILE.name)
+                .lastOppVedlegg(BEHANDLINGSID, VEDLEGGSTYPE, TEXT_FILE.readBytes(), TEXT_FILE.name)
         }
             .isInstanceOf(UgyldigOpplastingTypeException::class.java)
             .hasMessageContaining("Ugyldig filtype for opplasting")
@@ -313,7 +320,7 @@ internal class OpplastetVedleggServiceTest {
     fun `Skal oppdatere JsonInternalSoknad med vedleggsinformasjon`() {
         val opplastetVedlegg = OpplastetVedlegg(
             eier = SubjectHandlerUtils.getUserIdFromToken(),
-            vedleggType = OpplastetVedleggType(TYPE),
+            vedleggType = OpplastetVedleggType(VEDLEGGSTYPE),
             data = PDF_FILE.readBytes(),
             soknadId = 1L,
             filnavn = PDF_FILE.name
@@ -327,8 +334,8 @@ internal class OpplastetVedleggServiceTest {
                 JsonVedleggSpesifikasjon().withVedlegg(
                     listOf(
                         JsonVedlegg()
-                            .withType(OpplastetVedleggType(TYPE).type)
-                            .withTilleggsinfo(OpplastetVedleggType(TYPE).tilleggsinfo)
+                            .withType(OpplastetVedleggType(VEDLEGGSTYPE).type)
+                            .withTilleggsinfo(OpplastetVedleggType(VEDLEGGSTYPE).tilleggsinfo)
                             .withStatus("VedleggKreves")
                     )
                 )
@@ -338,10 +345,11 @@ internal class OpplastetVedleggServiceTest {
         val slot = slot<SoknadUnderArbeid>()
         every { soknadUnderArbeidRepository.oppdaterSoknadsdata(capture(slot), any()) } just runs
 
-        opplastetVedleggService.oppdaterVedleggStatus(
-            opplastetVedlegg,
+        soknadUnderArbeidService.oppdaterSoknadUnderArbeid(
+            opplastetVedlegg.sha512,
             BEHANDLINGSID,
-            "hei|på deg"
+            "hei|på deg",
+            opplastetVedlegg.filnavn
         )
 
         val soknadUnderArbeid = slot.captured
@@ -351,14 +359,24 @@ internal class OpplastetVedleggServiceTest {
         assertThat(fil.filnavn.contains(PDF_FILE.name.split(".")[0]))
     }
 
+    @Test
+    fun `Laste opp samme fil 2 ganger skal gi feil`() {
+        doCommonMocking()
+
+        opplastetVedleggService.lastOppVedlegg(BEHANDLINGSID, VEDLEGGSTYPE, PDF_FILE.readBytes(), PDF_FILE.name)
+        // skal feile andre runde
+        assertThatThrownBy { opplastetVedleggService.lastOppVedlegg(BEHANDLINGSID, VEDLEGGSTYPE, PDF_FILE.readBytes(), PDF_FILE.name) }
+            .isInstanceOf(DuplikatFilException::class.java)
+    }
+
     private fun doCommonMocking() {
         every { soknadUnderArbeidRepository.hentSoknad(any<String>(), any()) } returns createSoknadUnderArbeid(
             JsonInternalSoknad().withVedlegg(
                 JsonVedleggSpesifikasjon().withVedlegg(
                     listOf(
                         JsonVedlegg()
-                            .withType(OpplastetVedleggType(TYPE).type)
-                            .withTilleggsinfo(OpplastetVedleggType(TYPE).tilleggsinfo)
+                            .withType(OpplastetVedleggType(VEDLEGGSTYPE).type)
+                            .withTilleggsinfo(OpplastetVedleggType(VEDLEGGSTYPE).tilleggsinfo)
                             .withStatus("VedleggKreves")
                     )
                 )
@@ -381,7 +399,7 @@ internal class OpplastetVedleggServiceTest {
         private const val FILNAVN1 = "Bifil.jpeg"
         private const val FILNAVN2 = "Homofil.png"
         private const val SHA512 = "Shakk matt"
-        private const val TYPE = "hei|på deg"
+        private const val VEDLEGGSTYPE = "hei|på deg"
 
         private fun createSoknadUnderArbeid(jsonInternalSoknad: JsonInternalSoknad): SoknadUnderArbeid {
             return SoknadUnderArbeid(

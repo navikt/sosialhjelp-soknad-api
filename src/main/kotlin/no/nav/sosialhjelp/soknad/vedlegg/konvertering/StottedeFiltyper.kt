@@ -21,7 +21,7 @@ enum class StottetFiltype(val mimeType: String, val extension: String) : Filtype
     };
 
     companion object FiltypeUtil {
-        fun finnFiltype(mimeType: String, filnavn: String) =
+        fun finnKonverterer(mimeType: String, filnavn: String) =
             StottetFiltype.values().find { type -> mimeType == type.mimeType && filnavn.contains(type.extension) }
     }
 }

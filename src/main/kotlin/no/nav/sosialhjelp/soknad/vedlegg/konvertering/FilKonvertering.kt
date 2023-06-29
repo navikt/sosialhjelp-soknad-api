@@ -1,41 +1,36 @@
 package no.nav.sosialhjelp.soknad.vedlegg.konvertering
 
+import no.nav.sosialhjelp.kotlin.utils.pdf.filkonvertering.FilTilPdfConverter
+import no.nav.sosialhjelp.kotlin.utils.pdf.filkonvertering.exception.FilKonverteringException
+import no.nav.sosialhjelp.soknad.vedlegg.exceptions.KonverteringTilPdfException
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.FileDetectionUtils.detectMimeType
 
 object FilKonvertering {
-    fun konverterHvisStottet(sourceData: ByteArray, filnavn: String): VedleggWrapper {
-        val stottetFiltypeHvisFinnes = StottetFiltype.finnFiltype(detectMimeType(sourceData), filnavn)
+    fun konverterHvisStottet(orginaltFilnavn: String, sourceData: ByteArray): Pair<String, ByteArray> {
+        val konvertererHvisStottet = StottetFiltype.finnKonverterer(detectMimeType(sourceData), orginaltFilnavn)
 
-        return stottetFiltypeHvisFinnes?.let {
-            val konvertertData = it.getFiltypeConverter().konverterTilPdf(sourceData)
-            VedleggWrapper(konvertertData, byttExtension(filnavn))
+        return konvertererHvisStottet?.let {
+            Pair(
+                byttExtension(orginaltFilnavn),
+                konverter(it.getFiltypeConverter(), sourceData)
+            )
         }
-            ?: VedleggWrapper(sourceData, filnavn)
+            ?: Pair(orginaltFilnavn, sourceData)
     }
 
-    private fun byttExtension(filnavn: String): String = with(filnavn) {
-        val oldExtension = substring(lastIndexOf("."))
-        replace(oldExtension, ".pdf")
-    }
-}
+    private fun konverter(konverterer: FilTilPdfConverter, sourceData: ByteArray) =
+        try {
+            konverterer.konverterTilPdf(sourceData)
+        } catch (e: FilKonverteringException) {
+            throw KonverteringTilPdfException(e.message, e)
+        }
 
-data class VedleggWrapper(
-    val data: ByteArray,
-    val filnavn: String,
-) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
+    private fun byttExtension(filnavn: String): String {
+        val indexOfExt = filnavn.lastIndexOf(".")
 
-        other as VedleggWrapper
-
-        if (!data.contentEquals(other.data)) return false
-        return filnavn == other.filnavn
-    }
-
-    override fun hashCode(): Int {
-        var result = data.contentHashCode()
-        result = 31 * result + filnavn.hashCode()
-        return result
+        return if (indexOfExt < 0) { "$filnavn.pdf" } else {
+            val extension = filnavn.substring(indexOfExt)
+            filnavn.replace(extension, ".pdf")
+        }
     }
 }
