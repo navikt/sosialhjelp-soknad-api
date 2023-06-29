@@ -148,7 +148,7 @@ class ExceptionMapper(
             is DuplikatFilException -> {
                 log.info("Bruker lastet opp allerede opplastet fil")
                 return ResponseEntity
-                    .status(HttpStatus.CONFLICT)
+                    .status(HttpStatus.NOT_ACCEPTABLE)
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(
                         Feilmelding(
