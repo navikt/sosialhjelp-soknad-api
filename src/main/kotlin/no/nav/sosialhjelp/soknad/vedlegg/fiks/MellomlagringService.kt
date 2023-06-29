@@ -72,7 +72,14 @@ class MellomlagringService(
         return MellomlagretVedleggMetadata(
             filnavn = filOpplasting.metadata.filnavn,
             filId = filId
-        )
+        ).also {
+            soknadUnderArbeidService.oppdaterSoknadUnderArbeid(
+                VedleggUtils.getSha512FromByteArray(data),
+                behandlingsId,
+                vedleggstype,
+                filnavn
+            )
+        }
     }
 
     private fun opprettFilOpplasting(filnavn: String, data: ByteArray): FilOpplasting {

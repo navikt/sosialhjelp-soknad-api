@@ -145,6 +145,18 @@ class ExceptionMapper(
                 ResponseEntity.internalServerError()
                     .header(Feilmelding.NO_BIGIP_5XX_REDIRECT, "true")
             }
+            is DuplikatFilException -> {
+                log.info("Bruker lastet opp allerede opplastet fil")
+                return ResponseEntity
+                    .status(HttpStatus.CONFLICT)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(
+                        Feilmelding(
+                            id = "duplikat_fil",
+                            message = "Fil er allerede lastet opp"
+                        )
+                    )
+            }
             else -> {
                 log.error("REST-kall feilet", e)
                 ResponseEntity.internalServerError()

@@ -13,6 +13,7 @@ import no.nav.sbl.soknadsosialhjelp.soknad.JsonInternalSoknad
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedleggSpesifikasjon
 import no.nav.sosialhjelp.soknad.app.MiljoUtils
+import no.nav.sosialhjelp.soknad.app.exceptions.DuplikatFilException
 import no.nav.sosialhjelp.soknad.app.subjecthandler.StaticSubjectHandlerImpl
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggType
@@ -20,7 +21,6 @@ import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderAr
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
 import no.nav.sosialhjelp.soknad.innsending.SenderUtils.createPrefixedBehandlingsId
-import no.nav.sosialhjelp.soknad.innsending.digisosapi.dto.FilOpplasting
 import no.nav.sosialhjelp.soknad.innsending.digisosapi.kommuneinfo.KommuneInfoService
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
 import no.nav.sosialhjelp.soknad.util.ExampleFileRepository.EXCEL_FILE
@@ -145,8 +145,7 @@ internal class MellomlagringServiceTest {
         val behandlingsId = "123"
         val eksternId = createPrefixedBehandlingsId(behandlingsId)
 
-        val slot = slot<FilOpplasting>()
-        every { mellomlagringClient.postVedlegg(eksternId, capture(slot)) } just runs
+        every { mellomlagringClient.postVedlegg(eksternId, any()) } just runs
         every { mellomlagringClient.getMellomlagredeVedlegg(eksternId) } returns MellomlagringDto(eksternId, emptyList())
 
         assertThatThrownBy {
@@ -191,7 +190,68 @@ internal class MellomlagringServiceTest {
         assertThat(fil.filnavn).contains(PDF_FILE.name.split(".")[0])
     }
 
-    private fun opprettDokumentInfoList(fil: File): List<MellomlagringDokumentInfo> {
+    @Test
+    fun `Last opp fil kaster ikke exception`() {
+
+        val behandlingsId = "123"
+        val eksternId = createPrefixedBehandlingsId(behandlingsId)
+
+        val soknadUnderArbeid = createSoknadUnderArbeid(
+            behandlingsId,
+            createJsonInternalSoknad()
+        )
+
+        every { soknadUnderArbeidRepository.hentSoknad(behandlingsId, any()) } returns soknadUnderArbeid
+        every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
+
+        every { mellomlagringClient.postVedlegg(eksternId, any()) } just runs
+        every { mellomlagringClient.getMellomlagredeVedlegg(eksternId) } returns MellomlagringDto(
+            eksternId,
+            createDokumentInfoList(PDF_FILE)
+        )
+        mellomlagringService.uploadVedlegg(behandlingsId, "hei|på deg", PDF_FILE.readBytes(), PDF_FILE.name)
+    }
+
+    @Test
+    fun `Allerede opplastet fil kaster exception`() {
+
+        val behandlingsId = "123"
+        val eksternId = createPrefixedBehandlingsId(behandlingsId)
+
+        val soknadUnderArbeid = createSoknadUnderArbeid(
+            behandlingsId,
+            createJsonInternalSoknad()
+        )
+
+        every { soknadUnderArbeidRepository.hentSoknad(behandlingsId, any()) } returns soknadUnderArbeid
+        every { soknadUnderArbeidRepository.oppdaterSoknadsdata(any(), any()) } just runs
+
+        every { mellomlagringClient.postVedlegg(eksternId, any()) } just runs
+        every { mellomlagringClient.getMellomlagredeVedlegg(eksternId) } returns MellomlagringDto(
+            eksternId,
+            createDokumentInfoList(PDF_FILE)
+        )
+
+        mellomlagringService.uploadVedlegg(behandlingsId, "hei|på deg", PDF_FILE.readBytes(), PDF_FILE.name)
+        assertThatThrownBy {
+            mellomlagringService.uploadVedlegg(behandlingsId, "hei|på deg", PDF_FILE.readBytes(), PDF_FILE.name)
+        }.isInstanceOf(DuplikatFilException::class.java)
+    }
+
+    private fun createJsonInternalSoknad(): JsonInternalSoknad {
+        return JsonInternalSoknad().withVedlegg(
+            JsonVedleggSpesifikasjon().withVedlegg(
+                listOf(
+                    JsonVedlegg()
+                        .withType(OpplastetVedleggType("hei|på deg").type)
+                        .withTilleggsinfo(OpplastetVedleggType("hei|på deg").tilleggsinfo)
+                        .withStatus("VedleggKreves")
+                )
+            )
+        )
+    }
+
+    private fun createDokumentInfoList(fil: File): List<MellomlagringDokumentInfo> {
         val bytes = fil.readBytes()
         return listOf(
             MellomlagringDokumentInfo(
