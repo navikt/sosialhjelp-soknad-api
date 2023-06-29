@@ -52,7 +52,6 @@ internal class MellomlagringServiceTest {
         soknadUnderArbeidRepository, kommuneInfoService
     )
 
-
     private val mellomlagringService = MellomlagringService(
         mellomlagringClient,
         soknadUnderArbeidService,

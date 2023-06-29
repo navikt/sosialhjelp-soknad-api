@@ -111,7 +111,7 @@ internal class VedleggUtilsTest {
         val (filnavn1, data1) = VedleggUtils.behandleFilOgReturnerFildata(PDF_FILE.name, PDF_FILE.readBytes())
 
         val alteredBytes = PDF_FILE.readBytes()
-        alteredBytes[alteredBytes.size/2] = alteredBytes[alteredBytes.size/2].inc()
+        alteredBytes[alteredBytes.size / 2] = alteredBytes[alteredBytes.size / 2].inc()
 
         val (filnavn2, data2) = VedleggUtils.behandleFilOgReturnerFildata(PDF_FILE.name, alteredBytes)
 
