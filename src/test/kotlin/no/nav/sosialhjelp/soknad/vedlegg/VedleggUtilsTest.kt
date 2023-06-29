@@ -7,11 +7,13 @@ import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggType
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidStatus
-import no.nav.sosialhjelp.soknad.util.ExampleFileRepository
+import no.nav.sosialhjelp.soknad.util.ExampleFileRepository.EXCEL_FILE
+import no.nav.sosialhjelp.soknad.util.ExampleFileRepository.PDF_FILE
 import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils.finnVedleggEllerKastException
 import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils.lagFilnavn
 import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils.validerFil
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.UgyldigOpplastingTypeException
+import no.nav.sosialhjelp.soknad.vedlegg.filedetection.FileDetectionUtils.detectMimeType
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.TikaFileType
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
@@ -50,7 +52,7 @@ internal class VedleggUtilsTest {
 
     @Test
     fun `Validering av excel-fil kaster feil`() {
-        val file = ExampleFileRepository.EXCEL_FILE
+        val file = EXCEL_FILE
         assertThatThrownBy { validerFil(file.readBytes(), file.name) }
             .isInstanceOf(UgyldigOpplastingTypeException::class.java)
             .hasMessageContaining("Ugyldig filtype for opplasting")
@@ -59,7 +61,7 @@ internal class VedleggUtilsTest {
     @Test
     fun `Validering av PDF-fil gir riktig TikaType`() {
 
-        val file = ExampleFileRepository.PDF_FILE
+        val file = PDF_FILE
         val parts = file.name.split(".")
         val navn = parts[0]
         val ext = parts[1]
@@ -102,6 +104,34 @@ internal class VedleggUtilsTest {
         assertThatThrownBy { finnVedleggEllerKastException("hei|på deg", soknadUnderArbeid) }
             .isInstanceOf(IkkeFunnetException::class.java)
             .hasMessageContaining("Dette vedlegget tilhører hei|på deg utgift som har blitt tatt bort fra søknaden.")
+    }
+
+    @Test
+    fun `Fil med samme navn, men annet innhold gir annet filnavn`() {
+        val (filnavn1, data1) = VedleggUtils.behandleFilOgReturnerFildata(PDF_FILE.name, PDF_FILE.readBytes())
+
+        val alteredBytes = PDF_FILE.readBytes()
+        alteredBytes[alteredBytes.size / 2] = alteredBytes[alteredBytes.size / 2].inc()
+
+        val (filnavn2, data2) = VedleggUtils.behandleFilOgReturnerFildata(PDF_FILE.name, alteredBytes)
+
+        assertThat(detectMimeType(data1)).isEqualTo(detectMimeType(data2))
+        assertThat(data1).isNotEqualTo(data2)
+        assertThat(filnavn1).isNotEqualTo(filnavn2)
+    }
+
+    @Test
+    fun `Konverterer fil hvis excel`() {
+
+        assertThatThrownBy { validerFil(EXCEL_FILE.readBytes(), EXCEL_FILE.name) }
+            .isInstanceOf(UgyldigOpplastingTypeException::class.java)
+
+        val (filnavn, data) =
+            VedleggUtils.behandleFilOgReturnerFildata(EXCEL_FILE.name, EXCEL_FILE.readBytes())
+
+        assertThat(filnavn).contains(".pdf")
+        val fileType = validerFil(data, filnavn)
+        assertThat(fileType).isEqualTo(TikaFileType.PDF)
     }
 
     private fun createSoknadUnderArbeid(jsonInternalSoknad: JsonInternalSoknad): SoknadUnderArbeid {
