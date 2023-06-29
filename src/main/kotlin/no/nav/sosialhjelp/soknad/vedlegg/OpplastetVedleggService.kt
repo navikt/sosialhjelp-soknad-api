@@ -1,66 +1,54 @@
 package no.nav.sosialhjelp.soknad.vedlegg
 
-import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonFiler
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedlegg
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggRepository
 import no.nav.sosialhjelp.soknad.db.repositories.opplastetvedlegg.OpplastetVedleggType
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.Vedleggstatus
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeidRepository
+import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
 import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils.finnVedleggEllerKastException
-import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils.lagFilnavn
-import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils.validerFil
+import no.nav.sosialhjelp.soknad.vedlegg.VedleggUtils.getSha512FromByteArray
 import no.nav.sosialhjelp.soknad.vedlegg.exceptions.SamletVedleggStorrelseForStorException
-import no.nav.sosialhjelp.soknad.vedlegg.konvertering.FilKonvertering
+import no.nav.sosialhjelp.soknad.vedlegg.filedetection.FileDetectionUtils
 import no.nav.sosialhjelp.soknad.vedlegg.virusscan.VirusScanner
 import org.springframework.stereotype.Component
-import java.util.*
-import java.util.UUID.nameUUIDFromBytes as uuidFromBytes
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils.getUserIdFromToken as eier
 
 @Component
 class OpplastetVedleggService(
     private val opplastetVedleggRepository: OpplastetVedleggRepository,
     private val soknadUnderArbeidRepository: SoknadUnderArbeidRepository,
+    private val soknadUnderArbeidService: SoknadUnderArbeidService,
     private val virusScanner: VirusScanner
 ) {
     fun lastOppVedlegg(
         behandlingsId: String,
         vedleggstype: String,
-        sourceData: ByteArray,
-        originalfilnavn: String
+        orginalData: ByteArray,
+        orginaltFilnavn: String
     ): OpplastetVedlegg {
+        virusScanner.scan(orginaltFilnavn, orginalData, behandlingsId, FileDetectionUtils.detectMimeType(orginalData))
 
-        val vedleggWrapper = FilKonvertering.konverterHvisStottet(sourceData, originalfilnavn)
-
-        val fileType = validerFil(vedleggWrapper.data, vedleggWrapper.filnavn)
-        virusScanner.scan(vedleggWrapper.filnavn, vedleggWrapper.data, behandlingsId, fileType.name)
+        val (filnavn, data) = VedleggUtils.behandleFilOgReturnerFildata(orginaltFilnavn, orginalData)
+        soknadUnderArbeidService.sjekkDuplikate(behandlingsId, filnavn)
 
         val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier())
 
         return OpplastetVedlegg(
             eier = eier(),
             vedleggType = OpplastetVedleggType(vedleggstype),
-            data = sourceData,
+            data = data,
             soknadId = soknadUnderArbeid.soknadId,
-            filnavn = lagFilnavn(vedleggWrapper.filnavn, fileType, uuidFromBytes(vedleggWrapper.data)),
-        )
-    }
-
-    fun oppdaterVedleggStatus(opplastetVedlegg: OpplastetVedlegg, behandlingsId: String, vedleggstype: String) {
-        opplastetVedleggRepository.opprettVedlegg(opplastetVedlegg, eier())
-
-        val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier())
-
-        val jsonVedlegg = finnVedleggEllerKastException(vedleggstype, soknadUnderArbeid)
-        if (jsonVedlegg.filer == null) { jsonVedlegg.filer = ArrayList() }
-
-        jsonVedlegg.withStatus(Vedleggstatus.LastetOpp.toString())
-            .filer.add(
-                JsonFiler()
-                    .withFilnavn(opplastetVedlegg.filnavn)
-                    .withSha512(opplastetVedlegg.sha512)
+            filnavn = filnavn,
+        ).also {
+            opplastetVedleggRepository.opprettVedlegg(it, eier())
+            soknadUnderArbeidService.oppdaterSoknadUnderArbeid(
+                getSha512FromByteArray(data),
+                behandlingsId,
+                vedleggstype,
+                filnavn
             )
-        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier())
+        }
     }
 
     fun sjekkOmSoknadUnderArbeidTotalVedleggStorrelseOverskriderMaksgrense(behandlingsId: String?, data: ByteArray) {
