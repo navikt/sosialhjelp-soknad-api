@@ -12,4 +12,4 @@ class UgyldigOpplastingTypeException(message: String?, cause: Throwable?, id: St
     SosialhjelpSoknadApiException(message, cause, id)
 
 class KonverteringTilPdfException(message: String?, cause: Throwable?, id: String? = null) :
-        SosialhjelpSoknadApiException(message, cause, id)
+    SosialhjelpSoknadApiException(message, cause, id)

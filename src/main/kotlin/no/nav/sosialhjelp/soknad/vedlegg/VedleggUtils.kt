@@ -32,7 +32,7 @@ object VedleggUtils {
 
         val uuidFromBytes = UUID.nameUUIDFromBytes(orginalData)
 
-        val (filnavn, data) = FilKonvertering.konverterHvisStottet(orginalData, orginaltFilnavn)
+        val (filnavn, data) = FilKonvertering.konverterHvisStottet(orginaltFilnavn, orginalData)
         val fileType = validerFil(data, filnavn)
 
         val filnavnMedUuid = lagFilnavn(filnavn, fileType, uuidFromBytes)

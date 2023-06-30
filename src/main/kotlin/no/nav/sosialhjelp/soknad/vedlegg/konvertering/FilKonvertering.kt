@@ -6,7 +6,7 @@ import no.nav.sosialhjelp.soknad.vedlegg.exceptions.KonverteringTilPdfException
 import no.nav.sosialhjelp.soknad.vedlegg.filedetection.FileDetectionUtils.detectMimeType
 
 object FilKonvertering {
-    fun konverterHvisStottet(sourceData: ByteArray, orginaltFilnavn: String): Pair<String, ByteArray> {
+    fun konverterHvisStottet(orginaltFilnavn: String, sourceData: ByteArray): Pair<String, ByteArray> {
         val konvertererHvisStottet = StottetFiltype.finnKonverterer(detectMimeType(sourceData), orginaltFilnavn)
 
         return konvertererHvisStottet?.let {
@@ -18,11 +18,11 @@ object FilKonvertering {
             ?: Pair(orginaltFilnavn, sourceData)
     }
 
-    fun konverter(konverterer: FilTilPdfConverter, sourceData: ByteArray) =
+    private fun konverter(konverterer: FilTilPdfConverter, sourceData: ByteArray) =
         try {
             konverterer.konverterTilPdf(sourceData)
         } catch (e: FilKonverteringException) {
-            throw KonverteringTilPdfException(e.message, e.cause)
+            throw KonverteringTilPdfException(e.message, e)
         }
 
     private fun byttExtension(filnavn: String): String {
