@@ -97,7 +97,7 @@ class OkonomiskeOpplysningerRessurs(
             emptyList()
         }
 
-        if (jsonVedleggs.isNotEmpty() && mellomlagredeVedlegg.isEmpty()) {
+        if (jsonVedleggs.any { it.filer.isNotEmpty() } && mellomlagredeVedlegg.isEmpty()) {
             log.warn("Mellomlagrede Vedlegg er tom. BehandlingsId: $behandlingsId. Filer: $jsonVedleggs")
         }
 
