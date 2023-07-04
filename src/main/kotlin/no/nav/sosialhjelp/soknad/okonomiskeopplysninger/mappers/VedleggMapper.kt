@@ -231,7 +231,12 @@ object VedleggMapper {
                 mellomlagredeVedlegg
                     .firstOrNull { it.filnavn == fil.filnavn }
                     ?.let { FilFrontend(fil.filnavn, it.filId) }
-                    ?: throw IllegalStateException("Vedlegget finnes ikke. vedlegg type=${jsonVedlegg.type} tilleggsinfo=${jsonVedlegg.tilleggsinfo} status=${jsonVedlegg.status}")
+                    ?: throw IllegalStateException("Vedlegget finnes ikke. vedlegg type=${jsonVedlegg.type} " +
+                            "tilleggsinfo=${jsonVedlegg.tilleggsinfo} " +
+                            "status=${jsonVedlegg.status}" +
+                            "JsonFiler filnavn: ${fil.filnavn}" +
+                            "Mellomlagrede vedlegg: $mellomlagredeVedlegg"
+                    )
             }
     }
 
