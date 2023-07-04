@@ -238,12 +238,14 @@ class OkonomiskeOpplysningerRessurs(
         if (vedleggFrontend.vedleggStatus == VedleggStatus.VedleggKreves && !vedleggFrontend.filer.isNullOrEmpty()) {
 
             log.warn(
-                "VedleggFrontend har status ${vedleggFrontend.vedleggStatus} " +
-                    "og følgende filer: ${vedleggFrontend.filer} " +
-                    "type: ${vedleggFrontend.type}"
+                "VedleggFrontend har status '${vedleggFrontend.vedleggStatus}' " +
+                    "og følgende filer: ${vedleggFrontend.filer.forEachIndexed {int, filfrontend ->
+                        "$int. ${filfrontend.filNavn} (${filfrontend.uuid}), "
+                    }} " +
+                    "type: ${vedleggFrontend.type} "
             )
 
-            jsonVedleggs.firstOrNull { vedleggFrontend.type.name == it.type }?.let {
+            jsonVedleggs.firstOrNull { vedleggFrontend.type.name == it.type + "|" + it.tilleggsinfo }?.let {
                 log.warn(
                     "JsonVedlegg har status ${it.status} og følgende filer: ${it.filer} " +
                         "type: ${it.type} "
