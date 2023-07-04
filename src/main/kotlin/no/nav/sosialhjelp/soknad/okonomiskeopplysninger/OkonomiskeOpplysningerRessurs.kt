@@ -97,16 +97,28 @@ class OkonomiskeOpplysningerRessurs(
             emptyList()
         }
 
+        // *** ekstra logging ***
         if (jsonVedleggs.any { it.filer.isNotEmpty() } && mellomlagredeVedlegg.isEmpty()) {
-            jsonVedleggs.forEach {
-                if (it.filer.isNotEmpty()) {
-                    log.warn(
-                        "Mellomlagrede Vedlegg er tom. BehandlingsId: $behandlingsId. " +
-                            "Status: ${it.status},  Type:${it.type}  Filer: ${it.filer}"
-                    )
+
+            var logString = "BehandlingsId: $behandlingsId "
+
+            jsonVedleggs.forEach { vedlegg ->
+                logString += "status: ${vedlegg.status} type: ${vedlegg.type} filer: "
+
+                vedlegg.filer.forEach { fil ->
+                    logString += "${fil.filnavn} "
                 }
             }
+            val allVedlegg = mellomlagringService.getAllVedlegg(behandlingsId)
+
+            logString += "Mellomlagrede vedlegg: ${allVedlegg.size} "
+
+            allVedlegg.forEach { vedlegg ->
+                logString += "filnavn: ${vedlegg.filnavn} "
+            }
+            log.warn(logString)
         }
+        // *** SLUTT ***
 
         val opplastedeVedleggFraJson = jsonVedleggs.filter { it.status == Vedleggstatus.LastetOpp.toString() }.flatMap { it.filer }
         if (opplastedeVedleggFraJson.isNotEmpty() &&
