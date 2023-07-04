@@ -235,6 +235,8 @@ object VedleggMapper {
                         "Vedlegget finnes ikke. vedlegg type=${jsonVedlegg.type} " +
                             "tilleggsinfo=${jsonVedlegg.tilleggsinfo} " +
                             "status=${jsonVedlegg.status}" +
+                            "Filer JsonVedlegg: ${jsonVedlegg.filer.size}" +
+                            "Filer Mellomlagrede Vedlegg: ${mellomlagredeVedlegg.size}" +
                             "JsonFiler filnavn: ${fil.filnavn}" +
                             "Mellomlagrede vedlegg: $mellomlagredeVedlegg"
                     )
