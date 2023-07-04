@@ -18,6 +18,7 @@ import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.JsonOkonomiUtils.isOkonomiskeOpplysningerBekreftet
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggFrontend
+import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggStatus
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggType
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.mappers.OkonomiskGruppeMapper
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.mappers.OkonomiskeOpplysningerMapper.addAllFormuerToJsonOkonomi
@@ -233,6 +234,23 @@ class OkonomiskeOpplysningerRessurs(
 
     private fun setVedleggStatus(vedleggFrontend: VedleggFrontend, soknad: SoknadUnderArbeid) {
         val jsonVedleggs = JsonVedleggUtils.getVedleggFromInternalSoknad(soknad)
+
+        if (vedleggFrontend.vedleggStatus == VedleggStatus.VedleggKreves && !vedleggFrontend.filer.isNullOrEmpty()) {
+
+            log.warn(
+                "VedleggFrontend har status ${vedleggFrontend.vedleggStatus} " +
+                    "og følgende filer: ${vedleggFrontend.filer} " +
+                    "type: ${vedleggFrontend.type}"
+            )
+
+            jsonVedleggs.firstOrNull { vedleggFrontend.type.name == it.type }?.let {
+                log.warn(
+                    "JsonVedlegg har status ${it.status} og følgende filer: ${it.filer} " +
+                        "type: ${it.type} "
+                )
+            }
+        }
+
         jsonVedleggs
             .firstOrNull { vedleggFrontend.type.toString() == it.type + "|" + it.tilleggsinfo }
             ?.status = vedleggFrontend.vedleggStatus?.name ?: throw IllegalStateException("Vedlegget finnes ikke")
