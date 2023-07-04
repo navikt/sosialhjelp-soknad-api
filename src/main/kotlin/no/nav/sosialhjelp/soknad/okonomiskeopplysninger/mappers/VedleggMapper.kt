@@ -57,8 +57,9 @@ object VedleggMapper {
         vedlegg: JsonVedlegg,
         jsonOkonomi: JsonOkonomi,
         mellomlagredeVedlegg: List<MellomlagretVedleggMetadata>,
+        behandlingsId: String
     ): VedleggFrontend {
-        val filer = mapJsonFilerAndMellomlagredVedleggToFilerFrontend(vedlegg, mellomlagredeVedlegg)
+        val filer = mapJsonFilerAndMellomlagredVedleggToFilerFrontend(vedlegg, mellomlagredeVedlegg, behandlingsId)
         val vedleggType = getVedleggType(vedlegg)
         val rader = getRader(jsonOkonomi, vedleggType)
         return VedleggFrontend(
@@ -222,11 +223,12 @@ object VedleggMapper {
     private fun mapJsonFilerAndMellomlagredVedleggToFilerFrontend(
         jsonVedlegg: JsonVedlegg,
         mellomlagredeVedlegg: List<MellomlagretVedleggMetadata>,
+        behandlingsId: String
     ): List<FilFrontend> {
         return jsonVedlegg.filer
             .map { fil: JsonFiler ->
                 if (jsonVedlegg.status != Vedleggstatus.LastetOpp.toString()) {
-                    log.info("JsonVedlegg med status=${jsonVedlegg.status} (!= LastetOpp) - men har filer? Burde undersøkes")
+                    log.warn("JsonVedlegg med status=${jsonVedlegg.status} (!= LastetOpp) - men har filer? Burde undersøkes. BehandlingsId: $behandlingsId")
                 }
                 mellomlagredeVedlegg
                     .firstOrNull { it.filnavn == fil.filnavn }
@@ -234,11 +236,10 @@ object VedleggMapper {
                     ?: throw IllegalStateException(
                         "Vedlegget finnes ikke. vedlegg type=${jsonVedlegg.type} " +
                             "tilleggsinfo=${jsonVedlegg.tilleggsinfo} " +
-                            "status=${jsonVedlegg.status}" +
-                            "Filer JsonVedlegg: ${jsonVedlegg.filer.size}" +
-                            "Filer Mellomlagrede Vedlegg: ${mellomlagredeVedlegg.size}" +
-                            "JsonFiler filnavn: ${fil.filnavn}" +
-                            "Mellomlagrede vedlegg: $mellomlagredeVedlegg"
+                            "status=${jsonVedlegg.status} " +
+                            "Filer JsonVedlegg: ${jsonVedlegg.filer.size} " +
+                            "Filer Mellomlagrede Vedlegg: ${mellomlagredeVedlegg.size} " +
+                            "BehandlingsId: $behandlingsId"
                     )
             }
     }
