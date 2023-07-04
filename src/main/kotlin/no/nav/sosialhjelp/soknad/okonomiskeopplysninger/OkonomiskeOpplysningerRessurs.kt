@@ -239,16 +239,16 @@ class OkonomiskeOpplysningerRessurs(
 
             log.warn(
                 "VedleggFrontend har status '${vedleggFrontend.vedleggStatus}' " +
-                    "og følgende filer: ${vedleggFrontend.filer.forEachIndexed {int, filfrontend ->
-                        "$int. ${filfrontend.filNavn} (${filfrontend.uuid}), "
-                    }} " +
+                    "og følgende filer: ${vedleggFrontend.filer} " +
                     "type: ${vedleggFrontend.type} "
             )
 
-            jsonVedleggs.firstOrNull { vedleggFrontend.type.name == it.type + "|" + it.tilleggsinfo }?.let {
+            val jsonVedlegg =
+                jsonVedleggs.firstOrNull { vedleggFrontend.type.toString() == it.type + "|" + it.tilleggsinfo }
+            if (jsonVedlegg != null) {
                 log.warn(
-                    "JsonVedlegg har status ${it.status} og følgende filer: ${it.filer} " +
-                        "type: ${it.type} "
+                    "JsonVedlegg har status ${jsonVedlegg.status} og følgende filer: ${jsonVedlegg.filer} " +
+                        "type: ${jsonVedlegg.type} "
                 )
             }
         }
