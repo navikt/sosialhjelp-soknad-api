@@ -18,6 +18,7 @@ import no.nav.sosialhjelp.soknad.innsending.JsonVedleggUtils
 import no.nav.sosialhjelp.soknad.innsending.soknadunderarbeid.SoknadUnderArbeidService
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.JsonOkonomiUtils.isOkonomiskeOpplysningerBekreftet
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggFrontend
+import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggStatus
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.dto.VedleggType
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.mappers.OkonomiskGruppeMapper
 import no.nav.sosialhjelp.soknad.okonomiskeopplysninger.mappers.OkonomiskeOpplysningerMapper.addAllFormuerToJsonOkonomi
@@ -91,34 +92,35 @@ class OkonomiskeOpplysningerRessurs(
         val jsonOkonomi = soknadUnderArbeid.jsonInternalSoknad?.soknad?.data?.okonomi ?: JsonOkonomi()
         val jsonVedleggs = JsonVedleggUtils.getVedleggFromInternalSoknad(soknadUnderArbeid)
         val paakrevdeVedlegg = VedleggsforventningMaster.finnPaakrevdeVedlegg(soknadUnderArbeid.jsonInternalSoknad)
-        val mellomlagredeVedlegg = if (jsonVedleggs.any { it.status == Vedleggstatus.LastetOpp.toString() }) {
+
+        // *** Utvidet logging ***
+        var logString = ""
+        jsonVedleggs.forEach {
+            if (it.filer.isNotEmpty() && it.status != VedleggStatus.LastetOpp.name) {
+                if (!logString.contains("BehandlingsId: ")) {
+                    logString += "BehandlingsId: $behandlingsId"
+                }
+                logString += "Vedlegg har status: ${it.status}, men har ${it.filer.size} filer."
+            }
+        }
+        if (logString != "") {
+            log.warn(logString)
+        }
+        // *** SLUTT UTVIDET LOGGING ***
+
+        // TODO: Ny midlertidig logikk for å bli kvitt feilmeldingene
+        val mellomlagredeVedlegg = if (jsonVedleggs.any { it.filer.isNotEmpty() }) {
             mellomlagringService.getAllVedlegg(behandlingsId)
         } else {
             emptyList()
         }
 
-        // *** ekstra logging ***
-        if (jsonVedleggs.any { it.filer.isNotEmpty() } && mellomlagredeVedlegg.isEmpty()) {
-
-            var logString = "BehandlingsId: $behandlingsId "
-
-            jsonVedleggs.forEach { vedlegg ->
-                logString += "status: ${vedlegg.status} type: ${vedlegg.type} filer: "
-
-                vedlegg.filer.forEach { fil ->
-                    logString += "${fil.filnavn} "
-                }
-            }
-            val allVedlegg = mellomlagringService.getAllVedlegg(behandlingsId)
-
-            logString += "Mellomlagrede vedlegg: ${allVedlegg.size} "
-
-            allVedlegg.forEach { vedlegg ->
-                logString += "filnavn: ${vedlegg.filnavn} "
-            }
-            log.warn(logString)
-        }
-        // *** SLUTT ***
+        // TODO: Gammel logikk
+//        val mellomlagredeVedlegg = if (jsonVedleggs.any { it.status == Vedleggstatus.LastetOpp.toString() }) {
+//            mellomlagringService.getAllVedlegg(behandlingsId)
+//        } else {
+//            emptyList()
+//        }
 
         val opplastedeVedleggFraJson = jsonVedleggs.filter { it.status == Vedleggstatus.LastetOpp.toString() }.flatMap { it.filer }
         if (opplastedeVedleggFraJson.isNotEmpty() &&
@@ -256,6 +258,27 @@ class OkonomiskeOpplysningerRessurs(
 
     private fun setVedleggStatus(vedleggFrontend: VedleggFrontend, soknad: SoknadUnderArbeid) {
         val jsonVedleggs = JsonVedleggUtils.getVedleggFromInternalSoknad(soknad)
+
+        // *** START EKSTRA LOGGING ***
+        val vedleggStatus = vedleggFrontend.vedleggStatus
+
+        if (vedleggStatus != null &&
+            vedleggStatus == VedleggStatus.VedleggKreves &&
+            !vedleggFrontend.filer.isNullOrEmpty()
+        ) {
+            var logString = "BehandlingsId: ${soknad.behandlingsId} "
+            logString += "VedleggFrontend har status: $vedleggStatus, men har filer: ${vedleggFrontend.filer.size} "
+
+            logString += jsonVedleggs.firstOrNull { vedleggFrontend.type.toString() == it.type + "|" + it.tilleggsinfo }?.let {
+                var internalSoknad = "Internal Soknad Status: ${it.status}, Type: ${it.type}, Filer: "
+                it.filer.forEach { fil -> internalSoknad += "${fil.filnavn} " }
+                internalSoknad
+            }
+
+            log.warn(logString)
+        }
+        // ** SLUTT EKSTRA LOGGING **
+
         jsonVedleggs
             .firstOrNull { vedleggFrontend.type.toString() == it.type + "|" + it.tilleggsinfo }
             ?.status = vedleggFrontend.vedleggStatus?.name ?: throw IllegalStateException("Vedlegget finnes ikke")
