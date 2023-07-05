@@ -138,10 +138,10 @@ class OkonomiskeOpplysningerRessurs(
             if (filerJsonVedlegg.size != mellomlagredeVedlegg.size) {
 
                 vedleggString += " Filnavn JsonVedlegg: "
-                filerJsonVedlegg.forEach { vedleggString += "it.filnavn, " }
+                filerJsonVedlegg.forEach { vedleggString += "${it.filnavn}, " }
 
                 vedleggString += " Filnavn Mellomlagrede: "
-                mellomlagredeVedlegg.forEach { vedleggString += "it.filnavn, " }
+                mellomlagredeVedlegg.forEach { vedleggString += "${it.filnavn}, " }
             }
 
             log.warn(vedleggString)
