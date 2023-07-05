@@ -127,8 +127,23 @@ class OkonomiskeOpplysningerRessurs(
             mellomlagredeVedlegg.isNotEmpty() &&
             opplastedeVedleggFraJson.size != mellomlagredeVedlegg.size
         ) {
-            log.warn("Ulikt antall vedlegg i vedlegg.json (${opplastedeVedleggFraJson.size}) og mellomlagret hos KS (${mellomlagredeVedlegg.size}) for søknad $behandlingsId")
+            val vedleggString =
+                "Ulikt antall vedlegg i vedlegg.json (${opplastedeVedleggFraJson.size}) " +
+                    "og mellomlagret hos KS (${mellomlagredeVedlegg.size}) for søknad $behandlingsId " +
+                    "Antall filer fra alle statuser - JsonVedlegg: ${jsonVedleggs.flatMap { it.filer }} " +
+                    "Antall filer fra alle statuser - Mellomlagrede: ${mellomlagredeVedlegg.size} "
+
+            log.warn(vedleggString)
         }
+
+        // TODO - eksisterende logikk
+//        val opplastedeVedleggFraJson = jsonVedleggs.filter { it.status == Vedleggstatus.LastetOpp.toString() }.flatMap { it.filer }
+//        if (opplastedeVedleggFraJson.isNotEmpty() &&
+//            mellomlagredeVedlegg.isNotEmpty() &&
+//            opplastedeVedleggFraJson.size != mellomlagredeVedlegg.size
+//        ) {
+//            log.warn("Ulikt antall vedlegg i vedlegg.json (${opplastedeVedleggFraJson.size}) og mellomlagret hos KS (${mellomlagredeVedlegg.size}) for søknad $behandlingsId")
+//        }
 
         val slettedeVedlegg = removeIkkePaakrevdeMellomlagredeVedlegg(behandlingsId, jsonVedleggs, paakrevdeVedlegg, mellomlagredeVedlegg)
         addPaakrevdeVedlegg(jsonVedleggs, paakrevdeVedlegg)
