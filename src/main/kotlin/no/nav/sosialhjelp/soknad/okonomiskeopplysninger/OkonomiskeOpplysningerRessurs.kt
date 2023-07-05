@@ -130,8 +130,8 @@ class OkonomiskeOpplysningerRessurs(
             val vedleggString =
                 "Ulikt antall vedlegg i vedlegg.json (${opplastedeVedleggFraJson.size}) " +
                     "og mellomlagret hos KS (${mellomlagredeVedlegg.size}) for søknad $behandlingsId " +
-                    "Antall filer fra alle statuser - JsonVedlegg: ${jsonVedleggs.flatMap { it.filer }} " +
-                    "Antall filer fra alle statuser - Mellomlagrede: ${mellomlagredeVedlegg.size} "
+                    "Antall filer fra alle statuser - JsonVedlegg: ${ jsonVedleggs.flatMap { it.filer }.size } " +
+                    "Antall filer fra alle statuser - Mellomlagrede: ${ mellomlagredeVedlegg.size } "
 
             log.warn(vedleggString)
         }
