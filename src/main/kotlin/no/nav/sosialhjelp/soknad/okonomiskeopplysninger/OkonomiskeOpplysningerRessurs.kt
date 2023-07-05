@@ -127,11 +127,22 @@ class OkonomiskeOpplysningerRessurs(
             mellomlagredeVedlegg.isNotEmpty() &&
             opplastedeVedleggFraJson.size != mellomlagredeVedlegg.size
         ) {
-            val vedleggString =
+            var vedleggString =
                 "Ulikt antall vedlegg i vedlegg.json (${opplastedeVedleggFraJson.size}) " +
-                    "og mellomlagret hos KS (${mellomlagredeVedlegg.size}) for søknad $behandlingsId " +
-                    "Antall filer fra alle statuser - JsonVedlegg: ${ jsonVedleggs.flatMap { it.filer }.size } " +
-                    "Antall filer fra alle statuser - Mellomlagrede: ${ mellomlagredeVedlegg.size } "
+                    "og mellomlagret hos KS (${mellomlagredeVedlegg.size}) for søknad $behandlingsId "
+
+            val filerJsonVedlegg = jsonVedleggs.flatMap { it.filer }
+            vedleggString += "Antall filer fra alle statuser - JsonVedlegg: ${ filerJsonVedlegg.size } " +
+                "Antall filer fra alle statuser - Mellomlagrede: ${ mellomlagredeVedlegg.size } "
+
+            if (filerJsonVedlegg.size != mellomlagredeVedlegg.size) {
+
+                vedleggString += " Filnavn JsonVedlegg: "
+                filerJsonVedlegg.forEach { vedleggString += it.filnavn }
+
+                vedleggString += " Filnavn Mellomlagrede: "
+                mellomlagredeVedlegg.forEach { vedleggString += it.filnavn }
+            }
 
             log.warn(vedleggString)
         }
