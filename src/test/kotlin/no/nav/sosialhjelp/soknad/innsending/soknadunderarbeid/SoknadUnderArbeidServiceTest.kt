@@ -39,6 +39,7 @@ internal class SoknadUnderArbeidServiceTest {
         // false - mottaker.kommunenummer er null, dvs at bruker ikke har valgt noen adresse enda
         every { soknadUnderArbeid.erEttersendelse } returns false
         every { soknadUnderArbeid.jsonInternalSoknad?.soknad?.mottaker?.kommunenummer } returns null
+        every { soknadUnderArbeid.behandlingsId } returns BEHANDLINGSID
         assertThat(soknadUnderArbeidService.skalSoknadSendesMedDigisosApi(soknadUnderArbeid)).isFalse
 
         // kast feil - nedetid for kommune
