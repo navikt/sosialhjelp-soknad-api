@@ -99,7 +99,7 @@ class MellomlagringService(
             ?: throw IllegalStateException("Klarte ikke finne det mellomlagrede vedlegget som akkurat ble lastet opp")
 
         // TODO - Midlertidig logging
-        log.info("BehandlingsId: $behandlingsId - (Navn/Id): $filnavn / $filId")
+        log.info("BehandlingsId: $behandlingsId - Vedlegg lastet opp og funnet i FIKS (Navn/Id): $filnavn / $filId")
 
         // oppdater SoknadUnderArbeid etter suksessfull opplasting
         oppdaterSoknadUnderArbeid(data, behandlingsId, vedleggstype, filnavn)
@@ -126,10 +126,19 @@ class MellomlagringService(
             JsonFiler().withFilnavn(filnavn).withSha512(sha512)
         )
 
+        // TODO - Milertidig logging
+        val jsonFil = jsonVedlegg.filer.firstOrNull { it.filnavn == filnavn }
+        val filnavnFraInternSoknad = jsonFil ?: log.warn("Fant ikke fil i intern søknad med filnavn: $filnavn")
+
+        log.info("BehandlingsId: $behandlingsId - Intern søknad oppdatert med $filnavnFraInternSoknad")
+
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier)
     }
 
     fun deleteVedleggAndUpdateVedleggstatus(behandlingsId: String, vedleggId: String) {
+        // TODO - midlertidig logging
+        log.info("BehandlingsId: $behandlingsId - Sletter fil: $vedleggId")
+
         val navEksternId = getNavEksternId(behandlingsId)
 
         // hent alle mellomlagrede vedlegg
