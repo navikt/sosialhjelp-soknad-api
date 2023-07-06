@@ -18,7 +18,10 @@ object VedleggskravStatistikkUtil {
         vedleggList: List<VedleggMetadata>
     ) {
         val vedleggStatistikk = genererVedleggskravStatistikk(soknadUnderArbeid, vedleggList)
-        log.info("Vedleggskrav statistikk: ${mapper.writeValueAsString(vedleggStatistikk)}")
+        log.info(
+            "BehandlingsId: ${soknadUnderArbeid.behandlingsId} - " +
+                "Vedleggskrav statistikk: ${mapper.writeValueAsString(vedleggStatistikk)}"
+        )
     }
 
     fun genererVedleggskravStatistikk(

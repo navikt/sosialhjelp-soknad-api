@@ -54,16 +54,27 @@ class SoknadUnderArbeidService(
         }
 
         val kommunenummer = soknadUnderArbeid.jsonInternalSoknad?.soknad?.mottaker?.kommunenummer
-            ?: return false.also { log.info("Mottaker.kommunenummer ikke satt -> skalSoknadSendesMedDigisosApi returnerer false") }
+            ?: return false.also {
+                log.info(
+                    "BehandlingsId: ${soknadUnderArbeid.behandlingsId} - " +
+                        "Mottaker.kommunenummer ikke satt -> skalSoknadSendesMedDigisosApi returnerer false"
+                )
+            }
 
         return when (kommuneInfoService.getKommuneStatus(kommunenummer)) {
             FIKS_NEDETID_OG_TOM_CACHE -> {
-                throw SendingTilKommuneUtilgjengeligException("Mellomlagring av vedlegg er ikke tilgjengelig fordi fiks har nedetid og kommuneinfo-cache er tom.")
+                throw SendingTilKommuneUtilgjengeligException(
+                    "BehandlingsId: ${soknadUnderArbeid.behandlingsId} " +
+                        "- Mellomlagring av vedlegg er ikke tilgjengelig fordi fiks har nedetid og kommuneinfo-cache er tom."
+                )
             }
             MANGLER_KONFIGURASJON, HAR_KONFIGURASJON_MEN_SKAL_SENDE_VIA_SVARUT -> false
             SKAL_SENDE_SOKNADER_OG_ETTERSENDELSER_VIA_FDA -> true
             SKAL_VISE_MIDLERTIDIG_FEILSIDE_FOR_SOKNAD_OG_ETTERSENDELSER -> {
-                throw SendingTilKommuneErMidlertidigUtilgjengeligException("Sending til kommune $kommunenummer er midlertidig utilgjengelig.")
+                throw SendingTilKommuneErMidlertidigUtilgjengeligException(
+                    "BehandlingsId: ${soknadUnderArbeid.behandlingsId} " +
+                        "- Sending til kommune $kommunenummer er midlertidig utilgjengelig."
+                )
             }
         }
     }

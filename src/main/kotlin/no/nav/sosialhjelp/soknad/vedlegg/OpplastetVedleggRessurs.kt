@@ -119,7 +119,7 @@ class OpplastetVedleggRessurs(
         val soknadUnderArbeid = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
         val skalBrukeMellomlagring = soknadUnderArbeidService.skalSoknadSendesMedDigisosApi(soknadUnderArbeid)
         if (skalBrukeMellomlagring) {
-            log.info("Sletter vedlegg $vedleggId fra KS mellomlagring")
+            log.info("BehandlingsId: $behandlingsId - Sletter vedlegg $vedleggId fra KS mellomlagring")
             mellomlagringService.deleteVedleggAndUpdateVedleggstatus(behandlingsId, vedleggId)
         } else {
             opplastetVedleggService.deleteVedleggAndUpdateVedleggstatus(behandlingsId, vedleggId)

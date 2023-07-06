@@ -98,6 +98,9 @@ class MellomlagringService(
         val filId = mellomlagredeVedlegg?.firstOrNull { it.filnavn == filnavn }?.filId
             ?: throw IllegalStateException("Klarte ikke finne det mellomlagrede vedlegget som akkurat ble lastet opp")
 
+        // TODO - Midlertidig logging
+        log.info("BehandlingsId: $behandlingsId - (Navn/Id): $filnavn / $filId")
+
         // oppdater SoknadUnderArbeid etter suksessfull opplasting
         oppdaterSoknadUnderArbeid(data, behandlingsId, vedleggstype, filnavn)
 

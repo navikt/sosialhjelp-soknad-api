@@ -95,11 +95,11 @@ class SoknadService(
         systemdataUpdater.update(soknadUnderArbeid)
         soknadUnderArbeidRepository.opprettSoknad(soknadUnderArbeid, eier)
 
+        log.info("Starter søknad: $behandlingsId")
         return behandlingsId
     }
 
     private fun opprettSoknadMetadata(fnr: String): String {
-        log.info("Starter søknad")
         val id = soknadMetadataRepository.hentNesteId()
         val soknadMetadata = SoknadMetadata(
             id = id,

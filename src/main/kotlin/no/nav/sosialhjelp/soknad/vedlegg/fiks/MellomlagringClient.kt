@@ -107,7 +107,9 @@ class MellomlagringClientImpl(
             .retrieve()
             .bodyToMono<String>()
             .doOnSuccess {
-                log.info("Mellomlagring av vedlegg til søknad $navEksternId utført.")
+                // TODO - midlertidig logging for å finne ut av ulikt antall vedlegg
+                log.info("Mellomlagring av vedlegg (${filForOpplasting.filnavn}) til søknad $navEksternId utført.")
+//                log.info("Mellomlagring av vedlegg til søknad $navEksternId utført.")
             }
             .doOnError(WebClientResponseException::class.java) {
                 log.warn("Mellomlagring av vedlegg til søknad $navEksternId feilet etter ${System.currentTimeMillis() - startTime} ms med status ${it.statusCode} og response: ${it.responseBodyAsString}", it)
@@ -153,10 +155,10 @@ class MellomlagringClientImpl(
             .retrieve()
             .bodyToMono<String>()
             .doOnSuccess {
-                log.info("Fiks - delete mellomlagretVedlegg OK. vedleggId=$digisosDokumentId, behandlingsId=$navEksternId")
+                log.info("BehandlingsId: $navEksternId - Fiks - delete mellomlagretVedlegg OK. vedleggId=$digisosDokumentId")
             }
             .doOnError(WebClientResponseException::class.java) {
-                log.warn("Fiks - delete mellomlagretVedlegg feilet - ${it.responseBodyAsString}", it)
+                log.warn("BehandlingsId: $navEksternId - Fiks - delete mellomlagretVedlegg feilet - ${it.responseBodyAsString}", it)
             }
             .block()
     }

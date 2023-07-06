@@ -20,9 +20,15 @@ class DokumentListeService(
     fun getFilOpplastingList(soknadUnderArbeid: SoknadUnderArbeid): List<FilOpplasting> {
         val internalSoknad = soknadUnderArbeid.jsonInternalSoknad
         if (internalSoknad == null) {
-            throw RuntimeException("Kan ikke sende forsendelse til FIKS fordi søknad mangler")
+            throw RuntimeException(
+                "BehandlingsId: ${soknadUnderArbeid.behandlingsId} - " +
+                    "Kan ikke sende forsendelse til FIKS fordi søknad mangler"
+            )
         } else if (internalSoknad.soknad == null) {
-            throw RuntimeException("Kan ikke sende søknad fordi søknaden mangler")
+            throw RuntimeException(
+                "BehandlingsId: ${soknadUnderArbeid.behandlingsId} - " +
+                    "Kan ikke sende søknad fordi søknaden mangler"
+            )
         }
 
         val mellomlagredeVedlegg = mellomlagringService.getAllVedlegg(soknadUnderArbeid.behandlingsId)
@@ -32,7 +38,10 @@ class DokumentListeService(
             lagDokumentForJuridiskPdf(internalSoknad),
             lagDokumentForBrukerkvitteringPdf()
         ).also {
-            log.info("Antall vedlegg: ${it.size}. Antall mellomlagrede vedlegg: ${mellomlagredeVedlegg.size}")
+            log.info(
+                "BehandlingsId: ${soknadUnderArbeid.behandlingsId} - " +
+                    "Antall vedlegg: ${it.size}. Antall mellomlagrede vedlegg: ${mellomlagredeVedlegg.size}"
+            )
         }
     }
 
