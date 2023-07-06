@@ -128,9 +128,16 @@ class MellomlagringService(
 
         // TODO - Milertidig logging
         val jsonFil = jsonVedlegg.filer.firstOrNull { it.filnavn == filnavn }
-        val filnavnFraInternSoknad = jsonFil ?: log.warn("Fant ikke fil i intern søknad med filnavn: $filnavn")
+        val filnavnFraInternSoknad = jsonFil?.filnavn ?: log.warn("Fant ikke fil i intern søknad med filnavn: $filnavn")
 
-        log.info("BehandlingsId: $behandlingsId - Intern søknad oppdatert med $filnavnFraInternSoknad")
+        var logString = "BehandlingsId: $behandlingsId - Intern søknad oppdatert med $filnavnFraInternSoknad "
+
+        logString += "- Filer intern søknad: "
+        jsonVedlegg.filer.forEach {
+            logString += "${it.filnavn}, "
+        }
+
+        log.info(logString)
 
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier)
     }
