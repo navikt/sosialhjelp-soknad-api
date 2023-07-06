@@ -5,6 +5,7 @@ import no.nav.sbl.soknadsosialhjelp.vedlegg.JsonVedlegg
 import no.nav.sosialhjelp.soknad.app.LoggingUtils.logger
 import no.nav.sosialhjelp.soknad.app.MiljoUtils.isNonProduction
 import no.nav.sosialhjelp.soknad.app.exceptions.IkkeFunnetException
+import no.nav.sosialhjelp.soknad.app.exceptions.SamtidigOppdateringException
 import no.nav.sosialhjelp.soknad.app.subjecthandler.SubjectHandlerUtils
 import no.nav.sosialhjelp.soknad.db.repositories.soknadmetadata.Vedleggstatus
 import no.nav.sosialhjelp.soknad.db.repositories.soknadunderarbeid.SoknadUnderArbeid
@@ -98,11 +99,14 @@ class MellomlagringService(
         val filId = mellomlagredeVedlegg?.firstOrNull { it.filnavn == filnavn }?.filId
             ?: throw IllegalStateException("Klarte ikke finne det mellomlagrede vedlegget som akkurat ble lastet opp")
 
-        // TODO - Midlertidig logging
-        log.info("BehandlingsId: $behandlingsId - Vedlegg lastet opp og funnet i FIKS (Navn/Id): $filnavn / $filId")
-
         // oppdater SoknadUnderArbeid etter suksessfull opplasting
-        oppdaterSoknadUnderArbeid(data, behandlingsId, vedleggstype, filnavn)
+        // TODO - midlertidig try/catch-fix
+        try {
+            oppdaterSoknadUnderArbeid(data, behandlingsId, vedleggstype, filnavn)
+        } catch (e: SamtidigOppdateringException) {
+            mellomlagringClient.deleteVedlegg(navEksternId = navEksternId, digisosDokumentId = filId)
+            log.warn("Feil ved oppdatering av Søknad under arbeid. Sletter vedlegg i FIKS.")
+        }
 
         return MellomlagretVedleggMetadata(filnavn = filnavn, filId = filId)
     }
@@ -126,26 +130,10 @@ class MellomlagringService(
             JsonFiler().withFilnavn(filnavn).withSha512(sha512)
         )
 
-        // TODO - Milertidig logging
-        val jsonFil = jsonVedlegg.filer.firstOrNull { it.filnavn == filnavn }
-        val filnavnFraInternSoknad = jsonFil?.filnavn ?: log.warn("Fant ikke fil i intern søknad med filnavn: $filnavn")
-
-        var logString = "BehandlingsId: $behandlingsId - Intern søknad oppdatert med $filnavnFraInternSoknad "
-
-        logString += "- Filer intern søknad: "
-        jsonVedlegg.filer.forEach {
-            logString += "${it.filnavn}, "
-        }
-
-        log.info(logString)
-
         soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier)
     }
 
     fun deleteVedleggAndUpdateVedleggstatus(behandlingsId: String, vedleggId: String) {
-        // TODO - midlertidig logging
-        log.info("BehandlingsId: $behandlingsId - Sletter fil: $vedleggId")
-
         val navEksternId = getNavEksternId(behandlingsId)
 
         // hent alle mellomlagrede vedlegg

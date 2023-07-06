@@ -93,29 +93,12 @@ class OkonomiskeOpplysningerRessurs(
         val jsonVedleggs = JsonVedleggUtils.getVedleggFromInternalSoknad(soknadUnderArbeid)
         val paakrevdeVedlegg = VedleggsforventningMaster.finnPaakrevdeVedlegg(soknadUnderArbeid.jsonInternalSoknad)
 
-        // *** Utvidet logging ***
-        var logString = ""
-        jsonVedleggs.forEach {
-            if (it.filer.isNotEmpty() && it.status != VedleggStatus.LastetOpp.name) {
-                if (!logString.contains("BehandlingsId: ")) {
-                    logString += "BehandlingsId: $behandlingsId"
-                }
-                logString += "Vedlegg har status: ${it.status}, men har ${it.filer.size} filer."
-            }
-        }
-        if (logString != "") {
-            log.warn(logString)
-        }
-        // *** SLUTT UTVIDET LOGGING ***
-
         // TODO: Ny midlertidig logikk for å bli kvitt feilmeldingene
         val mellomlagredeVedlegg = if (jsonVedleggs.any { it.filer.isNotEmpty() }) {
             mellomlagringService.getAllVedlegg(behandlingsId)
         } else {
             emptyList()
         }
-
-        // TODO: Gammel logikk
 //        val mellomlagredeVedlegg = if (jsonVedleggs.any { it.status == Vedleggstatus.LastetOpp.toString() }) {
 //            mellomlagringService.getAllVedlegg(behandlingsId)
 //        } else {
@@ -127,34 +110,8 @@ class OkonomiskeOpplysningerRessurs(
             mellomlagredeVedlegg.isNotEmpty() &&
             opplastedeVedleggFraJson.size != mellomlagredeVedlegg.size
         ) {
-            var vedleggString =
-                "Ulikt antall vedlegg i vedlegg.json (${opplastedeVedleggFraJson.size}) " +
-                    "og mellomlagret hos KS (${mellomlagredeVedlegg.size}) for søknad $behandlingsId "
-
-            val filerJsonVedlegg = jsonVedleggs.flatMap { it.filer }
-            vedleggString += "Antall filer fra alle statuser - JsonVedlegg: ${ filerJsonVedlegg.size } " +
-                "Antall filer fra alle statuser - Mellomlagrede: ${ mellomlagredeVedlegg.size } "
-
-            if (filerJsonVedlegg.size != mellomlagredeVedlegg.size) {
-
-                vedleggString += " Filnavn JsonVedlegg: "
-                filerJsonVedlegg.forEach { vedleggString += "${it.filnavn}, " }
-
-                vedleggString += " Filnavn Mellomlagrede: "
-                mellomlagredeVedlegg.forEach { vedleggString += "${it.filnavn}, " }
-            }
-
-            log.warn(vedleggString)
+            log.warn("Ulikt antall vedlegg i vedlegg.json (${opplastedeVedleggFraJson.size}) og mellomlagret hos KS (${mellomlagredeVedlegg.size}) for søknad $behandlingsId")
         }
-
-        // TODO - eksisterende logikk
-//        val opplastedeVedleggFraJson = jsonVedleggs.filter { it.status == Vedleggstatus.LastetOpp.toString() }.flatMap { it.filer }
-//        if (opplastedeVedleggFraJson.isNotEmpty() &&
-//            mellomlagredeVedlegg.isNotEmpty() &&
-//            opplastedeVedleggFraJson.size != mellomlagredeVedlegg.size
-//        ) {
-//            log.warn("Ulikt antall vedlegg i vedlegg.json (${opplastedeVedleggFraJson.size}) og mellomlagret hos KS (${mellomlagredeVedlegg.size}) for søknad $behandlingsId")
-//        }
 
         val slettedeVedlegg = removeIkkePaakrevdeMellomlagredeVedlegg(behandlingsId, jsonVedleggs, paakrevdeVedlegg, mellomlagredeVedlegg)
         addPaakrevdeVedlegg(jsonVedleggs, paakrevdeVedlegg)
