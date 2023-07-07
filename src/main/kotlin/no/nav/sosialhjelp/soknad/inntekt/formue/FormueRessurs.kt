@@ -83,7 +83,7 @@ class FormueRessurs(
         )
         setFormue(okonomi.oversikt, formueFrontend)
         setBeskrivelseAvAnnet(okonomi.opplysninger, formueFrontend)
-        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
+        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier, "updateFormue")
     }
 
     private fun setFormue(oversikt: JsonOkonomioversikt, formueFrontend: FormueFrontend) {

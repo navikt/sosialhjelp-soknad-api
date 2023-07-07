@@ -86,7 +86,7 @@ class BarneutgiftRessurs(
             textService.getJsonOkonomiTittel("utgifter.barn")
         )
         setBarneutgifter(okonomi, barneutgifterFrontend)
-        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
+        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier, "updateBarneutgifter")
     }
 
     private fun setBarneutgifter(okonomi: JsonOkonomi, barneutgifterFrontend: BarneutgifterFrontend) {

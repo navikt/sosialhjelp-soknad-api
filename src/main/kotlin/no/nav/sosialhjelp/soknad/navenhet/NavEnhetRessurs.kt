@@ -66,6 +66,6 @@ class NavEnhetRessurs(
         val eier = SubjectHandlerUtils.getUserIdFromToken()
         val soknad = soknadUnderArbeidRepository.hentSoknad(behandlingsId, eier)
         adresseRessurs.setNavEnhetAsMottaker(soknad, navEnhetFrontend, eier)
-        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
+        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier, "putNavEnhet")
     }
 }

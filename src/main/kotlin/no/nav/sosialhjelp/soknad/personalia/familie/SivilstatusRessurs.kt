@@ -64,7 +64,7 @@ class SivilstatusRessurs(
         sivilstatus.ektefelle = mapToJsonEktefelle(sivilstatusFrontend.ektefelle)
         sivilstatus.borSammenMed = sivilstatusFrontend.borSammenMed
 
-        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
+        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier, "updateSivilstatus")
     }
 
     private fun addEktefelleFrontend(jsonEktefelle: JsonEktefelle): EktefelleFrontend {

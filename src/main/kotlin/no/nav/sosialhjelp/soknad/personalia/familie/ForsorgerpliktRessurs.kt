@@ -74,7 +74,7 @@ class ForsorgerpliktRessurs(
         updateBarnebidrag(forsorgerpliktFrontend, jsonInternalSoknad, forsorgerplikt)
         updateAnsvarAndHarForsorgerplikt(forsorgerpliktFrontend, jsonInternalSoknad, forsorgerplikt)
 
-        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
+        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier, "updateForsorgerplikt")
     }
 
     private fun updateBarnebidrag(

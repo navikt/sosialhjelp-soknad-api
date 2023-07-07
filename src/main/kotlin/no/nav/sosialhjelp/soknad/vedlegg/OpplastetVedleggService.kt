@@ -61,7 +61,7 @@ class OpplastetVedleggService(
             JsonFiler().withFilnavn(filnavn).withSha512(sha512)
         )
 
-        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier)
+        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier, "Opplastet - saveVedleggAndUpdateVedleggstatus")
 
         return opplastetVedlegg
     }
@@ -102,7 +102,7 @@ class OpplastetVedleggService(
             jsonVedlegg.status = Vedleggstatus.VedleggKreves.toString()
         }
 
-        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier)
+        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier, "Opplastet - deleteVedleggAndUpdateVedleggsstatus")
         opplastetVedleggRepository.slettVedlegg(vedleggId, eier)
     }
 

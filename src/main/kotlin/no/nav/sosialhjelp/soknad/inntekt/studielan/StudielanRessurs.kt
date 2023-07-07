@@ -80,7 +80,7 @@ class StudielanRessurs(
                 studielanFrontend.bekreftelse
             )
         }
-        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
+        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier, "updateStudielån")
     }
 
     data class StudielanFrontend(

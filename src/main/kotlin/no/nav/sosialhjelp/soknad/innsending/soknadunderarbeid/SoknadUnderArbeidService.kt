@@ -30,7 +30,7 @@ class SoknadUnderArbeidService(
             return
         }
         soknadUnderArbeid.jsonInternalSoknad?.soknad?.innsendingstidspunkt = nowWithForcedNanoseconds()
-        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, soknadUnderArbeid.eier)
+        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, soknadUnderArbeid.eier, "sendSøknad")
     }
 
     fun sortArbeid(arbeid: JsonArbeid) {

@@ -58,7 +58,7 @@ class ArbeidRessurs(
         } else {
             arbeid.kommentarTilArbeidsforhold = null
         }
-        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
+        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier, "updateArbeid")
     }
 
     private fun mapToArbeidsforholdFrontend(arbeidsforhold: JsonArbeidsforhold): ArbeidsforholdFrontend {

@@ -82,7 +82,7 @@ class VerdiRessurs(
         )
         setVerdier(okonomi.oversikt, verdierFrontend)
         setBeskrivelseAvAnnet(okonomi.opplysninger, verdierFrontend)
-        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
+        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier, "updateVerdier")
     }
 
     private fun setVerdier(oversikt: JsonOkonomioversikt, verdierFrontend: VerdierFrontend) {

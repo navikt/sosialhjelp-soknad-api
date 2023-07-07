@@ -55,7 +55,7 @@ class AdresseRessurs(
             null
         }
         jsonInternalSoknad.midlertidigAdresse = sysMidlertidigAdresse
-        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
+        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier, "hentAdresser")
 
         return AdresseMapper.mapToAdresserFrontend(
             sysFolkeregistrertAdresse,
@@ -93,14 +93,14 @@ class AdresseRessurs(
         }
         personalia.oppholdsadresse.adresseValg = adresserFrontend.valg
         personalia.postadresse = midlertidigLosningForPostadresse(personalia.oppholdsadresse)
-        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
+        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier, "updateAdresse")
         val navEnhetFrontend = navEnhetService.getNavEnhet(
             eier,
             jsonInternalSoknad.soknad,
             adresserFrontend.valg
         )?.also {
             setNavEnhetAsMottaker(soknad, it, eier)
-            soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
+            soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier, "updateAdresse")
         }
         return navEnhetFrontend?.let { listOf(it) } ?: emptyList()
     }

@@ -98,7 +98,7 @@ class OppsummeringService(
         )
 
         soknadUnderArbeid.jsonInternalSoknad?.vedlegg = JsonVedleggSpesifikasjon().withVedlegg(jsonVedleggs)
-        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier)
+        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier, "oppdatertVedleggsforventninger")
     }
 
     private fun fjernIkkePaakrevdeVedlegg(

@@ -77,7 +77,7 @@ class UtbetalingRessurs(
         )
         setUtbetalinger(opplysninger, utbetalingerFrontend)
         setBeskrivelseAvAnnet(opplysninger, utbetalingerFrontend)
-        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
+        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier, "updateUtbetalinger")
     }
 
     private fun setUtbetalinger(opplysninger: JsonOkonomiopplysninger, utbetalingerFrontend: UtbetalingerFrontend) {

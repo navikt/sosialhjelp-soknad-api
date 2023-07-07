@@ -90,7 +90,7 @@ class BostotteRessurs(
                 )
             }
         }
-        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
+        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier, "updateBostøtte")
     }
 
     @PostMapping("/samtykke")
@@ -119,7 +119,7 @@ class BostotteRessurs(
         }
         if (skalLagre) {
             bostotteSystemdata.updateSystemdataIn(soknad, token)
-            soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
+            soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier, "updateSamtykke (BostøtteRessurs)")
         }
     }
 

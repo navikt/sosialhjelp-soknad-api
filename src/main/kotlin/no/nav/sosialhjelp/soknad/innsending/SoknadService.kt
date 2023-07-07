@@ -206,7 +206,7 @@ class SoknadService(
         if (harBostotteSamtykke) {
             bostotteSystemdata.updateSystemdataIn(soknadUnderArbeid, token)
         }
-        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier)
+        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier, "oppdaterSamtykker")
     }
 
     private fun oppdaterMetadataVedAvslutningAvSoknad(

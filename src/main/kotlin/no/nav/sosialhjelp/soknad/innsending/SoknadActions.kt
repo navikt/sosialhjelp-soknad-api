@@ -114,7 +114,7 @@ class SoknadActions(
             jsonVedleggSpesifikasjon = jsonVedleggSpesifikasjon,
             isSoknad = !soknadUnderArbeid.erEttersendelse
         )
-        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier)
+        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier, "sendSøknad")
     }
 
     private fun isEttersendelsePaSoknadSendtViaSvarUt(soknadUnderArbeid: SoknadUnderArbeid): Boolean {

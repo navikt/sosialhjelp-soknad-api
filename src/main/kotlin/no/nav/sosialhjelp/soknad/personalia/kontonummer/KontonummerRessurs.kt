@@ -67,7 +67,7 @@ class KontonummerRessurs(
             kontonummerSystemdata.updateSystemdataIn(soknad)
             kontonummer.setHarIkkeKonto(null)
         }
-        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
+        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier, "updateKontonummer")
     }
 
     data class KontonummerFrontend(

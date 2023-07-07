@@ -130,7 +130,7 @@ class MellomlagringService(
             JsonFiler().withFilnavn(filnavn).withSha512(sha512)
         )
 
-        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier)
+        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier, "Mellomlagring - oppdaterSoknadUnderArbeid")
     }
 
     fun deleteVedleggAndUpdateVedleggstatus(behandlingsId: String, vedleggId: String) {
@@ -161,7 +161,7 @@ class MellomlagringService(
             jsonVedlegg.status = Vedleggstatus.VedleggKreves.toString()
         }
 
-        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier)
+        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier, "Mellomlagring - deleteVedleggAndUpdateVedleggstatus")
         mellomlagringClient.deleteVedlegg(navEksternId = navEksternId, digisosDokumentId = vedleggId)
     }
 

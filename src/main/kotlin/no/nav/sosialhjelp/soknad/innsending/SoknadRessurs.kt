@@ -80,7 +80,7 @@ class SoknadRessurs(
         return if (updatedJsonInternalSoknad == notUpdatedJsonInternalSoknad) {
             false
         } else {
-            soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier)
+            soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier, "sjekkOmSystemdataErEndret")
             true
         }
     }

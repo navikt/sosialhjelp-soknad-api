@@ -61,7 +61,7 @@ class UtdanningRessurs(
                 inntekter.removeIf { it.type == SoknadJsonTyper.STUDIELAN }
             }
         }
-        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
+        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier, "updateUtdanning")
     }
 
     data class UtdanningFrontend(

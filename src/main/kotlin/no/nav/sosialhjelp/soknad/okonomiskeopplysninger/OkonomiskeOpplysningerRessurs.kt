@@ -79,7 +79,7 @@ class OkonomiskeOpplysningerRessurs(
         addPaakrevdeVedlegg(jsonVedleggs, paakrevdeVedlegg)
 
         soknad.jsonInternalSoknad?.vedlegg = JsonVedleggSpesifikasjon().withVedlegg(jsonVedleggs)
-        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
+        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier, "hentBasertPåOpplastedeVedlegg")
 
         return VedleggFrontends(
             okonomiskeOpplysninger = jsonVedleggs.map { mapToVedleggFrontend(it, jsonOkonomi, opplastedeVedlegg) },
@@ -117,7 +117,7 @@ class OkonomiskeOpplysningerRessurs(
         addPaakrevdeVedlegg(jsonVedleggs, paakrevdeVedlegg)
 
         soknadUnderArbeid.jsonInternalSoknad?.vedlegg = JsonVedleggSpesifikasjon().withVedlegg(jsonVedleggs)
-        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier)
+        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknadUnderArbeid, eier, "hentBasertPåMellomlagredeVedlegg")
 
         return VedleggFrontends(
             okonomiskeOpplysninger = jsonVedleggs.map {
@@ -155,7 +155,7 @@ class OkonomiskeOpplysningerRessurs(
 
         setVedleggStatus(vedleggFrontend, soknad)
 
-        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
+        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier, "updateOkonomiskOpplysning")
     }
 
     private fun removeIkkePaakrevdeVedlegg(

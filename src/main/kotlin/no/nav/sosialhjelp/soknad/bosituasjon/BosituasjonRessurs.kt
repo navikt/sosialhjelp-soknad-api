@@ -48,7 +48,7 @@ class BosituasjonRessurs(
             bosituasjon.botype = bosituasjonFrontend.botype
         }
         bosituasjon.antallPersoner = bosituasjonFrontend.antallPersoner
-        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
+        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier, "updateBosituasjon")
     }
 
     data class BosituasjonFrontend(

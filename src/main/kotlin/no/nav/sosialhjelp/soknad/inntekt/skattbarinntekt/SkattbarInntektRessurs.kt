@@ -81,7 +81,7 @@ class SkattbarInntektRessurs(
         }
         if (skalLagre) {
             skatteetatenSystemdata.updateSystemdataIn(soknad)
-            soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
+            soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier, "updateSamtykke (SkattbareInntektRessurs")
         }
     }
 

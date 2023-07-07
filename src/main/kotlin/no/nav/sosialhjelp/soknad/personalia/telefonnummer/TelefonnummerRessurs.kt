@@ -70,7 +70,7 @@ class TelefonnummerRessurs(
             jsonTelefonnummer.kilde = JsonKilde.SYSTEM
             telefonnummerSystemdata.updateSystemdataIn(soknad)
         }
-        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier)
+        soknadUnderArbeidRepository.oppdaterSoknadsdata(soknad, eier, "updateTelefonnummer")
     }
 
     data class TelefonnummerFrontend(
